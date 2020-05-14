@@ -13,7 +13,7 @@ const typescript = require("gulp-typescript");
 function copyHtml()
 {
 	return gulp
-		.src("index.html")
+		.src(["**/*.html"], {base: './frontend'})
 		.pipe(gulp.dest("./dist"));
 };
 
@@ -21,8 +21,8 @@ function copyHtml()
 function copyImgs()
 {
 	return gulp
-		.src("img/*")
-		.pipe(gulp.dest("dist/img"));
+		.src("src/assets/img/*")
+		.pipe(gulp.dest("dist/assets/img"));
 }
 
 //sets gulp to add prefixes with Autoprefixer after Dreamweaver outputs the Sass filee to CSS
@@ -30,7 +30,7 @@ function copyImgs()
 function styles()
 {
 	return gulp
-		.src("css/*.css")
+		.src("src/css/*.css")
 		.pipe(postcss([autoprefixer()]))
 		.pipe(gulp.dest("./dist/css"));
 }
@@ -39,7 +39,7 @@ function styles()
 function scripts()
 {
 	return gulp
-		.src("src/**/*.ts")
+		.src(["src/**/*.ts"], {base: './frontend'})
 		.pipe(sourcemaps.init())
 		.pipe(typescript({
 			target: "es6",
@@ -58,7 +58,7 @@ function scripts()
 function scriptsDist()
 {
 	return gulp
-		.src("src/**/*.ts")
+		.src(["src/**/*.ts"], {base: './frontend'})
 		.pipe(sourcemaps.init())
 		.pipe(typescript({
 			target: "es6",
@@ -107,10 +107,10 @@ function dist()
 //watch files for changes and then run the appropriate tasks
 function watch()
 {
-	gulp.watch('/index.html', copyHtml);
-	gulp.watch('img/*', copyImgs);
-	gulp.watch('css/*.css', styles);
-	gulp.watch('/js/*.js', scripts);
+	gulp.watch("**/*.html", copyHtml);
+	gulp.watch('src/assets/img/*', copyImgs);
+	gulp.watch('src/css/*.css', styles);
+	gulp.watch('src/**/*.ts', scripts);
 }
 
 //exports for gulp to recognise them as tasks

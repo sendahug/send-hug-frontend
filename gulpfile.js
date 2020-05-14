@@ -7,6 +7,7 @@ const babel = require("gulp-babel");
 const sourcemaps = require("gulp-sourcemaps");
 const jasmineBrowser = require('gulp-jasmine-browser');
 const order = require("gulp-order");
+const typescript = require("gulp-typescript");
 
 //copies the html to the disribution folder
 function copyHtml()
@@ -38,8 +39,12 @@ function styles()
 function scripts()
 {
 	return gulp
-		.src("js/*.js")
+		.src("src/**/*.ts")
 		.pipe(sourcemaps.init())
+		.pipe(typescript({
+			target: "es6",
+			module: "commonjs",
+		}))
 		.pipe(babel({presets: ['@babel/preset-env']}))
 		.pipe(order([
 		
@@ -53,8 +58,12 @@ function scripts()
 function scriptsDist()
 {
 	return gulp
-		.src("js/*.js")
+		.src("src/**/*.ts")
 		.pipe(sourcemaps.init())
+		.pipe(typescript({
+			target: "es6",
+			module: "commonjs",
+		}))
 		.pipe(babel({presets: ['@babel/preset-env']}))
 		.pipe(order([
 		

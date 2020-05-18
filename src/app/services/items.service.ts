@@ -6,18 +6,27 @@ import { HttpClient } from '@angular/common/http';
 })
 export class ItemsService {
   private serverUrl = 'localhost:3000'
-  static itemsArray: any[] = [];
+  static newItemsArray: any[] = [];
+  static sugItemsArray = [];
 
   constructor(private Http: HttpClient) {
 
   }
 
-  getItems() {
+  // Gets a list of new items.
+  getNewItems() {
     this.Http.get(this.serverUrl).subscribe((response: any) => {
       let data = response.data.items;
-      data.forEach(element => {
-        ItemsService.itemsArray.push(element);
-      });
+      ItemsService.newItemsArray = data;
+    })
+  }
+
+  // Gets a list of suggested items
+  getSuggestedItems() {
+    const Url = this.serverUrl + '/suggested';
+    this.Http.get(Url).subscribe((response: any) => {
+      let data = response.data.items;
+      ItemsService.sugItemsArray = data;
     })
   }
 }

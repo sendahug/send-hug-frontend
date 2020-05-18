@@ -10,10 +10,10 @@ export class newItems implements OnInit {
   newItemsArray: any[] = [];
 
   constructor(itemsService: ItemsService) {
-    itemsService.getItems();
+    itemsService.getNewItems();
   }
 
   ngOnInit() {
-    this.newItemsArray = ItemsService.itemsArray;
+    this.newItemsArray = ItemsService.newItemsArray;
   }
 }

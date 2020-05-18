@@ -1,13 +1,12 @@
 const gulp = require("gulp");
 const postcss = require("gulp-postcss");
 const autoprefixer = require("autoprefixer");
-const concat = require("gulp-concat");
 const uglify = require("gulp-uglify");
 const babel = require("gulp-babel");
 const sourcemaps = require("gulp-sourcemaps");
 const jasmineBrowser = require('gulp-jasmine-browser');
-const order = require("gulp-order");
 const typescript = require("gulp-typescript");
+const webpack = require("webpack-stream");
 
 //copies the html to the disribution folder
 function copyHtml()
@@ -15,7 +14,7 @@ function copyHtml()
 	return gulp
 		.src(["**/*.html"], {base: './frontend'})
 		.pipe(gulp.dest("./dist"));
-};
+}
 
 //copies the images folder to the distribution folder
 function copyImgs()
@@ -35,7 +34,7 @@ function styles()
 		.pipe(gulp.dest("./dist/css"));
 }
 
-//deals with concating the scripts while in development mode
+//deals with transforming the scripts to ES5 JS while in development mode
 function scripts()
 {
 	return gulp
@@ -44,17 +43,15 @@ function scripts()
 		.pipe(typescript({
 			target: "es6",
 			module: "commonjs",
+			rootDir: "./src",
+			outDir: "./dist"
 		}))
 		.pipe(babel({presets: ['@babel/preset-env']}))
-		.pipe(order([
-		
-		]))
-		.pipe(concat('all.js'))
 		.pipe(sourcemaps.write())
 		.pipe(gulp.dest("dist/js"))
 }
 
-//deals with concating the scripts while in production mode
+//deals with bundling the scripts while in production mode
 function scriptsDist()
 {
 	return gulp
@@ -63,15 +60,20 @@ function scriptsDist()
 		.pipe(typescript({
 			target: "es6",
 			module: "commonjs",
+			rootDir: "./src",
+			outDir: "./dist"
 		}))
 		.pipe(babel({presets: ['@babel/preset-env']}))
-		.pipe(order([
-		
-		]))
-		.pipe(concat('all.js'))
+		.pipe(webpack({
+			mode: "production",
+			entry: "src/main.ts",
+			output: {
+				filename: "app.bundle.js"
+			}
+		}))
 		.pipe(uglify())
 		.pipe(sourcemaps.write())
-		.pipe(gulp.dest("dist/js"))
+		.pipe(gulp.dest("dist"))
 }
 
 //automatic testing in the Jasmine headless browser

@@ -4,16 +4,16 @@ import { ItemsService } from '../../services/items.service'
 @Component({
   selector: 'app-suggested-items',
   templateUrl: './suggestedItems.component.html',
-  providers: []
+  providers: [ItemsService]
 })
 export class suggestedItems implements OnInit {
   sugItemsArray = [];
 
-  constructor() {
-
+  constructor(itemsService:ItemsService) {
+    itemsService.getSuggestedItems();
   }
 
   ngOnInit() {
-
+    this.sugItemsArray = ItemsService.sugItemsArray;
   }
 }

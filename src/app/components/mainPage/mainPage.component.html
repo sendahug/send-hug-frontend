@@ -1,0 +1,17 @@
+<!-- New items -->
+<div id="newItems">
+	<ul id="newItemsList">
+		<li *ngFor="let item of newItemsArray" class="newItem">
+			{{ item.text }}
+		</li>
+	</ul>
+</div>
+
+<!-- Suggested items -->
+<div id="suggestedItems">
+	<ul id="sugItemsList">
+		<li *ngFor="let item of sugItemsArray" class="sugItem">
+			{{ item.text }}
+		</li>
+	</ul>
+</div>

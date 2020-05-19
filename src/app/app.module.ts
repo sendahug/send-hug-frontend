@@ -3,8 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module'
-import { newItems } from './components/newItems/newItems.component';
-import { suggestedItems } from './components/suggestedItems/suggestedItems.component';
+import { MainPage } from './components/mainPage/mainPage.component';
 import { siteHeader } from './components/header/header.component';
 import { userPage } from './components/userPage/userPage.component';
 import { AppMessaging } from './components/messages/messages.component';
@@ -17,8 +16,7 @@ import { AuthService } from './services/auth.service';
     AppRoutingModule
   ],
   declarations: [
-    newItems,
-    suggestedItems,
+    MainPage,
     siteHeader,
     userPage,
     AppMessaging

@@ -1,0 +1,22 @@
+<!-- If the user is logged in, displays the user's inbox. -->
+<div id="userInbox" *ngIf="authService.authenticated">
+	<!-- If there are messages in the user's inbox -->
+	<div *ngIf="messages.length">
+		<div *ngFor="let message in messages">
+			<div class="pageCategory">Username:</div> <div class="pageData">{{ message.from }}</div>
+			<div class="pageCategory">Message:</div> <div class="pageData">{{ message.messageText }}</div>
+		</div>
+	</div>
+	
+	<!-- If there are no messages in the user's inbox -->
+	<div *ngIf="!messages.length">
+		<div class="errorMessage">You have no incoming messages.</div>
+	</div>
+</div>
+
+<!-- If the user isn't logged in, prompts the user to log in. -->
+<div *ngIf="!authService.authenticated">
+	<div class="errorMessage">You are not currently logged in. To view your inbox, log in.</div>
+	
+	<a href="" id="logIn">Login</a>
+</div>

@@ -7,6 +7,7 @@ import { newItems } from './components/newItems/newItems.component';
 import { suggestedItems } from './components/suggestedItems/suggestedItems.component';
 import { siteHeader } from './components/header/header.component';
 import { userPage } from './components/userPage/userPage.component';
+import { AppMessaging } from './components/messages/messages.component';
 import { ItemsService } from './services/items.service';
 import { AuthService } from './services/auth.service';
 
@@ -19,7 +20,8 @@ import { AuthService } from './services/auth.service';
     newItems,
     suggestedItems,
     siteHeader,
-    userPage
+    userPage,
+    AppMessaging
   ],
   providers: [
     ItemsService,

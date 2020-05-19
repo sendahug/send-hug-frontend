@@ -7,13 +7,13 @@ import { Component, OnInit } from '@angular/core';
 export class siteHeader implements OnInit {
   navTabs = [{
     name: 'Home',
-    link: ''
+    link: '/'
   }, {
     name: 'Messages',
     link: ''
   }, {
     name: 'User Page',
-    link: ''
+    link: '/user'
   }];
 
   constructor() {

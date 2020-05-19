@@ -1,7 +1,12 @@
-<app-header></app-header>
+<header id="siteHeader">
+	<h1 id="mainTitle">Title</h1>
+	<nav id="navMenu">
+		<a *ngFor="let tab of navTabs" href="{{ tab.link }}" class="navLink">{{ tab.name }}</a>
+	</nav>
+</header>
 
 <main>
-	<app-main-page></app-main-page>
+	<router-outlet></router-outlet>
 </main>
 
 <footer>

@@ -4,4 +4,19 @@ import { Component } from '@angular/core'
   selector: 'app-root',
   templateUrl: './app.component.html'
 })
-export class AppComponent { }
+export class AppComponent {
+  navTabs = [{
+    name: 'Home',
+    link: '/'
+  }, {
+    name: 'Messages',
+    link: ''
+  }, {
+    name: 'User Page',
+    link: '/user'
+  }];
+  
+  constructor() {
+
+  }
+}

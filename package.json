@@ -29,6 +29,8 @@
     "@angular/platform-browser": "^9.1.7",
     "@angular/platform-browser-dynamic": "^9.1.7",
     "@angular/router": "^9.1.7",
+    "@types/auth0-js": "^9.12.5",
+    "auth0-js": "^9.13.2",
     "autoprefixer": "^9.7.5",
     "gulp-concat": "^2.6.1",
     "gulp-jasmine-browser": "^4.1.0",

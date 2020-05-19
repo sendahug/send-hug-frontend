@@ -1,0 +1,20 @@
+<app-header></app-header>
+
+<!-- If the user is logged in, displays a user page. -->
+<div *ngIf="authService.authenticated">
+	<div id="userPage">
+		<div class="pageCategory">Username:</div> <div class="pageData">{{ userData.username }}</div>
+		<div class="pageCategory">Received Hugs:</div> <div class="pageData">{{ userData.receivedH }}</div>
+		<div class="pageCategory">Given Hugs:</div> <div class="pageData">{{ userData.givenH }}</div>
+		<div class="pageCategory">Posts:</div> <div class="pageData">{{ userData.postsNum }}</div>
+		
+		<a href="" id="logOut">Log Out</a>
+	</div>
+</div>
+
+<!-- If the user isn't logged in, prompts the user to log in. -->
+<div *ngIf="!authService.authenticated">
+	<div class="errorMessage">You are not currently logged in. To view user information, log in.</div>
+	
+	<a href="" id="logIn">Login</a>
+</div>

@@ -1,17 +1,23 @@
 <!-- New items -->
-<div id="newItems">
+<div id="newItems" class="itemList">
 	<ul id="newItemsList">
 		<li *ngFor="let item of newItemsArray" class="newItem">
-			{{ item.text }}
+			<div class="itemText">{{ item.text }}</div>
+			<div class="itemUser">By {{ item.user }}</div>
+			<button class="appButton hugButton"><i class="fas fa-hand-holding-heart"></i></button>
+			<button class="appButton messageButton"><i class="fas fa-comments"></i></button>
 		</li>
 	</ul>
 </div>
 
 <!-- Suggested items -->
-<div id="suggestedItems">
+<div id="suggestedItems" class="itemList">
 	<ul id="sugItemsList">
 		<li *ngFor="let item of sugItemsArray" class="sugItem">
-			{{ item.text }}
+			<div class="itemText">{{ item.text }}</div>
+			<div class="itemUser">By {{ item.user }}</div>
+			<button class="appButton hugButton"><i class="fas fa-hand-holding-heart"></i></button>
+			<button class="appButton messageButton"><i class="fas fa-comments"></i></button>
 		</li>
 	</ul>
 </div>

@@ -34,7 +34,7 @@ function styles()
 		.pipe(gulp.dest("./dist/css"));
 }
 
-//deals with transforming the scripts to ES5 JS while in development mode
+//deals with transforming and bundling the scripts while in development mode
 function scripts()
 {
 	return gulp
@@ -47,11 +47,18 @@ function scripts()
 			outDir: "./dist"
 		}))
 		.pipe(babel({presets: ['@babel/preset-env']}))
+		.pipe(webpack({
+			mode: "production",
+			entry: "src/main.js",
+			output: {
+				filename: "app.bundle.js"
+			}
+		}))
 		.pipe(sourcemaps.write())
-		.pipe(gulp.dest("dist/js"))
+		.pipe(gulp.dest("src/"))
 }
 
-//deals with bundling the scripts while in production mode
+//deals with transforming and bundling the scripts while in production mode
 function scriptsDist()
 {
 	return gulp
@@ -66,7 +73,7 @@ function scriptsDist()
 		.pipe(babel({presets: ['@babel/preset-env']}))
 		.pipe(webpack({
 			mode: "production",
-			entry: "src/main.ts",
+			entry: "src/main.js",
 			output: {
 				filename: "app.bundle.js"
 			}

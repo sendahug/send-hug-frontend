@@ -8,25 +8,37 @@ export class ItemsService {
   private serverUrl = 'localhost:3000'
   static newItemsArray: any[] = [];
   static sugItemsArray = [];
+  static fullNewItems = [];
+  static fullSugItems = [];
 
   constructor(private Http: HttpClient) {
 
   }
 
+  // Gets ten recent and ten suggested items
+  getItems() {
+    this.Http.get(this.serverUrl).subscribe((response:any) => {
+      let data = response.data;
+      ItemsService.newItemsArray = data.recent;
+      ItemsService.sugItemsArray = data.suggested;
+    })
+  }
+
   // Gets a list of new items.
   getNewItems() {
-    this.Http.get(this.serverUrl).subscribe((response: any) => {
+    const Url = this.serverUrl + '/new-items';
+    this.Http.get(Url).subscribe((response: any) => {
       let data = response.data.items;
-      ItemsService.newItemsArray = data;
+      ItemsService.fullNewItems = data;
     })
   }
 
   // Gets a list of suggested items
   getSuggestedItems() {
-    const Url = this.serverUrl + '/suggested';
+    const Url = this.serverUrl + '/suggested-items';
     this.Http.get(Url).subscribe((response: any) => {
       let data = response.data.items;
-      ItemsService.sugItemsArray = data;
+      ItemsService.fullSugItems = data;
     })
   }
 }

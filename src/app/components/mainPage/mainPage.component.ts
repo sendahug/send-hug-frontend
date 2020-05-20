@@ -11,8 +11,7 @@ export class MainPage implements OnInit {
   sugItemsArray = [];
 
   constructor(itemsService: ItemsService) {
-    itemsService.getNewItems();
-    itemsService.getSuggestedItems();
+    itemsService.getItems();
   }
 
   ngOnInit() {

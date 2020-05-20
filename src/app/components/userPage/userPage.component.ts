@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { AuthService } from '../../services/auth.service';
 
 interface User {
@@ -29,12 +29,12 @@ export class userPage implements OnInit {
     jwt: ''
   }
 
-  constructor(authService: AuthService, private httpClient: HttpClient) {
+  constructor(private authService: AuthService, private httpClient: HttpClient) {
     authService.checkHash();
 
     // If the user is authenticated, gets the user's data.
     if(authService.authenticated) {
-      this.parseUserData(authService);
+      this.parseUserData();
     }
   }
 
@@ -43,14 +43,14 @@ export class userPage implements OnInit {
   }
 
   // Parses the user data from the JWT payload.
-  parseUserData(authService: AuthService) {
-    let userPayload = authService.userProfile;
+  parseUserData() {
+    let userPayload = this.authService.userProfile;
 
     if(userPayload) {
       this.userData.Id = userPayload.Id;
       this.userData.email = userPayload.email;
       this.userData.username = userPayload.username;
-      this.userData.jwt = authService.token;
+      this.userData.jwt = this.authService.token;
 
       this.fetchSocialData();
     }
@@ -58,7 +58,10 @@ export class userPage implements OnInit {
 
   // Fetches the social (app-related) data from the database.
   fetchSocialData() {
-    this.httpClient.get('localhost:3000/users').subscribe((response: any) => {
+    let params = new HttpParams().set('userID', this.authService.userProfile.sub)
+    this.httpClient.get('localhost:3000/users', {
+      params: params
+    }).subscribe((response: any) => {
       let data = response.data.user;
       this.userData.receivedH = data.receivedH;
       this.userData.givenH = data.givenH;

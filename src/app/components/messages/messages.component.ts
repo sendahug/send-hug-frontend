@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
+
+import { AuthService } from '../../services/auth.service';
 
 interface Message {
   Id: number;
@@ -12,15 +14,19 @@ interface Message {
 
 @Component({
   selector: 'app-messages',
-  templateUrl: './messages.component.html'
+  templateUrl: './messages.component.html',
+  providers: [ AuthService ]
 })
 export class AppMessaging implements OnInit {
   messages: Message[] = [];
 
   // CTOR
-  constructor(private httpClient: HttpClient) {
+  constructor(private httpClient: HttpClient, private authService: AuthService) {
     // Gets the user's messages from the server
-    this.httpClient.get('localhost:3000/messages').subscribe((response: any) => {
+    let params = new HttpParams().set('userID', this.authService.userProfile.sub)
+    this.httpClient.get('localhost:3000/messages', {
+      params: params
+    }).subscribe((response: any) => {
       let userMessages = response.data.messages;
       userMessages.forEach((element:Message) => {
         let message = element;

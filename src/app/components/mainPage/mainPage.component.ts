@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { ItemsService } from '../../services/items.service'
+import { ItemsService } from '../../services/items.service';
+
+import { Post } from '../../interfaces/post.interface';
 
 @Component({
   selector: 'app-main-page',
@@ -7,8 +9,8 @@ import { ItemsService } from '../../services/items.service'
   providers: [ ItemsService ]
 })
 export class MainPage implements OnInit {
-  newItemsArray: any[] = [];
-  sugItemsArray: any[] = [];
+  newItemsArray: Post[] = [];
+  sugItemsArray: Post[] = [];
 
   constructor(private itemsService: ItemsService) {
     this.itemsService.getItems();

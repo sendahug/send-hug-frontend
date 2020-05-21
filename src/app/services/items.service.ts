@@ -9,10 +9,10 @@ import { Message } from '../interfaces/message.interface';
 })
 export class ItemsService {
   private serverUrl = 'localhost:3000'
-  static newItemsArray: any[] = [];
-  static sugItemsArray = [];
-  static fullNewItems = [];
-  static fullSugItems = [];
+  static newItemsArray: Post[] = [];
+  static sugItemsArray: Post[] = [];
+  static fullNewItems: Post[] = [];
+  static fullSugItems: Post[] = [];
 
   constructor(private Http: HttpClient) {
 

@@ -1,4 +1,7 @@
+// Angular imports
 import { Component, OnInit } from '@angular/core';
+
+// App-related imports
 import { AuthService } from '../../services/auth.service';
 import { User } from '../../interfaces/user.interface';
 
@@ -19,6 +22,7 @@ export class UserPage implements OnInit {
     jwt: ''
   }
 
+  // CTOR
   constructor(private authService: AuthService) {
     authService.checkHash();
 

@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 
+// Error message interface
 interface ErrorMessage {
   title: string;
   message: string;

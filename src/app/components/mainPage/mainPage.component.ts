@@ -1,6 +1,8 @@
+// Angular imports
 import { Component, OnInit } from '@angular/core';
-import { ItemsService } from '../../services/items.service';
 
+// App-related imports
+import { ItemsService } from '../../services/items.service';
 import { Post } from '../../interfaces/post.interface';
 
 @Component({
@@ -12,6 +14,7 @@ export class MainPage implements OnInit {
   newItemsArray: Post[] = [];
   sugItemsArray: Post[] = [];
 
+  // CTOR
   constructor(private itemsService: ItemsService) {
     this.itemsService.getItems();
   }

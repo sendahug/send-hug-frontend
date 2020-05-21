@@ -1,9 +1,10 @@
+// Angular imports
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
+// App-related imports
 import { Post } from '../../interfaces/post.interface';
 import { Message } from '../../interfaces/message.interface';
-
 import { ItemsService } from '../../services/items.service';
 import { AuthService } from '../../services/auth.service';
 
@@ -17,16 +18,20 @@ export class NewItem {
   itemType:String = '';
   user:any;
 
+  // CTOR
   constructor(private itemsService:ItemsService,
     private authService:AuthService,
     private route:ActivatedRoute) {
+      // Gets the URL parameters
       let type = this.route.snapshot.paramMap.get('type');
       let user = this.route.snapshot.paramMap.get('userID');
 
+      // If there's a type parameter, sets the type property
       if(type) {
         this.itemType = type;
       }
 
+      // If there's a user parameter, sets the user property
       if(user) {
         this.user = user;
       }

@@ -1,6 +1,8 @@
+// Angular imports
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
+// App-related imports
 import { Post } from '../interfaces/post.interface';
 import { Message } from '../interfaces/message.interface';
 
@@ -14,6 +16,7 @@ export class ItemsService {
   static fullNewItems: Post[] = [];
   static fullSugItems: Post[] = [];
 
+  // CTOR
   constructor(private Http: HttpClient) {
 
   }

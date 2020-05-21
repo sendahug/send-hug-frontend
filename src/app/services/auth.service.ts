@@ -1,7 +1,9 @@
+// Angular imports
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import * as Auth0 from 'auth0-js';
 
+// App-related imports
 import { User } from '../interfaces/user.interface';
 
 @Injectable({
@@ -32,6 +34,7 @@ export class AuthService {
     jwt: ''
   }
 
+  // CTOR
   constructor(private Http:HttpClient) {
 
   }

@@ -1,6 +1,8 @@
+// Angular imports
 import { Component, OnInit } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 
+// App-related imports
 import { AuthService } from '../../services/auth.service';
 import { Message } from '../../interfaces/message.interface';
 

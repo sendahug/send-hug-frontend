@@ -12,7 +12,15 @@ const webpack = require("webpack-stream");
 function copyHtml()
 {
 	return gulp
-		.src(["**/*.html"], {base: './frontend'})
+		.src(["src/app/**/*.html"], {base: './'})
+		.pipe(gulp.dest("./dist"));
+}
+
+//copies the index html to the disribution folder
+function copyIndex()
+{
+	return gulp
+		.src("index.html")
 		.pipe(gulp.dest("./dist"));
 }
 
@@ -34,53 +42,58 @@ function styles()
 		.pipe(gulp.dest("./dist/css"));
 }
 
-//deals with transforming and bundling the scripts while in development mode
+//deals with transforming the scripts while in development mode
 function scripts()
 {
 	return gulp
-		.src(["src/**/*.ts"], {base: './frontend'})
+		.src(["./src/**/*.ts"], {base: './frontend'})
 		.pipe(sourcemaps.init())
 		.pipe(typescript({
 			target: "es6",
 			module: "commonjs",
 			rootDir: "./src",
-			outDir: "./dist"
+			outDir: "./dist",
+			experimentalDecorators: true,
+			strict: true
 		}))
 		.pipe(babel({presets: ['@babel/preset-env']}))
-		.pipe(webpack({
-			mode: "production",
-			entry: "src/main.js",
-			output: {
-				filename: "app.bundle.js"
-			}
-		}))
 		.pipe(sourcemaps.write())
-		.pipe(gulp.dest("src/"))
+		.pipe(gulp.dest("./dist"))
 }
 
 //deals with transforming and bundling the scripts while in production mode
 function scriptsDist()
 {
 	return gulp
-		.src(["src/**/*.ts"], {base: './frontend'})
+		.src(["./src/**/*.ts"], {base: './frontend'})
 		.pipe(sourcemaps.init())
 		.pipe(typescript({
 			target: "es6",
 			module: "commonjs",
 			rootDir: "./src",
-			outDir: "./dist"
+			outDir: "./dist",
+			experimentalDecorators: true,
+			strict: true
 		}))
 		.pipe(babel({presets: ['@babel/preset-env']}))
+		.pipe(uglify())
+		.pipe(sourcemaps.write())
+		.pipe(gulp.dest("dist"))
+}
+
+//bundles the scripts
+function bundleScripts()
+{
+	return gulp
+		.src(["./dist/**/*.js"], {base: './frontend'})
 		.pipe(webpack({
 			mode: "production",
-			entry: "src/main.js",
+			entry: "dist/js/main.js",
 			output: {
 				filename: "app.bundle.js"
 			}
 		}))
-		.pipe(uglify())
-		.pipe(sourcemaps.write())
-		.pipe(gulp.dest("dist"))
+		.pipe(gulp.dest('dist/js'))
 }
 
 //automatic testing in the Jasmine headless browser
@@ -107,6 +120,7 @@ function dist()
 	return gulp
 		.parallel(
 			copyHtml,
+			copyIndex,
 			copyImgs, 
 			styles, 
 			scriptsDist
@@ -124,10 +138,12 @@ function watch()
 
 //exports for gulp to recognise them as tasks
 exports.copyHtml = copyHtml;
+exports.copyIndex = copyIndex;
 exports.copyImgs = copyImgs;
 exports.styles = styles;
 exports.scripts = scripts;
 exports.scriptsDist = scriptsDist;
+exports.bundleScripts = bundleScripts;
 exports.jasmineBrowserTest = jasmineBrowserTest;
 exports.browserTests = browserTests;
 exports.dist = dist;

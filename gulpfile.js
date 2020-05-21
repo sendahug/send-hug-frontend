@@ -85,15 +85,15 @@ function scriptsDist()
 function bundleScripts()
 {
 	return gulp
-		.src(["./dist/**/*.js"], {base: './frontend'})
+		.src(["dist/**/*.js"])
 		.pipe(webpack({
 			mode: "production",
-			entry: "dist/js/main.js",
+			entry: "./dist/main.js",
 			output: {
 				filename: "app.bundle.js"
 			}
 		}))
-		.pipe(gulp.dest('dist/js'))
+		.pipe(gulp.dest('dist'))
 }
 
 //automatic testing in the Jasmine headless browser

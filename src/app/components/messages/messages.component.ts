@@ -2,15 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 
 import { AuthService } from '../../services/auth.service';
-
-interface Message {
-  Id: number;
-  from: string;
-  fromId: number;
-  for: string;
-  forId: number;
-  messageText: string;
-}
+import { Message } from '../../interfaces/message.interface';
 
 @Component({
   selector: 'app-messages',

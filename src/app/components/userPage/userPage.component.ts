@@ -1,16 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { AuthService } from '../../services/auth.service';
-
-interface User {
-  Id: number,
-  email: string,
-  username: string;
-  receivedH: number;
-  givenH: number;
-  postsNum: number;
-  jwt: string;
-}
+import { User } from '../../interfaces/user.interface';
 
 @Component({
   selector: 'app-user-page',
@@ -20,11 +11,12 @@ interface User {
 })
 export class userPage implements OnInit {
   userData: User = {
-    Id: 0,
+    id: 0,
+    auth0Id: '',
     email: '',
     username: '',
-    receivedH: 0,
-    givenH: 0,
+    receivedHugs: 0,
+    givenHugs: 0,
     postsNum: 0,
     jwt: ''
   }

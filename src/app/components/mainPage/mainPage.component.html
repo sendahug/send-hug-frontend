@@ -4,8 +4,8 @@
 		<li *ngFor="let item of newItemsArray" class="newItem">
 			<div class="itemText">{{ item.text }}</div>
 			<div class="itemUser">By {{ item.user }}</div>
-			<button class="appButton hugButton"><i class="fas fa-hand-holding-heart"></i></button>
-			<button class="appButton messageButton"><i class="fas fa-comments"></i></button>
+			<button class="appButton hugButton" (click)="sendHug({{item.id}})"><i class="fas fa-hand-holding-heart"></i></button>
+			<a [routerLink]="[/new, {type: 'Message', userID: item.user}]" class="appButton messageButton"><i class="fas fa-comments"></i></a>
 		</li>
 	</ul>
 </div>
@@ -16,8 +16,8 @@
 		<li *ngFor="let item of sugItemsArray" class="sugItem">
 			<div class="itemText">{{ item.text }}</div>
 			<div class="itemUser">By {{ item.user }}</div>
-			<button class="appButton hugButton"><i class="fas fa-hand-holding-heart"></i></button>
-			<button class="appButton messageButton"><i class="fas fa-comments"></i></button>
+			<button class="appButton hugButton" (click)="sendHug({{item.id}})"><i class="fas fa-hand-holding-heart"></i></button>
+			<a [routerLink]="[/new, {type: 'Message', userID: item.user}]" class="appButton messageButton"><i class="fas fa-comments"></i></a>
 		</li>
 	</ul>
 </div>

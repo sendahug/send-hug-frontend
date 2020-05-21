@@ -60,4 +60,13 @@ export class ItemsService {
       console.log(response);
     })
   }
+
+  // Send a hug
+  sendHug(item: any) {
+    const Url = this.serverUrl + '/posts';
+    item.givenHugs += 1;
+    this.Http.patch(Url, item).subscribe((response:any) => {
+      console.log(response);
+    })
+  }
 }

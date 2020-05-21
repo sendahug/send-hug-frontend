@@ -4,7 +4,7 @@
 	<div id="newMessage" *ngIf="itemType == 'Message'">
 		<form class="newItem">
 			<label for="messageFor">For:</label>
-			<input #messageFor type="text" id="messageFor" value="{{  }}" readonly>
+			<input #messageFor type="text" id="messageFor" value="{{ user }}" readonly>
 			<label for="messageText">Message</label>
 			<input #messageText type="text" id="messageText">
 			<button type="submit" class="appButton" (click)="sendMessage(messageFor.value, messageText.value)">Send</button>
@@ -15,7 +15,7 @@
 		<form class="newItem">
 			<label for="postText">Text:</label>
 			<input #postText type="text" id="postText">
-			<div class="pageCategory">By:</div> <div class="pageData">{{  }}</div>
+			<div class="pageCategory">By:</div> <div class="pageData">{{ authService.userData.username }}</div>
 			<button type="submit" class="appButton" (click)="sendPost(postText.value)">Post</button>
 		</form>
 	</div>

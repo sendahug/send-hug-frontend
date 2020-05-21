@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 
 import { Post } from '../../interfaces/post.interface';
 import { Message } from '../../interfaces/message.interface';
@@ -13,12 +14,22 @@ import { AuthService } from '../../services/auth.service';
     AuthService ]
 })
 export class NewItem {
-  itemType: Post | Message;
+  itemType:String = '';
+  user:any;
 
-  constructor(type: Post | Message,
-    private itemsService:ItemsService,
-    private authService:AuthService) {
-      this.itemType = type;
+  constructor(private itemsService:ItemsService,
+    private authService:AuthService,
+    private route:ActivatedRoute) {
+      let type = this.route.snapshot.paramMap.get('type');
+      let user = this.route.snapshot.paramMap.get('userID');
+
+      if(type) {
+        this.itemType = type;
+      }
+
+      if(user) {
+        this.user = user;
+      }
   }
 
   // Create new post

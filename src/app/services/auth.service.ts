@@ -1,5 +1,8 @@
 import { Injectable } from '@angular/core';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import * as Auth0 from 'auth0-js';
+
+import { User } from '../interfaces/user.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -15,11 +18,21 @@ export class AuthService {
     scope: ''
   })
 
-  userProfile: any;
   token: string = '';
   authenticated: boolean = false;
+  userProfile: any;
+  userData: User = {
+    id: 0,
+    auth0Id: '',
+    email: '',
+    username: '',
+    receivedHugs: 0,
+    givenHugs: 0,
+    postsNum: 0,
+    jwt: ''
+  }
 
-  constructor() {
+  constructor(private Http:HttpClient) {
 
   }
 
@@ -55,6 +68,27 @@ export class AuthService {
         this.userProfile = uProfile;
         this.token = authResult.accessToken;
         this.authenticated = true;
+        this.getSocialData();
+      }
+    })
+  }
+
+  // Gets the user's social data
+  getSocialData() {
+    let params = new HttpParams().set('userID', this.userProfile.sub)
+    this.Http.get('localhost:3000/users', {
+      params: params
+    }).subscribe((response:any) => {
+      let data = response.data.user;
+      this.userData = {
+        id: this.userProfile.id,
+        auth0Id: this.userProfile.sub,
+        email: this.userProfile.email,
+        username: this.userProfile.username,
+        receivedHugs: data.receivedH,
+        givenHugs: data.givenH,
+        postsNum: data.postsNum,
+        jwt: this.token
       }
     })
   }

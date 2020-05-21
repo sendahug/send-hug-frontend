@@ -12,7 +12,7 @@ import { AuthService } from '../../services/auth.service';
   providers: [ ItemsService,
     AuthService ]
 })
-export class newItem {
+export class NewItem {
   itemType: Post | Message;
 
   constructor(type: Post | Message,

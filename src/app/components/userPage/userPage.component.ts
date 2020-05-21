@@ -7,7 +7,7 @@ import { User } from '../../interfaces/user.interface';
   templateUrl:  './userPage.component.html',
   providers: [ AuthService ]
 })
-export class userPage implements OnInit {
+export class UserPage implements OnInit {
   userData: User = {
     id: 0,
     auth0Id: '',

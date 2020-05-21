@@ -1,7 +1,8 @@
 <header id="siteHeader">
 	<h1 id="mainTitle">Title</h1>
 	<nav id="navMenu">
-		<a *ngFor="let tab of navTabs" href="{{ tab.link }}" class="navLink">{{ tab.name }}</a>
+		<a *ngFor="let tab of navTabs" [routerLink]="[{{ tab.link }}]" class="navLink">{{ tab.name }}</a>
+		<a *ngIf="loggedIn" [routerLink]="[/new, {type: 'Post'}]" class="navLink"></a>
 	</nav>
 </header>
 

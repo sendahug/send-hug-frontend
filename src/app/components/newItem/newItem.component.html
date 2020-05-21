@@ -1,0 +1,22 @@
+<div id="newItem">
+	<h3>New {{ itemType }}</h3>
+	
+	<div id="newMessage" *ngIf="itemType == 'Message'">
+		<form class="newItem">
+			<label for="messageFor">For:</label>
+			<input #messageFor type="text" id="messageFor" value="{{  }}" readonly>
+			<label for="messageText">Message</label>
+			<input #messageText type="text" id="messageText">
+			<button type="submit" class="appButton" (click)="sendMessage(messageFor.value, messageText.value)">Send</button>
+		</form>
+	</div>
+	
+	<div id="newPost" *ngIf="itemType == 'Post'">
+		<form class="newItem">
+			<label for="postText">Text:</label>
+			<input #postText type="text" id="postText">
+			<div class="pageCategory">By:</div> <div class="pageData">{{  }}</div>
+			<button type="submit" class="appButton" (click)="sendPost(postText.value)">Post</button>
+		</form>
+	</div>
+</div>

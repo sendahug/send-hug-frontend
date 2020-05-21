@@ -1,6 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
+import { Post } from '../interfaces/post.interface';
+import { Message } from '../interfaces/message.interface';
+
 @Injectable({
   providedIn: 'root'
 })
@@ -39,6 +42,22 @@ export class ItemsService {
     this.Http.get(Url).subscribe((response: any) => {
       let data = response.data.items;
       ItemsService.fullSugItems = data;
+    })
+  }
+
+  // Send a message
+  sendMessage(message: Message) {
+    const Url = this.serverUrl + '/messages';
+    this.Http.post(Url, message).subscribe((response:any) => {
+      console.log(response);
+    })
+  }
+
+  // Post a new post
+  sendPost(post: Post) {
+    const Url = this.serverUrl + '/posts';
+    this.Http.post(Url, post).subscribe((response:any) => {
+      console.log(response);
     })
   }
 }

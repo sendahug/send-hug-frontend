@@ -2,8 +2,8 @@
 import { Component, OnInit } from '@angular/core';
 
 // App-related imports
-import { ItemsService } from '../../services/items.service';
 import { Post } from '../../interfaces/post.interface';
+import { ItemsService } from '../../services/items.service';
 
 @Component({
   selector: 'app-main-page',

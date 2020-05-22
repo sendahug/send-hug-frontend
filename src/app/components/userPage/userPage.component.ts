@@ -2,8 +2,8 @@
 import { Component, OnInit } from '@angular/core';
 
 // App-related imports
-import { AuthService } from '../../services/auth.service';
 import { User } from '../../interfaces/user.interface';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-user-page',

@@ -10,7 +10,7 @@ import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-new-item',
-  templateUrl: './newItem.component.ts',
+  templateUrl: './newItem.component.html',
   providers: [ ItemsService,
     AuthService ]
 })

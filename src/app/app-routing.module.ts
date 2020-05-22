@@ -9,9 +9,9 @@ import { NewItem } from './components/newItem/newItem.component';
 
 const routes: Routes = [
   { path: '', component: MainPage },
-  { path: '/user', component: UserPage },
-  { path: '/messages', component: AppMessaging },
-  { path: '/new/:type', component: NewItem },
+  { path: 'user', component: UserPage },
+  { path: 'messages', component: AppMessaging },
+  { path: 'new/:type', component: NewItem },
   { path: '**', component: ErrorPage }
 ];
 

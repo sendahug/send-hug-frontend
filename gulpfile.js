@@ -49,17 +49,10 @@ function scripts()
 	return gulp
 		.src(["./src/**/*.ts"], {base: './frontend'})
 		.pipe(sourcemaps.init())
-		.pipe(typescript({
-			target: "es6",
-			module: "commonjs",
-			rootDir: "./src",
-			outDir: "./dist",
-			experimentalDecorators: true,
-			strict: true
-		}))
+		.pipe(webpack(require('./webpack.config.js')))
 		.pipe(babel({presets: ['@babel/preset-env']}))
 		.pipe(sourcemaps.write())
-		.pipe(gulp.dest("./dist"))
+		.pipe(gulp.dest('dist'))
 }
 
 //deals with transforming and bundling the scripts while in production mode
@@ -68,32 +61,10 @@ function scriptsDist()
 	return gulp
 		.src(["./src/**/*.ts"], {base: './frontend'})
 		.pipe(sourcemaps.init())
-		.pipe(typescript({
-			target: "es6",
-			module: "commonjs",
-			rootDir: "./src",
-			outDir: "./dist",
-			experimentalDecorators: true,
-			strict: true
-		}))
+		.pipe(webpack(require('./webpack.config.js')))
 		.pipe(babel({presets: ['@babel/preset-env']}))
 		.pipe(uglify())
 		.pipe(sourcemaps.write())
-		.pipe(gulp.dest("dist"))
-}
-
-//bundles the scripts
-function bundleScripts()
-{
-	return gulp
-		.src(["dist/**/*.js"])
-		.pipe(webpack({
-			mode: "production",
-			entry: "./dist/main.js",
-			output: {
-				filename: "app.bundle.js"
-			}
-		}))
 		.pipe(gulp.dest('dist'))
 }
 
@@ -140,7 +111,8 @@ function dist()
 //watch files for changes and then run the appropriate tasks
 function watch()
 {
-	gulp.watch("**/*.html", copyHtml);
+	gulp.watch("src/app/**/*.html", copyHtml)
+	gulp.watch("index.html", copyIndex);
 	gulp.watch('src/assets/img/*', copyImgs);
 	gulp.watch('src/css/*.css', styles);
 	gulp.watch('src/**/*.ts', scripts);
@@ -153,7 +125,6 @@ exports.copyImgs = copyImgs;
 exports.styles = styles;
 exports.scripts = scripts;
 exports.scriptsDist = scriptsDist;
-exports.bundleScripts = bundleScripts;
 exports.jasmineBrowserTest = jasmineBrowserTest;
 exports.browserTests = browserTests;
 exports.dist = dist;

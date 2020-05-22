@@ -2,7 +2,7 @@
 <div id="userInbox" *ngIf="authService.authenticated">
 	<!-- If there are messages in the user's inbox -->
 	<div *ngIf="messages.length">
-		<div *ngFor="let message in messages">
+		<div *ngFor="let message of messages">
 			<div class="pageCategory">Username:</div> <div class="pageData">{{ message.from }}</div>
 			<div class="pageCategory">Message:</div> <div class="pageData">{{ message.messageText }}</div>
 		</div>

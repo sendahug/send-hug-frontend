@@ -13,20 +13,27 @@ import { Message } from '../../interfaces/message.interface';
 })
 export class AppMessaging implements OnInit {
   messages: Message[] = [];
+  loggedIn = false;
 
   // CTOR
   constructor(private httpClient: HttpClient, private authService: AuthService) {
     // Gets the user's messages from the server
-    let params = new HttpParams().set('userID', this.authService.userProfile.sub)
-    this.httpClient.get('localhost:3000/messages', {
-      params: params
-    }).subscribe((response: any) => {
-      let userMessages = response.data.messages;
-      userMessages.forEach((element:Message) => {
-        let message = element;
-        this.messages.push(message);
-      });
-    })
+    if(authService.authenticated) {
+      this.loggedIn = true;
+      let params = new HttpParams().set('userID', this.authService.userProfile.sub)
+      this.httpClient.get('localhost:3000/messages', {
+        params: params
+      }).subscribe((response: any) => {
+        let userMessages = response.data.messages;
+        userMessages.forEach((element:Message) => {
+          let message = element;
+          this.messages.push(message);
+        });
+      })
+    }
+    else {
+      this.loggedIn = false;
+    }
   }
 
   ngOnInit() {

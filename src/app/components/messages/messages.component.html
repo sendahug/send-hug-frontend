@@ -1,5 +1,5 @@
 <!-- If the user is logged in, displays the user's inbox. -->
-<div id="userInbox" *ngIf="authService.authenticated">
+<div id="userInbox" *ngIf="loggedIn">
 	<!-- If there are messages in the user's inbox -->
 	<div *ngIf="messages.length">
 		<div *ngFor="let message of messages">
@@ -15,7 +15,7 @@
 </div>
 
 <!-- If the user isn't logged in, prompts the user to log in. -->
-<div *ngIf="!authService.authenticated">
+<div *ngIf="!loggedIn">
 	<div class="errorMessage">You are not currently logged in. To view your inbox, log in.</div>
 	
 	<a href="" id="logIn">Login</a>

@@ -10,7 +10,7 @@ import { Message } from '../interfaces/message.interface';
   providedIn: 'root'
 })
 export class ItemsService {
-  private serverUrl = 'localhost:3000'
+  private serverUrl = 'http://localhost:5000'
   static newItemsArray: Post[] = [];
   static sugItemsArray: Post[] = [];
   static fullNewItems: Post[] = [];

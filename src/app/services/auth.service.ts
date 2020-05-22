@@ -79,7 +79,7 @@ export class AuthService {
   // Gets the user's social data
   getSocialData() {
     let params = new HttpParams().set('userID', this.userProfile.sub)
-    this.Http.get('localhost:3000/users', {
+    this.Http.get('http://localhost:5000/users', {
       params: params
     }).subscribe((response:any) => {
       let data = response.data.user;

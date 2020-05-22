@@ -21,6 +21,7 @@ export class UserPage implements OnInit {
     postsNum: 0,
     jwt: ''
   }
+  loggedIn = false;
 
   // CTOR
   constructor(private authService: AuthService) {
@@ -29,6 +30,10 @@ export class UserPage implements OnInit {
     // If the user is authenticated, gets the user's data.
     if(authService.authenticated) {
       this.userData = this.authService.userData;
+      this.loggedIn = true;
+    }
+    else {
+      this.loggedIn = false;
     }
   }
 

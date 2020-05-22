@@ -1,5 +1,5 @@
 <!-- If the user is logged in, displays a user page. -->
-<div *ngIf="authService.authenticated">
+<div *ngIf="loggedIn">
 	<div id="userPage">
 		<div class="pageCategory">Username:</div> <div class="pageData">{{ userData.username }}</div>
 		<div class="pageCategory">Received Hugs:</div> <div class="pageData">{{ userData.receivedH }}</div>
@@ -11,7 +11,7 @@
 </div>
 
 <!-- If the user isn't logged in, prompts the user to log in. -->
-<div *ngIf="!authService.authenticated">
+<div *ngIf="!loggedIn">
 	<div class="errorMessage">You are not currently logged in. To view user information, log in.</div>
 	
 	<a href="" id="logIn">Login</a>

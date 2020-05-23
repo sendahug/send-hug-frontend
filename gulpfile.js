@@ -71,7 +71,7 @@ function scriptsDist()
 function jasmineBrowserTest()
 {
 	return gulp
-		.src(["dist/js/all.js", "tests/specs.js"])
+		.src(["dist/app.bundle.js", "tests/specs.js"])
 		.pipe(jasmineBrowser.specRunner({ console: true }))
 		.pipe(jasmineBrowser.headless({ driver: "chrome" }));
 }
@@ -80,7 +80,7 @@ function jasmineBrowserTest()
 function browserTests()
 {
 	return gulp
-		.src(["dist/js/all.js", "tests/specs.js"])
+		.src(["dist/app.bundle.js", "tests/specs.js"])
 		.pipe(jasmineBrowser.specRunner())
 		.pipe(jasmineBrowser.server({ port: 3001 }));
 }
@@ -101,8 +101,8 @@ function dist()
 		.parallel(
 			copyHtml,
 			copyIndex,
-			copyImgs, 
-			styles, 
+			copyImgs,
+			styles,
 			scriptsDist
 		);
 }

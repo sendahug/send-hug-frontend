@@ -5,7 +5,6 @@ const uglify = require("gulp-uglify");
 const babel = require("gulp-babel");
 const sourcemaps = require("gulp-sourcemaps");
 const jasmineBrowser = require('gulp-jasmine-browser');
-const typescript = require("gulp-typescript");
 const webpack = require("webpack-stream");
 const browserSync = require("browser-sync").create();
 

@@ -1,2 +1,41 @@
-/* CSS Document */
+/* Colour Palette */
+/* =================== General Styling =================== */
+/* line 9, ../sass/styles.sass */
+img, picture, video, embed, textarea, textfield { max-width: 100%; }
 
+/* =================== Header Styling =================== */
+/* Site Header */
+/* line 14, ../sass/styles.sass */
+#siteHeader { width: 100%; max-width: 100%; background-color: #a3cad7; position: fixed; top: 0; left: 0; height: 110px; }
+
+/* Main Title */
+/* line 24, ../sass/styles.sass */
+#mainTitle { color: #252525; text-align: center; padding: 10px 5px 0; margin: 10px 5px; }
+
+/* Navigation Menu */
+/* line 31, ../sass/styles.sass */
+#navMenu { width: 80%; max-width: 80%; padding: 5px 10% 10px; display: flex; align-content: space-between; justify-content: space-between; }
+
+/* Navigation Item */
+/* line 40, ../sass/styles.sass */
+.navLink { color: #3f3a3a; font-size: 18px; }
+
+/* =================== Main Page Styling =================== */
+/* Main Page Component */
+/* line 46, ../sass/styles.sass */
+app-main-page { display: flex; padding: 5px; align-content: space-between; justify-content: space-between; position: relative; top: 110px; }
+
+/* Item list */
+/* line 55, ../sass/styles.sass */
+.itemList { border: thin solid #252525; border-radius: 5px; width: 45%; height: 70%; margin: 5px 10px; }
+
+/* =================== Footer Styling =================== */
+/* Site Footer */
+/* line 64, ../sass/styles.sass */
+#siteFooter { position: fixed; bottom: 0; left: 0; width: 100%; max-width: 100%; }
+
+/* Footer text */
+/* line 72, ../sass/styles.sass */
+.footerText { text-align: center; font-size: 14px; padding: 0; margin: 10px; color: #161616; }
+
+/*# sourceMappingURL=styles.css.map */

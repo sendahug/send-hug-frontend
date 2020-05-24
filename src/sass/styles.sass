@@ -1,2 +1,77 @@
-/* Sass Document */
+/* Colour Palette */
+$mainColour: rgba(112,163,209,1.00)
+$secondaryColour: rgba(163,202,215,1.00)
+$headlineColour: rgba(37,37,37,1.00)
+$textColour: rgba(22,22,22,1.00)
+$linkColour: rgba(63,58,58,1.00)
 
+/* =================== General Styling =================== */
+img, picture, video, embed, textarea, textfield
+	max-width: 100%
+
+/* =================== Header Styling =================== */
+/* Site Header */
+#siteHeader
+	width: 100%
+	max-width: 100%
+	background-color: $secondaryColour
+	position: fixed
+	top: 0
+	left: 0
+	height: 110px
+
+/* Main Title */
+#mainTitle
+	color: $headlineColour
+	text-align: center
+	padding: 10px 5px 0
+	margin: 10px 5px
+
+/* Navigation Menu */
+#navMenu
+	width: 80%
+	max-width: 80%
+	padding: 5px 10% 10px
+	display: flex
+	align-content: space-between
+	justify-content: space-between
+
+/* Navigation Item */
+.navLink
+	color: $linkColour
+	font-size: 18px
+
+/* =================== Main Page Styling =================== */
+/* Main Page Component */
+app-main-page
+	display: flex
+	padding: 5px
+	align-content: space-between
+	justify-content: space-between
+	position: relative
+	top: 110px
+
+/* Item list */
+.itemList
+	border: thin solid rgba(37,37,37,1.00)
+	border-radius: 5px
+	width: 45%
+	height: 70%
+	margin: 5px 10px
+
+/* =================== Footer Styling =================== */
+/* Site Footer */
+#siteFooter
+	position: fixed
+	bottom: 0
+	left: 0
+	width: 100%
+	max-width: 100%
+
+/* Footer text */
+.footerText
+	text-align: center
+	font-size: 14px
+	padding: 0
+	margin: 10px
+	color: rgba(22,22,22,1.00)

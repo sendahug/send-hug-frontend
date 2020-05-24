@@ -9,6 +9,7 @@ import { UserPage } from './components/userPage/userPage.component';
 import { AppMessaging } from './components/messages/messages.component';
 import { ErrorPage } from './components/errorPage/errorPage.component';
 import { NewItem } from './components/newItem/newItem.component';
+import { MyPosts } from './components/myPosts/myPosts.component';
 import { ItemsService } from './services/items.service';
 import { AuthService } from './services/auth.service';
 
@@ -24,7 +25,8 @@ import { AuthService } from './services/auth.service';
     UserPage,
     AppMessaging,
     ErrorPage,
-    NewItem
+    NewItem,
+    MyPosts
   ],
   providers: [
     ItemsService,

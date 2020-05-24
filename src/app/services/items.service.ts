@@ -15,6 +15,7 @@ export class ItemsService {
   static sugItemsArray: Post[] = [];
   static fullNewItems: Post[] = [];
   static fullSugItems: Post[] = [];
+  static userPosts: Post[] = [];
 
   // CTOR
   constructor(private Http: HttpClient) {
@@ -48,6 +49,15 @@ export class ItemsService {
     })
   }
 
+  // Gets the user's posts
+  getUserPosts(userID:number) {
+    const Url = this.serverUrl + `/users/${userID}/posts`;
+    this.Http.get(Url).subscribe((response:any) => {
+      let data = response.data.posts;
+      ItemsService.userPosts = data;
+    })
+  }
+
   // Send a message
   sendMessage(message: Message) {
     const Url = this.serverUrl + '/messages';
@@ -60,6 +70,22 @@ export class ItemsService {
   sendPost(post: Post) {
     const Url = this.serverUrl + '/posts';
     this.Http.post(Url, post).subscribe((response:any) => {
+      console.log(response);
+    })
+  }
+
+  // Delete a post
+  deletePost(post_id:number) {
+    const Url = this.serverUrl + `/posts/${post_id}`;
+    this.Http.delete(Url).subscribe((response:any) => {
+      console.log(response);
+    })
+  }
+
+  // Edit a post
+  editPost(post: Post) {
+    const Url = this.serverUrl + `/posts/${post.id}`;
+    this.Http.patch(Url, post).subscribe((response:any) => {
       console.log(response);
     })
   }

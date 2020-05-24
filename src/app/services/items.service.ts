@@ -25,7 +25,7 @@ export class ItemsService {
   // Gets ten recent and ten suggested items
   getItems() {
     this.Http.get(this.serverUrl).subscribe((response:any) => {
-      let data = response.data;
+      let data = response;
       ItemsService.newItemsArray = data.recent;
       ItemsService.sugItemsArray = data.suggested;
     })
@@ -35,7 +35,7 @@ export class ItemsService {
   getNewItems() {
     const Url = this.serverUrl + '/new-items';
     this.Http.get(Url).subscribe((response: any) => {
-      let data = response.data.items;
+      let data = response.items;
       ItemsService.fullNewItems = data;
     })
   }
@@ -44,7 +44,7 @@ export class ItemsService {
   getSuggestedItems() {
     const Url = this.serverUrl + '/suggested-items';
     this.Http.get(Url).subscribe((response: any) => {
-      let data = response.data.items;
+      let data = response.items;
       ItemsService.fullSugItems = data;
     })
   }
@@ -53,7 +53,7 @@ export class ItemsService {
   getUserPosts(userID:number) {
     const Url = this.serverUrl + `/users/${userID}/posts`;
     this.Http.get(Url).subscribe((response:any) => {
-      let data = response.data.posts;
+      let data = response.posts;
       ItemsService.userPosts = data;
     })
   }

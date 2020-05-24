@@ -5,6 +5,16 @@ $headlineColour: rgba(37,37,37,1.00)
 $textColour: rgba(22,22,22,1.00)
 $linkColour: rgba(63,58,58,1.00)
 
+/* Component Sample */
+#compSample
+	position: relative
+	top: 110px
+
+/* Frame Sample */
+#frameSample
+	border: thin solid rgba(37,37,37,1.00)
+	border-radius: 5px
+
 /* =================== General Styling =================== */
 img, picture, video, embed, textarea, textfield
 	max-width: 100%
@@ -44,20 +54,59 @@ img, picture, video, embed, textarea, textfield
 /* =================== Main Page Styling =================== */
 /* Main Page Component */
 app-main-page
+	@extend #compSample
 	display: flex
 	padding: 5px
 	align-content: space-between
 	justify-content: space-between
-	position: relative
-	top: 110px
 
 /* Item list */
 .itemList
-	border: thin solid rgba(37,37,37,1.00)
-	border-radius: 5px
+	@extend #frameSample
 	width: 45%
 	height: 70%
 	margin: 5px 10px
+
+/* =================== User Page Styling =================== */
+/* User Page Component */
+app-user-page
+	@extend #compSample
+	width: 80%
+
+/* User / Error Message Container */
+app-user-page > div
+	@extend #frameSample
+	padding: 10px
+
+/* =================== Messages Page Styling =================== */
+/* Message Page Component */
+app-messages
+	@extend #compSample
+	width: 80%
+
+/* Inbox / Error Message Container */
+app-messages > div
+	@extend #frameSample
+	padding: 10px
+
+/* Error Message Text */
+.errorMessage
+	text-align: center
+
+/* Login Link */
+#logIn
+	text-align: center
+	color: $linkColour
+
+/* =================== New Item Page Styling =================== */
+/* New Item Page Component */
+app-new-item
+	@extend #compSample
+
+/* =================== Error Page Styling =================== */
+/* Error Page Component */
+app-error-page
+	@extend #compSample
 
 /* =================== Footer Styling =================== */
 /* Site Footer */

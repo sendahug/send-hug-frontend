@@ -14,8 +14,7 @@ export class UserPage implements OnInit {
   userData: User = {
     id: 0,
     auth0Id: '',
-    email: '',
-    username: '',
+    displayName: '',
     receivedHugs: 0,
     givenHugs: 0,
     postsNum: 0,

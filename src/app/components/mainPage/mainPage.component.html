@@ -2,7 +2,7 @@
 <div id="newItems" class="listContainer">
 	<h2 class="listTitle">New Items</h2>
 	<!-- If there are items in the list -->
-	<ul class="itemList">
+	<ul class="itemList" *ngIf="newItemsArray.length > 0">
 		<li *ngFor="let item of newItemsArray" class="newItem">
 			<div class="itemText">{{ item.text }}</div>
 			<div class="itemUser">By {{ item.user }}</div>
@@ -10,13 +10,16 @@
 			<a [routerLink]="['/new']" [queryParams]="{type: 'Message', userID: item.user}" class="appButton messageButton"><i class="fas fa-comments"></i></a>
 		</li>
 	</ul>
+	
+	<!-- If there are no items in the list -->
+	<div class="errorMessage" *ngIf="newItemsArray.length == 0">There are no recent items.</div>
 </div>
 
 <!-- Suggested items -->
 <div id="suggestedItems" class="listContainer">
 	<h2 class="listTitle">Suggested Items</h2>
 	<!-- If there are items in the list -->
-	<ul class="itemList">
+	<ul class="itemList" *ngIf="sugItemsArray.length > 0">
 		<li *ngFor="let item of sugItemsArray" class="sugItem">
 			<div class="itemText">{{ item.text }}</div>
 			<div class="itemUser">By {{ item.user }}</div>
@@ -24,4 +27,7 @@
 			<a [routerLink]="['/new']" [queryParams]="{type: 'Message', userID: item.user}" class="appButton messageButton"><i class="fas fa-comments"></i></a>
 		</li>
 	</ul>
+
+	<!-- If there are no items in the list -->
+	<div class="errorMessage" *ngIf="sugItemsArray.length == 0">There are no suggested items.</div>
 </div>

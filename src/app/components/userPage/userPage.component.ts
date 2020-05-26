@@ -45,4 +45,9 @@ export class UserPage implements OnInit {
   login() {
     this.authService.login();
   }
+
+  // logout
+  logout() {
+    this.authService.logout();
+  }
 }

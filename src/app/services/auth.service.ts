@@ -19,7 +19,7 @@ export class AuthService {
     redirectUri: environment.auth0.redirectUri,
     audience: environment.auth0.audience
   })
-  
+
   token: string = '';
   authenticated: boolean = false;
   userProfile: any;
@@ -84,7 +84,7 @@ export class AuthService {
     }).subscribe((response:any) => {
       let data = response.data.user;
       this.userData = {
-        id: this.userProfile.id,
+        id: data.id,
         auth0Id: this.userProfile.sub,
         email: this.userProfile.email,
         username: this.userProfile.username,
@@ -99,8 +99,8 @@ export class AuthService {
   // Handles log out redirects.
   logout() {
     this.auth0.logout({
-      returnTo: '',
-      clientID: ''
+      returnTo: environment.auth0.logoutUri,
+      clientID: environment.auth0.clientID
     });
     this.authenticated = false;
     this.token = '';

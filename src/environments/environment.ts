@@ -8,7 +8,8 @@ export const environment = {
     domain: 'dev-sbac.auth0.com',
     clientID:'rgZL4I04pep3P2GRIEVQtDkWcHjv9sru',
     audience: 'sendhug',
-    redirectUri: 'http://localhost:3000/user'
+    redirectUri: 'http://localhost:3000/user',
+    logoutUri: 'http://localhost:3000'
   }
 };
 

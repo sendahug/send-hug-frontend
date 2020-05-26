@@ -4,6 +4,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import * as Auth0 from 'auth0-js';
 
 // App-related imports
+import { environment } from '../../environments/environment';
 import { User } from '../interfaces/user.interface';
 
 @Injectable({
@@ -12,14 +13,13 @@ import { User } from '../interfaces/user.interface';
 export class AuthService {
   // Auth0 variable
   auth0 = new Auth0.WebAuth({
-    clientID: '',
-    domain: '',
+    clientID: environment.auth0.clientID,
+    domain: environment.auth0.domain,
     responseType: 'token',
-    redirectUri: '',
-    audience: '',
-    scope: ''
+    redirectUri: environment.auth0.redirectUri,
+    audience: environment.auth0.audience
   })
-
+  
   token: string = '';
   authenticated: boolean = false;
   userProfile: any;

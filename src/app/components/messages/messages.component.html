@@ -17,6 +17,6 @@
 <!-- If the user isn't logged in, prompts the user to log in. -->
 <div *ngIf="!loggedIn">
 	<div class="errorMessage">You are not currently logged in. To view your inbox, log in.</div>
-	
-	<a href="" id="logIn">Login</a>
+
+	<button id="logIn" class="appButton" (click)="login()">Login</button>
 </div>

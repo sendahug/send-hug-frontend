@@ -39,4 +39,9 @@ export class AppMessaging implements OnInit {
   ngOnInit() {
 
   }
+
+  // Login
+  login() {
+    this.authService.login();
+  }
 }

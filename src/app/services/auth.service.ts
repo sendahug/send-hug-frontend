@@ -26,8 +26,7 @@ export class AuthService {
   userData: User = {
     id: 0,
     auth0Id: '',
-    email: '',
-    username: '',
+    displayName: '',
     receivedHugs: 0,
     givenHugs: 0,
     postsNum: 0,
@@ -86,8 +85,7 @@ export class AuthService {
       this.userData = {
         id: data.id,
         auth0Id: this.userProfile.sub,
-        email: this.userProfile.email,
-        username: this.userProfile.username,
+        displayName: data.displayName,
         receivedHugs: data.receivedH,
         givenHugs: data.givenH,
         postsNum: data.postsNum,

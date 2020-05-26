@@ -33,34 +33,42 @@ img, picture, video, embed, textarea, textfield { max-width: 100%; }
 /* line 56, ../sass/styles.sass */
 app-main-page { display: flex; padding: 5px; align-content: space-between; justify-content: space-between; }
 
-/* Item list */
+/* Item list container */
 /* line 64, ../sass/styles.sass */
-.itemList { width: 45%; height: 70%; margin: 5px 10px; }
+.listContainer { width: 45%; height: 70%; margin: 5px 10px; }
+
+/* Item List Title */
+/* line 70, ../sass/styles.sass */
+.listTitle { color: #252525; font-size: 20px; text-align: center; }
+
+/* Item List */
+/* line 76, ../sass/styles.sass */
+.itemList { height: 90%; }
 
 /* =================== User Page Styling =================== */
 /* User Page Component */
-/* line 72, ../sass/styles.sass */
+/* line 82, ../sass/styles.sass */
 app-user-page { width: 80%; }
 
 /* User / Error Message Container */
-/* line 77, ../sass/styles.sass */
+/* line 87, ../sass/styles.sass */
 app-user-page > div { padding: 10px; }
 
 /* =================== Messages Page Styling =================== */
 /* Message Page Component */
-/* line 83, ../sass/styles.sass */
+/* line 93, ../sass/styles.sass */
 app-messages { width: 80%; }
 
 /* Inbox / Error Message Container */
-/* line 88, ../sass/styles.sass */
+/* line 98, ../sass/styles.sass */
 app-messages > div { padding: 10px; }
 
 /* Error Message Text */
-/* line 93, ../sass/styles.sass */
+/* line 103, ../sass/styles.sass */
 .errorMessage { text-align: center; }
 
 /* Login Link */
-/* line 97, ../sass/styles.sass */
+/* line 107, ../sass/styles.sass */
 #logIn { text-align: center; color: #3f3a3a; }
 
 /* =================== New Item Page Styling =================== */
@@ -69,11 +77,11 @@ app-messages > div { padding: 10px; }
 /* Error Page Component */
 /* =================== Footer Styling =================== */
 /* Site Footer */
-/* line 113, ../sass/styles.sass */
+/* line 123, ../sass/styles.sass */
 #siteFooter { position: fixed; bottom: 0; left: 0; width: 100%; max-width: 100%; }
 
 /* Footer text */
-/* line 121, ../sass/styles.sass */
+/* line 131, ../sass/styles.sass */
 .footerText { text-align: center; font-size: 14px; padding: 0; margin: 10px; color: #161616; }
 
 /*# sourceMappingURL=styles.css.map */

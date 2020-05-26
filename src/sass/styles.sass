@@ -60,12 +60,22 @@ app-main-page
 	align-content: space-between
 	justify-content: space-between
 
-/* Item list */
-.itemList
-	@extend #frameSample
+/* Item list container */
+.listContainer
 	width: 45%
 	height: 70%
 	margin: 5px 10px
+
+/* Item List Title */
+.listTitle
+	color: $headlineColour
+	font-size: 20px
+	text-align: center
+
+/* Item List */
+.itemList
+	@extend #frameSample
+	height: 90%
 
 /* =================== User Page Styling =================== */
 /* User Page Component */

@@ -1,6 +1,8 @@
 <!-- New items -->
-<div id="newItems" class="itemList">
-	<ul id="newItemsList">
+<div id="newItems" class="listContainer">
+	<h2 class="listTitle">New Items</h2>
+	<!-- If there are items in the list -->
+	<ul class="itemList">
 		<li *ngFor="let item of newItemsArray" class="newItem">
 			<div class="itemText">{{ item.text }}</div>
 			<div class="itemUser">By {{ item.user }}</div>
@@ -11,8 +13,10 @@
 </div>
 
 <!-- Suggested items -->
-<div id="suggestedItems" class="itemList">
-	<ul id="sugItemsList">
+<div id="suggestedItems" class="listContainer">
+	<h2 class="listTitle">Suggested Items</h2>
+	<!-- If there are items in the list -->
+	<ul class="itemList">
 		<li *ngFor="let item of sugItemsArray" class="sugItem">
 			<div class="itemText">{{ item.text }}</div>
 			<div class="itemUser">By {{ item.user }}</div>

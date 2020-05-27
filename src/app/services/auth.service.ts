@@ -77,16 +77,17 @@ export class AuthService {
   // Checks the user's logins; if it's the first time, sends a post
   // request to the server to create a new user
   checkUserLogin(jwtPayload:any) {
-    let params = new HttpParams().set('userID', jwtPayload.sub)
-
     // if it's the user's first login, adds their data to the database
     if(jwtPayload['http://localhost:3000login_count'] == 0) {
       this.Http.post('http://localhost:5000/users', {
-        headers: this.authHeader,
-        params: params
+        id: jwtPayload.sub,
+        displayName: 'user' + Math.round(Math.random() * 100)
+      }, {
+        headers: this.authHeader
       }).subscribe((response:any) => {
-        console.log(response);
-        this.getUserData(jwtPayload);
+        if(response.data.success == true) {
+          this.getUserData(jwtPayload);
+        }
       })
     }
     // if not, gets the user's data from the database

@@ -5,7 +5,6 @@ const uglify = require("gulp-uglify");
 const babel = require("gulp-babel");
 const sourcemaps = require("gulp-sourcemaps");
 const jasmineBrowser = require('gulp-jasmine-browser');
-const webpack = require("webpack-stream");
 const browserSync = require("browser-sync").create();
 const browserify = require('browserify');
 const tsify = require('tsify');
@@ -49,26 +48,34 @@ function styles()
 //deals with transforming the scripts while in development mode
 function scripts()
 {
-	return gulp
-		.src(["./src/**/*.ts"], {base: './frontend'})
-		.pipe(sourcemaps.init())
-		.pipe(webpack(require('./webpack.config.js')))
-		.pipe(babel({presets: ['@babel/preset-env']}))
-		.pipe(sourcemaps.write())
-		.pipe(gulp.dest('dist'))
+	var b = browserify({
+		debug: true
+	}).add('src/main.ts').plugin(tsify, {target: 'es6'});
+
+	return b.bundle()
+      .pipe(source('src/main.ts'))
+      .pipe(buffer())
+      .pipe(sourcemaps.init({loadMaps: true}))
+        .pipe(babel({presets: ['@babel/preset-env']}))
+      .pipe(sourcemaps.write('./'))
+      .pipe(gulp.dest('./dist'));
 }
 
 //deals with transforming and bundling the scripts while in production mode
 function scriptsDist()
 {
-	return gulp
-		.src(["./src/**/*.ts"], {base: './frontend'})
-		.pipe(sourcemaps.init())
-		.pipe(webpack(require('./webpack.config.js')))
-		.pipe(babel({presets: ['@babel/preset-env']}))
-		.pipe(uglify())
-		.pipe(sourcemaps.write())
-		.pipe(gulp.dest('dist'))
+	var b = browserify({
+		debug: true
+	}).add('src/main.ts').plugin(tsify, {target: 'es6'});
+
+	return b.bundle()
+      .pipe(source('src/main.ts'))
+      .pipe(buffer())
+      .pipe(sourcemaps.init({loadMaps: true}))
+        .pipe(babel({presets: ['@babel/preset-env']}))
+				.pipe(uglify())
+      .pipe(sourcemaps.write('./'))
+      .pipe(gulp.dest('./dist'));
 }
 
 //automatic testing in the Jasmine headless browser
@@ -97,21 +104,6 @@ gulp.task("serve", function() {
 		}
 	});
 });
-
-//browserify test
-gulp.task("testBrowserify", function() {
-	var b = browserify({
-		debug: true
-	}).add('src/main.ts').plugin(tsify, {target: 'es6'});
-
-	return b.bundle()
-      .pipe(source('src/main.ts'))
-      .pipe(buffer())
-      .pipe(sourcemaps.init({loadMaps: true}))
-        .pipe(babel({presets: ['@babel/preset-env']}))
-      .pipe(sourcemaps.write('./'))
-      .pipe(gulp.dest('./dist/js'));
-})
 
 //prepare for distribution
 function dist()

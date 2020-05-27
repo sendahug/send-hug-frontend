@@ -7,6 +7,10 @@ const sourcemaps = require("gulp-sourcemaps");
 const jasmineBrowser = require('gulp-jasmine-browser');
 const webpack = require("webpack-stream");
 const browserSync = require("browser-sync").create();
+const browserify = require('browserify');
+const tsify = require('tsify');
+const source = require('vinyl-source-stream');
+const buffer = require('vinyl-buffer');
 
 //copies the html to the disribution folder
 function copyHtml()
@@ -93,6 +97,21 @@ gulp.task("serve", function() {
 		}
 	});
 });
+
+//browserify test
+gulp.task("testBrowserify", function() {
+	var b = browserify({
+		debug: true
+	}).add('src/main.ts').plugin(tsify, {target: 'es6'});
+
+	return b.bundle()
+      .pipe(source('src/main.ts'))
+      .pipe(buffer())
+      .pipe(sourcemaps.init({loadMaps: true}))
+        .pipe(babel({presets: ['@babel/preset-env']}))
+      .pipe(sourcemaps.write('./'))
+      .pipe(gulp.dest('./dist/js'));
+})
 
 //prepare for distribution
 function dist()

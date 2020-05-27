@@ -6,10 +6,10 @@ const babel = require("gulp-babel");
 const sourcemaps = require("gulp-sourcemaps");
 const jasmineBrowser = require('gulp-jasmine-browser');
 const browserSync = require("browser-sync").create();
-const browserify = require('browserify');
-const tsify = require('tsify');
-const source = require('vinyl-source-stream');
-const buffer = require('vinyl-buffer');
+const browserify = require("browserify");
+const tsify = require("tsify");
+const source = require("vinyl-source-stream");
+const buffer = require("vinyl-buffer");
 const rename = require("gulp-rename");
 
 //copies the html to the disribution folder
@@ -17,7 +17,7 @@ function copyHtml()
 {
 	return gulp
 		.src("src/app/**/*.html")
-		.pipe(rename({dirname:''}))
+		.pipe(rename({dirname:""}))
 		.pipe(gulp.dest("./dist"));
 }
 
@@ -52,16 +52,16 @@ function scripts()
 {
 	var b = browserify({
 		debug: true
-	}).add('src/main.ts').plugin(tsify, {target: 'es6'});
+	}).add("src/main.ts").plugin(tsify, {target: "es6"});
 
 	return b.bundle()
-      .pipe(source('src/main.ts'))
+      .pipe(source("src/main.ts"))
       .pipe(buffer())
       .pipe(sourcemaps.init({loadMaps: true}))
-        .pipe(babel({presets: ['@babel/preset-env']}))
-				.pipe(rename('app.bundle.js'))
-      .pipe(sourcemaps.write('./'))
-      .pipe(gulp.dest('./dist'));
+        .pipe(babel({presets: ["@babel/preset-env"]}))
+				.pipe(rename("app.bundle.js"))
+      .pipe(sourcemaps.write("./"))
+      .pipe(gulp.dest("./dist"));
 }
 
 //deals with transforming and bundling the scripts while in production mode
@@ -69,17 +69,17 @@ function scriptsDist()
 {
 	var b = browserify({
 		debug: true
-	}).add('src/main.ts').plugin(tsify, {target: 'es6'});
+	}).add("src/main.ts").plugin(tsify, {target: "es6"});
 
 	return b.bundle()
-      .pipe(source('src/main.ts'))
+      .pipe(source("src/main.ts"))
       .pipe(buffer())
       .pipe(sourcemaps.init({loadMaps: true}))
-        .pipe(babel({presets: ['@babel/preset-env']}))
+        .pipe(babel({presets: ["@babel/preset-env"]}))
 				.pipe(uglify())
-				.pipe(rename('app.bundle.js'))
-      .pipe(sourcemaps.write('./'))
-      .pipe(gulp.dest('./dist'));
+				.pipe(rename("app.bundle.js"))
+      .pipe(sourcemaps.write("./"))
+      .pipe(gulp.dest("./dist"));
 }
 
 //automatic testing in the Jasmine headless browser
@@ -127,9 +127,9 @@ function watch()
 {
 	gulp.watch("src/app/**/*.html", copyHtml)
 	gulp.watch("index.html", copyIndex);
-	gulp.watch('src/assets/img/*', copyImgs);
-	gulp.watch('src/css/*.css', styles);
-	gulp.watch('src/**/*.ts', scripts);
+	gulp.watch("src/assets/img/*", copyImgs);
+	gulp.watch("src/css/*.css", styles);
+	gulp.watch("src/**/*.ts", scripts);
 }
 
 //exports for gulp to recognise them as tasks

@@ -16,7 +16,8 @@ const rename = require("gulp-rename");
 function copyHtml()
 {
 	return gulp
-		.src(["src/app/**/*.html"], {base: './'})
+		.src("src/app/**/*.html")
+		.pipe(rename({dirname:''}))
 		.pipe(gulp.dest("./dist"));
 }
 

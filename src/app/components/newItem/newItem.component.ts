@@ -41,7 +41,7 @@ export class NewItem {
   sendPost(postText:string) {
     let newPost:Post = {
       user_id: this.authService.userData.id!,
-      user: this.authService.userData.username!,
+      user: this.authService.userData.displayName!,
       text: postText,
       date: new Date(),
       givenHugs: 0
@@ -53,7 +53,7 @@ export class NewItem {
   // Send a message to a user
   sendMessage(forUser:number, messageText:string) {
     let newMessage:Message = {
-      from: this.authService.userData.username!,
+      from: this.authService.userData.displayName!,
       fromId: this.authService.userData.id!,
       forId: forUser,
       messageText: messageText,

@@ -10,6 +10,7 @@ const browserify = require('browserify');
 const tsify = require('tsify');
 const source = require('vinyl-source-stream');
 const buffer = require('vinyl-buffer');
+const rename = require("gulp-rename");
 
 //copies the html to the disribution folder
 function copyHtml()
@@ -57,6 +58,7 @@ function scripts()
       .pipe(buffer())
       .pipe(sourcemaps.init({loadMaps: true}))
         .pipe(babel({presets: ['@babel/preset-env']}))
+				.pipe(rename('app.bundle.js'))
       .pipe(sourcemaps.write('./'))
       .pipe(gulp.dest('./dist'));
 }
@@ -74,6 +76,7 @@ function scriptsDist()
       .pipe(sourcemaps.init({loadMaps: true}))
         .pipe(babel({presets: ['@babel/preset-env']}))
 				.pipe(uglify())
+				.pipe(rename('app.bundle.js'))
       .pipe(sourcemaps.write('./'))
       .pipe(gulp.dest('./dist'));
 }

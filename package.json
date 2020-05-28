@@ -38,6 +38,7 @@
     "core-js": "^3.6.5",
     "gulp-jasmine-browser": "^4.1.0",
     "gulp-rename": "^2.0.0",
+    "gulp-replace": "^1.0.0",
     "gulp-sourcemaps": "^2.6.5",
     "jasmine-core": "^3.5.0",
     "puppeteer": "^3.1.0",

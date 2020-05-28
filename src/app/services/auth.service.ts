@@ -78,7 +78,7 @@ export class AuthService {
   // request to the server to create a new user
   checkUserLogin(jwtPayload:any) {
     // if it's the user's first login, adds their data to the database
-    if(jwtPayload['http://localhost:3000login_count'] == 0) {
+    if(jwtPayload['http://localhost:3000login_count'] == 1) {
       this.Http.post('http://localhost:5000/users', {
         id: jwtPayload.sub,
         displayName: 'user' + Math.round(Math.random() * 100)

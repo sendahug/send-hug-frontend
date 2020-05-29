@@ -36,7 +36,7 @@ export class AuthService {
 
   // CTOR
   constructor(private Http:HttpClient) {
-
+    this.getToken();
   }
 
   // Handles login redirect and authorise request.
@@ -115,6 +115,7 @@ export class AuthService {
         jwt: this.token
       }
       this.authenticated = true;
+      this.setToken();
     })
   }
 
@@ -126,5 +127,39 @@ export class AuthService {
     });
     this.authenticated = false;
     this.token = '';
+  }
+
+  // Sets the token in local storage
+  setToken() {
+    localStorage.setItem("ACTIVE_JWT", this.token);
+  }
+
+  // Gets the currently active token from localStorage
+  getToken() {
+    let jwt = localStorage.getItem("ACTIVE_JWT");
+    if(jwt) {
+      // Parses the token and checks its expiration
+      let payload = this.parseJWT(jwt);
+      let expiration = payload['exp'];
+      // If app auth token is not expired, request new token
+      if(expiration > Date.now()) {
+        this.auth0.checkSession({}, (err, authResult) => {
+          if(authResult.accessToken) {
+            this.token = authResult.accessToken;
+            let payload = this.parseJWT(authResult.accessToken);
+            this.getUserData(payload);
+          }
+          else if(err) {
+            return 'Error: ' + err;
+          }
+        })
+      }
+      // If it's still valid, parses the JWT and gets the user's details
+      else {
+        this.token = jwt;
+        let payload = this.parseJWT(jwt);
+        this.getUserData(payload);
+      }
+    }
   }
 }

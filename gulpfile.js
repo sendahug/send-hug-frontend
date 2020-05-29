@@ -19,7 +19,7 @@ function copyHtml()
 	return gulp
 		.src("src/app/**/*.html")
 		.pipe(rename({dirname:""}))
-		.pipe(gulp.dest("./dist"));
+		.pipe(gulp.dest("./dist/app"));
 }
 
 //copies the index html to the disribution folder

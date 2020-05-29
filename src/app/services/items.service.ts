@@ -5,6 +5,7 @@ import { HttpClient } from '@angular/common/http';
 // App-related imports
 import { Post } from '../interfaces/post.interface';
 import { Message } from '../interfaces/message.interface';
+import { AuthService } from './auth.service'
 
 @Injectable({
   providedIn: 'root'
@@ -18,7 +19,9 @@ export class ItemsService {
   static userPosts: Post[] = [];
 
   // CTOR
-  constructor(private Http: HttpClient) {
+  constructor(
+    private Http: HttpClient,
+    private authService:AuthService ) {
 
   }
 
@@ -52,7 +55,9 @@ export class ItemsService {
   // Gets the user's posts
   getUserPosts(userID:number) {
     const Url = this.serverUrl + `/users/${userID}/posts`;
-    this.Http.get(Url).subscribe((response:any) => {
+    this.Http.get(Url, {
+      headers: this.authService.authHeader
+    }).subscribe((response:any) => {
       let data = response.posts;
       ItemsService.userPosts = data;
     })
@@ -61,7 +66,9 @@ export class ItemsService {
   // Send a message
   sendMessage(message: Message) {
     const Url = this.serverUrl + '/messages';
-    this.Http.post(Url, message).subscribe((response:any) => {
+    this.Http.post(Url, message, {
+      headers: this.authService.authHeader
+    }).subscribe((response:any) => {
       console.log(response);
     })
   }
@@ -69,7 +76,9 @@ export class ItemsService {
   // Post a new post
   sendPost(post: Post) {
     const Url = this.serverUrl + '/posts';
-    this.Http.post(Url, post).subscribe((response:any) => {
+    this.Http.post(Url, post, {
+      headers: this.authService.authHeader
+    }).subscribe((response:any) => {
       console.log(response);
     })
   }
@@ -77,7 +86,9 @@ export class ItemsService {
   // Delete a post
   deletePost(post_id:number) {
     const Url = this.serverUrl + `/posts/${post_id}`;
-    this.Http.delete(Url).subscribe((response:any) => {
+    this.Http.delete(Url, {
+      headers: this.authService.authHeader
+    }).subscribe((response:any) => {
       console.log(response);
     })
   }
@@ -85,7 +96,9 @@ export class ItemsService {
   // Edit a post
   editPost(post: Post) {
     const Url = this.serverUrl + `/posts/${post.id}`;
-    this.Http.patch(Url, post).subscribe((response:any) => {
+    this.Http.patch(Url, post, {
+      headers: this.authService.authHeader
+    }).subscribe((response:any) => {
       console.log(response);
     })
   }
@@ -94,7 +107,9 @@ export class ItemsService {
   sendHug(item: any) {
     const Url = this.serverUrl + '/posts';
     item.givenHugs += 1;
-    this.Http.patch(Url, item).subscribe((response:any) => {
+    this.Http.patch(Url, item, {
+      headers: this.authService.authHeader
+    }).subscribe((response:any) => {
       console.log(response);
     })
   }

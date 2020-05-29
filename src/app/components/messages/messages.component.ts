@@ -22,6 +22,7 @@ export class AppMessaging implements OnInit {
       this.loggedIn = true;
       let params = new HttpParams().set('userID', this.authService.userProfile.sub)
       this.httpClient.get('http://localhost:5000/messages', {
+        headers: this.authService.authHeader,
         params: params
       }).subscribe((response: any) => {
         let userMessages = response.data.messages;

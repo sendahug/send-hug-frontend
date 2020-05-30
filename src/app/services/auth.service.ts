@@ -170,4 +170,16 @@ export class AuthService {
       }
     }
   }
+
+  // sends a request to the server to update the login count in the database
+  updateLoginCount() {
+    this.Http.patch(`http://localhost:5000/users/${this.userData.id}`, {
+      receivedH: this.userData.receivedHugs,
+      givenH: this.userData.givenHugs,
+      posts: this.userData.postsNum,
+      loginCount: this.userData.loginCount + 1
+    }).subscribe((response:any) => {
+      console.log(response);
+    });
+  }
 }

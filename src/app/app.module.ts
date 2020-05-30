@@ -12,6 +12,7 @@ import { NewItem } from './components/newItem/newItem.component';
 import { MyPosts } from './components/myPosts/myPosts.component';
 import { ItemsService } from './services/items.service';
 import { AuthService } from './services/auth.service';
+import { AlertsService } from './services/alerts.service';
 
 @NgModule({
   imports: [
@@ -30,7 +31,8 @@ import { AuthService } from './services/auth.service';
   ],
   providers: [
     ItemsService,
-    AuthService
+    AuthService,
+    AlertsService
   ],
   bootstrap: [AppComponent]
 })

@@ -84,7 +84,9 @@ export class ItemsService {
     this.Http.post(Url, message, {
       headers: this.authService.authHeader
     }).subscribe((response:any) => {
-      console.log(response);
+      if(response.success == true) {
+        this.createSuccessAlert('Your message was sent!');
+      }
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
       this.createErrorAlert(err);
@@ -97,7 +99,9 @@ export class ItemsService {
     this.Http.post(Url, post, {
       headers: this.authService.authHeader
     }).subscribe((response:any) => {
-      console.log(response);
+      if(response.success == true) {
+        this.createSuccessAlert('Your post was published!');
+      }
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
       this.createErrorAlert(err);
@@ -110,7 +114,9 @@ export class ItemsService {
     this.Http.delete(Url, {
       headers: this.authService.authHeader
     }).subscribe((response:any) => {
-      console.log(response);
+      if(response.success == true) {
+        this.createSuccessAlert(`Post ${response.deleted} was deleted.`);
+      }
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
       this.createErrorAlert(err);
@@ -123,7 +129,9 @@ export class ItemsService {
     this.Http.patch(Url, post, {
       headers: this.authService.authHeader
     }).subscribe((response:any) => {
-      console.log(response);
+      if(response.success == true) {
+        this.createSuccessAlert('Your post was edited. Refresh to view the updated post.');
+      }
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
       this.createErrorAlert(err);
@@ -137,11 +145,24 @@ export class ItemsService {
     this.Http.patch(Url, item, {
       headers: this.authService.authHeader
     }).subscribe((response:any) => {
-      console.log(response);
+      if(response.success == true) {
+        this.createSuccessAlert('Your hug was sent!');
+      }
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
       this.createErrorAlert(err);
     })
+  }
+
+  // Creates an alert for the user to know their action succeeded
+  createSuccessAlert(message:string) {
+    // an alert message
+    let alert:AlertMessage = {
+      type: 'Success',
+      message: message
+    }
+
+    this.alertsService.createAlert(alert);
   }
 
   // Checks what type of error occurred and returns an alert

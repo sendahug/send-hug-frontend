@@ -31,6 +31,7 @@ export class AuthService {
     receivedHugs: 0,
     givenHugs: 0,
     postsNum: 0,
+    loginCount: 0,
     jwt: ''
   }
 
@@ -92,6 +93,7 @@ export class AuthService {
         receivedHugs: data.receivedH,
         givenHugs: data.givenH,
         postsNum: data.postsNum,
+        loginCount: data.loginCount,
         jwt: this.token
       }
       this.authenticated = true;

@@ -18,6 +18,7 @@ export class UserPage implements OnInit {
     receivedHugs: 0,
     givenHugs: 0,
     postsNum: 0,
+    loginCount: 0,
     jwt: ''
   }
   loggedIn = false;

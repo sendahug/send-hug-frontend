@@ -1,11 +1,13 @@
 // Angular imports
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 
 // App-related imports
 import { Post } from '../interfaces/post.interface';
 import { Message } from '../interfaces/message.interface';
-import { AuthService } from './auth.service'
+import { AlertMessage } from '../interfaces/alert.interface';
+import { AuthService } from './auth.service';
+import { AlertsService } from './alerts.service';
 
 @Injectable({
   providedIn: 'root'
@@ -21,7 +23,8 @@ export class ItemsService {
   // CTOR
   constructor(
     private Http: HttpClient,
-    private authService:AuthService ) {
+    private authService:AuthService,
+    private alertsService:AlertsService) {
 
   }
 
@@ -31,6 +34,9 @@ export class ItemsService {
       let data = response;
       ItemsService.newItemsArray = data.recent;
       ItemsService.sugItemsArray = data.suggested;
+    // if there was an error, alert the user
+    }, (err:HttpErrorResponse) => {
+      this.createErrorAlert(err);
     })
   }
 
@@ -40,6 +46,9 @@ export class ItemsService {
     this.Http.get(Url).subscribe((response: any) => {
       let data = response.items;
       ItemsService.fullNewItems = data;
+    // if there was an error, alert the user
+    }, (err:HttpErrorResponse) => {
+      this.createErrorAlert(err);
     })
   }
 
@@ -49,6 +58,9 @@ export class ItemsService {
     this.Http.get(Url).subscribe((response: any) => {
       let data = response.items;
       ItemsService.fullSugItems = data;
+    // if there was an error, alert the user
+    }, (err:HttpErrorResponse) => {
+      this.createErrorAlert(err);
     })
   }
 
@@ -60,6 +72,9 @@ export class ItemsService {
     }).subscribe((response:any) => {
       let data = response.posts;
       ItemsService.userPosts = data;
+    // if there was an error, alert the user
+    }, (err:HttpErrorResponse) => {
+      this.createErrorAlert(err);
     })
   }
 
@@ -70,6 +85,9 @@ export class ItemsService {
       headers: this.authService.authHeader
     }).subscribe((response:any) => {
       console.log(response);
+    // if there was an error, alert the user
+    }, (err:HttpErrorResponse) => {
+      this.createErrorAlert(err);
     })
   }
 
@@ -80,6 +98,9 @@ export class ItemsService {
       headers: this.authService.authHeader
     }).subscribe((response:any) => {
       console.log(response);
+    // if there was an error, alert the user
+    }, (err:HttpErrorResponse) => {
+      this.createErrorAlert(err);
     })
   }
 
@@ -90,6 +111,9 @@ export class ItemsService {
       headers: this.authService.authHeader
     }).subscribe((response:any) => {
       console.log(response);
+    // if there was an error, alert the user
+    }, (err:HttpErrorResponse) => {
+      this.createErrorAlert(err);
     })
   }
 
@@ -100,6 +124,9 @@ export class ItemsService {
       headers: this.authService.authHeader
     }).subscribe((response:any) => {
       console.log(response);
+    // if there was an error, alert the user
+    }, (err:HttpErrorResponse) => {
+      this.createErrorAlert(err);
     })
   }
 
@@ -111,6 +138,20 @@ export class ItemsService {
       headers: this.authService.authHeader
     }).subscribe((response:any) => {
       console.log(response);
+    // if there was an error, alert the user
+    }, (err:HttpErrorResponse) => {
+      this.createErrorAlert(err);
     })
+  }
+
+  // Checks what type of error occurred and returns an alert
+  createErrorAlert(err:HttpErrorResponse) {
+    // an alert message
+    let alert:AlertMessage = {
+      type: 'Error',
+      message: err.error.message
+    }
+
+    this.alertsService.createAlert(alert);
   }
 }

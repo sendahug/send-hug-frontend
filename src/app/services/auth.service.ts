@@ -98,6 +98,7 @@ export class AuthService {
       }
       this.authenticated = true;
       this.setToken();
+      this.updateLoginCount();
       // if there's an error, check the error type
     }, (err) => {
       let statusCode = err.status;

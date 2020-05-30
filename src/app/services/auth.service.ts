@@ -54,7 +54,7 @@ export class AuthService {
         if(authResult.accessToken) {
           this.token = authResult.accessToken;
           let payload = this.parseJWT(authResult.accessToken);
-          this.checkUserLogin(payload);
+          this.getUserData(payload);
         }
       }
       else if (err) {
@@ -74,35 +74,15 @@ export class AuthService {
     return JSON.parse(jsonPayload);
   }
 
-  // Checks the user's logins; if it's the first time, sends a post
-  // request to the server to create a new user
-  checkUserLogin(jwtPayload:any) {
-    // if it's the user's first login, adds their data to the database
-    if(jwtPayload['http://localhost:3000login_count'] == 1) {
-      this.Http.post('http://localhost:5000/users', {
-        id: jwtPayload.sub,
-        displayName: 'user' + Math.round(Math.random() * 100)
-      }, {
-        headers: this.authHeader
-      }).subscribe((response:any) => {
-        if(response.data.success == true) {
-          this.getUserData(jwtPayload);
-        }
-      })
-    }
-    // if not, gets the user's data from the database
-    else {
-      this.getUserData(jwtPayload);
-    }
-  }
-
   // Gets the user's information from the database
   getUserData(jwtPayload:any) {
     let params = new HttpParams().set('userID', jwtPayload.sub)
 
+    // attempts to get the user's data
     this.Http.get('http://localhost:5000/users', {
       headers: this.authHeader,
       params: params
+      // if successful, get the user data
     }).subscribe((response:any) => {
       let data = response.data.user;
       this.userData = {
@@ -116,7 +96,33 @@ export class AuthService {
       }
       this.authenticated = true;
       this.setToken();
+      // if there's an error, check the error type
+    }, (err) => {
+      let statusCode = err.status;
+
+      // if a user with that ID doens't exist, try to create it
+      if(statusCode == 404) {
+        this.createUser(jwtPayload);
+      }
     })
+  }
+
+  // If the user doesn't exist, send a request to the server to
+  // add it to the database
+  createUser(jwtPayload:any) {
+    // post request to create the user
+    this.Http.post('http://localhost:5000/users', {
+      id: jwtPayload.sub,
+      displayName: 'user' + Math.round(Math.random() * 100)
+    }, {
+      headers: this.authHeader
+      //if the request succeeds, get the user's data
+    }).subscribe((response:any) => {
+      this.getUserData(jwtPayload);
+      // error handling
+    }, (err) => {
+      console.log(err);
+    });
   }
 
   // Handles log out redirects.

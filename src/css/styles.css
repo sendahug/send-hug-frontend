@@ -79,13 +79,38 @@ app-messages { width: 80%; }
 /* New Item Page Component */
 /* =================== Error Page Styling =================== */
 /* Error Page Component */
+/* =================== Alert Styling =================== */
+/* Base Alert */
+/* line 144, ../sass/styles.sass */
+.alertMessage { width: 70%; box-shadow: 12px 15px 20px 0 rgba(46, 61, 73, 0.5); border-radius: 5px; text-align: center; padding: 10px; position: fixed; bottom: 50px; left: 0; right: 0; margin-right: 15%; margin-left: 15%; z-index: 100; }
+
+/* Alert Title */
+/* line 159, ../sass/styles.sass */
+.alertType { margin: 0; padding: 5px; }
+
+/* Alert Text */
+/* line 164, ../sass/styles.sass */
+.alertText { font-size: 16px; }
+
+/* Alert Button */
+/* line 168, ../sass/styles.sass */
+#alertButton { margin: 10px; border-radius: 5px; }
+
+/* Success Alert */
+/* line 173, ../sass/styles.sass */
+.Success { background-color: rgba(46, 161, 60, 0.9); }
+
+/* Error Alert */
+/* line 177, ../sass/styles.sass */
+.Error { background-color: rgba(203, 72, 72, 0.95); }
+
 /* =================== Footer Styling =================== */
 /* Site Footer */
-/* line 144, ../sass/styles.sass */
+/* line 182, ../sass/styles.sass */
 #siteFooter { position: fixed; bottom: 0; left: 0; width: 100%; max-width: 100%; }
 
 /* Footer text */
-/* line 152, ../sass/styles.sass */
+/* line 190, ../sass/styles.sass */
 .footerText { text-align: center; font-size: 14px; padding: 0; margin: 10px; color: #161616; }
 
 /*# sourceMappingURL=styles.css.map */

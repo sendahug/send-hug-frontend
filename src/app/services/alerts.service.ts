@@ -27,10 +27,10 @@ export class AlertsService {
   // creates an alert div element
   buildAlertElement(alert:AlertMessage) {
     let alertMessage = document.createElement('div');
-    alertMessage.className = 'alertMessage';
+    alertMessage.className = `alertMessage ${alert.type}`;
 
     let alertHeadline = document.createElement('h3');
-    alertHeadline.className = `alertType ${alert.type}`;
+    alertHeadline.className = `alertType`;
     alertHeadline.textContent = alert.type;
     alertMessage.append(alertHeadline);
 
@@ -42,6 +42,7 @@ export class AlertsService {
     let closeButton = document.createElement('button');
     closeButton.className = 'appButton';
     closeButton.id = 'alertButton';
+    closeButton.textContent = 'Close';
     alertMessage.append(closeButton);
 
     return alertMessage;

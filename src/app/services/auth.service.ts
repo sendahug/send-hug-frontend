@@ -80,43 +80,45 @@ export class AuthService {
 
   // Gets the user's information from the database
   getUserData(jwtPayload:any) {
+    // if there's a JWT
+    if(jwtPayload) {
+      let params = new HttpParams().set('userID', jwtPayload.sub)
+
+      // attempts to get the user's data
+      this.Http.get('http://localhost:5000/users', {
+        headers: new HttpHeaders({'Authorization': `Bearer ${this.token}`}),
+        params: params
+        // if successful, get the user data
+      }).subscribe((response:any) => {
+        let data = response.user;
+        this.userData = {
+          id: data.id,
+          auth0Id: jwtPayload.sub,
+          displayName: data.displayName,
+          receivedHugs: data.receivedH,
+          givenHugs: data.givenH,
+          postsNum: data.postsNum,
+          loginCount: data.loginCount,
+          jwt: this.token
+        }
+        this.authenticated = true;
+        this.authHeader = new HttpHeaders({'Authorization': `Bearer ${this.token}`});
+        this.setToken();
+        //this.updateLoginCount();
+        // if there's an error, check the error type
+      }, (err) => {
+        let statusCode = err.status;
+
+        // if a user with that ID doens't exist, try to create it
+        if(statusCode == 404) {
+          this.createUser(jwtPayload);
+        }
+      })
+    }
     // If there's no currently-saved token
-    if(!jwtPayload) {
+    else {
       jwtPayload = this.getToken();
     }
-
-    let params = new HttpParams().set('userID', jwtPayload.sub)
-
-    // attempts to get the user's data
-    this.Http.get('http://localhost:5000/users', {
-      headers: new HttpHeaders({'Authorization': `Bearer ${this.token}`}),
-      params: params
-      // if successful, get the user data
-    }).subscribe((response:any) => {
-      let data = response.user;
-      this.userData = {
-        id: data.id,
-        auth0Id: jwtPayload.sub,
-        displayName: data.displayName,
-        receivedHugs: data.receivedH,
-        givenHugs: data.givenH,
-        postsNum: data.postsNum,
-        loginCount: data.loginCount,
-        jwt: this.token
-      }
-      this.authenticated = true;
-      this.authHeader = new HttpHeaders({'Authorization': `Bearer ${this.token}`});
-      this.setToken();
-      this.updateLoginCount();
-      // if there's an error, check the error type
-    }, (err) => {
-      let statusCode = err.status;
-
-      // if a user with that ID doens't exist, try to create it
-      if(statusCode == 404) {
-        this.createUser(jwtPayload);
-      }
-    })
   }
 
   // If the user doesn't exist, send a request to the server to
@@ -184,6 +186,7 @@ export class AuthService {
       let expiration = payload['exp'] as number * 1000;
       // If app auth token is not expired, request new token
       if(expiration > Date.now()) {
+        this.token = jwt;
         this.getUserData(payload);
         this.refreshToken();
       }

@@ -55,24 +55,56 @@ app-main-page { display: flex; padding: 5px; align-content: space-between; justi
 
 /* =================== User Page Styling =================== */
 /* User Page Component */
-/* line 94, ../sass/styles.sass */
-app-user-page { width: 80%; }
-
 /* User / Error Message Container */
+/* line 98, ../sass/styles.sass */
+app-user-page > div { width: 80%; max-width: 80%; margin-right: 10%; margin-left: 10%; }
+
+/* User Page Title */
+/* line 106, ../sass/styles.sass */
+app-user-page h3 { text-align: center; }
+
+/* User Page */
+/* line 110, ../sass/styles.sass */
+#userPage { display: flex; flex-wrap: wrap; align-content: space-between; justify-content: space-between; padding: 15px 8%; }
+
+/* User Profile */
+/* line 118, ../sass/styles.sass */
+#profileData { order: 0; width: 35%; }
+
+/* User Page Field Container */
+/* line 123, ../sass/styles.sass */
+.profileElement { padding: 10px 0; }
+
+/* User Page Field Title */
+/* line 127, ../sass/styles.sass */
+.pageCategory { font-size: 16px; font-weight: bold; margin: 0 5px; color: #252525; }
+
+/* User Page Field Text */
+/* line 134, ../sass/styles.sass */
+.pageData { font-size: 16px; color: #161616; }
+
+/* User Posts */
+/* line 139, ../sass/styles.sass */
+app-my-posts { order: 2; width: 50%; align-self: flex-start; }
+
+/* Logout button */
+/* line 145, ../sass/styles.sass */
+#logout { order: 3; margin: 20px 40% 0; }
+
 /* Login div */
 /* =================== Messages Page Styling =================== */
 /* Message Page Component */
-/* line 108, ../sass/styles.sass */
+/* line 155, ../sass/styles.sass */
 app-messages { width: 80%; }
 
 /* Inbox / Error Message Container */
 /* Login div */
 /* Error Message Text */
-/* line 121, ../sass/styles.sass */
+/* line 168, ../sass/styles.sass */
 .errorMessage { text-align: center; padding-bottom: 5px; padding-top: 10px; }
 
 /* Login Link */
-/* line 127, ../sass/styles.sass */
+/* line 174, ../sass/styles.sass */
 #logIn { text-align: center; margin: 10px Calc((100% - 50px) / 2); color: #3f3a3a; }
 
 /* =================== New Item Page Styling =================== */
@@ -81,36 +113,36 @@ app-messages { width: 80%; }
 /* Error Page Component */
 /* =================== Alert Styling =================== */
 /* Base Alert */
-/* line 144, ../sass/styles.sass */
+/* line 191, ../sass/styles.sass */
 .alertMessage { width: 70%; box-shadow: 12px 15px 20px 0 rgba(46, 61, 73, 0.5); border-radius: 5px; text-align: center; padding: 10px; position: fixed; bottom: 50px; left: 0; right: 0; margin-right: 15%; margin-left: 15%; z-index: 100; }
 
 /* Alert Title */
-/* line 159, ../sass/styles.sass */
+/* line 206, ../sass/styles.sass */
 .alertType { margin: 0; padding: 5px; }
 
 /* Alert Text */
-/* line 164, ../sass/styles.sass */
+/* line 211, ../sass/styles.sass */
 .alertText { font-size: 16px; }
 
 /* Alert Button */
-/* line 168, ../sass/styles.sass */
+/* line 215, ../sass/styles.sass */
 #alertButton { margin: 10px; border-radius: 5px; }
 
 /* Success Alert */
-/* line 173, ../sass/styles.sass */
+/* line 220, ../sass/styles.sass */
 .Success { background-color: rgba(46, 161, 60, 0.9); }
 
 /* Error Alert */
-/* line 177, ../sass/styles.sass */
+/* line 224, ../sass/styles.sass */
 .Error { background-color: rgba(203, 72, 72, 0.95); }
 
 /* =================== Footer Styling =================== */
 /* Site Footer */
-/* line 182, ../sass/styles.sass */
+/* line 229, ../sass/styles.sass */
 #siteFooter { position: fixed; bottom: 0; left: 0; width: 100%; max-width: 100%; }
 
 /* Footer text */
-/* line 190, ../sass/styles.sass */
+/* line 237, ../sass/styles.sass */
 .footerText { text-align: center; font-size: 14px; padding: 0; margin: 10px; color: #161616; }
 
 /*# sourceMappingURL=styles.css.map */

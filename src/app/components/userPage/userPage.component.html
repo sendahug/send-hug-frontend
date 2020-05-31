@@ -1,14 +1,25 @@
 <!-- If the user is logged in, displays a user page. -->
 <div *ngIf="authService.authenticated">
 	<div id="userPage">
-		<div class="pageCategory">Username:</div> <div class="pageData">{{ authService.userData.displayName }}</div>
-		<div class="pageCategory">Received Hugs:</div> <div class="pageData">{{ authService.userData.receivedH }}</div>
-		<div class="pageCategory">Given Hugs:</div> <div class="pageData">{{ authService.userData.givenH }}</div>
-		<div class="pageCategory">Posts:</div> <div class="pageData">{{ authService.userData.postsNum }}</div>
+		<div id="profileData">
+			<h3>User Profile</h3>
+			<div class="profileElement">
+				<span class="pageCategory">Username:</span> <span class="pageData">{{ authService.userData.displayName }}</span>
+			</div>
+			<div class="profileElement">
+				<span class="pageCategory">Received Hugs:</span> <span class="pageData">{{ authService.userData.receivedH }}</span>
+			</div>
+			<div class="profileElement">
+				<span class="pageCategory">Given Hugs:</span> <span class="pageData">{{ authService.userData.givenH }}</span>
+			</div>
+			<div class="profileElement">
+				<span class="pageCategory">Posts:</span> <span class="pageData">{{ authService.userData.postsNum }}</span>
+			</div>
+		</div>
 
 		<app-my-posts></app-my-posts>
-
-		<a href="" id="logOut">Log Out</a>
+		
+		<button id="logout" class="appButton" (click)="logout()">Log Out</button>
 	</div>
 </div>
 

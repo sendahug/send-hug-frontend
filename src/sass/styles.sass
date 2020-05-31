@@ -93,12 +93,59 @@ app-main-page
 /* User Page Component */
 app-user-page
 	@extend #compSample
-	width: 80%
 
 /* User / Error Message Container */
 app-user-page > div
 	@extend #frameSample
-		
+	width: 80%
+	max-width: 80%
+	margin-right: 10%
+	margin-left: 10%
+
+/* User Page Title */
+app-user-page h3
+	text-align: center
+
+/* User Page */
+#userPage
+	display: flex
+	flex-wrap: wrap
+	align-content: space-between
+	justify-content: space-between
+	padding: 15px 8%
+
+/* User Profile */
+#profileData
+	order: 0
+	width: 35%
+
+/* User Page Field Container */
+.profileElement
+	padding: 10px 0
+
+/* User Page Field Title */
+.pageCategory
+	font-size: 16px
+	font-weight: bold
+	margin: 0 5px
+	color: $headlineColour
+
+/* User Page Field Text */
+.pageData
+	font-size: 16px
+	color: $textColour
+
+/* User Posts */
+app-my-posts
+	order: 2
+	width: 50%
+	align-self: flex-start
+
+/* Logout button */
+#logout
+	order: 3
+	margin: 20px 40% 0
+
 /* Login div */
 #loginBox
 	@extend #errorMessBox

@@ -24,7 +24,7 @@ export class AppMessaging implements OnInit {
         headers: this.authService.authHeader,
         params: params
       }).subscribe((response: any) => {
-        let userMessages = response.data.messages;
+        let userMessages = response.messages;
         userMessages.forEach((element:Message) => {
           let message = element;
           this.messages.push(message);

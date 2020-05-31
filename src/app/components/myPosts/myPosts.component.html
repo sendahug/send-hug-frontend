@@ -2,11 +2,13 @@
 	<h3>My Posts</h3>
 	
 	<!-- If the user has posts, displays them -->
-	<div *ngIf="userPosts" *ngFor="let post of userPosts" class="userPost">
-		<div class="postText">{{ post.text }}</div>
-		<div class="postDate">{{ post.date }}</div>
-		<button class="appButton editButton" (click)="editPost(post.id)">Edit Post</button>
-		<button class="appButton deleteButton" (click)="deletePost(post.id)">Delete Post</button>
+	<div *ngIf="userPosts">
+		<div *ngFor="let post of userPosts" class="userPost">
+			<div class="postText">{{ post.text }}</div>
+			<div class="postDate">{{ post.date }}</div>
+			<button class="appButton editButton" (click)="editPost(post.id)">Edit Post</button>
+			<button class="appButton deleteButton" (click)="deletePost(post.id)">Delete Post</button>
+		</div>
 	</div>
 	
 	<!-- If the user doesn't have posts, displays an error message -->

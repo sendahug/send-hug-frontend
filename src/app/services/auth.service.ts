@@ -122,7 +122,17 @@ export class AuthService {
       headers: new HttpHeaders({'Authorization': `Bearer ${this.token}`})
       //if the request succeeds, get the user's data
     }).subscribe((response:any) => {
-      this.getUserData(jwtPayload);
+      let data = response.data;
+      this.userData = {
+        id: data.id,
+        auth0Id: jwtPayload.sub,
+        displayName: data.displayName,
+        receivedHugs: data.receivedH,
+        givenHugs: data.givenH,
+        postsNum: data.postsNum,
+        loginCount: data.loginCount,
+        jwt: this.token
+      }
       // error handling
     }, (err) => {
       console.log(err);

@@ -37,7 +37,7 @@ export class AuthService {
 
   // CTOR
   constructor(private Http:HttpClient) {
-    this.getToken();
+
   }
 
   // Handles login redirect and authorise request.
@@ -77,6 +77,11 @@ export class AuthService {
 
   // Gets the user's information from the database
   getUserData(jwtPayload:any) {
+    // If there's no currently-saved token
+    if(!jwtPayload) {
+      jwtPayload = this.getToken();
+    }
+
     let params = new HttpParams().set('userID', jwtPayload.sub)
 
     // attempts to get the user's data
@@ -85,7 +90,7 @@ export class AuthService {
       params: params
       // if successful, get the user data
     }).subscribe((response:any) => {
-      let data = response;
+      let data = response.user;
       this.userData = {
         id: data.id,
         auth0Id: jwtPayload.sub,
@@ -122,7 +127,7 @@ export class AuthService {
       headers: new HttpHeaders({'Authorization': `Bearer ${this.token}`})
       //if the request succeeds, get the user's data
     }).subscribe((response:any) => {
-      let data = response;
+      let data = response.user;
       this.userData = {
         id: data.id,
         auth0Id: jwtPayload.sub,
@@ -167,7 +172,7 @@ export class AuthService {
           if(authResult.accessToken) {
             this.token = authResult.accessToken;
             let payload = this.parseJWT(authResult.accessToken);
-            this.getUserData(payload);
+            return payload;
           }
           else if(err) {
             return 'Error: ' + err;
@@ -190,6 +195,8 @@ export class AuthService {
       givenH: this.userData.givenHugs,
       posts: this.userData.postsNum,
       loginCount: this.userData.loginCount + 1
+    }, {
+      headers: this.authHeader
     }).subscribe((response:any) => {
       console.log(response);
     });

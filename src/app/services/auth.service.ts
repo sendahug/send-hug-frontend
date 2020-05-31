@@ -21,7 +21,7 @@ export class AuthService {
   })
 
   token: string = '';
-  authHeader = new HttpHeaders({'Authorization': `Bearer ${this.token}`})
+  authHeader: HttpHeaders = new HttpHeaders;
   authenticated: boolean = false;
   userProfile: any;
   userData: User = {
@@ -81,7 +81,7 @@ export class AuthService {
 
     // attempts to get the user's data
     this.Http.get('http://localhost:5000/users', {
-      headers: this.authHeader,
+      headers: new HttpHeaders({'Authorization': `Bearer ${this.token}`}),
       params: params
       // if successful, get the user data
     }).subscribe((response:any) => {
@@ -97,6 +97,7 @@ export class AuthService {
         jwt: this.token
       }
       this.authenticated = true;
+      this.authHeader = new HttpHeaders({'Authorization': `Bearer ${this.token}`});
       this.setToken();
       this.updateLoginCount();
       // if there's an error, check the error type
@@ -118,7 +119,7 @@ export class AuthService {
       id: jwtPayload.sub,
       displayName: 'user' + Math.round(Math.random() * 100)
     }, {
-      headers: this.authHeader
+      headers: new HttpHeaders({'Authorization': `Bearer ${this.token}`})
       //if the request succeeds, get the user's data
     }).subscribe((response:any) => {
       this.getUserData(jwtPayload);

@@ -10,20 +10,19 @@ import { AuthService } from '../../services/auth.service';
   templateUrl: './myPosts.component.html'
 })
 export class MyPosts implements OnInit {
-  userPosts: Post[] = [];
 
-  constructor(private itemsService:ItemsService,
+  constructor(public itemsService:ItemsService,
     private authService:AuthService,
     private router:Router) {
       itemsService.getUserPosts(this.authService.userData.id!);
   }
 
   ngOnInit() {
-    this.userPosts = ItemsService.userPosts;
+
   }
 
   editPost(post:Post) {
-    
+
   }
 
   // Delete a post

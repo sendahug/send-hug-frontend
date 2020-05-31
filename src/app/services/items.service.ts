@@ -14,11 +14,11 @@ import { AlertsService } from './alerts.service';
 })
 export class ItemsService {
   private serverUrl = 'http://localhost:5000'
-  static newItemsArray: Post[] = [];
-  static sugItemsArray: Post[] = [];
+  newItemsArray: Post[] = [];
+  sugItemsArray: Post[] = [];
   static fullNewItems: Post[] = [];
   static fullSugItems: Post[] = [];
-  static userPosts: Post[] = [];
+  userPosts: Post[] = [];
 
   // CTOR
   constructor(
@@ -32,8 +32,8 @@ export class ItemsService {
   getItems() {
     this.Http.get(this.serverUrl).subscribe((response:any) => {
       let data = response;
-      ItemsService.newItemsArray = data.recent;
-      ItemsService.sugItemsArray = data.suggested;
+      this.newItemsArray = data.recent;
+      this.sugItemsArray = data.suggested;
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
       this.createErrorAlert(err);
@@ -71,7 +71,7 @@ export class ItemsService {
       headers: this.authService.authHeader
     }).subscribe((response:any) => {
       let data = response.posts;
-      ItemsService.userPosts = data;
+      this.userPosts = data;
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
       this.createErrorAlert(err);

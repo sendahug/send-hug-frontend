@@ -85,7 +85,7 @@ export class AuthService {
       params: params
       // if successful, get the user data
     }).subscribe((response:any) => {
-      let data = response.data.user;
+      let data = response;
       this.userData = {
         id: data.id,
         auth0Id: jwtPayload.sub,
@@ -122,7 +122,7 @@ export class AuthService {
       headers: new HttpHeaders({'Authorization': `Bearer ${this.token}`})
       //if the request succeeds, get the user's data
     }).subscribe((response:any) => {
-      let data = response.data;
+      let data = response;
       this.userData = {
         id: data.id,
         auth0Id: jwtPayload.sub,

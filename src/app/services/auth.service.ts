@@ -48,20 +48,23 @@ export class AuthService {
   // Checks the hash for a token.
   checkHash() {
     // Parses the token (in the URL hash).
-    this.auth0.parseHash({ hash: window.location.hash }, (err, authResult) => {
-      if (authResult) {
-        window.location.hash = '';
-        // parses the token payload
-        if(authResult.accessToken) {
-          this.token = authResult.accessToken;
-          let payload = this.parseJWT(authResult.accessToken);
-          this.getUserData(payload);
+    if(window.location.hash) {
+      this.auth0.parseHash({ hash: window.location.hash }, (err, authResult) => {
+        if (authResult) {
+          window.location.hash = '';
+          // parses the token payload
+          if(authResult.accessToken) {
+            this.token = authResult.accessToken;
+            let payload = this.parseJWT(authResult.accessToken);
+            this.getUserData(payload);
+          }
         }
-      }
-      else if (err) {
-        return 'Error: ' + err;
-      }
-    })
+        else if (err) {
+          return 'Error: ' + err;
+        }
+      })
+    }
+    this.getToken();
   }
 
   // Parse the token payload
@@ -165,14 +168,14 @@ export class AuthService {
     if(jwt) {
       // Parses the token and checks its expiration
       let payload = this.parseJWT(jwt);
-      let expiration = payload['exp'];
+      let expiration = payload['exp'] as number * 1000;
       // If app auth token is not expired, request new token
       if(expiration > Date.now()) {
         this.auth0.checkSession({}, (err, authResult) => {
           if(authResult.accessToken) {
             this.token = authResult.accessToken;
             let payload = this.parseJWT(authResult.accessToken);
-            return payload;
+            this.getUserData(payload);
           }
           else if(err) {
             return 'Error: ' + err;

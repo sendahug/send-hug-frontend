@@ -16,9 +16,8 @@ export class AppComponent {
     name: 'User Page',
     link: '/user'
   }];
-  loggedIn = false;
 
-  constructor(private authService:AuthService) {
-    this.loggedIn = this.authService.authenticated;
+  constructor(public authService:AuthService) {
+    this.authService.checkHash();
   }
 }

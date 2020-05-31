@@ -10,9 +10,6 @@ import { AppMessaging } from './components/messages/messages.component';
 import { ErrorPage } from './components/errorPage/errorPage.component';
 import { NewItem } from './components/newItem/newItem.component';
 import { MyPosts } from './components/myPosts/myPosts.component';
-import { ItemsService } from './services/items.service';
-import { AuthService } from './services/auth.service';
-import { AlertsService } from './services/alerts.service';
 
 @NgModule({
   imports: [
@@ -29,11 +26,7 @@ import { AlertsService } from './services/alerts.service';
     NewItem,
     MyPosts
   ],
-  providers: [
-    ItemsService,
-    AuthService,
-    AlertsService
-  ],
+  providers: [],
   bootstrap: [AppComponent]
 })
 export class AppModule {

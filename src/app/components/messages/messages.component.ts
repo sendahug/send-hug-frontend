@@ -8,8 +8,7 @@ import { Message } from '../../interfaces/message.interface';
 
 @Component({
   selector: 'app-messages',
-  templateUrl: './messages.component.html',
-  providers: [ AuthService ]
+  templateUrl: './messages.component.html'
 })
 export class AppMessaging implements OnInit {
   messages: Message[] = [];

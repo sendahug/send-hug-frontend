@@ -7,8 +7,7 @@ import { ItemsService } from '../../services/items.service';
 
 @Component({
   selector: 'app-main-page',
-  templateUrl: './mainPage.component.html',
-  providers: [ ItemsService ]
+  templateUrl: './mainPage.component.html'
 })
 export class MainPage implements OnInit {
   newItemsArray: Post[] = [];

@@ -6,8 +6,7 @@ import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-user-page',
-  templateUrl:  './userPage.component.html',
-  providers: [ AuthService ]
+  templateUrl:  './userPage.component.html'
 })
 export class UserPage implements OnInit {
 

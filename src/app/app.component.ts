@@ -3,8 +3,7 @@ import { AuthService } from './services/auth.service';
 
 @Component({
   selector: 'app-root',
-  templateUrl: './app.component.html',
-  providers: [ AuthService ]
+  templateUrl: './app.component.html'
 })
 export class AppComponent {
   navTabs = [{

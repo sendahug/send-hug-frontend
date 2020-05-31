@@ -2,7 +2,6 @@
 import { Component, OnInit } from '@angular/core';
 
 // App-related imports
-import { User } from '../../interfaces/user.interface';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
@@ -11,30 +10,10 @@ import { AuthService } from '../../services/auth.service';
   providers: [ AuthService ]
 })
 export class UserPage implements OnInit {
-  userData: User = {
-    id: 0,
-    auth0Id: '',
-    displayName: '',
-    receivedHugs: 0,
-    givenHugs: 0,
-    postsNum: 0,
-    loginCount: 0,
-    jwt: ''
-  }
-  loggedIn = false;
 
   // CTOR
-  constructor(private authService: AuthService) {
-    authService.checkHash();
-
-    // If the user is authenticated, gets the user's data.
-    if(authService.authenticated) {
-      this.userData = this.authService.userData;
-      this.loggedIn = true;
-    }
-    else {
-      this.loggedIn = false;
-    }
+  constructor(public authService: AuthService) {
+    this.authService.checkHash();
   }
 
   ngOnInit() {

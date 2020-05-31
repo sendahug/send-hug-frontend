@@ -1,10 +1,10 @@
 <!-- If the user is logged in, displays a user page. -->
-<div *ngIf="loggedIn">
+<div *ngIf="authService.authenticated">
 	<div id="userPage">
-		<div class="pageCategory">Username:</div> <div class="pageData">{{ userData.displayName }}</div>
-		<div class="pageCategory">Received Hugs:</div> <div class="pageData">{{ userData.receivedH }}</div>
-		<div class="pageCategory">Given Hugs:</div> <div class="pageData">{{ userData.givenH }}</div>
-		<div class="pageCategory">Posts:</div> <div class="pageData">{{ userData.postsNum }}</div>
+		<div class="pageCategory">Username:</div> <div class="pageData">{{ authService.userData.displayName }}</div>
+		<div class="pageCategory">Received Hugs:</div> <div class="pageData">{{ authService.userData.receivedH }}</div>
+		<div class="pageCategory">Given Hugs:</div> <div class="pageData">{{ authService.userData.givenH }}</div>
+		<div class="pageCategory">Posts:</div> <div class="pageData">{{ authService.userData.postsNum }}</div>
 
 		<app-my-posts></app-my-posts>
 
@@ -13,7 +13,7 @@
 </div>
 
 <!-- If the user isn't logged in, prompts the user to log in. -->
-<div  id="loginBox" *ngIf="!loggedIn">
+<div  id="loginBox" *ngIf="!authService.authenticated">
 	<div class="errorMessage">You are not currently logged in. To view user information, log in.</div>
 
 	<button id="logIn" class="appButton" (click)="login()">Login</button>

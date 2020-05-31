@@ -153,8 +153,21 @@ export class AuthService {
       returnTo: environment.auth0.logoutUri,
       clientID: environment.auth0.clientID
     });
+
+    //clears the user's data
     this.authenticated = false;
     this.token = '';
+    this.userData = {
+      id: 0,
+      auth0Id: '',
+      displayName: '',
+      receivedHugs: 0,
+      givenHugs: 0,
+      postsNum: 0,
+      loginCount: 0,
+      jwt: ''
+    }
+    localStorage.setItem("ACTIVE_JWT", '');
   }
 
   // Sets the token in local storage
@@ -171,24 +184,28 @@ export class AuthService {
       let expiration = payload['exp'] as number * 1000;
       // If app auth token is not expired, request new token
       if(expiration > Date.now()) {
-        this.auth0.checkSession({}, (err, authResult) => {
-          if(authResult.accessToken) {
-            this.token = authResult.accessToken;
-            let payload = this.parseJWT(authResult.accessToken);
-            this.getUserData(payload);
-          }
-          else if(err) {
-            return 'Error: ' + err;
-          }
-        })
-      }
-      // If it's still valid, parses the JWT and gets the user's details
-      else {
-        this.token = jwt;
-        let payload = this.parseJWT(jwt);
         this.getUserData(payload);
+        this.refreshToken();
+      }
+      // If it expired, clears the user's data
+      else {
+        this.logout();
       }
     }
+  }
+
+  // Attempts to refresh the token
+  refreshToken() {
+    this.auth0.checkSession({}, (err, authResult) => {
+      if(authResult.accessToken) {
+        this.token = authResult.accessToken;
+        let payload = this.parseJWT(authResult.accessToken);
+        this.getUserData(payload);
+      }
+      else if(err) {
+        return 'Error: ' + err;
+      }
+    })
   }
 
   // sends a request to the server to update the login count in the database

@@ -15,7 +15,7 @@
 		<form class="newItem">
 			<label for="postText">Text:</label>
 			<input #postText type="text" id="postText">
-			<div class="pageCategory">By:</div> <div class="pageData">{{ authService.userData.username }}</div>
+			<div class="pageCategory">By:</div> <div class="pageData">{{ authService.userData.displayName }}</div>
 			<button type="submit" class="appButton" (click)="sendPost(postText.value)">Post</button>
 		</form>
 	</div>

@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Location } from '@angular/common';
 
 // Error message interface
 interface ErrorMessage {
@@ -18,7 +19,12 @@ export class ErrorPage {
     code: 404
   }
 
-  constructor() {
+  constructor(private location:Location) {
 
+  }
+
+  // Sends the user back to the previous page
+  goBack() {
+    this.location.back();
   }
 }

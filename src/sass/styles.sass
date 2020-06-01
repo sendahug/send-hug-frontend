@@ -181,6 +181,32 @@ app-messages > div
 app-new-item
 	@extend #compSample
 
+/* New Item frame */
+#newItem
+	@extend #frameSample
+	width: 80%
+	margin: 15px 10%
+
+/* New Item title */
+#newItem h3
+	text-align: center
+	color: $headlineColour
+	font-size: 20px
+	padding: 10px
+	margin: 0
+
+/* New Item field + title */
+.formElement
+	text-align: center
+	color: $textColour
+	padding: 7px 2px
+
+/* New Item field button */
+.sendData
+	padding: 5px
+	margin: 10px Calc((100% - 28px) / 2)
+	font-size: 14px
+
 /* =================== Error Page Styling =================== */
 /* Error Page Component */
 app-error-page

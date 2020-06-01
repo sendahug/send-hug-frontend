@@ -3,20 +3,28 @@
 	
 	<div id="newMessage" *ngIf="itemType == 'Message'">
 		<form class="newItem">
-			<label for="messageFor">For:</label>
-			<input #messageFor type="text" id="messageFor" value="{{ user }}" readonly>
-			<label for="messageText">Message</label>
-			<input #messageText type="text" id="messageText">
-			<button type="submit" class="appButton" (click)="sendMessage(messageFor.value, messageText.value)">Send</button>
+			<div class="formElement">
+				<label class="pageCategory" for="messageFor">For:</label>
+				<input #messageFor type="text" id="messageFor" value="{{ user }}" readonly>
+			</div>
+			<div class="formElement">
+				<label class="pageCategory" for="messageText">Message</label>
+				<input #messageText type="text" id="messageText">
+			</div>
+			<button type="submit" class="appButton sendData" (click)="sendMessage(messageFor.value, messageText.value)">Send</button>
 		</form>
 	</div>
 	
 	<div id="newPost" *ngIf="itemType == 'Post'">
 		<form class="newItem">
-			<label for="postText">Text:</label>
-			<input #postText type="text" id="postText">
-			<div class="pageCategory">By:</div> <div class="pageData">{{ authService.userData.displayName }}</div>
-			<button type="submit" class="appButton" (click)="sendPost(postText.value)">Post</button>
+			<div class="formElement">
+				<span class="pageCategory">By:</span> <span class="pageData">{{ authService.userData.displayName }}</span>
+			</div>
+			<div class="formElement">
+				<label class="pageCategory" for="postText">Text:</label>
+				<input #postText type="text" id="postText">
+			</div>
+			<button type="submit" class="appButton sendData" (click)="sendPost(postText.value)">Post</button>
 		</form>
 	</div>
 </div>

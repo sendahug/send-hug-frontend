@@ -13,6 +13,11 @@ export class AlertsService {
 
   // add a new alert
   createAlert(alert:AlertMessage) {
+    // checks if there's already an alert, in which case it's removed
+    if(document.querySelector('.alertMessage')) {
+      document.querySelector('.alertMessage')!.remove();
+    }
+
     let alertMessage = this.buildAlertElement(alert);
 
     document.getElementById('alertContainer')!.append(alertMessage);

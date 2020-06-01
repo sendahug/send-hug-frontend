@@ -13,9 +13,9 @@ interface ErrorMessage {
 })
 export class ErrorPage {
   error: ErrorMessage = {
-    title: '',
-    message: '',
-    code: 0
+    title: 'Sorry!',
+    message: `The page you were looking for doesn\'t exist.`,
+    code: 404
   }
 
   constructor() {

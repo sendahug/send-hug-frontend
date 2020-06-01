@@ -1,5 +1,9 @@
 <div id="errorPage">
 	<h3>{{ error.title }}</h3>
 	<div class="pageData">{{ error.message }}</div>
-	<div class="pageCategory">Error code:</div> <div class="pageData">{{ error.code }}</div>
+	<div class="pageData">Go back to the previous page?</div>
+	<button class="appButton"><i class="far fa-arrow-alt-circle-left"></i></button>
+	
+	<br>
+	<span class="pageCategory">Error code:</span> <span class="pageData">{{ error.code }}</span>
 </div>

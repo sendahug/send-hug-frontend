@@ -6,7 +6,7 @@
 		<li *ngFor="let item of itemsService.newItemsArray" class="newItem">
 			<div class="itemText">{{ item.text }}</div>
 			<div class="itemUser">By {{ item.user }}</div>
-			<button class="appButton hugButton" (click)="sendHug(item.id)"><i class="fas fa-hand-holding-heart"></i></button>
+			<button class="appButton hugButton" (click)="sendHug(item.id)"><i class="fab fa-gratipay"></i></button>
 			<a [routerLink]="['/new', 'Message']" [queryParams]="{userID: item.user}" class="appButton messageButton"><i class="fas fa-comments"></i></a>
 		</li>
 	</ul>
@@ -23,7 +23,7 @@
 		<li *ngFor="let item of itemsService.sugItemsArray" class="sugItem">
 			<div class="itemText">{{ item.text }}</div>
 			<div class="itemUser">By {{ item.user }}</div>
-			<button class="appButton hugButton" (click)="sendHug(item.id)"><i class="fas fa-hand-holding-heart"></i></button>
+			<button class="appButton hugButton" (click)="sendHug(item.id)"><i class="fab fa-gratipay"></i></button>
 			<a [routerLink]="['/new', 'Message']" [queryParams]="{userID: item.user}" class="appButton messageButton"><i class="fas fa-comments"></i></a>
 		</li>
 	</ul>

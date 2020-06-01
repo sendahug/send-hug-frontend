@@ -186,6 +186,43 @@ app-new-item
 app-error-page
 	@extend #compSample
 
+/* Error Page frame */
+#errorPage
+	@extend #frameSample
+	width: 80%
+	margin: 15px 10%
+
+/* Error Page title */
+#errorPage h3
+	text-align: center
+	color: $headlineColour
+	font-size: 20px
+	padding: 10px
+	margin: 0
+
+/* Error Page text */
+.pageData
+	text-align: center
+	color: $textColour
+	font-size: 16px
+	padding: 10px 2px
+
+/* Error Page error code */
+#errorCode
+	text-align: center
+	color: $textColour
+	font-size: 13px
+	padding: 10px 2px
+
+/* Go Back Button */
+#backBtn
+	padding: 2px
+	margin: 7px Calc((100% - 20px) / 2)
+
+/* Arrow in Go Back Button */
+.fa-arrow-alt-circle-left
+	font-size: 18px
+
 /* =================== Alert Styling =================== */
 /* Base Alert */
 .alertMessage

@@ -2,8 +2,7 @@
 	<h3>{{ error.title }}</h3>
 	<div class="pageData">{{ error.message }}</div>
 	<div class="pageData">Go back to the previous page?</div>
-	<button class="appButton" (click)="goBack()"><i class="far fa-arrow-alt-circle-left"></i></button>
+	<button id="backBtn" class="appButton" (click)="goBack()"><i class="far fa-arrow-alt-circle-left"></i></button>
 	
-	<br>
-	<span class="pageCategory">Error code:</span> <span class="pageData">{{ error.code }}</span>
+	<div id="errorCode">Error code: {{ error.code }}</div>
 </div>

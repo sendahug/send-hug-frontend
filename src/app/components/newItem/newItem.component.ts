@@ -36,7 +36,8 @@ export class NewItem {
   }
 
   // Create new post
-  sendPost(postText:string) {
+  sendPost(e:Event, postText:string) {
+    e.preventDefault();
     let newPost:Post = {
       user_id: this.authService.userData.id!,
       user: this.authService.userData.displayName!,
@@ -49,7 +50,8 @@ export class NewItem {
   }
 
   // Send a message to a user
-  sendMessage(forUser:number, messageText:string) {
+  sendMessage(e:Event, forUser:number, messageText:string) {
+    e.preventDefault();
     let newMessage:Message = {
       from: this.authService.userData.displayName!,
       fromId: this.authService.userData.id!,

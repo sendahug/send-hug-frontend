@@ -11,7 +11,7 @@
 				<label class="pageCategory" for="messageText">Message</label>
 				<input #messageText type="text" id="messageText">
 			</div>
-			<button type="submit" class="appButton sendData" (click)="sendMessage(messageFor.value, messageText.value)">Send</button>
+			<button type="submit" class="appButton sendData" (click)="sendMessage($event, messageFor.value, messageText.value)">Send</button>
 		</form>
 	</div>
 	
@@ -24,7 +24,7 @@
 				<label class="pageCategory" for="postText">Text:</label>
 				<input #postText type="text" id="postText">
 			</div>
-			<button type="submit" class="appButton sendData" (click)="sendPost(postText.value)">Post</button>
+			<button type="submit" class="appButton sendData" (click)="sendPost($event, postText.value)">Post</button>
 		</form>
 	</div>
 </div>

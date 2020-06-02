@@ -34,6 +34,9 @@ export class AuthService {
     loginCount: 0,
     jwt: ''
   }
+  // documents whether the user just logged in or they're still logged in following
+  // their previous login
+  loggedIn = false;
 
   // CTOR
   constructor(private Http:HttpClient) {
@@ -56,6 +59,7 @@ export class AuthService {
           if(authResult.accessToken) {
             this.token = authResult.accessToken;
             let payload = this.parseJWT(authResult.accessToken);
+            this.loggedIn = true;
             this.getUserData(payload);
           }
         }
@@ -104,7 +108,11 @@ export class AuthService {
         this.authenticated = true;
         this.authHeader = new HttpHeaders({'Authorization': `Bearer ${this.token}`});
         this.setToken();
-        this.updateLoginCount();
+
+        // if the user just logged in, update the login count
+        if(this.loggedIn) {
+          this.updateLoginCount();
+        }
         // if there's an error, check the error type
       }, (err) => {
         let statusCode = err.status;
@@ -187,6 +195,7 @@ export class AuthService {
       // If app auth token is not expired, request new token
       if(expiration > Date.now()) {
         this.token = jwt;
+        this.loggedIn = false;
         this.getUserData(payload);
         this.refreshToken();
       }

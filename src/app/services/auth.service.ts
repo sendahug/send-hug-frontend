@@ -97,14 +97,14 @@ export class AuthService {
           displayName: data.displayName,
           receivedHugs: data.receivedH,
           givenHugs: data.givenH,
-          postsNum: data.postsNum,
+          postsNum: data.posts,
           loginCount: data.loginCount,
           jwt: this.token
         }
         this.authenticated = true;
         this.authHeader = new HttpHeaders({'Authorization': `Bearer ${this.token}`});
         this.setToken();
-        //this.updateLoginCount();
+        this.updateLoginCount();
         // if there's an error, check the error type
       }, (err) => {
         let statusCode = err.status;

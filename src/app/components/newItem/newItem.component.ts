@@ -7,6 +7,7 @@ import { Post } from '../../interfaces/post.interface';
 import { Message } from '../../interfaces/message.interface';
 import { ItemsService } from '../../services/items.service';
 import { AuthService } from '../../services/auth.service';
+import { AlertsService } from '../../services/alerts.service';
 
 @Component({
   selector: 'app-new-item',
@@ -20,7 +21,8 @@ export class NewItem {
   // CTOR
   constructor(private itemsService:ItemsService,
     private authService:AuthService,
-    private route:ActivatedRoute) {
+    private route:ActivatedRoute,
+    private alertService:AlertsService) {
       // Gets the URL parameters
       let type = this.route.snapshot.paramMap.get('type');
       let user = this.route.snapshot.queryParamMap.get('user');
@@ -55,14 +57,25 @@ export class NewItem {
   // Send a message to a user
   sendMessage(e:Event, messageText:string) {
     e.preventDefault();
-    let newMessage:Message = {
-      from: this.authService.userData.displayName!,
-      fromId: this.authService.userData.id!,
-      forId: this.forID,
-      messageText: messageText,
-      date: new Date()
-    }
 
-    this.itemsService.sendMessage(newMessage);
+    // if the user is attempting to send a message to themselves
+    if(this.authService.userData.id == this.forID) {
+      this.alertService.createAlert({
+        type: 'Error',
+        message: 'You can\'t send a message to yourself!'
+      });
+    }
+    // if the user is sending a message to someone else, make the request
+    else {
+      let newMessage:Message = {
+        from: this.authService.userData.displayName!,
+        fromId: this.authService.userData.id!,
+        forId: this.forID,
+        messageText: messageText,
+        date: new Date()
+      }
+
+      this.itemsService.sendMessage(newMessage);
+    }
   }
 }

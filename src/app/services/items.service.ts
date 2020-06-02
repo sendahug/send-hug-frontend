@@ -177,6 +177,21 @@ export class ItemsService {
     })
   }
 
+  // delete a message
+  deleteMessage(messageId:number) {
+    const Url = this.serverUrl + `/messages/${messageId}`
+
+    // try to delete the message
+    this.Http.delete(Url, {
+      headers: this.authService.authHeader
+    }).subscribe((response:any) => {
+      this.createSuccessAlert(`Message ${response.deleted} was deleted!`);
+    // if there was an error, alert the user
+    }, (err:HttpErrorResponse) => {
+      this.createErrorAlert(err);
+    })
+  }
+
   // Creates an alert for the user to know their action succeeded
   createSuccessAlert(message:string) {
     // an alert message

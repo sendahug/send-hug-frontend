@@ -26,4 +26,9 @@ export class AppMessaging implements OnInit {
   login() {
     this.authService.login();
   }
+
+  // delete a message
+  deleteMessage(messageID:number) {
+    this.itemsService.deleteMessage(messageID);
+  }
 }

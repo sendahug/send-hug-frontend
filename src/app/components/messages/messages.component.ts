@@ -12,13 +12,11 @@ import { Message } from '../../interfaces/message.interface';
 })
 export class AppMessaging implements OnInit {
   messages: Message[] = [];
-  loggedIn = false;
 
   // CTOR
-  constructor(private httpClient: HttpClient, private authService: AuthService) {
+  constructor(private httpClient: HttpClient, public authService: AuthService) {
     // Gets the user's messages from the server
     if(authService.authenticated) {
-      this.loggedIn = true;
       let params = new HttpParams().set('userID', `${this.authService.userData.id!}`);
       this.httpClient.get('http://localhost:5000/messages', {
         headers: this.authService.authHeader,
@@ -30,9 +28,6 @@ export class AppMessaging implements OnInit {
           this.messages.push(message);
         });
       })
-    }
-    else {
-      this.loggedIn = false;
     }
   }
 

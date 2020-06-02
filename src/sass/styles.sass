@@ -239,12 +239,40 @@ app-messages
 	left: 0
 	right: 0
 
+/* Page Headline */
+app-messages > h3
+	text-align: center
+	color: $headlineColour
+	font-size: 20px
+
 /* Inbox / Error Message Container */
 app-messages > div
 	@extend #frameSample
 	width: 90%
 	margin: 10px 5%
-	
+
+/* A Message */
+.userMessage
+	width: 90%
+	border-bottom: thin solid
+	margin: 0 5%
+
+/* From field */
+.messageField
+	text-align: center
+	padding: 5px
+	margin: 5px
+
+/* Field title */
+.pageCategory
+	text-align: center
+	color: $headlineColour
+
+/* Field text */
+.pageData
+	text-align: center
+	color: $textColour
+
 /* Login div */
 #loginBox
 	@extend #errorMessBox

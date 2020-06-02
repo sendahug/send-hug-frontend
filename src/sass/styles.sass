@@ -8,10 +8,8 @@ $linkColour: rgba(63,58,58,1.00)
 /* Component Sample */
 #compSample
 	position: absolute
-	top: 100px
+	top: 115px
 	bottom: 100px
-	left: 0
-	right: 0
 	overflow-y: scroll
 
 /* Frame Sample */
@@ -24,7 +22,7 @@ $linkColour: rgba(63,58,58,1.00)
 #errorMessBox
 	padding: 10px
 	width: 80%
-	margin: 5px 10%
+	margin: 5px Calc((20% - 20px) / 2)
 
 /* =================== General Styling =================== */
 img, picture, video, embed, textarea, textfield
@@ -74,6 +72,8 @@ app-main-page
 	@extend #compSample
 	display: flex
 	padding: 5px
+	left: 0
+	right: 0
 	align-content: space-between
 	justify-content: space-between
 
@@ -146,6 +146,9 @@ app-main-page
 /* User Page Component */
 app-user-page
 	@extend #compSample
+	width: 100%
+	left: 0
+	right: 0
 
 /* User / Error Message Container */
 app-user-page > div
@@ -202,12 +205,16 @@ app-my-posts
 /* Login div */
 #loginBox
 	@extend #errorMessBox
+	padding: 10px 15px
+	margin: 5px Calc((20% - 30px) / 2)
 
 /* =================== Messages Page Styling =================== */
 /* Message Page Component */
 app-messages
 	@extend #compSample
-	width: 80%
+	width: 100%
+	left: 0
+	right: 0
 
 /* Inbox / Error Message Container */
 app-messages > div

@@ -140,7 +140,7 @@ export class ItemsService {
 
   // Send a hug
   sendHug(item: any) {
-    const Url = this.serverUrl + '/posts';
+    const Url = this.serverUrl + `/posts/${item.id}`;
     item.givenHugs += 1;
     this.Http.patch(Url, item, {
       headers: this.authService.authHeader

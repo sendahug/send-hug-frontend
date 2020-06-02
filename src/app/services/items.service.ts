@@ -153,6 +153,7 @@ export class ItemsService {
       params: params
     }).subscribe((response:any) => {
       let messages = response.messages;
+      this.userMessages = [];
       messages.forEach((element: Message) => {
         this.userMessages.push(element);
       });

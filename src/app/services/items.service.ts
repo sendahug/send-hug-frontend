@@ -173,6 +173,11 @@ export class ItemsService {
       message: err.error.message
     }
 
+    // if it's an auth error, the structure is slightly different
+    if(err.status == 403 || err.status == 401) {
+      alert.message = err.error.message.description;
+    }
+
     this.alertsService.createAlert(alert);
   }
 }

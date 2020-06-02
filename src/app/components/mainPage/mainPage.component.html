@@ -7,7 +7,7 @@
 			<div class="itemText">{{ item.text }}</div>
 			<div class="itemUser">By {{ item.user }}</div>
 			<button class="appButton hugButton" (click)="sendHug(item.id)"><i class="fab fa-gratipay"></i></button>
-			<a [routerLink]="['/new', 'Message']" [queryParams]="{userID: item.user}" class="appButton messageButton"><i class="fas fa-comments"></i></a>
+			<a [routerLink]="['/new', 'Message']" [queryParams]="{user: item.user, userID: item.userId}" class="appButton messageButton"><i class="fas fa-comments"></i></a>
 		</li>
 	</ul>
 	
@@ -24,7 +24,7 @@
 			<div class="itemText">{{ item.text }}</div>
 			<div class="itemUser">By {{ item.user }}</div>
 			<button class="appButton hugButton" (click)="sendHug(item.id)"><i class="fab fa-gratipay"></i></button>
-			<a [routerLink]="['/new', 'Message']" [queryParams]="{userID: item.user}" class="appButton messageButton"><i class="fas fa-comments"></i></a>
+			<a [routerLink]="['/new', 'Message']" [queryParams]="{user: item.user, userID: item.userId}" class="appButton messageButton"><i class="fas fa-comments"></i></a>
 		</li>
 	</ul>
 

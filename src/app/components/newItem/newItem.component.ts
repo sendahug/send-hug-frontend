@@ -15,6 +15,7 @@ import { AuthService } from '../../services/auth.service';
 export class NewItem {
   itemType:String = '';
   user:any;
+  forID:any;
 
   // CTOR
   constructor(private itemsService:ItemsService,
@@ -22,7 +23,8 @@ export class NewItem {
     private route:ActivatedRoute) {
       // Gets the URL parameters
       let type = this.route.snapshot.paramMap.get('type');
-      let user = this.route.snapshot.paramMap.get('userID');
+      let user = this.route.snapshot.queryParamMap.get('user');
+      let userID = this.route.snapshot.queryParamMap.get('userID');
 
       // If there's a type parameter, sets the type property
       if(type) {
@@ -30,8 +32,9 @@ export class NewItem {
       }
 
       // If there's a user parameter, sets the user property
-      if(user) {
+      if(user && userID) {
         this.user = user;
+        this.forID = userID;
       }
   }
 
@@ -50,12 +53,12 @@ export class NewItem {
   }
 
   // Send a message to a user
-  sendMessage(e:Event, forUser:number, messageText:string) {
+  sendMessage(e:Event, messageText:string) {
     e.preventDefault();
     let newMessage:Message = {
       from: this.authService.userData.displayName!,
       fromId: this.authService.userData.id!,
-      forId: forUser,
+      forId: this.forID,
       messageText: messageText,
       date: new Date()
     }

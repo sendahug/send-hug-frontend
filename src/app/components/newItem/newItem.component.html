@@ -11,7 +11,7 @@
 				<label class="pageCategory" for="messageText">Message</label>
 				<input #messageText type="text" id="messageText">
 			</div>
-			<button type="submit" class="appButton sendData" (click)="sendMessage($event, messageFor.value, messageText.value)">Send</button>
+			<button type="submit" class="appButton sendData" (click)="sendMessage($event, messageText.value)">Send</button>
 		</form>
 	</div>
 	

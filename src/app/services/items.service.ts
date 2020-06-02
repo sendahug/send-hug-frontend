@@ -1,6 +1,6 @@
 // Angular imports
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
 
 // App-related imports
 import { Post } from '../interfaces/post.interface';
@@ -19,6 +19,7 @@ export class ItemsService {
   static fullNewItems: Post[] = [];
   static fullSugItems: Post[] = [];
   userPosts: Post[] = [];
+  userMessages: Message[] = [];
 
   // CTOR
   constructor(
@@ -28,6 +29,8 @@ export class ItemsService {
 
   }
 
+  // POST-RELATED METHODS
+  // ==============================================================
   // Gets ten recent and ten suggested items
   getItems() {
     this.Http.get(this.serverUrl).subscribe((response:any) => {
@@ -72,21 +75,6 @@ export class ItemsService {
     }).subscribe((response:any) => {
       let data = response.posts;
       this.userPosts = data;
-    // if there was an error, alert the user
-    }, (err:HttpErrorResponse) => {
-      this.createErrorAlert(err);
-    })
-  }
-
-  // Send a message
-  sendMessage(message: Message) {
-    const Url = this.serverUrl + '/messages';
-    this.Http.post(Url, message, {
-      headers: this.authService.authHeader
-    }).subscribe((response:any) => {
-      if(response.success == true) {
-        this.createSuccessAlert('Your message was sent!');
-      }
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
       this.createErrorAlert(err);
@@ -147,6 +135,41 @@ export class ItemsService {
     }).subscribe((response:any) => {
       if(response.success == true) {
         this.createSuccessAlert('Your hug was sent!');
+      }
+    // if there was an error, alert the user
+    }, (err:HttpErrorResponse) => {
+      this.createErrorAlert(err);
+    })
+  }
+
+  // MESSAGE-RELATED METHODS
+  // ==============================================================
+  // Get the user's messages
+  getMessages(userID:number) {
+    let params = new HttpParams().set('userID', `${userID}`);
+    // try to get the user's messages
+    this.Http.get('http://localhost:5000/messages', {
+      headers: this.authService.authHeader,
+      params: params
+    }).subscribe((response:any) => {
+      let messages = response.messages;
+      messages.forEach((element: Message) => {
+        this.userMessages.push(element);
+      });
+    // if there was an error, alert the user
+    }, (err:HttpErrorResponse) => {
+      this.createErrorAlert(err);
+    })
+  }
+
+  // Send a message
+  sendMessage(message: Message) {
+    const Url = this.serverUrl + '/messages';
+    this.Http.post(Url, message, {
+      headers: this.authService.authHeader
+    }).subscribe((response:any) => {
+      if(response.success == true) {
+        this.createSuccessAlert('Your message was sent!');
       }
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {

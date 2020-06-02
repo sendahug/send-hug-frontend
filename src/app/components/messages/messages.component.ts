@@ -1,33 +1,20 @@
 // Angular imports
 import { Component, OnInit } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
 
 // App-related imports
 import { AuthService } from '../../services/auth.service';
-import { Message } from '../../interfaces/message.interface';
+import { ItemsService } from '../../services/items.service';
 
 @Component({
   selector: 'app-messages',
   templateUrl: './messages.component.html'
 })
 export class AppMessaging implements OnInit {
-  messages: Message[] = [];
-
   // CTOR
-  constructor(private httpClient: HttpClient, public authService: AuthService) {
-    // Gets the user's messages from the server
+  constructor(public authService: AuthService, public itemsService: ItemsService) {
+    // Gets the user's messages via the items service
     if(authService.authenticated) {
-      let params = new HttpParams().set('userID', `${this.authService.userData.id!}`);
-      this.httpClient.get('http://localhost:5000/messages', {
-        headers: this.authService.authHeader,
-        params: params
-      }).subscribe((response: any) => {
-        let userMessages = response.messages;
-        userMessages.forEach((element:Message) => {
-          let message = element;
-          this.messages.push(message);
-        });
-      })
+      this.itemsService.getMessages(this.authService.userData.id!);
     }
   }
 

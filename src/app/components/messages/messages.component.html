@@ -2,8 +2,8 @@
 <!-- If the user is logged in, displays the user's inbox. -->
 <div id="userInbox" *ngIf="authService.authenticated">
 	<!-- If there are messages in the user's inbox -->
-	<div *ngIf="messages.length">
-		<div *ngFor="let message of messages" class="userMessage">
+	<div *ngIf="itemsService.userMessages.length">
+		<div *ngFor="let message of itemsService.userMessages" class="userMessage">
 			<div class="messageField">
 				<span class="pageCategory">From:</span> <span class="pageData">{{ message.from }}</span>
 			</div>
@@ -12,7 +12,7 @@
 	</div>
 	
 	<!-- If there are no messages in the user's inbox -->
-	<div *ngIf="!messages.length">
+	<div *ngIf="!itemsService.userMessages.length">
 		<div class="errorMessage">You have no incoming messages.</div>
 	</div>
 </div>

@@ -153,14 +153,16 @@ app-user-page
 /* User / Error Message Container */
 app-user-page > div
 	@extend #frameSample
-	width: 80%
-	max-width: 80%
-	margin-right: 10%
-	margin-left: 10%
+	width: 90%
+	max-width: 90%
+	margin-right: 5%
+	margin-left: 5%
 
 /* User Page Title */
 app-user-page h3
 	text-align: center
+	margin-top: 5px
+	padding-top: 5px
 
 /* User Page */
 #userPage
@@ -168,7 +170,7 @@ app-user-page h3
 	flex-wrap: wrap
 	align-content: space-between
 	justify-content: space-between
-	padding: 15px 8%
+	padding: 0 3%
 
 /* User Profile */
 #profileData
@@ -194,8 +196,28 @@ app-user-page h3
 /* User Posts */
 app-my-posts
 	order: 2
-	width: 50%
+	width: 55%
 	align-self: flex-start
+
+/* User Post */
+.userPost
+	@extend #frameSample
+	padding: 5px
+	margin: 5px
+
+/* Post text */
+.postText
+	text-align: center
+	font-size: 18px
+
+/* Post date */
+.postDate
+	text-align: center
+	font-size: 14px
+
+/* Post buttons */
+.editButton, .deleteButton
+	margin: 10px Calc((100% - 90px) / 4)
 
 /* Logout button */
 #logout

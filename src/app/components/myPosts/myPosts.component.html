@@ -6,8 +6,8 @@
 		<div *ngFor="let post of itemsService.userPosts" class="userPost">
 			<div class="postText">{{ post.text }}</div>
 			<div class="postDate">{{ post.date }}</div>
-			<button class="appButton editButton" (click)="editPost(post.id)">Edit Post</button>
-			<button class="appButton deleteButton" (click)="deletePost(post.id)">Delete Post</button>
+			<button class="appButton editButton" (click)="editPost(post.id)">Edit</button>
+			<button class="appButton deleteButton" (click)="deletePost(post.id)">Delete</button>
 		</div>
 	</div>
 	

@@ -39,4 +39,9 @@ export class PopUp {
     this.itemsService.editPost(this.editedItem);
     this.editMode.emit(false);
   }
+
+  // leave edit mode
+  exitEdit() {
+    this.editMode.emit(false);
+  }
 }

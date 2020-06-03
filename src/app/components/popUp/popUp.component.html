@@ -1,5 +1,6 @@
 <div id="modalBox">
 	<div id="editPopup">
+		<button id="exitButton" (click)="exitEdit()"><i class="fas fa-times"></i></button>
 		<!-- If the user is editing a post -->
 		<form *ngIf="toEdit == 'post'" id="postEdit">
 			<div class="formElement">

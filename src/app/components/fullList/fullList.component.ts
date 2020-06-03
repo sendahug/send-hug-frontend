@@ -40,4 +40,32 @@ export class FullList {
 
     this.itemsService.sendHug(item);
   }
+
+  // next page of user posts
+  nextPage() {
+    if(this.type == 'New') {
+      this.page += 1;
+      this.itemsService.fullItemsPage.fullNewItems += 1;
+      this.itemsService.getNewItems(this.itemsService.fullItemsPage.fullNewItems);
+    }
+    else if(this.type == 'Suggested') {
+      this.page += 1;
+      this.itemsService.fullItemsPage.fullSuggestedItems += 1;
+      this.itemsService.getSuggestedItems(this.itemsService.fullItemsPage.fullNewItems);
+    }
+  }
+
+  // previous page of user posts
+  prevPage() {
+    if(this.type == 'New') {
+      this.page -= 1;
+      this.itemsService.fullItemsPage.fullNewItems -= 1;
+      this.itemsService.getNewItems(this.itemsService.fullItemsPage.fullNewItems);
+    }
+    else if(this.type == 'Suggested') {
+      this.page -= 1;
+      this.itemsService.fullItemsPage.fullSuggestedItems -= 1;
+      this.itemsService.getSuggestedItems(this.itemsService.fullItemsPage.fullNewItems);
+    }
+  }
 }

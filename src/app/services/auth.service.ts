@@ -108,7 +108,7 @@ export class AuthService {
 
         // if the user just logged in, update the login count
         if(this.loggedIn) {
-          this.updateLoginCount();
+          this.updateUserData();
         }
         // if there's an error, check the error type
       }, (err) => {
@@ -217,9 +217,10 @@ export class AuthService {
     })
   }
 
-  // sends a request to the server to update the login count in the database
-  updateLoginCount() {
+  // sends a request to the server to update the login count & display name in the database
+  updateUserData() {
     this.Http.patch(`http://localhost:5000/users/${this.userData.id}`, {
+      displayName: this.userData.displayName,
       receivedH: this.userData.receivedHugs,
       givenH: this.userData.givenHugs,
       posts: this.userData.postsNum,

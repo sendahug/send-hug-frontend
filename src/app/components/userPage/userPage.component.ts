@@ -9,10 +9,14 @@ import { AuthService } from '../../services/auth.service';
   templateUrl:  './userPage.component.html'
 })
 export class UserPage implements OnInit {
+  userToEdit:any;
+  editType: string = 'user';
+  editMode:boolean;
 
   // CTOR
   constructor(public authService: AuthService) {
     this.authService.checkHash();
+    this.editMode = false;
   }
 
   ngOnInit() {
@@ -27,5 +31,16 @@ export class UserPage implements OnInit {
   // logout
   logout() {
     this.authService.logout();
+  }
+
+  // edit a user's display name
+  editName() {
+    this.userToEdit = this.authService.userData;
+    this.editMode = true;
+  }
+
+  // remove edit popup
+  changeMode(edit:boolean) {
+    this.editMode = edit;
   }
 }

@@ -19,6 +19,7 @@
 
 		<app-my-posts></app-my-posts>
 		
+		<button class="appButton" (click)="editName()">Edit Display Name</button>
 		<button id="logout" class="appButton" (click)="logout()">Log Out</button>
 	</div>
 </div>
@@ -29,3 +30,8 @@
 
 	<button id="logIn" class="appButton" (click)="login()">Login</button>
 </div>
+
+<app-pop-up *ngIf="editMode"
+			[editedItem]="userToEdit"
+			[toEdit]="editType"
+			(editMode)="changeMode($event)"></app-pop-up>

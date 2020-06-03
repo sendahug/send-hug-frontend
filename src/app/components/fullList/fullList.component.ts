@@ -1,6 +1,6 @@
 // Angular imports
 import { Component } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 // App-related imports
 import { ItemsService } from '../../services/items.service';
@@ -14,7 +14,8 @@ export class FullList {
   page:any;
 
   constructor(private route:ActivatedRoute,
-    private itemsService:ItemsService) {
+    private itemsService:ItemsService,
+    private router:Router) {
       this.type = this.route.snapshot.paramMap.get('type');
       this.page = Number(this.route.snapshot.queryParamMap.get('page'));
 
@@ -53,6 +54,15 @@ export class FullList {
       this.itemsService.fullItemsPage.fullSuggestedItems += 1;
       this.itemsService.getSuggestedItems(this.itemsService.fullItemsPage.fullNewItems);
     }
+
+    // changes the URL query parameter accordingly
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: {
+        page: this.page
+      },
+      replaceUrl: true
+    });
   }
 
   // previous page of user posts
@@ -67,5 +77,14 @@ export class FullList {
       this.itemsService.fullItemsPage.fullSuggestedItems -= 1;
       this.itemsService.getSuggestedItems(this.itemsService.fullItemsPage.fullNewItems);
     }
+
+    // changes the URL query parameter accordingly
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: {
+        page: this.page
+      },
+      replaceUrl: true
+    });
   }
 }

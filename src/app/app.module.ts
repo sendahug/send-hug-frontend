@@ -11,6 +11,7 @@ import { ErrorPage } from './components/errorPage/errorPage.component';
 import { NewItem } from './components/newItem/newItem.component';
 import { MyPosts } from './components/myPosts/myPosts.component';
 import { PopUp } from './components/popUp/popUp.component';
+import { FullList } from './components/fullList/fullList.component';
 
 @NgModule({
   imports: [
@@ -26,7 +27,8 @@ import { PopUp } from './components/popUp/popUp.component';
     ErrorPage,
     NewItem,
     MyPosts,
-    PopUp
+    PopUp,
+    FullList
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -1,0 +1,18 @@
+<div id="items" class="listContainer">
+	<h2 class="listTitle">{{ type }} Items</h2>
+	<!-- If there are items in the list -->
+	<ul class="itemList" *ngIf="itemsService.fullItemsList['full' + type + 'Items'].length > 0">
+		<li *ngFor="let item of itemsService.fullItemsList['full' + type + 'Items']" class="newItem">
+			<div class="itemText">{{ item.text }}</div>
+			<div class="itemUser">By {{ item.user }}</div>
+			<button class="appButton hugButton" (click)="sendHug(item.id)"><i class="fab fa-gratipay"></i></button>
+			<a [routerLink]="['/new', 'Message']" [queryParams]="{user: item.user, userID: item.userId}" class="appButton messageButton"><i class="fas fa-comments"></i></a>
+		</li>
+	</ul>
+	
+	<button *ngIf="itemsService.totalFullItemsPage['full' + type + 'Items'] > itemsService.fullItemsPage['full' + type + 'Items']" class="appButton" (click)="nextPage()">More Posts</button>
+	<button *ngIf="itemsService.fullItemsPage['full' + type + 'Items'] > 1" class="appButton" (click)="prevPage()">Previous Posts</button>
+	
+	<!-- If there are no items in the list -->
+	<div class="errorMessage" *ngIf="itemsService.fullItemsList['full' + type + 'Items'].length == 0">There are no posts.</div>
+</div>

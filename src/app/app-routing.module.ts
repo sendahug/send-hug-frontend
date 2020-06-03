@@ -6,12 +6,14 @@ import { UserPage } from './components/userPage/userPage.component';
 import { AppMessaging } from './components/messages/messages.component';
 import { ErrorPage } from './components/errorPage/errorPage.component';
 import { NewItem } from './components/newItem/newItem.component';
+import { FullList } from './components/fullList/fullList.component';
 
 const routes: Routes = [
   { path: '', component: MainPage },
   { path: 'user', component: UserPage },
   { path: 'messages', component: AppMessaging },
   { path: 'new/:type', component: NewItem },
+  { path: 'list/:type', component: FullList },
   { path: '**', component: ErrorPage }
 ];
 

@@ -16,11 +16,27 @@ export class ItemsService {
   private serverUrl = 'http://localhost:5000'
   newItemsArray: Post[] = [];
   sugItemsArray: Post[] = [];
-  static fullNewItems: Post[] = [];
-  static fullSugItems: Post[] = [];
+  // Full list variables
+  fullItemsList: {
+    fullNewItems: Post[],
+    fullSuggestedItems: Post[]
+  } = {
+    fullNewItems: [],
+    fullSuggestedItems: []
+  }
+  fullItemsPage = {
+    fullNewItems: 0,
+    fullSuggestedItems: 0
+  }
+  totalFullItemsPage = {
+    fullNewItems: 0,
+    fullSuggestedItems: 0
+  }
+  // User posts variables
   userPosts: Post[] = [];
   userPostsPage: number;
   totalUserPostsPages: number;
+  // User messages variables
   userMessages: Message[] = [];
   userMessagesPage: number;
   totalUserMessagesPages: number;
@@ -31,6 +47,10 @@ export class ItemsService {
     private authService:AuthService,
     private alertsService:AlertsService) {
       // default assignment
+      this.fullItemsPage.fullNewItems = 1;
+      this.fullItemsPage.fullSuggestedItems = 1;
+      this.totalFullItemsPage.fullNewItems = 1;
+      this.totalFullItemsPage.fullSuggestedItems = 1;
       this.userPostsPage = 1;
       this.userMessagesPage = 1;
       this.totalUserPostsPages = 1;
@@ -55,8 +75,8 @@ export class ItemsService {
   getNewItems() {
     const Url = this.serverUrl + '/new-items';
     this.Http.get(Url).subscribe((response: any) => {
-      let data = response.items;
-      ItemsService.fullNewItems = data;
+      let data = response.posts;
+      this.fullItemsList.fullNewItems = data;
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
       this.createErrorAlert(err);
@@ -67,8 +87,8 @@ export class ItemsService {
   getSuggestedItems() {
     const Url = this.serverUrl + '/suggested-items';
     this.Http.get(Url).subscribe((response: any) => {
-      let data = response.items;
-      ItemsService.fullSugItems = data;
+      let data = response.posts;
+      this.fullItemsList.fullSuggestedItems = data;
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
       this.createErrorAlert(err);

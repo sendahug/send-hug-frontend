@@ -10,6 +10,7 @@ import { AppMessaging } from './components/messages/messages.component';
 import { ErrorPage } from './components/errorPage/errorPage.component';
 import { NewItem } from './components/newItem/newItem.component';
 import { MyPosts } from './components/myPosts/myPosts.component';
+import { PopUp } from './components/popUp/popUp.component';
 
 @NgModule({
   imports: [
@@ -24,7 +25,8 @@ import { MyPosts } from './components/myPosts/myPosts.component';
     AppMessaging,
     ErrorPage,
     NewItem,
-    MyPosts
+    MyPosts,
+    PopUp
   ],
   providers: [],
   bootstrap: [AppComponent]

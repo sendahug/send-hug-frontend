@@ -15,11 +15,12 @@
 			<div class="profileElement">
 				<span class="pageCategory">Posts:</span> <span class="pageData">{{ authService.userData.postsNum }}</span>
 			</div>
+			
+			<button id="editName" class="appButton" (click)="editName()">Edit Display Name</button>
 		</div>
 
 		<app-my-posts></app-my-posts>
 		
-		<button class="appButton" (click)="editName()">Edit Display Name</button>
 		<button id="logout" class="appButton" (click)="logout()">Log Out</button>
 	</div>
 </div>

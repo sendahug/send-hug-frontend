@@ -6,7 +6,7 @@
 		<div *ngFor="let post of itemsService.userPosts" class="userPost">
 			<div class="postText">{{ post.text }}</div>
 			<div class="postDate">{{ post.date }}</div>
-			<button class="appButton editButton" (click)="editPost(post.id)">Edit</button>
+			<button class="appButton editButton" (click)="editPost(post)">Edit</button>
 			<button class="appButton deleteButton" (click)="deletePost(post.id)">Delete</button>
 		</div>
 		<!-- Post pagination -->
@@ -19,3 +19,8 @@
 		<div>You have no published posts. Write your first post now!</div>
 	</div>
 </div>
+
+<app-pop-up *ngIf="editMode"
+			[editedItem]="postToEdit"
+			[toEdit]="editType"
+			(editMode)="changeMode($event)"></app-pop-up>

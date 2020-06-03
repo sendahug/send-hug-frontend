@@ -16,7 +16,7 @@ export class FullList {
   constructor(private route:ActivatedRoute,
     private itemsService:ItemsService) {
       this.type = this.route.snapshot.paramMap.get('type');
-      this.page = this.route.snapshot.queryParamMap.get('page');
+      this.page = Number(this.route.snapshot.queryParamMap.get('page'));
 
       // if the type is new items, get the new items
       if(this.type == 'New') {

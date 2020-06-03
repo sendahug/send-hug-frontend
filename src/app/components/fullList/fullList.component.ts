@@ -52,7 +52,7 @@ export class FullList {
     else if(this.type == 'Suggested') {
       this.page += 1;
       this.itemsService.fullItemsPage.fullSuggestedItems += 1;
-      this.itemsService.getSuggestedItems(this.itemsService.fullItemsPage.fullNewItems);
+      this.itemsService.getSuggestedItems(this.itemsService.fullItemsPage.fullSuggestedItems);
     }
 
     // changes the URL query parameter accordingly
@@ -75,7 +75,7 @@ export class FullList {
     else if(this.type == 'Suggested') {
       this.page -= 1;
       this.itemsService.fullItemsPage.fullSuggestedItems -= 1;
-      this.itemsService.getSuggestedItems(this.itemsService.fullItemsPage.fullNewItems);
+      this.itemsService.getSuggestedItems(this.itemsService.fullItemsPage.fullSuggestedItems);
     }
 
     // changes the URL query parameter accordingly

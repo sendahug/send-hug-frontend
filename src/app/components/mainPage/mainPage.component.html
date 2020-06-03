@@ -10,6 +10,7 @@
 			<a [routerLink]="['/new', 'Message']" [queryParams]="{user: item.user, userID: item.userId}" class="appButton messageButton"><i class="fas fa-comments"></i></a>
 		</li>
 	</ul>
+	<a [routerLink]="['/list', 'New']" class="appButton">View Full List</a>
 	
 	<!-- If there are no items in the list -->
 	<div class="errorMessage" *ngIf="itemsService.newItemsArray.length == 0">There are no recent items.</div>
@@ -27,6 +28,7 @@
 			<a [routerLink]="['/new', 'Message']" [queryParams]="{user: item.user, userID: item.userId}" class="appButton messageButton"><i class="fas fa-comments"></i></a>
 		</li>
 	</ul>
+	<a [routerLink]="['/list', 'Suggested']" class="appButton">View Full List</a>
 
 	<!-- If there are no items in the list -->
 	<div class="errorMessage" *ngIf="itemsService.sugItemsArray.length == 0">There are no suggested items.</div>

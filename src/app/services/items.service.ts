@@ -73,13 +73,15 @@ export class ItemsService {
 
   // Gets a list of new items.
   getNewItems(page:number) {
-    const Url = this.serverUrl + '/new-items';
+    const Url = this.serverUrl + '/posts/new';
     const params = new HttpParams().set('page', `${page}`);
     this.Http.get(Url, {
       params: params
     }).subscribe((response: any) => {
       let data = response.posts;
       this.fullItemsList.fullNewItems = data;
+      this.fullItemsPage.fullNewItems = page;
+      this.totalFullItemsPage.fullNewItems = response.total_pages;
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
       this.createErrorAlert(err);
@@ -88,13 +90,15 @@ export class ItemsService {
 
   // Gets a list of suggested items
   getSuggestedItems(page:number) {
-    const Url = this.serverUrl + '/suggested-items';
+    const Url = this.serverUrl + '/posts/suggested';
     const params = new HttpParams().set('page', `${page}`);
     this.Http.get(Url, {
       params: params
     }).subscribe((response: any) => {
       let data = response.posts;
       this.fullItemsList.fullSuggestedItems = data;
+      this.fullItemsPage.fullSuggestedItems = page;
+      this.totalFullItemsPage.fullSuggestedItems = response.total_pages;
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
       this.createErrorAlert(err);

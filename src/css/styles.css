@@ -1,7 +1,7 @@
 /* Colour Palette */
 /* Component Sample */
 /* line 9, ../sass/styles.sass */
-#compSample, app-main-page, app-user-page, app-messages, app-new-item, app-error-page { position: absolute; top: 115px; bottom: 100px; overflow-y: scroll; }
+#compSample, app-main-page, #items, app-user-page, app-messages, app-new-item, app-error-page { position: absolute; top: 115px; bottom: 100px; overflow-y: scroll; }
 
 /* Frame Sample */
 /* line 16, ../sass/styles.sass */
@@ -81,205 +81,210 @@ app-main-page { display: flex; padding: 5px; left: 0; right: 0; align-content: s
 /* line 144, ../sass/styles.sass */
 .fa-comments { font-size: 16px; }
 
+/* =================== Full List Styling =================== */
+/* List container */
+/* line 149, ../sass/styles.sass */
+#items { width: 50%; margin: 0 10%; padding: 0 15%; left: 0; right: 0; }
+
 /* =================== User Page Styling =================== */
 /* User Page Component */
-/* line 149, ../sass/styles.sass */
+/* line 159, ../sass/styles.sass */
 app-user-page { width: 100%; left: 0; right: 0; }
 
 /* User / Error Message Container */
-/* line 156, ../sass/styles.sass */
+/* line 166, ../sass/styles.sass */
 app-user-page > div { width: 90%; max-width: 90%; margin: 10px 5%; }
 
 /* User Page Title */
-/* line 163, ../sass/styles.sass */
+/* line 173, ../sass/styles.sass */
 app-user-page h3 { text-align: center; margin-top: 5px; padding-top: 5px; }
 
 /* User Page */
-/* line 169, ../sass/styles.sass */
+/* line 179, ../sass/styles.sass */
 #userPage { display: flex; flex-wrap: wrap; align-content: space-between; justify-content: space-between; padding: 0 3%; }
 
 /* User Profile */
-/* line 177, ../sass/styles.sass */
+/* line 187, ../sass/styles.sass */
 #profileData { order: 0; width: 40%; }
 
 /* User Page Field Container */
-/* line 182, ../sass/styles.sass */
+/* line 192, ../sass/styles.sass */
 .profileElement { padding: 10px 0; }
 
 /* User Page Field Title */
-/* line 186, ../sass/styles.sass */
+/* line 196, ../sass/styles.sass */
 .pageCategory { font-size: 16px; font-weight: bold; margin: 0 5px; color: #252525; }
 
 /* User Page Field Text */
-/* line 193, ../sass/styles.sass */
+/* line 203, ../sass/styles.sass */
 .pageData { font-size: 16px; color: #161616; }
 
 /* edit display name button */
-/* line 198, ../sass/styles.sass */
+/* line 208, ../sass/styles.sass */
 #editName { margin: 20px 20%; }
 
 /* User Posts */
-/* line 202, ../sass/styles.sass */
+/* line 212, ../sass/styles.sass */
 app-my-posts { order: 2; width: 55%; align-self: flex-start; }
 
 /* User Post */
-/* line 208, ../sass/styles.sass */
+/* line 218, ../sass/styles.sass */
 .userPost { padding: 5px; margin: 5px; }
 
 /* Post text */
-/* line 214, ../sass/styles.sass */
+/* line 224, ../sass/styles.sass */
 .postText { text-align: center; font-size: 18px; }
 
 /* Post date */
-/* line 219, ../sass/styles.sass */
+/* line 229, ../sass/styles.sass */
 .postDate { text-align: center; font-size: 14px; }
 
 /* Post buttons */
-/* line 224, ../sass/styles.sass */
+/* line 234, ../sass/styles.sass */
 .editButton, .deleteButton { margin: 10px Calc((100% - 90px) / 4); }
 
 /* Logout button */
-/* line 228, ../sass/styles.sass */
+/* line 238, ../sass/styles.sass */
 #logout { order: 3; margin: 10px 40%; }
 
 /* Login div */
-/* line 233, ../sass/styles.sass */
+/* line 243, ../sass/styles.sass */
 #loginBox { padding: 10px 15px; margin: 5px Calc((20% - 30px) / 2); }
 
 /* =================== Messages Page Styling =================== */
 /* Message Page Component */
-/* line 240, ../sass/styles.sass */
+/* line 250, ../sass/styles.sass */
 app-messages { width: 100%; left: 0; right: 0; }
 
 /* Page Headline */
-/* line 247, ../sass/styles.sass */
+/* line 257, ../sass/styles.sass */
 app-messages > h3 { text-align: center; color: #252525; font-size: 20px; }
 
 /* Inbox / Error Message Container */
-/* line 253, ../sass/styles.sass */
+/* line 263, ../sass/styles.sass */
 app-messages > div { width: 90%; margin: 10px 5%; }
 
 /* A Message */
-/* line 259, ../sass/styles.sass */
+/* line 269, ../sass/styles.sass */
 .userMessage { width: 90%; border-bottom: thin solid; margin: 0 5%; }
 
 /* From field */
-/* line 265, ../sass/styles.sass */
+/* line 275, ../sass/styles.sass */
 .messageField { text-align: center; padding: 5px; margin: 5px; }
 
 /* Field title */
-/* line 271, ../sass/styles.sass */
+/* line 281, ../sass/styles.sass */
 .pageCategory { text-align: center; color: #252525; }
 
 /* Field text */
-/* line 276, ../sass/styles.sass */
+/* line 286, ../sass/styles.sass */
 .pageData { text-align: center; color: #161616; }
 
 /* Delete Message button */
-/* line 281, ../sass/styles.sass */
+/* line 291, ../sass/styles.sass */
 .userMessage .deleteButton { margin: 5px Calc((98% - 40px) / 2); }
 
 /* Login div */
 /* Error Message Text */
-/* line 289, ../sass/styles.sass */
+/* line 299, ../sass/styles.sass */
 .errorMessage { text-align: center; padding-bottom: 5px; padding-top: 10px; }
 
 /* Login Link */
-/* line 295, ../sass/styles.sass */
+/* line 305, ../sass/styles.sass */
 #logIn { text-align: center; margin: 10px Calc((100% - 50px) / 2); color: #3f3a3a; }
 
 /* =================== New Item Page Styling =================== */
 /* New Item Page Component */
-/* line 302, ../sass/styles.sass */
+/* line 312, ../sass/styles.sass */
 app-new-item { width: 100%; left: 0; right: 0; }
 
 /* New Item frame */
-/* line 309, ../sass/styles.sass */
+/* line 319, ../sass/styles.sass */
 #newItem { width: 90%; margin: 10px 5%; }
 
 /* New Item title */
-/* line 314, ../sass/styles.sass */
+/* line 324, ../sass/styles.sass */
 #newItem h3 { text-align: center; color: #252525; font-size: 20px; padding: 10px; margin: 0; }
 
 /* New Item field + title */
-/* line 322, ../sass/styles.sass */
+/* line 332, ../sass/styles.sass */
 .formElement { text-align: center; color: #161616; padding: 7px 2px; width: 100%; }
 
 /* New Item field button */
-/* line 329, ../sass/styles.sass */
+/* line 339, ../sass/styles.sass */
 .sendData { padding: 5px; margin: 10px Calc((100% - 28px) / 2); font-size: 14px; }
 
 /* =================== Error Page Styling =================== */
 /* Error Page Component */
 /* Error Page frame */
-/* line 340, ../sass/styles.sass */
+/* line 350, ../sass/styles.sass */
 #errorPage { width: 80%; margin: 15px 10%; }
 
 /* Error Page title */
-/* line 346, ../sass/styles.sass */
+/* line 356, ../sass/styles.sass */
 #errorPage h3 { text-align: center; color: #252525; font-size: 20px; padding: 10px; margin: 0; }
 
 /* Error Page text */
-/* line 354, ../sass/styles.sass */
+/* line 364, ../sass/styles.sass */
 .pageData { text-align: center; color: #161616; font-size: 16px; padding: 10px 2px; }
 
 /* Error Page error code */
-/* line 361, ../sass/styles.sass */
+/* line 371, ../sass/styles.sass */
 #errorCode { text-align: center; color: #161616; font-size: 13px; padding: 10px 2px; }
 
 /* Go Back Button */
-/* line 368, ../sass/styles.sass */
+/* line 378, ../sass/styles.sass */
 #backBtn { padding: 2px; margin: 7px Calc((100% - 20px) / 2); }
 
 /* Arrow in Go Back Button */
-/* line 373, ../sass/styles.sass */
+/* line 383, ../sass/styles.sass */
 .fa-arrow-alt-circle-left { font-size: 18px; }
 
 /* =================== Popup Styling =================== */
 /* Modal box */
-/* line 378, ../sass/styles.sass */
+/* line 388, ../sass/styles.sass */
 #modalBox { display: block; height: 100%; width: 100%; background-color: rgba(0, 0, 0, 0.6); position: fixed; left: 0; top: 0; }
 
 /* Edit popup */
-/* line 388, ../sass/styles.sass */
+/* line 398, ../sass/styles.sass */
 #editPopup { background-color: #FFFFFF; box-shadow: 12px 15px 20px 0 rgba(46, 61, 73, 0.5); border-radius: 5px; width: 70%; text-align: center; margin-left: auto; margin-right: auto; margin-top: 100px; padding: 10px; position: fixed; top: 100px; left: 15%; }
 
 /* Exit button */
-/* line 403, ../sass/styles.sass */
+/* line 413, ../sass/styles.sass */
 #exitButton { margin: 5px Calc(100% - 35px) 5px 2px; }
 
 /* =================== Alert Styling =================== */
 /* Base Alert */
-/* line 408, ../sass/styles.sass */
+/* line 418, ../sass/styles.sass */
 .alertMessage { width: 70%; box-shadow: 12px 15px 20px 0 rgba(46, 61, 73, 0.5); border-radius: 5px; text-align: center; padding: 10px; position: fixed; bottom: 50px; left: 0; right: 0; margin-right: 15%; margin-left: 15%; z-index: 100; }
 
 /* Alert Title */
-/* line 423, ../sass/styles.sass */
+/* line 433, ../sass/styles.sass */
 .alertType { margin: 0; padding: 5px; }
 
 /* Alert Text */
-/* line 428, ../sass/styles.sass */
+/* line 438, ../sass/styles.sass */
 .alertText { font-size: 16px; }
 
 /* Alert Button */
-/* line 432, ../sass/styles.sass */
+/* line 442, ../sass/styles.sass */
 #alertButton { margin: 10px; border-radius: 5px; }
 
 /* Success Alert */
-/* line 437, ../sass/styles.sass */
+/* line 447, ../sass/styles.sass */
 .Success { background-color: rgba(46, 161, 60, 0.9); }
 
 /* Error Alert */
-/* line 441, ../sass/styles.sass */
+/* line 451, ../sass/styles.sass */
 .Error { background-color: rgba(203, 72, 72, 0.95); }
 
 /* =================== Footer Styling =================== */
 /* Site Footer */
-/* line 446, ../sass/styles.sass */
+/* line 456, ../sass/styles.sass */
 #siteFooter { position: fixed; bottom: 0; left: 0; width: 100%; max-width: 100%; }
 
 /* Footer text */
-/* line 454, ../sass/styles.sass */
+/* line 464, ../sass/styles.sass */
 .footerText { text-align: center; font-size: 14px; padding: 0; margin: 10px; color: #161616; }
 
 /*# sourceMappingURL=styles.css.map */

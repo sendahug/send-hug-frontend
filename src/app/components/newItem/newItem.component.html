@@ -9,7 +9,7 @@
 			</div>
 			<div class="formElement">
 				<label class="pageCategory" for="messageText">Message</label>
-				<input #messageText type="text" id="messageText">
+				<textarea #messageText id="messageText" cols="40" rows="4"></textarea>
 			</div>
 			<button type="submit" class="appButton sendData" (click)="sendMessage($event, messageText.value)">Send</button>
 		</form>
@@ -22,7 +22,7 @@
 			</div>
 			<div class="formElement">
 				<label class="pageCategory" for="postText">Text:</label>
-				<input #postText type="text" id="postText">
+				<textarea #postText id="postText" cols="40" rows="4"></textarea>
 			</div>
 			<button type="submit" class="appButton sendData" (click)="sendPost($event, postText.value)">Post</button>
 		</form>

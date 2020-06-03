@@ -19,14 +19,22 @@ export class ItemsService {
   static fullNewItems: Post[] = [];
   static fullSugItems: Post[] = [];
   userPosts: Post[] = [];
+  userPostsPage: number;
+  totalUserPostsPages: number;
   userMessages: Message[] = [];
+  userMessagesPage: number;
+  totalUserMessagesPages: number;
 
   // CTOR
   constructor(
     private Http: HttpClient,
     private authService:AuthService,
     private alertsService:AlertsService) {
-
+      // default assignment
+      this.userPostsPage = 1;
+      this.userMessagesPage = 1;
+      this.totalUserPostsPages = 1;
+      this.totalUserMessagesPages = 1;
   }
 
   // POST-RELATED METHODS
@@ -69,16 +77,25 @@ export class ItemsService {
 
   // Gets the user's posts
   getUserPosts(userID:number) {
-    const Url = this.serverUrl + `/users/${userID}/posts`;
-    this.Http.get(Url, {
-      headers: this.authService.authHeader
-    }).subscribe((response:any) => {
-      let data = response.posts;
-      this.userPosts = data;
-    // if there was an error, alert the user
-    }, (err:HttpErrorResponse) => {
-      this.createErrorAlert(err);
-    })
+    if((this.userPostsPage <= this.totalUserPostsPages) && (this.userPostsPage >= 1)) {
+      const Url = this.serverUrl + `/users/${userID}/posts`;
+      const params = new HttpParams().set('page', `${this.userPostsPage}`);
+      this.Http.get(Url, {
+        headers: this.authService.authHeader,
+        params: params
+      }).subscribe((response:any) => {
+        let data = response.posts;
+        this.userPosts = data;
+        this.totalUserPostsPages = response.total_pages;
+        this.userPostsPage = response.page;
+      // if there was an error, alert the user
+      }, (err:HttpErrorResponse) => {
+        this.createErrorAlert(err);
+      })
+    }
+    else {
+      this.alertsService.createAlert({type: 'Error', message: 'This page doesn\'t exist!'});
+    }
   }
 
   // Post a new post
@@ -146,21 +163,30 @@ export class ItemsService {
   // ==============================================================
   // Get the user's messages
   getMessages(userID:number) {
-    let params = new HttpParams().set('userID', `${userID}`);
-    // try to get the user's messages
-    this.Http.get('http://localhost:5000/messages', {
-      headers: this.authService.authHeader,
-      params: params
-    }).subscribe((response:any) => {
-      let messages = response.messages;
-      this.userMessages = [];
-      messages.forEach((element: Message) => {
-        this.userMessages.push(element);
-      });
-    // if there was an error, alert the user
-    }, (err:HttpErrorResponse) => {
-      this.createErrorAlert(err);
-    })
+    if((this.userMessagesPage <= this.totalUserMessagesPages) && (this.userMessagesPage >= 1)) {
+      let params = new HttpParams()
+        .set('userID', `${userID}`)
+        .set('page', `${this.userMessagesPage}`);
+      // try to get the user's messages
+      this.Http.get('http://localhost:5000/messages', {
+        headers: this.authService.authHeader,
+        params: params
+      }).subscribe((response:any) => {
+        let messages = response.messages;
+        this.userMessages = [];
+        messages.forEach((element: Message) => {
+          this.userMessages.push(element);
+        });
+        this.userMessagesPage = response.page;
+        this.totalUserMessagesPages = response.total_pages;
+      // if there was an error, alert the user
+      }, (err:HttpErrorResponse) => {
+        this.createErrorAlert(err);
+      })
+    }
+    else {
+      this.alertsService.createAlert({type: 'Error', message: 'This page doesn\'t exist!'});
+    }
   }
 
   // Send a message

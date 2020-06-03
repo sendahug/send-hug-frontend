@@ -29,4 +29,16 @@ export class MyPosts implements OnInit {
   deletePost(post_id:number) {
     this.itemsService.deletePost(post_id);
   }
+
+  // next page of user posts
+  nextPage() {
+    this.itemsService.userPostsPage += 1;
+    this.itemsService.getUserPosts(this.authService.userData.id!);
+  }
+
+  // previous page of user posts
+  prevPage() {
+    this.itemsService.userPostsPage -= 1;
+    this.itemsService.getUserPosts(this.authService.userData.id!);
+  }
 }

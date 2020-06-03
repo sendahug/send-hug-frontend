@@ -31,4 +31,16 @@ export class AppMessaging implements OnInit {
   deleteMessage(messageID:number) {
     this.itemsService.deleteMessage(messageID);
   }
+
+  // next page of messages
+  nextPage() {
+    this.itemsService.userMessagesPage += 1;
+    this.itemsService.getMessages(this.authService.userData.id!);
+  }
+
+  // previous page of messages
+  prevPage() {
+    this.itemsService.userMessagesPage -= 1;
+    this.itemsService.getMessages(this.authService.userData.id!);
+  }
 }

@@ -72,9 +72,12 @@ export class ItemsService {
   }
 
   // Gets a list of new items.
-  getNewItems() {
+  getNewItems(page:number) {
     const Url = this.serverUrl + '/new-items';
-    this.Http.get(Url).subscribe((response: any) => {
+    const params = new HttpParams().set('page', `${page}`);
+    this.Http.get(Url, {
+      params: params
+    }).subscribe((response: any) => {
       let data = response.posts;
       this.fullItemsList.fullNewItems = data;
     // if there was an error, alert the user
@@ -84,9 +87,12 @@ export class ItemsService {
   }
 
   // Gets a list of suggested items
-  getSuggestedItems() {
+  getSuggestedItems(page:number) {
     const Url = this.serverUrl + '/suggested-items';
-    this.Http.get(Url).subscribe((response: any) => {
+    const params = new HttpParams().set('page', `${page}`);
+    this.Http.get(Url, {
+      params: params
+    }).subscribe((response: any) => {
       let data = response.posts;
       this.fullItemsList.fullSuggestedItems = data;
     // if there was an error, alert the user

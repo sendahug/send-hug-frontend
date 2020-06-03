@@ -86,12 +86,9 @@ export class AuthService {
   getUserData(jwtPayload:any) {
     // if there's a JWT
     if(jwtPayload) {
-      let params = new HttpParams().set('userID', jwtPayload.sub)
-
       // attempts to get the user's data
-      this.Http.get('http://localhost:5000/users', {
-        headers: new HttpHeaders({'Authorization': `Bearer ${this.token}`}),
-        params: params
+      this.Http.get(`http://localhost:5000/users/${jwtPayload.sub}`, {
+        headers: new HttpHeaders({'Authorization': `Bearer ${this.token}`})
         // if successful, get the user data
       }).subscribe((response:any) => {
         let data = response.user;

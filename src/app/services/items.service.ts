@@ -201,7 +201,7 @@ export class ItemsService {
       messages.forEach((element: Message) => {
         this.userMessages.push(element);
       });
-      this.userMessagesPage = response.page;
+      this.userMessagesPage = response.current_page;
       this.totalUserMessagesPages = response.total_pages;
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {

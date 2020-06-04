@@ -3,7 +3,9 @@ import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 // App-related imports
+import { AuthService } from '../../services/auth.service';
 import { ItemsService } from '../../services/items.service';
+import { Post } from '../../interfaces/post.interface';
 
 @Component({
   selector: 'app-full-list',
@@ -15,7 +17,8 @@ export class FullList {
 
   constructor(private route:ActivatedRoute,
     private itemsService:ItemsService,
-    private router:Router) {
+    private router:Router,
+    public authService:AuthService) {
       this.type = this.route.snapshot.paramMap.get('type');
       this.page = Number(this.route.snapshot.queryParamMap.get('page'));
 
@@ -86,5 +89,15 @@ export class FullList {
       },
       replaceUrl: true
     });
+  }
+
+  // edit a post
+  editPost(post:Post) {
+
+  }
+
+  // delete a post
+  deletePost(postID:number) {
+    this.itemsService.deletePost(postID);
   }
 }

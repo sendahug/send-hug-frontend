@@ -1,4 +1,4 @@
-#
+# APP
 
 ## Version
 
@@ -31,6 +31,8 @@ Will be updated as content is added.
 
 ## Dependencies
 
+### Gulp
+
 The site uses several tools to maximise compatibility:
 
 1. **Gulp** - Gulp enables running tasks automatically. You can read more on the [Gulp website](https://gulpjs.com). Gulp is a Node.js tool, so it requires installing Node.
@@ -42,6 +44,24 @@ The site uses several tools to maximise compatibility:
 7. **Gulp-Rename** - A gulp plugin used to rename files. Used to rename the main module JS and to change the directory name of all HTML files. For more info check the [Gulp-rename](https://www.npmjs.com/package/gulp-rename) page on NPM.
 8. **Gulp-replace** - A string replace plugin for Gulp. Used to change the templateUrls in the final JS file. For more info, check the [Gulp-replace](https://www.npmjs.com/package/gulp-replace) page on NPM.
 9. **Gulp-Jasmine-Browser** - A headless browser extension for the unit-testing tool Jasmine. The site also includes **Jasmine-core** and **Puppeteer** in order to execute Jasmine tests from the command line. For more info check the [Gulp-jasmine-browser](https://www.npmjs.com/package/gulp-jasmine-browser) page on NPM or the [Jasmine documentation](https://jasmine.github.io/) page.
+
+### Angular
+
+1. **@angular/animations** - Angular's animations library.
+2. **@angular/common** - Angular's commonly needed services, pipes and directives.
+3. **@angular/compiler** - Angular's template compiler.
+4. **@angular/compiler-cli** - Command-line interface to invoke Angular's compiler.
+5. **@angular/core** - Critical runtime parts of the Angular framework.
+6. **@angular/forms** - Support for template-driven and reactive forms.
+7. **@angular/platform-browser** - Everything DOM and browser-related.
+8. **@angular/platform-browser-dynamic** - Providers and methods for compiling and running the app.
+9. **@angular/router** - Angular's router module.
+10. **rxjs** - Contains an implementation of observables, which many Angular APIs use.
+11. **typescript** - TypeScript language server, which Angular uses.
+12. **zone.js** - Implementation of zones for JavaScript (used by Angular).
+13. **core-js** - Modular standard library for JavaScript. Contains polyfills. For more information, check the [GitHub repo](https://github.com/zloirock/core-js).
+
+For more information about Angular's required NPM packages, check the [Angular docs](https://angular.io/guide/npm-packages).
 
 ## Known Issues
 

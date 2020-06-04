@@ -231,4 +231,22 @@ export class AuthService {
       console.log(response);
     });
   }
+
+  // check a user's permissions
+  canUser(permission: string) {
+    let canUserDo:boolean;
+    let tokenPayload = this.parseJWT(this.token);
+    let permissions = tokenPayload['permissions'];
+
+    // if it's within the user's permissions
+    if(permission in permissions) {
+      canUserDo = true;
+    }
+    // if not
+    else {
+      canUserDo = false;
+    }
+
+    return canUserDo;
+  }
 }

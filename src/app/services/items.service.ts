@@ -130,7 +130,7 @@ export class ItemsService {
       headers: this.authService.authHeader
     }).subscribe((response:any) => {
       if(response.success == true) {
-        this.createSuccessAlert('Your post was published!');
+        this.createSuccessAlert('Your post was published! Return to home page to view the post.', false, '/');
       }
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
@@ -145,7 +145,7 @@ export class ItemsService {
       headers: this.authService.authHeader
     }).subscribe((response:any) => {
       if(response.success == true) {
-        this.createSuccessAlert(`Post ${response.deleted} was deleted.`);
+        this.createSuccessAlert(`Post ${response.deleted} was deleted. Refresh to view the updated post list.`, true);
       }
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
@@ -160,7 +160,7 @@ export class ItemsService {
       headers: this.authService.authHeader
     }).subscribe((response:any) => {
       if(response.success == true) {
-        this.createSuccessAlert('Your post was edited. Refresh to view the updated post.');
+        this.createSuccessAlert('Your post was edited. Refresh to view the updated post.', true);
       }
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
@@ -176,7 +176,7 @@ export class ItemsService {
       headers: this.authService.authHeader
     }).subscribe((response:any) => {
       if(response.success == true) {
-        this.createSuccessAlert('Your hug was sent!');
+        this.createSuccessAlert('Your hug was sent!', false);
       }
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
@@ -216,7 +216,7 @@ export class ItemsService {
       headers: this.authService.authHeader
     }).subscribe((response:any) => {
       if(response.success == true) {
-        this.createSuccessAlert('Your message was sent!');
+        this.createSuccessAlert('Your message was sent!', false, '/');
       }
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
@@ -232,7 +232,7 @@ export class ItemsService {
     this.Http.delete(Url, {
       headers: this.authService.authHeader
     }).subscribe((response:any) => {
-      this.createSuccessAlert(`Message ${response.deleted} was deleted!`);
+      this.createSuccessAlert(`Message ${response.deleted} was deleted! Refresh to view the updated message list.`, true);
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
       this.createErrorAlert(err);
@@ -240,14 +240,14 @@ export class ItemsService {
   }
 
   // Creates an alert for the user to know their action succeeded
-  createSuccessAlert(message:string) {
+  createSuccessAlert(message:string, reload:boolean = false, navigate?:string) {
     // an alert message
     let alert:AlertMessage = {
       type: 'Success',
       message: message
     }
 
-    this.alertsService.createAlert(alert);
+    this.alertsService.createAlert(alert, reload, navigate);
   }
 
   // Checks what type of error occurred and returns an alert

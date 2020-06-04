@@ -10,8 +10,13 @@
 			<button class="appButton deleteButton" (click)="deletePost(post.id)">Delete</button>
 		</div>
 		<!-- Post pagination -->
-		<button *ngIf="this.itemsService.totalUserPostsPages > this.itemsService.userPostsPage" class="appButton" (click)="nextPage()">More Posts</button>
-		<button *ngIf="this.itemsService.userPostsPage > 1" class="appButton" (click)="prevPage()">Previous Posts</button>
+		<div class="pagination">
+			<button *ngIf="itemsService.userPostsPage > 1" class="appButton prevButton" (click)="prevPage()">Previous Page</button>
+			<button *ngIf="itemsService.userPostsPage <= 1" class="appButton hidden" (click)="prevPage()">Previous Page</button>
+			<div class="pageCount">Page {{ itemsService.userPostsPage }} of {{ itemsService.totalUserPostsPages }}</div>
+			<button *ngIf="itemsService.totalUserPostsPages > itemsService.userPostsPage" class="appButton nextButton" (click)="nextPage()">Next Page</button>
+			<button *ngIf="itemsService.totalUserPostsPages <= itemsService.userPostsPage" class="appButton hidden" (click)="nextPage()">Next Page</button>
+		</div>
 	</div>
 	
 	<!-- If the user doesn't have posts, displays an error message -->

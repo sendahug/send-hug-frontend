@@ -12,7 +12,12 @@
 	
 	<!-- If there are no items in the list -->
 	<div class="errorMessage" *ngIf="itemsService.fullItemsList['full' + type + 'Items'].length == 0">There are no posts.</div>
-	
-	<button *ngIf="itemsService.fullItemsPage['full' + type + 'Items'] > 1" class="appButton" (click)="prevPage()">Previous Posts</button>
-	<button *ngIf="itemsService.totalFullItemsPage['full' + type + 'Items'] > itemsService.fullItemsPage['full' + type + 'Items']" class="appButton" (click)="nextPage()">More Posts</button>
+	<!-- Post pagination -->
+	<div class="pagination">
+		<button *ngIf="itemsService.fullItemsPage['full' + type + 'Items'] > 1" class="appButton prevButton" (click)="prevPage()">Previous Page</button>
+		<button *ngIf="itemsService.fullItemsPage['full' + type + 'Items'] <= 1" class="appButton hidden" (click)="prevPage()">Previous Page</button>
+		<div class="pageCount">Page {{ itemsService.fullItemsPage['full' + type + 'Items'] }} of {{ itemsService.totalFullItemsPage['full' + type + 'Items'] }}</div>
+		<button *ngIf="itemsService.totalFullItemsPage['full' + type + 'Items'] > itemsService.fullItemsPage['full' + type + 'Items']" class="appButton nextButton" (click)="nextPage()">Next Page</button>
+		<button *ngIf="itemsService.totalFullItemsPage['full' + type + 'Items'] <= itemsService.fullItemsPage['full' + type + 'Items']" class="appButton hidden" (click)="nextPage()">Next Page</button>
+	</div>
 </div>

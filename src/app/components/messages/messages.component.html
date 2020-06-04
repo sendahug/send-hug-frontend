@@ -11,8 +11,13 @@
 			<button class="appButton deleteButton" (click)="deleteMessage(message.id)">Delete</button>
 		</div>
 		<!-- Message pagination -->
-		<button *ngIf="itemsService.totalUserMessagesPages > itemsService.userMessagesPage" class="appButton" (click)="nextPage()">More Messages</button>
-		<button *ngIf="itemsService.userMessagesPage > 1" class="appButton" (click)="prevPage()">Previous Messages</button>
+		<div class="pagination">
+			<button *ngIf="itemsService.userMessagesPage > 1" class="appButton prevButton" (click)="prevPage()">Previous Page</button>
+			<button *ngIf="itemsService.userMessagesPage <= 1" class="appButton hidden" (click)="prevPage()">Previous Page</button>
+			<div class="pageCount">Page {{ itemsService.userMessagesPage }} of {{ itemsService.totalUserMessagesPages }}</div>
+			<button *ngIf="itemsService.totalUserMessagesPages > itemsService.userMessagesPage" class="appButton nextButton" (click)="nextPage()">Next Page</button>
+			<button *ngIf="itemsService.totalUserMessagesPages <= itemsService.userMessagesPage" class="appButton hidden" (click)="nextPage()">Next Page</button>
+		</div>
 	</div>
 	
 	<!-- If there are no messages in the user's inbox -->

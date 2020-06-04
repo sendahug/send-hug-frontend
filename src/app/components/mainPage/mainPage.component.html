@@ -10,10 +10,11 @@
 			<a [routerLink]="['/new', 'Message']" [queryParams]="{user: item.user, userID: item.userId}" class="appButton messageButton"><i class="fas fa-comments"></i></a>
 		</li>
 	</ul>
-	<a [routerLink]="['/list', 'New']" [queryParams]="{page: 1}" class="appButton">View Full List</a>
 	
 	<!-- If there are no items in the list -->
 	<div class="errorMessage" *ngIf="itemsService.newItemsArray.length == 0">There are no recent items.</div>
+	
+	<a [routerLink]="['/list', 'New']" [queryParams]="{page: 1}" class="appButton fullButton">View Full List</a>
 </div>
 
 <!-- Suggested items -->
@@ -28,8 +29,9 @@
 			<a [routerLink]="['/new', 'Message']" [queryParams]="{user: item.user, userID: item.userId}" class="appButton messageButton"><i class="fas fa-comments"></i></a>
 		</li>
 	</ul>
-	<a [routerLink]="['/list', 'Suggested']" [queryParams]="{page: 1}" class="appButton">View Full List</a>
 
 	<!-- If there are no items in the list -->
 	<div class="errorMessage" *ngIf="itemsService.sugItemsArray.length == 0">There are no suggested items.</div>
+	
+	<a [routerLink]="['/list', 'Suggested']" [queryParams]="{page: 1}" class="appButton fullButton">View Full List</a>
 </div>

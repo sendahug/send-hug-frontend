@@ -1,7 +1,7 @@
 <div id="items">
 	<h2 class="listTitle">{{ type }} Items</h2>
 	<!-- If there are items in the list -->
-	<ul class="itemList" *ngIf="itemsService.fullItemsList['full' + type + 'Items'].length > 0">
+	<ul id="fullItems" *ngIf="itemsService.fullItemsList['full' + type + 'Items'].length > 0">
 		<li *ngFor="let item of itemsService.fullItemsList['full' + type + 'Items']" class="newItem">
 			<div class="itemText">{{ item.text }}</div>
 			<div class="itemUser">By {{ item.user }}</div>
@@ -13,6 +13,6 @@
 	<!-- If there are no items in the list -->
 	<div class="errorMessage" *ngIf="itemsService.fullItemsList['full' + type + 'Items'].length == 0">There are no posts.</div>
 	
-	<button *ngIf="itemsService.totalFullItemsPage['full' + type + 'Items'] > itemsService.fullItemsPage['full' + type + 'Items']" class="appButton" (click)="nextPage()">More Posts</button>
 	<button *ngIf="itemsService.fullItemsPage['full' + type + 'Items'] > 1" class="appButton" (click)="prevPage()">Previous Posts</button>
+	<button *ngIf="itemsService.totalFullItemsPage['full' + type + 'Items'] > itemsService.fullItemsPage['full' + type + 'Items']" class="appButton" (click)="nextPage()">More Posts</button>
 </div>

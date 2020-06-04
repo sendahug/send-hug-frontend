@@ -14,6 +14,9 @@ import { Post } from '../../interfaces/post.interface';
 export class FullList {
   type:any;
   page:any;
+  postToEdit: Post | undefined;
+  editType: string = 'post';
+  editMode:boolean;
 
   constructor(private route:ActivatedRoute,
     private itemsService:ItemsService,
@@ -30,6 +33,8 @@ export class FullList {
       else if(this.type == 'Suggested') {
         this.itemsService.getSuggestedItems(this.page);
       }
+
+      this.editMode = false;
   }
 
   // send a hug
@@ -93,7 +98,13 @@ export class FullList {
 
   // edit a post
   editPost(post:Post) {
+    this.postToEdit = post;
+    this.editMode = true;
+  }
 
+  // remove edit popup
+  changeMode(edit:boolean) {
+    this.editMode = edit;
   }
 
   // delete a post

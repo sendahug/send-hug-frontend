@@ -1,6 +1,6 @@
 // Angular imports
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 // Other essential imports
 import { BehaviorSubject } from 'rxjs';

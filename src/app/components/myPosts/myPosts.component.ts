@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
 
 import { Post } from '../../interfaces/post.interface';
 import { ItemsService } from '../../services/items.service';
@@ -16,8 +15,7 @@ export class MyPosts implements OnInit {
   waitFor = 'user posts';
 
   constructor(public itemsService:ItemsService,
-    private authService:AuthService,
-    private router:Router) {
+    private authService:AuthService ) {
       itemsService.getUserPosts(this.authService.userData.id!);
       this.editMode = false;
   }

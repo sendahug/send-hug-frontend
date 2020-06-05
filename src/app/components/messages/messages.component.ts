@@ -14,10 +14,15 @@ export class AppMessaging implements OnInit {
 
   // CTOR
   constructor(public authService: AuthService, public itemsService: ItemsService) {
-    // Gets the user's messages via the items service
-    if(authService.authenticated) {
-      this.itemsService.getMessages(this.authService.userData.id!);
-    }
+    // subscribe to the subject following user data
+    this.authService.isUserData.subscribe((value) => {
+      // if the value is true, user data has been fetched, so the app can
+      // now fetch the user's messages
+      if(value == true) {
+        // Gets the user's messages via the items service
+        this.itemsService.getMessages(this.authService.userData.id!);
+      }
+    })
   }
 
   ngOnInit() {

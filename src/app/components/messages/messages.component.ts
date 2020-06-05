@@ -10,6 +10,8 @@ import { ItemsService } from '../../services/items.service';
   templateUrl: './messages.component.html'
 })
 export class AppMessaging implements OnInit {
+  waitFor = 'messages';
+
   // CTOR
   constructor(public authService: AuthService, public itemsService: ItemsService) {
     // Gets the user's messages via the items service

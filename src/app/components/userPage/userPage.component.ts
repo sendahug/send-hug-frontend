@@ -12,6 +12,7 @@ export class UserPage implements OnInit {
   userToEdit:any;
   editType: string = 'user';
   editMode:boolean;
+  waitFor = "user";
 
   // CTOR
   constructor(public authService: AuthService) {

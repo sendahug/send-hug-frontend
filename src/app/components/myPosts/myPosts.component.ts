@@ -13,6 +13,7 @@ export class MyPosts implements OnInit {
   postToEdit: Post | undefined;
   editType: string = 'post';
   editMode:boolean;
+  waitFor = 'user posts';
 
   constructor(public itemsService:ItemsService,
     private authService:AuthService,

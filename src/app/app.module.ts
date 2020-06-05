@@ -12,6 +12,7 @@ import { NewItem } from './components/newItem/newItem.component';
 import { MyPosts } from './components/myPosts/myPosts.component';
 import { PopUp } from './components/popUp/popUp.component';
 import { FullList } from './components/fullList/fullList.component';
+import { Loader } from './components/loader/loader.component';
 
 @NgModule({
   imports: [
@@ -28,7 +29,8 @@ import { FullList } from './components/fullList/fullList.component';
     NewItem,
     MyPosts,
     PopUp,
-    FullList
+    FullList,
+    Loader
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -19,6 +19,10 @@ export class Loader implements OnInit {
     private itemsService:ItemsService,
     private authService:AuthService
   ) {
+
+  }
+
+  ngOnInit() {
     // if the app is waiting for user data to be fetched from the server
     if(this.waitingFor == 'user') {
       this.message = 'Fetching user data...';
@@ -69,9 +73,5 @@ export class Loader implements OnInit {
         }
       })
     }
-  }
-
-  ngOnInit() {
-
   }
 }

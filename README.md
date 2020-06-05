@@ -63,6 +63,31 @@ The site uses several tools to maximise compatibility:
 
 For more information about Angular's required NPM packages, check the [Angular docs](https://angular.io/guide/npm-packages).
 
+## Authentication
+
+The project uses Auth0 as a third-party authentication provider. Authentication is done by Auth0, which in turn returns a JSON Web Token containing the user's data and permissions.
+
+While the frontend decodes and uses the JWT, it doesn't verify the given token. This is done by the backend. Upon login, a request is made to the server to fetch the user's data. Since getting user's data requires authentication, if the server's response contains the user's data, the frontend can treat the token as valid. Once the token is verified, the user is marked as 'authenticated'.
+
+On top of fetching the user's data, the frontend also deals with login, logout, hash parsing and token refreshing. These are done using [Auth0-js](https://auth0.com/docs/libraries/auth0js/v9), Auth0's client-side library. All authentication handling in the frontend is done by the [AuthService](./src/app/services/auth.service.ts).
+
+The frontend Authentication Process:
+
+1. Once the user logs in, Auth0-js parses the URL hash in order to extract the JWT.
+
+2. The token is then decoded and its payload is passed on.
+
+3. An attempt is made to fetch the user's data from the backend, where the token is verified. If successful, the fetched data is used as the user's data and the user is marked as authenticated.
+
+4. The verified token is added to localStorage, in order to be used later on.
+
+5. Upon logout, the frontend clears all user data, including the saved JWT.
+
+Notes:
+
+  - If the user doesn't exist in the database (the request was rejected because of something other than an AuthError), that means it's a new user. AuthService then makes a request to the server to add the new user to the database.
+  - If the user isn't redirected to the app from Auth0, there's no JWT in the URL. In that case, AuthService fetches the JWT from localStorage. If the JWT is still valid, AuthService attempts to refresh it while fetching the user's data. This lets the users stay logged in for longer periods of time without forcing them to actively login again.
+
 ## Known Issues
 
 There are no current issues at the time.

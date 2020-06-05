@@ -1,6 +1,7 @@
 // Angular imports
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
+import { BehaviorSubject } from 'rxjs';
 
 // App-related imports
 import { Post } from '../interfaces/post.interface';
@@ -36,10 +37,12 @@ export class ItemsService {
   userPosts: Post[] = [];
   userPostsPage: number;
   totalUserPostsPages: number;
+  isUserPosts = new BehaviorSubject(false);
   // User messages variables
   userMessages: Message[] = [];
   userMessagesPage: number;
   totalUserMessagesPages: number;
+  isUserMessages = new BehaviorSubject(false);
 
   // CTOR
   constructor(
@@ -117,6 +120,7 @@ export class ItemsService {
       this.userPosts = data;
       this.totalUserPostsPages = response.total_pages;
       this.userPostsPage = response.page;
+      this.isUserPosts.next(true);
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
       this.createErrorAlert(err);
@@ -203,6 +207,7 @@ export class ItemsService {
       });
       this.userMessagesPage = response.current_page;
       this.totalUserMessagesPages = response.total_pages;
+      this.isUserMessages.next(true);
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
       this.createErrorAlert(err);
@@ -239,6 +244,8 @@ export class ItemsService {
     })
   }
 
+  // ALERT METHODS
+  // ==============================================================
   // Creates an alert for the user to know their action succeeded
   createSuccessAlert(message:string, reload:boolean = false, navigate?:string) {
     // an alert message

@@ -1,6 +1,9 @@
 // Angular imports
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
+
+// Other essential imports
+import { BehaviorSubject } from 'rxjs';
 import * as Auth0 from 'auth0-js';
 
 // App-related imports
@@ -37,6 +40,7 @@ export class AuthService {
   // documents whether the user just logged in or they're still logged in following
   // their previous login
   loggedIn = false;
+  isUserData = new BehaviorSubject(false);
 
   // CTOR
   constructor(private Http:HttpClient) {
@@ -105,6 +109,7 @@ export class AuthService {
         this.authenticated = true;
         this.authHeader = new HttpHeaders({'Authorization': `Bearer ${this.token}`});
         this.setToken();
+        this.isUserData.next(true);
 
         // if the user just logged in, update the login count
         if(this.loggedIn) {

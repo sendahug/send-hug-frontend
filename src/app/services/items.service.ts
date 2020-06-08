@@ -111,7 +111,9 @@ export class ItemsService {
   // Gets the user's posts
   getUserPosts(userID:number) {
     const Url = this.serverUrl + `/users/${userID}/posts`;
-    const params = new HttpParams().set('page', `${this.userPostsPage}`);
+    // if the current page is 0, send page 1 to the server (default)
+    const currentPage = this.userPostsPage ? this.userPostsPage : 1;
+    const params = new HttpParams().set('page', `${currentPage}`);
     this.Http.get(Url, {
       headers: this.authService.authHeader,
       params: params
@@ -119,7 +121,9 @@ export class ItemsService {
       let data = response.posts;
       this.userPosts = data;
       this.totalUserPostsPages = response.total_pages;
-      this.userPostsPage = response.page;
+      // if there are 0 pages, current page is also 0; otherwise it's whatever
+      // the server returns
+      this.userPostsPage = this.totalUserPostsPages ? response.page : 0;
       this.isUserPostsResolved.next(true);
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
@@ -193,9 +197,11 @@ export class ItemsService {
   // ==============================================================
   // Get the user's messages
   getMessages(userID:number) {
+    // if the current page is 0, send page 1 to the server (default)
+    const currentPage = this.userMessagesPage ? this.userMessagesPage : 1;
     let params = new HttpParams()
       .set('userID', `${userID}`)
-      .set('page', `${this.userMessagesPage}`);
+      .set('page', `${currentPage}`);
     // try to get the user's messages
     this.Http.get('http://localhost:5000/messages', {
       headers: this.authService.authHeader,
@@ -206,8 +212,10 @@ export class ItemsService {
       messages.forEach((element: Message) => {
         this.userMessages.push(element);
       });
-      this.userMessagesPage = response.current_page;
       this.totalUserMessagesPages = response.total_pages;
+      // if there are 0 pages, current page is also 0; otherwise it's whatever
+      // the server returns
+      this.userMessagesPage = this.totalUserMessagesPages ? response.current_page : 0;
       this.isUserMessagesResolved.next(true);
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {

@@ -24,7 +24,7 @@
 	</div>
 	
 	<!-- If there are no messages in the user's inbox -->
-	<div *ngIf="!itemsService.userMessages.length">
+	<div *ngIf="!itemsService.userMessages.length && itemsService.isUserMessagesResolved">
 		<div class="errorMessage">You have no incoming messages.</div>
 	</div>
 </div>

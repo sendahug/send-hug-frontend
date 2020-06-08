@@ -156,6 +156,10 @@ export class AuthService {
         loginCount: data.loginCount,
         jwt: this.token
       }
+      this.authenticated = true;
+      this.authHeader = new HttpHeaders({'Authorization': `Bearer ${this.token}`});
+      this.setToken();
+      this.isUserDataResolved.next(true);
       // error handling
     }, (err) => {
       console.log(err);

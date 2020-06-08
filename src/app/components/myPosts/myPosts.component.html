@@ -1,8 +1,8 @@
-<app-loader
-		[waitingFor]="waitFor"></app-loader>
-
 <div id="myPosts">
 	<h3>My Posts</h3>
+	
+	<app-loader
+		[waitingFor]="waitFor"></app-loader>
 	
 	<!-- If the user has posts, displays them -->
 	<div *ngIf="itemsService.userPosts.length">
@@ -27,7 +27,7 @@
 	</div>
 	
 	<!-- If the user doesn't have posts, displays an error message -->
-	<div *ngIf="!itemsService.userPosts.length" class="errorMessage">
+	<div *ngIf="!itemsService.userPosts.length && itemsService.isUserPostsResolved" class="errorMessage">
 		<div>You have no published posts. Write your first post now!</div>
 	</div>
 </div>

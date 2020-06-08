@@ -1,9 +1,9 @@
-<app-loader
-		[waitingFor]="waitFor"></app-loader>
-
 <h3>Inbox</h3>
 <!-- If the user is logged in, displays the user's inbox. -->
 <div id="userInbox" *ngIf="authService.authenticated">
+	<app-loader
+		[waitingFor]="waitFor"></app-loader>
+
 	<!-- If there are messages in the user's inbox -->
 	<div *ngIf="itemsService.userMessages.length">
 		<div *ngFor="let message of itemsService.userMessages" class="userMessage">

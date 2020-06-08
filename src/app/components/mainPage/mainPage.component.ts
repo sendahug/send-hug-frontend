@@ -2,17 +2,28 @@
 import { Component, OnInit } from '@angular/core';
 
 // App-related imports
+import { AuthService } from '../../services/auth.service';
 import { ItemsService } from '../../services/items.service';
+import { Post } from '../../interfaces/post.interface';
 
 @Component({
   selector: 'app-main-page',
   templateUrl: './mainPage.component.html'
 })
 export class MainPage implements OnInit {
+  type:any;
+  page:any;
+  postToEdit: Post | undefined;
+  editType: string = 'post';
+  editMode:boolean;
 
   // CTOR
-  constructor(public itemsService: ItemsService) {
+  constructor(
+    public itemsService: ItemsService,
+    public authService:AuthService
+  ) {
     this.itemsService.getItems();
+    this.editMode = false;
   }
 
   ngOnInit() {
@@ -33,5 +44,22 @@ export class MainPage implements OnInit {
     }
 
     this.itemsService.sendHug(item);
+  }
+
+
+    // edit a post
+  editPost(post:Post) {
+    this.postToEdit = post;
+    this.editMode = true;
+  }
+
+  // remove edit popup
+  changeMode(edit:boolean) {
+    this.editMode = edit;
+  }
+
+  // delete a post
+  deletePost(postID:number) {
+    this.itemsService.deletePost(postID);
   }
 }

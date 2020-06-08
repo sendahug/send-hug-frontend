@@ -5,7 +5,7 @@
 	<h3>My Posts</h3>
 	
 	<!-- If the user has posts, displays them -->
-	<div *ngIf="itemsService.userPosts">
+	<div *ngIf="itemsService.userPosts.length">
 		<div *ngFor="let post of itemsService.userPosts" class="userPost">
 			<div class="postText">{{ post.text }}</div>
 			<div class="postDate">{{ post.date }}</div>
@@ -27,7 +27,7 @@
 	</div>
 	
 	<!-- If the user doesn't have posts, displays an error message -->
-	<div *ngIf="!itemsService.userPosts" class="errorMessage">
+	<div *ngIf="!itemsService.userPosts.length" class="errorMessage">
 		<div>You have no published posts. Write your first post now!</div>
 	</div>
 </div>

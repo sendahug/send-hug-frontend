@@ -27,7 +27,7 @@ export class Loader implements OnInit {
     if(this.waitingFor == 'user') {
       this.message = 'Fetching user data...';
       // subscribe to the subject following user data
-      this.authService.isUserData.subscribe((value) => {
+      this.authService.isUserDataResolved.subscribe((value) => {
         // the subject's value is changed to 'true' upon fetching user data,
         // so if the value is true, there's no longer need for the loader
         // screen.
@@ -44,12 +44,12 @@ export class Loader implements OnInit {
     else if(this.waitingFor == 'messages') {
       this.message = 'Fetching messages...';
       // subscribe to the subject following user data
-      this.authService.isUserData.subscribe((value) => {
+      this.authService.isUserDataResolved.subscribe((value) => {
         // if user data has been fetched, the app can attempt to fetch
         // the logged in user's messages
         if(value == true) {
           // subscribe to the subject following user messages data
-          this.itemsService.isUserMessages.subscribe((value) => {
+          this.itemsService.isUserMessagesResolved.subscribe((value) => {
             // the subject's value is changed to 'true' upon fetching user
             // messages, so if the value is true, there's no longer need
             // for the loader screen
@@ -64,7 +64,7 @@ export class Loader implements OnInit {
     else if(this.waitingFor == 'user posts') {
       this.message = 'Fetching user posts...';
       // subscribe to the subject following user's posts
-      this.itemsService.isUserPosts.subscribe((value) => {
+      this.itemsService.isUserPostsResolved.subscribe((value) => {
         // the subject's value is changed to 'true' upon fetching user
         // posts, so if the value is true, there's no longer need for the
         // loader screen

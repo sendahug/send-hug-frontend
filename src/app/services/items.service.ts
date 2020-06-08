@@ -37,12 +37,12 @@ export class ItemsService {
   userPosts: Post[] = [];
   userPostsPage: number;
   totalUserPostsPages: number;
-  isUserPosts = new BehaviorSubject(false);
+  isUserPostsResolved = new BehaviorSubject(false);
   // User messages variables
   userMessages: Message[] = [];
   userMessagesPage: number;
   totalUserMessagesPages: number;
-  isUserMessages = new BehaviorSubject(false);
+  isUserMessagesResolved = new BehaviorSubject(false);
 
   // CTOR
   constructor(
@@ -120,9 +120,10 @@ export class ItemsService {
       this.userPosts = data;
       this.totalUserPostsPages = response.total_pages;
       this.userPostsPage = response.page;
-      this.isUserPosts.next(true);
+      this.isUserPostsResolved.next(true);
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
+      this.isUserPostsResolved.next(true);
       this.createErrorAlert(err);
     })
   }
@@ -207,9 +208,10 @@ export class ItemsService {
       });
       this.userMessagesPage = response.current_page;
       this.totalUserMessagesPages = response.total_pages;
-      this.isUserMessages.next(true);
+      this.isUserMessagesResolved.next(true);
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
+      this.isUserMessagesResolved.next(true);
       this.createErrorAlert(err);
     })
   }

@@ -15,7 +15,7 @@ export class AppMessaging implements OnInit {
   // CTOR
   constructor(public authService: AuthService, public itemsService: ItemsService) {
     // subscribe to the subject following user data
-    this.authService.isUserData.subscribe((value) => {
+    this.authService.isUserDataResolved.subscribe((value) => {
       // if the value is true, user data has been fetched, so the app can
       // now fetch the user's messages
       if(value == true) {

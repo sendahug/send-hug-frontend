@@ -40,7 +40,7 @@ export class AuthService {
   // documents whether the user just logged in or they're still logged in following
   // their previous login
   loggedIn = false;
-  isUserData = new BehaviorSubject(false);
+  isUserDataResolved = new BehaviorSubject(false);
 
   // CTOR
   constructor(private Http:HttpClient) {
@@ -109,7 +109,7 @@ export class AuthService {
         this.authenticated = true;
         this.authHeader = new HttpHeaders({'Authorization': `Bearer ${this.token}`});
         this.setToken();
-        this.isUserData.next(true);
+        this.isUserDataResolved.next(true);
 
         // if the user just logged in, update the login count
         if(this.loggedIn) {
@@ -122,6 +122,9 @@ export class AuthService {
         // if a user with that ID doens't exist, try to create it
         if(statusCode == 404) {
           this.createUser(jwtPayload);
+        }
+        else {
+          this.isUserDataResolved.next(true);
         }
       })
     }
@@ -156,6 +159,7 @@ export class AuthService {
       // error handling
     }, (err) => {
       console.log(err);
+      this.isUserDataResolved.next(true);
     });
   }
 

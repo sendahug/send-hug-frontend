@@ -239,19 +239,26 @@ export class AuthService {
 
   // check a user's permissions
   canUser(permission: string) {
-    let canUserDo:boolean;
-    let tokenPayload = this.parseJWT(this.token);
-    let permissions = tokenPayload['permissions'];
+    // if there's an active token, check the logged in user's permissions
+    if(this.token) {
+      let canUserDo:boolean;
+      let tokenPayload = this.parseJWT(this.token);
+      let permissions = tokenPayload['permissions'];
 
-    // if it's within the user's permissions
-    if(permission in permissions) {
-      canUserDo = true;
+      // if it's within the user's permissions
+      if(permission in permissions) {
+        canUserDo = true;
+      }
+      // if not
+      else {
+        canUserDo = false;
+      }
+
+      return canUserDo;
     }
-    // if not
+    // if there isn't, no user is logged in, so of course there's no permission
     else {
-      canUserDo = false;
+      return false;
     }
-
-    return canUserDo;
   }
 }

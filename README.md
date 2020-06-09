@@ -1,10 +1,12 @@
-# APP
+# Send A Hug
 
 ## Version
 
 Version 1 (currently in development).
 
 Built using the [gulp-site-template](https://github.com/shirblc/gulp-site-template) repo.
+
+For full project information, check the [`main README file`](../readme.md).
 
 ## Requirements
 
@@ -21,13 +23,48 @@ Built using the [gulp-site-template](https://github.com/shirblc/gulp-site-templa
 5. Run ```gulp serve``` to start the local server.
 6. Open localhost:3000.
 
+**For your convenience,** this project utilises Gulp's 'watch' functionality. In order to activate it  while developing, run ```gulp watch```. For more information about Gulp watch, check the [Gulp documentation](https://gulpjs.com/docs/en/getting-started/watching-files/).
+
 ### Users
 
 **Not yet ready for users!**
 
 ## Contents
 
-Will be updated as content is added.
+The app (located in [src/app](./src/app)) contains the main module (AppModule), defined in **app.module.ts**, and a routing module, defined in **app-routing.module.ts**.
+
+The main module contains 9 components, 3 services and 4 interfaces. Each component folder contains both the HTML template and the component TypeScript file.
+
+### Components
+
+**Located in:** [src/app/components](./src/app/components)
+
+1. **errorPage** - Displays a 'not found' error page if the user attempts to navigate (via Angular's router) to a location that doesn't exist.
+2. **fullList** - Displays a full list of paginated posts, depending on the list requested by the user (new or suggested).
+3. **loader** - A loader, displayed while the app is fetching data from the backend.
+4. **mainPage** - The main page of the app. Displays two lists to the user ('suggested' and 'new') - each with ten posts, as well as 'view full list' links.
+5. **messages** - A messages screen. Displays a paginated list of messages sent to the user.
+6. **myPosts** - A sub-component of the userPage component. Displays a paginated list of posts by the user whose profile is viewed.
+7. **newItem** - A form component allowing users to create a new item (message or post).
+8. **popUp** - A sub-component displaying a popup screen with a form for editing items (posts or a user's display name).
+9. **userPage** - Displays the user's data as fetched from the backend, as well as a list of the user's posts (as myPost component).
+
+### Interfaces
+
+**Located in:** [src/app/interfaces](./src/app/interfaces)
+
+1. **alert** - An alert interface. Displays a popup alert in the bottom of the screen with an error/success message (depending on the response from the server).
+2. **message** - A message interface. Used when fetching messages and displaying them to the user, as well as when the user creates a new message. Reflects the Message model in the backend.
+3. **post** - A post interface. Used for all posts lists, as well as for creating a new post. Reflects the Post model in the backend.
+4. **user** - A user interface. Used for holding user data as fetched from the server. Reflects the User model in the backend.
+
+### Services
+
+**Located in:** [src/app/services](./src/app/services)
+
+1. **alerts** - Creates and displays an alert to the user, based on the response from the server and using the alert interface.
+2. **auth** - Handles authentication-related methods, including login, logout, token refresh and getting and changing user data. View [Authentication](#Authentication) for more details about the authentication process.
+3. **items** - Handles all communications with the backend, except for authentication-related methods. Deals with fetching, creating and deleting posts and messages, as well as editing posts.
 
 ## Dependencies
 

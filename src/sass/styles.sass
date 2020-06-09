@@ -156,10 +156,17 @@ app-main-page
 	margin: 5px
 	padding: 0 10%
 
+/* Buttons div */
+.buttonsContainer
+	order: 2
+	display: flex
+	align-content: space-between
+	justify-content: space-between
+	width: 100%
+
 /* Send a hug button container */
 .notification
-	order: 2
-	margin: 5px Calc((100% - 80px) / 4)
+	margin: 5px auto
 	padding: 6px
 
 /* Send Hug Button */
@@ -167,17 +174,20 @@ app-main-page
 	width: 33px
 	border: none
 
-/* Send Hug Button icon */
-.fa-gratipay
-	font-size: 20px
-
 /* Send Message Button */
 .messageButton
-	order: 3
-	margin: 10px Calc((100% - 80px) / 4)
+	margin: 10px auto
 
-/* Send Message Button icon */
-.fa-comments
+/* Edit Button */
+.editButton
+	margin: 10px auto
+
+/* Delete Button */
+.deleteButton
+	margin: 10px auto
+
+/* Button icons */
+.fa-gratipay, .fa-comments, .fa-edit, .fa-times
 	font-size: 20px
 
 /* View full list button */

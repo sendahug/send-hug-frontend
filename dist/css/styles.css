@@ -1,7 +1,7 @@
 /* Colour Palette */
 /* Component Sample */
 /* line 9, ../sass/styles.sass */
-#compSample, app-main-page, #items, app-user-page, app-messages, app-new-item, app-error-page { position: absolute; top: 115px; bottom: 100px; overflow-y: scroll; }
+#compSample, app-main-page, #items, app-user-page, app-messages, app-new-item, app-error-page, app-about { position: absolute; top: 115px; bottom: 100px; overflow-y: scroll; }
 
 /* Frame Sample */
 /* line 16, ../sass/styles.sass */
@@ -329,36 +329,53 @@ app-new-item { width: 100%; left: 0; right: 0; }
 @keyframes dash { 0% { stroke-dasharray: 1, 200; stroke-dashoffset: 0; }
   50% { stroke-dasharray: 89, 200; stroke-dashoffset: -35px; }
   100% { stroke-dasharray: 89, 200; stroke-dashoffset: -124px; } }
+/* =================== About Component Styling =================== */
+/* About Component */
+/* line 534, ../sass/styles.sass */
+app-about { width: 90%; padding: 0 5%; left: 0; right: 0; }
+
+/* About component title */
+/* line 542, ../sass/styles.sass */
+#aboutTitle { text-align: center; color: #252525; }
+
+/* About component text */
+/* line 547, ../sass/styles.sass */
+.aboutText { padding: 5px; margin: 5px 10px; color: #161616; font-size: 18px; }
+
+/* About component links */
+/* line 554, ../sass/styles.sass */
+.aboutLink { text-align: center; color: #3f3a3a; font-size: 17px; margin: 10px 40%; }
+
 /* =================== Alert Styling =================== */
 /* Base Alert */
-/* line 534, ../sass/styles.sass */
+/* line 562, ../sass/styles.sass */
 .alertMessage { width: 70%; box-shadow: 12px 15px 20px 0 rgba(46, 61, 73, 0.5); border-radius: 5px; text-align: center; padding: 10px; position: fixed; bottom: 50px; left: 0; right: 0; margin-right: 15%; margin-left: 15%; z-index: 100; }
 
 /* Alert Title */
-/* line 549, ../sass/styles.sass */
+/* line 577, ../sass/styles.sass */
 .alertType { margin: 0; padding: 5px; }
 
 /* Alert Text */
-/* line 554, ../sass/styles.sass */
+/* line 582, ../sass/styles.sass */
 .alertText { font-size: 16px; }
 
 /* Alert Button */
-/* line 558, ../sass/styles.sass */
+/* line 586, ../sass/styles.sass */
 #alertButton { margin: 10px; border-radius: 5px; }
 
 /* Success Alert */
-/* line 563, ../sass/styles.sass */
+/* line 591, ../sass/styles.sass */
 .Success { background-color: rgba(46, 161, 60, 0.9); }
 
 /* Error Alert */
-/* line 567, ../sass/styles.sass */
+/* line 595, ../sass/styles.sass */
 .Error { background-color: rgba(203, 72, 72, 0.95); }
 
 /* =================== Footer Styling =================== */
 /* Site Footer */
-/* line 572, ../sass/styles.sass */
+/* line 600, ../sass/styles.sass */
 #siteFooter { position: fixed; bottom: 0; left: 0; width: 100%; max-width: 100%; }
 
 /* Footer text */
-/* line 580, ../sass/styles.sass */
+/* line 608, ../sass/styles.sass */
 .footerText { text-align: center; font-size: 14px; padding: 0; margin: 10px; color: #161616; }

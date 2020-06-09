@@ -13,6 +13,7 @@ import { MyPosts } from './components/myPosts/myPosts.component';
 import { PopUp } from './components/popUp/popUp.component';
 import { FullList } from './components/fullList/fullList.component';
 import { Loader } from './components/loader/loader.component';
+import { AboutApp } from './components/aboutApp/aboutApp.component';
 
 @NgModule({
   imports: [
@@ -30,7 +31,8 @@ import { Loader } from './components/loader/loader.component';
     MyPosts,
     PopUp,
     FullList,
-    Loader
+    Loader,
+    AboutApp
   ],
   providers: [],
   bootstrap: [AppComponent]

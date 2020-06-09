@@ -15,6 +15,9 @@ export class AppComponent {
   }, {
     name: 'User Page',
     link: '/user'
+  }, {
+    name: 'About',
+    link: '/about'
   }];
 
   constructor(public authService:AuthService) {

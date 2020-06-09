@@ -1,3 +1,8 @@
+/*
+	Auth Service
+	Send a Hug Service
+*/
+
 // Angular imports
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
@@ -23,9 +28,11 @@ export class AuthService {
     audience: environment.auth0.audience
   })
 
+  // authentication information
   token: string = '';
   authHeader: HttpHeaders = new HttpHeaders;
   authenticated: boolean = false;
+  // user data
   userProfile: any;
   userData: User = {
     id: 0,
@@ -48,23 +55,37 @@ export class AuthService {
 
   }
 
-  // Handles login redirect and authorise request.
+  /*
+  Function Name: login()
+  Function Description: Activates Auth0 login/authorize.
+  Parameters: None.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
   login() {
     this.auth0.authorize();
   }
 
-  // Checks the hash for a token.
+  /*
+  Function Name: checkHash()
+  Function Description: Checks the URL hash for a token.
+  Parameters: None.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
   checkHash() {
-    // Parses the token (in the URL hash).
+    // if there's a token in the hash, parse it
     if(window.location.hash) {
+      // Parses the token (in the URL hash).
       this.auth0.parseHash({ hash: window.location.hash }, (err, authResult) => {
         if (authResult) {
           window.location.hash = '';
-          // parses the token payload
           if(authResult.accessToken) {
+            // parses the token payload
             this.token = authResult.accessToken;
             let payload = this.parseJWT(authResult.accessToken);
             this.loggedIn = true;
+            // gets the user's data
             this.getUserData(payload);
           }
         }
@@ -73,10 +94,18 @@ export class AuthService {
         }
       })
     }
+    // if there's no token in the hash, check localStorage to see if there's
+    // an active token there
     this.getToken();
   }
 
-  // Parse the token payload
+  /*
+  Function Name: parseJWT()
+  Function Description: Parse the token payload.
+  Parameters: token (string) - A string containing the JWT.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
   parseJWT(token:string) {
     var base64Url = token.split('.')[1];
     var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
@@ -87,7 +116,16 @@ export class AuthService {
     return JSON.parse(jsonPayload);
   }
 
-  // Gets the user's information from the database
+  /*
+  Function Name: getUserData()
+  Function Description: Sends a request to the server to get the user's data.
+                        Since getting a user's data requires permissions, a success
+                        response to this request means the JWT is valid and verified,
+                        so the user has successfully authenticated.
+  Parameters: jwtPayload (any) - The JWT payload.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
   getUserData(jwtPayload:any) {
     // if there's a JWT
     if(jwtPayload) {
@@ -108,6 +146,7 @@ export class AuthService {
           role: data.role,
           jwt: this.token
         }
+        // set the authentication-variables accordingly
         this.authenticated = true;
         this.authHeader = new HttpHeaders({'Authorization': `Bearer ${this.token}`});
         this.setToken();
@@ -136,8 +175,17 @@ export class AuthService {
     }
   }
 
-  // If the user doesn't exist, send a request to the server to
-  // add it to the database
+  /*
+  Function Name: createUser()
+  Function Description: Sends a request to the server to create a new user.
+                        Since getting a user's data requires permissions, a success
+                        response to this request means the JWT is valid and verified,
+                        so the user has successfully authenticated. This method is
+                        only triggered if the user doesn't already exist.
+  Parameters: jwtPayload (any) - The JWT payload.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
   createUser(jwtPayload:any) {
     // post request to create the user
     this.Http.post('http://localhost:5000/users', {
@@ -159,6 +207,7 @@ export class AuthService {
         role: data.role,
         jwt: this.token
       }
+      // set the authentication-variables accordingly
       this.authenticated = true;
       this.authHeader = new HttpHeaders({'Authorization': `Bearer ${this.token}`});
       this.setToken();
@@ -170,7 +219,13 @@ export class AuthService {
     });
   }
 
-  // Handles log out redirects.
+  /*
+  Function Name: logout()
+  Function Description: Activates Auth0 logout.
+  Parameters: None.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
   logout() {
     this.auth0.logout({
       returnTo: environment.auth0.logoutUri,
@@ -194,12 +249,24 @@ export class AuthService {
     localStorage.setItem("ACTIVE_JWT", '');
   }
 
-  // Sets the token in local storage
+  /*
+  Function Name: setToken()
+  Function Description: Sets the token in local storage.
+  Parameters: None.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
   setToken() {
     localStorage.setItem("ACTIVE_JWT", this.token);
   }
 
-  // Gets the currently active token from localStorage
+  /*
+  Function Name: getToken()
+  Function Description: Gets the currently active token from localStorage.
+  Parameters: None.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
   getToken() {
     let jwt = localStorage.getItem("ACTIVE_JWT");
     if(jwt) {
@@ -210,6 +277,8 @@ export class AuthService {
       if(expiration > Date.now()) {
         this.token = jwt;
         this.loggedIn = false;
+        // gets the user's data and refreshes the token at the same time in
+        // order to save time getting the information to the UI
         this.getUserData(payload);
         this.refreshToken();
       }
@@ -220,21 +289,37 @@ export class AuthService {
     }
   }
 
-  // Attempts to refresh the token
+  /*
+  Function Name: refreshToken()
+  Function Description: Attempts to silently refresh the token.
+  Parameters: None.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
   refreshToken() {
     this.auth0.checkSession({}, (err, authResult) => {
+      // if refreshing the token was successful, parse the JWT and get the
+      // token variable to the new token
       if(authResult && authResult.accessToken) {
         this.token = authResult.accessToken;
         let payload = this.parseJWT(authResult.accessToken);
         this.getUserData(payload);
       }
+      // if there was an error refreshing the token
       else if(err) {
         return 'Error: ' + err;
       }
     })
   }
 
-  // sends a request to the server to update the login count & display name in the database
+  /*
+  Function Name: updateUserData()
+  Function Description: Sends a request to the server to update the login count
+                        and display name in the database.
+  Parameters: None.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
   updateUserData() {
     this.Http.patch(`http://localhost:5000/users/${this.userData.id}`, {
       displayName: this.userData.displayName,
@@ -249,7 +334,13 @@ export class AuthService {
     });
   }
 
-  // check a user's permissions
+  /*
+  Function Name: canUser()
+  Function Description: Check whether the user has permission to perform an action.
+  Parameters: permission (string) - The required permission.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
   canUser(permission: string) {
     // if there's an active token, check the logged in user's permissions
     if(this.token) {

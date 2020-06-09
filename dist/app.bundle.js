@@ -21377,22 +21377,100 @@ return abortNative.apply(self,args);}// Otherwise, we are trying to abort an XHR
 if(global['navigator']&&global['navigator'].geolocation){patchPrototype(global['navigator'].geolocation,['getCurrentPosition','watchPosition']);}});Zone.__load_patch('PromiseRejectionEvent',function(global,Zone){// handle unhandled promise rejection
 function findPromiseRejectionHandler(evtName){return function(e){var eventTasks=findEventTasks(global,evtName);eventTasks.forEach(function(eventTask){// windows has added unhandledrejection event listener
 // trigger the event listener
-var PromiseRejectionEvent=global['PromiseRejectionEvent'];if(PromiseRejectionEvent){var evt=new PromiseRejectionEvent(evtName,{promise:e.promise,reason:e.rejection});eventTask.invoke(evt);}});};}if(global['PromiseRejectionEvent']){Zone[zoneSymbol('unhandledPromiseRejectionHandler')]=findPromiseRejectionHandler('unhandledrejection');Zone[zoneSymbol('rejectionHandledHandler')]=findPromiseRejectionHandler('rejectionhandled');}});});}).call(this,typeof global!=="undefined"?global:typeof self!=="undefined"?self:typeof window!=="undefined"?window:{});},{}],320:[function(require,module,exports){"use strict";var __decorate=this&&this.__decorate||function(decorators,target,key,desc){var c=arguments.length,r=c<3?target:desc===null?desc=Object.getOwnPropertyDescriptor(target,key):desc,d;if((typeof Reflect==="undefined"?"undefined":_typeof(Reflect))==="object"&&typeof Reflect.decorate==="function")r=Reflect.decorate(decorators,target,key,desc);else for(var i=decorators.length-1;i>=0;i--){if(d=decorators[i])r=(c<3?d(r):c>3?d(target,key,r):d(target,key))||r;}return c>3&&r&&Object.defineProperty(target,key,r),r;};Object.defineProperty(exports,"__esModule",{value:true});var core_1=require("@angular/core");var router_1=require("@angular/router");var mainPage_component_1=require("./components/mainPage/mainPage.component");var userPage_component_1=require("./components/userPage/userPage.component");var messages_component_1=require("./components/messages/messages.component");var errorPage_component_1=require("./components/errorPage/errorPage.component");var newItem_component_1=require("./components/newItem/newItem.component");var fullList_component_1=require("./components/fullList/fullList.component");var aboutApp_component_1=require("./components/aboutApp/aboutApp.component");var routes=[{path:'',component:mainPage_component_1.MainPage},{path:'user',component:userPage_component_1.UserPage},{path:'messages',component:messages_component_1.AppMessaging},{path:'new/:type',component:newItem_component_1.NewItem},{path:'list/:type',component:fullList_component_1.FullList},{path:'about',component:aboutApp_component_1.AboutApp},{path:'**',component:errorPage_component_1.ErrorPage}];var AppRoutingModule=function AppRoutingModule(){_classCallCheck(this,AppRoutingModule);};AppRoutingModule=__decorate([core_1.NgModule({imports:[router_1.RouterModule.forRoot(routes)],exports:[router_1.RouterModule]})],AppRoutingModule);exports.AppRoutingModule=AppRoutingModule;},{"./components/aboutApp/aboutApp.component":323,"./components/errorPage/errorPage.component":324,"./components/fullList/fullList.component":325,"./components/mainPage/mainPage.component":327,"./components/messages/messages.component":328,"./components/newItem/newItem.component":330,"./components/userPage/userPage.component":332,"@angular/core":4,"@angular/router":7}],321:[function(require,module,exports){"use strict";var __decorate=this&&this.__decorate||function(decorators,target,key,desc){var c=arguments.length,r=c<3?target:desc===null?desc=Object.getOwnPropertyDescriptor(target,key):desc,d;if((typeof Reflect==="undefined"?"undefined":_typeof(Reflect))==="object"&&typeof Reflect.decorate==="function")r=Reflect.decorate(decorators,target,key,desc);else for(var i=decorators.length-1;i>=0;i--){if(d=decorators[i])r=(c<3?d(r):c>3?d(target,key,r):d(target,key))||r;}return c>3&&r&&Object.defineProperty(target,key,r),r;};var __metadata=this&&this.__metadata||function(k,v){if((typeof Reflect==="undefined"?"undefined":_typeof(Reflect))==="object"&&typeof Reflect.metadata==="function")return Reflect.metadata(k,v);};Object.defineProperty(exports,"__esModule",{value:true});var core_1=require("@angular/core");var auth_service_1=require("./services/auth.service");var AppComponent=function AppComponent(authService){_classCallCheck(this,AppComponent);this.authService=authService;this.navTabs=[{name:'Home',link:'/'},{name:'Messages',link:'/messages'},{name:'User Page',link:'/user'},{name:'About',link:'/about'}];this.authService.checkHash();};AppComponent=__decorate([core_1.Component({selector:'app-root',templateUrl:'./app//app.component.html'}),__metadata("design:paramtypes",[auth_service_1.AuthService])],AppComponent);exports.AppComponent=AppComponent;},{"./services/auth.service":334,"@angular/core":4}],322:[function(require,module,exports){"use strict";var __decorate=this&&this.__decorate||function(decorators,target,key,desc){var c=arguments.length,r=c<3?target:desc===null?desc=Object.getOwnPropertyDescriptor(target,key):desc,d;if((typeof Reflect==="undefined"?"undefined":_typeof(Reflect))==="object"&&typeof Reflect.decorate==="function")r=Reflect.decorate(decorators,target,key,desc);else for(var i=decorators.length-1;i>=0;i--){if(d=decorators[i])r=(c<3?d(r):c>3?d(target,key,r):d(target,key))||r;}return c>3&&r&&Object.defineProperty(target,key,r),r;};Object.defineProperty(exports,"__esModule",{value:true});var core_1=require("@angular/core");var platform_browser_1=require("@angular/platform-browser");var http_1=require("@angular/common/http");var app_component_1=require("./app.component");var app_routing_module_1=require("./app-routing.module");var mainPage_component_1=require("./components/mainPage/mainPage.component");var userPage_component_1=require("./components/userPage/userPage.component");var messages_component_1=require("./components/messages/messages.component");var errorPage_component_1=require("./components/errorPage/errorPage.component");var newItem_component_1=require("./components/newItem/newItem.component");var myPosts_component_1=require("./components/myPosts/myPosts.component");var popUp_component_1=require("./components/popUp/popUp.component");var fullList_component_1=require("./components/fullList/fullList.component");var loader_component_1=require("./components/loader/loader.component");var aboutApp_component_1=require("./components/aboutApp/aboutApp.component");var AppModule=function AppModule(){_classCallCheck(this,AppModule);};AppModule=__decorate([core_1.NgModule({imports:[platform_browser_1.BrowserModule,app_routing_module_1.AppRoutingModule,http_1.HttpClientModule],declarations:[app_component_1.AppComponent,mainPage_component_1.MainPage,userPage_component_1.UserPage,messages_component_1.AppMessaging,errorPage_component_1.ErrorPage,newItem_component_1.NewItem,myPosts_component_1.MyPosts,popUp_component_1.PopUp,fullList_component_1.FullList,loader_component_1.Loader,aboutApp_component_1.AboutApp],providers:[],bootstrap:[app_component_1.AppComponent]})],AppModule);exports.AppModule=AppModule;},{"./app-routing.module":320,"./app.component":321,"./components/aboutApp/aboutApp.component":323,"./components/errorPage/errorPage.component":324,"./components/fullList/fullList.component":325,"./components/loader/loader.component":326,"./components/mainPage/mainPage.component":327,"./components/messages/messages.component":328,"./components/myPosts/myPosts.component":329,"./components/newItem/newItem.component":330,"./components/popUp/popUp.component":331,"./components/userPage/userPage.component":332,"@angular/common/http":1,"@angular/core":4,"@angular/platform-browser":6}],323:[function(require,module,exports){"use strict";var __decorate=this&&this.__decorate||function(decorators,target,key,desc){var c=arguments.length,r=c<3?target:desc===null?desc=Object.getOwnPropertyDescriptor(target,key):desc,d;if((typeof Reflect==="undefined"?"undefined":_typeof(Reflect))==="object"&&typeof Reflect.decorate==="function")r=Reflect.decorate(decorators,target,key,desc);else for(var i=decorators.length-1;i>=0;i--){if(d=decorators[i])r=(c<3?d(r):c>3?d(target,key,r):d(target,key))||r;}return c>3&&r&&Object.defineProperty(target,key,r),r;};var __metadata=this&&this.__metadata||function(k,v){if((typeof Reflect==="undefined"?"undefined":_typeof(Reflect))==="object"&&typeof Reflect.metadata==="function")return Reflect.metadata(k,v);};Object.defineProperty(exports,"__esModule",{value:true});var core_1=require("@angular/core");var AboutApp=function AboutApp(){_classCallCheck(this,AboutApp);};AboutApp=__decorate([core_1.Component({selector:'app-about',templateUrl:'./app//aboutApp.component.html'}),__metadata("design:paramtypes",[])],AboutApp);exports.AboutApp=AboutApp;},{"@angular/core":4}],324:[function(require,module,exports){"use strict";var __decorate=this&&this.__decorate||function(decorators,target,key,desc){var c=arguments.length,r=c<3?target:desc===null?desc=Object.getOwnPropertyDescriptor(target,key):desc,d;if((typeof Reflect==="undefined"?"undefined":_typeof(Reflect))==="object"&&typeof Reflect.decorate==="function")r=Reflect.decorate(decorators,target,key,desc);else for(var i=decorators.length-1;i>=0;i--){if(d=decorators[i])r=(c<3?d(r):c>3?d(target,key,r):d(target,key))||r;}return c>3&&r&&Object.defineProperty(target,key,r),r;};var __metadata=this&&this.__metadata||function(k,v){if((typeof Reflect==="undefined"?"undefined":_typeof(Reflect))==="object"&&typeof Reflect.metadata==="function")return Reflect.metadata(k,v);};Object.defineProperty(exports,"__esModule",{value:true});var core_1=require("@angular/core");var common_1=require("@angular/common");var ErrorPage=/*#__PURE__*/function(){function ErrorPage(location){_classCallCheck(this,ErrorPage);this.location=location;this.error={title:'Sorry!',message:"The page you were looking for doesn't exist.",code:404};}// Sends the user back to the previous page
-_createClass2(ErrorPage,[{key:"goBack",value:function goBack(){this.location.back();}}]);return ErrorPage;}();ErrorPage=__decorate([core_1.Component({selector:'app-error-page',templateUrl:'./app//errorPage.component.html'}),__metadata("design:paramtypes",[common_1.Location])],ErrorPage);exports.ErrorPage=ErrorPage;},{"@angular/common":2,"@angular/core":4}],325:[function(require,module,exports){"use strict";var __decorate=this&&this.__decorate||function(decorators,target,key,desc){var c=arguments.length,r=c<3?target:desc===null?desc=Object.getOwnPropertyDescriptor(target,key):desc,d;if((typeof Reflect==="undefined"?"undefined":_typeof(Reflect))==="object"&&typeof Reflect.decorate==="function")r=Reflect.decorate(decorators,target,key,desc);else for(var i=decorators.length-1;i>=0;i--){if(d=decorators[i])r=(c<3?d(r):c>3?d(target,key,r):d(target,key))||r;}return c>3&&r&&Object.defineProperty(target,key,r),r;};var __metadata=this&&this.__metadata||function(k,v){if((typeof Reflect==="undefined"?"undefined":_typeof(Reflect))==="object"&&typeof Reflect.metadata==="function")return Reflect.metadata(k,v);};Object.defineProperty(exports,"__esModule",{value:true});// Angular imports
+var PromiseRejectionEvent=global['PromiseRejectionEvent'];if(PromiseRejectionEvent){var evt=new PromiseRejectionEvent(evtName,{promise:e.promise,reason:e.rejection});eventTask.invoke(evt);}});};}if(global['PromiseRejectionEvent']){Zone[zoneSymbol('unhandledPromiseRejectionHandler')]=findPromiseRejectionHandler('unhandledrejection');Zone[zoneSymbol('rejectionHandledHandler')]=findPromiseRejectionHandler('rejectionhandled');}});});}).call(this,typeof global!=="undefined"?global:typeof self!=="undefined"?self:typeof window!=="undefined"?window:{});},{}],320:[function(require,module,exports){"use strict";var __decorate=this&&this.__decorate||function(decorators,target,key,desc){var c=arguments.length,r=c<3?target:desc===null?desc=Object.getOwnPropertyDescriptor(target,key):desc,d;if((typeof Reflect==="undefined"?"undefined":_typeof(Reflect))==="object"&&typeof Reflect.decorate==="function")r=Reflect.decorate(decorators,target,key,desc);else for(var i=decorators.length-1;i>=0;i--){if(d=decorators[i])r=(c<3?d(r):c>3?d(target,key,r):d(target,key))||r;}return c>3&&r&&Object.defineProperty(target,key,r),r;};Object.defineProperty(exports,"__esModule",{value:true});var core_1=require("@angular/core");var router_1=require("@angular/router");var mainPage_component_1=require("./components/mainPage/mainPage.component");var userPage_component_1=require("./components/userPage/userPage.component");var messages_component_1=require("./components/messages/messages.component");var errorPage_component_1=require("./components/errorPage/errorPage.component");var newItem_component_1=require("./components/newItem/newItem.component");var fullList_component_1=require("./components/fullList/fullList.component");var aboutApp_component_1=require("./components/aboutApp/aboutApp.component");var routes=[{path:'',component:mainPage_component_1.MainPage},{path:'user',component:userPage_component_1.UserPage},{path:'messages',component:messages_component_1.AppMessaging},{path:'new/:type',component:newItem_component_1.NewItem},{path:'list/:type',component:fullList_component_1.FullList},{path:'about',component:aboutApp_component_1.AboutApp},{path:'**',component:errorPage_component_1.ErrorPage}];var AppRoutingModule=function AppRoutingModule(){_classCallCheck(this,AppRoutingModule);};AppRoutingModule=__decorate([core_1.NgModule({imports:[router_1.RouterModule.forRoot(routes)],exports:[router_1.RouterModule]})],AppRoutingModule);exports.AppRoutingModule=AppRoutingModule;},{"./components/aboutApp/aboutApp.component":323,"./components/errorPage/errorPage.component":324,"./components/fullList/fullList.component":325,"./components/mainPage/mainPage.component":327,"./components/messages/messages.component":328,"./components/newItem/newItem.component":330,"./components/userPage/userPage.component":332,"@angular/core":4,"@angular/router":7}],321:[function(require,module,exports){"use strict";var __decorate=this&&this.__decorate||function(decorators,target,key,desc){var c=arguments.length,r=c<3?target:desc===null?desc=Object.getOwnPropertyDescriptor(target,key):desc,d;if((typeof Reflect==="undefined"?"undefined":_typeof(Reflect))==="object"&&typeof Reflect.decorate==="function")r=Reflect.decorate(decorators,target,key,desc);else for(var i=decorators.length-1;i>=0;i--){if(d=decorators[i])r=(c<3?d(r):c>3?d(target,key,r):d(target,key))||r;}return c>3&&r&&Object.defineProperty(target,key,r),r;};var __metadata=this&&this.__metadata||function(k,v){if((typeof Reflect==="undefined"?"undefined":_typeof(Reflect))==="object"&&typeof Reflect.metadata==="function")return Reflect.metadata(k,v);};Object.defineProperty(exports,"__esModule",{value:true});var core_1=require("@angular/core");var auth_service_1=require("./services/auth.service");var AppComponent=function AppComponent(authService){_classCallCheck(this,AppComponent);this.authService=authService;this.navTabs=[{name:'Home',link:'/'},{name:'Messages',link:'/messages'},{name:'User Page',link:'/user'},{name:'About',link:'/about'}];this.authService.checkHash();};AppComponent=__decorate([core_1.Component({selector:'app-root',templateUrl:'./app//app.component.html'}),__metadata("design:paramtypes",[auth_service_1.AuthService])],AppComponent);exports.AppComponent=AppComponent;},{"./services/auth.service":334,"@angular/core":4}],322:[function(require,module,exports){"use strict";var __decorate=this&&this.__decorate||function(decorators,target,key,desc){var c=arguments.length,r=c<3?target:desc===null?desc=Object.getOwnPropertyDescriptor(target,key):desc,d;if((typeof Reflect==="undefined"?"undefined":_typeof(Reflect))==="object"&&typeof Reflect.decorate==="function")r=Reflect.decorate(decorators,target,key,desc);else for(var i=decorators.length-1;i>=0;i--){if(d=decorators[i])r=(c<3?d(r):c>3?d(target,key,r):d(target,key))||r;}return c>3&&r&&Object.defineProperty(target,key,r),r;};Object.defineProperty(exports,"__esModule",{value:true});var core_1=require("@angular/core");var platform_browser_1=require("@angular/platform-browser");var http_1=require("@angular/common/http");var app_component_1=require("./app.component");var app_routing_module_1=require("./app-routing.module");var mainPage_component_1=require("./components/mainPage/mainPage.component");var userPage_component_1=require("./components/userPage/userPage.component");var messages_component_1=require("./components/messages/messages.component");var errorPage_component_1=require("./components/errorPage/errorPage.component");var newItem_component_1=require("./components/newItem/newItem.component");var myPosts_component_1=require("./components/myPosts/myPosts.component");var popUp_component_1=require("./components/popUp/popUp.component");var fullList_component_1=require("./components/fullList/fullList.component");var loader_component_1=require("./components/loader/loader.component");var aboutApp_component_1=require("./components/aboutApp/aboutApp.component");var AppModule=function AppModule(){_classCallCheck(this,AppModule);};AppModule=__decorate([core_1.NgModule({imports:[platform_browser_1.BrowserModule,app_routing_module_1.AppRoutingModule,http_1.HttpClientModule],declarations:[app_component_1.AppComponent,mainPage_component_1.MainPage,userPage_component_1.UserPage,messages_component_1.AppMessaging,errorPage_component_1.ErrorPage,newItem_component_1.NewItem,myPosts_component_1.MyPosts,popUp_component_1.PopUp,fullList_component_1.FullList,loader_component_1.Loader,aboutApp_component_1.AboutApp],providers:[],bootstrap:[app_component_1.AppComponent]})],AppModule);exports.AppModule=AppModule;},{"./app-routing.module":320,"./app.component":321,"./components/aboutApp/aboutApp.component":323,"./components/errorPage/errorPage.component":324,"./components/fullList/fullList.component":325,"./components/loader/loader.component":326,"./components/mainPage/mainPage.component":327,"./components/messages/messages.component":328,"./components/myPosts/myPosts.component":329,"./components/newItem/newItem.component":330,"./components/popUp/popUp.component":331,"./components/userPage/userPage.component":332,"@angular/common/http":1,"@angular/core":4,"@angular/platform-browser":6}],323:[function(require,module,exports){"use strict";/*
+    About App
+    Send a Hug Component
+*/var __decorate=this&&this.__decorate||function(decorators,target,key,desc){var c=arguments.length,r=c<3?target:desc===null?desc=Object.getOwnPropertyDescriptor(target,key):desc,d;if((typeof Reflect==="undefined"?"undefined":_typeof(Reflect))==="object"&&typeof Reflect.decorate==="function")r=Reflect.decorate(decorators,target,key,desc);else for(var i=decorators.length-1;i>=0;i--){if(d=decorators[i])r=(c<3?d(r):c>3?d(target,key,r):d(target,key))||r;}return c>3&&r&&Object.defineProperty(target,key,r),r;};var __metadata=this&&this.__metadata||function(k,v){if((typeof Reflect==="undefined"?"undefined":_typeof(Reflect))==="object"&&typeof Reflect.metadata==="function")return Reflect.metadata(k,v);};Object.defineProperty(exports,"__esModule",{value:true});// Angular imports
+var core_1=require("@angular/core");var AboutApp=// CTOR
+function AboutApp(){_classCallCheck(this,AboutApp);};AboutApp=__decorate([core_1.Component({selector:'app-about',templateUrl:'./app//aboutApp.component.html'}),__metadata("design:paramtypes",[])],AboutApp);exports.AboutApp=AboutApp;},{"@angular/core":4}],324:[function(require,module,exports){"use strict";/*
+    Error Page
+    Send a Hug Component
+*/var __decorate=this&&this.__decorate||function(decorators,target,key,desc){var c=arguments.length,r=c<3?target:desc===null?desc=Object.getOwnPropertyDescriptor(target,key):desc,d;if((typeof Reflect==="undefined"?"undefined":_typeof(Reflect))==="object"&&typeof Reflect.decorate==="function")r=Reflect.decorate(decorators,target,key,desc);else for(var i=decorators.length-1;i>=0;i--){if(d=decorators[i])r=(c<3?d(r):c>3?d(target,key,r):d(target,key))||r;}return c>3&&r&&Object.defineProperty(target,key,r),r;};var __metadata=this&&this.__metadata||function(k,v){if((typeof Reflect==="undefined"?"undefined":_typeof(Reflect))==="object"&&typeof Reflect.metadata==="function")return Reflect.metadata(k,v);};Object.defineProperty(exports,"__esModule",{value:true});// Angular imports
+var core_1=require("@angular/core");var common_1=require("@angular/common");var ErrorPage=/*#__PURE__*/function(){// CTOR
+function ErrorPage(location){_classCallCheck(this,ErrorPage);this.location=location;// Error message to display onscreen
+this.error={title:'Sorry!',message:"The page you were looking for doesn't exist.",code:404};}/*
+    Function Name: goBack()
+    Function Description: Sends the user back to the previous page
+    Parameters: e (event) - Post to edit.
+    ----------------
+    Programmer: Shir Bar Lev.
+    */_createClass2(ErrorPage,[{key:"goBack",value:function goBack(){this.location.back();}}]);return ErrorPage;}();ErrorPage=__decorate([core_1.Component({selector:'app-error-page',templateUrl:'./app//errorPage.component.html'}),__metadata("design:paramtypes",[common_1.Location])],ErrorPage);exports.ErrorPage=ErrorPage;},{"@angular/common":2,"@angular/core":4}],325:[function(require,module,exports){"use strict";/*
+    Full List
+    Send a Hug Component
+*/var __decorate=this&&this.__decorate||function(decorators,target,key,desc){var c=arguments.length,r=c<3?target:desc===null?desc=Object.getOwnPropertyDescriptor(target,key):desc,d;if((typeof Reflect==="undefined"?"undefined":_typeof(Reflect))==="object"&&typeof Reflect.decorate==="function")r=Reflect.decorate(decorators,target,key,desc);else for(var i=decorators.length-1;i>=0;i--){if(d=decorators[i])r=(c<3?d(r):c>3?d(target,key,r):d(target,key))||r;}return c>3&&r&&Object.defineProperty(target,key,r),r;};var __metadata=this&&this.__metadata||function(k,v){if((typeof Reflect==="undefined"?"undefined":_typeof(Reflect))==="object"&&typeof Reflect.metadata==="function")return Reflect.metadata(k,v);};Object.defineProperty(exports,"__esModule",{value:true});// Angular imports
 var core_1=require("@angular/core");var router_1=require("@angular/router");// App-related imports
-var auth_service_1=require("../../services/auth.service");var items_service_1=require("../../services/items.service");var FullList=/*#__PURE__*/function(){function FullList(route,itemsService,router,authService){_classCallCheck(this,FullList);this.route=route;this.itemsService=itemsService;this.router=router;this.authService=authService;this.editType='post';this.type=this.route.snapshot.paramMap.get('type');this.page=Number(this.route.snapshot.queryParamMap.get('page'));// if the type is new items, get the new items
+var auth_service_1=require("../../services/auth.service");var items_service_1=require("../../services/items.service");var FullList=/*#__PURE__*/function(){// CTOR
+function FullList(route,itemsService,router,authService){_classCallCheck(this,FullList);this.route=route;this.itemsService=itemsService;this.router=router;this.authService=authService;this.editType='post';// get the type of list and the current page
+this.type=this.route.snapshot.paramMap.get('type');this.page=Number(this.route.snapshot.queryParamMap.get('page'));// if the type is new items, get the new items
 if(this.type=='New'){this.itemsService.getNewItems(this.page);}// if the type is suggested items, get the suggested items
-else if(this.type=='Suggested'){this.itemsService.getSuggestedItems(this.page);}this.editMode=false;}// send a hug
-_createClass2(FullList,[{key:"sendHug",value:function sendHug(itemID){var item={};if(this.type=='New'){item=this.itemsService.fullItemsList.fullNewItems.filter(function(e){return e.id==itemID;})[0];}else if(this.type=='Suggested'){item=this.itemsService.fullItemsList.fullSuggestedItems.filter(function(e){return e.id==itemID;})[0];}this.itemsService.sendHug(item);}// next page of user posts
-},{key:"nextPage",value:function nextPage(){if(this.type=='New'){this.page+=1;this.itemsService.fullItemsPage.fullNewItems+=1;this.itemsService.getNewItems(this.itemsService.fullItemsPage.fullNewItems);}else if(this.type=='Suggested'){this.page+=1;this.itemsService.fullItemsPage.fullSuggestedItems+=1;this.itemsService.getSuggestedItems(this.itemsService.fullItemsPage.fullSuggestedItems);}// changes the URL query parameter accordingly
-this.router.navigate([],{relativeTo:this.route,queryParams:{page:this.page},replaceUrl:true});}// previous page of user posts
-},{key:"prevPage",value:function prevPage(){if(this.type=='New'){this.page-=1;this.itemsService.fullItemsPage.fullNewItems-=1;this.itemsService.getNewItems(this.itemsService.fullItemsPage.fullNewItems);}else if(this.type=='Suggested'){this.page-=1;this.itemsService.fullItemsPage.fullSuggestedItems-=1;this.itemsService.getSuggestedItems(this.itemsService.fullItemsPage.fullSuggestedItems);}// changes the URL query parameter accordingly
-this.router.navigate([],{relativeTo:this.route,queryParams:{page:this.page},replaceUrl:true});}// edit a post
-},{key:"editPost",value:function editPost(post){this.postToEdit=post;this.editMode=true;}// remove edit popup
-},{key:"changeMode",value:function changeMode(edit){this.editMode=edit;}// delete a post
-},{key:"deletePost",value:function deletePost(postID){this.itemsService.deletePost(postID);}}]);return FullList;}();FullList=__decorate([core_1.Component({selector:'app-full-list',templateUrl:'./app//fullList.component.html'}),__metadata("design:paramtypes",[router_1.ActivatedRoute,items_service_1.ItemsService,router_1.Router,auth_service_1.AuthService])],FullList);exports.FullList=FullList;},{"../../services/auth.service":334,"../../services/items.service":335,"@angular/core":4,"@angular/router":7}],326:[function(require,module,exports){"use strict";var __decorate=this&&this.__decorate||function(decorators,target,key,desc){var c=arguments.length,r=c<3?target:desc===null?desc=Object.getOwnPropertyDescriptor(target,key):desc,d;if((typeof Reflect==="undefined"?"undefined":_typeof(Reflect))==="object"&&typeof Reflect.decorate==="function")r=Reflect.decorate(decorators,target,key,desc);else for(var i=decorators.length-1;i>=0;i--){if(d=decorators[i])r=(c<3?d(r):c>3?d(target,key,r):d(target,key))||r;}return c>3&&r&&Object.defineProperty(target,key,r),r;};var __metadata=this&&this.__metadata||function(k,v){if((typeof Reflect==="undefined"?"undefined":_typeof(Reflect))==="object"&&typeof Reflect.metadata==="function")return Reflect.metadata(k,v);};Object.defineProperty(exports,"__esModule",{value:true});// Angular imports
+else if(this.type=='Suggested'){this.itemsService.getSuggestedItems(this.page);}this.editMode=false;}/*
+    Function Name: sendHug()
+    Function Description: Send a hug to a user through a post they've written. The hug
+                          itself is sent by the items service.
+    Parameters: itemID (number) - ID of the post.
+    ----------------
+    Programmer: Shir Bar Lev.
+    */_createClass2(FullList,[{key:"sendHug",value:function sendHug(itemID){var item={};// if the type of list is 'new posts', find the ID in the list of new posts
+if(this.type=='New'){item=this.itemsService.fullItemsList.fullNewItems.filter(function(e){return e.id==itemID;})[0];}// if the type of list is 'suggested posts', find the ID in the list of suggested posts
+else if(this.type=='Suggested'){item=this.itemsService.fullItemsList.fullSuggestedItems.filter(function(e){return e.id==itemID;})[0];}this.itemsService.sendHug(item);}/*
+    Function Name: nextPage()
+    Function Description: Go to the next page of posts. Sends a request to the
+                          items service to get the data for the next page.
+    Parameters: None.
+    ----------------
+    Programmer: Shir Bar Lev.
+    */},{key:"nextPage",value:function nextPage(){// if the list is the new posts list, get the next page of new posts
+if(this.type=='New'){this.page+=1;this.itemsService.fullItemsPage.fullNewItems+=1;this.itemsService.getNewItems(this.itemsService.fullItemsPage.fullNewItems);}// if the list is the suggested posts list, get the next page of suggested posts
+else if(this.type=='Suggested'){this.page+=1;this.itemsService.fullItemsPage.fullSuggestedItems+=1;this.itemsService.getSuggestedItems(this.itemsService.fullItemsPage.fullSuggestedItems);}// changes the URL query parameter (page) according to the new page
+this.router.navigate([],{relativeTo:this.route,queryParams:{page:this.page},replaceUrl:true});}/*
+    Function Name: prevPage()
+    Function Description: Go to the previous page of posts. Sends a request to the
+                          items service to get the data for the previous page.
+    Parameters: None.
+    ----------------
+    Programmer: Shir Bar Lev.
+    */},{key:"prevPage",value:function prevPage(){// if the list is the new posts list, get the previous page of new posts
+if(this.type=='New'){this.page-=1;this.itemsService.fullItemsPage.fullNewItems-=1;this.itemsService.getNewItems(this.itemsService.fullItemsPage.fullNewItems);}// if the list is the suggested posts list, get the previous page of suggested posts
+else if(this.type=='Suggested'){this.page-=1;this.itemsService.fullItemsPage.fullSuggestedItems-=1;this.itemsService.getSuggestedItems(this.itemsService.fullItemsPage.fullSuggestedItems);}// changes the URL query parameter (page) according to the new page
+this.router.navigate([],{relativeTo:this.route,queryParams:{page:this.page},replaceUrl:true});}/*
+    Function Name: editPost()
+    Function Description: Triggers edit mode in order to edit a post.
+    Parameters: post (Post) - Post to edit.
+    ----------------
+    Programmer: Shir Bar Lev.
+    */},{key:"editPost",value:function editPost(post){this.postToEdit=post;this.editMode=true;}/*
+    Function Name: changeMode()
+    Function Description: Remove the edit popup.
+    Parameters: edit (boolean) - indicating whether edit mode should be active.
+                                 When the user finishes editing, the event emitter
+                                 in the popup component sends 'false' to this function
+                                 to remove the popup.
+    ----------------
+    Programmer: Shir Bar Lev.
+    */},{key:"changeMode",value:function changeMode(edit){this.editMode=edit;}/*
+    Function Name: deletePost()
+    Function Description: Send a request to the items service to delete a post.
+    Parameters: post_id (number) - ID of the post to delete.
+    ----------------
+    Programmer: Shir Bar Lev.
+    */},{key:"deletePost",value:function deletePost(postID){this.itemsService.deletePost(postID);}}]);return FullList;}();FullList=__decorate([core_1.Component({selector:'app-full-list',templateUrl:'./app//fullList.component.html'}),__metadata("design:paramtypes",[router_1.ActivatedRoute,items_service_1.ItemsService,router_1.Router,auth_service_1.AuthService])],FullList);exports.FullList=FullList;},{"../../services/auth.service":334,"../../services/items.service":335,"@angular/core":4,"@angular/router":7}],326:[function(require,module,exports){"use strict";/*
+    Loader
+    Send a Hug Component
+*/var __decorate=this&&this.__decorate||function(decorators,target,key,desc){var c=arguments.length,r=c<3?target:desc===null?desc=Object.getOwnPropertyDescriptor(target,key):desc,d;if((typeof Reflect==="undefined"?"undefined":_typeof(Reflect))==="object"&&typeof Reflect.decorate==="function")r=Reflect.decorate(decorators,target,key,desc);else for(var i=decorators.length-1;i>=0;i--){if(d=decorators[i])r=(c<3?d(r):c>3?d(target,key,r):d(target,key))||r;}return c>3&&r&&Object.defineProperty(target,key,r),r;};var __metadata=this&&this.__metadata||function(k,v){if((typeof Reflect==="undefined"?"undefined":_typeof(Reflect))==="object"&&typeof Reflect.metadata==="function")return Reflect.metadata(k,v);};Object.defineProperty(exports,"__esModule",{value:true});// Angular imports
 var core_1=require("@angular/core");// App-related imports
-var items_service_1=require("../../services/items.service");var auth_service_1=require("../../services/auth.service");var Loader=/*#__PURE__*/function(){function Loader(itemsService,authService){_classCallCheck(this,Loader);this.itemsService=itemsService;this.authService=authService;this.message='';this.visible=true;}_createClass2(Loader,[{key:"ngOnInit",value:function ngOnInit(){var _this2=this;// if the app is waiting for user data to be fetched from the server
+var items_service_1=require("../../services/items.service");var auth_service_1=require("../../services/auth.service");var Loader=/*#__PURE__*/function(){// CTOR
+function Loader(itemsService,authService){_classCallCheck(this,Loader);this.itemsService=itemsService;this.authService=authService;// message to display to the user while waiting
+this.message='';// loader screen visibility
+this.visible=true;}/*
+    Function Name: ngOnInit()
+    Function Description: This method is automatically triggered by Angular upon
+                          page initiation. It checks for the existence of the data
+                          the parent component is waiting for and adjusts the
+                          loader itself (its message and visibility) accordingly.
+    Parameters: None.
+    ----------------
+    Programmer: Shir Bar Lev.
+    */_createClass2(Loader,[{key:"ngOnInit",value:function ngOnInit(){var _this2=this;// if the app is waiting for user data to be fetched from the server
 if(this.waitingFor=='user'){this.message='Fetching user data...';// subscribe to the subject following user data
 this.authService.isUserDataResolved.subscribe(function(value){// the subject's value is changed to 'true' upon fetching user data,
 // so if the value is true, there's no longer need for the loader
@@ -21411,102 +21489,389 @@ else if(this.waitingFor=='user posts'){this.message='Fetching user posts...';// 
 this.itemsService.isUserPostsResolved.subscribe(function(value){// the subject's value is changed to 'true' upon fetching user
 // posts, so if the value is true, there's no longer need for the
 // loader screen
-if(value==true){_this2.visible=false;}});}}}]);return Loader;}();__decorate([core_1.Input(),__metadata("design:type",String)],Loader.prototype,"waitingFor",void 0);Loader=__decorate([core_1.Component({selector:'app-loader',templateUrl:'./app//loader.component.html'}),__metadata("design:paramtypes",[items_service_1.ItemsService,auth_service_1.AuthService])],Loader);exports.Loader=Loader;},{"../../services/auth.service":334,"../../services/items.service":335,"@angular/core":4}],327:[function(require,module,exports){"use strict";var __decorate=this&&this.__decorate||function(decorators,target,key,desc){var c=arguments.length,r=c<3?target:desc===null?desc=Object.getOwnPropertyDescriptor(target,key):desc,d;if((typeof Reflect==="undefined"?"undefined":_typeof(Reflect))==="object"&&typeof Reflect.decorate==="function")r=Reflect.decorate(decorators,target,key,desc);else for(var i=decorators.length-1;i>=0;i--){if(d=decorators[i])r=(c<3?d(r):c>3?d(target,key,r):d(target,key))||r;}return c>3&&r&&Object.defineProperty(target,key,r),r;};var __metadata=this&&this.__metadata||function(k,v){if((typeof Reflect==="undefined"?"undefined":_typeof(Reflect))==="object"&&typeof Reflect.metadata==="function")return Reflect.metadata(k,v);};Object.defineProperty(exports,"__esModule",{value:true});// Angular imports
+if(value==true){_this2.visible=false;}});}}}]);return Loader;}();__decorate([core_1.Input(),__metadata("design:type",String)],Loader.prototype,"waitingFor",void 0);Loader=__decorate([core_1.Component({selector:'app-loader',templateUrl:'./app//loader.component.html'}),__metadata("design:paramtypes",[items_service_1.ItemsService,auth_service_1.AuthService])],Loader);exports.Loader=Loader;},{"../../services/auth.service":334,"../../services/items.service":335,"@angular/core":4}],327:[function(require,module,exports){"use strict";/*
+    Main Page
+    Send a Hug Component
+*/var __decorate=this&&this.__decorate||function(decorators,target,key,desc){var c=arguments.length,r=c<3?target:desc===null?desc=Object.getOwnPropertyDescriptor(target,key):desc,d;if((typeof Reflect==="undefined"?"undefined":_typeof(Reflect))==="object"&&typeof Reflect.decorate==="function")r=Reflect.decorate(decorators,target,key,desc);else for(var i=decorators.length-1;i>=0;i--){if(d=decorators[i])r=(c<3?d(r):c>3?d(target,key,r):d(target,key))||r;}return c>3&&r&&Object.defineProperty(target,key,r),r;};var __metadata=this&&this.__metadata||function(k,v){if((typeof Reflect==="undefined"?"undefined":_typeof(Reflect))==="object"&&typeof Reflect.metadata==="function")return Reflect.metadata(k,v);};Object.defineProperty(exports,"__esModule",{value:true});// Angular imports
 var core_1=require("@angular/core");// App-related imports
 var auth_service_1=require("../../services/auth.service");var items_service_1=require("../../services/items.service");var MainPage=/*#__PURE__*/function(){// CTOR
-function MainPage(itemsService,authService){_classCallCheck(this,MainPage);this.itemsService=itemsService;this.authService=authService;this.editType='post';this.itemsService.getItems();this.editMode=false;}_createClass2(MainPage,[{key:"ngOnInit",value:function ngOnInit(){}// Send a hug to a user
-},{key:"sendHug",value:function sendHug(itemID){var item={};// if the item is in the new list, gets it from there
+function MainPage(itemsService,authService){_classCallCheck(this,MainPage);this.itemsService=itemsService;this.authService=authService;this.editType='post';this.itemsService.getItems();this.editMode=false;}_createClass2(MainPage,[{key:"ngOnInit",value:function ngOnInit(){}/*
+    Function Name: sendHug()
+    Function Description: Send a hug to a user through a post they've written. The hug
+                          itself is sent by the items service.
+    Parameters: itemID (number) - ID of the post.
+    ----------------
+    Programmer: Shir Bar Lev.
+    */},{key:"sendHug",value:function sendHug(itemID){var item={};// if the item is in the new list, gets it from there
 if(this.itemsService.newItemsArray.filter(function(e){return e.id==itemID;})){item=this.itemsService.newItemsArray.filter(function(e){return e.id==itemID;})[0];}// if not, the item must be in the suggested list, so it gets it from there
-else{item=this.itemsService.sugItemsArray.filter(function(e){return e.id==itemID;})[0];}this.itemsService.sendHug(item);}// edit a post
-},{key:"editPost",value:function editPost(post){this.postToEdit=post;this.editMode=true;}// remove edit popup
-},{key:"changeMode",value:function changeMode(edit){this.editMode=edit;}// delete a post
-},{key:"deletePost",value:function deletePost(postID){this.itemsService.deletePost(postID);}}]);return MainPage;}();MainPage=__decorate([core_1.Component({selector:'app-main-page',templateUrl:'./app//mainPage.component.html'}),__metadata("design:paramtypes",[items_service_1.ItemsService,auth_service_1.AuthService])],MainPage);exports.MainPage=MainPage;},{"../../services/auth.service":334,"../../services/items.service":335,"@angular/core":4}],328:[function(require,module,exports){"use strict";var __decorate=this&&this.__decorate||function(decorators,target,key,desc){var c=arguments.length,r=c<3?target:desc===null?desc=Object.getOwnPropertyDescriptor(target,key):desc,d;if((typeof Reflect==="undefined"?"undefined":_typeof(Reflect))==="object"&&typeof Reflect.decorate==="function")r=Reflect.decorate(decorators,target,key,desc);else for(var i=decorators.length-1;i>=0;i--){if(d=decorators[i])r=(c<3?d(r):c>3?d(target,key,r):d(target,key))||r;}return c>3&&r&&Object.defineProperty(target,key,r),r;};var __metadata=this&&this.__metadata||function(k,v){if((typeof Reflect==="undefined"?"undefined":_typeof(Reflect))==="object"&&typeof Reflect.metadata==="function")return Reflect.metadata(k,v);};Object.defineProperty(exports,"__esModule",{value:true});// Angular imports
+else{item=this.itemsService.sugItemsArray.filter(function(e){return e.id==itemID;})[0];}this.itemsService.sendHug(item);}/*
+    Function Name: editPost()
+    Function Description: Triggers edit mode in order to edit a post.
+    Parameters: post (Post) - Post to edit.
+    ----------------
+    Programmer: Shir Bar Lev.
+    */},{key:"editPost",value:function editPost(post){this.postToEdit=post;this.editMode=true;}/*
+    Function Name: changeMode()
+    Function Description: Remove the edit popup.
+    Parameters: edit (boolean) - indicating whether edit mode should be active.
+                                 When the user finishes editing, the event emitter
+                                 in the popup component sends 'false' to this function
+                                 to remove the popup.
+    ----------------
+    Programmer: Shir Bar Lev.
+    */},{key:"changeMode",value:function changeMode(edit){this.editMode=edit;}/*
+    Function Name: deletePost()
+    Function Description: Send a request to the items service to delete a post.
+    Parameters: post_id (number) - ID of the post to delete.
+    ----------------
+    Programmer: Shir Bar Lev.
+    */},{key:"deletePost",value:function deletePost(postID){this.itemsService.deletePost(postID);}}]);return MainPage;}();MainPage=__decorate([core_1.Component({selector:'app-main-page',templateUrl:'./app//mainPage.component.html'}),__metadata("design:paramtypes",[items_service_1.ItemsService,auth_service_1.AuthService])],MainPage);exports.MainPage=MainPage;},{"../../services/auth.service":334,"../../services/items.service":335,"@angular/core":4}],328:[function(require,module,exports){"use strict";/*
+    Messages Page
+    Send a Hug Component
+*/var __decorate=this&&this.__decorate||function(decorators,target,key,desc){var c=arguments.length,r=c<3?target:desc===null?desc=Object.getOwnPropertyDescriptor(target,key):desc,d;if((typeof Reflect==="undefined"?"undefined":_typeof(Reflect))==="object"&&typeof Reflect.decorate==="function")r=Reflect.decorate(decorators,target,key,desc);else for(var i=decorators.length-1;i>=0;i--){if(d=decorators[i])r=(c<3?d(r):c>3?d(target,key,r):d(target,key))||r;}return c>3&&r&&Object.defineProperty(target,key,r),r;};var __metadata=this&&this.__metadata||function(k,v){if((typeof Reflect==="undefined"?"undefined":_typeof(Reflect))==="object"&&typeof Reflect.metadata==="function")return Reflect.metadata(k,v);};Object.defineProperty(exports,"__esModule",{value:true});// Angular imports
 var core_1=require("@angular/core");// App-related imports
 var auth_service_1=require("../../services/auth.service");var items_service_1=require("../../services/items.service");var AppMessaging=/*#__PURE__*/function(){// CTOR
-function AppMessaging(authService,itemsService){var _this3=this;_classCallCheck(this,AppMessaging);this.authService=authService;this.itemsService=itemsService;this.waitFor='messages';// subscribe to the subject following user data
+function AppMessaging(authService,itemsService){var _this3=this;_classCallCheck(this,AppMessaging);this.authService=authService;this.itemsService=itemsService;// loader sub-component variable
+this.waitFor='messages';// subscribe to the subject following user data
 this.authService.isUserDataResolved.subscribe(function(value){// if the value is true, user data has been fetched, so the app can
 // now fetch the user's messages
 if(value==true){// Gets the user's messages via the items service
-_this3.itemsService.getMessages(_this3.authService.userData.id);}});}_createClass2(AppMessaging,[{key:"ngOnInit",value:function ngOnInit(){}// Login
-},{key:"login",value:function login(){this.authService.login();}// delete a message
-},{key:"deleteMessage",value:function deleteMessage(messageID){this.itemsService.deleteMessage(messageID);}// next page of messages
-},{key:"nextPage",value:function nextPage(){this.itemsService.userMessagesPage+=1;this.itemsService.getMessages(this.authService.userData.id);}// previous page of messages
-},{key:"prevPage",value:function prevPage(){this.itemsService.userMessagesPage-=1;this.itemsService.getMessages(this.authService.userData.id);}}]);return AppMessaging;}();AppMessaging=__decorate([core_1.Component({selector:'app-messages',templateUrl:'./app//messages.component.html'}),__metadata("design:paramtypes",[auth_service_1.AuthService,items_service_1.ItemsService])],AppMessaging);exports.AppMessaging=AppMessaging;},{"../../services/auth.service":334,"../../services/items.service":335,"@angular/core":4}],329:[function(require,module,exports){"use strict";var __decorate=this&&this.__decorate||function(decorators,target,key,desc){var c=arguments.length,r=c<3?target:desc===null?desc=Object.getOwnPropertyDescriptor(target,key):desc,d;if((typeof Reflect==="undefined"?"undefined":_typeof(Reflect))==="object"&&typeof Reflect.decorate==="function")r=Reflect.decorate(decorators,target,key,desc);else for(var i=decorators.length-1;i>=0;i--){if(d=decorators[i])r=(c<3?d(r):c>3?d(target,key,r):d(target,key))||r;}return c>3&&r&&Object.defineProperty(target,key,r),r;};var __metadata=this&&this.__metadata||function(k,v){if((typeof Reflect==="undefined"?"undefined":_typeof(Reflect))==="object"&&typeof Reflect.metadata==="function")return Reflect.metadata(k,v);};Object.defineProperty(exports,"__esModule",{value:true});var core_1=require("@angular/core");var items_service_1=require("../../services/items.service");var auth_service_1=require("../../services/auth.service");var MyPosts=/*#__PURE__*/function(){function MyPosts(itemsService,authService){_classCallCheck(this,MyPosts);this.itemsService=itemsService;this.authService=authService;this.editType='post';this.waitFor='user posts';itemsService.getUserPosts(this.authService.userData.id);this.editMode=false;}_createClass2(MyPosts,[{key:"ngOnInit",value:function ngOnInit(){}},{key:"editPost",value:function editPost(post){this.postToEdit=post;this.editMode=true;}// remove edit popup
-},{key:"changeMode",value:function changeMode(edit){this.editMode=edit;}// Delete a post
-},{key:"deletePost",value:function deletePost(post_id){this.itemsService.deletePost(post_id);}// next page of user posts
-},{key:"nextPage",value:function nextPage(){this.itemsService.userPostsPage+=1;this.itemsService.getUserPosts(this.authService.userData.id);}// previous page of user posts
-},{key:"prevPage",value:function prevPage(){this.itemsService.userPostsPage-=1;this.itemsService.getUserPosts(this.authService.userData.id);}}]);return MyPosts;}();MyPosts=__decorate([core_1.Component({selector:'app-my-posts',templateUrl:'./app//myPosts.component.html'}),__metadata("design:paramtypes",[items_service_1.ItemsService,auth_service_1.AuthService])],MyPosts);exports.MyPosts=MyPosts;},{"../../services/auth.service":334,"../../services/items.service":335,"@angular/core":4}],330:[function(require,module,exports){"use strict";var __decorate=this&&this.__decorate||function(decorators,target,key,desc){var c=arguments.length,r=c<3?target:desc===null?desc=Object.getOwnPropertyDescriptor(target,key):desc,d;if((typeof Reflect==="undefined"?"undefined":_typeof(Reflect))==="object"&&typeof Reflect.decorate==="function")r=Reflect.decorate(decorators,target,key,desc);else for(var i=decorators.length-1;i>=0;i--){if(d=decorators[i])r=(c<3?d(r):c>3?d(target,key,r):d(target,key))||r;}return c>3&&r&&Object.defineProperty(target,key,r),r;};var __metadata=this&&this.__metadata||function(k,v){if((typeof Reflect==="undefined"?"undefined":_typeof(Reflect))==="object"&&typeof Reflect.metadata==="function")return Reflect.metadata(k,v);};Object.defineProperty(exports,"__esModule",{value:true});// Angular imports
+_this3.itemsService.getMessages(_this3.authService.userData.id);}});}_createClass2(AppMessaging,[{key:"ngOnInit",value:function ngOnInit(){}/*
+    Function Name: login()
+    Function Description: Activates Auth0 login via the authentication service.
+    Parameters: None.
+    ----------------
+    Programmer: Shir Bar Lev.
+    */},{key:"login",value:function login(){this.authService.login();}/*
+    Function Name: deleteMessage()
+    Function Description: Delete a specific message from the user's messages, via
+                          the items service.
+    Parameters: messageID (number) - the ID of the message to delete.
+    ----------------
+    Programmer: Shir Bar Lev.
+    */},{key:"deleteMessage",value:function deleteMessage(messageID){this.itemsService.deleteMessage(messageID);}/*
+    Function Name: nextPage()
+    Function Description: Go to the next page of messages. Sends a request to the
+                          items service to get the data for the next page.
+    Parameters: None.
+    ----------------
+    Programmer: Shir Bar Lev.
+    */},{key:"nextPage",value:function nextPage(){this.itemsService.userMessagesPage+=1;this.itemsService.getMessages(this.authService.userData.id);}/*
+    Function Name: prevPage()
+    Function Description: Go to the previous page of messages. Sends a request to the
+                          items service to get the data for the previous page.
+    Parameters: None.
+    ----------------
+    Programmer: Shir Bar Lev.
+    */},{key:"prevPage",value:function prevPage(){this.itemsService.userMessagesPage-=1;this.itemsService.getMessages(this.authService.userData.id);}}]);return AppMessaging;}();AppMessaging=__decorate([core_1.Component({selector:'app-messages',templateUrl:'./app//messages.component.html'}),__metadata("design:paramtypes",[auth_service_1.AuthService,items_service_1.ItemsService])],AppMessaging);exports.AppMessaging=AppMessaging;},{"../../services/auth.service":334,"../../services/items.service":335,"@angular/core":4}],329:[function(require,module,exports){"use strict";/*
+    My Posts
+    Send a Hug Component
+*/var __decorate=this&&this.__decorate||function(decorators,target,key,desc){var c=arguments.length,r=c<3?target:desc===null?desc=Object.getOwnPropertyDescriptor(target,key):desc,d;if((typeof Reflect==="undefined"?"undefined":_typeof(Reflect))==="object"&&typeof Reflect.decorate==="function")r=Reflect.decorate(decorators,target,key,desc);else for(var i=decorators.length-1;i>=0;i--){if(d=decorators[i])r=(c<3?d(r):c>3?d(target,key,r):d(target,key))||r;}return c>3&&r&&Object.defineProperty(target,key,r),r;};var __metadata=this&&this.__metadata||function(k,v){if((typeof Reflect==="undefined"?"undefined":_typeof(Reflect))==="object"&&typeof Reflect.metadata==="function")return Reflect.metadata(k,v);};Object.defineProperty(exports,"__esModule",{value:true});// Angular imports
+var core_1=require("@angular/core");var items_service_1=require("../../services/items.service");var auth_service_1=require("../../services/auth.service");var MyPosts=/*#__PURE__*/function(){// CTOR
+function MyPosts(itemsService,authService){_classCallCheck(this,MyPosts);this.itemsService=itemsService;this.authService=authService;this.editType='post';// loader sub-component variable
+this.waitFor='user posts';itemsService.getUserPosts(this.authService.userData.id);this.editMode=false;}_createClass2(MyPosts,[{key:"ngOnInit",value:function ngOnInit(){}/*
+    Function Name: editPost()
+    Function Description: Triggers edit mode in order to edit a post.
+    Parameters: post (Post) - Post to edit.
+    ----------------
+    Programmer: Shir Bar Lev.
+    */},{key:"editPost",value:function editPost(post){this.postToEdit=post;this.editMode=true;}/*
+    Function Name: changeMode()
+    Function Description: Remove the edit popup.
+    Parameters: edit (boolean) - indicating whether edit mode should be active.
+                                 When the user finishes editing, the event emitter
+                                 in the popup component sends 'false' to this function
+                                 to remove the popup.
+    ----------------
+    Programmer: Shir Bar Lev.
+    */},{key:"changeMode",value:function changeMode(edit){this.editMode=edit;}/*
+    Function Name: deletePost()
+    Function Description: Send a request to the items service to delete a post.
+    Parameters: post_id (number) - ID of the post to delete.
+    ----------------
+    Programmer: Shir Bar Lev.
+    */},{key:"deletePost",value:function deletePost(post_id){this.itemsService.deletePost(post_id);}/*
+    Function Name: nextPage()
+    Function Description: Go to the next page of user posts. Sends a request to the
+                          items service to get the data for the next page.
+    Parameters: None.
+    ----------------
+    Programmer: Shir Bar Lev.
+    */},{key:"nextPage",value:function nextPage(){this.itemsService.userPostsPage+=1;this.itemsService.getUserPosts(this.authService.userData.id);}/*
+    Function Name: prevPage()
+    Function Description: Go to the previous page of user posts. Sends a request to the
+                          items service to get the data for the previous page.
+    Parameters: None.
+    ----------------
+    Programmer: Shir Bar Lev.
+    */},{key:"prevPage",value:function prevPage(){this.itemsService.userPostsPage-=1;this.itemsService.getUserPosts(this.authService.userData.id);}}]);return MyPosts;}();MyPosts=__decorate([core_1.Component({selector:'app-my-posts',templateUrl:'./app//myPosts.component.html'}),__metadata("design:paramtypes",[items_service_1.ItemsService,auth_service_1.AuthService])],MyPosts);exports.MyPosts=MyPosts;},{"../../services/auth.service":334,"../../services/items.service":335,"@angular/core":4}],330:[function(require,module,exports){"use strict";/*
+    New Item
+    Send a Hug Component
+*/var __decorate=this&&this.__decorate||function(decorators,target,key,desc){var c=arguments.length,r=c<3?target:desc===null?desc=Object.getOwnPropertyDescriptor(target,key):desc,d;if((typeof Reflect==="undefined"?"undefined":_typeof(Reflect))==="object"&&typeof Reflect.decorate==="function")r=Reflect.decorate(decorators,target,key,desc);else for(var i=decorators.length-1;i>=0;i--){if(d=decorators[i])r=(c<3?d(r):c>3?d(target,key,r):d(target,key))||r;}return c>3&&r&&Object.defineProperty(target,key,r),r;};var __metadata=this&&this.__metadata||function(k,v){if((typeof Reflect==="undefined"?"undefined":_typeof(Reflect))==="object"&&typeof Reflect.metadata==="function")return Reflect.metadata(k,v);};Object.defineProperty(exports,"__esModule",{value:true});// Angular imports
 var core_1=require("@angular/core");var router_1=require("@angular/router");var items_service_1=require("../../services/items.service");var auth_service_1=require("../../services/auth.service");var alerts_service_1=require("../../services/alerts.service");var NewItem=/*#__PURE__*/function(){// CTOR
-function NewItem(itemsService,authService,route,alertService){_classCallCheck(this,NewItem);this.itemsService=itemsService;this.authService=authService;this.route=route;this.alertService=alertService;this.itemType='';// Gets the URL parameters
+function NewItem(itemsService,authService,route,alertService){_classCallCheck(this,NewItem);this.itemsService=itemsService;this.authService=authService;this.route=route;this.alertService=alertService;// variable declaration
+this.itemType='';// Gets the URL parameters
 var type=this.route.snapshot.paramMap.get('type');var user=this.route.snapshot.queryParamMap.get('user');var userID=this.route.snapshot.queryParamMap.get('userID');// If there's a type parameter, sets the type property
 if(type){this.itemType=type;}// If there's a user parameter, sets the user property
-if(user&&userID){this.user=user;this.forID=userID;}}// Create new post
-_createClass2(NewItem,[{key:"sendPost",value:function sendPost(e,postText){e.preventDefault();var newPost={user_id:this.authService.userData.id,user:this.authService.userData.displayName,text:postText,date:new Date(),givenHugs:0};this.itemsService.sendPost(newPost);}// Send a message to a user
-},{key:"sendMessage",value:function sendMessage(e,messageText){e.preventDefault();// if the user is attempting to send a message to themselves
+if(user&&userID){this.user=user;this.forID=userID;}}/*
+    Function Name: sendPost()
+    Function Description: Sends a request to create a new post to the items service.
+    Parameters: e (event) - This method is triggered by pressing a button; this parameter
+                            contains the click event data.
+                postText (string) - A string containing the post's text.
+    ----------------
+    Programmer: Shir Bar Lev.
+    */_createClass2(NewItem,[{key:"sendPost",value:function sendPost(e,postText){e.preventDefault();// create a new post object to send
+var newPost={user_id:this.authService.userData.id,user:this.authService.userData.displayName,text:postText,date:new Date(),givenHugs:0};this.itemsService.sendPost(newPost);}/*
+    Function Name: sendMessage()
+    Function Description: Sends a request to create a new message to the items service.
+    Parameters: e (event) - This method is triggered by pressing a button; this parameter
+                            contains the click event data.
+                messageText (string) - A string containing the new message's text.
+    ----------------
+    Programmer: Shir Bar Lev.
+    */},{key:"sendMessage",value:function sendMessage(e,messageText){e.preventDefault();// if the user is attempting to send a message to themselves
 if(this.authService.userData.id==this.forID){this.alertService.createAlert({type:'Error',message:'You can\'t send a message to yourself!'});}// if the user is sending a message to someone else, make the request
-else{var newMessage={from:this.authService.userData.displayName,fromId:this.authService.userData.id,forId:this.forID,messageText:messageText,date:new Date()};this.itemsService.sendMessage(newMessage);}}}]);return NewItem;}();NewItem=__decorate([core_1.Component({selector:'app-new-item',templateUrl:'./app//newItem.component.html'}),__metadata("design:paramtypes",[items_service_1.ItemsService,auth_service_1.AuthService,router_1.ActivatedRoute,alerts_service_1.AlertsService])],NewItem);exports.NewItem=NewItem;},{"../../services/alerts.service":333,"../../services/auth.service":334,"../../services/items.service":335,"@angular/core":4,"@angular/router":7}],331:[function(require,module,exports){"use strict";var __decorate=this&&this.__decorate||function(decorators,target,key,desc){var c=arguments.length,r=c<3?target:desc===null?desc=Object.getOwnPropertyDescriptor(target,key):desc,d;if((typeof Reflect==="undefined"?"undefined":_typeof(Reflect))==="object"&&typeof Reflect.decorate==="function")r=Reflect.decorate(decorators,target,key,desc);else for(var i=decorators.length-1;i>=0;i--){if(d=decorators[i])r=(c<3?d(r):c>3?d(target,key,r):d(target,key))||r;}return c>3&&r&&Object.defineProperty(target,key,r),r;};var __metadata=this&&this.__metadata||function(k,v){if((typeof Reflect==="undefined"?"undefined":_typeof(Reflect))==="object"&&typeof Reflect.metadata==="function")return Reflect.metadata(k,v);};Object.defineProperty(exports,"__esModule",{value:true});// Angular imports
+else{// create a new message object to send
+var newMessage={from:this.authService.userData.displayName,fromId:this.authService.userData.id,forId:this.forID,messageText:messageText,date:new Date()};this.itemsService.sendMessage(newMessage);}}}]);return NewItem;}();NewItem=__decorate([core_1.Component({selector:'app-new-item',templateUrl:'./app//newItem.component.html'}),__metadata("design:paramtypes",[items_service_1.ItemsService,auth_service_1.AuthService,router_1.ActivatedRoute,alerts_service_1.AlertsService])],NewItem);exports.NewItem=NewItem;},{"../../services/alerts.service":333,"../../services/auth.service":334,"../../services/items.service":335,"@angular/core":4,"@angular/router":7}],331:[function(require,module,exports){"use strict";/*
+    Popup
+    Send a Hug Component
+*/var __decorate=this&&this.__decorate||function(decorators,target,key,desc){var c=arguments.length,r=c<3?target:desc===null?desc=Object.getOwnPropertyDescriptor(target,key):desc,d;if((typeof Reflect==="undefined"?"undefined":_typeof(Reflect))==="object"&&typeof Reflect.decorate==="function")r=Reflect.decorate(decorators,target,key,desc);else for(var i=decorators.length-1;i>=0;i--){if(d=decorators[i])r=(c<3?d(r):c>3?d(target,key,r):d(target,key))||r;}return c>3&&r&&Object.defineProperty(target,key,r),r;};var __metadata=this&&this.__metadata||function(k,v){if((typeof Reflect==="undefined"?"undefined":_typeof(Reflect))==="object"&&typeof Reflect.metadata==="function")return Reflect.metadata(k,v);};Object.defineProperty(exports,"__esModule",{value:true});// Angular imports
 var core_1=require("@angular/core");// App-related import
-var auth_service_1=require("../../services/auth.service");var items_service_1=require("../../services/items.service");var PopUp=/*#__PURE__*/function(){function PopUp(authService,itemsService){_classCallCheck(this,PopUp);this.authService=authService;this.itemsService=itemsService;// indicates whether edit mode is still required
-this.editMode=new core_1.EventEmitter();}// edit the user's display name
-_createClass2(PopUp,[{key:"updateDisplayN",value:function updateDisplayN(e,newDisplayName){e.preventDefault();this.authService.userData.displayName=newDisplayName;this.authService.updateUserData();this.editMode.emit(false);}// edit a post's text
-},{key:"updatePost",value:function updatePost(e,newText){e.preventDefault();this.editedItem.text=newText;this.itemsService.editPost(this.editedItem);this.editMode.emit(false);}// leave edit mode
-},{key:"exitEdit",value:function exitEdit(){this.editMode.emit(false);}}]);return PopUp;}();__decorate([core_1.Input(),__metadata("design:type",String)],PopUp.prototype,"toEdit",void 0);__decorate([core_1.Input(),__metadata("design:type",Object)],PopUp.prototype,"editedItem",void 0);__decorate([core_1.Output(),__metadata("design:type",Object)],PopUp.prototype,"editMode",void 0);PopUp=__decorate([core_1.Component({selector:'app-pop-up',templateUrl:'./app//popUp.component.html'}),__metadata("design:paramtypes",[auth_service_1.AuthService,items_service_1.ItemsService])],PopUp);exports.PopUp=PopUp;},{"../../services/auth.service":334,"../../services/items.service":335,"@angular/core":4}],332:[function(require,module,exports){"use strict";var __decorate=this&&this.__decorate||function(decorators,target,key,desc){var c=arguments.length,r=c<3?target:desc===null?desc=Object.getOwnPropertyDescriptor(target,key):desc,d;if((typeof Reflect==="undefined"?"undefined":_typeof(Reflect))==="object"&&typeof Reflect.decorate==="function")r=Reflect.decorate(decorators,target,key,desc);else for(var i=decorators.length-1;i>=0;i--){if(d=decorators[i])r=(c<3?d(r):c>3?d(target,key,r):d(target,key))||r;}return c>3&&r&&Object.defineProperty(target,key,r),r;};var __metadata=this&&this.__metadata||function(k,v){if((typeof Reflect==="undefined"?"undefined":_typeof(Reflect))==="object"&&typeof Reflect.metadata==="function")return Reflect.metadata(k,v);};Object.defineProperty(exports,"__esModule",{value:true});// Angular imports
+var auth_service_1=require("../../services/auth.service");var items_service_1=require("../../services/items.service");var PopUp=/*#__PURE__*/function(){// CTOR
+function PopUp(authService,itemsService){_classCallCheck(this,PopUp);this.authService=authService;this.itemsService=itemsService;// indicates whether edit mode is still required
+this.editMode=new core_1.EventEmitter();}/*
+    Function Name: updateDisplayN()
+    Function Description: Sends a request via the auth service to edit the user's display name.
+    Parameters: e (event) - This method is triggered by pressing a button; this parameter
+                            contains the click event data.
+                newDisplayName (string) - A string containing the user's new name.
+    ----------------
+    Programmer: Shir Bar Lev.
+    */_createClass2(PopUp,[{key:"updateDisplayN",value:function updateDisplayN(e,newDisplayName){e.preventDefault();this.authService.userData.displayName=newDisplayName;this.authService.updateUserData();this.editMode.emit(false);}/*
+    Function Name: updatePost()
+    Function Description: Sends a request to edit a post's text to the items service.
+    Parameters: e (event) - This method is triggered by pressing a button; this parameter
+                            contains the click event data.
+                newText (string) - A string containing the new text for the post.
+    ----------------
+    Programmer: Shir Bar Lev.
+    */},{key:"updatePost",value:function updatePost(e,newText){e.preventDefault();this.editedItem.text=newText;this.itemsService.editPost(this.editedItem);this.editMode.emit(false);}/*
+    Function Name: exitEdit()
+    Function Description: Emits an event to disable edit mode. Exiting edit mode is
+                          done by the parent component upon getting the 'false' value.
+    Parameters: None.
+    ----------------
+    Programmer: Shir Bar Lev.
+    */},{key:"exitEdit",value:function exitEdit(){this.editMode.emit(false);}}]);return PopUp;}();__decorate([core_1.Input(),__metadata("design:type",String)],PopUp.prototype,"toEdit",void 0);__decorate([core_1.Input(),__metadata("design:type",Object)],PopUp.prototype,"editedItem",void 0);__decorate([core_1.Output(),__metadata("design:type",Object)],PopUp.prototype,"editMode",void 0);PopUp=__decorate([core_1.Component({selector:'app-pop-up',templateUrl:'./app//popUp.component.html'}),__metadata("design:paramtypes",[auth_service_1.AuthService,items_service_1.ItemsService])],PopUp);exports.PopUp=PopUp;},{"../../services/auth.service":334,"../../services/items.service":335,"@angular/core":4}],332:[function(require,module,exports){"use strict";/*
+    User Page
+    Send a Hug Component
+*/var __decorate=this&&this.__decorate||function(decorators,target,key,desc){var c=arguments.length,r=c<3?target:desc===null?desc=Object.getOwnPropertyDescriptor(target,key):desc,d;if((typeof Reflect==="undefined"?"undefined":_typeof(Reflect))==="object"&&typeof Reflect.decorate==="function")r=Reflect.decorate(decorators,target,key,desc);else for(var i=decorators.length-1;i>=0;i--){if(d=decorators[i])r=(c<3?d(r):c>3?d(target,key,r):d(target,key))||r;}return c>3&&r&&Object.defineProperty(target,key,r),r;};var __metadata=this&&this.__metadata||function(k,v){if((typeof Reflect==="undefined"?"undefined":_typeof(Reflect))==="object"&&typeof Reflect.metadata==="function")return Reflect.metadata(k,v);};Object.defineProperty(exports,"__esModule",{value:true});// Angular imports
 var core_1=require("@angular/core");// App-related imports
 var auth_service_1=require("../../services/auth.service");var UserPage=/*#__PURE__*/function(){// CTOR
-function UserPage(authService){_classCallCheck(this,UserPage);this.authService=authService;this.editType='user';this.waitFor="user";this.authService.checkHash();this.editMode=false;}_createClass2(UserPage,[{key:"ngOnInit",value:function ngOnInit(){}// Login
-},{key:"login",value:function login(){this.authService.login();}// logout
-},{key:"logout",value:function logout(){this.authService.logout();}// edit a user's display name
-},{key:"editName",value:function editName(){this.userToEdit=this.authService.userData;this.editMode=true;}// remove edit popup
-},{key:"changeMode",value:function changeMode(edit){this.editMode=edit;}}]);return UserPage;}();UserPage=__decorate([core_1.Component({selector:'app-user-page',templateUrl:'./app//userPage.component.html'}),__metadata("design:paramtypes",[auth_service_1.AuthService])],UserPage);exports.UserPage=UserPage;},{"../../services/auth.service":334,"@angular/core":4}],333:[function(require,module,exports){"use strict";var __decorate=this&&this.__decorate||function(decorators,target,key,desc){var c=arguments.length,r=c<3?target:desc===null?desc=Object.getOwnPropertyDescriptor(target,key):desc,d;if((typeof Reflect==="undefined"?"undefined":_typeof(Reflect))==="object"&&typeof Reflect.decorate==="function")r=Reflect.decorate(decorators,target,key,desc);else for(var i=decorators.length-1;i>=0;i--){if(d=decorators[i])r=(c<3?d(r):c>3?d(target,key,r):d(target,key))||r;}return c>3&&r&&Object.defineProperty(target,key,r),r;};var __metadata=this&&this.__metadata||function(k,v){if((typeof Reflect==="undefined"?"undefined":_typeof(Reflect))==="object"&&typeof Reflect.metadata==="function")return Reflect.metadata(k,v);};Object.defineProperty(exports,"__esModule",{value:true});// Angular imports
-var core_1=require("@angular/core");var AlertsService=/*#__PURE__*/function(){function AlertsService(){_classCallCheck(this,AlertsService);}// add a new alert
-_createClass2(AlertsService,[{key:"createAlert",value:function createAlert(alert){var reload=arguments.length>1&&arguments[1]!==undefined?arguments[1]:false;var navigate=arguments.length>2?arguments[2]:undefined;// checks if there's already an alert, in which case it's removed
-if(document.querySelector('.alertMessage')){document.querySelector('.alertMessage').remove();}var alertMessage=this.buildAlertElement(alert);document.getElementById('alertContainer').append(alertMessage);document.getElementById('alertButton').addEventListener('click',this.closeAlert);// if reload option is required
+function UserPage(authService){_classCallCheck(this,UserPage);this.authService=authService;this.editType='user';// loader sub-component variable
+this.waitFor="user";this.authService.checkHash();this.editMode=false;}_createClass2(UserPage,[{key:"ngOnInit",value:function ngOnInit(){}/*
+    Function Name: login()
+    Function Description: Activates Auth0 login via the authentication service.
+    Parameters: None.
+    ----------------
+    Programmer: Shir Bar Lev.
+    */},{key:"login",value:function login(){this.authService.login();}/*
+    Function Name: logout()
+    Function Description: Activates Auth0 logout via the authentication service.
+    Parameters: None.
+    ----------------
+    Programmer: Shir Bar Lev.
+    */},{key:"logout",value:function logout(){this.authService.logout();}/*
+    Function Name: editName()
+    Function Description: Activate the edit popup to edit a user's display name.
+    Parameters: None.
+    ----------------
+    Programmer: Shir Bar Lev.
+    */},{key:"editName",value:function editName(){this.userToEdit=this.authService.userData;this.editMode=true;}/*
+    Function Name: changeMode()
+    Function Description: Remove the edit popup.
+    Parameters: edit (boolean) - indicating whether edit mode should be active.
+                                 When the user finishes editing, the event emitter
+                                 in the popup component sends 'false' to this function
+                                 to remove the popup.
+    ----------------
+    Programmer: Shir Bar Lev.
+    */},{key:"changeMode",value:function changeMode(edit){this.editMode=edit;}}]);return UserPage;}();UserPage=__decorate([core_1.Component({selector:'app-user-page',templateUrl:'./app//userPage.component.html'}),__metadata("design:paramtypes",[auth_service_1.AuthService])],UserPage);exports.UserPage=UserPage;},{"../../services/auth.service":334,"@angular/core":4}],333:[function(require,module,exports){"use strict";/*
+    Alerts Service
+    Send a Hug Service
+*/var __decorate=this&&this.__decorate||function(decorators,target,key,desc){var c=arguments.length,r=c<3?target:desc===null?desc=Object.getOwnPropertyDescriptor(target,key):desc,d;if((typeof Reflect==="undefined"?"undefined":_typeof(Reflect))==="object"&&typeof Reflect.decorate==="function")r=Reflect.decorate(decorators,target,key,desc);else for(var i=decorators.length-1;i>=0;i--){if(d=decorators[i])r=(c<3?d(r):c>3?d(target,key,r):d(target,key))||r;}return c>3&&r&&Object.defineProperty(target,key,r),r;};var __metadata=this&&this.__metadata||function(k,v){if((typeof Reflect==="undefined"?"undefined":_typeof(Reflect))==="object"&&typeof Reflect.metadata==="function")return Reflect.metadata(k,v);};Object.defineProperty(exports,"__esModule",{value:true});// Angular imports
+var core_1=require("@angular/core");var AlertsService=/*#__PURE__*/function(){// CTOR
+function AlertsService(){_classCallCheck(this,AlertsService);}/*
+    Function Name: createAlert()
+    Function Description: Create a new alert and display it to the user. Checks to
+                          ensure there's only one active alert and displays required
+                          buttons/links.
+    Parameters: alert (AlertMessage) - The alert message to display (based on the alert interface).
+                reload (boolean) - Indicating whether a reload button is required.
+                navigate (string) - Optional parameter indicating whether there needs to
+                                    be a navigation link in the alert.
+    ----------------
+    Programmer: Shir Bar Lev.
+    */_createClass2(AlertsService,[{key:"createAlert",value:function createAlert(alert){var reload=arguments.length>1&&arguments[1]!==undefined?arguments[1]:false;var navigate=arguments.length>2?arguments[2]:undefined;// checks if there's already an alert, in which case it's removed
+if(document.querySelector('.alertMessage')){document.querySelector('.alertMessage').remove();}// builds the alert and adds it to the DOM; also adds an event listener to
+// the 'close' button.
+var alertMessage=this.buildAlertElement(alert);document.getElementById('alertContainer').append(alertMessage);document.getElementById('alertButton').addEventListener('click',this.closeAlert);// if reload option is required
 if(reload){this.addReloadButton(alertMessage);document.getElementById('reloadBtn').addEventListener('click',this.reloadPage);}// if return to homepage option is required
-else if(navigate=='/'){this.addNavigateButton(alertMessage);}}// close the alert
-},{key:"closeAlert",value:function closeAlert(){document.querySelector('.alertMessage').remove();}// reloads the page
-},{key:"reloadPage",value:function reloadPage(){document.querySelector('.alertMessage').remove();window.location.reload();}// creates an alert div element
-},{key:"buildAlertElement",value:function buildAlertElement(alert){var alertMessage=document.createElement('div');alertMessage.className="alertMessage ".concat(alert.type);var alertHeadline=document.createElement('h3');alertHeadline.className="alertType";alertHeadline.textContent=alert.type;alertMessage.append(alertHeadline);var alertText=document.createElement('div');alertText.className='alertText';alertText.textContent=alert.message;alertMessage.append(alertText);var closeButton=document.createElement('button');closeButton.className='appButton';closeButton.id='alertButton';closeButton.textContent='Close';alertMessage.append(closeButton);return alertMessage;}// add reload button
-},{key:"addReloadButton",value:function addReloadButton(alertMessage){var reloadButton=document.createElement('button');reloadButton.className='appButton';reloadButton.id='reloadBtn';reloadButton.textContent='Reload Page';alertMessage.append(reloadButton);}// navigate to another page
-},{key:"addNavigateButton",value:function addNavigateButton(alertMessage){var navButton=document.createElement('a');navButton.href='/';navButton.className='appButton';navButton.id='navButton';navButton.textContent="Home Page";alertMessage.append(navButton);}}]);return AlertsService;}();AlertsService=__decorate([core_1.Injectable({providedIn:'root'}),__metadata("design:paramtypes",[])],AlertsService);exports.AlertsService=AlertsService;},{"@angular/core":4}],334:[function(require,module,exports){"use strict";var __decorate=this&&this.__decorate||function(decorators,target,key,desc){var c=arguments.length,r=c<3?target:desc===null?desc=Object.getOwnPropertyDescriptor(target,key):desc,d;if((typeof Reflect==="undefined"?"undefined":_typeof(Reflect))==="object"&&typeof Reflect.decorate==="function")r=Reflect.decorate(decorators,target,key,desc);else for(var i=decorators.length-1;i>=0;i--){if(d=decorators[i])r=(c<3?d(r):c>3?d(target,key,r):d(target,key))||r;}return c>3&&r&&Object.defineProperty(target,key,r),r;};var __metadata=this&&this.__metadata||function(k,v){if((typeof Reflect==="undefined"?"undefined":_typeof(Reflect))==="object"&&typeof Reflect.metadata==="function")return Reflect.metadata(k,v);};var __importStar=this&&this.__importStar||function(mod){if(mod&&mod.__esModule)return mod;var result={};if(mod!=null)for(var k in mod){if(Object.hasOwnProperty.call(mod,k))result[k]=mod[k];}result["default"]=mod;return result;};Object.defineProperty(exports,"__esModule",{value:true});// Angular imports
+else if(navigate=='/'){this.addNavigateButton(alertMessage);}}/*
+    Function Name: closeAlert()
+    Function Description: Removes the alert.
+    Parameters: None.
+    ----------------
+    Programmer: Shir Bar Lev.
+    */},{key:"closeAlert",value:function closeAlert(){document.querySelector('.alertMessage').remove();}/*
+    Function Name: closeAlert()
+    Function Description: Removes the alert and reloads the page.
+    Parameters: None.
+    ----------------
+    Programmer: Shir Bar Lev.
+    */},{key:"reloadPage",value:function reloadPage(){document.querySelector('.alertMessage').remove();window.location.reload();}/*
+    Function Name: buildAlertElement()
+    Function Description: Builds the alert div element to add to the DOM.
+    Parameters: alert (AlertMessage) - The alert message to display (based on the alert interface).
+    ----------------
+    Programmer: Shir Bar Lev.
+    */},{key:"buildAlertElement",value:function buildAlertElement(alert){// alert div
+var alertMessage=document.createElement('div');alertMessage.className="alertMessage ".concat(alert.type);// alert title
+var alertHeadline=document.createElement('h3');alertHeadline.className="alertType";alertHeadline.textContent=alert.type;alertMessage.append(alertHeadline);// alert text
+var alertText=document.createElement('div');alertText.className='alertText';alertText.textContent=alert.message;alertMessage.append(alertText);// 'close alert' button
+var closeButton=document.createElement('button');closeButton.className='appButton';closeButton.id='alertButton';closeButton.textContent='Close';alertMessage.append(closeButton);return alertMessage;}/*
+    Function Name: addReloadButton()
+    Function Description: Adds a 'reload page' button to the alert message div.
+    Parameters: alertMessage (HTMLDivElement) - The alert message div.
+    ----------------
+    Programmer: Shir Bar Lev.
+    */},{key:"addReloadButton",value:function addReloadButton(alertMessage){var reloadButton=document.createElement('button');reloadButton.className='appButton';reloadButton.id='reloadBtn';reloadButton.textContent='Reload Page';alertMessage.append(reloadButton);}/*
+    Function Name: addNavigateButton()
+    Function Description: Adds a 'navigate to page' button to the alert message div.
+    Parameters: alertMessage (HTMLDivElement) - The alert message div.
+    ----------------
+    Programmer: Shir Bar Lev.
+    */},{key:"addNavigateButton",value:function addNavigateButton(alertMessage){var navButton=document.createElement('a');navButton.href='/';navButton.className='appButton';navButton.id='navButton';navButton.textContent="Home Page";alertMessage.append(navButton);}}]);return AlertsService;}();AlertsService=__decorate([core_1.Injectable({providedIn:'root'}),__metadata("design:paramtypes",[])],AlertsService);exports.AlertsService=AlertsService;},{"@angular/core":4}],334:[function(require,module,exports){"use strict";/*
+    Auth Service
+    Send a Hug Service
+*/var __decorate=this&&this.__decorate||function(decorators,target,key,desc){var c=arguments.length,r=c<3?target:desc===null?desc=Object.getOwnPropertyDescriptor(target,key):desc,d;if((typeof Reflect==="undefined"?"undefined":_typeof(Reflect))==="object"&&typeof Reflect.decorate==="function")r=Reflect.decorate(decorators,target,key,desc);else for(var i=decorators.length-1;i>=0;i--){if(d=decorators[i])r=(c<3?d(r):c>3?d(target,key,r):d(target,key))||r;}return c>3&&r&&Object.defineProperty(target,key,r),r;};var __metadata=this&&this.__metadata||function(k,v){if((typeof Reflect==="undefined"?"undefined":_typeof(Reflect))==="object"&&typeof Reflect.metadata==="function")return Reflect.metadata(k,v);};var __importStar=this&&this.__importStar||function(mod){if(mod&&mod.__esModule)return mod;var result={};if(mod!=null)for(var k in mod){if(Object.hasOwnProperty.call(mod,k))result[k]=mod[k];}result["default"]=mod;return result;};Object.defineProperty(exports,"__esModule",{value:true});// Angular imports
 var core_1=require("@angular/core");var http_1=require("@angular/common/http");// Other essential imports
 var rxjs_1=require("rxjs");var Auth0=__importStar(require("auth0-js"));// App-related imports
 var environment_1=require("../../environments/environment");var AuthService=/*#__PURE__*/function(){// CTOR
 function AuthService(Http){_classCallCheck(this,AuthService);this.Http=Http;// Auth0 variable
-this.auth0=new Auth0.WebAuth({clientID:environment_1.environment.auth0.clientID,domain:environment_1.environment.auth0.domain,responseType:'token',redirectUri:environment_1.environment.auth0.redirectUri,audience:environment_1.environment.auth0.audience});this.token='';this.authHeader=new http_1.HttpHeaders();this.authenticated=false;this.userData={id:0,auth0Id:'',displayName:'',receivedHugs:0,givenHugs:0,postsNum:0,loginCount:0,role:'',jwt:''};// documents whether the user just logged in or they're still logged in following
+this.auth0=new Auth0.WebAuth({clientID:environment_1.environment.auth0.clientID,domain:environment_1.environment.auth0.domain,responseType:'token',redirectUri:environment_1.environment.auth0.redirectUri,audience:environment_1.environment.auth0.audience});// authentication information
+this.token='';this.authHeader=new http_1.HttpHeaders();this.authenticated=false;this.userData={id:0,auth0Id:'',displayName:'',receivedHugs:0,givenHugs:0,postsNum:0,loginCount:0,role:'',jwt:''};// documents whether the user just logged in or they're still logged in following
 // their previous login
-this.loggedIn=false;this.isUserDataResolved=new rxjs_1.BehaviorSubject(false);}// Handles login redirect and authorise request.
-_createClass2(AuthService,[{key:"login",value:function login(){this.auth0.authorize();}// Checks the hash for a token.
-},{key:"checkHash",value:function checkHash(){var _this4=this;// Parses the token (in the URL hash).
-if(window.location.hash){this.auth0.parseHash({hash:window.location.hash},function(err,authResult){if(authResult){window.location.hash='';// parses the token payload
-if(authResult.accessToken){_this4.token=authResult.accessToken;var payload=_this4.parseJWT(authResult.accessToken);_this4.loggedIn=true;_this4.getUserData(payload);}}else if(err){return'Error: '+err;}});}this.getToken();}// Parse the token payload
-},{key:"parseJWT",value:function parseJWT(token){var base64Url=token.split('.')[1];var base64=base64Url.replace(/-/g,'+').replace(/_/g,'/');var jsonPayload=decodeURIComponent(atob(base64).split('').map(function(c){return'%'+('00'+c.charCodeAt(0).toString(16)).slice(-2);}).join(''));return JSON.parse(jsonPayload);}// Gets the user's information from the database
-},{key:"getUserData",value:function getUserData(jwtPayload){var _this5=this;// if there's a JWT
+this.loggedIn=false;this.isUserDataResolved=new rxjs_1.BehaviorSubject(false);}/*
+    Function Name: login()
+    Function Description: Activates Auth0 login/authorize.
+    Parameters: None.
+    ----------------
+    Programmer: Shir Bar Lev.
+    */_createClass2(AuthService,[{key:"login",value:function login(){this.auth0.authorize();}/*
+    Function Name: checkHash()
+    Function Description: Checks the URL hash for a token.
+    Parameters: None.
+    ----------------
+    Programmer: Shir Bar Lev.
+    */},{key:"checkHash",value:function checkHash(){var _this4=this;// if there's a token in the hash, parse it
+if(window.location.hash){// Parses the token (in the URL hash).
+this.auth0.parseHash({hash:window.location.hash},function(err,authResult){if(authResult){window.location.hash='';if(authResult.accessToken){// parses the token payload
+_this4.token=authResult.accessToken;var payload=_this4.parseJWT(authResult.accessToken);_this4.loggedIn=true;// gets the user's data
+_this4.getUserData(payload);}}else if(err){return'Error: '+err;}});}// if there's no token in the hash, check localStorage to see if there's
+// an active token there
+this.getToken();}/*
+    Function Name: parseJWT()
+    Function Description: Parse the token payload.
+    Parameters: token (string) - A string containing the JWT.
+    ----------------
+    Programmer: Shir Bar Lev.
+    */},{key:"parseJWT",value:function parseJWT(token){var base64Url=token.split('.')[1];var base64=base64Url.replace(/-/g,'+').replace(/_/g,'/');var jsonPayload=decodeURIComponent(atob(base64).split('').map(function(c){return'%'+('00'+c.charCodeAt(0).toString(16)).slice(-2);}).join(''));return JSON.parse(jsonPayload);}/*
+    Function Name: getUserData()
+    Function Description: Sends a request to the server to get the user's data.
+                          Since getting a user's data requires permissions, a success
+                          response to this request means the JWT is valid and verified,
+                          so the user has successfully authenticated.
+    Parameters: jwtPayload (any) - The JWT payload.
+    ----------------
+    Programmer: Shir Bar Lev.
+    */},{key:"getUserData",value:function getUserData(jwtPayload){var _this5=this;// if there's a JWT
 if(jwtPayload){// attempts to get the user's data
 this.Http.get("http://localhost:5000/users/".concat(jwtPayload.sub),{headers:new http_1.HttpHeaders({'Authorization':"Bearer ".concat(this.token)})// if successful, get the user data
-}).subscribe(function(response){var data=response.user;_this5.userData={id:data.id,auth0Id:jwtPayload.sub,displayName:data.displayName,receivedHugs:data.receivedH,givenHugs:data.givenH,postsNum:data.posts,loginCount:data.loginCount,role:data.role,jwt:_this5.token};_this5.authenticated=true;_this5.authHeader=new http_1.HttpHeaders({'Authorization':"Bearer ".concat(_this5.token)});_this5.setToken();_this5.isUserDataResolved.next(true);// if the user just logged in, update the login count
+}).subscribe(function(response){var data=response.user;_this5.userData={id:data.id,auth0Id:jwtPayload.sub,displayName:data.displayName,receivedHugs:data.receivedH,givenHugs:data.givenH,postsNum:data.posts,loginCount:data.loginCount,role:data.role,jwt:_this5.token};// set the authentication-variables accordingly
+_this5.authenticated=true;_this5.authHeader=new http_1.HttpHeaders({'Authorization':"Bearer ".concat(_this5.token)});_this5.setToken();_this5.isUserDataResolved.next(true);// if the user just logged in, update the login count
 if(_this5.loggedIn){_this5.updateUserData();}// if there's an error, check the error type
 },function(err){var statusCode=err.status;// if a user with that ID doens't exist, try to create it
 if(statusCode==404){_this5.createUser(jwtPayload);}else{_this5.isUserDataResolved.next(true);}});}// If there's no currently-saved token
-else{jwtPayload=this.getToken();}}// If the user doesn't exist, send a request to the server to
-// add it to the database
-},{key:"createUser",value:function createUser(jwtPayload){var _this6=this;// post request to create the user
+else{jwtPayload=this.getToken();}}/*
+    Function Name: createUser()
+    Function Description: Sends a request to the server to create a new user.
+                          Since getting a user's data requires permissions, a success
+                          response to this request means the JWT is valid and verified,
+                          so the user has successfully authenticated. This method is
+                          only triggered if the user doesn't already exist.
+    Parameters: jwtPayload (any) - The JWT payload.
+    ----------------
+    Programmer: Shir Bar Lev.
+    */},{key:"createUser",value:function createUser(jwtPayload){var _this6=this;// post request to create the user
 this.Http.post('http://localhost:5000/users',{id:jwtPayload.sub,displayName:'user'+Math.round(Math.random()*100)},{headers:new http_1.HttpHeaders({'Authorization':"Bearer ".concat(this.token)})//if the request succeeds, get the user's data
-}).subscribe(function(response){var data=response.user;_this6.userData={id:data.id,auth0Id:jwtPayload.sub,displayName:data.displayName,receivedHugs:data.receivedH,givenHugs:data.givenH,postsNum:data.postsNum,loginCount:data.loginCount,role:data.role,jwt:_this6.token};_this6.authenticated=true;_this6.authHeader=new http_1.HttpHeaders({'Authorization':"Bearer ".concat(_this6.token)});_this6.setToken();_this6.isUserDataResolved.next(true);// error handling
-},function(err){console.log(err);_this6.isUserDataResolved.next(true);});}// Handles log out redirects.
-},{key:"logout",value:function logout(){this.auth0.logout({returnTo:environment_1.environment.auth0.logoutUri,clientID:environment_1.environment.auth0.clientID});//clears the user's data
-this.authenticated=false;this.token='';this.userData={id:0,auth0Id:'',displayName:'',receivedHugs:0,givenHugs:0,postsNum:0,loginCount:0,role:'',jwt:''};localStorage.setItem("ACTIVE_JWT",'');}// Sets the token in local storage
-},{key:"setToken",value:function setToken(){localStorage.setItem("ACTIVE_JWT",this.token);}// Gets the currently active token from localStorage
-},{key:"getToken",value:function getToken(){var jwt=localStorage.getItem("ACTIVE_JWT");if(jwt){// Parses the token and checks its expiration
+}).subscribe(function(response){var data=response.user;_this6.userData={id:data.id,auth0Id:jwtPayload.sub,displayName:data.displayName,receivedHugs:data.receivedH,givenHugs:data.givenH,postsNum:data.postsNum,loginCount:data.loginCount,role:data.role,jwt:_this6.token};// set the authentication-variables accordingly
+_this6.authenticated=true;_this6.authHeader=new http_1.HttpHeaders({'Authorization':"Bearer ".concat(_this6.token)});_this6.setToken();_this6.isUserDataResolved.next(true);// error handling
+},function(err){console.log(err);_this6.isUserDataResolved.next(true);});}/*
+    Function Name: logout()
+    Function Description: Activates Auth0 logout.
+    Parameters: None.
+    ----------------
+    Programmer: Shir Bar Lev.
+    */},{key:"logout",value:function logout(){this.auth0.logout({returnTo:environment_1.environment.auth0.logoutUri,clientID:environment_1.environment.auth0.clientID});//clears the user's data
+this.authenticated=false;this.token='';this.userData={id:0,auth0Id:'',displayName:'',receivedHugs:0,givenHugs:0,postsNum:0,loginCount:0,role:'',jwt:''};localStorage.setItem("ACTIVE_JWT",'');}/*
+    Function Name: setToken()
+    Function Description: Sets the token in local storage.
+    Parameters: None.
+    ----------------
+    Programmer: Shir Bar Lev.
+    */},{key:"setToken",value:function setToken(){localStorage.setItem("ACTIVE_JWT",this.token);}/*
+    Function Name: getToken()
+    Function Description: Gets the currently active token from localStorage.
+    Parameters: None.
+    ----------------
+    Programmer: Shir Bar Lev.
+    */},{key:"getToken",value:function getToken(){var jwt=localStorage.getItem("ACTIVE_JWT");if(jwt){// Parses the token and checks its expiration
 var payload=this.parseJWT(jwt);var expiration=payload['exp']*1000;// If app auth token is not expired, request new token
-if(expiration>Date.now()){this.token=jwt;this.loggedIn=false;this.getUserData(payload);this.refreshToken();}// If it expired, clears the user's data
-else{this.logout();}}}// Attempts to refresh the token
-},{key:"refreshToken",value:function refreshToken(){var _this7=this;this.auth0.checkSession({},function(err,authResult){if(authResult&&authResult.accessToken){_this7.token=authResult.accessToken;var payload=_this7.parseJWT(authResult.accessToken);_this7.getUserData(payload);}else if(err){return'Error: '+err;}});}// sends a request to the server to update the login count & display name in the database
-},{key:"updateUserData",value:function updateUserData(){this.Http.patch("http://localhost:5000/users/".concat(this.userData.id),{displayName:this.userData.displayName,receivedH:this.userData.receivedHugs,givenH:this.userData.givenHugs,posts:this.userData.postsNum,loginCount:this.userData.loginCount+1},{headers:this.authHeader}).subscribe(function(response){console.log(response);});}// check a user's permissions
-},{key:"canUser",value:function canUser(permission){// if there's an active token, check the logged in user's permissions
+if(expiration>Date.now()){this.token=jwt;this.loggedIn=false;// gets the user's data and refreshes the token at the same time in
+// order to save time getting the information to the UI
+this.getUserData(payload);this.refreshToken();}// If it expired, clears the user's data
+else{this.logout();}}}/*
+    Function Name: refreshToken()
+    Function Description: Attempts to silently refresh the token.
+    Parameters: None.
+    ----------------
+    Programmer: Shir Bar Lev.
+    */},{key:"refreshToken",value:function refreshToken(){var _this7=this;this.auth0.checkSession({},function(err,authResult){// if refreshing the token was successful, parse the JWT and get the
+// token variable to the new token
+if(authResult&&authResult.accessToken){_this7.token=authResult.accessToken;var payload=_this7.parseJWT(authResult.accessToken);_this7.getUserData(payload);}// if there was an error refreshing the token
+else if(err){return'Error: '+err;}});}/*
+    Function Name: updateUserData()
+    Function Description: Sends a request to the server to update the login count
+                          and display name in the database.
+    Parameters: None.
+    ----------------
+    Programmer: Shir Bar Lev.
+    */},{key:"updateUserData",value:function updateUserData(){this.Http.patch("http://localhost:5000/users/".concat(this.userData.id),{displayName:this.userData.displayName,receivedH:this.userData.receivedHugs,givenH:this.userData.givenHugs,posts:this.userData.postsNum,loginCount:this.userData.loginCount+1},{headers:this.authHeader}).subscribe(function(response){console.log(response);});}/*
+    Function Name: canUser()
+    Function Description: Check whether the user has permission to perform an action.
+    Parameters: permission (string) - The required permission.
+    ----------------
+    Programmer: Shir Bar Lev.
+    */},{key:"canUser",value:function canUser(permission){// if there's an active token, check the logged in user's permissions
 if(this.token){var canUserDo;var tokenPayload=this.parseJWT(this.token);var permissions=tokenPayload['permissions'];// if it's within the user's permissions, return true;
 // otherwise return false
 canUserDo=permissions.includes(permission);return canUserDo;}// if there isn't, no user is logged in, so of course there's no permission
-else{return false;}}}]);return AuthService;}();AuthService=__decorate([core_1.Injectable({providedIn:'root'}),__metadata("design:paramtypes",[http_1.HttpClient])],AuthService);exports.AuthService=AuthService;},{"../../environments/environment":336,"@angular/common/http":1,"@angular/core":4,"auth0-js":8,"rxjs":120}],335:[function(require,module,exports){"use strict";var __decorate=this&&this.__decorate||function(decorators,target,key,desc){var c=arguments.length,r=c<3?target:desc===null?desc=Object.getOwnPropertyDescriptor(target,key):desc,d;if((typeof Reflect==="undefined"?"undefined":_typeof(Reflect))==="object"&&typeof Reflect.decorate==="function")r=Reflect.decorate(decorators,target,key,desc);else for(var i=decorators.length-1;i>=0;i--){if(d=decorators[i])r=(c<3?d(r):c>3?d(target,key,r):d(target,key))||r;}return c>3&&r&&Object.defineProperty(target,key,r),r;};var __metadata=this&&this.__metadata||function(k,v){if((typeof Reflect==="undefined"?"undefined":_typeof(Reflect))==="object"&&typeof Reflect.metadata==="function")return Reflect.metadata(k,v);};Object.defineProperty(exports,"__esModule",{value:true});// Angular imports
+else{return false;}}}]);return AuthService;}();AuthService=__decorate([core_1.Injectable({providedIn:'root'}),__metadata("design:paramtypes",[http_1.HttpClient])],AuthService);exports.AuthService=AuthService;},{"../../environments/environment":336,"@angular/common/http":1,"@angular/core":4,"auth0-js":8,"rxjs":120}],335:[function(require,module,exports){"use strict";/*
+    Items Service
+    Send a Hug Service
+*/var __decorate=this&&this.__decorate||function(decorators,target,key,desc){var c=arguments.length,r=c<3?target:desc===null?desc=Object.getOwnPropertyDescriptor(target,key):desc,d;if((typeof Reflect==="undefined"?"undefined":_typeof(Reflect))==="object"&&typeof Reflect.decorate==="function")r=Reflect.decorate(decorators,target,key,desc);else for(var i=decorators.length-1;i>=0;i--){if(d=decorators[i])r=(c<3?d(r):c>3?d(target,key,r):d(target,key))||r;}return c>3&&r&&Object.defineProperty(target,key,r),r;};var __metadata=this&&this.__metadata||function(k,v){if((typeof Reflect==="undefined"?"undefined":_typeof(Reflect))==="object"&&typeof Reflect.metadata==="function")return Reflect.metadata(k,v);};Object.defineProperty(exports,"__esModule",{value:true});// Angular imports
 var core_1=require("@angular/core");var http_1=require("@angular/common/http");var rxjs_1=require("rxjs");var auth_service_1=require("./auth.service");var alerts_service_1=require("./alerts.service");var ItemsService=/*#__PURE__*/function(){// CTOR
 function ItemsService(Http,authService,alertsService){_classCallCheck(this,ItemsService);this.Http=Http;this.authService=authService;this.alertsService=alertsService;this.serverUrl='http://localhost:5000';this.newItemsArray=[];this.sugItemsArray=[];// Full list variables
 this.fullItemsList={fullNewItems:[],fullSuggestedItems:[]};this.fullItemsPage={fullNewItems:0,fullSuggestedItems:0};this.totalFullItemsPage={fullNewItems:0,fullSuggestedItems:0};// User posts variables
@@ -21514,44 +21879,117 @@ this.userPosts=[];this.isUserPostsResolved=new rxjs_1.BehaviorSubject(false);// 
 this.userMessages=[];this.isUserMessagesResolved=new rxjs_1.BehaviorSubject(false);// default assignment
 this.fullItemsPage.fullNewItems=1;this.fullItemsPage.fullSuggestedItems=1;this.totalFullItemsPage.fullNewItems=1;this.totalFullItemsPage.fullSuggestedItems=1;this.userPostsPage=1;this.userMessagesPage=1;this.totalUserPostsPages=1;this.totalUserMessagesPages=1;}// POST-RELATED METHODS
 // ==============================================================
-// Gets ten recent and ten suggested items
-_createClass2(ItemsService,[{key:"getItems",value:function getItems(){var _this8=this;this.Http.get(this.serverUrl).subscribe(function(response){var data=response;_this8.newItemsArray=data.recent;_this8.sugItemsArray=data.suggested;// if there was an error, alert the user
-},function(err){_this8.createErrorAlert(err);});}// Gets a list of new items.
-},{key:"getNewItems",value:function getNewItems(page){var _this9=this;var Url=this.serverUrl+'/posts/new';var params=new http_1.HttpParams().set('page',"".concat(page));this.Http.get(Url,{params:params}).subscribe(function(response){var data=response.posts;_this9.fullItemsList.fullNewItems=data;_this9.fullItemsPage.fullNewItems=page;_this9.totalFullItemsPage.fullNewItems=response.total_pages;// if there was an error, alert the user
-},function(err){_this9.createErrorAlert(err);});}// Gets a list of suggested items
-},{key:"getSuggestedItems",value:function getSuggestedItems(page){var _this10=this;var Url=this.serverUrl+'/posts/suggested';var params=new http_1.HttpParams().set('page',"".concat(page));this.Http.get(Url,{params:params}).subscribe(function(response){var data=response.posts;_this10.fullItemsList.fullSuggestedItems=data;_this10.fullItemsPage.fullSuggestedItems=page;_this10.totalFullItemsPage.fullSuggestedItems=response.total_pages;// if there was an error, alert the user
-},function(err){_this10.createErrorAlert(err);});}// Gets the user's posts
-},{key:"getUserPosts",value:function getUserPosts(userID){var _this11=this;var Url=this.serverUrl+"/users/".concat(userID,"/posts");// if the current page is 0, send page 1 to the server (default)
-var currentPage=this.userPostsPage?this.userPostsPage:1;var params=new http_1.HttpParams().set('page',"".concat(currentPage));this.Http.get(Url,{headers:this.authService.authHeader,params:params}).subscribe(function(response){var data=response.posts;_this11.userPosts=data;_this11.totalUserPostsPages=response.total_pages;// if there are 0 pages, current page is also 0; otherwise it's whatever
+/*
+    Function Name: getItems()
+    Function Description: Gets ten recent posts and ten suggested posts for the
+                          main page (MainPage component).
+    Parameters: None.
+    ----------------
+    Programmer: Shir Bar Lev.
+    */_createClass2(ItemsService,[{key:"getItems",value:function getItems(){var _this8=this;this.Http.get(this.serverUrl).subscribe(function(response){var data=response;_this8.newItemsArray=data.recent;_this8.sugItemsArray=data.suggested;// if there was an error, alert the user
+},function(err){_this8.createErrorAlert(err);});}/*
+    Function Name: getNewItems()
+    Function Description: Gets a paginated list of new items.
+    Parameters: page (number) - Current page.
+    ----------------
+    Programmer: Shir Bar Lev.
+    */},{key:"getNewItems",value:function getNewItems(page){var _this9=this;// URL and page query parameter
+var Url=this.serverUrl+'/posts/new';var params=new http_1.HttpParams().set('page',"".concat(page));// HTTP request
+this.Http.get(Url,{params:params}).subscribe(function(response){var data=response.posts;_this9.fullItemsList.fullNewItems=data;_this9.fullItemsPage.fullNewItems=page;_this9.totalFullItemsPage.fullNewItems=response.total_pages;// if there was an error, alert the user
+},function(err){_this9.createErrorAlert(err);});}/*
+    Function Name: getSuggestedItems()
+    Function Description: Gets a paginated list of suggested items.
+    Parameters: page (number) - Current page.
+    ----------------
+    Programmer: Shir Bar Lev.
+    */},{key:"getSuggestedItems",value:function getSuggestedItems(page){var _this10=this;// URL and page query parameter
+var Url=this.serverUrl+'/posts/suggested';var params=new http_1.HttpParams().set('page',"".concat(page));// HTTP request
+this.Http.get(Url,{params:params}).subscribe(function(response){var data=response.posts;_this10.fullItemsList.fullSuggestedItems=data;_this10.fullItemsPage.fullSuggestedItems=page;_this10.totalFullItemsPage.fullSuggestedItems=response.total_pages;// if there was an error, alert the user
+},function(err){_this10.createErrorAlert(err);});}/*
+    Function Name: getUserPosts()
+    Function Description: Gets a paginated list of the user's posts.
+    Parameters: userID (number) - the ID of the user whose posts need to be fetched.
+    ----------------
+    Programmer: Shir Bar Lev.
+    */},{key:"getUserPosts",value:function getUserPosts(userID){var _this11=this;var Url=this.serverUrl+"/users/".concat(userID,"/posts");// if the current page is 0, send page 1 to the server (default)
+var currentPage=this.userPostsPage?this.userPostsPage:1;var params=new http_1.HttpParams().set('page',"".concat(currentPage));// HTTP request
+this.Http.get(Url,{headers:this.authService.authHeader,params:params}).subscribe(function(response){var data=response.posts;_this11.userPosts=data;_this11.totalUserPostsPages=response.total_pages;// if there are 0 pages, current page is also 0; otherwise it's whatever
 // the server returns
 _this11.userPostsPage=_this11.totalUserPostsPages?response.page:0;_this11.isUserPostsResolved.next(true);// if there was an error, alert the user
-},function(err){_this11.isUserPostsResolved.next(true);_this11.createErrorAlert(err);});}// Post a new post
-},{key:"sendPost",value:function sendPost(post){var _this12=this;var Url=this.serverUrl+'/posts';this.Http.post(Url,post,{headers:this.authService.authHeader}).subscribe(function(response){if(response.success==true){_this12.createSuccessAlert('Your post was published! Return to home page to view the post.',false,'/');}// if there was an error, alert the user
-},function(err){_this12.createErrorAlert(err);});}// Delete a post
-},{key:"deletePost",value:function deletePost(post_id){var _this13=this;var Url=this.serverUrl+"/posts/".concat(post_id);this.Http["delete"](Url,{headers:this.authService.authHeader}).subscribe(function(response){if(response.success==true){_this13.createSuccessAlert("Post ".concat(response.deleted," was deleted. Refresh to view the updated post list."),true);}// if there was an error, alert the user
-},function(err){_this13.createErrorAlert(err);});}// Edit a post
-},{key:"editPost",value:function editPost(post){var _this14=this;var Url=this.serverUrl+"/posts/".concat(post.id);this.Http.patch(Url,post,{headers:this.authService.authHeader}).subscribe(function(response){if(response.success==true){_this14.createSuccessAlert('Your post was edited. Refresh to view the updated post.',true);}// if there was an error, alert the user
-},function(err){_this14.createErrorAlert(err);});}// Send a hug
-},{key:"sendHug",value:function sendHug(item){var _this15=this;var Url=this.serverUrl+"/posts/".concat(item.id);item.givenHugs+=1;this.Http.patch(Url,item,{headers:this.authService.authHeader}).subscribe(function(response){if(response.success==true){_this15.createSuccessAlert('Your hug was sent!',false);}// if there was an error, alert the user
+},function(err){_this11.isUserPostsResolved.next(true);_this11.createErrorAlert(err);});}/*
+    Function Name: sendPost()
+    Function Description: Create a new post.
+    Parameters: post (Post) - the post to attempt to add to the database.
+    ----------------
+    Programmer: Shir Bar Lev.
+    */},{key:"sendPost",value:function sendPost(post){var _this12=this;var Url=this.serverUrl+'/posts';this.Http.post(Url,post,{headers:this.authService.authHeader}).subscribe(function(response){if(response.success==true){_this12.createSuccessAlert('Your post was published! Return to home page to view the post.',false,'/');}// if there was an error, alert the user
+},function(err){_this12.createErrorAlert(err);});}/*
+    Function Name: deletePost()
+    Function Description: Delete a post from the database.
+    Parameters: post_id (number) - the ID of the post to delete.
+    ----------------
+    Programmer: Shir Bar Lev.
+    */},{key:"deletePost",value:function deletePost(post_id){var _this13=this;var Url=this.serverUrl+"/posts/".concat(post_id);this.Http["delete"](Url,{headers:this.authService.authHeader}).subscribe(function(response){if(response.success==true){_this13.createSuccessAlert("Post ".concat(response.deleted," was deleted. Refresh to view the updated post list."),true);}// if there was an error, alert the user
+},function(err){_this13.createErrorAlert(err);});}/*
+    Function Name: editPost()
+    Function Description: Edit an existing post. This is used only for editing the post's text.
+    Parameters: post (Post) - the updated data of the post.
+    ----------------
+    Programmer: Shir Bar Lev.
+    */},{key:"editPost",value:function editPost(post){var _this14=this;var Url=this.serverUrl+"/posts/".concat(post.id);this.Http.patch(Url,post,{headers:this.authService.authHeader}).subscribe(function(response){if(response.success==true){_this14.createSuccessAlert('Your post was edited. Refresh to view the updated post.',true);}// if there was an error, alert the user
+},function(err){_this14.createErrorAlert(err);});}/*
+    Function Name: sendHug()
+    Function Description: Send a hug to a user through a post they've written.
+    Parameters: item (Post) - the post for which to send a hug.
+    ----------------
+    Programmer: Shir Bar Lev.
+    */},{key:"sendHug",value:function sendHug(item){var _this15=this;var Url=this.serverUrl+"/posts/".concat(item.id);item.givenHugs+=1;this.Http.patch(Url,item,{headers:this.authService.authHeader}).subscribe(function(response){if(response.success==true){_this15.createSuccessAlert('Your hug was sent!',false);}// if there was an error, alert the user
 },function(err){_this15.createErrorAlert(err);});}// MESSAGE-RELATED METHODS
 // ==============================================================
-// Get the user's messages
-},{key:"getMessages",value:function getMessages(userID){var _this16=this;// if the current page is 0, send page 1 to the server (default)
+/*
+    Function Name: getMessages()
+    Function Description: Get the user's messages.
+    Parameters: userID (number) - the ID of the user whose messages to fetch.
+    ----------------
+    Programmer: Shir Bar Lev.
+    */},{key:"getMessages",value:function getMessages(userID){var _this16=this;// if the current page is 0, send page 1 to the server (default)
 var currentPage=this.userMessagesPage?this.userMessagesPage:1;var params=new http_1.HttpParams().set('userID',"".concat(userID)).set('page',"".concat(currentPage));// try to get the user's messages
 this.Http.get('http://localhost:5000/messages',{headers:this.authService.authHeader,params:params}).subscribe(function(response){var messages=response.messages;_this16.userMessages=[];messages.forEach(function(element){_this16.userMessages.push(element);});_this16.totalUserMessagesPages=response.total_pages;// if there are 0 pages, current page is also 0; otherwise it's whatever
 // the server returns
 _this16.userMessagesPage=_this16.totalUserMessagesPages?response.current_page:0;_this16.isUserMessagesResolved.next(true);// if there was an error, alert the user
-},function(err){_this16.isUserMessagesResolved.next(true);_this16.createErrorAlert(err);});}// Send a message
-},{key:"sendMessage",value:function sendMessage(message){var _this17=this;var Url=this.serverUrl+'/messages';this.Http.post(Url,message,{headers:this.authService.authHeader}).subscribe(function(response){if(response.success==true){_this17.createSuccessAlert('Your message was sent!',false,'/');}// if there was an error, alert the user
-},function(err){_this17.createErrorAlert(err);});}// delete a message
-},{key:"deleteMessage",value:function deleteMessage(messageId){var _this18=this;var Url=this.serverUrl+"/messages/".concat(messageId);// try to delete the message
+},function(err){_this16.isUserMessagesResolved.next(true);_this16.createErrorAlert(err);});}/*
+    Function Name: sendMessage()
+    Function Description: Send a message.
+    Parameters: message (Message) - the message to send.
+    ----------------
+    Programmer: Shir Bar Lev.
+    */},{key:"sendMessage",value:function sendMessage(message){var _this17=this;var Url=this.serverUrl+'/messages';this.Http.post(Url,message,{headers:this.authService.authHeader}).subscribe(function(response){if(response.success==true){_this17.createSuccessAlert('Your message was sent!',false,'/');}// if there was an error, alert the user
+},function(err){_this17.createErrorAlert(err);});}/*
+    Function Name: deleteMessage()
+    Function Description: Delete a message.
+    Parameters: messageId (number) - the ID of the message to delete.
+    ----------------
+    Programmer: Shir Bar Lev.
+    */},{key:"deleteMessage",value:function deleteMessage(messageId){var _this18=this;var Url=this.serverUrl+"/messages/".concat(messageId);// try to delete the message
 this.Http["delete"](Url,{headers:this.authService.authHeader}).subscribe(function(response){_this18.createSuccessAlert("Message ".concat(response.deleted," was deleted! Refresh to view the updated message list."),true);// if there was an error, alert the user
 },function(err){_this18.createErrorAlert(err);});}// ALERT METHODS
 // ==============================================================
-// Creates an alert for the user to know their action succeeded
-},{key:"createSuccessAlert",value:function createSuccessAlert(message){var reload=arguments.length>1&&arguments[1]!==undefined?arguments[1]:false;var navigate=arguments.length>2?arguments[2]:undefined;// an alert message
-var alert={type:'Success',message:message};this.alertsService.createAlert(alert,reload,navigate);}// Checks what type of error occurred and returns an alert
-},{key:"createErrorAlert",value:function createErrorAlert(err){// an alert message
+/*
+    Function Name: createSuccessAlert()
+    Function Description: Creates an alert for the user to know their action succeeded.
+    Parameters: message (string) - the alert text.
+                reload (boolean) - whether a reload button is required; defaults to false.
+                navigate (string) - Optional parameter indicating the navigation target (if needed).
+    ----------------
+    Programmer: Shir Bar Lev.
+    */},{key:"createSuccessAlert",value:function createSuccessAlert(message){var reload=arguments.length>1&&arguments[1]!==undefined?arguments[1]:false;var navigate=arguments.length>2?arguments[2]:undefined;// an alert message
+var alert={type:'Success',message:message};this.alertsService.createAlert(alert,reload,navigate);}/*
+    Function Name: createErrorAlert()
+    Function Description: Checks what type of error occurred and returns an alert.
+    Parameters: err (HttpErrorResponse) - The HTTP error response from the server.
+    ----------------
+    Programmer: Shir Bar Lev.
+    */},{key:"createErrorAlert",value:function createErrorAlert(err){// an alert message
 var alert={type:'Error',message:err.error.message};// if it's an auth error, the structure is slightly different
 if(err.status==403||err.status==401){alert.message=err.error.message.description;}this.alertsService.createAlert(alert);}}]);return ItemsService;}();ItemsService=__decorate([core_1.Injectable({providedIn:'root'}),__metadata("design:paramtypes",[http_1.HttpClient,auth_service_1.AuthService,alerts_service_1.AlertsService])],ItemsService);exports.ItemsService=ItemsService;},{"./alerts.service":333,"./auth.service":334,"@angular/common/http":1,"@angular/core":4,"rxjs":120}],336:[function(require,module,exports){"use strict";// This file can be replaced during build by using the `fileReplacements` array.
 // `ng build --prod` replaces `environment.ts` with `environment.prod.ts`.

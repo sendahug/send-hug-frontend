@@ -1,3 +1,8 @@
+/*
+	Loader
+	Send a Hug Component
+*/
+
 // Angular imports
 import { Component, OnInit, Input } from '@angular/core';
 
@@ -10,11 +15,15 @@ import { AuthService } from '../../services/auth.service';
   templateUrl: './loader.component.html'
 })
 export class Loader implements OnInit {
+  // the sort of data the parent component is waiting for
   @Input()
   waitingFor!: string;
+  // message to display to the user while waiting
   message = '';
+  // loader screen visibility
   visible = true;
 
+  // CTOR
   constructor(
     private itemsService:ItemsService,
     private authService:AuthService
@@ -22,6 +31,16 @@ export class Loader implements OnInit {
 
   }
 
+  /*
+  Function Name: ngOnInit()
+  Function Description: This method is automatically triggered by Angular upon
+                        page initiation. It checks for the existence of the data
+                        the parent component is waiting for and adjusts the
+                        loader itself (its message and visibility) accordingly.
+  Parameters: None.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
   ngOnInit() {
     // if the app is waiting for user data to be fetched from the server
     if(this.waitingFor == 'user') {

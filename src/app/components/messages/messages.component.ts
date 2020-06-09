@@ -1,3 +1,8 @@
+/*
+	Messages Page
+	Send a Hug Component
+*/
+
 // Angular imports
 import { Component, OnInit } from '@angular/core';
 
@@ -10,6 +15,7 @@ import { ItemsService } from '../../services/items.service';
   templateUrl: './messages.component.html'
 })
 export class AppMessaging implements OnInit {
+  // loader sub-component variable
   waitFor = 'messages';
 
   // CTOR
@@ -29,23 +35,50 @@ export class AppMessaging implements OnInit {
 
   }
 
-  // Login
+  /*
+  Function Name: login()
+  Function Description: Activates Auth0 login via the authentication service.
+  Parameters: None.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
   login() {
     this.authService.login();
   }
 
-  // delete a message
+  /*
+  Function Name: deleteMessage()
+  Function Description: Delete a specific message from the user's messages, via
+                        the items service.
+  Parameters: messageID (number) - the ID of the message to delete.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
   deleteMessage(messageID:number) {
     this.itemsService.deleteMessage(messageID);
   }
 
-  // next page of messages
+  /*
+  Function Name: nextPage()
+  Function Description: Go to the next page of messages. Sends a request to the
+                        items service to get the data for the next page.
+  Parameters: None.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
   nextPage() {
     this.itemsService.userMessagesPage += 1;
     this.itemsService.getMessages(this.authService.userData.id!);
   }
 
-  // previous page of messages
+  /*
+  Function Name: prevPage()
+  Function Description: Go to the previous page of messages. Sends a request to the
+                        items service to get the data for the previous page.
+  Parameters: None.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
   prevPage() {
     this.itemsService.userMessagesPage -= 1;
     this.itemsService.getMessages(this.authService.userData.id!);

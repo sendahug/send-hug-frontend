@@ -1,3 +1,8 @@
+/*
+	Full List
+	Send a Hug Component
+*/
+
 // Angular imports
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -12,16 +17,20 @@ import { Post } from '../../interfaces/post.interface';
   templateUrl: './fullList.component.html'
 })
 export class FullList {
+  // current page and type of list
   type:any;
   page:any;
+  // edit popup sub-component variables
   postToEdit: Post | undefined;
   editType: string = 'post';
   editMode:boolean;
 
+  // CTOR
   constructor(private route:ActivatedRoute,
     private itemsService:ItemsService,
     private router:Router,
     public authService:AuthService) {
+      // get the type of list and the current page
       this.type = this.route.snapshot.paramMap.get('type');
       this.page = Number(this.route.snapshot.queryParamMap.get('page'));
 
@@ -37,12 +46,21 @@ export class FullList {
       this.editMode = false;
   }
 
-  // send a hug
+  /*
+  Function Name: sendHug()
+  Function Description: Send a hug to a user through a post they've written. The hug
+                        itself is sent by the items service.
+  Parameters: itemID (number) - ID of the post.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
   sendHug(itemID:number) {
     let item = {}
+    // if the type of list is 'new posts', find the ID in the list of new posts
     if(this.type == 'New') {
       item = this.itemsService.fullItemsList.fullNewItems.filter(e => e.id == itemID)[0];
     }
+    // if the type of list is 'suggested posts', find the ID in the list of suggested posts
     else if(this.type == 'Suggested') {
       item = this.itemsService.fullItemsList.fullSuggestedItems.filter(e => e.id == itemID)[0];
     }
@@ -50,20 +68,29 @@ export class FullList {
     this.itemsService.sendHug(item);
   }
 
-  // next page of user posts
+  /*
+  Function Name: nextPage()
+  Function Description: Go to the next page of posts. Sends a request to the
+                        items service to get the data for the next page.
+  Parameters: None.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
   nextPage() {
+    // if the list is the new posts list, get the next page of new posts
     if(this.type == 'New') {
       this.page += 1;
       this.itemsService.fullItemsPage.fullNewItems += 1;
       this.itemsService.getNewItems(this.itemsService.fullItemsPage.fullNewItems);
     }
+    // if the list is the suggested posts list, get the next page of suggested posts
     else if(this.type == 'Suggested') {
       this.page += 1;
       this.itemsService.fullItemsPage.fullSuggestedItems += 1;
       this.itemsService.getSuggestedItems(this.itemsService.fullItemsPage.fullSuggestedItems);
     }
 
-    // changes the URL query parameter accordingly
+    // changes the URL query parameter (page) according to the new page
     this.router.navigate([], {
       relativeTo: this.route,
       queryParams: {
@@ -73,20 +100,29 @@ export class FullList {
     });
   }
 
-  // previous page of user posts
+  /*
+  Function Name: prevPage()
+  Function Description: Go to the previous page of posts. Sends a request to the
+                        items service to get the data for the previous page.
+  Parameters: None.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
   prevPage() {
+    // if the list is the new posts list, get the previous page of new posts
     if(this.type == 'New') {
       this.page -= 1;
       this.itemsService.fullItemsPage.fullNewItems -= 1;
       this.itemsService.getNewItems(this.itemsService.fullItemsPage.fullNewItems);
     }
+    // if the list is the suggested posts list, get the previous page of suggested posts
     else if(this.type == 'Suggested') {
       this.page -= 1;
       this.itemsService.fullItemsPage.fullSuggestedItems -= 1;
       this.itemsService.getSuggestedItems(this.itemsService.fullItemsPage.fullSuggestedItems);
     }
 
-    // changes the URL query parameter accordingly
+    // changes the URL query parameter (page) according to the new page
     this.router.navigate([], {
       relativeTo: this.route,
       queryParams: {
@@ -96,18 +132,39 @@ export class FullList {
     });
   }
 
-  // edit a post
+  /*
+  Function Name: editPost()
+  Function Description: Triggers edit mode in order to edit a post.
+  Parameters: post (Post) - Post to edit.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
   editPost(post:Post) {
     this.postToEdit = post;
     this.editMode = true;
   }
 
-  // remove edit popup
+  /*
+  Function Name: changeMode()
+  Function Description: Remove the edit popup.
+  Parameters: edit (boolean) - indicating whether edit mode should be active.
+                               When the user finishes editing, the event emitter
+                               in the popup component sends 'false' to this function
+                               to remove the popup.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
   changeMode(edit:boolean) {
     this.editMode = edit;
   }
 
-  // delete a post
+  /*
+  Function Name: deletePost()
+  Function Description: Send a request to the items service to delete a post.
+  Parameters: post_id (number) - ID of the post to delete.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
   deletePost(postID:number) {
     this.itemsService.deletePost(postID);
   }

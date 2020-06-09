@@ -1,3 +1,8 @@
+/*
+	Main Page
+	Send a Hug Component
+*/
+
 // Angular imports
 import { Component, OnInit } from '@angular/core';
 
@@ -11,8 +16,7 @@ import { Post } from '../../interfaces/post.interface';
   templateUrl: './mainPage.component.html'
 })
 export class MainPage implements OnInit {
-  type:any;
-  page:any;
+  // edit popup sub-component variables
   postToEdit: Post | undefined;
   editType: string = 'post';
   editMode:boolean;
@@ -30,7 +34,14 @@ export class MainPage implements OnInit {
 
   }
 
-  // Send a hug to a user
+  /*
+  Function Name: sendHug()
+  Function Description: Send a hug to a user through a post they've written. The hug
+                        itself is sent by the items service.
+  Parameters: itemID (number) - ID of the post.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
   sendHug(itemID:number) {
     let item = {};
 
@@ -47,18 +58,39 @@ export class MainPage implements OnInit {
   }
 
 
-    // edit a post
+  /*
+  Function Name: editPost()
+  Function Description: Triggers edit mode in order to edit a post.
+  Parameters: post (Post) - Post to edit.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
   editPost(post:Post) {
     this.postToEdit = post;
     this.editMode = true;
   }
 
-  // remove edit popup
+  /*
+  Function Name: changeMode()
+  Function Description: Remove the edit popup.
+  Parameters: edit (boolean) - indicating whether edit mode should be active.
+                               When the user finishes editing, the event emitter
+                               in the popup component sends 'false' to this function
+                               to remove the popup.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
   changeMode(edit:boolean) {
     this.editMode = edit;
   }
 
-  // delete a post
+  /*
+  Function Name: deletePost()
+  Function Description: Send a request to the items service to delete a post.
+  Parameters: post_id (number) - ID of the post to delete.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
   deletePost(postID:number) {
     this.itemsService.deletePost(postID);
   }

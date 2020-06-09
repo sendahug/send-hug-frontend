@@ -1,3 +1,9 @@
+/*
+	About App
+	Send a Hug Component
+*/
+
+// Angular imports
 import { Component } from '@angular/core';
 
 @Component({
@@ -5,6 +11,7 @@ import { Component } from '@angular/core';
   templateUrl: './aboutApp.component.html'
 })
 export class AboutApp {
+  // CTOR
   constructor() {
 
   }

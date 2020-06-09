@@ -1,3 +1,8 @@
+/*
+	Items Service
+	Send a Hug Service
+*/
+
 // Angular imports
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
@@ -62,7 +67,14 @@ export class ItemsService {
 
   // POST-RELATED METHODS
   // ==============================================================
-  // Gets ten recent and ten suggested items
+  /*
+  Function Name: getItems()
+  Function Description: Gets ten recent posts and ten suggested posts for the
+                        main page (MainPage component).
+  Parameters: None.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
   getItems() {
     this.Http.get(this.serverUrl).subscribe((response:any) => {
       let data = response;
@@ -74,10 +86,19 @@ export class ItemsService {
     })
   }
 
-  // Gets a list of new items.
+  /*
+  Function Name: getNewItems()
+  Function Description: Gets a paginated list of new items.
+  Parameters: page (number) - Current page.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
   getNewItems(page:number) {
+    // URL and page query parameter
     const Url = this.serverUrl + '/posts/new';
     const params = new HttpParams().set('page', `${page}`);
+
+    // HTTP request
     this.Http.get(Url, {
       params: params
     }).subscribe((response: any) => {
@@ -91,10 +112,19 @@ export class ItemsService {
     })
   }
 
-  // Gets a list of suggested items
+  /*
+  Function Name: getSuggestedItems()
+  Function Description: Gets a paginated list of suggested items.
+  Parameters: page (number) - Current page.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
   getSuggestedItems(page:number) {
+    // URL and page query parameter
     const Url = this.serverUrl + '/posts/suggested';
     const params = new HttpParams().set('page', `${page}`);
+
+    // HTTP request
     this.Http.get(Url, {
       params: params
     }).subscribe((response: any) => {
@@ -108,12 +138,20 @@ export class ItemsService {
     })
   }
 
-  // Gets the user's posts
+  /*
+  Function Name: getUserPosts()
+  Function Description: Gets a paginated list of the user's posts.
+  Parameters: userID (number) - the ID of the user whose posts need to be fetched.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
   getUserPosts(userID:number) {
     const Url = this.serverUrl + `/users/${userID}/posts`;
     // if the current page is 0, send page 1 to the server (default)
     const currentPage = this.userPostsPage ? this.userPostsPage : 1;
     const params = new HttpParams().set('page', `${currentPage}`);
+
+    // HTTP request
     this.Http.get(Url, {
       headers: this.authService.authHeader,
       params: params
@@ -132,7 +170,13 @@ export class ItemsService {
     })
   }
 
-  // Post a new post
+  /*
+  Function Name: sendPost()
+  Function Description: Create a new post.
+  Parameters: post (Post) - the post to attempt to add to the database.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
   sendPost(post: Post) {
     const Url = this.serverUrl + '/posts';
     this.Http.post(Url, post, {
@@ -147,7 +191,13 @@ export class ItemsService {
     })
   }
 
-  // Delete a post
+  /*
+  Function Name: deletePost()
+  Function Description: Delete a post from the database.
+  Parameters: post_id (number) - the ID of the post to delete.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
   deletePost(post_id:number) {
     const Url = this.serverUrl + `/posts/${post_id}`;
     this.Http.delete(Url, {
@@ -162,7 +212,13 @@ export class ItemsService {
     })
   }
 
-  // Edit a post
+  /*
+  Function Name: editPost()
+  Function Description: Edit an existing post. This is used only for editing the post's text.
+  Parameters: post (Post) - the updated data of the post.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
   editPost(post: Post) {
     const Url = this.serverUrl + `/posts/${post.id}`;
     this.Http.patch(Url, post, {
@@ -177,7 +233,13 @@ export class ItemsService {
     })
   }
 
-  // Send a hug
+  /*
+  Function Name: sendHug()
+  Function Description: Send a hug to a user through a post they've written.
+  Parameters: item (Post) - the post for which to send a hug.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
   sendHug(item: any) {
     const Url = this.serverUrl + `/posts/${item.id}`;
     item.givenHugs += 1;
@@ -195,7 +257,13 @@ export class ItemsService {
 
   // MESSAGE-RELATED METHODS
   // ==============================================================
-  // Get the user's messages
+  /*
+  Function Name: getMessages()
+  Function Description: Get the user's messages.
+  Parameters: userID (number) - the ID of the user whose messages to fetch.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
   getMessages(userID:number) {
     // if the current page is 0, send page 1 to the server (default)
     const currentPage = this.userMessagesPage ? this.userMessagesPage : 1;
@@ -224,7 +292,13 @@ export class ItemsService {
     })
   }
 
-  // Send a message
+  /*
+  Function Name: sendMessage()
+  Function Description: Send a message.
+  Parameters: message (Message) - the message to send.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
   sendMessage(message: Message) {
     const Url = this.serverUrl + '/messages';
     this.Http.post(Url, message, {
@@ -239,7 +313,13 @@ export class ItemsService {
     })
   }
 
-  // delete a message
+  /*
+  Function Name: deleteMessage()
+  Function Description: Delete a message.
+  Parameters: messageId (number) - the ID of the message to delete.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
   deleteMessage(messageId:number) {
     const Url = this.serverUrl + `/messages/${messageId}`
 
@@ -256,7 +336,15 @@ export class ItemsService {
 
   // ALERT METHODS
   // ==============================================================
-  // Creates an alert for the user to know their action succeeded
+  /*
+  Function Name: createSuccessAlert()
+  Function Description: Creates an alert for the user to know their action succeeded.
+  Parameters: message (string) - the alert text.
+              reload (boolean) - whether a reload button is required; defaults to false.
+              navigate (string) - Optional parameter indicating the navigation target (if needed).
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
   createSuccessAlert(message:string, reload:boolean = false, navigate?:string) {
     // an alert message
     let alert:AlertMessage = {
@@ -267,7 +355,13 @@ export class ItemsService {
     this.alertsService.createAlert(alert, reload, navigate);
   }
 
-  // Checks what type of error occurred and returns an alert
+  /*
+  Function Name: createErrorAlert()
+  Function Description: Checks what type of error occurred and returns an alert.
+  Parameters: err (HttpErrorResponse) - The HTTP error response from the server.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
   createErrorAlert(err:HttpErrorResponse) {
     // an alert message
     let alert:AlertMessage = {

@@ -1,3 +1,8 @@
+/*
+	New Item
+	Send a Hug Component
+*/
+
 // Angular imports
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
@@ -14,6 +19,7 @@ import { AlertsService } from '../../services/alerts.service';
   templateUrl: './newItem.component.html'
 })
 export class NewItem {
+  // variable declaration
   itemType:String = '';
   user:any;
   forID:any;
@@ -40,9 +46,18 @@ export class NewItem {
       }
   }
 
-  // Create new post
+  /*
+  Function Name: sendPost()
+  Function Description: Sends a request to create a new post to the items service.
+  Parameters: e (event) - This method is triggered by pressing a button; this parameter
+                          contains the click event data.
+              postText (string) - A string containing the post's text.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
   sendPost(e:Event, postText:string) {
     e.preventDefault();
+    // create a new post object to send
     let newPost:Post = {
       user_id: this.authService.userData.id!,
       user: this.authService.userData.displayName!,
@@ -54,7 +69,15 @@ export class NewItem {
     this.itemsService.sendPost(newPost);
   }
 
-  // Send a message to a user
+  /*
+  Function Name: sendMessage()
+  Function Description: Sends a request to create a new message to the items service.
+  Parameters: e (event) - This method is triggered by pressing a button; this parameter
+                          contains the click event data.
+              messageText (string) - A string containing the new message's text.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
   sendMessage(e:Event, messageText:string) {
     e.preventDefault();
 
@@ -67,6 +90,7 @@ export class NewItem {
     }
     // if the user is sending a message to someone else, make the request
     else {
+      // create a new message object to send
       let newMessage:Message = {
         from: this.authService.userData.displayName!,
         fromId: this.authService.userData.id!,

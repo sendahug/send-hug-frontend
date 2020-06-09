@@ -1,0 +1,51 @@
+<!-- New items -->
+<div id="newItems" class="listContainer">
+	<h2 class="listTitle">New Items</h2>
+	<!-- If there are items in the list -->
+	<ul class="itemList" *ngIf="itemsService.newItemsArray.length > 0">
+		<li *ngFor="let item of itemsService.newItemsArray" class="newItem">
+			<div class="itemText">{{ item.text }}</div>
+			<div class="itemUser">By {{ item.user }}</div>
+			<div class="buttonsContainer">
+				<div class="notification">
+					<button class="appButton hugButton" (click)="sendHug(item.id)"><i class="fab fa-gratipay"></i></button>
+					<span class="badge">{{ item.givenHugs }}</span>
+				</div>
+				<a [routerLink]="['/new', 'Message']" [queryParams]="{user: item.user, userID: item.userId}" class="appButton messageButton"><i class="fas fa-comments"></i></a>
+				<button *ngIf="authService.canUser('patch:any-post')" class="appButton editButton" (click)="editPost(item)"><i class="far fa-edit"></i></button>
+				<button *ngIf="authService.canUser('delete:any-post')" class="appButton deleteButton" (click)="deletePost(item.id)"><i class="fas fa-times"></i></button>
+			</div>
+		</li>
+	</ul>
+	
+	<!-- If there are no items in the list -->
+	<div class="errorMessage" *ngIf="itemsService.newItemsArray.length == 0">There are no recent items.</div>
+	
+	<a [routerLink]="['/list', 'New']" [queryParams]="{page: 1}" class="appButton fullButton">View Full List</a>
+</div>
+
+<!-- Suggested items -->
+<div id="suggestedItems" class="listContainer">
+	<h2 class="listTitle">Suggested Items</h2>
+	<!-- If there are items in the list -->
+	<ul class="itemList" *ngIf="itemsService.sugItemsArray.length > 0">
+		<li *ngFor="let item of itemsService.sugItemsArray" class="sugItem">
+			<div class="itemText">{{ item.text }}</div>
+			<div class="itemUser">By {{ item.user }}</div>
+			<div class="buttonsContainer">
+				<div class="notification">
+					<button class="appButton hugButton" (click)="sendHug(item.id)"><i class="fab fa-gratipay"></i></button>
+					<span class="badge">{{ item.givenHugs }}</span>
+				</div>
+				<a [routerLink]="['/new', 'Message']" [queryParams]="{user: item.user, userID: item.userId}" class="appButton messageButton"><i class="fas fa-comments"></i></a>
+				<button *ngIf="authService.canUser('patch:any-post')" class="appButton editButton" (click)="editPost(item)"><i class="far fa-edit"></i></button>
+				<button *ngIf="authService.canUser('delete:any-post')" class="appButton deleteButton" (click)="deletePost(item.id)"><i class="fas fa-times"></i></button>
+			</div>
+		</li>
+	</ul>
+
+	<!-- If there are no items in the list -->
+	<div class="errorMessage" *ngIf="itemsService.sugItemsArray.length == 0">There are no suggested items.</div>
+	
+	<a [routerLink]="['/list', 'Suggested']" [queryParams]="{page: 1}" class="appButton fullButton">View Full List</a>
+</div>

@@ -1,0 +1,27 @@
+<div id="modalBox">
+	<div id="editPopup">
+		<button id="exitButton" (click)="exitEdit()"><i class="fas fa-times"></i></button>
+		<!-- If the user is editing a post -->
+		<form *ngIf="toEdit == 'post'" id="postEdit">
+			<div class="formElement">
+				<span class="pageCategory">By:</span> <span class="pageData">{{ authService.userData.displayName }}</span>
+			</div>
+			<div class="formElement">{{ editedItem.date }}</div>
+			<div class="formElement">
+				<label class="pageCategory" for="postText">Text:</label>
+				<textarea #postText id="postText" cols="40" rows="4">{{ editedItem.text }}</textarea>
+			</div>
+			<button type="submit" class="appButton sendData" (click)="updatePost($event, postText.value)">Update</button>
+		</form>
+		
+		<!-- If the user is editing a user -->
+		<form *ngIf="toEdit == 'user'" id="userEdit">
+			<div class="formElement">
+				<label class="pageCategory" for="displayName">Display Name:</label>
+				<input #displayName type="text" id="displayName" value="{{ authService.userData.displayName }}">
+			</div>
+			
+			<button type="submit" class="appButton updateItem" (click)="updateDisplayN($event, displayName.value)">Update</button>
+		</form>
+	</div>
+</div>

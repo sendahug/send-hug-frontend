@@ -35,6 +35,7 @@ export class AuthService {
     givenHugs: 0,
     postsNum: 0,
     loginCount: 0,
+    role: '',
     jwt: ''
   }
   // documents whether the user just logged in or they're still logged in following
@@ -104,6 +105,7 @@ export class AuthService {
           givenHugs: data.givenH,
           postsNum: data.posts,
           loginCount: data.loginCount,
+          role: data.role,
           jwt: this.token
         }
         this.authenticated = true;
@@ -154,6 +156,7 @@ export class AuthService {
         givenHugs: data.givenH,
         postsNum: data.postsNum,
         loginCount: data.loginCount,
+        role: data.role,
         jwt: this.token
       }
       this.authenticated = true;
@@ -185,6 +188,7 @@ export class AuthService {
       givenHugs: 0,
       postsNum: 0,
       loginCount: 0,
+      role: '',
       jwt: ''
     }
     localStorage.setItem("ACTIVE_JWT", '');

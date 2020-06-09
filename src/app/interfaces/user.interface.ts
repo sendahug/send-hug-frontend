@@ -8,5 +8,6 @@ export interface User {
   givenHugs: number;
   postsNum: number;
   loginCount: number;
+  role: string;
   jwt: string;
 }

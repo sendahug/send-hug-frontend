@@ -219,7 +219,7 @@ export class AuthService {
   // Attempts to refresh the token
   refreshToken() {
     this.auth0.checkSession({}, (err, authResult) => {
-      if(authResult.accessToken) {
+      if(authResult && authResult.accessToken) {
         this.token = authResult.accessToken;
         let payload = this.parseJWT(authResult.accessToken);
         this.getUserData(payload);
@@ -253,15 +253,9 @@ export class AuthService {
       let tokenPayload = this.parseJWT(this.token);
       let permissions = tokenPayload['permissions'];
 
-      // if it's within the user's permissions
-      if(permission in permissions) {
-        canUserDo = true;
-      }
-      // if not
-      else {
-        canUserDo = false;
-      }
-
+      // if it's within the user's permissions, return true;
+      // otherwise return false
+      canUserDo = permissions.includes(permission)
       return canUserDo;
     }
     // if there isn't, no user is logged in, so of course there's no permission

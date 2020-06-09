@@ -1,5 +1,5 @@
 <header id="siteHeader">
-	<h1 id="mainTitle">Title</h1>
+	<h1 id="mainTitle">Send a Hug</h1>
 	<nav id="navMenu">
 		<a *ngFor="let tab of navTabs" [routerLink]="(tab.link)" class="navLink">{{tab.name}}</a>
 		<a *ngIf="authService.authenticated" [routerLink]="['/new', 'Post']" class="navLink">New Post</a>

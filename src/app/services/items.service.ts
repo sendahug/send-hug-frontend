@@ -272,7 +272,15 @@ export class ItemsService {
 
   // MESSAGE-RELATED METHODS
   // ==============================================================
-  //
+  /*
+  Function Name: getMessages()
+  Function Description: Checks which mailbox was requested and forwards the request
+                        to the appropriate getter function.
+  Parameters: type (string) - Type of mailbox to fetch.
+              userID (number) - the ID of the user whose messages to fetch.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
   getMessages(type:string, userID:number) {
     if(type == 'inbox') {
       this.getInboxMessages(userID);
@@ -318,7 +326,13 @@ export class ItemsService {
     })
   }
 
-  //
+  /*
+  Function Name: getOutboxMessages()
+  Function Description: Get the user's outgoing messages.
+  Parameters: userID (number) - the ID of the user whose messages to fetch.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
   getOutboxMessages(userID:number) {
     // if the current page is 0, send page 1 to the server (default)
     const currentPage = this.userMessagesPage.outbox ? this.userMessagesPage.outbox : 1;

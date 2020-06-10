@@ -21791,7 +21791,7 @@ var core_1=require("@angular/core");var http_1=require("@angular/common/http");/
 var rxjs_1=require("rxjs");var Auth0=__importStar(require("auth0-js"));// App-related imports
 var environment_1=require("../../environments/environment");var AuthService=/*#__PURE__*/function(){// CTOR
 function AuthService(Http){_classCallCheck(this,AuthService);this.Http=Http;// Auth0 variable
-this.auth0=new Auth0.WebAuth({clientID:environment_1.environment.auth0.clientID,domain:environment_1.environment.auth0.domain,responseType:'token',redirectUri:environment_1.environment.auth0.redirectUri,audience:environment_1.environment.auth0.audience});// authentication information
+this.auth0=new Auth0.WebAuth({clientID:environment_1.environment.auth0.clientID,domain:environment_1.environment.auth0.domain,responseType:'token',redirectUri:environment_1.environment.auth0.redirectUri,audience:environment_1.environment.auth0.audience});this.serverUrl=environment_1.environment.backend.domain;// authentication information
 this.token='';this.authHeader=new http_1.HttpHeaders();this.authenticated=false;this.userData={id:0,auth0Id:'',displayName:'',receivedHugs:0,givenHugs:0,postsNum:0,loginCount:0,role:'',jwt:''};// documents whether the user just logged in or they're still logged in following
 // their previous login
 this.loggedIn=false;this.isUserDataResolved=new rxjs_1.BehaviorSubject(false);}/*
@@ -21829,7 +21829,7 @@ this.getToken();}/*
     Programmer: Shir Bar Lev.
     */},{key:"getUserData",value:function getUserData(jwtPayload){var _this5=this;// if there's a JWT
 if(jwtPayload){// attempts to get the user's data
-this.Http.get("http://localhost:5000/users/".concat(jwtPayload.sub),{headers:new http_1.HttpHeaders({'Authorization':"Bearer ".concat(this.token)})// if successful, get the user data
+this.Http.get("".concat(this.serverUrl,"/users/").concat(jwtPayload.sub),{headers:new http_1.HttpHeaders({'Authorization':"Bearer ".concat(this.token)})// if successful, get the user data
 }).subscribe(function(response){var data=response.user;_this5.userData={id:data.id,auth0Id:jwtPayload.sub,displayName:data.displayName,receivedHugs:data.receivedH,givenHugs:data.givenH,postsNum:data.posts,loginCount:data.loginCount,role:data.role,jwt:_this5.token};// set the authentication-variables accordingly
 _this5.authenticated=true;_this5.authHeader=new http_1.HttpHeaders({'Authorization':"Bearer ".concat(_this5.token)});_this5.setToken();_this5.isUserDataResolved.next(true);// if the user just logged in, update the login count
 if(_this5.loggedIn){_this5.updateUserData();}// if there's an error, check the error type
@@ -21846,7 +21846,7 @@ else{jwtPayload=this.getToken();}}/*
     ----------------
     Programmer: Shir Bar Lev.
     */},{key:"createUser",value:function createUser(jwtPayload){var _this6=this;// post request to create the user
-this.Http.post('http://localhost:5000/users',{id:jwtPayload.sub,displayName:'user'+Math.round(Math.random()*100)},{headers:new http_1.HttpHeaders({'Authorization':"Bearer ".concat(this.token)})//if the request succeeds, get the user's data
+this.Http.post("".concat(this.serverUrl,"/users"),{id:jwtPayload.sub,displayName:'user'+Math.round(Math.random()*100)},{headers:new http_1.HttpHeaders({'Authorization':"Bearer ".concat(this.token)})//if the request succeeds, get the user's data
 }).subscribe(function(response){var data=response.user;_this6.userData={id:data.id,auth0Id:jwtPayload.sub,displayName:data.displayName,receivedHugs:data.receivedH,givenHugs:data.givenH,postsNum:data.postsNum,loginCount:data.loginCount,role:data.role,jwt:_this6.token};// set the authentication-variables accordingly
 _this6.authenticated=true;_this6.authHeader=new http_1.HttpHeaders({'Authorization':"Bearer ".concat(_this6.token)});_this6.setToken();_this6.isUserDataResolved.next(true);// error handling
 },function(err){console.log(err);_this6.isUserDataResolved.next(true);});}/*
@@ -21889,7 +21889,7 @@ else if(err){return'Error: '+err;}});}/*
     Parameters: None.
     ----------------
     Programmer: Shir Bar Lev.
-    */},{key:"updateUserData",value:function updateUserData(){this.Http.patch("http://localhost:5000/users/".concat(this.userData.id),{displayName:this.userData.displayName,receivedH:this.userData.receivedHugs,givenH:this.userData.givenHugs,posts:this.userData.postsNum,loginCount:this.userData.loginCount+1},{headers:this.authHeader}).subscribe(function(response){console.log(response);});}/*
+    */},{key:"updateUserData",value:function updateUserData(){this.Http.patch("".concat(this.serverUrl,"/users/").concat(this.userData.id),{displayName:this.userData.displayName,receivedH:this.userData.receivedHugs,givenH:this.userData.givenHugs,posts:this.userData.postsNum,loginCount:this.userData.loginCount+1},{headers:this.authHeader}).subscribe(function(response){console.log(response);});}/*
     Function Name: canUser()
     Function Description: Check whether the user has permission to perform an action.
     Parameters: permission (string) - The required permission.
@@ -21903,8 +21903,8 @@ else{return false;}}}]);return AuthService;}();AuthService=__decorate([core_1.In
     Items Service
     Send a Hug Service
 */var __decorate=this&&this.__decorate||function(decorators,target,key,desc){var c=arguments.length,r=c<3?target:desc===null?desc=Object.getOwnPropertyDescriptor(target,key):desc,d;if((typeof Reflect==="undefined"?"undefined":_typeof(Reflect))==="object"&&typeof Reflect.decorate==="function")r=Reflect.decorate(decorators,target,key,desc);else for(var i=decorators.length-1;i>=0;i--){if(d=decorators[i])r=(c<3?d(r):c>3?d(target,key,r):d(target,key))||r;}return c>3&&r&&Object.defineProperty(target,key,r),r;};var __metadata=this&&this.__metadata||function(k,v){if((typeof Reflect==="undefined"?"undefined":_typeof(Reflect))==="object"&&typeof Reflect.metadata==="function")return Reflect.metadata(k,v);};Object.defineProperty(exports,"__esModule",{value:true});// Angular imports
-var core_1=require("@angular/core");var http_1=require("@angular/common/http");var rxjs_1=require("rxjs");var auth_service_1=require("./auth.service");var alerts_service_1=require("./alerts.service");var ItemsService=/*#__PURE__*/function(){// CTOR
-function ItemsService(Http,authService,alertsService){_classCallCheck(this,ItemsService);this.Http=Http;this.authService=authService;this.alertsService=alertsService;this.serverUrl='http://localhost:5000';this.newItemsArray=[];this.sugItemsArray=[];// Full list variables
+var core_1=require("@angular/core");var http_1=require("@angular/common/http");var rxjs_1=require("rxjs");var auth_service_1=require("./auth.service");var alerts_service_1=require("./alerts.service");var environment_1=require("../../environments/environment");var ItemsService=/*#__PURE__*/function(){// CTOR
+function ItemsService(Http,authService,alertsService){_classCallCheck(this,ItemsService);this.Http=Http;this.authService=authService;this.alertsService=alertsService;this.serverUrl=environment_1.environment.backend.domain;this.newItemsArray=[];this.sugItemsArray=[];// Full list variables
 this.fullItemsList={fullNewItems:[],fullSuggestedItems:[]};this.fullItemsPage={fullNewItems:0,fullSuggestedItems:0};this.totalFullItemsPage={fullNewItems:0,fullSuggestedItems:0};// User posts variables
 this.userPosts=[];this.isUserPostsResolved=new rxjs_1.BehaviorSubject(false);// User messages variables
 this.userMessages={inbox:[],outbox:[]};this.userMessagesPage={inbox:0,outbox:0};this.totalUserMessagesPages={inbox:0,outbox:0};this.isUserInboxResolved=new rxjs_1.BehaviorSubject(false);this.isUserOutboxResolved=new rxjs_1.BehaviorSubject(false);// default assignment
@@ -21993,7 +21993,7 @@ _this11.userPostsPage=_this11.totalUserPostsPages?response.page:0;_this11.isUser
     Programmer: Shir Bar Lev.
     */},{key:"getInboxMessages",value:function getInboxMessages(userID){var _this16=this;// if the current page is 0, send page 1 to the server (default)
 var currentPage=this.userMessagesPage.inbox?this.userMessagesPage.inbox:1;var params=new http_1.HttpParams().set('userID',"".concat(userID)).set('page',"".concat(currentPage)).set('type','inbox');// try to get the user's messages
-this.Http.get('http://localhost:5000/messages',{headers:this.authService.authHeader,params:params}).subscribe(function(response){var messages=response.messages;_this16.userMessages.inbox=[];messages.forEach(function(element){_this16.userMessages.inbox.push(element);});_this16.totalUserMessagesPages.inbox=response.total_pages;// if there are 0 pages, current page is also 0; otherwise it's whatever
+this.Http.get("".concat(this.serverUrl,"/messages"),{headers:this.authService.authHeader,params:params}).subscribe(function(response){var messages=response.messages;_this16.userMessages.inbox=[];messages.forEach(function(element){_this16.userMessages.inbox.push(element);});_this16.totalUserMessagesPages.inbox=response.total_pages;// if there are 0 pages, current page is also 0; otherwise it's whatever
 // the server returns
 _this16.userMessagesPage.inbox=_this16.totalUserMessagesPages.inbox?response.current_page:0;_this16.isUserInboxResolved.next(true);// if there was an error, alert the user
 },function(err){_this16.isUserInboxResolved.next(true);_this16.createErrorAlert(err);});}/*
@@ -22004,7 +22004,7 @@ _this16.userMessagesPage.inbox=_this16.totalUserMessagesPages.inbox?response.cur
     Programmer: Shir Bar Lev.
     */},{key:"getOutboxMessages",value:function getOutboxMessages(userID){var _this17=this;// if the current page is 0, send page 1 to the server (default)
 var currentPage=this.userMessagesPage.outbox?this.userMessagesPage.outbox:1;var params=new http_1.HttpParams().set('userID',"".concat(userID)).set('page',"".concat(currentPage)).set('type','outbox');// try to get the user's messages
-this.Http.get('http://localhost:5000/messages',{headers:this.authService.authHeader,params:params}).subscribe(function(response){var messages=response.messages;_this17.userMessages.outbox=[];messages.forEach(function(element){_this17.userMessages.outbox.push(element);});_this17.totalUserMessagesPages.outbox=response.total_pages;// if there are 0 pages, current page is also 0; otherwise it's whatever
+this.Http.get("".concat(this.serverUrl,"/messages"),{headers:this.authService.authHeader,params:params}).subscribe(function(response){var messages=response.messages;_this17.userMessages.outbox=[];messages.forEach(function(element){_this17.userMessages.outbox.push(element);});_this17.totalUserMessagesPages.outbox=response.total_pages;// if there are 0 pages, current page is also 0; otherwise it's whatever
 // the server returns
 _this17.userMessagesPage.outbox=_this17.totalUserMessagesPages.outbox?response.current_page:0;_this17.isUserOutboxResolved.next(true);// if there was an error, alert the user
 },function(err){_this17.isUserOutboxResolved.next(true);_this17.createErrorAlert(err);});}/*
@@ -22041,10 +22041,10 @@ var alert={type:'Success',message:message};this.alertsService.createAlert(alert,
     Programmer: Shir Bar Lev.
     */},{key:"createErrorAlert",value:function createErrorAlert(err){// an alert message
 var alert={type:'Error',message:err.error.message};// if it's an auth error, the structure is slightly different
-if(err.status==403||err.status==401){alert.message=err.error.message.description;}this.alertsService.createAlert(alert);}}]);return ItemsService;}();ItemsService=__decorate([core_1.Injectable({providedIn:'root'}),__metadata("design:paramtypes",[http_1.HttpClient,auth_service_1.AuthService,alerts_service_1.AlertsService])],ItemsService);exports.ItemsService=ItemsService;},{"./alerts.service":333,"./auth.service":334,"@angular/common/http":1,"@angular/core":4,"rxjs":120}],336:[function(require,module,exports){"use strict";// This file can be replaced during build by using the `fileReplacements` array.
+if(err.status==403||err.status==401){alert.message=err.error.message.description;}this.alertsService.createAlert(alert);}}]);return ItemsService;}();ItemsService=__decorate([core_1.Injectable({providedIn:'root'}),__metadata("design:paramtypes",[http_1.HttpClient,auth_service_1.AuthService,alerts_service_1.AlertsService])],ItemsService);exports.ItemsService=ItemsService;},{"../../environments/environment":336,"./alerts.service":333,"./auth.service":334,"@angular/common/http":1,"@angular/core":4,"rxjs":120}],336:[function(require,module,exports){"use strict";// This file can be replaced during build by using the `fileReplacements` array.
 // `ng build --prod` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
-Object.defineProperty(exports,"__esModule",{value:true});exports.environment={production:false,auth0:{domain:'dev-sbac.auth0.com',clientID:'rgZL4I04pep3P2GRIEVQtDkWcHjv9sru',audience:'sendhug',redirectUri:'http://localhost:3000/user',logoutUri:'http://localhost:3000'}};/*
+Object.defineProperty(exports,"__esModule",{value:true});exports.environment={production:false,auth0:{domain:'dev-sbac.auth0.com',clientID:'rgZL4I04pep3P2GRIEVQtDkWcHjv9sru',audience:'sendhug',redirectUri:'http://localhost:3000/user',logoutUri:'http://localhost:3000'},backend:{domain:'http://localhost:5000'}};/*
  * For easier debugging in development mode, you can import the following file
  * to ignore zone related error stack frames such as `zone.run`, `zoneDelegate.invokeTask`.
  *

@@ -28,6 +28,7 @@ export class AuthService {
     audience: environment.auth0.audience
   })
 
+  readonly serverUrl = environment.backend.domain;
   // authentication information
   token: string = '';
   authHeader: HttpHeaders = new HttpHeaders;
@@ -130,7 +131,7 @@ export class AuthService {
     // if there's a JWT
     if(jwtPayload) {
       // attempts to get the user's data
-      this.Http.get(`http://localhost:5000/users/${jwtPayload.sub}`, {
+      this.Http.get(`${this.serverUrl}/users/${jwtPayload.sub}`, {
         headers: new HttpHeaders({'Authorization': `Bearer ${this.token}`})
         // if successful, get the user data
       }).subscribe((response:any) => {
@@ -188,7 +189,7 @@ export class AuthService {
   */
   createUser(jwtPayload:any) {
     // post request to create the user
-    this.Http.post('http://localhost:5000/users', {
+    this.Http.post(`${this.serverUrl}/users`, {
       id: jwtPayload.sub,
       displayName: 'user' + Math.round(Math.random() * 100)
     }, {
@@ -321,7 +322,7 @@ export class AuthService {
   Programmer: Shir Bar Lev.
   */
   updateUserData() {
-    this.Http.patch(`http://localhost:5000/users/${this.userData.id}`, {
+    this.Http.patch(`${this.serverUrl}/users/${this.userData.id}`, {
       displayName: this.userData.displayName,
       receivedH: this.userData.receivedHugs,
       givenH: this.userData.givenHugs,

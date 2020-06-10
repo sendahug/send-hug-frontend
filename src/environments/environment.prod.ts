@@ -6,5 +6,8 @@ export const environment = {
     audience: 'sendhug',
     redirectUri: 'http://localhost:3000/user',
     logoutUri: 'http://localhost:3000'
+  },
+  backend: {
+    domain: 'http://localhost:5000'
   }
 };

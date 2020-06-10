@@ -14,12 +14,13 @@ import { Message } from '../interfaces/message.interface';
 import { AlertMessage } from '../interfaces/alert.interface';
 import { AuthService } from './auth.service';
 import { AlertsService } from './alerts.service';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ItemsService {
-  private serverUrl = 'http://localhost:5000'
+  readonly serverUrl = environment.backend.domain;
   newItemsArray: Post[] = [];
   sugItemsArray: Post[] = [];
   // Full list variables
@@ -305,7 +306,7 @@ export class ItemsService {
       .set('page', `${currentPage}`)
       .set('type', 'inbox');
     // try to get the user's messages
-    this.Http.get('http://localhost:5000/messages', {
+    this.Http.get(`${this.serverUrl}/messages`, {
       headers: this.authService.authHeader,
       params: params
     }).subscribe((response:any) => {
@@ -341,7 +342,7 @@ export class ItemsService {
       .set('page', `${currentPage}`)
       .set('type', 'outbox');
     // try to get the user's messages
-    this.Http.get('http://localhost:5000/messages', {
+    this.Http.get(`${this.serverUrl}/messages`, {
       headers: this.authService.authHeader,
       params: params
     }).subscribe((response:any) => {

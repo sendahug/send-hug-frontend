@@ -13,8 +13,11 @@
 	<!-- If there are messages in the user's inbox -->
 	<div *ngIf="itemsService.userMessages[messType].length">
 		<div *ngFor="let message of itemsService.userMessages[messType]" class="userMessage">
-			<div class="messageField">
+			<div class="messageField" *ngIf="messType == 'inbox'">
 				<span class="pageCategory">From:</span> <span class="pageData">{{ message.from }}</span>
+			</div>
+			<div class="messageField" *ngIf="messType == 'outbox'">
+				<span class="pageCategory">For:</span> <span class="pageData">{{ message.for }}</span>
 			</div>
 			<div class="pageCategory">Message:</div> <div class="pageData">{{ message.messageText }}</div>
 			<button class="appButton deleteButton" (click)="deleteMessage(message.id)">Delete</button>

@@ -1,12 +1,18 @@
 <h3>Inbox</h3>
 <!-- If the user is logged in, displays the user's inbox. -->
 <div id="userInbox" *ngIf="authService.authenticated">
+	<!-- Messages area navigation. -->
+	<div id="messagesNav">
+		<button class="messNavOption appButton" (click)="changeMailbox('inbox')">Inbox</button>
+		<button class="messNavOption appButton" (click)="changeMailbox('outbox')">Outbox</button>
+	</div>
+	
 	<app-loader
 		[waitingFor]="waitFor"></app-loader>
 
 	<!-- If there are messages in the user's inbox -->
-	<div *ngIf="itemsService.userMessages.length">
-		<div *ngFor="let message of itemsService.userMessages" class="userMessage">
+	<div *ngIf="itemsService.userMessages[messType].length">
+		<div *ngFor="let message of itemsService.userMessages[messType]" class="userMessage">
 			<div class="messageField">
 				<span class="pageCategory">From:</span> <span class="pageData">{{ message.from }}</span>
 			</div>
@@ -15,16 +21,16 @@
 		</div>
 		<!-- Message pagination -->
 		<div class="pagination">
-			<button *ngIf="itemsService.userMessagesPage > 1" class="appButton prevButton" (click)="prevPage()">Previous Page</button>
-			<button *ngIf="itemsService.userMessagesPage <= 1" class="appButton hidden" (click)="prevPage()">Previous Page</button>
-			<div class="pageCount">Page {{ itemsService.userMessagesPage }} of {{ itemsService.totalUserMessagesPages }}</div>
-			<button *ngIf="itemsService.totalUserMessagesPages > itemsService.userMessagesPage" class="appButton nextButton" (click)="nextPage()">Next Page</button>
-			<button *ngIf="itemsService.totalUserMessagesPages <= itemsService.userMessagesPage" class="appButton hidden" (click)="nextPage()">Next Page</button>
+			<button *ngIf="itemsService.userMessagesPage[messType] > 1" class="appButton prevButton" (click)="prevPage()">Previous Page</button>
+			<button *ngIf="itemsService.userMessagesPage[messType] <= 1" class="appButton hidden" (click)="prevPage()">Previous Page</button>
+			<div class="pageCount">Page {{ itemsService.userMessagesPage[messType] }} of {{ itemsService.totalUserMessagesPages[messType] }}</div>
+			<button *ngIf="itemsService.totalUserMessagesPages[messType] > itemsService.userMessagesPage[messType]" class="appButton nextButton" (click)="nextPage()">Next Page</button>
+			<button *ngIf="itemsService.totalUserMessagesPages[messType] <= itemsService.userMessagesPage[messType]" class="appButton hidden" (click)="nextPage()">Next Page</button>
 		</div>
 	</div>
 	
 	<!-- If there are no messages in the user's inbox -->
-	<div *ngIf="!itemsService.userMessages.length && itemsService.isUserMessagesResolved">
+	<div *ngIf="!itemsService.userMessages[messType].length && itemsService.isUserMessagesResolved">
 		<div class="errorMessage">You have no incoming messages.</div>
 	</div>
 </div>

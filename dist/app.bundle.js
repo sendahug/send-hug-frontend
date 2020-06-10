@@ -21476,12 +21476,20 @@ this.authService.isUserDataResolved.subscribe(function(value){// the subject's v
 // so if the value is true, there's no longer need for the loader
 // screen.
 if(value==true){_this2.visible=false;}});}// if the app is waiting for posts data to be fetched from the server
-else if(this.waitingFor=='posts'){this.message='Fetching posts...';}// if the app is waiting for messages data to be fetched from the server
-else if(this.waitingFor=='messages'){this.message='Fetching messages...';// subscribe to the subject following user data
+else if(this.waitingFor=='posts'){this.message='Fetching posts...';}// if the app is waiting for incoming messages data to be fetched from the server
+else if(this.waitingFor=='inbox messages'){this.message='Fetching messages...';// subscribe to the subject following user data
 this.authService.isUserDataResolved.subscribe(function(value){// if user data has been fetched, the app can attempt to fetch
 // the logged in user's messages
 if(value==true){// subscribe to the subject following user messages data
-_this2.itemsService.isUserMessagesResolved.subscribe(function(value){// the subject's value is changed to 'true' upon fetching user
+_this2.itemsService.isUserInboxResolved.subscribe(function(value){// the subject's value is changed to 'true' upon fetching user
+// messages, so if the value is true, there's no longer need
+// for the loader screen
+if(value==true){_this2.visible=false;}});}});}// if the app is waiting for outgoing messages data to be fetched from the server
+else if(this.waitingFor=='outbox messages'){this.message='Fetching messages...';// subscribe to the subject following user data
+this.authService.isUserDataResolved.subscribe(function(value){// if user data has been fetched, the app can attempt to fetch
+// the logged in user's messages
+if(value==true){// subscribe to the subject following user messages data
+_this2.itemsService.isUserOutboxResolved.subscribe(function(value){// the subject's value is changed to 'true' upon fetching user
 // messages, so if the value is true, there's no longer need
 // for the loader screen
 if(value==true){_this2.visible=false;}});}});}// if the app is waiting for the user's posts to be fetched from the server
@@ -21531,12 +21539,12 @@ else{item=this.itemsService.sugItemsArray.filter(function(e){return e.id==itemID
 */var __decorate=this&&this.__decorate||function(decorators,target,key,desc){var c=arguments.length,r=c<3?target:desc===null?desc=Object.getOwnPropertyDescriptor(target,key):desc,d;if((typeof Reflect==="undefined"?"undefined":_typeof(Reflect))==="object"&&typeof Reflect.decorate==="function")r=Reflect.decorate(decorators,target,key,desc);else for(var i=decorators.length-1;i>=0;i--){if(d=decorators[i])r=(c<3?d(r):c>3?d(target,key,r):d(target,key))||r;}return c>3&&r&&Object.defineProperty(target,key,r),r;};var __metadata=this&&this.__metadata||function(k,v){if((typeof Reflect==="undefined"?"undefined":_typeof(Reflect))==="object"&&typeof Reflect.metadata==="function")return Reflect.metadata(k,v);};Object.defineProperty(exports,"__esModule",{value:true});// Angular imports
 var core_1=require("@angular/core");// App-related imports
 var auth_service_1=require("../../services/auth.service");var items_service_1=require("../../services/items.service");var AppMessaging=/*#__PURE__*/function(){// CTOR
-function AppMessaging(authService,itemsService){var _this3=this;_classCallCheck(this,AppMessaging);this.authService=authService;this.itemsService=itemsService;// loader sub-component variable
-this.waitFor='messages';// subscribe to the subject following user data
+function AppMessaging(authService,itemsService){var _this3=this;_classCallCheck(this,AppMessaging);this.authService=authService;this.itemsService=itemsService;this.messType='inbox';// loader sub-component variable
+this.waitFor="".concat(this.messType," messages");// subscribe to the subject following user data
 this.authService.isUserDataResolved.subscribe(function(value){// if the value is true, user data has been fetched, so the app can
 // now fetch the user's messages
 if(value==true){// Gets the user's messages via the items service
-_this3.itemsService.getMessages(_this3.authService.userData.id);}});}_createClass2(AppMessaging,[{key:"ngOnInit",value:function ngOnInit(){}/*
+_this3.itemsService.getMessages(_this3.messType,_this3.authService.userData.id);}});}_createClass2(AppMessaging,[{key:"ngOnInit",value:function ngOnInit(){}/*
     Function Name: login()
     Function Description: Activates Auth0 login via the authentication service.
     Parameters: None.
@@ -21556,14 +21564,20 @@ _this3.itemsService.getMessages(_this3.authService.userData.id);}});}_createClas
     Parameters: None.
     ----------------
     Programmer: Shir Bar Lev.
-    */},{key:"nextPage",value:function nextPage(){this.itemsService.userMessagesPage+=1;this.itemsService.getMessages(this.authService.userData.id);}/*
+    */},{key:"nextPage",value:function nextPage(){if(this.messType=='inbox'){this.itemsService.userMessagesPage.inbox+=1;}else if(this.messType=='outbox'){this.itemsService.userMessagesPage.outbox+=1;}this.itemsService.getMessages(this.messType,this.authService.userData.id);}/*
     Function Name: prevPage()
     Function Description: Go to the previous page of messages. Sends a request to the
                           items service to get the data for the previous page.
     Parameters: None.
     ----------------
     Programmer: Shir Bar Lev.
-    */},{key:"prevPage",value:function prevPage(){this.itemsService.userMessagesPage-=1;this.itemsService.getMessages(this.authService.userData.id);}}]);return AppMessaging;}();AppMessaging=__decorate([core_1.Component({selector:'app-messages',templateUrl:'./app//messages.component.html'}),__metadata("design:paramtypes",[auth_service_1.AuthService,items_service_1.ItemsService])],AppMessaging);exports.AppMessaging=AppMessaging;},{"../../services/auth.service":334,"../../services/items.service":335,"@angular/core":4}],329:[function(require,module,exports){"use strict";/*
+    */},{key:"prevPage",value:function prevPage(){if(this.messType=='inbox'){this.itemsService.userMessagesPage.inbox-=1;}else if(this.messType=='outbox'){this.itemsService.userMessagesPage.outbox-=1;}this.itemsService.getMessages(this.messType,this.authService.userData.id);}/*
+    Function Name: changeMailbox()
+    Function Description: Changes the currently active mailbox (inbox or outbox).
+    Parameters: newType (string) - The mailbox to change to.
+    ----------------
+    Programmer: Shir Bar Lev.
+    */},{key:"changeMailbox",value:function changeMailbox(newType){this.messType=newType;this.itemsService.getMessages(this.messType,this.authService.userData.id);}}]);return AppMessaging;}();AppMessaging=__decorate([core_1.Component({selector:'app-messages',templateUrl:'./app//messages.component.html'}),__metadata("design:paramtypes",[auth_service_1.AuthService,items_service_1.ItemsService])],AppMessaging);exports.AppMessaging=AppMessaging;},{"../../services/auth.service":334,"../../services/items.service":335,"@angular/core":4}],329:[function(require,module,exports){"use strict";/*
     My Posts
     Send a Hug Component
 */var __decorate=this&&this.__decorate||function(decorators,target,key,desc){var c=arguments.length,r=c<3?target:desc===null?desc=Object.getOwnPropertyDescriptor(target,key):desc,d;if((typeof Reflect==="undefined"?"undefined":_typeof(Reflect))==="object"&&typeof Reflect.decorate==="function")r=Reflect.decorate(decorators,target,key,desc);else for(var i=decorators.length-1;i>=0;i--){if(d=decorators[i])r=(c<3?d(r):c>3?d(target,key,r):d(target,key))||r;}return c>3&&r&&Object.defineProperty(target,key,r),r;};var __metadata=this&&this.__metadata||function(k,v){if((typeof Reflect==="undefined"?"undefined":_typeof(Reflect))==="object"&&typeof Reflect.metadata==="function")return Reflect.metadata(k,v);};Object.defineProperty(exports,"__esModule",{value:true});// Angular imports
@@ -21876,8 +21890,8 @@ var core_1=require("@angular/core");var http_1=require("@angular/common/http");v
 function ItemsService(Http,authService,alertsService){_classCallCheck(this,ItemsService);this.Http=Http;this.authService=authService;this.alertsService=alertsService;this.serverUrl='http://localhost:5000';this.newItemsArray=[];this.sugItemsArray=[];// Full list variables
 this.fullItemsList={fullNewItems:[],fullSuggestedItems:[]};this.fullItemsPage={fullNewItems:0,fullSuggestedItems:0};this.totalFullItemsPage={fullNewItems:0,fullSuggestedItems:0};// User posts variables
 this.userPosts=[];this.isUserPostsResolved=new rxjs_1.BehaviorSubject(false);// User messages variables
-this.userMessages=[];this.isUserMessagesResolved=new rxjs_1.BehaviorSubject(false);// default assignment
-this.fullItemsPage.fullNewItems=1;this.fullItemsPage.fullSuggestedItems=1;this.totalFullItemsPage.fullNewItems=1;this.totalFullItemsPage.fullSuggestedItems=1;this.userPostsPage=1;this.userMessagesPage=1;this.totalUserPostsPages=1;this.totalUserMessagesPages=1;}// POST-RELATED METHODS
+this.userMessages={inbox:[],outbox:[]};this.userMessagesPage={inbox:0,outbox:0};this.totalUserMessagesPages={inbox:0,outbox:0};this.isUserInboxResolved=new rxjs_1.BehaviorSubject(false);this.isUserOutboxResolved=new rxjs_1.BehaviorSubject(false);// default assignment
+this.fullItemsPage.fullNewItems=1;this.fullItemsPage.fullSuggestedItems=1;this.totalFullItemsPage.fullNewItems=1;this.totalFullItemsPage.fullSuggestedItems=1;this.userPostsPage=1;this.totalUserPostsPages=1;this.userMessagesPage.inbox=1;this.totalUserMessagesPages.inbox=1;this.userMessagesPage.outbox=1;this.totalUserMessagesPages.outbox=1;}// POST-RELATED METHODS
 // ==============================================================
 /*
     Function Name: getItems()
@@ -21946,33 +21960,40 @@ _this11.userPostsPage=_this11.totalUserPostsPages?response.page:0;_this11.isUser
     */},{key:"sendHug",value:function sendHug(item){var _this15=this;var Url=this.serverUrl+"/posts/".concat(item.id);item.givenHugs+=1;this.Http.patch(Url,item,{headers:this.authService.authHeader}).subscribe(function(response){if(response.success==true){_this15.createSuccessAlert('Your hug was sent!',false);}// if there was an error, alert the user
 },function(err){_this15.createErrorAlert(err);});}// MESSAGE-RELATED METHODS
 // ==============================================================
-/*
-    Function Name: getMessages()
-    Function Description: Get the user's messages.
+//
+},{key:"getMessages",value:function getMessages(type,userID){if(type=='inbox'){this.getInboxMessages(userID);}else if(type=='outbox'){this.getOutboxMessages(userID);}}/*
+    Function Name: getInboxMessages()
+    Function Description: Get the user's incoming messages.
     Parameters: userID (number) - the ID of the user whose messages to fetch.
     ----------------
     Programmer: Shir Bar Lev.
-    */},{key:"getMessages",value:function getMessages(userID){var _this16=this;// if the current page is 0, send page 1 to the server (default)
-var currentPage=this.userMessagesPage?this.userMessagesPage:1;var params=new http_1.HttpParams().set('userID',"".concat(userID)).set('page',"".concat(currentPage));// try to get the user's messages
-this.Http.get('http://localhost:5000/messages',{headers:this.authService.authHeader,params:params}).subscribe(function(response){var messages=response.messages;_this16.userMessages=[];messages.forEach(function(element){_this16.userMessages.push(element);});_this16.totalUserMessagesPages=response.total_pages;// if there are 0 pages, current page is also 0; otherwise it's whatever
+    */},{key:"getInboxMessages",value:function getInboxMessages(userID){var _this16=this;// if the current page is 0, send page 1 to the server (default)
+var currentPage=this.userMessagesPage.inbox?this.userMessagesPage.inbox:1;var params=new http_1.HttpParams().set('userID',"".concat(userID)).set('page',"".concat(currentPage)).set('type','inbox');// try to get the user's messages
+this.Http.get('http://localhost:5000/messages',{headers:this.authService.authHeader,params:params}).subscribe(function(response){var messages=response.messages;_this16.userMessages.inbox=[];messages.forEach(function(element){_this16.userMessages.inbox.push(element);});_this16.totalUserMessagesPages.inbox=response.total_pages;// if there are 0 pages, current page is also 0; otherwise it's whatever
 // the server returns
-_this16.userMessagesPage=_this16.totalUserMessagesPages?response.current_page:0;_this16.isUserMessagesResolved.next(true);// if there was an error, alert the user
-},function(err){_this16.isUserMessagesResolved.next(true);_this16.createErrorAlert(err);});}/*
+_this16.userMessagesPage.inbox=_this16.totalUserMessagesPages.inbox?response.current_page:0;_this16.isUserInboxResolved.next(true);// if there was an error, alert the user
+},function(err){_this16.isUserInboxResolved.next(true);_this16.createErrorAlert(err);});}//
+},{key:"getOutboxMessages",value:function getOutboxMessages(userID){var _this17=this;// if the current page is 0, send page 1 to the server (default)
+var currentPage=this.userMessagesPage.outbox?this.userMessagesPage.outbox:1;var params=new http_1.HttpParams().set('userID',"".concat(userID)).set('page',"".concat(currentPage)).set('type','outbox');// try to get the user's messages
+this.Http.get('http://localhost:5000/messages',{headers:this.authService.authHeader,params:params}).subscribe(function(response){var messages=response.messages;_this17.userMessages.outbox=[];messages.forEach(function(element){_this17.userMessages.outbox.push(element);});_this17.totalUserMessagesPages.outbox=response.total_pages;// if there are 0 pages, current page is also 0; otherwise it's whatever
+// the server returns
+_this17.userMessagesPage.outbox=_this17.totalUserMessagesPages.outbox?response.current_page:0;_this17.isUserOutboxResolved.next(true);// if there was an error, alert the user
+},function(err){_this17.isUserOutboxResolved.next(true);_this17.createErrorAlert(err);});}/*
     Function Name: sendMessage()
     Function Description: Send a message.
     Parameters: message (Message) - the message to send.
     ----------------
     Programmer: Shir Bar Lev.
-    */},{key:"sendMessage",value:function sendMessage(message){var _this17=this;var Url=this.serverUrl+'/messages';this.Http.post(Url,message,{headers:this.authService.authHeader}).subscribe(function(response){if(response.success==true){_this17.createSuccessAlert('Your message was sent!',false,'/');}// if there was an error, alert the user
-},function(err){_this17.createErrorAlert(err);});}/*
+    */},{key:"sendMessage",value:function sendMessage(message){var _this18=this;var Url=this.serverUrl+'/messages';this.Http.post(Url,message,{headers:this.authService.authHeader}).subscribe(function(response){if(response.success==true){_this18.createSuccessAlert('Your message was sent!',false,'/');}// if there was an error, alert the user
+},function(err){_this18.createErrorAlert(err);});}/*
     Function Name: deleteMessage()
     Function Description: Delete a message.
     Parameters: messageId (number) - the ID of the message to delete.
     ----------------
     Programmer: Shir Bar Lev.
-    */},{key:"deleteMessage",value:function deleteMessage(messageId){var _this18=this;var Url=this.serverUrl+"/messages/".concat(messageId);// try to delete the message
-this.Http["delete"](Url,{headers:this.authService.authHeader}).subscribe(function(response){_this18.createSuccessAlert("Message ".concat(response.deleted," was deleted! Refresh to view the updated message list."),true);// if there was an error, alert the user
-},function(err){_this18.createErrorAlert(err);});}// ALERT METHODS
+    */},{key:"deleteMessage",value:function deleteMessage(messageId){var _this19=this;var Url=this.serverUrl+"/messages/".concat(messageId);// try to delete the message
+this.Http["delete"](Url,{headers:this.authService.authHeader}).subscribe(function(response){_this19.createSuccessAlert("Message ".concat(response.deleted," was deleted! Refresh to view the updated message list."),true);// if there was an error, alert the user
+},function(err){_this19.createErrorAlert(err);});}// ALERT METHODS
 // ==============================================================
 /*
     Function Name: createSuccessAlert()

@@ -15,8 +15,9 @@ import { ItemsService } from '../../services/items.service';
   templateUrl: './messages.component.html'
 })
 export class AppMessaging implements OnInit {
+  messType = 'inbox';
   // loader sub-component variable
-  waitFor = 'messages';
+  waitFor = `${this.messType} messages`;
 
   // CTOR
   constructor(public authService: AuthService, public itemsService: ItemsService) {
@@ -26,7 +27,7 @@ export class AppMessaging implements OnInit {
       // now fetch the user's messages
       if(value == true) {
         // Gets the user's messages via the items service
-        this.itemsService.getMessages(this.authService.userData.id!);
+        this.itemsService.getMessages(this.messType, this.authService.userData.id!);
       }
     })
   }
@@ -67,8 +68,14 @@ export class AppMessaging implements OnInit {
   Programmer: Shir Bar Lev.
   */
   nextPage() {
-    this.itemsService.userMessagesPage += 1;
-    this.itemsService.getMessages(this.authService.userData.id!);
+    if(this.messType == 'inbox') {
+      this.itemsService.userMessagesPage.inbox += 1;
+    }
+    else if(this.messType == 'outbox') {
+      this.itemsService.userMessagesPage.outbox += 1;
+    }
+
+    this.itemsService.getMessages(this.messType, this.authService.userData.id!);
   }
 
   /*
@@ -80,7 +87,24 @@ export class AppMessaging implements OnInit {
   Programmer: Shir Bar Lev.
   */
   prevPage() {
-    this.itemsService.userMessagesPage -= 1;
-    this.itemsService.getMessages(this.authService.userData.id!);
+    if(this.messType == 'inbox') {
+      this.itemsService.userMessagesPage.inbox -= 1;
+    }
+    else if(this.messType == 'outbox') {
+      this.itemsService.userMessagesPage.outbox -= 1;
+    }
+    this.itemsService.getMessages(this.messType, this.authService.userData.id!);
+  }
+
+  /*
+  Function Name: changeMailbox()
+  Function Description: Changes the currently active mailbox (inbox or outbox).
+  Parameters: newType (string) - The mailbox to change to.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  changeMailbox(newType:string) {
+    this.messType = newType;
+    this.itemsService.getMessages(this.messType, this.authService.userData.id!);
   }
 }

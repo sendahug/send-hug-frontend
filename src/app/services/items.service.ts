@@ -44,10 +44,23 @@ export class ItemsService {
   totalUserPostsPages: number;
   isUserPostsResolved = new BehaviorSubject(false);
   // User messages variables
-  userMessages: Message[] = [];
-  userMessagesPage: number;
-  totalUserMessagesPages: number;
-  isUserMessagesResolved = new BehaviorSubject(false);
+  userMessages: {
+    inbox: Message[],
+    outbox: Message[]
+  } = {
+    inbox: [],
+    outbox: []
+  }
+  userMessagesPage = {
+    inbox: 0,
+    outbox: 0
+  }
+  totalUserMessagesPages = {
+    inbox: 0,
+    outbox: 0
+  }
+  isUserInboxResolved = new BehaviorSubject(false);
+  isUserOutboxResolved = new BehaviorSubject(false);
 
   // CTOR
   constructor(
@@ -60,9 +73,11 @@ export class ItemsService {
       this.totalFullItemsPage.fullNewItems = 1;
       this.totalFullItemsPage.fullSuggestedItems = 1;
       this.userPostsPage = 1;
-      this.userMessagesPage = 1;
       this.totalUserPostsPages = 1;
-      this.totalUserMessagesPages = 1;
+      this.userMessagesPage.inbox = 1;
+      this.totalUserMessagesPages.inbox = 1;
+      this.userMessagesPage.outbox = 1;
+      this.totalUserMessagesPages.outbox = 1;
   }
 
   // POST-RELATED METHODS
@@ -257,37 +272,78 @@ export class ItemsService {
 
   // MESSAGE-RELATED METHODS
   // ==============================================================
+  //
+  getMessages(type:string, userID:number) {
+    if(type == 'inbox') {
+      this.getInboxMessages(userID);
+    }
+    else if(type == 'outbox') {
+      this.getOutboxMessages(userID);
+    }
+  }
+
   /*
-  Function Name: getMessages()
-  Function Description: Get the user's messages.
+  Function Name: getInboxMessages()
+  Function Description: Get the user's incoming messages.
   Parameters: userID (number) - the ID of the user whose messages to fetch.
   ----------------
   Programmer: Shir Bar Lev.
   */
-  getMessages(userID:number) {
+  getInboxMessages(userID:number) {
     // if the current page is 0, send page 1 to the server (default)
-    const currentPage = this.userMessagesPage ? this.userMessagesPage : 1;
+    const currentPage = this.userMessagesPage.inbox ? this.userMessagesPage.inbox : 1;
     let params = new HttpParams()
       .set('userID', `${userID}`)
-      .set('page', `${currentPage}`);
+      .set('page', `${currentPage}`)
+      .set('type', 'inbox');
     // try to get the user's messages
     this.Http.get('http://localhost:5000/messages', {
       headers: this.authService.authHeader,
       params: params
     }).subscribe((response:any) => {
       let messages = response.messages;
-      this.userMessages = [];
+      this.userMessages.inbox = [];
       messages.forEach((element: Message) => {
-        this.userMessages.push(element);
+        this.userMessages.inbox.push(element);
       });
-      this.totalUserMessagesPages = response.total_pages;
+      this.totalUserMessagesPages.inbox = response.total_pages;
       // if there are 0 pages, current page is also 0; otherwise it's whatever
       // the server returns
-      this.userMessagesPage = this.totalUserMessagesPages ? response.current_page : 0;
-      this.isUserMessagesResolved.next(true);
+      this.userMessagesPage.inbox = this.totalUserMessagesPages.inbox ? response.current_page : 0;
+      this.isUserInboxResolved.next(true);
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
-      this.isUserMessagesResolved.next(true);
+      this.isUserInboxResolved.next(true);
+      this.createErrorAlert(err);
+    })
+  }
+
+  //
+  getOutboxMessages(userID:number) {
+    // if the current page is 0, send page 1 to the server (default)
+    const currentPage = this.userMessagesPage.outbox ? this.userMessagesPage.outbox : 1;
+    let params = new HttpParams()
+      .set('userID', `${userID}`)
+      .set('page', `${currentPage}`)
+      .set('type', 'outbox');
+    // try to get the user's messages
+    this.Http.get('http://localhost:5000/messages', {
+      headers: this.authService.authHeader,
+      params: params
+    }).subscribe((response:any) => {
+      let messages = response.messages;
+      this.userMessages.outbox = [];
+      messages.forEach((element: Message) => {
+        this.userMessages.outbox.push(element);
+      });
+      this.totalUserMessagesPages.outbox = response.total_pages;
+      // if there are 0 pages, current page is also 0; otherwise it's whatever
+      // the server returns
+      this.userMessagesPage.outbox = this.totalUserMessagesPages.outbox ? response.current_page : 0;
+      this.isUserOutboxResolved.next(true);
+    // if there was an error, alert the user
+    }, (err:HttpErrorResponse) => {
+      this.isUserOutboxResolved.next(true);
       this.createErrorAlert(err);
     })
   }

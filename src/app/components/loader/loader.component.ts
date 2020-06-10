@@ -59,8 +59,8 @@ export class Loader implements OnInit {
     else if(this.waitingFor == 'posts') {
       this.message = 'Fetching posts...';
     }
-    // if the app is waiting for messages data to be fetched from the server
-    else if(this.waitingFor == 'messages') {
+    // if the app is waiting for incoming messages data to be fetched from the server
+    else if(this.waitingFor == 'inbox messages') {
       this.message = 'Fetching messages...';
       // subscribe to the subject following user data
       this.authService.isUserDataResolved.subscribe((value) => {
@@ -68,7 +68,27 @@ export class Loader implements OnInit {
         // the logged in user's messages
         if(value == true) {
           // subscribe to the subject following user messages data
-          this.itemsService.isUserMessagesResolved.subscribe((value) => {
+          this.itemsService.isUserInboxResolved.subscribe((value) => {
+            // the subject's value is changed to 'true' upon fetching user
+            // messages, so if the value is true, there's no longer need
+            // for the loader screen
+            if(value == true) {
+              this.visible = false;
+            }
+          })
+        }
+      })
+    }
+    // if the app is waiting for outgoing messages data to be fetched from the server
+    else if(this.waitingFor == 'outbox messages') {
+      this.message = 'Fetching messages...';
+      // subscribe to the subject following user data
+      this.authService.isUserDataResolved.subscribe((value) => {
+        // if user data has been fetched, the app can attempt to fetch
+        // the logged in user's messages
+        if(value == true) {
+          // subscribe to the subject following user messages data
+          this.itemsService.isUserOutboxResolved.subscribe((value) => {
             // the subject's value is changed to 'true' upon fetching user
             // messages, so if the value is true, there's no longer need
             // for the loader screen

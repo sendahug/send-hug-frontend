@@ -21465,17 +21465,34 @@ this.visible=true;}/*
     Function Name: ngOnInit()
     Function Description: This method is automatically triggered by Angular upon
                           page initiation. It checks for the existence of the data
-                          the parent component is waiting for and adjusts the
+                          the parent component is waiting (via checkLoadingTarget()) for and adjusts the
                           loader itself (its message and visibility) accordingly.
     Parameters: None.
     ----------------
     Programmer: Shir Bar Lev.
-    */_createClass2(Loader,[{key:"ngOnInit",value:function ngOnInit(){var _this2=this;// if the app is waiting for user data to be fetched from the server
+    */_createClass2(Loader,[{key:"ngOnInit",value:function ngOnInit(){this.checkLoadingTarget();}/*
+    Function Name: ngOnChanges()
+    Function Description: This method is automatically triggered by Angular upon
+                          changes in parent component. It checks for the existence of the data
+                          the parent component is waiting (via checkLoadingTarget()) for and adjusts the
+                          loader itself (its message and visibility) accordingly.
+    Parameters: None.
+    ----------------
+    Programmer: Shir Bar Lev.
+    */},{key:"ngOnChanges",value:function ngOnChanges(){if(this.waitingFor){this.visible=true;this.checkLoadingTarget();}}/*
+    Function Name: checkLoadingTarget()
+    Function Description: Checks for the existence of the data the parent component
+                          is waiting (via checkLoadingTarget()) for and adjusts the
+                          loader itself (its message and visibility) accordingly.
+    Parameters: None.
+    ----------------
+    Programmer: Shir Bar Lev.
+    */},{key:"checkLoadingTarget",value:function checkLoadingTarget(){var _this2=this;// if the app is waiting for user data to be fetched from the server
 if(this.waitingFor=='user'){this.message='Fetching user data...';// subscribe to the subject following user data
 this.authService.isUserDataResolved.subscribe(function(value){// the subject's value is changed to 'true' upon fetching user data,
 // so if the value is true, there's no longer need for the loader
 // screen.
-if(value==true){_this2.visible=false;}});}// if the app is waiting for posts data to be fetched from the server
+if(value==true){_this2.visible=false;_this2.waitingFor='';}});}// if the app is waiting for posts data to be fetched from the server
 else if(this.waitingFor=='posts'){this.message='Fetching posts...';}// if the app is waiting for incoming messages data to be fetched from the server
 else if(this.waitingFor=='inbox messages'){this.message='Fetching messages...';// subscribe to the subject following user data
 this.authService.isUserDataResolved.subscribe(function(value){// if user data has been fetched, the app can attempt to fetch
@@ -21484,7 +21501,7 @@ if(value==true){// subscribe to the subject following user messages data
 _this2.itemsService.isUserInboxResolved.subscribe(function(value){// the subject's value is changed to 'true' upon fetching user
 // messages, so if the value is true, there's no longer need
 // for the loader screen
-if(value==true){_this2.visible=false;}});}});}// if the app is waiting for outgoing messages data to be fetched from the server
+if(value==true){_this2.visible=false;_this2.waitingFor='';}});}});}// if the app is waiting for outgoing messages data to be fetched from the server
 else if(this.waitingFor=='outbox messages'){this.message='Fetching messages...';// subscribe to the subject following user data
 this.authService.isUserDataResolved.subscribe(function(value){// if user data has been fetched, the app can attempt to fetch
 // the logged in user's messages
@@ -21492,12 +21509,12 @@ if(value==true){// subscribe to the subject following user messages data
 _this2.itemsService.isUserOutboxResolved.subscribe(function(value){// the subject's value is changed to 'true' upon fetching user
 // messages, so if the value is true, there's no longer need
 // for the loader screen
-if(value==true){_this2.visible=false;}});}});}// if the app is waiting for the user's posts to be fetched from the server
+if(value==true){_this2.visible=false;_this2.waitingFor='';}});}});}// if the app is waiting for the user's posts to be fetched from the server
 else if(this.waitingFor=='user posts'){this.message='Fetching user posts...';// subscribe to the subject following user's posts
 this.itemsService.isUserPostsResolved.subscribe(function(value){// the subject's value is changed to 'true' upon fetching user
 // posts, so if the value is true, there's no longer need for the
 // loader screen
-if(value==true){_this2.visible=false;}});}}}]);return Loader;}();__decorate([core_1.Input(),__metadata("design:type",String)],Loader.prototype,"waitingFor",void 0);Loader=__decorate([core_1.Component({selector:'app-loader',templateUrl:'./app//loader.component.html'}),__metadata("design:paramtypes",[items_service_1.ItemsService,auth_service_1.AuthService])],Loader);exports.Loader=Loader;},{"../../services/auth.service":334,"../../services/items.service":335,"@angular/core":4}],327:[function(require,module,exports){"use strict";/*
+if(value==true){_this2.visible=false;_this2.waitingFor='';}});}}}]);return Loader;}();__decorate([core_1.Input(),__metadata("design:type",String)],Loader.prototype,"waitingFor",void 0);Loader=__decorate([core_1.Component({selector:'app-loader',templateUrl:'./app//loader.component.html'}),__metadata("design:paramtypes",[items_service_1.ItemsService,auth_service_1.AuthService])],Loader);exports.Loader=Loader;},{"../../services/auth.service":334,"../../services/items.service":335,"@angular/core":4}],327:[function(require,module,exports){"use strict";/*
     Main Page
     Send a Hug Component
 */var __decorate=this&&this.__decorate||function(decorators,target,key,desc){var c=arguments.length,r=c<3?target:desc===null?desc=Object.getOwnPropertyDescriptor(target,key):desc,d;if((typeof Reflect==="undefined"?"undefined":_typeof(Reflect))==="object"&&typeof Reflect.decorate==="function")r=Reflect.decorate(decorators,target,key,desc);else for(var i=decorators.length-1;i>=0;i--){if(d=decorators[i])r=(c<3?d(r):c>3?d(target,key,r):d(target,key))||r;}return c>3&&r&&Object.defineProperty(target,key,r),r;};var __metadata=this&&this.__metadata||function(k,v){if((typeof Reflect==="undefined"?"undefined":_typeof(Reflect))==="object"&&typeof Reflect.metadata==="function")return Reflect.metadata(k,v);};Object.defineProperty(exports,"__esModule",{value:true});// Angular imports
@@ -21577,7 +21594,7 @@ _this3.itemsService.getMessages(_this3.messType,_this3.authService.userData.id);
     Parameters: newType (string) - The mailbox to change to.
     ----------------
     Programmer: Shir Bar Lev.
-    */},{key:"changeMailbox",value:function changeMailbox(newType){this.messType=newType;this.itemsService.getMessages(this.messType,this.authService.userData.id);}}]);return AppMessaging;}();AppMessaging=__decorate([core_1.Component({selector:'app-messages',templateUrl:'./app//messages.component.html'}),__metadata("design:paramtypes",[auth_service_1.AuthService,items_service_1.ItemsService])],AppMessaging);exports.AppMessaging=AppMessaging;},{"../../services/auth.service":334,"../../services/items.service":335,"@angular/core":4}],329:[function(require,module,exports){"use strict";/*
+    */},{key:"changeMailbox",value:function changeMailbox(newType){this.messType=newType;this.waitFor="".concat(this.messType," messages");this.itemsService.getMessages(this.messType,this.authService.userData.id);}}]);return AppMessaging;}();AppMessaging=__decorate([core_1.Component({selector:'app-messages',templateUrl:'./app//messages.component.html'}),__metadata("design:paramtypes",[auth_service_1.AuthService,items_service_1.ItemsService])],AppMessaging);exports.AppMessaging=AppMessaging;},{"../../services/auth.service":334,"../../services/items.service":335,"@angular/core":4}],329:[function(require,module,exports){"use strict";/*
     My Posts
     Send a Hug Component
 */var __decorate=this&&this.__decorate||function(decorators,target,key,desc){var c=arguments.length,r=c<3?target:desc===null?desc=Object.getOwnPropertyDescriptor(target,key):desc,d;if((typeof Reflect==="undefined"?"undefined":_typeof(Reflect))==="object"&&typeof Reflect.decorate==="function")r=Reflect.decorate(decorators,target,key,desc);else for(var i=decorators.length-1;i>=0;i--){if(d=decorators[i])r=(c<3?d(r):c>3?d(target,key,r):d(target,key))||r;}return c>3&&r&&Object.defineProperty(target,key,r),r;};var __metadata=this&&this.__metadata||function(k,v){if((typeof Reflect==="undefined"?"undefined":_typeof(Reflect))==="object"&&typeof Reflect.metadata==="function")return Reflect.metadata(k,v);};Object.defineProperty(exports,"__esModule",{value:true});// Angular imports
@@ -21960,8 +21977,15 @@ _this11.userPostsPage=_this11.totalUserPostsPages?response.page:0;_this11.isUser
     */},{key:"sendHug",value:function sendHug(item){var _this15=this;var Url=this.serverUrl+"/posts/".concat(item.id);item.givenHugs+=1;this.Http.patch(Url,item,{headers:this.authService.authHeader}).subscribe(function(response){if(response.success==true){_this15.createSuccessAlert('Your hug was sent!',false);}// if there was an error, alert the user
 },function(err){_this15.createErrorAlert(err);});}// MESSAGE-RELATED METHODS
 // ==============================================================
-//
-},{key:"getMessages",value:function getMessages(type,userID){if(type=='inbox'){this.getInboxMessages(userID);}else if(type=='outbox'){this.getOutboxMessages(userID);}}/*
+/*
+    Function Name: getMessages()
+    Function Description: Checks which mailbox was requested and forwards the request
+                          to the appropriate getter function.
+    Parameters: type (string) - Type of mailbox to fetch.
+                userID (number) - the ID of the user whose messages to fetch.
+    ----------------
+    Programmer: Shir Bar Lev.
+    */},{key:"getMessages",value:function getMessages(type,userID){if(type=='inbox'){this.getInboxMessages(userID);}else if(type=='outbox'){this.getOutboxMessages(userID);}}/*
     Function Name: getInboxMessages()
     Function Description: Get the user's incoming messages.
     Parameters: userID (number) - the ID of the user whose messages to fetch.
@@ -21972,8 +21996,13 @@ var currentPage=this.userMessagesPage.inbox?this.userMessagesPage.inbox:1;var pa
 this.Http.get('http://localhost:5000/messages',{headers:this.authService.authHeader,params:params}).subscribe(function(response){var messages=response.messages;_this16.userMessages.inbox=[];messages.forEach(function(element){_this16.userMessages.inbox.push(element);});_this16.totalUserMessagesPages.inbox=response.total_pages;// if there are 0 pages, current page is also 0; otherwise it's whatever
 // the server returns
 _this16.userMessagesPage.inbox=_this16.totalUserMessagesPages.inbox?response.current_page:0;_this16.isUserInboxResolved.next(true);// if there was an error, alert the user
-},function(err){_this16.isUserInboxResolved.next(true);_this16.createErrorAlert(err);});}//
-},{key:"getOutboxMessages",value:function getOutboxMessages(userID){var _this17=this;// if the current page is 0, send page 1 to the server (default)
+},function(err){_this16.isUserInboxResolved.next(true);_this16.createErrorAlert(err);});}/*
+    Function Name: getOutboxMessages()
+    Function Description: Get the user's outgoing messages.
+    Parameters: userID (number) - the ID of the user whose messages to fetch.
+    ----------------
+    Programmer: Shir Bar Lev.
+    */},{key:"getOutboxMessages",value:function getOutboxMessages(userID){var _this17=this;// if the current page is 0, send page 1 to the server (default)
 var currentPage=this.userMessagesPage.outbox?this.userMessagesPage.outbox:1;var params=new http_1.HttpParams().set('userID',"".concat(userID)).set('page',"".concat(currentPage)).set('type','outbox');// try to get the user's messages
 this.Http.get('http://localhost:5000/messages',{headers:this.authService.authHeader,params:params}).subscribe(function(response){var messages=response.messages;_this17.userMessages.outbox=[];messages.forEach(function(element){_this17.userMessages.outbox.push(element);});_this17.totalUserMessagesPages.outbox=response.total_pages;// if there are 0 pages, current page is also 0; otherwise it's whatever
 // the server returns

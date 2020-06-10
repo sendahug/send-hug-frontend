@@ -4,7 +4,7 @@
 */
 
 // Angular imports
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, OnChanges } from '@angular/core';
 
 // App-related imports
 import { ItemsService } from '../../services/items.service';
@@ -14,7 +14,7 @@ import { AuthService } from '../../services/auth.service';
   selector: 'app-loader',
   templateUrl: './loader.component.html'
 })
-export class Loader implements OnInit {
+export class Loader implements OnInit, OnChanges {
   // the sort of data the parent component is waiting for
   @Input()
   waitingFor!: string;
@@ -35,13 +35,43 @@ export class Loader implements OnInit {
   Function Name: ngOnInit()
   Function Description: This method is automatically triggered by Angular upon
                         page initiation. It checks for the existence of the data
-                        the parent component is waiting for and adjusts the
+                        the parent component is waiting (via checkLoadingTarget()) for and adjusts the
                         loader itself (its message and visibility) accordingly.
   Parameters: None.
   ----------------
   Programmer: Shir Bar Lev.
   */
   ngOnInit() {
+    this.checkLoadingTarget();
+  }
+
+  /*
+  Function Name: ngOnChanges()
+  Function Description: This method is automatically triggered by Angular upon
+                        changes in parent component. It checks for the existence of the data
+                        the parent component is waiting (via checkLoadingTarget()) for and adjusts the
+                        loader itself (its message and visibility) accordingly.
+  Parameters: None.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  ngOnChanges() {
+    if(this.waitingFor) {
+      this.visible = true;
+      this.checkLoadingTarget();
+    }
+  }
+
+  /*
+  Function Name: checkLoadingTarget()
+  Function Description: Checks for the existence of the data the parent component
+                        is waiting (via checkLoadingTarget()) for and adjusts the
+                        loader itself (its message and visibility) accordingly.
+  Parameters: None.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  checkLoadingTarget() {
     // if the app is waiting for user data to be fetched from the server
     if(this.waitingFor == 'user') {
       this.message = 'Fetching user data...';
@@ -52,6 +82,7 @@ export class Loader implements OnInit {
         // screen.
         if(value == true) {
           this.visible = false;
+          this.waitingFor = '';
         }
       })
     }
@@ -74,6 +105,7 @@ export class Loader implements OnInit {
             // for the loader screen
             if(value == true) {
               this.visible = false;
+              this.waitingFor = '';
             }
           })
         }
@@ -94,6 +126,7 @@ export class Loader implements OnInit {
             // for the loader screen
             if(value == true) {
               this.visible = false;
+              this.waitingFor = '';
             }
           })
         }
@@ -109,6 +142,7 @@ export class Loader implements OnInit {
         // loader screen
         if(value == true) {
           this.visible = false;
+          this.waitingFor = '';
         }
       })
     }

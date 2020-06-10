@@ -105,6 +105,7 @@ export class AppMessaging implements OnInit {
   */
   changeMailbox(newType:string) {
     this.messType = newType;
+    this.waitFor = `${this.messType} messages`;
     this.itemsService.getMessages(this.messType, this.authService.userData.id!);
   }
 }

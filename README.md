@@ -126,6 +126,31 @@ Notes:
   - If the user doesn't exist in the database (the request was rejected because of something other than an AuthError), that means it's a new user. AuthService then makes a request to the server to add the new user to the database.
   - If the user isn't redirected to the app from Auth0, there's no JWT in the URL. In that case, AuthService fetches the JWT from localStorage. If the JWT is still valid, AuthService attempts to refresh it while fetching the user's data. This lets the users stay logged in for longer periods of time without forcing them to actively login again.
 
+## Hosting
+
+The project is hosted live on Heroku. You can view the live version [here](https://send-hug.herokuapp.com/). If you want to clone and host your own version, you can do so by using the following guide (the following commands are for Heroku, but they can be adjusted depending on your host):
+
+  1. Create a Heroku account (skip this step if you already have an account).
+  2. Install the Heroku command line interface.
+  3. In your Terminal, enter `heroku login`. This triggers logging in via the CLI.
+  4. Enter `heroku create <APP_NAME>` (with your own app name). If successful, Heroku returns the live version's URL (will be referred to as <LIVE_URL>) and the Git repo link (will be referred to as <GIT_URL>).
+  5. Make sure you're in the top directory (FSND-capstone). In your terminal, enter `git remote add heroku-client <GIT_URL>`.
+  6. Enter `git subtree push --prefix frontend heroku-client master`. This triggers the app build. If successful, you'll get a 'Verifying deploy... done.' message.
+  7. Add the following environment variables (via CLI or via the Heroku website):
+    - production - set to true
+    - auth0domain - set with your own Auth0 domain
+    - auth0client - set with your own client ID from Auth0
+    - audience - set with your own audience from Auth0
+    - loginurl - set to your <LIVE_URL> (or wherever in the app you want the user to be redirected to) to ensure after login the user will be redirected to your app
+    - logouturl - set to your <LIVE_URL> (or wherever in the app you want the user to be redirected to) to ensure after login the user will be redirected to your app
+    - apiurl - set with your own backend URL (necessary for making requests to the backend!)
+  8. On your Auth0 application configuration, make sure to:
+    - Add your new <LIVE_URL> to 'Allowed Callback URLs'
+    - Add your new <LIVE_URL> to 'Allowed Logout URLs'
+    - Add your new <LIVE_URL> to 'Allowed Web Origins'
+    - Add your new <LIVE_URL> to 'Allowed Origins (CORS)'
+  9. All done! Now you can visit your <GIT_URL> to see the live app.
+
 ## Known Issues
 
 There are no current issues at the time.

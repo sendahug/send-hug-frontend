@@ -1,0 +1,44 @@
+<!-- If the user is logged in, displays a user page. -->
+<div *ngIf="authService.authenticated">
+	<app-loader
+		[waitingFor]="waitFor"></app-loader>
+
+	<div id="userPage">
+		<div id="profileData">
+			<h3>User Profile</h3>
+			<div class="profileElement">
+				<span class="pageCategory">Username:</span> <span class="pageData">{{ authService.userData.displayName }}</span>
+			</div>
+			<div class="profileElement">
+				<span class="pageCategory">Role:</span> <span class="pageData">{{ authService.userData.role }}</span>
+			</div>
+			<div class="profileElement">
+				<span class="pageCategory">Received Hugs:</span> <span class="pageData">{{ authService.userData.receivedHugs }}</span>
+			</div>
+			<div class="profileElement">
+				<span class="pageCategory">Given Hugs:</span> <span class="pageData">{{ authService.userData.givenHugs }}</span>
+			</div>
+			<div class="profileElement">
+				<span class="pageCategory">Posts:</span> <span class="pageData">{{ authService.userData.postsNum }}</span>
+			</div>
+			
+			<button id="editName" class="appButton" (click)="editName()">Edit Display Name</button>
+		</div>
+
+		<app-my-posts></app-my-posts>
+		
+		<button id="logout" class="appButton" (click)="logout()">Log Out</button>
+	</div>
+</div>
+
+<!-- If the user isn't logged in, prompts the user to log in. -->
+<div  id="loginBox" *ngIf="!authService.authenticated">
+	<div class="errorMessage">You are not currently logged in. To view user information, log in.</div>
+
+	<button id="logIn" class="appButton" (click)="login()">Login</button>
+</div>
+
+<app-pop-up *ngIf="editMode"
+			[editedItem]="userToEdit"
+			[toEdit]="editType"
+			(editMode)="changeMode($event)"></app-pop-up>

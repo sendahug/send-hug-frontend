@@ -1,0 +1,38 @@
+<div id="myPosts">
+	<h3>My Posts</h3>
+	
+	<app-loader
+		[waitingFor]="waitFor"></app-loader>
+	
+	<!-- If the user has posts, displays them -->
+	<div *ngIf="itemsService.userPosts.length">
+		<div *ngFor="let post of itemsService.userPosts" class="userPost">
+			<div class="postText">{{ post.text }}</div>
+			<div class="postDate">{{ post.date }}</div>
+			<div class="notification">
+				<button class="appButton hugButton"><i class="fab fa-gratipay"></i></button>
+				<span class="badge">{{ post.givenHugs }}</span>
+			</div>
+			<button class="appButton editButton" (click)="editPost(post)">Edit</button>
+			<button class="appButton deleteButton" (click)="deletePost(post.id)">Delete</button>
+		</div>
+		<!-- Post pagination -->
+		<div class="pagination">
+			<button *ngIf="itemsService.userPostsPage > 1" class="appButton prevButton" (click)="prevPage()">Previous Page</button>
+			<button *ngIf="itemsService.userPostsPage <= 1" class="appButton hidden" (click)="prevPage()">Previous Page</button>
+			<div class="pageCount">Page {{ itemsService.userPostsPage }} of {{ itemsService.totalUserPostsPages }}</div>
+			<button *ngIf="itemsService.totalUserPostsPages > itemsService.userPostsPage" class="appButton nextButton" (click)="nextPage()">Next Page</button>
+			<button *ngIf="itemsService.totalUserPostsPages <= itemsService.userPostsPage" class="appButton hidden" (click)="nextPage()">Next Page</button>
+		</div>
+	</div>
+	
+	<!-- If the user doesn't have posts, displays an error message -->
+	<div *ngIf="!itemsService.userPosts.length && itemsService.isUserPostsResolved" class="errorMessage">
+		<div>You have no published posts. Write your first post now!</div>
+	</div>
+</div>
+
+<app-pop-up *ngIf="editMode"
+			[editedItem]="postToEdit"
+			[toEdit]="editType"
+			(editMode)="changeMode($event)"></app-pop-up>

@@ -45,6 +45,7 @@
     "@angular/router": "^9.1.9",
     "auth0-js": "^9.13.2",
     "core-js": "^3.6.5",
+    "express": "^4.17.1",
     "rxjs": "^6.5.5",
     "zone.js": "^0.10.3"
   }

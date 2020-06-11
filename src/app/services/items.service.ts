@@ -15,12 +15,13 @@ import { AlertMessage } from '../interfaces/alert.interface';
 import { AuthService } from './auth.service';
 import { AlertsService } from './alerts.service';
 import { environment } from '../../environments/environment';
+import { environment as prodEnv } from '../../environments/environment.prod';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ItemsService {
-  readonly serverUrl = environment.backend.domain;
+  readonly serverUrl = environment.production ? prodEnv.backend.domain! : environment.backend.domain;
   newItemsArray: Post[] = [];
   sugItemsArray: Post[] = [];
   // Full list variables

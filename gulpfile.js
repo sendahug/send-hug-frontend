@@ -73,9 +73,7 @@ function scripts()
 //deals with transforming and bundling the scripts while in production mode
 function scriptsDist()
 {
-	var b = browserify({
-		debug: true
-	}).add("src/main.ts").plugin(tsify, {target: "es6"});
+	var b = browserify().add("src/main.ts").plugin(tsify, {target: "es6"});
 
 	return b.bundle()
       .pipe(source("src/main.ts"))
@@ -86,9 +84,13 @@ function scriptsDist()
 						let newString = `templateUrl: './app/${componentName}.component.html`
 						return newString;
 					}))
+		.pipe(replace(/production: false/, () => {
+						let newString = `production: true`
+						return newString;
+					}))
         .pipe(babel({presets: ["@babel/preset-env"]}))
 				.pipe(uglify())
-				.pipe(rename("app.bundle.js"))
+				.pipe(rename("app.bundle.min.js"))
       .pipe(sourcemaps.write("./"))
       .pipe(gulp.dest("./dist"));
 }

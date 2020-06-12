@@ -101,6 +101,12 @@ The site uses several tools to maximise compatibility:
 
 For more information about Angular's required NPM packages, check the [Angular docs](https://angular.io/guide/npm-packages).
 
+### Production Dependencies
+
+1. **Express** - This project uses Express in order to run a basic server in deployment. This server is used to send the static files and script to the user. For more information, check the [Express website](https://expressjs.com).
+2. **Compression** - A Node extension used to compress production files when sending them from the Express server to the client. For more information, check the [compression NPM page](https://www.npmjs.com/package/compression).
+2. **dotenv** - A Node extension for accessing environment variables. Used by the frontend while in production mode. For more information, check the [dotenv NPM page](https://www.npmjs.com/package/dotenv).
+
 ## Authentication
 
 The project uses Auth0 as a third-party authentication provider. Authentication is done by Auth0, which in turn returns a JSON Web Token containing the user's data and permissions.

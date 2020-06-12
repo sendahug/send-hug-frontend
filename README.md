@@ -137,13 +137,13 @@ The project is hosted live on Heroku. You can view the live version [here](https
   5. Make sure you're in the top directory (FSND-capstone). In your terminal, enter `git remote add heroku-client <GIT_URL>`.
   6. Enter `git subtree push --prefix frontend heroku-client master`. This triggers the app build. If successful, you'll get a 'Verifying deploy... done.' message.
   7. Add the following environment variables (via CLI or via the Heroku website):
-    - production - set to true
-    - auth0domain - set with your own Auth0 domain
-    - auth0client - set with your own client ID from Auth0
-    - audience - set with your own audience from Auth0
-    - loginurl - set to your <LIVE_URL> (or wherever in the app you want the user to be redirected to) to ensure after login the user will be redirected to your app
-    - logouturl - set to your <LIVE_URL> (or wherever in the app you want the user to be redirected to) to ensure after login the user will be redirected to your app
-    - apiurl - set with your own backend URL (necessary for making requests to the backend!)
+    - PRODUCTION - set to true
+    - AUTH0_DOMAIN - set with your own Auth0 domain
+    - AUTH0_CLIENT - set with your own client ID from Auth0
+    - AUDIENCE - set with your own audience from Auth0
+    - LOGIN_REDIRECT - set to your <LIVE_URL> (or wherever in the app you want the user to be redirected to) to ensure after login the user will be redirected to your app
+    - LOGOUT_REDIRECT - set to your <LIVE_URL> (or wherever in the app you want the user to be redirected to) to ensure after login the user will be redirected to your app
+    - BACKEND_URL - set with your own backend URL (necessary for making requests to the backend!)
   8. On your Auth0 application configuration, make sure to:
     - Add your new <LIVE_URL> to 'Allowed Callback URLs'
     - Add your new <LIVE_URL> to 'Allowed Logout URLs'

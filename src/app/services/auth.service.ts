@@ -230,8 +230,8 @@ export class AuthService {
   */
   logout() {
     this.auth0.logout({
-      returnTo: environment.auth0.logoutUri,
-      clientID: environment.auth0.clientID
+      returnTo: environment.production ? prodEnv.auth0.logoutUri! : environment.auth0.logoutUri,
+      clientID: environment.production ? prodEnv.auth0.clientID! : environment.auth0.clientID
     });
 
     //clears the user's data

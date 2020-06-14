@@ -138,7 +138,10 @@ export class AppMessaging implements OnInit {
   Programmer: Shir Bar Lev.
   */
   loadThread(threadId:number) {
-
+    this.router.navigate(['../thread/' + threadId], {
+      relativeTo: this.route,
+      replaceUrl: true
+    });
   }
 
   /*

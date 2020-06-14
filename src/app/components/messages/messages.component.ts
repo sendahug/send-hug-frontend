@@ -163,13 +163,13 @@ export class AppMessaging implements OnInit {
   }
 
   /*
-  Function Name: changeMailbox()
+  Function Name: deleteThread()
   Function Description: Deletes a thread and all of its messages
   Parameters: threadId (number) - The thread to delete.
   ----------------
   Programmer: Shir Bar Lev.
   */
   deleteThread(threadId:number) {
-
+    this.itemsService.deleteThread(threadId);
   }
 }

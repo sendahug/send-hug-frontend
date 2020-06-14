@@ -498,6 +498,27 @@ export class ItemsService {
     })
   }
 
+  /*
+  Function Name: deleteThread()
+  Function Description: Delete a thread.
+  Parameters: threadId (number) - the ID of the thread to delete.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  deleteThread(threadId:number) {
+    const Url = this.serverUrl + `/messages?threadID=${threadId}`
+
+    // try to delete the thread
+    this.Http.delete(Url, {
+      headers: this.authService.authHeader
+    }).subscribe((response:any) => {
+      this.createSuccessAlert(`Message ${response.deleted} was deleted! Refresh to view the updated message list.`, true);
+    // if there was an error, alert the user
+    }, (err:HttpErrorResponse) => {
+      this.createErrorAlert(err);
+    })
+  }
+
   // ALERT METHODS
   // ==============================================================
   /*

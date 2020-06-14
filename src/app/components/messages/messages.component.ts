@@ -108,4 +108,26 @@ export class AppMessaging implements OnInit {
     this.waitFor = `${this.messType} messages`;
     this.itemsService.getMessages(this.messType, this.authService.userData.id!);
   }
+
+  /*
+  Function Name: loadThread()
+  Function Description: Shows the messages for the specific thread.
+  Parameters: threadId (number) - The thread to fetch.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  loadThread(threadId:number) {
+
+  }
+
+  /*
+  Function Name: changeMailbox()
+  Function Description: Deletes a thread and all of its messages
+  Parameters: threadId (number) - The thread to delete.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  deleteThread(threadId:number) {
+
+  }
 }

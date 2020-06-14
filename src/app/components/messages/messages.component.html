@@ -55,7 +55,7 @@
 					<span class="pageCategory">Last Active:</span> <span class="pageData">{{ thread.latestMessage }}</span>
 				</div>
 				<div class="buttons">
-					<div>View Messages</div>
+					<button class="appButton" (click)="loadThread(thread.id)">View Messages</button>
 					<button class="appButton deleteButton" (click)="deleteThread(thread.id)">Delete</button>
 				</div>
 			</li>

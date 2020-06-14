@@ -218,7 +218,7 @@ app-messages > div { width: 90%; margin: 10px 5%; }
 
 /* Mailbox navigation */
 /* line 337, ../sass/styles.sass */
-#messagesNav { width: 48%; margin: 5px; padding: 5px 15% 5px 35%; left: 0; right: 0; border-bottom: thin solid; }
+#messagesNav { width: 48%; margin: 5px; padding: 5px 20% 5px 30%; left: 0; right: 0; border-bottom: thin solid; }
 
 /* Mailbox navigation button */
 /* line 346, ../sass/styles.sass */

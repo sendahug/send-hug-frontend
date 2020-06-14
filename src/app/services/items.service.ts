@@ -12,6 +12,7 @@ import { BehaviorSubject } from 'rxjs';
 import { Post } from '../interfaces/post.interface';
 import { Message } from '../interfaces/message.interface';
 import { AlertMessage } from '../interfaces/alert.interface';
+import { Thread } from '../interfaces/thread.interface';
 import { AuthService } from './auth.service';
 import { AlertsService } from './alerts.service';
 import { environment } from '../../environments/environment';
@@ -63,6 +64,15 @@ export class ItemsService {
   }
   isUserInboxResolved = new BehaviorSubject(false);
   isUserOutboxResolved = new BehaviorSubject(false);
+  userThreads: Thread[] = [];
+  userThreadsPage: number;
+  totalUserThreadsPage: number;
+  isUserThreadsResolved = new BehaviorSubject(false);
+  activeThread = 0;
+  threadMessages: Message[] = [];
+  threadPage: number;
+  totalThreadPages: number;
+  isThreadResolved = new BehaviorSubject(false);
 
   // CTOR
   constructor(
@@ -80,6 +90,10 @@ export class ItemsService {
       this.totalUserMessagesPages.inbox = 1;
       this.userMessagesPage.outbox = 1;
       this.totalUserMessagesPages.outbox = 1;
+      this.userThreadsPage = 1;
+      this.totalUserThreadsPage = 1;
+      this.threadPage = 1;
+      this.totalThreadPages = 1;
   }
 
   // POST-RELATED METHODS
@@ -290,6 +304,9 @@ export class ItemsService {
     else if(type == 'outbox') {
       this.getOutboxMessages(userID);
     }
+    else if(type == 'threads') {
+      this.getThreads(userID);
+    }
   }
 
   /*
@@ -365,6 +382,88 @@ export class ItemsService {
   }
 
   /*
+  Function Name: getThreads()
+  Function Description: Get the user's threads.
+  Parameters: userID (number) - the ID of the user whose threads to fetch.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  getThreads(userID:number) {
+    // if the current page is 0, send page 1 to the server (default)
+    const currentPage = this.userThreadsPage ? this.userThreadsPage : 1;
+    let params = new HttpParams()
+      .set('userID', `${userID}`)
+      .set('page', `${currentPage}`)
+      .set('type', 'threads');
+    // try to get the user's messages
+    this.Http.get(`${this.serverUrl}/messages`, {
+      headers: this.authService.authHeader,
+      params: params
+    }).subscribe((response:any) => {
+      let threads = response.messages;
+      this.userThreads = [];
+      threads.forEach((element: any) => {
+        let thread: Thread = {
+          id: element.id,
+          user: (element.user1 == this.authService.userData.displayName) ? element.user2 : element.user1,
+          userID: (element.user1Id == this.authService.userData.id) ? element.user2Id : element.user1Id,
+          numMessages: element.numMessages,
+          latestMessage: element.latestMessage
+        }
+        this.userThreads.push(thread);
+      });
+      this.totalUserThreadsPage = response.total_pages;
+      // if there are 0 pages, current page is also 0; otherwise it's whatever
+      // the server returns
+      this.userThreadsPage = this.totalUserThreadsPage ? response.current_page : 0;
+      this.isUserThreadsResolved.next(true);
+    // if there was an error, alert the user
+    }, (err:HttpErrorResponse) => {
+      this.isUserThreadsResolved.next(true);
+      this.createErrorAlert(err);
+    })
+  }
+
+  /*
+  Function Name: getThread()
+  Function Description: Get the messages in a specific thread.
+  Parameters: userID (number) - the ID of the user whose messages to fetch.
+              threadId (number) - the ID of the thread to fetch.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  getThread(userID:number, threadId:number) {
+    this.activeThread = threadId;
+    // if the current page is 0, send page 1 to the server (default)
+    const currentPage = this.threadPage ? this.threadPage : 1;
+    let params = new HttpParams()
+      .set('userID', `${userID}`)
+      .set('page', `${currentPage}`)
+      .set('type', 'thread')
+      .set('threadID', `${threadId}`);
+    // try to get the user's messages
+    this.Http.get(`${this.serverUrl}/messages`, {
+      headers: this.authService.authHeader,
+      params: params
+    }).subscribe((response:any) => {
+      let messages = response.messages;
+      this.threadMessages = [];
+      messages.forEach((element: Message) => {
+        this.threadMessages.push(element);
+      });
+      this.totalThreadPages = response.total_pages;
+      // if there are 0 pages, current page is also 0; otherwise it's whatever
+      // the server returns
+      this.threadPage = this.totalThreadPages ? response.current_page : 0;
+      this.isThreadResolved.next(true);
+    // if there was an error, alert the user
+    }, (err:HttpErrorResponse) => {
+      this.isThreadResolved.next(true);
+      this.createErrorAlert(err);
+    })
+  }
+
+  /*
   Function Name: sendMessage()
   Function Description: Send a message.
   Parameters: message (Message) - the message to send.
@@ -396,6 +495,27 @@ export class ItemsService {
     const Url = this.serverUrl + `/messages/${messageId}`
 
     // try to delete the message
+    this.Http.delete(Url, {
+      headers: this.authService.authHeader
+    }).subscribe((response:any) => {
+      this.createSuccessAlert(`Message ${response.deleted} was deleted! Refresh to view the updated message list.`, true);
+    // if there was an error, alert the user
+    }, (err:HttpErrorResponse) => {
+      this.createErrorAlert(err);
+    })
+  }
+
+  /*
+  Function Name: deleteThread()
+  Function Description: Delete a thread.
+  Parameters: threadId (number) - the ID of the thread to delete.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  deleteThread(threadId:number) {
+    const Url = this.serverUrl + `/messages?threadID=${threadId}`
+
+    // try to delete the thread
     this.Http.delete(Url, {
       headers: this.authService.authHeader
     }).subscribe((response:any) => {

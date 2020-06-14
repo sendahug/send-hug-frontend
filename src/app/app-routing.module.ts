@@ -12,7 +12,14 @@ import { AboutApp } from './components/aboutApp/aboutApp.component';
 const routes: Routes = [
   { path: '', component: MainPage },
   { path: 'user', component: UserPage },
-  { path: 'messages', component: AppMessaging },
+  { path: 'messages',
+      children: [
+        { path: '', pathMatch: 'prefix', redirectTo: 'inbox' },
+        { path: 'inbox', pathMatch: 'prefix', component: AppMessaging },
+        { path: 'outbox', pathMatch: 'prefix', component: AppMessaging },
+        { path: 'threads', pathMatch: 'prefix', component: AppMessaging },
+        { path: 'thread/:id', pathMatch: 'prefix', component: AppMessaging }
+  ]},
   { path: 'new/:type', component: NewItem },
   { path: 'list/:type', component: FullList },
   { path: 'about', component: AboutApp },

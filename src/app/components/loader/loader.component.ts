@@ -132,6 +132,48 @@ export class Loader implements OnInit, OnChanges {
         }
       })
     }
+    // if the app is waiting for threads messages data to be fetched from the server
+    else if(this.waitingFor == 'threads messages') {
+      this.message = 'Fetching threads...';
+      // subscribe to the subject following user data
+      this.authService.isUserDataResolved.subscribe((value) => {
+        // if user data has been fetched, the app can attempt to fetch
+        // the logged in user's threads
+        if(value == true) {
+          // subscribe to the subject following user threads data
+          this.itemsService.isUserThreadsResolved.subscribe((value) => {
+            // the subject's value is changed to 'true' upon fetching user
+            // threads, so if the value is true, there's no longer need
+            // for the loader screen
+            if(value == true) {
+              this.visible = false;
+              this.waitingFor = '';
+            }
+          })
+        }
+      })
+    }
+    //
+    else if(this.waitingFor == 'thread messages') {
+      this.message = 'Fetching messages...';
+      // subscribe to the subject following user data
+      this.authService.isUserDataResolved.subscribe((value) => {
+        // if user data has been fetched, the app can attempt to fetch
+        // the logged in user's threads
+        if(value == true) {
+          // subscribe to the subject following user threads data
+          this.itemsService.isThreadResolved.subscribe((value) => {
+            // the subject's value is changed to 'true' upon fetching user
+            // threads, so if the value is true, there's no longer need
+            // for the loader screen
+            if(value == true) {
+              this.visible = false;
+              this.waitingFor = '';
+            }
+          })
+        }
+      })
+    }
     // if the app is waiting for the user's posts to be fetched from the server
     else if(this.waitingFor == 'user posts') {
       this.message = 'Fetching user posts...';

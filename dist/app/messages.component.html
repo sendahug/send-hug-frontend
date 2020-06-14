@@ -5,13 +5,14 @@
 	<div id="messagesNav">
 		<button class="messNavOption appButton" (click)="changeMailbox('inbox')">Inbox</button>
 		<button class="messNavOption appButton" (click)="changeMailbox('outbox')">Outbox</button>
+		<button class="messNavOption appButton" (click)="changeMailbox('threads')">Threads</button>
 	</div>
 	
 	<app-loader
 		[waitingFor]="waitFor"></app-loader>
 
 	<!-- If there are messages in the user's inbox -->
-	<div *ngIf="itemsService.userMessages[messType].length">
+	<div *ngIf="(messType == 'inbox' || messType == 'outbox') && itemsService.userMessages[messType].length">
 		<div *ngFor="let message of itemsService.userMessages[messType]" class="userMessage">
 			<div class="messageField" *ngIf="messType == 'inbox'">
 				<span class="pageCategory">From:</span> <span class="pageData">{{ message.from }}</span>
@@ -20,7 +21,10 @@
 				<span class="pageCategory">For:</span> <span class="pageData">{{ message.for }}</span>
 			</div>
 			<div class="pageCategory">Message:</div> <div class="pageData">{{ message.messageText }}</div>
-			<button class="appButton deleteButton" (click)="deleteMessage(message.id)">Delete</button>
+			<div class="buttons">
+				<a [routerLink]="['/new', 'Message']" [queryParams]="{user: message.from, userID: message.fromId}" class="appButton messageButton">Reply</a>
+				<button class="appButton deleteButton" (click)="deleteMessage(message.id)">Delete</button>
+			</div>
 		</div>
 		<!-- Message pagination -->
 		<div class="pagination">
@@ -33,8 +37,58 @@
 	</div>
 	
 	<!-- If there are no messages in the user's inbox -->
-	<div *ngIf="!itemsService.userMessages[messType].length && itemsService.isUserMessagesResolved">
+	<div *ngIf="(messType == 'inbox' || messType == 'outbox') && !itemsService.userMessages[messType].length && itemsService.isUserMessagesResolved">
 		<div class="errorMessage">You have no incoming messages.</div>
+	</div>
+	
+	<!-- If the user is looking at threads -->
+	<div *ngIf="messType == 'threads'">
+		<ul class="userThreads" *ngIf="itemsService.userThreads.length">
+			<li class="userThread" *ngFor="let thread of itemsService.userThreads">
+				<div class="messageField">
+					<span class="pageCategory">User:</span> <span class="pageData">{{ thread.user }}</span>
+				</div>
+				<div class="messageField">
+					<span class="pageCategory">Messages:</span> <span class="pageData">{{ thread.numMessages }}</span>
+				</div>
+				<div class="messageField">
+					<span class="pageCategory">Last Active:</span> <span class="pageData">{{ thread.latestMessage }}</span>
+				</div>
+				<div class="threadBtns">
+					<button class="appButton viewButton" (click)="loadThread(thread.id)">View Messages</button>
+					<button class="appButton deleteButton" (click)="deleteThread(thread.id)">Delete</button>
+				</div>
+			</li>
+		</ul>
+		
+			<!-- If there are no messages in the user's inbox -->
+			<div *ngIf="!itemsService.userThreads.length && itemsService.isUserThreadsResolved">
+				<div class="errorMessage">You have no Threads.</div>
+			</div>
+	</div>
+	
+	<!-- If the user is looking a specific thread -->
+	<div *ngIf="messType == 'thread'">
+		<ul class="threadMessages">
+			<li class="userMessage" *ngFor="let message of itemsService.threadMessages">
+				<div class="messageField">
+					<span class="pageCategory">From:</span> <span class="pageData">{{ message.from }}</span>
+				</div>
+				<div class="messageField">
+					<span class="pageCategory">For:</span> <span class="pageData">{{ message.for }}</span>
+				</div>
+				<div class="messageField">
+					<span class="pageCategory">Text:</span> <span class="pageData">{{ message.messageText }}</span>
+				</div>
+				<div class="messageField">
+					<span class="pageCategory">Date:</span> <span class="pageData">{{ message.date }}</span>
+				</div>
+				<div class="threadBtns">
+					<a [routerLink]="['/new', 'Message']" [queryParams]="{user: message.from, userID: message.fromId}" class="appButton messageButton">Reply</a>
+					<button class="appButton deleteButton" (click)="deleteMessage(message.id)">Delete</button>
+				</div>
+			</li>
+		</ul>
 	</div>
 </div>
 

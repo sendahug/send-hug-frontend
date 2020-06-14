@@ -218,119 +218,127 @@ app-messages > div { width: 90%; margin: 10px 5%; }
 
 /* Mailbox navigation */
 /* line 337, ../sass/styles.sass */
-#messagesNav { width: 50%; margin: 5px 15% 5px 35%; }
+#messagesNav { width: 48%; margin: 5px; padding: 5px 15% 5px 35%; left: 0; right: 0; border-bottom: thin solid; }
 
 /* Mailbox navigation button */
-/* line 342, ../sass/styles.sass */
+/* line 346, ../sass/styles.sass */
 .messNavOption { margin: 5px 10px; }
 
 /* A Message */
-/* line 346, ../sass/styles.sass */
+/* line 350, ../sass/styles.sass */
 .userMessage { width: 90%; border-bottom: thin solid; margin: 0 5%; }
 
 /* From field */
-/* line 352, ../sass/styles.sass */
+/* line 356, ../sass/styles.sass */
 .messageField { text-align: center; padding: 5px; margin: 5px; }
 
 /* Field title */
-/* line 358, ../sass/styles.sass */
+/* line 362, ../sass/styles.sass */
 .pageCategory { text-align: center; color: #252525; }
 
 /* Field text */
-/* line 363, ../sass/styles.sass */
+/* line 367, ../sass/styles.sass */
 .pageData { text-align: center; color: #161616; }
 
+/* Message buttons */
+/* line 372, ../sass/styles.sass */
+.userMessage .buttons { display: flex; justify-content: center; margin: 5px; padding: 5px; }
+
 /* Delete Message button */
-/* line 368, ../sass/styles.sass */
-.userMessage .deleteButton { margin: 5px Calc((98% - 40px) / 2); }
+/* line 379, ../sass/styles.sass */
+.userMessage .deleteButton { margin: 5px 5px; }
+
+/* Reply button */
+/* line 383, ../sass/styles.sass */
+.userMessage .messageButton { margin: 5px 5px; }
 
 /* Login div */
 /* Error Message Text */
-/* line 376, ../sass/styles.sass */
+/* line 391, ../sass/styles.sass */
 .errorMessage { text-align: center; padding-bottom: 5px; padding-top: 10px; }
 
 /* Login Link */
-/* line 382, ../sass/styles.sass */
+/* line 397, ../sass/styles.sass */
 #logIn { text-align: center; margin: 10px Calc((100% - 50px) / 2); color: #3f3a3a; }
 
 /* =================== New Item Page Styling =================== */
 /* New Item Page Component */
-/* line 389, ../sass/styles.sass */
+/* line 404, ../sass/styles.sass */
 app-new-item { width: 100%; left: 0; right: 0; }
 
 /* New Item frame */
-/* line 396, ../sass/styles.sass */
+/* line 411, ../sass/styles.sass */
 #newItem { width: 90%; margin: 10px 5%; }
 
 /* New Item title */
-/* line 401, ../sass/styles.sass */
+/* line 416, ../sass/styles.sass */
 #newItem h3 { text-align: center; color: #252525; font-size: 20px; padding: 10px; margin: 0; }
 
 /* New Item field + title */
-/* line 409, ../sass/styles.sass */
+/* line 424, ../sass/styles.sass */
 .formElement { text-align: center; color: #161616; padding: 7px 2px; width: 100%; }
 
 /* New Item field button */
-/* line 416, ../sass/styles.sass */
+/* line 431, ../sass/styles.sass */
 .sendData { padding: 5px; margin: 10px Calc((100% - 28px) / 2); font-size: 14px; }
 
 /* =================== Error Page Styling =================== */
 /* Error Page Component */
 /* Error Page frame */
-/* line 427, ../sass/styles.sass */
+/* line 442, ../sass/styles.sass */
 #errorPage { width: 80%; margin: 15px 10%; }
 
 /* Error Page title */
-/* line 433, ../sass/styles.sass */
+/* line 448, ../sass/styles.sass */
 #errorPage h3 { text-align: center; color: #252525; font-size: 20px; padding: 10px; margin: 0; }
 
 /* Error Page text */
-/* line 441, ../sass/styles.sass */
+/* line 456, ../sass/styles.sass */
 .pageData { text-align: center; color: #161616; font-size: 16px; padding: 10px 2px; }
 
 /* Error Page error code */
-/* line 448, ../sass/styles.sass */
+/* line 463, ../sass/styles.sass */
 #errorCode { text-align: center; color: #161616; font-size: 13px; padding: 10px 2px; }
 
 /* Go Back Button */
-/* line 455, ../sass/styles.sass */
+/* line 470, ../sass/styles.sass */
 #backBtn { padding: 2px; margin: 7px Calc((100% - 20px) / 2); }
 
 /* Arrow in Go Back Button */
-/* line 460, ../sass/styles.sass */
+/* line 475, ../sass/styles.sass */
 .fa-arrow-alt-circle-left { font-size: 18px; }
 
 /* =================== Popup Styling =================== */
 /* Modal box */
-/* line 465, ../sass/styles.sass */
+/* line 480, ../sass/styles.sass */
 #modalBox { display: block; height: 100%; width: 100%; background-color: rgba(0, 0, 0, 0.6); position: fixed; left: 0; top: 0; }
 
 /* Edit popup */
-/* line 475, ../sass/styles.sass */
+/* line 490, ../sass/styles.sass */
 #editPopup { background-color: #FFFFFF; box-shadow: 12px 15px 20px 0 rgba(46, 61, 73, 0.5); border-radius: 5px; width: 70%; text-align: center; margin-left: auto; margin-right: auto; margin-top: 100px; padding: 10px; position: fixed; top: 100px; left: 15%; }
 
 /* Exit button */
-/* line 490, ../sass/styles.sass */
+/* line 505, ../sass/styles.sass */
 #exitButton { margin: 5px Calc(100% - 35px) 5px 2px; }
 
 /* =================== Loader Component Styling =================== */
 /* Via https://medium.com/@tomastrajan/how-to-style-angular-application-loading-with-angular-cli-like-a-boss-cdd4f5358554 */
 /* Loader */
-/* line 496, ../sass/styles.sass */
+/* line 511, ../sass/styles.sass */
 #loading { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 80%; width: 80%; margin: 10%; }
 
 /* Loader text */
-/* line 507, ../sass/styles.sass */
+/* line 522, ../sass/styles.sass */
 #loadingMessage { color: #252525; font-size: 18px; }
 
 /* Loader spinner */
-/* line 512, ../sass/styles.sass */
+/* line 527, ../sass/styles.sass */
 #loadingMessage .spinner { height: 50px; width: 50px; animation: rotate 2.5s linear infinite; transform-origin: center center; position: relative; margin: 20%; }
 
 /* Loader spinner rotate animation */
 @keyframes rotate { 100% { transform: rotate(360deg); } }
 /* Loader spinner path */
-/* line 526, ../sass/styles.sass */
+/* line 541, ../sass/styles.sass */
 .spinner .path { stroke-dasharray: 1, 200; stroke-dashoffset: 0; animation: dash 2.5s ease-in-out infinite; stroke-linecap: round; stroke: #70a3d1; }
 
 /* Loader spinner path animation */
@@ -339,53 +347,53 @@ app-new-item { width: 100%; left: 0; right: 0; }
   100% { stroke-dasharray: 89, 200; stroke-dashoffset: -124px; } }
 /* =================== About Component Styling =================== */
 /* About Component */
-/* line 547, ../sass/styles.sass */
+/* line 562, ../sass/styles.sass */
 app-about { width: 90%; padding: 0 5%; left: 0; right: 0; }
 
 /* About component title */
-/* line 555, ../sass/styles.sass */
+/* line 570, ../sass/styles.sass */
 #aboutTitle { text-align: center; color: #252525; }
 
 /* About component text */
-/* line 560, ../sass/styles.sass */
+/* line 575, ../sass/styles.sass */
 .aboutText { padding: 5px; margin: 5px 10px; color: #161616; font-size: 18px; }
 
 /* About component links */
-/* line 567, ../sass/styles.sass */
+/* line 582, ../sass/styles.sass */
 .aboutLink { text-align: center; color: #3f3a3a; font-size: 17px; margin: 10px 40%; }
 
 /* =================== Alert Styling =================== */
 /* Base Alert */
-/* line 575, ../sass/styles.sass */
+/* line 590, ../sass/styles.sass */
 .alertMessage { width: 70%; box-shadow: 12px 15px 20px 0 rgba(46, 61, 73, 0.5); border-radius: 5px; text-align: center; padding: 10px; position: fixed; bottom: 50px; left: 0; right: 0; margin-right: 15%; margin-left: 15%; z-index: 100; }
 
 /* Alert Title */
-/* line 590, ../sass/styles.sass */
+/* line 605, ../sass/styles.sass */
 .alertType { margin: 0; padding: 5px; }
 
 /* Alert Text */
-/* line 595, ../sass/styles.sass */
+/* line 610, ../sass/styles.sass */
 .alertText { font-size: 16px; }
 
 /* Alert Button */
-/* line 599, ../sass/styles.sass */
+/* line 614, ../sass/styles.sass */
 #alertButton { margin: 10px; border-radius: 5px; }
 
 /* Success Alert */
-/* line 604, ../sass/styles.sass */
+/* line 619, ../sass/styles.sass */
 .Success { background-color: rgba(46, 161, 60, 0.9); }
 
 /* Error Alert */
-/* line 608, ../sass/styles.sass */
+/* line 623, ../sass/styles.sass */
 .Error { background-color: rgba(203, 72, 72, 0.95); }
 
 /* =================== Footer Styling =================== */
 /* Site Footer */
-/* line 613, ../sass/styles.sass */
+/* line 628, ../sass/styles.sass */
 #siteFooter { position: fixed; bottom: 0; left: 0; width: 100%; max-width: 100%; }
 
 /* Footer text */
-/* line 621, ../sass/styles.sass */
+/* line 636, ../sass/styles.sass */
 .footerText { text-align: center; font-size: 14px; padding: 0; margin: 10px; color: #161616; }
 
 /*# sourceMappingURL=styles.css.map */

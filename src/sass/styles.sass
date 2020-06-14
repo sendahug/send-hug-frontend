@@ -335,8 +335,12 @@ app-messages > div
 
 /* Mailbox navigation */
 #messagesNav
-	width: 50%
-	margin: 5px 15% 5px 35%
+	width: 48%
+	margin: 5px
+	padding: 5px 15% 5px 35%
+	left: 0
+	right: 0
+	border-bottom: thin solid
 
 /* Mailbox navigation button */
 .messNavOption
@@ -364,9 +368,20 @@ app-messages > div
 	text-align: center
 	color: $textColour
 
+/* Message buttons */
+.userMessage .buttons
+	display: flex
+	justify-content: center
+	margin: 5px
+	padding: 5px
+
 /* Delete Message button */
 .userMessage .deleteButton
-	margin: 5px Calc((98% - 40px) / 2)
+	margin: 5px 5px
+
+/* Reply button */
+.userMessage .messageButton
+	margin: 5px 5px
 
 /* Login div */
 #loginBox

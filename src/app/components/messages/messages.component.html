@@ -20,6 +20,7 @@
 				<span class="pageCategory">For:</span> <span class="pageData">{{ message.for }}</span>
 			</div>
 			<div class="pageCategory">Message:</div> <div class="pageData">{{ message.messageText }}</div>
+			<a [routerLink]="['/new', 'Message']" [queryParams]="{user: message.from, userID: message.fromId}" class="appButton messageButton"><i class="fas fa-reply"></i></a>
 			<button class="appButton deleteButton" (click)="deleteMessage(message.id)">Delete</button>
 		</div>
 		<!-- Message pagination -->

@@ -66,6 +66,30 @@
 				<div class="errorMessage">You have no Threads.</div>
 			</div>
 	</div>
+	
+	<!-- If the user is looking a specific thread -->
+	<div *ngIf="messType == 'thread'">
+		<ul class="threadMessages">
+			<li class="userMessage" *ngFor="let message of itemsService.threadMessages">
+				<div class="messageField">
+					<span class="pageCategory">From:</span> <span class="pageData">{{ message.from }}</span>
+				</div>
+				<div class="messageField">
+					<span class="pageCategory">For:</span> <span class="pageData">{{ message.for }}</span>
+				</div>
+				<div class="messageField">
+					<span class="pageCategory">Text:</span> <span class="pageData">{{ message.messageText }}</span>
+				</div>
+				<div class="messageField">
+					<span class="pageCategory">Date:</span> <span class="pageData">{{ thread.date }}</span>
+				</div>
+				<div class="threadBtns">
+					<a [routerLink]="['/new', 'Message']" [queryParams]="{user: message.from, userID: message.fromId}" class="appButton messageButton">Reply</a>
+					<button class="appButton deleteButton" (click)="deleteMessage(message.id)">Delete</button>
+				</div>
+			</li>
+		</ul>
+	</div>
 </div>
 
 <!-- If the user isn't logged in, prompts the user to log in. -->

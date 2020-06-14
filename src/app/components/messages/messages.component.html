@@ -44,7 +44,7 @@
 	<!-- If the user is looking at threads -->
 	<div *ngIf="messType == 'threads'">
 		<ul class="userThreads" *ngIf="itemsService.userThreads.length">
-			<li clas="userThread" *ngFor="let thread of itemsService.userThreads">
+			<li class="userThread" *ngFor="let thread of itemsService.userThreads">
 				<div class="messageField">
 					<span class="pageCategory">User:</span> <span class="pageData">{{ thread.user }}</span>
 				</div>
@@ -54,8 +54,8 @@
 				<div class="messageField">
 					<span class="pageCategory">Last Active:</span> <span class="pageData">{{ thread.latestMessage }}</span>
 				</div>
-				<div class="buttons">
-					<button class="appButton" (click)="loadThread(thread.id)">View Messages</button>
+				<div class="threadBtns">
+					<button class="appButton viewButton" (click)="loadThread(thread.id)">View Messages</button>
 					<button class="appButton deleteButton" (click)="deleteThread(thread.id)">Delete</button>
 				</div>
 			</li>

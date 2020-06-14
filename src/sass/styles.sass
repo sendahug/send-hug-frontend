@@ -383,6 +383,35 @@ app-messages > div
 .userMessage .messageButton
 	margin: 5px 5px
 
+/* Threads container */
+.userThreads
+	@extend .itemList
+	border: none
+
+/* A message thread */
+.userThread
+	margin: 8px
+	padding: 5px
+	display: flex
+	flex-direction: column
+	border-bottom: thin solid
+
+/* Message thread buttons */
+.threadBtns
+	display: flex
+	justify-content: center
+	margin: 5px
+	padding: 5px
+
+/* View thread button */
+.viewButton
+	margin: 5px 5px
+	padding: 0 5px
+
+/* Delete thread button */
+.userThread .deleteButton
+	margin: 5px 5px
+
 /* Login div */
 #loginBox
 	@extend #errorMessBox

@@ -81,7 +81,7 @@
 					<span class="pageCategory">Text:</span> <span class="pageData">{{ message.messageText }}</span>
 				</div>
 				<div class="messageField">
-					<span class="pageCategory">Date:</span> <span class="pageData">{{ thread.date }}</span>
+					<span class="pageCategory">Date:</span> <span class="pageData">{{ message.date }}</span>
 				</div>
 				<div class="threadBtns">
 					<a [routerLink]="['/new', 'Message']" [queryParams]="{user: message.from, userID: message.fromId}" class="appButton messageButton">Reply</a>

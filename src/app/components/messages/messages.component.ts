@@ -5,6 +5,7 @@
 
 // Angular imports
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 
 // App-related imports
 import { AuthService } from '../../services/auth.service';
@@ -20,7 +21,26 @@ export class AppMessaging implements OnInit {
   waitFor = `${this.messType} messages`;
 
   // CTOR
-  constructor(public authService: AuthService, public itemsService: ItemsService) {
+  constructor(
+    public authService: AuthService,
+    public itemsService: ItemsService,
+    public route:ActivatedRoute,
+    public router:Router
+  ) {
+    let messageType;
+
+    this.route.url.subscribe(params => {
+      messageType = params[0].path;
+    });
+
+    if(messageType) {
+      this.messType = messageType;
+      this.waitFor = `${this.messType} messages`;
+    }
+    else {
+      this.messType = 'inbox';
+    }
+
     // subscribe to the subject following user data
     this.authService.isUserDataResolved.subscribe((value) => {
       // if the value is true, user data has been fetched, so the app can
@@ -104,9 +124,10 @@ export class AppMessaging implements OnInit {
   Programmer: Shir Bar Lev.
   */
   changeMailbox(newType:string) {
-    this.messType = newType;
-    this.waitFor = `${this.messType} messages`;
-    this.itemsService.getMessages(this.messType, this.authService.userData.id!);
+    this.router.navigate(['../' + newType], {
+      relativeTo: this.route,
+      replaceUrl: true
+    });
   }
 
   /*

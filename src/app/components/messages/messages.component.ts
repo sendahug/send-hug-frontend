@@ -28,6 +28,7 @@ export class AppMessaging implements OnInit {
     public router:Router
   ) {
     let messageType;
+    let threadId = Number(this.route.snapshot.paramMap.get('id'));
 
     this.route.url.subscribe(params => {
       messageType = params[0].path;
@@ -47,7 +48,13 @@ export class AppMessaging implements OnInit {
       // now fetch the user's messages
       if(value == true) {
         // Gets the user's messages via the items service
-        this.itemsService.getMessages(this.messType, this.authService.userData.id!);
+        if(this.messType == 'inbox' || this.messType == 'outbox' || this.messType == 'threads') {
+          this.itemsService.getMessages(this.messType, this.authService.userData.id!);
+        }
+        // gets the thread's messages
+        else if(this.messType == 'thread' && threadId){
+          this.itemsService.getThread(this.authService.userData.id!, threadId);
+        }
       }
     })
   }
@@ -124,10 +131,21 @@ export class AppMessaging implements OnInit {
   Programmer: Shir Bar Lev.
   */
   changeMailbox(newType:string) {
-    this.router.navigate(['../' + newType], {
-      relativeTo: this.route,
-      replaceUrl: true
-    });
+    // if the user was looking at a specific thread, to get the mailbox type
+    // we need to go two levels up
+    if(this.messType == 'thread') {
+      this.router.navigate(['../../' + newType], {
+        relativeTo: this.route,
+        replaceUrl: true
+      });
+    }
+    // otherwise we need to go one level up to change mailbox
+    else {
+      this.router.navigate(['../' + newType], {
+        relativeTo: this.route,
+        replaceUrl: true
+      });
+    }
   }
 
   /*

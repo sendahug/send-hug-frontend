@@ -68,6 +68,11 @@ export class ItemsService {
   userThreadsPage: number;
   totalUserThreadsPage: number;
   isUserThreadsResolved = new BehaviorSubject(false);
+  activeThread = 0;
+  threadMessages: Message[] = [];
+  threadPage: number;
+  totalThreadPages: number;
+  isThreadResolved = new BehaviorSubject(false);
 
   // CTOR
   constructor(
@@ -87,6 +92,8 @@ export class ItemsService {
       this.totalUserMessagesPages.outbox = 1;
       this.userThreadsPage = 1;
       this.totalUserThreadsPage = 1;
+      this.threadPage = 1;
+      this.totalThreadPages = 1;
   }
 
   // POST-RELATED METHODS
@@ -406,6 +413,45 @@ export class ItemsService {
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
       this.isUserThreadsResolved.next(true);
+      this.createErrorAlert(err);
+    })
+  }
+
+  /*
+  Function Name: getThread()
+  Function Description: Get the messages in a specific thread.
+  Parameters: userID (number) - the ID of the user whose messages to fetch.
+              threadId (number) - the ID of the thread to fetch.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  getThread(userID:number, threadId:number) {
+    this.activeThread = threadId;
+    // if the current page is 0, send page 1 to the server (default)
+    const currentPage = this.threadPage ? this.threadPage : 1;
+    let params = new HttpParams()
+      .set('userID', `${userID}`)
+      .set('page', `${currentPage}`)
+      .set('type', 'thread')
+      .set('threadID', `${threadId}`);
+    // try to get the user's messages
+    this.Http.get(`${this.serverUrl}/messages`, {
+      headers: this.authService.authHeader,
+      params: params
+    }).subscribe((response:any) => {
+      let messages = response.messages;
+      this.threadMessages = [];
+      messages.forEach((element: Message) => {
+        this.threadMessages.push(element);
+      });
+      this.totalThreadPages = response.total_pages;
+      // if there are 0 pages, current page is also 0; otherwise it's whatever
+      // the server returns
+      this.threadPage = this.totalThreadPages ? response.current_page : 0;
+      this.isThreadResolved.next(true);
+    // if there was an error, alert the user
+    }, (err:HttpErrorResponse) => {
+      this.isThreadResolved.next(true);
       this.createErrorAlert(err);
     })
   }

@@ -12,6 +12,7 @@ import { BehaviorSubject } from 'rxjs';
 import { Post } from '../interfaces/post.interface';
 import { Message } from '../interfaces/message.interface';
 import { AlertMessage } from '../interfaces/alert.interface';
+import { Thread } from '../interfaces/thread.interface';
 import { AuthService } from './auth.service';
 import { AlertsService } from './alerts.service';
 import { environment } from '../../environments/environment';
@@ -63,6 +64,10 @@ export class ItemsService {
   }
   isUserInboxResolved = new BehaviorSubject(false);
   isUserOutboxResolved = new BehaviorSubject(false);
+  userThreads: Thread[] = [];
+  userThreadsPage: number;
+  totalUserThreadsPage: number;
+  isUserThreadsResolved = new BehaviorSubject(false);
 
   // CTOR
   constructor(
@@ -80,6 +85,8 @@ export class ItemsService {
       this.totalUserMessagesPages.inbox = 1;
       this.userMessagesPage.outbox = 1;
       this.totalUserMessagesPages.outbox = 1;
+      this.userThreadsPage = 1;
+      this.totalUserThreadsPage = 1;
   }
 
   // POST-RELATED METHODS
@@ -290,6 +297,9 @@ export class ItemsService {
     else if(type == 'outbox') {
       this.getOutboxMessages(userID);
     }
+    else if(type == 'threads') {
+      this.getThreads(userID);
+    }
   }
 
   /*
@@ -360,6 +370,42 @@ export class ItemsService {
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
       this.isUserOutboxResolved.next(true);
+      this.createErrorAlert(err);
+    })
+  }
+
+  /*
+  Function Name: getThreads()
+  Function Description: Get the user's threads.
+  Parameters: userID (number) - the ID of the user whose threads to fetch.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  getThreads(userID:number) {
+    // if the current page is 0, send page 1 to the server (default)
+    const currentPage = this.userThreadsPage ? this.userThreadsPage : 1;
+    let params = new HttpParams()
+      .set('userID', `${userID}`)
+      .set('page', `${currentPage}`)
+      .set('type', 'threads');
+    // try to get the user's messages
+    this.Http.get(`${this.serverUrl}/messages`, {
+      headers: this.authService.authHeader,
+      params: params
+    }).subscribe((response:any) => {
+      let threads = response.messages;
+      this.userThreads = [];
+      threads.forEach((element: Thread) => {
+        this.userThreads.push(element);
+      });
+      this.totalUserThreadsPage = response.total_pages;
+      // if there are 0 pages, current page is also 0; otherwise it's whatever
+      // the server returns
+      this.userThreadsPage = this.totalUserThreadsPage ? response.current_page : 0;
+      this.isUserThreadsResolved.next(true);
+    // if there was an error, alert the user
+    }, (err:HttpErrorResponse) => {
+      this.isUserThreadsResolved.next(true);
       this.createErrorAlert(err);
     })
   }

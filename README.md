@@ -6,7 +6,7 @@ Version 1 (currently in development).
 
 Built using the [gulp-site-template](https://github.com/shirblc/gulp-site-template) repo.
 
-For full project information, check the [`main README file`](https://github.com/shirblc/FSND-capstone/blob/master/README.md).
+For full project information, check the [`main README file`](https://github.com/sendahug/sendahug/blob/master/README.md).
 
 ## Requirements
 

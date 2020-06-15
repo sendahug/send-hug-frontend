@@ -19,6 +19,7 @@ export class AppMessaging implements OnInit {
   messType = 'inbox';
   // loader sub-component variable
   waitFor = `${this.messType} messages`;
+  threadId: number;
 
   // CTOR
   constructor(
@@ -28,7 +29,7 @@ export class AppMessaging implements OnInit {
     public router:Router
   ) {
     let messageType;
-    let threadId = Number(this.route.snapshot.paramMap.get('id'));
+    this.threadId = Number(this.route.snapshot.paramMap.get('id'));
 
     this.route.url.subscribe(params => {
       messageType = params[0].path;
@@ -52,8 +53,8 @@ export class AppMessaging implements OnInit {
           this.itemsService.getMessages(this.messType, this.authService.userData.id!);
         }
         // gets the thread's messages
-        else if(this.messType == 'thread' && threadId){
-          this.itemsService.getThread(this.authService.userData.id!, threadId);
+        else if(this.messType == 'thread' && this.threadId){
+          this.itemsService.getThread(this.authService.userData.id!, this.threadId);
         }
       }
     })
@@ -101,8 +102,17 @@ export class AppMessaging implements OnInit {
     else if(this.messType == 'outbox') {
       this.itemsService.userMessagesPage.outbox += 1;
     }
+    else if(this.messType == 'threads') {
+      this.itemsService.userThreadsPage += 1;
+    }
 
-    this.itemsService.getMessages(this.messType, this.authService.userData.id!);
+    if(this.messType == 'thread') {
+      this.itemsService.threadPage += 1;
+      this.itemsService.getThread(this.authService.userData.id!, this.threadId);
+    }
+    else {
+      this.itemsService.getMessages(this.messType, this.authService.userData.id!);
+    }
   }
 
   /*
@@ -120,7 +130,17 @@ export class AppMessaging implements OnInit {
     else if(this.messType == 'outbox') {
       this.itemsService.userMessagesPage.outbox -= 1;
     }
-    this.itemsService.getMessages(this.messType, this.authService.userData.id!);
+    else if(this.messType == 'threads') {
+      this.itemsService.userThreadsPage -= 1;
+    }
+
+    if(this.messType == 'thread') {
+      this.itemsService.threadPage -= 1;
+      this.itemsService.getThread(this.authService.userData.id!, this.threadId);
+    }
+    else {
+      this.itemsService.getMessages(this.messType, this.authService.userData.id!);
+    }
   }
 
   /*

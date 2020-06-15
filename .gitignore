@@ -9,8 +9,8 @@ __pycache__
 venv
 
 # local development files
-frontend/localdev/app
-frontend/localdev/css
-frontend/localdev/app.bundle.js
-frontend/localdev/app.bundle.js.map
-frontend/localdev/index.html
+localdev/app
+localdev/css
+localdev/app.bundle.js
+localdev/app.bundle.js.map
+localdev/index.html

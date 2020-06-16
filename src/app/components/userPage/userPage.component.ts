@@ -4,7 +4,7 @@
 */
 
 // Angular imports
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 // App-related imports
@@ -15,7 +15,7 @@ import { ItemsService } from '../../services/items.service';
   selector: 'app-user-page',
   templateUrl:  './userPage.component.html'
 })
-export class UserPage implements OnInit {
+export class UserPage implements OnInit, OnDestroy {
   // edit popup sub-component variables
   userToEdit:any;
   editType: string = 'user';
@@ -36,20 +36,21 @@ export class UserPage implements OnInit {
     // if there's a user ID, set the user ID to it
     if(this.route.snapshot.paramMap.get('id')) {
       this.userId = Number(this.route.snapshot.paramMap.get('id'));
-      this.waitFor = 'other user';
+      // If the user ID from the URL params is different than the logged in
+      // user's ID, the user is trying to view another user's profile
+      if(this.userId != this.authService.userData.id) {
+        this.itemsService.isOtherUser = true;
+        this.waitFor = 'other user';
+      }
+      // otherwise they're trying to view their own profile
+      else {
+        this.itemsService.isOtherUser = false;
+        this.waitFor = 'user';
+      }
       // if the user is logged in, get the data of the user with that ID
       this.authService.isUserDataResolved.subscribe((value) => {
         if(value == true) {
           this.itemsService.getUser(this.userId!);
-          // If the user ID from the URL params is different than the logged in
-          // user's ID, the user is trying to view another user's profile
-          if(this.userId != this.authService.userData.id) {
-            this.itemsService.isOtherUser = true;
-          }
-          // otherwise they're trying to view their own profile
-          else {
-            this.itemsService.isOtherUser = false;
-          }
         }
       });
     }
@@ -109,5 +110,10 @@ export class UserPage implements OnInit {
   */
   changeMode(edit:boolean) {
     this.editMode = edit;
+  }
+
+  // When leaving the page, return "other user" to false
+  ngOnDestroy() {
+    this.itemsService.isOtherUser = false;
   }
 }

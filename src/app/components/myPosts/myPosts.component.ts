@@ -29,7 +29,7 @@ export class MyPosts implements OnInit {
 
   // CTOR
   constructor(public itemsService:ItemsService,
-    private authService:AuthService ) {
+    public authService:AuthService ) {
       // if there's a user ID in the viewed profile, get that user's posts
       if(this.userID) {
         this.itemsService.getUserPosts(this.userID);

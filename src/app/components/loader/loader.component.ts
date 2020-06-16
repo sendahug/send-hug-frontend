@@ -22,6 +22,9 @@ export class Loader implements OnInit, OnChanges {
   message = '';
   // loader screen visibility
   visible = true;
+  //
+  @Input()
+  user!: 'self' | 'other';
 
   // CTOR
   constructor(
@@ -192,7 +195,7 @@ export class Loader implements OnInit, OnChanges {
     else if(this.waitingFor == 'user posts') {
       this.message = 'Fetching user posts...';
       // subscribe to the subject following user's posts
-      this.itemsService.isUserPostsResolved.subscribe((value) => {
+      this.itemsService.isUserPostsResolved[this.user].subscribe((value) => {
         // the subject's value is changed to 'true' upon fetching user
         // posts, so if the value is true, there's no longer need for the
         // loader screen

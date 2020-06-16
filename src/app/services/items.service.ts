@@ -43,10 +43,25 @@ export class ItemsService {
     fullSuggestedItems: 0
   }
   // User posts variables
-  userPosts: Post[] = [];
-  userPostsPage: number;
-  totalUserPostsPages: number;
-  isUserPostsResolved = new BehaviorSubject(false);
+  userPosts: {
+    self: Post[],
+    other: Post[]
+  } = {
+    self: [],
+    other: []
+  };
+  userPostsPage = {
+    self: 1,
+    other: 1
+  };
+  totalUserPostsPages = {
+    self: 1,
+    other: 1
+  };
+  isUserPostsResolved = {
+    self: new BehaviorSubject(false),
+    other: new BehaviorSubject(false)
+  };
   // User variables
   userData: OtherUser = {
     id: 0,
@@ -96,8 +111,6 @@ export class ItemsService {
       this.fullItemsPage.fullSuggestedItems = 1;
       this.totalFullItemsPage.fullNewItems = 1;
       this.totalFullItemsPage.fullSuggestedItems = 1;
-      this.userPostsPage = 1;
-      this.totalUserPostsPages = 1;
       this.userMessagesPage.inbox = 1;
       this.totalUserMessagesPages.inbox = 1;
       this.userMessagesPage.outbox = 1;
@@ -189,9 +202,10 @@ export class ItemsService {
   Programmer: Shir Bar Lev.
   */
   getUserPosts(userID:number) {
+    const user = (userID == this.authService.userData.id) ? 'self' : 'other';
     const Url = this.serverUrl + `/users/${userID}/posts`;
     // if the current page is 0, send page 1 to the server (default)
-    const currentPage = this.userPostsPage ? this.userPostsPage : 1;
+    const currentPage = this.userPostsPage[user] ? this.userPostsPage[user] : 1;
     const params = new HttpParams().set('page', `${currentPage}`);
 
     // HTTP request
@@ -200,15 +214,15 @@ export class ItemsService {
       params: params
     }).subscribe((response:any) => {
       let data = response.posts;
-      this.userPosts = data;
-      this.totalUserPostsPages = response.total_pages;
+      this.userPosts[user] = data;
+      this.totalUserPostsPages[user] = response.total_pages;
       // if there are 0 pages, current page is also 0; otherwise it's whatever
       // the server returns
-      this.userPostsPage = this.totalUserPostsPages ? response.page : 0;
-      this.isUserPostsResolved.next(true);
+      this.userPostsPage[user] = this.totalUserPostsPages[user] ? response.page : 0;
+      this.isUserPostsResolved[user].next(true);
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
-      this.isUserPostsResolved.next(true);
+      this.isUserPostsResolved[user].next(true);
       this.createErrorAlert(err);
     })
   }
@@ -324,6 +338,7 @@ export class ItemsService {
         postsNum: user.posts
       }
       this.isOtherUserResolved.next(true);
+      this.getUserPosts(userID);
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
       this.isOtherUserResolved.next(true);

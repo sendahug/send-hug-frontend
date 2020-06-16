@@ -25,7 +25,8 @@
 			<button id="editName" class="appButton" (click)="editName()" *ngIf="!itemsService.isOtherUser">Edit Display Name</button>
 		</div>
 
-		<app-my-posts></app-my-posts>
+		<app-my-posts
+					  [userID]="userId"></app-my-posts>
 		
 		<button id="logout" class="appButton" (click)="logout()" *ngIf="!itemsService.isOtherUser">Log Out</button>
 	</div>

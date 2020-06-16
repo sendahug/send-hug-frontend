@@ -4,7 +4,7 @@
 */
 
 // Angular imports
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 
 // App-related imports
 import { Post } from '../../interfaces/post.interface';
@@ -22,16 +22,29 @@ export class MyPosts implements OnInit {
   editMode:boolean;
   // loader sub-component variable
   waitFor = 'user posts';
+  // The user whose posts to fetch
+  @Input()
+  userID:number | undefined;
+  user: 'self' | 'other';
 
   // CTOR
   constructor(public itemsService:ItemsService,
     private authService:AuthService ) {
-      itemsService.getUserPosts(this.authService.userData.id!);
+      // if there's a user ID in the viewed profile, get that user's posts
+      if(this.userID) {
+        this.itemsService.getUserPosts(this.userID);
+        this.user = 'other';
+      }
+      // if there isn't, it's the user's own profile, so get their posts
+      else {
+        itemsService.getUserPosts(this.authService.userData.id!);
+        this.user = 'self';
+      }
       this.editMode = false;
   }
 
   ngOnInit() {
-
+    this.user = (this.userID) ? 'other' : 'self';
   }
 
   /*
@@ -80,7 +93,7 @@ export class MyPosts implements OnInit {
   Programmer: Shir Bar Lev.
   */
   nextPage() {
-    this.itemsService.userPostsPage += 1;
+    this.itemsService.userPostsPage[this.user] += 1;
     this.itemsService.getUserPosts(this.authService.userData.id!);
   }
 
@@ -93,7 +106,7 @@ export class MyPosts implements OnInit {
   Programmer: Shir Bar Lev.
   */
   prevPage() {
-    this.itemsService.userPostsPage -= 1;
+    this.itemsService.userPostsPage[this.user] -= 1;
     this.itemsService.getUserPosts(this.authService.userData.id!);
   }
 }

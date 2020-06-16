@@ -5,6 +5,7 @@
 
 // Angular imports
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 
 // App-related imports
 import { AuthService } from '../../services/auth.service';
@@ -20,11 +21,20 @@ export class UserPage implements OnInit {
   editMode:boolean;
   // loader sub-component variable
   waitFor = "user";
+  userId: number | undefined;
 
   // CTOR
-  constructor(public authService: AuthService) {
+  constructor(
+    public authService: AuthService,
+    private route:ActivatedRoute
+  ) {
     this.authService.checkHash();
     this.editMode = false;
+
+    // if there's a user ID, set the user ID to it
+    if(this.route.snapshot.paramMap.get('id')) {
+      this.userId = Number(this.route.snapshot.paramMap.get('id'));
+    }
   }
 
   ngOnInit() {

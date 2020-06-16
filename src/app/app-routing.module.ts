@@ -11,7 +11,11 @@ import { AboutApp } from './components/aboutApp/aboutApp.component';
 
 const routes: Routes = [
   { path: '', component: MainPage },
-  { path: 'user', component: UserPage },
+  { path: 'user',
+      children: [
+        { path: '', pathMatch: 'prefix', component: UserPage },
+        { path: ':id', pathMatch: 'prefix', component: UserPage }
+      ]},
   { path: 'messages',
       children: [
         { path: '', pathMatch: 'prefix', redirectTo: 'inbox' },

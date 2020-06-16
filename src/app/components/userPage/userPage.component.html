@@ -7,27 +7,27 @@
 		<div id="profileData">
 			<h3>User Profile</h3>
 			<div class="profileElement">
-				<span class="pageCategory">Username:</span> <span class="pageData">{{ authService.userData.displayName }}</span>
+				<span class="pageCategory">Username:</span> <span class="pageData" *ngIf="!itemsService.isOtherUser">{{ authService.userData.displayName }}</span> <span class="pageData" *ngIf="itemsService.isOtherUser">{{ itemsService.userData.displayName }}</span>
 			</div>
 			<div class="profileElement">
-				<span class="pageCategory">Role:</span> <span class="pageData">{{ authService.userData.role }}</span>
+				<span class="pageCategory">Role:</span> <span class="pageData" *ngIf="!itemsService.isOtherUser">{{ authService.userData.role }}</span> <span class="pageData" *ngIf="itemsService.isOtherUser">{{ itemsService.userData.role }}</span>
 			</div>
 			<div class="profileElement">
-				<span class="pageCategory">Received Hugs:</span> <span class="pageData">{{ authService.userData.receivedHugs }}</span>
+				<span class="pageCategory">Received Hugs:</span> <span class="pageData" *ngIf="!itemsService.isOtherUser">{{ authService.userData.receivedHugs }}</span> <span class="pageData" *ngIf="itemsService.isOtherUser">{{ itemsService.userData.receivedHugs }}</span>
 			</div>
 			<div class="profileElement">
-				<span class="pageCategory">Given Hugs:</span> <span class="pageData">{{ authService.userData.givenHugs }}</span>
+				<span class="pageCategory">Given Hugs:</span> <span class="pageData" *ngIf="!itemsService.isOtherUser">{{ authService.userData.givenHugs }}</span> <span class="pageData" *ngIf="itemsService.isOtherUser">{{ itemsService.userData.givenHugs }}</span>
 			</div>
 			<div class="profileElement">
-				<span class="pageCategory">Posts:</span> <span class="pageData">{{ authService.userData.postsNum }}</span>
+				<span class="pageCategory">Posts:</span> <span class="pageData" *ngIf="!itemsService.isOtherUser">{{ authService.userData.postsNum }}</span> <span class="pageData" *ngIf="itemsService.isOtherUser">{{ itemsService.userData.postsNum }}</span>
 			</div>
 			
-			<button id="editName" class="appButton" (click)="editName()">Edit Display Name</button>
+			<button id="editName" class="appButton" (click)="editName()" *ngIf="!itemsService.isOtherUser">Edit Display Name</button>
 		</div>
 
 		<app-my-posts></app-my-posts>
 		
-		<button id="logout" class="appButton" (click)="logout()">Log Out</button>
+		<button id="logout" class="appButton" (click)="logout()" *ngIf="!itemsService.isOtherUser">Log Out</button>
 	</div>
 </div>
 

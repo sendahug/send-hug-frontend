@@ -49,6 +49,7 @@ export class ItemsService {
   isUserPostsResolved = new BehaviorSubject(false);
   // User variables
   userData: OtherUser | undefined;
+  isOtherUser = false;
   // User messages variables
   userMessages: {
     inbox: Message[],

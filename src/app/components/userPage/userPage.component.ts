@@ -40,8 +40,20 @@ export class UserPage implements OnInit {
       this.authService.isUserDataResolved.subscribe((value) => {
         if(value == true) {
           this.itemsService.getUser(this.userId!);
+          // If the user ID from the URL params is different than the logged in
+          // user's ID, the user is trying to view another user's profile
+          if(this.userId != this.authService.userData.id) {
+            this.itemsService.isOtherUser = true;
+          }
+          // otherwise they're trying to view their own profile
+          else {
+            this.itemsService.isOtherUser = false;
+          }
         }
       });
+    }
+    else {
+      this.itemsService.isOtherUser = false;
     }
   }
 

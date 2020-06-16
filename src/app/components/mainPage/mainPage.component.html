@@ -5,7 +5,7 @@
 	<ul class="itemList" *ngIf="itemsService.newItemsArray.length > 0">
 		<li *ngFor="let item of itemsService.newItemsArray" class="newItem">
 			<div class="itemText">{{ item.text }}</div>
-			<div class="itemUser">By {{ item.user }}</div>
+			<div class="itemUser">By <a [routerLink]="['/user', item.userId ]">{{ item.user }}</a> </div>
 			<div class="buttonsContainer">
 				<div class="notification">
 					<button class="appButton hugButton" (click)="sendHug(item.id)"><i class="fab fa-gratipay"></i></button>
@@ -31,7 +31,7 @@
 	<ul class="itemList" *ngIf="itemsService.sugItemsArray.length > 0">
 		<li *ngFor="let item of itemsService.sugItemsArray" class="sugItem">
 			<div class="itemText">{{ item.text }}</div>
-			<div class="itemUser">By {{ item.user }}</div>
+			<div class="itemUser">By <a [routerLink]="['/user', item.userId ]">{{ item.user }}</a></div>
 			<div class="buttonsContainer">
 				<div class="notification">
 					<button class="appButton hugButton" (click)="sendHug(item.id)"><i class="fab fa-gratipay"></i></button>

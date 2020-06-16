@@ -4,7 +4,7 @@
 	<ul id="fullItems" *ngIf="itemsService.fullItemsList['full' + type + 'Items'].length > 0">
 		<li *ngFor="let item of itemsService.fullItemsList['full' + type + 'Items']" class="newItem">
 			<div class="itemText">{{ item.text }}</div>
-			<div class="itemUser">By {{ item.user }}</div>
+			<div class="itemUser">By <a [routerLink]="['/user', item.userId ]">{{ item.user }}</a></div>
 			<div class="buttonsContainer">
 				<div class="notification">
 					<button class="appButton hugButton" (click)="sendHug(item.id)"><i class="fab fa-gratipay"></i></button>

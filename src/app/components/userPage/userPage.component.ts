@@ -9,6 +9,7 @@ import { ActivatedRoute } from '@angular/router';
 
 // App-related imports
 import { AuthService } from '../../services/auth.service';
+import { ItemsService } from '../../services/items.service';
 
 @Component({
   selector: 'app-user-page',
@@ -26,7 +27,8 @@ export class UserPage implements OnInit {
   // CTOR
   constructor(
     public authService: AuthService,
-    private route:ActivatedRoute
+    private route:ActivatedRoute,
+    public itemsService:ItemsService
   ) {
     this.authService.checkHash();
     this.editMode = false;
@@ -34,6 +36,12 @@ export class UserPage implements OnInit {
     // if there's a user ID, set the user ID to it
     if(this.route.snapshot.paramMap.get('id')) {
       this.userId = Number(this.route.snapshot.paramMap.get('id'));
+      // if the user is logged in, get the data of the user with that ID
+      this.authService.isUserDataResolved.subscribe((value) => {
+        if(value == true) {
+          this.itemsService.getUser(this.userId!);
+        }
+      });
     }
   }
 

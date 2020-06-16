@@ -13,6 +13,7 @@ import { Post } from '../interfaces/post.interface';
 import { Message } from '../interfaces/message.interface';
 import { AlertMessage } from '../interfaces/alert.interface';
 import { Thread } from '../interfaces/thread.interface';
+import { OtherUser } from '../interfaces/otherUser.interface';
 import { AuthService } from './auth.service';
 import { AlertsService } from './alerts.service';
 import { environment } from '../../environments/environment';
@@ -46,6 +47,8 @@ export class ItemsService {
   userPostsPage: number;
   totalUserPostsPages: number;
   isUserPostsResolved = new BehaviorSubject(false);
+  // User variables
+  userData: OtherUser | undefined;
   // User messages variables
   userMessages: {
     inbox: Message[],
@@ -284,6 +287,37 @@ export class ItemsService {
     }, (err:HttpErrorResponse) => {
       this.createErrorAlert(err);
     })
+  }
+
+  // USER-RELATED METHODS
+  // ==============================================================
+  /*
+  Function Name: getUser()
+  Function Description: Gets the data of a specific user.
+  Parameters: userID (number) - the ID of the user to fetch.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  getUser(userID:number) {
+    const Url = this.serverUrl + `/users/${userID}`
+
+    // Get the user's data from the server
+    this.Http.get(Url, {
+      headers: this.authService.authHeader
+    }).subscribe((response:any) => {
+      let user = response.user;
+      this.userData = {
+        id: user.id,
+        displayName: user.displayName,
+        receivedHugs: user.receivedH,
+        givenHugs: user.givenH,
+        role: user.role,
+        postsNum: user.posts
+      }
+    // if there was an error, alert the user
+    }, (err:HttpErrorResponse) => {
+      this.createErrorAlert(err);
+    });
   }
 
   // MESSAGE-RELATED METHODS

@@ -48,7 +48,14 @@ export class ItemsService {
   totalUserPostsPages: number;
   isUserPostsResolved = new BehaviorSubject(false);
   // User variables
-  userData: OtherUser | undefined;
+  userData: OtherUser = {
+    id: 0,
+    displayName: '',
+    receivedHugs: 0,
+    givenHugs: 0,
+    postsNum: 0,
+    role: ''
+  };
   isOtherUser = false;
   isOtherUserResolved = new BehaviorSubject(false);
   // User messages variables

@@ -86,6 +86,20 @@ export class Loader implements OnInit, OnChanges {
         }
       })
     }
+    // if the app is waiting for another user's data to be fetched from the server
+    else if(this.waitingFor == 'other user') {
+      this.message = 'Fetching user data...';
+      // subscribe to the subject following other user's data
+      this.itemsService.isOtherUserResolved.subscribe((value) => {
+        // the subject's value is changed to 'true' upon fetching user data,
+        // so if the value is true, there's no longer need for the loader
+        // screen.
+        if(value == true) {
+          this.visible = false;
+          this.waitingFor = '';
+        }
+      })
+    }
     // if the app is waiting for posts data to be fetched from the server
     else if(this.waitingFor == 'posts') {
       this.message = 'Fetching posts...';

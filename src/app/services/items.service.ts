@@ -50,6 +50,7 @@ export class ItemsService {
   // User variables
   userData: OtherUser | undefined;
   isOtherUser = false;
+  isOtherUserResolved = new BehaviorSubject(false);
   // User messages variables
   userMessages: {
     inbox: Message[],
@@ -315,8 +316,10 @@ export class ItemsService {
         role: user.role,
         postsNum: user.posts
       }
+      this.isOtherUserResolved.next(true);
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
+      this.isOtherUserResolved.next(true);
       this.createErrorAlert(err);
     });
   }

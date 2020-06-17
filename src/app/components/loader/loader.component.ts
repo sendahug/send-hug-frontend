@@ -60,7 +60,6 @@ export class Loader implements OnInit, OnChanges {
   */
   ngOnChanges() {
     if(this.waitingFor) {
-      this.visible = true;
       this.checkLoadingTarget();
     }
   }
@@ -75,6 +74,7 @@ export class Loader implements OnInit, OnChanges {
   Programmer: Shir Bar Lev.
   */
   checkLoadingTarget() {
+    this.visible = true;
     // if the app is waiting for user data to be fetched from the server
     if(this.waitingFor == 'user') {
       this.message = 'Fetching user data...';

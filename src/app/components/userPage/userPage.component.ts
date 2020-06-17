@@ -6,6 +6,7 @@
 // Angular imports
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { Subscription } from 'rxjs';
 
 // App-related imports
 import { AuthService } from '../../services/auth.service';
@@ -23,6 +24,7 @@ export class UserPage implements OnInit, OnDestroy {
   // loader sub-component variable
   waitFor = "user";
   userId: number | undefined;
+  userDataSubscription:Subscription | undefined;
 
   // CTOR
   constructor(
@@ -47,12 +49,19 @@ export class UserPage implements OnInit, OnDestroy {
         this.itemsService.isOtherUser = false;
         this.waitFor = 'user';
       }
-      // if the user is logged in, get the data of the user with that ID
-      this.authService.isUserDataResolved.subscribe((value) => {
+      // set the userDataSubscription to the subscription to isUserDataResolved
+      this.userDataSubscription = this.authService.isUserDataResolved.subscribe((value) => {
+        // if the user is logged in, fetch the profile of the user whose ID
+        // is used in the URL param
         if(value == true) {
           this.itemsService.getUser(this.userId!);
+          // also unsubscribe from this to avoid sending the same request
+          // multiple times
+          if(this.userDataSubscription) {
+            this.userDataSubscription.unsubscribe();
+          }
         }
-      }).unsubscribe();
+      });
     }
     else {
       this.itemsService.isOtherUser = false;

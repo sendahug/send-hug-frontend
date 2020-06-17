@@ -329,6 +329,31 @@ export class ItemsService {
     })
   }
 
+  /*
+  Function Name: sendUserHug()
+  Function Description: Send a hug to a user.
+  Parameters: userID (number) - the ID of the user.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  sendUserHug(userID:number) {
+    const Url = this.serverUrl + `/users/${userID}`;
+    // update the users' data
+    this.otherUserData.receivedHugs += 1;
+    this.authService.userData.givenHugs += 1;
+
+    this.Http.patch(Url, this.otherUserData, {
+      headers: this.authService.authHeader
+    }).subscribe((response:any) => {
+      if(response.success == true) {
+        this.createSuccessAlert('Your hug was sent!', true);
+      }
+    // if there was an error, alert the user
+    }, (err:HttpErrorResponse) => {
+      this.createErrorAlert(err);
+    });
+  }
+
   // USER-RELATED METHODS
   // ==============================================================
   /*

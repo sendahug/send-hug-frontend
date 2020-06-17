@@ -112,6 +112,17 @@ export class UserPage implements OnInit, OnDestroy {
     this.editMode = edit;
   }
 
+  /*
+  Function Name: sendHug()
+  Function Description: Send a hug to a user.
+  Parameters: userID (number) - the ID of the user.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  sendHug(userID:number) {
+    this.itemsService.sendUserHug(userID);
+  }
+
   // When leaving the page, return "other user" to false
   ngOnDestroy() {
     this.itemsService.isOtherUser = false;

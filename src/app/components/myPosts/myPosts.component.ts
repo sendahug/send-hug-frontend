@@ -94,7 +94,12 @@ export class MyPosts implements OnInit {
   */
   nextPage() {
     this.itemsService.userPostsPage[this.user] += 1;
-    this.itemsService.getUserPosts(this.authService.userData.id!);
+    if(this.user == 'self') {
+      this.itemsService.getUserPosts(this.authService.userData.id!);
+    }
+    else {
+      this.itemsService.getUserPosts(this.userID!);
+    }
   }
 
   /*
@@ -107,6 +112,11 @@ export class MyPosts implements OnInit {
   */
   prevPage() {
     this.itemsService.userPostsPage[this.user] -= 1;
-    this.itemsService.getUserPosts(this.authService.userData.id!);
+    if(this.user == 'self') {
+      this.itemsService.getUserPosts(this.authService.userData.id!);
+    }
+    else {
+      this.itemsService.getUserPosts(this.userID!);
+    }
   }
 }

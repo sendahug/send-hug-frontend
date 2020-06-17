@@ -29,7 +29,8 @@
 	
 	<!-- If the user doesn't have posts, displays an error message -->
 	<div *ngIf="!itemsService.userPosts[user].length && itemsService.isUserPostsResolved[user]" class="errorMessage">
-		<div>You have no published posts. Write your first post now!</div>
+		<div *ngIf="user == 'self'">You have no published posts. Write your first post now!</div>
+		<div *ngIf="user == 'other'">The user hasn't published any posts yet.</div>
 	</div>
 </div>
 

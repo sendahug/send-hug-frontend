@@ -6,7 +6,7 @@
 		[user]="user"></app-loader>
 	
 	<!-- If the user has posts, displays them -->
-	<div *ngIf="itemsService.userPosts[user].length">
+	<div *ngIf="itemsService.userPosts[user].length && itemsService.isUserPostsResolved[user].value">
 		<div *ngFor="let post of itemsService.userPosts[user]" class="userPost">
 			<div class="postText">{{ post.text }}</div>
 			<div class="postDate">{{ post.date }}</div>

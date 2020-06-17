@@ -1,4 +1,4 @@
-<h3>Inbox</h3>
+<h3>Mail</h3>
 <!-- If the user is logged in, displays the user's inbox. -->
 <div id="userInbox" *ngIf="authService.authenticated">
 	<!-- Messages area navigation. -->
@@ -37,7 +37,12 @@
 	</div>
 	
 	<!-- If there are no messages in the user's inbox -->
-	<div *ngIf="(messType == 'inbox' || messType == 'outbox') && !itemsService.userMessages[messType].length && itemsService.isUserMessagesResolved">
+	<div *ngIf="(messType == 'inbox') && !itemsService.userMessages[messType].length && itemsService.isUserInboxResolved.value">
+		<div class="errorMessage">You have no incoming messages.</div>
+	</div>
+	
+	<!-- If there are no messages in the user's outbox -->
+	<div *ngIf="(messType == 'outbox') && !itemsService.userMessages[messType].length && itemsService.isUserOutboxResolved.value">
 		<div class="errorMessage">You have no incoming messages.</div>
 	</div>
 	
@@ -62,7 +67,7 @@
 		</ul>
 		
 			<!-- If there are no messages in the user's inbox -->
-			<div *ngIf="!itemsService.userThreads.length && itemsService.isUserThreadsResolved">
+			<div *ngIf="!itemsService.userThreads.length && itemsService.isUserThreadsResolved.value">
 				<div class="errorMessage">You have no Threads.</div>
 			</div>
 	</div>

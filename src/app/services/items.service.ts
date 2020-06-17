@@ -73,6 +73,7 @@ export class ItemsService {
   };
   isOtherUser = false;
   isOtherUserResolved = new BehaviorSubject(false);
+  previousUser:number = 0;
   // User messages variables
   userMessages: {
     inbox: Message[],
@@ -204,12 +205,25 @@ export class ItemsService {
   getUserPosts(userID:number) {
     const user = (userID == this.authService.userData.id) ? 'self' : 'other';
     const Url = this.serverUrl + `/users/${userID}/posts`;
+
+    // if the user is viewing another user's profile
+    if(user == 'other') {
+      // if this isn't the first profile the user is viewing (meaning the default
+      // values may have been changed) and the user isn't still viewing the same
+      // user's profile (e.g., they were trying to change a page on the user posts
+      // component), reset the values of the required variables
+      if(this.previousUser != 0 && this.previousUser != userID) {
+        this.userPostsPage[user] = 1;
+        this.totalUserPostsPages[user] = 1;
+        this.userPosts[user] = [];
+        this.isUserPostsResolved[user].next(false);
+      }
+    }
     // if the current page is 0, send page 1 to the server (default)
     const currentPage = this.userPostsPage[user] ? this.userPostsPage[user] : 1;
     const params = new HttpParams().set('page', `${currentPage}`);
-
-    this.isUserPostsResolved[user].next(false);
-    this.userPosts[user] = (user == 'other') ? [] : this.userPosts[user];
+    // change the ID of the previous user to the profile currently open
+    this.previousUser = userID;
 
     // HTTP request
     this.Http.get(Url, {

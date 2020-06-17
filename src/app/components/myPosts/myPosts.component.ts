@@ -43,8 +43,24 @@ export class MyPosts implements OnInit {
       this.editMode = false;
   }
 
+  /*
+  Function Name: ngOnInit()
+  Function Description: This method is automatically triggered by Angular upon
+                        page initiation. It checks for the requested user's
+                        identity (myself or someone else).
+  Parameters: None.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
   ngOnInit() {
-    this.user = (this.userID) ? 'other' : 'self';
+    // if the user ID is different than the logged in user, it's someone else
+    if(this.userID && this.userID != this.authService.userData.id) {
+      this.user = 'other';
+    }
+    // otherwise, if it's the same ID or there's no ID, get the user's profile
+    else {
+      this.user = 'self';
+    }
   }
 
   /*

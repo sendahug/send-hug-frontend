@@ -5,6 +5,7 @@
 
 // Angular imports
 import { Component, OnInit, Input, OnChanges } from '@angular/core';
+import { Subscription } from 'rxjs';
 
 // App-related imports
 import { ItemsService } from '../../services/items.service';
@@ -25,6 +26,7 @@ export class Loader implements OnInit, OnChanges {
   //
   @Input()
   user!: 'self' | 'other';
+  subsciption: Subscription | undefined;
 
   // CTOR
   constructor(
@@ -78,16 +80,24 @@ export class Loader implements OnInit, OnChanges {
     // if the app is waiting for user data to be fetched from the server
     if(this.waitingFor == 'user') {
       this.message = 'Fetching user data...';
-      // subscribe to the subject following user data
-      this.authService.isUserDataResolved.subscribe((value) => {
-        // the subject's value is changed to 'true' upon fetching user data,
-        // so if the value is true, there's no longer need for the loader
-        // screen.
-        if(value == true) {
-          this.visible = false;
-          this.waitingFor = '';
-        }
-      })
+      // if the user's data is already fetched, skip the loading screen
+      if(this.authService.isUserDataResolved.value) {
+        this.visible = false;
+      }
+      // if not, show the loading screen until the data is fetched
+      else {
+        // subscribe to the subject following user data
+        this.subsciption = this.authService.isUserDataResolved.subscribe((value) => {
+          console.log(value);
+          // the subject's value is changed to 'true' upon fetching user data,
+          // so if the value is true, there's no longer need for the loader
+          // screen.
+          if(value == true) {
+            this.visible = false;
+            this.waitingFor = '';
+          }
+        })
+      }
     }
     // if the app is waiting for another user's data to be fetched from the server
     else if(this.waitingFor == 'other user') {

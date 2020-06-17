@@ -43,25 +43,25 @@ export class UserPage implements OnInit, OnDestroy {
       if(this.userId != this.authService.userData.id) {
         this.itemsService.isOtherUser = true;
         this.waitFor = 'other user';
+        // set the userDataSubscription to the subscription to isUserDataResolved
+        this.userDataSubscription = this.authService.isUserDataResolved.subscribe((value) => {
+          // if the user is logged in, fetch the profile of the user whose ID
+          // is used in the URL param
+          if(value == true) {
+            this.itemsService.getUser(this.userId!);
+            // also unsubscribe from this to avoid sending the same request
+            // multiple times
+            if(this.userDataSubscription) {
+              this.userDataSubscription.unsubscribe();
+            }
+          }
+        });
       }
       // otherwise they're trying to view their own profile
       else {
         this.itemsService.isOtherUser = false;
         this.waitFor = 'user';
       }
-      // set the userDataSubscription to the subscription to isUserDataResolved
-      this.userDataSubscription = this.authService.isUserDataResolved.subscribe((value) => {
-        // if the user is logged in, fetch the profile of the user whose ID
-        // is used in the URL param
-        if(value == true) {
-          this.itemsService.getUser(this.userId!);
-          // also unsubscribe from this to avoid sending the same request
-          // multiple times
-          if(this.userDataSubscription) {
-            this.userDataSubscription.unsubscribe();
-          }
-        }
-      });
     }
     else {
       this.itemsService.isOtherUser = false;

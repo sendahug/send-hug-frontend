@@ -342,7 +342,12 @@ export class ItemsService {
     this.otherUserData.receivedHugs += 1;
     this.authService.userData.givenHugs += 1;
 
-    this.Http.patch(Url, this.otherUserData, {
+    this.Http.patch(Url, {
+      displayName: this.otherUserData.displayName,
+      receivedH: this.otherUserData.receivedHugs,
+      givenH: this.otherUserData.givenHugs,
+      posts: this.otherUserData.postsNum
+    }, {
       headers: this.authService.authHeader
     }).subscribe((response:any) => {
       if(response.success == true) {

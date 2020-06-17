@@ -7,19 +7,19 @@
 		<div id="profileData">
 			<h3>User Profile</h3>
 			<div class="profileElement">
-				<span class="pageCategory">Username:</span> <span class="pageData" *ngIf="!itemsService.isOtherUser">{{ authService.userData.displayName }}</span> <span class="pageData" *ngIf="itemsService.isOtherUser">{{ itemsService.userData.displayName }}</span>
+				<span class="pageCategory">Username:</span> <span class="pageData" *ngIf="!itemsService.isOtherUser">{{ authService.userData.displayName }}</span> <span class="pageData" *ngIf="itemsService.isOtherUser">{{ itemsService.otherUserData.displayName }}</span>
 			</div>
 			<div class="profileElement">
-				<span class="pageCategory">Role:</span> <span class="pageData" *ngIf="!itemsService.isOtherUser">{{ authService.userData.role }}</span> <span class="pageData" *ngIf="itemsService.isOtherUser">{{ itemsService.userData.role }}</span>
+				<span class="pageCategory">Role:</span> <span class="pageData" *ngIf="!itemsService.isOtherUser">{{ authService.userData.role }}</span> <span class="pageData" *ngIf="itemsService.isOtherUser">{{ itemsService.otherUserData.role }}</span>
 			</div>
 			<div class="profileElement">
-				<span class="pageCategory">Received Hugs:</span> <span class="pageData" *ngIf="!itemsService.isOtherUser">{{ authService.userData.receivedHugs }}</span> <span class="pageData" *ngIf="itemsService.isOtherUser">{{ itemsService.userData.receivedHugs }}</span>
+				<span class="pageCategory">Received Hugs:</span> <span class="pageData" *ngIf="!itemsService.isOtherUser">{{ authService.userData.receivedHugs }}</span> <span class="pageData" *ngIf="itemsService.isOtherUser">{{ itemsService.otherUserData.receivedHugs }}</span>
 			</div>
 			<div class="profileElement">
-				<span class="pageCategory">Given Hugs:</span> <span class="pageData" *ngIf="!itemsService.isOtherUser">{{ authService.userData.givenHugs }}</span> <span class="pageData" *ngIf="itemsService.isOtherUser">{{ itemsService.userData.givenHugs }}</span>
+				<span class="pageCategory">Given Hugs:</span> <span class="pageData" *ngIf="!itemsService.isOtherUser">{{ authService.userData.givenHugs }}</span> <span class="pageData" *ngIf="itemsService.isOtherUser">{{ itemsService.otherUserData.givenHugs }}</span>
 			</div>
 			<div class="profileElement">
-				<span class="pageCategory">Posts:</span> <span class="pageData" *ngIf="!itemsService.isOtherUser">{{ authService.userData.postsNum }}</span> <span class="pageData" *ngIf="itemsService.isOtherUser">{{ itemsService.userData.postsNum }}</span>
+				<span class="pageCategory">Posts:</span> <span class="pageData" *ngIf="!itemsService.isOtherUser">{{ authService.userData.postsNum }}</span> <span class="pageData" *ngIf="itemsService.isOtherUser">{{ itemsService.otherUserData.postsNum }}</span>
 			</div>
 			
 			<button id="editName" class="appButton" (click)="editName()" *ngIf="!itemsService.isOtherUser">Edit Display Name</button>

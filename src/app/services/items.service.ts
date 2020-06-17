@@ -63,7 +63,7 @@ export class ItemsService {
     other: new BehaviorSubject(false)
   };
   // User variables
-  userData: OtherUser = {
+  otherUserData: OtherUser = {
     id: 0,
     displayName: '',
     receivedHugs: 0,
@@ -322,14 +322,14 @@ export class ItemsService {
   Programmer: Shir Bar Lev.
   */
   getUser(userID:number) {
-    const Url = this.serverUrl + `/users/${userID}`
+    const Url = this.serverUrl + `/users/${userID}`;
 
     // Get the user's data from the server
     this.Http.get(Url, {
       headers: this.authService.authHeader
     }).subscribe((response:any) => {
       let user = response.user;
-      this.userData = {
+      this.otherUserData = {
         id: user.id,
         displayName: user.displayName,
         receivedHugs: user.receivedH,

@@ -219,6 +219,11 @@ export class ItemsService {
         this.isUserPostsResolved[user].next(false);
       }
     }
+    // if the user is viewing their own profile, set the postsResolved to false
+    else {
+      this.isUserPostsResolved[user].next(false);
+    }
+
     // if the current page is 0, send page 1 to the server (default)
     const currentPage = this.userPostsPage[user] ? this.userPostsPage[user] : 1;
     const params = new HttpParams().set('page', `${currentPage}`);

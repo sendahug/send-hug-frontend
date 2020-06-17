@@ -208,6 +208,9 @@ export class ItemsService {
     const currentPage = this.userPostsPage[user] ? this.userPostsPage[user] : 1;
     const params = new HttpParams().set('page', `${currentPage}`);
 
+    this.isUserPostsResolved[user].next(false);
+    this.userPosts[user] = (user == 'other') ? [] : this.userPosts[user];
+
     // HTTP request
     this.Http.get(Url, {
       headers: this.authService.authHeader,
@@ -323,6 +326,7 @@ export class ItemsService {
   */
   getUser(userID:number) {
     const Url = this.serverUrl + `/users/${userID}`;
+    this.isOtherUserResolved.next(false);
 
     // Get the user's data from the server
     this.Http.get(Url, {

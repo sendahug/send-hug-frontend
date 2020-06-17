@@ -52,7 +52,7 @@ export class UserPage implements OnInit, OnDestroy {
         if(value == true) {
           this.itemsService.getUser(this.userId!);
         }
-      });
+      }).unsubscribe();
     }
     else {
       this.itemsService.isOtherUser = false;

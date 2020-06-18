@@ -103,3 +103,11 @@
 
 	<button id="logIn" class="appButton" (click)="login()">Login</button>
 </div>
+
+<app-pop-up *ngIf="editMode"
+			[editedItem]="postToEdit"
+			[toEdit]="editType"
+			(editMode)="changeMode($event)"
+			[delete]="delete"
+			[toDelete]="toDelete"
+			[itemToDelete]="itemToDelete"></app-pop-up>

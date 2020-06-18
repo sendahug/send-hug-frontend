@@ -20,6 +20,13 @@ export class AppMessaging implements OnInit {
   // loader sub-component variable
   waitFor = `${this.messType} messages`;
   threadId: number;
+  // edit popup sub-component variables
+  postToEdit: any;
+  editType: string | undefined;
+  editMode:boolean;
+  delete:boolean;
+  toDelete: string | undefined;
+  itemToDelete: number | undefined;
 
   // CTOR
   constructor(
@@ -58,6 +65,9 @@ export class AppMessaging implements OnInit {
         }
       }
     })
+
+    this.editMode = false;
+    this.delete = false;
   }
 
   ngOnInit() {
@@ -191,5 +201,19 @@ export class AppMessaging implements OnInit {
   */
   deleteThread(threadId:number) {
     this.itemsService.deleteThread(threadId);
+  }
+
+  /*
+  Function Name: changeMode()
+  Function Description: Remove the edit popup.
+  Parameters: edit (boolean) - indicating whether edit mode should be active.
+                               When the user finishes editing, the event emitter
+                               in the popup component sends 'false' to this function
+                               to remove the popup.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  changeMode(edit:boolean) {
+    this.editMode = edit;
   }
 }

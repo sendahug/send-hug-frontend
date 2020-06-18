@@ -4,7 +4,7 @@
 */
 
 // Angular imports
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, OnChanges } from '@angular/core';
 
 // App-related import
 import { AuthService } from '../../services/auth.service';
@@ -14,23 +14,68 @@ import { ItemsService } from '../../services/items.service';
   selector: 'app-pop-up',
   templateUrl: './popUp.component.html'
 })
-export class PopUp {
+export class PopUp implements OnInit, OnChanges {
   // type of item to edit
-  @Input()
-  toEdit!: string;
+  @Input() toEdit: string | undefined;
   // item to edit
-  @Input()
-  editedItem!: any;
-  // indicates whether edit mode is still required
+  @Input() editedItem: any;
+  // indicates whether edit/delete mode is still required
   @Output() editMode = new EventEmitter<boolean>();
+  // whether we're in delete (or edit) mode
   @Input() delete = false;
+  // type of item to delete
   @Input() toDelete: string | undefined;
+  // the item to delete itself
   @Input() itemToDelete: any;
 
   // CTOR
   constructor(public authService:AuthService,
     private itemsService:ItemsService) {
 
+  }
+
+  /*
+  Function Name: ngOnInit()
+  Function Description: This method is automatically triggered by Angular upon
+                        page initiation. It checks for the mode the user is in (edit
+                        or delete) and sets the component's variables accordingly.
+  Parameters: None.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  ngOnInit() {
+    // if we're in delete mode, turn the values of edit variables to undefined
+    if(this.delete) {
+      this.toEdit = undefined;
+      this.editedItem = undefined;
+    }
+    // if we're in edit mode, turn the values of delete variables to undefined
+    else {
+      this.toDelete = undefined;
+      this.itemToDelete = undefined;
+    }
+  }
+
+  /*
+  Function Name: ngOnChanges()
+  Function Description: This method is automatically triggered by Angular upon
+                        changes in parent component. It checks for the mode the user is in (edit
+                        or delete) and sets the component's variables accordingly.
+  Parameters: None.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  ngOnChanges() {
+    // if we're in delete mode, turn the values of edit variables to undefined
+    if(this.delete) {
+      this.toEdit = undefined;
+      this.editedItem = undefined;
+    }
+    // if we're in edit mode, turn the values of delete variables to undefined
+    else {
+      this.toDelete = undefined;
+      this.itemToDelete = undefined;
+    }
   }
 
   /*

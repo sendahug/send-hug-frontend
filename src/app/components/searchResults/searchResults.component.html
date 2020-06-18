@@ -47,3 +47,11 @@
 <div *ngIf="itemsService.numPostResults == 0" class="errorMessage">
 	There are no posts that match your search!
 </div>
+
+<app-pop-up *ngIf="editMode"
+			[editedItem]="postToEdit"
+			[toEdit]="editType"
+			(editMode)="changeMode($event)"
+			[delete]="delete"
+			[toDelete]="toDelete"
+			[itemToDelete]="itemToDelete"></app-pop-up>

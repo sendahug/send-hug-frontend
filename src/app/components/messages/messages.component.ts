@@ -94,7 +94,10 @@ export class AppMessaging implements OnInit {
   Programmer: Shir Bar Lev.
   */
   deleteMessage(messageID:number) {
-    this.itemsService.deleteMessage(messageID);
+    this.editMode = true;
+    this.delete = true;
+    this.toDelete = 'Message';
+    this.itemToDelete = messageID;
   }
 
   /*
@@ -200,7 +203,10 @@ export class AppMessaging implements OnInit {
   Programmer: Shir Bar Lev.
   */
   deleteThread(threadId:number) {
-    this.itemsService.deleteThread(threadId);
+    this.editMode = true;
+    this.delete = true;
+    this.toDelete = 'Thread';
+    this.itemToDelete = threadId;
   }
 
   /*

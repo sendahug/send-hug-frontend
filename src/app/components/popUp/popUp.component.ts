@@ -23,6 +23,9 @@ export class PopUp {
   editedItem!: any;
   // indicates whether edit mode is still required
   @Output() editMode = new EventEmitter<boolean>();
+  @Input() delete = false;
+  @Input() toDelete: string | undefined;
+  @Input() itemToDelete: any;
 
   // CTOR
   constructor(public authService:AuthService,
@@ -59,6 +62,29 @@ export class PopUp {
     e.preventDefault();
     this.editedItem.text = newText;
     this.itemsService.editPost(this.editedItem);
+    this.editMode.emit(false);
+  }
+
+  /*
+  Function Name: deleteItem()
+  Function Description: Sends a request to delete a post or a message to the items service.
+  Parameters: None.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  deleteItem() {
+    // if it's a post, send a request to delete the post
+    if(this.toDelete == 'Post') {
+      this.itemsService.deletePost(this.itemToDelete);
+    }
+    // if it's a message, send a request to delete the message
+    else if(this.toDelete == 'Message') {
+      this.itemsService.deleteMessage(this.itemToDelete);
+    }
+    // if it's a thread, send a request to delete the thread
+    else if(this.toDelete == 'Thread') {
+      this.itemsService.deleteThread(this.itemToDelete);
+    }
     this.editMode.emit(false);
   }
 

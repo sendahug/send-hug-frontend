@@ -12,9 +12,10 @@ import { BehaviorSubject } from 'rxjs';
 import * as Auth0 from 'auth0-js';
 
 // App-related imports
+import { User } from '../interfaces/user.interface';
+import { AlertsService } from './alerts.service';
 import { environment } from '../../environments/environment';
 import { environment as prodEnv } from '../../environments/environment.prod';
-import { User } from '../interfaces/user.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -50,10 +51,14 @@ export class AuthService {
   // documents whether the user just logged in or they're still logged in following
   // their previous login
   loggedIn = false;
+  tokenExpired = false;
   isUserDataResolved = new BehaviorSubject(false);
 
   // CTOR
-  constructor(private Http:HttpClient) {
+  constructor(
+    private Http:HttpClient,
+    private alertsService:AlertsService
+  ) {
 
   }
 
@@ -153,6 +158,7 @@ export class AuthService {
         this.authHeader = new HttpHeaders({'Authorization': `Bearer ${this.token}`});
         this.setToken();
         this.isUserDataResolved.next(true);
+        this.tokenExpired = false;
 
         // if the user just logged in, update the login count
         if(this.loggedIn) {
@@ -249,6 +255,15 @@ export class AuthService {
       jwt: ''
     }
     localStorage.setItem("ACTIVE_JWT", '');
+
+    // if the user has been logged out through their token expiring
+    if(this.tokenExpired) {
+      this.alertsService.createAlert({
+        type: 'Notification',
+        message: `Your session had become inactive and you have been safely logged out.
+                  Log back in to continue.`
+      })
+    }
   }
 
   /*
@@ -286,6 +301,7 @@ export class AuthService {
       }
       // If it expired, clears the user's data
       else {
+        this.tokenExpired = true;
         this.logout();
       }
     }

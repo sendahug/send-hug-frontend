@@ -8,7 +8,7 @@ $linkColour: rgba(63,58,58,1.00)
 /* Component Sample */
 #compSample
 	position: absolute
-	top: 115px
+	top: 145px
 	bottom: 100px
 	overflow-y: scroll
 
@@ -76,13 +76,13 @@ img, picture, video, embed, textarea, textfield
 	position: fixed
 	top: 0
 	left: 0
-	height: 110px
+	height: 140px
 
 /* Main Title */
 #mainTitle
 	color: $headlineColour
 	text-align: center
-	padding: 10px 5px 0
+	padding: 5px 5px 0
 	margin: 10px 5px
 
 /* Navigation Menu */
@@ -98,6 +98,38 @@ img, picture, video, embed, textarea, textfield
 .navLink
 	color: $linkColour
 	font-size: 18px
+
+/* Search form */
+#search
+	display: flex
+	justify-content: center
+	align-content: center
+	width: 60%
+	max-width: 60%
+	margin: 5px 20%
+	left: 0
+	right: 0
+
+/* Search label */
+#searchLabel
+	order: 1
+	left: 0
+	margin: 0
+	align-self: center
+
+/* Search field */
+#searchQuery
+	order: 2
+	padding: 0
+	margin: 0 10px
+	height: 20px
+	align-self: center
+
+/* Search button */
+#search .sendData
+	order: 3
+	margin: 0
+	align-self: center
 
 /* =================== Main Page Styling =================== */
 /* Main Page Component */

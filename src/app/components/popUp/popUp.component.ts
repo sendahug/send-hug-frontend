@@ -138,6 +138,10 @@ export class PopUp implements OnInit, OnChanges {
     else if(this.toDelete == 'All posts') {
       this.postsService.deleteAllPosts(this.itemToDelete!);
     }
+    // if the user is attempting to delete all of their messages of a specific type
+    else if(this.toDelete == 'All inbox' || this.toDelete == 'All outbox' || this.toDelete == 'All threads') {
+      this.itemsService.deleteAll(this.toDelete, this.itemToDelete!);
+    }
 
     this.editMode.emit(false);
   }

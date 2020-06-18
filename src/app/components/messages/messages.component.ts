@@ -210,6 +210,20 @@ export class AppMessaging implements OnInit {
   }
 
   /*
+  Function Name: deleteAllMessages()
+  Function Description: Deletes all of the user's messages in a specific mailbox.
+  Parameters: type (string) - The type of messages to delete.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  deleteAllMessages(type:string) {
+    this.editMode = true;
+    this.delete = true;
+    this.toDelete = `All ${type}`;
+    this.itemToDelete = this.authService.userData.id;
+  }
+
+  /*
   Function Name: changeMode()
   Function Description: Remove the edit popup.
   Parameters: edit (boolean) - indicating whether edit mode should be active.

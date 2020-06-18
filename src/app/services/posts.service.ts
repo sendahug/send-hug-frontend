@@ -168,6 +168,28 @@ export class PostsService {
   }
 
   /*
+  Function Name: deleteAllPosts()
+  Function Description: Delete all of a user's posts.
+  Parameters: userID (number) - the ID of the user whose posts to delete.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  deleteAllPosts(userID:number) {
+    const Url = this.serverUrl + `/users/${userID}/posts`;
+    // send delete request
+    this.Http.delete(Url, {
+      headers: this.authService.authHeader
+    }).subscribe((response:any) => {
+      if(response.success) {
+        this.createSuccessAlert(`User ${userID}'s posts were deleted successfully. Refresh to view the updated profile.`, true);
+      }
+    // if there was an error, alert the user
+    }, (err:HttpErrorResponse) => {
+      this.createErrorAlert(err);
+    })
+  }
+
+  /*
   Function Name: editPost()
   Function Description: Edit an existing post. This is used only for editing the post's text.
   Parameters: post (Post) - the updated data of the post.

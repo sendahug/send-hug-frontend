@@ -22,8 +22,11 @@ export class FullList {
   page:any;
   // edit popup sub-component variables
   postToEdit: Post | undefined;
-  editType: string = 'post';
+  editType: string | undefined;
   editMode:boolean;
+  delete:boolean;
+  toDelete: string | undefined;
+  itemToDelete: number | undefined;
 
   // CTOR
   constructor(private route:ActivatedRoute,
@@ -44,6 +47,7 @@ export class FullList {
       }
 
       this.editMode = false;
+      this.delete = false;
   }
 
   /*
@@ -140,6 +144,7 @@ export class FullList {
   Programmer: Shir Bar Lev.
   */
   editPost(post:Post) {
+    this.editType = 'post';
     this.postToEdit = post;
     this.editMode = true;
   }
@@ -166,6 +171,9 @@ export class FullList {
   Programmer: Shir Bar Lev.
   */
   deletePost(postID:number) {
-    this.itemsService.deletePost(postID);
+    this.editMode = true;
+    this.delete = true;
+    this.toDelete = 'Post';
+    this.itemToDelete = postID;
   }
 }

@@ -102,6 +102,7 @@ export class ItemsService {
   totalThreadPages: number;
   isThreadResolved = new BehaviorSubject(false);
   // search variables
+  isSearching = false;
   userSearchResults: OtherUser[] = [];
   numUserResults = 0;
   numPostResults = 0;
@@ -657,6 +658,7 @@ export class ItemsService {
   Programmer: Shir Bar Lev.
   */
   sendSearch(searchQuery:string) {
+    this.isSearching = true;
     const params = new HttpParams().set('page', `${this.postSearchPage}`);
 
     this.Http.post(this.serverUrl, {
@@ -671,9 +673,11 @@ export class ItemsService {
       this.numUserResults = response.user_results;
       this.numPostResults = response.post_results;
       this.isSearchResolved.next(true);
+      this.isSearching = false;
     }, (err:HttpErrorResponse) => {
       this.isSearchResolved.next(true);
       this.createErrorAlert(err);
+      this.isSearching = false;
     })
   }
 

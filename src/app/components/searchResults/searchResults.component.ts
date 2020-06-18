@@ -39,6 +39,13 @@ export class SearchResults {
     this.searchQuery = this.route.snapshot.queryParamMap.get('query');
     this.editMode = false;
     this.delete = false;
+
+    // if there's a search query but there's no ongoing search, it might be
+    // the result of the user manually navigating here or refreshing the page.
+    // in that case, trigger a search manually
+    if(this.searchQuery && !this.itemsService.isSearching) {
+      this.itemsService.sendSearch(this.searchQuery);
+    }
   }
 
   /*

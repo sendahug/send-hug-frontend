@@ -26,7 +26,7 @@ export class PopUp implements OnInit, OnChanges {
   // type of item to delete
   @Input() toDelete: string | undefined;
   // the item to delete itself
-  @Input() itemToDelete: any;
+  @Input() itemToDelete: number | undefined;
 
   // CTOR
   constructor(public authService:AuthService,
@@ -120,15 +120,15 @@ export class PopUp implements OnInit, OnChanges {
   deleteItem() {
     // if it's a post, send a request to delete the post
     if(this.toDelete == 'Post') {
-      this.itemsService.deletePost(this.itemToDelete);
+      this.itemsService.deletePost(this.itemToDelete!);
     }
     // if it's a message, send a request to delete the message
     else if(this.toDelete == 'Message') {
-      this.itemsService.deleteMessage(this.itemToDelete);
+      this.itemsService.deleteMessage(this.itemToDelete!);
     }
     // if it's a thread, send a request to delete the thread
     else if(this.toDelete == 'Thread') {
-      this.itemsService.deleteThread(this.itemToDelete);
+      this.itemsService.deleteThread(this.itemToDelete!);
     }
     this.editMode.emit(false);
   }

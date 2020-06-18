@@ -262,7 +262,7 @@ export class AuthService {
         type: 'Notification',
         message: `Your session had become inactive and you have been safely logged out.
                   Log back in to continue.`
-      })
+      }, false, '/user')
     }
   }
 

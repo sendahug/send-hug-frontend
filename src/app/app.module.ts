@@ -14,6 +14,7 @@ import { PopUp } from './components/popUp/popUp.component';
 import { FullList } from './components/fullList/fullList.component';
 import { Loader } from './components/loader/loader.component';
 import { AboutApp } from './components/aboutApp/aboutApp.component';
+import { SearchResults } from './components/searchResults/searchResults.component';
 
 @NgModule({
   imports: [
@@ -32,7 +33,8 @@ import { AboutApp } from './components/aboutApp/aboutApp.component';
     PopUp,
     FullList,
     Loader,
-    AboutApp
+    AboutApp,
+    SearchResults
   ],
   providers: [],
   bootstrap: [AppComponent]

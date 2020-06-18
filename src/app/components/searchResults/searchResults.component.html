@@ -1,6 +1,9 @@
 <h2>Search Results</h2>
 <div id="resultSummary">{{ numUserResults }} users and {{ numPostResults }} posts match your search query: "{{ searchQuery }}"</div>
 
+<app-loader
+	[waitingFor]="waitFor"></app-loader>
+
 <h3>Users</h3>
 <ul *ngIf="numUserResults > 0" class="searchResults">
 	<li *ngFor="let user of itemsService.userSearchResults" class="searchResult">

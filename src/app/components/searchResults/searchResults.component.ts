@@ -18,6 +18,8 @@ export class SearchResults {
   numUserResults: number;
   numPostResults: number;
   searchQuery: string | null;
+  //loader component variable
+  waitFor = 'search';
 
   // CTOR
   constructor(

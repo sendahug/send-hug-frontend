@@ -215,5 +215,19 @@ export class Loader implements OnInit, OnChanges {
         }
       })
     }
+    // if the app is waiting for search results to be fetched from the server
+    else if(this.waitingFor == 'search') {
+      this.message = 'Searching...';
+      // subscribe to the subject following search results
+      this.itemsService.isSearchResolved.subscribe((value) => {
+        // the subject's value is changed to 'true' upon fetching search
+        // results, so if the value is true, there's no longer need for the
+        // loader screen
+        if(value == true) {
+          this.visible = false;
+          this.waitingFor = '';
+        }
+      })
+    }
   }
 }

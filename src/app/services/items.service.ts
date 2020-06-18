@@ -470,6 +470,31 @@ export class ItemsService {
     })
   }
 
+  /*
+  Function Name: deleteAll()
+  Function Description: Delete all of a user's messages in a specific mailbox.
+  Parameters: type (string) - Type of mailbox to clear.
+              userID (number) - The ID of the user whose mailbox to clear.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  deleteAll(type:string, userID:number) {
+    const mailbox_type = type.substring(4, type.length);
+    const Url = this.serverUrl + `/messages/${mailbox_type}`;
+    const params = new HttpParams().set('userID', `${userID}`);
+
+    // try to delete this mailbox
+    this.Http.delete(Url, {
+      params: params,
+      headers: this.authService.authHeader
+    }).subscribe((response:any) => {
+      this.createSuccessAlert(`${response.deleted} messages were deleted! Refresh to view the updated mailbox.`, true);
+    // if there was an error, alert the user
+    }, (err:HttpErrorResponse) => {
+      this.createErrorAlert(err);
+    })
+  }
+
   // SEARCH-RELATED METHODS
   // ==============================================================
   /*

@@ -134,6 +134,11 @@ export class PopUp implements OnInit, OnChanges {
     else if(this.toDelete == 'Thread') {
       this.itemsService.deleteThread(this.itemToDelete!);
     }
+    // if the user is attempting to delete all of the user's posts
+    else if(this.toDelete == 'All posts') {
+      this.postsService.deleteAllPosts(this.itemToDelete!);
+    }
+
     this.editMode.emit(false);
   }
 

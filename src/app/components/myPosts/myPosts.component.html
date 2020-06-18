@@ -25,6 +25,7 @@
 			<button *ngIf="itemsService.totalUserPostsPages[user] > itemsService.userPostsPage[user]" class="appButton nextButton" (click)="nextPage()">Next Page</button>
 			<button *ngIf="itemsService.totalUserPostsPages[user] <= itemsService.userPostsPage[user]" class="appButton hidden" (click)="nextPage()">Next Page</button>
 		</div>
+		<button *ngIf="(user == 'self') || (authService.canUser('delete:any-post'))" class="appButton deleteButton" (click)="deleteAllPosts()">Delete All Posts</button>
 	</div>
 	
 	<!-- If the user doesn't have posts, displays an error message -->

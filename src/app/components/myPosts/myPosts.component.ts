@@ -110,6 +110,23 @@ export class MyPosts implements OnInit {
   }
 
   /*
+  Function Name: deleteAllPosts()
+  Function Description: Send a request to the items service to delete all of the user's
+                        posts.
+  Parameters: post_id (number) - ID of the post to delete.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  deleteAllPosts() {
+    this.editMode = true;
+    this.delete = true;
+    this.toDelete = 'All posts';
+    // if there's a user ID, take the selected user's ID. Otherwise, it's the
+    // user's own profile, so take their ID from the Auth Service.
+    this.itemToDelete = this.userID ? this.userID : this.authService.userData.id;
+  }
+
+  /*
   Function Name: nextPage()
   Function Description: Go to the next page of user posts. Sends a request to the
                         items service to get the data for the next page.

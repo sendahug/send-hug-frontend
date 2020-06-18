@@ -28,6 +28,7 @@ export class PopUp implements OnInit, OnChanges {
   @Input() toDelete: string | undefined;
   // the item to delete itself
   @Input() itemToDelete: number | undefined;
+  @Input() messType: string | undefined;
 
   // CTOR
   constructor(
@@ -128,11 +129,11 @@ export class PopUp implements OnInit, OnChanges {
     }
     // if it's a message, send a request to delete the message
     else if(this.toDelete == 'Message') {
-      this.itemsService.deleteMessage(this.itemToDelete!);
+      this.itemsService.deleteMessage(this.itemToDelete!, this.messType!);
     }
     // if it's a thread, send a request to delete the thread
     else if(this.toDelete == 'Thread') {
-      this.itemsService.deleteThread(this.itemToDelete!);
+      this.itemsService.deleteThread(this.itemToDelete!, this.messType!);
     }
     // if the user is attempting to delete all of the user's posts
     else if(this.toDelete == 'All posts') {

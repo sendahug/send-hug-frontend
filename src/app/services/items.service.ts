@@ -435,8 +435,8 @@ export class ItemsService {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  deleteMessage(messageId:number) {
-    const Url = this.serverUrl + `/messages/${messageId}`
+  deleteMessage(messageId:number, messType:string) {
+    const Url = this.serverUrl + `/messages/${messType}/${messageId}`
 
     // try to delete the message
     this.Http.delete(Url, {
@@ -456,8 +456,8 @@ export class ItemsService {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  deleteThread(threadId:number) {
-    const Url = this.serverUrl + `/messages?threadID=${threadId}`
+  deleteThread(threadId:number, messType:string) {
+    const Url = this.serverUrl + `/messages/${messType}/${threadId}`
 
     // try to delete the thread
     this.Http.delete(Url, {

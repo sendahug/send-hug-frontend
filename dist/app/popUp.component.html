@@ -23,5 +23,14 @@
 			
 			<button type="submit" class="appButton updateItem" (click)="updateDisplayN($event, displayName.value)">Update</button>
 		</form>
+		
+		<!-- If the user is deleting something -->
+		<div *ngIf="delete" id="deleteItem">
+			<div>Are you sure you want to delete this item?</div>
+			<div id="warning">This action is irreversible!</div>
+			
+			<button class="appButton deleteButton" (click)="deleteItem()">Yes, Delete</button>
+			<button class="appButton" (click)="exitEdit()">Never Mind</button>
+		</div>
 	</div>
 </div>

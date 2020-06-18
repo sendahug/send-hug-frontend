@@ -4,6 +4,11 @@
 		<a *ngFor="let tab of navTabs" [routerLink]="(tab.link)" class="navLink">{{tab.name}}</a>
 		<a *ngIf="authService.authenticated" [routerLink]="['/new', 'Post']" class="navLink">New Post</a>
 	</nav>
+	<form id="search">
+		<label class="pageCategory" for="searchQuery" id="searchLabel">Search: </label>
+		<input type="text" id="searchQuery" placeholder="Search" #searchQuery>
+		<button type="submit" class="appButton sendData" (click)="searchApp($event,searchQuery.value)">Search</button>
+	</form>
 </header>
 
 <main>

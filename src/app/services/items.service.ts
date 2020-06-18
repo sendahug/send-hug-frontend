@@ -101,6 +101,12 @@ export class ItemsService {
   threadPage: number;
   totalThreadPages: number;
   isThreadResolved = new BehaviorSubject(false);
+  // search variables
+  userSearchResults: OtherUser[] = [];
+  postSearchResults: Post[] = [];
+  postSearchPage = 1;
+  totalPostSearchPages = 1;
+  isSearchResolved = new BehaviorSubject(false);
 
   // CTOR
   constructor(
@@ -635,6 +641,30 @@ export class ItemsService {
       this.createSuccessAlert(`Message ${response.deleted} was deleted! Refresh to view the updated message list.`, true);
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
+      this.createErrorAlert(err);
+    })
+  }
+
+  // SEARCH-RELATED METHODS
+  // ==============================================================
+  /*
+  Function Name: sendSearch()
+  Function Description: Sends a search query to the database.
+  Parameters: searchQuery (string) - String to search for.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  sendSearch(searchQuery:string) {
+    this.Http.post(this.serverUrl, {
+      search: searchQuery
+    }).subscribe((response:any) => {
+      this.userSearchResults = response.users;
+      this.postSearchResults = response.posts;
+      this.postSearchPage = response.current_page;
+      this.totalPostSearchPages = response.total_pages;
+      this.isSearchResolved.next(true);
+    }, (err:HttpErrorResponse) => {
+      this.isSearchResolved.next(true);
       this.createErrorAlert(err);
     })
   }

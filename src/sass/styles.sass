@@ -653,6 +653,43 @@ app-about
 	font-size: 17px
 	margin: 10px 40%
 
+/* =================== Search Results Component Styling =================== */
+/* Search Results Component */
+app-search-results
+	@extend #compSample
+	width: 90%
+	padding: 0 5%
+	left: 0
+	right: 0
+
+/* Search Results title */
+app-search-results h2
+	@extend #mainTitle
+	font-size: 24px
+	padding-top: 10px
+	margin-top: 0
+	
+/* Results summary title */
+#resultSummary
+	text-align: center
+
+/* Users / Posts title */
+app-search-results h3
+	text-align: center
+	color: $headlineColour
+	font-size: 20px
+
+/* Results list */
+.searchResults
+	border-radius: 5px
+	width: 80%
+	padding: 0 5%
+	margin: 5px 5%
+
+/* Result item */
+.searchResult
+	@extend .newItem
+
 /* =================== Alert Styling =================== */
 /* Base Alert */
 .alertMessage

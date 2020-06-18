@@ -18,8 +18,11 @@ import { AuthService } from '../../services/auth.service';
 export class MyPosts implements OnInit {
   // edit popup sub-component variables
   postToEdit: Post | undefined;
-  editType: string = 'post';
+  editType: string | undefined;
   editMode:boolean;
+  delete:boolean;
+  toDelete: string | undefined;
+  itemToDelete: number | undefined;
   // loader sub-component variable
   waitFor = 'user posts';
   // The user whose posts to fetch
@@ -40,7 +43,9 @@ export class MyPosts implements OnInit {
         itemsService.getUserPosts(this.authService.userData.id!);
         this.user = 'self';
       }
+
       this.editMode = false;
+      this.delete = false;
   }
 
   /*
@@ -71,6 +76,7 @@ export class MyPosts implements OnInit {
   Programmer: Shir Bar Lev.
   */
   editPost(post:Post) {
+    this.editType = 'post';
     this.postToEdit = post;
     this.editMode = true;
   }
@@ -97,7 +103,10 @@ export class MyPosts implements OnInit {
   Programmer: Shir Bar Lev.
   */
   deletePost(post_id:number) {
-    this.itemsService.deletePost(post_id);
+    this.editMode = true;
+    this.delete = true;
+    this.toDelete = 'Post';
+    this.itemToDelete = post_id;
   }
 
   /*

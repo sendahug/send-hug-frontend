@@ -42,6 +42,9 @@ export class AppComponent {
     // if there's something in the search query text field, search for it
     if(searchQuery) {
       this.itemsService.sendSearch(searchQuery);
+      // clears the search box
+      let searchBox = document.getElementById('searchQuery') as HTMLInputElement;
+      searchBox.value = '';
       //navigate to search results
       this.router.navigate(['search'], {
         queryParams: {

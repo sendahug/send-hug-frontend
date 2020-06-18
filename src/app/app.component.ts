@@ -1,5 +1,6 @@
 // Angular imports
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 
 // App-related imports
 import { AuthService } from './services/auth.service';
@@ -28,7 +29,8 @@ export class AppComponent {
   constructor(
     public authService:AuthService,
     private itemsService:ItemsService,
-    private alertsService:AlertsService
+    private alertsService:AlertsService,
+    private router:Router
   ) {
     this.authService.checkHash();
   }
@@ -40,6 +42,12 @@ export class AppComponent {
     // if there's something in the search query text field, search for it
     if(searchQuery) {
       this.itemsService.sendSearch(searchQuery);
+      //navigate to search results
+      this.router.navigate(['search'], {
+        queryParams: {
+          query: searchQuery
+        }
+      });
     }
     // otherwise alert the user there are no empty searches
     else {

@@ -103,6 +103,8 @@ export class ItemsService {
   isThreadResolved = new BehaviorSubject(false);
   // search variables
   userSearchResults: OtherUser[] = [];
+  numUserResults = 0;
+  numPostResults = 0;
   postSearchResults: Post[] = [];
   postSearchPage = 1;
   totalPostSearchPages = 1;
@@ -662,6 +664,8 @@ export class ItemsService {
       this.postSearchResults = response.posts;
       this.postSearchPage = response.current_page;
       this.totalPostSearchPages = response.total_pages;
+      this.numUserResults = response.user_results;
+      this.numPostResults = response.post_results;
       this.isSearchResolved.next(true);
     }, (err:HttpErrorResponse) => {
       this.isSearchResolved.next(true);

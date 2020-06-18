@@ -1,22 +1,22 @@
 <h2>Search Results</h2>
-<div id="resultSummary">{{ numUserResults }} users and {{ numPostResults }} posts match your search query: "{{ searchQuery }}"</div>
+<div id="resultSummary">{{ itemsService.numUserResults }} users and {{ itemsService.numPostResults }} posts match your search query: "{{ searchQuery }}"</div>
 
 <app-loader
 	[waitingFor]="waitFor"></app-loader>
 
 <h3>Users</h3>
-<ul *ngIf="numUserResults > 0" class="searchResults">
+<ul *ngIf="itemsService.numUserResults > 0" class="searchResults">
 	<li *ngFor="let user of itemsService.userSearchResults" class="searchResult">
 		<a [routerLink]="['/user', user.id]">{{ user.displayName }}</a>
 	</li>
 </ul>
 
-<div *ngIf="numUserResults == 0" class="errorMessage">
+<div *ngIf="itemsService.numUserResults == 0" class="errorMessage">
 	There are no users that match your search!
 </div>
 
 <h3>Posts</h3>
-<div *ngIf="numPostResults > 0">
+<div *ngIf="itemsService.numPostResults > 0">
 	<ul class="searchResults">
 		<li *ngFor="let item of itemsService.postSearchResults" class="searchResult">
 			<div class="itemText">{{ item.text }}</div>
@@ -44,6 +44,6 @@
 </div>
 
 
-<div *ngIf="numPostResults == 0" class="errorMessage">
+<div *ngIf="itemsService.numPostResults == 0" class="errorMessage">
 	There are no posts that match your search!
 </div>

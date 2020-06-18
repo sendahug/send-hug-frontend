@@ -15,8 +15,6 @@ import { ItemsService } from '../../services/items.service';
   templateUrl: './searchResults.component.html'
 })
 export class SearchResults {
-  numUserResults: number;
-  numPostResults: number;
   searchQuery: string | null;
   //loader component variable
   waitFor = 'search';
@@ -26,8 +24,6 @@ export class SearchResults {
     public itemsService:ItemsService,
     private route:ActivatedRoute
   ) {
-    this.numUserResults = 0;
-    this.numPostResults = 0;
     this.searchQuery = this.route.snapshot.queryParamMap.get('query');
   }
 }

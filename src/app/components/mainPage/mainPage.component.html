@@ -49,3 +49,11 @@
 	
 	<a [routerLink]="['/list', 'Suggested']" [queryParams]="{page: 1}" class="appButton fullButton">View Full List</a>
 </div>
+
+<app-pop-up *ngIf="editMode"
+			[editedItem]="postToEdit"
+			[toEdit]="editType"
+			(editMode)="changeMode($event)"
+			[delete]="delete"
+			[toDelete]="toDelete"
+			[itemToDelete]="itemToDelete"></app-pop-up>

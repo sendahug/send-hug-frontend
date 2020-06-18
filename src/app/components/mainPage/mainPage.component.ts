@@ -9,6 +9,7 @@ import { Component, OnInit } from '@angular/core';
 // App-related imports
 import { AuthService } from '../../services/auth.service';
 import { ItemsService } from '../../services/items.service';
+import { PostsService } from '../../services/posts.service';
 import { Post } from '../../interfaces/post.interface';
 
 @Component({
@@ -27,9 +28,10 @@ export class MainPage implements OnInit {
   // CTOR
   constructor(
     public itemsService: ItemsService,
-    public authService:AuthService
+    public authService:AuthService,
+    public postsService:PostsService
   ) {
-    this.itemsService.getItems();
+    this.postsService.getItems();
     this.editMode = false;
     this.delete = false;
   }
@@ -50,15 +52,15 @@ export class MainPage implements OnInit {
     let item = {};
 
     // if the item is in the new list, gets it from there
-    if(this.itemsService.newItemsArray.filter(e => e.id == itemID)) {
-      item = this.itemsService.newItemsArray.filter(e => e.id == itemID)[0];
+    if(this.postsService.newItemsArray.filter(e => e.id == itemID)) {
+      item = this.postsService.newItemsArray.filter(e => e.id == itemID)[0];
     }
     // if not, the item must be in the suggested list, so it gets it from there
     else {
-      item = this.itemsService.sugItemsArray.filter(e => e.id == itemID)[0];
+      item = this.postsService.sugItemsArray.filter(e => e.id == itemID)[0];
     }
 
-    this.itemsService.sendHug(item);
+    this.postsService.sendHug(item);
   }
 
 

@@ -2,8 +2,8 @@
 <div id="newItems" class="listContainer">
 	<h2 class="listTitle">New Items</h2>
 	<!-- If there are items in the list -->
-	<ul class="itemList" *ngIf="itemsService.newItemsArray.length > 0">
-		<li *ngFor="let item of itemsService.newItemsArray" class="newItem">
+	<ul class="itemList" *ngIf="postsService.newItemsArray.length > 0">
+		<li *ngFor="let item of postsService.newItemsArray" class="newItem">
 			<div class="itemText">{{ item.text }}</div>
 			<div class="itemUser">By <a [routerLink]="['/user', item.userId ]" class="profileLink">{{ item.user }}</a> </div>
 			<div class="buttonsContainer">
@@ -19,7 +19,7 @@
 	</ul>
 	
 	<!-- If there are no items in the list -->
-	<div class="errorMessage" *ngIf="itemsService.newItemsArray.length == 0">There are no recent items.</div>
+	<div class="errorMessage" *ngIf="postsService.newItemsArray.length == 0">There are no recent items.</div>
 	
 	<a [routerLink]="['/list', 'New']" [queryParams]="{page: 1}" class="appButton fullButton">View Full List</a>
 </div>
@@ -28,8 +28,8 @@
 <div id="suggestedItems" class="listContainer">
 	<h2 class="listTitle">Suggested Items</h2>
 	<!-- If there are items in the list -->
-	<ul class="itemList" *ngIf="itemsService.sugItemsArray.length > 0">
-		<li *ngFor="let item of itemsService.sugItemsArray" class="sugItem">
+	<ul class="itemList" *ngIf="postsService.sugItemsArray.length > 0">
+		<li *ngFor="let item of postsService.sugItemsArray" class="sugItem">
 			<div class="itemText">{{ item.text }}</div>
 			<div class="itemUser">By <a [routerLink]="['/user', item.userId ]" class="profileLink">{{ item.user }}</a></div>
 			<div class="buttonsContainer">
@@ -45,7 +45,7 @@
 	</ul>
 
 	<!-- If there are no items in the list -->
-	<div class="errorMessage" *ngIf="itemsService.sugItemsArray.length == 0">There are no suggested items.</div>
+	<div class="errorMessage" *ngIf="postsService.sugItemsArray.length == 0">There are no suggested items.</div>
 	
 	<a [routerLink]="['/list', 'Suggested']" [queryParams]="{page: 1}" class="appButton fullButton">View Full List</a>
 </div>

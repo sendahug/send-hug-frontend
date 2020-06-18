@@ -9,6 +9,7 @@ import { Component, Input, Output, EventEmitter, OnInit, OnChanges } from '@angu
 // App-related import
 import { AuthService } from '../../services/auth.service';
 import { ItemsService } from '../../services/items.service';
+import { PostsService } from '../../services/posts.service';
 
 @Component({
   selector: 'app-pop-up',
@@ -29,8 +30,11 @@ export class PopUp implements OnInit, OnChanges {
   @Input() itemToDelete: number | undefined;
 
   // CTOR
-  constructor(public authService:AuthService,
-    private itemsService:ItemsService) {
+  constructor(
+    public authService:AuthService,
+    private itemsService:ItemsService,
+    private postsService:PostsService
+  ) {
 
   }
 
@@ -106,7 +110,7 @@ export class PopUp implements OnInit, OnChanges {
   updatePost(e:Event, newText:string) {
     e.preventDefault();
     this.editedItem.text = newText;
-    this.itemsService.editPost(this.editedItem);
+    this.postsService.editPost(this.editedItem);
     this.editMode.emit(false);
   }
 
@@ -120,7 +124,7 @@ export class PopUp implements OnInit, OnChanges {
   deleteItem() {
     // if it's a post, send a request to delete the post
     if(this.toDelete == 'Post') {
-      this.itemsService.deletePost(this.itemToDelete!);
+      this.postsService.deletePost(this.itemToDelete!);
     }
     // if it's a message, send a request to delete the message
     else if(this.toDelete == 'Message') {

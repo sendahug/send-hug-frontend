@@ -13,6 +13,7 @@ import { Message } from '../../interfaces/message.interface';
 import { ItemsService } from '../../services/items.service';
 import { AuthService } from '../../services/auth.service';
 import { AlertsService } from '../../services/alerts.service';
+import { PostsService } from '../../services/posts.service';
 
 @Component({
   selector: 'app-new-item',
@@ -28,7 +29,9 @@ export class NewItem {
   constructor(private itemsService:ItemsService,
     private authService:AuthService,
     private route:ActivatedRoute,
-    private alertService:AlertsService) {
+    private alertService:AlertsService,
+    private postsService:PostsService
+  ) {
       // Gets the URL parameters
       let type = this.route.snapshot.paramMap.get('type');
       let user = this.route.snapshot.queryParamMap.get('user');
@@ -66,7 +69,7 @@ export class NewItem {
       givenHugs: 0
     }
 
-    this.itemsService.sendPost(newPost);
+    this.postsService.sendPost(newPost);
   }
 
   /*

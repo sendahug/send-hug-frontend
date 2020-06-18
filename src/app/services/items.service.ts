@@ -657,8 +657,12 @@ export class ItemsService {
   Programmer: Shir Bar Lev.
   */
   sendSearch(searchQuery:string) {
+    const params = new HttpParams().set('page', `${this.postSearchPage}`);
+
     this.Http.post(this.serverUrl, {
       search: searchQuery
+    }, {
+      params: params
     }).subscribe((response:any) => {
       this.userSearchResults = response.users;
       this.postSearchResults = response.posts;

@@ -47,8 +47,8 @@ export class AlertsService {
       document.getElementById('reloadBtn')!.addEventListener('click', this.reloadPage);
     }
     // if return to homepage option is required
-    else if(navigate == '/') {
-      this.addNavigateButton(alertMessage);
+    else if(navigate) {
+      this.addNavigateButton(alertMessage, navigate);
     }
   }
 
@@ -131,9 +131,9 @@ export class AlertsService {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  addNavigateButton(alertMessage:HTMLDivElement) {
+  addNavigateButton(alertMessage:HTMLDivElement, location:string) {
     let navButton = document.createElement('a');
-    navButton.href = '/';
+    navButton.href = location;
     navButton.className = 'appButton';
     navButton.id = 'navButton';
     navButton.textContent = `Home Page`;

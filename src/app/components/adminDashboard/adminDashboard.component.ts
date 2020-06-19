@@ -83,4 +83,54 @@ export class AdminDashboard {
   dismissReport(reportID:number) {
     this.adminService.dismissReport(reportID);
   }
+
+  // BLOCKS PAGE
+  // ==================================================================
+  /*
+  Function Name: block()
+  Function Description: Blocks a user for a set amount of time.
+  Parameters: e (Event) - The sending event (clicking the 'block button')
+              userID (number) - The ID of the user to block
+              length (string) - length of time for which the user should be blocked
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  block(e:Event, userID:number, length:string) {
+    e.preventDefault();
+    let releaseDate:Date;
+    let currentDate = new Date();
+    let millisecondsPerDay = 864E5;
+
+    // calculates when the user should be unblocked
+    switch(length) {
+      case 'oneDay':
+        releaseDate = new Date(currentDate.getTime() + millisecondsPerDay * 1);
+        break;
+      case 'oneWeek':
+        releaseDate = new Date(currentDate.getTime() + millisecondsPerDay * 7);
+        break;
+      case 'oneMonth':
+        releaseDate = new Date(currentDate.getTime() + millisecondsPerDay * 30);
+        break;
+      case 'forever':
+        releaseDate = new Date(currentDate.getTime() + millisecondsPerDay * 36500);
+        break;
+      default:
+        releaseDate = new Date(currentDate.getTime() + millisecondsPerDay * 1);
+        break;
+    }
+
+    this.adminService.block(userID, releaseDate);
+  }
+
+  /*
+  Function Name: unblock()
+  Function Description: Unblocks a user.
+  Parameters: userID (number) - The ID of the user to block
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  unblock(userID:number) {
+    this.adminService.unblock(userID);
+  }
 }

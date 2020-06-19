@@ -82,7 +82,48 @@
 	<!-- Admin dashboard blocks -->
 	<div class="adminScreen" id="adminBlocks" *ngIf="screen == 'blocks'">
 		<h3>Blocks</h3>
-
+		
+		<h4>Block User</h4>
+		<!-- Block a user by ID -->
+		<form>
+			<div class="formElement">
+				<label class="pageCategory" for="blockID">User ID: </label>
+				<input type="text" id="blockID" placeholder="user ID" #blockID required>
+			</div>
+			<div class="formElement">
+				<label class="pageCategory" for="blockLength">Length of block time: </label>
+				<select id="blockLength" name="blockLength" #blockLength>
+					<option value="oneDay">One Day</option>
+					<option value="oneWeek">One Week</option>
+					<option value="oneMonth">30 Days</option>
+					<option value="forever">Permanently</option>
+				</select>
+			</div>
+			<button type="submit" class="appButton sendData" (click)="block($event,blockID.value, blockLength.value)">Block</button>
+		</form>
+		
+		<h4>Blocked Users</h4>
+		<!-- Blocked users table -->
+		<table>
+			<thead>
+				<tr>
+					<td>User ID</td>
+					<td>Display Name</td>
+					<td>Unlocked Until</td>
+					<td>Action</td>
+				</tr>
+			</thead>
+			<tbody>
+				<tr *ngFor="let user of adminService.blockedUsers">
+					<td>{{ user.id }}</td>
+					<td>{{ user.displayName }}</td>
+					<td>{{ user.blockedUntil }}</td>
+					<td>
+						<button class="appButton" (click)="unblock(user.id)">Unblock</button>
+					</td>
+				</tr>
+			</tbody>
+		</table>
 	</div>
 
 	<!-- Admin dashboard filters -->
@@ -94,5 +135,5 @@
 
 <div *ngIf="!authService.canUser('read:admin-board')">
 	<div class="errorMessage">You do not have permission to view thie page!</div>
-	<a [routerLink]="/" class="appButton">Back to homepage</a>
+	<a [routerLink]="" class="appButton">Back to homepage</a>
 </div>

@@ -23,7 +23,60 @@
 	<!-- Admin dashboard reports -->
 	<div class="adminScreen" id="adminReports" *ngIf="screen == 'reports'">
 		<h3>Reports</h3>
-
+		
+		<h4>Reported Users</h4>
+		<!-- Reported users table -->
+		<table>
+			<thead>
+				<tr>
+					<td>User ID</td>
+					<td>Display Name</td>
+					<td>Reporter</td>
+					<td>Report Reason</td>
+					<td>Action</td>
+				</tr>
+			</thead>
+			<tbody>
+				<tr *ngFor="let report of adminService.userReports">
+					<td>{{ report.reportedId }}</td>
+					<td>{{ report.reportedDisplay }}</td>
+					<td>{{ report.reporter }}</td>
+					<td>{{ report.reportReason }}</td>
+					<td>
+						<button class="appButton" (click)="blockUser(report.reportedId)">Block User</button>
+						<button class="appButton" (click)="dismissReport(report.id)">Dismiss</button>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		
+		<h4>Reported Posts</h4>
+		<!-- Reported posts table -->
+		<table>
+			<thead>
+				<tr>
+					<td>Post ID</td>
+					<td>User ID</td>
+					<td>Post Text</td>
+					<td>Reporter</td>
+					<td>Report Reason</td>
+					<td>Action</td>
+				</tr>
+			</thead>
+			<tbody>
+				<tr *ngFor="let report of adminService.postReports">
+					<td>{{ report.reportedId }}</td>
+					<td>{{ report.reportedUser }}</td>
+					<td>{{ report.postText }}</td>
+					<td>{{ report.reporter }}</td>
+					<td>{{ report.reportReason }}</td>
+					<td>
+						<button class="appButton" (click)="deletePost(report.reportedId)">Delete Post</button>
+						<button class="appButton" (click)="dismissReport(report.id)">Dismiss</button>
+					</td>
+				</tr>
+			</tbody>
+		</table>
 	</div>
 
 	<!-- Admin dashboard blocks -->

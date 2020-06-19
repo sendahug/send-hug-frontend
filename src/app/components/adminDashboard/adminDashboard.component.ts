@@ -9,6 +9,7 @@ import { ActivatedRoute } from '@angular/router';
 
 // App imports
 import { AuthService } from '../../services/auth.service';
+import { AdminService } from '../../services/admin.service';
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -35,7 +36,8 @@ export class AdminDashboard {
   // CTOR
   constructor(
     private route:ActivatedRoute,
-    public authService:AuthService
+    public authService:AuthService,
+    public adminService:AdminService
   ) {
     this.route.url.subscribe(params => {
       if(params[0].path) {
@@ -45,5 +47,40 @@ export class AdminDashboard {
         this.screen = 'main';
       }
     })
+  }
+
+  // REPORTS PAGE
+  // ==================================================================
+  /*
+  Function Name: blockUser()
+  Function Description: Sends a request to block a user.
+  Parameters: userID (number) - the ID of the user to block.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  blockUser(userID:number) {
+    this.adminService.blockUser(userID);
+  }
+
+  /*
+  Function Name: deletePost()
+  Function Description: Sends a request to delete a post.
+  Parameters: postID (number) - the ID of the post to delete.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  deletePost(postID:number) {
+    this.adminService.deletePost(postID);
+  }
+
+  /*
+  Function Name: dismissReport()
+  Function Description: Closes an open report without taking further action.
+  Parameters: reportID (number) - the ID of the report to close.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  dismissReport(reportID:number) {
+    this.adminService.dismissReport(reportID);
   }
 }

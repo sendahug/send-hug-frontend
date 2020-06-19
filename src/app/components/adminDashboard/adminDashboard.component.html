@@ -1,21 +1,21 @@
 <div *ngIf="authService.canUser('read:admin-board')">
 	<!-- Admin dashboard navigation menu -->
 	<nav id="adminNav">
-		<a [routerLink]="['/admin']">Admin Dashboard</a>
-		<a [routerLink]="['/admin', 'reports']">Reports</a>
-		<a [routerLink]="['/admin', 'blocks']">Blocks</a>
-		<a [routerLink]="['/admin', 'filters']">Filters</a>
+		<a [routerLink]="['/admin']" class="adminNavItem">Admin Dashboard</a>
+		<a [routerLink]="['/admin', 'reports']" class="adminNavItem">Reports</a>
+		<a [routerLink]="['/admin', 'blocks']" class="adminNavItem">Blocks</a>
+		<a [routerLink]="['/admin', 'filters']" class="adminNavItem">Filters</a>
 	</nav>
 
 	<!-- Admin dashboard main page -->
 	<div class="adminScreen" id="adminMain" *ngIf="screen == 'main'">
 		<h3>Admin Dashboard</h3>
 		
-		<div>Welcome to the admin dashboard!</div>
-		<div>The admin dashboard is comprised of three parts:</div>
-		<ul>
+		<div class="adminText">Welcome to the admin dashboard!</div>
+		<div class="adminText">The admin dashboard is comprised of three parts:</div>
+		<ul id="adminCategories">
 			<li class="adminCategory" *ngFor="let category of adminCategories">
-				<span class="pageCategory">{{ category.title }}</span> <span class="pageText">{{ category.explanation }}</span>
+				<span class="pageCategory">{{ category.title }}:</span> <span class="pageText">{{ category.explanation }}</span>
 			</li>
 		</ul>
 	</div>
@@ -24,7 +24,7 @@
 	<div class="adminScreen" id="adminReports" *ngIf="screen == 'reports'">
 		<h3>Reports</h3>
 		
-		<h4>Reported Users</h4>
+		<h4 class="subTitle">Reported Users</h4>
 		<!-- Reported users table -->
 		<table>
 			<thead>
@@ -50,7 +50,7 @@
 			</tbody>
 		</table>
 		
-		<h4>Reported Posts</h4>
+		<h4 class="subTitle">Reported Posts</h4>
 		<!-- Reported posts table -->
 		<table>
 			<thead>
@@ -83,7 +83,7 @@
 	<div class="adminScreen" id="adminBlocks" *ngIf="screen == 'blocks'">
 		<h3>Blocks</h3>
 		
-		<h4>Block User</h4>
+		<h4 class="subTitle">Block User</h4>
 		<!-- Block a user by ID -->
 		<form>
 			<div class="formElement">
@@ -102,7 +102,7 @@
 			<button type="submit" class="appButton sendData" (click)="block($event,blockID.value, blockLength.value)">Block</button>
 		</form>
 		
-		<h4>Blocked Users</h4>
+		<h4 class="subTitle">Blocked Users</h4>
 		<!-- Blocked users table -->
 		<table>
 			<thead>
@@ -130,7 +130,7 @@
 	<div class="adminScreen" id="adminFilters" *ngIf="screen == 'filters'">
 		<h3>Filters</h3>
 		
-		<h4>Add Filter</h4>
+		<h4 class="subTitle">Add Filter</h4>
 		<!-- Add a word/phrase to filtered words list -->
 		<form>
 			<div class="formElement">
@@ -140,7 +140,7 @@
 			<button type="submit" class="appButton sendData" (click)="addFilter($event,filter.value)">Add Filter</button>
 		</form>
 		
-		<h4>Filtered Phrases</h4>
+		<h4 class="subTitle">Filtered Phrases</h4>
 		<!-- Filtered phrases table -->
 		<table>
 			<thead>

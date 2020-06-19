@@ -133,4 +133,30 @@ export class AdminDashboard {
   unblock(userID:number) {
     this.adminService.unblock(userID);
   }
+
+  // FILTERS PAGE
+  // ==================================================================
+  /*
+  Function Name: addFilter()
+  Function Description: Add a filtered phrase to the list.
+  Parameters: e (Event) - The sending event (clicking the 'add filter' button)
+              filter (string) - The string to filter.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  addFilter(e:Event, filter:string) {
+    e.preventDefault();
+    this.adminService.addFilter(filter);
+  }
+
+  /*
+  Function Name: removeFilter()
+  Function Description: Remove a filter from the filtered phrases list.
+  Parameters: filterID (number) - ID of the filter to remove.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  removeFilter(filterID:number) {
+    this.adminService.removeFilter(filterID);
+  }
 }

@@ -129,7 +129,35 @@
 	<!-- Admin dashboard filters -->
 	<div class="adminScreen" id="adminFilters" *ngIf="screen == 'filters'">
 		<h3>Filters</h3>
-
+		
+		<h4>Add Filter</h4>
+		<!-- Add a word/phrase to filtered words list -->
+		<form>
+			<div class="formElement">
+				<label class="pageCategory" for="filter">Filter: </label>
+				<input type="text" id="filter" placeholder="Filter" #filter required>
+			</div>
+			<button type="submit" class="appButton sendData" (click)="addFilter($event,filter.value)">Add Filter</button>
+		</form>
+		
+		<h4>Filtered Phrases</h4>
+		<!-- Filtered phrases table -->
+		<table>
+			<thead>
+				<tr>
+					<td>Phrase</td>
+					<td>Action</td>
+				</tr>
+			</thead>
+			<tbody>
+				<tr *ngFor="let phrase of adminService.filteredPhrases">
+					<td>{{ phrase.phrase }}</td>
+					<td>
+						<button class="appButton" (click)="removeFilter(phrase.id)">Remove Filter</button>
+					</td>
+				</tr>
+			</tbody>
+		</table>
 	</div>
 </div>
 

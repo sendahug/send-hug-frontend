@@ -26,7 +26,7 @@
 		
 		<h4 class="subTitle">Reported Users</h4>
 		<!-- Reported users table -->
-		<table>
+		<table *ngIf="adminService.userReports.length">
 			<thead>
 				<tr>
 					<td>User ID</td>
@@ -50,9 +50,12 @@
 			</tbody>
 		</table>
 		
+		<!-- If there are no open user reports -->
+		<div *ngIf="!adminService.userReports.length" class="errorMessage">There are no user reports waiting for review.</div>
+		
 		<h4 class="subTitle">Reported Posts</h4>
 		<!-- Reported posts table -->
-		<table>
+		<table *ngIf="adminService.postReports.length">
 			<thead>
 				<tr>
 					<td>Post ID</td>
@@ -77,6 +80,9 @@
 				</tr>
 			</tbody>
 		</table>
+		
+		<!-- If there are no open post reports -->
+		<div *ngIf="!adminService.postReports.length" class="errorMessage">There are no post reports waiting for review.</div>
 	</div>
 
 	<!-- Admin dashboard blocks -->
@@ -104,7 +110,7 @@
 		
 		<h4 class="subTitle">Blocked Users</h4>
 		<!-- Blocked users table -->
-		<table>
+		<table *ngIf="adminService.blockedUsers.length">
 			<thead>
 				<tr>
 					<td>User ID</td>
@@ -124,6 +130,9 @@
 				</tr>
 			</tbody>
 		</table>
+		
+		<!-- If there are no blocked users -->
+		<div *ngIf="!adminService.blockedUsers.length" class="errorMessage">There are no blocked users.</div>
 	</div>
 
 	<!-- Admin dashboard filters -->
@@ -142,7 +151,7 @@
 		
 		<h4 class="subTitle">Filtered Phrases</h4>
 		<!-- Filtered phrases table -->
-		<table>
+		<table *ngIf="!adminService.filteredPhrases.length">
 			<thead>
 				<tr>
 					<td>Phrase</td>
@@ -158,6 +167,9 @@
 				</tr>
 			</tbody>
 		</table>
+		
+		<!-- If there are no filtered phrases -->
+		<div *ngIf="!adminService.filteredPhrases.length" class="errorMessage">There are no filtered phrases.</div>
 	</div>
 </div>
 

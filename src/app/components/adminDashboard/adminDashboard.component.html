@@ -10,6 +10,14 @@
 	<!-- Admin dashboard main page -->
 	<div class="adminScreen" id="adminMain" *ngIf="screen == 'main'">
 		<h3>Admin Dashboard</h3>
+		
+		<div>Welcome to the admin dashboard!</div>
+		<div>The admin dashboard is comprised of three parts:</div>
+		<ul>
+			<li class="adminCategory" *ngFor="let category of adminCategories">
+				<span class="pageCategory">{{ category.title }}</span> <span class="pageText">{{ category.explanation }}</span>
+			</li>
+		</ul>
 	</div>
 
 	<!-- Admin dashboard reports -->

@@ -1,0 +1,30 @@
+<!-- Admin dashboard navigation menu -->
+<nav id="adminNav">
+	<a [routerLink]="['/admin', '']">Admin Dashboard</a>
+	<a [routerLink]="['/admin', 'reports']">Reports</a>
+	<a [routerLink]="['/admin', 'blocks']">Blocks</a>
+	<a [routerLink]="['/admin', 'filters']">Filters</a>
+</nav>
+
+<!-- Admin dashboard main page -->
+<div class="adminScreen" id="adminMain" *ngIf="screen == 'main'">
+	<h3>Admin Dashboard</h3>
+</div>
+
+<!-- Admin dashboard reports -->
+<div class="adminScreen" id="adminReports" *ngIf="screen == 'reports'">
+	<h3>Reports</h3>
+	
+</div>
+
+<!-- Admin dashboard blocks -->
+<div class="adminScreen" id="adminBlocks" *ngIf="screen == 'blocks'">
+	<h3>Blocks</h3>
+	
+</div>
+
+<!-- Admin dashboard filters -->
+<div class="adminScreen" id="adminFilters" *ngIf="screen == 'filters'">
+	<h3>Filters</h3>
+	
+</div>

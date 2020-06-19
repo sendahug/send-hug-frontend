@@ -15,6 +15,7 @@ import { FullList } from './components/fullList/fullList.component';
 import { Loader } from './components/loader/loader.component';
 import { AboutApp } from './components/aboutApp/aboutApp.component';
 import { SearchResults } from './components/searchResults/searchResults.component';
+import { AdminDashboard } from './components/adminDashboard/adminDashboard.component';
 
 @NgModule({
   imports: [
@@ -34,7 +35,8 @@ import { SearchResults } from './components/searchResults/searchResults.componen
     FullList,
     Loader,
     AboutApp,
-    SearchResults
+    SearchResults,
+    AdminDashboard
   ],
   providers: [],
   bootstrap: [AppComponent]

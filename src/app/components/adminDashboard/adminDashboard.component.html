@@ -1,7 +1,7 @@
 <div *ngIf="authService.canUser('read:admin-board')">
 	<!-- Admin dashboard navigation menu -->
 	<nav id="adminNav">
-		<a [routerLink]="['/admin', '']">Admin Dashboard</a>
+		<a [routerLink]="['/admin']">Admin Dashboard</a>
 		<a [routerLink]="['/admin', 'reports']">Reports</a>
 		<a [routerLink]="['/admin', 'blocks']">Blocks</a>
 		<a [routerLink]="['/admin', 'filters']">Filters</a>

@@ -40,7 +40,7 @@ export class AdminDashboard {
     public adminService:AdminService
   ) {
     this.route.url.subscribe(params => {
-      if(params[0].path) {
+      if(params[0] && params[0].path) {
         this.screen = params[0].path;
       }
       else {

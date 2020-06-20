@@ -74,7 +74,7 @@
 					<td>{{ report.reporter }}</td>
 					<td>{{ report.reportReason }}</td>
 					<td>
-						<button class="appButton" (click)="deletePost(report.reportedId)">Delete Post</button>
+						<button class="appButton" (click)="deletePost(report.reportedId, report.reportedUser)">Delete Post</button>
 						<button class="appButton" (click)="dismissReport(report.id)">Dismiss</button>
 					</td>
 				</tr>

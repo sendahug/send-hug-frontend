@@ -66,11 +66,12 @@ export class AdminDashboard {
   Function Name: deletePost()
   Function Description: Sends a request to delete a post.
   Parameters: postID (number) - the ID of the post to delete.
+              userID (number) - the ID of the user who wrote the post.
   ----------------
   Programmer: Shir Bar Lev.
   */
-  deletePost(postID:number) {
-    this.adminService.deletePost(postID);
+  deletePost(postID:number, userID:number) {
+    this.adminService.deletePost(postID, userID);
   }
 
   /*

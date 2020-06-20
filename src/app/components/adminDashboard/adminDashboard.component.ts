@@ -59,7 +59,7 @@ export class AdminDashboard {
   Programmer: Shir Bar Lev.
   */
   blockUser(userID:number) {
-    this.adminService.blockUser(userID);
+    this.block(userID, 'oneDay');
   }
 
   /*
@@ -95,8 +95,11 @@ export class AdminDashboard {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  block(e:Event, userID:number, length:string) {
-    e.preventDefault();
+  block(userID:number, length:string, e?:Event) {
+    // if the method is invoked through the DOM, prevent submit button default behaviour
+    if(e) {
+      e.preventDefault();
+    }
     let releaseDate:Date;
     let currentDate = new Date();
     let millisecondsPerDay = 864E5;
@@ -120,7 +123,7 @@ export class AdminDashboard {
         break;
     }
 
-    this.adminService.block(userID, releaseDate);
+    this.adminService.blockUser(userID, releaseDate);
   }
 
   /*

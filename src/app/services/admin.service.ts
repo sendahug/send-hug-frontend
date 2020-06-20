@@ -10,8 +10,10 @@ import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http'
 // App-related imports
 import { AlertMessage } from '../interfaces/alert.interface';
 import { Report } from '../interfaces/report.interface';
+import { Message } from '../interfaces/message.interface';
 import { AuthService } from './auth.service';
 import { AlertsService } from './alerts.service';
+import { ItemsService } from './items.service';
 import { environment } from '../../environments/environment';
 import { environment as prodEnv } from '../../environments/environment.prod';
 
@@ -26,7 +28,8 @@ export class AdminService {
   constructor(
     private Http:HttpClient,
     private authService:AuthService,
-    private alertsService:AlertsService
+    private alertsService:AlertsService,
+    private itemsService:ItemsService
   ) {
 
   }
@@ -51,6 +54,37 @@ export class AdminService {
       this.userReports = response.userReports;
       this.postReports = response.postReports;
     // if there's an error, alert the user
+    }, (err:HttpErrorResponse) => {
+      this.createErrorAlert(err);
+    })
+  }
+
+  /*
+  Function Name: deletePost()
+  Function Description: Sends a request to delete the post. If successful, alerts
+                        the user (via the ItemsService) that their post was deleted.
+  Parameters: postID (number) - ID of the post to delete.
+              userID (number) - ID of the user who wrote the post.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  deletePost(postID:number, userID:number) {
+    const postUrl = this.serverUrl + `/posts/${postID}`;
+
+    // delete the post from the database
+    this.Http.delete(postUrl, {
+      headers: this.authService.authHeader
+    }).subscribe((response:any) => {
+      // create a message from the admin to the user whose post was deleted
+      let message:Message = {
+        from: this.authService.userData.displayName,
+        fromId: this.authService.userData.id!,
+        forId: userID,
+        messageText: `Your post (ID ${response.deleted}) was deleted due to violating our community rules.`,
+        date: new Date()
+      }
+      // send the message about the deleted post
+      this.itemsService.sendMessage(message);
     }, (err:HttpErrorResponse) => {
       this.createErrorAlert(err);
     })

@@ -9,6 +9,7 @@ import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http'
 
 // App-related imports
 import { AlertMessage } from '../interfaces/alert.interface';
+import { Report } from '../interfaces/report.interface';
 import { AuthService } from './auth.service';
 import { AlertsService } from './alerts.service';
 import { environment } from '../../environments/environment';
@@ -19,8 +20,8 @@ import { environment as prodEnv } from '../../environments/environment.prod';
 })
 export class AdminService {
   readonly serverUrl = environment.production ? prodEnv.backend.domain! : environment.backend.domain;
-  userReports = [];
-  postReports = [];
+  userReports: Report[] = [];
+  postReports: Report[] = [];
 
   constructor(
     private Http:HttpClient,
@@ -49,6 +50,45 @@ export class AdminService {
     }).subscribe((response:any) => {
       this.userReports = response.userReports;
       this.postReports = response.postReports;
+    // if there's an error, alert the user
+    }, (err:HttpErrorResponse) => {
+      this.createErrorAlert(err);
+    })
+  }
+
+  /*
+  Function Name: dismissReport()
+  Function Description: Dismiss an open report without taking further action.
+  Parameters: reportID (number) - the ID of the report to dismiss.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  dismissReport(reportID:number) {
+    const Url = this.serverUrl + `/reports/${reportID}`;
+
+    let report:Report;
+
+    // if the item is a user report, gets it from user reports array
+    if(this.userReports.filter(e => e.id == reportID)) {
+      report = this.userReports.filter(e => e.id == reportID)[0];
+    }
+    // if not, the item must be a post report, so gets it from the post reports array
+    else {
+      report = this.userReports.filter(e => e.id == reportID)[0];
+    }
+
+    // sets the dismissed and closed values to true
+    report.dismissed = true;
+    report.closed = true;
+
+    // send a request to update the report
+    this.Http.patch(Url, report, {
+      headers: this.authService.authHeader
+    }).subscribe((response:any) => {
+      // if the report was dismissed, alert the user
+      if(response.success) {
+        this.createSuccessAlert('The report was dismissed! Refresh the page to view the updated list.', true);
+      }
     // if there's an error, alert the user
     }, (err:HttpErrorResponse) => {
       this.createErrorAlert(err);

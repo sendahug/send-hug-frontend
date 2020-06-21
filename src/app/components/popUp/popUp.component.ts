@@ -7,9 +7,14 @@
 import { Component, Input, Output, EventEmitter, OnInit, OnChanges } from '@angular/core';
 
 // App-related import
+import { Post } from '../../interfaces/post.interface';
+import { Report } from '../../interfaces/report.interface';
 import { AuthService } from '../../services/auth.service';
 import { ItemsService } from '../../services/items.service';
 import { PostsService } from '../../services/posts.service';
+
+// Reasons for submitting a report
+enum reportReasons { Inappropriate, Spam, Offensive, Other };
 
 @Component({
   selector: 'app-pop-up',
@@ -29,6 +34,11 @@ export class PopUp implements OnInit, OnChanges {
   // the item to delete itself
   @Input() itemToDelete: number | undefined;
   @Input() messType: string | undefined;
+  // whether the user is reporting an item
+  @Input() report = false;
+  // reported post
+  @Input() reportedItem: Post | undefined;
+  selectedReason: string | undefined;
 
   // CTOR
   constructor(
@@ -145,6 +155,54 @@ export class PopUp implements OnInit, OnChanges {
     }
 
     this.editMode.emit(false);
+  }
+
+  /*
+  Function Name: setSelected()
+  Function Description: Sets the selected reason for reporting the post. The method is
+                        triggered by the user checking radio buttons.
+  Parameters: selectedItem (number) - the ID of the slected option.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  setSelected(selectedItem:number) {
+    // If the selected reason is one of the set reasons, simply send it as is
+    if(selectedItem == 0 || selectedItem == 1 || selectedItem == 2) {
+      this.selectedReason = `The post is ${reportReasons[selectedItem]}`;
+    }
+    // If the user chose to put their own input, take that as the reason
+    else {
+      let otherText = document.getElementById('option3Text') as HTMLInputElement;
+      this.selectedReason = otherText.value;
+    }
+  }
+
+  /*
+  Function Name: reportPost()
+  Function Description: Creates a report and passes it on to the items service.
+                        The method is triggered by pressing the 'report' button
+                        in the report popup.
+  Parameters: e (Event) - clicking the report button.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  reportPost(e:Event) {
+    e.preventDefault();
+
+    // create a new report
+    let report: Report = {
+      type: 'Post',
+      userID: this.reportedItem!.user_id,
+      postID: this.reportedItem!.id,
+      reporter: this.authService.userData.id!,
+      reportReason: this.selectedReason!,
+      date: new Date(),
+      dismissed: false,
+      closed: false
+    }
+
+    // pass it on to the items service to send
+    this.itemsService.reportPost(report);
   }
 
   /*

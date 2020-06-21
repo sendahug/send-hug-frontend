@@ -32,5 +32,35 @@
 			<button class="appButton deleteButton" (click)="deleteItem()">Yes, Delete</button>
 			<button class="appButton" (click)="exitEdit()">Never Mind</button>
 		</div>
+		
+		<!-- If the user is reporting a post -->
+		<div *ngIf="report" id="reportItem">
+			<h3>Report Post</h3>
+			<div class="userPost">
+				<div class="itemText">{{ reportedItem.text }}</div>
+				<div class="itemUser">By {{ reportedItem.user }}</div>
+			</div>
+			<div>What is the problem with this post?</div>
+			<form id="reportPost">
+				<div class="formElement">
+					<input type="radio" class="radioButton" name="postReport" id="radioOption0" value="0" (click)="setSelected($event.target.value)">
+					<label class="radioButtonLabel" for="radioOption0">It is inppopriate.</label>
+				</div>
+				<div class="formElement">
+					<input type="radio" class="radioButton" name="postReport" id="radioOption1" value="1" (click)="setSelected($event.target.value)">
+					<label class="radioButtonLabel" for="radioOption1">It is spam.</label>
+				</div>
+				<div class="formElement">
+					<input type="radio" class="radioButton" name="postReport" id="radioOption2" value="2" (click)="setSelected($event.target.value)">
+					<label class="radioButtonLabel" for="radioOption2">It is offensive.</label>
+				</div>
+				<div class="formElement">
+					<input type="radio" class="radioButton" name="postReport" id="radioOption3" value="3" (click)="setSelected($event.target.value)">
+					<label class="radioButtonLabel" for="radioOption3">Other:</label> <input type="text" placeholder="Enter the response" id="option3Text">
+				</div>
+				
+				<button type="submit" class="appButton reportButton" (click)="reportPost($event)">Report</button>
+			</form>
+		</div>
 	</div>
 </div>

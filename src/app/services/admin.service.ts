@@ -228,6 +228,29 @@ export class AdminService {
     })
   }
 
+  /*
+  Function Name: addFilter()
+  Function Description: Adds a new string to the filtered phrases list.
+  Parameters: filter (string) - String to add to filtered words.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  addFilter(filter:string) {
+    const Url = this.serverUrl + '/filters';
+
+    // try to add the filter
+    this.Http.post(Url, {
+      word: filter
+    }, {
+      headers: this.authService.authHeader
+    }).subscribe((response:any) => {
+      this.createSuccessAlert(`The phrase ${response.added} was added to the list of filtered words! Refresh to see the updated list.`, true);
+    // if there was an error, alert the user.
+    }, (err:HttpErrorResponse) => {
+      this.createErrorAlert(err);
+    })
+  }
+
   // ALERT METHODS
   // ==============================================================
   /*

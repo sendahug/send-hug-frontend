@@ -135,7 +135,7 @@ export class AdminDashboard {
   Programmer: Shir Bar Lev.
   */
   unblock(userID:number) {
-    this.adminService.unblock(userID);
+    this.adminService.unblockUser(userID);
   }
 
   // FILTERS PAGE

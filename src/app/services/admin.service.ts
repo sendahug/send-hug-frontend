@@ -157,6 +157,31 @@ export class AdminService {
     })
   }
 
+  /*
+  Function Name: unblockUser()
+  Function Description: Blocks a user for the default amount of time (one day).
+  Parameters: userID (number) - the ID of the user to block.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  unblockUser(userID:number) {
+    const Url = this.serverUrl + `/users/${userID}`;
+
+    // try to unblock the user
+    this.Http.patch(Url, {
+      id: userID,
+      releaseDate: null,
+      blocked: false
+    }, {
+      headers: this.authService.authHeader
+    }).subscribe((response:any) => {
+      this.createSuccessAlert(`User ${response.updated} has been unblocked.`, true);
+    // if there was an error, alert the user.
+    }, (err:HttpErrorResponse) => {
+      this.createErrorAlert(err);
+    })
+  }
+
   // ALERT METHODS
   // ==============================================================
   /*

@@ -26,6 +26,7 @@ export class MainPage implements OnInit {
   itemToDelete: number | undefined;
   report:boolean;
   reportedItem: Post | undefined;
+  reportType = 'Post';
 
   // CTOR
   constructor(

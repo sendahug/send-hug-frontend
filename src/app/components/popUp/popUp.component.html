@@ -34,7 +34,7 @@
 		</div>
 		
 		<!-- If the user is reporting a post -->
-		<div *ngIf="report" id="reportItem">
+		<div *ngIf="report && reportType == 'Post'" id="reportItem">
 			<h3>Report Post</h3>
 			<div class="userPost">
 				<div class="itemText">{{ reportedItem.text }}</div>

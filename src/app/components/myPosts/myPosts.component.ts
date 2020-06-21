@@ -25,6 +25,7 @@ export class MyPosts implements OnInit {
   itemToDelete: number | undefined;
   report:boolean;
   reportedItem: Post | undefined;
+  reportType = 'Post';
   // loader sub-component variable
   waitFor = 'user posts';
   // The user whose posts to fetch
@@ -128,7 +129,7 @@ export class MyPosts implements OnInit {
     // user's own profile, so take their ID from the Auth Service.
     this.itemToDelete = this.userID ? this.userID : this.authService.userData.id;
   }
-  
+
   /*
   Function Name: reportPost()
   Function Description: Opens the popup to report a post.

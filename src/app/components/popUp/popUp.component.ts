@@ -38,6 +38,8 @@ export class PopUp implements OnInit, OnChanges {
   @Input() report = false;
   // reported post
   @Input() reportedItem: Post | undefined;
+  // type of item to report
+  @Input() reportType: 'User' | 'Post' | undefined;
   selectedReason: string | undefined;
 
   // CTOR

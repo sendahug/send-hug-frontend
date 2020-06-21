@@ -62,5 +62,32 @@
 				<button type="submit" class="appButton reportButton" (click)="reportPost($event)">Report</button>
 			</form>
 		</div>
+		
+		<!-- If the user is reporting a post -->
+		<div *ngIf="report && reportType == 'User'" id="reportUser">
+			<h3>Report User</h3>
+			<a [routerLink]="['/user', user.id]">{{ user.displayName }}</a>
+			<div>What is the problem with this user?</div>
+			<form id="reportUserForm">
+				<div class="formElement">
+					<input type="radio" class="radioButton" name="postReport" id="uRadioOption0" value="0" (click)="setSelected($event.target.value)">
+					<label class="radioButtonLabel" for="uRadioOption0">They are posting spam.</label>
+				</div>
+				<div class="formElement">
+					<input type="radio" class="radioButton" name="postReport" id="uRadioOption1" value="1" (click)="setSelected($event.target.value)">
+					<label class="radioButtonLabel" for="uRadioOption1">They are posting harmful / dangerous content.</label>
+				</div>
+				<div class="formElement">
+					<input type="radio" class="radioButton" name="postReport" id="uRadioOption2" value="2" (click)="setSelected($event.target.value)">
+					<label class="radioButtonLabel" for="uRadioOption2">They are behaving in an abusive manner.</label>
+				</div>
+				<div class="formElement">
+					<input type="radio" class="radioButton" name="postReport" id="uRadioOption3" value="3" (click)="setSelected($event.target.value)">
+					<label class="radioButtonLabel" for="uRadioOption3">Other:</label> <input type="text" placeholder="Enter the response" id="uOption3Text">
+				</div>
+				
+				<button type="submit" class="appButton reportButton" (click)="reportUser($event)">Report</button>
+			</form>
+		</div>
 	</div>
 </div>

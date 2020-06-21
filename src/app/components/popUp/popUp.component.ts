@@ -14,7 +14,7 @@ import { ItemsService } from '../../services/items.service';
 import { PostsService } from '../../services/posts.service';
 
 // Reasons for submitting a report
-enum reportReasons { Inappropriate, Spam, Offensive, Other };
+enum postReportReasons { Inappropriate, Spam, Offensive, Other };
 
 @Component({
   selector: 'app-pop-up',
@@ -170,7 +170,7 @@ export class PopUp implements OnInit, OnChanges {
   setSelected(selectedItem:number) {
     // If the selected reason is one of the set reasons, simply send it as is
     if(selectedItem == 0 || selectedItem == 1 || selectedItem == 2) {
-      this.selectedReason = `The post is ${reportReasons[selectedItem]}`;
+      this.selectedReason = `The post is ${postReportReasons[selectedItem]}`;
     }
     // If the user chose to put their own input, take that as the reason
     else {

@@ -129,6 +129,34 @@ export class AdminService {
     })
   }
 
+  // BLOCKS-RELATED METHODS
+  // ==============================================================
+  /*
+  Function Name: blockUser()
+  Function Description: Blocks a user for the default amount of time (one day).
+  Parameters: userID (number) - the ID of the user to block.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  blockUser(userID:number, releaseDate:Date) {
+    const Url = this.serverUrl + `/users/${userID}`;
+
+    // try to block the user
+    this.Http.patch(Url, {
+      id: userID,
+      releaseDate: releaseDate,
+      blocked: true
+    }, {
+      headers: this.authService.authHeader
+    // If successful, let the user know
+    }).subscribe((response:any) => {
+      this.createSuccessAlert(`User ${response.blocked} has been blocked until ${releaseDate}`, true);
+    // if there was an error, alert the user.
+    }, (err:HttpErrorResponse) => {
+      this.createErrorAlert(err);
+    })
+  }
+
   // ALERT METHODS
   // ==============================================================
   /*

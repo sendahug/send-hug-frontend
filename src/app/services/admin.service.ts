@@ -266,7 +266,7 @@ export class AdminService {
     this.Http.delete(Url, {
       headers: this.authService.authHeader
     }).subscribe((response:any) => {
-      this.createSuccessAlert(`The phrase ${filter} was removed from the list of filtered words. Refresh to see the updated list.`, true);
+      this.createSuccessAlert(`The phrase ${response.deleted} was removed from the list of filtered words. Refresh to see the updated list.`, true);
     // if there was an error, alert the user.
     }, (err:HttpErrorResponse) => {
       this.createErrorAlert(err);

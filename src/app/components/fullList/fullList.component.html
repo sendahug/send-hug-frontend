@@ -11,6 +11,7 @@
 					<span class="badge">{{ item.givenHugs }}</span>
 				</div>
 				<a [routerLink]="['/new', 'Message']" [queryParams]="{user: item.user, userID: item.userId}" class="appButton messageButton"><i class="fas fa-comments"></i></a>
+				<button class="appButton reportButton" (click)="reportPost(item)"><i class="fas fa-flag"></i></button>
 				<button *ngIf="authService.canUser('patch:any-post')" class="appButton editButton" (click)="editPost(item)"><i class="far fa-edit"></i></button>
 				<button *ngIf="authService.canUser('delete:any-post')" class="appButton deleteButton" (click)="deletePost(item.id)"><i class="fas fa-times"></i></button>
 			</div>
@@ -36,4 +37,6 @@
 			(editMode)="changeMode($event)"
 			[delete]="delete"
 			[toDelete]="toDelete"
-			[itemToDelete]="itemToDelete"></app-pop-up>
+			[itemToDelete]="itemToDelete"
+			[report]="report"
+			[reportedItem]="reportedItem"></app-pop-up>

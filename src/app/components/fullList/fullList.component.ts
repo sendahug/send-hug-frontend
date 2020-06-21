@@ -27,6 +27,8 @@ export class FullList {
   delete:boolean;
   toDelete: string | undefined;
   itemToDelete: number | undefined;
+  report:boolean;
+  reportedItem: Post | undefined;
 
   // CTOR
   constructor(private route:ActivatedRoute,
@@ -49,6 +51,7 @@ export class FullList {
 
       this.editMode = false;
       this.delete = false;
+	  this.report = false;
   }
 
   /*
@@ -176,5 +179,19 @@ export class FullList {
     this.delete = true;
     this.toDelete = 'Post';
     this.itemToDelete = postID;
+  }
+  
+  /*
+  Function Name: reportPost()
+  Function Description: Opens the popup to report a post.
+  Parameters: post (Post) - the Post to report.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  reportPost(post:Post) {
+	  this.editMode = true;
+	  this.delete = false;
+	  this.report = true;
+	  this.reportedItem = post;
   }
 }

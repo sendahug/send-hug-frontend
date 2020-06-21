@@ -25,6 +25,7 @@ export class AdminService {
   userReports: Report[] = [];
   postReports: Report[] = [];
   blockedUsers = [];
+  filteredPhrases = [];
 
   constructor(
     private Http:HttpClient,
@@ -198,6 +199,29 @@ export class AdminService {
       headers: this.authService.authHeader
     }).subscribe((response:any) => {
       this.createSuccessAlert(`User ${response.updated} has been unblocked.`, true);
+    // if there was an error, alert the user.
+    }, (err:HttpErrorResponse) => {
+      this.createErrorAlert(err);
+    })
+  }
+
+  // FILTERS-RELATED METHODS
+  // ==============================================================
+  /*
+  Function Name: getFilters()
+  Function Description: Gets a paginated list of user-added filtered words.
+  Parameters: None.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  getFilters() {
+    const Url = this.serverUrl + '/filters';
+
+    // try to fetch the list of words
+    this.Http.get(Url, {
+      headers: this.authService.authHeader
+    }).subscribe((response:any) => {
+      this.filteredPhrases = response.words;
     // if there was an error, alert the user.
     }, (err:HttpErrorResponse) => {
       this.createErrorAlert(err);

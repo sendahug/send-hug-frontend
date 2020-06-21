@@ -122,7 +122,7 @@ export class PopUp implements OnInit, OnChanges {
     e.preventDefault();
     this.editedItem.text = newText;
     this.postsService.editPost(this.editedItem);
-    this.editMode.emit(false);
+    this.exitEdit();
   }
 
   /*
@@ -154,7 +154,7 @@ export class PopUp implements OnInit, OnChanges {
       this.itemsService.deleteAll(this.toDelete, this.itemToDelete!);
     }
 
-    this.editMode.emit(false);
+    this.exitEdit();
   }
 
   /*
@@ -203,6 +203,7 @@ export class PopUp implements OnInit, OnChanges {
 
     // pass it on to the items service to send
     this.itemsService.reportPost(report);
+    this.exitEdit();
   }
 
   /*

@@ -67,6 +67,7 @@ export class AdminDashboard implements OnInit {
     else if(this.screen == 'blocks') {
       this.adminService.getBlockedUsers();
     }
+    // if the current screen is the filters screen
     else if(this.screen == 'filters') {
       this.adminService.getFilters();
     }
@@ -179,11 +180,11 @@ export class AdminDashboard implements OnInit {
   /*
   Function Name: removeFilter()
   Function Description: Remove a filter from the filtered phrases list.
-  Parameters: filterID (number) - ID of the filter to remove.
+  Parameters: filter (string) - The string to remove from the filters list.
   ----------------
   Programmer: Shir Bar Lev.
   */
-  removeFilter(filterID:number) {
-    this.adminService.removeFilter(filterID);
+  removeFilter(filter:string) {
+    this.adminService.removeFilter(filter);
   }
 }

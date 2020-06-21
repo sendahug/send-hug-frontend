@@ -160,9 +160,9 @@
 			</thead>
 			<tbody>
 				<tr *ngFor="let phrase of adminService.filteredPhrases">
-					<td>{{ phrase.phrase }}</td>
+					<td>{{ phrase }}</td>
 					<td>
-						<button class="appButton" (click)="removeFilter(phrase.id)">Remove Filter</button>
+						<button class="appButton" (click)="removeFilter(phrase)">Remove Filter</button>
 					</td>
 				</tr>
 			</tbody>

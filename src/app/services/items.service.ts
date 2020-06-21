@@ -533,7 +533,7 @@ export class ItemsService {
   // ==============================================================
   /*
   Function Name: reportPost()
-  Function Description: Sends a new user/post report to the database.
+  Function Description: Sends a new post report to the database.
   Parameters: report (Report) - the report.
   ----------------
   Programmer: Shir Bar Lev.
@@ -548,6 +548,29 @@ export class ItemsService {
       // if successful, alert the user
       let sent_report: Report = response.report;
       this.createSuccessAlert(`Post number ${sent_report.postID} was successfully reported.`, false, '/');
+    // if there's an error, alert the user
+    }, (err:HttpErrorResponse) => {
+      this.createErrorAlert(err);
+    })
+  }
+
+  /*
+  Function Name: reportUser()
+  Function Description: Sends a new user report to the database.
+  Parameters: report (Report) - the report.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  reportUser(report:Report) {
+    const Url = this.serverUrl + '/reports';
+
+    // sends the report
+    this.Http.post(Url, report, {
+      headers: this.authService.authHeader
+    }).subscribe((response:any) => {
+      // if successful, alert the user
+      let sent_report: Report = response.report;
+      this.createSuccessAlert(`User ${sent_report.userID} was successfully reported.`, false, '/');
     // if there's an error, alert the user
     }, (err:HttpErrorResponse) => {
       this.createErrorAlert(err);

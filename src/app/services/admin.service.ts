@@ -24,6 +24,7 @@ export class AdminService {
   readonly serverUrl = environment.production ? prodEnv.backend.domain! : environment.backend.domain;
   userReports: Report[] = [];
   postReports: Report[] = [];
+  blockedUsers = [];
 
   constructor(
     private Http:HttpClient,
@@ -131,6 +132,27 @@ export class AdminService {
 
   // BLOCKS-RELATED METHODS
   // ==============================================================
+  /*
+  Function Name: getBlockedUsers()
+  Function Description: Gets a paginated list of the currently blocked users.
+  Parameters: None.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  getBlockedUsers() {
+    const Url = this.serverUrl + `/users/blocked`;
+
+    // try to fetch blocked users
+    this.Http.get(Url, {
+      headers: this.authService.authHeader
+    }).subscribe((response:any) => {
+      this.blockedUsers = response.users;
+    // if there was an error, alert the user.
+    }, (err:HttpErrorResponse) => {
+      this.createErrorAlert(err);
+    })
+  }
+
   /*
   Function Name: blockUser()
   Function Description: Blocks a user for the default amount of time (one day).

@@ -43,20 +43,20 @@
 			<div>What is the problem with this post?</div>
 			<form id="reportPost">
 				<div class="formElement">
-					<input type="radio" class="radioButton" name="postReport" id="radioOption0" value="0" (click)="setSelected($event.target.value)">
-					<label class="radioButtonLabel" for="radioOption0">It is inppopriate.</label>
+					<input type="radio" class="radioButton" name="postReport" id="pRadioOption0" value="0" (click)="setSelected($event.target.value)">
+					<label class="radioButtonLabel" for="pRadioOption0">It is inppopriate.</label>
 				</div>
 				<div class="formElement">
-					<input type="radio" class="radioButton" name="postReport" id="radioOption1" value="1" (click)="setSelected($event.target.value)">
-					<label class="radioButtonLabel" for="radioOption1">It is spam.</label>
+					<input type="radio" class="radioButton" name="postReport" id="pRadioOption1" value="1" (click)="setSelected($event.target.value)">
+					<label class="radioButtonLabel" for="pRadioOption1">It is spam.</label>
 				</div>
 				<div class="formElement">
-					<input type="radio" class="radioButton" name="postReport" id="radioOption2" value="2" (click)="setSelected($event.target.value)">
-					<label class="radioButtonLabel" for="radioOption2">It is offensive.</label>
+					<input type="radio" class="radioButton" name="postReport" id="pRadioOption2" value="2" (click)="setSelected($event.target.value)">
+					<label class="radioButtonLabel" for="pRadioOption2">It is offensive.</label>
 				</div>
 				<div class="formElement">
-					<input type="radio" class="radioButton" name="postReport" id="radioOption3" value="3" (click)="setSelected($event.target.value)">
-					<label class="radioButtonLabel" for="radioOption3">Other:</label> <input type="text" placeholder="Enter the response" id="option3Text">
+					<input type="radio" class="radioButton" name="postReport" id="pRadioOption3" value="3" (click)="setSelected($event.target.value)">
+					<label class="radioButtonLabel" for="pRadioOption3">Other:</label> <input type="text" placeholder="Enter the response" id="rOption3Text">
 				</div>
 				
 				<button type="submit" class="appButton reportButton" (click)="reportPost($event)">Report</button>

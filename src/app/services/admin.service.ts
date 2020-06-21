@@ -251,6 +251,28 @@ export class AdminService {
     })
   }
 
+  /*
+  Function Name: removeFilter()
+  Function Description: Removes a string from the filtered phrases list.
+  Parameters: filter (string) - String to remove from filtered words.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  removeFilter(filter:string) {
+    const filterID = this.filteredPhrases.findIndex(element => element == filter);
+    const Url = this.serverUrl + `/filters/${filterID}`;
+
+    // try to delete the filter
+    this.Http.delete(Url, {
+      headers: this.authService.authHeader
+    }).subscribe((response:any) => {
+      this.createSuccessAlert(`The phrase ${filter} was removed from the list of filtered words. Refresh to see the updated list.`, true);
+    // if there was an error, alert the user.
+    }, (err:HttpErrorResponse) => {
+      this.createErrorAlert(err);
+    })
+  }
+
   // ALERT METHODS
   // ==============================================================
   /*

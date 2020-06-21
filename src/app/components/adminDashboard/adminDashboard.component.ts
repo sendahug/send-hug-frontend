@@ -4,7 +4,7 @@
 */
 
 // Angular imports
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 // App imports
@@ -15,7 +15,7 @@ import { AdminService } from '../../services/admin.service';
   selector: 'app-admin-dashboard',
   templateUrl: './adminDashboard.component.html'
 })
-export class AdminDashboard {
+export class AdminDashboard implements OnInit {
   screen:string = '';
   adminCategories = [
     {
@@ -47,6 +47,29 @@ export class AdminDashboard {
         this.screen = 'main';
       }
     })
+  }
+
+  /*
+  Function Name: ngOnInit()
+  Function Description: This method is automatically triggered by Angular upon
+                        page initiation. Checks for the current screen and calls
+                        the appropriate getter method.
+  Parameters: None.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  ngOnInit() {
+    // if the current screen is the reports screen
+    if(this.screen == 'reports') {
+      this.adminService.getOpenReports();
+    }
+    // if the current screen is the blocks screen
+    else if(this.screen == 'blocks') {
+      this.adminService.getBlockedUsers();
+    }
+    else if(this.screen == 'filters') {
+      this.adminService.getFilters();
+    }
   }
 
   // REPORTS PAGE

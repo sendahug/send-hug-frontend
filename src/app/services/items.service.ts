@@ -14,6 +14,7 @@ import { Message } from '../interfaces/message.interface';
 import { AlertMessage } from '../interfaces/alert.interface';
 import { Thread } from '../interfaces/thread.interface';
 import { OtherUser } from '../interfaces/otherUser.interface';
+import { Report } from '../interfaces/report.interface';
 import { AuthService } from './auth.service';
 import { AlertsService } from './alerts.service';
 import { environment } from '../../environments/environment';
@@ -525,6 +526,31 @@ export class ItemsService {
       this.isSearchResolved.next(true);
       this.createErrorAlert(err);
       this.isSearching = false;
+    })
+  }
+
+  // REPORT METHODS
+  // ==============================================================
+  /*
+  Function Name: reportPost()
+  Function Description: Sends a new user/post report to the database.
+  Parameters: report (Report) - the report.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  reportPost(report:Report) {
+    const Url = this.serverUrl + '/reports';
+
+    // sends the report
+    this.Http.post(Url, report, {
+      headers: this.authService.authHeader
+    }).subscribe((response:any) => {
+      // if successful, alert the user
+      let sent_report: Report = response.report;
+      this.createSuccessAlert(`Post number ${sent_report.postID} was successfully reported.`, false, '/');
+    // if there's an error, alert the user
+    }, (err:HttpErrorResponse) => {
+      this.createErrorAlert(err);
     })
   }
 

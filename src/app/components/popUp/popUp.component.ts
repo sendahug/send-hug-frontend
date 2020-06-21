@@ -219,7 +219,7 @@ export class PopUp implements OnInit, OnChanges {
     }
 
     // pass it on to the items service to send
-    this.itemsService.reportPost(report);
+    this.itemsService.sendReport(report);
     this.exitEdit();
   }
 
@@ -248,7 +248,7 @@ export class PopUp implements OnInit, OnChanges {
     }
 
     // pass it on to the items service to send
-    this.itemsService.reportUser(report);
+    this.itemsService.sendReport(report);
     this.exitEdit();
   }
 

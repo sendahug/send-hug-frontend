@@ -118,7 +118,7 @@ export class PopUp implements OnInit, OnChanges {
 
   /*
   Function Name: editUser()
-  Function Description: Edits a user's display name.
+  Function Description: Edits a user's display name from admin dashboard.
   Parameters: e (event) - This method is triggered by pressing a button; this parameter
                           contains the click event data.
               newDisplayName (string) - A string containing the user's new name.
@@ -154,7 +154,7 @@ export class PopUp implements OnInit, OnChanges {
 
   /*
   Function Name: editPost()
-  Function Description: Edits a post's text.
+  Function Description: Edits a post's text from admin dashboard.
   Parameters: e (event) - This method is triggered by pressing a button; this parameter
                           contains the click event data.
               newText (string) - A string containing the new post's text.

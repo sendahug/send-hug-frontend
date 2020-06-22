@@ -109,7 +109,8 @@ export class AdminService {
 
   /*
   Function Name: editPost()
-  Function Description: Edits a reported post's text.
+  Function Description: Edits a reported post's text. If necessary,
+                        also closes the report.
   Parameters: post (any) - the ID and new text of the post.
               reportID (number) - the ID of the report triggering the edit.
               closeReport (boolean) - whether or not to also close the report.
@@ -169,8 +170,9 @@ export class AdminService {
   Function Name: editUser()
   Function Description: Sends a request to edit the user's display name. If necessary,
                         also closes the report.
-  Parameters: postID (number) - ID of the post to delete.
-              userID (number) - ID of the user who wrote the post.
+  Parameters: user (any) - the ID and new display name of the user.
+              reportID (number) - the ID of the report triggering the edit.
+              closeReport (boolean) - whether or not to also close the report.
   ----------------
   Programmer: Shir Bar Lev.
   */

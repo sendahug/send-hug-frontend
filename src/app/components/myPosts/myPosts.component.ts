@@ -49,7 +49,7 @@ export class MyPosts implements OnInit {
 
       this.editMode = false;
       this.delete = false;
-	  this.report = false;
+      this.report = false;
   }
 
   /*

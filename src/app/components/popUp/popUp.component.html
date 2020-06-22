@@ -97,7 +97,7 @@
 		<!-- If the user is reporting a post -->
 		<div *ngIf="report && reportType == 'User'" id="reportUser">
 			<h3>Report User</h3>
-			<a [routerLink]="['/user', user.id]">{{ user.displayName }}</a>
+			<a [routerLink]="['/user', reportedItem.userId]">{{ reportedItem.displayName }}</a>
 			<div>What is the problem with this user?</div>
 			<form id="reportUserForm">
 				<div class="formElement">

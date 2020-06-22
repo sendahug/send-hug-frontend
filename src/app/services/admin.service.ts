@@ -177,7 +177,7 @@ export class AdminService {
   Programmer: Shir Bar Lev.
   */
   editUser(user:any, closeReport:boolean, reportID:number) {
-    const Url = this.serverUrl + `/users/${user.id}`;
+    const Url = this.serverUrl + `/users/all/${user.id}`;
 
     // update the user's display name
     this.Http.patch(Url, user, {
@@ -266,7 +266,7 @@ export class AdminService {
   Programmer: Shir Bar Lev.
   */
   blockUser(userID:number, releaseDate:Date) {
-    const Url = this.serverUrl + `/users/${userID}`;
+    const Url = this.serverUrl + `/users/all/${userID}`;
 
     // try to block the user
     this.Http.patch(Url, {
@@ -292,7 +292,7 @@ export class AdminService {
   Programmer: Shir Bar Lev.
   */
   unblockUser(userID:number) {
-    const Url = this.serverUrl + `/users/${userID}`;
+    const Url = this.serverUrl + `/users/all/${userID}`;
 
     // try to unblock the user
     this.Http.patch(Url, {

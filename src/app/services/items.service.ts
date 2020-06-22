@@ -120,7 +120,7 @@ export class ItemsService {
   */
   getUserPosts(userID:number) {
     const user = (userID == this.authService.userData.id) ? 'self' : 'other';
-    const Url = this.serverUrl + `/users/${userID}/posts`;
+    const Url = this.serverUrl + `/users/all/${userID}/posts`;
 
     // if the user is viewing another user's profile
     if(user == 'other') {
@@ -173,7 +173,7 @@ export class ItemsService {
   Programmer: Shir Bar Lev.
   */
   sendUserHug(userID:number) {
-    const Url = this.serverUrl + `/users/${userID}`;
+    const Url = this.serverUrl + `/users/all/${userID}`;
     // update the users' data
     this.otherUserData.receivedHugs += 1;
     this.authService.userData.givenHugs += 1;
@@ -205,7 +205,7 @@ export class ItemsService {
   Programmer: Shir Bar Lev.
   */
   getUser(userID:number) {
-    const Url = this.serverUrl + `/users/${userID}`;
+    const Url = this.serverUrl + `/users/all/${userID}`;
     this.isOtherUserResolved.next(false);
 
     // Get the user's data from the server

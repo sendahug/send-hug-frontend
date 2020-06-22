@@ -181,7 +181,7 @@ export class PostsService {
   Programmer: Shir Bar Lev.
   */
   deleteAllPosts(userID:number) {
-    const Url = this.serverUrl + `/users/${userID}/posts`;
+    const Url = this.serverUrl + `/users/all/${userID}/posts`;
     // send delete request
     this.Http.delete(Url, {
       headers: this.authService.authHeader

@@ -182,7 +182,7 @@ export class AdminService {
   Programmer: Shir Bar Lev.
   */
   editUser(user:any, closeReport:boolean, reportID:number) {
-    const Url = this.serverUrl + `/users/all/${user.id}`;
+    const Url = this.serverUrl + `/users/all/${user.userID}`;
 
     // update the user's display name
     this.Http.patch(Url, user, {

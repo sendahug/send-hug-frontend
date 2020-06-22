@@ -100,11 +100,12 @@ export class AdminDashboard implements OnInit {
   Function Name: blockUser()
   Function Description: Sends a request to block a user.
   Parameters: userID (number) - the ID of the user to block.
+              reportID (number) - the ID of the report.
   ----------------
   Programmer: Shir Bar Lev.
   */
-  blockUser(userID:number) {
-    this.block(userID, 'oneDay');
+  blockUser(userID:number, reportID:number) {
+    this.block(userID, 'oneDay', undefined, reportID);
   }
 
   /*
@@ -181,7 +182,7 @@ export class AdminDashboard implements OnInit {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  block(userID:number, length:string, e?:Event) {
+  block(userID:number, length:string, e?:Event, reportID?:number) {
     // if the method is invoked through the DOM, prevent submit button default behaviour
     if(e) {
       e.preventDefault();
@@ -209,7 +210,14 @@ export class AdminDashboard implements OnInit {
         break;
     }
 
-    this.adminService.blockUser(userID, releaseDate);
+    // if the user is blocked through the reports page, pass on the report ID
+    if(reportID) {
+      this.adminService.blockUser(userID, releaseDate, reportID);
+    }
+    // otherwise continue without it
+    else {
+      this.adminService.blockUser(userID, releaseDate);
+    }
   }
 
   /*

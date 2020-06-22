@@ -270,7 +270,7 @@ export class AdminService {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  blockUser(userID:number, releaseDate:Date) {
+  blockUser(userID:number, releaseDate:Date, reportID?:number) {
     const Url = this.serverUrl + `/users/all/${userID}`;
 
     // try to block the user
@@ -283,6 +283,10 @@ export class AdminService {
     // If successful, let the user know
     }).subscribe((response:any) => {
       this.alertsService.createSuccessAlert(`User ${response.updated} has been blocked until ${releaseDate}`, true);
+      // if the block was done via the reports page, also dismiss the report
+      if(reportID) {
+        this.dismissReport(reportID);
+      }
     // if there was an error, alert the user.
     }, (err:HttpErrorResponse) => {
       this.alertsService.createErrorAlert(err);

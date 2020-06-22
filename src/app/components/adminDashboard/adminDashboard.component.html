@@ -38,13 +38,13 @@
 			</thead>
 			<tbody>
 				<tr *ngFor="let report of adminService.userReports">
-					<td>{{ report.reportedId }}</td>
-					<td>{{ report.reportedDisplay }}</td>
+					<td>{{ report.user_id }}</td>
+					<td>{{ report.displayName }}</td>
 					<td>{{ report.reporter }}</td>
 					<td>{{ report.reportReason }}</td>
 					<td>
-						<button class="appButton" (click)="blockUser(report.reportedId)">Block User (One Day)</button>
-						<button class="appButton" (click)="editUser(report.id, report.reportedId, report.reportedDisplay)">Edit User</button>
+						<button class="appButton" (click)="blockUser(report.user_id)">Block User (One Day)</button>
+						<button class="appButton" (click)="editUser(report.id, report.user_id, report.displayName)">Edit User</button>
 						<button class="appButton" (click)="dismissReport(report.id)">Dismiss</button>
 					</td>
 				</tr>
@@ -78,14 +78,14 @@
 			</thead>
 			<tbody>
 				<tr *ngFor="let report of adminService.postReports">
-					<td>{{ report.reportedId }}</td>
-					<td>{{ report.reportedUser }}</td>
-					<td>{{ report.postText }}</td>
+					<td>{{ report.postID }}</td>
+					<td>{{ report.userID }}</td>
+					<td>{{ report.text }}</td>
 					<td>{{ report.reporter }}</td>
 					<td>{{ report.reportReason }}</td>
 					<td>
-						<button class="appButton" (click)="editPost(report.reportedId, report.postText, report.id)">Edit Post</button>
-						<button class="appButton" (click)="deletePost(report.reportedId, report.reportedUser)">Delete Post</button>
+						<button class="appButton" (click)="editPost(report.postID, report.text, report.id)">Edit Post</button>
+						<button class="appButton" (click)="deletePost(report.postID, report.userID)">Delete Post</button>
 						<button class="appButton" (click)="dismissReport(report.id)">Dismiss</button>
 					</td>
 				</tr>

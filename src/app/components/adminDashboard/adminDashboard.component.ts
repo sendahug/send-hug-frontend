@@ -268,4 +268,18 @@ export class AdminDashboard implements OnInit {
     this.adminService.currentPage[type] -= 1;
     this.adminService.getPage(type);
   }
+
+  /*
+  Function Name: changeMode()
+  Function Description: Remove the edit popup.
+  Parameters: edit (boolean) - indicating whether edit mode should be active.
+                               When the user finishes editing, the event emitter
+                               in the popup component sends 'false' to this function
+                               to remove the popup.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  changeMode(edit:boolean) {
+    this.editMode = edit;
+  }
 }

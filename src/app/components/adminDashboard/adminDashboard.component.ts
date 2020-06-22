@@ -6,6 +6,7 @@
 // Angular imports
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { Subscription } from 'rxjs';
 
 // App imports
 import { AuthService } from '../../services/auth.service';
@@ -34,6 +35,7 @@ export class AdminDashboard implements OnInit {
       explanation: `Here you can view currently filtered words. You can also add or remote filtered words to the list.`
     }
   ]
+  userDataSubscription: Subscription | undefined;
   // edit popup sub-component variables
   toEdit: any;
   editType: string | undefined;
@@ -80,18 +82,30 @@ export class AdminDashboard implements OnInit {
   Programmer: Shir Bar Lev.
   */
   ngOnInit() {
-    // if the current screen is the reports screen
-    if(this.screen == 'reports') {
-      this.adminService.getOpenReports();
-    }
-    // if the current screen is the blocks screen
-    else if(this.screen == 'blocks') {
-      this.adminService.getBlockedUsers();
-    }
-    // if the current screen is the filters screen
-    else if(this.screen == 'filters') {
-      this.adminService.getFilters();
-    }
+    // set the userDataSubscription to the subscription to isUserDataResolved
+    this.userDataSubscription = this.authService.isUserDataResolved.subscribe((value) => {
+      // if the user is logged in, fetch requested data for the current page
+      if(value == true) {
+        // if the current screen is the reports screen
+        if(this.screen == 'reports') {
+          this.adminService.getOpenReports();
+        }
+        // if the current screen is the blocks screen
+        else if(this.screen == 'blocks') {
+          this.adminService.getBlockedUsers();
+        }
+        // if the current screen is the filters screen
+        else if(this.screen == 'filters') {
+          this.adminService.getFilters();
+        }
+
+        // also unsubscribe from this to avoid sending the same request
+        // multiple times
+        if(this.userDataSubscription) {
+          this.userDataSubscription.unsubscribe();
+        }
+      }
+    })
   }
 
   // REPORTS PAGE

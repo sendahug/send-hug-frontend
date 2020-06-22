@@ -24,6 +24,7 @@ export class UserPage implements OnInit, OnDestroy {
   editMode:boolean;
   report: boolean;
   reportedItem: User | undefined;
+  reportType = 'User';
   // loader sub-component variable
   waitFor = "user";
   userId: number | undefined;

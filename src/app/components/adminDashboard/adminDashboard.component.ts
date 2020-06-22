@@ -8,6 +8,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 // App imports
+import { Post } from '../../interfaces/post.interface';
 import { AuthService } from '../../services/auth.service';
 import { AdminService } from '../../services/admin.service';
 
@@ -34,6 +35,14 @@ export class AdminDashboard implements OnInit {
       explanation: `Here you can view currently filtered words. You can also add or remote filtered words to the list.`
     }
   ]
+  // edit popup sub-component variables
+  postToEdit: Post | undefined;
+  editType: string | undefined;
+  editMode:boolean;
+  delete:boolean;
+  toDelete: string | undefined;
+  itemToDelete: number | undefined;
+  report:boolean;
 
   // CTOR
   constructor(
@@ -49,6 +58,10 @@ export class AdminDashboard implements OnInit {
         this.screen = 'main';
       }
     })
+
+    this.editMode = false;
+    this.delete = false;
+    this.report = false;
   }
 
   /*

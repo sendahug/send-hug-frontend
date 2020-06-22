@@ -213,3 +213,12 @@
 	<div class="errorMessage">You do not have permission to view thie page!</div>
 	<a [routerLink]="" class="appButton">Back to homepage</a>
 </div>
+
+<app-pop-up *ngIf="editMode"
+			[editedItem]="postToEdit"
+			[toEdit]="editType"
+			(editMode)="changeMode($event)"
+			[delete]="delete"
+			[toDelete]="toDelete"
+			[itemToDelete]="itemToDelete"
+			[report]="report"></app-pop-up>

@@ -25,6 +25,19 @@ export class AdminService {
   postReports: Report[] = [];
   blockedUsers = [];
   filteredPhrases = [];
+  // pagination
+  currentPage = {
+    userReports: 1,
+    postReports: 1,
+    blockedUsers: 1,
+    filteredPhrases: 1
+  }
+  totalPages = {
+    userReports: 1,
+    postReports: 1,
+    blockedUsers: 1,
+    filteredPhrases: 1
+  }
 
   constructor(
     private Http:HttpClient,
@@ -33,6 +46,34 @@ export class AdminService {
     private itemsService:ItemsService
   ) {
 
+  }
+
+  // GENERAL METHODS
+  // ==============================================================
+  /*
+  Function Name: getPage()
+  Function Description: Checks which list's page was changed and fetches the
+                        data for the given page.
+  Parameters: list (string) - The list for which to fetch another page.
+              page (number) - The page number to fetch.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  getPage(list: string) {
+    switch(list) {
+      case 'userReports':
+        this.getOpenReports();
+        break;
+      case 'postReports':
+        this.getOpenReports();
+        break;
+      case 'blockedUsers':
+        this.getBlockedUsers();
+        break;
+      case 'filteredPhrases':
+        this.getFilters();
+        break;
+    }
   }
 
   // REPORTS-RELATED METHODS
@@ -46,14 +87,20 @@ export class AdminService {
   */
   getOpenReports() {
     const Url = this.serverUrl + '/reports';
+    const params = new HttpParams()
+      .set('userPage', `${this.currentPage.userReports}`)
+      .set('postPage', `${this.currentPage.postReports}`);
 
     // Get reports
     this.Http.get(Url, {
-      headers: this.authService.authHeader
+      headers: this.authService.authHeader,
+      params: params
     // if successful, set the appropriate variables
     }).subscribe((response:any) => {
       this.userReports = response.userReports;
+      this.totalPages.userReports = response.totalUserPages;
       this.postReports = response.postReports;
+      this.totalPages.postReports = response.totalPostPages;
     // if there's an error, alert the user
     }, (err:HttpErrorResponse) => {
       this.alertsService.createErrorAlert(err);
@@ -141,12 +188,15 @@ export class AdminService {
   */
   getBlockedUsers() {
     const Url = this.serverUrl + `/users/blocked`;
+    const params = new HttpParams().set('page', `${this.currentPage.blockedUsers}`);
 
     // try to fetch blocked users
     this.Http.get(Url, {
-      headers: this.authService.authHeader
+      headers: this.authService.authHeader,
+      params: params
     }).subscribe((response:any) => {
       this.blockedUsers = response.users;
+      this.totalPages.blockedUsers = response.total_pages;
     // if there was an error, alert the user.
     }, (err:HttpErrorResponse) => {
       this.alertsService.createErrorAlert(err);
@@ -215,12 +265,15 @@ export class AdminService {
   */
   getFilters() {
     const Url = this.serverUrl + '/filters';
+    const params = new HttpParams().set('page', `${this.currentPage.filteredPhrases}`);
 
     // try to fetch the list of words
     this.Http.get(Url, {
-      headers: this.authService.authHeader
+      headers: this.authService.authHeader,
+      params: params
     }).subscribe((response:any) => {
       this.filteredPhrases = response.words;
+      this.totalPages.filteredPhrases = response.total_pages;
     // if there was an error, alert the user.
     }, (err:HttpErrorResponse) => {
       this.alertsService.createErrorAlert(err);

@@ -4,7 +4,7 @@
 		<!-- If the user is editing a post -->
 		<form *ngIf="toEdit == 'post'" id="postEdit">
 			<div class="formElement">
-				<span class="pageCategory">By:</span> <span class="pageData">{{ authService.userData.displayName }}</span>
+				<span class="pageCategory">By:</span> <span class="pageData">{{ editedItem.displayName }}</span>
 			</div>
 			<div class="formElement">{{ editedItem.date }}</div>
 			<div class="formElement">

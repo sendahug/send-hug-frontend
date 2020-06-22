@@ -62,7 +62,7 @@ export class NewItem {
     e.preventDefault();
     // create a new post object to send
     let newPost:Post = {
-      user_id: this.authService.userData.id!,
+      userId: this.authService.userData.id!,
       user: this.authService.userData.displayName!,
       text: postText,
       date: new Date(),

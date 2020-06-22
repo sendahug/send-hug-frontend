@@ -252,7 +252,7 @@ export class PopUp implements OnInit, OnChanges {
     // create a new report
     let report: Report = {
       type: 'Post',
-      userID: post.user_id,
+      userID: post.userId,
       postID: post.id,
       reporter: this.authService.userData.id!,
       reportReason: this.selectedReason!,
@@ -260,6 +260,7 @@ export class PopUp implements OnInit, OnChanges {
       dismissed: false,
       closed: false
     }
+    console.log(report);
 
     // pass it on to the items service to send
     this.itemsService.sendReport(report);

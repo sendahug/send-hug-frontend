@@ -118,7 +118,7 @@ export class AdminService {
   Programmer: Shir Bar Lev.
   */
   editPost(post:any, closeReport:boolean, reportID:number) {
-    const Url = this.serverUrl + `/posts/${post.postID}`;
+    const Url = this.serverUrl + `/posts/${post.id}`;
 
     // try to edit the psot
     this.Http.patch(Url, post, {

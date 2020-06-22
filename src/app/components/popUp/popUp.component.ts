@@ -205,6 +205,18 @@ export class PopUp implements OnInit, OnChanges {
   }
 
   /*
+  Function Name: deletePost()
+  Function Description: Sends a request to the admin service to delete a post and
+                        dismiss the report (if selected by the user).
+  Parameters: closeReport (boolean) - whether or not to close the report.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  deletePost(closeReport:boolean) {
+    this.adminService.deletePost(this.itemToDelete!, this.reportData, closeReport);
+  }
+
+  /*
   Function Name: setSelected()
   Function Description: Sets the selected reason for reporting the post. The method is
                         triggered by the user checking radio buttons.

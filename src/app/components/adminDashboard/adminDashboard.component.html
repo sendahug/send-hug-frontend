@@ -85,7 +85,7 @@
 					<td>{{ report.reportReason }}</td>
 					<td>
 						<button class="appButton" (click)="editPost(report.postID, report.text, report.id)">Edit Post</button>
-						<button class="appButton" (click)="deletePost(report.postID, report.userID)">Delete Post</button>
+						<button class="appButton" (click)="deletePost(report.postID, report.userID, report.id)">Delete Post</button>
 						<button class="appButton" (click)="dismissReport(report.id)">Dismiss</button>
 					</td>
 				</tr>

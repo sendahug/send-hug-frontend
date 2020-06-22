@@ -140,11 +140,12 @@ export class AdminService {
   Function Description: Sends a request to delete the post. If successful, alerts
                         the user (via the ItemsService) that their post was deleted.
   Parameters: postID (number) - ID of the post to delete.
-              userID (number) - ID of the user who wrote the post.
+              reportData (any) - User ID and report ID.
+              closeReport (boolean) - whether to also close the report.
   ----------------
   Programmer: Shir Bar Lev.
   */
-  deletePost(postID:number, userID:number) {
+  deletePost(postID:number, reportData:any, closeReport:boolean) {
     const postUrl = this.serverUrl + `/posts/${postID}`;
 
     // delete the post from the database
@@ -156,9 +157,12 @@ export class AdminService {
       let message:Message = {
         from: this.authService.userData.displayName,
         fromId: this.authService.userData.id!,
-        forId: userID,
+        forId: reportData.userID,
         messageText: `Your post (ID ${response.deleted}) was deleted due to violating our community rules.`,
         date: new Date()
+      }
+      if(closeReport) {
+        this.dismissReport(reportData.reportID);
       }
       // send the message about the deleted post
       this.itemsService.sendMessage(message);

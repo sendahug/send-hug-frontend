@@ -146,11 +146,17 @@ export class AdminDashboard implements OnInit {
   Function Description: Sends a request to delete a post.
   Parameters: postID (number) - the ID of the post to delete.
               userID (number) - the ID of the user who wrote the post.
+              reportID (number) - the ID of the report.
   ----------------
   Programmer: Shir Bar Lev.
   */
-  deletePost(postID:number, userID:number) {
-    this.adminService.deletePost(postID, userID);
+  deletePost(postID:number, userID:number, reportID:number) {
+    this.editMode = true;
+    this.delete = true;
+    this.toDelete = 'ad post';
+    this.itemToDelete = postID;
+    this.reportData.reportID = reportID;
+    this.reportData.userID = userID;
   }
 
   /*

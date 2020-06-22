@@ -206,12 +206,12 @@ export class AdminService {
     let report:Report;
 
     // if the item is a user report, gets it from user reports array
-    if(this.userReports.filter(e => e.id == reportID)) {
+    if(this.userReports.filter(e => e.id == reportID).length) {
       report = this.userReports.filter(e => e.id == reportID)[0];
     }
     // if not, the item must be a post report, so gets it from the post reports array
     else {
-      report = this.userReports.filter(e => e.id == reportID)[0];
+      report = this.postReports.filter(e => e.id == reportID)[0];
     }
 
     // sets the dismissed and closed values to true

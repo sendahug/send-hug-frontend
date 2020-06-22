@@ -38,12 +38,12 @@
 			</thead>
 			<tbody>
 				<tr *ngFor="let report of adminService.userReports">
-					<td>{{ report.user_id }}</td>
+					<td>{{ report.userID }}</td>
 					<td>{{ report.displayName }}</td>
 					<td>{{ report.reporter }}</td>
 					<td>{{ report.reportReason }}</td>
 					<td>
-						<button class="appButton" (click)="blockUser(report.user_id)">Block User (One Day)</button>
+						<button class="appButton" (click)="blockUser(report.userID)">Block User (One Day)</button>
 						<button class="appButton" (click)="editUser(report.id, report.user_id, report.displayName)">Edit User</button>
 						<button class="appButton" (click)="dismissReport(report.id)">Dismiss</button>
 					</td>

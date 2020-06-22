@@ -151,6 +151,7 @@ export class AdminService {
     this.Http.delete(postUrl, {
       headers: this.authService.authHeader
     }).subscribe((response:any) => {
+      this.alertsService.createSuccessAlert(`Post ${response.deleted} was successfully deleted.`);
       // create a message from the admin to the user whose post was deleted
       let message:Message = {
         from: this.authService.userData.displayName,

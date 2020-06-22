@@ -19,9 +19,12 @@
 			</li>
 		</ul>
 	</div>
+	
+	<app-loader
+		[waitingFor]="waitFor"></app-loader>
 
 	<!-- Admin dashboard reports -->
-	<div class="adminScreen" id="adminReports" *ngIf="screen == 'reports'">
+	<div class="adminScreen" id="adminReports" *ngIf="screen == 'reports' && adminService.isReportsResolved.value">
 		<h3>Reports</h3>
 		
 		<h4 class="subTitle">Reported Users</h4>
@@ -106,7 +109,7 @@
 	</div>
 
 	<!-- Admin dashboard blocks -->
-	<div class="adminScreen" id="adminBlocks" *ngIf="screen == 'blocks'">
+	<div class="adminScreen" id="adminBlocks" *ngIf="screen == 'blocks' && adminService.isBlocksResolved.value">
 		<h3>Blocks</h3>
 		
 		<h4 class="subTitle">Block User</h4>
@@ -165,7 +168,7 @@
 	</div>
 
 	<!-- Admin dashboard filters -->
-	<div class="adminScreen" id="adminFilters" *ngIf="screen == 'filters'">
+	<div class="adminScreen" id="adminFilters" *ngIf="screen == 'filters' && adminService.isFiltersResolved.value">
 		<h3>Filters</h3>
 		
 		<h4 class="subTitle">Add Filter</h4>

@@ -51,6 +51,8 @@ export class AdminDashboard implements OnInit {
   toDelete: string | undefined;
   itemToDelete: number | undefined;
   report:boolean;
+  // loader sub-component variable
+  waitFor = `admin ${this.screen}`;
 
   // CTOR
   constructor(
@@ -98,6 +100,8 @@ export class AdminDashboard implements OnInit {
         else if(this.screen == 'filters') {
           this.adminService.getFilters();
         }
+
+        this.waitFor = `admin ${this.screen}`;
 
         // also unsubscribe from this to avoid sending the same request
         // multiple times

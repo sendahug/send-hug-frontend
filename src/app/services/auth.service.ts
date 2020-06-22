@@ -5,7 +5,7 @@
 
 // Angular imports
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 
 // Other essential imports
 import { BehaviorSubject } from 'rxjs';
@@ -229,6 +229,7 @@ export class AuthService {
       // error handling
     }, (err) => {
       this.isUserDataResolved.next(true);
+      this.alertsService.createErrorAlert(err);
     });
   }
 
@@ -354,7 +355,11 @@ export class AuthService {
       loginCount: this.userData.loginCount + 1
     }, {
       headers: this.authHeader
-    }).subscribe((_response:any) => {});
+    }).subscribe((_response:any) => {
+
+    }, (err: HttpErrorResponse) => {
+      this.alertsService.createErrorAlert(err);
+    });
   }
 
   /*

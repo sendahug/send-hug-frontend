@@ -139,11 +139,12 @@ export class AuthService {
     // if there's a JWT
     if(jwtPayload) {
       // attempts to get the user's data
-      this.Http.get(`${this.serverUrl}/users/${jwtPayload.sub}`, {
+      this.Http.get(`${this.serverUrl}/users/all/${jwtPayload.sub}`, {
         headers: new HttpHeaders({'Authorization': `Bearer ${this.token}`})
         // if successful, get the user data
       }).subscribe((response:any) => {
         let data = response.user;
+        console.log(response);
         this.userData = {
           id: data.id,
           auth0Id: jwtPayload.sub,
@@ -347,7 +348,7 @@ export class AuthService {
   Programmer: Shir Bar Lev.
   */
   updateUserData() {
-    this.Http.patch(`${this.serverUrl}/users/${this.userData.id}`, {
+    this.Http.patch(`${this.serverUrl}/users/all/${this.userData.id}`, {
       displayName: this.userData.displayName,
       receivedH: this.userData.receivedHugs,
       givenH: this.userData.givenHugs,

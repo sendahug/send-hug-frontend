@@ -11,7 +11,6 @@ import { BehaviorSubject } from 'rxjs';
 // App-related imports
 import { Post } from '../interfaces/post.interface';
 import { Message } from '../interfaces/message.interface';
-import { AlertMessage } from '../interfaces/alert.interface';
 import { Thread } from '../interfaces/thread.interface';
 import { OtherUser } from '../interfaces/otherUser.interface';
 import { Report } from '../interfaces/report.interface';
@@ -162,7 +161,7 @@ export class ItemsService {
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
       this.isUserPostsResolved[user].next(true);
-      this.createErrorAlert(err);
+      this.alertsService.createErrorAlert(err);
     })
   }
 
@@ -188,11 +187,11 @@ export class ItemsService {
       headers: this.authService.authHeader
     }).subscribe((response:any) => {
       if(response.success == true) {
-        this.createSuccessAlert('Your hug was sent!', true);
+        this.alertsService.createSuccessAlert('Your hug was sent!', true);
       }
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
-      this.createErrorAlert(err);
+      this.alertsService.createErrorAlert(err);
     });
   }
 
@@ -227,7 +226,7 @@ export class ItemsService {
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
       this.isOtherUserResolved.next(true);
-      this.createErrorAlert(err);
+      this.alertsService.createErrorAlert(err);
     });
   }
 
@@ -286,7 +285,7 @@ export class ItemsService {
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
       this.isUserInboxResolved.next(true);
-      this.createErrorAlert(err);
+      this.alertsService.createErrorAlert(err);
     })
   }
 
@@ -322,7 +321,7 @@ export class ItemsService {
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
       this.isUserOutboxResolved.next(true);
-      this.createErrorAlert(err);
+      this.alertsService.createErrorAlert(err);
     })
   }
 
@@ -365,7 +364,7 @@ export class ItemsService {
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
       this.isUserThreadsResolved.next(true);
-      this.createErrorAlert(err);
+      this.alertsService.createErrorAlert(err);
     })
   }
 
@@ -404,7 +403,7 @@ export class ItemsService {
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
       this.isThreadResolved.next(true);
-      this.createErrorAlert(err);
+      this.alertsService.createErrorAlert(err);
     })
   }
 
@@ -421,11 +420,11 @@ export class ItemsService {
       headers: this.authService.authHeader
     }).subscribe((response:any) => {
       if(response.success == true) {
-        this.createSuccessAlert('Your message was sent!', false, '/');
+        this.alertsService.createSuccessAlert('Your message was sent!', false, '/');
       }
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
-      this.createErrorAlert(err);
+      this.alertsService.createErrorAlert(err);
     })
   }
 
@@ -443,10 +442,10 @@ export class ItemsService {
     this.Http.delete(Url, {
       headers: this.authService.authHeader
     }).subscribe((response:any) => {
-      this.createSuccessAlert(`Message ${response.deleted} was deleted! Refresh to view the updated message list.`, true);
+      this.alertsService.createSuccessAlert(`Message ${response.deleted} was deleted! Refresh to view the updated message list.`, true);
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
-      this.createErrorAlert(err);
+      this.alertsService.createErrorAlert(err);
     })
   }
 
@@ -464,10 +463,10 @@ export class ItemsService {
     this.Http.delete(Url, {
       headers: this.authService.authHeader
     }).subscribe((response:any) => {
-      this.createSuccessAlert(`Message ${response.deleted} was deleted! Refresh to view the updated message list.`, true);
+      this.alertsService.createSuccessAlert(`Message ${response.deleted} was deleted! Refresh to view the updated message list.`, true);
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
-      this.createErrorAlert(err);
+      this.alertsService.createErrorAlert(err);
     })
   }
 
@@ -489,10 +488,10 @@ export class ItemsService {
       params: params,
       headers: this.authService.authHeader
     }).subscribe((response:any) => {
-      this.createSuccessAlert(`${response.deleted} messages were deleted! Refresh to view the updated mailbox.`, true);
+      this.alertsService.createSuccessAlert(`${response.deleted} messages were deleted! Refresh to view the updated mailbox.`, true);
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
-      this.createErrorAlert(err);
+      this.alertsService.createErrorAlert(err);
     })
   }
 
@@ -524,7 +523,7 @@ export class ItemsService {
       this.isSearching = false;
     }, (err:HttpErrorResponse) => {
       this.isSearchResolved.next(true);
-      this.createErrorAlert(err);
+      this.alertsService.createErrorAlert(err);
       this.isSearching = false;
     })
   }
@@ -548,57 +547,14 @@ export class ItemsService {
       // if successful, alert the user
       let sent_report: Report = response.report;
       if(sent_report.type == 'Post') {
-        this.createSuccessAlert(`Post number ${sent_report.postID} was successfully reported.`, false, '/');
+        this.alertsService.createSuccessAlert(`Post number ${sent_report.postID} was successfully reported.`, false, '/');
       }
       else {
-        this.createSuccessAlert(`User ${sent_report.userID} was successfully reported.`, false, '/');
+        this.alertsService.createSuccessAlert(`User ${sent_report.userID} was successfully reported.`, false, '/');
       }
     // if there's an error, alert the user
     }, (err:HttpErrorResponse) => {
-      this.createErrorAlert(err);
+      this.alertsService.createErrorAlert(err);
     })
-  }
-
-  // ALERT METHODS
-  // ==============================================================
-  /*
-  Function Name: createSuccessAlert()
-  Function Description: Creates an alert for the user to know their action succeeded.
-  Parameters: message (string) - the alert text.
-              reload (boolean) - whether a reload button is required; defaults to false.
-              navigate (string) - Optional parameter indicating the navigation target (if needed).
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  createSuccessAlert(message:string, reload:boolean = false, navigate?:string) {
-    // an alert message
-    let alert:AlertMessage = {
-      type: 'Success',
-      message: message
-    }
-
-    this.alertsService.createAlert(alert, reload, navigate);
-  }
-
-  /*
-  Function Name: createErrorAlert()
-  Function Description: Checks what type of error occurred and returns an alert.
-  Parameters: err (HttpErrorResponse) - The HTTP error response from the server.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  createErrorAlert(err:HttpErrorResponse) {
-    // an alert message
-    let alert:AlertMessage = {
-      type: 'Error',
-      message: err.error.message
-    }
-
-    // if it's an auth error, the structure is slightly different
-    if(err.status == 403 || err.status == 401) {
-      alert.message = err.error.message.description;
-    }
-
-    this.alertsService.createAlert(alert);
   }
 }

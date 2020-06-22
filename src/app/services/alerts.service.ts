@@ -5,6 +5,7 @@
 
 // Angular imports
 import { Injectable } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
 
 // App-related imports
 import { AlertMessage } from '../interfaces/alert.interface';
@@ -138,5 +139,48 @@ export class AlertsService {
     navButton.id = 'navButton';
     navButton.textContent = `Home Page`;
     alertMessage.append(navButton);
+  }
+
+  // ALERT METHODS
+  // ==============================================================
+  /*
+  Function Name: createSuccessAlert()
+  Function Description: Creates an alert for the user to know their action succeeded.
+  Parameters: message (string) - the alert text.
+              reload (boolean) - whether a reload button is required; defaults to false.
+              navigate (string) - Optional parameter indicating the navigation target (if needed).
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  createSuccessAlert(message:string, reload:boolean = false, navigate?:string) {
+    // an alert message
+    let alert:AlertMessage = {
+      type: 'Success',
+      message: message
+    }
+
+    this.createAlert(alert, reload, navigate);
+  }
+
+  /*
+  Function Name: createErrorAlert()
+  Function Description: Checks what type of error occurred and returns an alert.
+  Parameters: err (HttpErrorResponse) - The HTTP error response from the server.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  createErrorAlert(err:HttpErrorResponse) {
+    // an alert message
+    let alert:AlertMessage = {
+      type: 'Error',
+      message: err.error.message
+    }
+
+    // if it's an auth error, the structure is slightly different
+    if(err.status == 403 || err.status == 401) {
+      alert.message = err.error.message.description;
+    }
+
+    this.createAlert(alert);
   }
 }

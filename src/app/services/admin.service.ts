@@ -8,7 +8,6 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
 
 // App-related imports
-import { AlertMessage } from '../interfaces/alert.interface';
 import { Report } from '../interfaces/report.interface';
 import { Message } from '../interfaces/message.interface';
 import { AuthService } from './auth.service';
@@ -57,7 +56,7 @@ export class AdminService {
       this.postReports = response.postReports;
     // if there's an error, alert the user
     }, (err:HttpErrorResponse) => {
-      this.createErrorAlert(err);
+      this.alertsService.createErrorAlert(err);
     })
   }
 
@@ -88,7 +87,7 @@ export class AdminService {
       // send the message about the deleted post
       this.itemsService.sendMessage(message);
     }, (err:HttpErrorResponse) => {
-      this.createErrorAlert(err);
+      this.alertsService.createErrorAlert(err);
     })
   }
 
@@ -123,11 +122,11 @@ export class AdminService {
     }).subscribe((response:any) => {
       // if the report was dismissed, alert the user
       if(response.success) {
-        this.createSuccessAlert('The report was dismissed! Refresh the page to view the updated list.', true);
+        this.alertsService.createSuccessAlert('The report was dismissed! Refresh the page to view the updated list.', true);
       }
     // if there's an error, alert the user
     }, (err:HttpErrorResponse) => {
-      this.createErrorAlert(err);
+      this.alertsService.createErrorAlert(err);
     })
   }
 
@@ -150,7 +149,7 @@ export class AdminService {
       this.blockedUsers = response.users;
     // if there was an error, alert the user.
     }, (err:HttpErrorResponse) => {
-      this.createErrorAlert(err);
+      this.alertsService.createErrorAlert(err);
     })
   }
 
@@ -173,10 +172,10 @@ export class AdminService {
       headers: this.authService.authHeader
     // If successful, let the user know
     }).subscribe((response:any) => {
-      this.createSuccessAlert(`User ${response.updated} has been blocked until ${releaseDate}`, true);
+      this.alertsService.createSuccessAlert(`User ${response.updated} has been blocked until ${releaseDate}`, true);
     // if there was an error, alert the user.
     }, (err:HttpErrorResponse) => {
-      this.createErrorAlert(err);
+      this.alertsService.createErrorAlert(err);
     })
   }
 
@@ -198,10 +197,10 @@ export class AdminService {
     }, {
       headers: this.authService.authHeader
     }).subscribe((response:any) => {
-      this.createSuccessAlert(`User ${response.updated} has been unblocked.`, true);
+      this.alertsService.createSuccessAlert(`User ${response.updated} has been unblocked.`, true);
     // if there was an error, alert the user.
     }, (err:HttpErrorResponse) => {
-      this.createErrorAlert(err);
+      this.alertsService.createErrorAlert(err);
     })
   }
 
@@ -224,7 +223,7 @@ export class AdminService {
       this.filteredPhrases = response.words;
     // if there was an error, alert the user.
     }, (err:HttpErrorResponse) => {
-      this.createErrorAlert(err);
+      this.alertsService.createErrorAlert(err);
     })
   }
 
@@ -244,10 +243,10 @@ export class AdminService {
     }, {
       headers: this.authService.authHeader
     }).subscribe((response:any) => {
-      this.createSuccessAlert(`The phrase ${response.added} was added to the list of filtered words! Refresh to see the updated list.`, true);
+      this.alertsService.createSuccessAlert(`The phrase ${response.added} was added to the list of filtered words! Refresh to see the updated list.`, true);
     // if there was an error, alert the user.
     }, (err:HttpErrorResponse) => {
-      this.createErrorAlert(err);
+      this.alertsService.createErrorAlert(err);
     })
   }
 
@@ -266,53 +265,10 @@ export class AdminService {
     this.Http.delete(Url, {
       headers: this.authService.authHeader
     }).subscribe((response:any) => {
-      this.createSuccessAlert(`The phrase ${response.deleted} was removed from the list of filtered words. Refresh to see the updated list.`, true);
+      this.alertsService.createSuccessAlert(`The phrase ${response.deleted} was removed from the list of filtered words. Refresh to see the updated list.`, true);
     // if there was an error, alert the user.
     }, (err:HttpErrorResponse) => {
-      this.createErrorAlert(err);
+      this.alertsService.createErrorAlert(err);
     })
-  }
-
-  // ALERT METHODS
-  // ==============================================================
-  /*
-  Function Name: createSuccessAlert()
-  Function Description: Creates an alert for the user to know their action succeeded.
-  Parameters: message (string) - the alert text.
-              reload (boolean) - whether a reload button is required; defaults to false.
-              navigate (string) - Optional parameter indicating the navigation target (if needed).
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  createSuccessAlert(message:string, reload:boolean = false, navigate?:string) {
-    // an alert message
-    let alert:AlertMessage = {
-      type: 'Success',
-      message: message
-    }
-
-    this.alertsService.createAlert(alert, reload, navigate);
-  }
-
-  /*
-  Function Name: createErrorAlert()
-  Function Description: Checks what type of error occurred and returns an alert.
-  Parameters: err (HttpErrorResponse) - The HTTP error response from the server.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  createErrorAlert(err:HttpErrorResponse) {
-    // an alert message
-    let alert:AlertMessage = {
-      type: 'Error',
-      message: err.error.message
-    }
-
-    // if it's an auth error, the structure is slightly different
-    if(err.status == 403 || err.status == 401) {
-      alert.message = err.error.message.description;
-    }
-
-    this.alertsService.createAlert(alert);
   }
 }

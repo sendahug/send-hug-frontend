@@ -272,7 +272,6 @@ export class PopUp implements OnInit, OnChanges {
       dismissed: false,
       closed: false
     }
-    console.log(report);
 
     // pass it on to the items service to send
     this.itemsService.sendReport(report);

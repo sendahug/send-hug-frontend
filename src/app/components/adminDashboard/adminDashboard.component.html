@@ -43,7 +43,8 @@
 					<td>{{ report.reporter }}</td>
 					<td>{{ report.reportReason }}</td>
 					<td>
-						<button class="appButton" (click)="blockUser(report.reportedId)">Block User</button>
+						<button class="appButton" (click)="blockUser(report.reportedId)">Block User (One Day)</button>
+						<button class="appButton" (click)="editUser(report.id, report.reportedId, report.reportedDisplay)">Edit User</button>
 						<button class="appButton" (click)="dismissReport(report.id)">Dismiss</button>
 					</td>
 				</tr>
@@ -215,10 +216,11 @@
 </div>
 
 <app-pop-up *ngIf="editMode"
-			[editedItem]="postToEdit"
+			[editedItem]="toEdit"
 			[toEdit]="editType"
 			(editMode)="changeMode($event)"
 			[delete]="delete"
 			[toDelete]="toDelete"
 			[itemToDelete]="itemToDelete"
-			[report]="report"></app-pop-up>
+			[report]="report"
+			[reportData]="reportData"></app-pop-up>

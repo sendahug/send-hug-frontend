@@ -8,7 +8,6 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 // App imports
-import { Post } from '../../interfaces/post.interface';
 import { AuthService } from '../../services/auth.service';
 import { AdminService } from '../../services/admin.service';
 
@@ -36,9 +35,16 @@ export class AdminDashboard implements OnInit {
     }
   ]
   // edit popup sub-component variables
-  postToEdit: Post | undefined;
+  toEdit: any;
   editType: string | undefined;
   editMode:boolean;
+  reportData: {
+    userID: number,
+    reportID: number
+  } = {
+    userID: 0,
+    reportID: 0
+  }
   delete:boolean;
   toDelete: string | undefined;
   itemToDelete: number | undefined;
@@ -99,6 +105,23 @@ export class AdminDashboard implements OnInit {
   */
   blockUser(userID:number) {
     this.block(userID, 'oneDay');
+  }
+
+  /*
+  Function Name: editUser()
+  Function Description: Edits a user's display name.
+  Parameters: userID (number) - the ID of the user to edit.
+              reportID (number) - the ID of the report triggering the edit.
+              displayName (string) - the user's current display name.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  editUser(reportID:number, userID:number, displayName:string) {
+    this.editType = 'other user';
+    this.toEdit = displayName;
+    this.editMode = true;
+    this.reportData.reportID = reportID;
+    this.reportData.userID = userID;
   }
 
   /*

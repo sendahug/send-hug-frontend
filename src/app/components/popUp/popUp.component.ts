@@ -13,6 +13,7 @@ import { OtherUser } from '../../interfaces/otherUser.interface';
 import { AuthService } from '../../services/auth.service';
 import { ItemsService } from '../../services/items.service';
 import { PostsService } from '../../services/posts.service';
+import { AdminService } from '../../services/admin.service';
 
 // Reasons for submitting a report
 enum postReportReasons { Inappropriate, Spam, Offensive, Other };
@@ -43,12 +44,14 @@ export class PopUp implements OnInit, OnChanges {
   // type of item to report
   @Input() reportType: 'User' | 'Post' | undefined;
   selectedReason: string | undefined;
+  @Input() reportData: any;
 
   // CTOR
   constructor(
     public authService:AuthService,
     private itemsService:ItemsService,
-    private postsService:PostsService
+    private postsService:PostsService,
+    private adminService:AdminService
   ) {
 
   }
@@ -111,6 +114,26 @@ export class PopUp implements OnInit, OnChanges {
     this.authService.userData.displayName = newDisplayName;
     this.authService.updateUserData();
     this.editMode.emit(false);
+  }
+
+  /*
+  Function Name: editUser()
+  Function Description: Edits a user's display name.
+  Parameters: e (event) - This method is triggered by pressing a button; this parameter
+                          contains the click event data.
+              newDisplayName (string) - A string containing the user's new name.
+              closeReport (boolean) - whether to also close the report.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  editUser(e:Event, newDisplayName:string, closeReport:boolean) {
+    e.preventDefault();
+    let user = {
+      userID: this.reportData.userID,
+      displayName: newDisplayName
+    }
+
+    this.adminService.editUser(user, closeReport, this.reportData.reportID);
   }
 
   /*

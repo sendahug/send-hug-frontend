@@ -15,13 +15,24 @@
 		</form>
 		
 		<!-- If the user is editing a user -->
-		<form *ngIf="toEdit == 'user'" id="userEdit">
+		<form *ngIf="toEdit == 'user'" id="userEdit" class="userEdit">
 			<div class="formElement">
 				<label class="pageCategory" for="displayName">Display Name:</label>
 				<input #displayName type="text" id="displayName" value="{{ authService.userData.displayName }}">
 			</div>
 			
 			<button type="submit" class="appButton updateItem" (click)="updateDisplayN($event, displayName.value)">Update</button>
+		</form>
+		
+		<!-- If the user is editing another user -->
+		<form *ngIf="toEdit == 'other user'" id="otherUserEdit" class="userEdit">
+			<div class="formElement">
+				<label class="pageCategory" for="uDisplayName">Display Name:</label>
+				<input #uDisplayName type="text" id="uDisplayName" value="{{ editedItem }}">
+			</div>
+			
+			<button type="submit" class="appButton updateItem" (click)="editUser($event, displayName.value, true)">Update and Close Report</button>
+			<button type="submit" class="appButton updateItem" (click)="editUser($event, displayName.value, false)">Update without Closing Report</button>
 		</form>
 		
 		<!-- If the user is deleting something -->

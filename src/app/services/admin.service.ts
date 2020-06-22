@@ -6,6 +6,7 @@
 // Angular imports
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
+import { BehaviorSubject } from 'rxjs';
 
 // App-related imports
 import { Report } from '../interfaces/report.interface';
@@ -23,8 +24,11 @@ export class AdminService {
   readonly serverUrl = environment.production ? prodEnv.backend.domain! : environment.backend.domain;
   userReports: Report[] = [];
   postReports: Report[] = [];
+  isReportsResolved = new BehaviorSubject(false);
   blockedUsers = [];
+  isBlocksResolved = new BehaviorSubject(false);
   filteredPhrases = [];
+  isFiltersResolved = new BehaviorSubject(false);
   // pagination
   currentPage = {
     userReports: 1,
@@ -90,6 +94,7 @@ export class AdminService {
     const params = new HttpParams()
       .set('userPage', `${this.currentPage.userReports}`)
       .set('postPage', `${this.currentPage.postReports}`);
+    this.isReportsResolved.next(false);
 
     // Get reports
     this.Http.get(Url, {
@@ -101,8 +106,10 @@ export class AdminService {
       this.totalPages.userReports = response.totalUserPages;
       this.postReports = response.postReports;
       this.totalPages.postReports = response.totalPostPages;
+      this.isReportsResolved.next(true);
     // if there's an error, alert the user
     }, (err:HttpErrorResponse) => {
+      this.isReportsResolved.next(true);
       this.alertsService.createErrorAlert(err);
     })
   }
@@ -249,6 +256,7 @@ export class AdminService {
   getBlockedUsers() {
     const Url = this.serverUrl + `/users/blocked`;
     const params = new HttpParams().set('page', `${this.currentPage.blockedUsers}`);
+    this.isBlocksResolved.next(false);
 
     // try to fetch blocked users
     this.Http.get(Url, {
@@ -257,8 +265,10 @@ export class AdminService {
     }).subscribe((response:any) => {
       this.blockedUsers = response.users;
       this.totalPages.blockedUsers = response.total_pages;
+      this.isBlocksResolved.next(true);
     // if there was an error, alert the user.
     }, (err:HttpErrorResponse) => {
+      this.isBlocksResolved.next(true);
       this.alertsService.createErrorAlert(err);
     })
   }
@@ -330,6 +340,7 @@ export class AdminService {
   getFilters() {
     const Url = this.serverUrl + '/filters';
     const params = new HttpParams().set('page', `${this.currentPage.filteredPhrases}`);
+    this.isFiltersResolved.next(false);
 
     // try to fetch the list of words
     this.Http.get(Url, {
@@ -338,8 +349,10 @@ export class AdminService {
     }).subscribe((response:any) => {
       this.filteredPhrases = response.words;
       this.totalPages.filteredPhrases = response.total_pages;
+      this.isFiltersResolved.next(true);
     // if there was an error, alert the user.
     }, (err:HttpErrorResponse) => {
+      this.isFiltersResolved.next(true);
       this.alertsService.createErrorAlert(err);
     })
   }

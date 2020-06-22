@@ -50,6 +50,15 @@
 			</tbody>
 		</table>
 		
+		<!-- User reports pagination -->
+		<div class="pagination" *ngIf="adminService.userReports.length">
+			<button *ngIf="adminService.currentPage.userReports > 1" class="appButton prevButton" (click)="prevPage('userReports')">Previous Page</button>
+			<button *ngIf="adminService.currentPage.userReports <= 1" class="appButton hidden" (click)="prevPage('userReports')">Previous Page</button>
+			<div class="pageCount">Page {{ adminService.currentPage.userReports }} of {{ adminService.totalPages.userReports }}</div>
+			<button *ngIf="adminService.totalPages.userReports > adminService.currentPage.userReports" class="appButton nextButton" (click)="nextPage('userReports')">Next Page</button>
+			<button *ngIf="adminService.totalPages.userReports <= adminService.currentPage.userReports" class="appButton hidden" (click)="nextPage('userReports')">Next Page</button>
+		</div>
+		
 		<!-- If there are no open user reports -->
 		<div *ngIf="!adminService.userReports.length" class="errorMessage">There are no user reports waiting for review.</div>
 		
@@ -80,6 +89,15 @@
 				</tr>
 			</tbody>
 		</table>
+		
+		<!-- Post reports pagination -->
+		<div class="pagination" *ngIf="adminService.postReports.length">
+			<button *ngIf="adminService.currentPage.postReports > 1" class="appButton prevButton" (click)="prevPage('postReports')">Previous Page</button>
+			<button *ngIf="adminService.currentPage.postReports <= 1" class="appButton hidden" (click)="prevPage('postReports')">Previous Page</button>
+			<div class="pageCount">Page {{ adminService.currentPage.postReports }} of {{ adminService.totalPages.postReports }}</div>
+			<button *ngIf="adminService.totalPages.postReports > adminService.currentPage.postReports" class="appButton nextButton" (click)="nextPage('postReports')">Next Page</button>
+			<button *ngIf="adminService.totalPages.postReports <= adminService.currentPage.postReports" class="appButton hidden" (click)="nextPage('postReports')">Next Page</button>
+		</div>
 		
 		<!-- If there are no open post reports -->
 		<div *ngIf="!adminService.postReports.length" class="errorMessage">There are no post reports waiting for review.</div>
@@ -131,6 +149,15 @@
 			</tbody>
 		</table>
 		
+		<!-- Blocked users pagination -->
+		<div class="pagination" *ngIf="adminService.blockedUsers.length">
+			<button *ngIf="adminService.currentPage.blockedUsers > 1" class="appButton prevButton" (click)="prevPage('blockedUsers')">Previous Page</button>
+			<button *ngIf="adminService.currentPage.blockedUsers <= 1" class="appButton hidden" (click)="prevPage('blockedUsers')">Previous Page</button>
+			<div class="pageCount">Page {{ adminService.currentPage.blockedUsers }} of {{ adminService.totalPages.blockedUsers }}</div>
+			<button *ngIf="adminService.totalPages.blockedUsers > adminService.currentPage.blockedUsers" class="appButton nextButton" (click)="nextPage('blockedUsers')">Next Page</button>
+			<button *ngIf="adminService.totalPages.blockedUsers <= adminService.currentPage.blockedUsers" class="appButton hidden" (click)="nextPage('blockedUsers')">Next Page</button>
+		</div>
+		
 		<!-- If there are no blocked users -->
 		<div *ngIf="!adminService.blockedUsers.length" class="errorMessage">There are no blocked users.</div>
 	</div>
@@ -167,6 +194,15 @@
 				</tr>
 			</tbody>
 		</table>
+		
+		<!-- Filtered words pagination -->
+		<div class="pagination" *ngIf="adminService.filteredPhrases.length">
+			<button *ngIf="adminService.currentPage.filteredPhrases > 1" class="appButton prevButton" (click)="prevPage('filteredPhrases')">Previous Page</button>
+			<button *ngIf="adminService.currentPage.filteredPhrases <= 1" class="appButton hidden" (click)="prevPage('filteredPhrases')">Previous Page</button>
+			<div class="pageCount">Page {{ adminService.currentPage.filteredPhrases }} of {{ adminService.totalPages.filteredPhrases }}</div>
+			<button *ngIf="adminService.totalPages.filteredPhrases > adminService.currentPage.filteredPhrases" class="appButton nextButton" (click)="nextPage('filteredPhrases')">Next Page</button>
+			<button *ngIf="adminService.totalPages.filteredPhrases <= adminService.currentPage.filteredPhrases" class="appButton hidden" (click)="nextPage('filteredPhrases')">Next Page</button>
+		</div>
 		
 		<!-- If there are no filtered phrases -->
 		<div *ngIf="!adminService.filteredPhrases.length" class="errorMessage">There are no filtered phrases.</div>

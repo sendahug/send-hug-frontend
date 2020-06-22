@@ -11,6 +11,8 @@ import { ActivatedRoute } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { AdminService } from '../../services/admin.service';
 
+type AdminList = 'userReports' | 'postReports' | 'blockedUsers' | 'filteredPhrases';
+
 @Component({
   selector: 'app-admin-dashboard',
   templateUrl: './adminDashboard.component.html'
@@ -186,5 +188,31 @@ export class AdminDashboard implements OnInit {
   */
   removeFilter(filter:string) {
     this.adminService.removeFilter(filter);
+  }
+
+  // GENERAL METHODS
+  /*
+  // ==================================================================
+  Function Name: nextPage()
+  Function Description: Go to the next page.
+  Parameters: None.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  nextPage(type:AdminList) {
+    this.adminService.currentPage[type] += 1;
+    this.adminService.getPage(type);
+  }
+
+  /*
+  Function Name: prevPage()
+  Function Description: Go to the previous page.
+  Parameters: None.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  prevPage(type:AdminList) {
+    this.adminService.currentPage[type] -= 1;
+    this.adminService.getPage(type);
   }
 }

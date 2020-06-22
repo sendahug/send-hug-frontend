@@ -10,6 +10,7 @@ import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http'
 // App-related imports
 import { Report } from '../interfaces/report.interface';
 import { Message } from '../interfaces/message.interface';
+import { OtherUser } from '../interfaces/otherUser.interface';
 import { AuthService } from './auth.service';
 import { AlertsService } from './alerts.service';
 import { ItemsService } from './items.service';
@@ -134,6 +135,32 @@ export class AdminService {
       // send the message about the deleted post
       this.itemsService.sendMessage(message);
     }, (err:HttpErrorResponse) => {
+      this.alertsService.createErrorAlert(err);
+    })
+  }
+
+  /*
+  Function Name: editUser()
+  Function Description: Sends a request to edit the user's display name. If necessary,
+                        also closes the report.
+  Parameters: postID (number) - ID of the post to delete.
+              userID (number) - ID of the user who wrote the post.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  editUser(user:any, closeReport:boolean, reportID:number) {
+    const Url = this.serverUrl + `/users/${user.id}`;
+
+    // update the user's display name
+    this.Http.patch(Url, user, {
+      headers: this.authService.authHeader
+    }).subscribe((response:any) => {
+      this.alertsService.createSuccessAlert(`User ${response.updated.displayName} updated.`, closeReport);
+      // if the report should be closed
+      if(closeReport) {
+        this.dismissReport(reportID);
+      }
+    }, (err: HttpErrorResponse) => {
       this.alertsService.createErrorAlert(err);
     })
   }

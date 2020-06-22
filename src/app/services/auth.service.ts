@@ -144,7 +144,6 @@ export class AuthService {
         // if successful, get the user data
       }).subscribe((response:any) => {
         let data = response.user;
-        console.log(response);
         this.userData = {
           id: data.id,
           auth0Id: jwtPayload.sub,
@@ -229,7 +228,6 @@ export class AuthService {
       this.isUserDataResolved.next(true);
       // error handling
     }, (err) => {
-      console.log(err);
       this.isUserDataResolved.next(true);
     });
   }
@@ -356,9 +354,7 @@ export class AuthService {
       loginCount: this.userData.loginCount + 1
     }, {
       headers: this.authHeader
-    }).subscribe((response:any) => {
-      console.log(response);
-    });
+    }).subscribe((_response:any) => {});
   }
 
   /*

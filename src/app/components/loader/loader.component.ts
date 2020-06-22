@@ -88,7 +88,6 @@ export class Loader implements OnInit, OnChanges {
       else {
         // subscribe to the subject following user data
         this.subsciption = this.authService.isUserDataResolved.subscribe((value) => {
-          console.log(value);
           // the subject's value is changed to 'true' upon fetching user data,
           // so if the value is true, there's no longer need for the loader
           // screen.

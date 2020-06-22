@@ -10,7 +10,6 @@ import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http'
 // App-related imports
 import { Report } from '../interfaces/report.interface';
 import { Message } from '../interfaces/message.interface';
-import { OtherUser } from '../interfaces/otherUser.interface';
 import { AuthService } from './auth.service';
 import { AlertsService } from './alerts.service';
 import { ItemsService } from './items.service';
@@ -103,6 +102,33 @@ export class AdminService {
       this.postReports = response.postReports;
       this.totalPages.postReports = response.totalPostPages;
     // if there's an error, alert the user
+    }, (err:HttpErrorResponse) => {
+      this.alertsService.createErrorAlert(err);
+    })
+  }
+
+  /*
+  Function Name: editPost()
+  Function Description: Edits a reported post's text.
+  Parameters: post (any) - the ID and new text of the post.
+              reportID (number) - the ID of the report triggering the edit.
+              closeReport (boolean) - whether or not to also close the report.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  editPost(post:any, closeReport:boolean, reportID:number) {
+    const Url = this.serverUrl + `/posts/${post.postID}`;
+
+    // try to edit the psot
+    this.Http.patch(Url, post, {
+      headers: this.authService.authHeader
+    }).subscribe((response:any) => {
+      this.alertsService.createSuccessAlert(`Post ${response.updated.id} updated.`, closeReport);
+      // if the report should be closed
+      if(closeReport) {
+        this.dismissReport(reportID);
+      }
+    // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
       this.alertsService.createErrorAlert(err);
     })

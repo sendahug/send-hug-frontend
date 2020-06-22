@@ -2,7 +2,7 @@
 	<div id="editPopup">
 		<button id="exitButton" (click)="exitEdit()"><i class="fas fa-times"></i></button>
 		<!-- If the user is editing a post -->
-		<form *ngIf="toEdit == 'post'" id="postEdit">
+		<form *ngIf="toEdit == 'post'" id="postEdit" class="postEdit">
 			<div class="formElement">
 				<span class="pageCategory">By:</span> <span class="pageData">{{ editedItem.displayName }}</span>
 			</div>
@@ -12,6 +12,16 @@
 				<textarea #postText id="postText" cols="40" rows="4">{{ editedItem.text }}</textarea>
 			</div>
 			<button type="submit" class="appButton sendData" (click)="updatePost($event, postText.value)">Update</button>
+		</form>
+		
+		<!-- If the user is editing a post from the report's page -->
+		<form *ngIf="toEdit == 'admin post'" id="adPostEdit" class="postEdit">
+			<div class="formElement">
+				<label class="pageCategory" for="adPostText">Text:</label>
+				<textarea #adPostText id="adPostText" cols="40" rows="4">{{ editedItem }}</textarea>
+			</div>
+			<button type="submit" class="appButton sendData" (click)="editPost($event, adPostText.value, true)">Update and Close Report</button>
+			<button type="submit" class="appButton sendData" (click)="editPost($event, adPostText.value, false)">Update without Closing Report</button>
 		</form>
 		
 		<!-- If the user is editing a user -->

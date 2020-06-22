@@ -39,10 +39,10 @@ export class AdminDashboard implements OnInit {
   editType: string | undefined;
   editMode:boolean;
   reportData: {
-    userID: number,
-    reportID: number
+    userID?: number,
+    reportID: number,
+    postID?: number
   } = {
-    userID: 0,
     reportID: 0
   }
   delete:boolean;
@@ -122,6 +122,23 @@ export class AdminDashboard implements OnInit {
     this.editMode = true;
     this.reportData.reportID = reportID;
     this.reportData.userID = userID;
+  }
+
+  /*
+  Function Name: editPost()
+  Function Description: Edits a reported post's text.
+  Parameters: postID (number) - the ID of the post to edit.
+              reportID (number) - the ID of the report triggering the edit.
+              postText (string) - the post's current text.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  editPost(postID:number, postText:string, reportID:number) {
+    this.editType = 'admin post';
+    this.toEdit = postText;
+    this.editMode = true;
+    this.reportData.reportID = reportID;
+    this.reportData.postID = postID;
   }
 
   /*

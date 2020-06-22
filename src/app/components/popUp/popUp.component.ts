@@ -153,6 +153,26 @@ export class PopUp implements OnInit, OnChanges {
   }
 
   /*
+  Function Name: editPost()
+  Function Description: Edits a post's text.
+  Parameters: e (event) - This method is triggered by pressing a button; this parameter
+                          contains the click event data.
+              newText (string) - A string containing the new post's text.
+              closeReport (boolean) - whether to also close the report.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  editPost(e:Event, newText:string, closeReport:boolean) {
+    e.preventDefault();
+    let post = {
+      text: newText,
+      id: this.reportData.postID
+    }
+
+    this.adminService.editPost(post, closeReport, this.reportData.reportID);
+  }
+
+  /*
   Function Name: deleteItem()
   Function Description: Sends a request to delete a post or a message to the items service.
   Parameters: None.

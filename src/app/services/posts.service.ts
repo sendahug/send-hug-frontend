@@ -133,17 +133,24 @@ export class PostsService {
   Programmer: Shir Bar Lev.
   */
   sendPost(post: Post) {
-    const Url = this.serverUrl + '/posts';
-    this.Http.post(Url, post, {
-      headers: this.authService.authHeader
-    }).subscribe((response:any) => {
-      if(response.success == true) {
-        this.createSuccessAlert('Your post was published! Return to home page to view the post.', false, '/');
-      }
-    // if there was an error, alert the user
-    }, (err:HttpErrorResponse) => {
-      this.createErrorAlert(err);
-    })
+    // if the user isn't blocked, let them post
+    if(!this.authService.userData.blocked) {
+      const Url = this.serverUrl + '/posts';
+      this.Http.post(Url, post, {
+        headers: this.authService.authHeader
+      }).subscribe((response:any) => {
+        if(response.success == true) {
+          this.createSuccessAlert('Your post was published! Return to home page to view the post.', false, '/');
+        }
+      // if there was an error, alert the user
+      }, (err:HttpErrorResponse) => {
+        this.createErrorAlert(err);
+      })
+    }
+    // if they're blocked, alert them they cannot post while blocked
+    else {
+      this.alertsService.createAlert({ type: 'Error', message: `You cannot post new posts while you're blocked. You're blocked until ${this.authService.userData.releaseDate}.` });
+    }
   }
 
   /*

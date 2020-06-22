@@ -41,8 +41,8 @@
 				<input #uDisplayName type="text" id="uDisplayName" value="{{ editedItem }}">
 			</div>
 			
-			<button type="submit" class="appButton updateItem" (click)="editUser($event, displayName.value, true)">Update and Close Report</button>
-			<button type="submit" class="appButton updateItem" (click)="editUser($event, displayName.value, false)">Update without Closing Report</button>
+			<button (click)="editUser($event, uDisplayName.value, true)" type="submit" class="appButton updateItem">Update and Close Report</button>
+			<button (click)="editUser($event, uDisplayName.value, false)" type="submit" class="appButton updateItem">Update without Closing Report</button>
 		</form>
 		
 		<!-- If the user is deleting something -->

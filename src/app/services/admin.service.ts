@@ -119,16 +119,16 @@ export class AdminService {
   */
   editPost(post:any, closeReport:boolean, reportID:number) {
     const Url = this.serverUrl + `/posts/${post.id}`;
+    // if the report should be closed
+    if(closeReport) {
+      post['closeReport'] = reportID;
+    }
 
     // try to edit the psot
     this.Http.patch(Url, post, {
       headers: this.authService.authHeader
     }).subscribe((response:any) => {
       this.alertsService.createSuccessAlert(`Post ${response.updated.id} updated.`, closeReport);
-      // if the report should be closed
-      if(closeReport) {
-        this.dismissReport(reportID);
-      }
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
       this.alertsService.createErrorAlert(err);
@@ -183,16 +183,16 @@ export class AdminService {
   */
   editUser(user:any, closeReport:boolean, reportID:number) {
     const Url = this.serverUrl + `/users/all/${user.userID}`;
+    // if the report should be closed
+    if(closeReport) {
+      user['closeReport'] = reportID;
+    }
 
     // update the user's display name
     this.Http.patch(Url, user, {
       headers: this.authService.authHeader
     }).subscribe((response:any) => {
       this.alertsService.createSuccessAlert(`User ${response.updated.displayName} updated.`, closeReport);
-      // if the report should be closed
-      if(closeReport) {
-        this.dismissReport(reportID);
-      }
     }, (err: HttpErrorResponse) => {
       this.alertsService.createErrorAlert(err);
     })

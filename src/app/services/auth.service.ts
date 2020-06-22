@@ -46,7 +46,9 @@ export class AuthService {
     postsNum: 0,
     loginCount: 0,
     role: '',
-    jwt: ''
+    jwt: '',
+    blocked: false,
+    releaseDate: undefined
   }
   // documents whether the user just logged in or they're still logged in following
   // their previous login
@@ -151,7 +153,9 @@ export class AuthService {
           postsNum: data.posts,
           loginCount: data.loginCount,
           role: data.role,
-          jwt: this.token
+          jwt: this.token,
+          blocked: data.blocked,
+          releaseDate: data.releaseDate
         }
         // set the authentication-variables accordingly
         this.authenticated = true;
@@ -213,7 +217,9 @@ export class AuthService {
         postsNum: data.postsNum,
         loginCount: data.loginCount,
         role: data.role,
-        jwt: this.token
+        jwt: this.token,
+        blocked: data.blocked,
+        releaseDate: data.releaseDate
       }
       // set the authentication-variables accordingly
       this.authenticated = true;
@@ -252,7 +258,9 @@ export class AuthService {
       postsNum: 0,
       loginCount: 0,
       role: '',
-      jwt: ''
+      jwt: '',
+      blocked: false,
+      releaseDate: undefined
     }
     localStorage.setItem("ACTIVE_JWT", '');
 

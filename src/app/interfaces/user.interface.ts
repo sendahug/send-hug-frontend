@@ -11,4 +11,6 @@ export interface User {
   loginCount: number;
   role: string;
   jwt: string;
+  blocked: boolean;
+  releaseDate: Date | undefined;
 }

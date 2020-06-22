@@ -307,7 +307,7 @@ export class AdminService {
     }, {
       headers: this.authService.authHeader
     }).subscribe((response:any) => {
-      this.alertsService.createSuccessAlert(`User ${response.updated} has been unblocked.`, true);
+      this.alertsService.createSuccessAlert(`User ${response.updated.id} has been unblocked.`, true);
     // if there was an error, alert the user.
     }, (err:HttpErrorResponse) => {
       this.alertsService.createErrorAlert(err);

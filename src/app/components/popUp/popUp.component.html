@@ -46,7 +46,7 @@
 		</form>
 		
 		<!-- If the user is deleting something -->
-		<div *ngIf="delete && toDelete == 'post'" id="deleteItem" class="deleteItem">
+		<div *ngIf="delete && toDelete != 'ad post'" id="deleteItem" class="deleteItem">
 			<div>Are you sure you want to delete this item?</div>
 			<div class="warning">This action is irreversible!</div>
 			

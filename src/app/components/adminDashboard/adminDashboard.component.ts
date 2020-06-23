@@ -11,6 +11,7 @@ import { Subscription } from 'rxjs';
 // App imports
 import { AuthService } from '../../services/auth.service';
 import { AdminService } from '../../services/admin.service';
+import { AlertsService } from '../../services/alerts.service';
 
 type AdminList = 'userReports' | 'postReports' | 'blockedUsers' | 'filteredPhrases';
 
@@ -59,7 +60,8 @@ export class AdminDashboard implements OnInit {
   constructor(
     private route:ActivatedRoute,
     public authService:AuthService,
-    public adminService:AdminService
+    public adminService:AdminService,
+    private alertsService:AlertsService
   ) {
     this.route.url.subscribe(params => {
       if(params[0] && params[0].path) {
@@ -204,7 +206,15 @@ export class AdminDashboard implements OnInit {
   block(e:Event, userID:number, length:string) {
     // prevent submit button default behaviour
     e.preventDefault();
-    this.checkBlock(userID, length);
+
+    // if the user is trying to block another user, let them
+    if(userID != this.authService.userData.id) {
+      this.checkBlock(userID, length);
+    }
+    // otherwise alert that they can't block themselves
+    else {
+      this.alertsService.createAlert({ type: 'Error', message: 'You cannot block yourself.' });
+    }
   }
 
   /*

@@ -1,8 +1,8 @@
 <div id="items">
 	<h2 class="listTitle">{{ type }} Items</h2>
 	<!-- If there are items in the list -->
-	<ul id="fullItems" *ngIf="itemsService.fullItemsList['full' + type + 'Items'].length > 0">
-		<li *ngFor="let item of itemsService.fullItemsList['full' + type + 'Items']" class="newItem">
+	<ul id="fullItems" *ngIf="postsService.fullItemsList['full' + type + 'Items'].length > 0">
+		<li *ngFor="let item of postsService.fullItemsList['full' + type + 'Items']" class="newItem">
 			<div class="itemText">{{ item.text }}</div>
 			<div class="itemUser">By <a [routerLink]="['/user', item.userId ]" class="profileLink">{{ item.user }}</a></div>
 			<div class="buttonsContainer">
@@ -11,6 +11,7 @@
 					<span class="badge">{{ item.givenHugs }}</span>
 				</div>
 				<a [routerLink]="['/new', 'Message']" [queryParams]="{user: item.user, userID: item.userId}" class="appButton messageButton"><i class="fas fa-comments"></i></a>
+				<button class="appButton reportButton" (click)="reportPost(item)"><i class="fas fa-flag"></i></button>
 				<button *ngIf="authService.canUser('patch:any-post')" class="appButton editButton" (click)="editPost(item)"><i class="far fa-edit"></i></button>
 				<button *ngIf="authService.canUser('delete:any-post')" class="appButton deleteButton" (click)="deletePost(item.id)"><i class="fas fa-times"></i></button>
 			</div>
@@ -18,15 +19,15 @@
 	</ul>
 	
 	<!-- If there are no items in the list -->
-	<div class="errorMessage" *ngIf="itemsService.fullItemsList['full' + type + 'Items'].length == 0">There are no posts.</div>
+	<div class="errorMessage" *ngIf="postsService.fullItemsList['full' + type + 'Items'].length == 0">There are no posts.</div>
 	
 	<!-- Post pagination -->
 	<div class="pagination">
-		<button *ngIf="itemsService.fullItemsPage['full' + type + 'Items'] > 1" class="appButton prevButton" (click)="prevPage()">Previous Page</button>
-		<button *ngIf="itemsService.fullItemsPage['full' + type + 'Items'] <= 1" class="appButton hidden" (click)="prevPage()">Previous Page</button>
-		<div class="pageCount">Page {{ itemsService.fullItemsPage['full' + type + 'Items'] }} of {{ itemsService.totalFullItemsPage['full' + type + 'Items'] }}</div>
-		<button *ngIf="itemsService.totalFullItemsPage['full' + type + 'Items'] > itemsService.fullItemsPage['full' + type + 'Items']" class="appButton nextButton" (click)="nextPage()">Next Page</button>
-		<button *ngIf="itemsService.totalFullItemsPage['full' + type + 'Items'] <= itemsService.fullItemsPage['full' + type + 'Items']" class="appButton hidden" (click)="nextPage()">Next Page</button>
+		<button *ngIf="postsService.fullItemsPage['full' + type + 'Items'] > 1" class="appButton prevButton" (click)="prevPage()">Previous Page</button>
+		<button *ngIf="postsService.fullItemsPage['full' + type + 'Items'] <= 1" class="appButton hidden" (click)="prevPage()">Previous Page</button>
+		<div class="pageCount">Page {{ postsService.fullItemsPage['full' + type + 'Items'] }} of {{ postsService.totalFullItemsPage['full' + type + 'Items'] }}</div>
+		<button *ngIf="postsService.totalFullItemsPage['full' + type + 'Items'] > postsService.fullItemsPage['full' + type + 'Items']" class="appButton nextButton" (click)="nextPage()">Next Page</button>
+		<button *ngIf="postsService.totalFullItemsPage['full' + type + 'Items'] <= postsService.fullItemsPage['full' + type + 'Items']" class="appButton hidden" (click)="nextPage()">Next Page</button>
 	</div>
 </div>
 
@@ -36,4 +37,7 @@
 			(editMode)="changeMode($event)"
 			[delete]="delete"
 			[toDelete]="toDelete"
-			[itemToDelete]="itemToDelete"></app-pop-up>
+			[itemToDelete]="itemToDelete"
+			[report]="report"
+			[reportedItem]="reportedItem"
+			[reportType]="reportType"></app-pop-up>

@@ -34,6 +34,7 @@
 			<button *ngIf="itemsService.totalUserMessagesPages[messType] > itemsService.userMessagesPage[messType]" class="appButton nextButton" (click)="nextPage()">Next Page</button>
 			<button *ngIf="itemsService.totalUserMessagesPages[messType] <= itemsService.userMessagesPage[messType]" class="appButton hidden" (click)="nextPage()">Next Page</button>
 		</div>
+		<button class="appButton deleteButton" (click)="deleteAllMessages(messType)">Delete All Messages</button>
 	</div>
 	
 	<!-- If there are no messages in the user's inbox -->
@@ -65,6 +66,7 @@
 				</div>
 			</li>
 		</ul>
+		<button class="appButton deleteButton" (click)="deleteAllMessages('threads')">Delete All Threads</button>
 		
 			<!-- If there are no messages in the user's inbox -->
 			<div *ngIf="!itemsService.userThreads.length && itemsService.isUserThreadsResolved.value">
@@ -110,4 +112,5 @@
 			(editMode)="changeMode($event)"
 			[delete]="delete"
 			[toDelete]="toDelete"
-			[itemToDelete]="itemToDelete"></app-pop-up>
+			[itemToDelete]="itemToDelete"
+			[messType]="messType"></app-pop-up>

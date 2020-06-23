@@ -2,7 +2,8 @@
 	<h1 id="mainTitle">Send a Hug</h1>
 	<nav id="navMenu">
 		<a *ngFor="let tab of navTabs" [routerLink]="(tab.link)" class="navLink">{{tab.name}}</a>
-		<a *ngIf="authService.authenticated" [routerLink]="['/new', 'Post']" class="navLink">New Post</a>
+		<a *ngIf="authService.authenticated && !authService.userData.blocked" [routerLink]="['/new', 'Post']" class="navLink">New Post</a>
+		<a *ngIf="authService.canUser('read:admin-board')" [routerLink]="['/admin']" class="navLink">Admin Dashboard</a>
 	</nav>
 	<form id="search">
 		<label class="pageCategory" for="searchQuery" id="searchLabel">Search: </label>

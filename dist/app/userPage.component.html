@@ -29,6 +29,7 @@
 			</div>
 			
 			<button id="editName" class="appButton" (click)="editName()" *ngIf="!itemsService.isOtherUser">Edit Display Name</button>
+			<button class="appButton reportButton" (click)="reportUser(itemsService.otherUserData)" *ngIf="itemsService.isOtherUser">Report User</button>
 		</div>
 
 		<app-my-posts
@@ -48,4 +49,7 @@
 <app-pop-up *ngIf="editMode"
 			[editedItem]="userToEdit"
 			[toEdit]="editType"
-			(editMode)="changeMode($event)"></app-pop-up>
+			(editMode)="changeMode($event)"
+			[report]="report"
+			[reportedItem]="reportedItem"
+			[reportType]="reportType"></app-pop-up>

@@ -14,6 +14,7 @@
 				<button class="appButton hugButton"><i class="fab fa-gratipay"></i></button>
 				<span class="badge">{{ post.givenHugs }}</span>
 			</div>
+			<button *ngIf="(user == 'other')" class="appButton reportButton" (click)="reportPost(item)"><i class="fas fa-flag"></i></button>
 			<button *ngIf="(user == 'self') || (authService.canUser('patch:any-post'))" class="appButton editButton" (click)="editPost(post)">Edit</button>
 			<button *ngIf="(user == 'self') || (authService.canUser('delete:any-post'))" class="appButton deleteButton" (click)="deletePost(post.id)">Delete</button>
 		</div>
@@ -25,6 +26,7 @@
 			<button *ngIf="itemsService.totalUserPostsPages[user] > itemsService.userPostsPage[user]" class="appButton nextButton" (click)="nextPage()">Next Page</button>
 			<button *ngIf="itemsService.totalUserPostsPages[user] <= itemsService.userPostsPage[user]" class="appButton hidden" (click)="nextPage()">Next Page</button>
 		</div>
+		<button *ngIf="(user == 'self') || (authService.canUser('delete:any-post'))" class="appButton deleteButton" (click)="deleteAllPosts()">Delete All Posts</button>
 	</div>
 	
 	<!-- If the user doesn't have posts, displays an error message -->
@@ -40,4 +42,7 @@
 			(editMode)="changeMode($event)"
 			[delete]="delete"
 			[toDelete]="toDelete"
-			[itemToDelete]="itemToDelete"></app-pop-up>
+			[itemToDelete]="itemToDelete"
+			[report]="report"
+			[reportedItem]="reportedItem"
+			[reportType]="reportType"></app-pop-up>

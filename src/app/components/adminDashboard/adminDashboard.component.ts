@@ -36,6 +36,7 @@ export class AdminDashboard implements OnInit {
     }
   ]
   userDataSubscription: Subscription | undefined;
+  blockSubscription: Subscription | undefined;
   // edit popup sub-component variables
   toEdit: any;
   editType: string | undefined;
@@ -205,6 +206,32 @@ export class AdminDashboard implements OnInit {
     if(e) {
       e.preventDefault();
     }
+
+    this.adminService.checkUserBlock(userID);
+
+    // Checks whether the user's block data has been fetched from the server
+    this.blockSubscription = this.adminService.isBlockDataResolved.subscribe((value) => {
+      // if it has, cancels the subscription and passes the data to setBlock
+      // so that the user's release date can be determined
+      if(value) {
+        this.setBlock(userID, length, reportID);
+        if(this.blockSubscription) {
+          this.blockSubscription.unsubscribe();
+        }
+      }
+    })
+  }
+
+  /*
+  Function Name: setBlock()
+  Function Description: Sets the user's release date and passes the data to the admin service.
+  Parameters: e (Event) - The sending event (clicking the 'block button')
+              userID (number) - The ID of the user to block
+              length (string) - length of time for which the user should be blocked
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  setBlock(userID:number, length:string, reportID?:number) {
     let releaseDate:Date;
     let currentDate = new Date();
     let millisecondsPerDay = 864E5;
@@ -226,6 +253,14 @@ export class AdminDashboard implements OnInit {
       default:
         releaseDate = new Date(currentDate.getTime() + millisecondsPerDay * 1);
         break;
+    }
+
+    // If the user is already blocked, adds the given amount of time
+    // to extend the block
+    if(this.adminService.userBlockData?.isBlocked) {
+      let newRelease = releaseDate.getTime() - currentDate.getTime();
+      let currentRelease = this.adminService.userBlockData.releaseDate.getTime();
+      releaseDate = new Date(newRelease + currentRelease);
     }
 
     // if the user is blocked through the reports page, pass on the report ID

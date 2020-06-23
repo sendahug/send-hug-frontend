@@ -10,6 +10,7 @@ import { Subscription } from 'rxjs';
 // App-related imports
 import { ItemsService } from '../../services/items.service';
 import { AuthService } from '../../services/auth.service';
+import { AdminService } from '../../services/admin.service';
 
 @Component({
   selector: 'app-loader',
@@ -31,7 +32,8 @@ export class Loader implements OnInit, OnChanges {
   // CTOR
   constructor(
     private itemsService:ItemsService,
-    private authService:AuthService
+    private authService:AuthService,
+    private adminService:AdminService
   ) {
 
   }
@@ -88,7 +90,6 @@ export class Loader implements OnInit, OnChanges {
       else {
         // subscribe to the subject following user data
         this.subsciption = this.authService.isUserDataResolved.subscribe((value) => {
-          console.log(value);
           // the subject's value is changed to 'true' upon fetching user data,
           // so if the value is true, there's no longer need for the loader
           // screen.
@@ -222,6 +223,48 @@ export class Loader implements OnInit, OnChanges {
       this.itemsService.isSearchResolved.subscribe((value) => {
         // the subject's value is changed to 'true' upon fetching search
         // results, so if the value is true, there's no longer need for the
+        // loader screen
+        if(value == true) {
+          this.visible = false;
+          this.waitingFor = '';
+        }
+      })
+    }
+    // if the app is waiting for open reports to be fetched from the server
+    else if(this.waitingFor == 'admin reports') {
+      this.message = 'Getting user and post reports...';
+        // subscribe to the subject following fetching reports
+      this.adminService.isReportsResolved.subscribe((value) => {
+        // the subject's value is changed to 'true' upon fetching open
+        // reports, so if the value is true, there's no longer need for the
+        // loader screen
+        if(value == true) {
+          this.visible = false;
+          this.waitingFor = '';
+        }
+      })
+    }
+    // if the app is waiting for blocked users to be fetched from the server
+    else if(this.waitingFor == 'admin blocks') {
+      this.message = 'Getting blocked users...';
+        // subscribe to the subject following fetching blocked users
+      this.adminService.isBlocksResolved.subscribe((value) => {
+        // the subject's value is changed to 'true' upon fetching blocked
+        // users, so if the value is true, there's no longer need for the
+        // loader screen
+        if(value == true) {
+          this.visible = false;
+          this.waitingFor = '';
+        }
+      })
+    }
+    // if the app is waiting for filtered phrases to be fetched from the server
+    else if(this.waitingFor == 'admin filters') {
+      this.message = 'Getting filtered phrases...';
+        // subscribe to the subject following fetching filtered phrases
+      this.adminService.isFiltersResolved.subscribe((value) => {
+        // the subject's value is changed to 'true' upon fetching filtered
+        // phrases, so if the value is true, there's no longer need for the
         // loader screen
         if(value == true) {
           this.visible = false;

@@ -1,0 +1,230 @@
+<div *ngIf="authService.canUser('read:admin-board')">
+	<!-- Admin dashboard navigation menu -->
+	<nav id="adminNav">
+		<a [routerLink]="['/admin']" class="adminNavItem">Admin Dashboard</a>
+		<a [routerLink]="['/admin', 'reports']" class="adminNavItem">Reports</a>
+		<a [routerLink]="['/admin', 'blocks']" class="adminNavItem">Blocks</a>
+		<a [routerLink]="['/admin', 'filters']" class="adminNavItem">Filters</a>
+	</nav>
+
+	<!-- Admin dashboard main page -->
+	<div class="adminScreen" id="adminMain" *ngIf="screen == 'main'">
+		<h3>Admin Dashboard</h3>
+		
+		<div class="adminText">Welcome to the admin dashboard!</div>
+		<div class="adminText">The admin dashboard is comprised of three parts:</div>
+		<ul id="adminCategories">
+			<li class="adminCategory" *ngFor="let category of adminCategories">
+				<span class="pageCategory">{{ category.title }}:</span> <span class="pageText">{{ category.explanation }}</span>
+			</li>
+		</ul>
+	</div>
+	
+	<app-loader
+		[waitingFor]="waitFor"></app-loader>
+
+	<!-- Admin dashboard reports -->
+	<div class="adminScreen" id="adminReports" *ngIf="screen == 'reports' && adminService.isReportsResolved.value">
+		<h3>Reports</h3>
+		
+		<h4 class="subTitle">Reported Users</h4>
+		<!-- Reported users table -->
+		<table *ngIf="adminService.userReports.length">
+			<thead>
+				<tr>
+					<td>User ID</td>
+					<td>Display Name</td>
+					<td>Reporter</td>
+					<td>Report Reason</td>
+					<td>Action</td>
+				</tr>
+			</thead>
+			<tbody>
+				<tr *ngFor="let report of adminService.userReports">
+					<td>{{ report.userID }}</td>
+					<td>{{ report.displayName }}</td>
+					<td>{{ report.reporter }}</td>
+					<td>{{ report.reportReason }}</td>
+					<td>
+						<button class="appButton" (click)="blockUser(report.userID, report.id)">Block User (One Day)</button>
+						<button class="appButton" (click)="editUser(report.id, report.userID, report.displayName)">Edit User</button>
+						<button class="appButton" (click)="dismissReport(report.id)">Dismiss</button>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		
+		<!-- User reports pagination -->
+		<div class="pagination" *ngIf="adminService.userReports.length">
+			<button *ngIf="adminService.currentPage.userReports > 1" class="appButton prevButton" (click)="prevPage('userReports')">Previous Page</button>
+			<button *ngIf="adminService.currentPage.userReports <= 1" class="appButton hidden" (click)="prevPage('userReports')">Previous Page</button>
+			<div class="pageCount">Page {{ adminService.currentPage.userReports }} of {{ adminService.totalPages.userReports }}</div>
+			<button *ngIf="adminService.totalPages.userReports > adminService.currentPage.userReports" class="appButton nextButton" (click)="nextPage('userReports')">Next Page</button>
+			<button *ngIf="adminService.totalPages.userReports <= adminService.currentPage.userReports" class="appButton hidden" (click)="nextPage('userReports')">Next Page</button>
+		</div>
+		
+		<!-- If there are no open user reports -->
+		<div *ngIf="!adminService.userReports.length" class="errorMessage">There are no user reports waiting for review.</div>
+		
+		<h4 class="subTitle">Reported Posts</h4>
+		<!-- Reported posts table -->
+		<table *ngIf="adminService.postReports.length">
+			<thead>
+				<tr>
+					<td>Post ID</td>
+					<td>User ID</td>
+					<td>Post Text</td>
+					<td>Reporter</td>
+					<td>Report Reason</td>
+					<td>Action</td>
+				</tr>
+			</thead>
+			<tbody>
+				<tr *ngFor="let report of adminService.postReports">
+					<td>{{ report.postID }}</td>
+					<td>{{ report.userID }}</td>
+					<td>{{ report.text }}</td>
+					<td>{{ report.reporter }}</td>
+					<td>{{ report.reportReason }}</td>
+					<td>
+						<button class="appButton" (click)="editPost(report.postID, report.text, report.id)">Edit Post</button>
+						<button class="appButton" (click)="deletePost(report.postID, report.userID, report.id)">Delete Post</button>
+						<button class="appButton" (click)="dismissReport(report.id)">Dismiss</button>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		
+		<!-- Post reports pagination -->
+		<div class="pagination" *ngIf="adminService.postReports.length">
+			<button *ngIf="adminService.currentPage.postReports > 1" class="appButton prevButton" (click)="prevPage('postReports')">Previous Page</button>
+			<button *ngIf="adminService.currentPage.postReports <= 1" class="appButton hidden" (click)="prevPage('postReports')">Previous Page</button>
+			<div class="pageCount">Page {{ adminService.currentPage.postReports }} of {{ adminService.totalPages.postReports }}</div>
+			<button *ngIf="adminService.totalPages.postReports > adminService.currentPage.postReports" class="appButton nextButton" (click)="nextPage('postReports')">Next Page</button>
+			<button *ngIf="adminService.totalPages.postReports <= adminService.currentPage.postReports" class="appButton hidden" (click)="nextPage('postReports')">Next Page</button>
+		</div>
+		
+		<!-- If there are no open post reports -->
+		<div *ngIf="!adminService.postReports.length" class="errorMessage">There are no post reports waiting for review.</div>
+	</div>
+
+	<!-- Admin dashboard blocks -->
+	<div class="adminScreen" id="adminBlocks" *ngIf="screen == 'blocks' && adminService.isBlocksResolved.value">
+		<h3>Blocks</h3>
+		
+		<h4 class="subTitle">Block User</h4>
+		<!-- Block a user by ID -->
+		<form>
+			<div class="formElement">
+				<label class="pageCategory" for="blockID">User ID: </label>
+				<input type="text" id="blockID" placeholder="user ID" #blockID required>
+			</div>
+			<div class="formElement">
+				<label class="pageCategory" for="blockLength">Length of block time: </label>
+				<select id="blockLength" name="blockLength" #blockLength>
+					<option value="oneDay">One Day</option>
+					<option value="oneWeek">One Week</option>
+					<option value="oneMonth">30 Days</option>
+					<option value="forever">Permanently</option>
+				</select>
+			</div>
+			<button type="submit" class="appButton sendData" (click)="block($event,blockID.value, blockLength.value)">Block</button>
+		</form>
+		
+		<h4 class="subTitle">Blocked Users</h4>
+		<!-- Blocked users table -->
+		<table *ngIf="adminService.blockedUsers.length">
+			<thead>
+				<tr>
+					<td>User ID</td>
+					<td>Display Name</td>
+					<td>Unlocked Until</td>
+					<td>Action</td>
+				</tr>
+			</thead>
+			<tbody>
+				<tr *ngFor="let user of adminService.blockedUsers">
+					<td>{{ user.id }}</td>
+					<td>{{ user.displayName }}</td>
+					<td>{{ user.releaseDate }}</td>
+					<td>
+						<button class="appButton" (click)="unblock(user.id)">Unblock</button>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		
+		<!-- Blocked users pagination -->
+		<div class="pagination" *ngIf="adminService.blockedUsers.length">
+			<button *ngIf="adminService.currentPage.blockedUsers > 1" class="appButton prevButton" (click)="prevPage('blockedUsers')">Previous Page</button>
+			<button *ngIf="adminService.currentPage.blockedUsers <= 1" class="appButton hidden" (click)="prevPage('blockedUsers')">Previous Page</button>
+			<div class="pageCount">Page {{ adminService.currentPage.blockedUsers }} of {{ adminService.totalPages.blockedUsers }}</div>
+			<button *ngIf="adminService.totalPages.blockedUsers > adminService.currentPage.blockedUsers" class="appButton nextButton" (click)="nextPage('blockedUsers')">Next Page</button>
+			<button *ngIf="adminService.totalPages.blockedUsers <= adminService.currentPage.blockedUsers" class="appButton hidden" (click)="nextPage('blockedUsers')">Next Page</button>
+		</div>
+		
+		<!-- If there are no blocked users -->
+		<div *ngIf="!adminService.blockedUsers.length" class="errorMessage">There are no blocked users.</div>
+	</div>
+
+	<!-- Admin dashboard filters -->
+	<div class="adminScreen" id="adminFilters" *ngIf="screen == 'filters' && adminService.isFiltersResolved.value">
+		<h3>Filters</h3>
+		
+		<h4 class="subTitle">Add Filter</h4>
+		<!-- Add a word/phrase to filtered words list -->
+		<form>
+			<div class="formElement">
+				<label class="pageCategory" for="filter">Filter: </label>
+				<input type="text" id="filter" placeholder="Filter" #filter required>
+			</div>
+			<button type="submit" class="appButton sendData" (click)="addFilter($event,filter.value)">Add Filter</button>
+		</form>
+		
+		<h4 class="subTitle">Filtered Phrases</h4>
+		<!-- Filtered phrases table -->
+		<table *ngIf="adminService.filteredPhrases.length">
+			<thead>
+				<tr>
+					<td>Phrase</td>
+					<td>Action</td>
+				</tr>
+			</thead>
+			<tbody>
+				<tr *ngFor="let phrase of adminService.filteredPhrases">
+					<td>{{ phrase }}</td>
+					<td>
+						<button class="appButton" (click)="removeFilter(phrase)">Remove Filter</button>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		
+		<!-- Filtered words pagination -->
+		<div class="pagination" *ngIf="adminService.filteredPhrases.length">
+			<button *ngIf="adminService.currentPage.filteredPhrases > 1" class="appButton prevButton" (click)="prevPage('filteredPhrases')">Previous Page</button>
+			<button *ngIf="adminService.currentPage.filteredPhrases <= 1" class="appButton hidden" (click)="prevPage('filteredPhrases')">Previous Page</button>
+			<div class="pageCount">Page {{ adminService.currentPage.filteredPhrases }} of {{ adminService.totalPages.filteredPhrases }}</div>
+			<button *ngIf="adminService.totalPages.filteredPhrases > adminService.currentPage.filteredPhrases" class="appButton nextButton" (click)="nextPage('filteredPhrases')">Next Page</button>
+			<button *ngIf="adminService.totalPages.filteredPhrases <= adminService.currentPage.filteredPhrases" class="appButton hidden" (click)="nextPage('filteredPhrases')">Next Page</button>
+		</div>
+		
+		<!-- If there are no filtered phrases -->
+		<div *ngIf="!adminService.filteredPhrases.length" class="errorMessage">There are no filtered phrases.</div>
+	</div>
+</div>
+
+<div *ngIf="!authService.canUser('read:admin-board')">
+	<div class="errorMessage">You do not have permission to view thie page!</div>
+	<a [routerLink]="" class="appButton">Back to homepage</a>
+</div>
+
+<app-pop-up *ngIf="editMode"
+			[editedItem]="toEdit"
+			[toEdit]="editType"
+			(editMode)="changeMode($event)"
+			[delete]="delete"
+			[toDelete]="toDelete"
+			[itemToDelete]="itemToDelete"
+			[report]="report"
+			[reportData]="reportData"></app-pop-up>

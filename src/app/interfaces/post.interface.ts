@@ -2,7 +2,7 @@
 // Based on the Post Model
 export interface Post {
   id?: number;
-  user_id: number;
+  userId: number;
   user: string;
   text: string;
   date: Date;

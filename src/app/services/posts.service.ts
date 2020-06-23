@@ -9,7 +9,6 @@ import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http'
 
 // App-related imports
 import { Post } from '../interfaces/post.interface';
-import { AlertMessage } from '../interfaces/alert.interface';
 import { AuthService } from './auth.service';
 import { AlertsService } from './alerts.service';
 import { environment } from '../../environments/environment';
@@ -69,7 +68,7 @@ export class PostsService {
       this.sugItemsArray = data.suggested;
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
-      this.createErrorAlert(err);
+      this.alertsService.createErrorAlert(err);
     })
   }
 
@@ -95,7 +94,7 @@ export class PostsService {
       this.totalFullItemsPage.fullNewItems = response.total_pages;
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
-      this.createErrorAlert(err);
+      this.alertsService.createErrorAlert(err);
     })
   }
 
@@ -121,7 +120,7 @@ export class PostsService {
       this.totalFullItemsPage.fullSuggestedItems = response.total_pages;
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
-      this.createErrorAlert(err);
+      this.alertsService.createErrorAlert(err);
     })
   }
 
@@ -133,17 +132,24 @@ export class PostsService {
   Programmer: Shir Bar Lev.
   */
   sendPost(post: Post) {
-    const Url = this.serverUrl + '/posts';
-    this.Http.post(Url, post, {
-      headers: this.authService.authHeader
-    }).subscribe((response:any) => {
-      if(response.success == true) {
-        this.createSuccessAlert('Your post was published! Return to home page to view the post.', false, '/');
-      }
-    // if there was an error, alert the user
-    }, (err:HttpErrorResponse) => {
-      this.createErrorAlert(err);
-    })
+    // if the user isn't blocked, let them post
+    if(!this.authService.userData.blocked) {
+      const Url = this.serverUrl + '/posts';
+      this.Http.post(Url, post, {
+        headers: this.authService.authHeader
+      }).subscribe((response:any) => {
+        if(response.success == true) {
+          this.alertsService.createSuccessAlert('Your post was published! Return to home page to view the post.', false, '/');
+        }
+      // if there was an error, alert the user
+      }, (err:HttpErrorResponse) => {
+        this.alertsService.createErrorAlert(err);
+      })
+    }
+    // if they're blocked, alert them they cannot post while blocked
+    else {
+      this.alertsService.createAlert({ type: 'Error', message: `You cannot post new posts while you're blocked. You're blocked until ${this.authService.userData.releaseDate}.` });
+    }
   }
 
   /*
@@ -159,11 +165,11 @@ export class PostsService {
       headers: this.authService.authHeader
     }).subscribe((response:any) => {
       if(response.success == true) {
-        this.createSuccessAlert(`Post ${response.deleted} was deleted. Refresh to view the updated post list.`, true);
+        this.alertsService.createSuccessAlert(`Post ${response.deleted} was deleted. Refresh to view the updated post list.`, true);
       }
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
-      this.createErrorAlert(err);
+      this.alertsService.createErrorAlert(err);
     })
   }
 
@@ -175,17 +181,17 @@ export class PostsService {
   Programmer: Shir Bar Lev.
   */
   deleteAllPosts(userID:number) {
-    const Url = this.serverUrl + `/users/${userID}/posts`;
+    const Url = this.serverUrl + `/users/all/${userID}/posts`;
     // send delete request
     this.Http.delete(Url, {
       headers: this.authService.authHeader
     }).subscribe((response:any) => {
       if(response.success) {
-        this.createSuccessAlert(`User ${userID}'s posts were deleted successfully. Refresh to view the updated profile.`, true);
+        this.alertsService.createSuccessAlert(`User ${userID}'s posts were deleted successfully. Refresh to view the updated profile.`, true);
       }
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
-      this.createErrorAlert(err);
+      this.alertsService.createErrorAlert(err);
     })
   }
 
@@ -202,11 +208,11 @@ export class PostsService {
       headers: this.authService.authHeader
     }).subscribe((response:any) => {
       if(response.success == true) {
-        this.createSuccessAlert('Your post was edited. Refresh to view the updated post.', true);
+        this.alertsService.createSuccessAlert('Your post was edited. Refresh to view the updated post.', true);
       }
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
-      this.createErrorAlert(err);
+      this.alertsService.createErrorAlert(err);
     })
   }
 
@@ -224,54 +230,11 @@ export class PostsService {
       headers: this.authService.authHeader
     }).subscribe((response:any) => {
       if(response.success == true) {
-        this.createSuccessAlert('Your hug was sent!', false);
+        this.alertsService.createSuccessAlert('Your hug was sent!', false);
       }
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
-      this.createErrorAlert(err);
+      this.alertsService.createErrorAlert(err);
     })
-  }
-
-  // ALERT METHODS
-  // ==============================================================
-  /*
-  Function Name: createSuccessAlert()
-  Function Description: Creates an alert for the user to know their action succeeded.
-  Parameters: message (string) - the alert text.
-              reload (boolean) - whether a reload button is required; defaults to false.
-              navigate (string) - Optional parameter indicating the navigation target (if needed).
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  createSuccessAlert(message:string, reload:boolean = false, navigate?:string) {
-    // an alert message
-    let alert:AlertMessage = {
-      type: 'Success',
-      message: message
-    }
-
-    this.alertsService.createAlert(alert, reload, navigate);
-  }
-
-  /*
-  Function Name: createErrorAlert()
-  Function Description: Checks what type of error occurred and returns an alert.
-  Parameters: err (HttpErrorResponse) - The HTTP error response from the server.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  createErrorAlert(err:HttpErrorResponse) {
-    // an alert message
-    let alert:AlertMessage = {
-      type: 'Error',
-      message: err.error.message
-    }
-
-    // if it's an auth error, the structure is slightly different
-    if(err.status == 403 || err.status == 401) {
-      alert.message = err.error.message.description;
-    }
-
-    this.alertsService.createAlert(alert);
   }
 }

@@ -9,6 +9,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 
 // App-related imports
+import { User } from '../../interfaces/user.interface';
 import { AuthService } from '../../services/auth.service';
 import { ItemsService } from '../../services/items.service';
 
@@ -19,8 +20,11 @@ import { ItemsService } from '../../services/items.service';
 export class UserPage implements OnInit, OnDestroy {
   // edit popup sub-component variables
   userToEdit:any;
-  editType: string = 'user';
+  editType: string | undefined;
   editMode:boolean;
+  report: boolean;
+  reportedItem: User | undefined;
+  reportType = 'User';
   // loader sub-component variable
   waitFor = "user";
   userId: number | undefined;
@@ -34,6 +38,7 @@ export class UserPage implements OnInit, OnDestroy {
   ) {
     this.authService.checkHash();
     this.editMode = false;
+    this.report = false;
 
     // if there's a user ID, set the user ID to it
     if(this.route.snapshot.paramMap.get('id')) {
@@ -105,6 +110,8 @@ export class UserPage implements OnInit, OnDestroy {
   editName() {
     this.userToEdit = this.authService.userData;
     this.editMode = true;
+    this.editType = 'user';
+    this.report = false;
   }
 
   /*
@@ -130,6 +137,20 @@ export class UserPage implements OnInit, OnDestroy {
   */
   sendHug(userID:number) {
     this.itemsService.sendUserHug(userID);
+  }
+
+  /*
+  Function Name: reportUser()
+  Function Description: Opens the popup to report a user.
+  Parameters: user (User) - the user to report.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  reportUser(user:User) {
+    this.editMode = true;
+    this.editType = undefined;
+    this.report = true;
+    this.reportedItem = user;
   }
 
   // When leaving the page, return "other user" to false

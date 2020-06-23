@@ -24,6 +24,9 @@ export class MainPage implements OnInit {
   delete:boolean;
   toDelete: string | undefined;
   itemToDelete: number | undefined;
+  report:boolean;
+  reportedItem: Post | undefined;
+  reportType = 'Post';
 
   // CTOR
   constructor(
@@ -34,6 +37,7 @@ export class MainPage implements OnInit {
     this.postsService.getItems();
     this.editMode = false;
     this.delete = false;
+    this.report = false;
   }
 
   ngOnInit() {
@@ -103,5 +107,19 @@ export class MainPage implements OnInit {
     this.delete = true;
     this.toDelete = 'Post';
     this.itemToDelete = postID;
+  }
+
+  /*
+  Function Name: reportPost()
+  Function Description: Opens the popup to report a post.
+  Parameters: post (Post) - the Post to report.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  reportPost(post:Post) {
+    this.editMode = true;
+    this.delete = false;
+    this.report = true;
+    this.reportedItem = post;
   }
 }

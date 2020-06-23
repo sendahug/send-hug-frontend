@@ -5,7 +5,7 @@
 
 // Angular imports
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 
 // Other essential imports
 import { BehaviorSubject } from 'rxjs';
@@ -46,7 +46,9 @@ export class AuthService {
     postsNum: 0,
     loginCount: 0,
     role: '',
-    jwt: ''
+    jwt: '',
+    blocked: false,
+    releaseDate: undefined
   }
   // documents whether the user just logged in or they're still logged in following
   // their previous login
@@ -137,7 +139,7 @@ export class AuthService {
     // if there's a JWT
     if(jwtPayload) {
       // attempts to get the user's data
-      this.Http.get(`${this.serverUrl}/users/${jwtPayload.sub}`, {
+      this.Http.get(`${this.serverUrl}/users/all/${jwtPayload.sub}`, {
         headers: new HttpHeaders({'Authorization': `Bearer ${this.token}`})
         // if successful, get the user data
       }).subscribe((response:any) => {
@@ -151,7 +153,9 @@ export class AuthService {
           postsNum: data.posts,
           loginCount: data.loginCount,
           role: data.role,
-          jwt: this.token
+          jwt: this.token,
+          blocked: data.blocked,
+          releaseDate: data.releaseDate
         }
         // set the authentication-variables accordingly
         this.authenticated = true;
@@ -213,7 +217,9 @@ export class AuthService {
         postsNum: data.postsNum,
         loginCount: data.loginCount,
         role: data.role,
-        jwt: this.token
+        jwt: this.token,
+        blocked: data.blocked,
+        releaseDate: data.releaseDate
       }
       // set the authentication-variables accordingly
       this.authenticated = true;
@@ -222,8 +228,8 @@ export class AuthService {
       this.isUserDataResolved.next(true);
       // error handling
     }, (err) => {
-      console.log(err);
       this.isUserDataResolved.next(true);
+      this.alertsService.createErrorAlert(err);
     });
   }
 
@@ -252,7 +258,9 @@ export class AuthService {
       postsNum: 0,
       loginCount: 0,
       role: '',
-      jwt: ''
+      jwt: '',
+      blocked: false,
+      releaseDate: undefined
     }
     localStorage.setItem("ACTIVE_JWT", '');
 
@@ -339,7 +347,7 @@ export class AuthService {
   Programmer: Shir Bar Lev.
   */
   updateUserData() {
-    this.Http.patch(`${this.serverUrl}/users/${this.userData.id}`, {
+    this.Http.patch(`${this.serverUrl}/users/all/${this.userData.id}`, {
       displayName: this.userData.displayName,
       receivedH: this.userData.receivedHugs,
       givenH: this.userData.givenHugs,
@@ -347,8 +355,10 @@ export class AuthService {
       loginCount: this.userData.loginCount + 1
     }, {
       headers: this.authHeader
-    }).subscribe((response:any) => {
-      console.log(response);
+    }).subscribe((_response:any) => {
+
+    }, (err: HttpErrorResponse) => {
+      this.alertsService.createErrorAlert(err);
     });
   }
 

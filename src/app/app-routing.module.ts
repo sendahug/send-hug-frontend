@@ -9,6 +9,7 @@ import { NewItem } from './components/newItem/newItem.component';
 import { FullList } from './components/fullList/fullList.component';
 import { AboutApp } from './components/aboutApp/aboutApp.component';
 import { SearchResults } from './components/searchResults/searchResults.component';
+import { AdminDashboard } from './components/adminDashboard/adminDashboard.component';
 
 const routes: Routes = [
   { path: '', component: MainPage },
@@ -29,6 +30,13 @@ const routes: Routes = [
   { path: 'list/:type', component: FullList },
   { path: 'about', component: AboutApp },
   { path: 'search', component: SearchResults },
+  { path: 'admin',
+      children: [
+        { path: '', pathMatch: 'prefix', component: AdminDashboard },
+        { path: 'reports', pathMatch: 'prefix', component: AdminDashboard },
+        { path: 'blocks', pathMatch: 'prefix', component: AdminDashboard },
+        { path: 'filters', pathMatch: 'prefix', component: AdminDashboard }
+      ]},
   { path: '**', component: ErrorPage }
 ];
 

@@ -16,7 +16,7 @@
 	</div>
 	
 	<div id="newPost" *ngIf="itemType == 'Post'">
-		<form class="newItem">
+		<form class="newItem" *ngIf="!authService.userData.blocked">
 			<div class="formElement">
 				<span class="pageCategory">By:</span> <span class="pageData">{{ authService.userData.displayName }}</span>
 			</div>
@@ -26,5 +26,9 @@
 			</div>
 			<button type="submit" class="appButton sendData" (click)="sendPost($event, postText.value)">Post</button>
 		</form>
+		
+		<div class="errorMessage" *ngIf="authService.userData.blocked">
+			You are currently blocked until {{ authService.userData.releaseDate }}. You cannot post new posts.
+		</div>
 	</div>
 </div>

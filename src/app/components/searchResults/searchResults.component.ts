@@ -28,6 +28,9 @@ export class SearchResults {
   delete:boolean;
   toDelete: string | undefined;
   itemToDelete: number | undefined;
+  report:boolean;
+  reportedItem: Post | undefined;
+  reportType = 'Post';
 
   // CTOR
   constructor(
@@ -39,6 +42,7 @@ export class SearchResults {
     this.searchQuery = this.route.snapshot.queryParamMap.get('query');
     this.editMode = false;
     this.delete = false;
+	this.report = false;
 
     // if there's a search query but there's no ongoing search, it might be
     // the result of the user manually navigating here or refreshing the page.
@@ -87,6 +91,20 @@ export class SearchResults {
     this.delete = true;
     this.toDelete = 'Post';
     this.itemToDelete = postID;
+  }
+
+  /*
+  Function Name: reportPost()
+  Function Description: Opens the popup to report a post.
+  Parameters: post (Post) - the Post to report.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  reportPost(post:Post) {
+	  this.editMode = true;
+	  this.delete = false;
+	  this.report = true;
+	  this.reportedItem = post;
   }
 
   /*

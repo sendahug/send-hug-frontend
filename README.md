@@ -40,15 +40,17 @@ The main module contains 9 components, 3 services and 4 interfaces. Each compone
 **Located in:** [src/app/components](./src/app/components)
 
 1. **aboutApp** - Displays an 'about the app' page.
-2. **errorPage** - Displays a 'not found' error page if the user attempts to navigate (via Angular's router) to a location that doesn't exist.
-3. **fullList** - Displays a full list of paginated posts, depending on the list requested by the user (new or suggested).
-4. **loader** - A loader, displayed while the app is fetching data from the backend.
-5. **mainPage** - The main page of the app. Displays two lists to the user ('suggested' and 'new') - each with ten posts, as well as 'view full list' links.
-6. **messages** - A messages screen. Displays a paginated list of messages sent to the user.
-7. **myPosts** - A sub-component of the userPage component. Displays a paginated list of posts by the user whose profile is viewed.
-8. **newItem** - A form component allowing users to create a new item (message or post).
-9. **popUp** - A sub-component displaying a popup screen with a form for editing items (posts or a user's display name).
-10. **userPage** - Displays the user's data as fetched from the backend, as well as a list of the user's posts (as myPost component).
+2. **adminDashboard** - An admin dashboard, allowing admins to handle reports, user blocks and filtered words easily.
+3. **errorPage** - Displays a 'not found' error page if the user attempts to navigate (via Angular's router) to a location that doesn't exist.
+4. **fullList** - Displays a full list of paginated posts, depending on the list requested by the user (new or suggested).
+5. **loader** - A loader, displayed while the app is fetching data from the backend.
+6. **mainPage** - The main page of the app. Displays two lists to the user ('suggested' and 'new') - each with ten posts, as well as 'view full list' links.
+7. **messages** - A messages screen. Displays a paginated list of messages sent to the user.
+8. **myPosts** - A sub-component of the userPage component. Displays a paginated list of posts by the user whose profile is viewed.
+9. **newItem** - A form component allowing users to create a new item (message or post).
+10. **popUp** - A sub-component displaying a popup screen with a form for editing items (posts or a user's display name).
+11. **searchResults** - A component to display the results of the user's search.
+12. **userPage** - Displays the user's data as fetched from the backend, as well as a list of the user's posts (as myPost component).
 
 ### Interfaces
 
@@ -56,16 +58,21 @@ The main module contains 9 components, 3 services and 4 interfaces. Each compone
 
 1. **alert** - An alert interface. Displays a popup alert in the bottom of the screen with an error/success message (depending on the response from the server).
 2. **message** - A message interface. Used when fetching messages and displaying them to the user, as well as when the user creates a new message. Reflects the Message model in the backend.
-3. **post** - A post interface. Used for all posts lists, as well as for creating a new post. Reflects the Post model in the backend.
-4. **user** - A user interface. Used for holding user data as fetched from the server. Reflects the User model in the backend.
+3. **otherUser** - A light version of the user interface, used to display other users' data (excluding more sensitive information like JWT and Auth0 ID).
+4. **post** - A post interface. Used for all posts lists, as well as for creating a new post. Reflects the Post model in the backend.
+5. **report** - A report interface, for submitting and reading user and post reports.
+6. **thread** - A thread interface, for easily displaying message threads.
+7. **user** - A user interface. Used for holding user data as fetched from the server. Reflects the User model in the backend.
 
 ### Services
 
 **Located in:** [src/app/services](./src/app/services)
 
-1. **alerts** - Creates and displays an alert to the user, based on the response from the server and using the alert interface.
-2. **auth** - Handles authentication-related methods, including login, logout, token refresh and getting and changing user data. View [Authentication](#Authentication) for more details about the authentication process.
-3. **items** - Handles all communications with the backend, except for authentication-related methods. Deals with fetching, creating and deleting posts and messages, as well as editing posts.
+1. **admin** - An admin service for handling all admin dashboard related methods. This includes handling user and post reports, blocking and unblocking users and managing filters list.
+2. **alerts** - Creates and displays an alert to the user, based on the response from the server and using the alert interface.
+3. **auth** - Handles authentication-related methods, including login, logout, token refresh and getting and changing user data. View [Authentication](#Authentication) for more details about the authentication process.
+4. **items** - Handles communications with the backend for non-post related communications. Deals with fetching user posts, handling messages (fetching, sending and deleting), running a search and sending a report.
+5. **posts** - Handles all backend communication for post-related communications (except for a specific user's posts). This includes getting, creating, editing and deleting posts.
 
 ## Dependencies
 

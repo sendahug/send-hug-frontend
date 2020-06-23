@@ -124,7 +124,7 @@ export class AdminDashboard implements OnInit {
   Programmer: Shir Bar Lev.
   */
   blockUser(userID:number, reportID:number) {
-    this.block(userID, 'oneDay', undefined, reportID);
+    this.checkBlock(userID, 'oneDay', reportID);
   }
 
   /*
@@ -194,19 +194,31 @@ export class AdminDashboard implements OnInit {
   // ==================================================================
   /*
   Function Name: block()
-  Function Description: Blocks a user for a set amount of time.
+  Function Description: Triggers user blocking.
   Parameters: e (Event) - The sending event (clicking the 'block button')
               userID (number) - The ID of the user to block
               length (string) - length of time for which the user should be blocked
   ----------------
   Programmer: Shir Bar Lev.
   */
-  block(userID:number, length:string, e?:Event, reportID?:number) {
-    // if the method is invoked through the DOM, prevent submit button default behaviour
-    if(e) {
-      e.preventDefault();
-    }
+  block(e:Event, userID:number, length:string) {
+    // prevent submit button default behaviour
+    e.preventDefault();
+    this.checkBlock(userID, length);
+  }
 
+  /*
+  Function Name: checkBlock()
+  Function Description: Trigers fetching block data and passes the current
+                        length and reportID data to setBlock to calculate
+                        the user's release date.
+  Parameters: userID (number) - The ID of the user to block
+              length (string) - length of time for which the user should be blocked
+              reportID (number) - the ID of the report triggering the block (if any)
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  checkBlock(userID:number, length:string, reportID?:number) {
     this.adminService.checkUserBlock(userID);
 
     // Checks whether the user's block data has been fetched from the server

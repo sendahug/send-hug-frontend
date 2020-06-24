@@ -331,7 +331,7 @@ export class AdminService {
       headers: this.authService.authHeader
     // If successful, let the user know
     }).subscribe((response:any) => {
-      this.alertsService.createSuccessAlert(`User ${response.updated} has been blocked until ${releaseDate}`, true);
+      this.alertsService.createSuccessAlert(`User ${response.updated.displayName} has been blocked until ${releaseDate}`, true);
       // if the block was done via the reports page, also dismiss the report
       if(reportID) {
         this.dismissReport(reportID);
@@ -360,7 +360,7 @@ export class AdminService {
     }, {
       headers: this.authService.authHeader
     }).subscribe((response:any) => {
-      this.alertsService.createSuccessAlert(`User ${response.updated.id} has been unblocked.`, true);
+      this.alertsService.createSuccessAlert(`User ${response.updated.displayName} has been unblocked.`, true);
     // if there was an error, alert the user.
     }, (err:HttpErrorResponse) => {
       this.alertsService.createErrorAlert(err);

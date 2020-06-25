@@ -92,6 +92,31 @@ export class ItemsService {
   postSearchPage = 1;
   totalPostSearchPages = 1;
   isSearchResolved = new BehaviorSubject(false);
+  // bookmarks variables
+  bookmarks: {
+    Posts: Post[],
+    Messages: Message[],
+    Users: OtherUser[]
+  } = {
+    Posts: [],
+    Messages: [],
+    Users: []
+  }
+  bookmarksPage = {
+    Posts: 1,
+    Messages: 1,
+    Users: 1
+  }
+  totalBookmarksPages = {
+    Posts: 1,
+    Messages: 1,
+    Users: 1
+  }
+  isBookmarksResolved = {
+    Posts: new BehaviorSubject(false),
+    Messages: new BehaviorSubject(false),
+    Users: new BehaviorSubject(false)
+  }
 
   // CTOR
   constructor(

@@ -10,6 +10,7 @@ import { FullList } from './components/fullList/fullList.component';
 import { AboutApp } from './components/aboutApp/aboutApp.component';
 import { SearchResults } from './components/searchResults/searchResults.component';
 import { AdminDashboard } from './components/adminDashboard/adminDashboard.component';
+import { Bookmarks } from './components/bookmarks.component';
 
 const routes: Routes = [
   { path: '', component: MainPage },
@@ -30,6 +31,13 @@ const routes: Routes = [
   { path: 'list/:type', component: FullList },
   { path: 'about', component: AboutApp },
   { path: 'search', component: SearchResults },
+  { path: 'bookmarks', 
+      children: [
+        { path: '', pathMatch: 'prefix', redirectTo: 'posts' },
+        { path: 'posts', pathMatch: 'prefix', component: Bookmarks },
+        { path: 'messages', pathMatch: 'prefix', component: Bookmarks },
+        { path: 'users', pathMatch: 'prefix', component: Bookmarks }
+		]},
   { path: 'admin',
       children: [
         { path: '', pathMatch: 'prefix', component: AdminDashboard },

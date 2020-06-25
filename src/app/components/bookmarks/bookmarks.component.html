@@ -1,0 +1,6 @@
+<div *ngIf="authService.authenticated">
+	<!-- Bookmarks navigation menu -->
+	<nav id="bookmarksNav">
+		<a *ngFor="let type of bookmarkTypes" [routerLink]="['/bookmarks', '{{ type.param }}]" class="adminNavItem">{{ type.name }}</a>
+	</nav>
+</div>

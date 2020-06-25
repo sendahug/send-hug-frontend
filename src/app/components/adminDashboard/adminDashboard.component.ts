@@ -11,6 +11,7 @@ import { Subscription } from 'rxjs';
 // App imports
 import { AuthService } from '../../services/auth.service';
 import { AdminService } from '../../services/admin.service';
+import { AlertsService } from '../../services/alerts.service';
 
 type AdminList = 'userReports' | 'postReports' | 'blockedUsers' | 'filteredPhrases';
 
@@ -36,6 +37,7 @@ export class AdminDashboard implements OnInit {
     }
   ]
   userDataSubscription: Subscription | undefined;
+  blockSubscription: Subscription | undefined;
   // edit popup sub-component variables
   toEdit: any;
   editType: string | undefined;
@@ -58,7 +60,8 @@ export class AdminDashboard implements OnInit {
   constructor(
     private route:ActivatedRoute,
     public authService:AuthService,
-    public adminService:AdminService
+    public adminService:AdminService,
+    private alertsService:AlertsService
   ) {
     this.route.url.subscribe(params => {
       if(params[0] && params[0].path) {
@@ -123,7 +126,7 @@ export class AdminDashboard implements OnInit {
   Programmer: Shir Bar Lev.
   */
   blockUser(userID:number, reportID:number) {
-    this.block(userID, 'oneDay', undefined, reportID);
+    this.checkBlock(userID, 'oneDay', reportID);
   }
 
   /*
@@ -193,18 +196,64 @@ export class AdminDashboard implements OnInit {
   // ==================================================================
   /*
   Function Name: block()
-  Function Description: Blocks a user for a set amount of time.
+  Function Description: Triggers user blocking.
   Parameters: e (Event) - The sending event (clicking the 'block button')
               userID (number) - The ID of the user to block
               length (string) - length of time for which the user should be blocked
   ----------------
   Programmer: Shir Bar Lev.
   */
-  block(userID:number, length:string, e?:Event, reportID?:number) {
-    // if the method is invoked through the DOM, prevent submit button default behaviour
-    if(e) {
-      e.preventDefault();
+  block(e:Event, userID:number, length:string) {
+    // prevent submit button default behaviour
+    e.preventDefault();
+
+    // if the user is trying to block another user, let them
+    if(userID != this.authService.userData.id) {
+      this.checkBlock(userID, length);
     }
+    // otherwise alert that they can't block themselves
+    else {
+      this.alertsService.createAlert({ type: 'Error', message: 'You cannot block yourself.' });
+    }
+  }
+
+  /*
+  Function Name: checkBlock()
+  Function Description: Trigers fetching block data and passes the current
+                        length and reportID data to setBlock to calculate
+                        the user's release date.
+  Parameters: userID (number) - The ID of the user to block
+              length (string) - length of time for which the user should be blocked
+              reportID (number) - the ID of the report triggering the block (if any)
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  checkBlock(userID:number, length:string, reportID?:number) {
+    this.adminService.checkUserBlock(userID);
+
+    // Checks whether the user's block data has been fetched from the server
+    this.blockSubscription = this.adminService.isBlockDataResolved.subscribe((value) => {
+      // if it has, cancels the subscription and passes the data to setBlock
+      // so that the user's release date can be determined
+      if(value) {
+        this.setBlock(userID, length, reportID);
+        if(this.blockSubscription) {
+          this.blockSubscription.unsubscribe();
+        }
+      }
+    })
+  }
+
+  /*
+  Function Name: setBlock()
+  Function Description: Sets the user's release date and passes the data to the admin service.
+  Parameters: e (Event) - The sending event (clicking the 'block button')
+              userID (number) - The ID of the user to block
+              length (string) - length of time for which the user should be blocked
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  setBlock(userID:number, length:string, reportID?:number) {
     let releaseDate:Date;
     let currentDate = new Date();
     let millisecondsPerDay = 864E5;
@@ -226,6 +275,14 @@ export class AdminDashboard implements OnInit {
       default:
         releaseDate = new Date(currentDate.getTime() + millisecondsPerDay * 1);
         break;
+    }
+
+    // If the user is already blocked, adds the given amount of time
+    // to extend the block
+    if(this.adminService.userBlockData?.isBlocked) {
+      let newRelease = releaseDate.getTime() - currentDate.getTime();
+      let currentRelease = this.adminService.userBlockData.releaseDate.getTime();
+      releaseDate = new Date(newRelease + currentRelease);
     }
 
     // if the user is blocked through the reports page, pass on the report ID

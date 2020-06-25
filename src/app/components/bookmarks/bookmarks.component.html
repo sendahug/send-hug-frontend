@@ -7,7 +7,7 @@
 	<!-- For bookmarks -->
 	<h3>Saved {{ currentType }}</h3>
 	<ul class="bookmarkContainer">
-		<li *ngFor="let bookmark of itemsService.bookmarks[currentType]">
+		<li *ngFor="let bookmark of bookmarksService.bookmarks[currentType]">
 			<!-- For post bookmarks -->
 			<div *ngIf="currentType == 'Post'">
 				<div class="itemText">{{ bookmark.text }}</div>
@@ -46,10 +46,10 @@
 	
 	<!-- Bookmark pagination -->
 	<div class="pagination">
-		<button *ngIf="itemsService.bookmarksPage[currentType] > 1" class="appButton prevButton" (click)="prevPage()">Previous Page</button>
-		<button *ngIf="itemsService.bookmarksPage[currentType] <= 1" class="appButton hidden" (click)="prevPage()">Previous Page</button>
-		<div class="pageCount">Page {{ itemsService.bookmarksPage[currentType] }} of {{ itemsService.totalBookmarksPages[currentType] }}</div>
-		<button *ngIf="itemsService.totalBookmarksPages[currentType] > itemsService.bookmarksPage[currentType]" class="appButton nextButton" (click)="nextPage()">Next Page</button>
-		<button *ngIf="itemsService.totalBookmarksPages[currentType] <= itemsService.bookmarksPage[currentType]" class="appButton hidden" (click)="nextPage()">Next Page</button>
+		<button *ngIf="bookmarksService.bookmarksPage[currentType] > 1" class="appButton prevButton" (click)="prevPage()">Previous Page</button>
+		<button *ngIf="bookmarksService.bookmarksPage[currentType] <= 1" class="appButton hidden" (click)="prevPage()">Previous Page</button>
+		<div class="pageCount">Page {{ bookmarksService.bookmarksPage[currentType] }} of {{ bookmarksService.totalBookmarksPages[currentType] }}</div>
+		<button *ngIf="bookmarksService.totalBookmarksPages[currentType] > bookmarksService.bookmarksPage[currentType]" class="appButton nextButton" (click)="nextPage()">Next Page</button>
+		<button *ngIf="bookmarksService.totalBookmarksPages[currentType] <= bookmarksService.bookmarksPage[currentType]" class="appButton hidden" (click)="nextPage()">Next Page</button>
 	</div>
 </div>

@@ -7,7 +7,7 @@
 import { Component } from '@angular/core';
 
 // App-related imports
-import { ItemsService } from '../../services/items.service';
+import { BookmarksService } from '../../services/bookmarks.service';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
@@ -24,7 +24,7 @@ export class Bookmarks {
 
 	// CTOR
 	constructor(
-		public itemsService:ItemsService,
+		public bookmarksService:BookmarksService,
 		public authService:AuthService
 	) {
 

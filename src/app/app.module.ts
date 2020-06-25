@@ -16,7 +16,7 @@ import { Loader } from './components/loader/loader.component';
 import { AboutApp } from './components/aboutApp/aboutApp.component';
 import { SearchResults } from './components/searchResults/searchResults.component';
 import { AdminDashboard } from './components/adminDashboard/adminDashboard.component';
-import { Bookmarks } from './components/bookmarks.component';
+import { Bookmarks } from './components/bookmarks/bookmarks.component';
 
 @NgModule({
   imports: [

@@ -3,4 +3,53 @@
 	<nav id="bookmarksNav">
 		<a *ngFor="let type of bookmarkTypes" [routerLink]="['/bookmarks', '{{ type.param }}]" class="adminNavItem">{{ type.name }}</a>
 	</nav>
+	
+	<!-- For bookmarks -->
+	<h3>Saved {{ currentType }}</h3>
+	<ul class="bookmarkContainer">
+		<li *ngFor="let bookmark of itemsService.bookmarks[currentType]">
+			<!-- For post bookmarks -->
+			<div *ngIf="currentType == 'Post'">
+				<div class="itemText">{{ bookmark.text }}</div>
+				<div class="itemUser">By <a [routerLink]="['/user', bookmark.userId ]" class="profileLink">{{ bookmark.user }}</a></div>
+				<div class="buttonsContainer">
+					<div class="notification">
+						<button class="appButton hugButton" (click)="sendHug(bookmark.id)"><i class="fab fa-gratipay"></i></button>
+						<span class="badge">{{ bookmark.givenHugs }}</span>
+					</div>
+					<a [routerLink]="['/new', 'Message']" [queryParams]="{user: bookmark.user, userID: bookmark.userId}" class="appButton messageButton"><i class="fas fa-comments"></i></a>
+					<button class="appButton reportButton" (click)="reportPost(bookmark)"><i class="fas fa-flag"></i></button>
+					<button *ngIf="authService.canUser('patch:any-post')" class="appButton editButton" (click)="editPost(bookmark)"><i class="far fa-edit"></i></button>
+					<button *ngIf="authService.canUser('delete:any-post')" class="appButton deleteButton" (click)="deletePost(bookmark.id)"><i class="fas fa-times"></i></button>
+				</div>
+			</div>
+			
+			<!-- For user bookmarks -->
+			<div *ngIf="currentType == 'User'" class="itemUser"> <a [routerLink]="['/user', bookmark.userId ]" class="profileLink">{{ bookmark.user }}</a></div>
+			
+			<!-- For messages bookmarks -->
+			<div *ngIf="currentType == 'Message'">
+				<div class="messageField">
+					<span class="pageCategory">From:</span> <span class="pageData">{{ message.from }}</span>
+				</div>
+				<div class="messageField">
+					<span class="pageCategory">For:</span> <span class="pageData">{{ message.for }}</span>
+				</div>
+				<div class="pageCategory">Message:</div> <div class="pageData">{{ message.messageText }}</div>
+				<div class="buttons">
+					<a [routerLink]="['/new', 'Message']" [queryParams]="{user: message.from, userID: message.fromId}" class="appButton messageButton">Reply</a>
+					<button class="appButton deleteButton" (click)="deleteMessage(message.id)">Delete</button>
+				</div>
+			</div>
+		</li>
+	</ul>
+	
+	<!-- Bookmark pagination -->
+	<div class="pagination">
+		<button *ngIf="itemsService.bookmarksPage[currentType] > 1" class="appButton prevButton" (click)="prevPage()">Previous Page</button>
+		<button *ngIf="itemsService.bookmarksPage[currentType] <= 1" class="appButton hidden" (click)="prevPage()">Previous Page</button>
+		<div class="pageCount">Page {{ itemsService.bookmarksPage[currentType] }} of {{ itemsService.totalBookmarksPages[currentType] }}</div>
+		<button *ngIf="itemsService.totalBookmarksPages[currentType] > itemsService.bookmarksPage[currentType]" class="appButton nextButton" (click)="nextPage()">Next Page</button>
+		<button *ngIf="itemsService.totalBookmarksPages[currentType] <= itemsService.bookmarksPage[currentType]" class="appButton hidden" (click)="nextPage()">Next Page</button>
+	</div>
 </div>

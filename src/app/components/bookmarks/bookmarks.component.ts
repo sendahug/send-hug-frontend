@@ -20,12 +20,13 @@ export class Bookmarks {
 		{ name: 'Messages', param: 'messages' },
 		{ name: 'Users', param: 'users' }
 	];
-	
+	currentType = 'Posts';
+
 	// CTOR
 	constructor(
 		public itemsService:ItemsService,
 		public authService:AuthService
 	) {
-		
+
 	}
 }

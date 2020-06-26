@@ -19,6 +19,9 @@ export class AppComponent {
     name: 'Messages',
     link: '/messages'
   }, {
+    name: 'Bookmarks',
+    link: '/bookmarks'
+  }, {
     name: 'User Page',
     link: '/user'
   }, {

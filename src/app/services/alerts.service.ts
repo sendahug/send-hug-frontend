@@ -14,6 +14,10 @@ import { AlertMessage } from '../interfaces/alert.interface';
   providedIn: 'root'
 })
 export class AlertsService {
+  // ServiceWorker variables
+  waitingServiceWorker: ServiceWorker | undefined;
+  isSWRelated = false;
+
   // CTOR
   constructor() {
   }
@@ -45,7 +49,8 @@ export class AlertsService {
     // if reload option is required
     if(reload) {
       this.addReloadButton(alertMessage);
-      document.getElementById('reloadBtn')!.addEventListener('click', this.reloadPage);
+      // add an event listener and bind 'this' to the AlertsService
+      document.getElementById('reloadBtn')!.addEventListener('click', this.reloadPage.bind(this));
     }
     // if return to homepage option is required
     else if(navigate) {
@@ -61,6 +66,7 @@ export class AlertsService {
   Programmer: Shir Bar Lev.
   */
   closeAlert() {
+    this.isSWRelated = false;
     document.querySelector('.alertMessage')!.remove();
   }
 
@@ -73,7 +79,21 @@ export class AlertsService {
   */
   reloadPage() {
     document.querySelector('.alertMessage')!.remove();
-    window.location.reload();
+
+    // if the 'reload' came from a ServiceWorker-related popup, tell
+    // the SW to skip waiting and activate the new SW
+    if(this.isSWRelated && this.waitingServiceWorker) {
+      this.waitingServiceWorker.postMessage({ action: 'skip waiting'});
+      // wait for the new serviceworker to take over, and when it does,
+      // reload the page
+      navigator.serviceWorker.addEventListener('controllerchange', () => {
+        window.location.reload();
+      })
+    }
+    // otherwise this isn't a SW-related reload, so just refresh
+    else {
+      window.location.reload();
+    }
   }
 
   /*
@@ -159,6 +179,7 @@ export class AlertsService {
       message: message
     }
 
+    this.isSWRelated = false;
     this.createAlert(alert, reload, navigate);
   }
 
@@ -181,6 +202,23 @@ export class AlertsService {
       alert.message = err.error.message.description;
     }
 
+    this.isSWRelated = false;
     this.createAlert(alert);
+  }
+
+  /*
+  Function Name: createSWAlert()
+  Function Description: Creates a notification alert triggered by a new ServiceWorker
+                        waiting to take control over the page.
+  Parameters: worker (ServiceWorker) - The waiting SW.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  createSWAlert(worker:ServiceWorker) {
+    // set SW-related variables and creates a notification alert
+    let alert:AlertMessage = { type: 'Notification', message: `A new version of the site is available. Click the reload button to update!` };
+    this.waitingServiceWorker = worker;
+    this.isSWRelated = true;
+    this.createAlert(alert, true);
   }
 }

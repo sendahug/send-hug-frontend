@@ -123,3 +123,11 @@ self.addEventListener("fetch", function(event) {
 		})
 	)
 })
+
+// message event listener
+self.addEventListener("message", function(event) {
+	// if the action in the message is to skip waiting, do it
+	if(event.data.action == 'skip waiting') {
+		self.skipWaiting();
+	}
+})

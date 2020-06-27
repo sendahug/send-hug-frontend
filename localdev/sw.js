@@ -1,8 +1,11 @@
+const currentCache = "send-hug-v1";
+const serverUrl = "localhost:5000";
+
 // upon installing a new service worker
 self.addEventListener("install", function(event) {
 	event.waitUntil(
 		// open the cache
-		caches.open("send-hug-v1").then(function(cache) {
+		caches.open(currentCache).then(function(cache) {
 			// cache static assets
 			let toCache = [
 				'/index.html',
@@ -69,14 +72,14 @@ self.addEventListener("fetch", function(event) {
 						
 						//if the asset isn't the dynamic JS file and it was changed since it was cached, replace the
 						//cached asset with the new asset
-						if(urlToFetch != '/app.bundle.js' && fetchedDateSec > cachedDateSec)
-							caches.open("send-hug-v1").then(function(cache) {
+						if(urlToFetch != '/app.bundle.js' && !fetchTarget.includes(serverUrl) && fetchedDateSec > cachedDateSec)
+							caches.open(currentCache).then(function(cache) {
 								cache.put(urlToFetch, fetchResponse);
 							})
 						//otherwise, if the asset IS the JS file, replace it anyway as it contains dynamic content
 						// that may have been changed
-						else if(urlToFetch == '/app.bundle.js') {
-							caches.open("send-hug-v1").then(function(cache) {
+						else if(urlToFetch == '/app.bundle.js' || fetchTarget.includes(serverUrl)) {
+							caches.open(currentCache).then(function(cache) {
 								cache.put(urlToFetch, fetchResponse);
 							})
 						}
@@ -89,7 +92,7 @@ self.addEventListener("fetch", function(event) {
 				// fetch the asset
 				fetch(fetchTarget).then(function(fetchRes) {
 					// open the cache and add the asset
-					caches.open("send-hug-v1").then(function(cache) {
+					caches.open(currentCache).then(function(cache) {
 						cache.put(fetchTarget, fetchRes);
 					})
 				// if there's an error, alert the user

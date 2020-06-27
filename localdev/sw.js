@@ -59,7 +59,7 @@ self.addEventListener("fetch", function(event) {
 	let urlToFetch;
 	
 	//if the request is for a browser-sync component, skip checking the cache
-	if(fetchTarget.includes("browser-sync")) {
+	if(fetchTarget.includes("browser-sync") || event.request.method != 'GET') {
 		return;
 	}
 	

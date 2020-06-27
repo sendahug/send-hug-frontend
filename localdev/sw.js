@@ -1,4 +1,4 @@
-const currentCache = "send-hug-v1";
+const currentCache = "send-hug-v2";
 const serverUrl = "localhost:5000";
 
 // upon installing a new service worker
@@ -62,7 +62,7 @@ self.addEventListener("fetch", function(event) {
 				//fetches the url from the server and checks whether it was
 					//updated after it was cached. If it was, replaces the URL in
 					//the cache with the newly fetched one
-					fetch(urlToFetch).then(function(fetchResponse) {
+					fetch(urlToFetch, {headers: event.request.headers}).then(function(fetchResponse) {
 						//checks the "last modified" date for both the cached and the
 						//fetched urls
 						let fetchedDate = fetchResponse.headers.get("Last-Modified");
@@ -90,7 +90,7 @@ self.addEventListener("fetch", function(event) {
 			// otherwise, go to the network and fetch it
 			else {
 				// fetch the asset
-				fetch(fetchTarget).then(function(fetchRes) {
+				fetch(fetchTarget, {headers: event.request.headers}).then(function(fetchRes) {
 					// open the cache and add the asset
 					caches.open(currentCache).then(function(cache) {
 						cache.put(fetchTarget, fetchRes);
@@ -102,7 +102,7 @@ self.addEventListener("fetch", function(event) {
 				
 				// return the fetch request in the meanwhile so that the user won't
 				// have to wait
-				return fetch(fetchTarget);
+				return fetch(fetchTarget, {headers: event.request.headers});
 			}
 		})
 	)

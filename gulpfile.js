@@ -153,6 +153,10 @@ function copyServiceWorker()
 {
 	return gulp
 		.src('localdev/sw.js')
+		.pipe(replace(/localhost:5000/g, (match) => {
+						let newString = `send-hug-server.herokuapp.com`
+						return newString;
+					}))
 		.pipe(gulp.dest('./dist'))
 }
 

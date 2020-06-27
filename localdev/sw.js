@@ -101,7 +101,16 @@ self.addEventListener("fetch", function(event) {
 						}
 					})
 				
-				return response;
+				// if the URL to fetch is not one of the static assets, return fetch request
+				if(urlToFetch == '/app.bundle.js' || fetchTarget.includes(serverUrl)) {
+					return fetch(urlToFetch, {headers: event.request.headers}).catch(function(err) {
+						return response;
+					});
+				}
+				// otherwise return the response from cache
+				else {
+					return response;
+				}
 			}
 			// otherwise, go to the network and fetch it
 			else {

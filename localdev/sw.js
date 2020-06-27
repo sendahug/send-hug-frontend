@@ -37,6 +37,22 @@ self.addEventListener("install", function(event) {
 	)
 });
 
+// upon activating a new service worker
+self.addEventListener("activate", function(event) {
+	event.waitUntil(
+		// get all current caches
+		caches.keys().then(function(cacheNames) {
+			// filter out any non-app caches and the current cache
+			cacheNames.filter(function(cacheName) {
+				return cacheName.startsWith('send-hug') && cacheName != currentCache;
+			//delete all unneeded caches
+			}).map(function(cacheName) {
+				return caches.delete(cacheName);
+			})
+		})
+	)
+});
+
 // fetch event listener
 self.addEventListener("fetch", function(event) {
 	let fetchTarget = event.request.url;

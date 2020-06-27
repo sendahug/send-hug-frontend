@@ -1,6 +1,6 @@
 // Angular imports
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, NavigationStart } from '@angular/router';
 
 // App-related imports
 import { AuthService } from './services/auth.service';
@@ -49,6 +49,13 @@ export class AppComponent implements OnInit {
   */
   ngOnInit() {
     this.serviceWorkerM.registerSW();
+
+    // when navigating to another page, check for updates to the ServiceWorker
+    this.router.events.subscribe((event) => {
+      if(event instanceof NavigationStart) {
+        this.serviceWorkerM.updateSW();
+      }
+    })
   }
 
   //

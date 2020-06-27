@@ -13,6 +13,8 @@ import { AlertsService } from './alerts.service';
   providedIn: 'root'
 })
 export class SWManager {
+  activeServiceWorkerReg: ServiceWorkerRegistration | undefined;
+
   // CTOR
   constructor(private alertsService:AlertsService) {
 
@@ -32,9 +34,13 @@ export class SWManager {
     if('serviceWorker' in navigator) {
       // register the service worker
       navigator.serviceWorker.register('/sw.js').then((reg) => {
+        // if there's an active service worker, set the variable
+        if(reg.active) {
+          this.activeServiceWorkerReg = reg;
+        }
         // if there's a waiting service worker ready to be activated,
         // alert the user; if they choose to refresh,
-        if(reg.waiting) {
+        else if(reg.waiting) {
           this.alertsService.createSWAlert(reg.waiting);
         }
         // if there's a service worker installing
@@ -71,5 +77,39 @@ export class SWManager {
         this.alertsService.createSWAlert(worker);
       }
     })
+  }
+
+  /*
+  Function Name: checkSWChange()
+  Function Description: Checks whether there's a new ServiceWorker installing,
+                        installed or waiting to be activated. This event fires up
+                        every time the user navigates to another page.
+  Parameters: None.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  updateSW() {
+    if(this.activeServiceWorkerReg) {
+      this.activeServiceWorkerReg.update().then(() => {
+        // if there's a waiting service worker ready to be activated,
+        // alert the user; if they choose to refresh,
+        if(this.activeServiceWorkerReg!.waiting) {
+          this.alertsService.createSWAlert(this.activeServiceWorkerReg!.waiting);
+        }
+        // if there's a service worker installing
+        else if(this.activeServiceWorkerReg!.installing) {
+          let installingSW = this.activeServiceWorkerReg!.installing;
+          this.checkSWChange(installingSW);
+        }
+        // otherwise wait for an 'updatefound' event
+        else {
+          this.activeServiceWorkerReg!.addEventListener('updatefound', () => {
+            // gets the SW that was found and is now being installed
+            let installingSW = this.activeServiceWorkerReg!.installing!;
+            this.checkSWChange(installingSW);
+          })
+        }
+      })
+    }
   }
 }

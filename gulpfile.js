@@ -148,13 +148,22 @@ function scriptsDist()
       .pipe(gulp.dest("./dist"));
 }
 
+//copy the service worker to the distribution folder
+function copyServiceWorker()
+{
+	return gulp
+		.src('localdev/sw.js')
+		.pipe(gulp.dest('./dist'))
+}
+
 //prepare for distribution
 gulp.task('dist', gulp.parallel(
 	copyHtmlDist,
 	copyIndexDist,
 	//copyImgsDist,
 	stylesDist,
-	scriptsDist
+	scriptsDist,
+	copyServiceWorker
 ));
 
 // TESTING TASKS

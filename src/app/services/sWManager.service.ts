@@ -6,6 +6,9 @@
 // Angular imports
 import { Injectable } from '@angular/core';
 
+// Other imports
+import { openDB, deleteDB, IDBPDatabase } from 'idb';
+
 // App-related imports
 import { AlertsService } from './alerts.service';
 
@@ -14,6 +17,8 @@ import { AlertsService } from './alerts.service';
 })
 export class SWManager {
   activeServiceWorkerReg: ServiceWorkerRegistration | undefined;
+  currentDB: Promise<IDBPDatabase> | undefined;
+  databaseVersion = 1;
 
   // CTOR
   constructor(private alertsService:AlertsService) {
@@ -57,6 +62,8 @@ export class SWManager {
           })
         }
       });
+
+      this.currentDB = this.openDatabase();
     }
   }
 
@@ -111,5 +118,44 @@ export class SWManager {
         }
       })
     }
+  }
+
+  /*
+  Function Name: openDatabase()
+  Function Description: Creates an IDBPromised database to contain data if the
+                        user is offline.
+  Parameters: None.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  openDatabase() {
+    return openDB('send-hug', this.databaseVersion, {
+      upgrade(db, _oldVersion, _newVersion, _transaction) {
+        // create store for posts
+        let postStore = db.createObjectStore('posts', {
+          keyPath: 'id'
+        });
+        postStore.createIndex('date', 'date');
+        postStore.createIndex('user', 'userId');
+        postStore.createIndex('hugs', 'givenHugs');
+
+        // create store for users
+        let userStore = db.createObjectStore('users', {
+          keyPath: 'id'
+        });
+
+        // create store for messages
+        let messageStore = db.createObjectStore('messages', {
+          keyPath: 'id'
+        });
+        messageStore.createIndex('date', 'date');
+
+        // create store for threads
+        let threadStore = db.createObjectStore('threads', {
+          keyPath: 'id'
+        });
+        threadStore.createIndex('latest', 'latestMessage');
+      }
+    });
   }
 }

@@ -20,8 +20,10 @@
 		</ul>
 	</div>
 	
-	<app-loader
+	<div *ngIf="screen != 'main'">
+		<app-loader
 		[waitingFor]="waitFor"></app-loader>
+	</div>
 
 	<!-- Admin dashboard reports -->
 	<div class="adminScreen" id="adminReports" *ngIf="screen == 'reports' && adminService.isReportsResolved.value">

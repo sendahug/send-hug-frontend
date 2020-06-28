@@ -60,25 +60,28 @@ export class ItemsService {
   // User messages variables
   userMessages: {
     inbox: Message[],
-    outbox: Message[]
+    outbox: Message[],
+    threads: Thread[]
   } = {
     inbox: [],
-    outbox: []
+    outbox: [],
+    threads: []
   }
   userMessagesPage = {
-    inbox: 0,
-    outbox: 0
+    inbox: 1,
+    outbox: 1,
+    threads: 1
   }
   totalUserMessagesPages = {
-    inbox: 0,
-    outbox: 0
+    inbox: 1,
+    outbox: 1,
+    threads: 1
   }
-  isUserInboxResolved = new BehaviorSubject(false);
-  isUserOutboxResolved = new BehaviorSubject(false);
-  userThreads: Thread[] = [];
-  userThreadsPage: number;
-  totalUserThreadsPage: number;
-  isUserThreadsResolved = new BehaviorSubject(false);
+  isUserMessagesResolved = {
+    inbox: new BehaviorSubject(false),
+    outbox: new BehaviorSubject(false),
+    threads: new BehaviorSubject(false)
+  }
   activeThread = 0;
   threadMessages: Message[] = [];
   threadPage: number;
@@ -102,12 +105,6 @@ export class ItemsService {
     private serviceWorkerM:SWManager
   ) {
       // default assignment
-      this.userMessagesPage.inbox = 1;
-      this.totalUserMessagesPages.inbox = 1;
-      this.userMessagesPage.outbox = 1;
-      this.totalUserMessagesPages.outbox = 1;
-      this.userThreadsPage = 1;
-      this.totalUserThreadsPage = 1;
       this.threadPage = 1;
       this.totalThreadPages = 1;
   }
@@ -260,55 +257,35 @@ export class ItemsService {
   // MESSAGE-RELATED METHODS
   // ==============================================================
   /*
-  Function Name: getMessages()
-  Function Description: Checks which mailbox was requested and forwards the request
-                        to the appropriate getter function.
-  Parameters: type (string) - Type of mailbox to fetch.
+  Function Name: getMailboxMessages()
+  Function Description: Get the user's incoming messages.
+  Parameters: type ('inbox' | 'outbox') - Type of messages to fetch.
               userID (number) - the ID of the user whose messages to fetch.
   ----------------
   Programmer: Shir Bar Lev.
   */
-  getMessages(type:string, userID:number) {
-    if(type == 'inbox') {
-      this.getInboxMessages(userID);
-    }
-    else if(type == 'outbox') {
-      this.getOutboxMessages(userID);
-    }
-    else if(type == 'threads') {
-      this.getThreads(userID);
-    }
-  }
-
-  /*
-  Function Name: getInboxMessages()
-  Function Description: Get the user's incoming messages.
-  Parameters: userID (number) - the ID of the user whose messages to fetch.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  getInboxMessages(userID:number) {
+  getMailboxMessages(type: 'inbox' | 'outbox', userID:number) {
     // if the current page is 0, send page 1 to the server (default)
-    const currentPage = this.userMessagesPage.inbox ? this.userMessagesPage.inbox : 1;
+    const currentPage = this.userMessagesPage[type] ? this.userMessagesPage[type] : 1;
     let params = new HttpParams()
       .set('userID', `${userID}`)
       .set('page', `${currentPage}`)
-      .set('type', 'inbox');
+      .set('type', type);
     // try to get the user's messages
     this.Http.get(`${this.serverUrl}/messages`, {
       headers: this.authService.authHeader,
       params: params
     }).subscribe((response:any) => {
       let messages = response.messages;
-      this.userMessages.inbox = [];
+      this.userMessages[type] = [];
       messages.forEach((element: Message) => {
-        this.userMessages.inbox.push(element);
+        this.userMessages[type].push(element);
       });
-      this.totalUserMessagesPages.inbox = response.total_pages;
+      this.totalUserMessagesPages[type] = response.total_pages;
       // if there are 0 pages, current page is also 0; otherwise it's whatever
       // the server returns
-      this.userMessagesPage.inbox = this.totalUserMessagesPages.inbox ? response.current_page : 0;
-      this.isUserInboxResolved.next(true);
+      this.userMessagesPage[type] = this.totalUserMessagesPages[type] ? response.current_page : 0;
+      this.isUserMessagesResolved[type].next(true);
 
       // if there's a currently operating IDB database, get it
       if(this.serviceWorkerM.currentDB) {
@@ -324,56 +301,7 @@ export class ItemsService {
       }
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
-      this.isUserInboxResolved.next(true);
-      this.alertsService.createErrorAlert(err);
-    })
-  }
-
-  /*
-  Function Name: getOutboxMessages()
-  Function Description: Get the user's outgoing messages.
-  Parameters: userID (number) - the ID of the user whose messages to fetch.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  getOutboxMessages(userID:number) {
-    // if the current page is 0, send page 1 to the server (default)
-    const currentPage = this.userMessagesPage.outbox ? this.userMessagesPage.outbox : 1;
-    let params = new HttpParams()
-      .set('userID', `${userID}`)
-      .set('page', `${currentPage}`)
-      .set('type', 'outbox');
-    // try to get the user's messages
-    this.Http.get(`${this.serverUrl}/messages`, {
-      headers: this.authService.authHeader,
-      params: params
-    }).subscribe((response:any) => {
-      let messages = response.messages;
-      this.userMessages.outbox = [];
-      messages.forEach((element: Message) => {
-        this.userMessages.outbox.push(element);
-      });
-      this.totalUserMessagesPages.outbox = response.total_pages;
-      // if there are 0 pages, current page is also 0; otherwise it's whatever
-      // the server returns
-      this.userMessagesPage.outbox = this.totalUserMessagesPages.outbox ? response.current_page : 0;
-      this.isUserOutboxResolved.next(true);
-
-      // if there's a currently operating IDB database, get it
-      if(this.serviceWorkerM.currentDB) {
-        this.serviceWorkerM.currentDB.then(db => {
-          // start a new transaction
-          let tx = db.transaction('messages', 'readwrite');
-          let store = tx.objectStore('messages');
-          // add each message in the messages list to the store
-          messages.forEach((element:Message) => {
-            store.put(element);
-          });
-        })
-      }
-    // if there was an error, alert the user
-    }, (err:HttpErrorResponse) => {
-      this.isUserOutboxResolved.next(true);
+      this.isUserMessagesResolved[type].next(true);
       this.alertsService.createErrorAlert(err);
     })
   }
@@ -387,7 +315,7 @@ export class ItemsService {
   */
   getThreads(userID:number) {
     // if the current page is 0, send page 1 to the server (default)
-    const currentPage = this.userThreadsPage ? this.userThreadsPage : 1;
+    const currentPage = this.userMessagesPage.threads ? this.userMessagesPage.threads : 1;
     let params = new HttpParams()
       .set('userID', `${userID}`)
       .set('page', `${currentPage}`)
@@ -398,7 +326,7 @@ export class ItemsService {
       params: params
     }).subscribe((response:any) => {
       let threads = response.messages;
-      this.userThreads = [];
+      this.userMessages.threads = [];
       threads.forEach((element: any) => {
         let thread: Thread = {
           id: element.id,
@@ -407,13 +335,13 @@ export class ItemsService {
           numMessages: element.numMessages,
           latestMessage: element.latestMessage
         }
-        this.userThreads.push(thread);
+        this.userMessages.threads.push(thread);
       });
-      this.totalUserThreadsPage = response.total_pages;
+      this.totalUserMessagesPages.threads = response.total_pages;
       // if there are 0 pages, current page is also 0; otherwise it's whatever
       // the server returns
-      this.userThreadsPage = this.totalUserThreadsPage ? response.current_page : 0;
-      this.isUserThreadsResolved.next(true);
+      this.userMessagesPage.threads = this.totalUserMessagesPages.threads ? response.current_page : 0;
+      this.isUserMessagesResolved.threads.next(true);
 
       // if there's a currently operating IDB database, get it
       if(this.serviceWorkerM.currentDB) {
@@ -429,7 +357,7 @@ export class ItemsService {
       }
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
-      this.isUserThreadsResolved.next(true);
+      this.isUserMessagesResolved.threads.next(true);
       this.alertsService.createErrorAlert(err);
     })
   }

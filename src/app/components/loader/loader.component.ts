@@ -127,7 +127,7 @@ export class Loader implements OnInit, OnChanges {
         // the logged in user's messages
         if(value == true) {
           // subscribe to the subject following user messages data
-          this.itemsService.isUserInboxResolved.subscribe((value) => {
+          this.itemsService.isUserMessagesResolved.inbox.subscribe((value) => {
             // the subject's value is changed to 'true' upon fetching user
             // messages, so if the value is true, there's no longer need
             // for the loader screen
@@ -148,7 +148,7 @@ export class Loader implements OnInit, OnChanges {
         // the logged in user's messages
         if(value == true) {
           // subscribe to the subject following user messages data
-          this.itemsService.isUserOutboxResolved.subscribe((value) => {
+          this.itemsService.isUserMessagesResolved.outbox.subscribe((value) => {
             // the subject's value is changed to 'true' upon fetching user
             // messages, so if the value is true, there's no longer need
             // for the loader screen
@@ -169,7 +169,7 @@ export class Loader implements OnInit, OnChanges {
         // the logged in user's threads
         if(value == true) {
           // subscribe to the subject following user threads data
-          this.itemsService.isUserThreadsResolved.subscribe((value) => {
+          this.itemsService.isUserMessagesResolved.threads.subscribe((value) => {
             // the subject's value is changed to 'true' upon fetching user
             // threads, so if the value is true, there's no longer need
             // for the loader screen

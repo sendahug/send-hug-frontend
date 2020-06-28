@@ -7,7 +7,7 @@
 import { Injectable } from '@angular/core';
 
 // Other imports
-import { openDB, deleteDB, IDBPDatabase } from 'idb';
+import { openDB, IDBPDatabase } from 'idb';
 
 // App-related imports
 import { AlertsService } from './alerts.service';
@@ -158,5 +158,88 @@ export class SWManager {
         threadStore.createIndex('latest', 'latestMessage');
       }
     });
+  }
+
+  /*
+  Function Name: queryDatabase()
+  Function Description: Gets data matching the provided query from IndexedDB database.
+  Parameters: target (string) - The target of the query.
+              params - An array of parameters build in the following form:
+                        { name: 'name', value: 1 }
+                        This includes:
+                          - currentUser (number) - the ID of the user currently logged in.
+                          - page (number) - current page of results the user is in.
+                          - threadID (number) - the ID of the thread for which to fetch messages.
+                          - userID (number) - user ID of the user whose data to fetch.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  queryDatabase(target:string, ...params:any[]) {
+    // checks that there's IDB database currently working
+    if(this.currentDB) {
+      return this.currentDB.then(function(db) {
+        // if the target is any of the single-message mailboxes, get the data
+        // from the messages objectStore
+        if(target == 'inbox' || target == 'outbox' || target == 'thread') {
+          let messageStore = db.transaction('messages').store.index('date');
+          return messageStore.getAll();
+        }
+        // if the target is the threads mailbox, get the data from
+        // the threads objectStore
+        else if(target == 'threads') {
+          let threadsStore = db.transaction('threads').store.index('latest');
+          return threadsStore.getAll();
+        }
+        // if the target is a user, get the data of the specific user from the
+        // users objectStore
+        else if(target == 'user') {
+          let userStore = db.transaction('users').store;
+          let userID = params.find((e:any) => e.name == 'userID');
+          return userStore.get(userID.value);
+        }
+      // once the data is fetched, operate on it
+      }).then(function(data) {
+        // if the target is a user, return it as-is
+        if(target == 'user') {
+          return data;
+        }
+        // otherwise, the target requires pagination, so get pages data and
+        // then get the relevant messages
+        else {
+          // get the current page and the start index for the paginated list
+          let currentPage = params.find((e:any) => e.name == 'page');
+          let startIndex = (currentPage.value - 1) * 5;
+
+          // if the target is inbox, keep only messages sent to the user and
+          // return paginated inbox messages
+          if(target == 'inbox') {
+            let currentUser = params.find((e:any) => e.name == 'currentUser');
+            let inbox = data.filter((e:any) => e.forId == currentUser.value);
+
+            return inbox.slice(startIndex, (startIndex + 5));
+          }
+          // if the target is outbox, keep only messages sent from the user and
+          // return paginated outbox messages
+          else if(target == 'outbox') {
+            let currentUser = params.find((e:any) => e.name == 'currentUser');
+            let outbox = data.filter((e:any) => e.fromId == currentUser.value);
+
+            return outbox.slice(startIndex, (startIndex + 5));
+          }
+          // if the target is threads, return paginated threads list
+          else if(target == 'threads') {
+            return data.slice(startIndex, (startIndex + 5));
+          }
+          // if the target is a specific thread, keep only messages belonging to
+          // that thread nad return paginated messages
+          else if(target == 'thread') {
+            let threadID = params.find((e:any) => e.name == 'threadID');
+            let thread = data.filter((e:any) => e.threadID == threadID.value);
+
+            return thread.slice(startIndex, (startIndex+5));
+          }
+        }
+      })
+    }
   }
 }

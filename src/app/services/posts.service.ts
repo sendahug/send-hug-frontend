@@ -11,6 +11,7 @@ import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http'
 import { Post } from '../interfaces/post.interface';
 import { AuthService } from './auth.service';
 import { AlertsService } from './alerts.service';
+import { SWManager } from './sWManager.service';
 import { environment } from '../../environments/environment';
 import { environment as prodEnv } from '../../environments/environment.prod';
 
@@ -42,7 +43,8 @@ export class PostsService {
   constructor(
     private Http: HttpClient,
     private authService:AuthService,
-    private alertsService:AlertsService
+    private alertsService:AlertsService,
+    private serviceWorkerM:SWManager
   ) {
       // default assignment
       this.fullItemsPage.fullNewItems = 1;
@@ -66,6 +68,23 @@ export class PostsService {
       let data = response;
       this.newItemsArray = data.recent;
       this.sugItemsArray = data.suggested;
+
+      // if there's a currently operating IDB database, get it
+      if(this.serviceWorkerM.currentDB) {
+        this.serviceWorkerM.currentDB.then(db => {
+          // start a new transaction
+          let tx = db.transaction('posts', 'readwrite');
+          let store = tx.objectStore('posts');
+          // add each post in the 'recent' list to posts store
+          data.recent.forEach((element:Post) => {
+            store.put(element);
+          });
+          // add each post in the 'suggested' list to posts store
+          data.suggested.forEach((element:Post) => {
+            store.put(element);
+          });
+        })
+      }
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
       this.alertsService.createErrorAlert(err);
@@ -92,6 +111,19 @@ export class PostsService {
       this.fullItemsList.fullNewItems = data;
       this.fullItemsPage.fullNewItems = page;
       this.totalFullItemsPage.fullNewItems = response.total_pages;
+
+      // if there's a currently operating IDB database, get it
+      if(this.serviceWorkerM.currentDB) {
+        this.serviceWorkerM.currentDB.then(db => {
+          // start a new transaction
+          let tx = db.transaction('posts', 'readwrite');
+          let store = tx.objectStore('posts');
+          // add each post in the 'recent' list to posts store
+          data.forEach((element:Post) => {
+            store.put(element);
+          });
+        })
+      }
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
       this.alertsService.createErrorAlert(err);
@@ -118,6 +150,19 @@ export class PostsService {
       this.fullItemsList.fullSuggestedItems = data;
       this.fullItemsPage.fullSuggestedItems = page;
       this.totalFullItemsPage.fullSuggestedItems = response.total_pages;
+
+      // if there's a currently operating IDB database, get it
+      if(this.serviceWorkerM.currentDB) {
+        this.serviceWorkerM.currentDB.then(db => {
+          // start a new transaction
+          let tx = db.transaction('posts', 'readwrite');
+          let store = tx.objectStore('posts');
+          // add each post in the 'recent' list to posts store
+          data.forEach((element:Post) => {
+            store.put(element);
+          });
+        })
+      }
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
       this.alertsService.createErrorAlert(err);

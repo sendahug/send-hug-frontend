@@ -130,7 +130,7 @@ export class SWManager {
   */
   openDatabase() {
     return openDB('send-hug', this.databaseVersion, {
-      upgrade(db, _oldVersion, _newVersion, _transaction) {
+      upgrade(db, _oldVersion, _newVersion, transaction) {
         // create store for posts
         let postStore = db.createObjectStore('posts', {
           keyPath: 'id'

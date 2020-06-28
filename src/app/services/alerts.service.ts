@@ -206,6 +206,11 @@ export class AlertsService {
     else if(err.status == 503) {
       alert.message = err.statusText;
     }
+    // otherwise, if zone.js / angular is overriding service worker responses with
+    // 'unknown error' (detected by the user being offline), return the 'you're offline' response
+    else if(err.status == 0 && !navigator.onLine) {
+      alert.message = "The server isn't available at the moment. Try again when you're connected to the internet.";
+    }
 
     this.isSWRelated = false;
     this.createAlert(alert);

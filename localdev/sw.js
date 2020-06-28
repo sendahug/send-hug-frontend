@@ -59,7 +59,19 @@ self.addEventListener("fetch", function(event) {
 	let urlToFetch;
 	
 	//if the request is for a browser-sync component, skip checking the cache
-	if(fetchTarget.includes("browser-sync") || event.request.method != 'GET') {
+	if(fetchTarget.includes("browser-sync")) {
+		return;
+	}
+	
+	// if the request is a non-GET and the user is offline, return an error
+	if(event.request.method != 'GET' && !navigator.onLine) {
+		return new Response("You are currently offline; try again when you're online.", {
+			"status": 503,
+			"statusText": "The server isn't available at the moment. Try again when you're connected to the internet."
+		})
+	}
+	// otherwise, just pass it on to the server as-is
+	else if(event.request.method != 'GET' && navigator.onLine) {
 		return;
 	}
 	
@@ -102,9 +114,9 @@ self.addEventListener("fetch", function(event) {
 					}).catch(function(err) {
 						// if the user is offline, let them know that theyy're offline and that's the issue
 						if(!navigator.onLine) {
-							return new Response("You are currently offline; try again when you're online. Try again when you're connected to the internet.", {
+							return new Response("You are currently offline; try again when you're online.", {
 								"status": 503,
-								"statusText": "The server isn't available at the moment."
+								"statusText": "The server isn't available at the moment. Try again when you're connected to the internet."
 							})
 						}
 						// otherwise log the error

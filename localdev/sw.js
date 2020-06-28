@@ -99,6 +99,18 @@ self.addEventListener("fetch", function(event) {
 								cache.put(urlToFetch, fetchResponse);
 							})
 						}
+					}).catch(function(err) {
+						// if the user is offline, let them know that theyy're offline and that's the issue
+						if(!navigator.onLine) {
+							return new Response("You are currently offline; try again when you're online. Try again when you're connected to the internet.", {
+								"status": 503,
+								"statusText": "The server isn't available at the moment."
+							})
+						}
+						// otherwise log the error
+						else {
+							console.log(err);
+						}
 					})
 				
 				// if the URL to fetch is not one of the static assets, return fetch request
@@ -127,8 +139,20 @@ self.addEventListener("fetch", function(event) {
 				
 				// return the fetch request in the meanwhile so that the user won't
 				// have to wait
-				return fetch(fetchTarget, {headers: event.request.headers});
-			}
+				return fetch(fetchTarget, {headers: event.request.headers}).catch(function(err) {
+						// if the user is offline, let them know that theyy're offline and that's the issue
+						if(!navigator.onLine) {
+							return new Response("You are currently offline; try again when you're online.", {
+								"status": 503,
+								"statusText": "The server isn't available at the moment. Try again when you're connected to the internet."
+							})
+						}
+						// otherwise log the error
+						else {
+							console.log(err);
+						}
+					});
+				}
 		})
 	)
 })

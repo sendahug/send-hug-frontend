@@ -149,6 +149,7 @@ export class SWManager {
           keyPath: 'id'
         });
         messageStore.createIndex('date', 'date');
+        messageStore.createIndex('thread', 'threadID');
 
         // create store for threads
         let threadStore = db.createObjectStore('threads', {

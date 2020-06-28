@@ -148,13 +148,19 @@ function scriptsDist()
       .pipe(gulp.dest("./dist"));
 }
 
-//copy the service worker to the distribution folder
+//copy the service worker to the distribution folder; update the cache version on each build
 function copyServiceWorker()
 {
 	return gulp
 		.src('localdev/sw.js')
 		.pipe(replace(/localhost:5000/g, (match) => {
 						let newString = `send-hug-server.herokuapp.com`
+						return newString;
+					}))
+		.pipe(replace(/send-hug-v2/g, (match) => {
+						let currentVersion = Number(match.substring(10, match.length));
+						let newVersion = currentVersion + 1;
+						let newString = `send-hug-v${newVersion}`
 						return newString;
 					}))
 		.pipe(gulp.dest('./dist'))

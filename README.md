@@ -73,6 +73,7 @@ The main module contains 9 components, 3 services and 4 interfaces. Each compone
 3. **auth** - Handles authentication-related methods, including login, logout, token refresh and getting and changing user data. View [Authentication](#Authentication) for more details about the authentication process.
 4. **items** - Handles communications with the backend for non-post related communications. Deals with fetching user posts, handling messages (fetching, sending and deleting), running a search and sending a report.
 5. **posts** - Handles all backend communication for post-related communications (except for a specific user's posts). This includes getting, creating, editing and deleting posts.
+6. **swmanager** - Handles the Service Worker and the IDBPromised database created for offline usage.
 
 ## Dependencies
 
@@ -107,6 +108,10 @@ The site uses several tools to maximise compatibility:
 13. **core-js** - Modular standard library for JavaScript. Contains polyfills. For more information, check the [GitHub repo](https://github.com/zloirock/core-js).
 
 For more information about Angular's required NPM packages, check the [Angular docs](https://angular.io/guide/npm-packages).
+
+### Other
+
+1. **IDB** (formerly IDBPromised) - An improved version of IndexedDB, which is Promise-based and includes various enhancements to improve the API's usability. For more information, check the [IDBP repo](https://github.com/jakearchibald/idb).
 
 ### Production Dependencies
 

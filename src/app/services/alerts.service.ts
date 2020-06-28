@@ -201,6 +201,11 @@ export class AlertsService {
     if(err.status == 403 || err.status == 401) {
       alert.message = err.error.message.description;
     }
+    // if it's a 'server unavilable' error, it's (currently) sent by the
+    // service worker, so it's a different structure
+    else if(err.status == 503) {
+      alert.message = err.statusText;
+    }
 
     this.isSWRelated = false;
     this.createAlert(alert);

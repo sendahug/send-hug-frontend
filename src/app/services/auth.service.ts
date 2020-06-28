@@ -14,6 +14,7 @@ import * as Auth0 from 'auth0-js';
 // App-related imports
 import { User } from '../interfaces/user.interface';
 import { AlertsService } from './alerts.service';
+import { SWManager } from './sWManager.service';
 import { environment } from '../../environments/environment';
 import { environment as prodEnv } from '../../environments/environment.prod';
 
@@ -59,7 +60,8 @@ export class AuthService {
   // CTOR
   constructor(
     private Http:HttpClient,
-    private alertsService:AlertsService
+    private alertsService:AlertsService,
+    private serviceWorkerM:SWManager
   ) {
 
   }
@@ -168,6 +170,29 @@ export class AuthService {
         if(this.loggedIn) {
           this.updateUserData();
         }
+
+        // if there's a currently operating IDB database, get it
+        if(this.serviceWorkerM.currentDB) {
+          this.serviceWorkerM.currentDB.then(db => {
+            // start a new transaction
+            let tx = db.transaction('users', 'readwrite');
+            let store = tx.objectStore('users');
+            // adds the user's data to the users store
+            let user = {
+              id: data.id,
+              auth0Id: jwtPayload.sub,
+              displayName: data.displayName,
+              receivedHugs: data.receivedH,
+              givenHugs: data.givenH,
+              postsNum: data.posts,
+              loginCount: data.loginCount,
+              role: data.role,
+              blocked: data.blocked,
+              releaseDate: data.releaseDate
+            }
+            store.put(user);
+          })
+        }
         // if there's an error, check the error type
       }, (err) => {
         let statusCode = err.status;
@@ -226,6 +251,29 @@ export class AuthService {
       this.authHeader = new HttpHeaders({'Authorization': `Bearer ${this.token}`});
       this.setToken();
       this.isUserDataResolved.next(true);
+
+      // if there's a currently operating IDB database, get it
+      if(this.serviceWorkerM.currentDB) {
+        this.serviceWorkerM.currentDB.then(db => {
+          // start a new transaction
+          let tx = db.transaction('users', 'readwrite');
+          let store = tx.objectStore('users');
+          // adds the user's data to the users store
+          let user = {
+            id: data.id,
+            auth0Id: jwtPayload.sub,
+            displayName: data.displayName,
+            receivedHugs: data.receivedH,
+            givenHugs: data.givenH,
+            postsNum: data.posts,
+            loginCount: data.loginCount,
+            role: data.role,
+            blocked: data.blocked,
+            releaseDate: data.releaseDate
+          }
+          store.put(user);
+        })
+      }
       // error handling
     }, (err) => {
       this.isUserDataResolved.next(true);

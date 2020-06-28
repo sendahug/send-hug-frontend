@@ -16,6 +16,7 @@ import { OtherUser } from '../interfaces/otherUser.interface';
 import { Report } from '../interfaces/report.interface';
 import { AuthService } from './auth.service';
 import { AlertsService } from './alerts.service';
+import { SWManager } from './sWManager.service';
 import { environment } from '../../environments/environment';
 import { environment as prodEnv } from '../../environments/environment.prod';
 
@@ -97,7 +98,9 @@ export class ItemsService {
   constructor(
     private Http: HttpClient,
     private authService:AuthService,
-    private alertsService:AlertsService) {
+    private alertsService:AlertsService,
+    private serviceWorkerM:SWManager
+  ) {
       // default assignment
       this.userMessagesPage.inbox = 1;
       this.totalUserMessagesPages.inbox = 1;
@@ -158,6 +161,19 @@ export class ItemsService {
       // the server returns
       this.userPostsPage[user] = this.totalUserPostsPages[user] ? response.page : 0;
       this.isUserPostsResolved[user].next(true);
+
+      // if there's a currently operating IDB database, get it
+      if(this.serviceWorkerM.currentDB) {
+        this.serviceWorkerM.currentDB.then(db => {
+          // start a new transaction
+          let tx = db.transaction('posts', 'readwrite');
+          let store = tx.objectStore('posts');
+          // add each post in the list to posts store
+          data.forEach((element:Post) => {
+            store.put(element);
+          });
+        })
+      }
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
       this.isUserPostsResolved[user].next(true);
@@ -223,6 +239,17 @@ export class ItemsService {
       }
       this.isOtherUserResolved.next(true);
       this.getUserPosts(userID);
+
+      // if there's a currently operating IDB database, get it
+      if(this.serviceWorkerM.currentDB) {
+        this.serviceWorkerM.currentDB.then(db => {
+          // start a new transaction
+          let tx = db.transaction('users', 'readwrite');
+          let store = tx.objectStore('users');
+          // adds the user's data to the users store
+          store.put(this.otherUserData);
+        })
+      }
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
       this.isOtherUserResolved.next(true);
@@ -282,6 +309,19 @@ export class ItemsService {
       // the server returns
       this.userMessagesPage.inbox = this.totalUserMessagesPages.inbox ? response.current_page : 0;
       this.isUserInboxResolved.next(true);
+
+      // if there's a currently operating IDB database, get it
+      if(this.serviceWorkerM.currentDB) {
+        this.serviceWorkerM.currentDB.then(db => {
+          // start a new transaction
+          let tx = db.transaction('messages', 'readwrite');
+          let store = tx.objectStore('messages');
+          // add each message in the messages list to the store
+          messages.forEach((element:Message) => {
+            store.put(element);
+          });
+        })
+      }
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
       this.isUserInboxResolved.next(true);
@@ -318,6 +358,19 @@ export class ItemsService {
       // the server returns
       this.userMessagesPage.outbox = this.totalUserMessagesPages.outbox ? response.current_page : 0;
       this.isUserOutboxResolved.next(true);
+
+      // if there's a currently operating IDB database, get it
+      if(this.serviceWorkerM.currentDB) {
+        this.serviceWorkerM.currentDB.then(db => {
+          // start a new transaction
+          let tx = db.transaction('messages', 'readwrite');
+          let store = tx.objectStore('messages');
+          // add each message in the messages list to the store
+          messages.forEach((element:Message) => {
+            store.put(element);
+          });
+        })
+      }
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
       this.isUserOutboxResolved.next(true);
@@ -361,6 +414,19 @@ export class ItemsService {
       // the server returns
       this.userThreadsPage = this.totalUserThreadsPage ? response.current_page : 0;
       this.isUserThreadsResolved.next(true);
+
+      // if there's a currently operating IDB database, get it
+      if(this.serviceWorkerM.currentDB) {
+        this.serviceWorkerM.currentDB.then(db => {
+          // start a new transaction
+          let tx = db.transaction('threads', 'readwrite');
+          let store = tx.objectStore('threads');
+          // add each message in the threads list to the store
+          threads.forEach((element:Message) => {
+            store.put(element);
+          });
+        })
+      }
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
       this.isUserThreadsResolved.next(true);
@@ -400,6 +466,19 @@ export class ItemsService {
       // the server returns
       this.threadPage = this.totalThreadPages ? response.current_page : 0;
       this.isThreadResolved.next(true);
+
+      // if there's a currently operating IDB database, get it
+      if(this.serviceWorkerM.currentDB) {
+        this.serviceWorkerM.currentDB.then(db => {
+          // start a new transaction
+          let tx = db.transaction('messages', 'readwrite');
+          let store = tx.objectStore('messages');
+          // add each message in the messages list to the store
+          messages.forEach((element:Message) => {
+            store.put(element);
+          });
+        })
+      }
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
       this.isThreadResolved.next(true);

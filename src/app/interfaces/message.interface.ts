@@ -8,4 +8,5 @@ export interface Message {
   forId: number;
   messageText: string;
   date: Date;
+  threadID?: number;
 }

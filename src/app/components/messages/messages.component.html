@@ -10,6 +10,9 @@
 	
 	<app-loader
 		[waitingFor]="waitFor"></app-loader>
+	
+	<app-header-message
+		[waitingFor]="waitFor"></app-header-message>
 
 	<!-- If there are messages in the user's inbox -->
 	<div *ngIf="(messType == 'inbox' || messType == 'outbox') && itemsService.userMessages[messType].length">

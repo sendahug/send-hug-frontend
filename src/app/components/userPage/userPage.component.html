@@ -2,6 +2,9 @@
 <div *ngIf="authService.authenticated">
 	<app-loader
 		[waitingFor]="waitFor"></app-loader>
+	
+	<app-header-message
+		[waitingFor]="waitFor"></app-header-message>
 
 	<div id="userPage" *ngIf="(!this.itemsService.isOtherUser && authService.isUserDataResolved.value) || (this.itemsService.isOtherUser && itemsService.isOtherUserResolved.value)">
 		<div id="profileData">

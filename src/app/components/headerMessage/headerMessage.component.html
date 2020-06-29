@@ -1,7 +1,6 @@
 <div id="headerMessage" *ngIf="visible">
 	<div class="logo"></div>
-	<div id="loadingMessage">{{ message }}</div>
-	<svg class="spinner" viewBox="25 25 50 50"  *ngIf="loading">
-		<circle class="path" cx="15" cy="15" r="5" fill="none" stroke-width="1" stroke-miterlimit="3"/>
-	</svg>
+	<svg class="spinner" viewBox="0 0 7 7"  *ngIf="loading">
+		<circle class="path" cx="5" cy="5" r="5" fill="none" stroke-width="1" stroke-miterlimit="3"/>
+	</svg> <span id="loadingMessage">{{ message }}</span>
 </div>

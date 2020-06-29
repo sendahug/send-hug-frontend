@@ -574,7 +574,7 @@ app-error-page
 	margin: 5px Calc(100% - 35px) 5px 2px
 
 /* =================== Loader Component Styling =================== */
-/* Via https://medium.com/@tomastrajan/how-to-style-angular-application-loading-with-angular-cli-like-a-boss-cdd4f5358554 */
+/* Via https://www.w3schools.com/howto/howto_css_loader.asp */
 /* Loader */
 #loading 
 	position: relative
@@ -587,43 +587,28 @@ app-error-page
 	margin: 10%
 
 /* Loader text */
-#loadingMessage
+#loading #loadingMessage
 	color: $headlineColour
 	font-size: 18px
 
 /* Loader spinner */
-#loadingMessage .spinner 
+#loading #loadingMessage .spinner 
 	height: 50px
 	width: 50px
-	animation: rotate 2.5s linear infinite
+	animation: spin 2s linear infinite
 	transform-origin: center center
 	position: relative
 	margin: 20%
+	border: 3px solid #f3f3f3 /* Light grey */
+	border-top: 3px solid #3498db /* Blue */
+	border-radius: 50%
 
 /* Loader spinner rotate animation */
-@keyframes rotate 
-	100% 
-		transform: rotate(360deg)
-
-/* Loader spinner path */
-.spinner .path
-	stroke-dasharray: 1, 200
-	stroke-dashoffset: 0
-	animation: dash 2.5s ease-in-out infinite
-	stroke-linecap: round
-	stroke: $mainColour
-
-/* Loader spinner path animation */
-@keyframes dash 
-	0%
-		stroke-dasharray: 1, 200
-		stroke-dashoffset: 0
-	50%
-		stroke-dasharray: 89, 200
-		stroke-dashoffset: -35px
+@keyframes spin
+	0% 
+		transform: rotate(0deg)
 	100%
-		stroke-dasharray: 89, 200
-		stroke-dashoffset: -124px
+		transform: rotate(360deg)
 
 /* =================== Header Message Component Styling =================== */
 /* Via https://www.w3schools.com/howto/howto_css_loader.asp */
@@ -657,7 +642,7 @@ app-header-message #headerMessage
 	magrin: 0 5%
 
 /*  Header Message message */
-#loadingMessage
+#headerMessage #loadingMessage
 	color: $headlineColour
 	font-size: 16px
 	margin: 0

@@ -98,7 +98,14 @@ export class PostsService {
       }
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
-      this.alertsService.createErrorAlert(err);
+      // if the server is unavilable due to the user being offline, tell the user
+      if(err.status == 503 && !navigator.onLine) {
+        this.alertsService.createOfflineAlert();
+      }
+      // otherwise just create an error alert
+      else {
+        this.alertsService.createErrorAlert(err);
+      }
     })
   }
 
@@ -145,7 +152,14 @@ export class PostsService {
       }
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
-      this.alertsService.createErrorAlert(err);
+      // if the server is unavilable due to the user being offline, tell the user
+      if(err.status == 503 && !navigator.onLine) {
+        this.alertsService.createOfflineAlert();
+      }
+      // otherwise just create an error alert
+      else {
+        this.alertsService.createErrorAlert(err);
+      }
     })
   }
 
@@ -192,7 +206,14 @@ export class PostsService {
       }
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
-      this.alertsService.createErrorAlert(err);
+      // if the server is unavilable due to the user being offline, tell the user
+      if(err.status == 503 && !navigator.onLine) {
+        this.alertsService.createOfflineAlert();
+      }
+      // otherwise just create an error alert
+      else {
+        this.alertsService.createErrorAlert(err);
+      }
     })
   }
 

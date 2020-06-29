@@ -104,7 +104,7 @@ export class Loader implements OnInit, OnChanges {
     else if(this.waitingFor == 'other user') {
       this.message = 'Fetching user data...';
       // subscribe to the subject following other user's data
-      this.itemsService.isOtherUserResolved.subscribe((value) => {
+      this.itemsService.idbResolved.user.subscribe((value) => {
         // the subject's value is changed to 'true' upon fetching user data,
         // so if the value is true, there's no longer need for the loader
         // screen.
@@ -127,7 +127,7 @@ export class Loader implements OnInit, OnChanges {
         // the logged in user's messages
         if(value == true) {
           // subscribe to the subject following user messages data
-          this.itemsService.isUserMessagesResolved.inbox.subscribe((value) => {
+          this.itemsService.idbResolved.inbox.subscribe((value) => {
             // the subject's value is changed to 'true' upon fetching user
             // messages, so if the value is true, there's no longer need
             // for the loader screen
@@ -148,7 +148,7 @@ export class Loader implements OnInit, OnChanges {
         // the logged in user's messages
         if(value == true) {
           // subscribe to the subject following user messages data
-          this.itemsService.isUserMessagesResolved.outbox.subscribe((value) => {
+          this.itemsService.idbResolved.outbox.subscribe((value) => {
             // the subject's value is changed to 'true' upon fetching user
             // messages, so if the value is true, there's no longer need
             // for the loader screen
@@ -169,7 +169,7 @@ export class Loader implements OnInit, OnChanges {
         // the logged in user's threads
         if(value == true) {
           // subscribe to the subject following user threads data
-          this.itemsService.isUserMessagesResolved.threads.subscribe((value) => {
+          this.itemsService.idbResolved.threads.subscribe((value) => {
             // the subject's value is changed to 'true' upon fetching user
             // threads, so if the value is true, there's no longer need
             // for the loader screen
@@ -190,7 +190,7 @@ export class Loader implements OnInit, OnChanges {
         // the logged in user's threads
         if(value == true) {
           // subscribe to the subject following user threads data
-          this.itemsService.isThreadResolved.subscribe((value) => {
+          this.itemsService.idbResolved.thread.subscribe((value) => {
             // the subject's value is changed to 'true' upon fetching user
             // threads, so if the value is true, there's no longer need
             // for the loader screen
@@ -206,7 +206,7 @@ export class Loader implements OnInit, OnChanges {
     else if(this.waitingFor == 'user posts') {
       this.message = 'Fetching user posts...';
       // subscribe to the subject following user's posts
-      this.itemsService.isUserPostsResolved[this.user].subscribe((value) => {
+      this.itemsService.idbResolved.userPosts.subscribe((value) => {
         // the subject's value is changed to 'true' upon fetching user
         // posts, so if the value is true, there's no longer need for the
         // loader screen

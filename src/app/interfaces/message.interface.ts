@@ -9,4 +9,5 @@ export interface Message {
   messageText: string;
   date: Date;
   threadID?: number;
+  isoDate?: string;
 }

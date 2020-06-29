@@ -7,4 +7,5 @@ export interface Post {
   text: string;
   date: Date;
   givenHugs: number;
+  isoDate?: string;
 }

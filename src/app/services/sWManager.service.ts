@@ -197,6 +197,25 @@ export class SWManager {
           let userID = params.find((e:any) => e.name == 'userID');
           return userStore.get(userID.value);
         }
+        // if the target is the main page's new posts, get the data from
+        // the posts store
+        else if(target == 'main new' || target == 'new posts') {
+          let postsStore = db.transaction('posts').store.index('date');
+          return postsStore.getAll();
+        }
+        // if the target is the main page's suggested posts, get the data from
+        // the posts store
+        else if(target == 'main suggested' || target == 'suggested posts') {
+          let postsStore = db.transaction('posts').store.index('givenHugs');
+          return postsStore.getAll();
+        }
+        // if the target is a specific user's posts, get the data from
+        // the posts store
+        else if(target == 'user posts') {
+          let postsStore = db.transaction('posts').store.index('user');
+          let userID = params.find((e:any) => e.name == 'userID');
+          return postsStore.getAll(userID.value);
+        }
       // once the data is fetched, operate on it
       }).then(function(data) {
         // if the target is a user, return it as-is
@@ -207,8 +226,11 @@ export class SWManager {
         // then get the relevant messages
         else {
           // get the current page and the start index for the paginated list
+          // if the target is one of the main page's lists, each list should contain
+          // 10 posts; otherwise each list should contain 5 items
           let currentPage = params.find((e:any) => e.name == 'page');
-          let startIndex = (currentPage.value - 1) * 5;
+          let startIndex = (target == 'main new' || target == 'main suggested') ?
+                            (currentPage.value - 1) * 10 : (currentPage.value - 1) * 5;
 
           // if the target is inbox, keep only messages sent to the user and
           // return paginated inbox messages
@@ -237,6 +259,29 @@ export class SWManager {
             let thread = data.filter((e:any) => e.threadID == threadID.value);
 
             return thread.slice(startIndex, (startIndex+5));
+          }
+          // if the target is the main page's new posts, reverse the order of
+          // the posts (to show the latest posts) and return paginated posts
+          else if(target == 'main new') {
+            let newPosts = data.reverse();
+
+            return newPosts.slice(startIndex, (startIndex + 10));
+          }
+          // if the target is the main page's new posts, return paginated posts
+          else if(target == 'main suggested') {
+            return data.slice(startIndex, (startIndex + 10));
+          }
+          // if the target is the fullList's new posts, reverse the order of
+          // the posts (to show the latest posts) and return paginated posts
+          else if(target == 'new posts') {
+            let newPosts = data.reverse();
+
+            return newPosts.slice(startIndex, (startIndex + 5));
+          }
+          // if the target is the fullList's suggested posts or a specific user's,
+          // posts, return paginated posts (as-is).
+          else if(target == 'suggested posts' || target == 'user posts') {
+            return data.slice(startIndex, (startIndex + 5));
           }
         }
       })

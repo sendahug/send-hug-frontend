@@ -18,7 +18,7 @@ import { AlertsService } from './alerts.service';
 export class SWManager {
   activeServiceWorkerReg: ServiceWorkerRegistration | undefined;
   currentDB: Promise<IDBPDatabase> | undefined;
-  databaseVersion = 1;
+  databaseVersion = 2;
 
   // CTOR
   constructor(private alertsService:AlertsService) {
@@ -130,32 +130,52 @@ export class SWManager {
   */
   openDatabase() {
     return openDB('send-hug', this.databaseVersion, {
-      upgrade(db, _oldVersion, _newVersion, transaction) {
-        // create store for posts
-        let postStore = db.createObjectStore('posts', {
-          keyPath: 'id'
-        });
-        postStore.createIndex('date', 'date');
-        postStore.createIndex('user', 'userId');
-        postStore.createIndex('hugs', 'givenHugs');
+      upgrade(db, oldVersion, _newVersion, transaction) {
+        switch(oldVersion) {
+          // if there was no previous version
+          case 0:
+            // create store for posts
+            let postStore = db.createObjectStore('posts', {
+              keyPath: 'id'
+            });
+            postStore.createIndex('date', 'date');
+            postStore.createIndex('user', 'userId');
+            postStore.createIndex('hugs', 'givenHugs');
 
-        // create store for users
-        let userStore = db.createObjectStore('users', {
-          keyPath: 'id'
-        });
+            // create store for users
+            let userStore = db.createObjectStore('users', {
+              keyPath: 'id'
+            });
 
-        // create store for messages
-        let messageStore = db.createObjectStore('messages', {
-          keyPath: 'id'
-        });
-        messageStore.createIndex('date', 'date');
-        messageStore.createIndex('thread', 'threadID');
+            // create store for messages
+            let messageStore = db.createObjectStore('messages', {
+              keyPath: 'id'
+            });
+            messageStore.createIndex('date', 'date');
+            messageStore.createIndex('thread', 'threadID');
 
-        // create store for threads
-        let threadStore = db.createObjectStore('threads', {
-          keyPath: 'id'
-        });
-        threadStore.createIndex('latest', 'latestMessage');
+            // create store for threads
+            let threadStore = db.createObjectStore('threads', {
+              keyPath: 'id'
+            });
+            threadStore.createIndex('latest', 'latestMessage');
+          // if the previous version the user had is 1
+          case 1:
+            // change posts store's date index to order by ISO date string
+            let postsStore = transaction.objectStore('posts');
+            postsStore.deleteIndex('date');
+            postsStore.createIndex('date', 'isoDate');
+
+            // change messages store's date index to order by ISO date string
+            let messagesStore = transaction.objectStore('messages');
+            messagesStore.deleteIndex('date');
+            messagesStore.createIndex('date', 'isoDate');
+
+            // change threads store's date index to order by ISO date string
+            let threadsStore = transaction.objectStore('threads');
+            threadsStore.deleteIndex('latest');
+            threadsStore.createIndex('latest', 'isoDate');
+        }
       }
     });
   }

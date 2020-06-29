@@ -96,6 +96,15 @@ export class ItemsService {
   postSearchPage = 1;
   totalPostSearchPages = 1;
   isSearchResolved = new BehaviorSubject(false);
+  //
+  idbResolved = {
+    user: new BehaviorSubject(false),
+    userPosts: new BehaviorSubject(false),
+    inbox: new BehaviorSubject(false),
+    outbox: new BehaviorSubject(false),
+    threads: new BehaviorSubject(false),
+    thread: new BehaviorSubject(false)
+  }
 
   // CTOR
   constructor(
@@ -145,6 +154,7 @@ export class ItemsService {
     const params = new HttpParams().set('page', `${currentPage}`);
     // change the ID of the previous user to the profile currently open
     this.previousUser = userID;
+    this.idbResolved.userPosts.next(false);
 
     // get the recent posts from IDB
     this.serviceWorkerM.queryDatabase('user posts', {
@@ -153,6 +163,7 @@ export class ItemsService {
       name: 'userID', value: userID
     })?.then((data:any) => {
       this.userPosts[user] = data;
+      this.idbResolved.userPosts.next(true);
     });
 
     // try to get the posts from the server
@@ -230,12 +241,14 @@ export class ItemsService {
   getUser(userID:number) {
     const Url = this.serverUrl + `/users/all/${userID}`;
     this.isOtherUserResolved.next(false);
+    this.idbResolved.user.next(false);
 
     // get the user's data from IDB
     this.serviceWorkerM.queryDatabase('user', {
       name: 'userID', value: userID
     })?.then((data:any) => {
       this.otherUserData = data;
+      this.idbResolved.user.next(true);
     });
 
     // try to get the user's data from the server
@@ -288,6 +301,7 @@ export class ItemsService {
       .set('userID', `${userID}`)
       .set('page', `${currentPage}`)
       .set('type', type);
+    this.idbResolved[type].next(false);
 
     // get the user's messages from IDB
     this.serviceWorkerM.queryDatabase(type, {
@@ -301,6 +315,7 @@ export class ItemsService {
       data.forEach((element:Message) => {
         this.userMessages[type].push(element);
       });
+      this.idbResolved[type].next(true);
     });
 
     // try to get the user's messages from the server
@@ -353,6 +368,7 @@ export class ItemsService {
       .set('userID', `${userID}`)
       .set('page', `${currentPage}`)
       .set('type', 'threads');
+    this.idbResolved.threads.next(false);
 
     // get the user's messages from IDB
     this.serviceWorkerM.queryDatabase('threads', {
@@ -370,6 +386,7 @@ export class ItemsService {
         }
         this.userMessages.threads.push(thread);
       });
+      this.idbResolved.threads.next(true);
     });
 
     // try to get the user's messages from the server
@@ -425,6 +442,7 @@ export class ItemsService {
   */
   getThread(userID:number, threadId:number) {
     this.activeThread = threadId;
+    this.idbResolved.thread.next(false);
     // if the current page is 0, send page 1 to the server (default)
     const currentPage = this.threadPage ? this.threadPage : 1;
     let params = new HttpParams()
@@ -445,6 +463,7 @@ export class ItemsService {
       data.forEach((element: Message) => {
         this.threadMessages.push(element);
       });
+      this.idbResolved.thread.next(true);
     });
 
     // try to get the user's messages from the server

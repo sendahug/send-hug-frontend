@@ -64,6 +64,15 @@ export class PostsService {
   Programmer: Shir Bar Lev.
   */
   getItems() {
+    // get the recent and suggested posts from IDB
+    this.serviceWorkerM.queryDatabase('main new')?.then((data:any) => {
+      this.newItemsArray = data;
+    });
+    this.serviceWorkerM.queryDatabase('main suggested')?.then((data:any) => {
+      this.sugItemsArray = data;
+    })
+
+    // attempt to get more updated recent / suggested posts from the server
     this.Http.get(this.serverUrl).subscribe((response:any) => {
       let data = response;
       this.newItemsArray = data.recent;
@@ -103,7 +112,14 @@ export class PostsService {
     const Url = this.serverUrl + '/posts/new';
     const params = new HttpParams().set('page', `${page}`);
 
-    // HTTP request
+    // get the recent posts from IDB
+    this.serviceWorkerM.queryDatabase('new posts', {
+      name: 'page', value: page
+    })?.then((data:any) => {
+      this.fullItemsList.fullNewItems = data;
+    });
+
+    // then try to get the recent posts from the server
     this.Http.get(Url, {
       params: params
     }).subscribe((response: any) => {
@@ -141,6 +157,13 @@ export class PostsService {
     // URL and page query parameter
     const Url = this.serverUrl + '/posts/suggested';
     const params = new HttpParams().set('page', `${page}`);
+
+    // get the recent posts from IDB
+    this.serviceWorkerM.queryDatabase('suggested posts', {
+      name: 'page', value: page
+    })?.then((data:any) => {
+      this.fullItemsList.fullSuggestedItems = data;
+    });
 
     // HTTP request
     this.Http.get(Url, {

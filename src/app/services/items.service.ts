@@ -146,7 +146,16 @@ export class ItemsService {
     // change the ID of the previous user to the profile currently open
     this.previousUser = userID;
 
-    // HTTP request
+    // get the recent posts from IDB
+    this.serviceWorkerM.queryDatabase('user posts', {
+      name: 'page', value: currentPage
+    }, {
+      name: 'userID', value: userID
+    })?.then((data:any) => {
+      this.userPosts[user] = data;
+    });
+
+    // try to get the posts from the server
     this.Http.get(Url, {
       headers: this.authService.authHeader,
       params: params
@@ -221,7 +230,14 @@ export class ItemsService {
     const Url = this.serverUrl + `/users/all/${userID}`;
     this.isOtherUserResolved.next(false);
 
-    // Get the user's data from the server
+    // get the user's data from IDB
+    this.serviceWorkerM.queryDatabase('user', {
+      name: 'userID', value: userID
+    })?.then((data:any) => {
+      this.otherUserData = data;
+    });
+
+    // try to get the user's data from the server
     this.Http.get(Url, {
       headers: this.authService.authHeader
     }).subscribe((response:any) => {
@@ -271,7 +287,22 @@ export class ItemsService {
       .set('userID', `${userID}`)
       .set('page', `${currentPage}`)
       .set('type', type);
-    // try to get the user's messages
+
+    // get the user's messages from IDB
+    this.serviceWorkerM.queryDatabase(type, {
+      name: 'currentUser',
+      value: this.authService.userData.id
+    }, {
+      name: 'page',
+      value: currentPage
+    })?.then((data:any) => {
+      // add the messages to the appropriate array
+      data.forEach((element:Message) => {
+        this.userMessages[type].push(element);
+      });
+    });
+
+    // try to get the user's messages from the server
     this.Http.get(`${this.serverUrl}/messages`, {
       headers: this.authService.authHeader,
       params: params
@@ -320,7 +351,23 @@ export class ItemsService {
       .set('userID', `${userID}`)
       .set('page', `${currentPage}`)
       .set('type', 'threads');
-    // try to get the user's messages
+
+    // get the user's messages from IDB
+    this.serviceWorkerM.queryDatabase('threads')?.then((data:any) => {
+      // add the threads to the appropriate array
+      data.forEach((element: any) => {
+        let thread: Thread = {
+          id: element.id,
+          user: (element.user1 == this.authService.userData.displayName) ? element.user2 : element.user1,
+          userID: (element.user1Id == this.authService.userData.id) ? element.user2Id : element.user1Id,
+          numMessages: element.numMessages,
+          latestMessage: element.latestMessage
+        }
+        this.userMessages.threads.push(thread);
+      });
+    });
+
+    // try to get the user's messages from the server
     this.Http.get(`${this.serverUrl}/messages`, {
       headers: this.authService.authHeader,
       params: params
@@ -379,7 +426,22 @@ export class ItemsService {
       .set('page', `${currentPage}`)
       .set('type', 'thread')
       .set('threadID', `${threadId}`);
-    // try to get the user's messages
+
+    // get the user's messages from IDB
+    this.serviceWorkerM.queryDatabase('thread', {
+      name: 'threadID',
+      value: threadId
+    }, {
+      name: 'page',
+      value: currentPage
+    })?.then((data:any) => {
+      // add the messages to the appropriate array
+      data.forEach((element: Message) => {
+        this.threadMessages.push(element);
+      });
+    });
+
+    // try to get the user's messages from the server
     this.Http.get(`${this.serverUrl}/messages`, {
       headers: this.authService.authHeader,
       params: params

@@ -353,7 +353,10 @@ export class ItemsService {
       .set('type', 'threads');
 
     // get the user's messages from IDB
-    this.serviceWorkerM.queryDatabase('threads')?.then((data:any) => {
+    this.serviceWorkerM.queryDatabase('threads', {
+      name: 'page',
+      value: currentPage
+    })?.then((data:any) => {
       // add the threads to the appropriate array
       data.forEach((element: any) => {
         let thread: Thread = {

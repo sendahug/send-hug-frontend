@@ -237,28 +237,33 @@ export class SWManager {
           if(target == 'inbox') {
             let currentUser = params.find((e:any) => e.name == 'currentUser');
             let inbox = data.filter((e:any) => e.forId == currentUser.value);
+            let orderedInbox = inbox.reverse();
 
-            return inbox.slice(startIndex, (startIndex + 5));
+            return orderedInbox.slice(startIndex, (startIndex + 5));
           }
           // if the target is outbox, keep only messages sent from the user and
           // return paginated outbox messages
           else if(target == 'outbox') {
             let currentUser = params.find((e:any) => e.name == 'currentUser');
             let outbox = data.filter((e:any) => e.fromId == currentUser.value);
+            let orderedOutbox = outbox.reverse();
 
-            return outbox.slice(startIndex, (startIndex + 5));
+            return orderedOutbox.slice(startIndex, (startIndex + 5));
           }
           // if the target is threads, return paginated threads list
           else if(target == 'threads') {
-            return data.slice(startIndex, (startIndex + 5));
+            let orderedThreads = data.reverse();
+
+            return orderedThreads.slice(startIndex, (startIndex + 5));
           }
           // if the target is a specific thread, keep only messages belonging to
           // that thread nad return paginated messages
           else if(target == 'thread') {
             let threadID = params.find((e:any) => e.name == 'threadID');
             let thread = data.filter((e:any) => e.threadID == threadID.value);
+            let orderedThread = thread.reverse();
 
-            return thread.slice(startIndex, (startIndex+5));
+            return orderedThread.slice(startIndex, (startIndex+5));
           }
           // if the target is the main page's new posts, reverse the order of
           // the posts (to show the latest posts) and return paginated posts

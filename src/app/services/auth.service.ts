@@ -312,6 +312,9 @@ export class AuthService {
     }
     localStorage.setItem("ACTIVE_JWT", '');
 
+    // clears all the messages data (as that's private per user)
+    this.serviceWorkerM.clearStore('messages');
+
     // if the user has been logged out through their token expiring
     if(this.tokenExpired) {
       this.alertsService.createAlert({

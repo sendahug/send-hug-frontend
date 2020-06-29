@@ -287,4 +287,25 @@ export class SWManager {
       })
     }
   }
+
+  /*
+  Function Name: clearStore()
+  Function Description: Deletes all records from an IDB store.
+  Parameters: storeID (string) - the name of the store to clear.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  clearStore(storeID:string) {
+    // checks that there's IDB database currently working
+    if(this.currentDB) {
+      // gets the current database, and then gets the given store and clears it
+      this.currentDB.then(function(db) {
+        let store = db.transaction(storeID).objectStore(storeID);
+        return store.clear();
+      // if there's an error, log it
+      }).catch(function(err) {
+        console.log(err);
+      });
+    }
+  }
 }

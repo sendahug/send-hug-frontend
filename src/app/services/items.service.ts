@@ -176,6 +176,7 @@ export class ItemsService {
           let store = tx.objectStore('posts');
           // add each post in the list to posts store
           data.forEach((element:Post) => {
+            element.isoDate = new Date(element.date).toISOString();
             store.put(element);
           });
         })
@@ -326,6 +327,7 @@ export class ItemsService {
           let store = tx.objectStore('messages');
           // add each message in the messages list to the store
           messages.forEach((element:Message) => {
+            element.isoDate = new Date(element.date).toISOString();
             store.put(element);
           });
         })
@@ -400,7 +402,8 @@ export class ItemsService {
           let tx = db.transaction('threads', 'readwrite');
           let store = tx.objectStore('threads');
           // add each message in the threads list to the store
-          threads.forEach((element:Message) => {
+          threads.forEach((element:Thread) => {
+            element.isoDate = new Date(element.latestMessage).toISOString();
             store.put(element);
           });
         })
@@ -468,6 +471,7 @@ export class ItemsService {
           let store = tx.objectStore('messages');
           // add each message in the messages list to the store
           messages.forEach((element:Message) => {
+            element.isoDate = new Date(element.date).toISOString();
             store.put(element);
           });
         })

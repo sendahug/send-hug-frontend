@@ -86,10 +86,12 @@ export class PostsService {
           let store = tx.objectStore('posts');
           // add each post in the 'recent' list to posts store
           data.recent.forEach((element:Post) => {
+            element.isoDate = new Date(element.date).toISOString();
             store.put(element);
           });
           // add each post in the 'suggested' list to posts store
           data.suggested.forEach((element:Post) => {
+            element.isoDate = new Date(element.date).toISOString();
             store.put(element);
           });
         })
@@ -136,6 +138,7 @@ export class PostsService {
           let store = tx.objectStore('posts');
           // add each post in the 'recent' list to posts store
           data.forEach((element:Post) => {
+            element.isoDate = new Date(element.date).toISOString();
             store.put(element);
           });
         })
@@ -182,6 +185,7 @@ export class PostsService {
           let store = tx.objectStore('posts');
           // add each post in the 'recent' list to posts store
           data.forEach((element:Post) => {
+            element.isoDate = new Date(element.date).toISOString();
             store.put(element);
           });
         })

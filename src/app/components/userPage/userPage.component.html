@@ -6,7 +6,7 @@
 	<app-header-message
 		[waitingFor]="waitFor"></app-header-message>
 
-	<div id="userPage" *ngIf="(!this.itemsService.isOtherUser && authService.isUserDataResolved.value) || (this.itemsService.isOtherUser && itemsService.isOtherUserResolved.value)">
+	<div id="userPage" *ngIf="(!this.itemsService.isOtherUser && authService.isUserDataResolved.value) || (this.itemsService.isOtherUser && itemsService.idbResolved.user.value)">
 		<div id="profileData">
 			<h3>User Profile</h3>
 			<div class="profileElement">

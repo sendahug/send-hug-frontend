@@ -10,7 +10,7 @@
 		[user]="user"></app-header-message>
 	
 	<!-- If the user has posts, displays them -->
-	<div *ngIf="itemsService.userPosts[user].length && itemsService.isUserPostsResolved[user].value">
+	<div *ngIf="itemsService.userPosts[user].length && itemsService.idbResolved.userPosts.value">
 		<div *ngFor="let post of itemsService.userPosts[user]" class="userPost">
 			<div class="postText">{{ post.text }}</div>
 			<div class="postDate">{{ post.date }}</div>
@@ -34,7 +34,7 @@
 	</div>
 	
 	<!-- If the user doesn't have posts, displays an error message -->
-	<div *ngIf="!itemsService.userPosts[user].length && itemsService.isUserPostsResolved[user].value" class="errorMessage">
+	<div *ngIf="!itemsService.userPosts[user].length &&  itemsService.idbResolved.userPosts.value" class="errorMessage">
 		<div *ngIf="user == 'self'">You have no published posts. Write your first post now!</div>
 		<div *ngIf="user == 'other'">The user hasn't published any posts yet.</div>
 	</div>

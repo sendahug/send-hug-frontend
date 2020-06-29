@@ -195,7 +195,15 @@ export class ItemsService {
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
       this.isUserPostsResolved[user].next(true);
-      this.alertsService.createErrorAlert(err);
+
+      // if the server is unavilable due to the user being offline, tell the user
+      if(err.status == 503 && !navigator.onLine) {
+        this.alertsService.createOfflineAlert();
+      }
+      // otherwise just create an error alert
+      else {
+        this.alertsService.createErrorAlert(err);
+      }
     })
   }
 
@@ -280,7 +288,15 @@ export class ItemsService {
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
       this.isOtherUserResolved.next(true);
-      this.alertsService.createErrorAlert(err);
+
+      // if the server is unavilable due to the user being offline, tell the user
+      if(err.status == 503 && !navigator.onLine) {
+        this.alertsService.createOfflineAlert();
+      }
+      // otherwise just create an error alert
+      else {
+        this.alertsService.createErrorAlert(err);
+      }
     });
   }
 
@@ -350,7 +366,15 @@ export class ItemsService {
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
       this.isUserMessagesResolved[type].next(true);
-      this.alertsService.createErrorAlert(err);
+
+      // if the server is unavilable due to the user being offline, tell the user
+      if(err.status == 503 && !navigator.onLine) {
+        this.alertsService.createOfflineAlert();
+      }
+      // otherwise just create an error alert
+      else {
+        this.alertsService.createErrorAlert(err);
+      }
     })
   }
 
@@ -428,7 +452,15 @@ export class ItemsService {
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
       this.isUserMessagesResolved.threads.next(true);
-      this.alertsService.createErrorAlert(err);
+
+      // if the server is unavilable due to the user being offline, tell the user
+      if(err.status == 503 && !navigator.onLine) {
+        this.alertsService.createOfflineAlert();
+      }
+      // otherwise just create an error alert
+      else {
+        this.alertsService.createErrorAlert(err);
+      }
     })
   }
 
@@ -498,7 +530,15 @@ export class ItemsService {
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
       this.isThreadResolved.next(true);
-      this.alertsService.createErrorAlert(err);
+
+      // if the server is unavilable due to the user being offline, tell the user
+      if(err.status == 503 && !navigator.onLine) {
+        this.alertsService.createOfflineAlert();
+      }
+      // otherwise just create an error alert
+      else {
+        this.alertsService.createErrorAlert(err);
+      }
     })
   }
 

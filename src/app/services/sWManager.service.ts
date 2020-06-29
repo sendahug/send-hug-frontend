@@ -206,7 +206,7 @@ export class SWManager {
         // if the target is the main page's suggested posts, get the data from
         // the posts store
         else if(target == 'main suggested' || target == 'suggested posts') {
-          let postsStore = db.transaction('posts').store.index('givenHugs');
+          let postsStore = db.transaction('posts').store.index('hugs');
           return postsStore.getAll();
         }
         // if the target is a specific user's posts, get the data from
@@ -230,7 +230,7 @@ export class SWManager {
           // 10 posts; otherwise each list should contain 5 items
           let currentPage = params.find((e:any) => e.name == 'page');
           let startIndex = (target == 'main new' || target == 'main suggested') ?
-                            (currentPage.value - 1) * 10 : (currentPage.value - 1) * 5;
+                            0 : (currentPage.value - 1) * 5;
 
           // if the target is inbox, keep only messages sent to the user and
           // return paginated inbox messages

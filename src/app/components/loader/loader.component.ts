@@ -109,8 +109,18 @@ export class Loader implements OnInit, OnChanges {
         // so if the value is true, there's no longer need for the loader
         // screen.
         if(value == true) {
-          this.visible = false;
-          this.waitingFor = '';
+          if(this.itemsService.otherUserData != undefined) {
+            this.visible = false;
+            this.waitingFor = '';
+          }
+          else {
+            this.itemsService.isOtherUserResolved.subscribe((value) => {
+              if(value) {
+                this.visible = false;
+                this.waitingFor = '';
+              }
+            })
+          }
         }
       })
     }
@@ -132,8 +142,21 @@ export class Loader implements OnInit, OnChanges {
             // messages, so if the value is true, there's no longer need
             // for the loader screen
             if(value == true) {
-              this.visible = false;
-              this.waitingFor = '';
+              // if there's data in the IDB database, hide the loading screen.
+              if(this.itemsService.userMessages.inbox.length > 0) {
+                this.visible = false;
+                this.waitingFor = '';
+              }
+              // otherwise, if the user's messages aren't in the database, keep showing loading
+              // screen until the data is fetched
+              else {
+                this.itemsService.isUserMessagesResolved.inbox.subscribe((value) => {
+                  if(value) {
+                    this.visible = false;
+                    this.waitingFor = '';
+                  }
+                })
+              }
             }
           })
         }
@@ -153,8 +176,21 @@ export class Loader implements OnInit, OnChanges {
             // messages, so if the value is true, there's no longer need
             // for the loader screen
             if(value == true) {
-              this.visible = false;
-              this.waitingFor = '';
+              // if there's data in the IDB database, hide the loading screen.
+              if(this.itemsService.userMessages.outbox.length > 0) {
+                this.visible = false;
+                this.waitingFor = '';
+              }
+              // otherwise, if the user's messages aren't in the database, keep showing loading
+              // screen until the data is fetched
+              else {
+                this.itemsService.isUserMessagesResolved.outbox.subscribe((value) => {
+                  if(value) {
+                    this.visible = false;
+                    this.waitingFor = '';
+                  }
+                })
+              }
             }
           })
         }
@@ -174,8 +210,21 @@ export class Loader implements OnInit, OnChanges {
             // threads, so if the value is true, there's no longer need
             // for the loader screen
             if(value == true) {
-              this.visible = false;
-              this.waitingFor = '';
+              // if there's data in the IDB database, hide the loading screen.
+              if(this.itemsService.userMessages.threads.length > 0) {
+                this.visible = false;
+                this.waitingFor = '';
+              }
+              // otherwise, if the user's messages aren't in the database, keep showing loading
+              // screen until the data is fetched
+              else {
+                this.itemsService.isUserMessagesResolved.threads.subscribe((value) => {
+                  if(value) {
+                    this.visible = false;
+                    this.waitingFor = '';
+                  }
+                })
+              }
             }
           })
         }
@@ -211,8 +260,21 @@ export class Loader implements OnInit, OnChanges {
         // posts, so if the value is true, there's no longer need for the
         // loader screen
         if(value == true) {
-          this.visible = false;
-          this.waitingFor = '';
+          // if there's data in the IDB database, hide the loading screen.
+          if(this.itemsService.userPosts[this.user] != undefined) {
+            this.visible = false;
+            this.waitingFor = '';
+          }
+          // otherwise, if the user's posts aren't in the database, keep showing loading
+          // screen until the data is fetched
+          else {
+            this.itemsService.isUserPostsResolved[this.user].subscribe((value) => {
+              if(value) {
+                this.visible = false;
+                this.waitingFor = '';
+              }
+            })
+          }
         }
       })
     }

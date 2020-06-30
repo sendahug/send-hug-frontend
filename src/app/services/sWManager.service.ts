@@ -7,17 +7,74 @@
 import { Injectable } from '@angular/core';
 
 // Other imports
-import { openDB, IDBPDatabase } from 'idb';
+import { openDB, IDBPDatabase, DBSchema } from 'idb';
 
 // App-related imports
 import { AlertsService } from './alerts.service';
+
+// IndexedDB Database schema
+interface MyDB extends DBSchema {
+  'posts': {
+    key: number;
+    value: {
+      'date': Date;
+      'givenHugs': number;
+      'id': number;
+      'isoDate': string;
+      'text': string;
+      'userId': number;
+      'user': string;
+    };
+    indexes: { 'date': string, 'user': number, 'hugs': number };
+  };
+  'users': {
+    key: number;
+    value: {
+      'id': number;
+      'displayName': string;
+      'givenHugs': number;
+      'postsNum': number;
+      'receivedHugs': number;
+      'role': string;
+    }
+  };
+  'messages': {
+    key: number;
+    value: {
+      'date': Date;
+      'for': string;
+      'forId': number;
+      'from': string;
+      'fromId': number;
+      'id': number;
+      'isoDate': string;
+      'text': string;
+      'threadID': number;
+    };
+    indexes: { 'date': string, 'thread': number };
+  };
+  'threads': {
+    key: number;
+    value: {
+      'latestMessage': Date;
+      'user1': string;
+      'user1Id': number;
+      'user2': string;
+      'user2Id': number;
+      'numMessages': number;
+      'isoDate': string;
+      'id': number;
+    };
+    indexes: { 'latest': string };
+  }
+}
 
 @Injectable({
   providedIn: 'root'
 })
 export class SWManager {
   activeServiceWorkerReg: ServiceWorkerRegistration | undefined;
-  currentDB: Promise<IDBPDatabase> | undefined;
+  currentDB: Promise<IDBPDatabase<MyDB>> | undefined;
   databaseVersion = 2;
 
   // CTOR
@@ -129,7 +186,7 @@ export class SWManager {
   Programmer: Shir Bar Lev.
   */
   openDatabase() {
-    return openDB('send-hug', this.databaseVersion, {
+    return openDB<MyDB>('send-hug', this.databaseVersion, {
       upgrade(db, oldVersion, _newVersion, transaction) {
         switch(oldVersion) {
           // if there was no previous version
@@ -181,136 +238,153 @@ export class SWManager {
   }
 
   /*
-  Function Name: queryDatabase()
+  Function Name: queryPosts()
   Function Description: Gets data matching the provided query from IndexedDB database.
   Parameters: target (string) - The target of the query.
-              params - An array of parameters build in the following form:
-                        { name: 'name', value: 1 }
-                        This includes:
-                          - currentUser (number) - the ID of the user currently logged in.
-                          - page (number) - current page of results the user is in.
-                          - threadID (number) - the ID of the thread for which to fetch messages.
-                          - userID (number) - user ID of the user whose data to fetch.
+              userID (number) - ID of the user whose posts to fetch.
+              page (number) - the current page.
   ----------------
   Programmer: Shir Bar Lev.
   */
-  queryDatabase(target:string, ...params:any[]) {
-    // checks that there's IDB database currently working
-    if(this.currentDB) {
-      return this.currentDB.then(function(db) {
-        // if the target is any of the single-message mailboxes, get the data
-        // from the messages objectStore
-        if(target == 'inbox' || target == 'outbox' || target == 'thread') {
-          let messageStore = db.transaction('messages').store.index('date');
-          return messageStore.getAll();
-        }
-        // if the target is the threads mailbox, get the data from
-        // the threads objectStore
-        else if(target == 'threads') {
-          let threadsStore = db.transaction('threads').store.index('latest');
-          return threadsStore.getAll();
-        }
-        // if the target is a user, get the data of the specific user from the
-        // users objectStore
-        else if(target == 'user') {
-          let userStore = db.transaction('users').store;
-          let userID = params.find((e:any) => e.name == 'userID');
-          return userStore.get(userID.value);
-        }
-        // if the target is the main page's new posts, get the data from
-        // the posts store
-        else if(target == 'main new' || target == 'new posts') {
-          let postsStore = db.transaction('posts').store.index('date');
-          return postsStore.getAll();
-        }
-        // if the target is the main page's suggested posts, get the data from
-        // the posts store
-        else if(target == 'main suggested' || target == 'suggested posts') {
-          let postsStore = db.transaction('posts').store.index('hugs');
-          return postsStore.getAll();
-        }
-        // if the target is a specific user's posts, get the data from
-        // the posts store
-        else if(target == 'user posts') {
-          let postsStore = db.transaction('posts').store.index('user');
-          let userID = params.find((e:any) => e.name == 'userID');
-          return postsStore.getAll(userID.value);
-        }
-      // once the data is fetched, operate on it
-      }).then(function(data) {
-        // if the target is a user, return it as-is
-        if(target == 'user') {
-          return data;
-        }
-        // otherwise, the target requires pagination, so get pages data and
-        // then get the relevant messages
-        else {
-          // get the current page and the start index for the paginated list
-          // if the target is one of the main page's lists, each list should contain
-          // 10 posts; otherwise each list should contain 5 items
-          let currentPage = params.find((e:any) => e.name == 'page');
-          let startIndex = (target == 'main new' || target == 'main suggested') ?
-                            0 : (currentPage.value - 1) * 5;
+  queryPosts(target: string, userID?: number, page?:number) {
+    return this.currentDB!.then(function(db) {
+      let postsStore = db.transaction('posts').store;
 
-          // if the target is inbox, keep only messages sent to the user and
-          // return paginated inbox messages
-          if(target == 'inbox') {
-            let currentUser = params.find((e:any) => e.name == 'currentUser');
-            let inbox = data.filter((e:any) => e.forId == currentUser.value);
-            let orderedInbox = inbox.reverse();
+      // if the target is the main page's new posts, get the data from
+      // the posts store
+      if(target == 'main new' || target == 'new posts') {
+        let newPosts = postsStore.index('date');
+        return newPosts.getAll();
+      }
+      // if the target is the main page's suggested posts, get the data from
+      // the posts store
+      else if(target == 'main suggested' || target == 'suggested posts') {
+        let suggestedPosts = postsStore.index('hugs');
+        return postsStore.getAll();
+      }
+      // if the target is a specific user's posts, get the data from
+      // the posts store
+      else if(target == 'user posts') {
+        let userPosts = postsStore.index('user');
+        return postsStore.getAll(userID);
+      }
+    }).then(function(posts) {
+      // get the current page and the start index for the paginated list
+      // if the target is one of the main page's lists, each list should contain
+      // 10 posts; otherwise each list should contain 5 items
+      let currentPage = page ? page: 1;
+      let startIndex = (target == 'main new' || target == 'main suggested') ?
+                        0 : (currentPage - 1) * 5;
 
-            return orderedInbox.slice(startIndex, (startIndex + 5));
-          }
-          // if the target is outbox, keep only messages sent from the user and
-          // return paginated outbox messages
-          else if(target == 'outbox') {
-            let currentUser = params.find((e:any) => e.name == 'currentUser');
-            let outbox = data.filter((e:any) => e.fromId == currentUser.value);
-            let orderedOutbox = outbox.reverse();
+      // if the target is the main page's new posts, reverse the order of
+      // the posts (to show the latest posts) and return paginated posts
+      if(target == 'main new') {
+        let newPosts = posts!.reverse();
 
-            return orderedOutbox.slice(startIndex, (startIndex + 5));
-          }
-          // if the target is threads, return paginated threads list
-          else if(target == 'threads') {
-            let orderedThreads = data.reverse();
+        return newPosts.slice(startIndex, (startIndex + 10));
+      }
+      // if the target is the main page's new posts, return paginated posts
+      else if(target == 'main suggested') {
+        return posts!.slice(startIndex, (startIndex + 10));
+      }
+      // if the target is the fullList's new posts, reverse the order of
+      // the posts (to show the latest posts) and return paginated posts
+      else if(target == 'new posts') {
+        let newPosts = posts!.reverse();
 
-            return orderedThreads.slice(startIndex, (startIndex + 5));
-          }
-          // if the target is a specific thread, keep only messages belonging to
-          // that thread nad return paginated messages
-          else if(target == 'thread') {
-            let threadID = params.find((e:any) => e.name == 'threadID');
-            let thread = data.filter((e:any) => e.threadID == threadID.value);
-            let orderedThread = thread.reverse();
+        return newPosts.slice(startIndex, (startIndex + 5));
+      }
+      // if the target is the fullList's suggested posts or a specific user's,
+      // posts, return paginated posts (as-is).
+      else if(target == 'suggested posts' || target == 'user posts') {
+        return posts!.slice(startIndex, (startIndex + 5));
+      }
+    })
+  }
 
-            return orderedThread.slice(startIndex, (startIndex+5));
-          }
-          // if the target is the main page's new posts, reverse the order of
-          // the posts (to show the latest posts) and return paginated posts
-          else if(target == 'main new') {
-            let newPosts = data.reverse();
+  /*
+  Function Name: queryMessages()
+  Function Description: Gets data matching the provided query from IndexedDB database.
+  Parameters: target (string) - The target of the query.
+              currentUser (number) - ID of the current user.
+              page (number) - the current page.
+              threadID (number) - the ID of the thread for which to fetch messages.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  queryMessages(target:string, currentUser:number, page:number, threadID?:number) {
+    return this.currentDB?.then(function(db) {
+      // if the target is any of the single-message mailboxes, get the data
+      // from the messages objectStore
+      let messagesStore = db.transaction('messages').store.index('date');
+      return messagesStore.getAll();
+    }).then(function(messages) {
+      // get the current page and the start index for the paginated list
+      // if the target is one of the main page's lists, each list should contain
+      // 10 posts; otherwise each list should contain 5 items
+      let startIndex = (target == 'main new' || target == 'main suggested') ?
+                        0 : (page - 1) * 5;
 
-            return newPosts.slice(startIndex, (startIndex + 10));
-          }
-          // if the target is the main page's new posts, return paginated posts
-          else if(target == 'main suggested') {
-            return data.slice(startIndex, (startIndex + 10));
-          }
-          // if the target is the fullList's new posts, reverse the order of
-          // the posts (to show the latest posts) and return paginated posts
-          else if(target == 'new posts') {
-            let newPosts = data.reverse();
+      // if the target is inbox, keep only messages sent to the user and
+      // return paginated inbox messages
+      if(target == 'inbox') {
+        let inbox = messages.filter((e:any) => e.forId == currentUser);
+        let orderedInbox = inbox.reverse();
 
-            return newPosts.slice(startIndex, (startIndex + 5));
-          }
-          // if the target is the fullList's suggested posts or a specific user's,
-          // posts, return paginated posts (as-is).
-          else if(target == 'suggested posts' || target == 'user posts') {
-            return data.slice(startIndex, (startIndex + 5));
-          }
-        }
-      })
-    }
+        return orderedInbox.slice(startIndex, (startIndex + 5));
+      }
+      // if the target is outbox, keep only messages sent from the user and
+      // return paginated outbox messages
+      else if(target == 'outbox') {
+        let outbox = messages.filter((e:any) => e.fromId == currentUser);
+        let orderedOutbox = outbox.reverse();
+
+        return orderedOutbox.slice(startIndex, (startIndex + 5));
+      }
+      // if the target is a specific thread, keep only messages belonging to
+      // that thread nad return paginated messages
+      else if(target == 'thread') {
+        let thread = messages.filter((e:any) => e.threadID == threadID);
+        let orderedThread = thread.reverse();
+
+        return orderedThread.slice(startIndex, (startIndex+5));
+      }
+    })
+  }
+
+  /*
+  Function Name: queryThreads()
+  Function Description: Gets data matching the provided query from IndexedDB database.
+  Parameters: currentPage (number) - the current page.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  queryThreads(currentPage:number) {
+    return this.currentDB?.then(function(db) {
+      let threadsStore = db.transaction('threads').store.index('latest');
+      return threadsStore.getAll();
+    }).then(function(threads) {
+      let startIndex = currentPage * 5;
+      let orderedThreads = threads.reverse();
+
+      return orderedThreads.slice(startIndex, (startIndex + 5));
+    })
+  }
+
+  /*
+  Function Name: queryUsers()
+  Function Description: Gets data matching the provided query from IndexedDB database.
+  Parameters: userID (number) - the ID of the user whose data to fetch.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  queryUsers(userID:number) {
+    return this.currentDB?.then(function(db) {
+      let userStore = db.transaction('users').store;
+      return userStore.get(userID);
+    }).then(function(data) {
+      return data;
+    })
   }
 
   /*
@@ -320,7 +394,7 @@ export class SWManager {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  clearStore(storeID:string) {
+  clearStore(storeID: 'posts' | 'messages' | 'users' | 'threads') {
     // checks that there's IDB database currently working
     if(this.currentDB) {
       // gets the current database, and then gets the given store and clears it

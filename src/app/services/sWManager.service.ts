@@ -269,6 +269,20 @@ export class SWManager {
           let userPosts = postsStore.index('user');
           return userPosts.getAll(userID);
         }
+      }).then((posts) => {
+        // if there are any posts, check each post
+        if(posts) {
+          posts.forEach(element => {
+            // if there's no display name for that post, get it through the
+            // queryUsers method and add it
+            if(!element.user) {
+              this.queryUsers(element.userId)!.then((userData) => {
+                element.user = userData!.displayName;
+              })
+            }
+          });
+        }
+        return posts;
       }).then(function(posts) {
         // get the current page and the start index for the paginated list
         // if the target is one of the main page's lists, each list should contain

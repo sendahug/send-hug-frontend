@@ -65,10 +65,11 @@ export class PostsService {
   */
   getItems() {
     // get the recent and suggested posts from IDB
-    this.serviceWorkerM.queryDatabase('main new')?.then((data:any) => {
+    this.serviceWorkerM.queryPosts('main new')?.then((data:any) => {
+      console.log(data);
       this.newItemsArray = data;
     });
-    this.serviceWorkerM.queryDatabase('main suggested')?.then((data:any) => {
+    this.serviceWorkerM.queryPosts('main suggested')?.then((data:any) => {
       this.sugItemsArray = data;
     })
 
@@ -86,13 +87,31 @@ export class PostsService {
           let store = tx.objectStore('posts');
           // add each post in the 'recent' list to posts store
           data.recent.forEach((element:Post) => {
-            element.isoDate = new Date(element.date).toISOString();
-            store.put(element);
+            let isoDate = new Date(element.date).toISOString();
+            let post = {
+              'date': element.date,
+              'givenHugs': element.givenHugs,
+              'id': element.id!,
+              'isoDate': isoDate,
+              'text': element.text,
+              'userId': Number(element.userId),
+              'user': element.user
+            }
+            store.put(post);
           });
           // add each post in the 'suggested' list to posts store
           data.suggested.forEach((element:Post) => {
-            element.isoDate = new Date(element.date).toISOString();
-            store.put(element);
+            let isoDate = new Date(element.date).toISOString();
+            let post = {
+              'date': element.date,
+              'givenHugs': element.givenHugs,
+              'id': element.id!,
+              'isoDate': isoDate,
+              'text': element.text,
+              'userId': Number(element.userId),
+              'user': element.user
+            }
+            store.put(post);
           });
         })
       }
@@ -122,9 +141,7 @@ export class PostsService {
     const params = new HttpParams().set('page', `${page}`);
 
     // get the recent posts from IDB
-    this.serviceWorkerM.queryDatabase('new posts', {
-      name: 'page', value: page
-    })?.then((data:any) => {
+    this.serviceWorkerM.queryPosts('new posts', undefined, page)?.then((data:any) => {
       this.fullItemsList.fullNewItems = data;
     });
 
@@ -145,8 +162,17 @@ export class PostsService {
           let store = tx.objectStore('posts');
           // add each post in the 'recent' list to posts store
           data.forEach((element:Post) => {
-            element.isoDate = new Date(element.date).toISOString();
-            store.put(element);
+            let isoDate = new Date(element.date).toISOString();
+            let post = {
+              'date': element.date,
+              'givenHugs': element.givenHugs,
+              'id': element.id!,
+              'isoDate': isoDate,
+              'text': element.text,
+              'userId': Number(element.userId),
+              'user': element.user
+            }
+            store.put(post);
           });
         })
       }
@@ -176,9 +202,7 @@ export class PostsService {
     const params = new HttpParams().set('page', `${page}`);
 
     // get the recent posts from IDB
-    this.serviceWorkerM.queryDatabase('suggested posts', {
-      name: 'page', value: page
-    })?.then((data:any) => {
+    this.serviceWorkerM.queryPosts('suggested posts', undefined, page)?.then((data:any) => {
       this.fullItemsList.fullSuggestedItems = data;
     });
 
@@ -199,8 +223,17 @@ export class PostsService {
           let store = tx.objectStore('posts');
           // add each post in the 'recent' list to posts store
           data.forEach((element:Post) => {
-            element.isoDate = new Date(element.date).toISOString();
-            store.put(element);
+            let isoDate = new Date(element.date).toISOString();
+            let post = {
+              'date': element.date,
+              'givenHugs': element.givenHugs,
+              'id': element.id!,
+              'isoDate': isoDate,
+              'text': element.text,
+              'userId': Number(element.userId),
+              'user': element.user
+            }
+            store.put(post);
           });
         })
       }

@@ -157,11 +157,7 @@ export class ItemsService {
     this.idbResolved.userPosts.next(false);
 
     // get the recent posts from IDB
-    this.serviceWorkerM.queryDatabase('user posts', {
-      name: 'page', value: currentPage
-    }, {
-      name: 'userID', value: userID
-    })?.then((data:any) => {
+    this.serviceWorkerM.queryPosts('user posts', userID, currentPage)?.then((data:any) => {
       this.userPosts[user] = data;
       this.idbResolved.userPosts.next(true);
     });
@@ -187,8 +183,17 @@ export class ItemsService {
           let store = tx.objectStore('posts');
           // add each post in the list to posts store
           data.forEach((element:Post) => {
-            element.isoDate = new Date(element.date).toISOString();
-            store.put(element);
+            let isoDate = new Date(element.date).toISOString();
+            let post = {
+              'date': element.date,
+              'givenHugs': element.givenHugs,
+              'id': element.id!,
+              'isoDate': isoDate,
+              'text': element.text,
+              'userId': Number(element.userId),
+              'user': element.user
+            }
+            store.put(post);
           });
         })
       }
@@ -252,9 +257,7 @@ export class ItemsService {
     this.idbResolved.user.next(false);
 
     // get the user's data from IDB
-    this.serviceWorkerM.queryDatabase('user', {
-      name: 'userID', value: userID
-    })?.then((data:any) => {
+    this.serviceWorkerM.queryUsers(userID)?.then((data:any) => {
       this.otherUserData = data;
       this.getUserPosts(userID);
       this.idbResolved.user.next(true);
@@ -321,13 +324,7 @@ export class ItemsService {
     this.idbResolved[type].next(false);
 
     // get the user's messages from IDB
-    this.serviceWorkerM.queryDatabase(type, {
-      name: 'currentUser',
-      value: this.authService.userData.id
-    }, {
-      name: 'page',
-      value: currentPage
-    })?.then((data:any) => {
+    this.serviceWorkerM.queryMessages(type, this.authService.userData.id!, currentPage)?.then((data:any) => {
       // add the messages to the appropriate array
       data.forEach((element:Message) => {
         this.userMessages[type].push(element);
@@ -359,8 +356,19 @@ export class ItemsService {
           let store = tx.objectStore('messages');
           // add each message in the messages list to the store
           messages.forEach((element:Message) => {
-            element.isoDate = new Date(element.date).toISOString();
-            store.put(element);
+            let isoDate = new Date(element.date).toISOString();
+            let message = {
+              'date': element.date,
+              'for': element.for!,
+              'forId': element.forId,
+              'from': element.from,
+              'fromId': element.fromId,
+              'id': element.Id!,
+              'isoDate': isoDate,
+              'text': element.messageText,
+              'threadID': element.threadID!
+            }
+            store.put(message);
           });
         })
       }
@@ -396,10 +404,7 @@ export class ItemsService {
     this.idbResolved.threads.next(false);
 
     // get the user's messages from IDB
-    this.serviceWorkerM.queryDatabase('threads', {
-      name: 'page',
-      value: currentPage
-    })?.then((data:any) => {
+    this.serviceWorkerM.queryThreads(currentPage)?.then((data:any) => {
       // add the threads to the appropriate array
       data.forEach((element: any) => {
         let thread: Thread = {
@@ -445,8 +450,18 @@ export class ItemsService {
           let store = tx.objectStore('threads');
           // add each message in the threads list to the store
           threads.forEach((element:Thread) => {
-            element.isoDate = new Date(element.latestMessage).toISOString();
-            store.put(element);
+            let isoDate = new Date(element.latestMessage).toISOString();
+            let thread = {
+              'latestMessage': element.latestMessage,
+              'user1': element.user!,
+              'user1Id': element.userID,
+              'user2': this.authService.userData.displayName,
+              'user2Id': this.authService.userData.id!,
+              'numMessages': element.numMessages!,
+              'isoDate': isoDate,
+              'id': element.id
+            }
+            store.put(thread);
           });
         })
       }
@@ -485,13 +500,7 @@ export class ItemsService {
       .set('threadID', `${threadId}`);
 
     // get the user's messages from IDB
-    this.serviceWorkerM.queryDatabase('thread', {
-      name: 'threadID',
-      value: threadId
-    }, {
-      name: 'page',
-      value: currentPage
-    })?.then((data:any) => {
+    this.serviceWorkerM.queryMessages('thread', this.authService.userData.id!, currentPage, threadId)?.then((data:any) => {
       // add the messages to the appropriate array
       data.forEach((element: Message) => {
         this.threadMessages.push(element);
@@ -523,8 +532,19 @@ export class ItemsService {
           let store = tx.objectStore('messages');
           // add each message in the messages list to the store
           messages.forEach((element:Message) => {
-            element.isoDate = new Date(element.date).toISOString();
-            store.put(element);
+            let isoDate = new Date(element.date).toISOString();
+            let message = {
+              'date': element.date,
+              'for': element.for!,
+              'forId': element.forId,
+              'from': element.from,
+              'fromId': element.fromId,
+              'id': element.Id!,
+              'isoDate': isoDate,
+              'text': element.messageText,
+              'threadID': element.threadID!
+            }
+            store.put(message);
           });
         })
       }

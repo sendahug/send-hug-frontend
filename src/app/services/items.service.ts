@@ -256,6 +256,7 @@ export class ItemsService {
       name: 'userID', value: userID
     })?.then((data:any) => {
       this.otherUserData = data;
+      this.getUserPosts(userID);
       this.idbResolved.user.next(true);
     });
 

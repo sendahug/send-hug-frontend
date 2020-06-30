@@ -247,59 +247,61 @@ export class SWManager {
   Programmer: Shir Bar Lev.
   */
   queryPosts(target: string, userID?: number, page?:number) {
-    return this.currentDB!.then(function(db) {
-      let postsStore = db.transaction('posts').store;
+    if(this.currentDB) {
+      return this.currentDB.then(function(db) {
+        let postsStore = db.transaction('posts').store;
 
-      // if the target is the main page's new posts, get the data from
-      // the posts store
-      if(target == 'main new' || target == 'new posts') {
-        let newPosts = postsStore.index('date');
-        return newPosts.getAll();
-      }
-      // if the target is the main page's suggested posts, get the data from
-      // the posts store
-      else if(target == 'main suggested' || target == 'suggested posts') {
-        let suggestedPosts = postsStore.index('hugs');
-        return suggestedPosts.getAll();
-      }
-      // if the target is a specific user's posts, get the data from
-      // the posts store
-      else if(target == 'user posts') {
-        let userPosts = postsStore.index('user');
-        return userPosts.getAll(userID);
-      }
-    }).then(function(posts) {
-      // get the current page and the start index for the paginated list
-      // if the target is one of the main page's lists, each list should contain
-      // 10 posts; otherwise each list should contain 5 items
-      let currentPage = page ? page: 1;
-      let startIndex = (target == 'main new' || target == 'main suggested') ?
-                        0 : (currentPage - 1) * 5;
+        // if the target is the main page's new posts, get the data from
+        // the posts store
+        if(target == 'main new' || target == 'new posts') {
+          let newPosts = postsStore.index('date');
+          return newPosts.getAll();
+        }
+        // if the target is the main page's suggested posts, get the data from
+        // the posts store
+        else if(target == 'main suggested' || target == 'suggested posts') {
+          let suggestedPosts = postsStore.index('hugs');
+          return suggestedPosts.getAll();
+        }
+        // if the target is a specific user's posts, get the data from
+        // the posts store
+        else if(target == 'user posts') {
+          let userPosts = postsStore.index('user');
+          return userPosts.getAll(userID);
+        }
+      }).then(function(posts) {
+        // get the current page and the start index for the paginated list
+        // if the target is one of the main page's lists, each list should contain
+        // 10 posts; otherwise each list should contain 5 items
+        let currentPage = page ? page: 1;
+        let startIndex = (target == 'main new' || target == 'main suggested') ?
+                          0 : (currentPage - 1) * 5;
 
-      // if the target is the main page's new posts, reverse the order of
-      // the posts (to show the latest posts) and return paginated posts
-      if(target == 'main new') {
-        let newPosts = posts!.reverse();
+        // if the target is the main page's new posts, reverse the order of
+        // the posts (to show the latest posts) and return paginated posts
+        if(target == 'main new') {
+          let newPosts = posts!.reverse();
 
-        return newPosts.slice(startIndex, (startIndex + 10));
-      }
-      // if the target is the main page's new posts, return paginated posts
-      else if(target == 'main suggested') {
-        return posts!.slice(startIndex, (startIndex + 10));
-      }
-      // if the target is the fullList's new posts, reverse the order of
-      // the posts (to show the latest posts) and return paginated posts
-      else if(target == 'new posts') {
-        let newPosts = posts!.reverse();
+          return newPosts.slice(startIndex, (startIndex + 10));
+        }
+        // if the target is the main page's new posts, return paginated posts
+        else if(target == 'main suggested') {
+          return posts!.slice(startIndex, (startIndex + 10));
+        }
+        // if the target is the fullList's new posts, reverse the order of
+        // the posts (to show the latest posts) and return paginated posts
+        else if(target == 'new posts') {
+          let newPosts = posts!.reverse();
 
-        return newPosts.slice(startIndex, (startIndex + 5));
-      }
-      // if the target is the fullList's suggested posts or a specific user's,
-      // posts, return paginated posts (as-is).
-      else if(target == 'suggested posts' || target == 'user posts') {
-        return posts!.slice(startIndex, (startIndex + 5));
-      }
-    })
+          return newPosts.slice(startIndex, (startIndex + 5));
+        }
+        // if the target is the fullList's suggested posts or a specific user's,
+        // posts, return paginated posts (as-is).
+        else if(target == 'suggested posts' || target == 'user posts') {
+          return posts!.slice(startIndex, (startIndex + 5));
+        }
+      })
+    }
   }
 
   /*

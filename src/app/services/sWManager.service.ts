@@ -260,13 +260,13 @@ export class SWManager {
       // the posts store
       else if(target == 'main suggested' || target == 'suggested posts') {
         let suggestedPosts = postsStore.index('hugs');
-        return postsStore.getAll();
+        return suggestedPosts.getAll();
       }
       // if the target is a specific user's posts, get the data from
       // the posts store
       else if(target == 'user posts') {
         let userPosts = postsStore.index('user');
-        return postsStore.getAll(userID);
+        return userPosts.getAll(userID);
       }
     }).then(function(posts) {
       // get the current page and the start index for the paginated list

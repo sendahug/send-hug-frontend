@@ -391,7 +391,7 @@ export class ItemsService {
               'fromId': element.fromId,
               'id': Number(element.id!),
               'isoDate': isoDate,
-              'text': element.messageText,
+              'messageText': element.messageText,
               'threadID': element.threadID!
             }
             store.put(message);
@@ -579,7 +579,7 @@ export class ItemsService {
               'fromId': element.fromId,
               'id': element.id!,
               'isoDate': isoDate,
-              'text': element.messageText,
+              'messageText': element.messageText,
               'threadID': element.threadID!
             }
             store.put(message);

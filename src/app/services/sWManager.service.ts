@@ -48,7 +48,7 @@ interface MyDB extends DBSchema {
       'fromId': number;
       'id': number;
       'isoDate': string;
-      'text': string;
+      'messageText': string;
       'threadID': number;
     };
     indexes: { 'date': string, 'thread': number };

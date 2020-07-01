@@ -348,6 +348,7 @@ export class ItemsService {
     this.serviceWorkerM.queryMessages(type, this.authService.userData.id!, currentPage)?.then((data:any) => {
       // if there's messages data in the IDB database
       if(data.length) {
+        this.userMessages[type] = [];
         // add the messages to the appropriate array
         data.forEach((element:Message) => {
           this.userMessages[type].push(element);
@@ -434,6 +435,7 @@ export class ItemsService {
     this.serviceWorkerM.queryThreads(currentPage)?.then((data:any) => {
       // if there's threads data in the IDB database
       if(data.length) {
+        this.userMessages.threads = [];
         // add the threads to the appropriate array
         data.forEach((element: any) => {
           let thread: Thread = {
@@ -536,6 +538,7 @@ export class ItemsService {
     this.serviceWorkerM.queryMessages('thread', this.authService.userData.id!, currentPage, threadId)?.then((data:any) => {
       // if there's messages data in the IDB database
       if(data.length) {
+        this.threadMessages = [];
         // add the messages to the appropriate array
         data.forEach((element: Message) => {
           this.threadMessages.push(element);

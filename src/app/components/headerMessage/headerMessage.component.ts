@@ -163,25 +163,4 @@ export class HeaderMessage implements OnInit, OnChanges {
       })
     }
   }
-
-  /*
-  Function Name: showInternetMessage()
-  Function Description: Show the message telling the user j
-  Parameters: None.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  toggleshowInternetMessage() {
-    // if the message isn't shown and needs to be shown
-    if(!this.networkMessage) {
-      this.visible = true;
-      this.loading = false;
-      this.message = 'You are not currently connected to the internet. For updated items, reconnect to the internet and try again.';
-    }
-    // if the message is shown and needs to be gone
-    else {
-      this.visible = false;
-      this.message = '';
-    }
-  }
 }

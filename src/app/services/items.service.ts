@@ -158,8 +158,11 @@ export class ItemsService {
 
     // get the recent posts from IDB
     this.serviceWorkerM.queryPosts('user posts', userID, currentPage)?.then((data:any) => {
-      this.userPosts[user] = data;
-      this.idbResolved.userPosts.next(true);
+      // if there are posts in cache, display them
+      if(data.length) {
+        this.userPosts[user] = data;
+        this.idbResolved.userPosts.next(true);
+      }
     });
 
     // try to get the posts from the server
@@ -174,6 +177,7 @@ export class ItemsService {
       // the server returns
       this.userPostsPage[user] = this.totalUserPostsPages[user] ? response.page : 0;
       this.isUserPostsResolved[user].next(true);
+      this.idbResolved.userPosts.next(true);
 
       // if there's a currently operating IDB database, get it
       if(this.serviceWorkerM.currentDB) {
@@ -258,9 +262,12 @@ export class ItemsService {
 
     // get the user's data from IDB
     this.serviceWorkerM.queryUsers(userID)?.then((data:any) => {
-      this.otherUserData = data;
-      this.getUserPosts(userID);
-      this.idbResolved.user.next(true);
+      // if the user's data exists in the IDB database
+      if(data) {
+        this.otherUserData = data;
+        this.getUserPosts(userID);
+        this.idbResolved.user.next(true);
+      }
     });
 
     // try to get the user's data from the server
@@ -277,6 +284,7 @@ export class ItemsService {
         postsNum: user.posts
       }
       this.isOtherUserResolved.next(true);
+      this.idbResolved.user.next(true);
       this.getUserPosts(userID);
 
       // if there's a currently operating IDB database, get it
@@ -325,11 +333,14 @@ export class ItemsService {
 
     // get the user's messages from IDB
     this.serviceWorkerM.queryMessages(type, this.authService.userData.id!, currentPage)?.then((data:any) => {
-      // add the messages to the appropriate array
-      data.forEach((element:Message) => {
-        this.userMessages[type].push(element);
-      });
-      this.idbResolved[type].next(true);
+      // if there's messages data in the IDB database
+      if(data.length) {
+        // add the messages to the appropriate array
+        data.forEach((element:Message) => {
+          this.userMessages[type].push(element);
+        });
+        this.idbResolved[type].next(true);
+      }
     });
 
     // try to get the user's messages from the server
@@ -347,6 +358,7 @@ export class ItemsService {
       // the server returns
       this.userMessagesPage[type] = this.totalUserMessagesPages[type] ? response.current_page : 0;
       this.isUserMessagesResolved[type].next(true);
+      this.idbResolved[type].next(true);
 
       // if there's a currently operating IDB database, get it
       if(this.serviceWorkerM.currentDB) {
@@ -405,18 +417,21 @@ export class ItemsService {
 
     // get the user's messages from IDB
     this.serviceWorkerM.queryThreads(currentPage)?.then((data:any) => {
-      // add the threads to the appropriate array
-      data.forEach((element: any) => {
-        let thread: Thread = {
-          id: element.id,
-          user: (element.user1 == this.authService.userData.displayName) ? element.user2 : element.user1,
-          userID: (element.user1Id == this.authService.userData.id) ? element.user2Id : element.user1Id,
-          numMessages: element.numMessages,
-          latestMessage: element.latestMessage
-        }
-        this.userMessages.threads.push(thread);
-      });
-      this.idbResolved.threads.next(true);
+      // if there's threads data in the IDB database
+      if(data.length) {
+        // add the threads to the appropriate array
+        data.forEach((element: any) => {
+          let thread: Thread = {
+            id: element.id,
+            user: (element.user1 == this.authService.userData.displayName) ? element.user2 : element.user1,
+            userID: (element.user1Id == this.authService.userData.id) ? element.user2Id : element.user1Id,
+            numMessages: element.numMessages,
+            latestMessage: element.latestMessage
+          }
+          this.userMessages.threads.push(thread);
+        });
+        this.idbResolved.threads.next(true);
+      }
     });
 
     // try to get the user's messages from the server
@@ -441,6 +456,7 @@ export class ItemsService {
       // the server returns
       this.userMessagesPage.threads = this.totalUserMessagesPages.threads ? response.current_page : 0;
       this.isUserMessagesResolved.threads.next(true);
+      this.idbResolved.threads.next(true);
 
       // if there's a currently operating IDB database, get it
       if(this.serviceWorkerM.currentDB) {
@@ -501,11 +517,14 @@ export class ItemsService {
 
     // get the user's messages from IDB
     this.serviceWorkerM.queryMessages('thread', this.authService.userData.id!, currentPage, threadId)?.then((data:any) => {
-      // add the messages to the appropriate array
-      data.forEach((element: Message) => {
-        this.threadMessages.push(element);
-      });
-      this.idbResolved.thread.next(true);
+      // if there's messages data in the IDB database
+      if(data.length) {
+        // add the messages to the appropriate array
+        data.forEach((element: Message) => {
+          this.threadMessages.push(element);
+        });
+        this.idbResolved.thread.next(true);
+      }
     });
 
     // try to get the user's messages from the server
@@ -523,6 +542,7 @@ export class ItemsService {
       // the server returns
       this.threadPage = this.totalThreadPages ? response.current_page : 0;
       this.isThreadResolved.next(true);
+      this.idbResolved.thread.next(true);
 
       // if there's a currently operating IDB database, get it
       if(this.serviceWorkerM.currentDB) {

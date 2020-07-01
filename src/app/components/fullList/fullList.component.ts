@@ -30,6 +30,7 @@ export class FullList {
   report:boolean;
   reportedItem: Post | undefined;
   reportType = 'Post';
+  waitFor = '';
 
   // CTOR
   constructor(private route:ActivatedRoute,
@@ -43,16 +44,18 @@ export class FullList {
 
       // if the type is new items, get the new items
       if(this.type == 'New') {
+        this.waitFor = 'new posts';
         this.postsService.getNewItems(this.page);
       }
       // if the type is suggested items, get the suggested items
       else if(this.type == 'Suggested') {
+        this.waitFor = 'suggested posts';
         this.postsService.getSuggestedItems(this.page);
       }
 
       this.editMode = false;
       this.delete = false;
-	  this.report = false;
+      this.report = false;
   }
 
   /*

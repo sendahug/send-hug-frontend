@@ -201,6 +201,7 @@ export class ItemsService {
             }
             store.put(post);
           });
+          this.serviceWorkerM.cleanDB('posts');
         })
       }
     // if there was an error, alert the user
@@ -397,6 +398,7 @@ export class ItemsService {
             }
             store.put(message);
           });
+          this.serviceWorkerM.cleanDB('messages');
         })
       }
     // if there was an error, alert the user
@@ -497,6 +499,7 @@ export class ItemsService {
             }
             store.put(thread);
           });
+          this.serviceWorkerM.cleanDB('threads');
         })
       }
     // if there was an error, alert the user
@@ -587,6 +590,7 @@ export class ItemsService {
             }
             store.put(message);
           });
+          this.serviceWorkerM.cleanDB('messages');
         })
       }
     // if there was an error, alert the user

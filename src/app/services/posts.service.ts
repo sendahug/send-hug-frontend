@@ -130,6 +130,7 @@ export class PostsService {
             }
             store.put(post);
           });
+          this.serviceWorkerM.cleanDB('posts');
         })
       }
     // if there was an error, alert the user
@@ -200,6 +201,7 @@ export class PostsService {
             }
             store.put(post);
           });
+          this.serviceWorkerM.cleanDB('posts');
         })
       }
     // if there was an error, alert the user
@@ -270,6 +272,7 @@ export class PostsService {
             }
             store.put(post);
           });
+          this.serviceWorkerM.cleanDB('posts');
         })
       }
     // if there was an error, alert the user

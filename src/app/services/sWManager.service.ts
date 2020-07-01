@@ -423,4 +423,42 @@ export class SWManager {
       });
     }
   }
+
+  /*
+  Function Name: cleanDB()
+  Function Description: Cleans the oldest posts/messages/threads.
+  Parameters: storeID (string) - the name of the store to clear.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  cleanDB(storeID: 'posts' | 'messages' | 'threads') {
+    if(this.currentDB) {
+      this.currentDB.then(function(db) {
+        // if the store to clear is posts or messages store
+        if(storeID == 'posts' || storeID == 'messages') {
+          // skip the latest 100 posts/messages
+          db.transaction(storeID).store.index('date').openCursor(undefined, 'prev').then((cursor) => {
+            return cursor?.advance(100);
+          // if there are more than 100 items, clean out the oldest
+          }).then(function clearItems(cursor):any {
+            if(!cursor) return;
+            cursor.delete();
+            return cursor.continue().then(clearItems);
+          })
+        }
+        // if the store to clean is the threads store
+        else {
+          // skip the latest 100 threads
+          db.transaction(storeID).store.index('latest').openCursor(undefined, 'prev').then((cursor) => {
+            return cursor?.advance(100);
+          // if there are more than 100 items, clean out the oldest
+          }).then(function clearItems(cursor):any {
+            if(!cursor) return;
+            cursor.delete();
+            return cursor.continue().then(clearItems);
+          })
+        }
+      })
+    }
+  }
 }

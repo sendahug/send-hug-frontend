@@ -50,7 +50,6 @@
 				</div>
 			</li>
 		</ul>
-		<button class="appButton deleteButton" (click)="deleteAllMessages('threads')">Delete All Threads</button>
 	</div>
 	
 	<!-- Message pagination -->
@@ -62,6 +61,7 @@
 		<button *ngIf="itemsService.totalUserMessagesPages[messType] <= itemsService.userMessagesPage[messType]" class="appButton hidden" (click)="nextPage()">Next Page</button>
 	</div>
 	<button class="appButton deleteButton" (click)="deleteAllMessages(messType)" *ngIf="itemsService.userMessages[messType].length && (messType == 'inbox' || messType == 'outbox')">Delete All Messages</button>
+	<button *ngIf="messType == 'threads' && itemsService.userMessages.threads.length" class="appButton deleteButton" (click)="deleteAllMessages('threads')">Delete All Threads</button>
 
 	<!-- If there are no messages in the user's outbox -->
 	<div *ngIf="!itemsService.userMessages[messType].length && itemsService.isUserMessagesResolved[messType].value">

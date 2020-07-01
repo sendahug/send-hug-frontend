@@ -142,11 +142,13 @@ export class ItemsService {
         this.totalUserPostsPages[user] = 1;
         this.userPosts[user] = [];
         this.isUserPostsResolved[user].next(false);
+        this.idbResolved.userPosts.next(false);
       }
     }
     // if the user is viewing their own profile, set the postsResolved to false
     else {
       this.isUserPostsResolved[user].next(false);
+      this.idbResolved.userPosts.next(false);
     }
 
     // if the current page is 0, send page 1 to the server (default)
@@ -154,7 +156,6 @@ export class ItemsService {
     const params = new HttpParams().set('page', `${currentPage}`);
     // change the ID of the previous user to the profile currently open
     this.previousUser = userID;
-    this.idbResolved.userPosts.next(false);
 
     // get the recent posts from IDB
     this.serviceWorkerM.queryPosts('user posts', userID, currentPage)?.then((data:any) => {
@@ -388,7 +389,7 @@ export class ItemsService {
               'forId': element.forId,
               'from': element.from,
               'fromId': element.fromId,
-              'id': element.Id!,
+              'id': Number(element.id!),
               'isoDate': isoDate,
               'text': element.messageText,
               'threadID': element.threadID!
@@ -576,7 +577,7 @@ export class ItemsService {
               'forId': element.forId,
               'from': element.from,
               'fromId': element.fromId,
-              'id': element.Id!,
+              'id': element.id!,
               'isoDate': isoDate,
               'text': element.messageText,
               'threadID': element.threadID!

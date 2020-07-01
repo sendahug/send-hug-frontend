@@ -75,14 +75,14 @@ export class PostsService {
     // get the recent and suggested posts from IDB
     this.serviceWorkerM.queryPosts('main new')?.then((data:any) => {
       // if there are posts in cache, display them
-      if(data) {
+      if(data.length) {
         this.newItemsArray = data;
         this.isMainPageResolved.next(true);
       }
     });
     this.serviceWorkerM.queryPosts('main suggested')?.then((data:any) => {
       // if there are posts in cache, display them
-      if(data) {
+      if(data.length) {
         this.sugItemsArray = data;
         this.isMainPageResolved.next(true);
       }
@@ -161,7 +161,7 @@ export class PostsService {
     // get the recent posts from IDB
     this.serviceWorkerM.queryPosts('new posts', undefined, page)?.then((data:any) => {
       // if there are posts in cache, display them
-      if(data) {
+      if(data.length) {
         this.fullItemsList.fullNewItems = data;
         this.isPostsResolved.fullNewItems.next(true);
       }
@@ -229,7 +229,7 @@ export class PostsService {
     // get the recent posts from IDB
     this.serviceWorkerM.queryPosts('suggested posts', undefined, page)?.then((data:any) => {
       // if there are posts in cache, display them
-      if(data) {
+      if(data.length) {
         this.fullItemsList.fullSuggestedItems = data;
         this.isPostsResolved.fullSuggestedItems.next(true);
       }

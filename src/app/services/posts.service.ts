@@ -6,6 +6,7 @@
 // Angular imports
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
+import { BehaviorSubject } from 'rxjs';
 
 // App-related imports
 import { Post } from '../interfaces/post.interface';
@@ -22,6 +23,7 @@ export class PostsService {
   readonly serverUrl = environment.production ? prodEnv.backend.domain! : environment.backend.domain;
   newItemsArray: Post[] = [];
   sugItemsArray: Post[] = [];
+  isMainPageResolved = new BehaviorSubject(false);
   // Full list variables
   fullItemsList: {
     fullNewItems: Post[],
@@ -37,6 +39,10 @@ export class PostsService {
   totalFullItemsPage = {
     fullNewItems: 0,
     fullSuggestedItems: 0
+  }
+  isPostsResolved = {
+    fullNewItems: new BehaviorSubject(false),
+    fullSuggestedItems: new BehaviorSubject(false)
   }
 
   // CTOR
@@ -64,13 +70,22 @@ export class PostsService {
   Programmer: Shir Bar Lev.
   */
   getItems() {
+    this.isMainPageResolved.next(false);
+
     // get the recent and suggested posts from IDB
     this.serviceWorkerM.queryPosts('main new')?.then((data:any) => {
-      console.log(data);
-      this.newItemsArray = data;
+      // if there are posts in cache, display them
+      if(data) {
+        this.newItemsArray = data;
+        this.isMainPageResolved.next(true);
+      }
     });
     this.serviceWorkerM.queryPosts('main suggested')?.then((data:any) => {
-      this.sugItemsArray = data;
+      // if there are posts in cache, display them
+      if(data) {
+        this.sugItemsArray = data;
+        this.isMainPageResolved.next(true);
+      }
     })
 
     // attempt to get more updated recent / suggested posts from the server
@@ -78,6 +93,7 @@ export class PostsService {
       let data = response;
       this.newItemsArray = data.recent;
       this.sugItemsArray = data.suggested;
+      this.isMainPageResolved.next(true);
 
       // if there's a currently operating IDB database, get it
       if(this.serviceWorkerM.currentDB) {
@@ -123,6 +139,7 @@ export class PostsService {
       }
       // otherwise just create an error alert
       else {
+        this.isMainPageResolved.next(true);
         this.alertsService.createErrorAlert(err);
       }
     })
@@ -139,10 +156,15 @@ export class PostsService {
     // URL and page query parameter
     const Url = this.serverUrl + '/posts/new';
     const params = new HttpParams().set('page', `${page}`);
+    this.isPostsResolved.fullNewItems.next(false);
 
     // get the recent posts from IDB
     this.serviceWorkerM.queryPosts('new posts', undefined, page)?.then((data:any) => {
-      this.fullItemsList.fullNewItems = data;
+      // if there are posts in cache, display them
+      if(data) {
+        this.fullItemsList.fullNewItems = data;
+        this.isPostsResolved.fullNewItems.next(true);
+      }
     });
 
     // then try to get the recent posts from the server
@@ -153,6 +175,7 @@ export class PostsService {
       this.fullItemsList.fullNewItems = data;
       this.fullItemsPage.fullNewItems = page;
       this.totalFullItemsPage.fullNewItems = response.total_pages;
+      this.isPostsResolved.fullNewItems.next(true);
 
       // if there's a currently operating IDB database, get it
       if(this.serviceWorkerM.currentDB) {
@@ -184,6 +207,7 @@ export class PostsService {
       }
       // otherwise just create an error alert
       else {
+        this.isPostsResolved.fullNewItems.next(true);
         this.alertsService.createErrorAlert(err);
       }
     })
@@ -200,10 +224,15 @@ export class PostsService {
     // URL and page query parameter
     const Url = this.serverUrl + '/posts/suggested';
     const params = new HttpParams().set('page', `${page}`);
+    this.isPostsResolved.fullSuggestedItems.next(false);
 
     // get the recent posts from IDB
     this.serviceWorkerM.queryPosts('suggested posts', undefined, page)?.then((data:any) => {
-      this.fullItemsList.fullSuggestedItems = data;
+      // if there are posts in cache, display them
+      if(data) {
+        this.fullItemsList.fullSuggestedItems = data;
+        this.isPostsResolved.fullSuggestedItems.next(true);
+      }
     });
 
     // HTTP request
@@ -214,6 +243,7 @@ export class PostsService {
       this.fullItemsList.fullSuggestedItems = data;
       this.fullItemsPage.fullSuggestedItems = page;
       this.totalFullItemsPage.fullSuggestedItems = response.total_pages;
+      this.isPostsResolved.fullSuggestedItems.next(true);
 
       // if there's a currently operating IDB database, get it
       if(this.serviceWorkerM.currentDB) {
@@ -245,6 +275,7 @@ export class PostsService {
       }
       // otherwise just create an error alert
       else {
+        this.isPostsResolved.fullSuggestedItems.next(true);
         this.alertsService.createErrorAlert(err);
       }
     })

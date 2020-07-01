@@ -63,6 +63,18 @@ self.addEventListener("fetch", function(event) {
 		return;
 	}
 	
+	// if the request is for the server and the user is online, ignore it
+	if(fetchTarget.includes(serverUrl) && navigator.onLine) {
+		return;
+	}
+	// if the request is for the server and the user is offline, alert them that they're offline so the server is unavailable
+	else if(fetchTarget.includes(serverUrl) && !navigator.onLine) {
+		return new Response("You are currently offline; try again when you're online.", {
+			"status": 503,
+			"statusText": "The server isn't available at the moment as you are currently offline. Try again when you're connected to the internet."
+		})
+	}
+	
 	// if the request is a non-GET and the user is offline, return an error
 	if(event.request.method != 'GET' && !navigator.onLine) {
 		return new Response("You are currently offline; try again when you're online.", {
@@ -100,19 +112,19 @@ self.addEventListener("fetch", function(event) {
 						
 						//if the asset isn't the dynamic JS file and it was changed since it was cached, replace the
 						//cached asset with the new asset
-						if(urlToFetch != '/app.bundle.js' && !fetchTarget.includes(serverUrl) && fetchedDateSec > cachedDateSec)
+						if(urlToFetch != '/app.bundle.js' && fetchedDateSec > cachedDateSec)
 							caches.open(currentCache).then(function(cache) {
 								cache.put(urlToFetch, fetchResponse);
 							})
 						//otherwise, if the asset IS the JS file, replace it anyway as it contains dynamic content
 						// that may have been changed
-						else if(urlToFetch == '/app.bundle.js' || fetchTarget.includes(serverUrl)) {
+						else if(urlToFetch == '/app.bundle.js') {
 							caches.open(currentCache).then(function(cache) {
 								cache.put(urlToFetch, fetchResponse);
 							})
 						}
 					}).catch(function(err) {
-						// if the user is offline, let them know that theyy're offline and that's the issue
+						// if the user is offline, let them know that they're offline and that's the issue
 						if(!navigator.onLine) {
 							return new Response("You are currently offline; try again when you're online.", {
 								"status": 503,

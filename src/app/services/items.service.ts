@@ -205,6 +205,7 @@ export class ItemsService {
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
       this.isUserPostsResolved[user].next(true);
+      this.idbResolved.userPosts.next(false);
 
       // if the server is unavilable due to the user being offline, tell the user
       if(!navigator.onLine) {
@@ -310,6 +311,7 @@ export class ItemsService {
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
       this.isOtherUserResolved.next(true);
+      this.idbResolved.user.next(true);
 
       // if the server is unavilable due to the user being offline, tell the user
       if(!navigator.onLine) {
@@ -398,6 +400,7 @@ export class ItemsService {
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
       this.isUserMessagesResolved[type].next(true);
+      this.idbResolved[type].next(true);
 
       // if the server is unavilable due to the user being offline, tell the user
       if(!navigator.onLine) {
@@ -496,6 +499,7 @@ export class ItemsService {
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
       this.isUserMessagesResolved.threads.next(true);
+      this.idbResolved.threads.next(true);
 
       // if the server is unavilable due to the user being offline, tell the user
       if(!navigator.onLine) {
@@ -584,6 +588,7 @@ export class ItemsService {
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
       this.isThreadResolved.next(true);
+      this.idbResolved.thread.next(true);
 
       // if the server is unavilable due to the user being offline, tell the user
       if(!navigator.onLine) {

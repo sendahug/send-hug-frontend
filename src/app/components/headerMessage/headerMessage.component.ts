@@ -77,9 +77,10 @@ export class HeaderMessage implements OnInit, OnChanges {
   Programmer: Shir Bar Lev.
   */
   checkLoadingTarget() {
-    this.visible = true;
+    this.visible = false;
     // if the app is waiting for another user's data to be fetched from the server
     if(this.waitingFor == 'other user') {
+      this.visible = true;
       this.message = 'Fetching user data from the server...';
       // subscribe to the subject following other user's data
       this.itemsService.isOtherUserResolved.subscribe((value) => {
@@ -94,6 +95,7 @@ export class HeaderMessage implements OnInit, OnChanges {
     }
     // if the app is waiting for incoming messages data to be fetched from the server
     else if(this.waitingFor == 'inbox messages') {
+      this.visible = true;
       this.message = 'Fetching messages from the server...';
       // subscribe to the subject following user messages data
       this.itemsService.isUserMessagesResolved.inbox.subscribe((value) => {
@@ -108,6 +110,7 @@ export class HeaderMessage implements OnInit, OnChanges {
     }
     // if the app is waiting for outgoing messages data to be fetched from the server
     else if(this.waitingFor == 'outbox messages') {
+      this.visible = true;
       this.message = 'Fetching messages from the server...';
       // subscribe to the subject following user messages data
       this.itemsService.isUserMessagesResolved.outbox.subscribe((value) => {
@@ -122,6 +125,7 @@ export class HeaderMessage implements OnInit, OnChanges {
     }
     // if the app is waiting for threads messages data to be fetched from the server
     else if(this.waitingFor == 'threads messages') {
+      this.visible = true;
       this.message = 'Fetching threads from the server...';
       // subscribe to the subject following user threads data
       this.itemsService.isUserMessagesResolved.threads.subscribe((value) => {
@@ -136,6 +140,7 @@ export class HeaderMessage implements OnInit, OnChanges {
     }
     //
     else if(this.waitingFor == 'thread messages') {
+      this.visible = true;
       this.message = 'Fetching messages from the server...';
       // subscribe to the subject following user threads data
       this.itemsService.isThreadResolved.subscribe((value) => {
@@ -150,6 +155,7 @@ export class HeaderMessage implements OnInit, OnChanges {
     }
     // if the app is waiting for the user's posts to be fetched from the server
     else if(this.waitingFor == 'user posts') {
+      this.visible = true;
       this.message = 'Fetching user posts from the server...';
       // subscribe to the subject following user's posts
       this.itemsService.isUserPostsResolved[this.user!].subscribe((value) => {

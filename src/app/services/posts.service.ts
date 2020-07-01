@@ -136,6 +136,7 @@ export class PostsService {
     }, (err:HttpErrorResponse) => {
       // if the server is unavilable due to the user being offline, tell the user
       if(!navigator.onLine) {
+        this.isMainPageResolved.next(true);
         this.alertsService.toggleOfflineAlert();
       }
       // otherwise just create an error alert
@@ -205,6 +206,7 @@ export class PostsService {
     }, (err:HttpErrorResponse) => {
       // if the server is unavilable due to the user being offline, tell the user
       if(!navigator.onLine) {
+        this.isPostsResolved.fullNewItems.next(true);
         this.alertsService.toggleOfflineAlert();
       }
       // otherwise just create an error alert
@@ -274,6 +276,7 @@ export class PostsService {
     }, (err:HttpErrorResponse) => {
       // if the server is unavilable due to the user being offline, tell the user
       if(!navigator.onLine) {
+        this.isPostsResolved.fullSuggestedItems.next(true);
         this.alertsService.toggleOfflineAlert();
       }
       // otherwise just create an error alert

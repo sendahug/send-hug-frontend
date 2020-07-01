@@ -11,6 +11,7 @@ import { Subscription } from 'rxjs';
 import { ItemsService } from '../../services/items.service';
 import { AuthService } from '../../services/auth.service';
 import { AdminService } from '../../services/admin.service';
+import { PostsService } from '../../services/posts.service';
 
 @Component({
   selector: 'app-loader',
@@ -33,7 +34,8 @@ export class Loader implements OnInit, OnChanges {
   constructor(
     private itemsService:ItemsService,
     private authService:AuthService,
-    private adminService:AdminService
+    private adminService:AdminService,
+    private postsService:PostsService
   ) {
 
   }
@@ -104,7 +106,7 @@ export class Loader implements OnInit, OnChanges {
     else if(this.waitingFor == 'other user') {
       this.message = 'Fetching user data...';
       // subscribe to the subject following other user's data
-      this.itemsService.isOtherUserResolved.subscribe((value) => {
+      this.itemsService.idbResolved.user.subscribe((value) => {
         // the subject's value is changed to 'true' upon fetching user data,
         // so if the value is true, there's no longer need for the loader
         // screen.
@@ -113,10 +115,6 @@ export class Loader implements OnInit, OnChanges {
           this.waitingFor = '';
         }
       })
-    }
-    // if the app is waiting for posts data to be fetched from the server
-    else if(this.waitingFor == 'posts') {
-      this.message = 'Fetching posts...';
     }
     // if the app is waiting for incoming messages data to be fetched from the server
     else if(this.waitingFor == 'inbox messages') {
@@ -127,7 +125,7 @@ export class Loader implements OnInit, OnChanges {
         // the logged in user's messages
         if(value == true) {
           // subscribe to the subject following user messages data
-          this.itemsService.isUserInboxResolved.subscribe((value) => {
+          this.itemsService.idbResolved.inbox.subscribe((value) => {
             // the subject's value is changed to 'true' upon fetching user
             // messages, so if the value is true, there's no longer need
             // for the loader screen
@@ -148,7 +146,7 @@ export class Loader implements OnInit, OnChanges {
         // the logged in user's messages
         if(value == true) {
           // subscribe to the subject following user messages data
-          this.itemsService.isUserOutboxResolved.subscribe((value) => {
+          this.itemsService.idbResolved.outbox.subscribe((value) => {
             // the subject's value is changed to 'true' upon fetching user
             // messages, so if the value is true, there's no longer need
             // for the loader screen
@@ -169,7 +167,7 @@ export class Loader implements OnInit, OnChanges {
         // the logged in user's threads
         if(value == true) {
           // subscribe to the subject following user threads data
-          this.itemsService.isUserThreadsResolved.subscribe((value) => {
+          this.itemsService.idbResolved.threads.subscribe((value) => {
             // the subject's value is changed to 'true' upon fetching user
             // threads, so if the value is true, there's no longer need
             // for the loader screen
@@ -190,7 +188,7 @@ export class Loader implements OnInit, OnChanges {
         // the logged in user's threads
         if(value == true) {
           // subscribe to the subject following user threads data
-          this.itemsService.isThreadResolved.subscribe((value) => {
+          this.itemsService.idbResolved.thread.subscribe((value) => {
             // the subject's value is changed to 'true' upon fetching user
             // threads, so if the value is true, there's no longer need
             // for the loader screen
@@ -202,11 +200,53 @@ export class Loader implements OnInit, OnChanges {
         }
       })
     }
+    // if the app is waiting for main page data to be fetched from the server
+    else if(this.waitingFor == 'main page') {
+      this.message = 'Fetching posts...';
+      // subscribe to the subject following main page posts
+      this.postsService.isMainPageResolved.subscribe((value) => {
+        // the subject's value is changed to 'true' upon fetching main
+        // page data, so if the value is true, there's no longer need
+        // for the loader screen
+        if(value) {
+          this.visible = false;
+          this.waitingFor = '';
+        }
+      })
+    }
+    // if the app is waiting for new posts data to be fetched from the server
+    else if(this.waitingFor == 'new posts') {
+      this.message = 'Fetching posts...';
+      // subscribe to the subject following full new posts
+      this.postsService.isPostsResolved.fullNewItems.subscribe((value) => {
+        // the subject's value is changed to 'true' upon fetching new
+        // posts page data, so if the value is true, there's no longer need
+        // for the loader screen
+        if(value) {
+          this.visible = false;
+          this.waitingFor = '';
+        }
+      })
+    }
+    // if the app is waiting for suggested posts data to be fetched from the server
+    else if(this.waitingFor == 'suggested posts') {
+      this.message = 'Fetching posts...';
+      // subscribe to the subject following full suggested posts
+      this.postsService.isPostsResolved.fullSuggestedItems.subscribe((value) => {
+        // the subject's value is changed to 'true' upon fetching suggested
+        // posts page data, so if the value is true, there's no longer need
+        // for the loader screen
+        if(value) {
+          this.visible = false;
+          this.waitingFor = '';
+        }
+      })
+    }
     // if the app is waiting for the user's posts to be fetched from the server
     else if(this.waitingFor == 'user posts') {
       this.message = 'Fetching user posts...';
       // subscribe to the subject following user's posts
-      this.itemsService.isUserPostsResolved[this.user].subscribe((value) => {
+      this.itemsService.idbResolved.userPosts.subscribe((value) => {
         // the subject's value is changed to 'true' upon fetching user
         // posts, so if the value is true, there's no longer need for the
         // loader screen

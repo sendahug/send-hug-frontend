@@ -1,7 +1,11 @@
 <div id="items">
 	<h2 class="listTitle">{{ type }} Items</h2>
+	
+	<app-loader
+		[waitingFor]="waitFor"></app-loader>
+	
 	<!-- If there are items in the list -->
-	<ul id="fullItems" *ngIf="postsService.fullItemsList['full' + type + 'Items'].length > 0">
+	<ul id="fullItems" *ngIf="postsService.fullItemsList['full' + type + 'Items'].length > 0 && postsService.isPostsResolved['full' + type + 'Items'].value">
 		<li *ngFor="let item of postsService.fullItemsList['full' + type + 'Items']" class="newItem">
 			<div class="itemText">{{ item.text }}</div>
 			<div class="itemUser">By <a [routerLink]="['/user', item.userId ]" class="profileLink">{{ item.user }}</a></div>
@@ -19,7 +23,7 @@
 	</ul>
 	
 	<!-- If there are no items in the list -->
-	<div class="errorMessage" *ngIf="postsService.fullItemsList['full' + type + 'Items'].length == 0">There are no posts.</div>
+	<div class="errorMessage" *ngIf="postsService.fullItemsList['full' + type + 'Items'].length == 0 && postsService.isPostsResolved['full' + type + 'Items'].value">There are no posts.</div>
 	
 	<!-- Post pagination -->
 	<div class="pagination">

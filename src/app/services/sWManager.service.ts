@@ -6,14 +6,76 @@
 // Angular imports
 import { Injectable } from '@angular/core';
 
+// Other imports
+import { openDB, IDBPDatabase, DBSchema } from 'idb';
+
 // App-related imports
 import { AlertsService } from './alerts.service';
+
+// IndexedDB Database schema
+interface MyDB extends DBSchema {
+  'posts': {
+    key: number;
+    value: {
+      'date': Date;
+      'givenHugs': number;
+      'id': number;
+      'isoDate': string;
+      'text': string;
+      'userId': number;
+      'user': string;
+    };
+    indexes: { 'date': string, 'user': number, 'hugs': number };
+  };
+  'users': {
+    key: number;
+    value: {
+      'id': number;
+      'displayName': string;
+      'givenHugs': number;
+      'postsNum': number;
+      'receivedHugs': number;
+      'role': string;
+    }
+  };
+  'messages': {
+    key: number;
+    value: {
+      'date': Date;
+      'for': string;
+      'forId': number;
+      'from': string;
+      'fromId': number;
+      'id': number;
+      'isoDate': string;
+      'messageText': string;
+      'threadID': number;
+    };
+    indexes: { 'date': string, 'thread': number };
+  };
+  'threads': {
+    key: number;
+    value: {
+      'latestMessage': Date;
+      'user1': string;
+      'user1Id': number;
+      'user2': string;
+      'user2Id': number;
+      'numMessages': number;
+      'isoDate': string;
+      'id': number;
+    };
+    indexes: { 'latest': string };
+  }
+}
 
 @Injectable({
   providedIn: 'root'
 })
 export class SWManager {
   activeServiceWorkerReg: ServiceWorkerRegistration | undefined;
+  currentDB: Promise<IDBPDatabase<MyDB>> | undefined;
+  databaseVersion = 2;
 
   // CTOR
   constructor(private alertsService:AlertsService) {
@@ -57,6 +119,8 @@ export class SWManager {
           })
         }
       });
+
+      this.currentDB = this.openDatabase();
     }
   }
 
@@ -107,6 +171,291 @@ export class SWManager {
             // gets the SW that was found and is now being installed
             let installingSW = this.activeServiceWorkerReg!.installing!;
             this.checkSWChange(installingSW);
+          })
+        }
+      })
+    }
+  }
+
+  /*
+  Function Name: openDatabase()
+  Function Description: Creates an IDBPromised database to contain data if the
+                        user is offline.
+  Parameters: None.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  openDatabase() {
+    return openDB<MyDB>('send-hug', this.databaseVersion, {
+      upgrade(db, oldVersion, _newVersion, transaction) {
+        switch(oldVersion) {
+          // if there was no previous version
+          case 0:
+            // create store for posts
+            let postStore = db.createObjectStore('posts', {
+              keyPath: 'id'
+            });
+            postStore.createIndex('date', 'date');
+            postStore.createIndex('user', 'userId');
+            postStore.createIndex('hugs', 'givenHugs');
+
+            // create store for users
+            let userStore = db.createObjectStore('users', {
+              keyPath: 'id'
+            });
+
+            // create store for messages
+            let messageStore = db.createObjectStore('messages', {
+              keyPath: 'id'
+            });
+            messageStore.createIndex('date', 'date');
+            messageStore.createIndex('thread', 'threadID');
+
+            // create store for threads
+            let threadStore = db.createObjectStore('threads', {
+              keyPath: 'id'
+            });
+            threadStore.createIndex('latest', 'latestMessage');
+          // if the previous version the user had is 1
+          case 1:
+            // change posts store's date index to order by ISO date string
+            let postsStore = transaction.objectStore('posts');
+            postsStore.deleteIndex('date');
+            postsStore.createIndex('date', 'isoDate');
+
+            // change messages store's date index to order by ISO date string
+            let messagesStore = transaction.objectStore('messages');
+            messagesStore.deleteIndex('date');
+            messagesStore.createIndex('date', 'isoDate');
+
+            // change threads store's date index to order by ISO date string
+            let threadsStore = transaction.objectStore('threads');
+            threadsStore.deleteIndex('latest');
+            threadsStore.createIndex('latest', 'isoDate');
+        }
+      }
+    });
+  }
+
+  /*
+  Function Name: queryPosts()
+  Function Description: Gets data matching the provided query from IndexedDB database.
+  Parameters: target (string) - The target of the query.
+              userID (number) - ID of the user whose posts to fetch.
+              page (number) - the current page.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  queryPosts(target: string, userID?: number, page?:number) {
+    if(this.currentDB) {
+      return this.currentDB.then(function(db) {
+        let postsStore = db.transaction('posts').store;
+
+        // if the target is the main page's new posts, get the data from
+        // the posts store
+        if(target == 'main new' || target == 'new posts') {
+          let newPosts = postsStore.index('date');
+          return newPosts.getAll();
+        }
+        // if the target is the main page's suggested posts, get the data from
+        // the posts store
+        else if(target == 'main suggested' || target == 'suggested posts') {
+          let suggestedPosts = postsStore.index('hugs');
+          return suggestedPosts.getAll();
+        }
+        // if the target is a specific user's posts, get the data from
+        // the posts store
+        else if(target == 'user posts') {
+          let userPosts = postsStore.index('user');
+          return userPosts.getAll(userID);
+        }
+      }).then((posts) => {
+        // if there are any posts, check each post
+        if(posts) {
+          posts.forEach(element => {
+            // if there's no display name for that post, get it through the
+            // queryUsers method and add it
+            if(!element.user) {
+              this.queryUsers(element.userId)!.then((userData) => {
+                element.user = userData!.displayName;
+              })
+            }
+          });
+        }
+        return posts;
+      }).then(function(posts) {
+        // get the current page and the start index for the paginated list
+        // if the target is one of the main page's lists, each list should contain
+        // 10 posts; otherwise each list should contain 5 items
+        let currentPage = page ? page: 1;
+        let startIndex = (target == 'main new' || target == 'main suggested') ?
+                          0 : (currentPage - 1) * 5;
+
+        // if the target is the main page's new posts, reverse the order of
+        // the posts (to show the latest posts) and return paginated posts
+        if(target == 'main new') {
+          let newPosts = posts!.reverse();
+
+          return newPosts.slice(startIndex, (startIndex + 10));
+        }
+        // if the target is the main page's new posts, return paginated posts
+        else if(target == 'main suggested') {
+          return posts!.slice(startIndex, (startIndex + 10));
+        }
+        // if the target is the fullList's new posts, reverse the order of
+        // the posts (to show the latest posts) and return paginated posts
+        else if(target == 'new posts') {
+          let newPosts = posts!.reverse();
+
+          return newPosts.slice(startIndex, (startIndex + 5));
+        }
+        // if the target is the fullList's suggested posts or a specific user's,
+        // posts, return paginated posts (as-is).
+        else if(target == 'suggested posts' || target == 'user posts') {
+          return posts!.slice(startIndex, (startIndex + 5));
+        }
+      })
+    }
+  }
+
+  /*
+  Function Name: queryMessages()
+  Function Description: Gets data matching the provided query from IndexedDB database.
+  Parameters: target (string) - The target of the query.
+              currentUser (number) - ID of the current user.
+              page (number) - the current page.
+              threadID (number) - the ID of the thread for which to fetch messages.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  queryMessages(target:string, currentUser:number, page:number, threadID?:number) {
+    return this.currentDB?.then(function(db) {
+      // if the target is any of the single-message mailboxes, get the data
+      // from the messages objectStore
+      let messagesStore = db.transaction('messages').store.index('date');
+      return messagesStore.getAll();
+    }).then(function(messages) {
+      // get the current page and the start index for the paginated list
+      // if the target is one of the main page's lists, each list should contain
+      // 10 posts; otherwise each list should contain 5 items
+      let startIndex = (target == 'main new' || target == 'main suggested') ?
+                        0 : (page - 1) * 5;
+
+      // if the target is inbox, keep only messages sent to the user and
+      // return paginated inbox messages
+      if(target == 'inbox') {
+        let inbox = messages.filter((e:any) => e.forId == currentUser);
+        let orderedInbox = inbox.reverse();
+
+        return orderedInbox.slice(startIndex, (startIndex + 5));
+      }
+      // if the target is outbox, keep only messages sent from the user and
+      // return paginated outbox messages
+      else if(target == 'outbox') {
+        let outbox = messages.filter((e:any) => e.fromId == currentUser);
+        let orderedOutbox = outbox.reverse();
+
+        return orderedOutbox.slice(startIndex, (startIndex + 5));
+      }
+      // if the target is a specific thread, keep only messages belonging to
+      // that thread nad return paginated messages
+      else if(target == 'thread') {
+        let thread = messages.filter((e:any) => e.threadID == threadID);
+        let orderedThread = thread.reverse();
+
+        return orderedThread.slice(startIndex, (startIndex+5));
+      }
+    })
+  }
+
+  /*
+  Function Name: queryThreads()
+  Function Description: Gets data matching the provided query from IndexedDB database.
+  Parameters: currentPage (number) - the current page.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  queryThreads(currentPage:number) {
+    return this.currentDB?.then(function(db) {
+      let threadsStore = db.transaction('threads').store.index('latest');
+      return threadsStore.getAll();
+    }).then(function(threads) {
+      let startIndex = currentPage * 5;
+      let orderedThreads = threads.reverse();
+
+      return orderedThreads.slice(startIndex, (startIndex + 5));
+    })
+  }
+
+  /*
+  Function Name: queryUsers()
+  Function Description: Gets data matching the provided query from IndexedDB database.
+  Parameters: userID (number) - the ID of the user whose data to fetch.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  queryUsers(userID:number) {
+    return this.currentDB?.then(function(db) {
+      let userStore = db.transaction('users').store;
+      return userStore.get(userID);
+    }).then(function(data) {
+      return data;
+    })
+  }
+
+  /*
+  Function Name: clearStore()
+  Function Description: Deletes all records from an IDB store.
+  Parameters: storeID (string) - the name of the store to clear.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  clearStore(storeID: 'posts' | 'messages' | 'users' | 'threads') {
+    // checks that there's IDB database currently working
+    if(this.currentDB) {
+      // gets the current database, and then gets the given store and clears it
+      this.currentDB.then(function(db) {
+        let store = db.transaction(storeID).objectStore(storeID);
+        return store.clear();
+      // if there's an error, log it
+      }).catch(function(err) {
+        console.log(err);
+      });
+    }
+  }
+
+  /*
+  Function Name: cleanDB()
+  Function Description: Cleans the oldest posts/messages/threads.
+  Parameters: storeID (string) - the name of the store to clear.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  cleanDB(storeID: 'posts' | 'messages' | 'threads') {
+    if(this.currentDB) {
+      this.currentDB.then(function(db) {
+        // if the store to clear is posts or messages store
+        if(storeID == 'posts' || storeID == 'messages') {
+          // skip the latest 100 posts/messages
+          db.transaction(storeID).store.index('date').openCursor(undefined, 'prev').then((cursor) => {
+            return cursor?.advance(100);
+          // if there are more than 100 items, clean out the oldest
+          }).then(function clearItems(cursor):any {
+            if(!cursor) return;
+            cursor.delete();
+            return cursor.continue().then(clearItems);
+          })
+        }
+        // if the store to clean is the threads store
+        else {
+          // skip the latest 100 threads
+          db.transaction(storeID).store.index('latest').openCursor(undefined, 'prev').then((cursor) => {
+            return cursor?.advance(100);
+          // if there are more than 100 items, clean out the oldest
+          }).then(function clearItems(cursor):any {
+            if(!cursor) return;
+            cursor.delete();
+            return cursor.continue().then(clearItems);
           })
         }
       })

@@ -16,6 +16,7 @@ import { OtherUser } from '../interfaces/otherUser.interface';
 import { Report } from '../interfaces/report.interface';
 import { AuthService } from './auth.service';
 import { AlertsService } from './alerts.service';
+import { SWManager } from './sWManager.service';
 import { environment } from '../../environments/environment';
 import { environment as prodEnv } from '../../environments/environment.prod';
 
@@ -59,25 +60,28 @@ export class ItemsService {
   // User messages variables
   userMessages: {
     inbox: Message[],
-    outbox: Message[]
+    outbox: Message[],
+    threads: Thread[]
   } = {
     inbox: [],
-    outbox: []
+    outbox: [],
+    threads: []
   }
   userMessagesPage = {
-    inbox: 0,
-    outbox: 0
+    inbox: 1,
+    outbox: 1,
+    threads: 1
   }
   totalUserMessagesPages = {
-    inbox: 0,
-    outbox: 0
+    inbox: 1,
+    outbox: 1,
+    threads: 1
   }
-  isUserInboxResolved = new BehaviorSubject(false);
-  isUserOutboxResolved = new BehaviorSubject(false);
-  userThreads: Thread[] = [];
-  userThreadsPage: number;
-  totalUserThreadsPage: number;
-  isUserThreadsResolved = new BehaviorSubject(false);
+  isUserMessagesResolved = {
+    inbox: new BehaviorSubject(false),
+    outbox: new BehaviorSubject(false),
+    threads: new BehaviorSubject(false)
+  }
   activeThread = 0;
   threadMessages: Message[] = [];
   threadPage: number;
@@ -92,19 +96,24 @@ export class ItemsService {
   postSearchPage = 1;
   totalPostSearchPages = 1;
   isSearchResolved = new BehaviorSubject(false);
+  //
+  idbResolved = {
+    user: new BehaviorSubject(false),
+    userPosts: new BehaviorSubject(false),
+    inbox: new BehaviorSubject(false),
+    outbox: new BehaviorSubject(false),
+    threads: new BehaviorSubject(false),
+    thread: new BehaviorSubject(false)
+  }
 
   // CTOR
   constructor(
     private Http: HttpClient,
     private authService:AuthService,
-    private alertsService:AlertsService) {
+    private alertsService:AlertsService,
+    private serviceWorkerM:SWManager
+  ) {
       // default assignment
-      this.userMessagesPage.inbox = 1;
-      this.totalUserMessagesPages.inbox = 1;
-      this.userMessagesPage.outbox = 1;
-      this.totalUserMessagesPages.outbox = 1;
-      this.userThreadsPage = 1;
-      this.totalUserThreadsPage = 1;
       this.threadPage = 1;
       this.totalThreadPages = 1;
   }
@@ -133,11 +142,13 @@ export class ItemsService {
         this.totalUserPostsPages[user] = 1;
         this.userPosts[user] = [];
         this.isUserPostsResolved[user].next(false);
+        this.idbResolved.userPosts.next(false);
       }
     }
     // if the user is viewing their own profile, set the postsResolved to false
     else {
       this.isUserPostsResolved[user].next(false);
+      this.idbResolved.userPosts.next(false);
     }
 
     // if the current page is 0, send page 1 to the server (default)
@@ -146,7 +157,16 @@ export class ItemsService {
     // change the ID of the previous user to the profile currently open
     this.previousUser = userID;
 
-    // HTTP request
+    // get the recent posts from IDB
+    this.serviceWorkerM.queryPosts('user posts', userID, currentPage)?.then((data:any) => {
+      // if there are posts in cache, display them
+      if(data.length) {
+        this.userPosts[user] = data;
+        this.idbResolved.userPosts.next(true);
+      }
+    });
+
+    // try to get the posts from the server
     this.Http.get(Url, {
       headers: this.authService.authHeader,
       params: params
@@ -158,10 +178,45 @@ export class ItemsService {
       // the server returns
       this.userPostsPage[user] = this.totalUserPostsPages[user] ? response.page : 0;
       this.isUserPostsResolved[user].next(true);
+      this.idbResolved.userPosts.next(true);
+      this.alertsService.toggleOfflineAlert();
+
+      // if there's a currently operating IDB database, get it
+      if(this.serviceWorkerM.currentDB) {
+        this.serviceWorkerM.currentDB.then(db => {
+          // start a new transaction
+          let tx = db.transaction('posts', 'readwrite');
+          let store = tx.objectStore('posts');
+          // add each post in the list to posts store
+          data.forEach((element:Post) => {
+            let isoDate = new Date(element.date).toISOString();
+            let post = {
+              'date': element.date,
+              'givenHugs': element.givenHugs,
+              'id': element.id!,
+              'isoDate': isoDate,
+              'text': element.text,
+              'userId': Number(element.userId),
+              'user': element.user
+            }
+            store.put(post);
+          });
+          this.serviceWorkerM.cleanDB('posts');
+        })
+      }
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
       this.isUserPostsResolved[user].next(true);
-      this.alertsService.createErrorAlert(err);
+      this.idbResolved.userPosts.next(false);
+
+      // if the server is unavilable due to the user being offline, tell the user
+      if(!navigator.onLine) {
+        this.alertsService.toggleOfflineAlert();
+      }
+      // otherwise just create an error alert
+      else {
+        this.alertsService.createErrorAlert(err);
+      }
     })
   }
 
@@ -189,9 +244,17 @@ export class ItemsService {
       if(response.success == true) {
         this.alertsService.createSuccessAlert('Your hug was sent!', true);
       }
+      this.alertsService.toggleOfflineAlert();
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
-      this.alertsService.createErrorAlert(err);
+      // if the user is offline, show the offline header message
+      if(!navigator.onLine) {
+        this.alertsService.toggleOfflineAlert();
+      }
+      // otherwise just create an error alert
+      else {
+        this.alertsService.createErrorAlert(err);
+      }
     });
   }
 
@@ -207,8 +270,19 @@ export class ItemsService {
   getUser(userID:number) {
     const Url = this.serverUrl + `/users/all/${userID}`;
     this.isOtherUserResolved.next(false);
+    this.idbResolved.user.next(false);
 
-    // Get the user's data from the server
+    // get the user's data from IDB
+    this.serviceWorkerM.queryUsers(userID)?.then((data:any) => {
+      // if the user's data exists in the IDB database
+      if(data) {
+        this.otherUserData = data;
+        this.getUserPosts(userID);
+        this.idbResolved.user.next(true);
+      }
+    });
+
+    // try to get the user's data from the server
     this.Http.get(Url, {
       headers: this.authService.authHeader
     }).subscribe((response:any) => {
@@ -222,106 +296,124 @@ export class ItemsService {
         postsNum: user.posts
       }
       this.isOtherUserResolved.next(true);
+      this.idbResolved.user.next(true);
       this.getUserPosts(userID);
+      this.alertsService.toggleOfflineAlert();
+
+      // if there's a currently operating IDB database, get it
+      if(this.serviceWorkerM.currentDB) {
+        this.serviceWorkerM.currentDB.then(db => {
+          // start a new transaction
+          let tx = db.transaction('users', 'readwrite');
+          let store = tx.objectStore('users');
+          // adds the user's data to the users store
+          store.put(this.otherUserData);
+        })
+      }
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
       this.isOtherUserResolved.next(true);
-      this.alertsService.createErrorAlert(err);
+      this.idbResolved.user.next(true);
+
+      // if the server is unavilable due to the user being offline, tell the user
+      if(!navigator.onLine) {
+        this.alertsService.toggleOfflineAlert();
+      }
+      // otherwise just create an error alert
+      else {
+        this.alertsService.createErrorAlert(err);
+      }
     });
   }
 
   // MESSAGE-RELATED METHODS
   // ==============================================================
   /*
-  Function Name: getMessages()
-  Function Description: Checks which mailbox was requested and forwards the request
-                        to the appropriate getter function.
-  Parameters: type (string) - Type of mailbox to fetch.
+  Function Name: getMailboxMessages()
+  Function Description: Get the user's incoming messages.
+  Parameters: type ('inbox' | 'outbox') - Type of messages to fetch.
               userID (number) - the ID of the user whose messages to fetch.
   ----------------
   Programmer: Shir Bar Lev.
   */
-  getMessages(type:string, userID:number) {
-    if(type == 'inbox') {
-      this.getInboxMessages(userID);
-    }
-    else if(type == 'outbox') {
-      this.getOutboxMessages(userID);
-    }
-    else if(type == 'threads') {
-      this.getThreads(userID);
-    }
-  }
-
-  /*
-  Function Name: getInboxMessages()
-  Function Description: Get the user's incoming messages.
-  Parameters: userID (number) - the ID of the user whose messages to fetch.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  getInboxMessages(userID:number) {
+  getMailboxMessages(type: 'inbox' | 'outbox', userID:number) {
     // if the current page is 0, send page 1 to the server (default)
-    const currentPage = this.userMessagesPage.inbox ? this.userMessagesPage.inbox : 1;
+    const currentPage = this.userMessagesPage[type] ? this.userMessagesPage[type] : 1;
     let params = new HttpParams()
       .set('userID', `${userID}`)
       .set('page', `${currentPage}`)
-      .set('type', 'inbox');
-    // try to get the user's messages
+      .set('type', type);
+    this.idbResolved[type].next(false);
+
+    // get the user's messages from IDB
+    this.serviceWorkerM.queryMessages(type, this.authService.userData.id!, currentPage)?.then((data:any) => {
+      // if there's messages data in the IDB database
+      if(data.length) {
+        this.userMessages[type] = [];
+        // add the messages to the appropriate array
+        data.forEach((element:Message) => {
+          this.userMessages[type].push(element);
+        });
+        this.idbResolved[type].next(true);
+      }
+    });
+
+    // try to get the user's messages from the server
     this.Http.get(`${this.serverUrl}/messages`, {
       headers: this.authService.authHeader,
       params: params
     }).subscribe((response:any) => {
       let messages = response.messages;
-      this.userMessages.inbox = [];
+      this.userMessages[type] = [];
       messages.forEach((element: Message) => {
-        this.userMessages.inbox.push(element);
+        this.userMessages[type].push(element);
       });
-      this.totalUserMessagesPages.inbox = response.total_pages;
+      this.totalUserMessagesPages[type] = response.total_pages;
       // if there are 0 pages, current page is also 0; otherwise it's whatever
       // the server returns
-      this.userMessagesPage.inbox = this.totalUserMessagesPages.inbox ? response.current_page : 0;
-      this.isUserInboxResolved.next(true);
-    // if there was an error, alert the user
-    }, (err:HttpErrorResponse) => {
-      this.isUserInboxResolved.next(true);
-      this.alertsService.createErrorAlert(err);
-    })
-  }
+      this.userMessagesPage[type] = this.totalUserMessagesPages[type] ? response.current_page : 0;
+      this.isUserMessagesResolved[type].next(true);
+      this.idbResolved[type].next(true);
+      this.alertsService.toggleOfflineAlert();
 
-  /*
-  Function Name: getOutboxMessages()
-  Function Description: Get the user's outgoing messages.
-  Parameters: userID (number) - the ID of the user whose messages to fetch.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  getOutboxMessages(userID:number) {
-    // if the current page is 0, send page 1 to the server (default)
-    const currentPage = this.userMessagesPage.outbox ? this.userMessagesPage.outbox : 1;
-    let params = new HttpParams()
-      .set('userID', `${userID}`)
-      .set('page', `${currentPage}`)
-      .set('type', 'outbox');
-    // try to get the user's messages
-    this.Http.get(`${this.serverUrl}/messages`, {
-      headers: this.authService.authHeader,
-      params: params
-    }).subscribe((response:any) => {
-      let messages = response.messages;
-      this.userMessages.outbox = [];
-      messages.forEach((element: Message) => {
-        this.userMessages.outbox.push(element);
-      });
-      this.totalUserMessagesPages.outbox = response.total_pages;
-      // if there are 0 pages, current page is also 0; otherwise it's whatever
-      // the server returns
-      this.userMessagesPage.outbox = this.totalUserMessagesPages.outbox ? response.current_page : 0;
-      this.isUserOutboxResolved.next(true);
+      // if there's a currently operating IDB database, get it
+      if(this.serviceWorkerM.currentDB) {
+        this.serviceWorkerM.currentDB.then(db => {
+          // start a new transaction
+          let tx = db.transaction('messages', 'readwrite');
+          let store = tx.objectStore('messages');
+          // add each message in the messages list to the store
+          messages.forEach((element:Message) => {
+            let isoDate = new Date(element.date).toISOString();
+            let message = {
+              'date': element.date,
+              'for': element.for!,
+              'forId': element.forId,
+              'from': element.from,
+              'fromId': element.fromId,
+              'id': Number(element.id!),
+              'isoDate': isoDate,
+              'messageText': element.messageText,
+              'threadID': element.threadID!
+            }
+            store.put(message);
+          });
+          this.serviceWorkerM.cleanDB('messages');
+        })
+      }
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
-      this.isUserOutboxResolved.next(true);
-      this.alertsService.createErrorAlert(err);
+      this.isUserMessagesResolved[type].next(true);
+      this.idbResolved[type].next(true);
+
+      // if the server is unavilable due to the user being offline, tell the user
+      if(!navigator.onLine) {
+        this.alertsService.toggleOfflineAlert();
+      }
+      // otherwise just create an error alert
+      else {
+        this.alertsService.createErrorAlert(err);
+      }
     })
   }
 
@@ -334,18 +426,40 @@ export class ItemsService {
   */
   getThreads(userID:number) {
     // if the current page is 0, send page 1 to the server (default)
-    const currentPage = this.userThreadsPage ? this.userThreadsPage : 1;
+    const currentPage = this.userMessagesPage.threads ? this.userMessagesPage.threads : 1;
     let params = new HttpParams()
       .set('userID', `${userID}`)
       .set('page', `${currentPage}`)
       .set('type', 'threads');
-    // try to get the user's messages
+    this.idbResolved.threads.next(false);
+
+    // get the user's messages from IDB
+    this.serviceWorkerM.queryThreads(currentPage)?.then((data:any) => {
+      // if there's threads data in the IDB database
+      if(data.length) {
+        this.userMessages.threads = [];
+        // add the threads to the appropriate array
+        data.forEach((element: any) => {
+          let thread: Thread = {
+            id: element.id,
+            user: (element.user1 == this.authService.userData.displayName) ? element.user2 : element.user1,
+            userID: (element.user1Id == this.authService.userData.id) ? element.user2Id : element.user1Id,
+            numMessages: element.numMessages,
+            latestMessage: element.latestMessage
+          }
+          this.userMessages.threads.push(thread);
+        });
+        this.idbResolved.threads.next(true);
+      }
+    });
+
+    // try to get the user's messages from the server
     this.Http.get(`${this.serverUrl}/messages`, {
       headers: this.authService.authHeader,
       params: params
     }).subscribe((response:any) => {
       let threads = response.messages;
-      this.userThreads = [];
+      this.userMessages.threads = [];
       threads.forEach((element: any) => {
         let thread: Thread = {
           id: element.id,
@@ -354,17 +468,53 @@ export class ItemsService {
           numMessages: element.numMessages,
           latestMessage: element.latestMessage
         }
-        this.userThreads.push(thread);
+        this.userMessages.threads.push(thread);
       });
-      this.totalUserThreadsPage = response.total_pages;
+      this.totalUserMessagesPages.threads = response.total_pages;
       // if there are 0 pages, current page is also 0; otherwise it's whatever
       // the server returns
-      this.userThreadsPage = this.totalUserThreadsPage ? response.current_page : 0;
-      this.isUserThreadsResolved.next(true);
+      this.userMessagesPage.threads = this.totalUserMessagesPages.threads ? response.current_page : 0;
+      this.isUserMessagesResolved.threads.next(true);
+      this.idbResolved.threads.next(true);
+      this.alertsService.toggleOfflineAlert();
+
+      // if there's a currently operating IDB database, get it
+      if(this.serviceWorkerM.currentDB) {
+        this.serviceWorkerM.currentDB.then(db => {
+          // start a new transaction
+          let tx = db.transaction('threads', 'readwrite');
+          let store = tx.objectStore('threads');
+          // add each message in the threads list to the store
+          threads.forEach((element:Thread) => {
+            let isoDate = new Date(element.latestMessage).toISOString();
+            let thread = {
+              'latestMessage': element.latestMessage,
+              'user1': element.user!,
+              'user1Id': element.userID,
+              'user2': this.authService.userData.displayName,
+              'user2Id': this.authService.userData.id!,
+              'numMessages': element.numMessages!,
+              'isoDate': isoDate,
+              'id': element.id
+            }
+            store.put(thread);
+          });
+          this.serviceWorkerM.cleanDB('threads');
+        })
+      }
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
-      this.isUserThreadsResolved.next(true);
-      this.alertsService.createErrorAlert(err);
+      this.isUserMessagesResolved.threads.next(true);
+      this.idbResolved.threads.next(true);
+
+      // if the server is unavilable due to the user being offline, tell the user
+      if(!navigator.onLine) {
+        this.alertsService.toggleOfflineAlert();
+      }
+      // otherwise just create an error alert
+      else {
+        this.alertsService.createErrorAlert(err);
+      }
     })
   }
 
@@ -378,6 +528,7 @@ export class ItemsService {
   */
   getThread(userID:number, threadId:number) {
     this.activeThread = threadId;
+    this.idbResolved.thread.next(false);
     // if the current page is 0, send page 1 to the server (default)
     const currentPage = this.threadPage ? this.threadPage : 1;
     let params = new HttpParams()
@@ -385,7 +536,21 @@ export class ItemsService {
       .set('page', `${currentPage}`)
       .set('type', 'thread')
       .set('threadID', `${threadId}`);
-    // try to get the user's messages
+
+    // get the user's messages from IDB
+    this.serviceWorkerM.queryMessages('thread', this.authService.userData.id!, currentPage, threadId)?.then((data:any) => {
+      // if there's messages data in the IDB database
+      if(data.length) {
+        this.threadMessages = [];
+        // add the messages to the appropriate array
+        data.forEach((element: Message) => {
+          this.threadMessages.push(element);
+        });
+        this.idbResolved.thread.next(true);
+      }
+    });
+
+    // try to get the user's messages from the server
     this.Http.get(`${this.serverUrl}/messages`, {
       headers: this.authService.authHeader,
       params: params
@@ -400,10 +565,47 @@ export class ItemsService {
       // the server returns
       this.threadPage = this.totalThreadPages ? response.current_page : 0;
       this.isThreadResolved.next(true);
+      this.idbResolved.thread.next(true);
+      this.alertsService.toggleOfflineAlert();
+
+      // if there's a currently operating IDB database, get it
+      if(this.serviceWorkerM.currentDB) {
+        this.serviceWorkerM.currentDB.then(db => {
+          // start a new transaction
+          let tx = db.transaction('messages', 'readwrite');
+          let store = tx.objectStore('messages');
+          // add each message in the messages list to the store
+          messages.forEach((element:Message) => {
+            let isoDate = new Date(element.date).toISOString();
+            let message = {
+              'date': element.date,
+              'for': element.for!,
+              'forId': element.forId,
+              'from': element.from,
+              'fromId': element.fromId,
+              'id': element.id!,
+              'isoDate': isoDate,
+              'messageText': element.messageText,
+              'threadID': element.threadID!
+            }
+            store.put(message);
+          });
+          this.serviceWorkerM.cleanDB('messages');
+        })
+      }
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
       this.isThreadResolved.next(true);
-      this.alertsService.createErrorAlert(err);
+      this.idbResolved.thread.next(true);
+
+      // if the server is unavilable due to the user being offline, tell the user
+      if(!navigator.onLine) {
+        this.alertsService.toggleOfflineAlert();
+      }
+      // otherwise just create an error alert
+      else {
+        this.alertsService.createErrorAlert(err);
+      }
     })
   }
 
@@ -422,9 +624,17 @@ export class ItemsService {
       if(response.success == true) {
         this.alertsService.createSuccessAlert('Your message was sent!', false, '/');
       }
+      this.alertsService.toggleOfflineAlert();
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
-      this.alertsService.createErrorAlert(err);
+      // if the user is offline, show the offline header message
+      if(!navigator.onLine) {
+        this.alertsService.toggleOfflineAlert();
+      }
+      // otherwise just create an error alert
+      else {
+        this.alertsService.createErrorAlert(err);
+      }
     })
   }
 
@@ -443,9 +653,17 @@ export class ItemsService {
       headers: this.authService.authHeader
     }).subscribe((response:any) => {
       this.alertsService.createSuccessAlert(`Message ${response.deleted} was deleted! Refresh to view the updated message list.`, true);
+      this.alertsService.toggleOfflineAlert();
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
-      this.alertsService.createErrorAlert(err);
+      // if the user is offline, show the offline header message
+      if(!navigator.onLine) {
+        this.alertsService.toggleOfflineAlert();
+      }
+      // otherwise just create an error alert
+      else {
+        this.alertsService.createErrorAlert(err);
+      }
     })
   }
 
@@ -464,9 +682,17 @@ export class ItemsService {
       headers: this.authService.authHeader
     }).subscribe((response:any) => {
       this.alertsService.createSuccessAlert(`Message ${response.deleted} was deleted! Refresh to view the updated message list.`, true);
+      this.alertsService.toggleOfflineAlert();
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
-      this.alertsService.createErrorAlert(err);
+      // if the user is offline, show the offline header message
+      if(!navigator.onLine) {
+        this.alertsService.toggleOfflineAlert();
+      }
+      // otherwise just create an error alert
+      else {
+        this.alertsService.createErrorAlert(err);
+      }
     })
   }
 
@@ -489,9 +715,17 @@ export class ItemsService {
       headers: this.authService.authHeader
     }).subscribe((response:any) => {
       this.alertsService.createSuccessAlert(`${response.deleted} messages were deleted! Refresh to view the updated mailbox.`, true);
+      this.alertsService.toggleOfflineAlert();
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
-      this.alertsService.createErrorAlert(err);
+      // if the user is offline, show the offline header message
+      if(!navigator.onLine) {
+        this.alertsService.toggleOfflineAlert();
+      }
+      // otherwise just create an error alert
+      else {
+        this.alertsService.createErrorAlert(err);
+      }
     })
   }
 
@@ -521,10 +755,19 @@ export class ItemsService {
       this.numPostResults = response.post_results;
       this.isSearchResolved.next(true);
       this.isSearching = false;
+      this.alertsService.toggleOfflineAlert();
     }, (err:HttpErrorResponse) => {
       this.isSearchResolved.next(true);
-      this.alertsService.createErrorAlert(err);
       this.isSearching = false;
+
+      // if the user is offline, show the offline header message
+      if(!navigator.onLine) {
+        this.alertsService.toggleOfflineAlert();
+      }
+      // otherwise just create an error alert
+      else {
+        this.alertsService.createErrorAlert(err);
+      }
     })
   }
 
@@ -552,9 +795,17 @@ export class ItemsService {
       else {
         this.alertsService.createSuccessAlert(`User ${sent_report.userID} was successfully reported.`, false, '/');
       }
+      this.alertsService.toggleOfflineAlert();
     // if there's an error, alert the user
     }, (err:HttpErrorResponse) => {
-      this.alertsService.createErrorAlert(err);
+      // if the user is offline, show the offline header message
+      if(!navigator.onLine) {
+        this.alertsService.toggleOfflineAlert();
+      }
+      // otherwise just create an error alert
+      else {
+        this.alertsService.createErrorAlert(err);
+      }
     })
   }
 }

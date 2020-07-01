@@ -27,6 +27,7 @@ export class MainPage implements OnInit {
   report:boolean;
   reportedItem: Post | undefined;
   reportType = 'Post';
+  waitFor = 'main page';
 
   // CTOR
   constructor(

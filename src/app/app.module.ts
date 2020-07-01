@@ -17,6 +17,7 @@ import { Loader } from './components/loader/loader.component';
 import { AboutApp } from './components/aboutApp/aboutApp.component';
 import { SearchResults } from './components/searchResults/searchResults.component';
 import { AdminDashboard } from './components/adminDashboard/adminDashboard.component';
+import { HeaderMessage } from './components/headerMessage/headerMessage.component';
 
 @NgModule({
   imports: [
@@ -38,7 +39,8 @@ import { AdminDashboard } from './components/adminDashboard/adminDashboard.compo
     Loader,
     AboutApp,
     SearchResults,
-    AdminDashboard
+    AdminDashboard,
+    HeaderMessage
   ],
   providers: [],
   bootstrap: [AppComponent]

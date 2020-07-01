@@ -6,11 +6,13 @@
 // Angular imports
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
+import { BehaviorSubject } from 'rxjs';
 
 // App-related imports
 import { Post } from '../interfaces/post.interface';
 import { AuthService } from './auth.service';
 import { AlertsService } from './alerts.service';
+import { SWManager } from './sWManager.service';
 import { environment } from '../../environments/environment';
 import { environment as prodEnv } from '../../environments/environment.prod';
 
@@ -21,6 +23,7 @@ export class PostsService {
   readonly serverUrl = environment.production ? prodEnv.backend.domain! : environment.backend.domain;
   newItemsArray: Post[] = [];
   sugItemsArray: Post[] = [];
+  isMainPageResolved = new BehaviorSubject(false);
   // Full list variables
   fullItemsList: {
     fullNewItems: Post[],
@@ -37,12 +40,17 @@ export class PostsService {
     fullNewItems: 0,
     fullSuggestedItems: 0
   }
+  isPostsResolved = {
+    fullNewItems: new BehaviorSubject(false),
+    fullSuggestedItems: new BehaviorSubject(false)
+  }
 
   // CTOR
   constructor(
     private Http: HttpClient,
     private authService:AuthService,
-    private alertsService:AlertsService
+    private alertsService:AlertsService,
+    private serviceWorkerM:SWManager
   ) {
       // default assignment
       this.fullItemsPage.fullNewItems = 1;
@@ -62,13 +70,81 @@ export class PostsService {
   Programmer: Shir Bar Lev.
   */
   getItems() {
+    this.isMainPageResolved.next(false);
+
+    // get the recent and suggested posts from IDB
+    this.serviceWorkerM.queryPosts('main new')?.then((data:any) => {
+      // if there are posts in cache, display them
+      if(data.length) {
+        this.newItemsArray = data;
+        this.isMainPageResolved.next(true);
+      }
+    });
+    this.serviceWorkerM.queryPosts('main suggested')?.then((data:any) => {
+      // if there are posts in cache, display them
+      if(data.length) {
+        this.sugItemsArray = data;
+        this.isMainPageResolved.next(true);
+      }
+    })
+
+    // attempt to get more updated recent / suggested posts from the server
     this.Http.get(this.serverUrl).subscribe((response:any) => {
       let data = response;
       this.newItemsArray = data.recent;
       this.sugItemsArray = data.suggested;
+      this.isMainPageResolved.next(true);
+      this.alertsService.toggleOfflineAlert();
+
+      // if there's a currently operating IDB database, get it
+      if(this.serviceWorkerM.currentDB) {
+        this.serviceWorkerM.currentDB.then(db => {
+          // start a new transaction
+          let tx = db.transaction('posts', 'readwrite');
+          let store = tx.objectStore('posts');
+          // add each post in the 'recent' list to posts store
+          data.recent.forEach((element:Post) => {
+            let isoDate = new Date(element.date).toISOString();
+            let post = {
+              'date': element.date,
+              'givenHugs': element.givenHugs,
+              'id': element.id!,
+              'isoDate': isoDate,
+              'text': element.text,
+              'userId': Number(element.userId),
+              'user': element.user
+            }
+            store.put(post);
+          });
+          // add each post in the 'suggested' list to posts store
+          data.suggested.forEach((element:Post) => {
+            let isoDate = new Date(element.date).toISOString();
+            let post = {
+              'date': element.date,
+              'givenHugs': element.givenHugs,
+              'id': element.id!,
+              'isoDate': isoDate,
+              'text': element.text,
+              'userId': Number(element.userId),
+              'user': element.user
+            }
+            store.put(post);
+          });
+          this.serviceWorkerM.cleanDB('posts');
+        })
+      }
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
-      this.alertsService.createErrorAlert(err);
+      // if the server is unavilable due to the user being offline, tell the user
+      if(!navigator.onLine) {
+        this.isMainPageResolved.next(true);
+        this.alertsService.toggleOfflineAlert();
+      }
+      // otherwise just create an error alert
+      else {
+        this.isMainPageResolved.next(true);
+        this.alertsService.createErrorAlert(err);
+      }
     })
   }
 
@@ -83,8 +159,18 @@ export class PostsService {
     // URL and page query parameter
     const Url = this.serverUrl + '/posts/new';
     const params = new HttpParams().set('page', `${page}`);
+    this.isPostsResolved.fullNewItems.next(false);
 
-    // HTTP request
+    // get the recent posts from IDB
+    this.serviceWorkerM.queryPosts('new posts', undefined, page)?.then((data:any) => {
+      // if there are posts in cache, display them
+      if(data.length) {
+        this.fullItemsList.fullNewItems = data;
+        this.isPostsResolved.fullNewItems.next(true);
+      }
+    });
+
+    // then try to get the recent posts from the server
     this.Http.get(Url, {
       params: params
     }).subscribe((response: any) => {
@@ -92,9 +178,44 @@ export class PostsService {
       this.fullItemsList.fullNewItems = data;
       this.fullItemsPage.fullNewItems = page;
       this.totalFullItemsPage.fullNewItems = response.total_pages;
+      this.isPostsResolved.fullNewItems.next(true);
+      this.alertsService.toggleOfflineAlert();
+
+      // if there's a currently operating IDB database, get it
+      if(this.serviceWorkerM.currentDB) {
+        this.serviceWorkerM.currentDB.then(db => {
+          // start a new transaction
+          let tx = db.transaction('posts', 'readwrite');
+          let store = tx.objectStore('posts');
+          // add each post in the 'recent' list to posts store
+          data.forEach((element:Post) => {
+            let isoDate = new Date(element.date).toISOString();
+            let post = {
+              'date': element.date,
+              'givenHugs': element.givenHugs,
+              'id': element.id!,
+              'isoDate': isoDate,
+              'text': element.text,
+              'userId': Number(element.userId),
+              'user': element.user
+            }
+            store.put(post);
+          });
+          this.serviceWorkerM.cleanDB('posts');
+        })
+      }
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
-      this.alertsService.createErrorAlert(err);
+      // if the server is unavilable due to the user being offline, tell the user
+      if(!navigator.onLine) {
+        this.isPostsResolved.fullNewItems.next(true);
+        this.alertsService.toggleOfflineAlert();
+      }
+      // otherwise just create an error alert
+      else {
+        this.isPostsResolved.fullNewItems.next(true);
+        this.alertsService.createErrorAlert(err);
+      }
     })
   }
 
@@ -109,6 +230,16 @@ export class PostsService {
     // URL and page query parameter
     const Url = this.serverUrl + '/posts/suggested';
     const params = new HttpParams().set('page', `${page}`);
+    this.isPostsResolved.fullSuggestedItems.next(false);
+
+    // get the recent posts from IDB
+    this.serviceWorkerM.queryPosts('suggested posts', undefined, page)?.then((data:any) => {
+      // if there are posts in cache, display them
+      if(data.length) {
+        this.fullItemsList.fullSuggestedItems = data;
+        this.isPostsResolved.fullSuggestedItems.next(true);
+      }
+    });
 
     // HTTP request
     this.Http.get(Url, {
@@ -118,9 +249,44 @@ export class PostsService {
       this.fullItemsList.fullSuggestedItems = data;
       this.fullItemsPage.fullSuggestedItems = page;
       this.totalFullItemsPage.fullSuggestedItems = response.total_pages;
+      this.isPostsResolved.fullSuggestedItems.next(true);
+      this.alertsService.toggleOfflineAlert();
+
+      // if there's a currently operating IDB database, get it
+      if(this.serviceWorkerM.currentDB) {
+        this.serviceWorkerM.currentDB.then(db => {
+          // start a new transaction
+          let tx = db.transaction('posts', 'readwrite');
+          let store = tx.objectStore('posts');
+          // add each post in the 'recent' list to posts store
+          data.forEach((element:Post) => {
+            let isoDate = new Date(element.date).toISOString();
+            let post = {
+              'date': element.date,
+              'givenHugs': element.givenHugs,
+              'id': element.id!,
+              'isoDate': isoDate,
+              'text': element.text,
+              'userId': Number(element.userId),
+              'user': element.user
+            }
+            store.put(post);
+          });
+          this.serviceWorkerM.cleanDB('posts');
+        })
+      }
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
-      this.alertsService.createErrorAlert(err);
+      // if the server is unavilable due to the user being offline, tell the user
+      if(!navigator.onLine) {
+        this.isPostsResolved.fullSuggestedItems.next(true);
+        this.alertsService.toggleOfflineAlert();
+      }
+      // otherwise just create an error alert
+      else {
+        this.isPostsResolved.fullSuggestedItems.next(true);
+        this.alertsService.createErrorAlert(err);
+      }
     })
   }
 
@@ -141,9 +307,17 @@ export class PostsService {
         if(response.success == true) {
           this.alertsService.createSuccessAlert('Your post was published! Return to home page to view the post.', false, '/');
         }
+        this.alertsService.toggleOfflineAlert();
       // if there was an error, alert the user
       }, (err:HttpErrorResponse) => {
-        this.alertsService.createErrorAlert(err);
+        // if the user is offline, show the offline header message
+        if(!navigator.onLine) {
+          this.alertsService.toggleOfflineAlert();
+        }
+        // otherwise just create an error alert
+        else {
+          this.alertsService.createErrorAlert(err);
+        }
       })
     }
     // if they're blocked, alert them they cannot post while blocked
@@ -167,9 +341,17 @@ export class PostsService {
       if(response.success == true) {
         this.alertsService.createSuccessAlert(`Post ${response.deleted} was deleted. Refresh to view the updated post list.`, true);
       }
+      this.alertsService.toggleOfflineAlert();
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
-      this.alertsService.createErrorAlert(err);
+      // if the user is offline, show the offline header message
+      if(!navigator.onLine) {
+        this.alertsService.toggleOfflineAlert();
+      }
+      // otherwise just create an error alert
+      else {
+        this.alertsService.createErrorAlert(err);
+      }
     })
   }
 
@@ -189,9 +371,17 @@ export class PostsService {
       if(response.success) {
         this.alertsService.createSuccessAlert(`User ${userID}'s posts were deleted successfully. Refresh to view the updated profile.`, true);
       }
+      this.alertsService.toggleOfflineAlert();
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
-      this.alertsService.createErrorAlert(err);
+      // if the user is offline, show the offline header message
+      if(!navigator.onLine) {
+        this.alertsService.toggleOfflineAlert();
+      }
+      // otherwise just create an error alert
+      else {
+        this.alertsService.createErrorAlert(err);
+      }
     })
   }
 
@@ -210,9 +400,17 @@ export class PostsService {
       if(response.success == true) {
         this.alertsService.createSuccessAlert('Your post was edited. Refresh to view the updated post.', true);
       }
+      this.alertsService.toggleOfflineAlert();
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
-      this.alertsService.createErrorAlert(err);
+      // if the user is offline, show the offline header message
+      if(!navigator.onLine) {
+        this.alertsService.toggleOfflineAlert();
+      }
+      // otherwise just create an error alert
+      else {
+        this.alertsService.createErrorAlert(err);
+      }
     })
   }
 
@@ -232,9 +430,17 @@ export class PostsService {
       if(response.success == true) {
         this.alertsService.createSuccessAlert('Your hug was sent!', false);
       }
+      this.alertsService.toggleOfflineAlert();
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
-      this.alertsService.createErrorAlert(err);
+      // if the user is offline, show the offline header message
+      if(!navigator.onLine) {
+        this.alertsService.toggleOfflineAlert();
+      }
+      // otherwise just create an error alert
+      else {
+        this.alertsService.createErrorAlert(err);
+      }
     })
   }
 }

@@ -6,6 +6,7 @@
 // Angular imports
 import { Injectable } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
+import { BehaviorSubject } from 'rxjs';
 
 // App-related imports
 import { AlertMessage } from '../interfaces/alert.interface';
@@ -17,6 +18,8 @@ export class AlertsService {
   // ServiceWorker variables
   waitingServiceWorker: ServiceWorker | undefined;
   isSWRelated = false;
+  // offline-related variables
+  isOffline = new BehaviorSubject(false);
 
   // CTOR
   constructor() {
@@ -230,5 +233,23 @@ export class AlertsService {
     this.waitingServiceWorker = worker;
     this.isSWRelated = true;
     this.createAlert(alert, true);
+  }
+
+  /*
+  Function Name: toggleOfflineAlert()
+  Function Description: Show/hide the message telling the user they're offline.
+  Parameters: None.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  toggleOfflineAlert() {
+    // if the user is offline, show it
+    if(!navigator.onLine) {
+      this.isOffline.next(true);
+    }
+    // otherwise hide it
+    else {
+      this.isOffline.next(false);
+    }
   }
 }

@@ -8,7 +8,7 @@ $linkColour: rgba(63,58,58,1.00)
 /* Component Sample */
 #compSample
 	position: absolute
-	top: 145px
+	top: 160px
 	bottom: 100px
 	overflow-y: scroll
 
@@ -76,14 +76,32 @@ img, picture, video, embed, textarea, textfield
 	position: fixed
 	top: 0
 	left: 0
-	height: 140px
+	height: 160px
+
+#noInternet
+	left: 0
+	right: 0
+	width: 90%
+	height: 15px
+	max-height: 15px
+	box-shadow: 5px 5px 5px 0 rgba(46, 61, 73, 0.5)
+	border-radius: 5px
+	text-align: center
+	padding: 5px
+	display: flex
+	align-content: center
+	justify-content: center
+	background-color: #EAEAEA
+	margin: 0 5%
+	color: $headlineColour
+	font-size: 16px
 
 /* Main Title */
 #mainTitle
 	color: $headlineColour
 	text-align: center
 	padding: 5px 5px 0
-	margin: 10px 5px
+	margin: 5px 5px 10px
 
 /* Navigation Menu */
 #navMenu
@@ -574,7 +592,7 @@ app-error-page
 	margin: 5px Calc(100% - 35px) 5px 2px
 
 /* =================== Loader Component Styling =================== */
-/* Via https://medium.com/@tomastrajan/how-to-style-angular-application-loading-with-angular-cli-like-a-boss-cdd4f5358554 */
+/* Via https://www.w3schools.com/howto/howto_css_loader.asp */
 /* Loader */
 #loading 
 	position: relative
@@ -587,43 +605,83 @@ app-error-page
 	margin: 10%
 
 /* Loader text */
-#loadingMessage
+#loading #loadingMessage
 	color: $headlineColour
 	font-size: 18px
 
 /* Loader spinner */
-#loadingMessage .spinner 
+#loading #loadingMessage .spinner 
 	height: 50px
 	width: 50px
-	animation: rotate 2.5s linear infinite
+	animation: spin 2s linear infinite
 	transform-origin: center center
 	position: relative
 	margin: 20%
+	border: 3px solid #f3f3f3 /* Light grey */
+	border-top: 3px solid #3498db /* Blue */
+	border-radius: 50%
 
 /* Loader spinner rotate animation */
-@keyframes rotate 
-	100% 
+@keyframes spin
+	0% 
+		transform: rotate(0deg)
+	100%
 		transform: rotate(360deg)
 
-/* Loader spinner path */
-.spinner .path
-	stroke-dasharray: 1, 200
-	stroke-dashoffset: 0
-	animation: dash 2.5s ease-in-out infinite
-	stroke-linecap: round
-	stroke: $mainColour
+/* =================== Header Message Component Styling =================== */
+/* Via https://www.w3schools.com/howto/howto_css_loader.asp */
+/*  Header Message component */
+app-header-message
+	position: absolute
+	top: 0
+	left: 0
+	right: 0
+	width: 90%
+	margin: 0 3% 0 7%
+	text-align: center
+	z-index: 200
+	height: 20px
 
-/* Loader spinner path animation */
-@keyframes dash 
-	0%
-		stroke-dasharray: 1, 200
-		stroke-dashoffset: 0
-	50%
-		stroke-dasharray: 89, 200
-		stroke-dashoffset: -35px
+/*  Header Message div */
+app-header-message #headerMessage
+	left: 0
+	right: 0
+	width: 90%
+	height: 20px
+	max-height: 20px
+	box-shadow: 5px 5px 5px 0 rgba(46, 61, 73, 0.5)
+	border-radius: 5px
+	text-align: center
+	padding: 10px
+	display: flex
+	align-content: center
+	justify-content: center
+	background-color: #EAEAEA
+	margin: 0 5%
+
+/*  Header Message message */
+#headerMessage #loadingMessage
+	color: $headlineColour
+	font-size: 16px
+	margin: 0
+	padding: 0
+
+/*  Header Message spinner */
+#headerMessage .spinner
+	border: 3px solid #f3f3f3 /* Light grey */
+	border-top: 3px solid #3498db /* Blue */
+	border-radius: 50%
+	width: 15px
+	height: 15px
+	animation: spin 2s linear infinite
+	margin: 0 20px
+
+/*  Header Message spinner rotate animation */
+@keyframes spin
+	0% 
+		transform: rotate(0deg)
 	100%
-		stroke-dasharray: 89, 200
-		stroke-dashoffset: -124px
+		transform: rotate(360deg)
 
 /* =================== About Component Styling =================== */
 /* About Component */

@@ -11,12 +11,14 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { ItemsService } from '../../services/items.service';
 
+type MessageType = 'inbox' | 'outbox' | 'threads';
+
 @Component({
   selector: 'app-messages',
   templateUrl: './messages.component.html'
 })
 export class AppMessaging implements OnInit {
-  messType = 'inbox';
+  messType: MessageType | 'thread' = 'inbox';
   // loader sub-component variable
   waitFor = `${this.messType} messages`;
   threadId: number;
@@ -56,8 +58,11 @@ export class AppMessaging implements OnInit {
       // now fetch the user's messages
       if(value == true) {
         // Gets the user's messages via the items service
-        if(this.messType == 'inbox' || this.messType == 'outbox' || this.messType == 'threads') {
-          this.itemsService.getMessages(this.messType, this.authService.userData.id!);
+        if(this.messType == 'inbox' || this.messType == 'outbox') {
+          this.itemsService.getMailboxMessages(this.messType, this.authService.userData.id!);
+        }
+        else if(this.messType == 'threads') {
+          this.itemsService.getThreads(this.authService.userData.id!);
         }
         // gets the thread's messages
         else if(this.messType == 'thread' && this.threadId){
@@ -109,22 +114,19 @@ export class AppMessaging implements OnInit {
   Programmer: Shir Bar Lev.
   */
   nextPage() {
-    if(this.messType == 'inbox') {
-      this.itemsService.userMessagesPage.inbox += 1;
-    }
-    else if(this.messType == 'outbox') {
-      this.itemsService.userMessagesPage.outbox += 1;
-    }
-    else if(this.messType == 'threads') {
-      this.itemsService.userThreadsPage += 1;
+    if(this.messType == 'inbox' || this.messType == 'outbox' || this.messType == 'threads') {
+      this.itemsService.userMessagesPage[this.messType] += 1;
     }
 
     if(this.messType == 'thread') {
       this.itemsService.threadPage += 1;
       this.itemsService.getThread(this.authService.userData.id!, this.threadId);
     }
+    else if(this.messType == 'threads') {
+      this.itemsService.getThreads(this.authService.userData.id!);
+    }
     else {
-      this.itemsService.getMessages(this.messType, this.authService.userData.id!);
+      this.itemsService.getMailboxMessages(this.messType, this.authService.userData.id!);
     }
   }
 
@@ -137,22 +139,19 @@ export class AppMessaging implements OnInit {
   Programmer: Shir Bar Lev.
   */
   prevPage() {
-    if(this.messType == 'inbox') {
-      this.itemsService.userMessagesPage.inbox -= 1;
-    }
-    else if(this.messType == 'outbox') {
-      this.itemsService.userMessagesPage.outbox -= 1;
-    }
-    else if(this.messType == 'threads') {
-      this.itemsService.userThreadsPage -= 1;
+    if(this.messType == 'inbox' || this.messType == 'outbox' || this.messType == 'threads') {
+      this.itemsService.userMessagesPage[this.messType] -= 1;
     }
 
     if(this.messType == 'thread') {
       this.itemsService.threadPage -= 1;
       this.itemsService.getThread(this.authService.userData.id!, this.threadId);
     }
+    else if(this.messType == 'threads') {
+      this.itemsService.getThreads(this.authService.userData.id!);
+    }
     else {
-      this.itemsService.getMessages(this.messType, this.authService.userData.id!);
+      this.itemsService.getMailboxMessages(this.messType, this.authService.userData.id!);
     }
   }
 

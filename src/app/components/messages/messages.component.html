@@ -10,6 +10,9 @@
 	
 	<app-loader
 		[waitingFor]="waitFor"></app-loader>
+	
+	<app-header-message
+		[waitingFor]="waitFor"></app-header-message>
 
 	<!-- If there are messages in the user's inbox -->
 	<div *ngIf="(messType == 'inbox' || messType == 'outbox') && itemsService.userMessages[messType].length">
@@ -26,31 +29,12 @@
 				<button class="appButton deleteButton" (click)="deleteMessage(message.id)">Delete</button>
 			</div>
 		</div>
-		<!-- Message pagination -->
-		<div class="pagination">
-			<button *ngIf="itemsService.userMessagesPage[messType] > 1" class="appButton prevButton" (click)="prevPage()">Previous Page</button>
-			<button *ngIf="itemsService.userMessagesPage[messType] <= 1" class="appButton hidden" (click)="prevPage()">Previous Page</button>
-			<div class="pageCount">Page {{ itemsService.userMessagesPage[messType] }} of {{ itemsService.totalUserMessagesPages[messType] }}</div>
-			<button *ngIf="itemsService.totalUserMessagesPages[messType] > itemsService.userMessagesPage[messType]" class="appButton nextButton" (click)="nextPage()">Next Page</button>
-			<button *ngIf="itemsService.totalUserMessagesPages[messType] <= itemsService.userMessagesPage[messType]" class="appButton hidden" (click)="nextPage()">Next Page</button>
-		</div>
-		<button class="appButton deleteButton" (click)="deleteAllMessages(messType)">Delete All Messages</button>
 	</div>
 	
-	<!-- If there are no messages in the user's inbox -->
-	<div *ngIf="(messType == 'inbox') && !itemsService.userMessages[messType].length && itemsService.isUserInboxResolved.value">
-		<div class="errorMessage">You have no incoming messages.</div>
-	</div>
-	
-	<!-- If there are no messages in the user's outbox -->
-	<div *ngIf="(messType == 'outbox') && !itemsService.userMessages[messType].length && itemsService.isUserOutboxResolved.value">
-		<div class="errorMessage">You have no incoming messages.</div>
-	</div>
-	
-	<!-- If the user is looking at threads -->
+		<!-- If the user is looking at threads -->
 	<div *ngIf="messType == 'threads'">
-		<ul class="userThreads" *ngIf="itemsService.userThreads.length">
-			<li class="userThread" *ngFor="let thread of itemsService.userThreads">
+		<ul class="userThreads" *ngIf="itemsService.userMessages.threads.length">
+			<li class="userThread" *ngFor="let thread of itemsService.userMessages.threads">
 				<div class="messageField">
 					<span class="pageCategory">User:</span> <span class="pageData">{{ thread.user }}</span>
 				</div>
@@ -66,12 +50,22 @@
 				</div>
 			</li>
 		</ul>
-		<button class="appButton deleteButton" (click)="deleteAllMessages('threads')">Delete All Threads</button>
-		
-			<!-- If there are no messages in the user's inbox -->
-			<div *ngIf="!itemsService.userThreads.length && itemsService.isUserThreadsResolved.value">
-				<div class="errorMessage">You have no Threads.</div>
-			</div>
+	</div>
+	
+	<!-- Message pagination -->
+	<div class="pagination" *ngIf="itemsService.userMessages[messType].length">
+		<button *ngIf="itemsService.userMessagesPage[messType] > 1" class="appButton prevButton" (click)="prevPage()">Previous Page</button>
+		<button *ngIf="itemsService.userMessagesPage[messType] <= 1" class="appButton hidden" (click)="prevPage()">Previous Page</button>
+		<div class="pageCount">Page {{ itemsService.userMessagesPage[messType] }} of {{ itemsService.totalUserMessagesPages[messType] }}</div>
+		<button *ngIf="itemsService.totalUserMessagesPages[messType] > itemsService.userMessagesPage[messType]" class="appButton nextButton" (click)="nextPage()">Next Page</button>
+		<button *ngIf="itemsService.totalUserMessagesPages[messType] <= itemsService.userMessagesPage[messType]" class="appButton hidden" (click)="nextPage()">Next Page</button>
+	</div>
+	<button class="appButton deleteButton" (click)="deleteAllMessages(messType)" *ngIf="itemsService.userMessages[messType].length && (messType == 'inbox' || messType == 'outbox')">Delete All Messages</button>
+	<button *ngIf="messType == 'threads' && itemsService.userMessages.threads.length" class="appButton deleteButton" (click)="deleteAllMessages('threads')">Delete All Threads</button>
+
+	<!-- If there are no messages in the user's outbox -->
+	<div *ngIf="!itemsService.userMessages[messType].length && itemsService.isUserMessagesResolved[messType].value">
+		<div class="errorMessage">You have no messages in this mailbox.</div>
 	</div>
 	
 	<!-- If the user is looking a specific thread -->

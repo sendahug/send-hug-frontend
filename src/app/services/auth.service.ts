@@ -202,6 +202,15 @@ export class AuthService {
           this.createUser(jwtPayload);
         }
         else {
+          // if the user is offline, show the offline header message
+          if(!navigator.onLine) {
+            this.alertsService.toggleOfflineAlert();
+          }
+          // otherwise just create an error alert
+          else {
+            this.alertsService.createErrorAlert(err);
+          }
+
           this.isUserDataResolved.next(true);
         }
       })
@@ -277,7 +286,15 @@ export class AuthService {
       // error handling
     }, (err) => {
       this.isUserDataResolved.next(true);
-      this.alertsService.createErrorAlert(err);
+
+      // if the user is offline, show the offline header message
+      if(!navigator.onLine) {
+        this.alertsService.toggleOfflineAlert();
+      }
+      // otherwise just create an error alert
+      else {
+        this.alertsService.createErrorAlert(err);
+      }
     });
   }
 
@@ -409,7 +426,14 @@ export class AuthService {
     }).subscribe((_response:any) => {
 
     }, (err: HttpErrorResponse) => {
-      this.alertsService.createErrorAlert(err);
+      // if the user is offline, show the offline header message
+      if(!navigator.onLine) {
+        this.alertsService.toggleOfflineAlert();
+      }
+      // otherwise just create an error alert
+      else {
+        this.alertsService.createErrorAlert(err);
+      }
     });
   }
 

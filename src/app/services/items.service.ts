@@ -178,6 +178,7 @@ export class ItemsService {
       this.userPostsPage[user] = this.totalUserPostsPages[user] ? response.page : 0;
       this.isUserPostsResolved[user].next(true);
       this.idbResolved.userPosts.next(true);
+      this.alertsService.toggleOfflineAlert();
 
       // if there's a currently operating IDB database, get it
       if(this.serviceWorkerM.currentDB) {
@@ -206,8 +207,8 @@ export class ItemsService {
       this.isUserPostsResolved[user].next(true);
 
       // if the server is unavilable due to the user being offline, tell the user
-      if(err.status == 503 && !navigator.onLine) {
-        this.alertsService.createOfflineAlert();
+      if(!navigator.onLine) {
+        this.alertsService.toggleOfflineAlert();
       }
       // otherwise just create an error alert
       else {
@@ -240,9 +241,17 @@ export class ItemsService {
       if(response.success == true) {
         this.alertsService.createSuccessAlert('Your hug was sent!', true);
       }
+      this.alertsService.toggleOfflineAlert();
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
-      this.alertsService.createErrorAlert(err);
+      // if the user is offline, show the offline header message
+      if(!navigator.onLine) {
+        this.alertsService.toggleOfflineAlert();
+      }
+      // otherwise just create an error alert
+      else {
+        this.alertsService.createErrorAlert(err);
+      }
     });
   }
 
@@ -286,6 +295,7 @@ export class ItemsService {
       this.isOtherUserResolved.next(true);
       this.idbResolved.user.next(true);
       this.getUserPosts(userID);
+      this.alertsService.toggleOfflineAlert();
 
       // if there's a currently operating IDB database, get it
       if(this.serviceWorkerM.currentDB) {
@@ -302,8 +312,8 @@ export class ItemsService {
       this.isOtherUserResolved.next(true);
 
       // if the server is unavilable due to the user being offline, tell the user
-      if(err.status == 503 && !navigator.onLine) {
-        this.alertsService.createOfflineAlert();
+      if(!navigator.onLine) {
+        this.alertsService.toggleOfflineAlert();
       }
       // otherwise just create an error alert
       else {
@@ -359,6 +369,7 @@ export class ItemsService {
       this.userMessagesPage[type] = this.totalUserMessagesPages[type] ? response.current_page : 0;
       this.isUserMessagesResolved[type].next(true);
       this.idbResolved[type].next(true);
+      this.alertsService.toggleOfflineAlert();
 
       // if there's a currently operating IDB database, get it
       if(this.serviceWorkerM.currentDB) {
@@ -389,8 +400,8 @@ export class ItemsService {
       this.isUserMessagesResolved[type].next(true);
 
       // if the server is unavilable due to the user being offline, tell the user
-      if(err.status == 503 && !navigator.onLine) {
-        this.alertsService.createOfflineAlert();
+      if(!navigator.onLine) {
+        this.alertsService.toggleOfflineAlert();
       }
       // otherwise just create an error alert
       else {
@@ -457,6 +468,7 @@ export class ItemsService {
       this.userMessagesPage.threads = this.totalUserMessagesPages.threads ? response.current_page : 0;
       this.isUserMessagesResolved.threads.next(true);
       this.idbResolved.threads.next(true);
+      this.alertsService.toggleOfflineAlert();
 
       // if there's a currently operating IDB database, get it
       if(this.serviceWorkerM.currentDB) {
@@ -486,8 +498,8 @@ export class ItemsService {
       this.isUserMessagesResolved.threads.next(true);
 
       // if the server is unavilable due to the user being offline, tell the user
-      if(err.status == 503 && !navigator.onLine) {
-        this.alertsService.createOfflineAlert();
+      if(!navigator.onLine) {
+        this.alertsService.toggleOfflineAlert();
       }
       // otherwise just create an error alert
       else {
@@ -543,6 +555,7 @@ export class ItemsService {
       this.threadPage = this.totalThreadPages ? response.current_page : 0;
       this.isThreadResolved.next(true);
       this.idbResolved.thread.next(true);
+      this.alertsService.toggleOfflineAlert();
 
       // if there's a currently operating IDB database, get it
       if(this.serviceWorkerM.currentDB) {
@@ -573,8 +586,8 @@ export class ItemsService {
       this.isThreadResolved.next(true);
 
       // if the server is unavilable due to the user being offline, tell the user
-      if(err.status == 503 && !navigator.onLine) {
-        this.alertsService.createOfflineAlert();
+      if(!navigator.onLine) {
+        this.alertsService.toggleOfflineAlert();
       }
       // otherwise just create an error alert
       else {
@@ -598,9 +611,17 @@ export class ItemsService {
       if(response.success == true) {
         this.alertsService.createSuccessAlert('Your message was sent!', false, '/');
       }
+      this.alertsService.toggleOfflineAlert();
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
-      this.alertsService.createErrorAlert(err);
+      // if the user is offline, show the offline header message
+      if(!navigator.onLine) {
+        this.alertsService.toggleOfflineAlert();
+      }
+      // otherwise just create an error alert
+      else {
+        this.alertsService.createErrorAlert(err);
+      }
     })
   }
 
@@ -619,9 +640,17 @@ export class ItemsService {
       headers: this.authService.authHeader
     }).subscribe((response:any) => {
       this.alertsService.createSuccessAlert(`Message ${response.deleted} was deleted! Refresh to view the updated message list.`, true);
+      this.alertsService.toggleOfflineAlert();
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
-      this.alertsService.createErrorAlert(err);
+      // if the user is offline, show the offline header message
+      if(!navigator.onLine) {
+        this.alertsService.toggleOfflineAlert();
+      }
+      // otherwise just create an error alert
+      else {
+        this.alertsService.createErrorAlert(err);
+      }
     })
   }
 
@@ -640,9 +669,17 @@ export class ItemsService {
       headers: this.authService.authHeader
     }).subscribe((response:any) => {
       this.alertsService.createSuccessAlert(`Message ${response.deleted} was deleted! Refresh to view the updated message list.`, true);
+      this.alertsService.toggleOfflineAlert();
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
-      this.alertsService.createErrorAlert(err);
+      // if the user is offline, show the offline header message
+      if(!navigator.onLine) {
+        this.alertsService.toggleOfflineAlert();
+      }
+      // otherwise just create an error alert
+      else {
+        this.alertsService.createErrorAlert(err);
+      }
     })
   }
 
@@ -665,9 +702,17 @@ export class ItemsService {
       headers: this.authService.authHeader
     }).subscribe((response:any) => {
       this.alertsService.createSuccessAlert(`${response.deleted} messages were deleted! Refresh to view the updated mailbox.`, true);
+      this.alertsService.toggleOfflineAlert();
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
-      this.alertsService.createErrorAlert(err);
+      // if the user is offline, show the offline header message
+      if(!navigator.onLine) {
+        this.alertsService.toggleOfflineAlert();
+      }
+      // otherwise just create an error alert
+      else {
+        this.alertsService.createErrorAlert(err);
+      }
     })
   }
 
@@ -697,10 +742,19 @@ export class ItemsService {
       this.numPostResults = response.post_results;
       this.isSearchResolved.next(true);
       this.isSearching = false;
+      this.alertsService.toggleOfflineAlert();
     }, (err:HttpErrorResponse) => {
       this.isSearchResolved.next(true);
-      this.alertsService.createErrorAlert(err);
       this.isSearching = false;
+
+      // if the user is offline, show the offline header message
+      if(!navigator.onLine) {
+        this.alertsService.toggleOfflineAlert();
+      }
+      // otherwise just create an error alert
+      else {
+        this.alertsService.createErrorAlert(err);
+      }
     })
   }
 
@@ -728,9 +782,17 @@ export class ItemsService {
       else {
         this.alertsService.createSuccessAlert(`User ${sent_report.userID} was successfully reported.`, false, '/');
       }
+      this.alertsService.toggleOfflineAlert();
     // if there's an error, alert the user
     }, (err:HttpErrorResponse) => {
-      this.alertsService.createErrorAlert(err);
+      // if the user is offline, show the offline header message
+      if(!navigator.onLine) {
+        this.alertsService.toggleOfflineAlert();
+      }
+      // otherwise just create an error alert
+      else {
+        this.alertsService.createErrorAlert(err);
+      }
     })
   }
 }

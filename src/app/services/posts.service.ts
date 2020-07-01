@@ -94,6 +94,7 @@ export class PostsService {
       this.newItemsArray = data.recent;
       this.sugItemsArray = data.suggested;
       this.isMainPageResolved.next(true);
+      this.alertsService.toggleOfflineAlert();
 
       // if there's a currently operating IDB database, get it
       if(this.serviceWorkerM.currentDB) {
@@ -134,8 +135,8 @@ export class PostsService {
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
       // if the server is unavilable due to the user being offline, tell the user
-      if(err.status == 503 && !navigator.onLine) {
-        this.alertsService.createOfflineAlert();
+      if(!navigator.onLine) {
+        this.alertsService.toggleOfflineAlert();
       }
       // otherwise just create an error alert
       else {
@@ -176,6 +177,7 @@ export class PostsService {
       this.fullItemsPage.fullNewItems = page;
       this.totalFullItemsPage.fullNewItems = response.total_pages;
       this.isPostsResolved.fullNewItems.next(true);
+      this.alertsService.toggleOfflineAlert();
 
       // if there's a currently operating IDB database, get it
       if(this.serviceWorkerM.currentDB) {
@@ -202,8 +204,8 @@ export class PostsService {
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
       // if the server is unavilable due to the user being offline, tell the user
-      if(err.status == 503 && !navigator.onLine) {
-        this.alertsService.createOfflineAlert();
+      if(!navigator.onLine) {
+        this.alertsService.toggleOfflineAlert();
       }
       // otherwise just create an error alert
       else {
@@ -244,6 +246,7 @@ export class PostsService {
       this.fullItemsPage.fullSuggestedItems = page;
       this.totalFullItemsPage.fullSuggestedItems = response.total_pages;
       this.isPostsResolved.fullSuggestedItems.next(true);
+      this.alertsService.toggleOfflineAlert();
 
       // if there's a currently operating IDB database, get it
       if(this.serviceWorkerM.currentDB) {
@@ -270,8 +273,8 @@ export class PostsService {
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
       // if the server is unavilable due to the user being offline, tell the user
-      if(err.status == 503 && !navigator.onLine) {
-        this.alertsService.createOfflineAlert();
+      if(!navigator.onLine) {
+        this.alertsService.toggleOfflineAlert();
       }
       // otherwise just create an error alert
       else {
@@ -298,9 +301,17 @@ export class PostsService {
         if(response.success == true) {
           this.alertsService.createSuccessAlert('Your post was published! Return to home page to view the post.', false, '/');
         }
+        this.alertsService.toggleOfflineAlert();
       // if there was an error, alert the user
       }, (err:HttpErrorResponse) => {
-        this.alertsService.createErrorAlert(err);
+        // if the user is offline, show the offline header message
+        if(!navigator.onLine) {
+          this.alertsService.toggleOfflineAlert();
+        }
+        // otherwise just create an error alert
+        else {
+          this.alertsService.createErrorAlert(err);
+        }
       })
     }
     // if they're blocked, alert them they cannot post while blocked
@@ -324,9 +335,17 @@ export class PostsService {
       if(response.success == true) {
         this.alertsService.createSuccessAlert(`Post ${response.deleted} was deleted. Refresh to view the updated post list.`, true);
       }
+      this.alertsService.toggleOfflineAlert();
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
-      this.alertsService.createErrorAlert(err);
+      // if the user is offline, show the offline header message
+      if(!navigator.onLine) {
+        this.alertsService.toggleOfflineAlert();
+      }
+      // otherwise just create an error alert
+      else {
+        this.alertsService.createErrorAlert(err);
+      }
     })
   }
 
@@ -346,9 +365,17 @@ export class PostsService {
       if(response.success) {
         this.alertsService.createSuccessAlert(`User ${userID}'s posts were deleted successfully. Refresh to view the updated profile.`, true);
       }
+      this.alertsService.toggleOfflineAlert();
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
-      this.alertsService.createErrorAlert(err);
+      // if the user is offline, show the offline header message
+      if(!navigator.onLine) {
+        this.alertsService.toggleOfflineAlert();
+      }
+      // otherwise just create an error alert
+      else {
+        this.alertsService.createErrorAlert(err);
+      }
     })
   }
 
@@ -367,9 +394,17 @@ export class PostsService {
       if(response.success == true) {
         this.alertsService.createSuccessAlert('Your post was edited. Refresh to view the updated post.', true);
       }
+      this.alertsService.toggleOfflineAlert();
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
-      this.alertsService.createErrorAlert(err);
+      // if the user is offline, show the offline header message
+      if(!navigator.onLine) {
+        this.alertsService.toggleOfflineAlert();
+      }
+      // otherwise just create an error alert
+      else {
+        this.alertsService.createErrorAlert(err);
+      }
     })
   }
 
@@ -389,9 +424,17 @@ export class PostsService {
       if(response.success == true) {
         this.alertsService.createSuccessAlert('Your hug was sent!', false);
       }
+      this.alertsService.toggleOfflineAlert();
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
-      this.alertsService.createErrorAlert(err);
+      // if the user is offline, show the offline header message
+      if(!navigator.onLine) {
+        this.alertsService.toggleOfflineAlert();
+      }
+      // otherwise just create an error alert
+      else {
+        this.alertsService.createErrorAlert(err);
+      }
     })
   }
 }

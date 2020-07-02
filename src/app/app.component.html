@@ -1,4 +1,5 @@
 <header id="siteHeader">
+	<a href="#mainContent" class="skip-link" role="navigation">Skip to posts</a>
 	<div id="noInternet" *ngIf="alertsService.isOffline.value">You are not currently connected to the internet. For updated data, reconnect to the internet and try again.</div>
 	<h1 id="mainTitle">Send a Hug</h1>
 	<nav id="navMenu">
@@ -13,9 +14,8 @@
 	</form>
 </header>
 
-<main>
+<main id="mainContent">
 	<router-outlet></router-outlet>
-	<div id="alertContainer"></div>
 </main>
 
 <footer>

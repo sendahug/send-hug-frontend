@@ -303,10 +303,8 @@ export class PostsService {
       const Url = this.serverUrl + '/posts';
       this.Http.post(Url, post, {
         headers: this.authService.authHeader
-      }).subscribe((response:any) => {
-        if(response.success == true) {
-          this.alertsService.createSuccessAlert('Your post was published! Return to home page to view the post.', false, '/');
-        }
+      }).subscribe((_response:any) => {
+        this.alertsService.createSuccessAlert('Your post was published! Return to home page to view the post.', false, '/');
         this.alertsService.toggleOfflineAlert();
       // if there was an error, alert the user
       }, (err:HttpErrorResponse) => {
@@ -338,9 +336,7 @@ export class PostsService {
     this.Http.delete(Url, {
       headers: this.authService.authHeader
     }).subscribe((response:any) => {
-      if(response.success == true) {
-        this.alertsService.createSuccessAlert(`Post ${response.deleted} was deleted. Refresh to view the updated post list.`, true);
-      }
+      this.alertsService.createSuccessAlert(`Post ${response.deleted} was deleted. Refresh to view the updated post list.`, true);
       this.alertsService.toggleOfflineAlert();
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
@@ -367,10 +363,8 @@ export class PostsService {
     // send delete request
     this.Http.delete(Url, {
       headers: this.authService.authHeader
-    }).subscribe((response:any) => {
-      if(response.success) {
-        this.alertsService.createSuccessAlert(`User ${userID}'s posts were deleted successfully. Refresh to view the updated profile.`, true);
-      }
+    }).subscribe((_response:any) => {
+      this.alertsService.createSuccessAlert(`User ${userID}'s posts were deleted successfully. Refresh to view the updated profile.`, true);
       this.alertsService.toggleOfflineAlert();
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
@@ -396,10 +390,8 @@ export class PostsService {
     const Url = this.serverUrl + `/posts/${post.id}`;
     this.Http.patch(Url, post, {
       headers: this.authService.authHeader
-    }).subscribe((response:any) => {
-      if(response.success == true) {
-        this.alertsService.createSuccessAlert('Your post was edited. Refresh to view the updated post.', true);
-      }
+    }).subscribe((_response:any) => {
+      this.alertsService.createSuccessAlert('Your post was edited. Refresh to view the updated post.', true);
       this.alertsService.toggleOfflineAlert();
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
@@ -426,10 +418,8 @@ export class PostsService {
     item.givenHugs += 1;
     this.Http.patch(Url, item, {
       headers: this.authService.authHeader
-    }).subscribe((response:any) => {
-      if(response.success == true) {
-        this.alertsService.createSuccessAlert('Your hug was sent!', false);
-      }
+    }).subscribe((_response:any) => {
+      this.alertsService.createSuccessAlert('Your hug was sent!', false);
       this.alertsService.toggleOfflineAlert();
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {

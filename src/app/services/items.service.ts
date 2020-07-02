@@ -240,10 +240,8 @@ export class ItemsService {
       posts: this.otherUserData.postsNum
     }, {
       headers: this.authService.authHeader
-    }).subscribe((response:any) => {
-      if(response.success == true) {
-        this.alertsService.createSuccessAlert('Your hug was sent!', true);
-      }
+    }).subscribe((_response:any) => {
+      this.alertsService.createSuccessAlert('Your hug was sent!', true);
       this.alertsService.toggleOfflineAlert();
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
@@ -620,10 +618,8 @@ export class ItemsService {
     const Url = this.serverUrl + '/messages';
     this.Http.post(Url, message, {
       headers: this.authService.authHeader
-    }).subscribe((response:any) => {
-      if(response.success == true) {
-        this.alertsService.createSuccessAlert('Your message was sent!', false, '/');
-      }
+    }).subscribe((_response:any) => {
+      this.alertsService.createSuccessAlert('Your message was sent!', false, '/');
       this.alertsService.toggleOfflineAlert();
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {

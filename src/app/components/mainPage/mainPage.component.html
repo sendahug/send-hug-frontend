@@ -7,7 +7,7 @@
 	
 	<!-- If there are items in the list -->
 	<ul class="itemList" *ngIf="postsService.newItemsArray.length > 0 && postsService.isMainPageResolved.value" role="region" aria-describedby="newTitle">
-		<li *ngFor="let item of postsService.newItemsArray" class="newItem" aria-describedby="newTitle">
+		<li *ngFor="let item of postsService.newItemsArray" class="newItem" aria-describedby="newTitle" role="article">
 			<div class="itemText" aria-describedby="pText" id="{{'nPost' + item.id}}">{{ item.text }}</div>
 			<div class="itemUser">By <a [routerLink]="['/user', item.userId ]" class="profileLink" aria-describedby="pUser" id="{{'nUser' + item.id}}">{{ item.user }}</a> </div>
 			<div class="buttonsContainer">
@@ -38,7 +38,7 @@
 	
 	<!-- If there are items in the list -->
 	<ul class="itemList" *ngIf="postsService.sugItemsArray.length > 0 && postsService.isMainPageResolved.value" role="region" aria-describedby="sugTitle">
-		<li *ngFor="let item of postsService.sugItemsArray" class="sugItem" aria-describedby="sugTitle">
+		<li *ngFor="let item of postsService.sugItemsArray" class="sugItem" aria-describedby="sugTitle" role="article">
 			<div class="itemText" aria-describedby="pText" id="{{'sPost' + item.id}}">{{ item.text }}</div>
 			<div class="itemUser">By <a [routerLink]="['/user', item.userId ]" class="profileLink" aria-describedby="pUser" id="{{'sUser' + item.id}}">{{ item.user }}</a> </div>
 			<div class="buttonsContainer">

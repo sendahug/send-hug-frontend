@@ -6,7 +6,7 @@
 	
 	<!-- If there are items in the list -->
 	<ul id="fullItems" *ngIf="postsService.fullItemsList['full' + type + 'Items'].length > 0 && postsService.isPostsResolved['full' + type + 'Items'].value" role="region" aria-describedby="listTitle">
-		<li *ngFor="let item of postsService.fullItemsList['full' + type + 'Items']" class="newItem" aria-describedby="listTitle">
+		<li *ngFor="let item of postsService.fullItemsList['full' + type + 'Items']" class="newItem" aria-describedby="listTitle" role="article">
 			<div class="itemText" aria-describedby="pText" id="{{'nPost' + item.id}}">{{ item.text }}</div>
 			<div class="itemUser">By <a [routerLink]="['/user', item.userId ]" class="profileLink" aria-describedby="pUser" id="{{'nUser' + item.id}}">{{ item.user }}</a> </div>
 			<div class="buttonsContainer">

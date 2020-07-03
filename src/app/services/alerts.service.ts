@@ -110,6 +110,7 @@ export class AlertsService {
     // alert div
     let alertMessage = document.createElement('div');
     alertMessage.className = `alertMessage ${alert.type}`;
+    alertMessage.setAttribute('role', 'alert');
 
     // alert title
     let alertHeadline = document.createElement('h3');

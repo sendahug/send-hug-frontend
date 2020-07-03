@@ -1,5 +1,5 @@
 <div id="myPosts">
-	<h3>My Posts</h3>
+	<h3 id="postsTitle">My Posts</h3>
 	
 	<app-loader
 		[waitingFor]="waitFor"
@@ -10,20 +10,22 @@
 		[user]="user"></app-header-message>
 	
 	<!-- If the user has posts, displays them -->
-	<div *ngIf="itemsService.userPosts[user].length && itemsService.idbResolved.userPosts.value">
-		<div *ngFor="let post of itemsService.userPosts[user]" class="userPost">
-			<div class="postText">{{ post.text }}</div>
-			<div class="postDate">{{ post.date }}</div>
+	<div *ngIf="itemsService.userPosts[user].length && itemsService.idbResolved.userPosts.value" role="region">
+		<div *ngFor="let post of itemsService.userPosts[user]" class="userPost" aria-describedby="postsTitle">
+			<div class="postText" aria-describedby="pText" id="{{'text' + post.id}}">{{ post.text }}</div>
+			<div class="postDate" aria-describedby="pDate">{{ post.date }}</div>
+			<div class="labels" id="{{'user' + post.id}}">{{ post.user }}</div>
 			<div class="notification">
-				<button class="appButton hugButton"><i class="fab fa-gratipay"></i></button>
-				<span class="badge">{{ post.givenHugs }}</span>
+				<button class="appButton hugButton" [attr.aria-describedby]="'pHug ' + 'user' + post.id"><i class="fab fa-gratipay"></i></button>
+				<span class="badge" aria-describedby="pGivenH">{{ post.givenHugs }}</span>
 			</div>
-			<button *ngIf="(user == 'other')" class="appButton reportButton" (click)="reportPost(item)"><i class="fas fa-flag"></i></button>
-			<button *ngIf="(user == 'self') || (authService.canUser('patch:any-post'))" class="appButton editButton" (click)="editPost(post)">Edit</button>
-			<button *ngIf="(user == 'self') || (authService.canUser('delete:any-post'))" class="appButton deleteButton" (click)="deletePost(post.id)">Delete</button>
+			<button *ngIf="(user == 'other')" class="appButton reportButton" (click)="reportPost(item)" [attr.aria-describedby]="'pReport ' + 'text' + post.id"><i class="fas fa-flag"></i></button>
+			<button *ngIf="(user == 'self') || (authService.canUser('patch:any-post'))" class="appButton editButton" (click)="editPost(post)" [attr.aria-describedby]="'pEdit ' + 'text' + post.id">Edit</button>
+			<button *ngIf="(user == 'self') || (authService.canUser('delete:any-post'))" class="appButton deleteButton" (click)="deletePost(post.id)" [attr.aria-describedby]="'pDelete ' + 'text' + post.id">Delete</button>
 		</div>
+		
 		<!-- Post pagination -->
-		<div class="pagination">
+		<div class="pagination" role="navigation">
 			<button *ngIf="itemsService.userPostsPage[user] > 1" class="appButton prevButton" (click)="prevPage()">Previous Page</button>
 			<button *ngIf="itemsService.userPostsPage[user] <= 1" class="appButton hidden" (click)="prevPage()">Previous Page</button>
 			<div class="pageCount">Page {{ itemsService.userPostsPage[user] }} of {{ itemsService.totalUserPostsPages[user] }}</div>
@@ -38,6 +40,16 @@
 		<div *ngIf="user == 'self'">You have no published posts. Write your first post now!</div>
 		<div *ngIf="user == 'other'">The user hasn't published any posts yet.</div>
 	</div>
+</div>
+
+<div id="labels" class="labels">
+	<p id="pText">Post Text</p>
+	<p id="pDate">Posted at</p>
+	<p id="pHug">Send a hug to user</p>
+	<p id="pGivenH">Hugs given to this post</p>
+	<p id="pReport">Report post</p>
+	<p id="pEdit">Edit post</p>
+	<p id="pDelete">Delete post</p>
 </div>
 
 <app-pop-up *ngIf="editMode"

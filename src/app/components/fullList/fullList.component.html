@@ -1,23 +1,23 @@
 <div id="items">
-	<h2 class="listTitle">{{ type }} Items</h2>
+	<h2 class="listTitle" id="listTitle">{{ type }} Items</h2>
 	
 	<app-loader
 		[waitingFor]="waitFor"></app-loader>
 	
 	<!-- If there are items in the list -->
-	<ul id="fullItems" *ngIf="postsService.fullItemsList['full' + type + 'Items'].length > 0 && postsService.isPostsResolved['full' + type + 'Items'].value">
-		<li *ngFor="let item of postsService.fullItemsList['full' + type + 'Items']" class="newItem">
-			<div class="itemText">{{ item.text }}</div>
-			<div class="itemUser">By <a [routerLink]="['/user', item.userId ]" class="profileLink">{{ item.user }}</a></div>
+	<ul id="fullItems" *ngIf="postsService.fullItemsList['full' + type + 'Items'].length > 0 && postsService.isPostsResolved['full' + type + 'Items'].value" role="region" aria-describedby="listTitle">
+		<li *ngFor="let item of postsService.fullItemsList['full' + type + 'Items']" class="newItem" aria-describedby="listTitle">
+			<div class="itemText" aria-describedby="pText" id="{{'nPost' + item.id}}">{{ item.text }}</div>
+			<div class="itemUser">By <a [routerLink]="['/user', item.userId ]" class="profileLink" aria-describedby="pUser" id="{{'nUser' + item.id}}">{{ item.user }}</a> </div>
 			<div class="buttonsContainer">
 				<div class="notification">
-					<button class="appButton hugButton" (click)="sendHug(item.id)"><i class="fab fa-gratipay"></i></button>
-					<span class="badge">{{ item.givenHugs }}</span>
+					<button class="appButton hugButton" (click)="sendHug(item.id)" [attr.aria-describedby]="'pHug ' + 'nUser' + item.id"><i class="fab fa-gratipay"></i></button>
+					<span class="badge" aria-describedby="pGivenH">{{ item.givenHugs }}</span>
 				</div>
-				<a [routerLink]="['/new', 'Message']" [queryParams]="{user: item.user, userID: item.userId}" class="appButton messageButton"><i class="fas fa-comments"></i></a>
-				<button class="appButton reportButton" (click)="reportPost(item)"><i class="fas fa-flag"></i></button>
-				<button *ngIf="authService.canUser('patch:any-post')" class="appButton editButton" (click)="editPost(item)"><i class="far fa-edit"></i></button>
-				<button *ngIf="authService.canUser('delete:any-post')" class="appButton deleteButton" (click)="deletePost(item.id)"><i class="fas fa-times"></i></button>
+				<a [routerLink]="['/new', 'Message']" [queryParams]="{user: item.user, userID: item.userId}" class="appButton messageButton" [attr.aria-describedby]="'pMessage ' + 'nUser' + item.id"><i class="fas fa-comments"></i></a>
+				<button class="appButton reportButton" (click)="reportPost(item)" [attr.aria-describedby]="'pReport ' + 'nPost' + item.id"><i class="fas fa-flag"></i></button>
+				<button *ngIf="authService.canUser('patch:any-post')" class="appButton editButton" (click)="editPost(item)" [attr.aria-describedby]="'pEdit ' + 'nPost' + item.id"><i class="far fa-edit"></i></button>
+				<button *ngIf="authService.canUser('delete:any-post')" class="appButton deleteButton" (click)="deletePost(item.id)" [attr.aria-describedby]="'pDelete ' + 'nPost' + item.id"><i class="fas fa-times"></i></button>
 			</div>
 		</li>
 	</ul>
@@ -26,13 +26,24 @@
 	<div class="errorMessage" *ngIf="postsService.fullItemsList['full' + type + 'Items'].length == 0 && postsService.isPostsResolved['full' + type + 'Items'].value">There are no posts.</div>
 	
 	<!-- Post pagination -->
-	<div class="pagination">
+	<div class="pagination" role="navigation">
 		<button *ngIf="postsService.fullItemsPage['full' + type + 'Items'] > 1" class="appButton prevButton" (click)="prevPage()">Previous Page</button>
 		<button *ngIf="postsService.fullItemsPage['full' + type + 'Items'] <= 1" class="appButton hidden" (click)="prevPage()">Previous Page</button>
 		<div class="pageCount">Page {{ postsService.fullItemsPage['full' + type + 'Items'] }} of {{ postsService.totalFullItemsPage['full' + type + 'Items'] }}</div>
 		<button *ngIf="postsService.totalFullItemsPage['full' + type + 'Items'] > postsService.fullItemsPage['full' + type + 'Items']" class="appButton nextButton" (click)="nextPage()">Next Page</button>
 		<button *ngIf="postsService.totalFullItemsPage['full' + type + 'Items'] <= postsService.fullItemsPage['full' + type + 'Items']" class="appButton hidden" (click)="nextPage()">Next Page</button>
 	</div>
+</div>
+
+<div id="labels" class="labels">
+	<p id="pText">Post Text</p>
+	<p id="pUser">Post Writer</p>
+	<p id="pHug">Send a hug to user</p>
+	<p id="pGivenH">Hugs given to this post</p>
+	<p id="pMessage">Send a message to user</p>
+	<p id="pReport">Report post</p>
+	<p id="pEdit">Edit post</p>
+	<p id="pDelete">Delete post</p>
 </div>
 
 <app-pop-up *ngIf="editMode"

@@ -9,7 +9,7 @@
 
 /* Frame Sample */
 /* line 16, ../sass/styles.sass */
-#frameSample, .itemList, .userThreads, .threadMessages, .newItem, .searchResult, .sugItem, app-user-page > div, .userPost, app-messages > div, #errorPage {
+#frameSample, .itemList, .userThreads, .threadMessages, .mailboxMessages, .newItem, .searchResult, .sugItem, app-user-page > div, .userPost, app-messages > div, #errorPage {
   border: thin solid #252525;
   border-radius: 5px;
   overflow-y: scroll; }
@@ -210,7 +210,7 @@ app-main-page {
 
 /* Item List */
 /* line 194, ../sass/styles.sass */
-.itemList, .userThreads, .threadMessages {
+.itemList, .userThreads, .threadMessages, .mailboxMessages {
   height: 90%;
   padding-left: 0; }
 
@@ -510,9 +510,9 @@ app-messages > div {
 .userMessage .messageButton {
   margin: 5px 5px; }
 
-/* Threads / single thread container */
+/* Inbox / Outbox / Threads / single thread container */
 /* line 459, ../sass/styles.sass */
-.userThreads, .threadMessages {
+.userThreads, .threadMessages, .mailboxMessages {
   border: none;
   list-style: none; }
 

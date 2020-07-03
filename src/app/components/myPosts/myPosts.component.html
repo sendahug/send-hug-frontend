@@ -11,18 +11,20 @@
 	
 	<!-- If the user has posts, displays them -->
 	<div *ngIf="itemsService.userPosts[user].length && itemsService.idbResolved.userPosts.value" role="region">
-		<div *ngFor="let post of itemsService.userPosts[user]" class="userPost" aria-describedby="postsTitle">
-			<div class="postText" aria-describedby="pText" id="{{'text' + post.id}}">{{ post.text }}</div>
-			<div class="postDate" aria-describedby="pDate">{{ post.date }}</div>
-			<div class="labels" id="{{'user' + post.id}}">{{ post.user }}</div>
-			<div class="notification">
-				<button class="appButton hugButton" [attr.aria-describedby]="'pHug ' + 'user' + post.id"><i class="fab fa-gratipay"></i></button>
-				<span class="badge" aria-describedby="pGivenH">{{ post.givenHugs }}</span>
-			</div>
-			<button *ngIf="(user == 'other')" class="appButton reportButton" (click)="reportPost(item)" [attr.aria-describedby]="'pReport ' + 'text' + post.id"><i class="fas fa-flag"></i></button>
-			<button *ngIf="(user == 'self') || (authService.canUser('patch:any-post'))" class="appButton editButton" (click)="editPost(post)" [attr.aria-describedby]="'pEdit ' + 'text' + post.id">Edit</button>
-			<button *ngIf="(user == 'self') || (authService.canUser('delete:any-post'))" class="appButton deleteButton" (click)="deletePost(post.id)" [attr.aria-describedby]="'pDelete ' + 'text' + post.id">Delete</button>
-		</div>
+		<ul class="itemList" aria-describedby="postsTitle">
+			<li *ngFor="let post of itemsService.userPosts[user]" class="userPost" aria-describedby="postsTitle" role="article">
+				<div class="postText" aria-describedby="pText" id="{{'text' + post.id}}">{{ post.text }}</div>
+				<div class="postDate" aria-describedby="pDate">{{ post.date }}</div>
+				<div class="labels" id="{{'user' + post.id}}">{{ post.user }}</div>
+				<div class="notification">
+					<button class="appButton hugButton" [attr.aria-describedby]="'pHug ' + 'user' + post.id"><i class="fab fa-gratipay"></i></button>
+					<span class="badge" aria-describedby="pGivenH">{{ post.givenHugs }}</span>
+				</div>
+				<button *ngIf="(user == 'other')" class="appButton reportButton" (click)="reportPost(item)" [attr.aria-describedby]="'pReport ' + 'text' + post.id"><i class="fas fa-flag"></i></button>
+				<button *ngIf="(user == 'self') || (authService.canUser('patch:any-post'))" class="appButton editButton" (click)="editPost(post)" [attr.aria-describedby]="'pEdit ' + 'text' + post.id">Edit</button>
+				<button *ngIf="(user == 'self') || (authService.canUser('delete:any-post'))" class="appButton deleteButton" (click)="deletePost(post.id)" [attr.aria-describedby]="'pDelete ' + 'text' + post.id">Delete</button>
+			</li>
+		</ul>
 		
 		<!-- Post pagination -->
 		<div class="pagination" role="navigation">

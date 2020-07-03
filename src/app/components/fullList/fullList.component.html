@@ -10,7 +10,7 @@
 			<div class="itemText" aria-describedby="pText" id="{{'nPost' + item.id}}">{{ item.text }}</div>
 			<div class="itemUser">By <a [routerLink]="['/user', item.userId ]" class="profileLink" aria-describedby="pUser" id="{{'nUser' + item.id}}">{{ item.user }}</a> </div>
 			<div class="buttonsContainer">
-				<div class="notification">
+				<div class="notification" [attr.aria-describedby]="'pHug ' + 'nUser' + item.id">
 					<button class="appButton hugButton" (click)="sendHug(item.id)" [attr.aria-describedby]="'pHug ' + 'nUser' + item.id"><i class="fab fa-gratipay"></i></button>
 					<span class="badge" aria-describedby="pGivenH">{{ item.givenHugs }}</span>
 				</div>

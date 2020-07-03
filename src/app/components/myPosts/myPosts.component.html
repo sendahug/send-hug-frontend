@@ -16,7 +16,7 @@
 				<div class="postText" aria-describedby="pText" id="{{'text' + post.id}}">{{ post.text }}</div>
 				<div class="postDate" aria-describedby="pDate">{{ post.date }}</div>
 				<div class="labels" id="{{'user' + post.id}}">{{ post.user }}</div>
-				<div class="notification">
+				<div class="notification" [attr.aria-describedby]="'pHug ' + 'user' + post.id">
 					<button class="appButton hugButton" [attr.aria-describedby]="'pHug ' + 'user' + post.id"><i class="fab fa-gratipay"></i></button>
 					<span class="badge" aria-describedby="pGivenH">{{ post.givenHugs }}</span>
 				</div>

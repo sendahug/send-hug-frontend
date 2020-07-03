@@ -1,25 +1,25 @@
 <header id="siteHeader">
 	<a href="#mainContent" class="skip-link" role="navigation">Skip to posts</a>
-	<div id="noInternet" *ngIf="alertsService.isOffline.value">You are not currently connected to the internet. For updated data, reconnect to the internet and try again.</div>
+	<div id="noInternet" *ngIf="alertsService.isOffline.value" role="banner">You are not currently connected to the internet. For updated data, reconnect to the internet and try again.</div>
 	<h1 id="mainTitle">Send a Hug</h1>
-	<nav id="navMenu">
+	<nav id="navMenu" role="navigation">
 		<a *ngFor="let tab of navTabs" [routerLink]="(tab.link)" class="navLink">{{tab.name}}</a>
 		<a *ngIf="authService.authenticated && !authService.userData.blocked" [routerLink]="['/new', 'Post']" class="navLink">New Post</a>
 		<a *ngIf="authService.canUser('read:admin-board')" [routerLink]="['/admin']" class="navLink">Admin Dashboard</a>
 	</nav>
-	<form id="search">
+	<form id="search" role="search">
 		<label class="pageCategory" for="searchQuery" id="searchLabel">Search: </label>
 		<input type="text" id="searchQuery" placeholder="Search" #searchQuery>
 		<button type="submit" class="appButton sendData" (click)="searchApp($event,searchQuery.value)">Search</button>
 	</form>
 </header>
 
-<main id="mainContent">
+<main id="mainContent" role="main">
 	<router-outlet></router-outlet>
 </main>
 
 <footer>
-	<div id="siteFooter">
+	<div id="siteFooter" role="contentinfo">
 		<p class="footerText" id="text">Open source project designed and built by <a href="https://github.com/sendahug/sendahug">Send a Hug</a> group members.</p>
 		<p class="footerText" id="contact">theobjectivistb@gmail.com</p>
 		<p class="footerText" id="rights">&copy; Send A Hug 2020.</p>

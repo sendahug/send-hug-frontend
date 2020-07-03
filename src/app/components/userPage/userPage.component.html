@@ -6,33 +6,33 @@
 	<app-header-message
 		[waitingFor]="waitFor"></app-header-message>
 
-	<div id="userPage" *ngIf="(!this.itemsService.isOtherUser && authService.isUserDataResolved.value) || (this.itemsService.isOtherUser && itemsService.idbResolved.user.value)">
+	<div id="userPage" *ngIf="(!this.itemsService.isOtherUser && authService.isUserDataResolved.value) || (this.itemsService.isOtherUser && itemsService.idbResolved.user.value)" role="region">
 		<div id="profileData">
 			<h3>User Profile</h3>
 			<div class="profileElement">
-				<span class="pageCategory">Username:</span>
-				<span class="pageData" *ngIf="!itemsService.isOtherUser">{{ authService.userData.displayName }}</span> 
-				<span class="pageData" *ngIf="itemsService.isOtherUser">{{ itemsService.otherUserData.displayName }} 
-					<button class="appButton hugButton" (click)="sendHug(itemsService.otherUserData.id)">
+				<span class="pageCategory" id="userName">Username:</span>
+				<span class="pageData" *ngIf="!itemsService.isOtherUser" aria-describedby="userName">{{ authService.userData.displayName }}</span> 
+				<span class="pageData" *ngIf="itemsService.isOtherUser" aria-describedby="userName">{{ itemsService.otherUserData.displayName }} 
+					<button class="appButton hugButton" (click)="sendHug(itemsService.otherUserData.id)" aria-describedby="uHug userName">
 						<i class="fab fa-gratipay"></i>
 					</button>
 				</span>
 			</div>
 			<div class="profileElement">
-				<span class="pageCategory">Role:</span> <span class="pageData" *ngIf="!itemsService.isOtherUser">{{ authService.userData.role }}</span> <span class="pageData" *ngIf="itemsService.isOtherUser">{{ itemsService.otherUserData.role }}</span>
+				<span class="pageCategory" id="userRole">Role:</span> <span class="pageData" *ngIf="!itemsService.isOtherUser" aria-describedby="userName userRole">{{ authService.userData.role }}</span> <span class="pageData" *ngIf="itemsService.isOtherUser" aria-describedby="userName userRole">{{ itemsService.otherUserData.role }}</span>
 			</div>
 			<div class="profileElement">
-				<span class="pageCategory">Received Hugs:</span> <span class="pageData" *ngIf="!itemsService.isOtherUser">{{ authService.userData.receivedHugs }}</span> <span class="pageData" *ngIf="itemsService.isOtherUser">{{ itemsService.otherUserData.receivedHugs }}</span>
+				<span class="pageCategory">Received Hugs:</span> <span class="pageData" *ngIf="!itemsService.isOtherUser" aria-describedby="userName uReceived">{{ authService.userData.receivedHugs }}</span> <span class="pageData" *ngIf="itemsService.isOtherUser" aria-describedby="userName uReceived">{{ itemsService.otherUserData.receivedHugs }}</span>
 			</div>
 			<div class="profileElement">
-				<span class="pageCategory">Given Hugs:</span> <span class="pageData" *ngIf="!itemsService.isOtherUser">{{ authService.userData.givenHugs }}</span> <span class="pageData" *ngIf="itemsService.isOtherUser">{{ itemsService.otherUserData.givenHugs }}</span>
+				<span class="pageCategory">Given Hugs:</span> <span class="pageData" *ngIf="!itemsService.isOtherUser" aria-describedby="userName uGivenH">{{ authService.userData.givenHugs }}</span> <span class="pageData" *ngIf="itemsService.isOtherUser" aria-describedby="userName uGivenH">{{ itemsService.otherUserData.givenHugs }}</span>
 			</div>
 			<div class="profileElement">
-				<span class="pageCategory">Posts:</span> <span class="pageData" *ngIf="!itemsService.isOtherUser">{{ authService.userData.postsNum }}</span> <span class="pageData" *ngIf="itemsService.isOtherUser">{{ itemsService.otherUserData.postsNum }}</span>
+				<span class="pageCategory">Posts:</span> <span class="pageData" *ngIf="!itemsService.isOtherUser" aria-describedby="uNumP userName">{{ authService.userData.postsNum }}</span> <span class="pageData" *ngIf="itemsService.isOtherUser" aria-describedby="uNumP userName">{{ itemsService.otherUserData.postsNum }}</span>
 			</div>
 			
-			<button id="editName" class="appButton" (click)="editName()" *ngIf="!itemsService.isOtherUser">Edit Display Name</button>
-			<button class="appButton reportButton" (click)="reportUser(itemsService.otherUserData)" *ngIf="itemsService.isOtherUser">Report User</button>
+			<button id="editName" class="appButton" (click)="editName()" *ngIf="!itemsService.isOtherUser" aria-describedby="userName">Edit Display Name</button>
+			<button class="appButton reportButton" (click)="reportUser(itemsService.otherUserData)" *ngIf="itemsService.isOtherUser" aria-describedby="userName">Report User</button>
 		</div>
 
 		<app-my-posts
@@ -47,6 +47,15 @@
 	<div class="errorMessage">You are not currently logged in. To view user information, log in.</div>
 
 	<button id="logIn" class="appButton" (click)="login()">Login</button>
+</div>
+
+<div id="labels" class="labels">
+	<p id="uHug">Send a hug to user</p>
+	<p id="uGivenH">Hugs given by user</p>
+	<p id="uReceived">Hugs received by user</p>
+	<p id="uNumP">Number of posts written by user</p>
+	<p id="pEdit">Edit post</p>
+	<p id="pDelete">Delete post</p>
 </div>
 
 <app-pop-up *ngIf="editMode"

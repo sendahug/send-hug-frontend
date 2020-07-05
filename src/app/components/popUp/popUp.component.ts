@@ -4,7 +4,7 @@
 */
 
 // Angular imports
-import { Component, Input, Output, EventEmitter, OnInit, OnChanges } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, OnChanges, AfterViewChecked } from '@angular/core';
 
 // App-related import
 import { Post } from '../../interfaces/post.interface';
@@ -23,7 +23,7 @@ enum userReportReasons { Spam, 'harmful / dangerous content', 'abusive manner', 
   selector: 'app-pop-up',
   templateUrl: './popUp.component.html'
 })
-export class PopUp implements OnInit, OnChanges {
+export class PopUp implements OnInit, OnChanges, AfterViewChecked {
   // type of item to edit
   @Input() toEdit: string | undefined;
   // item to edit
@@ -45,6 +45,7 @@ export class PopUp implements OnInit, OnChanges {
   @Input() reportType: 'User' | 'Post' | undefined;
   selectedReason: string | undefined;
   @Input() reportData: any;
+  focusableElements: any;
 
   // CTOR
   constructor(
@@ -76,6 +77,23 @@ export class PopUp implements OnInit, OnChanges {
       this.toDelete = undefined;
       this.itemToDelete = undefined;
     }
+  }
+
+  /*
+  Function Name: ngAfterViewChecked()
+  Function Description: This method is automatically triggered by Angular once the Component
+                        has been added to the DOM. It gets all focusable elements within the
+                        popup and sets the focus on the first element.
+  Parameters: None.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  ngAfterViewChecked() {
+    let modal = document.getElementById('modalBox');
+    this.focusableElements = modal!.querySelectorAll(`a, button:not([disabled]),
+          input:not([disabled]), textarea:not([disabled]), select:not([disabled]),
+          details, iframe, object, embed, [tabindex]:not([tabindex="-1"]`);
+    this.focusableElements[0].focus();
   }
 
   /*
@@ -113,7 +131,7 @@ export class PopUp implements OnInit, OnChanges {
     e.preventDefault();
     this.authService.userData.displayName = newDisplayName;
     this.authService.updateUserData();
-    this.editMode.emit(false);
+    this.exitEdit();
   }
 
   /*
@@ -134,6 +152,7 @@ export class PopUp implements OnInit, OnChanges {
     }
 
     this.adminService.editUser(user, closeReport, this.reportData.reportID);
+    this.exitEdit();
   }
 
   /*
@@ -170,6 +189,7 @@ export class PopUp implements OnInit, OnChanges {
     }
 
     this.adminService.editPost(post, closeReport, this.reportData.reportID);
+    this.exitEdit();
   }
 
   /*
@@ -311,11 +331,13 @@ export class PopUp implements OnInit, OnChanges {
   Function Name: exitEdit()
   Function Description: Emits an event to disable edit mode. Exiting edit mode is
                         done by the parent component upon getting the 'false' value.
+                        The user's focus is also moved back to the skip link.
   Parameters: None.
   ----------------
   Programmer: Shir Bar Lev.
   */
   exitEdit() {
+    document.getElementById('skipLink')!.focus();
     this.editMode.emit(false);
   }
 }

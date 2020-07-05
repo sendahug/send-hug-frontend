@@ -46,6 +46,7 @@ export class PopUp implements OnInit, OnChanges, AfterViewChecked {
   selectedReason: string | undefined;
   @Input() reportData: any;
   focusableElements: any;
+  checkFocusBinded = this.checkFocus.bind(this);
 
   // CTOR
   constructor(
@@ -77,6 +78,8 @@ export class PopUp implements OnInit, OnChanges, AfterViewChecked {
       this.toDelete = undefined;
       this.itemToDelete = undefined;
     }
+
+    document.getElementById('exitButton')!.focus();
   }
 
   /*
@@ -93,7 +96,7 @@ export class PopUp implements OnInit, OnChanges, AfterViewChecked {
     this.focusableElements = modal!.querySelectorAll(`a, button:not([disabled]),
           input:not([disabled]), textarea:not([disabled]), select:not([disabled]),
           details, iframe, object, embed, [tabindex]:not([tabindex="-1"]`);
-    this.focusableElements[0].focus();
+    modal!.addEventListener('keydown', this.checkFocusBinded);
   }
 
   /*
@@ -328,6 +331,38 @@ export class PopUp implements OnInit, OnChanges, AfterViewChecked {
   }
 
   /*
+  Function Name: checkFocus()
+  Function Description: Checks the currently focused element to ensure that the
+                        user's focus remains within the popup.
+  Parameters: None.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  checkFocus(e:KeyboardEvent) {
+    // if the pressed key is TAB
+    if(e.keyCode === 9) {
+      // if the user pressed SHIFT + TAB, which means they want to move backwards
+      if(e.shiftKey) {
+        // if the currently focused element in the first one in the popup,
+        // move back to the last focusable element in the popup
+        if(document.activeElement == this.focusableElements[0]) {
+          this.focusableElements[this.focusableElements.length - 1].focus();
+          e.preventDefault();
+        }
+      }
+      // otherwise the user pressed just TAB, so they want to move forward
+      else {
+        // if the currently focused element in the last one in the popup,
+        // move back to the first focusable element in the popup
+        if(document.activeElement == this.focusableElements[this.focusableElements.length - 1]) {
+          this.focusableElements[0].focus();
+          e.preventDefault();
+        }
+      }
+    }
+  }
+
+  /*
   Function Name: exitEdit()
   Function Description: Emits an event to disable edit mode. Exiting edit mode is
                         done by the parent component upon getting the 'false' value.
@@ -337,6 +372,8 @@ export class PopUp implements OnInit, OnChanges, AfterViewChecked {
   Programmer: Shir Bar Lev.
   */
   exitEdit() {
+    let modal = document.getElementById('modalBox');
+    modal!.removeEventListener('keydown', this.checkFocusBinded);
     document.getElementById('skipLink')!.focus();
     this.editMode.emit(false);
   }

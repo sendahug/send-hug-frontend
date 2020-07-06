@@ -26,7 +26,7 @@ export class MainPage implements OnInit {
   itemToDelete: number | undefined;
   report:boolean;
   reportedItem: Post | undefined;
-  reportType = 'Post';
+  reportType: 'Post' | undefined;
   waitFor = 'main page';
 
   // CTOR
@@ -80,6 +80,8 @@ export class MainPage implements OnInit {
     this.editType = 'post';
     this.postToEdit = post;
     this.editMode = true;
+    this.delete = false;
+    this.report = false;
   }
 
   /*
@@ -108,6 +110,7 @@ export class MainPage implements OnInit {
     this.delete = true;
     this.toDelete = 'Post';
     this.itemToDelete = postID;
+    this.report = false;
   }
 
   /*
@@ -119,8 +122,11 @@ export class MainPage implements OnInit {
   */
   reportPost(post:Post) {
     this.editMode = true;
+    this.postToEdit = undefined;
+    this.editType = undefined;
     this.delete = false;
     this.report = true;
     this.reportedItem = post;
+    this.reportType = 'Post';
   }
 }

@@ -14,6 +14,7 @@ import { AuthService } from '../../services/auth.service';
 import { ItemsService } from '../../services/items.service';
 import { PostsService } from '../../services/posts.service';
 import { AdminService } from '../../services/admin.service';
+import { AlertsService } from '../../services/alerts.service';
 
 // Reasons for submitting a report
 enum postReportReasons { Inappropriate, Spam, Offensive, Other };
@@ -53,7 +54,8 @@ export class PopUp implements OnInit, OnChanges, AfterViewChecked {
     public authService:AuthService,
     private itemsService:ItemsService,
     private postsService:PostsService,
-    private adminService:AdminService
+    private adminService:AdminService,
+    private alertsService:AlertsService
   ) {
 
   }
@@ -248,7 +250,7 @@ export class PopUp implements OnInit, OnChanges, AfterViewChecked {
   Programmer: Shir Bar Lev.
   */
   setSelected(selectedItem:number) {
-    let otherText = document.getElementById('rOption3Text') ? document.getElementById('rOption3Text') as HTMLInputElement : document.getElementById('uOption3Text') as HTMLInputElement;
+    let otherText = this.reportType == 'User' ? document.getElementById('uOption3Text') as HTMLInputElement : document.getElementById('rOption3Text') as HTMLInputElement;
 
     // If the selected reason is one of the set reasons, simply send it as is
     if(selectedItem == 0 || selectedItem == 1 || selectedItem == 2) {
@@ -289,10 +291,18 @@ export class PopUp implements OnInit, OnChanges, AfterViewChecked {
   reportPost(e:Event) {
     e.preventDefault();
     let post = this.reportedItem as Post;
-    let otherText = document.getElementById('rOption3Text') ? document.getElementById('rOption3Text') as HTMLInputElement : document.getElementById('uOption3Text') as HTMLInputElement;
+    let otherText = this.reportType == 'User' ? document.getElementById('uOption3Text') as HTMLInputElement : document.getElementById('rOption3Text') as HTMLInputElement;
 
+    // if the selected reason for the report is 'other', get the value of the text inputted
     if(this.selectedReason == 'other') {
-      this.selectedReason = otherText.textContent!;
+      if(otherText.value) {
+        this.selectedReason = otherText.value;
+      }
+      // if there's no text, alert the user that it's mandatory
+      else {
+        this.alertsService.createAlert({ message: 'The \'other\' field cannot be empty.', type: 'Error' });
+        return;
+      }
     }
 
     // create a new report

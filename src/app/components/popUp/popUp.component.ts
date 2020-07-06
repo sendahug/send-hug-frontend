@@ -248,6 +248,8 @@ export class PopUp implements OnInit, OnChanges, AfterViewChecked {
   Programmer: Shir Bar Lev.
   */
   setSelected(selectedItem:number) {
+    let otherText = document.getElementById('rOption3Text') ? document.getElementById('rOption3Text') as HTMLInputElement : document.getElementById('uOption3Text') as HTMLInputElement;
+
     // If the selected reason is one of the set reasons, simply send it as is
     if(selectedItem == 0 || selectedItem == 1 || selectedItem == 2) {
       // if the item being reported is a post
@@ -263,11 +265,15 @@ export class PopUp implements OnInit, OnChanges, AfterViewChecked {
           this.selectedReason = `The user is posting ${userReportReasons[selectedItem]}`;
         }
       }
+
+      otherText.disabled = true;
+      otherText.required = false;
     }
     // If the user chose to put their own input, take that as the reason
     else {
-      let otherText = document.getElementById('option3Text') as HTMLInputElement;
-      this.selectedReason = otherText.value;
+      otherText.disabled = false;
+      otherText.required = true;
+      this.selectedReason = 'other';
     }
   }
 
@@ -283,6 +289,11 @@ export class PopUp implements OnInit, OnChanges, AfterViewChecked {
   reportPost(e:Event) {
     e.preventDefault();
     let post = this.reportedItem as Post;
+    let otherText = document.getElementById('rOption3Text') ? document.getElementById('rOption3Text') as HTMLInputElement : document.getElementById('uOption3Text') as HTMLInputElement;
+
+    if(this.selectedReason == 'other') {
+      this.selectedReason = otherText.textContent!;
+    }
 
     // create a new report
     let report: Report = {

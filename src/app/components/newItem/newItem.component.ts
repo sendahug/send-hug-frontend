@@ -60,16 +60,24 @@ export class NewItem {
   */
   sendPost(e:Event, postText:string) {
     e.preventDefault();
-    // create a new post object to send
-    let newPost:Post = {
-      userId: this.authService.userData.id!,
-      user: this.authService.userData.displayName!,
-      text: postText,
-      date: new Date(),
-      givenHugs: 0
-    }
 
-    this.postsService.sendPost(newPost);
+    // if there's text in the textfield, try to create a new post
+    if(postText) {
+      // create a new post object to send
+      let newPost:Post = {
+        userId: this.authService.userData.id!,
+        user: this.authService.userData.displayName!,
+        text: postText,
+        date: new Date(),
+        givenHugs: 0
+      }
+
+      this.postsService.sendPost(newPost);
+    }
+    // otherwise alert the user that a post can't be empty
+    else {
+      this.alertService.createAlert({ type: 'Error', message: 'A post cannot be empty. Please fill the field and try again.' });
+    }
   }
 
   /*
@@ -84,25 +92,32 @@ export class NewItem {
   sendMessage(e:Event, messageText:string) {
     e.preventDefault();
 
-    // if the user is attempting to send a message to themselves
-    if(this.authService.userData.id == this.forID) {
-      this.alertService.createAlert({
-        type: 'Error',
-        message: 'You can\'t send a message to yourself!'
-      });
-    }
-    // if the user is sending a message to someone else, make the request
-    else {
-      // create a new message object to send
-      let newMessage:Message = {
-        from: this.authService.userData.displayName!,
-        fromId: this.authService.userData.id!,
-        forId: this.forID,
-        messageText: messageText,
-        date: new Date()
+    // if there's text in the textfield, try to create a new message
+    if(messageText) {
+      // if the user is attempting to send a message to themselves
+      if(this.authService.userData.id == this.forID) {
+        this.alertService.createAlert({
+          type: 'Error',
+          message: 'You can\'t send a message to yourself!'
+        });
       }
+      // if the user is sending a message to someone else, make the request
+      else {
+        // create a new message object to send
+        let newMessage:Message = {
+          from: this.authService.userData.displayName!,
+          fromId: this.authService.userData.id!,
+          forId: this.forID,
+          messageText: messageText,
+          date: new Date()
+        }
 
-      this.itemsService.sendMessage(newMessage);
+        this.itemsService.sendMessage(newMessage);
+      }
+    }
+    // otherwise alert the user that a message can't be empty
+    else {
+      this.alertService.createAlert({ type: 'Error', message: 'A message cannot be empty. Please fill the field and try again.' });
     }
   }
 }

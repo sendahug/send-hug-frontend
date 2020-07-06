@@ -207,13 +207,20 @@ export class AdminDashboard implements OnInit {
     // prevent submit button default behaviour
     e.preventDefault();
 
-    // if the user is trying to block another user, let them
-    if(userID != this.authService.userData.id) {
-      this.checkBlock(userID, length);
+    // if there's a user ID, proceed
+    if(userID) {
+      // if the user is trying to block another user, let them
+      if(userID != this.authService.userData.id) {
+        this.checkBlock(userID, length);
+      }
+      // otherwise alert that they can't block themselves
+      else {
+        this.alertsService.createAlert({ type: 'Error', message: 'You cannot block yourself.' });
+      }
     }
-    // otherwise alert that they can't block themselves
+    // otherwise alert the user a user ID is needed to block someone
     else {
-      this.alertsService.createAlert({ type: 'Error', message: 'You cannot block yourself.' });
+      this.alertsService.createAlert({ type: 'Error', message: 'A user ID is needed to block a user. Please add user ID to the textfield and try again.' });
     }
   }
 
@@ -318,7 +325,15 @@ export class AdminDashboard implements OnInit {
   */
   addFilter(e:Event, filter:string) {
     e.preventDefault();
-    this.adminService.addFilter(filter);
+
+    // if there's a filter in the textfield, continue
+    if(filter) {
+      this.adminService.addFilter(filter);
+    }
+    // otherwise alert the user a filter is required
+    else {
+      this.alertsService.createAlert({ type: 'Error', message: 'A filtered phrase is required in order to add to the filters list.' });
+    }
   }
 
   /*

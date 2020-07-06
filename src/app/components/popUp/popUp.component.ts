@@ -134,9 +134,17 @@ export class PopUp implements OnInit, OnChanges, AfterViewChecked {
   */
   updateDisplayN(e:Event, newDisplayName:string) {
     e.preventDefault();
-    this.authService.userData.displayName = newDisplayName;
-    this.authService.updateUserData();
-    this.exitEdit();
+
+    // if there's a new display name in the textbox, change the display name
+    if(newDisplayName) {
+      this.authService.userData.displayName = newDisplayName;
+      this.authService.updateUserData();
+      this.exitEdit();
+    }
+    // otherwise, alert the user that a display name can't be empty
+    else {
+      this.alertsService.createAlert({ type: 'Error', message: 'New display name cannot be empty! Please fill the field and try again.' });
+    }
   }
 
   /*
@@ -151,13 +159,21 @@ export class PopUp implements OnInit, OnChanges, AfterViewChecked {
   */
   editUser(e:Event, newDisplayName:string, closeReport:boolean) {
     e.preventDefault();
-    let user = {
-      userID: this.reportData.userID,
-      displayName: newDisplayName
-    }
 
-    this.adminService.editUser(user, closeReport, this.reportData.reportID);
-    this.exitEdit();
+    // if there's a new display name in the textbox, change the display name
+    if(newDisplayName) {
+      let user = {
+        userID: this.reportData.userID,
+        displayName: newDisplayName
+      }
+
+      this.adminService.editUser(user, closeReport, this.reportData.reportID);
+      this.exitEdit();
+    }
+    // otherwise, alert the user that a display name can't be empty
+    else {
+      this.alertsService.createAlert({ type: 'Error', message: 'New display name cannot be empty! Please fill the field and try again.' });
+    }
   }
 
   /*
@@ -171,9 +187,17 @@ export class PopUp implements OnInit, OnChanges, AfterViewChecked {
   */
   updatePost(e:Event, newText:string) {
     e.preventDefault();
-    this.editedItem.text = newText;
-    this.postsService.editPost(this.editedItem);
-    this.exitEdit();
+
+    // if there's text in the textbox, change the post's text
+    if(newText) {
+      this.editedItem.text = newText;
+      this.postsService.editPost(this.editedItem);
+      this.exitEdit();
+    }
+    // otherwise alert the user that a post cannot be empty
+    else {
+      this.alertsService.createAlert({ type: 'Error', message: 'New post text cannot be empty. Please fill the field and try again.' });
+    }
   }
 
   /*
@@ -188,13 +212,21 @@ export class PopUp implements OnInit, OnChanges, AfterViewChecked {
   */
   editPost(e:Event, newText:string, closeReport:boolean) {
     e.preventDefault();
-    let post = {
-      text: newText,
-      id: this.reportData.postID
-    }
 
-    this.adminService.editPost(post, closeReport, this.reportData.reportID);
-    this.exitEdit();
+    // if there's text in the textbox, change the post's text
+    if(newText) {
+      let post = {
+        text: newText,
+        id: this.reportData.postID
+      }
+
+      this.adminService.editPost(post, closeReport, this.reportData.reportID);
+      this.exitEdit();
+    }
+    // otherwise alert the user that a post cannot be empty
+    else {
+      this.alertsService.createAlert({ type: 'Error', message: 'New post text cannot be empty. Please fill the field and try again.' });
+    }
   }
 
   /*

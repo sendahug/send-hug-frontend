@@ -201,7 +201,7 @@
 				<tr *ngFor="let phrase of adminService.filteredPhrases">
 					<td aria-describedby="filteredP" id="{{ phrase }}">{{ phrase }}</td>
 					<td>
-						<span id= "{{ 'f_' + phrase }}" class="labels">{{ 'Add filter ' + filter.value }}</span>
+						<span id= "{{ 'f_' + phrase }}" class="labels">{{ 'Remove filter ' + filter.value }}</span>
 						<button class="appButton" (click)="removeFilter(phrase)" [attr.aria-labelledby]="'f_' + phrase">Remove Filter</button>
 					</td>
 				</tr>

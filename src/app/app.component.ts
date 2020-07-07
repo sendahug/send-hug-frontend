@@ -26,6 +26,7 @@ export class AppComponent implements OnInit {
     name: 'About',
     link: '/about'
   }];
+  showNotifications = false;
 
   constructor(
     public authService:AuthService,
@@ -78,6 +79,16 @@ export class AppComponent implements OnInit {
     // otherwise alert the user there are no empty searches
     else {
       this.alertsService.createAlert({ message: 'Search query is empty! Please write a term to search for.', type: 'Error' })
+    }
+  }
+
+  //
+  toggleNotifications() {
+    if(this.showNotifications) {
+      this.showNotifications = false;
+    }
+    else {
+      this.showNotifications = true;
     }
   }
 }

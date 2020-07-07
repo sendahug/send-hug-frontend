@@ -6,6 +6,7 @@
 		<a *ngFor="let tab of navTabs" [routerLink]="(tab.link)" class="navLink">{{tab.name}}</a>
 		<a *ngIf="authService.authenticated && !authService.userData.blocked" [routerLink]="['/new', 'Post']" class="navLink">New Post</a>
 		<a *ngIf="authService.canUser('read:admin-board')" [routerLink]="['/admin']" class="navLink">Admin Dashboard</a>
+		<button class="navLink" (click)="toggleNotifications()">Notifications</button>
 	</nav>
 	<form id="search" role="search">
 		<label class="pageCategory" for="searchQuery" id="searchLabel">Search: </label>
@@ -15,6 +16,9 @@
 </header>
 
 <main id="mainContent" role="main">
+	<div *ngIf="showNotifications">
+		<app-notifications></app-notifications>
+	</div>
 	<router-outlet></router-outlet>
 	<div id="alertContainer"></div>
 </main>

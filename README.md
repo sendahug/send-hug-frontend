@@ -48,9 +48,10 @@ The main module contains 9 components, 3 services and 4 interfaces. Each compone
 7. **messages** - A messages screen. Displays a paginated list of messages sent to the user.
 8. **myPosts** - A sub-component of the userPage component. Displays a paginated list of posts by the user whose profile is viewed.
 9. **newItem** - A form component allowing users to create a new item (message or post).
-10. **popUp** - A sub-component displaying a popup screen with a form for editing items (posts or a user's display name).
-11. **searchResults** - A component to display the results of the user's search.
-12. **userPage** - Displays the user's data as fetched from the backend, as well as a list of the user's posts (as myPost component).
+10. **notifications** - A tab component to display the latest notifications for the currently logged-in user.
+11. **popUp** - A sub-component displaying a popup screen with a form for editing items (posts or a user's display name).
+12. **searchResults** - A component to display the results of the user's search.
+13. **userPage** - Displays the user's data as fetched from the backend, as well as a list of the user's posts (as myPost component).
 
 ### Interfaces
 
@@ -102,10 +103,11 @@ The site uses several tools to maximise compatibility:
 7. **@angular/platform-browser** - Everything DOM and browser-related.
 8. **@angular/platform-browser-dynamic** - Providers and methods for compiling and running the app.
 9. **@angular/router** - Angular's router module.
-10. **rxjs** - Contains an implementation of observables, which many Angular APIs use.
-11. **typescript** - TypeScript language server, which Angular uses.
-12. **zone.js** - Implementation of zones for JavaScript (used by Angular).
-13. **core-js** - Modular standard library for JavaScript. Contains polyfills. For more information, check the [GitHub repo](https://github.com/zloirock/core-js).
+10. **@angular/service-worker** - Angular's ServiceWorker module.
+11. **rxjs** - Contains an implementation of observables, which many Angular APIs use.
+12. **typescript** - TypeScript language server, which Angular uses.
+13. **zone.js** - Implementation of zones for JavaScript (used by Angular).
+14. **core-js** - Modular standard library for JavaScript. Contains polyfills. For more information, check the [GitHub repo](https://github.com/zloirock/core-js).
 
 For more information about Angular's required NPM packages, check the [Angular docs](https://angular.io/guide/npm-packages).
 

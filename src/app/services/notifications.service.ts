@@ -6,6 +6,7 @@
 // Angular imports
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { SwPush } from '@angular/service-worker';
 
 // App-related imports
 import { AuthService } from './auth.service';
@@ -26,7 +27,8 @@ export class NotificationService {
   constructor(
     private Http:HttpClient,
     private authService:AuthService,
-    private alertsService:AlertsService
+    private alertsService:AlertsService,
+    private swPush:SwPush
   ) {
 
   }
@@ -57,6 +59,34 @@ export class NotificationService {
       else {
         this.alertsService.createErrorAlert(err);
       }
+    })
+  }
+
+  /*
+  Function Name: subscribeToStream()
+  Function Description: Subscribes the user to push notifications.
+  Parameters: None.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  subscribeToStream() {
+    const Url = this.serverUrl + '/notifications';
+
+    // request subscription
+    this.swPush.requestSubscription({
+      serverPublicKey: ''
+    // if it went successfully, send the subscription data to the server
+    }).then((subscription) => {
+      this.Http.post(Url, subscription, {
+        headers: this.authService.authHeader
+      }).subscribe((_response:any) => {
+        this.alertsService.createSuccessAlert('Subscribed to push notifications successfully!');
+      }, (err:HttpErrorResponse) => {
+        this.alertsService.createErrorAlert(err);
+      })
+    // if there was an error, alert the user
+    }).catch((err) => {
+      this.alertsService.createAlert({ type: 'Error', message: err });
     })
   }
 }

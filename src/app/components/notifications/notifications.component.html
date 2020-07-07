@@ -1,0 +1,14 @@
+<div id="notificationsTab">
+	<h4>Notifications</h4>
+	
+	<ul id="notificationsList">
+		<li *ngFor="let notification of itemsService.notifications">
+			<div>New {{ notification.type }}!</div>
+			<div *ngIf="notification.type == 'hug'">You received a hug from {{ notification.from }}.</div>
+			<div *ngIf="notification.type == 'message'">You have a new message from {{ notification.from }}. <a [routerLink]="/messages">View Message</a></div>
+		</li>
+		
+		<!-- If there are no notifications -->
+		<div *ngIf="itemsService.notifications.length == 0" class="errorMessage">You have no new notifications!</div>
+	</ul>
+</div>

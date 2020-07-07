@@ -59,7 +59,14 @@ export class AppComponent implements OnInit {
     })
   }
 
-  //
+  /*
+  Function Name: searchApp()
+  Function Description: Initiates a search for the given query.
+  Parameters: e (Event) - Click event (on the search button).
+              searchQuery (string) - Term to search for.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
   searchApp(e:Event, searchQuery:string) {
     e.preventDefault();
 
@@ -82,11 +89,19 @@ export class AppComponent implements OnInit {
     }
   }
 
-  //
+  /*
+  Function Name: toggleNotifications()
+  Function Description: Toggles the notifications tab.
+  Parameters: None.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
   toggleNotifications() {
+    // if notitfications tab is on, close it
     if(this.showNotifications) {
       this.showNotifications = false;
     }
+    // if it's not on, open it
     else {
       this.showNotifications = true;
     }

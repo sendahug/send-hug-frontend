@@ -96,7 +96,7 @@ export class ItemsService {
   postSearchPage = 1;
   totalPostSearchPages = 1;
   isSearchResolved = new BehaviorSubject(false);
-  //
+  // idb variables
   idbResolved = {
     user: new BehaviorSubject(false),
     userPosts: new BehaviorSubject(false),

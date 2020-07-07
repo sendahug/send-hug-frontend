@@ -823,7 +823,7 @@ export class ItemsService {
     this.Http.get(Url, {
       headers: this.authService.authHeader
     }).subscribe((response:any) => {
-      this.notifications = response;
+      this.notifications = response.notifications;
     }, (err:HttpErrorResponse) => {
       // if the user is offline, show the offline header message
       if(!navigator.onLine) {

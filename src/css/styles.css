@@ -1,7 +1,7 @@
 /* Colour Palette */
 /* Component Sample */
 /* line 9, ../sass/styles.sass */
-#compSample, app-main-page, #items, app-user-page, app-messages, app-new-item, app-error-page, app-about, app-search-results, app-admin-dashboard {
+#compSample, app-main-page, #items, app-user-page, app-messages, app-new-item, app-error-page, app-about, app-search-results, app-notifications, app-admin-dashboard {
   position: absolute;
   top: 160px;
   bottom: 100px;
@@ -845,9 +845,30 @@ app-search-results h3 {
   margin: 5px 5%; }
 
 /* Result item */
+/* =================== Notifications Tab Component Styling =================== */
+/* Notifications Component */
+/* line 774, ../sass/styles.sass */
+app-notifications {
+  width: 40%;
+  float: right;
+  box-shadow: 12px 15px 20px 0 rgba(46, 61, 73, 0.5);
+  border-radius: 5px;
+  background-color: #EAEAEA;
+  z-index: 100;
+  margin: 20px 5% 20px 55%; }
+
+/* Notifications Title */
+/* line 785, ../sass/styles.sass */
+app-notifications h4 {
+  color: #252525;
+  text-align: center;
+  padding: 5px 5px 0;
+  margin: 10px 5px;
+  font-size: 20px; }
+
 /* =================== Admin Dashboard Component Styling =================== */
 /* Admin Dashboard Component */
-/* line 774, ../sass/styles.sass */
+/* line 794, ../sass/styles.sass */
 app-admin-dashboard {
   width: 90%;
   padding: 0 5%;
@@ -855,14 +876,14 @@ app-admin-dashboard {
   right: 0; }
 
 /* Admin Dashboard navigation menu */
-/* line 782, ../sass/styles.sass */
+/* line 802, ../sass/styles.sass */
 #adminNav {
   width: 90%;
   margin: 5px;
   text-align: center; }
 
 /* Admin Dashboard navigation menu item */
-/* line 788, ../sass/styles.sass */
+/* line 808, ../sass/styles.sass */
 .adminNavItem {
   margin: 0 5px;
   color: #3f3a3a;
@@ -870,32 +891,32 @@ app-admin-dashboard {
   font-size: 18px; }
 
 /* Admin Dashboard title */
-/* line 795, ../sass/styles.sass */
+/* line 815, ../sass/styles.sass */
 app-admin-dashboard h3 {
   color: #252525;
   text-align: center;
   font-size: 20px; }
 
 /* Admin Dashboard main page intro text */
-/* line 801, ../sass/styles.sass */
+/* line 821, ../sass/styles.sass */
 .adminText {
   text-align: center;
   padding: 5px; }
 
 /* Admin Dashboard main page list */
-/* line 806, ../sass/styles.sass */
+/* line 826, ../sass/styles.sass */
 #adminCategories {
   padding: 0; }
 
 /* Admin Dashboard main page list item */
-/* line 810, ../sass/styles.sass */
+/* line 830, ../sass/styles.sass */
 .adminCategory {
   list-style: none;
   margin: 10px 5px;
   padding: 0; }
 
 /* Admin Dashboard sub-section title */
-/* line 816, ../sass/styles.sass */
+/* line 836, ../sass/styles.sass */
 .subTitle {
   color: #252525;
   text-align: center;
@@ -903,7 +924,7 @@ app-admin-dashboard h3 {
 
 /* =================== Alert Styling =================== */
 /* Base Alert */
-/* line 823, ../sass/styles.sass */
+/* line 843, ../sass/styles.sass */
 .alertMessage {
   width: 70%;
   box-shadow: 12px 15px 20px 0 rgba(46, 61, 73, 0.5);
@@ -919,40 +940,40 @@ app-admin-dashboard h3 {
   z-index: 100; }
 
 /* Alert Title */
-/* line 838, ../sass/styles.sass */
+/* line 858, ../sass/styles.sass */
 .alertType {
   margin: 0;
   padding: 5px; }
 
 /* Alert Text */
-/* line 843, ../sass/styles.sass */
+/* line 863, ../sass/styles.sass */
 .alertText {
   font-size: 16px; }
 
 /* Alert Button */
-/* line 847, ../sass/styles.sass */
+/* line 867, ../sass/styles.sass */
 #alertButton {
   margin: 10px;
   border-radius: 5px; }
 
 /* Success Alert */
-/* line 852, ../sass/styles.sass */
+/* line 872, ../sass/styles.sass */
 .Success {
   background-color: rgba(46, 161, 60, 0.9); }
 
 /* Error Alert */
-/* line 856, ../sass/styles.sass */
+/* line 876, ../sass/styles.sass */
 .Error {
   background-color: rgba(203, 72, 72, 0.95); }
 
 /* Notification Alert */
-/* line 860, ../sass/styles.sass */
+/* line 880, ../sass/styles.sass */
 .Notification {
   background-color: #a3cad7; }
 
 /* =================== Footer Styling =================== */
 /* Site Footer */
-/* line 865, ../sass/styles.sass */
+/* line 885, ../sass/styles.sass */
 #siteFooter {
   position: fixed;
   bottom: 0;
@@ -961,7 +982,7 @@ app-admin-dashboard h3 {
   max-width: 100%; }
 
 /* Footer text */
-/* line 873, ../sass/styles.sass */
+/* line 893, ../sass/styles.sass */
 .footerText {
   text-align: center;
   font-size: 14px;

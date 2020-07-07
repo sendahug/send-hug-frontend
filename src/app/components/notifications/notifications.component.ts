@@ -8,7 +8,7 @@ import { Component } from '@angular/core';
 
 // App-relateed imports
 import { AuthService } from '../../services/auth.service';
-import { ItemsService } from '../../services/items.service';
+import { NotificationService } from '../../services/notifications.service';
 
 @Component({
   selector: 'app-notifications',
@@ -18,13 +18,13 @@ export class NotificationsTab {
   // CTOR
   constructor(
     private authService:AuthService,
-    private itemsService:ItemsService
+    private notificationService:NotificationService
   ) {
     // if the user is authenticated, get all notifications from
     // the last time the user checked them
     this.authService.isUserDataResolved.subscribe((value) => {
       if(value) {
-        this.itemsService.getNotifications();
+        this.notificationService.getNotifications();
       }
     })
   }

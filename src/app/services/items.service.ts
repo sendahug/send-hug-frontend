@@ -105,8 +105,6 @@ export class ItemsService {
     threads: new BehaviorSubject(false),
     thread: new BehaviorSubject(false)
   }
-  // notifications data
-  notifications = [];
 
   // CTOR
   constructor(
@@ -795,35 +793,6 @@ export class ItemsService {
       }
       this.alertsService.toggleOfflineAlert();
     // if there's an error, alert the user
-    }, (err:HttpErrorResponse) => {
-      // if the user is offline, show the offline header message
-      if(!navigator.onLine) {
-        this.alertsService.toggleOfflineAlert();
-      }
-      // otherwise just create an error alert
-      else {
-        this.alertsService.createErrorAlert(err);
-      }
-    })
-  }
-
-  // NOTIFICATIONS METHODS
-  // ==============================================================
-  /*
-  Function Name: getNotifications()
-  Function Description: Gets all new user notifications.
-  Parameters: None.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  getNotifications() {
-    const Url = this.serverUrl + '/notifications';
-
-    // gets Notifications
-    this.Http.get(Url, {
-      headers: this.authService.authHeader
-    }).subscribe((response:any) => {
-      this.notifications = response.notifications;
     }, (err:HttpErrorResponse) => {
       // if the user is offline, show the offline header message
       if(!navigator.onLine) {

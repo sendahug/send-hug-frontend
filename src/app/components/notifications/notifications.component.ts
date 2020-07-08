@@ -114,11 +114,13 @@ export class NotificationsTab implements OnChanges {
     if(this.notificationService.refreshStatus) {
       this.notificationService.refreshStatus = false;
       this.notificationService.refreshRateSecs = 0;
+      this.notificationService.stopAutoRefresh();
     }
     // otherwise enable it
     else {
       this.notificationService.refreshStatus = true;
       this.notificationService.refreshRateSecs = 10;
+      this.notificationService.startAutoRefresh();
     }
   }
 }

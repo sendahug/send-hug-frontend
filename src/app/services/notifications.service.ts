@@ -7,7 +7,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { SwPush } from '@angular/service-worker';
-import { interval } from 'rxjs';
+import { interval, Subscription } from 'rxjs';
 
 // App-related imports
 import { AuthService } from './auth.service';
@@ -28,6 +28,7 @@ export class NotificationService {
   pushStatus = false;
   refreshStatus = true;
   refreshRateSecs = 20;
+  refreshSub: Subscription | undefined;
 
   // CTOR
   constructor(
@@ -53,7 +54,7 @@ export class NotificationService {
     // wait until the user is authenticated
     let userSub = this.authService.isUserDataResolved.subscribe((value) => {
       // once they are, start the refresh counter
-      if(value && this.refreshRateSecs) {
+      if(value && this.refreshStatus) {
         this.autoRefresh();
 
         // unsubscribe from the user data observable as it's no longer needed
@@ -76,9 +77,22 @@ export class NotificationService {
     const refreshCounter = interval(this.refreshRateSecs * 1000);
     // every ten seconds, when the counter is done, silently refres
     // the user's notifications
-    refreshCounter.subscribe((_value) => {
+    this.refreshSub = refreshCounter.subscribe((_value) => {
       this.getNotifications(true);
     })
+  }
+
+  /*
+  Function Name: stopAutoRefresh()
+  Function Description: Stops auto-refresh by unsubscribing from the interval.
+  Parameters: None.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  stopAutoRefresh() {
+    if(this.refreshSub) {
+      this.refreshSub.unsubscribe();
+    }
   }
 
   /*

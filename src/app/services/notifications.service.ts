@@ -120,6 +120,7 @@ export class NotificationService {
   */
   subscribeToStream() {
     const Url = this.serverUrl + '/notifications';
+    const headers = this.authService.authHeader.set('content-type', 'application/json');
 
     // request subscription
     this.swPush.requestSubscription({
@@ -129,8 +130,8 @@ export class NotificationService {
       this.notificationsSub = subscription;
 
       // send the info to the server
-      this.Http.post(Url, subscription, {
-        headers: this.authService.authHeader
+      this.Http.post(Url, JSON.stringify(subscription), {
+        headers: headers
       }).subscribe((_response:any) => {
         this.alertsService.createSuccessAlert('Subscribed to push notifications successfully!');
       }, (err:HttpErrorResponse) => {

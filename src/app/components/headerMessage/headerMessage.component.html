@@ -1,6 +1,4 @@
 <div id="headerMessage" *ngIf="visible" role="progressbar" aria-describedby="loadingMessage" aria-busy="true">
 	<div class="logo"></div>
-	<svg class="spinner" viewBox="0 0 7 7"  *ngIf="loading">
-		<circle class="path" cx="5" cy="5" r="5" fill="none" stroke-width="1" stroke-miterlimit="3"/>
-	</svg> <span id="loadingMessage">{{ message }}</span>
+	<div class="spinner"></div> <span id="loadingMessage">{{ message }}</span>
 </div>

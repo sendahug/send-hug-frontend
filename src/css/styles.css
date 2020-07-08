@@ -702,9 +702,9 @@ app-new-item {
 
 /* Loader spinner */
 /* line 634, ../sass/styles.sass */
-#loading #loadingMessage .spinner {
-  height: 50px;
-  width: 50px;
+#loading .spinner {
+  height: 100px;
+  width: 100px;
   animation: spin 2s linear infinite;
   transform-origin: center center;
   position: relative;

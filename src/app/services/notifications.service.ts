@@ -23,6 +23,7 @@ export class NotificationService {
   readonly publicKey = environment.production ? prodEnv.vapidKey : environment.vapidKey;
   // notifications data
   notifications = [];
+  notificationsSub: PushSubscription | undefined;
 
   // CTOR
   constructor(
@@ -78,6 +79,9 @@ export class NotificationService {
       serverPublicKey: this.publicKey
     // if it went successfully, send the subscription data to the server
     }).then((subscription) => {
+      this.notificationsSub = subscription;
+
+      // send the info to the server
       this.Http.post(Url, subscription, {
         headers: this.authService.authHeader
       }).subscribe((_response:any) => {
@@ -89,5 +93,18 @@ export class NotificationService {
     }).catch((err) => {
       this.alertsService.createAlert({ type: 'Error', message: err });
     })
+  }
+
+  /*
+  Function Name: unsubscribeFromStream()
+  Function Description: Unsubscribes the user from push notifications.
+  Parameters: None.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  unsubscribeFromStream() {
+    if(this.notificationsSub) {
+      this.notificationsSub.unsubscribe();
+    }
   }
 }

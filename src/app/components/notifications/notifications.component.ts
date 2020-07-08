@@ -16,10 +16,8 @@ import { NotificationService } from '../../services/notifications.service';
 })
 export class NotificationsTab implements OnChanges {
   // push notifications variables
-  pushStatus = false;
   toggleBtn: 'Enable' | 'Disable';
   // notifications refresh variables
-  refreshStatus = true;
   refreshBtn: 'Enable' | 'Disable';
 
   // CTOR
@@ -36,7 +34,7 @@ export class NotificationsTab implements OnChanges {
     })
 
     // if push notifications is enabled, have the button show 'disable'
-    if(this.pushStatus) {
+    if(this.notificationService.pushStatus) {
       this.toggleBtn = 'Disable';
     }
     // otherwise show 'enable'
@@ -45,7 +43,7 @@ export class NotificationsTab implements OnChanges {
     }
 
     // if auto-refresh is enabled, have the button show 'disable'
-    if(this.refreshStatus) {
+    if(this.notificationService.refreshStatus) {
       this.refreshBtn = 'Disable';
     }
     // otherwise show 'enable'
@@ -65,7 +63,7 @@ export class NotificationsTab implements OnChanges {
   */
   ngOnChanges() {
     // if push notifications is enabled, have the button show 'disable'
-    if(this.pushStatus) {
+    if(this.notificationService.pushStatus) {
       this.toggleBtn = 'Disable';
     }
     // otherwise show 'enable'
@@ -74,7 +72,7 @@ export class NotificationsTab implements OnChanges {
     }
 
     // if auto-refresh is enabled, have the button show 'disable'
-    if(this.refreshStatus) {
+    if(this.notificationService.refreshStatus) {
       this.refreshBtn = 'Disable';
     }
     // otherwise show 'enable'
@@ -92,13 +90,13 @@ export class NotificationsTab implements OnChanges {
   */
   togglePushNotifications() {
     // if notifications are enabled, disable them
-    if(this.pushStatus) {
-      this.pushStatus = false;
+    if(this.notificationService.pushStatus) {
+      this.notificationService.pushStatus = false;
       this.notificationService.unsubscribeFromStream();
     }
     // otherwise enable them
     else {
-      this.pushStatus = true;
+      this.notificationService.pushStatus = true;
       this.notificationService.subscribeToStream();
     }
   }
@@ -113,13 +111,13 @@ export class NotificationsTab implements OnChanges {
   */
   toggleAutoRefresh() {
     // if auto-refresh is enabled, disable it
-    if(this.refreshStatus) {
-      this.refreshStatus = false;
+    if(this.notificationService.refreshStatus) {
+      this.notificationService.refreshStatus = false;
       this.notificationService.refreshRateSecs = 0;
     }
     // otherwise enable it
     else {
-      this.refreshStatus = true;
+      this.notificationService.refreshStatus = true;
       this.notificationService.refreshRateSecs = 10;
     }
   }

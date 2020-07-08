@@ -24,6 +24,8 @@ export class NotificationService {
   // notifications data
   notifications = [];
   notificationsSub: PushSubscription | undefined;
+  pushStatus = false;
+  refreshStatus = true;
 
   // CTOR
   constructor(

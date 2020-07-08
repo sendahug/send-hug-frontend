@@ -29,7 +29,7 @@ export class NotificationsTab implements OnChanges {
     // the last time the user checked them
     this.authService.isUserDataResolved.subscribe((value) => {
       if(value) {
-        this.notificationService.getNotifications();
+        this.notificationService.getNotifications(false);
       }
     })
 

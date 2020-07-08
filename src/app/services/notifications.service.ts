@@ -5,7 +5,7 @@
 
 // Angular imports
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { SwPush } from '@angular/service-worker';
 
 // App-related imports
@@ -46,12 +46,15 @@ export class NotificationService {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  getNotifications() {
+  getNotifications(silentRefresh?:boolean) {
     const Url = this.serverUrl + '/notifications';
+    const silent = silentRefresh ? silentRefresh : true;
+    const params = new HttpParams().set('silentRefresh', `${silent}`);
 
     // gets Notifications
     this.Http.get(Url, {
-      headers: this.authService.authHeader
+      headers: this.authService.authHeader,
+      params: params
     }).subscribe((response:any) => {
       this.notifications = response.notifications;
     }, (err:HttpErrorResponse) => {

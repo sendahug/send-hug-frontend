@@ -1,8 +1,8 @@
 <div id="notificationsTab">
 	<h4>Notifications</h4>
 	
-	<ul id="notificationsList" *ngIf="itemsService.notifications.length">
-		<li *ngFor="let notification of itemsService.notifications">
+	<ul id="notificationsList" *ngIf="notificationService.notifications.length">
+		<li *ngFor="let notification of notificationService.notifications">
 			<div>New {{ notification.type }}!</div>
 			<div *ngIf="notification.type == 'hug'">You received a hug from {{ notification.from }}.</div>
 			<div *ngIf="notification.type == 'message'">You have a new message from {{ notification.from }}. <a [routerLink]="messages">View Message</a></div>
@@ -10,5 +10,5 @@
 	</ul>
 	
 	<!-- If there are no notifications -->
-	<div *ngIf="itemsService.notifications.length == 0" class="errorMessage">You have no new notifications!</div>
+	<div *ngIf="notificationService.notifications.length == 0" class="errorMessage">You have no new notifications!</div>
 </div>

@@ -136,25 +136,30 @@ export class NotificationService {
     const Url = this.serverUrl + '/notifications';
     const headers = this.authService.authHeader.set('content-type', 'application/json');
 
-    // request subscription
-    this.swPush.requestSubscription({
-      serverPublicKey: this.publicKey
-    // if it went successfully, send the subscription data to the server
-    }).then((subscription) => {
-      this.notificationsSub = subscription;
+    if('PushManager' in window) {
+      // request subscription
+      this.swPush.requestSubscription({
+        serverPublicKey: this.publicKey
+      // if it went successfully, send the subscription data to the server
+      }).then((subscription) => {
+        this.notificationsSub = subscription;
 
-      // send the info to the server
-      this.Http.post(Url, JSON.stringify(subscription), {
-        headers: headers
-      }).subscribe((_response:any) => {
-        this.alertsService.createSuccessAlert('Subscribed to push notifications successfully!');
-      }, (err:HttpErrorResponse) => {
-        this.alertsService.createErrorAlert(err);
+        // send the info to the server
+        this.Http.post(Url, JSON.stringify(subscription), {
+          headers: headers
+        }).subscribe((_response:any) => {
+          this.alertsService.createSuccessAlert('Subscribed to push notifications successfully!');
+        }, (err:HttpErrorResponse) => {
+          this.alertsService.createErrorAlert(err);
+        })
+      // if there was an error, alert the user
+      }).catch((err) => {
+        this.alertsService.createAlert({ type: 'Error', message: err });
       })
-    // if there was an error, alert the user
-    }).catch((err) => {
-      this.alertsService.createAlert({ type: 'Error', message: err });
-    })
+    }
+    else {
+      this.alertsService.createAlert({ type: 'Error', message: 'Push notifications are not currently supported in this browser.' });
+    }
   }
 
   /*

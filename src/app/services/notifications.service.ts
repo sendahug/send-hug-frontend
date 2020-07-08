@@ -7,6 +7,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { SwPush } from '@angular/service-worker';
+import { interval } from 'rxjs';
 
 // App-related imports
 import { AuthService } from './auth.service';
@@ -26,6 +27,7 @@ export class NotificationService {
   notificationsSub: PushSubscription | undefined;
   pushStatus = false;
   refreshStatus = true;
+  refreshRateSecs = 20;
 
   // CTOR
   constructor(
@@ -40,6 +42,46 @@ export class NotificationService {
   // NOTIFICATIONS METHODS
   // ==============================================================
   /*
+  Function Name: startAutoRefresh()
+  Function Description: Checks whethter the user is authenticated and if so, starts
+                        the auto-refresh process.
+  Parameters: None.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  startAutoRefresh() {
+    // wait until the user is authenticated
+    let userSub = this.authService.isUserDataResolved.subscribe((value) => {
+      // once they are, start the refresh counter
+      if(value && this.refreshRateSecs) {
+        this.autoRefresh();
+
+        // unsubscribe from the user data observable as it's no longer needed
+        if(userSub) {
+          userSub.unsubscribe();
+        }
+      }
+    })
+  }
+
+  /*
+  Function Name: autoRefresh()
+  Function Description: Runs the interval and sends a fetch request every 20
+                        seconds (or however much is set).
+  Parameters: None.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  autoRefresh() {
+    const refreshCounter = interval(this.refreshRateSecs * 1000);
+    // every ten seconds, when the counter is done, silently refres
+    // the user's notifications
+    refreshCounter.subscribe((_value) => {
+      this.getNotifications(true);
+    })
+  }
+
+  /*
   Function Name: getNotifications()
   Function Description: Gets all new user notifications.
   Parameters: None.
@@ -48,7 +90,7 @@ export class NotificationService {
   */
   getNotifications(silentRefresh?:boolean) {
     const Url = this.serverUrl + '/notifications';
-    const silent = silentRefresh ? silentRefresh : true;
+    const silent = silentRefresh ? silentRefresh : false;
     const params = new HttpParams().set('silentRefresh', `${silent}`);
 
     // gets Notifications

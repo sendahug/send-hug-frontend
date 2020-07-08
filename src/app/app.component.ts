@@ -7,6 +7,7 @@ import { AuthService } from './services/auth.service';
 import { ItemsService } from './services/items.service';
 import { AlertsService } from './services/alerts.service';
 import { SWManager } from './services/sWManager.service';
+import { NotificationService } from './services/notifications.service';
 
 @Component({
   selector: 'app-root',
@@ -33,9 +34,11 @@ export class AppComponent implements OnInit {
     private itemsService:ItemsService,
     private alertsService:AlertsService,
     private router:Router,
-    private serviceWorkerM:SWManager
+    private serviceWorkerM:SWManager,
+    private notificationService:NotificationService
   ) {
     this.authService.checkHash();
+    this.notificationService.startAutoRefresh();
   }
 
   /*

@@ -15,8 +15,12 @@ import { NotificationService } from '../../services/notifications.service';
   templateUrl: './notifications.component.html'
 })
 export class NotificationsTab implements OnChanges {
+  // push notifications variables
   pushStatus = false;
   toggleBtn: 'Enable' | 'Disable';
+  // notifications refresh variables
+  refreshStatus = true;
+  refreshBtn: 'Enable' | 'Disable';
 
   // CTOR
   constructor(
@@ -39,6 +43,15 @@ export class NotificationsTab implements OnChanges {
     else {
       this.toggleBtn = 'Enable';
     }
+
+    // if auto-refresh is enabled, have the button show 'disable'
+    if(this.refreshStatus) {
+      this.refreshBtn = 'Disable';
+    }
+    // otherwise show 'enable'
+    else {
+      this.refreshBtn = 'Enable';
+    }
   }
 
   /*
@@ -59,6 +72,15 @@ export class NotificationsTab implements OnChanges {
     else {
       this.toggleBtn = 'Enable';
     }
+
+    // if auto-refresh is enabled, have the button show 'disable'
+    if(this.refreshStatus) {
+      this.refreshBtn = 'Disable';
+    }
+    // otherwise show 'enable'
+    else {
+      this.refreshBtn = 'Enable';
+    }
   }
 
   /*
@@ -78,6 +100,27 @@ export class NotificationsTab implements OnChanges {
     else {
       this.pushStatus = true;
       this.notificationService.subscribeToStream();
+    }
+  }
+
+  /*
+  Function Name: togglePushNotifications()
+  Function Description: Enables and disables automatically refreshing the user's
+                        notifications in the background.
+  Parameters: None.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  toggleAutoRefresh() {
+    // if auto-refresh is enabled, disable it
+    if(this.refreshStatus) {
+      this.refreshStatus = false;
+      this.notificationService.refreshRateSecs = 0;
+    }
+    // otherwise enable it
+    else {
+      this.refreshStatus = true;
+      this.notificationService.refreshRateSecs = 10;
     }
   }
 }

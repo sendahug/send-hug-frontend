@@ -9,5 +9,6 @@ export const environment = {
   },
   backend: {
     domain: process.env.apiurl
-  }
+  },
+  vapidKey: ''
 };

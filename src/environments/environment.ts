@@ -13,7 +13,8 @@ export const environment = {
   },
   backend: {
     domain: 'http://localhost:5000'
-  }
+  },
+  vapidKey: 'BOpyfsj3-e89Gao4zPQHULL1alKy5z7oMnTCT3ZhgND_wGCNGbL_fPXnD5heYAT2kZLDN-XznXk0mVvBlbjm96o'
 };
 
 /*

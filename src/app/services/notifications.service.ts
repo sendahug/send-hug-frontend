@@ -20,6 +20,7 @@ import { environment as prodEnv } from '../../environments/environment.prod';
 })
 export class NotificationService {
   readonly serverUrl = environment.production ? prodEnv.backend.domain! : environment.backend.domain;
+  readonly publicKey = environment.production ? prodEnv.vapidKey : environment.vapidKey;
   // notifications data
   notifications = [];
 
@@ -74,7 +75,7 @@ export class NotificationService {
 
     // request subscription
     this.swPush.requestSubscription({
-      serverPublicKey: ''
+      serverPublicKey: this.publicKey
     // if it went successfully, send the subscription data to the server
     }).then((subscription) => {
       this.Http.post(Url, subscription, {

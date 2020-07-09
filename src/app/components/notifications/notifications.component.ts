@@ -4,7 +4,7 @@
 */
 
 // Angular imports
-import { Component, OnChanges } from '@angular/core';
+import { Component } from '@angular/core';
 
 // App-relateed imports
 import { AuthService } from '../../services/auth.service';
@@ -14,16 +14,11 @@ import { NotificationService } from '../../services/notifications.service';
   selector: 'app-notifications',
   templateUrl: './notifications.component.html'
 })
-export class NotificationsTab implements OnChanges {
-  // push notifications variables
-  toggleBtn: 'Enable' | 'Disable';
-  // notifications refresh variables
-  refreshBtn: 'Enable' | 'Disable';
-
+export class NotificationsTab {
   // CTOR
   constructor(
     private authService:AuthService,
-    private notificationService:NotificationService
+    public notificationService:NotificationService
   ) {
     // if the user is authenticated, get all notifications from
     // the last time the user checked them
@@ -32,53 +27,6 @@ export class NotificationsTab implements OnChanges {
         this.notificationService.getNotifications(false);
       }
     })
-
-    // if push notifications is enabled, have the button show 'disable'
-    if(this.notificationService.pushStatus) {
-      this.toggleBtn = 'Disable';
-    }
-    // otherwise show 'enable'
-    else {
-      this.toggleBtn = 'Enable';
-    }
-
-    // if auto-refresh is enabled, have the button show 'disable'
-    if(this.notificationService.refreshStatus) {
-      this.refreshBtn = 'Disable';
-    }
-    // otherwise show 'enable'
-    else {
-      this.refreshBtn = 'Enable';
-    }
-  }
-
-  /*
-  Function Name: ngOnChanges()
-  Function Description: This method is automatically triggered by Angular upon
-                        changes in parent component. It checks whether push notifications
-                        are currently enabled.
-  Parameters: None.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  ngOnChanges() {
-    // if push notifications is enabled, have the button show 'disable'
-    if(this.notificationService.pushStatus) {
-      this.toggleBtn = 'Disable';
-    }
-    // otherwise show 'enable'
-    else {
-      this.toggleBtn = 'Enable';
-    }
-
-    // if auto-refresh is enabled, have the button show 'disable'
-    if(this.notificationService.refreshStatus) {
-      this.refreshBtn = 'Disable';
-    }
-    // otherwise show 'enable'
-    else {
-      this.refreshBtn = 'Enable';
-    }
   }
 
   /*

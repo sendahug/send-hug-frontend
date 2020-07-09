@@ -1,6 +1,6 @@
 <div id="notificationsTab">
 	<h4>Notifications</h4>
-	<button class="tabLink" (click)="togglePushNotifications()">{{ toggleBtn }} Push Notifications</button> | <button class="tabLink" (click)="toggleAutoRefresh()">{{ refreshBtn }} Auto-Refresh</button>
+	<button class="tabLink" (click)="togglePushNotifications()">{{ notificationService.toggleBtn }} Push Notifications</button> | <button class="tabLink" (click)="toggleAutoRefresh()">{{ notificationService.refreshBtn }} Auto-Refresh</button>
 	
 	<ul id="notificationsList" *ngIf="notificationService.notifications.length">
 		<li *ngFor="let notification of notificationService.notifications">

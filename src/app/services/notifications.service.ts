@@ -24,9 +24,13 @@ export class NotificationService {
   readonly publicKey = environment.production ? prodEnv.vapidKey : environment.vapidKey;
   // notifications data
   notifications = [];
+  // push notifications variables
+  toggleBtn: 'Enable' | 'Disable';
   notificationsSub: PushSubscription | undefined;
   newNotifications = 0;
   pushStatus = false;
+  // notifications refresh variables
+  refreshBtn: 'Enable' | 'Disable';
   refreshStatus = true;
   refreshRateSecs = 20;
   refreshCounter: Observable<number> | undefined;
@@ -39,7 +43,8 @@ export class NotificationService {
     private alertsService:AlertsService,
     private swPush:SwPush
   ) {
-
+    this.toggleBtn = this.pushStatus ? 'Disable': 'Enable';
+    this.refreshBtn = this.refreshStatus ? 'Disable' : 'Enable';
   }
 
   // NOTIFICATIONS METHODS
@@ -57,6 +62,7 @@ export class NotificationService {
     let userSub = this.authService.isUserDataResolved.subscribe((value) => {
       // once they are, start the refresh counter
       if(value && this.refreshStatus) {
+        this.refreshBtn = 'Disable';
         this.autoRefresh();
         this.setSubscription();
 
@@ -103,6 +109,7 @@ export class NotificationService {
     if(this.refreshSub) {
       this.refreshSub.unsubscribe();
       this.refreshCounter = undefined;
+      this.refreshBtn = 'Enable';
       this.setSubscription();
     }
   }
@@ -160,6 +167,7 @@ export class NotificationService {
       // if it went successfully, send the subscription data to the server
       }).then((subscription) => {
         this.notificationsSub = subscription;
+        this.toggleBtn = 'Disable';
         this.setSubscription();
 
         // send the info to the server
@@ -190,6 +198,7 @@ export class NotificationService {
   unsubscribeFromStream() {
     if(this.notificationsSub) {
       this.notificationsSub.unsubscribe();
+      this.toggleBtn = 'Enable';
       this.setSubscription();
     }
   }

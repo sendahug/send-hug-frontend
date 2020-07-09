@@ -204,3 +204,16 @@ self.addEventListener("message", function(event) {
 		self.skipWaiting();
 	}
 })
+
+// push event listener
+self.addEventListener('push', function(event) {
+	pushData = event.data.json();
+	
+	event.waitUntil(
+		// show the user the notification
+		self.registration.showNotification(pushData.title, {
+			body: pushData.body,
+			icon: 'favicon.ico'
+		})
+	)
+})

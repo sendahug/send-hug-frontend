@@ -38,7 +38,13 @@ export class AppComponent implements OnInit {
     private notificationService:NotificationService
   ) {
     this.authService.checkHash();
-    this.notificationService.startAutoRefresh();
+
+    // if the user is logged in, and their data is fetched, start auto-refresh
+    this.authService.isUserDataResolved.subscribe((value) => {
+      if(value) {
+        this.notificationService.startAutoRefresh();
+      }
+    })
   }
 
   /*

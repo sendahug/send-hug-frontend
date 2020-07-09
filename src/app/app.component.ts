@@ -35,7 +35,7 @@ export class AppComponent implements OnInit {
     private alertsService:AlertsService,
     private router:Router,
     private serviceWorkerM:SWManager,
-    private notificationService:NotificationService
+    public notificationService:NotificationService
   ) {
     this.authService.checkHash();
 

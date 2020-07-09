@@ -25,6 +25,7 @@ export class NotificationService {
   // notifications data
   notifications = [];
   notificationsSub: PushSubscription | undefined;
+  newNotifications = 0;
   pushStatus = false;
   refreshStatus = true;
   refreshRateSecs = 20;
@@ -122,6 +123,11 @@ export class NotificationService {
       params: params
     }).subscribe((response:any) => {
       this.notifications = response.notifications;
+
+      // if it's a silent refresh, check how many new notifications the user has
+      if(silentRefresh) {
+        this.newNotifications = (this.notifications.length);
+      }
     }, (err:HttpErrorResponse) => {
       // if the user is offline, show the offline header message
       if(!navigator.onLine) {

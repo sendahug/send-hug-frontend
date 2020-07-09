@@ -1,4 +1,4 @@
-const currentCache = "send-hug-v3";
+const currentCache = "send-hug-v4";
 const serverUrl = "send-hug-server.herokuapp.com";
 
 // upon installing a new service worker
@@ -63,9 +63,25 @@ self.addEventListener("fetch", function(event) {
 		return;
 	}
 	
-	// if the request is for the server and the user is online, ignore it
+	// if the request is for the server and the user is online
 	if(fetchTarget.includes(serverUrl) && navigator.onLine) {
-		return;
+		// if it's a POST request with PushSubscription data, save the info in cache
+		if(event.request.method == 'POST' && fetchTarget.includes('notifications')) {
+			// fetch the asset
+				fetch(fetchTarget, {headers: event.request.headers, method: 'POST'}).then(function(fetchRes) {
+					// open the cache and add the asset
+					caches.open(currentCache).then(function(cache) {
+						cache.put(fetchTarget, fetchRes);
+					})
+				// if there's an error, alert the user
+				}).catch(function(err) {
+					console.log('Error: ' + err);
+				})
+		}
+		// otherwise ignore it
+		else {
+			return;
+		}
 	}
 	// if the request is for the server and the user is offline, alert them that they're offline so the server is unavailable
 	else if(fetchTarget.includes(serverUrl) && !navigator.onLine) {
@@ -187,4 +203,17 @@ self.addEventListener("message", function(event) {
 	if(event.data.action == 'skip waiting') {
 		self.skipWaiting();
 	}
+})
+
+// push event listener
+self.addEventListener('push', function(event) {
+	pushData = event.data.json();
+	
+	event.waitUntil(
+		// show the user the notification
+		self.registration.showNotification(pushData.title, {
+			body: pushData.body,
+			icon: 'favicon.ico'
+		})
+	)
 })

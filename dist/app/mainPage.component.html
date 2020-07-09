@@ -1,24 +1,24 @@
 <!-- New items -->
 <div id="newItems" class="listContainer">
-	<h2 class="listTitle">New Items</h2>
+	<h2 class="listTitle" id="newTitle">New Items</h2>
 	
 	<app-loader
 		[waitingFor]="waitFor"></app-loader>
 	
 	<!-- If there are items in the list -->
-	<ul class="itemList" *ngIf="postsService.newItemsArray.length > 0 && postsService.isMainPageResolved.value">
-		<li *ngFor="let item of postsService.newItemsArray" class="newItem">
-			<div class="itemText">{{ item.text }}</div>
-			<div class="itemUser">By <a [routerLink]="['/user', item.userId ]" class="profileLink">{{ item.user }}</a> </div>
+	<ul class="itemList" *ngIf="postsService.newItemsArray.length > 0 && postsService.isMainPageResolved.value" role="region" aria-describedby="newTitle">
+		<li *ngFor="let item of postsService.newItemsArray" class="newItem" aria-describedby="newTitle" role="article">
+			<div class="itemText" aria-describedby="pText" id="{{'nPost' + item.id}}">{{ item.text }}</div>
+			<div class="itemUser">By <a [routerLink]="['/user', item.userId ]" class="profileLink" aria-describedby="pUser" id="{{'nUser' + item.id}}">{{ item.user }}</a> </div>
 			<div class="buttonsContainer">
-				<div class="notification">
-					<button class="appButton hugButton" (click)="sendHug(item.id)"><i class="fab fa-gratipay"></i></button>
-					<span class="badge">{{ item.givenHugs }}</span>
+				<div class="notification" [attr.aria-describedby]="'pHug ' + 'nUser' + item.id">
+					<button class="appButton hugButton" (click)="sendHug(item.id)" [attr.aria-labelledby]="'pHug ' + 'nUser' + item.id" name="send a hug"><i class="fab fa-gratipay"></i></button>
+					<span class="badge" aria-describedby="pGivenH">{{ item.givenHugs }}</span>
 				</div>
-				<a [routerLink]="['/new', 'Message']" [queryParams]="{user: item.user, userID: item.userId}" class="appButton messageButton"><i class="fas fa-comments"></i></a>
-				<button class="appButton reportButton" (click)="reportPost(item)"><i class="fas fa-flag"></i></button>
-				<button *ngIf="authService.canUser('patch:any-post')" class="appButton editButton" (click)="editPost(item)"><i class="far fa-edit"></i></button>
-				<button *ngIf="authService.canUser('delete:any-post')" class="appButton deleteButton" (click)="deletePost(item.id)"><i class="fas fa-times"></i></button>
+				<a [routerLink]="['/new', 'Message']" [queryParams]="{user: item.user, userID: item.userId}" class="appButton messageButton" [attr.aria-labelledby]="'pMessage ' + 'nUser' + item.id" name="send a message"><i class="fas fa-comments"></i></a>
+				<button class="appButton reportButton" (click)="reportPost(item)" [attr.aria-labelledby]="'pReport ' + 'nPost' + item.id" name="report"><i class="fas fa-flag"></i></button>
+				<button *ngIf="authService.canUser('patch:any-post')" class="appButton editButton" (click)="editPost(item)" [attr.aria-labelledby]="'pEdit ' + 'nPost' + item.id"><i class="far fa-edit"></i></button>
+				<button *ngIf="authService.canUser('delete:any-post')" class="appButton deleteButton" (click)="deletePost(item.id)" [attr.aria-labelledby]="'pDelete ' + 'nPost' + item.id"><i class="fas fa-times"></i></button>
 			</div>
 		</li>
 	</ul>
@@ -26,30 +26,30 @@
 	<!-- If there are no items in the list -->
 	<div class="errorMessage" *ngIf="postsService.newItemsArray.length == 0 && postsService.isMainPageResolved.value">There are no recent items.</div>
 	
-	<a [routerLink]="['/list', 'New']" [queryParams]="{page: 1}" class="appButton fullButton">View Full List</a>
+	<a [routerLink]="['/list', 'New']" [queryParams]="{page: 1}" class="appButton fullButton" aria-label="View full list of new items">View Full List</a>
 </div>
 
 <!-- Suggested items -->
 <div id="suggestedItems" class="listContainer">
-	<h2 class="listTitle">Suggested Items</h2>
+	<h2 class="listTitle" id="sugTitle">Suggested Items</h2>
 	
 	<app-loader
 		[waitingFor]="waitFor"></app-loader>
 	
 	<!-- If there are items in the list -->
-	<ul class="itemList" *ngIf="postsService.sugItemsArray.length > 0 && postsService.isMainPageResolved.value">
-		<li *ngFor="let item of postsService.sugItemsArray" class="sugItem">
-			<div class="itemText">{{ item.text }}</div>
-			<div class="itemUser">By <a [routerLink]="['/user', item.userId ]" class="profileLink">{{ item.user }}</a></div>
+	<ul class="itemList" *ngIf="postsService.sugItemsArray.length > 0 && postsService.isMainPageResolved.value" role="region" aria-describedby="sugTitle">
+		<li *ngFor="let item of postsService.sugItemsArray" class="sugItem" aria-describedby="sugTitle" role="article">
+			<div class="itemText" aria-describedby="pText" id="{{'sPost' + item.id}}">{{ item.text }}</div>
+			<div class="itemUser">By <a [routerLink]="['/user', item.userId ]" class="profileLink" aria-describedby="pUser" id="{{'sUser' + item.id}}">{{ item.user }}</a> </div>
 			<div class="buttonsContainer">
 				<div class="notification">
-					<button class="appButton hugButton" (click)="sendHug(item.id)"><i class="fab fa-gratipay"></i></button>
-					<span class="badge">{{ item.givenHugs }}</span>
+					<button class="appButton hugButton" (click)="sendHug(item.id)" [attr.aria-labelledby]="'pHug ' + 'sUser' + item.id"><i class="fab fa-gratipay"></i></button>
+					<span class="badge" aria-describedby="pGivenH">{{ item.givenHugs }}</span>
 				</div>
-				<a [routerLink]="['/new', 'Message']" [queryParams]="{user: item.user, userID: item.userId}" class="appButton messageButton"><i class="fas fa-comments"></i></a>
-				<button class="appButton reportButton" (click)="reportPost(item)"><i class="fas fa-flag"></i></button>
-				<button *ngIf="authService.canUser('patch:any-post')" class="appButton editButton" (click)="editPost(item)"><i class="far fa-edit"></i></button>
-				<button *ngIf="authService.canUser('delete:any-post')" class="appButton deleteButton" (click)="deletePost(item.id)"><i class="fas fa-times"></i></button>
+				<a [routerLink]="['/new', 'Message']" [queryParams]="{user: item.user, userID: item.userId}" class="appButton messageButton" [attr.aria-labelledby]="'pMessage ' + 'sUser' + item.id"><i class="fas fa-comments"></i></a>
+				<button class="appButton reportButton" (click)="reportPost(item)" [attr.aria-labelledby]="'pReport ' + 'sPost' + item.id" name="report"><i class="fas fa-flag"></i></button>
+				<button *ngIf="authService.canUser('patch:any-post')" class="appButton editButton" (click)="editPost(item)" [attr.aria-labelledby]="'pEdit ' + 'sPost' + item.id"><i class="far fa-edit"></i></button>
+				<button *ngIf="authService.canUser('delete:any-post')" class="appButton deleteButton" (click)="deletePost(item.id)" [attr.aria-labelledby]="'pDelete ' + 'sPost' + item.id"><i class="fas fa-times"></i></button>
 			</div>
 		</li>
 	</ul>
@@ -57,7 +57,18 @@
 	<!-- If there are no items in the list -->
 	<div class="errorMessage" *ngIf="postsService.sugItemsArray.length == 0 && postsService.isMainPageResolved.value">There are no suggested items.</div>
 	
-	<a [routerLink]="['/list', 'Suggested']" [queryParams]="{page: 1}" class="appButton fullButton">View Full List</a>
+	<a [routerLink]="['/list', 'Suggested']" [queryParams]="{page: 1}" class="appButton fullButton" role="navigation" aria-label="View full list of suggested items">View Full List</a>
+</div>
+
+<div id="labels" class="labels" aria-hidden="true">
+	<p id="pText">Post Text</p>
+	<p id="pUser">Post Writer</p>
+	<p id="pHug">Send a hug to user</p>
+	<p id="pGivenH">Hugs given to this post</p>
+	<p id="pMessage">Send a message to user</p>
+	<p id="pReport">Report post</p>
+	<p id="pEdit">Edit post</p>
+	<p id="pDelete">Delete post</p>
 </div>
 
 <app-pop-up *ngIf="editMode"

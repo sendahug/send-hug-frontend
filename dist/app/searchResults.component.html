@@ -7,7 +7,7 @@
 	<div id="resultSummary">{{ itemsService.numUserResults }} users and {{ itemsService.numPostResults }} posts match your search query: "{{ searchQuery }}"</div>
 	
 	<h3>Users</h3>
-	<ul *ngIf="itemsService.numUserResults > 0" class="searchResults">
+	<ul *ngIf="itemsService.numUserResults > 0" class="searchResults" aria-describedby="uSearchRes">
 		<li *ngFor="let user of itemsService.userSearchResults" class="searchResult">
 			<a [routerLink]="['/user', user.id]">{{ user.displayName }}</a>
 		</li>
@@ -19,29 +19,29 @@
 
 	<h3>Posts</h3>
 	<div *ngIf="itemsService.numPostResults > 0">
-		<ul class="searchResults">
-			<li *ngFor="let item of itemsService.postSearchResults" class="searchResult">
-				<div class="itemText">{{ item.text }}</div>
-				<div class="itemUser">By <a [routerLink]="['/user', item.userId ]" class="profileLink">{{ item.user }}</a> </div>
-				<div class="buttonsContainer">
-					<div class="notification">
-						<button class="appButton hugButton" (click)="sendHug(item.id)"><i class="fab fa-gratipay"></i></button>
-						<span class="badge">{{ item.givenHugs }}</span>
-					</div>
-					<a [routerLink]="['/new', 'Message']" [queryParams]="{user: item.user, userID: item.userId}" class="appButton messageButton"><i class="fas fa-comments"></i></a>
-					<button class="appButton reportButton" (click)="reportPost(item)"><i class="fas fa-flag"></i></button>
-					<button *ngIf="authService.canUser('patch:any-post')" class="appButton editButton" (click)="editPost(item)"><i class="far fa-edit"></i></button>
-					<button *ngIf="authService.canUser('delete:any-post')" class="appButton deleteButton" (click)="deletePost(item.id)"><i class="fas fa-times"></i></button>
+		<ul class="searchResults" aria-describedby="pSearchRes">
+			<li *ngFor="let item of itemsService.postSearchResults" class="searchResult" role="article">
+				<div class="itemText" aria-describedby="pText" id="{{'nPost' + item.id}}">{{ item.text }}</div>
+			<div class="itemUser">By <a [routerLink]="['/user', item.userId ]" class="profileLink" aria-describedby="pUser" id="{{'nUser' + item.id}}">{{ item.user }}</a> </div>
+			<div class="buttonsContainer">
+				<div class="notification" [attr.aria-describedby]="'pHug ' + 'nUser' + item.id">
+					<button class="appButton hugButton" (click)="sendHug(item.id)" [attr.aria-describedby]="'pHug ' + 'nUser' + item.id"><i class="fab fa-gratipay"></i></button>
+					<span class="badge" aria-describedby="pGivenH">{{ item.givenHugs }}</span>
 				</div>
+				<a [routerLink]="['/new', 'Message']" [queryParams]="{user: item.user, userID: item.userId}" class="appButton messageButton" [attr.aria-describedby]="'pMessage ' + 'nUser' + item.id"><i class="fas fa-comments"></i></a>
+				<button class="appButton reportButton" (click)="reportPost(item)" [attr.aria-describedby]="'pReport ' + 'nPost' + item.id"><i class="fas fa-flag"></i></button>
+				<button *ngIf="authService.canUser('patch:any-post')" class="appButton editButton" (click)="editPost(item)" [attr.aria-describedby]="'pEdit ' + 'nPost' + item.id"><i class="far fa-edit"></i></button>
+				<button *ngIf="authService.canUser('delete:any-post')" class="appButton deleteButton" (click)="deletePost(item.id)" [attr.aria-describedby]="'pDelete ' + 'nPost' + item.id"><i class="fas fa-times"></i></button>
+			</div>
 			</li>
 		</ul>
 
 	<!-- Post pagination -->
-		<div class="pagination">
-			<button *ngIf="itemsService.postSearchPage > 1" class="appButton prevButton" (click)="prevPage()">Previous Page</button>
+		<div class="pagination" role="navigation">
+			<button *ngIf="itemsService.postSearchPage > 1" class="appButton prevButton" (click)="prevPage()" aria-label="previous page of post search results">Previous Page</button>
 			<button *ngIf="itemsService.postSearchPage <= 1" class="appButton hidden" (click)="prevPage()">Previous Page</button>
 			<div class="pageCount">Page {{ itemsService.postSearchPage }} of {{ itemsService.totalPostSearchPages }}</div>
-			<button *ngIf="itemsService.totalPostSearchPages > itemsService.postSearchPage" class="appButton nextButton" (click)="nextPage()">Next Page</button>
+			<button *ngIf="itemsService.totalPostSearchPages > itemsService.postSearchPage" class="appButton nextButton" (click)="nextPage()" aria-label="next page of post search results">Next Page</button>
 			<button *ngIf="itemsService.totalPostSearchPages <= itemsService.postSearchPage" class="appButton hidden" (click)="nextPage()">Next Page</button>
 		</div>
 	</div>
@@ -52,6 +52,18 @@
 	</div>
 </div>
 
+<div id="labels" class="labels" aria-hidden="true">
+	<p id="uSearchRes">Users search results</p>
+	<p id="pSearchRes">Posts search results</p>
+	<p id="pText">Post Text</p>
+	<p id="pUser">Post Writer</p>
+	<p id="pHug">Send a hug to user</p>
+	<p id="pGivenH">Hugs given to this post</p>
+	<p id="pMessage">Send a message to user</p>
+	<p id="pReport">Report post</p>
+	<p id="pEdit">Edit post</p>
+	<p id="pDelete">Delete post</p>
+</div>
 
 <app-pop-up *ngIf="editMode"
 			[editedItem]="postToEdit"

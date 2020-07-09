@@ -1,15 +1,15 @@
 <div id="modalBox">
-	<div id="editPopup">
-		<button id="exitButton" (click)="exitEdit()"><i class="fas fa-times"></i></button>
+	<div id="editPopup" role="dialog" aria-label="edit popup">
+		<button id="exitButton" (click)="exitEdit()" aria-label="close popup"><i class="fas fa-times"></i></button>
 		<!-- If the user is editing a post -->
 		<form *ngIf="toEdit == 'post'" id="postEdit" class="postEdit">
 			<div class="formElement">
-				<span class="pageCategory">By:</span> <span class="pageData">{{ editedItem.displayName }}</span>
+				<span class="pageCategory">By:</span> <span class="pageData" aria-describedby="pUser">{{ editedItem.displayName }}</span>
 			</div>
-			<div class="formElement">{{ editedItem.date }}</div>
+			<div class="formElement" aria-describedby="pDate">{{ editedItem.date }}</div>
 			<div class="formElement">
 				<label class="pageCategory" for="postText">Text:</label>
-				<textarea #postText id="postText" cols="40" rows="4">{{ editedItem.text }}</textarea>
+				<textarea #postText id="postText" cols="40" rows="4" aria-describedby="pText">{{ editedItem.text }}</textarea>
 			</div>
 			<button type="submit" class="appButton sendData" (click)="updatePost($event, postText.value)">Update</button>
 		</form>
@@ -17,21 +17,21 @@
 		<!-- If the user is editing a post from the report's page -->
 		<form *ngIf="toEdit == 'admin post'" id="adPostEdit" class="postEdit">
 			<div class="formElement">
-				<label class="pageCategory" for="adPostText">Text:</label>
+				<label class="pageCategory" for="adPostText">Post Text:</label>
 				<textarea #adPostText id="adPostText" cols="40" rows="4">{{ editedItem }}</textarea>
 			</div>
-			<button type="submit" class="appButton sendData" (click)="editPost($event, adPostText.value, true)">Update and Close Report</button>
-			<button type="submit" class="appButton sendData" (click)="editPost($event, adPostText.value, false)">Update without Closing Report</button>
+			<button type="submit" class="appButton sendData" (click)="editPost($event, adPostText.value, true)">Update Post and Close Report</button>
+			<button type="submit" class="appButton sendData" (click)="editPost($event, adPostText.value, false)">Update Post without Closing Report</button>
 		</form>
 		
-		<!-- If the user is editing a user -->
+		<!-- If the user is editing their own display name -->
 		<form *ngIf="toEdit == 'user'" id="userEdit" class="userEdit">
 			<div class="formElement">
 				<label class="pageCategory" for="displayName">Display Name:</label>
 				<input #displayName type="text" id="displayName" value="{{ authService.userData.displayName }}">
 			</div>
 			
-			<button type="submit" class="appButton updateItem" (click)="updateDisplayN($event, displayName.value)">Update</button>
+			<button type="submit" class="appButton updateItem" (click)="updateDisplayN($event, displayName.value)" aria-describedby="displayName">Update User</button>
 		</form>
 		
 		<!-- If the user is editing another user -->
@@ -41,8 +41,8 @@
 				<input #uDisplayName type="text" id="uDisplayName" value="{{ editedItem }}">
 			</div>
 			
-			<button (click)="editUser($event, uDisplayName.value, true)" type="submit" class="appButton updateItem">Update and Close Report</button>
-			<button (click)="editUser($event, uDisplayName.value, false)" type="submit" class="appButton updateItem">Update without Closing Report</button>
+			<button (click)="editUser($event, uDisplayName.value, true)" type="submit" class="appButton updateItem">Update User and Close Report</button>
+			<button (click)="editUser($event, uDisplayName.value, false)" type="submit" class="appButton updateItem">Update User without Closing Report</button>
 		</form>
 		
 		<!-- If the user is deleting something -->
@@ -68,57 +68,63 @@
 		<div *ngIf="report && reportType == 'Post'" id="reportItem">
 			<h3>Report Post</h3>
 			<div class="userPost">
-				<div class="itemText">{{ reportedItem.text }}</div>
+				<div class="itemText" id="reportText">{{ reportedItem.text }}</div>
 				<div class="itemUser">By {{ reportedItem.user }}</div>
 			</div>
-			<div>What is the problem with this post?</div>
-			<form id="reportPost">
+			<div id="reportQ">What is the problem with this post?</div>
+			<form id="reportPost" role="radiogroup">
 				<div class="formElement">
-					<input type="radio" class="radioButton" name="postReport" id="pRadioOption0" value="0" (click)="setSelected($event.target.value)">
+					<input type="radio" class="radioButton" name="postReport" id="pRadioOption0" value="0" (click)="setSelected($event.target.value)" aria-describedby="reportQ">
 					<label class="radioButtonLabel" for="pRadioOption0">It is inppopriate.</label>
 				</div>
 				<div class="formElement">
-					<input type="radio" class="radioButton" name="postReport" id="pRadioOption1" value="1" (click)="setSelected($event.target.value)">
+					<input type="radio" class="radioButton" name="postReport" id="pRadioOption1" value="1" (click)="setSelected($event.target.value)" aria-describedby="reportQ">
 					<label class="radioButtonLabel" for="pRadioOption1">It is spam.</label>
 				</div>
 				<div class="formElement">
-					<input type="radio" class="radioButton" name="postReport" id="pRadioOption2" value="2" (click)="setSelected($event.target.value)">
+					<input type="radio" class="radioButton" name="postReport" id="pRadioOption2" value="2" (click)="setSelected($event.target.value)" aria-describedby="reportQ">
 					<label class="radioButtonLabel" for="pRadioOption2">It is offensive.</label>
 				</div>
 				<div class="formElement">
-					<input type="radio" class="radioButton" name="postReport" id="pRadioOption3" value="3" (click)="setSelected($event.target.value)">
-					<label class="radioButtonLabel" for="pRadioOption3">Other:</label> <input type="text" placeholder="Enter the response" id="rOption3Text">
+					<input type="radio" class="radioButton" name="postReport" id="pRadioOption3" value="3" (click)="setSelected($event.target.value)" aria-describedby="reportQ">
+					<label class="radioButtonLabel" for="pRadioOption3">Other:</label> <input type="text" placeholder="Enter the response" id="rOption3Text"  disabled>
 				</div>
 				
-				<button type="submit" class="appButton reportButton" (click)="reportPost($event)">Report</button>
+				<button type="submit" class="appButton reportButton" (click)="reportPost($event)" aria-describedby="reportText">Report Post</button>
 			</form>
 		</div>
 		
 		<!-- If the user is reporting a post -->
 		<div *ngIf="report && reportType == 'User'" id="reportUser">
 			<h3>Report User</h3>
-			<a [routerLink]="['/user', reportedItem.userId]">{{ reportedItem.displayName }}</a>
-			<div>What is the problem with this user?</div>
+			<a [routerLink]="['/user', reportedItem.userId]" id="uReportText">{{ reportedItem.displayName }}</a>
+			<div id="reportUQ">What is the problem with this user?</div>
 			<form id="reportUserForm">
 				<div class="formElement">
-					<input type="radio" class="radioButton" name="postReport" id="uRadioOption0" value="0" (click)="setSelected($event.target.value)">
+					<input type="radio" class="radioButton" name="postReport" id="uRadioOption0" value="0" (click)="setSelected($event.target.value)" aria-describedby="reportUQ">
 					<label class="radioButtonLabel" for="uRadioOption0">They are posting spam.</label>
 				</div>
 				<div class="formElement">
-					<input type="radio" class="radioButton" name="postReport" id="uRadioOption1" value="1" (click)="setSelected($event.target.value)">
+					<input type="radio" class="radioButton" name="postReport" id="uRadioOption1" value="1" (click)="setSelected($event.target.value)" aria-describedby="reportUQ">
 					<label class="radioButtonLabel" for="uRadioOption1">They are posting harmful / dangerous content.</label>
 				</div>
 				<div class="formElement">
-					<input type="radio" class="radioButton" name="postReport" id="uRadioOption2" value="2" (click)="setSelected($event.target.value)">
+					<input type="radio" class="radioButton" name="postReport" id="uRadioOption2" value="2" (click)="setSelected($event.target.value)" aria-describedby="reportUQ">
 					<label class="radioButtonLabel" for="uRadioOption2">They are behaving in an abusive manner.</label>
 				</div>
 				<div class="formElement">
-					<input type="radio" class="radioButton" name="postReport" id="uRadioOption3" value="3" (click)="setSelected($event.target.value)">
-					<label class="radioButtonLabel" for="uRadioOption3">Other:</label> <input type="text" placeholder="Enter the response" id="uOption3Text">
+					<input type="radio" class="radioButton" name="postReport" id="uRadioOption3" value="3" (click)="setSelected($event.target.value)" aria-describedby="reportUQ">
+					<label class="radioButtonLabel" for="uRadioOption3">Other:</label> <input type="text" placeholder="Enter the response" id="uOption3Text" disabled>
 				</div>
 				
-				<button type="submit" class="appButton reportButton" (click)="reportUser($event)">Report</button>
+				<button type="submit" class="appButton reportButton" (click)="reportUser($event)" aria-describedby="uReportText">Report User</button>
 			</form>
 		</div>
 	</div>
+</div>
+
+<div id="labels" class="labels" aria-hidden="true">
+	<p id="pText">Post Text</p>
+	<p id="pDate">Published at</p>
+	<p id="pUser">Post Writer</p>
 </div>

@@ -1,34 +1,41 @@
 <div id="newItem">
-	<h3>New {{ itemType }}</h3>
+	<h3 id="newTitle">New {{ itemType }}</h3>
 	
 	<div id="newMessage" *ngIf="itemType == 'Message'">
-		<form class="newItem">
+		<form class="newItem" aria-describedby="newTitle">
 			<div class="formElement">
 				<label class="pageCategory" for="messageFor">For:</label>
-				<input #messageFor type="text" id="messageFor" value="{{ user }}" readonly>
+				<input #messageFor type="text" id="messageFor" value="{{ user }}" aria-labelledby="mUser" readonly>
 			</div>
 			<div class="formElement">
 				<label class="pageCategory" for="messageText">Message</label>
-				<textarea #messageText id="messageText" cols="40" rows="4"></textarea>
+				<textarea #messageText id="messageText" cols="40" rows="4" aria-labelledby="mText"></textarea>
 			</div>
-			<button type="submit" class="appButton sendData" (click)="sendMessage($event, messageText.value)">Send</button>
+			<button type="submit" class="appButton sendData" (click)="sendMessage($event, messageText.value)">Send Message</button>
 		</form>
 	</div>
 	
 	<div id="newPost" *ngIf="itemType == 'Post'">
-		<form class="newItem" *ngIf="!authService.userData.blocked">
+		<form class="newItem" *ngIf="!authService.userData.blocked" aria-describedby="newTitle">
 			<div class="formElement">
-				<span class="pageCategory">By:</span> <span class="pageData">{{ authService.userData.displayName }}</span>
+				<span class="pageCategory">By:</span> <span class="pageData" aria-describedby="pUser">{{ authService.userData.displayName }}</span>
 			</div>
 			<div class="formElement">
 				<label class="pageCategory" for="postText">Text:</label>
-				<textarea #postText id="postText" cols="40" rows="4"></textarea>
+				<textarea #postText id="postText" cols="40" rows="4" aria-labelledby="pText"></textarea>
 			</div>
-			<button type="submit" class="appButton sendData" (click)="sendPost($event, postText.value)">Post</button>
+			<button type="submit" class="appButton sendData" (click)="sendPost($event, postText.value)">Publish Post</button>
 		</form>
 		
-		<div class="errorMessage" *ngIf="authService.userData.blocked">
+		<div class="errorMessage" *ngIf="authService.userData.blocked" role="alert">
 			You are currently blocked until {{ authService.userData.releaseDate }}. You cannot post new posts.
 		</div>
+	</div>
+	
+	<div id="labels" class="labels" aria-hidden="true">
+		<p id="pText">New Post Text</p>
+		<p id="pUser">New Post Writer</p>
+		<p id="mText">New message text</p>
+		<p id="mUser">New message for user</p>
 	</div>
 </div>

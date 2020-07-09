@@ -7,7 +7,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { SwPush } from '@angular/service-worker';
-import { interval, Subscription } from 'rxjs';
+import { interval, Subscription, Observable } from 'rxjs';
 
 // App-related imports
 import { AuthService } from './auth.service';
@@ -28,6 +28,7 @@ export class NotificationService {
   pushStatus = false;
   refreshStatus = true;
   refreshRateSecs = 20;
+  refreshCounter: Observable<number> | undefined;
   refreshSub: Subscription | undefined;
 
   // CTOR
@@ -74,12 +75,19 @@ export class NotificationService {
   Programmer: Shir Bar Lev.
   */
   autoRefresh() {
-    const refreshCounter = interval(this.refreshRateSecs * 1000);
-    // every ten seconds, when the counter is done, silently refres
-    // the user's notifications
-    this.refreshSub = refreshCounter.subscribe((_value) => {
-      this.getNotifications(true);
-    })
+    // if the refresh counter is undefined, start an interval
+    if(!this.refreshCounter) {
+      this.refreshCounter = interval(this.refreshRateSecs * 1000);
+      // every ten seconds, when the counter is done, silently refres
+      // the user's notifications
+      this.refreshSub = this.refreshCounter.subscribe((_value) => {
+        this.getNotifications(true);
+      })
+    }
+    // otherwise there's already a running counter, so leave it as is
+    else {
+      return
+    }
   }
 
   /*
@@ -92,6 +100,7 @@ export class NotificationService {
   stopAutoRefresh() {
     if(this.refreshSub) {
       this.refreshSub.unsubscribe();
+      this.refreshCounter = undefined;
     }
   }
 

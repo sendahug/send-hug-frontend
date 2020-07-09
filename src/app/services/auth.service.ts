@@ -49,7 +49,9 @@ export class AuthService {
     role: '',
     jwt: '',
     blocked: false,
-    releaseDate: undefined
+    releaseDate: undefined,
+    autoRefresh: false,
+    pushEnabled: false
   }
   // documents whether the user just logged in or they're still logged in following
   // their previous login
@@ -157,7 +159,9 @@ export class AuthService {
           role: data.role,
           jwt: this.token,
           blocked: data.blocked,
-          releaseDate: data.releaseDate
+          releaseDate: data.releaseDate,
+          autoRefresh: data.autoRefresh,
+          pushEnabled: data.pushEnabled
         }
         // set the authentication-variables accordingly
         this.authenticated = true;
@@ -188,7 +192,9 @@ export class AuthService {
               loginCount: data.loginCount,
               role: data.role,
               blocked: data.blocked,
-              releaseDate: data.releaseDate
+              releaseDate: data.releaseDate,
+              autoRefresh: data.autoRefresh,
+              pushEnabled: data.pushEnabled
             }
             store.put(user);
           })
@@ -253,7 +259,9 @@ export class AuthService {
         role: data.role,
         jwt: this.token,
         blocked: data.blocked,
-        releaseDate: data.releaseDate
+        releaseDate: data.releaseDate,
+        autoRefresh: data.autoRefresh,
+        pushEnabled: data.pushEnabled
       }
       // set the authentication-variables accordingly
       this.authenticated = true;
@@ -278,7 +286,9 @@ export class AuthService {
             loginCount: data.loginCount,
             role: data.role,
             blocked: data.blocked,
-            releaseDate: data.releaseDate
+            releaseDate: data.releaseDate,
+            autoRefresh: data.autoRefresh,
+            pushEnabled: data.pushEnabled
           }
           store.put(user);
         })
@@ -325,7 +335,9 @@ export class AuthService {
       role: '',
       jwt: '',
       blocked: false,
-      releaseDate: undefined
+      releaseDate: undefined,
+      autoRefresh: false,
+      pushEnabled: false
     }
     localStorage.setItem("ACTIVE_JWT", '');
 

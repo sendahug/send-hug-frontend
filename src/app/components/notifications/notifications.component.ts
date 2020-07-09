@@ -40,11 +40,13 @@ export class NotificationsTab {
     // if notifications are enabled, disable them
     if(this.notificationService.pushStatus) {
       this.notificationService.pushStatus = false;
+      this.notificationService.updateUserSettings();
       this.notificationService.unsubscribeFromStream();
     }
     // otherwise enable them
     else {
       this.notificationService.pushStatus = true;
+      this.notificationService.updateUserSettings();
       this.notificationService.subscribeToStream();
     }
   }
@@ -62,12 +64,14 @@ export class NotificationsTab {
     if(this.notificationService.refreshStatus) {
       this.notificationService.refreshStatus = false;
       this.notificationService.refreshRateSecs = 0;
+      this.notificationService.updateUserSettings();
       this.notificationService.stopAutoRefresh();
     }
     // otherwise enable it
     else {
       this.notificationService.refreshStatus = true;
-      this.notificationService.refreshRateSecs = 10;
+      this.notificationService.refreshRateSecs = 20;
+      this.notificationService.updateUserSettings();
       this.notificationService.startAutoRefresh();
     }
   }

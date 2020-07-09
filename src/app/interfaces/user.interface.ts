@@ -13,4 +13,6 @@ export interface User {
   jwt: string;
   blocked: boolean;
   releaseDate: Date | undefined;
+  autoRefresh: boolean;
+  pushEnabled: boolean;
 }

@@ -25,13 +25,13 @@ export class NotificationService {
   // notifications data
   notifications = [];
   // push notifications variables
-  toggleBtn: 'Enable' | 'Disable';
+  toggleBtn!: 'Enable' | 'Disable';
   notificationsSub: PushSubscription | undefined;
   newNotifications = 0;
-  pushStatus = false;
+  pushStatus!:Boolean;
   // notifications refresh variables
-  refreshBtn: 'Enable' | 'Disable';
-  refreshStatus = true;
+  refreshBtn!: 'Enable' | 'Disable';
+  refreshStatus!:Boolean;
   refreshRateSecs = 20;
   refreshCounter: Observable<number> | undefined;
   refreshSub: Subscription | undefined;
@@ -43,8 +43,20 @@ export class NotificationService {
     private alertsService:AlertsService,
     private swPush:SwPush
   ) {
-    this.toggleBtn = this.pushStatus ? 'Disable': 'Enable';
-    this.refreshBtn = this.refreshStatus ? 'Disable' : 'Enable';
+    // if the user is logged in, and their data is fetched, set the appropriate variables
+    this.authService.isUserDataResolved.subscribe((value) => {
+      if(value) {
+        this.pushStatus = this.authService.userData.pushEnabled;
+        this.refreshStatus = this.authService.userData.autoRefresh;
+      }
+      else {
+        this.pushStatus = false;
+        this.refreshStatus = false;
+      }
+
+      this.toggleBtn = this.pushStatus ? 'Disable': 'Enable';
+      this.refreshBtn = this.refreshStatus ? 'Disable' : 'Enable';
+    })
   }
 
   // NOTIFICATIONS METHODS
@@ -64,7 +76,6 @@ export class NotificationService {
       if(value && this.refreshStatus) {
         this.refreshBtn = 'Disable';
         this.autoRefresh();
-        this.setSubscription();
 
         // unsubscribe from the user data observable as it's no longer needed
         if(userSub) {
@@ -110,7 +121,6 @@ export class NotificationService {
       this.refreshSub.unsubscribe();
       this.refreshCounter = undefined;
       this.refreshBtn = 'Enable';
-      this.setSubscription();
     }
   }
 
@@ -199,14 +209,12 @@ export class NotificationService {
     if(this.notificationsSub) {
       this.notificationsSub.unsubscribe();
       this.toggleBtn = 'Enable';
-      this.setSubscription();
     }
   }
 
   /*
   Function Name: setSubscription()
-  Function Description: Sets the currently active PushSubscription (if applicable), as well
-                        as auto-refresh and push settings in localStorage.
+  Function Description: Sets the currently active PushSubscription (if applicable) in localStorage.
   Parameters: None.
   ----------------
   Programmer: Shir Bar Lev.
@@ -216,38 +224,21 @@ export class NotificationService {
     if(this.notificationsSub) {
       localStorage.setItem("PUSH_SUBSCRIPTION", JSON.stringify(this.notificationsSub));
     }
-
-    // set the user's push notification preference in localStorage
-    localStorage.setItem('PUSH_STATUS', `${this.pushStatus}`);
-
-    // set the user's auto-refresh preference in localStorage
-    localStorage.setItem('REFRESH_STATUS', `${this.refreshStatus}`);
   }
 
   /*
   Function Name: getSubscription()
-  Function Description: Gets the currently active PushSubscription (if applicable), as well
-                        as auto-refresh and push settings from localStorage.
+  Function Description: Gets the currently active PushSubscription (if applicable) from localStorage.
   Parameters: None.
   ----------------
   Programmer: Shir Bar Lev.
   */
   getSubscription() {
-    // gets settings from localStorage
-    let pushStatus = Boolean(localStorage.getItem('PUSH_STATUS'));
-    let refreshStatus = Boolean(localStorage.getItem('REFRESH_STATUS'));
     let pushSub;
-
     // if push notifications are enabled, there's a subscription in localStorage, so get it
-    if(pushStatus) {
-      pushSub = JSON.parse(localStorage.getItem('PUSH_SUBSCRIPTION')!);
+    if(this.pushStatus) {
+      pushSub = JSON.parse(localStorage.getItem('PUSH_SUBSCRIPTION')!);;
     }
-
-    // if the push status and refresh status are the same as those set in the app,
-    // save the current setting; otherwise replace it with the user's latest choice from
-    // localStorage (for cases of closing the browser and re-opening it).
-    this.pushStatus = (this.pushStatus == pushStatus) ? this.pushStatus : pushStatus;
-    this.refreshStatus = (this.refreshStatus == refreshStatus) ? this.refreshStatus : refreshStatus;
 
     // if there's a push subscription, compare it to the one currently active. If
     // it's the same, leave as is; otherwise set the new subscription as the latest subscription
@@ -257,5 +248,29 @@ export class NotificationService {
         this.setSubscription();
       }
     }
+  }
+
+  /*
+  Function Name: updateUserSettings()
+  Function Description: Updates the user's auto-refresh and push settings in the database.
+  Parameters: None.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  updateUserSettings() {
+    const Url = this.serverUrl + `/users/all/${this.authService.userData.id}`;
+    const newSettings = {
+      autoRefresh: this.refreshStatus,
+      pushEnabled: this.pushStatus
+    }
+
+    // send the data to the server
+    this.Http.patch(Url, newSettings, {
+      headers: this.authService.authHeader
+    }).subscribe((_response:any) => {
+      this.alertsService.createSuccessAlert('Settings updated successfully!');
+    }, (err:HttpErrorResponse) => {
+      this.alertsService.createErrorAlert(err);
+    })
   }
 }

@@ -42,7 +42,13 @@ export class AppComponent implements OnInit {
     // if the user is logged in, and their data is fetched, start auto-refresh
     this.authService.isUserDataResolved.subscribe((value) => {
       if(value) {
-        this.notificationService.startAutoRefresh();
+        // get subscription and auto-refresh data from localStorage
+        this.notificationService.getSubscription();
+
+        // if auto-refresh is enabled, start it
+        if(this.notificationService.refreshStatus) {
+          this.notificationService.startAutoRefresh();
+        }
       }
     })
   }

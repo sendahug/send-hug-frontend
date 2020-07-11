@@ -1,9 +1,11 @@
 /* Colour Palette */
-$mainColour: rgba(112,163,209,1.00)
-$secondaryColour: rgba(163,202,215,1.00)
-$headlineColour: rgba(37,37,37,1.00)
-$textColour: rgba(22,22,22,1.00)
-$linkColour: rgba(63,58,58,1.00)
+$mainBackground: #F2F2F2
+$boxesBackground: #E2E2E2
+$itemBackground: #FFFFFF
+$buttonBackground: linear-gradient(90deg, rgba(227,49,123,1) 40%, rgba(250,81,108,1) 100%)
+$headlineColour: #1F1F1F
+$textColour: #000000
+$linkColour: #404040
 
 /* Component Sample */
 #compSample
@@ -31,10 +33,11 @@ img, picture, video, embed, textarea, textfield
 
 body
 	overflow-x: hidden
+	background: $mainBackground
 
 /* App button */
 .appButton
-	background-color: $secondaryColour
+	background-color: $itemBackground
 	color: $textColour
 	padding: 5px
 
@@ -72,7 +75,7 @@ body
 	right: -5px
 	padding: 3px 8px
 	border-radius: 50%
-	background: $mainColour
+	background: $boxesBackground
 	color: white
 	font-size: 14px
 
@@ -98,7 +101,7 @@ body
 #siteHeader
 	width: 100%
 	max-width: 100%
-	background-color: $secondaryColour
+	background-color: $mainBackground
 	position: fixed
 	top: 0
 	left: 0
@@ -883,7 +886,7 @@ app-admin-dashboard h3
 
 /* Notification Alert */
 .Notification
-	background-color: $secondaryColour
+	background-color: $itemBackground
 
 /* =================== Footer Styling =================== */
 /* Site Footer */

@@ -1,6 +1,6 @@
 /* Colour Palette */
 /* Component Sample */
-/* line 9, ../sass/styles.sass */
+/* line 11, ../sass/styles.sass */
 #compSample, app-main-page, #items, app-user-page, app-messages, app-new-item, app-error-page, app-about, app-search-results, app-notifications, app-admin-dashboard {
   position: absolute;
   top: 160px;
@@ -9,93 +9,94 @@
   overflow-x: hidden; }
 
 /* Frame Sample */
-/* line 17, ../sass/styles.sass */
+/* line 19, ../sass/styles.sass */
 #frameSample, .itemList, .userThreads, .threadMessages, .mailboxMessages, .newItem, .searchResult, .sugItem, app-user-page > div, .userPost, app-messages > div, #errorPage {
   border: thin solid #252525;
   border-radius: 5px;
   overflow-y: scroll; }
 
 /* Error message sample */
-/* line 23, ../sass/styles.sass */
+/* line 25, ../sass/styles.sass */
 #errorMessBox, #loginBox {
   padding: 10px;
   width: 80%;
   margin: 5px Calc((20% - 20px) / 2); }
 
 /* =================== General Styling =================== */
-/* line 29, ../sass/styles.sass */
+/* line 31, ../sass/styles.sass */
 img, picture, video, embed, textarea, textfield {
   max-width: 100%; }
 
-/* line 32, ../sass/styles.sass */
+/* line 34, ../sass/styles.sass */
 body {
-  overflow-x: hidden; }
+  overflow-x: hidden;
+  background: #F2F2F2; }
 
 /* App button */
-/* line 36, ../sass/styles.sass */
+/* line 39, ../sass/styles.sass */
 .appButton {
-  background-color: #a3cad7;
-  color: #161616;
+  background-color: #FFFFFF;
+  color: #000000;
   padding: 5px; }
 
 /* Pagination area */
-/* line 42, ../sass/styles.sass */
+/* line 45, ../sass/styles.sass */
 .pagination {
   display: flex;
   align-content: space-between;
   justify-content: space-between; }
 
 /* Page count */
-/* line 48, ../sass/styles.sass */
+/* line 51, ../sass/styles.sass */
 .pageCount {
   padding: 5px;
   margin: 0;
   font-weight: bold; }
 
 /* Hidden items */
-/* line 54, ../sass/styles.sass */
+/* line 57, ../sass/styles.sass */
 .hidden {
   visibility: hidden; }
 
 /* Notification block */
-/* line 58, ../sass/styles.sass */
+/* line 61, ../sass/styles.sass */
 .notification {
   padding: 15px 26px;
   position: relative;
   display: inline-block; }
 
-/* line 63, ../sass/styles.sass */
+/* line 66, ../sass/styles.sass */
 .newNotification {
   padding: 5px;
   position: relative;
   display: inline-block; }
 
 /* Notification badge */
-/* line 69, ../sass/styles.sass */
+/* line 72, ../sass/styles.sass */
 .badge {
   position: absolute;
   top: -5px;
   right: -5px;
   padding: 3px 8px;
   border-radius: 50%;
-  background: #70a3d1;
+  background: #E2E2E2;
   color: white;
   font-size: 14px; }
 
 /* Skip link */
-/* line 80, ../sass/styles.sass */
+/* line 83, ../sass/styles.sass */
 .skip-link {
   position: absolute;
   left: -100px; }
 
 /* Skip link when focused */
-/* line 85, ../sass/styles.sass */
+/* line 88, ../sass/styles.sass */
 .skip-link:focus {
   left: 0;
   top: 0; }
 
 /* ARIA labels */
-/* line 90, ../sass/styles.sass */
+/* line 93, ../sass/styles.sass */
 .labels {
   position: absolute;
   right: -300px;
@@ -104,17 +105,17 @@ body {
 
 /* =================== Header Styling =================== */
 /* Site Header */
-/* line 98, ../sass/styles.sass */
+/* line 101, ../sass/styles.sass */
 #siteHeader {
   width: 100%;
   max-width: 100%;
-  background-color: #a3cad7;
+  background-color: #F2F2F2;
   position: fixed;
   top: 0;
   left: 0;
   height: 160px; }
 
-/* line 107, ../sass/styles.sass */
+/* line 110, ../sass/styles.sass */
 #noInternet {
   left: 0;
   right: 0;
@@ -130,19 +131,19 @@ body {
   justify-content: center;
   background-color: #EAEAEA;
   margin: 0 5%;
-  color: #252525;
+  color: #1F1F1F;
   font-size: 16px; }
 
 /* Main Title */
-/* line 126, ../sass/styles.sass */
+/* line 129, ../sass/styles.sass */
 #mainTitle, app-search-results h2 {
-  color: #252525;
+  color: #1F1F1F;
   text-align: center;
   padding: 5px 5px 0;
   margin: 5px 5px 10px; }
 
 /* Navigation Menu */
-/* line 133, ../sass/styles.sass */
+/* line 136, ../sass/styles.sass */
 #navMenu {
   width: 80%;
   max-width: 80%;
@@ -152,13 +153,13 @@ body {
   justify-content: space-between; }
 
 /* Navigation Item */
-/* line 142, ../sass/styles.sass */
+/* line 145, ../sass/styles.sass */
 .navLink {
-  color: #3f3a3a;
+  color: #404040;
   font-size: 18px; }
 
 /* Search form */
-/* line 147, ../sass/styles.sass */
+/* line 150, ../sass/styles.sass */
 #search {
   display: flex;
   justify-content: center;
@@ -170,7 +171,7 @@ body {
   right: 0; }
 
 /* Search label */
-/* line 158, ../sass/styles.sass */
+/* line 161, ../sass/styles.sass */
 #searchLabel {
   order: 1;
   left: 0;
@@ -178,7 +179,7 @@ body {
   align-self: center; }
 
 /* Search field */
-/* line 165, ../sass/styles.sass */
+/* line 168, ../sass/styles.sass */
 #searchQuery {
   order: 2;
   padding: 0;
@@ -187,7 +188,7 @@ body {
   align-self: center; }
 
 /* Search button */
-/* line 173, ../sass/styles.sass */
+/* line 176, ../sass/styles.sass */
 #search .sendData {
   order: 3;
   margin: 0;
@@ -195,7 +196,7 @@ body {
 
 /* =================== Main Page Styling =================== */
 /* Main Page Component */
-/* line 180, ../sass/styles.sass */
+/* line 183, ../sass/styles.sass */
 app-main-page {
   display: flex;
   padding: 5px;
@@ -205,29 +206,29 @@ app-main-page {
   justify-content: space-between; }
 
 /* Item list container */
-/* line 190, ../sass/styles.sass */
+/* line 193, ../sass/styles.sass */
 .listContainer {
   width: 45%;
   height: 85%;
   margin: 0 10px; }
 
 /* Item List Title */
-/* line 196, ../sass/styles.sass */
+/* line 199, ../sass/styles.sass */
 .listTitle {
-  color: #252525;
+  color: #1F1F1F;
   font-size: 20px;
   text-align: center;
   padding-top: 5px;
   margin-top: 5px; }
 
 /* Item List */
-/* line 204, ../sass/styles.sass */
+/* line 207, ../sass/styles.sass */
 .itemList, .userThreads, .threadMessages, .mailboxMessages {
   height: 90%;
   padding-left: 0; }
 
 /* New & Suggested Item */
-/* line 210, ../sass/styles.sass */
+/* line 213, ../sass/styles.sass */
 .newItem, .searchResult, .sugItem {
   margin: 8px;
   padding: 5px;
@@ -235,7 +236,7 @@ app-main-page {
   flex-wrap: wrap; }
 
 /* Item Text */
-/* line 218, ../sass/styles.sass */
+/* line 221, ../sass/styles.sass */
 .itemText {
   order: 0;
   text-align: center;
@@ -245,7 +246,7 @@ app-main-page {
   padding: 0 10%; }
 
 /* Item User */
-/* line 227, ../sass/styles.sass */
+/* line 230, ../sass/styles.sass */
 .itemUser {
   order: 1;
   text-align: center;
@@ -255,14 +256,14 @@ app-main-page {
   padding: 0 10%; }
 
 /* Item User Profile Link */
-/* line 236, ../sass/styles.sass */
+/* line 239, ../sass/styles.sass */
 .profileLink {
-  color: #3f3a3a;
+  color: #404040;
   text-decoration: none;
   font-weight: bold; }
 
 /* Buttons div */
-/* line 242, ../sass/styles.sass */
+/* line 245, ../sass/styles.sass */
 .buttonsContainer {
   order: 2;
   display: flex;
@@ -271,50 +272,50 @@ app-main-page {
   width: 100%; }
 
 /* Send a hug button container */
-/* line 250, ../sass/styles.sass */
+/* line 253, ../sass/styles.sass */
 .notification {
   margin: 5px auto;
   padding: 6px; }
 
 /* Send Hug Button */
-/* line 255, ../sass/styles.sass */
+/* line 258, ../sass/styles.sass */
 .hugButton {
   width: 33px;
   border: none; }
 
 /* Send Message Button */
-/* line 260, ../sass/styles.sass */
+/* line 263, ../sass/styles.sass */
 .messageButton {
   margin: 10px auto; }
 
 /* Edit Button */
-/* line 264, ../sass/styles.sass */
+/* line 267, ../sass/styles.sass */
 .editButton {
   margin: 10px auto; }
 
 /* Delete Button */
-/* line 268, ../sass/styles.sass */
+/* line 271, ../sass/styles.sass */
 .deleteButton {
   margin: 10px auto; }
 
 /* Button icons */
-/* line 272, ../sass/styles.sass */
+/* line 275, ../sass/styles.sass */
 .fa-gratipay, .fa-comments, .fa-edit, .fa-times {
   font-size: 20px; }
 
 /* Main page error message */
-/* line 276, ../sass/styles.sass */
+/* line 279, ../sass/styles.sass */
 app-main-page .errorMessage {
   margin: 10px; }
 
 /* View full list button */
-/* line 280, ../sass/styles.sass */
+/* line 283, ../sass/styles.sass */
 .fullButton {
   margin: 0 Calc((100% - 120px) / 2); }
 
 /* =================== Full List Styling =================== */
 /* List container */
-/* line 285, ../sass/styles.sass */
+/* line 288, ../sass/styles.sass */
 #items {
   width: 60%;
   margin: 0;
@@ -323,7 +324,7 @@ app-main-page .errorMessage {
   right: 0; }
 
 /* Full items list */
-/* line 294, ../sass/styles.sass */
+/* line 297, ../sass/styles.sass */
 #fullItems {
   border: thin solid #252525;
   border-radius: 5px;
@@ -331,28 +332,28 @@ app-main-page .errorMessage {
 
 /* =================== User Page Styling =================== */
 /* User Page Component */
-/* line 301, ../sass/styles.sass */
+/* line 304, ../sass/styles.sass */
 app-user-page {
   width: 100%;
   left: 0;
   right: 0; }
 
 /* User / Error Message Container */
-/* line 308, ../sass/styles.sass */
+/* line 311, ../sass/styles.sass */
 app-user-page > div {
   width: 90%;
   max-width: 90%;
   margin: 10px 5%; }
 
 /* User Page Title */
-/* line 315, ../sass/styles.sass */
+/* line 318, ../sass/styles.sass */
 app-user-page h3 {
   text-align: center;
   margin-top: 5px;
   padding-top: 5px; }
 
 /* User Page */
-/* line 321, ../sass/styles.sass */
+/* line 324, ../sass/styles.sass */
 #userPage {
   display: flex;
   flex-wrap: wrap;
@@ -361,110 +362,110 @@ app-user-page h3 {
   padding: 0 3%; }
 
 /* User Profile */
-/* line 329, ../sass/styles.sass */
+/* line 332, ../sass/styles.sass */
 #profileData {
   order: 0;
   width: 40%; }
 
 /* User Page Field Container */
-/* line 334, ../sass/styles.sass */
+/* line 337, ../sass/styles.sass */
 .profileElement {
   padding: 10px 0; }
 
 /* User Page Field Title */
-/* line 338, ../sass/styles.sass */
+/* line 341, ../sass/styles.sass */
 .pageCategory {
   font-size: 16px;
   font-weight: bold;
   margin: 0 5px;
-  color: #252525; }
+  color: #1F1F1F; }
 
 /* User Page Field Text */
-/* line 345, ../sass/styles.sass */
+/* line 348, ../sass/styles.sass */
 .pageData {
   font-size: 16px;
-  color: #161616; }
+  color: #000000; }
 
 /* edit display name button */
-/* line 350, ../sass/styles.sass */
+/* line 353, ../sass/styles.sass */
 #editName {
   margin: 20px 20%; }
 
 /* User Posts */
-/* line 354, ../sass/styles.sass */
+/* line 357, ../sass/styles.sass */
 app-my-posts {
   order: 2;
   width: 55%;
   align-self: flex-start; }
 
 /* User Post */
-/* line 360, ../sass/styles.sass */
+/* line 363, ../sass/styles.sass */
 .userPost {
   padding: 5px;
   margin: 5px; }
 
 /* Post text */
-/* line 366, ../sass/styles.sass */
+/* line 369, ../sass/styles.sass */
 .postText {
   text-align: center;
   font-size: 18px; }
 
 /* Post date */
-/* line 371, ../sass/styles.sass */
+/* line 374, ../sass/styles.sass */
 .postDate {
   text-align: center;
   font-size: 14px; }
 
 /* Post buttons */
-/* line 376, ../sass/styles.sass */
+/* line 379, ../sass/styles.sass */
 .editButton, .deleteButton {
   margin: 10px Calc((100% - 140px) / 6); }
 
 /* Notification block in user's posts */
-/* line 380, ../sass/styles.sass */
+/* line 383, ../sass/styles.sass */
 .userPost .notification {
   margin: 10px Calc((100% - 140px) / 6) 0; }
 
 /* Page count in user's posts */
-/* line 384, ../sass/styles.sass */
+/* line 387, ../sass/styles.sass */
 app-my-posts .pageCount {
   text-align: center; }
 
 /* Logout button */
-/* line 388, ../sass/styles.sass */
+/* line 391, ../sass/styles.sass */
 #logout {
   order: 3;
   margin: 10px 40%; }
 
 /* Login div */
-/* line 393, ../sass/styles.sass */
+/* line 396, ../sass/styles.sass */
 #loginBox {
   padding: 10px 15px;
   margin: 5px Calc((20% - 30px) / 2); }
 
 /* =================== Messages Page Styling =================== */
 /* Message Page Component */
-/* line 400, ../sass/styles.sass */
+/* line 403, ../sass/styles.sass */
 app-messages {
   width: 100%;
   left: 0;
   right: 0; }
 
 /* Page Headline */
-/* line 407, ../sass/styles.sass */
+/* line 410, ../sass/styles.sass */
 app-messages > h3 {
   text-align: center;
-  color: #252525;
+  color: #1F1F1F;
   font-size: 20px; }
 
 /* Inbox / Error Message Container */
-/* line 413, ../sass/styles.sass */
+/* line 416, ../sass/styles.sass */
 app-messages > div {
   width: 90%;
   margin: 10px 5%; }
 
 /* Mailbox navigation */
-/* line 419, ../sass/styles.sass */
+/* line 422, ../sass/styles.sass */
 #messagesNav {
   width: 48%;
   margin: 5px;
@@ -474,38 +475,38 @@ app-messages > div {
   border-bottom: thin solid; }
 
 /* Mailbox navigation button */
-/* line 428, ../sass/styles.sass */
+/* line 431, ../sass/styles.sass */
 .messNavOption {
   margin: 5px 10px; }
 
 /* A Message */
-/* line 432, ../sass/styles.sass */
+/* line 435, ../sass/styles.sass */
 .userMessage {
   width: 90%;
   border-bottom: thin solid;
   margin: 0 5%; }
 
 /* From field */
-/* line 438, ../sass/styles.sass */
+/* line 441, ../sass/styles.sass */
 .messageField {
   text-align: center;
   padding: 5px;
   margin: 5px; }
 
 /* Field title */
-/* line 444, ../sass/styles.sass */
+/* line 447, ../sass/styles.sass */
 .pageCategory {
   text-align: center;
-  color: #252525; }
+  color: #1F1F1F; }
 
 /* Field text */
-/* line 449, ../sass/styles.sass */
+/* line 452, ../sass/styles.sass */
 .pageData {
   text-align: center;
-  color: #161616; }
+  color: #000000; }
 
 /* Message buttons */
-/* line 454, ../sass/styles.sass */
+/* line 457, ../sass/styles.sass */
 .userMessage .buttons {
   display: flex;
   justify-content: center;
@@ -513,23 +514,23 @@ app-messages > div {
   padding: 5px; }
 
 /* Delete Message button */
-/* line 461, ../sass/styles.sass */
+/* line 464, ../sass/styles.sass */
 .userMessage .deleteButton {
   margin: 5px 5px; }
 
 /* Reply button */
-/* line 465, ../sass/styles.sass */
+/* line 468, ../sass/styles.sass */
 .userMessage .messageButton {
   margin: 5px 5px; }
 
 /* Inbox / Outbox / Threads / single thread container */
-/* line 469, ../sass/styles.sass */
+/* line 472, ../sass/styles.sass */
 .userThreads, .threadMessages, .mailboxMessages {
   border: none;
   list-style: none; }
 
 /* A message thread */
-/* line 475, ../sass/styles.sass */
+/* line 478, ../sass/styles.sass */
 .userThread {
   margin: 8px;
   padding: 5px;
@@ -538,7 +539,7 @@ app-messages > div {
   border-bottom: thin solid; }
 
 /* Message thread buttons */
-/* line 483, ../sass/styles.sass */
+/* line 486, ../sass/styles.sass */
 .threadBtns {
   display: flex;
   justify-content: center;
@@ -546,64 +547,64 @@ app-messages > div {
   padding: 5px; }
 
 /* View thread button */
-/* line 490, ../sass/styles.sass */
+/* line 493, ../sass/styles.sass */
 .viewButton {
   margin: 5px 5px;
   padding: 0 5px; }
 
 /* Delete thread button */
-/* line 495, ../sass/styles.sass */
+/* line 498, ../sass/styles.sass */
 .userThread .deleteButton {
   margin: 5px 5px; }
 
 /* Login div */
 /* Error Message Text */
-/* line 503, ../sass/styles.sass */
+/* line 506, ../sass/styles.sass */
 .errorMessage {
   text-align: center;
   padding-bottom: 5px;
   padding-top: 10px; }
 
 /* Login Link */
-/* line 509, ../sass/styles.sass */
+/* line 512, ../sass/styles.sass */
 #logIn {
   text-align: center;
   margin: 10px Calc((100% - 50px) / 2);
-  color: #3f3a3a; }
+  color: #404040; }
 
 /* =================== New Item Page Styling =================== */
 /* New Item Page Component */
-/* line 516, ../sass/styles.sass */
+/* line 519, ../sass/styles.sass */
 app-new-item {
   width: 100%;
   left: 0;
   right: 0; }
 
 /* New Item frame */
-/* line 523, ../sass/styles.sass */
+/* line 526, ../sass/styles.sass */
 #newItem {
   width: 90%;
   margin: 10px 5%; }
 
 /* New Item title */
-/* line 528, ../sass/styles.sass */
+/* line 531, ../sass/styles.sass */
 #newItem h3 {
   text-align: center;
-  color: #252525;
+  color: #1F1F1F;
   font-size: 20px;
   padding: 10px;
   margin: 0; }
 
 /* New Item field + title */
-/* line 536, ../sass/styles.sass */
+/* line 539, ../sass/styles.sass */
 .formElement {
   text-align: center;
-  color: #161616;
+  color: #000000;
   padding: 7px 2px;
   width: 100%; }
 
 /* New Item field button */
-/* line 543, ../sass/styles.sass */
+/* line 546, ../sass/styles.sass */
 .sendData {
   padding: 5px;
   margin: 10px Calc((100% - 28px) / 2);
@@ -612,50 +613,50 @@ app-new-item {
 /* =================== Error Page Styling =================== */
 /* Error Page Component */
 /* Error Page frame */
-/* line 554, ../sass/styles.sass */
+/* line 557, ../sass/styles.sass */
 #errorPage {
   width: 80%;
   margin: 15px 10%; }
 
 /* Error Page title */
-/* line 560, ../sass/styles.sass */
+/* line 563, ../sass/styles.sass */
 #errorPage h3 {
   text-align: center;
-  color: #252525;
+  color: #1F1F1F;
   font-size: 20px;
   padding: 10px;
   margin: 0; }
 
 /* Error Page text */
-/* line 568, ../sass/styles.sass */
+/* line 571, ../sass/styles.sass */
 .pageData {
   text-align: center;
-  color: #161616;
+  color: #000000;
   font-size: 16px;
   padding: 10px 2px; }
 
 /* Error Page error code */
-/* line 575, ../sass/styles.sass */
+/* line 578, ../sass/styles.sass */
 #errorCode {
   text-align: center;
-  color: #161616;
+  color: #000000;
   font-size: 13px;
   padding: 10px 2px; }
 
 /* Go Back Button */
-/* line 582, ../sass/styles.sass */
+/* line 585, ../sass/styles.sass */
 #backBtn {
   padding: 2px;
   margin: 7px Calc((100% - 20px) / 2); }
 
 /* Arrow in Go Back Button */
-/* line 587, ../sass/styles.sass */
+/* line 590, ../sass/styles.sass */
 .fa-arrow-alt-circle-left {
   font-size: 18px; }
 
 /* =================== Popup Styling =================== */
 /* Modal box */
-/* line 592, ../sass/styles.sass */
+/* line 595, ../sass/styles.sass */
 #modalBox {
   display: block;
   height: 100%;
@@ -666,7 +667,7 @@ app-new-item {
   top: 0; }
 
 /* Edit popup */
-/* line 602, ../sass/styles.sass */
+/* line 605, ../sass/styles.sass */
 #editPopup {
   background-color: #FFFFFF;
   box-shadow: 12px 15px 20px 0 rgba(46, 61, 73, 0.5);
@@ -682,14 +683,14 @@ app-new-item {
   left: 15%; }
 
 /* Exit button */
-/* line 617, ../sass/styles.sass */
+/* line 620, ../sass/styles.sass */
 #exitButton {
   margin: 5px Calc(100% - 35px) 5px 2px; }
 
 /* =================== Loader Component Styling =================== */
 /* Via https://www.w3schools.com/howto/howto_css_loader.asp */
 /* Loader */
-/* line 623, ../sass/styles.sass */
+/* line 626, ../sass/styles.sass */
 #loading {
   position: relative;
   display: flex;
@@ -701,13 +702,13 @@ app-new-item {
   margin: 10%; }
 
 /* Loader text */
-/* line 634, ../sass/styles.sass */
+/* line 637, ../sass/styles.sass */
 #loading #loadingMessage {
-  color: #252525;
+  color: #1F1F1F;
   font-size: 18px; }
 
 /* Loader spinner */
-/* line 639, ../sass/styles.sass */
+/* line 642, ../sass/styles.sass */
 #loading .spinner {
   height: 100px;
   width: 100px;
@@ -728,7 +729,7 @@ app-new-item {
 /* =================== Header Message Component Styling =================== */
 /* Via https://www.w3schools.com/howto/howto_css_loader.asp */
 /*  Header Message component */
-/* line 660, ../sass/styles.sass */
+/* line 663, ../sass/styles.sass */
 app-header-message {
   position: absolute;
   top: 0;
@@ -741,7 +742,7 @@ app-header-message {
   height: 20px; }
 
 /*  Header Message div */
-/* line 672, ../sass/styles.sass */
+/* line 675, ../sass/styles.sass */
 app-header-message #headerMessage {
   left: 0;
   right: 0;
@@ -759,15 +760,15 @@ app-header-message #headerMessage {
   margin: 0 5%; }
 
 /*  Header Message message */
-/* line 689, ../sass/styles.sass */
+/* line 692, ../sass/styles.sass */
 #headerMessage #loadingMessage {
-  color: #252525;
+  color: #1F1F1F;
   font-size: 16px;
   margin: 0;
   padding: 0; }
 
 /*  Header Message spinner */
-/* line 696, ../sass/styles.sass */
+/* line 699, ../sass/styles.sass */
 #headerMessage .spinner {
   border: 3px solid #f3f3f3;
   border-top: 3px solid #3498db;
@@ -785,7 +786,7 @@ app-header-message #headerMessage {
     transform: rotate(360deg); } }
 /* =================== About Component Styling =================== */
 /* About Component */
-/* line 714, ../sass/styles.sass */
+/* line 717, ../sass/styles.sass */
 app-about {
   width: 90%;
   padding: 0 5%;
@@ -793,30 +794,30 @@ app-about {
   right: 0; }
 
 /* About component title */
-/* line 722, ../sass/styles.sass */
+/* line 725, ../sass/styles.sass */
 #aboutTitle {
   text-align: center;
-  color: #252525; }
+  color: #1F1F1F; }
 
 /* About component text */
-/* line 727, ../sass/styles.sass */
+/* line 730, ../sass/styles.sass */
 .aboutText {
   padding: 5px;
   margin: 5px 10px;
-  color: #161616;
+  color: #000000;
   font-size: 18px; }
 
 /* About component links */
-/* line 734, ../sass/styles.sass */
+/* line 737, ../sass/styles.sass */
 .aboutLink {
   text-align: center;
-  color: #3f3a3a;
+  color: #404040;
   font-size: 17px;
   margin: 10px 40%; }
 
 /* =================== Search Results Component Styling =================== */
 /* Search Results Component */
-/* line 742, ../sass/styles.sass */
+/* line 745, ../sass/styles.sass */
 app-search-results {
   width: 90%;
   padding: 0 5%;
@@ -824,26 +825,26 @@ app-search-results {
   right: 0; }
 
 /* Search Results title */
-/* line 750, ../sass/styles.sass */
+/* line 753, ../sass/styles.sass */
 app-search-results h2 {
   font-size: 24px;
   padding-top: 10px;
   margin-top: 0; }
 
 /* Results summary title */
-/* line 757, ../sass/styles.sass */
+/* line 760, ../sass/styles.sass */
 #resultSummary {
   text-align: center; }
 
 /* Users / Posts title */
-/* line 761, ../sass/styles.sass */
+/* line 764, ../sass/styles.sass */
 app-search-results h3 {
   text-align: center;
-  color: #252525;
+  color: #1F1F1F;
   font-size: 20px; }
 
 /* Results list */
-/* line 767, ../sass/styles.sass */
+/* line 770, ../sass/styles.sass */
 .searchResults {
   border-radius: 5px;
   width: 80%;
@@ -853,7 +854,7 @@ app-search-results h3 {
 /* Result item */
 /* =================== Notifications Tab Component Styling =================== */
 /* Notifications Component */
-/* line 779, ../sass/styles.sass */
+/* line 782, ../sass/styles.sass */
 app-notifications {
   width: 40%;
   float: right;
@@ -864,9 +865,9 @@ app-notifications {
   margin: 20px 5% 20px 55%; }
 
 /* Notifications Title */
-/* line 790, ../sass/styles.sass */
+/* line 793, ../sass/styles.sass */
 app-notifications h4 {
-  color: #252525;
+  color: #1F1F1F;
   text-align: center;
   padding: 5px 5px 0;
   margin: 10px 5px;
@@ -874,7 +875,7 @@ app-notifications h4 {
 
 /* =================== Admin Dashboard Component Styling =================== */
 /* Admin Dashboard Component */
-/* line 799, ../sass/styles.sass */
+/* line 802, ../sass/styles.sass */
 app-admin-dashboard {
   width: 90%;
   padding: 0 5%;
@@ -882,55 +883,55 @@ app-admin-dashboard {
   right: 0; }
 
 /* Admin Dashboard navigation menu */
-/* line 807, ../sass/styles.sass */
+/* line 810, ../sass/styles.sass */
 #adminNav {
   width: 90%;
   margin: 5px;
   text-align: center; }
 
 /* Admin Dashboard navigation menu item */
-/* line 813, ../sass/styles.sass */
+/* line 816, ../sass/styles.sass */
 .adminNavItem {
   margin: 0 5px;
-  color: #3f3a3a;
+  color: #404040;
   text-align: center;
   font-size: 18px; }
 
 /* Admin Dashboard title */
-/* line 820, ../sass/styles.sass */
+/* line 823, ../sass/styles.sass */
 app-admin-dashboard h3 {
-  color: #252525;
+  color: #1F1F1F;
   text-align: center;
   font-size: 20px; }
 
 /* Admin Dashboard main page intro text */
-/* line 826, ../sass/styles.sass */
+/* line 829, ../sass/styles.sass */
 .adminText {
   text-align: center;
   padding: 5px; }
 
 /* Admin Dashboard main page list */
-/* line 831, ../sass/styles.sass */
+/* line 834, ../sass/styles.sass */
 #adminCategories {
   padding: 0; }
 
 /* Admin Dashboard main page list item */
-/* line 835, ../sass/styles.sass */
+/* line 838, ../sass/styles.sass */
 .adminCategory {
   list-style: none;
   margin: 10px 5px;
   padding: 0; }
 
 /* Admin Dashboard sub-section title */
-/* line 841, ../sass/styles.sass */
+/* line 844, ../sass/styles.sass */
 .subTitle {
-  color: #252525;
+  color: #1F1F1F;
   text-align: center;
   font-size: 17px; }
 
 /* =================== Alert Styling =================== */
 /* Base Alert */
-/* line 848, ../sass/styles.sass */
+/* line 851, ../sass/styles.sass */
 .alertMessage {
   width: 70%;
   box-shadow: 12px 15px 20px 0 rgba(46, 61, 73, 0.5);
@@ -946,40 +947,40 @@ app-admin-dashboard h3 {
   z-index: 100; }
 
 /* Alert Title */
-/* line 863, ../sass/styles.sass */
+/* line 866, ../sass/styles.sass */
 .alertType {
   margin: 0;
   padding: 5px; }
 
 /* Alert Text */
-/* line 868, ../sass/styles.sass */
+/* line 871, ../sass/styles.sass */
 .alertText {
   font-size: 16px; }
 
 /* Alert Button */
-/* line 872, ../sass/styles.sass */
+/* line 875, ../sass/styles.sass */
 #alertButton {
   margin: 10px;
   border-radius: 5px; }
 
 /* Success Alert */
-/* line 877, ../sass/styles.sass */
+/* line 880, ../sass/styles.sass */
 .Success {
   background-color: rgba(46, 161, 60, 0.9); }
 
 /* Error Alert */
-/* line 881, ../sass/styles.sass */
+/* line 884, ../sass/styles.sass */
 .Error {
   background-color: rgba(203, 72, 72, 0.95); }
 
 /* Notification Alert */
-/* line 885, ../sass/styles.sass */
+/* line 888, ../sass/styles.sass */
 .Notification {
-  background-color: #a3cad7; }
+  background-color: #FFFFFF; }
 
 /* =================== Footer Styling =================== */
 /* Site Footer */
-/* line 890, ../sass/styles.sass */
+/* line 893, ../sass/styles.sass */
 #siteFooter {
   position: fixed;
   bottom: 0;
@@ -988,7 +989,7 @@ app-admin-dashboard h3 {
   max-width: 100%; }
 
 /* Footer text */
-/* line 898, ../sass/styles.sass */
+/* line 901, ../sass/styles.sass */
 .footerText {
   text-align: center;
   font-size: 14px;

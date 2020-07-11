@@ -299,22 +299,35 @@ app-main-page
 .hugButton
 	width: 33px
 	border: none
+	padding: 5px
+
+/* Report Button */
+.reportButton
+	border: none
+	margin: 10px auto
+	padding: 5px
 
 /* Send Message Button */
 .messageButton
 	margin: 10px auto
+	border: none
+	padding: 5px
 
 /* Edit Button */
 .editButton
 	margin: 10px auto
+	border: none
+	padding: 5px
 
 /* Delete Button */
 .deleteButton
 	margin: 10px auto
+	border: none
+	padding: 5px
 
 /* Button icons */
-.fa-gratipay, .fa-edit, .fa-times
-	font-size: 20px
+.fa-gratipay, .fa-comment, .fa-flag, .fa-edit, .fa-times
+	font-size: 22px
 
 /* Main page error message */
 app-main-page .errorMessage
@@ -417,7 +430,7 @@ app-my-posts
 	font-size: 14px
 
 /* Post buttons */
-.editButton, .deleteButton
+.userPost .editButton, .userPost .deleteButton
 	margin: 10px Calc((100% - 140px) / 6)
 
 /* Notification block in user's posts */

@@ -63,11 +63,6 @@ body
 	position: relative
 	display: inline-block
 
-.newNotification
-	padding: 5px
-	position: relative
-	display: inline-block
-
 /* Notification badge */
 .badge
 	position: absolute
@@ -76,13 +71,13 @@ body
 	padding: 3px 8px
 	border-radius: 50%
 	background: $boxesBackground
-	color: white
+	color: $headlineColour
 	font-size: 14px
 
 /* Skip link */
 .skip-link
 	position: absolute
-	left: -100px
+	left: -400px
 
 /* Skip link when focused */
 .skip-link:focus
@@ -99,9 +94,10 @@ body
 /* =================== Header Styling =================== */
 /* Site Header */
 #siteHeader
-	width: 100%
-	max-width: 100%
+	width: 94%
+	max-width: 94%
 	background-color: $mainBackground
+	margin: 0 3%
 	position: fixed
 	top: 0
 	left: 0
@@ -125,26 +121,62 @@ body
 	color: $headlineColour
 	font-size: 16px
 
-/* Main Title */
-#mainTitle
-	color: $headlineColour
-	text-align: center
-	padding: 5px 5px 0
-	margin: 5px 5px 10px
+/* Site logo */
+#siteLogo
+	margin: 0 10px 0 0
+	padding: 0 10px 0 0
+	height: 100px
+	width: 100px
 
 /* Navigation Menu */
 #navMenu
-	width: 80%
-	max-width: 80%
-	padding: 5px 10% 10px
+	width: 100%
+	max-width: 100%
+	left: 0
+	top: 0
+	padding: 10px 0
 	display: flex
-	align-content: space-between
+	align-items: center
 	justify-content: space-between
+	border-bottom: thin solid #cfcfcf
 
 /* Navigation Item */
 .navLink
 	color: $linkColour
-	font-size: 18px
+	display: block
+	text-align: center
+	border: none
+	padding: 0 15px
+	text-decoration: none
+
+/* Navigation Item (hover) */
+.navLink :hover
+	color: #f26363
+
+/* Navigation item icon */
+.navIcon
+	font-size: 30px
+	text-align: content
+
+/* Navigation item text */
+.navLinkText
+	font-size: 14px
+	padding-top: 5px
+
+/* Navigation buttons (notifications / search) */
+.navButton
+	font-size: 24px
+	text-align: center
+
+/* Notifications button */
+.newNotification
+	padding: 5px
+	margin-left: 20px
+	position: relative
+	display: inline-block
+
+.newNotification .badge
+	background: #cfcfcf
 
 /* Search form */
 #search
@@ -272,7 +304,7 @@ app-main-page
 	margin: 10px auto
 
 /* Button icons */
-.fa-gratipay, .fa-comments, .fa-edit, .fa-times
+.fa-gratipay, .fa-edit, .fa-times
 	font-size: 20px
 
 /* Main page error message */
@@ -751,10 +783,12 @@ app-search-results
 
 /* Search Results title */
 app-search-results h2
-	@extend #mainTitle
+	color: $headlineColour
+	text-align: center
+	padding: 5px 5px 0
+	margin: 0 5px 10px
 	font-size: 24px
 	padding-top: 10px
-	margin-top: 0
 	
 /* Results summary title */
 #resultSummary

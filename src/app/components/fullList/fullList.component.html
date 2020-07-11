@@ -14,7 +14,7 @@
 					<button class="appButton hugButton" (click)="sendHug(item.id)" [attr.aria-labelledby]="'pHug ' + 'nUser' + item.id" name="send a hug"><i class="fab fa-gratipay"></i></button>
 					<span class="badge" aria-describedby="pGivenH">{{ item.givenHugs }}</span>
 				</div>
-				<a [routerLink]="['/new', 'Message']" [queryParams]="{user: item.user, userID: item.userId}" class="appButton messageButton" [attr.aria-labelledby]="'pMessage ' + 'nUser' + item.id" name="send a message"><i class="fas fa-comments"></i></a>
+				<a [routerLink]="['/new', 'Message']" [queryParams]="{user: item.user, userID: item.userId}" class="appButton messageButton" [attr.aria-labelledby]="'pMessage ' + 'nUser' + item.id" name="send a message"><i class="far fa-comment"></i></a>
 				<button class="appButton reportButton" (click)="reportPost(item)" [attr.aria-labelledby]="'pReport ' + 'nPost' + item.id" name="report"><i class="fas fa-flag"></i></button>
 				<button *ngIf="authService.canUser('patch:any-post')" class="appButton editButton" (click)="editPost(item)" [attr.aria-labelledby]="'pEdit ' + 'nPost' + item.id"><i class="far fa-edit"></i></button>
 				<button *ngIf="authService.canUser('delete:any-post')" class="appButton deleteButton" (click)="deletePost(item.id)" [attr.aria-labelledby]="'pDelete ' + 'nPost' + item.id"><i class="fas fa-times"></i></button>

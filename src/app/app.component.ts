@@ -14,20 +14,8 @@ import { NotificationService } from './services/notifications.service';
   templateUrl: './app.component.html'
 })
 export class AppComponent implements OnInit {
-  navTabs = [{
-    name: 'Home',
-    link: '/'
-  }, {
-    name: 'Messages',
-    link: '/messages'
-  }, {
-    name: 'User Page',
-    link: '/user'
-  }, {
-    name: 'About',
-    link: '/about'
-  }];
   showNotifications = false;
+  showSearch = false;
 
   constructor(
     public authService:AuthService,
@@ -121,6 +109,24 @@ export class AppComponent implements OnInit {
     // if it's not on, open it
     else {
       this.showNotifications = true;
+    }
+  }
+
+  /*
+  Function Name: toggleSearch()
+  Function Description: Toggles the search.
+  Parameters: None.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  toggleSearch() {
+    // if the search is displayed, close it
+    if(this.showSearch) {
+      this.showSearch = false;
+    }
+    // otherwise show it
+    else {
+      this.showSearch = true;
     }
   }
 }

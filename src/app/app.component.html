@@ -31,9 +31,9 @@
 			<button class="navLink" (click)="toggleNotifications()"><i class="far fa-bell navButton" aria-label="notifications"></i></button>
 			<span class="badge">{{ notificationService.newNotifications }}</span>
 		</div>
-		<button class="navLink"><i class="fas fa-search navButton" aria-label="open search"></i></button>
+		<button class="navLink" (click)="toggleSearch()"><i class="fas fa-search navButton" aria-label="open search"></i></button>
 	</nav>
-	<form id="search" role="search">
+	<form id="search" role="search" *ngIf="showSearch">
 		<label class="pageCategory" for="searchQuery" id="searchLabel">Search: </label>
 		<input type="text" id="searchQuery" placeholder="Search" #searchQuery>
 		<button type="submit" class="appButton sendData" (click)="searchApp($event,searchQuery.value)">Search</button>

@@ -10,7 +10,7 @@ $linkColour: #404040
 /* Component Sample */
 #compSample
 	position: absolute
-	top: 160px
+	top: 130px
 	bottom: 100px
 	overflow-y: scroll
 	overflow-x: hidden
@@ -20,6 +20,12 @@ $linkColour: #404040
 	border: thin solid rgba(37,37,37,1.00)
 	border-radius: 5px
 	overflow-y: scroll
+
+/* Item (message/post) Sample */
+#itemSample
+	border: thin solid #FFFFFF
+	border-radius: 10px
+	box-shadow: 3px 3px 7px 0 rgba(46, 61, 73, 0.5)
 
 /* Error message sample */
 #errorMessBox
@@ -237,15 +243,18 @@ app-main-page
 
 /* Item List */
 .itemList
-	@extend #frameSample
+	overflow-y: scroll
 	height: 90%
 	padding-left: 0
 
 /* New & Suggested Item */
 .newItem, .sugItem
-	@extend #frameSample
-	margin: 8px
+	@extend #itemSample
+	border-color: #FFFFFF
+	box-shadow: 3px 3px 7px 0 rgba(46, 61, 73, 0.5)
+	margin: 20px 5px
 	padding: 5px
+	background: #FFFFFF
 	display: flex
 	flex-wrap: wrap
 

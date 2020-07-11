@@ -3,70 +3,77 @@
 /* line 11, ../sass/styles.sass */
 #compSample, app-main-page, #items, app-user-page, app-messages, app-new-item, app-error-page, app-about, app-search-results, app-notifications, app-admin-dashboard {
   position: absolute;
-  top: 160px;
+  top: 130px;
   bottom: 100px;
   overflow-y: scroll;
   overflow-x: hidden; }
 
 /* Frame Sample */
 /* line 19, ../sass/styles.sass */
-#frameSample, .itemList, .userThreads, .threadMessages, .mailboxMessages, .newItem, .searchResult, .sugItem, app-user-page > div, .userPost, app-messages > div, #errorPage {
+#frameSample, app-user-page > div, .userPost, app-messages > div, #errorPage {
   border: thin solid #252525;
   border-radius: 5px;
   overflow-y: scroll; }
 
-/* Error message sample */
+/* Item (message/post) Sample */
 /* line 25, ../sass/styles.sass */
+#itemSample, .newItem, .searchResult, .sugItem {
+  border: thin solid #FFFFFF;
+  border-radius: 10px;
+  box-shadow: 3px 3px 7px 0 rgba(46, 61, 73, 0.5); }
+
+/* Error message sample */
+/* line 31, ../sass/styles.sass */
 #errorMessBox, #loginBox {
   padding: 10px;
   width: 80%;
   margin: 5px Calc((20% - 20px) / 2); }
 
 /* =================== General Styling =================== */
-/* line 31, ../sass/styles.sass */
+/* line 37, ../sass/styles.sass */
 img, picture, video, embed, textarea, textfield {
   max-width: 100%; }
 
-/* line 34, ../sass/styles.sass */
+/* line 40, ../sass/styles.sass */
 body {
   overflow-x: hidden;
   background: #F2F2F2; }
 
 /* App button */
-/* line 39, ../sass/styles.sass */
+/* line 45, ../sass/styles.sass */
 .appButton {
   background-color: #FFFFFF;
   color: #000000;
   padding: 5px; }
 
 /* Pagination area */
-/* line 45, ../sass/styles.sass */
+/* line 51, ../sass/styles.sass */
 .pagination {
   display: flex;
   align-content: space-between;
   justify-content: space-between; }
 
 /* Page count */
-/* line 51, ../sass/styles.sass */
+/* line 57, ../sass/styles.sass */
 .pageCount {
   padding: 5px;
   margin: 0;
   font-weight: bold; }
 
 /* Hidden items */
-/* line 57, ../sass/styles.sass */
+/* line 63, ../sass/styles.sass */
 .hidden {
   visibility: hidden; }
 
 /* Notification block */
-/* line 61, ../sass/styles.sass */
+/* line 67, ../sass/styles.sass */
 .notification {
   padding: 15px 26px;
   position: relative;
   display: inline-block; }
 
 /* Notification badge */
-/* line 67, ../sass/styles.sass */
+/* line 73, ../sass/styles.sass */
 .badge {
   position: absolute;
   top: -5px;
@@ -78,19 +85,19 @@ body {
   font-size: 14px; }
 
 /* Skip link */
-/* line 78, ../sass/styles.sass */
+/* line 84, ../sass/styles.sass */
 .skip-link {
   position: absolute;
   left: -400px; }
 
 /* Skip link when focused */
-/* line 83, ../sass/styles.sass */
+/* line 89, ../sass/styles.sass */
 .skip-link:focus {
   left: 0;
   top: 0; }
 
 /* ARIA labels */
-/* line 88, ../sass/styles.sass */
+/* line 94, ../sass/styles.sass */
 .labels {
   position: absolute;
   right: -300px;
@@ -99,7 +106,7 @@ body {
 
 /* =================== Header Styling =================== */
 /* Site Header */
-/* line 96, ../sass/styles.sass */
+/* line 102, ../sass/styles.sass */
 #siteHeader {
   width: 94%;
   max-width: 94%;
@@ -110,7 +117,7 @@ body {
   left: 0;
   height: 160px; }
 
-/* line 106, ../sass/styles.sass */
+/* line 112, ../sass/styles.sass */
 #noInternet {
   left: 0;
   right: 0;
@@ -130,7 +137,7 @@ body {
   font-size: 16px; }
 
 /* Site logo */
-/* line 125, ../sass/styles.sass */
+/* line 131, ../sass/styles.sass */
 #siteLogo {
   margin: 0 10px 0 0;
   padding: 0 10px 0 0;
@@ -138,7 +145,7 @@ body {
   width: 100px; }
 
 /* Navigation Menu */
-/* line 132, ../sass/styles.sass */
+/* line 138, ../sass/styles.sass */
 #navMenu {
   width: 100%;
   max-width: 100%;
@@ -151,7 +158,7 @@ body {
   border-bottom: thin solid #cfcfcf; }
 
 /* Navigation Item */
-/* line 144, ../sass/styles.sass */
+/* line 150, ../sass/styles.sass */
 .navLink {
   color: #404040;
   display: block;
@@ -161,42 +168,42 @@ body {
   text-decoration: none; }
 
 /* Navigation Item (hover) */
-/* line 153, ../sass/styles.sass */
+/* line 159, ../sass/styles.sass */
 .navLink :hover {
   color: #f26363; }
 
 /* Navigation item icon */
-/* line 157, ../sass/styles.sass */
+/* line 163, ../sass/styles.sass */
 .navIcon {
   font-size: 30px;
   text-align: content; }
 
 /* Navigation item text */
-/* line 162, ../sass/styles.sass */
+/* line 168, ../sass/styles.sass */
 .navLinkText {
   font-size: 14px;
   padding-top: 5px; }
 
 /* Navigation buttons (notifications / search) */
-/* line 167, ../sass/styles.sass */
+/* line 173, ../sass/styles.sass */
 .navButton {
   font-size: 24px;
   text-align: center; }
 
 /* Notifications button */
-/* line 172, ../sass/styles.sass */
+/* line 178, ../sass/styles.sass */
 .newNotification {
   padding: 5px;
   margin-left: 20px;
   position: relative;
   display: inline-block; }
 
-/* line 178, ../sass/styles.sass */
+/* line 184, ../sass/styles.sass */
 .newNotification .badge {
   background: #cfcfcf; }
 
 /* Search form */
-/* line 182, ../sass/styles.sass */
+/* line 188, ../sass/styles.sass */
 #search {
   display: flex;
   justify-content: center;
@@ -208,7 +215,7 @@ body {
   right: 0; }
 
 /* Search label */
-/* line 193, ../sass/styles.sass */
+/* line 199, ../sass/styles.sass */
 #searchLabel {
   order: 1;
   left: 0;
@@ -216,7 +223,7 @@ body {
   align-self: center; }
 
 /* Search field */
-/* line 200, ../sass/styles.sass */
+/* line 206, ../sass/styles.sass */
 #searchQuery {
   order: 2;
   padding: 0;
@@ -225,7 +232,7 @@ body {
   align-self: center; }
 
 /* Search button */
-/* line 208, ../sass/styles.sass */
+/* line 214, ../sass/styles.sass */
 #search .sendData {
   order: 3;
   margin: 0;
@@ -233,7 +240,7 @@ body {
 
 /* =================== Main Page Styling =================== */
 /* Main Page Component */
-/* line 215, ../sass/styles.sass */
+/* line 221, ../sass/styles.sass */
 app-main-page {
   display: flex;
   padding: 5px;
@@ -243,14 +250,14 @@ app-main-page {
   justify-content: space-between; }
 
 /* Item list container */
-/* line 225, ../sass/styles.sass */
+/* line 231, ../sass/styles.sass */
 .listContainer {
   width: 45%;
   height: 85%;
   margin: 0 10px; }
 
 /* Item List Title */
-/* line 231, ../sass/styles.sass */
+/* line 237, ../sass/styles.sass */
 .listTitle {
   color: #1F1F1F;
   font-size: 20px;
@@ -259,21 +266,25 @@ app-main-page {
   margin-top: 5px; }
 
 /* Item List */
-/* line 239, ../sass/styles.sass */
+/* line 245, ../sass/styles.sass */
 .itemList, .userThreads, .threadMessages, .mailboxMessages {
+  overflow-y: scroll;
   height: 90%;
   padding-left: 0; }
 
 /* New & Suggested Item */
-/* line 245, ../sass/styles.sass */
+/* line 251, ../sass/styles.sass */
 .newItem, .searchResult, .sugItem {
-  margin: 8px;
+  border-color: #FFFFFF;
+  box-shadow: 3px 3px 7px 0 rgba(46, 61, 73, 0.5);
+  margin: 20px 5px;
   padding: 5px;
+  background: #FFFFFF;
   display: flex;
   flex-wrap: wrap; }
 
 /* Item Text */
-/* line 253, ../sass/styles.sass */
+/* line 262, ../sass/styles.sass */
 .itemText {
   order: 0;
   text-align: center;
@@ -283,7 +294,7 @@ app-main-page {
   padding: 0 10%; }
 
 /* Item User */
-/* line 262, ../sass/styles.sass */
+/* line 271, ../sass/styles.sass */
 .itemUser {
   order: 1;
   text-align: center;
@@ -293,14 +304,14 @@ app-main-page {
   padding: 0 10%; }
 
 /* Item User Profile Link */
-/* line 271, ../sass/styles.sass */
+/* line 280, ../sass/styles.sass */
 .profileLink {
   color: #404040;
   text-decoration: none;
   font-weight: bold; }
 
 /* Buttons div */
-/* line 277, ../sass/styles.sass */
+/* line 286, ../sass/styles.sass */
 .buttonsContainer {
   order: 2;
   display: flex;
@@ -309,50 +320,50 @@ app-main-page {
   width: 100%; }
 
 /* Send a hug button container */
-/* line 285, ../sass/styles.sass */
+/* line 294, ../sass/styles.sass */
 .notification {
   margin: 5px auto;
   padding: 6px; }
 
 /* Send Hug Button */
-/* line 290, ../sass/styles.sass */
+/* line 299, ../sass/styles.sass */
 .hugButton {
   width: 33px;
   border: none; }
 
 /* Send Message Button */
-/* line 295, ../sass/styles.sass */
+/* line 304, ../sass/styles.sass */
 .messageButton {
   margin: 10px auto; }
 
 /* Edit Button */
-/* line 299, ../sass/styles.sass */
+/* line 308, ../sass/styles.sass */
 .editButton {
   margin: 10px auto; }
 
 /* Delete Button */
-/* line 303, ../sass/styles.sass */
+/* line 312, ../sass/styles.sass */
 .deleteButton {
   margin: 10px auto; }
 
 /* Button icons */
-/* line 307, ../sass/styles.sass */
+/* line 316, ../sass/styles.sass */
 .fa-gratipay, .fa-edit, .fa-times {
   font-size: 20px; }
 
 /* Main page error message */
-/* line 311, ../sass/styles.sass */
+/* line 320, ../sass/styles.sass */
 app-main-page .errorMessage {
   margin: 10px; }
 
 /* View full list button */
-/* line 315, ../sass/styles.sass */
+/* line 324, ../sass/styles.sass */
 .fullButton {
   margin: 0 Calc((100% - 120px) / 2); }
 
 /* =================== Full List Styling =================== */
 /* List container */
-/* line 320, ../sass/styles.sass */
+/* line 329, ../sass/styles.sass */
 #items {
   width: 60%;
   margin: 0;
@@ -361,7 +372,7 @@ app-main-page .errorMessage {
   right: 0; }
 
 /* Full items list */
-/* line 329, ../sass/styles.sass */
+/* line 338, ../sass/styles.sass */
 #fullItems {
   border: thin solid #252525;
   border-radius: 5px;
@@ -369,28 +380,28 @@ app-main-page .errorMessage {
 
 /* =================== User Page Styling =================== */
 /* User Page Component */
-/* line 336, ../sass/styles.sass */
+/* line 345, ../sass/styles.sass */
 app-user-page {
   width: 100%;
   left: 0;
   right: 0; }
 
 /* User / Error Message Container */
-/* line 343, ../sass/styles.sass */
+/* line 352, ../sass/styles.sass */
 app-user-page > div {
   width: 90%;
   max-width: 90%;
   margin: 10px 5%; }
 
 /* User Page Title */
-/* line 350, ../sass/styles.sass */
+/* line 359, ../sass/styles.sass */
 app-user-page h3 {
   text-align: center;
   margin-top: 5px;
   padding-top: 5px; }
 
 /* User Page */
-/* line 356, ../sass/styles.sass */
+/* line 365, ../sass/styles.sass */
 #userPage {
   display: flex;
   flex-wrap: wrap;
@@ -399,18 +410,18 @@ app-user-page h3 {
   padding: 0 3%; }
 
 /* User Profile */
-/* line 364, ../sass/styles.sass */
+/* line 373, ../sass/styles.sass */
 #profileData {
   order: 0;
   width: 40%; }
 
 /* User Page Field Container */
-/* line 369, ../sass/styles.sass */
+/* line 378, ../sass/styles.sass */
 .profileElement {
   padding: 10px 0; }
 
 /* User Page Field Title */
-/* line 373, ../sass/styles.sass */
+/* line 382, ../sass/styles.sass */
 .pageCategory {
   font-size: 16px;
   font-weight: bold;
@@ -418,91 +429,91 @@ app-user-page h3 {
   color: #1F1F1F; }
 
 /* User Page Field Text */
-/* line 380, ../sass/styles.sass */
+/* line 389, ../sass/styles.sass */
 .pageData {
   font-size: 16px;
   color: #000000; }
 
 /* edit display name button */
-/* line 385, ../sass/styles.sass */
+/* line 394, ../sass/styles.sass */
 #editName {
   margin: 20px 20%; }
 
 /* User Posts */
-/* line 389, ../sass/styles.sass */
+/* line 398, ../sass/styles.sass */
 app-my-posts {
   order: 2;
   width: 55%;
   align-self: flex-start; }
 
 /* User Post */
-/* line 395, ../sass/styles.sass */
+/* line 404, ../sass/styles.sass */
 .userPost {
   padding: 5px;
   margin: 5px; }
 
 /* Post text */
-/* line 401, ../sass/styles.sass */
+/* line 410, ../sass/styles.sass */
 .postText {
   text-align: center;
   font-size: 18px; }
 
 /* Post date */
-/* line 406, ../sass/styles.sass */
+/* line 415, ../sass/styles.sass */
 .postDate {
   text-align: center;
   font-size: 14px; }
 
 /* Post buttons */
-/* line 411, ../sass/styles.sass */
+/* line 420, ../sass/styles.sass */
 .editButton, .deleteButton {
   margin: 10px Calc((100% - 140px) / 6); }
 
 /* Notification block in user's posts */
-/* line 415, ../sass/styles.sass */
+/* line 424, ../sass/styles.sass */
 .userPost .notification {
   margin: 10px Calc((100% - 140px) / 6) 0; }
 
 /* Page count in user's posts */
-/* line 419, ../sass/styles.sass */
+/* line 428, ../sass/styles.sass */
 app-my-posts .pageCount {
   text-align: center; }
 
 /* Logout button */
-/* line 423, ../sass/styles.sass */
+/* line 432, ../sass/styles.sass */
 #logout {
   order: 3;
   margin: 10px 40%; }
 
 /* Login div */
-/* line 428, ../sass/styles.sass */
+/* line 437, ../sass/styles.sass */
 #loginBox {
   padding: 10px 15px;
   margin: 5px Calc((20% - 30px) / 2); }
 
 /* =================== Messages Page Styling =================== */
 /* Message Page Component */
-/* line 435, ../sass/styles.sass */
+/* line 444, ../sass/styles.sass */
 app-messages {
   width: 100%;
   left: 0;
   right: 0; }
 
 /* Page Headline */
-/* line 442, ../sass/styles.sass */
+/* line 451, ../sass/styles.sass */
 app-messages > h3 {
   text-align: center;
   color: #1F1F1F;
   font-size: 20px; }
 
 /* Inbox / Error Message Container */
-/* line 448, ../sass/styles.sass */
+/* line 457, ../sass/styles.sass */
 app-messages > div {
   width: 90%;
   margin: 10px 5%; }
 
 /* Mailbox navigation */
-/* line 454, ../sass/styles.sass */
+/* line 463, ../sass/styles.sass */
 #messagesNav {
   width: 48%;
   margin: 5px;
@@ -512,38 +523,38 @@ app-messages > div {
   border-bottom: thin solid; }
 
 /* Mailbox navigation button */
-/* line 463, ../sass/styles.sass */
+/* line 472, ../sass/styles.sass */
 .messNavOption {
   margin: 5px 10px; }
 
 /* A Message */
-/* line 467, ../sass/styles.sass */
+/* line 476, ../sass/styles.sass */
 .userMessage {
   width: 90%;
   border-bottom: thin solid;
   margin: 0 5%; }
 
 /* From field */
-/* line 473, ../sass/styles.sass */
+/* line 482, ../sass/styles.sass */
 .messageField {
   text-align: center;
   padding: 5px;
   margin: 5px; }
 
 /* Field title */
-/* line 479, ../sass/styles.sass */
+/* line 488, ../sass/styles.sass */
 .pageCategory {
   text-align: center;
   color: #1F1F1F; }
 
 /* Field text */
-/* line 484, ../sass/styles.sass */
+/* line 493, ../sass/styles.sass */
 .pageData {
   text-align: center;
   color: #000000; }
 
 /* Message buttons */
-/* line 489, ../sass/styles.sass */
+/* line 498, ../sass/styles.sass */
 .userMessage .buttons {
   display: flex;
   justify-content: center;
@@ -551,23 +562,23 @@ app-messages > div {
   padding: 5px; }
 
 /* Delete Message button */
-/* line 496, ../sass/styles.sass */
+/* line 505, ../sass/styles.sass */
 .userMessage .deleteButton {
   margin: 5px 5px; }
 
 /* Reply button */
-/* line 500, ../sass/styles.sass */
+/* line 509, ../sass/styles.sass */
 .userMessage .messageButton {
   margin: 5px 5px; }
 
 /* Inbox / Outbox / Threads / single thread container */
-/* line 504, ../sass/styles.sass */
+/* line 513, ../sass/styles.sass */
 .userThreads, .threadMessages, .mailboxMessages {
   border: none;
   list-style: none; }
 
 /* A message thread */
-/* line 510, ../sass/styles.sass */
+/* line 519, ../sass/styles.sass */
 .userThread {
   margin: 8px;
   padding: 5px;
@@ -576,7 +587,7 @@ app-messages > div {
   border-bottom: thin solid; }
 
 /* Message thread buttons */
-/* line 518, ../sass/styles.sass */
+/* line 527, ../sass/styles.sass */
 .threadBtns {
   display: flex;
   justify-content: center;
@@ -584,26 +595,26 @@ app-messages > div {
   padding: 5px; }
 
 /* View thread button */
-/* line 525, ../sass/styles.sass */
+/* line 534, ../sass/styles.sass */
 .viewButton {
   margin: 5px 5px;
   padding: 0 5px; }
 
 /* Delete thread button */
-/* line 530, ../sass/styles.sass */
+/* line 539, ../sass/styles.sass */
 .userThread .deleteButton {
   margin: 5px 5px; }
 
 /* Login div */
 /* Error Message Text */
-/* line 538, ../sass/styles.sass */
+/* line 547, ../sass/styles.sass */
 .errorMessage {
   text-align: center;
   padding-bottom: 5px;
   padding-top: 10px; }
 
 /* Login Link */
-/* line 544, ../sass/styles.sass */
+/* line 553, ../sass/styles.sass */
 #logIn {
   text-align: center;
   margin: 10px Calc((100% - 50px) / 2);
@@ -611,20 +622,20 @@ app-messages > div {
 
 /* =================== New Item Page Styling =================== */
 /* New Item Page Component */
-/* line 551, ../sass/styles.sass */
+/* line 560, ../sass/styles.sass */
 app-new-item {
   width: 100%;
   left: 0;
   right: 0; }
 
 /* New Item frame */
-/* line 558, ../sass/styles.sass */
+/* line 567, ../sass/styles.sass */
 #newItem {
   width: 90%;
   margin: 10px 5%; }
 
 /* New Item title */
-/* line 563, ../sass/styles.sass */
+/* line 572, ../sass/styles.sass */
 #newItem h3 {
   text-align: center;
   color: #1F1F1F;
@@ -633,7 +644,7 @@ app-new-item {
   margin: 0; }
 
 /* New Item field + title */
-/* line 571, ../sass/styles.sass */
+/* line 580, ../sass/styles.sass */
 .formElement {
   text-align: center;
   color: #000000;
@@ -641,7 +652,7 @@ app-new-item {
   width: 100%; }
 
 /* New Item field button */
-/* line 578, ../sass/styles.sass */
+/* line 587, ../sass/styles.sass */
 .sendData {
   padding: 5px;
   margin: 10px Calc((100% - 28px) / 2);
@@ -650,13 +661,13 @@ app-new-item {
 /* =================== Error Page Styling =================== */
 /* Error Page Component */
 /* Error Page frame */
-/* line 589, ../sass/styles.sass */
+/* line 598, ../sass/styles.sass */
 #errorPage {
   width: 80%;
   margin: 15px 10%; }
 
 /* Error Page title */
-/* line 595, ../sass/styles.sass */
+/* line 604, ../sass/styles.sass */
 #errorPage h3 {
   text-align: center;
   color: #1F1F1F;
@@ -665,7 +676,7 @@ app-new-item {
   margin: 0; }
 
 /* Error Page text */
-/* line 603, ../sass/styles.sass */
+/* line 612, ../sass/styles.sass */
 .pageData {
   text-align: center;
   color: #000000;
@@ -673,7 +684,7 @@ app-new-item {
   padding: 10px 2px; }
 
 /* Error Page error code */
-/* line 610, ../sass/styles.sass */
+/* line 619, ../sass/styles.sass */
 #errorCode {
   text-align: center;
   color: #000000;
@@ -681,19 +692,19 @@ app-new-item {
   padding: 10px 2px; }
 
 /* Go Back Button */
-/* line 617, ../sass/styles.sass */
+/* line 626, ../sass/styles.sass */
 #backBtn {
   padding: 2px;
   margin: 7px Calc((100% - 20px) / 2); }
 
 /* Arrow in Go Back Button */
-/* line 622, ../sass/styles.sass */
+/* line 631, ../sass/styles.sass */
 .fa-arrow-alt-circle-left {
   font-size: 18px; }
 
 /* =================== Popup Styling =================== */
 /* Modal box */
-/* line 627, ../sass/styles.sass */
+/* line 636, ../sass/styles.sass */
 #modalBox {
   display: block;
   height: 100%;
@@ -704,7 +715,7 @@ app-new-item {
   top: 0; }
 
 /* Edit popup */
-/* line 637, ../sass/styles.sass */
+/* line 646, ../sass/styles.sass */
 #editPopup {
   background-color: #FFFFFF;
   box-shadow: 12px 15px 20px 0 rgba(46, 61, 73, 0.5);
@@ -720,14 +731,14 @@ app-new-item {
   left: 15%; }
 
 /* Exit button */
-/* line 652, ../sass/styles.sass */
+/* line 661, ../sass/styles.sass */
 #exitButton {
   margin: 5px Calc(100% - 35px) 5px 2px; }
 
 /* =================== Loader Component Styling =================== */
 /* Via https://www.w3schools.com/howto/howto_css_loader.asp */
 /* Loader */
-/* line 658, ../sass/styles.sass */
+/* line 667, ../sass/styles.sass */
 #loading {
   position: relative;
   display: flex;
@@ -739,13 +750,13 @@ app-new-item {
   margin: 10%; }
 
 /* Loader text */
-/* line 669, ../sass/styles.sass */
+/* line 678, ../sass/styles.sass */
 #loading #loadingMessage {
   color: #1F1F1F;
   font-size: 18px; }
 
 /* Loader spinner */
-/* line 674, ../sass/styles.sass */
+/* line 683, ../sass/styles.sass */
 #loading .spinner {
   height: 100px;
   width: 100px;
@@ -766,7 +777,7 @@ app-new-item {
 /* =================== Header Message Component Styling =================== */
 /* Via https://www.w3schools.com/howto/howto_css_loader.asp */
 /*  Header Message component */
-/* line 695, ../sass/styles.sass */
+/* line 704, ../sass/styles.sass */
 app-header-message {
   position: absolute;
   top: 0;
@@ -779,7 +790,7 @@ app-header-message {
   height: 20px; }
 
 /*  Header Message div */
-/* line 707, ../sass/styles.sass */
+/* line 716, ../sass/styles.sass */
 app-header-message #headerMessage {
   left: 0;
   right: 0;
@@ -797,7 +808,7 @@ app-header-message #headerMessage {
   margin: 0 5%; }
 
 /*  Header Message message */
-/* line 724, ../sass/styles.sass */
+/* line 733, ../sass/styles.sass */
 #headerMessage #loadingMessage {
   color: #1F1F1F;
   font-size: 16px;
@@ -805,7 +816,7 @@ app-header-message #headerMessage {
   padding: 0; }
 
 /*  Header Message spinner */
-/* line 731, ../sass/styles.sass */
+/* line 740, ../sass/styles.sass */
 #headerMessage .spinner {
   border: 3px solid #f3f3f3;
   border-top: 3px solid #3498db;
@@ -823,7 +834,7 @@ app-header-message #headerMessage {
     transform: rotate(360deg); } }
 /* =================== About Component Styling =================== */
 /* About Component */
-/* line 749, ../sass/styles.sass */
+/* line 758, ../sass/styles.sass */
 app-about {
   width: 90%;
   padding: 0 5%;
@@ -831,13 +842,13 @@ app-about {
   right: 0; }
 
 /* About component title */
-/* line 757, ../sass/styles.sass */
+/* line 766, ../sass/styles.sass */
 #aboutTitle {
   text-align: center;
   color: #1F1F1F; }
 
 /* About component text */
-/* line 762, ../sass/styles.sass */
+/* line 771, ../sass/styles.sass */
 .aboutText {
   padding: 5px;
   margin: 5px 10px;
@@ -845,7 +856,7 @@ app-about {
   font-size: 18px; }
 
 /* About component links */
-/* line 769, ../sass/styles.sass */
+/* line 778, ../sass/styles.sass */
 .aboutLink {
   text-align: center;
   color: #404040;
@@ -854,7 +865,7 @@ app-about {
 
 /* =================== Search Results Component Styling =================== */
 /* Search Results Component */
-/* line 777, ../sass/styles.sass */
+/* line 786, ../sass/styles.sass */
 app-search-results {
   width: 90%;
   padding: 0 5%;
@@ -862,7 +873,7 @@ app-search-results {
   right: 0; }
 
 /* Search Results title */
-/* line 785, ../sass/styles.sass */
+/* line 794, ../sass/styles.sass */
 app-search-results h2 {
   color: #1F1F1F;
   text-align: center;
@@ -872,19 +883,19 @@ app-search-results h2 {
   padding-top: 10px; }
 
 /* Results summary title */
-/* line 794, ../sass/styles.sass */
+/* line 803, ../sass/styles.sass */
 #resultSummary {
   text-align: center; }
 
 /* Users / Posts title */
-/* line 798, ../sass/styles.sass */
+/* line 807, ../sass/styles.sass */
 app-search-results h3 {
   text-align: center;
   color: #1F1F1F;
   font-size: 20px; }
 
 /* Results list */
-/* line 804, ../sass/styles.sass */
+/* line 813, ../sass/styles.sass */
 .searchResults {
   border-radius: 5px;
   width: 80%;
@@ -894,7 +905,7 @@ app-search-results h3 {
 /* Result item */
 /* =================== Notifications Tab Component Styling =================== */
 /* Notifications Component */
-/* line 816, ../sass/styles.sass */
+/* line 825, ../sass/styles.sass */
 app-notifications {
   width: 40%;
   float: right;
@@ -905,7 +916,7 @@ app-notifications {
   margin: 20px 5% 20px 55%; }
 
 /* Notifications Title */
-/* line 827, ../sass/styles.sass */
+/* line 836, ../sass/styles.sass */
 app-notifications h4 {
   color: #1F1F1F;
   text-align: center;
@@ -915,7 +926,7 @@ app-notifications h4 {
 
 /* =================== Admin Dashboard Component Styling =================== */
 /* Admin Dashboard Component */
-/* line 836, ../sass/styles.sass */
+/* line 845, ../sass/styles.sass */
 app-admin-dashboard {
   width: 90%;
   padding: 0 5%;
@@ -923,14 +934,14 @@ app-admin-dashboard {
   right: 0; }
 
 /* Admin Dashboard navigation menu */
-/* line 844, ../sass/styles.sass */
+/* line 853, ../sass/styles.sass */
 #adminNav {
   width: 90%;
   margin: 5px;
   text-align: center; }
 
 /* Admin Dashboard navigation menu item */
-/* line 850, ../sass/styles.sass */
+/* line 859, ../sass/styles.sass */
 .adminNavItem {
   margin: 0 5px;
   color: #404040;
@@ -938,32 +949,32 @@ app-admin-dashboard {
   font-size: 18px; }
 
 /* Admin Dashboard title */
-/* line 857, ../sass/styles.sass */
+/* line 866, ../sass/styles.sass */
 app-admin-dashboard h3 {
   color: #1F1F1F;
   text-align: center;
   font-size: 20px; }
 
 /* Admin Dashboard main page intro text */
-/* line 863, ../sass/styles.sass */
+/* line 872, ../sass/styles.sass */
 .adminText {
   text-align: center;
   padding: 5px; }
 
 /* Admin Dashboard main page list */
-/* line 868, ../sass/styles.sass */
+/* line 877, ../sass/styles.sass */
 #adminCategories {
   padding: 0; }
 
 /* Admin Dashboard main page list item */
-/* line 872, ../sass/styles.sass */
+/* line 881, ../sass/styles.sass */
 .adminCategory {
   list-style: none;
   margin: 10px 5px;
   padding: 0; }
 
 /* Admin Dashboard sub-section title */
-/* line 878, ../sass/styles.sass */
+/* line 887, ../sass/styles.sass */
 .subTitle {
   color: #1F1F1F;
   text-align: center;
@@ -971,7 +982,7 @@ app-admin-dashboard h3 {
 
 /* =================== Alert Styling =================== */
 /* Base Alert */
-/* line 885, ../sass/styles.sass */
+/* line 894, ../sass/styles.sass */
 .alertMessage {
   width: 70%;
   box-shadow: 12px 15px 20px 0 rgba(46, 61, 73, 0.5);
@@ -987,40 +998,40 @@ app-admin-dashboard h3 {
   z-index: 100; }
 
 /* Alert Title */
-/* line 900, ../sass/styles.sass */
+/* line 909, ../sass/styles.sass */
 .alertType {
   margin: 0;
   padding: 5px; }
 
 /* Alert Text */
-/* line 905, ../sass/styles.sass */
+/* line 914, ../sass/styles.sass */
 .alertText {
   font-size: 16px; }
 
 /* Alert Button */
-/* line 909, ../sass/styles.sass */
+/* line 918, ../sass/styles.sass */
 #alertButton {
   margin: 10px;
   border-radius: 5px; }
 
 /* Success Alert */
-/* line 914, ../sass/styles.sass */
+/* line 923, ../sass/styles.sass */
 .Success {
   background-color: rgba(46, 161, 60, 0.9); }
 
 /* Error Alert */
-/* line 918, ../sass/styles.sass */
+/* line 927, ../sass/styles.sass */
 .Error {
   background-color: rgba(203, 72, 72, 0.95); }
 
 /* Notification Alert */
-/* line 922, ../sass/styles.sass */
+/* line 931, ../sass/styles.sass */
 .Notification {
   background-color: #FFFFFF; }
 
 /* =================== Footer Styling =================== */
 /* Site Footer */
-/* line 927, ../sass/styles.sass */
+/* line 936, ../sass/styles.sass */
 #siteFooter {
   position: fixed;
   bottom: 0;
@@ -1029,7 +1040,7 @@ app-admin-dashboard h3 {
   max-width: 100%; }
 
 /* Footer text */
-/* line 935, ../sass/styles.sass */
+/* line 944, ../sass/styles.sass */
 .footerText {
   text-align: center;
   font-size: 14px;

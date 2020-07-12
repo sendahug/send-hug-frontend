@@ -1096,6 +1096,8 @@ app-about
 	text-align: center
 	color: $headlineColour
 	font-family: $mainFont
+	font-size: 24px
+	margin: 20px
 
 /* About component text */
 .aboutText
@@ -1103,15 +1105,24 @@ app-about
 	margin: 5px 10px
 	font-family: $mainFont
 	color: $textColour
-	font-size: 18px
+	font-size: 16px
+	line-height: 1.8em
+	/* Responsive styling for screens above 600px width */
+	@media screen and (min-width: 600px)
+		line-height: 2em
 
 /* About component links */
 .aboutLink
 	text-align: center
 	font-family: $mainFont
 	color: $linkColour
-	font-size: 17px
-	margin: 10px 40%
+	font-size: 15px
+	margin: 10px Calc((100% - 100px) / 2) 20px
+	padding-bottom: 20px
+	/* Responsive styling for screens above 700px width */
+	@media screen and (min-width: 700px)
+		font-size: 16px
+		margin: 10px Calc((100% - 105px) / 2) 20px
 
 /* =================== Search Results Component Styling =================== */
 /* Search Results Component */

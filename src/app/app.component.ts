@@ -163,9 +163,7 @@ export class AppComponent implements OnInit, AfterViewChecked {
   Programmer: Shir Bar Lev.
   */
   toggleMenu() {
-    console.log('in')
     let navMenu = document.getElementById('navLinks') as HTMLDivElement;
-    console.log(navMenu);
     // if the menu is displayed, close it
     if(!navMenu.classList.contains('hidden')) {
       navMenu.classList.add('hidden');

@@ -922,13 +922,17 @@ app-error-page
 	@extend #frameSample
 	width: 80%
 	margin: 15px 10%
+	@media screen and (min-width: 690px)
+		width: 550px
+		max-width: 550px
+		margin: 15px Calc((100% - 550px) / 2)
 
 /* Error Page title */
 #errorPage h3
 	text-align: center
 	font-family: $mainFont
 	color: $headlineColour
-	font-size: 20px
+	font-size: 24px
 	padding: 10px
 	margin: 0
 
@@ -950,8 +954,11 @@ app-error-page
 
 /* Go Back Button */
 #backBtn
-	padding: 2px
+	padding: 4px
 	margin: 7px Calc((100% - 20px) / 2)
+	border: none
+	border-radius: 10px
+	background: $mainBackground
 
 /* Arrow in Go Back Button */
 .fa-arrow-alt-circle-left

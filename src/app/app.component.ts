@@ -1,5 +1,5 @@
 // Angular imports
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener, AfterContentInit } from '@angular/core';
 import { Router, NavigationStart } from '@angular/router';
 
 // App-related imports
@@ -13,9 +13,10 @@ import { NotificationService } from './services/notifications.service';
   selector: 'app-root',
   templateUrl: './app.component.html'
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, AfterContentInit {
   showNotifications = false;
   showSearch = false;
+  showMenu = false;
 
   constructor(
     public authService:AuthService,
@@ -60,8 +61,25 @@ export class AppComponent implements OnInit {
     this.router.events.subscribe((event) => {
       if(event instanceof NavigationStart) {
         this.serviceWorkerM.updateSW();
+        // if the menu was open and the user navigated to another page, close it
+        if(this.showMenu) {
+          this.showMenu = false;
+        }
       }
     })
+  }
+
+  /*
+  Function Name: ngAfterViewChecked()
+  Function Description: This method is automatically triggered by Angular once the component's
+                        view is loaded. It checks the width of the screen and determines
+                        whether to display the navigation menu.
+  Parameters: None.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  ngAfterContentInit() {
+    this.showMenu = (document.documentElement.clientWidth > 600) ? true : false;
   }
 
   /*
@@ -127,6 +145,45 @@ export class AppComponent implements OnInit {
     // otherwise show it
     else {
       this.showSearch = true;
+    }
+  }
+
+  /*
+  Function Name: toggleMenu()
+  Function Description: Toggles the menu (for smaller screens, where the full menu
+                        isn't automatically displayed).
+  Parameters: None.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  toggleMenu() {
+    // if the menu is displayed, close it
+    if(this.showMenu) {
+      this.showMenu = false;
+    }
+    // otherwise show it
+    else {
+      this.showMenu = true;
+    }
+  }
+
+  /*
+  Function Name: onResize()
+  Function Description: Checks the viewport size on resize. If it's higher than
+                        500px, displays the menu in desktop mode.
+  Parameters: None.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  @HostListener('window:resize', ['$event'])
+  onResize(_event:Event) {
+    let width = document.documentElement.clientWidth;
+
+    if(width > 600) {
+      this.showMenu = true;
+    }
+    else {
+      this.showMenu = false;
     }
   }
 }

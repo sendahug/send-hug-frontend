@@ -2,36 +2,39 @@
 	<a href="#mainContent" class="skip-link" role="navigation" id="skipLink" aria-label="skip to main content">Skip navigation</a>
 	<div id="noInternet" *ngIf="alertsService.isOffline.value" role="banner">You are not currently connected to the internet. For updated data, reconnect to the internet and try again.</div>
 	<nav id="navMenu" role="navigation">
-		<img src="../assets/img/Logo.svg" alt="send a hug logo" id="siteLogo">
-		<a [routerLink]="['/']" class="navLink">
-			<img src="../assets/img/Home.svg" alt="">
-			<div class="navLinkText">Home</div>
-		</a>
-		<a [routerLink]="['/messages']" class="navLink">
-			<i class="far fa-comments navIcon" aria-label="Messages"></i>
-			<div class="navLinkText">Messages</div>
-		</a>
-		<a *ngIf="authService.authenticated && !authService.userData.blocked" [routerLink]="['/new', 'Post']" class="navLink">
-			<img src="../assets/img/post.svg" alt="">
-			<div class="navLinkText">New Post</div>
-		</a>
-		<a [routerLink]="['/user']" class="navLink">
-			<i class="fas fa-user-circle navIcon" aria-label="Profile"></i>
-			<div class="navLinkText">Profile</div>
-		</a>
-		<a [routerLink]="['/about']" class="navLink">
-			<i class="far fa-compass navIcon" aria-label="About"></i>
-			<div class="navLinkText">About</div>
-		</a>
-		<a *ngIf="authService.canUser('read:admin-board')" [routerLink]="['/admin']" class="navLink">
-			<img src="../assets/img/admin.svg" alt="">
-			<div class="navLinkText">Admin Dashboard</div>
-		</a>
-		<div class="newNotification">
-			<button class="navLink" (click)="toggleNotifications()"><i class="far fa-bell navButton" aria-label="notifications"></i></button>
-			<span class="badge">{{ notificationService.newNotifications }}</span>
+		<a [routerLink]="['/']"><img src="../assets/img/Logo.svg" alt="send a hug logo" id="siteLogo"></a>
+		<button class="navLink hidden" id="menuBtn" (click)="toggleMenu()"><i class="fas fa-bars"></i></button>
+		<div id="navLinks" *ngIf="showMenu">
+			<a [routerLink]="['/']" class="navLink">
+				<img src="../assets/img/Home.svg" alt="">
+				<div class="navLinkText">Home</div>
+			</a>
+			<a [routerLink]="['/messages']" class="navLink">
+				<i class="far fa-comments navIcon" aria-label="Messages"></i>
+				<div class="navLinkText">Messages</div>
+			</a>
+			<a *ngIf="authService.authenticated && !authService.userData.blocked" [routerLink]="['/new', 'Post']" class="navLink">
+				<img src="../assets/img/post.svg" alt="">
+				<div class="navLinkText">New Post</div>
+			</a>
+			<a [routerLink]="['/user']" class="navLink">
+				<i class="fas fa-user-circle navIcon" aria-label="Profile"></i>
+				<div class="navLinkText">Profile</div>
+			</a>
+			<a [routerLink]="['/about']" class="navLink">
+				<i class="far fa-compass navIcon" aria-label="About"></i>
+				<div class="navLinkText">About</div>
+			</a>
+			<a *ngIf="authService.canUser('read:admin-board')" [routerLink]="['/admin']" class="navLink">
+				<img src="../assets/img/admin.svg" alt="">
+				<div class="navLinkText">Admin Panel</div>
+			</a>
+			<div class="newNotification">
+				<button class="navLink" (click)="toggleNotifications()"><i class="far fa-bell navButton" aria-label="notifications" id="navNotific"></i></button>
+				<span class="badge">{{ notificationService.newNotifications }}</span>
+			</div>
+			<button class="navLink" (click)="toggleSearch()"><i class="fas fa-search navButton" aria-label="open search"></i></button>
 		</div>
-		<button class="navLink" (click)="toggleSearch()"><i class="fas fa-search navButton" aria-label="open search"></i></button>
 	</nav>
 	<form id="search" role="search" *ngIf="showSearch">
 		<label class="pageCategory" for="searchQuery" id="searchLabel">Search: </label>
@@ -50,7 +53,7 @@
 
 <footer>
 	<div id="siteFooter" role="contentinfo">
-		<p class="footerText" id="text">Open source project designed and built by <a href="https://github.com/sendahug/sendahug">Send a Hug</a> group members.</p>
+		<p class="footerText" id="text">Open source project designed and built by <a href="https://github.com/sendahug/sendahug">Send a Hug</a> group members. Designed by Macy Tyler.</p>
 		<p class="footerText" id="contact">theobjectivistb@gmail.com</p>
 		<p class="footerText" id="rights">&copy; Send A Hug 2020.</p>
 	</div>

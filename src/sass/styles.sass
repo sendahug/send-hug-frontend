@@ -12,11 +12,18 @@ $mainFont: 'Montserrat', sans-serif
 
 /* Component Sample */
 #compSample
+	z-index: 1
 	position: absolute
-	top: 130px
-	bottom: 100px
 	overflow-y: scroll
 	overflow-x: hidden
+	/* Responsive styling for screens up to 650px width */
+	@media screen and (max-width: 650px)
+		top: 105px
+		bottom: 80px
+	/* Responsive styling for screens above 650px width */
+	@media screen and (min-width: 650px)
+		bottom: 90px
+		top: 120px
 
 /* Frame Sample */
 #frameSample
@@ -64,7 +71,7 @@ body
 
 /* Hidden items */
 .hidden
-	visibility: hidden
+	display: none
 
 /* Notification block */
 .notification
@@ -97,7 +104,6 @@ body
 .labels
 	position: absolute
 	right: -300px
-	visibility: hidden
 	display: none
 
 /* =================== Header Styling =================== */
@@ -110,7 +116,8 @@ body
 	position: fixed
 	top: 0
 	left: 0
-	height: 160px
+	right: 0
+	z-index: 100
 
 #noInternet
 	left: 0
@@ -128,6 +135,7 @@ body
 	background-color: #EAEAEA
 	margin: 0 5%
 	color: $headlineColour
+	font-family: $mainFont
 	font-size: 16px
 
 /* Site logo */
@@ -136,6 +144,20 @@ body
 	padding: 0 10px 0 0
 	height: 100px
 	width: 100px
+	/* Responsive styling for screens above 600px width */
+	@media screen and (min-width: 600px)
+		height: 75px
+		width: 75px
+	/* Responsive styling for screens above 750px width */
+	@media screen and (min-width: 750px)
+		height: 90px
+		width: 90px
+		margin: 0 15px 0 0
+	/* Responsive styling for screens above 800px width */
+	@media screen and (min-width: 800px)
+		padding: 0 15px 0 0
+		height: 100px
+		width: 100px
 
 /* Navigation Menu */
 #navMenu
@@ -143,11 +165,64 @@ body
 	max-width: 100%
 	left: 0
 	top: 0
-	padding: 10px 0 0
 	display: flex
 	align-items: center
 	justify-content: space-between
 	border-bottom: thin solid #cfcfcf
+	/* Responsive styling for screens up to 400px width */
+	@media screen and (max-width: 400px)
+		padding: 0
+	/* Responsive styling for screens above 400px width */
+	@media screen and (min-width: 400px)
+		width: 90%
+		max-width: 90%
+		margin: 0 5%
+	/* Responsive styling for screens above 600px width */
+	@media screen and (min-width: 600px)
+		width: 100%
+		max-width: 100%
+		margin: 0
+		padding: 10px 0 0
+
+/* Menu button */
+#menuBtn
+	/* Responsive styling for screens up to 600px width */
+	@media screen and (max-width: 600px)
+		display: block
+		background: $mainBackground
+	/* Responsive styling for screens above 500px width */
+	@media screen and (min-width: 600px)
+		display: none
+
+/* Menu button icon */
+.fa-bars
+	font-size: 24px
+	text-align: center
+
+/* Navigation menu - inner */
+#navLinks
+	display: flex
+	/* Responsive styling for screens up to 600px width */
+	@media screen and (max-width: 600px)
+		flex-direction: column
+		width: 75%
+		overflow-y: visible
+		position: absolute
+		left: -10px
+		top: 0
+		z-index: 100
+		background: $boxesBackground
+		align-items: center
+		justify-content: center
+		padding: 10px
+	/* Responsive styling for screens above 600px width */
+	@media screen and (min-width: 600px)
+		flex-direction: row
+		width: 100%
+		background: $mainBackground
+		align-items: center
+		justify-content: space-between
+		padding: 10px
 
 /* Navigation Item */
 .navLink
@@ -157,6 +232,17 @@ body
 	border: none
 	padding: 0 15px
 	text-decoration: none
+	/* Responsive styling for screens up to 600px width */
+	@media screen and (max-width: 600px)
+		padding: 10px 15px
+		background: $boxesBackground
+	/* Responsive styling for screens above 600px width */
+	@media screen and (min-width: 600px)
+		background: $mainBackground
+		padding: 0 10px
+	/* Responsive styling for screens above 800px width */
+	@media screen and (min-width: 800px)
+		padding: 0 15px
 
 /* Navigation Item (hover) */
 .navLink :hover
@@ -165,25 +251,71 @@ body
 /* Navigation item icon */
 .navIcon
 	font-size: 30px
-	text-align: content
+	text-align: center
+	/* Responsive styling for screens above 600px width */
+	@media screen and (min-width: 600px)
+		font-size: 26px
+	/* Responsive styling for screens above 650px width */
+	@media screen and (min-width: 650px)
+		font-size: 28px
+	/* Responsive styling for screens above 800px width */
+	@media screen and (min-width: 800px)
+		font-size: 30px
 
 /* Navigation item text */
 .navLinkText
-	font-size: 14px
+	font-size: 13px
 	padding-top: 5px
 	font-family: $mainFont
+	/* Responsive styling for screens above 650px width */
+	@media screen and (min-width: 650px)
+		font-size: 14px
 
 /* Navigation buttons (notifications / search) */
 .navButton
 	font-size: 24px
 	text-align: center
+	/* Responsive styling for screens up to 600px width */
+	@media screen and (max-width: 600px)
+		padding: 10px 15px
+		background: $boxesBackground
+		margin: 0
+	/* Responsive styling for screens above 600px width */
+	@media screen and (min-width: 600px)
+		background: $mainBackground
+		font-size: 20px
+	/* Responsive styling for screens above 650px width */
+	@media screen and (min-width: 650px)
+		margin: 0 5px
+		font-size: 23px
+	/* Responsive styling for screens above 800px width */
+	@media screen and (min-width: 800px)
+		font-size: 24px
 
 /* Notifications button */
 .newNotification
 	padding: 5px
-	margin-left: 20px
 	position: relative
 	display: inline-block
+	background-color: $boxesBackground
+	/* Responsive styling for screens up to 600px width */
+	@media screen and (max-width: 600px)
+		margin-top: 20px
+	/* Responsive styling for screens above 600px width */
+	@media screen and (min-width: 600px)
+		margin-left: 10px
+		background: $mainBackground
+		padding: 6px
+	/* Responsive styling for screens above 750px width */
+	@media screen and (min-width: 750px)
+		padding: 3px
+		margin-left: 5px
+
+/* Notifications button icon */
+#navNotific
+	/* Responsive styling for screens up to 600px width */
+	@media screen and (max-width: 600px)
+		padding: 2px
 
 .newNotification .badge
 	background: #cfcfcf
@@ -228,31 +360,55 @@ body
 app-main-page
 	@extend #compSample
 	display: flex
+	flex-direction: column
 	padding: 5px
 	left: 0
 	right: 0
 	align-content: space-between
 	justify-content: space-between
+	/* Responsive styling for screens above 600px width */
+	@media screen and (min-width: 600px)
+		flex-direction: row
+		justify-content: space-evenly
 
 /* Item list container */
 .listContainer
-	width: 45%
-	height: 85%
-	margin: 0 10px
+	width: 90%
+	margin: 0 5%
+	/* Responsive styling for screens above 400px width */
+	@media screen and (min-width: 400px)
+		width: 80%
+		margin: 0 10%
+	/* Responsive styling for screens above 500px width */
+	@media screen and (min-width: 500px)
+		width: 74%
+		margin: 0 13%
+	/* Responsive styling for screens above 600px width */
+	@media screen and (min-width: 600px)
+		width: 45%
+		height: 85%
+		margin: 0 10px
+
+/* Suggested items list container */
+#suggestedItems
+	/* Responsive styling for screens up to 600px width */
+	@media screen and (max-width: 600px)
+		margin-top: 20px
 
 /* Item List Title */
 .listTitle
 	color: $headlineColour
 	font-family: $mainFont
-	font-size: 26px
+	font-size: 24px
 	text-align: center
 	padding-top: 5px
 	margin-top: 5px
+	/* Responsive styling for screens above 500px width */
+	@media screen and (min-width: 500px)
+		font-size: 26px
 
 /* Item List */
 .itemList
-	overflow-y: scroll
-	height: 90%
 	padding-left: 0
 
 /* New & Suggested Item */
@@ -265,6 +421,9 @@ app-main-page
 	background: #FFFFFF
 	display: flex
 	flex-wrap: wrap
+	/* Responsive styling for screens above 800px width */
+	@media screen and (min-width: 800px)
+		padding: 7px
 
 /* Item Text */
 .itemText
@@ -275,6 +434,9 @@ app-main-page
 	width: 80%
 	margin: 5px
 	padding: 0 10%
+	/* Responsive styling for screens above 500px width */
+	@media screen and (min-width: 500px)
+		font-size: 18.5px
 
 /* Item User */
 .itemUser
@@ -285,6 +447,9 @@ app-main-page
 	width: 80%
 	margin: 5px
 	padding: 0 10%
+	/* Responsive styling for screens above 500px width */
+	@media screen and (min-width: 500px)
+		font-size: 16.5px
 
 /* Item User Profile Link */
 .profileLink
@@ -311,33 +476,21 @@ app-main-page
 	border: none
 	padding: 5px
 
-/* Report Button */
-.reportButton
+/* Report, Send Message, Edit, Delete Buttons */
+.reportButton, .messageButton, .editButton, .deleteButton
 	border: none
 	margin: 10px auto
-	padding: 5px
-
-/* Send Message Button */
-.messageButton
-	margin: 10px auto
-	border: none
-	padding: 5px
-
-/* Edit Button */
-.editButton
-	margin: 10px auto
-	border: none
-	padding: 5px
-
-/* Delete Button */
-.deleteButton
-	margin: 10px auto
-	border: none
 	padding: 5px
 
 /* Button icons */
 .fa-gratipay, .fa-comment, .fa-flag, .fa-edit, .fa-times
 	font-size: 22px
+	/* Responsive styling for screens above 400px width */
+	@media screen and (min-width: 400px)
+		font-size: 24px
+	/* Responsive styling for screens above 500px width */
+	@media screen and (min-width: 500px)
+		font-size: 25px
 
 /* Main page error message */
 app-main-page .errorMessage
@@ -347,7 +500,18 @@ app-main-page .errorMessage
 /* View full list button */
 .fullButton
 	font-family: $mainFont
-	margin: 0 Calc((100% - 120px) / 2)
+	background: $mainBackground
+	padding-bottom: 10px
+	/* Responsive styling for screens up to 400px width */
+	@media screen and (max-width: 400px)
+		margin: 0 Calc((100% - 120px) / 2)
+	/* Responsive styling for screens above 400px width */
+	@media screen and (min-width: 400px)
+		font-size: 18px
+		margin: 0 Calc((100% - 130px) / 2)
+	/* Responsive styling for screens above 600px width */
+	@media screen and (min-width: 600px)
+		margin: 0 Calc((100% - 140px) / 2)
 
 /* =================== Full List Styling =================== */
 /* List container*/
@@ -1013,7 +1177,16 @@ app-admin-dashboard h3
 .footerText
 	font-family: $mainFont
 	text-align: center
-	font-size: 14px
 	padding: 0
-	margin: 10px
 	color: rgba(22,22,22,1.00)
+	/* Responsive styling for screens up to 600px width */
+	@media screen and (max-width: 650px)
+		font-size: 12px
+		margin: 5px
+	/* Responsive styling for screens above 600px width */
+	@media screen and (min-width: 650px)
+		margin: 10px
+		font-size: 13px
+
+.footerText a
+	color: $linkColour

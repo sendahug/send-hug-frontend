@@ -213,7 +213,7 @@ body
 	text-align: center
 
 /* Navigation menu - inner */
-#navLinks
+.navLinks
 	display: flex
 	/* Responsive styling for screens up to 600px width */
 	@media screen and (max-width: 600px)
@@ -236,6 +236,10 @@ body
 		align-items: center
 		justify-content: space-between
 		padding: 10px
+
+/* Navigation menu - inner - hidden */
+.navLinks.hidden
+	display: none
 
 /* Navigation Item */
 .navLink

@@ -1,5 +1,5 @@
 // Angular imports
-import { Component, OnInit, HostListener, AfterContentInit } from '@angular/core';
+import { Component, OnInit, HostListener, AfterViewChecked } from '@angular/core';
 import { Router, NavigationStart } from '@angular/router';
 
 // App-related imports
@@ -13,10 +13,9 @@ import { NotificationService } from './services/notifications.service';
   selector: 'app-root',
   templateUrl: './app.component.html'
 })
-export class AppComponent implements OnInit, AfterContentInit {
+export class AppComponent implements OnInit, AfterViewChecked {
   showNotifications = false;
   showSearch = false;
-  showMenu = false;
 
   constructor(
     public authService:AuthService,
@@ -56,14 +55,15 @@ export class AppComponent implements OnInit, AfterContentInit {
   */
   ngOnInit() {
     this.serviceWorkerM.registerSW();
+    let navMenu = document.getElementById('navLinks') as HTMLDivElement;
 
     // when navigating to another page, check for updates to the ServiceWorker
     this.router.events.subscribe((event) => {
       if(event instanceof NavigationStart) {
         this.serviceWorkerM.updateSW();
         // if the menu was open and the user navigated to another page, close it
-        if(this.showMenu) {
-          this.showMenu = false;
+        if(!navMenu.classList.contains('hidden')) {
+          navMenu.classList.add('hidden');
         }
       }
     })
@@ -78,8 +78,14 @@ export class AppComponent implements OnInit, AfterContentInit {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  ngAfterContentInit() {
-    this.showMenu = (document.documentElement.clientWidth > 600) ? true : false;
+  ngAfterViewChecked() {
+    let navMenu = document.getElementById('navLinks') as HTMLDivElement;
+
+    if(document.documentElement.clientWidth > 600) {
+      if(navMenu.classList.contains('hidden')) {
+        navMenu.classList.remove('hidden');
+      }
+    }
   }
 
   /*
@@ -157,13 +163,16 @@ export class AppComponent implements OnInit, AfterContentInit {
   Programmer: Shir Bar Lev.
   */
   toggleMenu() {
+    console.log('in')
+    let navMenu = document.getElementById('navLinks') as HTMLDivElement;
+    console.log(navMenu);
     // if the menu is displayed, close it
-    if(this.showMenu) {
-      this.showMenu = false;
+    if(!navMenu.classList.contains('hidden')) {
+      navMenu.classList.add('hidden');
     }
     // otherwise show it
     else {
-      this.showMenu = true;
+      navMenu.classList.remove('hidden');
     }
   }
 
@@ -178,12 +187,17 @@ export class AppComponent implements OnInit, AfterContentInit {
   @HostListener('window:resize', ['$event'])
   onResize(_event:Event) {
     let width = document.documentElement.clientWidth;
+    let navMenu = document.getElementById('navLinks') as HTMLDivElement;
 
     if(width > 600) {
-      this.showMenu = true;
+      if(navMenu.classList.contains('hidden')) {
+        navMenu.classList.remove('hidden');
+      }
     }
     else {
-      this.showMenu = false;
+      if(!navMenu.classList.contains('hidden')) {
+        navMenu.classList.add('hidden');
+      }
     }
   }
 }

@@ -4,7 +4,7 @@
 	<nav id="navMenu" role="navigation">
 		<a [routerLink]="['/']"><img src="../assets/img/Logo.svg" alt="send a hug logo" id="siteLogo"></a>
 		<button class="navLink hidden" id="menuBtn" (click)="toggleMenu()"><i class="fas fa-bars"></i></button>
-		<div id="navLinks" *ngIf="showMenu">
+		<div id="navLinks" class="navLinks">
 			<a [routerLink]="['/']" class="navLink">
 				<img src="../assets/img/Home.svg" alt="">
 				<div class="navLinkText">Home</div>

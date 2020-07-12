@@ -872,9 +872,17 @@ app-new-item
 	text-align: center
 	color: $headlineColour
 	font-family: $mainFont
-	font-size: 20px
+	font-size: 24px
 	padding: 10px
 	margin: 0
+
+/* New Item form */
+#newMessage .newItem, #newPost .newItem
+	background: $boxesBackground
+	/* Responsive styling for screens above 525px width */
+	@media screen and (min-width: 525px)
+		width: 90%
+		margin: 20px 6% 20px 4%
 
 /* New Item field + title */
 .formElement
@@ -882,14 +890,27 @@ app-new-item
 	font-family: $mainFont
 	color: $textColour
 	padding: 7px 2px
+	margin: 10px 5px
 	width: 100%
+
+/* New message / post text field */
+.newTextArea
+	margin:  10px
+	border-radius: 10px
+	border: none
+	width: 75%
+	/* Responsive styling for screens above 700px width */
+	@media screen and (min-width: 700px)
+		width: 80%
 
 /* New Item field button */
 .sendData
 	padding: 5px
-	margin: 10px Calc((100% - 28px) / 2)
+	margin: 5px Calc((100% - 102px) / 2) 20px
 	font-family: $mainFont
 	font-size: 14px
+	border-radius: 10px
+	border: none
 
 /* =================== Error Page Styling =================== */
 /* Error Page Component */

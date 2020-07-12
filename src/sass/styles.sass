@@ -699,14 +699,24 @@ app-user-page h3
 /* Role Field Container */
 #roleElement
 	background: $boxesBackground
-	font-size: 18px
-	padding: 4px Calc((90% - 100px) / 2)
+	padding: 4px Calc((90% - 140px) / 2)
 	text-align: center
 	width: 90%
 	margin: 10px
+	text-transform: uppercase
 	/* Responsive styling for screens above 725px width */
 	@media screen and (min-width: 725px)
 		margin: 0 10px
+
+/* Role Field */
+#roleElement .pageCategory
+	font-size: 16px
+	font-weight: normal
+
+/* Role Field data */
+#roleElement .pageData
+	text-transform: uppercase
+	font-size: 16px
 
 /* Hugs Field Container */
 #rHugsElement
@@ -737,13 +747,44 @@ app-user-page h3
 	padding-bottom: 0
 	margin-bottom: 0
 
+#profileData .buttons
+	display: flex
+	flex-direction: column
+	align-content: space-between
+	justify-content: space-between
+	margin: 0 10px 10px
+	/* Responsive styling for screens above 800px width */
+	@media screen and (min-width: 800px)
+		flex-direction: row
+		justify-content: space-between
+		margin: 0 0 10px
+		width: 90%
+
 /* edit display name button */
 #editName, #profileData .reportButton
 	font-family: $mainFont
 	font-size: 15px
-	margin: 10px 20% 20px
+	margin: 5px 5px
 	border: none
 	border-radius: 10px
+	/* Responsive styling for screens above 800px width */
+	@media screen and (min-width: 800px)
+		font-size: 16px
+		margin: 15px auto
+
+/* Logout button */
+#logout
+	font-family: $mainFont
+	order: 3
+	margin: 5px 5px
+	border: none
+	border-radius: 10px
+	margin-top: 10px
+	font-size: 15px
+	/* Responsive styling for screens above 600px width */
+	@media screen and (min-width: 600px)
+		font-size: 16px
+		margin: 15px auto
 
 /* User Posts */
 app-my-posts
@@ -830,12 +871,18 @@ app-my-posts .pageCount
 	margin: 5px 0
 	padding: 2px
 	font-size: 15px
+	/* Responsive styling for screens above 600px width */
+	@media screen and (min-width: 600px)
+		font-size: 16px
 
 /* Page count in user's posts */
 app-my-posts .pagination button
 	margin: 5px 0
 	padding: 5px
 	font-weight: normal
+	/* Responsive styling for screens above 600px width */
+	@media screen and (min-width: 600px)
+		font-size: 16px
 
 /* Delete all posts button */
 #deleteAll
@@ -845,20 +892,10 @@ app-my-posts .pagination button
 	border: none
 	border-radius: 10px
 	margin-top: 10px
-
-/* Logout button */
-#logout
-	font-family: $mainFont
-	order: 3
-	margin: 10px Calc((100% - 90px) / 2)
-	border: none
-	border-radius: 10px
-	margin-top: 10px
-	font-size: 15px
 	/* Responsive styling for screens above 600px width */
 	@media screen and (min-width: 600px)
 		font-size: 16px
-		margin: 15px Calc((100% - 80px) / 2) 10px
+		margin: 10px Calc((100% - 170px) / 2) 20px
 
 /* Login div */
 #loginBox

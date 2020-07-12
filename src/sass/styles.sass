@@ -1039,7 +1039,7 @@ app-header-message
 	left: 0
 	right: 0
 	width: 90%
-	margin: 0 3% 0 7%
+	margin: 0 5%
 	text-align: center
 	z-index: 200
 	height: 20px
@@ -1048,7 +1048,6 @@ app-header-message
 app-header-message #headerMessage
 	left: 0
 	right: 0
-	width: 90%
 	height: 20px
 	max-height: 20px
 	box-shadow: 5px 5px 5px 0 rgba(46, 61, 73, 0.5)
@@ -1065,9 +1064,15 @@ app-header-message #headerMessage
 #headerMessage #loadingMessage
 	color: $headlineColour
 	font-family: $mainFont
-	font-size: 16px
+	font-size: 13px
 	margin: 0
 	padding: 0
+	/* Responsive styling for screens above 390px width */
+	@media screen and (min-width: 390px)
+		font-size: 14px
+	/* Responsive styling for screens above 500px width */
+	@media screen and (min-width: 500px)
+		font-size: 16px
 
 /*  Header Message spinner */
 #headerMessage .spinner
@@ -1077,7 +1082,10 @@ app-header-message #headerMessage
 	width: 15px
 	height: 15px
 	animation: spin 2s linear infinite
-	margin: 0 20px
+	margin: 0 10px
+	/* Responsive styling for screens above 500px width */
+	@media screen and (min-width: 500px)
+		margin: 0 20px
 
 /*  Header Message spinner rotate animation */
 @keyframes spin

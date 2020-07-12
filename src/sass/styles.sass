@@ -71,6 +71,16 @@ body
 	margin: 0 5%
 	padding: 0
 
+/* Pagination button */
+.pagination button
+	font-family: $mainFont
+	background: $buttonBackground
+	color: #FFF
+	border-radius: 10px
+	font-weight: bold
+	padding: 7px
+	border: none
+
 /* Page count */
 .pageCount
 	padding: 5px
@@ -537,17 +547,45 @@ app-main-page .errorMessage
 /* List container*/
 #items
 	@extend #compSample
-	width: 60%
+	width: 90%
 	margin: 0
-	padding: 0 20%
+	padding: 10px 5%
 	left: 0
 	right: 0
 
+#items .listTitle
+	margin-bottom: 0
+
 /* Full items list */
 #fullItems
-	border: thin solid rgba(37,37,37,1.00)
+	width: 100%
+	border: none
 	border-radius: 5px
 	padding: 5px
+	/* Responsive styling for screens above 400px width */
+	@media screen and (min-width: 400px)
+		width: 90%
+		margin: 0 5%
+	/* Responsive styling for screens above 600px width */
+	@media screen and (min-width: 600px)
+		width: 80%
+		margin: 0 10%
+
+/* Full items list pagination */
+#items .pagination
+	margin-bottom: 10px
+	/* Responsive styling for screens above 400px width */
+	@media screen and (min-width: 400px)
+		width: 90%
+		margin: 0 5% 10px
+	/* Responsive styling for screens above 500px width */
+	@media screen and (min-width: 500px)
+		width: 80%
+		margin: 0 10% 15px
+	/* Responsive styling for screens above 550px width */
+	@media screen and (min-width: 550px)
+		width: 400px
+		margin: 0 Calc((100% - 400px) / 2) 10px
 
 /* =================== User Page Styling =================== */
 /* User Page Component */

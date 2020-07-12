@@ -132,6 +132,10 @@ body
 	right: 0
 	z-index: 100
 
+/* Site Header when the popup is on */
+#siteHeader.modal
+	z-index: 0
+
 #noInternet
 	left: 0
 	right: 0
@@ -977,7 +981,7 @@ app-error-page
 	background-color: #FFFFFF
 	box-shadow: 12px 15px 20px 0 rgba(46, 61, 73, 0.5)
 	border-radius: 5px
-	width: 70%
+	width: 80%
 	text-align: center
 	margin-left: auto
 	margin-right: auto
@@ -985,12 +989,75 @@ app-error-page
 	padding: 10px
 	position: fixed
 	top: 100px
-	left: 15%
+	left: 8%
+	/* Responsive styling for screens above 700px width */
+	@media screen and (min-width: 700px)
+		width: 70%
+		left: 15%
+
+/* Edit post textarea */
+#editPopup textarea
+	margin:  10px
+	border-radius: 10px
+	width: 75%
+	/* Responsive styling for screens above 700px width */
+	@media screen and (min-width: 700px)
+		width: 80%
 
 /* Exit button */
 #exitButton
+	@extend .textlessButton
 	margin: 5px Calc(100% - 35px) 5px 2px
 	font-family: $mainFont
+	border-radius: 5px
+	border: none
+
+/* Delete buttons */
+.popupDeleteBtn
+	margin: 5px 10px
+	border-radius: 5px
+	border: none
+
+/* Popup text */
+.popupText
+	font-family: $mainFont
+	font-size: 17px
+	margin: 0 10px 10px
+
+/* Popup title */
+.popupTitle
+	font-family: $mainFont
+	font-size: 20px
+	margin-top: 0
+
+/* Reported post */
+#editPopup .userPost
+	font-size: 15px
+	width: 90%
+	margin:  0 4% 15px
+	/* Responsive styling for screens above 450px width */
+	@media screen and (min-width: 450px)
+		width: 80%
+		margin:  0 9% 15px
+	/* Responsive styling for screens above 550px width */
+	@media screen and (min-width: 550px)
+		width: 400px
+		margin: 0 Calc((100% - 410px) / 2) 15px
+
+/* Report radio button */
+.radioButtonLabel
+	font-size: 16px
+
+/* Report option 3 free text */
+#uOption3Text, #rOption3Text
+	margin: 0 5px
+
+/* Report popup report button */
+#editPopup .reportButton
+	font-size: 16px
+	margin: 5px 10px
+	border-radius: 5px
+	border: none
 
 /* =================== Loader Component Styling =================== */
 /* Via https://www.w3schools.com/howto/howto_css_loader.asp */

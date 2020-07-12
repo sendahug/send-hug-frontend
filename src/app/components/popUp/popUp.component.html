@@ -4,12 +4,13 @@
 		<!-- If the user is editing a post -->
 		<form *ngIf="toEdit == 'post'" id="postEdit" class="postEdit">
 			<div class="formElement">
-				<span class="pageCategory">By:</span> <span class="pageData" aria-describedby="pUser">{{ editedItem.displayName }}</span>
+				<span class="pageCategory">By:</span> <span class="pageData" aria-describedby="pUser">{{ editedItem.user }}</span>
 			</div>
 			<div class="formElement" aria-describedby="pDate">{{ editedItem.date }}</div>
 			<div class="formElement">
 				<label class="pageCategory" for="postText">Text:</label>
-				<textarea #postText id="postText" cols="40" rows="4" aria-describedby="pText">{{ editedItem.text }}</textarea>
+				<br>
+				<textarea #postText id="postText" cols="40" rows="8" aria-describedby="pText">{{ editedItem.text }}</textarea>
 			</div>
 			<button type="submit" class="appButton sendData" (click)="updatePost($event, postText.value)">Update</button>
 		</form>
@@ -18,7 +19,8 @@
 		<form *ngIf="toEdit == 'admin post'" id="adPostEdit" class="postEdit">
 			<div class="formElement">
 				<label class="pageCategory" for="adPostText">Post Text:</label>
-				<textarea #adPostText id="adPostText" cols="40" rows="4">{{ editedItem }}</textarea>
+				<br>
+				<textarea #adPostText id="adPostText" cols="40" rows="8">{{ editedItem }}</textarea>
 			</div>
 			<button type="submit" class="appButton sendData" (click)="editPost($event, adPostText.value, true)">Update Post and Close Report</button>
 			<button type="submit" class="appButton sendData" (click)="editPost($event, adPostText.value, false)">Update Post without Closing Report</button>
@@ -47,31 +49,35 @@
 		
 		<!-- If the user is deleting something -->
 		<div *ngIf="delete && toDelete != 'ad post'" id="deleteItem" class="deleteItem">
-			<div>Are you sure you want to delete this item?</div>
-			<div class="warning">This action is irreversible!</div>
+			<div class="popupText">Are you sure you want to delete this item?</div>
+			<div class="popupText warning">This action is irreversible!</div>
 			
-			<button class="appButton deleteButton" (click)="deleteItem()">Yes, Delete</button>
-			<button class="appButton" (click)="exitEdit()">Never Mind</button>
+			<div class="buttons">
+				<button class="appButton popupDeleteBtn" (click)="deleteItem()">Yes, Delete</button>
+				<button class="appButton popupDeleteBtn" (click)="exitEdit()">Never Mind</button>
+			</div>
 		</div>
 		
 		<!-- If the user is deleting something from admin menu -->
 		<div *ngIf="delete && toDelete == 'ad post'" id="adDeleteItem" class="deleteItem">
-			<div>Are you sure you want to delete this item?</div>
-			<div class="warning">This action is irreversible!</div>
+			<div class="popupText">Are you sure you want to delete this item?</div>
+			<div class="popupText warning">This action is irreversible!</div>
 			
-			<button class="appButton deleteButton" (click)="deletePost(true)">Delete and Close Report</button>
-			<button class="appButton deleteButton" (click)="deletePost(false)">Delete without Closing Report</button>
-			<button class="appButton" (click)="exitEdit()">Never Mind</button>
+			<div class="buttons">
+				<button class="appButton deleteButton popupDeleteBtn" (click)="deletePost(true)">Delete and Close Report</button>
+				<button class="appButton deleteButton popupDeleteBtn" (click)="deletePost(false)">Delete without Closing Report</button>
+				<button class="appButton popupDeleteBtn" (click)="exitEdit()">Never Mind</button>
+			</div>
 		</div>
 		
 		<!-- If the user is reporting a post -->
 		<div *ngIf="report && reportType == 'Post'" id="reportItem">
-			<h3>Report Post</h3>
+			<h3 class="popupTitle">Report Post</h3>
 			<div class="userPost">
 				<div class="itemText" id="reportText">{{ reportedItem.text }}</div>
 				<div class="itemUser">By {{ reportedItem.user }}</div>
 			</div>
-			<div id="reportQ">What is the problem with this post?</div>
+			<div id="reportQ" class="popupText">What is the problem with this post?</div>
 			<form id="reportPost" role="radiogroup">
 				<div class="formElement">
 					<input type="radio" class="radioButton" name="postReport" id="pRadioOption0" value="0" (click)="setSelected($event.target.value)" aria-describedby="reportQ">
@@ -96,9 +102,9 @@
 		
 		<!-- If the user is reporting a post -->
 		<div *ngIf="report && reportType == 'User'" id="reportUser">
-			<h3>Report User</h3>
+			<h3 class="popupTitle">Report User</h3>
 			<a [routerLink]="['/user', reportedItem.userId]" id="uReportText">{{ reportedItem.displayName }}</a>
-			<div id="reportUQ">What is the problem with this user?</div>
+			<div id="reportUQ" class="popupText">What is the problem with this user?</div>
 			<form id="reportUserForm">
 				<div class="formElement">
 					<input type="radio" class="radioButton" name="postReport" id="uRadioOption0" value="0" (click)="setSelected($event.target.value)" aria-describedby="reportUQ">

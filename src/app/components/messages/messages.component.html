@@ -27,7 +27,7 @@
 			</div>
 			<div class="pageCategory">Message:</div> <div class="pageData" aria-describedby="mText" id="{{'text' + message.id}}">{{ message.messageText }}</div>
 			<div class="buttons">
-				<a [routerLink]="['/new', 'Message']" [queryParams]="{user: message.from, userID: message.fromId}" class="appButton messageButton" [attr.aria-describedby]="'mReply ' +  'text' + message.id">Reply</a>
+				<a [routerLink]="['/new', 'Message']" [queryParams]="{user: message.from, userID: message.fromId}" class="appButton messageButton" [attr.aria-describedby]="'mReply ' +  'text' + message.id" *ngIf="messType == 'inbox'">Reply</a>
 				<button class="appButton deleteButton" (click)="deleteMessage(message.id)" [attr.aria-describedby]="'mDelete ' + text + message.id">Delete</button>
 			</div>
 		</li>

@@ -1,13 +1,15 @@
-<h3>Mail</h3>
-<!-- If the user is logged in, displays the user's inbox. -->
-<div id="userInbox" *ngIf="authService.authenticated">
-	<!-- Messages area navigation. -->
-	<div id="messagesNav" role="navigation">
+<div id="mailboxNav">
+	<h3>{{ messType }}</h3>
+<!-- Messages area navigation. -->
+	<div id="messagesNav" role="navigation" *ngIf="authService.authenticated">
 		<button class="messNavOption appButton" (click)="changeMailbox('inbox')">Inbox</button>
 		<button class="messNavOption appButton" (click)="changeMailbox('outbox')">Outbox</button>
 		<button class="messNavOption appButton" (click)="changeMailbox('threads')">Threads</button>
 	</div>
-	
+</div>
+
+<!-- If the user is logged in, displays the user's inbox. -->
+<div id="userInbox" *ngIf="authService.authenticated">
 	<app-loader
 		[waitingFor]="waitFor"></app-loader>
 	
@@ -55,13 +57,13 @@
 	<!-- Message pagination -->
 	<div class="pagination" *ngIf="itemsService.userMessages[messType].length" role="navigation">
 		<button *ngIf="itemsService.userMessagesPage[messType] > 1" class="appButton prevButton" (click)="prevPage()">Previous Page</button>
-		<button *ngIf="itemsService.userMessagesPage[messType] <= 1" class="appButton hidden" (click)="prevPage()">Previous Page</button>
+		<button *ngIf="itemsService.userMessagesPage[messType] <= 1" class="appButton placeHolder">Previous Page</button>
 		<div class="pageCount">Page {{ itemsService.userMessagesPage[messType] }} of {{ itemsService.totalUserMessagesPages[messType] }}</div>
 		<button *ngIf="itemsService.totalUserMessagesPages[messType] > itemsService.userMessagesPage[messType]" class="appButton nextButton" (click)="nextPage()">Next Page</button>
-		<button *ngIf="itemsService.totalUserMessagesPages[messType] <= itemsService.userMessagesPage[messType]" class="appButton hidden" (click)="nextPage()">Next Page</button>
+		<button *ngIf="itemsService.totalUserMessagesPages[messType] <= itemsService.userMessagesPage[messType]" class="appButton placeHolder">Previous Page</button>
 	</div>
-	<button class="appButton deleteButton" (click)="deleteAllMessages(messType)" *ngIf="itemsService.userMessages[messType].length && (messType == 'inbox' || messType == 'outbox')">Delete All Messages</button>
-	<button *ngIf="messType == 'threads' && itemsService.userMessages.threads.length" class="appButton deleteButton" (click)="deleteAllMessages('threads')">Delete All Threads</button>
+	<button class="appButton deleteButton deleteAll" (click)="deleteAllMessages(messType)" *ngIf="itemsService.userMessages[messType].length && (messType == 'inbox' || messType == 'outbox')">Delete All Messages</button>
+	<button *ngIf="messType == 'threads' && itemsService.userMessages.threads.length" class="appButton deleteButton deleteAll" (click)="deleteAllMessages('threads')">Delete All Threads</button>
 
 	<!-- If there are no messages in the user's outbox -->
 	<div *ngIf="!itemsService.userMessages[messType].length && itemsService.isUserMessagesResolved[messType].value">

@@ -2,7 +2,7 @@
 $mainBackground: #F2F2F2
 $boxesBackground: #E2E2E2
 $itemBackground: #FFFFFF
-$buttonBackground: linear-gradient(90deg, rgba(227,49,123,1) 40%, rgba(250,81,108,1) 100%)
+$buttonBackground: linear-gradient(90deg, rgba(224,31,111,1) 40%, rgba(231,8,46,1) 100%)
 $headlineColour: #1F1F1F
 $textColour: #000000
 $linkColour: #404040
@@ -15,7 +15,8 @@ $mainFont: 'Montserrat', sans-serif
 	z-index: 1
 	position: absolute
 	overflow-y: scroll
-	overflow-x: hidden
+	width: 100%
+	max-width: 100%
 	/* Responsive styling for screens up to 650px width */
 	@media screen and (max-width: 650px)
 		top: 105px
@@ -29,7 +30,6 @@ $mainFont: 'Montserrat', sans-serif
 #frameSample
 	border: thin solid rgba(37,37,37,1.00)
 	border-radius: 5px
-	overflow-y: scroll
 
 /* Item (message/post) Sample */
 #itemSample
@@ -53,8 +53,8 @@ body
 
 /* App button */
 .appButton
-	background-color: $itemBackground
-	color: $textColour
+	background: $buttonBackground
+	color: #FFF
 	padding: 5px
 
 /* Pagination area */
@@ -62,16 +62,24 @@ body
 	display: flex
 	align-content: space-between
 	justify-content: space-between
+	width: 90%
+	margin: 0 5%
+	padding: 0
 
 /* Page count */
 .pageCount
 	padding: 5px
 	margin: 0
 	font-weight: bold
+	font-family: $mainFont
 
 /* Hidden items */
 .hidden
 	display: none
+
+/* Space placeholder */
+.placeHolder
+	visibility: hidden
 
 /* Notification block */
 .notification
@@ -644,39 +652,110 @@ app-messages
 	width: 100%
 	left: 0
 	right: 0
+	margin: 0
+	padding: 0
+	display: flex
+	flex-direction: column
+	/* Responsive styling for screens above 800px width */
+	@media screen and (min-width: 800px)
+		flex-direction: row
+
+/* Headline + navigation */
+#mailboxNav
+	/* Responsive styling for screens above 800px width */
+	@media screen and (min-width: 800px)
+		width: 15%
+		margin: 20px 7% 20px 8%
 
 /* Page Headline */
-app-messages > h3
+app-messages h3
 	text-align: center
 	font-family: $mainFont
 	color: $headlineColour
-	font-size: 20px
-
-/* Inbox / Error Message Container */
-app-messages > div
-	@extend #frameSample
-	width: 90%
-	margin: 10px 5%
+	font-size: 24px
+	margin-bottom: 10px
+	text-transform: capitalize
+	/* Responsive styling for screens above 800px width */
+	@media screen and (min-width: 800px)
+		margin: 15px 5px
 
 /* Mailbox navigation */
 #messagesNav
-	width: 48%
-	margin: 5px
-	padding: 5px 20% 5px 30%
+	width: 90%
+	margin: 5px 0
+	padding: 5px 5% 10px 5%
 	left: 0
 	right: 0
-	border-bottom: thin solid
+	align-self: center
+	text-align: center
+	display: flex
+	align-items: center
+	justify-content: center
+	/* Responsive styling for screens above 800px width */
+	@media screen and (min-width: 800px)
+		flex-direction: column
 
 /* Mailbox navigation button */
 .messNavOption
 	font-family: $mainFont
-	margin: 5px 10px
+	margin: 5px
+	background: $buttonBackground
+	color: #FFF
+	border-radius: 10px
+	font-weight: bold
+	padding: 7px
+	/* Responsive styling for screens above 500px width */
+	@media screen and (min-width: 500px)
+		margin: 5px 10px
+	/* Responsive styling for screens above 550px width */
+	@media screen and (min-width: 550px)
+		font-size:  14px
+	/* Responsive styling for screens above 800px width */
+	@media screen and (min-width: 800px)
+		width: 80px
 
-/* A Message */
-.userMessage
+/* Inbox Container */
+#userInbox
+	@extend #frameSample
 	width: 90%
-	border-bottom: thin solid
-	margin: 0 5%
+	margin: 10px 5%
+	background: $boxesBackground
+	border-radius: 5px
+	border: none
+	box-shadow: 5px 5px 7px 0 rgba(46, 61, 73, 0.5)
+	min-height: 100px
+	overflow: auto
+	/* Responsive styling for screens above 450px width */
+	@media screen and (min-width: 450px)
+		width: 84%
+		margin: 10px 8%
+	/* Responsive styling for screens above 550px width */
+	@media screen and (min-width: 550px)
+		width: 80%
+		margin: 10px 10%
+	/* Responsive styling for screens above 700px width */
+	@media screen and (min-width: 700px)
+		width: 70%
+		margin: 10px 15%
+	/* Responsive styling for screens above 800px width */
+	@media screen and (min-width: 800px)
+		width: 65%
+		margin: 2% 10px
+
+/* Inbox / Outbox / Threads / single thread container */
+.userThreads, .threadMessages, .mailboxMessages
+	@extend .itemList
+	border: none
+	list-style: none
+
+/* A Message / message thread */
+.userMessage, .userThread
+	width: 80%
+	border-radius: 10px
+	border: none
+	background: $itemBackground
+	margin: 15px 7%
+	padding: 10px
 
 /* From field */
 .messageField
@@ -697,63 +776,61 @@ app-messages > div
 	font-family: $mainFont
 	color: $textColour
 
-/* Message buttons */
-.userMessage .buttons
+/* Message / message thread buttons */
+.userMessage .buttons, .threadBtns
 	display: flex
 	justify-content: center
 	margin: 5px
 	padding: 5px
 
-/* Delete Message button */
-.userMessage .deleteButton
-	margin: 5px 5px
+/* Messages: Delete Message, Reply buttons */
+/* Threads View thread, Delete thread buttons */
+.userMessage .deleteButton, .userMessage .messageButton, .viewButton, .userThread .deleteButton
+	margin: 5px 10px
 	font-family: $mainFont
-
-/* Reply button */
-.userMessage .messageButton
-	margin: 5px 5px
-	font-family: $mainFont
-
-/* Inbox / Outbox / Threads / single thread container */
-.userThreads, .threadMessages, .mailboxMessages
-	@extend .itemList
+	border-radius: 5px
 	border: none
-	list-style: none
-
-/* A message thread */
-.userThread
-	margin: 8px
 	padding: 5px
-	display: flex
-	flex-direction: column
-	border-bottom: thin solid
+	text-decoration: none
+	font-size: 15px
+	/* Responsive styling for screens above 550px width */
+	@media screen and (min-width: 550px)
+		font-size:  16px
 
-/* Message thread buttons */
-.threadBtns
-	display: flex
-	justify-content: center
-	margin: 5px
-	padding: 5px
-
-/* View thread button */
-.viewButton
+/* Delete all messages / threads button */
+.deleteAll
+	text-align: center
 	font-family: $mainFont
-	margin: 5px 5px
-	padding: 0 5px
-
-/* Delete thread button */
-.userThread .deleteButton
-	font-family: $mainFont
-	margin: 5px 5px
+	font-size: 16px
+	margin: 10px Calc((100% - 170px) / 2) 15px
+	border-radius: 5px
+	border: none
+	width: 170px
 
 /* Login div */
 #loginBox
 	@extend #errorMessBox
+	@extend #frameSample
+	width: 90%
+	margin: 10px 5%
+	padding: 0
+	/* Responsive styling for screens above 450px width */
+	@media screen and (min-width: 450px)
+		width: 84%
+		margin: 10px 8%
+	/* Responsive styling for screens above 550px width */
+	@media screen and (min-width: 550px)
+		width: 80%
+		margin: 10px 10%
+	/* Responsive styling for screens above 700px width */
+	@media screen and (min-width: 700px)
+		width: 70%
+		margin: 10px 15%
 
 /* Error Message Text */
 .errorMessage
 	text-align: center
-	padding-bottom: 5px
+	padding-bottom: 10px
 	padding-top: 10px
 	font-family: $mainFont
 

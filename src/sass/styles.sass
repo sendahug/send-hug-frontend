@@ -7,6 +7,9 @@ $headlineColour: #1F1F1F
 $textColour: #000000
 $linkColour: #404040
 
+/* Fonts */
+$mainFont: 'Montserrat', sans-serif
+
 /* Component Sample */
 #compSample
 	position: absolute
@@ -168,6 +171,7 @@ body
 .navLinkText
 	font-size: 14px
 	padding-top: 5px
+	font-family: $mainFont
 
 /* Navigation buttons (notifications / search) */
 .navButton
@@ -183,6 +187,7 @@ body
 
 .newNotification .badge
 	background: #cfcfcf
+	font-family: $mainFont
 
 /* Search form */
 #search
@@ -201,6 +206,7 @@ body
 	left: 0
 	margin: 0
 	align-self: center
+	font-family: $mainFont
 
 /* Search field */
 #searchQuery
@@ -215,6 +221,7 @@ body
 	order: 3
 	margin: 0
 	align-self: center
+	font-family: $mainFont
 
 /* =================== Main Page Styling =================== */
 /* Main Page Component */
@@ -236,7 +243,8 @@ app-main-page
 /* Item List Title */
 .listTitle
 	color: $headlineColour
-	font-size: 20px
+	font-family: $mainFont
+	font-size: 26px
 	text-align: center
 	padding-top: 5px
 	margin-top: 5px
@@ -262,6 +270,7 @@ app-main-page
 .itemText
 	order: 0
 	text-align: center
+	font-family: $mainFont
 	font-size: 17.5px
 	width: 80%
 	margin: 5px
@@ -271,6 +280,7 @@ app-main-page
 .itemUser
 	order: 1
 	text-align: center
+	font-family: $mainFont
 	font-size: 15.5px
 	width: 80%
 	margin: 5px
@@ -331,10 +341,12 @@ app-main-page
 
 /* Main page error message */
 app-main-page .errorMessage
+	font-family: $mainFont
 	margin: 10px
 
 /* View full list button */
 .fullButton
+	font-family: $mainFont
 	margin: 0 Calc((100% - 120px) / 2)
 
 /* =================== Full List Styling =================== */
@@ -370,6 +382,7 @@ app-user-page > div
 
 /* User Page Title */
 app-user-page h3
+	font-family: $mainFont
 	text-align: center
 	margin-top: 5px
 	padding-top: 5px
@@ -393,6 +406,7 @@ app-user-page h3
 
 /* User Page Field Title */
 .pageCategory
+	font-family: $mainFont
 	font-size: 16px
 	font-weight: bold
 	margin: 0 5px
@@ -400,11 +414,13 @@ app-user-page h3
 
 /* User Page Field Text */
 .pageData
+	font-family: $mainFont
 	font-size: 16px
 	color: $textColour
 
 /* edit display name button */
 #editName
+	font-family: $mainFont
 	margin: 20px 20%
 
 /* User Posts */
@@ -421,11 +437,13 @@ app-my-posts
 
 /* Post text */
 .postText
+	font-family: $mainFont
 	text-align: center
 	font-size: 18px
 
 /* Post date */
 .postDate
+	font-family: $mainFont
 	text-align: center
 	font-size: 14px
 
@@ -439,16 +457,19 @@ app-my-posts
 
 /* Page count in user's posts */
 app-my-posts .pageCount
+	font-family: $mainFont
 	text-align: center
 
 /* Logout button */
 #logout
+	font-family: $mainFont
 	order: 3
 	margin: 10px 40%
 
 /* Login div */
 #loginBox
 	@extend #errorMessBox
+	font-family: $mainFont
 	padding: 10px 15px
 	margin: 5px Calc((20% - 30px) / 2)
 
@@ -463,6 +484,7 @@ app-messages
 /* Page Headline */
 app-messages > h3
 	text-align: center
+	font-family: $mainFont
 	color: $headlineColour
 	font-size: 20px
 
@@ -483,6 +505,7 @@ app-messages > div
 
 /* Mailbox navigation button */
 .messNavOption
+	font-family: $mainFont
 	margin: 5px 10px
 
 /* A Message */
@@ -493,6 +516,7 @@ app-messages > div
 
 /* From field */
 .messageField
+	font-family: $mainFont
 	text-align: center
 	padding: 5px
 	margin: 5px
@@ -500,11 +524,13 @@ app-messages > div
 /* Field title */
 .pageCategory
 	text-align: center
+	font-family: $mainFont
 	color: $headlineColour
 
 /* Field text */
 .pageData
 	text-align: center
+	font-family: $mainFont
 	color: $textColour
 
 /* Message buttons */
@@ -517,10 +543,12 @@ app-messages > div
 /* Delete Message button */
 .userMessage .deleteButton
 	margin: 5px 5px
+	font-family: $mainFont
 
 /* Reply button */
 .userMessage .messageButton
 	margin: 5px 5px
+	font-family: $mainFont
 
 /* Inbox / Outbox / Threads / single thread container */
 .userThreads, .threadMessages, .mailboxMessages
@@ -545,11 +573,13 @@ app-messages > div
 
 /* View thread button */
 .viewButton
+	font-family: $mainFont
 	margin: 5px 5px
 	padding: 0 5px
 
 /* Delete thread button */
 .userThread .deleteButton
+	font-family: $mainFont
 	margin: 5px 5px
 
 /* Login div */
@@ -561,12 +591,14 @@ app-messages > div
 	text-align: center
 	padding-bottom: 5px
 	padding-top: 10px
+	font-family: $mainFont
 
 /* Login Link */
 #logIn
 	text-align: center
 	margin: 10px Calc((100% - 50px) / 2)
 	color: $linkColour
+	font-family: $mainFont
 
 /* =================== New Item Page Styling =================== */
 /* New Item Page Component */
@@ -585,6 +617,7 @@ app-new-item
 #newItem h3
 	text-align: center
 	color: $headlineColour
+	font-family: $mainFont
 	font-size: 20px
 	padding: 10px
 	margin: 0
@@ -592,6 +625,7 @@ app-new-item
 /* New Item field + title */
 .formElement
 	text-align: center
+	font-family: $mainFont
 	color: $textColour
 	padding: 7px 2px
 	width: 100%
@@ -600,6 +634,7 @@ app-new-item
 .sendData
 	padding: 5px
 	margin: 10px Calc((100% - 28px) / 2)
+	font-family: $mainFont
 	font-size: 14px
 
 /* =================== Error Page Styling =================== */
@@ -616,6 +651,7 @@ app-error-page
 /* Error Page title */
 #errorPage h3
 	text-align: center
+	font-family: $mainFont
 	color: $headlineColour
 	font-size: 20px
 	padding: 10px
@@ -624,6 +660,7 @@ app-error-page
 /* Error Page text */
 .pageData
 	text-align: center
+	font-family: $mainFont
 	color: $textColour
 	font-size: 16px
 	padding: 10px 2px
@@ -631,6 +668,7 @@ app-error-page
 /* Error Page error code */
 #errorCode
 	text-align: center
+	font-family: $mainFont
 	color: $textColour
 	font-size: 13px
 	padding: 10px 2px
@@ -673,6 +711,7 @@ app-error-page
 /* Exit button */
 #exitButton
 	margin: 5px Calc(100% - 35px) 5px 2px
+	font-family: $mainFont
 
 /* =================== Loader Component Styling =================== */
 /* Via https://www.w3schools.com/howto/howto_css_loader.asp */
@@ -689,6 +728,7 @@ app-error-page
 
 /* Loader text */
 #loading #loadingMessage
+	font-family: $mainFont
 	color: $headlineColour
 	font-size: 18px
 
@@ -745,6 +785,7 @@ app-header-message #headerMessage
 /*  Header Message message */
 #headerMessage #loadingMessage
 	color: $headlineColour
+	font-family: $mainFont
 	font-size: 16px
 	margin: 0
 	padding: 0
@@ -779,17 +820,20 @@ app-about
 #aboutTitle
 	text-align: center
 	color: $headlineColour
+	font-family: $mainFont
 
 /* About component text */
 .aboutText
 	padding: 5px
 	margin: 5px 10px
+	font-family: $mainFont
 	color: $textColour
 	font-size: 18px
 
 /* About component links */
 .aboutLink
 	text-align: center
+	font-family: $mainFont
 	color: $linkColour
 	font-size: 17px
 	margin: 10px 40%
@@ -805,6 +849,7 @@ app-search-results
 
 /* Search Results title */
 app-search-results h2
+	font-family: $mainFont
 	color: $headlineColour
 	text-align: center
 	padding: 5px 5px 0
@@ -815,11 +860,13 @@ app-search-results h2
 /* Results summary title */
 #resultSummary
 	text-align: center
+	font-family: $mainFont
 
 /* Users / Posts title */
 app-search-results h3
 	text-align: center
 	color: $headlineColour
+	font-family: $mainFont
 	font-size: 20px
 
 /* Results list */
@@ -848,6 +895,7 @@ app-notifications
 /* Notifications Title */
 app-notifications h4
 	color: $headlineColour
+	font-family: $mainFont
 	text-align: center
 	padding: 5px 5px 0
 	margin: 10px 5px
@@ -871,12 +919,14 @@ app-admin-dashboard
 /* Admin Dashboard navigation menu item */
 .adminNavItem
 	margin: 0 5px
+	font-family: $mainFont
 	color: $linkColour
 	text-align: center
 	font-size: 18px
 
 /* Admin Dashboard title */
 app-admin-dashboard h3
+	font-family: $mainFont
 	color: $headlineColour
 	text-align: center
 	font-size: 20px
@@ -884,6 +934,7 @@ app-admin-dashboard h3
 /* Admin Dashboard main page intro text */
 .adminText
 	text-align: center
+	font-family: $mainFont
 	padding: 5px
 
 /* Admin Dashboard main page list */
@@ -893,11 +944,13 @@ app-admin-dashboard h3
 /* Admin Dashboard main page list item */
 .adminCategory
 	list-style: none
+	font-family: $mainFont
 	margin: 10px 5px
 	padding: 0
 
 /* Admin Dashboard sub-section title */
 .subTitle
+	font-family: $mainFont
 	color: $headlineColour
 	text-align: center
 	font-size: 17px
@@ -922,15 +975,18 @@ app-admin-dashboard h3
 .alertType
 	margin: 0
 	padding: 5px
+	font-family: $mainFont
 
 /* Alert Text */
 .alertText
 	font-size: 16px
+	font-family: $mainFont
 
 /* Alert Button */
 #alertButton
 	margin: 10px
 	border-radius: 5px
+	font-family: $mainFont
 
 /* Success Alert */
 .Success
@@ -955,6 +1011,7 @@ app-admin-dashboard h3
 
 /* Footer text */
 .footerText
+	font-family: $mainFont
 	text-align: center
 	font-size: 14px
 	padding: 0

@@ -1,6 +1,7 @@
 /* Colour Palette */
+/* Fonts */
 /* Component Sample */
-/* line 11, ../sass/styles.sass */
+/* line 14, ../sass/styles.sass */
 #compSample, app-main-page, #items, app-user-page, app-messages, app-new-item, app-error-page, app-about, app-search-results, app-notifications, app-admin-dashboard {
   position: absolute;
   top: 130px;
@@ -9,71 +10,71 @@
   overflow-x: hidden; }
 
 /* Frame Sample */
-/* line 19, ../sass/styles.sass */
+/* line 22, ../sass/styles.sass */
 #frameSample, app-user-page > div, .userPost, app-messages > div, #errorPage {
   border: thin solid #252525;
   border-radius: 5px;
   overflow-y: scroll; }
 
 /* Item (message/post) Sample */
-/* line 25, ../sass/styles.sass */
+/* line 28, ../sass/styles.sass */
 #itemSample, .newItem, .searchResult, .sugItem {
   border: thin solid #FFFFFF;
   border-radius: 10px;
   box-shadow: 3px 3px 7px 0 rgba(46, 61, 73, 0.5); }
 
 /* Error message sample */
-/* line 31, ../sass/styles.sass */
+/* line 34, ../sass/styles.sass */
 #errorMessBox, #loginBox {
   padding: 10px;
   width: 80%;
   margin: 5px Calc((20% - 20px) / 2); }
 
 /* =================== General Styling =================== */
-/* line 37, ../sass/styles.sass */
+/* line 40, ../sass/styles.sass */
 img, picture, video, embed, textarea, textfield {
   max-width: 100%; }
 
-/* line 40, ../sass/styles.sass */
+/* line 43, ../sass/styles.sass */
 body {
   overflow-x: hidden;
   background: #F2F2F2; }
 
 /* App button */
-/* line 45, ../sass/styles.sass */
+/* line 48, ../sass/styles.sass */
 .appButton {
   background-color: #FFFFFF;
   color: #000000;
   padding: 5px; }
 
 /* Pagination area */
-/* line 51, ../sass/styles.sass */
+/* line 54, ../sass/styles.sass */
 .pagination {
   display: flex;
   align-content: space-between;
   justify-content: space-between; }
 
 /* Page count */
-/* line 57, ../sass/styles.sass */
+/* line 60, ../sass/styles.sass */
 .pageCount {
   padding: 5px;
   margin: 0;
   font-weight: bold; }
 
 /* Hidden items */
-/* line 63, ../sass/styles.sass */
+/* line 66, ../sass/styles.sass */
 .hidden {
   visibility: hidden; }
 
 /* Notification block */
-/* line 67, ../sass/styles.sass */
+/* line 70, ../sass/styles.sass */
 .notification {
   padding: 15px 26px;
   position: relative;
   display: inline-block; }
 
 /* Notification badge */
-/* line 73, ../sass/styles.sass */
+/* line 76, ../sass/styles.sass */
 .badge {
   position: absolute;
   top: -5px;
@@ -85,19 +86,19 @@ body {
   font-size: 14px; }
 
 /* Skip link */
-/* line 84, ../sass/styles.sass */
+/* line 87, ../sass/styles.sass */
 .skip-link {
   position: absolute;
   left: -400px; }
 
 /* Skip link when focused */
-/* line 89, ../sass/styles.sass */
+/* line 92, ../sass/styles.sass */
 .skip-link:focus {
   left: 0;
   top: 0; }
 
 /* ARIA labels */
-/* line 94, ../sass/styles.sass */
+/* line 97, ../sass/styles.sass */
 .labels {
   position: absolute;
   right: -300px;
@@ -106,7 +107,7 @@ body {
 
 /* =================== Header Styling =================== */
 /* Site Header */
-/* line 102, ../sass/styles.sass */
+/* line 105, ../sass/styles.sass */
 #siteHeader {
   width: 94%;
   max-width: 94%;
@@ -117,7 +118,7 @@ body {
   left: 0;
   height: 160px; }
 
-/* line 112, ../sass/styles.sass */
+/* line 115, ../sass/styles.sass */
 #noInternet {
   left: 0;
   right: 0;
@@ -137,7 +138,7 @@ body {
   font-size: 16px; }
 
 /* Site logo */
-/* line 131, ../sass/styles.sass */
+/* line 134, ../sass/styles.sass */
 #siteLogo {
   margin: 0 10px 0 0;
   padding: 0 10px 0 0;
@@ -145,7 +146,7 @@ body {
   width: 100px; }
 
 /* Navigation Menu */
-/* line 138, ../sass/styles.sass */
+/* line 141, ../sass/styles.sass */
 #navMenu {
   width: 100%;
   max-width: 100%;
@@ -158,7 +159,7 @@ body {
   border-bottom: thin solid #cfcfcf; }
 
 /* Navigation Item */
-/* line 150, ../sass/styles.sass */
+/* line 153, ../sass/styles.sass */
 .navLink {
   color: #404040;
   display: block;
@@ -168,42 +169,44 @@ body {
   text-decoration: none; }
 
 /* Navigation Item (hover) */
-/* line 159, ../sass/styles.sass */
+/* line 162, ../sass/styles.sass */
 .navLink :hover {
   color: #f26363; }
 
 /* Navigation item icon */
-/* line 163, ../sass/styles.sass */
+/* line 166, ../sass/styles.sass */
 .navIcon {
   font-size: 30px;
   text-align: content; }
 
 /* Navigation item text */
-/* line 168, ../sass/styles.sass */
+/* line 171, ../sass/styles.sass */
 .navLinkText {
   font-size: 14px;
-  padding-top: 5px; }
+  padding-top: 5px;
+  font-family: "Montserrat", sans-serif; }
 
 /* Navigation buttons (notifications / search) */
-/* line 173, ../sass/styles.sass */
+/* line 177, ../sass/styles.sass */
 .navButton {
   font-size: 24px;
   text-align: center; }
 
 /* Notifications button */
-/* line 178, ../sass/styles.sass */
+/* line 182, ../sass/styles.sass */
 .newNotification {
   padding: 5px;
   margin-left: 20px;
   position: relative;
   display: inline-block; }
 
-/* line 184, ../sass/styles.sass */
+/* line 188, ../sass/styles.sass */
 .newNotification .badge {
-  background: #cfcfcf; }
+  background: #cfcfcf;
+  font-family: "Montserrat", sans-serif; }
 
 /* Search form */
-/* line 188, ../sass/styles.sass */
+/* line 193, ../sass/styles.sass */
 #search {
   display: flex;
   justify-content: center;
@@ -215,15 +218,16 @@ body {
   right: 0; }
 
 /* Search label */
-/* line 199, ../sass/styles.sass */
+/* line 204, ../sass/styles.sass */
 #searchLabel {
   order: 1;
   left: 0;
   margin: 0;
-  align-self: center; }
+  align-self: center;
+  font-family: "Montserrat", sans-serif; }
 
 /* Search field */
-/* line 206, ../sass/styles.sass */
+/* line 212, ../sass/styles.sass */
 #searchQuery {
   order: 2;
   padding: 0;
@@ -232,15 +236,16 @@ body {
   align-self: center; }
 
 /* Search button */
-/* line 214, ../sass/styles.sass */
+/* line 220, ../sass/styles.sass */
 #search .sendData {
   order: 3;
   margin: 0;
-  align-self: center; }
+  align-self: center;
+  font-family: "Montserrat", sans-serif; }
 
 /* =================== Main Page Styling =================== */
 /* Main Page Component */
-/* line 221, ../sass/styles.sass */
+/* line 228, ../sass/styles.sass */
 app-main-page {
   display: flex;
   padding: 5px;
@@ -250,30 +255,31 @@ app-main-page {
   justify-content: space-between; }
 
 /* Item list container */
-/* line 231, ../sass/styles.sass */
+/* line 238, ../sass/styles.sass */
 .listContainer {
   width: 45%;
   height: 85%;
   margin: 0 10px; }
 
 /* Item List Title */
-/* line 237, ../sass/styles.sass */
+/* line 244, ../sass/styles.sass */
 .listTitle {
   color: #1F1F1F;
-  font-size: 20px;
+  font-family: "Montserrat", sans-serif;
+  font-size: 26px;
   text-align: center;
   padding-top: 5px;
   margin-top: 5px; }
 
 /* Item List */
-/* line 245, ../sass/styles.sass */
+/* line 253, ../sass/styles.sass */
 .itemList, .userThreads, .threadMessages, .mailboxMessages {
   overflow-y: scroll;
   height: 90%;
   padding-left: 0; }
 
 /* New & Suggested Item */
-/* line 251, ../sass/styles.sass */
+/* line 259, ../sass/styles.sass */
 .newItem, .searchResult, .sugItem {
   border-color: #FFFFFF;
   box-shadow: 3px 3px 7px 0 rgba(46, 61, 73, 0.5);
@@ -284,34 +290,36 @@ app-main-page {
   flex-wrap: wrap; }
 
 /* Item Text */
-/* line 262, ../sass/styles.sass */
+/* line 270, ../sass/styles.sass */
 .itemText {
   order: 0;
   text-align: center;
+  font-family: "Montserrat", sans-serif;
   font-size: 17.5px;
   width: 80%;
   margin: 5px;
   padding: 0 10%; }
 
 /* Item User */
-/* line 271, ../sass/styles.sass */
+/* line 280, ../sass/styles.sass */
 .itemUser {
   order: 1;
   text-align: center;
+  font-family: "Montserrat", sans-serif;
   font-size: 15.5px;
   width: 80%;
   margin: 5px;
   padding: 0 10%; }
 
 /* Item User Profile Link */
-/* line 280, ../sass/styles.sass */
+/* line 290, ../sass/styles.sass */
 .profileLink {
   color: #404040;
   text-decoration: none;
   font-weight: bold; }
 
 /* Buttons div */
-/* line 286, ../sass/styles.sass */
+/* line 296, ../sass/styles.sass */
 .buttonsContainer {
   order: 2;
   display: flex;
@@ -320,64 +328,66 @@ app-main-page {
   width: 100%; }
 
 /* Send a hug button container */
-/* line 294, ../sass/styles.sass */
+/* line 304, ../sass/styles.sass */
 .notification {
   margin: 5px auto;
   padding: 6px; }
 
 /* Send Hug Button */
-/* line 299, ../sass/styles.sass */
+/* line 309, ../sass/styles.sass */
 .hugButton {
   width: 33px;
   border: none;
   padding: 5px; }
 
 /* Report Button */
-/* line 305, ../sass/styles.sass */
+/* line 315, ../sass/styles.sass */
 .reportButton {
   border: none;
   margin: 10px auto;
   padding: 5px; }
 
 /* Send Message Button */
-/* line 311, ../sass/styles.sass */
+/* line 321, ../sass/styles.sass */
 .messageButton {
   margin: 10px auto;
   border: none;
   padding: 5px; }
 
 /* Edit Button */
-/* line 317, ../sass/styles.sass */
+/* line 327, ../sass/styles.sass */
 .editButton {
   margin: 10px auto;
   border: none;
   padding: 5px; }
 
 /* Delete Button */
-/* line 323, ../sass/styles.sass */
+/* line 333, ../sass/styles.sass */
 .deleteButton {
   margin: 10px auto;
   border: none;
   padding: 5px; }
 
 /* Button icons */
-/* line 329, ../sass/styles.sass */
+/* line 339, ../sass/styles.sass */
 .fa-gratipay, .fa-comment, .fa-flag, .fa-edit, .fa-times {
   font-size: 22px; }
 
 /* Main page error message */
-/* line 333, ../sass/styles.sass */
+/* line 343, ../sass/styles.sass */
 app-main-page .errorMessage {
+  font-family: "Montserrat", sans-serif;
   margin: 10px; }
 
 /* View full list button */
-/* line 337, ../sass/styles.sass */
+/* line 348, ../sass/styles.sass */
 .fullButton {
+  font-family: "Montserrat", sans-serif;
   margin: 0 Calc((100% - 120px) / 2); }
 
 /* =================== Full List Styling =================== */
 /* List container */
-/* line 342, ../sass/styles.sass */
+/* line 354, ../sass/styles.sass */
 #items {
   width: 60%;
   margin: 0;
@@ -386,7 +396,7 @@ app-main-page .errorMessage {
   right: 0; }
 
 /* Full items list */
-/* line 351, ../sass/styles.sass */
+/* line 363, ../sass/styles.sass */
 #fullItems {
   border: thin solid #252525;
   border-radius: 5px;
@@ -394,28 +404,29 @@ app-main-page .errorMessage {
 
 /* =================== User Page Styling =================== */
 /* User Page Component */
-/* line 358, ../sass/styles.sass */
+/* line 370, ../sass/styles.sass */
 app-user-page {
   width: 100%;
   left: 0;
   right: 0; }
 
 /* User / Error Message Container */
-/* line 365, ../sass/styles.sass */
+/* line 377, ../sass/styles.sass */
 app-user-page > div {
   width: 90%;
   max-width: 90%;
   margin: 10px 5%; }
 
 /* User Page Title */
-/* line 372, ../sass/styles.sass */
+/* line 384, ../sass/styles.sass */
 app-user-page h3 {
+  font-family: "Montserrat", sans-serif;
   text-align: center;
   margin-top: 5px;
   padding-top: 5px; }
 
 /* User Page */
-/* line 378, ../sass/styles.sass */
+/* line 391, ../sass/styles.sass */
 #userPage {
   display: flex;
   flex-wrap: wrap;
@@ -424,110 +435,119 @@ app-user-page h3 {
   padding: 0 3%; }
 
 /* User Profile */
-/* line 386, ../sass/styles.sass */
+/* line 399, ../sass/styles.sass */
 #profileData {
   order: 0;
   width: 40%; }
 
 /* User Page Field Container */
-/* line 391, ../sass/styles.sass */
+/* line 404, ../sass/styles.sass */
 .profileElement {
   padding: 10px 0; }
 
 /* User Page Field Title */
-/* line 395, ../sass/styles.sass */
+/* line 408, ../sass/styles.sass */
 .pageCategory {
+  font-family: "Montserrat", sans-serif;
   font-size: 16px;
   font-weight: bold;
   margin: 0 5px;
   color: #1F1F1F; }
 
 /* User Page Field Text */
-/* line 402, ../sass/styles.sass */
+/* line 416, ../sass/styles.sass */
 .pageData {
+  font-family: "Montserrat", sans-serif;
   font-size: 16px;
   color: #000000; }
 
 /* edit display name button */
-/* line 407, ../sass/styles.sass */
+/* line 422, ../sass/styles.sass */
 #editName {
+  font-family: "Montserrat", sans-serif;
   margin: 20px 20%; }
 
 /* User Posts */
-/* line 411, ../sass/styles.sass */
+/* line 427, ../sass/styles.sass */
 app-my-posts {
   order: 2;
   width: 55%;
   align-self: flex-start; }
 
 /* User Post */
-/* line 417, ../sass/styles.sass */
+/* line 433, ../sass/styles.sass */
 .userPost {
   padding: 5px;
   margin: 5px; }
 
 /* Post text */
-/* line 423, ../sass/styles.sass */
+/* line 439, ../sass/styles.sass */
 .postText {
+  font-family: "Montserrat", sans-serif;
   text-align: center;
   font-size: 18px; }
 
 /* Post date */
-/* line 428, ../sass/styles.sass */
+/* line 445, ../sass/styles.sass */
 .postDate {
+  font-family: "Montserrat", sans-serif;
   text-align: center;
   font-size: 14px; }
 
 /* Post buttons */
-/* line 433, ../sass/styles.sass */
+/* line 451, ../sass/styles.sass */
 .userPost .editButton, .userPost .deleteButton {
   margin: 10px Calc((100% - 140px) / 6); }
 
 /* Notification block in user's posts */
-/* line 437, ../sass/styles.sass */
+/* line 455, ../sass/styles.sass */
 .userPost .notification {
   margin: 10px Calc((100% - 140px) / 6) 0; }
 
 /* Page count in user's posts */
-/* line 441, ../sass/styles.sass */
+/* line 459, ../sass/styles.sass */
 app-my-posts .pageCount {
+  font-family: "Montserrat", sans-serif;
   text-align: center; }
 
 /* Logout button */
-/* line 445, ../sass/styles.sass */
+/* line 464, ../sass/styles.sass */
 #logout {
+  font-family: "Montserrat", sans-serif;
   order: 3;
   margin: 10px 40%; }
 
 /* Login div */
-/* line 450, ../sass/styles.sass */
+/* line 470, ../sass/styles.sass */
 #loginBox {
+  font-family: "Montserrat", sans-serif;
   padding: 10px 15px;
   margin: 5px Calc((20% - 30px) / 2); }
 
 /* =================== Messages Page Styling =================== */
 /* Message Page Component */
-/* line 457, ../sass/styles.sass */
+/* line 478, ../sass/styles.sass */
 app-messages {
   width: 100%;
   left: 0;
   right: 0; }
 
 /* Page Headline */
-/* line 464, ../sass/styles.sass */
+/* line 485, ../sass/styles.sass */
 app-messages > h3 {
   text-align: center;
+  font-family: "Montserrat", sans-serif;
   color: #1F1F1F;
   font-size: 20px; }
 
 /* Inbox / Error Message Container */
-/* line 470, ../sass/styles.sass */
+/* line 492, ../sass/styles.sass */
 app-messages > div {
   width: 90%;
   margin: 10px 5%; }
 
 /* Mailbox navigation */
-/* line 476, ../sass/styles.sass */
+/* line 498, ../sass/styles.sass */
 #messagesNav {
   width: 48%;
   margin: 5px;
@@ -537,38 +557,42 @@ app-messages > div {
   border-bottom: thin solid; }
 
 /* Mailbox navigation button */
-/* line 485, ../sass/styles.sass */
+/* line 507, ../sass/styles.sass */
 .messNavOption {
+  font-family: "Montserrat", sans-serif;
   margin: 5px 10px; }
 
 /* A Message */
-/* line 489, ../sass/styles.sass */
+/* line 512, ../sass/styles.sass */
 .userMessage {
   width: 90%;
   border-bottom: thin solid;
   margin: 0 5%; }
 
 /* From field */
-/* line 495, ../sass/styles.sass */
+/* line 518, ../sass/styles.sass */
 .messageField {
+  font-family: "Montserrat", sans-serif;
   text-align: center;
   padding: 5px;
   margin: 5px; }
 
 /* Field title */
-/* line 501, ../sass/styles.sass */
+/* line 525, ../sass/styles.sass */
 .pageCategory {
   text-align: center;
+  font-family: "Montserrat", sans-serif;
   color: #1F1F1F; }
 
 /* Field text */
-/* line 506, ../sass/styles.sass */
+/* line 531, ../sass/styles.sass */
 .pageData {
   text-align: center;
+  font-family: "Montserrat", sans-serif;
   color: #000000; }
 
 /* Message buttons */
-/* line 511, ../sass/styles.sass */
+/* line 537, ../sass/styles.sass */
 .userMessage .buttons {
   display: flex;
   justify-content: center;
@@ -576,23 +600,25 @@ app-messages > div {
   padding: 5px; }
 
 /* Delete Message button */
-/* line 518, ../sass/styles.sass */
+/* line 544, ../sass/styles.sass */
 .userMessage .deleteButton {
-  margin: 5px 5px; }
+  margin: 5px 5px;
+  font-family: "Montserrat", sans-serif; }
 
 /* Reply button */
-/* line 522, ../sass/styles.sass */
+/* line 549, ../sass/styles.sass */
 .userMessage .messageButton {
-  margin: 5px 5px; }
+  margin: 5px 5px;
+  font-family: "Montserrat", sans-serif; }
 
 /* Inbox / Outbox / Threads / single thread container */
-/* line 526, ../sass/styles.sass */
+/* line 554, ../sass/styles.sass */
 .userThreads, .threadMessages, .mailboxMessages {
   border: none;
   list-style: none; }
 
 /* A message thread */
-/* line 532, ../sass/styles.sass */
+/* line 560, ../sass/styles.sass */
 .userThread {
   margin: 8px;
   padding: 5px;
@@ -601,7 +627,7 @@ app-messages > div {
   border-bottom: thin solid; }
 
 /* Message thread buttons */
-/* line 540, ../sass/styles.sass */
+/* line 568, ../sass/styles.sass */
 .threadBtns {
   display: flex;
   justify-content: center;
@@ -609,116 +635,126 @@ app-messages > div {
   padding: 5px; }
 
 /* View thread button */
-/* line 547, ../sass/styles.sass */
+/* line 575, ../sass/styles.sass */
 .viewButton {
+  font-family: "Montserrat", sans-serif;
   margin: 5px 5px;
   padding: 0 5px; }
 
 /* Delete thread button */
-/* line 552, ../sass/styles.sass */
+/* line 581, ../sass/styles.sass */
 .userThread .deleteButton {
+  font-family: "Montserrat", sans-serif;
   margin: 5px 5px; }
 
 /* Login div */
 /* Error Message Text */
-/* line 560, ../sass/styles.sass */
+/* line 590, ../sass/styles.sass */
 .errorMessage {
   text-align: center;
   padding-bottom: 5px;
-  padding-top: 10px; }
+  padding-top: 10px;
+  font-family: "Montserrat", sans-serif; }
 
 /* Login Link */
-/* line 566, ../sass/styles.sass */
+/* line 597, ../sass/styles.sass */
 #logIn {
   text-align: center;
   margin: 10px Calc((100% - 50px) / 2);
-  color: #404040; }
+  color: #404040;
+  font-family: "Montserrat", sans-serif; }
 
 /* =================== New Item Page Styling =================== */
 /* New Item Page Component */
-/* line 573, ../sass/styles.sass */
+/* line 605, ../sass/styles.sass */
 app-new-item {
   width: 100%;
   left: 0;
   right: 0; }
 
 /* New Item frame */
-/* line 580, ../sass/styles.sass */
+/* line 612, ../sass/styles.sass */
 #newItem {
   width: 90%;
   margin: 10px 5%; }
 
 /* New Item title */
-/* line 585, ../sass/styles.sass */
+/* line 617, ../sass/styles.sass */
 #newItem h3 {
   text-align: center;
   color: #1F1F1F;
+  font-family: "Montserrat", sans-serif;
   font-size: 20px;
   padding: 10px;
   margin: 0; }
 
 /* New Item field + title */
-/* line 593, ../sass/styles.sass */
+/* line 626, ../sass/styles.sass */
 .formElement {
   text-align: center;
+  font-family: "Montserrat", sans-serif;
   color: #000000;
   padding: 7px 2px;
   width: 100%; }
 
 /* New Item field button */
-/* line 600, ../sass/styles.sass */
+/* line 634, ../sass/styles.sass */
 .sendData {
   padding: 5px;
   margin: 10px Calc((100% - 28px) / 2);
+  font-family: "Montserrat", sans-serif;
   font-size: 14px; }
 
 /* =================== Error Page Styling =================== */
 /* Error Page Component */
 /* Error Page frame */
-/* line 611, ../sass/styles.sass */
+/* line 646, ../sass/styles.sass */
 #errorPage {
   width: 80%;
   margin: 15px 10%; }
 
 /* Error Page title */
-/* line 617, ../sass/styles.sass */
+/* line 652, ../sass/styles.sass */
 #errorPage h3 {
   text-align: center;
+  font-family: "Montserrat", sans-serif;
   color: #1F1F1F;
   font-size: 20px;
   padding: 10px;
   margin: 0; }
 
 /* Error Page text */
-/* line 625, ../sass/styles.sass */
+/* line 661, ../sass/styles.sass */
 .pageData {
   text-align: center;
+  font-family: "Montserrat", sans-serif;
   color: #000000;
   font-size: 16px;
   padding: 10px 2px; }
 
 /* Error Page error code */
-/* line 632, ../sass/styles.sass */
+/* line 669, ../sass/styles.sass */
 #errorCode {
   text-align: center;
+  font-family: "Montserrat", sans-serif;
   color: #000000;
   font-size: 13px;
   padding: 10px 2px; }
 
 /* Go Back Button */
-/* line 639, ../sass/styles.sass */
+/* line 677, ../sass/styles.sass */
 #backBtn {
   padding: 2px;
   margin: 7px Calc((100% - 20px) / 2); }
 
 /* Arrow in Go Back Button */
-/* line 644, ../sass/styles.sass */
+/* line 682, ../sass/styles.sass */
 .fa-arrow-alt-circle-left {
   font-size: 18px; }
 
 /* =================== Popup Styling =================== */
 /* Modal box */
-/* line 649, ../sass/styles.sass */
+/* line 687, ../sass/styles.sass */
 #modalBox {
   display: block;
   height: 100%;
@@ -729,7 +765,7 @@ app-new-item {
   top: 0; }
 
 /* Edit popup */
-/* line 659, ../sass/styles.sass */
+/* line 697, ../sass/styles.sass */
 #editPopup {
   background-color: #FFFFFF;
   box-shadow: 12px 15px 20px 0 rgba(46, 61, 73, 0.5);
@@ -745,14 +781,15 @@ app-new-item {
   left: 15%; }
 
 /* Exit button */
-/* line 674, ../sass/styles.sass */
+/* line 712, ../sass/styles.sass */
 #exitButton {
-  margin: 5px Calc(100% - 35px) 5px 2px; }
+  margin: 5px Calc(100% - 35px) 5px 2px;
+  font-family: "Montserrat", sans-serif; }
 
 /* =================== Loader Component Styling =================== */
 /* Via https://www.w3schools.com/howto/howto_css_loader.asp */
 /* Loader */
-/* line 680, ../sass/styles.sass */
+/* line 719, ../sass/styles.sass */
 #loading {
   position: relative;
   display: flex;
@@ -764,13 +801,14 @@ app-new-item {
   margin: 10%; }
 
 /* Loader text */
-/* line 691, ../sass/styles.sass */
+/* line 730, ../sass/styles.sass */
 #loading #loadingMessage {
+  font-family: "Montserrat", sans-serif;
   color: #1F1F1F;
   font-size: 18px; }
 
 /* Loader spinner */
-/* line 696, ../sass/styles.sass */
+/* line 736, ../sass/styles.sass */
 #loading .spinner {
   height: 100px;
   width: 100px;
@@ -791,7 +829,7 @@ app-new-item {
 /* =================== Header Message Component Styling =================== */
 /* Via https://www.w3schools.com/howto/howto_css_loader.asp */
 /*  Header Message component */
-/* line 717, ../sass/styles.sass */
+/* line 757, ../sass/styles.sass */
 app-header-message {
   position: absolute;
   top: 0;
@@ -804,7 +842,7 @@ app-header-message {
   height: 20px; }
 
 /*  Header Message div */
-/* line 729, ../sass/styles.sass */
+/* line 769, ../sass/styles.sass */
 app-header-message #headerMessage {
   left: 0;
   right: 0;
@@ -822,15 +860,16 @@ app-header-message #headerMessage {
   margin: 0 5%; }
 
 /*  Header Message message */
-/* line 746, ../sass/styles.sass */
+/* line 786, ../sass/styles.sass */
 #headerMessage #loadingMessage {
   color: #1F1F1F;
+  font-family: "Montserrat", sans-serif;
   font-size: 16px;
   margin: 0;
   padding: 0; }
 
 /*  Header Message spinner */
-/* line 753, ../sass/styles.sass */
+/* line 794, ../sass/styles.sass */
 #headerMessage .spinner {
   border: 3px solid #f3f3f3;
   border-top: 3px solid #3498db;
@@ -848,7 +887,7 @@ app-header-message #headerMessage {
     transform: rotate(360deg); } }
 /* =================== About Component Styling =================== */
 /* About Component */
-/* line 771, ../sass/styles.sass */
+/* line 812, ../sass/styles.sass */
 app-about {
   width: 90%;
   padding: 0 5%;
@@ -856,30 +895,33 @@ app-about {
   right: 0; }
 
 /* About component title */
-/* line 779, ../sass/styles.sass */
+/* line 820, ../sass/styles.sass */
 #aboutTitle {
   text-align: center;
-  color: #1F1F1F; }
+  color: #1F1F1F;
+  font-family: "Montserrat", sans-serif; }
 
 /* About component text */
-/* line 784, ../sass/styles.sass */
+/* line 826, ../sass/styles.sass */
 .aboutText {
   padding: 5px;
   margin: 5px 10px;
+  font-family: "Montserrat", sans-serif;
   color: #000000;
   font-size: 18px; }
 
 /* About component links */
-/* line 791, ../sass/styles.sass */
+/* line 834, ../sass/styles.sass */
 .aboutLink {
   text-align: center;
+  font-family: "Montserrat", sans-serif;
   color: #404040;
   font-size: 17px;
   margin: 10px 40%; }
 
 /* =================== Search Results Component Styling =================== */
 /* Search Results Component */
-/* line 799, ../sass/styles.sass */
+/* line 843, ../sass/styles.sass */
 app-search-results {
   width: 90%;
   padding: 0 5%;
@@ -887,8 +929,9 @@ app-search-results {
   right: 0; }
 
 /* Search Results title */
-/* line 807, ../sass/styles.sass */
+/* line 851, ../sass/styles.sass */
 app-search-results h2 {
+  font-family: "Montserrat", sans-serif;
   color: #1F1F1F;
   text-align: center;
   padding: 5px 5px 0;
@@ -897,19 +940,21 @@ app-search-results h2 {
   padding-top: 10px; }
 
 /* Results summary title */
-/* line 816, ../sass/styles.sass */
+/* line 861, ../sass/styles.sass */
 #resultSummary {
-  text-align: center; }
+  text-align: center;
+  font-family: "Montserrat", sans-serif; }
 
 /* Users / Posts title */
-/* line 820, ../sass/styles.sass */
+/* line 866, ../sass/styles.sass */
 app-search-results h3 {
   text-align: center;
   color: #1F1F1F;
+  font-family: "Montserrat", sans-serif;
   font-size: 20px; }
 
 /* Results list */
-/* line 826, ../sass/styles.sass */
+/* line 873, ../sass/styles.sass */
 .searchResults {
   border-radius: 5px;
   width: 80%;
@@ -919,7 +964,7 @@ app-search-results h3 {
 /* Result item */
 /* =================== Notifications Tab Component Styling =================== */
 /* Notifications Component */
-/* line 838, ../sass/styles.sass */
+/* line 885, ../sass/styles.sass */
 app-notifications {
   width: 40%;
   float: right;
@@ -930,9 +975,10 @@ app-notifications {
   margin: 20px 5% 20px 55%; }
 
 /* Notifications Title */
-/* line 849, ../sass/styles.sass */
+/* line 896, ../sass/styles.sass */
 app-notifications h4 {
   color: #1F1F1F;
+  font-family: "Montserrat", sans-serif;
   text-align: center;
   padding: 5px 5px 0;
   margin: 10px 5px;
@@ -940,7 +986,7 @@ app-notifications h4 {
 
 /* =================== Admin Dashboard Component Styling =================== */
 /* Admin Dashboard Component */
-/* line 858, ../sass/styles.sass */
+/* line 906, ../sass/styles.sass */
 app-admin-dashboard {
   width: 90%;
   padding: 0 5%;
@@ -948,55 +994,60 @@ app-admin-dashboard {
   right: 0; }
 
 /* Admin Dashboard navigation menu */
-/* line 866, ../sass/styles.sass */
+/* line 914, ../sass/styles.sass */
 #adminNav {
   width: 90%;
   margin: 5px;
   text-align: center; }
 
 /* Admin Dashboard navigation menu item */
-/* line 872, ../sass/styles.sass */
+/* line 920, ../sass/styles.sass */
 .adminNavItem {
   margin: 0 5px;
+  font-family: "Montserrat", sans-serif;
   color: #404040;
   text-align: center;
   font-size: 18px; }
 
 /* Admin Dashboard title */
-/* line 879, ../sass/styles.sass */
+/* line 928, ../sass/styles.sass */
 app-admin-dashboard h3 {
+  font-family: "Montserrat", sans-serif;
   color: #1F1F1F;
   text-align: center;
   font-size: 20px; }
 
 /* Admin Dashboard main page intro text */
-/* line 885, ../sass/styles.sass */
+/* line 935, ../sass/styles.sass */
 .adminText {
   text-align: center;
+  font-family: "Montserrat", sans-serif;
   padding: 5px; }
 
 /* Admin Dashboard main page list */
-/* line 890, ../sass/styles.sass */
+/* line 941, ../sass/styles.sass */
 #adminCategories {
   padding: 0; }
 
 /* Admin Dashboard main page list item */
-/* line 894, ../sass/styles.sass */
+/* line 945, ../sass/styles.sass */
 .adminCategory {
   list-style: none;
+  font-family: "Montserrat", sans-serif;
   margin: 10px 5px;
   padding: 0; }
 
 /* Admin Dashboard sub-section title */
-/* line 900, ../sass/styles.sass */
+/* line 952, ../sass/styles.sass */
 .subTitle {
+  font-family: "Montserrat", sans-serif;
   color: #1F1F1F;
   text-align: center;
   font-size: 17px; }
 
 /* =================== Alert Styling =================== */
 /* Base Alert */
-/* line 907, ../sass/styles.sass */
+/* line 960, ../sass/styles.sass */
 .alertMessage {
   width: 70%;
   box-shadow: 12px 15px 20px 0 rgba(46, 61, 73, 0.5);
@@ -1012,40 +1063,43 @@ app-admin-dashboard h3 {
   z-index: 100; }
 
 /* Alert Title */
-/* line 922, ../sass/styles.sass */
+/* line 975, ../sass/styles.sass */
 .alertType {
   margin: 0;
-  padding: 5px; }
+  padding: 5px;
+  font-family: "Montserrat", sans-serif; }
 
 /* Alert Text */
-/* line 927, ../sass/styles.sass */
+/* line 981, ../sass/styles.sass */
 .alertText {
-  font-size: 16px; }
+  font-size: 16px;
+  font-family: "Montserrat", sans-serif; }
 
 /* Alert Button */
-/* line 931, ../sass/styles.sass */
+/* line 986, ../sass/styles.sass */
 #alertButton {
   margin: 10px;
-  border-radius: 5px; }
+  border-radius: 5px;
+  font-family: "Montserrat", sans-serif; }
 
 /* Success Alert */
-/* line 936, ../sass/styles.sass */
+/* line 992, ../sass/styles.sass */
 .Success {
   background-color: rgba(46, 161, 60, 0.9); }
 
 /* Error Alert */
-/* line 940, ../sass/styles.sass */
+/* line 996, ../sass/styles.sass */
 .Error {
   background-color: rgba(203, 72, 72, 0.95); }
 
 /* Notification Alert */
-/* line 944, ../sass/styles.sass */
+/* line 1000, ../sass/styles.sass */
 .Notification {
   background-color: #FFFFFF; }
 
 /* =================== Footer Styling =================== */
 /* Site Footer */
-/* line 949, ../sass/styles.sass */
+/* line 1005, ../sass/styles.sass */
 #siteFooter {
   position: fixed;
   bottom: 0;
@@ -1054,8 +1108,9 @@ app-admin-dashboard h3 {
   max-width: 100%; }
 
 /* Footer text */
-/* line 957, ../sass/styles.sass */
+/* line 1013, ../sass/styles.sass */
 .footerText {
+  font-family: "Montserrat", sans-serif;
   text-align: center;
   font-size: 14px;
   padding: 0;

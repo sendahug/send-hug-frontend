@@ -198,4 +198,18 @@ export class AppComponent implements OnInit, AfterViewChecked {
       }
     }
   }
+
+  /*
+  Function Name: changeMode()
+  Function Description: Remove the notifications panel.
+  Parameters: edit (boolean) - indicating whether the notifications panel should be active.
+                               When the user is done with the panel, the event emitter
+                               in the popup component sends 'false' to this function
+                               to remove the popup.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  changeMode(notificationsOn:boolean) {
+    this.showNotifications = notificationsOn;
+  }
 }

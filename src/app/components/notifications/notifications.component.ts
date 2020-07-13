@@ -4,7 +4,7 @@
 */
 
 // Angular imports
-import { Component } from '@angular/core';
+import { Component, OnInit, EventEmitter, Output } from '@angular/core';
 
 // App-relateed imports
 import { AuthService } from '../../services/auth.service';
@@ -14,7 +14,12 @@ import { NotificationService } from '../../services/notifications.service';
   selector: 'app-notifications',
   templateUrl: './notifications.component.html'
 })
-export class NotificationsTab {
+export class NotificationsTab implements OnInit {
+  // indicates whether notifications panel is still required
+  @Output() NotificationsMode = new EventEmitter<boolean>();
+  focusableElements: any;
+  checkFocusBinded = this.checkFocus.bind(this);
+
   // CTOR
   constructor(
     private authService:AuthService,
@@ -27,6 +32,38 @@ export class NotificationsTab {
         this.notificationService.getNotifications(false);
       }
     })
+  }
+
+  /*
+  Function Name: ngOnInit()
+  Function Description: This method is automatically triggered by Angular upon
+                        page initiation. It adds the 'modal' keyword to the header (which
+                        is used to ensure the header remains under the modal box) and
+                        puts the exit button in focus.
+  Parameters: None.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  ngOnInit() {
+    document.getElementById('exitButton')!.focus();
+    document.getElementById('siteHeader')!.className = 'modal';
+  }
+
+  /*
+  Function Name: ngAfterViewChecked()
+  Function Description: This method is automatically triggered by Angular once the Component
+                        has been added to the DOM. It gets all focusable elements within the
+                        popup and sets the focus on the first element.
+  Parameters: None.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  ngAfterViewChecked() {
+    let modal = document.getElementById('modalBox');
+    this.focusableElements = modal!.querySelectorAll(`a, button:not([disabled]),
+          input:not([disabled]), textarea:not([disabled]), select:not([disabled]),
+          details, iframe, object, embed, [tabindex]:not([tabindex="-1"]`);
+    modal!.addEventListener('keydown', this.checkFocusBinded);
   }
 
   /*
@@ -74,5 +111,54 @@ export class NotificationsTab {
       this.notificationService.updateUserSettings();
       this.notificationService.startAutoRefresh();
     }
+  }
+
+  /*
+  Function Name: checkFocus()
+  Function Description: Checks the currently focused element to ensure that the
+                        user's focus remains within the popup.
+  Parameters: None.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  checkFocus(e:KeyboardEvent) {
+    // if the pressed key is TAB
+    if(e.keyCode === 9) {
+      // if the user pressed SHIFT + TAB, which means they want to move backwards
+      if(e.shiftKey) {
+        // if the currently focused element in the first one in the popup,
+        // move back to the last focusable element in the popup
+        if(document.activeElement == this.focusableElements[0]) {
+          this.focusableElements[this.focusableElements.length - 1].focus();
+          e.preventDefault();
+        }
+      }
+      // otherwise the user pressed just TAB, so they want to move forward
+      else {
+        // if the currently focused element in the last one in the popup,
+        // move back to the first focusable element in the popup
+        if(document.activeElement == this.focusableElements[this.focusableElements.length - 1]) {
+          this.focusableElements[0].focus();
+          e.preventDefault();
+        }
+      }
+    }
+  }
+
+  /*
+  Function Name: exitNotifications()
+  Function Description: Emits an event to disable notifications window. Exiting notifications window is
+                        done by the parent component upon getting the 'false' value.
+                        The user's focus is also moved back to the skip link.
+  Parameters: None.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  exitNotifications() {
+    let modal = document.getElementById('modalBox');
+    modal!.removeEventListener('keydown', this.checkFocusBinded);
+    document.getElementById('skipLink')!.focus();
+    document.getElementById('siteHeader')!.className = '';
+    this.NotificationsMode.emit(false);
   }
 }

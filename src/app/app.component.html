@@ -45,7 +45,8 @@
 
 <main id="mainContent" role="main">
 	<div *ngIf="showNotifications">
-		<app-notifications></app-notifications>
+		<app-notifications
+						   (NotificationsMode)="changeMode($event)"></app-notifications>
 	</div>
 	<router-outlet></router-outlet>
 	<div id="alertContainer"></div>

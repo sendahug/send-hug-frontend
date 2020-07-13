@@ -1907,6 +1907,16 @@ app-admin-dashboard h3
 	margin-right: 15%
 	margin-left: 15%
 	z-index: 100
+	background: $boxesBackground
+	/* Responsive design for screens above 500px width */
+	@media screen and (min-width:700px)
+		width: 500px
+		margin: 10px Calc((100% - 500px) / 2)
+
+/* Alert icon */
+.alertIcon
+	padding-top: 10px
+	font-size: 24px
 
 /* Alert Title */
 .alertType
@@ -1918,24 +1928,16 @@ app-admin-dashboard h3
 .alertText
 	font-size: 16px
 	font-family: $mainFont
+	padding: 10px
 
 /* Alert Button */
-#alertButton
+#alertButton, #navButton, #reloadBtn
 	margin: 10px
 	border-radius: 5px
 	font-family: $mainFont
-
-/* Success Alert */
-.Success
-	background-color: rgba(46,161,60,0.90)
-
-/* Error Alert */
-.Error
-	background-color: rgba(203,72,72,0.95)
-
-/* Notification Alert */
-.Notification
-	background-color: $itemBackground
+	border: none
+	border-radius: 10px
+	font-size: 16px
 
 /* =================== Footer Styling =================== */
 /* Site Footer */

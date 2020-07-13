@@ -1,5 +1,5 @@
 // Angular imports
-import { Component, OnInit, HostListener, AfterViewChecked } from '@angular/core';
+import { Component, OnInit, HostListener, AfterViewChecked, AfterViewInit } from '@angular/core';
 import { Router, NavigationStart } from '@angular/router';
 
 // App-related imports
@@ -13,7 +13,7 @@ import { NotificationService } from './services/notifications.service';
   selector: 'app-root',
   templateUrl: './app.component.html'
 })
-export class AppComponent implements OnInit, AfterViewChecked {
+export class AppComponent implements OnInit, AfterViewChecked, AfterViewInit {
   showNotifications = false;
   showSearch = false;
 
@@ -86,6 +86,81 @@ export class AppComponent implements OnInit, AfterViewChecked {
         navMenu.classList.remove('hidden');
       }
     }
+  }
+
+  /*
+  Function Name: ngAfterViewInit()
+  Function Description: This method is automatically triggered by Angular once the component's
+                        view is intialised. It checks the width of the screen and determines
+                        whether to display the navigation menu.
+  Parameters: None.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  ngAfterViewInit() {
+    this.router.events.subscribe((event) => {
+      if(event instanceof NavigationStart) {
+        let navItems = document.querySelectorAll('.navLink');
+
+        // remove 'active' class from the previously active component's link
+        navItems.forEach((navLink) => {
+          if(navLink.classList.contains('active')) {
+            navLink.classList.remove('active');
+          }
+        })
+
+        // check which link needs to be marked now
+        // if the current URL is the main page
+        if(event.url == '/') {
+          navItems[1].classList.add('active');
+        }
+        // if the current URL is one of the mailboxes
+        else if(event.url.startsWith('/messages')) {
+          navItems[2].classList.add('active');
+        }
+        // if the current URL is the new post page
+        else if(event.url == '/new/Post') {
+          // ensure only authenticated users can access this page
+          if(this.authService.authenticated) {
+            navItems[3].classList.add('active');
+          }
+        }
+        // if the current URL is the user's own profile
+        else if(event.url.startsWith('/user')) {
+          // if the user is logged in, they have the new post tab, so the new active link
+          // is different
+          if(this.authService.authenticated) {
+            // only marks the link as active if the user is viewing their own profile
+            if(event.url == `/user` || event.url == `/user/${this.authService.userData.id}`) {
+              navItems[4].classList.add('active');
+            }
+          }
+          // if the user isn't logged in, the new active link is different
+          else {
+            navItems[3].classList.add('active');
+          }
+        }
+        // if the current URL is the about page
+        else if(event.url == '/about') {
+          // if the user is logged in, they have the new post tab, so the new active link
+          // is different
+          if(this.authService.authenticated) {
+            navItems[5].classList.add('active');
+          }
+          // if the user isn't logged in, the new active link is different
+          else {
+            navItems[4].classList.add('active');
+          }
+        }
+        // if the current URL is the admin's page
+        else if(event.url.startsWith('/admin')) {
+          // ensure only authenticated users can access this page
+          if(this.authService.authenticated) {
+            navItems[6].classList.add('active');
+          }
+        }
+      }
+    })
   }
 
   /*

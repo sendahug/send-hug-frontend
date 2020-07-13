@@ -147,15 +147,21 @@ export class AppComponent implements OnInit, AfterViewChecked {
   Programmer: Shir Bar Lev.
   */
   toggleSearch() {
+    let width = document.documentElement.clientWidth;
+    let navMenu = document.getElementById('navLinks') as HTMLDivElement;
+
     // if the search is displayed, close it
     if(this.showSearch) {
       this.showSearch = false;
+
+      // if the viewport is smaller than 600, the user opened the panel through the
+      // menu, which needs to be closed
+      if(width < 600) {
+        navMenu.classList.remove('hidden');
+      }
     }
     // otherwise show it
     else {
-      let width = document.documentElement.clientWidth;
-      let navMenu = document.getElementById('navLinks') as HTMLDivElement;
-
       // if the viewport is smaller than 600, the user opened the panel through the
       // menu, which needs to be closed
       if(width < 600) {

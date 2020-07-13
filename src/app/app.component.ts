@@ -98,6 +98,7 @@ export class AppComponent implements OnInit, AfterViewChecked {
   */
   searchApp(e:Event, searchQuery:string) {
     e.preventDefault();
+    this.showSearch = false;
 
     // if there's something in the search query text field, search for it
     if(searchQuery) {
@@ -120,19 +121,21 @@ export class AppComponent implements OnInit, AfterViewChecked {
 
   /*
   Function Name: toggleNotifications()
-  Function Description: Toggles the notifications tab.
+  Function Description: Opens the notifications tab.
   Parameters: None.
   ----------------
   Programmer: Shir Bar Lev.
   */
   toggleNotifications() {
-    // if notitfications tab is on, close it
-    if(this.showNotifications) {
-      this.showNotifications = false;
-    }
-    // if it's not on, open it
-    else {
-      this.showNotifications = true;
+    let width = document.documentElement.clientWidth;
+    let navMenu = document.getElementById('navLinks') as HTMLDivElement;
+
+    this.showNotifications = true;
+
+    // if the viewport is smaller than 600, the user opened the panel through the
+    // menu, which needs to be closed
+    if(width < 600) {
+      navMenu.classList.add('hidden');
     }
   }
 
@@ -150,6 +153,15 @@ export class AppComponent implements OnInit, AfterViewChecked {
     }
     // otherwise show it
     else {
+      let width = document.documentElement.clientWidth;
+      let navMenu = document.getElementById('navLinks') as HTMLDivElement;
+
+      // if the viewport is smaller than 600, the user opened the panel through the
+      // menu, which needs to be closed
+      if(width < 600) {
+        navMenu.classList.add('hidden');
+      }
+
       this.showSearch = true;
     }
   }

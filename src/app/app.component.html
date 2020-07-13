@@ -37,6 +37,7 @@
 		</div>
 	</nav>
 	<form id="search" role="search" *ngIf="showSearch">
+		<button id="exitButton" (click)="exitNotifications()" aria-label="close popup"><i class="fas fa-times"></i></button>
 		<label class="pageCategory" for="searchQuery" id="searchLabel">Search: </label>
 		<input type="text" id="searchQuery" placeholder="Search" #searchQuery>
 		<button type="submit" class="appButton sendData" (click)="searchApp($event,searchQuery.value)">Search</button>

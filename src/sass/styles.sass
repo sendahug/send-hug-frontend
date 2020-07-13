@@ -1584,13 +1584,33 @@ app-search-results h3
 /* Notifications Component */
 app-notifications
 	@extend #compSample
-	width: 40%
+	z-index: 200
+
+/* Notifications panel */
+#notificationsTab
 	float: right
 	box-shadow: 12px 15px 20px 0 rgba(46, 61, 73, 0.5)
 	border-radius: 5px
-	background-color: #EAEAEA
-	z-index: 100
-	margin: 20px 5% 20px 55%
+	background-color: #EEE
+	margin: 0
+	position: fixed
+	top: 0
+	bottom: 0
+	width: 70%
+	margin-left: 30%
+	/* Responsive design for screens above 500px width */
+	@media screen and (min-width: 500px)
+		width: 67%
+		margin-left: 33%
+	/* Responsive design for screens above 600px width */
+	@media screen and (min-width: 600px)
+		width: 400px
+		margin-left: Calc(100% - 400px)
+
+/* Notifications exit button */
+#notificationsTab #exitButton
+	margin: 10px
+	background: #EEE
 
 /* Notifications Title */
 app-notifications h4
@@ -1598,8 +1618,74 @@ app-notifications h4
 	font-family: $mainFont
 	text-align: center
 	padding: 5px 5px 0
+	margin: 10px 5px 15px
+	font-size: 22px
+	/* Responsive design for screens above 500px width */
+	@media screen and (min-width: 550px)
+		font-size: 24px
+
+/* Notifications settings buttons container */
+#nButtons
+	display: flex
+	flex-wrap: wrap
+	justify-content: center
+	align-items: center
+
+/* Notifications settings buttons */
+.NotificationButton
+	text-align: center
+	font-size: 13px
+	border-radius: 10px
+	padding: 5px
+	border: none
+	margin: 5px
+	/* Responsive design for screens above 500px width */
+	@media screen and (min-width: 550px)
+		margin: 5px 8px
+		font-size: 14px
+	/* Responsive design for screens above 650px width */
+	@media screen and (min-width: 650px)
+		margin: 5px 10px
+
+/* Notifications list / no notificatioins message */
+#notificationsList , #noNotifications
 	margin: 10px 5px
-	font-size: 20px
+
+/* Notifications list */
+#notificationsList
+	list-style: none
+	padding: 10px
+
+/* Notification */
+.notificationItem
+	border: none
+	box-shadow: 5px 5px 7px 0 rgba(46, 61, 73, 0.5)
+	background: $itemBackground
+	border-radius: 10px
+	width: 80%	
+	margin: 10px 5%
+	padding: 10px 5%
+
+/* Notification title */
+.notificationTitle
+	font-family: $mainFont
+	text-align: center
+	font-size: 16px
+	color: $headlineColour
+	margin: 5px
+	font-weight: bold
+
+/* Notification text */
+.notificationText
+	font-family: $mainFont
+	text-align: center
+	font-size: 14px
+	color: $textColour
+	margin: 5px
+
+/* Notification link */
+.notificationText a
+	color: $linkColour
 	
 /* =================== Admin Dashboard Component Styling =================== */
 /* Admin Dashboard Component */

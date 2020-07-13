@@ -362,11 +362,64 @@ body
 	display: flex
 	justify-content: center
 	align-content: center
-	width: 60%
-	max-width: 60%
-	margin: 10px 20% 5px
+	width: 100%
+	max-width: 100%
+	margin: 10px 0 5px
 	left: 0
 	right: 0
+	border-radius: 5px
+	box-shadow: 3px 3px 7px 0 rgba(46, 61, 73, 0.5)
+	/* Responsive design for screens above 400px width */
+	@media screen and (min-width: 400px)
+		width: 90%
+		max-width: 90%
+		margin: 10px 5% 5px
+	/* Responsive design for screens above 450px width */
+	@media screen and (min-width: 450px)
+		justify-content: space-evenly
+		padding: 0 20px
+		width: Calc(90% - 20px)
+		max-width: Calc(90% - 20px)
+		margin: 10px Calc(5% - 10px) 5px
+	/* Responsive design for screens above 525px width */
+	@media screen and (min-width: 525px)
+		width: Calc(84% - 20px)
+		max-width: Calc(84% - 20px)
+		margin: 10px Calc(8% - 10px) 5px
+	/* Responsive design for screens above 575px width */
+	@media screen and (min-width: 575px)
+		width: Calc(80% - 20px)
+		max-width: Calc(80% - 20px)
+		margin: 10px Calc(10% - 10px) 5px
+	/* Responsive design for screens above 625px width */
+	@media screen and (min-width: 625px)
+		width: Calc(76% - 20px)
+		max-width: Calc(76% - 20px)
+		margin: 10px Calc(12% - 10px) 5px
+	/* Responsive design for screens above 650px width */
+	@media screen and (min-width: 650px)
+		justify-content: center
+		width: Calc(70% - 20px)
+		max-width: Calc(70% - 20px)
+		margin: 10px Calc(15% - 10px) 5px
+	/* Responsive design for screens above 700px width */
+	@media screen and (min-width: 700px)
+		width: Calc(60% - 20px)
+		max-width: Calc(60% - 20px)
+		margin: 10px Calc(20% - 10px) 5px
+
+/* Search form exit button */
+#search #exitButton
+	@extend .textlessButton
+	margin: 5px
+	font-family: $mainFont
+	border-radius: 5px
+	border: none
+	background: $mainBackground
+	padding: 1px
+	/* Responsive design for screens above 400px width */
+	@media screen and (min-width: 400px)
+		padding: 1px 2px
 
 /* Search label */
 #searchLabel
@@ -375,21 +428,34 @@ body
 	margin: 0
 	align-self: center
 	font-family: $mainFont
+	padding: 10px 0
+	/* Responsive design for screens above 400px width */
+	@media screen and (min-width: 400px)
+		margin: 0 7px
 
 /* Search field */
 #searchQuery
 	order: 2
 	padding: 0
-	margin: 0 10px
+	margin: 2px 3px
 	height: 20px
 	align-self: center
+	/* Responsive design for screens above 400px width */
+	@media screen and (min-width: 400px)
+		margin: 2px 5px
+	/* Responsive design for screens above 550px width */
+	@media screen and (min-width: 550px)
+		margin: 2px 10px
 
 /* Search button */
 #search .sendData
 	order: 3
-	margin: 0
+	margin: 1px
 	align-self: center
 	font-family: $mainFont
+	/* Responsive design for screens above 400px width */
+	@media screen and (min-width: 400px)
+		margin: 1px 2px
 
 /* =================== Main Page Styling =================== */
 /* Main Page Component */

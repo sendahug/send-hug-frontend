@@ -1,15 +1,15 @@
-<div *ngIf="authService.canUser('read:admin-board')">
+<div *ngIf="authService.canUser('read:admin-board')" id="adminDashAll">
 	<!-- Admin dashboard navigation menu -->
 	<nav id="adminNav" role="navigation">
-		<a [routerLink]="['/admin']" class="adminNavItem">Admin Dashboard</a>
+		<a [routerLink]="['/admin']" class="adminNavItem">Main</a>
 		<a [routerLink]="['/admin', 'reports']" class="adminNavItem">Reports</a>
 		<a [routerLink]="['/admin', 'blocks']" class="adminNavItem">Blocks</a>
 		<a [routerLink]="['/admin', 'filters']" class="adminNavItem">Filters</a>
 	</nav>
 
 	<!-- Admin dashboard main page -->
+	<h3 class="adminTitle" *ngIf="screen == 'main'">Admin Dashboard</h3>
 	<div class="adminScreen" id="adminMain" *ngIf="screen == 'main'" role="document">
-		<h3>Admin Dashboard</h3>
 		
 		<div class="adminText">Welcome to the admin dashboard!</div>
 		<div class="adminText">The admin dashboard is comprised of three parts:</div>
@@ -20,14 +20,14 @@
 		</ul>
 	</div>
 	
-	<div *ngIf="screen != 'main'">
+	<div *ngIf="screen != 'main'" id="loaderDiv">
 		<app-loader
 		[waitingFor]="waitFor"></app-loader>
 	</div>
 
 	<!-- Admin dashboard reports -->
+	<h3 class="adminTitle" *ngIf="screen == 'reports'">Reports</h3>
 	<div class="adminScreen" id="adminReports" *ngIf="screen == 'reports' && adminService.isReportsResolved.value" role="main">
-		<h3>Reports</h3>
 		
 		<h4 class="subTitle">Reported Users</h4>
 		<!-- Reported users table -->
@@ -115,8 +115,8 @@
 	</div>
 
 	<!-- Admin dashboard blocks -->
+	<h3 class="adminTitle" *ngIf="screen == 'blocks'">Blocks</h3>
 	<div class="adminScreen" id="adminBlocks" *ngIf="screen == 'blocks' && adminService.isBlocksResolved.value" role="main">
-		<h3>Blocks</h3>
 		
 		<h4 class="subTitle">Block User</h4>
 		<!-- Block a user by ID -->
@@ -175,8 +175,8 @@
 	</div>
 
 	<!-- Admin dashboard filters -->
+	<h3 class="adminTitle" *ngIf="screen == 'filters'">Filters</h3>
 	<div class="adminScreen" id="adminFilters" *ngIf="screen == 'filters' && adminService.isFiltersResolved.value" role="main">
-		<h3>Filters</h3>
 		
 		<h4 class="subTitle">Add Filter</h4>
 		<!-- Add a word/phrase to filtered words list -->

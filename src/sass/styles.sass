@@ -1610,26 +1610,89 @@ app-admin-dashboard
 	left: 0
 	right: 0
 
+/* Admin Dashboard */
+#adminDashAll
+	display: flex
+	flex-direction: column
+	/* Responsive styling for screens above 800px width */
+	@media screen and (min-width: 800px)
+		flex-direction: row
+		flex-wrap: wrap
+		justify-content: space-between
+
+#adminDashAll #loaderDiv
+	/* Responsive styling for screens above 800px width */
+	@media screen and (min-width: 800px)
+		order: 2
+
 /* Admin Dashboard navigation menu */
 #adminNav
 	width: 90%
-	margin: 5px
+	margin: 15px 5% 5px
 	text-align: center
+	display: flex
+	flex-wrap: wrap
+	justify-content: center
+	align-content: center
+	/* Responsive styling for screens above 800px width */
+	@media screen and (min-width: 800px)
+		order: 1
+		flex-direction: column
+		margin: 15px 10px
+		width: 15%
 
 /* Admin Dashboard navigation menu item */
 .adminNavItem
-	margin: 0 5px
+	@extend .appButton
+	margin: 15px 5px 5px
 	font-family: $mainFont
-	color: $linkColour
 	text-align: center
-	font-size: 18px
+	font-size: 16px
+	border-radius: 10px
+	padding: 5px
+	text-decoration: none
+	/* Responsive styling for screens above 800px width */
+	@media screen and (min-width: 800px)
+		margin: 15px 5px
 
 /* Admin Dashboard title */
 app-admin-dashboard h3
 	font-family: $mainFont
 	color: $headlineColour
 	text-align: center
-	font-size: 20px
+	font-size: 22px
+	/* Responsive styling for screens above 800px width */
+	@media screen and (min-width: 800px)
+		order: 0
+		width: 100%
+		font-size: 24px
+
+.adminScreen
+	border-radius: 5px
+	width: 90%
+	padding: 15px 3%
+	margin: 5px 2%
+	background: $boxesBackground
+	border-radius: 5px
+	border: none
+	box-shadow: 5px 5px 7px 0 rgba(46, 61, 73, 0.5)
+	/* Responsive styling for screens above 500px width */
+	@media screen and (min-width: 500px)
+		width: 80%
+		padding: 15px 5%
+		margin: 10px 5%
+	/* Responsive styling for screens above 800px width */
+	@media screen and (min-width: 800px)
+		order: 2
+		width: 65%
+		margin: 10px 2%
+		padding: 15px 3% 20px
+	/* Responsive styling for screens above 900px width */
+	@media screen and (min-width: 1900px)
+		width: 650px
+		max-width: 650px
+		padding: 15px Calc((100% - 650px) / 4)
+		margin: 10px Calc((100% - 650px) / 4)
 
 /* Admin Dashboard main page intro text */
 .adminText
@@ -1647,6 +1710,17 @@ app-admin-dashboard h3
 	font-family: $mainFont
 	margin: 10px 5px
 	padding: 0
+
+/* Admin Dashboard main page list item title */
+.adminCategory .pageCategory
+	font-size: 16px
+
+/* Admin Dashboard main page list item text */
+.adminCategory .pageText
+	line-height: 1.5em
+	/* Responsive styling for screens above 600px width */
+	@media screen and (min-width: 600px)
+		line-height: 1.8em
 
 /* Admin Dashboard sub-section title */
 .subTitle

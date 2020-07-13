@@ -1459,42 +1459,126 @@ app-about
 app-search-results
 	@extend #compSample
 	width: 90%
-	padding: 0 5%
+	padding: 20px 5%
 	left: 0
 	right: 0
+	/* Responsivce styling for screen above 750px width */
+	@media screen and (min-width: 750px)
+		padding: 20px 2%
+		width: 96%
+	/* Responsivce styling for screen above 850px width */
+	@media screen and (min-width: 850px)
+		padding: 20px
 
 /* Search Results title */
 app-search-results h2
 	font-family: $mainFont
 	color: $headlineColour
 	text-align: center
-	padding: 5px 5px 0
+	padding: 0px 5px 10px
 	margin: 0 5px 10px
 	font-size: 24px
 	padding-top: 10px
-	
+
+#searchResultsMain
+	display: flex
+	flex-direction: column
+	/* Responsivce styling for screen above 625px width */
+	@media screen and (min-width: 625px)
+		flex-direction: row
+		flex-wrap: wrap
+
 /* Results summary title */
 #resultSummary
 	text-align: center
 	font-family: $mainFont
+	order: 0
+	width: 100%
 
 /* Users / Posts title */
 app-search-results h3
 	text-align: center
 	color: $headlineColour
 	font-family: $mainFont
-	font-size: 20px
+	font-size: 22px
 
-/* Results list */
+/* Users title */
+#usersTitle
+	order: 1
+	/* Responsivce styling for screen above 625px width */
+	@media screen and (min-width: 625px)
+		padding: 5px Calc((100% - 140px) / 4)
+
+/* Posts title */
+#postsTitle
+	order: 3
+	/* Responsivce styling for screen above 625px width */
+	@media screen and (min-width: 625px)
+		order: 2
+		padding: 5px Calc((100% - 140px) / 4)
+
+/* Post/user Results list */
 .searchResults
 	border-radius: 5px
 	width: 80%
-	padding: 0 5%
+	padding: 15px 5%
 	margin: 5px 5%
+	background: $boxesBackground
+	border-radius: 5px
+	list-style: none
+	border: none
+	box-shadow: 5px 5px 7px 0 rgba(46, 61, 73, 0.5)
+	/* Responsivce styling for screen above 450px width */
+	@media screen and (min-width: 450px)
+		width: 70%
+		margin: 5px 10%
 
-/* Result item */
+/* user Results list */
+#userSearchResults
+	order: 2
+	/* Responsivce styling for screen above 625px width */
+	@media screen and (min-width: 625px)
+		order: 3
+		width: 20%
+		margin: 5px 0 5px 10%
+
+/* Post Results list */
+#postSearchResults
+	order:  4
+	/* Responsivce styling for screen above 625px width */
+	@media screen and (min-width: 625px)
+		order: 3
+		width: 55%
+		margin: 5px 0 5px 5%
+
+/* User result */
+.searchResultUser
+	text-align: center
+	font-family: $mainFont
+	padding: 5px
+	margin: 5px
+	/* Responsivce styling for screen above 700px width */
+	@media screen and (min-width: 700px)
+		padding: 8px 5px
+
+/* User result - link to profile page */
+.searchResultUser a
+	color: $linkColour
+	font-size: 16px
+	/* Responsivce styling for screen above 700px width */
+	@media screen and (min-width: 700px)
+		font-size: 17px
+
+/* Post Result */
 .searchResult
 	@extend .newItem
+	
+/* Pagination in search */
+#searchResultsMain .pagination
+	width: 100%
+	margin: 10px 0
+	left: 0
+	right: 0
 	
 /* =================== Notifications Tab Component Styling =================== */
 /* Notifications Component */

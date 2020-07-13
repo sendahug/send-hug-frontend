@@ -22,12 +22,12 @@ $mainFont: 'Montserrat', sans-serif
 	max-width: 100%
 	/* Responsive styling for screens up to 650px width */
 	@media screen and (max-width: 650px)
-		top: 105px
+		top: 125px
 		bottom: 80px
 	/* Responsive styling for screens above 650px width */
 	@media screen and (min-width: 650px)
 		bottom: 90px
-		top: 120px
+		top: 130px
 
 /* Frame Sample */
 #frameSample
@@ -151,12 +151,11 @@ body
 #siteHeader.modal
 	z-index: 0
 
+/* No internet connection message */
 #noInternet
 	left: 0
 	right: 0
 	width: 90%
-	height: 15px
-	max-height: 15px
 	box-shadow: 5px 5px 5px 0 rgba(46, 61, 73, 0.5)
 	border-radius: 5px
 	text-align: center
@@ -168,7 +167,12 @@ body
 	margin: 0 5%
 	color: $headlineColour
 	font-family: $mainFont
-	font-size: 16px
+	font-size: 14px
+	padding: 0
+	/* Responsive styling for screens above 900px width */
+	@media screen and (min-width: 900px)
+		height: 22px
+		max-height: 22px
 
 /* Site logo */
 #siteLogo

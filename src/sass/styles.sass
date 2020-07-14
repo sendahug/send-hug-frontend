@@ -284,13 +284,37 @@ body
 	@media screen and (min-width: 800px)
 		padding: 0 15px
 
+/* Navigation icon (SVG) - normal variant */
+.normal
+	display: inline-block
+
+/* Navigation icon (SVG) - normal hidden variant */
+.normal.hidden
+	display: none
+
+/* Navigation icon (SVG) - hover variant */
+.hover
+	display: none
+
 /* Navigation Item (hover) */
 .navLink:hover
 	color: #f26363
 
+/* Navigation icon (SVG) - hover variant when the mouse is hovering over the link */
+.navLink:hover .hover
+	display: inline-block
+
+/* Navigation icon (SVG) - active & normal variants when the mouse is hovering over the link */
+.navLink:hover .normal, .navLink:hover .active
+	display: none
+
 /* Navigation Item (current page) */
 .navLink.active
 	color: #e01f6f
+
+/* Navigation icon (current page) when the mouse is hovering over the link  */
+.navLink.active:hover
+	color: #f26363
 
 /* Navigation item icon */
 .navIcon

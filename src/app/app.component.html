@@ -6,9 +6,9 @@
 		<button class="navLink hidden" id="menuBtn" (click)="toggleMenu()"><i class="fas fa-bars"></i></button>
 		<div id="navLinks" class="navLinks">
 			<a [routerLink]="['/']" class="navLink">
-				<img src="../assets/img/home.svg" alt="" id="home">
-				<img src="../assets/img/home_active.svg" alt="" class="hidden" id="homeActive">
-				<img src="../assets/img/home_hover.svg" alt="" class="hidden" id="homeHover">
+				<img src="../assets/img/home.svg" alt="" id="home" class="normal">
+				<img src="../assets/img/home_active.svg" alt="" class="active hidden" id="homeActive">
+				<img src="../assets/img/home_hover.svg" alt="" class="hover" id="homeHover">
 				<div class="navLinkText">Home</div>
 			</a>
 			<a [routerLink]="['/messages']" class="navLink">
@@ -16,9 +16,9 @@
 				<div class="navLinkText">Messages</div>
 			</a>
 			<a *ngIf="authService.authenticated && !authService.userData.blocked" [routerLink]="['/new', 'Post']" class="navLink">
-				<img src="../assets/img/post.svg" alt="" id="post">
-				<img src="../assets/img/post_active.svg" alt="" class="hidden" id="postActive">
-				<img src="../assets/img/post_hover.svg" alt="" class="hidden" id="postHover">
+				<img src="../assets/img/post.svg" alt="" id="post" class="normal">
+				<img src="../assets/img/post_active.svg" alt="" class="active hidden" id="postActive">
+				<img src="../assets/img/post_hover.svg" alt="" class="hover" id="postHover">
 				<div class="navLinkText">New Post</div>
 			</a>
 			<a [routerLink]="['/user']" class="navLink">
@@ -30,9 +30,9 @@
 				<div class="navLinkText">About</div>
 			</a>
 			<a *ngIf="authService.canUser('read:admin-board')" [routerLink]="['/admin']" class="navLink">
-				<img src="../assets/img/admin.svg" alt="" id="admin">
-				<img src="../assets/img/admin_active.svg" alt="" class="hidden" id="adminActive">
-				<img src="../assets/img/admin_hover.svg" alt="" class="hidden" id="adminHidden">
+				<img src="../assets/img/admin.svg" alt="" id="admin" class="normal">
+				<img src="../assets/img/admin_active.svg" alt="" class="active hidden" id="adminActive">
+				<img src="../assets/img/admin_hover.svg" alt="" class="hover" id="adminHidden">
 				<div class="navLinkText">Admin Panel</div>
 			</a>
 			<div class="newNotification">

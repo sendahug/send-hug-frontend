@@ -26,7 +26,7 @@
 	</div>
 
 	<!-- Admin dashboard reports -->
-	<h3 class="adminTitle" *ngIf="screen == 'reports'">Reports</h3>
+	<h3 class="adminTitle" *ngIf="screen == 'reports' && adminService.isReportsResolved.value">Reports</h3>
 	<div class="adminScreen" id="adminReports" *ngIf="screen == 'reports' && adminService.isReportsResolved.value" role="main">
 		
 		<h4 class="subTitle">Reported Users</h4>
@@ -115,7 +115,7 @@
 	</div>
 
 	<!-- Admin dashboard blocks -->
-	<h3 class="adminTitle" *ngIf="screen == 'blocks'">Blocks</h3>
+	<h3 class="adminTitle" *ngIf="screen == 'blocks' && adminService.isBlocksResolved.value">Blocks</h3>
 	<div class="adminScreen" id="adminBlocks" *ngIf="screen == 'blocks' && adminService.isBlocksResolved.value" role="main">
 		
 		<h4 class="subTitle">Block User</h4>
@@ -175,7 +175,7 @@
 	</div>
 
 	<!-- Admin dashboard filters -->
-	<h3 class="adminTitle" *ngIf="screen == 'filters'">Filters</h3>
+	<h3 class="adminTitle" *ngIf="screen == 'filters' && adminService.isFiltersResolved.value">Filters</h3>
 	<div class="adminScreen" id="adminFilters" *ngIf="screen == 'filters' && adminService.isFiltersResolved.value" role="main">
 		
 		<h4 class="subTitle">Add Filter</h4>

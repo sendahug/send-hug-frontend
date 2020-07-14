@@ -93,7 +93,7 @@
 				</div>
 				<div class="formElement">
 					<input type="radio" class="radioButton" name="postReport" id="pRadioOption3" value="3" (click)="setSelected($event.target.value)" aria-describedby="reportQ">
-					<label class="radioButtonLabel" for="pRadioOption3">Other:</label> <input type="text" placeholder="Enter the response" id="rOption3Text"  disabled>
+					<label class="radioButtonLabel" for="pRadioOption3">Other:</label> <input type="text" placeholder="Enter the response" id="rOption3Text"  aria-label="what is the problem with this post?" disabled>
 				</div>
 				
 				<button type="submit" class="appButton reportButton" (click)="reportPost($event)" aria-describedby="reportText">Report Post</button>
@@ -120,7 +120,7 @@
 				</div>
 				<div class="formElement">
 					<input type="radio" class="radioButton" name="postReport" id="uRadioOption3" value="3" (click)="setSelected($event.target.value)" aria-describedby="reportUQ">
-					<label class="radioButtonLabel" for="uRadioOption3">Other:</label> <input type="text" placeholder="Enter the response" id="uOption3Text" disabled>
+					<label class="radioButtonLabel" for="uRadioOption3">Other:</label> <input type="text" placeholder="Enter the response" id="uOption3Text" aria-label="what is the problem with this user?" disabled>
 				</div>
 				
 				<button type="submit" class="appButton reportButton" (click)="reportUser($event)" aria-describedby="uReportText">Report User</button>

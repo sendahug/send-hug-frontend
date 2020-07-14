@@ -565,9 +565,13 @@ app-main-page
 	width: 80%
 	margin: 5px
 	padding: 0 10%
+	line-height: 1.5em
 	/* Responsive styling for screens above 500px width */
 	@media screen and (min-width: 500px)
 		font-size: 18.5px
+	/* Responsive styling for screens above 600px width */
+	@media screen and (min-width: 600px)
+		line-height: 1.8em
 
 /* Item User */
 .itemUser
@@ -936,6 +940,10 @@ app-my-posts #postsTitle
 	text-align: center
 	font-size: 17px
 	margin-bottom: 10px
+	line-height: 1.5em
+	/* Responsive styling for screens above 600px width */
+	@media screen and (min-width: 600px)
+		line-height: 1.8em
 
 /* Post date */
 .postDate
@@ -1125,16 +1133,21 @@ app-messages h3
 	margin: 5px
 
 /* Field title */
-.pageCategory
+app-messages .pageCategory
 	text-align: center
 	font-family: $mainFont
 	color: $headlineColour
+	font-size: 16px
 
 /* Field text */
-.pageData
+app-messages .pageData
 	text-align: center
 	font-family: $mainFont
 	color: $textColour
+	line-height: 1.5em
+	/* Responsive styling for screens above 600px width */
+	@media screen and (min-width: 600px)
+		line-height: 1.8em
 
 /* Message / message thread buttons */
 .userMessage .buttons, .threadBtns

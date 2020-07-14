@@ -31,40 +31,42 @@
 		
 		<h4 class="subTitle">Reported Users</h4>
 		<!-- Reported users table -->
-		<table *ngIf="adminService.userReports.length">
-			<thead>
-				<tr>
-					<td scope="col">User I.D.</td>
-					<td scope="col">Display Name</td>
-					<td scope="col">Reporter</td>
-					<td scope="col">Report Reason</td>
-					<td scope="col">Action</td>
-				</tr>
-			</thead>
-			<tbody>
-				<tr *ngFor="let report of adminService.userReports">
-					<td aria-describedby="rUserID">{{ report.userID }}</td>
-					<td aria-describedby="rUserDisplay" id="{{ 'user' + report.id }}">{{ report.displayName }}</td>
-					<td [attr.aria-describedby]="'user' + report.id + ' rUserBy'">{{ report.reporter }}</td>
-					<td [attr.aria-describedby]="'user' + report.id + ' rUserFor'">{{ report.reportReason }}</td>
-					<td>
-						<span id="{{ 'editU' + report.id }}" class="labels">{{ 'Edit user ' + report.displayName }}</span>
-						<span id="{{ 'blockU' + report.id }}" class="labels">{{ 'block user ' + report.text + ' for one day' }}</span>
-						<button class="appButton" (click)="blockUser(report.userID, report.id)" [attr.aria-labelledby]="'blockU' + report.id">Block User (One Day)</button>
-						<button class="appButton" (click)="editUser(report.id, report.userID, report.displayName)" [attr.aria-labelledby]="'editU' + report.id">Edit User</button>
-						<button class="appButton" (click)="dismissReport(report.id)">Dismiss Report</button>
-					</td>
-				</tr>
-			</tbody>
-		</table>
+		<div class="tableContainer" *ngIf="adminService.userReports.length">
+			<table>
+				<thead>
+					<tr>
+						<td scope="col">User I.D.</td>
+						<td scope="col">Display Name</td>
+						<td scope="col">Reporter</td>
+						<td scope="col">Report Reason</td>
+						<td scope="col">Action</td>
+					</tr>
+				</thead>
+				<tbody>
+					<tr *ngFor="let report of adminService.userReports">
+						<td aria-describedby="rUserID">{{ report.userID }}</td>
+						<td aria-describedby="rUserDisplay" id="{{ 'user' + report.id }}">{{ report.displayName }}</td>
+						<td [attr.aria-describedby]="'user' + report.id + ' rUserBy'">{{ report.reporter }}</td>
+						<td [attr.aria-describedby]="'user' + report.id + ' rUserFor'">{{ report.reportReason }}</td>
+						<td>
+							<span id="{{ 'editU' + report.id }}" class="labels">{{ 'Edit user ' + report.displayName }}</span>
+							<span id="{{ 'blockU' + report.id }}" class="labels">{{ 'block user ' + report.text + ' for one day' }}</span>
+							<button class="appButton adminButton" (click)="blockUser(report.userID, report.id)" [attr.aria-labelledby]="'blockU' + report.id">Block User (One Day)</button>
+							<button class="appButton adminButton" (click)="editUser(report.id, report.userID, report.displayName)" [attr.aria-labelledby]="'editU' + report.id">Edit User</button>
+							<button class="appButton adminButton" (click)="dismissReport(report.id)">Dismiss Report</button>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
 		
 		<!-- User reports pagination -->
 		<div class="pagination" *ngIf="adminService.userReports.length" role="navigation">
 			<button *ngIf="adminService.currentPage.userReports > 1" class="appButton prevButton" (click)="prevPage('userReports')">Previous Page</button>
-			<button *ngIf="adminService.currentPage.userReports <= 1" class="appButton hidden" (click)="prevPage('userReports')">Previous Page</button>
+			<button *ngIf="adminService.currentPage.userReports <= 1" class="appButton placeHolder" (click)="prevPage('userReports')">Prev Page</button>
 			<div class="pageCount">Page {{ adminService.currentPage.userReports }} of {{ adminService.totalPages.userReports }}</div>
 			<button *ngIf="adminService.totalPages.userReports > adminService.currentPage.userReports" class="appButton nextButton" (click)="nextPage('userReports')">Next Page</button>
-			<button *ngIf="adminService.totalPages.userReports <= adminService.currentPage.userReports" class="appButton hidden" (click)="nextPage('userReports')">Next Page</button>
+			<button *ngIf="adminService.totalPages.userReports <= adminService.currentPage.userReports" class="appButton placeHolder" (click)="nextPage('userReports')">Next Page</button>
 		</div>
 		
 		<!-- If there are no open user reports -->
@@ -72,42 +74,44 @@
 		
 		<h4 class="subTitle">Reported Posts</h4>
 		<!-- Reported posts table -->
-		<table *ngIf="adminService.postReports.length">
-			<thead>
-				<tr>
-					<td scope="col">Post I.D.</td>
-					<td scope="col">User I.D.</td>
-					<td scope="col">Post Text</td>
-					<td scope="col">Reporter</td>
-					<td scope="col">Report Reason</td>
-					<td scope="col">Action</td>
-				</tr>
-			</thead>
-			<tbody>
-				<tr *ngFor="let report of adminService.postReports">
-					<td aria-describedby="pPostID">{{ report.postID }}</td>
-					<td aria-describedby="pUserID">{{ report.userID }}</td>
-					<td aria-describedby="pText" id="{{ 'post' + report.id }}">{{ report.text }}</td>
-					<td [attr.aria-describedby]="'post' + report.id + ' pUserBy'">{{ report.reporter }}</td>
-					<td [attr.aria-describedby]="'post' + report.id + ' pUserFor'">{{ report.reportReason }}</td>
-					<td>
-						<span id="{{ 'edit' + report.id }}" class="labels">{{ 'Edit post ' + report.text }}</span>
-						<span id="{{ 'delete' + report.id }}" class="labels">{{ 'Delete post ' + report.text }}</span>
-						<button class="appButton" (click)="editPost(report.postID, report.text, report.id)" [attr.aria-labelledby]="'edit' + report.id">Edit Post</button>
-						<button class="appButton" (click)="deletePost(report.postID, report.userID, report.id)" [attr.aria-labelledby]="'delete' + report.id">Delete Post</button>
-						<button class="appButton" (click)="dismissReport(report.id)">Dismiss Report</button>
-					</td>
-				</tr>
-			</tbody>
-		</table>
+		<div class="tableContainer" *ngIf="adminService.postReports.length">
+			<table>
+				<thead>
+					<tr>
+						<td scope="col">Post I.D.</td>
+						<td scope="col">User I.D.</td>
+						<td scope="col">Post Text</td>
+						<td scope="col">Reporter</td>
+						<td scope="col">Report Reason</td>
+						<td scope="col">Action</td>
+					</tr>
+				</thead>
+				<tbody>
+					<tr *ngFor="let report of adminService.postReports">
+						<td aria-describedby="pPostID">{{ report.postID }}</td>
+						<td aria-describedby="pUserID">{{ report.userID }}</td>
+						<td aria-describedby="pText" id="{{ 'post' + report.id }}">{{ report.text }}</td>
+						<td [attr.aria-describedby]="'post' + report.id + ' pUserBy'">{{ report.reporter }}</td>
+						<td [attr.aria-describedby]="'post' + report.id + ' pUserFor'">{{ report.reportReason }}</td>
+						<td>
+							<span id="{{ 'edit' + report.id }}" class="labels">{{ 'Edit post ' + report.text }}</span>
+							<span id="{{ 'delete' + report.id }}" class="labels">{{ 'Delete post ' + report.text }}</span>
+							<button class="appButton adminButton" (click)="editPost(report.postID, report.text, report.id)" [attr.aria-labelledby]="'edit' + report.id">Edit Post</button>
+							<button class="appButton adminButton" (click)="deletePost(report.postID, report.userID, report.id)" [attr.aria-labelledby]="'delete' + report.id">Delete Post</button>
+							<button class="appButton adminButton" (click)="dismissReport(report.id)">Dismiss Report</button>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
 		
 		<!-- Post reports pagination -->
 		<div class="pagination" *ngIf="adminService.postReports.length" role="navigation">
 			<button *ngIf="adminService.currentPage.postReports > 1" class="appButton prevButton" (click)="prevPage('postReports')">Previous Page</button>
-			<button *ngIf="adminService.currentPage.postReports <= 1" class="appButton hidden" (click)="prevPage('postReports')">Previous Page</button>
+			<button *ngIf="adminService.currentPage.postReports <= 1" class="appButton placeHolder" (click)="prevPage('postReports')">Prev Page</button>
 			<div class="pageCount">Page {{ adminService.currentPage.postReports }} of {{ adminService.totalPages.postReports }}</div>
 			<button *ngIf="adminService.totalPages.postReports > adminService.currentPage.postReports" class="appButton nextButton" (click)="nextPage('postReports')">Next Page</button>
-			<button *ngIf="adminService.totalPages.postReports <= adminService.currentPage.postReports" class="appButton hidden" (click)="nextPage('postReports')">Next Page</button>
+			<button *ngIf="adminService.totalPages.postReports <= adminService.currentPage.postReports" class="appButton placeHolder" (click)="nextPage('postReports')">Next Page</button>
 		</div>
 		
 		<!-- If there are no open post reports -->
@@ -139,35 +143,37 @@
 		
 		<h4 class="subTitle">Blocked Users</h4>
 		<!-- Blocked users table -->
-		<table *ngIf="adminService.blockedUsers.length">
-			<thead>
-				<tr>
-					<td scope="col">User I.D.</td>
-					<td scope="col">Display Name</td>
-					<td scope="col">Blocked Until</td>
-					<td scope="col">Action</td>
-				</tr>
-			</thead>
-			<tbody>
-				<tr *ngFor="let user of adminService.blockedUsers">
-					<td aria-describedby="bUserID">{{ user.id }}</td>
-					<td aria-describedby="bUserDisplay" id="{{ 'user' + user.id }}">{{ user.displayName }}</td>
-					<td [attr.aria-describedby]="'user' + user.id + ' bUntil'">{{ user.releaseDate }}</td>
-					<td>
-						<span id="{{ 'unblock' + user.id }}" class="labels">{{ 'unblock user ' + user.displayName }}</span>
-						<button class="appButton" (click)="unblock(user.id)" [attr.aria-labelledby]="'unblock' + user.id">Unblock User</button>
-					</td>
-				</tr>
-			</tbody>
-		</table>
+		<div class="tableContainer" *ngIf="adminService.blockedUsers.length">
+			<table>
+				<thead>
+					<tr>
+						<td scope="col">User I.D.</td>
+						<td scope="col">Display Name</td>
+						<td scope="col">Blocked Until</td>
+						<td scope="col">Action</td>
+					</tr>
+				</thead>
+				<tbody>
+					<tr *ngFor="let user of adminService.blockedUsers">
+						<td aria-describedby="bUserID">{{ user.id }}</td>
+						<td aria-describedby="bUserDisplay" id="{{ 'user' + user.id }}">{{ user.displayName }}</td>
+						<td [attr.aria-describedby]="'user' + user.id + ' bUntil'">{{ user.releaseDate }}</td>
+						<td>
+							<span id="{{ 'unblock' + user.id }}" class="labels">{{ 'unblock user ' + user.displayName }}</span>
+							<button class="appButton adminButton" (click)="unblock(user.id)" [attr.aria-labelledby]="'unblock' + user.id">Unblock User</button>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
 		
 		<!-- Blocked users pagination -->
 		<div class="pagination" *ngIf="adminService.blockedUsers.length" role="navigation">
 			<button *ngIf="adminService.currentPage.blockedUsers > 1" class="appButton prevButton" (click)="prevPage('blockedUsers')">Previous Page</button>
-			<button *ngIf="adminService.currentPage.blockedUsers <= 1" class="appButton hidden" (click)="prevPage('blockedUsers')">Previous Page</button>
+			<button *ngIf="adminService.currentPage.blockedUsers <= 1" class="appButton placeHolder" (click)="prevPage('blockedUsers')">Prev Page</button>
 			<div class="pageCount">Page {{ adminService.currentPage.blockedUsers }} of {{ adminService.totalPages.blockedUsers }}</div>
 			<button *ngIf="adminService.totalPages.blockedUsers > adminService.currentPage.blockedUsers" class="appButton nextButton" (click)="nextPage('blockedUsers')">Next Page</button>
-			<button *ngIf="adminService.totalPages.blockedUsers <= adminService.currentPage.blockedUsers" class="appButton hidden" (click)="nextPage('blockedUsers')">Next Page</button>
+			<button *ngIf="adminService.totalPages.blockedUsers <= adminService.currentPage.blockedUsers" class="appButton placeHolder" (click)="nextPage('blockedUsers')">Next Page</button>
 		</div>
 		
 		<!-- If there are no blocked users -->
@@ -190,31 +196,33 @@
 		
 		<h4 class="subTitle">Filtered Phrases</h4>
 		<!-- Filtered phrases table -->
-		<table *ngIf="adminService.filteredPhrases.length">
-			<thead>
-				<tr>
-					<td scope="col">Phrase</td>
-					<td scope="col">Action</td>
-				</tr>
-			</thead>
-			<tbody>
-				<tr *ngFor="let phrase of adminService.filteredPhrases">
-					<td aria-describedby="filteredP" id="{{ phrase }}">{{ phrase }}</td>
-					<td>
-						<span id= "{{ 'f_' + phrase }}" class="labels">{{ 'Remove filter ' + filter.value }}</span>
-						<button class="appButton" (click)="removeFilter(phrase)" [attr.aria-labelledby]="'f_' + phrase">Remove Filter</button>
-					</td>
-				</tr>
-			</tbody>
-		</table>
+		<div class="tableContainer" *ngIf="adminService.filteredPhrases.length">
+			<table>
+				<thead>
+					<tr>
+						<td scope="col">Phrase</td>
+						<td scope="col">Action</td>
+					</tr>
+				</thead>
+				<tbody>
+					<tr *ngFor="let phrase of adminService.filteredPhrases">
+						<td aria-describedby="filteredP" id="{{ phrase }}">{{ phrase }}</td>
+						<td>
+							<span id= "{{ 'f_' + phrase }}" class="labels">{{ 'Remove filter ' + filter.value }}</span>
+							<button class="appButton adminButton" (click)="removeFilter(phrase)" [attr.aria-labelledby]="'f_' + phrase">Remove Filter</button>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
 		
 		<!-- Filtered words pagination -->
 		<div class="pagination" *ngIf="adminService.filteredPhrases.length" role="navigation">
 			<button *ngIf="adminService.currentPage.filteredPhrases > 1" class="appButton prevButton" (click)="prevPage('filteredPhrases')">Previous Page</button>
-			<button *ngIf="adminService.currentPage.filteredPhrases <= 1" class="appButton hidden" (click)="prevPage('filteredPhrases')">Previous Page</button>
+			<button *ngIf="adminService.currentPage.filteredPhrases <= 1" class="appButton placeHolder" (click)="prevPage('filteredPhrases')">Prev Page</button>
 			<div class="pageCount">Page {{ adminService.currentPage.filteredPhrases }} of {{ adminService.totalPages.filteredPhrases }}</div>
 			<button *ngIf="adminService.totalPages.filteredPhrases > adminService.currentPage.filteredPhrases" class="appButton nextButton" (click)="nextPage('filteredPhrases')">Next Page</button>
-			<button *ngIf="adminService.totalPages.filteredPhrases <= adminService.currentPage.filteredPhrases" class="appButton hidden" (click)="nextPage('filteredPhrases')">Next Page</button>
+			<button *ngIf="adminService.totalPages.filteredPhrases <= adminService.currentPage.filteredPhrases" class="appButton placeHolder" (click)="nextPage('filteredPhrases')">Next Page</button>
 		</div>
 		
 		<!-- If there are no filtered phrases -->

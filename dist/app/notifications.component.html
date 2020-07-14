@@ -1,15 +1,20 @@
-<div id="notificationsTab">
-	<h4>Notifications</h4>
-	<button class="tabLink" (click)="togglePushNotifications()">{{ notificationService.toggleBtn }} Push Notifications</button> | <button class="tabLink" (click)="toggleAutoRefresh()">{{ notificationService.refreshBtn }} Auto-Refresh</button>
-	
-	<ul id="notificationsList" *ngIf="notificationService.notifications.length">
-		<li *ngFor="let notification of notificationService.notifications">
-			<div>New {{ notification.type }}!</div>
-			<div *ngIf="notification.type == 'hug'">You received a hug from {{ notification.from }}.</div>
-			<div *ngIf="notification.type == 'message'">You have a new message from {{ notification.from }}. <a [routerLink]="messages">View Message</a></div>
-		</li>
-	</ul>
-	
-	<!-- If there are no notifications -->
-	<div *ngIf="notificationService.notifications.length == 0" class="errorMessage">You have no new notifications!</div>
+<div id="modalBox">
+	<div id="notificationsTab">
+		<button id="exitButton" (click)="exitNotifications()" aria-label="close popup"><i class="fas fa-times"></i></button>
+		<h4>Notifications</h4>
+		<div id="nButtons">
+			<button class="appButton NotificationButton" (click)="togglePushNotifications()">{{ notificationService.toggleBtn }} Push Notifications</button> <button class="appButton NotificationButton" (click)="toggleAutoRefresh()">{{ notificationService.refreshBtn }} Auto-Refresh</button>
+		</div>
+
+		<ul id="notificationsList" *ngIf="notificationService.notifications.length">
+			<li *ngFor="let notification of notificationService.notifications" class="notificationItem">
+				<div class="notificationTitle">New {{ notification.type }}!</div>
+				<div *ngIf="notification.type == 'hug'" class="notificationText">You received a hug from {{ notification.from }}.</div>
+				<div *ngIf="notification.type == 'message'" class="notificationText">You have a new message from {{ notification.from }}. <a [routerLink]="messages">View Message</a></div>
+			</li>
+		</ul>
+
+		<!-- If there are no notifications -->
+		<div *ngIf="notificationService.notifications.length == 0" class="errorMessage" id="noNotifications">You have no new notifications!</div>
+	</div>
 </div>

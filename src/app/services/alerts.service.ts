@@ -112,6 +112,22 @@ export class AlertsService {
     alertMessage.className = `alertMessage ${alert.type}`;
     alertMessage.setAttribute('role', 'alert');
 
+    let icon = document.createElement('i');
+    let className: string;
+    switch(alert.type) {
+      case 'Success':
+        className = 'far fa-check-circle';
+        break;
+      case 'Error':
+        className = 'far fa-times-circle';
+        break;
+      case 'Notification':
+        className = 'far fa-bel';
+        break;
+    }
+    icon.className = `alertIcon ${className}`;
+    alertMessage.append(icon);
+
     // alert title
     let alertHeadline = document.createElement('h3');
     alertHeadline.className = `alertType`;

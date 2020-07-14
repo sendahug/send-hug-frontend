@@ -1,4 +1,4 @@
-const currentCache = "send-hug-v4";
+const currentCache = "send-hug-v5";
 const serverUrl = "localhost:5000";
 
 // upon installing a new service worker
@@ -29,6 +29,24 @@ self.addEventListener("install", function(event) {
 			
 			// add all assets to cache
 			cache.addAll(toCache);
+			
+			// cache icons
+			let iconCache = [
+				'/assets/img/admin.svg',
+				'/assets/img/admin_active.svg',
+				'/assets/img/admin_hover.svg',
+				'/assets/img/home.svg',
+				'/assets/img/home_active.svg',
+				'/assets/img/home_hover.svg',
+				'/assets/img/Logo.svg',
+				'/assets/img/Logo_notifications.png',
+				'/assets/img/post.svg',
+				'/assets/img/post_active.svg',
+				'/assets/img/post_hover.svg'
+			]
+			
+			// add all icons to cache
+			cache.addAll(iconCache);
 			
 		// in case there's an error
 		}).catch(function(err) {
@@ -213,7 +231,7 @@ self.addEventListener('push', function(event) {
 		// show the user the notification
 		self.registration.showNotification(pushData.title, {
 			body: pushData.body,
-			icon: 'favicon.ico'
+			icon: '/assets/img/Logo_notifications.png'
 		})
 	)
 })

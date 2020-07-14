@@ -1,17 +1,49 @@
 <header id="siteHeader">
 	<a href="#mainContent" class="skip-link" role="navigation" id="skipLink" aria-label="skip to main content">Skip navigation</a>
 	<div id="noInternet" *ngIf="alertsService.isOffline.value" role="banner">You are not currently connected to the internet. For updated data, reconnect to the internet and try again.</div>
-	<h1 id="mainTitle">Send a Hug</h1>
 	<nav id="navMenu" role="navigation">
-		<a *ngFor="let tab of navTabs" [routerLink]="(tab.link)" class="navLink">{{tab.name}}</a>
-		<a *ngIf="authService.authenticated && !authService.userData.blocked" [routerLink]="['/new', 'Post']" class="navLink">New Post</a>
-		<a *ngIf="authService.canUser('read:admin-board')" [routerLink]="['/admin']" class="navLink">Admin Dashboard</a>
-		<div class="newNotification">
-			<button class="navLink" (click)="toggleNotifications()">Notifications</button>
-			<span class="badge">{{ notificationService.newNotifications }}</span>
+		<a [routerLink]="['/']"><img src="../assets/img/Logo.svg" alt="send a hug logo" id="siteLogo"></a>
+		<button class="navLink hidden" id="menuBtn" (click)="toggleMenu()"><i class="fas fa-bars"></i></button>
+		<div id="navLinks" class="navLinks">
+			<a [routerLink]="['/']" class="navLink">
+				<img src="../assets/img/home.svg" alt="" id="home" class="normal">
+				<img src="../assets/img/home_active.svg" alt="" class="active hidden" id="homeActive">
+				<img src="../assets/img/home_hover.svg" alt="" class="hover" id="homeHover">
+				<div class="navLinkText">Home</div>
+			</a>
+			<a [routerLink]="['/messages']" class="navLink">
+				<i class="far fa-comments navIcon" aria-label="Messages"></i>
+				<div class="navLinkText">Messages</div>
+			</a>
+			<a *ngIf="authService.authenticated && !authService.userData.blocked" [routerLink]="['/new', 'Post']" class="navLink">
+				<img src="../assets/img/post.svg" alt="" id="post" class="normal">
+				<img src="../assets/img/post_active.svg" alt="" class="active hidden" id="postActive">
+				<img src="../assets/img/post_hover.svg" alt="" class="hover" id="postHover">
+				<div class="navLinkText">New Post</div>
+			</a>
+			<a [routerLink]="['/user']" class="navLink">
+				<i class="fas fa-user-circle navIcon" aria-label="Profile"></i>
+				<div class="navLinkText">Profile</div>
+			</a>
+			<a [routerLink]="['/about']" class="navLink">
+				<i class="far fa-compass navIcon" aria-label="About"></i>
+				<div class="navLinkText">About</div>
+			</a>
+			<a *ngIf="authService.canUser('read:admin-board')" [routerLink]="['/admin']" class="navLink">
+				<img src="../assets/img/admin.svg" alt="" id="admin" class="normal">
+				<img src="../assets/img/admin_active.svg" alt="" class="active hidden" id="adminActive">
+				<img src="../assets/img/admin_hover.svg" alt="" class="hover" id="adminHidden">
+				<div class="navLinkText">Admin Panel</div>
+			</a>
+			<div class="newNotification">
+				<button class="navLink" (click)="toggleNotifications()"><i class="far fa-bell navButton" aria-label="notifications" id="navNotific"></i></button>
+				<span class="badge">{{ notificationService.newNotifications }}</span>
+			</div>
+			<button class="navLink" (click)="toggleSearch()"><i class="fas fa-search navButton" aria-label="open search"></i></button>
 		</div>
 	</nav>
-	<form id="search" role="search">
+	<form id="search" role="search" *ngIf="showSearch">
+		<button id="exitButton" (click)="exitNotifications()" aria-label="close popup"><i class="fas fa-times"></i></button>
 		<label class="pageCategory" for="searchQuery" id="searchLabel">Search: </label>
 		<input type="text" id="searchQuery" placeholder="Search" #searchQuery>
 		<button type="submit" class="appButton sendData" (click)="searchApp($event,searchQuery.value)">Search</button>
@@ -20,7 +52,8 @@
 
 <main id="mainContent" role="main">
 	<div *ngIf="showNotifications">
-		<app-notifications></app-notifications>
+		<app-notifications
+						   (NotificationsMode)="changeMode($event)"></app-notifications>
 	</div>
 	<router-outlet></router-outlet>
 	<div id="alertContainer"></div>
@@ -28,7 +61,7 @@
 
 <footer>
 	<div id="siteFooter" role="contentinfo">
-		<p class="footerText" id="text">Open source project designed and built by <a href="https://github.com/sendahug/sendahug">Send a Hug</a> group members.</p>
+		<p class="footerText" id="text">Open source project designed and built by <a href="https://github.com/sendahug/sendahug" target="_blank">Send a Hug</a> group members. Designed by <a href="https://instagram.com/alphamacy?igshid=8ca63sx6ccpz" target="_blank">Macy Tyler.</a></p>
 		<p class="footerText" id="contact">theobjectivistb@gmail.com</p>
 		<p class="footerText" id="rights">&copy; Send A Hug 2020.</p>
 	</div>

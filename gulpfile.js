@@ -170,7 +170,7 @@ function copyServiceWorker()
 gulp.task('dist', gulp.parallel(
 	copyHtmlDist,
 	copyIndexDist,
-	//copyImgsDist,
+	copyImgsDist,
 	stylesDist,
 	scriptsDist,
 	copyServiceWorker

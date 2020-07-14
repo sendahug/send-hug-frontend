@@ -82,6 +82,7 @@ export class PopUp implements OnInit, OnChanges, AfterViewChecked {
     }
 
     document.getElementById('exitButton')!.focus();
+    document.getElementById('siteHeader')!.className = 'modal';
   }
 
   /*
@@ -428,6 +429,7 @@ export class PopUp implements OnInit, OnChanges, AfterViewChecked {
     let modal = document.getElementById('modalBox');
     modal!.removeEventListener('keydown', this.checkFocusBinded);
     document.getElementById('skipLink')!.focus();
+    document.getElementById('siteHeader')!.className = '';
     this.editMode.emit(false);
   }
 }

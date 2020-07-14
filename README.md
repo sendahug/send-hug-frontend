@@ -43,15 +43,16 @@ The main module contains 9 components, 3 services and 4 interfaces. Each compone
 2. **adminDashboard** - An admin dashboard, allowing admins to handle reports, user blocks and filtered words easily.
 3. **errorPage** - Displays a 'not found' error page if the user attempts to navigate (via Angular's router) to a location that doesn't exist.
 4. **fullList** - Displays a full list of paginated posts, depending on the list requested by the user (new or suggested).
-5. **loader** - A loader, displayed while the app is fetching data from the backend.
-6. **mainPage** - The main page of the app. Displays two lists to the user ('suggested' and 'new') - each with ten posts, as well as 'view full list' links.
-7. **messages** - A messages screen. Displays a paginated list of messages sent to the user.
-8. **myPosts** - A sub-component of the userPage component. Displays a paginated list of posts by the user whose profile is viewed.
-9. **newItem** - A form component allowing users to create a new item (message or post).
-10. **notifications** - A tab component to display the latest notifications for the currently logged-in user.
-11. **popUp** - A sub-component displaying a popup screen with a form for editing items (posts or a user's display name).
-12. **searchResults** - A component to display the results of the user's search.
-13. **userPage** - Displays the user's data as fetched from the backend, as well as a list of the user's posts (as myPost component).
+5. **headerMessage** - A loader displayed, displayed while the app is fetching data from the backend.
+6. **loader** - A loader, displayed while the app is fetching data from the backend; if this isn't the user's first visit to the app, the loader only stays while the app is fetching data from IndexedDB.
+7. **mainPage** - The main page of the app. Displays two lists to the user ('suggested' and 'new') - each with ten posts, as well as 'view full list' links.
+8. **messages** - A messages screen. Displays a paginated list of messages sent to the user.
+9. **myPosts** - A sub-component of the userPage component. Displays a paginated list of posts by the user whose profile is viewed.
+10. **newItem** - A form component allowing users to create a new item (message or post).
+11. **notifications** - A tab component to display the latest notifications for the currently logged-in user.
+12. **popUp** - A sub-component displaying a popup screen with a form for editing items (posts or a user's display name).
+13. **searchResults** - A component to display the results of the user's search.
+14. **userPage** - Displays the user's data as fetched from the backend, as well as a list of the user's posts (as myPost component).
 
 ### Interfaces
 
@@ -73,8 +74,9 @@ The main module contains 9 components, 3 services and 4 interfaces. Each compone
 2. **alerts** - Creates and displays an alert to the user, based on the response from the server and using the alert interface.
 3. **auth** - Handles authentication-related methods, including login, logout, token refresh and getting and changing user data. View [Authentication](#Authentication) for more details about the authentication process.
 4. **items** - Handles communications with the backend for non-post related communications. Deals with fetching user posts, handling messages (fetching, sending and deleting), running a search and sending a report.
-5. **posts** - Handles all backend communication for post-related communications (except for a specific user's posts). This includes getting, creating, editing and deleting posts.
-6. **swmanager** - Handles the Service Worker and the IDBPromised database created for offline usage.
+5. **notifications** - Handles all notification-related communication, including push notifications subscription and setting the notifications' refresh time.
+6. **posts** - Handles all backend communication for post-related communications (except for a specific user's posts). This includes getting, creating, editing and deleting posts.
+7. **swmanager** - Handles the Service Worker and the IDBPromised database created for offline usage.
 
 ## Dependencies
 

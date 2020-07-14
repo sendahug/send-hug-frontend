@@ -213,7 +213,7 @@ self.addEventListener('push', function(event) {
 		// show the user the notification
 		self.registration.showNotification(pushData.title, {
 			body: pushData.body,
-			icon: 'favicon.ico'
+			icon: '/assets/img/Logo_notifications.png'
 		})
 	)
 })

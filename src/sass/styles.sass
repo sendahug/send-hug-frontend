@@ -241,6 +241,8 @@ body
 	/* Responsive styling for screens up to 600px width */
 	@media screen and (max-width: 600px)
 		flex-direction: column
+		height: 100%
+		max-height: 600px
 		width: 75%
 		overflow-y: visible
 		position: absolute
@@ -259,6 +261,9 @@ body
 		align-items: center
 		justify-content: space-between
 		padding: 10px
+	/* Responsive styling for screens above 600px height */
+	@media screen and (max-height: 600px)
+		overflow-y: scroll
 
 /* Navigation menu - inner - hidden */
 .navLinks.hidden
@@ -1720,6 +1725,9 @@ app-notifications
 	@media screen and (min-width: 600px)
 		width: 400px
 		margin-left: Calc(100% - 400px)
+		/* Responsive styling for screens above 600px height */
+	@media screen and (max-height: 600px)
+		overflow-y: scroll
 
 /* Notifications exit button */
 #notificationsTab #exitButton

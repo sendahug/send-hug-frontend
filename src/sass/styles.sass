@@ -9,6 +9,7 @@ $buttonBackground: linear-gradient(90deg, rgba(224,31,111,1) 40%, rgba(231,8,46,
 $headlineColour: #1F1F1F
 $textColour: #000000
 $linkColour: #404040
+$profileLinkColour: #70315B
 
 /* Fonts */
 $mainFont: 'Montserrat', sans-serif
@@ -308,7 +309,7 @@ fieldset
 
 /* Navigation Item (hover) */
 .navLink:hover
-	color: #B30F0F
+	color: #A50D0D
 
 /* Navigation icon (SVG) - hover variant when the mouse is hovering over the link */
 .navLink:hover .hover
@@ -320,7 +321,7 @@ fieldset
 
 /* Navigation Item (current page) */
 .navLink.active
-	color: #AF1857
+	color: #9D154E
 
 /* Navigation Item's text (current page) */
 .navLink.active .navLinkText
@@ -328,7 +329,7 @@ fieldset
 
 /* Navigation icon (current page) when the mouse is hovering over the link  */
 .navLink.active:hover
-	color: #B30F0F
+	color: #A50D0D
 
 /* Navigation item icon */
 .navIcon
@@ -559,11 +560,11 @@ app-main-page
 /* New & Suggested Item */
 .newItem, .sugItem
 	@extend #itemSample
-	border-color: #FFFFFF
+	border-color: $itemBackground
 	box-shadow: 3px 3px 7px 0 rgba(46, 61, 73, 0.5)
 	margin: 20px 5px
 	padding: 5px
-	background: #FFFFFF
+	background: $itemBackground
 	display: flex
 	flex-wrap: wrap
 	/* Responsive styling for screens above 800px width */
@@ -602,14 +603,14 @@ app-main-page
 
 /* Item User Profile Link */
 .profileLink
-	color: #8B323F
+	color: $profileLinkColour
 	text-decoration: none
 	font-weight: bold
 
 /* Item User Profile Link (hover) */
 .profileLink:hover
 	text-decoration: underline
-	color: #B30F0F
+	color: #7C1E1B
 
 /* Buttons div */
 .buttonsContainer
@@ -1362,7 +1363,7 @@ app-error-page
 
 /* Edit popup */
 #editPopup
-	background-color: #FFFFFF
+	background-color: $itemBackground
 	box-shadow: 12px 15px 20px 0 rgba(46, 61, 73, 0.5)
 	border-radius: 5px
 	width: 80%
@@ -1714,11 +1715,16 @@ app-search-results h3
 
 /* User result - link to profile page */
 .searchResultUser a
-	color: $linkColour
+	color: $profileLinkColour
 	font-size: 16px
 	/* Responsivce styling for screen above 700px width */
 	@media screen and (min-width: 700px)
 		font-size: 17px
+
+/* User result - link to profile page when hovered on */
+.searchResultsUser a:hover
+	text-decoration: underline
+	color: #7C1E1B
 
 /* Post Result */
 .searchResult

@@ -1675,9 +1675,27 @@ app-search-results h3
 		width: 20%
 		margin: 5px 0 5px 10%
 
+/* no user Results message */
+#uSearchResErr
+	order: 2
+	/* Responsivce styling for screen above 625px width */
+	@media screen and (min-width: 625px)
+		order: 3
+		width: 20%
+		margin: 5px 5% 5px 15%
+
 /* Post Results list */
 #postSearchResults
 	order:  4
+	/* Responsivce styling for screen above 625px width */
+	@media screen and (min-width: 625px)
+		order: 3
+		width: 55%
+		margin: 5px 0 5px 5%
+
+/* no post Results message */
+#pSearchResErr
+	order: 4
 	/* Responsivce styling for screen above 625px width */
 	@media screen and (min-width: 625px)
 		order: 3

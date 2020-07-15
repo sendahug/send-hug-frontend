@@ -10,7 +10,7 @@
 			<li *ngFor="let notification of notificationService.notifications" class="notificationItem">
 				<div class="notificationTitle">New {{ notification.type }}!</div>
 				<div *ngIf="notification.type == 'hug'" class="notificationText">You received a hug from {{ notification.from }}.</div>
-				<div *ngIf="notification.type == 'message'" class="notificationText">You have a new message from {{ notification.from }}. <a [routerLink]="messages">View Message</a></div>
+				<div *ngIf="notification.type == 'message'" class="notificationText">You have a new message from {{ notification.from }}. <a [routerLink]="messages" [attr.aria-label]="'view message from ' + notification.from">View Message</a></div>
 			</li>
 		</ul>
 

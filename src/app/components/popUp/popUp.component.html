@@ -12,7 +12,7 @@
 				<br>
 				<textarea #postText id="postText" cols="40" rows="8" aria-describedby="pText">{{ editedItem.text }}</textarea>
 			</div>
-			<button type="submit" class="appButton sendData" (click)="updatePost($event, postText.value)">Update</button>
+			<button type="submit" class="appButton sendData" (click)="updatePost($event, postText.value)" [attr.aria-label]="'update post ' + editedItem.text">Update Post</button>
 		</form>
 		
 		<!-- If the user is editing a post from the report's page -->
@@ -33,7 +33,7 @@
 				<input #displayName type="text" id="displayName" value="{{ authService.userData.displayName }}">
 			</div>
 			
-			<button type="submit" class="appButton updateItem" (click)="updateDisplayN($event, displayName.value)" aria-describedby="displayName">Update User</button>
+			<button type="submit" class="appButton updateItem" (click)="updateDisplayN($event, displayName.value)" [attr.aria-label]="'update display name for user ' + authService.userData.displayName">Update User</button>
 		</form>
 		
 		<!-- If the user is editing another user -->

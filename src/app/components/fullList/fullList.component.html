@@ -27,10 +27,10 @@
 	
 	<!-- Post pagination -->
 	<div class="pagination" role="navigation">
-		<button *ngIf="postsService.fullItemsPage['full' + type + 'Items'] > 1" class="appButton prevButton" (click)="prevPage()">Previous Page</button>
+		<button *ngIf="postsService.fullItemsPage['full' + type + 'Items'] > 1" class="appButton prevButton" (click)="prevPage()" [attr.aria-label]="'previous page of ' + type + ' posts'">Previous Page</button>
 		<button *ngIf="postsService.fullItemsPage['full' + type + 'Items'] <= 1" class="appButton placeHolder">Next Page</button>
 		<div class="pageCount">Page {{ postsService.fullItemsPage['full' + type + 'Items'] }} of {{ postsService.totalFullItemsPage['full' + type + 'Items'] }}</div>
-		<button *ngIf="postsService.totalFullItemsPage['full' + type + 'Items'] > postsService.fullItemsPage['full' + type + 'Items']" class="appButton nextButton" (click)="nextPage()">Next Page</button>
+		<button *ngIf="postsService.totalFullItemsPage['full' + type + 'Items'] > postsService.fullItemsPage['full' + type + 'Items']" class="appButton nextButton" (click)="nextPage()" [attr.aria-label]="'next page of ' + type + ' posts'">Next Page</button>
 		<button *ngIf="postsService.totalFullItemsPage['full' + type + 'Items'] <= postsService.fullItemsPage['full' + type + 'Items']" class="appButton placeHolder">Previous Page</button>
 	</div>
 </div>

@@ -26,7 +26,7 @@
 	<!-- If there are no items in the list -->
 	<div class="errorMessage" *ngIf="postsService.newItemsArray.length == 0 && postsService.isMainPageResolved.value">There are no recent items.</div>
 	
-	<a [routerLink]="['/list', 'New']" [queryParams]="{page: 1}" class="textlessButton fullButton" aria-label="View full list of new items">View Full List</a>
+	<a [routerLink]="['/list', 'New']" [queryParams]="{page: 1}" class="textlessButton fullButton" aria-label="View full list of new items" id="fullNew">View Full 'New' List</a>
 </div>
 
 <!-- Suggested items -->
@@ -57,7 +57,7 @@
 	<!-- If there are no items in the list -->
 	<div class="errorMessage" *ngIf="postsService.sugItemsArray.length == 0 && postsService.isMainPageResolved.value">There are no suggested items.</div>
 	
-	<a [routerLink]="['/list', 'Suggested']" [queryParams]="{page: 1}" class="textlessButton fullButton" role="navigation" aria-label="View full list of suggested items">View Full List</a>
+	<a [routerLink]="['/list', 'Suggested']" [queryParams]="{page: 1}" class="textlessButton fullButton" role="navigation" aria-label="View full list of suggested items">View Full 'Suggested' List</a>
 </div>
 
 <div id="labels" class="labels" aria-hidden="true">

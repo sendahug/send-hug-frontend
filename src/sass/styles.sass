@@ -652,21 +652,34 @@ app-main-page .errorMessage
 	font-family: $mainFont
 	margin: 10px
 
-/* View full list button */
+/* View full list buttons */
 .fullButton
 	font-family: $mainFont
 	background: $mainBackground
 	padding-bottom: 10px
 	/* Responsive styling for screens up to 400px width */
 	@media screen and (max-width: 400px)
-		margin: 0 Calc((100% - 120px) / 2)
+		margin: 0 Calc((100% - 220px) / 2)
 	/* Responsive styling for screens above 400px width */
 	@media screen and (min-width: 400px)
 		font-size: 18px
-		margin: 0 Calc((100% - 130px) / 2)
+		margin: 0 Calc((100% - 250px) / 2)
 	/* Responsive styling for screens above 600px width */
 	@media screen and (min-width: 600px)
-		margin: 0 Calc((100% - 140px) / 2)
+		margin: 0 Calc((100% - 250px) / 2)
+
+/* View full new list button */
+#fullNew
+	/* Responsive styling for screens up to 400px width */
+	@media screen and (max-width: 400px)
+		margin: 0 Calc((100% - 170px) / 2)
+	/* Responsive styling for screens above 400px width */
+	@media screen and (min-width: 400px)
+		font-size: 18px
+		margin: 0 Calc((100% - 190px) / 2)
+	/* Responsive styling for screens above 600px width */
+	@media screen and (min-width: 600px)
+		margin: 0 Calc((100% - 200px) / 2)
 
 /* =================== Full List Styling =================== */
 /* List container*/

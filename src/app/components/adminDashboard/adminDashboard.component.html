@@ -138,7 +138,7 @@
 					<option value="forever">Permanently</option>
 				</select>
 			</div>
-			<button type="submit" class="appButton sendData" (click)="block($event,blockID.value, blockLength.value)" [attr.aria-labelledby]="blockUser">Block User</button>
+			<button type="submit" class="appButton sendData" (click)="block($event,blockID.value, blockLength.value)">Block User</button>
 		</form>
 		
 		<h4 class="subTitle">Blocked Users</h4>
@@ -191,7 +191,7 @@
 				<label class="pageCategory" for="filter">Filter: </label>
 				<input type="text" id="filter" placeholder="Filter" #filter required>
 			</div>
-			<button type="submit" class="appButton sendData" (click)="addFilter($event,filter.value)" aria-labelledby="filterBtn">Add Filter</button>
+			<button type="submit" class="appButton sendData" (click)="addFilter($event,filter.value)">Add Filter</button>
 		</form>
 		
 		<h4 class="subTitle">Filtered Phrases</h4>

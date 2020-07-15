@@ -99,7 +99,8 @@
 					</fieldset>
 				</div>
 				
-				<button type="submit" class="appButton reportButton" (click)="reportPost($event)" aria-describedby="reportText">Report Post</button>
+				<div id="reportPText" class="labels">{{ 'report post ' + reportedItem.text }}</div>
+				<button type="submit" class="appButton reportButton" (click)="reportPost($event)" aria-labelledby="reportPText">Report Post</button>
 			</form>
 		</div>
 		
@@ -129,7 +130,8 @@
 					</fieldset>
 				</div>
 				
-				<button type="submit" class="appButton reportButton" (click)="reportUser($event)" aria-describedby="uReportText">Report User</button>
+				<div id="reportUText" class="labels">{{ 'Report user ' + reportedItem.displayName }}</div>
+				<button type="submit" class="appButton reportButton" (click)="reportUser($event)" aria-labelledby="reportUText">Report User</button>
 			</form>
 		</div>
 	</div>

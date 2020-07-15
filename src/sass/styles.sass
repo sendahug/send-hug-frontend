@@ -322,6 +322,10 @@ fieldset
 .navLink.active
 	color: #AF1857
 
+/* Navigation Item's text (current page) */
+.navLink.active .navLinkText
+	font-size: 15px
+
 /* Navigation icon (current page) when the mouse is hovering over the link  */
 .navLink.active:hover
 	color: #B30F0F
@@ -598,9 +602,14 @@ app-main-page
 
 /* Item User Profile Link */
 .profileLink
-	color: $linkColour
+	color: #8B323F
 	text-decoration: none
 	font-weight: bold
+
+/* Item User Profile Link (hover) */
+.profileLink:hover
+	text-decoration: underline
+	color: #B30F0F
 
 /* Buttons div */
 .buttonsContainer

@@ -49,6 +49,7 @@ export class AdminService {
     blockedUsers: 1,
     filteredPhrases: 1
   }
+  isUpdated = new BehaviorSubject(false);
 
   constructor(
     private Http:HttpClient,
@@ -137,12 +138,14 @@ export class AdminService {
     if(closeReport) {
       post['closeReport'] = reportID;
     }
+    this.isUpdated.next(false);
 
     // try to edit the psot
     this.Http.patch(Url, post, {
       headers: this.authService.authHeader
     }).subscribe((response:any) => {
       this.alertsService.createSuccessAlert(`Post ${response.updated.id} updated.`, closeReport);
+      this.isUpdated.next(true);
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
       this.alertsService.createErrorAlert(err);

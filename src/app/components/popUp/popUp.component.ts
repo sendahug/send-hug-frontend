@@ -233,7 +233,14 @@ export class PopUp implements OnInit, OnChanges, AfterViewChecked {
 
         this.editedItem.text = newText;
         this.postsService.editPost(this.editedItem);
-        this.exitEdit();
+        // check whether the post's data was updated in the database
+        this.postsService.isUpdated.subscribe((value) => {
+          // if it has, close the popup; otherwise, leave it on so that the user
+          // can fix whatever errors they have and try again
+          if(value) {
+            this.exitEdit();
+          }
+        })
       }
     }
     // otherwise alert the user that a post cannot be empty
@@ -276,7 +283,14 @@ export class PopUp implements OnInit, OnChanges, AfterViewChecked {
         }
 
         this.adminService.editPost(post, closeReport, this.reportData.reportID);
-        this.exitEdit();
+        // check whether the post's data was updated in the database
+        this.adminService.isUpdated.subscribe((value) => {
+          // if it has, close the popup; otherwise, leave it on so that the user
+          // can fix whatever errors they have and try again
+          if(value) {
+            this.exitEdit();
+          }
+        })
       }
     }
     // otherwise alert the user that a post cannot be empty
@@ -453,7 +467,7 @@ export class PopUp implements OnInit, OnChanges, AfterViewChecked {
           if(otherText.classList.contains('missing')) {
             otherText.classList.remove('missing');
           }
-          
+
           this.selectedReason = otherText.value;
         }
       }

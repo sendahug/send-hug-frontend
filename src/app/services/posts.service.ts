@@ -44,6 +44,7 @@ export class PostsService {
     fullNewItems: new BehaviorSubject(false),
     fullSuggestedItems: new BehaviorSubject(false)
   }
+  isUpdated = new BehaviorSubject(false);
 
   // CTOR
   constructor(
@@ -388,11 +389,15 @@ export class PostsService {
   */
   editPost(post: Post) {
     const Url = this.serverUrl + `/posts/${post.id}`;
+    this.isUpdated.next(false);
+
+    // send update request
     this.Http.patch(Url, post, {
       headers: this.authService.authHeader
     }).subscribe((_response:any) => {
       this.alertsService.createSuccessAlert('Your post was edited. Refresh to view the updated post.', true);
       this.alertsService.toggleOfflineAlert();
+      this.isUpdated.next(true);
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
       // if the user is offline, show the offline header message

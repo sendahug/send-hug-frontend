@@ -127,11 +127,11 @@
 		<form>
 			<div class="formElement">
 				<label class="pageCategory" for="blockID">User I.D.: </label>
-				<input type="text" id="blockID" placeholder="user I.D." #blockID required>
+				<input type="text" id="blockID" placeholder="user I.D." #blockID required  minlength="0">
 			</div>
 			<div class="formElement">
 				<label class="pageCategory" for="blockLength">Length of block time: </label>
-				<select id="blockLength" name="blockLength" #blockLength>
+				<select id="blockLength" name="blockLength" #blockLength required>
 					<option value="oneDay">One Day</option>
 					<option value="oneWeek">One Week</option>
 					<option value="oneMonth">30 Days</option>
@@ -189,7 +189,7 @@
 		<form>
 			<div class="formElement">
 				<label class="pageCategory" for="filter">Filter: </label>
-				<input type="text" id="filter" placeholder="Filter" #filter required>
+				<input type="text" id="filter" placeholder="Filter" #filter required  minlength="0">
 			</div>
 			<button type="submit" class="appButton sendData" (click)="addFilter($event,filter.value)">Add Filter</button>
 		</form>

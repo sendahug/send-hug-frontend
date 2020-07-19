@@ -145,6 +145,7 @@ export class PopUp implements OnInit, OnChanges, AfterViewChecked {
     // otherwise, alert the user that a display name can't be empty
     else {
       this.alertsService.createAlert({ type: 'Error', message: 'New display name cannot be empty! Please fill the field and try again.' });
+      document.getElementById('displayName')!.classList.add('missing');
     }
   }
 
@@ -174,6 +175,7 @@ export class PopUp implements OnInit, OnChanges, AfterViewChecked {
     // otherwise, alert the user that a display name can't be empty
     else {
       this.alertsService.createAlert({ type: 'Error', message: 'New display name cannot be empty! Please fill the field and try again.' });
+      document.getElementById('uDisplayName')!.classList.add('missing');
     }
   }
 
@@ -198,6 +200,7 @@ export class PopUp implements OnInit, OnChanges, AfterViewChecked {
     // otherwise alert the user that a post cannot be empty
     else {
       this.alertsService.createAlert({ type: 'Error', message: 'New post text cannot be empty. Please fill the field and try again.' });
+      document.getElementById('postText')!.classList.add('missing');
     }
   }
 
@@ -227,6 +230,7 @@ export class PopUp implements OnInit, OnChanges, AfterViewChecked {
     // otherwise alert the user that a post cannot be empty
     else {
       this.alertsService.createAlert({ type: 'Error', message: 'New post text cannot be empty. Please fill the field and try again.' });
+      document.getElementById('adPostText')!.classList.add('missing');
     }
   }
 

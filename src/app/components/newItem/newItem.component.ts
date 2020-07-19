@@ -77,6 +77,7 @@ export class NewItem {
     // otherwise alert the user that a post can't be empty
     else {
       this.alertService.createAlert({ type: 'Error', message: 'A post cannot be empty. Please fill the field and try again.' });
+      document.getElementById('postText')!.classList.add('missing');
     }
   }
 
@@ -118,6 +119,7 @@ export class NewItem {
     // otherwise alert the user that a message can't be empty
     else {
       this.alertService.createAlert({ type: 'Error', message: 'A message cannot be empty. Please fill the field and try again.' });
+      document.getElementById('messageText')!.classList.add('missing');
     }
   }
 }

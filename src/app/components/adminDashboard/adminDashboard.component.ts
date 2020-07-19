@@ -221,6 +221,7 @@ export class AdminDashboard implements OnInit {
     // otherwise alert the user a user ID is needed to block someone
     else {
       this.alertsService.createAlert({ type: 'Error', message: 'A user ID is needed to block a user. Please add user ID to the textfield and try again.' });
+      document.getElementById('blockID')!.classList.add('missing');
     }
   }
 
@@ -333,6 +334,7 @@ export class AdminDashboard implements OnInit {
     // otherwise alert the user a filter is required
     else {
       this.alertsService.createAlert({ type: 'Error', message: 'A filtered phrase is required in order to add to the filters list.' });
+      document.getElementById('filter')!.classList.add('missing');
     }
   }
 

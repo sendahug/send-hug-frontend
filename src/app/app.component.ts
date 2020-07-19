@@ -205,6 +205,7 @@ export class AppComponent implements OnInit, AfterViewChecked, AfterViewInit {
     // otherwise alert the user there are no empty searches
     else {
       this.alertsService.createAlert({ message: 'Search query is empty! Please write a term to search for.', type: 'Error' })
+      document.getElementById('searchQuery')!.classList.add('missing');
     }
   }
 

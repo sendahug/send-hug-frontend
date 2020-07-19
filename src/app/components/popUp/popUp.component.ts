@@ -334,6 +334,7 @@ export class PopUp implements OnInit, OnChanges, AfterViewChecked {
       // if there's no text, alert the user that it's mandatory
       else {
         this.alertsService.createAlert({ message: 'The \'other\' field cannot be empty.', type: 'Error' });
+        otherText.classList.add('missing');
         return;
       }
     }
@@ -367,6 +368,20 @@ export class PopUp implements OnInit, OnChanges, AfterViewChecked {
   reportUser(e:Event) {
     e.preventDefault();
     let userData = this.reportedItem as OtherUser;
+    let otherText = this.reportType == 'User' ? document.getElementById('uOption3Text') as HTMLInputElement : document.getElementById('rOption3Text') as HTMLInputElement;
+
+    // if the selected reason for the report is 'other', get the value of the text inputted
+    if(this.selectedReason == 'other') {
+      if(otherText.value) {
+        this.selectedReason = otherText.value;
+      }
+      // if there's no text, alert the user that it's mandatory
+      else {
+        this.alertsService.createAlert({ message: 'The \'other\' field cannot be empty.', type: 'Error' });
+        otherText.classList.add('missing');
+        return;
+      }
+    }
 
     // create a new report
     let report: Report = {

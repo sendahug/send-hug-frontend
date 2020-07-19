@@ -63,16 +63,24 @@ export class NewItem {
 
     // if there's text in the textfield, try to create a new post
     if(postText) {
-      // create a new post object to send
-      let newPost:Post = {
-        userId: this.authService.userData.id!,
-        user: this.authService.userData.displayName!,
-        text: postText,
-        date: new Date(),
-        givenHugs: 0
+      // if the new post text is longer than 480 characters, alert the user
+      if(postText.length > 480) {
+        this.alertService.createAlert({ type: 'Error', message: 'New post text cannot be over 480 characters! Please shorten the post and try again.' });
+        document.getElementById('postText')!.classList.add('missing');
       }
+      else {
+        // otherwise create the post
+        // create a new post object to send
+        let newPost:Post = {
+          userId: this.authService.userData.id!,
+          user: this.authService.userData.displayName!,
+          text: postText,
+          date: new Date(),
+          givenHugs: 0
+        }
 
-      this.postsService.sendPost(newPost);
+        this.postsService.sendPost(newPost);
+      }
     }
     // otherwise alert the user that a post can't be empty
     else {
@@ -104,16 +112,23 @@ export class NewItem {
       }
       // if the user is sending a message to someone else, make the request
       else {
-        // create a new message object to send
-        let newMessage:Message = {
-          from: this.authService.userData.displayName!,
-          fromId: this.authService.userData.id!,
-          forId: this.forID,
-          messageText: messageText,
-          date: new Date()
+        // if the new post text is longer than 480 characters, alert the user
+        if(messageText.length > 480) {
+          this.alertService.createAlert({ type: 'Error', message: 'New message text cannot be over 480 characters! Please shorten the message and try again.' });
+          document.getElementById('messageText')!.classList.add('missing');
         }
+        else {
+          // create a new message object to send
+          let newMessage:Message = {
+            from: this.authService.userData.displayName!,
+            fromId: this.authService.userData.id!,
+            forId: this.forID,
+            messageText: messageText,
+            date: new Date()
+          }
 
-        this.itemsService.sendMessage(newMessage);
+          this.itemsService.sendMessage(newMessage);
+        }
       }
     }
     // otherwise alert the user that a message can't be empty

@@ -138,9 +138,17 @@ export class PopUp implements OnInit, OnChanges, AfterViewChecked {
 
     // if there's a new display name in the textbox, change the display name
     if(newDisplayName) {
-      this.authService.userData.displayName = newDisplayName;
-      this.authService.updateUserData();
-      this.exitEdit();
+      // if the new display name is longer than 60 characters, alert the user
+      if(newDisplayName.length > 60) {
+        this.alertsService.createAlert({ type: 'Error', message: 'New display name cannot be over 60 characters! Please shorten the name and try again.' });
+        document.getElementById('displayName')!.classList.add('missing');
+      }
+      // otherwise change the name
+      else {
+        this.authService.userData.displayName = newDisplayName;
+        this.authService.updateUserData();
+        this.exitEdit();
+      }
     }
     // otherwise, alert the user that a display name can't be empty
     else {
@@ -164,13 +172,21 @@ export class PopUp implements OnInit, OnChanges, AfterViewChecked {
 
     // if there's a new display name in the textbox, change the display name
     if(newDisplayName) {
-      let user = {
-        userID: this.reportData.userID,
-        displayName: newDisplayName
+      // if the new display name is longer than 60 characters, alert the user
+      if(newDisplayName.length > 60) {
+        this.alertsService.createAlert({ type: 'Error', message: 'New display name cannot be over 60 characters! Please shorten the name and try again.' });
+        document.getElementById('uDisplayName')!.classList.add('missing');
       }
+      // otherwise change the name
+      else {
+        let user = {
+          userID: this.reportData.userID,
+          displayName: newDisplayName
+        }
 
-      this.adminService.editUser(user, closeReport, this.reportData.reportID);
-      this.exitEdit();
+        this.adminService.editUser(user, closeReport, this.reportData.reportID);
+        this.exitEdit();
+      }
     }
     // otherwise, alert the user that a display name can't be empty
     else {
@@ -193,9 +209,17 @@ export class PopUp implements OnInit, OnChanges, AfterViewChecked {
 
     // if there's text in the textbox, change the post's text
     if(newText) {
-      this.editedItem.text = newText;
-      this.postsService.editPost(this.editedItem);
-      this.exitEdit();
+      // if the new post text is longer than 480 characters, alert the user
+      if(newText.length > 480) {
+        this.alertsService.createAlert({ type: 'Error', message: 'New post text cannot be over 480 characters! Please shorten the post and try again.' });
+        document.getElementById('postText')!.classList.add('missing');
+      }
+      // otherwise edit the post
+      else {
+        this.editedItem.text = newText;
+        this.postsService.editPost(this.editedItem);
+        this.exitEdit();
+      }
     }
     // otherwise alert the user that a post cannot be empty
     else {
@@ -219,13 +243,21 @@ export class PopUp implements OnInit, OnChanges, AfterViewChecked {
 
     // if there's text in the textbox, change the post's text
     if(newText) {
-      let post = {
-        text: newText,
-        id: this.reportData.postID
+      // if the new post text is longer than 480 characters, alert the user
+      if(newText.length > 480) {
+        this.alertsService.createAlert({ type: 'Error', message: 'New post text cannot be over 480 characters! Please shorten the post and try again.' });
+        document.getElementById('adPostText')!.classList.add('missing');
       }
+      // otherwise edit the post
+      else {
+        let post = {
+          text: newText,
+          id: this.reportData.postID
+        }
 
-      this.adminService.editPost(post, closeReport, this.reportData.reportID);
-      this.exitEdit();
+        this.adminService.editPost(post, closeReport, this.reportData.reportID);
+        this.exitEdit();
+      }
     }
     // otherwise alert the user that a post cannot be empty
     else {
@@ -333,7 +365,15 @@ export class PopUp implements OnInit, OnChanges, AfterViewChecked {
     // if the selected reason for the report is 'other', get the value of the text inputted
     if(this.selectedReason == 'other') {
       if(otherText.value) {
-        this.selectedReason = otherText.value;
+        // if the report reason is longer than 120 characters, alert the user
+        if(otherText.value.length > 120) {
+          this.alertsService.createAlert({ type: 'Error', message: 'Report reason cannot be over 120 characters! Please shorten the message and try again.' });
+          otherText.classList.add('missing');
+        }
+        // otherwise get the text field's value
+        else {
+          this.selectedReason = otherText.value;
+        }
       }
       // if there's no text, alert the user that it's mandatory
       else {
@@ -377,7 +417,15 @@ export class PopUp implements OnInit, OnChanges, AfterViewChecked {
     // if the selected reason for the report is 'other', get the value of the text inputted
     if(this.selectedReason == 'other') {
       if(otherText.value) {
-        this.selectedReason = otherText.value;
+        // if the report reason is longer than 120 characters, alert the user
+        if(otherText.value.length > 120) {
+          this.alertsService.createAlert({ type: 'Error', message: 'Report reason cannot be over 120 characters! Please shorten the message and try again.' });
+          otherText.classList.add('missing');
+        }
+        // otherwise get the text field's value
+        else {
+          this.selectedReason = otherText.value;
+        }
       }
       // if there's no text, alert the user that it's mandatory
       else {

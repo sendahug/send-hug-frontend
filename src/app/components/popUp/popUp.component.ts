@@ -145,6 +145,11 @@ export class PopUp implements OnInit, OnChanges, AfterViewChecked {
       }
       // otherwise change the name
       else {
+        // if the textfield was marked red, remove it
+        if(document.getElementById('displayName')!.classList.contains('missing')) {
+          document.getElementById('displayName')!.classList.remove('missing');
+        }
+
         this.authService.userData.displayName = newDisplayName;
         this.authService.updateUserData();
         this.exitEdit();
@@ -179,6 +184,11 @@ export class PopUp implements OnInit, OnChanges, AfterViewChecked {
       }
       // otherwise change the name
       else {
+        // if the textfield was marked red, remove it
+        if(document.getElementById('uDisplayName')!.classList.contains('missing')) {
+          document.getElementById('uDisplayName')!.classList.remove('missing');
+        }
+
         let user = {
           userID: this.reportData.userID,
           displayName: newDisplayName
@@ -216,6 +226,11 @@ export class PopUp implements OnInit, OnChanges, AfterViewChecked {
       }
       // otherwise edit the post
       else {
+        // if the textfield was marked red, remove it
+        if(document.getElementById('postText')!.classList.contains('missing')) {
+          document.getElementById('postText')!.classList.remove('missing');
+        }
+
         this.editedItem.text = newText;
         this.postsService.editPost(this.editedItem);
         this.exitEdit();
@@ -250,6 +265,11 @@ export class PopUp implements OnInit, OnChanges, AfterViewChecked {
       }
       // otherwise edit the post
       else {
+        // if the textfield was marked red, remove it
+        if(document.getElementById('adPostText')!.classList.contains('missing')) {
+          document.getElementById('adPostText')!.classList.remove('missing');
+        }
+
         let post = {
           text: newText,
           id: this.reportData.postID
@@ -372,6 +392,11 @@ export class PopUp implements OnInit, OnChanges, AfterViewChecked {
         }
         // otherwise get the text field's value
         else {
+          // if the textfield was marked red, remove it
+          if(otherText.classList.contains('missing')) {
+            otherText.classList.remove('missing');
+          }
+
           this.selectedReason = otherText.value;
         }
       }
@@ -424,6 +449,11 @@ export class PopUp implements OnInit, OnChanges, AfterViewChecked {
         }
         // otherwise get the text field's value
         else {
+          // if the textfield was marked red, remove it
+          if(otherText.classList.contains('missing')) {
+            otherText.classList.remove('missing');
+          }
+          
           this.selectedReason = otherText.value;
         }
       }

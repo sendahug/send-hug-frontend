@@ -191,6 +191,11 @@ export class AppComponent implements OnInit, AfterViewChecked, AfterViewInit {
 
     // if there's something in the search query text field, search for it
     if(searchQuery) {
+      // if the textfield was marked red, remove it
+      if(document.getElementById('searchQuery')!.classList.contains('missing')) {
+        document.getElementById('searchQuery')!.classList.remove('missing');
+      }
+
       this.itemsService.sendSearch(searchQuery);
       // clears the search box
       let searchBox = document.getElementById('searchQuery') as HTMLInputElement;

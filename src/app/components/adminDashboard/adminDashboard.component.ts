@@ -214,6 +214,11 @@ export class AdminDashboard implements OnInit {
       if(userID != this.authService.userData.id) {
         // if the user ID is a number, check the user's block
         if(!isNaN(userID)) {
+          // if the textfield was marked red, remove it
+          if(document.getElementById('blockID')!.classList.contains('missing')) {
+            document.getElementById('blockID')!.classList.remove('missing');
+          }
+
           this.checkBlock(userID, length);
         }
         // otherwise alert the user that user ID has to be a number
@@ -338,6 +343,11 @@ export class AdminDashboard implements OnInit {
 
     // if there's a filter in the textfield, continue
     if(filter) {
+      // if the textfield was marked red, remove it
+      if(document.getElementById('filter')!.classList.contains('missing')) {
+        document.getElementById('filter')!.classList.remove('missing');
+      }
+
       this.adminService.addFilter(filter);
     }
     // otherwise alert the user a filter is required

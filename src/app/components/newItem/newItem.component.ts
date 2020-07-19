@@ -69,6 +69,11 @@ export class NewItem {
         document.getElementById('postText')!.classList.add('missing');
       }
       else {
+        // if the textfield was marked red, remove it
+        if(document.getElementById('postText')!.classList.contains('missing')) {
+          document.getElementById('postText')!.classList.remove('missing');
+        }
+
         // otherwise create the post
         // create a new post object to send
         let newPost:Post = {
@@ -118,6 +123,11 @@ export class NewItem {
           document.getElementById('messageText')!.classList.add('missing');
         }
         else {
+          // if the textfield was marked red, remove it
+          if(document.getElementById('messageText')!.classList.contains('missing')) {
+            document.getElementById('messageText')!.classList.remove('missing');
+          }
+
           // create a new message object to send
           let newMessage:Message = {
             from: this.authService.userData.displayName!,

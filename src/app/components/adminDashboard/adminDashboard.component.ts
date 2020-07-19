@@ -209,9 +209,18 @@ export class AdminDashboard implements OnInit {
 
     // if there's a user ID, proceed
     if(userID) {
+      userID = Number(userID)
       // if the user is trying to block another user, let them
       if(userID != this.authService.userData.id) {
-        this.checkBlock(userID, length);
+        // if the user ID is a number, check the user's block
+        if(!isNaN(userID)) {
+          this.checkBlock(userID, length);
+        }
+        // otherwise alert the user that user ID has to be a number
+        else {
+          this.alertsService.createAlert({ type: 'Error', message: 'User ID must be a number. Please correct the User ID and try again.' });
+          document.getElementById('blockID')!.classList.add('missing');
+        }
       }
       // otherwise alert that they can't block themselves
       else {

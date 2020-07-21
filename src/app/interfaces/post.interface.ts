@@ -8,4 +8,5 @@ export interface Post {
   date: Date;
   givenHugs: number;
   isoDate?: string;
+  sentHugs?: number[];
 }

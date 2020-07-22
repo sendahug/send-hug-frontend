@@ -96,7 +96,6 @@ export class PostsService {
       this.sugItemsArray = data.suggested;
       this.isMainPageResolved.next(true);
       this.alertsService.toggleOfflineAlert();
-      console.log(this.sugItemsArray);
 
       // if there's a currently operating IDB database, get it
       if(this.serviceWorkerM.currentDB) {

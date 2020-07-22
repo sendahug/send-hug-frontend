@@ -430,6 +430,12 @@ export class PostsService {
     }).subscribe((_response:any) => {
       this.alertsService.createSuccessAlert('Your hug was sent!', false);
       this.alertsService.toggleOfflineAlert();
+
+      // Check which array the item is in
+      this.disableHugButton(this.newItemsArray, '.newItem', item.id);
+      this.disableHugButton(this.sugItemsArray, '.sugItem', item.id);
+      this.disableHugButton(this.fullItemsList.fullNewItems, '.newItem', item.id);
+      this.disableHugButton(this.fullItemsList.fullSuggestedItems, '.newItem', item.id);
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
       item.givenHugs -= 1;
@@ -442,5 +448,28 @@ export class PostsService {
         this.alertsService.createErrorAlert(err);
       }
     })
+  }
+
+  /*
+  Function Name: disableHugButton()
+  Function Description: Finds the post that got a new hug in all the posts lists and
+                        disables the hug button (if the post exists) to prevent attempting
+                        to send multiple hugs on one post.
+  Parameters: checkList (Array) - the array to check for the existence of the post.
+              itemClass (string) - the css class given to the items belonging to the list.
+              itemID (number) - the ID of the item to look for.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  disableHugButton(checkList: any[], itemClass:string, itemID:number) {
+    // Check if the post is in the given array
+    let currentPostIndex = checkList.findIndex(e => e.id == itemID);
+    if(currentPostIndex > 0) {
+      // if it is, disable the send-hug button
+      let post = document.querySelectorAll(itemClass)[currentPostIndex];
+      post.querySelectorAll('.fa-hand-holding-heart').forEach((element) => {
+        (element.parentElement as HTMLButtonElement).disabled = true;
+      })
+    }
   }
 }

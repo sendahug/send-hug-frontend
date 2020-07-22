@@ -57,7 +57,7 @@ export class MainPage implements OnInit {
     let item = {};
 
     // if the item is in the new list, gets it from there
-    if(this.postsService.newItemsArray.filter(e => e.id == itemID)) {
+    if(this.postsService.newItemsArray.filter(e => e.id == itemID).length) {
       item = this.postsService.newItemsArray.filter(e => e.id == itemID)[0];
     }
     // if not, the item must be in the suggested list, so it gets it from there

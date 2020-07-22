@@ -113,7 +113,8 @@ export class PostsService {
               'isoDate': isoDate,
               'text': element.text,
               'userId': Number(element.userId),
-              'user': element.user
+              'user': element.user,
+              'sentHugs': element.sentHugs!
             }
             store.put(post);
           });
@@ -127,7 +128,8 @@ export class PostsService {
               'isoDate': isoDate,
               'text': element.text,
               'userId': Number(element.userId),
-              'user': element.user
+              'user': element.user,
+              'sentHugs': element.sentHugs!
             }
             store.put(post);
           });
@@ -198,7 +200,8 @@ export class PostsService {
               'isoDate': isoDate,
               'text': element.text,
               'userId': Number(element.userId),
-              'user': element.user
+              'user': element.user,
+              'sentHugs': element.sentHugs!
             }
             store.put(post);
           });
@@ -269,7 +272,8 @@ export class PostsService {
               'isoDate': isoDate,
               'text': element.text,
               'userId': Number(element.userId),
-              'user': element.user
+              'user': element.user,
+              'sentHugs': element.sentHugs!
             }
             store.put(post);
           });

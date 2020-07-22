@@ -24,6 +24,7 @@ interface MyDB extends DBSchema {
       'text': string;
       'userId': number;
       'user': string;
+      'sentHugs': number[];
     };
     indexes: { 'date': string, 'user': number, 'hugs': number };
   };
@@ -75,7 +76,7 @@ interface MyDB extends DBSchema {
 export class SWManager {
   activeServiceWorkerReg: ServiceWorkerRegistration | undefined;
   currentDB: Promise<IDBPDatabase<MyDB>> | undefined;
-  databaseVersion = 2;
+  databaseVersion = 3;
 
   // CTOR
   constructor(private alertsService:AlertsService) {

@@ -96,6 +96,7 @@ export class PostsService {
       this.sugItemsArray = data.suggested;
       this.isMainPageResolved.next(true);
       this.alertsService.toggleOfflineAlert();
+      console.log(this.sugItemsArray);
 
       // if there's a currently operating IDB database, get it
       if(this.serviceWorkerM.currentDB) {
@@ -432,6 +433,7 @@ export class PostsService {
       this.alertsService.toggleOfflineAlert();
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
+      item.givenHugs -= 1;
       // if the user is offline, show the offline header message
       if(!navigator.onLine) {
         this.alertsService.toggleOfflineAlert();

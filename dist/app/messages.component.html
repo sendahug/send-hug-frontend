@@ -28,7 +28,7 @@
 			<div class="pageCategory">Message:</div> <div class="pageData" aria-describedby="mText" id="{{'text' + message.id}}">{{ message.messageText }}</div>
 			<div class="buttons">
 				<a [routerLink]="['/new', 'Message']" [queryParams]="{user: message.from, userID: message.fromId}" class="appButton messageButton" [attr.aria-describedby]="'mReply ' +  'text' + message.id" *ngIf="messType == 'inbox'">Reply</a>
-				<button class="appButton deleteButton" (click)="deleteMessage(message.id)" [attr.aria-describedby]="'mDelete ' + text + message.id">Delete</button>
+				<button class="appButton deleteButton" (click)="deleteMessage(message.id)" [attr.aria-describedby]="'mDelete ' + text + message.id">Delete Message</button>
 			</div>
 		</li>
 	</ul>
@@ -47,8 +47,8 @@
 					<span class="pageCategory">Last Active:</span> <span class="pageData" [attr.aria-describedby]="'tLatestMess ' + 'user' + thread.id">{{ thread.latestMessage }}</span>
 				</div>
 				<div class="threadBtns">
-					<button class="appButton viewButton" (click)="loadThread(thread.id)" [attr.aria-describedby]="'tView ' + 'user' + thread.id">View Messages</button>
-					<button class="appButton deleteButton" (click)="deleteThread(thread.id)" [attr.aria-describedby]="'tDelete ' + 'user' + thread.id">Delete</button>
+					<button class="appButton viewButton" (click)="loadThread(thread.id)" [attr.aria-describedby]="'tView ' + 'user' + thread.id">View Thread Messages</button>
+					<button class="appButton deleteButton" (click)="deleteThread(thread.id)" [attr.aria-describedby]="'tDelete ' + 'user' + thread.id">Delete Thread</button>
 				</div>
 			</li>
 		</ul>
@@ -56,13 +56,13 @@
 	
 	<!-- Message pagination -->
 	<div class="pagination" *ngIf="itemsService.userMessages[messType].length" role="navigation">
-		<button *ngIf="itemsService.userMessagesPage[messType] > 1" class="appButton prevButton" (click)="prevPage()">Previous Page</button>
+		<button *ngIf="itemsService.userMessagesPage[messType] > 1" class="appButton prevButton" (click)="prevPage()" [attr.aria-label]="'previous page of the ' + messType + ' mailbox'">Previous Page</button>
 		<button *ngIf="itemsService.userMessagesPage[messType] <= 1" class="appButton placeHolder">Previous Page</button>
 		<div class="pageCount">Page {{ itemsService.userMessagesPage[messType] }} of {{ itemsService.totalUserMessagesPages[messType] }}</div>
-		<button *ngIf="itemsService.totalUserMessagesPages[messType] > itemsService.userMessagesPage[messType]" class="appButton nextButton" (click)="nextPage()">Next Page</button>
+		<button *ngIf="itemsService.totalUserMessagesPages[messType] > itemsService.userMessagesPage[messType]" class="appButton nextButton" (click)="nextPage()" [attr.aria-label]="'next page of the ' + messType + ' mailbox'">Next Page</button>
 		<button *ngIf="itemsService.totalUserMessagesPages[messType] <= itemsService.userMessagesPage[messType]" class="appButton placeHolder">Previous Page</button>
 	</div>
-	<button class="appButton deleteButton deleteAll" (click)="deleteAllMessages(messType)" *ngIf="itemsService.userMessages[messType].length && (messType == 'inbox' || messType == 'outbox')">Delete All Messages</button>
+	<button class="appButton deleteButton deleteAll" (click)="deleteAllMessages(messType)" *ngIf="itemsService.userMessages[messType].length && (messType == 'inbox' || messType == 'outbox')" [attr.aria-label]="'delete all ' + messType + ' messages'">Delete All Messages</button>
 	<button *ngIf="messType == 'threads' && itemsService.userMessages.threads.length" class="appButton deleteButton deleteAll" (click)="deleteAllMessages('threads')">Delete All Threads</button>
 
 	<!-- If there are no messages in the user's outbox -->
@@ -88,7 +88,7 @@
 				</div>
 				<div class="threadBtns">
 					<a [routerLink]="['/new', 'Message']" [queryParams]="{user: message.from, userID: message.fromId}" class="appButton messageButton" [attr.aria-describedby]="'mReply ' + 'mText' + message.id">Reply</a>
-					<button class="appButton deleteButton" (click)="deleteMessage(message.id)" [attr.aria-describedby]="'mDelete ' + 'mText' + message.id">Delete</button>
+					<button class="appButton deleteButton" (click)="deleteMessage(message.id)" [attr.aria-describedby]="'mDelete ' + 'mText' + message.id">Delete Message</button>
 				</div>
 			</li>
 		</ul>

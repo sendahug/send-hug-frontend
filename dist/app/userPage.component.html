@@ -33,8 +33,8 @@
 			</div>
 			
 			<div class="buttons">
-				<button id="editName" class="appButton" (click)="editName()" *ngIf="!itemsService.isOtherUser" aria-describedby="userName">Edit Display Name</button>
-				<button class="appButton reportButton" (click)="reportUser(itemsService.otherUserData)" *ngIf="itemsService.isOtherUser" aria-describedby="userName">Report User</button>
+				<button id="editName" class="appButton" (click)="editName()" *ngIf="!itemsService.isOtherUser" [attr.aria-label]="'edit display name for user ' + authService.userData.displayName">Edit Display Name</button>
+				<button class="appButton reportButton" (click)="reportUser(itemsService.otherUserData)" *ngIf="itemsService.isOtherUser" [attr.aria-label]="'report user ' + itemsService.otherUserData.displayName">Report User</button>
 				<button id="logout" class="appButton" (click)="logout()" *ngIf="!itemsService.isOtherUser">Log Out</button>
 			</div>
 		</div>

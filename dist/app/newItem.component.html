@@ -10,7 +10,7 @@
 			<div class="formElement">
 				<label class="pageCategory" for="messageText">Message</label>
 				<br>
-				<textarea #messageText id="messageText" cols="40" rows="8" aria-labelledby="mText" class="newTextArea"></textarea>
+				<textarea #messageText id="messageText" cols="40" rows="8" aria-labelledby="mText" class="newTextArea" minlength="0" maxlength="480"></textarea>
 			</div>
 			<button type="submit" class="appButton sendData" (click)="sendMessage($event, messageText.value)">Send Message</button>
 		</form>
@@ -24,7 +24,7 @@
 			<div class="formElement">
 				<label class="pageCategory" for="postText">Text:</label>
 				<br>
-				<textarea #postText id="postText" cols="40" rows="8" aria-labelledby="pText" class="newTextArea"></textarea>
+				<textarea #postText id="postText" cols="40" rows="8" aria-labelledby="pText" class="newTextArea" minlength="0" maxlength="480"></textarea>
 			</div>
 			<button type="submit" class="appButton sendData" (click)="sendPost($event, postText.value)">Publish Post</button>
 		</form>

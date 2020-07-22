@@ -13,7 +13,7 @@
 		</li>
 	</ul>
 
-	<div *ngIf="itemsService.numUserResults == 0" class="errorMessage">
+	<div *ngIf="itemsService.numUserResults == 0" class="errorMessage" id="uSearchResErr">
 		There are no users that match your search!
 	</div>
 
@@ -25,7 +25,8 @@
 			<div class="itemUser">By <a [routerLink]="['/user', item.userId ]" class="profileLink" aria-describedby="pUser" id="{{'nUser' + item.id}}">{{ item.user }}</a> </div>
 			<div class="buttonsContainer">
 				<div class="notification" [attr.aria-describedby]="'pHug ' + 'nUser' + item.id">
-					<button class="textlessButton hugButton" (click)="sendHug(item.id)" [attr.aria-describedby]="'pHug ' + 'nUser' + item.id"><i class="fab fa-gratipay"></i></button>
+					<button *ngIf="!item.sentHugs.includes(authService.userData.id.toString())" class="textlessButton hugButton" (click)="sendHug(item.id)" [attr.aria-labelledby]="'pHug ' + 'nUser' + item.id" name="send a hug"><i class="fas fa-hand-holding-heart"></i></button>
+					<button *ngIf="item.sentHugs.includes(authService.userData.id.toString())" class="textlessButton hugButton active" [attr.aria-labelledby]="'pHug ' + 'nUser' + item.id" name="send a hug" disabled><i class="fas fa-hand-holding-heart"></i></button>
 					<span class="badge" aria-describedby="pGivenH">{{ item.givenHugs }}</span>
 				</div>
 				<a [routerLink]="['/new', 'Message']" [queryParams]="{user: item.user, userID: item.userId}" class="textlessButton messageButton" [attr.aria-describedby]="'pMessage ' + 'nUser' + item.id"><i class="far fa-comment"></i></a>
@@ -47,7 +48,7 @@
 	</div>
 
 
-	<div *ngIf="itemsService.numPostResults == 0" class="errorMessage">
+	<div *ngIf="itemsService.numPostResults == 0" class="errorMessage" id="pSearchResErr">
 		There are no posts that match your search!
 	</div>
 </div>

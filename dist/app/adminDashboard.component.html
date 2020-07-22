@@ -1,10 +1,10 @@
 <div *ngIf="authService.canUser('read:admin-board')" id="adminDashAll">
 	<!-- Admin dashboard navigation menu -->
 	<nav id="adminNav" role="navigation">
-		<a [routerLink]="['/admin']" class="adminNavItem">Main</a>
-		<a [routerLink]="['/admin', 'reports']" class="adminNavItem">Reports</a>
-		<a [routerLink]="['/admin', 'blocks']" class="adminNavItem">Blocks</a>
-		<a [routerLink]="['/admin', 'filters']" class="adminNavItem">Filters</a>
+		<a [routerLink]="['/admin']" class="adminNavItem" aria-label="navigate to admin dashboard main page">Main</a>
+		<a [routerLink]="['/admin', 'reports']" class="adminNavItem" aria-label="navigate to admin dashboard reports page">Reports</a>
+		<a [routerLink]="['/admin', 'blocks']" class="adminNavItem" aria-label="navigate to admin dashboard blocks page">Blocks</a>
+		<a [routerLink]="['/admin', 'filters']" class="adminNavItem" aria-label="navigate to admin dashboard filters page">Filters</a>
 	</nav>
 
 	<!-- Admin dashboard main page -->
@@ -62,10 +62,10 @@
 		
 		<!-- User reports pagination -->
 		<div class="pagination" *ngIf="adminService.userReports.length" role="navigation">
-			<button *ngIf="adminService.currentPage.userReports > 1" class="appButton prevButton" (click)="prevPage('userReports')">Previous Page</button>
+			<button *ngIf="adminService.currentPage.userReports > 1" class="appButton prevButton" (click)="prevPage('userReports')" aria-label="previous page of user reports">Previous Page</button>
 			<button *ngIf="adminService.currentPage.userReports <= 1" class="appButton placeHolder" (click)="prevPage('userReports')">Prev Page</button>
 			<div class="pageCount">Page {{ adminService.currentPage.userReports }} of {{ adminService.totalPages.userReports }}</div>
-			<button *ngIf="adminService.totalPages.userReports > adminService.currentPage.userReports" class="appButton nextButton" (click)="nextPage('userReports')">Next Page</button>
+			<button *ngIf="adminService.totalPages.userReports > adminService.currentPage.userReports" class="appButton nextButton" (click)="nextPage('userReports')" aria-label="next page of user reports">Next Page</button>
 			<button *ngIf="adminService.totalPages.userReports <= adminService.currentPage.userReports" class="appButton placeHolder" (click)="nextPage('userReports')">Next Page</button>
 		</div>
 		
@@ -107,10 +107,10 @@
 		
 		<!-- Post reports pagination -->
 		<div class="pagination" *ngIf="adminService.postReports.length" role="navigation">
-			<button *ngIf="adminService.currentPage.postReports > 1" class="appButton prevButton" (click)="prevPage('postReports')">Previous Page</button>
+			<button *ngIf="adminService.currentPage.postReports > 1" class="appButton prevButton" (click)="prevPage('postReports')" aria-label="previous page of post reports">Previous Page</button>
 			<button *ngIf="adminService.currentPage.postReports <= 1" class="appButton placeHolder" (click)="prevPage('postReports')">Prev Page</button>
 			<div class="pageCount">Page {{ adminService.currentPage.postReports }} of {{ adminService.totalPages.postReports }}</div>
-			<button *ngIf="adminService.totalPages.postReports > adminService.currentPage.postReports" class="appButton nextButton" (click)="nextPage('postReports')">Next Page</button>
+			<button *ngIf="adminService.totalPages.postReports > adminService.currentPage.postReports" class="appButton nextButton" (click)="nextPage('postReports')" aria-label="next page of post reports">Next Page</button>
 			<button *ngIf="adminService.totalPages.postReports <= adminService.currentPage.postReports" class="appButton placeHolder" (click)="nextPage('postReports')">Next Page</button>
 		</div>
 		
@@ -127,18 +127,18 @@
 		<form>
 			<div class="formElement">
 				<label class="pageCategory" for="blockID">User I.D.: </label>
-				<input type="text" id="blockID" placeholder="user I.D." #blockID required>
+				<input type="text" id="blockID" placeholder="user I.D." #blockID required  minlength="0">
 			</div>
 			<div class="formElement">
 				<label class="pageCategory" for="blockLength">Length of block time: </label>
-				<select id="blockLength" name="blockLength" #blockLength>
+				<select id="blockLength" name="blockLength" #blockLength required>
 					<option value="oneDay">One Day</option>
 					<option value="oneWeek">One Week</option>
 					<option value="oneMonth">30 Days</option>
 					<option value="forever">Permanently</option>
 				</select>
 			</div>
-			<button type="submit" class="appButton sendData" (click)="block($event,blockID.value, blockLength.value)" [attr.aria-labelledby]="blockUser">Block User</button>
+			<button type="submit" class="appButton sendData" (click)="block($event,blockID.value, blockLength.value)">Block User</button>
 		</form>
 		
 		<h4 class="subTitle">Blocked Users</h4>
@@ -169,10 +169,10 @@
 		
 		<!-- Blocked users pagination -->
 		<div class="pagination" *ngIf="adminService.blockedUsers.length" role="navigation">
-			<button *ngIf="adminService.currentPage.blockedUsers > 1" class="appButton prevButton" (click)="prevPage('blockedUsers')">Previous Page</button>
+			<button *ngIf="adminService.currentPage.blockedUsers > 1" class="appButton prevButton" (click)="prevPage('blockedUsers')" aria-label="previous page of blocked users">Previous Page</button>
 			<button *ngIf="adminService.currentPage.blockedUsers <= 1" class="appButton placeHolder" (click)="prevPage('blockedUsers')">Prev Page</button>
 			<div class="pageCount">Page {{ adminService.currentPage.blockedUsers }} of {{ adminService.totalPages.blockedUsers }}</div>
-			<button *ngIf="adminService.totalPages.blockedUsers > adminService.currentPage.blockedUsers" class="appButton nextButton" (click)="nextPage('blockedUsers')">Next Page</button>
+			<button *ngIf="adminService.totalPages.blockedUsers > adminService.currentPage.blockedUsers" class="appButton nextButton" (click)="nextPage('blockedUsers')" aria-label="next page of blocked users">Next Page</button>
 			<button *ngIf="adminService.totalPages.blockedUsers <= adminService.currentPage.blockedUsers" class="appButton placeHolder" (click)="nextPage('blockedUsers')">Next Page</button>
 		</div>
 		
@@ -189,9 +189,9 @@
 		<form>
 			<div class="formElement">
 				<label class="pageCategory" for="filter">Filter: </label>
-				<input type="text" id="filter" placeholder="Filter" #filter required>
+				<input type="text" id="filter" placeholder="Filter" #filter required  minlength="0">
 			</div>
-			<button type="submit" class="appButton sendData" (click)="addFilter($event,filter.value)" aria-labelledby="filterBtn">Add Filter</button>
+			<button type="submit" class="appButton sendData" (click)="addFilter($event,filter.value)">Add Filter</button>
 		</form>
 		
 		<h4 class="subTitle">Filtered Phrases</h4>
@@ -218,10 +218,10 @@
 		
 		<!-- Filtered words pagination -->
 		<div class="pagination" *ngIf="adminService.filteredPhrases.length" role="navigation">
-			<button *ngIf="adminService.currentPage.filteredPhrases > 1" class="appButton prevButton" (click)="prevPage('filteredPhrases')">Previous Page</button>
+			<button *ngIf="adminService.currentPage.filteredPhrases > 1" class="appButton prevButton" (click)="prevPage('filteredPhrases')" aria-label="previous page of filtered phrases">Previous Page</button>
 			<button *ngIf="adminService.currentPage.filteredPhrases <= 1" class="appButton placeHolder" (click)="prevPage('filteredPhrases')">Prev Page</button>
 			<div class="pageCount">Page {{ adminService.currentPage.filteredPhrases }} of {{ adminService.totalPages.filteredPhrases }}</div>
-			<button *ngIf="adminService.totalPages.filteredPhrases > adminService.currentPage.filteredPhrases" class="appButton nextButton" (click)="nextPage('filteredPhrases')">Next Page</button>
+			<button *ngIf="adminService.totalPages.filteredPhrases > adminService.currentPage.filteredPhrases" class="appButton nextButton" (click)="nextPage('filteredPhrases')" aria-label="next page of filtered phrases">Next Page</button>
 			<button *ngIf="adminService.totalPages.filteredPhrases <= adminService.currentPage.filteredPhrases" class="appButton placeHolder" (click)="nextPage('filteredPhrases')">Next Page</button>
 		</div>
 		

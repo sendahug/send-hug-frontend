@@ -51,6 +51,7 @@ export class AuthService {
     blocked: false,
     releaseDate: undefined,
     autoRefresh: false,
+    refreshRate: 20,
     pushEnabled: false
   }
   // documents whether the user just logged in or they're still logged in following
@@ -161,6 +162,7 @@ export class AuthService {
           blocked: data.blocked,
           releaseDate: data.releaseDate,
           autoRefresh: data.autoRefresh,
+          refreshRate: data.refreshRate,
           pushEnabled: data.pushEnabled
         }
         // set the authentication-variables accordingly
@@ -261,6 +263,7 @@ export class AuthService {
         blocked: data.blocked,
         releaseDate: data.releaseDate,
         autoRefresh: data.autoRefresh,
+        refreshRate: data.refreshRate,
         pushEnabled: data.pushEnabled
       }
       // set the authentication-variables accordingly
@@ -337,6 +340,7 @@ export class AuthService {
       blocked: false,
       releaseDate: undefined,
       autoRefresh: false,
+      refreshRate: 20,
       pushEnabled: false
     }
     localStorage.setItem("ACTIVE_JWT", '');

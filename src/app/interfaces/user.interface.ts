@@ -15,4 +15,5 @@ export interface User {
   releaseDate: Date | undefined;
   autoRefresh: boolean;
   pushEnabled: boolean;
+  refreshRate: number;
 }

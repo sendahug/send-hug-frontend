@@ -48,6 +48,7 @@ export class NotificationService {
       if(value) {
         this.pushStatus = this.authService.userData.pushEnabled;
         this.refreshStatus = this.authService.userData.autoRefresh;
+        this.refreshRateSecs = this.authService.userData.refreshRate;
       }
       else {
         this.pushStatus = false;
@@ -261,7 +262,8 @@ export class NotificationService {
     const Url = this.serverUrl + `/users/all/${this.authService.userData.id}`;
     const newSettings = {
       autoRefresh: this.refreshStatus,
-      pushEnabled: this.pushStatus
+      pushEnabled: this.pushStatus,
+      refreshRate: this.refreshRateSecs
     }
 
     // send the data to the server

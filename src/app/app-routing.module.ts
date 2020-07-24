@@ -10,6 +10,7 @@ import { FullList } from './components/fullList/fullList.component';
 import { AboutApp } from './components/aboutApp/aboutApp.component';
 import { SearchResults } from './components/searchResults/searchResults.component';
 import { AdminDashboard } from './components/adminDashboard/adminDashboard.component';
+import { SettingsPage } from './components/settings/settings.component';
 
 const routes: Routes = [
   { path: '', component: MainPage },
@@ -37,6 +38,7 @@ const routes: Routes = [
         { path: 'blocks', pathMatch: 'prefix', component: AdminDashboard },
         { path: 'filters', pathMatch: 'prefix', component: AdminDashboard }
       ]},
+  { path: 'settings', component: SettingsPage },
   { path: '**', component: ErrorPage }
 ];
 

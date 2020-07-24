@@ -1,9 +1,18 @@
 <div  *ngIf="authService.authenticated">
 	<h3>Settings</h3>
 	
-	<div id="settings">
+	<h4>Notifications</h4>
+	<div id="notificationSettings">
 		<button class="appButton NotificationButton" (click)="togglePushNotifications()">{{ notificationService.toggleBtn }} Push Notifications</button>
 		<button class="appButton NotificationButton" (click)="toggleAutoRefresh()">{{ notificationService.refreshBtn }} Auto-Refresh</button>
+		<form id="refreshRateForm">
+			<div class="formElement">
+				<label for="notificationRate">Notifications auto-refresh rate:</label>
+				<input type="number" min="20" max="3600" id="notificationRate" value="(notificationService.refreshRateSecs)" #notificationRate>
+			</div>
+			<button type="submit" (click)="updateRefreshRate($event, notificationRate.value)" class="appButton sendData" aria-label="save auto-refresh settings">Save</button>
+		</form>
+		
 	</div>
 </div>
 

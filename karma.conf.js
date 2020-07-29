@@ -19,7 +19,7 @@ module.exports = function (karma) {
         devtool: "source-map",
         entry: {
           app: './src/main.ts',
-          test: 'base.spec.ts'
+          test: './base.spec.ts'
         },
         mode: "development",
         node: { fs: 'empty' },
@@ -33,6 +33,10 @@ module.exports = function (karma) {
                 {
                     test: /\.html$/,
                     loader: 'html-loader'
+                },
+                {
+                    test: /\.svg$/,
+                    loader: 'svg-inline-loader'
                 },
                 {
                   test: /(?:\.ngfactory\.js|\.ngstyle\.js|\.ts)$/,

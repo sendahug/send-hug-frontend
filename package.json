@@ -47,6 +47,7 @@
     "karma-sourcemap-loader": "^0.3.7",
     "karma-webpack": "^4.0.2",
     "puppeteer": "^5.2.0",
+    "svg-inline-loader": "^0.8.2",
     "ts-loader": "^8.0.1",
     "tsify": "^4.0.2",
     "typescript": "^3.9.7",

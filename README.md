@@ -52,7 +52,8 @@ The main module contains 9 components, 3 services and 4 interfaces. Each compone
 11. **notifications** - A tab component to display the latest notifications for the currently logged-in user.
 12. **popUp** - A sub-component displaying a popup screen with a form for editing items (posts or a user's display name).
 13. **searchResults** - A component to display the results of the user's search.
-14. **userPage** - Displays the user's data as fetched from the backend, as well as a list of the user's posts (as myPost component).
+14. **settings** - Lets the user control their settings for various components, such as the notifications component. 
+15. **userPage** - Displays the user's data as fetched from the backend, as well as a list of the user's posts (as myPost component).
 
 ### Interfaces
 

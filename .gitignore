@@ -4,9 +4,7 @@
 _notes/
 /bower_components/
 node_modules/
-__pycache__
-.env
-venv
+coverage
 
 # local development files
 localdev/app

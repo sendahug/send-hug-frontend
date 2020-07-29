@@ -12,6 +12,7 @@ const source = require("vinyl-source-stream");
 const buffer = require("vinyl-buffer");
 const rename = require("gulp-rename");
 const replace = require("gulp-replace");
+var Server = require('karma').Server;
 
 // LOCAL DEVELOPMENT TASKS
 // ===============================================
@@ -178,22 +179,13 @@ gulp.task('dist', gulp.parallel(
 
 // TESTING TASKS
 // ===============================================
-//automatic testing in the Jasmine headless browser
-function jasmineBrowserTest()
+// automatic testing in whatever browser is defined in the Karma config file
+function unitTest()
 {
-	return gulp
-		.src(["dist/app.bundle.js", "tests/specs.js"])
-		.pipe(jasmineBrowser.specRunner({ console: true }))
-		.pipe(jasmineBrowser.headless({ driver: "chrome" }));
-}
-
-//testing in whatever browser you want to use; just enter "localhost:3001" in the address line
-function browserTests()
-{
-	return gulp
-		.src(["dist/app.bundle.js", "tests/specs.js"])
-		.pipe(jasmineBrowser.specRunner())
-		.pipe(jasmineBrowser.server({ port: 3001 }));
+	return new Server({
+	    configFile: __dirname + '/karma.conf.js',
+	    singleRun: true
+	  }).start();
 }
 
 //boot up the server
@@ -213,6 +205,5 @@ exports.copyImgs = copyImgs;
 exports.styles = styles;
 exports.scripts = scripts;
 exports.scriptsDist = scriptsDist;
-exports.jasmineBrowserTest = jasmineBrowserTest;
-exports.browserTests = browserTests;
+exports.unitTest = unitTest;
 exports.watch = watch;

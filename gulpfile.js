@@ -4,7 +4,6 @@ const autoprefixer = require("autoprefixer");
 const uglify = require("gulp-uglify");
 const babel = require("gulp-babel");
 const sourcemaps = require("gulp-sourcemaps");
-const jasmineBrowser = require('gulp-jasmine-browser');
 const browserSync = require("browser-sync").create();
 const browserify = require("browserify");
 const tsify = require("tsify");

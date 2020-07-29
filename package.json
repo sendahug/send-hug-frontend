@@ -30,7 +30,6 @@
     "browserify": "^16.5.1",
     "gulp": "^4.0.2",
     "gulp-babel": "^8.0.0",
-    "gulp-jasmine-browser": "^4.1.0",
     "gulp-postcss": "^8.0.0",
     "gulp-rename": "^2.0.0",
     "gulp-replace": "^1.0.0",

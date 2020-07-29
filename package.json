@@ -20,8 +20,11 @@
   "devDependencies": {
     "@babel/core": "^7.10.5",
     "@babel/preset-env": "^7.10.4",
+    "@ngtools/webpack": "^10.0.4",
     "@types/auth0-js": "^9.13.3",
     "@types/jasmine": "^3.5.11",
+    "@types/node": "^14.0.27",
+    "angular-router-loader": "^0.8.5",
     "autoprefixer": "^9.8.5",
     "browser-sync": "^2.26.10",
     "browserify": "^16.5.1",
@@ -33,6 +36,7 @@
     "gulp-replace": "^1.0.0",
     "gulp-sourcemaps": "^2.6.5",
     "gulp-uglify": "^3.0.2",
+    "html-loader": "^1.1.0",
     "jasmine-core": "^3.5.0",
     "jasmine-spec-reporter": "^5.0.2",
     "karma": "^5.1.1",
@@ -42,11 +46,14 @@
     "karma-jasmine": "^3.3.1",
     "karma-jasmine-html-reporter": "^1.5.4",
     "karma-sourcemap-loader": "^0.3.7",
+    "karma-webpack": "^4.0.2",
     "puppeteer": "^5.2.0",
+    "ts-loader": "^8.0.1",
     "tsify": "^4.0.2",
     "typescript": "^3.9.7",
     "vinyl-buffer": "^1.0.1",
-    "vinyl-source-stream": "^2.0.0"
+    "vinyl-source-stream": "^2.0.0",
+    "webpack": "^4.44.0"
   },
   "dependencies": {
     "@angular/animations": "^10.0.4",

@@ -1,5 +1,7 @@
 const path = require('path');
 const ngTools = require('@ngtools/webpack');
+const puppeteer = require('puppeteer');
+process.env.CHROME_BIN = puppeteer.executablePath();
 
 // Karma configuration file
 module.exports = function (karma) {
@@ -76,7 +78,13 @@ module.exports = function (karma) {
     port: 9876,
     logLevel: 'DEBUG',
     autoWatch: false,
-    browsers: ['Chrome'],
+    browsers: ['ChromeHeadlessCI'],
+    customLaunchers: {
+        ChromeHeadlessCI: {
+            base: 'ChromeHeadless',
+            flags: ['--no-sandbox']
+        }
+    },
     singleRun: true
   });
 };

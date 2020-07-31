@@ -8,6 +8,8 @@ import {
   BrowserDynamicTestingModule,
   platformBrowserDynamicTesting
 } from "@angular/platform-browser-dynamic/testing";
+import { HttpClientModule } from "@angular/common/http";
+import { ServiceWorkerModule } from "@angular/service-worker";
 
 
 describe("AppComponent", () => {
@@ -18,7 +20,9 @@ describe("AppComponent", () => {
 
       TestBed.configureTestingModule({
         imports: [
-          RouterTestingModule
+          RouterTestingModule,
+          HttpClientModule,
+          ServiceWorkerModule.register('sw.js')
         ],
         declarations: [
           AppComponent

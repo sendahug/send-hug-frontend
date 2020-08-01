@@ -78,13 +78,11 @@ module.exports = function (karma) {
     port: 9876,
     logLevel: 'DEBUG',
     autoWatch: false,
-    browsers: ['ChromeHeadlessCI'],
-    customLaunchers: {
-        ChromeHeadlessCI: {
-            base: 'ChromeHeadless',
-            flags: ['--no-sandbox']
-        }
-    },
+    browsers: ['Chrome'],
+    flags: [
+        '--disable-gpu',
+        '--no-sandbox'
+    ],
     singleRun: true
   });
 };

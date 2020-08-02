@@ -1,4 +1,4 @@
-import { fakeAsync, TestBed } from "@angular/core/testing";
+import { TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from '@angular/router/testing';
 import {} from 'jasmine';
 import { APP_BASE_HREF } from '@angular/common';
@@ -14,9 +14,8 @@ import { HttpClientModule } from "@angular/common/http";
 import { ServiceWorkerModule } from "@angular/service-worker";
 
 describe('MainPage', () => {
-
   // Before each test, configure testing environment
-  beforeEach(fakeAsync(() => {
+  beforeEach(() => {
     TestBed.resetTestEnvironment();
     TestBed.initTestEnvironment(BrowserDynamicTestingModule,
         platformBrowserDynamicTesting());
@@ -36,12 +35,12 @@ describe('MainPage', () => {
         { provide: APP_BASE_HREF, useValue: '/' }
       ]
     }).compileComponents();
-  }));
+  });
 
   // Check that the component is created
-  it('should create the component', fakeAsync(() => {
+  it('should create the component', () => {
     const fixture = TestBed.createComponent(MainPage);
     const mainPage = fixture.componentInstance;
     expect(mainPage).toBeTruthy();
-  }));
+  });
 })

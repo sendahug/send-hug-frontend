@@ -1,4 +1,4 @@
-import { fakeAsync, TestBed } from "@angular/core/testing";
+import { TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from '@angular/router/testing';
 import {} from 'jasmine';
 import { APP_BASE_HREF } from '@angular/common';
@@ -13,7 +13,7 @@ import { ServiceWorkerModule } from "@angular/service-worker";
 
 
 describe("AppComponent", () => {
-    beforeEach(fakeAsync(() => {
+    beforeEach(() => {
       TestBed.resetTestEnvironment();
       TestBed.initTestEnvironment(BrowserDynamicTestingModule,
           platformBrowserDynamicTesting());
@@ -29,14 +29,14 @@ describe("AppComponent", () => {
         ],
         providers: [{ provide: APP_BASE_HREF, useValue: '/' }]
       }).compileComponents();
-    }));
+    });
 
     // Check that the app is created
-    it('should create the app', fakeAsync(() => {
+    it('should create the app', () => {
       const fixture = TestBed.createComponent(AppComponent);
       const app = fixture.componentInstance;
       expect(app).toBeTruthy();
-    }));
+    });
 
     // Check that there are valid navigation links
     it('should contain valid navigation links', () => {

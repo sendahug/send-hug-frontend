@@ -8,20 +8,29 @@ module.exports = function (karma) {
   karma.set({
     basePath: '',
     frameworks: ['jasmine'],
+    plugins: [
+      require('karma-jasmine'),
+      require('karma-chrome-launcher'),
+      require('karma-jasmine-html-reporter'),
+      require('karma-coverage-istanbul-reporter'),
+      require('karma-webpack'),
+      require('karma-coverage'),
+      require('karma-sourcemap-loader')
+    ],
     mime: { 'text/x-typescript': ['ts','tsx'] },
     files: [
-        { pattern: "src/base.spec.ts" },
-        { pattern: "src/**/*.+(ts|html)" }
+        { pattern: "./src/base.spec.ts", included: false },
+        { pattern: "./src/**/*.+(ts|html)" }
     ],
     preprocessors: {
-        './src/**/*.spec.ts': ['webpack'],
+        './src/base.spec.ts': ['webpack'],
         './src/**/*.ts': ['webpack', 'sourcemap', 'coverage']
     },
     webpack: {
         devtool: "source-map",
         entry: {
           app: './src/main.ts',
-          test: './base.spec.ts'
+          test: './src/base.spec.ts'
         },
         mode: "development",
         node: { fs: 'empty' },
@@ -69,11 +78,13 @@ module.exports = function (karma) {
         }
     },
     coverageIstanbulReporter: {
-      dir: require('path').join(__dirname, './coverage/angular-gulp'),
+      dir: path.resolve(__dirname, './coverage/angular-gulp'),
       reports: ['html', 'lcovonly', 'text-summary'],
       fixWebpackSourcePaths: true
     },
-    // add both "karma-coverage" and "karma-remap-coverage" reporters
+    client: {
+      clearContext: false // leave Jasmine Spec Runner output visible in browser
+    },
     reporters: ['progress', 'kjhtml', 'coverage'],
     port: 9876,
     logLevel: 'DEBUG',

@@ -8,4 +8,6 @@ export interface OtherUser {
   givenHugs: number;
   postsNum: number;
   role: string;
+  blocked?: boolean;
+  releaseDate?: Date;
 }

@@ -39,8 +39,11 @@ describe('MainPage', () => {
 
   // Check that the component is created
   it('should create the component', () => {
+    const acFixture = TestBed.createComponent(AppComponent);
+    const appComponent = acFixture.componentInstance;
     const fixture = TestBed.createComponent(MainPage);
     const mainPage = fixture.componentInstance;
+    expect(appComponent).toBeTruthy();
     expect(mainPage).toBeTruthy();
   });
 })

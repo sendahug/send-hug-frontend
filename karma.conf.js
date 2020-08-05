@@ -94,6 +94,8 @@ module.exports = function (karma) {
         '--disable-gpu',
         '--no-sandbox'
     ],
-    singleRun: true
+    singleRun: true,
+	browserDisconnectTimeout: 10000,
+	browserNoActivityTimeout: 100000
   });
 };

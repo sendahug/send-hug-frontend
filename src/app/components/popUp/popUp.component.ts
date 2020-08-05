@@ -82,7 +82,9 @@ export class PopUp implements OnInit, OnChanges, AfterViewChecked {
     }
 
     document.getElementById('exitButton')!.focus();
-    document.getElementById('siteHeader')!.className = 'modal';
+    if(document.getElementById('siteHeader')) {
+      document.getElementById('siteHeader')!.className = 'modal';
+    }
   }
 
   /*
@@ -539,8 +541,12 @@ export class PopUp implements OnInit, OnChanges, AfterViewChecked {
   exitEdit() {
     let modal = document.getElementById('modalBox');
     modal!.removeEventListener('keydown', this.checkFocusBinded);
-    document.getElementById('skipLink')!.focus();
-    document.getElementById('siteHeader')!.className = '';
+    if(document.getElementById('skipLink')) {
+      document.getElementById('skipLink')!.focus();
+    }
+    if(document.getElementById('siteHeader')) {
+      document.getElementById('siteHeader')!.className = '';
+    }
     this.editMode.emit(false);
   }
 }

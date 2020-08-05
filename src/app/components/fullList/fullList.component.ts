@@ -42,6 +42,18 @@ export class FullList {
       this.type = this.route.snapshot.paramMap.get('type');
       this.page = Number(this.route.snapshot.queryParamMap.get('page'));
 
+      // set a default page if no page is set
+      if(this.page) {
+        // if it was a string, set it to 1
+        if(this.page.isNaN) {
+          this.page = 1;
+        }
+      }
+      // if there's no page, set it to 1
+      else {
+        this.page = 1;
+      }
+
       // if the type is new items, get the new items
       if(this.type == 'New') {
         this.waitFor = 'new posts';

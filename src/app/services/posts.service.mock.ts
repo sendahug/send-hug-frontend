@@ -10,7 +10,7 @@ import { BehaviorSubject } from 'rxjs';
 
 // App-related imports
 import { Post } from '../interfaces/post.interface';
-import { AlertsService } from './alerts.service';
+import { MockAlertsService } from './alerts.service.mock';
 
 @Injectable({
   providedIn: 'root'
@@ -43,7 +43,7 @@ export class MockPostsService {
 
   // CTOR
   constructor(
-    private alertsService:AlertsService
+    private alertsService:MockAlertsService
   ) {
       // default assignment
       this.fullItemsPage.fullNewItems = 1;

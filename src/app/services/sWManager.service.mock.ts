@@ -10,7 +10,7 @@ import { Injectable } from '@angular/core';
 import { openDB, IDBPDatabase, DBSchema } from 'idb';
 
 // App-related imports
-import { AlertsService } from './alerts.service';
+import { MockAlertsService } from './alerts.service.mock';
 
 // IndexedDB Database schema
 interface MyDB extends DBSchema {
@@ -79,7 +79,7 @@ export class SWManager {
   databaseVersion = 3;
 
   // CTOR
-  constructor(private alertsService:AlertsService) {
+  constructor(private alertsService:MockAlertsService) {
 
   }
 

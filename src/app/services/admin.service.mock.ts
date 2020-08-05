@@ -11,8 +11,8 @@ import { BehaviorSubject } from 'rxjs';
 // App-related imports
 import { Report } from '../interfaces/report.interface';
 import { Message } from '../interfaces/message.interface';
-import { AuthService } from './auth.service';
-import { AlertsService } from './alerts.service';
+import { MockAuthService } from './auth.service.mock';
+import { MockAlertsService } from './alerts.service.mock';
 import { ItemsService } from './items.service';
 import { environment } from '../../environments/environment';
 import { environment as prodEnv } from '../../environments/environment.prod';
@@ -53,8 +53,8 @@ export class AdminService {
   isUpdated = new BehaviorSubject(false);
 
   constructor(
-    private authService:AuthService,
-    private alertsService:AlertsService,
+    private authService:MockAuthService,
+    private alertsService:MockAlertsService,
     private itemsService:ItemsService
   ) {
 

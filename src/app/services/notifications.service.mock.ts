@@ -10,7 +10,7 @@ import { interval, Subscription, Observable } from 'rxjs';
 
 // App-related imports
 import { MockAuthService } from './auth.service.mock';
-import { AlertsService } from './alerts.service';
+import { MockAlertsService } from './alerts.service.mock';
 
 @Injectable({
   providedIn: 'root'
@@ -33,7 +33,7 @@ export class MockNotificationService {
   // CTOR
   constructor(
     private authService:MockAuthService,
-    private alertsService:AlertsService
+    private alertsService:MockAlertsService
   ) {
     // if the user is logged in, and their data is fetched, set the appropriate variables
     this.authService.isUserDataResolved.subscribe((value) => {

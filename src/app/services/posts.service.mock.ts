@@ -141,7 +141,23 @@ export class MockPostsService {
         }
       ];
       this.fullItemsPage.fullNewItems = 1;
-      this.totalFullItemsPage.fullNewItems = 1;
+      this.totalFullItemsPage.fullNewItems = 2;
+      this.isPostsResolved.fullNewItems.next(true);
+    }
+    else if(page == 2) {
+      this.fullItemsList.fullNewItems = [
+        {
+          'date': new Date('2020-06-27 19:17:31.072'),
+          'givenHugs': 0,
+          'id': 1,
+          'text': 'test',
+          'userId': 1,
+          'user': 'test',
+          'sentHugs': []
+        }
+      ];
+      this.fullItemsPage.fullNewItems = 2;
+      this.totalFullItemsPage.fullNewItems = 2;
       this.isPostsResolved.fullNewItems.next(true);
     }
     else {
@@ -185,7 +201,23 @@ export class MockPostsService {
         }
       ];
       this.fullItemsPage.fullSuggestedItems = 1;
-      this.totalFullItemsPage.fullSuggestedItems = 1;
+      this.totalFullItemsPage.fullSuggestedItems = 2;
+      this.isPostsResolved.fullSuggestedItems.next(true);
+    }
+    else if(page == 2) {
+      this.fullItemsList.fullSuggestedItems = [
+        {
+          'date': new Date('2020-06-27 19:17:31.072'),
+          'givenHugs': 0,
+          'id': 1,
+          'text': 'test',
+          'userId': 1,
+          'user': 'test',
+          'sentHugs': []
+        }
+      ];
+      this.fullItemsPage.fullSuggestedItems = 2;
+      this.totalFullItemsPage.fullSuggestedItems = 2;
       this.isPostsResolved.fullSuggestedItems.next(true);
     }
     else {

@@ -21,7 +21,7 @@ import { OtherUser } from '../interfaces/otherUser.interface';
 @Injectable({
   providedIn: 'root'
 })
-export class AdminService {
+export class MockAdminService {
   readonly serverUrl = environment.production ? prodEnv.backend.domain! : environment.backend.domain;
   userReports: Report[] = [];
   postReports: Report[] = [];

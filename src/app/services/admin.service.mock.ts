@@ -13,7 +13,7 @@ import { Report } from '../interfaces/report.interface';
 import { Message } from '../interfaces/message.interface';
 import { MockAuthService } from './auth.service.mock';
 import { MockAlertsService } from './alerts.service.mock';
-import { ItemsService } from './items.service';
+import { MockItemsService } from './items.service.mock';
 import { environment } from '../../environments/environment';
 import { environment as prodEnv } from '../../environments/environment.prod';
 import { OtherUser } from '../interfaces/otherUser.interface';
@@ -55,7 +55,7 @@ export class AdminService {
   constructor(
     private authService:MockAuthService,
     private alertsService:MockAlertsService,
-    private itemsService:ItemsService
+    private itemsService:MockItemsService
   ) {
 
   }

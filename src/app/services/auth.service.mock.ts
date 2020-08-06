@@ -34,6 +34,15 @@ export class MockAuthService {
   token: string = '';
   authHeader: HttpHeaders = new HttpHeaders;
   authenticated: boolean = false;
+
+  public get getAuthenticated() : boolean {
+    return this.authenticated;
+  }
+
+  public set getAuthenticated(v : boolean) {
+    this.authenticated = v;
+  }
+
   // user data
   userProfile: any;
   userData: User = {

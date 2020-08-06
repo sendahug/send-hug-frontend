@@ -73,7 +73,7 @@ interface MyDB extends DBSchema {
 @Injectable({
   providedIn: 'root'
 })
-export class SWManager {
+export class MockSWManager {
   activeServiceWorkerReg: ServiceWorkerRegistration | undefined;
   currentDB: Promise<IDBPDatabase<MyDB>> | undefined;
   databaseVersion = 3;

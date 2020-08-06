@@ -56,4 +56,136 @@ describe('Notifications', () => {
     expect(appComponent).toBeTruthy();
     expect(notificationsTab).toBeTruthy();
   });
+
+  // Check that the component checks whether the user is authenticated
+  it('should check whether the user is logged in', () => {
+    // set up spies
+    const notificationsService = TestBed.get(NotificationService);
+    const notificationSpy = spyOn(notificationsService, 'getNotifications').and.callThrough();
+    const authService = TestBed.get(AuthService);
+    const authSpy = spyOn(authService.isUserDataResolved, 'subscribe').and.callThrough();
+
+    // set up the component
+    TestBed.createComponent(AppComponent);
+    const fixture = TestBed.createComponent(NotificationsTab);
+    const notificationsTab  = fixture.componentInstance;
+
+    expect(notificationsTab['authService'].isUserDataResolved).toBeTruthy();
+    expect(notificationSpy).toHaveBeenCalled();
+    expect(authSpy).toHaveBeenCalled()
+    expect(notificationsTab.notificationService.pushStatus).toBeFalse();
+    expect(notificationsTab.notificationService.refreshStatus).toBeFalse();
+  });
+
+  // Check that the button toggles push notifications
+  it('has a button that toggles push notifications', fakeAsync(() => {
+    // set up the component and its spies
+    TestBed.createComponent(AppComponent);
+    const fixture = TestBed.createComponent(NotificationsTab);
+    const notificationsTab  = fixture.componentInstance;
+    const notifTabDOM = fixture.nativeElement;
+    const toggleSpy = spyOn(notificationsTab, 'togglePushNotifications').and.callThrough();
+    const notificationsService = notificationsTab.notificationService;
+    const settingsSpy = spyOn(notificationsService, 'updateUserSettings').and.callThrough();
+    const subscribeSpy = spyOn(notificationsService, 'subscribeToStream').and.callThrough();
+    const unsubscribeSpy = spyOn(notificationsService, 'unsubscribeFromStream').and.callThrough();
+
+    fixture.detectChanges();
+    tick();
+
+    // before the click
+    expect(notificationsTab.notificationService.pushStatus).toBeFalse();
+
+    // simulate click
+    notifTabDOM.querySelector('#nButtons').children.item(0).click();
+    fixture.detectChanges();
+    tick();
+
+    // after the first click, check 'subscribe' was called
+    expect(toggleSpy).toHaveBeenCalled();
+    expect(notificationsTab.notificationService.pushStatus).toBeTrue();
+    expect(settingsSpy).toHaveBeenCalled();
+    expect(subscribeSpy).toHaveBeenCalled();
+    expect(unsubscribeSpy).not.toHaveBeenCalled();
+
+    // simulate another click
+    notifTabDOM.querySelectorAll('.NotificationButton')[0].click();
+    fixture.detectChanges();
+    tick();
+
+    // after the second click, chcek 'unsubscribe' was called
+    expect(toggleSpy.calls.count()).toBe(2);
+    expect(notificationsTab.notificationService.pushStatus).toBeFalse();
+    expect(settingsSpy.calls.count()).toBe(2);
+    expect(subscribeSpy.calls.count()).toBe(1);
+    expect(unsubscribeSpy).toHaveBeenCalled();
+    expect(unsubscribeSpy.calls.count()).toBe(1);
+  }));
+
+  // Check that the button toggles auto refresh
+  it('has a button that toggles auto-refresh', fakeAsync(() => {
+    // set up spies
+    const notificationsService = TestBed.get(NotificationService);
+    const settingsSpy = spyOn(notificationsService, 'updateUserSettings').and.callThrough();
+    const startRefreshSpy = spyOn(notificationsService, 'startAutoRefresh').and.callThrough();
+    const stopRefreshSpy = spyOn(notificationsService, 'stopAutoRefresh').and.callThrough();
+
+    // set up the component
+    TestBed.createComponent(AppComponent);
+    const fixture = TestBed.createComponent(NotificationsTab);
+    const notificationsTab  = fixture.componentInstance;
+    const notifTabDOM = fixture.nativeElement;
+    const toggleSpy = spyOn(notificationsTab, 'toggleAutoRefresh').and.callThrough();
+    fixture.detectChanges();
+    tick();
+
+    // before the click
+    expect(notificationsTab.notificationService.refreshStatus).toBeFalse();
+
+    // simulate click
+    notifTabDOM.querySelectorAll('.NotificationButton')[1].click();
+    fixture.detectChanges();
+    tick();
+
+    // after the first click, check 'subscribe' was called
+    expect(toggleSpy).toHaveBeenCalled();
+    expect(notificationsTab.notificationService.refreshStatus).toBeTrue();
+    expect(notificationsTab.notificationService.refreshRateSecs).toBe(20);
+    expect(settingsSpy).toHaveBeenCalled();
+    expect(startRefreshSpy).toHaveBeenCalled();
+    expect(stopRefreshSpy).not.toHaveBeenCalled();
+
+    // simulate another click
+    notifTabDOM.querySelectorAll('.NotificationButton')[1].click();
+    fixture.detectChanges();
+    tick();
+
+    // after the second click, chcek 'unsubscribe' was called
+    expect(toggleSpy.calls.count()).toBe(2);
+    expect(notificationsTab.notificationService.refreshStatus).toBeFalse();
+    expect(notificationsTab.notificationService.refreshRateSecs).toBe(0);
+    expect(settingsSpy.calls.count()).toBe(2);
+    expect(startRefreshSpy.calls.count()).toBe(1);
+    expect(stopRefreshSpy).toHaveBeenCalled();
+    expect(stopRefreshSpy.calls.count()).toBe(1);
+  }));
+
+  // Check that the exit button emits the correct boolean
+  it('emits false upon clicking the exit button', fakeAsync(() => {
+    // set up the component
+    TestBed.createComponent(AppComponent);
+    const fixture = TestBed.createComponent(NotificationsTab);
+    const notificationsTab  = fixture.componentInstance;
+    const notifTabDOM = fixture.nativeElement;
+    const emitterSpy = spyOn(notificationsTab.NotificationsMode, 'emit');
+    fixture.detectChanges();
+    tick();
+
+    // click the exit button
+    notifTabDOM.querySelector('#exitButton').click();
+    fixture.detectChanges();
+    tick();
+
+    expect(emitterSpy).toHaveBeenCalledWith(false);
+  }));
 });

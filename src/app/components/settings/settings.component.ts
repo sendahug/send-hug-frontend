@@ -8,6 +8,7 @@ import { Component } from '@angular/core';
 
 // App-related imports
 import { NotificationService } from '../../services/notifications.service';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-settings',
@@ -16,7 +17,8 @@ import { NotificationService } from '../../services/notifications.service';
 export class SettingsPage {
   // CTOR
   constructor(
-    public notificationService:NotificationService
+    public notificationService:NotificationService,
+    public authService:AuthService
   ) {
 
   }

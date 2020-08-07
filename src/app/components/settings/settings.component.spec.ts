@@ -61,21 +61,21 @@ describe('SettingsPage', () => {
 
   // Check that the user has to be logged in to interact with the component
   it('displays an error when not authenticated', fakeAsync(() => {
-    const authService = TestBed.get(AuthService);
-    const authSpy = spyOnProperty(authService, 'getAuthenticated', 'get').and.returnValue(false);
     TestBed.createComponent(AppComponent);
     const fixture = TestBed.createComponent(SettingsPage);
     const settingsPage = fixture.componentInstance;
     const settingsDOM = fixture.nativeElement;
+    settingsPage.authService.authenticated = false;
 
     fixture.detectChanges();
     tick();
 
-    expect(authService.getAuthenticated).toBeFalse();
-    expect(authSpy).toHaveBeenCalled();
-    expect(settingsDOM.querySelectorAll('.errorMessage')[0]).toBeTruthy();
-    expect(settingsDOM.querySelectorAll('.errorMessage')[0].textContent).toBe('You do not have permission to view thie page!');
-    expect(settingsDOM.querySelector('#notificationSettings')).toBeNull();
+    fixture.whenStable().then(() => {
+      expect(settingsPage.authService.authenticated).toBeFalse();
+      expect(settingsDOM.querySelectorAll('.errorMessage')[0]).toBeTruthy();
+      expect(settingsDOM.querySelectorAll('.errorMessage')[0].textContent).toBe('You do not have permission to view thie page!');
+      expect(settingsDOM.querySelector('#notificationSettings')).toBeNull();
+    });
   }));
 
   // Check that the button toggles push notifications
@@ -182,23 +182,26 @@ describe('SettingsPage', () => {
     const settingsPage  = fixture.componentInstance;
     const settingsDOM = fixture.nativeElement;
     const updateSpy = spyOn(settingsPage, 'updateRefreshRate').and.callThrough();
+    settingsPage.authService.authenticated = true;
 
     fixture.detectChanges();
     tick();
 
-    // check the original refresh rate
-    expect(settingsPage.notificationService.refreshRateSecs).toBe(20);
-    expect(updateSpy).not.toHaveBeenCalled();
+    fixture.whenStable().then(() => {
+      // check the original refresh rate
+      expect(settingsPage.notificationService.refreshRateSecs).toBe(20);
+      expect(updateSpy).not.toHaveBeenCalled();
 
-    // change the rate
-    settingsDOM.querySelector('#notificationRate').textContent = 30;
-    settingsDOM.querySelectorAll('.sendData')[0].click();
-    fixture.detectChanges();
-    tick();
+      // change the rate
+      settingsDOM.querySelectorAll('input')[0].value = 30;
+      settingsDOM.querySelectorAll('.sendData')[0].click();
+      fixture.detectChanges();
+      tick();
 
-    // check the rate changed
-    expect(settingsPage.notificationService.refreshRateSecs).toBe(30);
-    expect(updateSpy).toHaveBeenCalled();
-    expect(settingsSpy).toHaveBeenCalled();
+      // check the rate changed
+      expect(settingsPage.notificationService.refreshRateSecs).toBe(30);
+      expect(updateSpy).toHaveBeenCalled();
+      expect(settingsSpy).toHaveBeenCalled();
+    });
   }));
 });

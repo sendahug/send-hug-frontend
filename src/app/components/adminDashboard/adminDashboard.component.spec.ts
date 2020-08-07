@@ -117,7 +117,7 @@ describe('AdminDashboard', () => {
   it('should get open reports', fakeAsync(() => {
     // set up the spy and the component
     const adminService = TestBed.get(AdminService);
-    const reportSpy = spyOn(adminService, 'getOpenReports');
+    const reportSpy = spyOn(adminService, 'getOpenReports').and.callThrough();
     const fixture = TestBed.createComponent(AdminDashboard);
     const adminDashboard = fixture.componentInstance;
     const adminDashboardDOM = fixture.nativeElement;
@@ -142,11 +142,11 @@ describe('AdminDashboard', () => {
   it('should edit a user\'s display name', fakeAsync(() => {
     // set up the spy and the component
     const adminService = TestBed.get(AdminService);
-    const editServiceSpy = spyOn(adminService, 'editUser');
+    const editServiceSpy = spyOn(adminService, 'editUser').and.callThrough();
     const fixture = TestBed.createComponent(AdminDashboard);
     const adminDashboard = fixture.componentInstance;
     const adminDashboardDOM = fixture.nativeElement;
-    const editSpy = spyOn(adminDashboard, 'editUser');
+    const editSpy = spyOn(adminDashboard, 'editUser').and.callThrough();
     adminDashboard.screen = 'reports';
 
     // before the click
@@ -170,11 +170,11 @@ describe('AdminDashboard', () => {
   it('should edit a post\'s text', fakeAsync(() => {
     // set up the spy and the component
     const adminService = TestBed.get(AdminService);
-    const editServiceSpy = spyOn(adminService, 'editPost');
+    const editServiceSpy = spyOn(adminService, 'editPost').and.callThrough();
     const fixture = TestBed.createComponent(AdminDashboard);
     const adminDashboard = fixture.componentInstance;
     const adminDashboardDOM = fixture.nativeElement;
-    const editSpy = spyOn(adminDashboard, 'editPost');
+    const editSpy = spyOn(adminDashboard, 'editPost').and.callThrough();
     adminDashboard.screen = 'reports';
 
     // before the click
@@ -198,11 +198,11 @@ describe('AdminDashboard', () => {
   it('should delete a post', fakeAsync(() => {
     // set up the spy and the component
     const adminService = TestBed.get(AdminService);
-    const deleteServiceSpy = spyOn(adminService, 'deletePost');
+    const deleteServiceSpy = spyOn(adminService, 'deletePost').and.callThrough();
     const fixture = TestBed.createComponent(AdminDashboard);
     const adminDashboard = fixture.componentInstance;
     const adminDashboardDOM = fixture.nativeElement;
-    const deleteSpy = spyOn(adminDashboard, 'deletePost');
+    const deleteSpy = spyOn(adminDashboard, 'deletePost').and.callThrough();
     adminDashboard.screen = 'reports';
 
     // before the click
@@ -226,11 +226,11 @@ describe('AdminDashboard', () => {
   it('should dismiss report', fakeAsync(() => {
     // set up the spy and the component
     const adminService = TestBed.get(AdminService);
-    const dismissServiceSpy = spyOn(adminService, 'deletePost');
+    const dismissServiceSpy = spyOn(adminService, 'deletePost').and.callThrough();
     const fixture = TestBed.createComponent(AdminDashboard);
     const adminDashboard = fixture.componentInstance;
     const adminDashboardDOM = fixture.nativeElement;
-    const dismissSpy = spyOn(adminDashboard, 'deletePost');
+    const dismissSpy = spyOn(adminDashboard, 'deletePost').and.callThrough();
     adminDashboard.screen = 'reports';
 
     // trigger click
@@ -251,7 +251,7 @@ describe('AdminDashboard', () => {
   it('should get blocked users', fakeAsync(() => {
     // set up the spy and the component
     const adminService = TestBed.get(AdminService);
-    const blockSpy = spyOn(adminService, 'getBlockedUsers');
+    const blockSpy = spyOn(adminService, 'getBlockedUsers').and.callThrough();
     const fixture = TestBed.createComponent(AdminDashboard);
     const adminDashboard = fixture.componentInstance;
     const adminDashboardDOM = fixture.nativeElement;
@@ -285,7 +285,7 @@ describe('AdminDashboard', () => {
   it('should get filtered phrases', fakeAsync(() => {
     // set up the spy and the component
     const adminService = TestBed.get(AdminService);
-    const filterSpy = spyOn(adminService, 'getFilters');
+    const filterSpy = spyOn(adminService, 'getFilters').and.callThrough();
     const fixture = TestBed.createComponent(AdminDashboard);
     const adminDashboard = fixture.componentInstance;
     const adminDashboardDOM = fixture.nativeElement;
@@ -302,11 +302,11 @@ describe('AdminDashboard', () => {
   it('should add a new filter', fakeAsync(() => {
     // set up the spy and the component
     const adminService = TestBed.get(AdminService);
-    const addServiceSpy = spyOn(adminService, 'addFilter');
+    const addServiceSpy = spyOn(adminService, 'addFilter').and.callThrough();
     const fixture = TestBed.createComponent(AdminDashboard);
     const adminDashboard = fixture.componentInstance;
     const adminDashboardDOM = fixture.nativeElement;
-    const addSpy = spyOn(adminDashboard, 'addFilter');
+    const addSpy = spyOn(adminDashboard, 'addFilter').and.callThrough();
     adminDashboard.screen = 'filters';
 
     fixture.detectChanges();
@@ -328,11 +328,11 @@ describe('AdminDashboard', () => {
   it('should remove a filter', fakeAsync(() => {
     // set up the spy and the component
     const adminService = TestBed.get(AdminService);
-    const removeServiceSpy = spyOn(adminService, 'removeFilter');
+    const removeServiceSpy = spyOn(adminService, 'removeFilter').and.callThrough();
     const fixture = TestBed.createComponent(AdminDashboard);
     const adminDashboard = fixture.componentInstance;
     const adminDashboardDOM = fixture.nativeElement;
-    const removeSpy = spyOn(adminDashboard, 'removeFilter');
+    const removeSpy = spyOn(adminDashboard, 'removeFilter').and.callThrough();
     adminDashboard.screen = 'filters';
 
     fixture.detectChanges();

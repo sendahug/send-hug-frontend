@@ -135,7 +135,32 @@ describe('AdminDashboard', () => {
 
   // Check that you can block users
   it('should block a user', fakeAsync(() => {
+    // set up the spy and the component
+    const adminService = TestBed.get(AdminService);
+    const blockServiceSpy = spyOn(adminService, 'blockUser').and.callThrough();
+    const fixture = TestBed.createComponent(AdminDashboard);
+    const adminDashboard = fixture.componentInstance;
+    const adminDashboardDOM = fixture.nativeElement;
+    const blockSpy = spyOn(adminDashboard, 'blockUser').and.callThrough();
+    const checkBlockSpy = spyOn(adminDashboard, 'checkBlock').and.callThrough();
+    const setBlockSpy = spyOn(adminDashboard, 'setBlock').and.callThrough();
+    const releaseDate = new Date((new Date()).getTime() + 864E5 * 1);
+    adminDashboard.screen = 'reports';
 
+    // trigger a click
+    const userTable = adminDashboardDOM.querySelectorAll('.tableContainer')[0];
+    userTable.querySelectorAll('.adminButton')[0].click();
+    fixture.detectChanges();
+    tick();
+
+    // check expectations
+    expect(blockSpy).toHaveBeenCalled();
+    expect(checkBlockSpy).toHaveBeenCalled();
+    expect(checkBlockSpy).toHaveBeenCalledWith(1, 'oneDay', 1);
+    expect(setBlockSpy).toHaveBeenCalled();
+    expect(setBlockSpy).toHaveBeenCalledWith(1, 'oneDay', 1);
+    expect(blockServiceSpy).toHaveBeenCalled();
+    expect(blockServiceSpy).toHaveBeenCalledWith(1, releaseDate, 1)
   }));
 
   // Check that user editing triggers the popup
@@ -266,17 +291,90 @@ describe('AdminDashboard', () => {
 
   // Check that you can block a user
   it('should block a user', fakeAsync(() => {
+    // set up the spy and the component
+    const adminService = TestBed.get(AdminService);
+    const blockServiceSpy = spyOn(adminService, 'blockUser').and.callThrough();
+    const fixture = TestBed.createComponent(AdminDashboard);
+    const adminDashboard = fixture.componentInstance;
+    const adminDashboardDOM = fixture.nativeElement;
+    const blockSpy = spyOn(adminDashboard, 'block').and.callThrough();
+    const checkBlockSpy = spyOn(adminDashboard, 'checkBlock').and.callThrough();
+    const setBlockSpy = spyOn(adminDashboard, 'setBlock').and.callThrough();
+    const releaseDate = new Date((new Date()).getTime() + 864E5 * 1);
+    adminDashboard.screen = 'blocks';
 
+    // trigger a click
+    adminDashboardDOM.querySelector('#blockID').value = 5;
+    adminDashboardDOM.querySelector('#blockLength').value = 'oneDay';
+    adminDashboardDOM.querySelectorAll('.sendData')[0].click();
+    fixture.detectChanges();
+    tick();
+
+    // check expectations
+    expect(blockSpy).toHaveBeenCalled();
+    expect(checkBlockSpy).toHaveBeenCalled();
+    expect(checkBlockSpy).toHaveBeenCalledWith(5, 'oneDay');
+    expect(setBlockSpy).toHaveBeenCalled();
+    expect(setBlockSpy).toHaveBeenCalledWith(5, 'oneDay');
+    expect(blockServiceSpy).toHaveBeenCalled();
+    expect(blockServiceSpy).toHaveBeenCalledWith(5, releaseDate);
   }));
 
   // Check that you can unblock a user
   it('should unblock a user', fakeAsync(() => {
+    // set up the spy and the component
+    const adminService = TestBed.get(AdminService);
+    const unblockServiceSpy = spyOn(adminService, 'unblockUser').and.callThrough();
+    const fixture = TestBed.createComponent(AdminDashboard);
+    const adminDashboard = fixture.componentInstance;
+    const adminDashboardDOM = fixture.nativeElement;
+    const unblockSpy = spyOn(adminDashboard, 'unblock').and.callThrough();
+    adminDashboard.screen = 'blocks';
 
+    // trigger a click
+    adminDashboardDOM.querySelectorAll('.adminButton')[0].click();
+    fixture.detectChanges();
+    tick();
+
+    // check expectations
+    expect(unblockSpy).toHaveBeenCalled();
+    expect(unblockSpy).toHaveBeenCalledWith(1);
+    expect(unblockServiceSpy).toHaveBeenCalled();
+    expect(unblockServiceSpy).toHaveBeenCalledWith(1);
   }));
 
   // Check that blocks are calculated correctly
   it('should calculate block length', () => {
+    // set up the spy and the component
+    const adminService = TestBed.get(AdminService);
+    const blockServiceSpy = spyOn(adminService, 'blockUser').and.callThrough();
+    const fixture = TestBed.createComponent(AdminDashboard);
+    const adminDashboard = fixture.componentInstance;
+    const adminDashboardDOM = fixture.nativeElement;
+    const setBlockSpy = spyOn(adminDashboard, 'setBlock').and.callThrough();
+    const releaseDates = [
+      new Date((new Date()).getTime() + 864E5 * 1),
+      new Date((new Date()).getTime() + 864E5 * 7),
+      new Date((new Date()).getTime() + 864E5 * 30),
+      new Date((new Date()).getTime() + 864E5 * 36500)
+    ];
+    const blockLengths = [
+      'oneDay', 'oneWeek', 'oneMonth', 'forever'
+    ];
+    const users = [ 6, 7, 8, 9 ];
+    adminDashboard.screen = 'blocks';
 
+    blockLengths.forEach((length, index) => {
+      // trigger a click
+      adminDashboardDOM.querySelector('#blockID').value = users[index];
+      adminDashboardDOM.querySelector('#blockLength').value = length;
+      adminDashboardDOM.querySelectorAll('.sendData')[0].click();
+      fixture.detectChanges();
+      tick();
+
+      expect(setBlockSpy).toHaveBeenCalledWith(users[index], length);
+      expect(blockServiceSpy).toHaveBeenCalledWith(users[index], releaseDates[index])
+    });
   });
 
   // FILTERS PAGE

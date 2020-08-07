@@ -80,7 +80,7 @@ export class SettingsPage {
   */
   updateRefreshRate(e:Event, newRate:number) {
     e.preventDefault();
-    this.notificationService.refreshRateSecs = newRate;
+    this.notificationService.refreshRateSecs = Number(newRate);
     this.notificationService.updateUserSettings();
   }
 }

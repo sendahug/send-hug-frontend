@@ -413,6 +413,9 @@ describe('AdminDashboard', () => {
       tick();
 
       blockLengths.forEach((length, index) => {
+        // reset the calls to the spy to check each option on its own
+        setBlockSpy.calls.reset();
+        
         // trigger a click
         adminDashboardDOM.querySelector('#blockID').value = users[index];
         adminDashboardDOM.querySelector('#blockLength').value = length;
@@ -420,7 +423,7 @@ describe('AdminDashboard', () => {
         fixture.detectChanges();
         tick();
 
-        expect(setBlockSpy).toHaveBeenCalledWith(users[index], length);
+        expect(setBlockSpy).toHaveBeenCalledWith(users[index], length, undefined);
         expect(blockServiceSpy).toHaveBeenCalledWith(users[index], releaseDates[index])
       });
     }));

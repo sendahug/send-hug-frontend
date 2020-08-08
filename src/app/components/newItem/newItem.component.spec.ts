@@ -121,9 +121,9 @@ describe('NewItem', () => {
       const fixture = TestBed.createComponent(NewItem);
       const newItem = fixture.componentInstance;
       const newItemDOM = fixture.nativeElement;
-      const newPostSpy = spyOn(newItem, 'sendPost');
+      const newPostSpy = spyOn(newItem, 'sendPost').and.callThrough();
       const postsService = newItem['postsService'];
-      const newPostServiceSpy = spyOn(postsService, 'sendPost');
+      const newPostServiceSpy = spyOn(postsService, 'sendPost').and.callThrough();
       newItem['authService'].login();
 
       fixture.detectChanges();
@@ -156,11 +156,11 @@ describe('NewItem', () => {
       const fixture = TestBed.createComponent(NewItem);
       const newItem = fixture.componentInstance;
       const newItemDOM = fixture.nativeElement;
-      const newPostSpy = spyOn(newItem, 'sendPost');
+      const newPostSpy = spyOn(newItem, 'sendPost').and.callThrough();
       const postsService = newItem['postsService'];
-      const newPostServiceSpy = spyOn(postsService, 'sendPost');
+      const newPostServiceSpy = spyOn(postsService, 'sendPost').and.callThrough();
       const alertsService = newItem['alertService'];
-      const alertSpy = spyOn(alertsService, 'createAlert');
+      const alertSpy = spyOn(alertsService, 'createAlert').and.callThrough();
       newItem['authService'].login();
 
       fixture.detectChanges();
@@ -176,8 +176,12 @@ describe('NewItem', () => {
       expect(newPostSpy).toHaveBeenCalled();
       expect(alertSpy).toHaveBeenCalled();
       expect(newPostServiceSpy).not.toHaveBeenCalled();
-      expect(newItemDOM.querySelectorAll('.error')[0]).toBeTruthy();
-      expect(newItemDOM.querySelectorAll('.error')[0].querySelectorAll('.alertText')[0].textContent).toBe('A post cannot be empty. Please fill the field and try again.');
+
+      fixture.detectChanges();
+      tick();
+
+      expect(newItemDOM.querySelectorAll('.alertMessage')[0]).toBeTruthy();
+      expect(newItemDOM.querySelectorAll('.alertMessage')[0].querySelectorAll('.alertText')[0].textContent).toBe('A post cannot be empty. Please fill the field and try again.');
     }));
 
     // Check that a user can't post if they're blocked
@@ -195,16 +199,10 @@ describe('NewItem', () => {
       fixture.detectChanges();
       tick();
 
-      // fill in post's text and trigger a click
-      const postText = 'textfield';
-      newItemDOM.querySelector('#postText').value = postText;
-      newItemDOM.querySelectorAll('.sendData')[0].click();
-      fixture.detectChanges();
-      tick();
-
-      expect(newItemDOM.querySelector('#newPost')).toBeNull();
+      const alert = `You are currently blocked until ${newItem['authService'].userData.releaseDate}. You cannot post new posts.`;
+      expect(newItemDOM.querySelectorAll('.newItem')[0]).toBeUndefined();
       expect(newItemDOM.querySelectorAll('.errorMessage')[0]).toBeTruthy();
-      expect(newItemDOM.querySelectorAll('.errorMessage')[0].textContent).toBe(`You are currently blocked until ${newItem['authService'].userData.releaseDate}. You cannot post new posts.`);
+      expect(newItemDOM.querySelectorAll('.errorMessage')[0].textContent).toContain(alert);
     }));
 
     // Check that a user can't post if they're logged out
@@ -215,11 +213,11 @@ describe('NewItem', () => {
       const fixture = TestBed.createComponent(NewItem);
       const newItem = fixture.componentInstance;
       const newItemDOM = fixture.nativeElement;
-      const newPostSpy = spyOn(newItem, 'sendPost');
+      const newPostSpy = spyOn(newItem, 'sendPost').and.callThrough();
       const postsService = newItem['postsService'];
-      const newPostServiceSpy = spyOn(postsService, 'sendPost');
+      const newPostServiceSpy = spyOn(postsService, 'sendPost').and.callThrough();
       const alertsService = newItem['alertService'];
-      const alertSpy = spyOn(alertsService, 'createAlert');
+      const alertSpy = spyOn(alertsService, 'createAlert').and.callThrough();
       newItem['authService'].authenticated = false;
 
       fixture.detectChanges();
@@ -235,7 +233,11 @@ describe('NewItem', () => {
       expect(newPostSpy).toHaveBeenCalled();
       expect(alertSpy).toHaveBeenCalled();
       expect(newPostServiceSpy).not.toHaveBeenCalled();
-      expect(newItemDOM.querySelectorAll('.error')[0]).toBeTruthy();
+
+      fixture.detectChanges();
+      tick();
+
+      expect(newItemDOM.querySelectorAll('.alertMessage')[0]).toBeTruthy();
     }));
   });
 
@@ -273,7 +275,17 @@ describe('NewItem', () => {
       TestBed.createComponent(AppComponent);
       const paramMap = TestBed.get(ActivatedRoute) as ActivatedRoute;
       const routeSpy = spyOn(paramMap.snapshot.paramMap, 'get').and.returnValue('Message');
-      const queryParamsSpy = spyOn(paramMap.snapshot.queryParamMap, 'get').and.returnValue('user=hello&userID=2');
+      const queryParamsSpy = spyOn(paramMap.snapshot.queryParamMap, 'get').and.callFake((param) => {
+        if(param == 'user') {
+          return 'hello';
+        }
+        else if(param == 'userID') {
+          return '2';
+        }
+        else {
+          return null;
+        }
+      });
       const fixture = TestBed.createComponent(NewItem);
       const newItem = fixture.componentInstance;
       const newItemDOM = fixture.nativeElement;
@@ -297,13 +309,23 @@ describe('NewItem', () => {
       TestBed.createComponent(AppComponent);
       const paramMap = TestBed.get(ActivatedRoute) as ActivatedRoute;
       spyOn(paramMap.snapshot.paramMap, 'get').and.returnValue('Message');
-      spyOn(paramMap.snapshot.queryParamMap, 'get').and.returnValue('user=hello&userID=2');
+      spyOn(paramMap.snapshot.queryParamMap, 'get').and.callFake((param) => {
+        if(param == 'user') {
+          return 'hello';
+        }
+        else if(param == 'userID') {
+          return '2';
+        }
+        else {
+          return null;
+        }
+      });
       const fixture = TestBed.createComponent(NewItem);
       const newItem = fixture.componentInstance;
       const newItemDOM = fixture.nativeElement;
-      const newMessageSpy = spyOn(newItem, 'sendMessage');
+      const newMessageSpy = spyOn(newItem, 'sendMessage').and.callThrough();
       const itemsService = newItem['itemsService'];
-      const newMessServiceSpy = spyOn(itemsService, 'sendMessage');
+      const newMessServiceSpy = spyOn(itemsService, 'sendMessage').and.callThrough();
       newItem['authService'].login();
 
       fixture.detectChanges();
@@ -333,15 +355,25 @@ describe('NewItem', () => {
       TestBed.createComponent(AppComponent);
       const paramMap = TestBed.get(ActivatedRoute) as ActivatedRoute;
       spyOn(paramMap.snapshot.paramMap, 'get').and.returnValue('Message');
-      spyOn(paramMap.snapshot.queryParamMap, 'get').and.returnValue('user=hello&userID=2');
+      spyOn(paramMap.snapshot.queryParamMap, 'get').and.callFake((param) => {
+        if(param == 'user') {
+          return 'hello';
+        }
+        else if(param == 'userID') {
+          return '2';
+        }
+        else {
+          return null;
+        }
+      });
       const fixture = TestBed.createComponent(NewItem);
       const newItem = fixture.componentInstance;
       const newItemDOM = fixture.nativeElement;
-      const newMessageSpy = spyOn(newItem, 'sendMessage');
+      const newMessageSpy = spyOn(newItem, 'sendMessage').and.callThrough();
       const itemsService = newItem['itemsService'];
-      const newMessServiceSpy = spyOn(itemsService, 'sendMessage');
+      const newMessServiceSpy = spyOn(itemsService, 'sendMessage').and.callThrough();
       const alertsService = newItem['alertService'];
-      const alertSpy = spyOn(alertsService, 'createAlert');
+      const alertSpy = spyOn(alertsService, 'createAlert').and.callThrough();
       newItem['authService'].login();
 
       fixture.detectChanges();
@@ -357,8 +389,8 @@ describe('NewItem', () => {
       expect(newMessageSpy).toHaveBeenCalled();
       expect(alertSpy).toHaveBeenCalled();
       expect(newMessServiceSpy).not.toHaveBeenCalled();
-      expect(newItemDOM.querySelectorAll('.error')[0]).toBeTruthy();
-      expect(newItemDOM.querySelectorAll('.error')[0].querySelectorAll('.alertText')[0].textContent).toBe('A message cannot be empty. Please fill the field and try again.');
+      expect(newItemDOM.querySelectorAll('.alertMessage')[0]).toBeTruthy();
+      expect(newItemDOM.querySelectorAll('.alertMessage')[0].querySelectorAll('.alertText')[0].textContent).toBe('A message cannot be empty. Please fill the field and try again.');
     }));
 
     // Check that a user can't send a message if they're logged out
@@ -366,15 +398,25 @@ describe('NewItem', () => {
       TestBed.createComponent(AppComponent);
       const paramMap = TestBed.get(ActivatedRoute) as ActivatedRoute;
       spyOn(paramMap.snapshot.paramMap, 'get').and.returnValue('Message');
-      spyOn(paramMap.snapshot.queryParamMap, 'get').and.returnValue('user=hello&userID=2');
+      spyOn(paramMap.snapshot.queryParamMap, 'get').and.callFake((param) => {
+        if(param == 'user') {
+          return 'hello';
+        }
+        else if(param == 'userID') {
+          return '2';
+        }
+        else {
+          return null;
+        }
+      });
       const fixture = TestBed.createComponent(NewItem);
       const newItem = fixture.componentInstance;
       const newItemDOM = fixture.nativeElement;
-      const newMessageSpy = spyOn(newItem, 'sendMessage');
+      const newMessageSpy = spyOn(newItem, 'sendMessage').and.callThrough();
       const itemsService = newItem['itemsService'];
-      const newMessServiceSpy = spyOn(itemsService, 'sendMessage');
+      const newMessServiceSpy = spyOn(itemsService, 'sendMessage').and.callThrough();
       const alertsService = newItem['alertService'];
-      const alertSpy = spyOn(alertsService, 'createAlert');
+      const alertSpy = spyOn(alertsService, 'createAlert').and.callThrough();
       newItem['authService'].authenticated = false;
 
       fixture.detectChanges();
@@ -390,7 +432,7 @@ describe('NewItem', () => {
       expect(newMessageSpy).toHaveBeenCalled();
       expect(alertSpy).toHaveBeenCalled();
       expect(newMessServiceSpy).not.toHaveBeenCalled();
-      expect(newItemDOM.querySelectorAll('.error')[0]).toBeTruthy();
+      expect(newItemDOM.querySelectorAll('.alertMessage')[0]).toBeTruthy();
     }));
 
     // Check that an error is thrown if there's no user ID and user data
@@ -398,7 +440,9 @@ describe('NewItem', () => {
       TestBed.createComponent(AppComponent);
       const paramMap = TestBed.get(ActivatedRoute) as ActivatedRoute;
       spyOn(paramMap.snapshot.paramMap, 'get').and.returnValue('Message');
-      spyOn(paramMap.snapshot.queryParamMap, 'get').and.returnValue('');
+      spyOn(paramMap.snapshot.queryParamMap, 'get').and.callFake((_param) => {
+        return '';
+      });
       const fixture = TestBed.createComponent(NewItem);
       const newItem = fixture.componentInstance;
       const newItemDOM = fixture.nativeElement;
@@ -407,9 +451,9 @@ describe('NewItem', () => {
       fixture.detectChanges();
       tick();
 
-      expect(newItemDOM.querySelector('#newMessage')).toBeNull();
+      expect(newItemDOM.querySelectorAll('.newItem')[0]).toBeUndefined();
       expect(newItemDOM.querySelectorAll('.errorMessage')[0]).toBeTruthy();
-      expect(newItemDOM.querySelectorAll('.errorMessage')[0].textContent).toBe('User ID and display name are required for messaging!');
+      expect(newItemDOM.querySelectorAll('.errorMessage')[0].textContent).toContain('User ID and display name are required for sending a message');
     }));
 
     // Check that a user can't message themselves
@@ -417,15 +461,25 @@ describe('NewItem', () => {
       TestBed.createComponent(AppComponent);
       const paramMap = TestBed.get(ActivatedRoute) as ActivatedRoute;
       spyOn(paramMap.snapshot.paramMap, 'get').and.returnValue('Message');
-      spyOn(paramMap.snapshot.queryParamMap, 'get').and.returnValue('user=name&userID=4');
+      spyOn(paramMap.snapshot.queryParamMap, 'get').and.callFake((param) => {
+        if(param == 'user') {
+          return 'name';
+        }
+        else if(param == 'userID') {
+          return '4';
+        }
+        else {
+          return null;
+        }
+      });
       const fixture = TestBed.createComponent(NewItem);
       const newItem = fixture.componentInstance;
       const newItemDOM = fixture.nativeElement;
-      const newMessageSpy = spyOn(newItem, 'sendMessage');
+      const newMessageSpy = spyOn(newItem, 'sendMessage').and.callThrough();
       const itemsService = newItem['itemsService'];
-      const newMessServiceSpy = spyOn(itemsService, 'sendMessage');
+      const newMessServiceSpy = spyOn(itemsService, 'sendMessage').and.callThrough();
       const alertsService = newItem['alertService'];
-      const alertSpy = spyOn(alertsService, 'createAlert');
+      const alertSpy = spyOn(alertsService, 'createAlert').and.callThrough();
       newItem['authService'].login();
 
       fixture.detectChanges();
@@ -441,8 +495,8 @@ describe('NewItem', () => {
       expect(newMessageSpy).toHaveBeenCalled();
       expect(alertSpy).toHaveBeenCalled();
       expect(newMessServiceSpy).not.toHaveBeenCalled();
-      expect(newItemDOM.querySelectorAll('.error')[0]).toBeTruthy();
-      expect(newItemDOM.querySelectorAll('.error')[0].querySelectorAll('.alertText')[0].textContent).toBe('You can\'t send a message to yourself!');
+      expect(newItemDOM.querySelectorAll('.alertMessage')[0]).toBeTruthy();
+      expect(newItemDOM.querySelectorAll('.alertMessage')[0].querySelectorAll('.alertText')[0].textContent).toBe('You can\'t send a message to yourself!');
     }));
   });
 });

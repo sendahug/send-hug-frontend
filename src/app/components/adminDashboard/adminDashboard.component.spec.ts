@@ -24,7 +24,6 @@ import { AuthService } from '../../services/auth.service';
 import { MockAuthService } from '../../services/auth.service.mock';
 import { AlertsService } from '../../services/alerts.service';
 import { MockAlertsService } from '../../services/alerts.service.mock';
-import { ActivatedRoute, UrlSegment } from "@angular/router";
 import { Loader } from '../loader/loader.component';
 
 describe('AdminDashboard', () => {
@@ -78,6 +77,10 @@ describe('AdminDashboard', () => {
 
   // Check that clicking the navigation buttons changes the screen
   it('should change screen when navigating to another page', fakeAsync(() => {
+    // make sure the test goes through with admin permission
+    const authService = TestBed.get(AuthService);
+    spyOn(authService, 'canUser').and.returnValue(true);
+    // set up the component
     TestBed.createComponent(AppComponent);
     const fixture = TestBed.createComponent(AdminDashboard);
     const adminDashboard = fixture.componentInstance;
@@ -115,6 +118,10 @@ describe('AdminDashboard', () => {
   // ==================================================================
   // Check that a call is made to get open reports
   it('should get open reports', fakeAsync(() => {
+    // make sure the test goes through with admin permission
+    const authService = TestBed.get(AuthService) as AuthService;
+    spyOn(authService, 'canUser').and.returnValue(true);
+    authService.isUserDataResolved.next(true);
     // set up the spy and the component
     const adminService = TestBed.get(AdminService);
     const reportSpy = spyOn(adminService, 'getOpenReports').and.callThrough();
@@ -128,24 +135,31 @@ describe('AdminDashboard', () => {
 
     expect(reportSpy).toHaveBeenCalled();
     expect(adminDashboard.adminService.userReports.length).toBe(1);
-    expect(adminDashboardDOM.querySelectorAll('.tableContainer')[0].querySelectorAll('tbody tr').count()).toBe(1);
+    expect(adminDashboardDOM.querySelectorAll('.tableContainer')[0].querySelectorAll('tbody tr').length).toBe(1);
     expect(adminDashboard.adminService.postReports.length).toBe(1);
-    expect(adminDashboardDOM.querySelectorAll('.tableContainer')[1].querySelectorAll('tbody tr').count()).toBe(1);
+    expect(adminDashboardDOM.querySelectorAll('.tableContainer')[1].querySelectorAll('tbody tr').length).toBe(1);
   }));
 
   // Check that you can block users
   it('should block a user', fakeAsync(() => {
+    // make sure the test goes through with admin permission
+    const authService = TestBed.get(AuthService);
+    spyOn(authService, 'canUser').and.returnValue(true);
+    authService.isUserDataResolved.next(true);
     // set up the spy and the component
-    const adminService = TestBed.get(AdminService);
-    const blockServiceSpy = spyOn(adminService, 'blockUser').and.callThrough();
     const fixture = TestBed.createComponent(AdminDashboard);
     const adminDashboard = fixture.componentInstance;
     const adminDashboardDOM = fixture.nativeElement;
     const blockSpy = spyOn(adminDashboard, 'blockUser').and.callThrough();
     const checkBlockSpy = spyOn(adminDashboard, 'checkBlock').and.callThrough();
     const setBlockSpy = spyOn(adminDashboard, 'setBlock').and.callThrough();
+    const adminService = adminDashboard.adminService;
+    const blockServiceSpy = spyOn(adminService, 'blockUser').and.callThrough();
     const releaseDate = new Date((new Date()).getTime() + 864E5 * 1);
     adminDashboard.screen = 'reports';
+
+    fixture.detectChanges();
+    tick();
 
     // trigger a click
     const userTable = adminDashboardDOM.querySelectorAll('.tableContainer')[0];
@@ -156,23 +170,28 @@ describe('AdminDashboard', () => {
     // check expectations
     expect(blockSpy).toHaveBeenCalled();
     expect(checkBlockSpy).toHaveBeenCalled();
-    expect(checkBlockSpy).toHaveBeenCalledWith(1, 'oneDay', 1);
+    expect(checkBlockSpy).toHaveBeenCalledWith(10, 'oneDay', 1);
     expect(setBlockSpy).toHaveBeenCalled();
-    expect(setBlockSpy).toHaveBeenCalledWith(1, 'oneDay', 1);
+    expect(setBlockSpy).toHaveBeenCalledWith(10, 'oneDay', 1);
     expect(blockServiceSpy).toHaveBeenCalled();
-    expect(blockServiceSpy).toHaveBeenCalledWith(1, releaseDate, 1)
+    expect(blockServiceSpy).toHaveBeenCalledWith(10, releaseDate, 1);
   }));
 
   // Check that user editing triggers the popup
   it('should edit a user\'s display name', fakeAsync(() => {
+    // make sure the test goes through with admin permission
+    const authService = TestBed.get(AuthService);
+    spyOn(authService, 'canUser').and.returnValue(true);
+    authService.isUserDataResolved.next(true);
     // set up the spy and the component
-    const adminService = TestBed.get(AdminService);
-    const editServiceSpy = spyOn(adminService, 'editUser').and.callThrough();
     const fixture = TestBed.createComponent(AdminDashboard);
     const adminDashboard = fixture.componentInstance;
     const adminDashboardDOM = fixture.nativeElement;
     const editSpy = spyOn(adminDashboard, 'editUser').and.callThrough();
     adminDashboard.screen = 'reports';
+
+    fixture.detectChanges();
+    tick();
 
     // before the click
     expect(adminDashboard.editMode).toBeFalse();
@@ -185,7 +204,6 @@ describe('AdminDashboard', () => {
 
     // check expectations
     expect(editSpy).toHaveBeenCalled();
-    expect(editServiceSpy).toHaveBeenCalled();
     expect(adminDashboard.editMode).toBeTrue();
     expect(adminDashboard.editType).toBe('other user');
     expect(adminDashboardDOM.querySelector('app-pop-up')).toBeTruthy();
@@ -193,14 +211,19 @@ describe('AdminDashboard', () => {
 
   // Check that post editing triggers the popup
   it('should edit a post\'s text', fakeAsync(() => {
+    // make sure the test goes through with admin permission
+    const authService = TestBed.get(AuthService);
+    spyOn(authService, 'canUser').and.returnValue(true);
+    authService.isUserDataResolved.next(true);
     // set up the spy and the component
-    const adminService = TestBed.get(AdminService);
-    const editServiceSpy = spyOn(adminService, 'editPost').and.callThrough();
     const fixture = TestBed.createComponent(AdminDashboard);
     const adminDashboard = fixture.componentInstance;
     const adminDashboardDOM = fixture.nativeElement;
     const editSpy = spyOn(adminDashboard, 'editPost').and.callThrough();
     adminDashboard.screen = 'reports';
+
+    fixture.detectChanges();
+    tick();
 
     // before the click
     expect(adminDashboard.editMode).toBeFalse();
@@ -213,7 +236,6 @@ describe('AdminDashboard', () => {
 
     // check expectations
     expect(editSpy).toHaveBeenCalled();
-    expect(editServiceSpy).toHaveBeenCalled();
     expect(adminDashboard.editMode).toBeTrue();
     expect(adminDashboard.editType).toBe('admin post');
     expect(adminDashboardDOM.querySelector('app-pop-up')).toBeTruthy();
@@ -221,14 +243,19 @@ describe('AdminDashboard', () => {
 
   // Check that deleting a post triggers the popup
   it('should delete a post', fakeAsync(() => {
+    // make sure the test goes through with admin permission
+    const authService = TestBed.get(AuthService);
+    spyOn(authService, 'canUser').and.returnValue(true);
+    authService.isUserDataResolved.next(true);
     // set up the spy and the component
-    const adminService = TestBed.get(AdminService);
-    const deleteServiceSpy = spyOn(adminService, 'deletePost').and.callThrough();
     const fixture = TestBed.createComponent(AdminDashboard);
     const adminDashboard = fixture.componentInstance;
     const adminDashboardDOM = fixture.nativeElement;
     const deleteSpy = spyOn(adminDashboard, 'deletePost').and.callThrough();
     adminDashboard.screen = 'reports';
+
+    fixture.detectChanges();
+    tick();
 
     // before the click
     expect(adminDashboard.editMode).toBeFalse();
@@ -241,22 +268,29 @@ describe('AdminDashboard', () => {
 
     // check expectations
     expect(deleteSpy).toHaveBeenCalled();
-    expect(deleteServiceSpy).toHaveBeenCalled();
     expect(adminDashboard.editMode).toBeTrue();
-    expect(adminDashboard.editType).toBe('admin post');
+    expect(adminDashboard.editType).toBe('ad post');
     expect(adminDashboardDOM.querySelector('app-pop-up')).toBeTruthy();
   }));
 
   // Check that you can dismiss reports
   it('should dismiss report', fakeAsync(() => {
+    // make sure the test goes through with admin permission
+    const authService = TestBed.get(AuthService);
+    spyOn(authService, 'canUser').and.returnValue(true);
+    authService.isUserDataResolved.next(true);
     // set up the spy and the component
-    const adminService = TestBed.get(AdminService);
-    const dismissServiceSpy = spyOn(adminService, 'deletePost').and.callThrough();
     const fixture = TestBed.createComponent(AdminDashboard);
     const adminDashboard = fixture.componentInstance;
     const adminDashboardDOM = fixture.nativeElement;
-    const dismissSpy = spyOn(adminDashboard, 'deletePost').and.callThrough();
+    const dismissSpy = spyOn(adminDashboard, 'dismissReport').and.callThrough();
+    const adminService = adminDashboard.adminService;
+    const dismissServiceSpy = spyOn(adminService, 'dismissReport').and.callThrough();
+
     adminDashboard.screen = 'reports';
+
+    fixture.detectChanges();
+    tick();
 
     // trigger click
     const postTable = adminDashboardDOM.querySelectorAll('.tableContainer')[1];
@@ -267,13 +301,17 @@ describe('AdminDashboard', () => {
     // check expectations
     expect(dismissSpy).toHaveBeenCalled();
     expect(dismissServiceSpy).toHaveBeenCalled();
-    expect(dismissServiceSpy).toHaveBeenCalledWith(1);
+    expect(dismissServiceSpy).toHaveBeenCalledWith(2);
   }));
 
   // BLOCKS PAGE
   // ==================================================================
   // Check that a call is made to get blocked users
   it('should get blocked users', fakeAsync(() => {
+    // make sure the test goes through with admin permission
+    const authService = TestBed.get(AuthService);
+    spyOn(authService, 'canUser').and.returnValue(true);
+    authService.isUserDataResolved.next(true);
     // set up the spy and the component
     const adminService = TestBed.get(AdminService);
     const blockSpy = spyOn(adminService, 'getBlockedUsers').and.callThrough();
@@ -282,26 +320,34 @@ describe('AdminDashboard', () => {
     const adminDashboardDOM = fixture.nativeElement;
     adminDashboard.screen = 'blocks';
 
+    fixture.detectChanges();
     tick();
 
     expect(blockSpy).toHaveBeenCalled();
     expect(adminDashboard.adminService.blockedUsers.length).toBe(1);
-    expect(adminDashboardDOM.querySelectorAll('.tableContainer')[0].querySelectorAll('tbody tr').count()).toBe(1);
+    expect(adminDashboardDOM.querySelectorAll('.tableContainer')[0].querySelectorAll('tbody tr').length).toBe(1);
   }));
 
   // Check that you can block a user
   it('should block a user', fakeAsync(() => {
+    // make sure the test goes through with admin permission
+    const authService = TestBed.get(AuthService);
+    spyOn(authService, 'canUser').and.returnValue(true);
+    authService.isUserDataResolved.next(true);
     // set up the spy and the component
-    const adminService = TestBed.get(AdminService);
-    const blockServiceSpy = spyOn(adminService, 'blockUser').and.callThrough();
     const fixture = TestBed.createComponent(AdminDashboard);
     const adminDashboard = fixture.componentInstance;
     const adminDashboardDOM = fixture.nativeElement;
     const blockSpy = spyOn(adminDashboard, 'block').and.callThrough();
     const checkBlockSpy = spyOn(adminDashboard, 'checkBlock').and.callThrough();
     const setBlockSpy = spyOn(adminDashboard, 'setBlock').and.callThrough();
+    const adminService = adminDashboard.adminService;
+    const blockServiceSpy = spyOn(adminService, 'blockUser').and.callThrough();
     const releaseDate = new Date((new Date()).getTime() + 864E5 * 1);
     adminDashboard.screen = 'blocks';
+
+    fixture.detectChanges();
+    tick();
 
     // trigger a click
     adminDashboardDOM.querySelector('#blockID').value = 5;
@@ -315,21 +361,28 @@ describe('AdminDashboard', () => {
     expect(checkBlockSpy).toHaveBeenCalled();
     expect(checkBlockSpy).toHaveBeenCalledWith(5, 'oneDay');
     expect(setBlockSpy).toHaveBeenCalled();
-    expect(setBlockSpy).toHaveBeenCalledWith(5, 'oneDay');
+    expect(setBlockSpy).toHaveBeenCalledWith(5, 'oneDay', undefined);
     expect(blockServiceSpy).toHaveBeenCalled();
     expect(blockServiceSpy).toHaveBeenCalledWith(5, releaseDate);
   }));
 
   // Check that you can unblock a user
   it('should unblock a user', fakeAsync(() => {
+    // make sure the test goes through with admin permission
+    const authService = TestBed.get(AuthService);
+    spyOn(authService, 'canUser').and.returnValue(true);
+    authService.isUserDataResolved.next(true);
     // set up the spy and the component
-    const adminService = TestBed.get(AdminService);
-    const unblockServiceSpy = spyOn(adminService, 'unblockUser').and.callThrough();
     const fixture = TestBed.createComponent(AdminDashboard);
     const adminDashboard = fixture.componentInstance;
     const adminDashboardDOM = fixture.nativeElement;
     const unblockSpy = spyOn(adminDashboard, 'unblock').and.callThrough();
+    const adminService = adminDashboard.adminService;
+    const unblockServiceSpy = spyOn(adminService, 'unblockUser').and.callThrough();
     adminDashboard.screen = 'blocks';
+
+    fixture.detectChanges();
+    tick();
 
     // trigger a click
     adminDashboardDOM.querySelectorAll('.adminButton')[0].click();
@@ -344,14 +397,18 @@ describe('AdminDashboard', () => {
   }));
 
   // Check that blocks are calculated correctly
-  it('should calculate block length', () => {
+  it('should calculate block length', fakeAsync(() => {
+    // make sure the test goes through with admin permission
+    const authService = TestBed.get(AuthService);
+    spyOn(authService, 'canUser').and.returnValue(true);
+    authService.isUserDataResolved.next(true);
     // set up the spy and the component
-    const adminService = TestBed.get(AdminService);
-    const blockServiceSpy = spyOn(adminService, 'blockUser').and.callThrough();
     const fixture = TestBed.createComponent(AdminDashboard);
     const adminDashboard = fixture.componentInstance;
     const adminDashboardDOM = fixture.nativeElement;
     const setBlockSpy = spyOn(adminDashboard, 'setBlock').and.callThrough();
+    const adminService = adminDashboard.adminService;
+    const blockServiceSpy = spyOn(adminService, 'blockUser').and.callThrough();
     const releaseDates = [
       new Date((new Date()).getTime() + 864E5 * 1),
       new Date((new Date()).getTime() + 864E5 * 7),
@@ -364,6 +421,9 @@ describe('AdminDashboard', () => {
     const users = [ 6, 7, 8, 9 ];
     adminDashboard.screen = 'blocks';
 
+    fixture.detectChanges();
+    tick();
+
     blockLengths.forEach((length, index) => {
       // trigger a click
       adminDashboardDOM.querySelector('#blockID').value = users[index];
@@ -375,12 +435,16 @@ describe('AdminDashboard', () => {
       expect(setBlockSpy).toHaveBeenCalledWith(users[index], length);
       expect(blockServiceSpy).toHaveBeenCalledWith(users[index], releaseDates[index])
     });
-  });
+  }));
 
   // FILTERS PAGE
   // ==================================================================
   // Check that a call is made to get filtered phrases
   it('should get filtered phrases', fakeAsync(() => {
+    // make sure the test goes through with admin permission
+    const authService = TestBed.get(AuthService);
+    spyOn(authService, 'canUser').and.returnValue(true);
+    authService.isUserDataResolved.next(true);
     // set up the spy and the component
     const adminService = TestBed.get(AdminService);
     const filterSpy = spyOn(adminService, 'getFilters').and.callThrough();
@@ -389,22 +453,27 @@ describe('AdminDashboard', () => {
     const adminDashboardDOM = fixture.nativeElement;
     adminDashboard.screen = 'filters';
 
+    fixture.detectChanges();
     tick();
 
     expect(filterSpy).toHaveBeenCalled();
     expect(adminDashboard.adminService.filteredPhrases.length).toBe(2);
-    expect(adminDashboardDOM.querySelectorAll('.tableContainer')[0].querySelectorAll('tbody tr').count()).toBe(2);
+    expect(adminDashboardDOM.querySelectorAll('.tableContainer')[0].querySelectorAll('tbody tr').length).toBe(2);
   }));
 
   // Check that you can add a filter
   it('should add a new filter', fakeAsync(() => {
+    // make sure the test goes through with admin permission
+    const authService = TestBed.get(AuthService);
+    spyOn(authService, 'canUser').and.returnValue(true);
+    authService.isUserDataResolved.next(true);
     // set up the spy and the component
-    const adminService = TestBed.get(AdminService);
-    const addServiceSpy = spyOn(adminService, 'addFilter').and.callThrough();
     const fixture = TestBed.createComponent(AdminDashboard);
     const adminDashboard = fixture.componentInstance;
     const adminDashboardDOM = fixture.nativeElement;
     const addSpy = spyOn(adminDashboard, 'addFilter').and.callThrough();
+    const adminService = adminDashboard.adminService;
+    const addServiceSpy = spyOn(adminService, 'addFilter').and.callThrough();
     adminDashboard.screen = 'filters';
 
     fixture.detectChanges();
@@ -424,13 +493,17 @@ describe('AdminDashboard', () => {
 
   // Check that you can remove a filter
   it('should remove a filter', fakeAsync(() => {
+    // make sure the test goes through with admin permission
+    const authService = TestBed.get(AuthService);
+    spyOn(authService, 'canUser').and.returnValue(true);
+    authService.isUserDataResolved.next(true);
     // set up the spy and the component
-    const adminService = TestBed.get(AdminService);
-    const removeServiceSpy = spyOn(adminService, 'removeFilter').and.callThrough();
     const fixture = TestBed.createComponent(AdminDashboard);
     const adminDashboard = fixture.componentInstance;
     const adminDashboardDOM = fixture.nativeElement;
     const removeSpy = spyOn(adminDashboard, 'removeFilter').and.callThrough();
+    const adminService = adminDashboard.adminService;
+    const removeServiceSpy = spyOn(adminService, 'removeFilter').and.callThrough();
     adminDashboard.screen = 'filters';
 
     fixture.detectChanges();

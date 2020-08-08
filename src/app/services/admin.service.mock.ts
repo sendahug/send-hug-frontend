@@ -32,7 +32,7 @@ export class MockAdminService {
   userBlockData: {
     userID: number,
     isBlocked: boolean,
-    releaseDate: Date
+    releaseDate: Date | undefined
   } | undefined;
   isBlockDataResolved = new BehaviorSubject(false);
   filteredPhrases: string[] = [];
@@ -255,11 +255,23 @@ export class MockAdminService {
   checkUserBlock(userID:number) {
     this.isBlockDataResolved.next(false);
 
-    this.userBlockData = {
-      userID: userID,
-      isBlocked: true,
-      releaseDate: new Date('2020-09-29 19:17:31.072')
+    // if it's user 15, who's blocked, return the data
+    if(userID == 15) {
+      this.userBlockData = {
+        userID: userID,
+        isBlocked: true,
+        releaseDate: new Date('2020-09-29 19:17:31.072')
+      }
     }
+    // otherwise the user isn't blocked, so return this
+    else {
+      this.userBlockData = {
+        userID: userID,
+        isBlocked: false,
+        releaseDate: undefined
+      }
+    }
+
     // set the variable monitoring whether the request is resolved to true
     this.isBlockDataResolved.next(true);
   }

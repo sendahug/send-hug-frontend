@@ -2,7 +2,7 @@
 	<h3 id="newTitle">New {{ itemType }}</h3>
 	
 	<div id="newMessage" *ngIf="itemType == 'Message'">
-		<form class="newItem" aria-describedby="newTitle">
+		<form class="newItem" aria-describedby="newTitle" *ngIf="user && forID">
 			<div class="formElement">
 				<label class="pageCategory" for="messageFor">For:</label>
 				<input #messageFor type="text" id="messageFor" value="{{ user }}" aria-labelledby="mUser" readonly>
@@ -14,6 +14,10 @@
 			</div>
 			<button type="submit" class="appButton sendData" (click)="sendMessage($event, messageText.value)">Send Message</button>
 		</form>
+		
+		<div class="errorMessage" *ngIf="!user || !forID" role="alert">
+			User ID and display name are required for sending a message. Please add numerical user ID and the user's display name and try again.
+		</div>
 	</div>
 	
 	<div id="newPost" *ngIf="itemType == 'Post'">

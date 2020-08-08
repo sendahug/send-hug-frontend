@@ -422,9 +422,9 @@ describe('AdminDashboard', () => {
 
       // check expectations
       expect(unblockSpy).toHaveBeenCalled();
-      expect(unblockSpy).toHaveBeenCalledWith(1);
+      expect(unblockSpy).toHaveBeenCalledWith(15);
       expect(unblockServiceSpy).toHaveBeenCalled();
-      expect(unblockServiceSpy).toHaveBeenCalledWith(1);
+      expect(unblockServiceSpy).toHaveBeenCalledWith(15);
     }));
 
     // Check that blocks are calculated correctly

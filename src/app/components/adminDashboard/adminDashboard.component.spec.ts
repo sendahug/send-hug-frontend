@@ -282,7 +282,7 @@ describe('AdminDashboard', () => {
       // check expectations
       expect(deleteSpy).toHaveBeenCalled();
       expect(adminDashboard.editMode).toBeTrue();
-      expect(adminDashboard.editType).toBe('ad post');
+      expect(adminDashboard.toDelete).toBe('ad post');
       expect(adminDashboardDOM.querySelector('app-pop-up')).toBeTruthy();
     }));
 

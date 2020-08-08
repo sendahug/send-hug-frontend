@@ -75,45 +75,6 @@ describe('AdminDashboard', () => {
     expect(adminDashboard.report).toBeFalse();
   });
 
-  // Check that clicking the navigation buttons changes the screen
-  it('should change screen when navigating to another page', fakeAsync(() => {
-    // make sure the test goes through with admin permission
-    const authService = TestBed.get(AuthService);
-    spyOn(authService, 'canUser').and.returnValue(true);
-    // set up the component
-    TestBed.createComponent(AppComponent);
-    const fixture = TestBed.createComponent(AdminDashboard);
-    const adminDashboard = fixture.componentInstance;
-    const adminDashboardDOM = fixture.nativeElement;
-
-    // check the initial screen is the main screen
-    expect(adminDashboard.screen).toBe('main');
-
-    // click the second nav button
-    adminDashboardDOM.querySelectorAll('.adminNavItem')[1].click();
-    fixture.detectChanges();
-    tick();
-
-    // check the screen is now the reports screen
-    expect(adminDashboard.screen).toBe('reports');
-
-    // click the third nav button
-    adminDashboardDOM.querySelectorAll('.adminNavItem')[2].click();
-    fixture.detectChanges();
-    tick();
-
-    // check the screen is now the blocks screen
-    expect(adminDashboard.screen).toBe('blocks');
-
-    // click the fourth nav button
-    adminDashboardDOM.querySelectorAll('.adminNavItem')[3].click();
-    fixture.detectChanges();
-    tick();
-
-    // check the screen is now the filters screen
-    expect(adminDashboard.screen).toBe('filters');
-  }));
-
   // REPORTS PAGE
   // ==================================================================
   describe('Reports Page', () => {

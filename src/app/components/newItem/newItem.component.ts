@@ -45,7 +45,7 @@ export class NewItem {
       // If there's a user parameter, sets the user property
       if(user && userID) {
         this.user = user;
-        this.forID = userID;
+        this.forID = Number(userID);
       }
   }
 

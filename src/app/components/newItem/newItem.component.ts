@@ -134,16 +134,22 @@ export class NewItem {
             document.getElementById('messageText')!.classList.remove('missing');
           }
 
-          // create a new message object to send
-          let newMessage:Message = {
-            from: this.authService.userData.displayName!,
-            fromId: this.authService.userData.id!,
-            forId: this.forID,
-            messageText: messageText,
-            date: new Date()
+          // if there's no logged in user, alert the user
+          if(!this.authService.authenticated) {
+            this.alertService.createAlert({ type: 'Error', message: 'You\'re currently logged out. Log back in to send a message.' });
           }
+          else {
+            // create a new message object to send
+            let newMessage:Message = {
+              from: this.authService.userData.displayName!,
+              fromId: this.authService.userData.id!,
+              forId: this.forID,
+              messageText: messageText,
+              date: new Date()
+            }
 
-          this.itemsService.sendMessage(newMessage);
+            this.itemsService.sendMessage(newMessage);
+          }
         }
       }
     }

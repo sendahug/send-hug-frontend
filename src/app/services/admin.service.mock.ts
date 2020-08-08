@@ -103,7 +103,7 @@ export class MockAdminService {
     this.userReports = [{
       id: 1,
       type: 'User',
-      userID: 1,
+      userID: 10,
       reporter: 4,
       reportReason: 'something',
       date: new Date('2020-06-29 19:17:31.072'),
@@ -112,9 +112,9 @@ export class MockAdminService {
     }]
     this.totalPages.userReports = 1;
     this.postReports = [{
-      id: 1,
+      id: 2,
       type: 'Post',
-      userID: 1,
+      userID: 11,
       postID: 5,
       reporter: 4,
       reportReason: 'reason',
@@ -231,7 +231,7 @@ export class MockAdminService {
     this.isBlocksResolved.next(false);
 
     this.blockedUsers = [{
-            id: 1,
+            id: 15,
             displayName: 'name',
             receivedHugs: 2,
             givenHugs: 2,

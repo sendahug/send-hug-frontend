@@ -401,12 +401,14 @@ describe('AdminDashboard', () => {
         new Date((new Date()).getTime() + 864E5 * 1),
         new Date((new Date()).getTime() + 864E5 * 7),
         new Date((new Date()).getTime() + 864E5 * 30),
-        new Date((new Date()).getTime() + 864E5 * 36500)
+        new Date((new Date()).getTime() + 864E5 * 36500),
+        // test that time is added to existing block correctly
+        new Date((new Date('2020-09-29 19:17:31.072')).getTime() + 864E5 * 7)
       ];
       const blockLengths = [
-        'oneDay', 'oneWeek', 'oneMonth', 'forever'
+        'oneDay', 'oneWeek', 'oneMonth', 'forever', 'oneWeek'
       ];
-      const users = [ 6, 7, 8, 9 ];
+      const users = [ 6, 7, 8, 9, 15 ];
       adminDashboard.screen = 'blocks';
 
       fixture.detectChanges();
@@ -415,7 +417,7 @@ describe('AdminDashboard', () => {
       blockLengths.forEach((length, index) => {
         // reset the calls to the spy to check each option on its own
         setBlockSpy.calls.reset();
-        
+
         // trigger a click
         adminDashboardDOM.querySelector('#blockID').value = users[index];
         adminDashboardDOM.querySelector('#blockLength').value = length;

@@ -74,17 +74,23 @@ export class NewItem {
           document.getElementById('postText')!.classList.remove('missing');
         }
 
-        // otherwise create the post
-        // create a new post object to send
-        let newPost:Post = {
-          userId: this.authService.userData.id!,
-          user: this.authService.userData.displayName!,
-          text: postText,
-          date: new Date(),
-          givenHugs: 0
+        // if there's no logged in user, alert the user
+        if(!this.authService.authenticated) {
+          this.alertService.createAlert({ type: 'Error', message: 'You\'re currently logged out. Log back in to post a new post.' });
         }
+        else {
+          // otherwise create the post
+          // create a new post object to send
+          let newPost:Post = {
+            userId: this.authService.userData.id!,
+            user: this.authService.userData.displayName!,
+            text: postText,
+            date: new Date(),
+            givenHugs: 0
+          }
 
-        this.postsService.sendPost(newPost);
+          this.postsService.sendPost(newPost);
+        }
       }
     }
     // otherwise alert the user that a post can't be empty

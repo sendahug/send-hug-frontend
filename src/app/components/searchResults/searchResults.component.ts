@@ -10,6 +10,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 // App-related imports
 import { ItemsService } from '../../services/items.service';
 import { AuthService } from '../../services/auth.service';
+import { PostsService } from '../../services/posts.service';
 import { Post } from '../../interfaces/post.interface';
 
 @Component({
@@ -37,12 +38,13 @@ export class SearchResults {
     public itemsService:ItemsService,
     public authService:AuthService,
     private route:ActivatedRoute,
-    private router:Router
+    private router:Router,
+    private postsService:PostsService
   ) {
     this.searchQuery = this.route.snapshot.queryParamMap.get('query');
     this.editMode = false;
     this.delete = false;
-	this.report = false;
+    this.report = false;
 
     // if there's a search query but there's no ongoing search, it might be
     // the result of the user manually navigating here or refreshing the page.
@@ -105,6 +107,20 @@ export class SearchResults {
 	  this.delete = false;
 	  this.report = true;
 	  this.reportedItem = post;
+  }
+
+  /*
+  Function Name: sendHug()
+  Function Description: Send a hug to a user through a post they've written. The hug
+                        itself is sent by the items service.
+  Parameters: itemID (number) - ID of the post.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  sendHug(itemID:number) {
+    let item = {};
+    item = this.itemsService.userPosts.other.filter(e => e.id == itemID)[0];
+    this.postsService.sendHug(item);
   }
 
   /*

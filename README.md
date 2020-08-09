@@ -11,6 +11,7 @@ For full project information, check the [`main README file`](https://github.com/
 ## Requirements
 
 - Node.js
+- For testing: A machine with at least 8GBs of RAM.
 
 ## Installation and Usage
 
@@ -20,8 +21,9 @@ For full project information, check the [`main README file`](https://github.com/
 2. cd into the project directory.
 3. cd into frontend.
 4. Run ```npm install``` to install dependencies.
-5. Run ```gulp serve``` to start the local server.
-6. Open localhost:3000.
+5. Run ```gulp localdev``` to compile the whole project for local development.
+6. Run ```gulp serve``` to start the local server.
+7. Open localhost:3000.
 
 **For your convenience,** this project utilises Gulp's 'watch' functionality. In order to activate it  while developing, run ```gulp watch```. For more information about Gulp watch, check the [Gulp documentation](https://gulpjs.com/docs/en/getting-started/watching-files/).
 
@@ -52,7 +54,7 @@ The main module contains 9 components, 3 services and 4 interfaces. Each compone
 11. **notifications** - A tab component to display the latest notifications for the currently logged-in user.
 12. **popUp** - A sub-component displaying a popup screen with a form for editing items (posts or a user's display name).
 13. **searchResults** - A component to display the results of the user's search.
-14. **settings** - Lets the user control their settings for various components, such as the notifications component. 
+14. **settings** - Lets the user control their settings for various components, such as the notifications component.
 15. **userPage** - Displays the user's data as fetched from the backend, as well as a list of the user's posts (as myPost component).
 
 ### Interfaces
@@ -93,7 +95,6 @@ The site uses several tools to maximise compatibility:
 6. **Gulp-Sourcemaps** - A Gulp plugin utilizing the source maps tool. For more info check the [Gulp-sourcemaps](https://www.npmjs.com/package/gulp-sourcemaps) page on NPM.
 7. **Gulp-Rename** - A gulp plugin used to rename files. Used to rename the main module JS and to change the directory name of all HTML files. For more info check the [Gulp-rename](https://www.npmjs.com/package/gulp-rename) page on NPM.
 8. **Gulp-replace** - A string replace plugin for Gulp. Used to change the templateUrls in the final JS file. For more info, check the [Gulp-replace](https://www.npmjs.com/package/gulp-replace) page on NPM.
-9. **Gulp-Jasmine-Browser** - A headless browser extension for the unit-testing tool Jasmine. The site also includes **Jasmine-core** and **Puppeteer** in order to execute Jasmine tests from the command line. For more info check the [Gulp-jasmine-browser](https://www.npmjs.com/package/gulp-jasmine-browser) page on NPM or the [Jasmine documentation](https://jasmine.github.io/) page.
 
 ### Angular
 
@@ -117,6 +118,28 @@ For more information about Angular's required NPM packages, check the [Angular d
 ### Other
 
 1. **IDB** (formerly IDBPromised) - An improved version of IndexedDB, which is Promise-based and includes various enhancements to improve the API's usability. For more information, check the [IDBP repo](https://github.com/jakearchibald/idb).
+
+### Testing Dependencies
+
+This project's tests are run using the Jasmine framework and the Karma runner. Thus, testing requires several packages:
+
+1. **Jasmine** - An open-source behaviour-driven testing framework. For more information, check Jasmine's [official site](https://jasmine.github.io). Included packages:
+  - **jasmine-core**
+  - **jasmine-spec-reporter**
+  - **@types/jasmine** - A typed version, required in order to write TypeScript tests.
+2. **Karma** - An open-source test-runner, used to run the tests on various devices with a test server. For more information, check Karma's [official site](https://karma-runner.github.io/latest/index.html). Included packages:
+  - **karma**
+  - **karma-jasmine** - A Karma adapter for the Jasmine framework. [Project repo.](https://github.com/karma-runner/karma-jasmine)
+  - **karma-jasmine-html-reporter** - A reporter that shows test results in HTML. [NPM page.](https://www.npmjs.com/package/karma-jasmine-html-reporter).
+  - **karma-chrome-launcher** - A launcher for Chrome, Chrome Canary and Chromuim. [Project repo.](https://github.com/karma-runner/karma-chrome-launcher).
+  - **karma-coverage** - Code coverage generator. [Project repo.](https://github.com/karma-runner/karma-coverage)
+  - **karma-coverage-istanbul-reporter** - Code coverage generator reporter. [NPM page.](https://www.npmjs.com/package/karma-coverage-istanbul-reporter)
+  - **karma-sourcemap-loader** - A preprocessor that loads existing source maps. [NPM page.](https://www.npmjs.com/package/karma-sourcemap-loader)
+  - **karma-webpack** - A Karma adapter for processing files through Webpack. [Project repo.](https://github.com/webpack-contrib/karma-webpack)
+3. **Webpack** - An open-source module bundler, used to bundle the project's TypeScript and HTML files. For more information, check Webpack's [official website](https://webpack.js.org).
+  - **html-loader** - A webpack loader for HTML files.
+  - **angular-router-loader** - A webpack loader for Angular that enables the Angular router. [NPM page.](https://www.npmjs.com/package/angular-router-loader)
+  - **@ngtools/webpack** - A webpack plugin for ahead-of-time compilation of Angular components and modules. [NPM page.](https://www.npmjs.com/package/@ngtools/webpack)
 
 ### Production Dependencies
 
@@ -148,6 +171,18 @@ Notes:
 
   - If the user doesn't exist in the database (the request was rejected because of something other than an AuthError), that means it's a new user. AuthService then makes a request to the server to add the new user to the database.
   - If the user isn't redirected to the app from Auth0, there's no JWT in the URL. In that case, AuthService fetches the JWT from localStorage. If the JWT is still valid, AuthService attempts to refresh it while fetching the user's data. This lets the users stay logged in for longer periods of time without forcing them to actively login again.
+
+## Testing
+
+### Writing Tests
+
+Tests are written in TypeScript and each component's tests are located in the same directory as the component. Test files' names follow this format: `<component_name>.spec.ts`. This format is the way tests are picked up by the main testing file, and so it's important to keep to it.
+
+### Running Tests
+
+Running tests is done through the dedicated Gulp task. All you need to do is run `gulp unitTest --max_old_space_size=8192` in the terminal; this will start Karma and trigger Webpack's compilation of tests and project files.
+
+Note: this project (along with its tests) is fairly large and takes both time and memory in order to run tests for. The `max_old_space_size` NPM flag is required in order to run the tests; thus, free memory of at least 8 GBs is required (current measurements are ~6GBs).
 
 ## Hosting
 

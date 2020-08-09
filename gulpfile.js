@@ -82,6 +82,15 @@ function watch()
 	gulp.watch("src/**/*.ts", scripts);
 }
 
+//create local development files
+gulp.task('localdev', gulp.parallel(
+	copyHtml,
+	copyIndex,
+	copyImgs,
+	styles,
+	scripts
+));
+
 // PRODUCTION TASKS
 // ===============================================
 //copies the html to the disribution folder

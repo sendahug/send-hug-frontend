@@ -115,4 +115,44 @@ describe("AppComponent", () => {
       expect(component.showSearch).toBe(true);
 			expect(siteHeader.querySelector('#search')).toBeDefined();
     });
+
+    // Check that clicking 'search' triggers the ItemsService
+    it('should pass search query to the ItemsService when clicking search', () => {
+      const fixture = TestBed.createComponent(AppComponent);
+      fixture.detectChanges();
+      const component = fixture.componentInstance;
+      const componentHtml = fixture.nativeElement;
+      const searchSpy = spyOn(component, 'searchApp').and.callThrough();
+      const searchServiceSpy = spyOn(component['itemsService'], 'sendSearch');
+
+      // open search panel and run search
+      componentHtml.querySelector('#searchBtn').click();
+      componentHtml.querySelector('#searchQuery').value = 'search';
+      componentHtml.querySelectorAll('.sendData')[0].click();
+
+      // check the spies were triggered
+      expect(searchSpy).toHaveBeenCalled();
+      expect(searchServiceSpy).toHaveBeenCalled();
+      expect(searchServiceSpy).toHaveBeenCalledWith('search');
+    });
+
+    // Check that an empty search query isn't allowed
+    it('should prevent empty searches', () => {
+      const fixture = TestBed.createComponent(AppComponent);
+      fixture.detectChanges();
+      const component = fixture.componentInstance;
+      const componentHtml = fixture.nativeElement;
+      const searchSpy = spyOn(component, 'searchApp').and.callThrough();
+      const searchServiceSpy = spyOn(component['itemsService'], 'sendSearch');
+
+      // open search panel and run search
+      componentHtml.querySelector('#searchBtn').click();
+      componentHtml.querySelector('#searchQuery').value = '';
+      componentHtml.querySelectorAll('.sendData')[0].click();
+
+      // check one spy was triggered and one wasn't
+      expect(searchSpy).toHaveBeenCalled();
+      expect(searchServiceSpy).not.toHaveBeenCalled();
+      expect(componentHtml.querySelectorAll('.alertMessage')[0]).toBeTruthy();
+    });
 });

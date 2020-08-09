@@ -10,6 +10,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { Post } from '../../interfaces/post.interface';
 import { ItemsService } from '../../services/items.service';
 import { AuthService } from '../../services/auth.service';
+import { PostsService } from '../../services/posts.service';
 
 @Component({
   selector: 'app-my-posts',
@@ -34,8 +35,11 @@ export class MyPosts implements OnInit {
   user: 'self' | 'other';
 
   // CTOR
-  constructor(public itemsService:ItemsService,
-    public authService:AuthService ) {
+  constructor(
+    public itemsService:ItemsService,
+    public authService:AuthService,
+    private postsService:PostsService
+  ) {
       // if there's a user ID in the viewed profile, get that user's posts
       if(this.userID) {
         this.itemsService.getUserPosts(this.userID);
@@ -142,6 +146,20 @@ export class MyPosts implements OnInit {
 	  this.delete = false;
 	  this.report = true;
 	  this.reportedItem = post;
+  }
+
+  /*
+  Function Name: sendHug()
+  Function Description: Send a hug to a user through a post they've written. The hug
+                        itself is sent by the items service.
+  Parameters: itemID (number) - ID of the post.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  sendHug(itemID:number) {
+    let item = {};
+    item = this.itemsService.userPosts.other.filter(e => e.id == itemID)[0];
+    this.postsService.sendHug(item);
   }
 
   /*

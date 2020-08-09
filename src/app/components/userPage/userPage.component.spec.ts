@@ -15,6 +15,7 @@ import {
 import { HttpClientModule } from "@angular/common/http";
 import { ServiceWorkerModule } from "@angular/service-worker";
 import { ActivatedRoute } from "@angular/router";
+import { BehaviorSubject } from 'rxjs';
 
 import { AppComponent } from '../../app.component';
 import { UserPage } from './userPage.component';
@@ -101,9 +102,9 @@ describe('UserPage', () => {
     expect(userPage.itemsService.isOtherUser).toBeFalse();
     expect(userPageDOM.querySelectorAll('.displayName')[0].firstElementChild.textContent).toBe(userData.displayName);
     expect(userPageDOM.querySelector('#roleElement').querySelectorAll('.pageData')[0].textContent).toBe(userData.role);
-    expect(userPageDOM.querySelector('#rHugsElement').querySelectorAll('.pageData')[0].textContent).toBe(userData.receivedHugs);
-    expect(userPageDOM.querySelector('#gHugsElement').querySelectorAll('.pageData')[0].textContent).toBe(userData.givenHugs);
-    expect(userPageDOM.querySelector('#postsElement').querySelectorAll('.pageData')[0].textContent).toBe(userData.postsNum);
+    expect(userPageDOM.querySelector('#rHugsElement').querySelectorAll('.pageData')[0].textContent).toBe(String(userData.receivedHugs));
+    expect(userPageDOM.querySelector('#gHugsElement').querySelectorAll('.pageData')[0].textContent).toBe(String(userData.givenHugs));
+    expect(userPageDOM.querySelector('#postsElement').querySelectorAll('.pageData')[0].textContent).toBe(String(userData.postsNum));
     expect(userPageDOM.querySelector('#logout')).toBeTruthy();
   }));
 
@@ -125,9 +126,9 @@ describe('UserPage', () => {
     expect(userPage.itemsService.isOtherUser).toBeFalse();
     expect(userPageDOM.querySelectorAll('.displayName')[0].firstElementChild.textContent).toBe(userData.displayName);
     expect(userPageDOM.querySelector('#roleElement').querySelectorAll('.pageData')[0].textContent).toBe(userData.role);
-    expect(userPageDOM.querySelector('#rHugsElement').querySelectorAll('.pageData')[0].textContent).toBe(userData.receivedHugs);
-    expect(userPageDOM.querySelector('#gHugsElement').querySelectorAll('.pageData')[0].textContent).toBe(userData.givenHugs);
-    expect(userPageDOM.querySelector('#postsElement').querySelectorAll('.pageData')[0].textContent).toBe(userData.postsNum);
+    expect(userPageDOM.querySelector('#rHugsElement').querySelectorAll('.pageData')[0].textContent).toBe(String(userData.receivedHugs));
+    expect(userPageDOM.querySelector('#gHugsElement').querySelectorAll('.pageData')[0].textContent).toBe(String(userData.givenHugs));
+    expect(userPageDOM.querySelector('#postsElement').querySelectorAll('.pageData')[0].textContent).toBe(String(userData.postsNum));
     expect(userPageDOM.querySelector('#logout')).toBeTruthy();
     expect(userPageDOM.querySelectorAll('.reportButton')[0]).toBeUndefined();
   }));
@@ -148,12 +149,12 @@ describe('UserPage', () => {
     expect(routeSpy).toHaveBeenCalled();
     expect(userPage.userId).toBe(1);
     expect(userPage.itemsService.isOtherUser).toBeTrue();
-    expect(userPageDOM.querySelectorAll('.displayName')[0].firstElementChild.textContent).toBe(userData.displayName);
+    expect(userPageDOM.querySelectorAll('.displayName')[0].firstElementChild.textContent).toContain(userData.displayName);
     expect(userPageDOM.querySelector('#roleElement').querySelectorAll('.pageData')[0].textContent).toBe(userData.role);
-    expect(userPageDOM.querySelector('#rHugsElement').querySelectorAll('.pageData')[0].textContent).toBe(userData.receivedHugs);
-    expect(userPageDOM.querySelector('#gHugsElement').querySelectorAll('.pageData')[0].textContent).toBe(userData.givenHugs);
-    expect(userPageDOM.querySelector('#postsElement').querySelectorAll('.pageData')[0].textContent).toBe(userData.postsNum);
-    expect(userPageDOM.querySelector('#logout')).toBeUndefined();
+    expect(userPageDOM.querySelector('#rHugsElement').querySelectorAll('.pageData')[0].textContent).toBe(String(userData.receivedHugs));
+    expect(userPageDOM.querySelector('#gHugsElement').querySelectorAll('.pageData')[0].textContent).toBe(String(userData.givenHugs));
+    expect(userPageDOM.querySelector('#postsElement').querySelectorAll('.pageData')[0].textContent).toBe(String(userData.postsNum));
+    expect(userPageDOM.querySelector('#logout')).toBeNull();
     expect(userPageDOM.querySelectorAll('.reportButton')[0]).toBeTruthy();
   }));
 
@@ -162,18 +163,16 @@ describe('UserPage', () => {
     TestBed.createComponent(AppComponent);
     const paramMap = TestBed.get(ActivatedRoute);
     spyOn(paramMap.snapshot.paramMap, 'get').and.returnValue('4');
-    const authService = TestBed.get(AuthService);
-    const authSpy = spyOnProperty(authService, 'getAuthenticated', 'get').and.returnValue(false);
     const fixture = TestBed.createComponent(UserPage);
     const userPage = fixture.componentInstance;
     const userPageDOM = fixture.nativeElement;
+    userPage.authService.authenticated = false;
 
     fixture.detectChanges();
     tick();
 
-    expect(authSpy).toHaveBeenCalled();
     expect(userPage.itemsService.isOtherUser).toBeFalse();
-    expect(userPageDOM.querySelector('#profileContainer')).toBeUndefined();
+    expect(userPageDOM.querySelector('#profileContainer')).toBeNull();
     expect(userPageDOM.querySelector('#loginBox')).toBeTruthy();
   }));
 
@@ -182,13 +181,12 @@ describe('UserPage', () => {
     TestBed.createComponent(AppComponent);
     const paramMap = TestBed.get(ActivatedRoute);
     spyOn(paramMap.snapshot.paramMap, 'get').and.returnValue('4');
-    const authService = TestBed.get(AuthService);
-    spyOnProperty(authService, 'getAuthenticated', 'get').and.returnValue(false);
     const fixture = TestBed.createComponent(UserPage);
     const userPage = fixture.componentInstance;
     const userPageDOM = fixture.nativeElement;
     const loginSpy = spyOn(userPage, 'login').and.callThrough();
     const serviceLoginSpy = spyOn(userPage.authService, 'login').and.callThrough();
+    userPage.authService.authenticated = false;
 
     fixture.detectChanges();
     tick();
@@ -301,6 +299,7 @@ describe('UserPage', () => {
     const itemsService = userPage.itemsService;
     const hugSpy = spyOn(userPage, 'sendHug').and.callThrough();
     const serviceHugSpy = spyOn(itemsService, 'sendUserHug').and.callThrough();
+    userPage.itemsService['authService'].login();
 
     fixture.detectChanges();
     tick();
@@ -309,12 +308,12 @@ describe('UserPage', () => {
     expect(hugSpy).not.toHaveBeenCalled();
     expect(serviceHugSpy).not.toHaveBeenCalled();
     expect(userPage.itemsService.isOtherUser).toBeTrue();
-    expect(userPage.authService.userData.givenHugs).toBe(2);
-    expect(userPage.itemsService.otherUserData.receivedHugs).toBe(2);
-    expect(userPageDOM.querySelector('#rHugsElement').querySelectorAll('.pageData')[0].textContent).toBe('2');
+    expect(userPage.itemsService['authService'].userData.givenHugs).toBe(2);
+    expect(userPage.itemsService.otherUserData.receivedHugs).toBe(3);
+    expect(userPageDOM.querySelector('#rHugsElement').querySelectorAll('.pageData')[0].textContent).toBe('3');
 
     // simulate click
-    userPageDOM.querySelector('.hugButton')[0].click();
+    userPageDOM.querySelectorAll('.hugButton')[0].click();
     fixture.detectChanges();
     tick();
 
@@ -322,8 +321,8 @@ describe('UserPage', () => {
     expect(hugSpy).toHaveBeenCalled();
     expect(serviceHugSpy).toHaveBeenCalled();
     expect(userPage.itemsService.isOtherUser).toBeTrue();
-    expect(userPage.authService.userData.givenHugs).toBe(3);
-    expect(userPage.itemsService.otherUserData.receivedHugs).toBe(3);
-    expect(userPageDOM.querySelector('#rHugsElement').querySelectorAll('.pageData')[0].textContent).toBe('3');
+    expect(userPage.itemsService['authService'].userData.givenHugs).toBe(3);
+    expect(userPage.itemsService.otherUserData.receivedHugs).toBe(4);
+    expect(userPageDOM.querySelector('#rHugsElement').querySelectorAll('.pageData')[0].textContent).toBe('4');
   }));
 });

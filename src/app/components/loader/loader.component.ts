@@ -100,6 +100,9 @@ export class Loader implements OnInit, OnChanges {
           if(value == true) {
             this.visible = false;
             this.waitingFor = '';
+            if(this.subsciption) {
+              this.subsciption.unsubscribe();
+            }
           }
         })
       }

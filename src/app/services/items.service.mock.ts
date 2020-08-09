@@ -140,7 +140,7 @@ export class MockItemsService {
           sentHugs: [],
           text: "test",
           userId: 1,
-          user: ''
+          user: 'shirb'
         },
         {
           date: new Date("Mon, 01 Jun 2020 15:05:01 GMT"),
@@ -149,7 +149,7 @@ export class MockItemsService {
           sentHugs: [],
           text: "test",
           userId: 1,
-          user: ''
+          user: 'shirb'
         },
         {
           date: new Date("Mon, 01 Jun 2020 15:05:01 GMT"),
@@ -158,7 +158,7 @@ export class MockItemsService {
           sentHugs: [],
           text: "testing",
           userId: 1,
-          user: ''
+          user: 'shirb'
         },
         {
           date: new Date("Mon, 01 Jun 2020 15:05:01 GMT"),
@@ -167,7 +167,7 @@ export class MockItemsService {
           sentHugs: [],
           text: "test",
           userId: 1,
-          user: ''
+          user: 'shirb'
         },
         {
           date: new Date("Mon, 01 Jun 2020 15:05:01 GMT"),
@@ -176,7 +176,7 @@ export class MockItemsService {
           sentHugs: [],
           text: "test",
           userId: 1,
-          user: ''
+          user: 'shirb'
         }
       ];
 
@@ -190,11 +190,11 @@ export class MockItemsService {
         {
           date: new Date("Mon, 01 Jun 2020 15:05:01 GMT"),
           givenHugs: 1,
-          id: 5,
+          id: 7,
           sentHugs: [],
           text: "test",
           userId: 4,
-          user: ''
+          user: 'name'
         },
         {
           date: new Date("Mon, 01 Jun 2020 15:05:01 GMT"),
@@ -203,7 +203,7 @@ export class MockItemsService {
           sentHugs: [],
           text: "test",
           userId: 4,
-          user: ''
+          user: 'name'
         }
       ];
 
@@ -244,8 +244,8 @@ export class MockItemsService {
     this.otherUserData = {
       id: 1,
       displayName: "shirb",
-      receivedHugs: 2,
-      givenHugs: 2,
+      receivedHugs: 3,
+      givenHugs: 3,
       role: 'user',
       postsNum: 10
     }

@@ -1,4 +1,10 @@
-import { TestBed } from "@angular/core/testing";
+import 'zone.js/dist/zone';
+import "zone.js/dist/proxy";
+import "zone.js/dist/sync-test";
+import "zone.js/dist/jasmine-patch";
+import "zone.js/dist/async-test";
+import "zone.js/dist/fake-async-test";
+import { TestBed, fakeAsync, tick } from "@angular/core/testing";
 import { RouterTestingModule } from '@angular/router/testing';
 import {} from 'jasmine';
 import { APP_BASE_HREF } from '@angular/common';
@@ -117,16 +123,19 @@ describe("AppComponent", () => {
     });
 
     // Check that clicking 'search' triggers the ItemsService
-    it('should pass search query to the ItemsService when clicking search', () => {
+    it('should pass search query to the ItemsService when clicking search', fakeAsync(() => {
       const fixture = TestBed.createComponent(AppComponent);
       fixture.detectChanges();
       const component = fixture.componentInstance;
       const componentHtml = fixture.nativeElement;
       const searchSpy = spyOn(component, 'searchApp').and.callThrough();
       const searchServiceSpy = spyOn(component['itemsService'], 'sendSearch');
+      spyOn(component['router'], 'navigate');
 
       // open search panel and run search
       componentHtml.querySelector('#searchBtn').click();
+      fixture.detectChanges();
+      tick();
       componentHtml.querySelector('#searchQuery').value = 'search';
       componentHtml.querySelectorAll('.sendData')[0].click();
 
@@ -134,10 +143,10 @@ describe("AppComponent", () => {
       expect(searchSpy).toHaveBeenCalled();
       expect(searchServiceSpy).toHaveBeenCalled();
       expect(searchServiceSpy).toHaveBeenCalledWith('search');
-    });
+    }));
 
     // Check that an empty search query isn't allowed
-    it('should prevent empty searches', () => {
+    it('should prevent empty searches', fakeAsync(() => {
       const fixture = TestBed.createComponent(AppComponent);
       fixture.detectChanges();
       const component = fixture.componentInstance;
@@ -147,6 +156,8 @@ describe("AppComponent", () => {
 
       // open search panel and run search
       componentHtml.querySelector('#searchBtn').click();
+      fixture.detectChanges();
+      tick();
       componentHtml.querySelector('#searchQuery').value = '';
       componentHtml.querySelectorAll('.sendData')[0].click();
 
@@ -154,5 +165,5 @@ describe("AppComponent", () => {
       expect(searchSpy).toHaveBeenCalled();
       expect(searchServiceSpy).not.toHaveBeenCalled();
       expect(componentHtml.querySelectorAll('.alertMessage')[0]).toBeTruthy();
-    });
+    }));
 });

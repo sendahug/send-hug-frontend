@@ -132,55 +132,83 @@ export class MockItemsService {
     this.idbResolved.userPosts.next(false);
 
     if(user == 'other') {
-      this.userPosts.other = [
-        {
-          date: new Date("Mon, 01 Jun 2020 15:05:01 GMT"),
-          givenHugs: 1,
-          id: 1,
-          sentHugs: [],
-          text: "test",
-          userId: 1,
-          user: 'shirb'
-        },
-        {
-          date: new Date("Mon, 01 Jun 2020 15:05:01 GMT"),
-          givenHugs: 1,
-          id: 2,
-          sentHugs: [],
-          text: "test",
-          userId: 1,
-          user: 'shirb'
-        },
-        {
-          date: new Date("Mon, 01 Jun 2020 15:05:01 GMT"),
-          givenHugs: 1,
-          id: 3,
-          sentHugs: [],
-          text: "testing",
-          userId: 1,
-          user: 'shirb'
-        },
-        {
-          date: new Date("Mon, 01 Jun 2020 15:05:01 GMT"),
-          givenHugs: 1,
-          id: 4,
-          sentHugs: [],
-          text: "test",
-          userId: 1,
-          user: 'shirb'
-        },
-        {
-          date: new Date("Mon, 01 Jun 2020 15:05:01 GMT"),
-          givenHugs: 1,
-          id: 5,
-          sentHugs: [],
-          text: "test",
-          userId: 1,
-          user: 'shirb'
-        }
-      ];
+      if(this.userPostsPage.other == 1) {
+        this.userPosts.other = [
+          {
+            date: new Date("Mon, 01 Jun 2020 15:05:01 GMT"),
+            givenHugs: 1,
+            id: 1,
+            sentHugs: [],
+            text: "test",
+            userId: 1,
+            user: 'shirb'
+          },
+          {
+            date: new Date("Mon, 01 Jun 2020 15:05:01 GMT"),
+            givenHugs: 1,
+            id: 2,
+            sentHugs: [],
+            text: "test",
+            userId: 1,
+            user: 'shirb'
+          },
+          {
+            date: new Date("Mon, 01 Jun 2020 15:05:01 GMT"),
+            givenHugs: 1,
+            id: 3,
+            sentHugs: [],
+            text: "testing",
+            userId: 1,
+            user: 'shirb'
+          },
+          {
+            date: new Date("Mon, 01 Jun 2020 15:05:01 GMT"),
+            givenHugs: 1,
+            id: 4,
+            sentHugs: [],
+            text: "test",
+            userId: 1,
+            user: 'shirb'
+          },
+          {
+            date: new Date("Mon, 01 Jun 2020 15:05:01 GMT"),
+            givenHugs: 1,
+            id: 5,
+            sentHugs: [],
+            text: "test",
+            userId: 1,
+            user: 'shirb'
+          }
+        ];
 
-      this.userPostsPage.other = 1;
+        this.userPostsPage.other = 1;
+      }
+      else if(this.userPostsPage.other == 2) {
+        this.userPosts.other = [
+          {
+            date: new Date("Mon, 01 Jun 2020 15:05:01 GMT"),
+            givenHugs: 1,
+            id: 9,
+            sentHugs: [],
+            text: "testing",
+            userId: 1,
+            user: 'shirb'
+          },
+          {
+            date: new Date("Mon, 01 Jun 2020 15:05:01 GMT"),
+            givenHugs: 1,
+            id: 10,
+            sentHugs: [],
+            text: "another test",
+            userId: 1,
+            user: 'shirb'
+          }
+        ];
+
+        this.userPostsPage.other = 2;
+      }
+
+
       this.totalUserPostsPages.other = 2;
       this.isUserPostsResolved[user].next(true);
       this.idbResolved.userPosts.next(true);

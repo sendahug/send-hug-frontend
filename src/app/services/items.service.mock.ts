@@ -458,10 +458,62 @@ export class MockItemsService {
     this.isSearchResolved.next(false);
     const params = new HttpParams().set('page', `${this.postSearchPage}`);
 
-    this.userSearchResults = [];
-    this.postSearchResults = [];
-    this.postSearchPage = 1;
-    this.totalPostSearchPages = 1;
+    this.userSearchResults = [
+      {
+        id: 6,
+        displayName: 'tests',
+        receivedHugs: 2,
+        givenHugs: 4,
+        postsNum: 1,
+        role: 'user'
+      },
+      {
+        id: 7,
+        displayName: 'testing',
+        receivedHugs: 2,
+        givenHugs: 4,
+        postsNum: 1,
+        role: 'user'
+      }
+    ];
+    if(this.postSearchPage == 1) {
+      this.postSearchResults = [
+        {
+          date: new Date("Mon, 01 Jun 2020 15:20:11 GMT"),
+          givenHugs: 0,
+          id: 7,
+          text: "test",
+          user: "shirb",
+          userId: 1,
+          sentHugs: []
+        }
+      ];
+      this.postSearchPage = 1;
+    }
+    else if(this.postSearchPage == 2) {
+      this.postSearchResults = [
+        {
+          date: new Date("Mon, 01 Jun 2020 15:19:41 GMT"),
+          givenHugs: 0,
+          id: 6,
+          text: "test",
+          user: "shirb",
+          userId: 1,
+          sentHugs: []
+        },
+        {
+          date: new Date("Mon, 01 Jun 2020 15:18:37 GMT"),
+          givenHugs: 0,
+          id: 5,
+          text: "test",
+          user: "shirb",
+          userId: 1,
+          sentHugs: []
+        }
+      ]
+    }
+
+    this.totalPostSearchPages = 2;
     this.numUserResults = 0;
     this.numPostResults = 0;
     this.isSearchResolved.next(true);

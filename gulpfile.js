@@ -79,7 +79,7 @@ function watch()
 	gulp.watch("index.html", copyIndex);
 	gulp.watch("src/assets/img/*", copyImgs);
 	gulp.watch("src/css/*.css", styles);
-	gulp.watch("src/**/*.ts", scripts);
+	gulp.watch(["src/**/*.ts", "!src/**/*.spec.ts", "!src/**/*.mock.ts"], scripts);
 }
 
 //create local development files

@@ -119,7 +119,7 @@ export class SearchResults {
   */
   sendHug(itemID:number) {
     let item = {};
-    item = this.itemsService.userPosts.other.filter(e => e.id == itemID)[0];
+    item = this.itemsService.postSearchResults.filter(e => e.id == itemID)[0];
     this.postsService.sendHug(item);
   }
 

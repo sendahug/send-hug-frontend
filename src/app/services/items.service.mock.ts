@@ -301,39 +301,112 @@ export class MockItemsService {
 
 
     if(type == 'inbox') {
-      this.userMessages[type] = [
-
-      ];
-      this.userMessagesPage[type] = 1;
-      this.totalUserMessagesPages[type] = 1;
+      if(this.userMessagesPage.inbox == 1) {
+        this.userMessages[type] = [
+          {
+            date: new Date("Mon, 22 Jun 2020 14:32:38 GMT"),
+            for: "user14",
+            forId: 4,
+            from: "user14",
+            fromId: 4,
+            id: 1,
+            messageText: "Your post (ID 19) was deleted due to violating our community rules.",
+            threadID: 4
+          },
+          {
+            date: new Date("Mon, 22 Jun 2020 14:32:38 GMT"),
+            for: "user14",
+            forId: 4,
+            from: "user14",
+            fromId: 4,
+            id: 14,
+            messageText: "Your post (ID 19) was deleted due to violating our community rules.",
+            threadID: 4
+          }
+        ];
+        this.userMessagesPage[type] = 1;
+      }
+      else {
+        this.userMessages[type] = [
+          {
+            date: new Date("Mon, 22 Jun 2020 14:32:38 GMT"),
+            for: "user14",
+            forId: 4,
+            from: "user14",
+            fromId: 4,
+            id: 1,
+            messageText: "Your post (ID 19) was deleted due to violating our community rules.",
+            threadID: 4
+          },
+          {
+            date: new Date("Mon, 22 Jun 2020 14:32:38 GMT"),
+            for: "user14",
+            forId: 4,
+            from: "user14",
+            fromId: 4,
+            id: 14,
+            messageText: "Your post (ID 19) was deleted due to violating our community rules.",
+            threadID: 4
+          },
+          {
+            date: new Date("Mon, 22 Jun 2020 14:32:38 GMT"),
+            for: "user14",
+            forId: 4,
+            from: "user14",
+            fromId: 4,
+            id: 25,
+            messageText: "Your post (ID 19) was deleted due to violating our community rules.",
+            threadID: 4
+          }
+        ];
+        this.userMessagesPage[type] = 1;
+      }
+      this.totalUserMessagesPages[type] = 2;
       this.isUserMessagesResolved[type].next(true);
       this.idbResolved[type].next(true);
     }
     else {
-      this.userMessages[type] = [
-        {
-          date: new Date("Mon, 22 Jun 2020 14:32:38 GMT"),
-          for: "user14",
-          forId: 4,
-          from: "user14",
-          fromId: 4,
-          id: 18,
-          messageText: "Your post (ID 19) was deleted due to violating our community rules.",
-          threadID: 4
-        },
-        {
-          date: new Date("Mon, 08 Jun 2020 14:43:15 GMT"),
-          for: "shirb",
-          forId: 1,
-          from: "user14",
-          fromId: 4,
-          id: 9,
-          messageText: "hang in there",
-          threadID: 3
-        }
-      ];
-      this.userMessagesPage[type] = 1;
-      this.totalUserMessagesPages[type] = 1;
+      if(this.userMessagesPage.outbox == 1) {
+        this.userMessages[type] = [
+          {
+            date: new Date("Mon, 22 Jun 2020 14:32:38 GMT"),
+            for: "user14",
+            forId: 4,
+            from: "user14",
+            fromId: 4,
+            id: 18,
+            messageText: "Your post (ID 19) was deleted due to violating our community rules.",
+            threadID: 4
+          },
+          {
+            date: new Date("Mon, 08 Jun 2020 14:43:15 GMT"),
+            for: "shirb",
+            forId: 1,
+            from: "user14",
+            fromId: 4,
+            id: 9,
+            messageText: "hang in there",
+            threadID: 3
+          }
+        ];
+        this.userMessagesPage[type] = 1;
+      }
+      else {
+        this.userMessages[type] = [
+          {
+            date: new Date("Mon, 22 Jun 2020 14:32:38 GMT"),
+            for: "user14",
+            forId: 4,
+            from: "user14",
+            fromId: 4,
+            id: 18,
+            messageText: "Your post (ID 19) was deleted due to violating our community rules.",
+            threadID: 4
+          }
+        ];
+        this.userMessagesPage[type] = 2;
+      }
+      this.totalUserMessagesPages[type] = 2;
       this.isUserMessagesResolved[type].next(true);
       this.idbResolved[type].next(true);
     }
@@ -361,8 +434,13 @@ export class MockItemsService {
         latestMessage: new Date("Mon, 08 Jun 2020 14:43:15 GMT")
       }
     ];
-    this.userMessagesPage.threads = 1;
-    this.totalUserMessagesPages.threads = 1;
+    if(this.userMessagesPage.threads == 1) {
+      this.userMessagesPage.threads = 1;
+    }
+    else {
+      this.userMessagesPage.threads = 2;
+    }
+    this.totalUserMessagesPages.threads = 2;
     this.isUserMessagesResolved.threads.next(true);
     this.idbResolved.threads.next(true);
   }
@@ -389,6 +467,16 @@ export class MockItemsService {
         fromId: 4,
         id: 9,
         messageText: "hang in there",
+        threadID: 3
+      },
+      {
+        date: new Date("Mon, 08 Jun 2020 14:43:15 GMT"),
+        for: "shirb",
+        forId: 1,
+        from: "user14",
+        fromId: 4,
+        id: 10,
+        messageText: "hi",
         threadID: 3
       }
     ];

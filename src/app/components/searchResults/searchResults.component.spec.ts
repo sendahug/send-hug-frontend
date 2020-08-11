@@ -24,6 +24,8 @@ import { ItemsService } from '../../services/items.service';
 import { MockItemsService } from '../../services/items.service.mock';
 import { AuthService } from '../../services/auth.service';
 import { MockAuthService } from '../../services/auth.service.mock';
+import { PostsService } from '../../services/posts.service';
+import { MockPostsService } from '../../services/posts.service.mock';
 
 describe('SearchResults', () => {
   // Before each test, configure testing environment
@@ -46,6 +48,7 @@ describe('SearchResults', () => {
       ],
       providers: [
         { provide: APP_BASE_HREF, useValue: '/' },
+        { provide: PostsService, useClass: MockPostsService },
         { provide: ItemsService, useClass: MockItemsService },
         { provide: AuthService, useClass: MockAuthService }
       ]
@@ -77,6 +80,7 @@ describe('SearchResults', () => {
     const fixture = TestBed.createComponent(SearchResults);
     const searchResults = fixture.componentInstance;
     const searchResultsDOM = fixture.nativeElement;
+    fixture.detectChanges();
 
     expect(routeSpy).toHaveBeenCalled();
     expect(searchResults.searchQuery).toBe('search');
@@ -138,9 +142,9 @@ describe('SearchResults', () => {
       }
     });
     const searchSpy = spyOn(TestBed.get(ItemsService), 'sendSearch').and.callThrough();
+    TestBed.get(ItemsService).isSearching = true;
     const fixture = TestBed.createComponent(SearchResults);
     const searchResults = fixture.componentInstance;
-    searchResults.itemsService.isSearching = true;
 
     expect(searchResults.searchQuery).toBe('search');
     expect(searchSpy).not.toHaveBeenCalled();
@@ -169,6 +173,7 @@ describe('SearchResults', () => {
         ],
         providers: [
           { provide: APP_BASE_HREF, useValue: '/' },
+          { provide: PostsService, useClass: MockPostsService },
           { provide: ItemsService, useClass: MockItemsService },
           { provide: AuthService, useClass: MockAuthService }
         ]
@@ -225,7 +230,6 @@ describe('SearchResults', () => {
       expect(searchResultsDOM.querySelectorAll('.searchResultUser').length).toBe(2);
       searchResultsDOM.querySelectorAll('.searchResultUser').forEach((item: HTMLElement) => {
           expect(item.firstElementChild).toBeTruthy();
-          expect(item.firstElementChild!.tagName).toBe('a');
           expect(item.firstElementChild!.getAttribute('href')).toContain('/user');
           expect(item.firstElementChild!.textContent).toContain('test');
       });
@@ -256,6 +260,7 @@ describe('SearchResults', () => {
         ],
         providers: [
           { provide: APP_BASE_HREF, useValue: '/' },
+          { provide: PostsService, useClass: MockPostsService },
           { provide: ItemsService, useClass: MockItemsService },
           { provide: AuthService, useClass: MockAuthService }
         ]
@@ -384,7 +389,7 @@ describe('SearchResults', () => {
       expect(searchResults.editMode).toBeTrue();
       expect(searchResults.delete).toBeTrue();
       expect(searchResults.toDelete).toBe('Post');
-      expect(searchResults.itemToDelete).toBe(1);
+      expect(searchResults.itemToDelete).toBe(7);
       expect(searchResultsDOM.querySelector('app-pop-up')).toBeTruthy();
     }));
 
@@ -469,12 +474,9 @@ describe('SearchResults', () => {
       // set up spies
       TestBed.createComponent(AppComponent);
       const route = TestBed.get(ActivatedRoute);
-      spyOn(route.snapshot.queryParamMap, 'get').and.callFake((param: string) => {
+      const paramSpy = spyOn(route.snapshot.queryParamMap, 'get').and.callFake((param: string) => {
         if(param == 'query') {
           return 'search';
-        }
-        else if(param == 'page') {
-          return '1';
         }
         else {
           return null;
@@ -491,7 +493,7 @@ describe('SearchResults', () => {
 
       // expectations for page 1
       expect(searchResults.itemsService.postSearchPage).toBe(1);
-      expect(searchResultsDOM.querySelector('#postSearchResults').firstElementChild.children.length).toBe(2);
+      expect(searchResultsDOM.querySelector('#postSearchResults').firstElementChild.children.length).toBe(1);
 
       // change the page
       searchResultsDOM.querySelectorAll('.nextButton')[0].click();
@@ -501,7 +503,7 @@ describe('SearchResults', () => {
       // expectations for page 2
       expect(routeSpy).toHaveBeenCalled();
       expect(searchResults.itemsService.postSearchPage).toBe(2);
-      expect(searchResultsDOM.querySelector('#postSearchResults').firstElementChild.children.length).toBe(1);
+      expect(searchResultsDOM.querySelector('#postSearchResults').firstElementChild.children.length).toBe(2);
 
       // change the page
       searchResultsDOM.querySelectorAll('.prevButton')[0].click();
@@ -511,7 +513,7 @@ describe('SearchResults', () => {
       // expectations for page 1
       expect(routeSpy).toHaveBeenCalledTimes(2);
       expect(searchResults.itemsService.postSearchPage).toBe(1);
-      expect(searchResultsDOM.querySelector('#postSearchResults').firstElementChild.children.length).toBe(2);
+      expect(searchResultsDOM.querySelector('#postSearchResults').firstElementChild.children.length).toBe(1);
     }));
   });
 });

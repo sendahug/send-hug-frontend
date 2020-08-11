@@ -510,12 +510,13 @@ export class MockItemsService {
           userId: 1,
           sentHugs: []
         }
-      ]
+      ];
+      this.postSearchPage = 2;
     }
 
     this.totalPostSearchPages = 2;
-    this.numUserResults = 0;
-    this.numPostResults = 0;
+    this.numUserResults = 2;
+    this.numPostResults = 3;
     this.isSearchResolved.next(true);
     this.isSearching = false;
   }

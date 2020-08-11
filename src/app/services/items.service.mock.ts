@@ -359,7 +359,7 @@ export class MockItemsService {
             threadID: 4
           }
         ];
-        this.userMessagesPage[type] = 1;
+        this.userMessagesPage[type] = 2;
       }
       this.totalUserMessagesPages[type] = 2;
       this.isUserMessagesResolved[type].next(true);

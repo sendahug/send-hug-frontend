@@ -133,12 +133,14 @@ export class SearchResults {
   */
   nextPage() {
     this.itemsService.postSearchPage += 1;
+    this.page += 1;
     this.itemsService.sendSearch(this.searchQuery!);
 
     // changes the URL query parameter (page) according to the new page
     this.router.navigate([], {
       relativeTo: this.route,
       queryParams: {
+        query: this.searchQuery,
         page: this.page
       },
       replaceUrl: true
@@ -155,12 +157,14 @@ export class SearchResults {
   */
   prevPage() {
     this.itemsService.postSearchPage -= 1;
+    this.page -= 1;
     this.itemsService.sendSearch(this.searchQuery!);
 
     // changes the URL query parameter (page) according to the new page
     this.router.navigate([], {
       relativeTo: this.route,
       queryParams: {
+        query: this.searchQuery,
         page: this.page
       },
       replaceUrl: true

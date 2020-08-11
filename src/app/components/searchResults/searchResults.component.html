@@ -7,18 +7,18 @@
 	<div id="resultSummary">{{ itemsService.numUserResults }} users and {{ itemsService.numPostResults }} posts match your search query: "{{ searchQuery }}"</div>
 	
 	<h3 id="usersTitle">Users</h3>
-	<ul *ngIf="itemsService.numUserResults > 0" class="searchResults" aria-describedby="uSearchRes" id="userSearchResults">
+	<ul *ngIf="itemsService.userSearchResults.length > 0" class="searchResults" aria-describedby="uSearchRes" id="userSearchResults">
 		<li *ngFor="let user of itemsService.userSearchResults" class="searchResultUser">
 			<a [routerLink]="['/user', user.id]">{{ user.displayName }}</a>
 		</li>
 	</ul>
 
-	<div *ngIf="itemsService.numUserResults == 0" class="errorMessage" id="uSearchResErr">
+	<div *ngIf="itemsService.userSearchResults.length == 0" class="errorMessage" id="uSearchResErr">
 		There are no users that match your search!
 	</div>
 
 	<h3 id="postsTitle">Posts</h3>
-	<div *ngIf="itemsService.numPostResults > 0" id="postSearchResults">
+	<div *ngIf="itemsService.postSearchResults.length > 0" id="postSearchResults">
 		<ul class="searchResults" aria-describedby="pSearchRes">
 			<li *ngFor="let item of itemsService.postSearchResults" class="searchResult" role="article">
 				<div class="itemText" aria-describedby="pText" id="{{'nPost' + item.id}}">{{ item.text }}</div>
@@ -48,7 +48,7 @@
 	</div>
 
 
-	<div *ngIf="itemsService.numPostResults == 0" class="errorMessage" id="pSearchResErr">
+	<div *ngIf="itemsService.postSearchResults.length == 0" class="errorMessage" id="pSearchResErr">
 		There are no posts that match your search!
 	</div>
 </div>

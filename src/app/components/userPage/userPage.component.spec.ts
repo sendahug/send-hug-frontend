@@ -22,6 +22,7 @@ import { UserPage } from './userPage.component';
 import { PopUp } from '../popUp/popUp.component';
 import { Loader } from '../loader/loader.component';
 import { MyPosts } from '../myPosts/myPosts.component';
+import { HeaderMessage } from '../headerMessage/headerMessage.component';
 import { ItemsService } from '../../services/items.service';
 import { MockItemsService } from '../../services/items.service.mock';
 import { AuthService } from '../../services/auth.service';
@@ -45,7 +46,8 @@ describe('UserPage', () => {
         UserPage,
         PopUp,
         Loader,
-        MyPosts
+        MyPosts,
+        HeaderMessage
       ],
       providers: [
         { provide: APP_BASE_HREF, useValue: '/' },

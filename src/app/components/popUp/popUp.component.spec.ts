@@ -181,6 +181,7 @@ describe('Popup', () => {
 
       // change the post's text
       popUpDOM.querySelector('#postText').value = 'hello there';
+      popUpDOM.querySelectorAll('.sendData')[0].click();
       fixture.detectChanges();
       tick();
 
@@ -215,6 +216,7 @@ describe('Popup', () => {
 
       // change the post's text
       popUpDOM.querySelector('#postText').value = '';
+      popUpDOM.querySelectorAll('.sendData')[0].click();
       fixture.detectChanges();
       tick();
 
@@ -319,7 +321,7 @@ describe('Popup', () => {
         reportID: 1,
         postID: 2
       };
-      const updateSpy = spyOn(popUp, 'updatePost').and.callThrough();
+      const updateSpy = spyOn(popUp, 'editPost').and.callThrough();
       const updateServiceSpy = spyOn(popUp['adminService'], 'editPost').and.callThrough();
 
       fixture.detectChanges();
@@ -332,13 +334,14 @@ describe('Popup', () => {
       tick();
 
       // check that the closeReport boolean is true
-      const post = {
+      let post:any = {
         text: 'hi there',
-        id: 5
+        id: 2,
+        closeReport: 1
       };
       expect(updateSpy).toHaveBeenCalled();
       expect(updateServiceSpy).toHaveBeenCalled();
-      expect(updateServiceSpy).toHaveBeenCalledWith(post, true, 2);
+      expect(updateServiceSpy).toHaveBeenCalledWith(post, true, 1);
 
       // change the post's text
       popUpDOM.querySelector('#adPostText').value = 'hi there';
@@ -347,9 +350,13 @@ describe('Popup', () => {
       tick();
 
       // check that the closeReport boolean is false
+      post = {
+        text: 'hi there',
+        id: 2
+      };
       expect(updateSpy).toHaveBeenCalled();
       expect(updateServiceSpy).toHaveBeenCalled();
-      expect(updateServiceSpy).toHaveBeenCalledWith(post, false, 2);
+      expect(updateServiceSpy).toHaveBeenCalledWith(post, false, 1);
     }));
 
     // Check that saving the edited post is prevented if the post is empty
@@ -366,7 +373,7 @@ describe('Popup', () => {
         reportID: 1,
         postID: 2
       };
-      const updateSpy = spyOn(popUp, 'updatePost').and.callThrough();
+      const updateSpy = spyOn(popUp, 'editPost').and.callThrough();
       const updateServiceSpy = spyOn(popUp['adminService'], 'editPost').and.callThrough();
 
       fixture.detectChanges();
@@ -374,6 +381,7 @@ describe('Popup', () => {
 
       // change the post's text
       popUpDOM.querySelector('#adPostText').value = '';
+      popUpDOM.querySelectorAll('.sendData')[0].click();
       fixture.detectChanges();
       tick();
 
@@ -557,15 +565,7 @@ describe('Popup', () => {
       popUp.toEdit = 'other user';
       popUp.delete = false;
       popUp.report = false;
-      popUp.editedItem = {
-        id: 4,
-        displayName: 'name',
-        receivedHugs: 2,
-        givenHugs: 2,
-        postsNum: 2,
-        loginCount: 3,
-        role: 'admin',
-      };
+      popUp.editedItem = 'name';
       popUp.reportData = {
         reportID: 3,
         userID: 4
@@ -589,15 +589,7 @@ describe('Popup', () => {
       popUp.toEdit = 'other user';
       popUp.delete = false;
       popUp.report = false;
-      popUp.editedItem = {
-        id: 4,
-        displayName: 'name',
-        receivedHugs: 2,
-        givenHugs: 2,
-        postsNum: 2,
-        loginCount: 3,
-        role: 'admin',
-      };
+      popUp.editedItem = 'name';
       popUp.reportData = {
         reportID: 3,
         userID: 4
@@ -630,15 +622,7 @@ describe('Popup', () => {
       popUp.toEdit = 'other user';
       popUp.delete = false;
       popUp.report = false;
-      popUp.editedItem = {
-        id: 4,
-        displayName: 'name',
-        receivedHugs: 2,
-        givenHugs: 2,
-        postsNum: 2,
-        loginCount: 3,
-        role: 'admin',
-      };
+      popUp.editedItem = 'name';
       popUp.reportData = {
         reportID: 3,
         userID: 4
@@ -656,9 +640,10 @@ describe('Popup', () => {
       tick();
 
       // check that the closeReport boolean is true
-      const user = {
+      let user:any = {
         userID: 4,
-        displayName: 'new name'
+        displayName: 'new name',
+        closeReport: 3
       };
       expect(updateSpy).toHaveBeenCalled();
       expect(updateServiceSpy).toHaveBeenCalled();
@@ -671,6 +656,10 @@ describe('Popup', () => {
       tick();
 
       // check that the closeReport boolean is false
+      user = {
+        userID: 4,
+        displayName: 'new name'
+      };
       expect(updateSpy).toHaveBeenCalled();
       expect(updateServiceSpy).toHaveBeenCalled();
       expect(updateServiceSpy).toHaveBeenCalledWith(user, false, 3);
@@ -686,15 +675,7 @@ describe('Popup', () => {
       popUp.toEdit = 'other user';
       popUp.delete = false;
       popUp.report = false;
-      popUp.editedItem = {
-        id: 4,
-        displayName: 'name',
-        receivedHugs: 2,
-        givenHugs: 2,
-        postsNum: 2,
-        loginCount: 3,
-        role: 'admin',
-      };
+      popUp.editedItem = 'name';
       popUp.reportData = {
         reportID: 3,
         userID: 4
@@ -778,25 +759,25 @@ describe('Popup', () => {
       const popUpDOM = fixture.nativeElement;
       popUp.delete = true;
       popUp.report = false;
+      popUp.itemToDelete = 1;
       const deleteItems = [
-        'Post', 'Message', 'Thread', 'All posts', 'All inbox', 'All outbox', 'All threads'
+        'Post', 'Message', 'Thread', 'All posts', 'All inbox'
       ];
       let methodSpies = [
         spyOn(popUp['postsService'], 'deletePost').and.callThrough(),
         spyOn(popUp['itemsService'], 'deleteMessage').and.callThrough(),
         spyOn(popUp['itemsService'], 'deleteThread').and.callThrough(),
         spyOn(popUp['postsService'], 'deleteAllPosts').and.callThrough(),
-        spyOn(popUp['itemsService'], 'deleteAll').and.callThrough(),
-        spyOn(popUp['itemsService'], 'deleteAll').and.callThrough(),
         spyOn(popUp['itemsService'], 'deleteAll').and.callThrough()
       ];
       let currentSpy: jasmine.Spy;
       let calledSpies: jasmine.Spy[] = [];
 
+      fixture.detectChanges();
+
       deleteItems.forEach((item) => {
         // set up the popup
         popUp.toDelete = item;
-        popUp.itemToDelete = 1;
         if(popUp.toDelete == 'Message') {
           popUp.messType = 'inbox';
         }
@@ -992,7 +973,7 @@ describe('Popup', () => {
 
       // check the first option was selected
       expect(selectSpy).toHaveBeenCalled();
-      expect(selectSpy).toHaveBeenCalledWith(0);
+      expect(selectSpy).toHaveBeenCalledWith('0');
 
       // select option 2
       popUpDOM.querySelector('#pRadioOption1').click();
@@ -1001,7 +982,7 @@ describe('Popup', () => {
 
       // check the second option was selected
       expect(selectSpy).toHaveBeenCalled();
-      expect(selectSpy).toHaveBeenCalledWith(1);
+      expect(selectSpy).toHaveBeenCalledWith('1');
 
       // select option 3
       popUpDOM.querySelector('#pRadioOption2').click();
@@ -1010,7 +991,7 @@ describe('Popup', () => {
 
       // check the third option was selected
       expect(selectSpy).toHaveBeenCalled();
-      expect(selectSpy).toHaveBeenCalledWith(2);
+      expect(selectSpy).toHaveBeenCalledWith('2');
 
       // select option 4
       popUpDOM.querySelector('#pRadioOption3').click();
@@ -1019,7 +1000,7 @@ describe('Popup', () => {
 
       // check the fourth option was selected
       expect(selectSpy).toHaveBeenCalled();
-      expect(selectSpy).toHaveBeenCalledWith(3);
+      expect(selectSpy).toHaveBeenCalledWith('3');
     }));
 
     // Check that if the user chooses 'other' as reason they can't submit an
@@ -1055,7 +1036,7 @@ describe('Popup', () => {
 
       // check the fourth option was selected
       expect(selectSpy).toHaveBeenCalled();
-      expect(selectSpy).toHaveBeenCalledWith(3);
+      expect(selectSpy).toHaveBeenCalledWith('3');
 
       // try to submit it without text in the textfield
       popUpDOM.querySelectorAll('.reportButton')[0].click();
@@ -1154,7 +1135,7 @@ describe('Popup', () => {
       const popUpDOM = fixture.nativeElement;
       popUp.report = true;
       popUp.delete = false;
-      popUp.reportType = 'Post';
+      popUp.reportType = 'User';
       popUp.reportedItem = {
         id: 3,
         displayName: 'string',
@@ -1180,7 +1161,7 @@ describe('Popup', () => {
       const popUpDOM = fixture.nativeElement;
       popUp.report = true;
       popUp.delete = false;
-      popUp.reportType = 'Post';
+      popUp.reportType = 'User';
       popUp.reportedItem = {
         id: 3,
         displayName: 'string',
@@ -1201,7 +1182,7 @@ describe('Popup', () => {
 
       // check the first option was selected
       expect(selectSpy).toHaveBeenCalled();
-      expect(selectSpy).toHaveBeenCalledWith(0);
+      expect(selectSpy).toHaveBeenCalledWith('0');
 
       // select option 2
       popUpDOM.querySelector('#uRadioOption1').click();
@@ -1210,7 +1191,7 @@ describe('Popup', () => {
 
       // check the second option was selected
       expect(selectSpy).toHaveBeenCalled();
-      expect(selectSpy).toHaveBeenCalledWith(1);
+      expect(selectSpy).toHaveBeenCalledWith('1');
 
       // select option 3
       popUpDOM.querySelector('#uRadioOption2').click();
@@ -1219,7 +1200,7 @@ describe('Popup', () => {
 
       // check the third option was selected
       expect(selectSpy).toHaveBeenCalled();
-      expect(selectSpy).toHaveBeenCalledWith(2);
+      expect(selectSpy).toHaveBeenCalledWith('2');
 
       // select option 4
       popUpDOM.querySelector('#uRadioOption3').click();
@@ -1228,7 +1209,7 @@ describe('Popup', () => {
 
       // check the fourth option was selected
       expect(selectSpy).toHaveBeenCalled();
-      expect(selectSpy).toHaveBeenCalledWith(3);
+      expect(selectSpy).toHaveBeenCalledWith('3');
     }));
 
     // Check that if the user chooses 'other' as reason they can't submit an
@@ -1241,7 +1222,7 @@ describe('Popup', () => {
       const popUpDOM = fixture.nativeElement;
       popUp.report = true;
       popUp.delete = false;
-      popUp.reportType = 'Post';
+      popUp.reportType = 'User';
       popUp.reportedItem = {
         id: 3,
         displayName: 'string',
@@ -1263,7 +1244,7 @@ describe('Popup', () => {
 
       // check the fourth option was selected
       expect(selectSpy).toHaveBeenCalled();
-      expect(selectSpy).toHaveBeenCalledWith(3);
+      expect(selectSpy).toHaveBeenCalledWith('3');
 
       // try to submit it without text in the textfield
       popUpDOM.querySelectorAll('.reportButton')[0].click();
@@ -1286,7 +1267,7 @@ describe('Popup', () => {
       const popUpDOM = fixture.nativeElement;
       popUp.report = true;
       popUp.delete = false;
-      popUp.reportType = 'Post';
+      popUp.reportType = 'User';
       popUp.reportedItem = {
         id: 3,
         displayName: 'string',
@@ -1300,6 +1281,9 @@ describe('Popup', () => {
       fixture.detectChanges();
       tick();
 
+      expect(popUpDOM.querySelector('#uRadioOption0')).toBeTruthy();
+      expect(popUpDOM.querySelectorAll('.reportButton')[0]).toBeTruthy();
+
       // select report reason and hit report
       popUpDOM.querySelector('#uRadioOption0').click();
       popUpDOM.querySelectorAll('.reportButton')[0].click();
@@ -1308,7 +1292,7 @@ describe('Popup', () => {
 
       const report:Report = {
         type: 'User',
-        userID: 2,
+        userID: 3,
         reporter: 4,
         reportReason: 'The user is posting Spam',
         date: new Date(),

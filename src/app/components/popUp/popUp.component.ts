@@ -354,7 +354,8 @@ export class PopUp implements OnInit, OnChanges, AfterViewChecked {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  setSelected(selectedItem:number) {
+  setSelected(selectedItem:string | number) {
+    selectedItem = Number(selectedItem);
     let otherText = this.reportType == 'User' ? document.getElementById('uOption3Text') as HTMLInputElement : document.getElementById('rOption3Text') as HTMLInputElement;
 
     // If the selected reason is one of the set reasons, simply send it as is

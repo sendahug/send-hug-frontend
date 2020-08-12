@@ -14,19 +14,92 @@ import {
 } from "@angular/platform-browser-dynamic/testing";
 import { HttpClientModule } from "@angular/common/http";
 import { ServiceWorkerModule } from "@angular/service-worker";
+import { Component } from '@angular/core';
 
 import { AppComponent } from '../../app.component';
 import { MyPosts } from './myPosts.component';
 import { PopUp } from '../popUp/popUp.component';
 import { Loader } from '../loader/loader.component';
-import { UserPage } from '../userPage/userPage.component';
+import { HeaderMessage } from '../headerMessage/headerMessage.component';
 import { ItemsService } from '../../services/items.service';
 import { MockItemsService } from '../../services/items.service.mock';
 import { AuthService } from '../../services/auth.service';
 import { MockAuthService } from '../../services/auth.service.mock';
 import { PostsService } from '../../services/posts.service';
 import { MockPostsService } from '../../services/posts.service.mock';
+import { ActivatedRoute } from '@angular/router';
+import { Subscription } from 'rxjs';
 
+// Mock User Page for testing the sub-component
+// ==================================================
+@Component({
+  selector: 'app-user-mock',
+  template: `
+  <!-- If the user is logged in, displays a user page. -->
+  <div *ngIf="authService.authenticated" id="profileContainer">
+  		<app-my-posts
+  					  [userID]="userId"></app-my-posts>
+  </div>
+
+  <!-- If the user isn't logged in, prompts the user to log in. -->
+  <div  id="loginBox" *ngIf="!authService.authenticated">
+  	<div class="errorMessage">You are not currently logged in. To view user information, log in.</div>
+
+  	<button id="logIn" class="appButton" (click)="login()">Login</button>
+  </div>
+  `
+})
+class MockUserPage {
+  waitFor = "user";
+  userId: number | undefined;
+  userDataSubscription:Subscription | undefined;
+
+  constructor(
+    private route:ActivatedRoute,
+    public authService: AuthService,
+    public itemsService:ItemsService,
+    private postsService:PostsService
+  ) {
+    this.authService.checkHash();
+
+    // if there's a user ID, set the user ID to it
+    if(this.route.snapshot.paramMap.get('id')) {
+      this.userId = Number(this.route.snapshot.paramMap.get('id'));
+      // If the user ID from the URL params is different than the logged in
+      // user's ID, the user is trying to view another user's profile
+      if(this.userId != this.authService.userData.id) {
+        this.itemsService.isOtherUser = true;
+        this.waitFor = 'other user';
+        // set the userDataSubscription to the subscription to isUserDataResolved
+        this.userDataSubscription = this.authService.isUserDataResolved.subscribe((value) => {
+          // if the user is logged in, fetch the profile of the user whose ID
+          // is used in the URL param
+          if(value == true) {
+            this.itemsService.getUser(this.userId!);
+            // also unsubscribe from this to avoid sending the same request
+            // multiple times
+            if(this.userDataSubscription) {
+              this.userDataSubscription.unsubscribe();
+            }
+          }
+        });
+      }
+      // otherwise they're trying to view their own profile
+      else {
+        this.itemsService.isOtherUser = false;
+        this.waitFor = 'user';
+      }
+    }
+    else {
+      this.itemsService.isOtherUser = false;
+      this.waitFor = 'user';
+    }
+
+  }
+}
+
+// Sub-component testing
+// ==================================================
 describe('MyPosts', () => {
   // Before each test, configure testing environment
   beforeEach(() => {
@@ -42,10 +115,11 @@ describe('MyPosts', () => {
       ],
       declarations: [
         AppComponent,
-        UserPage,
+        MockUserPage,
         MyPosts,
         PopUp,
-        Loader
+        Loader,
+        HeaderMessage
       ],
       providers: [
         { provide: APP_BASE_HREF, useValue: '/' },
@@ -60,10 +134,10 @@ describe('MyPosts', () => {
   it('should create the component', () => {
     const acFixture = TestBed.createComponent(AppComponent);
     const appComponent = acFixture.componentInstance;
-    const upFixture = TestBed.createComponent(UserPage);
+    const upFixture = TestBed.createComponent(MockUserPage);
     const userPage = upFixture.componentInstance;
-    const fixture = TestBed.createComponent(MyPosts);
-    const myPosts = fixture.componentInstance;
+    upFixture.detectChanges();
+    const myPosts = upFixture.debugElement.children[0].children[0].componentInstance;
     expect(appComponent).toBeTruthy();
     expect(userPage).toBeTruthy();
     expect(myPosts).toBeTruthy();
@@ -72,9 +146,9 @@ describe('MyPosts', () => {
   // Check that all the popup-related variables are set to false at first
   it('should have all popup variables set to false', () => {
     TestBed.createComponent(AppComponent);
-    TestBed.createComponent(UserPage);
-    const fixture = TestBed.createComponent(MyPosts);
-    const myPosts = fixture.componentInstance;
+    const upFixture = TestBed.createComponent(MockUserPage);
+    upFixture.detectChanges();
+    const myPosts = upFixture.debugElement.children[0].children[0].componentInstance;
 
     expect(myPosts.editMode).toBeFalse();
     expect(myPosts.delete).toBeFalse();
@@ -84,10 +158,12 @@ describe('MyPosts', () => {
   // Check that the component gets the user ID correctly
   it('should get the correct user ID', fakeAsync(() => {
     TestBed.createComponent(AppComponent);
-    const userPage = TestBed.createComponent(UserPage).componentInstance;
+    const upFixture = TestBed.createComponent(MockUserPage);
+    const userPage = upFixture.componentInstance;
     userPage.userId = 1;
-    const fixture = TestBed.createComponent(MyPosts);
-    const myPosts = fixture.componentInstance;
+    upFixture.detectChanges();
+    tick();
+    const myPosts = upFixture.debugElement.children[0].children[0].componentInstance;
 
     expect(myPosts.userID).toBe(1);
     expect(myPosts.user).toBe('other');
@@ -95,14 +171,17 @@ describe('MyPosts', () => {
 
   // Check that the popup gets the correct user's posts
   it('should get the correct user\'s posts', fakeAsync(() => {
-    const itemsService = TestBed.get(ItemsService);
-    const getPostsSpy = spyOn(itemsService, 'getUserPosts').and.callThrough();
     TestBed.createComponent(AppComponent);
-    const userPage = TestBed.createComponent(UserPage).componentInstance;
-    userPage.userId = 1;
-    let fixture = TestBed.createComponent(MyPosts);
-    let myPosts = fixture.componentInstance;
-    let myPostsDOM = fixture.nativeElement;
+    const paramMap = TestBed.get(ActivatedRoute);
+    let pathSpy = spyOn(paramMap.snapshot.paramMap, 'get').and.returnValue('1');
+    let itemsService = TestBed.get(ItemsService) as ItemsService;
+    let getPostsSpy = spyOn(itemsService, 'getUserPosts').and.callThrough();
+    itemsService['authService'].login();
+    let fixture = TestBed.createComponent(MockUserPage);
+    fixture.detectChanges();
+    tick();
+    let myPosts = fixture.debugElement.children[0].children[0].componentInstance;
+    let myPostsDOM = fixture.debugElement.children[0].children[0].nativeElement;
 
     fixture.detectChanges();
     tick();
@@ -112,14 +191,44 @@ describe('MyPosts', () => {
     expect(getPostsSpy).toHaveBeenCalledWith(1);
     expect(myPosts.itemsService.userPosts.other.length).toBe(5);
     expect(myPostsDOM.querySelectorAll('.itemList')[0].children.length).toBe(5);
-    expect(myPosts.itemsService.userPosts.self.length).toBe(0);
 
-    // reset the 'other' array to set the service up for another call
-    myPosts.itemsService.userPosts.other = [];
-    userPage.userId = 4;
-    fixture = TestBed.createComponent(MyPosts);
-    myPosts = fixture.componentInstance;
-    myPostsDOM = fixture.nativeElement;
+    // reset the testing environment
+    TestBed.resetTestEnvironment();
+    TestBed.initTestEnvironment(BrowserDynamicTestingModule,
+        platformBrowserDynamicTesting());
+
+    TestBed.configureTestingModule({
+      imports: [
+        RouterTestingModule,
+        HttpClientModule,
+        ServiceWorkerModule.register('sw.js')
+      ],
+      declarations: [
+        AppComponent,
+        MockUserPage,
+        MyPosts,
+        PopUp,
+        Loader,
+        HeaderMessage
+      ],
+      providers: [
+        { provide: APP_BASE_HREF, useValue: '/' },
+        { provide: ItemsService, useClass: MockItemsService },
+        { provide: AuthService, useClass: MockAuthService },
+        { provide: PostsService, useClass: MockPostsService }
+      ]
+    }).compileComponents();
+
+    TestBed.createComponent(AppComponent);
+    pathSpy.and.returnValue('4');
+    itemsService = TestBed.get(ItemsService) as ItemsService;
+    getPostsSpy = spyOn(itemsService, 'getUserPosts').and.callThrough();
+    itemsService['authService'].login();
+    fixture = TestBed.createComponent(MockUserPage);
+    fixture.detectChanges();
+    tick();
+    myPosts = fixture.debugElement.children[0].children[0].componentInstance;
+    myPostsDOM = fixture.debugElement.children[0].children[0].nativeElement;
 
     fixture.detectChanges();
     tick();
@@ -134,18 +243,33 @@ describe('MyPosts', () => {
   // Check that the popup is opened when clicking 'edit'
   it('should open the popup upon editing', fakeAsync(() => {
     TestBed.createComponent(AppComponent);
-    TestBed.createComponent(UserPage);
-    const fixture = TestBed.createComponent(MyPosts);
-    const myPosts = fixture.componentInstance;
-    const myPostsDOM = fixture.debugElement.nativeElement;
+    const paramMap = TestBed.get(ActivatedRoute);
+    spyOn(paramMap.snapshot.paramMap, 'get').and.returnValue('4');
+    const itemsService = TestBed.get(ItemsService) as ItemsService;
+    const getSpy = spyOn(itemsService, 'getUserPosts').and.callThrough();
+    itemsService['authService'].login();
+    let fixture = TestBed.createComponent(MockUserPage);
+    fixture.detectChanges();
+    tick();
+    let myPosts = fixture.debugElement.children[0].children[0].componentInstance;
+    let myPostsDOM = fixture.debugElement.children[0].children[0].nativeElement;
     const editSpy = spyOn(myPosts, 'editPost').and.callThrough();
-
     fixture.detectChanges();
     tick();
 
     // before the click
+    expect(getSpy).toHaveBeenCalled();
+    expect(getSpy).toHaveBeenCalledWith(4);
+    expect(myPosts.user).toBe('self');
     expect(myPosts.editMode).toBeFalse();
+    expect(myPosts.userID).toBe(4);
     expect(editSpy).not.toHaveBeenCalled();
+
+    fixture.detectChanges();
+    tick();
+
+    expect(myPosts.itemsService.userPosts.self.length).toBe(2)
+    expect(myPostsDOM.querySelectorAll('.userPost')[0]).toBeTruthy();
 
     // trigger click
     myPostsDOM.querySelectorAll('.editButton')[0].click();
@@ -161,10 +285,15 @@ describe('MyPosts', () => {
   // Check that the popup is opened when clicking 'delete'
   it('should open the popup upon deleting', fakeAsync(() => {
     TestBed.createComponent(AppComponent);
-    TestBed.createComponent(UserPage);
-    const fixture = TestBed.createComponent(MyPosts);
-    const myPosts = fixture.componentInstance;
-    const myPostsDOM = fixture.debugElement.nativeElement;
+    const paramMap = TestBed.get(ActivatedRoute);
+    spyOn(paramMap.snapshot.paramMap, 'get').and.returnValue('4');
+    const itemsService = TestBed.get(ItemsService) as ItemsService;
+    itemsService['authService'].login();
+    let fixture = TestBed.createComponent(MockUserPage);
+    fixture.detectChanges();
+    tick();
+    let myPosts = fixture.debugElement.children[0].children[0].componentInstance;
+    let myPostsDOM = fixture.debugElement.children[0].children[0].nativeElement;
     const deleteSpy = spyOn(myPosts, 'deletePost').and.callThrough();
 
     fixture.detectChanges();
@@ -191,10 +320,15 @@ describe('MyPosts', () => {
   // Check that the popup is opened when clicking 'delete all'
   it('should open the popup upon deleting all', fakeAsync(() => {
     TestBed.createComponent(AppComponent);
-    TestBed.createComponent(UserPage);
-    const fixture = TestBed.createComponent(MyPosts);
-    const myPosts = fixture.componentInstance;
-    const myPostsDOM = fixture.debugElement.nativeElement;
+    const paramMap = TestBed.get(ActivatedRoute);
+    spyOn(paramMap.snapshot.paramMap, 'get').and.returnValue('4');
+    const itemsService = TestBed.get(ItemsService) as ItemsService;
+    itemsService['authService'].login();
+    let fixture = TestBed.createComponent(MockUserPage);
+    fixture.detectChanges();
+    tick();
+    let myPosts = fixture.debugElement.children[0].children[0].componentInstance;
+    let myPostsDOM = fixture.debugElement.children[0].children[0].nativeElement;
     const deleteSpy = spyOn(myPosts, 'deleteAllPosts').and.callThrough();
 
     fixture.detectChanges();
@@ -221,11 +355,15 @@ describe('MyPosts', () => {
   // Check that the popup is opened when clicking 'report'
   it('should open the popup upon reporting', fakeAsync(() => {
     TestBed.createComponent(AppComponent);
-    const userPage = TestBed.createComponent(UserPage).componentInstance;
-    userPage.userId = 1;
-    const fixture = TestBed.createComponent(MyPosts);
-    const myPosts = fixture.componentInstance;
-    const myPostsDOM = fixture.debugElement.nativeElement;
+    const paramMap = TestBed.get(ActivatedRoute);
+    spyOn(paramMap.snapshot.paramMap, 'get').and.returnValue('1');
+    const itemsService = TestBed.get(ItemsService) as ItemsService;
+    itemsService['authService'].login();
+    let fixture = TestBed.createComponent(MockUserPage);
+    fixture.detectChanges();
+    tick();
+    let myPosts = fixture.debugElement.children[0].children[0].componentInstance;
+    let myPostsDOM = fixture.debugElement.children[0].children[0].nativeElement;
     const reportSpy = spyOn(myPosts, 'reportPost').and.callThrough();
 
     fixture.detectChanges();
@@ -252,11 +390,15 @@ describe('MyPosts', () => {
   // Check that sending a hug triggers the posts service
   it('should trigger posts service on hug', fakeAsync(() => {
     TestBed.createComponent(AppComponent);
-    const userPage = TestBed.createComponent(UserPage).componentInstance;
-    userPage.userId = 1;
-    const fixture = TestBed.createComponent(MyPosts);
-    const myPosts = fixture.componentInstance;
-    const myPostsDOM = fixture.debugElement.nativeElement;
+    const paramMap = TestBed.get(ActivatedRoute);
+    spyOn(paramMap.snapshot.paramMap, 'get').and.returnValue('1');
+    const itemsService = TestBed.get(ItemsService) as ItemsService;
+    itemsService['authService'].login();
+    let fixture = TestBed.createComponent(MockUserPage);
+    fixture.detectChanges();
+    tick();
+    let myPosts = fixture.debugElement.children[0].children[0].componentInstance;
+    let myPostsDOM = fixture.debugElement.children[0].children[0].nativeElement;
     const hugSpy = spyOn(myPosts, 'sendHug').and.callThrough();
     const hugServiceSpy = spyOn(myPosts['postsService'], 'sendHug').and.callThrough();
 
@@ -285,20 +427,27 @@ describe('MyPosts', () => {
   it('changes page (with its associated posts) when clicked', fakeAsync(() => {
     // create the component
     TestBed.createComponent(AppComponent);
-    const userPage = TestBed.createComponent(UserPage).componentInstance;
-    userPage.userId = 1;
-    const fixture = TestBed.createComponent(MyPosts);
-    const myPosts = fixture.componentInstance;
-    const myPostsDOM = fixture.debugElement.nativeElement;
+    const paramMap = TestBed.get(ActivatedRoute);
+    spyOn(paramMap.snapshot.paramMap, 'get').and.returnValue('1');
+    const itemsService = TestBed.get(ItemsService) as ItemsService;
+    const getPostsSpy = spyOn(itemsService, 'getUserPosts').and.callThrough();
+    itemsService['authService'].login();
+    let fixture = TestBed.createComponent(MockUserPage);
+    fixture.detectChanges();
+    tick();
+    let myPosts = fixture.debugElement.children[0].children[0].componentInstance;
+    let myPostsDOM = fixture.debugElement.children[0].children[0].nativeElement;
     const nextPageSpy = spyOn(myPosts, 'nextPage').and.callThrough();
     const prevPageSpy = spyOn(myPosts, 'prevPage').and.callThrough();
-    const getPostsSpy = spyOn(myPosts.itemsService, 'getUserPosts').and.callThrough();
     fixture.detectChanges();
 
     // expectations for page 1
     expect(nextPageSpy).not.toHaveBeenCalled();
     expect(prevPageSpy).not.toHaveBeenCalled();
-    expect(getPostsSpy).toHaveBeenCalledTimes(1);
+    // Explanation: getPosts is actually called TWICE even on the first profile
+    // page view - once as a result of AuthService's login (which calls getPosts), and
+    // once as a result of viewing a user's profile page
+    expect(getPostsSpy).toHaveBeenCalledTimes(2);
     expect(myPosts.itemsService.userPostsPage.other).toBe(1);
     expect(myPostsDOM.querySelectorAll('.itemList')[0].children.length).toBe(5);
 
@@ -310,7 +459,7 @@ describe('MyPosts', () => {
     // expectations for page 2
     expect(nextPageSpy).toHaveBeenCalled();
     expect(prevPageSpy).not.toHaveBeenCalled();
-    expect(getPostsSpy).toHaveBeenCalledTimes(2);
+    expect(getPostsSpy).toHaveBeenCalledTimes(3);
     expect(myPosts.itemsService.userPostsPage.other).toBe(2);
     expect(myPostsDOM.querySelectorAll('.itemList')[0].children.length).toBe(2);
 
@@ -322,7 +471,7 @@ describe('MyPosts', () => {
     // expectations for page 1 (again)
     expect(prevPageSpy).toHaveBeenCalled();
     expect(nextPageSpy).toHaveBeenCalledTimes(1);
-    expect(getPostsSpy).toHaveBeenCalledTimes(3);
+    expect(getPostsSpy).toHaveBeenCalledTimes(4);
     expect(myPosts.itemsService.userPostsPage.other).toBe(1);
     expect(myPostsDOM.querySelectorAll('.itemList')[0].children.length).toBe(5);
   }));

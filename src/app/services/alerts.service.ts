@@ -181,7 +181,7 @@ export class AlertsService {
     alertMessage.append(navButton);
   }
 
-  // ALERT METHODS
+  // CONVENIENCE METHODS
   // ==============================================================
   /*
   Function Name: createSuccessAlert()

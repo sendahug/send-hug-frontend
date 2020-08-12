@@ -27,6 +27,7 @@ import { AdminService } from '../../services/admin.service';
 import { MockAdminService } from '../../services/admin.service.mock';
 import { AlertsService } from '../../services/alerts.service';
 import { MockAlertsService } from '../../services/alerts.service.mock';
+import { Report } from '../../interfaces/report.interface';
 
 describe('Popup', () => {
   // Before each test, configure testing environment
@@ -780,9 +781,6 @@ describe('Popup', () => {
       const deleteItems = [
         'Post', 'Message', 'Thread', 'All posts', 'All inbox', 'All outbox', 'All threads'
       ];
-      const requredArgs = [
-        1, [1, 'inbox'], [2, 'thread'], 4, ['All inbox', 4], ['All outbox', 4], ['All threads', 4]
-      ];
       let methodSpies = [
         spyOn(popUp['postsService'], 'deletePost').and.callThrough(),
         spyOn(popUp['itemsService'], 'deleteMessage').and.callThrough(),
@@ -903,6 +901,423 @@ describe('Popup', () => {
       });
       expect(exitSpy).toHaveBeenCalled();
       expect(deleteSpy).not.toHaveBeenCalled();
+    }));
+  });
+
+  // REPORT POST
+  // ==================================================================
+  describe('Report - Post', () => {
+    // Before each test, configure testing environment
+    beforeEach(() => {
+      TestBed.resetTestEnvironment();
+      TestBed.initTestEnvironment(BrowserDynamicTestingModule,
+          platformBrowserDynamicTesting());
+
+      TestBed.configureTestingModule({
+        imports: [
+          RouterTestingModule,
+          HttpClientModule,
+          ServiceWorkerModule.register('sw.js')
+        ],
+        declarations: [
+          AppComponent,
+          PopUp
+        ],
+        providers: [
+          { provide: APP_BASE_HREF, useValue: '/' },
+          { provide: PostsService, useClass: MockPostsService },
+          { provide: AuthService, useClass: MockAuthService },
+          { provide: ItemsService, useClass: MockItemsService },
+          { provide: AdminService, useClass: MockAdminService },
+          { provide: AlertsService, useClass: MockAlertsService }
+        ]
+      }).compileComponents();
+    });
+
+    // Check that the reported post is shown
+    it('shows the reported post', () => {
+      TestBed.createComponent(AppComponent);
+      TestBed.get(AuthService).login();
+      const fixture = TestBed.createComponent(PopUp);
+      const popUp = fixture.componentInstance;
+      const popUpDOM = fixture.nativeElement;
+      popUp.report = true;
+      popUp.delete = false;
+      popUp.reportType = 'Post';
+      popUp.reportedItem = {
+        id: 1,
+        givenHugs: 0,
+        sentHugs: [],
+        user: 'name',
+        userId: 2,
+        text: 'hi',
+        date: new Date()
+      };
+
+      fixture.detectChanges();
+
+      expect(popUpDOM.querySelector('#reportItem')).toBeTruthy();
+      expect(popUpDOM.querySelectorAll('.userPost')).toBeTruthy();
+      expect(popUpDOM.querySelector('#reportText').textContent).toBe('hi');
+    });
+
+    // Check that the correct radio button is set as selected
+    it('correctly identifies the chosen radio button', fakeAsync(() => {
+      TestBed.createComponent(AppComponent);
+      TestBed.get(AuthService).login();
+      const fixture = TestBed.createComponent(PopUp);
+      const popUp = fixture.componentInstance;
+      const popUpDOM = fixture.nativeElement;
+      popUp.report = true;
+      popUp.delete = false;
+      popUp.reportType = 'Post';
+      popUp.reportedItem = {
+        id: 1,
+        givenHugs: 0,
+        sentHugs: [],
+        user: 'name',
+        userId: 2,
+        text: 'hi',
+        date: new Date()
+      };
+      const selectSpy = spyOn(popUp, 'setSelected').and.callThrough();
+
+      fixture.detectChanges();
+      tick();
+
+      // select option 1
+      popUpDOM.querySelector('#pRadioOption0').click();
+      fixture.detectChanges();
+      tick();
+
+      // check the first option was selected
+      expect(selectSpy).toHaveBeenCalled();
+      expect(selectSpy).toHaveBeenCalledWith(0);
+
+      // select option 2
+      popUpDOM.querySelector('#pRadioOption1').click();
+      fixture.detectChanges();
+      tick();
+
+      // check the second option was selected
+      expect(selectSpy).toHaveBeenCalled();
+      expect(selectSpy).toHaveBeenCalledWith(1);
+
+      // select option 3
+      popUpDOM.querySelector('#pRadioOption2').click();
+      fixture.detectChanges();
+      tick();
+
+      // check the third option was selected
+      expect(selectSpy).toHaveBeenCalled();
+      expect(selectSpy).toHaveBeenCalledWith(2);
+
+      // select option 4
+      popUpDOM.querySelector('#pRadioOption3').click();
+      fixture.detectChanges();
+      tick();
+
+      // check the fourth option was selected
+      expect(selectSpy).toHaveBeenCalled();
+      expect(selectSpy).toHaveBeenCalledWith(3);
+    }));
+
+    // Check that if the user chooses 'other' as reason they can't submit an
+    // empty reason
+    it('requires text if the chosen reason is other', fakeAsync(() => {
+      TestBed.createComponent(AppComponent);
+      TestBed.get(AuthService).login();
+      const fixture = TestBed.createComponent(PopUp);
+      const popUp = fixture.componentInstance;
+      const popUpDOM = fixture.nativeElement;
+      popUp.report = true;
+      popUp.delete = false;
+      popUp.reportType = 'Post';
+      popUp.reportedItem = {
+        id: 1,
+        givenHugs: 0,
+        sentHugs: [],
+        user: 'name',
+        userId: 2,
+        text: 'hi',
+        date: new Date()
+      };
+      const selectSpy = spyOn(popUp, 'setSelected').and.callThrough();
+      const reportSpy = spyOn(popUp, 'reportPost').and.callThrough();
+      const reportServiceSpy = spyOn(popUp['itemsService'], 'sendReport').and.callThrough();
+      fixture.detectChanges();
+      tick();
+
+      // select option 4
+      popUpDOM.querySelector('#pRadioOption3').click();
+      fixture.detectChanges();
+      tick();
+
+      // check the fourth option was selected
+      expect(selectSpy).toHaveBeenCalled();
+      expect(selectSpy).toHaveBeenCalledWith(3);
+
+      // try to submit it without text in the textfield
+      popUpDOM.querySelectorAll('.reportButton')[0].click();
+      fixture.detectChanges();
+      tick();
+
+      // check the report wasn't sent and the user was alerted
+      expect(reportSpy).toHaveBeenCalled();
+      expect(popUpDOM.querySelectorAll('.alertMessage')[0]).toBeTruthy();
+      expect(popUpDOM.querySelector('#rOption3Text').classList).toContain('missing');
+      expect(reportServiceSpy).not.toHaveBeenCalled();
+    }));
+
+    // Check that the popup triggers creating a report via the Items Service
+    it('creates and sends a report to the itemsService', fakeAsync(() => {
+      TestBed.createComponent(AppComponent);
+      TestBed.get(AuthService).login();
+      const fixture = TestBed.createComponent(PopUp);
+      const popUp = fixture.componentInstance;
+      const popUpDOM = fixture.nativeElement;
+      popUp.report = true;
+      popUp.delete = false;
+      popUp.reportType = 'Post';
+      popUp.reportedItem = {
+        id: 1,
+        givenHugs: 0,
+        sentHugs: [],
+        user: 'name',
+        userId: 2,
+        text: 'hi',
+        date: new Date()
+      };
+      const reportSpy = spyOn(popUp, 'reportPost').and.callThrough();
+      const reportServiceSpy = spyOn(popUp['itemsService'], 'sendReport').and.callThrough();
+      fixture.detectChanges();
+      tick();
+
+      // select report reason and hit report
+      popUpDOM.querySelector('#pRadioOption0').click();
+      popUpDOM.querySelectorAll('.reportButton')[0].click();
+      fixture.detectChanges();
+      tick();
+
+      const report:Report = {
+        type: 'Post',
+        userID: 2,
+        postID: 1,
+        reporter: 4,
+        reportReason: 'The post is Inappropriate',
+        date: new Date(),
+        dismissed: false,
+        closed: false
+      }
+      expect(reportSpy).toHaveBeenCalled();
+      expect(reportServiceSpy).toHaveBeenCalled();
+      expect(reportServiceSpy).toHaveBeenCalledWith(report);
+    }));
+  });
+
+  // REPORT USER
+  // ==================================================================
+  describe('report - user', () => {
+    // Before each test, configure testing environment
+    beforeEach(() => {
+      TestBed.resetTestEnvironment();
+      TestBed.initTestEnvironment(BrowserDynamicTestingModule,
+          platformBrowserDynamicTesting());
+
+      TestBed.configureTestingModule({
+        imports: [
+          RouterTestingModule,
+          HttpClientModule,
+          ServiceWorkerModule.register('sw.js')
+        ],
+        declarations: [
+          AppComponent,
+          PopUp
+        ],
+        providers: [
+          { provide: APP_BASE_HREF, useValue: '/' },
+          { provide: PostsService, useClass: MockPostsService },
+          { provide: AuthService, useClass: MockAuthService },
+          { provide: ItemsService, useClass: MockItemsService },
+          { provide: AdminService, useClass: MockAdminService },
+          { provide: AlertsService, useClass: MockAlertsService }
+        ]
+      }).compileComponents();
+    });
+
+    // Check that the reported user's display name is shown
+    it('shows the reported user\'s name', () => {
+      TestBed.createComponent(AppComponent);
+      TestBed.get(AuthService).login();
+      const fixture = TestBed.createComponent(PopUp);
+      const popUp = fixture.componentInstance;
+      const popUpDOM = fixture.nativeElement;
+      popUp.report = true;
+      popUp.delete = false;
+      popUp.reportType = 'Post';
+      popUp.reportedItem = {
+        id: 3,
+        displayName: 'string',
+        receivedHugs: 3,
+        givenHugs: 4,
+        postsNum: 2,
+        role: 'user'
+      };
+
+      fixture.detectChanges();
+
+      expect(popUpDOM.querySelector('#reportUser')).toBeTruthy();
+      expect(popUpDOM.querySelectorAll('.uReportText')).toBeTruthy();
+      expect(popUpDOM.querySelector('#uReportText').textContent).toBe('string');
+    });
+
+    // Check that the correct radio button is set as selected
+    it('correctly identifies the chosen radio button', fakeAsync(() => {
+      TestBed.createComponent(AppComponent);
+      TestBed.get(AuthService).login();
+      const fixture = TestBed.createComponent(PopUp);
+      const popUp = fixture.componentInstance;
+      const popUpDOM = fixture.nativeElement;
+      popUp.report = true;
+      popUp.delete = false;
+      popUp.reportType = 'Post';
+      popUp.reportedItem = {
+        id: 3,
+        displayName: 'string',
+        receivedHugs: 3,
+        givenHugs: 4,
+        postsNum: 2,
+        role: 'user'
+      };
+      const selectSpy = spyOn(popUp, 'setSelected').and.callThrough();
+
+      fixture.detectChanges();
+      tick();
+
+      // select option 1
+      popUpDOM.querySelector('#uRadioOption0').click();
+      fixture.detectChanges();
+      tick();
+
+      // check the first option was selected
+      expect(selectSpy).toHaveBeenCalled();
+      expect(selectSpy).toHaveBeenCalledWith(0);
+
+      // select option 2
+      popUpDOM.querySelector('#uRadioOption1').click();
+      fixture.detectChanges();
+      tick();
+
+      // check the second option was selected
+      expect(selectSpy).toHaveBeenCalled();
+      expect(selectSpy).toHaveBeenCalledWith(1);
+
+      // select option 3
+      popUpDOM.querySelector('#uRadioOption2').click();
+      fixture.detectChanges();
+      tick();
+
+      // check the third option was selected
+      expect(selectSpy).toHaveBeenCalled();
+      expect(selectSpy).toHaveBeenCalledWith(2);
+
+      // select option 4
+      popUpDOM.querySelector('#uRadioOption3').click();
+      fixture.detectChanges();
+      tick();
+
+      // check the fourth option was selected
+      expect(selectSpy).toHaveBeenCalled();
+      expect(selectSpy).toHaveBeenCalledWith(3);
+    }));
+
+    // Check that if the user chooses 'other' as reason they can't submit an
+    // empty reason
+    it('requires text if the chosen reason is other', fakeAsync(() => {
+      TestBed.createComponent(AppComponent);
+      TestBed.get(AuthService).login();
+      const fixture = TestBed.createComponent(PopUp);
+      const popUp = fixture.componentInstance;
+      const popUpDOM = fixture.nativeElement;
+      popUp.report = true;
+      popUp.delete = false;
+      popUp.reportType = 'Post';
+      popUp.reportedItem = {
+        id: 3,
+        displayName: 'string',
+        receivedHugs: 3,
+        givenHugs: 4,
+        postsNum: 2,
+        role: 'user'
+      };
+      const selectSpy = spyOn(popUp, 'setSelected').and.callThrough();
+      const reportSpy = spyOn(popUp, 'reportUser').and.callThrough();
+      const reportServiceSpy = spyOn(popUp['itemsService'], 'sendReport').and.callThrough();
+      fixture.detectChanges();
+      tick();
+
+      // select option 4
+      popUpDOM.querySelector('#uRadioOption3').click();
+      fixture.detectChanges();
+      tick();
+
+      // check the fourth option was selected
+      expect(selectSpy).toHaveBeenCalled();
+      expect(selectSpy).toHaveBeenCalledWith(3);
+
+      // try to submit it without text in the textfield
+      popUpDOM.querySelectorAll('.reportButton')[0].click();
+      fixture.detectChanges();
+      tick();
+
+      // check the report wasn't sent and the user was alerted
+      expect(reportSpy).toHaveBeenCalled();
+      expect(popUpDOM.querySelectorAll('.alertMessage')[0]).toBeTruthy();
+      expect(popUpDOM.querySelector('#uOption3Text').classList).toContain('missing');
+      expect(reportServiceSpy).not.toHaveBeenCalled();
+    }));
+
+    // Check that the popup triggers creating a report via the Items Service
+    it('creates and sends a report to the itemsService', fakeAsync(() => {
+      TestBed.createComponent(AppComponent);
+      TestBed.get(AuthService).login();
+      const fixture = TestBed.createComponent(PopUp);
+      const popUp = fixture.componentInstance;
+      const popUpDOM = fixture.nativeElement;
+      popUp.report = true;
+      popUp.delete = false;
+      popUp.reportType = 'Post';
+      popUp.reportedItem = {
+        id: 3,
+        displayName: 'string',
+        receivedHugs: 3,
+        givenHugs: 4,
+        postsNum: 2,
+        role: 'user'
+      };
+      const reportSpy = spyOn(popUp, 'reportUser').and.callThrough();
+      const reportServiceSpy = spyOn(popUp['itemsService'], 'sendReport').and.callThrough();
+      fixture.detectChanges();
+      tick();
+
+      // select report reason and hit report
+      popUpDOM.querySelector('#uRadioOption0').click();
+      popUpDOM.querySelectorAll('.reportButton')[0].click();
+      fixture.detectChanges();
+      tick();
+
+      const report:Report = {
+        type: 'User',
+        userID: 2,
+        reporter: 4,
+        reportReason: 'The user is posting Spam',
+        date: new Date(),
+        dismissed: false,
+        closed: false
+      }
+      expect(reportSpy).toHaveBeenCalled();
+      expect(reportServiceSpy).toHaveBeenCalled();
+      expect(reportServiceSpy).toHaveBeenCalledWith(report);
     }));
   });
 });

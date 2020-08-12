@@ -66,6 +66,38 @@ describe('Popup', () => {
     expect(popUp).toBeTruthy();
   });
 
+  // Check that the event emitter emits false if the user clicks 'exit'
+  it('exits the popup if the user decides not to edit', fakeAsync(() => {
+    TestBed.createComponent(AppComponent);
+    const fixture = TestBed.createComponent(PopUp);
+    const popUp = fixture.componentInstance;
+    const popUpDOM = fixture.nativeElement;
+    popUp.toEdit = 'post';
+    popUp.delete = false;
+    popUp.report = false;
+    popUp.editedItem = {
+      id: 1,
+      userId: 4,
+      user: 'me',
+      text: 'hi',
+      date: new Date(),
+      givenHugs: 0,
+      sentHugs: []
+    };
+    const exitSpy = spyOn(popUp, 'exitEdit').and.callThrough();
+    fixture.detectChanges();
+
+    // click the exit button
+    popUpDOM.querySelector('#exitButton').click();
+    fixture.detectChanges();
+    tick();
+
+    popUp.editMode.subscribe((event:boolean) => {
+      expect(event).toBeFalse();
+    });
+    expect(exitSpy).toHaveBeenCalled();
+  }));
+
   // POST EDIT
   // ==================================================================
   describe('Post Edit', () => {
@@ -190,38 +222,6 @@ describe('Popup', () => {
       expect(popUpDOM.querySelector('#postText').classList).toContain('missing');
       expect(updateServiceSpy).not.toHaveBeenCalled();
     }));
-
-    // Check that the event emitter emits false if the user clicks 'exit'
-    it('exits the popup if the user decides not to edit', fakeAsync(() => {
-      TestBed.createComponent(AppComponent);
-      const fixture = TestBed.createComponent(PopUp);
-      const popUp = fixture.componentInstance;
-      const popUpDOM = fixture.nativeElement;
-      popUp.toEdit = 'post';
-      popUp.delete = false;
-      popUp.report = false;
-      popUp.editedItem = {
-        id: 1,
-        userId: 4,
-        user: 'me',
-        text: 'hi',
-        date: new Date(),
-        givenHugs: 0,
-        sentHugs: []
-      };
-      const exitSpy = spyOn(popUp, 'exitEdit').and.callThrough();
-      fixture.detectChanges();
-
-      // click the exit button
-      popUpDOM.querySelector('#exitButton').click();
-      fixture.detectChanges();
-      tick();
-
-      popUp.editMode.subscribe((event:boolean) => {
-        expect(event).toBeFalse();
-      });
-      expect(exitSpy).toHaveBeenCalled();
-    }));
   });
 
   // POST EDIT - ADMIN PAGE
@@ -325,7 +325,7 @@ describe('Popup', () => {
       tick();
 
       // change the post's text
-      popUpDOM.querySelector('#postText').value = 'hi there';
+      popUpDOM.querySelector('#adPostText').value = 'hi there';
       popUpDOM.querySelectorAll('.sendData')[0].click();
       fixture.detectChanges();
       tick();
@@ -340,7 +340,7 @@ describe('Popup', () => {
       expect(updateServiceSpy).toHaveBeenCalledWith(post, true, 2);
 
       // change the post's text
-      popUpDOM.querySelector('#postText').value = 'hi there';
+      popUpDOM.querySelector('#adPostText').value = 'hi there';
       popUpDOM.querySelectorAll('.sendData')[1].click();
       fixture.detectChanges();
       tick();
@@ -372,42 +372,349 @@ describe('Popup', () => {
       tick();
 
       // change the post's text
-      popUpDOM.querySelector('#postText').value = '';
+      popUpDOM.querySelector('#adPostText').value = '';
       fixture.detectChanges();
       tick();
 
       expect(updateSpy).toHaveBeenCalled();
       expect(popUpDOM.querySelectorAll('.alertMessage')[0]).toBeTruthy();
-      expect(popUpDOM.querySelector('#postText').classList).toContain('missing');
+      expect(popUpDOM.querySelector('#adPostText').classList).toContain('missing');
       expect(updateServiceSpy).not.toHaveBeenCalled();
     }));
+  });
 
-    // Check that the event emitter emits false if the user clicks 'exit'
-    it('exits the popup if the user decides not to edit', fakeAsync(() => {
+  // DISPLAY NAME EDIT
+  // ==================================================================
+  describe('Display Name Edit', () => {
+    // Before each test, configure testing environment
+    beforeEach(() => {
+      TestBed.resetTestEnvironment();
+      TestBed.initTestEnvironment(BrowserDynamicTestingModule,
+          platformBrowserDynamicTesting());
+
+      TestBed.configureTestingModule({
+        imports: [
+          RouterTestingModule,
+          HttpClientModule,
+          ServiceWorkerModule.register('sw.js')
+        ],
+        declarations: [
+          AppComponent,
+          PopUp
+        ],
+        providers: [
+          { provide: APP_BASE_HREF, useValue: '/' },
+          { provide: PostsService, useClass: MockPostsService },
+          { provide: AuthService, useClass: MockAuthService },
+          { provide: ItemsService, useClass: MockItemsService },
+          { provide: AdminService, useClass: MockAdminService },
+          { provide: AlertsService, useClass: MockAlertsService }
+        ]
+      }).compileComponents();
+    });
+
+    // Check that the user's current display name is shown in the textfield
+    it('shows the user\'s current display name', () => {
       TestBed.createComponent(AppComponent);
+      TestBed.get(AuthService).login();
       const fixture = TestBed.createComponent(PopUp);
       const popUp = fixture.componentInstance;
       const popUpDOM = fixture.nativeElement;
-      popUp.toEdit = 'admin post';
+      popUp.toEdit = 'user';
       popUp.delete = false;
       popUp.report = false;
-      popUp.editedItem = 'hi';
-      popUp.reportData = {
-        reportID: 1,
-        postID: 2
+      popUp.editedItem = {
+        id: 4,
+        displayName: 'name',
+        receivedHugs: 2,
+        givenHugs: 2,
+        postsNum: 2,
+        loginCount: 3,
+        role: 'admin',
       };
-      const exitSpy = spyOn(popUp, 'exitEdit').and.callThrough();
+
       fixture.detectChanges();
 
-      // click the exit button
-      popUpDOM.querySelector('#exitButton').click();
+      expect(popUpDOM.querySelector('#userEdit')).toBeTruthy();
+      expect(popUpDOM.querySelector('#displayName')).toBeTruthy();
+      expect(popUpDOM.querySelector('#displayName').value).toBe('name');
+    });
+
+    // Check that once the user click's the 'update' button, a request is made to change
+    // the user's display name
+    it('makes a request to change the display name upon submitting', fakeAsync(() => {
+      TestBed.createComponent(AppComponent);
+      TestBed.get(AuthService).login();
+      const fixture = TestBed.createComponent(PopUp);
+      const popUp = fixture.componentInstance;
+      const popUpDOM = fixture.nativeElement;
+      popUp.toEdit = 'user';
+      popUp.delete = false;
+      popUp.report = false;
+      popUp.editedItem = {
+        id: 4,
+        displayName: 'name',
+        receivedHugs: 2,
+        givenHugs: 2,
+        postsNum: 2,
+        loginCount: 3,
+        role: 'admin',
+      };
+      const updateSpy = spyOn(popUp, 'updateDisplayN').and.callThrough();
+      const updateServiceSpy = spyOn(popUp.authService, 'updateUserData').and.callThrough();
+
       fixture.detectChanges();
       tick();
 
-      popUp.editMode.subscribe((event:boolean) => {
-        expect(event).toBeFalse();
-      });
-      expect(exitSpy).toHaveBeenCalled();
+      // change the user's name
+      popUpDOM.querySelector('#displayName').value = 'new name';
+      popUpDOM.querySelectorAll('.updateItem')[0].click();
+      fixture.detectChanges();
+      tick();
+
+      // check the call is made
+      expect(updateSpy).toHaveBeenCalled();
+      expect(updateServiceSpy).toHaveBeenCalled();
+      expect(popUp.authService.userData.displayName).toBe('new name');
+    }));
+
+    // Check that empty display names are prevented
+    it('prevents empty display names', fakeAsync(() => {
+      TestBed.createComponent(AppComponent);
+      TestBed.get(AuthService).login();
+      const fixture = TestBed.createComponent(PopUp);
+      const popUp = fixture.componentInstance;
+      const popUpDOM = fixture.nativeElement;
+      popUp.toEdit = 'user';
+      popUp.delete = false;
+      popUp.report = false;
+      popUp.editedItem = {
+        id: 4,
+        displayName: 'name',
+        receivedHugs: 2,
+        givenHugs: 2,
+        postsNum: 2,
+        loginCount: 3,
+        role: 'admin',
+      };
+      const updateSpy = spyOn(popUp, 'updateDisplayN').and.callThrough();
+      const updateServiceSpy = spyOn(popUp.authService, 'updateUserData').and.callThrough();
+
+      fixture.detectChanges();
+      tick();
+
+      // change the user's name
+      popUpDOM.querySelector('#displayName').value = '';
+      popUpDOM.querySelectorAll('.updateItem')[0].click();
+      fixture.detectChanges();
+      tick();
+
+      expect(updateSpy).toHaveBeenCalled();
+      expect(popUpDOM.querySelectorAll('.alertMessage')[0]).toBeTruthy();
+      expect(popUpDOM.querySelector('#displayName').classList).toContain('missing');
+      expect(updateServiceSpy).not.toHaveBeenCalled();
+    }));
+  });
+
+  // DISPLAY NAME EDIT - ADMIN PAGE
+  // ==================================================================
+  describe('Display Name Edit - Admin Page', () => {
+    // Before each test, configure testing environment
+    beforeEach(() => {
+      TestBed.resetTestEnvironment();
+      TestBed.initTestEnvironment(BrowserDynamicTestingModule,
+          platformBrowserDynamicTesting());
+
+      TestBed.configureTestingModule({
+        imports: [
+          RouterTestingModule,
+          HttpClientModule,
+          ServiceWorkerModule.register('sw.js')
+        ],
+        declarations: [
+          AppComponent,
+          PopUp
+        ],
+        providers: [
+          { provide: APP_BASE_HREF, useValue: '/' },
+          { provide: PostsService, useClass: MockPostsService },
+          { provide: AuthService, useClass: MockAuthService },
+          { provide: ItemsService, useClass: MockItemsService },
+          { provide: AdminService, useClass: MockAdminService },
+          { provide: AlertsService, useClass: MockAlertsService }
+        ]
+      }).compileComponents();
+    });
+
+    // Check that the user's current display name is shown in the textfield
+    it('shows the user\'s current display name', () => {
+      TestBed.createComponent(AppComponent);
+      TestBed.get(AuthService).login();
+      const fixture = TestBed.createComponent(PopUp);
+      const popUp = fixture.componentInstance;
+      const popUpDOM = fixture.nativeElement;
+      popUp.toEdit = 'other user';
+      popUp.delete = false;
+      popUp.report = false;
+      popUp.editedItem = {
+        id: 4,
+        displayName: 'name',
+        receivedHugs: 2,
+        givenHugs: 2,
+        postsNum: 2,
+        loginCount: 3,
+        role: 'admin',
+      };
+      popUp.reportData = {
+        reportID: 3,
+        userID: 4
+      };
+
+      fixture.detectChanges();
+
+      expect(popUpDOM.querySelector('#otherUserEdit')).toBeTruthy();
+      expect(popUpDOM.querySelector('#uDisplayName')).toBeTruthy();
+      expect(popUpDOM.querySelector('#uDisplayName').value).toBe('name');
+    });
+
+    // Check that a request is made to the admin service to update the user's
+    // display name upon clicking 'update'
+    it('makes a request to change the display name upon submitting', fakeAsync(() => {
+      TestBed.createComponent(AppComponent);
+      TestBed.get(AuthService).login();
+      const fixture = TestBed.createComponent(PopUp);
+      const popUp = fixture.componentInstance;
+      const popUpDOM = fixture.nativeElement;
+      popUp.toEdit = 'other user';
+      popUp.delete = false;
+      popUp.report = false;
+      popUp.editedItem = {
+        id: 4,
+        displayName: 'name',
+        receivedHugs: 2,
+        givenHugs: 2,
+        postsNum: 2,
+        loginCount: 3,
+        role: 'admin',
+      };
+      popUp.reportData = {
+        reportID: 3,
+        userID: 4
+      };
+      const updateSpy = spyOn(popUp, 'editUser').and.callThrough();
+      const updateServiceSpy = spyOn(popUp['adminService'], 'editUser').and.callThrough();
+
+      fixture.detectChanges();
+      tick();
+
+      // change the display name
+      popUpDOM.querySelector('#uDisplayName').value = 'new name';
+      popUpDOM.querySelectorAll('.updateItem')[0].click();
+      fixture.detectChanges();
+      tick();
+
+      // check the call was made
+      expect(updateSpy).toHaveBeenCalled();
+      expect(updateServiceSpy).toHaveBeenCalled();
+    }));
+
+    // Check that the closeReport boolean is adjusted depending on what the
+    // user chose
+    it('makes a request to close the report if that\'s what the user chose', fakeAsync(() => {
+      TestBed.createComponent(AppComponent);
+      TestBed.get(AuthService).login();
+      const fixture = TestBed.createComponent(PopUp);
+      const popUp = fixture.componentInstance;
+      const popUpDOM = fixture.nativeElement;
+      popUp.toEdit = 'other user';
+      popUp.delete = false;
+      popUp.report = false;
+      popUp.editedItem = {
+        id: 4,
+        displayName: 'name',
+        receivedHugs: 2,
+        givenHugs: 2,
+        postsNum: 2,
+        loginCount: 3,
+        role: 'admin',
+      };
+      popUp.reportData = {
+        reportID: 3,
+        userID: 4
+      };
+      const updateSpy = spyOn(popUp, 'editUser').and.callThrough();
+      const updateServiceSpy = spyOn(popUp['adminService'], 'editUser').and.callThrough();
+
+      fixture.detectChanges();
+      tick();
+
+      // change the display name
+      popUpDOM.querySelector('#uDisplayName').value = 'new name';
+      popUpDOM.querySelectorAll('.updateItem')[0].click();
+      fixture.detectChanges();
+      tick();
+
+      // check that the closeReport boolean is true
+      const user = {
+        userID: 4,
+        displayName: 'new name'
+      };
+      expect(updateSpy).toHaveBeenCalled();
+      expect(updateServiceSpy).toHaveBeenCalled();
+      expect(updateServiceSpy).toHaveBeenCalledWith(user, true, 3);
+
+      // change the display name
+      popUpDOM.querySelector('#uDisplayName').value = 'new name';
+      popUpDOM.querySelectorAll('.updateItem')[1].click();
+      fixture.detectChanges();
+      tick();
+
+      // check that the closeReport boolean is false
+      expect(updateSpy).toHaveBeenCalled();
+      expect(updateServiceSpy).toHaveBeenCalled();
+      expect(updateServiceSpy).toHaveBeenCalledWith(user, false, 3);
+    }));
+
+    // Check that empty display names are prevented
+    it('prevents empty display names', fakeAsync(() => {
+      TestBed.createComponent(AppComponent);
+      TestBed.get(AuthService).login();
+      const fixture = TestBed.createComponent(PopUp);
+      const popUp = fixture.componentInstance;
+      const popUpDOM = fixture.nativeElement;
+      popUp.toEdit = 'other user';
+      popUp.delete = false;
+      popUp.report = false;
+      popUp.editedItem = {
+        id: 4,
+        displayName: 'name',
+        receivedHugs: 2,
+        givenHugs: 2,
+        postsNum: 2,
+        loginCount: 3,
+        role: 'admin',
+      };
+      popUp.reportData = {
+        reportID: 3,
+        userID: 4
+      };
+      const updateSpy = spyOn(popUp, 'editUser').and.callThrough();
+      const updateServiceSpy = spyOn(popUp['adminService'], 'editUser').and.callThrough();
+
+      fixture.detectChanges();
+      tick();
+
+      // change the display name
+      popUpDOM.querySelector('#uDisplayName').value = '';
+      popUpDOM.querySelectorAll('.updateItem')[0].click();
+      fixture.detectChanges();
+      tick();
+
+      // check the empty display name isn't passed on and the user is alerted
+      expect(updateSpy).toHaveBeenCalled();
+      expect(popUpDOM.querySelectorAll('.alertMessage')[0]).toBeTruthy();
+      expect(popUpDOM.querySelector('#uDisplayName').classList).toContain('missing');
+      expect(updateServiceSpy).not.toHaveBeenCalled();
     }));
   });
 });

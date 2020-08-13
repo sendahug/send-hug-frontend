@@ -16,6 +16,7 @@ import { AlertsService } from './alerts.service';
 import { ItemsService } from './items.service';
 import { environment } from '../../environments/environment';
 import { environment as prodEnv } from '../../environments/environment.prod';
+import { OtherUser } from '../interfaces/otherUser.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -25,7 +26,7 @@ export class AdminService {
   userReports: Report[] = [];
   postReports: Report[] = [];
   isReportsResolved = new BehaviorSubject(false);
-  blockedUsers = [];
+  blockedUsers: OtherUser[] = [];
   isBlocksResolved = new BehaviorSubject(false);
   // blocked user data
   userBlockData: {
@@ -34,7 +35,7 @@ export class AdminService {
     releaseDate: Date
   } | undefined;
   isBlockDataResolved = new BehaviorSubject(false);
-  filteredPhrases = [];
+  filteredPhrases: string[] = [];
   isFiltersResolved = new BehaviorSubject(false);
   // pagination
   currentPage = {
@@ -245,9 +246,7 @@ export class AdminService {
       headers: this.authService.authHeader
     }).subscribe((response:any) => {
       // if the report was dismissed, alert the user
-      if(response.success) {
-        this.alertsService.createSuccessAlert('The report was dismissed! Refresh the page to view the updated list.', true);
-      }
+      this.alertsService.createSuccessAlert(`Report ${response.updated.id} was dismissed! Refresh the page to view the updated list.`, true);
     // if there's an error, alert the user
     }, (err:HttpErrorResponse) => {
       this.alertsService.createErrorAlert(err);

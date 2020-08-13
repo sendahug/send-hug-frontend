@@ -14,7 +14,10 @@ import { AlertsService } from './alerts.service';
 
 @Component({
   selector: 'app-root',
-  template: `<div id="alertContainer"></div>`
+  template: `
+    <div id="noInternet" *ngIf="alertsService.isOffline.value" role="banner">You are not currently connected to the internet. For updated data, reconnect to the internet and try again.</div>
+    <div id="alertContainer"></div>
+    `
 })
 class Sample {
 
@@ -206,13 +209,41 @@ describe('AlertsService', () => {
 
   });
 
-  //
+  // Check the service shows an offline alert when the user is offline
   it('toggleOfflineAlert() - should add offline alert', () => {
+    const fixture = TestBed.createComponent(Sample);
+    const componentDOM = fixture.nativeElement;
+    fixture.detectChanges();
 
+    // expect the isOffline subject's current value to be false
+    expect(alertsService.isOffline.value).toBe(false);
+    expect(componentDOM.querySelector('#noInternet')).toBeNull();
+
+    // change the 'Navigator.onLine' value to false
+    spyOnProperty(Navigator.prototype, 'onLine').and.returnValue(false);
+    fixture.detectChanges();
+
+    // check the alert is on
+    expect(alertsService.isOffline.value).toBe(true);
+    expect(componentDOM.querySelector('#noInternet')).toBeTruthy();
   });
 
-  //
+  // Check the service removes the offline alert when the user is online
   it('toggleOfflineAlert() - should remove offline alert', () => {
+    const fixture = TestBed.createComponent(Sample);
+    const componentDOM = fixture.nativeElement;
+    const onlineSpy = spyOnProperty(Navigator.prototype, 'onLine').and.returnValue(false);
+    fixture.detectChanges();
 
+    // check the alert is on
+    expect(alertsService.isOffline.value).toBe(true);
+    expect(componentDOM.querySelector('#noInternet')).toBeTruthy();
+
+    // change the 'Navigator.onLine' value to true
+    onlineSpy.and.returnValue(true);
+
+    // check the alert is gone
+    expect(alertsService.isOffline.value).toBe(false);
+    expect(componentDOM.querySelector('#noInternet')).toBeNull();
   });
 });

@@ -35,7 +35,7 @@ For full project information, check the [`main README file`](https://github.com/
 
 The app (located in [src/app](./src/app)) contains the main module (AppModule), defined in **app.module.ts**, and a routing module, defined in **app-routing.module.ts**.
 
-The main module contains 9 components, 3 services and 4 interfaces. Each component folder contains both the HTML template and the component TypeScript file.
+The main module contains 15 components, 7 services and 7 interfaces. Each component folder contains both the HTML template and the component TypeScript file.
 
 ### Components
 

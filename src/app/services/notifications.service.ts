@@ -23,7 +23,7 @@ export class NotificationService {
   readonly serverUrl = environment.production ? prodEnv.backend.domain! : environment.backend.domain;
   readonly publicKey = environment.production ? prodEnv.vapidKey : environment.vapidKey;
   // notifications data
-  notifications = [];
+  notifications: any[] = [];
   // push notifications variables
   toggleBtn!: 'Enable' | 'Disable';
   notificationsSub: PushSubscription | undefined;

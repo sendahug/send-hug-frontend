@@ -210,6 +210,7 @@ export class NotificationService {
     if(this.notificationsSub) {
       this.notificationsSub.unsubscribe();
       this.toggleBtn = 'Enable';
+      this.pushStatus = false;
     }
   }
 

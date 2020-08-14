@@ -320,7 +320,7 @@ export class PopUp implements OnInit, OnChanges, AfterViewChecked {
     }
     // if it's a thread, send a request to delete the thread
     else if(this.toDelete == 'Thread') {
-      this.itemsService.deleteThread(this.itemToDelete!, this.messType!);
+      this.itemsService.deleteThread(this.itemToDelete!);
     }
     // if the user is attempting to delete all of the user's posts
     else if(this.toDelete == 'All posts') {

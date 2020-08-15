@@ -106,7 +106,7 @@ describe('PostsService', () => {
       }
     });
 
-    const req = httpController.expectOne('http://localhost:5000/');
+    const req = httpController.expectOne('http://localhost:5000');
     expect(req.request.method).toEqual('GET');
     req.flush(mockResponse);
   });
@@ -139,6 +139,25 @@ describe('PostsService', () => {
       ]
     };
 
+    // fetch page 1
+    postsService.getNewItems(1);
+    // wait for the fetch to be resolved
+    postsService.isPostsResolved.fullNewItems.subscribe((value) => {
+      if(value) {
+        expect(postsService.fullItemsPage.fullNewItems).toBe(1);
+        expect(postsService.totalFullItemsPage.fullNewItems).toBe(2);
+        expect(postsService.fullItemsList.fullNewItems.length).toBe(2);
+        expect(postsService.fullItemsList.fullNewItems[0].id).toBe(1);
+      }
+    });
+
+    const p1Req = httpController.expectOne('http://localhost:5000/posts/new?page=1');
+    expect(p1Req.request.method).toEqual('GET');
+    p1Req.flush(mockP1Response);
+  });
+
+  // Check the service gets the full new items page 2
+  it('getItems() - should get items page 2', () => {
     // mock page 2 response
     const mockP2Response = {
       success: true,
@@ -156,18 +175,6 @@ describe('PostsService', () => {
       ]
     };
 
-    // fetch page 1
-    postsService.getNewItems(1);
-    // wait for the fetch to be resolved
-    postsService.isPostsResolved.fullNewItems.subscribe((value) => {
-      if(value) {
-        expect(postsService.fullItemsPage.fullNewItems).toBe(1);
-        expect(postsService.totalFullItemsPage.fullNewItems).toBe(2);
-        expect(postsService.fullItemsList.fullNewItems.length).toBe(2);
-        expect(postsService.fullItemsList.fullNewItems[0].id).toBe(1);
-      }
-    });
-
     // fetch page 2
     postsService.getNewItems(2);
     // wait for the fetch to be resolved
@@ -179,10 +186,6 @@ describe('PostsService', () => {
         expect(postsService.fullItemsList.fullNewItems[0].id).toBe(3);
       }
     });
-
-    const p1Req = httpController.expectOne('http://localhost:5000/posts/new?page=1');
-    expect(p1Req.request.method).toEqual('GET');
-    p1Req.flush(mockP1Response);
 
     const p2Req = httpController.expectOne('http://localhost:5000/posts/new?page=2');
     expect(p2Req.request.method).toEqual('GET');
@@ -217,6 +220,25 @@ describe('PostsService', () => {
       ]
     };
 
+    // fetch page 1
+    postsService.getSuggestedItems(1);
+    // wait for the fetch to be resolved
+    postsService.isPostsResolved.fullSuggestedItems.subscribe((value) => {
+      if(value) {
+        expect(postsService.fullItemsPage.fullSuggestedItems).toBe(1);
+        expect(postsService.totalFullItemsPage.fullSuggestedItems).toBe(2);
+        expect(postsService.fullItemsList.fullSuggestedItems.length).toBe(2);
+        expect(postsService.fullItemsList.fullSuggestedItems[0].id).toBe(1);
+      }
+    });
+
+    const p1Req = httpController.expectOne('http://localhost:5000/posts/suggested?page=1');
+    expect(p1Req.request.method).toEqual('GET');
+    p1Req.flush(mockP1Response);
+  });
+
+  // Check the service gets the full suggested items page 2
+  it('getSuggestedItems() - should get suggested items page 2', () => {
     // mock page 2 response
     const mockP2Response = {
       success: true,
@@ -234,18 +256,6 @@ describe('PostsService', () => {
       ]
     };
 
-    // fetch page 1
-    postsService.getSuggestedItems(1);
-    // wait for the fetch to be resolved
-    postsService.isPostsResolved.fullSuggestedItems.subscribe((value) => {
-      if(value) {
-        expect(postsService.fullItemsPage.fullSuggestedItems).toBe(1);
-        expect(postsService.totalFullItemsPage.fullSuggestedItems).toBe(2);
-        expect(postsService.fullItemsList.fullSuggestedItems.length).toBe(2);
-        expect(postsService.fullItemsList.fullSuggestedItems[0].id).toBe(1);
-      }
-    });
-
     // fetch page 2
     postsService.getSuggestedItems(2);
     // wait for the fetch to be resolved
@@ -257,10 +267,6 @@ describe('PostsService', () => {
         expect(postsService.fullItemsList.fullSuggestedItems[0].id).toBe(3);
       }
     });
-
-    const p1Req = httpController.expectOne('http://localhost:5000/posts/suggested?page=1');
-    expect(p1Req.request.method).toEqual('GET');
-    p1Req.flush(mockP1Response);
 
     const p2Req = httpController.expectOne('http://localhost:5000/posts/suggested?page=2');
     expect(p2Req.request.method).toEqual('GET');
@@ -432,10 +438,5 @@ describe('PostsService', () => {
     expect(alertSpy).toHaveBeenCalledWith('Your hug was sent!', false);
     expect(disableSpy).toHaveBeenCalled();
     expect(disableSpy).toHaveBeenCalledTimes(4);
-  });
-
-  // Check the service disables the relevant hug button
-  it('disableHugButton() - should disable the relevant hug button', () => {
-
   });
 });

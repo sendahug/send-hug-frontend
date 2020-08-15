@@ -38,7 +38,7 @@ describe('Loader', () => {
       imports: [
         RouterTestingModule,
         HttpClientModule,
-        ServiceWorkerModule.register('sw.js')
+        ServiceWorkerModule.register('sw.js', { enabled: false })
       ],
       declarations: [
         AppComponent,

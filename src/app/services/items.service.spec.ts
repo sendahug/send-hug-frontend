@@ -18,7 +18,7 @@ import { SWManager } from './sWManager.service';
 import { MockSWManager } from './sWManager.service.mock';
 import { Report } from "../interfaces/report.interface";
 
-describe('AdminService', () => {
+describe('ItemsService', () => {
   let httpController: HttpTestingController;
   let itemsService: ItemsService;
 
@@ -85,7 +85,7 @@ describe('AdminService', () => {
       }
     });
 
-    const req = httpController.expectOne('http://localhost:5000/users/all/1/posts');
+    const req = httpController.expectOne('http://localhost:5000/users/all/1/posts?page=1');
     expect(req.request.method).toEqual('GET');
     req.flush(mockResponse);
   });
@@ -162,14 +162,14 @@ describe('AdminService', () => {
       }
     });
 
-    const selfReq = httpController.expectOne('http://localhost:5000/users/all/4/posts');
+    const selfReq = httpController.expectOne('http://localhost:5000/users/all/4/posts?page=1');
     expect(selfReq.request.method).toEqual('GET');
     selfReq.flush(mockSelfResponse);
 
     // for comparison, then fetch another user's posts
     itemsService.getUserPosts(1);
     // wait for the fetch to be resolved
-    itemsService.isUserPostsResolved.other.subscribe((value) => {
+    itemsService.isUserPostsResolved.self.subscribe((value) => {
       if(value) {
         expect(itemsService.userPosts.other.length).toBe(2);
         expect(itemsService.totalUserPostsPages.other).toBe(1);
@@ -180,7 +180,7 @@ describe('AdminService', () => {
       }
     });
 
-    const otherReq = httpController.expectOne('http://localhost:5000/users/all/1/posts');
+    const otherReq = httpController.expectOne('http://localhost:5000/users/all/1/posts?page=1');
     expect(otherReq.request.method).toEqual('GET');
     otherReq.flush(mockOtherResponse);
   });
@@ -211,13 +211,14 @@ describe('AdminService', () => {
       role: 'user'
     };
     itemsService.sendUserHug(2);
-    expect(itemsService['authService'].userData.givenHugs).toBe(3);
-    expect(itemsService.otherUserData.receivedHugs).toBe(1);
-    expect(alertSpy).toHaveBeenCalled();
 
     const req = httpController.expectOne('http://localhost:5000/users/all/2');
     expect(req.request.method).toEqual('PATCH');
     req.flush(mockResponse);
+
+    expect(itemsService['authService'].userData.givenHugs).toBe(3);
+    expect(itemsService.otherUserData.receivedHugs).toBe(1);
+    expect(alertSpy).toHaveBeenCalled();
   });
 
   // Check that the service gets other users' data
@@ -416,7 +417,7 @@ describe('AdminService', () => {
     // outbox request
     itemsService.getMailboxMessages('outbox', 4);
     // wait for the fetch to be resolved
-    itemsService.isUserMessagesResolved.inbox.subscribe((value) => {
+    itemsService.isUserMessagesResolved.outbox.subscribe((value) => {
       if(value) {
         expect(itemsService.userMessages.outbox.length).toBe(2);
         expect(itemsService.userMessagesPage.outbox).toBe(1);
@@ -495,7 +496,7 @@ describe('AdminService', () => {
           fromId: 4,
           id: 9,
           messageText: "hiiii",
-          thread: 1
+          threadID: 1
         },
         {
           date: "Mon, 08 Jun 2020 14:50:19 GMT",
@@ -505,7 +506,7 @@ describe('AdminService', () => {
           fromId: 4,
           id: 10,
           messageText: "hi there :)",
-          thread: 1
+          threadID: 1
         }
       ],
       success: true,
@@ -554,12 +555,13 @@ describe('AdminService', () => {
     };
     const alertSpy = spyOn(itemsService['alertsService'], 'createSuccessAlert');
     itemsService.sendMessage(message);
-    expect(alertSpy).toHaveBeenCalled();
-    expect(alertSpy).toHaveBeenCalledWith('Your message was sent!', false, '/');
 
     const req = httpController.expectOne('http://localhost:5000/messages');
     expect(req.request.method).toEqual('POST');
     req.flush(mockResponse);
+
+    expect(alertSpy).toHaveBeenCalled();
+    expect(alertSpy).toHaveBeenCalledWith('Your message was sent!', false, '/');
   });
 
   // Check that the service deletes a message
@@ -573,12 +575,13 @@ describe('AdminService', () => {
     // make the request
     const alertSpy = spyOn(itemsService['alertsService'], 'createSuccessAlert');
     itemsService.deleteMessage(6, 'inbox');
-    expect(alertSpy).toHaveBeenCalled();
-    expect(alertSpy).toHaveBeenCalledWith(`Message 6 was deleted! Refresh to view the updated message list.`, true);
 
     const req = httpController.expectOne('http://localhost:5000/messages/inbox/6');
     expect(req.request.method).toEqual('DELETE');
     req.flush(mockResponse);
+
+    expect(alertSpy).toHaveBeenCalled();
+    expect(alertSpy).toHaveBeenCalledWith(`Message 6 was deleted! Refresh to view the updated message list.`, true);
   });
 
   // Check that the service deletes a thread
@@ -592,12 +595,13 @@ describe('AdminService', () => {
     // make the request
     const alertSpy = spyOn(itemsService['alertsService'], 'createSuccessAlert');
     itemsService.deleteThread(2);
-    expect(alertSpy).toHaveBeenCalled();
-    expect(alertSpy).toHaveBeenCalledWith(`Thread 2 was deleted! Refresh to view the updated message list.`, true);
 
     const req = httpController.expectOne('http://localhost:5000/messages/threads/2');
     expect(req.request.method).toEqual('DELETE');
     req.flush(mockResponse);
+
+    expect(alertSpy).toHaveBeenCalled();
+    expect(alertSpy).toHaveBeenCalledWith(`Thread 2 was deleted! Refresh to view the updated message list.`, true);
   });
 
   // Check that the service clears the mailbox
@@ -611,13 +615,14 @@ describe('AdminService', () => {
 
     // make the request
     const alertSpy = spyOn(itemsService['alertsService'], 'createSuccessAlert');
-    itemsService.deleteAll('inbox', 4);
-    expect(alertSpy).toHaveBeenCalled();
-    expect(alertSpy).toHaveBeenCalledWith(`2 messages were deleted! Refresh to view the updated mailbox.`, true);
+    itemsService.deleteAll('all inbox', 4);
 
     const req = httpController.expectOne('http://localhost:5000/messages/inbox?userID=4');
     expect(req.request.method).toEqual('DELETE');
     req.flush(mockResponse);
+
+    expect(alertSpy).toHaveBeenCalled();
+    expect(alertSpy).toHaveBeenCalledWith(`2 messages were deleted! Refresh to view the updated mailbox.`, true);
   });
 
   // Check that the service runs the search and handles results correctly
@@ -739,11 +744,12 @@ describe('AdminService', () => {
     };
     const alertsSpy = spyOn(itemsService['alertsService'], 'createSuccessAlert');
     itemsService.sendReport(report);
-    expect(alertsSpy).toHaveBeenCalled();
-    expect(alertsSpy).toHaveBeenCalledWith(`User 5 was successfully reported.`, false, '/');
 
     const req = httpController.expectOne('http://localhost:5000/reports');
     expect(req.request.method).toEqual('POST');
     req.flush(mockResponse);
+
+    expect(alertsSpy).toHaveBeenCalled();
+    expect(alertsSpy).toHaveBeenCalledWith(`User 5 was successfully reported.`, false, '/');
   });
 });

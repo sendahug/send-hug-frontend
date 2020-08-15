@@ -9,12 +9,35 @@ import {
 } from "@angular/platform-browser-dynamic/testing";
 import { ServiceWorkerModule } from '@angular/service-worker';
 import {} from 'jasmine';
+import * as Auth0 from 'auth0-js';
 
 import { AuthService } from './auth.service';
 import { AlertsService } from './alerts.service';
 import { MockAlertsService } from './alerts.service.mock';
 import { SWManager } from './sWManager.service';
 import { MockSWManager } from './sWManager.service.mock';
+
+class MockAuth0 {
+  WebAuth() {
+
+  }
+
+  authorize() {
+
+  }
+
+  checkSession() {
+
+  }
+
+  parseHash() {
+
+  }
+
+  logout() {
+
+  }
+}
 
 describe('AuthService', () => {
   let httpController: HttpTestingController;
@@ -34,11 +57,11 @@ describe('AuthService', () => {
       providers: [
         AuthService,
         { provide: SWManager, useClass: MockSWManager },
-        { provide: AlertsService, useClass: MockAlertsService }
+        { provide: AlertsService, useClass: MockAlertsService },
+        { provide: Auth0, useClass: MockAuth0 }
       ]
     }).compileComponents();
 
-    TestBed.get(AuthService).login();
     authService = TestBed.get(AuthService);
     httpController = TestBed.get(HttpTestingController);
   });

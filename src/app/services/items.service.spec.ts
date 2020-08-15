@@ -41,6 +41,7 @@ describe('ItemsService', () => {
     }).compileComponents();
 
     itemsService = TestBed.get(ItemsService);
+    itemsService['authService'].login();
     httpController = TestBed.get(HttpTestingController);
   });
 
@@ -146,43 +147,47 @@ describe('ItemsService', () => {
       total_pages: 1
     };
 
-    // login and get the user's own posts
-    itemsService['authService'].login();
-    itemsService.getUserPosts(4);
-    // wait for the fetch to be resolved
-    itemsService.isUserPostsResolved.other.subscribe((value) => {
-      if(value) {
-        // check the items service correctly identified it as 'self' and didn't
-        // touch the 'other' variables
-        expect(itemsService.userPosts.self.length).toBe(3);
-        expect(itemsService.userPosts.other.length).toBe(0);
-        expect(itemsService.totalUserPostsPages.self).toBe(1);
-        expect(itemsService.userPostsPage.self).toBe(1);
-        expect(itemsService.previousUser).toBe(0);
-      }
+    // run the test for the user's own profile
+    new Promise(() => {
+      // login and get the user's own posts
+      itemsService['authService'].login();
+      itemsService.getUserPosts(4);
+      // wait for the fetch to be resolved
+      itemsService.isUserPostsResolved.other.subscribe((value) => {
+        if(value) {
+          // check the items service correctly identified it as 'self' and didn't
+          // touch the 'other' variables
+          expect(itemsService.userPosts.self.length).toBe(3);
+          expect(itemsService.userPosts.other.length).toBe(0);
+          expect(itemsService.totalUserPostsPages.self).toBe(1);
+          expect(itemsService.userPostsPage.self).toBe(1);
+          expect(itemsService.previousUser).toBe(0);
+        }
+      });
+
+      const selfReq = httpController.expectOne('http://localhost:5000/users/all/4/posts?page=1');
+      expect(selfReq.request.method).toEqual('GET');
+      selfReq.flush(mockSelfResponse);
+    // and once it's done, run the 'other' tests
+    }).then(() => {
+      // for comparison, then fetch another user's posts
+      itemsService.getUserPosts(1);
+      // wait for the fetch to be resolved
+      itemsService.isUserPostsResolved.self.subscribe((value) => {
+        if(value) {
+          expect(itemsService.userPosts.other.length).toBe(2);
+          expect(itemsService.totalUserPostsPages.other).toBe(1);
+          expect(itemsService.userPostsPage.other).toBe(1);
+          expect(itemsService.previousUser).toBe(1);
+          expect(itemsService.userPosts.other[0].id).not.toEqual(itemsService.userPosts.self[0].id);
+          expect(itemsService.userPosts.other[1].id).not.toEqual(itemsService.userPosts.self[1].id);
+        }
+      });
+
+      const otherReq = httpController.expectOne('http://localhost:5000/users/all/1/posts?page=1');
+      expect(otherReq.request.method).toEqual('GET');
+      otherReq.flush(mockOtherResponse);
     });
-
-    const selfReq = httpController.expectOne('http://localhost:5000/users/all/4/posts?page=1');
-    expect(selfReq.request.method).toEqual('GET');
-    selfReq.flush(mockSelfResponse);
-
-    // for comparison, then fetch another user's posts
-    itemsService.getUserPosts(1);
-    // wait for the fetch to be resolved
-    itemsService.isUserPostsResolved.self.subscribe((value) => {
-      if(value) {
-        expect(itemsService.userPosts.other.length).toBe(2);
-        expect(itemsService.totalUserPostsPages.other).toBe(1);
-        expect(itemsService.userPostsPage.other).toBe(1);
-        expect(itemsService.previousUser).toBe(1);
-        expect(itemsService.userPosts.other[0].id).not.toEqual(itemsService.userPosts.self[0].id);
-        expect(itemsService.userPosts.other[1].id).not.toEqual(itemsService.userPosts.self[1].id);
-      }
-    });
-
-    const otherReq = httpController.expectOne('http://localhost:5000/users/all/1/posts?page=1');
-    expect(otherReq.request.method).toEqual('GET');
-    otherReq.flush(mockOtherResponse);
   });
 
   // Check that the service sends the user a hug

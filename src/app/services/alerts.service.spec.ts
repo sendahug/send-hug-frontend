@@ -11,7 +11,6 @@ import {} from 'jasmine';
 
 import { AlertsService } from './alerts.service';
 
-
 @Component({
   selector: 'app-root',
   template: `
@@ -20,7 +19,9 @@ import { AlertsService } from './alerts.service';
     `
 })
 class Sample {
+  constructor(private alertsService:AlertsService) {
 
+  }
 }
 
 describe('AlertsService', () => {
@@ -57,7 +58,18 @@ describe('AlertsService', () => {
   it('createAlert() - should create an alert', () => {
     const fixture = TestBed.createComponent(Sample);
     const componentDOM = fixture.nativeElement;
-    const buildSpy = spyOn(alertsService, 'buildAlertElement').and.returnValue(new HTMLDivElement());
+    const buildSpy = spyOn(alertsService, 'buildAlertElement').and.callFake((alert) => {
+      const div = document.createElement('div');
+      div.className = `alertMessage ${alert.type}`
+
+      let closeButton = document.createElement('button');
+      closeButton.className = 'appButton';
+      closeButton.id = 'alertButton';
+      closeButton.textContent = 'Close';
+      div.append(closeButton);
+
+      return div;
+    });
     alertsService.createAlert({
       type: 'Error',
       message: 'error'
@@ -89,38 +101,6 @@ describe('AlertsService', () => {
 
     // check the alert was closed
     expect(componentDOM.querySelectorAll('.alertMessage')[0]).toBeUndefined();
-    expect(componentDOM.querySelector('#alertContainer')).toBeNull();
-  });
-
-  // Check the service reloads the page
-  it('reloadPage() - should reload the page', () => {
-    const fixture = TestBed.createComponent(Sample);
-    const componentDOM = fixture.nativeElement;
-    const reloadSpy = spyOn(window.location, 'reload');
-
-    alertsService.createAlert({
-      message: 'message',
-      type: 'Notification'
-    }, true);
-    alertsService.isSWRelated = false;
-
-    fixture.detectChanges();
-
-    // check the alert was created in order to remove it
-    expect(componentDOM.querySelectorAll('.alertMessage')[0]).toBeTruthy();
-
-    alertsService.reloadPage();
-    fixture.detectChanges();
-
-    // check the alert was closed and the reload was called
-    expect(componentDOM.querySelectorAll('.alertMessage')[0]).toBeUndefined();
-    expect(componentDOM.querySelector('#alertContainer')).toBeNull();
-    expect(reloadSpy).toHaveBeenCalled();
-  });
-
-  // Check the service reloads the page and alerts the ServiceWorker
-  it('reloadPage() - should reload the page and alert the ServiceWorker', () => {
-
   });
 
   // Check the service builds the alert element correctly
@@ -175,7 +155,7 @@ describe('AlertsService', () => {
     expect(alertSpy).toHaveBeenCalledWith({
       type: 'Success',
       message: 'string'
-    }, false);
+    }, false, undefined);
   });
 
   // Check the service creates an error alert
@@ -204,15 +184,12 @@ describe('AlertsService', () => {
     expect(alertsService.isSWRelated).toBeFalse();
   });
 
-  //
-  it('createSWAlert() - should create service worker alert', () => {
-
-  });
-
-  // Check the service shows an offline alert when the user is offline
+  // Check the service toggles the offline alert
   it('toggleOfflineAlert() - should add offline alert', () => {
     const fixture = TestBed.createComponent(Sample);
     const componentDOM = fixture.nativeElement;
+    const onlineSpy = spyOnProperty(Navigator.prototype, 'onLine').and.returnValue(true);
+    alertsService.toggleOfflineAlert();
     fixture.detectChanges();
 
     // expect the isOffline subject's current value to be false
@@ -220,19 +197,8 @@ describe('AlertsService', () => {
     expect(componentDOM.querySelector('#noInternet')).toBeNull();
 
     // change the 'Navigator.onLine' value to false
-    spyOnProperty(Navigator.prototype, 'onLine').and.returnValue(false);
-    fixture.detectChanges();
-
-    // check the alert is on
-    expect(alertsService.isOffline.value).toBe(true);
-    expect(componentDOM.querySelector('#noInternet')).toBeTruthy();
-  });
-
-  // Check the service removes the offline alert when the user is online
-  it('toggleOfflineAlert() - should remove offline alert', () => {
-    const fixture = TestBed.createComponent(Sample);
-    const componentDOM = fixture.nativeElement;
-    const onlineSpy = spyOnProperty(Navigator.prototype, 'onLine').and.returnValue(false);
+    onlineSpy.and.returnValue(false);
+    alertsService.toggleOfflineAlert();
     fixture.detectChanges();
 
     // check the alert is on
@@ -241,6 +207,8 @@ describe('AlertsService', () => {
 
     // change the 'Navigator.onLine' value to true
     onlineSpy.and.returnValue(true);
+    alertsService.toggleOfflineAlert();
+    fixture.detectChanges();
 
     // check the alert is gone
     expect(alertsService.isOffline.value).toBe(false);

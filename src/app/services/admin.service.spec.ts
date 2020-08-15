@@ -4,7 +4,7 @@ import "zone.js/dist/sync-test";
 import "zone.js/dist/jasmine-patch";
 import "zone.js/dist/async-test";
 import "zone.js/dist/fake-async-test";
-import { TestBed, fakeAsync } from "@angular/core/testing";
+import { TestBed } from "@angular/core/testing";
 import {
   HttpClientTestingModule,
   HttpTestingController
@@ -180,7 +180,7 @@ describe('AdminService', () => {
   });
 
   // Check that the service deletes the post
-  it('deletePost() - should delete a post', fakeAsync(() => {
+  it('deletePost() - should delete a post', () => {
     // mock response
     const mockResponse = {
       success: true,
@@ -205,10 +205,10 @@ describe('AdminService', () => {
     expect(dismissSpy).toHaveBeenCalled();
     expect(dismissSpy).toHaveBeenCalledWith(5);
     expect(messageSpy).toHaveBeenCalled();
-  }));
+  });
 
   // Check that the service edits a user's display name
-  it('editUser() - should edit a user\'s display name', fakeAsync(() => {
+  it('editUser() - should edit a user\'s display name', () => {
     // mock response
     const mockResponse = {
       success: true,
@@ -234,10 +234,10 @@ describe('AdminService', () => {
 
     expect(alertSpy).toHaveBeenCalled();
     expect(alertSpy).toHaveBeenCalledWith('User user updated.', true);
-  }));
+  });
 
   // Check that the service dismisses a report
-  it('dismissReport() - should dismiss report', fakeAsync(() => {
+  it('dismissReport() - should dismiss report', () => {
     // mock response
     const mockResponse = {
       success: true,
@@ -275,7 +275,7 @@ describe('AdminService', () => {
 
     expect(alertSpy).toHaveBeenCalled();
     expect(alertSpy).toHaveBeenCalledWith('Report 1 was dismissed! Refresh the page to view the updated list.', true);
-  }));
+  });
 
   // Check that the service gets a list of blocked users
   it('getBlockedUsers() - should get blocked users', () => {

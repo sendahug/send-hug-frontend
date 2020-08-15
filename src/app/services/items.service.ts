@@ -750,8 +750,8 @@ export class ItemsService {
       this.totalPostSearchPages = response.total_pages;
       this.numUserResults = response.user_results;
       this.numPostResults = response.post_results;
-      this.isSearchResolved.next(true);
       this.isSearching = false;
+      this.isSearchResolved.next(true);
       this.alertsService.toggleOfflineAlert();
     }, (err:HttpErrorResponse) => {
       this.isSearchResolved.next(true);

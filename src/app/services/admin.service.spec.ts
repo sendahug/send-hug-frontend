@@ -495,10 +495,14 @@ describe('AdminService', () => {
       deleted: 'word1'
     };
 
+    adminService.filteredPhrases = [
+      'word1',
+      'word2'
+    ];
     const alertSpy = spyOn(adminService['alertsService'], 'createSuccessAlert');
     adminService.removeFilter('word1');
 
-    const req = httpController.expectOne('http://localhost:5000/filters/1');
+    const req = httpController.expectOne('http://localhost:5000/filters/0');
     expect(req.request.method).toEqual('DELETE');
     req.flush(mockResponse);
 

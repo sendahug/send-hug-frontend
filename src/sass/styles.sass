@@ -1881,6 +1881,115 @@ app-notifications h4
 /* Notification link */
 .notificationText a
 	color: $linkColour
+
+/* =================== Settings Component Styling =================== */
+/* Settings Component */
+app-settings
+	@extend #compSample
+	width: 90%
+	padding: 0 5%
+	left: 0
+	right: 0
+
+/* Main title */
+app-settings h3
+	font-family: $mainFont
+	color: $headlineColour
+	text-align: center
+	font-size: 22px
+	/* Responsive styling for screens above 800px width */
+	@media screen and (min-width: 800px)
+		order: 0
+		width: 100%
+		font-size: 24px
+
+/* Section title */
+app-settings h4
+	font-family: $mainFont
+	color: $headlineColour
+	text-align: center
+	font-size: 17px
+
+/* Notification Settings */
+#notificationSettings
+	border-radius: 5px
+	width: 90%
+	padding: 15px 3%
+	margin: 5px 2%
+	background: $boxesBackground
+	border-radius: 5px
+	border: none
+	box-shadow: 5px 5px 7px 0 rgba(46, 61, 73, 0.5)
+	/* Responsive styling for screens above 500px width */
+	@media screen and (min-width: 500px)
+		width: 80%
+		padding: 15px 5%
+		margin: 10px 5%
+	/* Responsive styling for screens above 800px width */
+	@media screen and (min-width: 800px)
+		order: 2
+		width: 65%
+		margin: 10px 2%
+		padding: 15px 3% 20px
+	/* Responsive styling for screens above 900px width */
+	@media screen and (min-width: 1900px)
+		width: 650px
+		max-width: 650px
+		padding: 15px Calc((100% - 650px) / 4)
+		margin: 10px Calc((100% - 650px) / 4)
+
+/* Notification Settings - notification buttons */
+#notificationSettings .NotificationButton
+	margin: 5px Calc((100% - 300px) / 4)
+
+/* Notification Settings - notification rate textfield */
+#notificationRate
+	margin: 5px
+
+/* Notification Settings - update settings button */
+#notificationSettings .sendData
+	margin: 5px Calc((100% - 50px) / 2)
+
+/* Back to homepage div */
+#errorBox
+	@extend #errorMessBox
+	@extend #frameSample
+	width: 90%
+	margin: 10px 5%
+	padding-bottom: 20px
+	/* Responsive styling for screens above 450px width */
+	@media screen and (min-width: 450px)
+		width: 84%
+		margin: 10px 8%
+	/* Responsive styling for screens above 550px width */
+	@media screen and (min-width: 550px)
+		width: 80%
+		margin: 10px 10%
+	/* Responsive styling for screens above 700px width */
+	@media screen and (min-width: 700px)
+		width: 70%
+		margin: 10px 15%
+	/* Responsive styling for screens above 800px width */
+	@media screen and (min-width: 800px)
+		width: 70%
+		margin: 2% 15%
+
+/* Error Message Text */
+.errorMessage
+	text-align: center
+	padding-bottom: 20px
+	padding-top: 10px
+	font-family: $mainFont
+
+/* Back to homepage Link */
+#errorBox .appButton
+	text-align: center
+	margin: 20px Calc((100% - 170px) / 2) 10px
+	color: #FFF
+	font-family: $mainFont
+	border-radius: 5px
+	border: none
+	text-decoration: none
 	
 /* =================== Admin Dashboard Component Styling =================== */
 /* Admin Dashboard Component */

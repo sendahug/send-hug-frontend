@@ -34,6 +34,7 @@
 			
 			<div class="buttons">
 				<button id="editName" class="appButton" (click)="editName()" *ngIf="!itemsService.isOtherUser" [attr.aria-label]="'edit display name for user ' + authService.userData.displayName">Edit Display Name</button>
+				<a [routerLink]="['/settings']" id="settingsLink" class="appButton" *ngIf="!itemsService.isOtherUser" [attr.aria-label]="'go to user settings page for user ' + authService.userData.displayName">User Settings</a>
 				<button class="appButton reportButton" (click)="reportUser(itemsService.otherUserData)" *ngIf="itemsService.isOtherUser" [attr.aria-label]="'report user ' + itemsService.otherUserData.displayName">Report User</button>
 				<button id="logout" class="appButton" (click)="logout()" *ngIf="!itemsService.isOtherUser">Log Out</button>
 			</div>

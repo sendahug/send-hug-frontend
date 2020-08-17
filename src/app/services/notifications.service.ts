@@ -71,8 +71,9 @@ export class NotificationService {
   Programmer: Shir Bar Lev.
   */
   startAutoRefresh() {
+    let userSub: Subscription;
     // wait until the user is authenticated
-    let userSub = this.authService.isUserDataResolved.subscribe((value) => {
+    userSub = this.authService.isUserDataResolved.subscribe((value) => {
       // once they are, start the refresh counter
       if(value && this.refreshStatus) {
         this.refreshBtn = 'Disable';
@@ -245,8 +246,8 @@ export class NotificationService {
     // if there's a push subscription, compare it to the one currently active. If
     // it's the same, leave as is; otherwise set the new subscription as the latest subscription
     // in localStorage
-    if(pushSub) {
-      if(pushSub != this.notificationsSub) {
+    if(pushSub && this.notificationsSub) {
+      if(pushSub['endpoint'] != this.notificationsSub['endpoint']) {
         this.setSubscription();
       }
     }

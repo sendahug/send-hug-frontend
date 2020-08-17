@@ -141,6 +141,7 @@ export class AuthService {
   Programmer: Shir Bar Lev.
   */
   getUserData(jwtPayload:any) {
+    this.isUserDataResolved.next(false);
     // if there's a JWT
     if(jwtPayload) {
       // attempts to get the user's data
@@ -241,6 +242,8 @@ export class AuthService {
   Programmer: Shir Bar Lev.
   */
   createUser(jwtPayload:any) {
+    this.isUserDataResolved.next(false);
+    
     // post request to create the user
     this.Http.post(`${this.serverUrl}/users`, {
       id: jwtPayload.sub,

@@ -41,8 +41,11 @@ describe('ItemsService', () => {
     }).compileComponents();
 
     itemsService = TestBed.get(ItemsService);
-    itemsService['authService'].login();
     httpController = TestBed.get(HttpTestingController);
+    new Promise(() => {
+      itemsService['authService'].login();
+      TestBed.get(AuthService).login();
+    })
   });
 
   // Check the service is created

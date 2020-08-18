@@ -2,7 +2,8 @@ version: 2
 jobs:
   build:
     working_directory: ~/my-project
-    machine: true
+    machine:
+      image: ubuntu-1604:201903-01
     steps:
       - checkout
       - run: npm set prefix=/home/circleci/npm && echo 'export PATH=$HOME/circleci/npm/bin:$PATH' >> /home/circleci/.bashrc

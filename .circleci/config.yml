@@ -4,6 +4,7 @@ jobs:
     working_directory: ~/my-project
     machine:
       image: ubuntu-1604:202007-01
+    resource_class: large
     steps:
       - checkout
       - run: npm set prefix=/home/circleci/npm && echo 'export PATH=$HOME/circleci/npm/bin:$PATH' >> /home/circleci/.bashrc

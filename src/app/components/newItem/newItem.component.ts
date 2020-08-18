@@ -1,6 +1,20 @@
 /*
 	New Item
 	Send a Hug Component
+---------------------------------------------------
+MIT License
+
+Copyright (c) 2020 Send A Hug
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
 */
 
 // Angular imports
@@ -45,7 +59,7 @@ export class NewItem {
       // If there's a user parameter, sets the user property
       if(user && userID) {
         this.user = user;
-        this.forID = userID;
+        this.forID = Number(userID);
       }
   }
 
@@ -74,17 +88,23 @@ export class NewItem {
           document.getElementById('postText')!.classList.remove('missing');
         }
 
-        // otherwise create the post
-        // create a new post object to send
-        let newPost:Post = {
-          userId: this.authService.userData.id!,
-          user: this.authService.userData.displayName!,
-          text: postText,
-          date: new Date(),
-          givenHugs: 0
+        // if there's no logged in user, alert the user
+        if(!this.authService.authenticated) {
+          this.alertService.createAlert({ type: 'Error', message: 'You\'re currently logged out. Log back in to post a new post.' });
         }
+        else {
+          // otherwise create the post
+          // create a new post object to send
+          let newPost:Post = {
+            userId: this.authService.userData.id!,
+            user: this.authService.userData.displayName!,
+            text: postText,
+            date: new Date(),
+            givenHugs: 0
+          }
 
-        this.postsService.sendPost(newPost);
+          this.postsService.sendPost(newPost);
+        }
       }
     }
     // otherwise alert the user that a post can't be empty
@@ -128,16 +148,22 @@ export class NewItem {
             document.getElementById('messageText')!.classList.remove('missing');
           }
 
-          // create a new message object to send
-          let newMessage:Message = {
-            from: this.authService.userData.displayName!,
-            fromId: this.authService.userData.id!,
-            forId: this.forID,
-            messageText: messageText,
-            date: new Date()
+          // if there's no logged in user, alert the user
+          if(!this.authService.authenticated) {
+            this.alertService.createAlert({ type: 'Error', message: 'You\'re currently logged out. Log back in to send a message.' });
           }
+          else {
+            // create a new message object to send
+            let newMessage:Message = {
+              from: this.authService.userData.displayName!,
+              fromId: this.authService.userData.id!,
+              forId: this.forID,
+              messageText: messageText,
+              date: new Date()
+            }
 
-          this.itemsService.sendMessage(newMessage);
+            this.itemsService.sendMessage(newMessage);
+          }
         }
       }
     }

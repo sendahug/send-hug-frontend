@@ -4,7 +4,6 @@ const autoprefixer = require("autoprefixer");
 const uglify = require("gulp-uglify");
 const babel = require("gulp-babel");
 const sourcemaps = require("gulp-sourcemaps");
-const jasmineBrowser = require('gulp-jasmine-browser');
 const browserSync = require("browser-sync").create();
 const browserify = require("browserify");
 const tsify = require("tsify");
@@ -12,6 +11,7 @@ const source = require("vinyl-source-stream");
 const buffer = require("vinyl-buffer");
 const rename = require("gulp-rename");
 const replace = require("gulp-replace");
+var Server = require('karma').Server;
 
 // LOCAL DEVELOPMENT TASKS
 // ===============================================
@@ -79,8 +79,17 @@ function watch()
 	gulp.watch("index.html", copyIndex);
 	gulp.watch("src/assets/img/*", copyImgs);
 	gulp.watch("src/css/*.css", styles);
-	gulp.watch("src/**/*.ts", scripts);
+	gulp.watch(["src/**/*.ts", "!src/**/*.spec.ts", "!src/**/*.mock.ts"], scripts);
 }
+
+//create local development files
+gulp.task('localdev', gulp.parallel(
+	copyHtml,
+	copyIndex,
+	copyImgs,
+	styles,
+	scripts
+));
 
 // PRODUCTION TASKS
 // ===============================================
@@ -178,22 +187,12 @@ gulp.task('dist', gulp.parallel(
 
 // TESTING TASKS
 // ===============================================
-//automatic testing in the Jasmine headless browser
-function jasmineBrowserTest()
+// automatic testing in whatever browser is defined in the Karma config file
+function unitTest()
 {
-	return gulp
-		.src(["dist/app.bundle.js", "tests/specs.js"])
-		.pipe(jasmineBrowser.specRunner({ console: true }))
-		.pipe(jasmineBrowser.headless({ driver: "chrome" }));
-}
-
-//testing in whatever browser you want to use; just enter "localhost:3001" in the address line
-function browserTests()
-{
-	return gulp
-		.src(["dist/app.bundle.js", "tests/specs.js"])
-		.pipe(jasmineBrowser.specRunner())
-		.pipe(jasmineBrowser.server({ port: 3001 }));
+	return new Server({
+	    configFile: __dirname + '/karma.conf.js'
+	  }).start();
 }
 
 //boot up the server
@@ -213,6 +212,5 @@ exports.copyImgs = copyImgs;
 exports.styles = styles;
 exports.scripts = scripts;
 exports.scriptsDist = scriptsDist;
-exports.jasmineBrowserTest = jasmineBrowserTest;
-exports.browserTests = browserTests;
+exports.unitTest = unitTest;
 exports.watch = watch;

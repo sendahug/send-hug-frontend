@@ -671,14 +671,14 @@ export class ItemsService {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  deleteThread(threadId:number, messType:string) {
-    const Url = this.serverUrl + `/messages/${messType}/${threadId}`
+  deleteThread(threadId:number) {
+    const Url = this.serverUrl + `/messages/threads/${threadId}`
 
     // try to delete the thread
     this.Http.delete(Url, {
       headers: this.authService.authHeader
     }).subscribe((response:any) => {
-      this.alertsService.createSuccessAlert(`Message ${response.deleted} was deleted! Refresh to view the updated message list.`, true);
+      this.alertsService.createSuccessAlert(`Thread ${response.deleted} was deleted! Refresh to view the updated message list.`, true);
       this.alertsService.toggleOfflineAlert();
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
@@ -750,8 +750,8 @@ export class ItemsService {
       this.totalPostSearchPages = response.total_pages;
       this.numUserResults = response.user_results;
       this.numPostResults = response.post_results;
-      this.isSearchResolved.next(true);
       this.isSearching = false;
+      this.isSearchResolved.next(true);
       this.alertsService.toggleOfflineAlert();
     }, (err:HttpErrorResponse) => {
       this.isSearchResolved.next(true);

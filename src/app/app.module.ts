@@ -19,6 +19,7 @@ import { SearchResults } from './components/searchResults/searchResults.componen
 import { AdminDashboard } from './components/adminDashboard/adminDashboard.component';
 import { HeaderMessage } from './components/headerMessage/headerMessage.component';
 import { NotificationsTab } from './components/notifications/notifications.component';
+import { SettingsPage } from './components/settings/settings.component';
 
 @NgModule({
   imports: [
@@ -42,7 +43,8 @@ import { NotificationsTab } from './components/notifications/notifications.compo
     SearchResults,
     AdminDashboard,
     HeaderMessage,
-    NotificationsTab
+    NotificationsTab,
+    SettingsPage
   ],
   providers: [],
   bootstrap: [AppComponent]

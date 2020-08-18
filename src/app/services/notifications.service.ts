@@ -23,7 +23,7 @@ export class NotificationService {
   readonly serverUrl = environment.production ? prodEnv.backend.domain! : environment.backend.domain;
   readonly publicKey = environment.production ? prodEnv.vapidKey : environment.vapidKey;
   // notifications data
-  notifications = [];
+  notifications: any[] = [];
   // push notifications variables
   toggleBtn!: 'Enable' | 'Disable';
   notificationsSub: PushSubscription | undefined;
@@ -48,6 +48,7 @@ export class NotificationService {
       if(value) {
         this.pushStatus = this.authService.userData.pushEnabled;
         this.refreshStatus = this.authService.userData.autoRefresh;
+        this.refreshRateSecs = this.authService.userData.refreshRate;
       }
       else {
         this.pushStatus = false;
@@ -70,8 +71,9 @@ export class NotificationService {
   Programmer: Shir Bar Lev.
   */
   startAutoRefresh() {
+    let userSub: Subscription;
     // wait until the user is authenticated
-    let userSub = this.authService.isUserDataResolved.subscribe((value) => {
+    userSub = this.authService.isUserDataResolved.subscribe((value) => {
       // once they are, start the refresh counter
       if(value && this.refreshStatus) {
         this.refreshBtn = 'Disable';
@@ -209,6 +211,7 @@ export class NotificationService {
     if(this.notificationsSub) {
       this.notificationsSub.unsubscribe();
       this.toggleBtn = 'Enable';
+      this.pushStatus = false;
     }
   }
 
@@ -243,8 +246,8 @@ export class NotificationService {
     // if there's a push subscription, compare it to the one currently active. If
     // it's the same, leave as is; otherwise set the new subscription as the latest subscription
     // in localStorage
-    if(pushSub) {
-      if(pushSub != this.notificationsSub) {
+    if(pushSub && this.notificationsSub) {
+      if(pushSub['endpoint'] != this.notificationsSub['endpoint']) {
         this.setSubscription();
       }
     }
@@ -261,7 +264,8 @@ export class NotificationService {
     const Url = this.serverUrl + `/users/all/${this.authService.userData.id}`;
     const newSettings = {
       autoRefresh: this.refreshStatus,
-      pushEnabled: this.pushStatus
+      pushEnabled: this.pushStatus,
+      refreshRate: this.refreshRateSecs
     }
 
     // send the data to the server

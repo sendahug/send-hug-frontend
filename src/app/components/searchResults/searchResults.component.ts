@@ -1,6 +1,20 @@
 /*
 	Search Results
 	Send a Hug Component
+---------------------------------------------------
+MIT License
+
+Copyright (c) 2020 Send A Hug
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
 */
 
 // Angular imports
@@ -10,6 +24,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 // App-related imports
 import { ItemsService } from '../../services/items.service';
 import { AuthService } from '../../services/auth.service';
+import { PostsService } from '../../services/posts.service';
 import { Post } from '../../interfaces/post.interface';
 
 @Component({
@@ -37,12 +52,13 @@ export class SearchResults {
     public itemsService:ItemsService,
     public authService:AuthService,
     private route:ActivatedRoute,
-    private router:Router
+    private router:Router,
+    private postsService:PostsService
   ) {
     this.searchQuery = this.route.snapshot.queryParamMap.get('query');
     this.editMode = false;
     this.delete = false;
-	this.report = false;
+    this.report = false;
 
     // if there's a search query but there's no ongoing search, it might be
     // the result of the user manually navigating here or refreshing the page.
@@ -108,6 +124,20 @@ export class SearchResults {
   }
 
   /*
+  Function Name: sendHug()
+  Function Description: Send a hug to a user through a post they've written. The hug
+                        itself is sent by the items service.
+  Parameters: itemID (number) - ID of the post.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  sendHug(itemID:number) {
+    let item = {};
+    item = this.itemsService.postSearchResults.filter(e => e.id == itemID)[0];
+    this.postsService.sendHug(item);
+  }
+
+  /*
   Function Name: nextPage()
   Function Description: Go to the next page of posts. Sends a request to the
                         items service to get the data for the next page.
@@ -117,12 +147,14 @@ export class SearchResults {
   */
   nextPage() {
     this.itemsService.postSearchPage += 1;
+    this.page += 1;
     this.itemsService.sendSearch(this.searchQuery!);
 
     // changes the URL query parameter (page) according to the new page
     this.router.navigate([], {
       relativeTo: this.route,
       queryParams: {
+        query: this.searchQuery,
         page: this.page
       },
       replaceUrl: true
@@ -139,12 +171,14 @@ export class SearchResults {
   */
   prevPage() {
     this.itemsService.postSearchPage -= 1;
+    this.page -= 1;
     this.itemsService.sendSearch(this.searchQuery!);
 
     // changes the URL query parameter (page) according to the new page
     this.router.navigate([], {
       relativeTo: this.route,
       queryParams: {
+        query: this.searchQuery,
         page: this.page
       },
       replaceUrl: true

@@ -36,10 +36,10 @@
 				<div class="navLinkText">Admin Panel</div>
 			</a>
 			<div class="newNotification">
-				<button class="navLink" (click)="toggleNotifications()"><i class="far fa-bell navButton" aria-label="open notifications tab" id="navNotific"></i></button>
+				<button id="notificationsBtn" class="navLink" (click)="toggleNotifications()"><i class="far fa-bell navButton" aria-label="open notifications tab" id="navNotific"></i></button>
 				<span class="badge">{{ notificationService.newNotifications }}</span>
 			</div>
-			<button class="navLink" (click)="toggleSearch()"><i class="fas fa-search navButton" aria-label="open search panel"></i></button>
+			<button class="navLink" (click)="toggleSearch()" id="searchBtn"><i class="fas fa-search navButton" aria-label="open search panel"></i></button>
 		</div>
 	</nav>
 	<form id="search" role="search" *ngIf="showSearch">

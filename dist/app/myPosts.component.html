@@ -18,11 +18,11 @@
 				<div class="labels" id="{{'user' + post.id}}">{{ post.user }}</div>
 				<div class="buttons">
 					<div class="notification" [attr.aria-describedby]="'pHug ' + 'user' + post.id">
-						<button *ngIf="!item.sentHugs.includes(authService.userData.id.toString())" class="textlessButton hugButton" (click)="sendHug(post.id)" [attr.aria-labelledby]="'pHug ' + 'nUser' + item.id" name="send a hug"><i class="fas fa-hand-holding-heart"></i></button>
-						<button *ngIf="item.sentHugs.includes(authService.userData.id.toString())" class="textlessButton hugButton active" [attr.aria-labelledby]="'pHug ' + 'nUser' + item.id" name="send a hug" disabled><i class="fas fa-hand-holding-heart"></i></button>
+						<button *ngIf="!post.sentHugs.includes(authService.userData.id.toString())" class="textlessButton hugButton" (click)="sendHug(post.id)" [attr.aria-labelledby]="'pHug ' + 'nUser' + post.id" name="send a hug"><i class="fas fa-hand-holding-heart"></i></button>
+						<button *ngIf="post.sentHugs.includes(authService.userData.id.toString())" class="textlessButton hugButton active" [attr.aria-labelledby]="'pHug ' + 'nUser' + post.id" name="send a hug" disabled><i class="fas fa-hand-holding-heart"></i></button>
 						<span class="badge" aria-describedby="pGivenH">{{ post.givenHugs }}</span>
 					</div>
-					<button *ngIf="(user == 'other')" class="textlessButton reportButton" (click)="reportPost(item)" [attr.aria-describedby]="'pReport ' + 'text' + post.id"><i class="fas fa-flag"></i></button>
+					<button *ngIf="(user == 'other')" class="textlessButton reportButton" (click)="reportPost(post)" [attr.aria-describedby]="'pReport ' + 'text' + post.id"><i class="fas fa-flag"></i></button>
 					<button *ngIf="(user == 'self') || (authService.canUser('patch:any-post'))" class="textlessButton editButton" (click)="editPost(post)" [attr.aria-describedby]="'pEdit ' + 'text' + post.id">Edit</button>
 					<button *ngIf="(user == 'self') || (authService.canUser('delete:any-post'))" class="textlessButton deleteButton" (click)="deletePost(post.id)" [attr.aria-describedby]="'pDelete ' + 'text' + post.id">Delete</button>
 				</div>

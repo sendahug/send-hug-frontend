@@ -15,4 +15,4 @@ jobs:
           paths:
             - "node_modules"
       - run: npm install --global gulp-cli
-      - run: npm test
+      - run: npm test --max_old_space_size=8192

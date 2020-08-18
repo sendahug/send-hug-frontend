@@ -6,6 +6,7 @@ jobs:
       - image: circleci/node:10-browsers
     steps:
       - checkout
+      - run: npm set prefix=/home/circleci/npm && echo 'export PATH=$HOME/circleci/npm/bin:$PATH' >> /home/circleci/.bashrc
       - restore_cache:
           key: my-project-{{ .Branch }}-{{ checksum "package-lock.json" }}
       - run: npm install

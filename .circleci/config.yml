@@ -15,4 +15,4 @@ jobs:
           paths:
             - "node_modules"
       - run: npm install --global gulp-cli
-      - run: gulp unitTest
+      - run: npm test

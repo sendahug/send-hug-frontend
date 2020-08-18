@@ -7,7 +7,7 @@
     "test": "tests"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "gulp unitTest",
     "build": "node env-config.js",
     "start": "node server.js"
   },

@@ -92,10 +92,11 @@ module.exports = function (karma) {
     browsers: ['Chrome'],
     flags: [
         '--disable-gpu',
-        '--no-sandbox'
+        '--no-sandbox',
+        '--disable-setuid-sandbox'
     ],
     singleRun: true,
-	browserDisconnectTimeout: 10000,
-	browserNoActivityTimeout: 100000
+	  browserDisconnectTimeout: 10000,
+	  browserNoActivityTimeout: 100000
   });
 };

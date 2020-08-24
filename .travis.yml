@@ -13,7 +13,7 @@ cache:
 
 before_install:
   - # start your web application and listen on `localhost`
-  - google-chrome-stable --no-sandbox --disable-gpu --remote-debugging-port=9222 http://localhost &
+  - google-chrome-stable --no-sandbox --disable-gpu '--disable-setuid-sandbox' --remote-debugging-port=9222 http://localhost &
 
 install:
   - npm install

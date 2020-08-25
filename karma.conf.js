@@ -103,7 +103,7 @@ module.exports = function (karma) {
           '--disable-gpu'
         ]
       }
-    }
+    },
     singleRun: true,
 	  browserDisconnectTimeout: 10000,
 	  browserNoActivityTimeout: 100000

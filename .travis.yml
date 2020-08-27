@@ -12,9 +12,8 @@ cache:
      - ./node_modules
 
 install:
-  - npm install
-  - npm install -g gulp-cli
+  - sudo -E npm install
+  - sudo -E npm install -g gulp-cli
 
 script:
-  - build/update-linux-sandbox.sh
-  - gulp unitTest --max_old_space_size=8192
+  - sudo -E gulp unitTest --max_old_space_size=8192

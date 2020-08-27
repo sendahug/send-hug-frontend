@@ -16,5 +16,5 @@ install:
   - npm install -g gulp-cli
 
 script:
-  - killall google-chrome
+  - build/update-linux-sandbox.sh
   - gulp unitTest --max_old_space_size=8192

@@ -89,12 +89,17 @@ module.exports = function (karma) {
     port: 9876,
     logLevel: 'DEBUG',
     autoWatch: false,
-    browsers: ['Chrome'],
-    flags: [
-        '--disable-gpu',
-        '--no-sandbox',
-        '--disable-setuid-sandbox'
-    ],
+    browsers: ['ChromeNoSandbox'],
+    customLaunchers: {
+      ChromeNoSandbox: {
+        base: 'Chrome',
+        flags: [
+            '--disable-gpu',
+            '--no-sandbox',
+            '--disable-setuid-sandbox'
+        ]
+      }
+    },
     singleRun: true,
 	  browserDisconnectTimeout: 10000,
 	  browserNoActivityTimeout: 100000

@@ -89,10 +89,10 @@ module.exports = function (karma) {
     port: 9876,
     logLevel: 'DEBUG',
     autoWatch: false,
-    browsers: ['ChromeNoSandbox'],
+    browsers: ['ChromeHeadlessNoSandbox'],
     customLaunchers: {
-      ChromeNoSandbox: {
-        base: 'Chrome',
+      ChromeHeadlessNoSandbox: {
+        base: 'ChromeHeadless',
         flags: [
             '--disable-gpu',
             '--no-sandbox',

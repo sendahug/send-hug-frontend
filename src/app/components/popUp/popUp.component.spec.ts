@@ -837,11 +837,12 @@ describe('Popup', () => {
       popUp.report = false;
       popUp.itemToDelete = 2;
       popUp.reportData = {
-        reportID: 4,
+        reportID: 2,
         postID: 4
       };
       const deleteSpy = spyOn(popUp, 'deletePost').and.callThrough();
       const deleteServiceSpy = spyOn(popUp['adminService'], 'deletePost').and.callThrough();
+      popUp['adminService'].getOpenReports();
 
       fixture.detectChanges();
       tick();
@@ -853,7 +854,7 @@ describe('Popup', () => {
 
       // check that the closeReport boolean is true
       const report = {
-        reportID: 4,
+        reportID: 2,
         postID: 4
       };
       expect(deleteSpy).toHaveBeenCalled();

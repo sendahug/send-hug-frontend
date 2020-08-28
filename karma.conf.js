@@ -1,5 +1,7 @@
 const path = require('path');
 const ngTools = require('@ngtools/webpack');
+const puppeteer = require('puppeteer');
+process.env.CHROME_BIN = puppeteer.executablePath();
 
 // Karma configuration file
 module.exports = function (karma) {

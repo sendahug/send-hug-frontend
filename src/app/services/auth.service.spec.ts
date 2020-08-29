@@ -9,7 +9,7 @@ import {
 } from "@angular/platform-browser-dynamic/testing";
 import { ServiceWorkerModule } from '@angular/service-worker';
 import {} from 'jasmine';
-import * as Auth0 from 'auth0-js';
+import * as Auth0 from "auth0-js";
 import { HttpErrorResponse, HttpHeaders, HttpEventType } from "@angular/common/http";
 
 import { AuthService } from './auth.service';
@@ -27,20 +27,22 @@ class MockAuth0 {
 
   }
 
-  checkSession({}, cb:Function) {
-    const res = {
+  checkSession = ({}, cb:Auth0.Auth0Callback<any, Auth0.Auth0Error>): void => {
+    const authResult = {
       accessToken: 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjUxUm1CQkZqRy1lMDBxNDVKUm1TMiJ9'
     };
-    let err:any;
-    cb(err, res);
+    let err:Auth0.Auth0Error | null = null;
+    cb(err, authResult);
   }
 
-  parseHash({}, cb:Function) {
-    const res = {
+  parseHash = (_options: Auth0.ParseHashOptions, callback: Auth0.Auth0Callback<Auth0.Auth0DecodedHash, Auth0.Auth0ParseHashError>): void => {
+    const authResult:Auth0.Auth0DecodedHash = {
       accessToken: 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjUxUm1CQkZqRy1lMDBxNDVKUm1TMiJ9'
     };
-    let err:any;
-    cb(err, res);
+    let err:Auth0.Auth0Error = {
+      error: ''
+    };
+    callback(err, authResult);
   }
 
   logout() {
@@ -94,6 +96,16 @@ describe('AuthService', () => {
   // Check the hash is checked and parsed
   it('checkHash() - parses the hash to get the token', () => {
     // set up spies
+    //@ts-ignore
+    const hashSpy = spyOn(authService.auth0, 'parseHash').and.callFake((_options: Auth0.ParseHashOptions, callback: Auth0.Auth0Callback<Auth0.Auth0DecodedHash, Auth0.Auth0ParseHashError>): void => {
+      const authResult:Auth0.Auth0DecodedHash = {
+        accessToken: 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjUxUm1CQkZqRy1lMDBxNDVKUm1TMiJ9'
+      };
+      let err:Auth0.Auth0Error = {
+        error: ''
+      };
+      callback(err, authResult);
+    });
     const parseSpy = spyOn(authService, 'parseJWT').and.returnValue({
       token: 'fdsfd'
     });
@@ -104,6 +116,7 @@ describe('AuthService', () => {
     authService.checkHash();
 
     // check expectations
+    expect(hashSpy).toHaveBeenCalled();
     expect(parseSpy).toHaveBeenCalled();
     expect(getDataSpy).toHaveBeenCalledWith({
       token: 'fdsfd'
@@ -206,8 +219,9 @@ describe('AuthService', () => {
     // flush mock response
     const req = httpController.expectOne('http://localhost:5000/users/all/auth0');
     expect(req.request.method).toEqual('GET');
-    req.flush(mockResponse);
+    req.flush(null, mockResponse);
 
+    expect(authService.isUserDataResolved.value).toBeFalse();
     expect(createSpy).toHaveBeenCalled();
     expect(createSpy).toHaveBeenCalledWith(jwtPayload);
   });
@@ -398,7 +412,13 @@ describe('AuthService', () => {
   // Check the service refreshes the token
   it('refreshToken() - refreshes the token', () => {
     // set up spies
-    const sessionSpy = spyOn(authService.auth0, 'checkSession').and.callThrough();
+    const sessionSpy = spyOn(authService.auth0, 'checkSession').and.callFake(({}, cb:Auth0.Auth0Callback<any, Auth0.Auth0Error>): void => {
+      const authResult = {
+        accessToken: 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjUxUm1CQkZqRy1lMDBxNDVKUm1TMiJ9'
+      };
+      let err:Auth0.Auth0Error | null = null;
+      cb(err, authResult);
+    });
     const parseSpy = spyOn(authService, 'parseJWT').and.returnValue({
       token: 'fdsfd'
     });

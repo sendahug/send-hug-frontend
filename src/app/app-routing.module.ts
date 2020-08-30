@@ -28,8 +28,16 @@ const routes: Routes = [
         { path: 'threads', pathMatch: 'prefix', component: AppMessaging, data: { name: 'Threads' } },
         { path: 'thread/:id', pathMatch: 'prefix', component: AppMessaging, data: { name: 'Thread' } }
       ], data: { name: 'Mailbox' }},
-  { path: 'new/:type', component: NewItem, data: { name: 'New Item' } },
-  { path: 'list/:type', component: FullList, data: { name: 'Full Items List' } },
+  { path: 'new',
+      children: [
+        { path: 'Post', pathMatch: 'prefix', component: NewItem, data: { name: 'New post' } },
+        { path: 'Message', pathMatch: 'prefix', component: NewItem, data: { name: 'New message' } }
+      ], data: { name: 'New Item' } },
+  { path: 'list',
+      children: [
+        { path: 'New', pathMatch: 'prefix', component: NewItem, data: { name: 'Full new list' } },
+        { path: 'Suggested', pathMatch: 'prefix', component: NewItem, data: { name: 'Full suggested list' } }
+      ], data: { name: 'Full Items List' } },
   { path: 'about', component: AboutApp, data: { name: 'About Page' } },
   { path: 'search', component: SearchResults, data: { name: 'Search Results' } },
   { path: 'admin',

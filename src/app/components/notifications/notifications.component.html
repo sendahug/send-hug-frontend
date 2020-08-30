@@ -1,6 +1,6 @@
 <div id="modalBox">
 	<div id="notificationsTab">
-		<button id="exitButton" (click)="exitNotifications()" aria-label="close popup"><i class="fas fa-times"></i></button>
+		<button id="exitButton" (click)="exitNotifications()" aria-label="close popup"><fa-icon [icon]="faTimes" class="fa-times"></fa-icon></button>
 		<h4>Notifications</h4>
 		<div id="nButtons">
 			<button class="appButton NotificationButton" (click)="togglePushNotifications()">{{ notificationService.toggleBtn }} Push Notifications</button> <button class="appButton NotificationButton" (click)="toggleAutoRefresh()">{{ notificationService.refreshBtn }} Auto-Refresh</button>

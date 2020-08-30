@@ -19,6 +19,7 @@ copies or substantial portions of the Software.
 
 // Angular imports
 import { Component, Input, Output, EventEmitter, OnInit, OnChanges, AfterViewChecked } from '@angular/core';
+import { faTimes } from '@fortawesome/free-solid-svg-icons';
 
 // App-related import
 import { Post } from '../../interfaces/post.interface';
@@ -62,6 +63,8 @@ export class PopUp implements OnInit, OnChanges, AfterViewChecked {
   @Input() reportData: any;
   focusableElements: any;
   checkFocusBinded = this.checkFocus.bind(this);
+  // icons
+  faTimes = faTimes;
 
   // CTOR
   constructor(

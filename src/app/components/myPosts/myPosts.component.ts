@@ -19,6 +19,8 @@ copies or substantial portions of the Software.
 
 // Angular imports
 import { Component, OnInit, Input } from '@angular/core';
+import { faFlag } from '@fortawesome/free-regular-svg-icons';
+import { faHandHoldingHeart } from '@fortawesome/free-solid-svg-icons';
 
 // App-related imports
 import { Post } from '../../interfaces/post.interface';
@@ -47,6 +49,9 @@ export class MyPosts implements OnInit {
   @Input()
   userID:number | undefined;
   user: 'self' | 'other';
+  // icons
+  faFlag = faFlag;
+  faHandHoldingHeart = faHandHoldingHeart;
 
   // CTOR
   constructor(

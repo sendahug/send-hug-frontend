@@ -19,6 +19,7 @@ copies or substantial portions of the Software.
 
 // Angular imports
 import { Component, OnInit, EventEmitter, Output } from '@angular/core';
+import { faTimes } from '@fortawesome/free-solid-svg-icons';
 
 // App-relateed imports
 import { AuthService } from '../../services/auth.service';
@@ -33,6 +34,8 @@ export class NotificationsTab implements OnInit {
   @Output() NotificationsMode = new EventEmitter<boolean>();
   focusableElements: any;
   checkFocusBinded = this.checkFocus.bind(this);
+  // icons
+  faTimes = faTimes;
 
   // CTOR
   constructor(

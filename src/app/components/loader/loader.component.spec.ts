@@ -33,6 +33,7 @@ import {
 } from "@angular/platform-browser-dynamic/testing";
 import { HttpClientModule } from "@angular/common/http";
 import { ServiceWorkerModule } from "@angular/service-worker";
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 import { AppComponent } from '../../app.component';
 import { Loader } from './loader.component';
@@ -57,7 +58,8 @@ describe('Loader', () => {
       imports: [
         RouterTestingModule,
         HttpClientModule,
-        ServiceWorkerModule.register('sw.js', { enabled: false })
+        ServiceWorkerModule.register('sw.js', { enabled: false }),
+        FontAwesomeModule
       ],
       declarations: [
         AppComponent,

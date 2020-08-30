@@ -33,6 +33,7 @@ import {
 } from "@angular/platform-browser-dynamic/testing";
 import { HttpClientModule } from "@angular/common/http";
 import { ServiceWorkerModule } from "@angular/service-worker";
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 // App imports
 import { AppComponent } from '../../app.component';
@@ -55,7 +56,8 @@ describe('MainPage', () => {
       imports: [
         RouterTestingModule,
         HttpClientModule,
-        ServiceWorkerModule.register('sw.js', { enabled: false })
+        ServiceWorkerModule.register('sw.js', { enabled: false }),
+        FontAwesomeModule
       ],
       declarations: [
         AppComponent,

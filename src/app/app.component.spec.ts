@@ -16,6 +16,7 @@ import {
 } from "@angular/platform-browser-dynamic/testing";
 import { HttpClientModule } from "@angular/common/http";
 import { ServiceWorkerModule } from "@angular/service-worker";
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 
 describe("AppComponent", () => {
@@ -28,7 +29,8 @@ describe("AppComponent", () => {
         imports: [
           RouterTestingModule,
           HttpClientModule,
-          ServiceWorkerModule.register('sw.js')
+          ServiceWorkerModule.register('sw.js'),
+          FontAwesomeModule
         ],
         declarations: [
           AppComponent

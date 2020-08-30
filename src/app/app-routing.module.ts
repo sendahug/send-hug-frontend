@@ -35,8 +35,8 @@ const routes: Routes = [
       ], data: { name: 'New Item' } },
   { path: 'list',
       children: [
-        { path: 'New', pathMatch: 'prefix', component: NewItem, data: { name: 'Full new list' } },
-        { path: 'Suggested', pathMatch: 'prefix', component: NewItem, data: { name: 'Full suggested list' } }
+        { path: 'New', pathMatch: 'prefix', component: FullList, data: { name: 'Full new list' } },
+        { path: 'Suggested', pathMatch: 'prefix', component: FullList, data: { name: 'Full suggested list' } }
       ], data: { name: 'Full Items List' } },
   { path: 'about', component: AboutApp, data: { name: 'About Page' } },
   { path: 'search', component: SearchResults, data: { name: 'Search Results' } },

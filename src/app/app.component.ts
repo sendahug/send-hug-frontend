@@ -1,6 +1,8 @@
 // Angular imports
 import { Component, OnInit, HostListener, AfterViewChecked, AfterViewInit } from '@angular/core';
 import { Router, NavigationStart } from '@angular/router';
+import { faComments, faUserCircle, faCompass, faBell } from '@fortawesome/free-regular-svg-icons';
+import { faBars, faSearch, faTimes } from '@fortawesome/free-solid-svg-icons';
 
 // App-related imports
 import { AuthService } from './services/auth.service';
@@ -16,6 +18,14 @@ import { NotificationService } from './services/notifications.service';
 export class AppComponent implements OnInit, AfterViewChecked, AfterViewInit {
   showNotifications = false;
   showSearch = false;
+  // font awesome icons
+  faBars = faBars;
+  faComments = faComments;
+  faUserCircle = faUserCircle;
+  faCompass = faCompass;
+  faBell = faBell;
+  faSearch = faSearch;
+  faTimes = faTimes;
 
   constructor(
     public authService:AuthService,

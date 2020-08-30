@@ -3,7 +3,7 @@
 	<div id="noInternet" *ngIf="alertsService.isOffline.value" role="banner">You are not currently connected to the internet. For updated data, reconnect to the internet and try again.</div>
 	<nav id="navMenu" role="navigation">
 		<a [routerLink]="['/']"><img src="../assets/img/Logo.svg" alt="send a hug logo" id="siteLogo"></a>
-		<button class="navLink hidden" id="menuBtn" (click)="toggleMenu()"><i class="fas fa-bars"></i></button>
+		<button class="navLink hidden" id="menuBtn" (click)="toggleMenu()"><fa-icon [icon]="faBars" class="fa-bars"></fa-icon></button>
 		<div id="navLinks" class="navLinks">
 			<a [routerLink]="['/']" class="navLink">
 				<img src="../assets/img/home.svg" alt="" id="home" class="normal">
@@ -12,7 +12,7 @@
 				<div class="navLinkText">Home</div>
 			</a>
 			<a [routerLink]="['/messages']" class="navLink">
-				<i class="far fa-comments navIcon" aria-label="Messages"></i>
+				<fa-icon [icon]="faComments" class="navIcon fa-comments" aria-label="Messages"></fa-icon>
 				<div class="navLinkText">Messages</div>
 			</a>
 			<a *ngIf="authService.authenticated && !authService.userData.blocked" [routerLink]="['/new', 'Post']" class="navLink">
@@ -22,11 +22,11 @@
 				<div class="navLinkText">New Post</div>
 			</a>
 			<a [routerLink]="['/user']" class="navLink">
-				<i class="fas fa-user-circle navIcon" aria-label="Profile"></i>
+				<fa-icon [icon]="faUserCircle" class="navIcon fa-user-circle" aria-label="Profile"></fa-icon>
 				<div class="navLinkText">Profile</div>
 			</a>
 			<a [routerLink]="['/about']" class="navLink">
-				<i class="far fa-compass navIcon" aria-label="About"></i>
+				<fa-icon [icon]="faCompass" class="fa-compass navIcon" aria-label="About"></fa-icon>
 				<div class="navLinkText">About</div>
 			</a>
 			<a *ngIf="authService.canUser('read:admin-board')" [routerLink]="['/admin']" class="navLink">
@@ -36,14 +36,18 @@
 				<div class="navLinkText">Admin Panel</div>
 			</a>
 			<div class="newNotification">
-				<button id="notificationsBtn" class="navLink" (click)="toggleNotifications()"><i class="far fa-bell navButton" aria-label="open notifications tab" id="navNotific"></i></button>
+				<button id="notificationsBtn" class="navLink" (click)="toggleNotifications()">
+					<fa-icon [icon]="faBell" class="fa-bell navButton" aria-label="open notifications tab" id="navNotific"></fa-icon>
+				</button>
 				<span class="badge">{{ notificationService.newNotifications }}</span>
 			</div>
-			<button class="navLink" (click)="toggleSearch()" id="searchBtn"><i class="fas fa-search navButton" aria-label="open search panel"></i></button>
+			<button class="navLink" (click)="toggleSearch()" id="searchBtn">
+				<fa-icon [icon]="faSearch" class="fa-search navButton" aria-label="open search panel"></fa-icon>
+			</button>
 		</div>
 	</nav>
 	<form id="search" role="search" *ngIf="showSearch">
-		<button id="exitButton" (click)="exitNotifications()" aria-label="close search panel"><i class="fas fa-times"></i></button>
+		<button id="exitButton" (click)="exitNotifications()" aria-label="close search panel"><fa-icon [icon]="faTimes" class="fa-times"></fa-icon></button>
 		<label class="pageCategory" for="searchQuery" id="searchLabel">Search: </label>
 		<input type="text" id="searchQuery" placeholder="Search" #searchQuery minlength="0">
 		<button type="submit" class="appButton sendData" (click)="searchApp($event,searchQuery.value)">Search</button>

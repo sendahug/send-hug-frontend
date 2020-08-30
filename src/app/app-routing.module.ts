@@ -14,34 +14,34 @@ import { SettingsPage } from './components/settings/settings.component';
 import { SiteMap } from './components/siteMap/siteMap.component';
 
 const routes: Routes = [
-  { path: '', component: MainPage },
+  { path: '', component: MainPage, data: { name: 'Home Page' } },
   { path: 'user',
       children: [
-        { path: '', pathMatch: 'prefix', component: UserPage },
-        { path: ':id', pathMatch: 'prefix', component: UserPage }
-      ]},
+        { path: '', pathMatch: 'prefix', component: UserPage, data: { name: 'Your Page' } },
+        { path: ':id', pathMatch: 'prefix', component: UserPage, data: { name: 'Other User\'s Page' } }
+      ], data: { name: 'User Page' }},
   { path: 'messages',
       children: [
-        { path: '', pathMatch: 'prefix', redirectTo: 'inbox' },
-        { path: 'inbox', pathMatch: 'prefix', component: AppMessaging },
-        { path: 'outbox', pathMatch: 'prefix', component: AppMessaging },
-        { path: 'threads', pathMatch: 'prefix', component: AppMessaging },
-        { path: 'thread/:id', pathMatch: 'prefix', component: AppMessaging }
-  ]},
-  { path: 'new/:type', component: NewItem },
-  { path: 'list/:type', component: FullList },
-  { path: 'about', component: AboutApp },
-  { path: 'search', component: SearchResults },
+        { path: '', pathMatch: 'prefix', redirectTo: 'inbox', data: { name: 'Inbox' } },
+        { path: 'inbox', pathMatch: 'prefix', component: AppMessaging, data: { name: 'Inbox' } },
+        { path: 'outbox', pathMatch: 'prefix', component: AppMessaging, data: { name: 'Outbox' } },
+        { path: 'threads', pathMatch: 'prefix', component: AppMessaging, data: { name: 'Threads' } },
+        { path: 'thread/:id', pathMatch: 'prefix', component: AppMessaging, data: { name: 'Thread' } }
+      ], data: { name: 'Mailbox' }},
+  { path: 'new/:type', component: NewItem, data: { name: 'New Item' } },
+  { path: 'list/:type', component: FullList, data: { name: 'Full Items List' } },
+  { path: 'about', component: AboutApp, data: { name: 'About Page' } },
+  { path: 'search', component: SearchResults, data: { name: 'Search Results' } },
   { path: 'admin',
       children: [
-        { path: '', pathMatch: 'prefix', component: AdminDashboard },
-        { path: 'reports', pathMatch: 'prefix', component: AdminDashboard },
-        { path: 'blocks', pathMatch: 'prefix', component: AdminDashboard },
-        { path: 'filters', pathMatch: 'prefix', component: AdminDashboard }
-      ]},
-  { path: 'settings', component: SettingsPage },
-  { path: 'sitemap', component: SiteMap },
-  { path: '**', component: ErrorPage }
+        { path: '', pathMatch: 'prefix', component: AdminDashboard, data: { name: 'Main Page' } },
+        { path: 'reports', pathMatch: 'prefix', component: AdminDashboard, data: { name: 'Reports Page' } },
+        { path: 'blocks', pathMatch: 'prefix', component: AdminDashboard, data: { name: 'Blocks Page' } },
+        { path: 'filters', pathMatch: 'prefix', component: AdminDashboard, data: { name: 'Filters Page' } }
+      ], data: { name: 'Admin Dashboard' }},
+  { path: 'settings', component: SettingsPage, data: { name: 'Settings Page' } },
+  { path: 'sitemap', component: SiteMap, data: { name: 'Site Map' } },
+  { path: '**', component: ErrorPage, data: { name: 'Error Page' } }
 ];
 
 @NgModule({

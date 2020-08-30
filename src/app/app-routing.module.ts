@@ -13,7 +13,7 @@ import { AdminDashboard } from './components/adminDashboard/adminDashboard.compo
 import { SettingsPage } from './components/settings/settings.component';
 import { SiteMap } from './components/siteMap/siteMap.component';
 
-const routes: Routes = [
+export const routes: Routes = [
   { path: '', component: MainPage, data: { name: 'Home Page' } },
   { path: 'user',
       children: [

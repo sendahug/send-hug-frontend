@@ -30,6 +30,7 @@ import { ServiceWorkerModule } from "@angular/service-worker";
 
 import { AppComponent } from "../../app.component";
 import { SiteMap } from "./siteMap.component";
+import { routes } from '../../app-routing.module';
 
 describe('AboutApp', () => {
   // Before each test, configure testing environment
@@ -40,7 +41,7 @@ describe('AboutApp', () => {
 
     TestBed.configureTestingModule({
       imports: [
-        RouterTestingModule,
+        RouterTestingModule.withRoutes(routes),
         HttpClientModule,
         ServiceWorkerModule.register('sw.js', { enabled: false })
       ],
@@ -62,5 +63,27 @@ describe('AboutApp', () => {
     const siteMap = fixture.componentInstance;
     expect(appComponent).toBeTruthy();
     expect(siteMap).toBeTruthy();
+  });
+
+  // Check that there are valid navigation links
+  it('should contain valid navigation links', () => {
+    TestBed.createComponent(AppComponent);
+    const fixture = TestBed.createComponent(SiteMap);
+    const siteMap = fixture.componentInstance;
+    const siteMapDOM = fixture.nativeElement;
+    fixture.detectChanges();
+
+    let routeList = siteMapDOM.querySelector('#routeList');
+    expect(routeList).toBeTruthy();
+    expect(routeList!.children.length).not.toBe(0);
+    expect(siteMap.routes).toBeDefined();
+
+    // check each navingation item to ensure it contains a link
+    let navLinks = routeList!.querySelectorAll('.routerLink');
+    for(var i = 0; i < navLinks.length; i++) {
+      expect(navLinks[i]).toBeDefined();
+      expect(navLinks[i]!.getAttribute('href')).toBeDefined();
+      expect(navLinks[i]!.getAttribute('href')).not.toBe('');
+    }
   });
 });

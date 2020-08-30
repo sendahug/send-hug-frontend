@@ -1990,6 +1990,55 @@ app-settings h4
 	border-radius: 5px
 	border: none
 	text-decoration: none
+
+/* =================== Site Map Component Styling =================== */
+/* Site Map Component */
+app-site-map
+	@extend #compSample
+	width: 90%
+	padding: 0 5%
+	left: 0
+	right: 0
+
+/* Map title */
+#siteMap
+	font-family: $mainFont
+	text-align: center
+	margin-top: 5px
+	padding-top: 5px
+
+/* Map list */
+app-site-map ul
+	list-style: none
+	font-family: $mainFont
+	text-align: center
+	padding-inline-start: 0
+
+/* Route list item */
+.mainRoute
+	margin: 20px 0
+
+/* Route name (parent route) */
+.mainRoute h4
+	padding: 0
+	margin: 6px 0
+	font-size: 16px
+	/* Responsive styling for screens above 700px width */
+	@media screen and (min-width: 700px)
+		font-size: 17px
+
+/* Sub-route list item */
+.subRoute
+	margin: 7px
+
+/* Route links */
+app-site-map a
+	color: $linkColour
+	font-family: $mainFont
+	font-size: 15px
+	/* Responsive styling for screens above 700px width */
+	@media screen and (min-width: 700px)
+		font-size: 16px
 	
 /* =================== Admin Dashboard Component Styling =================== */
 /* Admin Dashboard Component */

@@ -11,6 +11,7 @@ import { AboutApp } from './components/aboutApp/aboutApp.component';
 import { SearchResults } from './components/searchResults/searchResults.component';
 import { AdminDashboard } from './components/adminDashboard/adminDashboard.component';
 import { SettingsPage } from './components/settings/settings.component';
+import { SiteMap } from './components/siteMap/siteMap.component';
 
 const routes: Routes = [
   { path: '', component: MainPage },
@@ -39,6 +40,7 @@ const routes: Routes = [
         { path: 'filters', pathMatch: 'prefix', component: AdminDashboard }
       ]},
   { path: 'settings', component: SettingsPage },
+  { path: 'sitemap', component: SiteMap },
   { path: '**', component: ErrorPage }
 ];
 

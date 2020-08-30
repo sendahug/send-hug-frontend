@@ -21,6 +21,7 @@ import { AdminDashboard } from './components/adminDashboard/adminDashboard.compo
 import { HeaderMessage } from './components/headerMessage/headerMessage.component';
 import { NotificationsTab } from './components/notifications/notifications.component';
 import { SettingsPage } from './components/settings/settings.component';
+import { SiteMap } from './components/siteMap/siteMap.component';
 
 @NgModule({
   imports: [
@@ -46,7 +47,8 @@ import { SettingsPage } from './components/settings/settings.component';
     AdminDashboard,
     HeaderMessage,
     NotificationsTab,
-    SettingsPage
+    SettingsPage,
+    SiteMap
   ],
   providers: [],
   bootstrap: [AppComponent]

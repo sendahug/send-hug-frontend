@@ -1,0 +1,15 @@
+<h3 id="siteMap">Send a Hug - Site Map</h3>
+
+<div role="document">
+	<ul id="routeList">
+		<li *ngFor="let route of routes" class="mainRoute">
+			<div>Title</div>
+			<ul *ngIf="route.children">
+				<li *ngFor="let child of route.children" class="subRoute">
+					<a [routerLink]="[child.path]">Title</a>
+				</li>
+			</ul>
+			<a [routerLink]="[route.path]" *ngIf="!route.children">Title</a>
+		</li>
+	</ul>
+</div>

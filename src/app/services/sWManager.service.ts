@@ -153,7 +153,15 @@ export class SWManager {
     // which means the SW has been installed and is ready to be activated
     worker.addEventListener('statechange', () => {
       if(worker.state == 'installed') {
-        this.alertsService.createSWAlert(worker);
+        // if there's an active ServiceWorker, alert the user that there's
+        // a new version of the site
+        if(this.activeServiceWorkerReg && this.activeServiceWorkerReg!.active) {
+          this.alertsService.createSWAlert(worker);
+        }
+        // otherwise, just tell the SW to take over
+        else {
+          worker.postMessage({ action: 'skip waiting'});
+        }
       }
     })
   }

@@ -92,12 +92,13 @@ module.exports = function (karma) {
     browsers: ['ChromeNoSandbox'],
     customLaunchers: {
       ChromeNoSandbox: {
-        base: 'ChromeHeadless',
+        base: 'Chrome',
         flags: [
             '--disable-gpu',
             '--no-sandbox',
             '--disable-setuid-sandbox',
-            '--disable-extensions'
+            '--disable-extensions',
+            '--disable-dev-shm-usage'
         ]
       }
     },

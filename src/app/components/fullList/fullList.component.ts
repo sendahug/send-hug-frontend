@@ -61,7 +61,9 @@ export class FullList {
     public postsService:PostsService
   ) {
       // get the type of list and the current page
-      this.type = this.route.snapshot.paramMap.get('type');
+      this.route.url.subscribe(params => {
+        this.type = params[0].path;
+      });
       this.page = Number(this.route.snapshot.queryParamMap.get('page'));
 
       // set a default page if no page is set

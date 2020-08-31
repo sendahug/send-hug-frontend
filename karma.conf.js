@@ -96,7 +96,8 @@ module.exports = function (karma) {
         flags: [
             '--disable-gpu',
             '--no-sandbox',
-            '--disable-setuid-sandbox'
+            '--disable-setuid-sandbox',
+            '--disable-extensions'
         ]
       }
     },

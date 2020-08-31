@@ -1,7 +1,7 @@
 # Send A Hug
 
 [![Build Status](https://travis-ci.com/sendahug/send-hug-frontend.svg?branch=Dev)](https://travis-ci.com/sendahug/send-hug-frontend)
-[![Known Vulnerabilities](https://snyk.io/test/github/{sendahug}/{send-hug-frontend}/badge.svg)](https://snyk.io/test/github/{sendahug}/{send-hug-frontend})
+[![Known Vulnerabilities](https://snyk.io/test/github/sendahug/send-hug-frontend/badge.svg)](https://snyk.io/test/github/sendahug/send-hug-frontend)
 
 ## Version
 

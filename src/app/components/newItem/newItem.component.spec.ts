@@ -46,6 +46,7 @@ import { MockItemsService } from '../../services/items.service.mock';
 import { AlertsService } from '../../services/alerts.service';
 import { MockAlertsService } from '../../services/alerts.service.mock';
 import { ActivatedRoute } from "@angular/router";
+import { of } from 'rxjs';
 
 describe('NewItem', () => {
   // Before each test, configure testing environment
@@ -119,7 +120,7 @@ describe('NewItem', () => {
     it('has a type determined by the type parameter - post', fakeAsync(() => {
       TestBed.createComponent(AppComponent);
       const paramMap = TestBed.get(ActivatedRoute);
-      const routeSpy = spyOn(paramMap.snapshot.paramMap, 'get').and.returnValue('Post');
+      paramMap.url = of([{path: 'Post'}]);
       const fixture = TestBed.createComponent(NewItem);
       const newItem = fixture.componentInstance;
       const newItemDOM = fixture.nativeElement;
@@ -128,7 +129,6 @@ describe('NewItem', () => {
       fixture.detectChanges();
       tick();
 
-      expect(routeSpy).toHaveBeenCalled();
       expect(newItem.itemType).toBe('Post');
       expect(newItemDOM.querySelector('#newPost')).toBeTruthy();
       expect(newItemDOM.querySelector('#newMessage')).toBeNull();
@@ -139,7 +139,7 @@ describe('NewItem', () => {
     it('triggers the posts service when creating a new post', fakeAsync(() => {
       TestBed.createComponent(AppComponent);
       const paramMap = TestBed.get(ActivatedRoute);
-      spyOn(paramMap.snapshot.paramMap, 'get').and.returnValue('Post');
+      paramMap.url = of([{path: 'Post'}]);
       const fixture = TestBed.createComponent(NewItem);
       const newItem = fixture.componentInstance;
       const newItemDOM = fixture.nativeElement;
@@ -174,7 +174,7 @@ describe('NewItem', () => {
     it('should prevent empty posts', fakeAsync(() => {
       TestBed.createComponent(AppComponent);
       const paramMap = TestBed.get(ActivatedRoute);
-      spyOn(paramMap.snapshot.paramMap, 'get').and.returnValue('Post');
+      paramMap.url = of([{path: 'Post'}]);
       const fixture = TestBed.createComponent(NewItem);
       const newItem = fixture.componentInstance;
       const newItemDOM = fixture.nativeElement;
@@ -210,7 +210,7 @@ describe('NewItem', () => {
     it('should prevent blocked users from posting', fakeAsync(() => {
       TestBed.createComponent(AppComponent);
       const paramMap = TestBed.get(ActivatedRoute);
-      spyOn(paramMap.snapshot.paramMap, 'get').and.returnValue('Post');
+      paramMap.url = of([{path: 'Post'}]);
       const fixture = TestBed.createComponent(NewItem);
       const newItem = fixture.componentInstance;
       const newItemDOM = fixture.nativeElement;
@@ -231,7 +231,7 @@ describe('NewItem', () => {
     it('should prevent logged out users from posting', fakeAsync(() => {
       TestBed.createComponent(AppComponent);
       const paramMap = TestBed.get(ActivatedRoute);
-      spyOn(paramMap.snapshot.paramMap, 'get').and.returnValue('Post');
+      paramMap.url = of([{path: 'Post'}]);
       const fixture = TestBed.createComponent(NewItem);
       const newItem = fixture.componentInstance;
       const newItemDOM = fixture.nativeElement;
@@ -296,9 +296,9 @@ describe('NewItem', () => {
     // Check that the type of new item is determined by the parameter type
     it('has a type determined by the type parameter - message', fakeAsync(() => {
       TestBed.createComponent(AppComponent);
-      const paramMap = TestBed.get(ActivatedRoute) as ActivatedRoute;
-      const routeSpy = spyOn(paramMap.snapshot.paramMap, 'get').and.returnValue('Message');
-      const queryParamsSpy = spyOn(paramMap.snapshot.queryParamMap, 'get').and.callFake((param) => {
+      const paramMap = TestBed.get(ActivatedRoute);
+      paramMap.url = of([{path: 'Message'}]);
+      const queryParamsSpy = spyOn(paramMap.snapshot.queryParamMap, 'get').and.callFake((param:string) => {
         if(param == 'user') {
           return 'hello';
         }
@@ -317,7 +317,6 @@ describe('NewItem', () => {
       fixture.detectChanges();
       tick();
 
-      expect(routeSpy).toHaveBeenCalled();
       expect(queryParamsSpy).toHaveBeenCalled();
       expect(newItem.itemType).toBe('Message');
       expect(newItem.user).toBe('hello');
@@ -330,9 +329,9 @@ describe('NewItem', () => {
     // Check that it triggers the items service when creating a new message
     it('triggers the items service when creating a new message', fakeAsync(() => {
       TestBed.createComponent(AppComponent);
-      const paramMap = TestBed.get(ActivatedRoute) as ActivatedRoute;
-      spyOn(paramMap.snapshot.paramMap, 'get').and.returnValue('Message');
-      spyOn(paramMap.snapshot.queryParamMap, 'get').and.callFake((param) => {
+      const paramMap = TestBed.get(ActivatedRoute);
+      paramMap.url = of([{path: 'Message'}]);
+      spyOn(paramMap.snapshot.queryParamMap, 'get').and.callFake((param:string) => {
         if(param == 'user') {
           return 'hello';
         }
@@ -376,9 +375,9 @@ describe('NewItem', () => {
     // Check that an empty message triggers an alert
     it('should prevent empty messages', fakeAsync(() => {
       TestBed.createComponent(AppComponent);
-      const paramMap = TestBed.get(ActivatedRoute) as ActivatedRoute;
-      spyOn(paramMap.snapshot.paramMap, 'get').and.returnValue('Message');
-      spyOn(paramMap.snapshot.queryParamMap, 'get').and.callFake((param) => {
+      const paramMap = TestBed.get(ActivatedRoute);
+      paramMap.url = of([{path: 'Message'}]);
+      spyOn(paramMap.snapshot.queryParamMap, 'get').and.callFake((param:string) => {
         if(param == 'user') {
           return 'hello';
         }
@@ -419,9 +418,9 @@ describe('NewItem', () => {
     // Check that a user can't send a message if they're logged out
     it('should prevent logged out users from messaging', fakeAsync(() => {
       TestBed.createComponent(AppComponent);
-      const paramMap = TestBed.get(ActivatedRoute) as ActivatedRoute;
-      spyOn(paramMap.snapshot.paramMap, 'get').and.returnValue('Message');
-      spyOn(paramMap.snapshot.queryParamMap, 'get').and.callFake((param) => {
+      const paramMap = TestBed.get(ActivatedRoute);
+      paramMap.url = of([{path: 'Message'}]);
+      spyOn(paramMap.snapshot.queryParamMap, 'get').and.callFake((param:string) => {
         if(param == 'user') {
           return 'hello';
         }
@@ -461,9 +460,9 @@ describe('NewItem', () => {
     // Check that an error is thrown if there's no user ID and user data
     it('should throw an error if there\'s no user ID and user', fakeAsync(() => {
       TestBed.createComponent(AppComponent);
-      const paramMap = TestBed.get(ActivatedRoute) as ActivatedRoute;
-      spyOn(paramMap.snapshot.paramMap, 'get').and.returnValue('Message');
-      spyOn(paramMap.snapshot.queryParamMap, 'get').and.callFake((_param) => {
+      const paramMap = TestBed.get(ActivatedRoute);
+      paramMap.url = of([{path: 'Message'}]);
+      spyOn(paramMap.snapshot.queryParamMap, 'get').and.callFake((_param:string) => {
         return '';
       });
       const fixture = TestBed.createComponent(NewItem);
@@ -482,9 +481,9 @@ describe('NewItem', () => {
     // Check that a user can't message themselves
     it('should prevent users messaging themselves', fakeAsync(() => {
       TestBed.createComponent(AppComponent);
-      const paramMap = TestBed.get(ActivatedRoute) as ActivatedRoute;
-      spyOn(paramMap.snapshot.paramMap, 'get').and.returnValue('Message');
-      spyOn(paramMap.snapshot.queryParamMap, 'get').and.callFake((param) => {
+      const paramMap = TestBed.get(ActivatedRoute);
+      paramMap.url = of([{path: 'Message'}]);
+      spyOn(paramMap.snapshot.queryParamMap, 'get').and.callFake((param:string) => {
         if(param == 'user') {
           return 'name';
         }

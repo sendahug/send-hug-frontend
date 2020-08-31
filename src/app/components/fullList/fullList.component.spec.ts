@@ -44,6 +44,7 @@ import { AuthService } from '../../services/auth.service';
 import { MockAuthService } from '../../services/auth.service.mock';
 import { ActivatedRoute } from "@angular/router";
 import { Loader } from '../loader/loader.component';
+import { of } from 'rxjs';
 
 
 describe('FullList', () => {
@@ -89,7 +90,7 @@ describe('FullList', () => {
     // set up spies
     TestBed.createComponent(AppComponent);
     const paramMap = TestBed.get(ActivatedRoute);
-    const routeSpy = spyOn(paramMap.snapshot.paramMap, 'get').and.returnValue('New');
+    paramMap.url = of([{path: 'New'}]);
     const postsService = TestBed.get(PostsService);
     const newPostsSpy = spyOn(postsService, 'getNewItems').and.callThrough();
     const sugPostsSpy = spyOn(postsService, 'getSuggestedItems').and.callThrough();
@@ -101,7 +102,6 @@ describe('FullList', () => {
     fixture.detectChanges();
     tick();
 
-    expect(routeSpy).toHaveBeenCalled();
     expect(fullList.waitFor).toBe('new posts');
     expect(newPostsSpy).toHaveBeenCalled();
     expect(sugPostsSpy).not.toHaveBeenCalled();
@@ -115,7 +115,7 @@ describe('FullList', () => {
     // set up spies
     TestBed.createComponent(AppComponent);
     const paramMap = TestBed.get(ActivatedRoute);
-    const routeSpy = spyOn(paramMap.snapshot.paramMap, 'get').and.returnValue('Suggested');
+    paramMap.url = of([{path: 'Suggested'}]);
     const postsService = TestBed.get(PostsService);
     const newPostsSpy = spyOn(postsService, 'getNewItems').and.callThrough();
     const sugPostsSpy = spyOn(postsService, 'getSuggestedItems').and.callThrough();
@@ -127,7 +127,6 @@ describe('FullList', () => {
     fixture.detectChanges();
     tick();
 
-    expect(routeSpy).toHaveBeenCalled();
     expect(fullList.waitFor).toBe('suggested posts');
     expect(sugPostsSpy).toHaveBeenCalled();
     expect(newPostsSpy).not.toHaveBeenCalled();
@@ -141,7 +140,7 @@ describe('FullList', () => {
     // set up spies
     TestBed.createComponent(AppComponent);
     const paramMap = TestBed.get(ActivatedRoute);
-    const routeSpy = spyOn(paramMap.snapshot.paramMap, 'get').and.returnValue('Suggested');
+    paramMap.url = of([{path: 'Suggested'}]);
     const pageSpy = spyOn(paramMap.snapshot.queryParamMap, 'get').and.returnValue('1');
 
     // create the component
@@ -151,7 +150,6 @@ describe('FullList', () => {
     fixture.detectChanges();
 
     // expectations for page 1
-    expect(routeSpy).toHaveBeenCalled();
     expect(pageSpy).toHaveBeenCalled();
     expect(fullList.page).toBe(1);
     expect(fullListDOM.querySelector('#fullItems').children.length).toBe(2);
@@ -171,7 +169,7 @@ describe('FullList', () => {
   it('should have all popup variables set to false', () => {
     TestBed.createComponent(AppComponent);
     const paramMap = TestBed.get(ActivatedRoute);
-    spyOn(paramMap.snapshot.paramMap, 'get').and.returnValue('New');
+    paramMap.url = of([{path: 'New'}]);
     const fixture = TestBed.createComponent(FullList);
     const fullList = fixture.componentInstance;
 
@@ -184,7 +182,7 @@ describe('FullList', () => {
   it('should trigger posts service on hug', fakeAsync(() => {
     TestBed.createComponent(AppComponent);
     const paramMap = TestBed.get(ActivatedRoute);
-    spyOn(paramMap.snapshot.paramMap, 'get').and.returnValue('New');
+    paramMap.url = of([{path: 'New'}]);
     const fixture = TestBed.createComponent(FullList);
     const fullList = fixture.componentInstance;
     const fullListDOM = fixture.debugElement.nativeElement;
@@ -216,7 +214,7 @@ describe('FullList', () => {
   it('should open the popup upon editing', fakeAsync(() => {
     TestBed.createComponent(AppComponent);
     const paramMap = TestBed.get(ActivatedRoute);
-    spyOn(paramMap.snapshot.paramMap, 'get').and.returnValue('New');
+    paramMap.url = of([{path: 'New'}]);
     const fixture = TestBed.createComponent(FullList);
     const fullList = fixture.componentInstance;
     const fullListDOM = fixture.debugElement.nativeElement;
@@ -246,7 +244,7 @@ describe('FullList', () => {
   it('should open the popup upon deleting', fakeAsync(() => {
     TestBed.createComponent(AppComponent);
     const paramMap = TestBed.get(ActivatedRoute);
-    spyOn(paramMap.snapshot.paramMap, 'get').and.returnValue('New');
+    paramMap.url = of([{path: 'New'}]);
     const fixture = TestBed.createComponent(FullList);
     const fullList = fixture.componentInstance;
     const fullListDOM = fixture.debugElement.nativeElement;
@@ -278,7 +276,7 @@ describe('FullList', () => {
   it('should open the popup upon reporting', fakeAsync(() => {
     TestBed.createComponent(AppComponent);
     const paramMap = TestBed.get(ActivatedRoute);
-    spyOn(paramMap.snapshot.paramMap, 'get').and.returnValue('New');
+    paramMap.url = of([{path: 'New'}]);
     const fixture = TestBed.createComponent(FullList);
     const fullList = fixture.componentInstance;
     const fullListDOM = fixture.debugElement.nativeElement;

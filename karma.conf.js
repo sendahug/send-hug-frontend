@@ -27,7 +27,7 @@ module.exports = function (karma) {
         './src/**/*.ts': ['webpack', 'sourcemap', 'coverage']
     },
     webpack: {
-        devtool: "source-map",
+        devtool: "eval-source-map",
         entry: {
           app: './src/main.ts',
           test: './src/base.spec.ts'

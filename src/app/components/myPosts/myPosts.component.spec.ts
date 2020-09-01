@@ -222,7 +222,8 @@ describe('MyPosts', () => {
       imports: [
         RouterTestingModule,
         HttpClientModule,
-        ServiceWorkerModule.register('sw.js', { enabled: false })
+        ServiceWorkerModule.register('sw.js', { enabled: false }),
+        FontAwesomeModule
       ],
       declarations: [
         AppComponent,

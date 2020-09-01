@@ -7,6 +7,9 @@ node_js:
 addons:
   chrome: stable
 
+services:
+  - xvfb
+
 cache:
   directories:
      - ./node_modules

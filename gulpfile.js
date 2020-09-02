@@ -11,6 +11,9 @@ const source = require("vinyl-source-stream");
 const buffer = require("vinyl-buffer");
 const rename = require("gulp-rename");
 const replace = require("gulp-replace");
+const webpack = require('webpack-stream');
+const path = require('path');
+const ngTools = require('@ngtools/webpack');
 var Server = require('karma').Server;
 
 // LOCAL DEVELOPMENT TASKS
@@ -187,6 +190,63 @@ gulp.task('dist', gulp.parallel(
 
 // TESTING TASKS
 // ===============================================
+// bundle up the files before the tests as there's an apparent memory leak
+// in karma-webpack
+function bundleCode() {
+	return gulp.src('src/main.ts')
+    .pipe(webpack({
+			devtool: "eval-source-map",
+	    entry: {
+	      app: './src/main.ts'
+	    },
+			output: {
+				filename: '[name].js'
+			},
+	    mode: "development",
+	    node: { fs: 'empty' },
+	    module: {
+	        rules: [
+	            {
+	                test: /\.html$/,
+	                loader: 'html-loader'
+	            },
+	            {
+	                test: /\.svg$/,
+	                loader: 'svg-inline-loader'
+	            },
+	            {
+	              test: /(?:\.ngfactory\.js|\.ngstyle\.js|\.ts)$/,
+	              loader: [
+	                '@ngtools/webpack',
+	                { loader: 'angular-router-loader' }
+	              ]
+	            }
+	        ]
+	    },
+	    optimization: {
+	      splitChunks: false
+	    },
+	    resolve: {
+	        extensions: [".ts", ".js"]
+	    },
+	    plugins: [
+	      new ngTools.AngularCompilerPlugin({
+	        tsConfigPath: 'tsconfig.json',
+	        basePath: './',
+	        entryModule: path.resolve(__dirname, 'src/app/app.module#AppModule'),
+	        skipCodeGeneration: true,
+	        sourceMap: true,
+	        directTemplateLoading: false,
+	        locale: 'en',
+	        hostReplacementPaths: {
+	          'src/environments/config.development.ts': 'src/environments/config.production.ts'
+	        }
+	      })
+	    ]
+    }))
+    .pipe(gulp.dest('tests/'));
+}
+
 // automatic testing in whatever browser is defined in the Karma config file
 function unitTest()
 {
@@ -194,6 +254,12 @@ function unitTest()
 	    configFile: __dirname + '/karma.conf.js'
 	  }).start();
 }
+
+// run code bundling and then test
+gulp.task('test', gulp.series(
+	bundleCode,
+	unitTest
+));
 
 //boot up the server
 gulp.task("serve", function() {

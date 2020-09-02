@@ -18,18 +18,18 @@ module.exports = function (karma) {
     ],
     mime: { 'text/x-typescript': ['ts','tsx'] },
     files: [
-        { pattern: "./src/base.spec.ts", included: false },
-        { pattern: "./src/**/*.+(ts|html)" }
+        { pattern: "./src/**/*.spec.ts" },
+        { pattern: "./tests/app.js" }
     ],
     preprocessors: {
-        './src/base.spec.ts': ['webpack'],
-        './src/**/*.ts': ['webpack', 'sourcemap', 'coverage']
+        "./tests/app.js": ['sourcemap', 'coverage'],
+        './src/**/*.spec.ts': ['webpack', 'sourcemap', 'coverage']
     },
     webpack: {
         devtool: "eval-source-map",
         entry: {
           app: './src/main.ts',
-          test: './src/base.spec.ts'
+          test: './src/tests.ts'
         },
         mode: "development",
         node: { fs: 'empty' },
@@ -52,9 +52,6 @@ module.exports = function (karma) {
                 }
             ]
         },
-        resolve: {
-            extensions: [".ts", ".js"]
-        },
         plugins: [
           new ngTools.AngularCompilerPlugin({
             tsConfigPath: 'tsconfig.json',
@@ -69,12 +66,6 @@ module.exports = function (karma) {
             }
           })
         ]
-    },
-    webpackMiddleware: {
-        quiet: true,
-        stats: {
-            colors: true
-        }
     },
     coverageIstanbulReporter: {
       dir: path.resolve(__dirname, './coverage/angular-gulp'),

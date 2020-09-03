@@ -68,7 +68,7 @@ module.exports = function (karma) {
         ]
     },
     coverageIstanbulReporter: {
-      dir: path.resolve(__dirname, './coverage/angular-gulp'),
+      dir: path.resolve(__dirname, './coverage'),
       reports: ['html', 'lcovonly', 'text-summary'],
       fixWebpackSourcePaths: true
     },

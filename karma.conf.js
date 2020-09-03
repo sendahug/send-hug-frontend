@@ -23,7 +23,7 @@ module.exports = function (karma) {
     ],
     preprocessors: {
         "./tests/app.js": ['sourcemap', 'coverage'],
-        './src/**/*.spec.ts': ['webpack', 'sourcemap', 'coverage']
+        './src/**/*.spec.ts': ['webpack', 'sourcemap', 'coverage', 'coverage-istanbul']
     },
     webpack: {
         devtool: "eval-source-map",
@@ -69,13 +69,20 @@ module.exports = function (karma) {
     },
     coverageIstanbulReporter: {
       dir: path.resolve(__dirname, './coverage'),
-      reports: ['json', 'html', 'text-summary'],
+      reports: ['html', 'lcovonly', 'text-summary'],
       fixWebpackSourcePaths: true
+    },
+    coverageReporter: {
+      reports: [
+        { type: 'html', subdir: 'report-html' },
+        { type: 'lcov', subdir: 'report-lcov' }
+      ],
+      dir : 'coverage/'
     },
     client: {
       clearContext: false // leave Jasmine Spec Runner output visible in browser
     },
-    reporters: ['progress', 'kjhtml', 'coverage'],
+    reporters: ['progress', 'kjhtml', 'coverage', 'coverage-istanbul'],
     port: 9876,
     logLevel: 'DEBUG',
     autoWatch: false,

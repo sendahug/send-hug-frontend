@@ -1,4 +1,8 @@
 <div *ngIf="authService.canUser('read:admin-board')" id="adminDashAll">
+	<nav id="breadcrumb" aria-label="Breadcrumb">
+		<a [routerLink]="['/admin']" class="breadcrumb bLink">Admin Panel</a> <span *ngIf="screen != 'main'" class="breadcrumb">/ <a [routerLink]="['/admin/' + screen]" class="breadcrumb bLink">{{ screen }}</a></span>
+	</nav>
+	
 	<!-- Admin dashboard navigation menu -->
 	<nav id="adminNav" role="navigation">
 		<a [routerLink]="['/admin']" class="adminNavItem" aria-label="navigate to admin dashboard main page">Main</a>

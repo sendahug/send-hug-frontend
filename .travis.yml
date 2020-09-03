@@ -23,7 +23,7 @@ install:
   - npm install -g gulp-cli
 
 script:
-  - sudo -E env "PATH=$PATH" gulp unitTest --max_old_space_size=8192
+  - sudo -E env "PATH=$PATH" gulp test --max_old_space_size=8192
 
 after_success:
   - codecov

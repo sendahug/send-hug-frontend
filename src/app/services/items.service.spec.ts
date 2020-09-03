@@ -336,6 +336,11 @@ describe('ItemsService', () => {
 
     const postsSpy = spyOn(itemsService, 'getUserPosts');
     itemsService.getUser(2);
+
+    const req = httpController.expectOne('http://localhost:5000/users/all/2');
+    expect(req.request.method).toEqual('GET');
+    req.flush(mockResponse);
+
     // wait for the fetch to be resolved
     itemsService.isOtherUserResolved.subscribe((value) => {
       if(value) {
@@ -349,10 +354,6 @@ describe('ItemsService', () => {
         expect(postsSpy).toHaveBeenCalledWith(2);
       }
     });
-
-    const req = httpController.expectOne('http://localhost:5000/users/all/2');
-    expect(req.request.method).toEqual('GET');
-    req.flush(mockResponse);
   });
 
   // Check that the service gets the user's inbox

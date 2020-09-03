@@ -52,4 +52,4 @@ jobs:
       run: npm install -g gulp-cli
       
     - name: run tests
-      run: gulp unitTest --max_old_space_size=8192
+      run: gulp test --max_old_space_size=8192

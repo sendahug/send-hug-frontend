@@ -23,7 +23,7 @@ module.exports = function (karma) {
     ],
     preprocessors: {
         "./tests/app.js": ['sourcemap', 'coverage'],
-        './src/**/*.spec.ts': ['webpack', 'sourcemap', 'coverage', 'coverage-istanbul']
+        './src/**/*.spec.ts': ['webpack', 'sourcemap', 'coverage']
     },
     webpack: {
         devtool: "eval-source-map",

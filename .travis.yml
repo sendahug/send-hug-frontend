@@ -24,3 +24,6 @@ install:
 
 script:
   - sudo -E env "PATH=$PATH" gulp unitTest --max_old_space_size=8192
+
+after_success:
+  - codecov

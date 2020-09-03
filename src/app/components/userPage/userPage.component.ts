@@ -21,6 +21,7 @@ copies or substantial portions of the Software.
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { faGratipay } from '@fortawesome/free-brands-svg-icons';
 
 // App-related imports
 import { User } from '../../interfaces/user.interface';
@@ -43,6 +44,8 @@ export class UserPage implements OnInit, OnDestroy {
   waitFor = "user";
   userId: number | undefined;
   userDataSubscription:Subscription | undefined;
+  // icons
+  faGratipay = faGratipay;
 
   // CTOR
   constructor(

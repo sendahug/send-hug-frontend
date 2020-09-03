@@ -12,7 +12,7 @@
 				<span class="pageData" *ngIf="!itemsService.isOtherUser" aria-describedby="userName">{{ authService.userData.displayName }}</span> 
 				<span class="pageData" *ngIf="itemsService.isOtherUser" aria-describedby="userName">{{ itemsService.otherUserData.displayName }} 
 					<button class="textlessButton hugButton" (click)="sendHug(itemsService.otherUserData.id)" aria-describedby="uHug userName">
-						<i class="fab fa-gratipay"></i>
+						<fa-icon [icon]="faGratipay" class="fa-gratipay"></fa-icon>
 					</button>
 				</span>
 			</div>

@@ -20,6 +20,7 @@ copies or substantial portions of the Software.
 // Angular imports
 import { Component } from '@angular/core';
 import { Location } from '@angular/common';
+import { faArrowAltCircleLeft } from '@fortawesome/free-regular-svg-icons';
 
 // Error message interface
 interface ErrorMessage {
@@ -39,6 +40,8 @@ export class ErrorPage {
     message: `The page you were looking for doesn\'t exist.`,
     code: 404
   }
+  // icons
+  faArrowAltCircleLeft = faArrowAltCircleLeft;
 
   // CTOR
   constructor(private location:Location) {

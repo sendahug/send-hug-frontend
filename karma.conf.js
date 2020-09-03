@@ -1,7 +1,6 @@
 const path = require('path');
 const ngTools = require('@ngtools/webpack');
-const puppeteer = require('puppeteer');
-process.env.CHROME_BIN = puppeteer.executablePath();
+process.env.CHROME_BIN = '/usr/bin/google-chrome-stable';
 
 // Karma configuration file
 module.exports = function (karma) {
@@ -19,18 +18,18 @@ module.exports = function (karma) {
     ],
     mime: { 'text/x-typescript': ['ts','tsx'] },
     files: [
-        { pattern: "./src/base.spec.ts", included: false },
-        { pattern: "./src/**/*.+(ts|html)" }
+        { pattern: "./src/**/*.spec.ts" },
+        { pattern: "./tests/app.js" }
     ],
     preprocessors: {
-        './src/base.spec.ts': ['webpack'],
-        './src/**/*.ts': ['webpack', 'sourcemap', 'coverage']
+        "./tests/app.js": ['sourcemap', 'coverage'],
+        './src/**/*.spec.ts': ['webpack', 'sourcemap', 'coverage']
     },
     webpack: {
-        devtool: "source-map",
+        devtool: "eval-source-map",
         entry: {
           app: './src/main.ts',
-          test: './src/base.spec.ts'
+          test: './src/tests.ts'
         },
         mode: "development",
         node: { fs: 'empty' },
@@ -53,9 +52,6 @@ module.exports = function (karma) {
                 }
             ]
         },
-        resolve: {
-            extensions: [".ts", ".js"]
-        },
         plugins: [
           new ngTools.AngularCompilerPlugin({
             tsConfigPath: 'tsconfig.json',
@@ -71,31 +67,40 @@ module.exports = function (karma) {
           })
         ]
     },
-    webpackMiddleware: {
-        quiet: true,
-        stats: {
-            colors: true
-        }
-    },
     coverageIstanbulReporter: {
-      dir: path.resolve(__dirname, './coverage/angular-gulp'),
+      dir: path.resolve(__dirname, './coverage'),
       reports: ['html', 'lcovonly', 'text-summary'],
       fixWebpackSourcePaths: true
+    },
+    coverageReporter: {
+      reports: [
+        { type: 'html', subdir: 'report-html' },
+        { type: 'lcov', subdir: 'report-lcov' }
+      ],
+      dir : 'coverage/'
     },
     client: {
       clearContext: false // leave Jasmine Spec Runner output visible in browser
     },
-    reporters: ['progress', 'kjhtml', 'coverage'],
+    reporters: ['progress', 'kjhtml', 'coverage', 'coverage-istanbul'],
     port: 9876,
     logLevel: 'DEBUG',
     autoWatch: false,
-    browsers: ['Chrome'],
-    flags: [
-        '--disable-gpu',
-        '--no-sandbox'
-    ],
+    browsers: ['ChromeNoSandbox'],
+    customLaunchers: {
+      ChromeNoSandbox: {
+        base: 'ChromeHeadless',
+        flags: [
+            '--disable-gpu',
+            '--no-sandbox',
+            '--disable-setuid-sandbox',
+            '--disable-extensions',
+            '--disable-dev-shm-usage'
+        ]
+      }
+    },
     singleRun: true,
-	browserDisconnectTimeout: 10000,
-	browserNoActivityTimeout: 100000
+	  browserDisconnectTimeout: 10000,
+	  browserNoActivityTimeout: 100000
   });
 };

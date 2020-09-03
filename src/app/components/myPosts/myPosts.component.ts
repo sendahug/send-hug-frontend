@@ -19,6 +19,8 @@ copies or substantial portions of the Software.
 
 // Angular imports
 import { Component, OnInit, Input } from '@angular/core';
+import { faFlag } from '@fortawesome/free-regular-svg-icons';
+import { faHandHoldingHeart } from '@fortawesome/free-solid-svg-icons';
 
 // App-related imports
 import { Post } from '../../interfaces/post.interface';
@@ -46,7 +48,10 @@ export class MyPosts implements OnInit {
   // The user whose posts to fetch
   @Input()
   userID:number | undefined;
-  user: 'self' | 'other';
+  user!: 'self' | 'other';
+  // icons
+  faFlag = faFlag;
+  faHandHoldingHeart = faHandHoldingHeart;
 
   // CTOR
   constructor(
@@ -61,8 +66,15 @@ export class MyPosts implements OnInit {
       }
       // if there isn't, it's the user's own profile, so get their posts
       else {
-        itemsService.getUserPosts(this.authService.userData.id!);
-        this.user = 'self';
+        // wait for user data to be resolved; that way, if there user just
+        // signed up, the component waits for user the user to be added to the
+        // database and only then fetches posts
+        this.authService.isUserDataResolved.subscribe((value) => {
+          if(value) {
+            itemsService.getUserPosts(this.authService.userData.id!);
+            this.user = 'self';
+          }
+        });
       }
 
       this.editMode = false;

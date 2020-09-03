@@ -1,4 +1,8 @@
 <div id="mailboxNav">
+	<nav id="breadcrumb" aria-label="Breadcrumb">
+		<a [routerLink]="['/messages']" class="breadcrumb bLink">Messages</a> / <a [routerLink]="['/messages' + messType]" class="breadcrumb bLink" span *ngIf="messType != 'thread'">{{ messType }}</a> <span *ngIf="messType == 'thread'" class="breadcrumb">Thread {{ threadId }}</span>
+	</nav>
+	
 	<h3>{{ messType }}</h3>
 <!-- Messages area navigation. -->
 	<div id="messagesNav" role="navigation" *ngIf="authService.authenticated">

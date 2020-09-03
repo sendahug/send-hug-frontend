@@ -35,6 +35,7 @@ import { HttpClientModule } from "@angular/common/http";
 import { ServiceWorkerModule } from "@angular/service-worker";
 import { ActivatedRoute, convertToParamMap } from '@angular/router';
 import { BehaviorSubject, of } from 'rxjs';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 import { AppComponent } from '../../app.component';
 import { AppMessaging } from './messages.component';
@@ -57,7 +58,8 @@ describe('AppMessaging', () => {
       imports: [
         RouterTestingModule,
         HttpClientModule,
-        ServiceWorkerModule.register('sw.js', { enabled: false })
+        ServiceWorkerModule.register('sw.js', { enabled: false }),
+        FontAwesomeModule
       ],
       declarations: [
         AppComponent,
@@ -171,7 +173,8 @@ describe('AppMessaging', () => {
         imports: [
           RouterTestingModule,
           HttpClientModule,
-          ServiceWorkerModule.register('sw.js', { enabled: false })
+          ServiceWorkerModule.register('sw.js', { enabled: false }),
+          FontAwesomeModule
         ],
         declarations: [
           AppComponent,
@@ -335,7 +338,8 @@ describe('AppMessaging', () => {
         imports: [
           RouterTestingModule,
           HttpClientModule,
-          ServiceWorkerModule.register('sw.js', { enabled: false })
+          ServiceWorkerModule.register('sw.js', { enabled: false }),
+          FontAwesomeModule
         ],
         declarations: [
           AppComponent,
@@ -496,7 +500,8 @@ describe('AppMessaging', () => {
         imports: [
           RouterTestingModule,
           HttpClientModule,
-          ServiceWorkerModule.register('sw.js', { enabled: false })
+          ServiceWorkerModule.register('sw.js', { enabled: false }),
+          FontAwesomeModule
         ],
         declarations: [
           AppComponent,
@@ -659,7 +664,8 @@ describe('AppMessaging', () => {
         imports: [
           RouterTestingModule,
           HttpClientModule,
-          ServiceWorkerModule.register('sw.js', { enabled: false })
+          ServiceWorkerModule.register('sw.js', { enabled: false }),
+          FontAwesomeModule
         ],
         declarations: [
           AppComponent,

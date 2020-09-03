@@ -34,6 +34,7 @@ import {
 import { HttpClientModule } from "@angular/common/http";
 import { ServiceWorkerModule } from "@angular/service-worker";
 import { Component } from '@angular/core';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 import { AppComponent } from '../../app.component';
 import { MyPosts } from './myPosts.component';
@@ -130,7 +131,8 @@ describe('MyPosts', () => {
       imports: [
         RouterTestingModule,
         HttpClientModule,
-        ServiceWorkerModule.register('sw.js', { enabled: false })
+        ServiceWorkerModule.register('sw.js', { enabled: false }),
+        FontAwesomeModule
       ],
       declarations: [
         AppComponent,
@@ -220,7 +222,8 @@ describe('MyPosts', () => {
       imports: [
         RouterTestingModule,
         HttpClientModule,
-        ServiceWorkerModule.register('sw.js', { enabled: false })
+        ServiceWorkerModule.register('sw.js', { enabled: false }),
+        FontAwesomeModule
       ],
       declarations: [
         AppComponent,

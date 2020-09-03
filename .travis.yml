@@ -1,0 +1,29 @@
+dist: bionic
+
+language: node_js
+node_js:
+  - "12"
+
+addons:
+  chrome: stable
+
+services:
+  - xvfb
+
+cache:
+  directories:
+     - ./node_modules
+
+before_install:
+  - # start your web application and listen on `localhost`
+  - google-chrome-stable --headless --disable-gpu --no-sandbox --remote-debugging-port=9222 http://localhost &
+
+install:
+  - npm install
+  - npm install -g gulp-cli
+
+script:
+  - sudo -E env "PATH=$PATH" gulp test --max_old_space_size=8192
+
+after_success:
+  - codecov

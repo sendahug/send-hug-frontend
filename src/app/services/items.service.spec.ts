@@ -1,3 +1,22 @@
+/*
+	Items Service
+	Send a Hug Service Tests
+  ---------------------------------------------------
+  MIT License
+
+  Copyright (c) 2020 Send A Hug
+
+  Permission is hereby granted, free of charge, to any person obtaining a copy
+  of this software and associated documentation files (the "Software"), to deal
+  in the Software without restriction, including without limitation the rights
+  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  copies of the Software, and to permit persons to whom the Software is
+  furnished to do so, subject to the following conditions:
+
+  The above copyright notice and this permission notice shall be included in all
+  copies or substantial portions of the Software.
+*/
+
 import { TestBed } from "@angular/core/testing";
 import {
   HttpClientTestingModule,
@@ -42,10 +61,26 @@ describe('ItemsService', () => {
 
     itemsService = TestBed.get(ItemsService);
     httpController = TestBed.get(HttpTestingController);
-    new Promise(() => {
-      itemsService['authService'].login();
-      TestBed.get(AuthService).login();
-    })
+    // set the user data as if the user is logged in
+    itemsService['authService'].userData = {
+      id: 4,
+      auth0Id: '',
+      displayName: 'name',
+      receivedHugs: 2,
+      givenHugs: 2,
+      postsNum: 2,
+      loginCount: 3,
+      role: 'admin',
+      jwt: '',
+      blocked: false,
+      releaseDate: undefined,
+      autoRefresh: false,
+      refreshRate: 20,
+      pushEnabled: false
+    };
+    itemsService['authService'].authenticated = true;
+    itemsService['authService'].isUserDataResolved.next(true);
+    itemsService['authService'].login();
   });
 
   // Check the service is created
@@ -78,6 +113,25 @@ describe('ItemsService', () => {
       total_pages: 1
     };
 
+    itemsService['authService'].userData = {
+      id: 4,
+      auth0Id: '',
+      displayName: 'name',
+      receivedHugs: 2,
+      givenHugs: 2,
+      postsNum: 2,
+      loginCount: 3,
+      role: 'admin',
+      jwt: '',
+      blocked: false,
+      releaseDate: undefined,
+      autoRefresh: false,
+      refreshRate: 20,
+      pushEnabled: false
+    };
+    itemsService['authService'].authenticated = true;
+    itemsService['authService'].isUserDataResolved.next(true);
+    itemsService['authService'].login();
     itemsService.getUserPosts(1);
     // wait for the fetch to be resolved
     itemsService.isUserPostsResolved.other.subscribe((value) => {
@@ -153,6 +207,24 @@ describe('ItemsService', () => {
     // run the test for the user's own profile
     new Promise(() => {
       // login and get the user's own posts
+      itemsService['authService'].userData = {
+        id: 4,
+        auth0Id: '',
+        displayName: 'name',
+        receivedHugs: 2,
+        givenHugs: 2,
+        postsNum: 2,
+        loginCount: 3,
+        role: 'admin',
+        jwt: '',
+        blocked: false,
+        releaseDate: undefined,
+        autoRefresh: false,
+        refreshRate: 20,
+        pushEnabled: false
+      };
+      itemsService['authService'].authenticated = true;
+      itemsService['authService'].isUserDataResolved.next(true);
       itemsService['authService'].login();
       itemsService.getUserPosts(4);
       // wait for the fetch to be resolved
@@ -209,6 +281,24 @@ describe('ItemsService', () => {
     };
 
     const alertSpy = spyOn(itemsService['alertsService'], 'createSuccessAlert');
+    itemsService['authService'].userData = {
+      id: 4,
+      auth0Id: '',
+      displayName: 'name',
+      receivedHugs: 2,
+      givenHugs: 2,
+      postsNum: 2,
+      loginCount: 3,
+      role: 'admin',
+      jwt: '',
+      blocked: false,
+      releaseDate: undefined,
+      autoRefresh: false,
+      refreshRate: 20,
+      pushEnabled: false
+    };
+    itemsService['authService'].authenticated = true;
+    itemsService['authService'].isUserDataResolved.next(true);
     itemsService['authService'].login();
     itemsService.otherUserData = {
       id: 2,
@@ -234,7 +324,7 @@ describe('ItemsService', () => {
     // mock response
     const mockResponse = {
       success: true,
-      updated: {
+      user: {
         displayName: "user_14",
         givenH: 0,
         id: 2,
@@ -246,6 +336,11 @@ describe('ItemsService', () => {
 
     const postsSpy = spyOn(itemsService, 'getUserPosts');
     itemsService.getUser(2);
+
+    const req = httpController.expectOne('http://localhost:5000/users/all/2');
+    expect(req.request.method).toEqual('GET');
+    req.flush(mockResponse);
+
     // wait for the fetch to be resolved
     itemsService.isOtherUserResolved.subscribe((value) => {
       if(value) {
@@ -259,10 +354,6 @@ describe('ItemsService', () => {
         expect(postsSpy).toHaveBeenCalledWith(2);
       }
     });
-
-    const req = httpController.expectOne('http://localhost:5000/users/all/2');
-    expect(req.request.method).toEqual('GET');
-    req.flush(mockResponse);
   });
 
   // Check that the service gets the user's inbox

@@ -20,6 +20,8 @@ copies or substantial portions of the Software.
 // Angular imports
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { faComment, faEdit, faFlag } from '@fortawesome/free-regular-svg-icons';
+import { faHandHoldingHeart, faTimes } from '@fortawesome/free-solid-svg-icons';
 
 // App-related imports
 import { ItemsService } from '../../services/items.service';
@@ -46,6 +48,12 @@ export class SearchResults {
   report:boolean;
   reportedItem: Post | undefined;
   reportType = 'Post';
+  // icons
+  faComment = faComment;
+  faEdit = faEdit;
+  faFlag = faFlag;
+  faHandHoldingHeart = faHandHoldingHeart;
+  faTimes = faTimes;
 
   // CTOR
   constructor(

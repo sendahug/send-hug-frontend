@@ -46,8 +46,11 @@ export class NewItem {
     private alertService:AlertsService,
     private postsService:PostsService
   ) {
+      let type;
       // Gets the URL parameters
-      let type = this.route.snapshot.paramMap.get('type');
+      this.route.url.subscribe(params => {
+        type = params[0].path;
+      });
       let user = this.route.snapshot.queryParamMap.get('user');
       let userID = this.route.snapshot.queryParamMap.get('userID');
 

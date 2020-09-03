@@ -1,6 +1,20 @@
 /*
 	Auth Service
-	Send a Hug Service
+	Send a Hug Mock Service
+  ---------------------------------------------------
+  MIT License
+
+  Copyright (c) 2020 Send A Hug
+
+  Permission is hereby granted, free of charge, to any person obtaining a copy
+  of this software and associated documentation files (the "Software"), to deal
+  in the Software without restriction, including without limitation the rights
+  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  copies of the Software, and to permit persons to whom the Software is
+  furnished to do so, subject to the following conditions:
+
+  The above copyright notice and this permission notice shall be included in all
+  copies or substantial portions of the Software.
 */
 
 // Angular imports
@@ -9,7 +23,6 @@ import { HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 
 // Other essential imports
 import { BehaviorSubject } from 'rxjs';
-import * as Auth0 from 'auth0-js';
 
 // App-related imports
 import { User } from '../interfaces/user.interface';
@@ -20,15 +33,6 @@ import { environment as prodEnv } from '../../environments/environment.prod';
   providedIn: 'root'
 })
 export class MockAuthService {
-  // Auth0 variable
-  auth0 = new Auth0.WebAuth({
-    clientID: environment.production ? prodEnv.auth0.clientID! : environment.auth0.clientID,
-    domain: environment.production ? prodEnv.auth0.domain! : environment.auth0.domain,
-    responseType: 'token',
-    redirectUri: environment.production ? prodEnv.auth0.redirectUri! : environment.auth0.redirectUri,
-    audience: environment.production ? prodEnv.auth0.audience! : environment.auth0.audience
-  })
-
   readonly serverUrl = environment.production ? prodEnv.backend.domain! : environment.backend.domain;
   // authentication information
   token: string = '';

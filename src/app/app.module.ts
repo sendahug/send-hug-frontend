@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
 import { ServiceWorkerModule } from '@angular/service-worker';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module'
@@ -20,13 +21,15 @@ import { AdminDashboard } from './components/adminDashboard/adminDashboard.compo
 import { HeaderMessage } from './components/headerMessage/headerMessage.component';
 import { NotificationsTab } from './components/notifications/notifications.component';
 import { SettingsPage } from './components/settings/settings.component';
+import { SiteMap } from './components/siteMap/siteMap.component';
 
 @NgModule({
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
-    ServiceWorkerModule.register('sw.js')
+    ServiceWorkerModule.register('sw.js'),
+    FontAwesomeModule
   ],
   declarations: [
     AppComponent,
@@ -44,7 +47,8 @@ import { SettingsPage } from './components/settings/settings.component';
     AdminDashboard,
     HeaderMessage,
     NotificationsTab,
-    SettingsPage
+    SettingsPage,
+    SiteMap
   ],
   providers: [],
   bootstrap: [AppComponent]

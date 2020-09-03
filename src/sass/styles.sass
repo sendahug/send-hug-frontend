@@ -144,6 +144,42 @@ fieldset
 .missing
 	border: solid medium #A20002
 
+/* Breadcrumb area */
+#breadcrumb
+	font-family: $mainFont
+	width: 40%
+	margin: 0 0 0 6%
+	padding: 5px
+	left: 0
+	right: 0
+	text-align: left
+	display: flex
+	align-items: center
+	justify-content: left
+	/* Responsive styling for screens above 800px width */
+	@media screen and (min-width: 800px)
+		width: 90%
+		align-self: center
+
+app-admin-dashboard #breadcrumb
+	margin: 0 0 0 1.5%
+
+/* Breadcrumb (current page) */
+.breadcrumb
+	font-family: $mainFont
+	color: $textColour
+	text-transform: capitalize
+	margin: 2px
+	padding: 2px
+	font-size: 15px
+	/* Responsive styling for screens above 800px width */
+	@media screen and (min-width: 800px)
+		font-size: 14px
+	
+/* Breadcrumb link */
+.bLink
+	color: $linkColour
+	
 /* =================== Header Styling =================== */
 /* Site Header */
 #siteHeader
@@ -1087,8 +1123,8 @@ app-messages
 #mailboxNav
 	/* Responsive styling for screens above 800px width */
 	@media screen and (min-width: 800px)
-		width: 15%
-		margin: 20px 7% 20px 8%
+		width: 24%
+		margin: 20px 2% 20px 4%
 
 /* Page Headline */
 app-messages h3
@@ -1097,10 +1133,12 @@ app-messages h3
 	color: $headlineColour
 	font-size: 24px
 	margin-bottom: 10px
+	padding-top: 0
+	margin-top: 5px
 	text-transform: capitalize
 	/* Responsive styling for screens above 800px width */
 	@media screen and (min-width: 800px)
-		margin: 15px 5px
+		margin: 5px 5px 10px
 
 /* Mailbox navigation */
 #messagesNav
@@ -1990,6 +2028,55 @@ app-settings h4
 	border-radius: 5px
 	border: none
 	text-decoration: none
+
+/* =================== Site Map Component Styling =================== */
+/* Site Map Component */
+app-site-map
+	@extend #compSample
+	width: 90%
+	padding: 0 5%
+	left: 0
+	right: 0
+
+/* Map title */
+#siteMap
+	font-family: $mainFont
+	text-align: center
+	margin-top: 5px
+	padding-top: 5px
+
+/* Map list */
+app-site-map ul
+	list-style: none
+	font-family: $mainFont
+	text-align: center
+	padding-inline-start: 0
+
+/* Route list item */
+.mainRoute
+	margin: 20px 0
+
+/* Route name (parent route) */
+.mainRoute h4
+	padding: 0
+	margin: 6px 0
+	font-size: 16px
+	/* Responsive styling for screens above 700px width */
+	@media screen and (min-width: 700px)
+		font-size: 17px
+
+/* Sub-route list item */
+.subRoute
+	margin: 7px
+
+/* Route links */
+app-site-map a
+	color: $linkColour
+	font-family: $mainFont
+	font-size: 15px
+	/* Responsive styling for screens above 700px width */
+	@media screen and (min-width: 700px)
+		font-size: 16px
 	
 /* =================== Admin Dashboard Component Styling =================== */
 /* Admin Dashboard Component */
@@ -2018,7 +2105,7 @@ app-admin-dashboard
 /* Admin Dashboard navigation menu */
 #adminNav
 	width: 90%
-	margin: 15px 5% 5px
+	margin: 5px 5% 5px
 	text-align: center
 	display: flex
 	flex-wrap: wrap
@@ -2028,7 +2115,7 @@ app-admin-dashboard
 	@media screen and (min-width: 800px)
 		order: 1
 		flex-direction: column
-		margin: 15px 10px
+		margin: 5px 10px 15px
 		width: 15%
 
 /* Admin Dashboard navigation menu item */
@@ -2056,6 +2143,8 @@ app-admin-dashboard h3
 		order: 0
 		width: 100%
 		font-size: 24px
+		padding-top: 0
+		margin-top: 0
 
 .adminScreen
 	border-radius: 5px

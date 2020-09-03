@@ -20,6 +20,8 @@ copies or substantial portions of the Software.
 // Angular imports
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { faComment, faEdit, faFlag } from '@fortawesome/free-regular-svg-icons';
+import { faHandHoldingHeart, faTimes } from '@fortawesome/free-solid-svg-icons';
 
 // App-related imports
 import { AuthService } from '../../services/auth.service';
@@ -45,6 +47,12 @@ export class FullList {
   reportedItem: Post | undefined;
   reportType = 'Post';
   waitFor = '';
+  // icons
+  faComment = faComment;
+  faEdit = faEdit;
+  faFlag = faFlag;
+  faHandHoldingHeart = faHandHoldingHeart;
+  faTimes = faTimes;
 
   // CTOR
   constructor(private route:ActivatedRoute,
@@ -53,7 +61,9 @@ export class FullList {
     public postsService:PostsService
   ) {
       // get the type of list and the current page
-      this.type = this.route.snapshot.paramMap.get('type');
+      this.route.url.subscribe(params => {
+        this.type = params[0].path;
+      });
       this.page = Number(this.route.snapshot.queryParamMap.get('page'));
 
       // set a default page if no page is set

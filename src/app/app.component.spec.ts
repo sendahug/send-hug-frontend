@@ -16,6 +16,17 @@ import {
 } from "@angular/platform-browser-dynamic/testing";
 import { HttpClientModule } from "@angular/common/http";
 import { ServiceWorkerModule } from "@angular/service-worker";
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { AuthService } from './services/auth.service';
+import { MockAuthService } from './services/auth.service.mock';
+import { ItemsService } from './services/items.service';
+import { MockItemsService } from './services/items.service.mock';
+import { AlertsService } from './services/alerts.service';
+import { MockAlertsService } from './services/alerts.service.mock';
+import { SWManager } from './services/sWManager.service';
+import { MockSWManager } from './services/sWManager.service.mock';
+import { NotificationService } from './services/notifications.service';
+import { MockNotificationService } from './services/notifications.service.mock';
 
 
 describe("AppComponent", () => {
@@ -28,12 +39,20 @@ describe("AppComponent", () => {
         imports: [
           RouterTestingModule,
           HttpClientModule,
-          ServiceWorkerModule.register('sw.js')
+          ServiceWorkerModule.register('sw.js', { enabled: false }),
+          FontAwesomeModule
         ],
         declarations: [
           AppComponent
         ],
-        providers: [{ provide: APP_BASE_HREF, useValue: '/' }]
+        providers: [
+          { provide: APP_BASE_HREF, useValue: '/' },
+          { provide: AuthService, useClass: MockAuthService },
+          { provide: ItemsService, useClass: MockItemsService },
+          { provide: AlertsService, useClass: MockAlertsService },
+          { provide: SWManager, useClass: MockSWManager },
+          { provide: NotificationService, useClass: MockNotificationService }
+        ]
       }).compileComponents();
     });
 

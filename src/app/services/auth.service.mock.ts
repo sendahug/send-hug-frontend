@@ -23,7 +23,6 @@ import { HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 
 // Other essential imports
 import { BehaviorSubject } from 'rxjs';
-import * as Auth0 from 'auth0-js';
 
 // App-related imports
 import { User } from '../interfaces/user.interface';
@@ -34,15 +33,6 @@ import { environment as prodEnv } from '../../environments/environment.prod';
   providedIn: 'root'
 })
 export class MockAuthService {
-  // Auth0 variable
-  auth0 = new Auth0.WebAuth({
-    clientID: environment.production ? prodEnv.auth0.clientID! : environment.auth0.clientID,
-    domain: environment.production ? prodEnv.auth0.domain! : environment.auth0.domain,
-    responseType: 'token',
-    redirectUri: environment.production ? prodEnv.auth0.redirectUri! : environment.auth0.redirectUri,
-    audience: environment.production ? prodEnv.auth0.audience! : environment.auth0.audience
-  })
-
   readonly serverUrl = environment.production ? prodEnv.backend.domain! : environment.backend.domain;
   // authentication information
   token: string = '';

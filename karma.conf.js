@@ -69,7 +69,7 @@ module.exports = function (karma) {
     },
     coverageIstanbulReporter: {
       dir: path.resolve(__dirname, './coverage'),
-      reports: ['html', 'lcov', 'text-summary'],
+      reports: ['json', 'html', 'text-summary'],
       fixWebpackSourcePaths: true
     },
     client: {

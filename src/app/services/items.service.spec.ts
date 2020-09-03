@@ -61,10 +61,25 @@ describe('ItemsService', () => {
 
     itemsService = TestBed.get(ItemsService);
     httpController = TestBed.get(HttpTestingController);
-    new Promise(() => {
-      itemsService['authService'].login();
-      TestBed.get(AuthService).login();
-    })
+    // set the user data as if the user is logged in
+    itemsService['authService'].userData = {
+      id: 4,
+      auth0Id: '',
+      displayName: 'name',
+      receivedHugs: 2,
+      givenHugs: 2,
+      postsNum: 2,
+      loginCount: 3,
+      role: 'admin',
+      jwt: '',
+      blocked: false,
+      releaseDate: undefined,
+      autoRefresh: false,
+      refreshRate: 20,
+      pushEnabled: false
+    };
+    itemsService['authService'].authenticated = true;
+    itemsService['authService'].isUserDataResolved.next(true);
   });
 
   // Check the service is created

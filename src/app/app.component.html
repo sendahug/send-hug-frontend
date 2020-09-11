@@ -36,13 +36,13 @@
 				<div class="navLinkText">Admin Panel</div>
 			</a>
 			<div class="newNotification">
-				<button id="notificationsBtn" class="navLink" (click)="toggleNotifications()">
-					<fa-icon [icon]="faBell" class="fa-bell navButton" aria-label="open notifications tab" id="navNotific"></fa-icon>
+				<button id="notificationsBtn" class="navLink" (click)="toggleNotifications()" aria-label="open notifications tab">
+					<fa-icon [icon]="faBell" class="fa-bell navButton" id="navNotific"></fa-icon>
 				</button>
 				<span class="badge">{{ notificationService.newNotifications }}</span>
 			</div>
-			<button class="navLink" (click)="toggleSearch()" id="searchBtn">
-				<fa-icon [icon]="faSearch" class="fa-search navButton" aria-label="open search panel"></fa-icon>
+			<button class="navLink" (click)="toggleSearch()" id="searchBtn" aria-label="open search panel">
+				<fa-icon [icon]="faSearch" class="fa-search navButton"></fa-icon>
 			</button>
 		</div>
 	</nav>

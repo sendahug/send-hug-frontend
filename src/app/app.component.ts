@@ -2,7 +2,7 @@
 import { Component, OnInit, HostListener, AfterViewChecked, AfterViewInit } from '@angular/core';
 import { Router, NavigationStart } from '@angular/router';
 import { faComments, faUserCircle, faCompass, faBell } from '@fortawesome/free-regular-svg-icons';
-import { faBars, faSearch, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faBars, faSearch, faTimes, faTextHeight } from '@fortawesome/free-solid-svg-icons';
 
 // App-related imports
 import { AuthService } from './services/auth.service';
@@ -18,6 +18,7 @@ import { NotificationService } from './services/notifications.service';
 export class AppComponent implements OnInit, AfterViewChecked, AfterViewInit {
   showNotifications = false;
   showSearch = false;
+  showTextPanel = false;
   // font awesome icons
   faBars = faBars;
   faComments = faComments;
@@ -26,6 +27,7 @@ export class AppComponent implements OnInit, AfterViewChecked, AfterViewInit {
   faBell = faBell;
   faSearch = faSearch;
   faTimes = faTimes;
+  faTextHeight = faTextHeight;
 
   constructor(
     public authService:AuthService,
@@ -319,6 +321,23 @@ export class AppComponent implements OnInit, AfterViewChecked, AfterViewInit {
       if(!navMenu.classList.contains('hidden')) {
         navMenu.classList.add('hidden');
       }
+    }
+  }
+
+  /*
+  Function Name: toggleSizePanel()
+  Function Description: Toggles the panel through which users can resize all of the
+                        app's text.
+  Parameters: None.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  toggleSizePanel() {
+    if(this.showTextPanel) {
+      this.showTextPanel = false;
+    }
+    else {
+      this.showTextPanel = true;
     }
   }
 

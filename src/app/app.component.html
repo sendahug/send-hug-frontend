@@ -44,6 +44,9 @@
 			<button class="navLink" (click)="toggleSearch()" id="searchBtn" aria-label="open search panel">
 				<fa-icon [icon]="faSearch" class="fa-search navButton"></fa-icon>
 			</button>
+			<button class="navLink" (click)="toggleSizePanel()" aria-label="change text size">
+				<fa-icon [icon]="faTextHeight" class="fa-bell navButton"></fa-icon>
+			</button>
 		</div>
 	</nav>
 	<form id="search" role="search" *ngIf="showSearch">
@@ -52,6 +55,13 @@
 		<input type="text" id="searchQuery" placeholder="Search" #searchQuery minlength="0">
 		<button type="submit" class="appButton sendData" (click)="searchApp($event,searchQuery.value)">Search</button>
 	</form>
+	<div id="textPanel" *ngIf="showTextPanel">
+		<span id="smallestText">Smallest size</span>
+		<span id="smallText">Small size</span>
+		<span id="regularText">Regular size</span>
+		<span id="largeText">Large size</span>
+		<span id="largestText">Largest size</span>
+	</div>
 </header>
 
 <main id="mainContent" role="main">

@@ -342,6 +342,33 @@ export class AppComponent implements OnInit, AfterViewChecked, AfterViewInit {
   }
 
   /*
+  Function Name: changeTextSize()
+  Function Description: Changes the app's font size.
+  Parameters: size - a string to indicate the new size.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  changeTextSize(size:string) {
+    switch(size) {
+      case 'smallest':
+        document.getElementsByTagName('html')[0]!.style.fontSize = "75%";
+        break;
+      case 'smaller':
+        document.getElementsByTagName('html')[0]!.style.fontSize = "87.5%";
+        break;
+      case 'regular':
+        document.getElementsByTagName('html')[0]!.style.fontSize = "100%";
+        break;
+      case 'larger':
+        document.getElementsByTagName('html')[0]!.style.fontSize = "150%";
+        break;
+      case 'largest':
+        document.getElementsByTagName('html')[0]!.style.fontSize = "200%";
+        break;
+    }
+  }
+
+  /*
   Function Name: changeMode()
   Function Description: Remove the notifications panel.
   Parameters: edit (boolean) - indicating whether the notifications panel should be active.

@@ -56,11 +56,11 @@
 		<button type="submit" class="appButton sendData" (click)="searchApp($event,searchQuery.value)">Search</button>
 	</form>
 	<div id="textPanel" *ngIf="showTextPanel">
-		<span id="smallestText">Smallest size</span>
-		<span id="smallText">Small size</span>
-		<span id="regularText">Regular size</span>
-		<span id="largeText">Large size</span>
-		<span id="largestText">Largest size</span>
+		<button id="smallestText" (click)="changeTextSize('smallest')">Smallest size</button>
+		<button id="smallText" (click)="changeTextSize('smaller')">Small size</button>
+		<button id="regularText" (click)="changeTextSize('regular')">Regular size</button>
+		<button id="largeText" (click)="changeTextSize('larger')">Large size</button>
+		<button id="largestText" (click)="changeTextSize('largest')">Largest size</button>
 	</div>
 </header>
 

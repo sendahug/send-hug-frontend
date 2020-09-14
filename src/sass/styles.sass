@@ -1627,10 +1627,18 @@ app-header-message #headerMessage
 /* About Component */
 app-about
 	@extend #compSample
-	width: 70%
-	padding: 0 15%
+	width: 90%
+	padding: 0 5%
 	left: 0
 	right: 0
+	/* Responsive styling for screens above 600px width */
+	@media screen and (min-width: 600px)
+		width: 80%
+		padding: 0 10%
+	/* Responsive styling for screens above 600px width */
+	@media screen and (min-width: 800px)
+		width: 70%
+		padding: 0 15%
 
 /* About component title */
 #aboutTitle

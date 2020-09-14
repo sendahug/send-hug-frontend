@@ -64,19 +64,22 @@
 	</div>
 </header>
 
-<main id="mainContent" role="main">
-	<div *ngIf="showNotifications">
-		<app-notifications
-						   (NotificationsMode)="changeMode($event)"></app-notifications>
-	</div>
-	<router-outlet></router-outlet>
-	<div id="alertContainer"></div>
-</main>
+<!-- Container for the main element and the footer (to ensure they follow one another, rather than have fixed styling) -->
+<div id="contentContainer">
+	<main id="mainContent" role="main">
+		<div *ngIf="showNotifications">
+			<app-notifications
+							   (NotificationsMode)="changeMode($event)"></app-notifications>
+		</div>
+		<router-outlet></router-outlet>
+		<div id="alertContainer"></div>
+	</main>
 
-<footer>
-	<div id="siteFooter" role="contentinfo">
-		<p class="footerText" id="text">Open source project designed and built by <a href="https://github.com/sendahug/sendahug" target="_blank" rel="noreferrer">Send a Hug</a> group members. Designed by <a href="https://instagram.com/alphamacy?igshid=8ca63sx6ccpz" target="_blank" rel="noreferrer">Macy Tyler.</a></p>
-		<p class="footerText" id="contact"><a [routerLink]="['/sitemap']">Site Map</a> | <a href="mailto:theobjectivistb@gmail.com">Email Us</a></p>
-		<p class="footerText" id="rights">&copy; Send A Hug 2020.</p>
-	</div>
-</footer>
+	<footer>
+		<div id="siteFooter" role="contentinfo">
+			<p class="footerText" id="text">Open source project designed and built by <a href="https://github.com/sendahug/sendahug" target="_blank" rel="noreferrer">Send a Hug</a> group members. Designed by <a href="https://instagram.com/alphamacy?igshid=8ca63sx6ccpz" target="_blank" rel="noreferrer">Macy Tyler.</a></p>
+			<p class="footerText" id="contact"><a [routerLink]="['/sitemap']">Site Map</a> | <a href="mailto:theobjectivistb@gmail.com">Email Us</a></p>
+			<p class="footerText" id="rights">&copy; Send A Hug 2020.</p>
+		</div>
+	</footer>
+</div>

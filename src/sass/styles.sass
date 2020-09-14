@@ -18,22 +18,6 @@ $mainFont: 'Montserrat', sans-serif
 @mixin fontSize($px-size)
 	font-size: ($px-size / 10 * 0.625) + rem
 
-/* Component Sample */
-#compSample
-	z-index: 1
-	position: absolute
-	overflow-y: scroll
-	width: 100%
-	max-width: 100%
-	/* Responsive styling for screens up to 650px width */
-	@media screen and (max-width: 650px)
-		top: 125px
-		bottom: 80px
-	/* Responsive styling for screens above 650px width */
-	@media screen and (min-width: 650px)
-		bottom: 90px
-		top: 130px
-
 /* Frame Sample */
 #frameSample
 	border: thin solid rgba(37,37,37,1.00)
@@ -58,6 +42,21 @@ img, picture, video, embed, textarea, textfield
 body
 	overflow-x: hidden
 	background: $mainBackground
+
+#contentContainer
+	z-index: 1
+	position: absolute
+	overflow-y: scroll
+	width: 100%
+	max-width: 100%
+	/* Responsive styling for screens up to 650px width */
+	@media screen and (max-width: 650px)
+		top: 125px
+		bottom: 30px
+	/* Responsive styling for screens above 650px width */
+	@media screen and (min-width: 650px)
+		bottom: 30px
+		top: 130px
 
 fieldset
 	border: none
@@ -557,7 +556,6 @@ app-admin-dashboard #breadcrumb
 /* =================== Main Page Styling =================== */
 /* Main Page Component */
 app-main-page
-	@extend #compSample
 	display: flex
 	flex-direction: column
 	padding: 5px
@@ -743,7 +741,6 @@ app-main-page .errorMessage
 /* =================== Full List Styling =================== */
 /* List container*/
 #items
-	@extend #compSample
 	width: 90%
 	margin: 0
 	padding: 10px 5%
@@ -787,7 +784,6 @@ app-main-page .errorMessage
 /* =================== User Page Styling =================== */
 /* User Page Component */
 app-user-page
-	@extend #compSample
 	width: 100%
 	left: 0
 	right: 0
@@ -1117,7 +1113,6 @@ app-my-posts .pagination button
 /* =================== Messages Page Styling =================== */
 /* Message Page Component */
 app-messages
-	@extend #compSample
 	width: 100%
 	left: 0
 	right: 0
@@ -1326,7 +1321,6 @@ app-messages .pageData
 /* =================== New Item Page Styling =================== */
 /* New Item Page Component */
 app-new-item
-	@extend #compSample
 	width: 100%
 	left: 0
 	right: 0
@@ -1382,10 +1376,6 @@ app-new-item
 	border: none
 
 /* =================== Error Page Styling =================== */
-/* Error Page Component */
-app-error-page
-	@extend #compSample
-
 /* Error Page frame */
 #errorPage
 	@extend #frameSample
@@ -1632,7 +1622,6 @@ app-header-message #headerMessage
 /* =================== About Component Styling =================== */
 /* About Component */
 app-about
-	@extend #compSample
 	width: 90%
 	padding: 0 5%
 	left: 0
@@ -1682,7 +1671,6 @@ app-about
 /* =================== Search Results Component Styling =================== */
 /* Search Results Component */
 app-search-results
-	@extend #compSample
 	width: 90%
 	padding: 20px 5%
 	left: 0
@@ -1831,7 +1819,6 @@ app-search-results h3
 /* =================== Notifications Tab Component Styling =================== */
 /* Notifications Component */
 app-notifications
-	@extend #compSample
 	z-index: 200
 
 /* Notifications panel */
@@ -1941,7 +1928,6 @@ app-notifications h4
 /* =================== Settings Component Styling =================== */
 /* Settings Component */
 app-settings
-	@extend #compSample
 	width: 90%
 	padding: 0 5%
 	left: 0
@@ -2050,7 +2036,6 @@ app-settings h4
 /* =================== Site Map Component Styling =================== */
 /* Site Map Component */
 app-site-map
-	@extend #compSample
 	width: 90%
 	padding: 0 5%
 	left: 0
@@ -2099,7 +2084,6 @@ app-site-map a
 /* =================== Admin Dashboard Component Styling =================== */
 /* Admin Dashboard Component */
 app-admin-dashboard
-	@extend #compSample
 	width: 90%
 	padding: 0 5%
 	left: 0
@@ -2301,9 +2285,6 @@ app-admin-dashboard h3
 /* =================== Footer Styling =================== */
 /* Site Footer */
 #siteFooter
-	position: fixed
-	bottom: 0
-	left: 0
 	width: 100%
 	max-width: 100%
 

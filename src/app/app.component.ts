@@ -96,6 +96,7 @@ export class AppComponent implements OnInit, AfterViewChecked, AfterViewInit {
     if(document.documentElement.clientWidth > 600) {
       if(navMenu.classList.contains('hidden')) {
         navMenu.classList.remove('hidden');
+        navMenu.setAttribute('aria-hidden', 'false');
       }
     }
   }
@@ -315,11 +316,13 @@ export class AppComponent implements OnInit, AfterViewChecked, AfterViewInit {
     if(width > 600) {
       if(navMenu.classList.contains('hidden')) {
         navMenu.classList.remove('hidden');
+        navMenu.setAttribute('aria-hidden', 'false');
       }
     }
     else {
       if(!navMenu.classList.contains('hidden')) {
         navMenu.classList.add('hidden');
+        navMenu.setAttribute('aria-hidden', 'true');
       }
     }
   }

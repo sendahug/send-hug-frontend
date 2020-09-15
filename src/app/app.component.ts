@@ -19,7 +19,7 @@ export class AppComponent implements OnInit, AfterViewInit, AfterViewChecked {
   showNotifications = false;
   showSearch = false;
   showTextPanel = false;
-  showMenu = true;
+  showMenu = false;
   // font awesome icons
   faBars = faBars;
   faComments = faComments;
@@ -91,6 +91,10 @@ export class AppComponent implements OnInit, AfterViewInit, AfterViewChecked {
   Programmer: Shir Bar Lev.
   */
   ngAfterViewInit() {
+    if(document.documentElement.clientWidth > 650) {
+        this.showMenu = true;
+    }
+
     this.router.events.subscribe((event) => {
       if(event instanceof NavigationStart) {
         let navItems = document.querySelectorAll('.navLink');
@@ -185,13 +189,16 @@ export class AppComponent implements OnInit, AfterViewInit, AfterViewChecked {
 
     // check the client width; if it's bigger than 650px and the menu needs to
     // be shown, show it
-    if(document.documentElement.clientWidth > 650 && this.showMenu) {
+    if((document.documentElement.clientWidth > 650 && this.showMenu) || this.showMenu) {
       if(navLinks.classList.contains('hidden')) {
         navLinks.classList.remove('hidden');
         navLinks.classList.remove('large');
-        menuBtn.classList.add('hidden');
         navLinks.setAttribute('aria-hidden', 'false');
         this.showMenu = true;
+
+        if(document.documentElement.clientWidth > 650) {
+          menuBtn.classList.add('hidden');
+        }
       }
     }
     // otherwise hide it
@@ -336,9 +343,12 @@ export class AppComponent implements OnInit, AfterViewInit, AfterViewChecked {
       if(navLinks.classList.contains('hidden')) {
         navLinks.classList.remove('hidden');
         navLinks.classList.remove('large');
-        menuBtn.classList.add('hidden');
         navLinks.setAttribute('aria-hidden', 'false');
         this.showMenu = true;
+      }
+
+      if(document.documentElement.clientWidth > 650) {
+        menuBtn.classList.add('hidden');
       }
     }
     else {
@@ -422,21 +432,24 @@ export class AppComponent implements OnInit, AfterViewInit, AfterViewChecked {
 
     // if the larger text makes the navigation menu too long, turn it back
     // to the small-viewport menu
-    if(navLinks.scrollWidth >= navMenu.offsetWidth) {
+    if((navLinks.scrollWidth + 50) >= navMenu.offsetWidth) {
+      this.showMenu = false;
       navLinks.classList.add('large');
       navLinks.classList.add('hidden');
       menuBtn.classList.remove('hidden');
       navLinks.setAttribute('aria-hidden', 'true');
-      this.showMenu = false;
     }
     else {
       if(navLinks.classList.contains('hidden')) {
         navLinks.classList.remove('hidden');
         navLinks.classList.remove('large');
       }
-      menuBtn.classList.add('hidden');
       navLinks.setAttribute('aria-hidden', 'false');
       this.showMenu = true;
+
+      if(document.documentElement.clientWidth > 650) {
+        menuBtn.classList.add('hidden');
+      }
     }
   }
 

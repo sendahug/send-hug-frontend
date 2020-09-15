@@ -271,13 +271,12 @@ app-admin-dashboard #breadcrumb
 
 /* Menu button */
 #menuBtn
-	/* Responsive styling for screens up to 600px width */
-	@media screen and (max-width: 600px)
-		display: block
-		background: $mainBackground
-	/* Responsive styling for screens above 500px width */
-	@media screen and (min-width: 600px)
-		display: none
+	display: block
+	background: $mainBackground
+
+/* Menu button (hidden form) */
+#menuBtn.hidden
+	display: none
 
 /* Menu button icon */
 .fa-bars
@@ -314,8 +313,25 @@ app-admin-dashboard #breadcrumb
 	@media screen and (max-height: 600px)
 		overflow-y: scroll
 
+/* Navigation menu - inner - for larger font size */
+.navLinks.large
+	flex-direction: column
+	height: 100%
+	max-height: 600px
+	width: 75%
+	overflow-y: visible
+	position: fixed
+	left: -10px
+	top: 0
+	z-index: 100
+	background: $boxesBackground
+	align-items: center
+	justify-content: center
+	padding: 30px 10px
+	overflow-y: scroll
+
 /* Navigation menu - inner - hidden */
-.navLinks.hidden
+.navLinks.hidden, .navLinks.large.hidden
 	display: none
 
 /* Navigation Item */
@@ -337,6 +353,11 @@ app-admin-dashboard #breadcrumb
 	/* Responsive styling for screens above 800px width */
 	@media screen and (min-width: 800px)
 		padding: 0 15px
+
+/* Navigation Item in the large menu */
+.navLinks.large .navLink, .navLinks.large .navButton
+	padding: 10px 15px
+	background: $boxesBackground
 
 /* Navigation icon (SVG) - normal variant */
 .normal

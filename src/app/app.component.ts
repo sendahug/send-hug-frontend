@@ -1,5 +1,5 @@
 // Angular imports
-import { Component, OnInit, HostListener, AfterViewChecked, AfterViewInit } from '@angular/core';
+import { Component, OnInit, HostListener, AfterViewInit, AfterViewChecked } from '@angular/core';
 import { Router, NavigationStart } from '@angular/router';
 import { faComments, faUserCircle, faCompass, faBell } from '@fortawesome/free-regular-svg-icons';
 import { faBars, faSearch, faTimes, faTextHeight } from '@fortawesome/free-solid-svg-icons';
@@ -15,10 +15,11 @@ import { NotificationService } from './services/notifications.service';
   selector: 'app-root',
   templateUrl: './app.component.html'
 })
-export class AppComponent implements OnInit, AfterViewChecked, AfterViewInit {
+export class AppComponent implements OnInit, AfterViewInit, AfterViewChecked {
   showNotifications = false;
   showSearch = false;
   showTextPanel = false;
+  viewCheckedTimes = 0;
   // font awesome icons
   faBars = faBars;
   faComments = faComments;
@@ -82,30 +83,9 @@ export class AppComponent implements OnInit, AfterViewChecked, AfterViewInit {
   }
 
   /*
-  Function Name: ngAfterViewChecked()
-  Function Description: This method is automatically triggered by Angular once the component's
-                        view is loaded. It checks the width of the screen and determines
-                        whether to display the navigation menu.
-  Parameters: None.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  ngAfterViewChecked() {
-    let navMenu = document.getElementById('navLinks') as HTMLDivElement;
-
-    if(document.documentElement.clientWidth > 600) {
-      if(navMenu.classList.contains('hidden')) {
-        navMenu.classList.remove('hidden');
-        navMenu.setAttribute('aria-hidden', 'false');
-      }
-    }
-  }
-
-  /*
   Function Name: ngAfterViewInit()
   Function Description: This method is automatically triggered by Angular once the component's
-                        view is intialised. It checks the width of the screen and determines
-                        whether to display the navigation menu.
+                        view is intialised. It checks for the currently active navigation menu link.
   Parameters: None.
   ----------------
   Programmer: Shir Bar Lev.
@@ -188,6 +168,43 @@ export class AppComponent implements OnInit, AfterViewChecked, AfterViewInit {
         }
       }
     })
+  }
+
+  /*
+  Function Name: ngAfterViewChecked()
+  Function Description: This method is automatically triggered by Angular once the component's
+                        view is intialised. It checks the width of the screen and determines
+                        whether to display the navigation menu.
+  Parameters: None.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  ngAfterViewChecked() {
+    // this is done to ensure it only runs while the page render, rather than
+    // after every change in the page (caused by the user's settings)
+    if(this.viewCheckedTimes < 2) {
+      let navLinks = document.getElementById('navLinks') as HTMLDivElement;
+      let menuBtn = document.getElementById('menuBtn') as HTMLDivElement;
+
+      // check the client width; if it's bigger than 600, show the menu
+      if(document.documentElement.clientWidth > 600) {
+        if(navLinks.classList.contains('hidden')) {
+          navLinks.classList.remove('hidden');
+          navLinks.classList.remove('large');
+          menuBtn.classList.add('hidden');
+          navLinks.setAttribute('aria-hidden', 'false');
+        }
+      }
+      // otherwise hide it
+      else {
+        navLinks.classList.add('large');
+        navLinks.classList.add('hidden');
+        menuBtn.classList.remove('hidden');
+        navLinks.setAttribute('aria-hidden', 'true');
+      }
+
+      this.viewCheckedTimes++;
+    }
   }
 
   /*
@@ -303,7 +320,7 @@ export class AppComponent implements OnInit, AfterViewChecked, AfterViewInit {
   /*
   Function Name: onResize()
   Function Description: Checks the viewport size on resize. If it's higher than
-                        500px, displays the menu in desktop mode.
+                      600px, displays the menu in desktop mode.
   Parameters: None.
   ----------------
   Programmer: Shir Bar Lev.
@@ -311,18 +328,24 @@ export class AppComponent implements OnInit, AfterViewChecked, AfterViewInit {
   @HostListener('window:resize', ['$event'])
   onResize(_event:Event) {
     let width = document.documentElement.clientWidth;
-    let navMenu = document.getElementById('navLinks') as HTMLDivElement;
+    let navMenu = document.getElementById('navMenu') as HTMLDivElement;
+    let navLinks = document.getElementById('navLinks') as HTMLDivElement;
+    let menuBtn = document.getElementById('menuBtn') as HTMLDivElement;
 
-    if(width > 600) {
-      if(navMenu.classList.contains('hidden')) {
-        navMenu.classList.remove('hidden');
-        navMenu.setAttribute('aria-hidden', 'false');
+    if(width > 600 && navLinks.scrollWidth < navMenu.offsetWidth) {
+      if(navLinks.classList.contains('hidden')) {
+        navLinks.classList.remove('hidden');
+        navLinks.classList.remove('large');
+        menuBtn.classList.add('hidden');
+        navLinks.setAttribute('aria-hidden', 'false');
       }
     }
     else {
-      if(!navMenu.classList.contains('hidden')) {
-        navMenu.classList.add('hidden');
-        navMenu.setAttribute('aria-hidden', 'true');
+      if(!navLinks.classList.contains('hidden')) {
+        navLinks.classList.add('large');
+        navLinks.classList.add('hidden');
+        menuBtn.classList.remove('hidden');
+        navLinks.setAttribute('aria-hidden', 'true');
       }
     }
   }
@@ -355,19 +378,61 @@ export class AppComponent implements OnInit, AfterViewChecked, AfterViewInit {
     switch(size) {
       case 'smallest':
         document.getElementsByTagName('html')[0]!.style.fontSize = "75%";
+        this.checkMenuSize()
         break;
       case 'smaller':
         document.getElementsByTagName('html')[0]!.style.fontSize = "87.5%";
+        this.checkMenuSize()
         break;
       case 'regular':
         document.getElementsByTagName('html')[0]!.style.fontSize = "100%";
+        this.checkMenuSize()
         break;
       case 'larger':
         document.getElementsByTagName('html')[0]!.style.fontSize = "150%";
+        this.checkMenuSize()
         break;
       case 'largest':
         document.getElementsByTagName('html')[0]!.style.fontSize = "200%";
+        this.checkMenuSize()
         break;
+    }
+  }
+
+  /*
+  Function Name: checkMenuSize()
+  Function Description: Checks whether the menu is too wide for the screen. If it
+                        is, it's hidden; otherwise it remains.
+  Parameters: None.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  checkMenuSize() {
+    let navMenu = document.getElementById('navMenu') as HTMLDivElement;
+    let navLinks = document.getElementById('navLinks') as HTMLDivElement;
+    let menuBtn = document.getElementById('menuBtn') as HTMLDivElement;
+
+    // remove the hidden label check the menu's width
+    if(navLinks.classList.contains('hidden')) {
+      navLinks.classList.remove('hidden');
+      navLinks.classList.remove('large');
+    }
+
+    // if the larger text makes the navigation menu too long, turn it back
+    // to the small-viewport menu
+    if(navLinks.scrollWidth >= navMenu.offsetWidth) {
+      navLinks.classList.add('large');
+      navLinks.classList.add('hidden');
+      menuBtn.classList.remove('hidden');
+      navLinks.setAttribute('aria-hidden', 'true');
+    }
+    else {
+      if(navLinks.classList.contains('hidden')) {
+        navLinks.classList.remove('hidden');
+        navLinks.classList.remove('large');
+      }
+      menuBtn.classList.add('hidden');
+      navLinks.setAttribute('aria-hidden', 'false');
     }
   }
 

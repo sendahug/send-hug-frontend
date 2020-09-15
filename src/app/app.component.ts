@@ -19,7 +19,7 @@ export class AppComponent implements OnInit, AfterViewInit, AfterViewChecked {
   showNotifications = false;
   showSearch = false;
   showTextPanel = false;
-  viewCheckedTimes = 0;
+  showMenu = true;
   // font awesome icons
   faBars = faBars;
   faComments = faComments;
@@ -180,30 +180,27 @@ export class AppComponent implements OnInit, AfterViewInit, AfterViewChecked {
   Programmer: Shir Bar Lev.
   */
   ngAfterViewChecked() {
-    // this is done to ensure it only runs while the page render, rather than
-    // after every change in the page (caused by the user's settings)
-    if(this.viewCheckedTimes < 2) {
-      let navLinks = document.getElementById('navLinks') as HTMLDivElement;
-      let menuBtn = document.getElementById('menuBtn') as HTMLDivElement;
+    let navLinks = document.getElementById('navLinks') as HTMLDivElement;
+    let menuBtn = document.getElementById('menuBtn') as HTMLDivElement;
 
-      // check the client width; if it's bigger than 600, show the menu
-      if(document.documentElement.clientWidth > 600) {
-        if(navLinks.classList.contains('hidden')) {
-          navLinks.classList.remove('hidden');
-          navLinks.classList.remove('large');
-          menuBtn.classList.add('hidden');
-          navLinks.setAttribute('aria-hidden', 'false');
-        }
+    // check the client width; if it's bigger than 600 and the menu needs to
+    // be shown, show it
+    if(document.documentElement.clientWidth > 600 && this.showMenu) {
+      if(navLinks.classList.contains('hidden')) {
+        navLinks.classList.remove('hidden');
+        navLinks.classList.remove('large');
+        menuBtn.classList.add('hidden');
+        navLinks.setAttribute('aria-hidden', 'false');
+        this.showMenu = true;
       }
-      // otherwise hide it
-      else {
-        navLinks.classList.add('large');
-        navLinks.classList.add('hidden');
-        menuBtn.classList.remove('hidden');
-        navLinks.setAttribute('aria-hidden', 'true');
-      }
-
-      this.viewCheckedTimes++;
+    }
+    // otherwise hide it
+    else {
+      navLinks.classList.add('large');
+      navLinks.classList.add('hidden');
+      menuBtn.classList.remove('hidden');
+      navLinks.setAttribute('aria-hidden', 'true');
+      this.showMenu = false;
     }
   }
 
@@ -260,6 +257,7 @@ export class AppComponent implements OnInit, AfterViewInit, AfterViewChecked {
     // if the viewport is smaller than 600, the user opened the panel through the
     // menu, which needs to be closed
     if(width < 600) {
+      this.showMenu = false;
       navMenu.classList.add('hidden');
     }
   }
@@ -310,10 +308,12 @@ export class AppComponent implements OnInit, AfterViewInit, AfterViewChecked {
     // if the menu is displayed, close it
     if(!navMenu.classList.contains('hidden')) {
       navMenu.classList.add('hidden');
+      this.showMenu = false;
     }
     // otherwise show it
     else {
       navMenu.classList.remove('hidden');
+      this.showMenu = true;
     }
   }
 
@@ -338,6 +338,7 @@ export class AppComponent implements OnInit, AfterViewInit, AfterViewChecked {
         navLinks.classList.remove('large');
         menuBtn.classList.add('hidden');
         navLinks.setAttribute('aria-hidden', 'false');
+        this.showMenu = true;
       }
     }
     else {
@@ -346,6 +347,7 @@ export class AppComponent implements OnInit, AfterViewInit, AfterViewChecked {
         navLinks.classList.add('hidden');
         menuBtn.classList.remove('hidden');
         navLinks.setAttribute('aria-hidden', 'true');
+        this.showMenu = false;
       }
     }
   }
@@ -425,6 +427,7 @@ export class AppComponent implements OnInit, AfterViewInit, AfterViewChecked {
       navLinks.classList.add('hidden');
       menuBtn.classList.remove('hidden');
       navLinks.setAttribute('aria-hidden', 'true');
+      this.showMenu = false;
     }
     else {
       if(navLinks.classList.contains('hidden')) {
@@ -433,6 +436,7 @@ export class AppComponent implements OnInit, AfterViewInit, AfterViewChecked {
       }
       menuBtn.classList.add('hidden');
       navLinks.setAttribute('aria-hidden', 'false');
+      this.showMenu = true;
     }
   }
 

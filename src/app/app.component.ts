@@ -183,9 +183,9 @@ export class AppComponent implements OnInit, AfterViewInit, AfterViewChecked {
     let navLinks = document.getElementById('navLinks') as HTMLDivElement;
     let menuBtn = document.getElementById('menuBtn') as HTMLDivElement;
 
-    // check the client width; if it's bigger than 600 and the menu needs to
+    // check the client width; if it's bigger than 650px and the menu needs to
     // be shown, show it
-    if(document.documentElement.clientWidth > 600 && this.showMenu) {
+    if(document.documentElement.clientWidth > 650 && this.showMenu) {
       if(navLinks.classList.contains('hidden')) {
         navLinks.classList.remove('hidden');
         navLinks.classList.remove('large');
@@ -254,9 +254,9 @@ export class AppComponent implements OnInit, AfterViewInit, AfterViewChecked {
 
     this.showNotifications = true;
 
-    // if the viewport is smaller than 600, the user opened the panel through the
+    // if the viewport is smaller than 650px, the user opened the panel through the
     // menu, which needs to be closed
-    if(width < 600) {
+    if(width < 650) {
       this.showMenu = false;
       navMenu.classList.add('hidden');
     }
@@ -277,17 +277,17 @@ export class AppComponent implements OnInit, AfterViewInit, AfterViewChecked {
     if(this.showSearch) {
       this.showSearch = false;
 
-      // if the viewport is smaller than 600, the user opened the panel through the
+      // if the viewport is smaller than 650px, the user opened the panel through the
       // menu, which needs to be closed
-      if(width < 600) {
+      if(width < 650) {
         navMenu.classList.remove('hidden');
       }
     }
     // otherwise show it
     else {
-      // if the viewport is smaller than 600, the user opened the panel through the
+      // if the viewport is smaller than 650px, the user opened the panel through the
       // menu, which needs to be closed
-      if(width < 600) {
+      if(width < 650) {
         navMenu.classList.add('hidden');
       }
 
@@ -320,7 +320,7 @@ export class AppComponent implements OnInit, AfterViewInit, AfterViewChecked {
   /*
   Function Name: onResize()
   Function Description: Checks the viewport size on resize. If it's higher than
-                      600px, displays the menu in desktop mode.
+                      650px, displays the menu in desktop mode.
   Parameters: None.
   ----------------
   Programmer: Shir Bar Lev.
@@ -332,7 +332,7 @@ export class AppComponent implements OnInit, AfterViewInit, AfterViewChecked {
     let navLinks = document.getElementById('navLinks') as HTMLDivElement;
     let menuBtn = document.getElementById('menuBtn') as HTMLDivElement;
 
-    if(width > 600 && navLinks.scrollWidth < navMenu.offsetWidth) {
+    if(width > 650 && navLinks.scrollWidth < navMenu.offsetWidth) {
       if(navLinks.classList.contains('hidden')) {
         navLinks.classList.remove('hidden');
         navLinks.classList.remove('large');

@@ -195,6 +195,9 @@ app-admin-dashboard #breadcrumb
 	left: 0
 	right: 0
 	z-index: 100
+	/* Responsive styling for screens up to 650px width */
+	@media screen and (max-width: 650px)
+		padding-top: 2%
 
 /* Site Header when the popup is on */
 #siteHeader.modal
@@ -229,6 +232,7 @@ app-admin-dashboard #breadcrumb
 	padding: 0 10px 0 0
 	height: 100px
 	width: 100px
+	min-width: 60px
 	/* Responsive styling for screens above 600px width */
 	@media screen and (min-width: 600px)
 		height: 75px
@@ -262,8 +266,8 @@ app-admin-dashboard #breadcrumb
 		width: 90%
 		max-width: 90%
 		margin: 0 5%
-	/* Responsive styling for screens above 600px width */
-	@media screen and (min-width: 600px)
+	/* Responsive styling for screens above 650px width */
+	@media screen and (min-width: 650px)
 		width: 100%
 		max-width: 100%
 		margin: 0
@@ -286,8 +290,8 @@ app-admin-dashboard #breadcrumb
 /* Navigation menu - inner */
 .navLinks
 	display: flex
-	/* Responsive styling for screens up to 600px width */
-	@media screen and (max-width: 600px)
+	/* Responsive styling for screens up to 650px width */
+	@media screen and (max-width: 650px)
 		flex-direction: column
 		height: 100%
 		max-height: 600px
@@ -301,8 +305,8 @@ app-admin-dashboard #breadcrumb
 		align-items: center
 		justify-content: center
 		padding: 10px
-	/* Responsive styling for screens above 600px width */
-	@media screen and (min-width: 600px)
+	/* Responsive styling for screens above 650px width */
+	@media screen and (min-width: 650px)
 		flex-direction: row
 		width: 100%
 		background: $mainBackground
@@ -342,12 +346,12 @@ app-admin-dashboard #breadcrumb
 	border: none
 	padding: 0 15px
 	text-decoration: none
-	/* Responsive styling for screens up to 600px width */
-	@media screen and (max-width: 600px)
+	/* Responsive styling for screens up to 650px width */
+	@media screen and (max-width: 650px)
 		padding: 10px 15px
 		background: $boxesBackground
-	/* Responsive styling for screens above 600px width */
-	@media screen and (min-width: 600px)
+	/* Responsive styling for screens above 650px width */
+	@media screen and (min-width: 650px)
 		background: $mainBackground
 		padding: 0 10px
 	/* Responsive styling for screens above 800px width */
@@ -399,11 +403,11 @@ app-admin-dashboard #breadcrumb
 .navIcon
 	font-size: 30px
 	text-align: center
-	/* Responsive styling for screens above 600px width */
-	@media screen and (min-width: 600px)
-		font-size: 26px
 	/* Responsive styling for screens above 650px width */
 	@media screen and (min-width: 650px)
+		font-size: 26px
+	/* Responsive styling for screens above 700px width */
+	@media screen and (min-width: 700px)
 		font-size: 28px
 	/* Responsive styling for screens above 800px width */
 	@media screen and (min-width: 800px)
@@ -414,25 +418,25 @@ app-admin-dashboard #breadcrumb
 	@include fontSize(13)
 	padding-top: 5px
 	font-family: $mainFont
-	/* Responsive styling for screens above 650px width */
-	@media screen and (min-width: 650px)
+	/* Responsive styling for screens above 700px width */
+	@media screen and (min-width: 700px)
 		@include fontSize(14)
 
 /* Navigation buttons (notifications / search) */
 .navButton
 	font-size: 24px
 	text-align: center
-	/* Responsive styling for screens up to 600px width */
-	@media screen and (max-width: 600px)
+	/* Responsive styling for screens up to 650px width */
+	@media screen and (max-width: 650px)
 		padding: 10px 15px
 		background: $boxesBackground
 		margin: 0
-	/* Responsive styling for screens above 600px width */
-	@media screen and (min-width: 600px)
-		background: $mainBackground
-		font-size: 20px
 	/* Responsive styling for screens above 650px width */
 	@media screen and (min-width: 650px)
+		background: $mainBackground
+		font-size: 20px
+	/* Responsive styling for screens above 700px width */
+	@media screen and (min-width: 700px)
 		margin: 0 5px
 		font-size: 23px
 	/* Responsive styling for screens above 800px width */
@@ -441,27 +445,29 @@ app-admin-dashboard #breadcrumb
 
 /* Notifications button */
 .newNotification
-	padding: 5px
+	padding: 2px
 	position: relative
 	display: inline-block
 	background-color: $boxesBackground
-	/* Responsive styling for screens up to 600px width */
-	@media screen and (max-width: 600px)
+	/* Responsive styling for screens up to 650px width */
+	@media screen and (max-width: 650px)
 		margin-top: 20px
-	/* Responsive styling for screens above 600px width */
-	@media screen and (min-width: 600px)
+	/* Responsive styling for screens above 650px width */
+	@media screen and (min-width: 650px)
 		margin-left: 10px
 		background: $mainBackground
-		padding: 6px
 	/* Responsive styling for screens above 750px width */
 	@media screen and (min-width: 750px)
-		padding: 3px
 		margin-left: 5px
+
+/* Notifications button - badge */
+.newNotification .badge
+	right: -5px
 
 /* Notifications button icon */
 #navNotific
-	/* Responsive styling for screens up to 600px width */
-	@media screen and (max-width: 600px)
+	/* Responsive styling for screens up to 650px width */
+	@media screen and (max-width: 650px)
 		padding: 2px
 
 .newNotification .badge

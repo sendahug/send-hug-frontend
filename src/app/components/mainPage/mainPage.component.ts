@@ -20,7 +20,7 @@ copies or substantial portions of the Software.
 // Angular imports
 import { Component, OnInit } from '@angular/core';
 import { faComment, faEdit, faFlag } from '@fortawesome/free-regular-svg-icons';
-import { faHandHoldingHeart, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faHandHoldingHeart, faTimes, faEllipsisV } from '@fortawesome/free-solid-svg-icons';
 
 // App-related imports
 import { AuthService } from '../../services/auth.service';
@@ -50,6 +50,7 @@ export class MainPage implements OnInit {
   faFlag = faFlag;
   faHandHoldingHeart = faHandHoldingHeart;
   faTimes = faTimes;
+  faEllipsisV = faEllipsisV;
 
   // CTOR
   constructor(

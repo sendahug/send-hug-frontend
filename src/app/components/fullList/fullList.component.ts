@@ -21,7 +21,7 @@ copies or substantial portions of the Software.
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { faComment, faEdit, faFlag } from '@fortawesome/free-regular-svg-icons';
-import { faHandHoldingHeart, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faHandHoldingHeart, faTimes, faEllipsisV } from '@fortawesome/free-solid-svg-icons';
 
 // App-related imports
 import { AuthService } from '../../services/auth.service';
@@ -53,6 +53,7 @@ export class FullList {
   faFlag = faFlag;
   faHandHoldingHeart = faHandHoldingHeart;
   faTimes = faTimes;
+  faEllipsisV = faEllipsisV;
 
   // CTOR
   constructor(private route:ActivatedRoute,

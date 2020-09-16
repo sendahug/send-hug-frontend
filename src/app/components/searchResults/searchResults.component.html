@@ -29,6 +29,7 @@
 					<button *ngIf="item.sentHugs.includes(authService.userData.id.toString())" class="textlessButton hugButton active" [attr.aria-labelledby]="'pHug ' + 'nUser' + item.id" name="send a hug" disabled><fa-icon [icon]="faHandHoldingHeart" class="fa-hand-holding-heart"></fa-icon></button>
 					<span class="badge" aria-describedby="pGivenH">{{ item.givenHugs }}</span>
 				</div>
+				<button class="textlessButton menuButton hidden" [attr.aria-labelledby]="'pOptions ' + 'nPost' + item.id" name="post options" (click)="toggleOptions()"><fa-icon [icon]="faEllipsisV" class="fa-comment"></fa-icon></button>
 				<a [routerLink]="['/new', 'Message']" [queryParams]="{user: item.user, userID: item.userId}" class="textlessButton messageButton" [attr.aria-describedby]="'pMessage ' + 'nUser' + item.id"><fa-icon [icon]="faComment" class="fa-comment"></fa-icon></a>
 				<button class="textlessButton reportButton" (click)="reportPost(item)" [attr.aria-describedby]="'pReport ' + 'nPost' + item.id"><fa-icon [icon]="faFlag" class="fa-flag"></fa-icon></button>
 				<button *ngIf="authService.canUser('patch:any-post')" class="textlessButton editButton" (click)="editPost(item)" [attr.aria-describedby]="'pEdit ' + 'nPost' + item.id"><fa-icon [icon]="faEdit" class="fa-edit"></fa-icon></button>
@@ -60,6 +61,7 @@
 	<p id="pUser">Post Writer</p>
 	<p id="pHug">Send a hug to user</p>
 	<p id="pGivenH">Hugs given to this post</p>
+	<p id="pOptions">show options for post</p>
 	<p id="pMessage">Send a message to user</p>
 	<p id="pReport">Report post</p>
 	<p id="pEdit">Edit post</p>

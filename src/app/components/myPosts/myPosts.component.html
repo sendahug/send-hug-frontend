@@ -22,7 +22,6 @@
 						<button *ngIf="post.sentHugs.includes(authService.userData.id.toString())" class="textlessButton hugButton active" [attr.aria-labelledby]="'pHug ' + 'nUser' + post.id" name="send a hug" disabled><fa-icon [icon]="faHandHoldingHeart" class="fa-hand-holding-heart"></fa-icon></button>
 						<span class="badge" aria-describedby="pGivenH">{{ post.givenHugs }}</span>
 					</div>
-					<button class="textlessButton menuButton hidden" [attr.aria-labelledby]="'pOptions ' + 'nPost' + post.id" name="post options" (click)="toggleOptions()"><fa-icon [icon]="faEllipsisV" class="fa-comment"></fa-icon></button>
 					<button *ngIf="(user == 'other')" class="textlessButton reportButton" (click)="reportPost(post)" [attr.aria-describedby]="'pReport ' + 'text' + post.id"><fa-icon [icon]="faFlag" class="fa-flag"></fa-icon></button>
 					<button *ngIf="(user == 'self') || (authService.canUser('patch:any-post'))" class="textlessButton editButton" (click)="editPost(post)" [attr.aria-describedby]="'pEdit ' + 'text' + post.id">Edit</button>
 					<button *ngIf="(user == 'self') || (authService.canUser('delete:any-post'))" class="textlessButton deleteButton" (click)="deletePost(post.id)" [attr.aria-describedby]="'pDelete ' + 'text' + post.id">Delete</button>

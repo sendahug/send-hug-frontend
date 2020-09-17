@@ -152,4 +152,43 @@ export class MainPage implements OnInit {
     this.reportedItem = post;
     this.reportType = 'Post';
   }
+
+  /*
+  Function Name: toggleOptions()
+  Function Description: Opens a floating sub menu that contains the message, report, edit (if
+                        applicable) and delete (if applicable) options on smaller screens.
+  Parameters: itemNum (number) - ID of the item for which to open the submenu.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  toggleOptions(itemType:string, itemNum:Number | string) {
+    itemNum = Number(itemNum);
+
+    let post: HTMLElement | null;
+
+    // if the item is in the new list, gets it from there
+    if(itemType.toLowerCase() == 'new') {
+      post = document.querySelector('#nPost' + itemNum)!.parentElement;
+    }
+    // if not, the item must be in the suggested list, so it gets it from there
+    else if(itemType.toLowerCase() == 'suggested') {
+      post = document.querySelector('#sPost' + itemNum)!.parentElement;
+    }
+
+    let buttons = post!.querySelectorAll('.buttonsContainer')[0];
+    let subMenu = post!.querySelectorAll('.subMenu')[0];
+
+    // if the submenu is hidden, show it
+    if(subMenu.classList.contains('hidden')) {
+      subMenu.classList.remove('hidden');
+      subMenu.classList.add('float');
+      buttons.classList.add('float');
+    }
+    // otherwise hide it
+    else {
+      subMenu.classList.add('hidden');
+      subMenu.classList.remove('float');
+      buttons.classList.remove('float');
+    }
+  }
 }

@@ -29,11 +29,13 @@
 					<button *ngIf="item.sentHugs.includes(authService.userData.id.toString())" class="textlessButton hugButton active" [attr.aria-labelledby]="'pHug ' + 'nUser' + item.id" name="send a hug" disabled><fa-icon [icon]="faHandHoldingHeart" class="fa-hand-holding-heart"></fa-icon></button>
 					<span class="badge" aria-describedby="pGivenH">{{ item.givenHugs }}</span>
 				</div>
-				<button class="textlessButton menuButton hidden" [attr.aria-labelledby]="'pOptions ' + 'nPost' + item.id" name="post options" (click)="toggleOptions()"><fa-icon [icon]="faEllipsisV" class="fa-comment"></fa-icon></button>
-				<a [routerLink]="['/new', 'Message']" [queryParams]="{user: item.user, userID: item.userId}" class="textlessButton messageButton" [attr.aria-describedby]="'pMessage ' + 'nUser' + item.id"><fa-icon [icon]="faComment" class="fa-comment"></fa-icon></a>
-				<button class="textlessButton reportButton" (click)="reportPost(item)" [attr.aria-describedby]="'pReport ' + 'nPost' + item.id"><fa-icon [icon]="faFlag" class="fa-flag"></fa-icon></button>
-				<button *ngIf="authService.canUser('patch:any-post')" class="textlessButton editButton" (click)="editPost(item)" [attr.aria-describedby]="'pEdit ' + 'nPost' + item.id"><fa-icon [icon]="faEdit" class="fa-edit"></fa-icon></button>
-				<button *ngIf="authService.canUser('delete:any-post')" class="textlessButton deleteButton" (click)="deletePost(item.id)" [attr.aria-describedby]="'pDelete ' + 'nPost' + item.id"><fa-icon [icon]="faTimes" class="fa-times"></fa-icon></button>
+				<button class="textlessButton menuButton hidden" [attr.aria-labelledby]="'pOptions ' + 'nPost' + item.id" name="post options" (click)="toggleOptions(item.id)"><fa-icon [icon]="faEllipsisV" class="fa-comment"></fa-icon></button>
+				<div class="subMenu">
+					<a [routerLink]="['/new', 'Message']" [queryParams]="{user: item.user, userID: item.userId}" class="textlessButton messageButton" [attr.aria-describedby]="'pMessage ' + 'nUser' + item.id"><fa-icon [icon]="faComment" class="fa-comment"></fa-icon></a>
+					<button class="textlessButton reportButton" (click)="reportPost(item)" [attr.aria-describedby]="'pReport ' + 'nPost' + item.id"><fa-icon [icon]="faFlag" class="fa-flag"></fa-icon></button>
+					<button *ngIf="authService.canUser('patch:any-post')" class="textlessButton editButton" (click)="editPost(item)" [attr.aria-describedby]="'pEdit ' + 'nPost' + item.id"><fa-icon [icon]="faEdit" class="fa-edit"></fa-icon></button>
+					<button *ngIf="authService.canUser('delete:any-post')" class="textlessButton deleteButton" (click)="deletePost(item.id)" [attr.aria-describedby]="'pDelete ' + 'nPost' + item.id"><fa-icon [icon]="faTimes" class="fa-times"></fa-icon></button>
+				</div>
 			</div>
 			</li>
 		</ul>

@@ -702,6 +702,42 @@ app-main-page
 	justify-content: space-between
 	width: 100%
 
+/* Buttons div when using floating menu (smaller viewports) */
+.buttonsContainer.float
+	flex-wrap: wrap
+
+/* Hugs button when using floating menu (smaller viewports) */
+.buttonsContainer.float .notification
+	margin-left: 15%
+	margin-right: 15%
+
+/* Sub-menu button when using floating menu (smaller viewports) */
+.buttonsContainer.float .menuButton
+	margin-left: 15%
+	margin-right: 15%
+
+/* Buttons sub-menu */
+.subMenu
+	display: flex
+	flex-direction: row
+	align-content: space-between
+	justify-content: space-between
+	width: 80%
+
+/* Buttons sub-menu when floating */
+.subMenu.float
+	overflow-y: visible
+	position: relative
+	top: 50px
+	z-index: 100
+	width: 100%
+	background: $itemBackground
+	align-items: center
+	justify-content: center
+	padding: 10px
+	box-shadow: 3px 3px 7px 0 rgba(46, 61, 73, 0.5)
+	border-radius: 5px
+
 /* Send a hug button container */
 .notification
 	margin: 5px auto

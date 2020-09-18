@@ -65,6 +65,12 @@ fieldset
 	padding: 0
 	margin: 0
 
+/* Font awesome icon within a link */
+a fa-icon
+	padding: 5px
+	vertical-align: middle
+	line-height: 44px
+
 /* App button */
 .appButton
 	background: $buttonBackground
@@ -83,6 +89,7 @@ fieldset
 	min-width: 44px
 	min-height: 44px
 	text-align: center
+	border: none
 
 /* Pagination area */
 .pagination
@@ -714,13 +721,13 @@ app-main-page
 
 /* Hugs button when using floating menu (smaller viewports) */
 .buttonsContainer.float .notification
-	margin-left: 15%
-	margin-right: 15%
+	margin-left: 10%
+	margin-right: 10%
 
 /* Sub-menu button when using floating menu (smaller viewports) */
 .buttonsContainer.float .menuButton
-	margin-left: 15%
-	margin-right: 15%
+	margin-left: 10%
+	margin-right: 10%
 
 /* Buttons sub-menu */
 .subMenu
@@ -744,6 +751,10 @@ app-main-page
 	box-shadow: 3px 3px 7px 0 rgba(46, 61, 73, 0.5)
 	border-radius: 5px
 
+/* Buttons sub-menu when floating & hidden */
+.subMenu.float.hidden
+	display: none
+
 /* Send a hug button container */
 .notification
 	margin: 5px auto
@@ -758,7 +769,7 @@ app-main-page
 .hugButton
 	width: 33px
 	border: none
-	padding: 5px
+	padding: 7px 5px 3px
 
 /* Send Hug Button on a post on which the user already sent a hug */
 .hugButton.active i

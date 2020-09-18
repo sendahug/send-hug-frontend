@@ -1,6 +1,23 @@
 /* Original design by Macy Tyler */
 /* Responsive adjustments by Send a Hug team */
 
+/* Font size mixin */
+@mixin fontSize($px-size)
+	font-size: ($px-size / 10 * 0.625) + rem
+
+/* Fonts */
+@font-face
+	font-family: 'Montserrat'
+	font-style: normal
+	font-weight: 400
+	src: local('Montserrat Regular'), local('Montserrat-Regular'), url('../assets/fonts/Montserrat-Regular.ttf') format('ttf')
+
+@font-face
+	font-family: 'Montserrat'
+	font-style: bold
+	font-weight: 700
+	src: local('Montserrat Bold'), local('Montserrat-Bold'), url('../assets/fonts/Montserrat-Bold.ttf') format('ttf')
+
 /* Colour Palette */
 $mainBackground: #F2F2F2
 $boxesBackground: #E2E2E2
@@ -13,10 +30,6 @@ $profileLinkColour: #70315B
 
 /* Fonts */
 $mainFont: 'Montserrat', sans-serif
-
-/* Font size mixin */
-@mixin fontSize($px-size)
-	font-size: ($px-size / 10 * 0.625) + rem
 
 /* Frame Sample */
 #frameSample

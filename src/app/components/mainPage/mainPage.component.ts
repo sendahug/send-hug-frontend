@@ -90,6 +90,7 @@ export class MainPage implements OnInit, AfterViewChecked {
 
       // remove the hidden label check the menu's width
       if(sub.classList.contains('hidden')) {
+        firstPButtons.classList.remove('float');
         sub.classList.remove('hidden');
         sub.classList.remove('float');
       }
@@ -121,6 +122,14 @@ export class MainPage implements OnInit, AfterViewChecked {
           }
           else {
             element.querySelectorAll('.subMenu')[0].classList.add('hidden');
+
+            // if it's not the first element that needs an open menu, close
+            // the first item's menu like  it was opened above
+            if(element.firstElementChild!.id == newPosts[0].firstElementChild!.id) {
+              element.querySelectorAll('.buttonsContainer')[0].classList.add('float');
+              element.querySelectorAll('.subMenu')[0].classList.add('hidden');
+              element.querySelectorAll('.subMenu')[0].classList.add('float');
+            }
           }
         })
 

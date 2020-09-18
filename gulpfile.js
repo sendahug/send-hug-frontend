@@ -35,12 +35,12 @@ function copyIndex()
 		.pipe(gulp.dest("./localdev"));
 }
 
-//copies the images folder to the distribution folder
-function copyImgs()
+//copies the assets folder to the distribution folder
+function copyAssets()
 {
 	return gulp
-		.src("src/assets/img/*")
-		.pipe(gulp.dest("localdev/assets/img"));
+		.src("src/assets/**/*")
+		.pipe(gulp.dest("localdev/assets/"));
 }
 
 //sets gulp to add prefixes with Autoprefixer after Dreamweaver outputs the Sass filee to CSS
@@ -80,7 +80,7 @@ function watch()
 {
 	gulp.watch("src/app/**/*.html", copyHtml)
 	gulp.watch("index.html", copyIndex);
-	gulp.watch("src/assets/img/*", copyImgs);
+	gulp.watch("src/assets/**/*", copyAssets);
 	gulp.watch("src/css/*.css", styles);
 	gulp.watch(["src/**/*.ts", "!src/**/*.spec.ts", "!src/**/*.mock.ts"], scripts);
 }
@@ -89,7 +89,7 @@ function watch()
 gulp.task('localdev', gulp.parallel(
 	copyHtml,
 	copyIndex,
-	copyImgs,
+	copyAssets,
 	styles,
 	scripts
 ));
@@ -117,12 +117,12 @@ function copyIndexDist()
 		.pipe(gulp.dest("./dist"));
 }
 
-//copies the images folder to the distribution folder
-function copyImgsDist()
+//copies the assets folder to the distribution folder
+function copyAssetsDist()
 {
 	return gulp
-		.src("src/assets/img/*")
-		.pipe(gulp.dest("dist/assets/img"));
+		.src("src/assets/**/*")
+		.pipe(gulp.dest("dist/assets/"));
 }
 
 //sets gulp to add prefixes with Autoprefixer after Dreamweaver outputs the Sass filee to CSS
@@ -182,7 +182,7 @@ function copyServiceWorker()
 gulp.task('dist', gulp.parallel(
 	copyHtmlDist,
 	copyIndexDist,
-	copyImgsDist,
+	copyAssetsDist,
 	stylesDist,
 	scriptsDist,
 	copyServiceWorker
@@ -274,7 +274,7 @@ gulp.task("serve", function() {
 //exports for gulp to recognise them as tasks
 exports.copyHtml = copyHtml;
 exports.copyIndex = copyIndex;
-exports.copyImgs = copyImgs;
+exports.copyAssets = copyAssets;
 exports.styles = styles;
 exports.scripts = scripts;
 exports.scriptsDist = scriptsDist;

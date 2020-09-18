@@ -114,30 +114,25 @@ export class MainPage implements OnInit, AfterViewChecked {
       }
       // if there's a menu to show, show that specific menu
       else if(this.showMenuNum) {
-        // if it's a new post
-        if(this.showMenuNum[0] == 'n') {
-          // the relevant menu to visible
-          newPosts.forEach((element) => {
-            if(element.firstElementChild!.id == 'nPost' + this.showMenuNum) {
-              element.querySelectorAll('.subMenu')[0].classList.remove('hidden');
-            }
-            else {
-              element.querySelectorAll('.subMenu')[0].classList.add('hidden');
-            }
-          })
-        }
-        // if it's a suggested post
-        else {
-          // the relevant menu to visible
-          sugPosts.forEach((element) => {
-            if(element.firstElementChild!.id == 'sPost' + this.showMenuNum) {
-              element.querySelectorAll('.subMenu')[0].classList.remove('hidden');
-            }
-            else {
-              element.querySelectorAll('.subMenu')[0].classList.add('hidden');
-            }
-          })
-        }
+        // the relevant menu to visible
+        newPosts.forEach((element) => {
+          if(element.firstElementChild!.id == this.showMenuNum) {
+            element.querySelectorAll('.subMenu')[0].classList.remove('hidden');
+          }
+          else {
+            element.querySelectorAll('.subMenu')[0].classList.add('hidden');
+          }
+        })
+
+        // the relevant menu to visible
+        sugPosts.forEach((element) => {
+          if(element.firstElementChild!.id == this.showMenuNum) {
+            element.querySelectorAll('.subMenu')[0].classList.remove('hidden');
+          }
+          else {
+            element.querySelectorAll('.subMenu')[0].classList.add('hidden');
+          }
+        })
       }
       // otherwise make sure the menu button is hidden and the buttons container
       // is in its normal design
@@ -274,7 +269,7 @@ export class MainPage implements OnInit, AfterViewChecked {
       subMenu.classList.remove('hidden');
       subMenu.classList.add('float');
       buttons.classList.add('float');
-      this.showMenuNum = itemType.toLowerCase() == 'new' ? '#nPost' + itemNum : '#sPost' + itemNum;
+      this.showMenuNum = itemType.toLowerCase() == 'new' ? 'nPost' + itemNum : 'sPost' + itemNum;
     }
     // otherwise hide it
     else {

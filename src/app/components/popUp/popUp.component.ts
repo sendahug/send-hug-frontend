@@ -405,12 +405,14 @@ export class PopUp implements OnInit, OnChanges, AfterViewChecked {
 
       otherText.disabled = true;
       otherText.required = false;
+      otherText.setAttribute('aria-required', 'false');
     }
     // If the user chose to put their own input, take that as the reason
     else {
       otherText.disabled = false;
       otherText.required = true;
       this.selectedReason = 'other';
+      otherText.setAttribute('aria-required', 'true');
     }
   }
 

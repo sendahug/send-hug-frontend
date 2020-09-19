@@ -104,7 +104,7 @@ export class SearchResults implements AfterViewChecked {
       }
 
       // if they're too long and there's no menu to show
-      if(sub.scrollWidth + 70 > firstPButtons.offsetWidth && !this.showMenuNum) {
+      if(sub.scrollWidth > sub.offsetWidth && !this.showMenuNum) {
         // change each menu to a floating, hidden menu
         posts.forEach((element) => {
           element.querySelectorAll('.buttonsContainer')[0].classList.add('float');

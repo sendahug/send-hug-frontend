@@ -96,7 +96,7 @@ export class MainPage implements OnInit, AfterViewChecked {
       }
 
       // if they're too long and there's no menu to show
-      if(sub.scrollWidth + 70 > firstPButtons.offsetWidth && !this.showMenuNum) {
+      if(sub.scrollWidth > sub.offsetWidth && !this.showMenuNum) {
         // change each new post's menu to a floating, hidden menu
         newPosts.forEach((element) => {
           element.querySelectorAll('.buttonsContainer')[0].classList.add('float');

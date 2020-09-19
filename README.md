@@ -4,8 +4,9 @@
 ![CI](https://github.com/sendahug/send-hug-frontend/workflows/Test%20CI/badge.svg)
 [![codecov](https://codecov.io/gh/sendahug/send-hug-frontend/graph/badge.svg)](https://codecov.io/gh/sendahug/send-hug-frontend)
 [![Known Vulnerabilities](https://snyk.io/test/github/sendahug/send-hug-frontend/badge.svg)](https://snyk.io/test/github/sendahug/send-hug-frontend)
-[![dependencies Status](https://david-dm.org/sendahug/send-hug-frontend/status.svg)](https://david-dm.org/sendahug/send-hug-frontend)
-[![devDependencies Status](https://david-dm.org/sendahug/send-hug-frontend/dev-status.svg)](https://david-dm.org/sendahug/send-hug-frontend?type=dev)
+![Libraries.io dependency status for GitHub repo](https://img.shields.io/librariesio/github/sendahug/send-hug-frontend)
+![GitHub](https://img.shields.io/github/license/sendahug/send-hug-frontend)
+![Website](https://img.shields.io/website?down_color=red&down_message=offline&up_color=blue&up_message=online&url=https%3A%2F%2Fsend-hug.herokuapp.com)
 
 ## Version
 
@@ -202,28 +203,28 @@ The project is hosted live on Heroku. You can view the live version [here](https
   5. Make sure you're in the top directory (FSND-capstone). In your terminal, enter `git remote add heroku-client <GIT_URL>`.
   6. Enter `git subtree push --prefix frontend heroku-client master`. This triggers the app build. If successful, you'll get a 'Verifying deploy... done.' message.
   7. Add the following environment variables (via CLI or via the Heroku website):
-    
+
     - PRODUCTION - set to true
-    
+
     - AUTH0_DOMAIN - set with your own Auth0 domain
-    
+
     - AUTH0_CLIENT - set with your own client ID from Auth0
-    
+
     - AUDIENCE - set with your own audience from Auth0
-    
+
     - LOGIN_REDIRECT - set to your <LIVE_URL> (or wherever in the app you want the user to be redirected to) to ensure after login the user will be redirected to your app
-    
+
     - LOGOUT_REDIRECT - set to your <LIVE_URL> (or wherever in the app you want the user to be redirected to) to ensure after login the user will be redirected to your app
-    
+
     - BACKEND_URL - set with your own backend URL (necessary for making requests to the backend!)
   8. On your Auth0 application configuration, make sure to:
-    
+
     - Add your new <LIVE_URL> to 'Allowed Callback URLs'
-    
+
     - Add your new <LIVE_URL> to 'Allowed Logout URLs'
-    
+
     - Add your new <LIVE_URL> to 'Allowed Web Origins'
-    
+
     - Add your new <LIVE_URL> to 'Allowed Origins (CORS)'
   9. All done! Now you can visit your <GIT_URL> to see the live app.
 

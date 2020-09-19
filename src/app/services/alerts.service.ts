@@ -62,6 +62,12 @@ export class AlertsService {
     let alertMessage = this.buildAlertElement(alert);
     document.getElementById('alertContainer')!.append(alertMessage);
     document.getElementById('alertButton')!.addEventListener('click', this.closeAlert);
+    // if it's an error, change the role to an alertdialog and focus on the button
+    if(alert.type == 'Error') {
+      alertMessage.setAttribute('role', 'alertdialog');
+      alertMessage.setAttribute('aria-label', 'an error has occurred');
+      (alertMessage.querySelector('#alertButton')! as HTMLButtonElement).focus();
+    }
 
     // if reload option is required
     if(reload) {

@@ -525,7 +525,7 @@ export class PopUp implements OnInit, OnChanges, AfterViewChecked {
   */
   checkFocus(e:KeyboardEvent) {
     // if the pressed key is TAB
-    if(e.keyCode === 9) {
+    if(e.key.toLowerCase() === 'tab') {
       // if the user pressed SHIFT + TAB, which means they want to move backwards
       if(e.shiftKey) {
         // if the currently focused element in the first one in the popup,

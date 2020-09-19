@@ -31,6 +31,7 @@ import { ItemsService } from './items.service';
 import { environment } from '../../environments/environment';
 import { environment as prodEnv } from '../../environments/environment.prod';
 import { OtherUser } from '../interfaces/otherUser.interface';
+import { SWManager } from './sWManager.service';
 
 @Injectable({
   providedIn: 'root'
@@ -70,7 +71,8 @@ export class AdminService {
     private Http:HttpClient,
     private authService:AuthService,
     private alertsService:AlertsService,
-    private itemsService:ItemsService
+    private itemsService:ItemsService,
+    private serviceWorkerM:SWManager
   ) {
 
   }
@@ -193,9 +195,22 @@ export class AdminService {
         messageText: `Your post (ID ${response.deleted}) was deleted due to violating our community rules.`,
         date: new Date()
       }
+
+      // if the report needs to be closed
       if(closeReport) {
         this.dismissReport(reportData.reportID);
       }
+
+      // delete the post from idb
+      if(this.serviceWorkerM.currentDB) {
+        this.serviceWorkerM.currentDB.then((db) => {
+          // start a new transaction
+          let tx = db.transaction('posts', 'readwrite');
+          let store = tx.objectStore('posts');
+          store.delete(response.deleted);
+        });
+      }
+
       // send the message about the deleted post
       this.itemsService.sendMessage(message);
     }, (err:HttpErrorResponse) => {

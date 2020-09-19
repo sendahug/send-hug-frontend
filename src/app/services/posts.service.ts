@@ -357,6 +357,16 @@ export class PostsService {
     }).subscribe((response:any) => {
       this.alertsService.createSuccessAlert(`Post ${response.deleted} was deleted. Refresh to view the updated post list.`, true);
       this.alertsService.toggleOfflineAlert();
+
+      // delete the post from idb
+      if(this.serviceWorkerM.currentDB) {
+        this.serviceWorkerM.currentDB.then((db) => {
+          // start a new transaction
+          let tx = db.transaction('posts', 'readwrite');
+          let store = tx.objectStore('posts');
+          store.delete(response.deleted);
+        });
+      }
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
       // if the user is offline, show the offline header message
@@ -385,6 +395,23 @@ export class PostsService {
     }).subscribe((_response:any) => {
       this.alertsService.createSuccessAlert(`User ${userID}'s posts were deleted successfully. Refresh to view the updated profile.`, true);
       this.alertsService.toggleOfflineAlert();
+
+      // delete the posts from idb
+      if(this.serviceWorkerM.currentDB) {
+        this.serviceWorkerM.currentDB.then((db) => {
+          // start a new transaction
+          let tx = db.transaction('posts', 'readwrite');
+          let store = tx.objectStore('posts').index('user');
+          // open a cursor and delete any post with the given user ID
+          store.openCursor().then(function checkPost(cursor):any {
+            if(!cursor) return;
+            if(cursor.value.userId == userID) {
+              cursor.delete();
+            }
+            return cursor.continue().then(checkPost);
+          })
+        });
+      }
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
       // if the user is offline, show the offline header message

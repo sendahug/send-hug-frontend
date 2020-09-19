@@ -665,6 +665,16 @@ export class ItemsService {
     }).subscribe((response:any) => {
       this.alertsService.createSuccessAlert(`Message ${response.deleted} was deleted! Refresh to view the updated message list.`, true);
       this.alertsService.toggleOfflineAlert();
+
+      // delete the message from idb
+      if(this.serviceWorkerM.currentDB) {
+        this.serviceWorkerM.currentDB.then((db) => {
+          // start a new transaction
+          let tx = db.transaction('messages', 'readwrite');
+          let store = tx.objectStore('messages');
+          store.delete(response.deleted);
+        });
+      }
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
       // if the user is offline, show the offline header message
@@ -694,6 +704,30 @@ export class ItemsService {
     }).subscribe((response:any) => {
       this.alertsService.createSuccessAlert(`Thread ${response.deleted} was deleted! Refresh to view the updated message list.`, true);
       this.alertsService.toggleOfflineAlert();
+
+      // delete the thread and its messages from idb
+      if(this.serviceWorkerM.currentDB) {
+        this.serviceWorkerM.currentDB.then((db) => {
+          // start a new transaction
+          let tx = db.transaction('threads', 'readwrite');
+          let store = tx.objectStore('threads');
+          store.delete(response.deleted);
+        });
+
+        this.serviceWorkerM.currentDB.then((db) => {
+          // start a new transaction
+          let tx = db.transaction('messages', 'readwrite');
+          let store = tx.objectStore('messages').index('thread');
+          // open a cursor and delete any messages with the deleted thread's ID
+          store.openCursor().then(function checkMessage(cursor):any {
+            if(!cursor) return;
+            if(cursor.value.threadID == response.deleted) {
+              cursor.delete();
+            }
+            return cursor.continue().then(checkMessage);
+          })
+        });
+      }
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
       // if the user is offline, show the offline header message
@@ -727,7 +761,43 @@ export class ItemsService {
     }).subscribe((response:any) => {
       this.alertsService.createSuccessAlert(`${response.deleted} messages were deleted! Refresh to view the updated mailbox.`, true);
       this.alertsService.toggleOfflineAlert();
-    // if there was an error, alert the user
+
+      // delete all messages from idb
+      if(this.serviceWorkerM.currentDB) {
+        this.serviceWorkerM.currentDB.then((db) => {
+          // if the mailbox to be cleared is the threads mailbox, delete everything
+          if(response.deleted == 'threads') {
+            this.serviceWorkerM.clearStore('messages');
+            this.serviceWorkerM.clearStore('threads');
+          }
+          // otherwise filter the messages by mailbox
+          else {
+            // start a new transaction
+            let tx = db.transaction('messages', 'readwrite');
+            let store = tx.objectStore('messages');
+
+            // open a cursor and delete any messages with the deleted thread's ID
+            store.openCursor().then(function checkMessage(cursor):any {
+              if(!cursor) return;
+              // if it's the inbox that needs to be cleared, find all the messages
+              // for the current user
+              if(response.deleted == 'inbox') {
+                if(cursor.value.forId == userID) {
+                  cursor.delete();
+                }
+              }
+              // otherwise find all the messages from the current user
+              else if(response.deleted == 'outbox') {
+                if(cursor.value.fromId == userID) {
+                  cursor.delete();
+                }
+              }
+              return cursor.continue().then(checkMessage);
+            })
+          }
+        });
+      }
+      // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
       // if the user is offline, show the offline header message
       if(!navigator.onLine) {

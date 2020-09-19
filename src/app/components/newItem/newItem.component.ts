@@ -84,12 +84,14 @@ export class NewItem {
       if(postText.length > 480) {
         this.alertService.createAlert({ type: 'Error', message: 'New post text cannot be over 480 characters! Please shorten the post and try again.' });
         document.getElementById('postText')!.classList.add('missing');
+        document.getElementById('postText')!.setAttribute('aria-invalid', 'true');
       }
       else {
         // if the textfield was marked red, remove it
         if(document.getElementById('postText')!.classList.contains('missing')) {
           document.getElementById('postText')!.classList.remove('missing');
         }
+        document.getElementById('postText')!.setAttribute('aria-invalid', 'false');
 
         // if there's no logged in user, alert the user
         if(!this.authService.authenticated) {
@@ -114,6 +116,7 @@ export class NewItem {
     else {
       this.alertService.createAlert({ type: 'Error', message: 'A post cannot be empty. Please fill the field and try again.' });
       document.getElementById('postText')!.classList.add('missing');
+      document.getElementById('postText')!.setAttribute('aria-invalid', 'true');
     }
   }
 
@@ -144,12 +147,14 @@ export class NewItem {
         if(messageText.length > 480) {
           this.alertService.createAlert({ type: 'Error', message: 'New message text cannot be over 480 characters! Please shorten the message and try again.' });
           document.getElementById('messageText')!.classList.add('missing');
+          document.getElementById('messageText')!.setAttribute('aria-invalid', 'true');
         }
         else {
           // if the textfield was marked red, remove it
           if(document.getElementById('messageText')!.classList.contains('missing')) {
             document.getElementById('messageText')!.classList.remove('missing');
           }
+          document.getElementById('messageText')!.setAttribute('aria-invalid', 'false');
 
           // if there's no logged in user, alert the user
           if(!this.authService.authenticated) {
@@ -174,6 +179,7 @@ export class NewItem {
     else {
       this.alertService.createAlert({ type: 'Error', message: 'A message cannot be empty. Please fill the field and try again.' });
       document.getElementById('messageText')!.classList.add('missing');
+      document.getElementById('messageText')!.setAttribute('aria-invalid', 'true');
     }
   }
 }

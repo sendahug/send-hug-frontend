@@ -131,7 +131,7 @@
 		<form>
 			<div class="formElement">
 				<label class="pageCategory" for="blockID">User I.D.: </label>
-				<input type="text" id="blockID" placeholder="user I.D." #blockID required  minlength="0">
+				<input type="text" id="blockID" placeholder="user I.D." #blockID required  minlength="0" aria-invalid="false">
 			</div>
 			<div class="formElement">
 				<label class="pageCategory" for="blockLength">Length of block time: </label>
@@ -193,7 +193,7 @@
 		<form>
 			<div class="formElement">
 				<label class="pageCategory" for="filter">Filter: </label>
-				<input type="text" id="filter" placeholder="Filter" #filter required  minlength="0">
+				<input type="text" id="filter" placeholder="Filter" #filter required  minlength="0" aria-invalid="false">
 			</div>
 			<button type="submit" class="appButton sendData" (click)="addFilter($event,filter.value)">Add Filter</button>
 		</form>

@@ -232,6 +232,7 @@ export class AdminDashboard implements OnInit {
           if(document.getElementById('blockID')!.classList.contains('missing')) {
             document.getElementById('blockID')!.classList.remove('missing');
           }
+          document.getElementById('blockID')!.setAttribute('aria-invalid', 'false');
 
           this.checkBlock(userID, length);
         }
@@ -250,6 +251,7 @@ export class AdminDashboard implements OnInit {
     else {
       this.alertsService.createAlert({ type: 'Error', message: 'A user ID is needed to block a user. Please add user ID to the textfield and try again.' });
       document.getElementById('blockID')!.classList.add('missing');
+      document.getElementById('blockID')!.setAttribute('aria-invalid', 'true');
     }
   }
 
@@ -361,6 +363,7 @@ export class AdminDashboard implements OnInit {
       if(document.getElementById('filter')!.classList.contains('missing')) {
         document.getElementById('filter')!.classList.remove('missing');
       }
+      document.getElementById('filter')!.setAttribute('aria-invalid', 'false');
 
       this.adminService.addFilter(filter);
     }
@@ -368,6 +371,7 @@ export class AdminDashboard implements OnInit {
     else {
       this.alertsService.createAlert({ type: 'Error', message: 'A filtered phrase is required in order to add to the filters list.' });
       document.getElementById('filter')!.classList.add('missing');
+      document.getElementById('filter')!.setAttribute('aria-invalid', 'true');
     }
   }
 

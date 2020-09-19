@@ -161,6 +161,7 @@ export class PopUp implements OnInit, OnChanges, AfterViewChecked {
       if(newDisplayName.length > 60) {
         this.alertsService.createAlert({ type: 'Error', message: 'New display name cannot be over 60 characters! Please shorten the name and try again.' });
         document.getElementById('displayName')!.classList.add('missing');
+        document.getElementById('displayName')!.setAttribute('aria-invalid', 'true');
       }
       // otherwise change the name
       else {
@@ -168,6 +169,7 @@ export class PopUp implements OnInit, OnChanges, AfterViewChecked {
         if(document.getElementById('displayName')!.classList.contains('missing')) {
           document.getElementById('displayName')!.classList.remove('missing');
         }
+        document.getElementById('displayName')!.setAttribute('aria-invalid', 'false');
 
         this.authService.userData.displayName = newDisplayName;
         this.authService.updateUserData();
@@ -178,6 +180,7 @@ export class PopUp implements OnInit, OnChanges, AfterViewChecked {
     else {
       this.alertsService.createAlert({ type: 'Error', message: 'New display name cannot be empty! Please fill the field and try again.' });
       document.getElementById('displayName')!.classList.add('missing');
+      document.getElementById('displayName')!.setAttribute('aria-invalid', 'true');
     }
   }
 
@@ -200,6 +203,7 @@ export class PopUp implements OnInit, OnChanges, AfterViewChecked {
       if(newDisplayName.length > 60) {
         this.alertsService.createAlert({ type: 'Error', message: 'New display name cannot be over 60 characters! Please shorten the name and try again.' });
         document.getElementById('uDisplayName')!.classList.add('missing');
+        document.getElementById('uDisplayName')!.setAttribute('aria-invalid', 'true');
       }
       // otherwise change the name
       else {
@@ -207,6 +211,7 @@ export class PopUp implements OnInit, OnChanges, AfterViewChecked {
         if(document.getElementById('uDisplayName')!.classList.contains('missing')) {
           document.getElementById('uDisplayName')!.classList.remove('missing');
         }
+        document.getElementById('uDisplayName')!.setAttribute('aria-invalid', 'false');
 
         let user = {
           userID: this.reportData.userID,
@@ -221,6 +226,7 @@ export class PopUp implements OnInit, OnChanges, AfterViewChecked {
     else {
       this.alertsService.createAlert({ type: 'Error', message: 'New display name cannot be empty! Please fill the field and try again.' });
       document.getElementById('uDisplayName')!.classList.add('missing');
+      document.getElementById('uDisplayName')!.setAttribute('aria-invalid', 'true');
     }
   }
 
@@ -242,6 +248,7 @@ export class PopUp implements OnInit, OnChanges, AfterViewChecked {
       if(newText.length > 480) {
         this.alertsService.createAlert({ type: 'Error', message: 'New post text cannot be over 480 characters! Please shorten the post and try again.' });
         document.getElementById('postText')!.classList.add('missing');
+        document.getElementById('postText')!.setAttribute('aria-invalid', 'true');
       }
       // otherwise edit the post
       else {
@@ -249,6 +256,7 @@ export class PopUp implements OnInit, OnChanges, AfterViewChecked {
         if(document.getElementById('postText')!.classList.contains('missing')) {
           document.getElementById('postText')!.classList.remove('missing');
         }
+        document.getElementById('postText')!.setAttribute('aria-invalid', 'false');
 
         this.editedItem.text = newText;
         this.postsService.editPost(this.editedItem);
@@ -266,6 +274,7 @@ export class PopUp implements OnInit, OnChanges, AfterViewChecked {
     else {
       this.alertsService.createAlert({ type: 'Error', message: 'New post text cannot be empty. Please fill the field and try again.' });
       document.getElementById('postText')!.classList.add('missing');
+      document.getElementById('postText')!.setAttribute('aria-invalid', 'true');
     }
   }
 
@@ -288,6 +297,7 @@ export class PopUp implements OnInit, OnChanges, AfterViewChecked {
       if(newText.length > 480) {
         this.alertsService.createAlert({ type: 'Error', message: 'New post text cannot be over 480 characters! Please shorten the post and try again.' });
         document.getElementById('adPostText')!.classList.add('missing');
+        document.getElementById('adPostText')!.setAttribute('aria-invalid', 'true');
       }
       // otherwise edit the post
       else {
@@ -295,6 +305,7 @@ export class PopUp implements OnInit, OnChanges, AfterViewChecked {
         if(document.getElementById('adPostText')!.classList.contains('missing')) {
           document.getElementById('adPostText')!.classList.remove('missing');
         }
+        document.getElementById('adPostText')!.setAttribute('aria-invalid', 'false');
 
         let post = {
           text: newText,
@@ -316,6 +327,7 @@ export class PopUp implements OnInit, OnChanges, AfterViewChecked {
     else {
       this.alertsService.createAlert({ type: 'Error', message: 'New post text cannot be empty. Please fill the field and try again.' });
       document.getElementById('adPostText')!.classList.add('missing');
+      document.getElementById('adPostText')!.setAttribute('aria-invalid', 'true');
     }
   }
 

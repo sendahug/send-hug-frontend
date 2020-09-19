@@ -10,7 +10,7 @@
 			<div class="formElement">
 				<label class="pageCategory" for="postText">Text:</label>
 				<br>
-				<textarea #postText id="postText" cols="40" rows="8" aria-describedby="pText" minlength="0" maxlength="480" required>{{ editedItem.text }}</textarea>
+				<textarea #postText id="postText" cols="40" rows="8" aria-describedby="pText" minlength="0" maxlength="480" required aria-invalid="false">{{ editedItem.text }}</textarea>
 			</div>
 			<button type="submit" class="appButton sendData" (click)="updatePost($event, postText.value)" [attr.aria-label]="'update post ' + editedItem.text">Update Post</button>
 		</form>
@@ -20,7 +20,7 @@
 			<div class="formElement">
 				<label class="pageCategory" for="adPostText">Post Text:</label>
 				<br>
-				<textarea #adPostText id="adPostText" cols="40" rows="8" minlength="0" maxlength="480" required>{{ editedItem }}</textarea>
+				<textarea #adPostText id="adPostText" cols="40" rows="8" minlength="0" maxlength="480" required aria-invalid="false">{{ editedItem }}</textarea>
 			</div>
 			<button type="submit" class="appButton sendData" (click)="editPost($event, adPostText.value, true)">Update Post and Close Report</button>
 			<button type="submit" class="appButton sendData" (click)="editPost($event, adPostText.value, false)">Update Post without Closing Report</button>
@@ -30,7 +30,7 @@
 		<form *ngIf="toEdit == 'user'" id="userEdit" class="userEdit">
 			<div class="formElement">
 				<label class="pageCategory" for="displayName">Display Name:</label>
-				<input #displayName type="text" id="displayName" value="{{ authService.userData.displayName }}" minlength="0" maxlength="60" required>
+				<input #displayName type="text" id="displayName" value="{{ authService.userData.displayName }}" minlength="0" maxlength="60" required aria-invalid="false">
 			</div>
 			
 			<button type="submit" class="appButton updateItem" (click)="updateDisplayN($event, displayName.value)" [attr.aria-label]="'update display name for user ' + authService.userData.displayName">Update User</button>
@@ -40,7 +40,7 @@
 		<form *ngIf="toEdit == 'other user'" id="otherUserEdit" class="userEdit">
 			<div class="formElement">
 				<label class="pageCategory" for="uDisplayName">Display Name:</label>
-				<input #uDisplayName type="text" id="uDisplayName" value="{{ editedItem }}" minlength="0" maxlength="60" required>
+				<input #uDisplayName type="text" id="uDisplayName" value="{{ editedItem }}" minlength="0" maxlength="60" required aria-invalid="false">
 			</div>
 			
 			<button (click)="editUser($event, uDisplayName.value, true)" type="submit" class="appButton updateItem">Update User and Close Report</button>

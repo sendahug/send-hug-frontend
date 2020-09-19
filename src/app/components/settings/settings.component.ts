@@ -23,6 +23,7 @@ import { Component } from '@angular/core';
 // App-related imports
 import { NotificationService } from '../../services/notifications.service';
 import { AuthService } from '../../services/auth.service';
+import { AlertsService } from '../../services/alerts.service';
 
 @Component({
   selector: 'app-settings',
@@ -32,7 +33,8 @@ export class SettingsPage {
   // CTOR
   constructor(
     public notificationService:NotificationService,
-    public authService:AuthService
+    public authService:AuthService,
+    private alertsService:AlertsService
   ) {
 
   }
@@ -94,7 +96,17 @@ export class SettingsPage {
   */
   updateRefreshRate(e:Event, newRate:number) {
     e.preventDefault();
-    this.notificationService.refreshRateSecs = Number(newRate);
-    this.notificationService.updateUserSettings();
+
+    // if there's a new rate, update user settings
+    if(newRate) {
+      this.notificationService.refreshRateSecs = Number(newRate);
+      this.notificationService.updateUserSettings();
+    }
+    // if there's no rate or it's zero, alert the user it can't be
+    else {
+      this.alertsService.createAlert({ type: 'Error', message: 'Refresh rate cannot be empty or zero. Please fill the field and try again.' });
+      document.getElementById('notificationRate')!.classList.add('missing');
+      document.getElementById('notificationRate')!.setAttribute('aria-invalid', 'true');
+    }
   }
 }

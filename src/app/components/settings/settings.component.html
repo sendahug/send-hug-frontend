@@ -8,7 +8,7 @@
 		<form id="refreshRateForm">
 			<div class="formElement">
 				<label for="notificationRate">Notifications auto-refresh rate:</label>
-				<input type="number" min="20" max="3600" id="notificationRate" value="(notificationService.refreshRateSecs)" #notificationRate>
+				<input type="number" min="20" max="3600" id="notificationRate" value="(notificationService.refreshRateSecs)" #notificationRate aria-invalid="false">
 			</div>
 			<button type="submit" (click)="updateRefreshRate($event, notificationRate.value)" class="appButton sendData" aria-label="save auto-refresh settings">Save</button>
 		</form>

@@ -11,9 +11,7 @@ const source = require("vinyl-source-stream");
 const buffer = require("vinyl-buffer");
 const rename = require("gulp-rename");
 const replace = require("gulp-replace");
-const webpack = require('webpack-stream');
-const path = require('path');
-const ngTools = require('@ngtools/webpack');
+const fs = require("fs");
 var Server = require('karma').Server;
 
 // LOCAL DEVELOPMENT TASKS
@@ -193,58 +191,63 @@ gulp.task('dist', gulp.parallel(
 // bundle up the files before the tests as there's an apparent memory leak
 // in karma-webpack
 function bundleCode() {
-	return gulp.src('src/main.ts')
-    .pipe(webpack({
-			devtool: "eval-source-map",
-	    entry: {
-	      app: './src/main.ts'
-	    },
-			output: {
-				filename: '[name].js'
-			},
-	    mode: "development",
-	    node: { fs: 'empty' },
-	    module: {
-	        rules: [
-	            {
-	                test: /\.html$/,
-	                loader: 'html-loader'
-	            },
-	            {
-	                test: /\.svg$/,
-	                loader: 'svg-inline-loader'
-	            },
-	            {
-	              test: /(?:\.ngfactory\.js|\.ngstyle\.js|\.ts)$/,
-	              loader: [
-	                '@ngtools/webpack',
-	                { loader: 'angular-router-loader' }
-	              ]
-	            }
-	        ]
-	    },
-	    optimization: {
-	      splitChunks: false
-	    },
-	    resolve: {
-	        extensions: [".ts", ".js"]
-	    },
-	    plugins: [
-	      new ngTools.AngularCompilerPlugin({
-	        tsConfigPath: 'tsconfig.json',
-	        basePath: './',
-	        entryModule: path.resolve(__dirname, 'src/app/app.module#AppModule'),
-	        skipCodeGeneration: true,
-	        sourceMap: true,
-	        directTemplateLoading: false,
-	        locale: 'en',
-	        hostReplacementPaths: {
-	          'src/environments/config.development.ts': 'src/environments/config.production.ts'
-	        }
-	      })
-	    ]
-    }))
-    .pipe(gulp.dest('tests/'));
+	var b = browserify().add("src/main.ts").plugin(tsify, {target: "es6"});
+
+	return b.bundle()
+			.pipe(source("src/main.ts"))
+			.pipe(buffer())
+      .pipe(sourcemaps.init({loadMaps: true}))
+			.pipe(replace(/(templateUrl: '.)(.*)(.component.html')/g, (match) => {
+							let componentName = match.substring(16, match.length-16);
+							let componentTemplate;
+
+							if(componentName == 'app') {
+								componentTemplate = fs.readFileSync(__dirname + `/src/app/${componentName}.component.html`);
+							}
+							else {
+								componentTemplate = fs.readFileSync(__dirname + `/src/app/components/${componentName}/${componentName}.component.html`);
+							}
+
+							let newString = `template: \`${componentTemplate}\``
+							return newString;
+						}))
+			.pipe(babel({presets: ["@babel/preset-env"]}))
+			.pipe(rename("app.bundle.js"))
+			.pipe(sourcemaps.write())
+			.pipe(gulp.dest("./tests"));
+}
+
+// bundle tests - for testing
+function bundleTests() {
+	var b = browserify().add("tests/src/base.spec.ts").plugin(tsify, {target: "es6"});
+
+	return b.bundle()
+			.pipe(source("tests/src/base.spec.ts"))
+			.pipe(buffer())
+      .pipe(sourcemaps.init({loadMaps: true}))
+			.pipe(rename("tests.bundle.js"))
+			.pipe(sourcemaps.write())
+			.pipe(gulp.dest("./tests"));
+}
+
+// add inline templates for testing
+function addTemplates() {
+	return gulp.src('src/**/*.ts', {base: "./"})
+	.pipe(replace(/(templateUrl: '.)(.*)(.component.html')/g, (match) => {
+					let componentName = match.substring(16, match.length-16);
+					let componentTemplate;
+
+					if(componentName == 'app') {
+						componentTemplate = fs.readFileSync(__dirname + `/src/app/${componentName}.component.html`);
+					}
+					else {
+						componentTemplate = fs.readFileSync(__dirname + `/src/app/components/${componentName}/${componentName}.component.html`);
+					}
+
+					let newString = `template: \`${componentTemplate}\``
+					return newString;
+				}))
+	.pipe(gulp.dest('./tests'))
 }
 
 // automatic testing in whatever browser is defined in the Karma config file
@@ -258,6 +261,7 @@ function unitTest()
 // run code bundling and then test
 gulp.task('test', gulp.series(
 	bundleCode,
+	addTemplates,
 	unitTest
 ));
 
@@ -280,3 +284,4 @@ exports.scripts = scripts;
 exports.scriptsDist = scriptsDist;
 exports.unitTest = unitTest;
 exports.watch = watch;
+exports.bundleTests = bundleTests;

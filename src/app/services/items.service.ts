@@ -672,7 +672,7 @@ export class ItemsService {
           // start a new transaction
           let tx = db.transaction('messages', 'readwrite');
           let store = tx.objectStore('messages');
-          store.delete(response.deleted);
+          store.delete(messageId);
         });
       }
     // if there was an error, alert the user
@@ -711,7 +711,7 @@ export class ItemsService {
           // start a new transaction
           let tx = db.transaction('threads', 'readwrite');
           let store = tx.objectStore('threads');
-          store.delete(response.deleted);
+          store.delete(threadId);
         });
 
         this.serviceWorkerM.currentDB.then((db) => {
@@ -721,7 +721,7 @@ export class ItemsService {
           // open a cursor and delete any messages with the deleted thread's ID
           store.openCursor().then(function checkMessage(cursor):any {
             if(!cursor) return;
-            if(cursor.value.threadID == response.deleted) {
+            if(cursor.value.threadID == threadId) {
               cursor.delete();
             }
             return cursor.continue().then(checkMessage);

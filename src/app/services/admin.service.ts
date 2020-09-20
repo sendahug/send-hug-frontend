@@ -207,7 +207,7 @@ export class AdminService {
           // start a new transaction
           let tx = db.transaction('posts', 'readwrite');
           let store = tx.objectStore('posts');
-          store.delete(response.deleted);
+          store.delete(postID);
         });
       }
 

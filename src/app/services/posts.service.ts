@@ -364,7 +364,7 @@ export class PostsService {
           // start a new transaction
           let tx = db.transaction('posts', 'readwrite');
           let store = tx.objectStore('posts');
-          store.delete(response.deleted);
+          store.delete(post_id);
         });
       }
     // if there was an error, alert the user

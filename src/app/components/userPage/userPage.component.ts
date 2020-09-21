@@ -30,7 +30,7 @@ import { ItemsService } from '../../services/items.service';
 
 @Component({
   selector: 'app-user-page',
-  templateUrl:  './userPage.component.html'
+  templateUrl: './userPage.component.html'
 })
 export class UserPage implements OnInit, OnDestroy {
   // edit popup sub-component variables

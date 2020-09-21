@@ -40,6 +40,7 @@ import { AppComponent } from '../../app.component';
 import { MainPage } from "./mainPage.component";
 import { Loader } from '../loader/loader.component';
 import { PopUp } from '../popUp/popUp.component';
+import { NotificationsTab } from '../notifications/notifications.component';
 import { PostsService } from '../../services/posts.service';
 import { MockPostsService } from '../../services/posts.service.mock';
 import { AuthService } from '../../services/auth.service';
@@ -63,7 +64,8 @@ describe('MainPage', () => {
         AppComponent,
         MainPage,
         Loader,
-        PopUp
+        PopUp,
+        NotificationsTab
       ],
       providers: [
         { provide: APP_BASE_HREF, useValue: '/' },

@@ -47,6 +47,7 @@ import { AlertsService } from '../../services/alerts.service';
 import { MockAlertsService } from '../../services/alerts.service.mock';
 import { ActivatedRoute } from "@angular/router";
 import { of } from 'rxjs';
+import { NotificationsTab } from '../notifications/notifications.component';
 
 describe('NewItem', () => {
   // Before each test, configure testing environment
@@ -64,7 +65,8 @@ describe('NewItem', () => {
       ],
       declarations: [
         AppComponent,
-        NewItem
+        NewItem,
+        NotificationsTab
       ],
       providers: [
         { provide: APP_BASE_HREF, useValue: '/' },
@@ -104,7 +106,8 @@ describe('NewItem', () => {
         ],
         declarations: [
           AppComponent,
-          NewItem
+          NewItem,
+          NotificationsTab
         ],
         providers: [
           { provide: APP_BASE_HREF, useValue: '/' },
@@ -281,7 +284,8 @@ describe('NewItem', () => {
         ],
         declarations: [
           AppComponent,
-          NewItem
+          NewItem,
+          NotificationsTab
         ],
         providers: [
           { provide: APP_BASE_HREF, useValue: '/' },

@@ -46,6 +46,7 @@ import { MockItemsService } from '../../services/items.service.mock';
 import { AdminService } from '../../services/admin.service';
 import { MockAdminService } from '../../services/admin.service.mock';
 import { BehaviorSubject } from 'rxjs';
+import { NotificationsTab } from '../notifications/notifications.component';
 
 describe('Loader', () => {
   // Before each test, configure testing environment
@@ -63,7 +64,8 @@ describe('Loader', () => {
       ],
       declarations: [
         AppComponent,
-        Loader
+        Loader,
+        NotificationsTab
       ],
       providers: [
         { provide: APP_BASE_HREF, useValue: '/' },

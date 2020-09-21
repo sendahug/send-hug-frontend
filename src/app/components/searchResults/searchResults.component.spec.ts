@@ -46,6 +46,7 @@ import { AuthService } from '../../services/auth.service';
 import { MockAuthService } from '../../services/auth.service.mock';
 import { PostsService } from '../../services/posts.service';
 import { MockPostsService } from '../../services/posts.service.mock';
+import { NotificationsTab } from '../notifications/notifications.component';
 
 describe('SearchResults', () => {
   // Before each test, configure testing environment
@@ -65,7 +66,8 @@ describe('SearchResults', () => {
         AppComponent,
         SearchResults,
         PopUp,
-        Loader
+        Loader,
+        NotificationsTab
       ],
       providers: [
         { provide: APP_BASE_HREF, useValue: '/' },
@@ -191,7 +193,8 @@ describe('SearchResults', () => {
           AppComponent,
           SearchResults,
           PopUp,
-          Loader
+          Loader,
+          NotificationsTab
         ],
         providers: [
           { provide: APP_BASE_HREF, useValue: '/' },
@@ -279,7 +282,8 @@ describe('SearchResults', () => {
           AppComponent,
           SearchResults,
           PopUp,
-          Loader
+          Loader,
+          NotificationsTab
         ],
         providers: [
           { provide: APP_BASE_HREF, useValue: '/' },

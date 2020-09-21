@@ -32,6 +32,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { AppComponent } from "../../app.component";
 import { SiteMap } from "./siteMap.component";
 import { routes } from '../../app-routing.module';
+import { NotificationsTab } from '../notifications/notifications.component';
 
 describe('AboutApp', () => {
   // Before each test, configure testing environment
@@ -49,7 +50,8 @@ describe('AboutApp', () => {
       ],
       declarations: [
         AppComponent,
-        SiteMap
+        SiteMap,
+        NotificationsTab
       ],
       providers: [
         { provide: APP_BASE_HREF, useValue: '/' }

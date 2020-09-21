@@ -31,6 +31,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 import { AppComponent } from "../../app.component";
 import { AboutApp } from "./aboutApp.component";
+import { NotificationsTab } from '../notifications/notifications.component';
 
 describe('AboutApp', () => {
   // Before each test, configure testing environment
@@ -48,7 +49,8 @@ describe('AboutApp', () => {
       ],
       declarations: [
         AppComponent,
-        AboutApp
+        AboutApp,
+        NotificationsTab
       ],
       providers: [
         { provide: APP_BASE_HREF, useValue: '/' }

@@ -41,6 +41,7 @@ import { NotificationService } from '../../services/notifications.service';
 import { MockNotificationService } from '../../services/notifications.service.mock';
 import { AuthService } from '../../services/auth.service';
 import { MockAuthService } from '../../services/auth.service.mock';
+import { NotificationsTab } from '../notifications/notifications.component';
 
 describe('SettingsPage', () => {
   // Before each test, configure testing environment
@@ -58,7 +59,8 @@ describe('SettingsPage', () => {
       ],
       declarations: [
         AppComponent,
-        SettingsPage
+        SettingsPage,
+        NotificationsTab
       ],
       providers: [
         { provide: APP_BASE_HREF, useValue: '/' },

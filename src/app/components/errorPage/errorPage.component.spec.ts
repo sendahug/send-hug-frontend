@@ -38,6 +38,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 // App imports
 import { AppComponent } from '../../app.component';
 import { ErrorPage } from "./errorPage.component";
+import { NotificationsTab } from '../notifications/notifications.component';
 
 class MockLocation {
   back() {
@@ -61,7 +62,8 @@ describe('ErrorPage', () => {
       ],
       declarations: [
         AppComponent,
-        ErrorPage
+        ErrorPage,
+        NotificationsTab
       ],
       providers: [
         { provide: APP_BASE_HREF, useValue: '/' },

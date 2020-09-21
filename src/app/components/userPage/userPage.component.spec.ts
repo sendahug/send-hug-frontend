@@ -46,6 +46,7 @@ import { ItemsService } from '../../services/items.service';
 import { MockItemsService } from '../../services/items.service.mock';
 import { AuthService } from '../../services/auth.service';
 import { MockAuthService } from '../../services/auth.service.mock';
+import { NotificationsTab } from '../notifications/notifications.component';
 
 describe('UserPage', () => {
   // Before each test, configure testing environment
@@ -67,7 +68,8 @@ describe('UserPage', () => {
         PopUp,
         Loader,
         MyPosts,
-        HeaderMessage
+        HeaderMessage,
+        NotificationsTab
       ],
       providers: [
         { provide: APP_BASE_HREF, useValue: '/' },

@@ -48,6 +48,7 @@ import { MockAdminService } from '../../services/admin.service.mock';
 import { AlertsService } from '../../services/alerts.service';
 import { MockAlertsService } from '../../services/alerts.service.mock';
 import { Report } from '../../interfaces/report.interface';
+import { NotificationsTab } from '../notifications/notifications.component';
 
 describe('Popup', () => {
   // Before each test, configure testing environment
@@ -65,7 +66,8 @@ describe('Popup', () => {
       ],
       declarations: [
         AppComponent,
-        PopUp
+        PopUp,
+        NotificationsTab
       ],
       providers: [
         { provide: APP_BASE_HREF, useValue: '/' },
@@ -138,7 +140,8 @@ describe('Popup', () => {
         ],
         declarations: [
           AppComponent,
-          PopUp
+          PopUp,
+          NotificationsTab
         ],
         providers: [
           { provide: APP_BASE_HREF, useValue: '/' },
@@ -267,7 +270,8 @@ describe('Popup', () => {
         ],
         declarations: [
           AppComponent,
-          PopUp
+          PopUp,
+          NotificationsTab
         ],
         providers: [
           { provide: APP_BASE_HREF, useValue: '/' },
@@ -433,7 +437,8 @@ describe('Popup', () => {
         ],
         declarations: [
           AppComponent,
-          PopUp
+          PopUp,
+          NotificationsTab
         ],
         providers: [
           { provide: APP_BASE_HREF, useValue: '/' },
@@ -567,7 +572,8 @@ describe('Popup', () => {
         ],
         declarations: [
           AppComponent,
-          PopUp
+          PopUp,
+          NotificationsTab
         ],
         providers: [
           { provide: APP_BASE_HREF, useValue: '/' },
@@ -743,7 +749,8 @@ describe('Popup', () => {
         ],
         declarations: [
           AppComponent,
-          PopUp
+          PopUp,
+          NotificationsTab
         ],
         providers: [
           { provide: APP_BASE_HREF, useValue: '/' },
@@ -930,7 +937,8 @@ describe('Popup', () => {
         ],
         declarations: [
           AppComponent,
-          PopUp
+          PopUp,
+          NotificationsTab
         ],
         providers: [
           { provide: APP_BASE_HREF, useValue: '/' },
@@ -1142,7 +1150,8 @@ describe('Popup', () => {
         ],
         declarations: [
           AppComponent,
-          PopUp
+          PopUp,
+          NotificationsTab
         ],
         providers: [
           { provide: APP_BASE_HREF, useValue: '/' },

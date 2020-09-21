@@ -42,6 +42,7 @@ import { MockAuthService } from '../../services/auth.service.mock';
 import { ItemsService } from '../../services/items.service';
 import { MockItemsService } from '../../services/items.service.mock';
 import { BehaviorSubject } from 'rxjs';
+import { NotificationsTab } from '../notifications/notifications.component';
 
 describe('HeaderMessage', () => {
   // Before each test, configure testing environment
@@ -59,7 +60,8 @@ describe('HeaderMessage', () => {
       ],
       declarations: [
         AppComponent,
-        HeaderMessage
+        HeaderMessage,
+        NotificationsTab
       ],
       providers: [
         { provide: APP_BASE_HREF, useValue: '/' },

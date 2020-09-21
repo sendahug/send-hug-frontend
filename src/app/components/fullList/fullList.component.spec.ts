@@ -44,6 +44,7 @@ import { AuthService } from '../../services/auth.service';
 import { MockAuthService } from '../../services/auth.service.mock';
 import { ActivatedRoute } from "@angular/router";
 import { Loader } from '../loader/loader.component';
+import { NotificationsTab } from '../notifications/notifications.component';
 import { of } from 'rxjs';
 
 
@@ -65,7 +66,8 @@ describe('FullList', () => {
         AppComponent,
         FullList,
         PopUp,
-        Loader
+        Loader,
+        NotificationsTab
       ],
       providers: [
         { provide: APP_BASE_HREF, useValue: '/' },

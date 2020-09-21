@@ -46,6 +46,7 @@ import { MockAuthService } from '../../services/auth.service.mock';
 import { AlertsService } from '../../services/alerts.service';
 import { MockAlertsService } from '../../services/alerts.service.mock';
 import { Loader } from '../loader/loader.component';
+import { NotificationsTab } from '../notifications/notifications.component';
 
 describe('AdminDashboard', () => {
   // Before each test, configure testing environment
@@ -65,7 +66,8 @@ describe('AdminDashboard', () => {
         AppComponent,
         AdminDashboard,
         PopUp,
-        Loader
+        Loader,
+        NotificationsTab
       ],
       providers: [
         { provide: APP_BASE_HREF, useValue: '/' },
@@ -117,7 +119,8 @@ describe('AdminDashboard', () => {
           AppComponent,
           AdminDashboard,
           PopUp,
-          Loader
+          Loader,
+          NotificationsTab
         ],
         providers: [
           { provide: APP_BASE_HREF, useValue: '/' },
@@ -318,7 +321,8 @@ describe('AdminDashboard', () => {
           AppComponent,
           AdminDashboard,
           PopUp,
-          Loader
+          Loader,
+          NotificationsTab
         ],
         providers: [
           { provide: APP_BASE_HREF, useValue: '/' },
@@ -475,7 +479,8 @@ describe('AdminDashboard', () => {
           AppComponent,
           AdminDashboard,
           PopUp,
-          Loader
+          Loader,
+          NotificationsTab
         ],
         providers: [
           { provide: APP_BASE_HREF, useValue: '/' },

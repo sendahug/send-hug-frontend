@@ -49,6 +49,7 @@ import { PostsService } from '../../services/posts.service';
 import { MockPostsService } from '../../services/posts.service.mock';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { NotificationsTab } from '../notifications/notifications.component';
 
 // Mock User Page for testing the sub-component
 // ==================================================
@@ -140,7 +141,8 @@ describe('MyPosts', () => {
         MyPosts,
         PopUp,
         Loader,
-        HeaderMessage
+        HeaderMessage,
+        NotificationsTab
       ],
       providers: [
         { provide: APP_BASE_HREF, useValue: '/' },

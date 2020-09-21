@@ -41,6 +41,7 @@ import { AppComponent } from '../../app.component';
 import { AppMessaging } from './messages.component';
 import { PopUp } from '../popUp/popUp.component';
 import { Loader } from '../loader/loader.component';
+import { NotificationsTab } from '../notifications/notifications.component';
 import { HeaderMessage } from '../headerMessage/headerMessage.component';
 import { ItemsService } from '../../services/items.service';
 import { MockItemsService } from '../../services/items.service.mock';
@@ -66,7 +67,8 @@ describe('AppMessaging', () => {
         AppMessaging,
         PopUp,
         Loader,
-        HeaderMessage
+        HeaderMessage,
+        NotificationsTab
       ],
       providers: [
         { provide: APP_BASE_HREF, useValue: '/' },
@@ -181,7 +183,8 @@ describe('AppMessaging', () => {
           AppMessaging,
           PopUp,
           Loader,
-          HeaderMessage
+          HeaderMessage,
+          NotificationsTab
         ],
         providers: [
           { provide: APP_BASE_HREF, useValue: '/' },
@@ -346,7 +349,8 @@ describe('AppMessaging', () => {
           AppMessaging,
           PopUp,
           Loader,
-          HeaderMessage
+          HeaderMessage,
+          NotificationsTab
         ],
         providers: [
           { provide: APP_BASE_HREF, useValue: '/' },
@@ -508,7 +512,8 @@ describe('AppMessaging', () => {
           AppMessaging,
           PopUp,
           Loader,
-          HeaderMessage
+          HeaderMessage,
+          NotificationsTab
         ],
         providers: [
           { provide: APP_BASE_HREF, useValue: '/' },
@@ -672,7 +677,8 @@ describe('AppMessaging', () => {
           AppMessaging,
           PopUp,
           Loader,
-          HeaderMessage
+          HeaderMessage,
+          NotificationsTab
         ],
         providers: [
           { provide: APP_BASE_HREF, useValue: '/' },

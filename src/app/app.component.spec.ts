@@ -10,6 +10,7 @@ import {} from 'jasmine';
 import { APP_BASE_HREF } from '@angular/common';
 
 import { AppComponent } from "./app.component";
+import { NotificationsTab } from './components/notifications/notifications.component';
 import {
   BrowserDynamicTestingModule,
   platformBrowserDynamicTesting
@@ -43,7 +44,8 @@ describe("AppComponent", () => {
           FontAwesomeModule
         ],
         declarations: [
-          AppComponent
+          AppComponent,
+          NotificationsTab
         ],
         providers: [
           { provide: APP_BASE_HREF, useValue: '/' },

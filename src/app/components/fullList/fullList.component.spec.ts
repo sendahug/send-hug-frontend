@@ -35,7 +35,6 @@ import { HttpClientModule } from "@angular/common/http";
 import { ServiceWorkerModule } from "@angular/service-worker";
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
-import { AppComponent } from '../../app.component';
 import { FullList } from './fullList.component';
 import { PopUp } from '../popUp/popUp.component';
 import { PostsService } from '../../services/posts.service';
@@ -44,7 +43,6 @@ import { AuthService } from '../../services/auth.service';
 import { MockAuthService } from '../../services/auth.service.mock';
 import { ActivatedRoute } from "@angular/router";
 import { Loader } from '../loader/loader.component';
-import { NotificationsTab } from '../notifications/notifications.component';
 import { of } from 'rxjs';
 
 
@@ -63,11 +61,9 @@ describe('FullList', () => {
         FontAwesomeModule
       ],
       declarations: [
-        AppComponent,
         FullList,
         PopUp,
-        Loader,
-        NotificationsTab
+        Loader
       ],
       providers: [
         { provide: APP_BASE_HREF, useValue: '/' },
@@ -79,18 +75,14 @@ describe('FullList', () => {
 
   // Check that the component is created
   it('should create the component', () => {
-    const acFixture = TestBed.createComponent(AppComponent);
-    const appComponent = acFixture.componentInstance;
     const fixture = TestBed.createComponent(FullList);
     const fullList = fixture.componentInstance;
-    expect(appComponent).toBeTruthy();
     expect(fullList).toBeTruthy();
   });
 
   // Check that the type parameter has an affect on the page
   it('has a type determined by the type parameter - new', fakeAsync(() => {
     // set up spies
-    TestBed.createComponent(AppComponent);
     const paramMap = TestBed.get(ActivatedRoute);
     paramMap.url = of([{path: 'New'}]);
     const postsService = TestBed.get(PostsService);
@@ -115,7 +107,6 @@ describe('FullList', () => {
   // Check that the type parameter has an affect on the page
   it('has a type determined by the type parameter - suggested', fakeAsync(() => {
     // set up spies
-    TestBed.createComponent(AppComponent);
     const paramMap = TestBed.get(ActivatedRoute);
     paramMap.url = of([{path: 'Suggested'}]);
     const postsService = TestBed.get(PostsService);
@@ -140,7 +131,6 @@ describe('FullList', () => {
   // Check that a different page gets different results
   it('changes page when clicked', fakeAsync(() => {
     // set up spies
-    TestBed.createComponent(AppComponent);
     const paramMap = TestBed.get(ActivatedRoute);
     paramMap.url = of([{path: 'Suggested'}]);
     const pageSpy = spyOn(paramMap.snapshot.queryParamMap, 'get').and.returnValue('1');
@@ -169,7 +159,6 @@ describe('FullList', () => {
 
   // Check that all the popup-related variables are set to false at first
   it('should have all popup variables set to false', () => {
-    TestBed.createComponent(AppComponent);
     const paramMap = TestBed.get(ActivatedRoute);
     paramMap.url = of([{path: 'New'}]);
     const fixture = TestBed.createComponent(FullList);
@@ -182,7 +171,6 @@ describe('FullList', () => {
 
   // Check that sending a hug triggers the posts service
   it('should trigger posts service on hug', fakeAsync(() => {
-    TestBed.createComponent(AppComponent);
     const paramMap = TestBed.get(ActivatedRoute);
     paramMap.url = of([{path: 'New'}]);
     const fixture = TestBed.createComponent(FullList);
@@ -214,7 +202,6 @@ describe('FullList', () => {
 
   // Check that the popup is opened when clicking 'edit'
   it('should open the popup upon editing', fakeAsync(() => {
-    TestBed.createComponent(AppComponent);
     const paramMap = TestBed.get(ActivatedRoute);
     paramMap.url = of([{path: 'New'}]);
     const fixture = TestBed.createComponent(FullList);
@@ -244,7 +231,6 @@ describe('FullList', () => {
 
   // Check that the popup is opened when clicking 'delete'
   it('should open the popup upon deleting', fakeAsync(() => {
-    TestBed.createComponent(AppComponent);
     const paramMap = TestBed.get(ActivatedRoute);
     paramMap.url = of([{path: 'New'}]);
     const fixture = TestBed.createComponent(FullList);
@@ -276,7 +262,6 @@ describe('FullList', () => {
 
   // Check that the popup is opened when clicking 'report'
   it('should open the popup upon reporting', fakeAsync(() => {
-    TestBed.createComponent(AppComponent);
     const paramMap = TestBed.get(ActivatedRoute);
     paramMap.url = of([{path: 'New'}]);
     const fixture = TestBed.createComponent(FullList);

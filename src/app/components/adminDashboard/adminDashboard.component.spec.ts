@@ -36,7 +36,6 @@ import { HttpClientModule } from "@angular/common/http";
 import { ServiceWorkerModule } from "@angular/service-worker";
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
-import { AppComponent } from '../../app.component';
 import { AdminDashboard } from './adminDashboard.component';
 import { PopUp } from '../popUp/popUp.component';
 import { AdminService } from '../../services/admin.service';
@@ -46,7 +45,6 @@ import { MockAuthService } from '../../services/auth.service.mock';
 import { AlertsService } from '../../services/alerts.service';
 import { MockAlertsService } from '../../services/alerts.service.mock';
 import { Loader } from '../loader/loader.component';
-import { NotificationsTab } from '../notifications/notifications.component';
 
 describe('AdminDashboard', () => {
   // Before each test, configure testing environment
@@ -63,11 +61,9 @@ describe('AdminDashboard', () => {
         FontAwesomeModule
       ],
       declarations: [
-        AppComponent,
         AdminDashboard,
         PopUp,
-        Loader,
-        NotificationsTab
+        Loader
       ],
       providers: [
         { provide: APP_BASE_HREF, useValue: '/' },
@@ -80,17 +76,13 @@ describe('AdminDashboard', () => {
 
   // Check that the component is created
   it('should create the component', () => {
-    const acFixture = TestBed.createComponent(AppComponent);
-    const appComponent = acFixture.componentInstance;
     const fixture = TestBed.createComponent(AdminDashboard);
     const adminDashboard = fixture.componentInstance;
-    expect(appComponent).toBeTruthy();
     expect(adminDashboard).toBeTruthy();
   });
 
   // Check that all the popup-related variables are set to false at first
   it('should have all popup variables set to false', () => {
-    TestBed.createComponent(AppComponent);
     const fixture = TestBed.createComponent(AdminDashboard);
     const adminDashboard = fixture.componentInstance;
 
@@ -116,11 +108,9 @@ describe('AdminDashboard', () => {
           FontAwesomeModule
         ],
         declarations: [
-          AppComponent,
           AdminDashboard,
           PopUp,
-          Loader,
-          NotificationsTab
+          Loader
         ],
         providers: [
           { provide: APP_BASE_HREF, useValue: '/' },
@@ -318,11 +308,9 @@ describe('AdminDashboard', () => {
           FontAwesomeModule
         ],
         declarations: [
-          AppComponent,
           AdminDashboard,
           PopUp,
-          Loader,
-          NotificationsTab
+          Loader
         ],
         providers: [
           { provide: APP_BASE_HREF, useValue: '/' },
@@ -476,11 +464,9 @@ describe('AdminDashboard', () => {
           FontAwesomeModule
         ],
         declarations: [
-          AppComponent,
           AdminDashboard,
           PopUp,
-          Loader,
-          NotificationsTab
+          Loader
         ],
         providers: [
           { provide: APP_BASE_HREF, useValue: '/' },

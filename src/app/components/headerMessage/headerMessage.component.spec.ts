@@ -35,14 +35,12 @@ import { HttpClientModule } from "@angular/common/http";
 import { ServiceWorkerModule } from "@angular/service-worker";
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
-import { AppComponent } from '../../app.component';
 import { HeaderMessage } from './headerMessage.component';
 import { AuthService } from '../../services/auth.service';
 import { MockAuthService } from '../../services/auth.service.mock';
 import { ItemsService } from '../../services/items.service';
 import { MockItemsService } from '../../services/items.service.mock';
 import { BehaviorSubject } from 'rxjs';
-import { NotificationsTab } from '../notifications/notifications.component';
 
 describe('HeaderMessage', () => {
   // Before each test, configure testing environment
@@ -59,9 +57,7 @@ describe('HeaderMessage', () => {
         FontAwesomeModule
       ],
       declarations: [
-        AppComponent,
-        HeaderMessage,
-        NotificationsTab
+        HeaderMessage
       ],
       providers: [
         { provide: APP_BASE_HREF, useValue: '/' },
@@ -73,17 +69,13 @@ describe('HeaderMessage', () => {
 
   // Check that the component is created
   it('should create the component', () => {
-    const acFixture = TestBed.createComponent(AppComponent);
-    const appComponent = acFixture.componentInstance;
     const fixture = TestBed.createComponent(HeaderMessage);
     const headerMessage  = fixture.componentInstance;
-    expect(appComponent).toBeTruthy();
     expect(headerMessage).toBeTruthy();
   });
 
   // Check that the component checks for loading target
   it('should check what target the parent component is', () => {
-    TestBed.createComponent(AppComponent);
     const fixture = TestBed.createComponent(HeaderMessage);
     const headerMessage  = fixture.componentInstance;
     const loadingSpy = spyOn(headerMessage, 'checkLoadingTarget').and.callThrough();
@@ -98,7 +90,6 @@ describe('HeaderMessage', () => {
 
   // Check that the component displays a loading message
   it('should display a loading message', fakeAsync(() => {
-    TestBed.createComponent(AppComponent);
     const fixture = TestBed.createComponent(HeaderMessage);
     const headerMessage  = fixture.componentInstance;
     const headerMessDOM = fixture.nativeElement;
@@ -117,7 +108,6 @@ describe('HeaderMessage', () => {
   // Check that the component is displaying different loading messages
   // for different components
   it('should display different messages for different components', fakeAsync(() => {
-    TestBed.createComponent(AppComponent);
     const fixture = TestBed.createComponent(HeaderMessage);
     const headerMessage  = fixture.componentInstance;
     const headerMessDOM = fixture.nativeElement;
@@ -156,7 +146,6 @@ describe('HeaderMessage', () => {
   // Check that the loader says on until the BehaviorSubject is false
   it('stays on until the BehaviorSubject emits false', fakeAsync(() => {
     // set up the component
-    TestBed.createComponent(AppComponent);
     const fixture = TestBed.createComponent(HeaderMessage);
     const headerMessage  = fixture.componentInstance;
     const headerMessDOM = fixture.nativeElement;
@@ -199,7 +188,6 @@ describe('HeaderMessage', () => {
   // Check that the component subscribes to the correct observable
   it('subscribes to the correct observable', fakeAsync(() => {
     // set up required variables
-    TestBed.createComponent(AppComponent);
     let previousSpies: jasmine.Spy<any>[] = [];
     let currentObservable: jasmine.Spy;
     const waitingForOptions = [

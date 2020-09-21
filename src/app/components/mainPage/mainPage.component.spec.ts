@@ -36,11 +36,9 @@ import { ServiceWorkerModule } from "@angular/service-worker";
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 // App imports
-import { AppComponent } from '../../app.component';
 import { MainPage } from "./mainPage.component";
 import { Loader } from '../loader/loader.component';
 import { PopUp } from '../popUp/popUp.component';
-import { NotificationsTab } from '../notifications/notifications.component';
 import { PostsService } from '../../services/posts.service';
 import { MockPostsService } from '../../services/posts.service.mock';
 import { AuthService } from '../../services/auth.service';
@@ -61,11 +59,9 @@ describe('MainPage', () => {
         FontAwesomeModule
       ],
       declarations: [
-        AppComponent,
         MainPage,
         Loader,
-        PopUp,
-        NotificationsTab
+        PopUp
       ],
       providers: [
         { provide: APP_BASE_HREF, useValue: '/' },
@@ -77,17 +73,13 @@ describe('MainPage', () => {
 
   // Check that the component is created
   it('should create the component', () => {
-    const acFixture = TestBed.createComponent(AppComponent);
-    const appComponent = acFixture.componentInstance;
     const fixture = TestBed.createComponent(MainPage);
     const mainPage = fixture.componentInstance;
-    expect(appComponent).toBeTruthy();
     expect(mainPage).toBeTruthy();
   });
 
   // Check that the a call to getItems() is made
   it('should get posts via the posts service', fakeAsync(() => {
-    TestBed.createComponent(AppComponent);
     const fixture = TestBed.createComponent(MainPage);
     const mainPage = fixture.componentInstance;
     const mainPageDOM = fixture.nativeElement;
@@ -103,7 +95,6 @@ describe('MainPage', () => {
 
   // Check that all the popup-related variables are set to false at first
   it('should have all popup variables set to false', () => {
-    TestBed.createComponent(AppComponent);
     const fixture = TestBed.createComponent(MainPage);
     const mainPage = fixture.componentInstance;
 
@@ -114,7 +105,6 @@ describe('MainPage', () => {
 
   // Check that sending a hug triggers the posts service
   it('should trigger posts service on hug', fakeAsync(() => {
-    TestBed.createComponent(AppComponent);
     const fixture = TestBed.createComponent(MainPage);
     const mainPage = fixture.componentInstance;
     const mainPageDOM = fixture.debugElement.nativeElement;

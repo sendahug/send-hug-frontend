@@ -29,9 +29,7 @@ import { HttpClientModule } from "@angular/common/http";
 import { ServiceWorkerModule } from "@angular/service-worker";
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
-import { AppComponent } from "../../app.component";
 import { AboutApp } from "./aboutApp.component";
-import { NotificationsTab } from '../notifications/notifications.component';
 
 describe('AboutApp', () => {
   // Before each test, configure testing environment
@@ -48,9 +46,7 @@ describe('AboutApp', () => {
         FontAwesomeModule
       ],
       declarations: [
-        AppComponent,
         AboutApp,
-        NotificationsTab
       ],
       providers: [
         { provide: APP_BASE_HREF, useValue: '/' }
@@ -60,11 +56,8 @@ describe('AboutApp', () => {
 
   // Check the page is created
   it('should create the component', () => {
-    const acFixture = TestBed.createComponent(AppComponent);
-    const appComponent = acFixture.componentInstance;
     const fixture = TestBed.createComponent(AboutApp);
     const aboutApp = fixture.componentInstance;
-    expect(appComponent).toBeTruthy();
     expect(aboutApp).toBeTruthy();
   });
 });

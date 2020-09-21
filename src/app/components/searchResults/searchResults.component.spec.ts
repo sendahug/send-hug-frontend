@@ -36,7 +36,6 @@ import { ServiceWorkerModule } from "@angular/service-worker";
 import { ActivatedRoute, Router } from "@angular/router";
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
-import { AppComponent } from '../../app.component';
 import { SearchResults } from './searchResults.component';
 import { PopUp } from '../popUp/popUp.component';
 import { Loader } from '../loader/loader.component';
@@ -46,7 +45,6 @@ import { AuthService } from '../../services/auth.service';
 import { MockAuthService } from '../../services/auth.service.mock';
 import { PostsService } from '../../services/posts.service';
 import { MockPostsService } from '../../services/posts.service.mock';
-import { NotificationsTab } from '../notifications/notifications.component';
 
 describe('SearchResults', () => {
   // Before each test, configure testing environment
@@ -63,11 +61,9 @@ describe('SearchResults', () => {
         FontAwesomeModule
       ],
       declarations: [
-        AppComponent,
         SearchResults,
         PopUp,
-        Loader,
-        NotificationsTab
+        Loader
       ],
       providers: [
         { provide: APP_BASE_HREF, useValue: '/' },
@@ -80,17 +76,13 @@ describe('SearchResults', () => {
 
   // Check that the component is created
   it('should create the component', () => {
-    const acFixture = TestBed.createComponent(AppComponent);
-    const appComponent = acFixture.componentInstance;
     const fixture = TestBed.createComponent(SearchResults);
     const searchResults = fixture.componentInstance;
-    expect(appComponent).toBeTruthy();
     expect(searchResults).toBeTruthy();
   });
 
   // Check that the component is getting the search query correctly
   it('should get the search query from the URL query param', () => {
-    TestBed.createComponent(AppComponent);
     const route = TestBed.get(ActivatedRoute);
     const routeSpy = spyOn(route.snapshot.queryParamMap, 'get').and.callFake((param: string) => {
       if(param == 'query') {
@@ -112,7 +104,6 @@ describe('SearchResults', () => {
 
   // Check that the popup variables are set to false
   it('should have all popup variables set to false', () => {
-    TestBed.createComponent(AppComponent);
     const route = TestBed.get(ActivatedRoute);
     spyOn(route.snapshot.queryParamMap, 'get').and.callFake((param: string) => {
       if(param == 'query') {
@@ -132,7 +123,6 @@ describe('SearchResults', () => {
 
   // Check that a search is triggered if there's no running search
   it('should trigger a search if there\'s no running search', () => {
-    TestBed.createComponent(AppComponent);
     const route = TestBed.get(ActivatedRoute);
     spyOn(route.snapshot.queryParamMap, 'get').and.callFake((param: string) => {
       if(param == 'query') {
@@ -154,7 +144,6 @@ describe('SearchResults', () => {
 
   // Check that if there's a running search, the search method isn't triggered
   it('shouldn\'t trigger a search if there is one running', () => {
-    TestBed.createComponent(AppComponent);
     const route = TestBed.get(ActivatedRoute);
     spyOn(route.snapshot.queryParamMap, 'get').and.callFake((param: string) => {
       if(param == 'query') {
@@ -190,11 +179,9 @@ describe('SearchResults', () => {
           FontAwesomeModule
         ],
         declarations: [
-          AppComponent,
           SearchResults,
           PopUp,
-          Loader,
-          NotificationsTab
+          Loader
         ],
         providers: [
           { provide: APP_BASE_HREF, useValue: '/' },
@@ -207,7 +194,6 @@ describe('SearchResults', () => {
 
     // Check that an error message is shown if there are no results
     it('should show error message if there are no user results', fakeAsync(() => {
-      TestBed.createComponent(AppComponent);
       const route = TestBed.get(ActivatedRoute);
       spyOn(route.snapshot.queryParamMap, 'get').and.callFake((param: string) => {
         if(param == 'query') {
@@ -232,7 +218,6 @@ describe('SearchResults', () => {
 
     // Check that the result list is shown when there are results
     it('should show a list of users with links to their pages', fakeAsync(() => {
-      TestBed.createComponent(AppComponent);
       const route = TestBed.get(ActivatedRoute);
       spyOn(route.snapshot.queryParamMap, 'get').and.callFake((param: string) => {
         if(param == 'query') {
@@ -279,11 +264,9 @@ describe('SearchResults', () => {
           FontAwesomeModule
         ],
         declarations: [
-          AppComponent,
           SearchResults,
           PopUp,
-          Loader,
-          NotificationsTab
+          Loader
         ],
         providers: [
           { provide: APP_BASE_HREF, useValue: '/' },
@@ -296,7 +279,6 @@ describe('SearchResults', () => {
 
     // Check that an error message is shown if there are no results
     it('should show error message if there are no post results', fakeAsync(() => {
-      TestBed.createComponent(AppComponent);
       const route = TestBed.get(ActivatedRoute);
       spyOn(route.snapshot.queryParamMap, 'get').and.callFake((param: string) => {
         if(param == 'query') {
@@ -321,7 +303,6 @@ describe('SearchResults', () => {
 
     // Check that the result list is shown when there are results
     it('should show a list of posts', fakeAsync(() => {
-      TestBed.createComponent(AppComponent);
       const route = TestBed.get(ActivatedRoute);
       spyOn(route.snapshot.queryParamMap, 'get').and.callFake((param: string) => {
         if(param == 'query') {
@@ -348,7 +329,6 @@ describe('SearchResults', () => {
 
     // Check that the popup is opened when clicking 'edit'
     it('should open the popup upon editing', fakeAsync(() => {
-      TestBed.createComponent(AppComponent);
       const route = TestBed.get(ActivatedRoute);
       spyOn(route.snapshot.queryParamMap, 'get').and.callFake((param: string) => {
         if(param == 'query') {
@@ -384,7 +364,6 @@ describe('SearchResults', () => {
 
     // Check that the popup is opened when clicking 'delete'
     it('should open the popup upon deleting', fakeAsync(() => {
-      TestBed.createComponent(AppComponent);
       const route = TestBed.get(ActivatedRoute);
       spyOn(route.snapshot.queryParamMap, 'get').and.callFake((param: string) => {
         if(param == 'query') {
@@ -422,7 +401,6 @@ describe('SearchResults', () => {
 
     // Check that the popup is opened when clicking 'report'
     it('should open the popup upon reporting', fakeAsync(() => {
-      TestBed.createComponent(AppComponent);
       const route = TestBed.get(ActivatedRoute);
       spyOn(route.snapshot.queryParamMap, 'get').and.callFake((param: string) => {
         if(param == 'query') {
@@ -460,7 +438,6 @@ describe('SearchResults', () => {
 
     // Check that sending a hug triggers the posts service
     it('should trigger posts service on hug', fakeAsync(() => {
-      TestBed.createComponent(AppComponent);
       const route = TestBed.get(ActivatedRoute);
       spyOn(route.snapshot.queryParamMap, 'get').and.callFake((param: string) => {
         if(param == 'query') {
@@ -499,7 +476,6 @@ describe('SearchResults', () => {
     // Check that a different page gets different results
     it('changes page when clicked', fakeAsync(() => {
       // set up spies
-      TestBed.createComponent(AppComponent);
       const route = TestBed.get(ActivatedRoute);
       const paramSpy = spyOn(route.snapshot.queryParamMap, 'get').and.callFake((param: string) => {
         if(param == 'query') {

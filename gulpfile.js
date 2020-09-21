@@ -189,8 +189,7 @@ gulp.task('dist', gulp.parallel(
 
 // TESTING TASKS
 // ===============================================
-// bundle up the files before the tests as there's an apparent memory leak
-// in karma-webpack
+// bundle up the files before the tests
 function bundleCode() {
 	var b = browserify().add("src/main.ts").plugin(tsify, {target: "es6"});
 
@@ -310,8 +309,4 @@ exports.copyAssets = copyAssets;
 exports.styles = styles;
 exports.scripts = scripts;
 exports.scriptsDist = scriptsDist;
-exports.unitTest = unitTest;
 exports.watch = watch;
-exports.bundleTests = bundleTests;
-exports.addTemplates = addTemplates;
-exports.setupTests = setupTests;

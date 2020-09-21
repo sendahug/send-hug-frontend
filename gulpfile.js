@@ -12,6 +12,7 @@ const buffer = require("vinyl-buffer");
 const rename = require("gulp-rename");
 const replace = require("gulp-replace");
 const fs = require("fs");
+const path = require("path");
 var Server = require('karma').Server;
 
 // LOCAL DEVELOPMENT TASKS
@@ -217,37 +218,63 @@ function bundleCode() {
 			.pipe(gulp.dest("./tests"));
 }
 
+// import all the tests to main file
+// credit for this goes to @hackerhat
+// https://github.com/facebook/create-react-app/issues/517#issuecomment-417943099
+function setupTests() {
+	return gulp.src('src/tests.ts')
+	.pipe(replace(/\/\/ test-placeholder/, (match) => {
+		let newString = '';
+
+		function readDirectory(directory) {
+	    fs.readdirSync(directory).forEach((file) => {
+	      const fullPath = path.resolve(directory, file);
+				const regularExpression = /\.spec\.ts$/;
+
+	      if (fs.statSync(fullPath).isDirectory()) {
+	        readDirectory(fullPath);
+	      }
+
+	      if (!regularExpression.test(fullPath)) return;
+
+	      newString += `import "${fullPath}";
+				`;
+	    });
+	  }
+
+		readDirectory(path.resolve(__dirname, 'src'));
+
+			return newString;
+		}))
+	.pipe(rename("tests.specs.ts"))
+	.pipe(gulp.dest('src/'))
+}
+
 // bundle tests - for testing
 function bundleTests() {
-	var b = browserify().add("tests/src/base.spec.ts").plugin(tsify, {target: "es6"});
+	var b = browserify().add("src/tests.specs.ts").plugin(tsify, {target: "es6"});
 
 	return b.bundle()
-			.pipe(source("tests/src/base.spec.ts"))
+			.pipe(source("src/tests.specs.ts"))
 			.pipe(buffer())
       .pipe(sourcemaps.init({loadMaps: true}))
+			.pipe(replace(/(templateUrl: '.)(.*)(.component.html')/g, (match) => {
+							let componentName = match.substring(16, match.length-16);
+							let componentTemplate;
+
+							if(componentName == 'app') {
+								componentTemplate = fs.readFileSync(__dirname + `/src/app/${componentName}.component.html`);
+							}
+							else {
+								componentTemplate = fs.readFileSync(__dirname + `/src/app/components/${componentName}/${componentName}.component.html`);
+							}
+
+							let newString = `template: \`${componentTemplate}\``
+							return newString;
+						}))
 			.pipe(rename("tests.bundle.js"))
 			.pipe(sourcemaps.write())
 			.pipe(gulp.dest("./tests"));
-}
-
-// add inline templates for testing
-function addTemplates() {
-	return gulp.src('src/**/*.ts', {base: "./"})
-	.pipe(replace(/(templateUrl: '.)(.*)(.component.html')/g, (match) => {
-					let componentName = match.substring(16, match.length-16);
-					let componentTemplate;
-
-					if(componentName == 'app') {
-						componentTemplate = fs.readFileSync(__dirname + `/src/app/${componentName}.component.html`);
-					}
-					else {
-						componentTemplate = fs.readFileSync(__dirname + `/src/app/components/${componentName}/${componentName}.component.html`);
-					}
-
-					let newString = `template: \`${componentTemplate}\``
-					return newString;
-				}))
-	.pipe(gulp.dest('./tests'))
 }
 
 // automatic testing in whatever browser is defined in the Karma config file
@@ -261,7 +288,8 @@ function unitTest()
 // run code bundling and then test
 gulp.task('test', gulp.series(
 	bundleCode,
-	addTemplates,
+	setupTests,
+	bundleTests,
 	unitTest
 ));
 
@@ -285,3 +313,5 @@ exports.scriptsDist = scriptsDist;
 exports.unitTest = unitTest;
 exports.watch = watch;
 exports.bundleTests = bundleTests;
+exports.addTemplates = addTemplates;
+exports.setupTests = setupTests;

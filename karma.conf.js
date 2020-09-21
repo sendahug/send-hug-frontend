@@ -5,25 +5,15 @@ process.env.CHROME_BIN = '/usr/bin/google-chrome-stable';
 module.exports = function (karma) {
   karma.set({
     basePath: '',
-    frameworks: ['jasmine', 'browserify'],
+    frameworks: ['jasmine'],
     mime: { 'text/x-typescript': ['ts','tsx'] },
     files: [
-        { pattern: "./src/**/*.spec.ts" },
-        { pattern: "./tests/app.js" }
+        { pattern: "./tests/app.bundle.js" },
+        { pattern: "./tests/tests.bundle.js" }
     ],
     preprocessors: {
-        "./tests/src/**/*.spec.ts" : ['browserify'],
-        './tests/app.bundle.js': ['sourcemap']
-    },
-    browserify: {
-      debug: true,
-      plugin: ['tsify'],
-      extensions: ['ts', 'tsx'],
-      configure: function(bundle) {
-        bundle.on('prebundle', function() {
-          bundle.transform('tsify', { target: 'es6' });
-        });
-      }
+        './tests/app.bundle.js': ['sourcemap', 'coverage'],
+        './tests/tests.bundle.js': ['sourcemap', 'coverage']
     },
     coverageIstanbulReporter: {
       dir: path.resolve(__dirname, './coverage'),
@@ -33,7 +23,7 @@ module.exports = function (karma) {
     client: {
       clearContext: false // leave Jasmine Spec Runner output visible in browser
     },
-    reporters: ['progress', 'kjhtml', 'coverage-istanbul'],
+    reporters: ['progress', 'kjhtml', 'coverage', 'coverage-istanbul'],
     port: 9876,
     logLevel: 'DEBUG',
     autoWatch: false,

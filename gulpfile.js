@@ -236,7 +236,9 @@ function setupTests() {
 
 	      if (!regularExpression.test(fullPath)) return;
 
-	      newString += `import "${fullPath}";
+				let hugIndex = fullPath.indexOf('src');
+				let newPath = './' + fullPath.substring(hugIndex);
+	      newString += `import "${newPath}";
 				`;
 	    });
 	  }

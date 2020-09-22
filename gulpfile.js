@@ -189,34 +189,6 @@ gulp.task('dist', gulp.parallel(
 
 // TESTING TASKS
 // ===============================================
-// bundle up the files before the tests
-function bundleCode() {
-	var b = browserify().add("src/main.ts").plugin(tsify, {target: "es6"});
-
-	return b.bundle()
-			.pipe(source("src/main.ts"))
-			.pipe(buffer())
-      .pipe(sourcemaps.init({loadMaps: true}))
-			.pipe(replace(/(templateUrl: '.)(.*)(.component.html')/g, (match) => {
-							let componentName = match.substring(16, match.length-16);
-							let componentTemplate;
-
-							if(componentName == 'app') {
-								componentTemplate = fs.readFileSync(__dirname + `/src/app/${componentName}.component.html`);
-							}
-							else {
-								componentTemplate = fs.readFileSync(__dirname + `/src/app/components/${componentName}/${componentName}.component.html`);
-							}
-
-							let newString = `template: \`${componentTemplate}\``
-							return newString;
-						}))
-			.pipe(babel({presets: ["@babel/preset-env"]}))
-			.pipe(rename("app.bundle.js"))
-			.pipe(sourcemaps.write())
-			.pipe(gulp.dest("./tests"));
-}
-
 // import all the tests to main file
 // credit for this goes to @hackerhat
 // https://github.com/facebook/create-react-app/issues/517#issuecomment-417943099
@@ -251,29 +223,43 @@ function setupTests() {
 	.pipe(gulp.dest('src/'))
 }
 
-// bundle tests - for testing
-function bundleTests() {
-	var b = browserify().add("src/tests.specs.ts").plugin(tsify, {target: "es6"});
+// add inline templates to all component files
+function addTemplates() {
+	return gulp.src('src/**/*.ts', {base: './'})
+	.pipe(replace(/(templateUrl: '.)(.*)(.component.html')/g, (match) => {
+					let componentName = match.substring(16, match.length-16);
+					let componentTemplate;
+
+					if(componentName == 'app') {
+						componentTemplate = fs.readFileSync(__dirname + `/src/app/${componentName}.component.html`);
+					}
+					else {
+						componentTemplate = fs.readFileSync(__dirname + `/src/app/components/${componentName}/${componentName}.component.html`);
+					}
+
+					let newString = `template: \`${componentTemplate}\``
+					return newString;
+				}))
+	.pipe(gulp.dest('tests/'))
+}
+
+// bundle up the code before the tests
+function bundleCode() {
+	var b = browserify({
+		debug: true
+	}).add("tests/src/main.ts").plugin(tsify, {target: "es6"}).transform(require('browserify-istanbul')({
+		instrumenterConfig: {
+                  embedSource: true
+                },
+		ignore: ['**/node_modules/**', 'src/**', '**/*.mock.ts', '**/*.spec.ts'],
+		defaultIgnore: false
+	}));
 
 	return b.bundle()
-			.pipe(source("src/tests.specs.ts"))
+			.pipe(source("src/main.ts"))
 			.pipe(buffer())
       .pipe(sourcemaps.init({loadMaps: true}))
-			.pipe(replace(/(templateUrl: '.)(.*)(.component.html')/g, (match) => {
-							let componentName = match.substring(16, match.length-16);
-							let componentTemplate;
-
-							if(componentName == 'app') {
-								componentTemplate = fs.readFileSync(__dirname + `/src/app/${componentName}.component.html`);
-							}
-							else {
-								componentTemplate = fs.readFileSync(__dirname + `/src/app/components/${componentName}/${componentName}.component.html`);
-							}
-
-							let newString = `template: \`${componentTemplate}\``
-							return newString;
-						}))
-			.pipe(rename("tests.bundle.js"))
+			.pipe(rename("app.bundle.js"))
 			.pipe(sourcemaps.write())
 			.pipe(gulp.dest("./tests"));
 }
@@ -288,9 +274,9 @@ function unitTest()
 
 // run code bundling and then test
 gulp.task('test', gulp.series(
-	bundleCode,
 	setupTests,
-	bundleTests,
+	addTemplates,
+	bundleCode,
 	unitTest
 ));
 

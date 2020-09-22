@@ -241,7 +241,6 @@ function addTemplates() {
 					return newString;
 			}))
 	.pipe(replace(/(<img src=".)(.*)(.">)/g, (match) => {
-		console.log(match)
 		let altIndex = match.indexOf('alt');
 		let url = match.substring(13, altIndex-2);
 		let svg = fs.readFileSync(__dirname + `/src/${url}`);

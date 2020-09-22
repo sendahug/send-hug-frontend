@@ -223,7 +223,7 @@ function setupTests() {
 	.pipe(gulp.dest('src/'))
 }
 
-// add inline templates to all component files
+// add inline templates & SVGs (if needed) to all component files
 function addTemplates() {
 	return gulp.src('src/**/*.ts', {base: './'})
 	.pipe(replace(/(templateUrl: '.)(.*)(.component.html')/g, (match) => {
@@ -239,7 +239,15 @@ function addTemplates() {
 
 					let newString = `template: \`${componentTemplate}\``
 					return newString;
-				}))
+			}))
+	.pipe(replace(/(<img src=".)(.*)(.">)/g, (match) => {
+		console.log(match)
+		let altIndex = match.indexOf('alt');
+		let url = match.substring(13, altIndex-2);
+		let svg = fs.readFileSync(__dirname + `/src/${url}`);
+
+		return svg;
+	}))
 	.pipe(gulp.dest('tests/'))
 }
 

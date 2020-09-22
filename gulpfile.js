@@ -236,7 +236,7 @@ function setupTests() {
 
 	      if (!regularExpression.test(fullPath)) return;
 
-				let hugIndex = fullPath.indexOf('src');
+				let hugIndex = fullPath.indexOf('app');
 				let newPath = './' + fullPath.substring(hugIndex);
 	      newString += `import "${newPath}";
 				`;

@@ -7,7 +7,7 @@ process.env.CHROME_BIN = '/usr/bin/google-chrome-stable';
 module.exports = function (karma) {
   karma.set({
     basePath: '',
-    frameworks: ['jasmine', 'browserify'],
+    frameworks: ['jasmine', 'browserify', 'viewport'],
     mime: { 'text/x-typescript': ['ts','tsx'] },
     files: [
         { pattern: "./tests/app.bundle.js" },
@@ -65,7 +65,7 @@ module.exports = function (karma) {
         },
         // run browserify-istanbul
         require('browserify-istanbul')({
-          ignore: ['**/node_modules/**', '**/*.mock.ts', '**/*.spec.ts'],
+          ignore: ['**/node_modules/**', '**/*.mock.ts', '**/*.spec.ts', '**/*.interface.ts'],
           defaultIgnore: false
         })],
       plugin: [['tsify', { target: 'es6' }]],

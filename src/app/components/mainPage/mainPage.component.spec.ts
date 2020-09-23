@@ -103,6 +103,279 @@ describe('MainPage', () => {
     expect(mainPage.report).toBeFalse();
   });
 
+  // Check the posts' menu is shown if there's enough room for them
+  it('should show the posts\'s menu if wide enough', fakeAsync(() => {
+    const fixture = TestBed.createComponent(MainPage);
+    const mainPage = fixture.componentInstance;
+    const mainPageDOM = fixture.debugElement.nativeElement;
+    const viewCheckedSpy = spyOn(mainPage, 'ngAfterViewChecked').and.callThrough();
+    fixture.detectChanges();
+
+    // change the elements' width to make sure there's enough room for the menu
+    let sub = mainPageDOM.querySelectorAll('.newItem')[0]!.querySelectorAll('.subMenu')[0] as HTMLDivElement;
+    sub.style.maxWidth = '';
+    sub.style.display = 'flex';
+    fixture.detectChanges();
+
+    // check all menus are shown
+    let newPosts = mainPageDOM.querySelectorAll('.newItem');
+    let sugPosts = mainPageDOM.querySelectorAll('.sugItem');
+    // new posts
+    newPosts.forEach((element:HTMLLIElement) => {
+      expect(element.querySelectorAll('.buttonsContainer')[0].classList).not.toContain('float');
+      expect(element.querySelectorAll('.subMenu')[0].classList).not.toContain('hidden');
+      expect(element.querySelectorAll('.subMenu')[0].classList).not.toContain('float');
+      expect(element.querySelectorAll('.menuButton')[0].classList).toContain('hidden');
+    });
+    sugPosts.forEach((element:HTMLLIElement) => {
+      expect(element.querySelectorAll('.buttonsContainer')[0].classList).not.toContain('float');
+      expect(element.querySelectorAll('.subMenu')[0].classList).not.toContain('hidden');
+      expect(element.querySelectorAll('.subMenu')[0].classList).not.toContain('float');
+      expect(element.querySelectorAll('.menuButton')[0].classList).toContain('hidden');
+    });
+    expect(viewCheckedSpy).toHaveBeenCalled();
+  }));
+
+  // check the posts' menu isn't shown if there isn't enough room for it
+  it('shouldn\'t show the posts\'s menu if not wide enough', fakeAsync(() => {
+    spyOn(TestBed.inject(AuthService), 'canUser').and.returnValue(true);
+    const fixture = TestBed.createComponent(MainPage);
+    const mainPage = fixture.componentInstance;
+    const mainPageDOM = fixture.debugElement.nativeElement;
+    const viewCheckedSpy = spyOn(mainPage, 'ngAfterViewChecked').and.callThrough();
+    fixture.detectChanges();
+
+    // change the elements' width to make sure there isn't enough room for the menu
+    let sub = mainPageDOM.querySelectorAll('.newItem')[0]!.querySelectorAll('.subMenu')[0] as HTMLDivElement;
+    sub.style.maxWidth = '40px';
+    sub.style.display = 'flex';
+    (sub.firstElementChild! as HTMLAnchorElement).style.width = '100px';
+    fixture.detectChanges();
+
+    // check all menus aren't shown
+    let newPosts = mainPageDOM.querySelectorAll('.newItem');
+    let sugPosts = mainPageDOM.querySelectorAll('.sugItem');
+    // new posts
+    newPosts.forEach((element:HTMLLIElement) => {
+      expect(element.querySelectorAll('.buttonsContainer')[0].classList).toContain('float');
+      expect(element.querySelectorAll('.subMenu')[0].classList).toContain('hidden');
+      expect(element.querySelectorAll('.subMenu')[0].classList).toContain('float');
+      expect(element.querySelectorAll('.menuButton')[0].classList).not.toContain('hidden');
+    });
+    sugPosts.forEach((element:HTMLLIElement) => {
+      expect(element.querySelectorAll('.buttonsContainer')[0].classList).toContain('float');
+      expect(element.querySelectorAll('.subMenu')[0].classList).toContain('hidden');
+      expect(element.querySelectorAll('.subMenu')[0].classList).toContain('float');
+      expect(element.querySelectorAll('.menuButton')[0].classList).not.toContain('hidden');
+    });
+    expect(viewCheckedSpy).toHaveBeenCalled();
+  }));
+
+  // check a menu is shown when clickinng the options button
+  it('should show the post\'s menu when clicked', fakeAsync(() => {
+    spyOn(TestBed.inject(AuthService), 'canUser').and.returnValue(true);
+    const fixture = TestBed.createComponent(MainPage);
+    const mainPage = fixture.componentInstance;
+    const mainPageDOM = fixture.debugElement.nativeElement;
+    const toggleSpy = spyOn(mainPage, 'toggleOptions').and.callThrough();
+    spyOn(mainPage, 'ngAfterViewChecked').and.callThrough();
+    fixture.detectChanges();
+
+    // change the elements' width to make sure there isn't enough room for the menu
+    const firstElement = mainPageDOM.querySelectorAll('.newItem')[0]!;
+    let sub = firstElement.querySelectorAll('.subMenu')[0] as HTMLDivElement;
+    sub.style.maxWidth = '40px';
+    sub.style.display = 'flex';
+    (sub.firstElementChild! as HTMLAnchorElement).style.width = '100px';
+    fixture.detectChanges();
+
+    // pre-click check
+    expect(toggleSpy).not.toHaveBeenCalled();
+    expect(mainPage.showMenuNum).toBeNull();
+    expect(firstElement.querySelectorAll('.subMenu')[0].classList).toContain('hidden');
+    expect(firstElement.querySelectorAll('.menuButton')[0].classList).not.toContain('hidden');
+
+    // click the options buton for the first new post
+    mainPageDOM.querySelectorAll('.newItem')[0]!.querySelectorAll('.menuButton')[0].click();
+    fixture.detectChanges();
+    tick();
+
+    // check the first post's menu is shown
+    expect(toggleSpy).toHaveBeenCalled();
+    expect(toggleSpy).toHaveBeenCalledWith('new', 1);
+    expect(mainPage.showMenuNum).toBe('nPost1');
+    expect(firstElement.querySelectorAll('.buttonsContainer')[0].classList).toContain('float');
+    expect(firstElement.querySelectorAll('.subMenu')[0].classList).not.toContain('hidden');
+    expect(firstElement.querySelectorAll('.subMenu')[0].classList).toContain('float');
+    expect(firstElement.querySelectorAll('.menuButton')[0].classList).not.toContain('hidden');
+  }));
+
+  // check only the selected menu is shown when clicking a button
+  it('should show the correct post\'s menu when clicked', fakeAsync(() => {
+    spyOn(TestBed.inject(AuthService), 'canUser').and.returnValue(true);
+    const fixture = TestBed.createComponent(MainPage);
+    const mainPage = fixture.componentInstance;
+    const mainPageDOM = fixture.debugElement.nativeElement;
+    const toggleSpy = spyOn(mainPage, 'toggleOptions').and.callThrough();
+    spyOn(mainPage, 'ngAfterViewChecked').and.callThrough();
+    fixture.detectChanges();
+
+    // change the elements' width to make sure there isn't enough room for the menu
+    let sub = mainPageDOM.querySelectorAll('.newItem')[0]!.querySelectorAll('.subMenu')[0] as HTMLDivElement;
+    sub.style.maxWidth = '40px';
+    sub.style.display = 'flex';
+    (sub.firstElementChild! as HTMLAnchorElement).style.width = '100px';
+    fixture.detectChanges();
+
+    // pre-click check
+    const clickElement = mainPageDOM.querySelectorAll('.newItem')[1]!;
+    expect(toggleSpy).not.toHaveBeenCalled();
+    expect(mainPage.showMenuNum).toBeNull();
+    expect(clickElement.querySelectorAll('.subMenu')[0].classList).toContain('hidden');
+    expect(clickElement.querySelectorAll('.menuButton')[0].classList).not.toContain('hidden');
+
+    // trigger click
+    clickElement.querySelectorAll('.menuButton')[0].click();
+    fixture.detectChanges();
+    tick();
+
+    // check only the second post's menu is shown
+    let newPosts = mainPageDOM.querySelectorAll('.newItem');
+    let sugPosts = mainPageDOM.querySelectorAll('.sugItem');
+
+    // new posts
+    newPosts.forEach((element:HTMLLIElement) => {
+      expect(element.querySelectorAll('.buttonsContainer')[0].classList).toContain('float');
+      expect(element.querySelectorAll('.subMenu')[0].classList).toContain('float');
+      expect(element.querySelectorAll('.menuButton')[0].classList).not.toContain('hidden');
+      // if it's the second element, check the menu isn't hidden
+      if(element.firstElementChild!.id == 'nPost2') {
+        expect(element.querySelectorAll('.subMenu')[0].classList).not.toContain('hidden');
+      }
+      // otherwise check it's hidden
+      else {
+        expect(element.querySelectorAll('.subMenu')[0].classList).toContain('hidden');
+      }
+    });
+
+    // suggested posts
+    sugPosts.forEach((element:HTMLLIElement) => {
+      expect(element.querySelectorAll('.buttonsContainer')[0].classList).toContain('float');
+      expect(element.querySelectorAll('.subMenu')[0].classList).toContain('hidden');
+      expect(element.querySelectorAll('.subMenu')[0].classList).toContain('float');
+      expect(element.querySelectorAll('.menuButton')[0].classList).not.toContain('hidden');
+    });
+    expect(toggleSpy).toHaveBeenCalled();
+    expect(toggleSpy).toHaveBeenCalledWith('new', 2);
+    expect(mainPage.showMenuNum).toBe('nPost2');
+  }));
+
+  // check that clicking the same menu button again hides it
+  it('should hide the post\'s menu when clicked again', fakeAsync(() => {
+    spyOn(TestBed.inject(AuthService), 'canUser').and.returnValue(true);
+    const fixture = TestBed.createComponent(MainPage);
+    const mainPage = fixture.componentInstance;
+    const mainPageDOM = fixture.debugElement.nativeElement;
+    const toggleSpy = spyOn(mainPage, 'toggleOptions').and.callThrough();
+    spyOn(mainPage, 'ngAfterViewChecked').and.callThrough();
+    fixture.detectChanges();
+
+    // change the elements' width to make sure there isn't enough room for the menu
+    const firstElement = mainPageDOM.querySelectorAll('.newItem')[0]!;
+    let sub = firstElement.querySelectorAll('.subMenu')[0] as HTMLDivElement;
+    sub.style.maxWidth = '40px';
+    sub.style.display = 'flex';
+    (sub.firstElementChild! as HTMLAnchorElement).style.width = '100px';
+    fixture.detectChanges();
+
+    // pre-click check
+    expect(toggleSpy).not.toHaveBeenCalled();
+    expect(mainPage.showMenuNum).toBeNull();
+    expect(firstElement.querySelectorAll('.buttonsContainer')[0].classList).toContain('float');
+    expect(firstElement.querySelectorAll('.subMenu')[0].classList).toContain('hidden');
+    expect(firstElement.querySelectorAll('.subMenu')[0].classList).toContain('float');
+    expect(firstElement.querySelectorAll('.menuButton')[0].classList).not.toContain('hidden');
+
+    // click the options buton for the first new post
+    mainPageDOM.querySelectorAll('.newItem')[0]!.querySelectorAll('.menuButton')[0].click();
+    fixture.detectChanges();
+    tick();
+
+    // check the first post's menu is shown
+    expect(toggleSpy).toHaveBeenCalled();
+    expect(toggleSpy).toHaveBeenCalledWith('new', 1);
+    expect(mainPage.showMenuNum).toBe('nPost1');
+    expect(firstElement.querySelectorAll('.subMenu')[0].classList).not.toContain('hidden');
+    expect(firstElement.querySelectorAll('.menuButton')[0].classList).not.toContain('hidden');
+
+    // click the options buton for the first new post again
+    mainPageDOM.querySelectorAll('.newItem')[0]!.querySelectorAll('.menuButton')[0].click();
+    fixture.detectChanges();
+    tick();
+
+    // check the menu is hidden
+    expect(toggleSpy).toHaveBeenCalled();
+    expect(toggleSpy).toHaveBeenCalledTimes(2);
+    expect(toggleSpy).toHaveBeenCalledWith('new', 1);
+    expect(mainPage.showMenuNum).toBeNull();
+    expect(firstElement.querySelectorAll('.subMenu')[0].classList).toContain('hidden');
+    expect(firstElement.querySelectorAll('.menuButton')[0].classList).not.toContain('hidden');
+  }));
+
+  // check that clicking another menu button also closes the previous one
+  // and opens the new one
+  it('should hide the previous post\'s menu when another post\'s menu button is clicked', fakeAsync(() => {
+    spyOn(TestBed.inject(AuthService), 'canUser').and.returnValue(true);
+    const fixture = TestBed.createComponent(MainPage);
+    const mainPage = fixture.componentInstance;
+    const mainPageDOM = fixture.debugElement.nativeElement;
+    const toggleSpy = spyOn(mainPage, 'toggleOptions').and.callThrough();
+    spyOn(mainPage, 'ngAfterViewChecked').and.callThrough();
+    fixture.detectChanges();
+
+    // change the elements' width to make sure there isn't enough room for the menu
+    const firstElement = mainPageDOM.querySelectorAll('.newItem')[0]!;
+    let sub = firstElement.querySelectorAll('.subMenu')[0] as HTMLDivElement;
+    sub.style.maxWidth = '40px';
+    sub.style.display = 'flex';
+    (sub.firstElementChild! as HTMLAnchorElement).style.width = '100px';
+    fixture.detectChanges();
+
+    // pre-click check
+    expect(toggleSpy).not.toHaveBeenCalled();
+    expect(mainPage.showMenuNum).toBeNull();
+    expect(firstElement.querySelectorAll('.buttonsContainer')[0].classList).toContain('float');
+    expect(firstElement.querySelectorAll('.subMenu')[0].classList).toContain('hidden');
+    expect(firstElement.querySelectorAll('.subMenu')[0].classList).toContain('float');
+    expect(firstElement.querySelectorAll('.menuButton')[0].classList).not.toContain('hidden');
+    expect(mainPageDOM.querySelectorAll('.sugItem')[0]!.querySelectorAll('.subMenu')[0].classList).toContain('hidden');
+
+    // click the options buton for the first new post
+    mainPageDOM.querySelectorAll('.newItem')[0]!.querySelectorAll('.menuButton')[0].click();
+    fixture.detectChanges();
+    tick();
+
+    // check the first post's menu is shown
+    expect(toggleSpy).toHaveBeenCalled();
+    expect(toggleSpy).toHaveBeenCalledWith('new', 1);
+    expect(mainPage.showMenuNum).toBe('nPost1');
+    expect(firstElement.querySelectorAll('.subMenu')[0].classList).not.toContain('hidden');
+    expect(firstElement.querySelectorAll('.menuButton')[0].classList).not.toContain('hidden');
+    expect(mainPageDOM.querySelectorAll('.sugItem')[0]!.querySelectorAll('.subMenu')[0].classList).toContain('hidden');
+
+    // click the options button for another post
+    mainPageDOM.querySelectorAll('.sugItem')[0]!.querySelectorAll('.menuButton')[0].click();
+    fixture.detectChanges();
+    tick();
+
+    // check the first post's menu is hidden and the new post's menu is shown
+    expect(toggleSpy).toHaveBeenCalled();
+    expect(toggleSpy).toHaveBeenCalledTimes(2);
+    expect(toggleSpy).toHaveBeenCalledWith('suggested', 2);
+    expect(firstElement.querySelectorAll('.subMenu')[0].classList).toContain('hidden');
+    expect(mainPageDOM.querySelectorAll('.sugItem')[0]!.querySelectorAll('.subMenu')[0].classList).not.toContain('hidden');
+  }));
+
   // Check that sending a hug triggers the posts service
   it('should trigger posts service on hug', fakeAsync(() => {
     const fixture = TestBed.createComponent(MainPage);

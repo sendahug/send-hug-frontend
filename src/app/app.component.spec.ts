@@ -29,6 +29,7 @@ import { MockSWManager } from './services/sWManager.service.mock';
 import { NotificationService } from './services/notifications.service';
 import { MockNotificationService } from './services/notifications.service.mock';
 
+declare const viewport:any;
 
 describe("AppComponent", () => {
     beforeEach(() => {
@@ -286,5 +287,91 @@ describe("AppComponent", () => {
       expect(document.getElementsByTagName('html')[0]!.style.fontSize).toBe('200%');
       expect(menuSpy).toHaveBeenCalled();
       expect(menuSpy).toHaveBeenCalledTimes(5);
+    }));
+
+    // check the menu is shown if the screen is wide enough
+    it('should show the menu if the screen is wide enough', () => {
+      const fixture = TestBed.createComponent(AppComponent);
+      viewport.set(700);
+      const component = fixture.componentInstance;
+      const componentHtml = fixture.nativeElement;
+      fixture.detectChanges();
+
+      expect(component.showMenu).toBeTrue();
+      expect(componentHtml.querySelector('#navLinks')!.classList).not.toContain('hidden');
+      expect(componentHtml.querySelector('#menuBtn')!.classList).toContain('hidden');
+    });
+
+    // check the menu is hidden if the screen isn't wide enough
+    it('should hide the menu if the screen isn\'t wide enough', () => {
+      const fixture = TestBed.createComponent(AppComponent);
+      viewport.set(500);
+      const component = fixture.componentInstance;
+      const componentHtml = fixture.nativeElement;
+      fixture.detectChanges();
+
+      expect(component.showMenu).toBeFalse();
+      expect(componentHtml.querySelector('#navLinks')!.classList).toContain('hidden');
+      expect(componentHtml.querySelector('#menuBtn')!.classList).not.toContain('hidden');
+    });
+
+    // check the menu is shown when clicking the menu button
+    it('should show the menu when the menu button is clicked', fakeAsync(() => {
+      const fixture = TestBed.createComponent(AppComponent);
+      viewport.set(500);
+      const component = fixture.componentInstance;
+      const componentHtml = fixture.nativeElement;
+      fixture.detectChanges();
+      tick();
+
+      // pre-click check
+      expect(component.showMenu).toBeFalse();
+      expect(componentHtml.querySelector('#navLinks')!.classList).toContain('hidden');
+      expect(componentHtml.querySelector('#menuBtn')!.classList).not.toContain('hidden');
+
+      // trigger click
+      componentHtml.querySelector('#menuBtn').click();
+      fixture.detectChanges();
+      tick();
+
+      // post-click check
+      expect(component.showMenu).toBeTrue();
+      expect(componentHtml.querySelector('#navLinks')!.classList).not.toContain('hidden');
+      expect(componentHtml.querySelector('#menuBtn')!.classList).not.toContain('hidden');
+    }));
+
+    // check the menu is hidden when clicked again
+    it('should hide the menu when the menu button is clicked again', fakeAsync(() => {
+      const fixture = TestBed.createComponent(AppComponent);
+      viewport.set(500);
+      const component = fixture.componentInstance;
+      const componentHtml = fixture.nativeElement;
+      fixture.detectChanges();
+      tick();
+
+      // pre-click check
+      expect(component.showMenu).toBeFalse();
+      expect(componentHtml.querySelector('#navLinks')!.classList).toContain('hidden');
+      expect(componentHtml.querySelector('#menuBtn')!.classList).not.toContain('hidden');
+
+      // trigger click
+      componentHtml.querySelector('#menuBtn').click();
+      fixture.detectChanges();
+      tick();
+
+      // post-click check
+      expect(component.showMenu).toBeTrue();
+      expect(componentHtml.querySelector('#navLinks')!.classList).not.toContain('hidden');
+      expect(componentHtml.querySelector('#menuBtn')!.classList).not.toContain('hidden');
+
+      // trigger another click
+      componentHtml.querySelector('#menuBtn').click();
+      fixture.detectChanges();
+      tick();
+
+      // post-click check
+      expect(component.showMenu).toBeFalse();
+      expect(componentHtml.querySelector('#navLinks')!.classList).toContain('hidden');
+      expect(componentHtml.querySelector('#menuBtn')!.classList).not.toContain('hidden');
     }));
 });

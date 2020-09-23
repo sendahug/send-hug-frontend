@@ -196,12 +196,19 @@ describe('MainPage', () => {
     const authService = mainPage.authService;
 
     const authSpy = spyOn(authService, 'canUser').and.returnValue(true);
+    const reportSpy = spyOn(mainPage, 'reportPost').and.callThrough();
     fixture.detectChanges();
     tick();
 
     // before the click
     expect(mainPage.editMode).toBeFalse();
+    expect(mainPage.postToEdit).toBeUndefined();
+    expect(mainPage.editType).toBeUndefined();
+    expect(mainPage.delete).toBeFalse();
+    expect(mainPage.report).toBeFalse();
+    expect(mainPage.reportType).toBeUndefined();
     expect(authSpy).toHaveBeenCalled();
+    expect(reportSpy).not.toHaveBeenCalled();
 
     // trigger click
     const newItems = mainPageDOM.querySelector('#newItemsList');
@@ -211,9 +218,12 @@ describe('MainPage', () => {
 
     // after the click
     expect(mainPage.editMode).toBeTrue();
+    expect(mainPage.postToEdit).toBeUndefined();
+    expect(mainPage.editType).toBeUndefined();
     expect(mainPage.delete).toBeFalse();
     expect(mainPage.report).toBeTrue();
     expect(mainPage.reportType).toBe('Post');
+    expect(reportSpy).toHaveBeenCalled();
     expect(mainPageDOM.querySelector('app-pop-up')).toBeTruthy();
   }));
 })

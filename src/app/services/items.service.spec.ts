@@ -59,8 +59,8 @@ describe('ItemsService', () => {
       ]
     }).compileComponents();
 
-    itemsService = TestBed.get(ItemsService);
-    httpController = TestBed.get(HttpTestingController);
+    itemsService = TestBed.inject(ItemsService);
+    httpController = TestBed.inject(HttpTestingController);
     // set the user data as if the user is logged in
     itemsService['authService'].userData = {
       id: 4,

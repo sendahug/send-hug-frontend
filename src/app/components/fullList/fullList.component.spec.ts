@@ -41,7 +41,7 @@ import { PostsService } from '../../services/posts.service';
 import { MockPostsService } from '../../services/posts.service.mock';
 import { AuthService } from '../../services/auth.service';
 import { MockAuthService } from '../../services/auth.service.mock';
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, UrlSegment } from "@angular/router";
 import { Loader } from '../loader/loader.component';
 import { of } from 'rxjs';
 
@@ -83,9 +83,9 @@ describe('FullList', () => {
   // Check that the type parameter has an affect on the page
   it('has a type determined by the type parameter - new', fakeAsync(() => {
     // set up spies
-    const paramMap = TestBed.get(ActivatedRoute);
-    paramMap.url = of([{path: 'New'}]);
-    const postsService = TestBed.get(PostsService);
+    const paramMap = TestBed.inject(ActivatedRoute);
+    paramMap.url = of([{path: 'New'} as UrlSegment]);
+    const postsService = TestBed.inject(PostsService);
     const newPostsSpy = spyOn(postsService, 'getNewItems').and.callThrough();
     const sugPostsSpy = spyOn(postsService, 'getSuggestedItems').and.callThrough();
 
@@ -107,9 +107,9 @@ describe('FullList', () => {
   // Check that the type parameter has an affect on the page
   it('has a type determined by the type parameter - suggested', fakeAsync(() => {
     // set up spies
-    const paramMap = TestBed.get(ActivatedRoute);
-    paramMap.url = of([{path: 'Suggested'}]);
-    const postsService = TestBed.get(PostsService);
+    const paramMap = TestBed.inject(ActivatedRoute);
+    paramMap.url = of([{path: 'Suggested'} as UrlSegment]);
+    const postsService = TestBed.inject(PostsService);
     const newPostsSpy = spyOn(postsService, 'getNewItems').and.callThrough();
     const sugPostsSpy = spyOn(postsService, 'getSuggestedItems').and.callThrough();
 
@@ -131,8 +131,8 @@ describe('FullList', () => {
   // Check that a different page gets different results
   it('changes page when clicked', fakeAsync(() => {
     // set up spies
-    const paramMap = TestBed.get(ActivatedRoute);
-    paramMap.url = of([{path: 'Suggested'}]);
+    const paramMap = TestBed.inject(ActivatedRoute);
+    paramMap.url = of([{path: 'Suggested'} as UrlSegment]);
     const pageSpy = spyOn(paramMap.snapshot.queryParamMap, 'get').and.returnValue('1');
 
     // create the component
@@ -159,8 +159,8 @@ describe('FullList', () => {
 
   // Check that all the popup-related variables are set to false at first
   it('should have all popup variables set to false', () => {
-    const paramMap = TestBed.get(ActivatedRoute);
-    paramMap.url = of([{path: 'New'}]);
+    const paramMap = TestBed.inject(ActivatedRoute);
+    paramMap.url = of([{path: 'New'} as UrlSegment]);
     const fixture = TestBed.createComponent(FullList);
     const fullList = fixture.componentInstance;
 
@@ -171,8 +171,8 @@ describe('FullList', () => {
 
   // Check that sending a hug triggers the posts service
   it('should trigger posts service on hug', fakeAsync(() => {
-    const paramMap = TestBed.get(ActivatedRoute);
-    paramMap.url = of([{path: 'New'}]);
+    const paramMap = TestBed.inject(ActivatedRoute);
+    paramMap.url = of([{path: 'New'} as UrlSegment]);
     const fixture = TestBed.createComponent(FullList);
     const fullList = fixture.componentInstance;
     const fullListDOM = fixture.debugElement.nativeElement;
@@ -202,8 +202,8 @@ describe('FullList', () => {
 
   // Check that the popup is opened when clicking 'edit'
   it('should open the popup upon editing', fakeAsync(() => {
-    const paramMap = TestBed.get(ActivatedRoute);
-    paramMap.url = of([{path: 'New'}]);
+    const paramMap = TestBed.inject(ActivatedRoute);
+    paramMap.url = of([{path: 'New'} as UrlSegment]);
     const fixture = TestBed.createComponent(FullList);
     const fullList = fixture.componentInstance;
     const fullListDOM = fixture.debugElement.nativeElement;
@@ -231,8 +231,8 @@ describe('FullList', () => {
 
   // Check that the popup is opened when clicking 'delete'
   it('should open the popup upon deleting', fakeAsync(() => {
-    const paramMap = TestBed.get(ActivatedRoute);
-    paramMap.url = of([{path: 'New'}]);
+    const paramMap = TestBed.inject(ActivatedRoute);
+    paramMap.url = of([{path: 'New'} as UrlSegment]);
     const fixture = TestBed.createComponent(FullList);
     const fullList = fixture.componentInstance;
     const fullListDOM = fixture.debugElement.nativeElement;
@@ -262,8 +262,8 @@ describe('FullList', () => {
 
   // Check that the popup is opened when clicking 'report'
   it('should open the popup upon reporting', fakeAsync(() => {
-    const paramMap = TestBed.get(ActivatedRoute);
-    paramMap.url = of([{path: 'New'}]);
+    const paramMap = TestBed.inject(ActivatedRoute);
+    paramMap.url = of([{path: 'New'} as UrlSegment]);
     const fixture = TestBed.createComponent(FullList);
     const fullList = fixture.componentInstance;
     const fullListDOM = fixture.debugElement.nativeElement;

@@ -58,8 +58,8 @@ describe('PostsService', () => {
       ]
     }).compileComponents();
 
-    postsService = TestBed.get(PostsService);
-    httpController = TestBed.get(HttpTestingController);
+    postsService = TestBed.inject(PostsService);
+    httpController = TestBed.inject(HttpTestingController);
   });
 
   // Check the service is created

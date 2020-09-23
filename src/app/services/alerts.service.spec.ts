@@ -65,7 +65,7 @@ describe('AlertsService', () => {
       ]
     }).compileComponents();
 
-    alertsService = TestBed.get(AlertsService);
+    alertsService = TestBed.inject(AlertsService);
   });
 
   // Check the service is created

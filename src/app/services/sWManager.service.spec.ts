@@ -52,8 +52,8 @@ describe('SWManagerService', () => {
       ]
     }).compileComponents();
 
-    sWManagerService = TestBed.get(SWManager);
-    httpController = TestBed.get(HttpTestingController);
+    sWManagerService = TestBed.inject(SWManager);
+    httpController = TestBed.inject(HttpTestingController);
   });
 
   // Check the service is created

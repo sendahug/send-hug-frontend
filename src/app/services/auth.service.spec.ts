@@ -94,8 +94,8 @@ describe('AuthService', () => {
       ]
     }).compileComponents();
 
-    authService = TestBed.get(AuthService);
-    httpController = TestBed.get(HttpTestingController);
+    authService = TestBed.inject(AuthService);
+    httpController = TestBed.inject(HttpTestingController);
   });
 
   // Check the service is created

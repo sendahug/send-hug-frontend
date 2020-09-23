@@ -454,7 +454,7 @@ describe('Popup', () => {
     // Check that the user's current display name is shown in the textfield
     it('shows the user\'s current display name', () => {
       TestBed.createComponent(AppComponent);
-      TestBed.get(AuthService).login();
+      TestBed.inject(AuthService).login();
       const fixture = TestBed.createComponent(PopUp);
       const popUp = fixture.componentInstance;
       const popUpDOM = fixture.nativeElement;
@@ -482,7 +482,7 @@ describe('Popup', () => {
     // the user's display name
     it('makes a request to change the display name upon submitting', fakeAsync(() => {
       TestBed.createComponent(AppComponent);
-      TestBed.get(AuthService).login();
+      TestBed.inject(AuthService).login();
       const fixture = TestBed.createComponent(PopUp);
       const popUp = fixture.componentInstance;
       const popUpDOM = fixture.nativeElement;
@@ -519,7 +519,7 @@ describe('Popup', () => {
     // Check that empty display names are prevented
     it('prevents empty display names', fakeAsync(() => {
       TestBed.createComponent(AppComponent);
-      TestBed.get(AuthService).login();
+      TestBed.inject(AuthService).login();
       const fixture = TestBed.createComponent(PopUp);
       const popUp = fixture.componentInstance;
       const popUpDOM = fixture.nativeElement;
@@ -589,7 +589,7 @@ describe('Popup', () => {
     // Check that the user's current display name is shown in the textfield
     it('shows the user\'s current display name', () => {
       TestBed.createComponent(AppComponent);
-      TestBed.get(AuthService).login();
+      TestBed.inject(AuthService).login();
       const fixture = TestBed.createComponent(PopUp);
       const popUp = fixture.componentInstance;
       const popUpDOM = fixture.nativeElement;
@@ -613,7 +613,7 @@ describe('Popup', () => {
     // display name upon clicking 'update'
     it('makes a request to change the display name upon submitting', fakeAsync(() => {
       TestBed.createComponent(AppComponent);
-      TestBed.get(AuthService).login();
+      TestBed.inject(AuthService).login();
       const fixture = TestBed.createComponent(PopUp);
       const popUp = fixture.componentInstance;
       const popUpDOM = fixture.nativeElement;
@@ -646,7 +646,7 @@ describe('Popup', () => {
     // user chose
     it('makes a request to close the report if that\'s what the user chose', fakeAsync(() => {
       TestBed.createComponent(AppComponent);
-      TestBed.get(AuthService).login();
+      TestBed.inject(AuthService).login();
       const fixture = TestBed.createComponent(PopUp);
       const popUp = fixture.componentInstance;
       const popUpDOM = fixture.nativeElement;
@@ -699,7 +699,7 @@ describe('Popup', () => {
     // Check that empty display names are prevented
     it('prevents empty display names', fakeAsync(() => {
       TestBed.createComponent(AppComponent);
-      TestBed.get(AuthService).login();
+      TestBed.inject(AuthService).login();
       const fixture = TestBed.createComponent(PopUp);
       const popUp = fixture.componentInstance;
       const popUpDOM = fixture.nativeElement;
@@ -766,7 +766,7 @@ describe('Popup', () => {
     // Check that a warning is shown before deleting an item
     it('shows a warning when deleting something', fakeAsync(() => {
       TestBed.createComponent(AppComponent);
-      TestBed.get(AuthService).login();
+      TestBed.inject(AuthService).login();
       const fixture = TestBed.createComponent(PopUp);
       const popUp = fixture.componentInstance;
       const popUpDOM = fixture.nativeElement;
@@ -786,7 +786,7 @@ describe('Popup', () => {
     // Check that the correct method is called depending on the item that's being deleted
     it('calls the correct method upon confirmation', fakeAsync(() => {
       TestBed.createComponent(AppComponent);
-      TestBed.get(AuthService).login();
+      TestBed.inject(AuthService).login();
       const fixture = TestBed.createComponent(PopUp);
       const popUp = fixture.componentInstance;
       const popUpDOM = fixture.nativeElement;
@@ -842,7 +842,7 @@ describe('Popup', () => {
     // the admin dashboard
     it('makes a request to close the report if that\'s what the user chose - Admin delete', fakeAsync(() => {
       TestBed.createComponent(AppComponent);
-      TestBed.get(AuthService).login();
+      TestBed.inject(AuthService).login();
       const fixture = TestBed.createComponent(PopUp);
       const popUp = fixture.componentInstance;
       const popUpDOM = fixture.nativeElement;
@@ -891,7 +891,7 @@ describe('Popup', () => {
     // Check that the popup is exited and the item isn't deleted if the user picks 'never mind'
     it('should emit false and keep the item if the user chooses not to delete', fakeAsync(() => {
       TestBed.createComponent(AppComponent);
-      TestBed.get(AuthService).login();
+      TestBed.inject(AuthService).login();
       const fixture = TestBed.createComponent(PopUp);
       const popUp = fixture.componentInstance;
       const popUpDOM = fixture.nativeElement;
@@ -954,7 +954,7 @@ describe('Popup', () => {
     // Check that the reported post is shown
     it('shows the reported post', () => {
       TestBed.createComponent(AppComponent);
-      TestBed.get(AuthService).login();
+      TestBed.inject(AuthService).login();
       const fixture = TestBed.createComponent(PopUp);
       const popUp = fixture.componentInstance;
       const popUpDOM = fixture.nativeElement;
@@ -981,7 +981,7 @@ describe('Popup', () => {
     // Check that the correct radio button is set as selected
     it('correctly identifies the chosen radio button', fakeAsync(() => {
       TestBed.createComponent(AppComponent);
-      TestBed.get(AuthService).login();
+      TestBed.inject(AuthService).login();
       const fixture = TestBed.createComponent(PopUp);
       const popUp = fixture.componentInstance;
       const popUpDOM = fixture.nativeElement;
@@ -1043,7 +1043,7 @@ describe('Popup', () => {
     // empty reason
     it('requires text if the chosen reason is other', fakeAsync(() => {
       TestBed.createComponent(AppComponent);
-      TestBed.get(AuthService).login();
+      TestBed.inject(AuthService).login();
       const fixture = TestBed.createComponent(PopUp);
       const popUp = fixture.componentInstance;
       const popUpDOM = fixture.nativeElement;
@@ -1089,7 +1089,7 @@ describe('Popup', () => {
     // Check that the popup triggers creating a report via the Items Service
     it('creates and sends a report to the itemsService', fakeAsync(() => {
       TestBed.createComponent(AppComponent);
-      TestBed.get(AuthService).login();
+      TestBed.inject(AuthService).login();
       const fixture = TestBed.createComponent(PopUp);
       const popUp = fixture.componentInstance;
       const popUpDOM = fixture.nativeElement;
@@ -1167,7 +1167,7 @@ describe('Popup', () => {
     // Check that the reported user's display name is shown
     it('shows the reported user\'s name', () => {
       TestBed.createComponent(AppComponent);
-      TestBed.get(AuthService).login();
+      TestBed.inject(AuthService).login();
       const fixture = TestBed.createComponent(PopUp);
       const popUp = fixture.componentInstance;
       const popUpDOM = fixture.nativeElement;
@@ -1193,7 +1193,7 @@ describe('Popup', () => {
     // Check that the correct radio button is set as selected
     it('correctly identifies the chosen radio button', fakeAsync(() => {
       TestBed.createComponent(AppComponent);
-      TestBed.get(AuthService).login();
+      TestBed.inject(AuthService).login();
       const fixture = TestBed.createComponent(PopUp);
       const popUp = fixture.componentInstance;
       const popUpDOM = fixture.nativeElement;
@@ -1254,7 +1254,7 @@ describe('Popup', () => {
     // empty reason
     it('requires text if the chosen reason is other', fakeAsync(() => {
       TestBed.createComponent(AppComponent);
-      TestBed.get(AuthService).login();
+      TestBed.inject(AuthService).login();
       const fixture = TestBed.createComponent(PopUp);
       const popUp = fixture.componentInstance;
       const popUpDOM = fixture.nativeElement;
@@ -1299,7 +1299,7 @@ describe('Popup', () => {
     // Check that the popup triggers creating a report via the Items Service
     it('creates and sends a report to the itemsService', fakeAsync(() => {
       TestBed.createComponent(AppComponent);
-      TestBed.get(AuthService).login();
+      TestBed.inject(AuthService).login();
       const fixture = TestBed.createComponent(PopUp);
       const popUp = fixture.componentInstance;
       const popUpDOM = fixture.nativeElement;

@@ -33,7 +33,7 @@ import {
 } from "@angular/platform-browser-dynamic/testing";
 import { HttpClientModule } from "@angular/common/http";
 import { ServiceWorkerModule } from "@angular/service-worker";
-import { ActivatedRoute, convertToParamMap } from '@angular/router';
+import { ActivatedRoute, convertToParamMap, UrlSegment } from '@angular/router';
 import { BehaviorSubject, of } from 'rxjs';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
@@ -91,7 +91,7 @@ describe('AppMessaging', () => {
 
   // Check that the component checks whether the user is logged in
   it('should check if the user is logged in', () => {
-    const authSpy = spyOn(TestBed.get(AuthService).isUserDataResolved as BehaviorSubject<boolean>, 'subscribe').and.callThrough();
+    const authSpy = spyOn(TestBed.inject(AuthService).isUserDataResolved as BehaviorSubject<boolean>, 'subscribe').and.callThrough();
     const fixture = TestBed.createComponent(AppMessaging);
     const appMessaging = fixture.componentInstance;
 
@@ -110,7 +110,7 @@ describe('AppMessaging', () => {
 
   // Check that an error is shown if the user isn't logged in
   it('should show an error if the user isn\'t logged in', fakeAsync(() => {
-    TestBed.get(AuthService).authenticated = false;
+    TestBed.inject(AuthService).authenticated = false;
     // create the component and set up spies
     const fixture = TestBed.createComponent(AppMessaging);
     const appMessaging = fixture.componentInstance;
@@ -127,7 +127,7 @@ describe('AppMessaging', () => {
   // Check that the login method triggers the auth service
   it('should trigger the auth service upon login', fakeAsync(() => {
     // set authenticated to false
-    TestBed.get(AuthService).authenticated = false;
+    TestBed.inject(AuthService).authenticated = false;
     // create the component and set up spies
     const fixture = TestBed.createComponent(AppMessaging);
     const appMessaging = fixture.componentInstance;
@@ -182,8 +182,8 @@ describe('AppMessaging', () => {
 
     // Check that the inbox is loaded correctly
     it('should load the correct mailbox - inbox', () => {
-      TestBed.get(ActivatedRoute).url = of([{path: 'inbox'}]);
-      const getMessagesSpy = spyOn(TestBed.get(ItemsService), 'getMailboxMessages').and.callThrough();
+      TestBed.inject(ActivatedRoute).url = of([{path: 'inbox'} as UrlSegment]);
+      const getMessagesSpy = spyOn(TestBed.inject(ItemsService), 'getMailboxMessages').and.callThrough();
       const fixture = TestBed.createComponent(AppMessaging);
       const appMessaging = fixture.componentInstance;
       appMessaging.login();
@@ -196,7 +196,7 @@ describe('AppMessaging', () => {
 
     // Check each message has delete button and reply link
     it('should have the relevant buttons for each message', fakeAsync(() => {
-      TestBed.get(ActivatedRoute).url = of([{path: 'inbox'}]);
+      TestBed.inject(ActivatedRoute).url = of([{path: 'inbox'} as UrlSegment]);
       const fixture = TestBed.createComponent(AppMessaging);
       const appMessaging = fixture.componentInstance;
       const appMessagingDOM = fixture.nativeElement;
@@ -219,7 +219,7 @@ describe('AppMessaging', () => {
 
     // Check deleting a single message triggers the poppup
     it('should trigger the popup upon delete', fakeAsync(() => {
-      TestBed.get(ActivatedRoute).url = of([{path: 'inbox'}]);
+      TestBed.inject(ActivatedRoute).url = of([{path: 'inbox'} as UrlSegment]);
       const fixture = TestBed.createComponent(AppMessaging);
       const appMessaging = fixture.componentInstance;
       const appMessagingDOM = fixture.nativeElement;
@@ -248,7 +248,7 @@ describe('AppMessaging', () => {
 
     // Check that deleting all messages triggers the popup
     it('should trigger the popup upon deleting all', fakeAsync(() => {
-      TestBed.get(ActivatedRoute).url = of([{path: 'inbox'}]);
+      TestBed.inject(ActivatedRoute).url = of([{path: 'inbox'} as UrlSegment]);
       const fixture = TestBed.createComponent(AppMessaging);
       const appMessaging = fixture.componentInstance;
       const appMessagingDOM = fixture.nativeElement;
@@ -276,7 +276,7 @@ describe('AppMessaging', () => {
 
     // Check that a different page gets different results
     it('should change pages when clicked', fakeAsync(() => {
-      TestBed.get(ActivatedRoute).url = of([{path: 'inbox'}]);
+      TestBed.inject(ActivatedRoute).url = of([{path: 'inbox'} as UrlSegment]);
       const fixture = TestBed.createComponent(AppMessaging);
       const appMessaging = fixture.componentInstance;
       const appMessagingDOM = fixture.nativeElement;
@@ -341,8 +341,8 @@ describe('AppMessaging', () => {
 
     // Check that the outbox is loaded correctly
     it('should load the correct mailbox - outbox', () => {
-      TestBed.get(ActivatedRoute).url = of([{path: 'outbox'}]);
-      const getMessagesSpy = spyOn(TestBed.get(ItemsService), 'getMailboxMessages').and.callThrough();
+      TestBed.inject(ActivatedRoute).url = of([{path: 'outbox'} as UrlSegment]);
+      const getMessagesSpy = spyOn(TestBed.inject(ItemsService), 'getMailboxMessages').and.callThrough();
       const fixture = TestBed.createComponent(AppMessaging);
       const appMessaging = fixture.componentInstance;
       appMessaging.login();
@@ -355,7 +355,7 @@ describe('AppMessaging', () => {
 
     // Check each message has delete button and reply link
     it('should have the relevant buttons for each message', fakeAsync(() => {
-      TestBed.get(ActivatedRoute).url = of([{path: 'outbox'}]);
+      TestBed.inject(ActivatedRoute).url = of([{path: 'outbox'} as UrlSegment]);
       const fixture = TestBed.createComponent(AppMessaging);
       const appMessaging = fixture.componentInstance;
       const appMessagingDOM = fixture.nativeElement;
@@ -375,7 +375,7 @@ describe('AppMessaging', () => {
 
     // Check deleting a single message triggers the poppup
     it('should trigger the popup upon delete', fakeAsync(() => {
-      TestBed.get(ActivatedRoute).url = of([{path: 'outbox'}]);
+      TestBed.inject(ActivatedRoute).url = of([{path: 'outbox'} as UrlSegment]);
       const fixture = TestBed.createComponent(AppMessaging);
       const appMessaging = fixture.componentInstance;
       const appMessagingDOM = fixture.nativeElement;
@@ -404,7 +404,7 @@ describe('AppMessaging', () => {
 
     // Check that deleting all messages triggers the popup
     it('should trigger the popup upon deleting all', fakeAsync(() => {
-      TestBed.get(ActivatedRoute).url = of([{path: 'outbox'}]);
+      TestBed.inject(ActivatedRoute).url = of([{path: 'outbox'} as UrlSegment]);
       const fixture = TestBed.createComponent(AppMessaging);
       const appMessaging = fixture.componentInstance;
       const appMessagingDOM = fixture.nativeElement;
@@ -432,7 +432,7 @@ describe('AppMessaging', () => {
 
     // Check that a different page gets different results
     it('should change pages when clicked', fakeAsync(() => {
-      TestBed.get(ActivatedRoute).url = of([{path: 'outbox'}]);
+      TestBed.inject(ActivatedRoute).url = of([{path: 'outbox'} as UrlSegment]);
       const fixture = TestBed.createComponent(AppMessaging);
       const appMessaging = fixture.componentInstance;
       const appMessagingDOM = fixture.nativeElement;
@@ -497,8 +497,8 @@ describe('AppMessaging', () => {
 
     // Check that the threads mailbox is loaded correctly
     it('should load the correct mailbox - threads', () => {
-      TestBed.get(ActivatedRoute).url = of([{path: 'threads'}]);
-      const getMessagesSpy = spyOn(TestBed.get(ItemsService), 'getThreads').and.callThrough();
+      TestBed.inject(ActivatedRoute).url = of([{path: 'threads'} as UrlSegment]);
+      const getMessagesSpy = spyOn(TestBed.inject(ItemsService), 'getThreads').and.callThrough();
       const fixture = TestBed.createComponent(AppMessaging);
       const appMessaging = fixture.componentInstance;
       appMessaging.login();
@@ -511,7 +511,7 @@ describe('AppMessaging', () => {
 
     // Check each message has delete button and view thread link
     it('should have the relevant buttons for each message', fakeAsync(() => {
-      TestBed.get(ActivatedRoute).url = of([{path: 'threads'}]);
+      TestBed.inject(ActivatedRoute).url = of([{path: 'threads'} as UrlSegment]);
       const fixture = TestBed.createComponent(AppMessaging);
       const appMessaging = fixture.componentInstance;
       const appMessagingDOM = fixture.nativeElement;
@@ -533,7 +533,7 @@ describe('AppMessaging', () => {
 
     // Check deleting a single message triggers the poppup
     it('should trigger the popup upon delete', fakeAsync(() => {
-      TestBed.get(ActivatedRoute).url = of([{path: 'threads'}]);
+      TestBed.inject(ActivatedRoute).url = of([{path: 'threads'} as UrlSegment]);
       const fixture = TestBed.createComponent(AppMessaging);
       const appMessaging = fixture.componentInstance;
       const appMessagingDOM = fixture.nativeElement;
@@ -562,7 +562,7 @@ describe('AppMessaging', () => {
 
     // Check that deleting all messages triggers the popup
     it('should trigger the popup upon deleting all', fakeAsync(() => {
-      TestBed.get(ActivatedRoute).url = of([{path: 'threads'}]);
+      TestBed.inject(ActivatedRoute).url = of([{path: 'threads'} as UrlSegment]);
       const fixture = TestBed.createComponent(AppMessaging);
       const appMessaging = fixture.componentInstance;
       const appMessagingDOM = fixture.nativeElement;
@@ -590,7 +590,7 @@ describe('AppMessaging', () => {
 
     // Check that a different page gets different results
     it('should change pages when clicked', fakeAsync(() => {
-      TestBed.get(ActivatedRoute).url = of([{path: 'threads'}]);
+      TestBed.inject(ActivatedRoute).url = of([{path: 'threads'} as UrlSegment]);
       const fixture = TestBed.createComponent(AppMessaging);
       const appMessaging = fixture.componentInstance;
       const appMessagingDOM = fixture.nativeElement;
@@ -655,9 +655,9 @@ describe('AppMessaging', () => {
 
     // Check that the specific thread is loaded correctly
     it('should load the correct mailbox - thread', () => {
-      TestBed.get(ActivatedRoute).url = of([{path: 'thread'}]);
-      const paramSpy = spyOn((TestBed.get(ActivatedRoute) as ActivatedRoute).snapshot.paramMap, 'get').and.returnValue('3');
-      const getMessagesSpy = spyOn(TestBed.get(ItemsService), 'getThread').and.callThrough();
+      TestBed.inject(ActivatedRoute).url = of([{path: 'thread'} as UrlSegment]);
+      const paramSpy = spyOn((TestBed.inject(ActivatedRoute) as ActivatedRoute).snapshot.paramMap, 'get').and.returnValue('3');
+      const getMessagesSpy = spyOn(TestBed.inject(ItemsService), 'getThread').and.callThrough();
       const fixture = TestBed.createComponent(AppMessaging);
       const appMessaging = fixture.componentInstance;
       appMessaging.login();
@@ -671,8 +671,8 @@ describe('AppMessaging', () => {
 
     // Check each message has delete button and reply link
     it('should have the relevant buttons for each message', fakeAsync(() => {
-      TestBed.get(ActivatedRoute).url = of([{path: 'thread'}]);
-      spyOn((TestBed.get(ActivatedRoute) as ActivatedRoute).snapshot.paramMap, 'get').and.returnValue('3');
+      TestBed.inject(ActivatedRoute).url = of([{path: 'thread'} as UrlSegment]);
+      spyOn((TestBed.inject(ActivatedRoute) as ActivatedRoute).snapshot.paramMap, 'get').and.returnValue('3');
       const fixture = TestBed.createComponent(AppMessaging);
       const appMessaging = fixture.componentInstance;
       const appMessagingDOM = fixture.nativeElement;
@@ -695,8 +695,8 @@ describe('AppMessaging', () => {
 
     // Check deleting a single message triggers the poppup
     it('should trigger the popup upon delete', fakeAsync(() => {
-      TestBed.get(ActivatedRoute).url = of([{path: 'thread'}]);
-      spyOn((TestBed.get(ActivatedRoute) as ActivatedRoute).snapshot.paramMap, 'get').and.returnValue('3');
+      TestBed.inject(ActivatedRoute).url = of([{path: 'thread'} as UrlSegment]);
+      spyOn((TestBed.inject(ActivatedRoute) as ActivatedRoute).snapshot.paramMap, 'get').and.returnValue('3');
       const fixture = TestBed.createComponent(AppMessaging);
       const appMessaging = fixture.componentInstance;
       const appMessagingDOM = fixture.nativeElement;

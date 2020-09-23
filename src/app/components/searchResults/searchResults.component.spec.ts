@@ -83,7 +83,7 @@ describe('SearchResults', () => {
 
   // Check that the component is getting the search query correctly
   it('should get the search query from the URL query param', () => {
-    const route = TestBed.get(ActivatedRoute);
+    const route = TestBed.inject(ActivatedRoute);
     const routeSpy = spyOn(route.snapshot.queryParamMap, 'get').and.callFake((param: string) => {
       if(param == 'query') {
         return 'search';
@@ -104,7 +104,7 @@ describe('SearchResults', () => {
 
   // Check that the popup variables are set to false
   it('should have all popup variables set to false', () => {
-    const route = TestBed.get(ActivatedRoute);
+    const route = TestBed.inject(ActivatedRoute);
     spyOn(route.snapshot.queryParamMap, 'get').and.callFake((param: string) => {
       if(param == 'query') {
         return 'search';
@@ -123,7 +123,7 @@ describe('SearchResults', () => {
 
   // Check that a search is triggered if there's no running search
   it('should trigger a search if there\'s no running search', () => {
-    const route = TestBed.get(ActivatedRoute);
+    const route = TestBed.inject(ActivatedRoute);
     spyOn(route.snapshot.queryParamMap, 'get').and.callFake((param: string) => {
       if(param == 'query') {
         return 'search';
@@ -132,8 +132,8 @@ describe('SearchResults', () => {
         return null;
       }
     });
-    const searchSpy = spyOn(TestBed.get(ItemsService), 'sendSearch').and.callThrough();
-    TestBed.get(ItemsService).isSearching = false;
+    const searchSpy = spyOn(TestBed.inject(ItemsService), 'sendSearch').and.callThrough();
+    TestBed.inject(ItemsService).isSearching = false;
     const fixture = TestBed.createComponent(SearchResults);
     const searchResults = fixture.componentInstance;
 
@@ -144,7 +144,7 @@ describe('SearchResults', () => {
 
   // Check that if there's a running search, the search method isn't triggered
   it('shouldn\'t trigger a search if there is one running', () => {
-    const route = TestBed.get(ActivatedRoute);
+    const route = TestBed.inject(ActivatedRoute);
     spyOn(route.snapshot.queryParamMap, 'get').and.callFake((param: string) => {
       if(param == 'query') {
         return 'search';
@@ -153,8 +153,8 @@ describe('SearchResults', () => {
         return null;
       }
     });
-    const searchSpy = spyOn(TestBed.get(ItemsService), 'sendSearch').and.callThrough();
-    TestBed.get(ItemsService).isSearching = true;
+    const searchSpy = spyOn(TestBed.inject(ItemsService), 'sendSearch').and.callThrough();
+    TestBed.inject(ItemsService).isSearching = true;
     const fixture = TestBed.createComponent(SearchResults);
     const searchResults = fixture.componentInstance;
 
@@ -194,7 +194,7 @@ describe('SearchResults', () => {
 
     // Check that an error message is shown if there are no results
     it('should show error message if there are no user results', fakeAsync(() => {
-      const route = TestBed.get(ActivatedRoute);
+      const route = TestBed.inject(ActivatedRoute);
       spyOn(route.snapshot.queryParamMap, 'get').and.callFake((param: string) => {
         if(param == 'query') {
           return 'search';
@@ -218,7 +218,7 @@ describe('SearchResults', () => {
 
     // Check that the result list is shown when there are results
     it('should show a list of users with links to their pages', fakeAsync(() => {
-      const route = TestBed.get(ActivatedRoute);
+      const route = TestBed.inject(ActivatedRoute);
       spyOn(route.snapshot.queryParamMap, 'get').and.callFake((param: string) => {
         if(param == 'query') {
           return 'test';
@@ -279,7 +279,7 @@ describe('SearchResults', () => {
 
     // Check that an error message is shown if there are no results
     it('should show error message if there are no post results', fakeAsync(() => {
-      const route = TestBed.get(ActivatedRoute);
+      const route = TestBed.inject(ActivatedRoute);
       spyOn(route.snapshot.queryParamMap, 'get').and.callFake((param: string) => {
         if(param == 'query') {
           return 'search';
@@ -303,7 +303,7 @@ describe('SearchResults', () => {
 
     // Check that the result list is shown when there are results
     it('should show a list of posts', fakeAsync(() => {
-      const route = TestBed.get(ActivatedRoute);
+      const route = TestBed.inject(ActivatedRoute);
       spyOn(route.snapshot.queryParamMap, 'get').and.callFake((param: string) => {
         if(param == 'query') {
           return 'test';
@@ -329,7 +329,7 @@ describe('SearchResults', () => {
 
     // Check that the popup is opened when clicking 'edit'
     it('should open the popup upon editing', fakeAsync(() => {
-      const route = TestBed.get(ActivatedRoute);
+      const route = TestBed.inject(ActivatedRoute);
       spyOn(route.snapshot.queryParamMap, 'get').and.callFake((param: string) => {
         if(param == 'query') {
           return 'search';
@@ -364,7 +364,7 @@ describe('SearchResults', () => {
 
     // Check that the popup is opened when clicking 'delete'
     it('should open the popup upon deleting', fakeAsync(() => {
-      const route = TestBed.get(ActivatedRoute);
+      const route = TestBed.inject(ActivatedRoute);
       spyOn(route.snapshot.queryParamMap, 'get').and.callFake((param: string) => {
         if(param == 'query') {
           return 'search';
@@ -401,7 +401,7 @@ describe('SearchResults', () => {
 
     // Check that the popup is opened when clicking 'report'
     it('should open the popup upon reporting', fakeAsync(() => {
-      const route = TestBed.get(ActivatedRoute);
+      const route = TestBed.inject(ActivatedRoute);
       spyOn(route.snapshot.queryParamMap, 'get').and.callFake((param: string) => {
         if(param == 'query') {
           return 'search';
@@ -438,7 +438,7 @@ describe('SearchResults', () => {
 
     // Check that sending a hug triggers the posts service
     it('should trigger posts service on hug', fakeAsync(() => {
-      const route = TestBed.get(ActivatedRoute);
+      const route = TestBed.inject(ActivatedRoute);
       spyOn(route.snapshot.queryParamMap, 'get').and.callFake((param: string) => {
         if(param == 'query') {
           return 'search';
@@ -476,8 +476,8 @@ describe('SearchResults', () => {
     // Check that a different page gets different results
     it('changes page when clicked', fakeAsync(() => {
       // set up spies
-      const route = TestBed.get(ActivatedRoute);
-      const paramSpy = spyOn(route.snapshot.queryParamMap, 'get').and.callFake((param: string) => {
+      const route = TestBed.inject(ActivatedRoute);
+      spyOn(route.snapshot.queryParamMap, 'get').and.callFake((param: string) => {
         if(param == 'query') {
           return 'search';
         }
@@ -485,7 +485,7 @@ describe('SearchResults', () => {
           return null;
         }
       });
-      const router = TestBed.get(Router);
+      const router = TestBed.inject(Router);
       const routeSpy = spyOn(router, 'navigate');
 
       // create the component

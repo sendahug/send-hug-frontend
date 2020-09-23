@@ -81,9 +81,9 @@ describe('Notifications', () => {
   // Check that the component checks whether the user is authenticated
   it('should check whether the user is logged in', () => {
     // set up spies
-    const notificationsService = TestBed.get(NotificationService);
+    const notificationsService = TestBed.inject(NotificationService);
     const notificationSpy = spyOn(notificationsService, 'getNotifications').and.callThrough();
-    const authService = TestBed.get(AuthService);
+    const authService = TestBed.inject(AuthService);
     const authSpy = spyOn(authService.isUserDataResolved, 'subscribe').and.callThrough();
 
     // set up the component
@@ -146,7 +146,7 @@ describe('Notifications', () => {
   // Check that the button toggles auto refresh
   it('has a button that toggles auto-refresh', fakeAsync(() => {
     // set up spies
-    const notificationsService = TestBed.get(NotificationService);
+    const notificationsService = TestBed.inject(NotificationService);
     const settingsSpy = spyOn(notificationsService, 'updateUserSettings').and.callThrough();
     const startRefreshSpy = spyOn(notificationsService, 'startAutoRefresh').and.callThrough();
     const stopRefreshSpy = spyOn(notificationsService, 'stopAutoRefresh').and.callThrough();

@@ -121,7 +121,7 @@ describe('AdminDashboard', () => {
       }).compileComponents();
 
       // make sure the test goes through with admin permission
-      const authService = TestBed.get(AuthService) as AuthService;
+      const authService = TestBed.inject(AuthService) as AuthService;
       spyOn(authService, 'canUser').and.returnValue(true);
       authService.isUserDataResolved.next(true);
     });
@@ -129,7 +129,7 @@ describe('AdminDashboard', () => {
     // Check that a call is made to get open reports
     it('should get open reports', fakeAsync(() => {
       // set up the spy and the component
-      const adminService = TestBed.get(AdminService);
+      const adminService = TestBed.inject(AdminService);
       const reportSpy = spyOn(adminService, 'getOpenReports').and.callThrough();
       const fixture = TestBed.createComponent(AdminDashboard);
       const adminDashboard = fixture.componentInstance;
@@ -321,7 +321,7 @@ describe('AdminDashboard', () => {
       }).compileComponents();
 
       // make sure the test goes through with admin permission
-      const authService = TestBed.get(AuthService) as AuthService;
+      const authService = TestBed.inject(AuthService);
       spyOn(authService, 'canUser').and.returnValue(true);
       authService.isUserDataResolved.next(true);
     });
@@ -329,7 +329,7 @@ describe('AdminDashboard', () => {
     // Check that a call is made to get blocked users
     it('should get blocked users', fakeAsync(() => {
       // set up the spy and the component
-      const adminService = TestBed.get(AdminService);
+      const adminService = TestBed.inject(AdminService);
       const blockSpy = spyOn(adminService, 'getBlockedUsers').and.callThrough();
       const fixture = TestBed.createComponent(AdminDashboard);
       const adminDashboard = fixture.componentInstance;
@@ -477,7 +477,7 @@ describe('AdminDashboard', () => {
       }).compileComponents();
 
       // make sure the test goes through with admin permission
-      const authService = TestBed.get(AuthService) as AuthService;
+      const authService = TestBed.inject(AuthService);
       spyOn(authService, 'canUser').and.returnValue(true);
       authService.isUserDataResolved.next(true);
     });
@@ -485,7 +485,7 @@ describe('AdminDashboard', () => {
     // Check that a call is made to get filtered phrases
     it('should get filtered phrases', fakeAsync(() => {
       // set up the spy and the component
-      const adminService = TestBed.get(AdminService);
+      const adminService = TestBed.inject(AdminService);
       const filterSpy = spyOn(adminService, 'getFilters').and.callThrough();
       const fixture = TestBed.createComponent(AdminDashboard);
       const adminDashboard = fixture.componentInstance;

@@ -149,7 +149,7 @@ describe('SettingsPage', () => {
   // Check that the button toggles auto refresh
   it('has a button that toggles auto-refresh', fakeAsync(() => {
     // set up spies
-    const notificationsService = TestBed.get(NotificationService);
+    const notificationsService = TestBed.inject(NotificationService);
     const settingsSpy = spyOn(notificationsService, 'updateUserSettings').and.callThrough();
     const startRefreshSpy = spyOn(notificationsService, 'startAutoRefresh').and.callThrough();
     const stopRefreshSpy = spyOn(notificationsService, 'stopAutoRefresh').and.callThrough();
@@ -197,7 +197,7 @@ describe('SettingsPage', () => {
   // Check that changing the refresh rate changes the set rate
   it('changes the refresh rate', fakeAsync(() => {
     // set up spies
-    const notificationsService = TestBed.get(NotificationService);
+    const notificationsService = TestBed.inject(NotificationService);
     const settingsSpy = spyOn(notificationsService, 'updateUserSettings').and.callThrough();
 
     // set up the component

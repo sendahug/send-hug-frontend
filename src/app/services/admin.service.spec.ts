@@ -64,8 +64,8 @@ describe('AdminService', () => {
       ]
     }).compileComponents();
 
-    adminService = TestBed.get(AdminService);
-    httpController = TestBed.get(HttpTestingController);
+    adminService = TestBed.inject(AdminService);
+    httpController = TestBed.inject(HttpTestingController);
   });
 
   // Check the service is created

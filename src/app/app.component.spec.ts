@@ -187,4 +187,104 @@ describe("AppComponent", () => {
       expect(searchServiceSpy).not.toHaveBeenCalled();
       expect(componentHtml.querySelectorAll('.alertMessage')[0]).toBeTruthy();
     }));
+
+    // Check that the font size panel is hidden
+    it('should have a hidden font size panel', () => {
+      const fixture = TestBed.createComponent(AppComponent);
+      const component = fixture.componentInstance;
+      const componentHtml = fixture.debugElement.nativeElement;
+
+      expect(component.showTextPanel).toBe(false);
+			expect(componentHtml.querySelector('#siteHeader').children.length).toEqual(2);
+    });
+
+    // Check that the font size panel appears when the button is clicked
+    it('has a font size which appears when the icon is clicked', () => {
+      const fixture = TestBed.createComponent(AppComponent);
+      fixture.detectChanges();
+      const component = fixture.componentInstance;
+      const componentHtml = fixture.nativeElement;
+      const siteHeader = componentHtml.querySelector('#siteHeader');
+
+      // Check the panel is initially hidden
+      expect(component.showTextPanel).toBe(false);
+			expect(siteHeader.querySelector('#textPanel')).toBeNull();
+
+      // Simulate a click on the button
+      componentHtml.querySelector('#textSize').click();
+
+      // Check the panel is now visible
+      expect(component.showTextPanel).toBe(true);
+			expect(siteHeader.querySelector('#textPanel')).toBeDefined();
+    });
+
+    // Check that the font size panel changes the site's font size
+    it('has a font size that changes according to user choice', fakeAsync(() => {
+      const fixture = TestBed.createComponent(AppComponent);
+      fixture.detectChanges();
+      const component = fixture.componentInstance;
+      const componentHtml = fixture.nativeElement;
+      const fontButton = componentHtml.querySelector('#textSize');
+      const menuSpy = spyOn(component, 'checkMenuSize');
+
+      // open the text panel
+      fontButton.click();
+      fixture.detectChanges();
+      tick();
+      const fontPanelButtons = componentHtml.querySelector('#textPanel').querySelectorAll('.appButton');
+
+      // check the initial font size
+      expect(document.getElementsByTagName('html')[0]!.style.fontSize).toBe('');
+      expect(menuSpy).not.toHaveBeenCalled();
+
+      // change the font size to the smallest
+      fontPanelButtons[0]!.click();
+      fixture.detectChanges();
+      tick();
+
+      // check the font size was changed
+      expect(document.getElementsByTagName('html')[0]!.style.fontSize).toBe('75%');
+      expect(menuSpy).toHaveBeenCalled();
+      expect(menuSpy).toHaveBeenCalledTimes(1);
+
+      // change the font size to the smaller
+      fontPanelButtons[1]!.click();
+      fixture.detectChanges();
+      tick();
+
+      // check the font size was changed
+      expect(document.getElementsByTagName('html')[0]!.style.fontSize).toBe('87.5%');
+      expect(menuSpy).toHaveBeenCalled();
+      expect(menuSpy).toHaveBeenCalledTimes(2);
+
+      // change the font size to the normal
+      fontPanelButtons[2]!.click();
+      fixture.detectChanges();
+      tick();
+
+      // check the font size was changed
+      expect(document.getElementsByTagName('html')[0]!.style.fontSize).toBe('100%');
+      expect(menuSpy).toHaveBeenCalled();
+      expect(menuSpy).toHaveBeenCalledTimes(3);
+
+      // change the font size to the larger
+      fontPanelButtons[3]!.click();
+      fixture.detectChanges();
+      tick();
+
+      // check the font size was changed
+      expect(document.getElementsByTagName('html')[0]!.style.fontSize).toBe('150%');
+      expect(menuSpy).toHaveBeenCalled();
+      expect(menuSpy).toHaveBeenCalledTimes(4);
+
+      // change the font size to the largest
+      fontPanelButtons[4]!.click();
+      fixture.detectChanges();
+      tick();
+
+      // check the font size was changed
+      expect(document.getElementsByTagName('html')[0]!.style.fontSize).toBe('200%');
+      expect(menuSpy).toHaveBeenCalled();
+      expect(menuSpy).toHaveBeenCalledTimes(5);
+    }));
 });

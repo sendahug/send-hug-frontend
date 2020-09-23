@@ -13,6 +13,7 @@ const rename = require("gulp-rename");
 const replace = require("gulp-replace");
 const fs = require("fs");
 const path = require("path");
+var through = require('through');
 var Server = require('karma').Server;
 
 // LOCAL DEVELOPMENT TASKS
@@ -223,49 +224,60 @@ function setupTests() {
 	.pipe(gulp.dest('src/'))
 }
 
-// add inline templates & SVGs (if needed) to all component files
-function addTemplates() {
-	return gulp.src('src/**/*.ts', {base: './'})
-	.pipe(replace(/(templateUrl: '.)(.*)(.component.html')/g, (match) => {
-					let componentName = match.substring(16, match.length-16);
-					let componentTemplate;
-
-					if(componentName == 'app') {
-						componentTemplate = fs.readFileSync(__dirname + `/src/app/${componentName}.component.html`);
-					}
-					else {
-						componentTemplate = fs.readFileSync(__dirname + `/src/app/components/${componentName}/${componentName}.component.html`);
-					}
-
-					let newString = `template: \`${componentTemplate}\``
-					return newString;
-			}))
-	.pipe(replace(/(<img src=".)(.*)(.">)/g, (match) => {
-		let altIndex = match.indexOf('alt');
-		let url = match.substring(13, altIndex-2);
-		let svg = fs.readFileSync(__dirname + `/src/${url}`);
-
-		return svg;
-	}))
-	.pipe(gulp.dest('tests/'))
-}
-
 // bundle up the code before the tests
 function bundleCode() {
 	var b = browserify({
 		debug: true
-	}).add("tests/src/main.ts").plugin(tsify, {target: "es6"}).transform(require('browserify-istanbul')({
+	}).add("src/main.ts").transform(function(file) {
+		var data = '';
+    return through(write, end);
+
+    function write (buf) {
+			let codeChunk = buf.toString("utf8");
+			// inline the templates
+			let replacedChunk = codeChunk.replace(/(templateUrl: '.)(.*)(.component.html')/g, (match) => {
+				let componentName = match.substring(16, match.length-16);
+				let componentTemplate;
+
+				if(componentName == 'app') {
+					componentTemplate = fs.readFileSync(__dirname + `/src/app/${componentName}.component.html`);
+				}
+				else {
+					componentTemplate = fs.readFileSync(__dirname + `/src/app/components/${componentName}/${componentName}.component.html`);
+				}
+
+				let newString = `/* istanbul ignore next */
+				template: \`${componentTemplate}\``
+				return newString;
+			});
+			// add the SVGs
+			let secondReplacedChunk = replacedChunk.replace(/(<img src="..\/assets.)(.*)(.">)/g, (match) => {
+				let altIndex = match.indexOf('alt');
+				let url = match.substring(13, altIndex-2);
+				let svg = fs.readFileSync(__dirname + `/src/${url}`);
+
+				return svg;
+			})
+
+			data += secondReplacedChunk
+		}
+
+    function end () {
+        this.queue(data);
+        this.queue(null);
+    }
+	}).plugin(tsify, { target: 'es6' }).transform(require('browserify-istanbul')({
 		instrumenterConfig: {
                   embedSource: true
                 },
-		ignore: ['**/node_modules/**', 'src/**', '**/*.mock.ts', '**/*.spec.ts'],
+		ignore: ['**/node_modules/**', '**/*.mock.ts', '**/*.spec.ts'],
 		defaultIgnore: false
 	}));
 
 	return b.bundle()
 			.pipe(source("src/main.ts"))
 			.pipe(buffer())
-      .pipe(sourcemaps.init({loadMaps: true}))
+      .pipe(sourcemaps.init({loadMaps: true, largeFile: true}))
 			.pipe(rename("app.bundle.js"))
 			.pipe(sourcemaps.write())
 			.pipe(gulp.dest("./tests"));
@@ -282,7 +294,6 @@ function unitTest()
 // run code bundling and then test
 gulp.task('test', gulp.series(
 	setupTests,
-	addTemplates,
 	bundleCode,
 	unitTest
 ));

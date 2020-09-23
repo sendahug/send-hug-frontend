@@ -178,7 +178,6 @@ describe('MainPage', () => {
     const mainPage = fixture.componentInstance;
     const mainPageDOM = fixture.debugElement.nativeElement;
     const toggleSpy = spyOn(mainPage, 'toggleOptions').and.callThrough();
-    spyOn(mainPage, 'ngAfterViewChecked').and.callThrough();
     fixture.detectChanges();
 
     // change the elements' width to make sure there isn't enough room for the menu
@@ -217,7 +216,6 @@ describe('MainPage', () => {
     const mainPage = fixture.componentInstance;
     const mainPageDOM = fixture.debugElement.nativeElement;
     const toggleSpy = spyOn(mainPage, 'toggleOptions').and.callThrough();
-    spyOn(mainPage, 'ngAfterViewChecked').and.callThrough();
     fixture.detectChanges();
 
     // change the elements' width to make sure there isn't enough room for the menu
@@ -277,7 +275,6 @@ describe('MainPage', () => {
     const mainPage = fixture.componentInstance;
     const mainPageDOM = fixture.debugElement.nativeElement;
     const toggleSpy = spyOn(mainPage, 'toggleOptions').and.callThrough();
-    spyOn(mainPage, 'ngAfterViewChecked').and.callThrough();
     fixture.detectChanges();
 
     // change the elements' width to make sure there isn't enough room for the menu
@@ -330,7 +327,6 @@ describe('MainPage', () => {
     const mainPage = fixture.componentInstance;
     const mainPageDOM = fixture.debugElement.nativeElement;
     const toggleSpy = spyOn(mainPage, 'toggleOptions').and.callThrough();
-    spyOn(mainPage, 'ngAfterViewChecked').and.callThrough();
     fixture.detectChanges();
 
     // change the elements' width to make sure there isn't enough room for the menu

@@ -21,7 +21,6 @@ For full project information, check the [`main README file`](https://github.com/
 ## Requirements
 
 - Node.js
-- For testing: A machine with at least 8GBs of RAM.
 
 ## Installation and Usage
 
@@ -146,6 +145,8 @@ This project's tests are run using the Jasmine framework and the Karma runner. T
   - **karma-coverage** - Code coverage generator. [Project repo.](https://github.com/karma-runner/karma-coverage)
   - **karma-coverage-istanbul-reporter** - Code coverage generator reporter. [NPM page.](https://www.npmjs.com/package/karma-coverage-istanbul-reporter)
   - **karma-sourcemap-loader** - A preprocessor that loads existing source maps. [NPM page.](https://www.npmjs.com/package/karma-sourcemap-loader)
+  - **karma-browserify** - A browserify preprocessor for karma, used to bundle up the tests. [NPM page.](https://www.npmjs.com/package/karma-browserify)
+  - **karma-viewport** - A karma framework used to gain access to the viewport in tests. [NPM page.](https://www.npmjs.com/package/karma-viewport)
 
 ### Production Dependencies
 
@@ -186,9 +187,7 @@ Tests are written in TypeScript and each component's tests are located in the sa
 
 ### Running Tests
 
-Running tests is done through the dedicated Gulp task. All you need to do is run `gulp unitTest --max_old_space_size=8192` in the terminal; this will start Karma and trigger Webpack's compilation of tests and project files.
-
-Note: this project (along with its tests) is fairly large and takes both time and memory in order to run tests for. The `max_old_space_size` NPM flag is required in order to run the tests; thus, free memory of at least 8 GBs is required (current measurements are ~6GBs).
+Running tests is done through the dedicated Gulp task. All you need to do is run `gulp test` in the terminal; this will start Karma and trigger Webpack's compilation of tests and project files.
 
 ## Hosting
 

@@ -466,7 +466,7 @@ export class SWManager {
   Parameters: store - the store from which to delete the items
               parentType - the category to which the item's condition belongs. For example, when
                             deleting all messages in a thread, the parent will be 'threadID'.
-              parentID - ID to match when deleting. 
+              parentID - ID to match when deleting.
   ----------------
   Programmer: Shir Bar Lev.
   */
@@ -474,14 +474,13 @@ export class SWManager {
     return this.currentDB?.then((db) => {
       // start a new transaction
       let tx = db.transaction(store, 'readwrite');
-      // @ts-ignore
-      let dbStore = tx.objectStore(store).index(parentType);
+      let dbStore = tx.objectStore(store);
       // open a cursor and delete any items with the matching parent's ID
       // open a cursor and delete any messages with the deleted thread's ID
       dbStore.openCursor().then(function checkItem(cursor):any {
         if(!cursor) return;
         // @ts-ignore
-        if(cursor.value.parentType == parentID) {
+        if(cursor.value[parentType] == parentID) {
           cursor.delete();
         }
         return cursor.continue().then(checkItem);

@@ -366,7 +366,7 @@ export class PostsService {
       this.alertsService.toggleOfflineAlert();
 
       // delete the posts from idb
-      this.serviceWorkerM.deleteItems('posts', 'user', userID);
+      this.serviceWorkerM.deleteItems('posts', 'userId', userID);
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
       // if the user is offline, show the offline header message

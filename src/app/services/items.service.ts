@@ -698,14 +698,14 @@ export class ItemsService {
 
       // delete all messages from idb
       // if the mailbox to be cleared is the threads mailbox, delete everything
-      if(response.deleted == 'threads') {
+      if(mailbox_type == 'threads') {
         this.serviceWorkerM.clearStore('messages');
         this.serviceWorkerM.clearStore('threads');
       }
-      else if(response.deleted == 'inbox') {
+      else if(mailbox_type == 'inbox') {
         this.serviceWorkerM.deleteItems('messages', 'forId', userID);
       }
-      else if(response.deleted == 'outbox') {
+      else if(mailbox_type == 'outbox') {
         this.serviceWorkerM.deleteItems('messages', 'fromId', userID);
       }
       // if there was an error, alert the user

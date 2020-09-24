@@ -192,30 +192,22 @@ export class AuthService {
           this.updateUserData();
         }
 
-        // if there's a currently operating IDB database, get it
-        if(this.serviceWorkerM.currentDB) {
-          this.serviceWorkerM.currentDB.then(db => {
-            // start a new transaction
-            let tx = db.transaction('users', 'readwrite');
-            let store = tx.objectStore('users');
-            // adds the user's data to the users store
-            let user = {
-              id: data.id,
-              auth0Id: jwtPayload.sub,
-              displayName: data.displayName,
-              receivedHugs: data.receivedH,
-              givenHugs: data.givenH,
-              postsNum: data.posts,
-              loginCount: data.loginCount,
-              role: data.role,
-              blocked: data.blocked,
-              releaseDate: data.releaseDate,
-              autoRefresh: data.autoRefresh,
-              pushEnabled: data.pushEnabled
-            }
-            store.put(user);
-          })
+        // adds the user's data to the users store
+        let user = {
+          id: data.id,
+          auth0Id: jwtPayload.sub,
+          displayName: data.displayName,
+          receivedHugs: data.receivedH,
+          givenHugs: data.givenH,
+          postsNum: data.posts,
+          loginCount: data.loginCount,
+          role: data.role,
+          blocked: data.blocked,
+          releaseDate: data.releaseDate,
+          autoRefresh: data.autoRefresh,
+          pushEnabled: data.pushEnabled
         }
+        this.serviceWorkerM.addItem('users', user);
         // if there's an error, check the error type
       }, (err) => {
         let statusCode = err.status;
@@ -289,30 +281,22 @@ export class AuthService {
       this.setToken();
       this.isUserDataResolved.next(true);
 
-      // if there's a currently operating IDB database, get it
-      if(this.serviceWorkerM.currentDB) {
-        this.serviceWorkerM.currentDB.then(db => {
-          // start a new transaction
-          let tx = db.transaction('users', 'readwrite');
-          let store = tx.objectStore('users');
-          // adds the user's data to the users store
-          let user = {
-            id: data.id,
-            auth0Id: jwtPayload.sub,
-            displayName: data.displayName,
-            receivedHugs: data.receivedH,
-            givenHugs: data.givenH,
-            postsNum: data.posts,
-            loginCount: data.loginCount,
-            role: data.role,
-            blocked: data.blocked,
-            releaseDate: data.releaseDate,
-            autoRefresh: data.autoRefresh,
-            pushEnabled: data.pushEnabled
-          }
-          store.put(user);
-        })
+      // adds the user's data to the users store
+      let user = {
+        id: data.id,
+        auth0Id: jwtPayload.sub,
+        displayName: data.displayName,
+        receivedHugs: data.receivedH,
+        givenHugs: data.givenH,
+        postsNum: data.posts,
+        loginCount: data.loginCount,
+        role: data.role,
+        blocked: data.blocked,
+        releaseDate: data.releaseDate,
+        autoRefresh: data.autoRefresh,
+        pushEnabled: data.pushEnabled
       }
+      this.serviceWorkerM.addItem('users', user);
       // error handling
     }, (err) => {
       this.isUserDataResolved.next(true);

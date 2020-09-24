@@ -111,45 +111,37 @@ export class PostsService {
       this.isMainPageResolved.next(true);
       this.alertsService.toggleOfflineAlert();
 
-      // if there's a currently operating IDB database, get it
-      if(this.serviceWorkerM.currentDB) {
-        this.serviceWorkerM.currentDB.then(db => {
-          // start a new transaction
-          let tx = db.transaction('posts', 'readwrite');
-          let store = tx.objectStore('posts');
-          // add each post in the 'recent' list to posts store
-          data.recent.forEach((element:Post) => {
-            let isoDate = new Date(element.date).toISOString();
-            let post = {
-              'date': element.date,
-              'givenHugs': element.givenHugs,
-              'id': element.id!,
-              'isoDate': isoDate,
-              'text': element.text,
-              'userId': Number(element.userId),
-              'user': element.user,
-              'sentHugs': element.sentHugs!
-            }
-            store.put(post);
-          });
-          // add each post in the 'suggested' list to posts store
-          data.suggested.forEach((element:Post) => {
-            let isoDate = new Date(element.date).toISOString();
-            let post = {
-              'date': element.date,
-              'givenHugs': element.givenHugs,
-              'id': element.id!,
-              'isoDate': isoDate,
-              'text': element.text,
-              'userId': Number(element.userId),
-              'user': element.user,
-              'sentHugs': element.sentHugs!
-            }
-            store.put(post);
-          });
-          this.serviceWorkerM.cleanDB('posts');
-        })
-      }
+      // add each post in the 'recent' list to posts store
+      data.recent.forEach((element:Post) => {
+        let isoDate = new Date(element.date).toISOString();
+        let post = {
+          'date': element.date,
+          'givenHugs': element.givenHugs,
+          'id': element.id!,
+          'isoDate': isoDate,
+          'text': element.text,
+          'userId': Number(element.userId),
+          'user': element.user,
+          'sentHugs': element.sentHugs!
+        }
+        this.serviceWorkerM.addItem('posts', post);
+      });
+      // add each post in the 'suggested' list to posts store
+      data.suggested.forEach((element:Post) => {
+        let isoDate = new Date(element.date).toISOString();
+        let post = {
+          'date': element.date,
+          'givenHugs': element.givenHugs,
+          'id': element.id!,
+          'isoDate': isoDate,
+          'text': element.text,
+          'userId': Number(element.userId),
+          'user': element.user,
+          'sentHugs': element.sentHugs!
+        }
+        this.serviceWorkerM.addItem('posts', post);
+      });
+      this.serviceWorkerM.cleanDB('posts');
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
       // if the server is unavilable due to the user being offline, tell the user
@@ -198,30 +190,22 @@ export class PostsService {
       this.isPostsResolved.fullNewItems.next(true);
       this.alertsService.toggleOfflineAlert();
 
-      // if there's a currently operating IDB database, get it
-      if(this.serviceWorkerM.currentDB) {
-        this.serviceWorkerM.currentDB.then(db => {
-          // start a new transaction
-          let tx = db.transaction('posts', 'readwrite');
-          let store = tx.objectStore('posts');
-          // add each post in the 'recent' list to posts store
-          data.forEach((element:Post) => {
-            let isoDate = new Date(element.date).toISOString();
-            let post = {
-              'date': element.date,
-              'givenHugs': element.givenHugs,
-              'id': element.id!,
-              'isoDate': isoDate,
-              'text': element.text,
-              'userId': Number(element.userId),
-              'user': element.user,
-              'sentHugs': element.sentHugs!
-            }
-            store.put(post);
-          });
-          this.serviceWorkerM.cleanDB('posts');
-        })
-      }
+      // add each post in the 'recent' list to posts store
+      data.forEach((element:Post) => {
+        let isoDate = new Date(element.date).toISOString();
+        let post = {
+          'date': element.date,
+          'givenHugs': element.givenHugs,
+          'id': element.id!,
+          'isoDate': isoDate,
+          'text': element.text,
+          'userId': Number(element.userId),
+          'user': element.user,
+          'sentHugs': element.sentHugs!
+        }
+        this.serviceWorkerM.addItem('posts', post);
+      });
+      this.serviceWorkerM.cleanDB('posts');
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
       // if the server is unavilable due to the user being offline, tell the user
@@ -270,30 +254,22 @@ export class PostsService {
       this.isPostsResolved.fullSuggestedItems.next(true);
       this.alertsService.toggleOfflineAlert();
 
-      // if there's a currently operating IDB database, get it
-      if(this.serviceWorkerM.currentDB) {
-        this.serviceWorkerM.currentDB.then(db => {
-          // start a new transaction
-          let tx = db.transaction('posts', 'readwrite');
-          let store = tx.objectStore('posts');
-          // add each post in the 'recent' list to posts store
-          data.forEach((element:Post) => {
-            let isoDate = new Date(element.date).toISOString();
-            let post = {
-              'date': element.date,
-              'givenHugs': element.givenHugs,
-              'id': element.id!,
-              'isoDate': isoDate,
-              'text': element.text,
-              'userId': Number(element.userId),
-              'user': element.user,
-              'sentHugs': element.sentHugs!
-            }
-            store.put(post);
-          });
-          this.serviceWorkerM.cleanDB('posts');
-        })
-      }
+      // add each post in the 'recent' list to posts store
+      data.forEach((element:Post) => {
+        let isoDate = new Date(element.date).toISOString();
+        let post = {
+          'date': element.date,
+          'givenHugs': element.givenHugs,
+          'id': element.id!,
+          'isoDate': isoDate,
+          'text': element.text,
+          'userId': Number(element.userId),
+          'user': element.user,
+          'sentHugs': element.sentHugs!
+        }
+        this.serviceWorkerM.addItem('posts', post);
+      });
+      this.serviceWorkerM.cleanDB('posts');
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
       // if the server is unavilable due to the user being offline, tell the user
@@ -359,14 +335,7 @@ export class PostsService {
       this.alertsService.toggleOfflineAlert();
 
       // delete the post from idb
-      if(this.serviceWorkerM.currentDB) {
-        this.serviceWorkerM.currentDB.then((db) => {
-          // start a new transaction
-          let tx = db.transaction('posts', 'readwrite');
-          let store = tx.objectStore('posts');
-          store.delete(post_id);
-        });
-      }
+      this.serviceWorkerM.deleteItem('posts', post_id);
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
       // if the user is offline, show the offline header message
@@ -397,21 +366,7 @@ export class PostsService {
       this.alertsService.toggleOfflineAlert();
 
       // delete the posts from idb
-      if(this.serviceWorkerM.currentDB) {
-        this.serviceWorkerM.currentDB.then((db) => {
-          // start a new transaction
-          let tx = db.transaction('posts', 'readwrite');
-          let store = tx.objectStore('posts').index('user');
-          // open a cursor and delete any post with the given user ID
-          store.openCursor().then(function checkPost(cursor):any {
-            if(!cursor) return;
-            if(cursor.value.userId == userID) {
-              cursor.delete();
-            }
-            return cursor.continue().then(checkPost);
-          })
-        });
-      }
+      this.serviceWorkerM.deleteItems('posts', 'user', userID);
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
       // if the user is offline, show the offline header message

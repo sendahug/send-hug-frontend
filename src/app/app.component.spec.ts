@@ -374,4 +374,59 @@ describe("AppComponent", () => {
       expect(componentHtml.querySelector('#navLinks')!.classList).toContain('hidden');
       expect(componentHtml.querySelector('#menuBtn')!.classList).not.toContain('hidden');
     }));
+
+    // should hide the nav menu if it gets too long
+    it('should hide nav menu if it gets too long', () => {
+      const fixture = TestBed.createComponent(AppComponent);
+      viewport.set(600);
+      const component = fixture.componentInstance;
+      const componentHtml = fixture.nativeElement;
+      const checkSpy = spyOn(component, 'checkMenuSize').and.callThrough();
+      fixture.detectChanges();
+
+      const navMenu = componentHtml.querySelector('#navMenu');
+      const navLinks = componentHtml.querySelector('#navLinks');
+      navLinks.style.width = '600px';
+      navMenu.style.maxWidth = '600px';
+      navMenu.style.display = 'flex';
+      component.changeTextSize('largest');
+      fixture.detectChanges();
+
+      expect(checkSpy).toHaveBeenCalled();
+      expect(navLinks.classList).toContain('hidden');
+      expect(navLinks.classList).toContain('large');
+      expect(componentHtml.querySelector('#menuBtn').classList).not.toContain('hidden');
+    });
+
+    // should hide the menu if it gets too long and show it again if it's not too long
+    it('should show the menu again if it\'s not to long again', () => {
+      const fixture = TestBed.createComponent(AppComponent);
+      viewport.set(600);
+      const component = fixture.componentInstance;
+      const componentHtml = fixture.nativeElement;
+      const checkSpy = spyOn(component, 'checkMenuSize').and.callThrough();
+      fixture.detectChanges();
+
+      const navMenu = componentHtml.querySelector('#navMenu');
+      const navLinks = componentHtml.querySelector('#navLinks');
+      navLinks.style.width = '600px';
+      navMenu.style.maxWidth = '600px';
+      navMenu.style.display = 'flex';
+      component.changeTextSize('largest');
+      fixture.detectChanges();
+
+      expect(checkSpy).toHaveBeenCalled();
+      expect(navLinks.classList).toContain('hidden');
+      expect(navLinks.classList).toContain('large');
+      expect(componentHtml.querySelector('#menuBtn').classList).not.toContain('hidden');
+
+      navLinks.style.width = '500px';
+      component.changeTextSize('smaller');
+      fixture.detectChanges();
+
+      expect(checkSpy).toHaveBeenCalled();
+      expect(navLinks.classList).not.toContain('hidden');
+      expect(navLinks.classList).not.toContain('large');
+      expect(component.showMenu).toBeTrue();
+    });
 });

@@ -219,6 +219,33 @@ describe("AppComponent", () => {
 			expect(siteHeader.querySelector('#textPanel')).toBeDefined();
     });
 
+    // Check that the font size panel is hidden when the button is clicked again
+    it('has a font size which iis hidden when the icon is clicked again', () => {
+      const fixture = TestBed.createComponent(AppComponent);
+      fixture.detectChanges();
+      const component = fixture.componentInstance;
+      const componentHtml = fixture.nativeElement;
+      const siteHeader = componentHtml.querySelector('#siteHeader');
+
+      // Check the panel is initially hidden
+      expect(component.showTextPanel).toBe(false);
+			expect(siteHeader.querySelector('#textPanel')).toBeNull();
+
+      // Simulate a click on the button
+      componentHtml.querySelector('#textSize').click();
+
+      // Check the panel is now visible
+      expect(component.showTextPanel).toBe(true);
+			expect(siteHeader.querySelector('#textPanel')).toBeDefined();
+
+      // Simulate another click on the button
+      componentHtml.querySelector('#textSize').click();
+
+      // check the panel is hidden again
+      expect(component.showTextPanel).toBe(false);
+			expect(siteHeader.querySelector('#textPanel')).toBeNull();
+    });
+
     // Check that the font size panel changes the site's font size
     it('has a font size that changes according to user choice', fakeAsync(() => {
       const fixture = TestBed.createComponent(AppComponent);

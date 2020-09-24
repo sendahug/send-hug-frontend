@@ -193,6 +193,7 @@ describe('AuthService', () => {
       sub: 'auth0'
     };
     const setSpy = spyOn(authService, 'setToken');
+    const addSpy = spyOn(authService['serviceWorkerM'], 'addItem');
 
     authService.getUserData(jwtPayload);
     // wait for user data to be resolved
@@ -209,6 +210,8 @@ describe('AuthService', () => {
     const req = httpController.expectOne('http://localhost:5000/users/all/auth0');
     expect(req.request.method).toEqual('GET');
     req.flush(mockResponse);
+
+    expect(addSpy).toHaveBeenCalled();
   });
 
   // Check the service triggers user creating if the user doesn't exist
@@ -321,6 +324,7 @@ describe('AuthService', () => {
         pushEnabled: false
       }
     };
+    const addSpy = spyOn(authService['serviceWorkerM'], 'addItem');
 
     // check the user is logged out at first
     expect(authService.userData.id).toBe(0);
@@ -344,6 +348,8 @@ describe('AuthService', () => {
     const req = httpController.expectOne('http://localhost:5000/users');
     expect(req.request.method).toEqual('POST');
     req.flush(mockResponse);
+
+    expect(addSpy).toHaveBeenCalled();
   });
 
   // Check logout is triggered

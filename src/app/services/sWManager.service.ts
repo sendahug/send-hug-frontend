@@ -361,8 +361,7 @@ export class SWManager {
       // get the current page and the start index for the paginated list
       // if the target is one of the main page's lists, each list should contain
       // 10 posts; otherwise each list should contain 5 items
-      let startIndex = (target == 'main new' || target == 'main suggested') ?
-                        0 : (page - 1) * 5;
+      let startIndex = (page - 1) * 5;
 
       // if the target is inbox, keep only messages sent to the user and
       // return paginated inbox messages
@@ -403,7 +402,7 @@ export class SWManager {
       let threadsStore = db.transaction('threads').store.index('latest');
       return threadsStore.getAll();
     }).then(function(threads) {
-      let startIndex = currentPage * 5;
+      let startIndex = (currentPage - 1) * 5;
       let orderedThreads = threads.reverse();
 
       return orderedThreads.slice(startIndex, (startIndex + 5));

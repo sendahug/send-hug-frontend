@@ -191,6 +191,180 @@ describe('Notifications', () => {
     expect(stopRefreshSpy.calls.count()).toBe(1);
   }));
 
+  // check tab and tab+shift let the user navigate
+  it('should navigate using tab and shift+tab', fakeAsync(() => {
+    const fixture = TestBed.createComponent(NotificationsTab);
+    const notificationsTab  = fixture.componentInstance;
+    const notifTabDOM = fixture.nativeElement;
+    const focusBindedSpy = spyOn(notificationsTab, 'checkFocusBinded').and.callThrough();
+    fixture.detectChanges();
+    tick();
+
+    // spies
+    const spies = [
+      spyOn(notifTabDOM.querySelector('#exitButton'), 'focus').and.callThrough(),
+      spyOn(notifTabDOM.querySelectorAll('.NotificationButton')[0], 'focus').and.callThrough(),
+      spyOn(notifTabDOM.querySelectorAll('.NotificationButton')[1], 'focus').and.callThrough()
+    ];
+
+    spies.forEach((spy) => {
+      spy.calls.reset();
+    });
+
+    // run the tests, with each stage wrapped in a promise to ensure they
+    // happen by the correct order
+    // step 1: check the first element is focused
+    new Promise(() => {
+      notificationsTab.ngOnInit();
+
+      // check the first element has focus
+      spies.forEach((spy, index:number) => {
+        if(index == 0) {
+          expect(spy).toHaveBeenCalled();
+        }
+        else {
+          expect(spy).not.toHaveBeenCalled();
+        }
+      });
+    // step 2: tab event tests
+    }).then(() => {
+      // trigger tab event
+      document.getElementById('modalBox')!.dispatchEvent(new KeyboardEvent('keydown', {
+        'key': 'tab',
+        'shiftKey': false
+      }));
+      fixture.detectChanges();
+      tick();
+
+      // check the focus shifted to the next element
+      expect(focusBindedSpy).toHaveBeenCalled();
+      spies.forEach((spy, index:number) => {
+        if(index == 0) {
+          expect(spy).toHaveBeenCalled();
+          expect(spy).toHaveBeenCalledTimes(1);
+        }
+        else if(index == 1) {
+          expect(spy).toHaveBeenCalled();
+          expect(spy).toHaveBeenCalledTimes(1);
+        }
+        else {
+          expect(spy).not.toHaveBeenCalled();
+        }
+      });
+    // step 3: shift + tab event tests
+    }).then(() => {
+      // trigger shift + tab event
+      document.getElementById('modalBox')!.dispatchEvent(new KeyboardEvent('keydown', {
+        'key': 'tab',
+        'shiftKey': true
+      }));
+      fixture.detectChanges();
+      tick();
+
+      // check the focus shifted to the previous element
+      expect(focusBindedSpy).toHaveBeenCalled();
+      expect(focusBindedSpy).toHaveBeenCalledTimes(2);
+      spies.forEach((spy, index:number) => {
+        if(index == 0) {
+          expect(spy).toHaveBeenCalled();
+          expect(spy).toHaveBeenCalledTimes(2);
+        }
+        else if(index == 1) {
+          expect(spy).toHaveBeenCalled();
+          expect(spy).toHaveBeenCalledTimes(1);
+        }
+        else {
+          expect(spy).not.toHaveBeenCalled();
+        }
+      });
+    })
+  }));
+
+  // check the focus is trapped
+  it('should trap focus in the modal', fakeAsync(() => {
+    const fixture = TestBed.createComponent(NotificationsTab);
+    const notificationsTab  = fixture.componentInstance;
+    const notifTabDOM = fixture.nativeElement;
+    const focusBindedSpy = spyOn(notificationsTab, 'checkFocusBinded').and.callThrough();
+    fixture.detectChanges();
+    tick();
+
+    // spies
+    const spies = [
+      spyOn(notifTabDOM.querySelector('#exitButton'), 'focus'),
+      spyOn(notifTabDOM.querySelectorAll('.NotificationButton')[0], 'focus'),
+      spyOn(notifTabDOM.querySelectorAll('.NotificationButton')[1], 'focus')
+    ];
+    spies.forEach((spy) => {
+      spy.calls.reset();
+    });
+
+    // run the tests, with each stage wrapped in a promise to ensure they
+    // happen by the correct order
+    // step 1: check the last element is focused
+    new Promise(() => {
+      // focus on the last element
+      notifTabDOM.querySelectorAll('.NotificationButton')[1].focus();
+
+      // check the last element has focus
+      spies.forEach((spy, index:number) => {
+        if(index == 2) {
+          expect(spy).toHaveBeenCalled();
+        }
+        else {
+          expect(spy).not.toHaveBeenCalled();
+        }
+      });
+    // step 2: check what happens when clicking tab
+    }).then(() => {
+      // trigger tab event
+      document.getElementById('modalBox')!.dispatchEvent(new KeyboardEvent('keydown', {
+        'key': 'tab',
+        'shiftKey': false
+      }));
+      fixture.detectChanges();
+      tick();
+
+      // check the focus shifted to the first element
+      expect(focusBindedSpy).toHaveBeenCalled();
+      spies.forEach((spy, index:number) => {
+        if(index != 1) {
+          expect(spy).toHaveBeenCalled();
+          expect(spy).toHaveBeenCalledTimes(1);
+        }
+        else {
+          expect(spy).not.toHaveBeenCalled();
+        }
+      });
+    // check what happens when clicking shift + tab
+    }).then(() => {
+      // trigger shift + tab event
+      document.getElementById('modalBox')!.dispatchEvent(new KeyboardEvent('keydown', {
+        'key': 'tab',
+        'shiftKey': true
+      }));
+      fixture.detectChanges();
+      tick();
+
+      // check the focus shifted to the last element
+      expect(focusBindedSpy).toHaveBeenCalled();
+      expect(focusBindedSpy).toHaveBeenCalledTimes(2);
+      spies.forEach((spy, index:number) => {
+        if(index == 2) {
+          expect(spy).toHaveBeenCalled();
+          expect(spy).toHaveBeenCalledTimes(2);
+        }
+        else if(index == 0) {
+          expect(spy).toHaveBeenCalled();
+          expect(spy).toHaveBeenCalledTimes(1);
+        }
+        else {
+          expect(spy).not.toHaveBeenCalled();
+        }
+      });
+    })
+  }));
+
   // Check that the exit button emits the correct boolean
   it('emits false upon clicking the exit button', fakeAsync(() => {
     // set up the component

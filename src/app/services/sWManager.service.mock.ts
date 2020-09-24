@@ -342,6 +342,68 @@ export class MockSWManager {
   }
 
   /*
+  Function Name: addItem()
+  Function Description: Add an item to one of the stores.
+  Parameters: store - the store to which to add an item
+              item - the item to add
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  addItem(store: 'posts' | 'messages' | 'users' | 'threads', item: any) {
+    return this.currentDB?.then((db) => {
+      // start a new transaction
+      let dbStore = db.transaction(store).store;
+      dbStore.put(item);
+    });
+  }
+
+  /*
+  Function Name: deleteItem()
+  Function Description: Delete an item from one of the stores.
+  Parameters: store - the store from which to delete an item
+              itemID - the ID of the item to delete
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  deleteItem(store: 'posts' | 'messages' | 'users' | 'threads', itemID: number ) {
+    return this.currentDB?.then((db) => {
+      // start a new transaction
+      let tx = db.transaction(store, 'readwrite');
+      let dbStore = tx.objectStore(store);
+      // delete the relevant item
+      dbStore.delete(itemID);
+    });
+  }
+
+  /*
+  Function Name: deleteItems()
+  Function Description: Delete multiple items from one of the stores.
+  Parameters: store - the store from which to delete the items
+              parentType - the category to which the item's condition belongs. For example, when
+                            deleting all messages in a thread, the parent will be 'threadID'.
+              parentID - ID to match when deleting.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  deleteItems(store: 'posts' | 'messages' | 'users' | 'threads', parentType: string, parentID: number) {
+    return this.currentDB?.then((db) => {
+      // start a new transaction
+      let tx = db.transaction(store, 'readwrite');
+      let dbStore = tx.objectStore(store);
+      // open a cursor and delete any items with the matching parent's ID
+      // open a cursor and delete any messages with the deleted thread's ID
+      dbStore.openCursor().then(function checkItem(cursor):any {
+        if(!cursor) return;
+        // @ts-ignore
+        if(cursor.value[parentType] == parentID) {
+          cursor.delete();
+        }
+        return cursor.continue().then(checkItem);
+      })
+    });
+  }
+
+  /*
   Function Name: clearStore()
   Function Description: Deletes all records from an IDB store.
   Parameters: storeID (string) - the name of the store to clear.

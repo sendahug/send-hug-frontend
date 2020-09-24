@@ -234,59 +234,68 @@ describe("AppComponent", () => {
       tick();
       const fontPanelButtons = componentHtml.querySelector('#textPanel').querySelectorAll('.appButton');
 
-      // check the initial font size
-      expect(document.getElementsByTagName('html')[0]!.style.fontSize).toBe('');
-      expect(menuSpy).not.toHaveBeenCalled();
+      // wrap tests in a promise to make sure they run fully and by the order
+      // step 1: regular size
+      new Promise(() => {
+        // check the initial font size
+        expect(document.getElementsByTagName('html')[0]!.style.fontSize).toBe('');
+        expect(menuSpy).not.toHaveBeenCalled();
+      // step 2: smallest size
+      }).then(() => {
+        // change the font size to the smallest
+        fontPanelButtons[0]!.click();
+        fixture.detectChanges();
+        tick();
 
-      // change the font size to the smallest
-      fontPanelButtons[0]!.click();
-      fixture.detectChanges();
-      tick();
+        // check the font size was changed
+        expect(document.getElementsByTagName('html')[0]!.style.fontSize).toBe('75%');
+        expect(menuSpy).toHaveBeenCalled();
+        expect(menuSpy).toHaveBeenCalledTimes(1);
+      // step 3: smaller size
+      }).then(() => {
+        // change the font size to the smaller
+        fontPanelButtons[1]!.click();
+        fixture.detectChanges();
+        tick();
 
-      // check the font size was changed
-      expect(document.getElementsByTagName('html')[0]!.style.fontSize).toBe('75%');
-      expect(menuSpy).toHaveBeenCalled();
-      expect(menuSpy).toHaveBeenCalledTimes(1);
+        // check the font size was changed
+        expect(document.getElementsByTagName('html')[0]!.style.fontSize).toBe('87.5%');
+        expect(menuSpy).toHaveBeenCalled();
+        expect(menuSpy).toHaveBeenCalledTimes(2);
+      // step 4: regular size
+      }).then(() => {
+        // change the font size to the normal
+        fontPanelButtons[2]!.click();
+        fixture.detectChanges();
+        tick();
 
-      // change the font size to the smaller
-      fontPanelButtons[1]!.click();
-      fixture.detectChanges();
-      tick();
+        // check the font size was changed
+        expect(document.getElementsByTagName('html')[0]!.style.fontSize).toBe('100%');
+        expect(menuSpy).toHaveBeenCalled();
+        expect(menuSpy).toHaveBeenCalledTimes(3);
+      // step 5: larger size
+      }).then(() => {
+        // change the font size to the larger
+        fontPanelButtons[3]!.click();
+        fixture.detectChanges();
+        tick();
 
-      // check the font size was changed
-      expect(document.getElementsByTagName('html')[0]!.style.fontSize).toBe('87.5%');
-      expect(menuSpy).toHaveBeenCalled();
-      expect(menuSpy).toHaveBeenCalledTimes(2);
+        // check the font size was changed
+        expect(document.getElementsByTagName('html')[0]!.style.fontSize).toBe('150%');
+        expect(menuSpy).toHaveBeenCalled();
+        expect(menuSpy).toHaveBeenCalledTimes(4);
+      // step 6: largest size
+      }).then(() => {
+        // change the font size to the largest
+        fontPanelButtons[4]!.click();
+        fixture.detectChanges();
+        tick();
 
-      // change the font size to the normal
-      fontPanelButtons[2]!.click();
-      fixture.detectChanges();
-      tick();
-
-      // check the font size was changed
-      expect(document.getElementsByTagName('html')[0]!.style.fontSize).toBe('100%');
-      expect(menuSpy).toHaveBeenCalled();
-      expect(menuSpy).toHaveBeenCalledTimes(3);
-
-      // change the font size to the larger
-      fontPanelButtons[3]!.click();
-      fixture.detectChanges();
-      tick();
-
-      // check the font size was changed
-      expect(document.getElementsByTagName('html')[0]!.style.fontSize).toBe('150%');
-      expect(menuSpy).toHaveBeenCalled();
-      expect(menuSpy).toHaveBeenCalledTimes(4);
-
-      // change the font size to the largest
-      fontPanelButtons[4]!.click();
-      fixture.detectChanges();
-      tick();
-
-      // check the font size was changed
-      expect(document.getElementsByTagName('html')[0]!.style.fontSize).toBe('200%');
-      expect(menuSpy).toHaveBeenCalled();
-      expect(menuSpy).toHaveBeenCalledTimes(5);
+        // check the font size was changed
+        expect(document.getElementsByTagName('html')[0]!.style.fontSize).toBe('200%');
+        expect(menuSpy).toHaveBeenCalled();
+        expect(menuSpy).toHaveBeenCalledTimes(5);
+      });
     }));
 
     // check the menu is shown if the screen is wide enough

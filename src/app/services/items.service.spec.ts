@@ -760,8 +760,8 @@ describe('ItemsService', () => {
     expect(deleteMultiSpy).toHaveBeenCalledWith('messages', 'threadID', 2);
   });
 
-  // Check that the service clears the mailbox
-  it('deleteAll() - should clear a mailbox', () => {
+  // Check that the service clears the mailbox - inbox
+  it('deleteAll() - should clear a mailbox - inbox', () => {
     // mock response
     const mockResponse = {
       deleted: "2",
@@ -771,6 +771,7 @@ describe('ItemsService', () => {
 
     // make the request
     const alertSpy = spyOn(itemsService['alertsService'], 'createSuccessAlert');
+    const deleteSpy = spyOn(itemsService['serviceWorkerM'], 'deleteItems');
     itemsService.deleteAll('all inbox', 4);
 
     const req = httpController.expectOne('http://localhost:5000/messages/inbox?userID=4');
@@ -779,6 +780,58 @@ describe('ItemsService', () => {
 
     expect(alertSpy).toHaveBeenCalled();
     expect(alertSpy).toHaveBeenCalledWith(`2 messages were deleted! Refresh to view the updated mailbox.`, true);
+    expect(deleteSpy).toHaveBeenCalled();
+    expect(deleteSpy).toHaveBeenCalledWith('messages', 'forId', 4);
+  });
+
+  // Check that the service clears the mailbox - outbox
+  it('deleteAll() - should clear a mailbox - outbox', () => {
+    // mock response
+    const mockResponse = {
+      deleted: "2",
+      success: true,
+      userID: "4"
+    };
+
+    // make the request
+    const alertSpy = spyOn(itemsService['alertsService'], 'createSuccessAlert');
+    const deleteSpy = spyOn(itemsService['serviceWorkerM'], 'deleteItems');
+    itemsService.deleteAll('all outbox', 4);
+
+    const req = httpController.expectOne('http://localhost:5000/messages/outbox?userID=4');
+    expect(req.request.method).toEqual('DELETE');
+    req.flush(mockResponse);
+
+    expect(alertSpy).toHaveBeenCalled();
+    expect(alertSpy).toHaveBeenCalledWith(`2 messages were deleted! Refresh to view the updated mailbox.`, true);
+    expect(deleteSpy).toHaveBeenCalled();
+    expect(deleteSpy).toHaveBeenCalledWith('messages', 'fromId', 4);
+  });
+
+  // Check that the service clears the mailbox - threads
+  it('deleteAll() - should clear a mailbox - threads', () => {
+    // mock response
+    const mockResponse = {
+      deleted: "2",
+      success: true,
+      userID: "4"
+    };
+
+    // make the request
+    const alertSpy = spyOn(itemsService['alertsService'], 'createSuccessAlert');
+    const clearSpy = spyOn(itemsService['serviceWorkerM'], 'clearStore');
+    itemsService.deleteAll('all threads', 4);
+
+    const req = httpController.expectOne('http://localhost:5000/messages/threads?userID=4');
+    expect(req.request.method).toEqual('DELETE');
+    req.flush(mockResponse);
+
+    expect(alertSpy).toHaveBeenCalled();
+    expect(alertSpy).toHaveBeenCalledWith(`2 messages were deleted! Refresh to view the updated mailbox.`, true);
+    expect(clearSpy).toHaveBeenCalled();
+    expect(clearSpy).toHaveBeenCalledTimes(2);
+    expect(clearSpy).toHaveBeenCalledWith('messages');
+    expect(clearSpy).toHaveBeenCalledWith('threads');
   });
 
   // Check that the service runs the search and handles results correctly

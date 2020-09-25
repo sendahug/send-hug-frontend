@@ -35,6 +35,7 @@ import { HttpClientModule } from "@angular/common/http";
 import { ServiceWorkerModule } from "@angular/service-worker";
 import { ActivatedRoute } from "@angular/router";
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { By } from '@angular/platform-browser';
 
 import { UserPage } from './userPage.component';
 import { PopUp } from '../popUp/popUp.component';
@@ -331,4 +332,35 @@ describe('UserPage', () => {
     expect(userPage.itemsService.otherUserData.receivedHugs).toBe(4);
     expect(userPageDOM.querySelector('#rHugsElement').querySelectorAll('.pageData')[0].textContent).toBe('4');
   }));
+
+  // Check the popup exits when 'false' is emitted
+  it('should change mode when the event emitter emits false', fakeAsync(() => {
+    const paramMap = TestBed.inject(ActivatedRoute);
+    spyOn(paramMap.snapshot.paramMap, 'get').and.returnValue('1');
+    const fixture = TestBed.createComponent(UserPage);
+    const userPage = fixture.componentInstance;
+    const changeSpy = spyOn(userPage, 'changeMode').and.callThrough();
+    userPage.itemsService['authService'].login();
+
+    fixture.detectChanges();
+    tick();
+
+    // start the popup
+    userPage.userToEdit = userPage.authService.userData;
+    userPage.editMode = true;
+    userPage.editType = 'user';
+    userPage.report = false;
+    fixture.detectChanges();
+    tick();
+
+    // exit the popup
+    const popup = fixture.debugElement.query(By.css('app-pop-up')).componentInstance as PopUp;
+    popup.exitEdit();
+    fixture.detectChanges();
+    tick();
+
+    // check the popup is exited
+    expect(changeSpy).toHaveBeenCalled();
+    expect(userPage.editMode).toBeFalse();
+  }))
 });

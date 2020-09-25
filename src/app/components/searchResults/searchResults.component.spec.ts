@@ -35,6 +35,7 @@ import { HttpClientModule } from "@angular/common/http";
 import { ServiceWorkerModule } from "@angular/service-worker";
 import { ActivatedRoute, Router } from "@angular/router";
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { By } from '@angular/platform-browser';
 
 import { SearchResults } from './searchResults.component';
 import { PopUp } from '../popUp/popUp.component';
@@ -848,5 +849,47 @@ describe('SearchResults', () => {
       expect(firstElement.querySelectorAll('.subMenu')[0].classList).toContain('hidden');
       expect(searchResultsDOM.querySelectorAll('.searchResult')[1]!.querySelectorAll('.subMenu')[0].classList).not.toContain('hidden');
     }));
+
+    // Check the popup exits when 'false' is emitted
+    it('should change mode when the event emitter emits false', fakeAsync(() => {
+      // set up spies
+      const route = TestBed.inject(ActivatedRoute);
+      spyOn(route.snapshot.queryParamMap, 'get').and.callFake((param: string) => {
+        if(param == 'query') {
+          return 'search';
+        }
+        else {
+          return null;
+        }
+      });
+      TestBed.inject(ItemsService).postSearchPage = 2;
+
+      // create the component
+      const fixture = TestBed.createComponent(SearchResults);
+      const searchResults = fixture.componentInstance;
+      const changeSpy = spyOn(searchResults, 'changeMode').and.callThrough();
+      searchResults.itemsService['authService'].login();
+
+      fixture.detectChanges();
+      tick();
+
+      // start the popup
+      searchResults.editMode = true;
+      searchResults.delete = true;
+      searchResults.toDelete = 'Post';
+      searchResults.itemToDelete = 2;
+      fixture.detectChanges();
+      tick();
+
+      // exit the popup
+      const popup = fixture.debugElement.query(By.css('app-pop-up')).componentInstance as PopUp;
+      popup.exitEdit();
+      fixture.detectChanges();
+      tick();
+
+      // check the popup is exited
+      expect(changeSpy).toHaveBeenCalled();
+      expect(searchResults.editMode).toBeFalse();
+    }))
   });
 });

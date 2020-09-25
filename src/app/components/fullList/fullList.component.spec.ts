@@ -34,6 +34,8 @@ import {
 import { HttpClientModule } from "@angular/common/http";
 import { ServiceWorkerModule } from "@angular/service-worker";
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { of } from 'rxjs';
+import { By } from '@angular/platform-browser';
 
 import { FullList } from './fullList.component';
 import { PopUp } from '../popUp/popUp.component';
@@ -43,8 +45,6 @@ import { AuthService } from '../../services/auth.service';
 import { MockAuthService } from '../../services/auth.service.mock';
 import { ActivatedRoute, UrlSegment } from "@angular/router";
 import { Loader } from '../loader/loader.component';
-import { of } from 'rxjs';
-
 
 describe('FullList', () => {
   // Before each test, configure testing environment
@@ -485,6 +485,36 @@ describe('FullList', () => {
     expect(firstElement.querySelectorAll('.subMenu')[0].classList).toContain('hidden');
     expect(fullListDOM.querySelectorAll('.newItem')[1]!.querySelectorAll('.subMenu')[0].classList).not.toContain('hidden');
   }));
+
+  // Check the popup exits when 'false' is emitted
+  it('should change mode when the event emitter emits false', fakeAsync(() => {
+    const paramMap = TestBed.inject(ActivatedRoute);
+    paramMap.url = of([{path: 'New'} as UrlSegment]);
+    const fixture = TestBed.createComponent(FullList);
+    const fullList = fixture.componentInstance;
+    const changeSpy = spyOn(fullList, 'changeMode').and.callThrough();
+
+    fixture.detectChanges();
+    tick();
+
+    // start the popup
+    fullList.editMode = true;
+    fullList.delete = true;
+    fullList.toDelete = 'Post';
+    fullList.itemToDelete = 1;
+    fixture.detectChanges();
+    tick();
+
+    // exit the popup
+    const popup = fixture.debugElement.query(By.css('app-pop-up')).componentInstance as PopUp;
+    popup.exitEdit();
+    fixture.detectChanges();
+    tick();
+
+    // check the popup is exited
+    expect(changeSpy).toHaveBeenCalled();
+    expect(fullList.editMode).toBeFalse();
+  }))
 
   // FULL NEW LIST
   // ==================================================================

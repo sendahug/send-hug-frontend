@@ -34,6 +34,7 @@ import {
 import { HttpClientModule } from "@angular/common/http";
 import { ServiceWorkerModule } from "@angular/service-worker";
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { By } from '@angular/platform-browser';
 
 // App imports
 import { MainPage } from "./mainPage.component";
@@ -495,4 +496,33 @@ describe('MainPage', () => {
     expect(reportSpy).toHaveBeenCalled();
     expect(mainPageDOM.querySelector('app-pop-up')).toBeTruthy();
   }));
+
+  // Check the popup exits when 'false' is emitted
+  it('should change mode when the event emitter emits false', fakeAsync(() => {
+    const fixture = TestBed.createComponent(MainPage);
+    const mainPage = fixture.componentInstance;
+    const changeSpy = spyOn(mainPage, 'changeMode').and.callThrough();
+
+    fixture.detectChanges();
+    tick();
+
+    // start the popup
+    mainPage.editMode = true;
+    mainPage.delete = true;
+    mainPage.toDelete = 'Post';
+    mainPage.itemToDelete = 1;
+    mainPage.report = false;
+    fixture.detectChanges();
+    tick();
+
+    // exit the popup
+    const popup = fixture.debugElement.query(By.css('app-pop-up')).componentInstance as PopUp;
+    popup.exitEdit();
+    fixture.detectChanges();
+    tick();
+
+    // check the popup is exited
+    expect(changeSpy).toHaveBeenCalled();
+    expect(mainPage.editMode).toBeFalse();
+  }))
 })

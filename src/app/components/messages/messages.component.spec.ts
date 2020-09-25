@@ -33,9 +33,10 @@ import {
 } from "@angular/platform-browser-dynamic/testing";
 import { HttpClientModule } from "@angular/common/http";
 import { ServiceWorkerModule } from "@angular/service-worker";
-import { ActivatedRoute, convertToParamMap, UrlSegment } from '@angular/router';
+import { ActivatedRoute, UrlSegment } from '@angular/router';
 import { BehaviorSubject, of } from 'rxjs';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { By } from '@angular/platform-browser';
 
 import { AppMessaging } from './messages.component';
 import { PopUp } from '../popUp/popUp.component';
@@ -149,6 +150,36 @@ describe('AppMessaging', () => {
     expect(loginServiceSpy).toHaveBeenCalled();
     expect(appMessaging.authService.authenticated).toBeTrue();
   }));
+
+  // Check the popup exits when 'false' is emitted
+  it('should change mode when the event emitter emits false', fakeAsync(() => {
+    TestBed.inject(ActivatedRoute).url = of([{path: 'inbox'} as UrlSegment]);
+    const fixture = TestBed.createComponent(AppMessaging);
+    const appMessaging = fixture.componentInstance;
+    appMessaging.login();
+    const changeSpy = spyOn(appMessaging, 'changeMode').and.callThrough();
+
+    fixture.detectChanges();
+    tick();
+
+    // start the popup
+    appMessaging.editMode = true;
+    appMessaging.delete = true;
+    appMessaging.toDelete = 'Thread';
+    appMessaging.itemToDelete = 1;
+    fixture.detectChanges();
+    tick();
+
+    // exit the popup
+    const popup = fixture.debugElement.query(By.css('app-pop-up')).componentInstance as PopUp;
+    popup.exitEdit();
+    fixture.detectChanges();
+    tick();
+
+    // check the popup is exited
+    expect(changeSpy).toHaveBeenCalled();
+    expect(appMessaging.editMode).toBeFalse();
+  }))
 
   // INBOX
   // ==================================================================

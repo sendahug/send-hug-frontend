@@ -35,6 +35,9 @@ import { HttpClientModule } from "@angular/common/http";
 import { ServiceWorkerModule } from "@angular/service-worker";
 import { Component } from '@angular/core';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { ActivatedRoute } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { By } from '@angular/platform-browser';
 
 import { MyPosts } from './myPosts.component';
 import { PopUp } from '../popUp/popUp.component';
@@ -46,8 +49,6 @@ import { AuthService } from '../../services/auth.service';
 import { MockAuthService } from '../../services/auth.service.mock';
 import { PostsService } from '../../services/posts.service';
 import { MockPostsService } from '../../services/posts.service.mock';
-import { ActivatedRoute } from '@angular/router';
-import { Subscription } from 'rxjs';
 
 // Mock User Page for testing the sub-component
 // ==================================================
@@ -481,4 +482,39 @@ describe('MyPosts', () => {
     expect(myPosts.itemsService.userPostsPage.other).toBe(1);
     expect(myPostsDOM.querySelectorAll('.itemList')[0].children.length).toBe(5);
   }));
+
+  // Check the popup exits when 'false' is emitted
+  it('should change mode when the event emitter emits false', fakeAsync(() => {
+    // create the component
+    const paramMap = TestBed.inject(ActivatedRoute);
+    spyOn(paramMap.snapshot.paramMap, 'get').and.returnValue('1');
+    const itemsService = TestBed.inject(ItemsService) as ItemsService;
+    itemsService['authService'].login();
+    let fixture = TestBed.createComponent(MockUserPage);
+    fixture.detectChanges();
+    tick();
+    let myPosts = fixture.debugElement.children[0].children[0].componentInstance;
+    const changeSpy = spyOn(myPosts, 'changeMode').and.callThrough();
+
+    fixture.detectChanges();
+    tick();
+
+    // start the popup
+    myPosts.editMode = true;
+    myPosts.delete = true;
+    myPosts.toDelete = 'Post';
+    myPosts.itemToDelete = 2;
+    fixture.detectChanges();
+    tick();
+
+    // exit the popup
+    const popup = fixture.debugElement.children[0].children[0].query(By.css('app-pop-up')).componentInstance as PopUp;
+    popup.exitEdit();
+    fixture.detectChanges();
+    tick();
+
+    // check the popup is exited
+    expect(changeSpy).toHaveBeenCalled();
+    expect(myPosts.editMode).toBeFalse();
+  }))
 });

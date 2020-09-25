@@ -35,6 +35,7 @@ import {
 import { HttpClientModule } from "@angular/common/http";
 import { ServiceWorkerModule } from "@angular/service-worker";
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { By } from '@angular/platform-browser';
 
 import { AdminDashboard } from './adminDashboard.component';
 import { PopUp } from '../popUp/popUp.component';
@@ -90,6 +91,36 @@ describe('AdminDashboard', () => {
     expect(adminDashboard.delete).toBeFalse();
     expect(adminDashboard.report).toBeFalse();
   });
+
+  // Check the popup exits when 'false' is emitted
+  it('should change mode when the event emitter emits false', fakeAsync(() => {
+    const fixture = TestBed.createComponent(AdminDashboard);
+    const adminDashboard = fixture.componentInstance;
+    const changeSpy = spyOn(adminDashboard, 'changeMode').and.callThrough();
+    adminDashboard['authService'].login();
+
+    fixture.detectChanges();
+    tick();
+
+    // start the popup
+    adminDashboard.editType = 'other user';
+    adminDashboard.toEdit = 'displayName';
+    adminDashboard.editMode = true;
+    adminDashboard.reportData.reportID = 5;
+    adminDashboard.reportData.userID = 2;
+    fixture.detectChanges();
+    tick();
+
+    // exit the popup
+    const popup = fixture.debugElement.query(By.css('app-pop-up')).componentInstance as PopUp;
+    popup.exitEdit();
+    fixture.detectChanges();
+    tick();
+
+    // check the popup is exited
+    expect(changeSpy).toHaveBeenCalled();
+    expect(adminDashboard.editMode).toBeFalse();
+  }));
 
   // REPORTS PAGE
   // ==================================================================

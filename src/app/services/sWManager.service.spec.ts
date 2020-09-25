@@ -112,6 +112,8 @@ describe('SWManagerService', () => {
       sWManagerService.currentDB = sWManagerService.openDatabase();
       sWManagerService.currentDB.then((db) => {
         const store = db.transaction('posts', 'readwrite').objectStore('posts');
+        // clear the store before adding records
+        store.clear();
         store.put({
           'date': new Date('2020-06-27 19:17:31.072'),
           'givenHugs': 0,
@@ -266,6 +268,8 @@ describe('SWManagerService', () => {
       sWManagerService.currentDB = sWManagerService.openDatabase();
       sWManagerService.currentDB.then((db) => {
         const store = db.transaction('messages', 'readwrite').objectStore('messages');
+        // clear the store before adding records
+        store.clear();
         store.put({
           date: new Date("Mon, 22 Jun 2020 14:32:38 GMT"),
           for: "user14",
@@ -396,6 +400,8 @@ describe('SWManagerService', () => {
       sWManagerService.currentDB = sWManagerService.openDatabase();
       sWManagerService.currentDB.then((db) => {
         const store = db.transaction('threads', 'readwrite').objectStore('threads');
+        // clear the store before adding records
+        store.clear();
         store.put({
           id: 3,
           user1: "shirb",
@@ -467,6 +473,8 @@ describe('SWManagerService', () => {
       sWManagerService.currentDB = sWManagerService.openDatabase();
       sWManagerService.currentDB.then((db) => {
         const store = db.transaction('users', 'readwrite').objectStore('users');
+        // clear the store before adding records
+        store.clear();
         store.put({
           id: 1,
           displayName: "shirb",

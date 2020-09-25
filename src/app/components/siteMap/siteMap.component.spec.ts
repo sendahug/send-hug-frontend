@@ -28,10 +28,45 @@ import {
 import { HttpClientModule } from "@angular/common/http";
 import { ServiceWorkerModule } from "@angular/service-worker";
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { Component } from "@angular/core";
+import { Routes } from "@angular/router";
 
 import { AppComponent } from "../../app.component";
 import { SiteMap } from "./siteMap.component";
-import { routes } from '../../app-routing.module';
+import { NotificationsTab } from '../notifications/notifications.component';
+
+// Mock Component for testing the sitemap
+// ==================================================
+@Component({
+  selector: 'app-mock',
+  template: `
+  <!-- If the user is logged in, displays a user page. -->
+  <div id="profileContainer">
+  		hi
+  </div>
+  `
+})
+class MockComp {
+  waitFor = "user";
+  userId: number | undefined;
+
+  constructor(
+  ) {
+    this.userId = 4;
+  }
+}
+
+// Routes
+export const routes: Routes = [
+  { path: '', component: MockComp, data: { name: 'Home Page' } },
+  { path: 'user',
+      children: [
+        { path: '', pathMatch: 'prefix', component: MockComp, data: { name: 'Your Page' } },
+        { path: ':id', pathMatch: 'prefix', component: MockComp, data: { name: 'Other User\'s Page' } }
+      ], data: { name: 'User Page' }},
+  { path: 'settings', component: MockComp, data: { name: 'Settings Page' } },
+  { path: 'sitemap', component: SiteMap, data: { name: 'Site Map' } }
+];
 
 describe('AboutApp', () => {
   // Before each test, configure testing environment
@@ -49,6 +84,8 @@ describe('AboutApp', () => {
       ],
       declarations: [
         AppComponent,
+        MockComp,
+        NotificationsTab,
         SiteMap
       ],
       providers: [

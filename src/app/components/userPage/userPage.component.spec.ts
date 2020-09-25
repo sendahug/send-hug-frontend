@@ -36,7 +36,6 @@ import { ServiceWorkerModule } from "@angular/service-worker";
 import { ActivatedRoute } from "@angular/router";
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
-import { AppComponent } from '../../app.component';
 import { UserPage } from './userPage.component';
 import { PopUp } from '../popUp/popUp.component';
 import { Loader } from '../loader/loader.component';
@@ -62,7 +61,6 @@ describe('UserPage', () => {
         FontAwesomeModule
       ],
       declarations: [
-        AppComponent,
         UserPage,
         PopUp,
         Loader,
@@ -79,19 +77,15 @@ describe('UserPage', () => {
 
   // Check that the component is created
   it('should create the component', () => {
-    const acFixture = TestBed.createComponent(AppComponent);
-    const appComponent = acFixture.componentInstance;
     const fixture = TestBed.createComponent(UserPage);
     const userPage = fixture.componentInstance;
-    expect(appComponent).toBeTruthy();
     expect(userPage).toBeTruthy();
   });
 
   // Check that the component checks for a logged in user
   it('should check for a logged in user', () => {
-    const authService = TestBed.get(AuthService);
+    const authService = TestBed.inject(AuthService);
     const authSpy = spyOn(authService, 'checkHash').and.callThrough();
-    TestBed.createComponent(AppComponent);
     const fixture = TestBed.createComponent(UserPage);
     const userPage = fixture.componentInstance;
 
@@ -101,7 +95,6 @@ describe('UserPage', () => {
 
   // Check that the popup variables are set to false
   it('should have the popup variables set to false', () => {
-    TestBed.createComponent(AppComponent);
     const fixture = TestBed.createComponent(UserPage);
     const userPage = fixture.componentInstance;
 
@@ -111,7 +104,6 @@ describe('UserPage', () => {
 
   // Check that when there's no ID the component defaults to the logged in user
   it('should show the logged in user if not provided with ID', fakeAsync(() => {
-    TestBed.createComponent(AppComponent);
     const fixture = TestBed.createComponent(UserPage);
     const userPage = fixture.componentInstance;
     const userPageDOM = fixture.nativeElement;
@@ -132,9 +124,8 @@ describe('UserPage', () => {
 
   // Check that when the ID is the user's ID, it shows the user's own page
   it('should show the logged in user if it\'s the user\'s own ID', fakeAsync(() => {
-    const paramMap = TestBed.get(ActivatedRoute);
+    const paramMap = TestBed.inject(ActivatedRoute);
     const routeSpy = spyOn(paramMap.snapshot.paramMap, 'get').and.returnValue('4');
-    TestBed.createComponent(AppComponent);
     const fixture = TestBed.createComponent(UserPage);
     const userPage = fixture.componentInstance;
     const userPageDOM = fixture.nativeElement;
@@ -157,9 +148,8 @@ describe('UserPage', () => {
 
   // Check that when the ID is another user's ID, it shows their page
   it('should show another user\'s page if that was the provided ID', fakeAsync(() => {
-    const paramMap = TestBed.get(ActivatedRoute);
+    const paramMap = TestBed.inject(ActivatedRoute);
     const routeSpy = spyOn(paramMap.snapshot.paramMap, 'get').and.returnValue('1');
-    TestBed.createComponent(AppComponent);
     const fixture = TestBed.createComponent(UserPage);
     const userPage = fixture.componentInstance;
     const userPageDOM = fixture.nativeElement;
@@ -182,8 +172,7 @@ describe('UserPage', () => {
 
   // Check that the 'please login page' is shown if the user's logged out
   it('should show login page if user is not authenticated', fakeAsync(() => {
-    TestBed.createComponent(AppComponent);
-    const paramMap = TestBed.get(ActivatedRoute);
+    const paramMap = TestBed.inject(ActivatedRoute);
     spyOn(paramMap.snapshot.paramMap, 'get').and.returnValue('4');
     const fixture = TestBed.createComponent(UserPage);
     const userPage = fixture.componentInstance;
@@ -200,8 +189,7 @@ describe('UserPage', () => {
 
   // Check that the login button triggers the AuthService's login method
   it('should trigger the AuthService upon clicking login', fakeAsync(() => {
-    TestBed.createComponent(AppComponent);
-    const paramMap = TestBed.get(ActivatedRoute);
+    const paramMap = TestBed.inject(ActivatedRoute);
     spyOn(paramMap.snapshot.paramMap, 'get').and.returnValue('4');
     const fixture = TestBed.createComponent(UserPage);
     const userPage = fixture.componentInstance;
@@ -229,9 +217,8 @@ describe('UserPage', () => {
 
   // Check that the logout button triggers the AuthService's logout method
   it('should trigger the AuthService upon clicking logout', fakeAsync(() => {
-    const paramMap = TestBed.get(ActivatedRoute);
+    const paramMap = TestBed.inject(ActivatedRoute);
     spyOn(paramMap.snapshot.paramMap, 'get').and.returnValue('4');
-    TestBed.createComponent(AppComponent);
     const fixture = TestBed.createComponent(UserPage);
     const userPage = fixture.componentInstance;
     const userPageDOM = fixture.nativeElement;
@@ -257,9 +244,8 @@ describe('UserPage', () => {
 
   // Check that the popup is triggered on edit
   it('should open the popup upon editing', fakeAsync(() => {
-    const paramMap = TestBed.get(ActivatedRoute);
+    const paramMap = TestBed.inject(ActivatedRoute);
     spyOn(paramMap.snapshot.paramMap, 'get').and.returnValue('4');
-    TestBed.createComponent(AppComponent);
     const fixture = TestBed.createComponent(UserPage);
     const userPage = fixture.componentInstance;
     const userPageDOM = fixture.nativeElement;
@@ -284,9 +270,8 @@ describe('UserPage', () => {
 
   //Check that the popup is opened when clicking 'report'
   it('should open the popup upon reporting', fakeAsync(() => {
-    const paramMap = TestBed.get(ActivatedRoute);
+    const paramMap = TestBed.inject(ActivatedRoute);
     spyOn(paramMap.snapshot.paramMap, 'get').and.returnValue('1');
-    TestBed.createComponent(AppComponent);
     const fixture = TestBed.createComponent(UserPage);
     const userPage = fixture.componentInstance;
     const userPageDOM = fixture.nativeElement;
@@ -312,9 +297,8 @@ describe('UserPage', () => {
 
   // Check that sending a hug triggers the items service
   it('should trigger items service on hug', fakeAsync(() => {
-    const paramMap = TestBed.get(ActivatedRoute);
+    const paramMap = TestBed.inject(ActivatedRoute);
     spyOn(paramMap.snapshot.paramMap, 'get').and.returnValue('1');
-    TestBed.createComponent(AppComponent);
     const fixture = TestBed.createComponent(UserPage);
     const userPage = fixture.componentInstance;
     const userPageDOM = fixture.nativeElement;

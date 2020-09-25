@@ -14,3 +14,7 @@ localdev/app.bundle.js.map
 localdev/index.html
 localdev/assets/fonts
 localdev/assets/img
+
+# Testing files
+tests/*
+src/tests.specs.ts

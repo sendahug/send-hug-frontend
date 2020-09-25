@@ -202,14 +202,7 @@ export class AdminService {
       }
 
       // delete the post from idb
-      if(this.serviceWorkerM.currentDB) {
-        this.serviceWorkerM.currentDB.then((db) => {
-          // start a new transaction
-          let tx = db.transaction('posts', 'readwrite');
-          let store = tx.objectStore('posts');
-          store.delete(postID);
-        });
-      }
+      this.serviceWorkerM.deleteItem('posts', postID);
 
       // send the message about the deleted post
       this.itemsService.sendMessage(message);

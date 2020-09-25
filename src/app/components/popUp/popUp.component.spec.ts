@@ -48,6 +48,7 @@ import { MockAdminService } from '../../services/admin.service.mock';
 import { AlertsService } from '../../services/alerts.service';
 import { MockAlertsService } from '../../services/alerts.service.mock';
 import { Report } from '../../interfaces/report.interface';
+import { NotificationsTab } from '../notifications/notifications.component';
 
 describe('Popup', () => {
   // Before each test, configure testing environment
@@ -65,7 +66,8 @@ describe('Popup', () => {
       ],
       declarations: [
         AppComponent,
-        PopUp
+        PopUp,
+        NotificationsTab
       ],
       providers: [
         { provide: APP_BASE_HREF, useValue: '/' },
@@ -87,6 +89,201 @@ describe('Popup', () => {
     expect(appComponent).toBeTruthy();
     expect(popUp).toBeTruthy();
   });
+
+  // check tab and tab+shift let the user navigate
+  it('should navigate using tab and shift+tab', fakeAsync(() => {
+    TestBed.createComponent(AppComponent);
+    const fixture = TestBed.createComponent(PopUp);
+    const popUp = fixture.componentInstance;
+    const popUpDOM = fixture.nativeElement;
+    const focusBindedSpy = spyOn(popUp, 'checkFocusBinded').and.callThrough();
+    popUp.toEdit = 'admin post';
+    popUp.delete = false;
+    popUp.report = false;
+    popUp.editedItem = 'hi';
+    popUp.reportData = {
+      reportID: 1,
+      postID: 2
+    };
+    fixture.detectChanges();
+    tick();
+
+    // spies
+    const spies = [
+      spyOn(popUpDOM.querySelector('#exitButton'), 'focus').and.callThrough(),
+      spyOn(popUpDOM.querySelector('#adPostText'), 'focus').and.callThrough(),
+      spyOn(popUpDOM.querySelectorAll('.sendData')[0], 'focus').and.callThrough(),
+      spyOn(popUpDOM.querySelectorAll('.sendData')[1], 'focus').and.callThrough()
+    ];
+
+    spies.forEach((spy) => {
+      spy.calls.reset();
+    });
+
+    // run the tests, with each stage wrapped in a promise to ensure they
+    // happen by the correct order
+    // step 1: check the first element is focused
+    new Promise(() => {
+      popUp.ngOnInit();
+
+      // check the first element has focus
+      spies.forEach((spy, index:number) => {
+        if(index == 0) {
+          expect(spy).toHaveBeenCalled();
+        }
+        else {
+          expect(spy).not.toHaveBeenCalled();
+        }
+      });
+    // step 2: tab event tests
+    }).then(() => {
+      // trigger tab event
+      document.getElementById('modalBox')!.dispatchEvent(new KeyboardEvent('keydown', {
+        'key': 'tab',
+        'shiftKey': false
+      }));
+      fixture.detectChanges();
+      tick();
+
+      // check the focus shifted to the next element
+      expect(focusBindedSpy).toHaveBeenCalled();
+      spies.forEach((spy, index:number) => {
+        if(index == 0) {
+          expect(spy).toHaveBeenCalled();
+          expect(spy).toHaveBeenCalledTimes(1);
+        }
+        else if(index == 1) {
+          expect(spy).toHaveBeenCalled();
+          expect(spy).toHaveBeenCalledTimes(1);
+        }
+        else {
+          expect(spy).not.toHaveBeenCalled();
+        }
+      });
+    // step 3: shift + tab event tests
+    }).then(() => {
+      // trigger shift + tab event
+      document.getElementById('modalBox')!.dispatchEvent(new KeyboardEvent('keydown', {
+        'key': 'tab',
+        'shiftKey': true
+      }));
+      fixture.detectChanges();
+      tick();
+
+      // check the focus shifted to the previous element
+      expect(focusBindedSpy).toHaveBeenCalled();
+      expect(focusBindedSpy).toHaveBeenCalledTimes(2);
+      spies.forEach((spy, index:number) => {
+        if(index == 0) {
+          expect(spy).toHaveBeenCalled();
+          expect(spy).toHaveBeenCalledTimes(2);
+        }
+        else if(index == 1) {
+          expect(spy).toHaveBeenCalled();
+          expect(spy).toHaveBeenCalledTimes(1);
+        }
+        else {
+          expect(spy).not.toHaveBeenCalled();
+        }
+      });
+    })
+  }));
+
+  // check the focus is trapped
+  it('should trap focus in the modal', fakeAsync(() => {
+    TestBed.createComponent(AppComponent);
+    const fixture = TestBed.createComponent(PopUp);
+    const popUp = fixture.componentInstance;
+    const popUpDOM = fixture.nativeElement;
+    const focusBindedSpy = spyOn(popUp, 'checkFocusBinded').and.callThrough();
+    popUp.toEdit = 'admin post';
+    popUp.delete = false;
+    popUp.report = false;
+    popUp.editedItem = 'hi';
+    popUp.reportData = {
+      reportID: 1,
+      postID: 2
+    };
+    fixture.detectChanges();
+    tick();
+
+    // spies
+    const spies = [
+      spyOn(popUpDOM.querySelector('#exitButton'), 'focus').and.callThrough(),
+      spyOn(popUpDOM.querySelector('#adPostText'), 'focus').and.callThrough(),
+      spyOn(popUpDOM.querySelectorAll('.sendData')[0], 'focus').and.callThrough(),
+      spyOn(popUpDOM.querySelectorAll('.sendData')[1], 'focus').and.callThrough()
+    ];
+
+    spies.forEach((spy) => {
+      spy.calls.reset();
+    });
+
+    // run the tests, with each stage wrapped in a promise to ensure they
+    // happen by the correct order
+    // step 1: check the last element is focused
+    new Promise(() => {
+      // focus on the last element
+      popUpDOM.querySelectorAll('.sendData')[1].focus();
+
+      // check the last element has focus
+      spies.forEach((spy, index:number) => {
+        if(index == 3) {
+          expect(spy).toHaveBeenCalled();
+        }
+        else {
+          expect(spy).not.toHaveBeenCalled();
+        }
+      });
+    // step 2: check what happens when clicking tab
+    }).then(() => {
+      // trigger tab event
+      document.getElementById('modalBox')!.dispatchEvent(new KeyboardEvent('keydown', {
+        'key': 'tab',
+        'shiftKey': false
+      }));
+      fixture.detectChanges();
+      tick();
+
+      // check the focus shifted to the first element
+      expect(focusBindedSpy).toHaveBeenCalled();
+      spies.forEach((spy, index:number) => {
+        if(index == 3 || index == 0) {
+          expect(spy).toHaveBeenCalled();
+          expect(spy).toHaveBeenCalledTimes(1);
+        }
+        else {
+          expect(spy).not.toHaveBeenCalled();
+        }
+      });
+    // check what happens when clicking shift + tab
+    }).then(() => {
+      // trigger shift + tab event
+      document.getElementById('modalBox')!.dispatchEvent(new KeyboardEvent('keydown', {
+        'key': 'tab',
+        'shiftKey': true
+      }));
+      fixture.detectChanges();
+      tick();
+
+      // check the focus shifted to the last element
+      expect(focusBindedSpy).toHaveBeenCalled();
+      expect(focusBindedSpy).toHaveBeenCalledTimes(2);
+      spies.forEach((spy, index:number) => {
+        if(index == 3) {
+          expect(spy).toHaveBeenCalled();
+          expect(spy).toHaveBeenCalledTimes(2);
+        }
+        else if(index == 0) {
+          expect(spy).toHaveBeenCalled();
+          expect(spy).toHaveBeenCalledTimes(1);
+        }
+        else {
+          expect(spy).not.toHaveBeenCalled();
+        }
+      });
+    })
+  }));
 
   // Check that the event emitter emits false if the user clicks 'exit'
   it('exits the popup if the user decides not to edit', fakeAsync(() => {
@@ -138,7 +335,8 @@ describe('Popup', () => {
         ],
         declarations: [
           AppComponent,
-          PopUp
+          PopUp,
+          NotificationsTab
         ],
         providers: [
           { provide: APP_BASE_HREF, useValue: '/' },
@@ -267,7 +465,8 @@ describe('Popup', () => {
         ],
         declarations: [
           AppComponent,
-          PopUp
+          PopUp,
+          NotificationsTab
         ],
         providers: [
           { provide: APP_BASE_HREF, useValue: '/' },
@@ -433,7 +632,8 @@ describe('Popup', () => {
         ],
         declarations: [
           AppComponent,
-          PopUp
+          PopUp,
+          NotificationsTab
         ],
         providers: [
           { provide: APP_BASE_HREF, useValue: '/' },
@@ -449,7 +649,7 @@ describe('Popup', () => {
     // Check that the user's current display name is shown in the textfield
     it('shows the user\'s current display name', () => {
       TestBed.createComponent(AppComponent);
-      TestBed.get(AuthService).login();
+      TestBed.inject(AuthService).login();
       const fixture = TestBed.createComponent(PopUp);
       const popUp = fixture.componentInstance;
       const popUpDOM = fixture.nativeElement;
@@ -477,7 +677,7 @@ describe('Popup', () => {
     // the user's display name
     it('makes a request to change the display name upon submitting', fakeAsync(() => {
       TestBed.createComponent(AppComponent);
-      TestBed.get(AuthService).login();
+      TestBed.inject(AuthService).login();
       const fixture = TestBed.createComponent(PopUp);
       const popUp = fixture.componentInstance;
       const popUpDOM = fixture.nativeElement;
@@ -514,7 +714,7 @@ describe('Popup', () => {
     // Check that empty display names are prevented
     it('prevents empty display names', fakeAsync(() => {
       TestBed.createComponent(AppComponent);
-      TestBed.get(AuthService).login();
+      TestBed.inject(AuthService).login();
       const fixture = TestBed.createComponent(PopUp);
       const popUp = fixture.componentInstance;
       const popUpDOM = fixture.nativeElement;
@@ -567,7 +767,8 @@ describe('Popup', () => {
         ],
         declarations: [
           AppComponent,
-          PopUp
+          PopUp,
+          NotificationsTab
         ],
         providers: [
           { provide: APP_BASE_HREF, useValue: '/' },
@@ -583,7 +784,7 @@ describe('Popup', () => {
     // Check that the user's current display name is shown in the textfield
     it('shows the user\'s current display name', () => {
       TestBed.createComponent(AppComponent);
-      TestBed.get(AuthService).login();
+      TestBed.inject(AuthService).login();
       const fixture = TestBed.createComponent(PopUp);
       const popUp = fixture.componentInstance;
       const popUpDOM = fixture.nativeElement;
@@ -607,7 +808,7 @@ describe('Popup', () => {
     // display name upon clicking 'update'
     it('makes a request to change the display name upon submitting', fakeAsync(() => {
       TestBed.createComponent(AppComponent);
-      TestBed.get(AuthService).login();
+      TestBed.inject(AuthService).login();
       const fixture = TestBed.createComponent(PopUp);
       const popUp = fixture.componentInstance;
       const popUpDOM = fixture.nativeElement;
@@ -640,7 +841,7 @@ describe('Popup', () => {
     // user chose
     it('makes a request to close the report if that\'s what the user chose', fakeAsync(() => {
       TestBed.createComponent(AppComponent);
-      TestBed.get(AuthService).login();
+      TestBed.inject(AuthService).login();
       const fixture = TestBed.createComponent(PopUp);
       const popUp = fixture.componentInstance;
       const popUpDOM = fixture.nativeElement;
@@ -693,7 +894,7 @@ describe('Popup', () => {
     // Check that empty display names are prevented
     it('prevents empty display names', fakeAsync(() => {
       TestBed.createComponent(AppComponent);
-      TestBed.get(AuthService).login();
+      TestBed.inject(AuthService).login();
       const fixture = TestBed.createComponent(PopUp);
       const popUp = fixture.componentInstance;
       const popUpDOM = fixture.nativeElement;
@@ -743,7 +944,8 @@ describe('Popup', () => {
         ],
         declarations: [
           AppComponent,
-          PopUp
+          PopUp,
+          NotificationsTab
         ],
         providers: [
           { provide: APP_BASE_HREF, useValue: '/' },
@@ -759,7 +961,7 @@ describe('Popup', () => {
     // Check that a warning is shown before deleting an item
     it('shows a warning when deleting something', fakeAsync(() => {
       TestBed.createComponent(AppComponent);
-      TestBed.get(AuthService).login();
+      TestBed.inject(AuthService).login();
       const fixture = TestBed.createComponent(PopUp);
       const popUp = fixture.componentInstance;
       const popUpDOM = fixture.nativeElement;
@@ -779,7 +981,7 @@ describe('Popup', () => {
     // Check that the correct method is called depending on the item that's being deleted
     it('calls the correct method upon confirmation', fakeAsync(() => {
       TestBed.createComponent(AppComponent);
-      TestBed.get(AuthService).login();
+      TestBed.inject(AuthService).login();
       const fixture = TestBed.createComponent(PopUp);
       const popUp = fixture.componentInstance;
       const popUpDOM = fixture.nativeElement;
@@ -835,7 +1037,7 @@ describe('Popup', () => {
     // the admin dashboard
     it('makes a request to close the report if that\'s what the user chose - Admin delete', fakeAsync(() => {
       TestBed.createComponent(AppComponent);
-      TestBed.get(AuthService).login();
+      TestBed.inject(AuthService).login();
       const fixture = TestBed.createComponent(PopUp);
       const popUp = fixture.componentInstance;
       const popUpDOM = fixture.nativeElement;
@@ -884,7 +1086,7 @@ describe('Popup', () => {
     // Check that the popup is exited and the item isn't deleted if the user picks 'never mind'
     it('should emit false and keep the item if the user chooses not to delete', fakeAsync(() => {
       TestBed.createComponent(AppComponent);
-      TestBed.get(AuthService).login();
+      TestBed.inject(AuthService).login();
       const fixture = TestBed.createComponent(PopUp);
       const popUp = fixture.componentInstance;
       const popUpDOM = fixture.nativeElement;
@@ -930,7 +1132,8 @@ describe('Popup', () => {
         ],
         declarations: [
           AppComponent,
-          PopUp
+          PopUp,
+          NotificationsTab
         ],
         providers: [
           { provide: APP_BASE_HREF, useValue: '/' },
@@ -946,7 +1149,7 @@ describe('Popup', () => {
     // Check that the reported post is shown
     it('shows the reported post', () => {
       TestBed.createComponent(AppComponent);
-      TestBed.get(AuthService).login();
+      TestBed.inject(AuthService).login();
       const fixture = TestBed.createComponent(PopUp);
       const popUp = fixture.componentInstance;
       const popUpDOM = fixture.nativeElement;
@@ -973,7 +1176,7 @@ describe('Popup', () => {
     // Check that the correct radio button is set as selected
     it('correctly identifies the chosen radio button', fakeAsync(() => {
       TestBed.createComponent(AppComponent);
-      TestBed.get(AuthService).login();
+      TestBed.inject(AuthService).login();
       const fixture = TestBed.createComponent(PopUp);
       const popUp = fixture.componentInstance;
       const popUpDOM = fixture.nativeElement;
@@ -1035,7 +1238,7 @@ describe('Popup', () => {
     // empty reason
     it('requires text if the chosen reason is other', fakeAsync(() => {
       TestBed.createComponent(AppComponent);
-      TestBed.get(AuthService).login();
+      TestBed.inject(AuthService).login();
       const fixture = TestBed.createComponent(PopUp);
       const popUp = fixture.componentInstance;
       const popUpDOM = fixture.nativeElement;
@@ -1081,7 +1284,7 @@ describe('Popup', () => {
     // Check that the popup triggers creating a report via the Items Service
     it('creates and sends a report to the itemsService', fakeAsync(() => {
       TestBed.createComponent(AppComponent);
-      TestBed.get(AuthService).login();
+      TestBed.inject(AuthService).login();
       const fixture = TestBed.createComponent(PopUp);
       const popUp = fixture.componentInstance;
       const popUpDOM = fixture.nativeElement;
@@ -1142,7 +1345,8 @@ describe('Popup', () => {
         ],
         declarations: [
           AppComponent,
-          PopUp
+          PopUp,
+          NotificationsTab
         ],
         providers: [
           { provide: APP_BASE_HREF, useValue: '/' },
@@ -1158,7 +1362,7 @@ describe('Popup', () => {
     // Check that the reported user's display name is shown
     it('shows the reported user\'s name', () => {
       TestBed.createComponent(AppComponent);
-      TestBed.get(AuthService).login();
+      TestBed.inject(AuthService).login();
       const fixture = TestBed.createComponent(PopUp);
       const popUp = fixture.componentInstance;
       const popUpDOM = fixture.nativeElement;
@@ -1184,7 +1388,7 @@ describe('Popup', () => {
     // Check that the correct radio button is set as selected
     it('correctly identifies the chosen radio button', fakeAsync(() => {
       TestBed.createComponent(AppComponent);
-      TestBed.get(AuthService).login();
+      TestBed.inject(AuthService).login();
       const fixture = TestBed.createComponent(PopUp);
       const popUp = fixture.componentInstance;
       const popUpDOM = fixture.nativeElement;
@@ -1245,7 +1449,7 @@ describe('Popup', () => {
     // empty reason
     it('requires text if the chosen reason is other', fakeAsync(() => {
       TestBed.createComponent(AppComponent);
-      TestBed.get(AuthService).login();
+      TestBed.inject(AuthService).login();
       const fixture = TestBed.createComponent(PopUp);
       const popUp = fixture.componentInstance;
       const popUpDOM = fixture.nativeElement;
@@ -1290,7 +1494,7 @@ describe('Popup', () => {
     // Check that the popup triggers creating a report via the Items Service
     it('creates and sends a report to the itemsService', fakeAsync(() => {
       TestBed.createComponent(AppComponent);
-      TestBed.get(AuthService).login();
+      TestBed.inject(AuthService).login();
       const fixture = TestBed.createComponent(PopUp);
       const popUp = fixture.componentInstance;
       const popUpDOM = fixture.nativeElement;

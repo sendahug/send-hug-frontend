@@ -23,7 +23,7 @@ install:
   - npm install -g gulp-cli
 
 script:
-  - sudo -E env "PATH=$PATH" gulp test --max_old_space_size=8192
+  - sudo -E env "PATH=$PATH" gulp test --max_old_space_size=4096
 
 after_success:
-  - codecov
+  - bash <(curl -s https://codecov.io/bash) -f coverage/lcov.info -X fix

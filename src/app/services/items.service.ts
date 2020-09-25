@@ -195,30 +195,23 @@ export class ItemsService {
       this.idbResolved.userPosts.next(true);
       this.alertsService.toggleOfflineAlert();
 
-      // if there's a currently operating IDB database, get it
-      if(this.serviceWorkerM.currentDB) {
-        this.serviceWorkerM.currentDB.then(db => {
-          // start a new transaction
-          let tx = db.transaction('posts', 'readwrite');
-          let store = tx.objectStore('posts');
-          // add each post in the list to posts store
-          data.forEach((element:Post) => {
-            let isoDate = new Date(element.date).toISOString();
-            let post = {
-              'date': element.date,
-              'givenHugs': element.givenHugs,
-              'id': element.id!,
-              'isoDate': isoDate,
-              'text': element.text,
-              'userId': Number(element.userId),
-              'user': element.user,
-              'sentHugs': element.sentHugs!
-            }
-            store.put(post);
-          });
-          this.serviceWorkerM.cleanDB('posts');
-        })
-      }
+      // add each post to the database
+      data.forEach((element:Post) => {
+        let isoDate = new Date(element.date).toISOString();
+        let post = {
+          'date': element.date,
+          'givenHugs': element.givenHugs,
+          'id': element.id!,
+          'isoDate': isoDate,
+          'text': element.text,
+          'userId': Number(element.userId),
+          'user': element.user,
+          'sentHugs': element.sentHugs!
+        }
+
+        this.serviceWorkerM.addItem('posts', post);
+      });
+      this.serviceWorkerM.cleanDB('posts');
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
       this.isUserPostsResolved[user].next(true);
@@ -313,16 +306,8 @@ export class ItemsService {
       this.getUserPosts(userID);
       this.alertsService.toggleOfflineAlert();
 
-      // if there's a currently operating IDB database, get it
-      if(this.serviceWorkerM.currentDB) {
-        this.serviceWorkerM.currentDB.then(db => {
-          // start a new transaction
-          let tx = db.transaction('users', 'readwrite');
-          let store = tx.objectStore('users');
-          // adds the user's data to the users store
-          store.put(this.otherUserData);
-        })
-      }
+      // adds the user's data to the users store
+      this.serviceWorkerM.addItem('users', this.otherUserData);
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
       this.isOtherUserResolved.next(true);
@@ -389,31 +374,23 @@ export class ItemsService {
       this.idbResolved[type].next(true);
       this.alertsService.toggleOfflineAlert();
 
-      // if there's a currently operating IDB database, get it
-      if(this.serviceWorkerM.currentDB) {
-        this.serviceWorkerM.currentDB.then(db => {
-          // start a new transaction
-          let tx = db.transaction('messages', 'readwrite');
-          let store = tx.objectStore('messages');
-          // add each message in the messages list to the store
-          messages.forEach((element:Message) => {
-            let isoDate = new Date(element.date).toISOString();
-            let message = {
-              'date': element.date,
-              'for': element.for!,
-              'forId': element.forId,
-              'from': element.from,
-              'fromId': element.fromId,
-              'id': Number(element.id!),
-              'isoDate': isoDate,
-              'messageText': element.messageText,
-              'threadID': element.threadID!
-            }
-            store.put(message);
-          });
-          this.serviceWorkerM.cleanDB('messages');
-        })
-      }
+      // add each message in the messages list to the store
+      messages.forEach((element:Message) => {
+        let isoDate = new Date(element.date).toISOString();
+        let message = {
+          'date': element.date,
+          'for': element.for!,
+          'forId': element.forId,
+          'from': element.from,
+          'fromId': element.fromId,
+          'id': Number(element.id!),
+          'isoDate': isoDate,
+          'messageText': element.messageText,
+          'threadID': element.threadID!
+        }
+        this.serviceWorkerM.addItem('messages', message);
+      });
+      this.serviceWorkerM.cleanDB('messages');
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
       this.isUserMessagesResolved[type].next(true);
@@ -491,30 +468,22 @@ export class ItemsService {
       this.idbResolved.threads.next(true);
       this.alertsService.toggleOfflineAlert();
 
-      // if there's a currently operating IDB database, get it
-      if(this.serviceWorkerM.currentDB) {
-        this.serviceWorkerM.currentDB.then(db => {
-          // start a new transaction
-          let tx = db.transaction('threads', 'readwrite');
-          let store = tx.objectStore('threads');
-          // add each message in the threads list to the store
-          threads.forEach((element:Thread) => {
-            let isoDate = new Date(element.latestMessage).toISOString();
-            let thread = {
-              'latestMessage': element.latestMessage,
-              'user1': element.user!,
-              'user1Id': element.userID,
-              'user2': this.authService.userData.displayName,
-              'user2Id': this.authService.userData.id!,
-              'numMessages': element.numMessages!,
-              'isoDate': isoDate,
-              'id': element.id
-            }
-            store.put(thread);
-          });
-          this.serviceWorkerM.cleanDB('threads');
-        })
-      }
+      // add each message in the threads list to the store
+      threads.forEach((element:Thread) => {
+        let isoDate = new Date(element.latestMessage).toISOString();
+        let thread = {
+          'latestMessage': element.latestMessage,
+          'user1': element.user!,
+          'user1Id': element.userID,
+          'user2': this.authService.userData.displayName,
+          'user2Id': this.authService.userData.id!,
+          'numMessages': element.numMessages!,
+          'isoDate': isoDate,
+          'id': element.id
+        }
+        this.serviceWorkerM.addItem('threads', thread);
+      });
+      this.serviceWorkerM.cleanDB('threads');
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
       this.isUserMessagesResolved.threads.next(true);
@@ -581,31 +550,23 @@ export class ItemsService {
       this.idbResolved.thread.next(true);
       this.alertsService.toggleOfflineAlert();
 
-      // if there's a currently operating IDB database, get it
-      if(this.serviceWorkerM.currentDB) {
-        this.serviceWorkerM.currentDB.then(db => {
-          // start a new transaction
-          let tx = db.transaction('messages', 'readwrite');
-          let store = tx.objectStore('messages');
-          // add each message in the messages list to the store
-          messages.forEach((element:Message) => {
-            let isoDate = new Date(element.date).toISOString();
-            let message = {
-              'date': element.date,
-              'for': element.for!,
-              'forId': element.forId,
-              'from': element.from,
-              'fromId': element.fromId,
-              'id': element.id!,
-              'isoDate': isoDate,
-              'messageText': element.messageText,
-              'threadID': element.threadID!
-            }
-            store.put(message);
-          });
-          this.serviceWorkerM.cleanDB('messages');
-        })
-      }
+      // add each message in the messages list to the store
+      messages.forEach((element:Message) => {
+        let isoDate = new Date(element.date).toISOString();
+        let message = {
+          'date': element.date,
+          'for': element.for!,
+          'forId': element.forId,
+          'from': element.from,
+          'fromId': element.fromId,
+          'id': element.id!,
+          'isoDate': isoDate,
+          'messageText': element.messageText,
+          'threadID': element.threadID!
+        }
+        this.serviceWorkerM.addItem('messages', message);
+      });
+      this.serviceWorkerM.cleanDB('messages');
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
       this.isThreadResolved.next(true);
@@ -667,14 +628,7 @@ export class ItemsService {
       this.alertsService.toggleOfflineAlert();
 
       // delete the message from idb
-      if(this.serviceWorkerM.currentDB) {
-        this.serviceWorkerM.currentDB.then((db) => {
-          // start a new transaction
-          let tx = db.transaction('messages', 'readwrite');
-          let store = tx.objectStore('messages');
-          store.delete(messageId);
-        });
-      }
+      this.serviceWorkerM.deleteItem('messages', messageId);
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
       // if the user is offline, show the offline header message
@@ -706,28 +660,8 @@ export class ItemsService {
       this.alertsService.toggleOfflineAlert();
 
       // delete the thread and its messages from idb
-      if(this.serviceWorkerM.currentDB) {
-        this.serviceWorkerM.currentDB.then((db) => {
-          // start a new transaction
-          let tx = db.transaction('threads', 'readwrite');
-          let store = tx.objectStore('threads');
-          store.delete(threadId);
-        });
-
-        this.serviceWorkerM.currentDB.then((db) => {
-          // start a new transaction
-          let tx = db.transaction('messages', 'readwrite');
-          let store = tx.objectStore('messages').index('thread');
-          // open a cursor and delete any messages with the deleted thread's ID
-          store.openCursor().then(function checkMessage(cursor):any {
-            if(!cursor) return;
-            if(cursor.value.threadID == threadId) {
-              cursor.delete();
-            }
-            return cursor.continue().then(checkMessage);
-          })
-        });
-      }
+      this.serviceWorkerM.deleteItems('messages', 'threadID', threadId);
+      this.serviceWorkerM.deleteItem('threads', threadId);
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
       // if the user is offline, show the offline header message
@@ -763,39 +697,16 @@ export class ItemsService {
       this.alertsService.toggleOfflineAlert();
 
       // delete all messages from idb
-      if(this.serviceWorkerM.currentDB) {
-        this.serviceWorkerM.currentDB.then((db) => {
-          // if the mailbox to be cleared is the threads mailbox, delete everything
-          if(response.deleted == 'threads') {
-            this.serviceWorkerM.clearStore('messages');
-            this.serviceWorkerM.clearStore('threads');
-          }
-          // otherwise filter the messages by mailbox
-          else {
-            // start a new transaction
-            let tx = db.transaction('messages', 'readwrite');
-            let store = tx.objectStore('messages');
-
-            // open a cursor and delete any messages with the deleted thread's ID
-            store.openCursor().then(function checkMessage(cursor):any {
-              if(!cursor) return;
-              // if it's the inbox that needs to be cleared, find all the messages
-              // for the current user
-              if(response.deleted == 'inbox') {
-                if(cursor.value.forId == userID) {
-                  cursor.delete();
-                }
-              }
-              // otherwise find all the messages from the current user
-              else if(response.deleted == 'outbox') {
-                if(cursor.value.fromId == userID) {
-                  cursor.delete();
-                }
-              }
-              return cursor.continue().then(checkMessage);
-            })
-          }
-        });
+      // if the mailbox to be cleared is the threads mailbox, delete everything
+      if(mailbox_type == 'threads') {
+        this.serviceWorkerM.clearStore('messages');
+        this.serviceWorkerM.clearStore('threads');
+      }
+      else if(mailbox_type == 'inbox') {
+        this.serviceWorkerM.deleteItems('messages', 'forId', userID);
+      }
+      else if(mailbox_type == 'outbox') {
+        this.serviceWorkerM.deleteItems('messages', 'fromId', userID);
       }
       // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {

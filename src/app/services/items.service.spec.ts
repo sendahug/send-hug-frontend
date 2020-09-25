@@ -59,8 +59,8 @@ describe('ItemsService', () => {
       ]
     }).compileComponents();
 
-    itemsService = TestBed.get(ItemsService);
-    httpController = TestBed.get(HttpTestingController);
+    itemsService = TestBed.inject(ItemsService);
+    httpController = TestBed.inject(HttpTestingController);
     // set the user data as if the user is logged in
     itemsService['authService'].userData = {
       id: 4,
@@ -132,6 +132,9 @@ describe('ItemsService', () => {
     itemsService['authService'].authenticated = true;
     itemsService['authService'].isUserDataResolved.next(true);
     itemsService['authService'].login();
+    const querySpy = spyOn(itemsService['serviceWorkerM'], 'queryPosts');
+    const addSpy = spyOn(itemsService['serviceWorkerM'], 'addItem');
+    const cleanSpy = spyOn(itemsService['serviceWorkerM'], 'cleanDB');
     itemsService.getUserPosts(1);
     // wait for the fetch to be resolved
     itemsService.isUserPostsResolved.other.subscribe((value) => {
@@ -146,6 +149,11 @@ describe('ItemsService', () => {
     const req = httpController.expectOne('http://localhost:5000/users/all/1/posts?page=1');
     expect(req.request.method).toEqual('GET');
     req.flush(mockResponse);
+
+    expect(querySpy).toHaveBeenCalled();
+    expect(addSpy).toHaveBeenCalled();
+    expect(addSpy).toHaveBeenCalledTimes(2);
+    expect(cleanSpy).toHaveBeenCalled();
   });
 
   // Check that the service correctly tells the difference between the logged in user
@@ -335,6 +343,8 @@ describe('ItemsService', () => {
     };
 
     const postsSpy = spyOn(itemsService, 'getUserPosts');
+    const querySpy = spyOn(itemsService['serviceWorkerM'], 'queryUsers');
+    const addSpy = spyOn(itemsService['serviceWorkerM'], 'addItem');
     itemsService.getUser(2);
 
     const req = httpController.expectOne('http://localhost:5000/users/all/2');
@@ -354,6 +364,10 @@ describe('ItemsService', () => {
         expect(postsSpy).toHaveBeenCalledWith(2);
       }
     });
+
+    expect(querySpy).toHaveBeenCalled();
+    expect(querySpy).toHaveBeenCalledWith(2);
+    expect(addSpy).toHaveBeenCalled();
   });
 
   // Check that the service gets the user's inbox
@@ -385,6 +399,9 @@ describe('ItemsService', () => {
       total_pages: 1
     };
 
+    const querySpy = spyOn(itemsService['serviceWorkerM'], 'queryMessages');
+    const addSpy = spyOn(itemsService['serviceWorkerM'], 'addItem');
+    const cleanSpy = spyOn(itemsService['serviceWorkerM'], 'cleanDB');
     itemsService.getMailboxMessages('inbox', 4);
     // wait for the fetch to be resolved
     itemsService.isUserMessagesResolved.inbox.subscribe((value) => {
@@ -399,6 +416,11 @@ describe('ItemsService', () => {
     const req = httpController.expectOne('http://localhost:5000/messages?userID=4&page=1&type=inbox');
     expect(req.request.method).toEqual('GET');
     req.flush(mockResponse);
+
+    expect(querySpy).toHaveBeenCalled();
+    expect(addSpy).toHaveBeenCalled();
+    expect(addSpy).toHaveBeenCalledTimes(2);
+    expect(cleanSpy).toHaveBeenCalled();
   });
 
   // Check that the service gets the user's outbox
@@ -430,6 +452,9 @@ describe('ItemsService', () => {
       total_pages: 1
     };
 
+    const querySpy = spyOn(itemsService['serviceWorkerM'], 'queryMessages');
+    const addSpy = spyOn(itemsService['serviceWorkerM'], 'addItem');
+    const cleanSpy = spyOn(itemsService['serviceWorkerM'], 'cleanDB');
     itemsService.getMailboxMessages('outbox', 4);
     // wait for the fetch to be resolved
     itemsService.isUserMessagesResolved.inbox.subscribe((value) => {
@@ -444,6 +469,11 @@ describe('ItemsService', () => {
     const req = httpController.expectOne('http://localhost:5000/messages?userID=4&page=1&type=outbox');
     expect(req.request.method).toEqual('GET');
     req.flush(mockResponse);
+
+    expect(querySpy).toHaveBeenCalled();
+    expect(addSpy).toHaveBeenCalled();
+    expect(addSpy).toHaveBeenCalledTimes(2);
+    expect(cleanSpy).toHaveBeenCalled();
   });
 
   // Check the service tells the difference between inbox and outbox
@@ -565,6 +595,9 @@ describe('ItemsService', () => {
       total_pages: 1
     };
 
+    const querySpy = spyOn(itemsService['serviceWorkerM'], 'queryThreads');
+    const addSpy = spyOn(itemsService['serviceWorkerM'], 'addItem');
+    const cleanSpy = spyOn(itemsService['serviceWorkerM'], 'cleanDB');
     itemsService.getThreads(4);
     // wait for the fetch to be resolved
     itemsService.isUserMessagesResolved.threads.subscribe((value) => {
@@ -579,6 +612,12 @@ describe('ItemsService', () => {
     const req = httpController.expectOne('http://localhost:5000/messages?userID=4&page=1&type=threads');
     expect(req.request.method).toEqual('GET');
     req.flush(mockResponse);
+
+    expect(querySpy).toHaveBeenCalled();
+    expect(querySpy).toHaveBeenCalledWith(1);
+    expect(addSpy).toHaveBeenCalled();
+    expect(addSpy).toHaveBeenCalledTimes(2);
+    expect(cleanSpy).toHaveBeenCalled();
   });
 
   // Check the service correctly gets the requested thread
@@ -612,6 +651,9 @@ describe('ItemsService', () => {
       total_pages: 1
     };
 
+    const querySpy = spyOn(itemsService['serviceWorkerM'], 'queryMessages');
+    const addSpy = spyOn(itemsService['serviceWorkerM'], 'addItem');
+    const cleanSpy = spyOn(itemsService['serviceWorkerM'], 'cleanDB');
     itemsService.getThread(4, 1);
     // wait for the fetch to be resolved
     itemsService.isThreadResolved.subscribe((value) => {
@@ -627,6 +669,12 @@ describe('ItemsService', () => {
     const req = httpController.expectOne('http://localhost:5000/messages?userID=4&page=1&type=thread&threadID=1');
     expect(req.request.method).toEqual('GET');
     req.flush(mockResponse);
+
+    expect(querySpy).toHaveBeenCalled();
+    expect(querySpy).toHaveBeenCalledWith('thread', 4, 1, 1);
+    expect(addSpy).toHaveBeenCalled();
+    expect(addSpy).toHaveBeenCalledTimes(2);
+    expect(cleanSpy).toHaveBeenCalled();
   });
 
   // Check the service correctly sends a message
@@ -673,6 +721,7 @@ describe('ItemsService', () => {
 
     // make the request
     const alertSpy = spyOn(itemsService['alertsService'], 'createSuccessAlert');
+    const deleteSpy = spyOn(itemsService['serviceWorkerM'], 'deleteItem');
     itemsService.deleteMessage(6, 'inbox');
 
     const req = httpController.expectOne('http://localhost:5000/messages/inbox/6');
@@ -681,6 +730,8 @@ describe('ItemsService', () => {
 
     expect(alertSpy).toHaveBeenCalled();
     expect(alertSpy).toHaveBeenCalledWith(`Message 6 was deleted! Refresh to view the updated message list.`, true);
+    expect(deleteSpy).toHaveBeenCalled();
+    expect(deleteSpy).toHaveBeenCalledWith('messages', 6);
   });
 
   // Check that the service deletes a thread
@@ -693,6 +744,8 @@ describe('ItemsService', () => {
 
     // make the request
     const alertSpy = spyOn(itemsService['alertsService'], 'createSuccessAlert');
+    const deleteSpy = spyOn(itemsService['serviceWorkerM'], 'deleteItem');
+    const deleteMultiSpy = spyOn(itemsService['serviceWorkerM'], 'deleteItems');
     itemsService.deleteThread(2);
 
     const req = httpController.expectOne('http://localhost:5000/messages/threads/2');
@@ -701,10 +754,14 @@ describe('ItemsService', () => {
 
     expect(alertSpy).toHaveBeenCalled();
     expect(alertSpy).toHaveBeenCalledWith(`Thread 2 was deleted! Refresh to view the updated message list.`, true);
+    expect(deleteSpy).toHaveBeenCalled();
+    expect(deleteSpy).toHaveBeenCalledWith('threads', 2);
+    expect(deleteMultiSpy).toHaveBeenCalled();
+    expect(deleteMultiSpy).toHaveBeenCalledWith('messages', 'threadID', 2);
   });
 
-  // Check that the service clears the mailbox
-  it('deleteAll() - should clear a mailbox', () => {
+  // Check that the service clears the mailbox - inbox
+  it('deleteAll() - should clear a mailbox - inbox', () => {
     // mock response
     const mockResponse = {
       deleted: "2",
@@ -714,6 +771,7 @@ describe('ItemsService', () => {
 
     // make the request
     const alertSpy = spyOn(itemsService['alertsService'], 'createSuccessAlert');
+    const deleteSpy = spyOn(itemsService['serviceWorkerM'], 'deleteItems');
     itemsService.deleteAll('all inbox', 4);
 
     const req = httpController.expectOne('http://localhost:5000/messages/inbox?userID=4');
@@ -722,6 +780,58 @@ describe('ItemsService', () => {
 
     expect(alertSpy).toHaveBeenCalled();
     expect(alertSpy).toHaveBeenCalledWith(`2 messages were deleted! Refresh to view the updated mailbox.`, true);
+    expect(deleteSpy).toHaveBeenCalled();
+    expect(deleteSpy).toHaveBeenCalledWith('messages', 'forId', 4);
+  });
+
+  // Check that the service clears the mailbox - outbox
+  it('deleteAll() - should clear a mailbox - outbox', () => {
+    // mock response
+    const mockResponse = {
+      deleted: "2",
+      success: true,
+      userID: "4"
+    };
+
+    // make the request
+    const alertSpy = spyOn(itemsService['alertsService'], 'createSuccessAlert');
+    const deleteSpy = spyOn(itemsService['serviceWorkerM'], 'deleteItems');
+    itemsService.deleteAll('all outbox', 4);
+
+    const req = httpController.expectOne('http://localhost:5000/messages/outbox?userID=4');
+    expect(req.request.method).toEqual('DELETE');
+    req.flush(mockResponse);
+
+    expect(alertSpy).toHaveBeenCalled();
+    expect(alertSpy).toHaveBeenCalledWith(`2 messages were deleted! Refresh to view the updated mailbox.`, true);
+    expect(deleteSpy).toHaveBeenCalled();
+    expect(deleteSpy).toHaveBeenCalledWith('messages', 'fromId', 4);
+  });
+
+  // Check that the service clears the mailbox - threads
+  it('deleteAll() - should clear a mailbox - threads', () => {
+    // mock response
+    const mockResponse = {
+      deleted: "2",
+      success: true,
+      userID: "4"
+    };
+
+    // make the request
+    const alertSpy = spyOn(itemsService['alertsService'], 'createSuccessAlert');
+    const clearSpy = spyOn(itemsService['serviceWorkerM'], 'clearStore');
+    itemsService.deleteAll('all threads', 4);
+
+    const req = httpController.expectOne('http://localhost:5000/messages/threads?userID=4');
+    expect(req.request.method).toEqual('DELETE');
+    req.flush(mockResponse);
+
+    expect(alertSpy).toHaveBeenCalled();
+    expect(alertSpy).toHaveBeenCalledWith(`2 messages were deleted! Refresh to view the updated mailbox.`, true);
+    expect(clearSpy).toHaveBeenCalled();
+    expect(clearSpy).toHaveBeenCalledTimes(2);
+    expect(clearSpy).toHaveBeenCalledWith('messages');
+    expect(clearSpy).toHaveBeenCalledWith('threads');
   });
 
   // Check that the service runs the search and handles results correctly

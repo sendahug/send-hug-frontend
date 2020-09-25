@@ -36,7 +36,6 @@ import { HttpClientModule } from "@angular/common/http";
 import { ServiceWorkerModule } from "@angular/service-worker";
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
-import { AppComponent } from '../../app.component';
 import { AdminDashboard } from './adminDashboard.component';
 import { PopUp } from '../popUp/popUp.component';
 import { AdminService } from '../../services/admin.service';
@@ -62,7 +61,6 @@ describe('AdminDashboard', () => {
         FontAwesomeModule
       ],
       declarations: [
-        AppComponent,
         AdminDashboard,
         PopUp,
         Loader
@@ -78,17 +76,13 @@ describe('AdminDashboard', () => {
 
   // Check that the component is created
   it('should create the component', () => {
-    const acFixture = TestBed.createComponent(AppComponent);
-    const appComponent = acFixture.componentInstance;
     const fixture = TestBed.createComponent(AdminDashboard);
     const adminDashboard = fixture.componentInstance;
-    expect(appComponent).toBeTruthy();
     expect(adminDashboard).toBeTruthy();
   });
 
   // Check that all the popup-related variables are set to false at first
   it('should have all popup variables set to false', () => {
-    TestBed.createComponent(AppComponent);
     const fixture = TestBed.createComponent(AdminDashboard);
     const adminDashboard = fixture.componentInstance;
 
@@ -114,7 +108,6 @@ describe('AdminDashboard', () => {
           FontAwesomeModule
         ],
         declarations: [
-          AppComponent,
           AdminDashboard,
           PopUp,
           Loader
@@ -128,7 +121,7 @@ describe('AdminDashboard', () => {
       }).compileComponents();
 
       // make sure the test goes through with admin permission
-      const authService = TestBed.get(AuthService) as AuthService;
+      const authService = TestBed.inject(AuthService) as AuthService;
       spyOn(authService, 'canUser').and.returnValue(true);
       authService.isUserDataResolved.next(true);
     });
@@ -136,7 +129,7 @@ describe('AdminDashboard', () => {
     // Check that a call is made to get open reports
     it('should get open reports', fakeAsync(() => {
       // set up the spy and the component
-      const adminService = TestBed.get(AdminService);
+      const adminService = TestBed.inject(AdminService);
       const reportSpy = spyOn(adminService, 'getOpenReports').and.callThrough();
       const fixture = TestBed.createComponent(AdminDashboard);
       const adminDashboard = fixture.componentInstance;
@@ -315,7 +308,6 @@ describe('AdminDashboard', () => {
           FontAwesomeModule
         ],
         declarations: [
-          AppComponent,
           AdminDashboard,
           PopUp,
           Loader
@@ -329,7 +321,7 @@ describe('AdminDashboard', () => {
       }).compileComponents();
 
       // make sure the test goes through with admin permission
-      const authService = TestBed.get(AuthService) as AuthService;
+      const authService = TestBed.inject(AuthService);
       spyOn(authService, 'canUser').and.returnValue(true);
       authService.isUserDataResolved.next(true);
     });
@@ -337,7 +329,7 @@ describe('AdminDashboard', () => {
     // Check that a call is made to get blocked users
     it('should get blocked users', fakeAsync(() => {
       // set up the spy and the component
-      const adminService = TestBed.get(AdminService);
+      const adminService = TestBed.inject(AdminService);
       const blockSpy = spyOn(adminService, 'getBlockedUsers').and.callThrough();
       const fixture = TestBed.createComponent(AdminDashboard);
       const adminDashboard = fixture.componentInstance;
@@ -472,7 +464,6 @@ describe('AdminDashboard', () => {
           FontAwesomeModule
         ],
         declarations: [
-          AppComponent,
           AdminDashboard,
           PopUp,
           Loader
@@ -486,7 +477,7 @@ describe('AdminDashboard', () => {
       }).compileComponents();
 
       // make sure the test goes through with admin permission
-      const authService = TestBed.get(AuthService) as AuthService;
+      const authService = TestBed.inject(AuthService);
       spyOn(authService, 'canUser').and.returnValue(true);
       authService.isUserDataResolved.next(true);
     });
@@ -494,7 +485,7 @@ describe('AdminDashboard', () => {
     // Check that a call is made to get filtered phrases
     it('should get filtered phrases', fakeAsync(() => {
       // set up the spy and the component
-      const adminService = TestBed.get(AdminService);
+      const adminService = TestBed.inject(AdminService);
       const filterSpy = spyOn(adminService, 'getFilters').and.callThrough();
       const fixture = TestBed.createComponent(AdminDashboard);
       const adminDashboard = fixture.componentInstance;

@@ -79,9 +79,9 @@ describe('NotificationService', () => {
       ]
     }).compileComponents();
 
-    notificationService = TestBed.get(NotificationService);
+    notificationService = TestBed.inject(NotificationService);
     notificationService['authService'].login();
-    httpController = TestBed.get(HttpTestingController);
+    httpController = TestBed.inject(HttpTestingController);
   });
 
   // Check the service is created

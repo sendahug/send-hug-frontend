@@ -36,7 +36,6 @@ import { ServiceWorkerModule } from "@angular/service-worker";
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 // App imports
-import { AppComponent } from '../../app.component';
 import { ErrorPage } from "./errorPage.component";
 
 class MockLocation {
@@ -60,7 +59,6 @@ describe('ErrorPage', () => {
         FontAwesomeModule
       ],
       declarations: [
-        AppComponent,
         ErrorPage
       ],
       providers: [
@@ -72,17 +70,13 @@ describe('ErrorPage', () => {
 
   // Check that the component is created
   it('should create the component', () => {
-    const acFixture = TestBed.createComponent(AppComponent);
-    const appComponent = acFixture.componentInstance;
     const fixture = TestBed.createComponent(ErrorPage);
     const errorPage = fixture.componentInstance;
-    expect(appComponent).toBeTruthy();
     expect(errorPage).toBeTruthy();
   });
 
   // Check that the error page has the right error message
   it('should have an error message', fakeAsync(() => {
-    TestBed.createComponent(AppComponent);
     const fixture = TestBed.createComponent(ErrorPage);
     const errorPage = fixture.componentInstance;
     const errorPageDOM = fixture.nativeElement;
@@ -102,7 +96,6 @@ describe('ErrorPage', () => {
 
   // Check that the 'back' method is called when clicking the back button
   it('should call back method when clicking the back button', fakeAsync(() => {
-    TestBed.createComponent(AppComponent);
     const fixture = TestBed.createComponent(ErrorPage);
     const errorPage = fixture.componentInstance;
     const errorPageDOM = fixture.nativeElement;

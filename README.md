@@ -21,7 +21,6 @@ For full project information, check the [`main README file`](https://github.com/
 ## Requirements
 
 - Node.js
-- For testing: A machine with at least 8GBs of RAM.
 
 ## Installation and Usage
 
@@ -128,6 +127,7 @@ For more information about Angular's required NPM packages, check the [Angular d
 ### Other
 
 1. **IDB** (formerly IDBPromised) - An improved version of IndexedDB, which is Promise-based and includes various enhancements to improve the API's usability. For more information, check the [IDBP repo](https://github.com/jakearchibald/idb).
+2. **Auth0-js** - Auth0's JS library, used for user authentication. For more information, check [Auth0's documentation](https://auth0.com/docs/libraries/auth0js).
 
 ### Testing Dependencies
 
@@ -145,11 +145,8 @@ This project's tests are run using the Jasmine framework and the Karma runner. T
   - **karma-coverage** - Code coverage generator. [Project repo.](https://github.com/karma-runner/karma-coverage)
   - **karma-coverage-istanbul-reporter** - Code coverage generator reporter. [NPM page.](https://www.npmjs.com/package/karma-coverage-istanbul-reporter)
   - **karma-sourcemap-loader** - A preprocessor that loads existing source maps. [NPM page.](https://www.npmjs.com/package/karma-sourcemap-loader)
-  - **karma-webpack** - A Karma adapter for processing files through Webpack. [Project repo.](https://github.com/webpack-contrib/karma-webpack)
-3. **Webpack** - An open-source module bundler, used to bundle the project's TypeScript and HTML files. For more information, check Webpack's [official website](https://webpack.js.org).
-  - **html-loader** - A webpack loader for HTML files.
-  - **angular-router-loader** - A webpack loader for Angular that enables the Angular router. [NPM page.](https://www.npmjs.com/package/angular-router-loader)
-  - **@ngtools/webpack** - A webpack plugin for ahead-of-time compilation of Angular components and modules. [NPM page.](https://www.npmjs.com/package/@ngtools/webpack)
+  - **karma-browserify** - A browserify preprocessor for karma, used to bundle up the tests. [NPM page.](https://www.npmjs.com/package/karma-browserify)
+  - **karma-viewport** - A karma framework used to gain access to the viewport in tests. [NPM page.](https://www.npmjs.com/package/karma-viewport)
 
 ### Production Dependencies
 
@@ -190,9 +187,7 @@ Tests are written in TypeScript and each component's tests are located in the sa
 
 ### Running Tests
 
-Running tests is done through the dedicated Gulp task. All you need to do is run `gulp unitTest --max_old_space_size=8192` in the terminal; this will start Karma and trigger Webpack's compilation of tests and project files.
-
-Note: this project (along with its tests) is fairly large and takes both time and memory in order to run tests for. The `max_old_space_size` NPM flag is required in order to run the tests; thus, free memory of at least 8 GBs is required (current measurements are ~6GBs).
+Running tests is done through the dedicated Gulp task. All you need to do is run `gulp test` in the terminal; this will start Karma and trigger Webpack's compilation of tests and project files.
 
 ## Hosting
 

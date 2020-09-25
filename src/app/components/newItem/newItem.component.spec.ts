@@ -45,8 +45,9 @@ import { ItemsService } from '../../services/items.service';
 import { MockItemsService } from '../../services/items.service.mock';
 import { AlertsService } from '../../services/alerts.service';
 import { MockAlertsService } from '../../services/alerts.service.mock';
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, UrlSegment } from "@angular/router";
 import { of } from 'rxjs';
+import { NotificationsTab } from '../notifications/notifications.component';
 
 describe('NewItem', () => {
   // Before each test, configure testing environment
@@ -64,7 +65,8 @@ describe('NewItem', () => {
       ],
       declarations: [
         AppComponent,
-        NewItem
+        NewItem,
+        NotificationsTab
       ],
       providers: [
         { provide: APP_BASE_HREF, useValue: '/' },
@@ -104,7 +106,8 @@ describe('NewItem', () => {
         ],
         declarations: [
           AppComponent,
-          NewItem
+          NewItem,
+          NotificationsTab
         ],
         providers: [
           { provide: APP_BASE_HREF, useValue: '/' },
@@ -119,8 +122,8 @@ describe('NewItem', () => {
     // Check that the type of new item is determined by the parameter type
     it('has a type determined by the type parameter - post', fakeAsync(() => {
       TestBed.createComponent(AppComponent);
-      const paramMap = TestBed.get(ActivatedRoute);
-      paramMap.url = of([{path: 'Post'}]);
+      const paramMap = TestBed.inject(ActivatedRoute);
+      paramMap.url = of([{path: 'Post'} as UrlSegment]);
       const fixture = TestBed.createComponent(NewItem);
       const newItem = fixture.componentInstance;
       const newItemDOM = fixture.nativeElement;
@@ -138,8 +141,8 @@ describe('NewItem', () => {
     // Check that it triggers the posts service when creating a new post
     it('triggers the posts service when creating a new post', fakeAsync(() => {
       TestBed.createComponent(AppComponent);
-      const paramMap = TestBed.get(ActivatedRoute);
-      paramMap.url = of([{path: 'Post'}]);
+      const paramMap = TestBed.inject(ActivatedRoute);
+      paramMap.url = of([{path: 'Post'} as UrlSegment]);
       const fixture = TestBed.createComponent(NewItem);
       const newItem = fixture.componentInstance;
       const newItemDOM = fixture.nativeElement;
@@ -173,8 +176,8 @@ describe('NewItem', () => {
     // Check that an empty post triggers an alert
     it('should prevent empty posts', fakeAsync(() => {
       TestBed.createComponent(AppComponent);
-      const paramMap = TestBed.get(ActivatedRoute);
-      paramMap.url = of([{path: 'Post'}]);
+      const paramMap = TestBed.inject(ActivatedRoute);
+      paramMap.url = of([{path: 'Post'} as UrlSegment]);
       const fixture = TestBed.createComponent(NewItem);
       const newItem = fixture.componentInstance;
       const newItemDOM = fixture.nativeElement;
@@ -209,8 +212,8 @@ describe('NewItem', () => {
     // Check that a user can't post if they're blocked
     it('should prevent blocked users from posting', fakeAsync(() => {
       TestBed.createComponent(AppComponent);
-      const paramMap = TestBed.get(ActivatedRoute);
-      paramMap.url = of([{path: 'Post'}]);
+      const paramMap = TestBed.inject(ActivatedRoute);
+      paramMap.url = of([{path: 'Post'} as UrlSegment]);
       const fixture = TestBed.createComponent(NewItem);
       const newItem = fixture.componentInstance;
       const newItemDOM = fixture.nativeElement;
@@ -230,8 +233,8 @@ describe('NewItem', () => {
     // Check that a user can't post if they're logged out
     it('should prevent logged out users from posting', fakeAsync(() => {
       TestBed.createComponent(AppComponent);
-      const paramMap = TestBed.get(ActivatedRoute);
-      paramMap.url = of([{path: 'Post'}]);
+      const paramMap = TestBed.inject(ActivatedRoute);
+      paramMap.url = of([{path: 'Post'} as UrlSegment]);
       const fixture = TestBed.createComponent(NewItem);
       const newItem = fixture.componentInstance;
       const newItemDOM = fixture.nativeElement;
@@ -281,7 +284,8 @@ describe('NewItem', () => {
         ],
         declarations: [
           AppComponent,
-          NewItem
+          NewItem,
+          NotificationsTab
         ],
         providers: [
           { provide: APP_BASE_HREF, useValue: '/' },
@@ -296,8 +300,8 @@ describe('NewItem', () => {
     // Check that the type of new item is determined by the parameter type
     it('has a type determined by the type parameter - message', fakeAsync(() => {
       TestBed.createComponent(AppComponent);
-      const paramMap = TestBed.get(ActivatedRoute);
-      paramMap.url = of([{path: 'Message'}]);
+      const paramMap = TestBed.inject(ActivatedRoute);
+      paramMap.url = of([{path: 'Message'} as UrlSegment]);
       const queryParamsSpy = spyOn(paramMap.snapshot.queryParamMap, 'get').and.callFake((param:string) => {
         if(param == 'user') {
           return 'hello';
@@ -329,8 +333,8 @@ describe('NewItem', () => {
     // Check that it triggers the items service when creating a new message
     it('triggers the items service when creating a new message', fakeAsync(() => {
       TestBed.createComponent(AppComponent);
-      const paramMap = TestBed.get(ActivatedRoute);
-      paramMap.url = of([{path: 'Message'}]);
+      const paramMap = TestBed.inject(ActivatedRoute);
+      paramMap.url = of([{path: 'Message'} as UrlSegment]);
       spyOn(paramMap.snapshot.queryParamMap, 'get').and.callFake((param:string) => {
         if(param == 'user') {
           return 'hello';
@@ -375,8 +379,8 @@ describe('NewItem', () => {
     // Check that an empty message triggers an alert
     it('should prevent empty messages', fakeAsync(() => {
       TestBed.createComponent(AppComponent);
-      const paramMap = TestBed.get(ActivatedRoute);
-      paramMap.url = of([{path: 'Message'}]);
+      const paramMap = TestBed.inject(ActivatedRoute);
+      paramMap.url = of([{path: 'Message'} as UrlSegment]);
       spyOn(paramMap.snapshot.queryParamMap, 'get').and.callFake((param:string) => {
         if(param == 'user') {
           return 'hello';
@@ -418,8 +422,8 @@ describe('NewItem', () => {
     // Check that a user can't send a message if they're logged out
     it('should prevent logged out users from messaging', fakeAsync(() => {
       TestBed.createComponent(AppComponent);
-      const paramMap = TestBed.get(ActivatedRoute);
-      paramMap.url = of([{path: 'Message'}]);
+      const paramMap = TestBed.inject(ActivatedRoute);
+      paramMap.url = of([{path: 'Message'} as UrlSegment]);
       spyOn(paramMap.snapshot.queryParamMap, 'get').and.callFake((param:string) => {
         if(param == 'user') {
           return 'hello';
@@ -460,8 +464,8 @@ describe('NewItem', () => {
     // Check that an error is thrown if there's no user ID and user data
     it('should throw an error if there\'s no user ID and user', fakeAsync(() => {
       TestBed.createComponent(AppComponent);
-      const paramMap = TestBed.get(ActivatedRoute);
-      paramMap.url = of([{path: 'Message'}]);
+      const paramMap = TestBed.inject(ActivatedRoute);
+      paramMap.url = of([{path: 'Message'} as UrlSegment]);
       spyOn(paramMap.snapshot.queryParamMap, 'get').and.callFake((_param:string) => {
         return '';
       });
@@ -481,8 +485,8 @@ describe('NewItem', () => {
     // Check that a user can't message themselves
     it('should prevent users messaging themselves', fakeAsync(() => {
       TestBed.createComponent(AppComponent);
-      const paramMap = TestBed.get(ActivatedRoute);
-      paramMap.url = of([{path: 'Message'}]);
+      const paramMap = TestBed.inject(ActivatedRoute);
+      paramMap.url = of([{path: 'Message'} as UrlSegment]);
       spyOn(paramMap.snapshot.queryParamMap, 'get').and.callFake((param:string) => {
         if(param == 'user') {
           return 'name';

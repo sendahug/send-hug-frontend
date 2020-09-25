@@ -316,21 +316,16 @@ export class FullList implements AfterViewChecked {
   toggleOptions(itemNum:number | string) {
     itemNum = Number(itemNum);
     let post = document.querySelector('#nPost' + itemNum)!.parentElement;
-    let buttons = post!.querySelectorAll('.buttonsContainer')[0];
     let subMenu = post!.querySelectorAll('.subMenu')[0];
 
     // if the submenu is hidden, show it
     if(subMenu.classList.contains('hidden')) {
       subMenu.classList.remove('hidden');
-      subMenu.classList.add('float');
-      buttons.classList.add('float');
       this.showMenuNum = itemNum;
     }
     // otherwise hide it
     else {
       subMenu.classList.add('hidden');
-      subMenu.classList.remove('float');
-      buttons.classList.remove('float');
       this.showMenuNum = null;
     }
   }

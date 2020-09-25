@@ -36,7 +36,6 @@ import { ServiceWorkerModule } from "@angular/service-worker";
 import { Component } from '@angular/core';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
-import { AppComponent } from '../../app.component';
 import { MyPosts } from './myPosts.component';
 import { PopUp } from '../popUp/popUp.component';
 import { Loader } from '../loader/loader.component';
@@ -135,7 +134,6 @@ describe('MyPosts', () => {
         FontAwesomeModule
       ],
       declarations: [
-        AppComponent,
         MockUserPage,
         MyPosts,
         PopUp,
@@ -153,20 +151,16 @@ describe('MyPosts', () => {
 
   // Check that the component is created
   it('should create the component', () => {
-    const acFixture = TestBed.createComponent(AppComponent);
-    const appComponent = acFixture.componentInstance;
     const upFixture = TestBed.createComponent(MockUserPage);
     const userPage = upFixture.componentInstance;
     upFixture.detectChanges();
     const myPosts = upFixture.debugElement.children[0].children[0].componentInstance;
-    expect(appComponent).toBeTruthy();
     expect(userPage).toBeTruthy();
     expect(myPosts).toBeTruthy();
   });
 
   // Check that all the popup-related variables are set to false at first
   it('should have all popup variables set to false', () => {
-    TestBed.createComponent(AppComponent);
     const upFixture = TestBed.createComponent(MockUserPage);
     upFixture.detectChanges();
     const myPosts = upFixture.debugElement.children[0].children[0].componentInstance;
@@ -178,7 +172,6 @@ describe('MyPosts', () => {
 
   // Check that the component gets the user ID correctly
   it('should get the correct user ID', fakeAsync(() => {
-    TestBed.createComponent(AppComponent);
     const upFixture = TestBed.createComponent(MockUserPage);
     const userPage = upFixture.componentInstance;
     userPage.userId = 1;
@@ -192,10 +185,9 @@ describe('MyPosts', () => {
 
   // Check that the popup gets the correct user's posts
   it('should get the correct user\'s posts', fakeAsync(() => {
-    TestBed.createComponent(AppComponent);
-    const paramMap = TestBed.get(ActivatedRoute);
+    const paramMap = TestBed.inject(ActivatedRoute);
     let pathSpy = spyOn(paramMap.snapshot.paramMap, 'get').and.returnValue('1');
-    let itemsService = TestBed.get(ItemsService) as ItemsService;
+    let itemsService = TestBed.inject(ItemsService) as ItemsService;
     let getPostsSpy = spyOn(itemsService, 'getUserPosts').and.callThrough();
     itemsService['authService'].login();
     let fixture = TestBed.createComponent(MockUserPage);
@@ -226,7 +218,6 @@ describe('MyPosts', () => {
         FontAwesomeModule
       ],
       declarations: [
-        AppComponent,
         MockUserPage,
         MyPosts,
         PopUp,
@@ -241,9 +232,8 @@ describe('MyPosts', () => {
       ]
     }).compileComponents();
 
-    TestBed.createComponent(AppComponent);
     pathSpy.and.returnValue('4');
-    itemsService = TestBed.get(ItemsService) as ItemsService;
+    itemsService = TestBed.inject(ItemsService) as ItemsService;
     getPostsSpy = spyOn(itemsService, 'getUserPosts').and.callThrough();
     itemsService['authService'].login();
     fixture = TestBed.createComponent(MockUserPage);
@@ -264,10 +254,9 @@ describe('MyPosts', () => {
 
   // Check that the popup is opened when clicking 'edit'
   it('should open the popup upon editing', fakeAsync(() => {
-    TestBed.createComponent(AppComponent);
-    const paramMap = TestBed.get(ActivatedRoute);
+    const paramMap = TestBed.inject(ActivatedRoute);
     spyOn(paramMap.snapshot.paramMap, 'get').and.returnValue('4');
-    const itemsService = TestBed.get(ItemsService) as ItemsService;
+    const itemsService = TestBed.inject(ItemsService) as ItemsService;
     const getSpy = spyOn(itemsService, 'getUserPosts').and.callThrough();
     itemsService['authService'].login();
     let fixture = TestBed.createComponent(MockUserPage);
@@ -306,10 +295,9 @@ describe('MyPosts', () => {
 
   // Check that the popup is opened when clicking 'delete'
   it('should open the popup upon deleting', fakeAsync(() => {
-    TestBed.createComponent(AppComponent);
-    const paramMap = TestBed.get(ActivatedRoute);
+    const paramMap = TestBed.inject(ActivatedRoute);
     spyOn(paramMap.snapshot.paramMap, 'get').and.returnValue('4');
-    const itemsService = TestBed.get(ItemsService) as ItemsService;
+    const itemsService = TestBed.inject(ItemsService) as ItemsService;
     itemsService['authService'].login();
     let fixture = TestBed.createComponent(MockUserPage);
     fixture.detectChanges();
@@ -341,10 +329,9 @@ describe('MyPosts', () => {
 
   // Check that the popup is opened when clicking 'delete all'
   it('should open the popup upon deleting all', fakeAsync(() => {
-    TestBed.createComponent(AppComponent);
-    const paramMap = TestBed.get(ActivatedRoute);
+    const paramMap = TestBed.inject(ActivatedRoute);
     spyOn(paramMap.snapshot.paramMap, 'get').and.returnValue('4');
-    const itemsService = TestBed.get(ItemsService) as ItemsService;
+    const itemsService = TestBed.inject(ItemsService) as ItemsService;
     itemsService['authService'].login();
     let fixture = TestBed.createComponent(MockUserPage);
     fixture.detectChanges();
@@ -376,10 +363,9 @@ describe('MyPosts', () => {
 
   // Check that the popup is opened when clicking 'report'
   it('should open the popup upon reporting', fakeAsync(() => {
-    TestBed.createComponent(AppComponent);
-    const paramMap = TestBed.get(ActivatedRoute);
+    const paramMap = TestBed.inject(ActivatedRoute);
     spyOn(paramMap.snapshot.paramMap, 'get').and.returnValue('1');
-    const itemsService = TestBed.get(ItemsService) as ItemsService;
+    const itemsService = TestBed.inject(ItemsService) as ItemsService;
     itemsService['authService'].login();
     let fixture = TestBed.createComponent(MockUserPage);
     fixture.detectChanges();
@@ -411,10 +397,9 @@ describe('MyPosts', () => {
 
   // Check that sending a hug triggers the posts service
   it('should trigger posts service on hug', fakeAsync(() => {
-    TestBed.createComponent(AppComponent);
-    const paramMap = TestBed.get(ActivatedRoute);
+    const paramMap = TestBed.inject(ActivatedRoute);
     spyOn(paramMap.snapshot.paramMap, 'get').and.returnValue('1');
-    const itemsService = TestBed.get(ItemsService) as ItemsService;
+    const itemsService = TestBed.inject(ItemsService) as ItemsService;
     itemsService['authService'].login();
     let fixture = TestBed.createComponent(MockUserPage);
     fixture.detectChanges();
@@ -448,10 +433,9 @@ describe('MyPosts', () => {
   // Check that a different page gets different results
   it('changes page (with its associated posts) when clicked', fakeAsync(() => {
     // create the component
-    TestBed.createComponent(AppComponent);
-    const paramMap = TestBed.get(ActivatedRoute);
+    const paramMap = TestBed.inject(ActivatedRoute);
     spyOn(paramMap.snapshot.paramMap, 'get').and.returnValue('1');
-    const itemsService = TestBed.get(ItemsService) as ItemsService;
+    const itemsService = TestBed.inject(ItemsService) as ItemsService;
     const getPostsSpy = spyOn(itemsService, 'getUserPosts').and.callThrough();
     itemsService['authService'].login();
     let fixture = TestBed.createComponent(MockUserPage);

@@ -64,8 +64,8 @@ describe('AdminService', () => {
       ]
     }).compileComponents();
 
-    adminService = TestBed.get(AdminService);
-    httpController = TestBed.get(HttpTestingController);
+    adminService = TestBed.inject(AdminService);
+    httpController = TestBed.inject(HttpTestingController);
   });
 
   // Check the service is created
@@ -213,6 +213,7 @@ describe('AdminService', () => {
     const alertSpy = spyOn(adminService['alertsService'], 'createSuccessAlert');
     const dismissSpy = spyOn(adminService, 'dismissReport');
     const messageSpy = spyOn(adminService['itemsService'], 'sendMessage');
+    const deleteSpy = spyOn(adminService['serviceWorkerM'], 'deleteItem').and.callThrough();
     adminService.deletePost(10, reportData, true);
 
     const req = httpController.expectOne('http://localhost:5000/posts/10');
@@ -224,6 +225,8 @@ describe('AdminService', () => {
     expect(dismissSpy).toHaveBeenCalled();
     expect(dismissSpy).toHaveBeenCalledWith(5);
     expect(messageSpy).toHaveBeenCalled();
+    expect(deleteSpy).toHaveBeenCalled();
+    expect(deleteSpy).toHaveBeenCalledWith('posts', 10);
   });
 
   // Check that the service edits a user's display name

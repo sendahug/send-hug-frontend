@@ -41,6 +41,7 @@ import { NotificationService } from '../../services/notifications.service';
 import { MockNotificationService } from '../../services/notifications.service.mock';
 import { AuthService } from '../../services/auth.service';
 import { MockAuthService } from '../../services/auth.service.mock';
+import { NotificationsTab } from '../notifications/notifications.component';
 
 describe('SettingsPage', () => {
   // Before each test, configure testing environment
@@ -58,7 +59,8 @@ describe('SettingsPage', () => {
       ],
       declarations: [
         AppComponent,
-        SettingsPage
+        SettingsPage,
+        NotificationsTab
       ],
       providers: [
         { provide: APP_BASE_HREF, useValue: '/' },
@@ -147,7 +149,7 @@ describe('SettingsPage', () => {
   // Check that the button toggles auto refresh
   it('has a button that toggles auto-refresh', fakeAsync(() => {
     // set up spies
-    const notificationsService = TestBed.get(NotificationService);
+    const notificationsService = TestBed.inject(NotificationService);
     const settingsSpy = spyOn(notificationsService, 'updateUserSettings').and.callThrough();
     const startRefreshSpy = spyOn(notificationsService, 'startAutoRefresh').and.callThrough();
     const stopRefreshSpy = spyOn(notificationsService, 'stopAutoRefresh').and.callThrough();
@@ -195,7 +197,7 @@ describe('SettingsPage', () => {
   // Check that changing the refresh rate changes the set rate
   it('changes the refresh rate', fakeAsync(() => {
     // set up spies
-    const notificationsService = TestBed.get(NotificationService);
+    const notificationsService = TestBed.inject(NotificationService);
     const settingsSpy = spyOn(notificationsService, 'updateUserSettings').and.callThrough();
 
     // set up the component

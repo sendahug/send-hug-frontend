@@ -27,7 +27,7 @@ import { openDB, IDBPDatabase, DBSchema } from 'idb';
 import { AlertsService } from './alerts.service';
 
 // IndexedDB Database schema
-interface MyDB extends DBSchema {
+export interface MyDB extends DBSchema {
   'posts': {
     key: number;
     value: {

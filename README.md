@@ -2,6 +2,7 @@
 
 [![Build Status](https://travis-ci.com/sendahug/send-hug-frontend.svg)](https://travis-ci.com/sendahug/send-hug-frontend)
 ![CI](https://github.com/sendahug/send-hug-frontend/workflows/Test%20CI/badge.svg)
+[![codecov](https://codecov.io/gh/sendahug/send-hug-frontend/graph/badge.svg)](https://codecov.io/gh/sendahug/send-hug-frontend)
 [![Known Vulnerabilities](https://snyk.io/test/github/sendahug/send-hug-frontend/badge.svg)](https://snyk.io/test/github/sendahug/send-hug-frontend)
 ![Libraries.io dependency status for GitHub repo](https://img.shields.io/librariesio/github/sendahug/send-hug-frontend)
 [![dependencies Status](https://david-dm.org/sendahug/send-hug-frontend/status.svg)](https://david-dm.org/sendahug/send-hug-frontend)

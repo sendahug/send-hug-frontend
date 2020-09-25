@@ -28,9 +28,146 @@ import {
 } from "@angular/platform-browser-dynamic/testing";
 import {} from 'jasmine';
 
-import { SWManager } from './sWManager.service';
+import { MyDB, SWManager } from './sWManager.service';
 import { AlertsService } from './alerts.service';
 import { MockAlertsService } from './alerts.service.mock';
+import { IDBPDatabase } from "idb";
+
+function populateDB(dbPromise: Promise<IDBPDatabase<MyDB>>, store: 'posts' | 'messages' | 'users' | 'threads' | 'all') {
+  const items = {
+    posts: [
+      {
+        'date': new Date('2020-06-27 19:17:31.072'),
+        'givenHugs': 0,
+        'id': 1,
+        'text': 'test',
+        'userId': 1,
+        'user': 'test',
+        'sentHugs': [],
+        'isoDate': '348310300'
+      },
+      {
+        'date': new Date('2020-06-28 19:17:31.072'),
+        'givenHugs': 2,
+        'id':2,
+        'text': 'test2',
+        'userId': 1,
+        'user': 'test',
+        'sentHugs': [],
+        'isoDate': '348310577'
+      },
+      {
+        'date': new Date('2020-06-27 19:17:31.072'),
+        'givenHugs': 1,
+        'id': 3,
+        'text': 'test3',
+        'userId': 3,
+        'user': 'test6',
+        'sentHugs': [],
+        'isoDate': '348310857'
+      }
+    ],
+    messages: [
+      {
+        date: new Date("Mon, 22 Jun 2020 14:32:38 GMT"),
+        for: "user14",
+        forId: 1,
+        from: "user14",
+        fromId: 4,
+        id: 1,
+        messageText: "test.",
+        threadID: 4,
+        isoDate: '67398730863'
+      },
+      {
+        date: new Date("Mon, 22 Jun 2020 14:32:38 GMT"),
+        for: "user14",
+        forId: 4,
+        from: "user14",
+        fromId: 1,
+        id: 14,
+        messageText: "message",
+        threadID: 4,
+        isoDate: '67398730824'
+      },
+      {
+        date: new Date("Mon, 08 Jun 2020 14:43:15 GMT"),
+        for: "shirb",
+        forId: 1,
+        from: "user14",
+        fromId: 4,
+        id: 9,
+        messageText: "hang in there",
+        threadID: 3,
+        isoDate: '67398730578'
+      }
+    ],
+    users: [
+      {
+        id: 1,
+        displayName: "shirb",
+        receivedHugs: 3,
+        givenHugs: 3,
+        role: 'user',
+        postsNum: 10
+      },
+      {
+        id: 4,
+        displayName: "user14",
+        receivedHugs: 3,
+        givenHugs: 3,
+        role: 'user',
+        postsNum: 10
+      }
+    ],
+    threads: [
+      {
+        id: 3,
+        user1: "shirb",
+        user1Id: 1,
+        user2: "user14",
+        user2Id: 4,
+        numMessages: 1,
+        latestMessage: new Date("Mon, 08 Jun 2020 14:43:15 GMT"),
+        isoDate: '37289456'
+      },
+      {
+        id: 5,
+        user1: "lalala",
+        user1Id: 2,
+        user2: "user14",
+        user2Id: 4,
+        numMessages: 2,
+        latestMessage: new Date("Mon, 08 Jun 2020 14:43:15 GMT"),
+        isoDate: '37289456'
+      }
+    ]
+  }
+
+  dbPromise.then(db => {
+    // if there's a specific store to populate, populate it
+    if(store != 'all') {
+      items[store].forEach((item:any) => {
+        db.put(store, item);
+      });
+    }
+    // otherwise, populate all stores
+    else {
+      items.messages.forEach(message => {
+        db.put('messages', message);
+      });
+      items.posts.forEach(post => {
+        db.put('posts', post);
+      });
+      items.threads.forEach(thread => {
+        db.put('threads', thread);
+      });
+      items.users.forEach(user => {
+        db.put('users', user);
+      });
+    }
+  });
+}
 
 describe('SWManagerService', () => {
   let httpController: HttpTestingController;
@@ -110,41 +247,7 @@ describe('SWManagerService', () => {
 
       sWManagerService = TestBed.inject(SWManager);
       sWManagerService.currentDB = sWManagerService.openDatabase();
-      sWManagerService.currentDB.then((db) => {
-        const store = db.transaction('posts', 'readwrite').objectStore('posts');
-        // clear the store before adding records
-        store.clear();
-        store.put({
-          'date': new Date('2020-06-27 19:17:31.072'),
-          'givenHugs': 0,
-          'id': 1,
-          'text': 'test',
-          'userId': 1,
-          'user': 'test',
-          'sentHugs': [],
-          'isoDate': '348310300'
-        });
-        store.put({
-          'date': new Date('2020-06-28 19:17:31.072'),
-          'givenHugs': 2,
-          'id':2,
-          'text': 'test2',
-          'userId': 1,
-          'user': 'test',
-          'sentHugs': [],
-          'isoDate': '348310577'
-        });
-        store.put({
-          'date': new Date('2020-06-27 19:17:31.072'),
-          'givenHugs': 1,
-          'id': 3,
-          'text': 'test3',
-          'userId': 3,
-          'user': 'test6',
-          'sentHugs': [],
-          'isoDate': '348310857'
-        })
-      });
+      populateDB(sWManagerService.currentDB, 'posts');
       httpController = TestBed.inject(HttpTestingController);
     });
 
@@ -266,44 +369,7 @@ describe('SWManagerService', () => {
 
       sWManagerService = TestBed.inject(SWManager);
       sWManagerService.currentDB = sWManagerService.openDatabase();
-      sWManagerService.currentDB.then((db) => {
-        const store = db.transaction('messages', 'readwrite').objectStore('messages');
-        // clear the store before adding records
-        store.clear();
-        store.put({
-          date: new Date("Mon, 22 Jun 2020 14:32:38 GMT"),
-          for: "user14",
-          forId: 1,
-          from: "user14",
-          fromId: 4,
-          id: 1,
-          messageText: "test.",
-          threadID: 4,
-          isoDate: '67398730863'
-        });
-        store.put({
-          date: new Date("Mon, 22 Jun 2020 14:32:38 GMT"),
-          for: "user14",
-          forId: 4,
-          from: "user14",
-          fromId: 1,
-          id: 14,
-          messageText: "message",
-          threadID: 4,
-          isoDate: '67398730824'
-        });
-        store.put({
-          date: new Date("Mon, 08 Jun 2020 14:43:15 GMT"),
-          for: "shirb",
-          forId: 1,
-          from: "user14",
-          fromId: 4,
-          id: 9,
-          messageText: "hang in there",
-          threadID: 3,
-          isoDate: '67398730578'
-        });
-      });
+      populateDB(sWManagerService.currentDB, 'messages');
       httpController = TestBed.inject(HttpTestingController);
     });
 
@@ -398,31 +464,7 @@ describe('SWManagerService', () => {
 
       sWManagerService = TestBed.inject(SWManager);
       sWManagerService.currentDB = sWManagerService.openDatabase();
-      sWManagerService.currentDB.then((db) => {
-        const store = db.transaction('threads', 'readwrite').objectStore('threads');
-        // clear the store before adding records
-        store.clear();
-        store.put({
-          id: 3,
-          user1: "shirb",
-          user1Id: 1,
-          user2: "user14",
-          user2Id: 4,
-          numMessages: 1,
-          latestMessage: new Date("Mon, 08 Jun 2020 14:43:15 GMT"),
-          isoDate: '37289456'
-        });
-        store.put({
-          id: 5,
-          user1: "lalala",
-          user1Id: 2,
-          user2: "user14",
-          user2Id: 4,
-          numMessages: 2,
-          latestMessage: new Date("Mon, 08 Jun 2020 14:43:15 GMT"),
-          isoDate: '37289456'
-        });
-      });
+      populateDB(sWManagerService.currentDB, 'threads');
       httpController = TestBed.inject(HttpTestingController);
     });
 
@@ -471,27 +513,7 @@ describe('SWManagerService', () => {
 
       sWManagerService = TestBed.inject(SWManager);
       sWManagerService.currentDB = sWManagerService.openDatabase();
-      sWManagerService.currentDB.then((db) => {
-        const store = db.transaction('users', 'readwrite').objectStore('users');
-        // clear the store before adding records
-        store.clear();
-        store.put({
-          id: 1,
-          displayName: "shirb",
-          receivedHugs: 3,
-          givenHugs: 3,
-          role: 'user',
-          postsNum: 10
-        });
-        store.put({
-          id: 4,
-          displayName: "user14",
-          receivedHugs: 3,
-          givenHugs: 3,
-          role: 'user',
-          postsNum: 10
-        });
-      });
+      populateDB(sWManagerService.currentDB, 'users');
       httpController = TestBed.inject(HttpTestingController);
     });
 

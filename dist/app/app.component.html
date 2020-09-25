@@ -3,7 +3,7 @@
 	<div id="noInternet" *ngIf="alertsService.isOffline.value" role="banner">You are not currently connected to the internet. For updated data, reconnect to the internet and try again.</div>
 	<nav id="navMenu" role="navigation">
 		<a [routerLink]="['/']"><img src="../assets/img/Logo.svg" alt="send a hug logo" id="siteLogo"></a>
-		<button class="navLink hidden" id="menuBtn" (click)="toggleMenu()"><fa-icon [icon]="faBars" class="fa-bars"></fa-icon></button>
+		<button class="navLink hidden" id="menuBtn" (click)="toggleMenu()" aria-hidden="true" aria-label="open navigation menu"><fa-icon [icon]="faBars" class="fa-bars"></fa-icon></button>
 		<div id="navLinks" class="navLinks">
 			<a [routerLink]="['/']" class="navLink">
 				<img src="../assets/img/home.svg" alt="" id="home" class="normal">
@@ -36,13 +36,16 @@
 				<div class="navLinkText">Admin Panel</div>
 			</a>
 			<div class="newNotification">
-				<button id="notificationsBtn" class="navLink" (click)="toggleNotifications()">
-					<fa-icon [icon]="faBell" class="fa-bell navButton" aria-label="open notifications tab" id="navNotific"></fa-icon>
+				<button id="notificationsBtn" class="navLink" (click)="toggleNotifications()" aria-label="open notifications tab">
+					<fa-icon [icon]="faBell" class="fa-bell navButton" id="navNotific"></fa-icon>
 				</button>
 				<span class="badge">{{ notificationService.newNotifications }}</span>
 			</div>
-			<button class="navLink" (click)="toggleSearch()" id="searchBtn">
-				<fa-icon [icon]="faSearch" class="fa-search navButton" aria-label="open search panel"></fa-icon>
+			<button class="navLink" (click)="toggleSearch()" id="searchBtn" aria-label="open search panel">
+				<fa-icon [icon]="faSearch" class="fa-search navButton"></fa-icon>
+			</button>
+			<button class="navLink" id="textSize" (click)="toggleSizePanel()" aria-label="change text size">
+				<fa-icon [icon]="faTextHeight" class="fa-bell navButton"></fa-icon>
 			</button>
 		</div>
 	</nav>
@@ -52,21 +55,31 @@
 		<input type="text" id="searchQuery" placeholder="Search" #searchQuery minlength="0">
 		<button type="submit" class="appButton sendData" (click)="searchApp($event,searchQuery.value)">Search</button>
 	</form>
+	<div id="textPanel" *ngIf="showTextPanel">
+		<button class="appButton" (click)="changeTextSize('smallest')" aria-label="change text size to smallest size">Smallest size</button>
+		<button class="appButton" (click)="changeTextSize('smaller')" aria-label="change text size to small size">Small size</button>
+		<button class="appButton" (click)="changeTextSize('regular')" aria-label="change text size to regular size">Regular size</button>
+		<button class="appButton" (click)="changeTextSize('larger')" aria-label="change text size to large size">Large size</button>
+		<button class="appButton" (click)="changeTextSize('largest')" aria-label="change text size to largest size">Largest size</button>
+	</div>
 </header>
 
-<main id="mainContent" role="main">
-	<div *ngIf="showNotifications">
-		<app-notifications
-						   (NotificationsMode)="changeMode($event)"></app-notifications>
-	</div>
-	<router-outlet></router-outlet>
-	<div id="alertContainer"></div>
-</main>
+<!-- Container for the main element and the footer (to ensure they follow one another, rather than have fixed styling) -->
+<div id="contentContainer">
+	<main id="mainContent" role="main">
+		<div *ngIf="showNotifications">
+			<app-notifications
+							   (NotificationsMode)="changeMode($event)"></app-notifications>
+		</div>
+		<router-outlet></router-outlet>
+		<div id="alertContainer" aria-live="assertive"></div>
+	</main>
 
-<footer>
-	<div id="siteFooter" role="contentinfo">
-		<p class="footerText" id="text">Open source project designed and built by <a href="https://github.com/sendahug/sendahug" target="_blank" rel="noreferrer">Send a Hug</a> group members. Designed by <a href="https://instagram.com/alphamacy?igshid=8ca63sx6ccpz" target="_blank" rel="noreferrer">Macy Tyler.</a></p>
-		<p class="footerText" id="contact"><a [routerLink]="['/sitemap']">Site Map</a> | <a href="mailto:theobjectivistb@gmail.com">Email Us</a></p>
-		<p class="footerText" id="rights">&copy; Send A Hug 2020.</p>
-	</div>
-</footer>
+	<footer>
+		<div id="siteFooter" role="contentinfo">
+			<p class="footerText" id="text">Open source project designed and built by <a href="https://github.com/sendahug/sendahug" target="_blank" rel="noreferrer">Send a Hug</a> group members. Designed by <a href="https://instagram.com/alphamacy?igshid=8ca63sx6ccpz" target="_blank" rel="noreferrer">Macy Tyler.</a></p>
+			<p class="footerText" id="contact"><a [routerLink]="['/sitemap']">Site Map</a> | <a href="mailto:theobjectivistb@gmail.com">Email Us</a></p>
+			<p class="footerText" id="rights">&copy; Send A Hug 2020.</p>
+		</div>
+	</footer>
+</div>

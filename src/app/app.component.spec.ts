@@ -220,7 +220,7 @@ describe("AppComponent", () => {
     });
 
     // Check that the font size panel is hidden when the button is clicked again
-    it('has a font size which iis hidden when the icon is clicked again', () => {
+    it('has a font size which is hidden when the icon is clicked again', () => {
       const fixture = TestBed.createComponent(AppComponent);
       fixture.detectChanges();
       const component = fixture.componentInstance;
@@ -264,11 +264,6 @@ describe("AppComponent", () => {
       // wrap tests in a promise to make sure they run fully and by the order
       // step 1: regular size
       new Promise(() => {
-        // check the initial font size
-        expect(document.getElementsByTagName('html')[0]!.style.fontSize).toBe('');
-        expect(menuSpy).not.toHaveBeenCalled();
-      // step 2: smallest size
-      }).then(() => {
         // change the font size to the smallest
         fontPanelButtons[0]!.click();
         fixture.detectChanges();

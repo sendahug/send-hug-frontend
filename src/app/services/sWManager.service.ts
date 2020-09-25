@@ -436,7 +436,7 @@ export class SWManager {
   addItem(store: 'posts' | 'messages' | 'users' | 'threads', item: any) {
     return this.currentDB?.then((db) => {
       // start a new transaction
-      let dbStore = db.transaction(store, 'readwrite').store;
+      let dbStore = db.transaction(store, 'readwrite').objectStore(store);
       dbStore.put(item);
     });
   }
@@ -499,7 +499,7 @@ export class SWManager {
     if(this.currentDB) {
       // gets the current database, and then gets the given store and clears it
       this.currentDB.then(function(db) {
-        let store = db.transaction(storeID).objectStore(storeID);
+        let store = db.transaction(storeID, 'readwrite').objectStore(storeID);
         return store.clear();
       // if there's an error, log it
       }).catch(function(err) {

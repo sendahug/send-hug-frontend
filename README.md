@@ -2,7 +2,6 @@
 
 [![Build Status](https://travis-ci.com/sendahug/send-hug-frontend.svg)](https://travis-ci.com/sendahug/send-hug-frontend)
 ![CI](https://github.com/sendahug/send-hug-frontend/workflows/Test%20CI/badge.svg)
-[![codecov](https://codecov.io/gh/sendahug/send-hug-frontend/graph/badge.svg)](https://codecov.io/gh/sendahug/send-hug-frontend)
 [![Known Vulnerabilities](https://snyk.io/test/github/sendahug/send-hug-frontend/badge.svg)](https://snyk.io/test/github/sendahug/send-hug-frontend)
 ![Libraries.io dependency status for GitHub repo](https://img.shields.io/librariesio/github/sendahug/send-hug-frontend)
 [![dependencies Status](https://david-dm.org/sendahug/send-hug-frontend/status.svg)](https://david-dm.org/sendahug/send-hug-frontend)
@@ -134,19 +133,19 @@ For more information about Angular's required NPM packages, check the [Angular d
 This project's tests are run using the Jasmine framework and the Karma runner. Thus, testing requires several packages:
 
 1. **Jasmine** - An open-source behaviour-driven testing framework. For more information, check Jasmine's [official site](https://jasmine.github.io). Included packages:
-  - **jasmine-core**
-  - **jasmine-spec-reporter**
-  - **@types/jasmine** - A typed version, required in order to write TypeScript tests.
+    - **jasmine-core**
+    - **jasmine-spec-reporter**
+    - **@types/jasmine** - A typed version, required in order to write TypeScript tests.
 2. **Karma** - An open-source test-runner, used to run the tests on various devices with a test server. For more information, check Karma's [official site](https://karma-runner.github.io/latest/index.html). Included packages:
-  - **karma**
-  - **karma-jasmine** - A Karma adapter for the Jasmine framework. [Project repo.](https://github.com/karma-runner/karma-jasmine)
-  - **karma-jasmine-html-reporter** - A reporter that shows test results in HTML. [NPM page.](https://www.npmjs.com/package/karma-jasmine-html-reporter).
-  - **karma-chrome-launcher** - A launcher for Chrome, Chrome Canary and Chromuim. [Project repo.](https://github.com/karma-runner/karma-chrome-launcher).
-  - **karma-coverage** - Code coverage generator. [Project repo.](https://github.com/karma-runner/karma-coverage)
-  - **karma-coverage-istanbul-reporter** - Code coverage generator reporter. [NPM page.](https://www.npmjs.com/package/karma-coverage-istanbul-reporter)
-  - **karma-sourcemap-loader** - A preprocessor that loads existing source maps. [NPM page.](https://www.npmjs.com/package/karma-sourcemap-loader)
-  - **karma-browserify** - A browserify preprocessor for karma, used to bundle up the tests. [NPM page.](https://www.npmjs.com/package/karma-browserify)
-  - **karma-viewport** - A karma framework used to gain access to the viewport in tests. [NPM page.](https://www.npmjs.com/package/karma-viewport)
+    - **karma**
+    - **karma-jasmine** - A Karma adapter for the Jasmine framework. [Project repo.](https://github.com/karma-runner/karma-jasmine)
+    - **karma-jasmine-html-reporter** - A reporter that shows test results in HTML. [NPM page.](https://www.npmjs.com/package/karma-jasmine-html-reporter).
+    - **karma-chrome-launcher** - A launcher for Chrome, Chrome Canary and Chromuim. [Project repo.](https://github.com/karma-runner/karma-chrome-launcher).
+    - **karma-coverage** - Code coverage generator. [Project repo.](https://github.com/karma-runner/karma-coverage)
+    - **karma-coverage-istanbul-reporter** - Code coverage generator reporter. [NPM page.](https://www.npmjs.com/package/karma-coverage-istanbul-reporter)
+    - **karma-sourcemap-loader** - A preprocessor that loads existing source maps. [NPM page.](https://www.npmjs.com/package/karma-sourcemap-loader)
+    - **karma-browserify** - A browserify preprocessor for karma, used to bundle up the tests. [NPM page.](https://www.npmjs.com/package/karma-browserify)
+    - **karma-viewport** - A karma framework used to gain access to the viewport in tests. [NPM page.](https://www.npmjs.com/package/karma-viewport)
 
 ### Production Dependencies
 
@@ -200,29 +199,18 @@ The project is hosted live on Heroku. You can view the live version [here](https
   5. Make sure you're in the top directory (FSND-capstone). In your terminal, enter `git remote add heroku-client <GIT_URL>`.
   6. Enter `git subtree push --prefix frontend heroku-client master`. This triggers the app build. If successful, you'll get a 'Verifying deploy... done.' message.
   7. Add the following environment variables (via CLI or via the Heroku website):
-
-    - PRODUCTION - set to true
-
-    - AUTH0_DOMAIN - set with your own Auth0 domain
-
-    - AUTH0_CLIENT - set with your own client ID from Auth0
-
-    - AUDIENCE - set with your own audience from Auth0
-
-    - LOGIN_REDIRECT - set to your <LIVE_URL> (or wherever in the app you want the user to be redirected to) to ensure after login the user will be redirected to your app
-
-    - LOGOUT_REDIRECT - set to your <LIVE_URL> (or wherever in the app you want the user to be redirected to) to ensure after login the user will be redirected to your app
-
-    - BACKEND_URL - set with your own backend URL (necessary for making requests to the backend!)
+      - PRODUCTION - set to true
+      - AUTH0_DOMAIN - set with your own Auth0 domain
+      - AUTH0_CLIENT - set with your own client ID from Auth0
+      - AUDIENCE - set with your own audience from Auth0
+      - LOGIN_REDIRECT - set to your <LIVE_URL> (or wherever in the app you want the user to be redirected to) to ensure after login the user will be redirected to your app
+      - LOGOUT_REDIRECT - set to your <LIVE_URL> (or wherever in the app you want the user to be redirected to) to ensure after login the user will be redirected to your app
+      - BACKEND_URL - set with your own backend URL (necessary for making requests to the backend!)
   8. On your Auth0 application configuration, make sure to:
-
-    - Add your new <LIVE_URL> to 'Allowed Callback URLs'
-
-    - Add your new <LIVE_URL> to 'Allowed Logout URLs'
-
-    - Add your new <LIVE_URL> to 'Allowed Web Origins'
-
-    - Add your new <LIVE_URL> to 'Allowed Origins (CORS)'
+      - Add your new <LIVE_URL> to 'Allowed Callback URLs'
+      - Add your new <LIVE_URL> to 'Allowed Logout URLs'
+      - Add your new <LIVE_URL> to 'Allowed Web Origins'
+      - Add your new <LIVE_URL> to 'Allowed Origins (CORS)'
   9. All done! Now you can visit your <GIT_URL> to see the live app.
 
 ## Known Issues

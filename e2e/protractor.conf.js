@@ -1,4 +1,5 @@
 const { SpecReporter, StacktraceOption } = require('jasmine-spec-reporter');
+const puppeteer = require('puppeteer');
 
 exports.config = {
   specs: [
@@ -6,12 +7,15 @@ exports.config = {
   ],
   exclude: ['**/node_modules/**'],
   capabilities: {
-    browserName: 'chrome'
+    browserName: 'chrome',
+    chromeOptions: {
+      binary: puppeteer.executablePath()
+    }
   },
   allScriptsTimeout: 11000,
-  logLevel: 'error',
+  logLevel: 'ERROR',
   directConnect: true,
-  baseUrl: 'http://localhost:4200/',
+  seleniumAddress: 'http://localhost:4444',
   framework: 'jasmine',
   jasmineNodeOpts: {
     showColors: true,

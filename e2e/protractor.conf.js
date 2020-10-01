@@ -9,7 +9,14 @@ exports.config = {
   capabilities: {
     browserName: 'chrome',
     chromeOptions: {
-      binary: puppeteer.executablePath()
+      binary: puppeteer.executablePath(),
+      args: [
+        '--disable-gpu',
+        '--no-sandbox',
+        '--disable-setuid-sandbox',
+        '--disable-extensions',
+        '--disable-dev-shm-usage'
+      ]
     }
   },
   allScriptsTimeout: 11000,

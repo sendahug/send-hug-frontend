@@ -133,4 +133,22 @@ describe('Send A Hug App', function() {
     // check messages route is marked active
     expect(element.all(by.className('navLink')).get(2).getAttribute('class')).toContain('active');
   });
+
+  // check the user is redirected to the search results page upon searching
+  it('should redirect to search page upon searching', () => {
+    let ec = protractor.ExpectedConditions;
+    browser.get('http://localhost:3000/');
+    browser.wait(ec.urlIs('http://localhost:3000/'), 2000);
+
+    // run search
+    element(by.id('searchBtn')).click();
+    element(by.id('searchQuery')).sendKeys('test');
+    element(by.className('sendData')). click();
+
+    // check the user was redirected
+    browser.getCurrentUrl().then(url => {
+      expect(url).toBe('http://localhost:3000/search?query=test');
+    });
+    expect(element(by.tagName('app-search-results'))).toBeDefined();
+  });
 });

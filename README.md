@@ -7,7 +7,6 @@
 ![Libraries.io dependency status for GitHub repo](https://img.shields.io/librariesio/github/sendahug/send-hug-frontend)
 [![dependencies Status](https://david-dm.org/sendahug/send-hug-frontend/status.svg)](https://david-dm.org/sendahug/send-hug-frontend)
 [![devDependencies Status](https://david-dm.org/sendahug/send-hug-frontend/dev-status.svg)](https://david-dm.org/sendahug/send-hug-frontend?type=dev)
-![GitHub](https://img.shields.io/github/license/sendahug/send-hug-frontend)
 ![Website](https://img.shields.io/website?down_color=red&down_message=offline&up_color=blue&up_message=online&url=https%3A%2F%2Fsend-hug.herokuapp.com)
 
 ## Version

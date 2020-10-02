@@ -1,20 +1,33 @@
 /*
   Admin Dashboard
   Send a Hug Component Tests
----------------------------------------------------
-MIT License
+  ---------------------------------------------------
+  MIT License
 
-Copyright (c) 2020 Send A Hug
+  Copyright (c) 2020 Send A Hug
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+  Permission is hereby granted, free of charge, to any person obtaining a copy
+  of this software and associated documentation files (the "Software"), to deal
+  in the Software without restriction, including without limitation the rights
+  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  copies of the Software, and to permit persons to whom the Software is
+  furnished to do so, subject to the following conditions:
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+  The above copyright notice and this permission notice shall be included in all
+  copies or substantial portions of the Software.
+
+  The provided Software is separate from the idea behind its website. The Send A Hug
+  website and its underlying design and ideas are owned by Send A Hug group and
+  may not be sold, sub-licensed or distributed in any way. The Software itself may
+  be adapted for any purpose and used freely under the given conditions.
+
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+  SOFTWARE.
 */
 
 
@@ -35,8 +48,8 @@ import {
 import { HttpClientModule } from "@angular/common/http";
 import { ServiceWorkerModule } from "@angular/service-worker";
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { By } from '@angular/platform-browser';
 
-import { AppComponent } from '../../app.component';
 import { AdminDashboard } from './adminDashboard.component';
 import { PopUp } from '../popUp/popUp.component';
 import { AdminService } from '../../services/admin.service';
@@ -62,7 +75,6 @@ describe('AdminDashboard', () => {
         FontAwesomeModule
       ],
       declarations: [
-        AppComponent,
         AdminDashboard,
         PopUp,
         Loader
@@ -78,17 +90,13 @@ describe('AdminDashboard', () => {
 
   // Check that the component is created
   it('should create the component', () => {
-    const acFixture = TestBed.createComponent(AppComponent);
-    const appComponent = acFixture.componentInstance;
     const fixture = TestBed.createComponent(AdminDashboard);
     const adminDashboard = fixture.componentInstance;
-    expect(appComponent).toBeTruthy();
     expect(adminDashboard).toBeTruthy();
   });
 
   // Check that all the popup-related variables are set to false at first
   it('should have all popup variables set to false', () => {
-    TestBed.createComponent(AppComponent);
     const fixture = TestBed.createComponent(AdminDashboard);
     const adminDashboard = fixture.componentInstance;
 
@@ -96,6 +104,36 @@ describe('AdminDashboard', () => {
     expect(adminDashboard.delete).toBeFalse();
     expect(adminDashboard.report).toBeFalse();
   });
+
+  // Check the popup exits when 'false' is emitted
+  it('should change mode when the event emitter emits false', fakeAsync(() => {
+    const fixture = TestBed.createComponent(AdminDashboard);
+    const adminDashboard = fixture.componentInstance;
+    const changeSpy = spyOn(adminDashboard, 'changeMode').and.callThrough();
+    adminDashboard['authService'].login();
+
+    fixture.detectChanges();
+    tick();
+
+    // start the popup
+    adminDashboard.editType = 'other user';
+    adminDashboard.toEdit = 'displayName';
+    adminDashboard.editMode = true;
+    adminDashboard.reportData.reportID = 5;
+    adminDashboard.reportData.userID = 2;
+    fixture.detectChanges();
+    tick();
+
+    // exit the popup
+    const popup = fixture.debugElement.query(By.css('app-pop-up')).componentInstance as PopUp;
+    popup.exitEdit();
+    fixture.detectChanges();
+    tick();
+
+    // check the popup is exited
+    expect(changeSpy).toHaveBeenCalled();
+    expect(adminDashboard.editMode).toBeFalse();
+  }));
 
   // REPORTS PAGE
   // ==================================================================
@@ -114,7 +152,6 @@ describe('AdminDashboard', () => {
           FontAwesomeModule
         ],
         declarations: [
-          AppComponent,
           AdminDashboard,
           PopUp,
           Loader
@@ -128,7 +165,7 @@ describe('AdminDashboard', () => {
       }).compileComponents();
 
       // make sure the test goes through with admin permission
-      const authService = TestBed.get(AuthService) as AuthService;
+      const authService = TestBed.inject(AuthService) as AuthService;
       spyOn(authService, 'canUser').and.returnValue(true);
       authService.isUserDataResolved.next(true);
     });
@@ -136,7 +173,7 @@ describe('AdminDashboard', () => {
     // Check that a call is made to get open reports
     it('should get open reports', fakeAsync(() => {
       // set up the spy and the component
-      const adminService = TestBed.get(AdminService);
+      const adminService = TestBed.inject(AdminService);
       const reportSpy = spyOn(adminService, 'getOpenReports').and.callThrough();
       const fixture = TestBed.createComponent(AdminDashboard);
       const adminDashboard = fixture.componentInstance;
@@ -315,7 +352,6 @@ describe('AdminDashboard', () => {
           FontAwesomeModule
         ],
         declarations: [
-          AppComponent,
           AdminDashboard,
           PopUp,
           Loader
@@ -329,7 +365,7 @@ describe('AdminDashboard', () => {
       }).compileComponents();
 
       // make sure the test goes through with admin permission
-      const authService = TestBed.get(AuthService) as AuthService;
+      const authService = TestBed.inject(AuthService);
       spyOn(authService, 'canUser').and.returnValue(true);
       authService.isUserDataResolved.next(true);
     });
@@ -337,7 +373,7 @@ describe('AdminDashboard', () => {
     // Check that a call is made to get blocked users
     it('should get blocked users', fakeAsync(() => {
       // set up the spy and the component
-      const adminService = TestBed.get(AdminService);
+      const adminService = TestBed.inject(AdminService);
       const blockSpy = spyOn(adminService, 'getBlockedUsers').and.callThrough();
       const fixture = TestBed.createComponent(AdminDashboard);
       const adminDashboard = fixture.componentInstance;
@@ -472,7 +508,6 @@ describe('AdminDashboard', () => {
           FontAwesomeModule
         ],
         declarations: [
-          AppComponent,
           AdminDashboard,
           PopUp,
           Loader
@@ -486,7 +521,7 @@ describe('AdminDashboard', () => {
       }).compileComponents();
 
       // make sure the test goes through with admin permission
-      const authService = TestBed.get(AuthService) as AuthService;
+      const authService = TestBed.inject(AuthService);
       spyOn(authService, 'canUser').and.returnValue(true);
       authService.isUserDataResolved.next(true);
     });
@@ -494,7 +529,7 @@ describe('AdminDashboard', () => {
     // Check that a call is made to get filtered phrases
     it('should get filtered phrases', fakeAsync(() => {
       // set up the spy and the component
-      const adminService = TestBed.get(AdminService);
+      const adminService = TestBed.inject(AdminService);
       const filterSpy = spyOn(adminService, 'getFilters').and.callThrough();
       const fixture = TestBed.createComponent(AdminDashboard);
       const adminDashboard = fixture.componentInstance;

@@ -15,6 +15,19 @@
 
   The above copyright notice and this permission notice shall be included in all
   copies or substantial portions of the Software.
+
+  The provided Software is separate from the idea behind its website. The Send A Hug
+  website and its underlying design and ideas are owned by Send A Hug group and
+  may not be sold, sub-licensed or distributed in any way. The Software itself may
+  be adapted for any purpose and used freely under the given conditions.
+
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+  SOFTWARE.
 */
 
 // Angular imports
@@ -192,30 +205,22 @@ export class AuthService {
           this.updateUserData();
         }
 
-        // if there's a currently operating IDB database, get it
-        if(this.serviceWorkerM.currentDB) {
-          this.serviceWorkerM.currentDB.then(db => {
-            // start a new transaction
-            let tx = db.transaction('users', 'readwrite');
-            let store = tx.objectStore('users');
-            // adds the user's data to the users store
-            let user = {
-              id: data.id,
-              auth0Id: jwtPayload.sub,
-              displayName: data.displayName,
-              receivedHugs: data.receivedH,
-              givenHugs: data.givenH,
-              postsNum: data.posts,
-              loginCount: data.loginCount,
-              role: data.role,
-              blocked: data.blocked,
-              releaseDate: data.releaseDate,
-              autoRefresh: data.autoRefresh,
-              pushEnabled: data.pushEnabled
-            }
-            store.put(user);
-          })
+        // adds the user's data to the users store
+        let user = {
+          id: data.id,
+          auth0Id: jwtPayload.sub,
+          displayName: data.displayName,
+          receivedHugs: data.receivedH,
+          givenHugs: data.givenH,
+          postsNum: data.posts,
+          loginCount: data.loginCount,
+          role: data.role,
+          blocked: data.blocked,
+          releaseDate: data.releaseDate,
+          autoRefresh: data.autoRefresh,
+          pushEnabled: data.pushEnabled
         }
+        this.serviceWorkerM.addItem('users', user);
         // if there's an error, check the error type
       }, (err) => {
         let statusCode = err.status;
@@ -289,30 +294,22 @@ export class AuthService {
       this.setToken();
       this.isUserDataResolved.next(true);
 
-      // if there's a currently operating IDB database, get it
-      if(this.serviceWorkerM.currentDB) {
-        this.serviceWorkerM.currentDB.then(db => {
-          // start a new transaction
-          let tx = db.transaction('users', 'readwrite');
-          let store = tx.objectStore('users');
-          // adds the user's data to the users store
-          let user = {
-            id: data.id,
-            auth0Id: jwtPayload.sub,
-            displayName: data.displayName,
-            receivedHugs: data.receivedH,
-            givenHugs: data.givenH,
-            postsNum: data.posts,
-            loginCount: data.loginCount,
-            role: data.role,
-            blocked: data.blocked,
-            releaseDate: data.releaseDate,
-            autoRefresh: data.autoRefresh,
-            pushEnabled: data.pushEnabled
-          }
-          store.put(user);
-        })
+      // adds the user's data to the users store
+      let user = {
+        id: data.id,
+        auth0Id: jwtPayload.sub,
+        displayName: data.displayName,
+        receivedHugs: data.receivedH,
+        givenHugs: data.givenH,
+        postsNum: data.posts,
+        loginCount: data.loginCount,
+        role: data.role,
+        blocked: data.blocked,
+        releaseDate: data.releaseDate,
+        autoRefresh: data.autoRefresh,
+        pushEnabled: data.pushEnabled
       }
+      this.serviceWorkerM.addItem('users', user);
       // error handling
     }, (err) => {
       this.isUserDataResolved.next(true);

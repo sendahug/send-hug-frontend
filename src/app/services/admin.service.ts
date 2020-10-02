@@ -15,6 +15,19 @@
 
   The above copyright notice and this permission notice shall be included in all
   copies or substantial portions of the Software.
+
+  The provided Software is separate from the idea behind its website. The Send A Hug
+  website and its underlying design and ideas are owned by Send A Hug group and
+  may not be sold, sub-licensed or distributed in any way. The Software itself may
+  be adapted for any purpose and used freely under the given conditions.
+
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+  SOFTWARE.
 */
 
 // Angular imports
@@ -31,6 +44,7 @@ import { ItemsService } from './items.service';
 import { environment } from '../../environments/environment';
 import { environment as prodEnv } from '../../environments/environment.prod';
 import { OtherUser } from '../interfaces/otherUser.interface';
+import { SWManager } from './sWManager.service';
 
 @Injectable({
   providedIn: 'root'
@@ -70,7 +84,8 @@ export class AdminService {
     private Http:HttpClient,
     private authService:AuthService,
     private alertsService:AlertsService,
-    private itemsService:ItemsService
+    private itemsService:ItemsService,
+    private serviceWorkerM:SWManager
   ) {
 
   }
@@ -193,9 +208,15 @@ export class AdminService {
         messageText: `Your post (ID ${response.deleted}) was deleted due to violating our community rules.`,
         date: new Date()
       }
+
+      // if the report needs to be closed
       if(closeReport) {
         this.dismissReport(reportData.reportID);
       }
+
+      // delete the post from idb
+      this.serviceWorkerM.deleteItem('posts', postID);
+
       // send the message about the deleted post
       this.itemsService.sendMessage(message);
     }, (err:HttpErrorResponse) => {

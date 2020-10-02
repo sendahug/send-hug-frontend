@@ -15,6 +15,19 @@
 
   The above copyright notice and this permission notice shall be included in all
   copies or substantial portions of the Software.
+
+  The provided Software is separate from the idea behind its website. The Send A Hug
+  website and its underlying design and ideas are owned by Send A Hug group and
+  may not be sold, sub-licensed or distributed in any way. The Software itself may
+  be adapted for any purpose and used freely under the given conditions.
+
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+  SOFTWARE.
 */
 
 import { TestBed } from "@angular/core/testing";
@@ -58,8 +71,8 @@ describe('PostsService', () => {
       ]
     }).compileComponents();
 
-    postsService = TestBed.get(PostsService);
-    httpController = TestBed.get(HttpTestingController);
+    postsService = TestBed.inject(PostsService);
+    httpController = TestBed.inject(HttpTestingController);
   });
 
   // Check the service is created
@@ -114,6 +127,9 @@ describe('PostsService', () => {
       ]
     };
 
+    const querySpy = spyOn(postsService['serviceWorkerM'], 'queryPosts');
+    const addSpy = spyOn(postsService['serviceWorkerM'], 'addItem');
+    const cleanSpy = spyOn(postsService['serviceWorkerM'], 'cleanDB');
     postsService.getItems();
     // wait for the fetch to be resolved
     postsService.isMainPageResolved.subscribe((value) => {
@@ -128,6 +144,13 @@ describe('PostsService', () => {
     const req = httpController.expectOne('http://localhost:5000');
     expect(req.request.method).toEqual('GET');
     req.flush(mockResponse);
+
+    expect(querySpy).toHaveBeenCalled();
+    expect(querySpy).toHaveBeenCalledTimes(2);
+    expect(addSpy).toHaveBeenCalled();
+    expect(addSpy).toHaveBeenCalledTimes(4);
+    expect(cleanSpy).toHaveBeenCalled();
+    expect(cleanSpy).toHaveBeenCalledWith('posts');
   });
 
   // Check the service gets the full new items
@@ -158,6 +181,9 @@ describe('PostsService', () => {
       ]
     };
 
+    const querySpy = spyOn(postsService['serviceWorkerM'], 'queryPosts');
+    const addSpy = spyOn(postsService['serviceWorkerM'], 'addItem');
+    const cleanSpy = spyOn(postsService['serviceWorkerM'], 'cleanDB');
     // fetch page 1
     postsService.getNewItems(1);
     // wait for the fetch to be resolved
@@ -173,6 +199,13 @@ describe('PostsService', () => {
     const p1Req = httpController.expectOne('http://localhost:5000/posts/new?page=1');
     expect(p1Req.request.method).toEqual('GET');
     p1Req.flush(mockP1Response);
+
+    expect(querySpy).toHaveBeenCalled();
+    expect(querySpy).toHaveBeenCalledWith('new posts', undefined, 1);
+    expect(addSpy).toHaveBeenCalled();
+    expect(addSpy).toHaveBeenCalledTimes(2);
+    expect(cleanSpy).toHaveBeenCalled();
+    expect(cleanSpy).toHaveBeenCalledWith('posts');
   });
 
   // Check the service gets the full new items page 2
@@ -194,6 +227,9 @@ describe('PostsService', () => {
       ]
     };
 
+    const querySpy = spyOn(postsService['serviceWorkerM'], 'queryPosts');
+    const addSpy = spyOn(postsService['serviceWorkerM'], 'addItem');
+    const cleanSpy = spyOn(postsService['serviceWorkerM'], 'cleanDB');
     // fetch page 2
     postsService.getNewItems(2);
     // wait for the fetch to be resolved
@@ -209,6 +245,13 @@ describe('PostsService', () => {
     const p2Req = httpController.expectOne('http://localhost:5000/posts/new?page=2');
     expect(p2Req.request.method).toEqual('GET');
     p2Req.flush(mockP2Response);
+
+    expect(querySpy).toHaveBeenCalled();
+    expect(querySpy).toHaveBeenCalledWith('new posts', undefined, 2);
+    expect(addSpy).toHaveBeenCalled();
+    expect(addSpy).toHaveBeenCalledTimes(1);
+    expect(cleanSpy).toHaveBeenCalled();
+    expect(cleanSpy).toHaveBeenCalledWith('posts');
   });
 
   // Check the service gets the full suggested items
@@ -239,6 +282,9 @@ describe('PostsService', () => {
       ]
     };
 
+    const querySpy = spyOn(postsService['serviceWorkerM'], 'queryPosts');
+    const addSpy = spyOn(postsService['serviceWorkerM'], 'addItem');
+    const cleanSpy = spyOn(postsService['serviceWorkerM'], 'cleanDB');
     // fetch page 1
     postsService.getSuggestedItems(1);
     // wait for the fetch to be resolved
@@ -254,6 +300,13 @@ describe('PostsService', () => {
     const p1Req = httpController.expectOne('http://localhost:5000/posts/suggested?page=1');
     expect(p1Req.request.method).toEqual('GET');
     p1Req.flush(mockP1Response);
+
+    expect(querySpy).toHaveBeenCalled();
+    expect(querySpy).toHaveBeenCalledWith('suggested posts', undefined, 1);
+    expect(addSpy).toHaveBeenCalled();
+    expect(addSpy).toHaveBeenCalledTimes(2);
+    expect(cleanSpy).toHaveBeenCalled();
+    expect(cleanSpy).toHaveBeenCalledWith('posts');
   });
 
   // Check the service gets the full suggested items page 2
@@ -275,6 +328,9 @@ describe('PostsService', () => {
       ]
     };
 
+    const querySpy = spyOn(postsService['serviceWorkerM'], 'queryPosts');
+    const addSpy = spyOn(postsService['serviceWorkerM'], 'addItem');
+    const cleanSpy = spyOn(postsService['serviceWorkerM'], 'cleanDB');
     // fetch page 2
     postsService.getSuggestedItems(2);
     // wait for the fetch to be resolved
@@ -290,6 +346,13 @@ describe('PostsService', () => {
     const p2Req = httpController.expectOne('http://localhost:5000/posts/suggested?page=2');
     expect(p2Req.request.method).toEqual('GET');
     p2Req.flush(mockP2Response);
+
+    expect(querySpy).toHaveBeenCalled();
+    expect(querySpy).toHaveBeenCalledWith('suggested posts', undefined, 2);
+    expect(addSpy).toHaveBeenCalled();
+    expect(addSpy).toHaveBeenCalledTimes(1);
+    expect(cleanSpy).toHaveBeenCalled();
+    expect(cleanSpy).toHaveBeenCalledWith('posts');
   });
 
   // Check the service creates a new post
@@ -354,6 +417,7 @@ describe('PostsService', () => {
     };
 
     const spy = spyOn(postsService['alertsService'], 'createSuccessAlert');
+    const deleteSpy = spyOn(postsService['serviceWorkerM'], 'deleteItem');
     postsService.deletePost(8);
 
     const req = httpController.expectOne('http://localhost:5000/posts/8');
@@ -362,6 +426,8 @@ describe('PostsService', () => {
 
     expect(spy).toHaveBeenCalled();
     expect(spy).toHaveBeenCalledWith(`Post ${mockResponse.deleted} was deleted. Refresh to view the updated post list.`, true);
+    expect(deleteSpy).toHaveBeenCalled();
+    expect(deleteSpy).toHaveBeenCalledWith('posts', 8);
   });
 
   // Check the service deletes all of a user's posts
@@ -374,6 +440,7 @@ describe('PostsService', () => {
     };
 
     const spy = spyOn(postsService['alertsService'], 'createSuccessAlert');
+    const deleteSpy = spyOn(postsService['serviceWorkerM'], 'deleteItems');
     postsService.deleteAllPosts(4);
 
     const req = httpController.expectOne('http://localhost:5000/users/all/4/posts');
@@ -382,6 +449,8 @@ describe('PostsService', () => {
 
     expect(spy).toHaveBeenCalled();
     expect(spy).toHaveBeenCalledWith(`User ${mockResponse.userID}'s posts were deleted successfully. Refresh to view the updated profile.`, true);
+    expect(deleteSpy).toHaveBeenCalled();
+    expect(deleteSpy).toHaveBeenCalledWith('posts', 'userId', 4);
   });
 
   // Check the service edits a post

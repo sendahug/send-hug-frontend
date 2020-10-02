@@ -1,20 +1,33 @@
 /*
 	Error Page
 	Send a Hug Component Tests
----------------------------------------------------
-MIT License
+  ---------------------------------------------------
+  MIT License
 
-Copyright (c) 2020 Send A Hug
+  Copyright (c) 2020 Send A Hug
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+  Permission is hereby granted, free of charge, to any person obtaining a copy
+  of this software and associated documentation files (the "Software"), to deal
+  in the Software without restriction, including without limitation the rights
+  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  copies of the Software, and to permit persons to whom the Software is
+  furnished to do so, subject to the following conditions:
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+  The above copyright notice and this permission notice shall be included in all
+  copies or substantial portions of the Software.
+
+  The provided Software is separate from the idea behind its website. The Send A Hug
+  website and its underlying design and ideas are owned by Send A Hug group and
+  may not be sold, sub-licensed or distributed in any way. The Software itself may
+  be adapted for any purpose and used freely under the given conditions.
+
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+  SOFTWARE.
 */
 
 import 'zone.js/dist/zone';
@@ -36,7 +49,6 @@ import { ServiceWorkerModule } from "@angular/service-worker";
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 // App imports
-import { AppComponent } from '../../app.component';
 import { ErrorPage } from "./errorPage.component";
 
 class MockLocation {
@@ -60,7 +72,6 @@ describe('ErrorPage', () => {
         FontAwesomeModule
       ],
       declarations: [
-        AppComponent,
         ErrorPage
       ],
       providers: [
@@ -72,17 +83,13 @@ describe('ErrorPage', () => {
 
   // Check that the component is created
   it('should create the component', () => {
-    const acFixture = TestBed.createComponent(AppComponent);
-    const appComponent = acFixture.componentInstance;
     const fixture = TestBed.createComponent(ErrorPage);
     const errorPage = fixture.componentInstance;
-    expect(appComponent).toBeTruthy();
     expect(errorPage).toBeTruthy();
   });
 
   // Check that the error page has the right error message
   it('should have an error message', fakeAsync(() => {
-    TestBed.createComponent(AppComponent);
     const fixture = TestBed.createComponent(ErrorPage);
     const errorPage = fixture.componentInstance;
     const errorPageDOM = fixture.nativeElement;
@@ -102,7 +109,6 @@ describe('ErrorPage', () => {
 
   // Check that the 'back' method is called when clicking the back button
   it('should call back method when clicking the back button', fakeAsync(() => {
-    TestBed.createComponent(AppComponent);
     const fixture = TestBed.createComponent(ErrorPage);
     const errorPage = fixture.componentInstance;
     const errorPageDOM = fixture.nativeElement;

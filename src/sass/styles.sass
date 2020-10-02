@@ -1,6 +1,23 @@
 /* Original design by Macy Tyler */
 /* Responsive adjustments by Send a Hug team */
 
+/* Font size mixin */
+@mixin fontSize($px-size)
+	font-size: ($px-size / 10 * 0.625) + rem
+
+/* Fonts */
+@font-face
+	font-family: 'Montserrat'
+	font-style: normal
+	font-weight: 400
+	src: local('Montserrat Regular'), local('Montserrat-Regular'), url('../assets/fonts/Montserrat-Regular.ttf') format('ttf')
+
+@font-face
+	font-family: 'Montserrat'
+	font-style: bold
+	font-weight: 700
+	src: local('Montserrat Bold'), local('Montserrat-Bold'), url('../assets/fonts/Montserrat-Bold.ttf') format('ttf')
+
 /* Colour Palette */
 $mainBackground: #F2F2F2
 $boxesBackground: #E2E2E2
@@ -13,22 +30,6 @@ $profileLinkColour: #70315B
 
 /* Fonts */
 $mainFont: 'Montserrat', sans-serif
-
-/* Component Sample */
-#compSample
-	z-index: 1
-	position: absolute
-	overflow-y: scroll
-	width: 100%
-	max-width: 100%
-	/* Responsive styling for screens up to 650px width */
-	@media screen and (max-width: 650px)
-		top: 125px
-		bottom: 80px
-	/* Responsive styling for screens above 650px width */
-	@media screen and (min-width: 650px)
-		bottom: 90px
-		top: 130px
 
 /* Frame Sample */
 #frameSample
@@ -55,21 +56,69 @@ body
 	overflow-x: hidden
 	background: $mainBackground
 
+#contentContainer
+	z-index: 1
+	position: absolute
+	overflow-y: scroll
+	width: 96%
+	max-width: 96%
+	margin-right: 4%
+	margin-left: 0
+	/* Responsive styling for screens up to 650px width */
+	@media screen and (max-width: 650px)
+		top: 125px
+		bottom: 10px
+	/* Responsive styling for screens above 650px width */
+	@media screen and (min-width: 650px)
+		bottom: 30px
+		top: 130px
+
+#mainContent
+	padding-bottom: 20px
+
 fieldset
 	border: none
 	padding: 0
 	margin: 0
+
+/* Font awesome icon within a link */
+a fa-icon
+	padding: 5px
+	vertical-align: middle
+	line-height: 44px
 
 /* App button */
 .appButton
 	background: $buttonBackground
 	color: #FFF
 	padding: 5px
+	border: none
+	font-family: $mainFont
+	min-width: 44px
+	min-height: 34px
+	text-align: center
+
+/* Link with App button class */
+a.appButton
+	padding: 0 5px
+	margin: 5px
+	vertical-align: middle
+	line-height: 34px
 
 .textlessButton
 	background-color: $itemBackground
 	color: $textColour
 	padding: 5px
+	min-width: 44px
+	min-height: 44px
+	text-align: center
+	border: none
+
+/* Required field */
+/* Via https://stackoverflow.com/a/11197803 */
+.required:after
+	content: ' *'
+	color: red
 
 /* Pagination area */
 .pagination
@@ -82,13 +131,11 @@ fieldset
 
 /* Pagination button */
 .pagination button
-	font-family: $mainFont
 	background: $buttonBackground
 	color: #FFF
 	border-radius: 10px
 	font-weight: bold
 	padding: 7px
-	border: none
 
 /* Page count */
 .pageCount
@@ -113,6 +160,7 @@ fieldset
 
 /* Notification badge */
 .badge
+	@include fontSize(14)
 	position: absolute
 	top: -5px
 	right: -5px
@@ -120,7 +168,6 @@ fieldset
 	border-radius: 50%
 	background: $boxesBackground
 	color: $headlineColour
-	font-size: 14px
 
 /* Skip link */
 .skip-link
@@ -129,10 +176,10 @@ fieldset
 
 /* Skip link when focused */
 .skip-link:focus
+	@include fontSize(16)
 	left: 0
 	top: 0
 	font-family: $mainFont
-	font-size: 16px
 
 /* ARIA labels */
 .labels
@@ -166,15 +213,15 @@ app-admin-dashboard #breadcrumb
 
 /* Breadcrumb (current page) */
 .breadcrumb
+	@include fontSize(15)
 	font-family: $mainFont
 	color: $textColour
 	text-transform: capitalize
 	margin: 2px
 	padding: 2px
-	font-size: 15px
 	/* Responsive styling for screens above 800px width */
 	@media screen and (min-width: 800px)
-		font-size: 14px
+		@include fontSize(14)
 	
 /* Breadcrumb link */
 .bLink
@@ -192,6 +239,9 @@ app-admin-dashboard #breadcrumb
 	left: 0
 	right: 0
 	z-index: 100
+	/* Responsive styling for screens up to 650px width */
+	@media screen and (max-width: 650px)
+		padding-top: 2%
 
 /* Site Header when the popup is on */
 #siteHeader.modal
@@ -199,6 +249,7 @@ app-admin-dashboard #breadcrumb
 
 /* No internet connection message */
 #noInternet
+	@include fontSize(14)
 	left: 0
 	right: 0
 	width: 90%
@@ -213,7 +264,6 @@ app-admin-dashboard #breadcrumb
 	margin: 0 5%
 	color: $headlineColour
 	font-family: $mainFont
-	font-size: 14px
 	padding: 0
 	/* Responsive styling for screens above 900px width */
 	@media screen and (min-width: 900px)
@@ -226,6 +276,7 @@ app-admin-dashboard #breadcrumb
 	padding: 0 10px 0 0
 	height: 100px
 	width: 100px
+	min-width: 60px
 	/* Responsive styling for screens above 600px width */
 	@media screen and (min-width: 600px)
 		height: 75px
@@ -259,8 +310,8 @@ app-admin-dashboard #breadcrumb
 		width: 90%
 		max-width: 90%
 		margin: 0 5%
-	/* Responsive styling for screens above 600px width */
-	@media screen and (min-width: 600px)
+	/* Responsive styling for screens above 650px width */
+	@media screen and (min-width: 650px)
 		width: 100%
 		max-width: 100%
 		margin: 0
@@ -268,13 +319,12 @@ app-admin-dashboard #breadcrumb
 
 /* Menu button */
 #menuBtn
-	/* Responsive styling for screens up to 600px width */
-	@media screen and (max-width: 600px)
-		display: block
-		background: $mainBackground
-	/* Responsive styling for screens above 500px width */
-	@media screen and (min-width: 600px)
-		display: none
+	display: block
+	background: $mainBackground
+
+/* Menu button (hidden form) */
+#menuBtn.hidden
+	display: none
 
 /* Menu button icon */
 .fa-bars
@@ -284,8 +334,8 @@ app-admin-dashboard #breadcrumb
 /* Navigation menu - inner */
 .navLinks
 	display: flex
-	/* Responsive styling for screens up to 600px width */
-	@media screen and (max-width: 600px)
+	/* Responsive styling for screens up to 650px width */
+	@media screen and (max-width: 650px)
 		flex-direction: column
 		height: 100%
 		max-height: 600px
@@ -299,8 +349,8 @@ app-admin-dashboard #breadcrumb
 		align-items: center
 		justify-content: center
 		padding: 10px
-	/* Responsive styling for screens above 600px width */
-	@media screen and (min-width: 600px)
+	/* Responsive styling for screens above 650px width */
+	@media screen and (min-width: 650px)
 		flex-direction: row
 		width: 100%
 		background: $mainBackground
@@ -311,8 +361,25 @@ app-admin-dashboard #breadcrumb
 	@media screen and (max-height: 600px)
 		overflow-y: scroll
 
+/* Navigation menu - inner - for larger font size */
+.navLinks.large
+	flex-direction: column
+	height: 100%
+	max-height: 600px
+	width: 75%
+	overflow-y: visible
+	position: fixed
+	left: -10px
+	top: 0
+	z-index: 100
+	background: $boxesBackground
+	align-items: center
+	justify-content: center
+	padding: 30px 10px
+	overflow-y: scroll
+
 /* Navigation menu - inner - hidden */
-.navLinks.hidden
+.navLinks.hidden, .navLinks.large.hidden
 	display: none
 
 /* Navigation Item */
@@ -323,17 +390,22 @@ app-admin-dashboard #breadcrumb
 	border: none
 	padding: 0 15px
 	text-decoration: none
-	/* Responsive styling for screens up to 600px width */
-	@media screen and (max-width: 600px)
+	/* Responsive styling for screens up to 650px width */
+	@media screen and (max-width: 650px)
 		padding: 10px 15px
 		background: $boxesBackground
-	/* Responsive styling for screens above 600px width */
-	@media screen and (min-width: 600px)
+	/* Responsive styling for screens above 650px width */
+	@media screen and (min-width: 650px)
 		background: $mainBackground
 		padding: 0 10px
 	/* Responsive styling for screens above 800px width */
 	@media screen and (min-width: 800px)
 		padding: 0 15px
+
+/* Navigation Item in the large menu */
+.navLinks.large .navLink, .navLinks.large .navButton
+	padding: 10px 15px
+	background: $boxesBackground
 
 /* Navigation icon (SVG) - normal variant */
 .normal
@@ -365,7 +437,7 @@ app-admin-dashboard #breadcrumb
 
 /* Navigation Item's text (current page) */
 .navLink.active .navLinkText
-	font-size: 15px
+	@include fontSize(15)
 
 /* Navigation icon (current page) when the mouse is hovering over the link  */
 .navLink.active:hover
@@ -375,11 +447,11 @@ app-admin-dashboard #breadcrumb
 .navIcon
 	font-size: 30px
 	text-align: center
-	/* Responsive styling for screens above 600px width */
-	@media screen and (min-width: 600px)
-		font-size: 26px
 	/* Responsive styling for screens above 650px width */
 	@media screen and (min-width: 650px)
+		font-size: 26px
+	/* Responsive styling for screens above 700px width */
+	@media screen and (min-width: 700px)
 		font-size: 28px
 	/* Responsive styling for screens above 800px width */
 	@media screen and (min-width: 800px)
@@ -387,28 +459,28 @@ app-admin-dashboard #breadcrumb
 
 /* Navigation item text */
 .navLinkText
-	font-size: 13px
+	@include fontSize(13)
 	padding-top: 5px
 	font-family: $mainFont
-	/* Responsive styling for screens above 650px width */
-	@media screen and (min-width: 650px)
-		font-size: 14px
+	/* Responsive styling for screens above 700px width */
+	@media screen and (min-width: 700px)
+		@include fontSize(14)
 
 /* Navigation buttons (notifications / search) */
 .navButton
 	font-size: 24px
 	text-align: center
-	/* Responsive styling for screens up to 600px width */
-	@media screen and (max-width: 600px)
+	/* Responsive styling for screens up to 650px width */
+	@media screen and (max-width: 650px)
 		padding: 10px 15px
 		background: $boxesBackground
 		margin: 0
-	/* Responsive styling for screens above 600px width */
-	@media screen and (min-width: 600px)
-		background: $mainBackground
-		font-size: 20px
 	/* Responsive styling for screens above 650px width */
 	@media screen and (min-width: 650px)
+		background: $mainBackground
+		font-size: 20px
+	/* Responsive styling for screens above 700px width */
+	@media screen and (min-width: 700px)
 		margin: 0 5px
 		font-size: 23px
 	/* Responsive styling for screens above 800px width */
@@ -417,35 +489,42 @@ app-admin-dashboard #breadcrumb
 
 /* Notifications button */
 .newNotification
-	padding: 5px
+	padding: 2px
 	position: relative
 	display: inline-block
 	background-color: $boxesBackground
-	/* Responsive styling for screens up to 600px width */
-	@media screen and (max-width: 600px)
+	/* Responsive styling for screens up to 650px width */
+	@media screen and (max-width: 650px)
 		margin-top: 20px
-	/* Responsive styling for screens above 600px width */
-	@media screen and (min-width: 600px)
+	/* Responsive styling for screens above 650px width */
+	@media screen and (min-width: 650px)
 		margin-left: 10px
 		background: $mainBackground
-		padding: 6px
 	/* Responsive styling for screens above 750px width */
 	@media screen and (min-width: 750px)
-		padding: 3px
 		margin-left: 5px
+
+/* Notifications button - badge */
+.newNotification .badge
+	right: -5px
 
 /* Notifications button icon */
 #navNotific
-	/* Responsive styling for screens up to 600px width */
-	@media screen and (max-width: 600px)
+	/* Responsive styling for screens up to 650px width */
+	@media screen and (max-width: 650px)
 		padding: 2px
 
 .newNotification .badge
 	background: #cfcfcf
 	font-family: $mainFont
 
-/* Search form */
-#search
+/* Text size button icon */
+#textSize
+	margin: 2px
+	padding: 2px
+
+/* Search form / font size adjustment */
+#search, #textPanel
 	display: flex
 	justify-content: center
 	align-content: center
@@ -494,6 +573,11 @@ app-admin-dashboard #breadcrumb
 		width: Calc(60% - 20px)
 		max-width: Calc(60% - 20px)
 		margin: 10px Calc(20% - 10px) 5px
+
+/* font size adjustment panel */
+#textPanel .appButton
+	margin: 5px
+	border-radius: 5px
 
 /* Search form exit button */
 #search #exitButton
@@ -547,7 +631,6 @@ app-admin-dashboard #breadcrumb
 /* =================== Main Page Styling =================== */
 /* Main Page Component */
 app-main-page
-	@extend #compSample
 	display: flex
 	flex-direction: column
 	padding: 5px
@@ -586,9 +669,9 @@ app-main-page
 
 /* Item List Title */
 .listTitle
+	@include fontSize(24)
 	color: $headlineColour
 	font-family: $mainFont
-	font-size: 24px
 	text-align: center
 	padding-top: 5px
 	margin-top: 5px
@@ -602,44 +685,45 @@ app-main-page
 	@extend #itemSample
 	border-color: $itemBackground
 	box-shadow: 3px 3px 7px 0 rgba(46, 61, 73, 0.5)
-	margin: 20px 5px
+	margin: 20px auto
 	padding: 5px
 	background: $itemBackground
 	display: flex
 	flex-wrap: wrap
+	max-width: 430px
 	/* Responsive styling for screens above 800px width */
 	@media screen and (min-width: 800px)
 		padding: 7px
 
 /* Item Text */
 .itemText
+	@include fontSize(17.5)
 	order: 0
 	text-align: center
 	font-family: $mainFont
-	font-size: 17.5px
 	width: 80%
 	margin: 5px
 	padding: 0 10%
 	line-height: 1.5em
 	/* Responsive styling for screens above 500px width */
 	@media screen and (min-width: 500px)
-		font-size: 18.5px
+		@include fontSize(18.5)
 	/* Responsive styling for screens above 600px width */
 	@media screen and (min-width: 600px)
 		line-height: 1.8em
 
 /* Item User */
 .itemUser
+	@include fontSize(15.5)
 	order: 1
 	text-align: center
 	font-family: $mainFont
-	font-size: 15.5px
 	width: 80%
 	margin: 5px
 	padding: 0 10%
 	/* Responsive styling for screens above 500px width */
 	@media screen and (min-width: 500px)
-		font-size: 16.5px
+		@include fontSize(16.5)
 
 /* Item User Profile Link */
 .profileLink
@@ -660,6 +744,46 @@ app-main-page
 	justify-content: space-between
 	width: 100%
 
+/* Buttons div when using floating menu (smaller viewports) */
+.buttonsContainer.float
+	flex-wrap: wrap
+
+/* Hugs button when using floating menu (smaller viewports) */
+.buttonsContainer.float .notification
+	margin-left: 10%
+	margin-right: 10%
+
+/* Sub-menu button when using floating menu (smaller viewports) */
+.buttonsContainer.float .menuButton
+	margin-left: 10%
+	margin-right: 10%
+
+/* Buttons sub-menu */
+.subMenu
+	display: flex
+	flex-direction: row
+	align-content: space-between
+	justify-content: space-between
+	width: 80%
+
+/* Buttons sub-menu when floating */
+.subMenu.float
+	overflow-y: visible
+	position: relative
+	top: 50px
+	z-index: 100
+	width: 100%
+	background: $itemBackground
+	align-items: center
+	justify-content: center
+	padding: 10px
+	box-shadow: 3px 3px 7px 0 rgba(46, 61, 73, 0.5)
+	border-radius: 5px
+
+/* Buttons sub-menu when floating & hidden */
+.subMenu.float.hidden
+	display: none
+
 /* Send a hug button container */
 .notification
 	margin: 5px auto
@@ -674,7 +798,7 @@ app-main-page
 .hugButton
 	width: 33px
 	border: none
-	padding: 5px
+	padding: 7px 5px 3px
 
 /* Send Hug Button on a post on which the user already sent a hug */
 .hugButton.active i
@@ -711,7 +835,7 @@ app-main-page .errorMessage
 		margin: 0 Calc((100% - 220px) / 2)
 	/* Responsive styling for screens above 400px width */
 	@media screen and (min-width: 400px)
-		font-size: 18px
+		@include fontSize(18)
 		margin: 0 Calc((100% - 250px) / 2)
 	/* Responsive styling for screens above 600px width */
 	@media screen and (min-width: 600px)
@@ -724,7 +848,7 @@ app-main-page .errorMessage
 		margin: 0 Calc((100% - 170px) / 2)
 	/* Responsive styling for screens above 400px width */
 	@media screen and (min-width: 400px)
-		font-size: 18px
+		@include fontSize(18)
 		margin: 0 Calc((100% - 190px) / 2)
 	/* Responsive styling for screens above 600px width */
 	@media screen and (min-width: 600px)
@@ -733,7 +857,6 @@ app-main-page .errorMessage
 /* =================== Full List Styling =================== */
 /* List container*/
 #items
-	@extend #compSample
 	width: 90%
 	margin: 0
 	padding: 10px 5%
@@ -777,7 +900,6 @@ app-main-page .errorMessage
 /* =================== User Page Styling =================== */
 /* User Page Component */
 app-user-page
-	@extend #compSample
 	width: 100%
 	left: 0
 	right: 0
@@ -869,8 +991,8 @@ app-user-page h3
 
 /* Display name */
 .displayName
+	@include fontSize(18)
 	background: $boxesBackground
-	font-size: 18px
 	font-weight: bold
 	text-align: center
 	width: 90%
@@ -897,13 +1019,13 @@ app-user-page h3
 
 /* Role Field */
 #roleElement .pageCategory
-	font-size: 16px
+	@include fontSize(16)
 	font-weight: normal
 
 /* Role Field data */
 #roleElement .pageData
+	@include fontSize(16)
 	text-transform: uppercase
-	font-size: 16px
 
 /* Hugs Field Container */
 #rHugsElement
@@ -919,12 +1041,12 @@ app-user-page h3
 
 /* Posts Field title */
 #postsElement .pageCategory
-	padding: 0 5 10px
+	padding: 0 0 10px
 
 /* User Page Field Title */
 .pageCategory
+	@include fontSize(14)
 	font-family: $mainFont
-	font-size: 14px
 	font-weight: bold
 	margin: 0 5px
 	color: $headlineColour
@@ -932,8 +1054,8 @@ app-user-page h3
 
 /* User Page Field Text */
 .pageData
+	@include fontSize(14)
 	font-family: $mainFont
-	font-size: 14px
 	color: $textColour
 	padding-bottom: 0
 	margin-bottom: 0
@@ -947,20 +1069,19 @@ app-user-page h3
 	/* Responsive styling for screens above 800px width */
 	@media screen and (min-width: 800px)
 		flex-direction: row
+		flex-wrap: wrap
 		justify-content: space-between
 		margin: 0 0 10px
 		width: 90%
 
 /* edit display name button */
 #editName, #profileData .reportButton, #settingsLink
-	font-family: $mainFont
-	font-size: 15px
+	@include fontSize(15)
 	margin: 5px 5px
-	border: none
 	border-radius: 10px
 	/* Responsive styling for screens above 800px width */
 	@media screen and (min-width: 800px)
-		font-size: 16px
+		@include fontSize(16)
 		margin: 15px auto
 
 /* Settings link */
@@ -970,16 +1091,14 @@ app-user-page h3
 
 /* Logout button */
 #logout
-	font-family: $mainFont
+	@include fontSize(15)
 	order: 3
 	margin: 5px 5px
-	border: none
 	border-radius: 10px
 	margin-top: 10px
-	font-size: 15px
 	/* Responsive styling for screens above 600px width */
 	@media screen and (min-width: 600px)
-		font-size: 16px
+		@include fontSize(16)
 		margin: 15px auto
 
 /* User Posts */
@@ -1027,9 +1146,9 @@ app-my-posts #postsTitle
 
 /* Post text */
 .postText
+	@include fontSize(17)
 	font-family: $mainFont
 	text-align: center
-	font-size: 17px
 	margin-bottom: 10px
 	line-height: 1.5em
 	/* Responsive styling for screens above 600px width */
@@ -1038,9 +1157,9 @@ app-my-posts #postsTitle
 
 /* Post date */
 .postDate
+	@include fontSize(14)
 	font-family: $mainFont
 	text-align: center
-	font-size: 14px
 
 /* Post buttons */
 .userPost .buttons
@@ -1050,9 +1169,9 @@ app-my-posts #postsTitle
 
 /* Post buttons */
 .userPost .editButton, .userPost .deleteButton, .userPost .reportButton
+	@include fontSize(16)
 	margin: 25px auto 10px
 	font-family: $mainFont
-	font-size: 16px
 
 /* Notification block in user's posts */
 .userPost .notification
@@ -1066,14 +1185,14 @@ app-my-posts .pagination
 
 /* Page count in user's posts */
 app-my-posts .pageCount
+	@include fontSize(15)
 	font-family: $mainFont
 	text-align: center
 	margin: 5px 0
 	padding: 2px
-	font-size: 15px
 	/* Responsive styling for screens above 600px width */
 	@media screen and (min-width: 600px)
-		font-size: 16px
+		@include fontSize(16)
 
 /* Page count in user's posts */
 app-my-posts .pagination button
@@ -1082,19 +1201,17 @@ app-my-posts .pagination button
 	font-weight: normal
 	/* Responsive styling for screens above 600px width */
 	@media screen and (min-width: 600px)
-		font-size: 16px
+		@include fontSize(16)
 
 /* Delete all posts button */
 #deleteAll
-	font-family: $mainFont
-	font-size: 15px
+	@include fontSize(15)
 	margin: 10px Calc((100% - 130px) / 2) 20px
-	border: none
 	border-radius: 10px
 	margin-top: 10px
 	/* Responsive styling for screens above 600px width */
 	@media screen and (min-width: 600px)
-		font-size: 16px
+		@include fontSize(16)
 		margin: 10px Calc((100% - 140px) / 2) 20px
 
 /* Login div */
@@ -1104,10 +1221,14 @@ app-my-posts .pagination button
 	padding: 10px 15px
 	margin: 5px Calc((20% - 30px) / 2)
 
+/* Login button div */
+#logIn
+	@include fontSize(15)
+	font-family: $mainFont
+
 /* =================== Messages Page Styling =================== */
 /* Message Page Component */
 app-messages
-	@extend #compSample
 	width: 100%
 	left: 0
 	right: 0
@@ -1128,10 +1249,10 @@ app-messages
 
 /* Page Headline */
 app-messages h3
+	@include fontSize(24)
 	text-align: center
 	font-family: $mainFont
 	color: $headlineColour
-	font-size: 24px
 	margin-bottom: 10px
 	padding-top: 0
 	margin-top: 5px
@@ -1158,7 +1279,6 @@ app-messages h3
 
 /* Mailbox navigation button */
 .messNavOption
-	font-family: $mainFont
 	margin: 5px
 	background: $buttonBackground
 	color: #FFF
@@ -1170,7 +1290,7 @@ app-messages h3
 		margin: 5px 10px
 	/* Responsive styling for screens above 550px width */
 	@media screen and (min-width: 550px)
-		font-size:  14px
+		@include fontSize(14)
 	/* Responsive styling for screens above 800px width */
 	@media screen and (min-width: 800px)
 		width: 80px
@@ -1227,10 +1347,10 @@ app-messages h3
 
 /* Field title */
 app-messages .pageCategory
+	@include fontSize(16)
 	text-align: center
 	font-family: $mainFont
 	color: $headlineColour
-	font-size: 16px
 
 /* Field text */
 app-messages .pageData
@@ -1252,25 +1372,21 @@ app-messages .pageData
 /* Messages: Delete Message, Reply buttons */
 /* Threads View thread, Delete thread buttons */
 .userMessage .deleteButton, .userMessage .messageButton, .viewButton, .userThread .deleteButton
+	@include fontSize(15)
 	margin: 5px 10px
-	font-family: $mainFont
 	border-radius: 5px
-	border: none
 	padding: 5px
 	text-decoration: none
-	font-size: 15px
 	/* Responsive styling for screens above 550px width */
 	@media screen and (min-width: 550px)
-		font-size:  16px
+		@include fontSize(16)
 
 /* Delete all messages / threads button */
 .deleteAll
+	@include fontSize(16)
 	text-align: center
-	font-family: $mainFont
-	font-size: 16px
 	margin: 10px Calc((100% - 170px) / 2) 15px
 	border-radius: 5px
-	border: none
 	width: 170px
 
 /* Login div */
@@ -1309,14 +1425,11 @@ app-messages .pageData
 	text-align: center
 	margin: 10px Calc((100% - 50px) / 2)
 	color: #FFF
-	font-family: $mainFont
 	border-radius: 5px
-	border: none
 
 /* =================== New Item Page Styling =================== */
 /* New Item Page Component */
 app-new-item
-	@extend #compSample
 	width: 100%
 	left: 0
 	right: 0
@@ -1328,10 +1441,10 @@ app-new-item
 
 /* New Item title */
 #newItem h3
+	@include fontSize(24)
 	text-align: center
 	color: $headlineColour
 	font-family: $mainFont
-	font-size: 24px
 	padding: 10px
 	margin: 0
 
@@ -1341,7 +1454,6 @@ app-new-item
 	/* Responsive styling for screens above 525px width */
 	@media screen and (min-width: 525px)
 		width: 90%
-		margin: 20px 6% 20px 4%
 
 /* New Item field + title */
 .formElement
@@ -1364,18 +1476,12 @@ app-new-item
 
 /* New Item field button */
 .sendData
+	@include fontSize(14)
 	padding: 5px
 	margin: 5px Calc((100% - 102px) / 2) 20px
-	font-family: $mainFont
-	font-size: 14px
 	border-radius: 10px
-	border: none
 
 /* =================== Error Page Styling =================== */
-/* Error Page Component */
-app-error-page
-	@extend #compSample
-
 /* Error Page frame */
 #errorPage
 	@extend #frameSample
@@ -1388,27 +1494,27 @@ app-error-page
 
 /* Error Page title */
 #errorPage h3
+	@include fontSize(24)
 	text-align: center
 	font-family: $mainFont
 	color: $headlineColour
-	font-size: 24px
 	padding: 10px
 	margin: 0
 
 /* Error Page text */
 .pageData
+	@include fontSize(16)
 	text-align: center
 	font-family: $mainFont
 	color: $textColour
-	font-size: 16px
 	padding: 10px 2px
 
 /* Error Page error code */
 #errorCode
+	@include fontSize(13)
 	text-align: center
 	font-family: $mainFont
 	color: $textColour
-	font-size: 13px
 	padding: 10px 2px
 
 /* Go Back Button */
@@ -1474,23 +1580,22 @@ app-error-page
 .popupDeleteBtn
 	margin: 5px 10px
 	border-radius: 5px
-	border: none
 
 /* Popup text */
 .popupText
+	@include fontSize(17)
 	font-family: $mainFont
-	font-size: 17px
 	margin: 0 10px 10px
 
 /* Popup title */
 .popupTitle
+	@include fontSize(20)
 	font-family: $mainFont
-	font-size: 20px
 	margin-top: 0
 
 /* Reported post */
 #editPopup .userPost
-	font-size: 15px
+	@include fontSize(15)
 	width: 90%
 	margin:  0 4% 15px
 	/* Responsive styling for screens above 450px width */
@@ -1504,7 +1609,7 @@ app-error-page
 
 /* Report radio button */
 .radioButtonLabel
-	font-size: 16px
+	@include fontSize(16)
 
 /* Report option 3 free text */
 #uOption3Text, #rOption3Text
@@ -1512,10 +1617,9 @@ app-error-page
 
 /* Report popup report button */
 #editPopup .reportButton
-	font-size: 16px
+	@include fontSize(16)
 	margin: 5px 10px
 	border-radius: 5px
-	border: none
 
 /* =================== Loader Component Styling =================== */
 /* Via https://www.w3schools.com/howto/howto_css_loader.asp */
@@ -1532,9 +1636,9 @@ app-error-page
 
 /* Loader text */
 #loading #loadingMessage
+	@include fontSize(18)
 	font-family: $mainFont
 	color: $headlineColour
-	font-size: 18px
 
 /* Loader spinner */
 #loading .spinner 
@@ -1587,17 +1691,17 @@ app-header-message #headerMessage
 
 /*  Header Message message */
 #headerMessage #loadingMessage
+	@include fontSize(13)
 	color: $headlineColour
 	font-family: $mainFont
-	font-size: 13px
 	margin: 0
 	padding: 0
 	/* Responsive styling for screens above 390px width */
 	@media screen and (min-width: 390px)
-		font-size: 14px
+		@include fontSize(14)
 	/* Responsive styling for screens above 500px width */
 	@media screen and (min-width: 500px)
-		font-size: 16px
+		@include fontSize(16)
 
 /*  Header Message spinner */
 #headerMessage .spinner
@@ -1622,27 +1726,34 @@ app-header-message #headerMessage
 /* =================== About Component Styling =================== */
 /* About Component */
 app-about
-	@extend #compSample
 	width: 90%
 	padding: 0 5%
 	left: 0
 	right: 0
+	/* Responsive styling for screens above 600px width */
+	@media screen and (min-width: 600px)
+		width: 80%
+		padding: 0 10%
+	/* Responsive styling for screens above 600px width */
+	@media screen and (min-width: 800px)
+		width: 70%
+		padding: 0 15%
 
 /* About component title */
 #aboutTitle
+	@include fontSize(24)
 	text-align: center
 	color: $headlineColour
 	font-family: $mainFont
-	font-size: 24px
 	margin: 20px
 
 /* About component text */
 .aboutText
+	@include fontSize(17)
 	padding: 5px
 	margin: 5px 10px
 	font-family: $mainFont
 	color: $textColour
-	font-size: 16px
 	line-height: 1.8em
 	/* Responsive styling for screens above 600px width */
 	@media screen and (min-width: 600px)
@@ -1650,21 +1761,20 @@ app-about
 
 /* About component links */
 .aboutLink
+	@include fontSize(15)
 	text-align: center
 	font-family: $mainFont
 	color: $linkColour
-	font-size: 15px
 	margin: 10px Calc((100% - 100px) / 2) 20px
 	padding-bottom: 20px
 	/* Responsive styling for screens above 700px width */
 	@media screen and (min-width: 700px)
-		font-size: 16px
+		@include fontSize(16)
 		margin: 10px Calc((100% - 105px) / 2) 20px
 
 /* =================== Search Results Component Styling =================== */
 /* Search Results Component */
 app-search-results
-	@extend #compSample
 	width: 90%
 	padding: 20px 5%
 	left: 0
@@ -1679,12 +1789,12 @@ app-search-results
 
 /* Search Results title */
 app-search-results h2
+	@include fontSize(24)
 	font-family: $mainFont
 	color: $headlineColour
 	text-align: center
 	padding: 0px 5px 10px
 	margin: 0 5px 10px
-	font-size: 24px
 	padding-top: 10px
 
 #searchResultsMain
@@ -1704,10 +1814,10 @@ app-search-results h2
 
 /* Users / Posts title */
 app-search-results h3
+	@include fontSize(22)
 	text-align: center
 	color: $headlineColour
 	font-family: $mainFont
-	font-size: 22px
 
 /* Users title */
 #usersTitle
@@ -1731,7 +1841,6 @@ app-search-results h3
 	padding: 15px 5%
 	margin: 5px 5%
 	background: $boxesBackground
-	border-radius: 5px
 	list-style: none
 	border: none
 	box-shadow: 5px 5px 7px 0 rgba(46, 61, 73, 0.5)
@@ -1788,11 +1897,11 @@ app-search-results h3
 
 /* User result - link to profile page */
 .searchResultUser a
+	@include fontSize(16)
 	color: $profileLinkColour
-	font-size: 16px
 	/* Responsivce styling for screen above 700px width */
 	@media screen and (min-width: 700px)
-		font-size: 17px
+		@include fontSize(17)
 
 /* User result - link to profile page when hovered on */
 .searchResultsUser a:hover
@@ -1813,7 +1922,6 @@ app-search-results h3
 /* =================== Notifications Tab Component Styling =================== */
 /* Notifications Component */
 app-notifications
-	@extend #compSample
 	z-index: 200
 
 /* Notifications panel */
@@ -1847,15 +1955,15 @@ app-notifications
 
 /* Notifications Title */
 app-notifications h4
+	@include fontSize(22)
 	color: $headlineColour
 	font-family: $mainFont
 	text-align: center
 	padding: 5px 5px 0
 	margin: 10px 5px 15px
-	font-size: 22px
 	/* Responsive design for screens above 500px width */
 	@media screen and (min-width: 550px)
-		font-size: 24px
+		@include fontSize(24)
 
 /* Notifications settings buttons container */
 #nButtons
@@ -1866,16 +1974,15 @@ app-notifications h4
 
 /* Notifications settings buttons */
 .NotificationButton
+	@include fontSize(13)
 	text-align: center
-	font-size: 13px
 	border-radius: 10px
 	padding: 5px
-	border: none
 	margin: 5px
 	/* Responsive design for screens above 500px width */
 	@media screen and (min-width: 550px)
+		@include fontSize(14)
 		margin: 5px 8px
-		font-size: 14px
 	/* Responsive design for screens above 650px width */
 	@media screen and (min-width: 650px)
 		margin: 5px 10px
@@ -1901,18 +2008,18 @@ app-notifications h4
 
 /* Notification title */
 .notificationTitle
+	@include fontSize(16)
 	font-family: $mainFont
 	text-align: center
-	font-size: 16px
 	color: $headlineColour
 	margin: 5px
 	font-weight: bold
 
 /* Notification text */
 .notificationText
+	@include fontSize(14)
 	font-family: $mainFont
 	text-align: center
-	font-size: 14px
 	color: $textColour
 	margin: 5px
 
@@ -1923,7 +2030,6 @@ app-notifications h4
 /* =================== Settings Component Styling =================== */
 /* Settings Component */
 app-settings
-	@extend #compSample
 	width: 90%
 	padding: 0 5%
 	left: 0
@@ -1931,22 +2037,22 @@ app-settings
 
 /* Main title */
 app-settings h3
+	@include fontSize(22)
 	font-family: $mainFont
 	color: $headlineColour
 	text-align: center
-	font-size: 22px
 	/* Responsive styling for screens above 800px width */
 	@media screen and (min-width: 800px)
+		@include fontSize(24)
 		order: 0
 		width: 100%
-		font-size: 24px
 
 /* Section title */
 app-settings h4
+	@include fontSize(17)
 	font-family: $mainFont
 	color: $headlineColour
 	text-align: center
-	font-size: 17px
 
 /* Notification Settings */
 #notificationSettings
@@ -1955,7 +2061,6 @@ app-settings h4
 	padding: 15px 3%
 	margin: 5px 2%
 	background: $boxesBackground
-	border-radius: 5px
 	border: none
 	box-shadow: 5px 5px 7px 0 rgba(46, 61, 73, 0.5)
 	/* Responsive styling for screens above 500px width */
@@ -2024,15 +2129,12 @@ app-settings h4
 	text-align: center
 	margin: 20px Calc((100% - 170px) / 2) 10px
 	color: #FFF
-	font-family: $mainFont
 	border-radius: 5px
-	border: none
 	text-decoration: none
 
 /* =================== Site Map Component Styling =================== */
 /* Site Map Component */
 app-site-map
-	@extend #compSample
 	width: 90%
 	padding: 0 5%
 	left: 0
@@ -2058,12 +2160,12 @@ app-site-map ul
 
 /* Route name (parent route) */
 .mainRoute h4
+	@include fontSize(16)
 	padding: 0
 	margin: 6px 0
-	font-size: 16px
 	/* Responsive styling for screens above 700px width */
 	@media screen and (min-width: 700px)
-		font-size: 17px
+		@include fontSize(17)
 
 /* Sub-route list item */
 .subRoute
@@ -2071,17 +2173,16 @@ app-site-map ul
 
 /* Route links */
 app-site-map a
+	@include fontSize(15)
 	color: $linkColour
 	font-family: $mainFont
-	font-size: 15px
 	/* Responsive styling for screens above 700px width */
 	@media screen and (min-width: 700px)
-		font-size: 16px
+		@include fontSize(16)
 	
 /* =================== Admin Dashboard Component Styling =================== */
 /* Admin Dashboard Component */
 app-admin-dashboard
-	@extend #compSample
 	width: 90%
 	padding: 0 5%
 	left: 0
@@ -2120,11 +2221,10 @@ app-admin-dashboard
 
 /* Admin Dashboard navigation menu item */
 .adminNavItem
+	@include fontSize(16)
 	@extend .appButton
 	margin: 15px 5px 5px
-	font-family: $mainFont
 	text-align: center
-	font-size: 16px
 	border-radius: 10px
 	padding: 5px
 	text-decoration: none
@@ -2134,20 +2234,19 @@ app-admin-dashboard
 
 /* Admin Dashboard title */
 app-admin-dashboard h3
+	@include fontSize(22)
 	font-family: $mainFont
 	color: $headlineColour
 	text-align: center
-	font-size: 22px
 	/* Responsive styling for screens above 800px width */
 	@media screen and (min-width: 800px)
+		@include fontSize(24)
 		order: 0
 		width: 100%
-		font-size: 24px
 		padding-top: 0
 		margin-top: 0
 
 .adminScreen
-	border-radius: 5px
 	width: 90%
 	padding: 15px 3%
 	margin: 5px 2%
@@ -2192,7 +2291,7 @@ app-admin-dashboard h3
 
 /* Admin Dashboard main page list item title */
 .adminCategory .pageCategory
-	font-size: 16px
+	@include fontSize(16)
 
 /* Admin Dashboard main page list item text */
 .adminCategory .pageText
@@ -2203,10 +2302,10 @@ app-admin-dashboard h3
 
 /* Admin Dashboard sub-section title */
 .subTitle
+	@include fontSize(17)
 	font-family: $mainFont
 	color: $headlineColour
 	text-align: center
-	font-size: 17px
 
 /* Admin Dashboard table container */
 .tableContainer
@@ -2229,7 +2328,6 @@ app-admin-dashboard h3
 /* Admin Dashboard table buttons */
 .adminButton
 	border-radius: 10px
-	border: none
 	margin: 5px
 
 /* =================== Alert Styling =================== */
@@ -2255,8 +2353,8 @@ app-admin-dashboard h3
 
 /* Alert icon */
 .alertIcon
+	@include fontSize(24)
 	padding-top: 10px
-	font-size: 24px
 
 /* Alert Title */
 .alertType
@@ -2266,28 +2364,23 @@ app-admin-dashboard h3
 
 /* Alert Text */
 .alertText
-	font-size: 16px
+	@include fontSize(16)
 	font-family: $mainFont
 	padding: 10px
 
 /* Alert Button */
 #alertButton, #navButton, #reloadBtn
+	@include fontSize(16)
 	margin: 10px
 	border-radius: 5px
-	font-family: $mainFont
-	border: none
-	border-radius: 10px
-	font-size: 16px
 	text-decoration: none
 
 /* =================== Footer Styling =================== */
 /* Site Footer */
 #siteFooter
-	position: fixed
-	bottom: 0
-	left: 0
-	width: 100%
-	max-width: 100%
+	width: 94%
+	max-width: 94%
+	margin: 0 2%
 
 /* Footer text */
 .footerText
@@ -2297,12 +2390,12 @@ app-admin-dashboard h3
 	color: rgba(22,22,22,1.00)
 	/* Responsive styling for screens up to 600px width */
 	@media screen and (max-width: 650px)
-		font-size: 12px
+		@include fontSize(12)
 		margin: 5px
 	/* Responsive styling for screens above 600px width */
 	@media screen and (min-width: 650px)
+		@include fontSize(13)
 		margin: 10px
-		font-size: 13px
 
 .footerText a
 	color: $linkColour

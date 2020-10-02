@@ -1,20 +1,33 @@
 /*
 	Admin Dashboard
 	Send a Hug Component
----------------------------------------------------
-MIT License
+  ---------------------------------------------------
+  MIT License
 
-Copyright (c) 2020 Send A Hug
+  Copyright (c) 2020 Send A Hug
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+  Permission is hereby granted, free of charge, to any person obtaining a copy
+  of this software and associated documentation files (the "Software"), to deal
+  in the Software without restriction, including without limitation the rights
+  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  copies of the Software, and to permit persons to whom the Software is
+  furnished to do so, subject to the following conditions:
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+  The above copyright notice and this permission notice shall be included in all
+  copies or substantial portions of the Software.
+
+  The provided Software is separate from the idea behind its website. The Send A Hug
+  website and its underlying design and ideas are owned by Send A Hug group and
+  may not be sold, sub-licensed or distributed in any way. The Software itself may
+  be adapted for any purpose and used freely under the given conditions.
+
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+  SOFTWARE.
 */
 
 // Angular imports
@@ -232,6 +245,7 @@ export class AdminDashboard implements OnInit {
           if(document.getElementById('blockID')!.classList.contains('missing')) {
             document.getElementById('blockID')!.classList.remove('missing');
           }
+          document.getElementById('blockID')!.setAttribute('aria-invalid', 'false');
 
           this.checkBlock(userID, length);
         }
@@ -250,6 +264,7 @@ export class AdminDashboard implements OnInit {
     else {
       this.alertsService.createAlert({ type: 'Error', message: 'A user ID is needed to block a user. Please add user ID to the textfield and try again.' });
       document.getElementById('blockID')!.classList.add('missing');
+      document.getElementById('blockID')!.setAttribute('aria-invalid', 'true');
     }
   }
 
@@ -361,6 +376,7 @@ export class AdminDashboard implements OnInit {
       if(document.getElementById('filter')!.classList.contains('missing')) {
         document.getElementById('filter')!.classList.remove('missing');
       }
+      document.getElementById('filter')!.setAttribute('aria-invalid', 'false');
 
       this.adminService.addFilter(filter);
     }
@@ -368,6 +384,7 @@ export class AdminDashboard implements OnInit {
     else {
       this.alertsService.createAlert({ type: 'Error', message: 'A filtered phrase is required in order to add to the filters list.' });
       document.getElementById('filter')!.classList.add('missing');
+      document.getElementById('filter')!.setAttribute('aria-invalid', 'true');
     }
   }
 

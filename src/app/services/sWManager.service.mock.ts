@@ -15,6 +15,19 @@
 
   The above copyright notice and this permission notice shall be included in all
   copies or substantial portions of the Software.
+
+  The provided Software is separate from the idea behind its website. The Send A Hug
+  website and its underlying design and ideas are owned by Send A Hug group and
+  may not be sold, sub-licensed or distributed in any way. The Software itself may
+  be adapted for any purpose and used freely under the given conditions.
+
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+  SOFTWARE.
 */
 
 // Angular imports
@@ -339,6 +352,68 @@ export class MockSWManager {
     }).then(function(data) {
       return data;
     })
+  }
+
+  /*
+  Function Name: addItem()
+  Function Description: Add an item to one of the stores.
+  Parameters: store - the store to which to add an item
+              item - the item to add
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  addItem(store: 'posts' | 'messages' | 'users' | 'threads', item: any) {
+    return this.currentDB?.then((db) => {
+      // start a new transaction
+      let dbStore = db.transaction(store).store;
+      dbStore.put(item);
+    });
+  }
+
+  /*
+  Function Name: deleteItem()
+  Function Description: Delete an item from one of the stores.
+  Parameters: store - the store from which to delete an item
+              itemID - the ID of the item to delete
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  deleteItem(store: 'posts' | 'messages' | 'users' | 'threads', itemID: number ) {
+    return this.currentDB?.then((db) => {
+      // start a new transaction
+      let tx = db.transaction(store, 'readwrite');
+      let dbStore = tx.objectStore(store);
+      // delete the relevant item
+      dbStore.delete(itemID);
+    });
+  }
+
+  /*
+  Function Name: deleteItems()
+  Function Description: Delete multiple items from one of the stores.
+  Parameters: store - the store from which to delete the items
+              parentType - the category to which the item's condition belongs. For example, when
+                            deleting all messages in a thread, the parent will be 'threadID'.
+              parentID - ID to match when deleting.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  deleteItems(store: 'posts' | 'messages' | 'users' | 'threads', parentType: string, parentID: number) {
+    return this.currentDB?.then((db) => {
+      // start a new transaction
+      let tx = db.transaction(store, 'readwrite');
+      let dbStore = tx.objectStore(store);
+      // open a cursor and delete any items with the matching parent's ID
+      // open a cursor and delete any messages with the deleted thread's ID
+      dbStore.openCursor().then(function checkItem(cursor):any {
+        if(!cursor) return;
+        // @ts-ignore
+        if(cursor.value[parentType] == parentID) {
+          cursor.delete();
+        }
+        return cursor.continue().then(checkItem);
+      })
+    });
   }
 
   /*

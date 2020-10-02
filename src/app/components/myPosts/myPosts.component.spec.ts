@@ -1,20 +1,33 @@
 /*
 	My Posts
 	Send a Hug Component Tests
----------------------------------------------------
-MIT License
+  ---------------------------------------------------
+  MIT License
 
-Copyright (c) 2020 Send A Hug
+  Copyright (c) 2020 Send A Hug
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+  Permission is hereby granted, free of charge, to any person obtaining a copy
+  of this software and associated documentation files (the "Software"), to deal
+  in the Software without restriction, including without limitation the rights
+  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  copies of the Software, and to permit persons to whom the Software is
+  furnished to do so, subject to the following conditions:
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+  The above copyright notice and this permission notice shall be included in all
+  copies or substantial portions of the Software.
+
+  The provided Software is separate from the idea behind its website. The Send A Hug
+  website and its underlying design and ideas are owned by Send A Hug group and
+  may not be sold, sub-licensed or distributed in any way. The Software itself may
+  be adapted for any purpose and used freely under the given conditions.
+
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+  SOFTWARE.
 */
 
 import 'zone.js/dist/zone';
@@ -35,8 +48,10 @@ import { HttpClientModule } from "@angular/common/http";
 import { ServiceWorkerModule } from "@angular/service-worker";
 import { Component } from '@angular/core';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { ActivatedRoute } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { By } from '@angular/platform-browser';
 
-import { AppComponent } from '../../app.component';
 import { MyPosts } from './myPosts.component';
 import { PopUp } from '../popUp/popUp.component';
 import { Loader } from '../loader/loader.component';
@@ -47,8 +62,6 @@ import { AuthService } from '../../services/auth.service';
 import { MockAuthService } from '../../services/auth.service.mock';
 import { PostsService } from '../../services/posts.service';
 import { MockPostsService } from '../../services/posts.service.mock';
-import { ActivatedRoute } from '@angular/router';
-import { Subscription } from 'rxjs';
 
 // Mock User Page for testing the sub-component
 // ==================================================
@@ -135,7 +148,6 @@ describe('MyPosts', () => {
         FontAwesomeModule
       ],
       declarations: [
-        AppComponent,
         MockUserPage,
         MyPosts,
         PopUp,
@@ -153,20 +165,16 @@ describe('MyPosts', () => {
 
   // Check that the component is created
   it('should create the component', () => {
-    const acFixture = TestBed.createComponent(AppComponent);
-    const appComponent = acFixture.componentInstance;
     const upFixture = TestBed.createComponent(MockUserPage);
     const userPage = upFixture.componentInstance;
     upFixture.detectChanges();
     const myPosts = upFixture.debugElement.children[0].children[0].componentInstance;
-    expect(appComponent).toBeTruthy();
     expect(userPage).toBeTruthy();
     expect(myPosts).toBeTruthy();
   });
 
   // Check that all the popup-related variables are set to false at first
   it('should have all popup variables set to false', () => {
-    TestBed.createComponent(AppComponent);
     const upFixture = TestBed.createComponent(MockUserPage);
     upFixture.detectChanges();
     const myPosts = upFixture.debugElement.children[0].children[0].componentInstance;
@@ -178,7 +186,6 @@ describe('MyPosts', () => {
 
   // Check that the component gets the user ID correctly
   it('should get the correct user ID', fakeAsync(() => {
-    TestBed.createComponent(AppComponent);
     const upFixture = TestBed.createComponent(MockUserPage);
     const userPage = upFixture.componentInstance;
     userPage.userId = 1;
@@ -192,10 +199,9 @@ describe('MyPosts', () => {
 
   // Check that the popup gets the correct user's posts
   it('should get the correct user\'s posts', fakeAsync(() => {
-    TestBed.createComponent(AppComponent);
-    const paramMap = TestBed.get(ActivatedRoute);
+    const paramMap = TestBed.inject(ActivatedRoute);
     let pathSpy = spyOn(paramMap.snapshot.paramMap, 'get').and.returnValue('1');
-    let itemsService = TestBed.get(ItemsService) as ItemsService;
+    let itemsService = TestBed.inject(ItemsService) as ItemsService;
     let getPostsSpy = spyOn(itemsService, 'getUserPosts').and.callThrough();
     itemsService['authService'].login();
     let fixture = TestBed.createComponent(MockUserPage);
@@ -226,7 +232,6 @@ describe('MyPosts', () => {
         FontAwesomeModule
       ],
       declarations: [
-        AppComponent,
         MockUserPage,
         MyPosts,
         PopUp,
@@ -241,9 +246,8 @@ describe('MyPosts', () => {
       ]
     }).compileComponents();
 
-    TestBed.createComponent(AppComponent);
     pathSpy.and.returnValue('4');
-    itemsService = TestBed.get(ItemsService) as ItemsService;
+    itemsService = TestBed.inject(ItemsService) as ItemsService;
     getPostsSpy = spyOn(itemsService, 'getUserPosts').and.callThrough();
     itemsService['authService'].login();
     fixture = TestBed.createComponent(MockUserPage);
@@ -264,10 +268,9 @@ describe('MyPosts', () => {
 
   // Check that the popup is opened when clicking 'edit'
   it('should open the popup upon editing', fakeAsync(() => {
-    TestBed.createComponent(AppComponent);
-    const paramMap = TestBed.get(ActivatedRoute);
+    const paramMap = TestBed.inject(ActivatedRoute);
     spyOn(paramMap.snapshot.paramMap, 'get').and.returnValue('4');
-    const itemsService = TestBed.get(ItemsService) as ItemsService;
+    const itemsService = TestBed.inject(ItemsService) as ItemsService;
     const getSpy = spyOn(itemsService, 'getUserPosts').and.callThrough();
     itemsService['authService'].login();
     let fixture = TestBed.createComponent(MockUserPage);
@@ -306,10 +309,9 @@ describe('MyPosts', () => {
 
   // Check that the popup is opened when clicking 'delete'
   it('should open the popup upon deleting', fakeAsync(() => {
-    TestBed.createComponent(AppComponent);
-    const paramMap = TestBed.get(ActivatedRoute);
+    const paramMap = TestBed.inject(ActivatedRoute);
     spyOn(paramMap.snapshot.paramMap, 'get').and.returnValue('4');
-    const itemsService = TestBed.get(ItemsService) as ItemsService;
+    const itemsService = TestBed.inject(ItemsService) as ItemsService;
     itemsService['authService'].login();
     let fixture = TestBed.createComponent(MockUserPage);
     fixture.detectChanges();
@@ -341,10 +343,9 @@ describe('MyPosts', () => {
 
   // Check that the popup is opened when clicking 'delete all'
   it('should open the popup upon deleting all', fakeAsync(() => {
-    TestBed.createComponent(AppComponent);
-    const paramMap = TestBed.get(ActivatedRoute);
+    const paramMap = TestBed.inject(ActivatedRoute);
     spyOn(paramMap.snapshot.paramMap, 'get').and.returnValue('4');
-    const itemsService = TestBed.get(ItemsService) as ItemsService;
+    const itemsService = TestBed.inject(ItemsService) as ItemsService;
     itemsService['authService'].login();
     let fixture = TestBed.createComponent(MockUserPage);
     fixture.detectChanges();
@@ -376,10 +377,9 @@ describe('MyPosts', () => {
 
   // Check that the popup is opened when clicking 'report'
   it('should open the popup upon reporting', fakeAsync(() => {
-    TestBed.createComponent(AppComponent);
-    const paramMap = TestBed.get(ActivatedRoute);
+    const paramMap = TestBed.inject(ActivatedRoute);
     spyOn(paramMap.snapshot.paramMap, 'get').and.returnValue('1');
-    const itemsService = TestBed.get(ItemsService) as ItemsService;
+    const itemsService = TestBed.inject(ItemsService) as ItemsService;
     itemsService['authService'].login();
     let fixture = TestBed.createComponent(MockUserPage);
     fixture.detectChanges();
@@ -411,10 +411,9 @@ describe('MyPosts', () => {
 
   // Check that sending a hug triggers the posts service
   it('should trigger posts service on hug', fakeAsync(() => {
-    TestBed.createComponent(AppComponent);
-    const paramMap = TestBed.get(ActivatedRoute);
+    const paramMap = TestBed.inject(ActivatedRoute);
     spyOn(paramMap.snapshot.paramMap, 'get').and.returnValue('1');
-    const itemsService = TestBed.get(ItemsService) as ItemsService;
+    const itemsService = TestBed.inject(ItemsService) as ItemsService;
     itemsService['authService'].login();
     let fixture = TestBed.createComponent(MockUserPage);
     fixture.detectChanges();
@@ -448,10 +447,9 @@ describe('MyPosts', () => {
   // Check that a different page gets different results
   it('changes page (with its associated posts) when clicked', fakeAsync(() => {
     // create the component
-    TestBed.createComponent(AppComponent);
-    const paramMap = TestBed.get(ActivatedRoute);
+    const paramMap = TestBed.inject(ActivatedRoute);
     spyOn(paramMap.snapshot.paramMap, 'get').and.returnValue('1');
-    const itemsService = TestBed.get(ItemsService) as ItemsService;
+    const itemsService = TestBed.inject(ItemsService) as ItemsService;
     const getPostsSpy = spyOn(itemsService, 'getUserPosts').and.callThrough();
     itemsService['authService'].login();
     let fixture = TestBed.createComponent(MockUserPage);
@@ -497,4 +495,39 @@ describe('MyPosts', () => {
     expect(myPosts.itemsService.userPostsPage.other).toBe(1);
     expect(myPostsDOM.querySelectorAll('.itemList')[0].children.length).toBe(5);
   }));
+
+  // Check the popup exits when 'false' is emitted
+  it('should change mode when the event emitter emits false', fakeAsync(() => {
+    // create the component
+    const paramMap = TestBed.inject(ActivatedRoute);
+    spyOn(paramMap.snapshot.paramMap, 'get').and.returnValue('1');
+    const itemsService = TestBed.inject(ItemsService) as ItemsService;
+    itemsService['authService'].login();
+    let fixture = TestBed.createComponent(MockUserPage);
+    fixture.detectChanges();
+    tick();
+    let myPosts = fixture.debugElement.children[0].children[0].componentInstance;
+    const changeSpy = spyOn(myPosts, 'changeMode').and.callThrough();
+
+    fixture.detectChanges();
+    tick();
+
+    // start the popup
+    myPosts.editMode = true;
+    myPosts.delete = true;
+    myPosts.toDelete = 'Post';
+    myPosts.itemToDelete = 2;
+    fixture.detectChanges();
+    tick();
+
+    // exit the popup
+    const popup = fixture.debugElement.children[0].children[0].query(By.css('app-pop-up')).componentInstance as PopUp;
+    popup.exitEdit();
+    fixture.detectChanges();
+    tick();
+
+    // check the popup is exited
+    expect(changeSpy).toHaveBeenCalled();
+    expect(myPosts.editMode).toBeFalse();
+  }))
 });

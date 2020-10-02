@@ -15,6 +15,19 @@
 
   The above copyright notice and this permission notice shall be included in all
   copies or substantial portions of the Software.
+
+  The provided Software is separate from the idea behind its website. The Send A Hug
+  website and its underlying design and ideas are owned by Send A Hug group and
+  may not be sold, sub-licensed or distributed in any way. The Software itself may
+  be adapted for any purpose and used freely under the given conditions.
+
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+  SOFTWARE.
 */
 
 import { TestBed } from "@angular/core/testing";
@@ -94,8 +107,8 @@ describe('AuthService', () => {
       ]
     }).compileComponents();
 
-    authService = TestBed.get(AuthService);
-    httpController = TestBed.get(HttpTestingController);
+    authService = TestBed.inject(AuthService);
+    httpController = TestBed.inject(HttpTestingController);
   });
 
   // Check the service is created
@@ -193,6 +206,7 @@ describe('AuthService', () => {
       sub: 'auth0'
     };
     const setSpy = spyOn(authService, 'setToken');
+    const addSpy = spyOn(authService['serviceWorkerM'], 'addItem');
 
     authService.getUserData(jwtPayload);
     // wait for user data to be resolved
@@ -209,6 +223,8 @@ describe('AuthService', () => {
     const req = httpController.expectOne('http://localhost:5000/users/all/auth0');
     expect(req.request.method).toEqual('GET');
     req.flush(mockResponse);
+
+    expect(addSpy).toHaveBeenCalled();
   });
 
   // Check the service triggers user creating if the user doesn't exist
@@ -321,6 +337,7 @@ describe('AuthService', () => {
         pushEnabled: false
       }
     };
+    const addSpy = spyOn(authService['serviceWorkerM'], 'addItem');
 
     // check the user is logged out at first
     expect(authService.userData.id).toBe(0);
@@ -344,6 +361,8 @@ describe('AuthService', () => {
     const req = httpController.expectOne('http://localhost:5000/users');
     expect(req.request.method).toEqual('POST');
     req.flush(mockResponse);
+
+    expect(addSpy).toHaveBeenCalled();
   });
 
   // Check logout is triggered

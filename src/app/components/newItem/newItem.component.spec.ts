@@ -1,20 +1,33 @@
 /*
 	New Item
 	Send a Hug Component Tests
----------------------------------------------------
-MIT License
+  ---------------------------------------------------
+  MIT License
 
-Copyright (c) 2020 Send A Hug
+  Copyright (c) 2020 Send A Hug
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+  Permission is hereby granted, free of charge, to any person obtaining a copy
+  of this software and associated documentation files (the "Software"), to deal
+  in the Software without restriction, including without limitation the rights
+  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  copies of the Software, and to permit persons to whom the Software is
+  furnished to do so, subject to the following conditions:
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+  The above copyright notice and this permission notice shall be included in all
+  copies or substantial portions of the Software.
+
+  The provided Software is separate from the idea behind its website. The Send A Hug
+  website and its underlying design and ideas are owned by Send A Hug group and
+  may not be sold, sub-licensed or distributed in any way. The Software itself may
+  be adapted for any purpose and used freely under the given conditions.
+
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+  SOFTWARE.
 */
 
 import 'zone.js/dist/zone';
@@ -45,8 +58,9 @@ import { ItemsService } from '../../services/items.service';
 import { MockItemsService } from '../../services/items.service.mock';
 import { AlertsService } from '../../services/alerts.service';
 import { MockAlertsService } from '../../services/alerts.service.mock';
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, UrlSegment } from "@angular/router";
 import { of } from 'rxjs';
+import { NotificationsTab } from '../notifications/notifications.component';
 
 describe('NewItem', () => {
   // Before each test, configure testing environment
@@ -64,7 +78,8 @@ describe('NewItem', () => {
       ],
       declarations: [
         AppComponent,
-        NewItem
+        NewItem,
+        NotificationsTab
       ],
       providers: [
         { provide: APP_BASE_HREF, useValue: '/' },
@@ -104,7 +119,8 @@ describe('NewItem', () => {
         ],
         declarations: [
           AppComponent,
-          NewItem
+          NewItem,
+          NotificationsTab
         ],
         providers: [
           { provide: APP_BASE_HREF, useValue: '/' },
@@ -119,8 +135,8 @@ describe('NewItem', () => {
     // Check that the type of new item is determined by the parameter type
     it('has a type determined by the type parameter - post', fakeAsync(() => {
       TestBed.createComponent(AppComponent);
-      const paramMap = TestBed.get(ActivatedRoute);
-      paramMap.url = of([{path: 'Post'}]);
+      const paramMap = TestBed.inject(ActivatedRoute);
+      paramMap.url = of([{path: 'Post'} as UrlSegment]);
       const fixture = TestBed.createComponent(NewItem);
       const newItem = fixture.componentInstance;
       const newItemDOM = fixture.nativeElement;
@@ -138,8 +154,8 @@ describe('NewItem', () => {
     // Check that it triggers the posts service when creating a new post
     it('triggers the posts service when creating a new post', fakeAsync(() => {
       TestBed.createComponent(AppComponent);
-      const paramMap = TestBed.get(ActivatedRoute);
-      paramMap.url = of([{path: 'Post'}]);
+      const paramMap = TestBed.inject(ActivatedRoute);
+      paramMap.url = of([{path: 'Post'} as UrlSegment]);
       const fixture = TestBed.createComponent(NewItem);
       const newItem = fixture.componentInstance;
       const newItemDOM = fixture.nativeElement;
@@ -173,8 +189,8 @@ describe('NewItem', () => {
     // Check that an empty post triggers an alert
     it('should prevent empty posts', fakeAsync(() => {
       TestBed.createComponent(AppComponent);
-      const paramMap = TestBed.get(ActivatedRoute);
-      paramMap.url = of([{path: 'Post'}]);
+      const paramMap = TestBed.inject(ActivatedRoute);
+      paramMap.url = of([{path: 'Post'} as UrlSegment]);
       const fixture = TestBed.createComponent(NewItem);
       const newItem = fixture.componentInstance;
       const newItemDOM = fixture.nativeElement;
@@ -209,8 +225,8 @@ describe('NewItem', () => {
     // Check that a user can't post if they're blocked
     it('should prevent blocked users from posting', fakeAsync(() => {
       TestBed.createComponent(AppComponent);
-      const paramMap = TestBed.get(ActivatedRoute);
-      paramMap.url = of([{path: 'Post'}]);
+      const paramMap = TestBed.inject(ActivatedRoute);
+      paramMap.url = of([{path: 'Post'} as UrlSegment]);
       const fixture = TestBed.createComponent(NewItem);
       const newItem = fixture.componentInstance;
       const newItemDOM = fixture.nativeElement;
@@ -230,8 +246,8 @@ describe('NewItem', () => {
     // Check that a user can't post if they're logged out
     it('should prevent logged out users from posting', fakeAsync(() => {
       TestBed.createComponent(AppComponent);
-      const paramMap = TestBed.get(ActivatedRoute);
-      paramMap.url = of([{path: 'Post'}]);
+      const paramMap = TestBed.inject(ActivatedRoute);
+      paramMap.url = of([{path: 'Post'} as UrlSegment]);
       const fixture = TestBed.createComponent(NewItem);
       const newItem = fixture.componentInstance;
       const newItemDOM = fixture.nativeElement;
@@ -281,7 +297,8 @@ describe('NewItem', () => {
         ],
         declarations: [
           AppComponent,
-          NewItem
+          NewItem,
+          NotificationsTab
         ],
         providers: [
           { provide: APP_BASE_HREF, useValue: '/' },
@@ -296,8 +313,8 @@ describe('NewItem', () => {
     // Check that the type of new item is determined by the parameter type
     it('has a type determined by the type parameter - message', fakeAsync(() => {
       TestBed.createComponent(AppComponent);
-      const paramMap = TestBed.get(ActivatedRoute);
-      paramMap.url = of([{path: 'Message'}]);
+      const paramMap = TestBed.inject(ActivatedRoute);
+      paramMap.url = of([{path: 'Message'} as UrlSegment]);
       const queryParamsSpy = spyOn(paramMap.snapshot.queryParamMap, 'get').and.callFake((param:string) => {
         if(param == 'user') {
           return 'hello';
@@ -329,8 +346,8 @@ describe('NewItem', () => {
     // Check that it triggers the items service when creating a new message
     it('triggers the items service when creating a new message', fakeAsync(() => {
       TestBed.createComponent(AppComponent);
-      const paramMap = TestBed.get(ActivatedRoute);
-      paramMap.url = of([{path: 'Message'}]);
+      const paramMap = TestBed.inject(ActivatedRoute);
+      paramMap.url = of([{path: 'Message'} as UrlSegment]);
       spyOn(paramMap.snapshot.queryParamMap, 'get').and.callFake((param:string) => {
         if(param == 'user') {
           return 'hello';
@@ -375,8 +392,8 @@ describe('NewItem', () => {
     // Check that an empty message triggers an alert
     it('should prevent empty messages', fakeAsync(() => {
       TestBed.createComponent(AppComponent);
-      const paramMap = TestBed.get(ActivatedRoute);
-      paramMap.url = of([{path: 'Message'}]);
+      const paramMap = TestBed.inject(ActivatedRoute);
+      paramMap.url = of([{path: 'Message'} as UrlSegment]);
       spyOn(paramMap.snapshot.queryParamMap, 'get').and.callFake((param:string) => {
         if(param == 'user') {
           return 'hello';
@@ -418,8 +435,8 @@ describe('NewItem', () => {
     // Check that a user can't send a message if they're logged out
     it('should prevent logged out users from messaging', fakeAsync(() => {
       TestBed.createComponent(AppComponent);
-      const paramMap = TestBed.get(ActivatedRoute);
-      paramMap.url = of([{path: 'Message'}]);
+      const paramMap = TestBed.inject(ActivatedRoute);
+      paramMap.url = of([{path: 'Message'} as UrlSegment]);
       spyOn(paramMap.snapshot.queryParamMap, 'get').and.callFake((param:string) => {
         if(param == 'user') {
           return 'hello';
@@ -460,8 +477,8 @@ describe('NewItem', () => {
     // Check that an error is thrown if there's no user ID and user data
     it('should throw an error if there\'s no user ID and user', fakeAsync(() => {
       TestBed.createComponent(AppComponent);
-      const paramMap = TestBed.get(ActivatedRoute);
-      paramMap.url = of([{path: 'Message'}]);
+      const paramMap = TestBed.inject(ActivatedRoute);
+      paramMap.url = of([{path: 'Message'} as UrlSegment]);
       spyOn(paramMap.snapshot.queryParamMap, 'get').and.callFake((_param:string) => {
         return '';
       });
@@ -481,8 +498,8 @@ describe('NewItem', () => {
     // Check that a user can't message themselves
     it('should prevent users messaging themselves', fakeAsync(() => {
       TestBed.createComponent(AppComponent);
-      const paramMap = TestBed.get(ActivatedRoute);
-      paramMap.url = of([{path: 'Message'}]);
+      const paramMap = TestBed.inject(ActivatedRoute);
+      paramMap.url = of([{path: 'Message'} as UrlSegment]);
       spyOn(paramMap.snapshot.queryParamMap, 'get').and.callFake((param:string) => {
         if(param == 'user') {
           return 'name';

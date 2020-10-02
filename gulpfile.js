@@ -11,9 +11,9 @@ const source = require("vinyl-source-stream");
 const buffer = require("vinyl-buffer");
 const rename = require("gulp-rename");
 const replace = require("gulp-replace");
-const webpack = require('webpack-stream');
-const path = require('path');
-const ngTools = require('@ngtools/webpack');
+const fs = require("fs");
+const path = require("path");
+var through = require('through');
 var Server = require('karma').Server;
 
 // LOCAL DEVELOPMENT TASKS
@@ -35,12 +35,12 @@ function copyIndex()
 		.pipe(gulp.dest("./localdev"));
 }
 
-//copies the images folder to the distribution folder
-function copyImgs()
+//copies the assets folder to the distribution folder
+function copyAssets()
 {
 	return gulp
-		.src("src/assets/img/*")
-		.pipe(gulp.dest("localdev/assets/img"));
+		.src("src/assets/**/*")
+		.pipe(gulp.dest("localdev/assets/"));
 }
 
 //sets gulp to add prefixes with Autoprefixer after Dreamweaver outputs the Sass filee to CSS
@@ -80,7 +80,7 @@ function watch()
 {
 	gulp.watch("src/app/**/*.html", copyHtml)
 	gulp.watch("index.html", copyIndex);
-	gulp.watch("src/assets/img/*", copyImgs);
+	gulp.watch("src/assets/**/*", copyAssets);
 	gulp.watch("src/css/*.css", styles);
 	gulp.watch(["src/**/*.ts", "!src/**/*.spec.ts", "!src/**/*.mock.ts"], scripts);
 }
@@ -89,7 +89,7 @@ function watch()
 gulp.task('localdev', gulp.parallel(
 	copyHtml,
 	copyIndex,
-	copyImgs,
+	copyAssets,
 	styles,
 	scripts
 ));
@@ -117,12 +117,12 @@ function copyIndexDist()
 		.pipe(gulp.dest("./dist"));
 }
 
-//copies the images folder to the distribution folder
-function copyImgsDist()
+//copies the assets folder to the distribution folder
+function copyAssetsDist()
 {
 	return gulp
-		.src("src/assets/img/*")
-		.pipe(gulp.dest("dist/assets/img"));
+		.src("src/assets/**/*")
+		.pipe(gulp.dest("dist/assets/"));
 }
 
 //sets gulp to add prefixes with Autoprefixer after Dreamweaver outputs the Sass filee to CSS
@@ -182,7 +182,7 @@ function copyServiceWorker()
 gulp.task('dist', gulp.parallel(
 	copyHtmlDist,
 	copyIndexDist,
-	copyImgsDist,
+	copyAssetsDist,
 	stylesDist,
 	scriptsDist,
 	copyServiceWorker
@@ -190,61 +190,97 @@ gulp.task('dist', gulp.parallel(
 
 // TESTING TASKS
 // ===============================================
-// bundle up the files before the tests as there's an apparent memory leak
-// in karma-webpack
+// import all the tests to main file
+// credit for this goes to @hackerhat
+// https://github.com/facebook/create-react-app/issues/517#issuecomment-417943099
+function setupTests() {
+	return gulp.src('src/tests.ts')
+	.pipe(replace(/\/\/ test-placeholder/, (match) => {
+		let newString = '';
+
+		function readDirectory(directory) {
+	    fs.readdirSync(directory).forEach((file) => {
+	      const fullPath = path.resolve(directory, file);
+				const regularExpression = /\.spec\.ts$/;
+
+	      if (fs.statSync(fullPath).isDirectory()) {
+	        readDirectory(fullPath);
+	      }
+
+	      if (!regularExpression.test(fullPath)) return;
+
+				let hugIndex = fullPath.indexOf('app');
+				let newPath = './' + fullPath.substring(hugIndex);
+	      newString += `import "${newPath}";
+				`;
+	    });
+	  }
+
+		readDirectory(path.resolve(__dirname, 'src'));
+
+			return newString;
+		}))
+	.pipe(rename("tests.specs.ts"))
+	.pipe(gulp.dest('src/'))
+}
+
+// bundle up the code before the tests
 function bundleCode() {
-	return gulp.src('src/main.ts')
-    .pipe(webpack({
-			devtool: "eval-source-map",
-	    entry: {
-	      app: './src/main.ts'
-	    },
-			output: {
-				filename: '[name].js'
-			},
-	    mode: "development",
-	    node: { fs: 'empty' },
-	    module: {
-	        rules: [
-	            {
-	                test: /\.html$/,
-	                loader: 'html-loader'
-	            },
-	            {
-	                test: /\.svg$/,
-	                loader: 'svg-inline-loader'
-	            },
-	            {
-	              test: /(?:\.ngfactory\.js|\.ngstyle\.js|\.ts)$/,
-	              loader: [
-	                '@ngtools/webpack',
-	                { loader: 'angular-router-loader' }
-	              ]
-	            }
-	        ]
-	    },
-	    optimization: {
-	      splitChunks: false
-	    },
-	    resolve: {
-	        extensions: [".ts", ".js"]
-	    },
-	    plugins: [
-	      new ngTools.AngularCompilerPlugin({
-	        tsConfigPath: 'tsconfig.json',
-	        basePath: './',
-	        entryModule: path.resolve(__dirname, 'src/app/app.module#AppModule'),
-	        skipCodeGeneration: true,
-	        sourceMap: true,
-	        directTemplateLoading: false,
-	        locale: 'en',
-	        hostReplacementPaths: {
-	          'src/environments/config.development.ts': 'src/environments/config.production.ts'
-	        }
-	      })
-	    ]
-    }))
-    .pipe(gulp.dest('tests/'));
+	var b = browserify({
+		debug: true
+	}).add("src/main.ts").transform(function(file) {
+		var data = '';
+    return through(write, end);
+
+    function write (buf) {
+			let codeChunk = buf.toString("utf8");
+			// inline the templates
+			let replacedChunk = codeChunk.replace(/(templateUrl: '.)(.*)(.component.html')/g, (match) => {
+				let componentName = match.substring(16, match.length-16);
+				let componentTemplate;
+
+				if(componentName == 'app') {
+					componentTemplate = fs.readFileSync(__dirname + `/src/app/${componentName}.component.html`);
+				}
+				else {
+					componentTemplate = fs.readFileSync(__dirname + `/src/app/components/${componentName}/${componentName}.component.html`);
+				}
+
+				let newString = `/* istanbul ignore next */
+				template: \`${componentTemplate}\``
+				return newString;
+			});
+			// add the SVGs
+			let secondReplacedChunk = replacedChunk.replace(/(<img src="..\/assets.)(.*)(.">)/g, (match) => {
+				let altIndex = match.indexOf('alt');
+				let url = match.substring(13, altIndex-2);
+				let svg = fs.readFileSync(__dirname + `/src/${url}`);
+
+				return svg;
+			})
+
+			data += secondReplacedChunk
+		}
+
+    function end () {
+        this.queue(data);
+        this.queue(null);
+    }
+	}).plugin(tsify, { target: 'es6' }).transform(require('browserify-istanbul')({
+		instrumenterConfig: {
+                  embedSource: true
+                },
+		ignore: ['**/node_modules/**', '**/*.mock.ts', '**/*.spec.ts'],
+		defaultIgnore: false
+	}));
+
+	return b.bundle()
+			.pipe(source("src/main.ts"))
+			.pipe(buffer())
+      .pipe(sourcemaps.init({loadMaps: true, largeFile: true}))
+			.pipe(rename("app.bundle.js"))
+			.pipe(sourcemaps.write())
+			.pipe(gulp.dest("./tests"));
 }
 
 // automatic testing in whatever browser is defined in the Karma config file
@@ -257,6 +293,7 @@ function unitTest()
 
 // run code bundling and then test
 gulp.task('test', gulp.series(
+	setupTests,
 	bundleCode,
 	unitTest
 ));
@@ -274,9 +311,8 @@ gulp.task("serve", function() {
 //exports for gulp to recognise them as tasks
 exports.copyHtml = copyHtml;
 exports.copyIndex = copyIndex;
-exports.copyImgs = copyImgs;
+exports.copyAssets = copyAssets;
 exports.styles = styles;
 exports.scripts = scripts;
 exports.scriptsDist = scriptsDist;
-exports.unitTest = unitTest;
 exports.watch = watch;

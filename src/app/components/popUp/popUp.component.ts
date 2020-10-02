@@ -1,20 +1,33 @@
 /*
 	Popup
 	Send a Hug Component
----------------------------------------------------
-MIT License
+  ---------------------------------------------------
+  MIT License
 
-Copyright (c) 2020 Send A Hug
+  Copyright (c) 2020 Send A Hug
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+  Permission is hereby granted, free of charge, to any person obtaining a copy
+  of this software and associated documentation files (the "Software"), to deal
+  in the Software without restriction, including without limitation the rights
+  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  copies of the Software, and to permit persons to whom the Software is
+  furnished to do so, subject to the following conditions:
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+  The above copyright notice and this permission notice shall be included in all
+  copies or substantial portions of the Software.
+
+  The provided Software is separate from the idea behind its website. The Send A Hug
+  website and its underlying design and ideas are owned by Send A Hug group and
+  may not be sold, sub-licensed or distributed in any way. The Software itself may
+  be adapted for any purpose and used freely under the given conditions.
+
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+  SOFTWARE.
 */
 
 // Angular imports
@@ -161,6 +174,7 @@ export class PopUp implements OnInit, OnChanges, AfterViewChecked {
       if(newDisplayName.length > 60) {
         this.alertsService.createAlert({ type: 'Error', message: 'New display name cannot be over 60 characters! Please shorten the name and try again.' });
         document.getElementById('displayName')!.classList.add('missing');
+        document.getElementById('displayName')!.setAttribute('aria-invalid', 'true');
       }
       // otherwise change the name
       else {
@@ -168,6 +182,7 @@ export class PopUp implements OnInit, OnChanges, AfterViewChecked {
         if(document.getElementById('displayName')!.classList.contains('missing')) {
           document.getElementById('displayName')!.classList.remove('missing');
         }
+        document.getElementById('displayName')!.setAttribute('aria-invalid', 'false');
 
         this.authService.userData.displayName = newDisplayName;
         this.authService.updateUserData();
@@ -178,6 +193,7 @@ export class PopUp implements OnInit, OnChanges, AfterViewChecked {
     else {
       this.alertsService.createAlert({ type: 'Error', message: 'New display name cannot be empty! Please fill the field and try again.' });
       document.getElementById('displayName')!.classList.add('missing');
+      document.getElementById('displayName')!.setAttribute('aria-invalid', 'true');
     }
   }
 
@@ -200,6 +216,7 @@ export class PopUp implements OnInit, OnChanges, AfterViewChecked {
       if(newDisplayName.length > 60) {
         this.alertsService.createAlert({ type: 'Error', message: 'New display name cannot be over 60 characters! Please shorten the name and try again.' });
         document.getElementById('uDisplayName')!.classList.add('missing');
+        document.getElementById('uDisplayName')!.setAttribute('aria-invalid', 'true');
       }
       // otherwise change the name
       else {
@@ -207,6 +224,7 @@ export class PopUp implements OnInit, OnChanges, AfterViewChecked {
         if(document.getElementById('uDisplayName')!.classList.contains('missing')) {
           document.getElementById('uDisplayName')!.classList.remove('missing');
         }
+        document.getElementById('uDisplayName')!.setAttribute('aria-invalid', 'false');
 
         let user = {
           userID: this.reportData.userID,
@@ -221,6 +239,7 @@ export class PopUp implements OnInit, OnChanges, AfterViewChecked {
     else {
       this.alertsService.createAlert({ type: 'Error', message: 'New display name cannot be empty! Please fill the field and try again.' });
       document.getElementById('uDisplayName')!.classList.add('missing');
+      document.getElementById('uDisplayName')!.setAttribute('aria-invalid', 'true');
     }
   }
 
@@ -242,6 +261,7 @@ export class PopUp implements OnInit, OnChanges, AfterViewChecked {
       if(newText.length > 480) {
         this.alertsService.createAlert({ type: 'Error', message: 'New post text cannot be over 480 characters! Please shorten the post and try again.' });
         document.getElementById('postText')!.classList.add('missing');
+        document.getElementById('postText')!.setAttribute('aria-invalid', 'true');
       }
       // otherwise edit the post
       else {
@@ -249,6 +269,7 @@ export class PopUp implements OnInit, OnChanges, AfterViewChecked {
         if(document.getElementById('postText')!.classList.contains('missing')) {
           document.getElementById('postText')!.classList.remove('missing');
         }
+        document.getElementById('postText')!.setAttribute('aria-invalid', 'false');
 
         this.editedItem.text = newText;
         this.postsService.editPost(this.editedItem);
@@ -266,6 +287,7 @@ export class PopUp implements OnInit, OnChanges, AfterViewChecked {
     else {
       this.alertsService.createAlert({ type: 'Error', message: 'New post text cannot be empty. Please fill the field and try again.' });
       document.getElementById('postText')!.classList.add('missing');
+      document.getElementById('postText')!.setAttribute('aria-invalid', 'true');
     }
   }
 
@@ -288,6 +310,7 @@ export class PopUp implements OnInit, OnChanges, AfterViewChecked {
       if(newText.length > 480) {
         this.alertsService.createAlert({ type: 'Error', message: 'New post text cannot be over 480 characters! Please shorten the post and try again.' });
         document.getElementById('adPostText')!.classList.add('missing');
+        document.getElementById('adPostText')!.setAttribute('aria-invalid', 'true');
       }
       // otherwise edit the post
       else {
@@ -295,6 +318,7 @@ export class PopUp implements OnInit, OnChanges, AfterViewChecked {
         if(document.getElementById('adPostText')!.classList.contains('missing')) {
           document.getElementById('adPostText')!.classList.remove('missing');
         }
+        document.getElementById('adPostText')!.setAttribute('aria-invalid', 'false');
 
         let post = {
           text: newText,
@@ -316,6 +340,7 @@ export class PopUp implements OnInit, OnChanges, AfterViewChecked {
     else {
       this.alertsService.createAlert({ type: 'Error', message: 'New post text cannot be empty. Please fill the field and try again.' });
       document.getElementById('adPostText')!.classList.add('missing');
+      document.getElementById('adPostText')!.setAttribute('aria-invalid', 'true');
     }
   }
 
@@ -393,12 +418,14 @@ export class PopUp implements OnInit, OnChanges, AfterViewChecked {
 
       otherText.disabled = true;
       otherText.required = false;
+      otherText.setAttribute('aria-required', 'false');
     }
     // If the user chose to put their own input, take that as the reason
     else {
       otherText.disabled = false;
       otherText.required = true;
       this.selectedReason = 'other';
+      otherText.setAttribute('aria-required', 'true');
     }
   }
 
@@ -525,7 +552,7 @@ export class PopUp implements OnInit, OnChanges, AfterViewChecked {
   */
   checkFocus(e:KeyboardEvent) {
     // if the pressed key is TAB
-    if(e.keyCode === 9) {
+    if(e.key.toLowerCase() === 'tab') {
       // if the user pressed SHIFT + TAB, which means they want to move backwards
       if(e.shiftKey) {
         // if the currently focused element in the first one in the popup,

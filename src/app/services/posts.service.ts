@@ -15,6 +15,19 @@
 
   The above copyright notice and this permission notice shall be included in all
   copies or substantial portions of the Software.
+
+  The provided Software is separate from the idea behind its website. The Send A Hug
+  website and its underlying design and ideas are owned by Send A Hug group and
+  may not be sold, sub-licensed or distributed in any way. The Software itself may
+  be adapted for any purpose and used freely under the given conditions.
+
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+  SOFTWARE.
 */
 
 // Angular imports
@@ -111,45 +124,37 @@ export class PostsService {
       this.isMainPageResolved.next(true);
       this.alertsService.toggleOfflineAlert();
 
-      // if there's a currently operating IDB database, get it
-      if(this.serviceWorkerM.currentDB) {
-        this.serviceWorkerM.currentDB.then(db => {
-          // start a new transaction
-          let tx = db.transaction('posts', 'readwrite');
-          let store = tx.objectStore('posts');
-          // add each post in the 'recent' list to posts store
-          data.recent.forEach((element:Post) => {
-            let isoDate = new Date(element.date).toISOString();
-            let post = {
-              'date': element.date,
-              'givenHugs': element.givenHugs,
-              'id': element.id!,
-              'isoDate': isoDate,
-              'text': element.text,
-              'userId': Number(element.userId),
-              'user': element.user,
-              'sentHugs': element.sentHugs!
-            }
-            store.put(post);
-          });
-          // add each post in the 'suggested' list to posts store
-          data.suggested.forEach((element:Post) => {
-            let isoDate = new Date(element.date).toISOString();
-            let post = {
-              'date': element.date,
-              'givenHugs': element.givenHugs,
-              'id': element.id!,
-              'isoDate': isoDate,
-              'text': element.text,
-              'userId': Number(element.userId),
-              'user': element.user,
-              'sentHugs': element.sentHugs!
-            }
-            store.put(post);
-          });
-          this.serviceWorkerM.cleanDB('posts');
-        })
-      }
+      // add each post in the 'recent' list to posts store
+      data.recent.forEach((element:Post) => {
+        let isoDate = new Date(element.date).toISOString();
+        let post = {
+          'date': element.date,
+          'givenHugs': element.givenHugs,
+          'id': element.id!,
+          'isoDate': isoDate,
+          'text': element.text,
+          'userId': Number(element.userId),
+          'user': element.user,
+          'sentHugs': element.sentHugs!
+        }
+        this.serviceWorkerM.addItem('posts', post);
+      });
+      // add each post in the 'suggested' list to posts store
+      data.suggested.forEach((element:Post) => {
+        let isoDate = new Date(element.date).toISOString();
+        let post = {
+          'date': element.date,
+          'givenHugs': element.givenHugs,
+          'id': element.id!,
+          'isoDate': isoDate,
+          'text': element.text,
+          'userId': Number(element.userId),
+          'user': element.user,
+          'sentHugs': element.sentHugs!
+        }
+        this.serviceWorkerM.addItem('posts', post);
+      });
+      this.serviceWorkerM.cleanDB('posts');
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
       // if the server is unavilable due to the user being offline, tell the user
@@ -198,30 +203,22 @@ export class PostsService {
       this.isPostsResolved.fullNewItems.next(true);
       this.alertsService.toggleOfflineAlert();
 
-      // if there's a currently operating IDB database, get it
-      if(this.serviceWorkerM.currentDB) {
-        this.serviceWorkerM.currentDB.then(db => {
-          // start a new transaction
-          let tx = db.transaction('posts', 'readwrite');
-          let store = tx.objectStore('posts');
-          // add each post in the 'recent' list to posts store
-          data.forEach((element:Post) => {
-            let isoDate = new Date(element.date).toISOString();
-            let post = {
-              'date': element.date,
-              'givenHugs': element.givenHugs,
-              'id': element.id!,
-              'isoDate': isoDate,
-              'text': element.text,
-              'userId': Number(element.userId),
-              'user': element.user,
-              'sentHugs': element.sentHugs!
-            }
-            store.put(post);
-          });
-          this.serviceWorkerM.cleanDB('posts');
-        })
-      }
+      // add each post in the 'recent' list to posts store
+      data.forEach((element:Post) => {
+        let isoDate = new Date(element.date).toISOString();
+        let post = {
+          'date': element.date,
+          'givenHugs': element.givenHugs,
+          'id': element.id!,
+          'isoDate': isoDate,
+          'text': element.text,
+          'userId': Number(element.userId),
+          'user': element.user,
+          'sentHugs': element.sentHugs!
+        }
+        this.serviceWorkerM.addItem('posts', post);
+      });
+      this.serviceWorkerM.cleanDB('posts');
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
       // if the server is unavilable due to the user being offline, tell the user
@@ -270,30 +267,22 @@ export class PostsService {
       this.isPostsResolved.fullSuggestedItems.next(true);
       this.alertsService.toggleOfflineAlert();
 
-      // if there's a currently operating IDB database, get it
-      if(this.serviceWorkerM.currentDB) {
-        this.serviceWorkerM.currentDB.then(db => {
-          // start a new transaction
-          let tx = db.transaction('posts', 'readwrite');
-          let store = tx.objectStore('posts');
-          // add each post in the 'recent' list to posts store
-          data.forEach((element:Post) => {
-            let isoDate = new Date(element.date).toISOString();
-            let post = {
-              'date': element.date,
-              'givenHugs': element.givenHugs,
-              'id': element.id!,
-              'isoDate': isoDate,
-              'text': element.text,
-              'userId': Number(element.userId),
-              'user': element.user,
-              'sentHugs': element.sentHugs!
-            }
-            store.put(post);
-          });
-          this.serviceWorkerM.cleanDB('posts');
-        })
-      }
+      // add each post in the 'recent' list to posts store
+      data.forEach((element:Post) => {
+        let isoDate = new Date(element.date).toISOString();
+        let post = {
+          'date': element.date,
+          'givenHugs': element.givenHugs,
+          'id': element.id!,
+          'isoDate': isoDate,
+          'text': element.text,
+          'userId': Number(element.userId),
+          'user': element.user,
+          'sentHugs': element.sentHugs!
+        }
+        this.serviceWorkerM.addItem('posts', post);
+      });
+      this.serviceWorkerM.cleanDB('posts');
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
       // if the server is unavilable due to the user being offline, tell the user
@@ -357,6 +346,9 @@ export class PostsService {
     }).subscribe((response:any) => {
       this.alertsService.createSuccessAlert(`Post ${response.deleted} was deleted. Refresh to view the updated post list.`, true);
       this.alertsService.toggleOfflineAlert();
+
+      // delete the post from idb
+      this.serviceWorkerM.deleteItem('posts', post_id);
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
       // if the user is offline, show the offline header message
@@ -385,6 +377,9 @@ export class PostsService {
     }).subscribe((_response:any) => {
       this.alertsService.createSuccessAlert(`User ${userID}'s posts were deleted successfully. Refresh to view the updated profile.`, true);
       this.alertsService.toggleOfflineAlert();
+
+      // delete the posts from idb
+      this.serviceWorkerM.deleteItems('posts', 'userId', userID);
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
       // if the user is offline, show the offline header message

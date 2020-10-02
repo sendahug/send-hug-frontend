@@ -15,6 +15,19 @@
 
   The above copyright notice and this permission notice shall be included in all
   copies or substantial portions of the Software.
+
+  The provided Software is separate from the idea behind its website. The Send A Hug
+  website and its underlying design and ideas are owned by Send A Hug group and
+  may not be sold, sub-licensed or distributed in any way. The Software itself may
+  be adapted for any purpose and used freely under the given conditions.
+
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+  SOFTWARE.
 */
 
 // Angular imports
@@ -195,30 +208,23 @@ export class ItemsService {
       this.idbResolved.userPosts.next(true);
       this.alertsService.toggleOfflineAlert();
 
-      // if there's a currently operating IDB database, get it
-      if(this.serviceWorkerM.currentDB) {
-        this.serviceWorkerM.currentDB.then(db => {
-          // start a new transaction
-          let tx = db.transaction('posts', 'readwrite');
-          let store = tx.objectStore('posts');
-          // add each post in the list to posts store
-          data.forEach((element:Post) => {
-            let isoDate = new Date(element.date).toISOString();
-            let post = {
-              'date': element.date,
-              'givenHugs': element.givenHugs,
-              'id': element.id!,
-              'isoDate': isoDate,
-              'text': element.text,
-              'userId': Number(element.userId),
-              'user': element.user,
-              'sentHugs': element.sentHugs!
-            }
-            store.put(post);
-          });
-          this.serviceWorkerM.cleanDB('posts');
-        })
-      }
+      // add each post to the database
+      data.forEach((element:Post) => {
+        let isoDate = new Date(element.date).toISOString();
+        let post = {
+          'date': element.date,
+          'givenHugs': element.givenHugs,
+          'id': element.id!,
+          'isoDate': isoDate,
+          'text': element.text,
+          'userId': Number(element.userId),
+          'user': element.user,
+          'sentHugs': element.sentHugs!
+        }
+
+        this.serviceWorkerM.addItem('posts', post);
+      });
+      this.serviceWorkerM.cleanDB('posts');
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
       this.isUserPostsResolved[user].next(true);
@@ -313,16 +319,8 @@ export class ItemsService {
       this.getUserPosts(userID);
       this.alertsService.toggleOfflineAlert();
 
-      // if there's a currently operating IDB database, get it
-      if(this.serviceWorkerM.currentDB) {
-        this.serviceWorkerM.currentDB.then(db => {
-          // start a new transaction
-          let tx = db.transaction('users', 'readwrite');
-          let store = tx.objectStore('users');
-          // adds the user's data to the users store
-          store.put(this.otherUserData);
-        })
-      }
+      // adds the user's data to the users store
+      this.serviceWorkerM.addItem('users', this.otherUserData);
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
       this.isOtherUserResolved.next(true);
@@ -389,31 +387,23 @@ export class ItemsService {
       this.idbResolved[type].next(true);
       this.alertsService.toggleOfflineAlert();
 
-      // if there's a currently operating IDB database, get it
-      if(this.serviceWorkerM.currentDB) {
-        this.serviceWorkerM.currentDB.then(db => {
-          // start a new transaction
-          let tx = db.transaction('messages', 'readwrite');
-          let store = tx.objectStore('messages');
-          // add each message in the messages list to the store
-          messages.forEach((element:Message) => {
-            let isoDate = new Date(element.date).toISOString();
-            let message = {
-              'date': element.date,
-              'for': element.for!,
-              'forId': element.forId,
-              'from': element.from,
-              'fromId': element.fromId,
-              'id': Number(element.id!),
-              'isoDate': isoDate,
-              'messageText': element.messageText,
-              'threadID': element.threadID!
-            }
-            store.put(message);
-          });
-          this.serviceWorkerM.cleanDB('messages');
-        })
-      }
+      // add each message in the messages list to the store
+      messages.forEach((element:Message) => {
+        let isoDate = new Date(element.date).toISOString();
+        let message = {
+          'date': element.date,
+          'for': element.for!,
+          'forId': element.forId,
+          'from': element.from,
+          'fromId': element.fromId,
+          'id': Number(element.id!),
+          'isoDate': isoDate,
+          'messageText': element.messageText,
+          'threadID': element.threadID!
+        }
+        this.serviceWorkerM.addItem('messages', message);
+      });
+      this.serviceWorkerM.cleanDB('messages');
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
       this.isUserMessagesResolved[type].next(true);
@@ -491,30 +481,22 @@ export class ItemsService {
       this.idbResolved.threads.next(true);
       this.alertsService.toggleOfflineAlert();
 
-      // if there's a currently operating IDB database, get it
-      if(this.serviceWorkerM.currentDB) {
-        this.serviceWorkerM.currentDB.then(db => {
-          // start a new transaction
-          let tx = db.transaction('threads', 'readwrite');
-          let store = tx.objectStore('threads');
-          // add each message in the threads list to the store
-          threads.forEach((element:Thread) => {
-            let isoDate = new Date(element.latestMessage).toISOString();
-            let thread = {
-              'latestMessage': element.latestMessage,
-              'user1': element.user!,
-              'user1Id': element.userID,
-              'user2': this.authService.userData.displayName,
-              'user2Id': this.authService.userData.id!,
-              'numMessages': element.numMessages!,
-              'isoDate': isoDate,
-              'id': element.id
-            }
-            store.put(thread);
-          });
-          this.serviceWorkerM.cleanDB('threads');
-        })
-      }
+      // add each message in the threads list to the store
+      threads.forEach((element:Thread) => {
+        let isoDate = new Date(element.latestMessage).toISOString();
+        let thread = {
+          'latestMessage': element.latestMessage,
+          'user1': element.user!,
+          'user1Id': element.userID,
+          'user2': this.authService.userData.displayName,
+          'user2Id': this.authService.userData.id!,
+          'numMessages': element.numMessages!,
+          'isoDate': isoDate,
+          'id': element.id
+        }
+        this.serviceWorkerM.addItem('threads', thread);
+      });
+      this.serviceWorkerM.cleanDB('threads');
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
       this.isUserMessagesResolved.threads.next(true);
@@ -581,31 +563,23 @@ export class ItemsService {
       this.idbResolved.thread.next(true);
       this.alertsService.toggleOfflineAlert();
 
-      // if there's a currently operating IDB database, get it
-      if(this.serviceWorkerM.currentDB) {
-        this.serviceWorkerM.currentDB.then(db => {
-          // start a new transaction
-          let tx = db.transaction('messages', 'readwrite');
-          let store = tx.objectStore('messages');
-          // add each message in the messages list to the store
-          messages.forEach((element:Message) => {
-            let isoDate = new Date(element.date).toISOString();
-            let message = {
-              'date': element.date,
-              'for': element.for!,
-              'forId': element.forId,
-              'from': element.from,
-              'fromId': element.fromId,
-              'id': element.id!,
-              'isoDate': isoDate,
-              'messageText': element.messageText,
-              'threadID': element.threadID!
-            }
-            store.put(message);
-          });
-          this.serviceWorkerM.cleanDB('messages');
-        })
-      }
+      // add each message in the messages list to the store
+      messages.forEach((element:Message) => {
+        let isoDate = new Date(element.date).toISOString();
+        let message = {
+          'date': element.date,
+          'for': element.for!,
+          'forId': element.forId,
+          'from': element.from,
+          'fromId': element.fromId,
+          'id': element.id!,
+          'isoDate': isoDate,
+          'messageText': element.messageText,
+          'threadID': element.threadID!
+        }
+        this.serviceWorkerM.addItem('messages', message);
+      });
+      this.serviceWorkerM.cleanDB('messages');
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
       this.isThreadResolved.next(true);
@@ -665,6 +639,9 @@ export class ItemsService {
     }).subscribe((response:any) => {
       this.alertsService.createSuccessAlert(`Message ${response.deleted} was deleted! Refresh to view the updated message list.`, true);
       this.alertsService.toggleOfflineAlert();
+
+      // delete the message from idb
+      this.serviceWorkerM.deleteItem('messages', messageId);
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
       // if the user is offline, show the offline header message
@@ -694,6 +671,10 @@ export class ItemsService {
     }).subscribe((response:any) => {
       this.alertsService.createSuccessAlert(`Thread ${response.deleted} was deleted! Refresh to view the updated message list.`, true);
       this.alertsService.toggleOfflineAlert();
+
+      // delete the thread and its messages from idb
+      this.serviceWorkerM.deleteItems('messages', 'threadID', threadId);
+      this.serviceWorkerM.deleteItem('threads', threadId);
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
       // if the user is offline, show the offline header message
@@ -727,7 +708,20 @@ export class ItemsService {
     }).subscribe((response:any) => {
       this.alertsService.createSuccessAlert(`${response.deleted} messages were deleted! Refresh to view the updated mailbox.`, true);
       this.alertsService.toggleOfflineAlert();
-    // if there was an error, alert the user
+
+      // delete all messages from idb
+      // if the mailbox to be cleared is the threads mailbox, delete everything
+      if(mailbox_type == 'threads') {
+        this.serviceWorkerM.clearStore('messages');
+        this.serviceWorkerM.clearStore('threads');
+      }
+      else if(mailbox_type == 'inbox') {
+        this.serviceWorkerM.deleteItems('messages', 'forId', userID);
+      }
+      else if(mailbox_type == 'outbox') {
+        this.serviceWorkerM.deleteItems('messages', 'fromId', userID);
+      }
+      // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
       // if the user is offline, show the offline header message
       if(!navigator.onLine) {

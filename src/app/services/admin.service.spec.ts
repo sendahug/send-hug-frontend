@@ -15,6 +15,19 @@
 
   The above copyright notice and this permission notice shall be included in all
   copies or substantial portions of the Software.
+
+  The provided Software is separate from the idea behind its website. The Send A Hug
+  website and its underlying design and ideas are owned by Send A Hug group and
+  may not be sold, sub-licensed or distributed in any way. The Software itself may
+  be adapted for any purpose and used freely under the given conditions.
+
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+  SOFTWARE.
 */
 
 import 'zone.js/dist/zone';
@@ -64,8 +77,8 @@ describe('AdminService', () => {
       ]
     }).compileComponents();
 
-    adminService = TestBed.get(AdminService);
-    httpController = TestBed.get(HttpTestingController);
+    adminService = TestBed.inject(AdminService);
+    httpController = TestBed.inject(HttpTestingController);
   });
 
   // Check the service is created
@@ -213,6 +226,7 @@ describe('AdminService', () => {
     const alertSpy = spyOn(adminService['alertsService'], 'createSuccessAlert');
     const dismissSpy = spyOn(adminService, 'dismissReport');
     const messageSpy = spyOn(adminService['itemsService'], 'sendMessage');
+    const deleteSpy = spyOn(adminService['serviceWorkerM'], 'deleteItem').and.callThrough();
     adminService.deletePost(10, reportData, true);
 
     const req = httpController.expectOne('http://localhost:5000/posts/10');
@@ -224,6 +238,8 @@ describe('AdminService', () => {
     expect(dismissSpy).toHaveBeenCalled();
     expect(dismissSpy).toHaveBeenCalledWith(5);
     expect(messageSpy).toHaveBeenCalled();
+    expect(deleteSpy).toHaveBeenCalled();
+    expect(deleteSpy).toHaveBeenCalledWith('posts', 10);
   });
 
   // Check that the service edits a user's display name

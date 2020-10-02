@@ -8,9 +8,9 @@
 			</div>
 			<div class="formElement" aria-describedby="pDate">{{ editedItem.date }}</div>
 			<div class="formElement">
-				<label class="pageCategory" for="postText">Text:</label>
+				<label class="pageCategory required" for="postText">Text:</label>
 				<br>
-				<textarea #postText id="postText" cols="40" rows="8" aria-describedby="pText" minlength="0" maxlength="480" required>{{ editedItem.text }}</textarea>
+				<textarea #postText id="postText" cols="40" rows="8" aria-describedby="pText" minlength="0" maxlength="480" required aria-invalid="false" aria-required="true">{{ editedItem.text }}</textarea>
 			</div>
 			<button type="submit" class="appButton sendData" (click)="updatePost($event, postText.value)" [attr.aria-label]="'update post ' + editedItem.text">Update Post</button>
 		</form>
@@ -18,9 +18,9 @@
 		<!-- If the user is editing a post from the report's page -->
 		<form *ngIf="toEdit == 'admin post'" id="adPostEdit" class="postEdit">
 			<div class="formElement">
-				<label class="pageCategory" for="adPostText">Post Text:</label>
+				<label class="pageCategory required" for="adPostText">Post Text:</label>
 				<br>
-				<textarea #adPostText id="adPostText" cols="40" rows="8" minlength="0" maxlength="480" required>{{ editedItem }}</textarea>
+				<textarea #adPostText id="adPostText" cols="40" rows="8" minlength="0" maxlength="480" required aria-invalid="false" aria-required="true">{{ editedItem }}</textarea>
 			</div>
 			<button type="submit" class="appButton sendData" (click)="editPost($event, adPostText.value, true)">Update Post and Close Report</button>
 			<button type="submit" class="appButton sendData" (click)="editPost($event, adPostText.value, false)">Update Post without Closing Report</button>
@@ -29,8 +29,8 @@
 		<!-- If the user is editing their own display name -->
 		<form *ngIf="toEdit == 'user'" id="userEdit" class="userEdit">
 			<div class="formElement">
-				<label class="pageCategory" for="displayName">Display Name:</label>
-				<input #displayName type="text" id="displayName" value="{{ authService.userData.displayName }}" minlength="0" maxlength="60" required>
+				<label class="pageCategory required" for="displayName">Display Name:</label>
+				<input #displayName type="text" id="displayName" value="{{ authService.userData.displayName }}" minlength="0" maxlength="60" required aria-invalid="false" aria-required="true">
 			</div>
 			
 			<button type="submit" class="appButton updateItem" (click)="updateDisplayN($event, displayName.value)" [attr.aria-label]="'update display name for user ' + authService.userData.displayName">Update User</button>
@@ -39,8 +39,8 @@
 		<!-- If the user is editing another user -->
 		<form *ngIf="toEdit == 'other user'" id="otherUserEdit" class="userEdit">
 			<div class="formElement">
-				<label class="pageCategory" for="uDisplayName">Display Name:</label>
-				<input #uDisplayName type="text" id="uDisplayName" value="{{ editedItem }}" minlength="0" maxlength="60" required>
+				<label class="pageCategory required" for="uDisplayName">Display Name:</label>
+				<input #uDisplayName type="text" id="uDisplayName" value="{{ editedItem }}" minlength="0" maxlength="60" required aria-invalid="false" aria-required="true">
 			</div>
 			
 			<button (click)="editUser($event, uDisplayName.value, true)" type="submit" class="appButton updateItem">Update User and Close Report</button>
@@ -77,7 +77,7 @@
 				<div class="itemText" id="reportText">{{ reportedItem.text }}</div>
 				<div class="itemUser">By {{ reportedItem.user }}</div>
 			</div>
-			<div id="reportQ" class="popupText">What is the problem with this post?</div>
+			<div id="reportQ" class="popupText required">What is the problem with this post?</div>
 			<form id="reportPost" role="radiogroup">
 				<div class="formElement">
 					<input type="radio" class="radioButton" name="postReport" id="pRadioOption0" value="0" (click)="setSelected($event.target.value)" aria-describedby="reportQ">
@@ -95,7 +95,7 @@
 					<fieldset>
 						<legend class="hidden" aria-hidden="false" id="rPostLegend">There's another problem with this post:</legend>
 						<input type="radio" class="radioButton" name="postReport" id="pRadioOption3" value="3" (click)="setSelected($event.target.value)" aria-describedby="reportQ">
-						<label class="radioButtonLabel" for="pRadioOption3">Other:</label> <input type="text" placeholder="Enter the response" id="rOption3Text" aria-labelledby="rPostLegend" disabled minlength="0" maxlength="120">
+						<label class="radioButtonLabel" for="pRadioOption3">Other:</label> <input type="text" placeholder="Enter the response" id="rOption3Text" aria-labelledby="rPostLegend" disabled minlength="0" maxlength="120" aria-required="false">
 					</fieldset>
 				</div>
 				
@@ -108,7 +108,7 @@
 		<div *ngIf="report && reportType == 'User'" id="reportUser">
 			<h3 class="popupTitle">Report User</h3>
 			<a [routerLink]="['/user', reportedItem.userId]" id="uReportText">{{ reportedItem.displayName }}</a>
-			<div id="reportUQ" class="popupText">What is the problem with this user?</div>
+			<div id="reportUQ" class="popupText required">What is the problem with this user?</div>
 			<form id="reportUserForm">
 				<div class="formElement">
 					<input type="radio" class="radioButton" name="postReport" id="uRadioOption0" value="0" (click)="setSelected($event.target.value)" aria-describedby="reportUQ">
@@ -126,7 +126,7 @@
 					<fieldset>
 						<legend class="hidden" aria-hidden="false" id="rUserLegend">There's another problem with this user:</legend>
 						<input type="radio" class="radioButton" name="postReport" id="uRadioOption3" value="3" (click)="setSelected($event.target.value)" aria-describedby="reportUQ">
-						<label class="radioButtonLabel" for="uRadioOption3">Other:</label> <input type="text" placeholder="Enter the response" id="uOption3Text" aria-labelledby="rUserLegend" disabled minlength="0" maxlength="120">
+						<label class="radioButtonLabel" for="uRadioOption3">Other:</label> <input type="text" placeholder="Enter the response" id="uOption3Text" aria-labelledby="rUserLegend" disabled minlength="0" maxlength="120" aria-required="false">
 					</fieldset>
 				</div>
 				

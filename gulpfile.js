@@ -14,6 +14,8 @@ const replace = require("gulp-replace");
 const fs = require("fs");
 const path = require("path");
 var through = require('through');
+const protractor = require('protractor/built/launcher');
+const webdriverUpdate = require('protractor/node_modules/webdriver-manager/built/lib/cmds/update');
 var Server = require('karma').Server;
 
 // LOCAL DEVELOPMENT TASKS
@@ -294,6 +296,18 @@ gulp.task('test', gulp.series(
 	bundleCode,
 	unitTest
 ));
+
+// run protractor
+async function runProtractor() {
+	// update webdriver
+	await webdriverUpdate.program.run({
+			standalone: false,
+			gecko: false,
+			quiet: true,
+	});
+	// run protractor
+	protractor.init('./e2e/protractor.conf.js');
+}
 
 //boot up the server
 gulp.task("serve", function() {

@@ -14,7 +14,7 @@ const replace = require("gulp-replace");
 const fs = require("fs");
 const path = require("path");
 var through = require('through');
-const protractor = require('protractor/built/launcher');
+const execFile = require('child_process').execFile;
 const webdriverUpdate = require('protractor/node_modules/webdriver-manager/built/lib/cmds/update');
 var Server = require('karma').Server;
 
@@ -306,7 +306,15 @@ async function runProtractor() {
 			quiet: true,
 	});
 	// run protractor
-	protractor.init('./e2e/protractor.conf.js');
+	execFile('./node_modules/protractor/bin/protractor', ['./e2e/protractor.conf.js'], (error, stdout, stderr) => {
+	    if (error) {
+	        console.error('error: ', stderr);
+	        throw error;
+	    }
+			else {
+				console.log(stdout);
+			}
+	});
 }
 
 //boot up the server

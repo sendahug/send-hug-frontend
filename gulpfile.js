@@ -228,12 +228,14 @@ function setupTests() {
 function bundleCode() {
 	var b = browserify({
 		debug: true
-	}).add("src/main.ts").transform(function(file) {
+	}).add("src/main.ts").plugin(tsify, { target: 'es6' }).transform(function(file) {
 		var data = '';
-    return through(write, end);
+		return through(write);
 
-    function write (buf) {
+		// write the stream, replacing templateUrls
+		function write(buf) {
 			let codeChunk = buf.toString("utf8");
+
 			// inline the templates
 			let replacedChunk = codeChunk.replace(/(templateUrl: '.)(.*)(.component.html')/g, (match) => {
 				let componentName = match.substring(16, match.length-16);
@@ -246,8 +248,7 @@ function bundleCode() {
 					componentTemplate = fs.readFileSync(__dirname + `/src/app/components/${componentName}/${componentName}.component.html`);
 				}
 
-				let newString = `/* istanbul ignore next */
-				template: \`${componentTemplate}\``
+				let newString = `template: \`${componentTemplate}\``
 				return newString;
 			});
 			// add the SVGs
@@ -260,13 +261,9 @@ function bundleCode() {
 			})
 
 			data += secondReplacedChunk
+			this.queue(data);
 		}
-
-    function end () {
-        this.queue(data);
-        this.queue(null);
-    }
-	}).plugin(tsify, { target: 'es6' }).transform(require('browserify-istanbul')({
+	}).transform(require('browserify-istanbul')({
 		instrumenterConfig: {
                   embedSource: true
                 },

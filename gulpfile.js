@@ -17,6 +17,7 @@ var through = require('through');
 const execFile = require('child_process').execFile;
 const webdriverUpdate = require('protractor/node_modules/webdriver-manager/built/lib/cmds/update');
 var Server = require('karma').Server;
+let bs;
 
 // LOCAL DEVELOPMENT TASKS
 // ===============================================
@@ -297,8 +298,23 @@ gulp.task('test', gulp.series(
 	unitTest
 ));
 
-// run protractor
+// get the static assets to run the server
+function getAssets() {
+	return gulp
+		.src(["index.html", "src/css/styles.css"])
+		.pipe(rename({dirname:""}))
+		.pipe(replace("css/styles.css", "styles.css"))
+		.pipe(gulp.dest("tests"));
+}
+// run development server & protractor
 async function runProtractor() {
+	bs = browserSync.init({
+		server: {
+			baseDir: "./tests"
+		},
+		single: true
+	})
+
 	// update webdriver
 	await webdriverUpdate.program.run({
 			standalone: false,
@@ -306,16 +322,32 @@ async function runProtractor() {
 			quiet: true,
 	});
 	// run protractor
-	execFile('./node_modules/protractor/bin/protractor', ['./e2e/protractor.conf.js'], (error, stdout, stderr) => {
+	await execFile('./node_modules/protractor/bin/protractor', ['./e2e/protractor.conf.js'], (error, stdout, stderr) => {
 	    if (error) {
 	        console.error('error: ', stderr);
 	        throw error;
 	    }
 			else {
 				console.log(stdout);
+				stopDevServer();
 			}
 	});
 }
+
+// stop the development server
+function stopDevServer() {
+	if(bs) {
+		bs.cleanup();
+		process.exit();
+	}
+}
+
+// run e2e testing
+gulp.task('e2e', gulp.series(
+	getAssets,
+	bundleCode,
+	runProtractor
+))
 
 //boot up the server
 gulp.task("serve", function() {

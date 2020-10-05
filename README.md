@@ -63,7 +63,8 @@ The main module contains 15 components, 7 services and 7 interfaces. Each compon
 12. **popUp** - A sub-component displaying a popup screen with a form for editing items (posts or a user's display name).
 13. **searchResults** - A component to display the results of the user's search.
 14. **settings** - Lets the user control their settings for various components, such as the notifications component.
-15. **userPage** - Displays the user's data as fetched from the backend, as well as a list of the user's posts (as myPost component).
+15. **siteMap** - A site map, containing a list of the site's pages.
+16. **userPage** - Displays the user's data as fetched from the backend, as well as a list of the user's posts (as myPost component).
 
 ### Interfaces
 
@@ -146,6 +147,7 @@ This project's tests are run using the Jasmine framework and the Karma runner. T
     - **karma-sourcemap-loader** - A preprocessor that loads existing source maps. [NPM page.](https://www.npmjs.com/package/karma-sourcemap-loader)
     - **karma-browserify** - A browserify preprocessor for karma, used to bundle up the tests. [NPM page.](https://www.npmjs.com/package/karma-browserify)
     - **karma-viewport** - A karma framework used to gain access to the viewport in tests. [NPM page.](https://www.npmjs.com/package/karma-viewport)
+3. **Protractor** - An open-source end-to-end test framework. For more information, check Protractor's [official site](http://www.protractortest.org/#/).
 
 ### Production Dependencies
 
@@ -187,6 +189,12 @@ Tests are written in TypeScript and each component's tests are located in the sa
 ### Running Tests
 
 Running tests is done through the dedicated Gulp task. All you need to do is run `gulp test` in the terminal; this will start Karma and trigger Webpack's compilation of tests and project files.
+
+### End-to-End Tests
+
+End to end tests are similarly written in TypeScript and named in the following format: `<component_name>.spec.ts`. They're all located in [e2e/src](./e2e/src).
+
+Since this is a full-stack application, running end-to-end tests requires running the [backend](https://github.com/sendahug/send-hug-backend) prior to running the tests. Once the backend is up and running, run `gulp e2e` in another terminal tab. This will compile all files, run the frontend server and then run Protractor.
 
 ## Hosting
 

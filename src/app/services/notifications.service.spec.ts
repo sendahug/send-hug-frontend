@@ -120,6 +120,8 @@ describe('NotificationService', () => {
   // Check the service auto-refreshes
   it('autoRefresh() - should run auto-refresh with interval', () => {
     const notifSpy = spyOn(notificationService, 'getNotifications');
+    notificationService['authService'].login();
+    TestBed.inject(AuthService).login();
 
     // before triggering the method
     expect(notificationService.refreshCounter).toBeUndefined();

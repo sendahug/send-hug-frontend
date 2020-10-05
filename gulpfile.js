@@ -344,6 +344,7 @@ function stopDevServer() {
 // run e2e testing
 gulp.task('e2e', gulp.series(
 	localDev,
+	scripts,
 	runProtractor
 ))
 

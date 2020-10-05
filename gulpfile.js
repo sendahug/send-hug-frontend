@@ -310,23 +310,9 @@ gulp.task('test', gulp.series(
 	unitTest
 ));
 
-// get the static assets to run the server
-function getAssets() {
-	return gulp
-		.src(["index.html", "src/css/styles.css", "localdev/sw.js"])
-		.pipe(rename({dirname:""}))
-		.pipe(replace("css/styles.css", "styles.css"))
-		.pipe(gulp.dest("tests"));
-}
-
 // run development server & protractor
 async function runProtractor() {
-	bs = browserSync.init({
-		server: {
-			baseDir: "./tests"
-		},
-		single: true
-	})
+	serve();
 
 	// update webdriver
 	await webdriverUpdate.program.run({
@@ -357,8 +343,7 @@ function stopDevServer() {
 
 // run e2e testing
 gulp.task('e2e', gulp.series(
-	getAssets,
-	bundleCode,
+	localDev,
 	runProtractor
 ))
 

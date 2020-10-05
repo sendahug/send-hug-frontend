@@ -89,13 +89,13 @@ function watch()
 }
 
 //create local development files
-gulp.task('localdev', gulp.parallel(
-	copyHtml,
-	copyIndex,
-	copyAssets,
-	styles,
-	scripts
-));
+async function localDev() {
+	copyHtml();
+	copyIndex();
+	copyAssets();
+	styles();
+	await scripts();
+}
 
 // PRODUCTION TASKS
 // ===============================================
@@ -365,5 +365,6 @@ exports.copyIndex = copyIndex;
 exports.copyAssets = copyAssets;
 exports.styles = styles;
 exports.scripts = scripts;
+exports.localDev = localDev;
 exports.scriptsDist = scriptsDist;
 exports.watch = watch;

@@ -97,6 +97,18 @@ async function localDev() {
 	await scripts();
 }
 
+//boot up the server
+async function serve() {
+	bs = browserSync.init({
+		server: {
+			baseDir: "./localdev"
+		},
+		single: true
+	});
+
+	await bs;
+}
+
 // PRODUCTION TASKS
 // ===============================================
 //copies the html to the disribution folder
@@ -301,11 +313,12 @@ gulp.task('test', gulp.series(
 // get the static assets to run the server
 function getAssets() {
 	return gulp
-		.src(["index.html", "src/css/styles.css"])
+		.src(["index.html", "src/css/styles.css", "localdev/sw.js"])
 		.pipe(rename({dirname:""}))
 		.pipe(replace("css/styles.css", "styles.css"))
 		.pipe(gulp.dest("tests"));
 }
+
 // run development server & protractor
 async function runProtractor() {
 	bs = browserSync.init({
@@ -349,16 +362,6 @@ gulp.task('e2e', gulp.series(
 	runProtractor
 ))
 
-//boot up the server
-gulp.task("serve", function() {
-	browserSync.init({
-		server: {
-			baseDir: "./localdev"
-		},
-		single: true
-	});
-});
-
 //exports for gulp to recognise them as tasks
 exports.copyHtml = copyHtml;
 exports.copyIndex = copyIndex;
@@ -366,5 +369,6 @@ exports.copyAssets = copyAssets;
 exports.styles = styles;
 exports.scripts = scripts;
 exports.localDev = localDev;
+exports.serve = serve;
 exports.scriptsDist = scriptsDist;
 exports.watch = watch;

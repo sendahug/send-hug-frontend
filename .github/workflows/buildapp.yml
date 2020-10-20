@@ -33,12 +33,11 @@ jobs:
           restore-keys: |
             ${{ runner.OS }}-node-
             ${{ runner.OS }}-
+      - name: Install gulp
+        run: npm install -g gulp-cli
 
       - name: Install dependencies
         run: npm install
-
-      - name: Install gulp
-        run: sudo npm install -g gulp-cli
       
       - name: Build
         run: gulp dist

@@ -52,6 +52,7 @@ export class AppComponent implements OnInit, AfterViewInit, AfterViewChecked {
   showSearch = false;
   showTextPanel = false;
   showMenu = false;
+  canShare = false;
   // font awesome icons
   faBars = faBars;
   faComments = faComments;
@@ -112,6 +113,13 @@ export class AppComponent implements OnInit, AfterViewInit, AfterViewChecked {
         }
       }
     })
+
+    if('share' in navigator) {
+      this.canShare = true;
+    }
+    else {
+      this.canShare = false;
+    }
   }
 
   /*
@@ -497,5 +505,24 @@ export class AppComponent implements OnInit, AfterViewInit, AfterViewChecked {
   */
   changeMode(notificationsOn:boolean) {
     this.showNotifications = notificationsOn;
+  }
+
+  /*
+  Function Name: shareSite()
+  Function Description: Triggers the Share API to let the user share the website.
+  Parameters: None.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  shareSite() {
+    navigator.share({
+      title: 'Send A Hug',
+      url: 'https://send-hug.herokuapp.com/',
+    }).catch((_err) => {
+      this.alertsService.createAlert({
+        type: 'Error',
+        message: 'Sharing failed. Please try again!'
+      });
+    })
   }
 }

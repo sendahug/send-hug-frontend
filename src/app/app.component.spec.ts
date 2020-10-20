@@ -492,4 +492,34 @@ describe("AppComponent", () => {
       expect(navLinks.classList).not.toContain('large');
       expect(component.showMenu).toBeTrue();
     });
+
+    // check the 'share' button is hidden
+    it('shouldn\'t show the share button if it\'s not supported', () => {
+      const fixture = TestBed.createComponent(AppComponent);
+      fixture.detectChanges();
+      const component = fixture.componentInstance;
+      const componentHtml = fixture.nativeElement;
+
+      // because tests run on Chrome, 'share' doesn't exist in navigator
+      expect(component.canShare).toBeFalse();
+      expect(componentHtml.querySelector('#siteFooter').querySelectorAll('textlessButton')[0]).toBeUndefined();
+    });
+
+    // check the share method is called when the button is clicked
+    it('should call the share method when the button is clicked', fakeAsync(() => {
+      const fixture = TestBed.createComponent(AppComponent);
+      fixture.detectChanges();
+      const component = fixture.componentInstance;
+      const componentHtml = fixture.nativeElement;
+      const shareSpy = spyOn(component, 'shareSite');
+
+      component.canShare = true;
+      fixture.detectChanges();
+
+      componentHtml.querySelector('#siteFooter').querySelectorAll('.textlessButton')[0].click();
+      fixture.detectChanges();
+      tick();
+
+      expect(shareSpy).toHaveBeenCalled();
+    }));
 });

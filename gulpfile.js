@@ -14,7 +14,10 @@ const replace = require("gulp-replace");
 const fs = require("fs");
 const path = require("path");
 var through = require('through');
+const execFile = require('child_process').execFile;
+const webdriverUpdate = require('protractor/node_modules/webdriver-manager/built/lib/cmds/update');
 var Server = require('karma').Server;
+let bs;
 
 // LOCAL DEVELOPMENT TASKS
 // ===============================================
@@ -86,13 +89,25 @@ function watch()
 }
 
 //create local development files
-gulp.task('localdev', gulp.parallel(
-	copyHtml,
-	copyIndex,
-	copyAssets,
-	styles,
-	scripts
-));
+async function localDev() {
+	copyHtml();
+	copyIndex();
+	copyAssets();
+	styles();
+	await scripts();
+}
+
+//boot up the server
+async function serve() {
+	bs = browserSync.init({
+		server: {
+			baseDir: "./localdev"
+		},
+		single: true
+	});
+
+	await bs;
+}
 
 // PRODUCTION TASKS
 // ===============================================
@@ -228,12 +243,14 @@ function setupTests() {
 function bundleCode() {
 	var b = browserify({
 		debug: true
-	}).add("src/main.ts").transform(function(file) {
+	}).add("src/main.ts").plugin(tsify, { target: 'es6' }).transform(function(file) {
 		var data = '';
-    return through(write, end);
+		return through(write);
 
-    function write (buf) {
+		// write the stream, replacing templateUrls
+		function write(buf) {
 			let codeChunk = buf.toString("utf8");
+
 			// inline the templates
 			let replacedChunk = codeChunk.replace(/(templateUrl: '.)(.*)(.component.html')/g, (match) => {
 				let componentName = match.substring(16, match.length-16);
@@ -246,8 +263,7 @@ function bundleCode() {
 					componentTemplate = fs.readFileSync(__dirname + `/src/app/components/${componentName}/${componentName}.component.html`);
 				}
 
-				let newString = `/* istanbul ignore next */
-				template: \`${componentTemplate}\``
+				let newString = `template: \`${componentTemplate}\``
 				return newString;
 			});
 			// add the SVGs
@@ -260,13 +276,9 @@ function bundleCode() {
 			})
 
 			data += secondReplacedChunk
+			this.queue(data);
 		}
-
-    function end () {
-        this.queue(data);
-        this.queue(null);
-    }
-	}).plugin(tsify, { target: 'es6' }).transform(require('browserify-istanbul')({
+	}).transform(require('browserify-istanbul')({
 		instrumenterConfig: {
                   embedSource: true
                 },
@@ -298,15 +310,43 @@ gulp.task('test', gulp.series(
 	unitTest
 ));
 
-//boot up the server
-gulp.task("serve", function() {
-	browserSync.init({
-		server: {
-			baseDir: "./localdev"
-		},
-		single: true
+// run development server & protractor
+async function runProtractor() {
+	serve();
+
+	// update webdriver
+	await webdriverUpdate.program.run({
+			standalone: false,
+			gecko: false,
+			quiet: true,
 	});
-});
+	// run protractor
+	await execFile('./node_modules/protractor/bin/protractor', ['./e2e/protractor.conf.js'], (error, stdout, stderr) => {
+	    if (error) {
+	        console.error('error: ', stderr);
+	        throw error;
+	    }
+			else {
+				console.log(stdout);
+				stopDevServer();
+			}
+	});
+}
+
+// stop the development server
+function stopDevServer() {
+	if(bs) {
+		bs.cleanup();
+		process.exit();
+	}
+}
+
+// run e2e testing
+gulp.task('e2e', gulp.series(
+	localDev,
+	scripts,
+	runProtractor
+))
 
 //exports for gulp to recognise them as tasks
 exports.copyHtml = copyHtml;
@@ -314,5 +354,7 @@ exports.copyIndex = copyIndex;
 exports.copyAssets = copyAssets;
 exports.styles = styles;
 exports.scripts = scripts;
+exports.localDev = localDev;
+exports.serve = serve;
 exports.scriptsDist = scriptsDist;
 exports.watch = watch;

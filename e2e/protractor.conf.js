@@ -23,6 +23,13 @@ exports.config = {
   logLevel: 'ERROR',
   directConnect: true,
   seleniumAddress: 'http://localhost:4444',
+  params: {
+    // login details
+    login: {
+      username: process.env.LOGIN,
+      password: process.env.PASSWORD
+    }
+  },
   framework: 'jasmine',
   jasmineNodeOpts: {
     showColors: true,

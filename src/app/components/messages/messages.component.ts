@@ -56,6 +56,7 @@ export class AppMessaging implements OnInit {
   delete:boolean;
   toDelete: string | undefined;
   itemToDelete: number | undefined;
+  lastFocusedElement: any;
 
   // CTOR
   constructor(
@@ -126,6 +127,7 @@ export class AppMessaging implements OnInit {
   Programmer: Shir Bar Lev.
   */
   deleteMessage(messageID:number) {
+    this.lastFocusedElement = document.activeElement;
     this.editMode = true;
     this.delete = true;
     this.toDelete = 'Message';
@@ -229,6 +231,7 @@ export class AppMessaging implements OnInit {
   Programmer: Shir Bar Lev.
   */
   deleteThread(threadId:number) {
+    this.lastFocusedElement = document.activeElement;
     this.editMode = true;
     this.delete = true;
     this.toDelete = 'Thread';
@@ -243,6 +246,7 @@ export class AppMessaging implements OnInit {
   Programmer: Shir Bar Lev.
   */
   deleteAllMessages(type:string) {
+    this.lastFocusedElement = document.activeElement;
     this.editMode = true;
     this.delete = true;
     this.toDelete = `All ${type}`;
@@ -261,5 +265,6 @@ export class AppMessaging implements OnInit {
   */
   changeMode(edit:boolean) {
     this.editMode = edit;
+    this.lastFocusedElement.focus();
   }
 }

@@ -56,6 +56,7 @@ export class MyPosts implements OnInit {
   report:boolean;
   reportedItem: Post | undefined;
   reportType = 'Post';
+  lastFocusedElement: any;
   // loader sub-component variable
   waitFor = 'user posts';
   // The user whose posts to fetch
@@ -123,6 +124,7 @@ export class MyPosts implements OnInit {
   Programmer: Shir Bar Lev.
   */
   editPost(post:Post) {
+    this.lastFocusedElement = document.activeElement;
     this.editType = 'post';
     this.postToEdit = post;
     this.editMode = true;
@@ -140,6 +142,7 @@ export class MyPosts implements OnInit {
   */
   changeMode(edit:boolean) {
     this.editMode = edit;
+    this.lastFocusedElement.focus();
   }
 
   /*
@@ -150,6 +153,7 @@ export class MyPosts implements OnInit {
   Programmer: Shir Bar Lev.
   */
   deletePost(post_id:number) {
+    this.lastFocusedElement = document.activeElement;
     this.editMode = true;
     this.delete = true;
     this.toDelete = 'Post';
@@ -165,6 +169,7 @@ export class MyPosts implements OnInit {
   Programmer: Shir Bar Lev.
   */
   deleteAllPosts() {
+    this.lastFocusedElement = document.activeElement;
     this.editMode = true;
     this.delete = true;
     this.toDelete = 'All posts';
@@ -181,6 +186,7 @@ export class MyPosts implements OnInit {
   Programmer: Shir Bar Lev.
   */
   reportPost(post:Post) {
+    this.lastFocusedElement = document.activeElement;
 	  this.editMode = true;
 	  this.delete = false;
 	  this.report = true;

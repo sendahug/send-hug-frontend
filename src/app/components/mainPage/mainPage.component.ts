@@ -57,6 +57,7 @@ export class MainPage implements OnInit, AfterViewChecked {
   report:boolean;
   reportedItem: Post | undefined;
   reportType: 'Post' | undefined;
+  lastFocusedElement: any;
   waitFor = 'main page';
   // icons
   faComment = faComment;
@@ -208,6 +209,7 @@ export class MainPage implements OnInit, AfterViewChecked {
   Programmer: Shir Bar Lev.
   */
   editPost(post:Post) {
+    this.lastFocusedElement = document.activeElement;
     this.editType = 'post';
     this.postToEdit = post;
     this.editMode = true;
@@ -227,6 +229,7 @@ export class MainPage implements OnInit, AfterViewChecked {
   */
   changeMode(edit:boolean) {
     this.editMode = edit;
+    this.lastFocusedElement.focus();
   }
 
   /*
@@ -237,6 +240,7 @@ export class MainPage implements OnInit, AfterViewChecked {
   Programmer: Shir Bar Lev.
   */
   deletePost(postID:number) {
+    this.lastFocusedElement = document.activeElement;
     this.editMode = true;
     this.delete = true;
     this.toDelete = 'Post';
@@ -252,6 +256,7 @@ export class MainPage implements OnInit, AfterViewChecked {
   Programmer: Shir Bar Lev.
   */
   reportPost(post:Post) {
+    this.lastFocusedElement = document.activeElement;
     this.editMode = true;
     this.postToEdit = undefined;
     this.editType = undefined;

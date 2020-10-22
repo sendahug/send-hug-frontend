@@ -80,6 +80,7 @@ export class AdminDashboard implements OnInit {
   toDelete: string | undefined;
   itemToDelete: number | undefined;
   report:boolean;
+  lastFocusedElement: any;
   // loader sub-component variable
   waitFor = `admin ${this.screen}`;
 
@@ -166,6 +167,7 @@ export class AdminDashboard implements OnInit {
   Programmer: Shir Bar Lev.
   */
   editUser(reportID:number, userID:number, displayName:string) {
+    this.lastFocusedElement = document.activeElement;
     this.editType = 'other user';
     this.toEdit = displayName;
     this.editMode = true;
@@ -183,6 +185,7 @@ export class AdminDashboard implements OnInit {
   Programmer: Shir Bar Lev.
   */
   editPost(postID:number, postText:string, reportID:number) {
+    this.lastFocusedElement = document.activeElement;
     this.editType = 'admin post';
     this.toEdit = postText;
     this.editMode = true;
@@ -200,6 +203,7 @@ export class AdminDashboard implements OnInit {
   Programmer: Shir Bar Lev.
   */
   deletePost(postID:number, userID:number, reportID:number) {
+    this.lastFocusedElement = document.activeElement;
     this.editMode = true;
     this.delete = true;
     this.toDelete = 'ad post';
@@ -437,5 +441,6 @@ export class AdminDashboard implements OnInit {
   */
   changeMode(edit:boolean) {
     this.editMode = edit;
+    this.lastFocusedElement.focus();
   }
 }

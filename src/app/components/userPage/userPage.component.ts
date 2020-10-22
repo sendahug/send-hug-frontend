@@ -53,6 +53,7 @@ export class UserPage implements OnInit, OnDestroy {
   report: boolean;
   reportedItem: User | undefined;
   reportType = 'User';
+  lastFocusedElement: any;
   // loader sub-component variable
   waitFor = "user";
   userId: number | undefined;
@@ -138,6 +139,7 @@ export class UserPage implements OnInit, OnDestroy {
   Programmer: Shir Bar Lev.
   */
   editName() {
+    this.lastFocusedElement = document.activeElement;
     this.userToEdit = this.authService.userData;
     this.editMode = true;
     this.editType = 'user';
@@ -156,6 +158,7 @@ export class UserPage implements OnInit, OnDestroy {
   */
   changeMode(edit:boolean) {
     this.editMode = edit;
+    this.lastFocusedElement.focus();
   }
 
   /*
@@ -177,6 +180,7 @@ export class UserPage implements OnInit, OnDestroy {
   Programmer: Shir Bar Lev.
   */
   reportUser(user:User) {
+    this.lastFocusedElement = document.activeElement;
     this.editMode = true;
     this.editType = undefined;
     this.report = true;

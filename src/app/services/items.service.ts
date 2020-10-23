@@ -607,9 +607,23 @@ export class ItemsService {
     const Url = this.serverUrl + '/messages';
     this.Http.post(Url, message, {
       headers: this.authService.authHeader
-    }).subscribe((_response:any) => {
+    }).subscribe((response:any) => {
       this.alertsService.createSuccessAlert('Your message was sent!', false, '/');
       this.alertsService.toggleOfflineAlert();
+
+      let isoDate = new Date(response.message.date).toISOString();
+      let message = {
+        'date': response.message.date,
+        'for': response.message.for!,
+        'forId': response.message.forId,
+        'from': response.message.from,
+        'fromId': response.message.fromId,
+        'id': Number(response.message.id!),
+        'isoDate': isoDate,
+        'messageText': response.message.messageText,
+        'threadID': response.message.threadID!
+      }
+      this.serviceWorkerM.addItem('messages', message);
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
       // if the user is offline, show the offline header message

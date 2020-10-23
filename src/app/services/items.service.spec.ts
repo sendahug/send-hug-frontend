@@ -696,8 +696,10 @@ describe('ItemsService', () => {
     const mockResponse = {
       message: {
         date: "Mon, 08 Jun 2020 14:43:15 GMT",
-        forId: 1,
+        from: 'user',
         fromId: 4,
+        for: 'user2',
+        forId: 1,
         id: 9,
         messageText: "hang in there",
         threadID: 1
@@ -714,6 +716,7 @@ describe('ItemsService', () => {
       date: new Date("Mon, 08 Jun 2020 14:43:15 GMT")
     };
     const alertSpy = spyOn(itemsService['alertsService'], 'createSuccessAlert');
+    const addSpy = spyOn(itemsService['serviceWorkerM'], 'addItem');
     itemsService.sendMessage(message);
 
     const req = httpController.expectOne('http://localhost:5000/messages');
@@ -722,6 +725,7 @@ describe('ItemsService', () => {
 
     expect(alertSpy).toHaveBeenCalled();
     expect(alertSpy).toHaveBeenCalledWith('Your message was sent!', false, '/');
+    expect(addSpy).toHaveBeenCalled();
   });
 
   // Check that the service deletes a message

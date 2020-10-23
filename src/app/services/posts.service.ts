@@ -311,9 +311,22 @@ export class PostsService {
       const Url = this.serverUrl + '/posts';
       this.Http.post(Url, post, {
         headers: this.authService.authHeader
-      }).subscribe((_response:any) => {
+      }).subscribe((response:any) => {
         this.alertsService.createSuccessAlert('Your post was published! Return to home page to view the post.', false, '/');
         this.alertsService.toggleOfflineAlert();
+
+        let isoDate = new Date(response.posts.date).toISOString();
+        let iDBPost = {
+          'date': response.posts.date,
+          'givenHugs': response.posts.givenHugs,
+          'id': response.posts.id!,
+          'isoDate': isoDate,
+          'text': response.posts.text,
+          'userId': Number(response.posts.userId),
+          'user': response.posts.user,
+          'sentHugs': response.posts.sentHugs!
+        };
+        this.serviceWorkerM.addItem('posts', iDBPost);
       // if there was an error, alert the user
       }, (err:HttpErrorResponse) => {
         // if the user is offline, show the offline header message

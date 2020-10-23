@@ -365,7 +365,8 @@ describe('PostsService', () => {
         id: 10,
         text: "test curl",
         userId: 4,
-        user: 'user'
+        user: 'user',
+        sendHugs: []
       },
       success: true
     };

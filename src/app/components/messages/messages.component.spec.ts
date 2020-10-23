@@ -176,6 +176,7 @@ describe('AppMessaging', () => {
     tick();
 
     // start the popup
+    appMessaging.lastFocusedElement = document.querySelectorAll('a')[0];
     appMessaging.editMode = true;
     appMessaging.delete = true;
     appMessaging.toDelete = 'Thread';
@@ -192,6 +193,7 @@ describe('AppMessaging', () => {
     // check the popup is exited
     expect(changeSpy).toHaveBeenCalled();
     expect(appMessaging.editMode).toBeFalse();
+    expect(document.activeElement).toBe(document.querySelectorAll('a')[0]);
   }))
 
   // INBOX

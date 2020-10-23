@@ -359,6 +359,7 @@ describe('UserPage', () => {
     tick();
 
     // start the popup
+    userPage.lastFocusedElement = document.querySelectorAll('a')[0];
     userPage.userToEdit = userPage.authService.userData;
     userPage.editMode = true;
     userPage.editType = 'user';
@@ -375,5 +376,6 @@ describe('UserPage', () => {
     // check the popup is exited
     expect(changeSpy).toHaveBeenCalled();
     expect(userPage.editMode).toBeFalse();
+    expect(document.activeElement).toBe(document.querySelectorAll('a')[0]);
   }))
 });

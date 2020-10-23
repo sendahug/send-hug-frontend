@@ -511,6 +511,7 @@ describe('FullList', () => {
     tick();
 
     // start the popup
+    fullList.lastFocusedElement = document.querySelectorAll('a')[0];
     fullList.editMode = true;
     fullList.delete = true;
     fullList.toDelete = 'Post';
@@ -527,6 +528,7 @@ describe('FullList', () => {
     // check the popup is exited
     expect(changeSpy).toHaveBeenCalled();
     expect(fullList.editMode).toBeFalse();
+    expect(document.activeElement).toBe(document.querySelectorAll('a')[0]);
   }))
 
   // FULL NEW LIST

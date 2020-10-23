@@ -513,6 +513,7 @@ describe('MyPosts', () => {
     tick();
 
     // start the popup
+    myPosts.lastFocusedElement = document.querySelectorAll('a')[0];
     myPosts.editMode = true;
     myPosts.delete = true;
     myPosts.toDelete = 'Post';
@@ -529,5 +530,6 @@ describe('MyPosts', () => {
     // check the popup is exited
     expect(changeSpy).toHaveBeenCalled();
     expect(myPosts.editMode).toBeFalse();
+    expect(document.activeElement).toBe(document.querySelectorAll('a')[0]);
   }))
 });

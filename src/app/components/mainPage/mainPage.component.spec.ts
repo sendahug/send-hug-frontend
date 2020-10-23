@@ -520,6 +520,7 @@ describe('MainPage', () => {
     tick();
 
     // start the popup
+    mainPage.lastFocusedElement = document.querySelectorAll('a')[0];
     mainPage.editMode = true;
     mainPage.delete = true;
     mainPage.toDelete = 'Post';
@@ -537,5 +538,6 @@ describe('MainPage', () => {
     // check the popup is exited
     expect(changeSpy).toHaveBeenCalled();
     expect(mainPage.editMode).toBeFalse();
+    expect(document.activeElement).toBe(document.querySelectorAll('a')[0]);
   }))
 })

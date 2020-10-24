@@ -182,7 +182,7 @@ export class ItemsService {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  getUserPosts(userID:number) {
+  getUserPosts(userID:number, page:number) {
     const user = (userID == this.authService.userData.id) ? 'self' : 'other';
     const Url = this.serverUrl + `/users/all/${userID}/posts`;
 
@@ -222,7 +222,8 @@ export class ItemsService {
         // posts
         if(this.lastFetched['userPosts' + user].date == 0 ||
            (this.lastFetched['userPosts' + user].date < Date.now() && this.lastFetched['userPosts' + user].source == 'IDB') ||
-           this.lastFetched['userPosts' + user].date + 10000 < Date.now()) {
+           this.lastFetched['userPosts' + user].date + 10000 < Date.now() ||
+           (page != this.userPostsPage[user] && page != 1)) {
           this.lastFetched['userPosts' + user].source = 'IDB';
           this.lastFetched['userPosts' + user].date = Date.now();
           this.userPosts[user] = data;
@@ -336,7 +337,7 @@ export class ItemsService {
       // if the user's data exists in the IDB database
       if(data) {
         this.otherUserData = data;
-        this.getUserPosts(userID);
+        this.getUserPosts(userID, 1);
         this.idbResolved.user.next(true);
       }
     });
@@ -356,7 +357,7 @@ export class ItemsService {
       }
       this.isOtherUserResolved.next(true);
       this.idbResolved.user.next(true);
-      this.getUserPosts(userID);
+      this.getUserPosts(userID, 1);
       this.alertsService.toggleOfflineAlert();
 
       // adds the user's data to the users store
@@ -387,9 +388,9 @@ export class ItemsService {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  getMailboxMessages(type: 'inbox' | 'outbox', userID:number) {
+  getMailboxMessages(type: 'inbox' | 'outbox', userID:number, page:number) {
     // if the current page is 0, send page 1 to the server (default)
-    const currentPage = this.userMessagesPage[type] ? this.userMessagesPage[type] : 1;
+    const currentPage = page ? page : 1;
     let params = new HttpParams()
       .set('userID', `${userID}`)
       .set('page', `${currentPage}`)
@@ -406,7 +407,8 @@ export class ItemsService {
         // posts
         if(this.lastFetched[type].date == 0 ||
            (this.lastFetched[type].date < Date.now() && this.lastFetched[type].source == 'IDB') ||
-           this.lastFetched[type].date + 10000 < Date.now()) {
+           this.lastFetched[type].date + 10000 < Date.now() ||
+           (page != this.userMessagesPage[type] && page != 1)) {
           this.lastFetched[type].source = 'IDB';
           this.lastFetched[type].date = Date.now();
           this.userMessages[type] = [];
@@ -479,9 +481,9 @@ export class ItemsService {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  getThreads(userID:number) {
+  getThreads(userID:number, page:number) {
     // if the current page is 0, send page 1 to the server (default)
-    const currentPage = this.userMessagesPage.threads ? this.userMessagesPage.threads : 1;
+    const currentPage = page ? page : 1;
     let params = new HttpParams()
       .set('userID', `${userID}`)
       .set('page', `${currentPage}`)
@@ -498,7 +500,8 @@ export class ItemsService {
         // posts
         if(this.lastFetched.threads.date == 0 ||
            (this.lastFetched.threads.date < Date.now() && this.lastFetched.threads.source == 'IDB') ||
-           this.lastFetched.threads.date + 10000 < Date.now()) {
+           this.lastFetched.threads.date + 10000 < Date.now() ||
+           (page != this.userMessagesPage.threads && page != 1)) {
           this.lastFetched.threads.source = 'IDB';
           this.lastFetched.threads.date = Date.now();
           this.userMessages.threads = [];

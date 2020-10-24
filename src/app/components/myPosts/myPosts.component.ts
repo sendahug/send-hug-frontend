@@ -63,6 +63,7 @@ export class MyPosts implements OnInit {
   @Input()
   userID:number | undefined;
   user!: 'self' | 'other';
+  page: number;
   // icons
   faFlag = faFlag;
   faHandHoldingHeart = faHandHoldingHeart;
@@ -75,7 +76,7 @@ export class MyPosts implements OnInit {
   ) {
       // if there's a user ID in the viewed profile, get that user's posts
       if(this.userID) {
-        this.itemsService.getUserPosts(this.userID);
+        this.itemsService.getUserPosts(this.userID, 1);
         this.user = 'other';
       }
       // if there isn't, it's the user's own profile, so get their posts
@@ -85,7 +86,7 @@ export class MyPosts implements OnInit {
         // database and only then fetches posts
         this.authService.isUserDataResolved.subscribe((value) => {
           if(value) {
-            itemsService.getUserPosts(this.authService.userData.id!);
+            itemsService.getUserPosts(this.authService.userData.id!, this.page);
             this.user = 'self';
           }
         });
@@ -94,6 +95,7 @@ export class MyPosts implements OnInit {
       this.editMode = false;
       this.delete = false;
       this.report = false;
+      this.page = 1;
   }
 
   /*
@@ -216,12 +218,12 @@ export class MyPosts implements OnInit {
   Programmer: Shir Bar Lev.
   */
   nextPage() {
-    this.itemsService.userPostsPage[this.user] += 1;
+    this.page += 1;
     if(this.user == 'self') {
-      this.itemsService.getUserPosts(this.authService.userData.id!);
+      this.itemsService.getUserPosts(this.authService.userData.id!, this.page);
     }
     else {
-      this.itemsService.getUserPosts(this.userID!);
+      this.itemsService.getUserPosts(this.userID!, this.page);
     }
   }
 
@@ -234,12 +236,12 @@ export class MyPosts implements OnInit {
   Programmer: Shir Bar Lev.
   */
   prevPage() {
-    this.itemsService.userPostsPage[this.user] -= 1;
+    this.page -= 1;
     if(this.user == 'self') {
-      this.itemsService.getUserPosts(this.authService.userData.id!);
+      this.itemsService.getUserPosts(this.authService.userData.id!, this.page);
     }
     else {
-      this.itemsService.getUserPosts(this.userID!);
+      this.itemsService.getUserPosts(this.userID!, this.page);
     }
   }
 }

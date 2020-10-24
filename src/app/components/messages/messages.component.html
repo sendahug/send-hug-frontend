@@ -63,7 +63,7 @@
 		<div class="pagination" *ngIf="itemsService.userMessages[messType].length" role="navigation">
 			<button *ngIf="itemsService.userMessagesPage[messType] > 1" class="appButton prevButton" (click)="prevPage()" [attr.aria-label]="'previous page of the ' + messType + ' mailbox'">Previous Page</button>
 			<button *ngIf="itemsService.userMessagesPage[messType] <= 1" class="appButton placeHolder">Previous Page</button>
-			<div class="pageCount">Page {{ itemsService.userMessagesPage[messType] }} of {{ itemsService.totalUserMessagesPages[messType] }}</div>
+			<div class="pageCount">Page {{ page }} of {{ itemsService.totalUserMessagesPages[messType] }}</div>
 			<button *ngIf="itemsService.totalUserMessagesPages[messType] > itemsService.userMessagesPage[messType]" class="appButton nextButton" (click)="nextPage()" [attr.aria-label]="'next page of the ' + messType + ' mailbox'">Next Page</button>
 			<button *ngIf="itemsService.totalUserMessagesPages[messType] <= itemsService.userMessagesPage[messType]" class="appButton placeHolder">Previous Page</button>
 		</div>

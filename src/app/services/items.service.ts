@@ -47,6 +47,11 @@ import { SWManager } from './sWManager.service';
 import { environment } from '../../environments/environment';
 import { environment as prodEnv } from '../../environments/environment.prod';
 
+type FetchStamp = {
+  source: 'Server' | 'IDB' | '';
+  date: number;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -132,6 +137,29 @@ export class ItemsService {
     threads: new BehaviorSubject(false),
     thread: new BehaviorSubject(false)
   }
+  // latest fetch
+  lastFetched: { [key:string]: FetchStamp; } = {
+    userPostsself: {
+      source: '',
+      date: 0
+    },
+    userPostsother: {
+      source: '',
+      date: 0
+    },
+    inbox: {
+      source: '',
+      date: 0
+    },
+    outbox: {
+      source: '',
+      date: 0
+    },
+    threads: {
+      source: '',
+      date: 0
+    }
+  };
 
   // CTOR
   constructor(
@@ -188,8 +216,18 @@ export class ItemsService {
     this.serviceWorkerM.queryPosts('user posts', userID, currentPage)?.then((data:any) => {
       // if there are posts in cache, display them
       if(data.length) {
-        this.userPosts[user] = data;
-        this.idbResolved.userPosts.next(true);
+        // if the latest fetch is none, the last fetch was from IDB and before,
+        // the last fetch was performed more than 10 seconds ago (meaning the user
+        // changed/refreshed the page) or it's a different page, update the latest fetch and the displayed
+        // posts
+        if(this.lastFetched['userPosts' + user].date == 0 ||
+           (this.lastFetched['userPosts' + user].date < Date.now() && this.lastFetched['userPosts' + user].source == 'IDB') ||
+           this.lastFetched['userPosts' + user].date + 10000 < Date.now()) {
+          this.lastFetched['userPosts' + user].source = 'IDB';
+          this.lastFetched['userPosts' + user].date = Date.now();
+          this.userPosts[user] = data;
+          this.idbResolved.userPosts.next(true);
+        }
       }
     });
 
@@ -204,6 +242,8 @@ export class ItemsService {
       // if there are 0 pages, current page is also 0; otherwise it's whatever
       // the server returns
       this.userPostsPage[user] = this.totalUserPostsPages[user] ? response.page : 0;
+      this.lastFetched['userPosts' + user].source = 'Server';
+      this.lastFetched['userPosts' + user].date = Date.now();
       this.isUserPostsResolved[user].next(true);
       this.idbResolved.userPosts.next(true);
       this.alertsService.toggleOfflineAlert();
@@ -360,12 +400,22 @@ export class ItemsService {
     this.serviceWorkerM.queryMessages(type, this.authService.userData.id!, currentPage)?.then((data:any) => {
       // if there's messages data in the IDB database
       if(data.length) {
-        this.userMessages[type] = [];
-        // add the messages to the appropriate array
-        data.forEach((element:Message) => {
-          this.userMessages[type].push(element);
-        });
-        this.idbResolved[type].next(true);
+        // if the latest fetch is none, the last fetch was from IDB and before,
+        // the last fetch was performed more than 10 seconds ago (meaning the user
+        // changed/refreshed the page) or it's a different page, update the latest fetch and the displayed
+        // posts
+        if(this.lastFetched[type].date == 0 ||
+           (this.lastFetched[type].date < Date.now() && this.lastFetched[type].source == 'IDB') ||
+           this.lastFetched[type].date + 10000 < Date.now()) {
+          this.lastFetched[type].source = 'IDB';
+          this.lastFetched[type].date = Date.now();
+          this.userMessages[type] = [];
+          // add the messages to the appropriate array
+          data.forEach((element:Message) => {
+            this.userMessages[type].push(element);
+          });
+          this.idbResolved[type].next(true);
+        }
       }
     });
 
@@ -383,6 +433,8 @@ export class ItemsService {
       // if there are 0 pages, current page is also 0; otherwise it's whatever
       // the server returns
       this.userMessagesPage[type] = this.totalUserMessagesPages[type] ? response.current_page : 0;
+      this.lastFetched[type].source = 'Server';
+      this.lastFetched[type].date = Date.now();
       this.isUserMessagesResolved[type].next(true);
       this.idbResolved[type].next(true);
       this.alertsService.toggleOfflineAlert();
@@ -440,19 +492,29 @@ export class ItemsService {
     this.serviceWorkerM.queryThreads(currentPage)?.then((data:any) => {
       // if there's threads data in the IDB database
       if(data.length) {
-        this.userMessages.threads = [];
-        // add the threads to the appropriate array
-        data.forEach((element: any) => {
-          let thread: Thread = {
-            id: element.id,
-            user: (element.user1 == this.authService.userData.displayName) ? element.user2 : element.user1,
-            userID: (element.user1Id == this.authService.userData.id) ? element.user2Id : element.user1Id,
-            numMessages: element.numMessages,
-            latestMessage: element.latestMessage
-          }
-          this.userMessages.threads.push(thread);
-        });
-        this.idbResolved.threads.next(true);
+        // if the latest fetch is none, the last fetch was from IDB and before,
+        // the last fetch was performed more than 10 seconds ago (meaning the user
+        // changed/refreshed the page) or it's a different page, update the latest fetch and the displayed
+        // posts
+        if(this.lastFetched.threads.date == 0 ||
+           (this.lastFetched.threads.date < Date.now() && this.lastFetched.threads.source == 'IDB') ||
+           this.lastFetched.threads.date + 10000 < Date.now()) {
+          this.lastFetched.threads.source = 'IDB';
+          this.lastFetched.threads.date = Date.now();
+          this.userMessages.threads = [];
+          // add the threads to the appropriate array
+          data.forEach((element: any) => {
+            let thread: Thread = {
+              id: element.id,
+              user: (element.user1 == this.authService.userData.displayName) ? element.user2 : element.user1,
+              userID: (element.user1Id == this.authService.userData.id) ? element.user2Id : element.user1Id,
+              numMessages: element.numMessages,
+              latestMessage: element.latestMessage
+            }
+            this.userMessages.threads.push(thread);
+          });
+          this.idbResolved.threads.next(true);
+        }
       }
     });
 
@@ -477,6 +539,8 @@ export class ItemsService {
       // if there are 0 pages, current page is also 0; otherwise it's whatever
       // the server returns
       this.userMessagesPage.threads = this.totalUserMessagesPages.threads ? response.current_page : 0;
+      this.lastFetched.threads.source = 'Server';
+      this.lastFetched.threads.date = Date.now();
       this.isUserMessagesResolved.threads.next(true);
       this.idbResolved.threads.next(true);
       this.alertsService.toggleOfflineAlert();

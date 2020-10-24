@@ -234,7 +234,8 @@ export class PostsService {
         // posts
         if(this.lastFetched.newItems.date == 0 ||
            (this.lastFetched.newItems.date < Date.now() && this.lastFetched.newItems.source == 'IDB') ||
-           this.lastFetched.newItems.date + 10000 < Date.now()) {
+           this.lastFetched.newItems.date + 10000 < Date.now() ||
+           (page != this.fullItemsPage.fullNewItems && page != 1)) {
           this.lastFetched.newItems.source = 'IDB';
           this.lastFetched.newItems.date = Date.now();
           this.fullItemsList.fullNewItems = data;
@@ -310,7 +311,8 @@ export class PostsService {
         // posts
         if(this.lastFetched.suggestedItems.date == 0 ||
            (this.lastFetched.suggestedItems.date < Date.now() && this.lastFetched.suggestedItems.source == 'IDB') ||
-           this.lastFetched.suggestedItems.date + 10000 < Date.now()) {
+           this.lastFetched.suggestedItems.date + 10000 < Date.now() ||
+           (page != this.fullItemsPage.fullSuggestedItems && page != 1)) {
           this.lastFetched.suggestedItems.source = 'IDB';
           this.lastFetched.suggestedItems.date = Date.now();
           this.fullItemsList.fullSuggestedItems = data;

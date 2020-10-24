@@ -237,7 +237,7 @@ describe('AppMessaging', () => {
       fixture.detectChanges();
 
       expect(appMessaging.messType).toBe('inbox');
-      expect(getMessagesSpy).toHaveBeenCalledWith('inbox', 4);
+      expect(getMessagesSpy).toHaveBeenCalledWith('inbox', 4, 1);
     });
 
     // Check each message has delete button and reply link
@@ -396,7 +396,7 @@ describe('AppMessaging', () => {
       fixture.detectChanges();
 
       expect(appMessaging.messType).toBe('outbox');
-      expect(getMessagesSpy).toHaveBeenCalledWith('outbox', 4);
+      expect(getMessagesSpy).toHaveBeenCalledWith('outbox', 4, 1);
     });
 
     // Check each message has delete button and reply link
@@ -552,7 +552,7 @@ describe('AppMessaging', () => {
       fixture.detectChanges();
 
       expect(appMessaging.messType).toBe('threads');
-      expect(getMessagesSpy).toHaveBeenCalledWith(4);
+      expect(getMessagesSpy).toHaveBeenCalledWith(4, 1);
     });
 
     // Check each message has delete button and view thread link

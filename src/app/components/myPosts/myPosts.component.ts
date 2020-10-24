@@ -86,7 +86,7 @@ export class MyPosts implements OnInit {
         // database and only then fetches posts
         this.authService.isUserDataResolved.subscribe((value) => {
           if(value) {
-            itemsService.getUserPosts(this.authService.userData.id!, this.page);
+            itemsService.getUserPosts(this.authService.userData.id!, 1);
             this.user = 'self';
           }
         });

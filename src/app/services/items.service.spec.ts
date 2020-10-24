@@ -148,7 +148,7 @@ describe('ItemsService', () => {
     const querySpy = spyOn(itemsService['serviceWorkerM'], 'queryPosts');
     const addSpy = spyOn(itemsService['serviceWorkerM'], 'addItem');
     const cleanSpy = spyOn(itemsService['serviceWorkerM'], 'cleanDB');
-    itemsService.getUserPosts(1);
+    itemsService.getUserPosts(1, 1);
     // wait for the fetch to be resolved
     itemsService.isUserPostsResolved.other.subscribe((value) => {
       if(value) {
@@ -247,7 +247,7 @@ describe('ItemsService', () => {
       itemsService['authService'].authenticated = true;
       itemsService['authService'].isUserDataResolved.next(true);
       itemsService['authService'].login();
-      itemsService.getUserPosts(4);
+      itemsService.getUserPosts(4, 1);
       // wait for the fetch to be resolved
       itemsService.isUserPostsResolved.other.subscribe((value) => {
         if(value) {
@@ -267,7 +267,7 @@ describe('ItemsService', () => {
     // and once it's done, run the 'other' tests
     }).then(() => {
       // for comparison, then fetch another user's posts
-      itemsService.getUserPosts(1);
+      itemsService.getUserPosts(1, 1);
       // wait for the fetch to be resolved
       itemsService.isUserPostsResolved.self.subscribe((value) => {
         if(value) {
@@ -374,7 +374,7 @@ describe('ItemsService', () => {
         expect(itemsService.otherUserData.role).toBe('user');
         expect(itemsService.otherUserData.postsNum).toBe(2);
         expect(postsSpy).toHaveBeenCalled();
-        expect(postsSpy).toHaveBeenCalledWith(2);
+        expect(postsSpy).toHaveBeenCalledWith(2, 1);
       }
     });
 
@@ -415,7 +415,7 @@ describe('ItemsService', () => {
     const querySpy = spyOn(itemsService['serviceWorkerM'], 'queryMessages');
     const addSpy = spyOn(itemsService['serviceWorkerM'], 'addItem');
     const cleanSpy = spyOn(itemsService['serviceWorkerM'], 'cleanDB');
-    itemsService.getMailboxMessages('inbox', 4);
+    itemsService.getMailboxMessages('inbox', 4, 1);
     // wait for the fetch to be resolved
     itemsService.isUserMessagesResolved.inbox.subscribe((value) => {
       if(value) {
@@ -468,7 +468,7 @@ describe('ItemsService', () => {
     const querySpy = spyOn(itemsService['serviceWorkerM'], 'queryMessages');
     const addSpy = spyOn(itemsService['serviceWorkerM'], 'addItem');
     const cleanSpy = spyOn(itemsService['serviceWorkerM'], 'cleanDB');
-    itemsService.getMailboxMessages('outbox', 4);
+    itemsService.getMailboxMessages('outbox', 4, 1);
     // wait for the fetch to be resolved
     itemsService.isUserMessagesResolved.inbox.subscribe((value) => {
       if(value) {
@@ -546,7 +546,7 @@ describe('ItemsService', () => {
     };
 
     // inbox request
-    itemsService.getMailboxMessages('inbox', 4);
+    itemsService.getMailboxMessages('inbox', 4, 1);
     // wait for the fetch to be resolved
     itemsService.isUserMessagesResolved.inbox.subscribe((value) => {
       if(value) {
@@ -557,7 +557,7 @@ describe('ItemsService', () => {
     });
 
     // outbox request
-    itemsService.getMailboxMessages('outbox', 4);
+    itemsService.getMailboxMessages('outbox', 4, 1);
     // wait for the fetch to be resolved
     itemsService.isUserMessagesResolved.outbox.subscribe((value) => {
       if(value) {
@@ -611,7 +611,7 @@ describe('ItemsService', () => {
     const querySpy = spyOn(itemsService['serviceWorkerM'], 'queryThreads');
     const addSpy = spyOn(itemsService['serviceWorkerM'], 'addItem');
     const cleanSpy = spyOn(itemsService['serviceWorkerM'], 'cleanDB');
-    itemsService.getThreads(4);
+    itemsService.getThreads(4, 1);
     // wait for the fetch to be resolved
     itemsService.isUserMessagesResolved.threads.subscribe((value) => {
       if(value) {

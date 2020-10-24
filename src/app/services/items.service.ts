@@ -207,7 +207,7 @@ export class ItemsService {
     }
 
     // if the current page is 0, send page 1 to the server (default)
-    const currentPage = this.userPostsPage[user] ? this.userPostsPage[user] : 1;
+    const currentPage = page ? page : 1;
     const params = new HttpParams().set('page', `${currentPage}`);
     // change the ID of the previous user to the profile currently open
     this.previousUser = userID;

@@ -238,7 +238,8 @@ export class PostsService {
            (page != this.fullItemsPage.fullNewItems && page != 1)) {
           this.lastFetched.newItems.source = 'IDB';
           this.lastFetched.newItems.date = Date.now();
-          this.fullItemsList.fullNewItems = data;
+          this.fullItemsList.fullNewItems = data.posts;
+          this.totalFullItemsPage.fullNewItems = data.pages;
           this.isPostsResolved.fullNewItems.next(true);
         }
       }
@@ -315,7 +316,8 @@ export class PostsService {
            (page != this.fullItemsPage.fullSuggestedItems && page != 1)) {
           this.lastFetched.suggestedItems.source = 'IDB';
           this.lastFetched.suggestedItems.date = Date.now();
-          this.fullItemsList.fullSuggestedItems = data;
+          this.fullItemsList.fullSuggestedItems = data.posts;
+          this.totalFullItemsPage.fullSuggestedItems = data.pages;
           this.isPostsResolved.fullSuggestedItems.next(true);
         }
       }

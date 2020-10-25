@@ -342,13 +342,22 @@ export class SWManager {
         // the posts (to show the latest posts) and return paginated posts
         else if(target == 'new posts') {
           let newPosts = posts!.reverse();
+          let pages = Math.ceil(newPosts.length / 5);
 
-          return newPosts.slice(startIndex, (startIndex + 5));
+          return {
+            posts: newPosts.slice(startIndex, (startIndex + 5)),
+            pages: pages
+          };
         }
         // if the target is the fullList's suggested posts or a specific user's,
         // posts, return paginated posts (as-is).
         else if(target == 'suggested posts' || target == 'user posts') {
-          return posts!.slice(startIndex, (startIndex + 5));
+          let pages = Math.ceil(posts!.length / 5);
+
+          return {
+            posts: posts!.slice(startIndex, (startIndex + 5)),
+            pages: pages
+          };
         }
       })
     }

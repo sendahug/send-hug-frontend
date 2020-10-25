@@ -227,7 +227,7 @@ export class PostsService {
     // get the recent posts from IDB
     this.serviceWorkerM.queryPosts('new posts', undefined, page)?.then((data:any) => {
       // if there are posts in cache, display them
-      if(data.length) {
+      if(data.posts.length) {
         // if the latest fetch is none, the last fetch was from IDB and before,
         // the last fetch was performed more than 10 seconds ago (meaning the user
         // changed/refreshed the page) or it's a different page, update the latest fetch and the displayed
@@ -305,7 +305,7 @@ export class PostsService {
     // get the recent posts from IDB
     this.serviceWorkerM.queryPosts('suggested posts', undefined, page)?.then((data:any) => {
       // if there are posts in cache, display them
-      if(data.length) {
+      if(data.posts.length) {
         // if the latest fetch is none, the last fetch was from IDB and before or
         // the last fetch was performed more than 10 seconds ago (meaning the user)
         // changed/refreshed the page, update the latest fetch and the displayed

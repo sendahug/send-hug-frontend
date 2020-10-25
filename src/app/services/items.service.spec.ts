@@ -669,13 +669,13 @@ describe('ItemsService', () => {
     const cleanSpy = spyOn(itemsService['serviceWorkerM'], 'cleanDB');
     itemsService.getThread(4, 1);
     // wait for the fetch to be resolved
-    itemsService.isThreadResolved.subscribe((value) => {
+    itemsService.isUserMessagesResolved.thread.subscribe((value) => {
       if(value) {
-        expect(itemsService.threadMessages.length).toBe(2);
-        expect(itemsService.threadMessages[0].id).toBe(9);
-        expect(itemsService.threadMessages[0].threadID).toBe(1);
-        expect(itemsService.threadPage).toBe(1);
-        expect(itemsService.totalThreadPages).toBe(1);
+        expect(itemsService.userMessages.thread.length).toBe(2);
+        expect(itemsService.userMessages.thread[0].id).toBe(9);
+        expect(itemsService.userMessages.thread[0].threadID).toBe(1);
+        expect(itemsService.userMessagesPage.thread).toBe(1);
+        expect(itemsService.totalUserMessagesPages.thread).toBe(1);
       }
     });
 

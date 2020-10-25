@@ -81,13 +81,17 @@ export class MyPosts implements OnInit {
       }
       // if there isn't, it's the user's own profile, so get their posts
       else {
+        let numCalls = 0;
         // wait for user data to be resolved; that way, if there user just
         // signed up, the component waits for user the user to be added to the
         // database and only then fetches posts
         this.authService.isUserDataResolved.subscribe((value) => {
           if(value) {
-            itemsService.getUserPosts(this.authService.userData.id!, 1);
-            this.user = 'self';
+            if(numCalls < 2) {
+              itemsService.getUserPosts(this.authService.userData.id!, 1);
+              this.user = 'self';
+              numCalls++;
+            }
           }
         });
       }

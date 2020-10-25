@@ -88,32 +88,33 @@ export class MockItemsService {
   userMessages: {
     inbox: Message[],
     outbox: Message[],
-    threads: Thread[]
+    threads: Thread[],
+    thread: Message[]
   } = {
     inbox: [],
     outbox: [],
-    threads: []
+    threads: [],
+    thread: []
   }
   userMessagesPage = {
     inbox: 1,
     outbox: 1,
-    threads: 1
+    threads: 1,
+    thread: 1
   }
   totalUserMessagesPages = {
     inbox: 1,
     outbox: 1,
-    threads: 1
+    threads: 1,
+    thread: 1
   }
   isUserMessagesResolved = {
     inbox: new BehaviorSubject(false),
     outbox: new BehaviorSubject(false),
-    threads: new BehaviorSubject(false)
+    threads: new BehaviorSubject(false),
+    thread: new BehaviorSubject(false)
   }
   activeThread = 0;
-  threadMessages: Message[] = [];
-  threadPage: number;
-  totalThreadPages: number;
-  isThreadResolved = new BehaviorSubject(false);
   // search variables
   isSearching = false;
   userSearchResults: OtherUser[] = [];
@@ -139,9 +140,7 @@ export class MockItemsService {
     private alertsService:MockAlertsService,
     private serviceWorkerM:MockSWManager
   ) {
-      // default assignment
-      this.threadPage = 1;
-      this.totalThreadPages = 1;
+    
   }
 
   // POST-RELATED METHODS
@@ -483,9 +482,9 @@ export class MockItemsService {
   getThread(userID:number, threadId:number) {
     this.activeThread = threadId;
     this.idbResolved.thread.next(false);
-    this.isThreadResolved.next(false);
+    this.isUserMessagesResolved.thread.next(false);
 
-    this.threadMessages = [
+    this.userMessages.thread = [
       {
         date: new Date("Mon, 08 Jun 2020 14:43:15 GMT"),
         for: "shirb",
@@ -507,9 +506,9 @@ export class MockItemsService {
         threadID: 3
       }
     ];
-    this.totalThreadPages = 1;
-    this.threadPage = 1;
-    this.isThreadResolved.next(true);
+    this.totalUserMessagesPages.thread = 1;
+    this.userMessagesPage.thread = 1;
+    this.isUserMessagesResolved.thread.next(true);
     this.idbResolved.thread.next(true);
   }
 

@@ -226,7 +226,7 @@ export class ItemsService {
           this.lastFetched['userPosts' + user].source = 'IDB';
           this.lastFetched['userPosts' + user].date = Date.now();
           this.userPosts[user] = data.posts;
-          this.totalUserPostsPages = data.pages;
+          this.totalUserPostsPages[user] = data.pages;
           this.idbResolved.userPosts.next(true);
         }
       }

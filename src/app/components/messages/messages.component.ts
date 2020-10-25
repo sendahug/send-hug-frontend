@@ -148,7 +148,7 @@ export class AppMessaging implements OnInit {
     this.page += 1;
 
     if(this.messType == 'thread') {
-      this.itemsService.threadPage += 1;
+      this.itemsService.userMessagesPage.thread += 1;
       this.itemsService.getThread(this.authService.userData.id!, this.threadId);
     }
     else if(this.messType == 'threads') {
@@ -171,7 +171,7 @@ export class AppMessaging implements OnInit {
     this.page -= 1;
 
     if(this.messType == 'thread') {
-      this.itemsService.threadPage -= 1;
+      this.itemsService.userMessagesPage.thread -= 1;
       this.itemsService.getThread(this.authService.userData.id!, this.threadId);
     }
     else if(this.messType == 'threads') {

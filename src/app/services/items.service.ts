@@ -93,32 +93,33 @@ export class ItemsService {
   userMessages: {
     inbox: Message[],
     outbox: Message[],
-    threads: Thread[]
+    threads: Thread[],
+    thread: Message[]
   } = {
     inbox: [],
     outbox: [],
-    threads: []
+    threads: [],
+    thread: []
   }
   userMessagesPage = {
     inbox: 1,
     outbox: 1,
-    threads: 1
+    threads: 1,
+    thread: 1
   }
   totalUserMessagesPages = {
     inbox: 1,
     outbox: 1,
-    threads: 1
+    threads: 1,
+    thread: 1
   }
   isUserMessagesResolved = {
     inbox: new BehaviorSubject(false),
     outbox: new BehaviorSubject(false),
-    threads: new BehaviorSubject(false)
+    threads: new BehaviorSubject(false),
+    thread: new BehaviorSubject(false)
   }
   activeThread = 0;
-  threadMessages: Message[] = [];
-  threadPage: number;
-  totalThreadPages: number;
-  isThreadResolved = new BehaviorSubject(false);
   // search variables
   isSearching = false;
   userSearchResults: OtherUser[] = [];
@@ -168,9 +169,7 @@ export class ItemsService {
     private alertsService:AlertsService,
     private serviceWorkerM:SWManager
   ) {
-      // default assignment
-      this.threadPage = 1;
-      this.totalThreadPages = 1;
+
   }
 
   // POST-RELATED METHODS
@@ -595,7 +594,7 @@ export class ItemsService {
     this.activeThread = threadId;
     this.idbResolved.thread.next(false);
     // if the current page is 0, send page 1 to the server (default)
-    const currentPage = this.threadPage ? this.threadPage : 1;
+    const currentPage = this.userMessagesPage.thread ? this.userMessagesPage.thread : 1;
     let params = new HttpParams()
       .set('userID', `${userID}`)
       .set('page', `${currentPage}`)
@@ -606,12 +605,12 @@ export class ItemsService {
     this.serviceWorkerM.queryMessages('thread', this.authService.userData.id!, currentPage, threadId)?.then((data:any) => {
       // if there's messages data in the IDB database
       if(data.posts.length) {
-        this.threadMessages = [];
+        this.userMessages.thread = [];
         // add the messages to the appropriate array
         data.posts.forEach((element: Message) => {
-          this.threadMessages.push(element);
+          this.userMessages.thread.push(element);
         });
-        this.totalThreadPages = data.pages;
+        this.totalUserMessagesPages.thread = data.pages;
         this.idbResolved.thread.next(true);
       }
     });
@@ -622,15 +621,15 @@ export class ItemsService {
       params: params
     }).subscribe((response:any) => {
       let messages = response.messages;
-      this.threadMessages = [];
+      this.userMessages.thread = [];
       messages.forEach((element: Message) => {
-        this.threadMessages.push(element);
+        this.userMessages.thread.push(element);
       });
-      this.totalThreadPages = response.total_pages;
+      this.totalUserMessagesPages.thread = response.total_pages;
       // if there are 0 pages, current page is also 0; otherwise it's whatever
       // the server returns
-      this.threadPage = this.totalThreadPages ? response.current_page : 0;
-      this.isThreadResolved.next(true);
+      this.userMessagesPage.thread = this.totalUserMessagesPages.thread ? response.current_page : 0;
+      this.isUserMessagesResolved.thread.next(true);
       this.idbResolved.thread.next(true);
       this.alertsService.toggleOfflineAlert();
 
@@ -653,7 +652,7 @@ export class ItemsService {
       this.serviceWorkerM.cleanDB('messages');
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
-      this.isThreadResolved.next(true);
+      this.isUserMessagesResolved.thread.next(true);
       this.idbResolved.thread.next(true);
 
       // if the server is unavilable due to the user being offline, tell the user

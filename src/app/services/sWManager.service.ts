@@ -390,24 +390,36 @@ export class SWManager {
       if(target == 'inbox') {
         let inbox = messages.filter((e:any) => e.forId == currentUser);
         let orderedInbox = inbox.reverse();
+        let pages = Math.ceil(orderedInbox!.length / 5);
 
-        return orderedInbox.slice(startIndex, (startIndex + 5));
+        return {
+          posts: orderedInbox.slice(startIndex, (startIndex + 5)),
+          pages: pages
+        };
       }
       // if the target is outbox, keep only messages sent from the user and
       // return paginated outbox messages
       else if(target == 'outbox') {
         let outbox = messages.filter((e:any) => e.fromId == currentUser);
         let orderedOutbox = outbox.reverse();
+        let pages = Math.ceil(orderedOutbox!.length / 5);
 
-        return orderedOutbox.slice(startIndex, (startIndex + 5));
+        return {
+          posts: orderedOutbox.slice(startIndex, (startIndex + 5)),
+          pages: pages
+        };
       }
       // if the target is a specific thread, keep only messages belonging to
       // that thread nad return paginated messages
       else if(target == 'thread') {
         let thread = messages.filter((e:any) => e.threadID == threadID);
         let orderedThread = thread.reverse();
+        let pages = Math.ceil(orderedThread!.length / 5);
 
-        return orderedThread.slice(startIndex, (startIndex+5));
+        return {
+          posts: orderedThread.slice(startIndex, (startIndex+5)),
+          pages: pages
+        };
       }
     })
   }
@@ -426,8 +438,12 @@ export class SWManager {
     }).then(function(threads) {
       let startIndex = (currentPage - 1) * 5;
       let orderedThreads = threads.reverse();
+      let pages = Math.ceil(orderedThreads!.length / 5);
 
-      return orderedThreads.slice(startIndex, (startIndex + 5));
+      return {
+        posts: orderedThreads.slice(startIndex, (startIndex + 5)),
+        pages: pages
+      };
     })
   }
 

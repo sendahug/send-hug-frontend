@@ -401,7 +401,7 @@ export class ItemsService {
     // get the user's messages from IDB
     this.serviceWorkerM.queryMessages(type, this.authService.userData.id!, currentPage)?.then((data:any) => {
       // if there's messages data in the IDB database
-      if(data.length) {
+      if(data.posts.length) {
         // if the latest fetch is none, the last fetch was from IDB and before,
         // the last fetch was performed more than 10 seconds ago (meaning the user
         // changed/refreshed the page) or it's a different page, update the latest fetch and the displayed
@@ -414,9 +414,10 @@ export class ItemsService {
           this.lastFetched[type].date = Date.now();
           this.userMessages[type] = [];
           // add the messages to the appropriate array
-          data.forEach((element:Message) => {
+          data.posts.forEach((element:Message) => {
             this.userMessages[type].push(element);
           });
+          this.totalUserMessagesPages[type] = data.pages;
           this.idbResolved[type].next(true);
         }
       }
@@ -494,7 +495,7 @@ export class ItemsService {
     // get the user's messages from IDB
     this.serviceWorkerM.queryThreads(currentPage)?.then((data:any) => {
       // if there's threads data in the IDB database
-      if(data.length) {
+      if(data.posts.length) {
         // if the latest fetch is none, the last fetch was from IDB and before,
         // the last fetch was performed more than 10 seconds ago (meaning the user
         // changed/refreshed the page) or it's a different page, update the latest fetch and the displayed
@@ -507,7 +508,7 @@ export class ItemsService {
           this.lastFetched.threads.date = Date.now();
           this.userMessages.threads = [];
           // add the threads to the appropriate array
-          data.forEach((element: any) => {
+          data.posts.forEach((element: any) => {
             let thread: Thread = {
               id: element.id,
               user: (element.user1 == this.authService.userData.displayName) ? element.user2 : element.user1,
@@ -517,6 +518,7 @@ export class ItemsService {
             }
             this.userMessages.threads.push(thread);
           });
+          this.totalUserMessagesPages.threads = data.pages;
           this.idbResolved.threads.next(true);
         }
       }
@@ -603,12 +605,13 @@ export class ItemsService {
     // get the user's messages from IDB
     this.serviceWorkerM.queryMessages('thread', this.authService.userData.id!, currentPage, threadId)?.then((data:any) => {
       // if there's messages data in the IDB database
-      if(data.length) {
+      if(data.posts.length) {
         this.threadMessages = [];
         // add the messages to the appropriate array
-        data.forEach((element: Message) => {
+        data.posts.forEach((element: Message) => {
           this.threadMessages.push(element);
         });
+        this.totalThreadPages = data.pages;
         this.idbResolved.thread.next(true);
       }
     });

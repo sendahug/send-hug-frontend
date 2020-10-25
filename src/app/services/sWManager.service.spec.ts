@@ -393,8 +393,8 @@ describe('SWManagerService', () => {
       return messPromise!.then(messages => {
         // check all the posts are there and they're ordered in reverse date order
         expect(messages).toBeDefined();
-        expect(messages!.length).toBe(1);
-        expect(messages![0].id).toBe(14);
+        expect(messages!.posts.length).toBe(1);
+        expect(messages!.posts[0].id).toBe(14);
       })
     });
 
@@ -405,7 +405,7 @@ describe('SWManagerService', () => {
       return messPromise!.then(messages => {
         // check all the posts are there and they're ordered in reverse date order
         expect(messages).toBeDefined();
-        expect(messages!.length).toBe(0);
+        expect(messages!.posts.length).toBe(0);
       })
     });
 
@@ -416,9 +416,9 @@ describe('SWManagerService', () => {
       return messPromise!.then(messages => {
         // check all the posts are there and they're ordered in reverse date order
         expect(messages).toBeDefined();
-        expect(messages!.length).toBe(2);
-        expect(messages![0].id).toBe(1);
-        expect(messages![1].id).toBe(9);
+        expect(messages!.posts.length).toBe(2);
+        expect(messages!.posts[0].id).toBe(1);
+        expect(messages!.posts[1].id).toBe(9);
       })
     });
 
@@ -429,7 +429,7 @@ describe('SWManagerService', () => {
       return messPromise!.then(messages => {
         // check all the posts are there and they're ordered in reverse date order
         expect(messages).toBeDefined();
-        expect(messages!.length).toBe(0);
+        expect(messages!.posts.length).toBe(0);
       })
     });
 
@@ -440,8 +440,8 @@ describe('SWManagerService', () => {
       return messPromise!.then(messages => {
         // check all the posts are there and they're ordered in reverse date order
         expect(messages).toBeDefined();
-        expect(messages!.length).toBe(1);
-        expect(messages![0].id).toBe(9);
+        expect(messages!.posts.length).toBe(1);
+        expect(messages!.posts[0].id).toBe(9);
       })
     });
 
@@ -452,7 +452,7 @@ describe('SWManagerService', () => {
       return messPromise!.then(messages => {
         // check all the posts are there and they're ordered in reverse date order
         expect(messages).toBeDefined();
-        expect(messages!.length).toBe(0);
+        expect(messages!.posts.length).toBe(0);
       })
     });
   });
@@ -488,9 +488,9 @@ describe('SWManagerService', () => {
       return messPromise!.then(threads => {
         // check all the posts are there and they're ordered in reverse date order
         expect(threads).toBeDefined();
-        expect(threads!.length).toBe(2);
-        expect(threads![0].id).toBe(5);
-        expect(threads![1].id).toBe(3);
+        expect(threads!.posts.length).toBe(2);
+        expect(threads!.posts[0].id).toBe(5);
+        expect(threads!.posts[1].id).toBe(3);
       })
     });
 
@@ -501,7 +501,7 @@ describe('SWManagerService', () => {
       return messPromise!.then(threads => {
         // check all the posts are there and they're ordered in reverse date order
         expect(threads).toBeDefined();
-        expect(threads!.length).toBe(0);
+        expect(threads!.posts.length).toBe(0);
       })
     });
   });

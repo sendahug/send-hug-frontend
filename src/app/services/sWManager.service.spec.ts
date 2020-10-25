@@ -268,7 +268,7 @@ describe('SWManagerService', () => {
     it('should get new posts correctly', () => {
       const postsPromise = sWManagerService.queryPosts('main new');
 
-      return postsPromise!.then(posts => {
+      return postsPromise!.then((posts: any) => {
         // check all the posts are there and they're ordered in reverse date order
         expect(posts).toBeDefined();
         expect(posts!.length).toBe(3);
@@ -281,7 +281,7 @@ describe('SWManagerService', () => {
     it('should get suggested posts correctly', () => {
       const postsPromise = sWManagerService.queryPosts('main suggested');
 
-      return postsPromise!.then(posts => {
+      return postsPromise!.then((posts: any) => {
         // check all the posts are there and they're ordered in reverse date order
         expect(posts).toBeDefined();
         expect(posts!.length).toBe(3);
@@ -294,12 +294,12 @@ describe('SWManagerService', () => {
     it('should get new posts correctly - page 1', () => {
       const postsPromise = sWManagerService.queryPosts('new posts', undefined, 1);
 
-      return postsPromise!.then(posts => {
+      return postsPromise!.then((posts: any) => {
         // check all the posts are there and they're ordered in reverse date order
         expect(posts).toBeDefined();
-        expect(posts!.length).toBe(3);
-        expect(Number(posts![0].isoDate)).toBeGreaterThan(Number(posts![1].isoDate));
-        expect(Number(posts![1].isoDate)).toBeGreaterThan(Number(posts![2].isoDate));
+        expect(posts!.posts.length).toBe(3);
+        expect(Number(posts!.posts[0].isoDate)).toBeGreaterThan(Number(posts!.posts[1].isoDate));
+        expect(Number(posts!.posts[1].isoDate)).toBeGreaterThan(Number(posts!.posts[2].isoDate));
       })
     });
 
@@ -307,10 +307,10 @@ describe('SWManagerService', () => {
     it('should get new posts correctly - page 2', () => {
       const postsPromise = sWManagerService.queryPosts('new posts', undefined, 2);
 
-      return postsPromise!.then(posts => {
+      return postsPromise!.then((posts: any) => {
         // check all the posts are there and they're ordered in reverse date order
         expect(posts).toBeDefined();
-        expect(posts!.length).toBe(0);
+        expect(posts!.posts.length).toBe(0);
       })
     });
 
@@ -318,12 +318,12 @@ describe('SWManagerService', () => {
     it('should get suggested posts correctly - page 1', () => {
       const postsPromise = sWManagerService.queryPosts('suggested posts', undefined, 1);
 
-      return postsPromise!.then(posts => {
+      return postsPromise!.then((posts: any) => {
         // check all the posts are there and they're ordered in reverse date order
         expect(posts).toBeDefined();
-        expect(posts!.length).toBe(3);
-        expect(posts![1].givenHugs).toBeGreaterThan(posts![0].givenHugs);
-        expect(posts![2].givenHugs).toBeGreaterThan(posts![1].givenHugs);
+        expect(posts!.posts.length).toBe(3);
+        expect(posts!.posts[1].givenHugs).toBeGreaterThan(posts!.posts[0].givenHugs);
+        expect(posts!.posts[2].givenHugs).toBeGreaterThan(posts!.posts[1].givenHugs);
       })
     });
 
@@ -331,10 +331,10 @@ describe('SWManagerService', () => {
     it('should get suggested posts correctly - page 2', () => {
       const postsPromise = sWManagerService.queryPosts('suggested posts', undefined, 2);
 
-      return postsPromise!.then(posts => {
+      return postsPromise!.then((posts: any) => {
         // check all the posts are there and they're ordered in reverse date order
         expect(posts).toBeDefined();
-        expect(posts!.length).toBe(0);
+        expect(posts!.posts.length).toBe(0);
       })
     });
 
@@ -342,11 +342,11 @@ describe('SWManagerService', () => {
     it('should get a user\'s posts correctly', () => {
       const postsPromise = sWManagerService.queryPosts('user posts', 1, 1);
 
-      return postsPromise!.then(posts => {
+      return postsPromise!.then((posts: any) => {
         expect(posts).toBeDefined();
-        expect(posts!.length).toBe(2);
-        expect(posts![0].id).toBe(1);
-        expect(posts![1].id).toBe(2);
+        expect(posts!.posts.length).toBe(2);
+        expect(posts!.posts[0].id).toBe(1);
+        expect(posts!.posts[1].id).toBe(2);
       });
     });
 
@@ -354,10 +354,10 @@ describe('SWManagerService', () => {
     it('should get other users\' posts', () => {
       const postsPromise = sWManagerService.queryPosts('user posts', 3, 1);
 
-      return postsPromise!.then(posts => {
+      return postsPromise!.then((posts: any) => {
         expect(posts).toBeDefined();
-        expect(posts!.length).toBe(1);
-        expect(posts![0].id).toBe(3);
+        expect(posts!.posts.length).toBe(1);
+        expect(posts!.posts[0].id).toBe(3);
       });
     });
   });

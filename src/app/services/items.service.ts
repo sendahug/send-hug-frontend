@@ -222,7 +222,8 @@ export class ItemsService {
         if(this.lastFetched['userPosts' + user].date == 0 ||
            (this.lastFetched['userPosts' + user].date < Date.now() && this.lastFetched['userPosts' + user].source == 'IDB') ||
            this.lastFetched['userPosts' + user].date + 10000 < Date.now() ||
-           (page != this.userPostsPage[user] && page != 1)) {
+           (page != this.userPostsPage[user] && page != 1) ||
+           this.previousUser != userID) {
           this.lastFetched['userPosts' + user].source = 'IDB';
           this.lastFetched['userPosts' + user].date = Date.now();
           this.userPosts[user] = data.posts;
@@ -347,7 +348,6 @@ export class ItemsService {
       // if the user's data exists in the IDB database
       if(data) {
         this.otherUserData = data;
-        this.getUserPosts(userID, 1);
         this.idbResolved.user.next(true);
       }
     });
@@ -367,7 +367,6 @@ export class ItemsService {
       }
       this.isOtherUserResolved.next(true);
       this.idbResolved.user.next(true);
-      this.getUserPosts(userID, 1);
       this.alertsService.toggleOfflineAlert();
 
       // adds the user's data to the users store

@@ -355,7 +355,6 @@ describe('ItemsService', () => {
       }
     };
 
-    const postsSpy = spyOn(itemsService, 'getUserPosts');
     const querySpy = spyOn(itemsService['serviceWorkerM'], 'queryUsers');
     const addSpy = spyOn(itemsService['serviceWorkerM'], 'addItem');
     itemsService.getUser(2);
@@ -373,8 +372,6 @@ describe('ItemsService', () => {
         expect(itemsService.otherUserData.givenHugs).toBe(0);
         expect(itemsService.otherUserData.role).toBe('user');
         expect(itemsService.otherUserData.postsNum).toBe(2);
-        expect(postsSpy).toHaveBeenCalled();
-        expect(postsSpy).toHaveBeenCalledWith(2, 1);
       }
     });
 

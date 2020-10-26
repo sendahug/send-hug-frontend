@@ -76,12 +76,10 @@ export class MyPosts implements OnInit {
   ) {
     // if there's a user ID in the viewed profile, get that user's posts
     if(this.userID && this.userID != this.authService.userData.id!) {
-      this.itemsService.getUserPosts(this.userID, 1);
       this.user = 'other';
     }
     // if there isn't, it's the user's own profile, so get their posts
     else {
-      itemsService.getUserPosts(this.authService.userData.id!, 1);
       this.user = 'self';
     }
 
@@ -103,10 +101,12 @@ export class MyPosts implements OnInit {
   ngOnInit() {
     // if the user ID is different than the logged in user, it's someone else
     if(this.userID && this.userID != this.authService.userData.id) {
+      this.itemsService.getUserPosts(this.userID, 1);
       this.user = 'other';
     }
     // otherwise, if it's the same ID or there's no ID, get the user's profile
     else {
+      this.itemsService.getUserPosts(this.authService.userData.id!, 1);
       this.user = 'self';
     }
   }

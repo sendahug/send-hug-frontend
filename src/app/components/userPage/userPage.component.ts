@@ -54,6 +54,7 @@ export class UserPage implements OnInit, OnDestroy {
   reportedItem: User | undefined;
   reportType = 'User';
   lastFocusedElement: any;
+  userDataCalls = 0;
   // loader sub-component variable
   waitFor = "user";
   userId: number | undefined;
@@ -74,17 +75,33 @@ export class UserPage implements OnInit, OnDestroy {
     // if there's a user ID, set the user ID to it
     if(this.route.snapshot.paramMap.get('id')) {
       this.userId = Number(this.route.snapshot.paramMap.get('id'));
-      // If the user ID from the URL params is different than the logged in
-      // user's ID, the user is trying to view another user's profile
-      if(this.userId != this.authService.userData.id) {
-        this.itemsService.isOtherUser = true;
-        this.waitFor = 'other user';
+
+      // if the user is logged in, just get the selected user's data
+      if(this.authService.userData.id && this.authService.userData.id != 0) {
+        // If the user ID from the URL params is different than the logged in
+        // user's ID, the user is trying to view another user's profile
+        if(this.userId != this.authService.userData.id) {
+          this.itemsService.isOtherUser = true;
+          this.waitFor = 'other user';
+          this.itemsService.getUser(this.userId!);
+        }
+        // otherwise they're trying to view their own profile
+        else {
+          this.itemsService.isOtherUser = false;
+          this.waitFor = 'user';
+        }
+      }
+      // otherwise wait for user data to come through
+      else {
         // set the userDataSubscription to the subscription to isUserDataResolved
         this.userDataSubscription = this.authService.isUserDataResolved.subscribe((value) => {
           // if the user is logged in, fetch the profile of the user whose ID
           // is used in the URL param
-          if(value == true) {
-            this.itemsService.getUser(this.userId!);
+          if(value == true && this.userDataCalls < 2) {
+            if(this.userId != this.authService.userData.id) {
+              this.userDataCalls++;
+              this.itemsService.getUser(this.userId!);
+            }
             // also unsubscribe from this to avoid sending the same request
             // multiple times
             if(this.userDataSubscription) {
@@ -93,12 +110,8 @@ export class UserPage implements OnInit, OnDestroy {
           }
         });
       }
-      // otherwise they're trying to view their own profile
-      else {
-        this.itemsService.isOtherUser = false;
-        this.waitFor = 'user';
-      }
     }
+    // otherwise they're trying to view their own profile
     else {
       this.itemsService.isOtherUser = false;
       this.waitFor = 'user';
@@ -190,5 +203,6 @@ export class UserPage implements OnInit, OnDestroy {
   // When leaving the page, return "other user" to false
   ngOnDestroy() {
     this.itemsService.isOtherUser = false;
+    this.userDataCalls = 0;
   }
 }

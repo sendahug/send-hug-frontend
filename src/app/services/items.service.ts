@@ -329,8 +329,18 @@ export class ItemsService {
   */
   getUser(userID:number) {
     const Url = this.serverUrl + `/users/all/${userID}`;
-    this.isOtherUserResolved.next(false);
-    this.idbResolved.user.next(false);
+    if(this.previousUser != 0 && this.previousUser != userID) {
+      this.otherUserData = {
+        id: 0,
+        displayName: '',
+        receivedHugs: 0,
+        givenHugs: 0,
+        postsNum: 0,
+        role: ''
+      };
+      this.isOtherUserResolved.next(false);
+      this.idbResolved.user.next(false);
+    }
 
     // get the user's data from IDB
     this.serviceWorkerM.queryUsers(userID)?.then((data:any) => {

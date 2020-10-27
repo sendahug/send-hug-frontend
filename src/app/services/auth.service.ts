@@ -364,6 +364,17 @@ export class AuthService {
       clientID: environment.production ? prodEnv.auth0.clientID! : environment.auth0.clientID
     });
 
+    // update the user's data in IDB to remove all user data
+    let user = {
+      id: this.userData.id,
+      displayName: this.userData.displayName,
+      receivedHugs: this.userData.receivedHugs,
+      givenHugs: this.userData.givenHugs,
+      postsNum: this.userData.postsNum,
+      role: this.userData.role
+    };
+    this.serviceWorkerM.addItem('users', user);
+
     //clears the user's data
     this.authenticated = false;
     this.token = '';

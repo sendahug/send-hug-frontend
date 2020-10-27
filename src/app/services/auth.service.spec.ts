@@ -389,12 +389,14 @@ describe('AuthService', () => {
 
     const authSpy = spyOn(authService.auth0, 'logout');
     const storageSpy = spyOn(localStorage, 'setItem');
+    const addSpy = spyOn(authService['serviceWorkerM'], 'addItem');
 
     authService.logout();
 
     expect(authSpy).toHaveBeenCalled();
     expect(storageSpy).toHaveBeenCalled();
     expect(authService.userData.id).toBe(0);
+    expect(addSpy).toHaveBeenCalled();
   });
 
   // Check the service sets the token in localStorage

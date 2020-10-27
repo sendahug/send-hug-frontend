@@ -313,7 +313,10 @@ export class SWManager {
             // queryUsers method and add it
             if(!element.user) {
               this.queryUsers(element.userId)!.then((userData) => {
-                element.user = userData!.displayName;
+                // if the user exists in the database, get it
+                if(userData) {
+                  element.user = userData.displayName;
+                }
               })
             }
           });

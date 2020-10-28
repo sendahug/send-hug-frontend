@@ -54,6 +54,7 @@ export class NotificationService {
   // push notifications variables
   toggleBtn!: 'Enable' | 'Disable';
   notificationsSub: PushSubscription | undefined;
+  subId = 0;
   newNotifications = 0;
   pushStatus!:Boolean;
   // notifications refresh variables
@@ -212,7 +213,8 @@ export class NotificationService {
         // send the info to the server
         this.Http.post(Url, JSON.stringify(subscription), {
           headers: headers
-        }).subscribe((_response:any) => {
+        }).subscribe((response:any) => {
+          this.subId = response.subId;
           this.alertsService.createSuccessAlert('Subscribed to push notifications successfully!');
         }, (err:HttpErrorResponse) => {
           this.alertsService.createErrorAlert(err);

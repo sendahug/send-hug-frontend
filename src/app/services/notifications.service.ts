@@ -57,6 +57,7 @@ export class NotificationService {
   subId = 0;
   newNotifications = 0;
   pushStatus!:Boolean;
+  resubscribeCalls = 0;
   // notifications refresh variables
   refreshBtn!: 'Enable' | 'Disable';
   refreshStatus!:Boolean;
@@ -86,6 +87,8 @@ export class NotificationService {
       this.toggleBtn = this.pushStatus ? 'Disable': 'Enable';
       this.refreshBtn = this.refreshStatus ? 'Disable' : 'Enable';
     })
+
+    navigator.serviceWorker.addEventListener('message', this.renewPushSubscription);
   }
 
   // NOTIFICATIONS METHODS
@@ -226,6 +229,40 @@ export class NotificationService {
     }
     else {
       this.alertsService.createAlert({ type: 'Error', message: 'Push notifications are not currently supported in this browser.' });
+    }
+  }
+
+  /*
+  Function Name: renewPushSubscription()
+  Function Description: Silently renews the expired push subscription.
+  Parameters: event (MessageEvent) - the ServiceWorker message event triggering the method.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  renewPushSubscription(event:MessageEvent) {
+    const Url = this.serverUrl + `/subscriptions/${this.subId}`;
+
+    //
+    if(event.data.action == 'resubscribe' && this.resubscribeCalls < 2) {
+      this.resubscribeCalls++;
+
+      // request a new push subscription
+      this.swPush.requestSubscription({
+        serverPublicKey: this.publicKey
+      }).then(subscription => {
+        this.notificationsSub = subscription;
+        this.toggleBtn = 'Disable';
+        this.setSubscription();
+
+        // update the saved subscription in the database
+        this.Http.patch(Url, JSON.stringify(subscription), {
+          headers: this.authService.authHeader
+        }).subscribe((response:any) => {
+          this.subId = response.subId;
+        }, (err) => {
+          console.log(err);
+        });
+      });
     }
   }
 

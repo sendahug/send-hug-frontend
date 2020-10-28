@@ -58,6 +58,7 @@ export class NotificationService {
   newNotifications = 0;
   pushStatus!:Boolean;
   resubscribeCalls = 0;
+  pushDate = 0;
   // notifications refresh variables
   refreshBtn!: 'Enable' | 'Disable';
   refreshStatus!:Boolean;
@@ -211,6 +212,7 @@ export class NotificationService {
       }).then((subscription) => {
         this.notificationsSub = subscription;
         this.toggleBtn = 'Disable';
+        this.pushDate = Date.now();
         this.setSubscription();
 
         // send the info to the server
@@ -242,6 +244,12 @@ export class NotificationService {
   renewPushSubscription(event:MessageEvent) {
     const Url = this.serverUrl + `/subscriptions/${this.subId}`;
 
+    // if it's been more than 24 hours since the last update, the push subscription
+    // expired, so reset the resubscribe calls 
+    if(this.pushDate + 864E5 <= Date.now()) {
+      this.resubscribeCalls = 0;
+    }
+
     //
     if(event.data.action == 'resubscribe' && this.resubscribeCalls < 2) {
       this.resubscribeCalls++;
@@ -252,6 +260,7 @@ export class NotificationService {
       }).then(subscription => {
         this.notificationsSub = subscription;
         this.toggleBtn = 'Disable';
+        this.pushDate = Date.now();
         this.setSubscription();
 
         // update the saved subscription in the database

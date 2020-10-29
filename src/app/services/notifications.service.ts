@@ -283,10 +283,11 @@ export class NotificationService {
   Programmer: Shir Bar Lev.
   */
   unsubscribeFromStream() {
+    this.toggleBtn = 'Enable';
+    this.pushStatus = false;
+
     if(this.notificationsSub) {
       this.notificationsSub.unsubscribe();
-      this.toggleBtn = 'Enable';
-      this.pushStatus = false;
     }
   }
 

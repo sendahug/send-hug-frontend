@@ -5,7 +5,7 @@
 ### Found a bug?
 
 - **Found a bug?** You can start by searching for it in our repo's open [issues](https://github.com/sendahug/send-hug-frontend/issues). 
-- **Haven't found a bug report?** Feel free to [open an issue](https://github.com/sendahug/send-hug-frontend/issues/new/choose). Be sure to include as much information about the bug itself, the behaviour you expected, the circumstances around the appearance of this bug, and anything else that's relevant to your bug report.
+- **Haven't found a bug report?** Feel free to [open an issue](https://github.com/sendahug/send-hug-frontend/issues/new?assignees=&labels=&template=bug_report.md&title=). Be sure to include as much information about the bug itself, the behaviour you expected, the circumstances around the appearance of this bug, and anything else that's relevant to your bug report.
 
 ### Before you work on a fix
 
@@ -57,4 +57,4 @@ Also, make sure that your code:
 
 ## Anything Else
 
-Any other questions or suggestions? Feel free to ask your question [here](https://github.com/sendahug/send-hug-frontend/issues/new?assignees=&labels=&template=question-template.md&title=) or via email, at sendahugcom@gmail.com.
+Any other questions or suggestions? Feel free to ask your question [here](https://github.com/sendahug/send-hug-frontend/issues/new?assignees=&labels=&template=question.md&title=) or via email, at sendahugcom@gmail.com.

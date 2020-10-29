@@ -203,6 +203,7 @@ a.appButton
 	display: flex
 	align-items: center
 	justify-content: left
+	white-space: nowrap
 	/* Responsive styling for screens above 800px width */
 	@media screen and (min-width: 800px)
 		width: 90%
@@ -842,29 +843,9 @@ app-main-page .errorMessage
 	font-family: $mainFont
 	background: $mainBackground
 	padding-bottom: 10px
-	/* Responsive styling for screens up to 400px width */
-	@media screen and (max-width: 400px)
-		margin: 0 Calc((100% - 220px) / 2)
-	/* Responsive styling for screens above 400px width */
-	@media screen and (min-width: 400px)
-		@include fontSize(18)
-		margin: 0 Calc((100% - 250px) / 2)
-	/* Responsive styling for screens above 600px width */
-	@media screen and (min-width: 600px)
-		margin: 0 Calc((100% - 250px) / 2)
-
-/* View full new list button */
-#fullNew
-	/* Responsive styling for screens up to 400px width */
-	@media screen and (max-width: 400px)
-		margin: 0 Calc((100% - 170px) / 2)
-	/* Responsive styling for screens above 400px width */
-	@media screen and (min-width: 400px)
-		@include fontSize(18)
-		margin: 0 Calc((100% - 190px) / 2)
-	/* Responsive styling for screens above 600px width */
-	@media screen and (min-width: 600px)
-		margin: 0 Calc((100% - 200px) / 2)
+	text-align: center
+	width: 100%
+	display: inline-block
 
 /* =================== Full List Styling =================== */
 /* List container*/
@@ -2197,7 +2178,6 @@ app-site-map a
 /* Admin Dashboard Component */
 app-admin-dashboard
 	width: 90%
-	padding: 0 5%
 	left: 0
 	right: 0
 

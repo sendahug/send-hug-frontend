@@ -71,7 +71,8 @@ export class NotificationService {
     private Http:HttpClient,
     private authService:AuthService,
     private alertsService:AlertsService,
-    private swPush:SwPush
+    private swPush:SwPush,
+    private serviceWorkerM:SWManager
   ) {
     // if the user is logged in, and their data is fetched, set the appropriate variables
     this.authService.isUserDataResolved.subscribe((value) => {
@@ -87,6 +88,37 @@ export class NotificationService {
 
       this.toggleBtn = this.pushStatus ? 'Disable': 'Enable';
       this.refreshBtn = this.refreshStatus ? 'Disable' : 'Enable';
+
+      // if there's an active service worker and push notifications are supported
+      if('PushManager' in window && this.serviceWorkerM.activeServiceWorkerReg) {
+        // check the state of the Push permission
+        this.serviceWorkerM.activeServiceWorkerReg.pushManager.permissionState().then(permission => {
+          // If permission was denied and the user's Push status is true, alert the
+          // user they can't get push notifications in this browser
+          if(permission == 'denied')  {
+            if(!this.pushStatus) {
+              this.pushStatus = false;
+              this.toggleBtn = 'Enable';
+              this.alertsService.createAlert({
+                type: 'Error',
+                message: 'Push notifications permission has been denied. Go to your browser settings, remove Send A Hug from the denied list, and then activate push notifications again.'
+              });
+            }
+          }
+          // If the client wasn't even asked on this browser and the user's push status
+          // is true, trigger subscription
+          else if(permission == 'prompt') {
+            if(!this.pushStatus) {
+              this.subscribeToStream();
+            }
+          }
+        })
+      }
+      // otherwise, turn everything false
+      else {
+        this.pushStatus = false;
+        this.toggleBtn = 'Enable';
+      }
     })
 
     navigator.serviceWorker.addEventListener('message', this.renewPushSubscription);
@@ -205,28 +237,41 @@ export class NotificationService {
     const headers = this.authService.authHeader.set('content-type', 'application/json');
 
     if('PushManager' in window) {
-      // request subscription
-      this.swPush.requestSubscription({
-        serverPublicKey: this.publicKey
-      // if it went successfully, send the subscription data to the server
-      }).then((subscription) => {
-        this.notificationsSub = subscription;
-        this.toggleBtn = 'Disable';
-        this.pushDate = Date.now();
-        this.setSubscription();
+      // check the state of the Push permission
+      this.serviceWorkerM.activeServiceWorkerReg?.pushManager.permissionState().then(permission => {
+        // If permission was denied, alert the user they can't get push notifications in this browser
+        if(permission == 'denied')  {
+          this.alertsService.createAlert({
+            type: 'Error',
+            message: 'Push notifications permission has been denied. Go to your browser settings, remove Send A Hug from the denied list, and then activate push notifications again.'
+          });
+        }
+        // otherwise, request a subscription
+        else {
+          // request subscription
+          this.swPush.requestSubscription({
+            serverPublicKey: this.publicKey
+          // if it went successfully, send the subscription data to the server
+          }).then((subscription) => {
+            this.notificationsSub = subscription;
+            this.toggleBtn = 'Disable';
+            this.pushDate = Date.now();
+            this.setSubscription();
 
-        // send the info to the server
-        this.Http.post(Url, JSON.stringify(subscription), {
-          headers: headers
-        }).subscribe((response:any) => {
-          this.subId = response.subId;
-          this.alertsService.createSuccessAlert('Subscribed to push notifications successfully!');
-        }, (err:HttpErrorResponse) => {
-          this.alertsService.createErrorAlert(err);
-        })
-      // if there was an error, alert the user
-      }).catch((err) => {
-        this.alertsService.createAlert({ type: 'Error', message: err });
+            // send the info to the server
+            this.Http.post(Url, JSON.stringify(subscription), {
+              headers: headers
+            }).subscribe((response:any) => {
+              this.subId = response.subId;
+              this.alertsService.createSuccessAlert('Subscribed to push notifications successfully!');
+            }, (err:HttpErrorResponse) => {
+              this.alertsService.createErrorAlert(err);
+            })
+          // if there was an error, alert the user
+          }).catch((err) => {
+            this.alertsService.createAlert({ type: 'Error', message: err });
+          })
+        }
       })
     }
     else {
@@ -245,7 +290,7 @@ export class NotificationService {
     const Url = this.serverUrl + `/subscriptions/${this.subId}`;
 
     // if it's been more than 24 hours since the last update, the push subscription
-    // expired, so reset the resubscribe calls 
+    // expired, so reset the resubscribe calls
     if(this.pushDate + 864E5 <= Date.now()) {
       this.resubscribeCalls = 0;
     }

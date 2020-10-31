@@ -555,11 +555,13 @@ export class PostsService {
   disableHugButton(checkList: any[], itemClass:string, itemID:number) {
     // Check if the post is in the given array
     let currentPostIndex = checkList.findIndex(e => e.id == itemID);
-    if(currentPostIndex > 0) {
+    if(currentPostIndex >= 0) {
       // if it is, disable the send-hug button
+      checkList[currentPostIndex].sentHugs!.push(this.authService.userData.id!);
       let post = document.querySelectorAll(itemClass)[currentPostIndex];
       post.querySelectorAll('.fa-hand-holding-heart').forEach((element) => {
         (element.parentElement as HTMLButtonElement).disabled = true;
+        (element.parentElement as HTMLButtonElement).classList.add('active');
       })
     }
   }

@@ -92,7 +92,9 @@ export class NotificationService {
       // if there's an active service worker and push notifications are supported
       if('PushManager' in window && this.serviceWorkerM.activeServiceWorkerReg) {
         // check the state of the Push permission
-        this.serviceWorkerM.activeServiceWorkerReg.pushManager.permissionState().then(permission => {
+        this.serviceWorkerM.activeServiceWorkerReg.pushManager.permissionState({
+          userVisibleOnly: true
+        }).then(permission => {
           // If permission was denied and the user's Push status is true, alert the
           // user they can't get push notifications in this browser
           if(permission == 'denied')  {
@@ -238,7 +240,9 @@ export class NotificationService {
 
     if('PushManager' in window) {
       // check the state of the Push permission
-      this.serviceWorkerM.activeServiceWorkerReg?.pushManager.permissionState().then(permission => {
+      this.serviceWorkerM.activeServiceWorkerReg?.pushManager.permissionState({
+        userVisibleOnly: true
+      }).then(permission => {
         // If permission was denied, alert the user they can't get push notifications in this browser
         if(permission == 'denied')  {
           this.alertsService.createAlert({

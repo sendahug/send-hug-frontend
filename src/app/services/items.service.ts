@@ -560,14 +560,14 @@ export class ItemsService {
       this.alertsService.toggleOfflineAlert();
 
       // add each message in the threads list to the store
-      threads.forEach((element:Thread) => {
+      threads.forEach((element:any) => {
         let isoDate = new Date(element.latestMessage).toISOString();
         let thread = {
           'latestMessage': element.latestMessage,
-          'user1': element.user!,
-          'user1Id': element.userID,
-          'user2': this.authService.userData.displayName,
-          'user2Id': this.authService.userData.id!,
+          'user1': element.user1!,
+          'user1Id': element.user1Id,
+          'user2': element.user2,
+          'user2Id': element.user2Id,
           'numMessages': element.numMessages!,
           'isoDate': isoDate,
           'id': element.id

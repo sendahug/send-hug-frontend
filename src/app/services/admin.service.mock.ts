@@ -62,7 +62,7 @@ export class MockAdminService {
     releaseDate: Date | undefined
   } | undefined;
   isBlockDataResolved = new BehaviorSubject(false);
-  filteredPhrases: string[] = [];
+  filteredPhrases: any[] = [];
   isFiltersResolved = new BehaviorSubject(false);
   // pagination
   currentPage = {
@@ -349,7 +349,11 @@ export class MockAdminService {
   getFilters() {
     this.isFiltersResolved.next(false);
 
-    this.filteredPhrases = ['word', 'word2'];
+    this.filteredPhrases = [{
+      filter: 'word', id: 1
+    }, {
+      filter: 'word2', id: 2
+    }];
     this.totalPages.filteredPhrases = 1;
     this.isFiltersResolved.next(true);
   }
@@ -372,9 +376,7 @@ export class MockAdminService {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  removeFilter(filter:string) {
-    const filterID = this.filteredPhrases.findIndex(element => element == filter);
-
+  removeFilter(filter:number) {
     this.alertsService.createSuccessAlert(`The phrase ${filter} was removed from the list of filtered words. Refresh to see the updated list.`, true);
   }
 }

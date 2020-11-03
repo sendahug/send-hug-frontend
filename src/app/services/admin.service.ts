@@ -459,13 +459,12 @@ export class AdminService {
   /*
   Function Name: removeFilter()
   Function Description: Removes a string from the filtered phrases list.
-  Parameters: filter (string) - String to remove from filtered words.
+  Parameters: filter (number) - String to remove from filtered words.
   ----------------
   Programmer: Shir Bar Lev.
   */
-  removeFilter(filter:string) {
-    const filterID = this.filteredPhrases.findIndex(element => element == filter);
-    const Url = this.serverUrl + `/filters/${filterID}`;
+  removeFilter(filter:number) {
+    const Url = this.serverUrl + `/filters/${filter}`;
 
     // try to delete the filter
     this.Http.delete(Url, {

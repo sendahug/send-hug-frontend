@@ -395,11 +395,11 @@ export class AdminDashboard implements OnInit {
   /*
   Function Name: removeFilter()
   Function Description: Remove a filter from the filtered phrases list.
-  Parameters: filter (string) - The string to remove from the filters list.
+  Parameters: filter (number) - The string to remove from the filters list.
   ----------------
   Programmer: Shir Bar Lev.
   */
-  removeFilter(filter:string) {
+  removeFilter(filter:number) {
     this.adminService.removeFilter(filter);
   }
 

@@ -594,7 +594,7 @@ describe('AdminDashboard', () => {
       // check expectations
       expect(removeSpy).toHaveBeenCalled();
       expect(removeServiceSpy).toHaveBeenCalled();
-      expect(removeServiceSpy).toHaveBeenCalledWith('word');
+      expect(removeServiceSpy).toHaveBeenCalledWith(1);
     }));
   });
 });

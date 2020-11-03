@@ -398,6 +398,7 @@ export class AuthService {
 
     // clears all the messages data (as that's private per user)
     this.serviceWorkerM.clearStore('messages');
+    this.serviceWorkerM.clearStore('threads');
 
     // if the user has been logged out through their token expiring
     if(this.tokenExpired) {

@@ -548,6 +548,6 @@ describe('AdminService', () => {
     req.flush(mockResponse);
 
     expect(alertSpy).toHaveBeenCalled();
-    expect(alertSpy).toHaveBeenCalledWith(`The phrase ${mockResponse.deleted} was removed from the list of filtered words. Refresh to see the updated list.`, true);
+    expect(alertSpy).toHaveBeenCalledWith(`The phrase ${mockResponse.deleted.filter} was removed from the list of filtered words. Refresh to see the updated list.`, true);
   });
 });

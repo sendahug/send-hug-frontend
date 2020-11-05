@@ -4,6 +4,8 @@
   "description": "An application meant to offer support to people struggling with mental health issues.",
   "display": "standalone",
   "scope": "./",
+  "theme_color": "#F2F2F2",
+  "background_color": "#F2F2F2",
   "icons": [{
     "src": "assets/icons/icon48.png",
     "sizes": "48x48",

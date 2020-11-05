@@ -78,6 +78,13 @@ function scripts()
       .pipe(gulp.dest("./localdev"));
 }
 
+// copy webmanifest
+function copyManifest() {
+	return gulp
+		.src("src/manifest.webmanifest")
+		.pipe(gulp.dest("./localdev"));
+}
+
 //watch files for changes and then run the appropriate tasks
 function watch()
 {
@@ -86,6 +93,7 @@ function watch()
 	gulp.watch("src/assets/**/*", copyAssets);
 	gulp.watch("src/css/*.css", styles);
 	gulp.watch(["src/**/*.ts", "!src/**/*.spec.ts", "!src/**/*.mock.ts"], scripts);
+	gulp.watch("src/manifest.webmanifest", copyManifest);
 }
 
 //create local development files
@@ -94,6 +102,7 @@ async function localDev() {
 	copyIndex();
 	copyAssets();
 	styles();
+	copyManifest();
 	await scripts();
 }
 
@@ -193,6 +202,13 @@ function copyServiceWorker()
 		.pipe(gulp.dest('./dist'))
 }
 
+// copy webmanifest
+function copyManifestDist() {
+	return gulp
+		.src("src/manifest.webmanifest")
+		.pipe(gulp.dest("./dist"));
+}
+
 //prepare for distribution
 gulp.task('dist', gulp.parallel(
 	copyHtmlDist,
@@ -200,7 +216,8 @@ gulp.task('dist', gulp.parallel(
 	copyAssetsDist,
 	stylesDist,
 	scriptsDist,
-	copyServiceWorker
+	copyServiceWorker,
+	copyManifestDist
 ));
 
 // TESTING TASKS

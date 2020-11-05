@@ -98,7 +98,7 @@ export class NotificationService {
           // If permission was denied and the user's Push status is true, alert the
           // user they can't get push notifications in this browser
           if(permission == 'denied')  {
-            if(!this.pushStatus) {
+            if(this.pushStatus) {
               this.pushStatus = false;
               this.toggleBtn = 'Enable';
               this.alertsService.createAlert({
@@ -110,7 +110,7 @@ export class NotificationService {
           // If the client wasn't even asked on this browser and the user's push status
           // is true, trigger subscription
           else if(permission == 'prompt') {
-            if(!this.pushStatus) {
+            if(this.pushStatus) {
               this.subscribeToStream();
             }
           }

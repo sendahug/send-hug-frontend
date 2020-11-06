@@ -365,7 +365,8 @@ describe('PostsService', () => {
         id: 10,
         text: "test curl",
         userId: 4,
-        user: 'user'
+        user: 'user',
+        sendHugs: []
       },
       success: true
     };
@@ -378,6 +379,7 @@ describe('PostsService', () => {
       givenHugs: 0
     };
     const spy = spyOn(postsService['alertsService'], 'createSuccessAlert');
+    const addSpy = spyOn(postsService['serviceWorkerM'], 'addItem');
     postsService['authService'].login();
     postsService.sendPost(newPost);
 
@@ -387,6 +389,7 @@ describe('PostsService', () => {
 
     expect(spy).toHaveBeenCalled();
     expect(spy).toHaveBeenCalledWith('Your post was published! Return to home page to view the post.', false, '/');
+    expect(addSpy).toHaveBeenCalled();
   });
 
   // Check the service prevents blocked users from sending posts
@@ -399,6 +402,7 @@ describe('PostsService', () => {
       givenHugs: 0
     };
     const spy = spyOn(postsService['alertsService'], 'createAlert');
+    const addSpy = spyOn(postsService['serviceWorkerM'], 'addItem');
     postsService['authService'].login();
     postsService['authService'].userData.blocked = true;
     postsService['authService'].userData.releaseDate = new Date((new Date()).getTime() + 864E5 * 1);
@@ -406,6 +410,7 @@ describe('PostsService', () => {
 
     expect(spy).toHaveBeenCalled();
     expect(spy).toHaveBeenCalledWith({ type: 'Error', message: `You cannot post new posts while you're blocked. You're blocked until ${postsService['authService'].userData.releaseDate}.` });
+    expect(addSpy).not.toHaveBeenCalled();
   });
 
   // Check the service deletes a post

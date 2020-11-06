@@ -43,6 +43,11 @@ import { SWManager } from './sWManager.service';
 import { environment } from '../../environments/environment';
 import { environment as prodEnv } from '../../environments/environment.prod';
 
+type FetchStamp = {
+  source: 'Server' | 'IDB' | '';
+  date: number;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -71,6 +76,20 @@ export class PostsService {
     fullNewItems: new BehaviorSubject(false),
     fullSuggestedItems: new BehaviorSubject(false)
   }
+  lastFetched: { [key:string]: FetchStamp; } = {
+    mainPage: {
+      source: '',
+      date: 0
+    },
+    newItems: {
+      source: '',
+      date: 0
+    },
+    suggestedItems: {
+      source: '',
+      date: 0
+    }
+  };
   isUpdated = new BehaviorSubject(false);
 
   // CTOR
@@ -104,15 +123,35 @@ export class PostsService {
     this.serviceWorkerM.queryPosts('main new')?.then((data:any) => {
       // if there are posts in cache, display them
       if(data.length) {
-        this.newItemsArray = data;
-        this.isMainPageResolved.next(true);
+        // if the latest fetch is none, the last fetch was from IDB and before or
+        // the last fetch was performed more than 10 seconds ago (meaning the user)
+        // changed/refreshed the page, update the latest fetch and the displayed
+        // posts
+        if(this.lastFetched.mainPage.date == 0 ||
+           (this.lastFetched.mainPage.date < Date.now() && this.lastFetched.mainPage.source == 'IDB') ||
+           this.lastFetched.mainPage.date + 10000 < Date.now()) {
+          this.lastFetched.mainPage.source = 'IDB';
+          this.lastFetched.mainPage.date = Date.now();
+          this.newItemsArray = data;
+          this.isMainPageResolved.next(true);
+        }
       }
     });
     this.serviceWorkerM.queryPosts('main suggested')?.then((data:any) => {
       // if there are posts in cache, display them
       if(data.length) {
-        this.sugItemsArray = data;
-        this.isMainPageResolved.next(true);
+        // if the latest fetch is none, the last fetch was from IDB and before or
+        // the last fetch was performed more than 10 seconds ago (meaning the user)
+        // changed/refreshed the page, update the latest fetch and the displayed
+        // posts
+        if(this.lastFetched.mainPage.date == 0 ||
+           (this.lastFetched.mainPage.date < Date.now() && this.lastFetched.mainPage.source == 'IDB') ||
+           this.lastFetched.mainPage.date + 10000 < Date.now()) {
+          this.lastFetched.mainPage.source = 'IDB';
+          this.lastFetched.mainPage.date = Date.now();
+          this.sugItemsArray = data;
+          this.isMainPageResolved.next(true);
+        }
       }
     })
 
@@ -121,6 +160,8 @@ export class PostsService {
       let data = response;
       this.newItemsArray = data.recent;
       this.sugItemsArray = data.suggested;
+      this.lastFetched.mainPage.source = 'Server';
+      this.lastFetched.mainPage.date = Date.now();
       this.isMainPageResolved.next(true);
       this.alertsService.toggleOfflineAlert();
 
@@ -186,9 +227,21 @@ export class PostsService {
     // get the recent posts from IDB
     this.serviceWorkerM.queryPosts('new posts', undefined, page)?.then((data:any) => {
       // if there are posts in cache, display them
-      if(data.length) {
-        this.fullItemsList.fullNewItems = data;
-        this.isPostsResolved.fullNewItems.next(true);
+      if(data.posts.length) {
+        // if the latest fetch is none, the last fetch was from IDB and before,
+        // the last fetch was performed more than 10 seconds ago (meaning the user
+        // changed/refreshed the page) or it's a different page, update the latest fetch and the displayed
+        // posts
+        if(this.lastFetched.newItems.date == 0 ||
+           (this.lastFetched.newItems.date < Date.now() && this.lastFetched.newItems.source == 'IDB') ||
+           this.lastFetched.newItems.date + 10000 < Date.now() ||
+           (page != this.fullItemsPage.fullNewItems && page != 1)) {
+          this.lastFetched.newItems.source = 'IDB';
+          this.lastFetched.newItems.date = Date.now();
+          this.fullItemsList.fullNewItems = data.posts;
+          this.totalFullItemsPage.fullNewItems = data.pages;
+          this.isPostsResolved.fullNewItems.next(true);
+        }
       }
     });
 
@@ -200,6 +253,8 @@ export class PostsService {
       this.fullItemsList.fullNewItems = data;
       this.fullItemsPage.fullNewItems = page;
       this.totalFullItemsPage.fullNewItems = response.total_pages;
+      this.lastFetched.newItems.source = 'Server';
+      this.lastFetched.newItems.date = Date.now();
       this.isPostsResolved.fullNewItems.next(true);
       this.alertsService.toggleOfflineAlert();
 
@@ -250,9 +305,21 @@ export class PostsService {
     // get the recent posts from IDB
     this.serviceWorkerM.queryPosts('suggested posts', undefined, page)?.then((data:any) => {
       // if there are posts in cache, display them
-      if(data.length) {
-        this.fullItemsList.fullSuggestedItems = data;
-        this.isPostsResolved.fullSuggestedItems.next(true);
+      if(data.posts.length) {
+        // if the latest fetch is none, the last fetch was from IDB and before or
+        // the last fetch was performed more than 10 seconds ago (meaning the user)
+        // changed/refreshed the page, update the latest fetch and the displayed
+        // posts
+        if(this.lastFetched.suggestedItems.date == 0 ||
+           (this.lastFetched.suggestedItems.date < Date.now() && this.lastFetched.suggestedItems.source == 'IDB') ||
+           this.lastFetched.suggestedItems.date + 10000 < Date.now() ||
+           (page != this.fullItemsPage.fullSuggestedItems && page != 1)) {
+          this.lastFetched.suggestedItems.source = 'IDB';
+          this.lastFetched.suggestedItems.date = Date.now();
+          this.fullItemsList.fullSuggestedItems = data.posts;
+          this.totalFullItemsPage.fullSuggestedItems = data.pages;
+          this.isPostsResolved.fullSuggestedItems.next(true);
+        }
       }
     });
 
@@ -264,6 +331,8 @@ export class PostsService {
       this.fullItemsList.fullSuggestedItems = data;
       this.fullItemsPage.fullSuggestedItems = page;
       this.totalFullItemsPage.fullSuggestedItems = response.total_pages;
+      this.lastFetched.newItems.source = 'Server';
+      this.lastFetched.newItems.date = Date.now();
       this.isPostsResolved.fullSuggestedItems.next(true);
       this.alertsService.toggleOfflineAlert();
 
@@ -311,9 +380,22 @@ export class PostsService {
       const Url = this.serverUrl + '/posts';
       this.Http.post(Url, post, {
         headers: this.authService.authHeader
-      }).subscribe((_response:any) => {
+      }).subscribe((response:any) => {
         this.alertsService.createSuccessAlert('Your post was published! Return to home page to view the post.', false, '/');
         this.alertsService.toggleOfflineAlert();
+
+        let isoDate = new Date(response.posts.date).toISOString();
+        let iDBPost = {
+          'date': response.posts.date,
+          'givenHugs': response.posts.givenHugs,
+          'id': response.posts.id!,
+          'isoDate': isoDate,
+          'text': response.posts.text,
+          'userId': Number(response.posts.userId),
+          'user': response.posts.user,
+          'sentHugs': response.posts.sentHugs!
+        };
+        this.serviceWorkerM.addItem('posts', iDBPost);
       // if there was an error, alert the user
       }, (err:HttpErrorResponse) => {
         // if the user is offline, show the offline header message
@@ -473,11 +555,13 @@ export class PostsService {
   disableHugButton(checkList: any[], itemClass:string, itemID:number) {
     // Check if the post is in the given array
     let currentPostIndex = checkList.findIndex(e => e.id == itemID);
-    if(currentPostIndex > 0) {
+    if(currentPostIndex >= 0) {
       // if it is, disable the send-hug button
+      checkList[currentPostIndex].sentHugs!.push(this.authService.userData.id!);
       let post = document.querySelectorAll(itemClass)[currentPostIndex];
       post.querySelectorAll('.fa-hand-holding-heart').forEach((element) => {
         (element.parentElement as HTMLButtonElement).disabled = true;
+        (element.parentElement as HTMLButtonElement).classList.add('active');
       })
     }
   }

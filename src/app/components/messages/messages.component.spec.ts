@@ -176,6 +176,7 @@ describe('AppMessaging', () => {
     tick();
 
     // start the popup
+    appMessaging.lastFocusedElement = document.querySelectorAll('a')[0];
     appMessaging.editMode = true;
     appMessaging.delete = true;
     appMessaging.toDelete = 'Thread';
@@ -192,6 +193,7 @@ describe('AppMessaging', () => {
     // check the popup is exited
     expect(changeSpy).toHaveBeenCalled();
     expect(appMessaging.editMode).toBeFalse();
+    expect(document.activeElement).toBe(document.querySelectorAll('a')[0]);
   }))
 
   // INBOX
@@ -235,7 +237,7 @@ describe('AppMessaging', () => {
       fixture.detectChanges();
 
       expect(appMessaging.messType).toBe('inbox');
-      expect(getMessagesSpy).toHaveBeenCalledWith('inbox', 4);
+      expect(getMessagesSpy).toHaveBeenCalledWith('inbox', 4, 1);
     });
 
     // Check each message has delete button and reply link
@@ -394,7 +396,7 @@ describe('AppMessaging', () => {
       fixture.detectChanges();
 
       expect(appMessaging.messType).toBe('outbox');
-      expect(getMessagesSpy).toHaveBeenCalledWith('outbox', 4);
+      expect(getMessagesSpy).toHaveBeenCalledWith('outbox', 4, 1);
     });
 
     // Check each message has delete button and reply link
@@ -550,7 +552,7 @@ describe('AppMessaging', () => {
       fixture.detectChanges();
 
       expect(appMessaging.messType).toBe('threads');
-      expect(getMessagesSpy).toHaveBeenCalledWith(4);
+      expect(getMessagesSpy).toHaveBeenCalledWith(4, 1);
     });
 
     // Check each message has delete button and view thread link

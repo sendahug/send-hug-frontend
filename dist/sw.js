@@ -235,3 +235,14 @@ self.addEventListener('push', function(event) {
 		})
 	)
 })
+
+// push subscription change 
+self.addEventListener('pushsubscriptionchange', (event) => {
+	// get the clients using the service worker
+	self.clients.matchAll().then(clients => {
+		clients.forEach(client => {
+			// alert the client that it needs to resubscribe
+			client.postMessage({ action: 'resubscribe'});
+		})
+	})
+})

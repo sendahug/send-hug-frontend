@@ -186,7 +186,7 @@ export class HeaderMessage implements OnInit, OnChanges {
       if(this.subscribeCalls == 0) {
         this.subscribeCalls++;
         // subscribe to the subject following user threads data
-        this.itemsService.isThreadResolved.subscribe((value) => {
+        this.itemsService.isUserMessagesResolved.thread.subscribe((value) => {
           // the subject's value is changed to 'true' upon fetching user
           // threads, so if the value is true, there's no longer need
           // for the loader screen

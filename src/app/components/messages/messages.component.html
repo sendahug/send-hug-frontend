@@ -20,66 +20,48 @@
 	<app-header-message
 		[waitingFor]="waitFor"></app-header-message>
 	
-	<div *ngIf="messType == 'inbox' || messType == 'outbox' || messType == 'threads'">
-		<!-- If there are messages in the user's inbox -->
-		<ul *ngIf="(messType == 'inbox' || messType == 'outbox') && itemsService.userMessages[messType].length" class="mailboxMessages" aria-describedby="messType">
-			<li *ngFor="let message of itemsService.userMessages[messType]" class="userMessage"  aria-describedby="messType">
-				<div class="messageField" *ngIf="messType == 'inbox'">
-					<span class="pageCategory">From:</span> <span class="pageData" aria-describedby="mUserFrom">{{ message.from }}</span>
+	<!-- If there are messages in the user's inbox -->
+	<ul *ngIf="(messType == 'inbox' || messType == 'outbox') && itemsService.userMessages[messType].length" class="mailboxMessages" aria-describedby="messType">
+		<li *ngFor="let message of itemsService.userMessages[messType]" class="userMessage"  aria-describedby="messType">
+			<div class="messageField" *ngIf="messType == 'inbox'">
+				<span class="pageCategory">From:</span> <span class="pageData" aria-describedby="mUserFrom">{{ message.from }}</span>
+			</div>
+			<div class="messageField" *ngIf="messType == 'outbox'">
+				<span class="pageCategory">For:</span> <span class="pageData" aria-describedby="mUserFor">{{ message.for }}</span>
+			</div>
+			<div class="pageCategory">Message:</div> <div class="pageData" aria-describedby="mText" id="{{'text' + message.id}}">{{ message.messageText }}</div>
+			<div class="buttons">
+				<a [routerLink]="['/new', 'Message']" [queryParams]="{user: message.from, userID: message.fromId}" class="appButton messageButton" [attr.aria-describedby]="'mReply ' +  'text' + message.id" *ngIf="messType == 'inbox'">Reply</a>
+				<button class="appButton deleteButton" (click)="deleteMessage(message.id)" [attr.aria-describedby]="'mDelete ' + text + message.id">Delete Message</button>
+			</div>
+		</li>
+	</ul>
+
+		<!-- If the user is looking at threads -->
+	<div *ngIf="messType == 'threads'">
+		<ul class="userThreads" *ngIf="itemsService.userMessages.threads.length" aria-describedby="messType">
+			<li class="userThread" *ngFor="let thread of itemsService.userMessages.threads" aria-describedby="messType">
+				<div class="messageField">
+					<span class="pageCategory">User:</span> <span class="pageData" aria-describedby="tUser" id="{{ 'user' + thread.id }}">{{ thread.user }}</span>
 				</div>
-				<div class="messageField" *ngIf="messType == 'outbox'">
-					<span class="pageCategory">For:</span> <span class="pageData" aria-describedby="mUserFor">{{ message.for }}</span>
+				<div class="messageField">
+					<span class="pageCategory">Messages:</span> <span class="pageData" [attr.aria-describedby]="'tNumMess ' + 'user' + thread.id">{{ thread.numMessages }}</span>
 				</div>
-				<div class="pageCategory">Message:</div> <div class="pageData" aria-describedby="mText" id="{{'text' + message.id}}">{{ message.messageText }}</div>
-				<div class="buttons">
-					<a [routerLink]="['/new', 'Message']" [queryParams]="{user: message.from, userID: message.fromId}" class="appButton messageButton" [attr.aria-describedby]="'mReply ' +  'text' + message.id" *ngIf="messType == 'inbox'">Reply</a>
-					<button class="appButton deleteButton" (click)="deleteMessage(message.id)" [attr.aria-describedby]="'mDelete ' + text + message.id">Delete Message</button>
+				<div class="messageField">
+					<span class="pageCategory">Last Active:</span> <span class="pageData" [attr.aria-describedby]="'tLatestMess ' + 'user' + thread.id">{{ thread.latestMessage }}</span>
+				</div>
+				<div class="threadBtns">
+					<button class="appButton viewButton" (click)="loadThread(thread.id)" [attr.aria-describedby]="'tView ' + 'user' + thread.id">View Thread Messages</button>
+					<button class="appButton deleteButton" (click)="deleteThread(thread.id)" [attr.aria-describedby]="'tDelete ' + 'user' + thread.id">Delete Thread</button>
 				</div>
 			</li>
 		</ul>
-
-			<!-- If the user is looking at threads -->
-		<div *ngIf="messType == 'threads'">
-			<ul class="userThreads" *ngIf="itemsService.userMessages.threads.length" aria-describedby="messType">
-				<li class="userThread" *ngFor="let thread of itemsService.userMessages.threads" aria-describedby="messType">
-					<div class="messageField">
-						<span class="pageCategory">User:</span> <span class="pageData" aria-describedby="tUser" id="{{ 'user' + thread.id }}">{{ thread.user }}</span>
-					</div>
-					<div class="messageField">
-						<span class="pageCategory">Messages:</span> <span class="pageData" [attr.aria-describedby]="'tNumMess ' + 'user' + thread.id">{{ thread.numMessages }}</span>
-					</div>
-					<div class="messageField">
-						<span class="pageCategory">Last Active:</span> <span class="pageData" [attr.aria-describedby]="'tLatestMess ' + 'user' + thread.id">{{ thread.latestMessage }}</span>
-					</div>
-					<div class="threadBtns">
-						<button class="appButton viewButton" (click)="loadThread(thread.id)" [attr.aria-describedby]="'tView ' + 'user' + thread.id">View Thread Messages</button>
-						<button class="appButton deleteButton" (click)="deleteThread(thread.id)" [attr.aria-describedby]="'tDelete ' + 'user' + thread.id">Delete Thread</button>
-					</div>
-				</li>
-			</ul>
-		</div>
-
-		<!-- Message pagination -->
-		<div class="pagination" *ngIf="itemsService.userMessages[messType].length" role="navigation">
-			<button *ngIf="itemsService.userMessagesPage[messType] > 1" class="appButton prevButton" (click)="prevPage()" [attr.aria-label]="'previous page of the ' + messType + ' mailbox'">Previous Page</button>
-			<button *ngIf="itemsService.userMessagesPage[messType] <= 1" class="appButton placeHolder">Previous Page</button>
-			<div class="pageCount">Page {{ itemsService.userMessagesPage[messType] }} of {{ itemsService.totalUserMessagesPages[messType] }}</div>
-			<button *ngIf="itemsService.totalUserMessagesPages[messType] > itemsService.userMessagesPage[messType]" class="appButton nextButton" (click)="nextPage()" [attr.aria-label]="'next page of the ' + messType + ' mailbox'">Next Page</button>
-			<button *ngIf="itemsService.totalUserMessagesPages[messType] <= itemsService.userMessagesPage[messType]" class="appButton placeHolder">Previous Page</button>
-		</div>
-		<button class="appButton deleteButton deleteAll" (click)="deleteAllMessages(messType)" *ngIf="itemsService.userMessages[messType].length && (messType == 'inbox' || messType == 'outbox')" [attr.aria-label]="'delete all ' + messType + ' messages'">Delete All Messages</button>
-		<button *ngIf="messType == 'threads' && itemsService.userMessages.threads.length" class="appButton deleteButton deleteAll" (click)="deleteAllMessages('threads')">Delete All Threads</button>
-
-		<!-- If there are no messages in the user's outbox -->
-		<div *ngIf="!itemsService.userMessages[messType].length && itemsService.isUserMessagesResolved[messType].value">
-			<div class="errorMessage">You have no messages in this mailbox.</div>
-		</div>
-	</div>	
+	</div>
 	
 	<!-- If the user is looking at a specific thread -->
 	<div *ngIf="messType == 'thread'">
 		<ul class="threadMessages" aria-describedby="messType">
-			<li class="userMessage" *ngFor="let message of itemsService.threadMessages" aria-describedby="messType">
+			<li class="userMessage" *ngFor="let message of itemsService.userMessages.thread" aria-describedby="messType">
 				<div class="messageField">
 					<span class="pageCategory">From:</span> <span class="pageData" aria-describedby="mUserFrom">{{ message.from }}</span>
 				</div>
@@ -99,7 +81,23 @@
 			</li>
 		</ul>
 	</div>
-</div>
+		
+	<!-- Message pagination -->
+	<div class="pagination" *ngIf="itemsService.userMessages[messType].length" role="navigation">
+		<button *ngIf="itemsService.userMessagesPage[messType] > 1" class="appButton prevButton" (click)="prevPage()" [attr.aria-label]="'previous page of the ' + messType + ' mailbox'">Previous Page</button>
+		<button *ngIf="itemsService.userMessagesPage[messType] <= 1" class="appButton placeHolder">Previous Page</button>
+		<div class="pageCount">Page {{ page }} of {{ itemsService.totalUserMessagesPages[messType] }}</div>
+		<button *ngIf="itemsService.totalUserMessagesPages[messType] > itemsService.userMessagesPage[messType]" class="appButton nextButton" (click)="nextPage()" [attr.aria-label]="'next page of the ' + messType + ' mailbox'">Next Page</button>
+		<button *ngIf="itemsService.totalUserMessagesPages[messType] <= itemsService.userMessagesPage[messType]" class="appButton placeHolder">Previous Page</button>
+	</div>
+	<button class="appButton deleteButton deleteAll" (click)="deleteAllMessages(messType)" *ngIf="itemsService.userMessages[messType].length && (messType == 'inbox' || messType == 'outbox')" [attr.aria-label]="'delete all ' + messType + ' messages'">Delete All Messages</button>
+	<button *ngIf="messType == 'threads' && itemsService.userMessages.threads.length" class="appButton deleteButton deleteAll" (click)="deleteAllMessages('threads')">Delete All Threads</button>
+
+	<!-- If there are no messages in the user's outbox -->
+	<div *ngIf="!itemsService.userMessages[messType].length && itemsService.isUserMessagesResolved[messType].value">
+		<div class="errorMessage">You have no messages in this mailbox.</div>
+	</div>
+</div>	
 
 <!-- If the user isn't logged in, prompts the user to log in. -->
 <div id="loginBox" *ngIf="!authService.authenticated">

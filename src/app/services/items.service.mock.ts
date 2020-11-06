@@ -88,32 +88,33 @@ export class MockItemsService {
   userMessages: {
     inbox: Message[],
     outbox: Message[],
-    threads: Thread[]
+    threads: Thread[],
+    thread: Message[]
   } = {
     inbox: [],
     outbox: [],
-    threads: []
+    threads: [],
+    thread: []
   }
   userMessagesPage = {
     inbox: 1,
     outbox: 1,
-    threads: 1
+    threads: 1,
+    thread: 1
   }
   totalUserMessagesPages = {
     inbox: 1,
     outbox: 1,
-    threads: 1
+    threads: 1,
+    thread: 1
   }
   isUserMessagesResolved = {
     inbox: new BehaviorSubject(false),
     outbox: new BehaviorSubject(false),
-    threads: new BehaviorSubject(false)
+    threads: new BehaviorSubject(false),
+    thread: new BehaviorSubject(false)
   }
   activeThread = 0;
-  threadMessages: Message[] = [];
-  threadPage: number;
-  totalThreadPages: number;
-  isThreadResolved = new BehaviorSubject(false);
   // search variables
   isSearching = false;
   userSearchResults: OtherUser[] = [];
@@ -139,9 +140,7 @@ export class MockItemsService {
     private alertsService:MockAlertsService,
     private serviceWorkerM:MockSWManager
   ) {
-      // default assignment
-      this.threadPage = 1;
-      this.totalThreadPages = 1;
+    
   }
 
   // POST-RELATED METHODS
@@ -153,13 +152,13 @@ export class MockItemsService {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  getUserPosts(userID:number) {
+  getUserPosts(userID:number, page:number) {
     const user = (userID == this.authService.userData.id) ? 'self' : 'other';
     this.isUserPostsResolved[user].next(false);
     this.idbResolved.userPosts.next(false);
 
     if(user == 'other') {
-      if(this.userPostsPage.other == 1) {
+      if(page == 1) {
         this.userPosts.other = [
           {
             date: new Date("Mon, 01 Jun 2020 15:05:01 GMT"),
@@ -210,7 +209,7 @@ export class MockItemsService {
 
         this.userPostsPage.other = 1;
       }
-      else if(this.userPostsPage.other == 2) {
+      else if(page == 2) {
         this.userPosts.other = [
           {
             date: new Date("Mon, 01 Jun 2020 15:05:01 GMT"),
@@ -307,7 +306,7 @@ export class MockItemsService {
 
     this.isOtherUserResolved.next(true);
     this.idbResolved.user.next(true);
-    this.getUserPosts(userID);
+    this.getUserPosts(userID, 1);
   }
 
   // MESSAGE-RELATED METHODS
@@ -320,15 +319,15 @@ export class MockItemsService {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  getMailboxMessages(type: 'inbox' | 'outbox', userID:number) {
+  getMailboxMessages(type: 'inbox' | 'outbox', userID:number, page:number) {
     // if the current page is 0, send page 1 to the server (default)
-    const currentPage = this.userMessagesPage[type] ? this.userMessagesPage[type] : 1;
+    const currentPage = page ? page : 1;
     this.idbResolved[type].next(false);
     this.isUserMessagesResolved[type].next(false);
 
 
     if(type == 'inbox') {
-      if(this.userMessagesPage.inbox == 1) {
+      if(page == 1) {
         this.userMessages[type] = [
           {
             date: new Date("Mon, 22 Jun 2020 14:32:38 GMT"),
@@ -393,7 +392,7 @@ export class MockItemsService {
       this.idbResolved[type].next(true);
     }
     else {
-      if(this.userMessagesPage.outbox == 1) {
+      if(page == 1) {
         this.userMessages[type] = [
           {
             date: new Date("Mon, 22 Jun 2020 14:32:38 GMT"),
@@ -446,9 +445,9 @@ export class MockItemsService {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  getThreads(userID:number) {
+  getThreads(userID:number, page:number) {
     // if the current page is 0, send page 1 to the server (default)
-    const currentPage = this.userMessagesPage.threads ? this.userMessagesPage.threads : 1;
+    const currentPage = page ? page : 1;
     this.idbResolved.threads.next(false);
     this.isUserMessagesResolved.threads.next(false);
 
@@ -461,7 +460,7 @@ export class MockItemsService {
         latestMessage: new Date("Mon, 08 Jun 2020 14:43:15 GMT")
       }
     ];
-    if(this.userMessagesPage.threads == 1) {
+    if(currentPage == 1) {
       this.userMessagesPage.threads = 1;
     }
     else {
@@ -483,9 +482,9 @@ export class MockItemsService {
   getThread(userID:number, threadId:number) {
     this.activeThread = threadId;
     this.idbResolved.thread.next(false);
-    this.isThreadResolved.next(false);
+    this.isUserMessagesResolved.thread.next(false);
 
-    this.threadMessages = [
+    this.userMessages.thread = [
       {
         date: new Date("Mon, 08 Jun 2020 14:43:15 GMT"),
         for: "shirb",
@@ -507,9 +506,9 @@ export class MockItemsService {
         threadID: 3
       }
     ];
-    this.totalThreadPages = 1;
-    this.threadPage = 1;
-    this.isThreadResolved.next(true);
+    this.totalUserMessagesPages.thread = 1;
+    this.userMessagesPage.thread = 1;
+    this.isUserMessagesResolved.thread.next(true);
     this.idbResolved.thread.next(true);
   }
 

@@ -508,7 +508,10 @@ describe('AdminService', () => {
     // mock response
     const mockResponse = {
       success: true,
-      added: 'sample'
+      added: {
+        filter: 'sample',
+        id: 1
+      }
     };
 
     const alertSpy = spyOn(adminService['alertsService'], 'createSuccessAlert');
@@ -519,7 +522,7 @@ describe('AdminService', () => {
     req.flush(mockResponse);
 
     expect(alertSpy).toHaveBeenCalled();
-    expect(alertSpy).toHaveBeenCalledWith(`The phrase ${mockResponse.added} was added to the list of filtered words! Refresh to see the updated list.`, true);
+    expect(alertSpy).toHaveBeenCalledWith(`The phrase ${mockResponse.added.filter} was added to the list of filtered words! Refresh to see the updated list.`, true);
   });
 
   // Check that the service removes a filter
@@ -527,7 +530,10 @@ describe('AdminService', () => {
     // mock response
     const mockResponse = {
       success: true,
-      deleted: 'word1'
+      deleted: {
+        filter: 'word1',
+        id: 1
+      }
     };
 
     adminService.filteredPhrases = [
@@ -535,13 +541,13 @@ describe('AdminService', () => {
       'word2'
     ];
     const alertSpy = spyOn(adminService['alertsService'], 'createSuccessAlert');
-    adminService.removeFilter('word1');
+    adminService.removeFilter(1);
 
-    const req = httpController.expectOne('http://localhost:5000/filters/0');
+    const req = httpController.expectOne('http://localhost:5000/filters/1');
     expect(req.request.method).toEqual('DELETE');
     req.flush(mockResponse);
 
     expect(alertSpy).toHaveBeenCalled();
-    expect(alertSpy).toHaveBeenCalledWith(`The phrase ${mockResponse.deleted} was removed from the list of filtered words. Refresh to see the updated list.`, true);
+    expect(alertSpy).toHaveBeenCalledWith(`The phrase ${mockResponse.deleted.filter} was removed from the list of filtered words. Refresh to see the updated list.`, true);
   });
 });

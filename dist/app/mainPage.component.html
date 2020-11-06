@@ -30,7 +30,7 @@
 	<!-- If there are no items in the list -->
 	<div class="errorMessage" *ngIf="postsService.newItemsArray.length == 0 && postsService.isMainPageResolved.value">There are no recent items.</div>
 	
-	<a [routerLink]="['/list', 'New']" [queryParams]="{page: 1}" class="textlessButton fullButton" aria-label="View full list of new items" id="fullNew">View Full 'New' List</a>
+	<a [routerLink]="['/list', 'New']" [queryParams]="{page: 1}" class="textlessButton fullButton" role="navigation" aria-label="View full list of new items">View Full 'New' List</a>
 </div>
 
 <!-- Suggested items -->

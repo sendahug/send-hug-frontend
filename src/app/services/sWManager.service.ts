@@ -313,7 +313,10 @@ export class SWManager {
             // queryUsers method and add it
             if(!element.user) {
               this.queryUsers(element.userId)!.then((userData) => {
-                element.user = userData!.displayName;
+                // if the user exists in the database, get it
+                if(userData) {
+                  element.user = userData.displayName;
+                }
               })
             }
           });
@@ -342,13 +345,22 @@ export class SWManager {
         // the posts (to show the latest posts) and return paginated posts
         else if(target == 'new posts') {
           let newPosts = posts!.reverse();
+          let pages = Math.ceil(newPosts.length / 5);
 
-          return newPosts.slice(startIndex, (startIndex + 5));
+          return {
+            posts: newPosts.slice(startIndex, (startIndex + 5)),
+            pages: pages
+          };
         }
         // if the target is the fullList's suggested posts or a specific user's,
         // posts, return paginated posts (as-is).
         else if(target == 'suggested posts' || target == 'user posts') {
-          return posts!.slice(startIndex, (startIndex + 5));
+          let pages = Math.ceil(posts!.length / 5);
+
+          return {
+            posts: posts!.slice(startIndex, (startIndex + 5)),
+            pages: pages
+          };
         }
       })
     }
@@ -381,24 +393,36 @@ export class SWManager {
       if(target == 'inbox') {
         let inbox = messages.filter((e:any) => e.forId == currentUser);
         let orderedInbox = inbox.reverse();
+        let pages = Math.ceil(orderedInbox!.length / 5);
 
-        return orderedInbox.slice(startIndex, (startIndex + 5));
+        return {
+          posts: orderedInbox.slice(startIndex, (startIndex + 5)),
+          pages: pages
+        };
       }
       // if the target is outbox, keep only messages sent from the user and
       // return paginated outbox messages
       else if(target == 'outbox') {
         let outbox = messages.filter((e:any) => e.fromId == currentUser);
         let orderedOutbox = outbox.reverse();
+        let pages = Math.ceil(orderedOutbox!.length / 5);
 
-        return orderedOutbox.slice(startIndex, (startIndex + 5));
+        return {
+          posts: orderedOutbox.slice(startIndex, (startIndex + 5)),
+          pages: pages
+        };
       }
       // if the target is a specific thread, keep only messages belonging to
       // that thread nad return paginated messages
       else if(target == 'thread') {
         let thread = messages.filter((e:any) => e.threadID == threadID);
         let orderedThread = thread.reverse();
+        let pages = Math.ceil(orderedThread!.length / 5);
 
-        return orderedThread.slice(startIndex, (startIndex+5));
+        return {
+          posts: orderedThread.slice(startIndex, (startIndex+5)),
+          pages: pages
+        };
       }
     })
   }
@@ -417,8 +441,12 @@ export class SWManager {
     }).then(function(threads) {
       let startIndex = (currentPage - 1) * 5;
       let orderedThreads = threads.reverse();
+      let pages = Math.ceil(orderedThreads!.length / 5);
 
-      return orderedThreads.slice(startIndex, (startIndex + 5));
+      return {
+        posts: orderedThreads.slice(startIndex, (startIndex + 5)),
+        pages: pages
+      };
     })
   }
 

@@ -215,7 +215,7 @@ describe('MyPosts', () => {
 
     // expectations for another user
     expect(getPostsSpy).toHaveBeenCalled();
-    expect(getPostsSpy).toHaveBeenCalledWith(1);
+    expect(getPostsSpy).toHaveBeenCalledWith(1, 1);
     expect(myPosts.itemsService.userPosts.other.length).toBe(5);
     expect(myPostsDOM.querySelectorAll('.itemList')[0].children.length).toBe(5);
 
@@ -260,7 +260,7 @@ describe('MyPosts', () => {
     tick();
 
     // expectations for the logged in user
-    expect(getPostsSpy).toHaveBeenCalledWith(4);
+    expect(getPostsSpy).toHaveBeenCalledWith(4, 1);
     expect(myPosts.itemsService.userPosts.other.length).toBe(0);
     expect(myPosts.itemsService.userPosts.self.length).toBe(2);
     expect(myPostsDOM.querySelectorAll('.itemList')[0].children.length).toBe(2);
@@ -284,7 +284,7 @@ describe('MyPosts', () => {
 
     // before the click
     expect(getSpy).toHaveBeenCalled();
-    expect(getSpy).toHaveBeenCalledWith(4);
+    expect(getSpy).toHaveBeenCalledWith(4, 1);
     expect(myPosts.user).toBe('self');
     expect(myPosts.editMode).toBeFalse();
     expect(myPosts.userID).toBe(4);
@@ -513,6 +513,7 @@ describe('MyPosts', () => {
     tick();
 
     // start the popup
+    myPosts.lastFocusedElement = document.querySelectorAll('a')[0];
     myPosts.editMode = true;
     myPosts.delete = true;
     myPosts.toDelete = 'Post';
@@ -529,5 +530,6 @@ describe('MyPosts', () => {
     // check the popup is exited
     expect(changeSpy).toHaveBeenCalled();
     expect(myPosts.editMode).toBeFalse();
+    expect(document.activeElement).toBe(document.querySelectorAll('a')[0]);
   }))
 });

@@ -62,6 +62,7 @@ export class SearchResults implements AfterViewChecked {
   report:boolean;
   reportedItem: Post | undefined;
   reportType = 'Post';
+  lastFocusedElement: any;
   // icons
   faComment = faComment;
   faEdit = faEdit;
@@ -167,6 +168,7 @@ export class SearchResults implements AfterViewChecked {
   Programmer: Shir Bar Lev.
   */
   editPost(post:Post) {
+    this.lastFocusedElement = document.activeElement;
     this.editType = 'post';
     this.postToEdit = post;
     this.editMode = true;
@@ -184,6 +186,7 @@ export class SearchResults implements AfterViewChecked {
   */
   changeMode(edit:boolean) {
     this.editMode = edit;
+    this.lastFocusedElement.focus();
   }
 
   /*
@@ -194,6 +197,7 @@ export class SearchResults implements AfterViewChecked {
   Programmer: Shir Bar Lev.
   */
   deletePost(postID:number) {
+    this.lastFocusedElement = document.activeElement;
     this.editMode = true;
     this.delete = true;
     this.toDelete = 'Post';
@@ -208,6 +212,7 @@ export class SearchResults implements AfterViewChecked {
   Programmer: Shir Bar Lev.
   */
   reportPost(post:Post) {
+    this.lastFocusedElement = document.activeElement;
 	  this.editMode = true;
 	  this.delete = false;
 	  this.report = true;

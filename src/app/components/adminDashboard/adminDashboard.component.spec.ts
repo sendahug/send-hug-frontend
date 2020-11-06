@@ -116,6 +116,7 @@ describe('AdminDashboard', () => {
     tick();
 
     // start the popup
+    adminDashboard.lastFocusedElement = document.querySelectorAll('a')[0];
     adminDashboard.editType = 'other user';
     adminDashboard.toEdit = 'displayName';
     adminDashboard.editMode = true;
@@ -133,6 +134,7 @@ describe('AdminDashboard', () => {
     // check the popup is exited
     expect(changeSpy).toHaveBeenCalled();
     expect(adminDashboard.editMode).toBeFalse();
+    expect(document.activeElement).toBe(document.querySelectorAll('a')[0]);
   }));
 
   // REPORTS PAGE
@@ -592,7 +594,7 @@ describe('AdminDashboard', () => {
       // check expectations
       expect(removeSpy).toHaveBeenCalled();
       expect(removeServiceSpy).toHaveBeenCalled();
-      expect(removeServiceSpy).toHaveBeenCalledWith('word');
+      expect(removeServiceSpy).toHaveBeenCalledWith(1);
     }));
   });
 });

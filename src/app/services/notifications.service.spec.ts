@@ -30,7 +30,13 @@
   SOFTWARE.
 */
 
-import { TestBed } from "@angular/core/testing";
+import 'zone.js/dist/zone';
+import "zone.js/dist/proxy";
+import "zone.js/dist/sync-test";
+import "zone.js/dist/jasmine-patch";
+import "zone.js/dist/async-test";
+import "zone.js/dist/fake-async-test";
+import { discardPeriodicTasks, fakeAsync, TestBed, tick } from "@angular/core/testing";
 import {
   HttpClientTestingModule,
   HttpTestingController
@@ -118,7 +124,7 @@ describe('NotificationService', () => {
   });
 
   // Check the service auto-refreshes
-  it('autoRefresh() - should run auto-refresh with interval', () => {
+  it('autoRefresh() - should run auto-refresh with interval', fakeAsync(() => {
     const notifSpy = spyOn(notificationService, 'getNotifications');
     notificationService['authService'].login();
     TestBed.inject(AuthService).login();
@@ -132,11 +138,17 @@ describe('NotificationService', () => {
     // after triggering the method
     expect(notificationService.refreshCounter).toBeDefined();
     expect(notificationService.refreshSub).toBeDefined();
+
+    // wait for the first round of the interval to pass
+    tick(notificationService.refreshRateSecs * 1000);
+
+    expect(notifSpy).toHaveBeenCalled();
     notificationService.refreshCounter!.subscribe((value) => {
       expect(value).toBeTruthy();
-      expect(notifSpy).toHaveBeenCalled();
     });
-  });
+
+    discardPeriodicTasks();
+  }));
 
   // Check the service also stops auto-refresh
   it('stopAutoRefresh() - should stop auto-refresh', () => {

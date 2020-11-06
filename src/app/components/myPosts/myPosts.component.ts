@@ -56,12 +56,14 @@ export class MyPosts implements OnInit {
   report:boolean;
   reportedItem: Post | undefined;
   reportType = 'Post';
+  lastFocusedElement: any;
   // loader sub-component variable
   waitFor = 'user posts';
   // The user whose posts to fetch
   @Input()
   userID:number | undefined;
   user!: 'self' | 'other';
+  page: number;
   // icons
   faFlag = faFlag;
   faHandHoldingHeart = faHandHoldingHeart;
@@ -72,27 +74,19 @@ export class MyPosts implements OnInit {
     public authService:AuthService,
     private postsService:PostsService
   ) {
-      // if there's a user ID in the viewed profile, get that user's posts
-      if(this.userID) {
-        this.itemsService.getUserPosts(this.userID);
-        this.user = 'other';
-      }
-      // if there isn't, it's the user's own profile, so get their posts
-      else {
-        // wait for user data to be resolved; that way, if there user just
-        // signed up, the component waits for user the user to be added to the
-        // database and only then fetches posts
-        this.authService.isUserDataResolved.subscribe((value) => {
-          if(value) {
-            itemsService.getUserPosts(this.authService.userData.id!);
-            this.user = 'self';
-          }
-        });
-      }
+    // if there's a user ID in the viewed profile, get that user's posts
+    if(this.userID && this.userID != this.authService.userData.id!) {
+      this.user = 'other';
+    }
+    // if there isn't, it's the user's own profile, so get their posts
+    else {
+      this.user = 'self';
+    }
 
-      this.editMode = false;
-      this.delete = false;
-      this.report = false;
+    this.editMode = false;
+    this.delete = false;
+    this.report = false;
+    this.page = 1;
   }
 
   /*
@@ -107,10 +101,12 @@ export class MyPosts implements OnInit {
   ngOnInit() {
     // if the user ID is different than the logged in user, it's someone else
     if(this.userID && this.userID != this.authService.userData.id) {
+      this.itemsService.getUserPosts(this.userID, 1);
       this.user = 'other';
     }
     // otherwise, if it's the same ID or there's no ID, get the user's profile
     else {
+      this.itemsService.getUserPosts(this.authService.userData.id!, 1);
       this.user = 'self';
     }
   }
@@ -123,6 +119,7 @@ export class MyPosts implements OnInit {
   Programmer: Shir Bar Lev.
   */
   editPost(post:Post) {
+    this.lastFocusedElement = document.activeElement;
     this.editType = 'post';
     this.postToEdit = post;
     this.editMode = true;
@@ -140,6 +137,7 @@ export class MyPosts implements OnInit {
   */
   changeMode(edit:boolean) {
     this.editMode = edit;
+    this.lastFocusedElement.focus();
   }
 
   /*
@@ -150,6 +148,7 @@ export class MyPosts implements OnInit {
   Programmer: Shir Bar Lev.
   */
   deletePost(post_id:number) {
+    this.lastFocusedElement = document.activeElement;
     this.editMode = true;
     this.delete = true;
     this.toDelete = 'Post';
@@ -165,6 +164,7 @@ export class MyPosts implements OnInit {
   Programmer: Shir Bar Lev.
   */
   deleteAllPosts() {
+    this.lastFocusedElement = document.activeElement;
     this.editMode = true;
     this.delete = true;
     this.toDelete = 'All posts';
@@ -181,6 +181,7 @@ export class MyPosts implements OnInit {
   Programmer: Shir Bar Lev.
   */
   reportPost(post:Post) {
+    this.lastFocusedElement = document.activeElement;
 	  this.editMode = true;
 	  this.delete = false;
 	  this.report = true;
@@ -210,12 +211,12 @@ export class MyPosts implements OnInit {
   Programmer: Shir Bar Lev.
   */
   nextPage() {
-    this.itemsService.userPostsPage[this.user] += 1;
+    this.page += 1;
     if(this.user == 'self') {
-      this.itemsService.getUserPosts(this.authService.userData.id!);
+      this.itemsService.getUserPosts(this.authService.userData.id!, this.page);
     }
     else {
-      this.itemsService.getUserPosts(this.userID!);
+      this.itemsService.getUserPosts(this.userID!, this.page);
     }
   }
 
@@ -228,12 +229,12 @@ export class MyPosts implements OnInit {
   Programmer: Shir Bar Lev.
   */
   prevPage() {
-    this.itemsService.userPostsPage[this.user] -= 1;
+    this.page -= 1;
     if(this.user == 'self') {
-      this.itemsService.getUserPosts(this.authService.userData.id!);
+      this.itemsService.getUserPosts(this.authService.userData.id!, this.page);
     }
     else {
-      this.itemsService.getUserPosts(this.userID!);
+      this.itemsService.getUserPosts(this.userID!, this.page);
     }
   }
 }

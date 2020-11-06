@@ -47,6 +47,11 @@ import { SWManager } from './sWManager.service';
 import { environment } from '../../environments/environment';
 import { environment as prodEnv } from '../../environments/environment.prod';
 
+type FetchStamp = {
+  source: 'Server' | 'IDB' | '';
+  date: number;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -88,32 +93,33 @@ export class ItemsService {
   userMessages: {
     inbox: Message[],
     outbox: Message[],
-    threads: Thread[]
+    threads: Thread[],
+    thread: Message[]
   } = {
     inbox: [],
     outbox: [],
-    threads: []
+    threads: [],
+    thread: []
   }
   userMessagesPage = {
     inbox: 1,
     outbox: 1,
-    threads: 1
+    threads: 1,
+    thread: 1
   }
   totalUserMessagesPages = {
     inbox: 1,
     outbox: 1,
-    threads: 1
+    threads: 1,
+    thread: 1
   }
   isUserMessagesResolved = {
     inbox: new BehaviorSubject(false),
     outbox: new BehaviorSubject(false),
-    threads: new BehaviorSubject(false)
+    threads: new BehaviorSubject(false),
+    thread: new BehaviorSubject(false)
   }
   activeThread = 0;
-  threadMessages: Message[] = [];
-  threadPage: number;
-  totalThreadPages: number;
-  isThreadResolved = new BehaviorSubject(false);
   // search variables
   isSearching = false;
   userSearchResults: OtherUser[] = [];
@@ -132,6 +138,29 @@ export class ItemsService {
     threads: new BehaviorSubject(false),
     thread: new BehaviorSubject(false)
   }
+  // latest fetch
+  lastFetched: { [key:string]: FetchStamp; } = {
+    userPostsself: {
+      source: '',
+      date: 0
+    },
+    userPostsother: {
+      source: '',
+      date: 0
+    },
+    inbox: {
+      source: '',
+      date: 0
+    },
+    outbox: {
+      source: '',
+      date: 0
+    },
+    threads: {
+      source: '',
+      date: 0
+    }
+  };
 
   // CTOR
   constructor(
@@ -140,9 +169,7 @@ export class ItemsService {
     private alertsService:AlertsService,
     private serviceWorkerM:SWManager
   ) {
-      // default assignment
-      this.threadPage = 1;
-      this.totalThreadPages = 1;
+
   }
 
   // POST-RELATED METHODS
@@ -154,7 +181,7 @@ export class ItemsService {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  getUserPosts(userID:number) {
+  getUserPosts(userID:number, page:number) {
     const user = (userID == this.authService.userData.id) ? 'self' : 'other';
     const Url = this.serverUrl + `/users/all/${userID}/posts`;
 
@@ -179,7 +206,7 @@ export class ItemsService {
     }
 
     // if the current page is 0, send page 1 to the server (default)
-    const currentPage = this.userPostsPage[user] ? this.userPostsPage[user] : 1;
+    const currentPage = page ? page : 1;
     const params = new HttpParams().set('page', `${currentPage}`);
     // change the ID of the previous user to the profile currently open
     this.previousUser = userID;
@@ -187,9 +214,22 @@ export class ItemsService {
     // get the recent posts from IDB
     this.serviceWorkerM.queryPosts('user posts', userID, currentPage)?.then((data:any) => {
       // if there are posts in cache, display them
-      if(data.length) {
-        this.userPosts[user] = data;
-        this.idbResolved.userPosts.next(true);
+      if(data.posts.length) {
+        // if the latest fetch is none, the last fetch was from IDB and before,
+        // the last fetch was performed more than 10 seconds ago (meaning the user
+        // changed/refreshed the page) or it's a different page, update the latest fetch and the displayed
+        // posts
+        if(this.lastFetched['userPosts' + user].date == 0 ||
+           (this.lastFetched['userPosts' + user].date < Date.now() && this.lastFetched['userPosts' + user].source == 'IDB') ||
+           this.lastFetched['userPosts' + user].date + 10000 < Date.now() ||
+           (page != this.userPostsPage[user] && page != 1) ||
+           this.previousUser != userID) {
+          this.lastFetched['userPosts' + user].source = 'IDB';
+          this.lastFetched['userPosts' + user].date = Date.now();
+          this.userPosts[user] = data.posts;
+          this.totalUserPostsPages[user] = data.pages;
+          this.idbResolved.userPosts.next(true);
+        }
       }
     });
 
@@ -204,6 +244,8 @@ export class ItemsService {
       // if there are 0 pages, current page is also 0; otherwise it's whatever
       // the server returns
       this.userPostsPage[user] = this.totalUserPostsPages[user] ? response.page : 0;
+      this.lastFetched['userPosts' + user].source = 'Server';
+      this.lastFetched['userPosts' + user].date = Date.now();
       this.isUserPostsResolved[user].next(true);
       this.idbResolved.userPosts.next(true);
       this.alertsService.toggleOfflineAlert();
@@ -288,15 +330,24 @@ export class ItemsService {
   */
   getUser(userID:number) {
     const Url = this.serverUrl + `/users/all/${userID}`;
-    this.isOtherUserResolved.next(false);
-    this.idbResolved.user.next(false);
+    if(this.previousUser != 0 && this.previousUser != userID) {
+      this.otherUserData = {
+        id: 0,
+        displayName: '',
+        receivedHugs: 0,
+        givenHugs: 0,
+        postsNum: 0,
+        role: ''
+      };
+      this.isOtherUserResolved.next(false);
+      this.idbResolved.user.next(false);
+    }
 
     // get the user's data from IDB
     this.serviceWorkerM.queryUsers(userID)?.then((data:any) => {
       // if the user's data exists in the IDB database
       if(data) {
         this.otherUserData = data;
-        this.getUserPosts(userID);
         this.idbResolved.user.next(true);
       }
     });
@@ -316,7 +367,6 @@ export class ItemsService {
       }
       this.isOtherUserResolved.next(true);
       this.idbResolved.user.next(true);
-      this.getUserPosts(userID);
       this.alertsService.toggleOfflineAlert();
 
       // adds the user's data to the users store
@@ -347,9 +397,9 @@ export class ItemsService {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  getMailboxMessages(type: 'inbox' | 'outbox', userID:number) {
+  getMailboxMessages(type: 'inbox' | 'outbox', userID:number, page:number) {
     // if the current page is 0, send page 1 to the server (default)
-    const currentPage = this.userMessagesPage[type] ? this.userMessagesPage[type] : 1;
+    const currentPage = page ? page : 1;
     let params = new HttpParams()
       .set('userID', `${userID}`)
       .set('page', `${currentPage}`)
@@ -359,13 +409,25 @@ export class ItemsService {
     // get the user's messages from IDB
     this.serviceWorkerM.queryMessages(type, this.authService.userData.id!, currentPage)?.then((data:any) => {
       // if there's messages data in the IDB database
-      if(data.length) {
-        this.userMessages[type] = [];
-        // add the messages to the appropriate array
-        data.forEach((element:Message) => {
-          this.userMessages[type].push(element);
-        });
-        this.idbResolved[type].next(true);
+      if(data.posts.length) {
+        // if the latest fetch is none, the last fetch was from IDB and before,
+        // the last fetch was performed more than 10 seconds ago (meaning the user
+        // changed/refreshed the page) or it's a different page, update the latest fetch and the displayed
+        // posts
+        if(this.lastFetched[type].date == 0 ||
+           (this.lastFetched[type].date < Date.now() && this.lastFetched[type].source == 'IDB') ||
+           this.lastFetched[type].date + 10000 < Date.now() ||
+           (page != this.userMessagesPage[type] && page != 1)) {
+          this.lastFetched[type].source = 'IDB';
+          this.lastFetched[type].date = Date.now();
+          this.userMessages[type] = [];
+          // add the messages to the appropriate array
+          data.posts.forEach((element:Message) => {
+            this.userMessages[type].push(element);
+          });
+          this.totalUserMessagesPages[type] = data.pages;
+          this.idbResolved[type].next(true);
+        }
       }
     });
 
@@ -383,6 +445,8 @@ export class ItemsService {
       // if there are 0 pages, current page is also 0; otherwise it's whatever
       // the server returns
       this.userMessagesPage[type] = this.totalUserMessagesPages[type] ? response.current_page : 0;
+      this.lastFetched[type].source = 'Server';
+      this.lastFetched[type].date = Date.now();
       this.isUserMessagesResolved[type].next(true);
       this.idbResolved[type].next(true);
       this.alertsService.toggleOfflineAlert();
@@ -427,9 +491,9 @@ export class ItemsService {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  getThreads(userID:number) {
+  getThreads(userID:number, page:number) {
     // if the current page is 0, send page 1 to the server (default)
-    const currentPage = this.userMessagesPage.threads ? this.userMessagesPage.threads : 1;
+    const currentPage = page ? page : 1;
     let params = new HttpParams()
       .set('userID', `${userID}`)
       .set('page', `${currentPage}`)
@@ -439,20 +503,32 @@ export class ItemsService {
     // get the user's messages from IDB
     this.serviceWorkerM.queryThreads(currentPage)?.then((data:any) => {
       // if there's threads data in the IDB database
-      if(data.length) {
-        this.userMessages.threads = [];
-        // add the threads to the appropriate array
-        data.forEach((element: any) => {
-          let thread: Thread = {
-            id: element.id,
-            user: (element.user1 == this.authService.userData.displayName) ? element.user2 : element.user1,
-            userID: (element.user1Id == this.authService.userData.id) ? element.user2Id : element.user1Id,
-            numMessages: element.numMessages,
-            latestMessage: element.latestMessage
-          }
-          this.userMessages.threads.push(thread);
-        });
-        this.idbResolved.threads.next(true);
+      if(data.posts.length) {
+        // if the latest fetch is none, the last fetch was from IDB and before,
+        // the last fetch was performed more than 10 seconds ago (meaning the user
+        // changed/refreshed the page) or it's a different page, update the latest fetch and the displayed
+        // posts
+        if(this.lastFetched.threads.date == 0 ||
+           (this.lastFetched.threads.date < Date.now() && this.lastFetched.threads.source == 'IDB') ||
+           this.lastFetched.threads.date + 10000 < Date.now() ||
+           (page != this.userMessagesPage.threads && page != 1)) {
+          this.lastFetched.threads.source = 'IDB';
+          this.lastFetched.threads.date = Date.now();
+          this.userMessages.threads = [];
+          // add the threads to the appropriate array
+          data.posts.forEach((element: any) => {
+            let thread: Thread = {
+              id: element.id,
+              user: (element.user1 == this.authService.userData.displayName) ? element.user2 : element.user1,
+              userID: (element.user1Id == this.authService.userData.id) ? element.user2Id : element.user1Id,
+              numMessages: element.numMessages,
+              latestMessage: element.latestMessage
+            }
+            this.userMessages.threads.push(thread);
+          });
+          this.totalUserMessagesPages.threads = data.pages;
+          this.idbResolved.threads.next(true);
+        }
       }
     });
 
@@ -477,19 +553,21 @@ export class ItemsService {
       // if there are 0 pages, current page is also 0; otherwise it's whatever
       // the server returns
       this.userMessagesPage.threads = this.totalUserMessagesPages.threads ? response.current_page : 0;
+      this.lastFetched.threads.source = 'Server';
+      this.lastFetched.threads.date = Date.now();
       this.isUserMessagesResolved.threads.next(true);
       this.idbResolved.threads.next(true);
       this.alertsService.toggleOfflineAlert();
 
       // add each message in the threads list to the store
-      threads.forEach((element:Thread) => {
+      threads.forEach((element:any) => {
         let isoDate = new Date(element.latestMessage).toISOString();
         let thread = {
           'latestMessage': element.latestMessage,
-          'user1': element.user!,
-          'user1Id': element.userID,
-          'user2': this.authService.userData.displayName,
-          'user2Id': this.authService.userData.id!,
+          'user1': element.user1!,
+          'user1Id': element.user1Id,
+          'user2': element.user2,
+          'user2Id': element.user2Id,
           'numMessages': element.numMessages!,
           'isoDate': isoDate,
           'id': element.id
@@ -525,7 +603,7 @@ export class ItemsService {
     this.activeThread = threadId;
     this.idbResolved.thread.next(false);
     // if the current page is 0, send page 1 to the server (default)
-    const currentPage = this.threadPage ? this.threadPage : 1;
+    const currentPage = this.userMessagesPage.thread ? this.userMessagesPage.thread : 1;
     let params = new HttpParams()
       .set('userID', `${userID}`)
       .set('page', `${currentPage}`)
@@ -535,12 +613,13 @@ export class ItemsService {
     // get the user's messages from IDB
     this.serviceWorkerM.queryMessages('thread', this.authService.userData.id!, currentPage, threadId)?.then((data:any) => {
       // if there's messages data in the IDB database
-      if(data.length) {
-        this.threadMessages = [];
+      if(data.posts.length) {
+        this.userMessages.thread = [];
         // add the messages to the appropriate array
-        data.forEach((element: Message) => {
-          this.threadMessages.push(element);
+        data.posts.forEach((element: Message) => {
+          this.userMessages.thread.push(element);
         });
+        this.totalUserMessagesPages.thread = data.pages;
         this.idbResolved.thread.next(true);
       }
     });
@@ -551,15 +630,15 @@ export class ItemsService {
       params: params
     }).subscribe((response:any) => {
       let messages = response.messages;
-      this.threadMessages = [];
+      this.userMessages.thread = [];
       messages.forEach((element: Message) => {
-        this.threadMessages.push(element);
+        this.userMessages.thread.push(element);
       });
-      this.totalThreadPages = response.total_pages;
+      this.totalUserMessagesPages.thread = response.total_pages;
       // if there are 0 pages, current page is also 0; otherwise it's whatever
       // the server returns
-      this.threadPage = this.totalThreadPages ? response.current_page : 0;
-      this.isThreadResolved.next(true);
+      this.userMessagesPage.thread = this.totalUserMessagesPages.thread ? response.current_page : 0;
+      this.isUserMessagesResolved.thread.next(true);
       this.idbResolved.thread.next(true);
       this.alertsService.toggleOfflineAlert();
 
@@ -582,7 +661,7 @@ export class ItemsService {
       this.serviceWorkerM.cleanDB('messages');
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
-      this.isThreadResolved.next(true);
+      this.isUserMessagesResolved.thread.next(true);
       this.idbResolved.thread.next(true);
 
       // if the server is unavilable due to the user being offline, tell the user
@@ -607,9 +686,23 @@ export class ItemsService {
     const Url = this.serverUrl + '/messages';
     this.Http.post(Url, message, {
       headers: this.authService.authHeader
-    }).subscribe((_response:any) => {
+    }).subscribe((response:any) => {
       this.alertsService.createSuccessAlert('Your message was sent!', false, '/');
       this.alertsService.toggleOfflineAlert();
+
+      let isoDate = new Date(response.message.date).toISOString();
+      let message = {
+        'date': response.message.date,
+        'for': response.message.for!,
+        'forId': response.message.forId,
+        'from': response.message.from,
+        'fromId': response.message.fromId,
+        'id': Number(response.message.id!),
+        'isoDate': isoDate,
+        'messageText': response.message.messageText,
+        'threadID': response.message.threadID!
+      }
+      this.serviceWorkerM.addItem('messages', message);
     // if there was an error, alert the user
     }, (err:HttpErrorResponse) => {
       // if the user is offline, show the offline header message

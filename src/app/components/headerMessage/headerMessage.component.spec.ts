@@ -140,7 +140,7 @@ describe('HeaderMessage', () => {
       headerMessage['itemsService'].isOtherUserResolved,
       headerMessage['itemsService'].isUserMessagesResolved.inbox,
       headerMessage['itemsService'].isUserMessagesResolved.threads,
-      headerMessage['itemsService'].isThreadResolved,
+      headerMessage['itemsService'].isUserMessagesResolved.thread,
       headerMessage['itemsService'].isUserPostsResolved.other
     ]
 
@@ -169,7 +169,7 @@ describe('HeaderMessage', () => {
       headerMessage['itemsService'].isOtherUserResolved,
       headerMessage['itemsService'].isUserMessagesResolved.inbox,
       headerMessage['itemsService'].isUserMessagesResolved.threads,
-      headerMessage['itemsService'].isThreadResolved,
+      headerMessage['itemsService'].isUserMessagesResolved.thread,
       headerMessage['itemsService'].isUserPostsResolved.other
     ];
     const waitingForOptions = [
@@ -216,7 +216,7 @@ describe('HeaderMessage', () => {
       spyOn(headerMessage['itemsService'].isUserMessagesResolved.inbox as BehaviorSubject<boolean>, 'subscribe').and.callThrough(),
       spyOn(headerMessage['itemsService'].isUserMessagesResolved.outbox as BehaviorSubject<boolean>, 'subscribe').and.callThrough(),
       spyOn(headerMessage['itemsService'].isUserMessagesResolved.threads as BehaviorSubject<boolean>, 'subscribe').and.callThrough(),
-      spyOn(headerMessage['itemsService'].isThreadResolved as BehaviorSubject<boolean>, 'subscribe').and.callThrough(),
+      spyOn(headerMessage['itemsService'].isUserMessagesResolved.thread as BehaviorSubject<boolean>, 'subscribe').and.callThrough(),
       spyOn(headerMessage['itemsService'].isUserPostsResolved.other as BehaviorSubject<boolean>, 'subscribe').and.callThrough()
     ];
 

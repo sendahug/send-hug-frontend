@@ -449,7 +449,7 @@ export class AdminService {
     }, {
       headers: this.authService.authHeader
     }).subscribe((response:any) => {
-      this.alertsService.createSuccessAlert(`The phrase ${response.added} was added to the list of filtered words! Refresh to see the updated list.`, true);
+      this.alertsService.createSuccessAlert(`The phrase ${response.added.filter} was added to the list of filtered words! Refresh to see the updated list.`, true);
     // if there was an error, alert the user.
     }, (err:HttpErrorResponse) => {
       this.alertsService.createErrorAlert(err);
@@ -459,19 +459,18 @@ export class AdminService {
   /*
   Function Name: removeFilter()
   Function Description: Removes a string from the filtered phrases list.
-  Parameters: filter (string) - String to remove from filtered words.
+  Parameters: filter (number) - String to remove from filtered words.
   ----------------
   Programmer: Shir Bar Lev.
   */
-  removeFilter(filter:string) {
-    const filterID = this.filteredPhrases.findIndex(element => element == filter);
-    const Url = this.serverUrl + `/filters/${filterID}`;
+  removeFilter(filter:number) {
+    const Url = this.serverUrl + `/filters/${filter}`;
 
     // try to delete the filter
     this.Http.delete(Url, {
       headers: this.authService.authHeader
     }).subscribe((response:any) => {
-      this.alertsService.createSuccessAlert(`The phrase ${response.deleted} was removed from the list of filtered words. Refresh to see the updated list.`, true);
+      this.alertsService.createSuccessAlert(`The phrase ${response.deleted.filter} was removed from the list of filtered words. Refresh to see the updated list.`, true);
     // if there was an error, alert the user.
     }, (err:HttpErrorResponse) => {
       this.alertsService.createErrorAlert(err);

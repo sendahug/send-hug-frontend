@@ -887,6 +887,7 @@ describe('SearchResults', () => {
       tick();
 
       // start the popup
+      searchResults.lastFocusedElement = document.querySelectorAll('a')[0];
       searchResults.editMode = true;
       searchResults.delete = true;
       searchResults.toDelete = 'Post';
@@ -903,6 +904,7 @@ describe('SearchResults', () => {
       // check the popup is exited
       expect(changeSpy).toHaveBeenCalled();
       expect(searchResults.editMode).toBeFalse();
+      expect(document.activeElement).toBe(document.querySelectorAll('a')[0]);
     }))
   });
 });

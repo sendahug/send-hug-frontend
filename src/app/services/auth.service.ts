@@ -168,7 +168,33 @@ export class AuthService {
   Programmer: Shir Bar Lev.
   */
   getUserData(jwtPayload:any) {
-    this.isUserDataResolved.next(false);
+    // turn the BehaviorSubject dealing with whether user data was resolved to
+    // false only if there's no user data
+    if(this.userData.id == 0 || !this.userData.id) {
+      this.isUserDataResolved.next(false);
+    }
+    // if the JWTs don't match (shouldn't happen, but just in case), change the BehaviorSubject
+    // and reset the user's data
+    else if(this.userData.auth0Id != jwtPayload.sub) {
+      this.isUserDataResolved.next(false);
+      this.userData = {
+        id: 0,
+        auth0Id: '',
+        displayName: '',
+        receivedHugs: 0,
+        givenHugs: 0,
+        postsNum: 0,
+        loginCount: 0,
+        role: '',
+        jwt: '',
+        blocked: false,
+        releaseDate: undefined,
+        autoRefresh: false,
+        refreshRate: 20,
+        pushEnabled: false
+      }
+    }
+
     // if there's a JWT
     if(jwtPayload) {
       // attempts to get the user's data
@@ -338,6 +364,17 @@ export class AuthService {
       clientID: environment.production ? prodEnv.auth0.clientID! : environment.auth0.clientID
     });
 
+    // update the user's data in IDB to remove all user data
+    let user = {
+      id: this.userData.id,
+      displayName: this.userData.displayName,
+      receivedHugs: this.userData.receivedHugs,
+      givenHugs: this.userData.givenHugs,
+      postsNum: this.userData.postsNum,
+      role: this.userData.role
+    };
+    this.serviceWorkerM.addItem('users', user);
+
     //clears the user's data
     this.authenticated = false;
     this.token = '';
@@ -361,6 +398,7 @@ export class AuthService {
 
     // clears all the messages data (as that's private per user)
     this.serviceWorkerM.clearStore('messages');
+    this.serviceWorkerM.clearStore('threads');
 
     // if the user has been logged out through their token expiring
     if(this.tokenExpired) {

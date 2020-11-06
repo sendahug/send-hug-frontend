@@ -46,6 +46,7 @@ type MessageType = 'inbox' | 'outbox' | 'threads';
 })
 export class AppMessaging implements OnInit {
   messType: MessageType | 'thread' = 'inbox';
+  page: number;
   // loader sub-component variable
   waitFor = `${this.messType} messages`;
   threadId: number;
@@ -56,6 +57,7 @@ export class AppMessaging implements OnInit {
   delete:boolean;
   toDelete: string | undefined;
   itemToDelete: number | undefined;
+  lastFocusedElement: any;
 
   // CTOR
   constructor(
@@ -86,10 +88,10 @@ export class AppMessaging implements OnInit {
       if(value == true) {
         // Gets the user's messages via the items service
         if(this.messType == 'inbox' || this.messType == 'outbox') {
-          this.itemsService.getMailboxMessages(this.messType, this.authService.userData.id!);
+          this.itemsService.getMailboxMessages(this.messType, this.authService.userData.id!, this.page);
         }
         else if(this.messType == 'threads') {
-          this.itemsService.getThreads(this.authService.userData.id!);
+          this.itemsService.getThreads(this.authService.userData.id!, this.page);
         }
         // gets the thread's messages
         else if(this.messType == 'thread' && this.threadId){
@@ -100,6 +102,7 @@ export class AppMessaging implements OnInit {
 
     this.editMode = false;
     this.delete = false;
+    this.page = 1;
   }
 
   ngOnInit() {
@@ -126,6 +129,7 @@ export class AppMessaging implements OnInit {
   Programmer: Shir Bar Lev.
   */
   deleteMessage(messageID:number) {
+    this.lastFocusedElement = document.activeElement;
     this.editMode = true;
     this.delete = true;
     this.toDelete = 'Message';
@@ -141,19 +145,17 @@ export class AppMessaging implements OnInit {
   Programmer: Shir Bar Lev.
   */
   nextPage() {
-    if(this.messType == 'inbox' || this.messType == 'outbox' || this.messType == 'threads') {
-      this.itemsService.userMessagesPage[this.messType] += 1;
-    }
+    this.page += 1;
 
     if(this.messType == 'thread') {
-      this.itemsService.threadPage += 1;
+      this.itemsService.userMessagesPage.thread += 1;
       this.itemsService.getThread(this.authService.userData.id!, this.threadId);
     }
     else if(this.messType == 'threads') {
-      this.itemsService.getThreads(this.authService.userData.id!);
+      this.itemsService.getThreads(this.authService.userData.id!, this.page);
     }
     else {
-      this.itemsService.getMailboxMessages(this.messType, this.authService.userData.id!);
+      this.itemsService.getMailboxMessages(this.messType, this.authService.userData.id!, this.page);
     }
   }
 
@@ -166,19 +168,17 @@ export class AppMessaging implements OnInit {
   Programmer: Shir Bar Lev.
   */
   prevPage() {
-    if(this.messType == 'inbox' || this.messType == 'outbox' || this.messType == 'threads') {
-      this.itemsService.userMessagesPage[this.messType] -= 1;
-    }
+    this.page -= 1;
 
     if(this.messType == 'thread') {
-      this.itemsService.threadPage -= 1;
+      this.itemsService.userMessagesPage.thread -= 1;
       this.itemsService.getThread(this.authService.userData.id!, this.threadId);
     }
     else if(this.messType == 'threads') {
-      this.itemsService.getThreads(this.authService.userData.id!);
+      this.itemsService.getThreads(this.authService.userData.id!, this.page);
     }
     else {
-      this.itemsService.getMailboxMessages(this.messType, this.authService.userData.id!);
+      this.itemsService.getMailboxMessages(this.messType, this.authService.userData.id!, this.page);
     }
   }
 
@@ -229,6 +229,7 @@ export class AppMessaging implements OnInit {
   Programmer: Shir Bar Lev.
   */
   deleteThread(threadId:number) {
+    this.lastFocusedElement = document.activeElement;
     this.editMode = true;
     this.delete = true;
     this.toDelete = 'Thread';
@@ -243,6 +244,7 @@ export class AppMessaging implements OnInit {
   Programmer: Shir Bar Lev.
   */
   deleteAllMessages(type:string) {
+    this.lastFocusedElement = document.activeElement;
     this.editMode = true;
     this.delete = true;
     this.toDelete = `All ${type}`;
@@ -261,5 +263,6 @@ export class AppMessaging implements OnInit {
   */
   changeMode(edit:boolean) {
     this.editMode = edit;
+    this.lastFocusedElement.focus();
   }
 }

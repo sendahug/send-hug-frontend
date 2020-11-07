@@ -47,12 +47,12 @@ import {
 import { HttpClientModule } from "@angular/common/http";
 import { ServiceWorkerModule } from "@angular/service-worker";
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { By } from '@angular/platform-browser';
 
 // App imports
 import { MainPage } from "./mainPage.component";
 import { Loader } from '../loader/loader.component';
 import { PopUp } from '../popUp/popUp.component';
+import { SinglePost } from '../post/post.component';
 import { PostsService } from '../../services/posts.service';
 import { MockPostsService } from '../../services/posts.service.mock';
 import { AuthService } from '../../services/auth.service';
@@ -75,7 +75,8 @@ describe('MainPage', () => {
       declarations: [
         MainPage,
         Loader,
-        PopUp
+        PopUp,
+        SinglePost
       ],
       providers: [
         { provide: APP_BASE_HREF, useValue: '/' },
@@ -107,16 +108,6 @@ describe('MainPage', () => {
     expect(mainPageDOM.querySelector('#sugItemsList').children.length).toBe(2);
   }));
 
-  // Check that all the popup-related variables are set to false at first
-  it('should have all popup variables set to false', () => {
-    const fixture = TestBed.createComponent(MainPage);
-    const mainPage = fixture.componentInstance;
-
-    expect(mainPage.editMode).toBeFalse();
-    expect(mainPage.delete).toBeFalse();
-    expect(mainPage.report).toBeFalse();
-  });
-
   // Check the posts' menu is shown if there's enough room for them
   it('should show the posts\'s menu if wide enough', fakeAsync(() => {
     const fixture = TestBed.createComponent(MainPage);
@@ -132,16 +123,9 @@ describe('MainPage', () => {
     fixture.detectChanges();
 
     // check all menus are shown
-    let newPosts = mainPageDOM.querySelectorAll('.newItem');
-    let sugPosts = mainPageDOM.querySelectorAll('.sugItem');
+    let posts = mainPageDOM.querySelectorAll('.newItem');
     // new posts
-    newPosts.forEach((element:HTMLLIElement) => {
-      expect(element.querySelectorAll('.buttonsContainer')[0].classList).not.toContain('float');
-      expect(element.querySelectorAll('.subMenu')[0].classList).not.toContain('hidden');
-      expect(element.querySelectorAll('.subMenu')[0].classList).not.toContain('float');
-      expect(element.querySelectorAll('.menuButton')[0].classList).toContain('hidden');
-    });
-    sugPosts.forEach((element:HTMLLIElement) => {
+    posts.forEach((element:HTMLLIElement) => {
       expect(element.querySelectorAll('.buttonsContainer')[0].classList).not.toContain('float');
       expect(element.querySelectorAll('.subMenu')[0].classList).not.toContain('hidden');
       expect(element.querySelectorAll('.subMenu')[0].classList).not.toContain('float');
@@ -167,16 +151,9 @@ describe('MainPage', () => {
     fixture.detectChanges();
 
     // check all menus aren't shown
-    let newPosts = mainPageDOM.querySelectorAll('.newItem');
-    let sugPosts = mainPageDOM.querySelectorAll('.sugItem');
+    let posts = mainPageDOM.querySelectorAll('.newItem');
     // new posts
-    newPosts.forEach((element:HTMLLIElement) => {
-      expect(element.querySelectorAll('.buttonsContainer')[0].classList).toContain('float');
-      expect(element.querySelectorAll('.subMenu')[0].classList).toContain('hidden');
-      expect(element.querySelectorAll('.subMenu')[0].classList).toContain('float');
-      expect(element.querySelectorAll('.menuButton')[0].classList).not.toContain('hidden');
-    });
-    sugPosts.forEach((element:HTMLLIElement) => {
+    posts.forEach((element:HTMLLIElement) => {
       expect(element.querySelectorAll('.buttonsContainer')[0].classList).toContain('float');
       expect(element.querySelectorAll('.subMenu')[0].classList).toContain('hidden');
       expect(element.querySelectorAll('.subMenu')[0].classList).toContain('float');
@@ -185,51 +162,12 @@ describe('MainPage', () => {
     expect(viewCheckedSpy).toHaveBeenCalled();
   }));
 
-  // check a menu is shown when clickinng the options button
-  it('should show the post\'s menu when clicked', fakeAsync(() => {
-    spyOn(TestBed.inject(AuthService), 'canUser').and.returnValue(true);
-    const fixture = TestBed.createComponent(MainPage);
-    const mainPage = fixture.componentInstance;
-    const mainPageDOM = fixture.debugElement.nativeElement;
-    const toggleSpy = spyOn(mainPage, 'toggleOptions').and.callThrough();
-    fixture.detectChanges();
-
-    // change the elements' width to make sure there isn't enough room for the menu
-    const firstElement = mainPageDOM.querySelectorAll('.newItem')[0]!;
-    let sub = firstElement.querySelectorAll('.subMenu')[0] as HTMLDivElement;
-    sub.style.maxWidth = '40px';
-    sub.style.display = 'flex';
-    (sub.firstElementChild! as HTMLAnchorElement).style.width = '100px';
-    fixture.detectChanges();
-
-    // pre-click check
-    expect(toggleSpy).not.toHaveBeenCalled();
-    expect(mainPage.showMenuNum).toBeNull();
-    expect(firstElement.querySelectorAll('.subMenu')[0].classList).toContain('hidden');
-    expect(firstElement.querySelectorAll('.menuButton')[0].classList).not.toContain('hidden');
-
-    // click the options buton for the first new post
-    mainPageDOM.querySelectorAll('.newItem')[0]!.querySelectorAll('.menuButton')[0].click();
-    fixture.detectChanges();
-    tick();
-
-    // check the first post's menu is shown
-    expect(toggleSpy).toHaveBeenCalled();
-    expect(toggleSpy).toHaveBeenCalledWith('new', 1);
-    expect(mainPage.showMenuNum).toBe('nPost1');
-    expect(firstElement.querySelectorAll('.buttonsContainer')[0].classList).toContain('float');
-    expect(firstElement.querySelectorAll('.subMenu')[0].classList).not.toContain('hidden');
-    expect(firstElement.querySelectorAll('.subMenu')[0].classList).toContain('float');
-    expect(firstElement.querySelectorAll('.menuButton')[0].classList).not.toContain('hidden');
-  }));
-
   // check only the selected menu is shown when clicking a button
   it('should show the correct post\'s menu when clicked', fakeAsync(() => {
     spyOn(TestBed.inject(AuthService), 'canUser').and.returnValue(true);
     const fixture = TestBed.createComponent(MainPage);
     const mainPage = fixture.componentInstance;
     const mainPageDOM = fixture.debugElement.nativeElement;
-    const toggleSpy = spyOn(mainPage, 'toggleOptions').and.callThrough();
     fixture.detectChanges();
 
     // change the elements' width to make sure there isn't enough room for the menu
@@ -241,7 +179,6 @@ describe('MainPage', () => {
 
     // pre-click check
     const clickElement = mainPageDOM.querySelectorAll('.newItem')[1]!;
-    expect(toggleSpy).not.toHaveBeenCalled();
     expect(mainPage.showMenuNum).toBeNull();
     expect(clickElement.querySelectorAll('.subMenu')[0].classList).toContain('hidden');
     expect(clickElement.querySelectorAll('.menuButton')[0].classList).not.toContain('hidden');
@@ -252,11 +189,10 @@ describe('MainPage', () => {
     tick();
 
     // check only the second post's menu is shown
-    let newPosts = mainPageDOM.querySelectorAll('.newItem');
-    let sugPosts = mainPageDOM.querySelectorAll('.sugItem');
+    let posts = mainPageDOM.querySelectorAll('.newItem');
 
     // new posts
-    newPosts.forEach((element:HTMLLIElement) => {
+    posts.forEach((element:HTMLLIElement) => {
       expect(element.querySelectorAll('.buttonsContainer')[0].classList).toContain('float');
       expect(element.querySelectorAll('.subMenu')[0].classList).toContain('float');
       expect(element.querySelectorAll('.menuButton')[0].classList).not.toContain('hidden');
@@ -269,68 +205,7 @@ describe('MainPage', () => {
         expect(element.querySelectorAll('.subMenu')[0].classList).toContain('hidden');
       }
     });
-
-    // suggested posts
-    sugPosts.forEach((element:HTMLLIElement) => {
-      expect(element.querySelectorAll('.buttonsContainer')[0].classList).toContain('float');
-      expect(element.querySelectorAll('.subMenu')[0].classList).toContain('hidden');
-      expect(element.querySelectorAll('.subMenu')[0].classList).toContain('float');
-      expect(element.querySelectorAll('.menuButton')[0].classList).not.toContain('hidden');
-    });
-    expect(toggleSpy).toHaveBeenCalled();
-    expect(toggleSpy).toHaveBeenCalledWith('new', 2);
     expect(mainPage.showMenuNum).toBe('nPost2');
-  }));
-
-  // check that clicking the same menu button again hides it
-  it('should hide the post\'s menu when clicked again', fakeAsync(() => {
-    spyOn(TestBed.inject(AuthService), 'canUser').and.returnValue(true);
-    const fixture = TestBed.createComponent(MainPage);
-    const mainPage = fixture.componentInstance;
-    const mainPageDOM = fixture.debugElement.nativeElement;
-    const toggleSpy = spyOn(mainPage, 'toggleOptions').and.callThrough();
-    fixture.detectChanges();
-
-    // change the elements' width to make sure there isn't enough room for the menu
-    const firstElement = mainPageDOM.querySelectorAll('.newItem')[0]!;
-    let sub = firstElement.querySelectorAll('.subMenu')[0] as HTMLDivElement;
-    sub.style.maxWidth = '40px';
-    sub.style.display = 'flex';
-    (sub.firstElementChild! as HTMLAnchorElement).style.width = '100px';
-    fixture.detectChanges();
-
-    // pre-click check
-    expect(toggleSpy).not.toHaveBeenCalled();
-    expect(mainPage.showMenuNum).toBeNull();
-    expect(firstElement.querySelectorAll('.buttonsContainer')[0].classList).toContain('float');
-    expect(firstElement.querySelectorAll('.subMenu')[0].classList).toContain('hidden');
-    expect(firstElement.querySelectorAll('.subMenu')[0].classList).toContain('float');
-    expect(firstElement.querySelectorAll('.menuButton')[0].classList).not.toContain('hidden');
-
-    // click the options buton for the first new post
-    mainPageDOM.querySelectorAll('.newItem')[0]!.querySelectorAll('.menuButton')[0].click();
-    fixture.detectChanges();
-    tick();
-
-    // check the first post's menu is shown
-    expect(toggleSpy).toHaveBeenCalled();
-    expect(toggleSpy).toHaveBeenCalledWith('new', 1);
-    expect(mainPage.showMenuNum).toBe('nPost1');
-    expect(firstElement.querySelectorAll('.subMenu')[0].classList).not.toContain('hidden');
-    expect(firstElement.querySelectorAll('.menuButton')[0].classList).not.toContain('hidden');
-
-    // click the options buton for the first new post again
-    mainPageDOM.querySelectorAll('.newItem')[0]!.querySelectorAll('.menuButton')[0].click();
-    fixture.detectChanges();
-    tick();
-
-    // check the menu is hidden
-    expect(toggleSpy).toHaveBeenCalled();
-    expect(toggleSpy).toHaveBeenCalledTimes(2);
-    expect(toggleSpy).toHaveBeenCalledWith('new', 1);
-    expect(mainPage.showMenuNum).toBeNull();
-    expect(firstElement.querySelectorAll('.subMenu')[0].classList).toContain('hidden');
-    expect(firstElement.querySelectorAll('.menuButton')[0].classList).not.toContain('hidden');
   }));
 
   // check that clicking another menu button also closes the previous one
@@ -340,7 +215,6 @@ describe('MainPage', () => {
     const fixture = TestBed.createComponent(MainPage);
     const mainPage = fixture.componentInstance;
     const mainPageDOM = fixture.debugElement.nativeElement;
-    const toggleSpy = spyOn(mainPage, 'toggleOptions').and.callThrough();
     fixture.detectChanges();
 
     // change the elements' width to make sure there isn't enough room for the menu
@@ -352,13 +226,12 @@ describe('MainPage', () => {
     fixture.detectChanges();
 
     // pre-click check
-    expect(toggleSpy).not.toHaveBeenCalled();
     expect(mainPage.showMenuNum).toBeNull();
     expect(firstElement.querySelectorAll('.buttonsContainer')[0].classList).toContain('float');
     expect(firstElement.querySelectorAll('.subMenu')[0].classList).toContain('hidden');
     expect(firstElement.querySelectorAll('.subMenu')[0].classList).toContain('float');
     expect(firstElement.querySelectorAll('.menuButton')[0].classList).not.toContain('hidden');
-    expect(mainPageDOM.querySelectorAll('.sugItem')[0]!.querySelectorAll('.subMenu')[0].classList).toContain('hidden');
+    expect(mainPageDOM.querySelectorAll('.newItem')[0]!.querySelectorAll('.subMenu')[0].classList).toContain('hidden');
 
     // click the options buton for the first new post
     mainPageDOM.querySelectorAll('.newItem')[0]!.querySelectorAll('.menuButton')[0].click();
@@ -366,178 +239,20 @@ describe('MainPage', () => {
     tick();
 
     // check the first post's menu is shown
-    expect(toggleSpy).toHaveBeenCalled();
-    expect(toggleSpy).toHaveBeenCalledWith('new', 1);
     expect(mainPage.showMenuNum).toBe('nPost1');
     expect(firstElement.querySelectorAll('.subMenu')[0].classList).not.toContain('hidden');
     expect(firstElement.querySelectorAll('.menuButton')[0].classList).not.toContain('hidden');
-    expect(mainPageDOM.querySelectorAll('.sugItem')[0]!.querySelectorAll('.subMenu')[0].classList).toContain('hidden');
+    expect(mainPageDOM.querySelectorAll('.newItem')[0]!.querySelectorAll('.subMenu')[0].classList).not.toContain('hidden');
+    expect(mainPageDOM.querySelectorAll('.newItem')[1]!.querySelectorAll('.subMenu')[0].classList).toContain('hidden');
 
     // click the options button for another post
-    mainPageDOM.querySelectorAll('.sugItem')[0]!.querySelectorAll('.menuButton')[0].click();
+    mainPageDOM.querySelectorAll('.newItem')[1]!.querySelectorAll('.menuButton')[0].click();
     fixture.detectChanges();
     tick();
 
     // check the first post's menu is hidden and the new post's menu is shown
-    expect(toggleSpy).toHaveBeenCalled();
-    expect(toggleSpy).toHaveBeenCalledTimes(2);
-    expect(toggleSpy).toHaveBeenCalledWith('suggested', 2);
     expect(firstElement.querySelectorAll('.subMenu')[0].classList).toContain('hidden');
-    expect(mainPageDOM.querySelectorAll('.sugItem')[0]!.querySelectorAll('.subMenu')[0].classList).not.toContain('hidden');
+    expect(mainPageDOM.querySelectorAll('.newItem')[0]!.querySelectorAll('.subMenu')[0].classList).toContain('hidden');
+    expect(mainPageDOM.querySelectorAll('.newItem')[1]!.querySelectorAll('.subMenu')[0].classList).not.toContain('hidden');
   }));
-
-  // Check that sending a hug triggers the posts service
-  it('should trigger posts service on hug', fakeAsync(() => {
-    const fixture = TestBed.createComponent(MainPage);
-    const mainPage = fixture.componentInstance;
-    const mainPageDOM = fixture.debugElement.nativeElement;
-    const postsService = mainPage.postsService;
-    const spy = spyOn(postsService, 'sendHug').and.callThrough();
-
-    fixture.detectChanges();
-    tick();
-
-    //  before the click
-    const newItems = mainPageDOM.querySelector('#newItemsList');
-    expect(mainPage.postsService.newItemsArray[0].givenHugs).toBe(0);
-    expect(newItems.querySelectorAll('.badge')[0].textContent).toBe('0');
-    fixture.detectChanges();
-
-    // simulate click
-    mainPageDOM.querySelectorAll('.hugButton')[0].click();
-    fixture.detectChanges();
-    tick();
-
-    // after the click
-    expect(spy).toHaveBeenCalled();
-    expect(spy.calls.count()).toBe(1);
-    expect(mainPage.postsService.newItemsArray[0].givenHugs).toBe(1);
-    expect(newItems.querySelectorAll('.badge')[0].textContent).toBe('1');
-  }));
-
-  // Check that the popup is opened when clicking 'edit'
-  it('should open the popup upon editing', fakeAsync(() => {
-    const fixture = TestBed.createComponent(MainPage);
-    const mainPage = fixture.componentInstance;
-    const mainPageDOM = fixture.debugElement.nativeElement;
-    const authService = mainPage.authService;
-
-    const authSpy = spyOn(authService, 'canUser').and.returnValue(true);
-    fixture.detectChanges();
-    tick();
-
-    // before the click
-    expect(mainPage.editMode).toBeFalse();
-    expect(authSpy).toHaveBeenCalled();
-
-    // trigger click
-    const newItems = mainPageDOM.querySelector('#newItemsList');
-    newItems.querySelectorAll('.editButton')[0].click();
-    fixture.detectChanges();
-    tick();
-
-    // after the click
-    expect(mainPage.editMode).toBeTrue();
-    expect(mainPage.editType).toBe('post');
-    expect(mainPageDOM.querySelector('app-pop-up')).toBeTruthy();
-  }));
-
-  // Check that the popup is opened when clicking 'delete'
-  it('should open the popup upon deleting', fakeAsync(() => {
-    const fixture = TestBed.createComponent(MainPage);
-    const mainPage = fixture.componentInstance;
-    const mainPageDOM = fixture.debugElement.nativeElement;
-    const authService = mainPage.authService;
-
-    const authSpy = spyOn(authService, 'canUser').and.returnValue(true);
-    fixture.detectChanges();
-    tick();
-
-    // before the click
-    expect(mainPage.editMode).toBeFalse();
-    expect(authSpy).toHaveBeenCalled();
-
-    // trigger click
-    const newItems = mainPageDOM.querySelector('#newItemsList');
-    newItems.querySelectorAll('.deleteButton')[0].click();
-    fixture.detectChanges();
-    tick();
-
-    // after the click
-    expect(mainPage.editMode).toBeTrue();
-    expect(mainPage.delete).toBeTrue();
-    expect(mainPage.toDelete).toBe('Post');
-    expect(mainPage.itemToDelete).toBe(1);
-    expect(mainPageDOM.querySelector('app-pop-up')).toBeTruthy();
-  }));
-
-  // Check that the popup is opened when clicking 'report'
-  it('should open the popup upon reporting', fakeAsync(() => {
-    const fixture = TestBed.createComponent(MainPage);
-    const mainPage = fixture.componentInstance;
-    const mainPageDOM = fixture.debugElement.nativeElement;
-    const authService = mainPage.authService;
-
-    const authSpy = spyOn(authService, 'canUser').and.returnValue(true);
-    const reportSpy = spyOn(mainPage, 'reportPost').and.callThrough();
-    fixture.detectChanges();
-    tick();
-
-    // before the click
-    expect(mainPage.editMode).toBeFalse();
-    expect(mainPage.postToEdit).toBeUndefined();
-    expect(mainPage.editType).toBeUndefined();
-    expect(mainPage.delete).toBeFalse();
-    expect(mainPage.report).toBeFalse();
-    expect(mainPage.reportType).toBeUndefined();
-    expect(authSpy).toHaveBeenCalled();
-    expect(reportSpy).not.toHaveBeenCalled();
-
-    // trigger click
-    const newItems = mainPageDOM.querySelector('#newItemsList');
-    newItems.querySelectorAll('.reportButton')[0].click();
-    fixture.detectChanges();
-    tick();
-
-    // after the click
-    expect(mainPage.editMode).toBeTrue();
-    expect(mainPage.postToEdit).toBeUndefined();
-    expect(mainPage.editType).toBeUndefined();
-    expect(mainPage.delete).toBeFalse();
-    expect(mainPage.report).toBeTrue();
-    expect(mainPage.reportType).toBe('Post');
-    expect(reportSpy).toHaveBeenCalled();
-    expect(mainPageDOM.querySelector('app-pop-up')).toBeTruthy();
-  }));
-
-  // Check the popup exits when 'false' is emitted
-  it('should change mode when the event emitter emits false', fakeAsync(() => {
-    const fixture = TestBed.createComponent(MainPage);
-    const mainPage = fixture.componentInstance;
-    const changeSpy = spyOn(mainPage, 'changeMode').and.callThrough();
-
-    fixture.detectChanges();
-    tick();
-
-    // start the popup
-    mainPage.lastFocusedElement = document.querySelectorAll('a')[0];
-    mainPage.editMode = true;
-    mainPage.delete = true;
-    mainPage.toDelete = 'Post';
-    mainPage.itemToDelete = 1;
-    mainPage.report = false;
-    fixture.detectChanges();
-    tick();
-
-    // exit the popup
-    const popup = fixture.debugElement.query(By.css('app-pop-up')).componentInstance as PopUp;
-    popup.exitEdit();
-    fixture.detectChanges();
-    tick();
-
-    // check the popup is exited
-    expect(changeSpy).toHaveBeenCalled();
-    expect(mainPage.editMode).toBeFalse();
-    expect(document.activeElement).toBe(document.querySelectorAll('a')[0]);
-  }))
 })

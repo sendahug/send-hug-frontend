@@ -26,3 +26,14 @@
 	<p id="pEdit">Edit post</p>
 	<p id="pDelete">Delete post</p>
 </div>
+
+<app-pop-up *ngIf="editMode"
+			[editedItem]="postToEdit"
+			[toEdit]="editType"
+			(editMode)="changeMode($event)"
+			[delete]="delete"
+			[toDelete]="toDelete"
+			[itemToDelete]="itemToDelete"
+			[report]="report"
+			[reportedItem]="reportedItem"
+			[reportType]="reportType"></app-pop-up>

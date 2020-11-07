@@ -48,6 +48,7 @@ import { Post } from '../../interfaces/post.interface';
 export class SinglePost {
   @Input() post!: Post;
   @Input() type!: 'n' | 's';
+  @Input() class!: string;
   @Output() showMenu = new EventEmitter<string>();
   // edit popup sub-component variables
   postToEdit: Post | undefined;

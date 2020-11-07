@@ -1,4 +1,4 @@
-<li class="newItem" aria-describedby="newTitle" role="article">
+<li class="{{class}}" aria-describedby="newTitle" role="article">
 	<div class="itemText" aria-describedby="pText" id="{{ type + 'Post' + post.id}}">{{ post.text }}</div>
 	<div class="itemUser">By <a [routerLink]="['/user', post.userId ]" class="profileLink" aria-describedby="pUser" id="{{ type + 'User' + post.id}}">{{ post.user }}</a> </div>
 	<div class="buttonsContainer">

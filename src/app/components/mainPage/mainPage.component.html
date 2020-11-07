@@ -10,6 +10,7 @@
 		<app-single-post  *ngFor="let item of postsService.newItemsArray"
 						 [post]="item"
 						 [type]="'n'"
+						 [class]="'newItem'"
 						 (showMenu)="openMenu($event)"></app-single-post>
 	</ul>
 	
@@ -31,6 +32,7 @@
 		<app-single-post  *ngFor="let item of postsService.sugItemsArray"
 						 [post]="item"
 						 [type]="'s'"
+						 [class]="'newItem'"
 						 (showMenu)="openMenu($event)"></app-single-post>
 	</ul>
 

@@ -9,6 +9,7 @@
 		<app-single-post  *ngFor="let item of postsService.fullItemsList['full' + type + 'Items']"
 						 [post]="item"
 						 [type]="'n'"
+						 [class]="'newItem'"
 						 (showMenu)="openMenu($event)"></app-single-post>
 	</ul>
 	

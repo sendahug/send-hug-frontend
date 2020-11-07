@@ -48,11 +48,11 @@ import { HttpClientModule } from "@angular/common/http";
 import { ServiceWorkerModule } from "@angular/service-worker";
 import { ActivatedRoute, Router } from "@angular/router";
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { By } from '@angular/platform-browser';
 
 import { SearchResults } from './searchResults.component';
 import { PopUp } from '../popUp/popUp.component';
 import { Loader } from '../loader/loader.component';
+import { SinglePost } from '../post/post.component';
 import { ItemsService } from '../../services/items.service';
 import { MockItemsService } from '../../services/items.service.mock';
 import { AuthService } from '../../services/auth.service';
@@ -77,7 +77,8 @@ describe('SearchResults', () => {
       declarations: [
         SearchResults,
         PopUp,
-        Loader
+        Loader,
+        SinglePost
       ],
       providers: [
         { provide: APP_BASE_HREF, useValue: '/' },
@@ -114,25 +115,6 @@ describe('SearchResults', () => {
     expect(routeSpy).toHaveBeenCalled();
     expect(searchResults.searchQuery).toBe('search');
     expect(searchResultsDOM.querySelector('#resultSummary').textContent).toContain('"search"');
-  });
-
-  // Check that the popup variables are set to false
-  it('should have all popup variables set to false', () => {
-    const route = TestBed.inject(ActivatedRoute);
-    spyOn(route.snapshot.queryParamMap, 'get').and.callFake((param: string) => {
-      if(param == 'query') {
-        return 'search';
-      }
-      else {
-        return null;
-      }
-    });
-    const fixture = TestBed.createComponent(SearchResults);
-    const searchResults = fixture.componentInstance;
-
-    expect(searchResults.editMode).toBeFalse();
-    expect(searchResults.delete).toBeFalse();
-    expect(searchResults.report).toBeFalse();
   });
 
   // Check that a search is triggered if there's no running search
@@ -195,7 +177,8 @@ describe('SearchResults', () => {
         declarations: [
           SearchResults,
           PopUp,
-          Loader
+          Loader,
+          SinglePost
         ],
         providers: [
           { provide: APP_BASE_HREF, useValue: '/' },
@@ -280,7 +263,8 @@ describe('SearchResults', () => {
         declarations: [
           SearchResults,
           PopUp,
-          Loader
+          Loader,
+          SinglePost
         ],
         providers: [
           { provide: APP_BASE_HREF, useValue: '/' },
@@ -339,152 +323,6 @@ describe('SearchResults', () => {
       expect(searchResultsDOM.querySelectorAll('.searchResult').length).toBe(1);
       expect(searchResultsDOM.querySelectorAll('.searchResult')[0]).toBeTruthy();
       expect(searchResultsDOM.querySelector('#pSearchResErr')).toBeNull();
-    }));
-
-    // Check that the popup is opened when clicking 'edit'
-    it('should open the popup upon editing', fakeAsync(() => {
-      const route = TestBed.inject(ActivatedRoute);
-      spyOn(route.snapshot.queryParamMap, 'get').and.callFake((param: string) => {
-        if(param == 'query') {
-          return 'search';
-        }
-        else {
-          return null;
-        }
-      });
-      const fixture = TestBed.createComponent(SearchResults);
-      const searchResults = fixture.componentInstance;
-      const searchResultsDOM = fixture.debugElement.nativeElement;
-      const authService = searchResults.authService;
-
-      const authSpy = spyOn(authService, 'canUser').and.returnValue(true);
-      fixture.detectChanges();
-      tick();
-
-      // before the click
-      expect(searchResults.editMode).toBeFalse();
-      expect(authSpy).toHaveBeenCalled();
-
-      // trigger click
-      searchResultsDOM.querySelector('#postSearchResults').querySelectorAll('.editButton')[0].click();
-      fixture.detectChanges();
-      tick();
-
-      // after the click
-      expect(searchResults.editMode).toBeTrue();
-      expect(searchResults.editType).toBe('post');
-      expect(searchResultsDOM.querySelector('app-pop-up')).toBeTruthy();
-    }));
-
-    // Check that the popup is opened when clicking 'delete'
-    it('should open the popup upon deleting', fakeAsync(() => {
-      const route = TestBed.inject(ActivatedRoute);
-      spyOn(route.snapshot.queryParamMap, 'get').and.callFake((param: string) => {
-        if(param == 'query') {
-          return 'search';
-        }
-        else {
-          return null;
-        }
-      });
-      const fixture = TestBed.createComponent(SearchResults);
-      const searchResults = fixture.componentInstance;
-      const searchResultsDOM = fixture.debugElement.nativeElement;
-      const authService = searchResults.authService;
-
-      const authSpy = spyOn(authService, 'canUser').and.returnValue(true);
-      fixture.detectChanges();
-      tick();
-
-      // before the click
-      expect(searchResults.editMode).toBeFalse();
-      expect(authSpy).toHaveBeenCalled();
-
-      // trigger click
-      searchResultsDOM.querySelector('#postSearchResults').querySelectorAll('.deleteButton')[0].click();
-      fixture.detectChanges();
-      tick();
-
-      // after the click
-      expect(searchResults.editMode).toBeTrue();
-      expect(searchResults.delete).toBeTrue();
-      expect(searchResults.toDelete).toBe('Post');
-      expect(searchResults.itemToDelete).toBe(7);
-      expect(searchResultsDOM.querySelector('app-pop-up')).toBeTruthy();
-    }));
-
-    // Check that the popup is opened when clicking 'report'
-    it('should open the popup upon reporting', fakeAsync(() => {
-      const route = TestBed.inject(ActivatedRoute);
-      spyOn(route.snapshot.queryParamMap, 'get').and.callFake((param: string) => {
-        if(param == 'query') {
-          return 'search';
-        }
-        else {
-          return null;
-        }
-      });
-      const fixture = TestBed.createComponent(SearchResults);
-      const searchResults = fixture.componentInstance;
-      const searchResultsDOM = fixture.debugElement.nativeElement;
-      const authService = searchResults.authService;
-
-      const authSpy = spyOn(authService, 'canUser').and.returnValue(true);
-      fixture.detectChanges();
-      tick();
-
-      // before the click
-      expect(searchResults.editMode).toBeFalse();
-      expect(authSpy).toHaveBeenCalled();
-
-      // trigger click
-      searchResultsDOM.querySelector('#postSearchResults').querySelectorAll('.reportButton')[0].click();
-      fixture.detectChanges();
-      tick();
-
-      // after the click
-      expect(searchResults.editMode).toBeTrue();
-      expect(searchResults.delete).toBeFalse();
-      expect(searchResults.report).toBeTrue();
-      expect(searchResults.reportType).toBe('Post');
-      expect(searchResultsDOM.querySelector('app-pop-up')).toBeTruthy();
-    }));
-
-    // Check that sending a hug triggers the posts service
-    it('should trigger posts service on hug', fakeAsync(() => {
-      const route = TestBed.inject(ActivatedRoute);
-      spyOn(route.snapshot.queryParamMap, 'get').and.callFake((param: string) => {
-        if(param == 'query') {
-          return 'search';
-        }
-        else {
-          return null;
-        }
-      });
-      const fixture = TestBed.createComponent(SearchResults);
-      const searchResults = fixture.componentInstance;
-      const searchResultsDOM = fixture.debugElement.nativeElement;
-      const postsService = searchResults['postsService'];
-      const spy = spyOn(postsService, 'sendHug').and.callThrough();
-
-      fixture.detectChanges();
-      tick();
-
-      //  before the click
-      expect(searchResults.itemsService.postSearchResults[0].givenHugs).toBe(0);
-      expect(searchResultsDOM.querySelector('#postSearchResults').querySelectorAll('.badge')[0].textContent).toBe('0');
-      fixture.detectChanges();
-
-      // simulate click
-      searchResultsDOM.querySelector('#postSearchResults').querySelectorAll('.hugButton')[0].click();
-      fixture.detectChanges();
-      tick();
-
-      // after the click
-      expect(spy).toHaveBeenCalled();
-      expect(spy.calls.count()).toBe(1);
-      expect(searchResults.itemsService.postSearchResults[0].givenHugs).toBe(1);
-      expect(searchResultsDOM.querySelector('#postSearchResults').querySelectorAll('.badge')[0].textContent).toBe('1');
     }));
 
     // Check that a different page gets different results
@@ -632,7 +470,7 @@ describe('SearchResults', () => {
       const searchResults = fixture.componentInstance;
       const searchResultsDOM = fixture.debugElement.nativeElement;
       const authService = searchResults.authService;
-      const toggleSpy = spyOn(searchResults, 'toggleOptions').and.callThrough();
+      const toggleSpy = spyOn(searchResults, 'openMenu').and.callThrough();
       spyOn(authService, 'canUser').and.returnValue(true);
       fixture.detectChanges();
       tick();
@@ -658,8 +496,8 @@ describe('SearchResults', () => {
 
       // check the first post's menu is shown
       expect(toggleSpy).toHaveBeenCalled();
-      expect(toggleSpy).toHaveBeenCalledWith(7);
-      expect(searchResults.showMenuNum).toBe(7);
+      expect(toggleSpy).toHaveBeenCalledWith('nPost7');
+      expect(searchResults.showMenuNum).toBe('nPost7');
       expect(firstElement.querySelectorAll('.buttonsContainer')[0].classList).toContain('float');
       expect(firstElement.querySelectorAll('.subMenu')[0].classList).not.toContain('hidden');
       expect(firstElement.querySelectorAll('.subMenu')[0].classList).toContain('float');
@@ -685,7 +523,7 @@ describe('SearchResults', () => {
       const searchResults = fixture.componentInstance;
       const searchResultsDOM = fixture.debugElement.nativeElement;
       const authService = searchResults.authService;
-      const toggleSpy = spyOn(searchResults, 'toggleOptions').and.callThrough();
+      const toggleSpy = spyOn(searchResults, 'openMenu').and.callThrough();
       spyOn(authService, 'canUser').and.returnValue(true);
       fixture.detectChanges();
       tick();
@@ -725,8 +563,8 @@ describe('SearchResults', () => {
         }
       });
       expect(toggleSpy).toHaveBeenCalled();
-      expect(toggleSpy).toHaveBeenCalledWith(5);
-      expect(searchResults.showMenuNum).toBe(5);
+      expect(toggleSpy).toHaveBeenCalledWith('nPost5');
+      expect(searchResults.showMenuNum).toBe('nPost5');
     }));
 
     // check that clicking the same menu button again hides it
@@ -747,7 +585,7 @@ describe('SearchResults', () => {
       const searchResults = fixture.componentInstance;
       const searchResultsDOM = fixture.debugElement.nativeElement;
       const authService = searchResults.authService;
-      const toggleSpy = spyOn(searchResults, 'toggleOptions').and.callThrough();
+      const toggleSpy = spyOn(searchResults, 'openMenu').and.callThrough();
       spyOn(authService, 'canUser').and.returnValue(true);
       fixture.detectChanges();
       tick();
@@ -775,8 +613,8 @@ describe('SearchResults', () => {
 
       // check the first post's menu is shown
       expect(toggleSpy).toHaveBeenCalled();
-      expect(toggleSpy).toHaveBeenCalledWith(7);
-      expect(searchResults.showMenuNum).toBe(7);
+      expect(toggleSpy).toHaveBeenCalledWith('nPost7');
+      expect(searchResults.showMenuNum).toBe('nPost7');
       expect(firstElement.querySelectorAll('.subMenu')[0].classList).not.toContain('hidden');
       expect(firstElement.querySelectorAll('.menuButton')[0].classList).not.toContain('hidden');
 
@@ -788,7 +626,7 @@ describe('SearchResults', () => {
       // check the menu is hidden
       expect(toggleSpy).toHaveBeenCalled();
       expect(toggleSpy).toHaveBeenCalledTimes(2);
-      expect(toggleSpy).toHaveBeenCalledWith(7);
+      expect(toggleSpy).toHaveBeenCalledWith('nPost7');
       expect(searchResults.showMenuNum).toBeNull();
       expect(firstElement.querySelectorAll('.subMenu')[0].classList).toContain('hidden');
       expect(firstElement.querySelectorAll('.menuButton')[0].classList).not.toContain('hidden');
@@ -814,7 +652,7 @@ describe('SearchResults', () => {
       const searchResults = fixture.componentInstance;
       const searchResultsDOM = fixture.debugElement.nativeElement;
       const authService = searchResults.authService;
-      const toggleSpy = spyOn(searchResults, 'toggleOptions').and.callThrough();
+      const toggleSpy = spyOn(searchResults, 'openMenu').and.callThrough();
       spyOn(authService, 'canUser').and.returnValue(true);
       fixture.detectChanges();
       tick();
@@ -843,8 +681,8 @@ describe('SearchResults', () => {
 
       // check the first post's menu is shown
       expect(toggleSpy).toHaveBeenCalled();
-      expect(toggleSpy).toHaveBeenCalledWith(6);
-      expect(searchResults.showMenuNum).toBe(6);
+      expect(toggleSpy).toHaveBeenCalledWith('nPost6');
+      expect(searchResults.showMenuNum).toBe('nPost6');
       expect(firstElement.querySelectorAll('.subMenu')[0].classList).not.toContain('hidden');
       expect(firstElement.querySelectorAll('.menuButton')[0].classList).not.toContain('hidden');
       expect(searchResultsDOM.querySelectorAll('.searchResult')[1]!.querySelectorAll('.subMenu')[0].classList).toContain('hidden');
@@ -857,54 +695,10 @@ describe('SearchResults', () => {
       // check the first post's menu is hidden and the new post's menu is shown
       expect(toggleSpy).toHaveBeenCalled();
       expect(toggleSpy).toHaveBeenCalledTimes(2);
-      expect(toggleSpy).toHaveBeenCalledWith(5);
-      expect(searchResults.showMenuNum).toBe(5);
+      expect(toggleSpy).toHaveBeenCalledWith('nPost5');
+      expect(searchResults.showMenuNum).toBe('nPost5');
       expect(firstElement.querySelectorAll('.subMenu')[0].classList).toContain('hidden');
       expect(searchResultsDOM.querySelectorAll('.searchResult')[1]!.querySelectorAll('.subMenu')[0].classList).not.toContain('hidden');
     }));
-
-    // Check the popup exits when 'false' is emitted
-    it('should change mode when the event emitter emits false', fakeAsync(() => {
-      // set up spies
-      const route = TestBed.inject(ActivatedRoute);
-      spyOn(route.snapshot.queryParamMap, 'get').and.callFake((param: string) => {
-        if(param == 'query') {
-          return 'search';
-        }
-        else {
-          return null;
-        }
-      });
-      TestBed.inject(ItemsService).postSearchPage = 2;
-
-      // create the component
-      const fixture = TestBed.createComponent(SearchResults);
-      const searchResults = fixture.componentInstance;
-      const changeSpy = spyOn(searchResults, 'changeMode').and.callThrough();
-      searchResults.itemsService['authService'].login();
-
-      fixture.detectChanges();
-      tick();
-
-      // start the popup
-      searchResults.lastFocusedElement = document.querySelectorAll('a')[0];
-      searchResults.editMode = true;
-      searchResults.delete = true;
-      searchResults.toDelete = 'Post';
-      searchResults.itemToDelete = 2;
-      fixture.detectChanges();
-      tick();
-
-      // exit the popup
-      const popup = fixture.debugElement.query(By.css('app-pop-up')).componentInstance as PopUp;
-      popup.exitEdit();
-      fixture.detectChanges();
-      tick();
-
-      // check the popup is exited
-      expect(changeSpy).toHaveBeenCalled();
-      expect(searchResults.editMode).toBeFalse();
-      expect(document.activeElement).toBe(document.querySelectorAll('a')[0]);
-    }))
   });
 });

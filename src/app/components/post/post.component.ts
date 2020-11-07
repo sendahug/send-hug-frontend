@@ -31,7 +31,7 @@
 */
 
 // Angular imports
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { faComment, faEdit, faFlag } from '@fortawesome/free-regular-svg-icons';
 import { faHandHoldingHeart, faTimes, faEllipsisV } from '@fortawesome/free-solid-svg-icons';
 
@@ -48,6 +48,7 @@ import { Post } from '../../interfaces/post.interface';
 export class SinglePost {
   @Input() post!: Post;
   @Input() type!: 'n' | 's';
+  @Output() showMenu = new EventEmitter<string>();
   // edit popup sub-component variables
   postToEdit: Post | undefined;
   editType: string | undefined;
@@ -74,7 +75,6 @@ export class SinglePost {
     public authService:AuthService,
     public postsService:PostsService
   ) {
-    this.postsService.getItems();
     this.editMode = false;
     this.delete = false;
     this.report = false;
@@ -167,16 +167,6 @@ export class SinglePost {
   Programmer: Shir Bar Lev.
   */
   toggleOptions() {
-    let post = document.querySelector('#' + this.type + 'Post' + this.post.id)!.parentElement;
-    let subMenu = post!.querySelectorAll('.subMenu')[0];
-
-    // if the submenu is hidden, show it
-    if(subMenu.classList.contains('hidden')) {
-      subMenu.classList.remove('hidden');
-    }
-    // otherwise hide it
-    else {
-      subMenu.classList.add('hidden');
-    }
+    this.showMenu.emit(`${this.type}Post${this.post.id}`);
   }
 }

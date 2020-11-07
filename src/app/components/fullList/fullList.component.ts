@@ -33,13 +33,10 @@
 // Angular imports
 import { Component, AfterViewChecked } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { faComment, faEdit, faFlag } from '@fortawesome/free-regular-svg-icons';
-import { faHandHoldingHeart, faTimes, faEllipsisV } from '@fortawesome/free-solid-svg-icons';
 
 // App-related imports
 import { AuthService } from '../../services/auth.service';
 import { PostsService } from '../../services/posts.service';
-import { Post } from '../../interfaces/post.interface';
 
 @Component({
   selector: 'app-full-list',
@@ -49,26 +46,9 @@ export class FullList implements AfterViewChecked {
   // current page and type of list
   type:any;
   page:any;
-  showMenuNum: number | null = null;
-  // edit popup sub-component variables
-  postToEdit: Post | undefined;
-  editType: string | undefined;
-  editMode:boolean;
-  delete:boolean;
-  toDelete: string | undefined;
-  itemToDelete: number | undefined;
-  report:boolean;
-  reportedItem: Post | undefined;
-  reportType = 'Post';
-  lastFocusedElement: any;
+  showMenuNum: string | null = null;
+  // loader sub-component variables
   waitFor = '';
-  // icons
-  faComment = faComment;
-  faEdit = faEdit;
-  faFlag = faFlag;
-  faHandHoldingHeart = faHandHoldingHeart;
-  faTimes = faTimes;
-  faEllipsisV = faEllipsisV;
 
   // CTOR
   constructor(private route:ActivatedRoute,
@@ -104,10 +84,6 @@ export class FullList implements AfterViewChecked {
         this.waitFor = 'suggested posts';
         this.postsService.getSuggestedItems(this.page);
       }
-
-      this.editMode = false;
-      this.delete = false;
-      this.report = false;
   }
 
   /*
@@ -149,7 +125,7 @@ export class FullList implements AfterViewChecked {
       else if(this.showMenuNum) {
         // change each menu to a floating menu
         posts.forEach((element) => {
-          if(element.firstElementChild!.id == 'nPost' + this.showMenuNum) {
+          if(element.firstElementChild!.id == this.showMenuNum) {
             element.querySelectorAll('.subMenu')[0].classList.remove('hidden');
           }
           else {
@@ -176,28 +152,6 @@ export class FullList implements AfterViewChecked {
         })
       }
     }
-  }
-
-  /*
-  Function Name: sendHug()
-  Function Description: Send a hug to a user through a post they've written. The hug
-                        itself is sent by the items service.
-  Parameters: itemID (number) - ID of the post.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  sendHug(itemID:number) {
-    let item = {}
-    // if the type of list is 'new posts', find the ID in the list of new posts
-    if(this.type == 'New') {
-      item = this.postsService.fullItemsList.fullNewItems.filter(e => e.id == itemID)[0];
-    }
-    // if the type of list is 'suggested posts', find the ID in the list of suggested posts
-    else if(this.type == 'Suggested') {
-      item = this.postsService.fullItemsList.fullSuggestedItems.filter(e => e.id == itemID)[0];
-    }
-
-    this.postsService.sendHug(item);
   }
 
   /*
@@ -261,81 +215,21 @@ export class FullList implements AfterViewChecked {
   }
 
   /*
-  Function Name: editPost()
-  Function Description: Triggers edit mode in order to edit a post.
-  Parameters: post (Post) - Post to edit.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  editPost(post:Post) {
-    this.lastFocusedElement = document.activeElement;
-    this.editType = 'post';
-    this.postToEdit = post;
-    this.editMode = true;
-  }
-
-  /*
-  Function Name: changeMode()
-  Function Description: Remove the edit popup.
-  Parameters: edit (boolean) - indicating whether edit mode should be active.
-                               When the user finishes editing, the event emitter
-                               in the popup component sends 'false' to this function
-                               to remove the popup.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  changeMode(edit:boolean) {
-    this.editMode = edit;
-    this.lastFocusedElement.focus();
-  }
-
-  /*
-  Function Name: deletePost()
-  Function Description: Send a request to the items service to delete a post.
-  Parameters: post_id (number) - ID of the post to delete.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  deletePost(postID:number) {
-    this.lastFocusedElement = document.activeElement;
-    this.editMode = true;
-    this.delete = true;
-    this.toDelete = 'Post';
-    this.itemToDelete = postID;
-  }
-
-  /*
-  Function Name: reportPost()
-  Function Description: Opens the popup to report a post.
-  Parameters: post (Post) - the Post to report.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  reportPost(post:Post) {
-    this.lastFocusedElement = document.activeElement;
-	  this.editMode = true;
-	  this.delete = false;
-	  this.report = true;
-	  this.reportedItem = post;
-  }
-
-  /*
-  Function Name: toggleOptions()
+  Function Name: openMenu()
   Function Description: Opens a floating sub menu that contains the message, report, edit (if
                         applicable) and delete (if applicable) options on smaller screens.
-  Parameters: itemNum (number) - ID of the item for which to open the submenu.
+  Parameters: menu (string) - ID of the item for which to open the submenu.
   ----------------
   Programmer: Shir Bar Lev.
   */
-  toggleOptions(itemNum:number | string) {
-    itemNum = Number(itemNum);
-    let post = document.querySelector('#nPost' + itemNum)!.parentElement;
+  openMenu(menu:string) {
+    let post = document.querySelector('#' + menu)!.parentElement;
     let subMenu = post!.querySelectorAll('.subMenu')[0];
 
     // if the submenu is hidden, show it
     if(subMenu.classList.contains('hidden')) {
       subMenu.classList.remove('hidden');
-      this.showMenuNum = itemNum;
+      this.showMenuNum = menu;
     }
     // otherwise hide it
     else {

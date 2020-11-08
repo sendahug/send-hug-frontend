@@ -139,6 +139,7 @@ describe('Post', () => {
     const hugSpy =  spyOn(myPosts, 'sendHug').and.callThrough();
     const spy = spyOn(postsService, 'sendHug').and.callThrough();
     const disableButton = spyOn(postsService, 'disableHugButton');
+    (myPosts.authService as AuthService).login();
 
     upFixture.detectChanges();
     tick();

@@ -95,37 +95,6 @@ describe('FullList', () => {
     expect(fullList).toBeTruthy();
   });
 
-  // Check that sending a hug triggers the posts service
-  it('should trigger posts service on hug', fakeAsync(() => {
-    const paramMap = TestBed.inject(ActivatedRoute);
-    paramMap.url = of([{path: 'New'} as UrlSegment]);
-    const fixture = TestBed.createComponent(FullList);
-    const fullList = fixture.componentInstance;
-    const fullListDOM = fixture.debugElement.nativeElement;
-    const postsService = fullList.postsService;
-    const spy = spyOn(postsService, 'sendHug').and.callThrough();
-
-    fixture.detectChanges();
-    tick();
-
-    //  before the click
-    const fullItems = fullListDOM.querySelector('#fullItems');
-    expect(fullList.postsService.fullItemsList.fullNewItems[0].givenHugs).toBe(0);
-    expect(fullItems.querySelectorAll('.badge')[0].textContent).toBe('0');
-    fixture.detectChanges();
-
-    // simulate click
-    fullListDOM.querySelectorAll('.hugButton')[0].click();
-    fixture.detectChanges();
-    tick();
-
-    // after the click
-    expect(spy).toHaveBeenCalled();
-    expect(spy.calls.count()).toBe(1);
-    expect(fullList.postsService.fullItemsList.fullNewItems[0].givenHugs).toBe(1);
-    expect(fullItems.querySelectorAll('.badge')[0].textContent).toBe('1');
-  }));
-
   // Check the posts' menu is shown if there's enough room for them
   it('should show the posts\'s menu if wide enough', fakeAsync(() => {
     const paramMap = TestBed.inject(ActivatedRoute);

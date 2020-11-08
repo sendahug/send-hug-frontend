@@ -240,6 +240,50 @@ describe('SWManagerService', () => {
     });
   });
 
+  // Check suggested posts are sorted correctly
+  it('sortPosts() - should sort posts by hugs and dates correctly', () => {
+    const posts = [
+      {
+        'date': new Date('2020-06-27 19:17:31.072'),
+        'givenHugs': 0,
+        'id': 1,
+        'text': 'test',
+        'userId': 1,
+        'user': 'test',
+        'sentHugs': [],
+        'isoDate': '348310300'
+      },
+      {
+        'date': new Date('2020-06-28 19:17:31.072'),
+        'givenHugs': 1,
+        'id':2,
+        'text': 'test2',
+        'userId': 1,
+        'user': 'test',
+        'sentHugs': [],
+        'isoDate': '348310577'
+      },
+      {
+        'date': new Date('2020-06-27 19:17:31.072'),
+        'givenHugs': 0,
+        'id': 3,
+        'text': 'test3',
+        'userId': 3,
+        'user': 'test6',
+        'sentHugs': [],
+        'isoDate': '348310857'
+      }
+    ];
+
+    const orderedPosts = sWManagerService.sortPosts(posts);
+
+    expect(orderedPosts[0].id).toBe(1);
+    expect(orderedPosts[1].id).toBe(3);
+    expect(orderedPosts[2].id).toBe(2);
+    expect(Number(orderedPosts[0].isoDate)).toBeLessThan(Number(orderedPosts[1].isoDate));
+    expect(orderedPosts[2].givenHugs).toBeGreaterThan(orderedPosts[1].givenHugs);
+  });
+
   // Query Posts Method Tests
   describe('queryPosts()', () => {
     // Before each test, configure testing environment

@@ -170,8 +170,6 @@ export class AppComponent implements OnInit, AfterViewInit, AfterViewChecked {
           // ensure only authenticated users can access this page
           if(this.authService.authenticated) {
             navItems[3].classList.add('active');
-            navItems[3].children.item(0)!.classList.add('hidden');
-            navItems[3].children.item(1)!.classList.remove('hidden');
           }
         }
         // if the current URL is the user's own profile

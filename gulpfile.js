@@ -26,6 +26,18 @@ function copyHtml()
 {
 	return gulp
 		.src("src/app/**/*.html")
+		.pipe(replace(/(<img src="..\/assets.)(.*)(.">)/g, (match) => {
+				if(match.indexOf('siteLogo') == -1) {
+					let altIndex = match.indexOf('alt');
+					let url = match.substring(13, altIndex-2);
+					let svg = fs.readFileSync(__dirname + `/src/${url}`);
+
+					return svg;
+				}
+				else {
+					return match;
+				}
+			}))
 		.pipe(rename({dirname:""}))
 		.pipe(gulp.dest("./localdev/app"));
 }
@@ -125,6 +137,18 @@ function copyHtmlDist()
 {
 	return gulp
 		.src("src/app/**/*.html")
+		.pipe(replace(/(<img src="..\/assets.)(.*)(.">)/g, (match) => {
+				if(match.indexOf('siteLogo') == -1) {
+					let altIndex = match.indexOf('alt');
+					let url = match.substring(13, altIndex-2);
+					let svg = fs.readFileSync(__dirname + `/src/${url}`);
+
+					return svg;
+				}
+				else {
+					return match;
+				}
+			}))
 		.pipe(rename({dirname:""}))
 		.pipe(gulp.dest("./dist/app"));
 }

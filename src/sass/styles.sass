@@ -424,14 +424,6 @@ app-admin-dashboard #breadcrumb
 .navLink:hover
 	color: #A50D0D
 
-/* Navigation icon (SVG) - hover variant when the mouse is hovering over the link */
-.navLink:hover .hover
-	display: inline-block
-
-/* Navigation icon (SVG) - active & normal variants when the mouse is hovering over the link */
-.navLink:hover .normal, .navLink:hover .active
-	display: none
-
 /* Navigation Item (current page) */
 .navLink.active
 	color: #9D154E
@@ -443,6 +435,21 @@ app-admin-dashboard #breadcrumb
 /* Navigation icon (current page) when the mouse is hovering over the link  */
 .navLink.active:hover
 	color: #A50D0D
+
+/* Navigation item pic (when it's an SVG rather than font awesome) */
+.navPic
+	height: 30px
+	padding: 7px 5px 8px
+	text-align: center
+	/* Responsive styling for screens above 650px width */
+	@media screen and (min-width: 650px)
+		height: 26px
+	/* Responsive styling for screens above 700px width */
+	@media screen and (min-width: 700px)
+		height: 28px
+	/* Responsive styling for screens above 800px width */
+	@media screen and (min-width: 800px)
+		height: 30px
 
 /* Navigation item icon */
 .navIcon

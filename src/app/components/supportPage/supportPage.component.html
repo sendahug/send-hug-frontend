@@ -1,9 +1,31 @@
 <!-- Frequently asked questions -->
 <h3>Frequently Asked Questions</h3>
 <ul>
-	<li *ngFor="let question of faq">
-		<div class="pageCategory">{{ question.question }}</div>
-		<div class="pageData" aria-describedby="userName userRole">{{ question.answer }}</div>
+	<li>
+		<div class="pageCategory">What can I do on this site?</div>
+		<div class="pageData" aria-describedby="userName userRole">As of the current version (version 1), you can do several things: you can write posts, send private messages, and send hugs to users.</div>
+	</li>
+	<li>
+		<div class="pageCategory">How do I send users hugs?</div>
+		<div class="pageData" aria-describedby="userName userRole">There are two ways in which you can send a hug to a user: through their post or through their profile.</div>
+		<div class="pageData" aria-describedby="userName userRole">You can send a hug by clicking the hug button in the bottom of a user's post. This automatically sends a hug to the post's writer and updates the post's hug count. Hugs are limited to one per post (from a single user).</div>
+		<div class="pageData" aria-describedby="userName userRole">You can also send a hug directly to the user, through the user's profile. Once you open their profile, you'll find a heart-shaped hug button by their display name. Clicking on it sends a hug to that user. These hugs aren't limited.</div>
+	</li>
+	<li>
+		<div class="pageCategory">How do I send private messages?</div>
+		<div class="pageData" aria-describedby="userName userRole">You can send a private message by clicking the message button in the bottom of a user's post. These messages are only visible to you and the person receiving your message. Feel free to write any words of support or help you can think of.</div>
+	</li>
+	<li>
+		<div class="pageCategory">Is data encrypted on this site?</div>
+		<div class="pageData" aria-describedby="userName userRole">As of the current version (version 1), information on the site is not encryped. This includes messages, reports, posts and profile information. Anything to do with signup and login is handled by Auth0; if you have any more questions, refer to their privacy policy.</div>
+	</li>
+	<li>
+		<div class="pageCategory">What do I do if I see spam, abusive behaviour or anything else that seems inappropriate?</div>
+		<div class="pageData" aria-describedby="userName userRole">You can report the post (if it's a post) or the user behind those posts or messages. If you need to report a post, please click the report button in the bottom of the post. If you need to report a user, go to that user's profile and click the report button there. All reports are handled quickly and efficiently.</div>
+	</li>
+	<li>
+		<div class="pageCategory">Can I delete my data?</div>
+		<div class="pageData" aria-describedby="userName userRole">You certainly can. You can easily delete your posts by clicking the delete button in the relevant post. Similarly, you can delete your private messages. Note that private messages are only fully deleted once both sides (the sender and the recipient) delete it.</div>
 	</li>
 </ul>
 

@@ -37,13 +37,6 @@ import { Component } from '@angular/core';
   templateUrl: './supportPage.component.html'
 })
 export class SupportPage {
-  faq = [
-    {
-      question: '',
-      answer: ''
-    }
-  ];
-
   // CTOR
   constructor() {
 

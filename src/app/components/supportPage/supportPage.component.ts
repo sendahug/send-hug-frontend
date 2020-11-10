@@ -31,12 +31,22 @@
 */
 
 import { Component } from '@angular/core';
+import { faComment, faFlag } from '@fortawesome/free-regular-svg-icons';
+import { faHandHoldingHeart, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faGratipay } from '@fortawesome/free-brands-svg-icons';
 
 @Component({
   selector: 'app-support',
   templateUrl: './supportPage.component.html'
 })
 export class SupportPage {
+  // icons
+  faComment = faComment
+  faFlag = faFlag;
+  faHandHoldingHeart = faHandHoldingHeart;
+  faTimes = faTimes;
+  faGratipay = faGratipay;
+
   // CTOR
   constructor() {
 

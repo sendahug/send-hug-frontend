@@ -40,6 +40,7 @@ import {
 } from "@angular/platform-browser-dynamic/testing";
 import { HttpClientModule } from "@angular/common/http";
 import { ServiceWorkerModule } from "@angular/service-worker";
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 // App imports
 import { SupportPage } from "./supportPage.component";
@@ -55,7 +56,8 @@ describe('Support Page', () => {
       imports: [
         RouterTestingModule,
         HttpClientModule,
-        ServiceWorkerModule.register('sw.js', { enabled: false })
+        ServiceWorkerModule.register('sw.js', { enabled: false }),
+        FontAwesomeModule
       ],
       declarations: [
         SupportPage

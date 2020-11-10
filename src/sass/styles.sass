@@ -2181,6 +2181,70 @@ app-site-map a
 	/* Responsive styling for screens above 700px width */
 	@media screen and (min-width: 700px)
 		@include fontSize(16)
+
+/* =================== Support Page Component Styling =================== */
+/* Support Page Component */
+app-support
+	width: 90%
+	text-align: center
+
+/* Support Page title */
+app-support h3
+	@include fontSize(22)
+	font-family: $mainFont
+	color: $headlineColour
+	text-align: center
+	/* Responsive styling for screens above 800px width */
+	@media screen and (min-width: 800px)
+		@include fontSize(24)
+		order: 0
+		width: 100%
+		padding-top: 0
+		margin-top: 0
+
+/* Frequently asked questions list */
+#faq
+	list-style: none
+	margin: 10px 5px
+	padding: 0 0 15px
+
+/* Frequently asked questions item */
+.faqItem
+	@extend #itemSample
+	background: $boxesBackground
+	padding: 10px
+	width: 90%
+	margin: 20px 5%
+
+/* Frequently asked questions item question & answer */
+.faqItem .pageCategory, .faqItem .pageData
+	font-family: $mainFont
+	color: $textColour
+
+/* Frequently asked questions item question */
+.faqItem .pageCategory
+	@include fontSize(18)
+	
+/* Frequently asked questions item answer */
+.faqItem .pageData
+	@include fontSize(16)
+
+/* Frequently asked questions example icons */
+fa-icon.supportIcon .fa-gratipay, .fa-comment, .fa-flag, .fa-edit, .fa-times, .fa-hand-holding-heart
+	font-size: 16px
+
+/* Any questions section text */
+.furtherQuestions
+	@include fontSize(16)
+	font-family: $mainFont
+	color: $textColour
+	padding: 10px
+	width: 90%
+	margin: 0 5%
+
+/* Any questions section links */
+.furtherQuestions a
+	color: $linkColour
 	
 /* =================== Admin Dashboard Component Styling =================== */
 /* Admin Dashboard Component */

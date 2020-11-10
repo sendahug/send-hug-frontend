@@ -55,6 +55,7 @@ import { NotificationsTab } from './components/notifications/notifications.compo
 import { SettingsPage } from './components/settings/settings.component';
 import { SiteMap } from './components/siteMap/siteMap.component';
 import { SinglePost } from './components/post/post.component';
+import { SupportPage } from './components/supportPage/supportPage.component';
 
 @NgModule({
   imports: [
@@ -82,7 +83,8 @@ import { SinglePost } from './components/post/post.component';
     NotificationsTab,
     SettingsPage,
     SiteMap,
-    SinglePost
+    SinglePost,
+    SupportPage
   ],
   providers: [],
   bootstrap: [AppComponent]

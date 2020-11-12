@@ -30,7 +30,7 @@
   SOFTWARE.
 */
 
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { faComment, faFlag } from '@fortawesome/free-regular-svg-icons';
 import { faHandHoldingHeart, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { faGratipay } from '@fortawesome/free-brands-svg-icons';
@@ -39,7 +39,8 @@ import { faGratipay } from '@fortawesome/free-brands-svg-icons';
   selector: 'app-support',
   templateUrl: './supportPage.component.html'
 })
-export class SupportPage {
+export class SupportPage implements OnInit {
+  faqItems: any[] = [];
   // icons
   faComment = faComment
   faFlag = faFlag;
@@ -50,5 +51,24 @@ export class SupportPage {
   // CTOR
   constructor() {
 
+  }
+
+  /*
+  Function Name: ngOnInit()
+  Function Description: This method is automatically triggered by Angular once the component
+                        is intialised. It creates a list of frequently asked questions
+                        and their IDs (to be used for links).
+  Parameters: None.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  ngOnInit() {
+    document.querySelectorAll('.faqItem').forEach((faqItem) => {
+      let item = {
+        href: faqItem.firstElementChild!.id,
+        question: faqItem.firstElementChild!.textContent
+      }
+      this.faqItems.push(item);
+    });
   }
 }

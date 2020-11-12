@@ -1,9 +1,9 @@
 <nav id="supportNav" role="navigation">
-	<a href="support#faqTitle">Frequently Asked Questions</a>
+	<a href="support#faqTitle" class="supportNavTitle">Frequently Asked Questions</a>
 	<ul>
-		<li *ngFor="let item of faqItems"><a href="{{ 'support#' + item.href }}">{{ item.question }}</a></li>
+		<li *ngFor="let item of faqItems"><a href="{{ 'support#' + item.href }}" class="supportNavLink">{{ item.question }}</a></li>
 	</ul>
-	<a href="support#qTitle">Other Questions / Issues</a>
+	<a href="support#qTitle" class="supportNavTitle">Other Questions / Issues</a>
 </nav>
 
 <!-- Frequently asked questions -->

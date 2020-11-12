@@ -2188,6 +2188,36 @@ app-support
 	width: 90%
 	text-align: center
 
+/* Support Page Navigation */
+#supportNav
+	@extend #itemSample
+	padding: 10px
+	width: 90%
+	margin: 0 5% 30px
+	text-align: left
+
+/* Support Page Navigation title */
+.supportNavTitle
+	@include fontSize(18)
+	font-family: $mainFont
+	color: $linkColour
+
+/* Support Page Navigation - questions list */
+#supportNav ul
+	list-style: none
+	margin: 0 5px
+	padding: 5px 10px
+
+/* Support Page Navigation - questions list - single question */
+#supportNav li
+	padding: 2px
+
+/* Support Page Navigatio link */
+.supportNavLink
+	@include fontSize(16)
+	font-family: $mainFont
+	color: $linkColour
+
 /* Support Page title */
 app-support h3
 	@include fontSize(22)

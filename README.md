@@ -61,10 +61,12 @@ The main module contains 15 components, 7 services and 7 interfaces. Each compon
 10. **newItem** - A form component allowing users to create a new item (message or post).
 11. **notifications** - A tab component to display the latest notifications for the currently logged-in user.
 12. **popUp** - A sub-component displaying a popup screen with a form for editing items (posts or a user's display name).
-13. **searchResults** - A component to display the results of the user's search.
-14. **settings** - Lets the user control their settings for various components, such as the notifications component.
-15. **siteMap** - A site map, containing a list of the site's pages.
-16. **userPage** - Displays the user's data as fetched from the backend, as well as a list of the user's posts (as myPost component).
+13. **post** - A single post sub-component, containing all of a post's functionality.
+14. **searchResults** - A component to display the results of the user's search.
+15. **settings** - Lets the user control their settings for various components, such as the notifications component.
+16. **siteMap** - A site map, containing a list of the site's pages.
+17. **supportPage** - A component containing FAQs and details about communicating with the Send A Hug team.
+18. **userPage** - Displays the user's data as fetched from the backend, as well as a list of the user's posts (as myPost component).
 
 ### Interfaces
 

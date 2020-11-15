@@ -52,6 +52,7 @@ import { By } from '@angular/platform-browser';
 
 import { FullList } from './fullList.component';
 import { PopUp } from '../popUp/popUp.component';
+import { SinglePost } from '../post/post.component';
 import { PostsService } from '../../services/posts.service';
 import { MockPostsService } from '../../services/posts.service.mock';
 import { AuthService } from '../../services/auth.service';
@@ -76,7 +77,8 @@ describe('FullList', () => {
       declarations: [
         FullList,
         PopUp,
-        Loader
+        Loader,
+        SinglePost
       ],
       providers: [
         { provide: APP_BASE_HREF, useValue: '/' },
@@ -92,145 +94,6 @@ describe('FullList', () => {
     const fullList = fixture.componentInstance;
     expect(fullList).toBeTruthy();
   });
-
-  // Check that all the popup-related variables are set to false at first
-  it('should have all popup variables set to false', () => {
-    const paramMap = TestBed.inject(ActivatedRoute);
-    paramMap.url = of([{path: 'New'} as UrlSegment]);
-    const fixture = TestBed.createComponent(FullList);
-    const fullList = fixture.componentInstance;
-
-    expect(fullList.editMode).toBeFalse();
-    expect(fullList.delete).toBeFalse();
-    expect(fullList.report).toBeFalse();
-  });
-
-  // Check that sending a hug triggers the posts service
-  it('should trigger posts service on hug', fakeAsync(() => {
-    const paramMap = TestBed.inject(ActivatedRoute);
-    paramMap.url = of([{path: 'New'} as UrlSegment]);
-    const fixture = TestBed.createComponent(FullList);
-    const fullList = fixture.componentInstance;
-    const fullListDOM = fixture.debugElement.nativeElement;
-    const postsService = fullList.postsService;
-    const spy = spyOn(postsService, 'sendHug').and.callThrough();
-
-    fixture.detectChanges();
-    tick();
-
-    //  before the click
-    const fullItems = fullListDOM.querySelector('#fullItems');
-    expect(fullList.postsService.fullItemsList.fullNewItems[0].givenHugs).toBe(0);
-    expect(fullItems.querySelectorAll('.badge')[0].textContent).toBe('0');
-    fixture.detectChanges();
-
-    // simulate click
-    fullListDOM.querySelectorAll('.hugButton')[0].click();
-    fixture.detectChanges();
-    tick();
-
-    // after the click
-    expect(spy).toHaveBeenCalled();
-    expect(spy.calls.count()).toBe(1);
-    expect(fullList.postsService.fullItemsList.fullNewItems[0].givenHugs).toBe(1);
-    expect(fullItems.querySelectorAll('.badge')[0].textContent).toBe('1');
-  }));
-
-  // Check that the popup is opened when clicking 'edit'
-  it('should open the popup upon editing', fakeAsync(() => {
-    const paramMap = TestBed.inject(ActivatedRoute);
-    paramMap.url = of([{path: 'New'} as UrlSegment]);
-    const fixture = TestBed.createComponent(FullList);
-    const fullList = fixture.componentInstance;
-    const fullListDOM = fixture.debugElement.nativeElement;
-    const authService = fullList.authService;
-
-    const authSpy = spyOn(authService, 'canUser').and.returnValue(true);
-    fixture.detectChanges();
-    tick();
-
-    // before the click
-    expect(fullList.editMode).toBeFalse();
-    expect(authSpy).toHaveBeenCalled();
-
-    // trigger click
-    const fullItems = fullListDOM.querySelector('#fullItems');
-    fullItems.querySelectorAll('.editButton')[0].click();
-    fixture.detectChanges();
-    tick();
-
-    // after the click
-    expect(fullList.editMode).toBeTrue();
-    expect(fullList.editType).toBe('post');
-    expect(fullListDOM.querySelector('app-pop-up')).toBeTruthy();
-  }));
-
-  // Check that the popup is opened when clicking 'delete'
-  it('should open the popup upon deleting', fakeAsync(() => {
-    const paramMap = TestBed.inject(ActivatedRoute);
-    paramMap.url = of([{path: 'New'} as UrlSegment]);
-    const fixture = TestBed.createComponent(FullList);
-    const fullList = fixture.componentInstance;
-    const fullListDOM = fixture.debugElement.nativeElement;
-    const authService = fullList.authService;
-
-    const authSpy = spyOn(authService, 'canUser').and.returnValue(true);
-    fixture.detectChanges();
-    tick();
-
-    // before the click
-    expect(fullList.editMode).toBeFalse();
-    expect(authSpy).toHaveBeenCalled();
-
-    // trigger click
-    const fullItems = fullListDOM.querySelector('#fullItems');
-    fullItems.querySelectorAll('.deleteButton')[0].click();
-    fixture.detectChanges();
-    tick();
-
-    // after the click
-    expect(fullList.editMode).toBeTrue();
-    expect(fullList.delete).toBeTrue();
-    expect(fullList.toDelete).toBe('Post');
-    expect(fullList.itemToDelete).toBe(1);
-    expect(fullListDOM.querySelector('app-pop-up')).toBeTruthy();
-  }));
-
-  // Check that the popup is opened when clicking 'report'
-  it('should open the popup upon reporting', fakeAsync(() => {
-    const paramMap = TestBed.inject(ActivatedRoute);
-    paramMap.url = of([{path: 'New'} as UrlSegment]);
-    const fixture = TestBed.createComponent(FullList);
-    const fullList = fixture.componentInstance;
-    const fullListDOM = fixture.debugElement.nativeElement;
-    const authService = fullList.authService;
-
-    const authSpy = spyOn(authService, 'canUser').and.returnValue(true);
-    const reportSpy = spyOn(fullList, 'reportPost').and.callThrough();
-    fixture.detectChanges();
-    tick();
-
-    // before the click
-    expect(fullList.editMode).toBeFalse();
-    expect(fullList.delete).toBeFalse();
-    expect(fullList.report).toBeFalse();
-    expect(authSpy).toHaveBeenCalled();
-    expect(reportSpy).not.toHaveBeenCalled();
-
-    // trigger click
-    const fullItems = fullListDOM.querySelector('#fullItems');
-    fullItems.querySelectorAll('.reportButton')[0].click();
-    fixture.detectChanges();
-    tick();
-
-    // after the click
-    expect(fullList.editMode).toBeTrue();
-    expect(fullList.delete).toBeFalse();
-    expect(fullList.report).toBeTrue();
-    expect(fullList.reportType).toBe('Post');
-    expect(reportSpy).toHaveBeenCalled();
-    expect(fullListDOM.querySelector('app-pop-up')).toBeTruthy();
-  }));
 
   // Check the posts' menu is shown if there's enough room for them
   it('should show the posts\'s menu if wide enough', fakeAsync(() => {
@@ -301,7 +164,7 @@ describe('FullList', () => {
     const fullList = fixture.componentInstance;
     const fullListDOM = fixture.debugElement.nativeElement;
     const authService = fullList.authService;
-    const toggleSpy = spyOn(fullList, 'toggleOptions').and.callThrough();
+    const toggleSpy = spyOn(fullList, 'openMenu').and.callThrough();
     spyOn(authService, 'canUser').and.returnValue(true);
     fixture.detectChanges();
     tick();
@@ -327,8 +190,8 @@ describe('FullList', () => {
 
     // check the first post's menu is shown
     expect(toggleSpy).toHaveBeenCalled();
-    expect(toggleSpy).toHaveBeenCalledWith(1);
-    expect(fullList.showMenuNum).toBe(1);
+    expect(toggleSpy).toHaveBeenCalledWith('nPost1');
+    expect(fullList.showMenuNum).toBe('nPost1');
     expect(firstElement.querySelectorAll('.buttonsContainer')[0].classList).toContain('float');
     expect(firstElement.querySelectorAll('.subMenu')[0].classList).not.toContain('hidden');
     expect(firstElement.querySelectorAll('.subMenu')[0].classList).toContain('float');
@@ -343,7 +206,7 @@ describe('FullList', () => {
     const fullList = fixture.componentInstance;
     const fullListDOM = fixture.debugElement.nativeElement;
     const authService = fullList.authService;
-    const toggleSpy = spyOn(fullList, 'toggleOptions').and.callThrough();
+    const toggleSpy = spyOn(fullList, 'openMenu').and.callThrough();
     spyOn(authService, 'canUser').and.returnValue(true);
     fixture.detectChanges();
     tick();
@@ -383,8 +246,8 @@ describe('FullList', () => {
       }
     });
     expect(toggleSpy).toHaveBeenCalled();
-    expect(toggleSpy).toHaveBeenCalledWith(2);
-    expect(fullList.showMenuNum).toBe(2);
+    expect(toggleSpy).toHaveBeenCalledWith('nPost2');
+    expect(fullList.showMenuNum).toBe('nPost2');
   }));
 
   // check that clicking the same menu button again hides it
@@ -395,7 +258,7 @@ describe('FullList', () => {
     const fullList = fixture.componentInstance;
     const fullListDOM = fixture.debugElement.nativeElement;
     const authService = fullList.authService;
-    const toggleSpy = spyOn(fullList, 'toggleOptions').and.callThrough();
+    const toggleSpy = spyOn(fullList, 'openMenu').and.callThrough();
     spyOn(authService, 'canUser').and.returnValue(true);
     fixture.detectChanges();
     tick();
@@ -423,8 +286,8 @@ describe('FullList', () => {
 
     // check the first post's menu is shown
     expect(toggleSpy).toHaveBeenCalled();
-    expect(toggleSpy).toHaveBeenCalledWith(1);
-    expect(fullList.showMenuNum).toBe(1);
+    expect(toggleSpy).toHaveBeenCalledWith('nPost1');
+    expect(fullList.showMenuNum).toBe('nPost1');
     expect(firstElement.querySelectorAll('.subMenu')[0].classList).not.toContain('hidden');
     expect(firstElement.querySelectorAll('.menuButton')[0].classList).not.toContain('hidden');
 
@@ -436,7 +299,7 @@ describe('FullList', () => {
     // check the menu is hidden
     expect(toggleSpy).toHaveBeenCalled();
     expect(toggleSpy).toHaveBeenCalledTimes(2);
-    expect(toggleSpy).toHaveBeenCalledWith(1);
+    expect(toggleSpy).toHaveBeenCalledWith('nPost1');
     expect(fullList.showMenuNum).toBeNull();
     expect(firstElement.querySelectorAll('.subMenu')[0].classList).toContain('hidden');
     expect(firstElement.querySelectorAll('.menuButton')[0].classList).not.toContain('hidden');
@@ -451,7 +314,7 @@ describe('FullList', () => {
     const fullList = fixture.componentInstance;
     const fullListDOM = fixture.debugElement.nativeElement;
     const authService = fullList.authService;
-    const toggleSpy = spyOn(fullList, 'toggleOptions').and.callThrough();
+    const toggleSpy = spyOn(fullList, 'openMenu').and.callThrough();
     spyOn(authService, 'canUser').and.returnValue(true);
     fixture.detectChanges();
     tick();
@@ -480,8 +343,8 @@ describe('FullList', () => {
 
     // check the first post's menu is shown
     expect(toggleSpy).toHaveBeenCalled();
-    expect(toggleSpy).toHaveBeenCalledWith(1);
-    expect(fullList.showMenuNum).toBe(1);
+    expect(toggleSpy).toHaveBeenCalledWith('nPost1');
+    expect(fullList.showMenuNum).toBe('nPost1');
     expect(firstElement.querySelectorAll('.subMenu')[0].classList).not.toContain('hidden');
     expect(firstElement.querySelectorAll('.menuButton')[0].classList).not.toContain('hidden');
     expect(fullListDOM.querySelectorAll('.newItem')[1]!.querySelectorAll('.subMenu')[0].classList).toContain('hidden');
@@ -494,42 +357,10 @@ describe('FullList', () => {
     // check the first post's menu is hidden and the new post's menu is shown
     expect(toggleSpy).toHaveBeenCalled();
     expect(toggleSpy).toHaveBeenCalledTimes(2);
-    expect(toggleSpy).toHaveBeenCalledWith(2);
+    expect(toggleSpy).toHaveBeenCalledWith('nPost2');
     expect(firstElement.querySelectorAll('.subMenu')[0].classList).toContain('hidden');
     expect(fullListDOM.querySelectorAll('.newItem')[1]!.querySelectorAll('.subMenu')[0].classList).not.toContain('hidden');
   }));
-
-  // Check the popup exits when 'false' is emitted
-  it('should change mode when the event emitter emits false', fakeAsync(() => {
-    const paramMap = TestBed.inject(ActivatedRoute);
-    paramMap.url = of([{path: 'New'} as UrlSegment]);
-    const fixture = TestBed.createComponent(FullList);
-    const fullList = fixture.componentInstance;
-    const changeSpy = spyOn(fullList, 'changeMode').and.callThrough();
-
-    fixture.detectChanges();
-    tick();
-
-    // start the popup
-    fullList.lastFocusedElement = document.querySelectorAll('a')[0];
-    fullList.editMode = true;
-    fullList.delete = true;
-    fullList.toDelete = 'Post';
-    fullList.itemToDelete = 1;
-    fixture.detectChanges();
-    tick();
-
-    // exit the popup
-    const popup = fixture.debugElement.query(By.css('app-pop-up')).componentInstance as PopUp;
-    popup.exitEdit();
-    fixture.detectChanges();
-    tick();
-
-    // check the popup is exited
-    expect(changeSpy).toHaveBeenCalled();
-    expect(fullList.editMode).toBeFalse();
-    expect(document.activeElement).toBe(document.querySelectorAll('a')[0]);
-  }))
 
   // FULL NEW LIST
   // ==================================================================
@@ -550,7 +381,8 @@ describe('FullList', () => {
         declarations: [
           FullList,
           PopUp,
-          Loader
+          Loader,
+          SinglePost
         ],
         providers: [
           { provide: APP_BASE_HREF, useValue: '/' },
@@ -648,7 +480,8 @@ describe('FullList', () => {
         declarations: [
           FullList,
           PopUp,
-          Loader
+          Loader,
+          SinglePost
         ],
         providers: [
           { provide: APP_BASE_HREF, useValue: '/' },

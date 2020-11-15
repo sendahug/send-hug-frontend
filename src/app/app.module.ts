@@ -54,6 +54,8 @@ import { HeaderMessage } from './components/headerMessage/headerMessage.componen
 import { NotificationsTab } from './components/notifications/notifications.component';
 import { SettingsPage } from './components/settings/settings.component';
 import { SiteMap } from './components/siteMap/siteMap.component';
+import { SinglePost } from './components/post/post.component';
+import { SupportPage } from './components/supportPage/supportPage.component';
 
 @NgModule({
   imports: [
@@ -80,7 +82,9 @@ import { SiteMap } from './components/siteMap/siteMap.component';
     HeaderMessage,
     NotificationsTab,
     SettingsPage,
-    SiteMap
+    SiteMap,
+    SinglePost,
+    SupportPage
   ],
   providers: [],
   bootstrap: [AppComponent]

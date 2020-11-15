@@ -97,6 +97,18 @@ export interface MyDB extends DBSchema {
   }
 }
 
+// A post as represented in IDB. Differs from the existing User interface in attribute names.
+interface IDBPost {
+  'date': Date;
+  'givenHugs': number;
+  'id': number;
+  'isoDate': string;
+  'text': string;
+  'userId': number;
+  'user': string;
+  'sentHugs': number[];
+};
+
 @Injectable({
   providedIn: 'root'
 })
@@ -236,7 +248,7 @@ export class SWManager {
             postStore.createIndex('hugs', 'givenHugs');
 
             // create store for users
-            let userStore = db.createObjectStore('users', {
+            db.createObjectStore('users', {
               keyPath: 'id'
             });
 
@@ -322,7 +334,7 @@ export class SWManager {
           });
         }
         return posts;
-      }).then(function(posts) {
+      }).then((posts) => {
         // get the current page and the start index for the paginated list
         // if the target is one of the main page's lists, each list should contain
         // 10 posts; otherwise each list should contain 5 items
@@ -339,7 +351,8 @@ export class SWManager {
         }
         // if the target is the main page's new posts, return paginated posts
         else if(target == 'main suggested') {
-          return posts!.slice(startIndex, (startIndex + 10));
+          let sortedPosts = this.sortPosts(posts!);
+          return sortedPosts.slice(startIndex, (startIndex + 10));
         }
         // if the target is the fullList's new posts, reverse the order of
         // the posts (to show the latest posts) and return paginated posts
@@ -352,9 +365,19 @@ export class SWManager {
             pages: pages
           };
         }
-        // if the target is the fullList's suggested posts or a specific user's,
-        // posts, return paginated posts (as-is).
-        else if(target == 'suggested posts' || target == 'user posts') {
+        // if the target is the fullList's suggested posts, order them and
+        // return paginated posts (as-is).
+        else if(target == 'suggested posts') {
+          let pages = Math.ceil(posts!.length / 5);
+          let sortedPosts = this.sortPosts(posts!);
+
+          return {
+            posts: sortedPosts.slice(startIndex, (startIndex + 5)),
+            pages: pages
+          };
+        }
+        // if the target is a specific user's posts, return paginated posts (as-is).
+        else if(target == 'user posts') {
           let pages = Math.ceil(posts!.length / 5);
 
           return {
@@ -364,6 +387,57 @@ export class SWManager {
         }
       })
     }
+  }
+
+  /*
+  Function Name: sortPosts()
+  Function Description: Orders suggested posts by number of hugs (ascending) and
+                        date (descending).
+  Parameters: posts (IDBPost[]) - list of posts to order
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  sortPosts(posts: IDBPost[]) {
+    let postHugs: { [hugs:number]: IDBPost[] } = { };
+    let orderedPosts: IDBPost[] = [];
+
+    // split to arrays by number of hugs
+    posts.forEach(post => {
+      // if this is the first post with a specific number of hugs, first set up
+      // the relevant property
+      if(!postHugs[post.givenHugs]) {
+        postHugs[post.givenHugs] = [];
+      }
+
+      postHugs[post.givenHugs].push(post);
+    });
+
+    const hugsNumbers = Object.keys(postHugs);
+    hugsNumbers.forEach((value:string) => {
+      // sort each array by date
+      postHugs[Number(value)].sort((postA, postB) => {
+        // if post A is newer than B, put B first
+        if(postA.isoDate > postB.isoDate) {
+          return 1;
+        }
+        // if it's the other way around, put A first
+        else if(postB.isoDate > postA.isoDate) {
+          return -1;
+        }
+        // otherwise return 0
+        else {
+          return 0;
+        }
+      });
+      // then push each post from the by-hugs arrays to a general array
+      postHugs[Number(value)].forEach(post => {
+        orderedPosts.push(post);
+      });
+    });
+
+    // return the suggested posts, ordered by number of hugs (ascending) and
+    // date (descending)
+    return orderedPosts;
   }
 
   /*

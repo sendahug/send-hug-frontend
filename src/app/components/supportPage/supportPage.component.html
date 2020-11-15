@@ -1,0 +1,42 @@
+<nav id="supportNav" role="navigation">
+	<a href="support#faqTitle" class="supportNavTitle" aria-label="skip to Frequently Asked Questions">Frequently Asked Questions</a>
+	<ul>
+		<li *ngFor="let item of faqItems"><a href="{{ 'support#' + item.href }}" class="supportNavLink" [attr.aria-label]="'skip to question ' + item.question">{{ item.question }}</a></li>
+	</ul>
+	<a href="support#qTitle" class="supportNavTitle" aria-label="skip to Other Questions or Issues">Other Questions / Issues</a>
+</nav>
+
+<!-- Frequently asked questions -->
+<h3 id="faqTitle">Frequently Asked Questions</h3>
+<ul id="faq">
+	<li class="faqItem">
+		<div class="pageCategory" id="faq1">What can I do on this site?</div>
+		<div class="pageData" aria-describedby="userName userRole">As of the current version (version 1), you can do several things: you can write posts, send private messages, and send hugs to users.</div>
+	</li>
+	<li class="faqItem">
+		<div class="pageCategory" id="faq2">How do I send users hugs?</div>
+		<div class="pageData" aria-describedby="userName userRole">There are two ways in which you can send a hug to a user: through their post or through their profile.</div>
+		<div class="pageData" aria-describedby="userName userRole">You can send a hug by clicking the hug button in the bottom of a user's post (<fa-icon [icon]="faHandHoldingHeart" class="supportIcon"></fa-icon>). This automatically sends a hug to the post's writer and updates the post's hug count. Hugs are limited to one per post (from a single user).</div>
+		<div class="pageData" aria-describedby="userName userRole">You can also send a hug directly to the user, through the user's profile. Once you open their profile, you'll find a heart-shaped hug button by their display name (<fa-icon [icon]="faGratipay" class="supportIcon"></fa-icon>). Clicking on it sends a hug to that user. These hugs aren't limited.</div>
+	</li>
+	<li class="faqItem">
+		<div class="pageCategory" id="faq3">How do I send private messages?</div>
+		<div class="pageData" aria-describedby="userName userRole">You can send a private message by clicking the message button in the bottom of a user's post (<fa-icon [icon]="faComment" class="supportIcon"></fa-icon>). These messages are only visible to you and the person receiving your message. Feel free to write any words of support or help you can think of.</div>
+	</li>
+	<li class="faqItem">
+		<div class="pageCategory" id="faq4">Is data encrypted on this site?</div>
+		<div class="pageData" aria-describedby="userName userRole">As of the current version (version 1), information on the site is not encryped. This includes messages, reports, posts and profile information. Anything to do with signup and login is handled by Auth0; if you have any more questions, refer to their privacy policy.</div>
+	</li>
+	<li class="faqItem">
+		<div class="pageCategory" id="faq5">What do I do if I see spam, abusive behaviour or anything else that seems inappropriate?</div>
+		<div class="pageData" aria-describedby="userName userRole">You can report the post (if it's a post) or the user behind those posts or messages. If you need to report a post, please click the report button in the bottom of the post (<fa-icon [icon]="faFlag" class="supportIcon"></fa-icon>). If you need to report a user, go to that user's profile and click the report button there. All reports are handled quickly and efficiently.</div>
+	</li>
+	<li class="faqItem">
+		<div class="pageCategory" id="faq6">Can I delete my data?</div>
+		<div class="pageData" aria-describedby="userName userRole">You certainly can. You can easily delete your posts by clicking the delete button in the relevant post (<fa-icon [icon]="faTimes" class="supportIcon"></fa-icon>). Similarly, you can delete your private messages. Note that private messages are only fully deleted once both sides (the sender and the recipient) delete it.</div>
+	</li>
+</ul>
+
+<h3 id="qTitle">Any Questions / Issues?</h3>
+<div class="furtherQuestions">Have any other question? Found a bug or an issue that you need help with? Have a feature you want to request?</div>
+<div class="furtherQuestions">Feel free to contact us! You can do it either by email, at <a href="mailto:sendahugcom@gmail.com">sendahugcom@gmail.com</a>, or on <a href="https://github.com/sendahug/send-hug-frontend/issues" target="_blank" rel="noreferrer">GitHub</a>. Please make sure to include as many details about the question, bug, issue or feature so that we can help you as soon as possible.</div>

@@ -20,24 +20,11 @@
 	<h3 id="postsTitle">Posts</h3>
 	<div *ngIf="itemsService.postSearchResults.length > 0" id="postSearchResults">
 		<ul class="searchResults" aria-describedby="pSearchRes">
-			<li *ngFor="let item of itemsService.postSearchResults" class="searchResult" role="article">
-				<div class="itemText" aria-describedby="pText" id="{{'nPost' + item.id}}">{{ item.text }}</div>
-			<div class="itemUser">By <a [routerLink]="['/user', item.userId ]" class="profileLink" aria-describedby="pUser" id="{{'nUser' + item.id}}">{{ item.user }}</a> </div>
-			<div class="buttonsContainer">
-				<div class="notification" [attr.aria-describedby]="'pHug ' + 'nUser' + item.id">
-					<button *ngIf="!item.sentHugs.includes(authService.userData.id.toString())" class="textlessButton hugButton" (click)="sendHug(item.id)" [attr.aria-labelledby]="'pHug ' + 'nUser' + item.id" name="send a hug"><fa-icon [icon]="faHandHoldingHeart" class="fa-hand-holding-heart"></fa-icon></button>
-					<button *ngIf="item.sentHugs.includes(authService.userData.id.toString())" class="textlessButton hugButton active" [attr.aria-labelledby]="'pHug ' + 'nUser' + item.id" name="send a hug" disabled><fa-icon [icon]="faHandHoldingHeart" class="fa-hand-holding-heart"></fa-icon></button>
-					<span class="badge" aria-describedby="pGivenH">{{ item.givenHugs }}</span>
-				</div>
-				<button class="textlessButton menuButton hidden" [attr.aria-labelledby]="'pOptions ' + 'nPost' + item.id" name="post options" (click)="toggleOptions(item.id)"><fa-icon [icon]="faEllipsisV" class="fa-comment"></fa-icon></button>
-				<div class="subMenu">
-					<a [routerLink]="['/new', 'Message']" [queryParams]="{user: item.user, userID: item.userId}" class="textlessButton messageButton" [attr.aria-describedby]="'pMessage ' + 'nUser' + item.id"><fa-icon [icon]="faComment" class="fa-comment"></fa-icon></a>
-					<button class="textlessButton reportButton" (click)="reportPost(item)" [attr.aria-describedby]="'pReport ' + 'nPost' + item.id"><fa-icon [icon]="faFlag" class="fa-flag"></fa-icon></button>
-					<button *ngIf="authService.canUser('patch:any-post')" class="textlessButton editButton" (click)="editPost(item)" [attr.aria-describedby]="'pEdit ' + 'nPost' + item.id"><fa-icon [icon]="faEdit" class="fa-edit"></fa-icon></button>
-					<button *ngIf="authService.canUser('delete:any-post')" class="textlessButton deleteButton" (click)="deletePost(item.id)" [attr.aria-describedby]="'pDelete ' + 'nPost' + item.id"><fa-icon [icon]="faTimes" class="fa-times"></fa-icon></button>
-				</div>
-			</div>
-			</li>
+			<app-single-post  *ngFor="let item of itemsService.postSearchResults"
+						 [post]="item"
+						 [type]="'n'"
+						 [class]="'searchResult'"
+						 (showMenu)="openMenu($event)"></app-single-post>
 		</ul>
 
 	<!-- Post pagination -->
@@ -55,28 +42,3 @@
 		There are no posts that match your search!
 	</div>
 </div>
-
-<div id="labels" class="labels" aria-hidden="true">
-	<p id="uSearchRes">Users search results</p>
-	<p id="pSearchRes">Posts search results</p>
-	<p id="pText">Post Text</p>
-	<p id="pUser">Post Writer</p>
-	<p id="pHug">Send a hug to user</p>
-	<p id="pGivenH">Hugs given to this post</p>
-	<p id="pOptions">show options for post</p>
-	<p id="pMessage">Send a message to user</p>
-	<p id="pReport">Report post</p>
-	<p id="pEdit">Edit post</p>
-	<p id="pDelete">Delete post</p>
-</div>
-
-<app-pop-up *ngIf="editMode"
-			[editedItem]="postToEdit"
-			[toEdit]="editType"
-			(editMode)="changeMode($event)"
-			[delete]="delete"
-			[toDelete]="toDelete"
-			[itemToDelete]="itemToDelete"
-			[report]="report"
-			[reportedItem]="reportedItem"
-			[reportType]="reportType"></app-pop-up>

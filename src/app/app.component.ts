@@ -143,14 +143,6 @@ export class AppComponent implements OnInit, AfterViewInit, AfterViewChecked {
         navItems.forEach((navLink) => {
           if(navLink.classList.contains('active')) {
             navLink.classList.remove('active');
-
-            // if the nav link has 4 children, it means it's got a pic rather than an
-            // icon as its symbol, so the regular icon needs to be displayed and the active
-            // icon needs to be hidden
-            if(navLink.children.length == 4) {
-              navLink.children.item(0)!.classList.remove('hidden');
-              navLink.children.item(1)!.classList.add('hidden');
-            }
           }
         })
 
@@ -158,8 +150,6 @@ export class AppComponent implements OnInit, AfterViewInit, AfterViewChecked {
         // if the current URL is the main page
         if(event.url == '/') {
           navItems[1].classList.add('active');
-          navItems[1].children.item(0)!.classList.add('hidden');
-          navItems[1].children.item(1)!.classList.remove('hidden');
         }
         // if the current URL is one of the mailboxes
         else if(event.url.startsWith('/messages')) {
@@ -170,8 +160,6 @@ export class AppComponent implements OnInit, AfterViewInit, AfterViewChecked {
           // ensure only authenticated users can access this page
           if(this.authService.authenticated) {
             navItems[3].classList.add('active');
-            navItems[3].children.item(0)!.classList.add('hidden');
-            navItems[3].children.item(1)!.classList.remove('hidden');
           }
         }
         // if the current URL is the user's own profile
@@ -206,8 +194,6 @@ export class AppComponent implements OnInit, AfterViewInit, AfterViewChecked {
           // ensure only authenticated users can access this page
           if(this.authService.authenticated) {
             navItems[6].classList.add('active');
-            navItems[6].children.item(0)!.classList.add('hidden');
-            navItems[6].children.item(1)!.classList.remove('hidden');
           }
         }
       }

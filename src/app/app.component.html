@@ -6,9 +6,7 @@
 		<button class="navLink hidden" id="menuBtn" (click)="toggleMenu()" aria-hidden="true" aria-label="open navigation menu"><fa-icon [icon]="faBars" class="fa-bars"></fa-icon></button>
 		<div id="navLinks" class="navLinks">
 			<a [routerLink]="['/']" class="navLink">
-				<img src="../assets/img/home.svg" alt="" id="home" class="normal">
-				<img src="../assets/img/home_active.svg" alt="" class="active hidden" id="homeActive">
-				<img src="../assets/img/home_hover.svg" alt="" class="hover" id="homeHover">
+				<img src="../assets/img/home.svg" alt="">
 				<div class="navLinkText">Home</div>
 			</a>
 			<a [routerLink]="['/messages']" class="navLink">
@@ -16,9 +14,7 @@
 				<div class="navLinkText">Messages</div>
 			</a>
 			<a *ngIf="authService.authenticated && !authService.userData.blocked" [routerLink]="['/new', 'Post']" class="navLink">
-				<img src="../assets/img/post.svg" alt="" id="post" class="normal">
-				<img src="../assets/img/post_active.svg" alt="" class="active hidden" id="postActive">
-				<img src="../assets/img/post_hover.svg" alt="" class="hover" id="postHover">
+				<img src="../assets/img/post.svg" alt="">
 				<div class="navLinkText">New Post</div>
 			</a>
 			<a [routerLink]="['/user']" class="navLink">
@@ -30,9 +26,7 @@
 				<div class="navLinkText">About</div>
 			</a>
 			<a *ngIf="authService.canUser('read:admin-board')" [routerLink]="['/admin']" class="navLink">
-				<img src="../assets/img/admin.svg" alt="" id="admin" class="normal">
-				<img src="../assets/img/admin_active.svg" alt="" class="active hidden" id="adminActive">
-				<img src="../assets/img/admin_hover.svg" alt="" class="hover" id="adminHidden">
+				<img src="../assets/img/admin.svg" alt="">
 				<div class="navLinkText">Admin Panel</div>
 			</a>
 			<div class="newNotification">
@@ -78,8 +72,20 @@
 	<footer>
 		<div id="siteFooter" role="contentinfo">
 			<p class="footerText" id="text">Open source project designed and built by <a href="https://github.com/sendahug/sendahug" target="_blank" rel="noreferrer">Send a Hug</a> group members. Designed by <a href="https://instagram.com/alphamacy?igshid=8ca63sx6ccpz" target="_blank" rel="noreferrer">Macy Tyler.</a></p>
-			<p class="footerText" id="contact"><a [routerLink]="['/sitemap']">Site Map</a> | <a href="mailto:sendahugcom@gmail.com">Email Us</a> <span *ngIf="canShare"> | <button class="textlessButton footerText" (click)="shareSite()">Share</button></span></p>
+			<p class="footerText" id="contact"><a [routerLink]="['/sitemap']">Site Map</a> | <a href="mailto:sendahugcom@gmail.com">Email Us</a> | <a [routerLink]="['/support']">Support</a> <span *ngIf="canShare"> | <button class="textlessButton footerText" (click)="shareSite()">Share</button></span></p>
 			<p class="footerText" id="rights">&copy; Send A Hug 2020.</p>
 		</div>
 	</footer>
+</div>
+
+<div id="labels" class="labels" aria-hidden="true">
+	<p id="pText">Post Text</p>
+	<p id="pUser">Post Writer</p>
+	<p id="pHug">Send a hug to user</p>
+	<p id="pGivenH">Hugs given to this post</p>
+	<p id="pOptions">show options for post</p>
+	<p id="pMessage">Send a message to user</p>
+	<p id="pReport">Report post</p>
+	<p id="pEdit">Edit post</p>
+	<p id="pDelete">Delete post</p>
 </div>

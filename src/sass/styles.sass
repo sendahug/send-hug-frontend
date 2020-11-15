@@ -75,6 +75,8 @@ body
 
 #mainContent
 	padding-bottom: 20px
+	display: flex
+	flex-direction: column
 
 fieldset
 	border: none
@@ -424,14 +426,6 @@ app-admin-dashboard #breadcrumb
 .navLink:hover
 	color: #A50D0D
 
-/* Navigation icon (SVG) - hover variant when the mouse is hovering over the link */
-.navLink:hover .hover
-	display: inline-block
-
-/* Navigation icon (SVG) - active & normal variants when the mouse is hovering over the link */
-.navLink:hover .normal, .navLink:hover .active
-	display: none
-
 /* Navigation Item (current page) */
 .navLink.active
 	color: #9D154E
@@ -443,6 +437,21 @@ app-admin-dashboard #breadcrumb
 /* Navigation icon (current page) when the mouse is hovering over the link  */
 .navLink.active:hover
 	color: #A50D0D
+
+/* Navigation item pic (when it's an SVG rather than font awesome) */
+.navPic
+	height: 30px
+	padding: 7px 5px 4px
+	text-align: center
+	/* Responsive styling for screens above 650px width */
+	@media screen and (min-width: 650px)
+		height: 26px
+	/* Responsive styling for screens above 700px width */
+	@media screen and (min-width: 700px)
+		height: 28px
+	/* Responsive styling for screens above 800px width */
+	@media screen and (min-width: 800px)
+		height: 30px
 
 /* Navigation item icon */
 .navIcon
@@ -2174,11 +2183,107 @@ app-site-map a
 	/* Responsive styling for screens above 700px width */
 	@media screen and (min-width: 700px)
 		@include fontSize(16)
+
+/* =================== Support Page Component Styling =================== */
+/* Support Page Component */
+app-support
+	width: 90%
+	padding: 10px 5%
+	text-align: center
+
+/* Support Page Navigation */
+#supportNav
+	@extend #itemSample
+	padding: 10px
+	width: 90%
+	margin: 0 5% 30px
+	text-align: left
+
+/* Support Page Navigation title */
+.supportNavTitle
+	@include fontSize(18)
+	font-family: $mainFont
+	color: $linkColour
+
+/* Support Page Navigation - questions list */
+#supportNav ul
+	list-style: none
+	margin: 0 5px
+	padding: 5px 10px
+
+/* Support Page Navigation - questions list - single question */
+#supportNav li
+	padding: 2px
+
+/* Support Page Navigatio link */
+.supportNavLink
+	@include fontSize(16)
+	font-family: $mainFont
+	color: $linkColour
+
+/* Support Page title */
+app-support h3
+	@include fontSize(22)
+	font-family: $mainFont
+	color: $headlineColour
+	text-align: center
+	/* Responsive styling for screens above 800px width */
+	@media screen and (min-width: 800px)
+		@include fontSize(24)
+		order: 0
+		width: 100%
+		padding-top: 0
+		margin-top: 0
+
+/* Frequently asked questions list */
+#faq
+	list-style: none
+	margin: 10px 5px
+	padding: 0 0 15px
+
+/* Frequently asked questions item */
+.faqItem
+	@extend #itemSample
+	background: $boxesBackground
+	padding: 10px
+	width: 90%
+	margin: 20px 5%
+
+/* Frequently asked questions item question & answer */
+.faqItem .pageCategory, .faqItem .pageData
+	font-family: $mainFont
+	color: $textColour
+
+/* Frequently asked questions item question */
+.faqItem .pageCategory
+	@include fontSize(18)
+	
+/* Frequently asked questions item answer */
+.faqItem .pageData
+	@include fontSize(16)
+
+/* Frequently asked questions example icons */
+fa-icon.supportIcon .fa-gratipay, fa-icon.supportIcon .fa-comment, fa-icon.supportIcon .fa-flag, fa-icon.supportIcon .fa-edit, fa-icon.supportIcon .fa-times, fa-icon.supportIcon .fa-hand-holding-heart
+	font-size: 16px
+
+/* Any questions section text */
+.furtherQuestions
+	@include fontSize(16)
+	font-family: $mainFont
+	color: $textColour
+	padding: 10px
+	width: 90%
+	margin: 0 5%
+
+/* Any questions section links */
+.furtherQuestions a
+	color: $linkColour
 	
 /* =================== Admin Dashboard Component Styling =================== */
 /* Admin Dashboard Component */
 app-admin-dashboard
 	width: 90%
+	padding: 0 5%
 	left: 0
 	right: 0
 

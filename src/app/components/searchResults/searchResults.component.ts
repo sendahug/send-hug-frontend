@@ -33,14 +33,11 @@
 // Angular imports
 import { Component, AfterViewChecked } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { faComment, faEdit, faFlag } from '@fortawesome/free-regular-svg-icons';
-import { faHandHoldingHeart, faTimes, faEllipsisV } from '@fortawesome/free-solid-svg-icons';
 
 // App-related imports
 import { ItemsService } from '../../services/items.service';
 import { AuthService } from '../../services/auth.service';
 import { PostsService } from '../../services/posts.service';
-import { Post } from '../../interfaces/post.interface';
 
 @Component({
   selector: 'app-search-results',
@@ -49,27 +46,9 @@ import { Post } from '../../interfaces/post.interface';
 export class SearchResults implements AfterViewChecked {
   searchQuery: string | null;
   page = 1;
-  showMenuNum: number | null = null;
+  showMenuNum: string | null = null;
   //loader component variable
   waitFor = 'search';
-  // edit popup sub-component variables
-  postToEdit: Post | undefined;
-  editType: string | undefined;
-  editMode:boolean;
-  delete:boolean;
-  toDelete: string | undefined;
-  itemToDelete: number | undefined;
-  report:boolean;
-  reportedItem: Post | undefined;
-  reportType = 'Post';
-  lastFocusedElement: any;
-  // icons
-  faComment = faComment;
-  faEdit = faEdit;
-  faFlag = faFlag;
-  faHandHoldingHeart = faHandHoldingHeart;
-  faTimes = faTimes;
-  faEllipsisV = faEllipsisV;
 
   // CTOR
   constructor(
@@ -80,9 +59,6 @@ export class SearchResults implements AfterViewChecked {
     private postsService:PostsService
   ) {
     this.searchQuery = this.route.snapshot.queryParamMap.get('query');
-    this.editMode = false;
-    this.delete = false;
-    this.report = false;
 
     // if there's a search query but there's no ongoing search, it might be
     // the result of the user manually navigating here or refreshing the page.
@@ -131,7 +107,7 @@ export class SearchResults implements AfterViewChecked {
       else if(this.showMenuNum) {
         // change each menu to a floating menu
         posts.forEach((element) => {
-          if(element.firstElementChild!.id == 'nPost' + this.showMenuNum) {
+          if(element.firstElementChild!.id == this.showMenuNum) {
             element.querySelectorAll('.subMenu')[0].classList.remove('hidden');
           }
           else {
@@ -158,79 +134,6 @@ export class SearchResults implements AfterViewChecked {
         })
       }
     }
-  }
-
-  /*
-  Function Name: editPost()
-  Function Description: Triggers edit mode in order to edit a post.
-  Parameters: post (Post) - Post to edit.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  editPost(post:Post) {
-    this.lastFocusedElement = document.activeElement;
-    this.editType = 'post';
-    this.postToEdit = post;
-    this.editMode = true;
-  }
-
-  /*
-  Function Name: changeMode()
-  Function Description: Remove the edit popup.
-  Parameters: edit (boolean) - indicating whether edit mode should be active.
-                               When the user finishes editing, the event emitter
-                               in the popup component sends 'false' to this function
-                               to remove the popup.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  changeMode(edit:boolean) {
-    this.editMode = edit;
-    this.lastFocusedElement.focus();
-  }
-
-  /*
-  Function Name: deletePost()
-  Function Description: Send a request to the items service to delete a post.
-  Parameters: post_id (number) - ID of the post to delete.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  deletePost(postID:number) {
-    this.lastFocusedElement = document.activeElement;
-    this.editMode = true;
-    this.delete = true;
-    this.toDelete = 'Post';
-    this.itemToDelete = postID;
-  }
-
-  /*
-  Function Name: reportPost()
-  Function Description: Opens the popup to report a post.
-  Parameters: post (Post) - the Post to report.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  reportPost(post:Post) {
-    this.lastFocusedElement = document.activeElement;
-	  this.editMode = true;
-	  this.delete = false;
-	  this.report = true;
-	  this.reportedItem = post;
-  }
-
-  /*
-  Function Name: sendHug()
-  Function Description: Send a hug to a user through a post they've written. The hug
-                        itself is sent by the items service.
-  Parameters: itemID (number) - ID of the post.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  sendHug(itemID:number) {
-    let item = {};
-    item = this.itemsService.postSearchResults.filter(e => e.id == itemID)[0];
-    this.postsService.sendHug(item);
   }
 
   /*
@@ -282,22 +185,21 @@ export class SearchResults implements AfterViewChecked {
   }
 
   /*
-  Function Name: toggleOptions()
+  Function Name: openMenu()
   Function Description: Opens a floating sub menu that contains the message, report, edit (if
                         applicable) and delete (if applicable) options on smaller screens.
-  Parameters: itemNum (number) - ID of the item for which to open the submenu.
+  Parameters: menu (string) - ID of the item for which to open the submenu.
   ----------------
   Programmer: Shir Bar Lev.
   */
-  toggleOptions(itemNum:number | string) {
-    itemNum = Number(itemNum);
-    let post = document.querySelector('#nPost' + itemNum)!.parentElement;
+  openMenu(menu:string) {
+    let post = document.querySelector('#' + menu)!.parentElement;
     let subMenu = post!.querySelectorAll('.subMenu')[0];
 
     // if the submenu is hidden, show it
     if(subMenu.classList.contains('hidden')) {
       subMenu.classList.remove('hidden');
-      this.showMenuNum = itemNum;
+      this.showMenuNum = menu;
     }
     // otherwise hide it
     else {

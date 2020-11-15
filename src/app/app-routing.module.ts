@@ -43,6 +43,7 @@ import { SearchResults } from './components/searchResults/searchResults.componen
 import { AdminDashboard } from './components/adminDashboard/adminDashboard.component';
 import { SettingsPage } from './components/settings/settings.component';
 import { SiteMap } from './components/siteMap/siteMap.component';
+import { SupportPage } from './components/supportPage/supportPage.component';
 
 export const routes: Routes = [
   { path: '', component: MainPage, data: { name: 'Home Page' } },
@@ -80,6 +81,7 @@ export const routes: Routes = [
       ], data: { name: 'Admin Dashboard' }},
   { path: 'settings', component: SettingsPage, data: { name: 'Settings Page' } },
   { path: 'sitemap', component: SiteMap, data: { name: 'Site Map' } },
+  { path: 'support', component: SupportPage, data: { name: 'Support' } },
   { path: '**', component: ErrorPage, data: { name: 'Error Page' } }
 ];
 

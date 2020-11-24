@@ -18,7 +18,7 @@
   "author": "Shir Bar Lev",
   "license": "ISC",
   "devDependencies": {
-    "@babel/core": "^7.12.7",
+    "@babel/core": "^7.12.8",
     "@babel/preset-env": "^7.12.7",
     "@types/auth0-js": "^9.14.2",
     "@types/jasmine": "^3.6.2",
@@ -45,7 +45,7 @@
     "karma-jasmine-html-reporter": "^1.5.4",
     "karma-sourcemap-loader": "^0.3.8",
     "karma-viewport": "^1.0.7",
-    "postcss": "^8.1.9",
+    "postcss": "^8.1.10",
     "protractor": "^7.0.0",
     "puppeteer": "^5.5.0",
     "ts-node": "^9.0.0",

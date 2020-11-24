@@ -32,7 +32,7 @@
 
 // Angular imports
 import { Injectable } from '@angular/core';
-import { HttpErrorResponse, HttpParams } from '@angular/common/http';
+import { HttpParams } from '@angular/common/http';
 import { BehaviorSubject } from 'rxjs';
 
 // App-related imports
@@ -45,13 +45,12 @@ import { MockAuthService } from './auth.service.mock';
 import { MockAlertsService } from './alerts.service.mock';
 import { MockSWManager } from './sWManager.service.mock';
 import { environment } from '../../environments/environment';
-import { environment as prodEnv } from '../../environments/environment.prod';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MockItemsService {
-  readonly serverUrl = environment.production ? prodEnv.backend.domain! : environment.backend.domain;
+  readonly serverUrl = environment.backend.domain;
   // User posts variables
   userPosts: {
     self: Post[],
@@ -140,7 +139,7 @@ export class MockItemsService {
     private alertsService:MockAlertsService,
     private serviceWorkerM:MockSWManager
   ) {
-    
+
   }
 
   // POST-RELATED METHODS

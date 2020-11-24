@@ -43,7 +43,6 @@ import { User } from '../interfaces/user.interface';
 import { AlertsService } from './alerts.service';
 import { SWManager } from './sWManager.service';
 import { environment } from '../../environments/environment';
-import { environment as prodEnv } from '../../environments/environment.prod';
 
 @Injectable({
   providedIn: 'root'
@@ -51,14 +50,14 @@ import { environment as prodEnv } from '../../environments/environment.prod';
 export class AuthService {
   // Auth0 variable
   auth0 = new Auth0.WebAuth({
-    clientID: environment.production ? prodEnv.auth0.clientID! : environment.auth0.clientID,
-    domain: environment.production ? prodEnv.auth0.domain! : environment.auth0.domain,
+    clientID: environment.auth0.clientID,
+    domain: environment.auth0.domain,
     responseType: 'token',
-    redirectUri: environment.production ? prodEnv.auth0.redirectUri! : environment.auth0.redirectUri,
-    audience: environment.production ? prodEnv.auth0.audience! : environment.auth0.audience
+    redirectUri: environment.auth0.redirectUri,
+    audience: environment.auth0.audience
   })
 
-  readonly serverUrl = environment.production ? prodEnv.backend.domain! : environment.backend.domain;
+  readonly serverUrl = environment.backend.domain;
   // authentication information
   token: string = '';
   authHeader: HttpHeaders = new HttpHeaders;
@@ -360,8 +359,8 @@ export class AuthService {
   */
   logout() {
     this.auth0.logout({
-      returnTo: environment.production ? prodEnv.auth0.logoutUri! : environment.auth0.logoutUri,
-      clientID: environment.production ? prodEnv.auth0.clientID! : environment.auth0.clientID
+      returnTo: environment.auth0.logoutUri,
+      clientID: environment.auth0.clientID
     });
 
     // update the user's data in IDB to remove all user data

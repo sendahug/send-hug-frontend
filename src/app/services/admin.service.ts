@@ -42,7 +42,6 @@ import { AuthService } from './auth.service';
 import { AlertsService } from './alerts.service';
 import { ItemsService } from './items.service';
 import { environment } from '../../environments/environment';
-import { environment as prodEnv } from '../../environments/environment.prod';
 import { OtherUser } from '../interfaces/otherUser.interface';
 import { SWManager } from './sWManager.service';
 
@@ -50,7 +49,7 @@ import { SWManager } from './sWManager.service';
   providedIn: 'root'
 })
 export class AdminService {
-  readonly serverUrl = environment.production ? prodEnv.backend.domain! : environment.backend.domain;
+  readonly serverUrl = environment.backend.domain;
   userReports: Report[] = [];
   postReports: Report[] = [];
   isReportsResolved = new BehaviorSubject(false);

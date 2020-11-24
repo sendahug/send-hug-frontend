@@ -45,7 +45,6 @@ import { AuthService } from './auth.service';
 import { AlertsService } from './alerts.service';
 import { SWManager } from './sWManager.service';
 import { environment } from '../../environments/environment';
-import { environment as prodEnv } from '../../environments/environment.prod';
 
 type FetchStamp = {
   source: 'Server' | 'IDB' | '';
@@ -56,7 +55,7 @@ type FetchStamp = {
   providedIn: 'root'
 })
 export class ItemsService {
-  readonly serverUrl = environment.production ? prodEnv.backend.domain! : environment.backend.domain;
+  readonly serverUrl = environment.backend.domain;
   // User posts variables
   userPosts: {
     self: Post[],

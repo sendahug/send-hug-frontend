@@ -41,14 +41,13 @@ import { AuthService } from './auth.service';
 import { AlertsService } from './alerts.service';
 import { SWManager } from './sWManager.service';
 import { environment } from '../../environments/environment';
-import { environment as prodEnv } from '../../environments/environment.prod';
 
 @Injectable({
   providedIn: 'root'
 })
 export class NotificationService {
-  readonly serverUrl = environment.production ? prodEnv.backend.domain! : environment.backend.domain;
-  readonly publicKey = environment.production ? prodEnv.vapidKey : environment.vapidKey;
+  readonly serverUrl = environment.backend.domain;
+  readonly publicKey = environment.vapidKey;
   // notifications data
   notifications: any[] = [];
   // push notifications variables

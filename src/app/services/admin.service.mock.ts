@@ -32,7 +32,6 @@
 
 // Angular imports
 import { Injectable } from '@angular/core';
-import { HttpErrorResponse } from '@angular/common/http';
 import { BehaviorSubject } from 'rxjs';
 
 // App-related imports
@@ -42,14 +41,13 @@ import { MockAuthService } from './auth.service.mock';
 import { MockAlertsService } from './alerts.service.mock';
 import { MockItemsService } from './items.service.mock';
 import { environment } from '../../environments/environment';
-import { environment as prodEnv } from '../../environments/environment.prod';
 import { OtherUser } from '../interfaces/otherUser.interface';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MockAdminService {
-  readonly serverUrl = environment.production ? prodEnv.backend.domain! : environment.backend.domain;
+  readonly serverUrl = environment.backend.domain;
   userReports: Report[] = [];
   postReports: Report[] = [];
   isReportsResolved = new BehaviorSubject(false);

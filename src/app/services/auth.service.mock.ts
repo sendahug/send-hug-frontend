@@ -32,7 +32,7 @@
 
 // Angular imports
 import { Injectable } from '@angular/core';
-import { HttpHeaders, HttpErrorResponse } from '@angular/common/http';
+import { HttpHeaders } from '@angular/common/http';
 
 // Other essential imports
 import { BehaviorSubject } from 'rxjs';
@@ -40,13 +40,12 @@ import { BehaviorSubject } from 'rxjs';
 // App-related imports
 import { User } from '../interfaces/user.interface';
 import { environment } from '../../environments/environment';
-import { environment as prodEnv } from '../../environments/environment.prod';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MockAuthService {
-  readonly serverUrl = environment.production ? prodEnv.backend.domain! : environment.backend.domain;
+  readonly serverUrl = environment.backend.domain;
   // authentication information
   token: string = '';
   authHeader: HttpHeaders = new HttpHeaders;

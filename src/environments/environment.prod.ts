@@ -1,5 +1,5 @@
 export const environment = {
-  production: process.env.production,
+  production: true,
   auth0: {
     domain: process.env.auth0domain,
     clientID: process.env.auth0client,

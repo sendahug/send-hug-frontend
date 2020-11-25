@@ -186,7 +186,25 @@ function stylesDist()
 //deals with transforming and bundling the scripts while in production mode
 function scriptsDist()
 {
-	var b = browserify().add("src/main.ts").plugin(tsify, {target: "es6"});
+	var b = browserify().add("src/main.ts").plugin(tsify, {target: "es6"}).transform(function(file) {
+		var data = '';
+		return through(write);
+
+		// write the stream, replacing the environment
+		function write(buf) {
+			let codeChunk = buf.toString("utf8");
+
+			// replace the environment file with production environment file
+			let replacedChunk = codeChunk.replace(/environments\/environment/g, (match) => {
+				console.log(match);
+				let newString = `environments/environment.prod`
+				return newString;
+			});
+
+			data += replacedChunk
+			this.queue(data);
+		}
+	});
 
 	return b.bundle()
       .pipe(source("src/main.ts"))
@@ -195,10 +213,6 @@ function scriptsDist()
 		.pipe(replace(/(templateUrl: '.)(.*)(.component.html)/g, (match) => {
 						let componentName = match.substring(15, match.length-15);
 						let newString = `templateUrl: './app/${componentName}.component.html`
-						return newString;
-					}))
-		.pipe(replace(/production: false/, () => {
-						let newString = `production: true`
 						return newString;
 					}))
         .pipe(babel({presets: ["@babel/preset-env"]}))

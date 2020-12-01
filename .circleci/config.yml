@@ -1,6 +1,7 @@
 version: 2.1
 orbs:
   node: circleci/node@1.1
+  browser-tools: circleci/browser-tools@1.1.1
 jobs:
   build:
     docker:
@@ -9,6 +10,13 @@ jobs:
       CHROME_BIN: /usr/bin/google-chrome
     steps:
       - checkout
+      - browser-tools/install-chrome
+      - browser-tools/install-chromedriver
+      - run:
+        name: Check install
+          command: |
+            google-chrome --version
+            chromedriver --version  
       - restore_cache:
           key: my-project-{{ .Branch }}-{{ checksum "package-lock.json" }}
       - run: npm install

@@ -4,7 +4,7 @@ orbs:
 jobs:
   build:
     docker:
-      - image: circleci/node:latest
+      - image: cimg/node:12.18-browsers
     environment:
       CHROME_BIN: /usr/bin/google-chrome
     steps:

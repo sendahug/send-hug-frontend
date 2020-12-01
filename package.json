@@ -7,7 +7,7 @@
     "test": "tests"
   },
   "scripts": {
-    "test": "gulp unitTest",
+    "test": "gulp test",
     "build": "node env-config.js",
     "start": "node server.js"
   },

@@ -12,11 +12,7 @@ jobs:
       - checkout
       - browser-tools/install-chrome
       - browser-tools/install-chromedriver
-      - run:
-        name: Check install
-          command: |
-            google-chrome --version
-            chromedriver --version  
+      - run: google-chrome --version
       - restore_cache:
           key: my-project-{{ .Branch }}-{{ checksum "package-lock.json" }}
       - run: npm install

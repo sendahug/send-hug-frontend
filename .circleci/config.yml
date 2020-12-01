@@ -21,3 +21,4 @@ jobs:
           paths:
             - "node_modules"
       - run: npm test -- --no-watch --no-progress --browsers=ChromeHeadlessCI
+      - run: bash <(curl -s https://codecov.io/bash) -f coverage/lcov.info -X fix

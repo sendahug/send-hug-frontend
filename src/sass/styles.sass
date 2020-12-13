@@ -1771,10 +1771,24 @@ app-about
 	color: $linkColour
 	margin: 10px Calc((100% - 100px) / 2) 20px
 	padding-bottom: 20px
+	white-space: nowrap
 	/* Responsive styling for screens above 700px width */
 	@media screen and (min-width: 700px)
 		@include fontSize(16)
 		margin: 10px Calc((100% - 105px) / 2) 20px
+
+/* About component policies paragraph */
+#policies
+	padding: 10px  Calc((100% - 440px) / 2)
+	margin: 10px
+
+/* About component policy links */
+.aboutInnerLink
+	@include fontSize(15)
+	text-align: center
+	font-family: $mainFont
+	color: $linkColour
+	margin: 10px
 
 /* =================== Policies Component Styling =================== */
 /* Policies Component */
@@ -2329,7 +2343,7 @@ fa-icon.supportIcon .fa-gratipay, fa-icon.supportIcon .fa-comment, fa-icon.suppo
 	margin: 0 5%
 
 /* Any questions section links */
-.furtherQuestions a
+.furtherQuestions a, .faqItem a
 	color: $linkColour
 	
 /* =================== Admin Dashboard Component Styling =================== */

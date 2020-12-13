@@ -32,15 +32,39 @@
 
 // Angular imports
 import { Component } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+
+enum policyTitles {
+  TermsConditions = 'Terms and Conditions',
+  PrivacyPolicy = 'Privacy Policy',
+  CookiePolicy = 'Cookies Policy'
+}
 
 @Component({
   selector: 'app-policies',
   templateUrl: './SitePolicies.component.html'
 })
 export class SitePolicies {
-  currentPolicy: string = '';
-  // CTOR
-  constructor() {
+  currentPolicy!: 'TermsConditions' | 'PrivacyPolicy' | 'CookiePolicy';
+  pageTitle: string = '';
 
+  // CTOR
+  constructor(private route:ActivatedRoute) {
+    // Get the URL param to determine which policy to show
+    this.route.url.subscribe(params => {
+      switch(params[0].path) {
+        case 'terms':
+          this.currentPolicy = 'TermsConditions';
+          break;
+        case 'privacy':
+          this.currentPolicy = 'PrivacyPolicy';
+          break;
+        case 'cookies':
+          this.currentPolicy = 'CookiePolicy';
+          break;
+      }
+
+      this.pageTitle = policyTitles[this.currentPolicy];
+    });
   }
 }

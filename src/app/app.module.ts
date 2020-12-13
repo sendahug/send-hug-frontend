@@ -56,6 +56,7 @@ import { SettingsPage } from './components/settings/settings.component';
 import { SiteMap } from './components/siteMap/siteMap.component';
 import { SinglePost } from './components/post/post.component';
 import { SupportPage } from './components/supportPage/supportPage.component';
+import { SitePolicies } from './components/sitePolicies/sitePolicies.component';
 
 @NgModule({
   imports: [
@@ -84,7 +85,8 @@ import { SupportPage } from './components/supportPage/supportPage.component';
     SettingsPage,
     SiteMap,
     SinglePost,
-    SupportPage
+    SupportPage,
+    SitePolicies
   ],
   providers: [],
   bootstrap: [AppComponent]

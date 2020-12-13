@@ -1776,6 +1776,59 @@ app-about
 		@include fontSize(16)
 		margin: 10px Calc((100% - 105px) / 2) 20px
 
+/* =================== Policies Component Styling =================== */
+/* Policies Component */
+app-policies
+	width: 90%
+	padding: 0 5%
+	left: 0
+	right: 0
+	/* Responsive styling for screens above 600px width */
+	@media screen and (min-width: 600px)
+		width: 80%
+		padding: 0 10%
+	/* Responsive styling for screens above 600px width */
+	@media screen and (min-width: 800px)
+		width: 70%
+		padding: 0 15%
+
+/* Policies Component main title */
+#policyTitle
+	@include fontSize(26)
+	text-align: center
+	color: $headlineColour
+	font-family: $mainFont
+	margin: 10px 20px
+
+/* Policies Component sub-titles */
+app-policies h3, app-policies h4
+	text-align: center
+	padding-top: 10px
+	margin: 0
+
+/* Policies Component sub-titles */
+app-policies h3
+	@include fontSize(22)
+	
+/* Policies Component sub-title */
+app-policies h4
+	@include fontSize(20)
+
+/* Policies Component text */
+.policyContent
+	@extend .aboutText
+
+/* Policies Component links */
+app-policies a
+	@extend .aboutLink
+
+/* Policies Component last update date */
+.updateDate
+	@include fontSize(15)
+	text-align: center
+	margin-top: 0
+	padding-top: 0
+
 /* =================== Search Results Component Styling =================== */
 /* Search Results Component */
 app-search-results

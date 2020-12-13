@@ -42,7 +42,7 @@ enum policyTitles {
 
 @Component({
   selector: 'app-policies',
-  templateUrl: './SitePolicies.component.html'
+  templateUrl: './sitePolicies.component.html'
 })
 export class SitePolicies {
   currentPolicy!: 'TermsConditions' | 'PrivacyPolicy' | 'CookiePolicy';

@@ -1,6 +1,6 @@
 # Send A Hug
 
-[![Build Status](https://travis-ci.com/sendahug/send-hug-frontend.svg)](https://travis-ci.com/sendahug/send-hug-frontend)
+[![CircleCI](https://circleci.com/gh/sendahug/send-hug-frontend.svg?style=shield)](https://circleci.com/gh/sendahug/send-hug-frontend)
 ![CI](https://github.com/sendahug/send-hug-frontend/workflows/Test%20CI/badge.svg)
 [![codecov](https://codecov.io/gh/sendahug/send-hug-frontend/graph/badge.svg)](https://codecov.io/gh/sendahug/send-hug-frontend)
 [![Known Vulnerabilities](https://snyk.io/test/github/sendahug/send-hug-frontend/badge.svg)](https://snyk.io/test/github/sendahug/send-hug-frontend)

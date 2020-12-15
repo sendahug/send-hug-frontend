@@ -44,6 +44,7 @@ import { AdminDashboard } from './components/adminDashboard/adminDashboard.compo
 import { SettingsPage } from './components/settings/settings.component';
 import { SiteMap } from './components/siteMap/siteMap.component';
 import { SupportPage } from './components/supportPage/supportPage.component';
+import { SitePolicies } from './components/sitePolicies/sitePolicies.component';
 
 export const routes: Routes = [
   { path: '', component: MainPage, data: { name: 'Home Page' } },
@@ -82,6 +83,12 @@ export const routes: Routes = [
   { path: 'settings', component: SettingsPage, data: { name: 'Settings Page' } },
   { path: 'sitemap', component: SiteMap, data: { name: 'Site Map' } },
   { path: 'support', component: SupportPage, data: { name: 'Support' } },
+  { path: 'policies',
+      children: [
+        { path: 'terms', pathMatch: 'prefix', component: SitePolicies, data: { name: 'Terms and Conditions'} },
+        { path: 'privacy', pathMatch: 'prefix', component: SitePolicies, data: { name: 'Privacy Policy' } },
+        { path: 'cookies', pathMatch: 'prefix', component: SitePolicies, data: { name: 'Cookie Policy' } }
+      ], data: { name: 'Site Policies' }},
   { path: '**', component: ErrorPage, data: { name: 'Error Page' } }
 ];
 

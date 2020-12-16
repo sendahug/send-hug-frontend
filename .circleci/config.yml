@@ -47,10 +47,16 @@ jobs:
       - run:
           name: Install Python
           command: |
-            sudo apt install software-properties-common
-            sudo add-apt-repository ppa:deadsnakes/ppa
-            sudo apt install python3.9
-            sudo apt-get install -y python3-pip
+            wget https://www.python.org/ftp/python/3.9.0/Python-3.9.0.tgz
+            sudo apt-get upgrade
+            sudo apt-get install -y make build-essential libssl-dev zlib1g-dev \
+                libbz2-dev libreadline-dev libsqlite3-dev wget curl llvm \
+                libncurses5-dev libncursesw5-dev xz-utils tk-dev
+            tar xvf Python-3.9.0.tgz
+            cd Python-3.9.0
+            ./configure --enable-optimizations --with-ensurepip=install
+            make -j 8
+            sudo make altinstall
       - run: sudo apt-get install -y postgresql-client
       - run:
           name: Install Python deps

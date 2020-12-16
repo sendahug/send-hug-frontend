@@ -42,8 +42,8 @@ jobs:
     environment:
       CHROME_BIN: /usr/bin/google-chrome
     steps:
-      - git clone https://github.com/sendahug/send-hug-backend
-      - cd send-hug-backend
+      - run: git clone https://github.com/sendahug/send-hug-backend
+      - run: cd send-hug-backend
       - run: sudo apt-get update
       - run: sudo apt-get install -y postgresql-client
       - run:

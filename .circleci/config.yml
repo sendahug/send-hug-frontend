@@ -57,6 +57,7 @@ jobs:
             ./configure --enable-optimizations --with-ensurepip=install
             make -j 8
             sudo make altinstall
+      - run: sudo apt-get install -y python3-pip
       - run: sudo apt-get install -y postgresql-client
       - run:
           name: Install Python deps

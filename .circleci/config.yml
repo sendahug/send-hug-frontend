@@ -3,7 +3,7 @@ orbs:
   node: circleci/node@1.1
   browser-tools: circleci/browser-tools@1.1.1
 jobs:
-  build:
+  test:
     docker:
       - image: cimg/node:12.18-browsers
     environment:
@@ -22,3 +22,73 @@ jobs:
             - "node_modules"
       - run: npm test -- --no-watch --no-progress --browsers=ChromeHeadlessCI
       - run: bash <(curl -s https://codecov.io/bash) -f coverage/lcov.info -X fix
+  e2e:
+    docker:
+      - image: cimg/node:12.18-browsers
+      - image: cimg/python:3.9.0
+        environment:
+          DATABASE_URL: postgresql://postgres:password@localhost:5432/test-capstone?sslmode=disable
+          FLASK_APP: app.py
+          FLASK_ENV: development
+          FRONTEND: http://localhost:3000
+      - image: circleci/postgres:12.5
+        auth:
+          username: mydockerhub-user
+          password: $DOCKERHUB_PASSWORD  # context / project UI env-var reference
+        environment:
+          POSTGRES_USER: postgres
+          POSTGRES_DB: test-capstone
+          POSTGRES_PASSWORD: "password"
+    environment:
+      CHROME_BIN: /usr/bin/google-chrome
+    steps:
+      - git clone https://github.com/sendahug/send-hug-backend
+      - cd send-hug-backend
+      - run: sudo apt-get update
+      - run: sudo apt-get install -y postgresql-client
+      - run:
+          name: Install Python deps
+          command: |
+            pip3 install -r requirements.txt
+            python3 -m pip install --upgrade pip
+            sudo apt-get install -y python3-pip
+      # Dockerize installation to wait for the database to load
+      # Taken from: https://support.circleci.com/hc/en-us/articles/360006773953-Race-Conditions-Wait-For-Database
+      - run:
+          name: install dockerize
+          command: wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && sudo tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && rm dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
+          environment:
+            DOCKERIZE_VERSION: v0.3.0
+      - run:
+          name: Wait for db
+          command: dockerize -wait tcp://localhost:5432 -timeout 1m
+      - run:
+          name: Restore database
+          command: psql -h localhost -p 5432 -U postgres test-capstone < capstone_db.sql
+      - run:
+          name: Start backend
+          command: flask run
+          background: true
+      - run: cd ..
+      - run: checkout
+      - browser-tools/install-chrome
+      - browser-tools/install-chromedriver
+      - run: google-chrome --version
+      - restore_cache:
+          key: my-project-{{ .Branch }}-{{ checksum "package-lock.json" }}
+      - run: npm install
+      - save_cache:
+          key: my-project-{{ .Branch }}-{{ checksum "package-lock.json" }}
+          paths:
+            - "node_modules"
+      - run: npm e2e
+
+workflows:
+  run-testing:
+    jobs:
+      - test
+      - e2e:
+        filters:
+          branches:
+            only:
+              - e2e-setup

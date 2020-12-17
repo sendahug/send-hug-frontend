@@ -366,7 +366,7 @@ gulp.task('test', gulp.series(
 ));
 
 // boot up the server for e2e testing - headless
-function e2eServe() {
+async function e2eServe() {
 	bs = browserSync.init({
 		server: {
 			baseDir: "./localdev"

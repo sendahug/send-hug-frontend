@@ -45,7 +45,7 @@ jobs:
       - run:
           name: Install Python deps
           command: |
-            pip3 install -r requirements.txt
+            pip3 install -r send-hug-backend/requirements.txt
             python3 -m pip install --upgrade pip
       # Dockerize installation to wait for the database to load
       # Taken from: https://support.circleci.com/hc/en-us/articles/360006773953-Race-Conditions-Wait-For-Database
@@ -54,7 +54,7 @@ jobs:
           command: dockerize -wait tcp://localhost:5432 -timeout 1m
       - run:
           name: Restore database
-          command: psql -h localhost -p 5432 -U postgres test-capstone < send-hug-backend_capstone_db.sql
+          command: psql -h localhost -p 5432 -U postgres test-capstone < send-hug-backend/capstone_db.sql
       - run:
           name: Start backend
           command: flask run

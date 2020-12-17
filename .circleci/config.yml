@@ -42,11 +42,10 @@ jobs:
       CHROME_BIN: /usr/bin/google-chrome
     steps:
       - run: git clone https://github.com/sendahug/send-hug-backend
-      - run: cd send-hug-backend
-      - run: ls
       - run:
           name: Install Python deps
           command: |
+            cd send-hug-backend
             pip3 install -r requirements.txt
             python3 -m pip install --upgrade pip
       # Dockerize installation to wait for the database to load

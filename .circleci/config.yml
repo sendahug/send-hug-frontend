@@ -24,7 +24,7 @@ jobs:
       - run: bash <(curl -s https://codecov.io/bash) -f coverage/lcov.info -X fix
   e2e:
     docker:
-      - image: shirblc/python-npm-tools:2.0
+      - image: shirblc/python-npm-tools:2.1
         environment:
           DATABASE_URL: postgresql://postgres:password@localhost:5432/test-capstone?sslmode=disable
           FLASK_APP: send-hug-backend/app.py

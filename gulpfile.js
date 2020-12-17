@@ -365,9 +365,22 @@ gulp.task('test', gulp.series(
 	unitTest
 ));
 
+// boot up the server for e2e testing - headless
+function e2eServe() {
+	bs = browserSync.init({
+		server: {
+			baseDir: "./localdev"
+		},
+		single: true,
+		open: false
+	});
+
+	await bs;
+}
+
 // run development server & protractor
 async function runProtractor() {
-	serve();
+	e2eServe();
 
 	// update webdriver
 	await webdriverUpdate.program.run({

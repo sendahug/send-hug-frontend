@@ -27,7 +27,7 @@ jobs:
       - image: shirblc/python-npm-tools:2.0
         environment:
           DATABASE_URL: postgresql://postgres:password@localhost:5432/test-capstone?sslmode=disable
-          FLASK_APP: app.py
+          FLASK_APP: send-hug-backend/app.py
           FLASK_ENV: development
           FRONTEND: http://localhost:3000
       - image: circleci/postgres:12.5
@@ -45,7 +45,6 @@ jobs:
       - run:
           name: Install Python deps
           command: |
-            cd send-hug-backend
             pip3 install -r requirements.txt
             python3 -m pip install --upgrade pip
       # Dockerize installation to wait for the database to load
@@ -55,24 +54,31 @@ jobs:
           command: dockerize -wait tcp://localhost:5432 -timeout 1m
       - run:
           name: Restore database
-          command: psql -h localhost -p 5432 -U postgres test-capstone < capstone_db.sql
+          command: psql -h localhost -p 5432 -U postgres test-capstone < send-hug-backend_capstone_db.sql
       - run:
           name: Start backend
           command: flask run
           background: true
-      - run: cd ..
       - run: checkout
       - browser-tools/install-chrome
       - browser-tools/install-chromedriver
       - run: google-chrome --version
       - restore_cache:
           key: my-project-{{ .Branch }}-{{ checksum "package-lock.json" }}
-      - run: npm install
+      - run:
+          name: Install dependencies
+          command: |
+            cd send-hug-frontend
+            npm install
       - save_cache:
           key: my-project-{{ .Branch }}-{{ checksum "package-lock.json" }}
           paths:
-            - "node_modules"
-      - run: npm e2e
+            - "send-hug-frontend/node_modules"
+      - run:
+          name: Run e2e tests
+          command: |
+            cd send-hug-frontend
+            npm e2e
 
 workflows:
   run-testing:

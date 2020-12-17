@@ -11,6 +11,7 @@ exports.config = {
     chromeOptions: {
       binary: puppeteer.executablePath(),
       args: [
+        '--headless',
         '--disable-gpu',
         '--no-sandbox',
         '--disable-setuid-sandbox',

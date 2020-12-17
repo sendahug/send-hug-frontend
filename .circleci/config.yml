@@ -5,7 +5,7 @@ orbs:
 jobs:
   test:
     docker:
-      - image: cimg/node:12.18-browsers
+      - image: cimg/node:lts-browsers
     environment:
       CHROME_BIN: /usr/bin/google-chrome
     steps:
@@ -24,7 +24,7 @@ jobs:
       - run: bash <(curl -s https://codecov.io/bash) -f coverage/lcov.info -X fix
   e2e:
     docker:
-      - image: cimg/node:12.18-browsers
+      - image: shirblc/python-npm-tools:1.0
         environment:
           DATABASE_URL: postgresql://postgres:password@localhost:5432/test-capstone?sslmode=disable
           FLASK_APP: app.py
@@ -43,22 +43,7 @@ jobs:
     steps:
       - run: git clone https://github.com/sendahug/send-hug-backend
       - run: cd send-hug-backend
-      - run: sudo apt-get update
-      - run:
-          name: Install Python
-          command: |
-            wget https://www.python.org/ftp/python/3.9.0/Python-3.9.0.tgz
-            sudo apt-get upgrade
-            sudo apt-get install -y make build-essential libssl-dev zlib1g-dev \
-                libbz2-dev libreadline-dev libsqlite3-dev wget curl llvm \
-                libncurses5-dev libncursesw5-dev xz-utils tk-dev
-            tar xvf Python-3.9.0.tgz
-            cd Python-3.9.0
-            ./configure --enable-optimizations --with-ensurepip=install
-            make -j 8
-            sudo make altinstall
-      - run: sudo apt-get install -y python3-pip
-      - run: sudo apt-get install -y postgresql-client
+      - run: ls
       - run:
           name: Install Python deps
           command: |

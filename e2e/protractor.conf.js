@@ -1,5 +1,4 @@
 const { SpecReporter, StacktraceOption } = require('jasmine-spec-reporter');
-const puppeteer = require('puppeteer');
 
 exports.config = {
   specs: [
@@ -9,7 +8,7 @@ exports.config = {
   capabilities: {
     browserName: 'chrome',
     chromeOptions: {
-      binary: puppeteer.executablePath(),
+      binary: '/usr/bin/google-chrome-stable',
       args: [
         '--headless',
         '--disable-gpu',

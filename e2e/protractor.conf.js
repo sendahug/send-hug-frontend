@@ -8,7 +8,7 @@ exports.config = {
   capabilities: {
     browserName: 'chrome',
     chromeOptions: {
-      binary: '/usr/bin/google-chrome-stable',
+      binary: '/usr/bin/google-chrome',
       args: [
         '--headless',
         '--disable-gpu',

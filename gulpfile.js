@@ -119,15 +119,13 @@ async function localDev() {
 }
 
 //boot up the server
-async function serve() {
-	bs = browserSync.init({
+function serve() {
+	browserSync.init({
 		server: {
 			baseDir: "./localdev"
 		},
 		single: true
 	});
-
-	await bs;
 }
 
 // PRODUCTION TASKS

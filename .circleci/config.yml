@@ -71,21 +71,17 @@ jobs:
       - browser-tools/install-chromedriver
       - run: google-chrome --version
       - restore_cache:
-          key: my-project-{{ .Branch }}-{{ checksum "send-hug-frontend/package-lock.json" }}
+          key: my-project-{{ .Branch }}-{{ checksum "package-lock.json" }}
       - run:
           name: Install dependencies
-          command: |
-            cd send-hug-frontend
-            npm install
+          command: npm install
       - save_cache:
-          key: my-project-{{ .Branch }}-{{ checksum "send-hug-frontend/package-lock.json" }}
+          key: my-project-{{ .Branch }}-{{ checksum "package-lock.json" }}
           paths:
             - "send-hug-frontend/node_modules"
       - run:
           name: Run e2e tests
-          command: |
-            cd send-hug-frontend
-            gulp e2e
+          command: gulp e2e
 
 workflows:
   run-testing:

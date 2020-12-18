@@ -86,5 +86,5 @@ jobs:
 workflows:
   run-testing:
     jobs:
-      - test:
-      - e2e:
+      - test
+      - e2e

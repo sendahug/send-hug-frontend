@@ -41,7 +41,10 @@ jobs:
     environment:
       CHROME_BIN: /usr/bin/google-chrome
     steps:
-      - run: git clone https://github.com/sendahug/send-hug-backend
+      - checkout
+      - run: |
+          cd ..
+          git clone https://github.com/sendahug/send-hug-backend
       - run:
           name: Install Python deps
           command: |
@@ -59,7 +62,6 @@ jobs:
           name: Start backend
           command: flask run
           background: true
-      - run: git clone https://github.com/sendahug/send-hug-frontend
       - browser-tools/install-chrome
       - browser-tools/install-chromedriver
       - run: google-chrome --version
@@ -78,7 +80,6 @@ jobs:
           name: Run e2e tests
           command: |
             cd send-hug-frontend
-            git checkout e2e-setup
             gulp e2e
 
 workflows:

@@ -87,12 +87,4 @@ workflows:
   run-testing:
     jobs:
       - test:
-        filters:
-          branches:
-            ignore:
-              - e2e-setup
       - e2e:
-        filters:
-          branches:
-            only:
-              - e2e-setup

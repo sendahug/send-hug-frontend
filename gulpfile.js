@@ -119,15 +119,13 @@ async function localDev() {
 }
 
 //boot up the server
-async function serve() {
-	bs = browserSync.init({
+function serve() {
+	browserSync.init({
 		server: {
 			baseDir: "./localdev"
 		},
 		single: true
 	});
-
-	await bs;
 }
 
 // PRODUCTION TASKS
@@ -365,9 +363,23 @@ gulp.task('test', gulp.series(
 	unitTest
 ));
 
+// boot up the server for e2e testing - headless
+async function e2eServe() {
+	bs = browserSync.init({
+		server: {
+			baseDir: "./localdev"
+		},
+		single: true,
+		open: false,
+		ui: false
+	});
+
+	await bs;
+}
+
 // run development server & protractor
 async function runProtractor() {
-	serve();
+	e2eServe();
 
 	// update webdriver
 	await webdriverUpdate.program.run({

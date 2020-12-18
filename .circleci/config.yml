@@ -48,6 +48,7 @@ jobs:
       - run:
           name: Install Python deps
           command: |
+            cd ..
             pip3 install -r send-hug-backend/requirements.txt
             python3 -m pip install --upgrade pip
       # Dockerize installation to wait for the database to load
@@ -57,10 +58,14 @@ jobs:
           command: dockerize -wait tcp://localhost:5432 -timeout 1m
       - run:
           name: Restore database
-          command: psql -h localhost -p 5432 -U postgres test-capstone < send-hug-backend/capstone_db.sql
+          command: |
+            cd ..
+            psql -h localhost -p 5432 -U postgres test-capstone < send-hug-backend/capstone_db.sql
       - run:
           name: Start backend
-          command: flask run
+          command: |
+            cd ..
+            flask run
           background: true
       - browser-tools/install-chrome
       - browser-tools/install-chromedriver

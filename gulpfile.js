@@ -370,7 +370,8 @@ async function e2eServe() {
 			baseDir: "./localdev"
 		},
 		single: true,
-		open: false
+		open: false,
+		ui: false
 	});
 
 	await bs;

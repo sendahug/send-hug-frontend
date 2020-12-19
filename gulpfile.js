@@ -17,7 +17,7 @@ var through = require('through');
 const execFile = require('child_process').execFile;
 const webdriverUpdate = require('protractor/node_modules/webdriver-manager/built/lib/cmds/update');
 var Server = require('karma').Server;
-const sitemapGenerator = require('xml-sitemaps-spa');
+const sitemapGenerator = require('./xml-sitemaps-spa/index');
 let bs;
 
 // LOCAL DEVELOPMENT TASKS

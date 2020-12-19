@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="https://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>http://localhost:3000/</loc>
+    <lastmod>Mon, 14 Dec 2020 09:43:51 GMT</lastmod>
+  </url>
+  <url>
+    <loc>http://localhost:3000/messages</loc>
+    <lastmod>Mon, 14 Dec 2020 09:43:51 GMT</lastmod>
+  </url>
+  <url>
+    <loc>http://localhost:3000/user</loc>
+    <lastmod>Mon, 14 Dec 2020 09:43:51 GMT</lastmod>
+  </url>
+  <url>
+    <loc>http://localhost:3000/about</loc>
+    <lastmod>Mon, 14 Dec 2020 09:43:51 GMT</lastmod>
+  </url>
+  <url>
+    <loc>http://localhost:3000/policies/terms</loc>
+    <lastmod>Mon, 14 Dec 2020 09:43:51 GMT</lastmod>
+  </url>
+  <url>
+    <loc>http://localhost:3000/policies/privacy</loc>
+    <lastmod>Mon, 14 Dec 2020 09:43:51 GMT</lastmod>
+  </url>
+  <url>
+    <loc>http://localhost:3000/policies/cookies</loc>
+    <lastmod>Mon, 14 Dec 2020 09:43:51 GMT</lastmod>
+  </url>
+  <url>
+    <loc>http://localhost:3000/sitemap</loc>
+    <lastmod>Mon, 14 Dec 2020 09:43:51 GMT</lastmod>
+  </url>
+  <url>
+    <loc>http://localhost:3000/support</loc>
+    <lastmod>Mon, 14 Dec 2020 09:43:51 GMT</lastmod>
+  </url>
+  <url>
+    <loc>http://localhost:3000/messagesinbox</loc>
+    <lastmod>Mon, 14 Dec 2020 09:43:51 GMT</lastmod>
+  </url>
+  <url>
+    <loc>http://localhost:3000/list/New?page=1</loc>
+    <lastmod>Mon, 14 Dec 2020 09:43:51 GMT</lastmod>
+  </url>
+  <url>
+    <loc>http://localhost:3000/list/Suggested?page=1</loc>
+    <lastmod>Mon, 14 Dec 2020 09:43:51 GMT</lastmod>
+  </url>
+</urlset>

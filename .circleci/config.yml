@@ -135,7 +135,6 @@ jobs:
       - run:
           name: Install dependencies
           command: npm install
-      - run: sudo npm install -g xml-sitemaps-spa --unsafe-perm=true --allow-root
       - save_cache:
           key: my-project-{{ .Branch }}-{{ checksum "package-lock.json" }}
           paths:
@@ -148,9 +147,6 @@ jobs:
           command: gulp e2eServe
           background: true
       - run: sleep 15
-      - run:
-          name: Create sitemap
-          command: gulp createSitemap
       - run:
           name: Run accessibility setup
           command: pa11y-ci --sitemap http://localhost:3000/sitemap.xml

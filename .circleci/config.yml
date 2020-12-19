@@ -143,7 +143,7 @@ jobs:
           name: Run setup
           command: gulp a11yServe
           background: true
-      - run: sleep 60
+      - run: sleep 120
       - run:
           name: Create sitemap
           command: gulp createSitemap

@@ -419,8 +419,16 @@ gulp.task('e2e', gulp.series(
 // create sitemap for accessibility testing
 async function createSitemap() {
 	// create generator
-	await sitemapGenerator('http://localhost:3000', {
-	  filepath: '.localDev/sitemap.xml'
+	const generator = sitemapGenerator('http://localhost:3000', {
+		maxDepth: 9999,
+	  filepath: 'localDev/sitemap.xml'
+	});
+
+	await generator.start();
+
+	// register event listeners
+	generator.on('done', () => {
+	  console.log('in')
 	});
 }
 

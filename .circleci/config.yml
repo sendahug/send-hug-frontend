@@ -145,7 +145,7 @@ jobs:
       - run: sleep 90
       - run:
           name: Start frontend server
-          command:
+          command: gulp e2eServe
           background: true
       - run:
           name: Create sitemap

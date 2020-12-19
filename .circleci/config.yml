@@ -142,11 +142,11 @@ jobs:
       - run:
           name: Run setup
           command: gulp localDev
-      - run: sleep 90
       - run:
           name: Start frontend server
           command: gulp e2eServe
           background: true
+      - run: sleep 15
       - run:
           name: Create sitemap
           command: gulp createSitemap

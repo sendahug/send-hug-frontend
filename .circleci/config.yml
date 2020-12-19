@@ -90,6 +90,7 @@ jobs:
           FLASK_APP: send-hug-backend/app.py
           FLASK_ENV: development
           FRONTEND: http://localhost:3000
+          PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: true
       - image: circleci/postgres:12.5
         auth:
           username: mydockerhub-user
@@ -135,6 +136,7 @@ jobs:
       - run:
           name: Install dependencies
           command: npm install
+      - run: sudo npm install -g puppeteer
       - run: sudo npm install -g pa11y-ci
       - save_cache:
           key: my-project-{{ .Branch }}-{{ checksum "package-lock.json" }}

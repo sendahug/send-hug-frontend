@@ -1,0 +1,40 @@
+{
+  "name": "xml-sitemaps-spa",
+  "version": "2.0.0",
+  "description": "Generate easily XML sitemaps focusing on single page applications",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "bin": {
+    "xml-sitemaps-spa": "./bin/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/avivharuzi/xml-sitemaps-spa.git"
+  },
+  "keywords": [
+    "xml",
+    "sitemaps",
+    "spa",
+    "sitemap.xml",
+    "generator",
+    "crawler",
+    "seo"
+  ],
+  "author": "Aviv Haruzi <avivharuzi@gmail.com> (https://www.avivharuzi.com)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/avivharuzi/xml-sitemaps-spa/issues"
+  },
+  "homepage": "https://github.com/avivharuzi/xml-sitemaps-spa#readme",
+  "dependencies": {
+    "chalk": "^2.4.2",
+    "clear": "^0.1.0",
+    "figlet": "^1.2.1",
+    "inquirer": "^6.2.2",
+    "inquirer-datepicker-prompt": "^0.4.2",
+    "puppeteer": "^1.14.0",
+    "xml-js": "^1.6.11"
+  }
+}

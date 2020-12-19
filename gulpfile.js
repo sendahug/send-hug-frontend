@@ -425,6 +425,7 @@ async function createSitemap() {
     priority: false,
     limit: 0,
     exclude: [],
+		log: true,
     output: 'localdev/'
 	});
 

@@ -17,6 +17,7 @@ var through = require('through');
 const execFile = require('child_process').execFile;
 const webdriverUpdate = require('protractor/node_modules/webdriver-manager/built/lib/cmds/update');
 var Server = require('karma').Server;
+const sitemapGenerator = require('sitemap-generator');
 let bs;
 
 // LOCAL DEVELOPMENT TASKS
@@ -415,6 +416,21 @@ gulp.task('e2e', gulp.series(
 	runProtractor
 ))
 
+// create sitemap for accessibility testing
+async function createSitemap() {
+	// create generator
+	await SitemapGenerator('http://localhost:3000', {
+	  filepath: '.localDev/sitemap.xml'
+	});
+}
+
+// run accessibility testing
+gulp.task('a11yServe', gulp.series(
+	localDev,
+	scripts,
+	e2eServe
+))
+
 //exports for gulp to recognise them as tasks
 exports.copyHtml = copyHtml;
 exports.copyIndex = copyIndex;
@@ -425,3 +441,5 @@ exports.localDev = localDev;
 exports.serve = serve;
 exports.scriptsDist = scriptsDist;
 exports.watch = watch;
+exports.stopDevServer = stopDevServer;
+exports.createSitemap = createSitemap;

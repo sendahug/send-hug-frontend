@@ -420,9 +420,7 @@ gulp.task('e2e', gulp.series(
 async function createSitemap() {
 	// create generator
 	const generator = new sitemapGenerator('http://localhost:3000', {
-		lastModified: false,
-    changeFrequency: false,
-    priority: false,
+    priority: 1.0,
     limit: 0,
     exclude: [],
 		log: true,
@@ -431,13 +429,6 @@ async function createSitemap() {
 
 	await generator.generate();
 }
-
-// run accessibility testing
-gulp.task('a11yServe', gulp.series(
-	localDev,
-	scripts,
-	e2eServe
-))
 
 //exports for gulp to recognise them as tasks
 exports.copyHtml = copyHtml;
@@ -449,5 +440,6 @@ exports.localDev = localDev;
 exports.serve = serve;
 exports.scriptsDist = scriptsDist;
 exports.watch = watch;
+exports.e2eServe = e2eServe;
 exports.stopDevServer = stopDevServer;
 exports.createSitemap = createSitemap;

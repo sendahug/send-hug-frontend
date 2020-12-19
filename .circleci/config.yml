@@ -141,9 +141,12 @@ jobs:
             - "send-hug-frontend/node_modules"
       - run:
           name: Run setup
-          command: gulp a11yServe
-          background: true
+          command: gulp localDev
       - run: sleep 90
+      - run:
+          name: Start frontend server
+          command:
+          background: true
       - run:
           name: Create sitemap
           command: gulp createSitemap

@@ -1,7 +1,7 @@
 class Injector$ {
   static getAllValidUrls() {
     const aElements = document.querySelectorAll('a');
-
+    console.log(aElements);
     let urls = [];
 
     if (aElements.length > 0) {

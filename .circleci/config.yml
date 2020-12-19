@@ -150,9 +150,6 @@ jobs:
       - run:
           name: Run accessibility setup
           command: pa11y-ci --sitemap http://localhost:3000/sitemap.xml
-      - run:
-          name: Kill the server
-          command: gulp stopDevServer
 
 workflows:
   run-testing:

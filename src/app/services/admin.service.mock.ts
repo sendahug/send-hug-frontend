@@ -263,7 +263,14 @@ export class MockAdminService {
             role: 'user',
             blocked: true,
             releaseDate: new Date('2020-09-29 19:17:31.072'),
-            postsNum: 1
+            postsNum: 1,
+            selectedIcon: 'kitty',
+            iconColours: {
+              character: '#BA9F93',
+              lbg: '#e2a275',
+              rbg: '#f8eee4',
+              item: '#f4b56a'
+            }
         }];
     this.totalPages.blockedUsers = 1;
     this.isBlocksResolved.next(true);

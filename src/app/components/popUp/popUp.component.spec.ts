@@ -1388,7 +1388,14 @@ describe('Popup', () => {
         receivedHugs: 3,
         givenHugs: 4,
         postsNum: 2,
-        role: 'user'
+        role: 'user',
+        selectedIcon: 'kitty',
+        iconColours: {
+          character: '#BA9F93',
+          lbg: '#e2a275',
+          rbg: '#f8eee4',
+          item: '#f4b56a'
+        }
       };
 
       fixture.detectChanges();
@@ -1414,7 +1421,14 @@ describe('Popup', () => {
         receivedHugs: 3,
         givenHugs: 4,
         postsNum: 2,
-        role: 'user'
+        role: 'user',
+        selectedIcon: 'kitty',
+        iconColours: {
+          character: '#BA9F93',
+          lbg: '#e2a275',
+          rbg: '#f8eee4',
+          item: '#f4b56a'
+        }
       };
       const selectSpy = spyOn(popUp, 'setSelected').and.callThrough();
 
@@ -1475,7 +1489,14 @@ describe('Popup', () => {
         receivedHugs: 3,
         givenHugs: 4,
         postsNum: 2,
-        role: 'user'
+        role: 'user',
+        selectedIcon: 'kitty',
+        iconColours: {
+          character: '#BA9F93',
+          lbg: '#e2a275',
+          rbg: '#f8eee4',
+          item: '#f4b56a'
+        }
       };
       const selectSpy = spyOn(popUp, 'setSelected').and.callThrough();
       const reportSpy = spyOn(popUp, 'reportUser').and.callThrough();
@@ -1520,7 +1541,14 @@ describe('Popup', () => {
         receivedHugs: 3,
         givenHugs: 4,
         postsNum: 2,
-        role: 'user'
+        role: 'user',
+        selectedIcon: 'kitty',
+        iconColours: {
+          character: '#BA9F93',
+          lbg: '#e2a275',
+          rbg: '#f8eee4',
+          item: '#f4b56a'
+        }
       };
       const reportSpy = spyOn(popUp, 'reportUser').and.callThrough();
       const reportServiceSpy = spyOn(popUp['itemsService'], 'sendReport').and.callThrough();

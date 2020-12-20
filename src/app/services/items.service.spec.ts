@@ -386,7 +386,14 @@ describe('ItemsService', () => {
         id: 2,
         posts: 2,
         receivedH: 1,
-        role: "user"
+        role: "user",
+        selectedIcon: 'kitty',
+        iconColours: {
+          character: '#BA9F93',
+          lbg: '#e2a275',
+          rbg: '#f8eee4',
+          item: '#f4b56a'
+        }
       }
     };
 

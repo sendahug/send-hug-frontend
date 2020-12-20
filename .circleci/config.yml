@@ -138,7 +138,7 @@ jobs:
       - save_cache:
           key: my-project-{{ .Branch }}-{{ checksum "package-lock.json" }}
           paths:
-            - "send-hug-frontend/node_modules"
+            - "node_modules"
       - run:
           name: Run setup
           command: gulp localDev
@@ -148,7 +148,7 @@ jobs:
           background: true
       - run: sleep 15
       - run:
-          name: Run accessibility setup
+          name: Run accessibility tests
           command: pa11y-ci --sitemap http://localhost:3000/sitemap.xml
 
 workflows:

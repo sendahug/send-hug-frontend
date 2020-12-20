@@ -154,14 +154,6 @@ jobs:
 workflows:
   run-testing:
     jobs:
-      - test:
-          filters:
-            branches:
-              only:
-                - Dev
-      - e2e:
-          filters:
-            branches:
-              only:
-                - Dev
+      - test
+      - e2e
       - accessibility

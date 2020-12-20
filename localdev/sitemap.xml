@@ -2,50 +2,70 @@
 <urlset xmlns="https://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>http://localhost:3000/</loc>
-    <lastmod>Mon, 14 Dec 2020 09:43:51 GMT</lastmod>
+    <lastmod>Sat, 19 Dec 2020 19:10:29 GMT</lastmod>
   </url>
   <url>
     <loc>http://localhost:3000/messages</loc>
-    <lastmod>Mon, 14 Dec 2020 09:43:51 GMT</lastmod>
+    <lastmod>Sat, 19 Dec 2020 19:10:29 GMT</lastmod>
   </url>
   <url>
     <loc>http://localhost:3000/user</loc>
-    <lastmod>Mon, 14 Dec 2020 09:43:51 GMT</lastmod>
+    <lastmod>Sat, 19 Dec 2020 19:10:29 GMT</lastmod>
   </url>
   <url>
     <loc>http://localhost:3000/about</loc>
-    <lastmod>Mon, 14 Dec 2020 09:43:51 GMT</lastmod>
-  </url>
-  <url>
-    <loc>http://localhost:3000/policies/terms</loc>
-    <lastmod>Mon, 14 Dec 2020 09:43:51 GMT</lastmod>
-  </url>
-  <url>
-    <loc>http://localhost:3000/policies/privacy</loc>
-    <lastmod>Mon, 14 Dec 2020 09:43:51 GMT</lastmod>
-  </url>
-  <url>
-    <loc>http://localhost:3000/policies/cookies</loc>
-    <lastmod>Mon, 14 Dec 2020 09:43:51 GMT</lastmod>
+    <lastmod>Sat, 19 Dec 2020 19:10:29 GMT</lastmod>
   </url>
   <url>
     <loc>http://localhost:3000/sitemap</loc>
-    <lastmod>Mon, 14 Dec 2020 09:43:51 GMT</lastmod>
+    <lastmod>Sat, 19 Dec 2020 19:10:29 GMT</lastmod>
+  </url>
+  <url>
+    <loc>http://localhost:3000/messages/inbox</loc>
+    <lastmod>Sat, 19 Dec 2020 19:10:29 GMT</lastmod>
+  </url>
+  <url>
+    <loc>http://localhost:3000/messages/outbox</loc>
+    <lastmod>Sat, 19 Dec 2020 19:10:29 GMT</lastmod>
+  </url>
+  <url>
+    <loc>http://localhost:3000/messages/threads</loc>
+    <lastmod>Sat, 19 Dec 2020 19:10:29 GMT</lastmod>
+  </url>
+  <url>
+    <loc>http://localhost:3000/new/Post</loc>
+    <lastmod>Sat, 19 Dec 2020 19:10:29 GMT</lastmod>
+  </url>
+  <url>
+    <loc>http://localhost:3000/new/Message</loc>
+    <lastmod>Sat, 19 Dec 2020 19:10:29 GMT</lastmod>
+  </url>
+  <url>
+    <loc>http://localhost:3000/list/New</loc>
+    <lastmod>Sat, 19 Dec 2020 19:10:29 GMT</lastmod>
+  </url>
+  <url>
+    <loc>http://localhost:3000/list/Suggested</loc>
+    <lastmod>Sat, 19 Dec 2020 19:10:29 GMT</lastmod>
+  </url>
+  <url>
+    <loc>http://localhost:3000/settings</loc>
+    <lastmod>Sat, 19 Dec 2020 19:10:29 GMT</lastmod>
   </url>
   <url>
     <loc>http://localhost:3000/support</loc>
-    <lastmod>Mon, 14 Dec 2020 09:43:51 GMT</lastmod>
+    <lastmod>Sat, 19 Dec 2020 19:10:29 GMT</lastmod>
   </url>
   <url>
-    <loc>http://localhost:3000/messagesinbox</loc>
-    <lastmod>Mon, 14 Dec 2020 09:43:51 GMT</lastmod>
+    <loc>http://localhost:3000/policies/terms</loc>
+    <lastmod>Sat, 19 Dec 2020 19:10:29 GMT</lastmod>
   </url>
   <url>
-    <loc>http://localhost:3000/list/New?page=1</loc>
-    <lastmod>Mon, 14 Dec 2020 09:43:51 GMT</lastmod>
+    <loc>http://localhost:3000/policies/privacy</loc>
+    <lastmod>Sat, 19 Dec 2020 19:10:29 GMT</lastmod>
   </url>
   <url>
-    <loc>http://localhost:3000/list/Suggested?page=1</loc>
-    <lastmod>Mon, 14 Dec 2020 09:43:51 GMT</lastmod>
+    <loc>http://localhost:3000/policies/cookies</loc>
+    <lastmod>Sat, 19 Dec 2020 19:10:29 GMT</lastmod>
   </url>
 </urlset>

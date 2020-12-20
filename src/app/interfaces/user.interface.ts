@@ -46,4 +46,11 @@ export interface User {
   autoRefresh: boolean;
   pushEnabled: boolean;
   refreshRate: number;
+  selectedIcon: string;
+  iconColours: {
+    character: String,
+    lbg: String,
+    rbg: String,
+    item: String
+  }
 }

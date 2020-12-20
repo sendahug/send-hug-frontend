@@ -40,4 +40,11 @@ export interface OtherUser {
   role: string;
   blocked?: boolean;
   releaseDate?: Date;
+  selectedIcon: string;
+  iconColours: {
+    character: String,
+    lbg: String,
+    rbg: String,
+    item: String
+  }
 }

@@ -32,13 +32,63 @@
 
 import { Component } from '@angular/core';
 
+type iconCharacters = 'bear' | 'kitty' | 'dog';
+
 @Component({
   selector: 'icon-editor',
   templateUrl: './iconEditor.component.html'
 })
 export class IconEditor {
+  selectedIcon: iconCharacters;
+  iconColours: {
+    character: String,
+    lbg: String,
+    rbg: String,
+    item: String
+  } = {
+    character: '',
+    lbg: '',
+    rbg: '',
+    item: ''
+  }
+
   // CTOR
   constructor() {
+    this.selectedIcon = 'bear';
+  }
 
+  /*
+  Function Name: setSelected()
+  Function Description: Updates the selected character icon.
+  Parameters: newIcon (iconCharacters) - The value of the new selected icon.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  setSelected(newIcon:iconCharacters) {
+    this.selectedIcon = newIcon;
+  }
+
+  /*
+  Function Name: updateElementColour()
+  Function Description: Updates the colour of the selected icon element (character, left background,
+                        right background or the hand-held item).
+  Parameters: newValue (String) - The value of the selected colour.
+              element - the element that needs to be recoloured.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  updateElementColour(newValue:string, element:'character' | 'lbg' | 'rbg' | 'item') {
+    this.iconColours[element] = newValue;
+  }
+
+  /*
+  Function Name: updateIcon()
+  Function Description: Updates the current user's icon.
+  Parameters: event (Event) - Click event on the 'update icon' button.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  updateIcon(event:Event) {
+    event.preventDefault();
   }
 }

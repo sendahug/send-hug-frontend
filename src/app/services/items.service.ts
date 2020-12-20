@@ -83,7 +83,14 @@ export class ItemsService {
     receivedHugs: 0,
     givenHugs: 0,
     postsNum: 0,
-    role: ''
+    role: '',
+    selectedIcon: '',
+    iconColours: {
+      character: '',
+      lbg: '',
+      rbg: '',
+      item: ''
+    }
   };
   isOtherUser = false;
   isOtherUserResolved = new BehaviorSubject(false);
@@ -336,7 +343,14 @@ export class ItemsService {
         receivedHugs: 0,
         givenHugs: 0,
         postsNum: 0,
-        role: ''
+        role: '',
+        selectedIcon: '',
+        iconColours: {
+          character: '',
+          lbg: '',
+          rbg: '',
+          item: ''
+        }
       };
       this.isOtherUserResolved.next(false);
       this.idbResolved.user.next(false);
@@ -362,7 +376,14 @@ export class ItemsService {
         receivedHugs: user.receivedH,
         givenHugs: user.givenH,
         role: user.role,
-        postsNum: user.posts
+        postsNum: user.posts,
+        selectedIcon: user.selectedIcon,
+        iconColours: {
+          character: user.iconColours.character,
+          lbg: user.iconColours.leftbg,
+          rbg: user.iconColours.rightbg,
+          item: user.iconColours.item
+        }
       }
       this.isOtherUserResolved.next(true);
       this.idbResolved.user.next(true);

@@ -78,7 +78,14 @@ export class MockItemsService {
     receivedHugs: 0,
     givenHugs: 0,
     postsNum: 0,
-    role: ''
+    role: '',
+    selectedIcon: '',
+    iconColours: {
+      character: '',
+      lbg: '',
+      rbg: '',
+      item: ''
+    }
   };
   isOtherUser = false;
   isOtherUserResolved = new BehaviorSubject(false);
@@ -300,7 +307,14 @@ export class MockItemsService {
       receivedHugs: 3,
       givenHugs: 3,
       role: 'user',
-      postsNum: 10
+      postsNum: 10,
+      selectedIcon: 'kitty',
+      iconColours: {
+        character: '#BA9F93',
+        lbg: '#e2a275',
+        rbg: '#f8eee4',
+        item: '#f4b56a'
+      }
     }
 
     this.isOtherUserResolved.next(true);
@@ -578,7 +592,14 @@ export class MockItemsService {
         receivedHugs: 2,
         givenHugs: 4,
         postsNum: 1,
-        role: 'user'
+        role: 'user',
+        selectedIcon: 'kitty',
+        iconColours: {
+          character: '#BA9F93',
+          lbg: '#e2a275',
+          rbg: '#f8eee4',
+          item: '#f4b56a'
+        }
       },
       {
         id: 7,
@@ -586,7 +607,14 @@ export class MockItemsService {
         receivedHugs: 2,
         givenHugs: 4,
         postsNum: 1,
-        role: 'user'
+        role: 'user',
+        selectedIcon: 'kitty',
+        iconColours: {
+          character: '#BA9F93',
+          lbg: '#e2a275',
+          rbg: '#f8eee4',
+          item: '#f4b56a'
+        }
       }
     ];
     if(this.postSearchPage == 1) {

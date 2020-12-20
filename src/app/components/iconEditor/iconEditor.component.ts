@@ -98,5 +98,12 @@ export class IconEditor {
   */
   updateIcon(event:Event) {
     event.preventDefault();
+
+    // set the userService with the new icon data
+    this.authService.userData.selectedIcon = this.selectedIcon;
+    this.authService.userData.iconColours = this.iconColours;
+
+    // update the backend
+    this.authService.updateUserData();
   }
 }

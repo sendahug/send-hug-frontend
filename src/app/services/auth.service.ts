@@ -522,7 +522,14 @@ export class AuthService {
       receivedH: this.userData.receivedHugs,
       givenH: this.userData.givenHugs,
       posts: this.userData.postsNum,
-      loginCount: this.userData.loginCount + 1
+      loginCount: this.userData.loginCount + 1,
+      selectedIcon: this.userData.selectedIcon,
+      iconColours: {
+        character: this.userData.iconColours.character,
+        lbg: this.userData.iconColours.lbg,
+        rbg: this.userData.iconColours.rbg,
+        item: this.userData.iconColours.item
+      }
     }, {
       headers: this.authHeader
     }).subscribe((_response:any) => {

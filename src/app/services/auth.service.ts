@@ -79,7 +79,7 @@ export class AuthService {
     autoRefresh: false,
     refreshRate: 20,
     pushEnabled: false,
-    selectedIcon: '',
+    selectedIcon: 'kitty',
     iconColours: {
       character: '',
       lbg: '',
@@ -198,7 +198,7 @@ export class AuthService {
         autoRefresh: false,
         refreshRate: 20,
         pushEnabled: false,
-        selectedIcon: '',
+        selectedIcon: 'kitty',
         iconColours: {
           character: '',
           lbg: '',
@@ -420,7 +420,7 @@ export class AuthService {
       autoRefresh: false,
       refreshRate: 20,
       pushEnabled: false,
-      selectedIcon: '',
+      selectedIcon: 'kitty',
       iconColours: {
         character: '',
         lbg: '',

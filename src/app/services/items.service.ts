@@ -84,7 +84,7 @@ export class ItemsService {
     givenHugs: 0,
     postsNum: 0,
     role: '',
-    selectedIcon: '',
+    selectedIcon: 'kitty',
     iconColours: {
       character: '',
       lbg: '',
@@ -344,7 +344,7 @@ export class ItemsService {
         givenHugs: 0,
         postsNum: 0,
         role: '',
-        selectedIcon: '',
+        selectedIcon: 'kitty',
         iconColours: {
           character: '',
           lbg: '',

@@ -46,7 +46,7 @@ export interface User {
   autoRefresh: boolean;
   pushEnabled: boolean;
   refreshRate: number;
-  selectedIcon: string;
+  selectedIcon: 'bear' | 'kitty' | 'dog';
   iconColours: {
     character: String,
     lbg: String,

@@ -79,7 +79,7 @@ export class MockItemsService {
     givenHugs: 0,
     postsNum: 0,
     role: '',
-    selectedIcon: '',
+    selectedIcon: 'kitty',
     iconColours: {
       character: '',
       lbg: '',

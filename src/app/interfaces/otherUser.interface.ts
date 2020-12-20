@@ -40,7 +40,7 @@ export interface OtherUser {
   role: string;
   blocked?: boolean;
   releaseDate?: Date;
-  selectedIcon: string;
+  selectedIcon: 'bear' | 'kitty' | 'dog';
   iconColours: {
     character: String,
     lbg: String,

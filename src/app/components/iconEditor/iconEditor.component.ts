@@ -32,6 +32,8 @@
 
 import { Component } from '@angular/core';
 
+import { AuthService } from '../../services/auth.service';
+
 type iconCharacters = 'bear' | 'kitty' | 'dog';
 
 @Component({
@@ -53,8 +55,14 @@ export class IconEditor {
   }
 
   // CTOR
-  constructor() {
-    this.selectedIcon = 'bear';
+  constructor(private authService:AuthService) {
+    this.selectedIcon = this.authService.userData.selectedIcon;
+    this.iconColours = {
+      character: this.authService.userData.iconColours.character,
+      lbg: this.authService.userData.iconColours.lbg,
+      rbg: this.authService.userData.iconColours.rbg,
+      item: this.authService.userData.iconColours.item
+    }
   }
 
   /*

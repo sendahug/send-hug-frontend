@@ -1,0 +1,9 @@
+{
+  "standard": "WCAG2AAA",
+  "level": "error",
+  "defaults": {
+    "timeout": 5000,
+    "threshold": 2
+  },
+  "ignore": []
+}

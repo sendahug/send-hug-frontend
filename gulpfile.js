@@ -425,3 +425,4 @@ exports.localDev = localDev;
 exports.serve = serve;
 exports.scriptsDist = scriptsDist;
 exports.watch = watch;
+exports.e2eServe = e2eServe;

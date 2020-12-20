@@ -198,7 +198,14 @@ describe('AuthService', () => {
         releaseDate: undefined,
         autoRefresh: false,
         refreshRate: 20,
-        pushEnabled: false
+        pushEnabled: false,
+        selectedIcon: 'kitty',
+        iconColours: {
+          character: '#BA9F93',
+          leftbg: '#e2a275',
+          rightbg: '#f8eee4',
+          item: '#f4b56a'
+        }
       }
     };
 
@@ -280,7 +287,14 @@ describe('AuthService', () => {
         releaseDate: undefined,
         autoRefresh: false,
         refreshRate: 20,
-        pushEnabled: false
+        pushEnabled: false,
+        selectedIcon: 'kitty',
+        iconColours: {
+          character: '#BA9F93',
+          leftbg: '#e2a275',
+          rightbg: '#f8eee4',
+          item: '#f4b56a'
+        }
       }
     };
 
@@ -334,7 +348,14 @@ describe('AuthService', () => {
         releaseDate: undefined,
         autoRefresh: false,
         refreshRate: 20,
-        pushEnabled: false
+        pushEnabled: false,
+        selectedIcon: 'kitty',
+        iconColours: {
+          character: '#BA9F93',
+          leftbg: '#e2a275',
+          rightbg: '#f8eee4',
+          item: '#f4b56a'
+        }
       }
     };
     const addSpy = spyOn(authService['serviceWorkerM'], 'addItem');
@@ -382,7 +403,14 @@ describe('AuthService', () => {
       releaseDate: undefined,
       autoRefresh: false,
       refreshRate: 20,
-      pushEnabled: false
+      pushEnabled: false,
+      selectedIcon: 'kitty',
+      iconColours: {
+        character: '#BA9F93',
+        lbg: '#e2a275',
+        rbg: '#f8eee4',
+        item: '#f4b56a'
+      }
     };
     authService.authenticated = true;
     authService.tokenExpired = false;
@@ -514,7 +542,14 @@ describe('AuthService', () => {
       releaseDate: undefined,
       autoRefresh: false,
       refreshRate: 20,
-      pushEnabled: false
+      pushEnabled: false,
+      selectedIcon: 'kitty',
+      iconColours: {
+        character: '#BA9F93',
+        lbg: '#e2a275',
+        rbg: '#f8eee4',
+        item: '#f4b56a'
+      }
     };
     authService.updateUserData();
 

@@ -75,7 +75,14 @@ export class MockAuthService {
     releaseDate: undefined,
     autoRefresh: false,
     refreshRate: 20,
-    pushEnabled: false
+    pushEnabled: false,
+    selectedIcon: '',
+    iconColours: {
+      character: '',
+      lbg: '',
+      rbg: '',
+      item: ''
+    }
   }
   // documents whether the user just logged in or they're still logged in following
   // their previous login
@@ -153,7 +160,14 @@ export class MockAuthService {
       releaseDate: undefined,
       autoRefresh: false,
       refreshRate: 20,
-      pushEnabled: false
+      pushEnabled: false,
+      selectedIcon: 'kitty',
+      iconColours: {
+        character: '#BA9F93',
+        lbg: '#e2a275',
+        rbg: '#f8eee4',
+        item: '#f4b56a'
+      }
     }
     // set the authentication-variables accordingly
     this.authenticated = true;

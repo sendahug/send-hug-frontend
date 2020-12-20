@@ -78,7 +78,14 @@ export class AuthService {
     releaseDate: undefined,
     autoRefresh: false,
     refreshRate: 20,
-    pushEnabled: false
+    pushEnabled: false,
+    selectedIcon: '',
+    iconColours: {
+      character: '',
+      lbg: '',
+      rbg: '',
+      item: ''
+    }
   }
   // documents whether the user just logged in or they're still logged in following
   // their previous login
@@ -190,7 +197,14 @@ export class AuthService {
         releaseDate: undefined,
         autoRefresh: false,
         refreshRate: 20,
-        pushEnabled: false
+        pushEnabled: false,
+        selectedIcon: '',
+        iconColours: {
+          character: '',
+          lbg: '',
+          rbg: '',
+          item: ''
+        }
       }
     }
 
@@ -216,7 +230,14 @@ export class AuthService {
           releaseDate: data.releaseDate,
           autoRefresh: data.autoRefresh,
           refreshRate: data.refreshRate,
-          pushEnabled: data.pushEnabled
+          pushEnabled: data.pushEnabled,
+          selectedIcon: data.selectedIcon,
+          iconColours: {
+            character: data.iconColours.character,
+            lbg: data.iconColours.leftbg,
+            rbg: data.iconColours.rightbg,
+            item: data.iconColours.item
+          }
         }
         // set the authentication-variables accordingly
         this.authenticated = true;
@@ -311,7 +332,14 @@ export class AuthService {
         releaseDate: data.releaseDate,
         autoRefresh: data.autoRefresh,
         refreshRate: data.refreshRate,
-        pushEnabled: data.pushEnabled
+        pushEnabled: data.pushEnabled,
+        selectedIcon: data.selectedIcon,
+        iconColours: {
+          character: data.iconColours.character,
+          lbg: data.iconColours.leftbg,
+          rbg: data.iconColours.rightbg,
+          item: data.iconColours.item
+        }
       }
       // set the authentication-variables accordingly
       this.authenticated = true;
@@ -391,7 +419,14 @@ export class AuthService {
       releaseDate: undefined,
       autoRefresh: false,
       refreshRate: 20,
-      pushEnabled: false
+      pushEnabled: false,
+      selectedIcon: '',
+      iconColours: {
+        character: '',
+        lbg: '',
+        rbg: '',
+        item: ''
+      }
     }
     localStorage.setItem("ACTIVE_JWT", '');
 

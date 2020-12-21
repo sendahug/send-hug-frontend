@@ -234,8 +234,8 @@ export class AuthService {
           selectedIcon: data.selectedIcon,
           iconColours: {
             character: data.iconColours.character,
-            lbg: data.iconColours.leftbg,
-            rbg: data.iconColours.rightbg,
+            lbg: data.iconColours.lbg,
+            rbg: data.iconColours.rbg,
             item: data.iconColours.item
           }
         }

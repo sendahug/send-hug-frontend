@@ -352,8 +352,8 @@ describe('AuthService', () => {
         selectedIcon: 'kitty',
         iconColours: {
           character: '#BA9F93',
-          leftbg: '#e2a275',
-          rightbg: '#f8eee4',
+          lbg: '#e2a275',
+          rbg: '#f8eee4',
           item: '#f4b56a'
         }
       }

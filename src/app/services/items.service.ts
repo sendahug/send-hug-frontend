@@ -380,8 +380,8 @@ export class ItemsService {
         selectedIcon: user.selectedIcon,
         iconColours: {
           character: user.iconColours.character,
-          lbg: user.iconColours.leftbg,
-          rbg: user.iconColours.rightbg,
+          lbg: user.iconColours.lbg,
+          rbg: user.iconColours.rbg,
           item: user.iconColours.item
         }
       }

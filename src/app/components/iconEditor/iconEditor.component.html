@@ -1,17 +1,17 @@
 <form>
-	<label for="characterSelect">Select Icon</label>
+	<label for="characterSelect">Select Icon:</label>
 	<div id="characterSelect" role="radiogroup">
 		<div class="formElement">
 			<input type="radio" class="radioButton" name="characterOption" id="cRadioOption1" value="bear" (click)="setSelected($event.target.value)" aria-describedby="">
-			<label class="radioButtonLabel" for="cRadioOption1"><img src="../../../assets/img/bear.svg" alt=""></label>
+			<label class="radioButtonLabel" for="cRadioOption1"><img src="../../../assets/img/bear.svg" alt="" class="editIconOption"></label>
 		</div>
 		<div class="formElement">
 			<input type="radio" class="radioButton" name="characterOption" id="cRadioOption2" value="kitty" (click)="setSelected($event.target.value)" aria-describedby="">
-			<label class="radioButtonLabel" for="cRadioOption2"><img src="../../../assets/img/kitty.svg" alt=""></label>
+			<label class="radioButtonLabel" for="cRadioOption2"><img src="../../../assets/img/kitty.svg" alt="" class="editIconOption"></label>
 		</div>
 		<div class="formElement">
 			<input type="radio" class="radioButton" name="characterOption" id="cRadioOption3" value="dog" (click)="setSelected($event.target.value)" aria-describedby="">
-			<label class="radioButtonLabel" for="cRadioOption3"><img src="../../../assets/img/dog.svg" alt=""></label>
+			<label class="radioButtonLabel" for="cRadioOption3"><img src="../../../assets/img/dog.svg" alt="" class="editIconOption"></label>
 		</div>
 	</div>
 	
@@ -20,22 +20,22 @@
 	<img src="../../../assets/img/dog.svg" alt="" class="selectedCharacter" *ngIf="selectedIcon == 'dog'">
 	
 	<div class="formElement">
-		<label for="characterC">Select Character Colour</label>
+		<label for="characterC">Select Character Colour: </label>
 		<input type="color" id="characterC" (change)="updateElementColour($event.target.value, 'character')">
 	</div>
 	
 	<div class="formElement">
-		<label for="lbgColour">Select Left Background Colour</label>
+		<label for="lbgColour">Select Left Background Colour: </label>
 		<input type="color" id="lbgColour" (change)="updateElementColour($event.target.value, 'lbg')">
 	</div>
 	
 	<div class="formElement">
-		<label for="rbgColour">Select Right Background Colour</label>
+		<label for="rbgColour">Select Right Background Colour: </label>
 		<input type="color" id="rbgColour" (change)="updateElementColour($event.target.value, 'rbg')">
 	</div>
 	
 	<div class="formElement">
-		<label for="itemColour">Select Hand-Held Item Colour</label>
+		<label for="itemColour">Select Hand-Held Item Colour: </label>
 		<input type="color" id="itemColour" (change)="updateElementColour($event.target.value, 'item')">
 	</div>
 	

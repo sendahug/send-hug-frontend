@@ -2160,6 +2160,9 @@ app-settings h4
 .userIcon
 	width: 100px
 	margin: 5px
+	border-radius: 10px
+	padding: 0
+	border: 3px solid #000
 
 /* User icon settings - edit button */
 #iconSettings .appButton
@@ -2215,6 +2218,40 @@ app-settings h4
 	color: #FFF
 	border-radius: 5px
 	text-decoration: none
+
+/* =================== Icon Editor Component Styling =================== */
+app-icon-editor label
+	@include fontSize(16)
+	font-family: $mainFont
+	color: $headlineColour
+	text-align: center
+	margin: 5px
+
+/* Character selection area */
+#characterSelect
+	display: flex
+
+/* Character selection options */
+#characterSelect .formElement
+	display: flex
+	flex-direction: column
+	align-items: center
+	justify-content: center
+
+/* Character selection - single option icon */
+.editIconOption
+	width: 80px
+	margin: 5px
+	border-radius: 10px
+	padding: 0
+	border: 3px solid #000
+
+/* Character selection - currently selected character */
+.selectedCharacter
+	border-radius: 10px
+	padding: 0
+	margin: 5px
+	border: 3px solid #000
 
 /* =================== Site Map Component Styling =================== */
 /* Site Map Component */

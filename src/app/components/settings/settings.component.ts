@@ -57,12 +57,19 @@ export class SettingsPage {
   /*
   Function Name: toggleIconEditor()
   Function Description: Opens/closes the icon editor.
-  Parameters: None.
+  Parameters: edit (boolean) - optional; is sent by the IconEditor's EventEmitter to trigger
+                                closing the edit panel.
   ----------------
   Programmer: Shir Bar Lev.
   */
-  toggleIconEditor() {
-    this.editIcon = !this.editIcon;
+  toggleIconEditor(edit?:boolean) {
+    if(edit) {
+      this.editIcon = edit;
+      document.getElementById('editIcon')!.focus();
+    }
+    else {
+      this.editIcon = !this.editIcon;
+    }
   }
 
   /*

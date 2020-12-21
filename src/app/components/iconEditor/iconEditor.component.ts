@@ -30,7 +30,7 @@
   SOFTWARE.
 */
 
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 
 import { AuthService } from '../../services/auth.service';
 
@@ -53,6 +53,8 @@ export class IconEditor {
     rbg: '',
     item: ''
   }
+  // indicates whether edit mode is still required
+  @Output() editMode = new EventEmitter<boolean>();
 
   // CTOR
   constructor(private authService:AuthService) {
@@ -110,5 +112,17 @@ export class IconEditor {
 
     // update the backend
     this.authService.updateUserData();
+    this.editMode.emit(false);
+  }
+
+  /*
+  Function Name: dismiss()
+  Function Description: Closes the edit panel.
+  Parameters: None.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  dismiss() {
+    this.editMode.emit(false);
   }
 }

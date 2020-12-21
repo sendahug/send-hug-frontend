@@ -14,9 +14,10 @@
 				<img src="../../../assets/img/bear.svg" alt=""  class="userIcon" >
 			</div>
 		</div>
-		<button *ngIf="editIcon == false" (click)="toggleIconEditor()" class="appButton">Edit User Icon</button>
+		<button *ngIf="editIcon == false" (click)="toggleIconEditor()" class="appButton" id="editIcon">Edit User Icon</button>
 		
-		<app-icon-editor *ngIf="editIcon== true"></app-icon-editor>
+		<app-icon-editor *ngIf="editIcon== true"
+						 (editMode)="toggleIconEditor($event)"></app-icon-editor>
 	</div>
 	
 	<div id="notificationSettings">

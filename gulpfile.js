@@ -26,17 +26,11 @@ function copyHtml()
 {
 	return gulp
 		.src("src/app/**/*.html")
-		.pipe(replace(/(<img src=".)(.*)(.\/assets.)(.*)(.">)/g, (match) => {
+		.pipe(replace(/(<img src="..\/assets.)(.*)(.">)/g, (match) => {
 				if(match.indexOf('siteLogo') == -1) {
 					let altIndex = match.indexOf('alt');
-					let assetsIndex = match.indexOf('assets');
-					let url = match.substring(assetsIndex, altIndex-2);
+					let url = match.substring(13, altIndex-2);
 					let svg = fs.readFileSync(__dirname + `/src/${url}`);
-					
-					let classIndex = match.indexOf('class');
-					let endTagIndex = match.indexOf('>');
-					let elementClass = match.substring(classIndex+7,endTagIndex-1)
-					svg.class = elementClass;
 
 					return svg;
 				}
@@ -44,6 +38,21 @@ function copyHtml()
 					return match;
 				}
 			}))
+		.pipe(replace(/(<img src=")(.*)(\/assets.)(.*)(." >)/g, match => {
+			if(match.indexOf('siteLogo') == -1) {
+				let altIndex = match.indexOf('alt');
+				let assetsIndex = match.indexOf('assets');
+				let url = match.substring(assetsIndex, altIndex-2);
+				let svg = fs.readFileSync(__dirname + `/src/${url}`, { encoding: 'utf-8' });
+
+				let classIndex = match.indexOf('class');
+				let endTagIndex = match.indexOf('>');
+				let elementClass = match.substring(classIndex+7,endTagIndex-2)
+				svg = svg.replace('svg', `svg class="${elementClass}"`);
+				
+				return svg;
+			}
+		}))
 		.pipe(rename({dirname:""}))
 		.pipe(gulp.dest("./localdev/app"));
 }
@@ -141,17 +150,11 @@ function copyHtmlDist()
 {
 	return gulp
 		.src("src/app/**/*.html")
-		.pipe(replace(/(<img src=".)(.*)(.\/assets.)(.*)(.">)/g, (match) => {
+		.pipe(replace(/(<img src="..\/assets.)(.*)(.">)/g, (match) => {
 				if(match.indexOf('siteLogo') == -1) {
 					let altIndex = match.indexOf('alt');
-					let assetsIndex = match.indexOf('assets');
-					let url = match.substring(assetsIndex, altIndex-2);
+					let url = match.substring(13, altIndex-2);
 					let svg = fs.readFileSync(__dirname + `/src/${url}`);
-					
-					let classIndex = match.indexOf('class');
-					let endTagIndex = match.indexOf('>');
-					let elementClass = match.substring(classIndex+7,endTagIndex-1)
-					svg.class = elementClass;
 
 					return svg;
 				}
@@ -159,6 +162,21 @@ function copyHtmlDist()
 					return match;
 				}
 			}))
+		.pipe(replace(/(<img src=")(.*)(\/assets.)(.*)(." >)/g, match => {
+			if(match.indexOf('siteLogo') == -1) {
+				let altIndex = match.indexOf('alt');
+				let assetsIndex = match.indexOf('assets');
+				let url = match.substring(assetsIndex, altIndex-2);
+				let svg = fs.readFileSync(__dirname + `/src/${url}`, { encoding: 'utf-8' });
+
+				let classIndex = match.indexOf('class');
+				let endTagIndex = match.indexOf('>');
+				let elementClass = match.substring(classIndex+7,endTagIndex-2)
+				svg = svg.replace('svg', `svg class="${elementClass}"`);
+				
+				return svg;
+			}
+		}))
 		.pipe(rename({dirname:""}))
 		.pipe(gulp.dest("./dist/app"));
 }

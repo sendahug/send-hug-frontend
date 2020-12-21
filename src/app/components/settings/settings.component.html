@@ -3,7 +3,11 @@
 	
 	<div id="iconSettings">
 		<h4>User Icon</h4>
-		<div *ngIf="editIcon == false"><img src="../../../assets/img/kitty.svg" alt=""  class="userIcon" ></div>
+		<div *ngIf="editIcon == false">
+			<img src="../../../assets/img/kitty.svg" alt="" *ngIf="authService.userData.selectedIcon == 'kitty'" class="userIcon" >
+			<img src="../../../assets/img/dog.svg" alt="" *ngIf="authService.userData.selectedIcon == 'dog'"  class="userIcon" >
+			<img src="../../../assets/img/bear.svg" alt="" *ngIf="authService.userData.selectedIcon == 'bear'"  class="userIcon" >
+		</div>
 		<button *ngIf="editIcon == false" (click)="toggleIconEditor()" class="appButton">Edit User Icon</button>
 		
 		<app-icon-editor *ngIf="editIcon== true"></app-icon-editor>

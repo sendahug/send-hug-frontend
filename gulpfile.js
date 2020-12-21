@@ -26,11 +26,17 @@ function copyHtml()
 {
 	return gulp
 		.src("src/app/**/*.html")
-		.pipe(replace(/(<img src="..\/assets.)(.*)(.">)/g, (match) => {
+		.pipe(replace(/(<img src=".)(.*)(.\/assets.)(.*)(.">)/g, (match) => {
 				if(match.indexOf('siteLogo') == -1) {
 					let altIndex = match.indexOf('alt');
-					let url = match.substring(13, altIndex-2);
+					let assetsIndex = match.indexOf('assets');
+					let url = match.substring(assetsIndex, altIndex-2);
 					let svg = fs.readFileSync(__dirname + `/src/${url}`);
+					
+					let classIndex = match.indexOf('class');
+					let endTagIndex = match.indexOf('>');
+					let elementClass = match.substring(classIndex+7,endTagIndex-1)
+					svg.class = elementClass;
 
 					return svg;
 				}
@@ -135,11 +141,17 @@ function copyHtmlDist()
 {
 	return gulp
 		.src("src/app/**/*.html")
-		.pipe(replace(/(<img src="..\/assets.)(.*)(.">)/g, (match) => {
+		.pipe(replace(/(<img src=".)(.*)(.\/assets.)(.*)(.">)/g, (match) => {
 				if(match.indexOf('siteLogo') == -1) {
 					let altIndex = match.indexOf('alt');
-					let url = match.substring(13, altIndex-2);
+					let assetsIndex = match.indexOf('assets');
+					let url = match.substring(assetsIndex, altIndex-2);
 					let svg = fs.readFileSync(__dirname + `/src/${url}`);
+					
+					let classIndex = match.indexOf('class');
+					let endTagIndex = match.indexOf('>');
+					let elementClass = match.substring(classIndex+7,endTagIndex-1)
+					svg.class = elementClass;
 
 					return svg;
 				}
@@ -320,9 +332,10 @@ function bundleCode() {
 				return newString;
 			});
 			// add the SVGs
-			let secondReplacedChunk = replacedChunk.replace(/(<img src="..\/assets.)(.*)(.">)/g, (match) => {
+			let secondReplacedChunk = replacedChunk.replace(/(<img src=".)(.*)(.\/assets.)(.*)(.">)/g, (match) => {
 				let altIndex = match.indexOf('alt');
-				let url = match.substring(13, altIndex-2);
+				let assetsIndex = match.indexOf('assets');
+				let url = match.substring(assetsIndex, altIndex-2);
 				let svg = fs.readFileSync(__dirname + `/src/${url}`);
 
 				return svg;

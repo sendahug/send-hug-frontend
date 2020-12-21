@@ -30,7 +30,7 @@
   SOFTWARE.
 */
 
-import { Component, EventEmitter, Output } from '@angular/core';
+import { AfterViewChecked, Component, EventEmitter, Output } from '@angular/core';
 
 import { AuthService } from '../../services/auth.service';
 
@@ -40,7 +40,7 @@ type iconCharacters = 'bear' | 'kitty' | 'dog';
   selector: 'app-icon-editor',
   templateUrl: './iconEditor.component.html'
 })
-export class IconEditor {
+export class IconEditor implements AfterViewChecked {
   selectedIcon: iconCharacters;
   iconColours: {
     character: String,
@@ -65,6 +65,25 @@ export class IconEditor {
       rbg: this.authService.userData.iconColours.rbg,
       item: this.authService.userData.iconColours.item
     }
+  }
+
+  /*
+  Function Name: ngAfterViewChecked()
+  Function Description: This method is automatically triggered by Angular once the component's
+                        view is checked by Angular. It updates the user's icon according to the colours
+                        chosen by the user.
+  Parameters: None.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  ngAfterViewChecked() {
+    Object.keys(this.iconColours).forEach((key) => {
+      if(document.querySelectorAll('.userIcon')[0]) {
+        document.querySelectorAll('.userIcon')[0].querySelectorAll(`.${key as 'character' | 'lbg' | 'rbg' | 'item'}`).forEach(element => {
+          (element as SVGPathElement).setAttribute('style', `fill:${this.iconColours[key as 'character' | 'lbg' | 'rbg' | 'item']};`);
+        })
+      }
+    })
   }
 
   /*

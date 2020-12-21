@@ -41,7 +41,17 @@ import { MockAuthService } from './auth.service.mock';
 import { MockAlertsService } from './alerts.service.mock';
 import { MockItemsService } from './items.service.mock';
 import { environment } from '../../environments/environment';
-import { OtherUser } from '../interfaces/otherUser.interface';
+
+interface BlockedUser {
+  id: number;
+  displayName: string;
+  receivedHugs: number;
+  givenHugs: number;
+  postsNum: number;
+  role: string;
+  blocked?: boolean;
+  releaseDate?: Date;
+}
 
 @Injectable({
   providedIn: 'root'
@@ -51,7 +61,7 @@ export class MockAdminService {
   userReports: Report[] = [];
   postReports: Report[] = [];
   isReportsResolved = new BehaviorSubject(false);
-  blockedUsers: OtherUser[] = [];
+  blockedUsers: BlockedUser[] = [];
   isBlocksResolved = new BehaviorSubject(false);
   // blocked user data
   userBlockData: {
@@ -263,14 +273,7 @@ export class MockAdminService {
             role: 'user',
             blocked: true,
             releaseDate: new Date('2020-09-29 19:17:31.072'),
-            postsNum: 1,
-            selectedIcon: 'kitty',
-            iconColours: {
-              character: '#BA9F93',
-              lbg: '#e2a275',
-              rbg: '#f8eee4',
-              item: '#f4b56a'
-            }
+            postsNum: 1
         }];
     this.totalPages.blockedUsers = 1;
     this.isBlocksResolved.next(true);

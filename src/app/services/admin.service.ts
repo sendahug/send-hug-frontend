@@ -42,8 +42,18 @@ import { AuthService } from './auth.service';
 import { AlertsService } from './alerts.service';
 import { ItemsService } from './items.service';
 import { environment } from '../../environments/environment';
-import { OtherUser } from '../interfaces/otherUser.interface';
 import { SWManager } from './sWManager.service';
+
+interface BlockedUser {
+  id: number;
+  displayName: string;
+  receivedHugs: number;
+  givenHugs: number;
+  postsNum: number;
+  role: string;
+  blocked?: boolean;
+  releaseDate?: Date;
+}
 
 @Injectable({
   providedIn: 'root'
@@ -53,7 +63,7 @@ export class AdminService {
   userReports: Report[] = [];
   postReports: Report[] = [];
   isReportsResolved = new BehaviorSubject(false);
-  blockedUsers: OtherUser[] = [];
+  blockedUsers: BlockedUser[] = [];
   isBlocksResolved = new BehaviorSubject(false);
   // blocked user data
   userBlockData: {

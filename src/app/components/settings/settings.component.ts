@@ -43,6 +43,8 @@ import { AlertsService } from '../../services/alerts.service';
   templateUrl: './settings.component.html'
 })
 export class SettingsPage {
+  editIcon = false;
+
   // CTOR
   constructor(
     public notificationService:NotificationService,
@@ -50,6 +52,17 @@ export class SettingsPage {
     private alertsService:AlertsService
   ) {
 
+  }
+
+  /*
+  Function Name: toggleIconEditor()
+  Function Description: Opens/closes the icon editor.
+  Parameters: None.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  toggleIconEditor() {
+    this.editIcon = !this.editIcon;
   }
 
   /*

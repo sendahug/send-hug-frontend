@@ -50,6 +50,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 import { AppComponent } from '../../app.component';
 import { SettingsPage } from './settings.component';
+import { IconEditor } from '../iconEditor/iconEditor.component';
 import { NotificationService } from '../../services/notifications.service';
 import { MockNotificationService } from '../../services/notifications.service.mock';
 import { AuthService } from '../../services/auth.service';
@@ -73,7 +74,8 @@ describe('SettingsPage', () => {
       declarations: [
         AppComponent,
         SettingsPage,
-        NotificationsTab
+        NotificationsTab,
+        IconEditor
       ],
       providers: [
         { provide: APP_BASE_HREF, useValue: '/' },

@@ -37,7 +37,7 @@ import { AuthService } from '../../services/auth.service';
 type iconCharacters = 'bear' | 'kitty' | 'dog';
 
 @Component({
-  selector: 'icon-editor',
+  selector: 'app-icon-editor',
   templateUrl: './iconEditor.component.html'
 })
 export class IconEditor {

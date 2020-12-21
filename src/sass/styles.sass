@@ -2126,7 +2126,7 @@ app-settings h4
 	text-align: center
 
 /* Notification Settings */
-#notificationSettings
+#notificationSettings, #iconSettings
 	border-radius: 5px
 	width: 90%
 	padding: 15px 3%
@@ -2134,6 +2134,10 @@ app-settings h4
 	background: $boxesBackground
 	border: none
 	box-shadow: 5px 5px 7px 0 rgba(46, 61, 73, 0.5)
+	display: flex
+	flex-direction: column
+	align-items: center
+	justify-content: center
 	/* Responsive styling for screens above 500px width */
 	@media screen and (min-width: 500px)
 		width: 80%
@@ -2142,9 +2146,9 @@ app-settings h4
 	/* Responsive styling for screens above 800px width */
 	@media screen and (min-width: 800px)
 		order: 2
-		width: 65%
-		margin: 10px 2%
-		padding: 15px 3% 20px
+		width: 70%
+		margin: 10px 10%
+		padding: 15px 5% 20px
 	/* Responsive styling for screens above 900px width */
 	@media screen and (min-width: 1900px)
 		width: 650px
@@ -2152,9 +2156,18 @@ app-settings h4
 		padding: 15px Calc((100% - 650px) / 4)
 		margin: 10px Calc((100% - 650px) / 4)
 
+/* User icons */
+.userIcon
+	width: 100px
+	margin: 5px
+
+/* User icon settings - edit button */
+#iconSettings .appButton
+	@extend .NotificationButton
+
 /* Notification Settings - notification buttons */
 #notificationSettings .NotificationButton
-	margin: 5px Calc((100% - 300px) / 4)
+	margin: 5px
 
 /* Notification Settings - notification rate textfield */
 #notificationRate

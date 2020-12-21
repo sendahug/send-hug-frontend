@@ -3,8 +3,8 @@
 	
 	<div id="iconSettings">
 		<h4>User Icon</h4>
-		<div class="userIcon" *ngIf="editIcon == false"></div>
-		<button *ngIf="editIcon == false" (click)="toggleIconEditor()">Edit User Icon</button>
+		<div class="userIcon" *ngIf="editIcon == false"><img src="../../../assets/img/kitty.svg" alt=""></div>
+		<button *ngIf="editIcon == false" (click)="toggleIconEditor()" class="appButton">Edit User Icon</button>
 		
 		<app-icon-editor *ngIf="editIcon== true"></app-icon-editor>
 	</div>

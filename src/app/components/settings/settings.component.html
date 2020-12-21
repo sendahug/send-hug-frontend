@@ -4,9 +4,15 @@
 	<div id="iconSettings">
 		<h4>User Icon</h4>
 		<div *ngIf="editIcon == false">
-			<img src="../../../assets/img/kitty.svg" alt="" *ngIf="authService.userData.selectedIcon == 'kitty'" class="userIcon" >
-			<img src="../../../assets/img/dog.svg" alt="" *ngIf="authService.userData.selectedIcon == 'dog'"  class="userIcon" >
-			<img src="../../../assets/img/bear.svg" alt="" *ngIf="authService.userData.selectedIcon == 'bear'"  class="userIcon" >
+			<div *ngIf="authService.userData.selectedIcon == 'kitty'">
+				<img src="../../../assets/img/kitty.svg" alt="" class="userIcon" >
+			</div>
+			<div *ngIf="authService.userData.selectedIcon == 'dog'">
+				<img src="../../../assets/img/dog.svg" alt="" class="userIcon" >
+			</div>
+			<div *ngIf="authService.userData.selectedIcon == 'bear'">
+				<img src="../../../assets/img/bear.svg" alt=""  class="userIcon" >
+			</div>
 		</div>
 		<button *ngIf="editIcon == false" (click)="toggleIconEditor()" class="appButton">Edit User Icon</button>
 		

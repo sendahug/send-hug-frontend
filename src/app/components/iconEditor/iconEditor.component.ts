@@ -87,6 +87,11 @@ export class IconEditor {
   */
   updateElementColour(newValue:string, element:'character' | 'lbg' | 'rbg' | 'item') {
     this.iconColours[element] = newValue;
+
+    // update the image
+    document.querySelectorAll('.selectedCharacter')[0].querySelectorAll(`.${element}`).forEach((path:Element) => {
+      (path as SVGPathElement).setAttribute('style', `fill:${newValue};`);
+    })
   }
 
   /*

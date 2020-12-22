@@ -23,6 +23,17 @@
 	<!-- If there are messages in the user's inbox -->
 	<ul *ngIf="(messType == 'inbox' || messType == 'outbox') && itemsService.userMessages[messType].length" class="mailboxMessages" aria-describedby="messType">
 		<li *ngFor="let message of itemsService.userMessages[messType]" class="userMessage"  aria-describedby="messType">
+			<div class="messageProfilePic">
+				<div *ngIf="(messType == 'inbox' && message.from.selectedIcon == 'kitty') || (messType == 'outbox' && message.for.selectedIcon == 'kitty')">
+					<img src="../../../assets/img/kitty.svg" alt="" class="userIcon" >
+				</div>
+				<div *ngIf="(messType == 'inbox' && message.from.selectedIcon == 'dog') || (messType == 'outbox' && message.for.selectedIcon == 'dog')">
+					<img src="../../../assets/img/dog.svg" alt="" class="userIcon" >
+				</div>
+				<div *ngIf="(messType == 'inbox' && message.from.selectedIcon == 'bear') || (messType == 'outbox' && message.for.selectedIcon == 'bear')">
+					<img src="../../../assets/img/bear.svg" alt=""  class="userIcon" >
+				</div>	
+			</div>
 			<div class="messageField" *ngIf="messType == 'inbox'">
 				<span class="pageCategory">From:</span> <span class="pageData" aria-describedby="mUserFrom">{{ message.from.displayName }}</span>
 			</div>
@@ -41,6 +52,17 @@
 	<div *ngIf="messType == 'threads'">
 		<ul class="userThreads" *ngIf="itemsService.userMessages.threads.length" aria-describedby="messType">
 			<li class="userThread" *ngFor="let thread of itemsService.userMessages.threads" aria-describedby="messType">
+				<div class="messageProfilePic">
+					<div *ngIf="thread.user.selectedIcon == 'kitty'">
+						<img src="../../../assets/img/kitty.svg" alt="" class="userIcon" >
+					</div>
+					<div *ngIf="thread.user.selectedIcon == 'dog'">
+						<img src="../../../assets/img/dog.svg" alt="" class="userIcon" >
+					</div>
+					<div *ngIf="thread.user.selectedIcon == 'bear'">
+						<img src="../../../assets/img/bear.svg" alt=""  class="userIcon" >
+					</div>	
+				</div>
 				<div class="messageField">
 					<span class="pageCategory">User:</span> <span class="pageData" aria-describedby="tUser" id="{{ 'user' + thread.id }}">{{ thread.user.displayName }}</span>
 				</div>
@@ -62,6 +84,17 @@
 	<div *ngIf="messType == 'thread'">
 		<ul class="threadMessages" aria-describedby="messType">
 			<li class="userMessage" *ngFor="let message of itemsService.userMessages.thread" aria-describedby="messType">
+				<div class="messageProfilePic">
+					<div *ngIf="message.from.selectedIcon == 'kitty'">
+						<img src="../../../assets/img/kitty.svg" alt="" class="userIcon" >
+					</div>
+					<div *ngIf="message.from.selectedIcon == 'dog'">
+						<img src="../../../assets/img/dog.svg" alt="" class="userIcon" >
+					</div>
+					<div *ngIf="message.from.selectedIcon == 'bear'">
+						<img src="../../../assets/img/bear.svg" alt=""  class="userIcon" >
+					</div>	
+				</div>
 				<div class="messageField">
 					<span class="pageCategory">From:</span> <span class="pageData" aria-describedby="mUserFrom">{{ message.from.displayName }}</span>
 				</div>

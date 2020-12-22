@@ -22,7 +22,7 @@
 	
 	<!-- If there are messages in the user's inbox -->
 	<ul *ngIf="(messType == 'inbox' || messType == 'outbox') && itemsService.userMessages[messType].length" class="mailboxMessages" aria-describedby="messType">
-		<li *ngFor="let message of itemsService.userMessages[messType]" class="userMessage"  aria-describedby="messType">
+		<li *ngFor="let message of itemsService.userMessages[messType]" class="userMessage"  aria-describedby="messType" id="{{messType + message.id}}">
 			<div class="messageProfilePic">
 				<div *ngIf="(messType == 'inbox' && message.from.selectedIcon == 'kitty') || (messType == 'outbox' && message.for.selectedIcon == 'kitty')">
 					<img src="../../../assets/img/kitty.svg" alt="" class="userIcon" >
@@ -53,7 +53,7 @@
 		<!-- If the user is looking at threads -->
 	<div *ngIf="messType == 'threads'">
 		<ul class="userThreads" *ngIf="itemsService.userMessages.threads.length" aria-describedby="messType">
-			<li class="userThread" *ngFor="let thread of itemsService.userMessages.threads" aria-describedby="messType">
+			<li class="userThread" *ngFor="let thread of itemsService.userMessages.threads" aria-describedby="messType" id="{{messType + thread.id}}">
 				<div class="messageProfilePic">
 					<div *ngIf="thread.user.selectedIcon == 'kitty'">
 						<img src="../../../assets/img/kitty.svg" alt="" class="userIcon" >
@@ -87,7 +87,7 @@
 	<!-- If the user is looking at a specific thread -->
 	<div *ngIf="messType == 'thread'">
 		<ul class="threadMessages" aria-describedby="messType">
-			<li class="userMessage" *ngFor="let message of itemsService.userMessages.thread" aria-describedby="messType">
+			<li class="userMessage" *ngFor="let message of itemsService.userMessages.thread" aria-describedby="messType"  id="{{messType + message.id}}">
 				<div class="messageProfilePic">
 					<div *ngIf="message.from.selectedIcon == 'kitty'">
 						<img src="../../../assets/img/kitty.svg" alt="" class="userIcon" >

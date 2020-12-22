@@ -1345,6 +1345,13 @@ app-messages h3
 	background: $itemBackground
 	margin: 15px 7%
 	padding: 10px
+	display: flex
+	justify-content: center
+
+/* User icon */
+.messageProfilePic .userIcon
+	width: 60px
+	border-width: 2px
 
 /* From field */
 .messageField
@@ -1352,6 +1359,18 @@ app-messages h3
 	text-align: center
 	padding: 5px
 	margin: 5px
+
+/* Message text */
+.messageText
+	@include fontSize(17)
+	text-align: center
+	font-family: $mainFont
+	color: $textColour
+	line-height: 1.5em
+	margin-top: 5px
+	/* Responsive styling for screens above 600px width */
+	@media screen and (min-width: 600px)
+		line-height: 1.8em
 
 /* Field title */
 app-messages .pageCategory
@@ -1369,6 +1388,10 @@ app-messages .pageData
 	/* Responsive styling for screens above 600px width */
 	@media screen and (min-width: 600px)
 		line-height: 1.8em
+
+/* Field text - inbox/outbox */
+.mailboxMessages .pageData
+	@include fontSize(15)
 
 /* Message / message thread buttons */
 .userMessage .buttons, .threadBtns

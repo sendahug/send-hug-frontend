@@ -264,7 +264,14 @@ export class AuthService {
           blocked: data.blocked,
           releaseDate: data.releaseDate,
           autoRefresh: data.autoRefresh,
-          pushEnabled: data.pushEnabled
+          pushEnabled: data.pushEnabled,
+          selectedIcon: data.selectedIcon,
+          iconColours: {
+            character: data.iconColours.character,
+            lbg: data.iconColours.lbg,
+            rbg: data.iconColours.rbg,
+            item: data.iconColours.item
+          }
         }
         this.serviceWorkerM.addItem('users', user);
         // if there's an error, check the error type

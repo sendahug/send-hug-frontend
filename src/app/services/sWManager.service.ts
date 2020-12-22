@@ -64,6 +64,13 @@ export interface MyDB extends DBSchema {
       'postsNum': number;
       'receivedHugs': number;
       'role': string;
+      selectedIcon: 'bear' | 'kitty' | 'dog';
+      iconColours: {
+        character: String,
+        lbg: String,
+        rbg: String,
+        item: String
+      };
     }
   };
   'messages': {

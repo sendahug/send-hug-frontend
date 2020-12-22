@@ -122,7 +122,14 @@ function populateDB(dbPromise: Promise<IDBPDatabase<MyDB>>, store: 'posts' | 'me
         receivedHugs: 3,
         givenHugs: 3,
         role: 'user',
-        postsNum: 10
+        postsNum: 10,
+        selectedIcon: 'kitty' as 'kitty',
+        iconColours: {
+          character: '#BA9F93',
+          lbg: '#e2a275',
+          rbg: '#f8eee4',
+          item: '#f4b56a'
+        }
       },
       {
         id: 4,
@@ -130,7 +137,14 @@ function populateDB(dbPromise: Promise<IDBPDatabase<MyDB>>, store: 'posts' | 'me
         receivedHugs: 3,
         givenHugs: 3,
         role: 'user',
-        postsNum: 10
+        postsNum: 10,
+        selectedIcon: 'kitty' as 'kitty',
+        iconColours: {
+          character: '#BA9F93',
+          lbg: '#e2a275',
+          rbg: '#f8eee4',
+          item: '#f4b56a'
+        }
       }
     ],
     threads: [

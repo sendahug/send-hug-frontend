@@ -547,7 +547,7 @@ export class ItemsService {
           data.posts.forEach((element: any) => {
             let thread: Thread = {
               id: element.id,
-              user: (element.user1 == this.authService.userData.displayName) ? element.user2 : element.user1,
+              user: (element.user1.displayName == this.authService.userData.displayName) ? element.user2 : element.user1,
               userID: (element.user1Id == this.authService.userData.id) ? element.user2Id : element.user1Id,
               numMessages: element.numMessages,
               latestMessage: element.latestMessage

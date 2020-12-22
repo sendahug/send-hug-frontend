@@ -344,9 +344,13 @@ export class MockItemsService {
         this.userMessages[type] = [
           {
             date: new Date("Mon, 22 Jun 2020 14:32:38 GMT"),
-            for: "user14",
+            for: {
+              displayName: "user14"
+            },
             forId: 4,
-            from: "user14",
+            from: {
+              displayName: "user14"
+            },
             fromId: 4,
             id: 1,
             messageText: "Your post (ID 19) was deleted due to violating our community rules.",
@@ -354,9 +358,13 @@ export class MockItemsService {
           },
           {
             date: new Date("Mon, 22 Jun 2020 14:32:38 GMT"),
-            for: "user14",
+            for: {
+              displayName: "user14"
+            },
             forId: 4,
-            from: "user14",
+            from: {
+              displayName: "user14"
+            },
             fromId: 4,
             id: 14,
             messageText: "Your post (ID 19) was deleted due to violating our community rules.",
@@ -369,9 +377,13 @@ export class MockItemsService {
         this.userMessages[type] = [
           {
             date: new Date("Mon, 22 Jun 2020 14:32:38 GMT"),
-            for: "user14",
+            for: {
+              displayName: "user14"
+            },
             forId: 4,
-            from: "user14",
+            from: {
+              displayName: "user14"
+            },
             fromId: 4,
             id: 1,
             messageText: "Your post (ID 19) was deleted due to violating our community rules.",
@@ -379,9 +391,13 @@ export class MockItemsService {
           },
           {
             date: new Date("Mon, 22 Jun 2020 14:32:38 GMT"),
-            for: "user14",
+            for: {
+              displayName: "user14"
+            },
             forId: 4,
-            from: "user14",
+            from: {
+              displayName: "user14"
+            },
             fromId: 4,
             id: 14,
             messageText: "Your post (ID 19) was deleted due to violating our community rules.",
@@ -389,9 +405,13 @@ export class MockItemsService {
           },
           {
             date: new Date("Mon, 22 Jun 2020 14:32:38 GMT"),
-            for: "user14",
+            for: {
+              displayName: "user14"
+            },
             forId: 4,
-            from: "user14",
+            from: {
+              displayName: "user14"
+            },
             fromId: 4,
             id: 25,
             messageText: "Your post (ID 19) was deleted due to violating our community rules.",
@@ -409,9 +429,13 @@ export class MockItemsService {
         this.userMessages[type] = [
           {
             date: new Date("Mon, 22 Jun 2020 14:32:38 GMT"),
-            for: "user14",
+            for: {
+              displayName: "user14"
+            },
             forId: 4,
-            from: "user14",
+            from: {
+              displayName: "user14"
+            },
             fromId: 4,
             id: 18,
             messageText: "Your post (ID 19) was deleted due to violating our community rules.",
@@ -419,9 +443,13 @@ export class MockItemsService {
           },
           {
             date: new Date("Mon, 08 Jun 2020 14:43:15 GMT"),
-            for: "shirb",
+            for: {
+              displayName: "shirb"
+            },
             forId: 1,
-            from: "user14",
+            from: {
+              displayName: "user14"
+            },
             fromId: 4,
             id: 9,
             messageText: "hang in there",
@@ -434,9 +462,13 @@ export class MockItemsService {
         this.userMessages[type] = [
           {
             date: new Date("Mon, 22 Jun 2020 14:32:38 GMT"),
-            for: "user14",
+            for: {
+              displayName: "user14"
+            },
             forId: 4,
-            from: "user14",
+            from: {
+              displayName: "user14"
+            },
             fromId: 4,
             id: 18,
             messageText: "Your post (ID 19) was deleted due to violating our community rules.",
@@ -467,7 +499,16 @@ export class MockItemsService {
     this.userMessages.threads = [
       {
         id: 3,
-        user: "shirb",
+        user: {
+          displayName: "shirb",
+          selectedIcon: 'kitty',
+          iconColours: {
+            character: '#BA9F93',
+            lbg: '#e2a275',
+            rbg: '#f8eee4',
+            item: '#f4b56a'
+          }
+        },
         userID: 1,
         numMessages: 1,
         latestMessage: new Date("Mon, 08 Jun 2020 14:43:15 GMT")
@@ -500,9 +541,13 @@ export class MockItemsService {
     this.userMessages.thread = [
       {
         date: new Date("Mon, 08 Jun 2020 14:43:15 GMT"),
-        for: "shirb",
+        for: {
+          displayName: "shirb"
+        },
         forId: 1,
-        from: "user14",
+        from: {
+          displayName: "user14"
+        },
         fromId: 4,
         id: 9,
         messageText: "hang in there",
@@ -510,9 +555,13 @@ export class MockItemsService {
       },
       {
         date: new Date("Mon, 08 Jun 2020 14:43:15 GMT"),
-        for: "shirb",
+        for: {
+          displayName: "shirb"
+        },
         forId: 1,
-        from: "user14",
+        from: {
+          displayName: "user14"
+        },
         fromId: 4,
         id: 10,
         messageText: "hi",

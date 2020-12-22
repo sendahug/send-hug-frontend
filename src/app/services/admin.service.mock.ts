@@ -196,7 +196,9 @@ export class MockAdminService {
     this.alertsService.createSuccessAlert(`Post ${postID} was successfully deleted.`);
     // create a message from the admin to the user whose post was deleted
     let message:Message = {
-      from: this.authService.userData.displayName,
+      from: {
+        displayName: this.authService.userData.displayName
+      },
       fromId: this.authService.userData.id!,
       forId: reportData.userID,
       messageText: `Your post (ID ${postID}) was deleted due to violating our community rules.`,

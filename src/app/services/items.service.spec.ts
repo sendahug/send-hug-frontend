@@ -747,9 +747,13 @@ describe('ItemsService', () => {
     };
 
     const message = {
-      from: 'user',
+      from: {
+        displayName: 'user'
+      },
       fromId: 4,
-      for: 'user2',
+      for: {
+        displayName: 'user2'
+      },
       forId: 1,
       messageText: 'hang in there',
       date: new Date("Mon, 08 Jun 2020 14:43:15 GMT")

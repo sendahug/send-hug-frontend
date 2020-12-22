@@ -378,7 +378,9 @@ describe('NewItem', () => {
       tick();
 
       const newMessage = {
-        from: 'name',
+        from: {
+          displayName: 'name'
+        },
         fromId: 4,
         forId: 2,
         messageText: messageText,

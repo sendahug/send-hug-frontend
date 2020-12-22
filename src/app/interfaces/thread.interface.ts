@@ -32,7 +32,16 @@
 
 export interface Thread {
   id: number;
-  user: string;
+  user: {
+    displayName: string;
+    selectedIcon: 'bear' | 'kitty' | 'dog';
+    iconColours: {
+      character: String,
+      lbg: String,
+      rbg: String,
+      item: String
+    };
+  };
   userID: number;
   numMessages: number;
   latestMessage: Date;

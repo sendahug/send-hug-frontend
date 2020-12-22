@@ -32,9 +32,27 @@
 
 export interface Message {
   id?: number;
-  from: string;
+  from?: {
+    displayName: string;
+    selectedIcon?: 'bear' | 'kitty' | 'dog';
+    iconColours?: {
+      character: String,
+      lbg: String,
+      rbg: String,
+      item: String
+    };
+  };
   fromId: number;
-  for?: string;
+  for?: {
+    displayName: string;
+    selectedIcon?: 'bear' | 'kitty' | 'dog';
+    iconColours?: {
+      character: String,
+      lbg: String,
+      rbg: String,
+      item: String
+    };
+  };
   forId: number;
   messageText: string;
   date: Date;

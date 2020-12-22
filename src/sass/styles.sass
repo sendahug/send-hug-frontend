@@ -979,6 +979,19 @@ app-user-page h3
 		width: 39%
 		margin: 2% 3% 2% 0
 
+/* User Page Profile pic container */
+#profilePic
+	margin: 5px 0 5px 10px
+
+/* User Page username + role container */
+#userNameRole
+	display: flex
+	flex-direction: column
+	align-content: space-around
+	justify-content: space-evenly
+	align-items: center
+	margin: 0
+
 /* User Page Field Container */
 .profileElement
 	border: none
@@ -997,11 +1010,7 @@ app-user-page h3
 	background: $boxesBackground
 	font-weight: bold
 	text-align: center
-	width: 90%
-	margin: 0 5%
-	/* Responsive styling for screens above 725px width */
-	@media screen and (min-width: 725px)
-		margin: 0 10px
+	margin: 0
 
 /* Profile hug button */
 .displayName .hugButton
@@ -1012,12 +1021,8 @@ app-user-page h3
 	background: $boxesBackground
 	padding: 4px
 	text-align: center
-	width: 90%
-	margin: 10px
+	margin: 10px 0
 	text-transform: uppercase
-	/* Responsive styling for screens above 725px width */
-	@media screen and (min-width: 725px)
-		margin: 0 10px
 
 /* Role Field */
 #roleElement .pageCategory

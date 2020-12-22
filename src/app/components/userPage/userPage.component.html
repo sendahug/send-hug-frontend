@@ -8,7 +8,7 @@
 
 	<div id="userPage" *ngIf="(!this.itemsService.isOtherUser && authService.isUserDataResolved.value) || (this.itemsService.isOtherUser && itemsService.idbResolved.user.value)" role="region">
 		<div id="profileData">
-			<div class="profileElement">
+			<div id="profilePic">
 				<div *ngIf="(itemsService.isOtherUser && itemsService.otherUserData.selectedIcon == 'kitty') || (!itemsService.isOtherUser && authService.userData.selectedIcon == 'kitty')">
 					<img src="../../../assets/img/kitty.svg" alt="" class="userIcon" >
 				</div>
@@ -19,8 +19,8 @@
 					<img src="../../../assets/img/bear.svg" alt=""  class="userIcon" >
 				</div>	
 			</div>
-			<div>
-				<div class="profileElement displayName">
+			<div id="userNameRole">
+				<div class="displayName">
 					<span class="pageData" aria-describedby="userName">{{ itemsService.isOtherUser ? itemsService.otherUserData.displayName : authService.userData.displayName }}</span> 
 					<span class="pageData" *ngIf="itemsService.isOtherUser" aria-describedby="userName">
 						<button class="textlessButton hugButton" (click)="sendHug(itemsService.otherUserData.id)" aria-describedby="uHug userName">
@@ -28,7 +28,7 @@
 						</button>
 					</span>
 				</div>
-				<div class="profileElement" id="roleElement">
+				<div id="roleElement">
 					<span class="pageCategory" id="userRole">Role:</span><span class="pageData" aria-describedby="userName userRole">{{ itemsService.isOtherUser ? itemsService.otherUserData.role : authService.userData.role }}</span>
 				</div>
 			</div>

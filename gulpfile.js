@@ -120,7 +120,7 @@ function watch()
 {
 	gulp.watch("src/app/**/*.html", copyHtml)
 	gulp.watch("index.html", copyIndex);
-	gulp.watch("src/assets/**/*", copyAssets);
+	gulp.watch("src/assets/**/*", gulp.parallel(copyAssets, copyHtml));
 	gulp.watch("src/css/*.css", styles);
 	gulp.watch(["src/**/*.ts", "!src/**/*.spec.ts", "!src/**/*.mock.ts"], scripts);
 	gulp.watch("src/manifest.webmanifest", copyManifest);

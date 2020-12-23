@@ -27,22 +27,22 @@
 		
 	<div class="formElement">
 		<label for="characterC">Select Character Colour: </label>
-		<input type="color" id="characterC" (change)="updateElementColour($event.target.value, 'character')" value="{{ iconColours.character }}">
+		<input type="color" id="characterC" (change)="updateElementColour($event.target.value, 'character')" value="{{ iconColours.character }}" (input)="showNewColour($event.target.value, 'character')">
 	</div>
 	
 	<div class="formElement">
 		<label for="lbgColour">Select Left Background Colour: </label>
-		<input type="color" id="lbgColour" (change)="updateElementColour($event.target.value, 'lbg')" value="{{ iconColours.lbg }}">
+		<input type="color" id="lbgColour" (change)="updateElementColour($event.target.value, 'lbg')" value="{{ iconColours.lbg }}" (input)="showNewColour($event.target.value, 'lbg')">
 	</div>
 	
 	<div class="formElement">
 		<label for="rbgColour">Select Right Background Colour: </label>
-		<input type="color" id="rbgColour" (change)="updateElementColour($event.target.value, 'rbg')" value="{{ iconColours.rbg }}">
+		<input type="color" id="rbgColour" (change)="updateElementColour($event.target.value, 'rbg')" value="{{ iconColours.rbg }}" (input)="showNewColour($event.target.value, 'rbg')">
 	</div>
 	
 	<div class="formElement">
 		<label for="itemColour">Select Hand-Held Item Colour: </label>
-		<input type="color" id="itemColour" (change)="updateElementColour($event.target.value, 'item')" value="{{ iconColours.item }}">
+		<input type="color" id="itemColour" (change)="updateElementColour($event.target.value, 'item')" value="{{ iconColours.item }}" (input)="showNewColour($event.target.value, 'item')">
 	</div>
 	
 	<button type="submit" (click)="updateIcon($event)" class="appButton iconButton">Update Icon</button>

@@ -98,6 +98,23 @@ export class IconEditor implements AfterViewChecked {
   }
 
   /*
+  Function Name: showNewColour()
+  Function Description: Updates the colour of the selected icon element in the icon itself without
+                        updating the saved colours (in the iconColours array). This method is
+                        executed upon every input() event.
+  Parameters: newValue (String) - The value of the selected colour.
+              element - the element that needs to be recoloured.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  showNewColour(newValue:string, element:'character' | 'lbg' | 'rbg' | 'item') {
+    // update the image
+    document.querySelectorAll('.selectedCharacter')[0].querySelectorAll(`.${element}`).forEach((path:Element) => {
+      (path as SVGPathElement).setAttribute('style', `fill:${newValue};`);
+    })
+  }
+
+  /*
   Function Name: updateElementColour()
   Function Description: Updates the colour of the selected icon element (character, left background,
                         right background or the hand-held item).

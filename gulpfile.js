@@ -53,6 +53,9 @@ function copyHtml()
 				return svg;
 			}
 		}))
+		.pipe(replace(/(image href=".\/bg_pattern.svg")/g, match => {
+				return "image href=\"./assets/img/bg_pattern.svg\"";
+		}))
 		.pipe(rename({dirname:""}))
 		.pipe(gulp.dest("./localdev/app"));
 }
@@ -176,6 +179,9 @@ function copyHtmlDist()
 				
 				return svg;
 			}
+		}))
+		.pipe(replace(/(image href=".\/bg_pattern.svg")/g, match => {
+				return "image href=\"./assets/img/bg_pattern.svg\"";
 		}))
 		.pipe(rename({dirname:""}))
 		.pipe(gulp.dest("./dist/app"));

@@ -31,7 +31,7 @@
 */
 
 // Angular imports
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, AfterViewChecked } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { faGratipay } from '@fortawesome/free-brands-svg-icons';
@@ -45,7 +45,7 @@ import { ItemsService } from '../../services/items.service';
   selector: 'app-user-page',
   templateUrl: './userPage.component.html'
 })
-export class UserPage implements OnInit, OnDestroy {
+export class UserPage implements OnInit, OnDestroy, AfterViewChecked {
   // edit popup sub-component variables
   userToEdit:any;
   editType: string | undefined;
@@ -120,6 +120,28 @@ export class UserPage implements OnInit, OnDestroy {
 
   ngOnInit() {
 
+  }
+
+  /*
+  Function Name: ngAfterViewChecked()
+  Function Description: This method is automatically triggered by Angular once the component's
+                        view is checked by Angular. It updates the user's icon according to the colours
+                        chosen by the user.
+  Parameters: None.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  ngAfterViewChecked() {
+    // if it's the logged in user, get the data from authService; otherwise get it from itemsService
+    let dataSource = this.itemsService.isOtherUser ? this.itemsService.otherUserData : this.authService.userData;
+
+    Object.keys(dataSource.iconColours).forEach((key) => {
+      if(document.querySelectorAll('.userIcon')[0]) {
+        document.querySelectorAll('.userIcon')[0].querySelectorAll(`.${key as 'character' | 'lbg' | 'rbg' | 'item'}`).forEach(element => {
+          (element as SVGPathElement).setAttribute('style', `fill:${dataSource.iconColours[key as 'character' | 'lbg' | 'rbg' | 'item']};`);
+        })
+      }
+    })
   }
 
   /*

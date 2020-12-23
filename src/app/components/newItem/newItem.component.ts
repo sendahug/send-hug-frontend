@@ -176,7 +176,9 @@ export class NewItem {
           else {
             // create a new message object to send
             let newMessage:Message = {
-              from: this.authService.userData.displayName!,
+              from: {
+                displayName: this.authService.userData.displayName!
+              },
               fromId: this.authService.userData.id!,
               forId: this.forID,
               messageText: messageText,

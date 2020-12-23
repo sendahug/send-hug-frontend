@@ -38,6 +38,24 @@ function copyHtml()
 					return match;
 				}
 			}))
+		.pipe(replace(/(<img src=")(.*)(\/assets.)(.*)(." >)/g, match => {
+			if(match.indexOf('siteLogo') == -1) {
+				let altIndex = match.indexOf('alt');
+				let assetsIndex = match.indexOf('assets');
+				let url = match.substring(assetsIndex, altIndex-2);
+				let svg = fs.readFileSync(__dirname + `/src/${url}`, { encoding: 'utf-8' });
+
+				let classIndex = match.indexOf('class');
+				let endTagIndex = match.indexOf('>');
+				let elementClass = match.substring(classIndex+7,endTagIndex-2)
+				svg = svg.replace('svg', `svg class="${elementClass}"`);
+				
+				return svg;
+			}
+		}))
+		.pipe(replace(/(image href=".\/bg_pattern.svg")/g, match => {
+				return "image href=\"./assets/img/bg_pattern.svg\"";
+		}))
 		.pipe(rename({dirname:""}))
 		.pipe(gulp.dest("./localdev/app"));
 }
@@ -102,7 +120,7 @@ function watch()
 {
 	gulp.watch("src/app/**/*.html", copyHtml)
 	gulp.watch("index.html", copyIndex);
-	gulp.watch("src/assets/**/*", copyAssets);
+	gulp.watch("src/assets/**/*", gulp.parallel(copyAssets, copyHtml));
 	gulp.watch("src/css/*.css", styles);
 	gulp.watch(["src/**/*.ts", "!src/**/*.spec.ts", "!src/**/*.mock.ts"], scripts);
 	gulp.watch("src/manifest.webmanifest", copyManifest);
@@ -119,15 +137,13 @@ async function localDev() {
 }
 
 //boot up the server
-async function serve() {
-	bs = browserSync.init({
+function serve() {
+	browserSync.init({
 		server: {
 			baseDir: "./localdev"
 		},
 		single: true
 	});
-
-	await bs;
 }
 
 // PRODUCTION TASKS
@@ -149,6 +165,24 @@ function copyHtmlDist()
 					return match;
 				}
 			}))
+		.pipe(replace(/(<img src=")(.*)(\/assets.)(.*)(." >)/g, match => {
+			if(match.indexOf('siteLogo') == -1) {
+				let altIndex = match.indexOf('alt');
+				let assetsIndex = match.indexOf('assets');
+				let url = match.substring(assetsIndex, altIndex-2);
+				let svg = fs.readFileSync(__dirname + `/src/${url}`, { encoding: 'utf-8' });
+
+				let classIndex = match.indexOf('class');
+				let endTagIndex = match.indexOf('>');
+				let elementClass = match.substring(classIndex+7,endTagIndex-2)
+				svg = svg.replace('svg', `svg class="${elementClass}"`);
+				
+				return svg;
+			}
+		}))
+		.pipe(replace(/(image href=".\/bg_pattern.svg")/g, match => {
+				return "image href=\"./assets/img/bg_pattern.svg\"";
+		}))
 		.pipe(rename({dirname:""}))
 		.pipe(gulp.dest("./dist/app"));
 }
@@ -322,9 +356,10 @@ function bundleCode() {
 				return newString;
 			});
 			// add the SVGs
-			let secondReplacedChunk = replacedChunk.replace(/(<img src="..\/assets.)(.*)(.">)/g, (match) => {
+			let secondReplacedChunk = replacedChunk.replace(/(<img src=".)(.*)(.\/assets.)(.*)(.">)/g, (match) => {
 				let altIndex = match.indexOf('alt');
-				let url = match.substring(13, altIndex-2);
+				let assetsIndex = match.indexOf('assets');
+				let url = match.substring(assetsIndex, altIndex-2);
 				let svg = fs.readFileSync(__dirname + `/src/${url}`);
 
 				return svg;
@@ -365,9 +400,23 @@ gulp.task('test', gulp.series(
 	unitTest
 ));
 
+// boot up the server for e2e testing - headless
+async function e2eServe() {
+	bs = browserSync.init({
+		server: {
+			baseDir: "./localdev"
+		},
+		single: true,
+		open: false,
+		ui: false
+	});
+
+	await bs;
+}
+
 // run development server & protractor
 async function runProtractor() {
-	serve();
+	e2eServe();
 
 	// update webdriver
 	await webdriverUpdate.program.run({
@@ -413,3 +462,4 @@ exports.localDev = localDev;
 exports.serve = serve;
 exports.scriptsDist = scriptsDist;
 exports.watch = watch;
+exports.e2eServe = e2eServe;

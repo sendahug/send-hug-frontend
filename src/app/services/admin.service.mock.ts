@@ -41,7 +41,17 @@ import { MockAuthService } from './auth.service.mock';
 import { MockAlertsService } from './alerts.service.mock';
 import { MockItemsService } from './items.service.mock';
 import { environment } from '../../environments/environment';
-import { OtherUser } from '../interfaces/otherUser.interface';
+
+interface BlockedUser {
+  id: number;
+  displayName: string;
+  receivedHugs: number;
+  givenHugs: number;
+  postsNum: number;
+  role: string;
+  blocked?: boolean;
+  releaseDate?: Date;
+}
 
 @Injectable({
   providedIn: 'root'
@@ -51,7 +61,7 @@ export class MockAdminService {
   userReports: Report[] = [];
   postReports: Report[] = [];
   isReportsResolved = new BehaviorSubject(false);
-  blockedUsers: OtherUser[] = [];
+  blockedUsers: BlockedUser[] = [];
   isBlocksResolved = new BehaviorSubject(false);
   // blocked user data
   userBlockData: {
@@ -186,7 +196,9 @@ export class MockAdminService {
     this.alertsService.createSuccessAlert(`Post ${postID} was successfully deleted.`);
     // create a message from the admin to the user whose post was deleted
     let message:Message = {
-      from: this.authService.userData.displayName,
+      from: {
+        displayName: this.authService.userData.displayName
+      },
       fromId: this.authService.userData.id!,
       forId: reportData.userID,
       messageText: `Your post (ID ${postID}) was deleted due to violating our community rules.`,

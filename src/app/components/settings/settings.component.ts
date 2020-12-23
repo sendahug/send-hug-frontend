@@ -31,7 +31,7 @@
 */
 
 // Angular imports
-import { Component } from '@angular/core';
+import { Component, AfterViewChecked } from '@angular/core';
 
 // App-related imports
 import { NotificationService } from '../../services/notifications.service';
@@ -42,7 +42,9 @@ import { AlertsService } from '../../services/alerts.service';
   selector: 'app-settings',
   templateUrl: './settings.component.html'
 })
-export class SettingsPage {
+export class SettingsPage implements AfterViewChecked {
+  editIcon = false;
+
   // CTOR
   constructor(
     public notificationService:NotificationService,
@@ -50,6 +52,43 @@ export class SettingsPage {
     private alertsService:AlertsService
   ) {
 
+  }
+
+  /*
+  Function Name: ngAfterViewChecked()
+  Function Description: This method is automatically triggered by Angular once the component's
+                        view is checked by Angular. It updates the user's icon according to the colours
+                        chosen by the user.
+  Parameters: None.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  ngAfterViewChecked() {
+    Object.keys(this.authService.userData.iconColours).forEach((key) => {
+      if(document.querySelectorAll('.userIcon')[0]) {
+        document.querySelectorAll('.userIcon')[0].querySelectorAll(`.${key as 'character' | 'lbg' | 'rbg' | 'item'}`).forEach(element => {
+          (element as SVGPathElement).setAttribute('style', `fill:${this.authService.userData.iconColours[key as 'character' | 'lbg' | 'rbg' | 'item']};`);
+        })
+      }
+    })
+  }
+
+  /*
+  Function Name: toggleIconEditor()
+  Function Description: Opens/closes the icon editor.
+  Parameters: edit (boolean) - optional; is sent by the IconEditor's EventEmitter to trigger
+                                closing the edit panel.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  toggleIconEditor(edit?:boolean) {
+    if(edit) {
+      this.editIcon = edit;
+      document.getElementById('editIcon')!.focus();
+    }
+    else {
+      this.editIcon = !this.editIcon;
+    }
   }
 
   /*

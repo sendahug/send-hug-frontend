@@ -83,9 +83,27 @@ function populateDB(dbPromise: Promise<IDBPDatabase<MyDB>>, store: 'posts' | 'me
     messages: [
       {
         date: new Date("Mon, 22 Jun 2020 14:32:38 GMT"),
-        for: "user14",
+        for: {
+          displayName: "user14",
+          selectedIcon: 'kitty' as 'kitty',
+          iconColours: {
+            character: '#BA9F93',
+            lbg: '#e2a275',
+            rbg: '#f8eee4',
+            item: '#f4b56a'
+          }
+        },
         forId: 1,
-        from: "user14",
+        from: {
+          displayName: "user14",
+          selectedIcon: 'kitty' as 'kitty',
+          iconColours: {
+            character: '#BA9F93',
+            lbg: '#e2a275',
+            rbg: '#f8eee4',
+            item: '#f4b56a'
+          }
+        },
         fromId: 4,
         id: 1,
         messageText: "test.",
@@ -94,9 +112,27 @@ function populateDB(dbPromise: Promise<IDBPDatabase<MyDB>>, store: 'posts' | 'me
       },
       {
         date: new Date("Mon, 22 Jun 2020 14:32:38 GMT"),
-        for: "user14",
+        for: {
+          displayName: "user14",
+          selectedIcon: 'kitty' as 'kitty',
+          iconColours: {
+            character: '#BA9F93',
+            lbg: '#e2a275',
+            rbg: '#f8eee4',
+            item: '#f4b56a'
+          }
+        },
         forId: 4,
-        from: "user14",
+        from: {
+          displayName: "user14",
+          selectedIcon: 'kitty' as 'kitty',
+          iconColours: {
+            character: '#BA9F93',
+            lbg: '#e2a275',
+            rbg: '#f8eee4',
+            item: '#f4b56a'
+          }
+        },
         fromId: 1,
         id: 14,
         messageText: "message",
@@ -105,9 +141,27 @@ function populateDB(dbPromise: Promise<IDBPDatabase<MyDB>>, store: 'posts' | 'me
       },
       {
         date: new Date("Mon, 08 Jun 2020 14:43:15 GMT"),
-        for: "shirb",
+        for: {
+          displayName: "shirb",
+          selectedIcon: 'kitty' as 'kitty',
+          iconColours: {
+            character: '#BA9F93',
+            lbg: '#e2a275',
+            rbg: '#f8eee4',
+            item: '#f4b56a'
+          }
+        },
         forId: 1,
-        from: "user14",
+        from: {
+          displayName: "user14",
+          selectedIcon: 'kitty' as 'kitty',
+          iconColours: {
+            character: '#BA9F93',
+            lbg: '#e2a275',
+            rbg: '#f8eee4',
+            item: '#f4b56a'
+          }
+        },
         fromId: 4,
         id: 9,
         messageText: "hang in there",
@@ -122,7 +176,14 @@ function populateDB(dbPromise: Promise<IDBPDatabase<MyDB>>, store: 'posts' | 'me
         receivedHugs: 3,
         givenHugs: 3,
         role: 'user',
-        postsNum: 10
+        postsNum: 10,
+        selectedIcon: 'kitty' as 'kitty',
+        iconColours: {
+          character: '#BA9F93',
+          lbg: '#e2a275',
+          rbg: '#f8eee4',
+          item: '#f4b56a'
+        }
       },
       {
         id: 4,
@@ -130,15 +191,40 @@ function populateDB(dbPromise: Promise<IDBPDatabase<MyDB>>, store: 'posts' | 'me
         receivedHugs: 3,
         givenHugs: 3,
         role: 'user',
-        postsNum: 10
+        postsNum: 10,
+        selectedIcon: 'kitty' as 'kitty',
+        iconColours: {
+          character: '#BA9F93',
+          lbg: '#e2a275',
+          rbg: '#f8eee4',
+          item: '#f4b56a'
+        }
       }
     ],
     threads: [
       {
         id: 3,
-        user1: "shirb",
+        user1: {
+          displayName: "shirb",
+          selectedIcon: 'kitty' as 'kitty',
+          iconColours: {
+            character: '#BA9F93',
+            lbg: '#e2a275',
+            rbg: '#f8eee4',
+            item: '#f4b56a'
+          }
+        },
         user1Id: 1,
-        user2: "user14",
+        user2: {
+          displayName: "user14",
+          selectedIcon: 'kitty' as 'kitty',
+          iconColours: {
+            character: '#BA9F93',
+            lbg: '#e2a275',
+            rbg: '#f8eee4',
+            item: '#f4b56a'
+          }
+        },
         user2Id: 4,
         numMessages: 1,
         latestMessage: new Date("Mon, 08 Jun 2020 14:43:15 GMT"),
@@ -146,9 +232,27 @@ function populateDB(dbPromise: Promise<IDBPDatabase<MyDB>>, store: 'posts' | 'me
       },
       {
         id: 5,
-        user1: "lalala",
+        user1: {
+          displayName: "lalala",
+          selectedIcon: 'kitty' as 'kitty',
+          iconColours: {
+            character: '#BA9F93',
+            lbg: '#e2a275',
+            rbg: '#f8eee4',
+            item: '#f4b56a'
+          }
+        },
         user1Id: 2,
-        user2: "user14",
+        user2: {
+          displayName: "user14",
+          selectedIcon: 'kitty' as 'kitty',
+          iconColours: {
+            character: '#BA9F93',
+            lbg: '#e2a275',
+            rbg: '#f8eee4',
+            item: '#f4b56a'
+          }
+        },
         user2Id: 4,
         numMessages: 2,
         latestMessage: new Date("Mon, 08 Jun 2020 14:43:15 GMT"),

@@ -83,7 +83,14 @@ export class ItemsService {
     receivedHugs: 0,
     givenHugs: 0,
     postsNum: 0,
-    role: ''
+    role: '',
+    selectedIcon: 'kitty',
+    iconColours: {
+      character: '',
+      lbg: '',
+      rbg: '',
+      item: ''
+    }
   };
   isOtherUser = false;
   isOtherUserResolved = new BehaviorSubject(false);
@@ -336,7 +343,14 @@ export class ItemsService {
         receivedHugs: 0,
         givenHugs: 0,
         postsNum: 0,
-        role: ''
+        role: '',
+        selectedIcon: 'kitty',
+        iconColours: {
+          character: '',
+          lbg: '',
+          rbg: '',
+          item: ''
+        }
       };
       this.isOtherUserResolved.next(false);
       this.idbResolved.user.next(false);
@@ -362,7 +376,14 @@ export class ItemsService {
         receivedHugs: user.receivedH,
         givenHugs: user.givenH,
         role: user.role,
-        postsNum: user.posts
+        postsNum: user.posts,
+        selectedIcon: user.selectedIcon,
+        iconColours: {
+          character: user.iconColours.character,
+          lbg: user.iconColours.lbg,
+          rbg: user.iconColours.rbg,
+          item: user.iconColours.item
+        }
       }
       this.isOtherUserResolved.next(true);
       this.idbResolved.user.next(true);
@@ -455,9 +476,17 @@ export class ItemsService {
         let isoDate = new Date(element.date).toISOString();
         let message = {
           'date': element.date,
-          'for': element.for!,
+          'for': {
+            displayName: element.for!.displayName,
+            selectedIcon: (element.forId == this.authService.userData.id) ? this.authService.userData.selectedIcon : element.for!.selectedIcon,
+            iconColours: (element.forId == this.authService.userData.id) ? this.authService.userData.iconColours : element.for!.iconColours
+          },
           'forId': element.forId,
-          'from': element.from,
+          'from': {
+            displayName: element.from!.displayName,
+            selectedIcon: (element.forId == this.authService.userData.id) ? this.authService.userData.selectedIcon : element.from!.selectedIcon,
+            iconColours: (element.forId == this.authService.userData.id) ? this.authService.userData.iconColours : element.from!.iconColours
+          },
           'fromId': element.fromId,
           'id': Number(element.id!),
           'isoDate': isoDate,
@@ -518,7 +547,7 @@ export class ItemsService {
           data.posts.forEach((element: any) => {
             let thread: Thread = {
               id: element.id,
-              user: (element.user1 == this.authService.userData.displayName) ? element.user2 : element.user1,
+              user: (element.user1.displayName == this.authService.userData.displayName) ? element.user2 : element.user1,
               userID: (element.user1Id == this.authService.userData.id) ? element.user2Id : element.user1Id,
               numMessages: element.numMessages,
               latestMessage: element.latestMessage
@@ -563,9 +592,17 @@ export class ItemsService {
         let isoDate = new Date(element.latestMessage).toISOString();
         let thread = {
           'latestMessage': element.latestMessage,
-          'user1': element.user1!,
+          'user1': {
+            displayName: element.user1!.displayName,
+            selectedIcon: element.user1!.selectedIcon,
+            iconColours: element.user1!.iconColours
+          },
           'user1Id': element.user1Id,
-          'user2': element.user2,
+          'user2': {
+            displayName: element.user2!.displayName,
+            selectedIcon: element.user2!.selectedIcon,
+            iconColours: element.user2!.iconColours
+          },
           'user2Id': element.user2Id,
           'numMessages': element.numMessages!,
           'isoDate': isoDate,
@@ -646,9 +683,17 @@ export class ItemsService {
         let isoDate = new Date(element.date).toISOString();
         let message = {
           'date': element.date,
-          'for': element.for!,
+          'for': {
+            displayName: element.for!.displayName,
+            selectedIcon: element.for!.selectedIcon,
+            iconColours: element.for!.iconColours
+          },
           'forId': element.forId,
-          'from': element.from,
+          'from': {
+            displayName: element.from!.displayName,
+            selectedIcon: element.from!.selectedIcon,
+            iconColours: element.from!.iconColours
+          },
           'fromId': element.fromId,
           'id': element.id!,
           'isoDate': isoDate,

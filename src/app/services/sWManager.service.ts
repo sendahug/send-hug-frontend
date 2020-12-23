@@ -64,15 +64,40 @@ export interface MyDB extends DBSchema {
       'postsNum': number;
       'receivedHugs': number;
       'role': string;
+      selectedIcon: 'bear' | 'kitty' | 'dog';
+      iconColours: {
+        character: String,
+        lbg: String,
+        rbg: String,
+        item: String
+      };
     }
   };
   'messages': {
     key: number;
     value: {
       'date': Date;
-      'for': string;
+      'for': {
+        'displayName': string;
+        'selectedIcon'?: 'bear' | 'kitty' | 'dog';
+        'iconColours'?: {
+          'character': String,
+          'lbg': String,
+          'rbg': String,
+          'item': String
+        };
+      };
       'forId': number;
-      'from': string;
+      'from': {
+        'displayName': string;
+        'selectedIcon'?: 'bear' | 'kitty' | 'dog';
+        'iconColours'?: {
+          'character': String,
+          'lbg': String,
+          'rbg': String,
+          'item': String
+        };
+      };
       'fromId': number;
       'id': number;
       'isoDate': string;
@@ -85,9 +110,27 @@ export interface MyDB extends DBSchema {
     key: number;
     value: {
       'latestMessage': Date;
-      'user1': string;
+      'user1': {
+        'displayName': string;
+        'selectedIcon': 'bear' | 'kitty' | 'dog';
+        'iconColours': {
+          'character': String,
+          'lbg': String,
+          'rbg': String,
+          'item': String
+        };
+      };
       'user1Id': number;
-      'user2': string;
+      'user2': {
+        'displayName': string;
+        'selectedIcon': 'bear' | 'kitty' | 'dog';
+        'iconColours': {
+          'character': String,
+          'lbg': String,
+          'rbg': String,
+          'item': String
+        };
+      };
       'user2Id': number;
       'numMessages': number;
       'isoDate': string;

@@ -78,7 +78,14 @@ export class AuthService {
     releaseDate: undefined,
     autoRefresh: false,
     refreshRate: 20,
-    pushEnabled: false
+    pushEnabled: false,
+    selectedIcon: 'kitty',
+    iconColours: {
+      character: '',
+      lbg: '',
+      rbg: '',
+      item: ''
+    }
   }
   // documents whether the user just logged in or they're still logged in following
   // their previous login
@@ -190,7 +197,14 @@ export class AuthService {
         releaseDate: undefined,
         autoRefresh: false,
         refreshRate: 20,
-        pushEnabled: false
+        pushEnabled: false,
+        selectedIcon: 'kitty',
+        iconColours: {
+          character: '',
+          lbg: '',
+          rbg: '',
+          item: ''
+        }
       }
     }
 
@@ -216,7 +230,14 @@ export class AuthService {
           releaseDate: data.releaseDate,
           autoRefresh: data.autoRefresh,
           refreshRate: data.refreshRate,
-          pushEnabled: data.pushEnabled
+          pushEnabled: data.pushEnabled,
+          selectedIcon: data.selectedIcon,
+          iconColours: {
+            character: data.iconColours.character,
+            lbg: data.iconColours.lbg,
+            rbg: data.iconColours.rbg,
+            item: data.iconColours.item
+          }
         }
         // set the authentication-variables accordingly
         this.authenticated = true;
@@ -243,7 +264,14 @@ export class AuthService {
           blocked: data.blocked,
           releaseDate: data.releaseDate,
           autoRefresh: data.autoRefresh,
-          pushEnabled: data.pushEnabled
+          pushEnabled: data.pushEnabled,
+          selectedIcon: data.selectedIcon,
+          iconColours: {
+            character: data.iconColours.character,
+            lbg: data.iconColours.lbg,
+            rbg: data.iconColours.rbg,
+            item: data.iconColours.item
+          }
         }
         this.serviceWorkerM.addItem('users', user);
         // if there's an error, check the error type
@@ -311,7 +339,14 @@ export class AuthService {
         releaseDate: data.releaseDate,
         autoRefresh: data.autoRefresh,
         refreshRate: data.refreshRate,
-        pushEnabled: data.pushEnabled
+        pushEnabled: data.pushEnabled,
+        selectedIcon: data.selectedIcon,
+        iconColours: {
+          character: data.iconColours.character,
+          lbg: data.iconColours.leftbg,
+          rbg: data.iconColours.rightbg,
+          item: data.iconColours.item
+        }
       }
       // set the authentication-variables accordingly
       this.authenticated = true;
@@ -391,7 +426,14 @@ export class AuthService {
       releaseDate: undefined,
       autoRefresh: false,
       refreshRate: 20,
-      pushEnabled: false
+      pushEnabled: false,
+      selectedIcon: 'kitty',
+      iconColours: {
+        character: '',
+        lbg: '',
+        rbg: '',
+        item: ''
+      }
     }
     localStorage.setItem("ACTIVE_JWT", '');
 
@@ -487,7 +529,14 @@ export class AuthService {
       receivedH: this.userData.receivedHugs,
       givenH: this.userData.givenHugs,
       posts: this.userData.postsNum,
-      loginCount: this.userData.loginCount + 1
+      loginCount: this.userData.loginCount + 1,
+      selectedIcon: this.userData.selectedIcon,
+      iconColours: {
+        character: this.userData.iconColours.character,
+        lbg: this.userData.iconColours.lbg,
+        rbg: this.userData.iconColours.rbg,
+        item: this.userData.iconColours.item
+      }
     }, {
       headers: this.authHeader
     }).subscribe((_response:any) => {

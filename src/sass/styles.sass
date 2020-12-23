@@ -979,6 +979,19 @@ app-user-page h3
 		width: 39%
 		margin: 2% 3% 2% 0
 
+/* User Page Profile pic container */
+#profilePic
+	margin: 5px 0 5px 10px
+
+/* User Page username + role container */
+#userNameRole
+	display: flex
+	flex-direction: column
+	align-content: space-around
+	justify-content: space-evenly
+	align-items: center
+	margin: 0
+
 /* User Page Field Container */
 .profileElement
 	border: none
@@ -997,11 +1010,7 @@ app-user-page h3
 	background: $boxesBackground
 	font-weight: bold
 	text-align: center
-	width: 90%
-	margin: 0 5%
-	/* Responsive styling for screens above 725px width */
-	@media screen and (min-width: 725px)
-		margin: 0 10px
+	margin: 0
 
 /* Profile hug button */
 .displayName .hugButton
@@ -1012,12 +1021,8 @@ app-user-page h3
 	background: $boxesBackground
 	padding: 4px
 	text-align: center
-	width: 90%
-	margin: 10px
+	margin: 10px 0
 	text-transform: uppercase
-	/* Responsive styling for screens above 725px width */
-	@media screen and (min-width: 725px)
-		margin: 0 10px
 
 /* Role Field */
 #roleElement .pageCategory
@@ -1340,6 +1345,13 @@ app-messages h3
 	background: $itemBackground
 	margin: 15px 7%
 	padding: 10px
+	display: flex
+	justify-content: center
+
+/* User icon */
+.messageProfilePic .userIcon
+	width: 60px
+	border-width: 2px
 
 /* From field */
 .messageField
@@ -1347,6 +1359,18 @@ app-messages h3
 	text-align: center
 	padding: 5px
 	margin: 5px
+
+/* Message text */
+.messageText
+	@include fontSize(17)
+	text-align: center
+	font-family: $mainFont
+	color: $textColour
+	line-height: 1.5em
+	margin-top: 5px
+	/* Responsive styling for screens above 600px width */
+	@media screen and (min-width: 600px)
+		line-height: 1.8em
 
 /* Field title */
 app-messages .pageCategory
@@ -1364,6 +1388,10 @@ app-messages .pageData
 	/* Responsive styling for screens above 600px width */
 	@media screen and (min-width: 600px)
 		line-height: 1.8em
+
+/* Field text - inbox/outbox */
+.mailboxMessages .pageData
+	@include fontSize(15)
 
 /* Message / message thread buttons */
 .userMessage .buttons, .threadBtns
@@ -2126,7 +2154,7 @@ app-settings h4
 	text-align: center
 
 /* Notification Settings */
-#notificationSettings
+#notificationSettings, #iconSettings
 	border-radius: 5px
 	width: 90%
 	padding: 15px 3%
@@ -2134,6 +2162,10 @@ app-settings h4
 	background: $boxesBackground
 	border: none
 	box-shadow: 5px 5px 7px 0 rgba(46, 61, 73, 0.5)
+	display: flex
+	flex-direction: column
+	align-items: center
+	justify-content: center
 	/* Responsive styling for screens above 500px width */
 	@media screen and (min-width: 500px)
 		width: 80%
@@ -2142,9 +2174,9 @@ app-settings h4
 	/* Responsive styling for screens above 800px width */
 	@media screen and (min-width: 800px)
 		order: 2
-		width: 65%
-		margin: 10px 2%
-		padding: 15px 3% 20px
+		width: 70%
+		margin: 10px 10%
+		padding: 15px 5% 20px
 	/* Responsive styling for screens above 900px width */
 	@media screen and (min-width: 1900px)
 		width: 650px
@@ -2152,9 +2184,21 @@ app-settings h4
 		padding: 15px Calc((100% - 650px) / 4)
 		margin: 10px Calc((100% - 650px) / 4)
 
+/* User icons */
+.userIcon
+	width: 100px
+	margin: 5px
+	border-radius: 10px
+	padding: 0
+	border: 3px solid #000
+
+/* User icon settings - edit button */
+#iconSettings > .appButton
+	@extend .NotificationButton
+
 /* Notification Settings - notification buttons */
 #notificationSettings .NotificationButton
-	margin: 5px Calc((100% - 300px) / 4)
+	margin: 5px
 
 /* Notification Settings - notification rate textfield */
 #notificationRate
@@ -2202,6 +2246,45 @@ app-settings h4
 	color: #FFF
 	border-radius: 5px
 	text-decoration: none
+
+/* =================== Icon Editor Component Styling =================== */
+app-icon-editor label
+	@include fontSize(16)
+	font-family: $mainFont
+	color: $headlineColour
+	text-align: center
+	margin: 5px
+
+/* Character selection area */
+#characterSelect
+	display: flex
+
+/* Character selection options */
+#characterSelect .formElement
+	display: flex
+	flex-direction: column
+	align-items: center
+	justify-content: center
+
+/* Character selection - single option icon */
+.editIconOption
+	width: 80px
+	margin: 5px
+	border-radius: 10px
+	padding: 0
+	border: 3px solid #000
+
+/* Character selection - currently selected character */
+.selectedCharacter
+	border-radius: 10px
+	padding: 0
+	margin: 5px
+	border: 3px solid #000
+
+/* Buttons */
+.iconButton
+	@extend .NotificationButton
+	margin: 5px Calc((100% - 180px) / 4)
 
 /* =================== Site Map Component Styling =================== */
 /* Site Map Component */

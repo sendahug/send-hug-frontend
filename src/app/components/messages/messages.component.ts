@@ -31,7 +31,7 @@
 */
 
 // Angular imports
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewChecked } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 // App-related imports
@@ -44,7 +44,7 @@ type MessageType = 'inbox' | 'outbox' | 'threads';
   selector: 'app-messages',
   templateUrl: './messages.component.html'
 })
-export class AppMessaging implements OnInit {
+export class AppMessaging implements OnInit, AfterViewChecked {
   messType: MessageType | 'thread' = 'inbox';
   page: number;
   // loader sub-component variable
@@ -107,6 +107,51 @@ export class AppMessaging implements OnInit {
 
   ngOnInit() {
 
+  }
+
+  /*
+  Function Name: ngAfterViewChecked()
+  Function Description: This method is automatically triggered by Angular once the component's
+                        view is checked by Angular. It updates the user's icon according to the colours
+                        chosen by the user.
+  Parameters: None.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  ngAfterViewChecked() {
+    // wait for the DOM to load
+    if(document.querySelectorAll('.userIcon')[0]) {
+      this.itemsService.userMessages[this.messType].forEach((message: any) => {
+        const messageDOM = document.getElementById(this.messType + message.id);
+
+        switch(this.messType) {
+          // If it's the inbox, get the the icon details of the user sending the message
+          case 'inbox' || 'thread':
+            Object.keys(message.from.iconColours).forEach(key => {
+              messageDOM!.querySelectorAll('.userIcon')[0].querySelectorAll(`.${key as 'character' | 'lbg' | 'rbg' | 'item'}`).forEach(element => {
+                (element as SVGPathElement).setAttribute('style', `fill:${message.from.iconColours[key as 'character' | 'lbg' | 'rbg' | 'item']};`);
+              })
+            })
+            break;
+          // If it's the outbox, get the icon details of the user for which the message is meant
+          case 'outbox':
+            Object.keys(message.for.iconColours).forEach(key => {
+              messageDOM!.querySelectorAll('.userIcon')[0].querySelectorAll(`.${key as 'character' | 'lbg' | 'rbg' | 'item'}`).forEach(element => {
+                (element as SVGPathElement).setAttribute('style', `fill:${message.for.iconColours[key as 'character' | 'lbg' | 'rbg' | 'item']};`);
+              })
+            })
+            break;
+          // If it's the threads mailbox, get the icon details of the other user in the thread
+          case 'threads':
+            Object.keys(message.user.iconColours).forEach(key => {
+              messageDOM!.querySelectorAll('.userIcon')[0].querySelectorAll(`.${key as 'character' | 'lbg' | 'rbg' | 'item'}`).forEach(element => {
+                (element as SVGPathElement).setAttribute('style', `fill:${message.user.iconColours[key as 'character' | 'lbg' | 'rbg' | 'item']};`);
+              })
+            })
+            break;
+        }
+      })
+    }
   }
 
   /*

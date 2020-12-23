@@ -8,27 +8,40 @@
 
 	<div id="userPage" *ngIf="(!this.itemsService.isOtherUser && authService.isUserDataResolved.value) || (this.itemsService.isOtherUser && itemsService.idbResolved.user.value)" role="region">
 		<div id="profileData">
-			<div class="profileElement displayName">
-				<span class="pageData" *ngIf="!itemsService.isOtherUser" aria-describedby="userName">{{ authService.userData.displayName }}</span> 
-				<span class="pageData" *ngIf="itemsService.isOtherUser" aria-describedby="userName">{{ itemsService.otherUserData.displayName }} 
-					<button class="textlessButton hugButton" (click)="sendHug(itemsService.otherUserData.id)" aria-describedby="uHug userName">
-						<fa-icon [icon]="faGratipay" class="fa-gratipay"></fa-icon>
-					</button>
-				</span>
+			<div id="profilePic">
+				<div *ngIf="(itemsService.isOtherUser && itemsService.otherUserData.selectedIcon == 'kitty') || (!itemsService.isOtherUser && authService.userData.selectedIcon == 'kitty')">
+					<img src="../../../assets/img/kitty.svg" alt="" class="userIcon" >
+				</div>
+				<div *ngIf="(itemsService.isOtherUser && itemsService.otherUserData.selectedIcon == 'dog') || (!itemsService.isOtherUser && authService.userData.selectedIcon == 'dog')">
+					<img src="../../../assets/img/dog.svg" alt="" class="userIcon" >
+				</div>
+				<div *ngIf="(itemsService.isOtherUser && itemsService.otherUserData.selectedIcon == 'bear') || (!itemsService.isOtherUser && authService.userData.selectedIcon == 'bear')">
+					<img src="../../../assets/img/bear.svg" alt=""  class="userIcon" >
+				</div>	
 			</div>
-			<div class="profileElement" id="roleElement">
-				<span class="pageCategory" id="userRole">Role:</span><span class="pageData" *ngIf="!itemsService.isOtherUser" aria-describedby="userName userRole">{{ authService.userData.role }}</span><span class="pageData" *ngIf="itemsService.isOtherUser" aria-describedby="userName userRole">{{ itemsService.otherUserData.role }}</span>
+			<div id="userNameRole">
+				<div class="displayName">
+					<span class="pageData" aria-describedby="userName">{{ itemsService.isOtherUser ? itemsService.otherUserData.displayName : authService.userData.displayName }}</span> 
+					<span class="pageData" *ngIf="itemsService.isOtherUser" aria-describedby="userName">
+						<button class="textlessButton hugButton" (click)="sendHug(itemsService.otherUserData.id)" aria-describedby="uHug userName">
+							<fa-icon [icon]="faGratipay" class="fa-gratipay"></fa-icon>
+						</button>
+					</span>
+				</div>
+				<div id="roleElement">
+					<span class="pageCategory" id="userRole">Role:</span><span class="pageData" aria-describedby="userName userRole">{{ itemsService.isOtherUser ? itemsService.otherUserData.role : authService.userData.role }}</span>
+				</div>
 			</div>
 			<div class="profileElement" id="rHugsElement">
-				<div class="pageData" *ngIf="!itemsService.isOtherUser" aria-describedby="userName uReceived">{{ authService.userData.receivedHugs }}</div> <div class="pageData" *ngIf="itemsService.isOtherUser" aria-describedby="userName uReceived">{{ itemsService.otherUserData.receivedHugs }}</div>
+				<div class="pageData" aria-describedby="userName uReceived">{{ itemsService.isOtherUser ? itemsService.otherUserData.receivedHugs : authService.userData.receivedHugs }}</div>
 				<div class="pageCategory">Hugs Received</div>
 			</div>
 			<div class="profileElement" id="gHugsElement">
-				<div class="pageData" *ngIf="!itemsService.isOtherUser" aria-describedby="userName uGivenH">{{ authService.userData.givenHugs }}</div> <div class="pageData" *ngIf="itemsService.isOtherUser" aria-describedby="userName uGivenH">{{ itemsService.otherUserData.givenHugs }}</div>
+				<div class="pageData" aria-describedby="userName uGivenH">{{ itemsService.isOtherUser ? itemsService.otherUserData.givenHugs : authService.userData.givenHugs }}</div>
 				<div class="pageCategory">Hugs Given</div>
 			</div>
 			<div class="profileElement" id="postsElement">
-				<div class="pageData" *ngIf="!itemsService.isOtherUser" aria-describedby="uNumP userName">{{ authService.userData.postsNum }}</div> <div class="pageData" *ngIf="itemsService.isOtherUser" aria-describedby="uNumP userName">{{ itemsService.otherUserData.postsNum }}</div>
+				<div class="pageData" aria-describedby="uNumP userName">{{ itemsService.isOtherUser ? itemsService.otherUserData.postsNum : authService.userData.postsNum }}</div>
 				<div class="pageCategory">Posts Written</div>
 			</div>
 			

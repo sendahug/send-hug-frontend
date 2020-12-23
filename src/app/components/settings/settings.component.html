@@ -1,6 +1,25 @@
 <div  *ngIf="authService.authenticated">
 	<h3>Settings</h3>
 	
+	<div id="iconSettings">
+		<h4>User Icon</h4>
+		<div *ngIf="editIcon == false">
+			<div *ngIf="authService.userData.selectedIcon == 'kitty'">
+				<img src="../../../assets/img/kitty.svg" alt="" class="userIcon" >
+			</div>
+			<div *ngIf="authService.userData.selectedIcon == 'dog'">
+				<img src="../../../assets/img/dog.svg" alt="" class="userIcon" >
+			</div>
+			<div *ngIf="authService.userData.selectedIcon == 'bear'">
+				<img src="../../../assets/img/bear.svg" alt=""  class="userIcon" >
+			</div>
+		</div>
+		<button *ngIf="editIcon == false" (click)="toggleIconEditor()" class="appButton" id="editIcon">Edit User Icon</button>
+		
+		<app-icon-editor *ngIf="editIcon== true"
+						 (editMode)="toggleIconEditor($event)"></app-icon-editor>
+	</div>
+	
 	<div id="notificationSettings">
 		<h4>Notifications</h4>
 		<button class="appButton NotificationButton" (click)="togglePushNotifications()">{{ notificationService.toggleBtn }} Push Notifications</button>

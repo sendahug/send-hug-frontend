@@ -57,6 +57,7 @@ import { SiteMap } from './components/siteMap/siteMap.component';
 import { SinglePost } from './components/post/post.component';
 import { SupportPage } from './components/supportPage/supportPage.component';
 import { SitePolicies } from './components/sitePolicies/sitePolicies.component';
+import { IconEditor } from './components/iconEditor/iconEditor.component';
 
 @NgModule({
   imports: [
@@ -86,7 +87,8 @@ import { SitePolicies } from './components/sitePolicies/sitePolicies.component';
     SiteMap,
     SinglePost,
     SupportPage,
-    SitePolicies
+    SitePolicies,
+    IconEditor
   ],
   providers: [],
   bootstrap: [AppComponent]

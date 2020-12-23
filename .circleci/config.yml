@@ -3,9 +3,9 @@ orbs:
   node: circleci/node@1.1
   browser-tools: circleci/browser-tools@1.1.1
 jobs:
-  build:
+  test:
     docker:
-      - image: cimg/node:12.18-browsers
+      - image: cimg/node:lts-browsers
     environment:
       CHROME_BIN: /usr/bin/google-chrome
     steps:
@@ -22,3 +22,138 @@ jobs:
             - "node_modules"
       - run: npm test -- --no-watch --no-progress --browsers=ChromeHeadlessCI
       - run: bash <(curl -s https://codecov.io/bash) -f coverage/lcov.info -X fix
+  e2e:
+    docker:
+      - image: shirblc/python-npm-tools:2.3
+        environment:
+          DATABASE_URL: postgresql://postgres:password@localhost:5432/test-capstone?sslmode=disable
+          FLASK_APP: send-hug-backend/app.py
+          FLASK_ENV: development
+          FRONTEND: http://localhost:3000
+      - image: circleci/postgres:12.5
+        auth:
+          username: mydockerhub-user
+          password: $DOCKERHUB_PASSWORD  # context / project UI env-var reference
+        environment:
+          POSTGRES_USER: postgres
+          POSTGRES_DB: test-capstone
+          POSTGRES_PASSWORD: "password"
+    environment:
+      CHROME_BIN: /usr/bin/google-chrome
+    steps:
+      - checkout
+      - run: |
+          cd ..
+          git clone https://github.com/sendahug/send-hug-backend
+      - run:
+          name: Install Python deps
+          command: |
+            cd ..
+            pip3 install -r send-hug-backend/requirements.txt
+            python3 -m pip install --upgrade pip
+      # Dockerize installation to wait for the database to load
+      # Taken from: https://support.circleci.com/hc/en-us/articles/360006773953-Race-Conditions-Wait-For-Database
+      - run:
+          name: Wait for db
+          command: dockerize -wait tcp://localhost:5432 -timeout 1m
+      - run:
+          name: Restore database
+          command: |
+            cd ..
+            psql -h localhost -p 5432 -U postgres test-capstone < send-hug-backend/capstone_db.sql
+      - run:
+          name: Start backend
+          command: |
+            cd ..
+            flask run
+          background: true
+      - browser-tools/install-chrome
+      - browser-tools/install-chromedriver
+      - run: google-chrome --version
+      - restore_cache:
+          key: my-project-{{ .Branch }}-{{ checksum "package-lock.json" }}
+      - run:
+          name: Install dependencies
+          command: npm install
+      - save_cache:
+          key: my-project-{{ .Branch }}-{{ checksum "package-lock.json" }}
+          paths:
+            - "send-hug-frontend/node_modules"
+      - run:
+          name: Run e2e tests
+          command: gulp e2e
+  accessibility:
+    docker:
+      - image: shirblc/python-npm-tools:2.4
+        environment:
+          DATABASE_URL: postgresql://postgres:password@localhost:5432/test-capstone?sslmode=disable
+          FLASK_APP: send-hug-backend/app.py
+          FLASK_ENV: development
+          FRONTEND: http://localhost:3000
+      - image: circleci/postgres:12.5
+        auth:
+          username: mydockerhub-user
+          password: $DOCKERHUB_PASSWORD  # context / project UI env-var reference
+        environment:
+          POSTGRES_USER: postgres
+          POSTGRES_DB: test-capstone
+          POSTGRES_PASSWORD: "password"
+    environment:
+      CHROME_BIN: /usr/bin/google-chrome
+    steps:
+      - checkout
+      - run: |
+          cd ..
+          git clone https://github.com/sendahug/send-hug-backend
+      - run:
+          name: Install Python deps
+          command: |
+            cd ..
+            pip3 install -r send-hug-backend/requirements.txt
+            python3 -m pip install --upgrade pip
+      # Dockerize installation to wait for the database to load
+      # Taken from: https://support.circleci.com/hc/en-us/articles/360006773953-Race-Conditions-Wait-For-Database
+      - run:
+          name: Wait for db
+          command: dockerize -wait tcp://localhost:5432 -timeout 1m
+      - run:
+          name: Restore database
+          command: |
+            cd ..
+            psql -h localhost -p 5432 -U postgres test-capstone < send-hug-backend/capstone_db.sql
+      - run:
+          name: Start backend
+          command: |
+            cd ..
+            flask run
+          background: true
+      - browser-tools/install-chrome
+      - browser-tools/install-chromedriver
+      - run: google-chrome --version
+      - restore_cache:
+          key: my-project-{{ .Branch }}-{{ checksum "package-lock.json" }}
+      - run:
+          name: Install dependencies
+          command: npm install
+      - save_cache:
+          key: my-project-{{ .Branch }}-{{ checksum "package-lock.json" }}
+          paths:
+            - "node_modules"
+      - run:
+          name: Run setup
+          command: gulp localDev
+      - run:
+          name: Start frontend server
+          command: gulp e2eServe
+          background: true
+      - run: sleep 15
+      - run:
+          name: Run accessibility tests
+          command: pa11y-ci --sitemap http://localhost:3000/sitemap.xml
+
+workflows:
+  run-testing:
+    jobs:
+      - test
+      - e2e
+      - accessibility

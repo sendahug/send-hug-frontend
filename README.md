@@ -54,19 +54,21 @@ The main module contains 15 components, 7 services and 7 interfaces. Each compon
 3. **errorPage** - Displays a 'not found' error page if the user attempts to navigate (via Angular's router) to a location that doesn't exist.
 4. **fullList** - Displays a full list of paginated posts, depending on the list requested by the user (new or suggested).
 5. **headerMessage** - A loader displayed, displayed while the app is fetching data from the backend.
-6. **loader** - A loader, displayed while the app is fetching data from the backend; if this isn't the user's first visit to the app, the loader only stays while the app is fetching data from IndexedDB.
-7. **mainPage** - The main page of the app. Displays two lists to the user ('suggested' and 'new') - each with ten posts, as well as 'view full list' links.
-8. **messages** - A messages screen. Displays a paginated list of messages sent to the user.
-9. **myPosts** - A sub-component of the userPage component. Displays a paginated list of posts by the user whose profile is viewed.
-10. **newItem** - A form component allowing users to create a new item (message or post).
-11. **notifications** - A tab component to display the latest notifications for the currently logged-in user.
-12. **popUp** - A sub-component displaying a popup screen with a form for editing items (posts or a user's display name).
-13. **post** - A single post sub-component, containing all of a post's functionality.
-14. **searchResults** - A component to display the results of the user's search.
-15. **settings** - Lets the user control their settings for various components, such as the notifications component.
-16. **siteMap** - A site map, containing a list of the site's pages.
-17. **supportPage** - A component containing FAQs and details about communicating with the Send A Hug team.
-18. **userPage** - Displays the user's data as fetched from the backend, as well as a list of the user's posts (as myPost component).
+6. **iconEditor** - A settings sub-component for choosing and editing user icons.
+7. **loader** - A loader, displayed while the app is fetching data from the backend; if this isn't the user's first visit to the app, the loader only stays while the app is fetching data from IndexedDB.
+8. **mainPage** - The main page of the app. Displays two lists to the user ('suggested' and 'new') - each with ten posts, as well as 'view full list' links.
+9. **messages** - A messages screen. Displays a paginated list of messages sent to the user.
+10. **myPosts** - A sub-component of the userPage component. Displays a paginated list of posts by the user whose profile is viewed.
+11. **newItem** - A form component allowing users to create a new item (message or post).
+12. **notifications** - A tab component to display the latest notifications for the currently logged-in user.
+13. **popUp** - A sub-component displaying a popup screen with a form for editing items (posts or a user's display name).
+14. **post** - A single post sub-component, containing all of a post's functionality.
+15. **searchResults** - A component to display the results of the user's search.
+16. **settings** - Lets the user control their settings for various components, such as the notifications component.
+17. **siteMap** - A site map, containing a list of the site's pages.
+18. **sitePolicies** - A component containing the site's T&Cs, privacy policy and cookies policy.
+19. **supportPage** - A component containing FAQs and details about communicating with the Send A Hug team.
+20. **userPage** - Displays the user's data as fetched from the backend, as well as a list of the user's posts (as myPost component).
 
 ### Interfaces
 

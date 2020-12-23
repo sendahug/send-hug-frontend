@@ -42,8 +42,18 @@ import { AuthService } from './auth.service';
 import { AlertsService } from './alerts.service';
 import { ItemsService } from './items.service';
 import { environment } from '../../environments/environment';
-import { OtherUser } from '../interfaces/otherUser.interface';
 import { SWManager } from './sWManager.service';
+
+interface BlockedUser {
+  id: number;
+  displayName: string;
+  receivedHugs: number;
+  givenHugs: number;
+  postsNum: number;
+  role: string;
+  blocked?: boolean;
+  releaseDate?: Date;
+}
 
 @Injectable({
   providedIn: 'root'
@@ -53,7 +63,7 @@ export class AdminService {
   userReports: Report[] = [];
   postReports: Report[] = [];
   isReportsResolved = new BehaviorSubject(false);
-  blockedUsers: OtherUser[] = [];
+  blockedUsers: BlockedUser[] = [];
   isBlocksResolved = new BehaviorSubject(false);
   // blocked user data
   userBlockData: {
@@ -201,7 +211,9 @@ export class AdminService {
       this.alertsService.createSuccessAlert(`Post ${response.deleted} was successfully deleted.`);
       // create a message from the admin to the user whose post was deleted
       let message:Message = {
-        from: this.authService.userData.displayName,
+        from: {
+          displayName: this.authService.userData.displayName
+        },
         fromId: this.authService.userData.id!,
         forId: reportData.userID,
         messageText: `Your post (ID ${response.deleted}) was deleted due to violating our community rules.`,

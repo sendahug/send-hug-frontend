@@ -89,7 +89,14 @@ describe('ItemsService', () => {
       releaseDate: undefined,
       autoRefresh: false,
       refreshRate: 20,
-      pushEnabled: false
+      pushEnabled: false,
+      selectedIcon: 'kitty',
+      iconColours: {
+        character: '#BA9F93',
+        lbg: '#e2a275',
+        rbg: '#f8eee4',
+        item: '#f4b56a'
+      }
     };
     itemsService['authService'].authenticated = true;
     itemsService['authService'].isUserDataResolved.next(true);
@@ -140,7 +147,14 @@ describe('ItemsService', () => {
       releaseDate: undefined,
       autoRefresh: false,
       refreshRate: 20,
-      pushEnabled: false
+      pushEnabled: false,
+      selectedIcon: 'kitty',
+      iconColours: {
+        character: '#BA9F93',
+        lbg: '#e2a275',
+        rbg: '#f8eee4',
+        item: '#f4b56a'
+      }
     };
     itemsService['authService'].authenticated = true;
     itemsService['authService'].isUserDataResolved.next(true);
@@ -242,7 +256,14 @@ describe('ItemsService', () => {
         releaseDate: undefined,
         autoRefresh: false,
         refreshRate: 20,
-        pushEnabled: false
+        pushEnabled: false,
+        selectedIcon: 'kitty',
+        iconColours: {
+          character: '#BA9F93',
+          lbg: '#e2a275',
+          rbg: '#f8eee4',
+          item: '#f4b56a'
+        }
       };
       itemsService['authService'].authenticated = true;
       itemsService['authService'].isUserDataResolved.next(true);
@@ -316,7 +337,14 @@ describe('ItemsService', () => {
       releaseDate: undefined,
       autoRefresh: false,
       refreshRate: 20,
-      pushEnabled: false
+      pushEnabled: false,
+      selectedIcon: 'kitty',
+      iconColours: {
+        character: '#BA9F93',
+        lbg: '#e2a275',
+        rbg: '#f8eee4',
+        item: '#f4b56a'
+      }
     };
     itemsService['authService'].authenticated = true;
     itemsService['authService'].isUserDataResolved.next(true);
@@ -327,7 +355,14 @@ describe('ItemsService', () => {
       receivedHugs: 0,
       givenHugs: 0,
       postsNum: 2,
-      role: 'user'
+      role: 'user',
+      selectedIcon: 'kitty',
+      iconColours: {
+        character: '#BA9F93',
+        lbg: '#e2a275',
+        rbg: '#f8eee4',
+        item: '#f4b56a'
+      }
     };
     itemsService.sendUserHug(2);
 
@@ -351,7 +386,14 @@ describe('ItemsService', () => {
         id: 2,
         posts: 2,
         receivedH: 1,
-        role: "user"
+        role: "user",
+        selectedIcon: 'kitty',
+        iconColours: {
+          character: '#BA9F93',
+          lbg: '#e2a275',
+          rbg: '#f8eee4',
+          item: '#f4b56a'
+        }
       }
     };
 
@@ -705,9 +747,13 @@ describe('ItemsService', () => {
     };
 
     const message = {
-      from: 'user',
+      from: {
+        displayName: 'user'
+      },
       fromId: 4,
-      for: 'user2',
+      for: {
+        displayName: 'user2'
+      },
       forId: 1,
       messageText: 'hang in there',
       date: new Date("Mon, 08 Jun 2020 14:43:15 GMT")

@@ -17,6 +17,7 @@ var through = require('through');
 const execFile = require('child_process').execFile;
 const webdriverUpdate = require('protractor/node_modules/webdriver-manager/built/lib/cmds/update');
 var Server = require('karma').Server;
+var glob = require("glob");
 let bs;
 
 // LOCAL DEVELOPMENT TASKS
@@ -49,7 +50,7 @@ function copyHtml()
 				let endTagIndex = match.indexOf('>');
 				let elementClass = match.substring(classIndex+7,endTagIndex-2)
 				svg = svg.replace('svg', `svg class="${elementClass}"`);
-				
+
 				return svg;
 			}
 		}))
@@ -176,7 +177,7 @@ function copyHtmlDist()
 				let endTagIndex = match.indexOf('>');
 				let elementClass = match.substring(classIndex+7,endTagIndex-2)
 				svg = svg.replace('svg', `svg class="${elementClass}"`);
-				
+
 				return svg;
 			}
 		}))
@@ -295,32 +296,21 @@ gulp.task('dist', gulp.parallel(
 // TESTING TASKS
 // ===============================================
 // import all the tests to main file
-// credit for this goes to @hackerhat
-// https://github.com/facebook/create-react-app/issues/517#issuecomment-417943099
 function setupTests() {
 	return gulp.src('src/tests.ts')
 	.pipe(replace(/\/\/ test-placeholder/, (match) => {
+		// find all the tests
+		const tests = glob.sync("app/**/*.spec.ts", {
+			cwd: "./src"
+		});
 		let newString = '';
 
-		function readDirectory(directory) {
-	    fs.readdirSync(directory).forEach((file) => {
-	      const fullPath = path.resolve(directory, file);
-				const regularExpression = /\.spec\.ts$/;
-
-	      if (fs.statSync(fullPath).isDirectory()) {
-	        readDirectory(fullPath);
-	      }
-
-	      if (!regularExpression.test(fullPath)) return;
-
-				let hugIndex = fullPath.indexOf('app');
-				let newPath = './' + fullPath.substring(hugIndex);
-	      newString += `import "${newPath}";
-				`;
-	    });
-	  }
-
-		readDirectory(path.resolve(__dirname, 'src'));
+		// add each import to the tests file
+		tests.forEach(testPath => {
+			let newPath = './' + testPath;
+			newString += `import "${newPath}";
+			`;
+		})
 
 			return newString;
 		}))
@@ -463,3 +453,4 @@ exports.serve = serve;
 exports.scriptsDist = scriptsDist;
 exports.watch = watch;
 exports.e2eServe = e2eServe;
+exports.setupTests = setupTests;

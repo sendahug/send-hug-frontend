@@ -28,6 +28,7 @@
     "browser-sync": "^2.26.13",
     "browserify": "^17.0.0",
     "browserify-istanbul": "^3.0.1",
+    "glob": "^7.1.6",
     "gulp": "^4.0.2",
     "gulp-babel": "^8.0.0",
     "gulp-postcss": "^9.0.0",

@@ -75,7 +75,7 @@
     "@fortawesome/free-solid-svg-icons": "^5.15.1",
     "auth0-js": "^9.14.0",
     "compression": "^1.7.4",
-    "core-js": "^3.8.1",
+    "core-js": "^3.8.2",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "idb": "^5.0.8",

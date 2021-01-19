@@ -374,7 +374,7 @@ export class MockSWManager {
   addItem(store: 'posts' | 'messages' | 'users' | 'threads', item: any) {
     return this.currentDB?.then((db) => {
       // start a new transaction
-      let dbStore = db.transaction(store).store;
+      let dbStore = db.transaction(store, 'readwrite').store;
       dbStore.put(item);
     });
   }

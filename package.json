@@ -46,7 +46,7 @@
     "karma-jasmine": "^4.0.1",
     "karma-jasmine-html-reporter": "^1.5.4",
     "karma-sourcemap-loader": "^0.3.8",
-    "karma-viewport": "^1.0.7",
+    "karma-viewport": "^1.0.8",
     "postcss": "^8.2.4",
     "protractor": "^7.0.0",
     "puppeteer": "^6.0.0",

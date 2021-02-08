@@ -15,7 +15,7 @@ const fs = require("fs");
 const path = require("path");
 var through = require('through');
 const execFile = require('child_process').execFile;
-const webdriverUpdate = require('webdriver-manager/built/lib/cmds/update');
+const webdriverUpdate = require('protractor/node_modules/webdriver-manager/built/lib/cmds/update');
 var Server = require('karma').Server;
 var glob = require("glob");
 let bs;

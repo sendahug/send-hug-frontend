@@ -72,7 +72,7 @@
     "@fortawesome/fontawesome-common-types": "^0.2.34",
     "@fortawesome/fontawesome-svg-core": "^1.2.34",
     "@fortawesome/free-brands-svg-icons": "^5.15.2",
-    "@fortawesome/free-regular-svg-icons": "^5.15.2",
+    "@fortawesome/free-regular-svg-icons": "^5.15.3",
     "@fortawesome/free-solid-svg-icons": "^5.15.2",
     "auth0-js": "^9.14.3",
     "compression": "^1.7.4",

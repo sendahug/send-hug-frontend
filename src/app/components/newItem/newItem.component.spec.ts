@@ -170,12 +170,11 @@ describe('NewItem', () => {
         userId: 4,
         user: 'name',
         text: postText,
-        date: new Date(),
         givenHugs: 0
       };
       expect(newPostSpy).toHaveBeenCalled();
       expect(newPostServiceSpy).toHaveBeenCalled();
-      expect(newPostServiceSpy).toHaveBeenCalledWith(newPost);
+      expect(newPostServiceSpy).toHaveBeenCalledWith(jasmine.objectContaining(newPost));
       done();
     });
 
@@ -370,12 +369,11 @@ describe('NewItem', () => {
         },
         fromId: 4,
         forId: 2,
-        messageText: messageText,
-        date: new Date()
+        messageText: messageText
       };
       expect(newMessageSpy).toHaveBeenCalled();
       expect(newMessServiceSpy).toHaveBeenCalled();
-      expect(newMessServiceSpy).toHaveBeenCalledWith(newMessage);
+      expect(newMessServiceSpy).toHaveBeenCalledWith(jasmine.objectContaining(newMessage));
       done();
     });
 

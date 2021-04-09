@@ -194,7 +194,6 @@ describe('AdminDashboard', () => {
       const setBlockSpy = spyOn(adminDashboard, 'setBlock').and.callThrough();
       const adminService = adminDashboard.adminService;
       const blockServiceSpy = spyOn(adminService, 'blockUser').and.callThrough();
-      const releaseDate = new Date((new Date()).getTime() + 864E5 * 1);
       adminDashboard.screen = 'reports';
 
       fixture.detectChanges();
@@ -202,6 +201,7 @@ describe('AdminDashboard', () => {
       // trigger a click
       const userTable = adminDashboardDOM.querySelectorAll('.tableContainer')[0];
       userTable.querySelectorAll('.adminButton')[0].click();
+      const releaseDate = new Date((new Date()).getTime() + 864E5 * 1);
       fixture.detectChanges();
 
       // check expectations
@@ -387,7 +387,6 @@ describe('AdminDashboard', () => {
       const setBlockSpy = spyOn(adminDashboard, 'setBlock').and.callThrough();
       const adminService = adminDashboard.adminService;
       const blockServiceSpy = spyOn(adminService, 'blockUser').and.callThrough();
-      const releaseDate = new Date((new Date()).getTime() + 864E5 * 1);
       adminDashboard.screen = 'blocks';
 
       fixture.detectChanges();
@@ -396,6 +395,7 @@ describe('AdminDashboard', () => {
       adminDashboardDOM.querySelector('#blockID').value = 5;
       adminDashboardDOM.querySelector('#blockLength').value = 'oneDay';
       adminDashboardDOM.querySelectorAll('.sendData')[0].click();
+      const releaseDate = new Date((new Date()).getTime() + 864E5 * 1);
       fixture.detectChanges();
 
       // check expectations

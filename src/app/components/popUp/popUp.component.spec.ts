@@ -1292,19 +1292,18 @@ describe('Popup', () => {
       popUpDOM.querySelectorAll('.reportButton')[0].click();
       fixture.detectChanges();
 
-      const report:Report = {
+      const report:any = {
         type: 'Post',
         userID: 2,
         postID: 1,
         reporter: 4,
         reportReason: 'The post is Inappropriate',
-        date: new Date(),
         dismissed: false,
         closed: false
       }
       expect(reportSpy).toHaveBeenCalled();
       expect(reportServiceSpy).toHaveBeenCalled();
-      expect(reportServiceSpy).toHaveBeenCalledWith(report);
+      expect(reportServiceSpy).toHaveBeenCalledWith(jasmine.objectContaining(report));
       done();
     });
   });
@@ -1525,18 +1524,17 @@ describe('Popup', () => {
       popUpDOM.querySelectorAll('.reportButton')[0].click();
       fixture.detectChanges();
 
-      const report:Report = {
+      const report = {
         type: 'User',
         userID: 3,
         reporter: 4,
         reportReason: 'The user is posting Spam',
-        date: new Date(),
         dismissed: false,
         closed: false
       }
       expect(reportSpy).toHaveBeenCalled();
       expect(reportServiceSpy).toHaveBeenCalled();
-      expect(reportServiceSpy).toHaveBeenCalledWith(report);
+      expect(reportServiceSpy).toHaveBeenCalledWith(jasmine.objectContaining(report));
       done();
     });
   });

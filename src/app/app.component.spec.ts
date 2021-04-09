@@ -29,14 +29,7 @@
   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
   SOFTWARE.
 */
-
-import 'zone.js/dist/zone';
-import "zone.js/dist/proxy";
-import "zone.js/dist/sync-test";
-import "zone.js/dist/jasmine-patch";
-import "zone.js/dist/async-test";
-import "zone.js/dist/fake-async-test";
-import { TestBed, fakeAsync, tick } from "@angular/core/testing";
+import { TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from '@angular/router/testing';
 import {} from 'jasmine';
 import { APP_BASE_HREF } from '@angular/common';
@@ -177,7 +170,7 @@ describe("AppComponent", () => {
     });
 
     // Check that clicking 'search' triggers the ItemsService
-    it('should pass search query to the ItemsService when clicking search', fakeAsync(() => {
+    it('should pass search query to the ItemsService when clicking search', (done: DoneFn) => {
       const fixture = TestBed.createComponent(AppComponent);
       fixture.detectChanges();
       const component = fixture.componentInstance;
@@ -189,7 +182,7 @@ describe("AppComponent", () => {
       // open search panel and run search
       componentHtml.querySelector('#searchBtn').click();
       fixture.detectChanges();
-      tick();
+      // tick();
       componentHtml.querySelector('#searchQuery').value = 'search';
       componentHtml.querySelectorAll('.sendData')[0].click();
 
@@ -197,10 +190,11 @@ describe("AppComponent", () => {
       expect(searchSpy).toHaveBeenCalled();
       expect(searchServiceSpy).toHaveBeenCalled();
       expect(searchServiceSpy).toHaveBeenCalledWith('search');
-    }));
+      done();
+    });
 
     // Check that an empty search query isn't allowed
-    it('should prevent empty searches', fakeAsync(() => {
+    it('should prevent empty searches', (done: DoneFn) => {
       const fixture = TestBed.createComponent(AppComponent);
       fixture.detectChanges();
       const component = fixture.componentInstance;
@@ -211,7 +205,7 @@ describe("AppComponent", () => {
       // open search panel and run search
       componentHtml.querySelector('#searchBtn').click();
       fixture.detectChanges();
-      tick();
+
       componentHtml.querySelector('#searchQuery').value = '';
       componentHtml.querySelectorAll('.sendData')[0].click();
 
@@ -219,7 +213,8 @@ describe("AppComponent", () => {
       expect(searchSpy).toHaveBeenCalled();
       expect(searchServiceSpy).not.toHaveBeenCalled();
       expect(componentHtml.querySelectorAll('.alertMessage')[0]).toBeTruthy();
-    }));
+      done();
+    });
 
     // Check that the font size panel is hidden
     it('should have a hidden font size panel', () => {
@@ -279,7 +274,7 @@ describe("AppComponent", () => {
     });
 
     // Check that the font size panel changes the site's font size
-    it('has a font size that changes according to user choice', fakeAsync(() => {
+    it('has a font size that changes according to user choice', (done: DoneFn) => {
       const fixture = TestBed.createComponent(AppComponent);
       fixture.detectChanges();
       const component = fixture.componentInstance;
@@ -290,7 +285,7 @@ describe("AppComponent", () => {
       // open the text panel
       fontButton.click();
       fixture.detectChanges();
-      tick();
+
       const fontPanelButtons = componentHtml.querySelector('#textPanel').querySelectorAll('.appButton');
 
       // wrap tests in a promise to make sure they run fully and by the order
@@ -299,7 +294,6 @@ describe("AppComponent", () => {
         // change the font size to the smallest
         fontPanelButtons[0]!.click();
         fixture.detectChanges();
-        tick();
 
         // check the font size was changed
         expect(document.getElementsByTagName('html')[0]!.style.fontSize).toBe('75%');
@@ -310,7 +304,6 @@ describe("AppComponent", () => {
         // change the font size to the smaller
         fontPanelButtons[1]!.click();
         fixture.detectChanges();
-        tick();
 
         // check the font size was changed
         expect(document.getElementsByTagName('html')[0]!.style.fontSize).toBe('87.5%');
@@ -321,7 +314,6 @@ describe("AppComponent", () => {
         // change the font size to the normal
         fontPanelButtons[2]!.click();
         fixture.detectChanges();
-        tick();
 
         // check the font size was changed
         expect(document.getElementsByTagName('html')[0]!.style.fontSize).toBe('100%');
@@ -332,7 +324,6 @@ describe("AppComponent", () => {
         // change the font size to the larger
         fontPanelButtons[3]!.click();
         fixture.detectChanges();
-        tick();
 
         // check the font size was changed
         expect(document.getElementsByTagName('html')[0]!.style.fontSize).toBe('150%');
@@ -343,14 +334,14 @@ describe("AppComponent", () => {
         // change the font size to the largest
         fontPanelButtons[4]!.click();
         fixture.detectChanges();
-        tick();
 
         // check the font size was changed
         expect(document.getElementsByTagName('html')[0]!.style.fontSize).toBe('200%');
         expect(menuSpy).toHaveBeenCalled();
         expect(menuSpy).toHaveBeenCalledTimes(5);
       });
-    }));
+      done();
+    });
 
     // check the menu is shown if the screen is wide enough
     it('should show the menu if the screen is wide enough', () => {
@@ -379,13 +370,12 @@ describe("AppComponent", () => {
     });
 
     // check the menu is shown when clicking the menu button
-    it('should show the menu when the menu button is clicked', fakeAsync(() => {
+    it('should show the menu when the menu button is clicked', (done: DoneFn) => {
       const fixture = TestBed.createComponent(AppComponent);
       viewport.set(500);
       const component = fixture.componentInstance;
       const componentHtml = fixture.nativeElement;
       fixture.detectChanges();
-      tick();
 
       // pre-click check
       expect(component.showMenu).toBeFalse();
@@ -395,22 +385,21 @@ describe("AppComponent", () => {
       // trigger click
       componentHtml.querySelector('#menuBtn').click();
       fixture.detectChanges();
-      tick();
 
       // post-click check
       expect(component.showMenu).toBeTrue();
       expect(componentHtml.querySelector('#navLinks')!.classList).not.toContain('hidden');
       expect(componentHtml.querySelector('#menuBtn')!.classList).not.toContain('hidden');
-    }));
+      done();
+    });
 
     // check the menu is hidden when clicked again
-    it('should hide the menu when the menu button is clicked again', fakeAsync(() => {
+    it('should hide the menu when the menu button is clicked again', (done: DoneFn) => {
       const fixture = TestBed.createComponent(AppComponent);
       viewport.set(500);
       const component = fixture.componentInstance;
       const componentHtml = fixture.nativeElement;
       fixture.detectChanges();
-      tick();
 
       // pre-click check
       expect(component.showMenu).toBeFalse();
@@ -420,7 +409,6 @@ describe("AppComponent", () => {
       // trigger click
       componentHtml.querySelector('#menuBtn').click();
       fixture.detectChanges();
-      tick();
 
       // post-click check
       expect(component.showMenu).toBeTrue();
@@ -430,13 +418,13 @@ describe("AppComponent", () => {
       // trigger another click
       componentHtml.querySelector('#menuBtn').click();
       fixture.detectChanges();
-      tick();
 
       // post-click check
       expect(component.showMenu).toBeFalse();
       expect(componentHtml.querySelector('#navLinks')!.classList).toContain('hidden');
       expect(componentHtml.querySelector('#menuBtn')!.classList).not.toContain('hidden');
-    }));
+      done();
+    });
 
     // should hide the nav menu if it gets too long
     it('should hide nav menu if it gets too long', () => {
@@ -506,7 +494,7 @@ describe("AppComponent", () => {
     });
 
     // check the share method is called when the button is clicked
-    it('should call the share method when the button is clicked', fakeAsync(() => {
+    it('should call the share method when the button is clicked', (done: DoneFn) => {
       const fixture = TestBed.createComponent(AppComponent);
       fixture.detectChanges();
       const component = fixture.componentInstance;
@@ -518,8 +506,8 @@ describe("AppComponent", () => {
 
       componentHtml.querySelector('#siteFooter').querySelectorAll('.textlessButton')[0].click();
       fixture.detectChanges();
-      tick();
 
       expect(shareSpy).toHaveBeenCalled();
-    }));
+      done();
+    });
 });

@@ -30,13 +30,7 @@
   SOFTWARE.
 */
 
-import 'zone.js/dist/zone';
-import "zone.js/dist/proxy";
-import "zone.js/dist/sync-test";
-import "zone.js/dist/jasmine-patch";
-import "zone.js/dist/async-test";
-import "zone.js/dist/fake-async-test";
-import { TestBed, tick, fakeAsync } from "@angular/core/testing";
+import { TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from '@angular/router/testing';
 import {} from 'jasmine';
 import { APP_BASE_HREF } from '@angular/common';
@@ -133,7 +127,7 @@ describe('NewItem', () => {
     });
 
     // Check that the type of new item is determined by the parameter type
-    it('has a type determined by the type parameter - post', fakeAsync(() => {
+    it('has a type determined by the type parameter - post', (done: DoneFn) => {
       TestBed.createComponent(AppComponent);
       const paramMap = TestBed.inject(ActivatedRoute);
       paramMap.url = of([{path: 'Post'} as UrlSegment]);
@@ -143,16 +137,16 @@ describe('NewItem', () => {
       newItem['authService'].login();
 
       fixture.detectChanges();
-      tick();
 
       expect(newItem.itemType).toBe('Post');
       expect(newItemDOM.querySelector('#newPost')).toBeTruthy();
       expect(newItemDOM.querySelector('#newMessage')).toBeNull();
       expect(newItemDOM.querySelectorAll('.formElement')[0].querySelectorAll('.pageData')[0].textContent).toBe('name');
-    }));
+      done();
+    });
 
     // Check that it triggers the posts service when creating a new post
-    it('triggers the posts service when creating a new post', fakeAsync(() => {
+    it('triggers the posts service when creating a new post', (done: DoneFn) => {
       TestBed.createComponent(AppComponent);
       const paramMap = TestBed.inject(ActivatedRoute);
       paramMap.url = of([{path: 'Post'} as UrlSegment]);
@@ -165,14 +159,12 @@ describe('NewItem', () => {
       newItem['authService'].login();
 
       fixture.detectChanges();
-      tick();
 
       // fill in post's text and trigger a click
       const postText = 'new post';
       newItemDOM.querySelector('#postText').value = postText;
       newItemDOM.querySelectorAll('.sendData')[0].click();
       fixture.detectChanges();
-      tick();
 
       const newPost = {
         userId: 4,
@@ -184,10 +176,11 @@ describe('NewItem', () => {
       expect(newPostSpy).toHaveBeenCalled();
       expect(newPostServiceSpy).toHaveBeenCalled();
       expect(newPostServiceSpy).toHaveBeenCalledWith(newPost);
-    }));
+      done();
+    });
 
     // Check that an empty post triggers an alert
-    it('should prevent empty posts', fakeAsync(() => {
+    it('should prevent empty posts', (done: DoneFn) => {
       TestBed.createComponent(AppComponent);
       const paramMap = TestBed.inject(ActivatedRoute);
       paramMap.url = of([{path: 'Post'} as UrlSegment]);
@@ -202,28 +195,26 @@ describe('NewItem', () => {
       newItem['authService'].login();
 
       fixture.detectChanges();
-      tick();
 
       // fill in post's text and trigger a click
       const postText = '';
       newItemDOM.querySelector('#postText').value = postText;
       newItemDOM.querySelectorAll('.sendData')[0].click();
       fixture.detectChanges();
-      tick();
 
       expect(newPostSpy).toHaveBeenCalled();
       expect(alertSpy).toHaveBeenCalled();
       expect(newPostServiceSpy).not.toHaveBeenCalled();
 
       fixture.detectChanges();
-      tick();
 
       expect(newItemDOM.querySelectorAll('.alertMessage')[0]).toBeTruthy();
       expect(newItemDOM.querySelectorAll('.alertMessage')[0].querySelectorAll('.alertText')[0].textContent).toBe('A post cannot be empty. Please fill the field and try again.');
-    }));
+      done();
+    });
 
     // Check that a user can't post if they're blocked
-    it('should prevent blocked users from posting', fakeAsync(() => {
+    it('should prevent blocked users from posting', (done: DoneFn) => {
       TestBed.createComponent(AppComponent);
       const paramMap = TestBed.inject(ActivatedRoute);
       paramMap.url = of([{path: 'Post'} as UrlSegment]);
@@ -235,16 +226,16 @@ describe('NewItem', () => {
       newItem['authService'].userData.releaseDate = new Date((new Date()).getTime() + 864E5 * 7);
 
       fixture.detectChanges();
-      tick();
 
       const alert = `You are currently blocked until ${newItem['authService'].userData.releaseDate}. You cannot post new posts.`;
       expect(newItemDOM.querySelectorAll('.newItem')[0]).toBeUndefined();
       expect(newItemDOM.querySelectorAll('.errorMessage')[0]).toBeTruthy();
       expect(newItemDOM.querySelectorAll('.errorMessage')[0].textContent).toContain(alert);
-    }));
+      done();
+    });
 
     // Check that a user can't post if they're logged out
-    it('should prevent logged out users from posting', fakeAsync(() => {
+    it('should prevent logged out users from posting', (done: DoneFn) => {
       TestBed.createComponent(AppComponent);
       const paramMap = TestBed.inject(ActivatedRoute);
       paramMap.url = of([{path: 'Post'} as UrlSegment]);
@@ -259,24 +250,22 @@ describe('NewItem', () => {
       newItem['authService'].authenticated = false;
 
       fixture.detectChanges();
-      tick();
 
       // fill in post's text and trigger a click
       const postText = 'textfield';
       newItemDOM.querySelector('#postText').value = postText;
       newItemDOM.querySelectorAll('.sendData')[0].click();
       fixture.detectChanges();
-      tick();
 
       expect(newPostSpy).toHaveBeenCalled();
       expect(alertSpy).toHaveBeenCalled();
       expect(newPostServiceSpy).not.toHaveBeenCalled();
 
       fixture.detectChanges();
-      tick();
 
       expect(newItemDOM.querySelectorAll('.alertMessage')[0]).toBeTruthy();
-    }));
+      done();
+    });
   });
 
   // NEW MESSAGE
@@ -311,7 +300,7 @@ describe('NewItem', () => {
     });
 
     // Check that the type of new item is determined by the parameter type
-    it('has a type determined by the type parameter - message', fakeAsync(() => {
+    it('has a type determined by the type parameter - message', (done: DoneFn) => {
       TestBed.createComponent(AppComponent);
       const paramMap = TestBed.inject(ActivatedRoute);
       paramMap.url = of([{path: 'Message'} as UrlSegment]);
@@ -332,7 +321,6 @@ describe('NewItem', () => {
       newItem['authService'].login();
 
       fixture.detectChanges();
-      tick();
 
       expect(queryParamsSpy).toHaveBeenCalled();
       expect(newItem.itemType).toBe('Message');
@@ -341,10 +329,11 @@ describe('NewItem', () => {
       expect(newItemDOM.querySelector('#newPost')).toBeNull();
       expect(newItemDOM.querySelector('#newMessage')).toBeTruthy();
       expect(newItemDOM.querySelector('#messageFor').value).toBe('hello');
-    }));
+      done();
+    });
 
     // Check that it triggers the items service when creating a new message
-    it('triggers the items service when creating a new message', fakeAsync(() => {
+    it('triggers the items service when creating a new message', (done: DoneFn) => {
       TestBed.createComponent(AppComponent);
       const paramMap = TestBed.inject(ActivatedRoute);
       paramMap.url = of([{path: 'Message'} as UrlSegment]);
@@ -368,14 +357,12 @@ describe('NewItem', () => {
       newItem['authService'].login();
 
       fixture.detectChanges();
-      tick();
 
       // fill in message's text and trigger a click
       const messageText = 'hello';
       newItemDOM.querySelector('#messageText').value = messageText;
       newItemDOM.querySelectorAll('.sendData')[0].click();
       fixture.detectChanges();
-      tick();
 
       const newMessage = {
         from: {
@@ -389,10 +376,11 @@ describe('NewItem', () => {
       expect(newMessageSpy).toHaveBeenCalled();
       expect(newMessServiceSpy).toHaveBeenCalled();
       expect(newMessServiceSpy).toHaveBeenCalledWith(newMessage);
-    }));
+      done();
+    });
 
     // Check that an empty message triggers an alert
-    it('should prevent empty messages', fakeAsync(() => {
+    it('should prevent empty messages', (done: DoneFn) => {
       TestBed.createComponent(AppComponent);
       const paramMap = TestBed.inject(ActivatedRoute);
       paramMap.url = of([{path: 'Message'} as UrlSegment]);
@@ -418,24 +406,23 @@ describe('NewItem', () => {
       newItem['authService'].login();
 
       fixture.detectChanges();
-      tick();
 
       // fill in message's text and trigger a click
       const messageText = '';
       newItemDOM.querySelector('#messageText').value = messageText;
       newItemDOM.querySelectorAll('.sendData')[0].click();
       fixture.detectChanges();
-      tick();
 
       expect(newMessageSpy).toHaveBeenCalled();
       expect(alertSpy).toHaveBeenCalled();
       expect(newMessServiceSpy).not.toHaveBeenCalled();
       expect(newItemDOM.querySelectorAll('.alertMessage')[0]).toBeTruthy();
       expect(newItemDOM.querySelectorAll('.alertMessage')[0].querySelectorAll('.alertText')[0].textContent).toBe('A message cannot be empty. Please fill the field and try again.');
-    }));
+      done();
+    });
 
     // Check that a user can't send a message if they're logged out
-    it('should prevent logged out users from messaging', fakeAsync(() => {
+    it('should prevent logged out users from messaging', (done: DoneFn) => {
       TestBed.createComponent(AppComponent);
       const paramMap = TestBed.inject(ActivatedRoute);
       paramMap.url = of([{path: 'Message'} as UrlSegment]);
@@ -461,23 +448,22 @@ describe('NewItem', () => {
       newItem['authService'].authenticated = false;
 
       fixture.detectChanges();
-      tick();
 
       // fill in message's text and trigger a click
       const messageText = 'text';
       newItemDOM.querySelector('#messageText').value = messageText;
       newItemDOM.querySelectorAll('.sendData')[0].click();
       fixture.detectChanges();
-      tick();
 
       expect(newMessageSpy).toHaveBeenCalled();
       expect(alertSpy).toHaveBeenCalled();
       expect(newMessServiceSpy).not.toHaveBeenCalled();
       expect(newItemDOM.querySelectorAll('.alertMessage')[0]).toBeTruthy();
-    }));
+      done();
+    });
 
     // Check that an error is thrown if there's no user ID and user data
-    it('should throw an error if there\'s no user ID and user', fakeAsync(() => {
+    it('should throw an error if there\'s no user ID and user', (done: DoneFn) => {
       TestBed.createComponent(AppComponent);
       const paramMap = TestBed.inject(ActivatedRoute);
       paramMap.url = of([{path: 'Message'} as UrlSegment]);
@@ -490,15 +476,15 @@ describe('NewItem', () => {
       newItem['authService'].login();
 
       fixture.detectChanges();
-      tick();
 
       expect(newItemDOM.querySelectorAll('.newItem')[0]).toBeUndefined();
       expect(newItemDOM.querySelectorAll('.errorMessage')[0]).toBeTruthy();
       expect(newItemDOM.querySelectorAll('.errorMessage')[0].textContent).toContain('User ID and display name are required for sending a message');
-    }));
+      done();
+    });
 
     // Check that a user can't message themselves
-    it('should prevent users messaging themselves', fakeAsync(() => {
+    it('should prevent users messaging themselves', (done: DoneFn) => {
       TestBed.createComponent(AppComponent);
       const paramMap = TestBed.inject(ActivatedRoute);
       paramMap.url = of([{path: 'Message'} as UrlSegment]);
@@ -524,20 +510,19 @@ describe('NewItem', () => {
       newItem['authService'].login();
 
       fixture.detectChanges();
-      tick();
 
       // fill in message's text and trigger a click
       const messageText = 'text';
       newItemDOM.querySelector('#messageText').value = messageText;
       newItemDOM.querySelectorAll('.sendData')[0].click();
       fixture.detectChanges();
-      tick();
 
       expect(newMessageSpy).toHaveBeenCalled();
       expect(alertSpy).toHaveBeenCalled();
       expect(newMessServiceSpy).not.toHaveBeenCalled();
       expect(newItemDOM.querySelectorAll('.alertMessage')[0]).toBeTruthy();
       expect(newItemDOM.querySelectorAll('.alertMessage')[0].querySelectorAll('.alertText')[0].textContent).toBe('You can\'t send a message to yourself!');
-    }));
+      done();
+    });
   });
 });

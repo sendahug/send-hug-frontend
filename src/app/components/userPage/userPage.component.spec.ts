@@ -30,13 +30,7 @@
   SOFTWARE.
 */
 
-import 'zone.js/dist/zone';
-import "zone.js/dist/proxy";
-import "zone.js/dist/sync-test";
-import "zone.js/dist/jasmine-patch";
-import "zone.js/dist/async-test";
-import "zone.js/dist/fake-async-test";
-import { TestBed, tick, fakeAsync } from "@angular/core/testing";
+import { TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from '@angular/router/testing';
 import {} from 'jasmine';
 import { APP_BASE_HREF } from '@angular/common';
@@ -117,13 +111,12 @@ describe('UserPage', () => {
   });
 
   // Check that when there's no ID the component defaults to the logged in user
-  it('should show the logged in user if not provided with ID', fakeAsync(() => {
+  it('should show the logged in user if not provided with ID', (done: DoneFn) => {
     const fixture = TestBed.createComponent(UserPage);
     const userPage = fixture.componentInstance;
     const userPageDOM = fixture.nativeElement;
 
     fixture.detectChanges();
-    tick();
 
     const userData = userPage.authService.userData;
     expect(userPage.userId).toBeUndefined();
@@ -134,10 +127,11 @@ describe('UserPage', () => {
     expect(userPageDOM.querySelector('#gHugsElement').querySelectorAll('.pageData')[0].textContent).toBe(String(userData.givenHugs));
     expect(userPageDOM.querySelector('#postsElement').querySelectorAll('.pageData')[0].textContent).toBe(String(userData.postsNum));
     expect(userPageDOM.querySelector('#logout')).toBeTruthy();
-  }));
+    done();
+  });
 
   // Check that when the ID is the user's ID, it shows the user's own page
-  it('should show the logged in user if it\'s the user\'s own ID', fakeAsync(() => {
+  it('should show the logged in user if it\'s the user\'s own ID', (done: DoneFn) => {
     const paramMap = TestBed.inject(ActivatedRoute);
     const routeSpy = spyOn(paramMap.snapshot.paramMap, 'get').and.returnValue('4');
     const fixture = TestBed.createComponent(UserPage);
@@ -145,7 +139,6 @@ describe('UserPage', () => {
     const userPageDOM = fixture.nativeElement;
 
     fixture.detectChanges();
-    tick();
 
     const userData = userPage.authService.userData;
     expect(routeSpy).toHaveBeenCalled();
@@ -158,10 +151,11 @@ describe('UserPage', () => {
     expect(userPageDOM.querySelector('#postsElement').querySelectorAll('.pageData')[0].textContent).toBe(String(userData.postsNum));
     expect(userPageDOM.querySelector('#logout')).toBeTruthy();
     expect(userPageDOM.querySelectorAll('.reportButton')[0]).toBeUndefined();
-  }));
+    done();
+  });
 
   // Check that when the ID is another user's ID, it shows their page
-  it('should show another user\'s page if that was the provided ID', fakeAsync(() => {
+  it('should show another user\'s page if that was the provided ID', (done: DoneFn) => {
     const paramMap = TestBed.inject(ActivatedRoute);
     const routeSpy = spyOn(paramMap.snapshot.paramMap, 'get').and.returnValue('1');
     const fixture = TestBed.createComponent(UserPage);
@@ -169,7 +163,6 @@ describe('UserPage', () => {
     const userPageDOM = fixture.nativeElement;
 
     fixture.detectChanges();
-    tick();
 
     const userData = userPage.itemsService.otherUserData;
     expect(routeSpy).toHaveBeenCalled();
@@ -182,10 +175,11 @@ describe('UserPage', () => {
     expect(userPageDOM.querySelector('#postsElement').querySelectorAll('.pageData')[0].textContent).toBe(String(userData.postsNum));
     expect(userPageDOM.querySelector('#logout')).toBeNull();
     expect(userPageDOM.querySelectorAll('.reportButton')[0]).toBeTruthy();
-  }));
+    done();
+  });
 
   // Check that the 'please login page' is shown if the user's logged out
-  it('should show login page if user is not authenticated', fakeAsync(() => {
+  it('should show login page if user is not authenticated', (done: DoneFn) => {
     const paramMap = TestBed.inject(ActivatedRoute);
     spyOn(paramMap.snapshot.paramMap, 'get').and.returnValue('4');
     const fixture = TestBed.createComponent(UserPage);
@@ -194,15 +188,15 @@ describe('UserPage', () => {
     userPage.authService.authenticated = false;
 
     fixture.detectChanges();
-    tick();
 
     expect(userPage.itemsService.isOtherUser).toBeFalse();
     expect(userPageDOM.querySelector('#profileContainer')).toBeNull();
     expect(userPageDOM.querySelector('#loginBox')).toBeTruthy();
-  }));
+    done();
+  });
 
   // Check that the login button triggers the AuthService's login method
-  it('should trigger the AuthService upon clicking login', fakeAsync(() => {
+  it('should trigger the AuthService upon clicking login', (done: DoneFn) => {
     const paramMap = TestBed.inject(ActivatedRoute);
     spyOn(paramMap.snapshot.paramMap, 'get').and.returnValue('4');
     const fixture = TestBed.createComponent(UserPage);
@@ -213,7 +207,6 @@ describe('UserPage', () => {
     userPage.authService.authenticated = false;
 
     fixture.detectChanges();
-    tick();
 
     // check that the user isn't logged in before the click
     expect(userPage.authService.authenticated).toBeFalse();
@@ -222,15 +215,15 @@ describe('UserPage', () => {
     // trigger click on the login button
     userPageDOM.querySelector('#logIn').click();
     fixture.detectChanges();
-    tick();
 
     // check the login methods were called
     expect(loginSpy).toHaveBeenCalled();
     expect(serviceLoginSpy).toHaveBeenCalled();
-  }));
+    done();
+  });
 
   // Check that the logout button triggers the AuthService's logout method
-  it('should trigger the AuthService upon clicking logout', fakeAsync(() => {
+  it('should trigger the AuthService upon clicking logout', (done: DoneFn) => {
     const paramMap = TestBed.inject(ActivatedRoute);
     spyOn(paramMap.snapshot.paramMap, 'get').and.returnValue('4');
     const fixture = TestBed.createComponent(UserPage);
@@ -240,7 +233,6 @@ describe('UserPage', () => {
     const serviceLogoutSpy = spyOn(userPage.authService, 'logout').and.callThrough();
 
     fixture.detectChanges();
-    tick();
 
     // check the user is logged in
     expect(userPage.authService.authenticated).toBeTrue();
@@ -249,15 +241,15 @@ describe('UserPage', () => {
     // trigger click on the logout button
     userPageDOM.querySelector('#logout').click();
     fixture.detectChanges();
-    tick();
 
     // check the logout methods were called
     expect(logoutSpy).toHaveBeenCalled();
     expect(serviceLogoutSpy).toHaveBeenCalled();
-  }));
+    done();
+  });
 
   // Check that the popup is triggered on edit
-  it('should open the popup upon editing', fakeAsync(() => {
+  it('should open the popup upon editing', (done: DoneFn) => {
     const paramMap = TestBed.inject(ActivatedRoute);
     spyOn(paramMap.snapshot.paramMap, 'get').and.returnValue('4');
     const fixture = TestBed.createComponent(UserPage);
@@ -265,7 +257,6 @@ describe('UserPage', () => {
     const userPageDOM = fixture.nativeElement;
 
     fixture.detectChanges();
-    tick();
 
     // before the click
     expect(userPage.editMode).toBeFalse();
@@ -273,17 +264,17 @@ describe('UserPage', () => {
     // trigger click
     userPageDOM.querySelector('#editName').click();
     fixture.detectChanges();
-    tick();
 
     // after the click
     expect(userPage.editMode).toBeTrue();
     expect(userPage.editType).toBe('user');
     expect(userPage.report).toBeFalse();
     expect(userPageDOM.querySelector('app-pop-up')).toBeTruthy();
-  }));
+    done();
+  });
 
   //Check that the popup is opened when clicking 'report'
-  it('should open the popup upon reporting', fakeAsync(() => {
+  it('should open the popup upon reporting', (done: DoneFn) => {
     const paramMap = TestBed.inject(ActivatedRoute);
     spyOn(paramMap.snapshot.paramMap, 'get').and.returnValue('1');
     const fixture = TestBed.createComponent(UserPage);
@@ -291,7 +282,6 @@ describe('UserPage', () => {
     const userPageDOM = fixture.nativeElement;
 
     fixture.detectChanges();
-    tick();
 
     // before the click
     expect(userPage.editMode).toBeFalse();
@@ -300,17 +290,17 @@ describe('UserPage', () => {
     // trigger click
     userPageDOM.querySelectorAll('.reportButton')[0].click();
     fixture.detectChanges();
-    tick();
 
     // after the click
     expect(userPage.editMode).toBeTrue();
     expect(userPage.editType).toBeUndefined();
     expect(userPage.report).toBeTrue();
     expect(userPageDOM.querySelector('app-pop-up')).toBeTruthy();
-  }));
+    done();
+  });
 
   // Check that sending a hug triggers the items service
-  it('should trigger items service on hug', fakeAsync(() => {
+  it('should trigger items service on hug', (done: DoneFn) => {
     const paramMap = TestBed.inject(ActivatedRoute);
     spyOn(paramMap.snapshot.paramMap, 'get').and.returnValue('1');
     const fixture = TestBed.createComponent(UserPage);
@@ -322,7 +312,6 @@ describe('UserPage', () => {
     userPage.itemsService['authService'].login();
 
     fixture.detectChanges();
-    tick();
 
     // before the click
     expect(hugSpy).not.toHaveBeenCalled();
@@ -335,7 +324,6 @@ describe('UserPage', () => {
     // simulate click
     userPageDOM.querySelectorAll('.hugButton')[0].click();
     fixture.detectChanges();
-    tick();
 
     // after the click
     expect(hugSpy).toHaveBeenCalled();
@@ -344,10 +332,11 @@ describe('UserPage', () => {
     expect(userPage.itemsService['authService'].userData.givenHugs).toBe(3);
     expect(userPage.itemsService.otherUserData.receivedHugs).toBe(4);
     expect(userPageDOM.querySelector('#rHugsElement').querySelectorAll('.pageData')[0].textContent).toBe('4');
-  }));
+    done();
+  });
 
   // Check the popup exits when 'false' is emitted
-  it('should change mode when the event emitter emits false', fakeAsync(() => {
+  it('should change mode when the event emitter emits false', (done: DoneFn) => {
     const paramMap = TestBed.inject(ActivatedRoute);
     spyOn(paramMap.snapshot.paramMap, 'get').and.returnValue('1');
     const fixture = TestBed.createComponent(UserPage);
@@ -356,7 +345,6 @@ describe('UserPage', () => {
     userPage.itemsService['authService'].login();
 
     fixture.detectChanges();
-    tick();
 
     // start the popup
     userPage.lastFocusedElement = document.querySelectorAll('a')[0];
@@ -365,17 +353,16 @@ describe('UserPage', () => {
     userPage.editType = 'user';
     userPage.report = false;
     fixture.detectChanges();
-    tick();
 
     // exit the popup
     const popup = fixture.debugElement.query(By.css('app-pop-up')).componentInstance as PopUp;
     popup.exitEdit();
     fixture.detectChanges();
-    tick();
 
     // check the popup is exited
     expect(changeSpy).toHaveBeenCalled();
     expect(userPage.editMode).toBeFalse();
     expect(document.activeElement).toBe(document.querySelectorAll('a')[0]);
-  }))
+    done();
+  })
 });

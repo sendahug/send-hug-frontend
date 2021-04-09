@@ -30,13 +30,7 @@
   SOFTWARE.
 */
 
-import 'zone.js/dist/zone';
-import "zone.js/dist/proxy";
-import "zone.js/dist/sync-test";
-import "zone.js/dist/jasmine-patch";
-import "zone.js/dist/async-test";
-import "zone.js/dist/fake-async-test";
-import { TestBed, tick, fakeAsync } from "@angular/core/testing";
+import { TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from '@angular/router/testing';
 import {} from 'jasmine';
 import { APP_BASE_HREF } from '@angular/common';
@@ -185,20 +179,20 @@ describe('MyPosts', () => {
   });
 
   // Check that the component gets the user ID correctly
-  it('should get the correct user ID', fakeAsync(() => {
+  it('should get the correct user ID', (done: DoneFn) => {
     const upFixture = TestBed.createComponent(MockUserPage);
     const userPage = upFixture.componentInstance;
     userPage.userId = 1;
     upFixture.detectChanges();
-    tick();
     const myPosts = upFixture.debugElement.children[0].children[0].componentInstance;
 
     expect(myPosts.userID).toBe(1);
     expect(myPosts.user).toBe('other');
-  }));
+    done();
+  });
 
   // Check that the popup gets the correct user's posts
-  it('should get the correct user\'s posts', fakeAsync(() => {
+  it('should get the correct user\'s posts', (done: DoneFn) => {
     const paramMap = TestBed.inject(ActivatedRoute);
     let pathSpy = spyOn(paramMap.snapshot.paramMap, 'get').and.returnValue('1');
     let itemsService = TestBed.inject(ItemsService) as ItemsService;
@@ -206,12 +200,10 @@ describe('MyPosts', () => {
     itemsService['authService'].login();
     let fixture = TestBed.createComponent(MockUserPage);
     fixture.detectChanges();
-    tick();
     let myPosts = fixture.debugElement.children[0].children[0].componentInstance;
     let myPostsDOM = fixture.debugElement.children[0].children[0].nativeElement;
 
     fixture.detectChanges();
-    tick();
 
     // expectations for another user
     expect(getPostsSpy).toHaveBeenCalled();
@@ -252,22 +244,21 @@ describe('MyPosts', () => {
     itemsService['authService'].login();
     fixture = TestBed.createComponent(MockUserPage);
     fixture.detectChanges();
-    tick();
     myPosts = fixture.debugElement.children[0].children[0].componentInstance;
     myPostsDOM = fixture.debugElement.children[0].children[0].nativeElement;
 
     fixture.detectChanges();
-    tick();
 
     // expectations for the logged in user
     expect(getPostsSpy).toHaveBeenCalledWith(4, 1);
     expect(myPosts.itemsService.userPosts.other.length).toBe(0);
     expect(myPosts.itemsService.userPosts.self.length).toBe(2);
     expect(myPostsDOM.querySelectorAll('.itemList')[0].children.length).toBe(2);
-  }));
+    done();
+  });
 
   // Check that the popup is opened when clicking 'edit'
-  it('should open the popup upon editing', fakeAsync(() => {
+  it('should open the popup upon editing', (done: DoneFn) => {
     const paramMap = TestBed.inject(ActivatedRoute);
     spyOn(paramMap.snapshot.paramMap, 'get').and.returnValue('4');
     const itemsService = TestBed.inject(ItemsService) as ItemsService;
@@ -275,12 +266,10 @@ describe('MyPosts', () => {
     itemsService['authService'].login();
     let fixture = TestBed.createComponent(MockUserPage);
     fixture.detectChanges();
-    tick();
     let myPosts = fixture.debugElement.children[0].children[0].componentInstance;
     let myPostsDOM = fixture.debugElement.children[0].children[0].nativeElement;
     const editSpy = spyOn(myPosts, 'editPost').and.callThrough();
     fixture.detectChanges();
-    tick();
 
     // before the click
     expect(getSpy).toHaveBeenCalled();
@@ -291,7 +280,6 @@ describe('MyPosts', () => {
     expect(editSpy).not.toHaveBeenCalled();
 
     fixture.detectChanges();
-    tick();
 
     expect(myPosts.itemsService.userPosts.self.length).toBe(2)
     expect(myPostsDOM.querySelectorAll('.userPost')[0]).toBeTruthy();
@@ -299,29 +287,27 @@ describe('MyPosts', () => {
     // trigger click
     myPostsDOM.querySelectorAll('.editButton')[0].click();
     fixture.detectChanges();
-    tick();
 
     // after the click
     expect(myPosts.editMode).toBeTrue();
     expect(myPosts.editType).toBe('post');
     expect(myPostsDOM.querySelector('app-pop-up')).toBeTruthy();
-  }));
+    done();
+  });
 
   // Check that the popup is opened when clicking 'delete'
-  it('should open the popup upon deleting', fakeAsync(() => {
+  it('should open the popup upon deleting', (done: DoneFn) => {
     const paramMap = TestBed.inject(ActivatedRoute);
     spyOn(paramMap.snapshot.paramMap, 'get').and.returnValue('4');
     const itemsService = TestBed.inject(ItemsService) as ItemsService;
     itemsService['authService'].login();
     let fixture = TestBed.createComponent(MockUserPage);
     fixture.detectChanges();
-    tick();
     let myPosts = fixture.debugElement.children[0].children[0].componentInstance;
     let myPostsDOM = fixture.debugElement.children[0].children[0].nativeElement;
     const deleteSpy = spyOn(myPosts, 'deletePost').and.callThrough();
 
     fixture.detectChanges();
-    tick();
 
     // before the click
     expect(myPosts.editMode).toBeFalse();
@@ -331,7 +317,6 @@ describe('MyPosts', () => {
     // trigger click
     myPostsDOM.querySelectorAll('.deleteButton')[0].click();
     fixture.detectChanges();
-    tick();
 
     // after the click
     expect(myPosts.editMode).toBeTrue();
@@ -339,23 +324,22 @@ describe('MyPosts', () => {
     expect(myPosts.toDelete).toBe('Post');
     expect(myPosts.itemToDelete).toBe(7);
     expect(myPostsDOM.querySelector('app-pop-up')).toBeTruthy();
-  }));
+    done();
+  });
 
   // Check that the popup is opened when clicking 'delete all'
-  it('should open the popup upon deleting all', fakeAsync(() => {
+  it('should open the popup upon deleting all', (done: DoneFn) => {
     const paramMap = TestBed.inject(ActivatedRoute);
     spyOn(paramMap.snapshot.paramMap, 'get').and.returnValue('4');
     const itemsService = TestBed.inject(ItemsService) as ItemsService;
     itemsService['authService'].login();
     let fixture = TestBed.createComponent(MockUserPage);
     fixture.detectChanges();
-    tick();
     let myPosts = fixture.debugElement.children[0].children[0].componentInstance;
     let myPostsDOM = fixture.debugElement.children[0].children[0].nativeElement;
     const deleteSpy = spyOn(myPosts, 'deleteAllPosts').and.callThrough();
 
     fixture.detectChanges();
-    tick();
 
     // before the click
     expect(myPosts.editMode).toBeFalse();
@@ -365,7 +349,6 @@ describe('MyPosts', () => {
     // trigger click
     myPostsDOM.querySelector('#deleteAll').click();
     fixture.detectChanges();
-    tick();
 
     // after the click
     expect(myPosts.editMode).toBeTrue();
@@ -373,23 +356,22 @@ describe('MyPosts', () => {
     expect(myPosts.toDelete).toBe('All posts');
     expect(myPosts.itemToDelete).toBe(myPosts.authService.userData.id);
     expect(myPostsDOM.querySelector('app-pop-up')).toBeTruthy();
-  }));
+    done();
+  });
 
   // Check that the popup is opened when clicking 'report'
-  it('should open the popup upon reporting', fakeAsync(() => {
+  it('should open the popup upon reporting', (done: DoneFn) => {
     const paramMap = TestBed.inject(ActivatedRoute);
     spyOn(paramMap.snapshot.paramMap, 'get').and.returnValue('1');
     const itemsService = TestBed.inject(ItemsService) as ItemsService;
     itemsService['authService'].login();
     let fixture = TestBed.createComponent(MockUserPage);
     fixture.detectChanges();
-    tick();
     let myPosts = fixture.debugElement.children[0].children[0].componentInstance;
     let myPostsDOM = fixture.debugElement.children[0].children[0].nativeElement;
     const reportSpy = spyOn(myPosts, 'reportPost').and.callThrough();
 
     fixture.detectChanges();
-    tick();
 
     // before the click
     expect(myPosts.editMode).toBeFalse();
@@ -399,7 +381,6 @@ describe('MyPosts', () => {
     // trigger click
     myPostsDOM.querySelectorAll('.reportButton')[0].click();
     fixture.detectChanges();
-    tick();
 
     // after the click
     expect(myPosts.editMode).toBeTrue();
@@ -407,24 +388,23 @@ describe('MyPosts', () => {
     expect(myPosts.report).toBeTrue();
     expect(myPosts.reportType).toBe('Post');
     expect(myPostsDOM.querySelector('app-pop-up')).toBeTruthy();
-  }));
+    done();
+  });
 
   // Check that sending a hug triggers the posts service
-  it('should trigger posts service on hug', fakeAsync(() => {
+  it('should trigger posts service on hug', (done: DoneFn) => {
     const paramMap = TestBed.inject(ActivatedRoute);
     spyOn(paramMap.snapshot.paramMap, 'get').and.returnValue('1');
     const itemsService = TestBed.inject(ItemsService) as ItemsService;
     itemsService['authService'].login();
     let fixture = TestBed.createComponent(MockUserPage);
     fixture.detectChanges();
-    tick();
     let myPosts = fixture.debugElement.children[0].children[0].componentInstance;
     let myPostsDOM = fixture.debugElement.children[0].children[0].nativeElement;
     const hugSpy = spyOn(myPosts, 'sendHug').and.callThrough();
     const hugServiceSpy = spyOn(myPosts['postsService'], 'sendHug').and.callThrough();
 
     fixture.detectChanges();
-    tick();
 
     //  before the click
     expect(myPosts.itemsService.userPosts.other[0].givenHugs).toBe(1);
@@ -434,7 +414,6 @@ describe('MyPosts', () => {
     // simulate click
     myPostsDOM.querySelectorAll('.hugButton')[0].click();
     fixture.detectChanges();
-    tick();
 
     // after the click
     expect(hugSpy).toHaveBeenCalled();
@@ -442,10 +421,11 @@ describe('MyPosts', () => {
     expect(hugServiceSpy).toHaveBeenCalled();
     expect(myPosts.itemsService.userPosts.other[0].givenHugs).toBe(2);
     expect(myPostsDOM.querySelectorAll('.badge')[0].textContent).toBe('2');
-  }));
+    done();
+  });
 
   // Check that a different page gets different results
-  it('changes page (with its associated posts) when clicked', fakeAsync(() => {
+  it('changes page (with its associated posts) when clicked', (done: DoneFn) => {
     // create the component
     const paramMap = TestBed.inject(ActivatedRoute);
     spyOn(paramMap.snapshot.paramMap, 'get').and.returnValue('1');
@@ -454,7 +434,6 @@ describe('MyPosts', () => {
     itemsService['authService'].login();
     let fixture = TestBed.createComponent(MockUserPage);
     fixture.detectChanges();
-    tick();
     let myPosts = fixture.debugElement.children[0].children[0].componentInstance;
     let myPostsDOM = fixture.debugElement.children[0].children[0].nativeElement;
     const nextPageSpy = spyOn(myPosts, 'nextPage').and.callThrough();
@@ -474,7 +453,6 @@ describe('MyPosts', () => {
     // change the page
     myPostsDOM.querySelectorAll('.nextButton')[0].click();
     fixture.detectChanges();
-    tick();
 
     // expectations for page 2
     expect(nextPageSpy).toHaveBeenCalled();
@@ -486,7 +464,6 @@ describe('MyPosts', () => {
     // change the page
     myPostsDOM.querySelectorAll('.prevButton')[0].click();
     fixture.detectChanges();
-    tick();
 
     // expectations for page 1 (again)
     expect(prevPageSpy).toHaveBeenCalled();
@@ -494,10 +471,11 @@ describe('MyPosts', () => {
     expect(getPostsSpy).toHaveBeenCalledTimes(4);
     expect(myPosts.itemsService.userPostsPage.other).toBe(1);
     expect(myPostsDOM.querySelectorAll('.itemList')[0].children.length).toBe(5);
-  }));
+    done();
+  });
 
   // Check the popup exits when 'false' is emitted
-  it('should change mode when the event emitter emits false', fakeAsync(() => {
+  it('should change mode when the event emitter emits false', (done: DoneFn) => {
     // create the component
     const paramMap = TestBed.inject(ActivatedRoute);
     spyOn(paramMap.snapshot.paramMap, 'get').and.returnValue('1');
@@ -505,12 +483,10 @@ describe('MyPosts', () => {
     itemsService['authService'].login();
     let fixture = TestBed.createComponent(MockUserPage);
     fixture.detectChanges();
-    tick();
     let myPosts = fixture.debugElement.children[0].children[0].componentInstance;
     const changeSpy = spyOn(myPosts, 'changeMode').and.callThrough();
 
     fixture.detectChanges();
-    tick();
 
     // start the popup
     myPosts.lastFocusedElement = document.querySelectorAll('a')[0];
@@ -519,17 +495,16 @@ describe('MyPosts', () => {
     myPosts.toDelete = 'Post';
     myPosts.itemToDelete = 2;
     fixture.detectChanges();
-    tick();
 
     // exit the popup
     const popup = fixture.debugElement.children[0].children[0].query(By.css('app-pop-up')).componentInstance as PopUp;
     popup.exitEdit();
     fixture.detectChanges();
-    tick();
 
     // check the popup is exited
     expect(changeSpy).toHaveBeenCalled();
     expect(myPosts.editMode).toBeFalse();
     expect(document.activeElement).toBe(document.querySelectorAll('a')[0]);
-  }))
+    done();
+  })
 });

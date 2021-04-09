@@ -30,13 +30,7 @@
   SOFTWARE.
 */
 
-import 'zone.js/dist/zone';
-import "zone.js/dist/proxy";
-import "zone.js/dist/sync-test";
-import "zone.js/dist/jasmine-patch";
-import "zone.js/dist/async-test";
-import "zone.js/dist/fake-async-test";
-import { TestBed, tick, fakeAsync } from "@angular/core/testing";
+import { TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from '@angular/router/testing';
 import {} from 'jasmine';
 import { APP_BASE_HREF } from '@angular/common';
@@ -129,7 +123,7 @@ describe('Post', () => {
   });
 
   // Check that sending a hug triggers the posts service
-  it('should trigger posts service on hug', fakeAsync(() => {
+  it('should trigger posts service on hug', (done: DoneFn) => {
     const upFixture = TestBed.createComponent(MockPage);
     const pageDOM = upFixture.nativeElement;
     upFixture.detectChanges();
@@ -142,7 +136,6 @@ describe('Post', () => {
     (myPosts.authService as AuthService).login();
 
     upFixture.detectChanges();
-    tick();
 
     //  before the click
     const newItems = pageDOM.querySelector('#newItemsList');
@@ -154,7 +147,6 @@ describe('Post', () => {
     // simulate click
     myPostsDOM.querySelectorAll('.hugButton')[0].click();
     upFixture.detectChanges();
-    tick();
 
     // after the click
     expect(spy).toHaveBeenCalled();
@@ -163,10 +155,11 @@ describe('Post', () => {
     expect(myPosts.postsService.newItemsArray[0].givenHugs).toBe(1);
     expect(newItems.querySelectorAll('.badge')[0].textContent).toBe('1');
     expect(disableButton).toHaveBeenCalled();
-  }));
+    done();
+  });
 
   // Check that the popup is opened when clicking 'edit'
-  it('should open the popup upon editing', fakeAsync(() => {
+  it('should open the popup upon editing', (done: DoneFn) => {
     const upFixture = TestBed.createComponent(MockPage);
     const pageDOM = upFixture.nativeElement;
     upFixture.detectChanges();
@@ -176,7 +169,6 @@ describe('Post', () => {
 
     const authSpy = spyOn(authService, 'canUser').and.returnValue(true);
     upFixture.detectChanges();
-    tick();
 
     // before the click
     expect(myPosts.editMode).toBeFalse();
@@ -186,16 +178,16 @@ describe('Post', () => {
     const newItems = pageDOM.querySelector('#newItemsList');
     newItems.querySelectorAll('.editButton')[0].click();
     upFixture.detectChanges();
-    tick();
 
     // after the click
     expect(myPosts.editMode).toBeTrue();
     expect(myPosts.editType).toBe('post');
     expect(myPostsDOM.querySelector('app-pop-up')).toBeTruthy();
-  }));
+    done();
+  });
 
   // Check that the popup is opened when clicking 'delete'
-  it('should open the popup upon deleting', fakeAsync(() => {
+  it('should open the popup upon deleting', (done: DoneFn) => {
     const upFixture = TestBed.createComponent(MockPage);
     const pageDOM = upFixture.nativeElement;
     upFixture.detectChanges();
@@ -205,7 +197,6 @@ describe('Post', () => {
 
     const authSpy = spyOn(authService, 'canUser').and.returnValue(true);
     upFixture.detectChanges();
-    tick();
 
     // before the click
     expect(myPosts.editMode).toBeFalse();
@@ -215,7 +206,6 @@ describe('Post', () => {
     const newItems = pageDOM.querySelector('#newItemsList');
     newItems.querySelectorAll('.deleteButton')[0].click();
     upFixture.detectChanges();
-    tick();
 
     // after the click
     expect(myPosts.editMode).toBeTrue();
@@ -223,10 +213,11 @@ describe('Post', () => {
     expect(myPosts.toDelete).toBe('Post');
     expect(myPosts.itemToDelete).toBe(1);
     expect(myPostsDOM.querySelector('app-pop-up')).toBeTruthy();
-  }));
+    done();
+  });
 
   // Check that the popup is opened when clicking 'report'
-  it('should open the popup upon reporting', fakeAsync(() => {
+  it('should open the popup upon reporting', (done: DoneFn) => {
     const upFixture = TestBed.createComponent(MockPage);
     const pageDOM = upFixture.nativeElement;
     upFixture.detectChanges();
@@ -237,7 +228,6 @@ describe('Post', () => {
     const authSpy = spyOn(authService, 'canUser').and.returnValue(true);
     const reportSpy = spyOn(myPosts, 'reportPost').and.callThrough();
     upFixture.detectChanges();
-    tick();
 
     // before the click
     expect(myPosts.editMode).toBeFalse();
@@ -253,7 +243,6 @@ describe('Post', () => {
     const newItems = pageDOM.querySelector('#newItemsList');
     newItems.querySelectorAll('.reportButton')[0].click();
     upFixture.detectChanges();
-    tick();
 
     // after the click
     expect(myPosts.editMode).toBeTrue();
@@ -264,17 +253,17 @@ describe('Post', () => {
     expect(myPosts.reportType).toBe('Post');
     expect(reportSpy).toHaveBeenCalled();
     expect(myPostsDOM.querySelector('app-pop-up')).toBeTruthy();
-  }));
+    done();
+  });
 
   // Check the popup exits when 'false' is emitted
-  it('should change mode when the event emitter emits false', fakeAsync(() => {
+  it('should change mode when the event emitter emits false', (done: DoneFn) => {
     const upFixture = TestBed.createComponent(MockPage);
     upFixture.detectChanges();
     const myPosts = upFixture.debugElement.children[0].children[0].componentInstance;
     const changeSpy = spyOn(myPosts, 'changeMode').and.callThrough();
 
     upFixture.detectChanges();
-    tick();
 
     // start the popup
     myPosts.lastFocusedElement = document.querySelectorAll('a')[0];
@@ -284,17 +273,16 @@ describe('Post', () => {
     myPosts.itemToDelete = 1;
     myPosts.report = false;
     upFixture.detectChanges();
-    tick();
 
     // exit the popup
     const popup = upFixture.debugElement.query(By.css('app-pop-up')).componentInstance as PopUp;
     popup.exitEdit();
     upFixture.detectChanges();
-    tick();
 
     // check the popup is exited
     expect(changeSpy).toHaveBeenCalled();
     expect(myPosts.editMode).toBeFalse();
     expect(document.activeElement).toBe(document.querySelectorAll('a')[0]);
-  }));
+    done();
+  });
 });

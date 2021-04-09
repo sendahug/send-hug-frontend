@@ -30,13 +30,7 @@
   SOFTWARE.
 */
 
-import 'zone.js/dist/zone';
-import "zone.js/dist/proxy";
-import "zone.js/dist/sync-test";
-import "zone.js/dist/jasmine-patch";
-import "zone.js/dist/async-test";
-import "zone.js/dist/fake-async-test";
-import { TestBed, tick, fakeAsync } from "@angular/core/testing";
+import { TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from '@angular/router/testing';
 import {} from 'jasmine';
 import { APP_BASE_HREF } from '@angular/common';
@@ -104,7 +98,7 @@ describe('Popup', () => {
   });
 
   // check tab and tab+shift let the user navigate
-  it('should navigate using tab and shift+tab', fakeAsync(() => {
+  it('should navigate using tab and shift+tab', (done: DoneFn) => {
     TestBed.createComponent(AppComponent);
     const fixture = TestBed.createComponent(PopUp);
     const popUp = fixture.componentInstance;
@@ -119,7 +113,6 @@ describe('Popup', () => {
       postID: 2
     };
     fixture.detectChanges();
-    tick();
 
     // spies
     const spies = [
@@ -156,7 +149,6 @@ describe('Popup', () => {
         'shiftKey': false
       }));
       fixture.detectChanges();
-      tick();
 
       // check the focus shifted to the next element
       expect(focusBindedSpy).toHaveBeenCalled();
@@ -181,7 +173,6 @@ describe('Popup', () => {
         'shiftKey': true
       }));
       fixture.detectChanges();
-      tick();
 
       // check the focus shifted to the previous element
       expect(focusBindedSpy).toHaveBeenCalled();
@@ -200,10 +191,11 @@ describe('Popup', () => {
         }
       });
     })
-  }));
+    done();
+  });
 
   // check the focus is trapped
-  it('should trap focus in the modal', fakeAsync(() => {
+  it('should trap focus in the modal', (done: DoneFn) => {
     TestBed.createComponent(AppComponent);
     const fixture = TestBed.createComponent(PopUp);
     const popUp = fixture.componentInstance;
@@ -218,7 +210,6 @@ describe('Popup', () => {
       postID: 2
     };
     fixture.detectChanges();
-    tick();
 
     // spies
     const spies = [
@@ -256,7 +247,6 @@ describe('Popup', () => {
         'shiftKey': false
       }));
       fixture.detectChanges();
-      tick();
 
       // check the focus shifted to the first element
       expect(focusBindedSpy).toHaveBeenCalled();
@@ -277,7 +267,6 @@ describe('Popup', () => {
         'shiftKey': true
       }));
       fixture.detectChanges();
-      tick();
 
       // check the focus shifted to the last element
       expect(focusBindedSpy).toHaveBeenCalled();
@@ -296,10 +285,11 @@ describe('Popup', () => {
         }
       });
     })
-  }));
+    done();
+  });
 
   // Check that the event emitter emits false if the user clicks 'exit'
-  it('exits the popup if the user decides not to edit', fakeAsync(() => {
+  it('exits the popup if the user decides not to edit', (done: DoneFn) => {
     TestBed.createComponent(AppComponent);
     const fixture = TestBed.createComponent(PopUp);
     const popUp = fixture.componentInstance;
@@ -322,13 +312,13 @@ describe('Popup', () => {
     // click the exit button
     popUpDOM.querySelector('#exitButton').click();
     fixture.detectChanges();
-    tick();
 
     popUp.editMode.subscribe((event:boolean) => {
       expect(event).toBeFalse();
     });
     expect(exitSpy).toHaveBeenCalled();
-  }));
+    done();
+  });
 
   // POST EDIT
   // ==================================================================
@@ -389,7 +379,7 @@ describe('Popup', () => {
     });
 
     // Check that upon confirming a requset is made to the PostsService
-    it('makes a request to change the post text upon submitting', fakeAsync(() => {
+    it('makes a request to change the post text upon submitting', (done: DoneFn) => {
       TestBed.createComponent(AppComponent);
       const fixture = TestBed.createComponent(PopUp);
       const popUp = fixture.componentInstance;
@@ -410,21 +400,20 @@ describe('Popup', () => {
       const updateServiceSpy = spyOn(popUp['postsService'], 'editPost').and.callThrough();
 
       fixture.detectChanges();
-      tick();
 
       // change the post's text
       popUpDOM.querySelector('#postText').value = 'hello there';
       popUpDOM.querySelectorAll('.sendData')[0].click();
       fixture.detectChanges();
-      tick();
 
       // check the request is made
       expect(updateSpy).toHaveBeenCalled();
       expect(updateServiceSpy).toHaveBeenCalled();
-    }));
+      done();
+    });
 
     // Check that saving the edited post is prevented if the post is empty
-    it('prevents empty posts', fakeAsync(() => {
+    it('prevents empty posts', (done: DoneFn) => {
       TestBed.createComponent(AppComponent);
       const fixture = TestBed.createComponent(PopUp);
       const popUp = fixture.componentInstance;
@@ -445,19 +434,18 @@ describe('Popup', () => {
       const updateServiceSpy = spyOn(popUp['postsService'], 'editPost').and.callThrough();
 
       fixture.detectChanges();
-      tick();
 
       // change the post's text
       popUpDOM.querySelector('#postText').value = '';
       popUpDOM.querySelectorAll('.sendData')[0].click();
       fixture.detectChanges();
-      tick();
 
       expect(updateSpy).toHaveBeenCalled();
       expect(popUpDOM.querySelectorAll('.alertMessage')[0]).toBeTruthy();
       expect(popUpDOM.querySelector('#postText').classList).toContain('missing');
       expect(updateServiceSpy).not.toHaveBeenCalled();
-    }));
+      done();
+    });
   });
 
   // POST EDIT - ADMIN PAGE
@@ -514,7 +502,7 @@ describe('Popup', () => {
     });
 
     // Check that a request is made to the AdminService upon clicking 'update'
-    it('makes a request to change the post text upon submitting', fakeAsync(() => {
+    it('makes a request to change the post text upon submitting', (done: DoneFn) => {
       TestBed.createComponent(AppComponent);
       const fixture = TestBed.createComponent(PopUp);
       const popUp = fixture.componentInstance;
@@ -535,15 +523,15 @@ describe('Popup', () => {
       // change the post's text
       popUpDOM.querySelectorAll('.sendData')[0].click();
       fixture.detectChanges();
-      tick();
 
       // check the request is made
       expect(updateSpy).toHaveBeenCalled();
       expect(updateServiceSpy).toHaveBeenCalled();
-    }));
+      done();
+    });
 
     //
-    it('makes a request to close the report if that\'s what the user chose', fakeAsync(() => {
+    it('makes a request to close the report if that\'s what the user chose', (done: DoneFn) => {
       TestBed.createComponent(AppComponent);
       const fixture = TestBed.createComponent(PopUp);
       const popUp = fixture.componentInstance;
@@ -560,13 +548,11 @@ describe('Popup', () => {
       const updateServiceSpy = spyOn(popUp['adminService'], 'editPost').and.callThrough();
 
       fixture.detectChanges();
-      tick();
 
       // change the post's text
       popUpDOM.querySelector('#adPostText').value = 'hi there';
       popUpDOM.querySelectorAll('.sendData')[0].click();
       fixture.detectChanges();
-      tick();
 
       // check that the closeReport boolean is true
       let post:any = {
@@ -582,7 +568,6 @@ describe('Popup', () => {
       popUpDOM.querySelector('#adPostText').value = 'hi there';
       popUpDOM.querySelectorAll('.sendData')[1].click();
       fixture.detectChanges();
-      tick();
 
       // check that the closeReport boolean is false
       post = {
@@ -592,10 +577,11 @@ describe('Popup', () => {
       expect(updateSpy).toHaveBeenCalled();
       expect(updateServiceSpy).toHaveBeenCalled();
       expect(updateServiceSpy).toHaveBeenCalledWith(post, false, 1);
-    }));
+      done();
+    });
 
     // Check that saving the edited post is prevented if the post is empty
-    it('prevents empty posts', fakeAsync(() => {
+    it('prevents empty posts', (done: DoneFn) => {
       TestBed.createComponent(AppComponent);
       const fixture = TestBed.createComponent(PopUp);
       const popUp = fixture.componentInstance;
@@ -612,19 +598,18 @@ describe('Popup', () => {
       const updateServiceSpy = spyOn(popUp['adminService'], 'editPost').and.callThrough();
 
       fixture.detectChanges();
-      tick();
 
       // change the post's text
       popUpDOM.querySelector('#adPostText').value = '';
       popUpDOM.querySelectorAll('.sendData')[0].click();
       fixture.detectChanges();
-      tick();
 
       expect(updateSpy).toHaveBeenCalled();
       expect(popUpDOM.querySelectorAll('.alertMessage')[0]).toBeTruthy();
       expect(popUpDOM.querySelector('#adPostText').classList).toContain('missing');
       expect(updateServiceSpy).not.toHaveBeenCalled();
-    }));
+      done();
+    });
   });
 
   // DISPLAY NAME EDIT
@@ -688,7 +673,7 @@ describe('Popup', () => {
 
     // Check that once the user click's the 'update' button, a request is made to change
     // the user's display name
-    it('makes a request to change the display name upon submitting', fakeAsync(() => {
+    it('makes a request to change the display name upon submitting', (done: DoneFn) => {
       TestBed.createComponent(AppComponent);
       TestBed.inject(AuthService).login();
       const fixture = TestBed.createComponent(PopUp);
@@ -710,22 +695,21 @@ describe('Popup', () => {
       const updateServiceSpy = spyOn(popUp.authService, 'updateUserData').and.callThrough();
 
       fixture.detectChanges();
-      tick();
 
       // change the user's name
       popUpDOM.querySelector('#displayName').value = 'new name';
       popUpDOM.querySelectorAll('.updateItem')[0].click();
       fixture.detectChanges();
-      tick();
 
       // check the call is made
       expect(updateSpy).toHaveBeenCalled();
       expect(updateServiceSpy).toHaveBeenCalled();
       expect(popUp.authService.userData.displayName).toBe('new name');
-    }));
+      done();
+    });
 
     // Check that empty display names are prevented
-    it('prevents empty display names', fakeAsync(() => {
+    it('prevents empty display names', (done: DoneFn) => {
       TestBed.createComponent(AppComponent);
       TestBed.inject(AuthService).login();
       const fixture = TestBed.createComponent(PopUp);
@@ -747,19 +731,18 @@ describe('Popup', () => {
       const updateServiceSpy = spyOn(popUp.authService, 'updateUserData').and.callThrough();
 
       fixture.detectChanges();
-      tick();
 
       // change the user's name
       popUpDOM.querySelector('#displayName').value = '';
       popUpDOM.querySelectorAll('.updateItem')[0].click();
       fixture.detectChanges();
-      tick();
 
       expect(updateSpy).toHaveBeenCalled();
       expect(popUpDOM.querySelectorAll('.alertMessage')[0]).toBeTruthy();
       expect(popUpDOM.querySelector('#displayName').classList).toContain('missing');
       expect(updateServiceSpy).not.toHaveBeenCalled();
-    }));
+      done();
+    });
   });
 
   // DISPLAY NAME EDIT - ADMIN PAGE
@@ -819,7 +802,7 @@ describe('Popup', () => {
 
     // Check that a request is made to the admin service to update the user's
     // display name upon clicking 'update'
-    it('makes a request to change the display name upon submitting', fakeAsync(() => {
+    it('makes a request to change the display name upon submitting', (done: DoneFn) => {
       TestBed.createComponent(AppComponent);
       TestBed.inject(AuthService).login();
       const fixture = TestBed.createComponent(PopUp);
@@ -837,22 +820,21 @@ describe('Popup', () => {
       const updateServiceSpy = spyOn(popUp['adminService'], 'editUser').and.callThrough();
 
       fixture.detectChanges();
-      tick();
 
       // change the display name
       popUpDOM.querySelector('#uDisplayName').value = 'new name';
       popUpDOM.querySelectorAll('.updateItem')[0].click();
       fixture.detectChanges();
-      tick();
 
       // check the call was made
       expect(updateSpy).toHaveBeenCalled();
       expect(updateServiceSpy).toHaveBeenCalled();
-    }));
+      done();
+    });
 
     // Check that the closeReport boolean is adjusted depending on what the
     // user chose
-    it('makes a request to close the report if that\'s what the user chose', fakeAsync(() => {
+    it('makes a request to close the report if that\'s what the user chose', (done: DoneFn) => {
       TestBed.createComponent(AppComponent);
       TestBed.inject(AuthService).login();
       const fixture = TestBed.createComponent(PopUp);
@@ -870,13 +852,11 @@ describe('Popup', () => {
       const updateServiceSpy = spyOn(popUp['adminService'], 'editUser').and.callThrough();
 
       fixture.detectChanges();
-      tick();
 
       // change the display name
       popUpDOM.querySelector('#uDisplayName').value = 'new name';
       popUpDOM.querySelectorAll('.updateItem')[0].click();
       fixture.detectChanges();
-      tick();
 
       // check that the closeReport boolean is true
       let user:any = {
@@ -892,7 +872,6 @@ describe('Popup', () => {
       popUpDOM.querySelector('#uDisplayName').value = 'new name';
       popUpDOM.querySelectorAll('.updateItem')[1].click();
       fixture.detectChanges();
-      tick();
 
       // check that the closeReport boolean is false
       user = {
@@ -902,10 +881,11 @@ describe('Popup', () => {
       expect(updateSpy).toHaveBeenCalled();
       expect(updateServiceSpy).toHaveBeenCalled();
       expect(updateServiceSpy).toHaveBeenCalledWith(user, false, 3);
-    }));
+      done();
+    });
 
     // Check that empty display names are prevented
-    it('prevents empty display names', fakeAsync(() => {
+    it('prevents empty display names', (done: DoneFn) => {
       TestBed.createComponent(AppComponent);
       TestBed.inject(AuthService).login();
       const fixture = TestBed.createComponent(PopUp);
@@ -923,20 +903,19 @@ describe('Popup', () => {
       const updateServiceSpy = spyOn(popUp['adminService'], 'editUser').and.callThrough();
 
       fixture.detectChanges();
-      tick();
 
       // change the display name
       popUpDOM.querySelector('#uDisplayName').value = '';
       popUpDOM.querySelectorAll('.updateItem')[0].click();
       fixture.detectChanges();
-      tick();
 
       // check the empty display name isn't passed on and the user is alerted
       expect(updateSpy).toHaveBeenCalled();
       expect(popUpDOM.querySelectorAll('.alertMessage')[0]).toBeTruthy();
       expect(popUpDOM.querySelector('#uDisplayName').classList).toContain('missing');
       expect(updateServiceSpy).not.toHaveBeenCalled();
-    }));
+      done();
+    });
   });
 
   // DELETE
@@ -972,7 +951,7 @@ describe('Popup', () => {
     });
 
     // Check that a warning is shown before deleting an item
-    it('shows a warning when deleting something', fakeAsync(() => {
+    it('shows a warning when deleting something', (done: DoneFn) => {
       TestBed.createComponent(AppComponent);
       TestBed.inject(AuthService).login();
       const fixture = TestBed.createComponent(PopUp);
@@ -984,15 +963,15 @@ describe('Popup', () => {
       popUp.itemToDelete = 2;
 
       fixture.detectChanges();
-      tick();
 
       expect(popUpDOM.querySelector('#deleteItem')).toBeTruthy();
       expect(popUpDOM.querySelector('#deleteItem').querySelectorAll('.warning')[0]).toBeTruthy();
       expect(popUpDOM.querySelector('#deleteItem').querySelectorAll('.warning')[0].textContent).toContain('This action is irreversible!');
-    }));
+      done();
+    });
 
     // Check that the correct method is called depending on the item that's being deleted
-    it('calls the correct method upon confirmation', fakeAsync(() => {
+    it('calls the correct method upon confirmation', (done: DoneFn) => {
       TestBed.createComponent(AppComponent);
       TestBed.inject(AuthService).login();
       const fixture = TestBed.createComponent(PopUp);
@@ -1031,7 +1010,6 @@ describe('Popup', () => {
 
         popUpDOM.querySelectorAll('.popupDeleteBtn')[0].click();
         fixture.detectChanges();
-        tick();
 
         // check the other spies weren't called
         methodSpies.forEach((spy) => {
@@ -1044,11 +1022,12 @@ describe('Popup', () => {
           expect(spy).toHaveBeenCalledTimes(1);
         });
       });
-    }));
+      done();
+    });
 
     // Check that a request to close the report is made if the item is deleted from
     // the admin dashboard
-    it('makes a request to close the report if that\'s what the user chose - Admin delete', fakeAsync(() => {
+    it('makes a request to close the report if that\'s what the user chose - Admin delete', (done: DoneFn) => {
       TestBed.createComponent(AppComponent);
       TestBed.inject(AuthService).login();
       const fixture = TestBed.createComponent(PopUp);
@@ -1067,12 +1046,10 @@ describe('Popup', () => {
       popUp['adminService'].getOpenReports();
 
       fixture.detectChanges();
-      tick();
 
       // click 'delete and close report'
       popUpDOM.querySelectorAll('.popupDeleteBtn')[0].click();
       fixture.detectChanges();
-      tick();
 
       // check that the closeReport boolean is true
       const report = {
@@ -1087,17 +1064,17 @@ describe('Popup', () => {
       // click 'delete and close report'
       popUpDOM.querySelectorAll('.popupDeleteBtn')[1].click();
       fixture.detectChanges();
-      tick();
 
       // check that the closeReport boolean is false
       expect(deleteSpy).toHaveBeenCalled();
       expect(deleteSpy).toHaveBeenCalledWith(false);
       expect(deleteServiceSpy).toHaveBeenCalled();
       expect(deleteServiceSpy).toHaveBeenCalledWith(2, report, false);
-    }));
+      done();
+    });
 
     // Check that the popup is exited and the item isn't deleted if the user picks 'never mind'
-    it('should emit false and keep the item if the user chooses not to delete', fakeAsync(() => {
+    it('should emit false and keep the item if the user chooses not to delete', (done: DoneFn) => {
       TestBed.createComponent(AppComponent);
       TestBed.inject(AuthService).login();
       const fixture = TestBed.createComponent(PopUp);
@@ -1111,12 +1088,10 @@ describe('Popup', () => {
       const deleteSpy = spyOn(popUp, 'deleteItem').and.callThrough();
 
       fixture.detectChanges();
-      tick();
 
       // click the 'never mind button'
       popUpDOM.querySelectorAll('.popupDeleteBtn')[1].click();
       fixture.detectChanges();
-      tick();
 
       // check the exit method was called
       popUp.editMode.subscribe((event:boolean) => {
@@ -1124,7 +1099,8 @@ describe('Popup', () => {
       });
       expect(exitSpy).toHaveBeenCalled();
       expect(deleteSpy).not.toHaveBeenCalled();
-    }));
+      done();
+    });
   });
 
   // REPORT POST
@@ -1187,7 +1163,7 @@ describe('Popup', () => {
     });
 
     // Check that the correct radio button is set as selected
-    it('correctly identifies the chosen radio button', fakeAsync(() => {
+    it('correctly identifies the chosen radio button', (done: DoneFn) => {
       TestBed.createComponent(AppComponent);
       TestBed.inject(AuthService).login();
       const fixture = TestBed.createComponent(PopUp);
@@ -1208,12 +1184,10 @@ describe('Popup', () => {
       const selectSpy = spyOn(popUp, 'setSelected').and.callThrough();
 
       fixture.detectChanges();
-      tick();
 
       // select option 1
       popUpDOM.querySelector('#pRadioOption0').click();
       fixture.detectChanges();
-      tick();
 
       // check the first option was selected
       expect(selectSpy).toHaveBeenCalled();
@@ -1222,7 +1196,6 @@ describe('Popup', () => {
       // select option 2
       popUpDOM.querySelector('#pRadioOption1').click();
       fixture.detectChanges();
-      tick();
 
       // check the second option was selected
       expect(selectSpy).toHaveBeenCalled();
@@ -1231,7 +1204,6 @@ describe('Popup', () => {
       // select option 3
       popUpDOM.querySelector('#pRadioOption2').click();
       fixture.detectChanges();
-      tick();
 
       // check the third option was selected
       expect(selectSpy).toHaveBeenCalled();
@@ -1240,16 +1212,16 @@ describe('Popup', () => {
       // select option 4
       popUpDOM.querySelector('#pRadioOption3').click();
       fixture.detectChanges();
-      tick();
 
       // check the fourth option was selected
       expect(selectSpy).toHaveBeenCalled();
       expect(selectSpy).toHaveBeenCalledWith('3');
-    }));
+      done();
+    });
 
     // Check that if the user chooses 'other' as reason they can't submit an
     // empty reason
-    it('requires text if the chosen reason is other', fakeAsync(() => {
+    it('requires text if the chosen reason is other', (done: DoneFn) => {
       TestBed.createComponent(AppComponent);
       TestBed.inject(AuthService).login();
       const fixture = TestBed.createComponent(PopUp);
@@ -1271,12 +1243,10 @@ describe('Popup', () => {
       const reportSpy = spyOn(popUp, 'reportPost').and.callThrough();
       const reportServiceSpy = spyOn(popUp['itemsService'], 'sendReport').and.callThrough();
       fixture.detectChanges();
-      tick();
 
       // select option 4
       popUpDOM.querySelector('#pRadioOption3').click();
       fixture.detectChanges();
-      tick();
 
       // check the fourth option was selected
       expect(selectSpy).toHaveBeenCalled();
@@ -1285,17 +1255,17 @@ describe('Popup', () => {
       // try to submit it without text in the textfield
       popUpDOM.querySelectorAll('.reportButton')[0].click();
       fixture.detectChanges();
-      tick();
 
       // check the report wasn't sent and the user was alerted
       expect(reportSpy).toHaveBeenCalled();
       expect(popUpDOM.querySelectorAll('.alertMessage')[0]).toBeTruthy();
       expect(popUpDOM.querySelector('#rOption3Text').classList).toContain('missing');
       expect(reportServiceSpy).not.toHaveBeenCalled();
-    }));
+      done();
+    });
 
     // Check that the popup triggers creating a report via the Items Service
-    it('creates and sends a report to the itemsService', fakeAsync(() => {
+    it('creates and sends a report to the itemsService',(done: DoneFn) => {
       TestBed.createComponent(AppComponent);
       TestBed.inject(AuthService).login();
       const fixture = TestBed.createComponent(PopUp);
@@ -1316,13 +1286,11 @@ describe('Popup', () => {
       const reportSpy = spyOn(popUp, 'reportPost').and.callThrough();
       const reportServiceSpy = spyOn(popUp['itemsService'], 'sendReport').and.callThrough();
       fixture.detectChanges();
-      tick();
 
       // select report reason and hit report
       popUpDOM.querySelector('#pRadioOption0').click();
       popUpDOM.querySelectorAll('.reportButton')[0].click();
       fixture.detectChanges();
-      tick();
 
       const report:Report = {
         type: 'Post',
@@ -1337,7 +1305,8 @@ describe('Popup', () => {
       expect(reportSpy).toHaveBeenCalled();
       expect(reportServiceSpy).toHaveBeenCalled();
       expect(reportServiceSpy).toHaveBeenCalledWith(report);
-    }));
+      done();
+    });
   });
 
   // REPORT USER
@@ -1406,7 +1375,7 @@ describe('Popup', () => {
     });
 
     // Check that the correct radio button is set as selected
-    it('correctly identifies the chosen radio button', fakeAsync(() => {
+    it('correctly identifies the chosen radio button', (done: DoneFn) => {
       TestBed.createComponent(AppComponent);
       TestBed.inject(AuthService).login();
       const fixture = TestBed.createComponent(PopUp);
@@ -1433,12 +1402,10 @@ describe('Popup', () => {
       const selectSpy = spyOn(popUp, 'setSelected').and.callThrough();
 
       fixture.detectChanges();
-      tick();
 
       // select option 1
       popUpDOM.querySelector('#uRadioOption0').click();
       fixture.detectChanges();
-      tick();
 
       // check the first option was selected
       expect(selectSpy).toHaveBeenCalled();
@@ -1447,7 +1414,6 @@ describe('Popup', () => {
       // select option 2
       popUpDOM.querySelector('#uRadioOption1').click();
       fixture.detectChanges();
-      tick();
 
       // check the second option was selected
       expect(selectSpy).toHaveBeenCalled();
@@ -1456,7 +1422,6 @@ describe('Popup', () => {
       // select option 3
       popUpDOM.querySelector('#uRadioOption2').click();
       fixture.detectChanges();
-      tick();
 
       // check the third option was selected
       expect(selectSpy).toHaveBeenCalled();
@@ -1465,16 +1430,16 @@ describe('Popup', () => {
       // select option 4
       popUpDOM.querySelector('#uRadioOption3').click();
       fixture.detectChanges();
-      tick();
 
       // check the fourth option was selected
       expect(selectSpy).toHaveBeenCalled();
       expect(selectSpy).toHaveBeenCalledWith('3');
-    }));
+      done();
+    });
 
     // Check that if the user chooses 'other' as reason they can't submit an
     // empty reason
-    it('requires text if the chosen reason is other', fakeAsync(() => {
+    it('requires text if the chosen reason is other', (done: DoneFn) => {
       TestBed.createComponent(AppComponent);
       TestBed.inject(AuthService).login();
       const fixture = TestBed.createComponent(PopUp);
@@ -1502,12 +1467,10 @@ describe('Popup', () => {
       const reportSpy = spyOn(popUp, 'reportUser').and.callThrough();
       const reportServiceSpy = spyOn(popUp['itemsService'], 'sendReport').and.callThrough();
       fixture.detectChanges();
-      tick();
 
       // select option 4
       popUpDOM.querySelector('#uRadioOption3').click();
       fixture.detectChanges();
-      tick();
 
       // check the fourth option was selected
       expect(selectSpy).toHaveBeenCalled();
@@ -1516,17 +1479,17 @@ describe('Popup', () => {
       // try to submit it without text in the textfield
       popUpDOM.querySelectorAll('.reportButton')[0].click();
       fixture.detectChanges();
-      tick();
 
       // check the report wasn't sent and the user was alerted
       expect(reportSpy).toHaveBeenCalled();
       expect(popUpDOM.querySelectorAll('.alertMessage')[0]).toBeTruthy();
       expect(popUpDOM.querySelector('#uOption3Text').classList).toContain('missing');
       expect(reportServiceSpy).not.toHaveBeenCalled();
-    }));
+      done();
+    });
 
     // Check that the popup triggers creating a report via the Items Service
-    it('creates and sends a report to the itemsService', fakeAsync(() => {
+    it('creates and sends a report to the itemsService', (done: DoneFn) => {
       TestBed.createComponent(AppComponent);
       TestBed.inject(AuthService).login();
       const fixture = TestBed.createComponent(PopUp);
@@ -1553,7 +1516,6 @@ describe('Popup', () => {
       const reportSpy = spyOn(popUp, 'reportUser').and.callThrough();
       const reportServiceSpy = spyOn(popUp['itemsService'], 'sendReport').and.callThrough();
       fixture.detectChanges();
-      tick();
 
       expect(popUpDOM.querySelector('#uRadioOption0')).toBeTruthy();
       expect(popUpDOM.querySelectorAll('.reportButton')[0]).toBeTruthy();
@@ -1562,7 +1524,6 @@ describe('Popup', () => {
       popUpDOM.querySelector('#uRadioOption0').click();
       popUpDOM.querySelectorAll('.reportButton')[0].click();
       fixture.detectChanges();
-      tick();
 
       const report:Report = {
         type: 'User',
@@ -1576,6 +1537,7 @@ describe('Popup', () => {
       expect(reportSpy).toHaveBeenCalled();
       expect(reportServiceSpy).toHaveBeenCalled();
       expect(reportServiceSpy).toHaveBeenCalledWith(report);
-    }));
+      done();
+    });
   });
 });

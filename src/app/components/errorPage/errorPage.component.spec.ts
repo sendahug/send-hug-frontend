@@ -30,13 +30,7 @@
   SOFTWARE.
 */
 
-import 'zone.js/dist/zone';
-import "zone.js/dist/proxy";
-import "zone.js/dist/sync-test";
-import "zone.js/dist/jasmine-patch";
-import "zone.js/dist/async-test";
-import "zone.js/dist/fake-async-test";
-import { TestBed, tick, fakeAsync } from "@angular/core/testing";
+import { TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from '@angular/router/testing';
 import {} from 'jasmine';
 import { APP_BASE_HREF, Location } from '@angular/common';
@@ -89,7 +83,7 @@ describe('ErrorPage', () => {
   });
 
   // Check that the error page has the right error message
-  it('should have an error message', fakeAsync(() => {
+  it('should have an error message', (done: DoneFn) => {
     const fixture = TestBed.createComponent(ErrorPage);
     const errorPage = fixture.componentInstance;
     const errorPageDOM = fixture.nativeElement;
@@ -100,15 +94,15 @@ describe('ErrorPage', () => {
     };
 
     fixture.detectChanges();
-    tick();
 
     expect(errorPage.error).toEqual(error);
     expect(errorPageDOM.querySelectorAll('h3')[0].textContent).toBe(error.title);
     expect(errorPageDOM.querySelector('#errorCode').textContent).toContain(error.code);
-  }));
+    done();
+  });
 
   // Check that the 'back' method is called when clicking the back button
-  it('should call back method when clicking the back button', fakeAsync(() => {
+  it('should call back method when clicking the back button', (done: DoneFn) => {
     const fixture = TestBed.createComponent(ErrorPage);
     const errorPage = fixture.componentInstance;
     const errorPageDOM = fixture.nativeElement;
@@ -116,14 +110,13 @@ describe('ErrorPage', () => {
     const mockLocationSpy = spyOn(errorPage['location'], 'back').and.callThrough();
 
     fixture.detectChanges();
-    tick();
 
     // click the back button
     errorPageDOM.querySelector('#backBtn').click();
     fixture.detectChanges();
-    tick();
 
     expect(backSpy).toHaveBeenCalled();
     expect(mockLocationSpy).toHaveBeenCalled();
-  }));
+    done();
+  });
 });

@@ -30,13 +30,7 @@
   SOFTWARE.
 */
 
-import 'zone.js/dist/zone';
-import "zone.js/dist/proxy";
-import "zone.js/dist/sync-test";
-import "zone.js/dist/jasmine-patch";
-import "zone.js/dist/async-test";
-import "zone.js/dist/fake-async-test";
-import { TestBed, tick, fakeAsync } from "@angular/core/testing";
+import { TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from '@angular/router/testing';
 import {} from 'jasmine';
 import { APP_BASE_HREF } from '@angular/common';
@@ -102,7 +96,7 @@ describe('HeaderMessage', () => {
   });
 
   // Check that the component displays a loading message
-  it('should display a loading message', fakeAsync(() => {
+  it('should display a loading message', (done: DoneFn) => {
     const fixture = TestBed.createComponent(HeaderMessage);
     const headerMessage  = fixture.componentInstance;
     const headerMessDOM = fixture.nativeElement;
@@ -110,17 +104,17 @@ describe('HeaderMessage', () => {
     headerMessage['itemsService'].isOtherUserResolved.next(false);
 
     fixture.detectChanges();
-    tick();
 
     expect(headerMessage.message).toBeDefined();
     expect(headerMessage.message).toBe('Fetching user data from the server...');
     expect(headerMessDOM.querySelector('#loadingMessage')).toBeTruthy();
     expect(headerMessDOM.querySelector('#loadingMessage').textContent).toBe(headerMessage.message);
-  }));
+    done();
+  });
 
   // Check that the component is displaying different loading messages
   // for different components
-  it('should display different messages for different components', fakeAsync(() => {
+  it('should display different messages for different components', (done: DoneFn) => {
     const fixture = TestBed.createComponent(HeaderMessage);
     const headerMessage  = fixture.componentInstance;
     const headerMessDOM = fixture.nativeElement;
@@ -150,14 +144,14 @@ describe('HeaderMessage', () => {
       headerMessage.ngOnChanges();
       observables[index].next(false);
       fixture.detectChanges();
-      tick();
       expect(headerMessage.message).toBe(loadingMessagesOptions[index]);
       expect(headerMessDOM.querySelector('#loadingMessage').textContent).toBe(headerMessage.message);
     });
-  }));
+    done();
+  });
 
   // Check that the loader says on until the BehaviorSubject is false
-  it('stays on until the BehaviorSubject emits false', fakeAsync(() => {
+  it('stays on until the BehaviorSubject emits false', (done: DoneFn) => {
     // set up the component
     const fixture = TestBed.createComponent(HeaderMessage);
     const headerMessage  = fixture.componentInstance;
@@ -184,22 +178,21 @@ describe('HeaderMessage', () => {
       headerMessage.waitingFor = target;
       headerMessage.ngOnChanges();
       fixture.detectChanges();
-      tick();
       // check that the visibility is true
       expect(headerMessage.visible).toBeTrue();
       expect(headerMessDOM.querySelector('#headerMessage')).toBeTruthy();
       // change the BehaviorSubject's value to true
       subjects[index].next(true);
       fixture.detectChanges();
-      tick();
       // check that the visibility is false
       expect(headerMessage.visible).toBeFalse();
       expect(headerMessDOM.querySelector('#headerMessage')).toBeNull();
     })
-  }));
+    done();
+  });
 
   // Check that the component subscribes to the correct observable
-  it('subscribes to the correct observable', fakeAsync(() => {
+  it('subscribes to the correct observable', (done: DoneFn) => {
     // set up required variables
     let previousSpies: jasmine.Spy<any>[] = [];
     let currentObservable: jasmine.Spy;
@@ -237,7 +230,6 @@ describe('HeaderMessage', () => {
       headerMessage.user = 'other';
       headerMessage.ngOnChanges();
       fixture.detectChanges();
-      tick();
 
       // check that each of the previous spies was called once, in its
       // relevant if
@@ -251,5 +243,6 @@ describe('HeaderMessage', () => {
         expect(element).not.toHaveBeenCalled();
       });
     });
-  }));
+    done();
+  });
 });

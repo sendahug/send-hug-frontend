@@ -444,6 +444,7 @@ describe('AdminDashboard', () => {
       const blockLengthNum = 864E5 * 1;
       const blockLengthStr = 'oneDay';
       const blockedUser = 6;
+      const releaseDate = new Date((new Date()).getTime() + blockLengthNum).toString();
       adminDashboard.screen = 'blocks';
 
       fixture.detectChanges();
@@ -452,12 +453,12 @@ describe('AdminDashboard', () => {
       adminDashboardDOM.querySelector('#blockID').value = blockedUser;
       adminDashboardDOM.querySelector('#blockLength').value = blockLengthStr;
       adminDashboardDOM.querySelectorAll('.sendData')[0].click();
-      const releaseDate = new Date((new Date()).getTime() + blockLengthNum);
 
       fixture.detectChanges();
 
       expect(setBlockSpy).toHaveBeenCalledWith(blockedUser, blockLengthStr, undefined);
-      expect(blockServiceSpy).toHaveBeenCalledWith(blockedUser, releaseDate);
+      expect(blockServiceSpy).toHaveBeenCalledWith(blockedUser, jasmine.any(Date));
+      expect(blockServiceSpy.calls.mostRecent().args[1].toString()).toEqual(releaseDate);
       done();
     });
 
@@ -473,6 +474,7 @@ describe('AdminDashboard', () => {
       const blockLengthNum = 864E5 * 7;
       const blockLengthStr = 'oneWeek';
       const blockedUser = 7;
+      const releaseDate = new Date((new Date()).getTime() + blockLengthNum).toString();
       adminDashboard.screen = 'blocks';
 
       fixture.detectChanges();
@@ -481,12 +483,12 @@ describe('AdminDashboard', () => {
       adminDashboardDOM.querySelector('#blockID').value = blockedUser;
       adminDashboardDOM.querySelector('#blockLength').value = blockLengthStr;
       adminDashboardDOM.querySelectorAll('.sendData')[0].click();
-      const releaseDate = new Date((new Date()).getTime() + blockLengthNum);
 
       fixture.detectChanges();
 
       expect(setBlockSpy).toHaveBeenCalledWith(blockedUser, blockLengthStr, undefined);
-      expect(blockServiceSpy).toHaveBeenCalledWith(blockedUser, releaseDate);
+      expect(blockServiceSpy).toHaveBeenCalledWith(blockedUser, jasmine.any(Date));
+      expect(blockServiceSpy.calls.mostRecent().args[1].toString()).toEqual(releaseDate);
       done();
     });
 
@@ -502,6 +504,7 @@ describe('AdminDashboard', () => {
       const blockLengthNum = 864E5 * 30;
       const blockLengthStr = 'oneMonth';
       const blockedUser = 8;
+      const releaseDate = new Date((new Date()).getTime() + blockLengthNum).toString();
       adminDashboard.screen = 'blocks';
 
       fixture.detectChanges();
@@ -510,12 +513,12 @@ describe('AdminDashboard', () => {
       adminDashboardDOM.querySelector('#blockID').value = blockedUser;
       adminDashboardDOM.querySelector('#blockLength').value = blockLengthStr;
       adminDashboardDOM.querySelectorAll('.sendData')[0].click();
-      const releaseDate = new Date((new Date()).getTime() + blockLengthNum);
 
       fixture.detectChanges();
 
       expect(setBlockSpy).toHaveBeenCalledWith(blockedUser, blockLengthStr, undefined);
-      expect(blockServiceSpy).toHaveBeenCalledWith(blockedUser, releaseDate);
+      expect(blockServiceSpy).toHaveBeenCalledWith(blockedUser, jasmine.any(Date));
+      expect(blockServiceSpy.calls.mostRecent().args[1].toString()).toEqual(releaseDate);
       done();
     });
 
@@ -531,6 +534,7 @@ describe('AdminDashboard', () => {
       const blockLengthNum = 864E5 * 36500;
       const blockLengthStr = 'forever';
       const blockedUser = 9;
+      const releaseDate = new Date((new Date()).getTime() + blockLengthNum).toString();
       adminDashboard.screen = 'blocks';
 
       fixture.detectChanges();
@@ -539,12 +543,12 @@ describe('AdminDashboard', () => {
       adminDashboardDOM.querySelector('#blockID').value = blockedUser;
       adminDashboardDOM.querySelector('#blockLength').value = blockLengthStr;
       adminDashboardDOM.querySelectorAll('.sendData')[0].click();
-      const releaseDate = new Date((new Date()).getTime() + blockLengthNum);
 
       fixture.detectChanges();
 
       expect(setBlockSpy).toHaveBeenCalledWith(blockedUser, blockLengthStr, undefined);
-      expect(blockServiceSpy).toHaveBeenCalledWith(blockedUser, releaseDate);
+      expect(blockServiceSpy).toHaveBeenCalledWith(blockedUser, jasmine.any(Date));
+      expect(blockServiceSpy.calls.mostRecent().args[1].toString()).toEqual(releaseDate);
       done();
     });
 

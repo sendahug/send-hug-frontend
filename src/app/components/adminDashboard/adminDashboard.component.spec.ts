@@ -434,8 +434,8 @@ describe('AdminDashboard', () => {
       done();
     });
 
-    // Check that blocks are calculated correctly
-    it('should calculate block length', (done: DoneFn) => {
+    // Check that blocks are calculated correctly - day
+    it('should calculate block length - day', (done: DoneFn) => {
       // set up the spy and the component
       const fixture = TestBed.createComponent(AdminDashboard);
       const adminDashboard = fixture.componentInstance;
@@ -443,36 +443,138 @@ describe('AdminDashboard', () => {
       const setBlockSpy = spyOn(adminDashboard, 'setBlock').and.callThrough();
       const adminService = adminDashboard.adminService;
       const blockServiceSpy = spyOn(adminService, 'blockUser').and.callThrough();
-      const releaseDates = [
-        new Date((new Date()).getTime() + 864E5 * 1),
-        new Date((new Date()).getTime() + 864E5 * 7),
-        new Date((new Date()).getTime() + 864E5 * 30),
-        new Date((new Date()).getTime() + 864E5 * 36500),
-        // test that time is added to existing block correctly
-        new Date((new Date('2020-09-29 19:17:31.072')).getTime() + 864E5 * 7)
-      ];
-      const blockLengths = [
-        'oneDay', 'oneWeek', 'oneMonth', 'forever', 'oneWeek'
-      ];
-      const users = [ 6, 7, 8, 9, 15 ];
+      const blockLengthNum = 864E5 * 1;
+      const blockLengthStr = 'oneDay';
+      const blockedUser = 6;
       adminDashboard.screen = 'blocks';
 
       fixture.detectChanges();
 
-      blockLengths.forEach((length, index) => {
-        // reset the calls to the spy to check each option on its own
-        setBlockSpy.calls.reset();
+      // trigger a click
+      adminDashboardDOM.querySelector('#blockID').value = blockedUser;
+      adminDashboardDOM.querySelector('#blockLength').value = blockLengthStr;
+      adminDashboardDOM.querySelectorAll('.sendData')[0].click();
+      const releaseDate = new Date((new Date()).getTime() + blockLengthNum);
 
-        // trigger a click
-        adminDashboardDOM.querySelector('#blockID').value = users[index];
-        adminDashboardDOM.querySelector('#blockLength').value = length;
-        adminDashboardDOM.querySelectorAll('.sendData')[0].click();
-        fixture.detectChanges();
+      fixture.detectChanges();
 
-        expect(setBlockSpy).toHaveBeenCalledWith(users[index], length, undefined);
-        expect(blockServiceSpy).toHaveBeenCalledWith(users[index], releaseDates[index])
-      });
+      expect(setBlockSpy).toHaveBeenCalledWith(blockedUser, blockLengthStr, undefined);
+      expect(blockServiceSpy).toHaveBeenCalledWith(blockedUser, releaseDate);
+      done();
+    });
 
+    // Check that blocks are calculated correctly - week
+    it('should calculate block length - week', (done: DoneFn) => {
+      // set up the spy and the component
+      const fixture = TestBed.createComponent(AdminDashboard);
+      const adminDashboard = fixture.componentInstance;
+      const adminDashboardDOM = fixture.nativeElement;
+      const setBlockSpy = spyOn(adminDashboard, 'setBlock').and.callThrough();
+      const adminService = adminDashboard.adminService;
+      const blockServiceSpy = spyOn(adminService, 'blockUser').and.callThrough();
+      const blockLengthNum = 864E5 * 7;
+      const blockLengthStr = 'oneWeek';
+      const blockedUser = 7;
+      adminDashboard.screen = 'blocks';
+
+      fixture.detectChanges();
+
+      // trigger a click
+      adminDashboardDOM.querySelector('#blockID').value = blockedUser;
+      adminDashboardDOM.querySelector('#blockLength').value = blockLengthStr;
+      adminDashboardDOM.querySelectorAll('.sendData')[0].click();
+      const releaseDate = new Date((new Date()).getTime() + blockLengthNum);
+
+      fixture.detectChanges();
+
+      expect(setBlockSpy).toHaveBeenCalledWith(blockedUser, blockLengthStr, undefined);
+      expect(blockServiceSpy).toHaveBeenCalledWith(blockedUser, releaseDate);
+      done();
+    });
+
+    // Check that blocks are calculated correctly - month
+    it('should calculate block length - month', (done: DoneFn) => {
+      // set up the spy and the component
+      const fixture = TestBed.createComponent(AdminDashboard);
+      const adminDashboard = fixture.componentInstance;
+      const adminDashboardDOM = fixture.nativeElement;
+      const setBlockSpy = spyOn(adminDashboard, 'setBlock').and.callThrough();
+      const adminService = adminDashboard.adminService;
+      const blockServiceSpy = spyOn(adminService, 'blockUser').and.callThrough();
+      const blockLengthNum = 864E5 * 30;
+      const blockLengthStr = 'oneMonth';
+      const blockedUser = 8;
+      adminDashboard.screen = 'blocks';
+
+      fixture.detectChanges();
+
+      // trigger a click
+      adminDashboardDOM.querySelector('#blockID').value = blockedUser;
+      adminDashboardDOM.querySelector('#blockLength').value = blockLengthStr;
+      adminDashboardDOM.querySelectorAll('.sendData')[0].click();
+      const releaseDate = new Date((new Date()).getTime() + blockLengthNum);
+
+      fixture.detectChanges();
+
+      expect(setBlockSpy).toHaveBeenCalledWith(blockedUser, blockLengthStr, undefined);
+      expect(blockServiceSpy).toHaveBeenCalledWith(blockedUser, releaseDate);
+      done();
+    });
+
+    // Check that blocks are calculated correctly - forever
+    it('should calculate block length - forever', (done: DoneFn) => {
+      // set up the spy and the component
+      const fixture = TestBed.createComponent(AdminDashboard);
+      const adminDashboard = fixture.componentInstance;
+      const adminDashboardDOM = fixture.nativeElement;
+      const setBlockSpy = spyOn(adminDashboard, 'setBlock').and.callThrough();
+      const adminService = adminDashboard.adminService;
+      const blockServiceSpy = spyOn(adminService, 'blockUser').and.callThrough();
+      const blockLengthNum = 864E5 * 36500;
+      const blockLengthStr = 'forever';
+      const blockedUser = 9;
+      adminDashboard.screen = 'blocks';
+
+      fixture.detectChanges();
+
+      // trigger a click
+      adminDashboardDOM.querySelector('#blockID').value = blockedUser;
+      adminDashboardDOM.querySelector('#blockLength').value = blockLengthStr;
+      adminDashboardDOM.querySelectorAll('.sendData')[0].click();
+      const releaseDate = new Date((new Date()).getTime() + blockLengthNum);
+
+      fixture.detectChanges();
+
+      expect(setBlockSpy).toHaveBeenCalledWith(blockedUser, blockLengthStr, undefined);
+      expect(blockServiceSpy).toHaveBeenCalledWith(blockedUser, releaseDate);
+      done();
+    });
+
+    // Check that blocks are calculated correctly - extending a block
+    it('should calculate block length - extending an existing block', (done: DoneFn) => {
+      // set up the spy and the component
+      const fixture = TestBed.createComponent(AdminDashboard);
+      const adminDashboard = fixture.componentInstance;
+      const adminDashboardDOM = fixture.nativeElement;
+      const setBlockSpy = spyOn(adminDashboard, 'setBlock').and.callThrough();
+      const adminService = adminDashboard.adminService;
+      const blockServiceSpy = spyOn(adminService, 'blockUser').and.callThrough();
+      const releaseDate = new Date((new Date('2020-09-29 19:17:31.072')).getTime() + 864E5 * 7);
+      const blockLengthStr = 'oneWeek';
+      const blockedUser = 15;
+      adminDashboard.screen = 'blocks';
+
+      fixture.detectChanges();
+
+      // trigger a click
+      adminDashboardDOM.querySelector('#blockID').value = blockedUser;
+      adminDashboardDOM.querySelector('#blockLength').value = blockLengthStr;
+      adminDashboardDOM.querySelectorAll('.sendData')[0].click();
+
+      fixture.detectChanges();
+
+      expect(setBlockSpy).toHaveBeenCalledWith(blockedUser, blockLengthStr, undefined);
+      expect(blockServiceSpy).toHaveBeenCalledWith(blockedUser, releaseDate);
       done();
     });
   });

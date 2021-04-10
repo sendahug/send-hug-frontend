@@ -201,7 +201,6 @@ describe('AdminDashboard', () => {
       // trigger a click
       const userTable = adminDashboardDOM.querySelectorAll('.tableContainer')[0];
       userTable.querySelectorAll('.adminButton')[0].click();
-      const releaseDate = new Date((new Date()).getTime() + 864E5 * 1);
       fixture.detectChanges();
 
       // check expectations
@@ -211,7 +210,7 @@ describe('AdminDashboard', () => {
       expect(setBlockSpy).toHaveBeenCalled();
       expect(setBlockSpy).toHaveBeenCalledWith(10, 'oneDay', 1);
       expect(blockServiceSpy).toHaveBeenCalled();
-      expect(blockServiceSpy).toHaveBeenCalledWith(10, releaseDate, 1);
+      expect(blockServiceSpy).toHaveBeenCalledWith(10, jasmine.any(Date), 1);
       done();
     });
 
@@ -395,7 +394,6 @@ describe('AdminDashboard', () => {
       adminDashboardDOM.querySelector('#blockID').value = 5;
       adminDashboardDOM.querySelector('#blockLength').value = 'oneDay';
       adminDashboardDOM.querySelectorAll('.sendData')[0].click();
-      const releaseDate = new Date((new Date()).getTime() + 864E5 * 1);
       fixture.detectChanges();
 
       // check expectations
@@ -405,7 +403,7 @@ describe('AdminDashboard', () => {
       expect(setBlockSpy).toHaveBeenCalled();
       expect(setBlockSpy).toHaveBeenCalledWith(5, 'oneDay', undefined);
       expect(blockServiceSpy).toHaveBeenCalled();
-      expect(blockServiceSpy).toHaveBeenCalledWith(5, releaseDate);
+      expect(blockServiceSpy).toHaveBeenCalledWith(5, jasmine.any(Date));
       done();
     });
 

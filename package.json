@@ -67,7 +67,7 @@
     "@angular/platform-browser": "^11.2.9",
     "@angular/platform-browser-dynamic": "^11.2.9",
     "@angular/router": "^11.2.9",
-    "@angular/service-worker": "^11.2.9",
+    "@angular/service-worker": "^11.2.10",
     "@fortawesome/angular-fontawesome": "^0.8.2",
     "@fortawesome/fontawesome-common-types": "^0.2.35",
     "@fortawesome/fontawesome-svg-core": "^1.2.35",

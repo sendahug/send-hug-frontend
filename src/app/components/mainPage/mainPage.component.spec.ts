@@ -30,13 +30,7 @@
   SOFTWARE.
 */
 
-import 'zone.js/dist/zone';
-import "zone.js/dist/proxy";
-import "zone.js/dist/sync-test";
-import "zone.js/dist/jasmine-patch";
-import "zone.js/dist/async-test";
-import "zone.js/dist/fake-async-test";
-import { TestBed, tick, fakeAsync } from "@angular/core/testing";
+import { TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from '@angular/router/testing';
 import {} from 'jasmine';
 import { APP_BASE_HREF } from '@angular/common';
@@ -94,22 +88,22 @@ describe('MainPage', () => {
   });
 
   // Check that the a call to getItems() is made
-  it('should get posts via the posts service', fakeAsync(() => {
+  it('should get posts via the posts service', (done: DoneFn) => {
     const fixture = TestBed.createComponent(MainPage);
     const mainPage = fixture.componentInstance;
     const mainPageDOM = fixture.nativeElement;
 
     fixture.detectChanges();
-    tick();
 
     expect(mainPage.postsService.newItemsArray.length).toEqual(2);
     expect(mainPageDOM.querySelector('#newItemsList').children.length).toBe(2);
     expect(mainPage.postsService.sugItemsArray.length).toEqual(2);
     expect(mainPageDOM.querySelector('#sugItemsList').children.length).toBe(2);
-  }));
+    done();
+  });
 
   // Check the posts' menu is shown if there's enough room for them
-  it('should show the posts\'s menu if wide enough', fakeAsync(() => {
+  it('should show the posts\'s menu if wide enough', (done: DoneFn) => {
     const fixture = TestBed.createComponent(MainPage);
     const mainPage = fixture.componentInstance;
     const mainPageDOM = fixture.debugElement.nativeElement;
@@ -132,10 +126,11 @@ describe('MainPage', () => {
       expect(element.querySelectorAll('.menuButton')[0].classList).toContain('hidden');
     });
     expect(viewCheckedSpy).toHaveBeenCalled();
-  }));
+    done();
+  });
 
   // check the posts' menu isn't shown if there isn't enough room for it
-  it('shouldn\'t show the posts\'s menu if not wide enough', fakeAsync(() => {
+  it('shouldn\'t show the posts\'s menu if not wide enough', (done: DoneFn) => {
     spyOn(TestBed.inject(AuthService), 'canUser').and.returnValue(true);
     const fixture = TestBed.createComponent(MainPage);
     const mainPage = fixture.componentInstance;
@@ -160,10 +155,11 @@ describe('MainPage', () => {
       expect(element.querySelectorAll('.menuButton')[0].classList).not.toContain('hidden');
     });
     expect(viewCheckedSpy).toHaveBeenCalled();
-  }));
+    done();
+  });
 
   // check a menu is shown when clickinng the options button
-  it('should show the post\'s menu when clicked', fakeAsync(() => {
+  it('should show the post\'s menu when clicked', (done: DoneFn) => {
     spyOn(TestBed.inject(AuthService), 'canUser').and.returnValue(true);
     const fixture = TestBed.createComponent(MainPage);
     const mainPage = fixture.componentInstance;
@@ -188,7 +184,6 @@ describe('MainPage', () => {
     // click the options buton for the first new post
     mainPageDOM.querySelectorAll('.newItem')[0]!.querySelectorAll('.menuButton')[0].click();
     fixture.detectChanges();
-    tick();
 
     // check the first post's menu is shown
     expect(toggleSpy).toHaveBeenCalled();
@@ -198,10 +193,11 @@ describe('MainPage', () => {
     expect(firstElement.querySelectorAll('.subMenu')[0].classList).not.toContain('hidden');
     expect(firstElement.querySelectorAll('.subMenu')[0].classList).toContain('float');
     expect(firstElement.querySelectorAll('.menuButton')[0].classList).not.toContain('hidden');
-  }));
+    done();
+  });
 
   // check that clicking the same menu button again hides it
-  it('should hide the post\'s menu when clicked again', fakeAsync(() => {
+  it('should hide the post\'s menu when clicked again', (done: DoneFn) => {
     spyOn(TestBed.inject(AuthService), 'canUser').and.returnValue(true);
     const fixture = TestBed.createComponent(MainPage);
     const mainPage = fixture.componentInstance;
@@ -228,7 +224,6 @@ describe('MainPage', () => {
     // click the options buton for the first new post
     mainPageDOM.querySelectorAll('.newItem')[0]!.querySelectorAll('.menuButton')[0].click();
     fixture.detectChanges();
-    tick();
 
     // check the first post's menu is shown
     expect(toggleSpy).toHaveBeenCalled();
@@ -240,7 +235,6 @@ describe('MainPage', () => {
     // click the options buton for the first new post again
     mainPageDOM.querySelectorAll('.newItem')[0]!.querySelectorAll('.menuButton')[0].click();
     fixture.detectChanges();
-    tick();
 
     // check the menu is hidden
     expect(toggleSpy).toHaveBeenCalled();
@@ -249,10 +243,11 @@ describe('MainPage', () => {
     expect(mainPage.showMenuNum).toBeNull();
     expect(firstElement.querySelectorAll('.subMenu')[0].classList).toContain('hidden');
     expect(firstElement.querySelectorAll('.menuButton')[0].classList).not.toContain('hidden');
-  }));
+    done();
+  });
 
   // check only the selected menu is shown when clicking a button
-  it('should show the correct post\'s menu when clicked', fakeAsync(() => {
+  it('should show the correct post\'s menu when clicked', (done: DoneFn) => {
     spyOn(TestBed.inject(AuthService), 'canUser').and.returnValue(true);
     const fixture = TestBed.createComponent(MainPage);
     const mainPage = fixture.componentInstance;
@@ -275,7 +270,6 @@ describe('MainPage', () => {
     // trigger click
     clickElement.querySelectorAll('.menuButton')[0].click();
     fixture.detectChanges();
-    tick();
 
     // check only the second post's menu is shown
     let posts = mainPageDOM.querySelectorAll('.newItem');
@@ -295,11 +289,12 @@ describe('MainPage', () => {
       }
     });
     expect(mainPage.showMenuNum).toBe('nPost2');
-  }));
+    done();
+  });
 
   // check that clicking another menu button also closes the previous one
   // and opens the new one
-  it('should hide the previous post\'s menu when another post\'s menu button is clicked', fakeAsync(() => {
+  it('should hide the previous post\'s menu when another post\'s menu button is clicked', (done: DoneFn) => {
     spyOn(TestBed.inject(AuthService), 'canUser').and.returnValue(true);
     const fixture = TestBed.createComponent(MainPage);
     const mainPage = fixture.componentInstance;
@@ -325,7 +320,6 @@ describe('MainPage', () => {
     // click the options buton for the first new post
     mainPageDOM.querySelectorAll('.newItem')[0]!.querySelectorAll('.menuButton')[0].click();
     fixture.detectChanges();
-    tick();
 
     // check the first post's menu is shown
     expect(mainPage.showMenuNum).toBe('nPost1');
@@ -337,11 +331,11 @@ describe('MainPage', () => {
     // click the options button for another post
     mainPageDOM.querySelectorAll('.newItem')[1]!.querySelectorAll('.menuButton')[0].click();
     fixture.detectChanges();
-    tick();
 
     // check the first post's menu is hidden and the new post's menu is shown
     expect(firstElement.querySelectorAll('.subMenu')[0].classList).toContain('hidden');
     expect(mainPageDOM.querySelectorAll('.newItem')[0]!.querySelectorAll('.subMenu')[0].classList).toContain('hidden');
     expect(mainPageDOM.querySelectorAll('.newItem')[1]!.querySelectorAll('.subMenu')[0].classList).not.toContain('hidden');
-  }));
+    done();
+  });
 })

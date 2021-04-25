@@ -30,13 +30,7 @@
   SOFTWARE.
 */
 
-import 'zone.js/dist/zone';
-import "zone.js/dist/proxy";
-import "zone.js/dist/sync-test";
-import "zone.js/dist/jasmine-patch";
-import "zone.js/dist/async-test";
-import "zone.js/dist/fake-async-test";
-import { TestBed, tick, fakeAsync } from "@angular/core/testing";
+import { TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from '@angular/router/testing';
 import {} from 'jasmine';
 import { APP_BASE_HREF } from '@angular/common';
@@ -112,7 +106,7 @@ describe('Notifications', () => {
   });
 
   // Check that the button toggles push notifications
-  it('has a button that toggles push notifications', fakeAsync(() => {
+  it('has a button that toggles push notifications', (done: DoneFn) => {
     // set up the component and its spies
     TestBed.createComponent(AppComponent);
     const fixture = TestBed.createComponent(NotificationsTab);
@@ -125,7 +119,6 @@ describe('Notifications', () => {
     const unsubscribeSpy = spyOn(notificationsService, 'unsubscribeFromStream').and.callThrough();
 
     fixture.detectChanges();
-    tick();
 
     // before the click
     expect(notificationsTab.notificationService.pushStatus).toBeFalse();
@@ -133,7 +126,6 @@ describe('Notifications', () => {
     // simulate click
     notifTabDOM.querySelector('#nButtons').children.item(0).click();
     fixture.detectChanges();
-    tick();
 
     // after the first click, check 'subscribe' was called
     expect(toggleSpy).toHaveBeenCalled();
@@ -145,7 +137,6 @@ describe('Notifications', () => {
     // simulate another click
     notifTabDOM.querySelectorAll('.NotificationButton')[0].click();
     fixture.detectChanges();
-    tick();
 
     // after the second click, chcek 'unsubscribe' was called
     expect(toggleSpy.calls.count()).toBe(2);
@@ -154,10 +145,11 @@ describe('Notifications', () => {
     expect(subscribeSpy.calls.count()).toBe(1);
     expect(unsubscribeSpy).toHaveBeenCalled();
     expect(unsubscribeSpy.calls.count()).toBe(1);
-  }));
+    done();
+  });
 
   // Check that the button toggles auto refresh
-  it('has a button that toggles auto-refresh', fakeAsync(() => {
+  it('has a button that toggles auto-refresh', (done: DoneFn) => {
     // set up spies
     const notificationsService = TestBed.inject(NotificationService);
     const settingsSpy = spyOn(notificationsService, 'updateUserSettings').and.callThrough();
@@ -171,7 +163,6 @@ describe('Notifications', () => {
     const notifTabDOM = fixture.nativeElement;
     const toggleSpy = spyOn(notificationsTab, 'toggleAutoRefresh').and.callThrough();
     fixture.detectChanges();
-    tick();
 
     // before the click
     expect(notificationsTab.notificationService.refreshStatus).toBeFalse();
@@ -179,7 +170,6 @@ describe('Notifications', () => {
     // simulate click
     notifTabDOM.querySelectorAll('.NotificationButton')[1].click();
     fixture.detectChanges();
-    tick();
 
     // after the first click, check 'subscribe' was called
     expect(toggleSpy).toHaveBeenCalled();
@@ -192,7 +182,6 @@ describe('Notifications', () => {
     // simulate another click
     notifTabDOM.querySelectorAll('.NotificationButton')[1].click();
     fixture.detectChanges();
-    tick();
 
     // after the second click, chcek 'unsubscribe' was called
     expect(toggleSpy.calls.count()).toBe(2);
@@ -202,16 +191,16 @@ describe('Notifications', () => {
     expect(startRefreshSpy.calls.count()).toBe(1);
     expect(stopRefreshSpy).toHaveBeenCalled();
     expect(stopRefreshSpy.calls.count()).toBe(1);
-  }));
+    done();
+  });
 
   // check tab and tab+shift let the user navigate
-  it('should navigate using tab and shift+tab', fakeAsync(() => {
+  it('should navigate using tab and shift+tab', (done: DoneFn) => {
     const fixture = TestBed.createComponent(NotificationsTab);
     const notificationsTab  = fixture.componentInstance;
     const notifTabDOM = fixture.nativeElement;
     const focusBindedSpy = spyOn(notificationsTab, 'checkFocusBinded').and.callThrough();
     fixture.detectChanges();
-    tick();
 
     // spies
     const spies = [
@@ -247,7 +236,6 @@ describe('Notifications', () => {
         'shiftKey': false
       }));
       fixture.detectChanges();
-      tick();
 
       // check the focus shifted to the next element
       expect(focusBindedSpy).toHaveBeenCalled();
@@ -272,7 +260,6 @@ describe('Notifications', () => {
         'shiftKey': true
       }));
       fixture.detectChanges();
-      tick();
 
       // check the focus shifted to the previous element
       expect(focusBindedSpy).toHaveBeenCalled();
@@ -291,16 +278,16 @@ describe('Notifications', () => {
         }
       });
     })
-  }));
+    done();
+  });
 
   // check the focus is trapped
-  it('should trap focus in the modal', fakeAsync(() => {
+  it('should trap focus in the modal', (done: DoneFn) => {
     const fixture = TestBed.createComponent(NotificationsTab);
     const notificationsTab  = fixture.componentInstance;
     const notifTabDOM = fixture.nativeElement;
     const focusBindedSpy = spyOn(notificationsTab, 'checkFocusBinded').and.callThrough();
     fixture.detectChanges();
-    tick();
 
     // spies
     const spies = [
@@ -336,7 +323,6 @@ describe('Notifications', () => {
         'shiftKey': false
       }));
       fixture.detectChanges();
-      tick();
 
       // check the focus shifted to the first element
       expect(focusBindedSpy).toHaveBeenCalled();
@@ -357,7 +343,6 @@ describe('Notifications', () => {
         'shiftKey': true
       }));
       fixture.detectChanges();
-      tick();
 
       // check the focus shifted to the last element
       expect(focusBindedSpy).toHaveBeenCalled();
@@ -376,10 +361,11 @@ describe('Notifications', () => {
         }
       });
     })
-  }));
+    done();
+  });
 
   // Check that the exit button emits the correct boolean
-  it('emits false upon clicking the exit button', fakeAsync(() => {
+  it('emits false upon clicking the exit button', (done: DoneFn) => {
     // set up the component
     TestBed.createComponent(AppComponent);
     const fixture = TestBed.createComponent(NotificationsTab);
@@ -387,13 +373,12 @@ describe('Notifications', () => {
     const notifTabDOM = fixture.nativeElement;
     const emitterSpy = spyOn(notificationsTab.NotificationsMode, 'emit');
     fixture.detectChanges();
-    tick();
 
     // click the exit button
     notifTabDOM.querySelector('#exitButton').click();
     fixture.detectChanges();
-    tick();
 
     expect(emitterSpy).toHaveBeenCalledWith(false);
-  }));
+    done();
+  });
 });

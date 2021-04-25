@@ -30,13 +30,7 @@
   SOFTWARE.
 */
 
-import 'zone.js/dist/zone';
-import "zone.js/dist/proxy";
-import "zone.js/dist/sync-test";
-import "zone.js/dist/jasmine-patch";
-import "zone.js/dist/async-test";
-import "zone.js/dist/fake-async-test";
-import { TestBed, tick, fakeAsync } from "@angular/core/testing";
+import { TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from '@angular/router/testing';
 import {} from 'jasmine';
 import { APP_BASE_HREF } from '@angular/common';
@@ -98,7 +92,7 @@ describe('SettingsPage', () => {
   });
 
   // Check that the user has to be logged in to interact with the component
-  it('displays an error when not authenticated', fakeAsync(() => {
+  it('displays an error when not authenticated', (done: DoneFn) => {
     TestBed.createComponent(AppComponent);
     const fixture = TestBed.createComponent(SettingsPage);
     const settingsPage = fixture.componentInstance;
@@ -106,7 +100,6 @@ describe('SettingsPage', () => {
     settingsPage.authService.authenticated = false;
 
     fixture.detectChanges();
-    tick();
 
     fixture.whenStable().then(() => {
       expect(settingsPage.authService.authenticated).toBeFalse();
@@ -114,10 +107,11 @@ describe('SettingsPage', () => {
       expect(settingsDOM.querySelectorAll('.errorMessage')[0].textContent).toBe('You do not have permission to view thie page!');
       expect(settingsDOM.querySelector('#notificationSettings')).toBeNull();
     });
-  }));
+    done();
+  });
 
   // Check that the button toggles push notifications
-  it('has a button that toggles push notifications', fakeAsync(() => {
+  it('has a button that toggles push notifications', (done: DoneFn) => {
     // set up the component and its spies
     TestBed.createComponent(AppComponent);
     const fixture = TestBed.createComponent(SettingsPage);
@@ -130,7 +124,6 @@ describe('SettingsPage', () => {
     const unsubscribeSpy = spyOn(notificationsService, 'unsubscribeFromStream').and.callThrough();
 
     fixture.detectChanges();
-    tick();
 
     // before the click
     expect(settingsPage.notificationService.pushStatus).toBeFalse();
@@ -138,7 +131,6 @@ describe('SettingsPage', () => {
     // simulate click
     settingsDOM.querySelectorAll('.NotificationButton')[0].click();
     fixture.detectChanges();
-    tick();
 
     // after the first click, check 'subscribe' was called
     expect(toggleSpy).toHaveBeenCalled();
@@ -150,7 +142,6 @@ describe('SettingsPage', () => {
     // simulate another click
     settingsDOM.querySelectorAll('.NotificationButton')[0].click();
     fixture.detectChanges();
-    tick();
 
     // after the second click, chcek 'unsubscribe' was called
     expect(toggleSpy.calls.count()).toBe(2);
@@ -159,10 +150,11 @@ describe('SettingsPage', () => {
     expect(subscribeSpy.calls.count()).toBe(1);
     expect(unsubscribeSpy).toHaveBeenCalled();
     expect(unsubscribeSpy.calls.count()).toBe(1);
-  }));
+    done();
+  });
 
   // Check that the button toggles auto refresh
-  it('has a button that toggles auto-refresh', fakeAsync(() => {
+  it('has a button that toggles auto-refresh', (done: DoneFn) => {
     // set up spies
     const notificationsService = TestBed.inject(NotificationService);
     const settingsSpy = spyOn(notificationsService, 'updateUserSettings').and.callThrough();
@@ -176,7 +168,6 @@ describe('SettingsPage', () => {
     const settingsDOM = fixture.nativeElement;
     const toggleSpy = spyOn(settingsPage, 'toggleAutoRefresh').and.callThrough();
     fixture.detectChanges();
-    tick();
 
     // before the click
     expect(settingsPage.notificationService.refreshStatus).toBeFalse();
@@ -184,7 +175,6 @@ describe('SettingsPage', () => {
     // simulate click
     settingsDOM.querySelectorAll('.NotificationButton')[1].click();
     fixture.detectChanges();
-    tick();
 
     // after the first click, check 'subscribe' was called
     expect(toggleSpy).toHaveBeenCalled();
@@ -197,7 +187,6 @@ describe('SettingsPage', () => {
     // simulate another click
     settingsDOM.querySelectorAll('.NotificationButton')[1].click();
     fixture.detectChanges();
-    tick();
 
     // after the second click, chcek 'unsubscribe' was called
     expect(toggleSpy.calls.count()).toBe(2);
@@ -207,10 +196,11 @@ describe('SettingsPage', () => {
     expect(startRefreshSpy.calls.count()).toBe(1);
     expect(stopRefreshSpy).toHaveBeenCalled();
     expect(stopRefreshSpy.calls.count()).toBe(1);
-  }));
+    done();
+  });
 
   // Check that changing the refresh rate changes the set rate
-  it('changes the refresh rate', fakeAsync(() => {
+  it('changes the refresh rate', (done: DoneFn) => {
     // set up spies
     const notificationsService = TestBed.inject(NotificationService);
     const settingsSpy = spyOn(notificationsService, 'updateUserSettings').and.callThrough();
@@ -223,7 +213,6 @@ describe('SettingsPage', () => {
     settingsPage.authService.authenticated = true;
 
     fixture.detectChanges();
-    tick();
 
     fixture.whenStable().then(() => {
       // check the original refresh rate
@@ -234,12 +223,12 @@ describe('SettingsPage', () => {
       settingsDOM.querySelectorAll('input')[0].value = 30;
       settingsDOM.querySelectorAll('.sendData')[0].click();
       fixture.detectChanges();
-      tick();
 
       // check the rate changed
       expect(settingsPage.notificationService.refreshRateSecs).toBe(30);
       expect(updateSpy).toHaveBeenCalled();
       expect(settingsSpy).toHaveBeenCalled();
     });
-  }));
+    done();
+  });
 });

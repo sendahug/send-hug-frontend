@@ -30,14 +30,7 @@
   SOFTWARE.
 */
 
-
-import 'zone.js/dist/zone';
-import "zone.js/dist/proxy";
-import "zone.js/dist/sync-test";
-import "zone.js/dist/jasmine-patch";
-import "zone.js/dist/async-test";
-import "zone.js/dist/fake-async-test";
-import { TestBed, tick, fakeAsync } from "@angular/core/testing";
+import { TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from '@angular/router/testing';
 import {} from 'jasmine';
 import { APP_BASE_HREF } from '@angular/common';
@@ -106,14 +99,13 @@ describe('AdminDashboard', () => {
   });
 
   // Check the popup exits when 'false' is emitted
-  it('should change mode when the event emitter emits false', fakeAsync(() => {
+  it('should change mode when the event emitter emits false', (done: DoneFn) => {
     const fixture = TestBed.createComponent(AdminDashboard);
     const adminDashboard = fixture.componentInstance;
     const changeSpy = spyOn(adminDashboard, 'changeMode').and.callThrough();
     adminDashboard['authService'].login();
 
     fixture.detectChanges();
-    tick();
 
     // start the popup
     adminDashboard.lastFocusedElement = document.querySelectorAll('a')[0];
@@ -123,19 +115,18 @@ describe('AdminDashboard', () => {
     adminDashboard.reportData.reportID = 5;
     adminDashboard.reportData.userID = 2;
     fixture.detectChanges();
-    tick();
 
     // exit the popup
     const popup = fixture.debugElement.query(By.css('app-pop-up')).componentInstance as PopUp;
     popup.exitEdit();
     fixture.detectChanges();
-    tick();
 
     // check the popup is exited
     expect(changeSpy).toHaveBeenCalled();
     expect(adminDashboard.editMode).toBeFalse();
     expect(document.activeElement).toBe(document.querySelectorAll('a')[0]);
-  }));
+    done();
+  });
 
   // REPORTS PAGE
   // ==================================================================
@@ -173,7 +164,7 @@ describe('AdminDashboard', () => {
     });
 
     // Check that a call is made to get open reports
-    it('should get open reports', fakeAsync(() => {
+    it('should get open reports', (done: DoneFn) => {
       // set up the spy and the component
       const adminService = TestBed.inject(AdminService);
       const reportSpy = spyOn(adminService, 'getOpenReports').and.callThrough();
@@ -183,17 +174,17 @@ describe('AdminDashboard', () => {
       adminDashboard.screen = 'reports';
 
       fixture.detectChanges();
-      tick();
 
       expect(reportSpy).toHaveBeenCalled();
       expect(adminDashboard.adminService.userReports.length).toBe(1);
       expect(adminDashboardDOM.querySelectorAll('.tableContainer')[0].querySelectorAll('tbody tr').length).toBe(1);
       expect(adminDashboard.adminService.postReports.length).toBe(1);
       expect(adminDashboardDOM.querySelectorAll('.tableContainer')[1].querySelectorAll('tbody tr').length).toBe(1);
-    }));
+      done();
+    });
 
     // Check that you can block users
-    it('should block a user', fakeAsync(() => {
+    it('should block a user', (done: DoneFn) => {
       // set up the spy and the component
       const fixture = TestBed.createComponent(AdminDashboard);
       const adminDashboard = fixture.componentInstance;
@@ -203,17 +194,14 @@ describe('AdminDashboard', () => {
       const setBlockSpy = spyOn(adminDashboard, 'setBlock').and.callThrough();
       const adminService = adminDashboard.adminService;
       const blockServiceSpy = spyOn(adminService, 'blockUser').and.callThrough();
-      const releaseDate = new Date((new Date()).getTime() + 864E5 * 1);
       adminDashboard.screen = 'reports';
 
       fixture.detectChanges();
-      tick();
 
       // trigger a click
       const userTable = adminDashboardDOM.querySelectorAll('.tableContainer')[0];
       userTable.querySelectorAll('.adminButton')[0].click();
       fixture.detectChanges();
-      tick();
 
       // check expectations
       expect(blockSpy).toHaveBeenCalled();
@@ -222,11 +210,12 @@ describe('AdminDashboard', () => {
       expect(setBlockSpy).toHaveBeenCalled();
       expect(setBlockSpy).toHaveBeenCalledWith(10, 'oneDay', 1);
       expect(blockServiceSpy).toHaveBeenCalled();
-      expect(blockServiceSpy).toHaveBeenCalledWith(10, releaseDate, 1);
-    }));
+      expect(blockServiceSpy).toHaveBeenCalledWith(10, jasmine.any(Date), 1);
+      done();
+    });
 
     // Check that user editing triggers the popup
-    it('should edit a user\'s display name', fakeAsync(() => {
+    it('should edit a user\'s display name', (done: DoneFn) => {
       // set up the spy and the component
       const fixture = TestBed.createComponent(AdminDashboard);
       const adminDashboard = fixture.componentInstance;
@@ -235,7 +224,6 @@ describe('AdminDashboard', () => {
       adminDashboard.screen = 'reports';
 
       fixture.detectChanges();
-      tick();
 
       // before the click
       expect(adminDashboard.editMode).toBeFalse();
@@ -244,17 +232,17 @@ describe('AdminDashboard', () => {
       const userTable = adminDashboardDOM.querySelectorAll('.tableContainer')[0];
       userTable.querySelectorAll('.adminButton')[1].click();
       fixture.detectChanges();
-      tick();
 
       // check expectations
       expect(editSpy).toHaveBeenCalled();
       expect(adminDashboard.editMode).toBeTrue();
       expect(adminDashboard.editType).toBe('other user');
       expect(adminDashboardDOM.querySelector('app-pop-up')).toBeTruthy();
-    }));
+      done();
+    });
 
     // Check that post editing triggers the popup
-    it('should edit a post\'s text', fakeAsync(() => {
+    it('should edit a post\'s text', (done: DoneFn) => {
       // set up the spy and the component
       const fixture = TestBed.createComponent(AdminDashboard);
       const adminDashboard = fixture.componentInstance;
@@ -263,7 +251,6 @@ describe('AdminDashboard', () => {
       adminDashboard.screen = 'reports';
 
       fixture.detectChanges();
-      tick();
 
       // before the click
       expect(adminDashboard.editMode).toBeFalse();
@@ -272,17 +259,17 @@ describe('AdminDashboard', () => {
       const postTable = adminDashboardDOM.querySelectorAll('.tableContainer')[1];
       postTable.querySelectorAll('.adminButton')[0].click();
       fixture.detectChanges();
-      tick();
 
       // check expectations
       expect(editSpy).toHaveBeenCalled();
       expect(adminDashboard.editMode).toBeTrue();
       expect(adminDashboard.editType).toBe('admin post');
       expect(adminDashboardDOM.querySelector('app-pop-up')).toBeTruthy();
-    }));
+      done();
+    });
 
     // Check that deleting a post triggers the popup
-    it('should delete a post', fakeAsync(() => {
+    it('should delete a post', (done: DoneFn) => {
       // set up the spy and the component
       const fixture = TestBed.createComponent(AdminDashboard);
       const adminDashboard = fixture.componentInstance;
@@ -291,7 +278,6 @@ describe('AdminDashboard', () => {
       adminDashboard.screen = 'reports';
 
       fixture.detectChanges();
-      tick();
 
       // before the click
       expect(adminDashboard.editMode).toBeFalse();
@@ -300,17 +286,17 @@ describe('AdminDashboard', () => {
       const postTable = adminDashboardDOM.querySelectorAll('.tableContainer')[1];
       postTable.querySelectorAll('.adminButton')[1].click();
       fixture.detectChanges();
-      tick();
 
       // check expectations
       expect(deleteSpy).toHaveBeenCalled();
       expect(adminDashboard.editMode).toBeTrue();
       expect(adminDashboard.toDelete).toBe('ad post');
       expect(adminDashboardDOM.querySelector('app-pop-up')).toBeTruthy();
-    }));
+      done();
+    });
 
     // Check that you can dismiss reports
-    it('should dismiss report', fakeAsync(() => {
+    it('should dismiss report', (done: DoneFn) => {
       // set up the spy and the component
       const fixture = TestBed.createComponent(AdminDashboard);
       const adminDashboard = fixture.componentInstance;
@@ -322,19 +308,18 @@ describe('AdminDashboard', () => {
       adminDashboard.screen = 'reports';
 
       fixture.detectChanges();
-      tick();
 
       // trigger click
       const postTable = adminDashboardDOM.querySelectorAll('.tableContainer')[1];
       postTable.querySelectorAll('.adminButton')[2].click();
       fixture.detectChanges();
-      tick();
 
       // check expectations
       expect(dismissSpy).toHaveBeenCalled();
       expect(dismissServiceSpy).toHaveBeenCalled();
       expect(dismissServiceSpy).toHaveBeenCalledWith(2);
-    }));
+      done();
+    });
   });
 
   // BLOCKS PAGE
@@ -373,7 +358,7 @@ describe('AdminDashboard', () => {
     });
 
     // Check that a call is made to get blocked users
-    it('should get blocked users', fakeAsync(() => {
+    it('should get blocked users', (done: DoneFn) => {
       // set up the spy and the component
       const adminService = TestBed.inject(AdminService);
       const blockSpy = spyOn(adminService, 'getBlockedUsers').and.callThrough();
@@ -383,15 +368,15 @@ describe('AdminDashboard', () => {
       adminDashboard.screen = 'blocks';
 
       fixture.detectChanges();
-      tick();
 
       expect(blockSpy).toHaveBeenCalled();
       expect(adminDashboard.adminService.blockedUsers.length).toBe(1);
       expect(adminDashboardDOM.querySelectorAll('.tableContainer')[0].querySelectorAll('tbody tr').length).toBe(1);
-    }));
+      done();
+    });
 
     // Check that you can block a user
-    it('should block a user', fakeAsync(() => {
+    it('should block a user', (done: DoneFn) => {
       // set up the spy and the component
       const fixture = TestBed.createComponent(AdminDashboard);
       const adminDashboard = fixture.componentInstance;
@@ -401,18 +386,15 @@ describe('AdminDashboard', () => {
       const setBlockSpy = spyOn(adminDashboard, 'setBlock').and.callThrough();
       const adminService = adminDashboard.adminService;
       const blockServiceSpy = spyOn(adminService, 'blockUser').and.callThrough();
-      const releaseDate = new Date((new Date()).getTime() + 864E5 * 1);
       adminDashboard.screen = 'blocks';
 
       fixture.detectChanges();
-      tick();
 
       // trigger a click
       adminDashboardDOM.querySelector('#blockID').value = 5;
       adminDashboardDOM.querySelector('#blockLength').value = 'oneDay';
       adminDashboardDOM.querySelectorAll('.sendData')[0].click();
       fixture.detectChanges();
-      tick();
 
       // check expectations
       expect(blockSpy).toHaveBeenCalled();
@@ -421,11 +403,12 @@ describe('AdminDashboard', () => {
       expect(setBlockSpy).toHaveBeenCalled();
       expect(setBlockSpy).toHaveBeenCalledWith(5, 'oneDay', undefined);
       expect(blockServiceSpy).toHaveBeenCalled();
-      expect(blockServiceSpy).toHaveBeenCalledWith(5, releaseDate);
-    }));
+      expect(blockServiceSpy).toHaveBeenCalledWith(5, jasmine.any(Date));
+      done();
+    });
 
     // Check that you can unblock a user
-    it('should unblock a user', fakeAsync(() => {
+    it('should unblock a user', (done: DoneFn) => {
       // set up the spy and the component
       const fixture = TestBed.createComponent(AdminDashboard);
       const adminDashboard = fixture.componentInstance;
@@ -436,22 +419,21 @@ describe('AdminDashboard', () => {
       adminDashboard.screen = 'blocks';
 
       fixture.detectChanges();
-      tick();
 
       // trigger a click
       adminDashboardDOM.querySelectorAll('.adminButton')[0].click();
       fixture.detectChanges();
-      tick();
 
       // check expectations
       expect(unblockSpy).toHaveBeenCalled();
       expect(unblockSpy).toHaveBeenCalledWith(15);
       expect(unblockServiceSpy).toHaveBeenCalled();
       expect(unblockServiceSpy).toHaveBeenCalledWith(15);
-    }));
+      done();
+    });
 
-    // Check that blocks are calculated correctly
-    it('should calculate block length', fakeAsync(() => {
+    // Check that blocks are calculated correctly - day
+    it('should calculate block length - day', (done: DoneFn) => {
       // set up the spy and the component
       const fixture = TestBed.createComponent(AdminDashboard);
       const adminDashboard = fixture.componentInstance;
@@ -459,38 +441,144 @@ describe('AdminDashboard', () => {
       const setBlockSpy = spyOn(adminDashboard, 'setBlock').and.callThrough();
       const adminService = adminDashboard.adminService;
       const blockServiceSpy = spyOn(adminService, 'blockUser').and.callThrough();
-      const releaseDates = [
-        new Date((new Date()).getTime() + 864E5 * 1),
-        new Date((new Date()).getTime() + 864E5 * 7),
-        new Date((new Date()).getTime() + 864E5 * 30),
-        new Date((new Date()).getTime() + 864E5 * 36500),
-        // test that time is added to existing block correctly
-        new Date((new Date('2020-09-29 19:17:31.072')).getTime() + 864E5 * 7)
-      ];
-      const blockLengths = [
-        'oneDay', 'oneWeek', 'oneMonth', 'forever', 'oneWeek'
-      ];
-      const users = [ 6, 7, 8, 9, 15 ];
+      const blockLengthNum = 864E5 * 1;
+      const blockLengthStr = 'oneDay';
+      const blockedUser = 6;
+      const releaseDate = new Date((new Date()).getTime() + blockLengthNum).toString();
       adminDashboard.screen = 'blocks';
 
       fixture.detectChanges();
-      tick();
 
-      blockLengths.forEach((length, index) => {
-        // reset the calls to the spy to check each option on its own
-        setBlockSpy.calls.reset();
+      // trigger a click
+      adminDashboardDOM.querySelector('#blockID').value = blockedUser;
+      adminDashboardDOM.querySelector('#blockLength').value = blockLengthStr;
+      adminDashboardDOM.querySelectorAll('.sendData')[0].click();
 
-        // trigger a click
-        adminDashboardDOM.querySelector('#blockID').value = users[index];
-        adminDashboardDOM.querySelector('#blockLength').value = length;
-        adminDashboardDOM.querySelectorAll('.sendData')[0].click();
-        fixture.detectChanges();
-        tick();
+      fixture.detectChanges();
 
-        expect(setBlockSpy).toHaveBeenCalledWith(users[index], length, undefined);
-        expect(blockServiceSpy).toHaveBeenCalledWith(users[index], releaseDates[index])
-      });
-    }));
+      expect(setBlockSpy).toHaveBeenCalledWith(blockedUser, blockLengthStr, undefined);
+      expect(blockServiceSpy).toHaveBeenCalledWith(blockedUser, jasmine.any(Date));
+      expect(blockServiceSpy.calls.mostRecent().args[1].toString()).toEqual(releaseDate);
+      done();
+    });
+
+    // Check that blocks are calculated correctly - week
+    it('should calculate block length - week', (done: DoneFn) => {
+      // set up the spy and the component
+      const fixture = TestBed.createComponent(AdminDashboard);
+      const adminDashboard = fixture.componentInstance;
+      const adminDashboardDOM = fixture.nativeElement;
+      const setBlockSpy = spyOn(adminDashboard, 'setBlock').and.callThrough();
+      const adminService = adminDashboard.adminService;
+      const blockServiceSpy = spyOn(adminService, 'blockUser').and.callThrough();
+      const blockLengthNum = 864E5 * 7;
+      const blockLengthStr = 'oneWeek';
+      const blockedUser = 7;
+      const releaseDate = new Date((new Date()).getTime() + blockLengthNum).toString();
+      adminDashboard.screen = 'blocks';
+
+      fixture.detectChanges();
+
+      // trigger a click
+      adminDashboardDOM.querySelector('#blockID').value = blockedUser;
+      adminDashboardDOM.querySelector('#blockLength').value = blockLengthStr;
+      adminDashboardDOM.querySelectorAll('.sendData')[0].click();
+
+      fixture.detectChanges();
+
+      expect(setBlockSpy).toHaveBeenCalledWith(blockedUser, blockLengthStr, undefined);
+      expect(blockServiceSpy).toHaveBeenCalledWith(blockedUser, jasmine.any(Date));
+      expect(blockServiceSpy.calls.mostRecent().args[1].toString()).toEqual(releaseDate);
+      done();
+    });
+
+    // Check that blocks are calculated correctly - month
+    it('should calculate block length - month', (done: DoneFn) => {
+      // set up the spy and the component
+      const fixture = TestBed.createComponent(AdminDashboard);
+      const adminDashboard = fixture.componentInstance;
+      const adminDashboardDOM = fixture.nativeElement;
+      const setBlockSpy = spyOn(adminDashboard, 'setBlock').and.callThrough();
+      const adminService = adminDashboard.adminService;
+      const blockServiceSpy = spyOn(adminService, 'blockUser').and.callThrough();
+      const blockLengthNum = 864E5 * 30;
+      const blockLengthStr = 'oneMonth';
+      const blockedUser = 8;
+      const releaseDate = new Date((new Date()).getTime() + blockLengthNum).toString();
+      adminDashboard.screen = 'blocks';
+
+      fixture.detectChanges();
+
+      // trigger a click
+      adminDashboardDOM.querySelector('#blockID').value = blockedUser;
+      adminDashboardDOM.querySelector('#blockLength').value = blockLengthStr;
+      adminDashboardDOM.querySelectorAll('.sendData')[0].click();
+
+      fixture.detectChanges();
+
+      expect(setBlockSpy).toHaveBeenCalledWith(blockedUser, blockLengthStr, undefined);
+      expect(blockServiceSpy).toHaveBeenCalledWith(blockedUser, jasmine.any(Date));
+      expect(blockServiceSpy.calls.mostRecent().args[1].toString()).toEqual(releaseDate);
+      done();
+    });
+
+    // Check that blocks are calculated correctly - forever
+    it('should calculate block length - forever', (done: DoneFn) => {
+      // set up the spy and the component
+      const fixture = TestBed.createComponent(AdminDashboard);
+      const adminDashboard = fixture.componentInstance;
+      const adminDashboardDOM = fixture.nativeElement;
+      const setBlockSpy = spyOn(adminDashboard, 'setBlock').and.callThrough();
+      const adminService = adminDashboard.adminService;
+      const blockServiceSpy = spyOn(adminService, 'blockUser').and.callThrough();
+      const blockLengthNum = 864E5 * 36500;
+      const blockLengthStr = 'forever';
+      const blockedUser = 9;
+      const releaseDate = new Date((new Date()).getTime() + blockLengthNum).toString();
+      adminDashboard.screen = 'blocks';
+
+      fixture.detectChanges();
+
+      // trigger a click
+      adminDashboardDOM.querySelector('#blockID').value = blockedUser;
+      adminDashboardDOM.querySelector('#blockLength').value = blockLengthStr;
+      adminDashboardDOM.querySelectorAll('.sendData')[0].click();
+
+      fixture.detectChanges();
+
+      expect(setBlockSpy).toHaveBeenCalledWith(blockedUser, blockLengthStr, undefined);
+      expect(blockServiceSpy).toHaveBeenCalledWith(blockedUser, jasmine.any(Date));
+      expect(blockServiceSpy.calls.mostRecent().args[1].toString()).toEqual(releaseDate);
+      done();
+    });
+
+    // Check that blocks are calculated correctly - extending a block
+    it('should calculate block length - extending an existing block', (done: DoneFn) => {
+      // set up the spy and the component
+      const fixture = TestBed.createComponent(AdminDashboard);
+      const adminDashboard = fixture.componentInstance;
+      const adminDashboardDOM = fixture.nativeElement;
+      const setBlockSpy = spyOn(adminDashboard, 'setBlock').and.callThrough();
+      const adminService = adminDashboard.adminService;
+      const blockServiceSpy = spyOn(adminService, 'blockUser').and.callThrough();
+      const releaseDate = new Date((new Date('2020-09-29 19:17:31.072')).getTime() + 864E5 * 7);
+      const blockLengthStr = 'oneWeek';
+      const blockedUser = 15;
+      adminDashboard.screen = 'blocks';
+
+      fixture.detectChanges();
+
+      // trigger a click
+      adminDashboardDOM.querySelector('#blockID').value = blockedUser;
+      adminDashboardDOM.querySelector('#blockLength').value = blockLengthStr;
+      adminDashboardDOM.querySelectorAll('.sendData')[0].click();
+
+      fixture.detectChanges();
+
+      expect(setBlockSpy).toHaveBeenCalledWith(blockedUser, blockLengthStr, undefined);
+      expect(blockServiceSpy).toHaveBeenCalledWith(blockedUser, releaseDate);
+      done();
+    });
   });
 
   // FILTERS PAGE
@@ -529,7 +617,7 @@ describe('AdminDashboard', () => {
     });
 
     // Check that a call is made to get filtered phrases
-    it('should get filtered phrases', fakeAsync(() => {
+    it('should get filtered phrases', (done: DoneFn) => {
       // set up the spy and the component
       const adminService = TestBed.inject(AdminService);
       const filterSpy = spyOn(adminService, 'getFilters').and.callThrough();
@@ -539,15 +627,15 @@ describe('AdminDashboard', () => {
       adminDashboard.screen = 'filters';
 
       fixture.detectChanges();
-      tick();
 
       expect(filterSpy).toHaveBeenCalled();
       expect(adminDashboard.adminService.filteredPhrases.length).toBe(2);
       expect(adminDashboardDOM.querySelectorAll('.tableContainer')[0].querySelectorAll('tbody tr').length).toBe(2);
-    }));
+      done();
+    });
 
     // Check that you can add a filter
-    it('should add a new filter', fakeAsync(() => {
+    it('should add a new filter', (done: DoneFn) => {
       // set up the spy and the component
       const fixture = TestBed.createComponent(AdminDashboard);
       const adminDashboard = fixture.componentInstance;
@@ -558,22 +646,21 @@ describe('AdminDashboard', () => {
       adminDashboard.screen = 'filters';
 
       fixture.detectChanges();
-      tick();
 
       // add filter to the text-field and click the button
       adminDashboardDOM.querySelector('#filter').value = 'text';
       adminDashboardDOM.querySelectorAll('.sendData')[0].click();
       fixture.detectChanges();
-      tick();
 
       // check expectations
       expect(addSpy).toHaveBeenCalled();
       expect(addServiceSpy).toHaveBeenCalled();
       expect(addServiceSpy).toHaveBeenCalledWith('text');
-    }));
+      done();
+    });
 
     // Check that you can remove a filter
-    it('should remove a filter', fakeAsync(() => {
+    it('should remove a filter', (done: DoneFn) => {
       // set up the spy and the component
       const fixture = TestBed.createComponent(AdminDashboard);
       const adminDashboard = fixture.componentInstance;
@@ -584,17 +671,16 @@ describe('AdminDashboard', () => {
       adminDashboard.screen = 'filters';
 
       fixture.detectChanges();
-      tick();
 
       // simulate click on the 'remove' button
       adminDashboardDOM.querySelectorAll('.adminButton')[0].click();
       fixture.detectChanges();
-      tick();
 
       // check expectations
       expect(removeSpy).toHaveBeenCalled();
       expect(removeServiceSpy).toHaveBeenCalled();
       expect(removeServiceSpy).toHaveBeenCalledWith(1);
-    }));
+      done();
+    });
   });
 });

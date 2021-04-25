@@ -30,13 +30,7 @@
   SOFTWARE.
 */
 
-import 'zone.js/dist/zone';
-import "zone.js/dist/proxy";
-import "zone.js/dist/sync-test";
-import "zone.js/dist/jasmine-patch";
-import "zone.js/dist/async-test";
-import "zone.js/dist/fake-async-test";
-import { TestBed, tick, fakeAsync } from "@angular/core/testing";
+import { TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from '@angular/router/testing';
 import {} from 'jasmine';
 import { APP_BASE_HREF } from '@angular/common';
@@ -190,7 +184,7 @@ describe('SearchResults', () => {
     });
 
     // Check that an error message is shown if there are no results
-    it('should show error message if there are no user results', fakeAsync(() => {
+    it('should show error message if there are no user results', (done: DoneFn) => {
       const route = TestBed.inject(ActivatedRoute);
       spyOn(route.snapshot.queryParamMap, 'get').and.callFake((param: string) => {
         if(param == 'query') {
@@ -207,14 +201,14 @@ describe('SearchResults', () => {
       searchResults.itemsService.numUserResults = 0;
 
       fixture.detectChanges();
-      tick();
 
       expect(searchResultsDOM.querySelector('#userSearchResults')).toBeNull();
       expect(searchResultsDOM.querySelector('#uSearchResErr')).toBeTruthy();
-    }));
+      done();
+    });
 
     // Check that the result list is shown when there are results
-    it('should show a list of users with links to their pages', fakeAsync(() => {
+    it('should show a list of users with links to their pages', (done: DoneFn) => {
       const route = TestBed.inject(ActivatedRoute);
       spyOn(route.snapshot.queryParamMap, 'get').and.callFake((param: string) => {
         if(param == 'query') {
@@ -229,7 +223,6 @@ describe('SearchResults', () => {
       const searchResultsDOM = fixture.debugElement.nativeElement;
 
       fixture.detectChanges();
-      tick();
 
       expect(searchResults.itemsService.userSearchResults).toBeTruthy();
       expect(searchResults.itemsService.userSearchResults.length).toBe(2);
@@ -241,7 +234,8 @@ describe('SearchResults', () => {
           expect(item.firstElementChild!.textContent).toContain('test');
       });
       expect(searchResultsDOM.querySelector('#uSearchResErr')).toBeNull();
-    }));
+      done();
+    });
   });
 
   // POST SEARCH RESULTS
@@ -276,7 +270,7 @@ describe('SearchResults', () => {
     });
 
     // Check that an error message is shown if there are no results
-    it('should show error message if there are no post results', fakeAsync(() => {
+    it('should show error message if there are no post results', (done: DoneFn) => {
       const route = TestBed.inject(ActivatedRoute);
       spyOn(route.snapshot.queryParamMap, 'get').and.callFake((param: string) => {
         if(param == 'query') {
@@ -293,14 +287,14 @@ describe('SearchResults', () => {
       searchResults.itemsService.numPostResults = 0;
 
       fixture.detectChanges();
-      tick();
 
       expect(searchResultsDOM.querySelector('#postSearchResults')).toBeNull();
       expect(searchResultsDOM.querySelector('#pSearchResErr')).toBeTruthy();
-    }));
+      done();
+    });
 
     // Check that the result list is shown when there are results
-    it('should show a list of posts', fakeAsync(() => {
+    it('should show a list of posts', (done: DoneFn) => {
       const route = TestBed.inject(ActivatedRoute);
       spyOn(route.snapshot.queryParamMap, 'get').and.callFake((param: string) => {
         if(param == 'query') {
@@ -315,7 +309,6 @@ describe('SearchResults', () => {
       const searchResultsDOM = fixture.debugElement.nativeElement;
 
       fixture.detectChanges();
-      tick();
 
       expect(searchResults.itemsService.postSearchResults).toBeTruthy();
       expect(searchResults.itemsService.postSearchResults.length).toBe(1);
@@ -323,10 +316,11 @@ describe('SearchResults', () => {
       expect(searchResultsDOM.querySelectorAll('.searchResult').length).toBe(1);
       expect(searchResultsDOM.querySelectorAll('.searchResult')[0]).toBeTruthy();
       expect(searchResultsDOM.querySelector('#pSearchResErr')).toBeNull();
-    }));
+      done();
+    });
 
     // Check that a different page gets different results
-    it('changes page when clicked', fakeAsync(() => {
+    it('changes page when clicked', (done: DoneFn) => {
       // set up spies
       const route = TestBed.inject(ActivatedRoute);
       spyOn(route.snapshot.queryParamMap, 'get').and.callFake((param: string) => {
@@ -353,7 +347,6 @@ describe('SearchResults', () => {
       // change the page
       searchResultsDOM.querySelectorAll('.nextButton')[0].click();
       fixture.detectChanges();
-      tick();
 
       // expectations for page 2
       expect(routeSpy).toHaveBeenCalled();
@@ -363,16 +356,16 @@ describe('SearchResults', () => {
       // change the page
       searchResultsDOM.querySelectorAll('.prevButton')[0].click();
       fixture.detectChanges();
-      tick();
 
       // expectations for page 1
       expect(routeSpy).toHaveBeenCalledTimes(2);
       expect(searchResults.itemsService.postSearchPage).toBe(1);
       expect(searchResultsDOM.querySelector('#postSearchResults').firstElementChild.children.length).toBe(1);
-    }));
+      done();
+    });
 
     // Check the posts' menu is shown if there's enough room for them
-    it('should show the posts\'s menu if wide enough', fakeAsync(() => {
+    it('should show the posts\'s menu if wide enough', (done: DoneFn) => {
       // set up spies
       const route = TestBed.inject(ActivatedRoute);
       spyOn(route.snapshot.queryParamMap, 'get').and.callFake((param: string) => {
@@ -392,7 +385,6 @@ describe('SearchResults', () => {
       const viewCheckedSpy = spyOn(searchResults, 'ngAfterViewChecked').and.callThrough();
       spyOn(authService, 'canUser').and.returnValue(true);
       fixture.detectChanges();
-      tick();
 
       // change the elements' width to make sure there's enough room for the menu
       let sub = searchResultsDOM.querySelectorAll('.searchResult')[0]!.querySelectorAll('.subMenu')[0] as HTMLDivElement;
@@ -409,10 +401,11 @@ describe('SearchResults', () => {
         expect(element.querySelectorAll('.menuButton')[0].classList).toContain('hidden');
       })
       expect(viewCheckedSpy).toHaveBeenCalled();
-    }));
+      done();
+    });
 
     // check the posts' menu isn't shown if there isn't enough room for it
-    it('shouldn\'t show the posts\'s menu if not wide enough', fakeAsync(() => {
+    it('shouldn\'t show the posts\'s menu if not wide enough', (done: DoneFn) => {
       // set up spies
       const route = TestBed.inject(ActivatedRoute);
       spyOn(route.snapshot.queryParamMap, 'get').and.callFake((param: string) => {
@@ -432,7 +425,6 @@ describe('SearchResults', () => {
       const viewCheckedSpy = spyOn(searchResults, 'ngAfterViewChecked').and.callThrough();
       spyOn(authService, 'canUser').and.returnValue(true);
       fixture.detectChanges();
-      tick();
 
       // change the elements' width to make sure there isn't enough room for the menu
       let sub = searchResultsDOM.querySelectorAll('.searchResult')[0]!.querySelectorAll('.subMenu')[0] as HTMLDivElement;
@@ -450,10 +442,11 @@ describe('SearchResults', () => {
         expect(element.querySelectorAll('.menuButton')[0].classList).not.toContain('hidden');
       });
       expect(viewCheckedSpy).toHaveBeenCalled();
-    }));
+      done();
+    });
 
     // check a menu is shown when clickinng the options button
-    it('should show the post\'s menu when clicked', fakeAsync(() => {
+    it('should show the post\'s menu when clicked', (done: DoneFn) => {
       // set up spies
       const route = TestBed.inject(ActivatedRoute);
       spyOn(route.snapshot.queryParamMap, 'get').and.callFake((param: string) => {
@@ -473,7 +466,6 @@ describe('SearchResults', () => {
       const toggleSpy = spyOn(searchResults, 'openMenu').and.callThrough();
       spyOn(authService, 'canUser').and.returnValue(true);
       fixture.detectChanges();
-      tick();
 
       // change the elements' width to make sure there isn't enough room for the menu
       const firstElement = searchResultsDOM.querySelectorAll('.searchResult')[0]!;
@@ -492,7 +484,6 @@ describe('SearchResults', () => {
       // click the options buton for the first new post
       firstElement.querySelectorAll('.menuButton')[0].click();
       fixture.detectChanges();
-      tick();
 
       // check the first post's menu is shown
       expect(toggleSpy).toHaveBeenCalled();
@@ -502,10 +493,11 @@ describe('SearchResults', () => {
       expect(firstElement.querySelectorAll('.subMenu')[0].classList).not.toContain('hidden');
       expect(firstElement.querySelectorAll('.subMenu')[0].classList).toContain('float');
       expect(firstElement.querySelectorAll('.menuButton')[0].classList).not.toContain('hidden');
-    }));
+      done();
+    });
 
     // check only the selected menu is shown when clicking a button
-    it('should show the correct post\'s menu when clicked', fakeAsync(() => {
+    it('should show the correct post\'s menu when clicked', (done: DoneFn) => {
       // set up spies
       const route = TestBed.inject(ActivatedRoute);
       spyOn(route.snapshot.queryParamMap, 'get').and.callFake((param: string) => {
@@ -526,7 +518,6 @@ describe('SearchResults', () => {
       const toggleSpy = spyOn(searchResults, 'openMenu').and.callThrough();
       spyOn(authService, 'canUser').and.returnValue(true);
       fixture.detectChanges();
-      tick();
 
       // change the elements' width to make sure there isn't enough room for the menu
       let sub = searchResultsDOM.querySelectorAll('.searchResult')[0]!.querySelectorAll('.subMenu')[0] as HTMLDivElement;
@@ -545,7 +536,6 @@ describe('SearchResults', () => {
       // trigger click
       clickElement.querySelectorAll('.menuButton')[0].click();
       fixture.detectChanges();
-      tick();
 
       // check only the second post's menu is shown
       let posts = searchResultsDOM.querySelectorAll('.searchResult');
@@ -565,10 +555,11 @@ describe('SearchResults', () => {
       expect(toggleSpy).toHaveBeenCalled();
       expect(toggleSpy).toHaveBeenCalledWith('nPost5');
       expect(searchResults.showMenuNum).toBe('nPost5');
-    }));
+      done();
+    });
 
     // check that clicking the same menu button again hides it
-    it('should hide the post\'s menu when clicked again', fakeAsync(() => {
+    it('should hide the post\'s menu when clicked again', (done: DoneFn) => {
       // set up spies
       const route = TestBed.inject(ActivatedRoute);
       spyOn(route.snapshot.queryParamMap, 'get').and.callFake((param: string) => {
@@ -588,7 +579,6 @@ describe('SearchResults', () => {
       const toggleSpy = spyOn(searchResults, 'openMenu').and.callThrough();
       spyOn(authService, 'canUser').and.returnValue(true);
       fixture.detectChanges();
-      tick();
 
       // change the elements' width to make sure there isn't enough room for the menu
       const firstElement = searchResultsDOM.querySelectorAll('.searchResult')[0]!;
@@ -609,7 +599,6 @@ describe('SearchResults', () => {
       // click the options buton for the first new post
       searchResultsDOM.querySelectorAll('.searchResult')[0]!.querySelectorAll('.menuButton')[0].click();
       fixture.detectChanges();
-      tick();
 
       // check the first post's menu is shown
       expect(toggleSpy).toHaveBeenCalled();
@@ -621,7 +610,6 @@ describe('SearchResults', () => {
       // click the options buton for the first new post again
       searchResultsDOM.querySelectorAll('.searchResult')[0]!.querySelectorAll('.menuButton')[0].click();
       fixture.detectChanges();
-      tick();
 
       // check the menu is hidden
       expect(toggleSpy).toHaveBeenCalled();
@@ -630,11 +618,12 @@ describe('SearchResults', () => {
       expect(searchResults.showMenuNum).toBeNull();
       expect(firstElement.querySelectorAll('.subMenu')[0].classList).toContain('hidden');
       expect(firstElement.querySelectorAll('.menuButton')[0].classList).not.toContain('hidden');
-    }));
+      done();
+    });
 
     // check that clicking another menu button also closes the previous one
     // and opens the new one
-    it('should hide the previous post\'s menu when another post\'s menu button is clicked', fakeAsync(() => {
+    it('should hide the previous post\'s menu when another post\'s menu button is clicked', (done: DoneFn) => {
       // set up spies
       const route = TestBed.inject(ActivatedRoute);
       spyOn(route.snapshot.queryParamMap, 'get').and.callFake((param: string) => {
@@ -655,7 +644,6 @@ describe('SearchResults', () => {
       const toggleSpy = spyOn(searchResults, 'openMenu').and.callThrough();
       spyOn(authService, 'canUser').and.returnValue(true);
       fixture.detectChanges();
-      tick();
 
       // change the elements' width to make sure there isn't enough room for the menu
       const firstElement = searchResultsDOM.querySelectorAll('.searchResult')[0]!
@@ -677,7 +665,6 @@ describe('SearchResults', () => {
       // click the options buton for the first new post
       searchResultsDOM.querySelectorAll('.searchResult')[0]!.querySelectorAll('.menuButton')[0].click();
       fixture.detectChanges();
-      tick();
 
       // check the first post's menu is shown
       expect(toggleSpy).toHaveBeenCalled();
@@ -690,7 +677,6 @@ describe('SearchResults', () => {
       // click the options button for another post
       searchResultsDOM.querySelectorAll('.searchResult')[1]!.querySelectorAll('.menuButton')[0].click();
       fixture.detectChanges();
-      tick();
 
       // check the first post's menu is hidden and the new post's menu is shown
       expect(toggleSpy).toHaveBeenCalled();
@@ -699,6 +685,7 @@ describe('SearchResults', () => {
       expect(searchResults.showMenuNum).toBe('nPost5');
       expect(firstElement.querySelectorAll('.subMenu')[0].classList).toContain('hidden');
       expect(searchResultsDOM.querySelectorAll('.searchResult')[1]!.querySelectorAll('.subMenu')[0].classList).not.toContain('hidden');
-    }));
+      done();
+    });
   });
 });

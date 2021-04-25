@@ -30,13 +30,7 @@
   SOFTWARE.
 */
 
-import 'zone.js/dist/zone';
-import "zone.js/dist/proxy";
-import "zone.js/dist/sync-test";
-import "zone.js/dist/jasmine-patch";
-import "zone.js/dist/async-test";
-import "zone.js/dist/fake-async-test";
-import { TestBed, tick, fakeAsync } from "@angular/core/testing";
+import { TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from '@angular/router/testing';
 import {} from 'jasmine';
 import { APP_BASE_HREF } from '@angular/common';
@@ -96,7 +90,7 @@ describe('FullList', () => {
   });
 
   // Check the posts' menu is shown if there's enough room for them
-  it('should show the posts\'s menu if wide enough', fakeAsync(() => {
+  it('should show the posts\'s menu if wide enough', (done: DoneFn) => {
     const paramMap = TestBed.inject(ActivatedRoute);
     paramMap.url = of([{path: 'New'} as UrlSegment]);
     const fixture = TestBed.createComponent(FullList);
@@ -106,7 +100,6 @@ describe('FullList', () => {
     const viewCheckedSpy = spyOn(fullList, 'ngAfterViewChecked').and.callThrough();
     spyOn(authService, 'canUser').and.returnValue(true);
     fixture.detectChanges();
-    tick();
 
     // change the elements' width to make sure there's enough room for the menu
     let sub = fullListDOM.querySelectorAll('.newItem')[0]!.querySelectorAll('.subMenu')[0] as HTMLDivElement;
@@ -123,10 +116,11 @@ describe('FullList', () => {
       expect(element.querySelectorAll('.menuButton')[0].classList).toContain('hidden');
     })
     expect(viewCheckedSpy).toHaveBeenCalled();
-  }));
+    done();
+  });
 
   // check the posts' menu isn't shown if there isn't enough room for it
-  it('shouldn\'t show the posts\'s menu if not wide enough', fakeAsync(() => {
+  it('shouldn\'t show the posts\'s menu if not wide enough', (done: DoneFn) => {
     const paramMap = TestBed.inject(ActivatedRoute);
     paramMap.url = of([{path: 'New'} as UrlSegment]);
     const fixture = TestBed.createComponent(FullList);
@@ -136,7 +130,6 @@ describe('FullList', () => {
     const viewCheckedSpy = spyOn(fullList, 'ngAfterViewChecked').and.callThrough();
     spyOn(authService, 'canUser').and.returnValue(true);
     fixture.detectChanges();
-    tick();
 
     // change the elements' width to make sure there isn't enough room for the menu
     let sub = fullListDOM.querySelectorAll('.newItem')[0]!.querySelectorAll('.subMenu')[0] as HTMLDivElement;
@@ -154,10 +147,11 @@ describe('FullList', () => {
       expect(element.querySelectorAll('.menuButton')[0].classList).not.toContain('hidden');
     });
     expect(viewCheckedSpy).toHaveBeenCalled();
-  }));
+    done();
+  });
 
   // check a menu is shown when clickinng the options button
-  it('should show the post\'s menu when clicked', fakeAsync(() => {
+  it('should show the post\'s menu when clicked', (done: DoneFn) => {
     const paramMap = TestBed.inject(ActivatedRoute);
     paramMap.url = of([{path: 'New'} as UrlSegment]);
     const fixture = TestBed.createComponent(FullList);
@@ -167,7 +161,6 @@ describe('FullList', () => {
     const toggleSpy = spyOn(fullList, 'openMenu').and.callThrough();
     spyOn(authService, 'canUser').and.returnValue(true);
     fixture.detectChanges();
-    tick();
 
     // change the elements' width to make sure there isn't enough room for the menu
     const firstElement = fullListDOM.querySelectorAll('.newItem')[0]!;
@@ -186,7 +179,6 @@ describe('FullList', () => {
     // click the options buton for the first new post
     firstElement.querySelectorAll('.menuButton')[0].click();
     fixture.detectChanges();
-    tick();
 
     // check the first post's menu is shown
     expect(toggleSpy).toHaveBeenCalled();
@@ -196,10 +188,11 @@ describe('FullList', () => {
     expect(firstElement.querySelectorAll('.subMenu')[0].classList).not.toContain('hidden');
     expect(firstElement.querySelectorAll('.subMenu')[0].classList).toContain('float');
     expect(firstElement.querySelectorAll('.menuButton')[0].classList).not.toContain('hidden');
-  }));
+    done();
+  });
 
   // check only the selected menu is shown when clicking a button
-  it('should show the correct post\'s menu when clicked', fakeAsync(() => {
+  it('should show the correct post\'s menu when clicked', (done: DoneFn) => {
     const paramMap = TestBed.inject(ActivatedRoute);
     paramMap.url = of([{path: 'New'} as UrlSegment]);
     const fixture = TestBed.createComponent(FullList);
@@ -209,7 +202,6 @@ describe('FullList', () => {
     const toggleSpy = spyOn(fullList, 'openMenu').and.callThrough();
     spyOn(authService, 'canUser').and.returnValue(true);
     fixture.detectChanges();
-    tick();
 
     // change the elements' width to make sure there isn't enough room for the menu
     let sub = fullListDOM.querySelectorAll('.newItem')[0]!.querySelectorAll('.subMenu')[0] as HTMLDivElement;
@@ -228,7 +220,6 @@ describe('FullList', () => {
     // trigger click
     clickElement.querySelectorAll('.menuButton')[0].click();
     fixture.detectChanges();
-    tick();
 
     // check only the second post's menu is shown
     let posts = fullListDOM.querySelectorAll('.newItem');
@@ -248,10 +239,11 @@ describe('FullList', () => {
     expect(toggleSpy).toHaveBeenCalled();
     expect(toggleSpy).toHaveBeenCalledWith('nPost2');
     expect(fullList.showMenuNum).toBe('nPost2');
-  }));
+    done();
+  });
 
   // check that clicking the same menu button again hides it
-  it('should hide the post\'s menu when clicked again', fakeAsync(() => {
+  it('should hide the post\'s menu when clicked again', (done: DoneFn) => {
     const paramMap = TestBed.inject(ActivatedRoute);
     paramMap.url = of([{path: 'New'} as UrlSegment]);
     const fixture = TestBed.createComponent(FullList);
@@ -261,7 +253,6 @@ describe('FullList', () => {
     const toggleSpy = spyOn(fullList, 'openMenu').and.callThrough();
     spyOn(authService, 'canUser').and.returnValue(true);
     fixture.detectChanges();
-    tick();
 
     // change the elements' width to make sure there isn't enough room for the menu
     const firstElement = fullListDOM.querySelectorAll('.newItem')[0]!;
@@ -282,7 +273,6 @@ describe('FullList', () => {
     // click the options buton for the first new post
     fullListDOM.querySelectorAll('.newItem')[0]!.querySelectorAll('.menuButton')[0].click();
     fixture.detectChanges();
-    tick();
 
     // check the first post's menu is shown
     expect(toggleSpy).toHaveBeenCalled();
@@ -294,7 +284,6 @@ describe('FullList', () => {
     // click the options buton for the first new post again
     fullListDOM.querySelectorAll('.newItem')[0]!.querySelectorAll('.menuButton')[0].click();
     fixture.detectChanges();
-    tick();
 
     // check the menu is hidden
     expect(toggleSpy).toHaveBeenCalled();
@@ -303,11 +292,12 @@ describe('FullList', () => {
     expect(fullList.showMenuNum).toBeNull();
     expect(firstElement.querySelectorAll('.subMenu')[0].classList).toContain('hidden');
     expect(firstElement.querySelectorAll('.menuButton')[0].classList).not.toContain('hidden');
-  }));
+    done();
+  });
 
   // check that clicking another menu button also closes the previous one
   // and opens the new one
-  it('should hide the previous post\'s menu when another post\'s menu button is clicked', fakeAsync(() => {
+  it('should hide the previous post\'s menu when another post\'s menu button is clicked', (done: DoneFn) => {
     const paramMap = TestBed.inject(ActivatedRoute);
     paramMap.url = of([{path: 'New'} as UrlSegment]);
     const fixture = TestBed.createComponent(FullList);
@@ -317,7 +307,6 @@ describe('FullList', () => {
     const toggleSpy = spyOn(fullList, 'openMenu').and.callThrough();
     spyOn(authService, 'canUser').and.returnValue(true);
     fixture.detectChanges();
-    tick();
 
     // change the elements' width to make sure there isn't enough room for the menu
     const firstElement = fullListDOM.querySelectorAll('.newItem')[0]!
@@ -339,7 +328,6 @@ describe('FullList', () => {
     // click the options buton for the first new post
     fullListDOM.querySelectorAll('.newItem')[0]!.querySelectorAll('.menuButton')[0].click();
     fixture.detectChanges();
-    tick();
 
     // check the first post's menu is shown
     expect(toggleSpy).toHaveBeenCalled();
@@ -352,7 +340,6 @@ describe('FullList', () => {
     // click the options button for another post
     fullListDOM.querySelectorAll('.newItem')[1]!.querySelectorAll('.menuButton')[0].click();
     fixture.detectChanges();
-    tick();
 
     // check the first post's menu is hidden and the new post's menu is shown
     expect(toggleSpy).toHaveBeenCalled();
@@ -360,7 +347,8 @@ describe('FullList', () => {
     expect(toggleSpy).toHaveBeenCalledWith('nPost2');
     expect(firstElement.querySelectorAll('.subMenu')[0].classList).toContain('hidden');
     expect(fullListDOM.querySelectorAll('.newItem')[1]!.querySelectorAll('.subMenu')[0].classList).not.toContain('hidden');
-  }));
+    done();
+  });
 
   // FULL NEW LIST
   // ==================================================================
@@ -393,7 +381,7 @@ describe('FullList', () => {
     });
 
     // Check that the type parameter has an affect on the page
-    it('has a type determined by the type parameter - new', fakeAsync(() => {
+    it('has a type determined by the type parameter - new', (done: DoneFn) => {
       // set up spies
       const paramMap = TestBed.inject(ActivatedRoute);
       paramMap.url = of([{path: 'New'} as UrlSegment]);
@@ -406,7 +394,6 @@ describe('FullList', () => {
       const fullList = fixture.componentInstance;
 
       fixture.detectChanges();
-      tick();
 
       expect(fullList.waitFor).toBe('new posts');
       expect(newPostsSpy).toHaveBeenCalled();
@@ -414,10 +401,11 @@ describe('FullList', () => {
       expect(postsService.fullItemsList).toBeTruthy();
       expect(postsService.fullItemsList.fullNewItems.length).toBe(2);
       expect(postsService.fullItemsList.fullSuggestedItems.length).toBe(0);
-    }));
+      done();
+    });
 
     // Check that a different page gets different results
-    it('changes page when clicked', fakeAsync(() => {
+    it('changes page when clicked', (done: DoneFn) => {
       // set up spies
       const paramMap = TestBed.inject(ActivatedRoute);
       paramMap.url = of([{path: 'New'} as UrlSegment]);
@@ -440,7 +428,6 @@ describe('FullList', () => {
       // change the page
       fullListDOM.querySelectorAll('.nextButton')[0].click();
       fixture.detectChanges();
-      tick();
 
       // expectations for page 2
       expect(pageSpy).toHaveBeenCalled();
@@ -451,14 +438,14 @@ describe('FullList', () => {
       // change the page again
       fullListDOM.querySelectorAll('.prevButton')[0].click();
       fixture.detectChanges();
-      tick();
 
       // expectations for page 1
       expect(pageSpy).toHaveBeenCalled();
       expect(fullList.page).toBe(1);
       expect(fullListDOM.querySelector('#fullItems').children.length).toBe(2);
       expect(newPostsSpy).toHaveBeenCalledTimes(3);
-    }));
+      done();
+    });
   });
 
   // FULL SUGGESTED LIST
@@ -492,7 +479,7 @@ describe('FullList', () => {
     });
 
     // Check that the type parameter has an affect on the page
-    it('has a type determined by the type parameter - suggested', fakeAsync(() => {
+    it('has a type determined by the type parameter - suggested', (done: DoneFn) => {
       // set up spies
       const paramMap = TestBed.inject(ActivatedRoute);
       paramMap.url = of([{path: 'Suggested'} as UrlSegment]);
@@ -505,7 +492,6 @@ describe('FullList', () => {
       const fullList = fixture.componentInstance;
 
       fixture.detectChanges();
-      tick();
 
       expect(fullList.waitFor).toBe('suggested posts');
       expect(sugPostsSpy).toHaveBeenCalled();
@@ -513,10 +499,11 @@ describe('FullList', () => {
       expect(postsService.fullItemsList).toBeTruthy();
       expect(postsService.fullItemsList.fullNewItems.length).toBe(0);
       expect(postsService.fullItemsList.fullSuggestedItems.length).toBe(2);
-    }));
+      done();
+    });
 
     // Check that a different page gets different results
-    it('changes page when clicked', fakeAsync(() => {
+    it('changes page when clicked', (done: DoneFn) => {
       // set up spies
       const paramMap = TestBed.inject(ActivatedRoute);
       paramMap.url = of([{path: 'Suggested'} as UrlSegment]);
@@ -539,7 +526,6 @@ describe('FullList', () => {
       // change the page
       fullListDOM.querySelectorAll('.nextButton')[0].click();
       fixture.detectChanges();
-      tick();
 
       // expectations for page 2
       expect(pageSpy).toHaveBeenCalled();
@@ -550,13 +536,13 @@ describe('FullList', () => {
       // change the page
       fullListDOM.querySelectorAll('.prevButton')[0].click();
       fixture.detectChanges();
-      tick();
 
       // expectations for page 1
       expect(pageSpy).toHaveBeenCalled();
       expect(fullList.page).toBe(1);
       expect(fullListDOM.querySelector('#fullItems').children.length).toBe(2);
       expect(sugPostsSpy).toHaveBeenCalledTimes(3);
-    }));
+      done();
+    });
   });
 });

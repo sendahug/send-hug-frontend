@@ -30,13 +30,7 @@
   SOFTWARE.
 */
 
-import 'zone.js/dist/zone';
-import "zone.js/dist/proxy";
-import "zone.js/dist/sync-test";
-import "zone.js/dist/jasmine-patch";
-import "zone.js/dist/async-test";
-import "zone.js/dist/fake-async-test";
-import { TestBed, tick, fakeAsync } from "@angular/core/testing";
+import { TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from '@angular/router/testing';
 import {} from 'jasmine';
 import { APP_BASE_HREF } from '@angular/common';
@@ -99,7 +93,7 @@ describe('SitePolicies', () => {
   });
 
   // Check the icon changes when the radio button is clicked
-  it('should change icon when radio buttons are clicked', fakeAsync(() => {
+  it('should change icon when radio buttons are clicked', (done: DoneFn) => {
     const fixture = TestBed.createComponent(IconEditor);
     const iconEditor = fixture.componentInstance;
     const iconEditorDOM = fixture.nativeElement;
@@ -110,16 +104,15 @@ describe('SitePolicies', () => {
 
     iconEditorDOM.querySelector('#cRadioOption1').click();
     fixture.detectChanges();
-    tick();
 
     // before changing icon
     expect(iconEditor.selectedIcon).toBe('bear');
 
     iconEditorDOM.querySelector('#cRadioOption3').click();
     fixture.detectChanges();
-    tick();
 
     // before changing icon
     expect(iconEditor.selectedIcon).toBe('dog');
-  }));
+    done();
+  });
 });

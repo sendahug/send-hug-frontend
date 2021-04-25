@@ -30,13 +30,7 @@
   SOFTWARE.
 */
 
-import 'zone.js/dist/zone';
-import "zone.js/dist/proxy";
-import "zone.js/dist/sync-test";
-import "zone.js/dist/jasmine-patch";
-import "zone.js/dist/async-test";
-import "zone.js/dist/fake-async-test";
-import { TestBed, tick, fakeAsync } from "@angular/core/testing";
+import { TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from '@angular/router/testing';
 import {} from 'jasmine';
 import { APP_BASE_HREF } from '@angular/common';
@@ -114,7 +108,7 @@ describe('Loader', () => {
   });
 
   // Check that the component displays a loading message
-  it('should display a loading message', fakeAsync(() => {
+  it('should display a loading message', (done: DoneFn) => {
     TestBed.createComponent(AppComponent);
     const fixture = TestBed.createComponent(Loader);
     const loader  = fixture.componentInstance;
@@ -122,17 +116,17 @@ describe('Loader', () => {
     loader.waitingFor = 'user';
     loader['authService'].isUserDataResolved.next(false);
     fixture.detectChanges();
-    tick();
 
     expect(loader.message).toBeDefined();
     expect(loader.message).toBe('Fetching user data...');
     expect(loaderDOM.querySelector('#loadingMessage')).toBeTruthy();
     expect(loaderDOM.querySelector('#loadingMessage').textContent).toBe(loader.message);
-  }));
+    done();
+  });
 
   // Check that the component is displaying different loading messages
   // for different components
-  it('should display different messages for different components', fakeAsync(() => {
+  it('should display different messages for different components', (done: DoneFn) => {
     TestBed.createComponent(AppComponent);
     const fixture = TestBed.createComponent(Loader);
     const loader  = fixture.componentInstance;
@@ -168,14 +162,14 @@ describe('Loader', () => {
       loader.ngOnChanges();
       observables[index].next(false);
       fixture.detectChanges();
-      tick();
       expect(loader.message).toBe(loadingMessagesOptions[index]);
       expect(loaderDOM.querySelector('#loadingMessage').textContent).toBe(loader.message);
     });
-  }));
+    done();
+  });
 
   // Check that the component subscribes to the correct observable
-  it('subscribes to the correct observable', fakeAsync(() => {
+  it('subscribes to the correct observable', (done: DoneFn) => {
     // set up spies
     TestBed.createComponent(AppComponent);
     let previousSpies: jasmine.Spy<any>[] = [];
@@ -221,7 +215,6 @@ describe('Loader', () => {
       loader.waitingFor = target;
       loader.ngOnChanges();
       fixture.detectChanges();
-      tick();
 
       // check that each of the previous spies was called once, in its
       // relevant if
@@ -247,7 +240,6 @@ describe('Loader', () => {
     authSpy.calls.reset();
     loader.ngOnChanges();
     fixture.detectChanges();
-    tick();
     // check the auth spy was called for this target
     expect(authSpy).toHaveBeenCalled();
     // check that each of the previous spies was called once, in its
@@ -256,10 +248,11 @@ describe('Loader', () => {
       expect(item).toHaveBeenCalled();
       expect(item!.calls.count()).toBe(1);
     })
-  }));
+    done();
+  });
 
   // Check that the loader says on until the BehaviorSubject is false
-  it('stays on until the BehaviorSubject emits false', fakeAsync(() => {
+  it('stays on until the BehaviorSubject emits false', (done: DoneFn) => {
     // set up the component
     const fixture = TestBed.createComponent(Loader);
     const loader  = fixture.componentInstance;
@@ -295,17 +288,16 @@ describe('Loader', () => {
       loader.waitingFor = target;
       loader.ngOnChanges();
       fixture.detectChanges();
-      tick();
       // check that the visibility is true
       expect(loader.visible).toBeTrue();
       expect(loaderDOM.querySelector('#loading')).toBeTruthy();
       // change the BehaviorSubject's value to true
       subjects[index].next(true);
       fixture.detectChanges();
-      tick();
       // check that the visibility is false
       expect(loader.visible).toBeFalse();
       expect(loaderDOM.querySelector('#loading')).toBeNull();
     })
-  }));
+    done();
+  });
 });

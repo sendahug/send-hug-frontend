@@ -1,4 +1,4 @@
-const currentCache = "send-hug-v5";
+const currentCache = "send-hug-v6";
 const serverUrl = "send-hug-server.herokuapp.com";
 
 // upon installing a new service worker
@@ -26,10 +26,10 @@ self.addEventListener("install", function(event) {
 				'/app/userPage.component.html',
 				'/app.bundle.js'
 			]
-			
+
 			// add all assets to cache
 			cache.addAll(toCache);
-			
+
 			// cache icons
 			let iconCache = [
 				'/assets/img/admin.svg',
@@ -44,10 +44,10 @@ self.addEventListener("install", function(event) {
 				'/assets/img/post_active.svg',
 				'/assets/img/post_hover.svg'
 			]
-			
+
 			// add all icons to cache
 			cache.addAll(iconCache);
-			
+
 		// in case there's an error
 		}).catch(function(err) {
 			console.log(err);
@@ -75,12 +75,12 @@ self.addEventListener("activate", function(event) {
 self.addEventListener("fetch", function(event) {
 	let fetchTarget = event.request.url;
 	let urlToFetch;
-	
+
 	//if the request is for a browser-sync component, skip checking the cache
 	if(fetchTarget.includes("browser-sync")) {
 		return;
 	}
-	
+
 	// if the request is for the server and the user is online
 	if(fetchTarget.includes(serverUrl) && navigator.onLine) {
 		// if it's a POST request with PushSubscription data, save the info in cache
@@ -108,7 +108,7 @@ self.addEventListener("fetch", function(event) {
 			"statusText": "The server isn't available at the moment as you are currently offline. Try again when you're connected to the internet."
 		})
 	}
-	
+
 	// if the request is a non-GET and the user is offline, return an error
 	if(event.request.method != 'GET' && !navigator.onLine) {
 		return new Response("You are currently offline; try again when you're online.", {
@@ -120,14 +120,14 @@ self.addEventListener("fetch", function(event) {
 	else if(event.request.method != 'GET' && navigator.onLine) {
 		return;
 	}
-	
+
 	if(fetchTarget.pathname == '/') {
 		urlToFetch = '/index.html';
 	}
 	else {
 		urlToFetch = fetchTarget;
 	}
-	
+
 	event.respondWith(
 		// find the target in the cache
 		caches.match(fetchTarget).then(function(response) {
@@ -143,7 +143,7 @@ self.addEventListener("fetch", function(event) {
 						let cachedDate = response.headers.get("Last-Modified");
 						let fetchedDateSec = new Date(fetchedDate);
 						let cachedDateSec = new Date(cachedDate);
-						
+
 						//if the asset isn't the dynamic JS file and it was changed since it was cached, replace the
 						//cached asset with the new asset
 						if(urlToFetch != '/app.bundle.js' && fetchedDateSec > cachedDateSec)
@@ -170,7 +170,7 @@ self.addEventListener("fetch", function(event) {
 							console.log(err);
 						}
 					})
-				
+
 				// if the URL to fetch is not one of the static assets, return fetch request
 				if(urlToFetch == '/app.bundle.js' || fetchTarget.includes(serverUrl)) {
 					return fetch(urlToFetch, {headers: event.request.headers}).catch(function(err) {
@@ -194,7 +194,7 @@ self.addEventListener("fetch", function(event) {
 				}).catch(function(err) {
 					console.log('Error: ' + err);
 				})
-				
+
 				// return the fetch request in the meanwhile so that the user won't
 				// have to wait
 				return fetch(fetchTarget, {headers: event.request.headers}).catch(function(err) {
@@ -226,7 +226,7 @@ self.addEventListener("message", function(event) {
 // push event listener
 self.addEventListener('push', function(event) {
 	pushData = event.data.json();
-	
+
 	event.waitUntil(
 		// show the user the notification
 		self.registration.showNotification(pushData.title, {
@@ -236,7 +236,7 @@ self.addEventListener('push', function(event) {
 	)
 })
 
-// push subscription change 
+// push subscription change
 self.addEventListener('pushsubscriptionchange', (event) => {
 	// get the clients using the service worker
 	self.clients.matchAll().then(clients => {

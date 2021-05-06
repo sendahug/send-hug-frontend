@@ -58,7 +58,7 @@
     "watchify": "^4.0.0"
   },
   "dependencies": {
-    "@angular/animations": "^11.2.12",
+    "@angular/animations": "^11.2.13",
     "@angular/common": "^11.2.12",
     "@angular/compiler": "^11.2.12",
     "@angular/compiler-cli": "^11.2.12",

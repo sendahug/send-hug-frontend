@@ -89,4 +89,4 @@ updates:
     versions:
     - 7.0.0
     - 7.0.4
-  rebase-strategy: disabled
+  rebase-strategy: auto

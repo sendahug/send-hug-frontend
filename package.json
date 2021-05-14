@@ -19,7 +19,7 @@
   "author": "Shir Bar Lev",
   "license": "ISC",
   "devDependencies": {
-    "@babel/core": "^7.14.0",
+    "@babel/core": "^7.14.2",
     "@babel/preset-env": "^7.14.1",
     "@types/auth0-js": "^9.14.4",
     "@types/jasmine": "^3.7.4",

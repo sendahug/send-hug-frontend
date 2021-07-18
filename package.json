@@ -44,7 +44,7 @@
     "karma-coverage": "^2.0.3",
     "karma-coverage-istanbul-reporter": "^3.0.3",
     "karma-jasmine": "^4.0.1",
-    "karma-jasmine-html-reporter": "^1.6.0",
+    "karma-jasmine-html-reporter": "^1.7.0",
     "karma-sourcemap-loader": "^0.3.8",
     "karma-viewport": "^1.0.8",
     "postcss": "^8.3.5",
@@ -58,7 +58,7 @@
     "watchify": "^4.0.0"
   },
   "dependencies": {
-    "@angular/animations": "^12.1.1",
+    "@angular/animations": "^12.1.2",
     "@angular/common": "^12.1.1",
     "@angular/compiler": "^12.1.1",
     "@angular/compiler-cli": "^12.1.1",

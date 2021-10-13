@@ -19,7 +19,7 @@
     "@babel/preset-env": "^7.15.6",
     "@types/auth0-js": "^9.14.5",
     "@types/jasmine": "^3.9.1",
-    "@types/node": "^16.10.2",
+    "@types/node": "^16.10.5",
     "autoprefixer": "^10.3.6",
     "browser-sync": "^2.27.5",
     "browserify": "^17.0.0",

@@ -56,7 +56,7 @@
     "@angular/animations": "^12.2.15",
     "@angular/common": "^12.2.15",
     "@angular/compiler": "^12.2.15",
-    "@angular/compiler-cli": "^12.2.15",
+    "@angular/compiler-cli": "^12.2.16",
     "@angular/core": "^12.2.15",
     "@angular/forms": "^12.2.15",
     "@angular/platform-browser": "^12.2.15",

@@ -387,3 +387,4 @@ exports.scriptsDist = scriptsDist;
 exports.watch = watch;
 exports.e2e = e2e;
 exports.setupTests = setupTests;
+exports.e2eServe = e2eServe;

@@ -26,7 +26,7 @@ module.exports = function (karma) {
         }),
         replaceTemplateUrl(),
         inlineSVGs(),
-   			typescript(),
+   			typescript({ exclude: ['e2e/**/*'] }),
    			nodeResolve({
    				extensions: ['.js', '.ts']
    			}),

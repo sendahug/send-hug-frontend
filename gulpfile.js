@@ -11,8 +11,6 @@ const rename = require("gulp-rename");
 const replace = require("gulp-replace");
 const fs = require("fs");
 const path = require("path");
-const execFile = require('child_process').execFile;
-const webdriverUpdate = require('protractor/node_modules/webdriver-manager/built/lib/cmds/update');
 var Server = require('karma').Server;
 var glob = require("glob");
 let bs;
@@ -20,6 +18,7 @@ const rollupStream = require("@rollup/stream");
 const commonjs = require("@rollup/plugin-commonjs");
 const nodeResolve = require("@rollup/plugin-node-resolve").nodeResolve;
 const typescript = require("@rollup/plugin-typescript");
+const { exec } = require("child_process");
 
 // LOCAL DEVELOPMENT TASKS
 // ===============================================
@@ -351,43 +350,29 @@ async function e2eServe() {
 	await bs;
 }
 
-// run development server & protractor
-async function runProtractor() {
-	e2eServe();
+// run e2e tests
+ async function e2e() {
+ 	// compile
+ 	await localDev();
 
-	// update webdriver
-	await webdriverUpdate.program.run({
-			standalone: false,
-			gecko: false,
-			quiet: true,
-	});
-	// run protractor
-	await execFile('./node_modules/protractor/bin/protractor', ['./e2e/protractor.conf.js'], (error, stdout, stderr) => {
-	    if (error) {
-	        console.error('error: ', stderr);
-	        throw error;
-	    }
-			else {
-				console.log(stdout);
-				stopDevServer();
-			}
-	});
-}
+ 	// serve
+ 	e2eServe();
 
-// stop the development server
-function stopDevServer() {
-	if(bs) {
-		bs.cleanup();
-		process.exit();
-	}
-}
+ 	// run cypress
+ 	await exec('npm run cypress', (error, stdout, stderr) => {
+ 		if (error) {
+         console.log(`error: ${error.message}`);
+     }
+     if (stderr) {
+         console.log(`stderr: ${stderr}`);
+     }
+     console.log(`stdout: ${stdout}`);
 
-// run e2e testing
-gulp.task('e2e', gulp.series(
-	localDev,
-	scripts,
-	runProtractor
-))
+ 		if(bs) {
+ 			bs.cleanup();
+ 		}
+ 	})
+ }
 
 //exports for gulp to recognise them as tasks
 exports.copyHtml = copyHtml;
@@ -399,5 +384,5 @@ exports.localDev = localDev;
 exports.serve = serve;
 exports.scriptsDist = scriptsDist;
 exports.watch = watch;
-exports.e2eServe = e2eServe;
+exports.e2e = e2e;
 exports.setupTests = setupTests;

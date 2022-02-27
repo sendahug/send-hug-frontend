@@ -19,6 +19,7 @@ const commonjs = require("@rollup/plugin-commonjs");
 const nodeResolve = require("@rollup/plugin-node-resolve").nodeResolve;
 const typescript = require("@rollup/plugin-typescript");
 const { exec } = require("child_process");
+const setProductionEnv = require("./processor").setProductionEnv;
 
 // LOCAL DEVELOPMENT TASKS
 // ===============================================
@@ -232,22 +233,22 @@ function stylesDist()
 function scriptsDist()
 {
 	const options = {
- 		input: 'src/main.ts',
- 		output: { sourcemap: true },
- 		plugins: [
-			// TODO: Set the environment!
- 			typescript({ exclude: ['**/*.spec.ts', 'e2e/**/*'] }),
- 			nodeResolve({
- 				extensions: ['.js', '.ts']
- 			}),
- 			commonjs({
- 				extensions: ['.js', '.ts'],
- 				transformMixedEsModules: true
- 			})
-     	]
-  };
+		input: 'src/main.ts',
+		output: { sourcemap: true },
+		plugins: [
+			setProductionEnv(),
+			typescript({ exclude: ['**/*.spec.ts', 'e2e/**/*'] }),
+			nodeResolve({
+				extensions: ['.js', '.ts']
+			}),
+			commonjs({
+				extensions: ['.js', '.ts'],
+				transformMixedEsModules: true
+			})
+    	]
+   	};
 
- 	return rollupStream(options)
+	return rollupStream(options)
       .pipe(source("src/main.ts"))
       .pipe(buffer())
 			.pipe(replace(/(templateUrl: '.)(.*)(.component.html)/g, (match) => {

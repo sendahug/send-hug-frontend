@@ -91,3 +91,37 @@ exports.inlineSVGs = function() {
     }
   }
 }
+
+/*
+Function Name: setProductionEnv()
+Function Description: Sets the angular environment to production.
+                      Originally written as a Browserify transform:
+                      https://github.com/sendahug/send-hug-frontend/blob/dev/gulpfile.js#L233
+Parameters: None.
+----------------
+Programmer: Shir Bar Lev.
+*/
+exports.setProductionEnv = function() {
+  return {
+    name: 'production-setter',
+    transform(code) {
+      const magicString = new MagicString(code);
+      let tempString = magicString.toString();
+
+      const environment = tempString.match(/environments\/environment/);
+
+      if(environment) {
+        const start = environment.index;
+        const end = start + environment[0].length;
+        const newString = `environments/environment.prod`;
+
+        magicString.overwrite(start, end, newString);
+      }
+
+      return {
+        code: magicString.toString(),
+        map: magicString.generateMap()
+      }
+    }
+  }
+}

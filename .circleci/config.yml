@@ -25,7 +25,7 @@ jobs:
       - run: bash <(curl -s https://codecov.io/bash) -f coverage/lcov.info -X fix
   e2e:
     docker:
-      - image: shirblc/python-npm-tools:2.3
+      - image: shirblc/python-npm-tools:2.6
         environment:
           DATABASE_URL: postgresql://postgres:password@localhost:5432/test-capstone?sslmode=disable
           FLASK_APP: send-hug-backend/app.py
@@ -71,7 +71,6 @@ jobs:
       - browser-tools/install-chrome
       - browser-tools/install-chromedriver
       - run: google-chrome --version
-      - cypress/install
       - restore_cache:
           key: my-project-{{ .Branch }}-{{ checksum "package-lock.json" }}
       - run:
@@ -86,7 +85,7 @@ jobs:
           command: npm run e2e
   accessibility:
     docker:
-      - image: shirblc/python-npm-tools:2.4
+      - image: shirblc/python-npm-tools:2.6
         environment:
           DATABASE_URL: postgresql://postgres:password@localhost:5432/test-capstone?sslmode=disable
           FLASK_APP: send-hug-backend/app.py

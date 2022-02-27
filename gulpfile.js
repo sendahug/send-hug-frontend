@@ -5,15 +5,12 @@ const terser = require("gulp-terser");
 const babel = require("gulp-babel");
 const sourcemaps = require("gulp-sourcemaps");
 const browserSync = require("browser-sync").create();
-const browserify = require("browserify");
-const tsify = require("tsify");
 const source = require("vinyl-source-stream");
 const buffer = require("vinyl-buffer");
 const rename = require("gulp-rename");
 const replace = require("gulp-replace");
 const fs = require("fs");
 const path = require("path");
-var through = require('through');
 const execFile = require('child_process').execFile;
 const webdriverUpdate = require('protractor/node_modules/webdriver-manager/built/lib/cmds/update');
 var Server = require('karma').Server;
@@ -325,62 +322,6 @@ function setupTests() {
 	.pipe(gulp.dest('src/'))
 }
 
-// bundle up the code before the tests
-function bundleCode() {
-	var b = browserify({
-		debug: true
-	}).add("src/main.ts").plugin(tsify, { target: 'es6' }).transform(function(file) {
-		var data = '';
-		return through(write);
-
-		// write the stream, replacing templateUrls
-		function write(buf) {
-			let codeChunk = buf.toString("utf8");
-
-			// inline the templates
-			let replacedChunk = codeChunk.replace(/(templateUrl: '.)(.*)(.component.html')/g, (match) => {
-				let componentName = match.substring(16, match.length-16);
-				let componentTemplate;
-
-				if(componentName == 'app') {
-					componentTemplate = fs.readFileSync(__dirname + `/src/app/${componentName}.component.html`);
-				}
-				else {
-					componentTemplate = fs.readFileSync(__dirname + `/src/app/components/${componentName}/${componentName}.component.html`);
-				}
-
-				let newString = `template: \`${componentTemplate}\``
-				return newString;
-			});
-			// add the SVGs
-			let secondReplacedChunk = replacedChunk.replace(/(<img src=".)(.*)(.\/assets.)(.*)(.">)/g, (match) => {
-				let altIndex = match.indexOf('alt');
-				let assetsIndex = match.indexOf('assets');
-				let url = match.substring(assetsIndex, altIndex-2);
-				let svg = fs.readFileSync(__dirname + `/src/${url}`);
-
-				return svg;
-			})
-
-			data += secondReplacedChunk
-			this.queue(data);
-		}
-	}).transform(require('browserify-istanbul')({
-		instrumenterConfig: {
-                  embedSource: true
-                },
-		ignore: ['**/node_modules/**', '**/*.mock.ts', '**/*.spec.ts'],
-		defaultIgnore: false
-	}));
-
-	return b.bundle()
-			.pipe(source("src/main.ts"))
-			.pipe(buffer())
-      .pipe(sourcemaps.init({loadMaps: true, largeFile: true}))
-			.pipe(rename("app.bundle.js"))
-			.pipe(sourcemaps.write())
-			.pipe(gulp.dest("./tests"));
-}
 
 // automatic testing in whatever browser is defined in the Karma config file
 function unitTest()
@@ -393,7 +334,6 @@ function unitTest()
 // run code bundling and then test
 gulp.task('test', gulp.series(
 	setupTests,
-	bundleCode,
 	unitTest
 ));
 

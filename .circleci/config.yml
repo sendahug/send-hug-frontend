@@ -2,6 +2,7 @@ version: 2.1
 orbs:
   node: circleci/node@1.1
   browser-tools: circleci/browser-tools@1.1.1
+  cypress: cypress-io/cypress@1
 jobs:
   test:
     docker:
@@ -20,7 +21,7 @@ jobs:
           key: my-project-{{ .Branch }}-{{ checksum "package-lock.json" }}
           paths:
             - "node_modules"
-      - run: npm test -- --no-watch --no-progress --browsers=ChromeHeadlessCI
+      - run: npm run test -- --no-watch --no-progress --browsers=ChromeHeadlessCI
       - run: bash <(curl -s https://codecov.io/bash) -f coverage/lcov.info -X fix
   e2e:
     docker:
@@ -70,6 +71,7 @@ jobs:
       - browser-tools/install-chrome
       - browser-tools/install-chromedriver
       - run: google-chrome --version
+      - cypress/install
       - restore_cache:
           key: my-project-{{ .Branch }}-{{ checksum "package-lock.json" }}
       - run:
@@ -78,10 +80,10 @@ jobs:
       - save_cache:
           key: my-project-{{ .Branch }}-{{ checksum "package-lock.json" }}
           paths:
-            - "send-hug-frontend/node_modules"
+            - "node_modules"
       - run:
           name: Run e2e tests
-          command: gulp e2e
+          command: npm run e2e
   accessibility:
     docker:
       - image: shirblc/python-npm-tools:2.4

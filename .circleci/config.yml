@@ -82,8 +82,15 @@ jobs:
           paths:
             - "node_modules"
       - run:
+          name: Run setup
+          command: gulp localDev
+      - run:
+          name: Start frontend server
+          command: gulp e2eServe
+          background: true
+      - run:
           name: Run e2e tests
-          command: npm run e2e
+          command: npm run cypress
   accessibility:
     docker:
       - image: shirblc/python-npm-tools:2.6

@@ -5,7 +5,7 @@ name: Test CI
 
 on:
   push:
-    branches: [ dev, staging, live ]
+    branches: [ fix/gha, dev, staging, live ]
   pull_request:
     branches: [ dev, staging, live ]
 
@@ -16,7 +16,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [14.x]
+        node-version: ['14']
 
     steps:
     - uses: actions/checkout@v2
@@ -44,6 +44,9 @@ jobs:
         restore-keys: |
           ${{ runner.OS }}-node-
           ${{ runner.OS }}-
+    
+    - name: Install
+      run: npm install -g npm
 
     - name: Install dependencies
       run: npm install

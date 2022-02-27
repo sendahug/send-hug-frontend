@@ -352,12 +352,13 @@ async function e2eServe() {
 }
 
 // run e2e tests
- async function e2e() {
+async function e2e() {
  	// compile
  	await localDev();
 
  	// serve
  	e2eServe();
+	console.log("cont")
 
  	// run cypress
  	await exec('npm run cypress', (error, stdout, stderr) => {
@@ -373,7 +374,7 @@ async function e2eServe() {
  			bs.cleanup();
  		}
  	})
- }
+}
 
 //exports for gulp to recognise them as tasks
 exports.copyHtml = copyHtml;

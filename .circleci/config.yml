@@ -42,7 +42,6 @@ jobs:
     environment:
       CHROME_BIN: /usr/bin/google-chrome
     steps:
-      - run: ls -lR /home/circleci/project
       - checkout
       - run: |
           cd ..
@@ -72,6 +71,7 @@ jobs:
       - browser-tools/install-chrome
       - browser-tools/install-chromedriver
       - run: google-chrome --version
+      - cypress/install
       - restore_cache:
           key: my-project-{{ .Branch }}-{{ checksum "package-lock.json" }}
       - run:

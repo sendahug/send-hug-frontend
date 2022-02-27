@@ -44,12 +44,12 @@ jobs:
         restore-keys: |
           ${{ runner.OS }}-node-
           ${{ runner.OS }}-
+    
+    - name: Install
+      run: npm install -g npm
 
     - name: Install dependencies
       run: npm install
-
-    - name: Install rollup
-      run: npm install --save-dev @rollup/stream
 
     - name: Install gulp
       run: npm install -g gulp-cli

@@ -19,6 +19,10 @@ const webdriverUpdate = require('protractor/node_modules/webdriver-manager/built
 var Server = require('karma').Server;
 var glob = require("glob");
 let bs;
+const rollupStream = require("@rollup/stream");
+const commonjs = require("@rollup/plugin-commonjs");
+const nodeResolve = require("@rollup/plugin-node-resolve").nodeResolve;
+const typescript = require("@rollup/plugin-typescript");
 
 // LOCAL DEVELOPMENT TASKS
 // ===============================================
@@ -90,21 +94,31 @@ function styles()
 //deals with transforming the scripts while in development mode
 function scripts()
 {
-	var b = browserify({
-		debug: true
-	}).add("src/main.ts").plugin(tsify, {target: "es6"});
+	const options = {
+ 		input: 'src/main.ts',
+ 		output: { sourcemap: true },
+ 		plugins: [
+ 			typescript(),
+ 			nodeResolve({
+ 				extensions: ['.js', '.ts']
+ 			}),
+ 			commonjs({
+ 				extensions: ['.js', '.ts'],
+ 				transformMixedEsModules: true
+ 			})
+     	]
+    	};
 
-	return b.bundle()
+ 	return rollupStream(options)
       .pipe(source("src/main.ts"))
       .pipe(buffer())
       .pipe(sourcemaps.init({loadMaps: true}))
-				.pipe(replace(/(templateUrl: '.)(.*)(.component.html)/g, (match) => {
-					let componentName = match.substring(15, match.length-15);
-					let newString = `templateUrl: './app/${componentName}.component.html`
-					return newString;
-				}))
-        .pipe(babel({presets: ["@babel/preset-env"]}))
-				.pipe(rename("app.bundle.js"))
+			.pipe(replace(/(templateUrl: '.)(.*)(.component.html)/g, (match) => {
+				let componentName = match.substring(15, match.length-15);
+				let newString = `templateUrl: './app/${componentName}.component.html`
+				return newString;
+			}))
+			.pipe(rename("app.bundle.js"))
       .pipe(sourcemaps.write("./"))
       .pipe(gulp.dest("./localdev"));
 }

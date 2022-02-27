@@ -42,6 +42,7 @@ jobs:
     environment:
       CHROME_BIN: /usr/bin/google-chrome
     steps:
+      - run: ls -lR /home/circleci/project
       - checkout
       - run: |
           cd ..

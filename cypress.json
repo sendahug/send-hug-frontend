@@ -1,0 +1,6 @@
+{
+  "integrationFolder": "e2e/src",
+  "pluginsFile": "e2e/plugins/index.ts",
+  "supportFile": "e2e/support/index.ts",
+  "video": false
+}

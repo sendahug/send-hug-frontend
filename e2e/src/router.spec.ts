@@ -1,149 +1,120 @@
-import { browser, by, element, protractor } from 'protractor';
-
 describe('Send A Hug Router', () => {
+  // login
+  // TODO: drop this and do it in a better way
+  before(() => {
+    cy.visit('http://localhost:3000/user');
+    cy.get('#logIn').click();
+    cy.wait(500);
+    cy.get('[type="email"]').type(Cypress.env('ADMIN_USERNAME'));
+    cy.get('[type="password"]').type(Cypress.env('ADMIN_PASSWORD'));
+    cy.get('button[type="submit"]').click();
+  });
+
   // check the user is sent to the right page upon navigation
   it('should send the user to the correct page', () => {
-    let ec = protractor.ExpectedConditions;
-
     // main page
-    browser.get('http://localhost:3000/');
-    browser.wait(ec.urlIs('http://localhost:3000/'), 2000);
-    expect(element(by.tagName('app-main-page'))).toBeDefined();
+    cy.visit('http://localhost:3000/');
+    cy.get('app-main-page').should('be.visible').should('not.be.undefined');
 
     // user page
-    browser.get('http://localhost:3000/user');
-    browser.wait(ec.urlIs('http://localhost:3000/user'), 2000);
-    expect(element(by.tagName('app-user-page'))).toBeDefined();
+    cy.visit('http://localhost:3000/user');
+    cy.get('app-user-page').should('be.visible').should('not.be.undefined');
 
     // mailbox
-    browser.get('http://localhost:3000/messages/inbox');
-    browser.wait(ec.urlIs('http://localhost:3000/messages/inbox'), 2000);
-    expect(element(by.tagName('app-messages'))).toBeDefined();
+    cy.visit('http://localhost:3000/messages/inbox');
+    cy.get('app-messages').should('be.visible').should('not.be.undefined');
 
     // new item
-    browser.get('http://localhost:3000/new/Post');
-    browser.wait(ec.urlIs('http://localhost:3000/new/Post'), 2000);
-    expect(element(by.tagName('app-new-item'))).toBeDefined();
+    cy.visit('http://localhost:3000/new/Post');
+    cy.get('app-new-item').should('be.visible').should('not.be.undefined');
 
     // full list
-    browser.get('http://localhost:3000/list/New');
-    browser.wait(ec.urlIs('http://localhost:3000/list/New'), 2000);
-    expect(element(by.tagName('app-full-list'))).toBeDefined();
+    cy.visit('http://localhost:3000/list/New');
+    cy.get('app-full-list').should('be.visible').should('not.be.undefined');
 
     // about page
-    browser.get('http://localhost:3000/about');
-    browser.wait(ec.urlIs('http://localhost:3000/about'), 2000);
-    expect(element(by.tagName('app-about'))).toBeDefined();
+    cy.visit('http://localhost:3000/about');
+    cy.get('app-about').should('be.visible').should('not.be.undefined');
 
     // search results
-    browser.get('http://localhost:3000/search?query=test');
-    browser.wait(ec.urlIs('http://localhost:3000/search?query=test'), 2000);
-    expect(element(by.tagName('app-search-results'))).toBeDefined();
+    cy.visit('http://localhost:3000/search?query=test');
+    cy.get('app-search-results').should('be.visible').should('not.be.undefined');
 
     // admin dashboard
-    browser.get('http://localhost:3000/admin');
-    browser.wait(ec.urlIs('http://localhost:3000/admin'), 2000);
-    expect(element(by.tagName('app-admin-dashboard'))).toBeDefined();
+    cy.visit('http://localhost:3000/admin');
+    cy.get('app-admin-dashboard').should('be.visible').should('not.be.undefined');
 
     // settings
-    browser.get('http://localhost:3000/settings');
-    browser.wait(ec.urlIs('http://localhost:3000/settings'), 2000);
-    expect(element(by.tagName('app-settings'))).toBeDefined();
+    cy.visit('http://localhost:3000/settings');
+    cy.get('app-settings').should('be.visible').should('not.be.undefined');
 
     // sitemap
-    browser.get('http://localhost:3000/sitemap');
-    browser.wait(ec.urlIs('http://localhost:3000/sitemap'), 2000);
-    expect(element(by.tagName('app-sitemap'))).toBeDefined();
+    cy.visit('http://localhost:3000/sitemap');
+    cy.get('app-site-map').should('be.visible').should('not.be.undefined');
   });
 
   // check an error page is shown if the given path doesn't exist in the router
   it('should show an error page if the path doesn\'t exist', () => {
-    let ec = protractor.ExpectedConditions;
-    browser.get('http://localhost:3000/fdsd');
-    browser.wait(ec.urlIs('http://localhost:3000/fdsd'), 2000);
-
-    expect(element(by.tagName('app-error-page'))).toBeDefined();
+    cy.visit('http://localhost:3000/fdsd');
+    cy.get('app-error-page').should('be.visible').should('not.be.undefined');
   });
 
   // check the correct sub-route is shown for those paths that have sub-routes
   it('should show the correct sub-route - messages', () => {
-    let ec = protractor.ExpectedConditions;
-
     // inbox
-    browser.get('http://localhost:3000/messages/inbox');
-    browser.wait(ec.urlIs('http://localhost:3000/messages/inbox'), 2000);
-    expect(element(by.tagName('app-messages'))).toBeDefined();
-    element(by.tagName('h3')).getText().then(text => {
-      expect(text).toBe('Inbox');
-    });
+    cy.visit('http://localhost:3000/messages/inbox');
+    cy.get('app-messages').should('be.visible').should('not.be.undefined');
+    cy.get('h3').eq(0).should('have.text', 'inbox');
 
     // outbox
-    browser.get('http://localhost:3000/messages/outbox');
-    browser.wait(ec.urlIs('http://localhost:3000/messages/outbox'), 2000);
-    expect(element(by.tagName('app-messages'))).toBeDefined();
-    element(by.tagName('h3')).getText().then(text => {
-      expect(text).toBe('Outbox');
-    });
+    cy.visit('http://localhost:3000/messages/outbox');
+    cy.get('app-messages').should('be.visible').should('not.be.undefined');
+    cy.get('h3').eq(0).should('have.text', 'outbox');
 
     // threads
-    browser.get('http://localhost:3000/messages/threads');
-    browser.wait(ec.urlIs('http://localhost:3000/messages/threads'), 2000);
-    expect(element(by.tagName('app-messages'))).toBeDefined();
-    element(by.tagName('h3')).getText().then(text => {
-      expect(text).toBe('Threads');
-    });
+    cy.visit('http://localhost:3000/messages/threads');
+    cy.get('app-messages').should('be.visible').should('not.be.undefined');
+    cy.get('h3').eq(0).should('have.text', 'threads');
 
     // thread
-    browser.get('http://localhost:3000/messages/thread/1');
-    browser.wait(ec.urlIs('http://localhost:3000/messages/thread/1'), 2000);
-    expect(element(by.tagName('app-messages'))).toBeDefined();
-    element(by.tagName('h3')).getText().then(text => {
-      expect(text).toBe('Thread');
-    });
+    cy.visit('http://localhost:3000/messages/thread/1');
+    cy.get('app-messages').should('be.visible').should('not.be.undefined');
+    cy.get('h3').eq(0).should('have.text', 'thread');
   });
 
   // check the correct sub-route is shown for those paths that have sub-routes
   it('should show the correct sub-route - new item', () => {
-    let ec = protractor.ExpectedConditions;
-
     // new post
-    browser.get('http://localhost:3000/new/Post');
-    browser.wait(ec.urlIs('http://localhost:3000/new/Post'), 2000);
-    expect(element(by.tagName('app-new-item'))).toBeDefined();
-    element(by.id('newTitle')).getText().then(text => {
-      expect(text).toBe('New Post');
-    });
+    cy.visit('http://localhost:3000/new/Post');
+    cy.get('app-new-item').should('be.visible').should('not.be.undefined');
+    cy.get('#newTitle').should('have.text', 'New Post');
 
     // new message
-    browser.get('http://localhost:3000/new/Message');
-    browser.wait(ec.urlIs('http://localhost:3000/new/Message'), 2000);
-    expect(element(by.tagName('app-new-item'))).toBeDefined();
-    element(by.id('newTitle')).getText().then(text => {
-      expect(text).toBe('New Message');
-    });
+    cy.visit('http://localhost:3000/new/Message');
+    cy.get('app-new-item').should('be.visible').should('not.be.undefined');
+    cy.get('#newTitle').should('have.text', 'New Message');
   });
 
   // check the correct sub-route is shown for those paths that have sub-routes
   it('should show the correct sub-route - full list', () => {
-    let ec = protractor.ExpectedConditions;
-
     // full new
-    browser.get('http://localhost:3000/list/New');
-    browser.wait(ec.urlIs('http://localhost:3000/list/New'), 2000);
-    expect(element(by.tagName('app-full-list'))).toBeDefined();
-    element(by.id('listTitle')).getText().then(text => {
-      expect(text).toBe('New Items');
-    });
+    cy.visit('http://localhost:3000/list/New');
+    cy.get('app-full-list').should('be.visible').should('not.be.undefined');
+    cy.get('#listTitle').should('have.text', 'New Items');
 
     // full suggested
-    browser.get('http://localhost:3000/list/Suggested');
-    browser.wait(ec.urlIs('http://localhost:3000/list/Suggested'), 2000);
-    expect(element(by.tagName('app-full-list'))).toBeDefined();
-    element(by.id('listTitle')).getText().then(text => {
-      expect(text).toBe('Suggested Items');
-    });
+    cy.visit('http://localhost:3000/list/Suggested');
+    cy.get('app-full-list').should('be.visible').should('not.be.undefined');
+    cy.get('#listTitle').should('have.text', 'Suggested Items');
   });
 
   // TODO: Mailbox navigation (using buttons)
   // TODO: Admin dashboard navigation
+
+  // logout
+  // TODO: Figure out why that doesn't work
+  // after(() => {
+  //   cy.visit('http://localhost:3000/user');
+  //   cy.get('button').contains('Log Out').scrollIntoView().click();
+  // })
 });

@@ -1,7 +1,7 @@
 const gulp = require("gulp");
 const postcss = require("gulp-postcss");
 const autoprefixer = require("autoprefixer");
-const uglify = require("gulp-uglify");
+const terser = require("gulp-terser");
 const babel = require("gulp-babel");
 const sourcemaps = require("gulp-sourcemaps");
 const browserSync = require("browser-sync").create();
@@ -235,39 +235,32 @@ function stylesDist()
 //deals with transforming and bundling the scripts while in production mode
 function scriptsDist()
 {
-	var b = browserify().add("src/main.ts").plugin(tsify, {target: "es6"}).transform(function(file) {
-		var data = '';
-		return through(write);
+	const options = {
+ 		input: 'src/main.ts',
+ 		output: { sourcemap: true },
+ 		plugins: [
+			// TODO: Set the environment!
+ 			typescript(),
+ 			nodeResolve({
+ 				extensions: ['.js', '.ts']
+ 			}),
+ 			commonjs({
+ 				extensions: ['.js', '.ts'],
+ 				transformMixedEsModules: true
+ 			})
+     	]
+  };
 
-		// write the stream, replacing the environment
-		function write(buf) {
-			let codeChunk = buf.toString("utf8");
-
-			// replace the environment file with production environment file
-			let replacedChunk = codeChunk.replace(/environments\/environment/g, (match) => {
-				console.log(match);
-				let newString = `environments/environment.prod`
-				return newString;
-			});
-
-			data += replacedChunk
-			this.queue(data);
-		}
-	});
-
-	return b.bundle()
+ 	return rollupStream(options)
       .pipe(source("src/main.ts"))
       .pipe(buffer())
-      .pipe(sourcemaps.init({loadMaps: true}))
-		.pipe(replace(/(templateUrl: '.)(.*)(.component.html)/g, (match) => {
+			.pipe(replace(/(templateUrl: '.)(.*)(.component.html)/g, (match) => {
 						let componentName = match.substring(15, match.length-15);
 						let newString = `templateUrl: './app/${componentName}.component.html`
 						return newString;
 					}))
-        .pipe(babel({presets: ["@babel/preset-env"]}))
-				.pipe(uglify())
-				.pipe(rename("app.bundle.min.js"))
-      .pipe(sourcemaps.write("./"))
+			.pipe(terser())
+ 			.pipe(rename("app.bundle.min.js"))
       .pipe(gulp.dest("./dist"));
 }
 

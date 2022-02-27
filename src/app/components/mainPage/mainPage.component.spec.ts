@@ -105,9 +105,7 @@ describe('MainPage', () => {
   // Check the posts' menu is shown if there's enough room for them
   it('should show the posts\'s menu if wide enough', (done: DoneFn) => {
     const fixture = TestBed.createComponent(MainPage);
-    const mainPage = fixture.componentInstance;
     const mainPageDOM = fixture.debugElement.nativeElement;
-    const viewCheckedSpy = spyOn(mainPage, 'ngAfterViewChecked').and.callThrough();
     fixture.detectChanges();
 
     // change the elements' width to make sure there's enough room for the menu
@@ -125,7 +123,6 @@ describe('MainPage', () => {
       expect(element.querySelectorAll('.subMenu')[0].classList).not.toContain('float');
       expect(element.querySelectorAll('.menuButton')[0].classList).toContain('hidden');
     });
-    expect(viewCheckedSpy).toHaveBeenCalled();
     done();
   });
 
@@ -133,9 +130,7 @@ describe('MainPage', () => {
   it('shouldn\'t show the posts\'s menu if not wide enough', (done: DoneFn) => {
     spyOn(TestBed.inject(AuthService), 'canUser').and.returnValue(true);
     const fixture = TestBed.createComponent(MainPage);
-    const mainPage = fixture.componentInstance;
     const mainPageDOM = fixture.debugElement.nativeElement;
-    const viewCheckedSpy = spyOn(mainPage, 'ngAfterViewChecked').and.callThrough();
     fixture.detectChanges();
 
     // change the elements' width to make sure there isn't enough room for the menu
@@ -154,7 +149,6 @@ describe('MainPage', () => {
       expect(element.querySelectorAll('.subMenu')[0].classList).toContain('float');
       expect(element.querySelectorAll('.menuButton')[0].classList).not.toContain('hidden');
     });
-    expect(viewCheckedSpy).toHaveBeenCalled();
     done();
   });
 

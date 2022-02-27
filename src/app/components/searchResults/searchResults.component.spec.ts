@@ -382,7 +382,6 @@ describe('SearchResults', () => {
       const searchResults = fixture.componentInstance;
       const searchResultsDOM = fixture.debugElement.nativeElement;
       const authService = searchResults.authService;
-      const viewCheckedSpy = spyOn(searchResults, 'ngAfterViewChecked').and.callThrough();
       spyOn(authService, 'canUser').and.returnValue(true);
       fixture.detectChanges();
 
@@ -400,7 +399,6 @@ describe('SearchResults', () => {
         expect(element.querySelectorAll('.subMenu')[0].classList).not.toContain('float');
         expect(element.querySelectorAll('.menuButton')[0].classList).toContain('hidden');
       })
-      expect(viewCheckedSpy).toHaveBeenCalled();
       done();
     });
 
@@ -422,7 +420,6 @@ describe('SearchResults', () => {
       const searchResults = fixture.componentInstance;
       const searchResultsDOM = fixture.debugElement.nativeElement;
       const authService = searchResults.authService;
-      const viewCheckedSpy = spyOn(searchResults, 'ngAfterViewChecked').and.callThrough();
       spyOn(authService, 'canUser').and.returnValue(true);
       fixture.detectChanges();
 
@@ -441,7 +438,6 @@ describe('SearchResults', () => {
         expect(element.querySelectorAll('.subMenu')[0].classList).toContain('float');
         expect(element.querySelectorAll('.menuButton')[0].classList).not.toContain('hidden');
       });
-      expect(viewCheckedSpy).toHaveBeenCalled();
       done();
     });
 

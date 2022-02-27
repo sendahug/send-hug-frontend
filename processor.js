@@ -44,20 +44,45 @@ exports.replaceTemplateUrl = function() {
         magicString.overwrite(start, end, newString);
       }
 
-      tempString = magicString.toString();
+      return {
+        code: magicString.toString(),
+        map: magicString.generateMap()
+      }
+    }
+  }
+}
+
+
+/*
+  Function Name: inlineSVGs()
+  Function Description: Rollup plugin for inlining the SVGs.
+                        Originally written as a Browserify transform:
+                        https://github.com/sendahug/send-hug-frontend/commit/d0cb971da5801ebfecb05184d09386e743b7405b
+  Parameters: None.
+  ----------------
+  Programmer: Shir Bar Lev.
+*/
+exports.inlineSVGs = function() {
+  return {
+    name: 'inliner',
+    transform(code) {
+      const magicString  = new MagicString(code);
+      let tempString = magicString.toString();
 
       // inline the SVGs
       const svgs = tempString.match(/(<img src="..\/assets.)(.*)(.">)/g);
-      svgs.forEach((svgTag) => {
-        const start = tempString.indexOf(svgTag);
-        const end = start + svgTag.length;
-        const altIndex = match.indexOf('alt');
-        const url = svgTag.substring(13, altIndex-2);
-        const svg = fs.readFileSync(__dirname + `/src/${url}`);
 
-        magicString.overwrite(start, end, svg);
-        tempString = magicString.toString();
-      })
+      if(svgs) {
+        svgs.forEach((svgTag) => {
+          const start = tempString.indexOf(svgTag);
+          const end = start + svgTag.length;
+          const altIndex = svgTag.indexOf('alt');
+          const url = svgTag.substring(13, altIndex-2);
+          const svg = fs.readFileSync(__dirname + `/src/${url}`);
+
+          magicString.overwrite(start, end, `${svg}`);
+        })
+      }
 
       return {
         code: magicString.toString(),

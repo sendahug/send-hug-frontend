@@ -1,5 +1,6 @@
 const path = require('path');
 const replaceTemplateUrl = require("./processor").replaceTemplateUrl;
+const inlineSVGs = require("./processor").inlineSVGs;
 const coverage = require("rollup-plugin-istanbul");
 const commonjs = require("@rollup/plugin-commonjs");
 const nodeResolve = require("@rollup/plugin-node-resolve").nodeResolve;
@@ -24,6 +25,7 @@ module.exports = function (karma) {
           exclude: ['node_modules/**', '**/*.spec.ts', '**/*.mock.ts']
         }),
         replaceTemplateUrl(),
+        inlineSVGs(),
    			typescript(),
    			nodeResolve({
    				extensions: ['.js', '.ts']

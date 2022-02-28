@@ -6,7 +6,7 @@ name: Build App
 # events but only for the master branch
 on:
   pull_request:
-    branches: [ master ]
+    branches: [ staging ]
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -20,7 +20,7 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
         with:
-          ref: Dev
+          ref: dev
 
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
@@ -38,17 +38,13 @@ jobs:
 
       - name: Install dependencies
         run: npm install
-      
+
       - name: Build
         run: gulp dist
-      
-      - name: Commit & Push
-        run: |
-          if [ -n "$(git status --porcelain)" ];
-          then
-            git config user.name github-actions[bot]
-            git config user.email 41898282+github-actions[bot]@users.noreply.github.com
-            git add .
-            git commit -m 'Updated distribution files.'
-            git push
-          fi
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v3
+        with:
+          commit-message: 'Updated distribution files.'
+          title: 'Updated distribution files.'
+          branch: 'dist/distribution_files_update'

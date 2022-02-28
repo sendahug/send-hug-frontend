@@ -46,4 +46,5 @@ jobs:
         uses: peter-evans/create-pull-request@v3
         with:
           commit-message: 'Updated distribution files.'
+          title: 'Updated distribution files.'
           branch: 'dist/distribution_files_update'

@@ -2,6 +2,7 @@ version: 2.1
 orbs:
   node: circleci/node@1.1
   browser-tools: circleci/browser-tools@1.1.1
+  cypress: cypress-io/cypress@1
 jobs:
   test:
     docker:
@@ -20,11 +21,11 @@ jobs:
           key: my-project-{{ .Branch }}-{{ checksum "package-lock.json" }}
           paths:
             - "node_modules"
-      - run: npm test -- --no-watch --no-progress --browsers=ChromeHeadlessCI
+      - run: npm run test -- --no-watch --no-progress --browsers=ChromeHeadlessCI
       - run: bash <(curl -s https://codecov.io/bash) -f coverage/lcov.info -X fix
   e2e:
     docker:
-      - image: shirblc/python-npm-tools:2.3
+      - image: shirblc/python-npm-tools:2.6
         environment:
           DATABASE_URL: postgresql://postgres:password@localhost:5432/test-capstone?sslmode=disable
           FLASK_APP: send-hug-backend/app.py
@@ -70,6 +71,7 @@ jobs:
       - browser-tools/install-chrome
       - browser-tools/install-chromedriver
       - run: google-chrome --version
+      - cypress/install
       - restore_cache:
           key: my-project-{{ .Branch }}-{{ checksum "package-lock.json" }}
       - run:
@@ -78,13 +80,20 @@ jobs:
       - save_cache:
           key: my-project-{{ .Branch }}-{{ checksum "package-lock.json" }}
           paths:
-            - "send-hug-frontend/node_modules"
+            - "node_modules"
+      - run:
+          name: Run setup
+          command: gulp localDev
+      - run:
+          name: Start frontend server
+          command: gulp e2eServe
+          background: true
       - run:
           name: Run e2e tests
-          command: gulp e2e
+          command: npm run cypress
   accessibility:
     docker:
-      - image: shirblc/python-npm-tools:2.4
+      - image: shirblc/python-npm-tools:2.6
         environment:
           DATABASE_URL: postgresql://postgres:password@localhost:5432/test-capstone?sslmode=disable
           FLASK_APP: send-hug-backend/app.py

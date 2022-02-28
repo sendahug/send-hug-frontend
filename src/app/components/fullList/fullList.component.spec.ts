@@ -97,7 +97,6 @@ describe('FullList', () => {
     const fullList = fixture.componentInstance;
     const fullListDOM = fixture.debugElement.nativeElement;
     const authService = fullList.authService;
-    const viewCheckedSpy = spyOn(fullList, 'ngAfterViewChecked').and.callThrough();
     spyOn(authService, 'canUser').and.returnValue(true);
     fixture.detectChanges();
 
@@ -115,7 +114,6 @@ describe('FullList', () => {
       expect(element.querySelectorAll('.subMenu')[0].classList).not.toContain('float');
       expect(element.querySelectorAll('.menuButton')[0].classList).toContain('hidden');
     })
-    expect(viewCheckedSpy).toHaveBeenCalled();
     done();
   });
 
@@ -127,7 +125,6 @@ describe('FullList', () => {
     const fullList = fixture.componentInstance;
     const fullListDOM = fixture.debugElement.nativeElement;
     const authService = fullList.authService;
-    const viewCheckedSpy = spyOn(fullList, 'ngAfterViewChecked').and.callThrough();
     spyOn(authService, 'canUser').and.returnValue(true);
     fixture.detectChanges();
 
@@ -146,7 +143,6 @@ describe('FullList', () => {
       expect(element.querySelectorAll('.subMenu')[0].classList).toContain('float');
       expect(element.querySelectorAll('.menuButton')[0].classList).not.toContain('hidden');
     });
-    expect(viewCheckedSpy).toHaveBeenCalled();
     done();
   });
 

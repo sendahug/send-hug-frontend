@@ -149,7 +149,7 @@ describe('SiteMap', () => {
     expect(routeList!.children.length).not.toBe(0);
     expect(siteMap.routes).toBeDefined();
 
-    // check each navingation item to ensure it contains a link
+    // check each navigation item to ensure it contains a link
     let navLinks = routeList!.querySelectorAll('.routerLink');
     for(var i = 0; i < navLinks.length; i++) {
       expect(navLinks[i]).toBeDefined();

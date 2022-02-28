@@ -1,24 +1,25 @@
 const gulp = require("gulp");
 const postcss = require("gulp-postcss");
 const autoprefixer = require("autoprefixer");
-const uglify = require("gulp-uglify");
+const terser = require("gulp-terser");
 const babel = require("gulp-babel");
 const sourcemaps = require("gulp-sourcemaps");
 const browserSync = require("browser-sync").create();
-const browserify = require("browserify");
-const tsify = require("tsify");
 const source = require("vinyl-source-stream");
 const buffer = require("vinyl-buffer");
 const rename = require("gulp-rename");
 const replace = require("gulp-replace");
 const fs = require("fs");
 const path = require("path");
-var through = require('through');
-const execFile = require('child_process').execFile;
-const webdriverUpdate = require('protractor/node_modules/webdriver-manager/built/lib/cmds/update');
 var Server = require('karma').Server;
 var glob = require("glob");
 let bs;
+const rollupStream = require("@rollup/stream");
+const commonjs = require("@rollup/plugin-commonjs");
+const nodeResolve = require("@rollup/plugin-node-resolve").nodeResolve;
+const typescript = require("@rollup/plugin-typescript");
+const { exec } = require("child_process");
+const setProductionEnv = require("./processor").setProductionEnv;
 
 // LOCAL DEVELOPMENT TASKS
 // ===============================================
@@ -90,21 +91,31 @@ function styles()
 //deals with transforming the scripts while in development mode
 function scripts()
 {
-	var b = browserify({
-		debug: true
-	}).add("src/main.ts").plugin(tsify, {target: "es6"});
+	const options = {
+ 		input: 'src/main.ts',
+ 		output: { sourcemap: true },
+ 		plugins: [
+ 			typescript({ exclude: ['**/*.spec.ts', 'e2e/**/*'] }),
+ 			nodeResolve({
+ 				extensions: ['.js', '.ts']
+ 			}),
+ 			commonjs({
+ 				extensions: ['.js', '.ts'],
+ 				transformMixedEsModules: true
+ 			})
+     	]
+    	};
 
-	return b.bundle()
+ 	return rollupStream(options)
       .pipe(source("src/main.ts"))
       .pipe(buffer())
       .pipe(sourcemaps.init({loadMaps: true}))
-				.pipe(replace(/(templateUrl: '.)(.*)(.component.html)/g, (match) => {
-					let componentName = match.substring(15, match.length-15);
-					let newString = `templateUrl: './app/${componentName}.component.html`
-					return newString;
-				}))
-        .pipe(babel({presets: ["@babel/preset-env"]}))
-				.pipe(rename("app.bundle.js"))
+			.pipe(replace(/(templateUrl: '.)(.*)(.component.html)/g, (match) => {
+				let componentName = match.substring(15, match.length-15);
+				let newString = `templateUrl: './app/${componentName}.component.html`
+				return newString;
+			}))
+			.pipe(rename("app.bundle.js"))
       .pipe(sourcemaps.write("./"))
       .pipe(gulp.dest("./localdev"));
 }
@@ -221,39 +232,32 @@ function stylesDist()
 //deals with transforming and bundling the scripts while in production mode
 function scriptsDist()
 {
-	var b = browserify().add("src/main.ts").plugin(tsify, {target: "es6"}).transform(function(file) {
-		var data = '';
-		return through(write);
+	const options = {
+		input: 'src/main.ts',
+		output: { sourcemap: true },
+		plugins: [
+			setProductionEnv(),
+			typescript({ exclude: ['**/*.spec.ts', 'e2e/**/*'] }),
+			nodeResolve({
+				extensions: ['.js', '.ts']
+			}),
+			commonjs({
+				extensions: ['.js', '.ts'],
+				transformMixedEsModules: true
+			})
+    	]
+   	};
 
-		// write the stream, replacing the environment
-		function write(buf) {
-			let codeChunk = buf.toString("utf8");
-
-			// replace the environment file with production environment file
-			let replacedChunk = codeChunk.replace(/environments\/environment/g, (match) => {
-				console.log(match);
-				let newString = `environments/environment.prod`
-				return newString;
-			});
-
-			data += replacedChunk
-			this.queue(data);
-		}
-	});
-
-	return b.bundle()
+	return rollupStream(options)
       .pipe(source("src/main.ts"))
       .pipe(buffer())
-      .pipe(sourcemaps.init({loadMaps: true}))
-		.pipe(replace(/(templateUrl: '.)(.*)(.component.html)/g, (match) => {
+			.pipe(replace(/(templateUrl: '.)(.*)(.component.html)/g, (match) => {
 						let componentName = match.substring(15, match.length-15);
 						let newString = `templateUrl: './app/${componentName}.component.html`
 						return newString;
 					}))
-        .pipe(babel({presets: ["@babel/preset-env"]}))
-				.pipe(uglify())
-				.pipe(rename("app.bundle.min.js"))
-      .pipe(sourcemaps.write("./"))
+			.pipe(terser())
+ 			.pipe(rename("app.bundle.min.js"))
       .pipe(gulp.dest("./dist"));
 }
 
@@ -318,62 +322,6 @@ function setupTests() {
 	.pipe(gulp.dest('src/'))
 }
 
-// bundle up the code before the tests
-function bundleCode() {
-	var b = browserify({
-		debug: true
-	}).add("src/main.ts").plugin(tsify, { target: 'es6' }).transform(function(file) {
-		var data = '';
-		return through(write);
-
-		// write the stream, replacing templateUrls
-		function write(buf) {
-			let codeChunk = buf.toString("utf8");
-
-			// inline the templates
-			let replacedChunk = codeChunk.replace(/(templateUrl: '.)(.*)(.component.html')/g, (match) => {
-				let componentName = match.substring(16, match.length-16);
-				let componentTemplate;
-
-				if(componentName == 'app') {
-					componentTemplate = fs.readFileSync(__dirname + `/src/app/${componentName}.component.html`);
-				}
-				else {
-					componentTemplate = fs.readFileSync(__dirname + `/src/app/components/${componentName}/${componentName}.component.html`);
-				}
-
-				let newString = `template: \`${componentTemplate}\``
-				return newString;
-			});
-			// add the SVGs
-			let secondReplacedChunk = replacedChunk.replace(/(<img src=".)(.*)(.\/assets.)(.*)(.">)/g, (match) => {
-				let altIndex = match.indexOf('alt');
-				let assetsIndex = match.indexOf('assets');
-				let url = match.substring(assetsIndex, altIndex-2);
-				let svg = fs.readFileSync(__dirname + `/src/${url}`);
-
-				return svg;
-			})
-
-			data += secondReplacedChunk
-			this.queue(data);
-		}
-	}).transform(require('browserify-istanbul')({
-		instrumenterConfig: {
-                  embedSource: true
-                },
-		ignore: ['**/node_modules/**', '**/*.mock.ts', '**/*.spec.ts'],
-		defaultIgnore: false
-	}));
-
-	return b.bundle()
-			.pipe(source("src/main.ts"))
-			.pipe(buffer())
-      .pipe(sourcemaps.init({loadMaps: true, largeFile: true}))
-			.pipe(rename("app.bundle.js"))
-			.pipe(sourcemaps.write())
-			.pipe(gulp.dest("./tests"));
-}
 
 // automatic testing in whatever browser is defined in the Karma config file
 function unitTest()
@@ -386,7 +334,6 @@ function unitTest()
 // run code bundling and then test
 gulp.task('test', gulp.series(
 	setupTests,
-	bundleCode,
 	unitTest
 ));
 
@@ -404,43 +351,29 @@ async function e2eServe() {
 	await bs;
 }
 
-// run development server & protractor
-async function runProtractor() {
-	e2eServe();
+// run e2e tests
+async function e2e() {
+ 	// compile
+ 	await localDev();
 
-	// update webdriver
-	await webdriverUpdate.program.run({
-			standalone: false,
-			gecko: false,
-			quiet: true,
-	});
-	// run protractor
-	await execFile('./node_modules/protractor/bin/protractor', ['./e2e/protractor.conf.js'], (error, stdout, stderr) => {
-	    if (error) {
-	        console.error('error: ', stderr);
-	        throw error;
-	    }
-			else {
-				console.log(stdout);
-				stopDevServer();
-			}
-	});
+ 	// serve
+ 	e2eServe();
+
+ 	// run cypress
+ 	await exec('npm run cypress', (error, stdout, stderr) => {
+ 		if (error) {
+         console.log(`error: ${error.message}`);
+     }
+     if (stderr) {
+         console.log(`stderr: ${stderr}`);
+     }
+     console.log(`stdout: ${stdout}`);
+
+ 		if(bs) {
+ 			bs.cleanup();
+ 		}
+ 	})
 }
-
-// stop the development server
-function stopDevServer() {
-	if(bs) {
-		bs.cleanup();
-		process.exit();
-	}
-}
-
-// run e2e testing
-gulp.task('e2e', gulp.series(
-	localDev,
-	scripts,
-	runProtractor
-))
 
 //exports for gulp to recognise them as tasks
 exports.copyHtml = copyHtml;
@@ -452,5 +385,6 @@ exports.localDev = localDev;
 exports.serve = serve;
 exports.scriptsDist = scriptsDist;
 exports.watch = watch;
-exports.e2eServe = e2eServe;
+exports.e2e = e2e;
 exports.setupTests = setupTests;
+exports.e2eServe = e2eServe;

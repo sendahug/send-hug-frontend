@@ -45,7 +45,7 @@ jobs:
           ${{ runner.OS }}-node-
           ${{ runner.OS }}-
 
-    - name: Install dependencies
+    - name: Upgrade npm
       run: npm install
 
     - name: Install gulp

@@ -358,7 +358,6 @@ async function e2e() {
 
  	// serve
  	e2eServe();
-	console.log("cont")
 
  	// run cypress
  	await exec('npm run cypress', (error, stdout, stderr) => {

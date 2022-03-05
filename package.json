@@ -75,7 +75,7 @@
     "auth0-js": "^9.19.0",
     "compression": "^1.7.4",
     "core-js": "^3.21.1",
-    "cypress": "^9.5.0",
+    "cypress": "^9.5.1",
     "dotenv": "^16.0.0",
     "express": "^4.17.3",
     "idb": "^6.1.5",

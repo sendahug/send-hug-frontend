@@ -43,7 +43,6 @@ import { ItemsService } from '../../services/items.service';
 import { PostsService } from '../../services/posts.service';
 import { AdminService } from '../../services/admin.service';
 import { AlertsService } from '../../services/alerts.service';
-import { PostEditForm } from '../forms/postEditForm/postEditForm.component';
 
 // Reasons for submitting a report
 enum postReportReasons { Inappropriate, Spam, Offensive, Other };

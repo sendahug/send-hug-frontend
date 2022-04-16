@@ -53,6 +53,10 @@ enum userReportReasons { Spam, 'harmful / dangerous content', 'abusive manner', 
   templateUrl: './popUp.component.html'
 })
 export class PopUp implements OnInit, OnChanges, AfterViewChecked {
+  // type of item to edit
+  @Input() toEdit: string | undefined;
+  // item to edit
+  @Input() editedItem: any;
   // indicates whether edit/delete mode is still required
   @Output() editMode = new EventEmitter<boolean>();
   // whether we're in delete (or edit) mode

@@ -23,10 +23,15 @@ exports.replaceTemplateUrl = function() {
       magicString.replace(/(templateUrl:'.)(.*)(.component.html')/, (match) => {
         const componentName = match.substring(15, match.length-16);
         if(componentName == 'my') return match;
+        let componentTemplateURL;
 
-        const componentTemplateURL = componentName == 'app'
-          ? __dirname + `/src/app/${componentName}.component.html`
-          : __dirname + `/src/app/components/${componentName}/${componentName}.component.html`;
+        if(componentName == 'app') {
+          componentTemplateURL = __dirname + `/src/app/${componentName}.component.html`;
+        } else if(componentName.includes('Form')) {
+          componentTemplateURL = __dirname + `/src/app/components/forms/${componentName}/${componentName}.component.html`;
+        } else {
+          componentTemplateURL = __dirname + `/src/app/components/${componentName}/${componentName}.component.html`;
+        }
 
         componentTemplate = fs.readFileSync(componentTemplateURL);
 

@@ -53,10 +53,6 @@ enum userReportReasons { Spam, 'harmful / dangerous content', 'abusive manner', 
   templateUrl: './popUp.component.html'
 })
 export class PopUp implements OnInit, OnChanges, AfterViewChecked {
-  // type of item to edit
-  @Input() toEdit: string | undefined;
-  // item to edit
-  @Input() editedItem: any;
   // indicates whether edit/delete mode is still required
   @Output() editMode = new EventEmitter<boolean>();
   // whether we're in delete (or edit) mode
@@ -101,12 +97,7 @@ export class PopUp implements OnInit, OnChanges, AfterViewChecked {
   */
   ngOnInit() {
     // if we're in delete mode, turn the values of edit variables to undefined
-    if(this.delete) {
-      this.toEdit = undefined;
-      this.editedItem = undefined;
-    }
-    // if we're in edit mode, turn the values of delete variables to undefined
-    else {
+    if(!this.delete) {
       this.toDelete = undefined;
       this.itemToDelete = undefined;
     }
@@ -145,101 +136,9 @@ export class PopUp implements OnInit, OnChanges, AfterViewChecked {
   */
   ngOnChanges() {
     // if we're in delete mode, turn the values of edit variables to undefined
-    if(this.delete) {
-      this.toEdit = undefined;
-      this.editedItem = undefined;
-    }
-    // if we're in edit mode, turn the values of delete variables to undefined
-    else {
+    if(!this.delete) {
       this.toDelete = undefined;
       this.itemToDelete = undefined;
-    }
-  }
-
-  /*
-  Function Name: updateDisplayN()
-  Function Description: Sends a request via the auth service to edit the user's display name.
-  Parameters: e (event) - This method is triggered by pressing a button; this parameter
-                          contains the click event data.
-              newDisplayName (string) - A string containing the user's new name.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  updateDisplayN(e:Event, newDisplayName:string) {
-    e.preventDefault();
-
-    // if there's a new display name in the textbox, change the display name
-    if(newDisplayName) {
-      // if the new display name is longer than 60 characters, alert the user
-      if(newDisplayName.length > 60) {
-        this.alertsService.createAlert({ type: 'Error', message: 'New display name cannot be over 60 characters! Please shorten the name and try again.' });
-        document.getElementById('displayName')!.classList.add('missing');
-        document.getElementById('displayName')!.setAttribute('aria-invalid', 'true');
-      }
-      // otherwise change the name
-      else {
-        // if the textfield was marked red, remove it
-        if(document.getElementById('displayName')!.classList.contains('missing')) {
-          document.getElementById('displayName')!.classList.remove('missing');
-        }
-        document.getElementById('displayName')!.setAttribute('aria-invalid', 'false');
-
-        this.authService.userData.displayName = newDisplayName;
-        this.authService.updateUserData();
-        this.exitEdit();
-      }
-    }
-    // otherwise, alert the user that a display name can't be empty
-    else {
-      this.alertsService.createAlert({ type: 'Error', message: 'New display name cannot be empty! Please fill the field and try again.' });
-      document.getElementById('displayName')!.classList.add('missing');
-      document.getElementById('displayName')!.setAttribute('aria-invalid', 'true');
-    }
-  }
-
-  /*
-  Function Name: editUser()
-  Function Description: Edits a user's display name from admin dashboard.
-  Parameters: e (event) - This method is triggered by pressing a button; this parameter
-                          contains the click event data.
-              newDisplayName (string) - A string containing the user's new name.
-              closeReport (boolean) - whether to also close the report.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  editUser(e:Event, newDisplayName:string, closeReport:boolean) {
-    e.preventDefault();
-
-    // if there's a new display name in the textbox, change the display name
-    if(newDisplayName) {
-      // if the new display name is longer than 60 characters, alert the user
-      if(newDisplayName.length > 60) {
-        this.alertsService.createAlert({ type: 'Error', message: 'New display name cannot be over 60 characters! Please shorten the name and try again.' });
-        document.getElementById('uDisplayName')!.classList.add('missing');
-        document.getElementById('uDisplayName')!.setAttribute('aria-invalid', 'true');
-      }
-      // otherwise change the name
-      else {
-        // if the textfield was marked red, remove it
-        if(document.getElementById('uDisplayName')!.classList.contains('missing')) {
-          document.getElementById('uDisplayName')!.classList.remove('missing');
-        }
-        document.getElementById('uDisplayName')!.setAttribute('aria-invalid', 'false');
-
-        let user = {
-          userID: this.reportData.userID,
-          displayName: newDisplayName
-        }
-
-        this.adminService.editUser(user, closeReport, this.reportData.reportID);
-        this.exitEdit();
-      }
-    }
-    // otherwise, alert the user that a display name can't be empty
-    else {
-      this.alertsService.createAlert({ type: 'Error', message: 'New display name cannot be empty! Please fill the field and try again.' });
-      document.getElementById('uDisplayName')!.classList.add('missing');
-      document.getElementById('uDisplayName')!.setAttribute('aria-invalid', 'true');
     }
   }
 

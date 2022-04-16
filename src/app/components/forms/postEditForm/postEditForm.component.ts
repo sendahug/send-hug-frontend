@@ -1,5 +1,5 @@
 /*
-	Popup
+	PostEditForm
 	Send a Hug Component
   ---------------------------------------------------
   MIT License

@@ -187,7 +187,7 @@ export class AdminDashboard implements OnInit {
   editPost(postID:number, postText:string, reportID:number) {
     this.lastFocusedElement = document.activeElement;
     this.editType = 'admin post';
-    this.toEdit = postText;
+    this.toEdit = { "text": postText, "id": postID };
     this.editMode = true;
     this.reportData.reportID = reportID;
     this.reportData.postID = postID;

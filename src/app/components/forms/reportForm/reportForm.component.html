@@ -29,9 +29,9 @@
     </div>
 
     <div *ngIf="reportType == 'Post'" id="reportPText" class="labels">{{ 'report post ' + reportedItem.text }}</div>
-    <button *ngIf="reportType == 'Post'" type="submit" class="appButton reportButton" (click)="createReport($event)" aria-labelledby="reportPText">Report Post</button>
+    <button *ngIf="reportType == 'Post'" type="submit" class="appButton reportButton" (click)="createReport($event)" aria-labelledby="reportPText" [disabled]="selectedReason == undefined">Report Post</button>
 
     <div *ngIf="reportType == 'User'" id="reportUText" class="labels">{{ 'Report user ' + reportedItem.displayName }}</div>
-    <button *ngIf="reportType == 'User'" type="submit" class="appButton reportButton" (click)="createReport($event)" aria-labelledby="reportUText">Report User</button>
+    <button *ngIf="reportType == 'User'" type="submit" class="appButton reportButton" (click)="createReport($event)" aria-labelledby="reportUText" [disabled]="selectedReason == undefined">Report User</button>
   </form>
 </div>

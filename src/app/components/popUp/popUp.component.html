@@ -1,75 +1,58 @@
 <div id="modalBox">
 	<div id="editPopup" role="dialog" aria-label="edit popup">
 		<button id="exitButton" (click)="exitEdit()" aria-label="close popup"><fa-icon [icon]="faTimes" class="fa-times"></fa-icon></button>
-		<!-- If the user is editing a post -->
-		<form *ngIf="toEdit == 'post'" id="postEdit" class="postEdit">
-			<div class="formElement">
-				<span class="pageCategory">By:</span> <span class="pageData" aria-describedby="pUser">{{ editedItem.user }}</span>
-			</div>
-			<div class="formElement" aria-describedby="pDate">{{ editedItem.date }}</div>
-			<div class="formElement">
-				<label class="pageCategory required" for="postText">Text:</label>
-				<br>
-				<textarea #postText id="postText" cols="40" rows="8" aria-describedby="pText" minlength="0" maxlength="480" required aria-invalid="false" aria-required="true">{{ editedItem.text }}</textarea>
-			</div>
-			<button type="submit" class="appButton sendData" (click)="updatePost($event, postText.value)" [attr.aria-label]="'update post ' + editedItem.text">Update Post</button>
-		</form>
-		
-		<!-- If the user is editing a post from the report's page -->
-		<form *ngIf="toEdit == 'admin post'" id="adPostEdit" class="postEdit">
-			<div class="formElement">
-				<label class="pageCategory required" for="adPostText">Post Text:</label>
-				<br>
-				<textarea #adPostText id="adPostText" cols="40" rows="8" minlength="0" maxlength="480" required aria-invalid="false" aria-required="true">{{ editedItem }}</textarea>
-			</div>
-			<button type="submit" class="appButton sendData" (click)="editPost($event, adPostText.value, true)">Update Post and Close Report</button>
-			<button type="submit" class="appButton sendData" (click)="editPost($event, adPostText.value, false)">Update Post without Closing Report</button>
-		</form>
-		
+		<post-edit-form
+			*ngIf="toEdit == 'post' || toEdit == 'admin post'"
+			[editedItem]="editedItem"
+			[toEdit]="toEdit"
+			[reportData]="reportData"
+			(editMode)="exitEdit()">
+		</post-edit-form>
+
 		<!-- If the user is editing their own display name -->
 		<form *ngIf="toEdit == 'user'" id="userEdit" class="userEdit">
 			<div class="formElement">
 				<label class="pageCategory required" for="displayName">Display Name:</label>
 				<input #displayName type="text" id="displayName" value="{{ authService.userData.displayName }}" minlength="0" maxlength="60" required aria-invalid="false" aria-required="true">
 			</div>
-			
+
 			<button type="submit" class="appButton updateItem" (click)="updateDisplayN($event, displayName.value)" [attr.aria-label]="'update display name for user ' + authService.userData.displayName">Update User</button>
 		</form>
-		
+
 		<!-- If the user is editing another user -->
 		<form *ngIf="toEdit == 'other user'" id="otherUserEdit" class="userEdit">
 			<div class="formElement">
 				<label class="pageCategory required" for="uDisplayName">Display Name:</label>
 				<input #uDisplayName type="text" id="uDisplayName" value="{{ editedItem }}" minlength="0" maxlength="60" required aria-invalid="false" aria-required="true">
 			</div>
-			
+
 			<button (click)="editUser($event, uDisplayName.value, true)" type="submit" class="appButton updateItem">Update User and Close Report</button>
 			<button (click)="editUser($event, uDisplayName.value, false)" type="submit" class="appButton updateItem">Update User without Closing Report</button>
 		</form>
-		
+
 		<!-- If the user is deleting something -->
 		<div *ngIf="delete && toDelete != 'ad post'" id="deleteItem" class="deleteItem">
 			<div class="popupText">Are you sure you want to delete this item?</div>
 			<div class="popupText warning">This action is irreversible!</div>
-			
+
 			<div class="buttons">
 				<button class="appButton popupDeleteBtn" (click)="deleteItem()">Yes, Delete</button>
 				<button class="appButton popupDeleteBtn" (click)="exitEdit()">Never Mind</button>
 			</div>
 		</div>
-		
+
 		<!-- If the user is deleting something from admin menu -->
 		<div *ngIf="delete && toDelete == 'ad post'" id="adDeleteItem" class="deleteItem">
 			<div class="popupText">Are you sure you want to delete this item?</div>
 			<div class="popupText warning">This action is irreversible!</div>
-			
+
 			<div class="buttons">
 				<button class="appButton deleteButton popupDeleteBtn" (click)="deletePost(true)">Delete and Close Report</button>
 				<button class="appButton deleteButton popupDeleteBtn" (click)="deletePost(false)">Delete without Closing Report</button>
 				<button class="appButton popupDeleteBtn" (click)="exitEdit()">Never Mind</button>
 			</div>
 		</div>
-		
+
 		<!-- If the user is reporting a post -->
 		<div *ngIf="report && reportType == 'Post'" id="reportItem">
 			<h3 class="popupTitle">Report Post</h3>
@@ -98,12 +81,12 @@
 						<label class="radioButtonLabel" for="pRadioOption3">Other:</label> <input type="text" placeholder="Enter the response" id="rOption3Text" aria-labelledby="rPostLegend" disabled minlength="0" maxlength="120" aria-required="false">
 					</fieldset>
 				</div>
-				
+
 				<div id="reportPText" class="labels">{{ 'report post ' + reportedItem.text }}</div>
 				<button type="submit" class="appButton reportButton" (click)="reportPost($event)" aria-labelledby="reportPText">Report Post</button>
 			</form>
 		</div>
-		
+
 		<!-- If the user is reporting a post -->
 		<div *ngIf="report && reportType == 'User'" id="reportUser">
 			<h3 class="popupTitle">Report User</h3>
@@ -129,7 +112,7 @@
 						<label class="radioButtonLabel" for="uRadioOption3">Other:</label> <input type="text" placeholder="Enter the response" id="uOption3Text" aria-labelledby="rUserLegend" disabled minlength="0" maxlength="120" aria-required="false">
 					</fieldset>
 				</div>
-				
+
 				<div id="reportUText" class="labels">{{ 'Report user ' + reportedItem.displayName }}</div>
 				<button type="submit" class="appButton reportButton" (click)="reportUser($event)" aria-labelledby="reportUText">Report User</button>
 			</form>

@@ -43,6 +43,7 @@ import { ItemsService } from '../../services/items.service';
 import { PostsService } from '../../services/posts.service';
 import { AdminService } from '../../services/admin.service';
 import { AlertsService } from '../../services/alerts.service';
+import { PostEditForm } from '../forms/postEditForm/postEditForm.component';
 
 // Reasons for submitting a report
 enum postReportReasons { Inappropriate, Spam, Offensive, Other };
@@ -240,107 +241,6 @@ export class PopUp implements OnInit, OnChanges, AfterViewChecked {
       this.alertsService.createAlert({ type: 'Error', message: 'New display name cannot be empty! Please fill the field and try again.' });
       document.getElementById('uDisplayName')!.classList.add('missing');
       document.getElementById('uDisplayName')!.setAttribute('aria-invalid', 'true');
-    }
-  }
-
-  /*
-  Function Name: updatePost()
-  Function Description: Sends a request to edit a post's text to the items service.
-  Parameters: e (event) - This method is triggered by pressing a button; this parameter
-                          contains the click event data.
-              newText (string) - A string containing the new text for the post.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  updatePost(e:Event, newText:string) {
-    e.preventDefault();
-
-    // if there's text in the textbox, change the post's text
-    if(newText) {
-      // if the new post text is longer than 480 characters, alert the user
-      if(newText.length > 480) {
-        this.alertsService.createAlert({ type: 'Error', message: 'New post text cannot be over 480 characters! Please shorten the post and try again.' });
-        document.getElementById('postText')!.classList.add('missing');
-        document.getElementById('postText')!.setAttribute('aria-invalid', 'true');
-      }
-      // otherwise edit the post
-      else {
-        // if the textfield was marked red, remove it
-        if(document.getElementById('postText')!.classList.contains('missing')) {
-          document.getElementById('postText')!.classList.remove('missing');
-        }
-        document.getElementById('postText')!.setAttribute('aria-invalid', 'false');
-
-        this.editedItem.text = newText;
-        this.postsService.editPost(this.editedItem);
-        // check whether the post's data was updated in the database
-        this.postsService.isUpdated.subscribe((value) => {
-          // if it has, close the popup; otherwise, leave it on so that the user
-          // can fix whatever errors they have and try again
-          if(value) {
-            this.exitEdit();
-          }
-        })
-      }
-    }
-    // otherwise alert the user that a post cannot be empty
-    else {
-      this.alertsService.createAlert({ type: 'Error', message: 'New post text cannot be empty. Please fill the field and try again.' });
-      document.getElementById('postText')!.classList.add('missing');
-      document.getElementById('postText')!.setAttribute('aria-invalid', 'true');
-    }
-  }
-
-  /*
-  Function Name: editPost()
-  Function Description: Edits a post's text from admin dashboard.
-  Parameters: e (event) - This method is triggered by pressing a button; this parameter
-                          contains the click event data.
-              newText (string) - A string containing the new post's text.
-              closeReport (boolean) - whether to also close the report.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  editPost(e:Event, newText:string, closeReport:boolean) {
-    e.preventDefault();
-
-    // if there's text in the textbox, change the post's text
-    if(newText) {
-      // if the new post text is longer than 480 characters, alert the user
-      if(newText.length > 480) {
-        this.alertsService.createAlert({ type: 'Error', message: 'New post text cannot be over 480 characters! Please shorten the post and try again.' });
-        document.getElementById('adPostText')!.classList.add('missing');
-        document.getElementById('adPostText')!.setAttribute('aria-invalid', 'true');
-      }
-      // otherwise edit the post
-      else {
-        // if the textfield was marked red, remove it
-        if(document.getElementById('adPostText')!.classList.contains('missing')) {
-          document.getElementById('adPostText')!.classList.remove('missing');
-        }
-        document.getElementById('adPostText')!.setAttribute('aria-invalid', 'false');
-
-        let post = {
-          text: newText,
-          id: this.reportData.postID
-        }
-
-        this.adminService.editPost(post, closeReport, this.reportData.reportID);
-        // check whether the post's data was updated in the database
-        this.adminService.isUpdated.subscribe((value) => {
-          // if it has, close the popup; otherwise, leave it on so that the user
-          // can fix whatever errors they have and try again
-          if(value) {
-            this.exitEdit();
-          }
-        })
-      }
-    }
-    // otherwise alert the user that a post cannot be empty
-    else {
-      this.alertsService.createAlert({ type: 'Error', message: 'New post text cannot be empty. Please fill the field and try again.' });
-      document.getElementById('adPostText')!.classList.add('missing');
-      document.getElementById('adPostText')!.setAttribute('aria-invalid', 'true');
     }
   }
 

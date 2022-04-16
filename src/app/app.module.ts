@@ -58,6 +58,7 @@ import { SinglePost } from './components/post/post.component';
 import { SupportPage } from './components/supportPage/supportPage.component';
 import { SitePolicies } from './components/sitePolicies/sitePolicies.component';
 import { IconEditor } from './components/iconEditor/iconEditor.component';
+import { PostEditForm } from './components/forms/postEditForm/postEditForm.component';
 
 @NgModule({
   imports: [
@@ -88,7 +89,8 @@ import { IconEditor } from './components/iconEditor/iconEditor.component';
     SinglePost,
     SupportPage,
     SitePolicies,
-    IconEditor
+    IconEditor,
+    PostEditForm
   ],
   providers: [],
   bootstrap: [AppComponent]

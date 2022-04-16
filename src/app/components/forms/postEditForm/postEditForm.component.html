@@ -1,24 +1,44 @@
-<!-- If the user is editing a post -->
-<form *ngIf="toEdit == 'post'" id="postEdit" class="postEdit">
+<form id="postEdit" class="postEdit">
   <div class="formElement">
     <span class="pageCategory">By:</span> <span class="pageData" aria-describedby="pUser">{{ editedItem.user }}</span>
   </div>
   <div class="formElement" aria-describedby="pDate">{{ editedItem.date }}</div>
   <div class="formElement">
-    <label class="pageCategory required" for="postText">Text:</label>
+    <label class="pageCategory required" for="postText">Post Text:</label>
     <br>
-    <textarea #postText id="postText" cols="40" rows="8" aria-describedby="pText" minlength="0" maxlength="480" required aria-invalid="false" aria-required="true">{{ editedItem.text }}</textarea>
+    <textarea #postText
+      id="postText"
+      cols="40"
+      rows="8"
+      aria-describedby="pText"
+      minlength="0"
+      maxlength="480"
+      required aria-invalid="false"
+      aria-required="true">{{ editedItem.text }}
+    </textarea>
   </div>
-  <button type="submit" class="appButton sendData" (click)="updatePost($event, postText.value)" [attr.aria-label]="'update post ' + editedItem.text">Update Post</button>
-</form>
-
-<!-- If the user is editing a post from the report's page -->
-<form *ngIf="toEdit == 'admin post'" id="adPostEdit" class="postEdit">
-  <div class="formElement">
-    <label class="pageCategory required" for="adPostText">Post Text:</label>
-    <br>
-    <textarea #adPostText id="adPostText" cols="40" rows="8" minlength="0" maxlength="480" required aria-invalid="false" aria-required="true">{{ editedItem }}</textarea>
-  </div>
-  <button type="submit" class="appButton sendData" (click)="editPost($event, adPostText.value, true)">Update Post and Close Report</button>
-  <button type="submit" class="appButton sendData" (click)="editPost($event, adPostText.value, false)">Update Post without Closing Report</button>
+  <!-- If the user is editing a post from anywhere else -->
+  <button
+    *ngIf="!isAdmin"
+    type="submit"
+    class="appButton sendData"
+    (click)="editPost($event, postText.value, null)"
+    [attr.aria-label]="'update post ' + editedItem.text">
+      Update Post
+  </button>
+  <!-- If the user is editing a post from the report's page -->
+  <button
+    *ngIf="isAdmin"
+    type="submit"
+    class="appButton sendData"
+    (click)="editPost($event, postText.value, true)">
+      Update Post and Close Report
+  </button>
+  <button
+    *ngIf="isAdmin"
+    type="submit"
+    class="appButton sendData"
+    (click)="editPost($event, postText.value, false)">
+      Update Post without Closing Report
+  </button>
 </form>

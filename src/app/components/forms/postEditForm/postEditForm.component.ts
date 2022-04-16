@@ -44,13 +44,12 @@ import { AlertsService } from '../../../services/alerts.service';
   templateUrl: './postEditForm.component.html'
 })
 export class PostEditForm {
-  // type of item to edit
-  @Input() toEdit: string | undefined;
   // item to edit
   @Input() editedItem!: Post;
   // indicates whether edit/delete mode is still required
   @Output() editMode = new EventEmitter<boolean>();
   @Input() reportData: any;
+  @Input() isAdmin = false;
 
   // CTOR
   constructor(
@@ -62,59 +61,41 @@ export class PostEditForm {
   }
 
   /*
-  Function Name: updatePost()
-  Function Description: Sends a request to edit a post's text to the items service.
-  Parameters: e (event) - This method is triggered by pressing a button; this parameter
-                          contains the click event data.
-              newText (string) - A string containing the new text for the post.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  updatePost(e:Event, newText:string) {
-    e.preventDefault();
-
-    // if the post is valid, edit the text
-    if(this.validatePost(newText, 'postText')) {
-      this.toggleErrorIndicator(true, 'postText');
-
-      this.editedItem.text = newText;
-      this.postsService.editPost(this.editedItem);
-      // check whether the post's data was updated in the database
-      this.postsService.isUpdated.subscribe((value: Boolean) => {
-        // if it has, close the popup; otherwise, leave it on so that the user
-        // can fix whatever errors they have and try again
-        if(value) {
-          this.editMode.emit(false);
-        }
-      })
-    }
-  }
-
-  /*
   Function Name: editPost()
   Function Description: Edits a post's text from admin dashboard.
   Parameters: e (event) - This method is triggered by pressing a button; this parameter
                           contains the click event data.
               newText (string) - A string containing the new post's text.
-              closeReport (boolean) - whether to also close the report.
+              closeReport (optional boolean) - whether to also close the report if the sender
+                                               is the admin's report page.
   ----------------
   Programmer: Shir Bar Lev.
   */
-  editPost(e:Event, newText:string, closeReport:boolean) {
+  editPost(e:Event, newText:string, closeReport:boolean | null) {
     e.preventDefault();
 
-    // if the post is valid, edit the text
-    if(this.validatePost(newText, 'adPostText')) {
-      this.toggleErrorIndicator(true, 'adPostText');
+    const serviceToUse = closeReport === null ? 'postsService' : 'adminService';
 
-      let post = {
-        text: newText,
-        id: this.reportData.postID
+    // if the post is valid, edit the text
+    if(this.validatePost(newText, 'postText')) {
+      this.toggleErrorIndicator(true, 'postText');
+
+      // if there isn't a value for closeReport, it means it's sent from the regular edit
+      if(closeReport === null) {
+        this.editedItem.text = newText;
+        this.postsService.editPost(this.editedItem);
+      // otherwise if there's a value it's coming from admin dashboard editing
+      } else {
+        let post = {
+          text: newText,
+          id: this.reportData.postID
+        }
+
+        this.adminService.editPost(post, closeReport, this.reportData.reportID);
       }
 
-      this.adminService.editPost(post, closeReport, this.reportData.reportID);
       // check whether the post's data was updated in the database
-      this.adminService.isUpdated.subscribe((value: Boolean) => {
+      this[serviceToUse].isUpdated.subscribe((value: Boolean) => {
         // if it has, close the popup; otherwise, leave it on so that the user
         // can fix whatever errors they have and try again
         if (value) {

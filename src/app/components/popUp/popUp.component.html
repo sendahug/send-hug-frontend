@@ -4,9 +4,9 @@
 		<post-edit-form
 			*ngIf="toEdit == 'post' || toEdit == 'admin post'"
 			[editedItem]="editedItem"
-			[toEdit]="toEdit"
 			[reportData]="reportData"
-			(editMode)="exitEdit()">
+			(editMode)="exitEdit()"
+			[isAdmin]="toEdit == 'post' ? false : true">
 		</post-edit-form>
 
 		<!-- If the user is editing their own display name -->

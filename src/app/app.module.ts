@@ -59,6 +59,7 @@ import { SupportPage } from './components/supportPage/supportPage.component';
 import { SitePolicies } from './components/sitePolicies/sitePolicies.component';
 import { IconEditor } from './components/iconEditor/iconEditor.component';
 import { PostEditForm } from './components/forms/postEditForm/postEditForm.component';
+import { DisplayNameEditForm } from './components/forms/displayNameEditForm/displayNameEditForm.component';
 
 @NgModule({
   imports: [
@@ -90,7 +91,8 @@ import { PostEditForm } from './components/forms/postEditForm/postEditForm.compo
     SupportPage,
     SitePolicies,
     IconEditor,
-    PostEditForm
+    PostEditForm,
+    DisplayNameEditForm,
   ],
   providers: [],
   bootstrap: [AppComponent]

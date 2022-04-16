@@ -43,7 +43,22 @@ import { AlertsService } from '../../../services/alerts.service';
 
 // Reasons for submitting a report
 enum postReportReasons { Inappropriate, Spam, Offensive, Other };
-enum userReportReasons { Spam, 'harmful / dangerous content', 'abusive manner', Other};
+enum userReportReasons { Spam, Harmful, Abusive, Other };
+
+const reportReasonsText = {
+  Post: {
+    0: "It is inppopriate.",
+    1: "It is spam.",
+    2: "It is offensive.",
+    3: "Other:",
+  },
+  User: {
+    0: "They are posting spam.",
+    1: "They are posting harmful / dangerous content.",
+    2: "They are behaving in an abusive manner.",
+    3: "Other:",
+  }
+};
 
 @Component({
   selector: 'report-form',
@@ -57,6 +72,7 @@ export class ReportForm {
   // type of item to report
   @Input() reportType: 'User' | 'Post' | undefined;
   selectedReason: string | undefined;
+  reportReasonsText = reportReasonsText;
 
   // CTOR
   constructor(
@@ -77,7 +93,7 @@ export class ReportForm {
   */
   setSelected(selectedItem:string | number) {
     selectedItem = Number(selectedItem);
-    let otherText = this.reportType == 'User' ? document.getElementById('uOption3Text') as HTMLInputElement : document.getElementById('rOption3Text') as HTMLInputElement;
+    let otherText = document.getElementById('rOption3Text') as HTMLInputElement;
 
     // If the selected reason is one of the set reasons, simply send it as is
     if(selectedItem == 0 || selectedItem == 1 || selectedItem == 2) {
@@ -117,47 +133,37 @@ export class ReportForm {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  reportPost(e:Event) {
+  createReport(e:Event) {
     e.preventDefault();
-    let post = this.reportedItem as Post;
-    let otherText = this.reportType == 'User' ? document.getElementById('uOption3Text') as HTMLInputElement : document.getElementById('rOption3Text') as HTMLInputElement;
+    let item = this.reportType == 'User' ? this.reportedItem as OtherUser : this.reportedItem as Post;
+    let otherText = document.getElementById('rOption3Text') as HTMLInputElement;
 
     // if the selected reason for the report is 'other', get the value of the text inputted
     if(this.selectedReason == 'other') {
-      if(otherText.value) {
-        // if the report reason is longer than 120 characters, alert the user
-        if(otherText.value.length > 120) {
-          this.alertsService.createAlert({ type: 'Error', message: 'Report reason cannot be over 120 characters! Please shorten the message and try again.' });
-          otherText.classList.add('missing');
-        }
-        // otherwise get the text field's value
-        else {
-          // if the textfield was marked red, remove it
-          if(otherText.classList.contains('missing')) {
-            otherText.classList.remove('missing');
-          }
-
-          this.selectedReason = otherText.value;
-        }
-      }
-      // if there's no text, alert the user that it's mandatory
-      else {
-        this.alertsService.createAlert({ message: 'The \'other\' field cannot be empty.', type: 'Error' });
-        otherText.classList.add('missing');
-        return;
+      // if the input is valid, get the value
+      if(this.validateOtherField(otherText)) {
+        this.toggleErrorIndicator(true, otherText);
+        this.selectedReason = otherText.value;
       }
     }
 
     // create a new report
     let report: Report = {
-      type: 'Post',
-      userID: post.userId,
-      postID: post.id,
+      type: this.reportType as 'Post' | 'User',
+      userID: 0,
+      postID: undefined,
       reporter: this.authService.userData.id!,
       reportReason: this.selectedReason!,
       date: new Date(),
       dismissed: false,
       closed: false
+    }
+
+    if(this.reportType == 'Post') {
+      report['userID'] = (item as Post).userId;
+      report['postID'] = (item as Post).id;
+    } else {
+      report['userID'] = (item as OtherUser).id;
     }
 
     // pass it on to the items service to send
@@ -166,58 +172,48 @@ export class ReportForm {
   }
 
   /*
-  Function Name: reportUser()
-  Function Description: Creates a report and passes it on to the items service.
-                        The method is triggered by pressing the 'report' button
-                        in the report popup.
-  Parameters: e (Event) - clicking the report button.
+  Function Name: validateOtherField()
+  Function Description: Validates the text in the passed in textfield.
+  Parameters: otherText (HTMLInputElement) - the input to work with.
   ----------------
   Programmer: Shir Bar Lev.
   */
-  reportUser(e:Event) {
-    e.preventDefault();
-    let userData = this.reportedItem as OtherUser;
-    let otherText = this.reportType == 'User' ? document.getElementById('uOption3Text') as HTMLInputElement : document.getElementById('rOption3Text') as HTMLInputElement;
-
-    // if the selected reason for the report is 'other', get the value of the text inputted
-    if(this.selectedReason == 'other') {
-      if(otherText.value) {
-        // if the report reason is longer than 120 characters, alert the user
-        if(otherText.value.length > 120) {
-          this.alertsService.createAlert({ type: 'Error', message: 'Report reason cannot be over 120 characters! Please shorten the message and try again.' });
-          otherText.classList.add('missing');
-        }
-        // otherwise get the text field's value
-        else {
-          // if the textfield was marked red, remove it
-          if(otherText.classList.contains('missing')) {
-            otherText.classList.remove('missing');
-          }
-
-          this.selectedReason = otherText.value;
-        }
-      }
-      // if there's no text, alert the user that it's mandatory
-      else {
-        this.alertsService.createAlert({ message: 'The \'other\' field cannot be empty.', type: 'Error' });
-        otherText.classList.add('missing');
-        return;
+  validateOtherField(otherText: HTMLInputElement): boolean {
+    if(otherText.value) {
+      // if the report reason is longer than 120 characters, alert the user
+      if(otherText.value.length > 120) {
+        this.alertsService.createAlert({ type: 'Error', message: 'Report reason cannot be over 120 characters! Please shorten the message and try again.' });
+        this.toggleErrorIndicator(false, otherText);
+        return false;
+      } else {
+        return true;
       }
     }
-
-    // create a new report
-    let report: Report = {
-      type: 'User',
-      userID: userData.id,
-      reporter: this.authService.userData.id!,
-      reportReason: this.selectedReason!,
-      date: new Date(),
-      dismissed: false,
-      closed: false
+    // if there's no text, alert the user that it's mandatory
+    else {
+      this.alertsService.createAlert({ message: 'The \'other\' field cannot be empty.', type: 'Error' });
+      this.toggleErrorIndicator(false, otherText);
+      return false;
     }
+  }
 
-    // pass it on to the items service to send
-    this.itemsService.sendReport(report);
-    this.reportMode.emit(false);
+  /*
+  Function Name: toggleErrorIndicator()
+  Function Description: Adds or removes error indicators from the text fields.
+  Parameters: isValid (boolean) - whether or not the value is valid.
+              otherText (HTMLInputElement) - the input to work with.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  toggleErrorIndicator(isValid: boolean, otherText: HTMLInputElement) {
+    // if the data is valid, delete the 'missing' class to turn red colour off
+    if(isValid) {
+      if(otherText.classList.contains('missing')) {
+        otherText.classList.remove('missing');
+      }
+    // if the data isn't valid, alert the users
+    } else {
+      otherText.classList.add('missing');
+    }
   }
 }

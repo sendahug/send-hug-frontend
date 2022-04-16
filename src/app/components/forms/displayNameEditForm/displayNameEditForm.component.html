@@ -1,20 +1,40 @@
-<!-- If the user is editing their own display name -->
-<form *ngIf="toEdit == 'user'" id="userEdit" class="userEdit">
+<form id="userEdit" class="userEdit">
   <div class="formElement">
     <label class="pageCategory required" for="displayName">Display Name:</label>
-    <input #displayName type="text" id="displayName" value="{{ authService.userData.displayName }}" minlength="0" maxlength="60" required aria-invalid="false" aria-required="true">
+    <input #displayName
+      type="text"
+      id="displayName"
+      value="{{ editedItem }}"
+      minlength="0"
+      maxlength="60"
+      required
+      aria-invalid="false"
+      aria-required="true">
   </div>
 
-  <button type="submit" class="appButton updateItem" (click)="updateDisplayN($event, displayName.value)" [attr.aria-label]="'update display name for user ' + authService.userData.displayName">Update User</button>
-</form>
+  <!-- If the user is editing their own display name -->
+  <button
+    *ngIf="toEdit == 'user'"
+    type="submit"
+    class="appButton updateItem"
+    (click)="updateDisplayName($event, displayName.value, null)"
+    [attr.aria-label]="'update display name for user ' + authService.userData.displayName">
+      Update User
+  </button>
 
-<!-- If the user is editing another user -->
-<form *ngIf="toEdit == 'other user'" id="otherUserEdit" class="userEdit">
-  <div class="formElement">
-    <label class="pageCategory required" for="uDisplayName">Display Name:</label>
-    <input #uDisplayName type="text" id="uDisplayName" value="{{ editedItem }}" minlength="0" maxlength="60" required aria-invalid="false" aria-required="true">
-  </div>
-
-  <button (click)="editUser($event, uDisplayName.value, true)" type="submit" class="appButton updateItem">Update User and Close Report</button>
-  <button (click)="editUser($event, uDisplayName.value, false)" type="submit" class="appButton updateItem">Update User without Closing Report</button>
+  <!-- If the user is editing another user -->
+  <button
+    *ngIf="toEdit == 'other user'"
+    (click)="updateDisplayName($event, displayName.value, true)"
+    type="submit"
+    class="appButton updateItem">
+      Update User and Close Report
+  </button>
+  <button
+    *ngIf="toEdit == 'other user'"
+    (click)="updateDisplayName($event, displayName.value, false)"
+    type="submit"
+    class="appButton updateItem">
+      Update User without Closing Report
+  </button>
 </form>

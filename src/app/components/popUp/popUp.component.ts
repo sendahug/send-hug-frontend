@@ -101,7 +101,12 @@ export class PopUp implements OnInit, OnChanges, AfterViewChecked {
   */
   ngOnInit() {
     // if we're in delete mode, turn the values of edit variables to undefined
-    if(!this.delete) {
+    if(this.delete) {
+      this.toEdit = undefined;
+      this.editedItem = undefined;
+    }
+    // if we're in edit mode, turn the values of delete variables to undefined
+    else {
       this.toDelete = undefined;
       this.itemToDelete = undefined;
     }
@@ -140,7 +145,12 @@ export class PopUp implements OnInit, OnChanges, AfterViewChecked {
   */
   ngOnChanges() {
     // if we're in delete mode, turn the values of edit variables to undefined
-    if(!this.delete) {
+    if(this.delete) {
+      this.toEdit = undefined;
+      this.editedItem = undefined;
+    }
+    // if we're in edit mode, turn the values of delete variables to undefined
+    else {
       this.toDelete = undefined;
       this.itemToDelete = undefined;
     }

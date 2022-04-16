@@ -24,28 +24,14 @@
 			(reportMode)="exitEdit()">
 		</report-form>
 
-		<!-- If the user is deleting something -->
-		<div *ngIf="delete && toDelete != 'ad post'" id="deleteItem" class="deleteItem">
-			<div class="popupText">Are you sure you want to delete this item?</div>
-			<div class="popupText warning">This action is irreversible!</div>
-
-			<div class="buttons">
-				<button class="appButton popupDeleteBtn" (click)="deleteItem()">Yes, Delete</button>
-				<button class="appButton popupDeleteBtn" (click)="exitEdit()">Never Mind</button>
-			</div>
-		</div>
-
-		<!-- If the user is deleting something from admin menu -->
-		<div *ngIf="delete && toDelete == 'ad post'" id="adDeleteItem" class="deleteItem">
-			<div class="popupText">Are you sure you want to delete this item?</div>
-			<div class="popupText warning">This action is irreversible!</div>
-
-			<div class="buttons">
-				<button class="appButton deleteButton popupDeleteBtn" (click)="deletePost(true)">Delete and Close Report</button>
-				<button class="appButton deleteButton popupDeleteBtn" (click)="deletePost(false)">Delete without Closing Report</button>
-				<button class="appButton popupDeleteBtn" (click)="exitEdit()">Never Mind</button>
-			</div>
-		</div>
+		<item-delete-form
+			*ngIf="delete"
+			[toDelete]="toDelete"
+			[itemToDelete]="itemToDelete"
+			[messType]="messType"
+			[reportData]="reportData"
+			(editMode)="exitEdit()">
+		</item-delete-form>
 	</div>
 </div>
 

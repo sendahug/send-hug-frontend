@@ -38,10 +38,6 @@ import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import { Post } from '../../interfaces/post.interface';
 import { OtherUser } from '../../interfaces/otherUser.interface';
 import { AuthService } from '../../services/auth.service';
-import { ItemsService } from '../../services/items.service';
-import { PostsService } from '../../services/posts.service';
-import { AdminService } from '../../services/admin.service';
-import { AlertsService } from '../../services/alerts.service';
 
 @Component({
   selector: 'app-pop-up',
@@ -77,10 +73,6 @@ export class PopUp implements OnInit, OnChanges, AfterViewChecked {
   // CTOR
   constructor(
     public authService:AuthService,
-    private itemsService:ItemsService,
-    private postsService:PostsService,
-    private adminService:AdminService,
-    private alertsService:AlertsService
   ) {
 
   }
@@ -149,50 +141,6 @@ export class PopUp implements OnInit, OnChanges, AfterViewChecked {
       this.toDelete = undefined;
       this.itemToDelete = undefined;
     }
-  }
-
-  /*
-  Function Name: deleteItem()
-  Function Description: Sends a request to delete a post or a message to the items service.
-  Parameters: None.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  deleteItem() {
-    // if it's a post, send a request to delete the post
-    if(this.toDelete == 'Post') {
-      this.postsService.deletePost(this.itemToDelete!);
-    }
-    // if it's a message, send a request to delete the message
-    else if(this.toDelete == 'Message') {
-      this.itemsService.deleteMessage(this.itemToDelete!, this.messType!);
-    }
-    // if it's a thread, send a request to delete the thread
-    else if(this.toDelete == 'Thread') {
-      this.itemsService.deleteThread(this.itemToDelete!);
-    }
-    // if the user is attempting to delete all of the user's posts
-    else if(this.toDelete == 'All posts') {
-      this.postsService.deleteAllPosts(this.itemToDelete!);
-    }
-    // if the user is attempting to delete all of their messages of a specific type
-    else if(this.toDelete == 'All inbox' || this.toDelete == 'All outbox' || this.toDelete == 'All threads') {
-      this.itemsService.deleteAll(this.toDelete, this.itemToDelete!);
-    }
-
-    this.exitEdit();
-  }
-
-  /*
-  Function Name: deletePost()
-  Function Description: Sends a request to the admin service to delete a post and
-                        dismiss the report (if selected by the user).
-  Parameters: closeReport (boolean) - whether or not to close the report.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  deletePost(closeReport:boolean) {
-    this.adminService.deletePost(this.itemToDelete!, this.reportData, closeReport);
   }
 
   /*

@@ -61,6 +61,7 @@ import { IconEditor } from './components/iconEditor/iconEditor.component';
 import { PostEditForm } from './components/forms/postEditForm/postEditForm.component';
 import { DisplayNameEditForm } from './components/forms/displayNameEditForm/displayNameEditForm.component';
 import { ReportForm } from './components/forms/reportForm/reportForm.component';
+import { ItemDeleteForm } from './components/forms/itemDeleteForm/itemDeleteForm.component';
 
 @NgModule({
   imports: [
@@ -95,6 +96,7 @@ import { ReportForm } from './components/forms/reportForm/reportForm.component';
     PostEditForm,
     DisplayNameEditForm,
     ReportForm,
+    ItemDeleteForm,
   ],
   providers: [],
   bootstrap: [AppComponent]

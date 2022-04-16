@@ -77,8 +77,8 @@ export class PostEditForm {
     const serviceToUse = closeReport === null ? 'postsService' : 'adminService';
 
     // if the post is valid, edit the text
-    if(this.validatePost(newText, 'postText')) {
-      this.toggleErrorIndicator(true, 'postText');
+    if(this.validatePost(newText)) {
+      this.toggleErrorIndicator(true);
 
       // if there isn't a value for closeReport, it means it's sent from the regular edit
       if(closeReport === null) {
@@ -109,17 +109,16 @@ export class PostEditForm {
   Function Name: validatePost()
   Function Description: Validates the post to ensure it fits the rules.
   Parameters: newText (string) - A string containing the new post's text.
-              postTextId (string) - the ID of the HTML text field.
   ----------------
   Programmer: Shir Bar Lev.
   */
-  validatePost(newText:string, postTextId:string): boolean {
+  validatePost(newText:string): boolean {
     // if there's text in the textbox, change the post's text
     if(newText) {
       // if the new post text is longer than 480 characters, alert the user
       if(newText.length > 480) {
         this.alertsService.createAlert({ type: 'Error', message: 'New post text cannot be over 480 characters! Please shorten the post and try again.' });
-        this.toggleErrorIndicator(false, postTextId);
+        this.toggleErrorIndicator(false);
         return false;
       } else {
         return true;
@@ -128,7 +127,7 @@ export class PostEditForm {
     // otherwise alert the user that a post cannot be empty
     else {
       this.alertsService.createAlert({ type: 'Error', message: 'New post text cannot be empty. Please fill the field and try again.' });
-      this.toggleErrorIndicator(false, postTextId);
+      this.toggleErrorIndicator(false);
       return false;
     }
   }
@@ -137,22 +136,21 @@ export class PostEditForm {
   Function Name: toggleErrorIndicator()
   Function Description: Adds or removes error indicators from the text fields.
   Parameters: isValid (boolean) - whether or not the value is valid.
-              postTextId (string) - the ID of the HTML text field.
   ----------------
   Programmer: Shir Bar Lev.
   */
-  toggleErrorIndicator(isValid: boolean, postTextId:string) {
+  toggleErrorIndicator(isValid: boolean) {
     // if the data isn't valid, alert the users
     if(!isValid) {
-      document.getElementById(postTextId)!.classList.add('missing');
-      document.getElementById(postTextId)!.setAttribute('aria-invalid', 'true');
+      document.getElementById('postText')!.classList.add('missing');
+      document.getElementById('postText')!.setAttribute('aria-invalid', 'true');
     // otherwise make sure it's set to false
     } else {
       // if the textfield was marked red, remove it
-      if(document.getElementById(postTextId)!.classList.contains('missing')) {
-        document.getElementById(postTextId)!.classList.remove('missing');
+      if(document.getElementById('postText')!.classList.contains('missing')) {
+        document.getElementById('postText')!.classList.remove('missing');
       }
-      document.getElementById(postTextId)!.setAttribute('aria-invalid', 'false');
+      document.getElementById('postText')!.setAttribute('aria-invalid', 'false');
     }
   }
 }

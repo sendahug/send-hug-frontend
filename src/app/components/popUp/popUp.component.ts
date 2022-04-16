@@ -36,17 +36,12 @@ import { faTimes } from '@fortawesome/free-solid-svg-icons';
 
 // App-related import
 import { Post } from '../../interfaces/post.interface';
-import { Report } from '../../interfaces/report.interface';
 import { OtherUser } from '../../interfaces/otherUser.interface';
 import { AuthService } from '../../services/auth.service';
 import { ItemsService } from '../../services/items.service';
 import { PostsService } from '../../services/posts.service';
 import { AdminService } from '../../services/admin.service';
 import { AlertsService } from '../../services/alerts.service';
-
-// Reasons for submitting a report
-enum postReportReasons { Inappropriate, Spam, Offensive, Other };
-enum userReportReasons { Spam, 'harmful / dangerous content', 'abusive manner', Other};
 
 @Component({
   selector: 'app-pop-up',
@@ -198,160 +193,6 @@ export class PopUp implements OnInit, OnChanges, AfterViewChecked {
   */
   deletePost(closeReport:boolean) {
     this.adminService.deletePost(this.itemToDelete!, this.reportData, closeReport);
-  }
-
-  /*
-  Function Name: setSelected()
-  Function Description: Sets the selected reason for reporting the post. The method is
-                        triggered by the user checking radio buttons.
-  Parameters: selectedItem (number) - the ID of the slected option.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  setSelected(selectedItem:string | number) {
-    selectedItem = Number(selectedItem);
-    let otherText = this.reportType == 'User' ? document.getElementById('uOption3Text') as HTMLInputElement : document.getElementById('rOption3Text') as HTMLInputElement;
-
-    // If the selected reason is one of the set reasons, simply send it as is
-    if(selectedItem == 0 || selectedItem == 1 || selectedItem == 2) {
-      // if the item being reported is a post
-      if(this.reportType == 'Post') {
-        this.selectedReason = `The post is ${postReportReasons[selectedItem]}`;
-      }
-      // if the item being reported is a user
-      else {
-        if(selectedItem == 2) {
-          this.selectedReason = `The user is behaving in an ${userReportReasons[selectedItem]}`;
-        }
-        else {
-          this.selectedReason = `The user is posting ${userReportReasons[selectedItem]}`;
-        }
-      }
-
-      otherText.disabled = true;
-      otherText.required = false;
-      otherText.setAttribute('aria-required', 'false');
-    }
-    // If the user chose to put their own input, take that as the reason
-    else {
-      otherText.disabled = false;
-      otherText.required = true;
-      this.selectedReason = 'other';
-      otherText.setAttribute('aria-required', 'true');
-    }
-  }
-
-  /*
-  Function Name: reportPost()
-  Function Description: Creates a report and passes it on to the items service.
-                        The method is triggered by pressing the 'report' button
-                        in the report popup.
-  Parameters: e (Event) - clicking the report button.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  reportPost(e:Event) {
-    e.preventDefault();
-    let post = this.reportedItem as Post;
-    let otherText = this.reportType == 'User' ? document.getElementById('uOption3Text') as HTMLInputElement : document.getElementById('rOption3Text') as HTMLInputElement;
-
-    // if the selected reason for the report is 'other', get the value of the text inputted
-    if(this.selectedReason == 'other') {
-      if(otherText.value) {
-        // if the report reason is longer than 120 characters, alert the user
-        if(otherText.value.length > 120) {
-          this.alertsService.createAlert({ type: 'Error', message: 'Report reason cannot be over 120 characters! Please shorten the message and try again.' });
-          otherText.classList.add('missing');
-        }
-        // otherwise get the text field's value
-        else {
-          // if the textfield was marked red, remove it
-          if(otherText.classList.contains('missing')) {
-            otherText.classList.remove('missing');
-          }
-
-          this.selectedReason = otherText.value;
-        }
-      }
-      // if there's no text, alert the user that it's mandatory
-      else {
-        this.alertsService.createAlert({ message: 'The \'other\' field cannot be empty.', type: 'Error' });
-        otherText.classList.add('missing');
-        return;
-      }
-    }
-
-    // create a new report
-    let report: Report = {
-      type: 'Post',
-      userID: post.userId,
-      postID: post.id,
-      reporter: this.authService.userData.id!,
-      reportReason: this.selectedReason!,
-      date: new Date(),
-      dismissed: false,
-      closed: false
-    }
-
-    // pass it on to the items service to send
-    this.itemsService.sendReport(report);
-    this.exitEdit();
-  }
-
-  /*
-  Function Name: reportUser()
-  Function Description: Creates a report and passes it on to the items service.
-                        The method is triggered by pressing the 'report' button
-                        in the report popup.
-  Parameters: e (Event) - clicking the report button.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  reportUser(e:Event) {
-    e.preventDefault();
-    let userData = this.reportedItem as OtherUser;
-    let otherText = this.reportType == 'User' ? document.getElementById('uOption3Text') as HTMLInputElement : document.getElementById('rOption3Text') as HTMLInputElement;
-
-    // if the selected reason for the report is 'other', get the value of the text inputted
-    if(this.selectedReason == 'other') {
-      if(otherText.value) {
-        // if the report reason is longer than 120 characters, alert the user
-        if(otherText.value.length > 120) {
-          this.alertsService.createAlert({ type: 'Error', message: 'Report reason cannot be over 120 characters! Please shorten the message and try again.' });
-          otherText.classList.add('missing');
-        }
-        // otherwise get the text field's value
-        else {
-          // if the textfield was marked red, remove it
-          if(otherText.classList.contains('missing')) {
-            otherText.classList.remove('missing');
-          }
-
-          this.selectedReason = otherText.value;
-        }
-      }
-      // if there's no text, alert the user that it's mandatory
-      else {
-        this.alertsService.createAlert({ message: 'The \'other\' field cannot be empty.', type: 'Error' });
-        otherText.classList.add('missing');
-        return;
-      }
-    }
-
-    // create a new report
-    let report: Report = {
-      type: 'User',
-      userID: userData.id,
-      reporter: this.authService.userData.id!,
-      reportReason: this.selectedReason!,
-      date: new Date(),
-      dismissed: false,
-      closed: false
-    }
-
-    // pass it on to the items service to send
-    this.itemsService.sendReport(report);
-    this.exitEdit();
   }
 
   /*

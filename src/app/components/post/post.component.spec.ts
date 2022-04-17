@@ -43,6 +43,7 @@ import { ServiceWorkerModule } from "@angular/service-worker";
 import { Component } from '@angular/core';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { By } from '@angular/platform-browser';
+import { NO_ERRORS_SCHEMA } from "@angular/core";
 
 import { SinglePost } from './post.component';
 import { PopUp } from '../popUp/popUp.component';
@@ -91,6 +92,7 @@ describe('Post', () => {
         platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
+      schemas: [NO_ERRORS_SCHEMA],
       imports: [
         RouterTestingModule,
         HttpClientModule,

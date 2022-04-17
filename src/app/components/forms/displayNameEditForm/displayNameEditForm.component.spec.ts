@@ -162,7 +162,7 @@ describe('DisplayNameEditForm', () => {
     const emitSpy = spyOn(popUp.editMode, 'emit');
 
     popUpDOM.querySelector('#displayName').value = newName;
-    popUpDOM.querySelectorAll('.updateItem')[1].click();
+    popUpDOM.querySelectorAll('.updateItem')[0].click();
     fixture.detectChanges();
 
     expect(validateSpy).toHaveBeenCalledWith(newName);
@@ -199,7 +199,7 @@ describe('DisplayNameEditForm', () => {
     const emitSpy = spyOn(popUp.editMode, 'emit');
 
     popUpDOM.querySelector('#displayName').value = newName;
-    popUpDOM.querySelectorAll('.updateItem')[2].click();
+    popUpDOM.querySelectorAll('.updateItem')[1].click();
     fixture.detectChanges();
 
     expect(validateSpy).toHaveBeenCalledWith(newName);
@@ -268,7 +268,7 @@ describe('DisplayNameEditForm', () => {
     popUp.toggleErrorIndicator(false);
 
     expect(textField.classList).toContain('missing');
-    expect(textField.getAttribute('aria-invalid')).toEqual(true);
+    expect(textField.getAttribute('aria-invalid')).toEqual('true');
   });
 
   it('should toggle error indicator off', () => {
@@ -280,7 +280,7 @@ describe('DisplayNameEditForm', () => {
     popUp.toggleErrorIndicator(true);
 
     expect(textField.classList).not.toContain('missing');
-    expect(textField.getAttribute('aria-invalid')).toEqual(false);
+    expect(textField.getAttribute('aria-invalid')).toEqual('false');
   });
 
   it('should toggle missing off if it\'s on', () => {

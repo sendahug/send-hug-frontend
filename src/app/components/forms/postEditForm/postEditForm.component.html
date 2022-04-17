@@ -31,6 +31,7 @@
     *ngIf="isAdmin"
     type="submit"
     class="appButton sendData"
+    id="updateAndClose"
     (click)="editPost($event, postText.value, true)">
       Update Post and Close Report
   </button>
@@ -38,6 +39,7 @@
     *ngIf="isAdmin"
     type="submit"
     class="appButton sendData"
+    id="updateDontClose"
     (click)="editPost($event, postText.value, false)">
       Update Post without Closing Report
   </button>

@@ -54,7 +54,7 @@ import { Post } from "../../../interfaces/post.interface";
 
 // DISPLAY NAME EDIT
 // ==================================================================
-describe('DisplayNameEditForm', () => {
+describe('PostEditForm', () => {
   // Before each test, configure testing environment
   beforeEach(() => {
     TestBed.resetTestEnvironment();
@@ -134,7 +134,7 @@ describe('DisplayNameEditForm', () => {
       reportID: 1,
       postID: 2
     };
-    popUp.isAdmin = false;
+    popUp.isAdmin = true;
     popUp.editedItem = originalItem;
     const newText = 'new text';
 
@@ -144,7 +144,7 @@ describe('DisplayNameEditForm', () => {
     const isUpdatedSpy = spyOn(popUp['adminService'].isUpdated, 'subscribe');
 
     popUpDOM.querySelector('#postText').value = newText;
-    popUpDOM.querySelectorAll('.sendData')[0].click();
+    popUpDOM.querySelector('#updateAndClose').click();
     fixture.detectChanges();
 
     expect(validateSpy).toHaveBeenCalledWith(newText);
@@ -165,7 +165,7 @@ describe('DisplayNameEditForm', () => {
       reportID: 1,
       postID: 2
     };
-    popUp.isAdmin = false;
+    popUp.isAdmin = true;
     popUp.editedItem = originalItem;
     const newText = 'new text';
 
@@ -175,7 +175,7 @@ describe('DisplayNameEditForm', () => {
     const isUpdatedSpy = spyOn(popUp['adminService'].isUpdated, 'subscribe');
 
     popUpDOM.querySelector('#postText').value = newText;
-    popUpDOM.querySelectorAll('.sendData')[1].click();
+    popUpDOM.querySelector('#updateDontClose').click();
     fixture.detectChanges();
 
     expect(validateSpy).toHaveBeenCalledWith(newText);
@@ -209,7 +209,7 @@ describe('DisplayNameEditForm', () => {
     const toggleSpy = spyOn(popUp, 'toggleErrorIndicator');
     let newPost = "";
 
-    for(let i = 0; i < 50; i++) {
+    for(let i = 100; i < 150; i++) {
       newPost += i * 10;
     }
 
@@ -244,7 +244,7 @@ describe('DisplayNameEditForm', () => {
     popUp.toggleErrorIndicator(false);
 
     expect(textField.classList).toContain('missing');
-    expect(textField.getAttribute('aria-invalid')).toEqual(true);
+    expect(textField.getAttribute('aria-invalid')).toEqual('true');
   });
 
   it('should toggle error indicator off', () => {
@@ -256,7 +256,7 @@ describe('DisplayNameEditForm', () => {
     popUp.toggleErrorIndicator(true);
 
     expect(textField.classList).not.toContain('missing');
-    expect(textField.getAttribute('aria-invalid')).toEqual(false);
+    expect(textField.getAttribute('aria-invalid')).toEqual('false');
   });
 
   it('should toggle missing off if it\'s on', () => {

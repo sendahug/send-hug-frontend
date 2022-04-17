@@ -259,7 +259,7 @@ describe('Popup', () => {
     fixture.detectChanges();
 
     // click the 'never mind button'
-    itemDeleteFormDOM.querySelectorAll('.popupDeleteBtn')[1].click();
+    itemDeleteFormDOM.querySelector('#adminCancel').click();
     fixture.detectChanges();
 
     // check the exit method was called

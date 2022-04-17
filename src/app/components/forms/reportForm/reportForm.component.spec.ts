@@ -451,6 +451,16 @@ describe('Report', () => {
      const createAlertSpy = spyOn(popUp['alertsService'], 'createAlert');
      const toggleSpy = spyOn(popUp, 'toggleErrorIndicator');
      const otherText = popUpDOM.querySelector('#rOption3Text');
+     popUp.reportType = 'Post';
+     popUp.reportedItem = {
+       id: 1,
+       givenHugs: 0,
+       sentHugs: [],
+       user: 'name',
+       userId: 2,
+       text: 'hi',
+       date: new Date()
+     };
 
      const res = popUp.validateOtherField(otherText);
 
@@ -466,6 +476,16 @@ describe('Report', () => {
      const createAlertSpy = spyOn(popUp['alertsService'], 'createAlert');
      const toggleSpy = spyOn(popUp, 'toggleErrorIndicator');
      const otherText = popUpDOM.querySelector('#rOption3Text');
+     popUp.reportType = 'Post';
+     popUp.reportedItem = {
+       id: 1,
+       givenHugs: 0,
+       sentHugs: [],
+       user: 'name',
+       userId: 2,
+       text: 'hi',
+       date: new Date()
+     };
      let otherReason = '';
 
      for(let i = 100; i < 200; i++) {
@@ -493,6 +513,16 @@ describe('Report', () => {
      const toggleSpy = spyOn(popUp, 'toggleErrorIndicator');
      const otherText = popUpDOM.querySelector('#rOption3Text');
      const reportReason = 'because';
+     popUp.reportType = 'Post';
+     popUp.reportedItem = {
+       id: 1,
+       givenHugs: 0,
+       sentHugs: [],
+       user: 'name',
+       userId: 2,
+       text: 'hi',
+       date: new Date()
+     };
 
      otherText.value = reportReason;
      fixture.detectChanges();

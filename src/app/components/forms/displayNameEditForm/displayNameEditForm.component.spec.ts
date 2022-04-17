@@ -120,6 +120,7 @@ describe('DisplayNameEditForm', () => {
       role: 'admin',
     };
     const newName = 'new name';
+    fixture.detectChanges();
 
     const validateSpy = spyOn(popUp, 'validateDisplayName').and.returnValue(true);
     const toggleSpy = spyOn(popUp, 'toggleErrorIndicator');
@@ -155,6 +156,7 @@ describe('DisplayNameEditForm', () => {
       reportID: 1
     };
     const newName = 'new name';
+    fixture.detectChanges();
 
     const validateSpy = spyOn(popUp, 'validateDisplayName').and.returnValue(true);
     const toggleSpy = spyOn(popUp, 'toggleErrorIndicator');
@@ -167,7 +169,7 @@ describe('DisplayNameEditForm', () => {
 
     expect(validateSpy).toHaveBeenCalledWith(newName);
     expect(toggleSpy).toHaveBeenCalledWith(true);
-    expect(updateSpy).toHaveBeenCalled({
+    expect(updateSpy).toHaveBeenCalledWith({
       userID: 4,
       displayName: newName,
     }, true, 1);
@@ -192,6 +194,7 @@ describe('DisplayNameEditForm', () => {
       reportID: 1
     };
     const newName = 'new name';
+    fixture.detectChanges();
 
     const validateSpy = spyOn(popUp, 'validateDisplayName').and.returnValue(true);
     const toggleSpy = spyOn(popUp, 'toggleErrorIndicator');
@@ -204,7 +207,7 @@ describe('DisplayNameEditForm', () => {
 
     expect(validateSpy).toHaveBeenCalledWith(newName);
     expect(toggleSpy).toHaveBeenCalledWith(true);
-    expect(updateSpy).toHaveBeenCalled({
+    expect(updateSpy).toHaveBeenCalledWith({
       userID: 4,
       displayName: newName,
     }, false, 1);

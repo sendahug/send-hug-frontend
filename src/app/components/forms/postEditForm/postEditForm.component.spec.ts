@@ -107,6 +107,7 @@ describe('PostEditForm', () => {
     popUp.isAdmin = false;
     popUp.editedItem = originalItem;
     const newText = 'new text';
+    fixture.detectChanges();
 
     const validateSpy = spyOn(popUp, 'validatePost').and.returnValue(true);
     const toggleSpy = spyOn(popUp, 'toggleErrorIndicator');

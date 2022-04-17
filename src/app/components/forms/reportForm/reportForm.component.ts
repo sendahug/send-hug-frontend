@@ -43,7 +43,7 @@ import { AlertsService } from '../../../services/alerts.service';
 
 // Reasons for submitting a report
 enum postReportReasons { Inappropriate, Spam, Offensive, Other };
-enum userReportReasons { Spam, Harmful, Abusive, Other };
+enum userReportReasons { Spam, 'harmful / dangerous content', 'abusive manner', Other};
 
 const reportReasonsText = {
   Post: {
@@ -144,6 +144,8 @@ export class ReportForm {
       if(this.validateOtherField(otherText)) {
         this.toggleErrorIndicator(true, otherText);
         this.selectedReason = otherText.value;
+      } else {
+        return;
       }
     }
 

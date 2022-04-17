@@ -257,25 +257,25 @@ describe('Report', () => {
      expect(popUp.selectedReason).toEqual('The user is posting Spam');
      expect(otherTextField.required).toBe(false);
      expect(otherTextField.disabled).toBe(true);
-     expect(popUp.getAttribute('aria-required')).toEqual('false');
+     expect(otherTextField.getAttribute('aria-required')).toEqual('false');
 
      popUp.setSelected('1');
      expect(popUp.selectedReason).toEqual('The user is posting harmful / dangerous content');
      expect(otherTextField.required).toBe(false);
      expect(otherTextField.disabled).toBe(true);
-     expect(popUp.getAttribute('aria-required')).toEqual('false');
+     expect(otherTextField.getAttribute('aria-required')).toEqual('false');
 
      popUp.setSelected('2');
      expect(popUp.selectedReason).toEqual('The user is behaving in an abusive manner');
      expect(otherTextField.required).toBe(false);
      expect(otherTextField.disabled).toBe(true);
-     expect(popUp.getAttribute('aria-required')).toEqual('false');
+     expect(otherTextField.getAttribute('aria-required')).toEqual('false');
 
      popUp.setSelected('3');
      expect(popUp.selectedReason).toEqual('other');
      expect(otherTextField.required).toBe(true);
      expect(otherTextField.disabled).toBe(false);
-     expect(popUp.getAttribute('aria-required')).toEqual('true');
+     expect(otherTextField.getAttribute('aria-required')).toEqual('true');
    });
 
    // Check that if the user chooses 'other' as reason they can't submit an

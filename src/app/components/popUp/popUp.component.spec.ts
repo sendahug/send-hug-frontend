@@ -124,7 +124,7 @@ describe('Popup', () => {
     // spies
     const spies = [
       spyOn(popUpDOM.querySelector('#exitButton'), 'focus').and.callThrough(),
-      spyOn(popUpDOM.querySelector('#adPostText'), 'focus').and.callThrough(),
+      spyOn(popUpDOM.querySelector('#postText'), 'focus').and.callThrough(),
       spyOn(popUpDOM.querySelectorAll('.sendData')[0], 'focus').and.callThrough(),
       spyOn(popUpDOM.querySelectorAll('.sendData')[1], 'focus').and.callThrough()
     ];
@@ -221,7 +221,7 @@ describe('Popup', () => {
     // spies
     const spies = [
       spyOn(popUpDOM.querySelector('#exitButton'), 'focus').and.callThrough(),
-      spyOn(popUpDOM.querySelector('#adPostText'), 'focus').and.callThrough(),
+      spyOn(popUpDOM.querySelector('#postText'), 'focus').and.callThrough(),
       spyOn(popUpDOM.querySelectorAll('.sendData')[0], 'focus').and.callThrough(),
       spyOn(popUpDOM.querySelectorAll('.sendData')[1], 'focus').and.callThrough()
     ];

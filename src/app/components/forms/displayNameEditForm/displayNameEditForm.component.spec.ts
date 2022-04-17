@@ -153,7 +153,8 @@ describe('DisplayNameEditForm', () => {
       role: 'admin',
     };
     popUp.reportData = {
-      reportID: 1
+      reportID: 1,
+      userID: 4,
     };
     const newName = 'new name';
     fixture.detectChanges();
@@ -191,7 +192,8 @@ describe('DisplayNameEditForm', () => {
       role: 'admin',
     };
     popUp.reportData = {
-      reportID: 1
+      reportID: 1,
+      userID: 4,
     };
     const newName = 'new name';
     fixture.detectChanges();

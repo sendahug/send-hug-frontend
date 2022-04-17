@@ -44,10 +44,9 @@ import { ItemsService } from '../../../services/items.service';
 import { MockItemsService } from '../../../services/items.service.mock';
 import { AlertsService } from '../../../services/alerts.service';
 import { MockAlertsService } from '../../../services/alerts.service.mock';
-import { Report } from '../../../interfaces/report.interface';
 
 
-describe('Report - Post', () => {
+describe('Report', () => {
    // Before each test, configure testing environment
    beforeEach(() => {
      TestBed.resetTestEnvironment();
@@ -300,6 +299,7 @@ describe('Report - Post', () => {
      const validateSpy = spyOn(popUp, 'validateOtherField').and.returnValue(false);
      const toggleSpy = spyOn(popUp, 'toggleErrorIndicator');
      const reportServiceSpy = spyOn(popUp['itemsService'], 'sendReport');
+     const otherText = popUpDOM.querySelector('#rOption3Text');
      fixture.detectChanges();
 
      // select option 4
@@ -311,7 +311,7 @@ describe('Report - Post', () => {
      fixture.detectChanges();
 
      // check the report wasn't sent and the user was alerted
-     expect(validateSpy).toHaveBeenCalledWith('hi');
+     expect(validateSpy).toHaveBeenCalledWith(otherText);
      expect(toggleSpy).not.toHaveBeenCalled();
      expect(reportServiceSpy).not.toHaveBeenCalled();
      done();
@@ -384,11 +384,11 @@ describe('Report - Post', () => {
      fixture.detectChanges();
 
      // check the report wasn't sent and the user was alerted
-     const report: Report = {
+     const report = {
        type: 'Post',
        userID: 2,
        postID: 1,
-       reporter: 0,
+       reporter: 4,
        reportReason: 'The post is Inappropriate',
        dismissed: false,
        closed: false
@@ -430,11 +430,11 @@ describe('Report - Post', () => {
      fixture.detectChanges();
 
      // check the report wasn't sent and the user was alerted
-     const report: Report = {
+     const report = {
        type: 'User',
        userID: 3,
        postID: undefined,
-       reporter: 0,
+       reporter: 4,
        reportReason: 'The post is Inappropriate',
        dismissed: false,
        closed: false
@@ -453,7 +453,7 @@ describe('Report - Post', () => {
      const res = popUp.validateOtherField(otherText);
 
      expect(res).toBe(false);
-     expect(toggleSpy).toHaveBeenCalledWith(false);
+     expect(toggleSpy).toHaveBeenCalledWith(false, otherText);
      expect(createAlertSpy).toHaveBeenCalledWith({ message: 'The \'other\' field cannot be empty.', type: 'Error' });
    });
 
@@ -477,7 +477,7 @@ describe('Report - Post', () => {
      const res = popUp.validateOtherField(otherText);
 
      expect(res).toBe(false);
-     expect(toggleSpy).toHaveBeenCalledWith(false);
+     expect(toggleSpy).toHaveBeenCalledWith(false, otherText);
      expect(createAlertSpy).toHaveBeenCalledWith({ type: 'Error', message: 'Report reason cannot be over 120 characters! Please shorten the message and try again.' });
    });
 

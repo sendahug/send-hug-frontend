@@ -51,10 +51,8 @@ import { MockAlertsService } from './alerts.service.mock';
 
 const pushSub:PushSubscription = {
   endpoint: 'endpoint',
-  expirationTime: 100000,
   options: {
     applicationServerKey: null,
-    userVisibleOnly: true
   },
   getKey(_name): ArrayBuffer | null {
     return null;
@@ -298,10 +296,8 @@ describe('NotificationService', () => {
   it('getSubscription() - should get push subscription from localStorage and call setSubscription', () => {
     const sub:PushSubscription = {
       endpoint: 'fsfdsfg',
-      expirationTime: 110000,
       options: {
         applicationServerKey: null,
-        userVisibleOnly: true
       },
       getKey(_name): ArrayBuffer | null {
         return null;

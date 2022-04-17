@@ -45,6 +45,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { By } from '@angular/platform-browser';
+import { NO_ERRORS_SCHEMA } from "@angular/core";
 
 import { MyPosts } from './myPosts.component';
 import { PopUp } from '../popUp/popUp.component';
@@ -135,6 +136,7 @@ describe('MyPosts', () => {
         platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
+      schemas: [NO_ERRORS_SCHEMA],
       imports: [
         RouterTestingModule,
         HttpClientModule,

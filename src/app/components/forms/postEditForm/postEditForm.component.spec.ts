@@ -121,7 +121,7 @@ describe('PostEditForm', () => {
     expect(toggleSpy).toHaveBeenCalledWith(true);
     const updatedItem = { ...originalItem };
     updatedItem['text'] = newText;
-    expect(updateSpy).toHaveBeenCalled(updatedItem);
+    expect(updateSpy).toHaveBeenCalledWith(updatedItem);
     expect(isUpdatedSpy).toHaveBeenCalled();
   });
 
@@ -150,7 +150,7 @@ describe('PostEditForm', () => {
 
     expect(validateSpy).toHaveBeenCalledWith(newText);
     expect(toggleSpy).toHaveBeenCalledWith(true);
-    expect(updateSpy).toHaveBeenCalled({
+    expect(updateSpy).toHaveBeenCalledWith({
       id: 2,
       text: newText,
     }, true, 2);
@@ -182,7 +182,7 @@ describe('PostEditForm', () => {
 
     expect(validateSpy).toHaveBeenCalledWith(newText);
     expect(toggleSpy).toHaveBeenCalledWith(true);
-    expect(updateSpy).toHaveBeenCalled({
+    expect(updateSpy).toHaveBeenCalledWith({
       id: 2,
       text: newText,
     }, false, 2);

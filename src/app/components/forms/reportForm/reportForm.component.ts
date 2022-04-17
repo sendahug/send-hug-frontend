@@ -213,11 +213,11 @@ export class ReportForm {
       if(otherText.classList.contains('missing')) {
         otherText.classList.remove('missing');
       }
-      otherText.setAttribute('aria-invalid', 'true');
+      otherText.setAttribute('aria-invalid', 'false');
     // if the data isn't valid, alert the users
     } else {
       otherText.classList.add('missing');
-      otherText.setAttribute('aria-invalid', 'false');
+      otherText.setAttribute('aria-invalid', 'true');
     }
   }
 }

@@ -153,7 +153,7 @@ describe('PostEditForm', () => {
     expect(updateSpy).toHaveBeenCalledWith({
       id: 2,
       text: newText,
-    }, true, 2);
+    }, true, 1);
     expect(isUpdatedSpy).toHaveBeenCalled();
   });
 
@@ -185,7 +185,7 @@ describe('PostEditForm', () => {
     expect(updateSpy).toHaveBeenCalledWith({
       id: 2,
       text: newText,
-    }, false, 2);
+    }, false, 1);
     expect(isUpdatedSpy).toHaveBeenCalled();
   });
 

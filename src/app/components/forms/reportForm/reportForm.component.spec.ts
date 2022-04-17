@@ -124,8 +124,7 @@ describe('Report', () => {
 
      fixture.detectChanges();
 
-     expect(popUpDOM.querySelector('#reportUser')).toBeTruthy();
-     expect(popUpDOM.querySelectorAll('.uReportText')).toBeTruthy();
+     expect(popUpDOM.querySelector('#uReportText')).toBeTruthy();
      expect(popUpDOM.querySelector('#uReportText').textContent).toBe('string');
    });
 
@@ -395,6 +394,7 @@ describe('Report', () => {
        closed: false
      }
      expect(reportServiceSpy).toHaveBeenCalledWith(jasmine.objectContaining(report));
+     done();
    });
 
    it('creates the report and sends it to the itemsService - user', (done: DoneFn) => {
@@ -441,6 +441,7 @@ describe('Report', () => {
        closed: false
      }
      expect(reportServiceSpy).toHaveBeenCalledWith(jasmine.objectContaining(report));
+     done();
    });
 
    it('should raise validation error on empty otherText', () => {
@@ -508,8 +509,19 @@ describe('Report', () => {
      const popUp = fixture.componentInstance;
      const popUpDOM = fixture.nativeElement;
      const otherText = popUpDOM.querySelector('#rOption3Text');
-
+     popUp.reportType = 'Post';
+     popUp.reportedItem = {
+       id: 1,
+       givenHugs: 0,
+       sentHugs: [],
+       user: 'name',
+       userId: 2,
+       text: 'hi',
+       date: new Date()
+     };
+     
      popUp.toggleErrorIndicator(false, otherText);
+     fixture.detectChanges();
 
      expect(otherText.classList).toContain('missing');
      expect(otherText.getAttribute('aria-invalid')).toEqual('true');
@@ -520,8 +532,19 @@ describe('Report', () => {
      const popUp = fixture.componentInstance;
      const popUpDOM = fixture.nativeElement;
      const otherText = popUpDOM.querySelector('#rOption3Text');
+     popUp.reportType = 'Post';
+     popUp.reportedItem = {
+       id: 1,
+       givenHugs: 0,
+       sentHugs: [],
+       user: 'name',
+       userId: 2,
+       text: 'hi',
+       date: new Date()
+     };
 
      popUp.toggleErrorIndicator(true, otherText);
+     fixture.detectChanges();
 
      expect(otherText.classList).not.toContain('missing');
      expect(otherText.getAttribute('aria-invalid')).toEqual('false');
@@ -532,12 +555,24 @@ describe('Report', () => {
      const popUp = fixture.componentInstance;
      const popUpDOM = fixture.nativeElement;
      const otherText = popUpDOM.querySelector('#rOption3Text');
+     popUp.reportType = 'Post';
+     popUp.reportedItem = {
+       id: 1,
+       givenHugs: 0,
+       sentHugs: [],
+       user: 'name',
+       userId: 2,
+       text: 'hi',
+       date: new Date()
+     };
 
      popUp.toggleErrorIndicator(false, otherText);
+     fixture.detectChanges();
 
      expect(otherText.classList).toContain('missing');
 
      popUp.toggleErrorIndicator(true, otherText);
+     fixture.detectChanges();
 
      expect(otherText.classList).not.toContain('missing');
    });

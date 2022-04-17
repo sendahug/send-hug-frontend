@@ -105,5 +105,6 @@ export class ItemDeleteForm {
   */
   deletePost(closeReport:boolean) {
     this.adminService.deletePost(this.itemToDelete!, this.reportData, closeReport);
+    this.editMode.emit(false);
   }
 }

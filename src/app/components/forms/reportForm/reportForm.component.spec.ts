@@ -337,11 +337,12 @@ describe('Report', () => {
      const toggleSpy = spyOn(popUp, 'toggleErrorIndicator');
      const reportServiceSpy = spyOn(popUp['itemsService'], 'sendReport');
      const reportReason = 'because';
+     const otherText = popUpDOM.querySelector('#rOption3Text');
      fixture.detectChanges();
 
      // select option 4
      popUpDOM.querySelector('#pRadioOption3').click();
-     popUpDOM.querySelector('#rOption3Text').value = reportReason;
+     otherText.value = reportReason;
      fixture.detectChanges();
 
      // try to submit it without text in the textfield
@@ -349,8 +350,8 @@ describe('Report', () => {
      fixture.detectChanges();
 
      // check the report wasn't sent and the user was alerted
-     expect(validateSpy).toHaveBeenCalledWith(reportReason);
-     expect(toggleSpy).toHaveBeenCalledWith(true, reportReason);
+     expect(validateSpy).toHaveBeenCalledWith(otherText);
+     expect(toggleSpy).toHaveBeenCalledWith(true, otherText);
      expect(popUp.selectedReason).toEqual(reportReason);
      expect(reportServiceSpy).toHaveBeenCalled();
      done();
@@ -435,7 +436,7 @@ describe('Report', () => {
        userID: 3,
        postID: undefined,
        reporter: 4,
-       reportReason: 'The post is Inappropriate',
+       reportReason: 'The user is posting Spam',
        dismissed: false,
        closed: false
      }

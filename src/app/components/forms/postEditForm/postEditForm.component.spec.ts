@@ -137,6 +137,7 @@ describe('PostEditForm', () => {
     popUp.isAdmin = true;
     popUp.editedItem = originalItem;
     const newText = 'new text';
+    fixture.detectChanges();
 
     const validateSpy = spyOn(popUp, 'validatePost').and.returnValue(true);
     const toggleSpy = spyOn(popUp, 'toggleErrorIndicator');
@@ -168,6 +169,7 @@ describe('PostEditForm', () => {
     popUp.isAdmin = true;
     popUp.editedItem = originalItem;
     const newText = 'new text';
+    fixture.detectChanges();
 
     const validateSpy = spyOn(popUp, 'validatePost').and.returnValue(true);
     const toggleSpy = spyOn(popUp, 'toggleErrorIndicator');
@@ -209,8 +211,8 @@ describe('PostEditForm', () => {
     const toggleSpy = spyOn(popUp, 'toggleErrorIndicator');
     let newPost = "";
 
-    for(let i = 100; i < 150; i++) {
-      newPost += i * 10;
+    for(let i = 100; i < 200; i++) {
+      newPost += i * 500;
     }
 
     const res = popUp.validatePost(newPost);

@@ -40,7 +40,7 @@ import { AlertsService } from '../../../services/alerts.service';
 
 @Component({
   selector: 'display-name-edit-form',
-  templateUrl: './DisplayNameEditForm.component.html'
+  templateUrl: './displayNameEditForm.component.html'
 })
 export class DisplayNameEditForm implements OnInit {
   // type of item to edit

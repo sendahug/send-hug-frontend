@@ -91,6 +91,7 @@ export class ValidationService {
   */
   validateItem(typeOfTest: ValidatableItems, textToValidate: string, elementId: string): boolean {
     const testValidationRules = this.validationRules[typeOfTest];
+    // if there's text, check its length
     if(textToValidate) {
       if(textToValidate.length > testValidationRules['max']) {
         this.alertsService.createAlert({ type: 'Error', message: testValidationRules['errorMessages']['tooLong'] })
@@ -100,6 +101,7 @@ export class ValidationService {
         this.toggleErrorIndicator(true, elementId);
         return true;
       }
+    // if there isn't text, check if empty texts are allowed
     } else {
       if(testValidationRules['emptyAllowed']) {
         this.toggleErrorIndicator(true, elementId);

@@ -224,6 +224,20 @@ describe('PostsService', () => {
     });
   });
 
+  it('should return true for emptyAllowed', () => {
+    const emptyReason = '';
+    const alertSpy = spyOn(validationService['alertsService'], 'createAlert');
+    const toggleSpy = spyOn(validationService, 'toggleErrorIndicator');
+    validationService.validationRules.reportOther.emptyAllowed = true;
+
+    // check the valid reason
+    const res = validationService.validateItem('reportOther', emptyReason, 'el');
+
+    expect(res).toBe(true);
+    expect(toggleSpy).toHaveBeenCalledWith(true, 'el');
+    expect(alertSpy).not.toHaveBeenCalled();
+  });
+
   it('should toggle error indicator on', () => {
     const fixture = TestBed.createComponent(MockPage);
     const mockPage = fixture.componentInstance;

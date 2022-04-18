@@ -40,6 +40,7 @@ import { OtherUser } from '../../../interfaces/otherUser.interface';
 import { AuthService } from '../../../services/auth.service';
 import { ItemsService } from '../../../services/items.service';
 import { AlertsService } from '../../../services/alerts.service';
+import { ValidationService } from '../../../services/validation.service';
 
 // Reasons for submitting a report
 enum postReportReasons { Inappropriate, Spam, Offensive, Other };
@@ -78,7 +79,8 @@ export class ReportForm {
   constructor(
     public authService:AuthService,
     private itemsService:ItemsService,
-    private alertsService:AlertsService
+    private alertsService:AlertsService,
+    private validationService:ValidationService
   ) {
 
   }
@@ -141,8 +143,7 @@ export class ReportForm {
     // if the selected reason for the report is 'other', get the value of the text inputted
     if(this.selectedReason == 'other') {
       // if the input is valid, get the value
-      if(this.validateOtherField(otherText)) {
-        this.toggleErrorIndicator(true, otherText);
+      if(this.validationService.validateItem('reportOther', otherText.value, 'rOption3Text')) {
         this.selectedReason = otherText.value;
       } else {
         return;
@@ -171,53 +172,5 @@ export class ReportForm {
     // pass it on to the items service to send
     this.itemsService.sendReport(report);
     this.reportMode.emit(false);
-  }
-
-  /*
-  Function Name: validateOtherField()
-  Function Description: Validates the text in the passed in textfield.
-  Parameters: otherText (HTMLInputElement) - the input to work with.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  validateOtherField(otherText: HTMLInputElement): boolean {
-    if(otherText.value) {
-      // if the report reason is longer than 120 characters, alert the user
-      if(otherText.value.length > 120) {
-        this.alertsService.createAlert({ type: 'Error', message: 'Report reason cannot be over 120 characters! Please shorten the message and try again.' });
-        this.toggleErrorIndicator(false, otherText);
-        return false;
-      } else {
-        return true;
-      }
-    }
-    // if there's no text, alert the user that it's mandatory
-    else {
-      this.alertsService.createAlert({ message: 'The \'other\' field cannot be empty.', type: 'Error' });
-      this.toggleErrorIndicator(false, otherText);
-      return false;
-    }
-  }
-
-  /*
-  Function Name: toggleErrorIndicator()
-  Function Description: Adds or removes error indicators from the text fields.
-  Parameters: isValid (boolean) - whether or not the value is valid.
-              otherText (HTMLInputElement) - the input to work with.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  toggleErrorIndicator(isValid: boolean, otherText: HTMLInputElement) {
-    // if the data is valid, delete the 'missing' class to turn red colour off
-    if(isValid) {
-      if(otherText.classList.contains('missing')) {
-        otherText.classList.remove('missing');
-      }
-      otherText.setAttribute('aria-invalid', 'false');
-    // if the data isn't valid, alert the users
-    } else {
-      otherText.classList.add('missing');
-      otherText.setAttribute('aria-invalid', 'true');
-    }
   }
 }

@@ -295,8 +295,7 @@ describe('Report', () => {
        text: 'hi',
        date: new Date()
      };
-     const validateSpy = spyOn(popUp, 'validateOtherField').and.returnValue(false);
-     const toggleSpy = spyOn(popUp, 'toggleErrorIndicator');
+     const validateSpy = spyOn(popUp['validationService'], 'validateItem').and.returnValue(false);
      const reportServiceSpy = spyOn(popUp['itemsService'], 'sendReport');
      const otherText = popUpDOM.querySelector('#rOption3Text');
      fixture.detectChanges();
@@ -310,8 +309,7 @@ describe('Report', () => {
      fixture.detectChanges();
 
      // check the report wasn't sent and the user was alerted
-     expect(validateSpy).toHaveBeenCalledWith(otherText);
-     expect(toggleSpy).not.toHaveBeenCalled();
+     expect(validateSpy).toHaveBeenCalledWith('reportOther', '', 'rOption3Text');
      expect(reportServiceSpy).not.toHaveBeenCalled();
      done();
    });
@@ -332,8 +330,7 @@ describe('Report', () => {
        text: 'hi',
        date: new Date()
      };
-     const validateSpy = spyOn(popUp, 'validateOtherField').and.returnValue(true);
-     const toggleSpy = spyOn(popUp, 'toggleErrorIndicator');
+     const validateSpy = spyOn(popUp['validationService'], 'validateItem').and.returnValue(true);
      const reportServiceSpy = spyOn(popUp['itemsService'], 'sendReport');
      const reportReason = 'because';
      const otherText = popUpDOM.querySelector('#rOption3Text');
@@ -349,8 +346,7 @@ describe('Report', () => {
      fixture.detectChanges();
 
      // check the report wasn't sent and the user was alerted
-     expect(validateSpy).toHaveBeenCalledWith(otherText);
-     expect(toggleSpy).toHaveBeenCalledWith(true, otherText);
+     expect(validateSpy).toHaveBeenCalledWith('reportOther', reportReason, 'rOption3Text');
      expect(popUp.selectedReason).toEqual(reportReason);
      expect(reportServiceSpy).toHaveBeenCalled();
      done();
@@ -442,168 +438,5 @@ describe('Report', () => {
      }
      expect(reportServiceSpy).toHaveBeenCalledWith(jasmine.objectContaining(report));
      done();
-   });
-
-   it('should raise validation error on empty otherText', () => {
-     const fixture = TestBed.createComponent(ReportForm);
-     const popUp = fixture.componentInstance;
-     const popUpDOM = fixture.nativeElement;
-     const createAlertSpy = spyOn(popUp['alertsService'], 'createAlert');
-     const toggleSpy = spyOn(popUp, 'toggleErrorIndicator');
-     const otherText = popUpDOM.querySelector('#rOption3Text');
-     popUp.reportType = 'Post';
-     popUp.reportedItem = {
-       id: 1,
-       givenHugs: 0,
-       sentHugs: [],
-       user: 'name',
-       userId: 2,
-       text: 'hi',
-       date: new Date()
-     };
-
-     const res = popUp.validateOtherField(otherText);
-
-     expect(res).toBe(false);
-     expect(toggleSpy).toHaveBeenCalledWith(false, otherText);
-     expect(createAlertSpy).toHaveBeenCalledWith({ message: 'The \'other\' field cannot be empty.', type: 'Error' });
-   });
-
-   it('should raise validation error on long reasons', () => {
-     const fixture = TestBed.createComponent(ReportForm);
-     const popUp = fixture.componentInstance;
-     const popUpDOM = fixture.nativeElement;
-     const createAlertSpy = spyOn(popUp['alertsService'], 'createAlert');
-     const toggleSpy = spyOn(popUp, 'toggleErrorIndicator');
-     const otherText = popUpDOM.querySelector('#rOption3Text');
-     popUp.reportType = 'Post';
-     popUp.reportedItem = {
-       id: 1,
-       givenHugs: 0,
-       sentHugs: [],
-       user: 'name',
-       userId: 2,
-       text: 'hi',
-       date: new Date()
-     };
-     let otherReason = '';
-
-     for(let i = 100; i < 200; i++) {
-       otherReason += i * 10;
-     }
-
-     popUpDOM.querySelector('#pRadioOption3').click();
-     popUpDOM.querySelector('#rOption3Text').value = otherReason;
-     fixture.detectChanges();
-
-     const res = popUp.validateOtherField(otherText);
-
-     expect(res).toBe(false);
-     expect(toggleSpy).toHaveBeenCalledWith(false, otherText);
-     expect(createAlertSpy).toHaveBeenCalledWith({ type: 'Error', message: 'Report reason cannot be over 120 characters! Please shorten the message and try again.' });
-   });
-
-   it('should return valid for valid posts', () => {
-     TestBed.createComponent(AppComponent);
-     TestBed.inject(AuthService).login();
-     const fixture = TestBed.createComponent(ReportForm);
-     const popUp = fixture.componentInstance;
-     const popUpDOM = fixture.nativeElement;
-     const createAlertSpy = spyOn(popUp['alertsService'], 'createAlert');
-     const toggleSpy = spyOn(popUp, 'toggleErrorIndicator');
-     const otherText = popUpDOM.querySelector('#rOption3Text');
-     const reportReason = 'because';
-     popUp.reportType = 'Post';
-     popUp.reportedItem = {
-       id: 1,
-       givenHugs: 0,
-       sentHugs: [],
-       user: 'name',
-       userId: 2,
-       text: 'hi',
-       date: new Date()
-     };
-
-     otherText.value = reportReason;
-     fixture.detectChanges();
-
-     const res = popUp.validateOtherField(otherText);
-
-     expect(res).toBe(true);
-     expect(toggleSpy).not.toHaveBeenCalled();
-     expect(createAlertSpy).not.toHaveBeenCalled();
-   });
-
-   it('should toggle error indicator on', () => {
-     const fixture = TestBed.createComponent(ReportForm);
-     const popUp = fixture.componentInstance;
-     const popUpDOM = fixture.nativeElement;
-     const otherText = popUpDOM.querySelector('#rOption3Text');
-     popUp.reportType = 'Post';
-     popUp.reportedItem = {
-       id: 1,
-       givenHugs: 0,
-       sentHugs: [],
-       user: 'name',
-       userId: 2,
-       text: 'hi',
-       date: new Date()
-     };
-     
-     popUp.toggleErrorIndicator(false, otherText);
-     fixture.detectChanges();
-
-     expect(otherText.classList).toContain('missing');
-     expect(otherText.getAttribute('aria-invalid')).toEqual('true');
-   });
-
-   it('should toggle error indicator off', () => {
-     const fixture = TestBed.createComponent(ReportForm);
-     const popUp = fixture.componentInstance;
-     const popUpDOM = fixture.nativeElement;
-     const otherText = popUpDOM.querySelector('#rOption3Text');
-     popUp.reportType = 'Post';
-     popUp.reportedItem = {
-       id: 1,
-       givenHugs: 0,
-       sentHugs: [],
-       user: 'name',
-       userId: 2,
-       text: 'hi',
-       date: new Date()
-     };
-
-     popUp.toggleErrorIndicator(true, otherText);
-     fixture.detectChanges();
-
-     expect(otherText.classList).not.toContain('missing');
-     expect(otherText.getAttribute('aria-invalid')).toEqual('false');
-   });
-
-   it('should toggle missing off if it\'s on', () => {
-     const fixture = TestBed.createComponent(ReportForm);
-     const popUp = fixture.componentInstance;
-     const popUpDOM = fixture.nativeElement;
-     const otherText = popUpDOM.querySelector('#rOption3Text');
-     popUp.reportType = 'Post';
-     popUp.reportedItem = {
-       id: 1,
-       givenHugs: 0,
-       sentHugs: [],
-       user: 'name',
-       userId: 2,
-       text: 'hi',
-       date: new Date()
-     };
-
-     popUp.toggleErrorIndicator(false, otherText);
-     fixture.detectChanges();
-
-     expect(otherText.classList).toContain('missing');
-
-     popUp.toggleErrorIndicator(true, otherText);
-     fixture.detectChanges();
-
-     expect(otherText.classList).not.toContain('missing');
    });
 });

@@ -58,6 +58,10 @@ import { SinglePost } from './components/post/post.component';
 import { SupportPage } from './components/supportPage/supportPage.component';
 import { SitePolicies } from './components/sitePolicies/sitePolicies.component';
 import { IconEditor } from './components/iconEditor/iconEditor.component';
+import { PostEditForm } from './components/forms/postEditForm/postEditForm.component';
+import { DisplayNameEditForm } from './components/forms/displayNameEditForm/displayNameEditForm.component';
+import { ReportForm } from './components/forms/reportForm/reportForm.component';
+import { ItemDeleteForm } from './components/forms/itemDeleteForm/itemDeleteForm.component';
 
 @NgModule({
   imports: [
@@ -88,7 +92,11 @@ import { IconEditor } from './components/iconEditor/iconEditor.component';
     SinglePost,
     SupportPage,
     SitePolicies,
-    IconEditor
+    IconEditor,
+    PostEditForm,
+    DisplayNameEditForm,
+    ReportForm,
+    ItemDeleteForm,
   ],
   providers: [],
   bootstrap: [AppComponent]

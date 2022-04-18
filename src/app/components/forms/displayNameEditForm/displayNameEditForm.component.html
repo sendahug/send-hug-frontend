@@ -1,0 +1,40 @@
+<form id="userEdit" class="userEdit">
+  <div class="formElement">
+    <label class="pageCategory required" for="displayName">Display Name:</label>
+    <input #displayName
+      type="text"
+      id="displayName"
+      value="{{ editedItem }}"
+      minlength="0"
+      maxlength="60"
+      required
+      aria-invalid="false"
+      aria-required="true">
+  </div>
+
+  <!-- If the user is editing their own display name -->
+  <button
+    *ngIf="toEdit == 'user'"
+    type="submit"
+    class="appButton updateItem"
+    (click)="updateDisplayName($event, displayName.value, null)"
+    [attr.aria-label]="'update display name for user ' + authService.userData.displayName">
+      Update User
+  </button>
+
+  <!-- If the user is editing another user -->
+  <button
+    *ngIf="toEdit == 'other user'"
+    (click)="updateDisplayName($event, displayName.value, true)"
+    type="submit"
+    class="appButton updateItem">
+      Update User and Close Report
+  </button>
+  <button
+    *ngIf="toEdit == 'other user'"
+    (click)="updateDisplayName($event, displayName.value, false)"
+    type="submit"
+    class="appButton updateItem">
+      Update User without Closing Report
+  </button>
+</form>

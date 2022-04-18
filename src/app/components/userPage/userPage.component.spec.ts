@@ -43,12 +43,10 @@ import { ServiceWorkerModule } from "@angular/service-worker";
 import { ActivatedRoute } from "@angular/router";
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { By } from '@angular/platform-browser';
+import { NO_ERRORS_SCHEMA } from "@angular/core";
 
 import { UserPage } from './userPage.component';
 import { PopUp } from '../popUp/popUp.component';
-import { Loader } from '../loader/loader.component';
-import { MyPosts } from '../myPosts/myPosts.component';
-import { HeaderMessage } from '../headerMessage/headerMessage.component';
 import { ItemsService } from '../../services/items.service';
 import { MockItemsService } from '../../services/items.service.mock';
 import { AuthService } from '../../services/auth.service';
@@ -62,6 +60,7 @@ describe('UserPage', () => {
         platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
+      schemas: [NO_ERRORS_SCHEMA],
       imports: [
         RouterTestingModule,
         HttpClientModule,
@@ -71,9 +70,6 @@ describe('UserPage', () => {
       declarations: [
         UserPage,
         PopUp,
-        Loader,
-        MyPosts,
-        HeaderMessage
       ],
       providers: [
         { provide: APP_BASE_HREF, useValue: '/' },

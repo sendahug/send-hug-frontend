@@ -38,6 +38,7 @@ import { Post } from '../../../interfaces/post.interface';
 import { PostsService } from '../../../services/posts.service';
 import { AdminService } from '../../../services/admin.service';
 import { AlertsService } from '../../../services/alerts.service';
+import { ValidationService } from '../../../services/validation.service';
 
 @Component({
   selector: 'post-edit-form',
@@ -55,7 +56,8 @@ export class PostEditForm {
   constructor(
     private postsService:PostsService,
     private adminService:AdminService,
-    private alertsService:AlertsService
+    private alertsService:AlertsService,
+    private validationService:ValidationService,
   ) {
 
   }
@@ -77,9 +79,7 @@ export class PostEditForm {
     const serviceToUse = closeReport === null ? 'postsService' : 'adminService';
 
     // if the post is valid, edit the text
-    if(this.validatePost(newText)) {
-      this.toggleErrorIndicator(true);
-
+    if(this.validationService.validateItem('post', newText, 'postText')) {
       // if there isn't a value for closeReport, it means it's sent from the regular edit
       if(closeReport === null) {
         this.editedItem.text = newText;
@@ -102,55 +102,6 @@ export class PostEditForm {
           this.editMode.emit(false);
         }
       })
-    }
-  }
-
-  /*
-  Function Name: validatePost()
-  Function Description: Validates the post to ensure it fits the rules.
-  Parameters: newText (string) - A string containing the new post's text.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  validatePost(newText:string): boolean {
-    // if there's text in the textbox, change the post's text
-    if(newText) {
-      // if the new post text is longer than 480 characters, alert the user
-      if(newText.length > 480) {
-        this.alertsService.createAlert({ type: 'Error', message: 'New post text cannot be over 480 characters! Please shorten the post and try again.' });
-        this.toggleErrorIndicator(false);
-        return false;
-      } else {
-        return true;
-      }
-    }
-    // otherwise alert the user that a post cannot be empty
-    else {
-      this.alertsService.createAlert({ type: 'Error', message: 'New post text cannot be empty. Please fill the field and try again.' });
-      this.toggleErrorIndicator(false);
-      return false;
-    }
-  }
-
-  /*
-  Function Name: toggleErrorIndicator()
-  Function Description: Adds or removes error indicators from the text fields.
-  Parameters: isValid (boolean) - whether or not the value is valid.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  toggleErrorIndicator(isValid: boolean) {
-    // if the data isn't valid, alert the users
-    if(!isValid) {
-      document.getElementById('postText')!.classList.add('missing');
-      document.getElementById('postText')!.setAttribute('aria-invalid', 'true');
-    // otherwise make sure it's set to false
-    } else {
-      // if the textfield was marked red, remove it
-      if(document.getElementById('postText')!.classList.contains('missing')) {
-        document.getElementById('postText')!.classList.remove('missing');
-      }
-      document.getElementById('postText')!.setAttribute('aria-invalid', 'false');
     }
   }
 }

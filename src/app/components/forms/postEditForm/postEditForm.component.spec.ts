@@ -109,8 +109,7 @@ describe('PostEditForm', () => {
     const newText = 'new text';
     fixture.detectChanges();
 
-    const validateSpy = spyOn(popUp, 'validatePost').and.returnValue(true);
-    const toggleSpy = spyOn(popUp, 'toggleErrorIndicator');
+    const validateSpy = spyOn(popUp['validationService'], 'validateItem').and.returnValue(true);
     const updateSpy = spyOn(popUp['postsService'], 'editPost');
     const isUpdatedSpy = spyOn(popUp['postsService'].isUpdated, 'subscribe');
 
@@ -118,8 +117,7 @@ describe('PostEditForm', () => {
     popUpDOM.querySelectorAll('.sendData')[0].click();
     fixture.detectChanges();
 
-    expect(validateSpy).toHaveBeenCalledWith(newText);
-    expect(toggleSpy).toHaveBeenCalledWith(true);
+    expect(validateSpy).toHaveBeenCalledWith('post', newText, 'postText');
     const updatedItem = { ...originalItem };
     updatedItem['text'] = newText;
     expect(updateSpy).toHaveBeenCalledWith(updatedItem);
@@ -140,8 +138,7 @@ describe('PostEditForm', () => {
     const newText = 'new text';
     fixture.detectChanges();
 
-    const validateSpy = spyOn(popUp, 'validatePost').and.returnValue(true);
-    const toggleSpy = spyOn(popUp, 'toggleErrorIndicator');
+    const validateSpy = spyOn(popUp['validationService'], 'validateItem').and.returnValue(true);
     const updateSpy = spyOn(popUp['adminService'], 'editPost');
     const isUpdatedSpy = spyOn(popUp['adminService'].isUpdated, 'subscribe');
 
@@ -149,8 +146,7 @@ describe('PostEditForm', () => {
     popUpDOM.querySelector('#updateAndClose').click();
     fixture.detectChanges();
 
-    expect(validateSpy).toHaveBeenCalledWith(newText);
-    expect(toggleSpy).toHaveBeenCalledWith(true);
+    expect(validateSpy).toHaveBeenCalledWith('post', newText, 'postText');
     expect(updateSpy).toHaveBeenCalledWith({
       id: 2,
       text: newText,
@@ -172,8 +168,7 @@ describe('PostEditForm', () => {
     const newText = 'new text';
     fixture.detectChanges();
 
-    const validateSpy = spyOn(popUp, 'validatePost').and.returnValue(true);
-    const toggleSpy = spyOn(popUp, 'toggleErrorIndicator');
+    const validateSpy = spyOn(popUp['validationService'], 'validateItem').and.returnValue(true);
     const updateSpy = spyOn(popUp['adminService'], 'editPost');
     const isUpdatedSpy = spyOn(popUp['adminService'].isUpdated, 'subscribe');
 
@@ -181,99 +176,11 @@ describe('PostEditForm', () => {
     popUpDOM.querySelector('#updateDontClose').click();
     fixture.detectChanges();
 
-    expect(validateSpy).toHaveBeenCalledWith(newText);
-    expect(toggleSpy).toHaveBeenCalledWith(true);
+    expect(validateSpy).toHaveBeenCalledWith('post', newText, 'postText');
     expect(updateSpy).toHaveBeenCalledWith({
       id: 2,
       text: newText,
     }, false, 1);
     expect(isUpdatedSpy).toHaveBeenCalled();
-  });
-
-  it('should raise validation error on empty posts', () => {
-    const fixture = TestBed.createComponent(PostEditForm);
-    const popUp = fixture.componentInstance;
-
-    const createAlertSpy = spyOn(popUp['alertsService'], 'createAlert');
-    const toggleSpy = spyOn(popUp, 'toggleErrorIndicator');
-
-    const res = popUp.validatePost("");
-
-    expect(res).toBe(false);
-    expect(toggleSpy).toHaveBeenCalledWith(false);
-    expect(createAlertSpy).toHaveBeenCalledWith({ type: 'Error', message: 'New post text cannot be empty. Please fill the field and try again.' });
-  });
-
-  it('should raise validation error on long posts', () => {
-    const fixture = TestBed.createComponent(PostEditForm);
-    const popUp = fixture.componentInstance;
-
-    const createAlertSpy = spyOn(popUp['alertsService'], 'createAlert');
-    const toggleSpy = spyOn(popUp, 'toggleErrorIndicator');
-    let newPost = "";
-
-    for(let i = 100; i < 200; i++) {
-      newPost += i * 500;
-    }
-
-    const res = popUp.validatePost(newPost);
-
-    expect(res).toBe(false);
-    expect(toggleSpy).toHaveBeenCalledWith(false);
-    expect(createAlertSpy).toHaveBeenCalledWith({ type: 'Error', message: 'New post text cannot be over 480 characters! Please shorten the post and try again.' });
-  });
-
-  it('should return valid for valid posts', () => {
-    const fixture = TestBed.createComponent(PostEditForm);
-    const popUp = fixture.componentInstance;
-
-    const createAlertSpy = spyOn(popUp['alertsService'], 'createAlert');
-    const toggleSpy = spyOn(popUp, 'toggleErrorIndicator');
-    const newPost = "my new post";
-
-    const res = popUp.validatePost(newPost);
-
-    expect(res).toBe(true);
-    expect(toggleSpy).not.toHaveBeenCalled();
-    expect(createAlertSpy).not.toHaveBeenCalled();
-  });
-
-  it('should toggle error indicator on', () => {
-    const fixture = TestBed.createComponent(PostEditForm);
-    const popUp = fixture.componentInstance;
-    const popUpDOM = fixture.nativeElement;
-    const textField = popUpDOM.querySelector('#postText');
-
-    popUp.toggleErrorIndicator(false);
-
-    expect(textField.classList).toContain('missing');
-    expect(textField.getAttribute('aria-invalid')).toEqual('true');
-  });
-
-  it('should toggle error indicator off', () => {
-    const fixture = TestBed.createComponent(PostEditForm);
-    const popUp = fixture.componentInstance;
-    const popUpDOM = fixture.nativeElement;
-    const textField = popUpDOM.querySelector('#postText');
-
-    popUp.toggleErrorIndicator(true);
-
-    expect(textField.classList).not.toContain('missing');
-    expect(textField.getAttribute('aria-invalid')).toEqual('false');
-  });
-
-  it('should toggle missing off if it\'s on', () => {
-    const fixture = TestBed.createComponent(PostEditForm);
-    const popUp = fixture.componentInstance;
-    const popUpDOM = fixture.nativeElement;
-    const textField = popUpDOM.querySelector('#postText');
-
-    popUp.toggleErrorIndicator(false);
-
-    expect(textField.classList).toContain('missing');
-
-    popUp.toggleErrorIndicator(true);
-
-    expect(textField.classList).not.toContain('missing');
   });
 });

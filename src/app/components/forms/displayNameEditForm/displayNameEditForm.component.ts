@@ -36,7 +36,7 @@ import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 // App-related import
 import { AuthService } from '../../../services/auth.service';
 import { AdminService } from '../../../services/admin.service';
-import { AlertsService } from '../../../services/alerts.service';
+import { ValidationService } from '../../../services/validation.service';
 
 @Component({
   selector: 'display-name-edit-form',
@@ -55,7 +55,7 @@ export class DisplayNameEditForm implements OnInit {
   constructor(
     public authService:AuthService,
     private adminService:AdminService,
-    private alertsService:AlertsService
+    private validationService:ValidationService,
   ) {
 
   }
@@ -90,10 +90,7 @@ export class DisplayNameEditForm implements OnInit {
     e.preventDefault();
 
     // if the name is valid, set it
-    if(this.validateDisplayName(newDisplayName)) {
-      // if the textfield was marked red, remove it
-      this.toggleErrorIndicator(true);
-
+    if(this.validationService.validateItem('displayName', newDisplayName, 'displayName')) {
       // if the user is editing their own name
       if(closeReport == null) {
         this.authService.userData.displayName = newDisplayName;
@@ -109,56 +106,6 @@ export class DisplayNameEditForm implements OnInit {
       }
 
       this.editMode.emit(false);
-    }
-  }
-
-
-  /*
-  Function Name: validateDisplayName()
-  Function Description: Validates the display name to ensure it fits the rules.
-  Parameters: newDisplayName (string) - A string containing the new display name.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  validateDisplayName(newDisplayName: string): boolean {
-    // if there's a new display name in the textbox, change the display name
-    if(newDisplayName) {
-      // if the new display name is longer than 60 characters, alert the user
-      if(newDisplayName.length > 60) {
-        this.alertsService.createAlert({ type: 'Error', message: 'New display name cannot be over 60 characters! Please shorten the name and try again.' });
-        this.toggleErrorIndicator(false);
-        return false;
-      } else {
-        return true;
-      }
-    }
-    // otherwise, alert the user that a display name can't be empty
-    else {
-      this.alertsService.createAlert({ type: 'Error', message: 'New display name cannot be empty! Please fill the field and try again.' });
-      this.toggleErrorIndicator(false);
-      return false;
-    }
-  }
-
-  /*
-  Function Name: toggleErrorIndicator()
-  Function Description: Adds or removes error indicators from the text fields.
-  Parameters: isValid (boolean) - whether or not the value is valid.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  toggleErrorIndicator(isValid: boolean) {
-    // if the data isn't valid, alert the users
-    if(!isValid) {
-      document.getElementById('displayName')!.classList.add('missing');
-      document.getElementById('displayName')!.setAttribute('aria-invalid', 'true');
-    // otherwise make sure it's set to false
-    } else {
-      // if the textfield was marked red, remove it
-      if(document.getElementById('displayName')!.classList.contains('missing')) {
-        document.getElementById('displayName')!.classList.remove('missing');
-      }
-      document.getElementById('displayName')!.setAttribute('aria-invalid', 'false');
     }
   }
 }

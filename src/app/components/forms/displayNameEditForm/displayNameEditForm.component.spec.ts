@@ -48,8 +48,6 @@ import { AuthService } from '../../../services/auth.service';
 import { MockAuthService } from '../../../services/auth.service.mock';
 import { AdminService } from '../../../services/admin.service';
 import { MockAdminService } from '../../../services/admin.service.mock';
-import { AlertsService } from '../../../services/alerts.service';
-import { MockAlertsService } from '../../../services/alerts.service.mock';
 
 // DISPLAY NAME EDIT
 // ==================================================================
@@ -75,7 +73,6 @@ describe('DisplayNameEditForm', () => {
         { provide: APP_BASE_HREF, useValue: '/' },
         { provide: AuthService, useClass: MockAuthService },
         { provide: AdminService, useClass: MockAdminService },
-        { provide: AlertsService, useClass: MockAlertsService }
       ]
     }).compileComponents();
   });
@@ -122,8 +119,7 @@ describe('DisplayNameEditForm', () => {
     const newName = 'new name';
     fixture.detectChanges();
 
-    const validateSpy = spyOn(popUp, 'validateDisplayName').and.returnValue(true);
-    const toggleSpy = spyOn(popUp, 'toggleErrorIndicator');
+    const validateSpy = spyOn(popUp['validationService'], 'validateItem').and.returnValue(true);
     const updateSpy = spyOn(popUp.authService, 'updateUserData');
     const emitSpy = spyOn(popUp.editMode, 'emit');
 
@@ -131,8 +127,7 @@ describe('DisplayNameEditForm', () => {
     popUpDOM.querySelectorAll('.updateItem')[0].click();
     fixture.detectChanges();
 
-    expect(validateSpy).toHaveBeenCalledWith(newName);
-    expect(toggleSpy).toHaveBeenCalledWith(true);
+    expect(validateSpy).toHaveBeenCalledWith('displayName', newName, 'displayName');
     expect(popUp.authService.userData.displayName).toEqual(newName);
     expect(updateSpy).toHaveBeenCalled();
     expect(emitSpy).toHaveBeenCalledWith(false);
@@ -159,8 +154,7 @@ describe('DisplayNameEditForm', () => {
     const newName = 'new name';
     fixture.detectChanges();
 
-    const validateSpy = spyOn(popUp, 'validateDisplayName').and.returnValue(true);
-    const toggleSpy = spyOn(popUp, 'toggleErrorIndicator');
+    const validateSpy = spyOn(popUp['validationService'], 'validateItem').and.returnValue(true);
     const updateSpy = spyOn(popUp['adminService'], 'editUser');
     const emitSpy = spyOn(popUp.editMode, 'emit');
 
@@ -168,8 +162,7 @@ describe('DisplayNameEditForm', () => {
     popUpDOM.querySelectorAll('.updateItem')[0].click();
     fixture.detectChanges();
 
-    expect(validateSpy).toHaveBeenCalledWith(newName);
-    expect(toggleSpy).toHaveBeenCalledWith(true);
+    expect(validateSpy).toHaveBeenCalledWith('displayName', newName, 'displayName');
     expect(updateSpy).toHaveBeenCalledWith({
       userID: 4,
       displayName: newName,
@@ -198,8 +191,7 @@ describe('DisplayNameEditForm', () => {
     const newName = 'new name';
     fixture.detectChanges();
 
-    const validateSpy = spyOn(popUp, 'validateDisplayName').and.returnValue(true);
-    const toggleSpy = spyOn(popUp, 'toggleErrorIndicator');
+    const validateSpy = spyOn(popUp['validationService'], 'validateItem').and.returnValue(true);
     const updateSpy = spyOn(popUp['adminService'], 'editUser');
     const emitSpy = spyOn(popUp.editMode, 'emit');
 
@@ -207,99 +199,11 @@ describe('DisplayNameEditForm', () => {
     popUpDOM.querySelectorAll('.updateItem')[1].click();
     fixture.detectChanges();
 
-    expect(validateSpy).toHaveBeenCalledWith(newName);
-    expect(toggleSpy).toHaveBeenCalledWith(true);
+    expect(validateSpy).toHaveBeenCalledWith('displayName', newName, 'displayName');
     expect(updateSpy).toHaveBeenCalledWith({
       userID: 4,
       displayName: newName,
     }, false, 1);
     expect(emitSpy).toHaveBeenCalledWith(false);
-  });
-
-  it('should raise validation error on empty names', () => {
-    const fixture = TestBed.createComponent(DisplayNameEditForm);
-    const popUp = fixture.componentInstance;
-
-    const createAlertSpy = spyOn(popUp['alertsService'], 'createAlert');
-    const toggleSpy = spyOn(popUp, 'toggleErrorIndicator');
-
-    const res = popUp.validateDisplayName("");
-
-    expect(res).toBe(false);
-    expect(toggleSpy).toHaveBeenCalledWith(false);
-    expect(createAlertSpy).toHaveBeenCalledWith({ type: 'Error', message: 'New display name cannot be empty! Please fill the field and try again.' });
-  });
-
-  it('should raise validation error on long names', () => {
-    const fixture = TestBed.createComponent(DisplayNameEditForm);
-    const popUp = fixture.componentInstance;
-
-    const createAlertSpy = spyOn(popUp['alertsService'], 'createAlert');
-    const toggleSpy = spyOn(popUp, 'toggleErrorIndicator');
-    let newName = "";
-
-    for(let i = 0; i < 50; i++) {
-      newName += i;
-    }
-
-    const res = popUp.validateDisplayName(newName);
-
-    expect(res).toBe(false);
-    expect(toggleSpy).toHaveBeenCalledWith(false);
-    expect(createAlertSpy).toHaveBeenCalledWith({ type: 'Error', message: 'New display name cannot be over 60 characters! Please shorten the name and try again.' });
-  });
-
-  it('should return valid for valid names', () => {
-    const fixture = TestBed.createComponent(DisplayNameEditForm);
-    const popUp = fixture.componentInstance;
-
-    const createAlertSpy = spyOn(popUp['alertsService'], 'createAlert');
-    const toggleSpy = spyOn(popUp, 'toggleErrorIndicator');
-    let newName = "my name";
-
-    const res = popUp.validateDisplayName(newName);
-
-    expect(res).toBe(true);
-    expect(toggleSpy).not.toHaveBeenCalled();
-    expect(createAlertSpy).not.toHaveBeenCalled();
-  });
-
-  it('should toggle error indicator on', () => {
-    const fixture = TestBed.createComponent(DisplayNameEditForm);
-    const popUp = fixture.componentInstance;
-    const popUpDOM = fixture.nativeElement;
-    const textField = popUpDOM.querySelector('#displayName');
-
-    popUp.toggleErrorIndicator(false);
-
-    expect(textField.classList).toContain('missing');
-    expect(textField.getAttribute('aria-invalid')).toEqual('true');
-  });
-
-  it('should toggle error indicator off', () => {
-    const fixture = TestBed.createComponent(DisplayNameEditForm);
-    const popUp = fixture.componentInstance;
-    const popUpDOM = fixture.nativeElement;
-    const textField = popUpDOM.querySelector('#displayName');
-
-    popUp.toggleErrorIndicator(true);
-
-    expect(textField.classList).not.toContain('missing');
-    expect(textField.getAttribute('aria-invalid')).toEqual('false');
-  });
-
-  it('should toggle missing off if it\'s on', () => {
-    const fixture = TestBed.createComponent(DisplayNameEditForm);
-    const popUp = fixture.componentInstance;
-    const popUpDOM = fixture.nativeElement;
-    const textField = popUpDOM.querySelector('#displayName');
-
-    popUp.toggleErrorIndicator(false);
-
-    expect(textField.classList).toContain('missing');
-
-    popUp.toggleErrorIndicator(true);
-
-    expect(textField.classList).not.toContain('missing');
   });
 });

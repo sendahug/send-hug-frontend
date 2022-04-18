@@ -41,6 +41,7 @@ import { ItemsService } from '../../services/items.service';
 import { AuthService } from '../../services/auth.service';
 import { AlertsService } from '../../services/alerts.service';
 import { PostsService } from '../../services/posts.service';
+import { ValidationService } from '../../services/validation.service';
 
 @Component({
   selector: 'app-new-item',
@@ -57,7 +58,8 @@ export class NewItem {
     private authService:AuthService,
     private route:ActivatedRoute,
     private alertService:AlertsService,
-    private postsService:PostsService
+    private postsService:PostsService,
+    private validationService:ValidationService
   ) {
       let type;
       // Gets the URL parameters
@@ -91,45 +93,24 @@ export class NewItem {
   sendPost(e:Event, postText:string) {
     e.preventDefault();
 
-    // if there's text in the textfield, try to create a new post
-    if(postText) {
-      // if the new post text is longer than 480 characters, alert the user
-      if(postText.length > 480) {
-        this.alertService.createAlert({ type: 'Error', message: 'New post text cannot be over 480 characters! Please shorten the post and try again.' });
-        document.getElementById('postText')!.classList.add('missing');
-        document.getElementById('postText')!.setAttribute('aria-invalid', 'true');
+    if(this.validationService.validateItem('post', postText, 'postText')) {
+      // if there's no logged in user, alert the user
+      if(!this.authService.authenticated) {
+        this.alertService.createAlert({ type: 'Error', message: 'You\'re currently logged out. Log back in to post a new post.' });
       }
       else {
-        // if the textfield was marked red, remove it
-        if(document.getElementById('postText')!.classList.contains('missing')) {
-          document.getElementById('postText')!.classList.remove('missing');
+        // otherwise create the post
+        // create a new post object to send
+        let newPost:Post = {
+          userId: this.authService.userData.id!,
+          user: this.authService.userData.displayName!,
+          text: postText,
+          date: new Date(),
+          givenHugs: 0
         }
-        document.getElementById('postText')!.setAttribute('aria-invalid', 'false');
 
-        // if there's no logged in user, alert the user
-        if(!this.authService.authenticated) {
-          this.alertService.createAlert({ type: 'Error', message: 'You\'re currently logged out. Log back in to post a new post.' });
-        }
-        else {
-          // otherwise create the post
-          // create a new post object to send
-          let newPost:Post = {
-            userId: this.authService.userData.id!,
-            user: this.authService.userData.displayName!,
-            text: postText,
-            date: new Date(),
-            givenHugs: 0
-          }
-
-          this.postsService.sendPost(newPost);
-        }
+        this.postsService.sendPost(newPost);
       }
-    }
-    // otherwise alert the user that a post can't be empty
-    else {
-      this.alertService.createAlert({ type: 'Error', message: 'A post cannot be empty. Please fill the field and try again.' });
-      document.getElementById('postText')!.classList.add('missing');
-      document.getElementById('postText')!.setAttribute('aria-invalid', 'true');
     }
   }
 
@@ -146,7 +127,7 @@ export class NewItem {
     e.preventDefault();
 
     // if there's text in the textfield, try to create a new message
-    if(messageText) {
+    if(this.validationService.validateItem('message', messageText, 'messageText')) {
       // if the user is attempting to send a message to themselves
       if(this.authService.userData.id == this.forID) {
         this.alertService.createAlert({
@@ -156,45 +137,25 @@ export class NewItem {
       }
       // if the user is sending a message to someone else, make the request
       else {
-        // if the new post text is longer than 480 characters, alert the user
-        if(messageText.length > 480) {
-          this.alertService.createAlert({ type: 'Error', message: 'New message text cannot be over 480 characters! Please shorten the message and try again.' });
-          document.getElementById('messageText')!.classList.add('missing');
-          document.getElementById('messageText')!.setAttribute('aria-invalid', 'true');
+        // if there's no logged in user, alert the user
+        if(!this.authService.authenticated) {
+          this.alertService.createAlert({ type: 'Error', message: 'You\'re currently logged out. Log back in to send a message.' });
         }
         else {
-          // if the textfield was marked red, remove it
-          if(document.getElementById('messageText')!.classList.contains('missing')) {
-            document.getElementById('messageText')!.classList.remove('missing');
+          // create a new message object to send
+          let newMessage:Message = {
+            from: {
+              displayName: this.authService.userData.displayName!
+            },
+            fromId: this.authService.userData.id!,
+            forId: this.forID,
+            messageText: messageText,
+            date: new Date()
           }
-          document.getElementById('messageText')!.setAttribute('aria-invalid', 'false');
 
-          // if there's no logged in user, alert the user
-          if(!this.authService.authenticated) {
-            this.alertService.createAlert({ type: 'Error', message: 'You\'re currently logged out. Log back in to send a message.' });
-          }
-          else {
-            // create a new message object to send
-            let newMessage:Message = {
-              from: {
-                displayName: this.authService.userData.displayName!
-              },
-              fromId: this.authService.userData.id!,
-              forId: this.forID,
-              messageText: messageText,
-              date: new Date()
-            }
-
-            this.itemsService.sendMessage(newMessage);
-          }
+          this.itemsService.sendMessage(newMessage);
         }
       }
-    }
-    // otherwise alert the user that a message can't be empty
-    else {
-      this.alertService.createAlert({ type: 'Error', message: 'A message cannot be empty. Please fill the field and try again.' });
-      document.getElementById('messageText')!.classList.add('missing');
-      document.getElementById('messageText')!.setAttribute('aria-invalid', 'true');
     }
   }
 }

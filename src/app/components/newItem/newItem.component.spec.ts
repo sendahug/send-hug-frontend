@@ -208,7 +208,7 @@ describe('NewItem', () => {
       fixture.detectChanges();
 
       expect(newItemDOM.querySelectorAll('.alertMessage')[0]).toBeTruthy();
-      expect(newItemDOM.querySelectorAll('.alertMessage')[0].querySelectorAll('.alertText')[0].textContent).toBe('A post cannot be empty. Please fill the field and try again.');
+      expect(newItemDOM.querySelectorAll('.alertMessage')[0].querySelectorAll('.alertText')[0].textContent).toBe('Post text cannot be empty. Please fill the field and try again.');
       done();
     });
 

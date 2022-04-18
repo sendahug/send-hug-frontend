@@ -1,4 +1,4 @@
-import 'core-js/features/reflect';
+import 'core-js/full/reflect';
 import 'zone.js/dist/zone';
 import 'zone.js/dist/zone-testing';
 import { getTestBed } from '@angular/core/testing';

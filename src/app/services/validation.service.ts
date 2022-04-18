@@ -33,6 +33,8 @@
 // Angular imports
 import { Injectable } from '@angular/core';
 
+// App-related imports
+import { AlertsService } from './alerts.service';
 
 type ValidatableItems = 'post' | 'message' | 'displayName' | 'reportOther';
 
@@ -44,23 +46,39 @@ export class ValidationService {
     post: {
       max: 480,
       emptyAllowed: false,
+      errorMessages: {
+        zeroLength: 'Post text cannot be empty. Please fill the field and try again.',
+        tooLong: 'Post text cannot be over 480 characters! Please shorten the post and try again.',
+      },
     },
     message: {
       max: 480,
       emptyAllowed: false,
+      errorMessages: {
+        zeroLength: 'A message cannot be empty. Please fill the field and try again.',
+        tooLong: 'Message text cannot be over 480 characters! Please shorten the message and try again.',
+      },
     },
     displayName: {
       max: 60,
       emptyAllowed: false,
+      errorMessages: {
+        zeroLength: 'New display name cannot be empty. Please fill the field and try again.',
+        tooLong: 'New display name cannot be over 60 characters! Please shorten the name and try again.',
+      },
     },
     reportOther: {
       max: 120,
       emptyAllowed: false,
+      errorMessages: {
+        zeroLength: 'The \'other\' field cannot be empty.',
+        tooLong: 'Report reason cannot be over 120 characters! Please shorten the message and try again.',
+      },
     },
   }
 
   // CTOR
-  constructor() { }
+  constructor(private alertsService: AlertsService) { }
 
   /*
   Function Name: validateItem()
@@ -75,6 +93,7 @@ export class ValidationService {
     const testValidationRules = this.validationRules[typeOfTest];
     if(textToValidate) {
       if(textToValidate.length > testValidationRules['max']) {
+        this.alertsService.createAlert({ type: 'Error', message: testValidationRules['errorMessages']['tooLong'] })
         this.toggleErrorIndicator(false, elementId);
         return false;
       } else {
@@ -86,6 +105,7 @@ export class ValidationService {
         this.toggleErrorIndicator(true, elementId);
         return true;
       } else {
+        this.alertsService.createAlert({ type: 'Error', message: testValidationRules['errorMessages']['zeroLength'] })
         this.toggleErrorIndicator(false, elementId);
         return false;
       }

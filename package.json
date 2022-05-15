@@ -45,7 +45,7 @@
     "karma-rollup-preprocessor": "^7.0.8",
     "karma-sourcemap-loader": "^0.3.8",
     "karma-viewport": "^1.0.9",
-    "magic-string": "^0.26.1",
+    "magic-string": "^0.26.2",
     "postcss": "^8.4.13",
     "puppeteer": "^14.1.0",
     "rollup-plugin-istanbul": "^3.0.0",

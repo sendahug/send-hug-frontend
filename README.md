@@ -4,7 +4,8 @@
 ![CI](https://github.com/sendahug/send-hug-frontend/workflows/Test%20CI/badge.svg)
 [![codecov](https://codecov.io/gh/sendahug/send-hug-frontend/graph/badge.svg)](https://codecov.io/gh/sendahug/send-hug-frontend)
 [![Known Vulnerabilities](https://snyk.io/test/github/sendahug/send-hug-frontend/badge.svg)](https://snyk.io/test/github/sendahug/send-hug-frontend)
-![Libraries.io dependency status for GitHub repo](https://img.shields.io/librariesio/github/sendahug/send-hug-frontend)
+[![Depfu](https://badges.depfu.com/badges/d559c2b81b6153cf48b9badbfe1633ae/overview.svg)](https://depfu.com/github/sendahug/send-hug-frontend?project_id=35503)
+[![Depfu](https://badges.depfu.com/badges/d559c2b81b6153cf48b9badbfe1633ae/count.svg)](https://depfu.com/github/sendahug/send-hug-frontend?project_id=35503)
 ![Website](https://img.shields.io/website?down_color=red&down_message=offline&up_color=blue&up_message=online&url=https%3A%2F%2Fsend-hug.herokuapp.com)
 
 ## Version

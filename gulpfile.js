@@ -384,6 +384,15 @@ exports.scripts = scripts;
 exports.localDev = localDev;
 exports.serve = serve;
 exports.scriptsDist = scriptsDist;
+exports.dist = gulp.parallel(
+	copyHtmlDist,
+	copyIndexDist,
+	copyAssetsDist,
+	stylesDist,
+	scriptsDist,
+	copyServiceWorker,
+	copyManifestDist
+);
 exports.watch = watch;
 exports.e2e = e2e;
 exports.setupTests = setupTests;

@@ -1,8 +1,0 @@
-<div id="errorPage">
-	<h3>{{ error.title }}</h3>
-	<div class="pageData">{{ error.message }}</div>
-	<div class="pageData">Go back to the previous page?</div>
-	<button id="backBtn" class="textlessButton" (click)="goBack()" aria-label="Go back to previous page"><fa-icon [icon]="faArrowAltCircleLeft" class="fa-arrow-alt-circle-left"></fa-icon></button>
-
-	<div id="errorCode">Error code: {{ error.code }}</div>
-</div>

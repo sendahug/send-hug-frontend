@@ -6,7 +6,7 @@ orbs:
 jobs:
   test:
     docker:
-      - image: cimg/node:lts-browsers
+      - image: cimg/node:lts
     environment:
       CHROME_BIN: /usr/bin/google-chrome
     steps:

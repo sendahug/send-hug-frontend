@@ -5,6 +5,7 @@ _notes/
 /bower_components/
 node_modules/
 coverage
+.DS_Store
 
 # local development files
 localdev/app

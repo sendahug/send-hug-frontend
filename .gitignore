@@ -20,3 +20,6 @@ localdev/manifest.webmanifest
 tests/*
 src/tests.specs.ts
 cypress/*
+
+dist/*
+!dist/README.md

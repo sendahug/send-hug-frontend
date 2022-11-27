@@ -6,7 +6,6 @@
 [![Known Vulnerabilities](https://snyk.io/test/github/sendahug/send-hug-frontend/badge.svg)](https://snyk.io/test/github/sendahug/send-hug-frontend)
 [![Depfu](https://badges.depfu.com/badges/d559c2b81b6153cf48b9badbfe1633ae/overview.svg)](https://depfu.com/github/sendahug/send-hug-frontend?project_id=35503)
 [![Depfu](https://badges.depfu.com/badges/d559c2b81b6153cf48b9badbfe1633ae/count.svg)](https://depfu.com/github/sendahug/send-hug-frontend?project_id=35503)
-![Website](https://img.shields.io/website?down_color=red&down_message=offline&up_color=blue&up_message=online&url=https%3A%2F%2Fsend-hug.herokuapp.com)
 
 ## Version
 
@@ -16,11 +15,17 @@ Built using the [gulp-site-template](https://github.com/shirblc/gulp-site-templa
 
 For full project information, check the [`main README file`](https://github.com/sendahug/sendahug/blob/master/README.md).
 
-## Requirements
+## Code Usage and Contribution
 
-- Node.js
+If you want to contribute to the project, you should start by reading the [contribution guidelines](https://github.com/sendahug/send-hug-frontend/blob/dev/CONTRIBUTING.md) and the [code of conduct](https://github.com/sendahug/send-hug-frontend/blob/dev/CODE_OF_CONDUCT.md).
+
+The project is open source, so feel free to use parts of the code. However, the full project itself is **not** meant to be reused. The design, the concept and the project itself are personal and belong to the Send A Hug group.
 
 ## Installation and Usage
+
+### Requirements
+
+- Node.js
 
 ### Developers
 
@@ -201,7 +206,7 @@ Since this is a full-stack application, running end-to-end tests requires runnin
 
 ## Hosting
 
-The project is hosted live on Heroku. You can view the live version [here](https://send-hug.herokuapp.com/). If you want to clone and host your own version, you can do so by using the following guide (the following commands are for Heroku, but they can be adjusted depending on your host):
+The project was hosted live on Heroku (we're currently looking at alternatives, due to Heroku removing their free tier). If you want to clone and host your own version, you can do so by using the following guide (the following commands are for Heroku, but they can be adjusted depending on your host):
 
   1. Create a Heroku account (skip this step if you already have an account).
   2. Install the Heroku command line interface.

@@ -233,10 +233,10 @@ export class AuthService {
           pushEnabled: data.pushEnabled,
           selectedIcon: data.selectedIcon,
           iconColours: {
-            character: data.iconColours.character,
-            lbg: data.iconColours.lbg,
-            rbg: data.iconColours.rbg,
-            item: data.iconColours.item
+            character: data.iconColours?.character,
+            lbg: data.iconColours?.lbg,
+            rbg: data.iconColours?.rbg,
+            item: data.iconColours?.item
           }
         }
         // set the authentication-variables accordingly
@@ -267,10 +267,10 @@ export class AuthService {
           pushEnabled: data.pushEnabled,
           selectedIcon: data.selectedIcon,
           iconColours: {
-            character: data.iconColours.character,
-            lbg: data.iconColours.lbg,
-            rbg: data.iconColours.rbg,
-            item: data.iconColours.item
+            character: data.iconColours?.character,
+            lbg: data.iconColours?.lbg,
+            rbg: data.iconColours?.rbg,
+            item: data.iconColours?.item
           }
         }
         this.serviceWorkerM.addItem('users', user);

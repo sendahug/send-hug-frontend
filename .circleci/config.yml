@@ -62,7 +62,7 @@ jobs:
           name: Restore database
           command: |
             cd ..
-            psql -h localhost -p 5432 -U postgres test-capstone < send-hug-backend/capstone_db.sql
+            psql -h localhost -p 5432 -U postgres test-capstone < send-hug-backend/tests/capstone_db.sql
       - run:
           name: Start backend
           command: |
@@ -130,7 +130,7 @@ jobs:
           name: Restore database
           command: |
             cd ..
-            psql -h localhost -p 5432 -U postgres test-capstone < send-hug-backend/capstone_db.sql
+            psql -h localhost -p 5432 -U postgres test-capstone < send-hug-backend/tests/capstone_db.sql
       - run:
           name: Start backend
           command: |

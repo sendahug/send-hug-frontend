@@ -233,7 +233,7 @@ function scriptsDist()
 {
 	const options = {
 		input: 'src/main.ts',
-		output: { sourcemap: false },
+		output: { sourcemap: 'hidden' },
 		plugins: [
 			setProductionEnv(),
 			typescript({ exclude: ['**/*.spec.ts', 'e2e/**/*'] }),

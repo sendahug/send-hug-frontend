@@ -25,7 +25,7 @@
     "@types/jasmine": "^4.3.1",
     "@types/node": "^18.14.1",
     "autoprefixer": "^10.4.13",
-    "browser-sync": "^2.27.12",
+    "browser-sync": "^2.28.1",
     "glob": "^8.1.0",
     "gulp": "^4.0.2",
     "gulp-postcss": "^9.0.1",

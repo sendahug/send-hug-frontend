@@ -19,6 +19,7 @@ const nodeResolve = require("@rollup/plugin-node-resolve").nodeResolve;
 const typescript = require("@rollup/plugin-typescript");
 const { exec } = require("child_process");
 const setProductionEnv = require("./processor").setProductionEnv;
+const sass = require('gulp-sass')(require('sass'));
 
 // LOCAL DEVELOPMENT TASKS
 // ===============================================
@@ -82,7 +83,8 @@ function copyAssets()
 function styles()
 {
 	return gulp
-		.src("src/css/*.css")
+		.src("src/sass/*.sass")
+		.pipe(sass().on('error', sass.logError))
 		.pipe(postcss([autoprefixer()]))
 		.pipe(gulp.dest("./localdev/css"));
 }
@@ -132,7 +134,7 @@ function watch()
 	gulp.watch("src/app/**/*.html", copyHtml)
 	gulp.watch("index.html", copyIndex);
 	gulp.watch("src/assets/**/*", gulp.parallel(copyAssets, copyHtml));
-	gulp.watch("src/css/*.css", styles);
+	gulp.watch("src/sass/*.sass", styles);
 	gulp.watch(["src/**/*.ts", "!src/**/*.spec.ts", "!src/**/*.mock.ts"], scripts);
 	gulp.watch("src/manifest.webmanifest", copyManifest);
 }
@@ -223,7 +225,8 @@ function copyAssetsDist()
 function stylesDist()
 {
 	return gulp
-		.src("src/css/*.css")
+		.src("src/sass/*.sass")
+		.pipe(sass().on('error', sass.logError))
 		.pipe(postcss([autoprefixer()]))
 		.pipe(gulp.dest("./dist/css"));
 }

@@ -420,6 +420,15 @@ export class ItemsService {
   getMailboxMessages(type: 'inbox' | 'outbox', userID:number, page:number) {
     // if the current page is 0, send page 1 to the server (default)
     const currentPage = page ? page : 1;
+    
+    if (!["inbox", "outbox"].includes(type)) {
+      this.alertsService.createAlert({
+        "message": "Mailbox type must be either inbox or outbox",
+        "type": "Error"
+      });
+      return;
+    }
+
     let params = new HttpParams()
       .set('userID', `${userID}`)
       .set('page', `${currentPage}`)

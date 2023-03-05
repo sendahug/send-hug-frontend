@@ -366,8 +366,8 @@ describe('ItemsService', () => {
     };
     itemsService.sendUserHug(2);
 
-    const req = httpController.expectOne('http://localhost:5000/users/all/2');
-    expect(req.request.method).toEqual('PATCH');
+    const req = httpController.expectOne('http://localhost:5000/users/all/2/hugs');
+    expect(req.request.method).toEqual('POST');
     req.flush(mockResponse);
 
     expect(itemsService['authService'].userData.givenHugs).toBe(3);

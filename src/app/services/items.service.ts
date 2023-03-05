@@ -297,17 +297,12 @@ export class ItemsService {
   Programmer: Shir Bar Lev.
   */
   sendUserHug(userID:number) {
-    const Url = this.serverUrl + `/users/all/${userID}`;
+    const Url = this.serverUrl + `/users/all/${userID}/hugs`;
     // update the users' data
     this.otherUserData.receivedHugs += 1;
     this.authService.userData.givenHugs += 1;
 
-    this.Http.patch(Url, {
-      displayName: this.otherUserData.displayName,
-      receivedH: this.otherUserData.receivedHugs,
-      givenH: this.otherUserData.givenHugs,
-      posts: this.otherUserData.postsNum
-    }, {
+    this.Http.post(Url, {}, {
       headers: this.authService.authHeader
     }).subscribe((_response:any) => {
       this.alertsService.createSuccessAlert('Your hug was sent!', true);

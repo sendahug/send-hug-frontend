@@ -523,8 +523,8 @@ describe('PostsService', () => {
     const disableSpy = spyOn(postsService, 'disableHugButton');
     postsService.sendHug(newPost);
 
-    const req = httpController.expectOne('http://localhost:5000/posts/15');
-    expect(req.request.method).toEqual('PATCH');
+    const req = httpController.expectOne('http://localhost:5000/posts/15/hugs');
+    expect(req.request.method).toEqual('POST');
     req.flush(mockResponse);
 
     expect(alertSpy).toHaveBeenCalled();

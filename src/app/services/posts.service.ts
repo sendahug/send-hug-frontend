@@ -513,9 +513,9 @@ export class PostsService {
   Programmer: Shir Bar Lev.
   */
   sendHug(item: any) {
-    const Url = this.serverUrl + `/posts/${item.id}`;
+    const Url = this.serverUrl + `/posts/${item.id}/hugs`;
     item.givenHugs += 1;
-    this.Http.patch(Url, item, {
+    this.Http.post(Url, {}, {
       headers: this.authService.authHeader
     }).subscribe((_response:any) => {
       this.alertsService.createSuccessAlert('Your hug was sent!', false);

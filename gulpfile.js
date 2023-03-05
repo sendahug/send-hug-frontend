@@ -306,7 +306,7 @@ function setupTests() {
 	return gulp.src('src/tests.ts')
 	.pipe(replace(/\/\/ test-placeholder/, (match) => {
 		// find all the tests
-		const tests = glob.sync("app/**/*.spec.ts", {
+		const tests = glob.globSync("app/**/*.spec.ts", {
 			cwd: "./src"
 		});
 		let newString = '';

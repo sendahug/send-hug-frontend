@@ -47,7 +47,7 @@
     "magic-string": "^0.30.0",
     "postcss": "^8.4.21",
     "puppeteer": "^19.7.3",
-    "rollup": "^3.18.0",
+    "rollup": "^3.19.1",
     "rollup-plugin-istanbul": "^4.0.0",
     "sass": "^1.58.3",
     "tslib": "^2.5.0",

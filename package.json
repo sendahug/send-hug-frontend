@@ -18,7 +18,7 @@
   "license": "ISC",
   "devDependencies": {
     "@rollup/plugin-commonjs": "^24.0.1",
-    "@rollup/plugin-node-resolve": "^15.0.1",
+    "@rollup/plugin-node-resolve": "^15.0.2",
     "@rollup/plugin-typescript": "^11.0.0",
     "@rollup/stream": "^3.0.0",
     "@types/auth0-js": "^9.14.7",

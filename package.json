@@ -46,7 +46,7 @@
     "karma-viewport": "^1.0.9",
     "magic-string": "^0.30.0",
     "postcss": "^8.4.23",
-    "puppeteer": "^19.11.0",
+    "puppeteer": "^19.11.1",
     "rollup": "^3.20.7",
     "rollup-plugin-istanbul": "^4.0.0",
     "sass": "^1.62.0",

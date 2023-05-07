@@ -16,12 +16,12 @@ jobs:
 
     strategy:
       matrix:
-        node-version: ['14']
+        node-version: ['18', '20']
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
+      uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.node-version }}
     - name: install puppeteer libraries
@@ -36,7 +36,7 @@ jobs:
             ca-certificates fonts-liberation libappindicator1 libnss3 lsb-release xdg-utils wget \
             xvfb x11vnc x11-xkb-utils xfonts-100dpi xfonts-75dpi xfonts-scalable xfonts-cyrillic x11-apps
     - name: Cache Node.js modules
-      uses: actions/cache@v2
+      uses: actions/cache@v3
       with:
         # npm cache files are stored in `~/.npm` on Linux/macOS
         path: ~/.npm

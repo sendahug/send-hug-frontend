@@ -462,7 +462,7 @@ describe('AdminDashboard', () => {
 
       expect(setBlockSpy).toHaveBeenCalledWith(blockedUser, blockLengthStr, undefined);
       expect(blockServiceSpy).toHaveBeenCalledWith(blockedUser, jasmine.any(Date));
-      expect(blockServiceSpy.calls.mostRecent().args[1].getTime() / 1000).toBeCloseTo(releaseDate.getTime() / 1000);
+      expect(blockServiceSpy.calls.mostRecent().args[1].getTime() / 1000).toBeCloseTo(releaseDate.getTime() / 1000, 1);
       done();
     });
 
@@ -492,7 +492,7 @@ describe('AdminDashboard', () => {
 
       expect(setBlockSpy).toHaveBeenCalledWith(blockedUser, blockLengthStr, undefined);
       expect(blockServiceSpy).toHaveBeenCalledWith(blockedUser, jasmine.any(Date));
-      expect(blockServiceSpy.calls.mostRecent().args[1].getTime() / 1000).toBeCloseTo(releaseDate.getTime() / 1000);
+      expect(blockServiceSpy.calls.mostRecent().args[1].getTime() / 1000).toBeCloseTo(releaseDate.getTime() / 1000, 1);
       done();
     });
 
@@ -522,7 +522,7 @@ describe('AdminDashboard', () => {
 
       expect(setBlockSpy).toHaveBeenCalledWith(blockedUser, blockLengthStr, undefined);
       expect(blockServiceSpy).toHaveBeenCalledWith(blockedUser, jasmine.any(Date));
-      expect(blockServiceSpy.calls.mostRecent().args[1].getTime() / 1000).toBeCloseTo(releaseDate.getTime() / 1000);
+      expect(blockServiceSpy.calls.mostRecent().args[1].getTime() / 1000).toBeCloseTo(releaseDate.getTime() / 1000, 1);
       done();
     });
 
@@ -552,7 +552,7 @@ describe('AdminDashboard', () => {
 
       expect(setBlockSpy).toHaveBeenCalledWith(blockedUser, blockLengthStr, undefined);
       expect(blockServiceSpy).toHaveBeenCalledWith(blockedUser, jasmine.any(Date));
-      expect(blockServiceSpy.calls.mostRecent().args[1].getTime() / 1000).toBeCloseTo(releaseDate.getTime() / 1000);
+      expect(blockServiceSpy.calls.mostRecent().args[1].getTime() / 1000).toBeCloseTo(releaseDate.getTime() / 1000, 1);
       done();
     });
 

@@ -51,8 +51,6 @@ import { ItemsService } from '../../services/items.service';
 import { MockItemsService } from '../../services/items.service.mock';
 import { AuthService } from '../../services/auth.service';
 import { MockAuthService } from '../../services/auth.service.mock';
-import { PostsService } from '../../services/posts.service';
-import { MockPostsService } from '../../services/posts.service.mock';
 
 describe('SearchResults', () => {
   // Before each test, configure testing environment
@@ -76,7 +74,6 @@ describe('SearchResults', () => {
       ],
       providers: [
         { provide: APP_BASE_HREF, useValue: '/' },
-        { provide: PostsService, useClass: MockPostsService },
         { provide: ItemsService, useClass: MockItemsService },
         { provide: AuthService, useClass: MockAuthService }
       ]
@@ -176,7 +173,6 @@ describe('SearchResults', () => {
         ],
         providers: [
           { provide: APP_BASE_HREF, useValue: '/' },
-          { provide: PostsService, useClass: MockPostsService },
           { provide: ItemsService, useClass: MockItemsService },
           { provide: AuthService, useClass: MockAuthService }
         ]
@@ -262,7 +258,6 @@ describe('SearchResults', () => {
         ],
         providers: [
           { provide: APP_BASE_HREF, useValue: '/' },
-          { provide: PostsService, useClass: MockPostsService },
           { provide: ItemsService, useClass: MockItemsService },
           { provide: AuthService, useClass: MockAuthService }
         ]

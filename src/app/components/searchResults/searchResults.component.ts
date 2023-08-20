@@ -37,7 +37,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 // App-related imports
 import { ItemsService } from '../../services/items.service';
 import { AuthService } from '../../services/auth.service';
-import { PostsService } from '../../services/posts.service';
 
 @Component({
   selector: 'app-search-results',
@@ -56,7 +55,6 @@ export class SearchResults implements AfterViewChecked {
     public authService:AuthService,
     private route:ActivatedRoute,
     private router:Router,
-    private postsService:PostsService
   ) {
     this.searchQuery = this.route.snapshot.queryParamMap.get('query');
 

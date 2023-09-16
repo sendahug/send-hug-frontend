@@ -31,7 +31,7 @@
 */
 
 // Angular imports
-import { Component, OnInit, HostListener, AfterViewInit, AfterViewChecked } from '@angular/core';
+import { Component, OnInit, HostListener, AfterViewInit, AfterViewChecked, signal } from '@angular/core';
 import { Router, NavigationStart } from '@angular/router';
 import { faComments, faUserCircle, faCompass, faBell } from '@fortawesome/free-regular-svg-icons';
 import { faBars, faSearch, faTimes, faTextHeight } from '@fortawesome/free-solid-svg-icons';
@@ -53,6 +53,9 @@ export class AppComponent implements OnInit, AfterViewInit, AfterViewChecked {
   showTextPanel = false;
   showMenu = false;
   canShare = false;
+  inactiveLinkClass = "navLink";
+  activeLinkClass = "navLink active";
+  currentlyActiveRoute = signal("/");
   // font awesome icons
   faBars = faBars;
   faComments = faComments;
@@ -69,7 +72,7 @@ export class AppComponent implements OnInit, AfterViewInit, AfterViewChecked {
     private alertsService:AlertsService,
     private router:Router,
     private serviceWorkerM:SWManager,
-    public notificationService:NotificationService
+    public notificationService:NotificationService,
   ) {
     this.authService.checkHash();
 
@@ -137,63 +140,20 @@ export class AppComponent implements OnInit, AfterViewInit, AfterViewChecked {
 
     this.router.events.subscribe((event) => {
       if(event instanceof NavigationStart) {
-        let navItems = document.querySelectorAll('.navLink');
-
-        // remove 'active' class from the previously active component's link
-        navItems.forEach((navLink) => {
-          if(navLink.classList.contains('active')) {
-            navLink.classList.remove('active');
-          }
-        })
-
-        // check which link needs to be marked now
         // if the current URL is the main page
-        if(event.url == '/') {
-          navItems[1].classList.add('active');
-        }
-        // if the current URL is one of the mailboxes
-        else if(event.url.startsWith('/messages')) {
-          navItems[2].classList.add('active');
-        }
-        // if the current URL is the new post page
-        else if(event.url == '/new/Post') {
-          // ensure only authenticated users can access this page
-          if(this.authService.authenticated) {
-            navItems[3].classList.add('active');
-          }
-        }
-        // if the current URL is the user's own profile
-        else if(event.url.startsWith('/user')) {
-          // if the user is logged in, they have the new post tab, so the new active link
-          // is different
-          if(this.authService.authenticated) {
-            // only marks the link as active if the user is viewing their own profile
-            if(event.url == `/user` || event.url == `/user/${this.authService.userData.id}`) {
-              navItems[4].classList.add('active');
-            }
-          }
-          // if the user isn't logged in, the new active link is different
-          else {
-            navItems[3].classList.add('active');
-          }
-        }
-        // if the current URL is the about page
-        else if(event.url == '/about') {
-          // if the user is logged in, they have the new post tab, so the new active link
-          // is different
-          if(this.authService.authenticated) {
-            navItems[5].classList.add('active');
-          }
-          // if the user isn't logged in, the new active link is different
-          else {
-            navItems[4].classList.add('active');
-          }
-        }
-        // if the current URL is the admin's page
-        else if(event.url.startsWith('/admin')) {
-          // ensure only authenticated users can access this page
-          if(this.authService.authenticated) {
-            navItems[6].classList.add('active');
+        // or the about page
+        if (event.url == "/" || event.url == '/about') {
+          this.currentlyActiveRoute.set(event.url);
+        // if it's any of the messages/admin/new pages
+        } else if (event.url.startsWith('/messages') || event.url.startsWith('/admin') || event.url.startsWith("/new")) {
+          this.currentlyActiveRoute.set(`/${event.url.split('/')[1]}`);
+        } else if (event.url.startsWith('/user')) {
+          // if the user is logged in and viewing their own page, or
+          // if they're viewing the /user page
+          if(event.url == `/user` || (
+            this.authService.authenticated && event.url == `/user/${this.authService.userData.id}`
+            )) {
+            this.currentlyActiveRoute.set("/user");
           }
         }
       }

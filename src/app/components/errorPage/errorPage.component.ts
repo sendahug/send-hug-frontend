@@ -31,9 +31,9 @@
 */
 
 // Angular imports
-import { Component } from '@angular/core';
-import { Location } from '@angular/common';
-import { faArrowAltCircleLeft } from '@fortawesome/free-regular-svg-icons';
+import { Component } from "@angular/core";
+import { Location } from "@angular/common";
+import { faArrowAltCircleLeft } from "@fortawesome/free-regular-svg-icons";
 
 // Error message interface
 interface ErrorMessage {
@@ -43,23 +43,21 @@ interface ErrorMessage {
 }
 
 @Component({
-  selector: 'app-error-page',
-  templateUrl: './errorPage.component.html'
+  selector: "app-error-page",
+  templateUrl: "./errorPage.component.html",
 })
 export class ErrorPage {
   // Error message to display onscreen
   error: ErrorMessage = {
-    title: 'Sorry!',
+    title: "Sorry!",
     message: `The page you were looking for doesn\'t exist.`,
-    code: 404
-  }
+    code: 404,
+  };
   // icons
   faArrowAltCircleLeft = faArrowAltCircleLeft;
 
   // CTOR
-  constructor(private location:Location) {
-
-  }
+  constructor(private location: Location) {}
 
   /*
   Function Name: goBack()

@@ -31,17 +31,25 @@
 */
 
 // Angular imports
-import { Component, Input, Output, EventEmitter, OnInit, OnChanges, AfterViewChecked } from '@angular/core';
-import { faTimes } from '@fortawesome/free-solid-svg-icons';
+import {
+  Component,
+  Input,
+  Output,
+  EventEmitter,
+  OnInit,
+  OnChanges,
+  AfterViewChecked,
+} from "@angular/core";
+import { faTimes } from "@fortawesome/free-solid-svg-icons";
 
 // App-related import
-import { Post } from '../../interfaces/post.interface';
-import { OtherUser } from '../../interfaces/otherUser.interface';
-import { AuthService } from '../../services/auth.service';
+import { Post } from "../../interfaces/post.interface";
+import { OtherUser } from "../../interfaces/otherUser.interface";
+import { AuthService } from "../../services/auth.service";
 
 @Component({
-  selector: 'app-pop-up',
-  templateUrl: './popUp.component.html'
+  selector: "app-pop-up",
+  templateUrl: "./popUp.component.html",
 })
 export class PopUp implements OnInit, OnChanges, AfterViewChecked {
   // type of item to edit
@@ -62,7 +70,7 @@ export class PopUp implements OnInit, OnChanges, AfterViewChecked {
   // reported post
   @Input() reportedItem: Post | OtherUser | undefined;
   // type of item to report
-  @Input() reportType: 'User' | 'Post' | undefined;
+  @Input() reportType: "User" | "Post" | undefined;
   selectedReason: string | undefined;
   @Input() reportData: any;
   focusableElements: any;
@@ -71,11 +79,7 @@ export class PopUp implements OnInit, OnChanges, AfterViewChecked {
   faTimes = faTimes;
 
   // CTOR
-  constructor(
-    public authService:AuthService,
-  ) {
-
-  }
+  constructor(public authService: AuthService) {}
 
   /*
   Function Name: ngOnInit()
@@ -88,7 +92,7 @@ export class PopUp implements OnInit, OnChanges, AfterViewChecked {
   */
   ngOnInit() {
     // if we're in delete mode, turn the values of edit variables to undefined
-    if(this.delete) {
+    if (this.delete) {
       this.toEdit = undefined;
       this.editedItem = undefined;
     }
@@ -98,9 +102,9 @@ export class PopUp implements OnInit, OnChanges, AfterViewChecked {
       this.itemToDelete = undefined;
     }
 
-    document.getElementById('exitButton')!.focus();
-    if(document.getElementById('siteHeader')) {
-      document.getElementById('siteHeader')!.className = 'modal';
+    document.getElementById("exitButton")!.focus();
+    if (document.getElementById("siteHeader")) {
+      document.getElementById("siteHeader")!.className = "modal";
     }
   }
 
@@ -114,11 +118,11 @@ export class PopUp implements OnInit, OnChanges, AfterViewChecked {
   Programmer: Shir Bar Lev.
   */
   ngAfterViewChecked() {
-    let modal = document.getElementById('modalBox');
+    let modal = document.getElementById("modalBox");
     this.focusableElements = modal!.querySelectorAll(`a, button:not([disabled]),
           input:not([disabled]), textarea:not([disabled]), select:not([disabled]),
           details, iframe, object, embed, [tabindex]:not([tabindex="-1"]`);
-    modal!.addEventListener('keydown', this.checkFocusBinded);
+    modal!.addEventListener("keydown", this.checkFocusBinded);
   }
 
   /*
@@ -132,7 +136,7 @@ export class PopUp implements OnInit, OnChanges, AfterViewChecked {
   */
   ngOnChanges() {
     // if we're in delete mode, turn the values of edit variables to undefined
-    if(this.delete) {
+    if (this.delete) {
       this.toEdit = undefined;
       this.editedItem = undefined;
     }
@@ -151,14 +155,14 @@ export class PopUp implements OnInit, OnChanges, AfterViewChecked {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  checkFocus(e:KeyboardEvent) {
+  checkFocus(e: KeyboardEvent) {
     // if the pressed key is TAB
-    if(e.key.toLowerCase() === 'tab') {
+    if (e.key.toLowerCase() === "tab") {
       // if the user pressed SHIFT + TAB, which means they want to move backwards
-      if(e.shiftKey) {
+      if (e.shiftKey) {
         // if the currently focused element in the first one in the popup,
         // move back to the last focusable element in the popup
-        if(document.activeElement == this.focusableElements[0]) {
+        if (document.activeElement == this.focusableElements[0]) {
           this.focusableElements[this.focusableElements.length - 1].focus();
           e.preventDefault();
         }
@@ -167,7 +171,7 @@ export class PopUp implements OnInit, OnChanges, AfterViewChecked {
       else {
         // if the currently focused element in the last one in the popup,
         // move back to the first focusable element in the popup
-        if(document.activeElement == this.focusableElements[this.focusableElements.length - 1]) {
+        if (document.activeElement == this.focusableElements[this.focusableElements.length - 1]) {
           this.focusableElements[0].focus();
           e.preventDefault();
         }
@@ -185,13 +189,13 @@ export class PopUp implements OnInit, OnChanges, AfterViewChecked {
   Programmer: Shir Bar Lev.
   */
   exitEdit() {
-    let modal = document.getElementById('modalBox');
-    modal!.removeEventListener('keydown', this.checkFocusBinded);
-    if(document.getElementById('skipLink')) {
-      document.getElementById('skipLink')!.focus();
+    let modal = document.getElementById("modalBox");
+    modal!.removeEventListener("keydown", this.checkFocusBinded);
+    if (document.getElementById("skipLink")) {
+      document.getElementById("skipLink")!.focus();
     }
-    if(document.getElementById('siteHeader')) {
-      document.getElementById('siteHeader')!.className = '';
+    if (document.getElementById("siteHeader")) {
+      document.getElementById("siteHeader")!.className = "";
     }
     this.editMode.emit(false);
   }

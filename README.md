@@ -32,12 +32,12 @@ The project is open source, so feel free to use parts of the code. However, the 
 1. Download or clone the repo.
 2. cd into the project directory.
 3. cd into frontend.
-4. Run ```npm install``` to install dependencies.
-5. Run ```gulp localdev``` to compile the whole project for local development.
-6. Run ```gulp serve``` to start the local server.
+4. Run `npm install` to install dependencies.
+5. Run `gulp localdev` to compile the whole project for local development.
+6. Run `gulp serve` to start the local server.
 7. Open localhost:3000.
 
-**For your convenience,** this project utilises Gulp's 'watch' functionality. In order to activate it  while developing, run ```gulp watch```. For more information about Gulp watch, check the [Gulp documentation](https://gulpjs.com/docs/en/getting-started/watching-files/).
+**For your convenience,** this project utilises Gulp's 'watch' functionality. In order to activate it while developing, run `gulp watch`. For more information about Gulp watch, check the [Gulp documentation](https://gulpjs.com/docs/en/getting-started/watching-files/).
 
 ### Users
 
@@ -142,26 +142,26 @@ For more information about Angular's required NPM packages, check the [Angular d
 This project's tests are run using the Jasmine framework and the Karma runner. Thus, testing requires several packages:
 
 1. **Jasmine** - An open-source behaviour-driven testing framework. For more information, check Jasmine's [official site](https://jasmine.github.io). Included packages:
-    - **jasmine-core**
-    - **jasmine-spec-reporter**
-    - **@types/jasmine** - A typed version, required in order to write TypeScript tests.
+   - **jasmine-core**
+   - **jasmine-spec-reporter**
+   - **@types/jasmine** - A typed version, required in order to write TypeScript tests.
 2. **Karma** - An open-source test-runner, used to run the tests on various devices with a test server. For more information, check Karma's [official site](https://karma-runner.github.io/latest/index.html). Included packages:
-    - **karma**
-    - **karma-jasmine** - A Karma adapter for the Jasmine framework. [Project repo.](https://github.com/karma-runner/karma-jasmine)
-    - **karma-jasmine-html-reporter** - A reporter that shows test results in HTML. [NPM page.](https://www.npmjs.com/package/karma-jasmine-html-reporter).
-    - **karma-chrome-launcher** - A launcher for Chrome, Chrome Canary and Chromuim. [Project repo.](https://github.com/karma-runner/karma-chrome-launcher).
-    - **karma-coverage** - Code coverage generator. [Project repo.](https://github.com/karma-runner/karma-coverage)
-    - **karma-coverage-istanbul-reporter** - Code coverage generator reporter. [NPM page.](https://www.npmjs.com/package/karma-coverage-istanbul-reporter)
-    - **karma-sourcemap-loader** - A preprocessor that loads existing source maps. [NPM page.](https://www.npmjs.com/package/karma-sourcemap-loader)
-    - **karma-rollup-preprocessor** - A rollup preprocessor for karma, used to bundle up the tests. [NPM page.](https://www.npmjs.com/package/karma-rollup-preprocessor)
-    - **karma-viewport** - A karma framework used to gain access to the viewport in tests. [NPM page.](https://www.npmjs.com/package/karma-viewport)
+   - **karma**
+   - **karma-jasmine** - A Karma adapter for the Jasmine framework. [Project repo.](https://github.com/karma-runner/karma-jasmine)
+   - **karma-jasmine-html-reporter** - A reporter that shows test results in HTML. [NPM page.](https://www.npmjs.com/package/karma-jasmine-html-reporter).
+   - **karma-chrome-launcher** - A launcher for Chrome, Chrome Canary and Chromuim. [Project repo.](https://github.com/karma-runner/karma-chrome-launcher).
+   - **karma-coverage** - Code coverage generator. [Project repo.](https://github.com/karma-runner/karma-coverage)
+   - **karma-coverage-istanbul-reporter** - Code coverage generator reporter. [NPM page.](https://www.npmjs.com/package/karma-coverage-istanbul-reporter)
+   - **karma-sourcemap-loader** - A preprocessor that loads existing source maps. [NPM page.](https://www.npmjs.com/package/karma-sourcemap-loader)
+   - **karma-rollup-preprocessor** - A rollup preprocessor for karma, used to bundle up the tests. [NPM page.](https://www.npmjs.com/package/karma-rollup-preprocessor)
+   - **karma-viewport** - A karma framework used to gain access to the viewport in tests. [NPM page.](https://www.npmjs.com/package/karma-viewport)
 3. **Protractor** - An open-source end-to-end test framework. For more information, check Protractor's [official site](http://www.protractortest.org/#/).
 
 ### Production Dependencies
 
 1. **Express** - This project uses Express in order to run a basic server in deployment. This server is used to send the static files and script to the user. For more information, check the [Express website](https://expressjs.com).
 2. **Compression** - A Node extension used to compress production files when sending them from the Express server to the client. For more information, check the [compression NPM page](https://www.npmjs.com/package/compression).
-2. **dotenv** - A Node extension for accessing environment variables. Used by the frontend while in production mode. For more information, check the [dotenv NPM page](https://www.npmjs.com/package/dotenv).
+3. **dotenv** - A Node extension for accessing environment variables. Used by the frontend while in production mode. For more information, check the [dotenv NPM page](https://www.npmjs.com/package/dotenv).
 
 ## Authentication
 
@@ -185,8 +185,8 @@ The frontend Authentication Process:
 
 Notes:
 
-  - If the user doesn't exist in the database (the request was rejected because of something other than an AuthError), that means it's a new user. AuthService then makes a request to the server to add the new user to the database.
-  - If the user isn't redirected to the app from Auth0, there's no JWT in the URL. In that case, AuthService fetches the JWT from localStorage. If the JWT is still valid, AuthService attempts to refresh it while fetching the user's data. This lets the users stay logged in for longer periods of time without forcing them to actively login again.
+- If the user doesn't exist in the database (the request was rejected because of something other than an AuthError), that means it's a new user. AuthService then makes a request to the server to add the new user to the database.
+- If the user isn't redirected to the app from Auth0, there's no JWT in the URL. In that case, AuthService fetches the JWT from localStorage. If the JWT is still valid, AuthService attempts to refresh it while fetching the user's data. This lets the users stay logged in for longer periods of time without forcing them to actively login again.
 
 ## Testing
 
@@ -208,26 +208,26 @@ Since this is a full-stack application, running end-to-end tests requires runnin
 
 The project was hosted live on Heroku (we're currently looking at alternatives, due to Heroku removing their free tier). If you want to clone and host your own version, you can do so by using the following guide (the following commands are for Heroku, but they can be adjusted depending on your host):
 
-  1. Create a Heroku account (skip this step if you already have an account).
-  2. Install the Heroku command line interface.
-  3. In your Terminal, enter `heroku login`. This triggers logging in via the CLI.
-  4. Enter `heroku create <APP_NAME>` (with your own app name). If successful, Heroku returns the live version's URL (will be referred to as <LIVE_URL>) and the Git repo link (will be referred to as <GIT_URL>).
-  5. Make sure you're in the top directory (FSND-capstone). In your terminal, enter `git remote add heroku-client <GIT_URL>`.
-  6. Enter `git subtree push --prefix frontend heroku-client master`. This triggers the app build. If successful, you'll get a 'Verifying deploy... done.' message.
-  7. Add the following environment variables (via CLI or via the Heroku website):
-      - PRODUCTION - set to true
-      - AUTH0_DOMAIN - set with your own Auth0 domain
-      - AUTH0_CLIENT - set with your own client ID from Auth0
-      - AUDIENCE - set with your own audience from Auth0
-      - LOGIN_REDIRECT - set to your <LIVE_URL> (or wherever in the app you want the user to be redirected to) to ensure after login the user will be redirected to your app
-      - LOGOUT_REDIRECT - set to your <LIVE_URL> (or wherever in the app you want the user to be redirected to) to ensure after login the user will be redirected to your app
-      - BACKEND_URL - set with your own backend URL (necessary for making requests to the backend!)
-  8. On your Auth0 application configuration, make sure to:
-      - Add your new <LIVE_URL> to 'Allowed Callback URLs'
-      - Add your new <LIVE_URL> to 'Allowed Logout URLs'
-      - Add your new <LIVE_URL> to 'Allowed Web Origins'
-      - Add your new <LIVE_URL> to 'Allowed Origins (CORS)'
-  9. All done! Now you can visit your <GIT_URL> to see the live app.
+1. Create a Heroku account (skip this step if you already have an account).
+2. Install the Heroku command line interface.
+3. In your Terminal, enter `heroku login`. This triggers logging in via the CLI.
+4. Enter `heroku create <APP_NAME>` (with your own app name). If successful, Heroku returns the live version's URL (will be referred to as <LIVE_URL>) and the Git repo link (will be referred to as <GIT_URL>).
+5. Make sure you're in the top directory (FSND-capstone). In your terminal, enter `git remote add heroku-client <GIT_URL>`.
+6. Enter `git subtree push --prefix frontend heroku-client master`. This triggers the app build. If successful, you'll get a 'Verifying deploy... done.' message.
+7. Add the following environment variables (via CLI or via the Heroku website):
+   - PRODUCTION - set to true
+   - AUTH0_DOMAIN - set with your own Auth0 domain
+   - AUTH0_CLIENT - set with your own client ID from Auth0
+   - AUDIENCE - set with your own audience from Auth0
+   - LOGIN_REDIRECT - set to your <LIVE_URL> (or wherever in the app you want the user to be redirected to) to ensure after login the user will be redirected to your app
+   - LOGOUT_REDIRECT - set to your <LIVE_URL> (or wherever in the app you want the user to be redirected to) to ensure after login the user will be redirected to your app
+   - BACKEND_URL - set with your own backend URL (necessary for making requests to the backend!)
+8. On your Auth0 application configuration, make sure to:
+   - Add your new <LIVE_URL> to 'Allowed Callback URLs'
+   - Add your new <LIVE_URL> to 'Allowed Logout URLs'
+   - Add your new <LIVE_URL> to 'Allowed Web Origins'
+   - Add your new <LIVE_URL> to 'Allowed Origins (CORS)'
+9. All done! Now you can visit your <GIT_URL> to see the live app.
 
 ## Known Issues
 

@@ -34,12 +34,12 @@ export interface Thread {
   id: number;
   user: {
     displayName: string;
-    selectedIcon: 'bear' | 'kitty' | 'dog';
+    selectedIcon: "bear" | "kitty" | "dog";
     iconColours: {
-      character: String,
-      lbg: String,
-      rbg: String,
-      item: String
+      character: String;
+      lbg: String;
+      rbg: String;
+      item: String;
     };
   };
   userID: number;

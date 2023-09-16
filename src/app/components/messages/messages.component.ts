@@ -31,21 +31,21 @@
 */
 
 // Angular imports
-import { Component, OnInit, AfterViewChecked } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Component, OnInit, AfterViewChecked } from "@angular/core";
+import { ActivatedRoute, Router } from "@angular/router";
 
 // App-related imports
-import { AuthService } from '../../services/auth.service';
-import { ItemsService } from '../../services/items.service';
+import { AuthService } from "../../services/auth.service";
+import { ItemsService } from "../../services/items.service";
 
-type MessageType = 'inbox' | 'outbox' | 'threads';
+type MessageType = "inbox" | "outbox" | "threads";
 
 @Component({
-  selector: 'app-messages',
-  templateUrl: './messages.component.html'
+  selector: "app-messages",
+  templateUrl: "./messages.component.html",
 })
 export class AppMessaging implements OnInit, AfterViewChecked {
-  messType: MessageType | 'thread' = 'inbox';
+  messType: MessageType | "thread" = "inbox";
   page: number;
   // loader sub-component variable
   waitFor = `${this.messType} messages`;
@@ -53,8 +53,8 @@ export class AppMessaging implements OnInit, AfterViewChecked {
   // edit popup sub-component variables
   postToEdit: any;
   editType: string | undefined;
-  editMode:boolean;
-  delete:boolean;
+  editMode: boolean;
+  delete: boolean;
   toDelete: string | undefined;
   itemToDelete: number | undefined;
   lastFocusedElement: any;
@@ -63,51 +63,51 @@ export class AppMessaging implements OnInit, AfterViewChecked {
   constructor(
     public authService: AuthService,
     public itemsService: ItemsService,
-    public route:ActivatedRoute,
-    public router:Router
+    public route: ActivatedRoute,
+    public router: Router,
   ) {
     let messageType;
-    this.threadId = Number(this.route.snapshot.paramMap.get('id'));
+    this.threadId = Number(this.route.snapshot.paramMap.get("id"));
 
-    this.route.url.subscribe(params => {
+    this.route.url.subscribe((params) => {
       messageType = params[0].path;
     });
 
-    if(messageType) {
+    if (messageType) {
       this.messType = messageType;
       this.waitFor = `${this.messType} messages`;
-    }
-    else {
-      this.messType = 'inbox';
+    } else {
+      this.messType = "inbox";
     }
 
     // subscribe to the subject following user data
     this.authService.isUserDataResolved.subscribe((value) => {
       // if the value is true, user data has been fetched, so the app can
       // now fetch the user's messages
-      if(value == true) {
+      if (value == true) {
         // Gets the user's messages via the items service
-        if(this.messType == 'inbox' || this.messType == 'outbox') {
-          this.itemsService.getMailboxMessages(this.messType, this.authService.userData.id!, this.page);
-        }
-        else if(this.messType == 'threads') {
+        if (this.messType == "inbox" || this.messType == "outbox") {
+          this.itemsService.getMailboxMessages(
+            this.messType,
+            this.authService.userData.id!,
+            this.page,
+          );
+        } else if (this.messType == "threads") {
           this.itemsService.getThreads(this.authService.userData.id!, this.page);
         }
         // gets the thread's messages
-        else if(this.messType == 'thread' && this.threadId){
+        else if (this.messType == "thread" && this.threadId) {
           this.itemsService.getThread(this.authService.userData.id!, this.threadId);
         }
       }
-    })
+    });
 
     this.editMode = false;
     this.delete = false;
     this.page = 1;
   }
 
-  ngOnInit() {
-
-  }
+  ngOnInit() {}
 
   /*
   Function Name: ngAfterViewChecked()
@@ -120,37 +120,59 @@ export class AppMessaging implements OnInit, AfterViewChecked {
   */
   ngAfterViewChecked() {
     // wait for the DOM to load
-    if(document.querySelectorAll('.userIcon')[0]) {
+    if (document.querySelectorAll(".userIcon")[0]) {
       this.itemsService.userMessages[this.messType].forEach((message: any) => {
         const messageDOM = document.getElementById(this.messType + message.id);
 
-        switch(this.messType) {
+        switch (this.messType) {
           // If it's the inbox, get the the icon details of the user sending the message
-          case 'inbox' || 'thread':
-            Object.keys(message.from.iconColours).forEach(key => {
-              messageDOM!.querySelectorAll('.userIcon')[0].querySelectorAll(`.${key as 'character' | 'lbg' | 'rbg' | 'item'}`).forEach(element => {
-                (element as SVGPathElement).setAttribute('style', `fill:${message.from.iconColours[key as 'character' | 'lbg' | 'rbg' | 'item']};`);
-              })
-            })
+          case "inbox" || "thread":
+            Object.keys(message.from.iconColours).forEach((key) => {
+              messageDOM!
+                .querySelectorAll(".userIcon")[0]
+                .querySelectorAll(`.${key as "character" | "lbg" | "rbg" | "item"}`)
+                .forEach((element) => {
+                  (element as SVGPathElement).setAttribute(
+                    "style",
+                    `fill:${
+                      message.from.iconColours[key as "character" | "lbg" | "rbg" | "item"]
+                    };`,
+                  );
+                });
+            });
             break;
           // If it's the outbox, get the icon details of the user for which the message is meant
-          case 'outbox':
-            Object.keys(message.for.iconColours).forEach(key => {
-              messageDOM!.querySelectorAll('.userIcon')[0].querySelectorAll(`.${key as 'character' | 'lbg' | 'rbg' | 'item'}`).forEach(element => {
-                (element as SVGPathElement).setAttribute('style', `fill:${message.for.iconColours[key as 'character' | 'lbg' | 'rbg' | 'item']};`);
-              })
-            })
+          case "outbox":
+            Object.keys(message.for.iconColours).forEach((key) => {
+              messageDOM!
+                .querySelectorAll(".userIcon")[0]
+                .querySelectorAll(`.${key as "character" | "lbg" | "rbg" | "item"}`)
+                .forEach((element) => {
+                  (element as SVGPathElement).setAttribute(
+                    "style",
+                    `fill:${message.for.iconColours[key as "character" | "lbg" | "rbg" | "item"]};`,
+                  );
+                });
+            });
             break;
           // If it's the threads mailbox, get the icon details of the other user in the thread
-          case 'threads':
-            Object.keys(message.user.iconColours).forEach(key => {
-              messageDOM!.querySelectorAll('.userIcon')[0].querySelectorAll(`.${key as 'character' | 'lbg' | 'rbg' | 'item'}`).forEach(element => {
-                (element as SVGPathElement).setAttribute('style', `fill:${message.user.iconColours[key as 'character' | 'lbg' | 'rbg' | 'item']};`);
-              })
-            })
+          case "threads":
+            Object.keys(message.user.iconColours).forEach((key) => {
+              messageDOM!
+                .querySelectorAll(".userIcon")[0]
+                .querySelectorAll(`.${key as "character" | "lbg" | "rbg" | "item"}`)
+                .forEach((element) => {
+                  (element as SVGPathElement).setAttribute(
+                    "style",
+                    `fill:${
+                      message.user.iconColours[key as "character" | "lbg" | "rbg" | "item"]
+                    };`,
+                  );
+                });
+            });
             break;
         }
-      })
+      });
     }
   }
 
@@ -173,11 +195,11 @@ export class AppMessaging implements OnInit, AfterViewChecked {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  deleteMessage(messageID:number) {
+  deleteMessage(messageID: number) {
     this.lastFocusedElement = document.activeElement;
     this.editMode = true;
     this.delete = true;
-    this.toDelete = 'Message';
+    this.toDelete = "Message";
     this.itemToDelete = messageID;
   }
 
@@ -192,14 +214,12 @@ export class AppMessaging implements OnInit, AfterViewChecked {
   nextPage() {
     this.page += 1;
 
-    if(this.messType == 'thread') {
+    if (this.messType == "thread") {
       this.itemsService.userMessagesPage.thread += 1;
       this.itemsService.getThread(this.authService.userData.id!, this.threadId);
-    }
-    else if(this.messType == 'threads') {
+    } else if (this.messType == "threads") {
       this.itemsService.getThreads(this.authService.userData.id!, this.page);
-    }
-    else {
+    } else {
       this.itemsService.getMailboxMessages(this.messType, this.authService.userData.id!, this.page);
     }
   }
@@ -215,14 +235,12 @@ export class AppMessaging implements OnInit, AfterViewChecked {
   prevPage() {
     this.page -= 1;
 
-    if(this.messType == 'thread') {
+    if (this.messType == "thread") {
       this.itemsService.userMessagesPage.thread -= 1;
       this.itemsService.getThread(this.authService.userData.id!, this.threadId);
-    }
-    else if(this.messType == 'threads') {
+    } else if (this.messType == "threads") {
       this.itemsService.getThreads(this.authService.userData.id!, this.page);
-    }
-    else {
+    } else {
       this.itemsService.getMailboxMessages(this.messType, this.authService.userData.id!, this.page);
     }
   }
@@ -234,20 +252,20 @@ export class AppMessaging implements OnInit, AfterViewChecked {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  changeMailbox(newType:string) {
+  changeMailbox(newType: string) {
     // if the user was looking at a specific thread, to get the mailbox type
     // we need to go two levels up
-    if(this.messType == 'thread') {
-      this.router.navigate(['../../' + newType], {
+    if (this.messType == "thread") {
+      this.router.navigate(["../../" + newType], {
         relativeTo: this.route,
-        replaceUrl: true
+        replaceUrl: true,
       });
     }
     // otherwise we need to go one level up to change mailbox
     else {
-      this.router.navigate(['../' + newType], {
+      this.router.navigate(["../" + newType], {
         relativeTo: this.route,
-        replaceUrl: true
+        replaceUrl: true,
       });
     }
   }
@@ -259,10 +277,10 @@ export class AppMessaging implements OnInit, AfterViewChecked {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  loadThread(threadId:number) {
-    this.router.navigate(['../thread/' + threadId], {
+  loadThread(threadId: number) {
+    this.router.navigate(["../thread/" + threadId], {
       relativeTo: this.route,
-      replaceUrl: true
+      replaceUrl: true,
     });
   }
 
@@ -273,11 +291,11 @@ export class AppMessaging implements OnInit, AfterViewChecked {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  deleteThread(threadId:number) {
+  deleteThread(threadId: number) {
     this.lastFocusedElement = document.activeElement;
     this.editMode = true;
     this.delete = true;
-    this.toDelete = 'Thread';
+    this.toDelete = "Thread";
     this.itemToDelete = threadId;
   }
 
@@ -288,7 +306,7 @@ export class AppMessaging implements OnInit, AfterViewChecked {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  deleteAllMessages(type:string) {
+  deleteAllMessages(type: string) {
     this.lastFocusedElement = document.activeElement;
     this.editMode = true;
     this.delete = true;
@@ -306,7 +324,7 @@ export class AppMessaging implements OnInit, AfterViewChecked {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  changeMode(edit:boolean) {
+  changeMode(edit: boolean) {
     this.editMode = edit;
     this.lastFocusedElement.focus();
   }

@@ -31,16 +31,16 @@
 */
 
 // Angular imports
-import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit } from "@angular/core";
 
 // App-related import
-import { AuthService } from '../../../services/auth.service';
-import { AdminService } from '../../../services/admin.service';
-import { ValidationService } from '../../../services/validation.service';
+import { AuthService } from "../../../services/auth.service";
+import { AdminService } from "../../../services/admin.service";
+import { ValidationService } from "../../../services/validation.service";
 
 @Component({
-  selector: 'display-name-edit-form',
-  templateUrl: './displayNameEditForm.component.html'
+  selector: "display-name-edit-form",
+  templateUrl: "./displayNameEditForm.component.html",
 })
 export class DisplayNameEditForm implements OnInit {
   // type of item to edit
@@ -53,12 +53,10 @@ export class DisplayNameEditForm implements OnInit {
 
   // CTOR
   constructor(
-    public authService:AuthService,
-    private adminService:AdminService,
-    private validationService:ValidationService,
-  ) {
-
-  }
+    public authService: AuthService,
+    private adminService: AdminService,
+    private validationService: ValidationService,
+  ) {}
 
   /*
   Function Name: ngOnInit()
@@ -70,9 +68,8 @@ export class DisplayNameEditForm implements OnInit {
   Programmer: Shir Bar Lev.
   */
   ngOnInit() {
-    this.editedItem = this.toEdit == 'user'
-      ? this.authService.userData.displayName
-      : this.editedItem;
+    this.editedItem =
+      this.toEdit == "user" ? this.authService.userData.displayName : this.editedItem;
   }
 
   /*
@@ -86,21 +83,21 @@ export class DisplayNameEditForm implements OnInit {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  updateDisplayName(e:Event, newDisplayName:string, closeReport:boolean | null) {
+  updateDisplayName(e: Event, newDisplayName: string, closeReport: boolean | null) {
     e.preventDefault();
 
     // if the name is valid, set it
-    if(this.validationService.validateItem('displayName', newDisplayName, 'displayName')) {
+    if (this.validationService.validateItem("displayName", newDisplayName, "displayName")) {
       // if the user is editing their own name
-      if(closeReport == null) {
+      if (closeReport == null) {
         this.authService.userData.displayName = newDisplayName;
         this.authService.updateUserData();
-      // if they're editing someone else's name from the reports page
+        // if they're editing someone else's name from the reports page
       } else {
         let user = {
           userID: this.reportData.userID,
-          displayName: newDisplayName
-        }
+          displayName: newDisplayName,
+        };
 
         this.adminService.editUser(user, closeReport, this.reportData.reportID);
       }

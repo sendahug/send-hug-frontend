@@ -30,41 +30,41 @@
   SOFTWARE.
 */
 
-import { AfterViewChecked, Component, EventEmitter, Output } from '@angular/core';
+import { AfterViewChecked, Component, EventEmitter, Output } from "@angular/core";
 
-import { AuthService } from '../../services/auth.service';
+import { AuthService } from "../../services/auth.service";
 
-type iconCharacters = 'bear' | 'kitty' | 'dog';
+type iconCharacters = "bear" | "kitty" | "dog";
 
 @Component({
-  selector: 'app-icon-editor',
-  templateUrl: './iconEditor.component.html'
+  selector: "app-icon-editor",
+  templateUrl: "./iconEditor.component.html",
 })
 export class IconEditor implements AfterViewChecked {
   selectedIcon: iconCharacters;
   iconColours: {
-    character: String,
-    lbg: String,
-    rbg: String,
-    item: String
+    character: String;
+    lbg: String;
+    rbg: String;
+    item: String;
   } = {
-    character: '',
-    lbg: '',
-    rbg: '',
-    item: ''
-  }
+    character: "",
+    lbg: "",
+    rbg: "",
+    item: "",
+  };
   // indicates whether edit mode is still required
   @Output() editMode = new EventEmitter<boolean>();
 
   // CTOR
-  constructor(private authService:AuthService) {
+  constructor(private authService: AuthService) {
     this.selectedIcon = this.authService.userData.selectedIcon;
     this.iconColours = {
       character: this.authService.userData.iconColours.character,
       lbg: this.authService.userData.iconColours.lbg,
       rbg: this.authService.userData.iconColours.rbg,
-      item: this.authService.userData.iconColours.item
-    }
+      item: this.authService.userData.iconColours.item,
+    };
   }
 
   /*
@@ -78,12 +78,18 @@ export class IconEditor implements AfterViewChecked {
   */
   ngAfterViewChecked() {
     Object.keys(this.iconColours).forEach((key) => {
-      if(document.querySelectorAll('.userIcon')[0]) {
-        document.querySelectorAll('.userIcon')[0].querySelectorAll(`.${key as 'character' | 'lbg' | 'rbg' | 'item'}`).forEach(element => {
-          (element as SVGPathElement).setAttribute('style', `fill:${this.iconColours[key as 'character' | 'lbg' | 'rbg' | 'item']};`);
-        })
+      if (document.querySelectorAll(".userIcon")[0]) {
+        document
+          .querySelectorAll(".userIcon")[0]
+          .querySelectorAll(`.${key as "character" | "lbg" | "rbg" | "item"}`)
+          .forEach((element) => {
+            (element as SVGPathElement).setAttribute(
+              "style",
+              `fill:${this.iconColours[key as "character" | "lbg" | "rbg" | "item"]};`,
+            );
+          });
       }
-    })
+    });
   }
 
   /*
@@ -93,7 +99,7 @@ export class IconEditor implements AfterViewChecked {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  setSelected(newIcon:iconCharacters) {
+  setSelected(newIcon: iconCharacters) {
     this.selectedIcon = newIcon;
   }
 
@@ -107,11 +113,14 @@ export class IconEditor implements AfterViewChecked {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  showNewColour(newValue:string, element:'character' | 'lbg' | 'rbg' | 'item') {
+  showNewColour(newValue: string, element: "character" | "lbg" | "rbg" | "item") {
     // update the image
-    document.querySelectorAll('.selectedCharacter')[0].querySelectorAll(`.${element}`).forEach((path:Element) => {
-      (path as SVGPathElement).setAttribute('style', `fill:${newValue};`);
-    })
+    document
+      .querySelectorAll(".selectedCharacter")[0]
+      .querySelectorAll(`.${element}`)
+      .forEach((path: Element) => {
+        (path as SVGPathElement).setAttribute("style", `fill:${newValue};`);
+      });
   }
 
   /*
@@ -123,13 +132,16 @@ export class IconEditor implements AfterViewChecked {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  updateElementColour(newValue:string, element:'character' | 'lbg' | 'rbg' | 'item') {
+  updateElementColour(newValue: string, element: "character" | "lbg" | "rbg" | "item") {
     this.iconColours[element] = newValue;
 
     // update the image
-    document.querySelectorAll('.selectedCharacter')[0].querySelectorAll(`.${element}`).forEach((path:Element) => {
-      (path as SVGPathElement).setAttribute('style', `fill:${newValue};`);
-    })
+    document
+      .querySelectorAll(".selectedCharacter")[0]
+      .querySelectorAll(`.${element}`)
+      .forEach((path: Element) => {
+        (path as SVGPathElement).setAttribute("style", `fill:${newValue};`);
+      });
   }
 
   /*
@@ -139,7 +151,7 @@ export class IconEditor implements AfterViewChecked {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  updateIcon(event:Event) {
+  updateIcon(event: Event) {
     event.preventDefault();
 
     // set the userService with the new icon data

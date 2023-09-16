@@ -34,23 +34,23 @@ export interface Message {
   id?: number;
   from?: {
     displayName: string;
-    selectedIcon?: 'bear' | 'kitty' | 'dog';
+    selectedIcon?: "bear" | "kitty" | "dog";
     iconColours?: {
-      character: String,
-      lbg: String,
-      rbg: String,
-      item: String
+      character: String;
+      lbg: String;
+      rbg: String;
+      item: String;
     };
   };
   fromId: number;
   for?: {
     displayName: string;
-    selectedIcon?: 'bear' | 'kitty' | 'dog';
+    selectedIcon?: "bear" | "kitty" | "dog";
     iconColours?: {
-      character: String,
-      lbg: String,
-      rbg: String,
-      item: String
+      character: String;
+      lbg: String;
+      rbg: String;
+      item: String;
     };
   };
   forId: number;

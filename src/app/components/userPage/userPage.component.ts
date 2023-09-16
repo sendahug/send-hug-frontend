@@ -31,64 +31,64 @@
 */
 
 // Angular imports
-import { Component, OnInit, OnDestroy, AfterViewChecked } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { Subscription } from 'rxjs';
-import { faGratipay } from '@fortawesome/free-brands-svg-icons';
+import { Component, OnInit, OnDestroy, AfterViewChecked } from "@angular/core";
+import { ActivatedRoute } from "@angular/router";
+import { Subscription } from "rxjs";
+import { faGratipay } from "@fortawesome/free-brands-svg-icons";
 
 // App-related imports
-import { User } from '../../interfaces/user.interface';
-import { AuthService } from '../../services/auth.service';
-import { ItemsService } from '../../services/items.service';
+import { User } from "../../interfaces/user.interface";
+import { AuthService } from "../../services/auth.service";
+import { ItemsService } from "../../services/items.service";
 
 @Component({
-  selector: 'app-user-page',
-  templateUrl: './userPage.component.html'
+  selector: "app-user-page",
+  templateUrl: "./userPage.component.html",
 })
 export class UserPage implements OnInit, OnDestroy, AfterViewChecked {
   // edit popup sub-component variables
-  userToEdit:any;
+  userToEdit: any;
   editType: string | undefined;
-  editMode:boolean;
+  editMode: boolean;
   report: boolean;
   reportedItem: User | undefined;
-  reportType = 'User';
+  reportType = "User";
   lastFocusedElement: any;
   userDataCalls = 0;
   // loader sub-component variable
   waitFor = "user";
   userId: number | undefined;
-  userDataSubscription:Subscription | undefined;
+  userDataSubscription: Subscription | undefined;
   // icons
   faGratipay = faGratipay;
 
   // CTOR
   constructor(
     public authService: AuthService,
-    private route:ActivatedRoute,
-    public itemsService:ItemsService
+    private route: ActivatedRoute,
+    public itemsService: ItemsService,
   ) {
     this.authService.checkHash();
     this.editMode = false;
     this.report = false;
 
     // if there's a user ID, set the user ID to it
-    if(this.route.snapshot.paramMap.get('id')) {
-      this.userId = Number(this.route.snapshot.paramMap.get('id'));
+    if (this.route.snapshot.paramMap.get("id")) {
+      this.userId = Number(this.route.snapshot.paramMap.get("id"));
 
       // if the user is logged in, just get the selected user's data
-      if(this.authService.userData.id && this.authService.userData.id != 0) {
+      if (this.authService.userData.id && this.authService.userData.id != 0) {
         // If the user ID from the URL params is different than the logged in
         // user's ID, the user is trying to view another user's profile
-        if(this.userId != this.authService.userData.id) {
+        if (this.userId != this.authService.userData.id) {
           this.itemsService.isOtherUser = true;
-          this.waitFor = 'other user';
+          this.waitFor = "other user";
           this.itemsService.getUser(this.userId!);
         }
         // otherwise they're trying to view their own profile
         else {
           this.itemsService.isOtherUser = false;
-          this.waitFor = 'user';
+          this.waitFor = "user";
         }
       }
       // otherwise wait for user data to come through
@@ -97,14 +97,14 @@ export class UserPage implements OnInit, OnDestroy, AfterViewChecked {
         this.userDataSubscription = this.authService.isUserDataResolved.subscribe((value) => {
           // if the user is logged in, fetch the profile of the user whose ID
           // is used in the URL param
-          if(value == true && this.userDataCalls < 2) {
-            if(this.userId != this.authService.userData.id) {
+          if (value == true && this.userDataCalls < 2) {
+            if (this.userId != this.authService.userData.id) {
               this.userDataCalls++;
               this.itemsService.getUser(this.userId!);
             }
             // also unsubscribe from this to avoid sending the same request
             // multiple times
-            if(this.userDataSubscription) {
+            if (this.userDataSubscription) {
               this.userDataSubscription.unsubscribe();
             }
           }
@@ -114,13 +114,11 @@ export class UserPage implements OnInit, OnDestroy, AfterViewChecked {
     // otherwise they're trying to view their own profile
     else {
       this.itemsService.isOtherUser = false;
-      this.waitFor = 'user';
+      this.waitFor = "user";
     }
   }
 
-  ngOnInit() {
-
-  }
+  ngOnInit() {}
 
   /*
   Function Name: ngAfterViewChecked()
@@ -133,15 +131,23 @@ export class UserPage implements OnInit, OnDestroy, AfterViewChecked {
   */
   ngAfterViewChecked() {
     // if it's the logged in user, get the data from authService; otherwise get it from itemsService
-    let dataSource = this.itemsService.isOtherUser ? this.itemsService.otherUserData : this.authService.userData;
+    let dataSource = this.itemsService.isOtherUser
+      ? this.itemsService.otherUserData
+      : this.authService.userData;
 
     Object.keys(dataSource.iconColours).forEach((key) => {
-      if(document.querySelectorAll('.userIcon')[0]) {
-        document.querySelectorAll('.userIcon')[0].querySelectorAll(`.${key as 'character' | 'lbg' | 'rbg' | 'item'}`).forEach(element => {
-          (element as SVGPathElement).setAttribute('style', `fill:${dataSource.iconColours[key as 'character' | 'lbg' | 'rbg' | 'item']};`);
-        })
+      if (document.querySelectorAll(".userIcon")[0]) {
+        document
+          .querySelectorAll(".userIcon")[0]
+          .querySelectorAll(`.${key as "character" | "lbg" | "rbg" | "item"}`)
+          .forEach((element) => {
+            (element as SVGPathElement).setAttribute(
+              "style",
+              `fill:${dataSource.iconColours[key as "character" | "lbg" | "rbg" | "item"]};`,
+            );
+          });
       }
-    })
+    });
   }
 
   /*
@@ -177,7 +183,7 @@ export class UserPage implements OnInit, OnDestroy, AfterViewChecked {
     this.lastFocusedElement = document.activeElement;
     this.userToEdit = this.authService.userData;
     this.editMode = true;
-    this.editType = 'user';
+    this.editType = "user";
     this.report = false;
   }
 
@@ -191,7 +197,7 @@ export class UserPage implements OnInit, OnDestroy, AfterViewChecked {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  changeMode(edit:boolean) {
+  changeMode(edit: boolean) {
     this.editMode = edit;
     this.lastFocusedElement.focus();
   }
@@ -203,7 +209,7 @@ export class UserPage implements OnInit, OnDestroy, AfterViewChecked {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  sendHug(userID:number) {
+  sendHug(userID: number) {
     this.itemsService.sendUserHug(userID);
   }
 
@@ -214,7 +220,7 @@ export class UserPage implements OnInit, OnDestroy, AfterViewChecked {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  reportUser(user:User) {
+  reportUser(user: User) {
     this.lastFocusedElement = document.activeElement;
     this.editMode = true;
     this.editType = undefined;

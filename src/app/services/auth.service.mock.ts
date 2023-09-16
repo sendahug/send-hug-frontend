@@ -31,31 +31,31 @@
 */
 
 // Angular imports
-import { Injectable } from '@angular/core';
-import { HttpHeaders } from '@angular/common/http';
+import { Injectable } from "@angular/core";
+import { HttpHeaders } from "@angular/common/http";
 
 // Other essential imports
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject } from "rxjs";
 
 // App-related imports
-import { User } from '../interfaces/user.interface';
-import { environment } from '../../environments/environment';
+import { User } from "../interfaces/user.interface";
+import { environment } from "../../environments/environment";
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root",
 })
 export class MockAuthService {
   readonly serverUrl = environment.backend.domain;
   // authentication information
-  token: string = '';
-  authHeader: HttpHeaders = new HttpHeaders;
+  token: string = "";
+  authHeader: HttpHeaders = new HttpHeaders();
   authenticated: boolean = false;
 
-  public get getAuthenticated() : boolean {
+  public get getAuthenticated(): boolean {
     return this.authenticated;
   }
 
-  public set getAuthenticated(v : boolean) {
+  public set getAuthenticated(v: boolean) {
     this.authenticated = v;
   }
 
@@ -63,27 +63,27 @@ export class MockAuthService {
   userProfile: any;
   userData: User = {
     id: 0,
-    auth0Id: '',
-    displayName: '',
+    auth0Id: "",
+    displayName: "",
     receivedHugs: 0,
     givenHugs: 0,
     postsNum: 0,
     loginCount: 0,
-    role: '',
-    jwt: '',
+    role: "",
+    jwt: "",
     blocked: false,
     releaseDate: undefined,
     autoRefresh: false,
     refreshRate: 20,
     pushEnabled: false,
-    selectedIcon: 'kitty',
+    selectedIcon: "kitty",
     iconColours: {
-      character: '',
-      lbg: '',
-      rbg: '',
-      item: ''
-    }
-  }
+      character: "",
+      lbg: "",
+      rbg: "",
+      item: "",
+    },
+  };
   // documents whether the user just logged in or they're still logged in following
   // their previous login
   loggedIn = false;
@@ -91,10 +91,7 @@ export class MockAuthService {
   isUserDataResolved = new BehaviorSubject(false);
 
   // CTOR
-  constructor(
-  ) {
-
-  }
+  constructor() {}
 
   /*
   Function Name: login()
@@ -115,7 +112,7 @@ export class MockAuthService {
   Programmer: Shir Bar Lev.
   */
   checkHash() {
-    this.getUserData('');
+    this.getUserData("");
   }
 
   /*
@@ -125,12 +122,17 @@ export class MockAuthService {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  parseJWT(token:string) {
-    var base64Url = token.split('.')[1];
-    var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-    var jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
-        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-    }).join(''));
+  parseJWT(token: string) {
+    var base64Url = token.split(".")[1];
+    var base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+    var jsonPayload = decodeURIComponent(
+      atob(base64)
+        .split("")
+        .map(function (c) {
+          return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
+        })
+        .join(""),
+    );
 
     return JSON.parse(jsonPayload);
   }
@@ -145,39 +147,39 @@ export class MockAuthService {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  getUserData(jwtPayload:any) {
+  getUserData(jwtPayload: any) {
     this.userData = {
       id: 4,
       auth0Id: jwtPayload,
-      displayName: 'name',
+      displayName: "name",
       receivedHugs: 2,
       givenHugs: 2,
       postsNum: 2,
       loginCount: 3,
-      role: 'admin',
-      jwt: '',
+      role: "admin",
+      jwt: "",
       blocked: false,
       releaseDate: undefined,
       autoRefresh: false,
       refreshRate: 20,
       pushEnabled: false,
-      selectedIcon: 'kitty',
+      selectedIcon: "kitty",
       iconColours: {
-        character: '#BA9F93',
-        lbg: '#e2a275',
-        rbg: '#f8eee4',
-        item: '#f4b56a'
-      }
-    }
+        character: "#BA9F93",
+        lbg: "#e2a275",
+        rbg: "#f8eee4",
+        item: "#f4b56a",
+      },
+    };
     // set the authentication-variables accordingly
     this.authenticated = true;
-    this.authHeader = new HttpHeaders({'Authorization': `Bearer ${this.token}`});
+    this.authHeader = new HttpHeaders({ Authorization: `Bearer ${this.token}` });
     this.setToken();
     this.isUserDataResolved.next(true);
     this.tokenExpired = false;
 
     // if the user just logged in, update the login count
-    if(this.loggedIn) {
+    if (this.loggedIn) {
       this.updateUserData();
     }
   }
@@ -190,7 +192,7 @@ export class MockAuthService {
   Programmer: Shir Bar Lev.
   */
   logout() {
-    return 'logged out!'
+    return "logged out!";
   }
 
   /*
@@ -201,7 +203,7 @@ export class MockAuthService {
   Programmer: Shir Bar Lev.
   */
   setToken() {
-    return 'set'!
+    return "set"!;
   }
 
   /*
@@ -225,23 +227,23 @@ export class MockAuthService {
   */
   canUser(permission: string) {
     const permissions = [
-    "delete:any-post",
-    "delete:messages",
-    "patch:any-post",
-    "patch:any-user",
-    "post:message",
-    "post:post",
-    "read:messages",
-    "read:user",
-    "read:admin-board"
-  ]
+      "delete:any-post",
+      "delete:messages",
+      "patch:any-post",
+      "patch:any-user",
+      "post:message",
+      "post:post",
+      "read:messages",
+      "read:user",
+      "read:admin-board",
+    ];
     // if there's an active token, check the logged in user's permissions
-    if(this.token) {
-      let canUserDo:boolean;
+    if (this.token) {
+      let canUserDo: boolean;
 
       // if it's within the user's permissions, return true;
       // otherwise return false
-      canUserDo = permissions.includes(permission)
+      canUserDo = permissions.includes(permission);
       return canUserDo;
     }
     // if there isn't, no user is logged in, so of course there's no permission

@@ -31,88 +31,85 @@
 */
 
 import { TestBed } from "@angular/core/testing";
-import { RouterTestingModule } from '@angular/router/testing';
-import {} from 'jasmine';
-import { APP_BASE_HREF, Location } from '@angular/common';
+import { RouterTestingModule } from "@angular/router/testing";
+import {} from "jasmine";
+import { APP_BASE_HREF, Location } from "@angular/common";
 import {
   BrowserDynamicTestingModule,
-  platformBrowserDynamicTesting
+  platformBrowserDynamicTesting,
 } from "@angular/platform-browser-dynamic/testing";
 import { HttpClientModule } from "@angular/common/http";
 import { ServiceWorkerModule } from "@angular/service-worker";
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 
 // App imports
 import { ErrorPage } from "./errorPage.component";
 
 class MockLocation {
   back() {
-    return 'went back!';
+    return "went back!";
   }
-};
+}
 
-describe('ErrorPage', () => {
+describe("ErrorPage", () => {
   // Before each test, configure testing environment
   beforeEach(() => {
     TestBed.resetTestEnvironment();
-    TestBed.initTestEnvironment(BrowserDynamicTestingModule,
-        platformBrowserDynamicTesting());
+    TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
       imports: [
         RouterTestingModule,
         HttpClientModule,
-        ServiceWorkerModule.register('sw.js', { enabled: false }),
-        FontAwesomeModule
+        ServiceWorkerModule.register("sw.js", { enabled: false }),
+        FontAwesomeModule,
       ],
-      declarations: [
-        ErrorPage
-      ],
+      declarations: [ErrorPage],
       providers: [
-        { provide: APP_BASE_HREF, useValue: '/' },
-        { provide: Location, useClass: MockLocation }
-      ]
+        { provide: APP_BASE_HREF, useValue: "/" },
+        { provide: Location, useClass: MockLocation },
+      ],
     }).compileComponents();
   });
 
   // Check that the component is created
-  it('should create the component', () => {
+  it("should create the component", () => {
     const fixture = TestBed.createComponent(ErrorPage);
     const errorPage = fixture.componentInstance;
     expect(errorPage).toBeTruthy();
   });
 
   // Check that the error page has the right error message
-  it('should have an error message', (done: DoneFn) => {
+  it("should have an error message", (done: DoneFn) => {
     const fixture = TestBed.createComponent(ErrorPage);
     const errorPage = fixture.componentInstance;
     const errorPageDOM = fixture.nativeElement;
     const error = {
-      title: 'Sorry!',
+      title: "Sorry!",
       message: `The page you were looking for doesn\'t exist.`,
-      code: 404
+      code: 404,
     };
 
     fixture.detectChanges();
 
     expect(errorPage.error).toEqual(error);
-    expect(errorPageDOM.querySelectorAll('h3')[0].textContent).toBe(error.title);
-    expect(errorPageDOM.querySelector('#errorCode').textContent).toContain(error.code);
+    expect(errorPageDOM.querySelectorAll("h3")[0].textContent).toBe(error.title);
+    expect(errorPageDOM.querySelector("#errorCode").textContent).toContain(error.code);
     done();
   });
 
   // Check that the 'back' method is called when clicking the back button
-  it('should call back method when clicking the back button', (done: DoneFn) => {
+  it("should call back method when clicking the back button", (done: DoneFn) => {
     const fixture = TestBed.createComponent(ErrorPage);
     const errorPage = fixture.componentInstance;
     const errorPageDOM = fixture.nativeElement;
-    const backSpy = spyOn(errorPage, 'goBack').and.callThrough();
-    const mockLocationSpy = spyOn(errorPage['location'], 'back').and.callThrough();
+    const backSpy = spyOn(errorPage, "goBack").and.callThrough();
+    const mockLocationSpy = spyOn(errorPage["location"], "back").and.callThrough();
 
     fixture.detectChanges();
 
     // click the back button
-    errorPageDOM.querySelector('#backBtn').click();
+    errorPageDOM.querySelector("#backBtn").click();
     fixture.detectChanges();
 
     expect(backSpy).toHaveBeenCalled();

@@ -31,54 +31,50 @@
 */
 
 import { TestBed } from "@angular/core/testing";
-import { RouterTestingModule } from '@angular/router/testing';
-import {} from 'jasmine';
-import { APP_BASE_HREF } from '@angular/common';
+import { RouterTestingModule } from "@angular/router/testing";
+import {} from "jasmine";
+import { APP_BASE_HREF } from "@angular/common";
 import {
   BrowserDynamicTestingModule,
-  platformBrowserDynamicTesting
+  platformBrowserDynamicTesting,
 } from "@angular/platform-browser-dynamic/testing";
 import { HttpClientModule } from "@angular/common/http";
 import { ServiceWorkerModule } from "@angular/service-worker";
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 
-import { AppComponent } from '../../../app.component';
-import { DisplayNameEditForm } from './displayNameEditForm.component';
-import { AuthService } from '../../../services/auth.service';
-import { MockAuthService } from '../../../services/auth.service.mock';
-import { AdminService } from '../../../services/admin.service';
-import { MockAdminService } from '../../../services/admin.service.mock';
+import { AppComponent } from "../../../app.component";
+import { DisplayNameEditForm } from "./displayNameEditForm.component";
+import { AuthService } from "../../../services/auth.service";
+import { MockAuthService } from "../../../services/auth.service.mock";
+import { AdminService } from "../../../services/admin.service";
+import { MockAdminService } from "../../../services/admin.service.mock";
 
 // DISPLAY NAME EDIT
 // ==================================================================
-describe('DisplayNameEditForm', () => {
+describe("DisplayNameEditForm", () => {
   // Before each test, configure testing environment
   beforeEach(() => {
     TestBed.resetTestEnvironment();
-    TestBed.initTestEnvironment(BrowserDynamicTestingModule,
-        platformBrowserDynamicTesting());
+    TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
       imports: [
         RouterTestingModule,
         HttpClientModule,
-        ServiceWorkerModule.register('sw.js', { enabled: false }),
-        FontAwesomeModule
+        ServiceWorkerModule.register("sw.js", { enabled: false }),
+        FontAwesomeModule,
       ],
-      declarations: [
-        AppComponent,
-        DisplayNameEditForm,
-      ],
+      declarations: [AppComponent, DisplayNameEditForm],
       providers: [
-        { provide: APP_BASE_HREF, useValue: '/' },
+        { provide: APP_BASE_HREF, useValue: "/" },
         { provide: AuthService, useClass: MockAuthService },
         { provide: AdminService, useClass: MockAdminService },
-      ]
+      ],
     }).compileComponents();
   });
 
   // Check that the component is created
-  it('should create the component', () => {
+  it("should create the component", () => {
     const acFixture = TestBed.createComponent(AppComponent);
     const appComponent = acFixture.componentInstance;
     const fixture = TestBed.createComponent(DisplayNameEditForm);
@@ -87,123 +83,131 @@ describe('DisplayNameEditForm', () => {
     expect(popUp).toBeTruthy();
   });
 
-  it('should set editedItem depending on toEdit', () => {
+  it("should set editedItem depending on toEdit", () => {
     const fixture = TestBed.createComponent(DisplayNameEditForm);
     const popUp = fixture.componentInstance;
-    popUp.toEdit = 'user';
+    popUp.toEdit = "user";
     popUp.ngOnInit();
 
     expect(popUp.editedItem).toEqual(popUp.authService.userData.displayName);
 
-    popUp.toEdit = 'other user';
-    popUp.editedItem = 'test';
+    popUp.toEdit = "other user";
+    popUp.editedItem = "test";
     popUp.ngOnInit();
 
-    expect(popUp.editedItem).toEqual('test');
+    expect(popUp.editedItem).toEqual("test");
   });
 
-  it('should make the request to authService to change the name', () => {
+  it("should make the request to authService to change the name", () => {
     const fixture = TestBed.createComponent(DisplayNameEditForm);
     const popUp = fixture.componentInstance;
     const popUpDOM = fixture.nativeElement;
-    popUp.toEdit = 'user';
+    popUp.toEdit = "user";
     popUp.editedItem = {
       id: 4,
-      displayName: 'name',
+      displayName: "name",
       receivedHugs: 2,
       givenHugs: 2,
       postsNum: 2,
       loginCount: 3,
-      role: 'admin',
+      role: "admin",
     };
-    const newName = 'new name';
+    const newName = "new name";
     fixture.detectChanges();
 
-    const validateSpy = spyOn(popUp['validationService'], 'validateItem').and.returnValue(true);
-    const updateSpy = spyOn(popUp.authService, 'updateUserData');
-    const emitSpy = spyOn(popUp.editMode, 'emit');
+    const validateSpy = spyOn(popUp["validationService"], "validateItem").and.returnValue(true);
+    const updateSpy = spyOn(popUp.authService, "updateUserData");
+    const emitSpy = spyOn(popUp.editMode, "emit");
 
-    popUpDOM.querySelector('#displayName').value = newName;
-    popUpDOM.querySelectorAll('.updateItem')[0].click();
+    popUpDOM.querySelector("#displayName").value = newName;
+    popUpDOM.querySelectorAll(".updateItem")[0].click();
     fixture.detectChanges();
 
-    expect(validateSpy).toHaveBeenCalledWith('displayName', newName, 'displayName');
+    expect(validateSpy).toHaveBeenCalledWith("displayName", newName, "displayName");
     expect(popUp.authService.userData.displayName).toEqual(newName);
     expect(updateSpy).toHaveBeenCalled();
     expect(emitSpy).toHaveBeenCalledWith(false);
   });
 
-  it('should make the request to adminService to change the name - close report', () => {
+  it("should make the request to adminService to change the name - close report", () => {
     const fixture = TestBed.createComponent(DisplayNameEditForm);
     const popUp = fixture.componentInstance;
     const popUpDOM = fixture.nativeElement;
-    popUp.toEdit = 'other user';
+    popUp.toEdit = "other user";
     popUp.editedItem = {
       id: 4,
-      displayName: 'name',
+      displayName: "name",
       receivedHugs: 2,
       givenHugs: 2,
       postsNum: 2,
       loginCount: 3,
-      role: 'admin',
+      role: "admin",
     };
     popUp.reportData = {
       reportID: 1,
       userID: 4,
     };
-    const newName = 'new name';
+    const newName = "new name";
     fixture.detectChanges();
 
-    const validateSpy = spyOn(popUp['validationService'], 'validateItem').and.returnValue(true);
-    const updateSpy = spyOn(popUp['adminService'], 'editUser');
-    const emitSpy = spyOn(popUp.editMode, 'emit');
+    const validateSpy = spyOn(popUp["validationService"], "validateItem").and.returnValue(true);
+    const updateSpy = spyOn(popUp["adminService"], "editUser");
+    const emitSpy = spyOn(popUp.editMode, "emit");
 
-    popUpDOM.querySelector('#displayName').value = newName;
-    popUpDOM.querySelectorAll('.updateItem')[0].click();
+    popUpDOM.querySelector("#displayName").value = newName;
+    popUpDOM.querySelectorAll(".updateItem")[0].click();
     fixture.detectChanges();
 
-    expect(validateSpy).toHaveBeenCalledWith('displayName', newName, 'displayName');
-    expect(updateSpy).toHaveBeenCalledWith({
-      userID: 4,
-      displayName: newName,
-    }, true, 1);
+    expect(validateSpy).toHaveBeenCalledWith("displayName", newName, "displayName");
+    expect(updateSpy).toHaveBeenCalledWith(
+      {
+        userID: 4,
+        displayName: newName,
+      },
+      true,
+      1,
+    );
     expect(emitSpy).toHaveBeenCalledWith(false);
   });
 
-  it('should make the request to adminService to change the name - don\'t close report', () => {
+  it("should make the request to adminService to change the name - don't close report", () => {
     const fixture = TestBed.createComponent(DisplayNameEditForm);
     const popUp = fixture.componentInstance;
     const popUpDOM = fixture.nativeElement;
-    popUp.toEdit = 'other user';
+    popUp.toEdit = "other user";
     popUp.editedItem = {
       id: 4,
-      displayName: 'name',
+      displayName: "name",
       receivedHugs: 2,
       givenHugs: 2,
       postsNum: 2,
       loginCount: 3,
-      role: 'admin',
+      role: "admin",
     };
     popUp.reportData = {
       reportID: 1,
       userID: 4,
     };
-    const newName = 'new name';
+    const newName = "new name";
     fixture.detectChanges();
 
-    const validateSpy = spyOn(popUp['validationService'], 'validateItem').and.returnValue(true);
-    const updateSpy = spyOn(popUp['adminService'], 'editUser');
-    const emitSpy = spyOn(popUp.editMode, 'emit');
+    const validateSpy = spyOn(popUp["validationService"], "validateItem").and.returnValue(true);
+    const updateSpy = spyOn(popUp["adminService"], "editUser");
+    const emitSpy = spyOn(popUp.editMode, "emit");
 
-    popUpDOM.querySelector('#displayName').value = newName;
-    popUpDOM.querySelectorAll('.updateItem')[1].click();
+    popUpDOM.querySelector("#displayName").value = newName;
+    popUpDOM.querySelectorAll(".updateItem")[1].click();
     fixture.detectChanges();
 
-    expect(validateSpy).toHaveBeenCalledWith('displayName', newName, 'displayName');
-    expect(updateSpy).toHaveBeenCalledWith({
-      userID: 4,
-      displayName: newName,
-    }, false, 1);
+    expect(validateSpy).toHaveBeenCalledWith("displayName", newName, "displayName");
+    expect(updateSpy).toHaveBeenCalledWith(
+      {
+        userID: 4,
+        displayName: newName,
+      },
+      false,
+      1,
+    );
     expect(emitSpy).toHaveBeenCalledWith(false);
   });
 });

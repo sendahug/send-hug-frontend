@@ -31,44 +31,38 @@
 */
 
 import { TestBed } from "@angular/core/testing";
-import {
-  HttpClientTestingModule,
-  HttpTestingController
-} from '@angular/common/http/testing';
+import { HttpClientTestingModule, HttpTestingController } from "@angular/common/http/testing";
 import {
   BrowserDynamicTestingModule,
-  platformBrowserDynamicTesting
+  platformBrowserDynamicTesting,
 } from "@angular/platform-browser-dynamic/testing";
-import {} from 'jasmine';
+import {} from "jasmine";
 
-import { PostsService } from './posts.service';
-import { AuthService } from './auth.service';
-import { MockAuthService } from './auth.service.mock';
-import { AlertsService } from './alerts.service';
-import { MockAlertsService } from './alerts.service.mock';
-import { SWManager } from './sWManager.service';
-import { MockSWManager } from './sWManager.service.mock';
+import { PostsService } from "./posts.service";
+import { AuthService } from "./auth.service";
+import { MockAuthService } from "./auth.service.mock";
+import { AlertsService } from "./alerts.service";
+import { MockAlertsService } from "./alerts.service.mock";
+import { SWManager } from "./sWManager.service";
+import { MockSWManager } from "./sWManager.service.mock";
 
-describe('PostsService', () => {
+describe("PostsService", () => {
   let httpController: HttpTestingController;
   let postsService: PostsService;
 
   // Before each test, configure testing environment
   beforeEach(() => {
     TestBed.resetTestEnvironment();
-    TestBed.initTestEnvironment(BrowserDynamicTestingModule,
-        platformBrowserDynamicTesting());
+    TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
-      imports: [
-        HttpClientTestingModule
-      ],
+      imports: [HttpClientTestingModule],
       providers: [
         PostsService,
         { provide: AuthService, useClass: MockAuthService },
         { provide: AlertsService, useClass: MockAlertsService },
-        { provide: SWManager, useClass: MockSWManager }
-      ]
+        { provide: SWManager, useClass: MockSWManager },
+      ],
     }).compileComponents();
 
     postsService = TestBed.inject(PostsService);
@@ -76,64 +70,64 @@ describe('PostsService', () => {
   });
 
   // Check the service is created
-  it('should be created', () => {
+  it("should be created", () => {
     expect(postsService).toBeTruthy();
   });
 
   // Check the service gets the main page items
-  it('getItems() - should get items', () => {
+  it("getItems() - should get items", () => {
     // mock response
     const mockResponse = {
       success: true,
       recent: [
         {
-          'date': new Date('2020-06-27 19:17:31.072'),
-          'givenHugs': 0,
-          'id': 1,
-          'text': 'test',
-          'userId': 1,
-          'user': 'test',
-          'sentHugs': []
+          date: new Date("2020-06-27 19:17:31.072"),
+          givenHugs: 0,
+          id: 1,
+          text: "test",
+          userId: 1,
+          user: "test",
+          sentHugs: [],
         },
         {
-          'date': new Date('2020-06-28 19:17:31.072'),
-          'givenHugs': 0,
-          'id':2,
-          'text': 'test2',
-          'userId': 1,
-          'user': 'test',
-          'sentHugs': []
-        }
+          date: new Date("2020-06-28 19:17:31.072"),
+          givenHugs: 0,
+          id: 2,
+          text: "test2",
+          userId: 1,
+          user: "test",
+          sentHugs: [],
+        },
       ],
       suggested: [
         {
-          'date': new Date('2020-06-28 19:17:31.072'),
-          'givenHugs': 0,
-          'id': 2,
-          'text': 'test2',
-          'userId': 1,
-          'user': 'test',
-          'sentHugs': []
+          date: new Date("2020-06-28 19:17:31.072"),
+          givenHugs: 0,
+          id: 2,
+          text: "test2",
+          userId: 1,
+          user: "test",
+          sentHugs: [],
         },
         {
-          'date': new Date('2020-06-27 19:17:31.072'),
-          'givenHugs': 0,
-          'id': 1,
-          'text': 'test',
-          'userId': 1,
-          'user': 'test',
-          'sentHugs': []
-        }
-      ]
+          date: new Date("2020-06-27 19:17:31.072"),
+          givenHugs: 0,
+          id: 1,
+          text: "test",
+          userId: 1,
+          user: "test",
+          sentHugs: [],
+        },
+      ],
     };
 
-    const querySpy = spyOn(postsService['serviceWorkerM'], 'queryPosts');
-    const addSpy = spyOn(postsService['serviceWorkerM'], 'addItem');
-    const cleanSpy = spyOn(postsService['serviceWorkerM'], 'cleanDB');
+    const querySpy = spyOn(postsService["serviceWorkerM"], "queryPosts");
+    const addSpy = spyOn(postsService["serviceWorkerM"], "addItem");
+    const cleanSpy = spyOn(postsService["serviceWorkerM"], "cleanDB");
     postsService.getItems();
     // wait for the fetch to be resolved
     postsService.isMainPageResolved.subscribe((value) => {
-      if(value) {
+      if (value) {
         expect(postsService.newItemsArray.length).toBe(2);
         expect(postsService.newItemsArray[0].id).toBe(1);
         expect(postsService.sugItemsArray.length).toBe(2);
@@ -141,8 +135,8 @@ describe('PostsService', () => {
       }
     });
 
-    const req = httpController.expectOne('http://localhost:5000');
-    expect(req.request.method).toEqual('GET');
+    const req = httpController.expectOne("http://localhost:5000");
+    expect(req.request.method).toEqual("GET");
     req.flush(mockResponse);
 
     expect(querySpy).toHaveBeenCalled();
@@ -150,45 +144,45 @@ describe('PostsService', () => {
     expect(addSpy).toHaveBeenCalled();
     expect(addSpy).toHaveBeenCalledTimes(4);
     expect(cleanSpy).toHaveBeenCalled();
-    expect(cleanSpy).toHaveBeenCalledWith('posts');
+    expect(cleanSpy).toHaveBeenCalledWith("posts");
   });
 
   // Check the service gets the full new items
-  it('getNewItems() - should get new items', () => {
+  it("getNewItems() - should get new items", () => {
     // mock page 1 response
     const mockP1Response = {
       success: true,
       total_pages: 2,
       posts: [
         {
-          'date': new Date('2020-06-27 19:17:31.072'),
-          'givenHugs': 0,
-          'id': 1,
-          'text': 'test',
-          'userId': 1,
-          'user': 'test',
-          'sentHugs': []
+          date: new Date("2020-06-27 19:17:31.072"),
+          givenHugs: 0,
+          id: 1,
+          text: "test",
+          userId: 1,
+          user: "test",
+          sentHugs: [],
         },
         {
-          'date': new Date('2020-06-28 19:17:31.072'),
-          'givenHugs': 0,
-          'id':2,
-          'text': 'test2',
-          'userId': 1,
-          'user': 'test',
-          'sentHugs': []
-        }
-      ]
+          date: new Date("2020-06-28 19:17:31.072"),
+          givenHugs: 0,
+          id: 2,
+          text: "test2",
+          userId: 1,
+          user: "test",
+          sentHugs: [],
+        },
+      ],
     };
 
-    const querySpy = spyOn(postsService['serviceWorkerM'], 'queryPosts');
-    const addSpy = spyOn(postsService['serviceWorkerM'], 'addItem');
-    const cleanSpy = spyOn(postsService['serviceWorkerM'], 'cleanDB');
+    const querySpy = spyOn(postsService["serviceWorkerM"], "queryPosts");
+    const addSpy = spyOn(postsService["serviceWorkerM"], "addItem");
+    const cleanSpy = spyOn(postsService["serviceWorkerM"], "cleanDB");
     // fetch page 1
     postsService.getNewItems(1);
     // wait for the fetch to be resolved
     postsService.isPostsResolved.fullNewItems.subscribe((value) => {
-      if(value) {
+      if (value) {
         expect(postsService.fullItemsPage.fullNewItems).toBe(1);
         expect(postsService.totalFullItemsPage.fullNewItems).toBe(2);
         expect(postsService.fullItemsList.fullNewItems.length).toBe(2);
@@ -196,45 +190,45 @@ describe('PostsService', () => {
       }
     });
 
-    const p1Req = httpController.expectOne('http://localhost:5000/posts/new?page=1');
-    expect(p1Req.request.method).toEqual('GET');
+    const p1Req = httpController.expectOne("http://localhost:5000/posts/new?page=1");
+    expect(p1Req.request.method).toEqual("GET");
     p1Req.flush(mockP1Response);
 
     expect(querySpy).toHaveBeenCalled();
-    expect(querySpy).toHaveBeenCalledWith('new posts', undefined, 1);
+    expect(querySpy).toHaveBeenCalledWith("new posts", undefined, 1);
     expect(addSpy).toHaveBeenCalled();
     expect(addSpy).toHaveBeenCalledTimes(2);
     expect(cleanSpy).toHaveBeenCalled();
-    expect(cleanSpy).toHaveBeenCalledWith('posts');
+    expect(cleanSpy).toHaveBeenCalledWith("posts");
   });
 
   // Check the service gets the full new items page 2
-  it('getItems() - should get items page 2', () => {
+  it("getItems() - should get items page 2", () => {
     // mock page 2 response
     const mockP2Response = {
       success: true,
       total_pages: 2,
       posts: [
         {
-          'date': new Date('2020-06-27 19:17:31.072'),
-          'givenHugs': 0,
-          'id': 3,
-          'text': 'test',
-          'userId': 1,
-          'user': 'test',
-          'sentHugs': []
-        }
-      ]
+          date: new Date("2020-06-27 19:17:31.072"),
+          givenHugs: 0,
+          id: 3,
+          text: "test",
+          userId: 1,
+          user: "test",
+          sentHugs: [],
+        },
+      ],
     };
 
-    const querySpy = spyOn(postsService['serviceWorkerM'], 'queryPosts');
-    const addSpy = spyOn(postsService['serviceWorkerM'], 'addItem');
-    const cleanSpy = spyOn(postsService['serviceWorkerM'], 'cleanDB');
+    const querySpy = spyOn(postsService["serviceWorkerM"], "queryPosts");
+    const addSpy = spyOn(postsService["serviceWorkerM"], "addItem");
+    const cleanSpy = spyOn(postsService["serviceWorkerM"], "cleanDB");
     // fetch page 2
     postsService.getNewItems(2);
     // wait for the fetch to be resolved
     postsService.isPostsResolved.fullNewItems.subscribe((value) => {
-      if(value) {
+      if (value) {
         expect(postsService.fullItemsPage.fullNewItems).toBe(2);
         expect(postsService.totalFullItemsPage.fullNewItems).toBe(2);
         expect(postsService.fullItemsList.fullNewItems.length).toBe(1);
@@ -242,54 +236,54 @@ describe('PostsService', () => {
       }
     });
 
-    const p2Req = httpController.expectOne('http://localhost:5000/posts/new?page=2');
-    expect(p2Req.request.method).toEqual('GET');
+    const p2Req = httpController.expectOne("http://localhost:5000/posts/new?page=2");
+    expect(p2Req.request.method).toEqual("GET");
     p2Req.flush(mockP2Response);
 
     expect(querySpy).toHaveBeenCalled();
-    expect(querySpy).toHaveBeenCalledWith('new posts', undefined, 2);
+    expect(querySpy).toHaveBeenCalledWith("new posts", undefined, 2);
     expect(addSpy).toHaveBeenCalled();
     expect(addSpy).toHaveBeenCalledTimes(1);
     expect(cleanSpy).toHaveBeenCalled();
-    expect(cleanSpy).toHaveBeenCalledWith('posts');
+    expect(cleanSpy).toHaveBeenCalledWith("posts");
   });
 
   // Check the service gets the full suggested items
-  it('getSuggestedItems() - should get suggested items', () => {
+  it("getSuggestedItems() - should get suggested items", () => {
     // mock page 1 response
     const mockP1Response = {
       success: true,
       total_pages: 2,
       posts: [
         {
-          'date': new Date('2020-06-27 19:17:31.072'),
-          'givenHugs': 0,
-          'id': 1,
-          'text': 'test',
-          'userId': 1,
-          'user': 'test',
-          'sentHugs': []
+          date: new Date("2020-06-27 19:17:31.072"),
+          givenHugs: 0,
+          id: 1,
+          text: "test",
+          userId: 1,
+          user: "test",
+          sentHugs: [],
         },
         {
-          'date': new Date('2020-06-28 19:17:31.072'),
-          'givenHugs': 0,
-          'id':2,
-          'text': 'test2',
-          'userId': 1,
-          'user': 'test',
-          'sentHugs': []
-        }
-      ]
+          date: new Date("2020-06-28 19:17:31.072"),
+          givenHugs: 0,
+          id: 2,
+          text: "test2",
+          userId: 1,
+          user: "test",
+          sentHugs: [],
+        },
+      ],
     };
 
-    const querySpy = spyOn(postsService['serviceWorkerM'], 'queryPosts');
-    const addSpy = spyOn(postsService['serviceWorkerM'], 'addItem');
-    const cleanSpy = spyOn(postsService['serviceWorkerM'], 'cleanDB');
+    const querySpy = spyOn(postsService["serviceWorkerM"], "queryPosts");
+    const addSpy = spyOn(postsService["serviceWorkerM"], "addItem");
+    const cleanSpy = spyOn(postsService["serviceWorkerM"], "cleanDB");
     // fetch page 1
     postsService.getSuggestedItems(1);
     // wait for the fetch to be resolved
     postsService.isPostsResolved.fullSuggestedItems.subscribe((value) => {
-      if(value) {
+      if (value) {
         expect(postsService.fullItemsPage.fullSuggestedItems).toBe(1);
         expect(postsService.totalFullItemsPage.fullSuggestedItems).toBe(2);
         expect(postsService.fullItemsList.fullSuggestedItems.length).toBe(2);
@@ -297,45 +291,45 @@ describe('PostsService', () => {
       }
     });
 
-    const p1Req = httpController.expectOne('http://localhost:5000/posts/suggested?page=1');
-    expect(p1Req.request.method).toEqual('GET');
+    const p1Req = httpController.expectOne("http://localhost:5000/posts/suggested?page=1");
+    expect(p1Req.request.method).toEqual("GET");
     p1Req.flush(mockP1Response);
 
     expect(querySpy).toHaveBeenCalled();
-    expect(querySpy).toHaveBeenCalledWith('suggested posts', undefined, 1);
+    expect(querySpy).toHaveBeenCalledWith("suggested posts", undefined, 1);
     expect(addSpy).toHaveBeenCalled();
     expect(addSpy).toHaveBeenCalledTimes(2);
     expect(cleanSpy).toHaveBeenCalled();
-    expect(cleanSpy).toHaveBeenCalledWith('posts');
+    expect(cleanSpy).toHaveBeenCalledWith("posts");
   });
 
   // Check the service gets the full suggested items page 2
-  it('getSuggestedItems() - should get suggested items page 2', () => {
+  it("getSuggestedItems() - should get suggested items page 2", () => {
     // mock page 2 response
     const mockP2Response = {
       success: true,
       total_pages: 2,
       posts: [
         {
-          'date': new Date('2020-06-27 19:17:31.072'),
-          'givenHugs': 0,
-          'id': 3,
-          'text': 'test',
-          'userId': 1,
-          'user': 'test',
-          'sentHugs': []
-        }
-      ]
+          date: new Date("2020-06-27 19:17:31.072"),
+          givenHugs: 0,
+          id: 3,
+          text: "test",
+          userId: 1,
+          user: "test",
+          sentHugs: [],
+        },
+      ],
     };
 
-    const querySpy = spyOn(postsService['serviceWorkerM'], 'queryPosts');
-    const addSpy = spyOn(postsService['serviceWorkerM'], 'addItem');
-    const cleanSpy = spyOn(postsService['serviceWorkerM'], 'cleanDB');
+    const querySpy = spyOn(postsService["serviceWorkerM"], "queryPosts");
+    const addSpy = spyOn(postsService["serviceWorkerM"], "addItem");
+    const cleanSpy = spyOn(postsService["serviceWorkerM"], "cleanDB");
     // fetch page 2
     postsService.getSuggestedItems(2);
     // wait for the fetch to be resolved
     postsService.isPostsResolved.fullSuggestedItems.subscribe((value) => {
-      if(value) {
+      if (value) {
         expect(postsService.fullItemsPage.fullSuggestedItems).toBe(2);
         expect(postsService.totalFullItemsPage.fullSuggestedItems).toBe(2);
         expect(postsService.fullItemsList.fullSuggestedItems.length).toBe(1);
@@ -343,20 +337,20 @@ describe('PostsService', () => {
       }
     });
 
-    const p2Req = httpController.expectOne('http://localhost:5000/posts/suggested?page=2');
-    expect(p2Req.request.method).toEqual('GET');
+    const p2Req = httpController.expectOne("http://localhost:5000/posts/suggested?page=2");
+    expect(p2Req.request.method).toEqual("GET");
     p2Req.flush(mockP2Response);
 
     expect(querySpy).toHaveBeenCalled();
-    expect(querySpy).toHaveBeenCalledWith('suggested posts', undefined, 2);
+    expect(querySpy).toHaveBeenCalledWith("suggested posts", undefined, 2);
     expect(addSpy).toHaveBeenCalled();
     expect(addSpy).toHaveBeenCalledTimes(1);
     expect(cleanSpy).toHaveBeenCalled();
-    expect(cleanSpy).toHaveBeenCalledWith('posts');
+    expect(cleanSpy).toHaveBeenCalledWith("posts");
   });
 
   // Check the service creates a new post
-  it('sendPost() - should send a post', () => {
+  it("sendPost() - should send a post", () => {
     // mock response
     const mockResponse = {
       posts: {
@@ -365,101 +359,114 @@ describe('PostsService', () => {
         id: 10,
         text: "test curl",
         userId: 4,
-        user: 'user',
-        sendHugs: []
+        user: "user",
+        sendHugs: [],
       },
-      success: true
+      success: true,
     };
 
     const newPost = {
       userId: 4,
-      user: 'name',
-      text: 'text',
+      user: "name",
+      text: "text",
       date: new Date(),
-      givenHugs: 0
+      givenHugs: 0,
     };
-    const spy = spyOn(postsService['alertsService'], 'createSuccessAlert');
-    const addSpy = spyOn(postsService['serviceWorkerM'], 'addItem');
-    postsService['authService'].login();
+    const spy = spyOn(postsService["alertsService"], "createSuccessAlert");
+    const addSpy = spyOn(postsService["serviceWorkerM"], "addItem");
+    postsService["authService"].login();
     postsService.sendPost(newPost);
 
-    const req = httpController.expectOne('http://localhost:5000/posts');
-    expect(req.request.method).toEqual('POST');
+    const req = httpController.expectOne("http://localhost:5000/posts");
+    expect(req.request.method).toEqual("POST");
     req.flush(mockResponse);
 
     expect(spy).toHaveBeenCalled();
-    expect(spy).toHaveBeenCalledWith('Your post was published! Return to home page to view the post.', false, '/');
+    expect(spy).toHaveBeenCalledWith(
+      "Your post was published! Return to home page to view the post.",
+      false,
+      "/",
+    );
     expect(addSpy).toHaveBeenCalled();
   });
 
   // Check the service prevents blocked users from sending posts
-  it('sendPost() - should prevent blocked users from sending posts', () => {
+  it("sendPost() - should prevent blocked users from sending posts", () => {
     const newPost = {
       userId: 4,
-      user: 'name',
-      text: 'text',
+      user: "name",
+      text: "text",
       date: new Date(),
-      givenHugs: 0
+      givenHugs: 0,
     };
-    const spy = spyOn(postsService['alertsService'], 'createAlert');
-    const addSpy = spyOn(postsService['serviceWorkerM'], 'addItem');
-    postsService['authService'].login();
-    postsService['authService'].userData.blocked = true;
-    postsService['authService'].userData.releaseDate = new Date((new Date()).getTime() + 864E5 * 1);
+    const spy = spyOn(postsService["alertsService"], "createAlert");
+    const addSpy = spyOn(postsService["serviceWorkerM"], "addItem");
+    postsService["authService"].login();
+    postsService["authService"].userData.blocked = true;
+    postsService["authService"].userData.releaseDate = new Date(new Date().getTime() + 864e5 * 1);
     postsService.sendPost(newPost);
 
     expect(spy).toHaveBeenCalled();
-    expect(spy).toHaveBeenCalledWith({ type: 'Error', message: `You cannot post new posts while you're blocked. You're blocked until ${postsService['authService'].userData.releaseDate}.` });
+    expect(spy).toHaveBeenCalledWith({
+      type: "Error",
+      message: `You cannot post new posts while you're blocked. You're blocked until ${postsService["authService"].userData.releaseDate}.`,
+    });
     expect(addSpy).not.toHaveBeenCalled();
   });
 
   // Check the service deletes a post
-  it('deletePost() - should delete a post', () => {
+  it("deletePost() - should delete a post", () => {
     // mock response
     const mockResponse = {
       success: true,
-      deleted: 8
+      deleted: 8,
     };
 
-    const spy = spyOn(postsService['alertsService'], 'createSuccessAlert');
-    const deleteSpy = spyOn(postsService['serviceWorkerM'], 'deleteItem');
+    const spy = spyOn(postsService["alertsService"], "createSuccessAlert");
+    const deleteSpy = spyOn(postsService["serviceWorkerM"], "deleteItem");
     postsService.deletePost(8);
 
-    const req = httpController.expectOne('http://localhost:5000/posts/8');
-    expect(req.request.method).toEqual('DELETE');
+    const req = httpController.expectOne("http://localhost:5000/posts/8");
+    expect(req.request.method).toEqual("DELETE");
     req.flush(mockResponse);
 
     expect(spy).toHaveBeenCalled();
-    expect(spy).toHaveBeenCalledWith(`Post ${mockResponse.deleted} was deleted. Refresh to view the updated post list.`, true);
+    expect(spy).toHaveBeenCalledWith(
+      `Post ${mockResponse.deleted} was deleted. Refresh to view the updated post list.`,
+      true,
+    );
     expect(deleteSpy).toHaveBeenCalled();
-    expect(deleteSpy).toHaveBeenCalledWith('posts', 8);
+    expect(deleteSpy).toHaveBeenCalledWith("posts", 8);
   });
 
   // Check the service deletes all of a user's posts
-  it('deleteAllPosts() - should delete all of a user\'s posts', () => {
+  it("deleteAllPosts() - should delete all of a user's posts", () => {
     // mock response
     const mockResponse = {
       deleted: 2,
       success: true,
-      userID: 4
+      userID: 4,
     };
 
-    const spy = spyOn(postsService['alertsService'], 'createSuccessAlert');
-    const deleteSpy = spyOn(postsService['serviceWorkerM'], 'deleteItems');
+    const spy = spyOn(postsService["alertsService"], "createSuccessAlert");
+    const deleteSpy = spyOn(postsService["serviceWorkerM"], "deleteItems");
     postsService.deleteAllPosts(4);
 
-    const req = httpController.expectOne('http://localhost:5000/users/all/4/posts');
-    expect(req.request.method).toEqual('DELETE');
+    const req = httpController.expectOne("http://localhost:5000/users/all/4/posts");
+    expect(req.request.method).toEqual("DELETE");
     req.flush(mockResponse);
 
     expect(spy).toHaveBeenCalled();
-    expect(spy).toHaveBeenCalledWith(`User ${mockResponse.userID}'s posts were deleted successfully. Refresh to view the updated profile.`, true);
+    expect(spy).toHaveBeenCalledWith(
+      `User ${mockResponse.userID}'s posts were deleted successfully. Refresh to view the updated profile.`,
+      true,
+    );
     expect(deleteSpy).toHaveBeenCalled();
-    expect(deleteSpy).toHaveBeenCalledWith('posts', 'userId', 4);
+    expect(deleteSpy).toHaveBeenCalledWith("posts", "userId", 4);
   });
 
   // Check the service edits a post
-  it('editPost() - should edit a post', () => {
+  it("editPost() - should edit a post", () => {
     // mock response
     const mockResponse = {
       success: true,
@@ -469,8 +476,8 @@ describe('PostsService', () => {
         id: 15,
         text: "test curl",
         userId: 4,
-        user: 'name'
-      }
+        user: "name",
+      },
     };
 
     const newPost = {
@@ -479,25 +486,28 @@ describe('PostsService', () => {
       id: 15,
       text: "test curl",
       userId: 4,
-      user: 'name'
+      user: "name",
     };
-    const spy = spyOn(postsService['alertsService'], 'createSuccessAlert');
+    const spy = spyOn(postsService["alertsService"], "createSuccessAlert");
     postsService.editPost(newPost);
     // wait for the edit to be resolved
     postsService.isUpdated.subscribe((value) => {
-      if(value) {
+      if (value) {
         expect(spy).toHaveBeenCalled();
-        expect(spy).toHaveBeenCalledWith('Your post was edited. Refresh to view the updated post.', true);
+        expect(spy).toHaveBeenCalledWith(
+          "Your post was edited. Refresh to view the updated post.",
+          true,
+        );
       }
     });
 
-    const req = httpController.expectOne('http://localhost:5000/posts/15');
-    expect(req.request.method).toEqual('PATCH');
+    const req = httpController.expectOne("http://localhost:5000/posts/15");
+    expect(req.request.method).toEqual("PATCH");
     req.flush(mockResponse);
   });
 
   // Check the service sends a hug
-  it('sendHug() - should send a hug', () => {
+  it("sendHug() - should send a hug", () => {
     // mock response
     const mockResponse = {
       success: true,
@@ -507,8 +517,8 @@ describe('PostsService', () => {
         id: 15,
         text: "test curl",
         userId: 4,
-        user: 'name'
-      }
+        user: "name",
+      },
     };
 
     const newPost = {
@@ -517,18 +527,18 @@ describe('PostsService', () => {
       id: 15,
       text: "test curl",
       userId: 4,
-      user: 'name'
+      user: "name",
     };
-    const alertSpy = spyOn(postsService['alertsService'], 'createSuccessAlert');
-    const disableSpy = spyOn(postsService, 'disableHugButton');
+    const alertSpy = spyOn(postsService["alertsService"], "createSuccessAlert");
+    const disableSpy = spyOn(postsService, "disableHugButton");
     postsService.sendHug(newPost);
 
-    const req = httpController.expectOne('http://localhost:5000/posts/15/hugs');
-    expect(req.request.method).toEqual('POST');
+    const req = httpController.expectOne("http://localhost:5000/posts/15/hugs");
+    expect(req.request.method).toEqual("POST");
     req.flush(mockResponse);
 
     expect(alertSpy).toHaveBeenCalled();
-    expect(alertSpy).toHaveBeenCalledWith('Your hug was sent!', false);
+    expect(alertSpy).toHaveBeenCalledWith("Your hug was sent!", false);
     expect(disableSpy).toHaveBeenCalled();
     expect(disableSpy).toHaveBeenCalledTimes(4);
   });

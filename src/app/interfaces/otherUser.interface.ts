@@ -40,11 +40,11 @@ export interface OtherUser {
   role: string;
   blocked?: boolean;
   releaseDate?: Date;
-  selectedIcon: 'bear' | 'kitty' | 'dog';
+  selectedIcon: "bear" | "kitty" | "dog";
   iconColours: {
-    character: String,
-    lbg: String,
-    rbg: String,
-    item: String
-  }
+    character: String;
+    lbg: String;
+    rbg: String;
+    item: String;
+  };
 }

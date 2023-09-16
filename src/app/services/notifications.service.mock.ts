@@ -31,52 +31,51 @@
 */
 
 // Angular imports
-import { Injectable } from '@angular/core';
-import { HttpErrorResponse } from '@angular/common/http';
-import { interval, Subscription, Observable } from 'rxjs';
+import { Injectable } from "@angular/core";
+import { HttpErrorResponse } from "@angular/common/http";
+import { interval, Subscription, Observable } from "rxjs";
 
 // App-related imports
-import { MockAuthService } from './auth.service.mock';
-import { MockAlertsService } from './alerts.service.mock';
+import { MockAuthService } from "./auth.service.mock";
+import { MockAlertsService } from "./alerts.service.mock";
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root",
 })
 export class MockNotificationService {
   // notifications data
   notifications = [];
   // push notifications variables
-  toggleBtn!: 'Enable' | 'Disable';
+  toggleBtn!: "Enable" | "Disable";
   notificationsSub: PushSubscription | undefined;
   newNotifications = 0;
-  pushStatus!:Boolean;
+  pushStatus!: Boolean;
   // notifications refresh variables
-  refreshBtn!: 'Enable' | 'Disable';
-  refreshStatus!:Boolean;
+  refreshBtn!: "Enable" | "Disable";
+  refreshStatus!: Boolean;
   refreshRateSecs = 20;
   refreshCounter: Observable<number> | undefined;
   refreshSub: Subscription | undefined;
 
   // CTOR
   constructor(
-    private authService:MockAuthService,
-    private alertsService:MockAlertsService
+    private authService: MockAuthService,
+    private alertsService: MockAlertsService,
   ) {
     // if the user is logged in, and their data is fetched, set the appropriate variables
     this.authService.isUserDataResolved.subscribe((value) => {
-      if(value) {
+      if (value) {
         this.pushStatus = this.authService.userData.pushEnabled;
         this.refreshStatus = this.authService.userData.autoRefresh;
         this.refreshRateSecs = this.authService.userData.refreshRate;
-      }
-      else {
+      } else {
         this.pushStatus = false;
         this.refreshStatus = false;
       }
 
-      this.toggleBtn = this.pushStatus ? 'Disable': 'Enable';
-      this.refreshBtn = this.refreshStatus ? 'Disable' : 'Enable';
-    })
+      this.toggleBtn = this.pushStatus ? "Disable" : "Enable";
+      this.refreshBtn = this.refreshStatus ? "Disable" : "Enable";
+    });
   }
 
   // NOTIFICATIONS METHODS
@@ -93,16 +92,16 @@ export class MockNotificationService {
     // wait until the user is authenticated
     let userSub = this.authService.isUserDataResolved.subscribe((value) => {
       // once they are, start the refresh counter
-      if(value && this.refreshStatus) {
-        this.refreshBtn = 'Disable';
+      if (value && this.refreshStatus) {
+        this.refreshBtn = "Disable";
         this.autoRefresh();
 
         // unsubscribe from the user data observable as it's no longer needed
-        if(userSub) {
+        if (userSub) {
           userSub.unsubscribe();
         }
       }
-    })
+    });
   }
 
   /*
@@ -115,17 +114,17 @@ export class MockNotificationService {
   */
   autoRefresh() {
     // if the refresh counter is undefined, start an interval
-    if(!this.refreshCounter) {
+    if (!this.refreshCounter) {
       this.refreshCounter = interval(this.refreshRateSecs * 1000);
       // every ten seconds, when the counter is done, silently refres
       // the user's notifications
       this.refreshSub = this.refreshCounter.subscribe((_value) => {
         this.getNotifications(true);
-      })
+      });
     }
     // otherwise there's already a running counter, so leave it as is
     else {
-      return
+      return;
     }
   }
 
@@ -137,10 +136,10 @@ export class MockNotificationService {
   Programmer: Shir Bar Lev.
   */
   stopAutoRefresh() {
-    if(this.refreshSub) {
+    if (this.refreshSub) {
       this.refreshSub.unsubscribe();
       this.refreshCounter = undefined;
-      this.refreshBtn = 'Enable';
+      this.refreshBtn = "Enable";
     }
   }
 
@@ -151,14 +150,14 @@ export class MockNotificationService {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  getNotifications(silentRefresh?:boolean) {
+  getNotifications(silentRefresh?: boolean) {
     const silent = silentRefresh ? silentRefresh : false;
 
     this.notifications = [];
 
     // if it's a silent refresh, check how many new notifications the user has
-    if(silent) {
-      this.newNotifications = (this.notifications.length);
+    if (silent) {
+      this.newNotifications = this.notifications.length;
     }
   }
 
@@ -170,9 +169,9 @@ export class MockNotificationService {
   Programmer: Shir Bar Lev.
   */
   subscribeToStream() {
-    this.toggleBtn = 'Disable';
+    this.toggleBtn = "Disable";
     this.setSubscription();
-    this.alertsService.createSuccessAlert('Subscribed to push notifications successfully!');
+    this.alertsService.createSuccessAlert("Subscribed to push notifications successfully!");
   }
 
   /*
@@ -183,9 +182,9 @@ export class MockNotificationService {
   Programmer: Shir Bar Lev.
   */
   unsubscribeFromStream() {
-    if(this.notificationsSub) {
+    if (this.notificationsSub) {
       this.notificationsSub.unsubscribe();
-      this.toggleBtn = 'Enable';
+      this.toggleBtn = "Enable";
     }
   }
 
@@ -197,7 +196,7 @@ export class MockNotificationService {
   Programmer: Shir Bar Lev.
   */
   setSubscription() {
-    return 'set';
+    return "set";
   }
 
   /*
@@ -208,7 +207,7 @@ export class MockNotificationService {
   Programmer: Shir Bar Lev.
   */
   getSubscription() {
-    return '';
+    return "";
   }
 
   /*
@@ -219,6 +218,6 @@ export class MockNotificationService {
   Programmer: Shir Bar Lev.
   */
   updateUserSettings() {
-    this.alertsService.createSuccessAlert('Settings updated successfully!');
+    this.alertsService.createSuccessAlert("Settings updated successfully!");
   }
 }

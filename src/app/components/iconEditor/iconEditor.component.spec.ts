@@ -31,42 +31,39 @@
 */
 
 import { TestBed } from "@angular/core/testing";
-import { RouterTestingModule } from '@angular/router/testing';
-import {} from 'jasmine';
-import { APP_BASE_HREF } from '@angular/common';
+import { RouterTestingModule } from "@angular/router/testing";
+import {} from "jasmine";
+import { APP_BASE_HREF } from "@angular/common";
 import {
   BrowserDynamicTestingModule,
-  platformBrowserDynamicTesting
+  platformBrowserDynamicTesting,
 } from "@angular/platform-browser-dynamic/testing";
 import { HttpClientModule } from "@angular/common/http";
 import { ServiceWorkerModule } from "@angular/service-worker";
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 
 import { IconEditor } from "./iconEditor.component";
-import { AuthService } from '../../services/auth.service';
-import { MockAuthService } from '../../services/auth.service.mock';
+import { AuthService } from "../../services/auth.service";
+import { MockAuthService } from "../../services/auth.service.mock";
 
-describe('SitePolicies', () => {
+describe("SitePolicies", () => {
   // Before each test, configure testing environment
   beforeEach(() => {
     TestBed.resetTestEnvironment();
-    TestBed.initTestEnvironment(BrowserDynamicTestingModule,
-        platformBrowserDynamicTesting());
+    TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
       imports: [
         RouterTestingModule,
         HttpClientModule,
-        ServiceWorkerModule.register('sw.js', { enabled: false }),
-        FontAwesomeModule
+        ServiceWorkerModule.register("sw.js", { enabled: false }),
+        FontAwesomeModule,
       ],
-      declarations: [
-        IconEditor,
-      ],
+      declarations: [IconEditor],
       providers: [
-        { provide: APP_BASE_HREF, useValue: '/' },
-        { provide: AuthService, useClass: MockAuthService }
-      ]
+        { provide: APP_BASE_HREF, useValue: "/" },
+        { provide: AuthService, useClass: MockAuthService },
+      ],
     }).compileComponents();
 
     // trigger login
@@ -74,45 +71,45 @@ describe('SitePolicies', () => {
   });
 
   // Check the page is created
-  it('should create the component', () => {
+  it("should create the component", () => {
     const fixture = TestBed.createComponent(IconEditor);
     const iconEditor = fixture.componentInstance;
     expect(iconEditor).toBeTruthy();
   });
 
   // Check the variables are set correctly
-  it('should get the icon data from the AuthService', () => {
+  it("should get the icon data from the AuthService", () => {
     const fixture = TestBed.createComponent(IconEditor);
     const iconEditor = fixture.componentInstance;
 
-    expect(iconEditor.selectedIcon).toBe('kitty');
-    expect(iconEditor.iconColours.character).toBe('#BA9F93');
-    expect(iconEditor.iconColours.lbg).toBe('#e2a275');
-    expect(iconEditor.iconColours.rbg).toBe('#f8eee4');
-    expect(iconEditor.iconColours.item).toBe('#f4b56a');
+    expect(iconEditor.selectedIcon).toBe("kitty");
+    expect(iconEditor.iconColours.character).toBe("#BA9F93");
+    expect(iconEditor.iconColours.lbg).toBe("#e2a275");
+    expect(iconEditor.iconColours.rbg).toBe("#f8eee4");
+    expect(iconEditor.iconColours.item).toBe("#f4b56a");
   });
 
   // Check the icon changes when the radio button is clicked
-  it('should change icon when radio buttons are clicked', (done: DoneFn) => {
+  it("should change icon when radio buttons are clicked", (done: DoneFn) => {
     const fixture = TestBed.createComponent(IconEditor);
     const iconEditor = fixture.componentInstance;
     const iconEditorDOM = fixture.nativeElement;
     fixture.detectChanges();
 
     // before changing icon
-    expect(iconEditor.selectedIcon).toBe('kitty');
+    expect(iconEditor.selectedIcon).toBe("kitty");
 
-    iconEditorDOM.querySelector('#cRadioOption1').click();
+    iconEditorDOM.querySelector("#cRadioOption1").click();
     fixture.detectChanges();
 
     // before changing icon
-    expect(iconEditor.selectedIcon).toBe('bear');
+    expect(iconEditor.selectedIcon).toBe("bear");
 
-    iconEditorDOM.querySelector('#cRadioOption3').click();
+    iconEditorDOM.querySelector("#cRadioOption3").click();
     fixture.detectChanges();
 
     // before changing icon
-    expect(iconEditor.selectedIcon).toBe('dog');
+    expect(iconEditor.selectedIcon).toBe("dog");
     done();
   });
 });

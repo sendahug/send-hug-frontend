@@ -32,7 +32,7 @@
 
 export interface Report {
   id?: number;
-  type: 'User' | 'Post';
+  type: "User" | "Post";
   userID: number;
   postID?: number;
   reporter: number;

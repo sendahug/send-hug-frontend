@@ -111,9 +111,9 @@ function scripts()
       .pipe(source("src/main.ts"))
       .pipe(buffer())
       .pipe(sourcemaps.init({loadMaps: true}))
-			.pipe(replace(/(templateUrl: '.)(.*)(.component.html)/g, (match) => {
+			.pipe(replace(/(templateUrl:)(.*)(\.component\.html)/g, (match) => {
 				let componentName = match.substring(15, match.length-15);
-				let newString = `templateUrl: './app/${componentName}.component.html`
+				let newString = `templateUrl: "./app/${componentName}.component.html`
 				return newString;
 			}))
 			.pipe(rename("app.bundle.js"))
@@ -253,11 +253,11 @@ function scriptsDist()
 	return rollupStream(options)
       .pipe(source("src/main.ts"))
       .pipe(buffer())
-			.pipe(replace(/(templateUrl: '.)(.*)(.component.html)/g, (match) => {
-						let componentName = match.substring(15, match.length-15);
-						let newString = `templateUrl: './app/${componentName}.component.html`
-						return newString;
-					}))
+			.pipe(replace(/(templateUrl:)(.*)(\.component\.html)/g, (match) => {
+				let componentName = match.substring(15, match.length-15);
+				let newString = `templateUrl: "./app/${componentName}.component.html`
+				return newString;
+			}))
 			.pipe(terser())
  			.pipe(rename("app.bundle.min.js"))
       .pipe(gulp.dest("./dist"));

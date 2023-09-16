@@ -31,58 +31,52 @@
 */
 
 import { TestBed } from "@angular/core/testing";
-import { RouterTestingModule } from '@angular/router/testing';
-import {} from 'jasmine';
-import { APP_BASE_HREF } from '@angular/common';
+import { RouterTestingModule } from "@angular/router/testing";
+import {} from "jasmine";
+import { APP_BASE_HREF } from "@angular/common";
 import {
   BrowserDynamicTestingModule,
-  platformBrowserDynamicTesting
+  platformBrowserDynamicTesting,
 } from "@angular/platform-browser-dynamic/testing";
 import { HttpClientModule } from "@angular/common/http";
 import { ServiceWorkerModule } from "@angular/service-worker";
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 
-import { AppComponent } from '../../app.component';
-import { SettingsPage } from './settings.component';
-import { IconEditor } from '../iconEditor/iconEditor.component';
-import { NotificationService } from '../../services/notifications.service';
-import { MockNotificationService } from '../../services/notifications.service.mock';
-import { AuthService } from '../../services/auth.service';
-import { MockAuthService } from '../../services/auth.service.mock';
-import { NotificationsTab } from '../notifications/notifications.component';
+import { AppComponent } from "../../app.component";
+import { SettingsPage } from "./settings.component";
+import { IconEditor } from "../iconEditor/iconEditor.component";
+import { NotificationService } from "../../services/notifications.service";
+import { MockNotificationService } from "../../services/notifications.service.mock";
+import { AuthService } from "../../services/auth.service";
+import { MockAuthService } from "../../services/auth.service.mock";
+import { NotificationsTab } from "../notifications/notifications.component";
 
-describe('SettingsPage', () => {
+describe("SettingsPage", () => {
   // Before each test, configure testing environment
   beforeEach(() => {
     TestBed.resetTestEnvironment();
-    TestBed.initTestEnvironment(BrowserDynamicTestingModule,
-        platformBrowserDynamicTesting());
+    TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
       imports: [
         RouterTestingModule,
         HttpClientModule,
-        ServiceWorkerModule.register('sw.js', { enabled: false }),
-        FontAwesomeModule
+        ServiceWorkerModule.register("sw.js", { enabled: false }),
+        FontAwesomeModule,
       ],
-      declarations: [
-        AppComponent,
-        SettingsPage,
-        NotificationsTab,
-        IconEditor
-      ],
+      declarations: [AppComponent, SettingsPage, NotificationsTab, IconEditor],
       providers: [
-        { provide: APP_BASE_HREF, useValue: '/' },
+        { provide: APP_BASE_HREF, useValue: "/" },
         { provide: AuthService, useClass: MockAuthService },
-        { provide: NotificationService, useClass: MockNotificationService }
-      ]
+        { provide: NotificationService, useClass: MockNotificationService },
+      ],
     }).compileComponents();
 
     TestBed.inject(MockAuthService);
   });
 
   // Check that the app is created
-  it('should create the app', () => {
+  it("should create the app", () => {
     const acFixture = TestBed.createComponent(AppComponent);
     const appComponent = acFixture.componentInstance;
     const fixture = TestBed.createComponent(SettingsPage);
@@ -92,7 +86,7 @@ describe('SettingsPage', () => {
   });
 
   // Check that the user has to be logged in to interact with the component
-  it('displays an error when not authenticated', (done: DoneFn) => {
+  it("displays an error when not authenticated", (done: DoneFn) => {
     TestBed.createComponent(AppComponent);
     const fixture = TestBed.createComponent(SettingsPage);
     const settingsPage = fixture.componentInstance;
@@ -103,25 +97,27 @@ describe('SettingsPage', () => {
 
     fixture.whenStable().then(() => {
       expect(settingsPage.authService.authenticated).toBeFalse();
-      expect(settingsDOM.querySelectorAll('.errorMessage')[0]).toBeTruthy();
-      expect(settingsDOM.querySelectorAll('.errorMessage')[0].textContent).toBe('You do not have permission to view thie page!');
-      expect(settingsDOM.querySelector('#notificationSettings')).toBeNull();
+      expect(settingsDOM.querySelectorAll(".errorMessage")[0]).toBeTruthy();
+      expect(settingsDOM.querySelectorAll(".errorMessage")[0].textContent).toBe(
+        "You do not have permission to view thie page!",
+      );
+      expect(settingsDOM.querySelector("#notificationSettings")).toBeNull();
     });
     done();
   });
 
   // Check that the button toggles push notifications
-  it('has a button that toggles push notifications', (done: DoneFn) => {
+  it("has a button that toggles push notifications", (done: DoneFn) => {
     // set up the component and its spies
     TestBed.createComponent(AppComponent);
     const fixture = TestBed.createComponent(SettingsPage);
-    const settingsPage  = fixture.componentInstance;
+    const settingsPage = fixture.componentInstance;
     const settingsDOM = fixture.nativeElement;
-    const toggleSpy = spyOn(settingsPage, 'togglePushNotifications').and.callThrough();
+    const toggleSpy = spyOn(settingsPage, "togglePushNotifications").and.callThrough();
     const notificationsService = settingsPage.notificationService;
-    const settingsSpy = spyOn(notificationsService, 'updateUserSettings').and.callThrough();
-    const subscribeSpy = spyOn(notificationsService, 'subscribeToStream').and.callThrough();
-    const unsubscribeSpy = spyOn(notificationsService, 'unsubscribeFromStream').and.callThrough();
+    const settingsSpy = spyOn(notificationsService, "updateUserSettings").and.callThrough();
+    const subscribeSpy = spyOn(notificationsService, "subscribeToStream").and.callThrough();
+    const unsubscribeSpy = spyOn(notificationsService, "unsubscribeFromStream").and.callThrough();
 
     fixture.detectChanges();
 
@@ -129,7 +125,7 @@ describe('SettingsPage', () => {
     expect(settingsPage.notificationService.pushStatus).toBeFalse();
 
     // simulate click
-    settingsDOM.querySelectorAll('.NotificationButton')[0].click();
+    settingsDOM.querySelectorAll(".NotificationButton")[0].click();
     fixture.detectChanges();
 
     // after the first click, check 'subscribe' was called
@@ -140,7 +136,7 @@ describe('SettingsPage', () => {
     expect(unsubscribeSpy).not.toHaveBeenCalled();
 
     // simulate another click
-    settingsDOM.querySelectorAll('.NotificationButton')[0].click();
+    settingsDOM.querySelectorAll(".NotificationButton")[0].click();
     fixture.detectChanges();
 
     // after the second click, chcek 'unsubscribe' was called
@@ -154,26 +150,26 @@ describe('SettingsPage', () => {
   });
 
   // Check that the button toggles auto refresh
-  it('has a button that toggles auto-refresh', (done: DoneFn) => {
+  it("has a button that toggles auto-refresh", (done: DoneFn) => {
     // set up spies
     const notificationsService = TestBed.inject(NotificationService);
-    const settingsSpy = spyOn(notificationsService, 'updateUserSettings').and.callThrough();
-    const startRefreshSpy = spyOn(notificationsService, 'startAutoRefresh').and.callThrough();
-    const stopRefreshSpy = spyOn(notificationsService, 'stopAutoRefresh').and.callThrough();
+    const settingsSpy = spyOn(notificationsService, "updateUserSettings").and.callThrough();
+    const startRefreshSpy = spyOn(notificationsService, "startAutoRefresh").and.callThrough();
+    const stopRefreshSpy = spyOn(notificationsService, "stopAutoRefresh").and.callThrough();
 
     // set up the component
     TestBed.createComponent(AppComponent);
     const fixture = TestBed.createComponent(SettingsPage);
-    const settingsPage  = fixture.componentInstance;
+    const settingsPage = fixture.componentInstance;
     const settingsDOM = fixture.nativeElement;
-    const toggleSpy = spyOn(settingsPage, 'toggleAutoRefresh').and.callThrough();
+    const toggleSpy = spyOn(settingsPage, "toggleAutoRefresh").and.callThrough();
     fixture.detectChanges();
 
     // before the click
     expect(settingsPage.notificationService.refreshStatus).toBeFalse();
 
     // simulate click
-    settingsDOM.querySelectorAll('.NotificationButton')[1].click();
+    settingsDOM.querySelectorAll(".NotificationButton")[1].click();
     fixture.detectChanges();
 
     // after the first click, check 'subscribe' was called
@@ -185,7 +181,7 @@ describe('SettingsPage', () => {
     expect(stopRefreshSpy).not.toHaveBeenCalled();
 
     // simulate another click
-    settingsDOM.querySelectorAll('.NotificationButton')[1].click();
+    settingsDOM.querySelectorAll(".NotificationButton")[1].click();
     fixture.detectChanges();
 
     // after the second click, chcek 'unsubscribe' was called
@@ -200,16 +196,16 @@ describe('SettingsPage', () => {
   });
 
   // Check that changing the refresh rate changes the set rate
-  it('changes the refresh rate', (done: DoneFn) => {
+  it("changes the refresh rate", (done: DoneFn) => {
     // set up spies
     const notificationsService = TestBed.inject(NotificationService);
-    const settingsSpy = spyOn(notificationsService, 'updateUserSettings').and.callThrough();
+    const settingsSpy = spyOn(notificationsService, "updateUserSettings").and.callThrough();
 
     // set up the component
     const fixture = TestBed.createComponent(SettingsPage);
-    const settingsPage  = fixture.componentInstance;
+    const settingsPage = fixture.componentInstance;
     const settingsDOM = fixture.nativeElement;
-    const updateSpy = spyOn(settingsPage, 'updateRefreshRate').and.callThrough();
+    const updateSpy = spyOn(settingsPage, "updateRefreshRate").and.callThrough();
     settingsPage.authService.authenticated = true;
 
     fixture.detectChanges();
@@ -220,8 +216,8 @@ describe('SettingsPage', () => {
       expect(updateSpy).not.toHaveBeenCalled();
 
       // change the rate
-      settingsDOM.querySelectorAll('input')[0].value = 30;
-      settingsDOM.querySelectorAll('.sendData')[0].click();
+      settingsDOM.querySelectorAll("input")[0].value = 30;
+      settingsDOM.querySelectorAll(".sendData")[0].click();
       fixture.detectChanges();
 
       // check the rate changed

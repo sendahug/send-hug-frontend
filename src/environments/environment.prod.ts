@@ -5,10 +5,10 @@ export const environment = {
     clientID: process.env.auth0client,
     audience: process.env.audience,
     redirectUri: process.env.loginurl,
-    logoutUri: process.env.logouturl
+    logoutUri: process.env.logouturl,
   },
   backend: {
-    domain: process.env.apiurl
+    domain: process.env.apiurl,
   },
-  vapidKey: ''
+  vapidKey: "",
 };

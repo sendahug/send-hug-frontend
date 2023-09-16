@@ -35,4 +35,4 @@ export interface AlertMessage {
   type: MessageType;
 }
 
-type MessageType = 'Error' | 'Success' | 'Notification'
+type MessageType = "Error" | "Success" | "Notification";

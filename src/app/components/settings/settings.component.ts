@@ -31,28 +31,26 @@
 */
 
 // Angular imports
-import { Component, AfterViewChecked } from '@angular/core';
+import { Component, AfterViewChecked } from "@angular/core";
 
 // App-related imports
-import { NotificationService } from '../../services/notifications.service';
-import { AuthService } from '../../services/auth.service';
-import { AlertsService } from '../../services/alerts.service';
+import { NotificationService } from "../../services/notifications.service";
+import { AuthService } from "../../services/auth.service";
+import { AlertsService } from "../../services/alerts.service";
 
 @Component({
-  selector: 'app-settings',
-  templateUrl: './settings.component.html'
+  selector: "app-settings",
+  templateUrl: "./settings.component.html",
 })
 export class SettingsPage implements AfterViewChecked {
   editIcon = false;
 
   // CTOR
   constructor(
-    public notificationService:NotificationService,
-    public authService:AuthService,
-    private alertsService:AlertsService
-  ) {
-
-  }
+    public notificationService: NotificationService,
+    public authService: AuthService,
+    private alertsService: AlertsService,
+  ) {}
 
   /*
   Function Name: ngAfterViewChecked()
@@ -65,12 +63,20 @@ export class SettingsPage implements AfterViewChecked {
   */
   ngAfterViewChecked() {
     Object.keys(this.authService.userData.iconColours).forEach((key) => {
-      if(document.querySelectorAll('.userIcon')[0]) {
-        document.querySelectorAll('.userIcon')[0].querySelectorAll(`.${key as 'character' | 'lbg' | 'rbg' | 'item'}`).forEach(element => {
-          (element as SVGPathElement).setAttribute('style', `fill:${this.authService.userData.iconColours[key as 'character' | 'lbg' | 'rbg' | 'item']};`);
-        })
+      if (document.querySelectorAll(".userIcon")[0]) {
+        document
+          .querySelectorAll(".userIcon")[0]
+          .querySelectorAll(`.${key as "character" | "lbg" | "rbg" | "item"}`)
+          .forEach((element) => {
+            (element as SVGPathElement).setAttribute(
+              "style",
+              `fill:${
+                this.authService.userData.iconColours[key as "character" | "lbg" | "rbg" | "item"]
+              };`,
+            );
+          });
       }
-    })
+    });
   }
 
   /*
@@ -81,12 +87,11 @@ export class SettingsPage implements AfterViewChecked {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  toggleIconEditor(edit?:boolean) {
-    if(edit) {
+  toggleIconEditor(edit?: boolean) {
+    if (edit) {
       this.editIcon = edit;
-      document.getElementById('editIcon')!.focus();
-    }
-    else {
+      document.getElementById("editIcon")!.focus();
+    } else {
       this.editIcon = !this.editIcon;
     }
   }
@@ -100,7 +105,7 @@ export class SettingsPage implements AfterViewChecked {
   */
   togglePushNotifications() {
     // if notifications are enabled, disable them
-    if(this.notificationService.pushStatus) {
+    if (this.notificationService.pushStatus) {
       this.notificationService.pushStatus = false;
       this.notificationService.updateUserSettings();
       this.notificationService.unsubscribeFromStream();
@@ -123,7 +128,7 @@ export class SettingsPage implements AfterViewChecked {
   */
   toggleAutoRefresh() {
     // if auto-refresh is enabled, disable it
-    if(this.notificationService.refreshStatus) {
+    if (this.notificationService.refreshStatus) {
       this.notificationService.refreshStatus = false;
       this.notificationService.refreshRateSecs = 0;
       this.notificationService.updateUserSettings();
@@ -146,19 +151,22 @@ export class SettingsPage implements AfterViewChecked {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  updateRefreshRate(e:Event, newRate:number) {
+  updateRefreshRate(e: Event, newRate: number) {
     e.preventDefault();
 
     // if there's a new rate, update user settings
-    if(newRate) {
+    if (newRate) {
       this.notificationService.refreshRateSecs = Number(newRate);
       this.notificationService.updateUserSettings();
     }
     // if there's no rate or it's zero, alert the user it can't be
     else {
-      this.alertsService.createAlert({ type: 'Error', message: 'Refresh rate cannot be empty or zero. Please fill the field and try again.' });
-      document.getElementById('notificationRate')!.classList.add('missing');
-      document.getElementById('notificationRate')!.setAttribute('aria-invalid', 'true');
+      this.alertsService.createAlert({
+        type: "Error",
+        message: "Refresh rate cannot be empty or zero. Please fill the field and try again.",
+      });
+      document.getElementById("notificationRate")!.classList.add("missing");
+      document.getElementById("notificationRate")!.setAttribute("aria-invalid", "true");
     }
   }
 }

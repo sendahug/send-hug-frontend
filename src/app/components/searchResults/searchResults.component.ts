@@ -31,37 +31,37 @@
 */
 
 // Angular imports
-import { Component, AfterViewChecked } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Component, AfterViewChecked } from "@angular/core";
+import { ActivatedRoute, Router } from "@angular/router";
 
 // App-related imports
-import { ItemsService } from '../../services/items.service';
-import { AuthService } from '../../services/auth.service';
+import { ItemsService } from "../../services/items.service";
+import { AuthService } from "../../services/auth.service";
 
 @Component({
-  selector: 'app-search-results',
-  templateUrl: './searchResults.component.html'
+  selector: "app-search-results",
+  templateUrl: "./searchResults.component.html",
 })
 export class SearchResults implements AfterViewChecked {
   searchQuery: string | null;
   page = 1;
   showMenuNum: string | null = null;
   //loader component variable
-  waitFor = 'search';
+  waitFor = "search";
 
   // CTOR
   constructor(
-    public itemsService:ItemsService,
-    public authService:AuthService,
-    private route:ActivatedRoute,
-    private router:Router,
+    public itemsService: ItemsService,
+    public authService: AuthService,
+    private route: ActivatedRoute,
+    private router: Router,
   ) {
-    this.searchQuery = this.route.snapshot.queryParamMap.get('query');
+    this.searchQuery = this.route.snapshot.queryParamMap.get("query");
 
     // if there's a search query but there's no ongoing search, it might be
     // the result of the user manually navigating here or refreshing the page.
     // in that case, trigger a search manually
-    if(this.searchQuery && !this.itemsService.isSearching) {
+    if (this.searchQuery && !this.itemsService.isSearching) {
       this.itemsService.sendSearch(this.searchQuery);
     }
   }
@@ -77,59 +77,58 @@ export class SearchResults implements AfterViewChecked {
   Programmer: Shir Bar Lev.
   */
   ngAfterViewChecked() {
-    let posts = document.querySelectorAll('.searchResult');
+    let posts = document.querySelectorAll(".searchResult");
 
-    if(posts[0]) {
+    if (posts[0]) {
       // check the first post; the others are the same
-      let firstPButtons = posts[0]!.querySelectorAll('.buttonsContainer')[0] as HTMLDivElement;
-      let sub = posts[0]!.querySelectorAll('.subMenu')[0] as HTMLDivElement;
+      let firstPButtons = posts[0]!.querySelectorAll(".buttonsContainer")[0] as HTMLDivElement;
+      let sub = posts[0]!.querySelectorAll(".subMenu")[0] as HTMLDivElement;
 
       // remove the hidden label check the menu's width
-      if(sub.classList.contains('hidden')) {
-        firstPButtons.classList.remove('float');
-        sub.classList.remove('hidden');
-        sub.classList.remove('float');
+      if (sub.classList.contains("hidden")) {
+        firstPButtons.classList.remove("float");
+        sub.classList.remove("hidden");
+        sub.classList.remove("float");
       }
 
       // if they're too long and there's no menu to show
-      if(sub.scrollWidth > sub.offsetWidth && !this.showMenuNum) {
+      if (sub.scrollWidth > sub.offsetWidth && !this.showMenuNum) {
         // change each menu to a floating, hidden menu
         posts.forEach((element) => {
-          element.querySelectorAll('.buttonsContainer')[0].classList.add('float');
-          element.querySelectorAll('.subMenu')[0].classList.add('hidden');
-          element.querySelectorAll('.subMenu')[0].classList.add('float');
-          element.querySelectorAll('.menuButton')[0].classList.remove('hidden');
-        })
+          element.querySelectorAll(".buttonsContainer")[0].classList.add("float");
+          element.querySelectorAll(".subMenu")[0].classList.add("hidden");
+          element.querySelectorAll(".subMenu")[0].classList.add("float");
+          element.querySelectorAll(".menuButton")[0].classList.remove("hidden");
+        });
       }
       // if there's a menu to show, show that specific menu
-      else if(this.showMenuNum) {
+      else if (this.showMenuNum) {
         // change each menu to a floating menu
         posts.forEach((element) => {
-          if(element.firstElementChild!.id == this.showMenuNum) {
-            element.querySelectorAll('.subMenu')[0].classList.remove('hidden');
-          }
-          else {
-            element.querySelectorAll('.subMenu')[0].classList.add('hidden');
+          if (element.firstElementChild!.id == this.showMenuNum) {
+            element.querySelectorAll(".subMenu")[0].classList.remove("hidden");
+          } else {
+            element.querySelectorAll(".subMenu")[0].classList.add("hidden");
 
             // if it's not the first element that needs an open menu, close
             // the first item's menu like  it was opened above
-            if(element.firstElementChild!.id == posts[0].firstElementChild!.id) {
-              element.querySelectorAll('.buttonsContainer')[0].classList.add('float');
-              element.querySelectorAll('.subMenu')[0].classList.add('hidden');
-              element.querySelectorAll('.subMenu')[0].classList.add('float');
+            if (element.firstElementChild!.id == posts[0].firstElementChild!.id) {
+              element.querySelectorAll(".buttonsContainer")[0].classList.add("float");
+              element.querySelectorAll(".subMenu")[0].classList.add("hidden");
+              element.querySelectorAll(".subMenu")[0].classList.add("float");
             }
           }
-        })
+        });
       }
       // otherwise make sure the menu button is hidden and the buttons container
       // is in its normal design
       else {
         posts.forEach((element) => {
-          element.querySelectorAll('.buttonsContainer')[0].classList.remove('float');
-          element.querySelectorAll('.subMenu')[0].classList.remove('hidden');
-          element.querySelectorAll('.subMenu')[0].classList.remove('float');
-          element.querySelectorAll('.menuButton')[0].classList.add('hidden');
-        })
+          element.querySelectorAll(".buttonsContainer")[0].classList.remove("float");
+          element.querySelectorAll(".subMenu")[0].classList.remove("hidden");
+          element.querySelectorAll(".subMenu")[0].classList.remove("float");
+          element.querySelectorAll(".menuButton")[0].classList.add("hidden");
+        });
       }
     }
   }
@@ -152,9 +151,9 @@ export class SearchResults implements AfterViewChecked {
       relativeTo: this.route,
       queryParams: {
         query: this.searchQuery,
-        page: this.page
+        page: this.page,
       },
-      replaceUrl: true
+      replaceUrl: true,
     });
   }
 
@@ -176,9 +175,9 @@ export class SearchResults implements AfterViewChecked {
       relativeTo: this.route,
       queryParams: {
         query: this.searchQuery,
-        page: this.page
+        page: this.page,
       },
-      replaceUrl: true
+      replaceUrl: true,
     });
   }
 
@@ -190,18 +189,18 @@ export class SearchResults implements AfterViewChecked {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  openMenu(menu:string) {
-    let post = document.querySelector('#' + menu)!.parentElement;
-    let subMenu = post!.querySelectorAll('.subMenu')[0];
+  openMenu(menu: string) {
+    let post = document.querySelector("#" + menu)!.parentElement;
+    let subMenu = post!.querySelectorAll(".subMenu")[0];
 
     // if the submenu is hidden, show it
-    if(subMenu.classList.contains('hidden')) {
-      subMenu.classList.remove('hidden');
+    if (subMenu.classList.contains("hidden")) {
+      subMenu.classList.remove("hidden");
       this.showMenuNum = menu;
     }
     // otherwise hide it
     else {
-      subMenu.classList.add('hidden');
+      subMenu.classList.add("hidden");
       this.showMenuNum = null;
     }
   }

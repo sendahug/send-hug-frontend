@@ -21,7 +21,7 @@ exports.replaceTemplateUrl = function () {
       const magicString = new MagicString(code);
 
       magicString.replace(/(templateUrl:)(.*)(\.component\.html)/, (match) => {
-        const componentName = match.substring(15, match.length - 16);
+        const componentName = match.split(".")[1].substring(1);
         if (componentName == "my") return match;
         let componentTemplateURL;
 

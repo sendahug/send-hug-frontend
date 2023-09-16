@@ -50,7 +50,9 @@ const pushSub: PushSubscription = {
   endpoint: "endpoint",
   options: {
     applicationServerKey: null,
+    userVisibleOnly: true,
   },
+  expirationTime: 100000,
   getKey(_name): ArrayBuffer | null {
     return null;
   },
@@ -298,7 +300,9 @@ describe("NotificationService", () => {
       endpoint: "fsfdsfg",
       options: {
         applicationServerKey: null,
+        userVisibleOnly: true,
       },
+      expirationTime: 100000,
       getKey(_name): ArrayBuffer | null {
         return null;
       },

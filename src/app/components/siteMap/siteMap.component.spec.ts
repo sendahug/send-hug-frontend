@@ -42,7 +42,7 @@ import { HttpClientModule } from "@angular/common/http";
 import { ServiceWorkerModule } from "@angular/service-worker";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { Component } from "@angular/core";
-import { Routes } from "@angular/router";
+import { Route, Routes } from "@angular/router";
 
 import { AppComponent } from "../../app.component";
 import { SiteMap } from "./siteMap.component";
@@ -174,7 +174,7 @@ describe("SiteMap", () => {
 
     let routeList = siteMapDOM.querySelector("#routeList");
     let navLinks = routeList!.querySelectorAll(".routerLink");
-    let adminPath = {
+    let adminPath: Route = {
       path: "admin",
       children: [
         { path: "", pathMatch: "prefix", component: MockComp, data: { name: "Main Page" } },
@@ -216,7 +216,7 @@ describe("SiteMap", () => {
 
     let routeList = siteMapDOM.querySelector("#routeList");
     let navLinks = routeList!.querySelectorAll(".routerLink");
-    let adminPath = {
+    let adminPath: Route = {
       path: "admin",
       children: [
         { path: "", pathMatch: "prefix", component: MockComp, data: { name: "Main Page" } },
@@ -263,7 +263,7 @@ describe("SiteMap", () => {
     let routeList = siteMapDOM.querySelector("#routeList");
     let navLinks = routeList!.querySelectorAll(".routerLink");
     // the path as it should appear
-    let messagesPath = {
+    let messagesPath: Route = {
       path: "messages",
       children: [
         { path: "inbox", pathMatch: "prefix", component: MockComp, data: { name: "Inbox" } },
@@ -273,7 +273,7 @@ describe("SiteMap", () => {
       data: { name: "Mailbox" },
     };
     // the full path
-    let messagesFullPath = {
+    let messagesFullPath: Route = {
       path: "messages",
       children: [
         { path: "", pathMatch: "prefix", redirectTo: "inbox", data: { name: "Inbox" } },
@@ -310,7 +310,7 @@ describe("SiteMap", () => {
     let routeList = siteMapDOM.querySelector("#routeList");
     let navLinks = routeList!.querySelectorAll(".routerLink");
     // the path as it should appear
-    let userPath = {
+    let userPath: Route = {
       path: "user",
       children: [
         { path: "", pathMatch: "prefix", component: MockComp, data: { name: "Your Page" } },
@@ -318,7 +318,7 @@ describe("SiteMap", () => {
       data: { name: "User Page" },
     };
     // the full path
-    let userFullPath = {
+    let userFullPath: Route = {
       path: "user",
       children: [
         { path: "", pathMatch: "prefix", component: MockComp, data: { name: "Your Page" } },

@@ -20,7 +20,7 @@ exports.replaceTemplateUrl = function () {
     transform(code) {
       const magicString = new MagicString(code);
 
-      magicString.replace(/(templateUrl:)(.*)(\.component\.html)/, (match) => {
+      magicString.replace(/(templateUrl:)(.*)(\.component\.html")/, (match) => {
         const componentName = match.split(".")[1].substring(1);
         if (componentName == "my") return match;
         let componentTemplateURL;

@@ -313,7 +313,7 @@ function setupTests() {
 
 		// add each import to the tests file
 		tests.forEach(testPath => {
-			let newPath = './' + testPath;
+			let newPath = './' + testPath.substring(0, testPath.length-3);
 			newString += `import "${newPath}";
 			`;
 		})

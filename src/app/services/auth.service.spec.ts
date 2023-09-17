@@ -122,7 +122,23 @@ describe("AuthService", () => {
   // Check the hash is checked and parsed
   it("checkHash() - parses the hash to get the token", () => {
     // set up spies
-    const hashSpy = spyOn(authService.auth0, "parseHash").and.callThrough();
+    //@ts-ignore
+    const hashSpy = spyOn(authService.auth0, "parseHash").and.callFake(
+      //@ts-ignore
+      (
+        _options: Auth0.ParseHashOptions,
+        callback: Auth0.Auth0Callback<Auth0.Auth0DecodedHash, Auth0.Auth0ParseHashError>,
+      ): void => {
+        const authResult: Auth0.Auth0DecodedHash = {
+          accessToken:
+            "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjUxUm1CQkZqRy1lMDBxNDVKUm1TMiJ9",
+        };
+        let err: Auth0.Auth0Error = {
+          error: "",
+        };
+        callback(err, authResult);
+      },
+    );
     const parseSpy = spyOn(authService, "parseJWT").and.returnValue({
       token: "fdsfd",
     });

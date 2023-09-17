@@ -10,8 +10,9 @@ const rename = require("gulp-rename");
 const replace = require("gulp-replace");
 const fs = require("fs");
 const path = require("path");
-var Server = require('karma').Server;
-var glob = require("glob");
+const Server = require('karma').Server;
+const parseConfig = require('karma').config.parseConfig;
+const glob = require("glob");
 let bs;
 const rollupStream = require("@rollup/stream");
 const commonjs = require("@rollup/plugin-commonjs");
@@ -328,9 +329,7 @@ function setupTests() {
 // automatic testing in whatever browser is defined in the Karma config file
 function unitTest()
 {
-	return new Server({
-	    configFile: __dirname + '/karma.conf.js'
-	  }).start();
+	return new Server(parseConfig(__dirname + '/karma.conf.js')).start();
 }
 
 // run code bundling and then test

@@ -5,14 +5,8 @@ updates:
     schedule:
       interval: daily
     open-pull-requests-limit: 10
-    ignore:
-      - dependency-name: "@angular/animations"
-      - dependency-name: "@angular/common"
-      - dependency-name: "@angular/compiler"
-      - dependency-name: "@angular/compiler-cli"
-      - dependency-name: "@angular/forms"
-      - dependency-name: "@angular/platform-browser"
-      - dependency-name: "@angular/platform-browser-dynamic"
-      - dependency-name: "@angular/router"
-      - dependency-name: "@angular/service-worker"
+    groups:
+      angular-dependencies:
+        patterns:
+          - "@angular/*"
     rebase-strategy: auto

@@ -33,6 +33,7 @@
 // Angular imports
 import { Component, OnInit, HostListener, AfterViewInit, signal, computed } from "@angular/core";
 import { Router, NavigationStart } from "@angular/router";
+import { FormBuilder, Validators } from "@angular/forms";
 import { faComments, faUserCircle, faCompass, faBell } from "@fortawesome/free-regular-svg-icons";
 import { faBars, faSearch, faTimes, faTextHeight } from "@fortawesome/free-solid-svg-icons";
 
@@ -59,6 +60,9 @@ export class AppComponent implements OnInit, AfterViewInit {
   inactiveLinkClass = "navLink";
   activeLinkClass = "navLink active";
   currentlyActiveRoute = signal("/");
+  searchForm = this.fb.group({
+    searchQuery: this.fb.control("", [Validators.required, Validators.minLength(1)]),
+  });
   // font awesome icons
   faBars = faBars;
   faComments = faComments;
@@ -76,6 +80,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     private router: Router,
     private serviceWorkerM: SWManager,
     public notificationService: NotificationService,
+    private fb: FormBuilder,
   ) {
     this.authService.checkHash();
 
@@ -179,19 +184,13 @@ export class AppComponent implements OnInit, AfterViewInit {
   */
   searchApp(e: Event, searchQuery: string) {
     e.preventDefault();
-    this.showSearch = false;
 
     // if there's something in the search query text field, search for it
     if (searchQuery) {
-      // if the textfield was marked red, remove it
-      if (document.getElementById("searchQuery")!.classList.contains("missing")) {
-        document.getElementById("searchQuery")!.classList.remove("missing");
-      }
-
+      this.showSearch = false;
       this.itemsService.sendSearch(searchQuery);
       // clears the search box
-      let searchBox = document.getElementById("searchQuery") as HTMLInputElement;
-      searchBox.value = "";
+      this.searchForm.reset();
       //navigate to search results
       this.router.navigate(["search"], {
         queryParams: {
@@ -205,7 +204,6 @@ export class AppComponent implements OnInit, AfterViewInit {
         message: "Search query is empty! Please write a term to search for.",
         type: "Error",
       });
-      document.getElementById("searchQuery")!.classList.add("missing");
     }
   }
 

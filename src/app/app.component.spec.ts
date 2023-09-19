@@ -42,6 +42,7 @@ import {
 } from "@angular/platform-browser-dynamic/testing";
 import { HttpClientModule } from "@angular/common/http";
 import { ServiceWorkerModule } from "@angular/service-worker";
+import { ReactiveFormsModule } from "@angular/forms";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { AuthService } from "./services/auth.service";
 import { MockAuthService } from "./services/auth.service.mock";
@@ -65,6 +66,7 @@ describe("AppComponent", () => {
       imports: [
         RouterTestingModule,
         HttpClientModule,
+        ReactiveFormsModule,
         ServiceWorkerModule.register("sw.js", { enabled: false }),
         FontAwesomeModule,
       ],

@@ -355,7 +355,7 @@ describe("AppComponent", () => {
     const componentHtml = fixture.nativeElement;
     fixture.detectChanges();
 
-    expect(component.showMenu).toBeTrue();
+    expect(component.showMenu()).toBeTrue();
     expect(componentHtml.querySelector("#navLinks")!.classList).not.toContain("hidden");
     expect(componentHtml.querySelector("#menuBtn")!.classList).toContain("hidden");
   });
@@ -368,7 +368,7 @@ describe("AppComponent", () => {
     const componentHtml = fixture.nativeElement;
     fixture.detectChanges();
 
-    expect(component.showMenu).toBeFalse();
+    expect(component.showMenu()).toBeFalse();
     expect(componentHtml.querySelector("#navLinks")!.classList).toContain("hidden");
     expect(componentHtml.querySelector("#menuBtn")!.classList).not.toContain("hidden");
   });
@@ -382,7 +382,7 @@ describe("AppComponent", () => {
     fixture.detectChanges();
 
     // pre-click check
-    expect(component.showMenu).toBeFalse();
+    expect(component.showMenu()).toBeFalse();
     expect(componentHtml.querySelector("#navLinks")!.classList).toContain("hidden");
     expect(componentHtml.querySelector("#menuBtn")!.classList).not.toContain("hidden");
 
@@ -391,7 +391,7 @@ describe("AppComponent", () => {
     fixture.detectChanges();
 
     // post-click check
-    expect(component.showMenu).toBeTrue();
+    expect(component.showMenu()).toBeTrue();
     expect(componentHtml.querySelector("#navLinks")!.classList).not.toContain("hidden");
     expect(componentHtml.querySelector("#menuBtn")!.classList).not.toContain("hidden");
     done();
@@ -406,7 +406,7 @@ describe("AppComponent", () => {
     fixture.detectChanges();
 
     // pre-click check
-    expect(component.showMenu).toBeFalse();
+    expect(component.showMenu()).toBeFalse();
     expect(componentHtml.querySelector("#navLinks")!.classList).toContain("hidden");
     expect(componentHtml.querySelector("#menuBtn")!.classList).not.toContain("hidden");
 
@@ -415,7 +415,7 @@ describe("AppComponent", () => {
     fixture.detectChanges();
 
     // post-click check
-    expect(component.showMenu).toBeTrue();
+    expect(component.showMenu()).toBeTrue();
     expect(componentHtml.querySelector("#navLinks")!.classList).not.toContain("hidden");
     expect(componentHtml.querySelector("#menuBtn")!.classList).not.toContain("hidden");
 
@@ -424,7 +424,7 @@ describe("AppComponent", () => {
     fixture.detectChanges();
 
     // post-click check
-    expect(component.showMenu).toBeFalse();
+    expect(component.showMenu()).toBeFalse();
     expect(componentHtml.querySelector("#navLinks")!.classList).toContain("hidden");
     expect(componentHtml.querySelector("#menuBtn")!.classList).not.toContain("hidden");
     done();
@@ -449,7 +449,6 @@ describe("AppComponent", () => {
 
     expect(checkSpy).toHaveBeenCalled();
     expect(navLinks.classList).toContain("hidden");
-    expect(navLinks.classList).toContain("large");
     expect(componentHtml.querySelector("#menuBtn").classList).not.toContain("hidden");
   });
 
@@ -472,7 +471,6 @@ describe("AppComponent", () => {
 
     expect(checkSpy).toHaveBeenCalled();
     expect(navLinks.classList).toContain("hidden");
-    expect(navLinks.classList).toContain("large");
     expect(componentHtml.querySelector("#menuBtn").classList).not.toContain("hidden");
 
     navLinks.style.width = "500px";
@@ -481,8 +479,7 @@ describe("AppComponent", () => {
 
     expect(checkSpy).toHaveBeenCalled();
     expect(navLinks.classList).not.toContain("hidden");
-    expect(navLinks.classList).not.toContain("large");
-    expect(component.showMenu).toBeTrue();
+    expect(component.showMenu()).toBeTrue();
   });
 
   // check the 'share' button is hidden

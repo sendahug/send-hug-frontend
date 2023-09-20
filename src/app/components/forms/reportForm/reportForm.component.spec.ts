@@ -35,6 +35,7 @@ import {
 import { HttpClientModule } from "@angular/common/http";
 import { ServiceWorkerModule } from "@angular/service-worker";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
+import { ReactiveFormsModule } from "@angular/forms";
 
 import { AppComponent } from "../../../app.component";
 import { ReportForm } from "./reportForm.component";
@@ -57,6 +58,7 @@ describe("Report", () => {
         HttpClientModule,
         ServiceWorkerModule.register("sw.js", { enabled: false }),
         FontAwesomeModule,
+        ReactiveFormsModule,
       ],
       declarations: [AppComponent, ReportForm],
       providers: [
@@ -178,6 +180,8 @@ describe("Report", () => {
     done();
   });
 
+  // TODO: Really need to refactor this test; there's
+  // too much being tested at once
   it("correctly sets the selected reason - posts", () => {
     TestBed.createComponent(AppComponent);
     TestBed.inject(AuthService).login();
@@ -198,30 +202,32 @@ describe("Report", () => {
     fixture.detectChanges();
 
     popUp.setSelected("0");
-    expect(popUp.selectedReason).toEqual("The post is Inappropriate");
+    expect(popUp.getSelectedReasonText()).toEqual("The post is Inappropriate");
     expect(otherTextField.required).toBe(false);
     expect(otherTextField.disabled).toBe(true);
     expect(otherTextField.getAttribute("aria-required")).toEqual("false");
 
     popUp.setSelected("1");
-    expect(popUp.selectedReason).toEqual("The post is Spam");
+    expect(popUp.getSelectedReasonText()).toEqual("The post is Spam");
     expect(otherTextField.required).toBe(false);
     expect(otherTextField.disabled).toBe(true);
     expect(otherTextField.getAttribute("aria-required")).toEqual("false");
 
     popUp.setSelected("2");
-    expect(popUp.selectedReason).toEqual("The post is Offensive");
+    expect(popUp.getSelectedReasonText()).toEqual("The post is Offensive");
     expect(otherTextField.required).toBe(false);
     expect(otherTextField.disabled).toBe(true);
     expect(otherTextField.getAttribute("aria-required")).toEqual("false");
 
     popUp.setSelected("3");
-    expect(popUp.selectedReason).toEqual("other");
+    expect(popUp.getSelectedReasonText()).toEqual("other");
     expect(otherTextField.required).toBe(true);
     expect(otherTextField.disabled).toBe(false);
     expect(otherTextField.getAttribute("aria-required")).toEqual("true");
   });
 
+  // TODO: Really need to refactor this test; there's
+  // too much being tested at once
   it("correctly sets the selected reason - users", () => {
     TestBed.createComponent(AppComponent);
     TestBed.inject(AuthService).login();
@@ -248,25 +254,27 @@ describe("Report", () => {
     fixture.detectChanges();
 
     popUp.setSelected("0");
-    expect(popUp.selectedReason).toEqual("The user is posting Spam");
+    expect(popUp.getSelectedReasonText()).toEqual("The user is posting Spam");
     expect(otherTextField.required).toBe(false);
     expect(otherTextField.disabled).toBe(true);
     expect(otherTextField.getAttribute("aria-required")).toEqual("false");
 
     popUp.setSelected("1");
-    expect(popUp.selectedReason).toEqual("The user is posting harmful / dangerous content");
+    expect(popUp.getSelectedReasonText()).toEqual(
+      "The user is posting harmful / dangerous content",
+    );
     expect(otherTextField.required).toBe(false);
     expect(otherTextField.disabled).toBe(true);
     expect(otherTextField.getAttribute("aria-required")).toEqual("false");
 
     popUp.setSelected("2");
-    expect(popUp.selectedReason).toEqual("The user is behaving in an abusive manner");
+    expect(popUp.getSelectedReasonText()).toEqual("The user is behaving in an abusive manner");
     expect(otherTextField.required).toBe(false);
     expect(otherTextField.disabled).toBe(true);
     expect(otherTextField.getAttribute("aria-required")).toEqual("false");
 
     popUp.setSelected("3");
-    expect(popUp.selectedReason).toEqual("other");
+    expect(popUp.getSelectedReasonText()).toEqual("other");
     expect(otherTextField.required).toBe(true);
     expect(otherTextField.disabled).toBe(false);
     expect(otherTextField.getAttribute("aria-required")).toEqual("true");
@@ -342,7 +350,7 @@ describe("Report", () => {
 
     // check the report wasn't sent and the user was alerted
     expect(validateSpy).toHaveBeenCalledWith("reportOther", reportReason, "rOption3Text");
-    expect(popUp.selectedReason).toEqual(reportReason);
+    expect(popUp.getSelectedReasonText()).toEqual(reportReason);
     expect(reportServiceSpy).toHaveBeenCalled();
     done();
   });

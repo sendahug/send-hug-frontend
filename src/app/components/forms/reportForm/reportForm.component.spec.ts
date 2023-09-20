@@ -210,24 +210,57 @@ describe("Report", () => {
     fixture.detectChanges();
 
     popUp.checkSelectedForOther("0");
-    expect(otherTextField.required).toBe(false);
     expect(otherTextField.disabled).toBe(true);
-    expect(otherTextField.getAttribute("aria-required")).toEqual("false");
 
     popUp.checkSelectedForOther("1");
-    expect(otherTextField.required).toBe(false);
     expect(otherTextField.disabled).toBe(true);
-    expect(otherTextField.getAttribute("aria-required")).toEqual("false");
 
     popUp.checkSelectedForOther("2");
-    expect(otherTextField.required).toBe(false);
     expect(otherTextField.disabled).toBe(true);
-    expect(otherTextField.getAttribute("aria-required")).toEqual("false");
 
     popUp.checkSelectedForOther("3");
-    expect(otherTextField.required).toBe(true);
     expect(otherTextField.disabled).toBe(false);
+  });
+
+  it("Correctly sets the required and aria-required attributes", (done: DoneFn) => {
+    TestBed.createComponent(AppComponent);
+    TestBed.inject(AuthService).login();
+    const fixture = TestBed.createComponent(ReportForm);
+    const popUp = fixture.componentInstance;
+    const popUpDOM = fixture.nativeElement;
+    popUp.reportType = "Post";
+    popUp.reportedItem = {
+      id: 1,
+      givenHugs: 0,
+      sentHugs: [],
+      user: "name",
+      userId: 2,
+      text: "hi",
+      date: new Date(),
+    };
+    const otherTextField = document.getElementById("rOption3Text") as HTMLInputElement;
+
+    popUpDOM.querySelector("#pRadioOption0").click();
+    fixture.detectChanges();
+    expect(otherTextField.required).toBe(false);
+    expect(otherTextField.getAttribute("aria-required")).toEqual("false");
+
+    popUpDOM.querySelector("#pRadioOption1").click();
+    fixture.detectChanges();
+    expect(otherTextField.required).toBe(false);
+    expect(otherTextField.getAttribute("aria-required")).toEqual("false");
+
+    popUpDOM.querySelector("#pRadioOption3").click();
+    fixture.detectChanges();
+    expect(otherTextField.required).toBe(true);
     expect(otherTextField.getAttribute("aria-required")).toEqual("true");
+
+    popUpDOM.querySelector("#pRadioOption2").click();
+    fixture.detectChanges();
+    expect(otherTextField.required).toBe(false);
+    expect(otherTextField.getAttribute("aria-required")).toEqual("false");
+
+    done();
   });
 
   it("getSelectedReasonText() - correctly sets the selected reason - posts", (done: DoneFn) => {
@@ -336,7 +369,7 @@ describe("Report", () => {
     };
     const validateSpy = spyOn(popUp["validationService"], "validateItem").and.returnValue(false);
     const reportServiceSpy = spyOn(popUp["itemsService"], "sendReport");
-    const otherText = popUpDOM.querySelector("#rOption3Text");
+    const alertServiceSpy = spyOn(popUp["alertsService"], "createAlert");
     fixture.detectChanges();
 
     // select option 4
@@ -350,6 +383,7 @@ describe("Report", () => {
     // check the report wasn't sent and the user was alerted
     expect(validateSpy).toHaveBeenCalledWith("reportOther", "", "rOption3Text");
     expect(reportServiceSpy).not.toHaveBeenCalled();
+    expect(alertServiceSpy).toHaveBeenCalled();
     done();
   });
 
@@ -378,13 +412,16 @@ describe("Report", () => {
     // select option 4
     popUpDOM.querySelector("#pRadioOption3").click();
     otherText.value = reportReason;
+    otherText.dispatchEvent(new Event("input"));
     fixture.detectChanges();
 
-    // try to submit it without text in the textfield
+    expect(popUp.reportForm.get("otherReason")?.value).toEqual(reportReason);
+
+    // try to submit it
     popUpDOM.querySelectorAll(".reportButton")[0].click();
     fixture.detectChanges();
 
-    // check the report wasn't sent and the user was alerted
+    // check the report was sent
     expect(validateSpy).toHaveBeenCalledWith("reportOther", reportReason, "rOption3Text");
     expect(popUp.getSelectedReasonText()).toEqual(reportReason);
     expect(reportServiceSpy).toHaveBeenCalled();

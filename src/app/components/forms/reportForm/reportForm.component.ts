@@ -130,17 +130,19 @@ export class ReportForm {
     if (selectedItem == null || selectedItem == undefined) {
       return undefined;
     } else {
-      if (Number(selectedItem) < 3) {
+      const selectedItemNumber = Number(selectedItem);
+
+      if (selectedItemNumber < 3) {
         // if the item being reported is a post
         if (this.reportType == "Post") {
-          return `The post is ${postReportReasons[Number(selectedItem)]}`;
+          return `The post is ${postReportReasons[selectedItemNumber]}`;
         }
         // if the item being reported is a user
         else {
-          if (Number(selectedItem) == 2) {
-            return `The user is behaving in an ${userReportReasons[Number(selectedItem)]}`;
+          if (selectedItemNumber == 2) {
+            return `The user is behaving in an ${userReportReasons[selectedItemNumber]}`;
           } else {
-            return `The user is posting ${userReportReasons[Number(selectedItem)]}`;
+            return `The user is posting ${userReportReasons[selectedItemNumber]}`;
           }
         }
       } else {
@@ -167,10 +169,13 @@ export class ReportForm {
     // if the selected reason for the report is 'other', get the value of the text inputted
     if (reportReason == "other") {
       const otherReasonValue = this.reportForm.get("otherReason")?.value;
+      const isValid = this.validationService.validateItem(
+        "reportOther",
+        otherReasonValue || "",
+        "rOption3Text",
+      );
       // if the input is valid, get the value
-      if (
-        !this.validationService.validateItem("reportOther", otherReasonValue || "", "rOption3Text")
-      ) {
+      if (!isValid) {
         this.alertsService.createAlert({
           type: "Error",
           message: "If you choose 'other', you must specify a reason.",

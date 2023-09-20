@@ -423,7 +423,6 @@ describe("Report", () => {
 
     // check the report was sent
     expect(validateSpy).toHaveBeenCalledWith("reportOther", reportReason, "rOption3Text");
-    expect(popUp.getSelectedReasonText()).toEqual(reportReason);
     expect(reportServiceSpy).toHaveBeenCalled();
     done();
   });

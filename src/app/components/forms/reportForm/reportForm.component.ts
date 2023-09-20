@@ -85,8 +85,8 @@ export class ReportForm {
   @Input() reportType: "User" | "Post" | undefined;
   reportReasonsText = reportReasonsText;
   reportForm = this.fb.group({
-    selectedReason: this.fb.control(undefined, [Validators.required]),
-    otherReason: this.fb.control({ value: undefined, disabled: true }),
+    selectedReason: this.fb.control(undefined as string | undefined, [Validators.required]),
+    otherReason: this.fb.control({ value: undefined as string | undefined, disabled: true }),
   });
 
   // CTOR
@@ -99,14 +99,14 @@ export class ReportForm {
   ) {}
 
   /*
-  Function Name: setSelected()
-  Function Description: Sets the selected reason for reporting the post. The method is
-                        triggered by the user checking radio buttons.
+  Function Name: checkSelectedForOther()
+  Function Description: Checks whether to enable or disable the 'other'
+                        text input, based on the selected reason.
   Parameters: selectedItem (number) - the ID of the slected option.
   ----------------
   Programmer: Shir Bar Lev.
   */
-  setSelected(selectedItem: string | number) {
+  checkSelectedForOther(selectedItem: string | number) {
     selectedItem = Number(selectedItem);
 
     // If the selected reason is one of the set reasons, simply send it as is
@@ -130,17 +130,17 @@ export class ReportForm {
     if (selectedItem == null || selectedItem == undefined) {
       return undefined;
     } else {
-      if (selectedItem < 3) {
+      if (Number(selectedItem) < 3) {
         // if the item being reported is a post
         if (this.reportType == "Post") {
-          return `The post is ${postReportReasons[selectedItem]}`;
+          return `The post is ${postReportReasons[Number(selectedItem)]}`;
         }
         // if the item being reported is a user
         else {
-          if (selectedItem == 2) {
-            return `The user is behaving in an ${userReportReasons[selectedItem]}`;
+          if (Number(selectedItem) == 2) {
+            return `The user is behaving in an ${userReportReasons[Number(selectedItem)]}`;
           } else {
-            return `The user is posting ${userReportReasons[selectedItem]}`;
+            return `The user is posting ${userReportReasons[Number(selectedItem)]}`;
           }
         }
       } else {

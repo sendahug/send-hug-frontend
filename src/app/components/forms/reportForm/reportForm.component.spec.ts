@@ -142,7 +142,7 @@ describe("Report", () => {
       text: "hi",
       date: new Date(),
     };
-    const selectSpy = spyOn(popUp, "setSelected").and.callThrough();
+    const selectSpy = spyOn(popUp, "checkSelectedForOther").and.callThrough();
 
     fixture.detectChanges();
 
@@ -153,6 +153,7 @@ describe("Report", () => {
     // check the first option was selected
     expect(selectSpy).toHaveBeenCalled();
     expect(selectSpy).toHaveBeenCalledWith("0");
+    expect(popUp.reportForm.get("selectedReason")?.value).toEqual("0");
 
     // select option 2
     popUpDOM.querySelector("#pRadioOption1").click();
@@ -161,6 +162,7 @@ describe("Report", () => {
     // check the second option was selected
     expect(selectSpy).toHaveBeenCalled();
     expect(selectSpy).toHaveBeenCalledWith("1");
+    expect(popUp.reportForm.get("selectedReason")?.value).toEqual("1");
 
     // select option 3
     popUpDOM.querySelector("#pRadioOption2").click();
@@ -169,6 +171,7 @@ describe("Report", () => {
     // check the third option was selected
     expect(selectSpy).toHaveBeenCalled();
     expect(selectSpy).toHaveBeenCalledWith("2");
+    expect(popUp.reportForm.get("selectedReason")?.value).toEqual("2");
 
     // select option 4
     popUpDOM.querySelector("#pRadioOption3").click();
@@ -177,58 +180,11 @@ describe("Report", () => {
     // check the fourth option was selected
     expect(selectSpy).toHaveBeenCalled();
     expect(selectSpy).toHaveBeenCalledWith("3");
+    expect(popUp.reportForm.get("selectedReason")?.value).toEqual("3");
     done();
   });
 
-  // TODO: Really need to refactor this test; there's
-  // too much being tested at once
-  it("correctly sets the selected reason - posts", () => {
-    TestBed.createComponent(AppComponent);
-    TestBed.inject(AuthService).login();
-    const fixture = TestBed.createComponent(ReportForm);
-    const popUp = fixture.componentInstance;
-    popUp.reportType = "Post";
-    popUp.reportedItem = {
-      id: 1,
-      givenHugs: 0,
-      sentHugs: [],
-      user: "name",
-      userId: 2,
-      text: "hi",
-      date: new Date(),
-    };
-    const otherTextField = document.getElementById("rOption3Text") as HTMLInputElement;
-
-    fixture.detectChanges();
-
-    popUp.setSelected("0");
-    expect(popUp.getSelectedReasonText()).toEqual("The post is Inappropriate");
-    expect(otherTextField.required).toBe(false);
-    expect(otherTextField.disabled).toBe(true);
-    expect(otherTextField.getAttribute("aria-required")).toEqual("false");
-
-    popUp.setSelected("1");
-    expect(popUp.getSelectedReasonText()).toEqual("The post is Spam");
-    expect(otherTextField.required).toBe(false);
-    expect(otherTextField.disabled).toBe(true);
-    expect(otherTextField.getAttribute("aria-required")).toEqual("false");
-
-    popUp.setSelected("2");
-    expect(popUp.getSelectedReasonText()).toEqual("The post is Offensive");
-    expect(otherTextField.required).toBe(false);
-    expect(otherTextField.disabled).toBe(true);
-    expect(otherTextField.getAttribute("aria-required")).toEqual("false");
-
-    popUp.setSelected("3");
-    expect(popUp.getSelectedReasonText()).toEqual("other");
-    expect(otherTextField.required).toBe(true);
-    expect(otherTextField.disabled).toBe(false);
-    expect(otherTextField.getAttribute("aria-required")).toEqual("true");
-  });
-
-  // TODO: Really need to refactor this test; there's
-  // too much being tested at once
-  it("correctly sets the selected reason - users", () => {
+  it("checkSelectedForOther() - correctly enables/disables the 'other' text field", () => {
     TestBed.createComponent(AppComponent);
     TestBed.inject(AuthService).login();
     const fixture = TestBed.createComponent(ReportForm);
@@ -253,31 +209,111 @@ describe("Report", () => {
 
     fixture.detectChanges();
 
-    popUp.setSelected("0");
-    expect(popUp.getSelectedReasonText()).toEqual("The user is posting Spam");
+    popUp.checkSelectedForOther("0");
     expect(otherTextField.required).toBe(false);
     expect(otherTextField.disabled).toBe(true);
     expect(otherTextField.getAttribute("aria-required")).toEqual("false");
 
-    popUp.setSelected("1");
-    expect(popUp.getSelectedReasonText()).toEqual(
-      "The user is posting harmful / dangerous content",
-    );
+    popUp.checkSelectedForOther("1");
     expect(otherTextField.required).toBe(false);
     expect(otherTextField.disabled).toBe(true);
     expect(otherTextField.getAttribute("aria-required")).toEqual("false");
 
-    popUp.setSelected("2");
-    expect(popUp.getSelectedReasonText()).toEqual("The user is behaving in an abusive manner");
+    popUp.checkSelectedForOther("2");
     expect(otherTextField.required).toBe(false);
     expect(otherTextField.disabled).toBe(true);
     expect(otherTextField.getAttribute("aria-required")).toEqual("false");
 
-    popUp.setSelected("3");
-    expect(popUp.getSelectedReasonText()).toEqual("other");
+    popUp.checkSelectedForOther("3");
     expect(otherTextField.required).toBe(true);
     expect(otherTextField.disabled).toBe(false);
     expect(otherTextField.getAttribute("aria-required")).toEqual("true");
+  });
+
+  it("getSelectedReasonText() - correctly sets the selected reason - posts", (done: DoneFn) => {
+    TestBed.createComponent(AppComponent);
+    TestBed.inject(AuthService).login();
+    const fixture = TestBed.createComponent(ReportForm);
+    const popUp = fixture.componentInstance;
+    const popUpDOM = fixture.nativeElement;
+    popUp.reportType = "Post";
+    popUp.reportedItem = {
+      id: 1,
+      givenHugs: 0,
+      sentHugs: [],
+      user: "name",
+      userId: 2,
+      text: "hi",
+      date: new Date(),
+    };
+
+    fixture.detectChanges();
+    expect(popUp.getSelectedReasonText()).toBe(undefined);
+
+    popUpDOM.querySelector("#pRadioOption0").click();
+    fixture.detectChanges();
+    expect(popUp.getSelectedReasonText()).toEqual("The post is Inappropriate");
+
+    popUpDOM.querySelector("#pRadioOption1").click();
+    fixture.detectChanges();
+    expect(popUp.getSelectedReasonText()).toEqual("The post is Spam");
+
+    popUpDOM.querySelector("#pRadioOption2").click();
+    fixture.detectChanges();
+    expect(popUp.getSelectedReasonText()).toEqual("The post is Offensive");
+
+    popUpDOM.querySelector("#pRadioOption3").click();
+    fixture.detectChanges();
+    expect(popUp.getSelectedReasonText()).toEqual("other");
+
+    done();
+  });
+
+  it("getSelectedReasonText() - correctly sets the selected reason - users", (done: DoneFn) => {
+    TestBed.createComponent(AppComponent);
+    TestBed.inject(AuthService).login();
+    const fixture = TestBed.createComponent(ReportForm);
+    const popUp = fixture.componentInstance;
+    const popUpDOM = fixture.nativeElement;
+    popUp.reportType = "User";
+    popUp.reportedItem = {
+      id: 3,
+      displayName: "string",
+      receivedHugs: 3,
+      givenHugs: 4,
+      postsNum: 2,
+      role: "user",
+      selectedIcon: "kitty",
+      iconColours: {
+        character: "#BA9F93",
+        lbg: "#e2a275",
+        rbg: "#f8eee4",
+        item: "#f4b56a",
+      },
+    };
+
+    fixture.detectChanges();
+    expect(popUp.getSelectedReasonText()).toBe(undefined);
+
+    popUpDOM.querySelector("#pRadioOption0").click();
+    fixture.detectChanges();
+    expect(popUp.getSelectedReasonText()).toEqual("The user is posting Spam");
+
+    popUpDOM.querySelector("#pRadioOption1").click();
+    fixture.detectChanges();
+    expect(popUp.getSelectedReasonText()).toEqual(
+      "The user is posting harmful / dangerous content",
+    );
+
+    popUpDOM.querySelector("#pRadioOption2").click();
+    fixture.detectChanges();
+    expect(popUp.getSelectedReasonText()).toEqual("The user is behaving in an abusive manner");
+
+    popUpDOM.querySelector("#pRadioOption3").click();
+    fixture.detectChanges();
+    expect(popUp.getSelectedReasonText()).toEqual("other");
+
+    done();
   });
 
   // Check that if the user chooses 'other' as reason they can't submit an

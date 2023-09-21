@@ -81,6 +81,8 @@ export class AdminDashboard implements OnInit {
   itemToDelete: number | undefined;
   report: boolean;
   lastFocusedElement: any;
+  nextButtonClass = "appButton nextButton";
+  previousButtonClass = "appButton prevButton";
   // loader sub-component variable
   waitFor = `admin ${this.screen}`;
 

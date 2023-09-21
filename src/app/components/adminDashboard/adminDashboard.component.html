@@ -66,11 +66,19 @@
 		
 		<!-- User reports pagination -->
 		<div class="pagination" *ngIf="adminService.userReports.length" role="navigation">
-			<button *ngIf="adminService.currentPage.userReports > 1" class="appButton prevButton" (click)="prevPage('userReports')" aria-label="previous page of user reports">Previous Page</button>
-			<button *ngIf="adminService.currentPage.userReports <= 1" class="appButton placeHolder" (click)="prevPage('userReports')">Prev Page</button>
+			<button
+				[class]="adminService.currentPage.userReports > 1 ? previousButtonClass : previousButtonClass + ' disabled'"
+				[disabled]="adminService.currentPage.userReports <= 1"
+				(click)="prevPage('userReports')"
+				aria-label="previous page of user reports"
+			>Previous Page</button>
 			<div class="pageCount">Page {{ adminService.currentPage.userReports }} of {{ adminService.totalPages.userReports }}</div>
-			<button *ngIf="adminService.totalPages.userReports > adminService.currentPage.userReports" class="appButton nextButton" (click)="nextPage('userReports')" aria-label="next page of user reports">Next Page</button>
-			<button *ngIf="adminService.totalPages.userReports <= adminService.currentPage.userReports" class="appButton placeHolder" (click)="nextPage('userReports')">Next Page</button>
+			<button
+				class="adminService.totalPages.userReports > adminService.currentPage.userReports ? nextButtonClass : nextButtonClass + ' disabled'"
+				[disabled]="adminService.totalPages.userReports <= adminService.currentPage.userReports"
+				(click)="nextPage('userReports')"
+				aria-label="next page of user reports"
+			>Next Page</button>
 		</div>
 		
 		<!-- If there are no open user reports -->
@@ -111,11 +119,19 @@
 		
 		<!-- Post reports pagination -->
 		<div class="pagination" *ngIf="adminService.postReports.length" role="navigation">
-			<button *ngIf="adminService.currentPage.postReports > 1" class="appButton prevButton" (click)="prevPage('postReports')" aria-label="previous page of post reports">Previous Page</button>
-			<button *ngIf="adminService.currentPage.postReports <= 1" class="appButton placeHolder" (click)="prevPage('postReports')">Prev Page</button>
+			<button
+				class="adminService.currentPage.postReports > 1 ? previousButtonClass : previousButtonClass + ' disabled'"
+				[disabled]="adminService.currentPage.postReports <= 1"
+				(click)="prevPage('postReports')"
+				aria-label="previous page of post reports"
+			>Previous Page</button>
 			<div class="pageCount">Page {{ adminService.currentPage.postReports }} of {{ adminService.totalPages.postReports }}</div>
-			<button *ngIf="adminService.totalPages.postReports > adminService.currentPage.postReports" class="appButton nextButton" (click)="nextPage('postReports')" aria-label="next page of post reports">Next Page</button>
-			<button *ngIf="adminService.totalPages.postReports <= adminService.currentPage.postReports" class="appButton placeHolder" (click)="nextPage('postReports')">Next Page</button>
+			<button
+				[class]="adminService.totalPages.postReports > adminService.currentPage.postReports ? nextButtonClass : nextButtonClass + ' disabled'"
+				[disabled]="adminService.totalPages.postReports <= adminService.currentPage.postReports"
+				(click)="nextPage('postReports')"
+				aria-label="next page of post reports"
+			>Next Page</button>
 		</div>
 		
 		<!-- If there are no open post reports -->
@@ -173,11 +189,19 @@
 		
 		<!-- Blocked users pagination -->
 		<div class="pagination" *ngIf="adminService.blockedUsers.length" role="navigation">
-			<button *ngIf="adminService.currentPage.blockedUsers > 1" class="appButton prevButton" (click)="prevPage('blockedUsers')" aria-label="previous page of blocked users">Previous Page</button>
-			<button *ngIf="adminService.currentPage.blockedUsers <= 1" class="appButton placeHolder" (click)="prevPage('blockedUsers')">Prev Page</button>
+			<button
+				[class]="adminService.currentPage.blockedUsers > 1 ? previousButtonClass : previousButtonClass + ' disabled'"
+				[disabled]="adminService.currentPage.blockedUsers <= 1"
+				(click)="prevPage('blockedUsers')"
+				aria-label="previous page of blocked users"
+			>Previous Page</button>
 			<div class="pageCount">Page {{ adminService.currentPage.blockedUsers }} of {{ adminService.totalPages.blockedUsers }}</div>
-			<button *ngIf="adminService.totalPages.blockedUsers > adminService.currentPage.blockedUsers" class="appButton nextButton" (click)="nextPage('blockedUsers')" aria-label="next page of blocked users">Next Page</button>
-			<button *ngIf="adminService.totalPages.blockedUsers <= adminService.currentPage.blockedUsers" class="appButton placeHolder" (click)="nextPage('blockedUsers')">Next Page</button>
+			<button 
+				[class]="adminService.totalPages.blockedUsers > adminService.currentPage.blockedUsers ? nextButtonClass : nextButtonClass + ' disabled'"
+				[disabled]="adminService.totalPages.blockedUsers <= adminService.currentPage.blockedUsers"
+				(click)="nextPage('blockedUsers')"
+				aria-label="next page of blocked users"
+			>Next Page</button>
 		</div>
 		
 		<!-- If there are no blocked users -->
@@ -222,11 +246,19 @@
 		
 		<!-- Filtered words pagination -->
 		<div class="pagination" *ngIf="adminService.filteredPhrases.length" role="navigation">
-			<button *ngIf="adminService.currentPage.filteredPhrases > 1" class="appButton prevButton" (click)="prevPage('filteredPhrases')" aria-label="previous page of filtered phrases">Previous Page</button>
-			<button *ngIf="adminService.currentPage.filteredPhrases <= 1" class="appButton placeHolder" (click)="prevPage('filteredPhrases')">Prev Page</button>
+			<button
+				[class]="adminService.currentPage.filteredPhrases > 1 ? previousButtonClass : previousButtonClass + ' disabled'"
+				[disabled]="adminService.currentPage.filteredPhrases <= 1"
+				(click)="prevPage('filteredPhrases')"
+				aria-label="previous page of filtered phrases"
+			>Previous Page</button>
 			<div class="pageCount">Page {{ adminService.currentPage.filteredPhrases }} of {{ adminService.totalPages.filteredPhrases }}</div>
-			<button *ngIf="adminService.totalPages.filteredPhrases > adminService.currentPage.filteredPhrases" class="appButton nextButton" (click)="nextPage('filteredPhrases')" aria-label="next page of filtered phrases">Next Page</button>
-			<button *ngIf="adminService.totalPages.filteredPhrases <= adminService.currentPage.filteredPhrases" class="appButton placeHolder" (click)="nextPage('filteredPhrases')">Next Page</button>
+			<button
+				[class]="adminService.totalPages.filteredPhrases > adminService.currentPage.filteredPhrases ? nextButtonClass : nextButtonClass + ' disabled'"
+				[disabled]="adminService.totalPages.filteredPhrases <= adminService.currentPage.filteredPhrases"
+				(click)="nextPage('filteredPhrases')"
+				aria-label="next page of filtered phrases"
+			>Next Page</button>
 		</div>
 		
 		<!-- If there are no filtered phrases -->

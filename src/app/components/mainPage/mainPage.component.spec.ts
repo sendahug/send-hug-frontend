@@ -89,9 +89,9 @@ describe("MainPage", () => {
 
     fixture.detectChanges();
 
-    expect(mainPage.postsService.newItemsArray.length).toEqual(2);
+    expect(mainPage.postsService.posts.newItems.value.length).toEqual(2);
     expect(mainPageDOM.querySelector("#newItemsList").children.length).toBe(2);
-    expect(mainPage.postsService.sugItemsArray.length).toEqual(2);
+    expect(mainPage.postsService.posts.suggestedItems.value.length).toEqual(2);
     expect(mainPageDOM.querySelector("#sugItemsList").children.length).toBe(2);
     done();
   });

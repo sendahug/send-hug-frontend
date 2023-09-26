@@ -391,12 +391,12 @@ export class SWManager {
           if (target == "main new") {
             let newPosts = posts!.reverse();
 
-            return newPosts.slice(startIndex, startIndex + 10);
+            return { posts: newPosts.slice(startIndex, startIndex + 10) };
           }
           // if the target is the main page's new posts, return paginated posts
           else if (target == "main suggested") {
             let sortedPosts = this.sortPosts(posts!);
-            return sortedPosts.slice(startIndex, startIndex + 10);
+            return { posts: sortedPosts.slice(startIndex, startIndex + 10) };
           }
           // if the target is the fullList's new posts, reverse the order of
           // the posts (to show the latest posts) and return paginated posts

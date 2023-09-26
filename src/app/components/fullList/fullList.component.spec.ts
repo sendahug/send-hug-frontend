@@ -382,8 +382,7 @@ describe("FullList", () => {
       const paramMap = TestBed.inject(ActivatedRoute);
       paramMap.url = of([{ path: "New" } as UrlSegment]);
       const postsService = TestBed.inject(PostsService);
-      const newPostsSpy = spyOn(postsService, "getNewItems").and.callThrough();
-      const sugPostsSpy = spyOn(postsService, "getSuggestedItems").and.callThrough();
+      const newPostsSpy = spyOn(postsService, "getPosts").and.callThrough();
 
       // create the component
       const fixture = TestBed.createComponent(FullList);
@@ -393,10 +392,8 @@ describe("FullList", () => {
 
       expect(fullList.waitFor).toBe("new posts");
       expect(newPostsSpy).toHaveBeenCalled();
-      expect(sugPostsSpy).not.toHaveBeenCalled();
-      expect(postsService.fullItemsList).toBeTruthy();
-      expect(postsService.fullItemsList.fullNewItems.length).toBe(2);
-      expect(postsService.fullItemsList.fullSuggestedItems.length).toBe(0);
+      expect(postsService.posts.newItems.value).toBeTruthy();
+      expect(postsService.posts.newItems.value.length).toBe(2);
       done();
     });
 
@@ -406,7 +403,7 @@ describe("FullList", () => {
       const paramMap = TestBed.inject(ActivatedRoute);
       paramMap.url = of([{ path: "New" } as UrlSegment]);
       const pageSpy = spyOn(paramMap.snapshot.queryParamMap, "get").and.returnValue("1");
-      const newPostsSpy = spyOn(TestBed.inject(PostsService), "getNewItems").and.callThrough();
+      const newPostsSpy = spyOn(TestBed.inject(PostsService), "getPosts").and.callThrough();
 
       // create the component
       const fixture = TestBed.createComponent(FullList);
@@ -474,8 +471,7 @@ describe("FullList", () => {
       const paramMap = TestBed.inject(ActivatedRoute);
       paramMap.url = of([{ path: "Suggested" } as UrlSegment]);
       const postsService = TestBed.inject(PostsService);
-      const newPostsSpy = spyOn(postsService, "getNewItems").and.callThrough();
-      const sugPostsSpy = spyOn(postsService, "getSuggestedItems").and.callThrough();
+      const newPostsSpy = spyOn(postsService, "getPosts").and.callThrough();
 
       // create the component
       const fixture = TestBed.createComponent(FullList);
@@ -484,11 +480,9 @@ describe("FullList", () => {
       fixture.detectChanges();
 
       expect(fullList.waitFor).toBe("suggested posts");
-      expect(sugPostsSpy).toHaveBeenCalled();
       expect(newPostsSpy).not.toHaveBeenCalled();
-      expect(postsService.fullItemsList).toBeTruthy();
-      expect(postsService.fullItemsList.fullNewItems.length).toBe(0);
-      expect(postsService.fullItemsList.fullSuggestedItems.length).toBe(2);
+      expect(postsService.posts.newItems.value).toBeTruthy();
+      expect(postsService.posts.suggestedItems.value.length).toBe(2);
       done();
     });
 
@@ -498,10 +492,7 @@ describe("FullList", () => {
       const paramMap = TestBed.inject(ActivatedRoute);
       paramMap.url = of([{ path: "Suggested" } as UrlSegment]);
       const pageSpy = spyOn(paramMap.snapshot.queryParamMap, "get").and.returnValue("1");
-      const sugPostsSpy = spyOn(
-        TestBed.inject(PostsService),
-        "getSuggestedItems",
-      ).and.callThrough();
+      const sugPostsSpy = spyOn(TestBed.inject(PostsService), "getPosts").and.callThrough();
 
       // create the component
       const fixture = TestBed.createComponent(FullList);

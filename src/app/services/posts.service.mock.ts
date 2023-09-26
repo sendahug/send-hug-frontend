@@ -43,38 +43,28 @@ import { MockAlertsService } from "./alerts.service.mock";
   providedIn: "root",
 })
 export class MockPostsService {
-  newItemsArray: Post[] = [];
-  sugItemsArray: Post[] = [];
-  isMainPageResolved = new BehaviorSubject(false);
-  // Full list variables
-  fullItemsList: {
-    fullNewItems: Post[];
-    fullSuggestedItems: Post[];
-  } = {
-    fullNewItems: [],
-    fullSuggestedItems: [],
-  };
-  fullItemsPage = {
-    fullNewItems: 0,
-    fullSuggestedItems: 0,
-  };
-  totalFullItemsPage = {
-    fullNewItems: 0,
-    fullSuggestedItems: 0,
-  };
-  isPostsResolved = {
-    fullNewItems: new BehaviorSubject(false),
-    fullSuggestedItems: new BehaviorSubject(false),
-  };
   isUpdated = new BehaviorSubject(false);
+  posts = {
+    newItems: new BehaviorSubject<Post[]>([]),
+    suggestedItems: new BehaviorSubject<Post[]>([]),
+  };
+  // TODO: Remove isFetchResolved and rely entirely on the
+  // behaviour subjects above
+  isFetchResolved = {
+    newItems: new BehaviorSubject(false),
+    suggestedItems: new BehaviorSubject(false),
+  };
+  lastFetchTarget: "/posts/new" | "/posts/suggested" | "" = "";
+  lastFetchSource: "Server" | "IDB" | "" = "";
+  lastFetchDate: number = 0;
+  currentPage = 1;
+  totalPages = 1;
 
   // CTOR
   constructor(private alertsService: MockAlertsService) {
     // default assignment
-    this.fullItemsPage.fullNewItems = 1;
-    this.fullItemsPage.fullSuggestedItems = 1;
-    this.totalFullItemsPage.fullNewItems = 1;
-    this.totalFullItemsPage.fullSuggestedItems = 1;
+    this.currentPage = 1;
+    this.totalPages = 1;
   }
 
   // POST-RELATED METHODS
@@ -87,160 +77,57 @@ export class MockPostsService {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  getItems() {
-    this.isMainPageResolved.next(false);
+  getPosts(_url: string, _type: "new" | "suggested", page: number = 1) {
+    this.isFetchResolved.newItems.next(false);
+    this.isFetchResolved.suggestedItems.next(false);
+
+    const pageOnePosts = [
+      {
+        date: new Date("2020-06-27 19:17:31.072"),
+        givenHugs: 0,
+        id: 1,
+        text: "test",
+        userId: 1,
+        user: "test",
+        sentHugs: [],
+      },
+      {
+        date: new Date("2020-06-28 19:17:31.072"),
+        givenHugs: 0,
+        id: 2,
+        text: "test2",
+        userId: 1,
+        user: "test",
+        sentHugs: [],
+      },
+    ];
+    const pageTwoPosts = [
+      {
+        date: new Date("2020-06-27 19:17:31.072"),
+        givenHugs: 0,
+        id: 1,
+        text: "test",
+        userId: 1,
+        user: "test",
+        sentHugs: [],
+      },
+    ];
 
     // mock data
-    this.newItemsArray = [
-      {
-        date: new Date("2020-06-27 19:17:31.072"),
-        givenHugs: 0,
-        id: 1,
-        text: "test",
-        userId: 1,
-        user: "test",
-        sentHugs: [],
-      },
-      {
-        date: new Date("2020-06-28 19:17:31.072"),
-        givenHugs: 0,
-        id: 2,
-        text: "test2",
-        userId: 1,
-        user: "test",
-        sentHugs: [],
-      },
-    ];
-    this.sugItemsArray = [
-      {
-        date: new Date("2020-06-28 19:17:31.072"),
-        givenHugs: 0,
-        id: 2,
-        text: "test2",
-        userId: 1,
-        user: "test",
-        sentHugs: [],
-      },
-      {
-        date: new Date("2020-06-27 19:17:31.072"),
-        givenHugs: 0,
-        id: 1,
-        text: "test",
-        userId: 1,
-        user: "test",
-        sentHugs: [],
-      },
-    ];
-    this.isMainPageResolved.next(true);
-  }
-
-  /*
-  Function Name: getNewItems()
-  Function Description: Gets a paginated list of new items.
-  Parameters: page (number) - Current page.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  getNewItems(page: number) {
-    this.isPostsResolved.fullNewItems.next(false);
-
     if (page == 1) {
-      this.fullItemsList.fullNewItems = [
-        {
-          date: new Date("2020-06-27 19:17:31.072"),
-          givenHugs: 0,
-          id: 1,
-          text: "test",
-          userId: 1,
-          user: "test",
-          sentHugs: [],
-        },
-        {
-          date: new Date("2020-06-28 19:17:31.072"),
-          givenHugs: 0,
-          id: 2,
-          text: "test2",
-          userId: 1,
-          user: "test",
-          sentHugs: [],
-        },
-      ];
-      this.fullItemsPage.fullNewItems = 1;
-      this.totalFullItemsPage.fullNewItems = 2;
-      this.isPostsResolved.fullNewItems.next(true);
+      this.posts.newItems.next(pageOnePosts);
+      this.posts.suggestedItems.next(pageOnePosts);
+      this.currentPage = 1;
+      this.totalPages = 2;
+      this.isFetchResolved.newItems.next(true);
+      this.isFetchResolved.suggestedItems.next(true);
     } else if (page == 2) {
-      this.fullItemsList.fullNewItems = [
-        {
-          date: new Date("2020-06-27 19:17:31.072"),
-          givenHugs: 0,
-          id: 1,
-          text: "test",
-          userId: 1,
-          user: "test",
-          sentHugs: [],
-        },
-      ];
-      this.fullItemsPage.fullNewItems = 2;
-      this.totalFullItemsPage.fullNewItems = 2;
-      this.isPostsResolved.fullNewItems.next(true);
-    } else {
-      let err: HttpErrorResponse = new HttpErrorResponse({
-        status: 404,
-        statusText: "Not found",
-      });
-      this.alertsService.createErrorAlert(err);
-    }
-  }
-
-  /*
-  Function Name: getSuggestedItems()
-  Function Description: Gets a paginated list of suggested items.
-  Parameters: page (number) - Current page.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  getSuggestedItems(page: number) {
-    this.isPostsResolved.fullSuggestedItems.next(false);
-
-    if (page == 1) {
-      this.fullItemsList.fullSuggestedItems = [
-        {
-          date: new Date("2020-06-27 19:17:31.072"),
-          givenHugs: 0,
-          id: 1,
-          text: "test",
-          userId: 1,
-          user: "test",
-          sentHugs: [],
-        },
-        {
-          date: new Date("2020-06-28 19:17:31.072"),
-          givenHugs: 0,
-          id: 2,
-          text: "test2",
-          userId: 1,
-          user: "test",
-          sentHugs: [],
-        },
-      ];
-      this.fullItemsPage.fullSuggestedItems = 1;
-      this.totalFullItemsPage.fullSuggestedItems = 2;
-      this.isPostsResolved.fullSuggestedItems.next(true);
-    } else if (page == 2) {
-      this.fullItemsList.fullSuggestedItems = [
-        {
-          date: new Date("2020-06-27 19:17:31.072"),
-          givenHugs: 0,
-          id: 1,
-          text: "test",
-          userId: 1,
-          user: "test",
-          sentHugs: [],
-        },
-      ];
-      this.fullItemsPage.fullSuggestedItems = 2;
-      this.totalFullItemsPage.fullSuggestedItems = 2;
-      this.isPostsResolved.fullSuggestedItems.next(true);
+      this.posts.newItems.next(pageTwoPosts);
+      this.posts.suggestedItems.next(pageTwoPosts);
+      this.currentPage = 2;
+      this.totalPages = 2;
+      this.isFetchResolved.newItems.next(true);
+      this.isFetchResolved.suggestedItems.next(true);
     } else {
       let err: HttpErrorResponse = new HttpErrorResponse({
         status: 404,
@@ -322,10 +209,8 @@ export class MockPostsService {
     this.alertsService.createSuccessAlert("Your hug was sent!", false);
 
     // Check which array the item is in
-    this.disableHugButton(this.newItemsArray, ".newItem", item.id);
-    this.disableHugButton(this.sugItemsArray, ".sugItem", item.id);
-    this.disableHugButton(this.fullItemsList.fullNewItems, ".newItem", item.id);
-    this.disableHugButton(this.fullItemsList.fullSuggestedItems, ".newItem", item.id);
+    this.disableHugButton(this.posts.newItems.value, ".newItem", item.id);
+    this.disableHugButton(this.posts.suggestedItems.value, ".sugItem", item.id);
   }
 
   /*

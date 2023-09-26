@@ -61,13 +61,15 @@ import { MockPostsService } from "../../services/posts.service.mock";
   template: `
     <ul
       class="itemList"
-      *ngIf="postsService.newItemsArray.length > 0 && postsService.isMainPageResolved.value"
+      *ngIf="
+        postsService.posts.newItems.value.length > 0 && postsService.isFetchResolved.newItem.value
+      "
       role="region"
       aria-describedby="newTitle"
       id="newItemsList"
     >
       <app-single-post
-        *ngFor="let item of postsService.newItemsArray"
+        *ngFor="let item of postsService.posts.newItems.value"
         [post]="item"
         [type]="'n'"
         [class]="'newItem'"
@@ -86,7 +88,7 @@ class MockPage {
     public itemsService: ItemsService,
     private postsService: PostsService,
   ) {
-    this.postsService.getItems();
+    this.postsService.getPosts("", "new");
   }
 }
 
@@ -144,7 +146,7 @@ describe("Post", () => {
 
     //  before the click
     const newItems = pageDOM.querySelector("#newItemsList");
-    expect(myPosts.postsService.newItemsArray[0].givenHugs).toBe(0);
+    expect(myPosts.postsService.posts.newItems.value[0].givenHugs).toBe(0);
     expect(newItems.querySelectorAll(".badge")[0].textContent).toBe("0");
     expect(hugSpy).not.toHaveBeenCalled();
     upFixture.detectChanges();
@@ -157,7 +159,7 @@ describe("Post", () => {
     expect(spy).toHaveBeenCalled();
     expect(spy.calls.count()).toBe(1);
     expect(hugSpy).toHaveBeenCalled();
-    expect(myPosts.postsService.newItemsArray[0].givenHugs).toBe(1);
+    expect(myPosts.postsService.posts.newItems.value[0].givenHugs).toBe(1);
     expect(newItems.querySelectorAll(".badge")[0].textContent).toBe("1");
     expect(disableButton).toHaveBeenCalled();
     done();

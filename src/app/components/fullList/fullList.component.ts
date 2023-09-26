@@ -31,12 +31,15 @@
 */
 
 // Angular imports
-import { Component, AfterViewChecked } from "@angular/core";
+import { Component, AfterViewChecked, computed } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 
 // App-related imports
 import { AuthService } from "../../services/auth.service";
 import { PostsService } from "../../services/posts.service";
+
+type FullListType = "New" | "Suggested";
+type LowercaseFullListType = "new" | "suggested";
 
 @Component({
   selector: "app-full-list",
@@ -44,9 +47,11 @@ import { PostsService } from "../../services/posts.service";
 })
 export class FullList implements AfterViewChecked {
   // current page and type of list
-  type: any;
+  type: FullListType = "New";
   page: any;
   showMenuNum: string | null = null;
+  postsFetchUrl = computed(() => `/posts/${this.type.toLowerCase()}`);
+  postsServiceProperty = computed(() => `${this.type.toLowerCase()}Items`);
   // loader sub-component variables
   waitFor = "";
 
@@ -59,32 +64,28 @@ export class FullList implements AfterViewChecked {
   ) {
     // get the type of list and the current page
     this.route.url.subscribe((params) => {
-      this.type = params[0].path;
-    });
-    this.page = Number(this.route.snapshot.queryParamMap.get("page"));
+      const urlPath = params[0].path;
 
-    // set a default page if no page is set
-    if (this.page) {
-      // if it was a string, set it to 1
-      if (this.page.isNaN) {
+      // set the type from the url only if a valid type is
+      // passed in
+      if (urlPath.toLowerCase() === "new" || urlPath.toLowerCase() === "suggested") {
+        this.type = urlPath as FullListType;
+      }
+
+      this.page = Number(this.route.snapshot.queryParamMap.get("page"));
+
+      // set a default page if no page is set or it's invalid
+      if ((this.page && this.page.isNaN) || !this.page) {
         this.page = 1;
       }
-    }
-    // if there's no page, set it to 1
-    else {
-      this.page = 1;
-    }
 
-    // if the type is new items, get the new items
-    if (this.type == "New") {
-      this.waitFor = "new posts";
-      this.postsService.getNewItems(this.page);
-    }
-    // if the type is suggested items, get the suggested items
-    else if (this.type == "Suggested") {
-      this.waitFor = "suggested posts";
-      this.postsService.getSuggestedItems(this.page);
-    }
+      this.waitFor = `${this.type.toLowerCase()} posts`;
+      this.postsService.getPosts(
+        this.postsFetchUrl(),
+        this.type.toLowerCase() as LowercaseFullListType,
+        this.page,
+      );
+    });
   }
 
   /*
@@ -163,16 +164,12 @@ export class FullList implements AfterViewChecked {
   Programmer: Shir Bar Lev.
   */
   nextPage() {
-    // if the list is the new posts list, get the next page of new posts
-    if (this.type == "New") {
-      this.page += 1;
-      this.postsService.getNewItems(this.page);
-    }
-    // if the list is the suggested posts list, get the next page of suggested posts
-    else if (this.type == "Suggested") {
-      this.page += 1;
-      this.postsService.getSuggestedItems(this.page);
-    }
+    this.page += 1;
+    this.postsService.getPosts(
+      this.postsFetchUrl(),
+      this.type.toLowerCase() as LowercaseFullListType,
+      this.page,
+    );
 
     // changes the URL query parameter (page) according to the new page
     this.router.navigate([], {
@@ -193,16 +190,12 @@ export class FullList implements AfterViewChecked {
   Programmer: Shir Bar Lev.
   */
   prevPage() {
-    // if the list is the new posts list, get the previous page of new posts
-    if (this.type == "New") {
-      this.page -= 1;
-      this.postsService.getNewItems(this.page);
-    }
-    // if the list is the suggested posts list, get the previous page of suggested posts
-    else if (this.type == "Suggested") {
-      this.page -= 1;
-      this.postsService.getSuggestedItems(this.page);
-    }
+    this.page -= 1;
+    this.postsService.getPosts(
+      this.postsFetchUrl(),
+      this.type.toLowerCase() as LowercaseFullListType,
+      this.page,
+    );
 
     // changes the URL query parameter (page) according to the new page
     this.router.navigate([], {

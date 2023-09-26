@@ -53,7 +53,7 @@ export class MainPage implements OnInit, AfterViewChecked {
     public authService: AuthService,
     public postsService: PostsService,
   ) {
-    this.postsService.getItems();
+    this.postsService.getPosts("", "new");
   }
 
   ngOnInit() {}

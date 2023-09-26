@@ -42,54 +42,28 @@ import { AlertsService } from "./alerts.service";
 import { SWManager } from "./sWManager.service";
 import { environment } from "../../environments/environment";
 
-type FetchStamp = {
-  source: "Server" | "IDB" | "";
-  date: number;
-};
 
 @Injectable({
   providedIn: "root",
 })
 export class PostsService {
   readonly serverUrl = environment.backend.domain;
-  newItemsArray: Post[] = [];
-  sugItemsArray: Post[] = [];
-  isMainPageResolved = new BehaviorSubject(false);
-  // Full list variables
-  fullItemsList: {
-    fullNewItems: Post[];
-    fullSuggestedItems: Post[];
-  } = {
-    fullNewItems: [],
-    fullSuggestedItems: [],
-  };
-  fullItemsPage = {
-    fullNewItems: 0,
-    fullSuggestedItems: 0,
-  };
-  totalFullItemsPage = {
-    fullNewItems: 0,
-    fullSuggestedItems: 0,
-  };
-  isPostsResolved = {
-    fullNewItems: new BehaviorSubject(false),
-    fullSuggestedItems: new BehaviorSubject(false),
-  };
-  lastFetched: { [key: string]: FetchStamp } = {
-    mainPage: {
-      source: "",
-      date: 0,
-    },
-    newItems: {
-      source: "",
-      date: 0,
-    },
-    suggestedItems: {
-      source: "",
-      date: 0,
-    },
-  };
   isUpdated = new BehaviorSubject(false);
+  posts = {
+    newItems: new BehaviorSubject<Post[]>([]),
+    suggestedItems: new BehaviorSubject<Post[]>([]),
+  };
+  // TODO: Remove isFetchResolved and rely entirely on the
+  // behaviour subjects above
+  isFetchResolved = {
+    newItems: new BehaviorSubject(false),
+    suggestedItems: new BehaviorSubject(false),
+  };
+  lastFetchTarget: "/posts/new" | "/posts/suggested" | "" = "";
+  lastFetchSource: "Server" | "IDB" | "" = "";
+  lastFetchDate: number = 0;
+  currentPage = 1;
+  totalPages = 1;
 
   // CTOR
   constructor(
@@ -99,292 +73,134 @@ export class PostsService {
     private serviceWorkerM: SWManager,
   ) {
     // default assignment
-    this.fullItemsPage.fullNewItems = 1;
-    this.fullItemsPage.fullSuggestedItems = 1;
-    this.totalFullItemsPage.fullNewItems = 1;
-    this.totalFullItemsPage.fullSuggestedItems = 1;
+    this.currentPage = 1;
+    this.totalPages = 1;
   }
 
   // POST-RELATED METHODS
   // ==============================================================
-  /*
-  Function Name: getItems()
-  Function Description: Gets ten recent posts and ten suggested posts for the
-                        main page (MainPage component).
-  Parameters: None.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  getItems() {
-    this.isMainPageResolved.next(false);
+  /**
+   * Fetches the posts from the server and updates the posts behaviour subjects
+   * @param url - The URL to fetch.
+   * @param type - The type of posts to fetch. Not used when the URL is "" as it's the home page.
+   * @param page - The page to fetch. Not used when the URL is "" as it's the home page.
+   */
+  getPosts(url: string, type: "new" | "suggested", page: number = 1) {
+    if (type !== "new" && type !== "suggested") return;
 
-    // get the recent and suggested posts from IDB
-    this.serviceWorkerM.queryPosts("main new")?.then((data: any) => {
-      // if there are posts in cache, display them
-      if (data.length) {
-        // if the latest fetch is none, the last fetch was from IDB and before or
-        // the last fetch was performed more than 10 seconds ago (meaning the user)
-        // changed/refreshed the page, update the latest fetch and the displayed
-        // posts
-        if (
-          this.lastFetched.mainPage.date == 0 ||
-          (this.lastFetched.mainPage.date < Date.now() &&
-            this.lastFetched.mainPage.source == "IDB") ||
-          this.lastFetched.mainPage.date + 10000 < Date.now()
-        ) {
-          this.lastFetched.mainPage.source = "IDB";
-          this.lastFetched.mainPage.date = Date.now();
-          this.newItemsArray = data;
-          this.isMainPageResolved.next(true);
-        }
-      }
-    });
-    this.serviceWorkerM.queryPosts("main suggested")?.then((data: any) => {
-      // if there are posts in cache, display them
-      if (data.length) {
-        // if the latest fetch is none, the last fetch was from IDB and before or
-        // the last fetch was performed more than 10 seconds ago (meaning the user)
-        // changed/refreshed the page, update the latest fetch and the displayed
-        // posts
-        if (
-          this.lastFetched.mainPage.date == 0 ||
-          (this.lastFetched.mainPage.date < Date.now() &&
-            this.lastFetched.mainPage.source == "IDB") ||
-          this.lastFetched.mainPage.date + 10000 < Date.now()
-        ) {
-          this.lastFetched.mainPage.source = "IDB";
-          this.lastFetched.mainPage.date = Date.now();
-          this.sugItemsArray = data;
-          this.isMainPageResolved.next(true);
-        }
-      }
-    });
-
-    // attempt to get more updated recent / suggested posts from the server
-    this.Http.get(this.serverUrl).subscribe(
-      (response: any) => {
-        let data = response;
-        this.newItemsArray = data.recent;
-        this.sugItemsArray = data.suggested;
-        this.lastFetched.mainPage.source = "Server";
-        this.lastFetched.mainPage.date = Date.now();
-        this.isMainPageResolved.next(true);
-        this.alertsService.toggleOfflineAlert();
-
-        // add each post in the 'recent' list to posts store
-        data.recent.forEach((element: Post) => {
-          let isoDate = new Date(element.date).toISOString();
-          let post = {
-            date: element.date,
-            givenHugs: element.givenHugs,
-            id: element.id!,
-            isoDate: isoDate,
-            text: element.text,
-            userId: Number(element.userId),
-            user: element.user,
-            sentHugs: element.sentHugs!,
-          };
-          this.serviceWorkerM.addItem("posts", post);
-        });
-        // add each post in the 'suggested' list to posts store
-        data.suggested.forEach((element: Post) => {
-          let isoDate = new Date(element.date).toISOString();
-          let post = {
-            date: element.date,
-            givenHugs: element.givenHugs,
-            id: element.id!,
-            isoDate: isoDate,
-            text: element.text,
-            userId: Number(element.userId),
-            user: element.user,
-            sentHugs: element.sentHugs!,
-          };
-          this.serviceWorkerM.addItem("posts", post);
-        });
-        this.serviceWorkerM.cleanDB("posts");
-        // if there was an error, alert the user
-      },
-      (err: HttpErrorResponse) => {
-        // if the server is unavilable due to the user being offline, tell the user
-        if (!navigator.onLine) {
-          this.isMainPageResolved.next(true);
-          this.alertsService.toggleOfflineAlert();
-        }
-        // otherwise just create an error alert
-        else {
-          this.isMainPageResolved.next(true);
-          this.alertsService.createErrorAlert(err);
-        }
-      },
-    );
-  }
-
-  /*
-  Function Name: getNewItems()
-  Function Description: Gets a paginated list of new items.
-  Parameters: page (number) - Current page.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  getNewItems(page: number) {
     // URL and page query parameter
-    const Url = this.serverUrl + "/posts/new";
-    const params = new HttpParams().set("page", `${page}`);
-    this.isPostsResolved.fullNewItems.next(false);
+    const Url = this.serverUrl + url;
+    let params = new HttpParams();
 
-    // get the recent posts from IDB
-    this.serviceWorkerM.queryPosts("new posts", undefined, page)?.then((data: any) => {
-      // if there are posts in cache, display them
-      if (data.posts.length) {
-        // if the latest fetch is none, the last fetch was from IDB and before,
-        // the last fetch was performed more than 10 seconds ago (meaning the user
-        // changed/refreshed the page) or it's a different page, update the latest fetch and the displayed
-        // posts
-        if (
-          this.lastFetched.newItems.date == 0 ||
-          (this.lastFetched.newItems.date < Date.now() &&
-            this.lastFetched.newItems.source == "IDB") ||
-          this.lastFetched.newItems.date + 10000 < Date.now() ||
-          (page != this.fullItemsPage.fullNewItems && page != 1)
-        ) {
-          this.lastFetched.newItems.source = "IDB";
-          this.lastFetched.newItems.date = Date.now();
-          this.fullItemsList.fullNewItems = data.posts;
-          this.totalFullItemsPage.fullNewItems = data.pages;
-          this.isPostsResolved.fullNewItems.next(true);
-        }
-      }
-    });
+    if (url !== "") {
+      params = params.set("page", `${page}`);
+      this.fetchPostsFromIdb(url, type, page);
+    } else {
+      this.fetchPostsFromIdb(url, "new", page);
+      this.fetchPostsFromIdb(url, "suggested", page);
+    }
 
-    // then try to get the recent posts from the server
-    this.Http.get(Url, {
-      params: params,
-    }).subscribe(
-      (response: any) => {
-        let data = response.posts;
-        this.fullItemsList.fullNewItems = data;
-        this.fullItemsPage.fullNewItems = page;
-        this.totalFullItemsPage.fullNewItems = response.total_pages;
-        this.lastFetched.newItems.source = "Server";
-        this.lastFetched.newItems.date = Date.now();
-        this.isPostsResolved.fullNewItems.next(true);
-        this.alertsService.toggleOfflineAlert();
-
-        // add each post in the 'recent' list to posts store
-        data.forEach((element: Post) => {
-          let isoDate = new Date(element.date).toISOString();
-          let post = {
-            date: element.date,
-            givenHugs: element.givenHugs,
-            id: element.id!,
-            isoDate: isoDate,
-            text: element.text,
-            userId: Number(element.userId),
-            user: element.user,
-            sentHugs: element.sentHugs!,
-          };
-          this.serviceWorkerM.addItem("posts", post);
-        });
-        this.serviceWorkerM.cleanDB("posts");
-        // if there was an error, alert the user
-      },
-      (err: HttpErrorResponse) => {
-        // if the server is unavilable due to the user being offline, tell the user
-        if (!navigator.onLine) {
-          this.isPostsResolved.fullNewItems.next(true);
-          this.alertsService.toggleOfflineAlert();
-        }
-        // otherwise just create an error alert
-        else {
-          this.isPostsResolved.fullNewItems.next(true);
-          this.alertsService.createErrorAlert(err);
-        }
-      },
-    );
-  }
-
-  /*
-  Function Name: getSuggestedItems()
-  Function Description: Gets a paginated list of suggested items.
-  Parameters: page (number) - Current page.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  getSuggestedItems(page: number) {
-    // URL and page query parameter
-    const Url = this.serverUrl + "/posts/suggested";
-    const params = new HttpParams().set("page", `${page}`);
-    this.isPostsResolved.fullSuggestedItems.next(false);
-
-    // get the recent posts from IDB
-    this.serviceWorkerM.queryPosts("suggested posts", undefined, page)?.then((data: any) => {
-      // if there are posts in cache, display them
-      if (data.posts.length) {
-        // if the latest fetch is none, the last fetch was from IDB and before or
-        // the last fetch was performed more than 10 seconds ago (meaning the user)
-        // changed/refreshed the page, update the latest fetch and the displayed
-        // posts
-        if (
-          this.lastFetched.suggestedItems.date == 0 ||
-          (this.lastFetched.suggestedItems.date < Date.now() &&
-            this.lastFetched.suggestedItems.source == "IDB") ||
-          this.lastFetched.suggestedItems.date + 10000 < Date.now() ||
-          (page != this.fullItemsPage.fullSuggestedItems && page != 1)
-        ) {
-          this.lastFetched.suggestedItems.source = "IDB";
-          this.lastFetched.suggestedItems.date = Date.now();
-          this.fullItemsList.fullSuggestedItems = data.posts;
-          this.totalFullItemsPage.fullSuggestedItems = data.pages;
-          this.isPostsResolved.fullSuggestedItems.next(true);
-        }
-      }
-    });
+    this.isFetchResolved.newItems.next(false);
+    this.isFetchResolved.suggestedItems.next(false);
 
     // HTTP request
     this.Http.get(Url, {
       params: params,
-    }).subscribe(
-      (response: any) => {
-        let data = response.posts;
-        this.fullItemsList.fullSuggestedItems = data;
-        this.fullItemsPage.fullSuggestedItems = page;
-        this.totalFullItemsPage.fullSuggestedItems = response.total_pages;
-        this.lastFetched.newItems.source = "Server";
-        this.lastFetched.newItems.date = Date.now();
-        this.isPostsResolved.fullSuggestedItems.next(true);
-        this.alertsService.toggleOfflineAlert();
+    }).subscribe({
+      next: (response: any) => {
+        if (url === "") {
+          this.posts.newItems.next(response.recent);
+          this.posts.suggestedItems.next(response.suggested);
+          this.addPostsToIdb(response.recent);
+          this.addPostsToIdb(response.suggested);
+        } else {
+          const data = response.posts;
+          this.posts[`${type}Items`].next(data);
+          this.addPostsToIdb(data);
+        }
 
-        // add each post in the 'recent' list to posts store
-        data.forEach((element: Post) => {
-          let isoDate = new Date(element.date).toISOString();
-          let post = {
-            date: element.date,
-            givenHugs: element.givenHugs,
-            id: element.id!,
-            isoDate: isoDate,
-            text: element.text,
-            userId: Number(element.userId),
-            user: element.user,
-            sentHugs: element.sentHugs!,
-          };
-          this.serviceWorkerM.addItem("posts", post);
-        });
-        this.serviceWorkerM.cleanDB("posts");
-        // if there was an error, alert the user
+        this.currentPage = page;
+        this.totalPages = response.total_pages || 1;
+        this.lastFetchSource = "Server";
+        this.lastFetchDate = Date.now();
+        this.alertsService.toggleOfflineAlert();
+        this.isFetchResolved.newItems.next(true);
+        this.isFetchResolved.suggestedItems.next(true);
       },
-      (err: HttpErrorResponse) => {
+      error: (err) => {
         // if the server is unavilable due to the user being offline, tell the user
         if (!navigator.onLine) {
-          this.isPostsResolved.fullSuggestedItems.next(true);
+          this.posts[`${type}Items`].next([]);
           this.alertsService.toggleOfflineAlert();
         }
         // otherwise just create an error alert
         else {
-          this.isPostsResolved.fullSuggestedItems.next(true);
+          this.posts[`${type}Items`].next([]);
           this.alertsService.createErrorAlert(err);
         }
+
+        this.isFetchResolved.newItems.next(true);
+        this.isFetchResolved.suggestedItems.next(true);
       },
-    );
+    });
+  }
+
+  /**
+   * Fetches the given type of posts from IndexedDB.
+   * @param url - The URL to fetch. Used to determine the number of posts to fetch, as
+   *              the home page has 10 posts, and the full list page has 5.
+   * @param type - The type of posts to fetch.
+   * @param page - The page to fetch.
+   */
+  fetchPostsFromIdb(url: string, type: "new" | "suggested", page: number = 1) {
+    const queryTarget = url == "" ? `main ${type}` : `${type} posts`;
+
+    // get the posts from IDB
+    this.serviceWorkerM.queryPosts(queryTarget, undefined, page)?.then((data: any) => {
+      // if there are posts in cache, display them
+      if (data.posts.length) {
+        // if the latest fetch is none, the last fetch was from IDB and before or
+        // the last fetch was performed more than 10 seconds ago (meaning the user)
+        // changed/refreshed the page, update the latest fetch and the displayed
+        // posts
+        if (
+          !this.lastFetchDate ||
+          (this.lastFetchDate < Date.now() && this.lastFetchSource == "IDB") ||
+          this.lastFetchDate + 10000 < Date.now() ||
+          (page != this.currentPage && page != 1) ||
+          this.lastFetchTarget != url
+        ) {
+          this.lastFetchSource = "IDB";
+          this.lastFetchDate = Date.now();
+          this.posts[`${type}Items`].next(data.posts);
+          this.totalPages = data.pages;
+          this.lastFetchTarget = url as "" | "/posts/new" | "/posts/suggested";
+        }
+      }
+    });
+  }
+
+  /**
+   * Adds the fetched posts to IndexedDB.
+   * @param posts - The list of posts to add to IDB.
+   */
+  addPostsToIdb(posts: Post[]) {
+    // add each post in the list to posts store
+    posts.forEach((element: Post) => {
+      let isoDate = new Date(element.date).toISOString();
+      let post = {
+        date: element.date,
+        givenHugs: element.givenHugs,
+        id: element.id!,
+        isoDate: isoDate,
+        text: element.text,
+        userId: Number(element.userId),
+        user: element.user,
+        sentHugs: element.sentHugs!,
+      };
+      this.serviceWorkerM.addItem("posts", post);
+    });
+    this.serviceWorkerM.cleanDB("posts");
   }
 
   /*
@@ -576,10 +392,8 @@ export class PostsService {
         this.alertsService.toggleOfflineAlert();
 
         // Check which array the item is in
-        this.disableHugButton(this.newItemsArray, ".newItem", item.id);
-        this.disableHugButton(this.sugItemsArray, ".sugItem", item.id);
-        this.disableHugButton(this.fullItemsList.fullNewItems, ".newItem", item.id);
-        this.disableHugButton(this.fullItemsList.fullSuggestedItems, ".newItem", item.id);
+        this.disableHugButton(this.posts.newItems.value, ".newItem", item.id);
+        this.disableHugButton(this.posts.suggestedItems.value, ".sugItem", item.id);
         // if there was an error, alert the user
       },
       (err: HttpErrorResponse) => {

@@ -237,56 +237,13 @@ export class Loader implements OnInit, OnChanges {
         }
       });
     }
-    // if the app is waiting for main page data to be fetched from the server
-    else if (this.waitingFor == "main page") {
+    // if the app is waiting for main page/new posts/suggested posts data to be fetched from the server
+    else if (
+      this.waitingFor == "main page" ||
+      this.waitingFor == "new posts" ||
+      this.waitingFor == "suggested posts"
+    ) {
       this.message = "Fetching posts...";
-      if (this.subscribeCalls == 0) {
-        this.subscribeCalls++;
-        // subscribe to the subject following main page posts
-        this.postsService.isMainPageResolved.subscribe((value) => {
-          // the subject's value is changed to 'true' upon fetching main
-          // page data, so if the value is true, there's no longer need
-          // for the loader screen
-          if (value) {
-            this.visible = false;
-            this.waitingFor = "";
-          }
-        });
-      }
-    }
-    // if the app is waiting for new posts data to be fetched from the server
-    else if (this.waitingFor == "new posts") {
-      this.message = "Fetching posts...";
-      if (this.subscribeCalls == 0) {
-        this.subscribeCalls++;
-        // subscribe to the subject following full new posts
-        this.postsService.isPostsResolved.fullNewItems.subscribe((value) => {
-          // the subject's value is changed to 'true' upon fetching new
-          // posts page data, so if the value is true, there's no longer need
-          // for the loader screen
-          if (value) {
-            this.visible = false;
-            this.waitingFor = "";
-          }
-        });
-      }
-    }
-    // if the app is waiting for suggested posts data to be fetched from the server
-    else if (this.waitingFor == "suggested posts") {
-      this.message = "Fetching posts...";
-      if (this.subscribeCalls == 0) {
-        this.subscribeCalls++;
-        // subscribe to the subject following full suggested posts
-        this.postsService.isPostsResolved.fullSuggestedItems.subscribe((value) => {
-          // the subject's value is changed to 'true' upon fetching suggested
-          // posts page data, so if the value is true, there's no longer need
-          // for the loader screen
-          if (value) {
-            this.visible = false;
-            this.waitingFor = "";
-          }
-        });
-      }
     }
     // if the app is waiting for the user's posts to be fetched from the server
     else if (this.waitingFor == "user posts") {

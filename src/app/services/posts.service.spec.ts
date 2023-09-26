@@ -75,7 +75,7 @@ describe("PostsService", () => {
   });
 
   // Check the service gets the main page items
-  it("getItems() - should get items", () => {
+  it("getPosts() - should get home page items", () => {
     // mock response
     const mockResponse = {
       success: true,
@@ -124,14 +124,18 @@ describe("PostsService", () => {
     const querySpy = spyOn(postsService["serviceWorkerM"], "queryPosts");
     const addSpy = spyOn(postsService["serviceWorkerM"], "addItem");
     const cleanSpy = spyOn(postsService["serviceWorkerM"], "cleanDB");
-    postsService.getItems();
+    postsService.getPosts("", "new", 1);
     // wait for the fetch to be resolved
-    postsService.isMainPageResolved.subscribe((value) => {
+    postsService.isFetchResolved.newItems.subscribe((value) => {
       if (value) {
-        expect(postsService.newItemsArray.length).toBe(2);
-        expect(postsService.newItemsArray[0].id).toBe(1);
-        expect(postsService.sugItemsArray.length).toBe(2);
-        expect(postsService.sugItemsArray[0].id).toBe(2);
+        expect(postsService.posts.newItems.value.length).toBe(2);
+        expect(postsService.posts.newItems.value[0].id).toBe(1);
+      }
+    });
+    postsService.isFetchResolved.suggestedItems.subscribe((value) => {
+      if (value) {
+        expect(postsService.posts.suggestedItems.value.length).toBe(2);
+        expect(postsService.posts.suggestedItems.value[0].id).toBe(2);
       }
     });
 
@@ -148,7 +152,7 @@ describe("PostsService", () => {
   });
 
   // Check the service gets the full new items
-  it("getNewItems() - should get new items", () => {
+  it("getPosts() - should get new items", () => {
     // mock page 1 response
     const mockP1Response = {
       success: true,
@@ -179,14 +183,14 @@ describe("PostsService", () => {
     const addSpy = spyOn(postsService["serviceWorkerM"], "addItem");
     const cleanSpy = spyOn(postsService["serviceWorkerM"], "cleanDB");
     // fetch page 1
-    postsService.getNewItems(1);
+    postsService.getPosts("/posts/new", "new", 1);
     // wait for the fetch to be resolved
-    postsService.isPostsResolved.fullNewItems.subscribe((value) => {
+    postsService.isFetchResolved.newItems.subscribe((value) => {
       if (value) {
-        expect(postsService.fullItemsPage.fullNewItems).toBe(1);
-        expect(postsService.totalFullItemsPage.fullNewItems).toBe(2);
-        expect(postsService.fullItemsList.fullNewItems.length).toBe(2);
-        expect(postsService.fullItemsList.fullNewItems[0].id).toBe(1);
+        expect(postsService.currentPage).toBe(1);
+        expect(postsService.totalPages).toBe(2);
+        expect(postsService.posts.newItems.value.length).toBe(2);
+        expect(postsService.posts.newItems.value[0].id).toBe(1);
       }
     });
 
@@ -203,7 +207,7 @@ describe("PostsService", () => {
   });
 
   // Check the service gets the full new items page 2
-  it("getItems() - should get items page 2", () => {
+  it("getPosts() - should get new items page 2", () => {
     // mock page 2 response
     const mockP2Response = {
       success: true,
@@ -225,14 +229,14 @@ describe("PostsService", () => {
     const addSpy = spyOn(postsService["serviceWorkerM"], "addItem");
     const cleanSpy = spyOn(postsService["serviceWorkerM"], "cleanDB");
     // fetch page 2
-    postsService.getNewItems(2);
+    postsService.getPosts("/posts/new", "new", 2);
     // wait for the fetch to be resolved
-    postsService.isPostsResolved.fullNewItems.subscribe((value) => {
+    postsService.isFetchResolved.newItems.subscribe((value) => {
       if (value) {
-        expect(postsService.fullItemsPage.fullNewItems).toBe(2);
-        expect(postsService.totalFullItemsPage.fullNewItems).toBe(2);
-        expect(postsService.fullItemsList.fullNewItems.length).toBe(1);
-        expect(postsService.fullItemsList.fullNewItems[0].id).toBe(3);
+        expect(postsService.currentPage).toBe(2);
+        expect(postsService.totalPages).toBe(2);
+        expect(postsService.posts.newItems.value.length).toBe(1);
+        expect(postsService.posts.newItems.value[0].id).toBe(3);
       }
     });
 
@@ -249,7 +253,7 @@ describe("PostsService", () => {
   });
 
   // Check the service gets the full suggested items
-  it("getSuggestedItems() - should get suggested items", () => {
+  it("getPosts() - should get suggested items", () => {
     // mock page 1 response
     const mockP1Response = {
       success: true,
@@ -280,14 +284,14 @@ describe("PostsService", () => {
     const addSpy = spyOn(postsService["serviceWorkerM"], "addItem");
     const cleanSpy = spyOn(postsService["serviceWorkerM"], "cleanDB");
     // fetch page 1
-    postsService.getSuggestedItems(1);
+    postsService.getPosts("/posts/suggested", "suggested", 1);
     // wait for the fetch to be resolved
-    postsService.isPostsResolved.fullSuggestedItems.subscribe((value) => {
+    postsService.isFetchResolved.suggestedItems.subscribe((value) => {
       if (value) {
-        expect(postsService.fullItemsPage.fullSuggestedItems).toBe(1);
-        expect(postsService.totalFullItemsPage.fullSuggestedItems).toBe(2);
-        expect(postsService.fullItemsList.fullSuggestedItems.length).toBe(2);
-        expect(postsService.fullItemsList.fullSuggestedItems[0].id).toBe(1);
+        expect(postsService.currentPage).toBe(1);
+        expect(postsService.totalPages).toBe(2);
+        expect(postsService.posts.suggestedItems.value.length).toBe(2);
+        expect(postsService.posts.suggestedItems.value[0].id).toBe(1);
       }
     });
 
@@ -304,7 +308,7 @@ describe("PostsService", () => {
   });
 
   // Check the service gets the full suggested items page 2
-  it("getSuggestedItems() - should get suggested items page 2", () => {
+  it("getPosts() - should get suggested items page 2", () => {
     // mock page 2 response
     const mockP2Response = {
       success: true,
@@ -326,14 +330,14 @@ describe("PostsService", () => {
     const addSpy = spyOn(postsService["serviceWorkerM"], "addItem");
     const cleanSpy = spyOn(postsService["serviceWorkerM"], "cleanDB");
     // fetch page 2
-    postsService.getSuggestedItems(2);
+    postsService.getPosts("/posts/suggested", "suggested", 2);
     // wait for the fetch to be resolved
-    postsService.isPostsResolved.fullSuggestedItems.subscribe((value) => {
+    postsService.isFetchResolved.suggestedItems.subscribe((value) => {
       if (value) {
-        expect(postsService.fullItemsPage.fullSuggestedItems).toBe(2);
-        expect(postsService.totalFullItemsPage.fullSuggestedItems).toBe(2);
-        expect(postsService.fullItemsList.fullSuggestedItems.length).toBe(1);
-        expect(postsService.fullItemsList.fullSuggestedItems[0].id).toBe(3);
+        expect(postsService.currentPage).toBe(2);
+        expect(postsService.totalPages).toBe(2);
+        expect(postsService.posts.suggestedItems.value.length).toBe(1);
+        expect(postsService.posts.suggestedItems.value[0].id).toBe(3);
       }
     });
 

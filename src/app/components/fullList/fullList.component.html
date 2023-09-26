@@ -10,7 +10,7 @@
 		<app-single-post  *ngFor="let item of postsService.posts[postsServiceProperty()].value"
 						 [post]="item"
 						 [type]="'n'"
-						 [class]="type == 'New' ? 'newItem' : 'suggestedItem"
+						 [class]="type == 'New' ? 'newItem' : 'suggestedItem'"
 						 (showMenu)="openMenu($event)"></app-single-post>
 	</ul>
 	

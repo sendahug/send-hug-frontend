@@ -207,8 +207,8 @@ export class NotificationService {
     this.Http.get(Url, {
       headers: this.authService.authHeader,
       params: params,
-    }).subscribe(
-      (response: any) => {
+    }).subscribe({
+      next: (response: any) => {
         this.notifications = response.notifications;
 
         // if it's a silent refresh, check how many new notifications the user has
@@ -216,7 +216,7 @@ export class NotificationService {
           this.newNotifications = this.notifications.length;
         }
       },
-      (err: HttpErrorResponse) => {
+      error: (err: HttpErrorResponse) => {
         // if the user is offline, show the offline header message
         if (!navigator.onLine) {
           this.alertsService.toggleOfflineAlert();
@@ -226,7 +226,7 @@ export class NotificationService {
           this.alertsService.createErrorAlert(err);
         }
       },
-    );
+    });
   }
 
   /*
@@ -270,17 +270,17 @@ export class NotificationService {
                 // send the info to the server
                 this.Http.post(Url, JSON.stringify(subscription), {
                   headers: headers,
-                }).subscribe(
-                  (response: any) => {
+                }).subscribe({
+                  next: (response: any) => {
                     this.subId = response.subId;
                     this.alertsService.createSuccessAlert(
                       "Subscribed to push notifications successfully!",
                     );
                   },
-                  (err: HttpErrorResponse) => {
+                  error: (err: HttpErrorResponse) => {
                     this.alertsService.createErrorAlert(err);
                   },
-                );
+                });
                 // if there was an error, alert the user
               })
               .catch((err) => {
@@ -330,14 +330,14 @@ export class NotificationService {
           // update the saved subscription in the database
           this.Http.patch(Url, JSON.stringify(subscription), {
             headers: this.authService.authHeader,
-          }).subscribe(
-            (response: any) => {
+          }).subscribe({
+            next: (response: any) => {
               this.subId = response.subId;
             },
-            (err) => {
+            error: (err) => {
               console.log(err);
             },
-          );
+          });
         });
     }
   }
@@ -414,13 +414,13 @@ export class NotificationService {
     // send the data to the server
     this.Http.patch(Url, newSettings, {
       headers: this.authService.authHeader,
-    }).subscribe(
-      (_response: any) => {
+    }).subscribe({
+      next: (_response: any) => {
         this.alertsService.createSuccessAlert("Settings updated successfully!");
       },
-      (err: HttpErrorResponse) => {
+      error: (err: HttpErrorResponse) => {
         this.alertsService.createErrorAlert(err);
       },
-    );
+    });
   }
 }

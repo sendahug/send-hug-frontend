@@ -216,8 +216,8 @@ export class AuthService {
       this.Http.get(`${this.serverUrl}/users/all/${jwtPayload.sub}`, {
         headers: new HttpHeaders({ Authorization: `Bearer ${this.token}` }),
         // if successful, get the user data
-      }).subscribe(
-        (response: any) => {
+      }).subscribe({
+        next: (response: any) => {
           let data = response.user;
           this.userData = {
             id: data.id,
@@ -279,7 +279,7 @@ export class AuthService {
           this.serviceWorkerM.addItem("users", user);
           // if there's an error, check the error type
         },
-        (err) => {
+        error: (err) => {
           let statusCode = err.status;
 
           // if a user with that ID doens't exist, try to create it
@@ -298,7 +298,7 @@ export class AuthService {
             this.isUserDataResolved.next(true);
           }
         },
-      );
+      });
     }
     // If there's no currently-saved token
     else {
@@ -331,8 +331,8 @@ export class AuthService {
         headers: new HttpHeaders({ Authorization: `Bearer ${this.token}` }),
         //if the request succeeds, get the user's data
       },
-    ).subscribe(
-      (response: any) => {
+    ).subscribe({
+      next: (response: any) => {
         let data = response.user;
         this.userData = {
           id: data.id,
@@ -381,7 +381,7 @@ export class AuthService {
         this.serviceWorkerM.addItem("users", user);
         // error handling
       },
-      (err) => {
+      error: (err) => {
         this.isUserDataResolved.next(true);
 
         // if the user is offline, show the offline header message
@@ -393,7 +393,7 @@ export class AuthService {
           this.alertsService.createErrorAlert(err);
         }
       },
-    );
+    });
   }
 
   /*
@@ -558,9 +558,9 @@ export class AuthService {
       {
         headers: this.authHeader,
       },
-    ).subscribe(
-      (_response: any) => {},
-      (err: HttpErrorResponse) => {
+    ).subscribe({
+      next: (_response: any) => {},
+      error: (err: HttpErrorResponse) => {
         // if the user is offline, show the offline header message
         if (!navigator.onLine) {
           this.alertsService.toggleOfflineAlert();
@@ -570,7 +570,7 @@ export class AuthService {
           this.alertsService.createErrorAlert(err);
         }
       },
-    );
+    });
   }
 
   /*

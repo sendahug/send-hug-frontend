@@ -244,8 +244,8 @@ export class ItemsService {
     this.Http.get(Url, {
       headers: this.authService.authHeader,
       params: params,
-    }).subscribe(
-      (response: any) => {
+    }).subscribe({
+      next: (response: any) => {
         let data = response.posts;
         this.userPosts[user] = data;
         this.totalUserPostsPages[user] = response.total_pages;
@@ -277,7 +277,7 @@ export class ItemsService {
         this.serviceWorkerM.cleanDB("posts");
         // if there was an error, alert the user
       },
-      (err: HttpErrorResponse) => {
+      error: (err: HttpErrorResponse) => {
         this.isUserPostsResolved[user].next(true);
         this.idbResolved.userPosts.next(false);
 
@@ -290,7 +290,7 @@ export class ItemsService {
           this.alertsService.createErrorAlert(err);
         }
       },
-    );
+    });
   }
 
   /*
@@ -312,13 +312,13 @@ export class ItemsService {
       {
         headers: this.authService.authHeader,
       },
-    ).subscribe(
-      (_response: any) => {
+    ).subscribe({
+      next: (_response: any) => {
         this.alertsService.createSuccessAlert("Your hug was sent!", true);
         this.alertsService.toggleOfflineAlert();
         // if there was an error, alert the user
       },
-      (err: HttpErrorResponse) => {
+      error: (err: HttpErrorResponse) => {
         // if the user is offline, show the offline header message
         if (!navigator.onLine) {
           this.alertsService.toggleOfflineAlert();
@@ -328,7 +328,7 @@ export class ItemsService {
           this.alertsService.createErrorAlert(err);
         }
       },
-    );
+    });
   }
 
   // USER-RELATED METHODS
@@ -374,8 +374,8 @@ export class ItemsService {
     // try to get the user's data from the server
     this.Http.get(Url, {
       headers: this.authService.authHeader,
-    }).subscribe(
-      (response: any) => {
+    }).subscribe({
+      next: (response: any) => {
         let user = response.user;
         this.otherUserData = {
           id: user.id,
@@ -400,7 +400,7 @@ export class ItemsService {
         this.serviceWorkerM.addItem("users", this.otherUserData);
         // if there was an error, alert the user
       },
-      (err: HttpErrorResponse) => {
+      error: (err: HttpErrorResponse) => {
         this.isOtherUserResolved.next(true);
         this.idbResolved.user.next(true);
 
@@ -413,7 +413,7 @@ export class ItemsService {
           this.alertsService.createErrorAlert(err);
         }
       },
-    );
+    });
   }
 
   // MESSAGE-RELATED METHODS
@@ -477,8 +477,8 @@ export class ItemsService {
     this.Http.get(`${this.serverUrl}/messages`, {
       headers: this.authService.authHeader,
       params: params,
-    }).subscribe(
-      (response: any) => {
+    }).subscribe({
+      next: (response: any) => {
         let messages = response.messages;
         this.userMessages[type] = [];
         messages.forEach((element: Message) => {
@@ -533,7 +533,7 @@ export class ItemsService {
         this.serviceWorkerM.cleanDB("messages");
         // if there was an error, alert the user
       },
-      (err: HttpErrorResponse) => {
+      error: (err: HttpErrorResponse) => {
         this.isUserMessagesResolved[type].next(true);
         this.idbResolved[type].next(true);
 
@@ -546,7 +546,7 @@ export class ItemsService {
           this.alertsService.createErrorAlert(err);
         }
       },
-    );
+    });
   }
 
   /*
@@ -608,8 +608,8 @@ export class ItemsService {
     this.Http.get(`${this.serverUrl}/messages`, {
       headers: this.authService.authHeader,
       params: params,
-    }).subscribe(
-      (response: any) => {
+    }).subscribe({
+      next: (response: any) => {
         let threads = response.messages;
         this.userMessages.threads = [];
         threads.forEach((element: any) => {
@@ -664,7 +664,7 @@ export class ItemsService {
         this.serviceWorkerM.cleanDB("threads");
         // if there was an error, alert the user
       },
-      (err: HttpErrorResponse) => {
+      error: (err: HttpErrorResponse) => {
         this.isUserMessagesResolved.threads.next(true);
         this.idbResolved.threads.next(true);
 
@@ -677,7 +677,7 @@ export class ItemsService {
           this.alertsService.createErrorAlert(err);
         }
       },
-    );
+    });
   }
 
   /*
@@ -719,8 +719,8 @@ export class ItemsService {
     this.Http.get(`${this.serverUrl}/messages`, {
       headers: this.authService.authHeader,
       params: params,
-    }).subscribe(
-      (response: any) => {
+    }).subscribe({
+      next: (response: any) => {
         let messages = response.messages;
         this.userMessages.thread = [];
         messages.forEach((element: Message) => {
@@ -763,7 +763,7 @@ export class ItemsService {
         this.serviceWorkerM.cleanDB("messages");
         // if there was an error, alert the user
       },
-      (err: HttpErrorResponse) => {
+      error: (err: HttpErrorResponse) => {
         this.isUserMessagesResolved.thread.next(true);
         this.idbResolved.thread.next(true);
 
@@ -776,7 +776,7 @@ export class ItemsService {
           this.alertsService.createErrorAlert(err);
         }
       },
-    );
+    });
   }
 
   /*
@@ -790,8 +790,8 @@ export class ItemsService {
     const Url = this.serverUrl + "/messages";
     this.Http.post(Url, message, {
       headers: this.authService.authHeader,
-    }).subscribe(
-      (response: any) => {
+    }).subscribe({
+      next: (response: any) => {
         this.alertsService.createSuccessAlert("Your message was sent!", false, "/");
         this.alertsService.toggleOfflineAlert();
 
@@ -810,7 +810,7 @@ export class ItemsService {
         this.serviceWorkerM.addItem("messages", message);
         // if there was an error, alert the user
       },
-      (err: HttpErrorResponse) => {
+      error: (err: HttpErrorResponse) => {
         // if the user is offline, show the offline header message
         if (!navigator.onLine) {
           this.alertsService.toggleOfflineAlert();
@@ -820,7 +820,7 @@ export class ItemsService {
           this.alertsService.createErrorAlert(err);
         }
       },
-    );
+    });
   }
 
   /*
@@ -836,8 +836,8 @@ export class ItemsService {
     // try to delete the message
     this.Http.delete(Url, {
       headers: this.authService.authHeader,
-    }).subscribe(
-      (response: any) => {
+    }).subscribe({
+      next: (response: any) => {
         this.alertsService.createSuccessAlert(
           `Message ${response.deleted} was deleted! Refresh to view the updated message list.`,
           true,
@@ -848,7 +848,7 @@ export class ItemsService {
         this.serviceWorkerM.deleteItem("messages", messageId);
         // if there was an error, alert the user
       },
-      (err: HttpErrorResponse) => {
+      error: (err: HttpErrorResponse) => {
         // if the user is offline, show the offline header message
         if (!navigator.onLine) {
           this.alertsService.toggleOfflineAlert();
@@ -858,7 +858,7 @@ export class ItemsService {
           this.alertsService.createErrorAlert(err);
         }
       },
-    );
+    });
   }
 
   /*
@@ -874,8 +874,8 @@ export class ItemsService {
     // try to delete the thread
     this.Http.delete(Url, {
       headers: this.authService.authHeader,
-    }).subscribe(
-      (response: any) => {
+    }).subscribe({
+      next: (response: any) => {
         this.alertsService.createSuccessAlert(
           `Thread ${response.deleted} was deleted! Refresh to view the updated message list.`,
           true,
@@ -887,7 +887,7 @@ export class ItemsService {
         this.serviceWorkerM.deleteItem("threads", threadId);
         // if there was an error, alert the user
       },
-      (err: HttpErrorResponse) => {
+      error: (err: HttpErrorResponse) => {
         // if the user is offline, show the offline header message
         if (!navigator.onLine) {
           this.alertsService.toggleOfflineAlert();
@@ -897,7 +897,7 @@ export class ItemsService {
           this.alertsService.createErrorAlert(err);
         }
       },
-    );
+    });
   }
 
   /*
@@ -917,8 +917,8 @@ export class ItemsService {
     this.Http.delete(Url, {
       params: params,
       headers: this.authService.authHeader,
-    }).subscribe(
-      (response: any) => {
+    }).subscribe({
+      next: (response: any) => {
         this.alertsService.createSuccessAlert(
           `${response.deleted} messages were deleted! Refresh to view the updated mailbox.`,
           true,
@@ -937,7 +937,7 @@ export class ItemsService {
         }
         // if there was an error, alert the user
       },
-      (err: HttpErrorResponse) => {
+      error: (err: HttpErrorResponse) => {
         // if the user is offline, show the offline header message
         if (!navigator.onLine) {
           this.alertsService.toggleOfflineAlert();
@@ -947,7 +947,7 @@ export class ItemsService {
           this.alertsService.createErrorAlert(err);
         }
       },
-    );
+    });
   }
 
   // SEARCH-RELATED METHODS
@@ -971,8 +971,8 @@ export class ItemsService {
       {
         params: params,
       },
-    ).subscribe(
-      (response: any) => {
+    ).subscribe({
+      next: (response: any) => {
         this.userSearchResults = response.users;
         this.postSearchResults = response.posts;
         this.postSearchPage = response.current_page;
@@ -983,7 +983,7 @@ export class ItemsService {
         this.isSearchResolved.next(true);
         this.alertsService.toggleOfflineAlert();
       },
-      (err: HttpErrorResponse) => {
+      error: (err: HttpErrorResponse) => {
         this.isSearchResolved.next(true);
         this.isSearching = false;
 
@@ -996,7 +996,7 @@ export class ItemsService {
           this.alertsService.createErrorAlert(err);
         }
       },
-    );
+    });
   }
 
   // REPORT METHODS
@@ -1014,8 +1014,8 @@ export class ItemsService {
     // sends the report
     this.Http.post(Url, report, {
       headers: this.authService.authHeader,
-    }).subscribe(
-      (response: any) => {
+    }).subscribe({
+      next: (response: any) => {
         // if successful, alert the user
         let sent_report: Report = response.report;
         if (sent_report.type == "Post") {
@@ -1034,7 +1034,7 @@ export class ItemsService {
         this.alertsService.toggleOfflineAlert();
         // if there's an error, alert the user
       },
-      (err: HttpErrorResponse) => {
+      error: (err: HttpErrorResponse) => {
         // if the user is offline, show the offline header message
         if (!navigator.onLine) {
           this.alertsService.toggleOfflineAlert();
@@ -1044,6 +1044,6 @@ export class ItemsService {
           this.alertsService.createErrorAlert(err);
         }
       },
-    );
+    });
   }
 }

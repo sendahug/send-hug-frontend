@@ -215,8 +215,8 @@ export class PostsService {
       const Url = this.serverUrl + "/posts";
       this.Http.post(Url, post, {
         headers: this.authService.authHeader,
-      }).subscribe(
-        (response: any) => {
+      }).subscribe({
+        next: (response: any) => {
           this.alertsService.createSuccessAlert(
             "Your post was published! Return to home page to view the post.",
             false,
@@ -238,7 +238,7 @@ export class PostsService {
           this.serviceWorkerM.addItem("posts", iDBPost);
           // if there was an error, alert the user
         },
-        (err: HttpErrorResponse) => {
+        error: (err: HttpErrorResponse) => {
           // if the user is offline, show the offline header message
           if (!navigator.onLine) {
             this.alertsService.toggleOfflineAlert();
@@ -248,7 +248,7 @@ export class PostsService {
             this.alertsService.createErrorAlert(err);
           }
         },
-      );
+      });
     }
     // if they're blocked, alert them they cannot post while blocked
     else {
@@ -270,8 +270,8 @@ export class PostsService {
     const Url = this.serverUrl + `/posts/${post_id}`;
     this.Http.delete(Url, {
       headers: this.authService.authHeader,
-    }).subscribe(
-      (response: any) => {
+    }).subscribe({
+      next: (response: any) => {
         this.alertsService.createSuccessAlert(
           `Post ${response.deleted} was deleted. Refresh to view the updated post list.`,
           true,
@@ -282,7 +282,7 @@ export class PostsService {
         this.serviceWorkerM.deleteItem("posts", post_id);
         // if there was an error, alert the user
       },
-      (err: HttpErrorResponse) => {
+      error: (err: HttpErrorResponse) => {
         // if the user is offline, show the offline header message
         if (!navigator.onLine) {
           this.alertsService.toggleOfflineAlert();
@@ -292,7 +292,7 @@ export class PostsService {
           this.alertsService.createErrorAlert(err);
         }
       },
-    );
+    });
   }
 
   /*
@@ -307,8 +307,8 @@ export class PostsService {
     // send delete request
     this.Http.delete(Url, {
       headers: this.authService.authHeader,
-    }).subscribe(
-      (_response: any) => {
+    }).subscribe({
+      next: (_response: any) => {
         this.alertsService.createSuccessAlert(
           `User ${userID}'s posts were deleted successfully. Refresh to view the updated profile.`,
           true,
@@ -319,7 +319,7 @@ export class PostsService {
         this.serviceWorkerM.deleteItems("posts", "userId", userID);
         // if there was an error, alert the user
       },
-      (err: HttpErrorResponse) => {
+      error: (err: HttpErrorResponse) => {
         // if the user is offline, show the offline header message
         if (!navigator.onLine) {
           this.alertsService.toggleOfflineAlert();
@@ -329,7 +329,7 @@ export class PostsService {
           this.alertsService.createErrorAlert(err);
         }
       },
-    );
+    });
   }
 
   /*
@@ -346,8 +346,8 @@ export class PostsService {
     // send update request
     this.Http.patch(Url, post, {
       headers: this.authService.authHeader,
-    }).subscribe(
-      (_response: any) => {
+    }).subscribe({
+      next: (_response: any) => {
         this.alertsService.createSuccessAlert(
           "Your post was edited. Refresh to view the updated post.",
           true,
@@ -356,7 +356,7 @@ export class PostsService {
         this.isUpdated.next(true);
         // if there was an error, alert the user
       },
-      (err: HttpErrorResponse) => {
+      error: (err: HttpErrorResponse) => {
         // if the user is offline, show the offline header message
         if (!navigator.onLine) {
           this.alertsService.toggleOfflineAlert();
@@ -366,7 +366,7 @@ export class PostsService {
           this.alertsService.createErrorAlert(err);
         }
       },
-    );
+    });
   }
 
   /*
@@ -385,8 +385,8 @@ export class PostsService {
       {
         headers: this.authService.authHeader,
       },
-    ).subscribe(
-      (_response: any) => {
+    ).subscribe({
+      next: (_response: any) => {
         this.alertsService.createSuccessAlert("Your hug was sent!", false);
         this.alertsService.toggleOfflineAlert();
 
@@ -395,7 +395,7 @@ export class PostsService {
         this.disableHugButton(this.posts.suggestedItems.value, ".sugItem", item.id);
         // if there was an error, alert the user
       },
-      (err: HttpErrorResponse) => {
+      error: (err: HttpErrorResponse) => {
         item.givenHugs -= 1;
         // if the user is offline, show the offline header message
         if (!navigator.onLine) {
@@ -406,7 +406,7 @@ export class PostsService {
           this.alertsService.createErrorAlert(err);
         }
       },
-    );
+    });
   }
 
   /*

@@ -148,8 +148,8 @@ export class AdminService {
       headers: this.authService.authHeader,
       params: params,
       // if successful, set the appropriate variables
-    }).subscribe(
-      (response: any) => {
+    }).subscribe({
+      next: (response: any) => {
         this.userReports = response.userReports;
         this.totalPages.userReports = response.totalUserPages;
         this.postReports = response.postReports;
@@ -157,11 +157,11 @@ export class AdminService {
         this.isReportsResolved.next(true);
         // if there's an error, alert the user
       },
-      (err: HttpErrorResponse) => {
+      error: (err: HttpErrorResponse) => {
         this.isReportsResolved.next(true);
         this.alertsService.createErrorAlert(err);
       },
-    );
+    });
   }
 
   /*
@@ -185,16 +185,16 @@ export class AdminService {
     // try to edit the psot
     this.Http.patch(Url, post, {
       headers: this.authService.authHeader,
-    }).subscribe(
-      (response: any) => {
+    }).subscribe({
+      next: (response: any) => {
         this.alertsService.createSuccessAlert(`Post ${response.updated.id} updated.`, closeReport);
         this.isUpdated.next(true);
         // if there was an error, alert the user
       },
-      (err: HttpErrorResponse) => {
+      error: (err: HttpErrorResponse) => {
         this.alertsService.createErrorAlert(err);
       },
-    );
+    });
   }
 
   /*
@@ -213,8 +213,8 @@ export class AdminService {
     // delete the post from the database
     this.Http.delete(postUrl, {
       headers: this.authService.authHeader,
-    }).subscribe(
-      (response: any) => {
+    }).subscribe({
+      next: (response: any) => {
         this.alertsService.createSuccessAlert(`Post ${response.deleted} was successfully deleted.`);
         // create a message from the admin to the user whose post was deleted
         let message: Message = {
@@ -238,10 +238,10 @@ export class AdminService {
         // send the message about the deleted post
         this.itemsService.sendMessage(message);
       },
-      (err: HttpErrorResponse) => {
+      error: (err: HttpErrorResponse) => {
         this.alertsService.createErrorAlert(err);
       },
-    );
+    });
   }
 
   /*
@@ -264,17 +264,17 @@ export class AdminService {
     // update the user's display name
     this.Http.patch(Url, user, {
       headers: this.authService.authHeader,
-    }).subscribe(
-      (response: any) => {
+    }).subscribe({
+      next: (response: any) => {
         this.alertsService.createSuccessAlert(
           `User ${response.updated.displayName} updated.`,
           closeReport,
         );
       },
-      (err: HttpErrorResponse) => {
+      error: (err: HttpErrorResponse) => {
         this.alertsService.createErrorAlert(err);
       },
-    );
+    });
   }
 
   /*
@@ -305,8 +305,8 @@ export class AdminService {
     // send a request to update the report
     this.Http.patch(Url, report, {
       headers: this.authService.authHeader,
-    }).subscribe(
-      (response: any) => {
+    }).subscribe({
+      next: (response: any) => {
         // if the report was dismissed, alert the user
         this.alertsService.createSuccessAlert(
           `Report ${response.updated.id} was dismissed! Refresh the page to view the updated list.`,
@@ -314,10 +314,10 @@ export class AdminService {
         );
         // if there's an error, alert the user
       },
-      (err: HttpErrorResponse) => {
+      error: (err: HttpErrorResponse) => {
         this.alertsService.createErrorAlert(err);
       },
-    );
+    });
   }
 
   // BLOCKS-RELATED METHODS
@@ -338,18 +338,18 @@ export class AdminService {
     this.Http.get(Url, {
       headers: this.authService.authHeader,
       params: params,
-    }).subscribe(
-      (response: any) => {
+    }).subscribe({
+      next: (response: any) => {
         this.blockedUsers = response.users;
         this.totalPages.blockedUsers = response.total_pages;
         this.isBlocksResolved.next(true);
         // if there was an error, alert the user.
       },
-      (err: HttpErrorResponse) => {
+      error: (err: HttpErrorResponse) => {
         this.isBlocksResolved.next(true);
         this.alertsService.createErrorAlert(err);
       },
-    );
+    });
   }
 
   /*
@@ -367,8 +367,8 @@ export class AdminService {
     // send the request to get the block data
     this.Http.get(Url, {
       headers: this.authService.authHeader,
-    }).subscribe(
-      (response: any) => {
+    }).subscribe({
+      next: (response: any) => {
         // set the user's block data
         let user = response.user;
         this.userBlockData = {
@@ -380,11 +380,11 @@ export class AdminService {
         this.isBlockDataResolved.next(true);
         // if there was an error, alert the user.
       },
-      (err: HttpErrorResponse) => {
+      error: (err: HttpErrorResponse) => {
         this.isBlockDataResolved.next(true);
         this.alertsService.createErrorAlert(err);
       },
-    );
+    });
   }
 
   /*
@@ -409,8 +409,8 @@ export class AdminService {
         headers: this.authService.authHeader,
         // If successful, let the user know
       },
-    ).subscribe(
-      (response: any) => {
+    ).subscribe({
+      next: (response: any) => {
         this.alertsService.createSuccessAlert(
           `User ${response.updated.displayName} has been blocked until ${releaseDate}`,
           true,
@@ -421,10 +421,10 @@ export class AdminService {
         }
         // if there was an error, alert the user.
       },
-      (err: HttpErrorResponse) => {
+      error: (err: HttpErrorResponse) => {
         this.alertsService.createErrorAlert(err);
       },
-    );
+    });
   }
 
   /*
@@ -448,18 +448,18 @@ export class AdminService {
       {
         headers: this.authService.authHeader,
       },
-    ).subscribe(
-      (response: any) => {
+    ).subscribe({
+      next: (response: any) => {
         this.alertsService.createSuccessAlert(
           `User ${response.updated.displayName} has been unblocked.`,
           true,
         );
         // if there was an error, alert the user.
       },
-      (err: HttpErrorResponse) => {
+      error: (err: HttpErrorResponse) => {
         this.alertsService.createErrorAlert(err);
       },
-    );
+    });
   }
 
   // FILTERS-RELATED METHODS
@@ -480,18 +480,18 @@ export class AdminService {
     this.Http.get(Url, {
       headers: this.authService.authHeader,
       params: params,
-    }).subscribe(
-      (response: any) => {
+    }).subscribe({
+      next: (response: any) => {
         this.filteredPhrases = response.words;
         this.totalPages.filteredPhrases = response.total_pages;
         this.isFiltersResolved.next(true);
         // if there was an error, alert the user.
       },
-      (err: HttpErrorResponse) => {
+      error: (err: HttpErrorResponse) => {
         this.isFiltersResolved.next(true);
         this.alertsService.createErrorAlert(err);
       },
-    );
+    });
   }
 
   /*
@@ -513,18 +513,18 @@ export class AdminService {
       {
         headers: this.authService.authHeader,
       },
-    ).subscribe(
-      (response: any) => {
+    ).subscribe({
+      next: (response: any) => {
         this.alertsService.createSuccessAlert(
           `The phrase ${response.added.filter} was added to the list of filtered words! Refresh to see the updated list.`,
           true,
         );
         // if there was an error, alert the user.
       },
-      (err: HttpErrorResponse) => {
+      error: (err: HttpErrorResponse) => {
         this.alertsService.createErrorAlert(err);
       },
-    );
+    });
   }
 
   /*
@@ -540,17 +540,17 @@ export class AdminService {
     // try to delete the filter
     this.Http.delete(Url, {
       headers: this.authService.authHeader,
-    }).subscribe(
-      (response: any) => {
+    }).subscribe({
+      next: (response: any) => {
         this.alertsService.createSuccessAlert(
           `The phrase ${response.deleted.filter} was removed from the list of filtered words. Refresh to see the updated list.`,
           true,
         );
         // if there was an error, alert the user.
       },
-      (err: HttpErrorResponse) => {
+      error: (err: HttpErrorResponse) => {
         this.alertsService.createErrorAlert(err);
       },
-    );
+    });
   }
 }

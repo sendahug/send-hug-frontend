@@ -62,7 +62,7 @@ import { MockPostsService } from "../../services/posts.service.mock";
     <ul
       class="itemList"
       *ngIf="
-        postsService.posts.newItems.value.length > 0 && postsService.isFetchResolved.newItem.value
+        postsService.posts.newItems.value.length > 0 && postsService.isFetchResolved.newItems.value
       "
       role="region"
       aria-describedby="newTitle"

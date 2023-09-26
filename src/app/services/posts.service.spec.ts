@@ -544,6 +544,6 @@ describe("PostsService", () => {
     expect(alertSpy).toHaveBeenCalled();
     expect(alertSpy).toHaveBeenCalledWith("Your hug was sent!", false);
     expect(disableSpy).toHaveBeenCalled();
-    expect(disableSpy).toHaveBeenCalledTimes(4);
+    expect(disableSpy).toHaveBeenCalledTimes(2);
   });
 });

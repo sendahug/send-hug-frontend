@@ -42,7 +42,6 @@ import { AlertsService } from "./alerts.service";
 import { SWManager } from "./sWManager.service";
 import { environment } from "../../environments/environment";
 
-
 @Injectable({
   providedIn: "root",
 })

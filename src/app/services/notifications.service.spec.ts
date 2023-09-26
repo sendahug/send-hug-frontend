@@ -182,7 +182,9 @@ describe("NotificationService", () => {
 
     notificationService.getNotifications(false);
 
-    const req = httpController.expectOne("http://localhost:5000/notifications?silentRefresh=false");
+    const req = httpController.expectOne(
+      `${notificationService.serverUrl}/notifications?silentRefresh=false`,
+    );
     expect(req.request.method).toEqual("GET");
     req.flush(mockResponse);
 
@@ -212,7 +214,9 @@ describe("NotificationService", () => {
 
     notificationService.getNotifications(true);
 
-    const req = httpController.expectOne("http://localhost:5000/notifications?silentRefresh=true");
+    const req = httpController.expectOne(
+      `${notificationService.serverUrl}/notifications?silentRefresh=true`,
+    );
     expect(req.request.method).toEqual("GET");
     req.flush(mockResponse);
 
@@ -238,7 +242,7 @@ describe("NotificationService", () => {
 
     notificationService.subscribeToStream();
 
-  //  const req = httpController.expectOne('http://localhost:5000/notifications');
+  //  const req = httpController.expectOne(`${notificationService.serverUrl}/notifications`);
   //  expect(req.request.method).toEqual('POST');
   //  req.flush(mockResponse);
 
@@ -352,7 +356,7 @@ describe("NotificationService", () => {
     const spy = spyOn(notificationService["alertsService"], "createSuccessAlert");
     notificationService.updateUserSettings();
 
-    const req = httpController.expectOne("http://localhost:5000/users/all/4");
+    const req = httpController.expectOne(`${notificationService.serverUrl}/users/all/4`);
     expect(req.request.method).toEqual("PATCH");
     req.flush(mockResponse);
 

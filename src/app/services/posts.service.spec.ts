@@ -139,7 +139,7 @@ describe("PostsService", () => {
       }
     });
 
-    const req = httpController.expectOne("http://localhost:5000");
+    const req = httpController.expectOne(`${postsService.serverUrl}`);
     expect(req.request.method).toEqual("GET");
     req.flush(mockResponse);
 
@@ -194,7 +194,7 @@ describe("PostsService", () => {
       }
     });
 
-    const p1Req = httpController.expectOne("http://localhost:5000/posts/new?page=1");
+    const p1Req = httpController.expectOne(`${postsService.serverUrl}/posts/new?page=1`);
     expect(p1Req.request.method).toEqual("GET");
     p1Req.flush(mockP1Response);
 
@@ -240,7 +240,7 @@ describe("PostsService", () => {
       }
     });
 
-    const p2Req = httpController.expectOne("http://localhost:5000/posts/new?page=2");
+    const p2Req = httpController.expectOne(`${postsService.serverUrl}/posts/new?page=2`);
     expect(p2Req.request.method).toEqual("GET");
     p2Req.flush(mockP2Response);
 
@@ -295,7 +295,7 @@ describe("PostsService", () => {
       }
     });
 
-    const p1Req = httpController.expectOne("http://localhost:5000/posts/suggested?page=1");
+    const p1Req = httpController.expectOne(`${postsService.serverUrl}/posts/suggested?page=1`);
     expect(p1Req.request.method).toEqual("GET");
     p1Req.flush(mockP1Response);
 
@@ -341,7 +341,7 @@ describe("PostsService", () => {
       }
     });
 
-    const p2Req = httpController.expectOne("http://localhost:5000/posts/suggested?page=2");
+    const p2Req = httpController.expectOne(`${postsService.serverUrl}/posts/suggested?page=2`);
     expect(p2Req.request.method).toEqual("GET");
     p2Req.flush(mockP2Response);
 
@@ -381,7 +381,7 @@ describe("PostsService", () => {
     postsService["authService"].login();
     postsService.sendPost(newPost);
 
-    const req = httpController.expectOne("http://localhost:5000/posts");
+    const req = httpController.expectOne(`${postsService.serverUrl}/posts`);
     expect(req.request.method).toEqual("POST");
     req.flush(mockResponse);
 
@@ -430,7 +430,7 @@ describe("PostsService", () => {
     const deleteSpy = spyOn(postsService["serviceWorkerM"], "deleteItem");
     postsService.deletePost(8);
 
-    const req = httpController.expectOne("http://localhost:5000/posts/8");
+    const req = httpController.expectOne(`${postsService.serverUrl}/posts/8`);
     expect(req.request.method).toEqual("DELETE");
     req.flush(mockResponse);
 
@@ -456,7 +456,7 @@ describe("PostsService", () => {
     const deleteSpy = spyOn(postsService["serviceWorkerM"], "deleteItems");
     postsService.deleteAllPosts(4);
 
-    const req = httpController.expectOne("http://localhost:5000/users/all/4/posts");
+    const req = httpController.expectOne(`${postsService.serverUrl}/users/all/4/posts`);
     expect(req.request.method).toEqual("DELETE");
     req.flush(mockResponse);
 
@@ -505,7 +505,7 @@ describe("PostsService", () => {
       }
     });
 
-    const req = httpController.expectOne("http://localhost:5000/posts/15");
+    const req = httpController.expectOne(`${postsService.serverUrl}/posts/15`);
     expect(req.request.method).toEqual("PATCH");
     req.flush(mockResponse);
   });
@@ -537,7 +537,7 @@ describe("PostsService", () => {
     const disableSpy = spyOn(postsService, "disableHugButton");
     postsService.sendHug(newPost);
 
-    const req = httpController.expectOne("http://localhost:5000/posts/15/hugs");
+    const req = httpController.expectOne(`${postsService.serverUrl}/posts/15/hugs`);
     expect(req.request.method).toEqual("POST");
     req.flush(mockResponse);
 

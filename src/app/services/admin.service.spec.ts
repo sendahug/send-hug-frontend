@@ -160,7 +160,7 @@ describe("AdminService", () => {
       }
     });
 
-    const req = httpController.expectOne("http://localhost:5000/reports?userPage=1&postPage=1");
+    const req = httpController.expectOne(`${adminService.serverUrl}/reports?userPage=1&postPage=1`);
     expect(req.request.method).toEqual("GET");
     req.flush(mockResponse);
   });
@@ -194,7 +194,7 @@ describe("AdminService", () => {
       }
     });
 
-    const req = httpController.expectOne("http://localhost:5000/posts/2");
+    const req = httpController.expectOne(`${adminService.serverUrl}/posts/2`);
     expect(req.request.method).toEqual("PATCH");
     req.flush(mockResponse);
   });
@@ -217,7 +217,7 @@ describe("AdminService", () => {
     const deleteSpy = spyOn(adminService["serviceWorkerM"], "deleteItem").and.callThrough();
     adminService.deletePost(10, reportData, true);
 
-    const req = httpController.expectOne("http://localhost:5000/posts/10");
+    const req = httpController.expectOne(`${adminService.serverUrl}/posts/10`);
     expect(req.request.method).toEqual("DELETE");
     req.flush(mockResponse);
 
@@ -251,7 +251,7 @@ describe("AdminService", () => {
     const alertSpy = spyOn(adminService["alertsService"], "createSuccessAlert");
     adminService.editUser(userData, true, 6);
 
-    const req = httpController.expectOne("http://localhost:5000/users/all/2");
+    const req = httpController.expectOne(`${adminService.serverUrl}/users/all/2`);
     expect(req.request.method).toEqual("PATCH");
     req.flush(mockResponse);
 
@@ -292,7 +292,7 @@ describe("AdminService", () => {
     const alertSpy = spyOn(adminService["alertsService"], "createSuccessAlert");
     adminService.dismissReport(1);
 
-    const req = httpController.expectOne("http://localhost:5000/reports/1");
+    const req = httpController.expectOne(`${adminService.serverUrl}/reports/1`);
     expect(req.request.method).toEqual("PATCH");
     req.flush(mockResponse);
 
@@ -334,7 +334,7 @@ describe("AdminService", () => {
       }
     });
 
-    const req = httpController.expectOne("http://localhost:5000/users/blocked?page=1");
+    const req = httpController.expectOne(`${adminService.serverUrl}/users/blocked?page=1`);
     expect(req.request.method).toEqual("GET");
     req.flush(mockResponse);
   });
@@ -370,7 +370,7 @@ describe("AdminService", () => {
       }
     });
 
-    const req = httpController.expectOne("http://localhost:5000/users/all/15");
+    const req = httpController.expectOne(`${adminService.serverUrl}/users/all/15`);
     expect(req.request.method).toEqual("GET");
     req.flush(mockResponse);
   });
@@ -396,7 +396,7 @@ describe("AdminService", () => {
     const alertSpy = spyOn(adminService["alertsService"], "createSuccessAlert");
     adminService.blockUser(15, new Date("2020-09-29 19:17:31.072"));
 
-    const req = httpController.expectOne("http://localhost:5000/users/all/15");
+    const req = httpController.expectOne(`${adminService.serverUrl}/users/all/15`);
     expect(req.request.method).toEqual("PATCH");
     req.flush(mockResponse);
 
@@ -429,7 +429,7 @@ describe("AdminService", () => {
     const dismissSpy = spyOn(adminService, "dismissReport");
     adminService.blockUser(15, new Date("2020-09-29 19:17:31.072"), 3);
 
-    const req = httpController.expectOne("http://localhost:5000/users/all/15");
+    const req = httpController.expectOne(`${adminService.serverUrl}/users/all/15`);
     expect(req.request.method).toEqual("PATCH");
     req.flush(mockResponse);
 
@@ -463,7 +463,7 @@ describe("AdminService", () => {
     const alertSpy = spyOn(adminService["alertsService"], "createSuccessAlert");
     adminService.unblockUser(15);
 
-    const req = httpController.expectOne("http://localhost:5000/users/all/15");
+    const req = httpController.expectOne(`${adminService.serverUrl}/users/all/15`);
     expect(req.request.method).toEqual("PATCH");
     req.flush(mockResponse);
 
@@ -493,7 +493,7 @@ describe("AdminService", () => {
       }
     });
 
-    const req = httpController.expectOne("http://localhost:5000/filters?page=1");
+    const req = httpController.expectOne(`${adminService.serverUrl}/filters?page=1`);
     expect(req.request.method).toEqual("GET");
     req.flush(mockResponse);
   });
@@ -512,7 +512,7 @@ describe("AdminService", () => {
     const alertSpy = spyOn(adminService["alertsService"], "createSuccessAlert");
     adminService.addFilter("sample");
 
-    const req = httpController.expectOne("http://localhost:5000/filters");
+    const req = httpController.expectOne(`${adminService.serverUrl}/filters`);
     expect(req.request.method).toEqual("POST");
     req.flush(mockResponse);
 
@@ -538,7 +538,7 @@ describe("AdminService", () => {
     const alertSpy = spyOn(adminService["alertsService"], "createSuccessAlert");
     adminService.removeFilter(1);
 
-    const req = httpController.expectOne("http://localhost:5000/filters/1");
+    const req = httpController.expectOne(`${adminService.serverUrl}/filters/1`);
     expect(req.request.method).toEqual("DELETE");
     req.flush(mockResponse);
 

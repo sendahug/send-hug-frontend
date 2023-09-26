@@ -229,7 +229,7 @@ describe("AuthService", () => {
     });
 
     // flush mock response
-    const req = httpController.expectOne("http://localhost:5000/users/all/auth0");
+    const req = httpController.expectOne(`${authService.serverUrl}/users/all/auth0`);
     expect(req.request.method).toEqual("GET");
     req.flush(mockResponse);
 
@@ -261,7 +261,7 @@ describe("AuthService", () => {
     authService.getUserData(jwtPayload);
 
     // flush mock response
-    const req = httpController.expectOne("http://localhost:5000/users/all/auth0");
+    const req = httpController.expectOne(`${authService.serverUrl}/users/all/auth0`);
     expect(req.request.method).toEqual("GET");
     req.flush(null, mockResponse);
 
@@ -310,7 +310,7 @@ describe("AuthService", () => {
     authService.getUserData(jwtPayload);
 
     // flush mock response
-    const req = httpController.expectOne("http://localhost:5000/users/all/auth0");
+    const req = httpController.expectOne(`${authService.serverUrl}/users/all/auth0`);
     expect(req.request.method).toEqual("GET");
     req.flush(mockResponse);
 
@@ -381,7 +381,7 @@ describe("AuthService", () => {
     });
 
     // flush mock response
-    const req = httpController.expectOne("http://localhost:5000/users");
+    const req = httpController.expectOne(`${authService.serverUrl}/users`);
     expect(req.request.method).toEqual("POST");
     req.flush(mockResponse);
 
@@ -559,7 +559,7 @@ describe("AuthService", () => {
     authService.updateUserData();
 
     // flush mock response
-    const req = httpController.expectOne("http://localhost:5000/users/all/4");
+    const req = httpController.expectOne(`${authService.serverUrl}/users/all/4`);
     expect(req.request.method).toEqual("PATCH");
     req.flush(mockResponse);
   });

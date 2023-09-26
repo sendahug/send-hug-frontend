@@ -167,7 +167,7 @@ describe("ItemsService", () => {
       }
     });
 
-    const req = httpController.expectOne("http://localhost:5000/users/all/1/posts?page=1");
+    const req = httpController.expectOne(`${itemsService.serverUrl}/users/all/1/posts?page=1`);
     expect(req.request.method).toEqual("GET");
     req.flush(mockResponse);
 
@@ -276,7 +276,9 @@ describe("ItemsService", () => {
         }
       });
 
-      const selfReq = httpController.expectOne("http://localhost:5000/users/all/4/posts?page=1");
+      const selfReq = httpController.expectOne(
+        `${itemsService.serverUrl}/users/all/4/posts?page=1`,
+      );
       expect(selfReq.request.method).toEqual("GET");
       selfReq.flush(mockSelfResponse);
       // and once it's done, run the 'other' tests
@@ -295,7 +297,9 @@ describe("ItemsService", () => {
         }
       });
 
-      const otherReq = httpController.expectOne("http://localhost:5000/users/all/1/posts?page=1");
+      const otherReq = httpController.expectOne(
+        `${itemsService.serverUrl}/users/all/1/posts?page=1`,
+      );
       expect(otherReq.request.method).toEqual("GET");
       otherReq.flush(mockOtherResponse);
     });
@@ -360,7 +364,7 @@ describe("ItemsService", () => {
     };
     itemsService.sendUserHug(2);
 
-    const req = httpController.expectOne("http://localhost:5000/users/all/2/hugs");
+    const req = httpController.expectOne(`${itemsService.serverUrl}/users/all/2/hugs`);
     expect(req.request.method).toEqual("POST");
     req.flush(mockResponse);
 
@@ -395,7 +399,7 @@ describe("ItemsService", () => {
     const addSpy = spyOn(itemsService["serviceWorkerM"], "addItem");
     itemsService.getUser(2);
 
-    const req = httpController.expectOne("http://localhost:5000/users/all/2");
+    const req = httpController.expectOne(`${itemsService.serverUrl}/users/all/2`);
     expect(req.request.method).toEqual("GET");
     req.flush(mockResponse);
 
@@ -460,7 +464,7 @@ describe("ItemsService", () => {
     });
 
     const req = httpController.expectOne(
-      "http://localhost:5000/messages?userID=4&page=1&type=inbox",
+      `${itemsService.serverUrl}/messages?userID=4&page=1&type=inbox`,
     );
     expect(req.request.method).toEqual("GET");
     req.flush(mockResponse);
@@ -515,7 +519,7 @@ describe("ItemsService", () => {
     });
 
     const req = httpController.expectOne(
-      "http://localhost:5000/messages?userID=4&page=1&type=outbox",
+      `${itemsService.serverUrl}/messages?userID=4&page=1&type=outbox`,
     );
     expect(req.request.method).toEqual("GET");
     req.flush(mockResponse);
@@ -612,13 +616,13 @@ describe("ItemsService", () => {
     });
 
     const inboxReq = httpController.expectOne(
-      "http://localhost:5000/messages?userID=4&page=1&type=inbox",
+      `${itemsService.serverUrl}/messages?userID=4&page=1&type=inbox`,
     );
     expect(inboxReq.request.method).toEqual("GET");
     inboxReq.flush(mockInboxResponse);
 
     const outboxReq = httpController.expectOne(
-      "http://localhost:5000/messages?userID=4&page=1&type=outbox",
+      `${itemsService.serverUrl}/messages?userID=4&page=1&type=outbox`,
     );
     expect(outboxReq.request.method).toEqual("GET");
     outboxReq.flush(mockOutboxResponse);
@@ -668,7 +672,7 @@ describe("ItemsService", () => {
     });
 
     const req = httpController.expectOne(
-      "http://localhost:5000/messages?userID=4&page=1&type=threads",
+      `${itemsService.serverUrl}/messages?userID=4&page=1&type=threads`,
     );
     expect(req.request.method).toEqual("GET");
     req.flush(mockResponse);
@@ -727,7 +731,7 @@ describe("ItemsService", () => {
     });
 
     const req = httpController.expectOne(
-      "http://localhost:5000/messages?userID=4&page=1&type=thread&threadID=1",
+      `${itemsService.serverUrl}/messages?userID=4&page=1&type=thread&threadID=1`,
     );
     expect(req.request.method).toEqual("GET");
     req.flush(mockResponse);
@@ -772,7 +776,7 @@ describe("ItemsService", () => {
     const addSpy = spyOn(itemsService["serviceWorkerM"], "addItem");
     itemsService.sendMessage(message);
 
-    const req = httpController.expectOne("http://localhost:5000/messages");
+    const req = httpController.expectOne(`${itemsService.serverUrl}/messages`);
     expect(req.request.method).toEqual("POST");
     req.flush(mockResponse);
 
@@ -794,7 +798,7 @@ describe("ItemsService", () => {
     const deleteSpy = spyOn(itemsService["serviceWorkerM"], "deleteItem");
     itemsService.deleteMessage(6, "inbox");
 
-    const req = httpController.expectOne("http://localhost:5000/messages/inbox/6");
+    const req = httpController.expectOne(`${itemsService.serverUrl}/messages/inbox/6`);
     expect(req.request.method).toEqual("DELETE");
     req.flush(mockResponse);
 
@@ -821,7 +825,7 @@ describe("ItemsService", () => {
     const deleteMultiSpy = spyOn(itemsService["serviceWorkerM"], "deleteItems");
     itemsService.deleteThread(2);
 
-    const req = httpController.expectOne("http://localhost:5000/messages/threads/2");
+    const req = httpController.expectOne(`${itemsService.serverUrl}/messages/threads/2`);
     expect(req.request.method).toEqual("DELETE");
     req.flush(mockResponse);
 
@@ -850,7 +854,7 @@ describe("ItemsService", () => {
     const deleteSpy = spyOn(itemsService["serviceWorkerM"], "deleteItems");
     itemsService.deleteAll("all inbox", 4);
 
-    const req = httpController.expectOne("http://localhost:5000/messages/inbox?userID=4");
+    const req = httpController.expectOne(`${itemsService.serverUrl}/messages/inbox?userID=4`);
     expect(req.request.method).toEqual("DELETE");
     req.flush(mockResponse);
 
@@ -877,7 +881,7 @@ describe("ItemsService", () => {
     const deleteSpy = spyOn(itemsService["serviceWorkerM"], "deleteItems");
     itemsService.deleteAll("all outbox", 4);
 
-    const req = httpController.expectOne("http://localhost:5000/messages/outbox?userID=4");
+    const req = httpController.expectOne(`${itemsService.serverUrl}/messages/outbox?userID=4`);
     expect(req.request.method).toEqual("DELETE");
     req.flush(mockResponse);
 
@@ -904,7 +908,7 @@ describe("ItemsService", () => {
     const clearSpy = spyOn(itemsService["serviceWorkerM"], "clearStore");
     itemsService.deleteAll("all threads", 4);
 
-    const req = httpController.expectOne("http://localhost:5000/messages/threads?userID=4");
+    const req = httpController.expectOne(`${itemsService.serverUrl}/messages/threads?userID=4`);
     expect(req.request.method).toEqual("DELETE");
     req.flush(mockResponse);
 
@@ -1004,7 +1008,7 @@ describe("ItemsService", () => {
       }
     });
 
-    const req = httpController.expectOne("http://localhost:5000?page=1");
+    const req = httpController.expectOne(`${itemsService.serverUrl}?page=1`);
     expect(req.request.method).toEqual("POST");
     req.flush(mockResponse);
   });
@@ -1039,7 +1043,7 @@ describe("ItemsService", () => {
     const alertsSpy = spyOn(itemsService["alertsService"], "createSuccessAlert");
     itemsService.sendReport(report);
 
-    const req = httpController.expectOne("http://localhost:5000/reports");
+    const req = httpController.expectOne(`${itemsService.serverUrl}/reports`);
     expect(req.request.method).toEqual("POST");
     req.flush(mockResponse);
 

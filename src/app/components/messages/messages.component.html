@@ -19,6 +19,7 @@
 		[waitingFor]="waitFor"></app-loader>
 	
 	<app-header-message
+		*ngIf="!itemsService.isUserMessagesResolved[messType].value"
 		[waitingFor]="waitFor"></app-header-message>
 	
 	<!-- If there are messages in the user's inbox -->

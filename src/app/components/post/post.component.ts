@@ -106,6 +106,10 @@ export class SinglePost implements AfterViewChecked, OnInit, OnDestroy {
     this.subscription?.unsubscribe();
   }
 
+  /**
+   * Checks whether the menu is too long to fit in the screen.
+   * If it is, it hides it or sets it to float.
+   */
   checkMenuSize() {
     const post = document.getElementById(this.postId())?.parentElement as HTMLLIElement;
     if (!post) return;

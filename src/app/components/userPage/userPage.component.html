@@ -5,6 +5,7 @@
 		[waitingFor]="waitFor"></app-loader>
 	
 	<app-header-message
+		*ngIf="(!this.itemsService.isOtherUser && !authService.isUserDataResolved.value) || (this.itemsService.isOtherUser && !itemsService.idbResolved.user.value)"
 		[waitingFor]="waitFor"></app-header-message>
 
 	<div id="userPage" *ngIf="(!this.itemsService.isOtherUser && authService.isUserDataResolved.value) || (this.itemsService.isOtherUser && itemsService.idbResolved.user.value)" role="region">

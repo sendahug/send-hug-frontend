@@ -5,8 +5,8 @@
 		[waitingFor]="waitFor"></app-loader>
 	
 	<app-header-message
-		[waitingFor]="waitFor"
-		[user]="user"></app-header-message>
+		*ngIf="!itemsService.isUserPostsResolved[user].value"
+		[waitingFor]="waitFor"></app-header-message>
 
 <div id="myPosts">
 	<!-- If the user has posts, displays them -->

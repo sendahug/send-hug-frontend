@@ -91,6 +91,9 @@ export class PostsService {
     const Url = this.serverUrl + url;
     let params = new HttpParams();
 
+    this.isFetchResolved.newItems.next(false);
+    this.isFetchResolved.suggestedItems.next(false);
+
     if (url !== "") {
       params = params.set("page", `${page}`);
       this.fetchPostsFromIdb(url, type, page);
@@ -99,15 +102,13 @@ export class PostsService {
       this.fetchPostsFromIdb(url, "suggested", page);
     }
 
-    this.isFetchResolved.newItems.next(false);
-    this.isFetchResolved.suggestedItems.next(false);
-
     // HTTP request
     this.Http.get(Url, {
       params: params,
     }).subscribe({
       next: (response: any) => {
         if (url === "") {
+          // TODO: Replace `recent` with `new` for consistency.
           this.posts.newItems.next(response.recent);
           this.posts.suggestedItems.next(response.suggested);
           this.addPostsToIdb(response.recent);
@@ -174,6 +175,8 @@ export class PostsService {
           this.posts[`${type}Items`].next(data.posts);
           this.totalPages = data.pages;
           this.lastFetchTarget = url as "" | "/posts/new" | "/posts/suggested";
+          this.isFetchResolved.newItems.next(true);
+          this.isFetchResolved.suggestedItems.next(true);
         }
       }
     });

@@ -15,6 +15,7 @@
 <!-- If the user is logged in, displays the user's inbox. -->
 <div id="userInbox" *ngIf="authService.authenticated">
 	<app-loader
+		*ngIf="!itemsService.idbResolved[messType].value"
 		[waitingFor]="waitFor"></app-loader>
 	
 	<app-header-message

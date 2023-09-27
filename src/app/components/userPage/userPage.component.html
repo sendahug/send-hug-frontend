@@ -1,6 +1,7 @@
 <!-- If the user is logged in, displays a user page. -->
 <div *ngIf="authService.authenticated" id="profileContainer">
 	<app-loader
+		*ngIf="(!this.itemsService.isOtherUser && !authService.isUserDataResolved.value) || (this.itemsService.isOtherUser && !itemsService.idbResolved.user.value)"
 		[waitingFor]="waitFor"></app-loader>
 	
 	<app-header-message

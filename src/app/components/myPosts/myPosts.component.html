@@ -1,8 +1,8 @@
 <h3 id="postsTitle">My Posts</h3>
 
 <app-loader
-		[waitingFor]="waitFor"
-		[user]="user"></app-loader>
+		*ngIf="!itemsService.idbResolved.userPosts.value"
+		[waitingFor]="waitFor"></app-loader>
 	
 	<app-header-message
 		[waitingFor]="waitFor"

@@ -1,6 +1,7 @@
 <h2>Search Results</h2>
 
 <app-loader
+	*ngIf="!itemsService.isSearchResolved.value"
 	[waitingFor]="waitFor"></app-loader>
 
 <div *ngIf="itemsService.isSearchResolved.value" id="searchResultsMain">

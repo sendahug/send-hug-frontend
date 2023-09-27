@@ -24,7 +24,7 @@
 		</ul>
 	</div>
 	
-	<div *ngIf="screen != 'main'" id="loaderDiv">
+	<div *ngIf="(screen == 'reports' && !adminService.isReportsResolved.value) || (screen == 'blocks' && !adminService.isBlocksResolved.value) || (screen == 'filters' && !adminService.isFiltersResolved.value)" id="loaderDiv">
 		<app-loader
 		[waitingFor]="waitFor"></app-loader>
 	</div>

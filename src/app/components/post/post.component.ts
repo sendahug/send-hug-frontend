@@ -31,7 +31,16 @@
 */
 
 // Angular imports
-import { Component, EventEmitter, Input, Output } from "@angular/core";
+import {
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+  computed,
+  AfterViewChecked,
+  OnInit,
+  OnDestroy,
+} from "@angular/core";
 import { faComment, faEdit, faFlag } from "@fortawesome/free-regular-svg-icons";
 import { faHandHoldingHeart, faTimes, faEllipsisV } from "@fortawesome/free-solid-svg-icons";
 
@@ -40,16 +49,17 @@ import { AuthService } from "../../services/auth.service";
 import { ItemsService } from "../../services/items.service";
 import { PostsService } from "../../services/posts.service";
 import { Post } from "../../interfaces/post.interface";
+import { Subscription } from "rxjs";
 
 @Component({
   selector: "app-single-post",
   templateUrl: "./post.component.html",
 })
-export class SinglePost {
+export class SinglePost implements AfterViewChecked, OnInit, OnDestroy {
   @Input() post!: Post;
   @Input() type!: "n" | "s";
   @Input() class!: string;
-  @Output() showMenu = new EventEmitter<string>();
+  postId = computed(() => `${this.type}Post${this.post?.id || ""}`);
   // edit popup sub-component variables
   postToEdit: Post | undefined;
   editType: string | undefined;
@@ -62,6 +72,7 @@ export class SinglePost {
   reportType: "Post" | undefined;
   lastFocusedElement: any;
   waitFor = "main page";
+  subscription: Subscription | undefined;
   // icons
   faComment = faComment;
   faEdit = faEdit;
@@ -79,6 +90,53 @@ export class SinglePost {
     this.editMode = false;
     this.delete = false;
     this.report = false;
+  }
+
+  ngOnInit(): void {
+    this.subscription = this.postsService.currentlyOpenMenu.subscribe((currentlyOpenId) => {
+      this.checkMenuSize();
+    });
+  }
+
+  ngAfterViewChecked(): void {
+    this.checkMenuSize();
+  }
+
+  ngOnDestroy(): void {
+    this.subscription?.unsubscribe();
+  }
+
+  checkMenuSize() {
+    const post = document.getElementById(this.postId())?.parentElement as HTMLLIElement;
+    if (!post) return;
+    const buttonsContainer = post?.querySelectorAll(".buttonsContainer")[0] as HTMLDivElement;
+    const sub = post?.querySelectorAll(".subMenu")[0] as HTMLDivElement;
+
+    // remove the hidden label check the menu's width
+    buttonsContainer.classList.remove("float");
+    sub.classList.remove("hidden");
+    sub.classList.remove("float");
+
+    // TODO: There has to be a better way to do this (without manually
+    // setting the element's classes).
+    // if the menu is too long, change it to a floating menu
+    if (sub.scrollWidth > sub.offsetWidth) {
+      buttonsContainer.classList.add("float");
+      sub.classList.add("float");
+      post.querySelector(".menuButton")?.classList.remove("hidden");
+
+      if (this.postsService.currentlyOpenMenu.value != this.post?.id) {
+        sub.classList.add("hidden");
+      } else {
+        sub.classList.remove("hidden");
+      }
+      // Otherwise change it back to a regular menu
+    } else {
+      buttonsContainer.classList.remove("float");
+      sub.classList.remove("hidden");
+      sub.classList.remove("float");
+      post.querySelector(".menuButton")?.classList.add("hidden");
+    }
   }
 
   /*
@@ -167,6 +225,10 @@ export class SinglePost {
   Programmer: Shir Bar Lev.
   */
   toggleOptions() {
-    this.showMenu.emit(`${this.type}Post${this.post.id}`);
+    if (this.postsService.currentlyOpenMenu.value !== this.post.id) {
+      this.postsService.currentlyOpenMenu.next(this.post.id as number);
+    } else {
+      this.postsService.currentlyOpenMenu.next(-1);
+    }
   }
 }

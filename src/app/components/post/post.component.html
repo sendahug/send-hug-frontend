@@ -1,6 +1,6 @@
 <li class="{{class}}" aria-describedby="newTitle" role="article">
-	<div class="itemText" aria-describedby="pText" id="{{ type + 'Post' + post.id}}">{{ post.text }}</div>
-	<div class="itemUser">By <a [routerLink]="['/user', post.userId ]" class="profileLink" aria-describedby="pUser" id="{{ type + 'User' + post.id}}">{{ post.user }}</a> </div>
+	<div class="itemText" aria-describedby="pText" id="{{ postId() }}">{{ post.text }}</div>
+	<div class="itemUser">By <a [routerLink]="['/user', post.userId ]" class="profileLink" aria-describedby="pUser" id="{{ type + 'User' + post.id }}">{{ post.user }}</a> </div>
 	<div class="buttonsContainer">
 		<div class="notification" [attr.aria-describedby]="'pHug ' + type + 'User' + post.id">
 			<button *ngIf="!post.sentHugs.includes(authService.userData.id.toString()) && authService.authenticated" class="textlessButton hugButton" (click)="sendHug()" [attr.aria-labelledby]="'pHug ' + type + 'User' + post.id" name="send a hug"><fa-icon [icon]="faHandHoldingHeart" class="fa-hand-holding-heart"></fa-icon></button>

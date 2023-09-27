@@ -63,6 +63,7 @@ export class PostsService {
   lastFetchDate: number = 0;
   currentPage = 1;
   totalPages = 1;
+  currentlyOpenMenu = new BehaviorSubject(-1);
 
   // CTOR
   constructor(

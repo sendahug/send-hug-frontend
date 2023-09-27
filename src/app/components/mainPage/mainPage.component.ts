@@ -31,7 +31,7 @@
 */
 
 // Angular imports
-import { Component, OnInit, AfterViewChecked } from "@angular/core";
+import { Component } from "@angular/core";
 
 // App-related imports
 import { AuthService } from "../../services/auth.service";
@@ -42,7 +42,7 @@ import { PostsService } from "../../services/posts.service";
   selector: "app-main-page",
   templateUrl: "./mainPage.component.html",
 })
-export class MainPage implements OnInit, AfterViewChecked {
+export class MainPage {
   showMenuNum: string | null = null;
   // loader sub-component variables
   waitFor = "main page";
@@ -54,123 +54,5 @@ export class MainPage implements OnInit, AfterViewChecked {
     public postsService: PostsService,
   ) {
     this.postsService.getPosts("", "new");
-  }
-
-  ngOnInit() {}
-
-  /*
-  Function Name: ngAfterViewInit()
-  Function Description: This method is automatically triggered by Angular once the component's
-                        view is intialised. It checks whether posts' buttons are
-                        too big for their container; if they are, changes the menu to be
-                        a floating one.
-  Parameters: None.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  ngAfterViewChecked() {
-    let newPosts = document.querySelectorAll(".newItem");
-    let sugPosts = document.querySelectorAll(".sugItem");
-
-    if (newPosts[0]) {
-      // check the first post; the others are the same
-      let firstPButtons = newPosts[0]!.querySelectorAll(".buttonsContainer")[0] as HTMLDivElement;
-      let sub = newPosts[0]!.querySelectorAll(".subMenu")[0] as HTMLDivElement;
-
-      // remove the hidden label check the menu's width
-      if (sub.classList.contains("hidden")) {
-        firstPButtons.classList.remove("float");
-        sub.classList.remove("hidden");
-        sub.classList.remove("float");
-      }
-
-      // if they're too long and there's no menu to show
-      if (sub.scrollWidth > sub.offsetWidth && !this.showMenuNum) {
-        // change each new post's menu to a floating, hidden menu
-        newPosts.forEach((element) => {
-          element.querySelectorAll(".buttonsContainer")[0].classList.add("float");
-          element.querySelectorAll(".subMenu")[0].classList.add("hidden");
-          element.querySelectorAll(".subMenu")[0].classList.add("float");
-          element.querySelectorAll(".menuButton")[0].classList.remove("hidden");
-        });
-
-        // change each suggested post's menu to a floating, hidden menu
-        sugPosts.forEach((element) => {
-          element.querySelectorAll(".buttonsContainer")[0].classList.add("float");
-          element.querySelectorAll(".subMenu")[0].classList.add("hidden");
-          element.querySelectorAll(".subMenu")[0].classList.add("float");
-          element.querySelectorAll(".menuButton")[0].classList.remove("hidden");
-        });
-      }
-      // if there's a menu to show, show that specific menu
-      else if (this.showMenuNum) {
-        // the relevant menu to visible
-        newPosts.forEach((element) => {
-          if (element.firstElementChild!.id == this.showMenuNum) {
-            element.querySelectorAll(".subMenu")[0].classList.remove("hidden");
-          } else {
-            element.querySelectorAll(".subMenu")[0].classList.add("hidden");
-
-            // if it's not the first element that needs an open menu, close
-            // the first item's menu like  it was opened above
-            if (element.firstElementChild!.id == newPosts[0].firstElementChild!.id) {
-              element.querySelectorAll(".buttonsContainer")[0].classList.add("float");
-              element.querySelectorAll(".subMenu")[0].classList.add("hidden");
-              element.querySelectorAll(".subMenu")[0].classList.add("float");
-            }
-          }
-        });
-
-        // the relevant menu to visible
-        sugPosts.forEach((element) => {
-          if (element.firstElementChild!.id == this.showMenuNum) {
-            element.querySelectorAll(".subMenu")[0].classList.remove("hidden");
-          } else {
-            element.querySelectorAll(".subMenu")[0].classList.add("hidden");
-          }
-        });
-      }
-      // otherwise make sure the menu button is hidden and the buttons container
-      // is in its normal design
-      else {
-        newPosts.forEach((element) => {
-          element.querySelectorAll(".buttonsContainer")[0].classList.remove("float");
-          element.querySelectorAll(".subMenu")[0].classList.remove("hidden");
-          element.querySelectorAll(".subMenu")[0].classList.remove("float");
-          element.querySelectorAll(".menuButton")[0].classList.add("hidden");
-        });
-
-        sugPosts.forEach((element) => {
-          element.querySelectorAll(".buttonsContainer")[0].classList.remove("float");
-          element.querySelectorAll(".subMenu")[0].classList.remove("hidden");
-          element.querySelectorAll(".subMenu")[0].classList.remove("float");
-          element.querySelectorAll(".menuButton")[0].classList.add("hidden");
-        });
-      }
-    }
-  }
-
-  /*
-  Function Name: openMenu()
-  Function Description: Opens a floating sub menu that contains the message, report, edit (if
-                        applicable) and delete (if applicable) options on smaller screens.
-  Parameters: menu (string) - ID of the item for which to open the submenu.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  openMenu(menu: string) {
-    let post = document.querySelector("#" + menu)!.parentElement;
-    let subMenu = post!.querySelectorAll(".subMenu")[0];
-
-    // if the submenu is hidden, show it
-    if (subMenu.classList.contains("hidden")) {
-      subMenu.classList.remove("hidden");
-      this.showMenuNum = menu;
-    }
-    // otherwise hide it
-    else {
-      subMenu.classList.add("hidden");
-      this.showMenuNum = null;
-    }
   }
 }

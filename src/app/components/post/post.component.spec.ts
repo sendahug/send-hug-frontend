@@ -73,7 +73,6 @@ import { MockPostsService } from "../../services/posts.service.mock";
         [post]="item"
         [type]="'n'"
         [class]="'newItem'"
-        (showMenu)="openMenu($event)"
       ></app-single-post>
     </ul>
   `,
@@ -290,6 +289,131 @@ describe("Post", () => {
     expect(changeSpy).toHaveBeenCalled();
     expect(myPosts.editMode).toBeFalse();
     expect(document.activeElement).toBe(document.querySelectorAll("a")[0]);
+    done();
+  });
+
+  it("toggleMenu() - should set the currently open menu to the given post's id", () => {
+    const upFixture = TestBed.createComponent(MockPage);
+    upFixture.detectChanges();
+    const myPosts = upFixture.debugElement.children[0].children[0].componentInstance;
+    myPosts.postsService.currentlyOpenMenu.next(3);
+    const openMenuSpy = spyOn(myPosts.postsService.currentlyOpenMenu, "next").and.callThrough();
+
+    // before the change
+    expect(myPosts.postsService.currentlyOpenMenu.value).toBe(3);
+    expect(openMenuSpy).not.toHaveBeenCalled();
+
+    // trigger the function
+    myPosts.toggleOptions();
+    upFixture.detectChanges();
+
+    // after the change
+    expect(myPosts.postsService.currentlyOpenMenu.value).toBe(1);
+    expect(openMenuSpy).toHaveBeenCalledWith(1);
+  });
+
+  it("toggleMenu() - should set the currently open menu to -1 if the given post's id is already open", () => {
+    const upFixture = TestBed.createComponent(MockPage);
+    upFixture.detectChanges();
+    const myPosts = upFixture.debugElement.children[0].children[0].componentInstance;
+    myPosts.postsService.currentlyOpenMenu.next(1);
+    const openMenuSpy = spyOn(myPosts.postsService.currentlyOpenMenu, "next").and.callThrough();
+
+    // before the call
+    expect(myPosts.postsService.currentlyOpenMenu.value).toBe(1);
+    expect(openMenuSpy).not.toHaveBeenCalled();
+
+    // trigger the function
+    myPosts.toggleOptions();
+    upFixture.detectChanges();
+
+    // after the call
+    expect(myPosts.postsService.currentlyOpenMenu.value).toBe(-1);
+    expect(openMenuSpy).toHaveBeenCalledWith(-1);
+  });
+
+  // check the posts' menu isn't shown if there isn't enough room for it
+  it("checkMenuSize() - shouldn't show the posts's menu if not wide enough", (done: DoneFn) => {
+    const upFixture = TestBed.createComponent(MockPage);
+    upFixture.detectChanges();
+    const myPosts = upFixture.debugElement.children[0].children[0].componentInstance;
+    const myPostsDOM = upFixture.debugElement.children[0].children[0].nativeElement;
+    const authService = myPosts.authService;
+    spyOn(authService, "canUser").and.returnValue(true);
+
+    // change the elements' width to make sure there isn't enough room for the menu
+    const post = myPostsDOM.querySelector(".newItem");
+    const sub = post.querySelector(".subMenu") as HTMLDivElement;
+    sub.style.maxWidth = "40px";
+    sub.style.display = "flex";
+    (sub.firstElementChild! as HTMLAnchorElement).style.width = "100px";
+    upFixture.detectChanges();
+
+    // check all menus aren't shown
+    expect(post.querySelectorAll(".buttonsContainer")[0].classList).toContain("float");
+    expect(post.querySelectorAll(".subMenu")[0].classList).toContain("hidden");
+    expect(post.querySelectorAll(".subMenu")[0].classList).toContain("float");
+    expect(post.querySelectorAll(".menuButton")[0].classList).not.toContain("hidden");
+    done();
+  });
+
+  // check the posts' menu is shown if there is enough room for it
+  it("checkMenuSize() - should show the menu if it's wide enough for it", (done: DoneFn) => {
+    const upFixture = TestBed.createComponent(MockPage);
+    upFixture.detectChanges();
+    const myPosts = upFixture.debugElement.children[0].children[0].componentInstance;
+    const myPostsDOM = upFixture.debugElement.children[0].children[0].nativeElement;
+    const authService = myPosts.authService;
+    spyOn(authService, "canUser").and.returnValue(true);
+
+    // change the elements' width to make sure there isn't enough room for the menu
+    const post = myPostsDOM.querySelector(".newItem");
+    const sub = post.querySelector(".subMenu") as HTMLDivElement;
+    sub.style.maxWidth = "120px";
+    sub.style.display = "flex";
+    (sub.firstElementChild! as HTMLAnchorElement).style.width = "100px";
+    upFixture.detectChanges();
+
+    // check all menus aren't shown
+    expect(post.querySelectorAll(".buttonsContainer")[0].classList).not.toContain("float");
+    expect(post.querySelectorAll(".subMenu")[0].classList).not.toContain("hidden");
+    expect(post.querySelectorAll(".subMenu")[0].classList).not.toContain("float");
+    expect(post.querySelectorAll(".menuButton")[0].classList).toContain("hidden");
+    done();
+  });
+
+  // check the posts' menu is floating if there isn't enough room for it
+  it("checkMenuSize() - should float the menu if it's wide enough for it", (done: DoneFn) => {
+    const upFixture = TestBed.createComponent(MockPage);
+    upFixture.detectChanges();
+    const myPosts = upFixture.debugElement.children[0].children[0].componentInstance;
+    const myPostsDOM = upFixture.debugElement.children[0].children[0].nativeElement;
+    const authService = myPosts.authService;
+    spyOn(authService, "canUser").and.returnValue(true);
+
+    // change the elements' width to make sure there isn't enough room for the menu
+    const post = myPostsDOM.querySelector(".newItem");
+    const sub = post.querySelector(".subMenu") as HTMLDivElement;
+    sub.style.maxWidth = "40px";
+    sub.style.display = "flex";
+    (sub.firstElementChild! as HTMLAnchorElement).style.width = "100px";
+    upFixture.detectChanges();
+
+    // check all menus aren't shown
+    expect(post.querySelectorAll(".buttonsContainer")[0].classList).toContain("float");
+    expect(post.querySelectorAll(".subMenu")[0].classList).toContain("hidden");
+    expect(post.querySelectorAll(".subMenu")[0].classList).toContain("float");
+    expect(post.querySelectorAll(".menuButton")[0].classList).not.toContain("hidden");
+
+    // click the options buton for the post
+    post.querySelectorAll(".menuButton")[0].click();
+    upFixture.detectChanges();
+
+    // check the menu is floating
+    expect(post.querySelectorAll(".buttonsContainer")[0].classList).toContain("float");
+    expect(post.querySelectorAll(".subMenu")[0].classList).not.toContain("hidden");
+    expect(post.querySelectorAll(".subMenu")[0].classList).toContain("float");
+    expect(post.querySelectorAll(".menuButton")[0].classList).not.toContain("hidden");
     done();
   });
 });

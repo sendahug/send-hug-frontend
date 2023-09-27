@@ -11,8 +11,7 @@
 		<app-single-post  *ngFor="let item of postsService.posts.newItems.value"
 						 [post]="item"
 						 [type]="'n'"
-						 [class]="'newItem'"
-						 (showMenu)="openMenu($event)"></app-single-post>
+						 [class]="'newItem'"></app-single-post>
 	</ul>
 	
 	<!-- If there are no items in the list -->
@@ -34,8 +33,7 @@
 		<app-single-post  *ngFor="let item of postsService.posts.suggestedItems.value"
 						 [post]="item"
 						 [type]="'s'"
-						 [class]="'newItem'"
-						 (showMenu)="openMenu($event)"></app-single-post>
+						 [class]="'newItem'"></app-single-post>
 	</ul>
 
 	<!-- If there are no items in the list -->

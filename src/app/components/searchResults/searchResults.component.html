@@ -23,8 +23,7 @@
 			<app-single-post  *ngFor="let item of itemsService.postSearchResults"
 						 [post]="item"
 						 [type]="'n'"
-						 [class]="'searchResult'"
-						 (showMenu)="openMenu($event)"></app-single-post>
+						 [class]="'searchResult'"></app-single-post>
 		</ul>
 
 	<!-- Post pagination -->

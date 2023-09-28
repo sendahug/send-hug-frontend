@@ -41,12 +41,13 @@ import {
 import { HttpClientModule } from "@angular/common/http";
 import { ServiceWorkerModule } from "@angular/service-worker";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
+import { ReactiveFormsModule } from "@angular/forms";
 
 import { IconEditor } from "./iconEditor.component";
 import { AuthService } from "../../services/auth.service";
 import { MockAuthService } from "../../services/auth.service.mock";
 
-describe("SitePolicies", () => {
+describe("IconEditor", () => {
   // Before each test, configure testing environment
   beforeEach(() => {
     TestBed.resetTestEnvironment();
@@ -58,6 +59,7 @@ describe("SitePolicies", () => {
         HttpClientModule,
         ServiceWorkerModule.register("sw.js", { enabled: false }),
         FontAwesomeModule,
+        ReactiveFormsModule,
       ],
       declarations: [IconEditor],
       providers: [
@@ -82,11 +84,11 @@ describe("SitePolicies", () => {
     const fixture = TestBed.createComponent(IconEditor);
     const iconEditor = fixture.componentInstance;
 
-    expect(iconEditor.selectedIcon).toBe("kitty");
-    expect(iconEditor.iconColours.character).toBe("#BA9F93");
-    expect(iconEditor.iconColours.lbg).toBe("#e2a275");
-    expect(iconEditor.iconColours.rbg).toBe("#f8eee4");
-    expect(iconEditor.iconColours.item).toBe("#f4b56a");
+    expect(iconEditor.iconEditForm.get("selectedIcon")?.value).toBe("kitty");
+    expect(iconEditor.iconEditForm.get("characterColour")?.value).toBe("#BA9F93");
+    expect(iconEditor.iconEditForm.get("lbgColour")?.value).toBe("#e2a275");
+    expect(iconEditor.iconEditForm.get("rbgColour")?.value).toBe("#f8eee4");
+    expect(iconEditor.iconEditForm.get("itemColour")?.value).toBe("#f4b56a");
   });
 
   // Check the icon changes when the radio button is clicked
@@ -97,19 +99,119 @@ describe("SitePolicies", () => {
     fixture.detectChanges();
 
     // before changing icon
-    expect(iconEditor.selectedIcon).toBe("kitty");
+    expect(iconEditor.iconEditForm.get("selectedIcon")?.value).toBe("kitty");
 
     iconEditorDOM.querySelector("#cRadioOption1").click();
     fixture.detectChanges();
 
     // before changing icon
-    expect(iconEditor.selectedIcon).toBe("bear");
+    expect(iconEditor.iconEditForm.get("selectedIcon")?.value).toBe("bear");
 
     iconEditorDOM.querySelector("#cRadioOption3").click();
     fixture.detectChanges();
 
     // before changing icon
-    expect(iconEditor.selectedIcon).toBe("dog");
+    expect(iconEditor.iconEditForm.get("selectedIcon")?.value).toBe("dog");
+    done();
+  });
+
+  it("should update the colours when clicked", (done: DoneFn) => {
+    const fixture = TestBed.createComponent(IconEditor);
+    const iconEditor = fixture.componentInstance;
+    const iconEditorDOM = fixture.nativeElement;
+    fixture.detectChanges();
+
+    // before changing icon
+    expect(iconEditor.iconEditForm.get("characterColour")?.value).toBe("#BA9F93");
+    expect(iconEditor.iconEditForm.get("lbgColour")?.value).toBe("#e2a275");
+    expect(iconEditor.iconEditForm.get("rbgColour")?.value).toBe("#f8eee4");
+    expect(iconEditor.iconEditForm.get("itemColour")?.value).toBe("#f4b56a");
+
+    // change the character colour
+    iconEditorDOM.querySelector("#characterC").value = "#000000";
+    iconEditorDOM.querySelector("#characterC").dispatchEvent(new Event("input"));
+    fixture.detectChanges();
+
+    expect(iconEditor.iconEditForm.get("characterColour")?.value).toBe("#000000");
+    iconEditorDOM.querySelectorAll(".character").forEach((path: SVGPathElement) => {
+      expect(path.getAttribute("style")).toBe("fill:#000000;");
+    });
+
+    // change the left background colour
+    iconEditorDOM.querySelector("#lbgColour").value = "#121212";
+    iconEditorDOM.querySelector("#lbgColour").dispatchEvent(new Event("input"));
+    fixture.detectChanges();
+
+    expect(iconEditor.iconEditForm.get("lbgColour")?.value).toBe("#121212");
+    iconEditorDOM.querySelectorAll(".lbg").forEach((path: SVGPathElement) => {
+      expect(path.getAttribute("style")).toBe("fill:#121212;");
+    });
+
+    // change the right background colour
+    iconEditorDOM.querySelector("#rbgColour").value = "#ffffff";
+    iconEditorDOM.querySelector("#rbgColour").dispatchEvent(new Event("input"));
+    fixture.detectChanges();
+
+    expect(iconEditor.iconEditForm.get("rbgColour")?.value).toBe("#ffffff");
+    iconEditorDOM.querySelectorAll(".rbg").forEach((path: SVGPathElement) => {
+      expect(path.getAttribute("style")).toBe("fill:#ffffff;");
+    });
+
+    // change the item colour
+    iconEditorDOM.querySelector("#itemColour").value = "#e1e1e1";
+    iconEditorDOM.querySelector("#itemColour").dispatchEvent(new Event("input"));
+    fixture.detectChanges();
+
+    expect(iconEditor.iconEditForm.get("itemColour")?.value).toBe("#e1e1e1");
+    iconEditorDOM.querySelectorAll(".item").forEach((path: SVGPathElement) => {
+      expect(path.getAttribute("style")).toBe("fill:#e1e1e1;");
+    });
+    done();
+  });
+
+  it("should make the request to change the icon", (done: DoneFn) => {
+    const fixture = TestBed.createComponent(IconEditor);
+    const iconEditor = fixture.componentInstance;
+    const iconEditorDOM = fixture.nativeElement;
+    const updateSpy = spyOn(iconEditor.authService, "updateUserData");
+    const dismissSpy = spyOn(iconEditor.editMode, "emit");
+    fixture.detectChanges();
+
+    // before the update
+    expect(iconEditor.authService.userData.selectedIcon).toBe("kitty");
+    expect(iconEditor.authService.userData.iconColours.character).toBe("#BA9F93");
+    expect(iconEditor.authService.userData.iconColours.lbg).toBe("#e2a275");
+    expect(iconEditor.authService.userData.iconColours.rbg).toBe("#f8eee4");
+    expect(iconEditor.authService.userData.iconColours.item).toBe("#f4b56a");
+
+    // update the icon and colours
+    iconEditorDOM.querySelector("#cRadioOption1").click();
+    iconEditor.iconEditForm.get("characterColour")?.setValue("#000000");
+    iconEditor.iconEditForm.get("lbgColour")?.setValue("#000000");
+    iconEditor.iconEditForm.get("rbgColour")?.setValue("#000000");
+    iconEditor.iconEditForm.get("itemColour")?.setValue("#000000");
+
+    // after the update
+    iconEditorDOM.querySelectorAll(".iconButton")[0].click();
+    expect(iconEditor.authService.userData.selectedIcon).toBe("bear");
+    expect(iconEditor.authService.userData.iconColours.character).toBe("#000000");
+    expect(iconEditor.authService.userData.iconColours.lbg).toBe("#000000");
+    expect(iconEditor.authService.userData.iconColours.rbg).toBe("#000000");
+    expect(iconEditor.authService.userData.iconColours.item).toBe("#000000");
+    expect(updateSpy).toHaveBeenCalled();
+    expect(dismissSpy).toHaveBeenCalledWith(false);
+    done();
+  });
+
+  it("should dismiss the editor when the cancel button is clicked", (done: DoneFn) => {
+    const fixture = TestBed.createComponent(IconEditor);
+    const iconEditor = fixture.componentInstance;
+    const iconEditorDOM = fixture.nativeElement;
+    const dismissSpy = spyOn(iconEditor.editMode, "emit");
+    fixture.detectChanges();
+
+    iconEditorDOM.querySelectorAll(".iconButton")[1].click();
+    expect(dismissSpy).toHaveBeenCalledWith(false);
     done();
   });
 });

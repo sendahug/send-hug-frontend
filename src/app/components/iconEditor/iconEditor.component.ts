@@ -30,7 +30,8 @@
   SOFTWARE.
 */
 
-import { AfterViewChecked, Component, EventEmitter, Output } from "@angular/core";
+import { Component, EventEmitter, Output } from "@angular/core";
+import { FormBuilder, Validators } from "@angular/forms";
 
 import { AuthService } from "../../services/auth.service";
 import { iconCharacters, iconElements } from "../../interfaces/types";
@@ -39,67 +40,58 @@ import { iconCharacters, iconElements } from "../../interfaces/types";
   selector: "app-icon-editor",
   templateUrl: "./iconEditor.component.html",
 })
-export class IconEditor implements AfterViewChecked {
-  selectedIcon: iconCharacters;
-  iconColours: {
-    character: String;
-    lbg: String;
-    rbg: String;
-    item: String;
-  } = {
-    character: "",
-    lbg: "",
-    rbg: "",
-    item: "",
+export class IconEditor {
+  iconDefaults = {
+    selectedIcon: "kitty",
+    characterColour: "#BA9F93",
+    lbgColour: "#E2A275",
+    rbgColour: "#F8EEE4",
+    itemColour: "#F4B56A",
   };
+  // form for the icon editor
+  iconEditForm = this.fb.group({
+    selectedIcon: [
+      this.authService.userData.selectedIcon ||
+        (this.iconDefaults.characterColour as iconCharacters),
+      Validators.required,
+    ],
+    characterColour: [
+      this.authService.userData.iconColours.character || this.iconDefaults.characterColour,
+      Validators.required,
+    ],
+    lbgColour: [
+      this.authService.userData.iconColours.lbg || this.iconDefaults.lbgColour,
+      Validators.required,
+    ],
+    rbgColour: [
+      this.authService.userData.iconColours.rbg || this.iconDefaults.rbgColour,
+      Validators.required,
+    ],
+    itemColour: [
+      this.authService.userData.iconColours.item || this.iconDefaults.itemColour,
+      Validators.required,
+    ],
+  });
   // indicates whether edit mode is still required
   @Output() editMode = new EventEmitter<boolean>();
 
   // CTOR
-  constructor(private authService: AuthService) {
-    this.selectedIcon = this.authService.userData.selectedIcon;
-    this.iconColours = {
-      character: this.authService.userData.iconColours.character,
-      lbg: this.authService.userData.iconColours.lbg,
-      rbg: this.authService.userData.iconColours.rbg,
-      item: this.authService.userData.iconColours.item,
-    };
-  }
-
-  /*
-  Function Name: ngAfterViewChecked()
-  Function Description: This method is automatically triggered by Angular once the component's
-                        view is checked by Angular. It updates the user's icon according to the colours
-                        chosen by the user.
-  Parameters: None.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  ngAfterViewChecked() {
-    Object.keys(this.iconColours).forEach((key) => {
-      if (document.querySelectorAll(".userIcon")[0]) {
-        document
-          .querySelectorAll(".userIcon")[0]
-          .querySelectorAll(`.${key as iconElements}`)
-          .forEach((element) => {
-            (element as SVGPathElement).setAttribute(
-              "style",
-              `fill:${this.iconColours[key as iconElements]};`,
-            );
-          });
-      }
-    });
-  }
-
-  /*
-  Function Name: setSelected()
-  Function Description: Updates the selected character icon.
-  Parameters: newIcon (iconCharacters) - The value of the new selected icon.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  setSelected(newIcon: iconCharacters) {
-    this.selectedIcon = newIcon;
+  constructor(
+    public authService: AuthService,
+    private fb: FormBuilder,
+  ) {
+    this.iconEditForm
+      .get("characterColour")
+      ?.valueChanges.subscribe((newValue) => this.showNewColour(newValue as string, "character"));
+    this.iconEditForm
+      .get("lbgColour")
+      ?.valueChanges.subscribe((newValue) => this.showNewColour(newValue as string, "lbg"));
+    this.iconEditForm
+      .get("rbgColour")
+      ?.valueChanges.subscribe((newValue) => this.showNewColour(newValue as string, "rbg"));
+    this.iconEditForm
+      .get("itemColour")
+      ?.valueChanges.subscribe((newValue) => this.showNewColour(newValue as string, "item"));
   }
 
   /*
@@ -123,22 +115,6 @@ export class IconEditor implements AfterViewChecked {
   }
 
   /*
-  Function Name: updateElementColour()
-  Function Description: Updates the colour of the selected icon element (character, left background,
-                        right background or the hand-held item).
-  Parameters: newValue (String) - The value of the selected colour.
-              element - the element that needs to be recoloured.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  updateElementColour(newValue: string, element: iconElements) {
-    this.iconColours[element] = newValue;
-
-    // update the image
-    this.showNewColour(newValue, element);
-  }
-
-  /*
   Function Name: updateIcon()
   Function Description: Updates the current user's icon.
   Parameters: event (Event) - Click event on the 'update icon' button.
@@ -149,8 +125,16 @@ export class IconEditor implements AfterViewChecked {
     event.preventDefault();
 
     // set the userService with the new icon data
-    this.authService.userData.selectedIcon = this.selectedIcon;
-    this.authService.userData.iconColours = this.iconColours;
+    this.authService.userData.selectedIcon =
+      this.iconEditForm.get("selectedIcon")?.value ||
+      (this.iconDefaults.selectedIcon as iconCharacters);
+    this.authService.userData.iconColours = {
+      character:
+        this.iconEditForm.get("characterColour")?.value || this.iconDefaults.characterColour,
+      lbg: this.iconEditForm.get("lbgColour")?.value || this.iconDefaults.lbgColour,
+      rbg: this.iconEditForm.get("rbgColour")?.value || this.iconDefaults.rbgColour,
+      item: this.iconEditForm.get("itemColour")?.value || this.iconDefaults.itemColour,
+    };
 
     // update the backend
     this.authService.updateUserData();

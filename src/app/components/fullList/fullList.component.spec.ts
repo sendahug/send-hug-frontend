@@ -42,7 +42,7 @@ import { HttpClientModule } from "@angular/common/http";
 import { ServiceWorkerModule } from "@angular/service-worker";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { of } from "rxjs";
-import { By } from "@angular/platform-browser";
+import { ActivatedRoute, UrlSegment } from "@angular/router";
 
 import { FullList } from "./fullList.component";
 import { PopUp } from "../popUp/popUp.component";
@@ -51,7 +51,6 @@ import { PostsService } from "../../services/posts.service";
 import { MockPostsService } from "../../services/posts.service.mock";
 import { AuthService } from "../../services/auth.service";
 import { MockAuthService } from "../../services/auth.service.mock";
-import { ActivatedRoute, UrlSegment } from "@angular/router";
 import { Loader } from "../loader/loader.component";
 
 describe("FullList", () => {

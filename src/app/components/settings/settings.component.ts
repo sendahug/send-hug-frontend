@@ -37,6 +37,7 @@ import { Component, AfterViewChecked } from "@angular/core";
 import { NotificationService } from "../../services/notifications.service";
 import { AuthService } from "../../services/auth.service";
 import { AlertsService } from "../../services/alerts.service";
+import { iconElements } from "../../interfaces/types";
 
 @Component({
   selector: "app-settings",
@@ -66,13 +67,11 @@ export class SettingsPage implements AfterViewChecked {
       if (document.querySelectorAll(".userIcon")[0]) {
         document
           .querySelectorAll(".userIcon")[0]
-          .querySelectorAll(`.${key as "character" | "lbg" | "rbg" | "item"}`)
+          .querySelectorAll(`.${key as iconElements}`)
           .forEach((element) => {
             (element as SVGPathElement).setAttribute(
               "style",
-              `fill:${
-                this.authService.userData.iconColours[key as "character" | "lbg" | "rbg" | "item"]
-              };`,
+              `fill:${this.authService.userData.iconColours[key as iconElements]};`,
             );
           });
       }

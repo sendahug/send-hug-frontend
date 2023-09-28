@@ -41,6 +41,7 @@ import { AuthService } from "./auth.service";
 import { AlertsService } from "./alerts.service";
 import { SWManager } from "./sWManager.service";
 import { environment } from "../../environments/environment";
+import { LowercaseFullListType } from "../interfaces/types";
 
 @Injectable({
   providedIn: "root",
@@ -85,7 +86,7 @@ export class PostsService {
    * @param type - The type of posts to fetch. Not used when the URL is "" as it's the home page.
    * @param page - The page to fetch. Not used when the URL is "" as it's the home page.
    */
-  getPosts(url: string, type: "new" | "suggested", page: number = 1) {
+  getPosts(url: string, type: LowercaseFullListType, page: number = 1) {
     if (type !== "new" && type !== "suggested") return;
 
     // URL and page query parameter
@@ -153,7 +154,7 @@ export class PostsService {
    * @param type - The type of posts to fetch.
    * @param page - The page to fetch.
    */
-  fetchPostsFromIdb(url: string, type: "new" | "suggested", page: number = 1) {
+  fetchPostsFromIdb(url: string, type: LowercaseFullListType, page: number = 1) {
     const queryTarget = url == "" ? `main ${type}` : `${type} posts`;
 
     // get the posts from IDB

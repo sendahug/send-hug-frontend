@@ -40,6 +40,7 @@ import { faGratipay } from "@fortawesome/free-brands-svg-icons";
 import { User } from "../../interfaces/user.interface";
 import { AuthService } from "../../services/auth.service";
 import { ItemsService } from "../../services/items.service";
+import { iconElements } from "../../interfaces/types";
 
 @Component({
   selector: "app-user-page",
@@ -139,11 +140,11 @@ export class UserPage implements OnInit, OnDestroy, AfterViewChecked {
       if (document.querySelectorAll(".userIcon")[0]) {
         document
           .querySelectorAll(".userIcon")[0]
-          .querySelectorAll(`.${key as "character" | "lbg" | "rbg" | "item"}`)
+          .querySelectorAll(`.${key as iconElements}`)
           .forEach((element) => {
             (element as SVGPathElement).setAttribute(
               "style",
-              `fill:${dataSource.iconColours[key as "character" | "lbg" | "rbg" | "item"]};`,
+              `fill:${dataSource.iconColours[key as iconElements]};`,
             );
           });
       }

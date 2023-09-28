@@ -38,6 +38,7 @@ import { BehaviorSubject } from "rxjs";
 // App-related imports
 import { Post } from "../interfaces/post.interface";
 import { MockAlertsService } from "./alerts.service.mock";
+import { LowercaseFullListType } from "../interfaces/types";
 
 @Injectable({
   providedIn: "root",
@@ -78,7 +79,7 @@ export class MockPostsService {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  getPosts(_url: string, _type: "new" | "suggested", page: number = 1) {
+  getPosts(_url: string, _type: LowercaseFullListType, page: number = 1) {
     this.isFetchResolved.newItems.next(false);
     this.isFetchResolved.suggestedItems.next(false);
 

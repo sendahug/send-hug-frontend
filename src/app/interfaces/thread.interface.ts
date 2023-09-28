@@ -30,11 +30,13 @@
   SOFTWARE.
 */
 
+import { iconCharacters } from "./types";
+
 export interface Thread {
   id: number;
   user: {
     displayName: string;
-    selectedIcon: "bear" | "kitty" | "dog";
+    selectedIcon: iconCharacters;
     iconColours: {
       character: String;
       lbg: String;

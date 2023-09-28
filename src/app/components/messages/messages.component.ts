@@ -37,6 +37,7 @@ import { ActivatedRoute, Router } from "@angular/router";
 // App-related imports
 import { AuthService } from "../../services/auth.service";
 import { ItemsService } from "../../services/items.service";
+import { iconElements } from "../../interfaces/types";
 
 type MessageType = "inbox" | "outbox" | "threads";
 
@@ -130,13 +131,11 @@ export class AppMessaging implements OnInit, AfterViewChecked {
             Object.keys(message.from.iconColours).forEach((key) => {
               messageDOM!
                 .querySelectorAll(".userIcon")[0]
-                .querySelectorAll(`.${key as "character" | "lbg" | "rbg" | "item"}`)
+                .querySelectorAll(`.${key as iconElements}`)
                 .forEach((element) => {
                   (element as SVGPathElement).setAttribute(
                     "style",
-                    `fill:${
-                      message.from.iconColours[key as "character" | "lbg" | "rbg" | "item"]
-                    };`,
+                    `fill:${message.from.iconColours[key as iconElements]};`,
                   );
                 });
             });
@@ -146,11 +145,11 @@ export class AppMessaging implements OnInit, AfterViewChecked {
             Object.keys(message.for.iconColours).forEach((key) => {
               messageDOM!
                 .querySelectorAll(".userIcon")[0]
-                .querySelectorAll(`.${key as "character" | "lbg" | "rbg" | "item"}`)
+                .querySelectorAll(`.${key as iconElements}`)
                 .forEach((element) => {
                   (element as SVGPathElement).setAttribute(
                     "style",
-                    `fill:${message.for.iconColours[key as "character" | "lbg" | "rbg" | "item"]};`,
+                    `fill:${message.for.iconColours[key as iconElements]};`,
                   );
                 });
             });
@@ -160,13 +159,11 @@ export class AppMessaging implements OnInit, AfterViewChecked {
             Object.keys(message.user.iconColours).forEach((key) => {
               messageDOM!
                 .querySelectorAll(".userIcon")[0]
-                .querySelectorAll(`.${key as "character" | "lbg" | "rbg" | "item"}`)
+                .querySelectorAll(`.${key as iconElements}`)
                 .forEach((element) => {
                   (element as SVGPathElement).setAttribute(
                     "style",
-                    `fill:${
-                      message.user.iconColours[key as "character" | "lbg" | "rbg" | "item"]
-                    };`,
+                    `fill:${message.user.iconColours[key as iconElements]};`,
                   );
                 });
             });

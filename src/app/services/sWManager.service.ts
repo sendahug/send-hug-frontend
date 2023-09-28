@@ -38,6 +38,7 @@ import { openDB, IDBPDatabase, DBSchema } from "idb";
 
 // App-related imports
 import { AlertsService } from "./alerts.service";
+import { iconCharacters } from "../interfaces/types";
 
 // IndexedDB Database schema
 export interface MyDB extends DBSchema {
@@ -64,7 +65,7 @@ export interface MyDB extends DBSchema {
       postsNum: number;
       receivedHugs: number;
       role: string;
-      selectedIcon: "bear" | "kitty" | "dog";
+      selectedIcon: iconCharacters;
       iconColours: {
         character: String;
         lbg: String;
@@ -79,7 +80,7 @@ export interface MyDB extends DBSchema {
       date: Date;
       for: {
         displayName: string;
-        selectedIcon?: "bear" | "kitty" | "dog";
+        selectedIcon?: iconCharacters;
         iconColours?: {
           character: String;
           lbg: String;
@@ -90,7 +91,7 @@ export interface MyDB extends DBSchema {
       forId: number;
       from: {
         displayName: string;
-        selectedIcon?: "bear" | "kitty" | "dog";
+        selectedIcon?: iconCharacters;
         iconColours?: {
           character: String;
           lbg: String;
@@ -112,7 +113,7 @@ export interface MyDB extends DBSchema {
       latestMessage: Date;
       user1: {
         displayName: string;
-        selectedIcon: "bear" | "kitty" | "dog";
+        selectedIcon: iconCharacters;
         iconColours: {
           character: String;
           lbg: String;
@@ -123,7 +124,7 @@ export interface MyDB extends DBSchema {
       user1Id: number;
       user2: {
         displayName: string;
-        selectedIcon: "bear" | "kitty" | "dog";
+        selectedIcon: iconCharacters;
         iconColours: {
           character: String;
           lbg: String;

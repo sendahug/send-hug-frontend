@@ -30,11 +30,13 @@
   SOFTWARE.
 */
 
+import { iconCharacters } from "./types";
+
 export interface Message {
   id?: number;
   from?: {
     displayName: string;
-    selectedIcon?: "bear" | "kitty" | "dog";
+    selectedIcon?: iconCharacters;
     iconColours?: {
       character: String;
       lbg: String;
@@ -45,7 +47,7 @@ export interface Message {
   fromId: number;
   for?: {
     displayName: string;
-    selectedIcon?: "bear" | "kitty" | "dog";
+    selectedIcon?: iconCharacters;
     iconColours?: {
       character: String;
       lbg: String;

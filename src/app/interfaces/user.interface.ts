@@ -31,6 +31,8 @@
   SOFTWARE.
 */
 
+import { iconCharacters } from "./types";
+
 export interface User {
   id?: number;
   auth0Id: string;
@@ -46,7 +48,7 @@ export interface User {
   autoRefresh: boolean;
   pushEnabled: boolean;
   refreshRate: number;
-  selectedIcon: "bear" | "kitty" | "dog";
+  selectedIcon: iconCharacters;
   iconColours: {
     character: String;
     lbg: String;

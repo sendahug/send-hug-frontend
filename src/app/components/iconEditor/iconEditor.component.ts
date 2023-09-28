@@ -33,8 +33,7 @@
 import { AfterViewChecked, Component, EventEmitter, Output } from "@angular/core";
 
 import { AuthService } from "../../services/auth.service";
-
-type iconCharacters = "bear" | "kitty" | "dog";
+import { iconCharacters, iconElements } from "../../interfaces/types";
 
 @Component({
   selector: "app-icon-editor",
@@ -81,11 +80,11 @@ export class IconEditor implements AfterViewChecked {
       if (document.querySelectorAll(".userIcon")[0]) {
         document
           .querySelectorAll(".userIcon")[0]
-          .querySelectorAll(`.${key as "character" | "lbg" | "rbg" | "item"}`)
+          .querySelectorAll(`.${key as iconElements}`)
           .forEach((element) => {
             (element as SVGPathElement).setAttribute(
               "style",
-              `fill:${this.iconColours[key as "character" | "lbg" | "rbg" | "item"]};`,
+              `fill:${this.iconColours[key as iconElements]};`,
             );
           });
       }
@@ -113,7 +112,7 @@ export class IconEditor implements AfterViewChecked {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  showNewColour(newValue: string, element: "character" | "lbg" | "rbg" | "item") {
+  showNewColour(newValue: string, element: iconElements) {
     // update the image
     document
       .querySelectorAll(".selectedCharacter")[0]
@@ -132,16 +131,11 @@ export class IconEditor implements AfterViewChecked {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  updateElementColour(newValue: string, element: "character" | "lbg" | "rbg" | "item") {
+  updateElementColour(newValue: string, element: iconElements) {
     this.iconColours[element] = newValue;
 
     // update the image
-    document
-      .querySelectorAll(".selectedCharacter")[0]
-      .querySelectorAll(`.${element}`)
-      .forEach((path: Element) => {
-        (path as SVGPathElement).setAttribute("style", `fill:${newValue};`);
-      });
+    this.showNewColour(newValue, element);
   }
 
   /*

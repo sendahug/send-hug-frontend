@@ -37,9 +37,7 @@ import { ActivatedRoute, Router } from "@angular/router";
 // App-related imports
 import { AuthService } from "../../services/auth.service";
 import { PostsService } from "../../services/posts.service";
-
-type FullListType = "New" | "Suggested";
-type LowercaseFullListType = "new" | "suggested";
+import { FullListType, LowercaseFullListType } from "../../interfaces/types";
 
 @Component({
   selector: "app-full-list",

@@ -31,6 +31,8 @@
   SOFTWARE.
 */
 
+import { iconCharacters } from "./types";
+
 export interface OtherUser {
   id: number;
   displayName: string;
@@ -40,7 +42,7 @@ export interface OtherUser {
   role: string;
   blocked?: boolean;
   releaseDate?: Date;
-  selectedIcon: "bear" | "kitty" | "dog";
+  selectedIcon: iconCharacters;
   iconColours: {
     character: String;
     lbg: String;

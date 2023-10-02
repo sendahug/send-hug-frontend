@@ -31,20 +31,21 @@
 */
 
 // Angular imports
-import { Injectable } from "@angular/core";
+import { Injectable, WritableSignal, computed, signal } from "@angular/core";
 import { HttpParams } from "@angular/common/http";
 import { BehaviorSubject } from "rxjs";
 
 // App-related imports
 import { Post } from "../interfaces/post.interface";
 import { Message } from "../interfaces/message.interface";
-import { Thread } from "../interfaces/thread.interface";
+import { FullThread, ParsedThread } from "../interfaces/thread.interface";
 import { OtherUser } from "../interfaces/otherUser.interface";
 import { Report } from "../interfaces/report.interface";
 import { MockAuthService } from "./auth.service.mock";
 import { MockAlertsService } from "./alerts.service.mock";
 import { MockSWManager } from "./sWManager.service.mock";
 import { environment } from "../../environments/environment";
+import { MessageType } from "../interfaces/types";
 
 @Injectable({
   providedIn: "root",
@@ -91,36 +92,31 @@ export class MockItemsService {
   isOtherUserResolved = new BehaviorSubject(false);
   previousUser: number = 0;
   // User messages variables
-  userMessages: {
-    inbox: Message[];
-    outbox: Message[];
-    threads: Thread[];
-    thread: Message[];
-  } = {
-    inbox: [],
-    outbox: [],
-    threads: [],
-    thread: [],
-  };
-  userMessagesPage = {
-    inbox: 1,
-    outbox: 1,
-    threads: 1,
-    thread: 1,
-  };
-  totalUserMessagesPages = {
-    inbox: 1,
-    outbox: 1,
-    threads: 1,
-    thread: 1,
-  };
-  isUserMessagesResolved = {
-    inbox: new BehaviorSubject(false),
-    outbox: new BehaviorSubject(false),
-    threads: new BehaviorSubject(false),
-    thread: new BehaviorSubject(false),
-  };
   activeThread = 0;
+  userMessages: Message[] = [];
+  userThreads: WritableSignal<FullThread[]> = signal([]);
+  userThreadsFormatted = computed(() => {
+    return this.userThreads().map((thread: FullThread) => {
+      return {
+        id: thread.id,
+        user:
+        thread.user1Id == this.authService.userData.id
+            ? thread.user2
+            : thread.user1,
+        userID:
+        thread.user1Id == this.authService.userData.id ? thread.user2Id : thread.user1Id,
+        numMessages: thread.numMessages,
+        latestMessage: thread.latestMessage,
+      };
+    });
+  });
+  currentMessagesPage = 1;
+  totalMessagesPages = 1;
+  isMessagesResolved = new BehaviorSubject(false);
+  isMessagesIdbResolved = new BehaviorSubject(false);
+  lastFetchTarget?: MessageType;
+  lastFetchSource: "Server" | "IDB" | "" = "";
+  lastFetchDate: number = 0;
   // search variables
   isSearching = false;
   userSearchResults: OtherUser[] = [];
@@ -319,31 +315,37 @@ export class MockItemsService {
 
   // MESSAGE-RELATED METHODS
   // ==============================================================
-  /*
-  Function Name: getMailboxMessages()
-  Function Description: Get the user's incoming messages.
-  Parameters: type ('inbox' | 'outbox') - Type of messages to fetch.
-              userID (number) - the ID of the user whose messages to fetch.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  getMailboxMessages(type: "inbox" | "outbox", userID: number, page: number) {
+  getMessages(type: MessageType, page: number, threadId?: number) {
     // if the current page is 0, send page 1 to the server (default)
     const currentPage = page ? page : 1;
-    this.idbResolved[type].next(false);
-    this.isUserMessagesResolved[type].next(false);
+    this.isMessagesIdbResolved.next(false);
+    this.isMessagesResolved.next(false);
 
     if (type == "inbox") {
       if (page == 1) {
-        this.userMessages[type] = [
+        this.userMessages = [
           {
             date: new Date("Mon, 22 Jun 2020 14:32:38 GMT"),
             for: {
               displayName: "user14",
+              selectedIcon: "kitty",
+              iconColours: {
+                character: "#BA9F93",
+                lbg: "#e2a275",
+                rbg: "#f8eee4",
+                item: "#f4b56a",
+              },
             },
             forId: 4,
             from: {
               displayName: "user14",
+              selectedIcon: "kitty",
+              iconColours: {
+                character: "#BA9F93",
+                lbg: "#e2a275",
+                rbg: "#f8eee4",
+                item: "#f4b56a",
+              },
             },
             fromId: 4,
             id: 1,
@@ -354,10 +356,24 @@ export class MockItemsService {
             date: new Date("Mon, 22 Jun 2020 14:32:38 GMT"),
             for: {
               displayName: "user14",
+              selectedIcon: "kitty",
+              iconColours: {
+                character: "#BA9F93",
+                lbg: "#e2a275",
+                rbg: "#f8eee4",
+                item: "#f4b56a",
+              },
             },
             forId: 4,
             from: {
               displayName: "user14",
+              selectedIcon: "kitty",
+              iconColours: {
+                character: "#BA9F93",
+                lbg: "#e2a275",
+                rbg: "#f8eee4",
+                item: "#f4b56a",
+              },
             },
             fromId: 4,
             id: 14,
@@ -365,17 +381,31 @@ export class MockItemsService {
             threadID: 4,
           },
         ];
-        this.userMessagesPage[type] = 1;
+        this.currentMessagesPage = 1;
       } else {
-        this.userMessages[type] = [
+        this.userMessages = [
           {
             date: new Date("Mon, 22 Jun 2020 14:32:38 GMT"),
             for: {
               displayName: "user14",
+              selectedIcon: "kitty",
+              iconColours: {
+                character: "#BA9F93",
+                lbg: "#e2a275",
+                rbg: "#f8eee4",
+                item: "#f4b56a",
+              },
             },
             forId: 4,
             from: {
               displayName: "user14",
+              selectedIcon: "kitty",
+              iconColours: {
+                character: "#BA9F93",
+                lbg: "#e2a275",
+                rbg: "#f8eee4",
+                item: "#f4b56a",
+              },
             },
             fromId: 4,
             id: 1,
@@ -386,10 +416,24 @@ export class MockItemsService {
             date: new Date("Mon, 22 Jun 2020 14:32:38 GMT"),
             for: {
               displayName: "user14",
+              selectedIcon: "kitty",
+              iconColours: {
+                character: "#BA9F93",
+                lbg: "#e2a275",
+                rbg: "#f8eee4",
+                item: "#f4b56a",
+              },
             },
             forId: 4,
             from: {
               displayName: "user14",
+              selectedIcon: "kitty",
+              iconColours: {
+                character: "#BA9F93",
+                lbg: "#e2a275",
+                rbg: "#f8eee4",
+                item: "#f4b56a",
+              },
             },
             fromId: 4,
             id: 14,
@@ -400,10 +444,24 @@ export class MockItemsService {
             date: new Date("Mon, 22 Jun 2020 14:32:38 GMT"),
             for: {
               displayName: "user14",
+              selectedIcon: "kitty",
+              iconColours: {
+                character: "#BA9F93",
+                lbg: "#e2a275",
+                rbg: "#f8eee4",
+                item: "#f4b56a",
+              },
             },
             forId: 4,
             from: {
               displayName: "user14",
+              selectedIcon: "kitty",
+              iconColours: {
+                character: "#BA9F93",
+                lbg: "#e2a275",
+                rbg: "#f8eee4",
+                item: "#f4b56a",
+              },
             },
             fromId: 4,
             id: 25,
@@ -411,22 +469,36 @@ export class MockItemsService {
             threadID: 4,
           },
         ];
-        this.userMessagesPage[type] = 2;
+        this.currentMessagesPage = 2;
       }
-      this.totalUserMessagesPages[type] = 2;
-      this.isUserMessagesResolved[type].next(true);
-      this.idbResolved[type].next(true);
-    } else {
+      this.totalMessagesPages = 2;
+      this.isMessagesResolved.next(true);
+      this.isMessagesIdbResolved.next(true);
+    } else if (type == "outbox") {
       if (page == 1) {
-        this.userMessages[type] = [
+        this.userMessages = [
           {
             date: new Date("Mon, 22 Jun 2020 14:32:38 GMT"),
             for: {
               displayName: "user14",
+              selectedIcon: "kitty",
+              iconColours: {
+                character: "#BA9F93",
+                lbg: "#e2a275",
+                rbg: "#f8eee4",
+                item: "#f4b56a",
+              },
             },
             forId: 4,
             from: {
               displayName: "user14",
+              selectedIcon: "kitty",
+              iconColours: {
+                character: "#BA9F93",
+                lbg: "#e2a275",
+                rbg: "#f8eee4",
+                item: "#f4b56a",
+              },
             },
             fromId: 4,
             id: 18,
@@ -437,10 +509,24 @@ export class MockItemsService {
             date: new Date("Mon, 08 Jun 2020 14:43:15 GMT"),
             for: {
               displayName: "shirb",
+              selectedIcon: "kitty",
+              iconColours: {
+                character: "#BA9F93",
+                lbg: "#e2a275",
+                rbg: "#f8eee4",
+                item: "#f4b56a",
+              },
             },
             forId: 1,
             from: {
               displayName: "user14",
+              selectedIcon: "kitty",
+              iconColours: {
+                character: "#BA9F93",
+                lbg: "#e2a275",
+                rbg: "#f8eee4",
+                item: "#f4b56a",
+              },
             },
             fromId: 4,
             id: 9,
@@ -448,17 +534,31 @@ export class MockItemsService {
             threadID: 3,
           },
         ];
-        this.userMessagesPage[type] = 1;
+        this.currentMessagesPage = 1;
       } else {
-        this.userMessages[type] = [
+        this.userMessages = [
           {
             date: new Date("Mon, 22 Jun 2020 14:32:38 GMT"),
             for: {
               displayName: "user14",
+              selectedIcon: "kitty",
+              iconColours: {
+                character: "#BA9F93",
+                lbg: "#e2a275",
+                rbg: "#f8eee4",
+                item: "#f4b56a",
+              },
             },
             forId: 4,
             from: {
               displayName: "user14",
+              selectedIcon: "kitty",
+              iconColours: {
+                character: "#BA9F93",
+                lbg: "#e2a275",
+                rbg: "#f8eee4",
+                item: "#f4b56a",
+              },
             },
             fromId: 4,
             id: 18,
@@ -466,102 +566,109 @@ export class MockItemsService {
             threadID: 4,
           },
         ];
-        this.userMessagesPage[type] = 2;
+        this.currentMessagesPage = 2;
       }
-      this.totalUserMessagesPages[type] = 2;
-      this.isUserMessagesResolved[type].next(true);
-      this.idbResolved[type].next(true);
-    }
-  }
-
-  /*
-  Function Name: getThreads()
-  Function Description: Get the user's threads.
-  Parameters: userID (number) - the ID of the user whose threads to fetch.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  getThreads(userID: number, page: number) {
-    // if the current page is 0, send page 1 to the server (default)
-    const currentPage = page ? page : 1;
-    this.idbResolved.threads.next(false);
-    this.isUserMessagesResolved.threads.next(false);
-
-    this.userMessages.threads = [
-      {
-        id: 3,
-        user: {
-          displayName: "shirb",
-          selectedIcon: "kitty",
-          iconColours: {
-            character: "#BA9F93",
-            lbg: "#e2a275",
-            rbg: "#f8eee4",
-            item: "#f4b56a",
+      this.totalMessagesPages = 2;
+      this.isMessagesResolved.next(true);
+      this.isMessagesIdbResolved.next(true);
+    } else if (type == "threads") {
+      this.userThreads.set([
+        {
+          id: 3,
+          user1: {
+            displayName: "shirb",
+            selectedIcon: "kitty",
+            iconColours: {
+              character: "#BA9F93",
+              lbg: "#e2a275",
+              rbg: "#f8eee4",
+              item: "#f4b56a",
+            },
           },
+          user1Id: 1,
+          user2: {
+            displayName: "shirb",
+            selectedIcon: "kitty",
+            iconColours: {
+              character: "#BA9F93",
+              lbg: "#e2a275",
+              rbg: "#f8eee4",
+              item: "#f4b56a",
+            },
+          },
+          user2Id: 2,
+          numMessages: 1,
+          latestMessage: new Date("Mon, 08 Jun 2020 14:43:15 GMT"),
         },
-        userID: 1,
-        numMessages: 1,
-        latestMessage: new Date("Mon, 08 Jun 2020 14:43:15 GMT"),
-      },
-    ];
-    if (currentPage == 1) {
-      this.userMessagesPage.threads = 1;
+      ]);
+      this.currentMessagesPage = page == 1 ? 1 : 2;
+      this.totalMessagesPages = 2;
+      this.isMessagesResolved.next(true);
+      this.isMessagesIdbResolved.next(true);
     } else {
-      this.userMessagesPage.threads = 2;
+      this.userMessages = [
+        {
+          date: new Date("Mon, 08 Jun 2020 14:43:15 GMT"),
+          for: {
+            displayName: "shirb",
+            selectedIcon: "kitty",
+              iconColours: {
+                character: "#BA9F93",
+                lbg: "#e2a275",
+                rbg: "#f8eee4",
+                item: "#f4b56a",
+              },
+          },
+          forId: 1,
+          from: {
+            displayName: "user14",
+            selectedIcon: "kitty",
+              iconColours: {
+                character: "#BA9F93",
+                lbg: "#e2a275",
+                rbg: "#f8eee4",
+                item: "#f4b56a",
+              },
+          },
+          fromId: 4,
+          id: 9,
+          messageText: "hang in there",
+          threadID: 3,
+        },
+        {
+          date: new Date("Mon, 08 Jun 2020 14:43:15 GMT"),
+          for: {
+            displayName: "shirb",
+            selectedIcon: "kitty",
+              iconColours: {
+                character: "#BA9F93",
+                lbg: "#e2a275",
+                rbg: "#f8eee4",
+                item: "#f4b56a",
+              },
+          },
+          forId: 1,
+          from: {
+            displayName: "user14",
+            selectedIcon: "kitty",
+              iconColours: {
+                character: "#BA9F93",
+                lbg: "#e2a275",
+                rbg: "#f8eee4",
+                item: "#f4b56a",
+              },
+          },
+          fromId: 4,
+          id: 10,
+          messageText: "hi",
+          threadID: 3,
+        },
+      ];
+      this.currentMessagesPage = 1;
+      this.totalMessagesPages = 1;
+      this.isMessagesResolved.next(true);
+      this.isMessagesIdbResolved.next(true);
     }
-    this.totalUserMessagesPages.threads = 2;
-    this.isUserMessagesResolved.threads.next(true);
-    this.idbResolved.threads.next(true);
-  }
-
-  /*
-  Function Name: getThread()
-  Function Description: Get the messages in a specific thread.
-  Parameters: userID (number) - the ID of the user whose messages to fetch.
-              threadId (number) - the ID of the thread to fetch.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  getThread(userID: number, threadId: number) {
-    this.activeThread = threadId;
-    this.idbResolved.thread.next(false);
-    this.isUserMessagesResolved.thread.next(false);
-
-    this.userMessages.thread = [
-      {
-        date: new Date("Mon, 08 Jun 2020 14:43:15 GMT"),
-        for: {
-          displayName: "shirb",
-        },
-        forId: 1,
-        from: {
-          displayName: "user14",
-        },
-        fromId: 4,
-        id: 9,
-        messageText: "hang in there",
-        threadID: 3,
-      },
-      {
-        date: new Date("Mon, 08 Jun 2020 14:43:15 GMT"),
-        for: {
-          displayName: "shirb",
-        },
-        forId: 1,
-        from: {
-          displayName: "user14",
-        },
-        fromId: 4,
-        id: 10,
-        messageText: "hi",
-        threadID: 3,
-      },
-    ];
-    this.totalUserMessagesPages.thread = 1;
-    this.userMessagesPage.thread = 1;
-    this.isUserMessagesResolved.thread.next(true);
-    this.idbResolved.thread.next(true);
   }
 
   /*

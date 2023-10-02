@@ -184,6 +184,40 @@ describe("AppMessaging", () => {
     done();
   });
 
+  // Check that a different page gets different results
+  it("should change pages when clicked", (done: DoneFn) => {
+    TestBed.inject(ActivatedRoute).url = of([{ path: "inbox" } as UrlSegment]);
+    const fixture = TestBed.createComponent(AppMessaging);
+    const appMessaging = fixture.componentInstance;
+    const appMessagingDOM = fixture.nativeElement;
+    appMessaging.login();
+
+    fixture.detectChanges();
+
+    // before the click, page 1
+    expect(appMessaging.itemsService.currentMessagesPage).toBe(1);
+    expect(appMessagingDOM.querySelectorAll(".mailboxMessages")[0].children.length).toBe(2);
+
+    expect(appMessagingDOM.querySelectorAll(".pagination").children.length).toBe(3);
+
+    // trigger click
+    appMessagingDOM.querySelectorAll(".nextButton")[0].click();
+    fixture.detectChanges();
+
+    // after click, page 2
+    expect(appMessaging.itemsService.currentMessagesPage).toBe(2);
+    expect(appMessagingDOM.querySelectorAll(".mailboxMessages")[0].children.length).toBe(3);
+
+    // trigger another click
+    appMessagingDOM.querySelectorAll(".prevButton")[0].click();
+    fixture.detectChanges();
+
+    // after click, page 1
+    expect(appMessaging.itemsService.currentMessagesPage).toBe(1);
+    expect(appMessagingDOM.querySelectorAll(".mailboxMessages")[0].children.length).toBe(2);
+    done();
+  });
+
   // INBOX
   // ==================================================================
   describe("Inbox", () => {
@@ -214,7 +248,7 @@ describe("AppMessaging", () => {
       TestBed.inject(ActivatedRoute).url = of([{ path: "inbox" } as UrlSegment]);
       const getMessagesSpy = spyOn(
         TestBed.inject(ItemsService),
-        "getMailboxMessages",
+        "getMessages",
       ).and.callThrough();
       const fixture = TestBed.createComponent(AppMessaging);
       const appMessaging = fixture.componentInstance;
@@ -223,7 +257,7 @@ describe("AppMessaging", () => {
       fixture.detectChanges();
 
       expect(appMessaging.messType).toBe("inbox");
-      expect(getMessagesSpy).toHaveBeenCalledWith("inbox", 4, 1);
+      expect(getMessagesSpy).toHaveBeenCalledWith("inbox", 1, 0);
     });
 
     // Check each message has delete button and reply link
@@ -305,38 +339,6 @@ describe("AppMessaging", () => {
       expect(appMessagingDOM.querySelector("app-pop-up")).toBeTruthy();
       done();
     });
-
-    // Check that a different page gets different results
-    it("should change pages when clicked", (done: DoneFn) => {
-      TestBed.inject(ActivatedRoute).url = of([{ path: "inbox" } as UrlSegment]);
-      const fixture = TestBed.createComponent(AppMessaging);
-      const appMessaging = fixture.componentInstance;
-      const appMessagingDOM = fixture.nativeElement;
-      appMessaging.login();
-
-      fixture.detectChanges();
-
-      // before the click, page 1
-      expect(appMessaging.itemsService.userMessagesPage.inbox).toBe(1);
-      expect(appMessagingDOM.querySelectorAll(".mailboxMessages")[0].children.length).toBe(2);
-
-      // trigger click
-      appMessagingDOM.querySelectorAll(".nextButton")[0].click();
-      fixture.detectChanges();
-
-      // after click, page 2
-      expect(appMessaging.itemsService.userMessagesPage.inbox).toBe(2);
-      expect(appMessagingDOM.querySelectorAll(".mailboxMessages")[0].children.length).toBe(3);
-
-      // trigger another click
-      appMessagingDOM.querySelectorAll(".prevButton")[0].click();
-      fixture.detectChanges();
-
-      // after click, page 1
-      expect(appMessaging.itemsService.userMessagesPage.inbox).toBe(1);
-      expect(appMessagingDOM.querySelectorAll(".mailboxMessages")[0].children.length).toBe(2);
-      done();
-    });
   });
 
   // OUTBOX
@@ -369,7 +371,7 @@ describe("AppMessaging", () => {
       TestBed.inject(ActivatedRoute).url = of([{ path: "outbox" } as UrlSegment]);
       const getMessagesSpy = spyOn(
         TestBed.inject(ItemsService),
-        "getMailboxMessages",
+        "getMessages",
       ).and.callThrough();
       const fixture = TestBed.createComponent(AppMessaging);
       const appMessaging = fixture.componentInstance;
@@ -378,7 +380,7 @@ describe("AppMessaging", () => {
       fixture.detectChanges();
 
       expect(appMessaging.messType).toBe("outbox");
-      expect(getMessagesSpy).toHaveBeenCalledWith("outbox", 4, 1);
+      expect(getMessagesSpy).toHaveBeenCalledWith("outbox", 1, 0);
     });
 
     // Check each message has delete button and reply link
@@ -455,38 +457,6 @@ describe("AppMessaging", () => {
       expect(appMessagingDOM.querySelector("app-pop-up")).toBeTruthy();
       done();
     });
-
-    // Check that a different page gets different results
-    it("should change pages when clicked", (done: DoneFn) => {
-      TestBed.inject(ActivatedRoute).url = of([{ path: "outbox" } as UrlSegment]);
-      const fixture = TestBed.createComponent(AppMessaging);
-      const appMessaging = fixture.componentInstance;
-      const appMessagingDOM = fixture.nativeElement;
-      appMessaging.login();
-
-      fixture.detectChanges();
-
-      // before the click, page 1
-      expect(appMessaging.itemsService.userMessagesPage.outbox).toBe(1);
-      expect(appMessagingDOM.querySelectorAll(".mailboxMessages")[0].children.length).toBe(2);
-
-      // trigger click
-      appMessagingDOM.querySelectorAll(".nextButton")[0].click();
-      fixture.detectChanges();
-
-      // after click, page 2
-      expect(appMessaging.itemsService.userMessagesPage.outbox).toBe(2);
-      expect(appMessagingDOM.querySelectorAll(".mailboxMessages")[0].children.length).toBe(1);
-
-      // trigger another click
-      appMessagingDOM.querySelectorAll(".prevButton")[0].click();
-      fixture.detectChanges();
-
-      // after click, page 1
-      expect(appMessaging.itemsService.userMessagesPage.outbox).toBe(1);
-      expect(appMessagingDOM.querySelectorAll(".mailboxMessages")[0].children.length).toBe(2);
-      done();
-    });
   });
 
   // THREADS
@@ -517,7 +487,7 @@ describe("AppMessaging", () => {
     // Check that the threads mailbox is loaded correctly
     it("should load the correct mailbox - threads", () => {
       TestBed.inject(ActivatedRoute).url = of([{ path: "threads" } as UrlSegment]);
-      const getMessagesSpy = spyOn(TestBed.inject(ItemsService), "getThreads").and.callThrough();
+      const getMessagesSpy = spyOn(TestBed.inject(ItemsService), "getMessages").and.callThrough();
       const fixture = TestBed.createComponent(AppMessaging);
       const appMessaging = fixture.componentInstance;
       appMessaging.login();
@@ -525,7 +495,7 @@ describe("AppMessaging", () => {
       fixture.detectChanges();
 
       expect(appMessaging.messType).toBe("threads");
-      expect(getMessagesSpy).toHaveBeenCalledWith(4, 1);
+      expect(getMessagesSpy).toHaveBeenCalledWith("threads", 1, 0);
     });
 
     // Check each message has delete button and view thread link
@@ -604,38 +574,6 @@ describe("AppMessaging", () => {
       expect(appMessagingDOM.querySelector("app-pop-up")).toBeTruthy();
       done();
     });
-
-    // Check that a different page gets different results
-    it("should change pages when clicked", (done: DoneFn) => {
-      TestBed.inject(ActivatedRoute).url = of([{ path: "threads" } as UrlSegment]);
-      const fixture = TestBed.createComponent(AppMessaging);
-      const appMessaging = fixture.componentInstance;
-      const appMessagingDOM = fixture.nativeElement;
-      appMessaging.login();
-
-      fixture.detectChanges();
-
-      // before the click, page 1
-      expect(appMessaging.itemsService.userMessagesPage.threads).toBe(1);
-      expect(appMessagingDOM.querySelectorAll(".userThreads")[0].children.length).toBe(1);
-
-      // trigger click
-      appMessagingDOM.querySelectorAll(".nextButton")[0].click();
-      fixture.detectChanges();
-
-      // after click, page 2
-      expect(appMessaging.itemsService.userMessagesPage.threads).toBe(2);
-      expect(appMessagingDOM.querySelectorAll(".userThreads")[0].children.length).toBe(1);
-
-      // trigger another click
-      appMessagingDOM.querySelectorAll(".prevButton")[0].click();
-      fixture.detectChanges();
-
-      // after click, page 1
-      expect(appMessaging.itemsService.userMessagesPage.threads).toBe(1);
-      expect(appMessagingDOM.querySelectorAll(".userThreads")[0].children.length).toBe(1);
-      done();
-    });
   });
 
   // THREAD
@@ -670,7 +608,7 @@ describe("AppMessaging", () => {
         (TestBed.inject(ActivatedRoute) as ActivatedRoute).snapshot.paramMap,
         "get",
       ).and.returnValue("3");
-      const getMessagesSpy = spyOn(TestBed.inject(ItemsService), "getThread").and.callThrough();
+      const getMessagesSpy = spyOn(TestBed.inject(ItemsService), "getMessages").and.callThrough();
       const fixture = TestBed.createComponent(AppMessaging);
       const appMessaging = fixture.componentInstance;
       appMessaging.login();
@@ -679,7 +617,7 @@ describe("AppMessaging", () => {
 
       expect(paramSpy).toHaveBeenCalled();
       expect(appMessaging.messType).toBe("thread");
-      expect(getMessagesSpy).toHaveBeenCalledWith(4, 3);
+      expect(getMessagesSpy).toHaveBeenCalledWith("thread", 1, 3);
     });
 
     // Check each message has delete button and reply link

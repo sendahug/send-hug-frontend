@@ -33,7 +33,7 @@
 import { iconCharacters } from "./types";
 import { UserIconColours } from "./user.interface";
 
-export interface Thread {
+export interface ParsedThread {
   id: number;
   user: {
     displayName: string;
@@ -41,6 +41,35 @@ export interface Thread {
     iconColours: UserIconColours;
   };
   userID: number;
+  numMessages: number;
+  latestMessage: Date;
+  isoDate?: string;
+}
+
+export interface FullThread {
+  id: number;
+  user1: {
+    displayName: string;
+    selectedIcon: iconCharacters;
+    iconColours: {
+      character: String;
+      lbg: String;
+      rbg: String;
+      item: String;
+    };
+  };
+  user1Id: number;
+  user2: {
+    displayName: string;
+    selectedIcon: iconCharacters;
+    iconColours: {
+      character: String;
+      lbg: String;
+      rbg: String;
+      item: String;
+    };
+  };
+  user2Id: number;
   numMessages: number;
   latestMessage: Date;
   isoDate?: string;

@@ -38,6 +38,8 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { AuthService } from "../../services/auth.service";
 import { ItemsService } from "../../services/items.service";
 import { iconElements } from "../../interfaces/types";
+import { ParsedThread } from "../../interfaces/thread.interface";
+import { UserIconColours } from "../../interfaces/user.interface";
 
 type MessageType = "inbox" | "outbox" | "threads";
 
@@ -50,7 +52,7 @@ export class AppMessaging implements OnInit, AfterViewChecked {
   page: number;
   // loader sub-component variable
   waitFor = `${this.messType} messages`;
-  threadId: number;
+  threadId?: number;
   // edit popup sub-component variables
   postToEdit: any;
   editType: string | undefined;
@@ -69,6 +71,9 @@ export class AppMessaging implements OnInit, AfterViewChecked {
   ) {
     let messageType;
     this.threadId = Number(this.route.snapshot.paramMap.get("id"));
+    this.editMode = false;
+    this.delete = false;
+    this.page = 1;
 
     this.route.url.subscribe((params) => {
       messageType = params[0].path;
@@ -87,25 +92,9 @@ export class AppMessaging implements OnInit, AfterViewChecked {
       // now fetch the user's messages
       if (value == true) {
         // Gets the user's messages via the items service
-        if (this.messType == "inbox" || this.messType == "outbox") {
-          this.itemsService.getMailboxMessages(
-            this.messType,
-            this.authService.userData.id!,
-            this.page,
-          );
-        } else if (this.messType == "threads") {
-          this.itemsService.getThreads(this.authService.userData.id!, this.page);
-        }
-        // gets the thread's messages
-        else if (this.messType == "thread" && this.threadId) {
-          this.itemsService.getThread(this.authService.userData.id!, this.threadId);
-        }
+        this.itemsService.getMessages(this.messType, this.page, this.threadId);
       }
     });
-
-    this.editMode = false;
-    this.delete = false;
-    this.page = 1;
   }
 
   ngOnInit() {}
@@ -122,55 +111,45 @@ export class AppMessaging implements OnInit, AfterViewChecked {
   ngAfterViewChecked() {
     // wait for the DOM to load
     if (document.querySelectorAll(".userIcon")[0]) {
-      this.itemsService.userMessages[this.messType].forEach((message: any) => {
-        const messageDOM = document.getElementById(this.messType + message.id);
-
-        switch (this.messType) {
-          // If it's the inbox, get the the icon details of the user sending the message
-          case "inbox" || "thread":
-            Object.keys(message.from.iconColours).forEach((key) => {
-              messageDOM!
-                .querySelectorAll(".userIcon")[0]
-                .querySelectorAll(`.${key as iconElements}`)
-                .forEach((element) => {
-                  (element as SVGPathElement).setAttribute(
-                    "style",
-                    `fill:${message.from.iconColours[key as iconElements]};`,
-                  );
-                });
-            });
-            break;
-          // If it's the outbox, get the icon details of the user for which the message is meant
-          case "outbox":
-            Object.keys(message.for.iconColours).forEach((key) => {
-              messageDOM!
-                .querySelectorAll(".userIcon")[0]
-                .querySelectorAll(`.${key as iconElements}`)
-                .forEach((element) => {
-                  (element as SVGPathElement).setAttribute(
-                    "style",
-                    `fill:${message.for.iconColours[key as iconElements]};`,
-                  );
-                });
-            });
-            break;
-          // If it's the threads mailbox, get the icon details of the other user in the thread
-          case "threads":
-            Object.keys(message.user.iconColours).forEach((key) => {
-              messageDOM!
-                .querySelectorAll(".userIcon")[0]
-                .querySelectorAll(`.${key as iconElements}`)
-                .forEach((element) => {
-                  (element as SVGPathElement).setAttribute(
-                    "style",
-                    `fill:${message.user.iconColours[key as iconElements]};`,
-                  );
-                });
-            });
-            break;
-        }
-      });
+      // If it's the threads mailbox, get the icon details of the other user in the thread
+      if (this.messType == "threads") {
+        this.itemsService.userThreadsFormatted().forEach((thread: ParsedThread) => {
+          this.setUpUserIcon(thread.id, thread.user.iconColours);
+        });
+      } else {
+        this.itemsService.userMessages.forEach((message: any) => {
+          switch (this.messType) {
+            // If it's the inbox, get the the icon details of the user sending the message
+            case "inbox" || "thread":
+              this.setUpUserIcon(message.id, message.from.iconColours);
+              break;
+            // If it's the outbox, get the icon details of the user for which the message is meant
+            case "outbox":
+              this.setUpUserIcon(message.id, message.for.iconColours);
+              break;
+          }
+        });
+      }
     }
+  }
+
+  /**
+   * Updates the user's icon with the right colours
+   * @param messageId the ID of the message
+   * @param userIconColours the user's icon colours
+   */
+  setUpUserIcon(messageId: number, userIconColours: UserIconColours) {
+    Object.keys(userIconColours).forEach((key) => {
+      document
+        .querySelectorAll(`#${this.messType}${messageId} .userIcon`)[0]
+        .querySelectorAll(`.${key as iconElements}`)
+        .forEach((element) => {
+          (element as SVGPathElement).setAttribute(
+            "style",
+            `fill:${userIconColours[key as iconElements]};`,
+          );
+        });
+    });
   }
 
   /*
@@ -210,15 +189,7 @@ export class AppMessaging implements OnInit, AfterViewChecked {
   */
   nextPage() {
     this.page += 1;
-
-    if (this.messType == "thread") {
-      this.itemsService.userMessagesPage.thread += 1;
-      this.itemsService.getThread(this.authService.userData.id!, this.threadId);
-    } else if (this.messType == "threads") {
-      this.itemsService.getThreads(this.authService.userData.id!, this.page);
-    } else {
-      this.itemsService.getMailboxMessages(this.messType, this.authService.userData.id!, this.page);
-    }
+    this.itemsService.getMessages(this.messType, this.page, this.threadId);
   }
 
   /*
@@ -231,15 +202,7 @@ export class AppMessaging implements OnInit, AfterViewChecked {
   */
   prevPage() {
     this.page -= 1;
-
-    if (this.messType == "thread") {
-      this.itemsService.userMessagesPage.thread -= 1;
-      this.itemsService.getThread(this.authService.userData.id!, this.threadId);
-    } else if (this.messType == "threads") {
-      this.itemsService.getThreads(this.authService.userData.id!, this.page);
-    } else {
-      this.itemsService.getMailboxMessages(this.messType, this.authService.userData.id!, this.page);
-    }
+    this.itemsService.getMessages(this.messType, this.page, this.threadId);
   }
 
   /*

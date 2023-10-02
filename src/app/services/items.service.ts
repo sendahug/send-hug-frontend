@@ -449,7 +449,7 @@ export class ItemsService {
       .queryMessages(type, this.authService.userData.id!, currentPage)
       ?.then((data: any) => {
         // if there's messages data in the IDB database
-        if (data.posts.length) {
+        if (data.messages.length) {
           // if the latest fetch is none, the last fetch was from IDB and before,
           // the last fetch was performed more than 10 seconds ago (meaning the user
           // changed/refreshed the page) or it's a different page, update the latest fetch and the displayed
@@ -568,7 +568,7 @@ export class ItemsService {
     // get the user's messages from IDB
     this.serviceWorkerM.queryThreads(currentPage)?.then((data: any) => {
       // if there's threads data in the IDB database
-      if (data.posts.length) {
+      if (data.messages.length) {
         // if the latest fetch is none, the last fetch was from IDB and before,
         // the last fetch was performed more than 10 seconds ago (meaning the user
         // changed/refreshed the page) or it's a different page, update the latest fetch and the displayed
@@ -704,7 +704,7 @@ export class ItemsService {
       .queryMessages("thread", this.authService.userData.id!, currentPage, threadId)
       ?.then((data: any) => {
         // if there's messages data in the IDB database
-        if (data.posts.length) {
+        if (data.messages.length) {
           this.userMessages.thread = [];
           // add the messages to the appropriate array
           data.posts.forEach((element: Message) => {

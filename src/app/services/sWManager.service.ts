@@ -517,7 +517,7 @@ export class SWManager {
           let pages = Math.ceil(orderedInbox!.length / 5);
 
           return {
-            posts: orderedInbox.slice(startIndex, startIndex + 5),
+            messages: orderedInbox.slice(startIndex, startIndex + 5),
             pages: pages,
           };
         }
@@ -529,7 +529,7 @@ export class SWManager {
           let pages = Math.ceil(orderedOutbox!.length / 5);
 
           return {
-            posts: orderedOutbox.slice(startIndex, startIndex + 5),
+            messages: orderedOutbox.slice(startIndex, startIndex + 5),
             pages: pages,
           };
         }
@@ -541,7 +541,7 @@ export class SWManager {
           let pages = Math.ceil(orderedThread!.length / 5);
 
           return {
-            posts: orderedThread.slice(startIndex, startIndex + 5),
+            messages: orderedThread.slice(startIndex, startIndex + 5),
             pages: pages,
           };
         }
@@ -567,7 +567,7 @@ export class SWManager {
         let pages = Math.ceil(orderedThreads!.length / 5);
 
         return {
-          posts: orderedThreads.slice(startIndex, startIndex + 5),
+          messages: orderedThreads.slice(startIndex, startIndex + 5),
           pages: pages,
         };
       });

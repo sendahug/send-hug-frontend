@@ -31,29 +31,20 @@
 */
 
 import { iconCharacters } from "./types";
+import { UserIconColours } from "./user.interface";
 
 export interface Message {
   id?: number;
   from?: {
     displayName: string;
     selectedIcon?: iconCharacters;
-    iconColours?: {
-      character: String;
-      lbg: String;
-      rbg: String;
-      item: String;
-    };
+    iconColours?: UserIconColours;
   };
   fromId: number;
   for?: {
     displayName: string;
     selectedIcon?: iconCharacters;
-    iconColours?: {
-      character: String;
-      lbg: String;
-      rbg: String;
-      item: String;
-    };
+    iconColours?: UserIconColours;
   };
   forId: number;
   messageText: string;

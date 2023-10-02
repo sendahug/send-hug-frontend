@@ -31,18 +31,14 @@
 */
 
 import { iconCharacters } from "./types";
+import { UserIconColours } from "./user.interface";
 
 export interface Thread {
   id: number;
   user: {
     displayName: string;
     selectedIcon: iconCharacters;
-    iconColours: {
-      character: String;
-      lbg: String;
-      rbg: String;
-      item: String;
-    };
+    iconColours: UserIconColours;
   };
   userID: number;
   numMessages: number;

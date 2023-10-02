@@ -33,6 +33,13 @@
 
 import { iconCharacters } from "./types";
 
+export interface UserIconColours {
+  character: String;
+  lbg: String;
+  rbg: String;
+  item: String;
+}
+
 export interface User {
   id?: number;
   auth0Id: string;
@@ -49,10 +56,5 @@ export interface User {
   pushEnabled: boolean;
   refreshRate: number;
   selectedIcon: iconCharacters;
-  iconColours: {
-    character: String;
-    lbg: String;
-    rbg: String;
-    item: String;
-  };
+  iconColours: UserIconColours;
 }

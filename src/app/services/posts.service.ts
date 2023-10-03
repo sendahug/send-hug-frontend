@@ -59,9 +59,6 @@ export class PostsService {
     newItems: new BehaviorSubject(false),
     suggestedItems: new BehaviorSubject(false),
   };
-  lastFetchTarget: "/posts/new" | "/posts/suggested" | "" = "";
-  lastFetchSource: "Server" | "IDB" | "" = "";
-  lastFetchDate: number = 0;
   currentPage = 1;
   totalPages = 1;
   currentlyOpenMenu = new BehaviorSubject(-1);
@@ -89,24 +86,71 @@ export class PostsService {
   getPosts(url: string, type: LowercaseFullListType, page: number = 1) {
     if (type !== "new" && type !== "suggested") return;
 
+    this.isFetchResolved.newItems.next(false);
+    this.isFetchResolved.suggestedItems.next(false);
+    const idbPromises: Promise<void>[] = this.fetchPostsFromIdb(url, type, page);
+
+    // TODO: Convert this to an observable
+    Promise.all(idbPromises).then(() => {
+      this.isFetchResolved.newItems.next(true);
+      this.isFetchResolved.suggestedItems.next(true);
+
+      // Then fetch from the server
+      this.fetchPostsFromServer(url, type, page);
+    });
+  }
+
+  /**
+   * Fetches posts from IndexedDB and updates the posts behaviour subjects
+   * @param url - The URL to fetch.
+   * @param type - The type of posts to fetch. Not used when the URL is "" as it's the home page.
+   * @param page - The page to fetch. Not used when the URL is "" as it's the home page.
+   * @returns a list of promises that resolve when the posts are fetched from IDB.
+   */
+  fetchPostsFromIdb(url: string, type: LowercaseFullListType, page: number = 1) {
+    let idbPromises: Promise<void>[] = [];
+
+    // Fetch from Idb
+    if (url !== "") {
+      const postsPromise = this.serviceWorkerM
+        .fetchPosts(type === "new" ? "date" : "hugs", 5, undefined, page, type === "new")
+        .then((data) => {
+          this.posts[`${type}Items`].next(data.posts);
+          this.totalPages = data.pages;
+          this.currentPage = page;
+        });
+      idbPromises = [postsPromise];
+    } else {
+      const newPostsPromise = this.serviceWorkerM
+        .fetchPosts("date", 10, undefined, 1, true)
+        .then((data) => this.posts.newItems.next(data.posts));
+      const suggestedPostsPromise = this.serviceWorkerM
+        .fetchPosts("hugs", 10, undefined, 1, false)
+        .then((data) => this.posts.suggestedItems.next(data.posts));
+      idbPromises = [newPostsPromise, suggestedPostsPromise];
+    }
+
+    return idbPromises;
+  }
+
+  /**
+   * Fetches posts from the server and updates the posts behaviour subjects
+   * @param url - The URL to fetch.
+   * @param type - The type of posts to fetch. Not used when the URL is "" as it's the home page.
+   * @param page - The page to fetch. Not used when the URL is "" as it's the home page.
+   */
+  fetchPostsFromServer(url: string, type: LowercaseFullListType, page: number = 1) {
     // URL and page query parameter
     const Url = this.serverUrl + url;
     let params = new HttpParams();
 
-    this.isFetchResolved.newItems.next(false);
-    this.isFetchResolved.suggestedItems.next(false);
-
-    if (url !== "") {
+    if (url != "") {
       params = params.set("page", `${page}`);
-      this.fetchPostsFromIdb(url, type, page);
-    } else {
-      this.fetchPostsFromIdb(url, "new", page);
-      this.fetchPostsFromIdb(url, "suggested", page);
     }
 
     // HTTP request
     this.Http.get(Url, {
-      params: params,
+      params,
     }).subscribe({
       next: (response: any) => {
         if (url === "") {
@@ -123,8 +167,6 @@ export class PostsService {
 
         this.currentPage = page;
         this.totalPages = response.total_pages || 1;
-        this.lastFetchSource = "Server";
-        this.lastFetchDate = Date.now();
         this.alertsService.toggleOfflineAlert();
         this.isFetchResolved.newItems.next(true);
         this.isFetchResolved.suggestedItems.next(true);
@@ -148,43 +190,6 @@ export class PostsService {
   }
 
   /**
-   * Fetches the given type of posts from IndexedDB.
-   * @param url - The URL to fetch. Used to determine the number of posts to fetch, as
-   *              the home page has 10 posts, and the full list page has 5.
-   * @param type - The type of posts to fetch.
-   * @param page - The page to fetch.
-   */
-  fetchPostsFromIdb(url: string, type: LowercaseFullListType, page: number = 1) {
-    const queryTarget = url == "" ? `main ${type}` : `${type} posts`;
-
-    // get the posts from IDB
-    this.serviceWorkerM.queryPosts(queryTarget, undefined, page)?.then((data: any) => {
-      // if there are posts in cache, display them
-      if (data.posts.length) {
-        // if the latest fetch is none, the last fetch was from IDB and before or
-        // the last fetch was performed more than 10 seconds ago (meaning the user)
-        // changed/refreshed the page, update the latest fetch and the displayed
-        // posts
-        if (
-          !this.lastFetchDate ||
-          (this.lastFetchDate < Date.now() && this.lastFetchSource == "IDB") ||
-          this.lastFetchDate + 10000 < Date.now() ||
-          (page != this.currentPage && page != 1) ||
-          this.lastFetchTarget != url
-        ) {
-          this.lastFetchSource = "IDB";
-          this.lastFetchDate = Date.now();
-          this.posts[`${type}Items`].next(data.posts);
-          this.totalPages = data.pages;
-          this.lastFetchTarget = url as "" | "/posts/new" | "/posts/suggested";
-          this.isFetchResolved.newItems.next(true);
-          this.isFetchResolved.suggestedItems.next(true);
-        }
-      }
-    });
-  }
-
-  /**
    * Adds the fetched posts to IndexedDB.
    * @param posts - The list of posts to add to IDB.
    */
@@ -193,14 +198,8 @@ export class PostsService {
     posts.forEach((element: Post) => {
       let isoDate = new Date(element.date).toISOString();
       let post = {
-        date: element.date,
-        givenHugs: element.givenHugs,
-        id: element.id!,
+        ...element,
         isoDate: isoDate,
-        text: element.text,
-        userId: Number(element.userId),
-        user: element.user,
-        sentHugs: element.sentHugs!,
       };
       this.serviceWorkerM.addItem("posts", post);
     });

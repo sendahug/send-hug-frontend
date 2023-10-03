@@ -38,6 +38,7 @@ import { openDB, IDBPDatabase, DBSchema } from "idb";
 
 // App-related imports
 import { MockAlertsService } from "./alerts.service.mock";
+import { Post } from "../interfaces/post.interface";
 
 // IndexedDB Database schema
 interface MyDB extends DBSchema {
@@ -184,6 +185,37 @@ export class MockSWManager {
   */
   openDatabase() {
     return "opened";
+  }
+
+  /**
+   * Fetches posts based on the given attributes.
+   *
+   * queryPosts (the original method) mapping:
+   * (old target: new parameters)
+   * -  main new: "date", 10, undefined, 1, true
+   * -  main suggested: "hugs", 10, undefined, 1, false
+   * -  new posts: "date", 5, undefined, page, true
+   * -  suggested posts: "hugs", 5, undefined, page, false
+   * -  user posts: "user", 5, userID, page, false
+   *
+   * @param sortBy - index to sort by
+   * @param perPage - number of posts per page
+   * @param userID (optional) - the user ID for which to fetch posts
+   * @param page (optional) - the current page
+   * @param reverseOrder (optional) - whether to reverse the posts' order
+   * @returns A promise that resolves to an object containing the
+   *          posts and the number of pages.
+   */
+  fetchPosts(
+    sortBy: "date" | "user" | "hugs",
+    perPage: number,
+    userID?: number,
+    page?: number,
+    reverseOrder: boolean = false,
+  ): Promise<{ posts: Post[]; pages: number }> {
+    return new Promise((resolve) => {
+      resolve({ posts: [], pages: 1 });
+    });
   }
 
   /*

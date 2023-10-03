@@ -75,7 +75,7 @@ describe("PostsService", () => {
   });
 
   // Check the service gets the main page items
-  it("getPosts() - should get home page items", () => {
+  it("fetchPostsFromServer() - should get home page items", () => {
     // mock response
     const mockResponse = {
       success: true,
@@ -121,10 +121,9 @@ describe("PostsService", () => {
       ],
     };
 
-    const querySpy = spyOn(postsService["serviceWorkerM"], "queryPosts");
     const addSpy = spyOn(postsService["serviceWorkerM"], "addItem");
     const cleanSpy = spyOn(postsService["serviceWorkerM"], "cleanDB");
-    postsService.getPosts("", "new", 1);
+    postsService.fetchPostsFromServer("", "new", 1);
     // wait for the fetch to be resolved
     postsService.isFetchResolved.newItems.subscribe((value) => {
       if (value) {
@@ -143,8 +142,6 @@ describe("PostsService", () => {
     expect(req.request.method).toEqual("GET");
     req.flush(mockResponse);
 
-    expect(querySpy).toHaveBeenCalled();
-    expect(querySpy).toHaveBeenCalledTimes(2);
     expect(addSpy).toHaveBeenCalled();
     expect(addSpy).toHaveBeenCalledTimes(4);
     expect(cleanSpy).toHaveBeenCalled();
@@ -152,7 +149,7 @@ describe("PostsService", () => {
   });
 
   // Check the service gets the full new items
-  it("getPosts() - should get new items", () => {
+  it("fetchPostsFromServer() - should get new items", () => {
     // mock page 1 response
     const mockP1Response = {
       success: true,
@@ -179,11 +176,10 @@ describe("PostsService", () => {
       ],
     };
 
-    const querySpy = spyOn(postsService["serviceWorkerM"], "queryPosts");
     const addSpy = spyOn(postsService["serviceWorkerM"], "addItem");
     const cleanSpy = spyOn(postsService["serviceWorkerM"], "cleanDB");
     // fetch page 1
-    postsService.getPosts("/posts/new", "new", 1);
+    postsService.fetchPostsFromServer("/posts/new", "new", 1);
     // wait for the fetch to be resolved
     postsService.isFetchResolved.newItems.subscribe((value) => {
       if (value) {
@@ -198,8 +194,6 @@ describe("PostsService", () => {
     expect(p1Req.request.method).toEqual("GET");
     p1Req.flush(mockP1Response);
 
-    expect(querySpy).toHaveBeenCalled();
-    expect(querySpy).toHaveBeenCalledWith("new posts", undefined, 1);
     expect(addSpy).toHaveBeenCalled();
     expect(addSpy).toHaveBeenCalledTimes(2);
     expect(cleanSpy).toHaveBeenCalled();
@@ -207,7 +201,7 @@ describe("PostsService", () => {
   });
 
   // Check the service gets the full new items page 2
-  it("getPosts() - should get new items page 2", () => {
+  it("fetchPostsFromServer() - should get new items page 2", () => {
     // mock page 2 response
     const mockP2Response = {
       success: true,
@@ -225,11 +219,10 @@ describe("PostsService", () => {
       ],
     };
 
-    const querySpy = spyOn(postsService["serviceWorkerM"], "queryPosts");
     const addSpy = spyOn(postsService["serviceWorkerM"], "addItem");
     const cleanSpy = spyOn(postsService["serviceWorkerM"], "cleanDB");
     // fetch page 2
-    postsService.getPosts("/posts/new", "new", 2);
+    postsService.fetchPostsFromServer("/posts/new", "new", 2);
     // wait for the fetch to be resolved
     postsService.isFetchResolved.newItems.subscribe((value) => {
       if (value) {
@@ -244,8 +237,6 @@ describe("PostsService", () => {
     expect(p2Req.request.method).toEqual("GET");
     p2Req.flush(mockP2Response);
 
-    expect(querySpy).toHaveBeenCalled();
-    expect(querySpy).toHaveBeenCalledWith("new posts", undefined, 2);
     expect(addSpy).toHaveBeenCalled();
     expect(addSpy).toHaveBeenCalledTimes(1);
     expect(cleanSpy).toHaveBeenCalled();
@@ -253,7 +244,7 @@ describe("PostsService", () => {
   });
 
   // Check the service gets the full suggested items
-  it("getPosts() - should get suggested items", () => {
+  it("fetchPostsFromServer() - should get suggested items", () => {
     // mock page 1 response
     const mockP1Response = {
       success: true,
@@ -280,11 +271,10 @@ describe("PostsService", () => {
       ],
     };
 
-    const querySpy = spyOn(postsService["serviceWorkerM"], "queryPosts");
     const addSpy = spyOn(postsService["serviceWorkerM"], "addItem");
     const cleanSpy = spyOn(postsService["serviceWorkerM"], "cleanDB");
     // fetch page 1
-    postsService.getPosts("/posts/suggested", "suggested", 1);
+    postsService.fetchPostsFromServer("/posts/suggested", "suggested", 1);
     // wait for the fetch to be resolved
     postsService.isFetchResolved.suggestedItems.subscribe((value) => {
       if (value) {
@@ -299,8 +289,6 @@ describe("PostsService", () => {
     expect(p1Req.request.method).toEqual("GET");
     p1Req.flush(mockP1Response);
 
-    expect(querySpy).toHaveBeenCalled();
-    expect(querySpy).toHaveBeenCalledWith("suggested posts", undefined, 1);
     expect(addSpy).toHaveBeenCalled();
     expect(addSpy).toHaveBeenCalledTimes(2);
     expect(cleanSpy).toHaveBeenCalled();
@@ -308,7 +296,7 @@ describe("PostsService", () => {
   });
 
   // Check the service gets the full suggested items page 2
-  it("getPosts() - should get suggested items page 2", () => {
+  it("fetchPostsFromServer() - should get suggested items page 2", () => {
     // mock page 2 response
     const mockP2Response = {
       success: true,
@@ -326,11 +314,10 @@ describe("PostsService", () => {
       ],
     };
 
-    const querySpy = spyOn(postsService["serviceWorkerM"], "queryPosts");
     const addSpy = spyOn(postsService["serviceWorkerM"], "addItem");
     const cleanSpy = spyOn(postsService["serviceWorkerM"], "cleanDB");
     // fetch page 2
-    postsService.getPosts("/posts/suggested", "suggested", 2);
+    postsService.fetchPostsFromServer("/posts/suggested", "suggested", 2);
     // wait for the fetch to be resolved
     postsService.isFetchResolved.suggestedItems.subscribe((value) => {
       if (value) {
@@ -345,8 +332,6 @@ describe("PostsService", () => {
     expect(p2Req.request.method).toEqual("GET");
     p2Req.flush(mockP2Response);
 
-    expect(querySpy).toHaveBeenCalled();
-    expect(querySpy).toHaveBeenCalledWith("suggested posts", undefined, 2);
     expect(addSpy).toHaveBeenCalled();
     expect(addSpy).toHaveBeenCalledTimes(1);
     expect(cleanSpy).toHaveBeenCalled();

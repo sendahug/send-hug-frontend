@@ -373,7 +373,7 @@ describe("SWManagerService", () => {
       },
     ];
 
-    const orderedPosts = sWManagerService.sortPosts(posts);
+    const orderedPosts = sWManagerService.sortSuggestedPosts(posts);
 
     expect(orderedPosts[0].id).toBe(1);
     expect(orderedPosts[1].id).toBe(3);

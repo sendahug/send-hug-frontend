@@ -39,6 +39,7 @@ import { openDB, IDBPDatabase, DBSchema } from "idb";
 // App-related imports
 import { AlertsService } from "./alerts.service";
 import { iconCharacters } from "../interfaces/types";
+import { Post } from "../interfaces/post.interface";
 
 // IndexedDB Database schema
 export interface MyDB extends DBSchema {
@@ -327,6 +328,84 @@ export class SWManager {
     });
   }
 
+  /**
+   * Fetches posts based on the given attributes.
+   *
+   * queryPosts (the original method) mapping:
+   * (old target: new parameters)
+   * -  main new: "date", 10, undefined, 1, true
+   * -  main suggested: "hugs", 10, undefined, 1, false
+   * -  new posts: "date", 5, undefined, page, true
+   * -  suggested posts: "hugs", 5, undefined, page, false
+   * -  user posts: "user", 5, userID, page, false
+   *
+   * @param sortBy - index to sort by
+   * @param perPage - number of posts per page
+   * @param userID (optional) - the user ID for which to fetch posts
+   * @param page (optional) - the current page
+   * @param reverseOrder (optional) - whether to reverse the posts' order
+   * @returns A promise that resolves to an object containing the
+   *          posts and the number of pages.
+   */
+  fetchPosts(
+    sortBy: "date" | "user" | "hugs",
+    perPage: number,
+    userID?: number,
+    page?: number,
+    reverseOrder: boolean = false,
+  ): Promise<{ posts: Post[]; pages: number }> {
+    if (this.currentDB) {
+      return this.currentDB
+        .then((db) => {
+          let postsStore = db.transaction("posts").store.index(sortBy);
+
+          if (userID) {
+            return postsStore.getAll(userID);
+          } else {
+            return postsStore.getAll();
+          }
+        })
+        .then((posts) => {
+          // if there are any posts, check each post
+          posts.forEach((element) => {
+            // if there's no display name for that post, get it through the
+            // queryUsers method and add it
+            if (!element.user) {
+              this.queryUsers(element.userId)!.then((userData) => {
+                // if the user exists in the database, get it
+                if (userData) {
+                  element.user = userData.displayName;
+                }
+              });
+            }
+          });
+          return posts;
+        })
+        .then((posts) => {
+          const currentPage = page ? page : 1;
+          const startIndex = (currentPage - 1) * perPage;
+          const pages = Math.ceil(posts!.length / 5);
+
+          let finalPosts: Post[];
+
+          if (sortBy == "hugs") {
+            finalPosts = this.sortSuggestedPosts(posts);
+          } else {
+            finalPosts = reverseOrder ? posts.reverse() : posts;
+          }
+
+          return {
+            posts: finalPosts.slice(startIndex, startIndex + perPage),
+            pages,
+          };
+        });
+    } else {
+      return new Promise((resolve) => {
+        resolve({ posts: [], pages: 1 });
+      });
+    }
+  }
+
   /*
   Function Name: queryPosts()
   Function Description: Gets data matching the provided query from IndexedDB database.
@@ -396,7 +475,7 @@ export class SWManager {
           }
           // if the target is the main page's new posts, return paginated posts
           else if (target == "main suggested") {
-            let sortedPosts = this.sortPosts(posts!);
+            let sortedPosts = this.sortSuggestedPosts(posts!);
             return { posts: sortedPosts.slice(startIndex, startIndex + 10) };
           }
           // if the target is the fullList's new posts, reverse the order of
@@ -414,7 +493,7 @@ export class SWManager {
           // return paginated posts (as-is).
           else if (target == "suggested posts") {
             let pages = Math.ceil(posts!.length / 5);
-            let sortedPosts = this.sortPosts(posts!);
+            let sortedPosts = this.sortSuggestedPosts(posts!);
 
             return {
               posts: sortedPosts.slice(startIndex, startIndex + 5),
@@ -435,14 +514,14 @@ export class SWManager {
   }
 
   /*
-  Function Name: sortPosts()
+  Function Name: sortSuggestedPosts()
   Function Description: Orders suggested posts by number of hugs (ascending) and
                         date (descending).
   Parameters: posts (IDBPost[]) - list of posts to order
   ----------------
   Programmer: Shir Bar Lev.
   */
-  sortPosts(posts: IDBPost[]) {
+  sortSuggestedPosts(posts: IDBPost[]) {
     let postHugs: { [hugs: number]: IDBPost[] } = {};
     let orderedPosts: IDBPost[] = [];
 

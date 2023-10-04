@@ -383,7 +383,7 @@ describe("SWManagerService", () => {
   });
 
   // Query Posts Method Tests
-  describe("queryPosts()", () => {
+  describe("fetchPosts()", () => {
     // Before each test, configure testing environment
     beforeEach(() => {
       TestBed.resetTestEnvironment();
@@ -402,7 +402,7 @@ describe("SWManagerService", () => {
 
     // try to get main page's new posts
     it("should get new posts correctly", () => {
-      const postsPromise = sWManagerService.queryPosts("main new");
+      const postsPromise = sWManagerService.fetchPosts("date", 10, undefined, 1, true);
 
       return postsPromise!.then((posts: any) => {
         // check all the posts are there and they're ordered in reverse date order
@@ -415,7 +415,7 @@ describe("SWManagerService", () => {
 
     // try to get main page's suggested posts
     it("should get suggested posts correctly", () => {
-      const postsPromise = sWManagerService.queryPosts("main suggested");
+      const postsPromise = sWManagerService.fetchPosts("hugs", 10, undefined, 1, false);
 
       return postsPromise!.then((posts: any) => {
         // check all the posts are there and they're ordered in reverse date order
@@ -428,7 +428,7 @@ describe("SWManagerService", () => {
 
     // try to get new posts
     it("should get new posts correctly - page 1", () => {
-      const postsPromise = sWManagerService.queryPosts("new posts", undefined, 1);
+      const postsPromise = sWManagerService.fetchPosts("date", 5, undefined, 1, true);
 
       return postsPromise!.then((posts: any) => {
         // check all the posts are there and they're ordered in reverse date order
@@ -441,7 +441,7 @@ describe("SWManagerService", () => {
 
     // try to get new posts page 2 (doesn't exist)
     it("should get new posts correctly - page 2", () => {
-      const postsPromise = sWManagerService.queryPosts("new posts", undefined, 2);
+      const postsPromise = sWManagerService.fetchPosts("date", 5, undefined, 2, true);
 
       return postsPromise!.then((posts: any) => {
         // check all the posts are there and they're ordered in reverse date order
@@ -452,7 +452,7 @@ describe("SWManagerService", () => {
 
     // try to get suggested posts
     it("should get suggested posts correctly - page 1", () => {
-      const postsPromise = sWManagerService.queryPosts("suggested posts", undefined, 1);
+      const postsPromise = sWManagerService.fetchPosts("hugs", 5, undefined, 1, false);
 
       return postsPromise!.then((posts: any) => {
         // check all the posts are there and they're ordered in reverse date order
@@ -465,7 +465,7 @@ describe("SWManagerService", () => {
 
     // try to get suggested posts page 2 (doesn't exist)
     it("should get suggested posts correctly - page 2", () => {
-      const postsPromise = sWManagerService.queryPosts("suggested posts", undefined, 2);
+      const postsPromise = sWManagerService.fetchPosts("hugs", 5, undefined, 2, false);
 
       return postsPromise!.then((posts: any) => {
         // check all the posts are there and they're ordered in reverse date order
@@ -476,7 +476,7 @@ describe("SWManagerService", () => {
 
     // try to get user's posts
     it("should get a user's posts correctly", () => {
-      const postsPromise = sWManagerService.queryPosts("user posts", 1, 1);
+      const postsPromise = sWManagerService.fetchPosts("user", 5, 1, 1, false);
 
       return postsPromise!.then((posts: any) => {
         expect(posts).toBeDefined();
@@ -488,7 +488,7 @@ describe("SWManagerService", () => {
 
     // try to get another user's posts
     it("should get other users' posts", () => {
-      const postsPromise = sWManagerService.queryPosts("user posts", 3, 1);
+      const postsPromise = sWManagerService.fetchPosts("user", 5, 3, 1, false);
 
       return postsPromise!.then((posts: any) => {
         expect(posts).toBeDefined();

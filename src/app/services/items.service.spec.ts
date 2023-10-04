@@ -153,7 +153,7 @@ describe("ItemsService", () => {
     itemsService["authService"].authenticated = true;
     itemsService["authService"].isUserDataResolved.next(true);
     itemsService["authService"].login();
-    const querySpy = spyOn(itemsService["serviceWorkerM"], "queryPosts");
+    const querySpy = spyOn(itemsService["serviceWorkerM"], "fetchPosts");
     const addSpy = spyOn(itemsService["serviceWorkerM"], "addItem");
     const cleanSpy = spyOn(itemsService["serviceWorkerM"], "cleanDB");
     itemsService.getUserPosts(1, 1);

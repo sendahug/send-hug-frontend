@@ -216,7 +216,7 @@ export class ItemsService {
     this.previousUser = userID;
 
     // get the recent posts from IDB
-    this.serviceWorkerM.queryPosts("user posts", userID, currentPage)?.then((data: any) => {
+    this.serviceWorkerM.fetchPosts("user", 5, userID, currentPage, false)?.then((data: any) => {
       // if there are posts in cache, display them
       if (data.posts.length) {
         // if the latest fetch is none, the last fetch was from IDB and before,

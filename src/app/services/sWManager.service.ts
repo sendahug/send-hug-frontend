@@ -39,6 +39,7 @@ import { openDB, IDBPDatabase, DBSchema } from "idb";
 // App-related imports
 import { AlertsService } from "./alerts.service";
 import { iconCharacters } from "../interfaces/types";
+import { Message } from "../interfaces/message.interface";
 import { Post } from "../interfaces/post.interface";
 
 // IndexedDB Database schema
@@ -455,6 +456,46 @@ export class SWManager {
     // return the suggested posts, ordered by number of hugs (ascending) and
     // date (descending)
     return orderedPosts;
+  }
+
+  /**
+   * Fetch posts based on the given filters.
+   *
+   * queryMessages (the original method) mapping:
+   * (old target: new parameters)
+   * - inbox: "forId", currentUser, 5, page
+   * - outbox: "fromId", currentUser, 5, page
+   * - thread: "threadID", threadID, 5, page
+   *
+   * @param filterAttribute - the attribute to filter by.
+   * @param filterValue - the value to match.
+   * @param perPage - number of messages per page
+   * @param page (optional) - the current page
+   * @returns A promise that resolves into a list of messages and the number of pages.
+   */
+  fetchMessages(
+    filterAttribute: "forId" | "fromId" | "threadID",
+    filterValue: number,
+    perPage: number,
+    page?: number,
+  ) {
+    return this.currentDB
+      ?.then(function (db) {
+        let messagesStore = db.transaction("messages").store.index("date");
+        return messagesStore.getAll();
+      })
+      .then((messages) => {
+        const filteredMessages = messages
+          .filter((message: Message) => message[filterAttribute] == filterValue)
+          .reverse();
+        const startIndex = (page || 1 - 1) * perPage;
+        const pages = Math.ceil(filteredMessages.length / 5);
+
+        return {
+          messages: filteredMessages.slice(startIndex, startIndex + perPage),
+          pages: pages,
+        };
+      });
   }
 
   /*

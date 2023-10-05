@@ -60,16 +60,27 @@ export class ApiClientService {
   }
 
   /**
+   * Generates the HttpParams object from the given parameters.
+   * @param params - a key-value mapping of parameters to set.
+   * @returns theh HttpParams object.
+   */
+  getHttpParams(params: { [key: string]: any }): HttpParams {
+    return new HttpParams({
+      fromObject: params,
+    });
+  }
+
+  /**
    * Performs a GET request.
    * @param endpoint - the endpoint to query.
    * @param params - any query parameters.
    * @returns an observable of the response / an error if one occurred.
    */
-  get<T extends Object>(endpoint: string, params?: HttpParams): Observable<T> {
+  get<T extends Object>(endpoint: string, params?: { [key: string]: any }): Observable<T> {
     return this.http
       .get<T>(`${this.serverUrl}/${endpoint}`, {
         headers: this.authHeader,
-        params: params,
+        params: this.getHttpParams(params || {}),
       })
       .pipe(catchError(this.handleRequestError.bind(this)));
   }
@@ -81,11 +92,15 @@ export class ApiClientService {
    * @param params - any query parameters.
    * @returns an observable of the response / an error if one occurred.
    */
-  post<T extends Object>(endpoint: string, body: any, params?: HttpParams): Observable<T> {
+  post<T extends Object>(
+    endpoint: string,
+    body: any,
+    params?: { [key: string]: any },
+  ): Observable<T> {
     return this.http
       .post<T>(`${this.serverUrl}/${endpoint}`, body, {
         headers: this.authHeader,
-        params,
+        params: this.getHttpParams(params || {}),
       })
       .pipe(catchError(this.handleRequestError.bind(this)));
   }
@@ -97,11 +112,15 @@ export class ApiClientService {
    * @param params - any query parameters.
    * @returns an observable of the response / an error if one occurred.
    */
-  patch<T extends Object>(endpoint: string, body: any, params?: HttpParams): Observable<T> {
+  patch<T extends Object>(
+    endpoint: string,
+    body: any,
+    params?: { [key: string]: any },
+  ): Observable<T> {
     return this.http
       .patch<T>(`${this.serverUrl}/${endpoint}`, body, {
         headers: this.authHeader,
-        params,
+        params: this.getHttpParams(params || {}),
       })
       .pipe(catchError(this.handleRequestError.bind(this)));
   }
@@ -112,11 +131,11 @@ export class ApiClientService {
    * @param params - any query parameters.
    * @returns an observable of the response / an error if one occurred.
    */
-  delete<T extends Object>(endpoint: string, params?: HttpParams): Observable<T> {
+  delete<T extends Object>(endpoint: string, params?: { [key: string]: any }): Observable<T> {
     return this.http
       .delete<T>(`${this.serverUrl}/${endpoint}`, {
         headers: this.authHeader,
-        params,
+        params: this.getHttpParams(params || {}),
       })
       .pipe(catchError(this.handleRequestError.bind(this)));
   }

@@ -10,7 +10,7 @@
 		<app-single-post  *ngFor="let item of postsService.posts[postsServiceProperty()].value"
 						 [post]="item"
 						 [type]="'n'"
-						 [class]="type == 'New' ? 'newItem' : 'suggestedItem'"></app-single-post>
+						 [class]="type == 'New' ? 'newItem' : 'sugItem'"></app-single-post>
 	</ul>
 	
 	<!-- If there are no items in the list -->

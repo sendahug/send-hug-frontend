@@ -31,21 +31,36 @@
 */
 
 // Angular imports
-import { Component, OnInit, Input } from "@angular/core";
+import { Component, OnInit, Input, signal, computed } from "@angular/core";
 import { faFlag } from "@fortawesome/free-regular-svg-icons";
 import { faHandHoldingHeart } from "@fortawesome/free-solid-svg-icons";
+import { from, map, switchMap, tap } from "rxjs";
 
 // App-related imports
 import { Post } from "../../interfaces/post.interface";
-import { ItemsService } from "../../services/items.service";
 import { AuthService } from "../../services/auth.service";
 import { PostsService } from "../../services/posts.service";
+import { SWManager } from "../../services/sWManager.service";
+import { ApiClientService } from "../../services/apiClient.service";
+import { AlertsService } from "../../services/alerts.service";
+
+interface MyPostsResponse {
+  page: number;
+  posts: Post[];
+  total_pages: number;
+  success: boolean;
+}
 
 @Component({
   selector: "app-my-posts",
   templateUrl: "./myPosts.component.html",
 })
 export class MyPosts implements OnInit {
+  isLoading = signal(false);
+  isServerFetchResolved = signal(false);
+  posts = signal<Post[]>([]);
+  currentPage = signal(1);
+  totalPages = signal(1);
   // edit popup sub-component variables
   postToEdit: Post | undefined;
   editType: string | undefined;
@@ -61,32 +76,30 @@ export class MyPosts implements OnInit {
   waitFor = "user posts";
   // The user whose posts to fetch
   @Input()
-  userID: number | undefined;
-  user!: "self" | "other";
-  page: number;
+  userID!: number;
+  user = computed(() =>
+    this.userID && this.userID != this.authService.userData.id! ? "other" : "self",
+  );
   // icons
   faFlag = faFlag;
   faHandHoldingHeart = faHandHoldingHeart;
 
   // CTOR
   constructor(
-    public itemsService: ItemsService,
     public authService: AuthService,
     private postsService: PostsService,
+    private swManager: SWManager,
+    private apiClient: ApiClientService,
+    private alertsService: AlertsService,
   ) {
-    // if there's a user ID in the viewed profile, get that user's posts
-    if (this.userID && this.userID != this.authService.userData.id!) {
-      this.user = "other";
-    }
-    // if there isn't, it's the user's own profile, so get their posts
-    else {
-      this.user = "self";
+    if (!this.userID) {
+      this.userID = this.authService.userData.id!;
     }
 
     this.editMode = false;
     this.delete = false;
     this.report = false;
-    this.page = 1;
+    this.currentPage.set(1);
   }
 
   /*
@@ -99,16 +112,61 @@ export class MyPosts implements OnInit {
   Programmer: Shir Bar Lev.
   */
   ngOnInit() {
-    // if the user ID is different than the logged in user, it's someone else
-    if (this.userID && this.userID != this.authService.userData.id) {
-      this.itemsService.getUserPosts(this.userID, 1);
-      this.user = "other";
+    if (!this.userID) {
+      this.userID = this.authService.userData.id!;
     }
-    // otherwise, if it's the same ID or there's no ID, get the user's profile
-    else {
-      this.itemsService.getUserPosts(this.authService.userData.id!, 1);
-      this.user = "self";
-    }
+
+    this.fetchPosts();
+  }
+
+  /**
+   * Fetches the posts to display from IDB and then
+   * from the server.
+   */
+  fetchPosts() {
+    const fetchFromIdb$ = this.fetchPostsFromIdb();
+    this.isLoading.set(true);
+    this.isServerFetchResolved.set(false);
+
+    fetchFromIdb$
+      .pipe(
+        switchMap(() =>
+          this.apiClient.get<MyPostsResponse>(`users/all/${this.userID}/posts`, {
+            page: this.currentPage(),
+          }),
+        ),
+      )
+      .subscribe((data) => {
+        this.totalPages.set(data.total_pages);
+        this.posts.set(data.posts);
+        this.isLoading.set(false);
+        this.isServerFetchResolved.set(true);
+        this.alertsService.toggleOfflineAlert();
+        this.postsService.addPostsToIdb(data.posts);
+      });
+  }
+
+  /**
+   * Generates the observable for fetching the data from IndexedDB.
+   * @returns an observable that handles fetching
+   *          posts from IndexedDB and transforming them.
+   */
+  fetchPostsFromIdb() {
+    return from(this.swManager.fetchPosts("user", 5, this.userID, this.currentPage(), false)).pipe(
+      tap((data) => {
+        this.posts.set(data.posts);
+        this.isLoading.set(false);
+        this.totalPages.set(data.pages);
+      }),
+      map((data) => {
+        return {
+          page: this.currentPage(),
+          posts: data.posts,
+          total_pages: data.pages,
+          success: true,
+        };
+      }),
+    );
   }
 
   /*
@@ -198,7 +256,7 @@ export class MyPosts implements OnInit {
   */
   sendHug(itemID: number) {
     let item = {};
-    item = this.itemsService.userPosts.other.filter((e) => e.id == itemID)[0];
+    item = this.posts().filter((e) => e.id == itemID)[0];
     this.postsService.sendHug(item);
   }
 
@@ -211,12 +269,8 @@ export class MyPosts implements OnInit {
   Programmer: Shir Bar Lev.
   */
   nextPage() {
-    this.page += 1;
-    if (this.user == "self") {
-      this.itemsService.getUserPosts(this.authService.userData.id!, this.page);
-    } else {
-      this.itemsService.getUserPosts(this.userID!, this.page);
-    }
+    this.currentPage.set(this.currentPage() + 1);
+    this.fetchPosts();
   }
 
   /*
@@ -228,11 +282,7 @@ export class MyPosts implements OnInit {
   Programmer: Shir Bar Lev.
   */
   prevPage() {
-    this.page -= 1;
-    if (this.user == "self") {
-      this.itemsService.getUserPosts(this.authService.userData.id!, this.page);
-    } else {
-      this.itemsService.getUserPosts(this.userID!, this.page);
-    }
+    this.currentPage.set(this.currentPage() - 1);
+    this.fetchPosts();
   }
 }

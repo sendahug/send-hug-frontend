@@ -56,26 +56,6 @@ type FetchStamp = {
 })
 export class ItemsService {
   readonly serverUrl = environment.backend.domain;
-  // User posts variables
-  userPosts: {
-    self: Post[];
-    other: Post[];
-  } = {
-    self: [],
-    other: [],
-  };
-  userPostsPage = {
-    self: 1,
-    other: 1,
-  };
-  totalUserPostsPages = {
-    self: 1,
-    other: 1,
-  };
-  isUserPostsResolved = {
-    self: new BehaviorSubject(false),
-    other: new BehaviorSubject(false),
-  };
   // User variables
   otherUserData: OtherUser = {
     id: 0,
@@ -138,7 +118,6 @@ export class ItemsService {
   // idb variables
   idbResolved = {
     user: new BehaviorSubject(false),
-    userPosts: new BehaviorSubject(false),
     inbox: new BehaviorSubject(false),
     outbox: new BehaviorSubject(false),
     threads: new BehaviorSubject(false),
@@ -146,14 +125,6 @@ export class ItemsService {
   };
   // latest fetch
   lastFetched: { [key: string]: FetchStamp } = {
-    userPostsself: {
-      source: "",
-      date: 0,
-    },
-    userPostsother: {
-      source: "",
-      date: 0,
-    },
     inbox: {
       source: "",
       date: 0,
@@ -178,121 +149,6 @@ export class ItemsService {
 
   // POST-RELATED METHODS
   // ==============================================================
-  /*
-  Function Name: getUserPosts()
-  Function Description: Gets a paginated list of the user's posts.
-  Parameters: userID (number) - the ID of the user whose posts need to be fetched.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  getUserPosts(userID: number, page: number) {
-    const user = userID == this.authService.userData.id ? "self" : "other";
-    const Url = this.serverUrl + `/users/all/${userID}/posts`;
-
-    // if the user is viewing another user's profile
-    if (user == "other") {
-      // if this isn't the first profile the user is viewing (meaning the default
-      // values may have been changed) and the user isn't still viewing the same
-      // user's profile (e.g., they were trying to change a page on the user posts
-      // component), reset the values of the required variables
-      if (this.previousUser != 0 && this.previousUser != userID) {
-        this.userPostsPage[user] = 1;
-        this.totalUserPostsPages[user] = 1;
-        this.userPosts[user] = [];
-        this.isUserPostsResolved[user].next(false);
-        this.idbResolved.userPosts.next(false);
-      }
-    }
-    // if the user is viewing their own profile, set the postsResolved to false
-    else {
-      this.isUserPostsResolved[user].next(false);
-      this.idbResolved.userPosts.next(false);
-    }
-
-    // if the current page is 0, send page 1 to the server (default)
-    const currentPage = page ? page : 1;
-    const params = new HttpParams().set("page", `${currentPage}`);
-    // change the ID of the previous user to the profile currently open
-    this.previousUser = userID;
-
-    // get the recent posts from IDB
-    this.serviceWorkerM.fetchPosts("user", 5, userID, currentPage, false)?.then((data: any) => {
-      // if there are posts in cache, display them
-      if (data.posts.length) {
-        // if the latest fetch is none, the last fetch was from IDB and before,
-        // the last fetch was performed more than 10 seconds ago (meaning the user
-        // changed/refreshed the page) or it's a different page, update the latest fetch and the displayed
-        // posts
-        if (
-          this.lastFetched["userPosts" + user].date == 0 ||
-          (this.lastFetched["userPosts" + user].date < Date.now() &&
-            this.lastFetched["userPosts" + user].source == "IDB") ||
-          this.lastFetched["userPosts" + user].date + 10000 < Date.now() ||
-          (page != this.userPostsPage[user] && page != 1) ||
-          this.previousUser != userID
-        ) {
-          this.lastFetched["userPosts" + user].source = "IDB";
-          this.lastFetched["userPosts" + user].date = Date.now();
-          this.userPosts[user] = data.posts;
-          this.totalUserPostsPages[user] = data.pages;
-          this.idbResolved.userPosts.next(true);
-        }
-      }
-    });
-
-    // try to get the posts from the server
-    this.Http.get(Url, {
-      headers: this.authService.authHeader,
-      params: params,
-    }).subscribe({
-      next: (response: any) => {
-        let data = response.posts;
-        this.userPosts[user] = data;
-        this.totalUserPostsPages[user] = response.total_pages;
-        // if there are 0 pages, current page is also 0; otherwise it's whatever
-        // the server returns
-        this.userPostsPage[user] = this.totalUserPostsPages[user] ? response.page : 0;
-        this.lastFetched["userPosts" + user].source = "Server";
-        this.lastFetched["userPosts" + user].date = Date.now();
-        this.isUserPostsResolved[user].next(true);
-        this.idbResolved.userPosts.next(true);
-        this.alertsService.toggleOfflineAlert();
-
-        // add each post to the database
-        data.forEach((element: Post) => {
-          let isoDate = new Date(element.date).toISOString();
-          let post = {
-            date: element.date,
-            givenHugs: element.givenHugs,
-            id: element.id!,
-            isoDate: isoDate,
-            text: element.text,
-            userId: Number(element.userId),
-            user: element.user,
-            sentHugs: element.sentHugs!,
-          };
-
-          this.serviceWorkerM.addItem("posts", post);
-        });
-        this.serviceWorkerM.cleanDB("posts");
-        // if there was an error, alert the user
-      },
-      error: (err: HttpErrorResponse) => {
-        this.isUserPostsResolved[user].next(true);
-        this.idbResolved.userPosts.next(false);
-
-        // if the server is unavilable due to the user being offline, tell the user
-        if (!navigator.onLine) {
-          this.alertsService.toggleOfflineAlert();
-        }
-        // otherwise just create an error alert
-        else {
-          this.alertsService.createErrorAlert(err);
-        }
-      },
-    });
-  }
-
   /*
   Function Name: sendUserHug()
   Function Description: Send a hug to a user.

@@ -31,13 +31,23 @@
 */
 
 // Angular imports
-import { Component, computed } from "@angular/core";
+import { Component, WritableSignal, signal } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
+import { from, map, switchMap, tap } from "rxjs";
 
 // App-related imports
-import { AuthService } from "../../services/auth.service";
 import { PostsService } from "../../services/posts.service";
-import { FullListType, LowercaseFullListType } from "../../interfaces/types";
+import { FullListType } from "../../interfaces/types";
+import { Post } from "../../interfaces/post.interface";
+import { SWManager } from "../../services/sWManager.service";
+import { AlertsService } from "../../services/alerts.service";
+import { ApiClientService } from "../../services/apiClient.service";
+
+interface PostsListResponse {
+  success: boolean;
+  posts: Post[];
+  total_pages: number;
+}
 
 @Component({
   selector: "app-full-list",
@@ -46,10 +56,10 @@ import { FullListType, LowercaseFullListType } from "../../interfaces/types";
 export class FullList {
   // current page and type of list
   type: FullListType = "New";
-  page: any;
-  showMenuNum: string | null = null;
-  postsFetchUrl = computed(() => `/posts/${this.type.toLowerCase()}`);
-  postsServiceProperty = computed(() => `${this.type.toLowerCase()}Items`);
+  currentPage = signal(1);
+  totalPages = signal(1);
+  isLoading = signal(false);
+  posts: WritableSignal<Post[]> = signal([]);
   // loader sub-component variables
   waitFor = "";
 
@@ -57,8 +67,10 @@ export class FullList {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    public authService: AuthService,
     public postsService: PostsService,
+    private swManager: SWManager,
+    private alertsService: AlertsService,
+    private apiClient: ApiClientService,
   ) {
     // get the type of list and the current page
     this.route.url.subscribe((params) => {
@@ -70,69 +82,102 @@ export class FullList {
         this.type = urlPath as FullListType;
       }
 
-      this.page = Number(this.route.snapshot.queryParamMap.get("page"));
+      const requestedPage = Number(this.route.snapshot.queryParamMap.get("page"));
 
       // set a default page if no page is set or it's invalid
-      if ((this.page && this.page.isNaN) || !this.page) {
-        this.page = 1;
+      if ((requestedPage && isNaN(requestedPage)) || !requestedPage) {
+        this.currentPage.set(1);
+      } else {
+        this.currentPage.set(requestedPage);
       }
 
       this.waitFor = `${this.type.toLowerCase()} posts`;
-      this.postsService.getPosts(
-        this.postsFetchUrl(),
-        this.type.toLowerCase() as LowercaseFullListType,
-        this.page,
-      );
+      this.fetchPosts();
     });
   }
 
-  /*
-  Function Name: nextPage()
-  Function Description: Go to the next page of posts. Sends a request to the
-                        items service to get the data for the next page.
-  Parameters: None.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
+  /**
+   * Fetches the posts to display from IDB and then
+   * from the server.
+   */
+  fetchPosts() {
+    const fetchFromIdb$ = this.fetchPostsFromIdb();
+    fetchFromIdb$
+      .pipe(
+        switchMap(() =>
+          this.apiClient.get<PostsListResponse>(`posts/${this.type.toLowerCase()}`, {
+            page: this.currentPage(),
+          }),
+        ),
+      )
+      .subscribe((data) => {
+        this.totalPages.set(data.total_pages);
+        this.posts.set(data.posts);
+        this.isLoading.set(false);
+        this.alertsService.toggleOfflineAlert();
+        this.postsService.addPostsToIdb(data.posts);
+      });
+  }
+
+  /**
+   * Generates the observable for fetching the data from IndexedDB.
+   * @returns an observable that handles fetching
+   *          posts from IndexedDB and transforming them.
+   */
+  fetchPostsFromIdb() {
+    const index = this.type.toLowerCase() === "new" ? "date" : "hugs";
+
+    return from(
+      this.swManager.fetchPosts(
+        index,
+        5,
+        undefined,
+        this.currentPage(),
+        this.type.toLowerCase() === "new",
+      ),
+    ).pipe(
+      tap((data) => {
+        this.posts.set(data.posts);
+        this.isLoading.set(false);
+      }),
+      map((data) => {
+        return {
+          posts: data.posts,
+          total_pages: data.pages,
+          success: true,
+        } as PostsListResponse;
+      }),
+    );
+  }
+
+  /**
+   * Go to the next page of posts. Sends a request to the
+   * IDB and API clients to get the data for the next page.
+   */
   nextPage() {
-    this.page += 1;
-    this.postsService.getPosts(
-      this.postsFetchUrl(),
-      this.type.toLowerCase() as LowercaseFullListType,
-      this.page,
-    );
-
-    // changes the URL query parameter (page) according to the new page
-    this.router.navigate([], {
-      relativeTo: this.route,
-      queryParams: {
-        page: this.page,
-      },
-      replaceUrl: true,
-    });
+    this.currentPage.set(this.currentPage() + 1);
+    this.fetchPosts();
+    this.updatePageUrlParam();
   }
 
-  /*
-  Function Name: prevPage()
-  Function Description: Go to the previous page of posts. Sends a request to the
-                        items service to get the data for the previous page.
-  Parameters: None.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
+  /**
+   * Go to the previous page of posts. Sends a request to the
+   * IDB and API clients to get the data for the next page.
+   */
   prevPage() {
-    this.page -= 1;
-    this.postsService.getPosts(
-      this.postsFetchUrl(),
-      this.type.toLowerCase() as LowercaseFullListType,
-      this.page,
-    );
+    this.currentPage.set(this.currentPage() - 1);
+    this.fetchPosts();
+    this.updatePageUrlParam();
+  }
 
-    // changes the URL query parameter (page) according to the new page
+  /**
+   * Updates the URL query parameter (page) according to the new page.
+   */
+  updatePageUrlParam() {
     this.router.navigate([], {
       relativeTo: this.route,
       queryParams: {
-        page: this.page,
+        page: this.currentPage(),
       },
       replaceUrl: true,
     });

@@ -2,26 +2,26 @@
 	<h2 class="listTitle" id="listTitle">{{ type }} Items</h2>
 	
 	<app-loader
-		*ngIf="!postsService.isFetchResolved[postsServiceProperty()].value"
+		*ngIf="isLoading()"
 		[waitingFor]="waitFor"></app-loader>
 
 	<!-- If there are items in the list -->
-	<ul id="fullItems" *ngIf="postsService.posts[postsServiceProperty()].value.length > 0 && postsService.isFetchResolved[postsServiceProperty()].value" role="region" aria-describedby="listTitle">
-		<app-single-post  *ngFor="let item of postsService.posts[postsServiceProperty()].value"
+	<ul id="fullItems" *ngIf="posts().length > 0 && !isLoading()" role="region" aria-describedby="listTitle">
+		<app-single-post  *ngFor="let item of posts()"
 						 [post]="item"
 						 [type]="'n'"
 						 [class]="type == 'New' ? 'newItem' : 'sugItem'"></app-single-post>
 	</ul>
 	
 	<!-- If there are no items in the list -->
-	<div class="errorMessage" *ngIf="postsService.posts[postsServiceProperty()].value.length == 0 && postsService.isFetchResolved[postsServiceProperty()].value">There are no posts.</div>
+	<div class="errorMessage" *ngIf="posts().length == 0 && !isLoading()">There are no posts.</div>
 	
 	<!-- Post pagination -->
 	<div class="pagination" role="navigation">
-		<button *ngIf="postsService.currentPage > 1" class="appButton prevButton" (click)="prevPage()" [attr.aria-label]="'previous page of ' + type + ' posts'">Previous Page</button>
-		<button *ngIf="postsService.currentPage <= 1" class="appButton placeHolder">Next Page</button>
-		<div class="pageCount">Page {{ page }} of {{ postsService.totalPages }}</div>
-		<button *ngIf="postsService.totalPages > postsService.currentPage" class="appButton nextButton" (click)="nextPage()" [attr.aria-label]="'next page of ' + type + ' posts'">Next Page</button>
-		<button *ngIf="postsService.totalPages <= postsService.currentPage" class="appButton placeHolder">Previous Page</button>
+		<button *ngIf="currentPage() > 1" class="appButton prevButton" (click)="prevPage()" [attr.aria-label]="'previous page of ' + type + ' posts'">Previous Page</button>
+		<button *ngIf="currentPage() <= 1" class="appButton placeHolder">Next Page</button>
+		<div class="pageCount">Page {{ currentPage() }} of {{ totalPages() }}</div>
+		<button *ngIf="totalPages() > currentPage()" class="appButton nextButton" (click)="nextPage()" [attr.aria-label]="'next page of ' + type + ' posts'">Next Page</button>
+		<button *ngIf="totalPages() <= currentPage()" class="appButton placeHolder">Previous Page</button>
 	</div>
 </div>

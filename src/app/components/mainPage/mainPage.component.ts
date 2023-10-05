@@ -31,28 +31,99 @@
 */
 
 // Angular imports
-import { Component } from "@angular/core";
+import { Component, WritableSignal, signal } from "@angular/core";
+import { catchError, forkJoin, from, map, of, switchMap, tap } from "rxjs";
 
 // App-related imports
-import { AuthService } from "../../services/auth.service";
-import { ItemsService } from "../../services/items.service";
 import { PostsService } from "../../services/posts.service";
+import { ApiClientService } from "../../services/apiClient.service";
+import { SWManager } from "../../services/sWManager.service";
+import { Post } from "../../interfaces/post.interface";
+import { AlertsService } from "../../services/alerts.service";
+
+interface MainPageResponse {
+  recent: Post[];
+  suggested: Post[];
+  success?: boolean;
+}
 
 @Component({
   selector: "app-main-page",
   templateUrl: "./mainPage.component.html",
 })
 export class MainPage {
-  showMenuNum: string | null = null;
+  isLoading = signal(false);
+  newPosts: WritableSignal<Post[]> = signal([]);
+  suggestedPosts: WritableSignal<Post[]> = signal([]);
   // loader sub-component variables
   waitFor = "main page";
 
   // CTOR
   constructor(
-    public itemsService: ItemsService,
-    public authService: AuthService,
     public postsService: PostsService,
+    private apiClient: ApiClientService,
+    private swManager: SWManager,
+    private alertsService: AlertsService,
   ) {
-    this.postsService.getPosts("", "new");
+    this.fetchPosts();
+  }
+
+  /**
+   * Fetches the posts to display from IDB and then
+   * from the server.
+   */
+  fetchPosts() {
+    this.isLoading.set(true);
+    const fetchFromIdb$ = this.fetchFromIdb();
+
+    fetchFromIdb$
+      .pipe(switchMap(() => this.apiClient.get<MainPageResponse>("")))
+      .subscribe((data) => {
+        this.updatePostsInterface(data);
+        this.alertsService.toggleOfflineAlert();
+        // TODO: Convert these into a generic "add" function
+        // All that's done with these 'add's is to add an ISO date
+        // which is the same across all objects. No need for multiple
+        // functions.
+        this.postsService.addPostsToIdb(data.recent);
+        this.postsService.addPostsToIdb(data.suggested);
+      });
+  }
+
+  /**
+   * Generates the observable for fetching the data from IndexedDB.
+   * @returns an observable that handles fetching
+   *          posts from IndexedDB and transforming them.
+   */
+  fetchFromIdb() {
+    // Fetch from Idb
+    return forkJoin({
+      recent: from(this.swManager.fetchPosts("date", 10, undefined, 1, true)),
+      suggested: from(this.swManager.fetchPosts("hugs", 10, undefined, 1, false)),
+    }).pipe(
+      // Transform and update the UI
+      map((data) => {
+        return {
+          recent: data.recent.posts,
+          suggested: data.suggested.posts,
+          success: true,
+        } as MainPageResponse;
+      }),
+      tap((data) => this.updatePostsInterface(data)),
+      catchError((error) => {
+        console.log(error);
+        return of(error);
+      }),
+    );
+  }
+
+  /**
+   * Updates the main page's interface with the newly fetched data.
+   * @param data - the posts to set as new and suggested posts.
+   */
+  updatePostsInterface(data: MainPageResponse) {
+    if (data.recent) this.newPosts.set(data.recent);
+    if (data.suggested) this.suggestedPosts.set(data.suggested);
+    this.isLoading.set(false);
   }
 }

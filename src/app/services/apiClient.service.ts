@@ -65,7 +65,7 @@ export class ApiClientService {
    * @param params - any query parameters.
    * @returns an observable of the response / an error if one occurred.
    */
-  get<T extends Object>(endpoint: string, params?: HttpParams): Observable<T | HttpErrorResponse> {
+  get<T extends Object>(endpoint: string, params?: HttpParams): Observable<T> {
     return this.http
       .get<T>(`${this.serverUrl}/${endpoint}`, {
         headers: this.authHeader,
@@ -81,11 +81,7 @@ export class ApiClientService {
    * @param params - any query parameters.
    * @returns an observable of the response / an error if one occurred.
    */
-  post<T extends Object>(
-    endpoint: string,
-    body: any,
-    params?: HttpParams,
-  ): Observable<T | HttpErrorResponse> {
+  post<T extends Object>(endpoint: string, body: any, params?: HttpParams): Observable<T> {
     return this.http
       .post<T>(`${this.serverUrl}/${endpoint}`, body, {
         headers: this.authHeader,
@@ -101,11 +97,7 @@ export class ApiClientService {
    * @param params - any query parameters.
    * @returns an observable of the response / an error if one occurred.
    */
-  patch<T extends Object>(
-    endpoint: string,
-    body: any,
-    params?: HttpParams,
-  ): Observable<T | HttpErrorResponse> {
+  patch<T extends Object>(endpoint: string, body: any, params?: HttpParams): Observable<T> {
     return this.http
       .patch<T>(`${this.serverUrl}/${endpoint}`, body, {
         headers: this.authHeader,
@@ -120,10 +112,7 @@ export class ApiClientService {
    * @param params - any query parameters.
    * @returns an observable of the response / an error if one occurred.
    */
-  delete<T extends Object>(
-    endpoint: string,
-    params?: HttpParams,
-  ): Observable<T | HttpErrorResponse> {
+  delete<T extends Object>(endpoint: string, params?: HttpParams): Observable<T> {
     return this.http
       .delete<T>(`${this.serverUrl}/${endpoint}`, {
         headers: this.authHeader,
@@ -138,10 +127,7 @@ export class ApiClientService {
    * @param caught - the observable that threw the error.
    * @returns an observable of the error.
    */
-  handleRequestError<T>(
-    error: HttpErrorResponse,
-    _caught: Observable<T>,
-  ): Observable<HttpErrorResponse> {
+  handleRequestError<T>(error: HttpErrorResponse, _caught: Observable<T>): Observable<T> {
     // if the server is unavilable due to the user being offline, tell the user
     if (!navigator.onLine) {
       this.alertsService.toggleOfflineAlert();
@@ -151,6 +137,6 @@ export class ApiClientService {
       this.alertsService.createErrorAlert(error);
     }
 
-    return of(error);
+    return of({} as T);
   }
 }

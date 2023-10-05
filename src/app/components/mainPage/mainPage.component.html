@@ -3,19 +3,19 @@
 	<h2 class="listTitle" id="newTitle">New Items</h2>
 	
 	<app-loader
-		*ngIf="!postsService.isFetchResolved.newItems.value"
+		*ngIf="isLoading()"
 		[waitingFor]="waitFor"></app-loader>
 	
 	<!-- If there are items in the list -->
-	<ul class="itemList" *ngIf="postsService.posts.newItems.value.length > 0 && postsService.isFetchResolved.newItems.value" role="region" aria-describedby="newTitle" id="newItemsList">
-		<app-single-post  *ngFor="let item of postsService.posts.newItems.value"
+	<ul class="itemList" *ngIf="newPosts().length > 0 && !isLoading()" role="region" aria-describedby="newTitle" id="newItemsList">
+		<app-single-post  *ngFor="let item of newPosts()"
 						 [post]="item"
 						 [type]="'n'"
 						 [class]="'newItem'"></app-single-post>
 	</ul>
 	
 	<!-- If there are no items in the list -->
-	<div class="errorMessage" *ngIf="postsService.posts.newItems.value.length == 0 && postsService.isFetchResolved.newItems.value">There are no recent items.</div>
+	<div class="errorMessage" *ngIf="newPosts().length == 0 && !isLoading()">There are no recent items.</div>
 	
 	<a [routerLink]="['/list', 'New']" [queryParams]="{page: 1}" class="textlessButton fullButton" role="navigation" aria-label="View full list of new items">View Full 'New' List</a>
 </div>
@@ -25,19 +25,19 @@
 	<h2 class="listTitle" id="sugTitle">Suggested Items</h2>
 	
 	<app-loader
-		*ngIf="!postsService.isFetchResolved.suggestedItems.value"
+		*ngIf="isLoading()"
 		[waitingFor]="waitFor"></app-loader>
 	
 	<!-- If there are items in the list -->
-	<ul class="itemList" *ngIf="postsService.posts.suggestedItems.value.length > 0 && postsService.isFetchResolved.suggestedItems.value" role="region" aria-describedby="sugTitle" id="sugItemsList">
-		<app-single-post  *ngFor="let item of postsService.posts.suggestedItems.value"
+	<ul class="itemList" *ngIf="suggestedPosts().length > 0 && !isLoading()" role="region" aria-describedby="sugTitle" id="sugItemsList">
+		<app-single-post  *ngFor="let item of suggestedPosts()"
 						 [post]="item"
 						 [type]="'s'"
 						 [class]="'sugItem'"></app-single-post>
 	</ul>
 
 	<!-- If there are no items in the list -->
-	<div class="errorMessage" *ngIf="postsService.posts.suggestedItems.value.length == 0 && postsService.isFetchResolved.suggestedItems.value">There are no suggested items.</div>
+	<div class="errorMessage" *ngIf="suggestedPosts().length == 0 && !isLoading()">There are no suggested items.</div>
 	
 	<a [routerLink]="['/list', 'Suggested']" [queryParams]="{page: 1}" class="textlessButton fullButton" role="navigation" aria-label="View full list of suggested items">View Full 'Suggested' List</a>
 </div>

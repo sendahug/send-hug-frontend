@@ -41,7 +41,6 @@ import { AuthService } from "./auth.service";
 import { AlertsService } from "./alerts.service";
 import { SWManager } from "./sWManager.service";
 import { environment } from "../../environments/environment";
-import { LowercaseFullListType } from "../interfaces/types";
 
 @Injectable({
   providedIn: "root",
@@ -58,126 +57,10 @@ export class PostsService {
     private authService: AuthService,
     private alertsService: AlertsService,
     private serviceWorkerM: SWManager,
-  ) {
-    // default assignment
-    this.currentPage = 1;
-    this.totalPages = 1;
-  }
+  ) {}
 
   // POST-RELATED METHODS
   // ==============================================================
-  /**
-   * Fetches the posts from the server and updates the posts behaviour subjects
-   * @param url - The URL to fetch.
-   * @param type - The type of posts to fetch. Not used when the URL is "" as it's the home page.
-   * @param page - The page to fetch. Not used when the URL is "" as it's the home page.
-   */
-  getPosts(url: string, type: LowercaseFullListType, page: number = 1) {
-    if (type !== "new" && type !== "suggested") return;
-
-    this.isFetchResolved.newItems.next(false);
-    this.isFetchResolved.suggestedItems.next(false);
-    const idbPromises: Promise<void>[] = this.fetchPostsFromIdb(url, type, page);
-
-    // TODO: Convert this to an observable
-    Promise.all(idbPromises).then(() => {
-      this.isFetchResolved.newItems.next(true);
-      this.isFetchResolved.suggestedItems.next(true);
-
-      // Then fetch from the server
-      this.fetchPostsFromServer(url, type, page);
-    });
-  }
-
-  /**
-   * Fetches posts from IndexedDB and updates the posts behaviour subjects
-   * @param url - The URL to fetch.
-   * @param type - The type of posts to fetch. Not used when the URL is "" as it's the home page.
-   * @param page - The page to fetch. Not used when the URL is "" as it's the home page.
-   * @returns a list of promises that resolve when the posts are fetched from IDB.
-   */
-  fetchPostsFromIdb(url: string, type: LowercaseFullListType, page: number = 1) {
-    let idbPromises: Promise<void>[] = [];
-
-    // Fetch from Idb
-    if (url !== "") {
-      const postsPromise = this.serviceWorkerM
-        .fetchPosts(type === "new" ? "date" : "hugs", 5, undefined, page, type === "new")
-        .then((data) => {
-          this.posts[`${type}Items`].next(data.posts);
-          this.totalPages = data.pages;
-          this.currentPage = page;
-        });
-      idbPromises = [postsPromise];
-    } else {
-      const newPostsPromise = this.serviceWorkerM
-        .fetchPosts("date", 10, undefined, 1, true)
-        .then((data) => this.posts.newItems.next(data.posts));
-      const suggestedPostsPromise = this.serviceWorkerM
-        .fetchPosts("hugs", 10, undefined, 1, false)
-        .then((data) => this.posts.suggestedItems.next(data.posts));
-      idbPromises = [newPostsPromise, suggestedPostsPromise];
-    }
-
-    return idbPromises;
-  }
-
-  /**
-   * Fetches posts from the server and updates the posts behaviour subjects
-   * @param url - The URL to fetch.
-   * @param type - The type of posts to fetch. Not used when the URL is "" as it's the home page.
-   * @param page - The page to fetch. Not used when the URL is "" as it's the home page.
-   */
-  fetchPostsFromServer(url: string, type: LowercaseFullListType, page: number = 1) {
-    // URL and page query parameter
-    const Url = this.serverUrl + url;
-    let params = new HttpParams();
-
-    if (url != "") {
-      params = params.set("page", `${page}`);
-    }
-
-    // HTTP request
-    this.Http.get(Url, {
-      params,
-    }).subscribe({
-      next: (response: any) => {
-        if (url === "") {
-          // TODO: Replace `recent` with `new` for consistency.
-          this.posts.newItems.next(response.recent);
-          this.posts.suggestedItems.next(response.suggested);
-          this.addPostsToIdb(response.recent);
-          this.addPostsToIdb(response.suggested);
-        } else {
-          const data = response.posts;
-          this.posts[`${type}Items`].next(data);
-          this.addPostsToIdb(data);
-        }
-
-        this.currentPage = page;
-        this.totalPages = response.total_pages || 1;
-        this.alertsService.toggleOfflineAlert();
-        this.isFetchResolved.newItems.next(true);
-        this.isFetchResolved.suggestedItems.next(true);
-      },
-      error: (err) => {
-        // if the server is unavilable due to the user being offline, tell the user
-        if (!navigator.onLine) {
-          this.posts[`${type}Items`].next([]);
-          this.alertsService.toggleOfflineAlert();
-        }
-        // otherwise just create an error alert
-        else {
-          this.posts[`${type}Items`].next([]);
-          this.alertsService.createErrorAlert(err);
-        }
-
-        this.isFetchResolved.newItems.next(true);
-        this.isFetchResolved.suggestedItems.next(true);
-      },
-    });
-  }
-
   /**
    * Adds the fetched posts to IndexedDB.
    * @param posts - The list of posts to add to IDB.
@@ -396,30 +279,5 @@ export class PostsService {
         }
       },
     });
-  }
-
-  /*
-  Function Name: disableHugButton()
-  Function Description: Finds the post that got a new hug in all the posts lists and
-                        disables the hug button (if the post exists) to prevent attempting
-                        to send multiple hugs on one post.
-  Parameters: checkList (Array) - the array to check for the existence of the post.
-              itemClass (string) - the css class given to the items belonging to the list.
-              itemID (number) - the ID of the item to look for.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  disableHugButton(checkList: any[], itemClass: string, itemID: number) {
-    // Check if the post is in the given array
-    let currentPostIndex = checkList.findIndex((e) => e.id == itemID);
-    if (currentPostIndex >= 0) {
-      // if it is, disable the send-hug button
-      checkList[currentPostIndex].sentHugs!.push(this.authService.userData.id!);
-      let post = document.querySelectorAll(itemClass)[currentPostIndex];
-      post.querySelectorAll(".fa-hand-holding-heart").forEach((element) => {
-        (element.parentElement as HTMLButtonElement).disabled = true;
-        (element.parentElement as HTMLButtonElement).classList.add("active");
-      });
-    }
   }
 }

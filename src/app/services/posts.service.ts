@@ -49,19 +49,8 @@ import { LowercaseFullListType } from "../interfaces/types";
 export class PostsService {
   readonly serverUrl = environment.backend.domain;
   isUpdated = new BehaviorSubject(false);
-  posts = {
-    newItems: new BehaviorSubject<Post[]>([]),
-    suggestedItems: new BehaviorSubject<Post[]>([]),
-  };
-  // TODO: Remove isFetchResolved and rely entirely on the
-  // behaviour subjects above
-  isFetchResolved = {
-    newItems: new BehaviorSubject(false),
-    suggestedItems: new BehaviorSubject(false),
-  };
-  currentPage = 1;
-  totalPages = 1;
   currentlyOpenMenu = new BehaviorSubject(-1);
+  receivedAHug = new BehaviorSubject(0);
 
   // CTOR
   constructor(
@@ -382,7 +371,6 @@ export class PostsService {
   */
   sendHug(item: any) {
     const Url = this.serverUrl + `/posts/${item.id}/hugs`;
-    item.givenHugs += 1;
     this.Http.post(
       Url,
       {},
@@ -393,14 +381,11 @@ export class PostsService {
       next: (_response: any) => {
         this.alertsService.createSuccessAlert("Your hug was sent!", false);
         this.alertsService.toggleOfflineAlert();
-
-        // Check which array the item is in
-        this.disableHugButton(this.posts.newItems.value, ".newItem", item.id);
-        this.disableHugButton(this.posts.suggestedItems.value, ".sugItem", item.id);
+        // Alert the posts that this item received a hug
+        this.receivedAHug.next(item.id);
         // if there was an error, alert the user
       },
       error: (err: HttpErrorResponse) => {
-        item.givenHugs -= 1;
         // if the user is offline, show the offline header message
         if (!navigator.onLine) {
           this.alertsService.toggleOfflineAlert();

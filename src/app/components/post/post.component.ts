@@ -31,16 +31,7 @@
 */
 
 // Angular imports
-import {
-  Component,
-  EventEmitter,
-  Input,
-  Output,
-  computed,
-  AfterViewChecked,
-  OnInit,
-  OnDestroy,
-} from "@angular/core";
+import { Component, Input, computed, AfterViewChecked, OnInit, OnDestroy } from "@angular/core";
 import { faComment, faEdit, faFlag } from "@fortawesome/free-regular-svg-icons";
 import { faHandHoldingHeart, faTimes, faEllipsisV } from "@fortawesome/free-solid-svg-icons";
 
@@ -72,7 +63,7 @@ export class SinglePost implements AfterViewChecked, OnInit, OnDestroy {
   reportType: "Post" | undefined;
   lastFocusedElement: any;
   waitFor = "main page";
-  subscription: Subscription | undefined;
+  subscriptions: Subscription[] = [];
   // icons
   faComment = faComment;
   faEdit = faEdit;
@@ -93,9 +84,17 @@ export class SinglePost implements AfterViewChecked, OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.subscription = this.postsService.currentlyOpenMenu.subscribe((currentlyOpenId) => {
+    this.subscriptions.push(this.postsService.currentlyOpenMenu.subscribe((_currentlyOpenId) => {
       this.checkMenuSize();
-    });
+    }));
+    this.subscriptions.push(this.postsService.receivedAHug.subscribe((postId) => {
+      if (postId == this.post.id && !this.post.sentHugs?.includes(this.authService.userData.id!)) {
+        // TODO: Also update the parent list & IDB
+        this.post.givenHugs += 1;
+        this.post.sentHugs?.push(this.authService.userData.id!);
+        this.disableHugButton();
+      }
+    }))
   }
 
   ngAfterViewChecked(): void {
@@ -103,7 +102,7 @@ export class SinglePost implements AfterViewChecked, OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.subscription?.unsubscribe();
+    this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 
   /**
@@ -234,5 +233,22 @@ export class SinglePost implements AfterViewChecked, OnInit, OnDestroy {
     } else {
       this.postsService.currentlyOpenMenu.next(-1);
     }
+  }
+
+  /**
+  * Disables the current post's hug button to prevent attempting
+  * to send multiple hugs on one post. Is triggered by the user
+  * sending a hug for the post.
+  */
+  disableHugButton() {
+    // TODO: Ideally we shouldn't have to do this; this is only done
+    // because the post isn't fully reactive. This should be fixed.
+    let post = document.getElementById(this.postId())?.parentElement;
+    console.log(post)
+    post?.querySelectorAll(".fa-hand-holding-heart").forEach((element) => {
+      console.log(element);
+      (element.parentElement as HTMLButtonElement).disabled = true;
+      (element.parentElement as HTMLButtonElement).classList.add("active");
+    });
   }
 }

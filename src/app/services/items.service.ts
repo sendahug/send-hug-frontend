@@ -31,27 +31,19 @@
 */
 
 // Angular imports
-import { Injectable, WritableSignal, computed, signal } from "@angular/core";
+import { Injectable } from "@angular/core";
 import { HttpClient, HttpErrorResponse, HttpParams } from "@angular/common/http";
 import { BehaviorSubject } from "rxjs";
 
 // App-related imports
 import { Post } from "../interfaces/post.interface";
 import { Message } from "../interfaces/message.interface";
-import { FullThread } from "../interfaces/thread.interface";
 import { OtherUser } from "../interfaces/otherUser.interface";
 import { Report } from "../interfaces/report.interface";
 import { AuthService } from "./auth.service";
 import { AlertsService } from "./alerts.service";
 import { SWManager } from "./sWManager.service";
 import { environment } from "../../environments/environment";
-import { MessageType } from "../interfaces/types";
-
-type FetchStamp = {
-  source: "Server" | "IDB" | "";
-  date: number;
-};
-
 
 @Injectable({
   providedIn: "root",
@@ -77,32 +69,6 @@ export class ItemsService {
   isOtherUser = false;
   isOtherUserResolved = new BehaviorSubject(false);
   previousUser: number = 0;
-  // User messages variables
-  activeThread = 0;
-  userMessages: Message[] = [];
-  userThreads: WritableSignal<FullThread[]> = signal([]);
-  userThreadsFormatted = computed(() => {
-    return this.userThreads().map((thread: FullThread) => {
-      return {
-        id: thread.id,
-        user:
-        thread.user1Id == this.authService.userData.id
-            ? thread.user2
-            : thread.user1,
-        userID:
-        thread.user1Id == this.authService.userData.id ? thread.user2Id : thread.user1Id,
-        numMessages: thread.numMessages,
-        latestMessage: thread.latestMessage,
-      };
-    });
-  });
-  currentMessagesPage = 1;
-  totalMessagesPages = 1;
-  isMessagesResolved = new BehaviorSubject(false);
-  isMessagesIdbResolved = new BehaviorSubject(false);
-  lastFetchTarget?: MessageType;
-  lastFetchSource: "Server" | "IDB" | "" = "";
-  lastFetchDate: number = 0;
   // search variables
   isSearching = false;
   userSearchResults: OtherUser[] = [];
@@ -115,18 +81,6 @@ export class ItemsService {
   // idb variables
   idbResolved = {
     user: new BehaviorSubject(false),
-    userPosts: new BehaviorSubject(false),
-  };
-  // latest fetch
-  lastFetched: { [key: string]: FetchStamp } = {
-    userPostsself: {
-      source: "",
-      date: 0,
-    },
-    userPostsother: {
-      source: "",
-      date: 0,
-    },
   };
 
   // CTOR
@@ -264,142 +218,6 @@ export class ItemsService {
 
   // MESSAGE-RELATED METHODS
   // ==============================================================
-  getMessages(type: MessageType, page: number, threadId?: number) {
-    // if the current page is 0, send page 1 to the server (default)
-    const currentPage = page ? page : 1;
-
-    if (type == "thread" && !threadId) {
-      this.alertsService.createAlert({
-        message: "Thread ID must be provided",
-        type: "Error",
-      });
-      return;
-    }
-
-    if (!this.authService.userData || !this.authService.userData.id) return;
-
-    let params = new HttpParams()
-      .set("userID", `${this.authService.userData.id}`)
-      .set("page", `${currentPage}`)
-      .set("type", type);
-    this.isMessagesResolved.next(false);
-    this.isMessagesIdbResolved.next(false);
-
-    if (type == "thread") {
-      params = params.set("threadID", `${threadId}`);
-      this.activeThread = threadId as number;
-    }
-
-    // get the posts from IDB
-    // TODO: IF THREADS THEN DO THE OTHER THING
-    if (type == "threads") {
-      this.serviceWorkerM.queryThreads(page)?.then((data) => {
-        // if there are posts in cache, display them
-        if (data.messages.length) {
-          // if the latest fetch is none, the last fetch was from IDB and before or
-          // the last fetch was performed more than 10 seconds ago (meaning the user)
-          // changed/refreshed the page, update the latest fetch and the displayed
-          // posts
-          if (
-            !this.lastFetchDate ||
-            (this.lastFetchDate < Date.now() && this.lastFetchSource == "IDB") ||
-            this.lastFetchDate + 10000 < Date.now() ||
-            (page != this.currentMessagesPage && page != 1) ||
-            this.lastFetchTarget != type
-          ) {
-            this.lastFetchSource = "IDB";
-            this.lastFetchDate = Date.now();
-            this.userThreads.set(data.messages);
-            this.totalMessagesPages = data.pages;
-            this.lastFetchTarget = type;
-            this.isMessagesIdbResolved.next(true);
-          }
-        }
-      });
-    } else {
-      this.serviceWorkerM.queryMessages(type, this.authService.userData.id!, page, threadId)?.then((data: any) => {
-        // if there are posts in cache, display them
-        if (data.messages.length) {
-          // if the latest fetch is none, the last fetch was from IDB and before or
-          // the last fetch was performed more than 10 seconds ago (meaning the user)
-          // changed/refreshed the page, update the latest fetch and the displayed
-          // posts
-          if (
-            !this.lastFetchDate ||
-            (this.lastFetchDate < Date.now() && this.lastFetchSource == "IDB") ||
-            this.lastFetchDate + 10000 < Date.now() ||
-            (page != this.currentMessagesPage && page != 1) ||
-            this.lastFetchTarget != type
-          ) {
-            this.lastFetchSource = "IDB";
-            this.lastFetchDate = Date.now();
-            this.userMessages = [...data.messages];
-            this.totalMessagesPages = data.pages;
-            this.lastFetchTarget = type;
-            this.isMessagesIdbResolved.next(true);
-          }
-        }
-      });
-    }
-
-    // try to get the user's messages from the server
-    this.Http.get(`${this.serverUrl}/messages`, {
-      headers: this.authService.authHeader,
-      params: params,
-    }).subscribe({
-      next: (response: any) => {
-        this,this.totalMessagesPages = response.total_pages;
-        // if there are 0 pages, current page is also 0; otherwise it's whatever
-        // the server returns
-        this.currentMessagesPage = this.totalMessagesPages ? response.current_page : 0;
-        this.lastFetchSource = "Server";
-        this.lastFetchDate = Date.now();
-        this.isMessagesResolved.next(true);
-        this.isMessagesIdbResolved.next(true);
-        this.alertsService.toggleOfflineAlert();
-
-        // add each message in the messages list to the store
-        if (type == "threads") {
-          const messages = response.messages;
-          this.userThreads.set([...messages]);
-          messages.forEach((element: FullThread) => {
-            const thread: FullThread = {
-              ...element,
-              isoDate: new Date(element.latestMessage).toISOString(),
-            };
-            this.serviceWorkerM.addItem("threads", thread);
-          });
-          this.serviceWorkerM.cleanDB("threads");
-        } else {
-          const messages = response.messages;
-          this.userMessages = [...messages];
-          messages.forEach((element: Message) => {
-            const message: Message = {
-              ...element,
-              isoDate: new Date(element.date).toISOString(),
-            };
-            this.serviceWorkerM.addItem("messages", message);
-          });
-          this.serviceWorkerM.cleanDB("messages");
-        }
-      },
-      // if there was an error, alert the user
-      error: (err: HttpErrorResponse) => {
-        this.isMessagesResolved.next(true);
-        this.isMessagesIdbResolved.next(true);
-
-        // if the server is unavilable due to the user being offline, tell the user
-        if (!navigator.onLine) {
-          this.alertsService.toggleOfflineAlert();
-        }
-        // otherwise just create an error alert
-        else {
-          this.alertsService.createErrorAlert(err);
-        }
-      },
-    })
-  }
-
   /*
   Function Name: sendMessage()
   Function Description: Send a message.

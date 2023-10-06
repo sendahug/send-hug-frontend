@@ -41,6 +41,7 @@ import { AlertsService } from "./alerts.service";
 import { iconCharacters } from "../interfaces/types";
 import { Message } from "../interfaces/message.interface";
 import { Post } from "../interfaces/post.interface";
+import { FullThread } from "../interfaces/thread.interface";
 
 // IndexedDB Database schema
 export interface MyDB extends DBSchema {
@@ -478,87 +479,30 @@ export class SWManager {
     filterValue: number,
     perPage: number,
     page?: number,
-  ) {
-    return this.currentDB
-      ?.then(function (db) {
-        let messagesStore = db.transaction("messages").store.index("date");
-        return messagesStore.getAll();
-      })
-      .then((messages) => {
-        const filteredMessages = messages
-          .filter((message: Message) => message[filterAttribute] == filterValue)
-          .reverse();
-        const startIndex = (page || 1 - 1) * perPage;
-        const pages = Math.ceil(filteredMessages.length / 5);
+  ): Promise<{ messages: Message[]; pages: number }> {
+    if (this.currentDB) {
+      return this.currentDB
+        .then(function (db) {
+          let messagesStore = db.transaction("messages").store.index("date");
+          return messagesStore.getAll();
+        })
+        .then((messages) => {
+          const filteredMessages = messages
+            .filter((message: Message) => message[filterAttribute] == filterValue)
+            .reverse();
+          const startIndex = (page || 1 - 1) * perPage;
+          const pages = Math.ceil(filteredMessages.length / 5);
 
-        return {
-          messages: filteredMessages.slice(startIndex, startIndex + perPage),
-          pages: pages,
-        };
+          return {
+            messages: filteredMessages.slice(startIndex, startIndex + perPage),
+            pages: pages,
+          };
+        });
+    } else {
+      return new Promise((resolve) => {
+        resolve({ messages: [], pages: 1 });
       });
-  }
-
-  /*
-  Function Name: queryMessages()
-  Function Description: Gets data matching the provided query from IndexedDB database.
-  Parameters: target (string) - The target of the query.
-              currentUser (number) - ID of the current user.
-              page (number) - the current page.
-              threadID (number) - the ID of the thread for which to fetch messages.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  queryMessages(target: string, currentUser: number, page: number, threadID?: number) {
-    return this.currentDB
-      ?.then(function (db) {
-        // if the target is any of the single-message mailboxes, get the data
-        // from the messages objectStore
-        let messagesStore = db.transaction("messages").store.index("date");
-        return messagesStore.getAll();
-      })
-      .then(function (messages) {
-        // get the current page and the start index for the paginated list
-        // if the target is one of the main page's lists, each list should contain
-        // 10 posts; otherwise each list should contain 5 items
-        let startIndex = (page - 1) * 5;
-
-        // if the target is inbox, keep only messages sent to the user and
-        // return paginated inbox messages
-        if (target == "inbox") {
-          let inbox = messages.filter((e: any) => e.forId == currentUser);
-          let orderedInbox = inbox.reverse();
-          let pages = Math.ceil(orderedInbox!.length / 5);
-
-          return {
-            messages: orderedInbox.slice(startIndex, startIndex + 5),
-            pages: pages,
-          };
-        }
-        // if the target is outbox, keep only messages sent from the user and
-        // return paginated outbox messages
-        else if (target == "outbox") {
-          let outbox = messages.filter((e: any) => e.fromId == currentUser);
-          let orderedOutbox = outbox.reverse();
-          let pages = Math.ceil(orderedOutbox!.length / 5);
-
-          return {
-            messages: orderedOutbox.slice(startIndex, startIndex + 5),
-            pages: pages,
-          };
-        }
-        // if the target is a specific thread, keep only messages belonging to
-        // that thread nad return paginated messages
-        else if (target == "thread") {
-          let thread = messages.filter((e: any) => e.threadID == threadID);
-          let orderedThread = thread.reverse();
-          let pages = Math.ceil(orderedThread!.length / 5);
-
-          return {
-            messages: orderedThread.slice(startIndex, startIndex + 5),
-            pages: pages,
-          };
-        }
-      });
+    }
   }
 
   /*
@@ -568,22 +512,28 @@ export class SWManager {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  queryThreads(currentPage: number) {
-    return this.currentDB
-      ?.then(function (db) {
-        let threadsStore = db.transaction("threads").store.index("latest");
-        return threadsStore.getAll();
-      })
-      .then(function (threads) {
-        let startIndex = (currentPage - 1) * 5;
-        let orderedThreads = threads.reverse();
-        let pages = Math.ceil(orderedThreads!.length / 5);
+  queryThreads(currentPage: number): Promise<{ messages: FullThread[]; pages: number }> {
+    if (this.currentDB) {
+      return this.currentDB
+        .then(function (db) {
+          let threadsStore = db.transaction("threads").store.index("latest");
+          return threadsStore.getAll();
+        })
+        .then(function (threads) {
+          let startIndex = (currentPage - 1) * 5;
+          let orderedThreads = threads.reverse();
+          let pages = Math.ceil(orderedThreads!.length / 5);
 
-        return {
-          messages: orderedThreads.slice(startIndex, startIndex + 5),
-          pages: pages,
-        };
+          return {
+            messages: orderedThreads.slice(startIndex, startIndex + 5),
+            pages: pages,
+          };
+        });
+    } else {
+      return new Promise((resolve) => {
+        resolve({ messages: [], pages: 1 });
       });
+    }
   }
 
   /*

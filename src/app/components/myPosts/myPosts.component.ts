@@ -142,7 +142,7 @@ export class MyPosts implements OnInit {
         this.isLoading.set(false);
         this.isServerFetchResolved.set(true);
         this.alertsService.toggleOfflineAlert();
-        this.postsService.addPostsToIdb(data.posts);
+        this.swManager.addFetchedItems("posts", data.posts, "date");
       });
   }
 

@@ -35,7 +35,6 @@ import { Component, WritableSignal, signal } from "@angular/core";
 import { catchError, forkJoin, from, map, of, switchMap, tap } from "rxjs";
 
 // App-related imports
-import { PostsService } from "../../services/posts.service";
 import { ApiClientService } from "../../services/apiClient.service";
 import { SWManager } from "../../services/sWManager.service";
 import { Post } from "../../interfaces/post.interface";
@@ -60,7 +59,6 @@ export class MainPage {
 
   // CTOR
   constructor(
-    public postsService: PostsService,
     private apiClient: ApiClientService,
     private swManager: SWManager,
     private alertsService: AlertsService,
@@ -81,12 +79,7 @@ export class MainPage {
       .subscribe((data) => {
         this.updatePostsInterface(data);
         this.alertsService.toggleOfflineAlert();
-        // TODO: Convert these into a generic "add" function
-        // All that's done with these 'add's is to add an ISO date
-        // which is the same across all objects. No need for multiple
-        // functions.
-        this.postsService.addPostsToIdb(data.recent);
-        this.postsService.addPostsToIdb(data.suggested);
+        this.swManager.addFetchedItems("posts", [...data.recent, ...data.suggested], "date");
       });
   }
 

@@ -84,17 +84,24 @@ export class SinglePost implements AfterViewChecked, OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.subscriptions.push(this.postsService.currentlyOpenMenu.subscribe((_currentlyOpenId) => {
-      this.checkMenuSize();
-    }));
-    this.subscriptions.push(this.postsService.receivedAHug.subscribe((postId) => {
-      if (postId == this.post.id && !this.post.sentHugs?.includes(this.authService.userData.id!)) {
-        // TODO: Also update the parent list & IDB
-        this.post.givenHugs += 1;
-        this.post.sentHugs?.push(this.authService.userData.id!);
-        this.disableHugButton();
-      }
-    }))
+    this.subscriptions.push(
+      this.postsService.currentlyOpenMenu.subscribe((_currentlyOpenId) => {
+        this.checkMenuSize();
+      }),
+    );
+    this.subscriptions.push(
+      this.postsService.receivedAHug.subscribe((postId) => {
+        if (
+          postId == this.post.id &&
+          !this.post.sentHugs?.includes(this.authService.userData.id!)
+        ) {
+          // TODO: Also update the parent list & IDB
+          this.post.givenHugs += 1;
+          this.post.sentHugs?.push(this.authService.userData.id!);
+          this.disableHugButton();
+        }
+      }),
+    );
   }
 
   ngAfterViewChecked(): void {
@@ -102,7 +109,7 @@ export class SinglePost implements AfterViewChecked, OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.subscriptions.forEach(sub => sub.unsubscribe());
+    this.subscriptions.forEach((sub) => sub.unsubscribe());
   }
 
   /**
@@ -236,17 +243,15 @@ export class SinglePost implements AfterViewChecked, OnInit, OnDestroy {
   }
 
   /**
-  * Disables the current post's hug button to prevent attempting
-  * to send multiple hugs on one post. Is triggered by the user
-  * sending a hug for the post.
-  */
+   * Disables the current post's hug button to prevent attempting
+   * to send multiple hugs on one post. Is triggered by the user
+   * sending a hug for the post.
+   */
   disableHugButton() {
     // TODO: Ideally we shouldn't have to do this; this is only done
     // because the post isn't fully reactive. This should be fixed.
     let post = document.getElementById(this.postId())?.parentElement;
-    console.log(post)
     post?.querySelectorAll(".fa-hand-holding-heart").forEach((element) => {
-      console.log(element);
       (element.parentElement as HTMLButtonElement).disabled = true;
       (element.parentElement as HTMLButtonElement).classList.add("active");
     });

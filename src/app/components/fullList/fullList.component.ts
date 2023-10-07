@@ -36,7 +36,6 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { from, map, switchMap, tap } from "rxjs";
 
 // App-related imports
-import { PostsService } from "../../services/posts.service";
 import { FullListType } from "../../interfaces/types";
 import { Post } from "../../interfaces/post.interface";
 import { SWManager } from "../../services/sWManager.service";
@@ -67,7 +66,6 @@ export class FullList {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    public postsService: PostsService,
     private swManager: SWManager,
     private alertsService: AlertsService,
     private apiClient: ApiClientService,
@@ -102,6 +100,8 @@ export class FullList {
    */
   fetchPosts() {
     const fetchFromIdb$ = this.fetchPostsFromIdb();
+    this.isLoading.set(true);
+
     fetchFromIdb$
       .pipe(
         switchMap(() =>
@@ -115,7 +115,7 @@ export class FullList {
         this.posts.set(data.posts);
         this.isLoading.set(false);
         this.alertsService.toggleOfflineAlert();
-        this.postsService.addPostsToIdb(data.posts);
+        this.swManager.addFetchedItems("posts", data.posts, "date");
       });
   }
 

@@ -205,14 +205,7 @@ export class AppMessaging implements OnInit, AfterViewChecked {
           this.isLoading.set(false);
           this.alertsService.toggleOfflineAlert();
           const idbMessages = [...data.messages];
-          idbMessages.forEach((element: Message) => {
-            const message: Message = {
-              ...element,
-              isoDate: new Date(element.date).toISOString(),
-            };
-            this.swManager.addItem("messages", message);
-          });
-          this.swManager.cleanDB("messages");
+          this.swManager.addFetchedItems("messages", idbMessages, "date");
         },
       });
   }
@@ -271,14 +264,7 @@ export class AppMessaging implements OnInit, AfterViewChecked {
           this.isLoading.set(false);
           this.alertsService.toggleOfflineAlert();
           const idbThreads = [...data.messages];
-          idbThreads.forEach((element: FullThread) => {
-            const thread: FullThread = {
-              ...element,
-              isoDate: new Date(element.latestMessage).toISOString(),
-            };
-            this.swManager.addItem("threads", thread);
-          });
-          this.swManager.cleanDB("threads");
+          this.swManager.addFetchedItems("threads", idbThreads, "latestMessage");
         },
       });
   }

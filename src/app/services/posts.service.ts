@@ -61,23 +61,6 @@ export class PostsService {
 
   // POST-RELATED METHODS
   // ==============================================================
-  /**
-   * Adds the fetched posts to IndexedDB.
-   * @param posts - The list of posts to add to IDB.
-   */
-  addPostsToIdb(posts: Post[]) {
-    // add each post in the list to posts store
-    posts.forEach((element: Post) => {
-      let isoDate = new Date(element.date).toISOString();
-      let post = {
-        ...element,
-        isoDate: isoDate,
-      };
-      this.serviceWorkerM.addItem("posts", post);
-    });
-    this.serviceWorkerM.cleanDB("posts");
-  }
-
   /*
   Function Name: sendPost()
   Function Description: Create a new post.

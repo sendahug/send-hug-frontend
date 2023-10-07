@@ -554,6 +554,37 @@ export class SWManager {
       });
   }
 
+  /**
+   * Adds an ISO date to each item in the list of items, and then adds
+   * them to the store. It also cleans the store after adding all items.
+   *
+   * @param store - the type of store to add to
+   * @param data - the data to add
+   * @param dateParam - the name of the attribute that contains the date
+   *                    to use (to convert to ISO Date) for each of the items.
+   * @returns A promise that resolves to void.
+   */
+  addFetchedItems(
+    store: "posts" | "messages" | "users" | "threads",
+    data: any[],
+    dateParam: string,
+  ) {
+    return this.currentDB
+      ?.then((db) => {
+        // start a new transaction
+        let dbStore = db.transaction(store, "readwrite").objectStore(store);
+        data.forEach((item) => {
+          item["isoDate"] = new Date(item[dateParam]).toISOString();
+          dbStore.put(item);
+        });
+      })
+      .then(() => {
+        if (store != "users") {
+          this.cleanDB(store);
+        }
+      });
+  }
+
   /*
   Function Name: addItem()
   Function Description: Add an item to one of the stores.

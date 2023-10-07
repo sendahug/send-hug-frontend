@@ -32,7 +32,7 @@
 
 // Angular imports
 import { Injectable } from "@angular/core";
-import { HttpClient, HttpErrorResponse, HttpParams } from "@angular/common/http";
+import { HttpClient, HttpErrorResponse } from "@angular/common/http";
 import { BehaviorSubject } from "rxjs";
 
 // App-related imports
@@ -85,14 +85,8 @@ export class PostsService {
 
           let isoDate = new Date(response.posts.date).toISOString();
           let iDBPost = {
-            date: response.posts.date,
-            givenHugs: response.posts.givenHugs,
-            id: response.posts.id!,
+            ...response.posts,
             isoDate: isoDate,
-            text: response.posts.text,
-            userId: Number(response.posts.userId),
-            user: response.posts.user,
-            sentHugs: response.posts.sentHugs!,
           };
           this.serviceWorkerM.addItem("posts", iDBPost);
           // if there was an error, alert the user
@@ -116,79 +110,6 @@ export class PostsService {
         message: `You cannot post new posts while you're blocked. You're blocked until ${this.authService.userData.releaseDate}.`,
       });
     }
-  }
-
-  /*
-  Function Name: deletePost()
-  Function Description: Delete a post from the database.
-  Parameters: post_id (number) - the ID of the post to delete.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  deletePost(post_id: number) {
-    const Url = this.serverUrl + `/posts/${post_id}`;
-    this.Http.delete(Url, {
-      headers: this.authService.authHeader,
-    }).subscribe({
-      next: (response: any) => {
-        this.alertsService.createSuccessAlert(
-          `Post ${response.deleted} was deleted. Refresh to view the updated post list.`,
-          true,
-        );
-        this.alertsService.toggleOfflineAlert();
-
-        // delete the post from idb
-        this.serviceWorkerM.deleteItem("posts", post_id);
-        // if there was an error, alert the user
-      },
-      error: (err: HttpErrorResponse) => {
-        // if the user is offline, show the offline header message
-        if (!navigator.onLine) {
-          this.alertsService.toggleOfflineAlert();
-        }
-        // otherwise just create an error alert
-        else {
-          this.alertsService.createErrorAlert(err);
-        }
-      },
-    });
-  }
-
-  /*
-  Function Name: deleteAllPosts()
-  Function Description: Delete all of a user's posts.
-  Parameters: userID (number) - the ID of the user whose posts to delete.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  deleteAllPosts(userID: number) {
-    const Url = this.serverUrl + `/users/all/${userID}/posts`;
-    // send delete request
-    this.Http.delete(Url, {
-      headers: this.authService.authHeader,
-    }).subscribe({
-      next: (_response: any) => {
-        this.alertsService.createSuccessAlert(
-          `User ${userID}'s posts were deleted successfully. Refresh to view the updated profile.`,
-          true,
-        );
-        this.alertsService.toggleOfflineAlert();
-
-        // delete the posts from idb
-        this.serviceWorkerM.deleteItems("posts", "userId", userID);
-        // if there was an error, alert the user
-      },
-      error: (err: HttpErrorResponse) => {
-        // if the user is offline, show the offline header message
-        if (!navigator.onLine) {
-          this.alertsService.toggleOfflineAlert();
-        }
-        // otherwise just create an error alert
-        else {
-          this.alertsService.createErrorAlert(err);
-        }
-      },
-    });
   }
 
   /*

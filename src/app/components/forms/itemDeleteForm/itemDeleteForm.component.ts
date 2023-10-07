@@ -35,9 +35,10 @@ import { Component, Input, Output, EventEmitter } from "@angular/core";
 
 // App-related import
 import { AuthService } from "../../../services/auth.service";
-import { ItemsService } from "../../../services/items.service";
-import { PostsService } from "../../../services/posts.service";
 import { AdminService } from "../../../services/admin.service";
+import { ApiClientService } from "../../../services/apiClient.service";
+import { SWManager } from "../../../services/sWManager.service";
+import { AlertsService } from "../../../services/alerts.service";
 
 @Component({
   selector: "item-delete-form",
@@ -56,9 +57,10 @@ export class ItemDeleteForm {
   // CTOR
   constructor(
     public authService: AuthService,
-    private itemsService: ItemsService,
-    private postsService: PostsService,
     private adminService: AdminService,
+    private apiClient: ApiClientService,
+    private swManager: SWManager,
+    private alertsService: AlertsService,
   ) {}
 
   /*
@@ -71,19 +73,15 @@ export class ItemDeleteForm {
   deleteItem() {
     // if it's a post, send a request to delete the post
     if (this.toDelete == "Post") {
-      this.postsService.deletePost(this.itemToDelete!);
+      this.deleteUserPost();
     }
-    // if it's a message, send a request to delete the message
-    else if (this.toDelete == "Message") {
-      this.itemsService.deleteMessage(this.itemToDelete!, this.messType!);
-    }
-    // if it's a thread, send a request to delete the thread
-    else if (this.toDelete == "Thread") {
-      this.itemsService.deleteThread(this.itemToDelete!);
+    // if it's a message/thread, send a request to delete the message
+    else if (this.toDelete == "Message" || this.toDelete == "Thread") {
+      this.deleteMessage();
     }
     // if the user is attempting to delete all of the user's posts
     else if (this.toDelete == "All posts") {
-      this.postsService.deleteAllPosts(this.itemToDelete!);
+      this.deleteAllPosts();
     }
     // if the user is attempting to delete all of their messages of a specific type
     else if (
@@ -91,10 +89,31 @@ export class ItemDeleteForm {
       this.toDelete == "All outbox" ||
       this.toDelete == "All threads"
     ) {
-      this.itemsService.deleteAll(this.toDelete, this.itemToDelete!);
+      this.deleteAllMessage();
     }
 
     this.editMode.emit(false);
+  }
+
+  /**
+   * Deletes a post. Used when a user attemps to delete a post from any page other
+   * than the admin page.
+   */
+  deleteUserPost() {
+    if (!this.itemToDelete) return;
+
+    this.apiClient
+      .delete<{ success: boolean; deleted: number }>(`posts/${this.itemToDelete}`)
+      .subscribe((response) => {
+        this.alertsService.createSuccessAlert(
+          `Post ${response.deleted} was deleted. Refresh to view the updated post list.`,
+          true,
+        );
+        this.alertsService.toggleOfflineAlert();
+
+        // delete the post from idb
+        this.swManager.deleteItem("posts", this.itemToDelete!);
+      });
   }
 
   /*
@@ -108,5 +127,90 @@ export class ItemDeleteForm {
   deletePost(closeReport: boolean) {
     this.adminService.deletePost(this.itemToDelete!, this.reportData, closeReport);
     this.editMode.emit(false);
+  }
+
+  /**
+   * Delete all of a user's posts.
+   */
+  deleteAllPosts() {
+    if (!this.itemToDelete) return;
+
+    this.apiClient
+      .delete<{ success: boolean; userID: number; deleted: number }>(
+        `users/all/${this.itemToDelete}/posts`,
+      )
+      .subscribe((_response) => {
+        this.alertsService.createSuccessAlert(
+          `User ${this.itemToDelete}'s posts were deleted successfully. Refresh to view the updated profile.`,
+          true,
+        );
+        this.alertsService.toggleOfflineAlert();
+
+        // delete the posts from idb
+        this.swManager.deleteItems("posts", "userId", this.itemToDelete!);
+      });
+  }
+
+  /**
+   * Deletes a message.
+   */
+  deleteMessage() {
+    if (!this.itemToDelete || !this.messType) return;
+
+    this.apiClient
+      .delete<{ success: boolean; deleted: number }>(
+        `messages/${this.messType}/${this.itemToDelete}`,
+      )
+      .subscribe((response) => {
+        this.alertsService.createSuccessAlert(
+          `${this.toDelete} ${response.deleted} was deleted! Refresh to view the updated message list.`,
+          true,
+        );
+        this.alertsService.toggleOfflineAlert();
+
+        // delete the message from idb
+        if (this.toDelete == "Thread") {
+          // delete the thread and its messages from idb
+          this.swManager.deleteItems("messages", "threadID", response.deleted);
+          this.swManager.deleteItem("threads", response.deleted);
+        } else {
+          // delete the message from idb
+          this.swManager.deleteItem("messages", response.deleted);
+        }
+      });
+  }
+
+  /**
+   * Delete all of a user's messages in a specific mailbox.
+   */
+  deleteAllMessage() {
+    if (!this.itemToDelete) return;
+
+    const mailbox_type = this.toDelete!.split(" ")[1];
+    const params = { userID: this.itemToDelete };
+
+    this.apiClient
+      .delete<{ success: boolean; userID: number; deleted: number }>(
+        `messages/${mailbox_type}`,
+        params,
+      )
+      .subscribe((response) => {
+        this.alertsService.createSuccessAlert(
+          `${response.deleted} messages were deleted! Refresh to view the updated mailbox.`,
+          true,
+        );
+        this.alertsService.toggleOfflineAlert();
+
+        // delete all messages from idb
+        // if the mailbox to be cleared is the threads mailbox, delete everything
+        if (mailbox_type == "threads") {
+          this.swManager.clearStore("messages");
+          this.swManager.clearStore("threads");
+        } else if (mailbox_type == "inbox") {
+          this.swManager.deleteItems("messages", "forId", this.itemToDelete!);
+        } else if (mailbox_type == "outbox") {
+          this.swManager.deleteItems("messages", "fromId", this.itemToDelete!);
+        }
+      });
   }
 }

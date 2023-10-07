@@ -7,3 +7,4 @@ export type iconElements = "character" | "lbg" | "rbg" | "item";
 export type FullListType = "New" | "Suggested";
 export type LowercaseFullListType = "new" | "suggested";
 export type MessageType = "inbox" | "outbox" | "threads" | "thread";
+export type IdbStoreType = "posts" | "messages" | "users" | "threads";

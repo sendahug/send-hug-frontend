@@ -38,7 +38,7 @@ import { openDB, IDBPDatabase, DBSchema } from "idb";
 
 // App-related imports
 import { AlertsService } from "./alerts.service";
-import { iconCharacters } from "../interfaces/types";
+import { IdbStoreType, iconCharacters } from "../interfaces/types";
 import { Message } from "../interfaces/message.interface";
 import { Post } from "../interfaces/post.interface";
 import { FullThread } from "../interfaces/thread.interface";
@@ -564,11 +564,7 @@ export class SWManager {
    *                    to use (to convert to ISO Date) for each of the items.
    * @returns A promise that resolves to void.
    */
-  addFetchedItems(
-    store: "posts" | "messages" | "users" | "threads",
-    data: any[],
-    dateParam: string,
-  ) {
+  addFetchedItems(store: IdbStoreType, data: any[], dateParam: string) {
     return this.currentDB
       ?.then((db) => {
         // start a new transaction
@@ -593,7 +589,7 @@ export class SWManager {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  addItem(store: "posts" | "messages" | "users" | "threads", item: any) {
+  addItem(store: IdbStoreType, item: any) {
     return this.currentDB?.then((db) => {
       // start a new transaction
       let dbStore = db.transaction(store, "readwrite").objectStore(store);
@@ -609,7 +605,7 @@ export class SWManager {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  deleteItem(store: "posts" | "messages" | "users" | "threads", itemID: number) {
+  deleteItem(store: IdbStoreType, itemID: number) {
     return this.currentDB?.then((db) => {
       // start a new transaction
       let tx = db.transaction(store, "readwrite");
@@ -629,11 +625,7 @@ export class SWManager {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  deleteItems(
-    store: "posts" | "messages" | "users" | "threads",
-    parentType: string,
-    parentID: number,
-  ) {
+  deleteItems(store: IdbStoreType, parentType: string, parentID: number) {
     return this.currentDB?.then((db) => {
       // start a new transaction
       let tx = db.transaction(store, "readwrite");
@@ -658,7 +650,7 @@ export class SWManager {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  clearStore(storeID: "posts" | "messages" | "users" | "threads") {
+  clearStore(storeID: IdbStoreType) {
     // checks that there's IDB database currently working
     if (this.currentDB) {
       // gets the current database, and then gets the given store and clears it

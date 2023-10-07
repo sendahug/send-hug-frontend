@@ -17,7 +17,7 @@
   },
   "author": "Shir Bar Lev",
   "devDependencies": {
-    "@rollup/plugin-commonjs": "^25.0.4",
+    "@rollup/plugin-commonjs": "^25.0.5",
     "@rollup/plugin-node-resolve": "^15.2.1",
     "@rollup/plugin-typescript": "^11.1.5",
     "@rollup/stream": "^3.0.0",

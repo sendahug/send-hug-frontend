@@ -31,16 +31,16 @@
 */
 
 // Angular imports
-import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { Injectable } from "@angular/core";
+import { BehaviorSubject } from "rxjs";
 
 // App-related imports
-import { Report } from '../interfaces/report.interface';
-import { Message } from '../interfaces/message.interface';
-import { MockAuthService } from './auth.service.mock';
-import { MockAlertsService } from './alerts.service.mock';
-import { MockItemsService } from './items.service.mock';
-import { environment } from '../../environments/environment';
+import { Report } from "../interfaces/report.interface";
+import { Message } from "../interfaces/message.interface";
+import { MockAuthService } from "./auth.service.mock";
+import { MockAlertsService } from "./alerts.service.mock";
+import { MockItemsService } from "./items.service.mock";
+import { environment } from "../../environments/environment";
 
 interface BlockedUser {
   id: number;
@@ -54,7 +54,7 @@ interface BlockedUser {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root",
 })
 export class MockAdminService {
   readonly serverUrl = environment.backend.domain;
@@ -64,11 +64,13 @@ export class MockAdminService {
   blockedUsers: BlockedUser[] = [];
   isBlocksResolved = new BehaviorSubject(false);
   // blocked user data
-  userBlockData: {
-    userID: number,
-    isBlocked: boolean,
-    releaseDate: Date | undefined
-  } | undefined;
+  userBlockData:
+    | {
+        userID: number;
+        isBlocked: boolean;
+        releaseDate: Date | undefined;
+      }
+    | undefined;
   isBlockDataResolved = new BehaviorSubject(false);
   filteredPhrases: any[] = [];
   isFiltersResolved = new BehaviorSubject(false);
@@ -77,23 +79,21 @@ export class MockAdminService {
     userReports: 1,
     postReports: 1,
     blockedUsers: 1,
-    filteredPhrases: 1
-  }
+    filteredPhrases: 1,
+  };
   totalPages = {
     userReports: 1,
     postReports: 1,
     blockedUsers: 1,
-    filteredPhrases: 1
-  }
+    filteredPhrases: 1,
+  };
   isUpdated = new BehaviorSubject(false);
 
   constructor(
-    private authService:MockAuthService,
-    private alertsService:MockAlertsService,
-    private itemsService:MockItemsService
-  ) {
-
-  }
+    private authService: MockAuthService,
+    private alertsService: MockAlertsService,
+    private itemsService: MockItemsService,
+  ) {}
 
   // GENERAL METHODS
   // ==============================================================
@@ -107,17 +107,17 @@ export class MockAdminService {
   Programmer: Shir Bar Lev.
   */
   getPage(list: string) {
-    switch(list) {
-      case 'userReports':
+    switch (list) {
+      case "userReports":
         this.getOpenReports();
         break;
-      case 'postReports':
+      case "postReports":
         this.getOpenReports();
         break;
-      case 'blockedUsers':
+      case "blockedUsers":
         this.getBlockedUsers();
         break;
-      case 'filteredPhrases':
+      case "filteredPhrases":
         this.getFilters();
         break;
     }
@@ -135,28 +135,32 @@ export class MockAdminService {
   getOpenReports() {
     this.isReportsResolved.next(false);
 
-    this.userReports = [{
-      id: 1,
-      type: 'User',
-      userID: 10,
-      reporter: 4,
-      reportReason: 'something',
-      date: new Date('2020-06-29 19:17:31.072'),
-      dismissed: false,
-      closed: false
-    }]
+    this.userReports = [
+      {
+        id: 1,
+        type: "User",
+        userID: 10,
+        reporter: 4,
+        reportReason: "something",
+        date: new Date("2020-06-29 19:17:31.072"),
+        dismissed: false,
+        closed: false,
+      },
+    ];
     this.totalPages.userReports = 1;
-    this.postReports = [{
-      id: 2,
-      type: 'Post',
-      userID: 11,
-      postID: 5,
-      reporter: 4,
-      reportReason: 'reason',
-      date: new Date('2020-06-29 19:17:31.072'),
-      dismissed: false,
-      closed: false
-    }];
+    this.postReports = [
+      {
+        id: 2,
+        type: "Post",
+        userID: 11,
+        postID: 5,
+        reporter: 4,
+        reportReason: "reason",
+        date: new Date("2020-06-29 19:17:31.072"),
+        dismissed: false,
+        closed: false,
+      },
+    ];
     this.totalPages.postReports = 1;
     this.isReportsResolved.next(true);
   }
@@ -171,10 +175,10 @@ export class MockAdminService {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  editPost(post:any, closeReport:boolean, reportID:number) {
+  editPost(post: any, closeReport: boolean, reportID: number) {
     // if the report should be closed
-    if(closeReport) {
-      post['closeReport'] = reportID;
+    if (closeReport) {
+      post["closeReport"] = reportID;
     }
     this.isUpdated.next(false);
 
@@ -192,19 +196,19 @@ export class MockAdminService {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  deletePost(postID:number, reportData:any, closeReport:boolean) {
+  deletePost(postID: number, reportData: any, closeReport: boolean) {
     this.alertsService.createSuccessAlert(`Post ${postID} was successfully deleted.`);
     // create a message from the admin to the user whose post was deleted
-    let message:Message = {
+    let message: Message = {
       from: {
-        displayName: this.authService.userData.displayName
+        displayName: this.authService.userData.displayName,
       },
       fromId: this.authService.userData.id!,
       forId: reportData.userID,
       messageText: `Your post (ID ${postID}) was deleted due to violating our community rules.`,
-      date: new Date()
-    }
-    if(closeReport) {
+      date: new Date(),
+    };
+    if (closeReport) {
       this.dismissReport(reportData.reportID);
     }
     // send the message about the deleted post
@@ -221,10 +225,10 @@ export class MockAdminService {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  editUser(user:any, closeReport:boolean, reportID:number) {
+  editUser(user: any, closeReport: boolean, reportID: number) {
     // if the report should be closed
-    if(closeReport) {
-      user['closeReport'] = reportID;
+    if (closeReport) {
+      user["closeReport"] = reportID;
     }
     this.alertsService.createSuccessAlert(`User ${user.displayName} updated.`, closeReport);
   }
@@ -236,23 +240,26 @@ export class MockAdminService {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  dismissReport(reportID:number) {
-    let report:Report;
+  dismissReport(reportID: number) {
+    let report: Report;
 
     // if the item is a user report, gets it from user reports array
-    if(this.userReports.filter(e => e.id == reportID).length) {
-      report = this.userReports.filter(e => e.id == reportID)[0];
+    if (this.userReports.filter((e) => e.id == reportID).length) {
+      report = this.userReports.filter((e) => e.id == reportID)[0];
     }
     // if not, the item must be a post report, so gets it from the post reports array
     else {
-      report = this.postReports.filter(e => e.id == reportID)[0];
+      report = this.postReports.filter((e) => e.id == reportID)[0];
     }
 
     // sets the dismissed and closed values to true
     report.dismissed = true;
     report.closed = true;
 
-    this.alertsService.createSuccessAlert('The report was dismissed! Refresh the page to view the updated list.', true);
+    this.alertsService.createSuccessAlert(
+      "The report was dismissed! Refresh the page to view the updated list.",
+      true,
+    );
   }
 
   // BLOCKS-RELATED METHODS
@@ -267,16 +274,18 @@ export class MockAdminService {
   getBlockedUsers() {
     this.isBlocksResolved.next(false);
 
-    this.blockedUsers = [{
-            id: 15,
-            displayName: 'name',
-            receivedHugs: 2,
-            givenHugs: 2,
-            role: 'user',
-            blocked: true,
-            releaseDate: new Date('2020-09-29 19:17:31.072'),
-            postsNum: 1
-        }];
+    this.blockedUsers = [
+      {
+        id: 15,
+        displayName: "name",
+        receivedHugs: 2,
+        givenHugs: 2,
+        role: "user",
+        blocked: true,
+        releaseDate: new Date("2020-09-29 19:17:31.072"),
+        postsNum: 1,
+      },
+    ];
     this.totalPages.blockedUsers = 1;
     this.isBlocksResolved.next(true);
   }
@@ -289,24 +298,24 @@ export class MockAdminService {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  checkUserBlock(userID:number) {
+  checkUserBlock(userID: number) {
     this.isBlockDataResolved.next(false);
 
     // if it's user 15, who's blocked, return the data
-    if(userID == 15) {
+    if (userID == 15) {
       this.userBlockData = {
         userID: userID,
         isBlocked: true,
-        releaseDate: new Date('2020-09-29 19:17:31.072')
-      }
+        releaseDate: new Date("2020-09-29 19:17:31.072"),
+      };
     }
     // otherwise the user isn't blocked, so return this
     else {
       this.userBlockData = {
         userID: userID,
         isBlocked: false,
-        releaseDate: undefined
-      }
+        releaseDate: undefined,
+      };
     }
 
     // set the variable monitoring whether the request is resolved to true
@@ -320,14 +329,17 @@ export class MockAdminService {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  blockUser(userID:number, releaseDate:Date, reportID?:number) {
+  blockUser(userID: number, releaseDate: Date, reportID?: number) {
     const user = {
       id: userID,
       releaseDate: releaseDate,
-      blocked: true
+      blocked: true,
     };
 
-    this.alertsService.createSuccessAlert(`User ${user.id} has been blocked until ${releaseDate}`, true);
+    this.alertsService.createSuccessAlert(
+      `User ${user.id} has been blocked until ${releaseDate}`,
+      true,
+    );
   }
 
   /*
@@ -337,11 +349,11 @@ export class MockAdminService {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  unblockUser(userID:number) {
+  unblockUser(userID: number) {
     const user = {
       id: userID,
       releaseDate: null,
-      blocked: false
+      blocked: false,
     };
 
     this.alertsService.createSuccessAlert(`User ${user.id} has been unblocked.`, true);
@@ -359,11 +371,16 @@ export class MockAdminService {
   getFilters() {
     this.isFiltersResolved.next(false);
 
-    this.filteredPhrases = [{
-      filter: 'word', id: 1
-    }, {
-      filter: 'word2', id: 2
-    }];
+    this.filteredPhrases = [
+      {
+        filter: "word",
+        id: 1,
+      },
+      {
+        filter: "word2",
+        id: 2,
+      },
+    ];
     this.totalPages.filteredPhrases = 1;
     this.isFiltersResolved.next(true);
   }
@@ -375,8 +392,11 @@ export class MockAdminService {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  addFilter(filter:string) {
-    this.alertsService.createSuccessAlert(`The phrase ${filter} was added to the list of filtered words! Refresh to see the updated list.`, true);
+  addFilter(filter: string) {
+    this.alertsService.createSuccessAlert(
+      `The phrase ${filter} was added to the list of filtered words! Refresh to see the updated list.`,
+      true,
+    );
   }
 
   /*
@@ -386,7 +406,10 @@ export class MockAdminService {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  removeFilter(filter:number) {
-    this.alertsService.createSuccessAlert(`The phrase ${filter} was removed from the list of filtered words. Refresh to see the updated list.`, true);
+  removeFilter(filter: number) {
+    this.alertsService.createSuccessAlert(
+      `The phrase ${filter} was removed from the list of filtered words. Refresh to see the updated list.`,
+      true,
+    );
   }
 }

@@ -4,7 +4,7 @@
 
 ### Found a bug?
 
-- **Found a bug?** You can start by searching for it in our repo's open [issues](https://github.com/sendahug/send-hug-frontend/issues). 
+- **Found a bug?** You can start by searching for it in our repo's open [issues](https://github.com/sendahug/send-hug-frontend/issues).
 - **Haven't found a bug report?** Feel free to [open an issue](https://github.com/sendahug/send-hug-frontend/issues/new?assignees=&labels=&template=bug_report.md&title=). Be sure to include as much information about the bug itself, the behaviour you expected, the circumstances around the appearance of this bug, and anything else that's relevant to your bug report.
 
 ### Before you work on a fix
@@ -14,16 +14,17 @@ Before you start working on a bug fix, make sure that there's no currently open 
 ### Submitting a PR
 
 Pull requests are welcome in this project. When submitting a bug-related PR, make sure to:
+
 - Include a link to the issue, if your PR is a fix for a reported bug (from our repo's open issues).
 - Include information about the bug itself, the behaviour you expected, the circumstances around the appearance of this bug, how you fixed it, and any other relevant data in the PR description.
 - Give the PR an informative title.
 
 Also, make sure that your code:
+
 - Is properly documented.
 - Is concise and solves the bug.
 - Follows the same styling as the project.
 - Clears all checks (particularly the tests).
-
 
 ## New Features
 
@@ -44,12 +45,14 @@ Haven't found a reference to it anywhere? Feel free to start working on your own
 ### Submitting a PR
 
 Pull requests are welcome in this project. When submitting a feature-related PR, make sure to:
+
 - Include a link to the feature request, if your PR is meant to close an open feature request.
 - Include information about the feature, how you implemented it, and any other relevant data in the PR description.
 - Include the relevant tests for your feature. This is just as essential as the feature itself.
 - Give the PR an informative title.
 
 Also, make sure that your code:
+
 - Is properly documented.
 - Is concise and solves the bug.
 - Follows the same styling as the project.

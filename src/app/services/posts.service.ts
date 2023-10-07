@@ -31,24 +31,24 @@
 */
 
 // Angular imports
-import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
-import { BehaviorSubject } from 'rxjs';
+import { Injectable } from "@angular/core";
+import { HttpClient, HttpErrorResponse, HttpParams } from "@angular/common/http";
+import { BehaviorSubject } from "rxjs";
 
 // App-related imports
-import { Post } from '../interfaces/post.interface';
-import { AuthService } from './auth.service';
-import { AlertsService } from './alerts.service';
-import { SWManager } from './sWManager.service';
-import { environment } from '../../environments/environment';
+import { Post } from "../interfaces/post.interface";
+import { AuthService } from "./auth.service";
+import { AlertsService } from "./alerts.service";
+import { SWManager } from "./sWManager.service";
+import { environment } from "../../environments/environment";
 
 type FetchStamp = {
-  source: 'Server' | 'IDB' | '';
+  source: "Server" | "IDB" | "";
   date: number;
-}
+};
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root",
 })
 export class PostsService {
   readonly serverUrl = environment.backend.domain;
@@ -57,52 +57,52 @@ export class PostsService {
   isMainPageResolved = new BehaviorSubject(false);
   // Full list variables
   fullItemsList: {
-    fullNewItems: Post[],
-    fullSuggestedItems: Post[]
+    fullNewItems: Post[];
+    fullSuggestedItems: Post[];
   } = {
     fullNewItems: [],
-    fullSuggestedItems: []
-  }
+    fullSuggestedItems: [],
+  };
   fullItemsPage = {
     fullNewItems: 0,
-    fullSuggestedItems: 0
-  }
+    fullSuggestedItems: 0,
+  };
   totalFullItemsPage = {
     fullNewItems: 0,
-    fullSuggestedItems: 0
-  }
+    fullSuggestedItems: 0,
+  };
   isPostsResolved = {
     fullNewItems: new BehaviorSubject(false),
-    fullSuggestedItems: new BehaviorSubject(false)
-  }
-  lastFetched: { [key:string]: FetchStamp; } = {
+    fullSuggestedItems: new BehaviorSubject(false),
+  };
+  lastFetched: { [key: string]: FetchStamp } = {
     mainPage: {
-      source: '',
-      date: 0
+      source: "",
+      date: 0,
     },
     newItems: {
-      source: '',
-      date: 0
+      source: "",
+      date: 0,
     },
     suggestedItems: {
-      source: '',
-      date: 0
-    }
+      source: "",
+      date: 0,
+    },
   };
   isUpdated = new BehaviorSubject(false);
 
   // CTOR
   constructor(
     private Http: HttpClient,
-    private authService:AuthService,
-    private alertsService:AlertsService,
-    private serviceWorkerM:SWManager
+    private authService: AuthService,
+    private alertsService: AlertsService,
+    private serviceWorkerM: SWManager,
   ) {
-      // default assignment
-      this.fullItemsPage.fullNewItems = 1;
-      this.fullItemsPage.fullSuggestedItems = 1;
-      this.totalFullItemsPage.fullNewItems = 1;
-      this.totalFullItemsPage.fullSuggestedItems = 1;
+    // default assignment
+    this.fullItemsPage.fullNewItems = 1;
+    this.fullItemsPage.fullSuggestedItems = 1;
+    this.totalFullItemsPage.fullNewItems = 1;
+    this.totalFullItemsPage.fullSuggestedItems = 1;
   }
 
   // POST-RELATED METHODS
@@ -119,95 +119,104 @@ export class PostsService {
     this.isMainPageResolved.next(false);
 
     // get the recent and suggested posts from IDB
-    this.serviceWorkerM.queryPosts('main new')?.then((data:any) => {
+    this.serviceWorkerM.queryPosts("main new")?.then((data: any) => {
       // if there are posts in cache, display them
-      if(data.length) {
+      if (data.length) {
         // if the latest fetch is none, the last fetch was from IDB and before or
         // the last fetch was performed more than 10 seconds ago (meaning the user)
         // changed/refreshed the page, update the latest fetch and the displayed
         // posts
-        if(this.lastFetched.mainPage.date == 0 ||
-           (this.lastFetched.mainPage.date < Date.now() && this.lastFetched.mainPage.source == 'IDB') ||
-           this.lastFetched.mainPage.date + 10000 < Date.now()) {
-          this.lastFetched.mainPage.source = 'IDB';
+        if (
+          this.lastFetched.mainPage.date == 0 ||
+          (this.lastFetched.mainPage.date < Date.now() &&
+            this.lastFetched.mainPage.source == "IDB") ||
+          this.lastFetched.mainPage.date + 10000 < Date.now()
+        ) {
+          this.lastFetched.mainPage.source = "IDB";
           this.lastFetched.mainPage.date = Date.now();
           this.newItemsArray = data;
           this.isMainPageResolved.next(true);
         }
       }
     });
-    this.serviceWorkerM.queryPosts('main suggested')?.then((data:any) => {
+    this.serviceWorkerM.queryPosts("main suggested")?.then((data: any) => {
       // if there are posts in cache, display them
-      if(data.length) {
+      if (data.length) {
         // if the latest fetch is none, the last fetch was from IDB and before or
         // the last fetch was performed more than 10 seconds ago (meaning the user)
         // changed/refreshed the page, update the latest fetch and the displayed
         // posts
-        if(this.lastFetched.mainPage.date == 0 ||
-           (this.lastFetched.mainPage.date < Date.now() && this.lastFetched.mainPage.source == 'IDB') ||
-           this.lastFetched.mainPage.date + 10000 < Date.now()) {
-          this.lastFetched.mainPage.source = 'IDB';
+        if (
+          this.lastFetched.mainPage.date == 0 ||
+          (this.lastFetched.mainPage.date < Date.now() &&
+            this.lastFetched.mainPage.source == "IDB") ||
+          this.lastFetched.mainPage.date + 10000 < Date.now()
+        ) {
+          this.lastFetched.mainPage.source = "IDB";
           this.lastFetched.mainPage.date = Date.now();
           this.sugItemsArray = data;
           this.isMainPageResolved.next(true);
         }
       }
-    })
+    });
 
     // attempt to get more updated recent / suggested posts from the server
-    this.Http.get(this.serverUrl).subscribe((response:any) => {
-      let data = response;
-      this.newItemsArray = data.recent;
-      this.sugItemsArray = data.suggested;
-      this.lastFetched.mainPage.source = 'Server';
-      this.lastFetched.mainPage.date = Date.now();
-      this.isMainPageResolved.next(true);
-      this.alertsService.toggleOfflineAlert();
-
-      // add each post in the 'recent' list to posts store
-      data.recent.forEach((element:Post) => {
-        let isoDate = new Date(element.date).toISOString();
-        let post = {
-          'date': element.date,
-          'givenHugs': element.givenHugs,
-          'id': element.id!,
-          'isoDate': isoDate,
-          'text': element.text,
-          'userId': Number(element.userId),
-          'user': element.user,
-          'sentHugs': element.sentHugs!
-        }
-        this.serviceWorkerM.addItem('posts', post);
-      });
-      // add each post in the 'suggested' list to posts store
-      data.suggested.forEach((element:Post) => {
-        let isoDate = new Date(element.date).toISOString();
-        let post = {
-          'date': element.date,
-          'givenHugs': element.givenHugs,
-          'id': element.id!,
-          'isoDate': isoDate,
-          'text': element.text,
-          'userId': Number(element.userId),
-          'user': element.user,
-          'sentHugs': element.sentHugs!
-        }
-        this.serviceWorkerM.addItem('posts', post);
-      });
-      this.serviceWorkerM.cleanDB('posts');
-    // if there was an error, alert the user
-    }, (err:HttpErrorResponse) => {
-      // if the server is unavilable due to the user being offline, tell the user
-      if(!navigator.onLine) {
+    this.Http.get(this.serverUrl).subscribe(
+      (response: any) => {
+        let data = response;
+        this.newItemsArray = data.recent;
+        this.sugItemsArray = data.suggested;
+        this.lastFetched.mainPage.source = "Server";
+        this.lastFetched.mainPage.date = Date.now();
         this.isMainPageResolved.next(true);
         this.alertsService.toggleOfflineAlert();
-      }
-      // otherwise just create an error alert
-      else {
-        this.isMainPageResolved.next(true);
-        this.alertsService.createErrorAlert(err);
-      }
-    })
+
+        // add each post in the 'recent' list to posts store
+        data.recent.forEach((element: Post) => {
+          let isoDate = new Date(element.date).toISOString();
+          let post = {
+            date: element.date,
+            givenHugs: element.givenHugs,
+            id: element.id!,
+            isoDate: isoDate,
+            text: element.text,
+            userId: Number(element.userId),
+            user: element.user,
+            sentHugs: element.sentHugs!,
+          };
+          this.serviceWorkerM.addItem("posts", post);
+        });
+        // add each post in the 'suggested' list to posts store
+        data.suggested.forEach((element: Post) => {
+          let isoDate = new Date(element.date).toISOString();
+          let post = {
+            date: element.date,
+            givenHugs: element.givenHugs,
+            id: element.id!,
+            isoDate: isoDate,
+            text: element.text,
+            userId: Number(element.userId),
+            user: element.user,
+            sentHugs: element.sentHugs!,
+          };
+          this.serviceWorkerM.addItem("posts", post);
+        });
+        this.serviceWorkerM.cleanDB("posts");
+        // if there was an error, alert the user
+      },
+      (err: HttpErrorResponse) => {
+        // if the server is unavilable due to the user being offline, tell the user
+        if (!navigator.onLine) {
+          this.isMainPageResolved.next(true);
+          this.alertsService.toggleOfflineAlert();
+        }
+        // otherwise just create an error alert
+        else {
+          this.isMainPageResolved.next(true);
+          this.alertsService.createErrorAlert(err);
+        }
+      },
+    );
   }
 
   /*
@@ -217,25 +226,28 @@ export class PostsService {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  getNewItems(page:number) {
+  getNewItems(page: number) {
     // URL and page query parameter
-    const Url = this.serverUrl + '/posts/new';
-    const params = new HttpParams().set('page', `${page}`);
+    const Url = this.serverUrl + "/posts/new";
+    const params = new HttpParams().set("page", `${page}`);
     this.isPostsResolved.fullNewItems.next(false);
 
     // get the recent posts from IDB
-    this.serviceWorkerM.queryPosts('new posts', undefined, page)?.then((data:any) => {
+    this.serviceWorkerM.queryPosts("new posts", undefined, page)?.then((data: any) => {
       // if there are posts in cache, display them
-      if(data.posts.length) {
+      if (data.posts.length) {
         // if the latest fetch is none, the last fetch was from IDB and before,
         // the last fetch was performed more than 10 seconds ago (meaning the user
         // changed/refreshed the page) or it's a different page, update the latest fetch and the displayed
         // posts
-        if(this.lastFetched.newItems.date == 0 ||
-           (this.lastFetched.newItems.date < Date.now() && this.lastFetched.newItems.source == 'IDB') ||
-           this.lastFetched.newItems.date + 10000 < Date.now() ||
-           (page != this.fullItemsPage.fullNewItems && page != 1)) {
-          this.lastFetched.newItems.source = 'IDB';
+        if (
+          this.lastFetched.newItems.date == 0 ||
+          (this.lastFetched.newItems.date < Date.now() &&
+            this.lastFetched.newItems.source == "IDB") ||
+          this.lastFetched.newItems.date + 10000 < Date.now() ||
+          (page != this.fullItemsPage.fullNewItems && page != 1)
+        ) {
+          this.lastFetched.newItems.source = "IDB";
           this.lastFetched.newItems.date = Date.now();
           this.fullItemsList.fullNewItems = data.posts;
           this.totalFullItemsPage.fullNewItems = data.pages;
@@ -246,46 +258,49 @@ export class PostsService {
 
     // then try to get the recent posts from the server
     this.Http.get(Url, {
-      params: params
-    }).subscribe((response: any) => {
-      let data = response.posts;
-      this.fullItemsList.fullNewItems = data;
-      this.fullItemsPage.fullNewItems = page;
-      this.totalFullItemsPage.fullNewItems = response.total_pages;
-      this.lastFetched.newItems.source = 'Server';
-      this.lastFetched.newItems.date = Date.now();
-      this.isPostsResolved.fullNewItems.next(true);
-      this.alertsService.toggleOfflineAlert();
-
-      // add each post in the 'recent' list to posts store
-      data.forEach((element:Post) => {
-        let isoDate = new Date(element.date).toISOString();
-        let post = {
-          'date': element.date,
-          'givenHugs': element.givenHugs,
-          'id': element.id!,
-          'isoDate': isoDate,
-          'text': element.text,
-          'userId': Number(element.userId),
-          'user': element.user,
-          'sentHugs': element.sentHugs!
-        }
-        this.serviceWorkerM.addItem('posts', post);
-      });
-      this.serviceWorkerM.cleanDB('posts');
-    // if there was an error, alert the user
-    }, (err:HttpErrorResponse) => {
-      // if the server is unavilable due to the user being offline, tell the user
-      if(!navigator.onLine) {
+      params: params,
+    }).subscribe(
+      (response: any) => {
+        let data = response.posts;
+        this.fullItemsList.fullNewItems = data;
+        this.fullItemsPage.fullNewItems = page;
+        this.totalFullItemsPage.fullNewItems = response.total_pages;
+        this.lastFetched.newItems.source = "Server";
+        this.lastFetched.newItems.date = Date.now();
         this.isPostsResolved.fullNewItems.next(true);
         this.alertsService.toggleOfflineAlert();
-      }
-      // otherwise just create an error alert
-      else {
-        this.isPostsResolved.fullNewItems.next(true);
-        this.alertsService.createErrorAlert(err);
-      }
-    })
+
+        // add each post in the 'recent' list to posts store
+        data.forEach((element: Post) => {
+          let isoDate = new Date(element.date).toISOString();
+          let post = {
+            date: element.date,
+            givenHugs: element.givenHugs,
+            id: element.id!,
+            isoDate: isoDate,
+            text: element.text,
+            userId: Number(element.userId),
+            user: element.user,
+            sentHugs: element.sentHugs!,
+          };
+          this.serviceWorkerM.addItem("posts", post);
+        });
+        this.serviceWorkerM.cleanDB("posts");
+        // if there was an error, alert the user
+      },
+      (err: HttpErrorResponse) => {
+        // if the server is unavilable due to the user being offline, tell the user
+        if (!navigator.onLine) {
+          this.isPostsResolved.fullNewItems.next(true);
+          this.alertsService.toggleOfflineAlert();
+        }
+        // otherwise just create an error alert
+        else {
+          this.isPostsResolved.fullNewItems.next(true);
+          this.alertsService.createErrorAlert(err);
+        }
+      },
+    );
   }
 
   /*
@@ -295,25 +310,28 @@ export class PostsService {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  getSuggestedItems(page:number) {
+  getSuggestedItems(page: number) {
     // URL and page query parameter
-    const Url = this.serverUrl + '/posts/suggested';
-    const params = new HttpParams().set('page', `${page}`);
+    const Url = this.serverUrl + "/posts/suggested";
+    const params = new HttpParams().set("page", `${page}`);
     this.isPostsResolved.fullSuggestedItems.next(false);
 
     // get the recent posts from IDB
-    this.serviceWorkerM.queryPosts('suggested posts', undefined, page)?.then((data:any) => {
+    this.serviceWorkerM.queryPosts("suggested posts", undefined, page)?.then((data: any) => {
       // if there are posts in cache, display them
-      if(data.posts.length) {
+      if (data.posts.length) {
         // if the latest fetch is none, the last fetch was from IDB and before or
         // the last fetch was performed more than 10 seconds ago (meaning the user)
         // changed/refreshed the page, update the latest fetch and the displayed
         // posts
-        if(this.lastFetched.suggestedItems.date == 0 ||
-           (this.lastFetched.suggestedItems.date < Date.now() && this.lastFetched.suggestedItems.source == 'IDB') ||
-           this.lastFetched.suggestedItems.date + 10000 < Date.now() ||
-           (page != this.fullItemsPage.fullSuggestedItems && page != 1)) {
-          this.lastFetched.suggestedItems.source = 'IDB';
+        if (
+          this.lastFetched.suggestedItems.date == 0 ||
+          (this.lastFetched.suggestedItems.date < Date.now() &&
+            this.lastFetched.suggestedItems.source == "IDB") ||
+          this.lastFetched.suggestedItems.date + 10000 < Date.now() ||
+          (page != this.fullItemsPage.fullSuggestedItems && page != 1)
+        ) {
+          this.lastFetched.suggestedItems.source = "IDB";
           this.lastFetched.suggestedItems.date = Date.now();
           this.fullItemsList.fullSuggestedItems = data.posts;
           this.totalFullItemsPage.fullSuggestedItems = data.pages;
@@ -324,46 +342,49 @@ export class PostsService {
 
     // HTTP request
     this.Http.get(Url, {
-      params: params
-    }).subscribe((response: any) => {
-      let data = response.posts;
-      this.fullItemsList.fullSuggestedItems = data;
-      this.fullItemsPage.fullSuggestedItems = page;
-      this.totalFullItemsPage.fullSuggestedItems = response.total_pages;
-      this.lastFetched.newItems.source = 'Server';
-      this.lastFetched.newItems.date = Date.now();
-      this.isPostsResolved.fullSuggestedItems.next(true);
-      this.alertsService.toggleOfflineAlert();
-
-      // add each post in the 'recent' list to posts store
-      data.forEach((element:Post) => {
-        let isoDate = new Date(element.date).toISOString();
-        let post = {
-          'date': element.date,
-          'givenHugs': element.givenHugs,
-          'id': element.id!,
-          'isoDate': isoDate,
-          'text': element.text,
-          'userId': Number(element.userId),
-          'user': element.user,
-          'sentHugs': element.sentHugs!
-        }
-        this.serviceWorkerM.addItem('posts', post);
-      });
-      this.serviceWorkerM.cleanDB('posts');
-    // if there was an error, alert the user
-    }, (err:HttpErrorResponse) => {
-      // if the server is unavilable due to the user being offline, tell the user
-      if(!navigator.onLine) {
+      params: params,
+    }).subscribe(
+      (response: any) => {
+        let data = response.posts;
+        this.fullItemsList.fullSuggestedItems = data;
+        this.fullItemsPage.fullSuggestedItems = page;
+        this.totalFullItemsPage.fullSuggestedItems = response.total_pages;
+        this.lastFetched.newItems.source = "Server";
+        this.lastFetched.newItems.date = Date.now();
         this.isPostsResolved.fullSuggestedItems.next(true);
         this.alertsService.toggleOfflineAlert();
-      }
-      // otherwise just create an error alert
-      else {
-        this.isPostsResolved.fullSuggestedItems.next(true);
-        this.alertsService.createErrorAlert(err);
-      }
-    })
+
+        // add each post in the 'recent' list to posts store
+        data.forEach((element: Post) => {
+          let isoDate = new Date(element.date).toISOString();
+          let post = {
+            date: element.date,
+            givenHugs: element.givenHugs,
+            id: element.id!,
+            isoDate: isoDate,
+            text: element.text,
+            userId: Number(element.userId),
+            user: element.user,
+            sentHugs: element.sentHugs!,
+          };
+          this.serviceWorkerM.addItem("posts", post);
+        });
+        this.serviceWorkerM.cleanDB("posts");
+        // if there was an error, alert the user
+      },
+      (err: HttpErrorResponse) => {
+        // if the server is unavilable due to the user being offline, tell the user
+        if (!navigator.onLine) {
+          this.isPostsResolved.fullSuggestedItems.next(true);
+          this.alertsService.toggleOfflineAlert();
+        }
+        // otherwise just create an error alert
+        else {
+          this.isPostsResolved.fullSuggestedItems.next(true);
+          this.alertsService.createErrorAlert(err);
+        }
+      },
+    );
   }
 
   /*
@@ -375,41 +396,51 @@ export class PostsService {
   */
   sendPost(post: Post) {
     // if the user isn't blocked, let them post
-    if(!this.authService.userData.blocked) {
-      const Url = this.serverUrl + '/posts';
+    if (!this.authService.userData.blocked) {
+      const Url = this.serverUrl + "/posts";
       this.Http.post(Url, post, {
-        headers: this.authService.authHeader
-      }).subscribe((response:any) => {
-        this.alertsService.createSuccessAlert('Your post was published! Return to home page to view the post.', false, '/');
-        this.alertsService.toggleOfflineAlert();
-
-        let isoDate = new Date(response.posts.date).toISOString();
-        let iDBPost = {
-          'date': response.posts.date,
-          'givenHugs': response.posts.givenHugs,
-          'id': response.posts.id!,
-          'isoDate': isoDate,
-          'text': response.posts.text,
-          'userId': Number(response.posts.userId),
-          'user': response.posts.user,
-          'sentHugs': response.posts.sentHugs!
-        };
-        this.serviceWorkerM.addItem('posts', iDBPost);
-      // if there was an error, alert the user
-      }, (err:HttpErrorResponse) => {
-        // if the user is offline, show the offline header message
-        if(!navigator.onLine) {
+        headers: this.authService.authHeader,
+      }).subscribe(
+        (response: any) => {
+          this.alertsService.createSuccessAlert(
+            "Your post was published! Return to home page to view the post.",
+            false,
+            "/",
+          );
           this.alertsService.toggleOfflineAlert();
-        }
-        // otherwise just create an error alert
-        else {
-          this.alertsService.createErrorAlert(err);
-        }
-      })
+
+          let isoDate = new Date(response.posts.date).toISOString();
+          let iDBPost = {
+            date: response.posts.date,
+            givenHugs: response.posts.givenHugs,
+            id: response.posts.id!,
+            isoDate: isoDate,
+            text: response.posts.text,
+            userId: Number(response.posts.userId),
+            user: response.posts.user,
+            sentHugs: response.posts.sentHugs!,
+          };
+          this.serviceWorkerM.addItem("posts", iDBPost);
+          // if there was an error, alert the user
+        },
+        (err: HttpErrorResponse) => {
+          // if the user is offline, show the offline header message
+          if (!navigator.onLine) {
+            this.alertsService.toggleOfflineAlert();
+          }
+          // otherwise just create an error alert
+          else {
+            this.alertsService.createErrorAlert(err);
+          }
+        },
+      );
     }
     // if they're blocked, alert them they cannot post while blocked
     else {
-      this.alertsService.createAlert({ type: 'Error', message: `You cannot post new posts while you're blocked. You're blocked until ${this.authService.userData.releaseDate}.` });
+      this.alertsService.createAlert({
+        type: "Error",
+        message: `You cannot post new posts while you're blocked. You're blocked until ${this.authService.userData.releaseDate}.`,
+      });
     }
   }
 
@@ -420,27 +451,33 @@ export class PostsService {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  deletePost(post_id:number) {
+  deletePost(post_id: number) {
     const Url = this.serverUrl + `/posts/${post_id}`;
     this.Http.delete(Url, {
-      headers: this.authService.authHeader
-    }).subscribe((response:any) => {
-      this.alertsService.createSuccessAlert(`Post ${response.deleted} was deleted. Refresh to view the updated post list.`, true);
-      this.alertsService.toggleOfflineAlert();
-
-      // delete the post from idb
-      this.serviceWorkerM.deleteItem('posts', post_id);
-    // if there was an error, alert the user
-    }, (err:HttpErrorResponse) => {
-      // if the user is offline, show the offline header message
-      if(!navigator.onLine) {
+      headers: this.authService.authHeader,
+    }).subscribe(
+      (response: any) => {
+        this.alertsService.createSuccessAlert(
+          `Post ${response.deleted} was deleted. Refresh to view the updated post list.`,
+          true,
+        );
         this.alertsService.toggleOfflineAlert();
-      }
-      // otherwise just create an error alert
-      else {
-        this.alertsService.createErrorAlert(err);
-      }
-    })
+
+        // delete the post from idb
+        this.serviceWorkerM.deleteItem("posts", post_id);
+        // if there was an error, alert the user
+      },
+      (err: HttpErrorResponse) => {
+        // if the user is offline, show the offline header message
+        if (!navigator.onLine) {
+          this.alertsService.toggleOfflineAlert();
+        }
+        // otherwise just create an error alert
+        else {
+          this.alertsService.createErrorAlert(err);
+        }
+      },
+    );
   }
 
   /*
@@ -450,28 +487,34 @@ export class PostsService {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  deleteAllPosts(userID:number) {
+  deleteAllPosts(userID: number) {
     const Url = this.serverUrl + `/users/all/${userID}/posts`;
     // send delete request
     this.Http.delete(Url, {
-      headers: this.authService.authHeader
-    }).subscribe((_response:any) => {
-      this.alertsService.createSuccessAlert(`User ${userID}'s posts were deleted successfully. Refresh to view the updated profile.`, true);
-      this.alertsService.toggleOfflineAlert();
-
-      // delete the posts from idb
-      this.serviceWorkerM.deleteItems('posts', 'userId', userID);
-    // if there was an error, alert the user
-    }, (err:HttpErrorResponse) => {
-      // if the user is offline, show the offline header message
-      if(!navigator.onLine) {
+      headers: this.authService.authHeader,
+    }).subscribe(
+      (_response: any) => {
+        this.alertsService.createSuccessAlert(
+          `User ${userID}'s posts were deleted successfully. Refresh to view the updated profile.`,
+          true,
+        );
         this.alertsService.toggleOfflineAlert();
-      }
-      // otherwise just create an error alert
-      else {
-        this.alertsService.createErrorAlert(err);
-      }
-    })
+
+        // delete the posts from idb
+        this.serviceWorkerM.deleteItems("posts", "userId", userID);
+        // if there was an error, alert the user
+      },
+      (err: HttpErrorResponse) => {
+        // if the user is offline, show the offline header message
+        if (!navigator.onLine) {
+          this.alertsService.toggleOfflineAlert();
+        }
+        // otherwise just create an error alert
+        else {
+          this.alertsService.createErrorAlert(err);
+        }
+      },
+    );
   }
 
   /*
@@ -487,22 +530,28 @@ export class PostsService {
 
     // send update request
     this.Http.patch(Url, post, {
-      headers: this.authService.authHeader
-    }).subscribe((_response:any) => {
-      this.alertsService.createSuccessAlert('Your post was edited. Refresh to view the updated post.', true);
-      this.alertsService.toggleOfflineAlert();
-      this.isUpdated.next(true);
-    // if there was an error, alert the user
-    }, (err:HttpErrorResponse) => {
-      // if the user is offline, show the offline header message
-      if(!navigator.onLine) {
+      headers: this.authService.authHeader,
+    }).subscribe(
+      (_response: any) => {
+        this.alertsService.createSuccessAlert(
+          "Your post was edited. Refresh to view the updated post.",
+          true,
+        );
         this.alertsService.toggleOfflineAlert();
-      }
-      // otherwise just create an error alert
-      else {
-        this.alertsService.createErrorAlert(err);
-      }
-    })
+        this.isUpdated.next(true);
+        // if there was an error, alert the user
+      },
+      (err: HttpErrorResponse) => {
+        // if the user is offline, show the offline header message
+        if (!navigator.onLine) {
+          this.alertsService.toggleOfflineAlert();
+        }
+        // otherwise just create an error alert
+        else {
+          this.alertsService.createErrorAlert(err);
+        }
+      },
+    );
   }
 
   /*
@@ -515,29 +564,36 @@ export class PostsService {
   sendHug(item: any) {
     const Url = this.serverUrl + `/posts/${item.id}/hugs`;
     item.givenHugs += 1;
-    this.Http.post(Url, {}, {
-      headers: this.authService.authHeader
-    }).subscribe((_response:any) => {
-      this.alertsService.createSuccessAlert('Your hug was sent!', false);
-      this.alertsService.toggleOfflineAlert();
-
-      // Check which array the item is in
-      this.disableHugButton(this.newItemsArray, '.newItem', item.id);
-      this.disableHugButton(this.sugItemsArray, '.sugItem', item.id);
-      this.disableHugButton(this.fullItemsList.fullNewItems, '.newItem', item.id);
-      this.disableHugButton(this.fullItemsList.fullSuggestedItems, '.newItem', item.id);
-    // if there was an error, alert the user
-    }, (err:HttpErrorResponse) => {
-      item.givenHugs -= 1;
-      // if the user is offline, show the offline header message
-      if(!navigator.onLine) {
+    this.Http.post(
+      Url,
+      {},
+      {
+        headers: this.authService.authHeader,
+      },
+    ).subscribe(
+      (_response: any) => {
+        this.alertsService.createSuccessAlert("Your hug was sent!", false);
         this.alertsService.toggleOfflineAlert();
-      }
-      // otherwise just create an error alert
-      else {
-        this.alertsService.createErrorAlert(err);
-      }
-    })
+
+        // Check which array the item is in
+        this.disableHugButton(this.newItemsArray, ".newItem", item.id);
+        this.disableHugButton(this.sugItemsArray, ".sugItem", item.id);
+        this.disableHugButton(this.fullItemsList.fullNewItems, ".newItem", item.id);
+        this.disableHugButton(this.fullItemsList.fullSuggestedItems, ".newItem", item.id);
+        // if there was an error, alert the user
+      },
+      (err: HttpErrorResponse) => {
+        item.givenHugs -= 1;
+        // if the user is offline, show the offline header message
+        if (!navigator.onLine) {
+          this.alertsService.toggleOfflineAlert();
+        }
+        // otherwise just create an error alert
+        else {
+          this.alertsService.createErrorAlert(err);
+        }
+      },
+    );
   }
 
   /*
@@ -551,17 +607,17 @@ export class PostsService {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  disableHugButton(checkList: any[], itemClass:string, itemID:number) {
+  disableHugButton(checkList: any[], itemClass: string, itemID: number) {
     // Check if the post is in the given array
-    let currentPostIndex = checkList.findIndex(e => e.id == itemID);
-    if(currentPostIndex >= 0) {
+    let currentPostIndex = checkList.findIndex((e) => e.id == itemID);
+    if (currentPostIndex >= 0) {
       // if it is, disable the send-hug button
       checkList[currentPostIndex].sentHugs!.push(this.authService.userData.id!);
       let post = document.querySelectorAll(itemClass)[currentPostIndex];
-      post.querySelectorAll('.fa-hand-holding-heart').forEach((element) => {
+      post.querySelectorAll(".fa-hand-holding-heart").forEach((element) => {
         (element.parentElement as HTMLButtonElement).disabled = true;
-        (element.parentElement as HTMLButtonElement).classList.add('active');
-      })
+        (element.parentElement as HTMLButtonElement).classList.add("active");
+      });
     }
   }
 }

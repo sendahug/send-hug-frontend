@@ -5,16 +5,17 @@
 export const environment = {
   production: false,
   auth0: {
-    domain: 'dev-sbac.auth0.com',
-    clientID:'rgZL4I04pep3P2GRIEVQtDkWcHjv9sru',
-    audience: 'sendhug',
-    redirectUri: 'http://localhost:3000/user',
-    logoutUri: 'http://localhost:3000'
+    domain: "dev-sbac.auth0.com",
+    clientID: "rgZL4I04pep3P2GRIEVQtDkWcHjv9sru",
+    audience: "sendhug",
+    redirectUri: "http://localhost:3000/user",
+    logoutUri: "http://localhost:3000",
   },
   backend: {
-    domain: 'http://localhost:5000'
+    domain: "http://localhost:5000",
   },
-  vapidKey: 'BOpyfsj3-e89Gao4zPQHULL1alKy5z7oMnTCT3ZhgND_wGCNGbL_fPXnD5heYAT2kZLDN-XznXk0mVvBlbjm96o'
+  vapidKey:
+    "BOpyfsj3-e89Gao4zPQHULL1alKy5z7oMnTCT3ZhgND_wGCNGbL_fPXnD5heYAT2kZLDN-XznXk0mVvBlbjm96o",
 };
 
 /*

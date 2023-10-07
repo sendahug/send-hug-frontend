@@ -1,10 +1,9 @@
 ---
 name: Bug Fix / New Feature PR
 about: PR to fix a bug / add a new feature.
-title: ''
-labels: ''
-assignees: ''
-
+title: ""
+labels: ""
+assignees: ""
 ---
 
 **Description**

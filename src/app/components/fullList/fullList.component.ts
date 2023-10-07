@@ -31,59 +31,60 @@
 */
 
 // Angular imports
-import { Component, AfterViewChecked } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Component, AfterViewChecked } from "@angular/core";
+import { ActivatedRoute, Router } from "@angular/router";
 
 // App-related imports
-import { AuthService } from '../../services/auth.service';
-import { PostsService } from '../../services/posts.service';
+import { AuthService } from "../../services/auth.service";
+import { PostsService } from "../../services/posts.service";
 
 @Component({
-  selector: 'app-full-list',
-  templateUrl: './fullList.component.html'
+  selector: "app-full-list",
+  templateUrl: "./fullList.component.html",
 })
 export class FullList implements AfterViewChecked {
   // current page and type of list
-  type:any;
-  page:any;
+  type: any;
+  page: any;
   showMenuNum: string | null = null;
   // loader sub-component variables
-  waitFor = '';
+  waitFor = "";
 
   // CTOR
-  constructor(private route:ActivatedRoute,
-    private router:Router,
-    public authService:AuthService,
-    public postsService:PostsService
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    public authService: AuthService,
+    public postsService: PostsService,
   ) {
-      // get the type of list and the current page
-      this.route.url.subscribe(params => {
-        this.type = params[0].path;
-      });
-      this.page = Number(this.route.snapshot.queryParamMap.get('page'));
+    // get the type of list and the current page
+    this.route.url.subscribe((params) => {
+      this.type = params[0].path;
+    });
+    this.page = Number(this.route.snapshot.queryParamMap.get("page"));
 
-      // set a default page if no page is set
-      if(this.page) {
-        // if it was a string, set it to 1
-        if(this.page.isNaN) {
-          this.page = 1;
-        }
-      }
-      // if there's no page, set it to 1
-      else {
+    // set a default page if no page is set
+    if (this.page) {
+      // if it was a string, set it to 1
+      if (this.page.isNaN) {
         this.page = 1;
       }
+    }
+    // if there's no page, set it to 1
+    else {
+      this.page = 1;
+    }
 
-      // if the type is new items, get the new items
-      if(this.type == 'New') {
-        this.waitFor = 'new posts';
-        this.postsService.getNewItems(this.page);
-      }
-      // if the type is suggested items, get the suggested items
-      else if(this.type == 'Suggested') {
-        this.waitFor = 'suggested posts';
-        this.postsService.getSuggestedItems(this.page);
-      }
+    // if the type is new items, get the new items
+    if (this.type == "New") {
+      this.waitFor = "new posts";
+      this.postsService.getNewItems(this.page);
+    }
+    // if the type is suggested items, get the suggested items
+    else if (this.type == "Suggested") {
+      this.waitFor = "suggested posts";
+      this.postsService.getSuggestedItems(this.page);
+    }
   }
 
   /*
@@ -97,59 +98,58 @@ export class FullList implements AfterViewChecked {
   Programmer: Shir Bar Lev.
   */
   ngAfterViewChecked() {
-    let posts = document.querySelectorAll('.newItem');
+    let posts = document.querySelectorAll(".newItem");
 
-    if(posts[0]) {
+    if (posts[0]) {
       // check the first post; the others are the same
-      let firstPButtons = posts[0]!.querySelectorAll('.buttonsContainer')[0] as HTMLDivElement;
-      let sub = posts[0]!.querySelectorAll('.subMenu')[0] as HTMLDivElement;
+      let firstPButtons = posts[0]!.querySelectorAll(".buttonsContainer")[0] as HTMLDivElement;
+      let sub = posts[0]!.querySelectorAll(".subMenu")[0] as HTMLDivElement;
 
       // remove the hidden label check the menu's width
-      if(sub.classList.contains('hidden')) {
-        firstPButtons.classList.remove('float');
-        sub.classList.remove('hidden');
-        sub.classList.remove('float');
+      if (sub.classList.contains("hidden")) {
+        firstPButtons.classList.remove("float");
+        sub.classList.remove("hidden");
+        sub.classList.remove("float");
       }
 
       // if they're too long and there's no menu to show
-      if(sub.scrollWidth > sub.offsetWidth && !this.showMenuNum) {
+      if (sub.scrollWidth > sub.offsetWidth && !this.showMenuNum) {
         // change each menu to a floating, hidden menu
         posts.forEach((element) => {
-          element.querySelectorAll('.buttonsContainer')[0].classList.add('float');
-          element.querySelectorAll('.subMenu')[0].classList.add('hidden');
-          element.querySelectorAll('.subMenu')[0].classList.add('float');
-          element.querySelectorAll('.menuButton')[0].classList.remove('hidden');
-        })
+          element.querySelectorAll(".buttonsContainer")[0].classList.add("float");
+          element.querySelectorAll(".subMenu")[0].classList.add("hidden");
+          element.querySelectorAll(".subMenu")[0].classList.add("float");
+          element.querySelectorAll(".menuButton")[0].classList.remove("hidden");
+        });
       }
       // if there's a menu to show, show that specific menu
-      else if(this.showMenuNum) {
+      else if (this.showMenuNum) {
         // change each menu to a floating menu
         posts.forEach((element) => {
-          if(element.firstElementChild!.id == this.showMenuNum) {
-            element.querySelectorAll('.subMenu')[0].classList.remove('hidden');
-          }
-          else {
-            element.querySelectorAll('.subMenu')[0].classList.add('hidden');
+          if (element.firstElementChild!.id == this.showMenuNum) {
+            element.querySelectorAll(".subMenu")[0].classList.remove("hidden");
+          } else {
+            element.querySelectorAll(".subMenu")[0].classList.add("hidden");
 
             // if it's not the first element that needs an open menu, close
             // the first item's menu like  it was opened above
-            if(element.firstElementChild!.id == posts[0].firstElementChild!.id) {
-              element.querySelectorAll('.buttonsContainer')[0].classList.add('float');
-              element.querySelectorAll('.subMenu')[0].classList.add('hidden');
-              element.querySelectorAll('.subMenu')[0].classList.add('float');
+            if (element.firstElementChild!.id == posts[0].firstElementChild!.id) {
+              element.querySelectorAll(".buttonsContainer")[0].classList.add("float");
+              element.querySelectorAll(".subMenu")[0].classList.add("hidden");
+              element.querySelectorAll(".subMenu")[0].classList.add("float");
             }
           }
-        })
+        });
       }
       // otherwise make sure the menu button is hidden and the buttons container
       // is in its normal design
       else {
         posts.forEach((element) => {
-          element.querySelectorAll('.buttonsContainer')[0].classList.remove('float');
-          element.querySelectorAll('.subMenu')[0].classList.remove('hidden');
-          element.querySelectorAll('.subMenu')[0].classList.remove('float');
-          element.querySelectorAll('.menuButton')[0].classList.add('hidden');
-        })
+          element.querySelectorAll(".buttonsContainer")[0].classList.remove("float");
+          element.querySelectorAll(".subMenu")[0].classList.remove("hidden");
+          element.querySelectorAll(".subMenu")[0].classList.remove("float");
+          element.querySelectorAll(".menuButton")[0].classList.add("hidden");
+        });
       }
     }
   }
@@ -164,12 +164,12 @@ export class FullList implements AfterViewChecked {
   */
   nextPage() {
     // if the list is the new posts list, get the next page of new posts
-    if(this.type == 'New') {
+    if (this.type == "New") {
       this.page += 1;
       this.postsService.getNewItems(this.page);
     }
     // if the list is the suggested posts list, get the next page of suggested posts
-    else if(this.type == 'Suggested') {
+    else if (this.type == "Suggested") {
       this.page += 1;
       this.postsService.getSuggestedItems(this.page);
     }
@@ -178,9 +178,9 @@ export class FullList implements AfterViewChecked {
     this.router.navigate([], {
       relativeTo: this.route,
       queryParams: {
-        page: this.page
+        page: this.page,
       },
-      replaceUrl: true
+      replaceUrl: true,
     });
   }
 
@@ -194,12 +194,12 @@ export class FullList implements AfterViewChecked {
   */
   prevPage() {
     // if the list is the new posts list, get the previous page of new posts
-    if(this.type == 'New') {
+    if (this.type == "New") {
       this.page -= 1;
       this.postsService.getNewItems(this.page);
     }
     // if the list is the suggested posts list, get the previous page of suggested posts
-    else if(this.type == 'Suggested') {
+    else if (this.type == "Suggested") {
       this.page -= 1;
       this.postsService.getSuggestedItems(this.page);
     }
@@ -208,9 +208,9 @@ export class FullList implements AfterViewChecked {
     this.router.navigate([], {
       relativeTo: this.route,
       queryParams: {
-        page: this.page
+        page: this.page,
       },
-      replaceUrl: true
+      replaceUrl: true,
     });
   }
 
@@ -222,18 +222,18 @@ export class FullList implements AfterViewChecked {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  openMenu(menu:string) {
-    let post = document.querySelector('#' + menu)!.parentElement;
-    let subMenu = post!.querySelectorAll('.subMenu')[0];
+  openMenu(menu: string) {
+    let post = document.querySelector("#" + menu)!.parentElement;
+    let subMenu = post!.querySelectorAll(".subMenu")[0];
 
     // if the submenu is hidden, show it
-    if(subMenu.classList.contains('hidden')) {
-      subMenu.classList.remove('hidden');
+    if (subMenu.classList.contains("hidden")) {
+      subMenu.classList.remove("hidden");
       this.showMenuNum = menu;
     }
     // otherwise hide it
     else {
-      subMenu.classList.add('hidden');
+      subMenu.classList.add("hidden");
       this.showMenuNum = null;
     }
   }

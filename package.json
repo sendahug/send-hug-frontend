@@ -7,6 +7,7 @@
     "test": "tests"
   },
   "scripts": {
+    "format": "prettier .  --write",
     "compile:dev": "gulp localDev",
     "test": "gulp test",
     "cypress": "cypress run",
@@ -15,7 +16,6 @@
     "start": "node server.js"
   },
   "author": "Shir Bar Lev",
-  "license": "ISC",
   "devDependencies": {
     "@rollup/plugin-commonjs": "^25.0.4",
     "@rollup/plugin-node-resolve": "^15.2.1",
@@ -46,6 +46,7 @@
     "karma-viewport": "^1.0.9",
     "magic-string": "^0.30.4",
     "postcss": "^8.4.31",
+    "prettier": "^3.0.3",
     "puppeteer": "^21.3.7",
     "rollup": "^3.29.4",
     "rollup-plugin-istanbul": "^4.0.0",

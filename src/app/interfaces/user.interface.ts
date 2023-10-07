@@ -46,11 +46,11 @@ export interface User {
   autoRefresh: boolean;
   pushEnabled: boolean;
   refreshRate: number;
-  selectedIcon: 'bear' | 'kitty' | 'dog';
+  selectedIcon: "bear" | "kitty" | "dog";
   iconColours: {
-    character: String,
-    lbg: String,
-    rbg: String,
-    item: String
-  }
+    character: String;
+    lbg: String;
+    rbg: String;
+    item: String;
+  };
 }

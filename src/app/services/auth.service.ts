@@ -31,62 +31,62 @@
 */
 
 // Angular imports
-import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
+import { Injectable } from "@angular/core";
+import { HttpClient, HttpHeaders, HttpErrorResponse } from "@angular/common/http";
 
 // Other essential imports
-import { BehaviorSubject } from 'rxjs';
-import * as Auth0 from 'auth0-js';
+import { BehaviorSubject } from "rxjs";
+import * as Auth0 from "auth0-js";
 
 // App-related imports
-import { User } from '../interfaces/user.interface';
-import { AlertsService } from './alerts.service';
-import { SWManager } from './sWManager.service';
-import { environment } from '../../environments/environment';
+import { User } from "../interfaces/user.interface";
+import { AlertsService } from "./alerts.service";
+import { SWManager } from "./sWManager.service";
+import { environment } from "../../environments/environment";
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root",
 })
 export class AuthService {
   // Auth0 variable
   auth0 = new Auth0.WebAuth({
     clientID: environment.auth0.clientID,
     domain: environment.auth0.domain,
-    responseType: 'token',
+    responseType: "token",
     redirectUri: environment.auth0.redirectUri,
-    audience: environment.auth0.audience
-  })
+    audience: environment.auth0.audience,
+  });
 
   readonly serverUrl = environment.backend.domain;
   // authentication information
-  token: string = '';
-  authHeader: HttpHeaders = new HttpHeaders;
+  token: string = "";
+  authHeader: HttpHeaders = new HttpHeaders();
   authenticated: boolean = false;
   // user data
   userProfile: any;
   userData: User = {
     id: 0,
-    auth0Id: '',
-    displayName: '',
+    auth0Id: "",
+    displayName: "",
     receivedHugs: 0,
     givenHugs: 0,
     postsNum: 0,
     loginCount: 0,
-    role: '',
-    jwt: '',
+    role: "",
+    jwt: "",
     blocked: false,
     releaseDate: undefined,
     autoRefresh: false,
     refreshRate: 20,
     pushEnabled: false,
-    selectedIcon: 'kitty',
+    selectedIcon: "kitty",
     iconColours: {
-      character: '',
-      lbg: '',
-      rbg: '',
-      item: ''
-    }
-  }
+      character: "",
+      lbg: "",
+      rbg: "",
+      item: "",
+    },
+  };
   // documents whether the user just logged in or they're still logged in following
   // their previous login
   loggedIn = false;
@@ -95,12 +95,10 @@ export class AuthService {
 
   // CTOR
   constructor(
-    private Http:HttpClient,
-    private alertsService:AlertsService,
-    private serviceWorkerM:SWManager
-  ) {
-
-  }
+    private Http: HttpClient,
+    private alertsService: AlertsService,
+    private serviceWorkerM: SWManager,
+  ) {}
 
   /*
   Function Name: login()
@@ -122,12 +120,12 @@ export class AuthService {
   */
   checkHash() {
     // if there's a token in the hash, parse it
-    if(window.location.hash) {
+    if (window.location.hash) {
       // Parses the token (in the URL hash).
       this.auth0.parseHash({ hash: window.location.hash }, (err, authResult) => {
         if (authResult) {
-          window.location.hash = '';
-          if(authResult.accessToken) {
+          window.location.hash = "";
+          if (authResult.accessToken) {
             // parses the token payload
             this.token = authResult.accessToken;
             let payload = this.parseJWT(authResult.accessToken);
@@ -135,11 +133,10 @@ export class AuthService {
             // gets the user's data
             this.getUserData(payload);
           }
+        } else if (err) {
+          return "Error: " + err;
         }
-        else if (err) {
-          return 'Error: ' + err;
-        }
-      })
+      });
     }
     // if there's no token in the hash, check localStorage to see if there's
     // an active token there
@@ -153,12 +150,17 @@ export class AuthService {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  parseJWT(token:string) {
-    var base64Url = token.split('.')[1];
-    var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-    var jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
-        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-    }).join(''));
+  parseJWT(token: string) {
+    var base64Url = token.split(".")[1];
+    var base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+    var jsonPayload = decodeURIComponent(
+      atob(base64)
+        .split("")
+        .map(function (c) {
+          return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
+        })
+        .join(""),
+    );
 
     return JSON.parse(jsonPayload);
   }
@@ -173,128 +175,130 @@ export class AuthService {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  getUserData(jwtPayload:any) {
+  getUserData(jwtPayload: any) {
     // turn the BehaviorSubject dealing with whether user data was resolved to
     // false only if there's no user data
-    if(this.userData.id == 0 || !this.userData.id) {
+    if (this.userData.id == 0 || !this.userData.id) {
       this.isUserDataResolved.next(false);
     }
     // if the JWTs don't match (shouldn't happen, but just in case), change the BehaviorSubject
     // and reset the user's data
-    else if(this.userData.auth0Id != jwtPayload.sub) {
+    else if (this.userData.auth0Id != jwtPayload.sub) {
       this.isUserDataResolved.next(false);
       this.userData = {
         id: 0,
-        auth0Id: '',
-        displayName: '',
+        auth0Id: "",
+        displayName: "",
         receivedHugs: 0,
         givenHugs: 0,
         postsNum: 0,
         loginCount: 0,
-        role: '',
-        jwt: '',
+        role: "",
+        jwt: "",
         blocked: false,
         releaseDate: undefined,
         autoRefresh: false,
         refreshRate: 20,
         pushEnabled: false,
-        selectedIcon: 'kitty',
+        selectedIcon: "kitty",
         iconColours: {
-          character: '',
-          lbg: '',
-          rbg: '',
-          item: ''
-        }
-      }
+          character: "",
+          lbg: "",
+          rbg: "",
+          item: "",
+        },
+      };
     }
 
     // if there's a JWT
-    if(jwtPayload) {
+    if (jwtPayload) {
       // attempts to get the user's data
       this.Http.get(`${this.serverUrl}/users/all/${jwtPayload.sub}`, {
-        headers: new HttpHeaders({'Authorization': `Bearer ${this.token}`})
+        headers: new HttpHeaders({ Authorization: `Bearer ${this.token}` }),
         // if successful, get the user data
-      }).subscribe((response:any) => {
-        let data = response.user;
-        this.userData = {
-          id: data.id,
-          auth0Id: jwtPayload.sub,
-          displayName: data.displayName,
-          receivedHugs: data.receivedH,
-          givenHugs: data.givenH,
-          postsNum: data.posts,
-          loginCount: data.loginCount,
-          role: data.role,
-          jwt: this.token,
-          blocked: data.blocked,
-          releaseDate: data.releaseDate,
-          autoRefresh: data.autoRefresh,
-          refreshRate: data.refreshRate,
-          pushEnabled: data.pushEnabled,
-          selectedIcon: data.selectedIcon,
-          iconColours: {
-            character: data.iconColours?.character,
-            lbg: data.iconColours?.lbg,
-            rbg: data.iconColours?.rbg,
-            item: data.iconColours?.item
-          }
-        }
-        // set the authentication-variables accordingly
-        this.authenticated = true;
-        this.authHeader = new HttpHeaders({'Authorization': `Bearer ${this.token}`});
-        this.setToken();
-        this.isUserDataResolved.next(true);
-        this.tokenExpired = false;
-
-        // if the user just logged in, update the login count
-        if(this.loggedIn) {
-          this.updateUserData();
-        }
-
-        // adds the user's data to the users store
-        let user = {
-          id: data.id,
-          auth0Id: jwtPayload.sub,
-          displayName: data.displayName,
-          receivedHugs: data.receivedH,
-          givenHugs: data.givenH,
-          postsNum: data.posts,
-          loginCount: data.loginCount,
-          role: data.role,
-          blocked: data.blocked,
-          releaseDate: data.releaseDate,
-          autoRefresh: data.autoRefresh,
-          pushEnabled: data.pushEnabled,
-          selectedIcon: data.selectedIcon,
-          iconColours: {
-            character: data.iconColours?.character,
-            lbg: data.iconColours?.lbg,
-            rbg: data.iconColours?.rbg,
-            item: data.iconColours?.item
-          }
-        }
-        this.serviceWorkerM.addItem('users', user);
-        // if there's an error, check the error type
-      }, (err) => {
-        let statusCode = err.status;
-
-        // if a user with that ID doens't exist, try to create it
-        if(statusCode == 404) {
-          this.createUser(jwtPayload);
-        }
-        else {
-          // if the user is offline, show the offline header message
-          if(!navigator.onLine) {
-            this.alertsService.toggleOfflineAlert();
-          }
-          // otherwise just create an error alert
-          else {
-            this.alertsService.createErrorAlert(err);
-          }
-
+      }).subscribe(
+        (response: any) => {
+          let data = response.user;
+          this.userData = {
+            id: data.id,
+            auth0Id: jwtPayload.sub,
+            displayName: data.displayName,
+            receivedHugs: data.receivedH,
+            givenHugs: data.givenH,
+            postsNum: data.posts,
+            loginCount: data.loginCount,
+            role: data.role,
+            jwt: this.token,
+            blocked: data.blocked,
+            releaseDate: data.releaseDate,
+            autoRefresh: data.autoRefresh,
+            refreshRate: data.refreshRate,
+            pushEnabled: data.pushEnabled,
+            selectedIcon: data.selectedIcon,
+            iconColours: {
+              character: data.iconColours?.character,
+              lbg: data.iconColours?.lbg,
+              rbg: data.iconColours?.rbg,
+              item: data.iconColours?.item,
+            },
+          };
+          // set the authentication-variables accordingly
+          this.authenticated = true;
+          this.authHeader = new HttpHeaders({ Authorization: `Bearer ${this.token}` });
+          this.setToken();
           this.isUserDataResolved.next(true);
-        }
-      })
+          this.tokenExpired = false;
+
+          // if the user just logged in, update the login count
+          if (this.loggedIn) {
+            this.updateUserData();
+          }
+
+          // adds the user's data to the users store
+          let user = {
+            id: data.id,
+            auth0Id: jwtPayload.sub,
+            displayName: data.displayName,
+            receivedHugs: data.receivedH,
+            givenHugs: data.givenH,
+            postsNum: data.posts,
+            loginCount: data.loginCount,
+            role: data.role,
+            blocked: data.blocked,
+            releaseDate: data.releaseDate,
+            autoRefresh: data.autoRefresh,
+            pushEnabled: data.pushEnabled,
+            selectedIcon: data.selectedIcon,
+            iconColours: {
+              character: data.iconColours?.character,
+              lbg: data.iconColours?.lbg,
+              rbg: data.iconColours?.rbg,
+              item: data.iconColours?.item,
+            },
+          };
+          this.serviceWorkerM.addItem("users", user);
+          // if there's an error, check the error type
+        },
+        (err) => {
+          let statusCode = err.status;
+
+          // if a user with that ID doens't exist, try to create it
+          if (statusCode == 404) {
+            this.createUser(jwtPayload);
+          } else {
+            // if the user is offline, show the offline header message
+            if (!navigator.onLine) {
+              this.alertsService.toggleOfflineAlert();
+            }
+            // otherwise just create an error alert
+            else {
+              this.alertsService.createErrorAlert(err);
+            }
+
+            this.isUserDataResolved.next(true);
+          }
+        },
+      );
     }
     // If there's no currently-saved token
     else {
@@ -313,76 +317,83 @@ export class AuthService {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  createUser(jwtPayload:any) {
+  createUser(jwtPayload: any) {
     this.isUserDataResolved.next(false);
 
     // post request to create the user
-    this.Http.post(`${this.serverUrl}/users`, {
-      id: jwtPayload.sub,
-      displayName: 'user' + Math.round(Math.random() * 100)
-    }, {
-      headers: new HttpHeaders({'Authorization': `Bearer ${this.token}`})
-      //if the request succeeds, get the user's data
-    }).subscribe((response:any) => {
-      let data = response.user;
-      this.userData = {
-        id: data.id,
-        auth0Id: jwtPayload.sub,
-        displayName: data.displayName,
-        receivedHugs: data.receivedH,
-        givenHugs: data.givenH,
-        postsNum: data.postsNum,
-        loginCount: data.loginCount,
-        role: data.role,
-        jwt: this.token,
-        blocked: data.blocked,
-        releaseDate: data.releaseDate,
-        autoRefresh: data.autoRefresh,
-        refreshRate: data.refreshRate,
-        pushEnabled: data.pushEnabled,
-        selectedIcon: data.selectedIcon,
-        iconColours: {
-          character: data.iconColours.character,
-          lbg: data.iconColours.leftbg,
-          rbg: data.iconColours.rightbg,
-          item: data.iconColours.item
+    this.Http.post(
+      `${this.serverUrl}/users`,
+      {
+        id: jwtPayload.sub,
+        displayName: "user" + Math.round(Math.random() * 100),
+      },
+      {
+        headers: new HttpHeaders({ Authorization: `Bearer ${this.token}` }),
+        //if the request succeeds, get the user's data
+      },
+    ).subscribe(
+      (response: any) => {
+        let data = response.user;
+        this.userData = {
+          id: data.id,
+          auth0Id: jwtPayload.sub,
+          displayName: data.displayName,
+          receivedHugs: data.receivedH,
+          givenHugs: data.givenH,
+          postsNum: data.postsNum,
+          loginCount: data.loginCount,
+          role: data.role,
+          jwt: this.token,
+          blocked: data.blocked,
+          releaseDate: data.releaseDate,
+          autoRefresh: data.autoRefresh,
+          refreshRate: data.refreshRate,
+          pushEnabled: data.pushEnabled,
+          selectedIcon: data.selectedIcon,
+          iconColours: {
+            character: data.iconColours.character,
+            lbg: data.iconColours.leftbg,
+            rbg: data.iconColours.rightbg,
+            item: data.iconColours.item,
+          },
+        };
+        // set the authentication-variables accordingly
+        this.authenticated = true;
+        this.authHeader = new HttpHeaders({ Authorization: `Bearer ${this.token}` });
+        this.setToken();
+        this.isUserDataResolved.next(true);
+
+        // adds the user's data to the users store
+        let user = {
+          id: data.id,
+          auth0Id: jwtPayload.sub,
+          displayName: data.displayName,
+          receivedHugs: data.receivedH,
+          givenHugs: data.givenH,
+          postsNum: data.posts,
+          loginCount: data.loginCount,
+          role: data.role,
+          blocked: data.blocked,
+          releaseDate: data.releaseDate,
+          autoRefresh: data.autoRefresh,
+          pushEnabled: data.pushEnabled,
+        };
+        this.serviceWorkerM.addItem("users", user);
+        // error handling
+      },
+      (err) => {
+        this.isUserDataResolved.next(true);
+
+        // if the user is offline, show the offline header message
+        if (!navigator.onLine) {
+          this.alertsService.toggleOfflineAlert();
         }
-      }
-      // set the authentication-variables accordingly
-      this.authenticated = true;
-      this.authHeader = new HttpHeaders({'Authorization': `Bearer ${this.token}`});
-      this.setToken();
-      this.isUserDataResolved.next(true);
-
-      // adds the user's data to the users store
-      let user = {
-        id: data.id,
-        auth0Id: jwtPayload.sub,
-        displayName: data.displayName,
-        receivedHugs: data.receivedH,
-        givenHugs: data.givenH,
-        postsNum: data.posts,
-        loginCount: data.loginCount,
-        role: data.role,
-        blocked: data.blocked,
-        releaseDate: data.releaseDate,
-        autoRefresh: data.autoRefresh,
-        pushEnabled: data.pushEnabled
-      }
-      this.serviceWorkerM.addItem('users', user);
-      // error handling
-    }, (err) => {
-      this.isUserDataResolved.next(true);
-
-      // if the user is offline, show the offline header message
-      if(!navigator.onLine) {
-        this.alertsService.toggleOfflineAlert();
-      }
-      // otherwise just create an error alert
-      else {
-        this.alertsService.createErrorAlert(err);
-      }
-    });
+        // otherwise just create an error alert
+        else {
+          this.alertsService.createErrorAlert(err);
+        }
+      },
+    );
   }
 
   /*
@@ -395,7 +406,7 @@ export class AuthService {
   logout() {
     this.auth0.logout({
       returnTo: environment.auth0.logoutUri,
-      clientID: environment.auth0.clientID
+      clientID: environment.auth0.clientID,
     });
 
     // update the user's data in IDB to remove all user data
@@ -405,49 +416,53 @@ export class AuthService {
       receivedHugs: this.userData.receivedHugs,
       givenHugs: this.userData.givenHugs,
       postsNum: this.userData.postsNum,
-      role: this.userData.role
+      role: this.userData.role,
     };
-    this.serviceWorkerM.addItem('users', user);
+    this.serviceWorkerM.addItem("users", user);
 
     //clears the user's data
     this.authenticated = false;
-    this.token = '';
+    this.token = "";
     this.userData = {
       id: 0,
-      auth0Id: '',
-      displayName: '',
+      auth0Id: "",
+      displayName: "",
       receivedHugs: 0,
       givenHugs: 0,
       postsNum: 0,
       loginCount: 0,
-      role: '',
-      jwt: '',
+      role: "",
+      jwt: "",
       blocked: false,
       releaseDate: undefined,
       autoRefresh: false,
       refreshRate: 20,
       pushEnabled: false,
-      selectedIcon: 'kitty',
+      selectedIcon: "kitty",
       iconColours: {
-        character: '',
-        lbg: '',
-        rbg: '',
-        item: ''
-      }
-    }
-    localStorage.setItem("ACTIVE_JWT", '');
+        character: "",
+        lbg: "",
+        rbg: "",
+        item: "",
+      },
+    };
+    localStorage.setItem("ACTIVE_JWT", "");
 
     // clears all the messages data (as that's private per user)
-    this.serviceWorkerM.clearStore('messages');
-    this.serviceWorkerM.clearStore('threads');
+    this.serviceWorkerM.clearStore("messages");
+    this.serviceWorkerM.clearStore("threads");
 
     // if the user has been logged out through their token expiring
-    if(this.tokenExpired) {
-      this.alertsService.createAlert({
-        type: 'Notification',
-        message: `Your session had become inactive and you have been safely logged out.
-                  Log back in to continue.`
-      }, false, '/user')
+    if (this.tokenExpired) {
+      this.alertsService.createAlert(
+        {
+          type: "Notification",
+          message: `Your session had become inactive and you have been safely logged out.
+                  Log back in to continue.`,
+        },
+        false,
+        "/user",
+      );
     }
   }
 
@@ -471,12 +486,12 @@ export class AuthService {
   */
   getToken() {
     let jwt = localStorage.getItem("ACTIVE_JWT");
-    if(jwt) {
+    if (jwt) {
       // Parses the token and checks its expiration
       let payload = this.parseJWT(jwt);
-      let expiration = payload['exp'] as number * 1000;
+      let expiration = (payload["exp"] as number) * 1000;
       // If app auth token is not expired, request new token
-      if(expiration > Date.now()) {
+      if (expiration > Date.now()) {
         this.token = jwt;
         this.loggedIn = false;
         // gets the user's data and refreshes the token at the same time in
@@ -503,16 +518,16 @@ export class AuthService {
     this.auth0.checkSession({}, (err, authResult) => {
       // if refreshing the token was successful, parse the JWT and get the
       // token variable to the new token
-      if(authResult && authResult.accessToken) {
+      if (authResult && authResult.accessToken) {
         this.token = authResult.accessToken;
         let payload = this.parseJWT(authResult.accessToken);
         this.getUserData(payload);
       }
       // if there was an error refreshing the token
-      else if(err) {
-        return 'Error: ' + err;
+      else if (err) {
+        return "Error: " + err;
       }
-    })
+    });
   }
 
   /*
@@ -524,33 +539,38 @@ export class AuthService {
   Programmer: Shir Bar Lev.
   */
   updateUserData() {
-    this.Http.patch(`${this.serverUrl}/users/all/${this.userData.id}`, {
-      displayName: this.userData.displayName,
-      receivedH: this.userData.receivedHugs,
-      givenH: this.userData.givenHugs,
-      posts: this.userData.postsNum,
-      loginCount: this.userData.loginCount + 1,
-      selectedIcon: this.userData.selectedIcon,
-      iconColours: {
-        character: this.userData.iconColours.character,
-        lbg: this.userData.iconColours.lbg,
-        rbg: this.userData.iconColours.rbg,
-        item: this.userData.iconColours.item
-      }
-    }, {
-      headers: this.authHeader
-    }).subscribe((_response:any) => {
-
-    }, (err: HttpErrorResponse) => {
-      // if the user is offline, show the offline header message
-      if(!navigator.onLine) {
-        this.alertsService.toggleOfflineAlert();
-      }
-      // otherwise just create an error alert
-      else {
-        this.alertsService.createErrorAlert(err);
-      }
-    });
+    this.Http.patch(
+      `${this.serverUrl}/users/all/${this.userData.id}`,
+      {
+        displayName: this.userData.displayName,
+        receivedH: this.userData.receivedHugs,
+        givenH: this.userData.givenHugs,
+        posts: this.userData.postsNum,
+        loginCount: this.userData.loginCount + 1,
+        selectedIcon: this.userData.selectedIcon,
+        iconColours: {
+          character: this.userData.iconColours.character,
+          lbg: this.userData.iconColours.lbg,
+          rbg: this.userData.iconColours.rbg,
+          item: this.userData.iconColours.item,
+        },
+      },
+      {
+        headers: this.authHeader,
+      },
+    ).subscribe(
+      (_response: any) => {},
+      (err: HttpErrorResponse) => {
+        // if the user is offline, show the offline header message
+        if (!navigator.onLine) {
+          this.alertsService.toggleOfflineAlert();
+        }
+        // otherwise just create an error alert
+        else {
+          this.alertsService.createErrorAlert(err);
+        }
+      },
+    );
   }
 
   /*
@@ -562,14 +582,14 @@ export class AuthService {
   */
   canUser(permission: string) {
     // if there's an active token, check the logged in user's permissions
-    if(this.token) {
-      let canUserDo:boolean;
+    if (this.token) {
+      let canUserDo: boolean;
       let tokenPayload = this.parseJWT(this.token);
-      let permissions = tokenPayload['permissions'];
+      let permissions = tokenPayload["permissions"];
 
       // if it's within the user's permissions, return true;
       // otherwise return false
-      canUserDo = permissions.includes(permission)
+      canUserDo = permissions.includes(permission);
       return canUserDo;
     }
     // if there isn't, no user is logged in, so of course there's no permission

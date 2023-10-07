@@ -31,58 +31,54 @@
 */
 
 import { TestBed } from "@angular/core/testing";
-import { RouterTestingModule } from '@angular/router/testing';
-import {} from 'jasmine';
-import { APP_BASE_HREF } from '@angular/common';
+import { RouterTestingModule } from "@angular/router/testing";
+import {} from "jasmine";
+import { APP_BASE_HREF } from "@angular/common";
 import {
   BrowserDynamicTestingModule,
-  platformBrowserDynamicTesting
+  platformBrowserDynamicTesting,
 } from "@angular/platform-browser-dynamic/testing";
 import { HttpClientModule } from "@angular/common/http";
 import { ServiceWorkerModule } from "@angular/service-worker";
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 
-import { AppComponent } from '../../../app.component';
-import { PostEditForm } from './postEditForm.component';
-import { PostsService } from '../../../services/posts.service';
-import { MockPostsService } from '../../../services/posts.service.mock';
-import { AdminService } from '../../../services/admin.service';
-import { MockAdminService } from '../../../services/admin.service.mock';
-import { AlertsService } from '../../../services/alerts.service';
-import { MockAlertsService } from '../../../services/alerts.service.mock';
+import { AppComponent } from "../../../app.component";
+import { PostEditForm } from "./postEditForm.component";
+import { PostsService } from "../../../services/posts.service";
+import { MockPostsService } from "../../../services/posts.service.mock";
+import { AdminService } from "../../../services/admin.service";
+import { MockAdminService } from "../../../services/admin.service.mock";
+import { AlertsService } from "../../../services/alerts.service";
+import { MockAlertsService } from "../../../services/alerts.service.mock";
 import { Post } from "../../../interfaces/post.interface";
 
 // DISPLAY NAME EDIT
 // ==================================================================
-describe('PostEditForm', () => {
+describe("PostEditForm", () => {
   // Before each test, configure testing environment
   beforeEach(() => {
     TestBed.resetTestEnvironment();
-    TestBed.initTestEnvironment(BrowserDynamicTestingModule,
-        platformBrowserDynamicTesting());
+    TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
       imports: [
         RouterTestingModule,
         HttpClientModule,
-        ServiceWorkerModule.register('sw.js', { enabled: false }),
-        FontAwesomeModule
+        ServiceWorkerModule.register("sw.js", { enabled: false }),
+        FontAwesomeModule,
       ],
-      declarations: [
-        AppComponent,
-        PostEditForm,
-      ],
+      declarations: [AppComponent, PostEditForm],
       providers: [
-        { provide: APP_BASE_HREF, useValue: '/' },
+        { provide: APP_BASE_HREF, useValue: "/" },
         { provide: PostsService, useClass: MockPostsService },
         { provide: AdminService, useClass: MockAdminService },
-        { provide: AlertsService, useClass: MockAlertsService }
-      ]
+        { provide: AlertsService, useClass: MockAlertsService },
+      ],
     }).compileComponents();
   });
 
   // Check that the component is created
-  it('should create the component', () => {
+  it("should create the component", () => {
     const acFixture = TestBed.createComponent(AppComponent);
     const appComponent = acFixture.componentInstance;
     const fixture = TestBed.createComponent(PostEditForm);
@@ -91,96 +87,104 @@ describe('PostEditForm', () => {
     expect(popUp).toBeTruthy();
   });
 
-  it('should make the request to postsService to change the post', () => {
+  it("should make the request to postsService to change the post", () => {
     const fixture = TestBed.createComponent(PostEditForm);
     const popUp = fixture.componentInstance;
     const popUpDOM = fixture.nativeElement;
     const originalItem = {
       id: 1,
       userId: 4,
-      user: 'me',
-      text: 'hi',
+      user: "me",
+      text: "hi",
       date: new Date(),
       givenHugs: 0,
-      sentHugs: []
+      sentHugs: [],
     };
     popUp.isAdmin = false;
     popUp.editedItem = originalItem;
-    const newText = 'new text';
+    const newText = "new text";
     fixture.detectChanges();
 
-    const validateSpy = spyOn(popUp['validationService'], 'validateItem').and.returnValue(true);
-    const updateSpy = spyOn(popUp['postsService'], 'editPost');
-    const isUpdatedSpy = spyOn(popUp['postsService'].isUpdated, 'subscribe');
+    const validateSpy = spyOn(popUp["validationService"], "validateItem").and.returnValue(true);
+    const updateSpy = spyOn(popUp["postsService"], "editPost");
+    const isUpdatedSpy = spyOn(popUp["postsService"].isUpdated, "subscribe");
 
-    popUpDOM.querySelector('#postText').value = newText;
-    popUpDOM.querySelectorAll('.sendData')[0].click();
+    popUpDOM.querySelector("#postText").value = newText;
+    popUpDOM.querySelectorAll(".sendData")[0].click();
     fixture.detectChanges();
 
-    expect(validateSpy).toHaveBeenCalledWith('post', newText, 'postText');
+    expect(validateSpy).toHaveBeenCalledWith("post", newText, "postText");
     const updatedItem = { ...originalItem };
-    updatedItem['text'] = newText;
+    updatedItem["text"] = newText;
     expect(updateSpy).toHaveBeenCalledWith(updatedItem);
     expect(isUpdatedSpy).toHaveBeenCalled();
   });
 
-  it('should make the request to adminService to change the post - close report', () => {
+  it("should make the request to adminService to change the post - close report", () => {
     const fixture = TestBed.createComponent(PostEditForm);
     const popUp = fixture.componentInstance;
     const popUpDOM = fixture.nativeElement;
-    const originalItem = { text: 'hi', id: 2 } as Post;
+    const originalItem = { text: "hi", id: 2 } as Post;
     popUp.reportData = {
       reportID: 1,
-      postID: 2
+      postID: 2,
     };
     popUp.isAdmin = true;
     popUp.editedItem = originalItem;
-    const newText = 'new text';
+    const newText = "new text";
     fixture.detectChanges();
 
-    const validateSpy = spyOn(popUp['validationService'], 'validateItem').and.returnValue(true);
-    const updateSpy = spyOn(popUp['adminService'], 'editPost');
-    const isUpdatedSpy = spyOn(popUp['adminService'].isUpdated, 'subscribe');
+    const validateSpy = spyOn(popUp["validationService"], "validateItem").and.returnValue(true);
+    const updateSpy = spyOn(popUp["adminService"], "editPost");
+    const isUpdatedSpy = spyOn(popUp["adminService"].isUpdated, "subscribe");
 
-    popUpDOM.querySelector('#postText').value = newText;
-    popUpDOM.querySelector('#updateAndClose').click();
+    popUpDOM.querySelector("#postText").value = newText;
+    popUpDOM.querySelector("#updateAndClose").click();
     fixture.detectChanges();
 
-    expect(validateSpy).toHaveBeenCalledWith('post', newText, 'postText');
-    expect(updateSpy).toHaveBeenCalledWith({
-      id: 2,
-      text: newText,
-    }, true, 1);
+    expect(validateSpy).toHaveBeenCalledWith("post", newText, "postText");
+    expect(updateSpy).toHaveBeenCalledWith(
+      {
+        id: 2,
+        text: newText,
+      },
+      true,
+      1,
+    );
     expect(isUpdatedSpy).toHaveBeenCalled();
   });
 
-  it('should make the request to adminService to change the post - don\'t close report', () => {
+  it("should make the request to adminService to change the post - don't close report", () => {
     const fixture = TestBed.createComponent(PostEditForm);
     const popUp = fixture.componentInstance;
     const popUpDOM = fixture.nativeElement;
-    const originalItem = { text: 'hi', id: 2 } as Post;
+    const originalItem = { text: "hi", id: 2 } as Post;
     popUp.reportData = {
       reportID: 1,
-      postID: 2
+      postID: 2,
     };
     popUp.isAdmin = true;
     popUp.editedItem = originalItem;
-    const newText = 'new text';
+    const newText = "new text";
     fixture.detectChanges();
 
-    const validateSpy = spyOn(popUp['validationService'], 'validateItem').and.returnValue(true);
-    const updateSpy = spyOn(popUp['adminService'], 'editPost');
-    const isUpdatedSpy = spyOn(popUp['adminService'].isUpdated, 'subscribe');
+    const validateSpy = spyOn(popUp["validationService"], "validateItem").and.returnValue(true);
+    const updateSpy = spyOn(popUp["adminService"], "editPost");
+    const isUpdatedSpy = spyOn(popUp["adminService"].isUpdated, "subscribe");
 
-    popUpDOM.querySelector('#postText').value = newText;
-    popUpDOM.querySelector('#updateDontClose').click();
+    popUpDOM.querySelector("#postText").value = newText;
+    popUpDOM.querySelector("#updateDontClose").click();
     fixture.detectChanges();
 
-    expect(validateSpy).toHaveBeenCalledWith('post', newText, 'postText');
-    expect(updateSpy).toHaveBeenCalledWith({
-      id: 2,
-      text: newText,
-    }, false, 1);
+    expect(validateSpy).toHaveBeenCalledWith("post", newText, "postText");
+    expect(updateSpy).toHaveBeenCalledWith(
+      {
+        id: 2,
+        text: newText,
+      },
+      false,
+      1,
+    );
     expect(isUpdatedSpy).toHaveBeenCalled();
   });
 });

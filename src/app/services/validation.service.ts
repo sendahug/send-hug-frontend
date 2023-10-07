@@ -31,15 +31,15 @@
 */
 
 // Angular imports
-import { Injectable } from '@angular/core';
+import { Injectable } from "@angular/core";
 
 // App-related imports
-import { AlertsService } from './alerts.service';
+import { AlertsService } from "./alerts.service";
 
-type ValidatableItems = 'post' | 'message' | 'displayName' | 'reportOther';
+type ValidatableItems = "post" | "message" | "displayName" | "reportOther";
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root",
 })
 export class ValidationService {
   validationRules = {
@@ -47,38 +47,41 @@ export class ValidationService {
       max: 480,
       emptyAllowed: false,
       errorMessages: {
-        zeroLength: 'Post text cannot be empty. Please fill the field and try again.',
-        tooLong: 'Post text cannot be over 480 characters! Please shorten the post and try again.',
+        zeroLength: "Post text cannot be empty. Please fill the field and try again.",
+        tooLong: "Post text cannot be over 480 characters! Please shorten the post and try again.",
       },
     },
     message: {
       max: 480,
       emptyAllowed: false,
       errorMessages: {
-        zeroLength: 'A message cannot be empty. Please fill the field and try again.',
-        tooLong: 'Message text cannot be over 480 characters! Please shorten the message and try again.',
+        zeroLength: "A message cannot be empty. Please fill the field and try again.",
+        tooLong:
+          "Message text cannot be over 480 characters! Please shorten the message and try again.",
       },
     },
     displayName: {
       max: 60,
       emptyAllowed: false,
       errorMessages: {
-        zeroLength: 'New display name cannot be empty. Please fill the field and try again.',
-        tooLong: 'New display name cannot be over 60 characters! Please shorten the name and try again.',
+        zeroLength: "New display name cannot be empty. Please fill the field and try again.",
+        tooLong:
+          "New display name cannot be over 60 characters! Please shorten the name and try again.",
       },
     },
     reportOther: {
       max: 120,
       emptyAllowed: false,
       errorMessages: {
-        zeroLength: 'The \'other\' field cannot be empty.',
-        tooLong: 'Report reason cannot be over 120 characters! Please shorten the message and try again.',
+        zeroLength: "The 'other' field cannot be empty.",
+        tooLong:
+          "Report reason cannot be over 120 characters! Please shorten the message and try again.",
       },
     },
-  }
+  };
 
   // CTOR
-  constructor(private alertsService: AlertsService) { }
+  constructor(private alertsService: AlertsService) {}
 
   /*
   Function Name: validateItem()
@@ -92,22 +95,28 @@ export class ValidationService {
   validateItem(typeOfTest: ValidatableItems, textToValidate: string, elementId: string): boolean {
     const testValidationRules = this.validationRules[typeOfTest];
     // if there's text, check its length
-    if(textToValidate) {
-      if(textToValidate.length > testValidationRules['max']) {
-        this.alertsService.createAlert({ type: 'Error', message: testValidationRules['errorMessages']['tooLong'] })
+    if (textToValidate) {
+      if (textToValidate.length > testValidationRules["max"]) {
+        this.alertsService.createAlert({
+          type: "Error",
+          message: testValidationRules["errorMessages"]["tooLong"],
+        });
         this.toggleErrorIndicator(false, elementId);
         return false;
       } else {
         this.toggleErrorIndicator(true, elementId);
         return true;
       }
-    // if there isn't text, check if empty texts are allowed
+      // if there isn't text, check if empty texts are allowed
     } else {
-      if(testValidationRules['emptyAllowed']) {
+      if (testValidationRules["emptyAllowed"]) {
         this.toggleErrorIndicator(true, elementId);
         return true;
       } else {
-        this.alertsService.createAlert({ type: 'Error', message: testValidationRules['errorMessages']['zeroLength'] })
+        this.alertsService.createAlert({
+          type: "Error",
+          message: testValidationRules["errorMessages"]["zeroLength"],
+        });
         this.toggleErrorIndicator(false, elementId);
         return false;
       }
@@ -124,16 +133,16 @@ export class ValidationService {
   */
   toggleErrorIndicator(isValid: boolean, elementId: string) {
     // if the data isn't valid, alert the users
-    if(!isValid) {
-      document.getElementById(elementId)!.classList.add('missing');
-      document.getElementById(elementId)!.setAttribute('aria-invalid', 'true');
-    // otherwise make sure it's set to false
+    if (!isValid) {
+      document.getElementById(elementId)!.classList.add("missing");
+      document.getElementById(elementId)!.setAttribute("aria-invalid", "true");
+      // otherwise make sure it's set to false
     } else {
       // if the textfield was marked red, remove it
-      if(document.getElementById(elementId)!.classList.contains('missing')) {
-        document.getElementById(elementId)!.classList.remove('missing');
+      if (document.getElementById(elementId)!.classList.contains("missing")) {
+        document.getElementById(elementId)!.classList.remove("missing");
       }
-      document.getElementById(elementId)!.setAttribute('aria-invalid', 'false');
+      document.getElementById(elementId)!.setAttribute("aria-invalid", "false");
     }
   }
 }

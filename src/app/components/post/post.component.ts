@@ -31,37 +31,37 @@
 */
 
 // Angular imports
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { faComment, faEdit, faFlag } from '@fortawesome/free-regular-svg-icons';
-import { faHandHoldingHeart, faTimes, faEllipsisV } from '@fortawesome/free-solid-svg-icons';
+import { Component, EventEmitter, Input, Output } from "@angular/core";
+import { faComment, faEdit, faFlag } from "@fortawesome/free-regular-svg-icons";
+import { faHandHoldingHeart, faTimes, faEllipsisV } from "@fortawesome/free-solid-svg-icons";
 
 // App-related imports
-import { AuthService } from '../../services/auth.service';
-import { ItemsService } from '../../services/items.service';
-import { PostsService } from '../../services/posts.service';
-import { Post } from '../../interfaces/post.interface';
+import { AuthService } from "../../services/auth.service";
+import { ItemsService } from "../../services/items.service";
+import { PostsService } from "../../services/posts.service";
+import { Post } from "../../interfaces/post.interface";
 
 @Component({
-  selector: 'app-single-post',
-  templateUrl: './post.component.html'
+  selector: "app-single-post",
+  templateUrl: "./post.component.html",
 })
 export class SinglePost {
   @Input() post!: Post;
-  @Input() type!: 'n' | 's';
+  @Input() type!: "n" | "s";
   @Input() class!: string;
   @Output() showMenu = new EventEmitter<string>();
   // edit popup sub-component variables
   postToEdit: Post | undefined;
   editType: string | undefined;
-  editMode:boolean;
-  delete:boolean;
+  editMode: boolean;
+  delete: boolean;
   toDelete: string | undefined;
   itemToDelete: number | undefined;
-  report:boolean;
+  report: boolean;
   reportedItem: Post | undefined;
-  reportType: 'Post' | undefined;
+  reportType: "Post" | undefined;
   lastFocusedElement: any;
-  waitFor = 'main page';
+  waitFor = "main page";
   // icons
   faComment = faComment;
   faEdit = faEdit;
@@ -73,8 +73,8 @@ export class SinglePost {
   // CTOR
   constructor(
     public itemsService: ItemsService,
-    public authService:AuthService,
-    public postsService:PostsService
+    public authService: AuthService,
+    public postsService: PostsService,
   ) {
     this.editMode = false;
     this.delete = false;
@@ -93,7 +93,6 @@ export class SinglePost {
     this.postsService.sendHug(this.post);
   }
 
-
   /*
   Function Name: editPost()
   Function Description: Triggers edit mode in order to edit a post.
@@ -103,7 +102,7 @@ export class SinglePost {
   */
   editPost() {
     this.lastFocusedElement = document.activeElement;
-    this.editType = 'post';
+    this.editType = "post";
     this.postToEdit = this.post;
     this.editMode = true;
     this.delete = false;
@@ -120,7 +119,7 @@ export class SinglePost {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  changeMode(edit:boolean) {
+  changeMode(edit: boolean) {
     this.editMode = edit;
     this.lastFocusedElement.focus();
   }
@@ -136,7 +135,7 @@ export class SinglePost {
     this.lastFocusedElement = document.activeElement;
     this.editMode = true;
     this.delete = true;
-    this.toDelete = 'Post';
+    this.toDelete = "Post";
     this.itemToDelete = this.post.id;
     this.report = false;
   }
@@ -156,7 +155,7 @@ export class SinglePost {
     this.delete = false;
     this.report = true;
     this.reportedItem = this.post;
-    this.reportType = 'Post';
+    this.reportType = "Post";
   }
 
   /*

@@ -31,48 +31,47 @@
 */
 
 import { TestBed } from "@angular/core/testing";
-import { RouterTestingModule } from '@angular/router/testing';
-import {} from 'jasmine';
-import { APP_BASE_HREF } from '@angular/common';
+import { RouterTestingModule } from "@angular/router/testing";
+import {} from "jasmine";
+import { APP_BASE_HREF } from "@angular/common";
 import {
   BrowserDynamicTestingModule,
-  platformBrowserDynamicTesting
+  platformBrowserDynamicTesting,
 } from "@angular/platform-browser-dynamic/testing";
 import { HttpClientModule } from "@angular/common/http";
 import { ServiceWorkerModule } from "@angular/service-worker";
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 
-import { AppComponent } from '../../app.component';
-import { PopUp } from './popUp.component';
-import { AuthService } from '../../services/auth.service';
-import { MockAuthService } from '../../services/auth.service.mock';
-import { ItemsService } from '../../services/items.service';
-import { MockItemsService } from '../../services/items.service.mock';
-import { PostsService } from '../../services/posts.service';
-import { MockPostsService } from '../../services/posts.service.mock';
-import { AdminService } from '../../services/admin.service';
-import { MockAdminService } from '../../services/admin.service.mock';
-import { AlertsService } from '../../services/alerts.service';
-import { MockAlertsService } from '../../services/alerts.service.mock';
-import { NotificationsTab } from '../notifications/notifications.component';
-import { DisplayNameEditForm } from '../forms/displayNameEditForm/displayNameEditForm.component';
-import { ItemDeleteForm } from '../forms/itemDeleteForm/itemDeleteForm.component';
-import { PostEditForm } from '../forms/postEditForm/postEditForm.component';
-import { ReportForm } from '../forms/reportForm/reportForm.component';
+import { AppComponent } from "../../app.component";
+import { PopUp } from "./popUp.component";
+import { AuthService } from "../../services/auth.service";
+import { MockAuthService } from "../../services/auth.service.mock";
+import { ItemsService } from "../../services/items.service";
+import { MockItemsService } from "../../services/items.service.mock";
+import { PostsService } from "../../services/posts.service";
+import { MockPostsService } from "../../services/posts.service.mock";
+import { AdminService } from "../../services/admin.service";
+import { MockAdminService } from "../../services/admin.service.mock";
+import { AlertsService } from "../../services/alerts.service";
+import { MockAlertsService } from "../../services/alerts.service.mock";
+import { NotificationsTab } from "../notifications/notifications.component";
+import { DisplayNameEditForm } from "../forms/displayNameEditForm/displayNameEditForm.component";
+import { ItemDeleteForm } from "../forms/itemDeleteForm/itemDeleteForm.component";
+import { PostEditForm } from "../forms/postEditForm/postEditForm.component";
+import { ReportForm } from "../forms/reportForm/reportForm.component";
 
-describe('Popup', () => {
+describe("Popup", () => {
   // Before each test, configure testing environment
   beforeEach(() => {
     TestBed.resetTestEnvironment();
-    TestBed.initTestEnvironment(BrowserDynamicTestingModule,
-        platformBrowserDynamicTesting());
+    TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
       imports: [
         RouterTestingModule,
         HttpClientModule,
-        ServiceWorkerModule.register('sw.js', { enabled: false }),
-        FontAwesomeModule
+        ServiceWorkerModule.register("sw.js", { enabled: false }),
+        FontAwesomeModule,
       ],
       declarations: [
         AppComponent,
@@ -81,21 +80,21 @@ describe('Popup', () => {
         DisplayNameEditForm,
         ItemDeleteForm,
         PostEditForm,
-        ReportForm
+        ReportForm,
       ],
       providers: [
-        { provide: APP_BASE_HREF, useValue: '/' },
+        { provide: APP_BASE_HREF, useValue: "/" },
         { provide: PostsService, useClass: MockPostsService },
         { provide: AuthService, useClass: MockAuthService },
         { provide: ItemsService, useClass: MockItemsService },
         { provide: AdminService, useClass: MockAdminService },
-        { provide: AlertsService, useClass: MockAlertsService }
-      ]
+        { provide: AlertsService, useClass: MockAlertsService },
+      ],
     }).compileComponents();
   });
 
   // Check that the component is created
-  it('should create the component', () => {
+  it("should create the component", () => {
     const acFixture = TestBed.createComponent(AppComponent);
     const appComponent = acFixture.componentInstance;
     const fixture = TestBed.createComponent(PopUp);
@@ -105,28 +104,28 @@ describe('Popup', () => {
   });
 
   // check tab and tab+shift let the user navigate
-  it('should navigate using tab and shift+tab', (done: DoneFn) => {
+  it("should navigate using tab and shift+tab", (done: DoneFn) => {
     TestBed.createComponent(AppComponent);
     const fixture = TestBed.createComponent(PopUp);
     const popUp = fixture.componentInstance;
     const popUpDOM = fixture.nativeElement;
-    const focusBindedSpy = spyOn(popUp, 'checkFocusBinded').and.callThrough();
-    popUp.toEdit = 'admin post';
+    const focusBindedSpy = spyOn(popUp, "checkFocusBinded").and.callThrough();
+    popUp.toEdit = "admin post";
     popUp.delete = false;
     popUp.report = false;
-    popUp.editedItem = 'hi';
+    popUp.editedItem = "hi";
     popUp.reportData = {
       reportID: 1,
-      postID: 2
+      postID: 2,
     };
     fixture.detectChanges();
 
     // spies
     const spies = [
-      spyOn(popUpDOM.querySelector('#exitButton'), 'focus').and.callThrough(),
-      spyOn(popUpDOM.querySelector('#postText'), 'focus').and.callThrough(),
-      spyOn(popUpDOM.querySelectorAll('.sendData')[0], 'focus').and.callThrough(),
-      spyOn(popUpDOM.querySelectorAll('.sendData')[1], 'focus').and.callThrough()
+      spyOn(popUpDOM.querySelector("#exitButton"), "focus").and.callThrough(),
+      spyOn(popUpDOM.querySelector("#postText"), "focus").and.callThrough(),
+      spyOn(popUpDOM.querySelectorAll(".sendData")[0], "focus").and.callThrough(),
+      spyOn(popUpDOM.querySelectorAll(".sendData")[1], "focus").and.callThrough(),
     ];
 
     spies.forEach((spy) => {
@@ -140,90 +139,91 @@ describe('Popup', () => {
       popUp.ngOnInit();
 
       // check the first element has focus
-      spies.forEach((spy, index:number) => {
-        if(index == 0) {
+      spies.forEach((spy, index: number) => {
+        if (index == 0) {
           expect(spy).toHaveBeenCalled();
-        }
-        else {
+        } else {
           expect(spy).not.toHaveBeenCalled();
         }
       });
-    // step 2: tab event tests
-    }).then(() => {
-      // trigger tab event
-      document.getElementById('modalBox')!.dispatchEvent(new KeyboardEvent('keydown', {
-        'key': 'tab',
-        'shiftKey': false
-      }));
-      fixture.detectChanges();
-
-      // check the focus shifted to the next element
-      expect(focusBindedSpy).toHaveBeenCalled();
-      spies.forEach((spy, index:number) => {
-        if(index == 0) {
-          expect(spy).toHaveBeenCalled();
-          expect(spy).toHaveBeenCalledTimes(1);
-        }
-        else if(index == 1) {
-          expect(spy).toHaveBeenCalled();
-          expect(spy).toHaveBeenCalledTimes(1);
-        }
-        else {
-          expect(spy).not.toHaveBeenCalled();
-        }
-      });
-    // step 3: shift + tab event tests
-    }).then(() => {
-      // trigger shift + tab event
-      document.getElementById('modalBox')!.dispatchEvent(new KeyboardEvent('keydown', {
-        'key': 'tab',
-        'shiftKey': true
-      }));
-      fixture.detectChanges();
-
-      // check the focus shifted to the previous element
-      expect(focusBindedSpy).toHaveBeenCalled();
-      expect(focusBindedSpy).toHaveBeenCalledTimes(2);
-      spies.forEach((spy, index:number) => {
-        if(index == 0) {
-          expect(spy).toHaveBeenCalled();
-          expect(spy).toHaveBeenCalledTimes(2);
-        }
-        else if(index == 1) {
-          expect(spy).toHaveBeenCalled();
-          expect(spy).toHaveBeenCalledTimes(1);
-        }
-        else {
-          expect(spy).not.toHaveBeenCalled();
-        }
-      });
+      // step 2: tab event tests
     })
+      .then(() => {
+        // trigger tab event
+        document.getElementById("modalBox")!.dispatchEvent(
+          new KeyboardEvent("keydown", {
+            key: "tab",
+            shiftKey: false,
+          }),
+        );
+        fixture.detectChanges();
+
+        // check the focus shifted to the next element
+        expect(focusBindedSpy).toHaveBeenCalled();
+        spies.forEach((spy, index: number) => {
+          if (index == 0) {
+            expect(spy).toHaveBeenCalled();
+            expect(spy).toHaveBeenCalledTimes(1);
+          } else if (index == 1) {
+            expect(spy).toHaveBeenCalled();
+            expect(spy).toHaveBeenCalledTimes(1);
+          } else {
+            expect(spy).not.toHaveBeenCalled();
+          }
+        });
+        // step 3: shift + tab event tests
+      })
+      .then(() => {
+        // trigger shift + tab event
+        document.getElementById("modalBox")!.dispatchEvent(
+          new KeyboardEvent("keydown", {
+            key: "tab",
+            shiftKey: true,
+          }),
+        );
+        fixture.detectChanges();
+
+        // check the focus shifted to the previous element
+        expect(focusBindedSpy).toHaveBeenCalled();
+        expect(focusBindedSpy).toHaveBeenCalledTimes(2);
+        spies.forEach((spy, index: number) => {
+          if (index == 0) {
+            expect(spy).toHaveBeenCalled();
+            expect(spy).toHaveBeenCalledTimes(2);
+          } else if (index == 1) {
+            expect(spy).toHaveBeenCalled();
+            expect(spy).toHaveBeenCalledTimes(1);
+          } else {
+            expect(spy).not.toHaveBeenCalled();
+          }
+        });
+      });
     done();
   });
 
   // check the focus is trapped
-  it('should trap focus in the modal', (done: DoneFn) => {
+  it("should trap focus in the modal", (done: DoneFn) => {
     TestBed.createComponent(AppComponent);
     const fixture = TestBed.createComponent(PopUp);
     const popUp = fixture.componentInstance;
     const popUpDOM = fixture.nativeElement;
-    const focusBindedSpy = spyOn(popUp, 'checkFocusBinded').and.callThrough();
-    popUp.toEdit = 'admin post';
+    const focusBindedSpy = spyOn(popUp, "checkFocusBinded").and.callThrough();
+    popUp.toEdit = "admin post";
     popUp.delete = false;
     popUp.report = false;
-    popUp.editedItem = 'hi';
+    popUp.editedItem = "hi";
     popUp.reportData = {
       reportID: 1,
-      postID: 2
+      postID: 2,
     };
     fixture.detectChanges();
 
     // spies
     const spies = [
-      spyOn(popUpDOM.querySelector('#exitButton'), 'focus').and.callThrough(),
-      spyOn(popUpDOM.querySelector('#postText'), 'focus').and.callThrough(),
-      spyOn(popUpDOM.querySelectorAll('.sendData')[0], 'focus').and.callThrough(),
-      spyOn(popUpDOM.querySelectorAll('.sendData')[1], 'focus').and.callThrough()
+      spyOn(popUpDOM.querySelector("#exitButton"), "focus").and.callThrough(),
+      spyOn(popUpDOM.querySelector("#postText"), "focus").and.callThrough(),
+      spyOn(popUpDOM.querySelectorAll(".sendData")[0], "focus").and.callThrough(),
+      spyOn(popUpDOM.querySelectorAll(".sendData")[1], "focus").and.callThrough(),
     ];
 
     spies.forEach((spy) => {
@@ -235,92 +235,94 @@ describe('Popup', () => {
     // step 1: check the last element is focused
     new Promise(() => {
       // focus on the last element
-      popUpDOM.querySelectorAll('.sendData')[1].focus();
+      popUpDOM.querySelectorAll(".sendData")[1].focus();
 
       // check the last element has focus
-      spies.forEach((spy, index:number) => {
-        if(index == 3) {
+      spies.forEach((spy, index: number) => {
+        if (index == 3) {
           expect(spy).toHaveBeenCalled();
-        }
-        else {
+        } else {
           expect(spy).not.toHaveBeenCalled();
         }
       });
-    // step 2: check what happens when clicking tab
-    }).then(() => {
-      // trigger tab event
-      document.getElementById('modalBox')!.dispatchEvent(new KeyboardEvent('keydown', {
-        'key': 'tab',
-        'shiftKey': false
-      }));
-      fixture.detectChanges();
-
-      // check the focus shifted to the first element
-      expect(focusBindedSpy).toHaveBeenCalled();
-      spies.forEach((spy, index:number) => {
-        if(index == 3 || index == 0) {
-          expect(spy).toHaveBeenCalled();
-          expect(spy).toHaveBeenCalledTimes(1);
-        }
-        else {
-          expect(spy).not.toHaveBeenCalled();
-        }
-      });
-    // check what happens when clicking shift + tab
-    }).then(() => {
-      // trigger shift + tab event
-      document.getElementById('modalBox')!.dispatchEvent(new KeyboardEvent('keydown', {
-        'key': 'tab',
-        'shiftKey': true
-      }));
-      fixture.detectChanges();
-
-      // check the focus shifted to the last element
-      expect(focusBindedSpy).toHaveBeenCalled();
-      expect(focusBindedSpy).toHaveBeenCalledTimes(2);
-      spies.forEach((spy, index:number) => {
-        if(index == 3) {
-          expect(spy).toHaveBeenCalled();
-          expect(spy).toHaveBeenCalledTimes(2);
-        }
-        else if(index == 0) {
-          expect(spy).toHaveBeenCalled();
-          expect(spy).toHaveBeenCalledTimes(1);
-        }
-        else {
-          expect(spy).not.toHaveBeenCalled();
-        }
-      });
+      // step 2: check what happens when clicking tab
     })
+      .then(() => {
+        // trigger tab event
+        document.getElementById("modalBox")!.dispatchEvent(
+          new KeyboardEvent("keydown", {
+            key: "tab",
+            shiftKey: false,
+          }),
+        );
+        fixture.detectChanges();
+
+        // check the focus shifted to the first element
+        expect(focusBindedSpy).toHaveBeenCalled();
+        spies.forEach((spy, index: number) => {
+          if (index == 3 || index == 0) {
+            expect(spy).toHaveBeenCalled();
+            expect(spy).toHaveBeenCalledTimes(1);
+          } else {
+            expect(spy).not.toHaveBeenCalled();
+          }
+        });
+        // check what happens when clicking shift + tab
+      })
+      .then(() => {
+        // trigger shift + tab event
+        document.getElementById("modalBox")!.dispatchEvent(
+          new KeyboardEvent("keydown", {
+            key: "tab",
+            shiftKey: true,
+          }),
+        );
+        fixture.detectChanges();
+
+        // check the focus shifted to the last element
+        expect(focusBindedSpy).toHaveBeenCalled();
+        expect(focusBindedSpy).toHaveBeenCalledTimes(2);
+        spies.forEach((spy, index: number) => {
+          if (index == 3) {
+            expect(spy).toHaveBeenCalled();
+            expect(spy).toHaveBeenCalledTimes(2);
+          } else if (index == 0) {
+            expect(spy).toHaveBeenCalled();
+            expect(spy).toHaveBeenCalledTimes(1);
+          } else {
+            expect(spy).not.toHaveBeenCalled();
+          }
+        });
+      });
     done();
   });
 
   // Check that the event emitter emits false if the user clicks 'exit'
-  it('exits the popup if the user decides not to edit', (done: DoneFn) => {
+  it("exits the popup if the user decides not to edit", (done: DoneFn) => {
     TestBed.createComponent(AppComponent);
     const fixture = TestBed.createComponent(PopUp);
     const popUp = fixture.componentInstance;
     const popUpDOM = fixture.nativeElement;
-    popUp.toEdit = 'post';
+    popUp.toEdit = "post";
     popUp.delete = false;
     popUp.report = false;
     popUp.editedItem = {
       id: 1,
       userId: 4,
-      user: 'me',
-      text: 'hi',
+      user: "me",
+      text: "hi",
       date: new Date(),
       givenHugs: 0,
-      sentHugs: []
+      sentHugs: [],
     };
-    const exitSpy = spyOn(popUp, 'exitEdit').and.callThrough();
+    const exitSpy = spyOn(popUp, "exitEdit").and.callThrough();
     fixture.detectChanges();
 
     // click the exit button
-    popUpDOM.querySelector('#exitButton').click();
+    popUpDOM.querySelector("#exitButton").click();
     fixture.detectChanges();
 
-    popUp.editMode.subscribe((event:boolean) => {
+    popUp.editMode.subscribe((event: boolean) => {
       expect(event).toBeFalse();
     });
     expect(exitSpy).toHaveBeenCalled();

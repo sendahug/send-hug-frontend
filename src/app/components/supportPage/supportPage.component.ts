@@ -30,28 +30,26 @@
   SOFTWARE.
 */
 
-import { Component, OnInit } from '@angular/core';
-import { faComment, faFlag } from '@fortawesome/free-regular-svg-icons';
-import { faHandHoldingHeart, faTimes } from '@fortawesome/free-solid-svg-icons';
-import { faGratipay } from '@fortawesome/free-brands-svg-icons';
+import { Component, OnInit } from "@angular/core";
+import { faComment, faFlag } from "@fortawesome/free-regular-svg-icons";
+import { faHandHoldingHeart, faTimes } from "@fortawesome/free-solid-svg-icons";
+import { faGratipay } from "@fortawesome/free-brands-svg-icons";
 
 @Component({
-  selector: 'app-support',
-  templateUrl: './supportPage.component.html'
+  selector: "app-support",
+  templateUrl: "./supportPage.component.html",
 })
 export class SupportPage implements OnInit {
   faqItems: any[] = [];
   // icons
-  faComment = faComment
+  faComment = faComment;
   faFlag = faFlag;
   faHandHoldingHeart = faHandHoldingHeart;
   faTimes = faTimes;
   faGratipay = faGratipay;
 
   // CTOR
-  constructor() {
-
-  }
+  constructor() {}
 
   /*
   Function Name: ngOnInit()
@@ -63,11 +61,11 @@ export class SupportPage implements OnInit {
   Programmer: Shir Bar Lev.
   */
   ngOnInit() {
-    document.querySelectorAll('.faqItem').forEach((faqItem) => {
+    document.querySelectorAll(".faqItem").forEach((faqItem) => {
       let item = {
         href: faqItem.firstElementChild!.id,
-        question: faqItem.firstElementChild!.textContent
-      }
+        question: faqItem.firstElementChild!.textContent,
+      };
       this.faqItems.push(item);
     });
   }

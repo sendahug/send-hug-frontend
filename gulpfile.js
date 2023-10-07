@@ -10,8 +10,9 @@ const rename = require("gulp-rename");
 const replace = require("gulp-replace");
 const fs = require("fs");
 const path = require("path");
-var Server = require('karma').Server;
-var glob = require("glob");
+const Server = require('karma').Server;
+const parseConfig = require('karma').config.parseConfig;
+const glob = require("glob");
 let bs;
 const rollupStream = require("@rollup/stream");
 const commonjs = require("@rollup/plugin-commonjs");
@@ -111,9 +112,9 @@ function scripts()
       .pipe(source("src/main.ts"))
       .pipe(buffer())
       .pipe(sourcemaps.init({loadMaps: true}))
-			.pipe(replace(/(templateUrl: '.)(.*)(.component.html)/g, (match) => {
+			.pipe(replace(/(templateUrl:)(.*)(\.component\.html)/g, (match) => {
 				let componentName = match.substring(15, match.length-15);
-				let newString = `templateUrl: './app/${componentName}.component.html`
+				let newString = `templateUrl: "./app/${componentName}.component.html`
 				return newString;
 			}))
 			.pipe(rename("app.bundle.js"))
@@ -253,11 +254,11 @@ function scriptsDist()
 	return rollupStream(options)
       .pipe(source("src/main.ts"))
       .pipe(buffer())
-			.pipe(replace(/(templateUrl: '.)(.*)(.component.html)/g, (match) => {
-						let componentName = match.substring(15, match.length-15);
-						let newString = `templateUrl: './app/${componentName}.component.html`
-						return newString;
-					}))
+			.pipe(replace(/(templateUrl:)(.*)(\.component\.html)/g, (match) => {
+				let componentName = match.substring(15, match.length-15);
+				let newString = `templateUrl: "./app/${componentName}.component.html`
+				return newString;
+			}))
 			.pipe(terser())
  			.pipe(rename("app.bundle.min.js"))
       .pipe(gulp.dest("./dist"));
@@ -313,7 +314,7 @@ function setupTests() {
 
 		// add each import to the tests file
 		tests.forEach(testPath => {
-			let newPath = './' + testPath;
+			let newPath = './' + testPath.substring(0, testPath.length-3);
 			newString += `import "${newPath}";
 			`;
 		})
@@ -328,9 +329,7 @@ function setupTests() {
 // automatic testing in whatever browser is defined in the Karma config file
 function unitTest()
 {
-	return new Server({
-	    configFile: __dirname + '/karma.conf.js'
-	  }).start();
+	return new Server(parseConfig(__dirname + '/karma.conf.js')).start();
 }
 
 // run code bundling and then test

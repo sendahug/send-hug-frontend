@@ -31,18 +31,18 @@
 */
 
 // Angular imports
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from "@angular/core";
 
 // App-related import
-import { Post } from '../../../interfaces/post.interface';
-import { PostsService } from '../../../services/posts.service';
-import { AdminService } from '../../../services/admin.service';
-import { AlertsService } from '../../../services/alerts.service';
-import { ValidationService } from '../../../services/validation.service';
+import { Post } from "../../../interfaces/post.interface";
+import { PostsService } from "../../../services/posts.service";
+import { AdminService } from "../../../services/admin.service";
+import { AlertsService } from "../../../services/alerts.service";
+import { ValidationService } from "../../../services/validation.service";
 
 @Component({
-  selector: 'post-edit-form',
-  templateUrl: './postEditForm.component.html'
+  selector: "post-edit-form",
+  templateUrl: "./postEditForm.component.html",
 })
 export class PostEditForm {
   // item to edit
@@ -54,13 +54,11 @@ export class PostEditForm {
 
   // CTOR
   constructor(
-    private postsService:PostsService,
-    private adminService:AdminService,
-    private alertsService:AlertsService,
-    private validationService:ValidationService,
-  ) {
-
-  }
+    private postsService: PostsService,
+    private adminService: AdminService,
+    private alertsService: AlertsService,
+    private validationService: ValidationService,
+  ) {}
 
   /*
   Function Name: editPost()
@@ -73,23 +71,23 @@ export class PostEditForm {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  editPost(e:Event, newText:string, closeReport:boolean | null) {
+  editPost(e: Event, newText: string, closeReport: boolean | null) {
     e.preventDefault();
 
-    const serviceToUse = closeReport === null ? 'postsService' : 'adminService';
+    const serviceToUse = closeReport === null ? "postsService" : "adminService";
 
     // if the post is valid, edit the text
-    if(this.validationService.validateItem('post', newText, 'postText')) {
+    if (this.validationService.validateItem("post", newText, "postText")) {
       // if there isn't a value for closeReport, it means it's sent from the regular edit
-      if(closeReport === null) {
+      if (closeReport === null) {
         this.editedItem.text = newText;
         this.postsService.editPost(this.editedItem);
-      // otherwise if there's a value it's coming from admin dashboard editing
+        // otherwise if there's a value it's coming from admin dashboard editing
       } else {
         let post = {
           text: newText,
-          id: this.reportData.postID
-        }
+          id: this.reportData.postID,
+        };
 
         this.adminService.editPost(post, closeReport, this.reportData.reportID);
       }
@@ -101,7 +99,7 @@ export class PostEditForm {
         if (value) {
           this.editMode.emit(false);
         }
-      })
+      });
     }
   }
 }

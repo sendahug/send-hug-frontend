@@ -31,74 +31,74 @@
 */
 
 // Angular imports
-import { Injectable } from '@angular/core';
+import { Injectable } from "@angular/core";
 
 // Other imports
-import { openDB, IDBPDatabase, DBSchema } from 'idb';
+import { openDB, IDBPDatabase, DBSchema } from "idb";
 
 // App-related imports
-import { MockAlertsService } from './alerts.service.mock';
+import { MockAlertsService } from "./alerts.service.mock";
 
 // IndexedDB Database schema
 interface MyDB extends DBSchema {
-  'posts': {
+  posts: {
     key: number;
     value: {
-      'date': Date;
-      'givenHugs': number;
-      'id': number;
-      'isoDate': string;
-      'text': string;
-      'userId': number;
-      'user': string;
-      'sentHugs': number[];
+      date: Date;
+      givenHugs: number;
+      id: number;
+      isoDate: string;
+      text: string;
+      userId: number;
+      user: string;
+      sentHugs: number[];
     };
-    indexes: { 'date': string, 'user': number, 'hugs': number };
+    indexes: { date: string; user: number; hugs: number };
   };
-  'users': {
+  users: {
     key: number;
     value: {
-      'id': number;
-      'displayName': string;
-      'givenHugs': number;
-      'postsNum': number;
-      'receivedHugs': number;
-      'role': string;
-    }
-  };
-  'messages': {
-    key: number;
-    value: {
-      'date': Date;
-      'for': string;
-      'forId': number;
-      'from': string;
-      'fromId': number;
-      'id': number;
-      'isoDate': string;
-      'messageText': string;
-      'threadID': number;
+      id: number;
+      displayName: string;
+      givenHugs: number;
+      postsNum: number;
+      receivedHugs: number;
+      role: string;
     };
-    indexes: { 'date': string, 'thread': number };
   };
-  'threads': {
+  messages: {
     key: number;
     value: {
-      'latestMessage': Date;
-      'user1': string;
-      'user1Id': number;
-      'user2': string;
-      'user2Id': number;
-      'numMessages': number;
-      'isoDate': string;
-      'id': number;
+      date: Date;
+      for: string;
+      forId: number;
+      from: string;
+      fromId: number;
+      id: number;
+      isoDate: string;
+      messageText: string;
+      threadID: number;
     };
-    indexes: { 'latest': string };
-  }
+    indexes: { date: string; thread: number };
+  };
+  threads: {
+    key: number;
+    value: {
+      latestMessage: Date;
+      user1: string;
+      user1Id: number;
+      user2: string;
+      user2Id: number;
+      numMessages: number;
+      isoDate: string;
+      id: number;
+    };
+    indexes: { latest: string };
+  };
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root",
 })
 export class MockSWManager {
   activeServiceWorkerReg: ServiceWorkerRegistration | undefined;
@@ -106,9 +106,7 @@ export class MockSWManager {
   databaseVersion = 3;
 
   // CTOR
-  constructor(private alertsService:MockAlertsService) {
-
-  }
+  constructor(private alertsService: MockAlertsService) {}
 
   /*
   Function Name: registerSW()
@@ -120,7 +118,7 @@ export class MockSWManager {
   Programmer: Shir Bar Lev.
   */
   registerSW() {
-    return 'registered'
+    return "registered";
   }
 
   /*
@@ -132,14 +130,14 @@ export class MockSWManager {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  checkSWChange(worker:ServiceWorker) {
+  checkSWChange(worker: ServiceWorker) {
     // wait for 'statechange' event on the SW being installed,
     // which means the SW has been installed and is ready to be activated
-    worker.addEventListener('statechange', () => {
-      if(worker.state == 'installed') {
+    worker.addEventListener("statechange", () => {
+      if (worker.state == "installed") {
         this.alertsService.createSWAlert(worker);
       }
-    })
+    });
   }
 
   /*
@@ -152,27 +150,27 @@ export class MockSWManager {
   Programmer: Shir Bar Lev.
   */
   updateSW() {
-    if(this.activeServiceWorkerReg) {
+    if (this.activeServiceWorkerReg) {
       this.activeServiceWorkerReg.update().then(() => {
         // if there's a waiting service worker ready to be activated,
         // alert the user; if they choose to refresh,
-        if(this.activeServiceWorkerReg!.waiting) {
+        if (this.activeServiceWorkerReg!.waiting) {
           this.alertsService.createSWAlert(this.activeServiceWorkerReg!.waiting);
         }
         // if there's a service worker installing
-        else if(this.activeServiceWorkerReg!.installing) {
+        else if (this.activeServiceWorkerReg!.installing) {
           let installingSW = this.activeServiceWorkerReg!.installing;
           this.checkSWChange(installingSW);
         }
         // otherwise wait for an 'updatefound' event
         else {
-          this.activeServiceWorkerReg!.addEventListener('updatefound', () => {
+          this.activeServiceWorkerReg!.addEventListener("updatefound", () => {
             // gets the SW that was found and is now being installed
             let installingSW = this.activeServiceWorkerReg!.installing!;
             this.checkSWChange(installingSW);
-          })
+          });
         }
-      })
+      });
     }
   }
 
@@ -185,7 +183,7 @@ export class MockSWManager {
   Programmer: Shir Bar Lev.
   */
   openDatabase() {
-	  return 'opened';
+    return "opened";
   }
 
   /*
@@ -197,84 +195,87 @@ export class MockSWManager {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  queryPosts(target: string, userID?: number, page?:number) {
-    if(this.currentDB) {
-      return this.currentDB.then(function(db) {
-        let postsStore = db.transaction('posts').store;
+  queryPosts(target: string, userID?: number, page?: number) {
+    if (this.currentDB) {
+      return this.currentDB
+        .then(function (db) {
+          let postsStore = db.transaction("posts").store;
 
-        // if the target is the main page's new posts, get the data from
-        // the posts store
-        if(target == 'main new' || target == 'new posts') {
-          let newPosts = postsStore.index('date');
-          return newPosts.getAll();
-        }
-        // if the target is the main page's suggested posts, get the data from
-        // the posts store
-        else if(target == 'main suggested' || target == 'suggested posts') {
-          let suggestedPosts = postsStore.index('hugs');
-          return suggestedPosts.getAll();
-        }
-        // if the target is a specific user's posts, get the data from
-        // the posts store
-        else if(target == 'user posts') {
-          let userPosts = postsStore.index('user');
-          return userPosts.getAll(userID);
-        }
-      }).then((posts) => {
-        // if there are any posts, check each post
-        if(posts) {
-          posts.forEach(element => {
-            // if there's no display name for that post, get it through the
-            // queryUsers method and add it
-            if(!element.user) {
-              this.queryUsers(element.userId)!.then((userData) => {
-                element.user = userData!.displayName;
-              })
-            }
-          });
-        }
-        return posts;
-      }).then(function(posts) {
-        // get the current page and the start index for the paginated list
-        // if the target is one of the main page's lists, each list should contain
-        // 10 posts; otherwise each list should contain 5 items
-        let currentPage = page ? page: 1;
-        let startIndex = (target == 'main new' || target == 'main suggested') ?
-                          0 : (currentPage - 1) * 5;
+          // if the target is the main page's new posts, get the data from
+          // the posts store
+          if (target == "main new" || target == "new posts") {
+            let newPosts = postsStore.index("date");
+            return newPosts.getAll();
+          }
+          // if the target is the main page's suggested posts, get the data from
+          // the posts store
+          else if (target == "main suggested" || target == "suggested posts") {
+            let suggestedPosts = postsStore.index("hugs");
+            return suggestedPosts.getAll();
+          }
+          // if the target is a specific user's posts, get the data from
+          // the posts store
+          else if (target == "user posts") {
+            let userPosts = postsStore.index("user");
+            return userPosts.getAll(userID);
+          }
+        })
+        .then((posts) => {
+          // if there are any posts, check each post
+          if (posts) {
+            posts.forEach((element) => {
+              // if there's no display name for that post, get it through the
+              // queryUsers method and add it
+              if (!element.user) {
+                this.queryUsers(element.userId)!.then((userData) => {
+                  element.user = userData!.displayName;
+                });
+              }
+            });
+          }
+          return posts;
+        })
+        .then(function (posts) {
+          // get the current page and the start index for the paginated list
+          // if the target is one of the main page's lists, each list should contain
+          // 10 posts; otherwise each list should contain 5 items
+          let currentPage = page ? page : 1;
+          let startIndex =
+            target == "main new" || target == "main suggested" ? 0 : (currentPage - 1) * 5;
 
-        // if the target is the main page's new posts, reverse the order of
-        // the posts (to show the latest posts) and return paginated posts
-        if(target == 'main new') {
-          let newPosts = posts!.reverse();
+          // if the target is the main page's new posts, reverse the order of
+          // the posts (to show the latest posts) and return paginated posts
+          if (target == "main new") {
+            let newPosts = posts!.reverse();
 
-          return newPosts.slice(startIndex, (startIndex + 10));
-        }
-        // if the target is the main page's new posts, return paginated posts
-        else if(target == 'main suggested') {
-          return posts!.slice(startIndex, (startIndex + 10));
-        }
-        // if the target is the fullList's new posts, reverse the order of
-        // the posts (to show the latest posts) and return paginated posts
-        else if(target == 'new posts') {
-          let newPosts = posts!.reverse();
-          let pages = Math.ceil(newPosts.length / 5);
+            return newPosts.slice(startIndex, startIndex + 10);
+          }
+          // if the target is the main page's new posts, return paginated posts
+          else if (target == "main suggested") {
+            return posts!.slice(startIndex, startIndex + 10);
+          }
+          // if the target is the fullList's new posts, reverse the order of
+          // the posts (to show the latest posts) and return paginated posts
+          else if (target == "new posts") {
+            let newPosts = posts!.reverse();
+            let pages = Math.ceil(newPosts.length / 5);
 
-          return {
-            posts: newPosts.slice(startIndex, (startIndex + 5)),
-            pages: pages
-          };
-        }
-        // if the target is the fullList's suggested posts or a specific user's,
-        // posts, return paginated posts (as-is).
-        else if(target == 'suggested posts' || target == 'user posts') {
-          let pages = Math.ceil(posts!.length / 5);
+            return {
+              posts: newPosts.slice(startIndex, startIndex + 5),
+              pages: pages,
+            };
+          }
+          // if the target is the fullList's suggested posts or a specific user's,
+          // posts, return paginated posts (as-is).
+          else if (target == "suggested posts" || target == "user posts") {
+            let pages = Math.ceil(posts!.length / 5);
 
-          return {
-            posts: posts!.slice(startIndex, (startIndex + 5)),
-            pages: pages
-          };
-        }
-      })
+            return {
+              posts: posts!.slice(startIndex, startIndex + 5),
+              pages: pages,
+            };
+          }
+        });
     }
   }
 
@@ -288,44 +289,45 @@ export class MockSWManager {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  queryMessages(target:string, currentUser:number, page:number, threadID?:number) {
-    return this.currentDB?.then(function(db) {
-      // if the target is any of the single-message mailboxes, get the data
-      // from the messages objectStore
-      let messagesStore = db.transaction('messages').store.index('date');
-      return messagesStore.getAll();
-    }).then(function(messages) {
-      // get the current page and the start index for the paginated list
-      // if the target is one of the main page's lists, each list should contain
-      // 10 posts; otherwise each list should contain 5 items
-      let startIndex = (target == 'main new' || target == 'main suggested') ?
-                        0 : (page - 1) * 5;
+  queryMessages(target: string, currentUser: number, page: number, threadID?: number) {
+    return this.currentDB
+      ?.then(function (db) {
+        // if the target is any of the single-message mailboxes, get the data
+        // from the messages objectStore
+        let messagesStore = db.transaction("messages").store.index("date");
+        return messagesStore.getAll();
+      })
+      .then(function (messages) {
+        // get the current page and the start index for the paginated list
+        // if the target is one of the main page's lists, each list should contain
+        // 10 posts; otherwise each list should contain 5 items
+        let startIndex = target == "main new" || target == "main suggested" ? 0 : (page - 1) * 5;
 
-      // if the target is inbox, keep only messages sent to the user and
-      // return paginated inbox messages
-      if(target == 'inbox') {
-        let inbox = messages.filter((e:any) => e.forId == currentUser);
-        let orderedInbox = inbox.reverse();
+        // if the target is inbox, keep only messages sent to the user and
+        // return paginated inbox messages
+        if (target == "inbox") {
+          let inbox = messages.filter((e: any) => e.forId == currentUser);
+          let orderedInbox = inbox.reverse();
 
-        return orderedInbox.slice(startIndex, (startIndex + 5));
-      }
-      // if the target is outbox, keep only messages sent from the user and
-      // return paginated outbox messages
-      else if(target == 'outbox') {
-        let outbox = messages.filter((e:any) => e.fromId == currentUser);
-        let orderedOutbox = outbox.reverse();
+          return orderedInbox.slice(startIndex, startIndex + 5);
+        }
+        // if the target is outbox, keep only messages sent from the user and
+        // return paginated outbox messages
+        else if (target == "outbox") {
+          let outbox = messages.filter((e: any) => e.fromId == currentUser);
+          let orderedOutbox = outbox.reverse();
 
-        return orderedOutbox.slice(startIndex, (startIndex + 5));
-      }
-      // if the target is a specific thread, keep only messages belonging to
-      // that thread nad return paginated messages
-      else if(target == 'thread') {
-        let thread = messages.filter((e:any) => e.threadID == threadID);
-        let orderedThread = thread.reverse();
+          return orderedOutbox.slice(startIndex, startIndex + 5);
+        }
+        // if the target is a specific thread, keep only messages belonging to
+        // that thread nad return paginated messages
+        else if (target == "thread") {
+          let thread = messages.filter((e: any) => e.threadID == threadID);
+          let orderedThread = thread.reverse();
 
-        return orderedThread.slice(startIndex, (startIndex+5));
-      }
-    })
+          return orderedThread.slice(startIndex, startIndex + 5);
+        }
+      });
   }
 
   /*
@@ -335,16 +337,18 @@ export class MockSWManager {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  queryThreads(currentPage:number) {
-    return this.currentDB?.then(function(db) {
-      let threadsStore = db.transaction('threads').store.index('latest');
-      return threadsStore.getAll();
-    }).then(function(threads) {
-      let startIndex = currentPage * 5;
-      let orderedThreads = threads.reverse();
+  queryThreads(currentPage: number) {
+    return this.currentDB
+      ?.then(function (db) {
+        let threadsStore = db.transaction("threads").store.index("latest");
+        return threadsStore.getAll();
+      })
+      .then(function (threads) {
+        let startIndex = currentPage * 5;
+        let orderedThreads = threads.reverse();
 
-      return orderedThreads.slice(startIndex, (startIndex + 5));
-    })
+        return orderedThreads.slice(startIndex, startIndex + 5);
+      });
   }
 
   /*
@@ -354,13 +358,15 @@ export class MockSWManager {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  queryUsers(userID:number) {
-    return this.currentDB?.then(function(db) {
-      let userStore = db.transaction('users').store;
-      return userStore.get(userID);
-    }).then(function(data) {
-      return data;
-    })
+  queryUsers(userID: number) {
+    return this.currentDB
+      ?.then(function (db) {
+        let userStore = db.transaction("users").store;
+        return userStore.get(userID);
+      })
+      .then(function (data) {
+        return data;
+      });
   }
 
   /*
@@ -371,10 +377,10 @@ export class MockSWManager {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  addItem(store: 'posts' | 'messages' | 'users' | 'threads', item: any) {
+  addItem(store: "posts" | "messages" | "users" | "threads", item: any) {
     return this.currentDB?.then((db) => {
       // start a new transaction
-      let dbStore = db.transaction(store, 'readwrite').store;
+      let dbStore = db.transaction(store, "readwrite").store;
       dbStore.put(item);
     });
   }
@@ -387,10 +393,10 @@ export class MockSWManager {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  deleteItem(store: 'posts' | 'messages' | 'users' | 'threads', itemID: number ) {
+  deleteItem(store: "posts" | "messages" | "users" | "threads", itemID: number) {
     return this.currentDB?.then((db) => {
       // start a new transaction
-      let tx = db.transaction(store, 'readwrite');
+      let tx = db.transaction(store, "readwrite");
       let dbStore = tx.objectStore(store);
       // delete the relevant item
       dbStore.delete(itemID);
@@ -407,21 +413,25 @@ export class MockSWManager {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  deleteItems(store: 'posts' | 'messages' | 'users' | 'threads', parentType: string, parentID: number) {
+  deleteItems(
+    store: "posts" | "messages" | "users" | "threads",
+    parentType: string,
+    parentID: number,
+  ) {
     return this.currentDB?.then((db) => {
       // start a new transaction
-      let tx = db.transaction(store, 'readwrite');
+      let tx = db.transaction(store, "readwrite");
       let dbStore = tx.objectStore(store);
       // open a cursor and delete any items with the matching parent's ID
       // open a cursor and delete any messages with the deleted thread's ID
-      dbStore.openCursor().then(function checkItem(cursor):any {
-        if(!cursor) return;
+      dbStore.openCursor().then(function checkItem(cursor): any {
+        if (!cursor) return;
         // @ts-ignore
-        if(cursor.value[parentType] == parentID) {
+        if (cursor.value[parentType] == parentID) {
           cursor.delete();
         }
         return cursor.continue().then(checkItem);
-      })
+      });
     });
   }
 
@@ -432,8 +442,8 @@ export class MockSWManager {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  clearStore(storeID: 'posts' | 'messages' | 'users' | 'threads') {
-	  return storeID;
+  clearStore(storeID: "posts" | "messages" | "users" | "threads") {
+    return storeID;
   }
 
   /*
@@ -443,7 +453,7 @@ export class MockSWManager {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  cleanDB(storeID: 'posts' | 'messages' | 'threads') {
-	return storeID;
+  cleanDB(storeID: "posts" | "messages" | "threads") {
+    return storeID;
   }
 }

@@ -6,7 +6,7 @@ name: Build App
 # events but only for the master branch
 on:
   pull_request:
-    branches: [ staging ]
+    branches: [staging]
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -45,6 +45,6 @@ jobs:
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v3
         with:
-          commit-message: 'Updated distribution files.'
-          title: 'Updated distribution files.'
-          branch: 'dist/distribution_files_update'
+          commit-message: "Updated distribution files."
+          title: "Updated distribution files."
+          branch: "dist/distribution_files_update"

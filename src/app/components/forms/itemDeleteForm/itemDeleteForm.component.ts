@@ -31,17 +31,17 @@
 */
 
 // Angular imports
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from "@angular/core";
 
 // App-related import
-import { AuthService } from '../../../services/auth.service';
-import { ItemsService } from '../../../services/items.service';
-import { PostsService } from '../../../services/posts.service';
-import { AdminService } from '../../../services/admin.service';
+import { AuthService } from "../../../services/auth.service";
+import { ItemsService } from "../../../services/items.service";
+import { PostsService } from "../../../services/posts.service";
+import { AdminService } from "../../../services/admin.service";
 
 @Component({
-  selector: 'item-delete-form',
-  templateUrl: './itemDeleteForm.component.html'
+  selector: "item-delete-form",
+  templateUrl: "./itemDeleteForm.component.html",
 })
 export class ItemDeleteForm {
   // indicates whether edit/delete mode is still required
@@ -55,13 +55,11 @@ export class ItemDeleteForm {
 
   // CTOR
   constructor(
-    public authService:AuthService,
-    private itemsService:ItemsService,
-    private postsService:PostsService,
-    private adminService:AdminService,
-  ) {
-
-  }
+    public authService: AuthService,
+    private itemsService: ItemsService,
+    private postsService: PostsService,
+    private adminService: AdminService,
+  ) {}
 
   /*
   Function Name: deleteItem()
@@ -72,23 +70,27 @@ export class ItemDeleteForm {
   */
   deleteItem() {
     // if it's a post, send a request to delete the post
-    if(this.toDelete == 'Post') {
+    if (this.toDelete == "Post") {
       this.postsService.deletePost(this.itemToDelete!);
     }
     // if it's a message, send a request to delete the message
-    else if(this.toDelete == 'Message') {
+    else if (this.toDelete == "Message") {
       this.itemsService.deleteMessage(this.itemToDelete!, this.messType!);
     }
     // if it's a thread, send a request to delete the thread
-    else if(this.toDelete == 'Thread') {
+    else if (this.toDelete == "Thread") {
       this.itemsService.deleteThread(this.itemToDelete!);
     }
     // if the user is attempting to delete all of the user's posts
-    else if(this.toDelete == 'All posts') {
+    else if (this.toDelete == "All posts") {
       this.postsService.deleteAllPosts(this.itemToDelete!);
     }
     // if the user is attempting to delete all of their messages of a specific type
-    else if(this.toDelete == 'All inbox' || this.toDelete == 'All outbox' || this.toDelete == 'All threads') {
+    else if (
+      this.toDelete == "All inbox" ||
+      this.toDelete == "All outbox" ||
+      this.toDelete == "All threads"
+    ) {
       this.itemsService.deleteAll(this.toDelete, this.itemToDelete!);
     }
 
@@ -103,7 +105,7 @@ export class ItemDeleteForm {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  deletePost(closeReport:boolean) {
+  deletePost(closeReport: boolean) {
     this.adminService.deletePost(this.itemToDelete!, this.reportData, closeReport);
     this.editMode.emit(false);
   }

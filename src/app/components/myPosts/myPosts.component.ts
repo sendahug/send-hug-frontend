@@ -31,38 +31,38 @@
 */
 
 // Angular imports
-import { Component, OnInit, Input } from '@angular/core';
-import { faFlag } from '@fortawesome/free-regular-svg-icons';
-import { faHandHoldingHeart } from '@fortawesome/free-solid-svg-icons';
+import { Component, OnInit, Input } from "@angular/core";
+import { faFlag } from "@fortawesome/free-regular-svg-icons";
+import { faHandHoldingHeart } from "@fortawesome/free-solid-svg-icons";
 
 // App-related imports
-import { Post } from '../../interfaces/post.interface';
-import { ItemsService } from '../../services/items.service';
-import { AuthService } from '../../services/auth.service';
-import { PostsService } from '../../services/posts.service';
+import { Post } from "../../interfaces/post.interface";
+import { ItemsService } from "../../services/items.service";
+import { AuthService } from "../../services/auth.service";
+import { PostsService } from "../../services/posts.service";
 
 @Component({
-  selector: 'app-my-posts',
-  templateUrl: './myPosts.component.html'
+  selector: "app-my-posts",
+  templateUrl: "./myPosts.component.html",
 })
 export class MyPosts implements OnInit {
   // edit popup sub-component variables
   postToEdit: Post | undefined;
   editType: string | undefined;
-  editMode:boolean;
-  delete:boolean;
+  editMode: boolean;
+  delete: boolean;
   toDelete: string | undefined;
   itemToDelete: number | undefined;
-  report:boolean;
+  report: boolean;
   reportedItem: Post | undefined;
-  reportType = 'Post';
+  reportType = "Post";
   lastFocusedElement: any;
   // loader sub-component variable
-  waitFor = 'user posts';
+  waitFor = "user posts";
   // The user whose posts to fetch
   @Input()
-  userID:number | undefined;
-  user!: 'self' | 'other';
+  userID: number | undefined;
+  user!: "self" | "other";
   page: number;
   // icons
   faFlag = faFlag;
@@ -70,17 +70,17 @@ export class MyPosts implements OnInit {
 
   // CTOR
   constructor(
-    public itemsService:ItemsService,
-    public authService:AuthService,
-    private postsService:PostsService
+    public itemsService: ItemsService,
+    public authService: AuthService,
+    private postsService: PostsService,
   ) {
     // if there's a user ID in the viewed profile, get that user's posts
-    if(this.userID && this.userID != this.authService.userData.id!) {
-      this.user = 'other';
+    if (this.userID && this.userID != this.authService.userData.id!) {
+      this.user = "other";
     }
     // if there isn't, it's the user's own profile, so get their posts
     else {
-      this.user = 'self';
+      this.user = "self";
     }
 
     this.editMode = false;
@@ -100,14 +100,14 @@ export class MyPosts implements OnInit {
   */
   ngOnInit() {
     // if the user ID is different than the logged in user, it's someone else
-    if(this.userID && this.userID != this.authService.userData.id) {
+    if (this.userID && this.userID != this.authService.userData.id) {
       this.itemsService.getUserPosts(this.userID, 1);
-      this.user = 'other';
+      this.user = "other";
     }
     // otherwise, if it's the same ID or there's no ID, get the user's profile
     else {
       this.itemsService.getUserPosts(this.authService.userData.id!, 1);
-      this.user = 'self';
+      this.user = "self";
     }
   }
 
@@ -118,9 +118,9 @@ export class MyPosts implements OnInit {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  editPost(post:Post) {
+  editPost(post: Post) {
     this.lastFocusedElement = document.activeElement;
-    this.editType = 'post';
+    this.editType = "post";
     this.postToEdit = post;
     this.editMode = true;
   }
@@ -135,7 +135,7 @@ export class MyPosts implements OnInit {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  changeMode(edit:boolean) {
+  changeMode(edit: boolean) {
     this.editMode = edit;
     this.lastFocusedElement.focus();
   }
@@ -147,11 +147,11 @@ export class MyPosts implements OnInit {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  deletePost(post_id:number) {
+  deletePost(post_id: number) {
     this.lastFocusedElement = document.activeElement;
     this.editMode = true;
     this.delete = true;
-    this.toDelete = 'Post';
+    this.toDelete = "Post";
     this.itemToDelete = post_id;
   }
 
@@ -167,7 +167,7 @@ export class MyPosts implements OnInit {
     this.lastFocusedElement = document.activeElement;
     this.editMode = true;
     this.delete = true;
-    this.toDelete = 'All posts';
+    this.toDelete = "All posts";
     // if there's a user ID, take the selected user's ID. Otherwise, it's the
     // user's own profile, so take their ID from the Auth Service.
     this.itemToDelete = this.userID ? this.userID : this.authService.userData.id;
@@ -180,12 +180,12 @@ export class MyPosts implements OnInit {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  reportPost(post:Post) {
+  reportPost(post: Post) {
     this.lastFocusedElement = document.activeElement;
-	  this.editMode = true;
-	  this.delete = false;
-	  this.report = true;
-	  this.reportedItem = post;
+    this.editMode = true;
+    this.delete = false;
+    this.report = true;
+    this.reportedItem = post;
   }
 
   /*
@@ -196,9 +196,9 @@ export class MyPosts implements OnInit {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  sendHug(itemID:number) {
+  sendHug(itemID: number) {
     let item = {};
-    item = this.itemsService.userPosts.other.filter(e => e.id == itemID)[0];
+    item = this.itemsService.userPosts.other.filter((e) => e.id == itemID)[0];
     this.postsService.sendHug(item);
   }
 
@@ -212,10 +212,9 @@ export class MyPosts implements OnInit {
   */
   nextPage() {
     this.page += 1;
-    if(this.user == 'self') {
+    if (this.user == "self") {
       this.itemsService.getUserPosts(this.authService.userData.id!, this.page);
-    }
-    else {
+    } else {
       this.itemsService.getUserPosts(this.userID!, this.page);
     }
   }
@@ -230,10 +229,9 @@ export class MyPosts implements OnInit {
   */
   prevPage() {
     this.page -= 1;
-    if(this.user == 'self') {
+    if (this.user == "self") {
       this.itemsService.getUserPosts(this.authService.userData.id!, this.page);
-    }
-    else {
+    } else {
       this.itemsService.getUserPosts(this.userID!, this.page);
     }
   }

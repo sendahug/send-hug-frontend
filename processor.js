@@ -14,23 +14,26 @@ const fs = require("fs");
   Inspited by @rollup/plugin-replce
   https://github.com/rollup/plugins/blob/master/packages/replace/src/index.js
 */
-exports.replaceTemplateUrl = function() {
+exports.replaceTemplateUrl = function () {
   return {
-    name: 'replacer',
+    name: "replacer",
     transform(code) {
-      const magicString  = new MagicString(code);
+      const magicString = new MagicString(code);
 
-      magicString.replace(/(templateUrl:'.)(.*)(.component.html')/, (match) => {
-        const componentName = match.substring(15, match.length-16);
-        if(componentName == 'my') return match;
+      magicString.replace(/(templateUrl:)(.*)(\.component\.html")/, (match) => {
+        const componentName = match.split(".")[1].substring(1);
+        if (componentName == "my") return match;
         let componentTemplateURL;
 
-        if(componentName == 'app') {
+        if (componentName == "app") {
           componentTemplateURL = __dirname + `/src/app/${componentName}.component.html`;
-        } else if(componentName.includes('Form')) {
-          componentTemplateURL = __dirname + `/src/app/components/forms/${componentName}/${componentName}.component.html`;
+        } else if (componentName.includes("Form")) {
+          componentTemplateURL =
+            __dirname +
+            `/src/app/components/forms/${componentName}/${componentName}.component.html`;
         } else {
-          componentTemplateURL = __dirname + `/src/app/components/${componentName}/${componentName}.component.html`;
+          componentTemplateURL =
+            __dirname + `/src/app/components/${componentName}/${componentName}.component.html`;
         }
 
         componentTemplate = fs.readFileSync(componentTemplateURL);
@@ -40,12 +43,11 @@ exports.replaceTemplateUrl = function() {
 
       return {
         code: magicString.toString(),
-        map: magicString.generateMap()
-      }
-    }
-  }
-}
-
+        map: magicString.generateMap(),
+      };
+    },
+  };
+};
 
 /*
   Function Name: inlineSVGs()
@@ -56,16 +58,16 @@ exports.replaceTemplateUrl = function() {
   ----------------
   Programmer: Shir Bar Lev.
 */
-exports.inlineSVGs = function() {
+exports.inlineSVGs = function () {
   return {
-    name: 'inliner',
+    name: "inliner",
     transform(code) {
-      const magicString  = new MagicString(code);
+      const magicString = new MagicString(code);
 
       // inline the SVGs
       magicString.replace(/(<img src="..\/assets.)(.*)(.">)/g, (match) => {
-        const altIndex = match.indexOf('alt');
-        const url = match.substring(13, altIndex-2);
+        const altIndex = match.indexOf("alt");
+        const url = match.substring(13, altIndex - 2);
         const svg = fs.readFileSync(__dirname + `/src/${url}`);
 
         return `${svg}`;
@@ -73,11 +75,11 @@ exports.inlineSVGs = function() {
 
       return {
         code: magicString.toString(),
-        map: magicString.generateMap()
-      }
-    }
-  }
-}
+        map: magicString.generateMap(),
+      };
+    },
+  };
+};
 
 /*
 Function Name: setProductionEnv()
@@ -88,16 +90,16 @@ Parameters: None.
 ----------------
 Programmer: Shir Bar Lev.
 */
-exports.setProductionEnv = function() {
+exports.setProductionEnv = function () {
   return {
-    name: 'production-setter',
+    name: "production-setter",
     transform(code) {
       const magicString = new MagicString(code);
       let tempString = magicString.toString();
 
       const environment = tempString.match(/environments\/environment/);
 
-      if(environment) {
+      if (environment) {
         const start = environment.index;
         const end = start + environment[0].length;
         const newString = `environments/environment.prod`;
@@ -107,8 +109,8 @@ exports.setProductionEnv = function() {
 
       return {
         code: magicString.toString(),
-        map: magicString.generateMap()
-      }
-    }
-  }
-}
+        map: magicString.generateMap(),
+      };
+    },
+  };
+};

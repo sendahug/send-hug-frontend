@@ -31,20 +31,30 @@
 */
 
 // Angular imports
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from "@angular/core";
 
 // App-related import
-import { Post } from '../../../interfaces/post.interface';
-import { Report } from '../../../interfaces/report.interface';
-import { OtherUser } from '../../../interfaces/otherUser.interface';
-import { AuthService } from '../../../services/auth.service';
-import { ItemsService } from '../../../services/items.service';
-import { AlertsService } from '../../../services/alerts.service';
-import { ValidationService } from '../../../services/validation.service';
+import { Post } from "../../../interfaces/post.interface";
+import { Report } from "../../../interfaces/report.interface";
+import { OtherUser } from "../../../interfaces/otherUser.interface";
+import { AuthService } from "../../../services/auth.service";
+import { ItemsService } from "../../../services/items.service";
+import { AlertsService } from "../../../services/alerts.service";
+import { ValidationService } from "../../../services/validation.service";
 
 // Reasons for submitting a report
-enum postReportReasons { Inappropriate, Spam, Offensive, Other };
-enum userReportReasons { Spam, 'harmful / dangerous content', 'abusive manner', Other};
+enum postReportReasons {
+  Inappropriate,
+  Spam,
+  Offensive,
+  Other,
+}
+enum userReportReasons {
+  Spam,
+  "harmful / dangerous content",
+  "abusive manner",
+  Other,
+}
 
 const reportReasonsText = {
   Post: {
@@ -58,12 +68,12 @@ const reportReasonsText = {
     1: "They are posting harmful / dangerous content.",
     2: "They are behaving in an abusive manner.",
     3: "Other:",
-  }
+  },
 };
 
 @Component({
-  selector: 'report-form',
-  templateUrl: './reportForm.component.html'
+  selector: "report-form",
+  templateUrl: "./reportForm.component.html",
 })
 export class ReportForm {
   // indicates whether edit/delete mode is still required
@@ -71,19 +81,17 @@ export class ReportForm {
   // reported post
   @Input() reportedItem: Post | OtherUser | undefined;
   // type of item to report
-  @Input() reportType: 'User' | 'Post' | undefined;
+  @Input() reportType: "User" | "Post" | undefined;
   selectedReason: string | undefined;
   reportReasonsText = reportReasonsText;
 
   // CTOR
   constructor(
-    public authService:AuthService,
-    private itemsService:ItemsService,
-    private alertsService:AlertsService,
-    private validationService:ValidationService
-  ) {
-
-  }
+    public authService: AuthService,
+    private itemsService: ItemsService,
+    private alertsService: AlertsService,
+    private validationService: ValidationService,
+  ) {}
 
   /*
   Function Name: setSelected()
@@ -93,36 +101,35 @@ export class ReportForm {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  setSelected(selectedItem:string | number) {
+  setSelected(selectedItem: string | number) {
     selectedItem = Number(selectedItem);
-    let otherText = document.getElementById('rOption3Text') as HTMLInputElement;
+    let otherText = document.getElementById("rOption3Text") as HTMLInputElement;
 
     // If the selected reason is one of the set reasons, simply send it as is
-    if(selectedItem == 0 || selectedItem == 1 || selectedItem == 2) {
+    if (selectedItem == 0 || selectedItem == 1 || selectedItem == 2) {
       // if the item being reported is a post
-      if(this.reportType == 'Post') {
+      if (this.reportType == "Post") {
         this.selectedReason = `The post is ${postReportReasons[selectedItem]}`;
       }
       // if the item being reported is a user
       else {
-        if(selectedItem == 2) {
+        if (selectedItem == 2) {
           this.selectedReason = `The user is behaving in an ${userReportReasons[selectedItem]}`;
-        }
-        else {
+        } else {
           this.selectedReason = `The user is posting ${userReportReasons[selectedItem]}`;
         }
       }
 
       otherText.disabled = true;
       otherText.required = false;
-      otherText.setAttribute('aria-required', 'false');
+      otherText.setAttribute("aria-required", "false");
     }
     // If the user chose to put their own input, take that as the reason
     else {
       otherText.disabled = false;
       otherText.required = true;
-      this.selectedReason = 'other';
-      otherText.setAttribute('aria-required', 'true');
+      this.selectedReason = "other";
+      otherText.setAttribute("aria-required", "true");
     }
   }
 
@@ -135,15 +142,16 @@ export class ReportForm {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  createReport(e:Event) {
+  createReport(e: Event) {
     e.preventDefault();
-    let item = this.reportType == 'User' ? this.reportedItem as OtherUser : this.reportedItem as Post;
-    let otherText = document.getElementById('rOption3Text') as HTMLInputElement;
+    let item =
+      this.reportType == "User" ? (this.reportedItem as OtherUser) : (this.reportedItem as Post);
+    let otherText = document.getElementById("rOption3Text") as HTMLInputElement;
 
     // if the selected reason for the report is 'other', get the value of the text inputted
-    if(this.selectedReason == 'other') {
+    if (this.selectedReason == "other") {
       // if the input is valid, get the value
-      if(this.validationService.validateItem('reportOther', otherText.value, 'rOption3Text')) {
+      if (this.validationService.validateItem("reportOther", otherText.value, "rOption3Text")) {
         this.selectedReason = otherText.value;
       } else {
         return;
@@ -152,21 +160,21 @@ export class ReportForm {
 
     // create a new report
     let report: Report = {
-      type: this.reportType as 'Post' | 'User',
+      type: this.reportType as "Post" | "User",
       userID: 0,
       postID: undefined,
       reporter: this.authService.userData.id!,
       reportReason: this.selectedReason!,
       date: new Date(),
       dismissed: false,
-      closed: false
-    }
+      closed: false,
+    };
 
-    if(this.reportType == 'Post') {
-      report['userID'] = (item as Post).userId;
-      report['postID'] = (item as Post).id;
+    if (this.reportType == "Post") {
+      report["userID"] = (item as Post).userId;
+      report["postID"] = (item as Post).id;
     } else {
-      report['userID'] = (item as OtherUser).id;
+      report["userID"] = (item as OtherUser).id;
     }
 
     // pass it on to the items service to send

@@ -31,21 +31,28 @@
 */
 
 // Angular imports
-import { Component, OnInit, HostListener, AfterViewInit, AfterViewChecked } from '@angular/core';
-import { Router, NavigationStart } from '@angular/router';
-import { faComments, faUserCircle, faCompass, faBell } from '@fortawesome/free-regular-svg-icons';
-import { faBars, faSearch, faTimes, faTextHeight } from '@fortawesome/free-solid-svg-icons';
+import {
+  Component,
+  OnInit,
+  HostListener,
+  AfterViewInit,
+  AfterViewChecked,
+  signal,
+} from "@angular/core";
+import { Router, NavigationStart } from "@angular/router";
+import { faComments, faUserCircle, faCompass, faBell } from "@fortawesome/free-regular-svg-icons";
+import { faBars, faSearch, faTimes, faTextHeight } from "@fortawesome/free-solid-svg-icons";
 
 // App-related imports
-import { AuthService } from './services/auth.service';
-import { ItemsService } from './services/items.service';
-import { AlertsService } from './services/alerts.service';
-import { SWManager } from './services/sWManager.service';
-import { NotificationService } from './services/notifications.service';
+import { AuthService } from "./services/auth.service";
+import { ItemsService } from "./services/items.service";
+import { AlertsService } from "./services/alerts.service";
+import { SWManager } from "./services/sWManager.service";
+import { NotificationService } from "./services/notifications.service";
 
 @Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html'
+  selector: "app-root",
+  templateUrl: "./app.component.html",
 })
 export class AppComponent implements OnInit, AfterViewInit, AfterViewChecked {
   showNotifications = false;
@@ -53,6 +60,9 @@ export class AppComponent implements OnInit, AfterViewInit, AfterViewChecked {
   showTextPanel = false;
   showMenu = false;
   canShare = false;
+  inactiveLinkClass = "navLink";
+  activeLinkClass = "navLink active";
+  currentlyActiveRoute = signal("/");
   // font awesome icons
   faBars = faBars;
   faComments = faComments;
@@ -64,29 +74,29 @@ export class AppComponent implements OnInit, AfterViewInit, AfterViewChecked {
   faTextHeight = faTextHeight;
 
   constructor(
-    public authService:AuthService,
-    private itemsService:ItemsService,
-    private alertsService:AlertsService,
-    private router:Router,
-    private serviceWorkerM:SWManager,
-    public notificationService:NotificationService
+    public authService: AuthService,
+    private itemsService: ItemsService,
+    private alertsService: AlertsService,
+    private router: Router,
+    private serviceWorkerM: SWManager,
+    public notificationService: NotificationService,
   ) {
     this.authService.checkHash();
 
     // if the user is logged in, and their data is fetched, start auto-refresh
     this.authService.isUserDataResolved.subscribe((value) => {
-      if(value) {
+      if (value) {
         // if push notifications are enabled, get subscription and auto-refresh data from localStorage
-        if(this.authService.userData.pushEnabled) {
+        if (this.authService.userData.pushEnabled) {
           this.notificationService.getSubscription();
         }
 
         // if auto-refresh is enabled, start auto-refresh
-        if(this.authService.userData.autoRefresh) {
+        if (this.authService.userData.autoRefresh) {
           this.notificationService.startAutoRefresh();
         }
       }
-    })
+    });
   }
 
   /*
@@ -101,23 +111,22 @@ export class AppComponent implements OnInit, AfterViewInit, AfterViewChecked {
   */
   ngOnInit() {
     this.serviceWorkerM.registerSW();
-    let navMenu = document.getElementById('navLinks') as HTMLDivElement;
+    let navMenu = document.getElementById("navLinks") as HTMLDivElement;
 
     // when navigating to another page, check for updates to the ServiceWorker
     this.router.events.subscribe((event) => {
-      if(event instanceof NavigationStart) {
+      if (event instanceof NavigationStart) {
         this.serviceWorkerM.updateSW();
         // if the menu was open and the user navigated to another page, close it
-        if(!navMenu.classList.contains('hidden')) {
-          navMenu.classList.add('hidden');
+        if (!navMenu.classList.contains("hidden")) {
+          navMenu.classList.add("hidden");
         }
       }
-    })
+    });
 
-    if('share' in navigator) {
+    if ("share" in navigator) {
       this.canShare = true;
-    }
-    else {
+    } else {
       this.canShare = false;
     }
   }
@@ -131,73 +140,35 @@ export class AppComponent implements OnInit, AfterViewInit, AfterViewChecked {
   Programmer: Shir Bar Lev.
   */
   ngAfterViewInit() {
-    if(document.documentElement.clientWidth > 650) {
-        this.showMenu = true;
+    if (document.documentElement.clientWidth > 650) {
+      this.showMenu = true;
     }
 
     this.router.events.subscribe((event) => {
-      if(event instanceof NavigationStart) {
-        let navItems = document.querySelectorAll('.navLink');
-
-        // remove 'active' class from the previously active component's link
-        navItems.forEach((navLink) => {
-          if(navLink.classList.contains('active')) {
-            navLink.classList.remove('active');
-          }
-        })
-
-        // check which link needs to be marked now
+      if (event instanceof NavigationStart) {
         // if the current URL is the main page
-        if(event.url == '/') {
-          navItems[1].classList.add('active');
-        }
-        // if the current URL is one of the mailboxes
-        else if(event.url.startsWith('/messages')) {
-          navItems[2].classList.add('active');
-        }
-        // if the current URL is the new post page
-        else if(event.url == '/new/Post') {
-          // ensure only authenticated users can access this page
-          if(this.authService.authenticated) {
-            navItems[3].classList.add('active');
-          }
-        }
-        // if the current URL is the user's own profile
-        else if(event.url.startsWith('/user')) {
-          // if the user is logged in, they have the new post tab, so the new active link
-          // is different
-          if(this.authService.authenticated) {
-            // only marks the link as active if the user is viewing their own profile
-            if(event.url == `/user` || event.url == `/user/${this.authService.userData.id}`) {
-              navItems[4].classList.add('active');
-            }
-          }
-          // if the user isn't logged in, the new active link is different
-          else {
-            navItems[3].classList.add('active');
-          }
-        }
-        // if the current URL is the about page
-        else if(event.url == '/about') {
-          // if the user is logged in, they have the new post tab, so the new active link
-          // is different
-          if(this.authService.authenticated) {
-            navItems[5].classList.add('active');
-          }
-          // if the user isn't logged in, the new active link is different
-          else {
-            navItems[4].classList.add('active');
-          }
-        }
-        // if the current URL is the admin's page
-        else if(event.url.startsWith('/admin')) {
-          // ensure only authenticated users can access this page
-          if(this.authService.authenticated) {
-            navItems[6].classList.add('active');
+        // or the about page
+        if (event.url == "/" || event.url == "/about") {
+          this.currentlyActiveRoute.set(event.url);
+          // if it's any of the messages/admin/new pages
+        } else if (
+          event.url.startsWith("/messages") ||
+          event.url.startsWith("/admin") ||
+          event.url.startsWith("/new")
+        ) {
+          this.currentlyActiveRoute.set(`/${event.url.split("/")[1]}`);
+        } else if (event.url.startsWith("/user")) {
+          // if the user is logged in and viewing their own page, or
+          // if they're viewing the /user page
+          if (
+            event.url == `/user` ||
+            (this.authService.authenticated && event.url == `/user/${this.authService.userData.id}`)
+          ) {
+            this.currentlyActiveRoute.set("/user");
           }
         }
       }
-    })
+    });
   }
 
   /*
@@ -210,29 +181,29 @@ export class AppComponent implements OnInit, AfterViewInit, AfterViewChecked {
   Programmer: Shir Bar Lev.
   */
   ngAfterViewChecked() {
-    let navLinks = document.getElementById('navLinks') as HTMLDivElement;
-    let menuBtn = document.getElementById('menuBtn') as HTMLDivElement;
+    let navLinks = document.getElementById("navLinks") as HTMLDivElement;
+    let menuBtn = document.getElementById("menuBtn") as HTMLDivElement;
 
     // check the client width; if it's bigger than 650px and the menu needs to
     // be shown, show it
-    if((document.documentElement.clientWidth > 650 && this.showMenu) || this.showMenu) {
-      if(navLinks.classList.contains('hidden')) {
-        navLinks.classList.remove('hidden');
-        navLinks.classList.remove('large');
-        navLinks.setAttribute('aria-hidden', 'false');
+    if ((document.documentElement.clientWidth > 650 && this.showMenu) || this.showMenu) {
+      if (navLinks.classList.contains("hidden")) {
+        navLinks.classList.remove("hidden");
+        navLinks.classList.remove("large");
+        navLinks.setAttribute("aria-hidden", "false");
         this.showMenu = true;
 
-        if(document.documentElement.clientWidth > 650) {
-          menuBtn.classList.add('hidden');
+        if (document.documentElement.clientWidth > 650) {
+          menuBtn.classList.add("hidden");
         }
       }
     }
     // otherwise hide it
     else {
-      navLinks.classList.add('large');
-      navLinks.classList.add('hidden');
-      menuBtn.classList.remove('hidden');
-      navLinks.setAttribute('aria-hidden', 'true');
+      navLinks.classList.add("large");
+      navLinks.classList.add("hidden");
+      menuBtn.classList.remove("hidden");
+      navLinks.setAttribute("aria-hidden", "true");
       this.showMenu = false;
     }
   }
@@ -245,32 +216,35 @@ export class AppComponent implements OnInit, AfterViewInit, AfterViewChecked {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  searchApp(e:Event, searchQuery:string) {
+  searchApp(e: Event, searchQuery: string) {
     e.preventDefault();
     this.showSearch = false;
 
     // if there's something in the search query text field, search for it
-    if(searchQuery) {
+    if (searchQuery) {
       // if the textfield was marked red, remove it
-      if(document.getElementById('searchQuery')!.classList.contains('missing')) {
-        document.getElementById('searchQuery')!.classList.remove('missing');
+      if (document.getElementById("searchQuery")!.classList.contains("missing")) {
+        document.getElementById("searchQuery")!.classList.remove("missing");
       }
 
       this.itemsService.sendSearch(searchQuery);
       // clears the search box
-      let searchBox = document.getElementById('searchQuery') as HTMLInputElement;
-      searchBox.value = '';
+      let searchBox = document.getElementById("searchQuery") as HTMLInputElement;
+      searchBox.value = "";
       //navigate to search results
-      this.router.navigate(['search'], {
+      this.router.navigate(["search"], {
         queryParams: {
-          query: searchQuery
-        }
+          query: searchQuery,
+        },
       });
     }
     // otherwise alert the user there are no empty searches
     else {
-      this.alertsService.createAlert({ message: 'Search query is empty! Please write a term to search for.', type: 'Error' })
-      document.getElementById('searchQuery')!.classList.add('missing');
+      this.alertsService.createAlert({
+        message: "Search query is empty! Please write a term to search for.",
+        type: "Error",
+      });
+      document.getElementById("searchQuery")!.classList.add("missing");
     }
   }
 
@@ -283,15 +257,15 @@ export class AppComponent implements OnInit, AfterViewInit, AfterViewChecked {
   */
   toggleNotifications() {
     let width = document.documentElement.clientWidth;
-    let navMenu = document.getElementById('navLinks') as HTMLDivElement;
+    let navMenu = document.getElementById("navLinks") as HTMLDivElement;
 
     this.showNotifications = true;
 
     // if the viewport is smaller than 650px, the user opened the panel through the
     // menu, which needs to be closed
-    if(width < 650) {
+    if (width < 650) {
       this.showMenu = false;
-      navMenu.classList.add('hidden');
+      navMenu.classList.add("hidden");
     }
   }
 
@@ -304,24 +278,24 @@ export class AppComponent implements OnInit, AfterViewInit, AfterViewChecked {
   */
   toggleSearch() {
     let width = document.documentElement.clientWidth;
-    let navMenu = document.getElementById('navLinks') as HTMLDivElement;
+    let navMenu = document.getElementById("navLinks") as HTMLDivElement;
 
     // if the search is displayed, close it
-    if(this.showSearch) {
+    if (this.showSearch) {
       this.showSearch = false;
 
       // if the viewport is smaller than 650px, the user opened the panel through the
       // menu, which needs to be closed
-      if(width < 650) {
-        navMenu.classList.remove('hidden');
+      if (width < 650) {
+        navMenu.classList.remove("hidden");
       }
     }
     // otherwise show it
     else {
       // if the viewport is smaller than 650px, the user opened the panel through the
       // menu, which needs to be closed
-      if(width < 650) {
-        navMenu.classList.add('hidden');
+      if (width < 650) {
+        navMenu.classList.add("hidden");
       }
 
       this.showSearch = true;
@@ -337,15 +311,15 @@ export class AppComponent implements OnInit, AfterViewInit, AfterViewChecked {
   Programmer: Shir Bar Lev.
   */
   toggleMenu() {
-    let navMenu = document.getElementById('navLinks') as HTMLDivElement;
+    let navMenu = document.getElementById("navLinks") as HTMLDivElement;
     // if the menu is displayed, close it
-    if(!navMenu.classList.contains('hidden')) {
-      navMenu.classList.add('hidden');
+    if (!navMenu.classList.contains("hidden")) {
+      navMenu.classList.add("hidden");
       this.showMenu = false;
     }
     // otherwise show it
     else {
-      navMenu.classList.remove('hidden');
+      navMenu.classList.remove("hidden");
       this.showMenu = true;
     }
   }
@@ -358,31 +332,30 @@ export class AppComponent implements OnInit, AfterViewInit, AfterViewChecked {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  @HostListener('window:resize', ['$event'])
-  onResize(_event:Event) {
+  @HostListener("window:resize", ["$event"])
+  onResize(_event: Event) {
     let width = document.documentElement.clientWidth;
-    let navMenu = document.getElementById('navMenu') as HTMLDivElement;
-    let navLinks = document.getElementById('navLinks') as HTMLDivElement;
-    let menuBtn = document.getElementById('menuBtn') as HTMLDivElement;
+    let navMenu = document.getElementById("navMenu") as HTMLDivElement;
+    let navLinks = document.getElementById("navLinks") as HTMLDivElement;
+    let menuBtn = document.getElementById("menuBtn") as HTMLDivElement;
 
-    if(width > 650 && navLinks.scrollWidth < navMenu.offsetWidth) {
-      if(navLinks.classList.contains('hidden')) {
-        navLinks.classList.remove('hidden');
-        navLinks.classList.remove('large');
-        navLinks.setAttribute('aria-hidden', 'false');
+    if (width > 650 && navLinks.scrollWidth < navMenu.offsetWidth) {
+      if (navLinks.classList.contains("hidden")) {
+        navLinks.classList.remove("hidden");
+        navLinks.classList.remove("large");
+        navLinks.setAttribute("aria-hidden", "false");
         this.showMenu = true;
       }
 
-      if(document.documentElement.clientWidth > 650) {
-        menuBtn.classList.add('hidden');
+      if (document.documentElement.clientWidth > 650) {
+        menuBtn.classList.add("hidden");
       }
-    }
-    else {
-      if(!navLinks.classList.contains('hidden')) {
-        navLinks.classList.add('large');
-        navLinks.classList.add('hidden');
-        menuBtn.classList.remove('hidden');
-        navLinks.setAttribute('aria-hidden', 'true');
+    } else {
+      if (!navLinks.classList.contains("hidden")) {
+        navLinks.classList.add("large");
+        navLinks.classList.add("hidden");
+        menuBtn.classList.remove("hidden");
+        navLinks.setAttribute("aria-hidden", "true");
         this.showMenu = false;
       }
     }
@@ -397,10 +370,9 @@ export class AppComponent implements OnInit, AfterViewInit, AfterViewChecked {
   Programmer: Shir Bar Lev.
   */
   toggleSizePanel() {
-    if(this.showTextPanel) {
+    if (this.showTextPanel) {
       this.showTextPanel = false;
-    }
-    else {
+    } else {
       this.showTextPanel = true;
     }
   }
@@ -412,27 +384,27 @@ export class AppComponent implements OnInit, AfterViewInit, AfterViewChecked {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  changeTextSize(size:string) {
-    switch(size) {
-      case 'smallest':
-        document.getElementsByTagName('html')[0]!.style.fontSize = "75%";
-        this.checkMenuSize()
+  changeTextSize(size: string) {
+    switch (size) {
+      case "smallest":
+        document.getElementsByTagName("html")[0]!.style.fontSize = "75%";
+        this.checkMenuSize();
         break;
-      case 'smaller':
-        document.getElementsByTagName('html')[0]!.style.fontSize = "87.5%";
-        this.checkMenuSize()
+      case "smaller":
+        document.getElementsByTagName("html")[0]!.style.fontSize = "87.5%";
+        this.checkMenuSize();
         break;
-      case 'regular':
-        document.getElementsByTagName('html')[0]!.style.fontSize = "100%";
-        this.checkMenuSize()
+      case "regular":
+        document.getElementsByTagName("html")[0]!.style.fontSize = "100%";
+        this.checkMenuSize();
         break;
-      case 'larger':
-        document.getElementsByTagName('html')[0]!.style.fontSize = "150%";
-        this.checkMenuSize()
+      case "larger":
+        document.getElementsByTagName("html")[0]!.style.fontSize = "150%";
+        this.checkMenuSize();
         break;
-      case 'largest':
-        document.getElementsByTagName('html')[0]!.style.fontSize = "200%";
-        this.checkMenuSize()
+      case "largest":
+        document.getElementsByTagName("html")[0]!.style.fontSize = "200%";
+        this.checkMenuSize();
         break;
     }
   }
@@ -446,35 +418,34 @@ export class AppComponent implements OnInit, AfterViewInit, AfterViewChecked {
   Programmer: Shir Bar Lev.
   */
   checkMenuSize() {
-    let navMenu = document.getElementById('navMenu') as HTMLDivElement;
-    let navLinks = document.getElementById('navLinks') as HTMLDivElement;
-    let menuBtn = document.getElementById('menuBtn') as HTMLDivElement;
+    let navMenu = document.getElementById("navMenu") as HTMLDivElement;
+    let navLinks = document.getElementById("navLinks") as HTMLDivElement;
+    let menuBtn = document.getElementById("menuBtn") as HTMLDivElement;
 
     // remove the hidden label check the menu's width
-    if(navLinks.classList.contains('hidden')) {
-      navLinks.classList.remove('hidden');
-      navLinks.classList.remove('large');
+    if (navLinks.classList.contains("hidden")) {
+      navLinks.classList.remove("hidden");
+      navLinks.classList.remove("large");
     }
 
     // if the larger text makes the navigation menu too long, turn it back
     // to the small-viewport menu
-    if((navLinks.scrollWidth + 50) >= navMenu.offsetWidth) {
+    if (navLinks.scrollWidth + 50 >= navMenu.offsetWidth) {
       this.showMenu = false;
-      navLinks.classList.add('large');
-      navLinks.classList.add('hidden');
-      menuBtn.classList.remove('hidden');
-      navLinks.setAttribute('aria-hidden', 'true');
-    }
-    else {
-      if(navLinks.classList.contains('hidden')) {
-        navLinks.classList.remove('hidden');
-        navLinks.classList.remove('large');
+      navLinks.classList.add("large");
+      navLinks.classList.add("hidden");
+      menuBtn.classList.remove("hidden");
+      navLinks.setAttribute("aria-hidden", "true");
+    } else {
+      if (navLinks.classList.contains("hidden")) {
+        navLinks.classList.remove("hidden");
+        navLinks.classList.remove("large");
       }
-      navLinks.setAttribute('aria-hidden', 'false');
+      navLinks.setAttribute("aria-hidden", "false");
       this.showMenu = true;
 
-      if(document.documentElement.clientWidth > 650) {
-        menuBtn.classList.add('hidden');
+      if (document.documentElement.clientWidth > 650) {
+        menuBtn.classList.add("hidden");
       }
     }
   }
@@ -489,7 +460,7 @@ export class AppComponent implements OnInit, AfterViewInit, AfterViewChecked {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  changeMode(notificationsOn:boolean) {
+  changeMode(notificationsOn: boolean) {
     this.showNotifications = notificationsOn;
   }
 
@@ -501,14 +472,16 @@ export class AppComponent implements OnInit, AfterViewInit, AfterViewChecked {
   Programmer: Shir Bar Lev.
   */
   shareSite() {
-    navigator.share({
-      title: 'Send A Hug',
-      url: 'https://send-hug.herokuapp.com/',
-    }).catch((_err) => {
-      this.alertsService.createAlert({
-        type: 'Error',
-        message: 'Sharing failed. Please try again!'
+    navigator
+      .share({
+        title: "Send A Hug",
+        url: "https://send-hug.herokuapp.com/",
+      })
+      .catch((_err) => {
+        this.alertsService.createAlert({
+          type: "Error",
+          message: "Sharing failed. Please try again!",
+        });
       });
-    })
   }
 }

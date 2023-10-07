@@ -31,16 +31,16 @@
 */
 
 // Angular imports
-import { Component, OnInit, EventEmitter, Output } from '@angular/core';
-import { faTimes } from '@fortawesome/free-solid-svg-icons';
+import { Component, OnInit, EventEmitter, Output } from "@angular/core";
+import { faTimes } from "@fortawesome/free-solid-svg-icons";
 
 // App-relateed imports
-import { AuthService } from '../../services/auth.service';
-import { NotificationService } from '../../services/notifications.service';
+import { AuthService } from "../../services/auth.service";
+import { NotificationService } from "../../services/notifications.service";
 
 @Component({
-  selector: 'app-notifications',
-  templateUrl: './notifications.component.html'
+  selector: "app-notifications",
+  templateUrl: "./notifications.component.html",
 })
 export class NotificationsTab implements OnInit {
   // indicates whether notifications panel is still required
@@ -52,16 +52,16 @@ export class NotificationsTab implements OnInit {
 
   // CTOR
   constructor(
-    private authService:AuthService,
-    public notificationService:NotificationService
+    private authService: AuthService,
+    public notificationService: NotificationService,
   ) {
     // if the user is authenticated, get all notifications from
     // the last time the user checked them
     this.authService.isUserDataResolved.subscribe((value) => {
-      if(value) {
+      if (value) {
         this.notificationService.getNotifications(false);
       }
-    })
+    });
   }
 
   /*
@@ -75,9 +75,9 @@ export class NotificationsTab implements OnInit {
   Programmer: Shir Bar Lev.
   */
   ngOnInit() {
-    document.getElementById('exitButton')!.focus();
-    if(document.getElementById('siteHeader')) {
-      document.getElementById('siteHeader')!.className = 'modal';
+    document.getElementById("exitButton")!.focus();
+    if (document.getElementById("siteHeader")) {
+      document.getElementById("siteHeader")!.className = "modal";
     }
   }
 
@@ -91,11 +91,11 @@ export class NotificationsTab implements OnInit {
   Programmer: Shir Bar Lev.
   */
   ngAfterViewChecked() {
-    let modal = document.getElementById('modalBox');
+    let modal = document.getElementById("modalBox");
     this.focusableElements = modal!.querySelectorAll(`a, button:not([disabled]),
           input:not([disabled]), textarea:not([disabled]), select:not([disabled]),
           details, iframe, object, embed, [tabindex]:not([tabindex="-1"]`);
-    modal!.addEventListener('keydown', this.checkFocusBinded);
+    modal!.addEventListener("keydown", this.checkFocusBinded);
   }
 
   /*
@@ -107,7 +107,7 @@ export class NotificationsTab implements OnInit {
   */
   togglePushNotifications() {
     // if notifications are enabled, disable them
-    if(this.notificationService.pushStatus) {
+    if (this.notificationService.pushStatus) {
       this.notificationService.pushStatus = false;
       this.notificationService.updateUserSettings();
       this.notificationService.unsubscribeFromStream();
@@ -130,7 +130,7 @@ export class NotificationsTab implements OnInit {
   */
   toggleAutoRefresh() {
     // if auto-refresh is enabled, disable it
-    if(this.notificationService.refreshStatus) {
+    if (this.notificationService.refreshStatus) {
       this.notificationService.refreshStatus = false;
       this.notificationService.refreshRateSecs = 0;
       this.notificationService.updateUserSettings();
@@ -153,14 +153,14 @@ export class NotificationsTab implements OnInit {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  checkFocus(e:KeyboardEvent) {
+  checkFocus(e: KeyboardEvent) {
     // if the pressed key is TAB
-    if(e.key.toLowerCase() === 'tab') {
+    if (e.key.toLowerCase() === "tab") {
       // if the user pressed SHIFT + TAB, which means they want to move backwards
-      if(e.shiftKey) {
+      if (e.shiftKey) {
         // if the currently focused element in the first one in the popup,
         // move back to the last focusable element in the popup
-        if(document.activeElement == this.focusableElements[0]) {
+        if (document.activeElement == this.focusableElements[0]) {
           this.focusableElements[this.focusableElements.length - 1].focus();
           e.preventDefault();
         }
@@ -169,7 +169,7 @@ export class NotificationsTab implements OnInit {
       else {
         // if the currently focused element in the last one in the popup,
         // move back to the first focusable element in the popup
-        if(document.activeElement == this.focusableElements[this.focusableElements.length - 1]) {
+        if (document.activeElement == this.focusableElements[this.focusableElements.length - 1]) {
           this.focusableElements[0].focus();
           e.preventDefault();
         }
@@ -187,13 +187,13 @@ export class NotificationsTab implements OnInit {
   Programmer: Shir Bar Lev.
   */
   exitNotifications() {
-    let modal = document.getElementById('modalBox');
-    modal!.removeEventListener('keydown', this.checkFocusBinded);
-    if(document.getElementById('skipLink')) {
-      document.getElementById('skipLink')!.focus();
+    let modal = document.getElementById("modalBox");
+    modal!.removeEventListener("keydown", this.checkFocusBinded);
+    if (document.getElementById("skipLink")) {
+      document.getElementById("skipLink")!.focus();
     }
-    if(document.getElementById('siteHeader')) {
-      document.getElementById('siteHeader')!.className = '';
+    if (document.getElementById("siteHeader")) {
+      document.getElementById("siteHeader")!.className = "";
     }
     this.NotificationsMode.emit(false);
   }

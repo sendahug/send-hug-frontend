@@ -31,16 +31,16 @@
 */
 
 // Angular imports
-import { Injectable } from '@angular/core';
-import { HttpErrorResponse } from '@angular/common/http';
-import { BehaviorSubject } from 'rxjs';
+import { Injectable } from "@angular/core";
+import { HttpErrorResponse } from "@angular/common/http";
+import { BehaviorSubject } from "rxjs";
 
 // App-related imports
-import { Post } from '../interfaces/post.interface';
-import { MockAlertsService } from './alerts.service.mock';
+import { Post } from "../interfaces/post.interface";
+import { MockAlertsService } from "./alerts.service.mock";
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root",
 })
 export class MockPostsService {
   newItemsArray: Post[] = [];
@@ -48,35 +48,33 @@ export class MockPostsService {
   isMainPageResolved = new BehaviorSubject(false);
   // Full list variables
   fullItemsList: {
-    fullNewItems: Post[],
-    fullSuggestedItems: Post[]
+    fullNewItems: Post[];
+    fullSuggestedItems: Post[];
   } = {
     fullNewItems: [],
-    fullSuggestedItems: []
-  }
+    fullSuggestedItems: [],
+  };
   fullItemsPage = {
     fullNewItems: 0,
-    fullSuggestedItems: 0
-  }
+    fullSuggestedItems: 0,
+  };
   totalFullItemsPage = {
     fullNewItems: 0,
-    fullSuggestedItems: 0
-  }
+    fullSuggestedItems: 0,
+  };
   isPostsResolved = {
     fullNewItems: new BehaviorSubject(false),
-    fullSuggestedItems: new BehaviorSubject(false)
-  }
+    fullSuggestedItems: new BehaviorSubject(false),
+  };
   isUpdated = new BehaviorSubject(false);
 
   // CTOR
-  constructor(
-    private alertsService:MockAlertsService
-  ) {
-      // default assignment
-      this.fullItemsPage.fullNewItems = 1;
-      this.fullItemsPage.fullSuggestedItems = 1;
-      this.totalFullItemsPage.fullNewItems = 1;
-      this.totalFullItemsPage.fullSuggestedItems = 1;
+  constructor(private alertsService: MockAlertsService) {
+    // default assignment
+    this.fullItemsPage.fullNewItems = 1;
+    this.fullItemsPage.fullSuggestedItems = 1;
+    this.totalFullItemsPage.fullNewItems = 1;
+    this.totalFullItemsPage.fullSuggestedItems = 1;
   }
 
   // POST-RELATED METHODS
@@ -95,43 +93,43 @@ export class MockPostsService {
     // mock data
     this.newItemsArray = [
       {
-        'date': new Date('2020-06-27 19:17:31.072'),
-        'givenHugs': 0,
-        'id': 1,
-        'text': 'test',
-        'userId': 1,
-        'user': 'test',
-        'sentHugs': []
+        date: new Date("2020-06-27 19:17:31.072"),
+        givenHugs: 0,
+        id: 1,
+        text: "test",
+        userId: 1,
+        user: "test",
+        sentHugs: [],
       },
       {
-        'date': new Date('2020-06-28 19:17:31.072'),
-        'givenHugs': 0,
-        'id':2,
-        'text': 'test2',
-        'userId': 1,
-        'user': 'test',
-        'sentHugs': []
-      }
+        date: new Date("2020-06-28 19:17:31.072"),
+        givenHugs: 0,
+        id: 2,
+        text: "test2",
+        userId: 1,
+        user: "test",
+        sentHugs: [],
+      },
     ];
     this.sugItemsArray = [
       {
-        'date': new Date('2020-06-28 19:17:31.072'),
-        'givenHugs': 0,
-        'id': 2,
-        'text': 'test2',
-        'userId': 1,
-        'user': 'test',
-        'sentHugs': []
+        date: new Date("2020-06-28 19:17:31.072"),
+        givenHugs: 0,
+        id: 2,
+        text: "test2",
+        userId: 1,
+        user: "test",
+        sentHugs: [],
       },
       {
-        'date': new Date('2020-06-27 19:17:31.072'),
-        'givenHugs': 0,
-        'id': 1,
-        'text': 'test',
-        'userId': 1,
-        'user': 'test',
-        'sentHugs': []
-      }
+        date: new Date("2020-06-27 19:17:31.072"),
+        givenHugs: 0,
+        id: 1,
+        text: "test",
+        userId: 1,
+        user: "test",
+        sentHugs: [],
+      },
     ];
     this.isMainPageResolved.next(true);
   }
@@ -143,55 +141,53 @@ export class MockPostsService {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  getNewItems(page:number) {
+  getNewItems(page: number) {
     this.isPostsResolved.fullNewItems.next(false);
 
-    if(page == 1) {
+    if (page == 1) {
       this.fullItemsList.fullNewItems = [
         {
-          'date': new Date('2020-06-27 19:17:31.072'),
-          'givenHugs': 0,
-          'id': 1,
-          'text': 'test',
-          'userId': 1,
-          'user': 'test',
-          'sentHugs': []
+          date: new Date("2020-06-27 19:17:31.072"),
+          givenHugs: 0,
+          id: 1,
+          text: "test",
+          userId: 1,
+          user: "test",
+          sentHugs: [],
         },
         {
-          'date': new Date('2020-06-28 19:17:31.072'),
-          'givenHugs': 0,
-          'id':2,
-          'text': 'test2',
-          'userId': 1,
-          'user': 'test',
-          'sentHugs': []
-        }
+          date: new Date("2020-06-28 19:17:31.072"),
+          givenHugs: 0,
+          id: 2,
+          text: "test2",
+          userId: 1,
+          user: "test",
+          sentHugs: [],
+        },
       ];
       this.fullItemsPage.fullNewItems = 1;
       this.totalFullItemsPage.fullNewItems = 2;
       this.isPostsResolved.fullNewItems.next(true);
-    }
-    else if(page == 2) {
+    } else if (page == 2) {
       this.fullItemsList.fullNewItems = [
         {
-          'date': new Date('2020-06-27 19:17:31.072'),
-          'givenHugs': 0,
-          'id': 1,
-          'text': 'test',
-          'userId': 1,
-          'user': 'test',
-          'sentHugs': []
-        }
+          date: new Date("2020-06-27 19:17:31.072"),
+          givenHugs: 0,
+          id: 1,
+          text: "test",
+          userId: 1,
+          user: "test",
+          sentHugs: [],
+        },
       ];
       this.fullItemsPage.fullNewItems = 2;
       this.totalFullItemsPage.fullNewItems = 2;
       this.isPostsResolved.fullNewItems.next(true);
-    }
-    else {
-      let err:HttpErrorResponse = new HttpErrorResponse({
+    } else {
+      let err: HttpErrorResponse = new HttpErrorResponse({
         status: 404,
-        statusText: 'Not found'
-      })
+        statusText: "Not found",
+      });
       this.alertsService.createErrorAlert(err);
     }
   }
@@ -203,55 +199,53 @@ export class MockPostsService {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  getSuggestedItems(page:number) {
+  getSuggestedItems(page: number) {
     this.isPostsResolved.fullSuggestedItems.next(false);
 
-    if(page == 1) {
+    if (page == 1) {
       this.fullItemsList.fullSuggestedItems = [
         {
-          'date': new Date('2020-06-27 19:17:31.072'),
-          'givenHugs': 0,
-          'id': 1,
-          'text': 'test',
-          'userId': 1,
-          'user': 'test',
-          'sentHugs': []
+          date: new Date("2020-06-27 19:17:31.072"),
+          givenHugs: 0,
+          id: 1,
+          text: "test",
+          userId: 1,
+          user: "test",
+          sentHugs: [],
         },
         {
-          'date': new Date('2020-06-28 19:17:31.072'),
-          'givenHugs': 0,
-          'id':2,
-          'text': 'test2',
-          'userId': 1,
-          'user': 'test',
-          'sentHugs': []
-        }
+          date: new Date("2020-06-28 19:17:31.072"),
+          givenHugs: 0,
+          id: 2,
+          text: "test2",
+          userId: 1,
+          user: "test",
+          sentHugs: [],
+        },
       ];
       this.fullItemsPage.fullSuggestedItems = 1;
       this.totalFullItemsPage.fullSuggestedItems = 2;
       this.isPostsResolved.fullSuggestedItems.next(true);
-    }
-    else if(page == 2) {
+    } else if (page == 2) {
       this.fullItemsList.fullSuggestedItems = [
         {
-          'date': new Date('2020-06-27 19:17:31.072'),
-          'givenHugs': 0,
-          'id': 1,
-          'text': 'test',
-          'userId': 1,
-          'user': 'test',
-          'sentHugs': []
-        }
+          date: new Date("2020-06-27 19:17:31.072"),
+          givenHugs: 0,
+          id: 1,
+          text: "test",
+          userId: 1,
+          user: "test",
+          sentHugs: [],
+        },
       ];
       this.fullItemsPage.fullSuggestedItems = 2;
       this.totalFullItemsPage.fullSuggestedItems = 2;
       this.isPostsResolved.fullSuggestedItems.next(true);
-    }
-    else {
-      let err:HttpErrorResponse = new HttpErrorResponse({
+    } else {
+      let err: HttpErrorResponse = new HttpErrorResponse({
         status: 404,
-        statusText: 'Not found'
-      })
+        statusText: "Not found",
+      });
       this.alertsService.createErrorAlert(err);
     }
   }
@@ -264,7 +258,11 @@ export class MockPostsService {
   Programmer: Shir Bar Lev.
   */
   sendPost(post: Post) {
-    this.alertsService.createSuccessAlert('Your post was published! Return to home page to view the post.', false, '/');
+    this.alertsService.createSuccessAlert(
+      "Your post was published! Return to home page to view the post.",
+      false,
+      "/",
+    );
   }
 
   /*
@@ -274,8 +272,11 @@ export class MockPostsService {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  deletePost(post_id:number) {
-    this.alertsService.createSuccessAlert(`Post ${post_id} was deleted. Refresh to view the updated post list.`, true);
+  deletePost(post_id: number) {
+    this.alertsService.createSuccessAlert(
+      `Post ${post_id} was deleted. Refresh to view the updated post list.`,
+      true,
+    );
   }
 
   /*
@@ -285,8 +286,11 @@ export class MockPostsService {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  deleteAllPosts(userID:number) {
-    this.alertsService.createSuccessAlert(`User ${userID}'s posts were deleted successfully. Refresh to view the updated profile.`, true);
+  deleteAllPosts(userID: number) {
+    this.alertsService.createSuccessAlert(
+      `User ${userID}'s posts were deleted successfully. Refresh to view the updated profile.`,
+      true,
+    );
   }
 
   /*
@@ -299,7 +303,10 @@ export class MockPostsService {
   editPost(post: Post) {
     this.isUpdated.next(false);
 
-    this.alertsService.createSuccessAlert('Your post was edited. Refresh to view the updated post.', true);
+    this.alertsService.createSuccessAlert(
+      "Your post was edited. Refresh to view the updated post.",
+      true,
+    );
     this.isUpdated.next(true);
   }
 
@@ -312,13 +319,13 @@ export class MockPostsService {
   */
   sendHug(item: any) {
     item.givenHugs += 1;
-    this.alertsService.createSuccessAlert('Your hug was sent!', false);
+    this.alertsService.createSuccessAlert("Your hug was sent!", false);
 
     // Check which array the item is in
-    this.disableHugButton(this.newItemsArray, '.newItem', item.id);
-    this.disableHugButton(this.sugItemsArray, '.sugItem', item.id);
-    this.disableHugButton(this.fullItemsList.fullNewItems, '.newItem', item.id);
-    this.disableHugButton(this.fullItemsList.fullSuggestedItems, '.newItem', item.id);
+    this.disableHugButton(this.newItemsArray, ".newItem", item.id);
+    this.disableHugButton(this.sugItemsArray, ".sugItem", item.id);
+    this.disableHugButton(this.fullItemsList.fullNewItems, ".newItem", item.id);
+    this.disableHugButton(this.fullItemsList.fullSuggestedItems, ".newItem", item.id);
   }
 
   /*
@@ -332,15 +339,15 @@ export class MockPostsService {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  disableHugButton(checkList: any[], itemClass:string, itemID:number) {
+  disableHugButton(checkList: any[], itemClass: string, itemID: number) {
     // Check if the post is in the given array
-    let currentPostIndex = checkList.findIndex(e => e.id == itemID);
-    if(currentPostIndex > 0) {
+    let currentPostIndex = checkList.findIndex((e) => e.id == itemID);
+    if (currentPostIndex > 0) {
       // if it is, disable the send-hug button
       let post = document.querySelectorAll(itemClass)[currentPostIndex];
-      post.querySelectorAll('.fa-hand-holding-heart').forEach((element) => {
+      post.querySelectorAll(".fa-hand-holding-heart").forEach((element) => {
         (element.parentElement as HTMLButtonElement).disabled = true;
-      })
+      });
     }
   }
 }

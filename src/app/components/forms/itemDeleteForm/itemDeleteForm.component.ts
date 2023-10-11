@@ -39,6 +39,7 @@ import { AdminService } from "../../../services/admin.service";
 import { ApiClientService } from "../../../services/apiClient.service";
 import { SWManager } from "../../../services/sWManager.service";
 import { AlertsService } from "../../../services/alerts.service";
+import { tap } from "rxjs";
 
 @Component({
   selector: "item-delete-form",
@@ -71,13 +72,20 @@ export class ItemDeleteForm {
   Programmer: Shir Bar Lev.
   */
   deleteItem() {
-    // if it's a post, send a request to delete the post
-    if (this.toDelete == "Post") {
-      this.deleteUserPost();
-    }
-    // if it's a message/thread, send a request to delete the message
-    else if (this.toDelete == "Message" || this.toDelete == "Thread") {
-      this.deleteMessage();
+    // if it's a single item, make the request to delete it
+    if (this.toDelete == "Post" || this.toDelete == "Message" || this.toDelete == "Thread") {
+      let url: string;
+      let store: "posts" | "messages" | "threads";
+
+      if (this.toDelete == "Post") {
+        url = `posts/${this.itemToDelete}`;
+        store = "posts";
+      } else {
+        url = `messages/${this.messType}/${this.itemToDelete}`;
+        store = this.toDelete == "Message" ? "messages" : "threads";
+      }
+
+      this.deleteSingleItem(url, store);
     }
     // if the user is attempting to delete all of the user's posts
     else if (this.toDelete == "All posts") {
@@ -96,23 +104,28 @@ export class ItemDeleteForm {
   }
 
   /**
-   * Deletes a post. Used when a user attemps to delete a post from any page other
-   * than the admin page.
+   * Deletes a single item (be it a post, a message or a thread).
+   * @param url - the url to send the request to.
+   * @returns an observable of the response.
    */
-  deleteUserPost() {
-    if (!this.itemToDelete) return;
-
-    this.apiClient
-      .delete<{ success: boolean; deleted: number }>(`posts/${this.itemToDelete}`)
+  deleteSingleItem(url: string, idbStore: "posts" | "messages" | "threads") {
+    return this.apiClient
+      .delete<{ success: boolean; deleted: number }>(url)
       .subscribe((response) => {
         this.alertsService.createSuccessAlert(
-          `Post ${response.deleted} was deleted. Refresh to view the updated post list.`,
+          `${this.toDelete} ${response.deleted} was deleted. Refresh to view the updated ${
+            this.toDelete?.toLowerCase() || ""
+          } list.`,
           true,
         );
         this.alertsService.toggleOfflineAlert();
 
-        // delete the post from idb
-        this.swManager.deleteItem("posts", this.itemToDelete!);
+        // delete the item from idb
+        this.swManager.deleteItem(idbStore, response.deleted);
+
+        if (this.toDelete == "Thread") {
+          this.swManager.deleteItems("messages", "threadID", response.deleted);
+        }
       });
   }
 
@@ -148,35 +161,6 @@ export class ItemDeleteForm {
 
         // delete the posts from idb
         this.swManager.deleteItems("posts", "userId", this.itemToDelete!);
-      });
-  }
-
-  /**
-   * Deletes a message.
-   */
-  deleteMessage() {
-    if (!this.itemToDelete || !this.messType) return;
-
-    this.apiClient
-      .delete<{ success: boolean; deleted: number }>(
-        `messages/${this.messType}/${this.itemToDelete}`,
-      )
-      .subscribe((response) => {
-        this.alertsService.createSuccessAlert(
-          `${this.toDelete} ${response.deleted} was deleted! Refresh to view the updated message list.`,
-          true,
-        );
-        this.alertsService.toggleOfflineAlert();
-
-        // delete the message from idb
-        if (this.toDelete == "Thread") {
-          // delete the thread and its messages from idb
-          this.swManager.deleteItems("messages", "threadID", response.deleted);
-          this.swManager.deleteItem("threads", response.deleted);
-        } else {
-          // delete the message from idb
-          this.swManager.deleteItem("messages", response.deleted);
-        }
       });
   }
 

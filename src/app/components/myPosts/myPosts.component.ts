@@ -39,7 +39,7 @@ import { from, map, switchMap, tap } from "rxjs";
 // App-related imports
 import { Post } from "../../interfaces/post.interface";
 import { AuthService } from "../../services/auth.service";
-import { PostsService } from "../../services/posts.service";
+import { ItemsService } from "../../services/items.service";
 import { SWManager } from "../../services/sWManager.service";
 import { ApiClientService } from "../../services/apiClient.service";
 import { AlertsService } from "../../services/alerts.service";
@@ -87,7 +87,7 @@ export class MyPosts implements OnInit {
   // CTOR
   constructor(
     public authService: AuthService,
-    private postsService: PostsService,
+    private itemsService: ItemsService,
     private swManager: SWManager,
     private apiClient: ApiClientService,
     private alertsService: AlertsService,
@@ -257,7 +257,7 @@ export class MyPosts implements OnInit {
   sendHug(itemID: number) {
     let item = {};
     item = this.posts().filter((e) => e.id == itemID)[0];
-    this.postsService.sendHug(item);
+    this.itemsService.sendHug(item);
   }
 
   /*

@@ -40,7 +40,6 @@ import { Message } from "../../interfaces/message.interface";
 import { ItemsService } from "../../services/items.service";
 import { AuthService } from "../../services/auth.service";
 import { AlertsService } from "../../services/alerts.service";
-import { PostsService } from "../../services/posts.service";
 import { ValidationService } from "../../services/validation.service";
 
 @Component({
@@ -59,7 +58,6 @@ export class NewItem {
     private authService: AuthService,
     private route: ActivatedRoute,
     private alertService: AlertsService,
-    private postsService: PostsService,
     private validationService: ValidationService,
   ) {
     let type;
@@ -67,8 +65,8 @@ export class NewItem {
     this.route.url.subscribe((params) => {
       type = params[0].path;
     });
-    let user = this.route.snapshot.queryParamMap.get("user");
-    let userID = this.route.snapshot.queryParamMap.get("userID");
+    const user = this.route.snapshot.queryParamMap.get("user");
+    const userID = this.route.snapshot.queryParamMap.get("userID");
 
     // If there's a type parameter, sets the type property
     if (type) {
@@ -112,7 +110,7 @@ export class NewItem {
           givenHugs: 0,
         };
 
-        this.postsService.sendPost(newPost);
+        this.itemsService.sendPost(newPost);
       }
     }
   }

@@ -38,7 +38,6 @@ import { faHandHoldingHeart, faTimes, faEllipsisV } from "@fortawesome/free-soli
 // App-related imports
 import { AuthService } from "../../services/auth.service";
 import { ItemsService } from "../../services/items.service";
-import { PostsService } from "../../services/posts.service";
 import { Post } from "../../interfaces/post.interface";
 import { Subscription } from "rxjs";
 
@@ -76,7 +75,6 @@ export class SinglePost implements AfterViewChecked, OnInit, OnDestroy {
   constructor(
     public itemsService: ItemsService,
     public authService: AuthService,
-    public postsService: PostsService,
   ) {
     this.editMode = false;
     this.delete = false;
@@ -85,12 +83,12 @@ export class SinglePost implements AfterViewChecked, OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.subscriptions.push(
-      this.postsService.currentlyOpenMenu.subscribe((_currentlyOpenId) => {
+      this.itemsService.currentlyOpenMenu.subscribe((_currentlyOpenId) => {
         this.checkMenuSize();
       }),
     );
     this.subscriptions.push(
-      this.postsService.receivedAHug.subscribe((postId) => {
+      this.itemsService.receivedAHug.subscribe((postId) => {
         if (
           postId == this.post.id &&
           !this.post.sentHugs?.includes(this.authService.userData.id!)
@@ -135,7 +133,7 @@ export class SinglePost implements AfterViewChecked, OnInit, OnDestroy {
       sub.classList.add("float");
       post.querySelector(".menuButton")?.classList.remove("hidden");
 
-      if (this.postsService.currentlyOpenMenu.value != this.post?.id) {
+      if (this.itemsService.currentlyOpenMenu.value != this.post?.id) {
         sub.classList.add("hidden");
       } else {
         sub.classList.remove("hidden");
@@ -158,7 +156,7 @@ export class SinglePost implements AfterViewChecked, OnInit, OnDestroy {
   Programmer: Shir Bar Lev.
   */
   sendHug() {
-    this.postsService.sendHug(this.post);
+    this.itemsService.sendHug(this.post);
   }
 
   /*
@@ -235,10 +233,10 @@ export class SinglePost implements AfterViewChecked, OnInit, OnDestroy {
   Programmer: Shir Bar Lev.
   */
   toggleOptions() {
-    if (this.postsService.currentlyOpenMenu.value !== this.post.id) {
-      this.postsService.currentlyOpenMenu.next(this.post.id as number);
+    if (this.itemsService.currentlyOpenMenu.value !== this.post.id) {
+      this.itemsService.currentlyOpenMenu.next(this.post.id as number);
     } else {
-      this.postsService.currentlyOpenMenu.next(-1);
+      this.itemsService.currentlyOpenMenu.next(-1);
     }
   }
 

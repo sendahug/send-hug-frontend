@@ -33,7 +33,7 @@
 // Angular imports
 import { Injectable } from "@angular/core";
 import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams } from "@angular/common/http";
-import { Observable, catchError, of } from "rxjs";
+import { Observable, catchError, throwError } from "rxjs";
 
 // App-related imports
 import { environment } from "../../environments/environment";
@@ -44,7 +44,7 @@ import { AlertsService } from "./alerts.service";
 })
 export class ApiClientService {
   readonly serverUrl = environment.backend.domain;
-  private authHeader: HttpHeaders = new HttpHeaders();
+  private authHeader: HttpHeaders = new HttpHeaders().set("Content-Type", "application/json");
 
   constructor(
     private http: HttpClient,
@@ -156,6 +156,6 @@ export class ApiClientService {
       this.alertsService.createErrorAlert(error);
     }
 
-    return of({} as T);
+    return throwError(() => error)
   }
 }

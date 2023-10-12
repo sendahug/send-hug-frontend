@@ -32,7 +32,7 @@
 
 // Angular imports
 import { Injectable } from "@angular/core";
-import { HttpClient, HttpErrorResponse, HttpParams } from "@angular/common/http";
+import { HttpErrorResponse } from "@angular/common/http";
 import { BehaviorSubject } from "rxjs";
 
 // App-related imports
@@ -43,13 +43,12 @@ import { Report } from "../interfaces/report.interface";
 import { AuthService } from "./auth.service";
 import { AlertsService } from "./alerts.service";
 import { SWManager } from "./sWManager.service";
-import { environment } from "../../environments/environment";
+import { ApiClientService } from "./apiClient.service";
 
 @Injectable({
   providedIn: "root",
 })
 export class ItemsService {
-  readonly serverUrl = environment.backend.domain;
   // User variables
   otherUserData: OtherUser = {
     id: 0,
@@ -89,10 +88,10 @@ export class ItemsService {
 
   // CTOR
   constructor(
-    private Http: HttpClient,
     private authService: AuthService,
     private alertsService: AlertsService,
     private serviceWorkerM: SWManager,
+    private apiClient: ApiClientService,
   ) {}
 
   // POST-RELATED METHODS
@@ -106,10 +105,7 @@ export class ItemsService {
   sendPost(post: Post) {
     // if the user isn't blocked, let them post
     if (!this.authService.userData.blocked) {
-      const Url = this.serverUrl + "/posts";
-      this.Http.post(Url, post, {
-        headers: this.authService.authHeader,
-      }).subscribe({
+      this.apiClient.post("posts", post).subscribe({
         next: (response: any) => {
           this.alertsService.createSuccessAlert(
             "Your post was published! Return to home page to view the post.",
@@ -124,17 +120,6 @@ export class ItemsService {
             isoDate: isoDate,
           };
           this.serviceWorkerM.addItem("posts", iDBPost);
-          // if there was an error, alert the user
-        },
-        error: (err: HttpErrorResponse) => {
-          // if the user is offline, show the offline header message
-          if (!navigator.onLine) {
-            this.alertsService.toggleOfflineAlert();
-          }
-          // otherwise just create an error alert
-          else {
-            this.alertsService.createErrorAlert(err);
-          }
         },
       });
     }
@@ -155,13 +140,10 @@ export class ItemsService {
   Programmer: Shir Bar Lev.
   */
   editPost(post: Post) {
-    const Url = this.serverUrl + `/posts/${post.id}`;
     this.isUpdated.next(false);
 
     // send update request
-    this.Http.patch(Url, post, {
-      headers: this.authService.authHeader,
-    }).subscribe({
+    this.apiClient.patch(`posts/${post.id}`, post).subscribe({
       next: (_response: any) => {
         this.alertsService.createSuccessAlert(
           "Your post was edited. Refresh to view the updated post.",
@@ -169,17 +151,6 @@ export class ItemsService {
         );
         this.alertsService.toggleOfflineAlert();
         this.isUpdated.next(true);
-        // if there was an error, alert the user
-      },
-      error: (err: HttpErrorResponse) => {
-        // if the user is offline, show the offline header message
-        if (!navigator.onLine) {
-          this.alertsService.toggleOfflineAlert();
-        }
-        // otherwise just create an error alert
-        else {
-          this.alertsService.createErrorAlert(err);
-        }
       },
     });
   }
@@ -192,30 +163,12 @@ export class ItemsService {
   Programmer: Shir Bar Lev.
   */
   sendHug(item: any) {
-    const Url = this.serverUrl + `/posts/${item.id}/hugs`;
-    this.Http.post(
-      Url,
-      {},
-      {
-        headers: this.authService.authHeader,
-      },
-    ).subscribe({
+    this.apiClient.post(`posts/${item.id}/hugs`, {}).subscribe({
       next: (_response: any) => {
         this.alertsService.createSuccessAlert("Your hug was sent!", false);
         this.alertsService.toggleOfflineAlert();
         // Alert the posts that this item received a hug
         this.receivedAHug.next(item.id);
-        // if there was an error, alert the user
-      },
-      error: (err: HttpErrorResponse) => {
-        // if the user is offline, show the offline header message
-        if (!navigator.onLine) {
-          this.alertsService.toggleOfflineAlert();
-        }
-        // otherwise just create an error alert
-        else {
-          this.alertsService.createErrorAlert(err);
-        }
       },
     });
   }
@@ -230,32 +183,14 @@ export class ItemsService {
   Programmer: Shir Bar Lev.
   */
   sendUserHug(userID: number) {
-    const Url = this.serverUrl + `/users/all/${userID}/hugs`;
     // update the users' data
     this.otherUserData.receivedHugs += 1;
     this.authService.userData.givenHugs += 1;
 
-    this.Http.post(
-      Url,
-      {},
-      {
-        headers: this.authService.authHeader,
-      },
-    ).subscribe({
+    this.apiClient.post(`users/all/${userID}/hugs`, {}).subscribe({
       next: (_response: any) => {
         this.alertsService.createSuccessAlert("Your hug was sent!", true);
         this.alertsService.toggleOfflineAlert();
-        // if there was an error, alert the user
-      },
-      error: (err: HttpErrorResponse) => {
-        // if the user is offline, show the offline header message
-        if (!navigator.onLine) {
-          this.alertsService.toggleOfflineAlert();
-        }
-        // otherwise just create an error alert
-        else {
-          this.alertsService.createErrorAlert(err);
-        }
       },
     });
   }
@@ -268,7 +203,6 @@ export class ItemsService {
   Programmer: Shir Bar Lev.
   */
   getUser(userID: number) {
-    const Url = this.serverUrl + `/users/all/${userID}`;
     if (this.previousUser != 0 && this.previousUser != userID) {
       this.otherUserData = {
         id: 0,
@@ -299,9 +233,7 @@ export class ItemsService {
     });
 
     // try to get the user's data from the server
-    this.Http.get(Url, {
-      headers: this.authService.authHeader,
-    }).subscribe({
+    this.apiClient.get(`users/all/${userID}`).subscribe({
       next: (response: any) => {
         let user = response.user;
         this.otherUserData = {
@@ -327,18 +259,9 @@ export class ItemsService {
         this.serviceWorkerM.addItem("users", this.otherUserData);
         // if there was an error, alert the user
       },
-      error: (err: HttpErrorResponse) => {
+      error: (_err: HttpErrorResponse) => {
         this.isOtherUserResolved.next(true);
         this.idbResolved.user.next(true);
-
-        // if the server is unavilable due to the user being offline, tell the user
-        if (!navigator.onLine) {
-          this.alertsService.toggleOfflineAlert();
-        }
-        // otherwise just create an error alert
-        else {
-          this.alertsService.createErrorAlert(err);
-        }
       },
     });
   }
@@ -353,10 +276,7 @@ export class ItemsService {
   Programmer: Shir Bar Lev.
   */
   sendMessage(message: Message) {
-    const Url = this.serverUrl + "/messages";
-    this.Http.post(Url, message, {
-      headers: this.authService.authHeader,
-    }).subscribe({
+    this.apiClient.post("messages", message).subscribe({
       next: (response: any) => {
         this.alertsService.createSuccessAlert("Your message was sent!", false, "/");
         this.alertsService.toggleOfflineAlert();
@@ -367,17 +287,6 @@ export class ItemsService {
           isoDate: isoDate,
         };
         this.serviceWorkerM.addItem("messages", message);
-        // if there was an error, alert the user
-      },
-      error: (err: HttpErrorResponse) => {
-        // if the user is offline, show the offline header message
-        if (!navigator.onLine) {
-          this.alertsService.toggleOfflineAlert();
-        }
-        // otherwise just create an error alert
-        else {
-          this.alertsService.createErrorAlert(err);
-        }
       },
     });
   }
@@ -393,17 +302,8 @@ export class ItemsService {
   */
   sendSearch(searchQuery: string) {
     this.isSearching = true;
-    const params = new HttpParams().set("page", `${this.postSearchPage}`);
 
-    this.Http.post(
-      this.serverUrl,
-      {
-        search: searchQuery,
-      },
-      {
-        params: params,
-      },
-    ).subscribe({
+    this.apiClient.post("", { search: searchQuery }, { page: `${this.postSearchPage}` }).subscribe({
       next: (response: any) => {
         this.userSearchResults = response.users;
         this.postSearchResults = response.posts;
@@ -415,18 +315,9 @@ export class ItemsService {
         this.isSearchResolved.next(true);
         this.alertsService.toggleOfflineAlert();
       },
-      error: (err: HttpErrorResponse) => {
+      error: (_err: HttpErrorResponse) => {
         this.isSearchResolved.next(true);
         this.isSearching = false;
-
-        // if the user is offline, show the offline header message
-        if (!navigator.onLine) {
-          this.alertsService.toggleOfflineAlert();
-        }
-        // otherwise just create an error alert
-        else {
-          this.alertsService.createErrorAlert(err);
-        }
       },
     });
   }
@@ -441,12 +332,8 @@ export class ItemsService {
   Programmer: Shir Bar Lev.
   */
   sendReport(report: Report) {
-    const Url = this.serverUrl + "/reports";
-
     // sends the report
-    this.Http.post(Url, report, {
-      headers: this.authService.authHeader,
-    }).subscribe({
+    this.apiClient.post("reports", report).subscribe({
       next: (response: any) => {
         // if successful, alert the user
         let sent_report: Report = response.report;
@@ -464,17 +351,6 @@ export class ItemsService {
           );
         }
         this.alertsService.toggleOfflineAlert();
-        // if there's an error, alert the user
-      },
-      error: (err: HttpErrorResponse) => {
-        // if the user is offline, show the offline header message
-        if (!navigator.onLine) {
-          this.alertsService.toggleOfflineAlert();
-        }
-        // otherwise just create an error alert
-        else {
-          this.alertsService.createErrorAlert(err);
-        }
       },
     });
   }

@@ -43,6 +43,7 @@ import { User } from "../interfaces/user.interface";
 import { AlertsService } from "./alerts.service";
 import { SWManager } from "./sWManager.service";
 import { environment } from "../../environments/environment";
+import { ApiClientService } from "./apiClient.service";
 
 @Injectable({
   providedIn: "root",
@@ -98,6 +99,7 @@ export class AuthService {
     private Http: HttpClient,
     private alertsService: AlertsService,
     private serviceWorkerM: SWManager,
+    private apiClient: ApiClientService,
   ) {}
 
   /*
@@ -212,35 +214,19 @@ export class AuthService {
 
     // if there's a JWT
     if (jwtPayload) {
+      this.apiClient.setAuthToken(this.token);
+
       // attempts to get the user's data
       this.Http.get(`${this.serverUrl}/users/all/${jwtPayload.sub}`, {
         headers: new HttpHeaders({ Authorization: `Bearer ${this.token}` }),
         // if successful, get the user data
       }).subscribe({
         next: (response: any) => {
-          let data = response.user;
+          const data = response.user;
           this.userData = {
-            id: data.id,
+            ...data,
             auth0Id: jwtPayload.sub,
-            displayName: data.displayName,
-            receivedHugs: data.receivedH,
-            givenHugs: data.givenH,
-            postsNum: data.posts,
-            loginCount: data.loginCount,
-            role: data.role,
             jwt: this.token,
-            blocked: data.blocked,
-            releaseDate: data.releaseDate,
-            autoRefresh: data.autoRefresh,
-            refreshRate: data.refreshRate,
-            pushEnabled: data.pushEnabled,
-            selectedIcon: data.selectedIcon,
-            iconColours: {
-              character: data.iconColours?.character,
-              lbg: data.iconColours?.lbg,
-              rbg: data.iconColours?.rbg,
-              item: data.iconColours?.item,
-            },
           };
           // set the authentication-variables accordingly
           this.authenticated = true;
@@ -333,29 +319,11 @@ export class AuthService {
       },
     ).subscribe({
       next: (response: any) => {
-        let data = response.user;
+        const data = response.user;
         this.userData = {
-          id: data.id,
+          ...data,
           auth0Id: jwtPayload.sub,
-          displayName: data.displayName,
-          receivedHugs: data.receivedH,
-          givenHugs: data.givenH,
-          postsNum: data.postsNum,
-          loginCount: data.loginCount,
-          role: data.role,
           jwt: this.token,
-          blocked: data.blocked,
-          releaseDate: data.releaseDate,
-          autoRefresh: data.autoRefresh,
-          refreshRate: data.refreshRate,
-          pushEnabled: data.pushEnabled,
-          selectedIcon: data.selectedIcon,
-          iconColours: {
-            character: data.iconColours.character,
-            lbg: data.iconColours.leftbg,
-            rbg: data.iconColours.rightbg,
-            item: data.iconColours.item,
-          },
         };
         // set the authentication-variables accordingly
         this.authenticated = true;
@@ -539,38 +507,22 @@ export class AuthService {
   Programmer: Shir Bar Lev.
   */
   updateUserData() {
-    this.Http.patch(
-      `${this.serverUrl}/users/all/${this.userData.id}`,
-      {
-        displayName: this.userData.displayName,
-        receivedH: this.userData.receivedHugs,
-        givenH: this.userData.givenHugs,
-        posts: this.userData.postsNum,
-        loginCount: this.userData.loginCount + 1,
-        selectedIcon: this.userData.selectedIcon,
-        iconColours: {
-          character: this.userData.iconColours.character,
-          lbg: this.userData.iconColours.lbg,
-          rbg: this.userData.iconColours.rbg,
-          item: this.userData.iconColours.item,
-        },
+    const updatedUser = {
+      displayName: this.userData.displayName,
+      receivedH: this.userData.receivedHugs,
+      givenH: this.userData.givenHugs,
+      posts: this.userData.postsNum,
+      loginCount: this.userData.loginCount + 1,
+      selectedIcon: this.userData.selectedIcon,
+      iconColours: {
+        character: this.userData.iconColours.character,
+        lbg: this.userData.iconColours.lbg,
+        rbg: this.userData.iconColours.rbg,
+        item: this.userData.iconColours.item,
       },
-      {
-        headers: this.authHeader,
-      },
-    ).subscribe({
-      next: (_response: any) => {},
-      error: (err: HttpErrorResponse) => {
-        // if the user is offline, show the offline header message
-        if (!navigator.onLine) {
-          this.alertsService.toggleOfflineAlert();
-        }
-        // otherwise just create an error alert
-        else {
-          this.alertsService.createErrorAlert(err);
-        }
-      },
-    });
+    };
+
+    this.apiClient.patch(`users/all/${this.userData.id}`, updatedUser).subscribe({});
   }
 
   /*

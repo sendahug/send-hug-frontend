@@ -89,7 +89,12 @@ export class ItemDeleteForm {
     }
     // if the user is attempting to delete all of the user's posts
     else if (this.toDelete == "All posts") {
-      this.deleteAllPosts();
+      this.deleteMultipleItems(`users/all/${this.itemToDelete}/posts`, "posts").subscribe(
+        (response) => {
+          // delete the posts from idb
+          this.swManager.deleteItems("posts", "userId", response.userID);
+        },
+      );
     }
     // if the user is attempting to delete all of their messages of a specific type
     else if (
@@ -97,7 +102,23 @@ export class ItemDeleteForm {
       this.toDelete == "All outbox" ||
       this.toDelete == "All threads"
     ) {
-      this.deleteAllMessage();
+      const mailbox_type = this.toDelete!.split(" ")[1];
+      const params = { userID: this.itemToDelete };
+
+      this.deleteMultipleItems(`messages/${mailbox_type}`, "messages", params).subscribe(
+        (response) => {
+          // delete all messages from idb
+          // if the mailbox to be cleared is the threads mailbox, delete everything
+          if (mailbox_type == "threads") {
+            this.swManager.clearStore("messages");
+            this.swManager.clearStore("threads");
+          } else if (mailbox_type == "inbox") {
+            this.swManager.deleteItems("messages", "forId", response.userID);
+          } else if (mailbox_type == "outbox") {
+            this.swManager.deleteItems("messages", "fromId", response.userID);
+          }
+        },
+      );
     }
 
     this.editMode.emit(false);
@@ -143,58 +164,23 @@ export class ItemDeleteForm {
   }
 
   /**
-   * Delete all of a user's posts.
+   * Deletes multiple items.
+   * @param url - the url to send the request to.
+   * @param itemType - the type of items to delete (for the success message).
+   * @param params - any query parameters to send with the request.
+   * @returns an observable of the response.
    */
-  deleteAllPosts() {
-    if (!this.itemToDelete) return;
-
-    this.apiClient
-      .delete<{ success: boolean; userID: number; deleted: number }>(
-        `users/all/${this.itemToDelete}/posts`,
-      )
-      .subscribe((_response) => {
-        this.alertsService.createSuccessAlert(
-          `User ${this.itemToDelete}'s posts were deleted successfully. Refresh to view the updated profile.`,
-          true,
-        );
-        this.alertsService.toggleOfflineAlert();
-
-        // delete the posts from idb
-        this.swManager.deleteItems("posts", "userId", this.itemToDelete!);
-      });
-  }
-
-  /**
-   * Delete all of a user's messages in a specific mailbox.
-   */
-  deleteAllMessage() {
-    if (!this.itemToDelete) return;
-
-    const mailbox_type = this.toDelete!.split(" ")[1];
-    const params = { userID: this.itemToDelete };
-
-    this.apiClient
-      .delete<{ success: boolean; userID: number; deleted: number }>(
-        `messages/${mailbox_type}`,
-        params,
-      )
-      .subscribe((response) => {
-        this.alertsService.createSuccessAlert(
-          `${response.deleted} messages were deleted! Refresh to view the updated mailbox.`,
-          true,
-        );
-        this.alertsService.toggleOfflineAlert();
-
-        // delete all messages from idb
-        // if the mailbox to be cleared is the threads mailbox, delete everything
-        if (mailbox_type == "threads") {
-          this.swManager.clearStore("messages");
-          this.swManager.clearStore("threads");
-        } else if (mailbox_type == "inbox") {
-          this.swManager.deleteItems("messages", "forId", this.itemToDelete!);
-        } else if (mailbox_type == "outbox") {
-          this.swManager.deleteItems("messages", "fromId", this.itemToDelete!);
-        }
-      });
+  deleteMultipleItems(url: string, itemType: string, params?: { [key: string]: any }) {
+    return this.apiClient
+      .delete<{ success: boolean; userID: number; deleted: number }>(url, params)
+      .pipe(
+        tap(() => this.alertsService.toggleOfflineAlert()),
+        tap((response) =>
+          this.alertsService.createSuccessAlert(
+            `${response.deleted} ${itemType} were deleted. Refresh to view the updated page.`,
+            true,
+          ),
+        ),
+      );
   }
 }

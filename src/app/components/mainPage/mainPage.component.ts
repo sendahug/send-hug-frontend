@@ -32,7 +32,7 @@
 
 // Angular imports
 import { Component, WritableSignal, signal } from "@angular/core";
-import { catchError, forkJoin, from, map, of, switchMap, tap } from "rxjs";
+import { forkJoin, from, map, switchMap, tap } from "rxjs";
 
 // App-related imports
 import { ApiClientService } from "../../services/apiClient.service";
@@ -103,10 +103,6 @@ export class MainPage {
         } as MainPageResponse;
       }),
       tap((data) => this.updatePostsInterface(data)),
-      catchError((error) => {
-        console.log(error);
-        return of(error);
-      }),
     );
   }
 

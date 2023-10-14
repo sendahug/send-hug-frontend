@@ -41,16 +41,57 @@ import {
 import { HttpClientModule } from "@angular/common/http";
 import { ServiceWorkerModule } from "@angular/service-worker";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
+import { of } from "rxjs";
 
 // App imports
 import { MainPage } from "./mainPage.component";
 import { Loader } from "../loader/loader.component";
 import { PopUp } from "../popUp/popUp.component";
 import { SinglePost } from "../post/post.component";
-import { PostsService } from "../../services/posts.service";
-import { MockPostsService } from "../../services/posts.service.mock";
-import { AuthService } from "../../services/auth.service";
-import { MockAuthService } from "../../services/auth.service.mock";
+import { ApiClientService } from "../../services/apiClient.service";
+import { SWManager } from "../../services/sWManager.service";
+import { AlertsService } from "../../services/alerts.service";
+
+const newItems = [
+  {
+    date: new Date("2020-06-27 19:17:31.072"),
+    givenHugs: 0,
+    id: 1,
+    text: "test",
+    userId: 1,
+    user: "test",
+    sentHugs: [],
+  },
+  {
+    date: new Date("2020-06-28 19:17:31.072"),
+    givenHugs: 0,
+    id: 2,
+    text: "test2",
+    userId: 1,
+    user: "test",
+    sentHugs: [],
+  },
+];
+const suggestedItems = [
+  {
+    date: new Date("2020-06-28 19:17:31.072"),
+    givenHugs: 0,
+    id: 2,
+    text: "test2",
+    userId: 1,
+    user: "test",
+    sentHugs: [],
+  },
+  {
+    date: new Date("2020-06-27 19:17:31.072"),
+    givenHugs: 0,
+    id: 1,
+    text: "test",
+    userId: 1,
+    user: "test",
+    sentHugs: [],
+  },
+];
 
 describe("MainPage", () => {
   // Before each test, configure testing environment
@@ -66,11 +107,7 @@ describe("MainPage", () => {
         FontAwesomeModule,
       ],
       declarations: [MainPage, Loader, PopUp, SinglePost],
-      providers: [
-        { provide: APP_BASE_HREF, useValue: "/" },
-        { provide: PostsService, useClass: MockPostsService },
-        { provide: AuthService, useClass: MockAuthService },
-      ],
+      providers: [{ provide: APP_BASE_HREF, useValue: "/" }],
     }).compileComponents();
   });
 
@@ -81,44 +118,153 @@ describe("MainPage", () => {
     expect(mainPage).toBeTruthy();
   });
 
-  // Check that the a call to getItems() is made
-  it("should get posts via the posts service", (done: DoneFn) => {
-    const fixture = TestBed.createComponent(MainPage);
-    const mainPage = fixture.componentInstance;
-    const mainPageDOM = fixture.nativeElement;
+  it("should requests posts upon creation", () => {
+    const fetchSpy = spyOn(MainPage.prototype, "fetchPosts");
+    TestBed.createComponent(MainPage);
 
-    fixture.detectChanges();
+    expect(fetchSpy).toHaveBeenCalled();
+  });
 
-    expect(mainPage.postsService.posts.newItems.value.length).toEqual(2);
-    expect(mainPageDOM.querySelector("#newItemsList").children.length).toBe(2);
-    expect(mainPage.postsService.posts.suggestedItems.value.length).toEqual(2);
-    expect(mainPageDOM.querySelector("#sugItemsList").children.length).toBe(2);
+  it("should fetch posts from the server", (done: DoneFn) => {
+    // Inject services
+    const apiClient = TestBed.inject(ApiClientService);
+    const swManager = TestBed.inject(SWManager);
+    const alertsService = TestBed.inject(AlertsService);
+
+    // set up mock data
+    const mockNetworkResponse = { recent: newItems, suggested: suggestedItems, success: true };
+
+    // set up spies
+    const idbSpy = spyOn(MainPage.prototype, "fetchFromIdb").and.returnValue(
+      of({ recent: [], suggested: [], success: true }),
+    );
+    const apiClientSpy = spyOn(apiClient, "get").and.returnValue(of(mockNetworkResponse));
+    const updateInterfaceSpy = spyOn(MainPage.prototype, "updatePostsInterface");
+    const addItemsSpy = spyOn(swManager, "addFetchedItems");
+    const alertsSpy = spyOn(alertsService, "toggleOfflineAlert");
+
+    TestBed.createComponent(MainPage);
+
+    expect(idbSpy).toHaveBeenCalled();
+    expect(apiClientSpy).toHaveBeenCalledWith("");
+    expect(updateInterfaceSpy).toHaveBeenCalledWith(mockNetworkResponse);
+    expect(alertsSpy).toHaveBeenCalled();
+    expect(addItemsSpy).toHaveBeenCalledWith(
+      "posts",
+      [...mockNetworkResponse.recent, ...mockNetworkResponse.suggested],
+      "date",
+    );
+
     done();
   });
 
-  // Check the posts' menu is shown if there's enough room for them
-  it("should show the posts's menu if wide enough", (done: DoneFn) => {
-    const fixture = TestBed.createComponent(MainPage);
-    const mainPageDOM = fixture.debugElement.nativeElement;
-    fixture.detectChanges();
+  it("should fetch posts from Idb", (done: DoneFn) => {
+    // Just to make sure it doesn't get called during the test
+    spyOn(MainPage.prototype, "fetchPosts");
 
-    // change the elements' width to make sure there's enough room for the menu
-    let sub = mainPageDOM
-      .querySelectorAll(".newItem")[0]!
-      .querySelectorAll(".subMenu")[0] as HTMLDivElement;
-    sub.style.maxWidth = "";
-    sub.style.display = "flex";
-    fixture.detectChanges();
+    // Inject services
+    const swManager = TestBed.inject(SWManager);
 
-    // check all menus are shown
-    let posts = mainPageDOM.querySelectorAll(".newItem");
-    // new posts
-    posts.forEach((element: HTMLLIElement) => {
-      expect(element.querySelectorAll(".buttonsContainer")[0].classList).not.toContain("float");
-      expect(element.querySelectorAll(".subMenu")[0].classList).not.toContain("hidden");
-      expect(element.querySelectorAll(".subMenu")[0].classList).not.toContain("float");
-      expect(element.querySelectorAll(".menuButton")[0].classList).toContain("hidden");
+    // set up mock data
+    const mockNewPosts = { posts: newItems, success: true, pages: 1 };
+    const mockSuggestedPosts = { posts: suggestedItems, success: true, pages: 1 };
+
+    // set up spies
+    const idbSpy = spyOn(swManager, "fetchPosts").and.callFake(
+      (sortBy, _perPage, _userID, _page, _reverseOrder) => {
+        return new Promise((resolve, _reject) => {
+          if (sortBy == "date") {
+            resolve(mockNewPosts);
+          } else {
+            resolve(mockSuggestedPosts);
+          }
+        });
+      },
+    );
+    const updateInterfaceSpy = spyOn(MainPage.prototype, "updatePostsInterface");
+
+    const mainPage = TestBed.createComponent(MainPage);
+
+    mainPage.componentInstance.fetchFromIdb().subscribe((_data) => {
+      expect(idbSpy).toHaveBeenCalledWith("date", 10, undefined, 1, true);
+      expect(idbSpy).toHaveBeenCalledWith("hugs", 10, undefined, 1, false);
+      expect(idbSpy).toHaveBeenCalledTimes(2);
+      expect(updateInterfaceSpy).toHaveBeenCalledOnceWith({
+        recent: mockNewPosts.posts,
+        suggested: mockSuggestedPosts.posts,
+        success: true,
+      });
+      done();
     });
+  });
+
+  it("should update the interface with the fetched posts", (done: DoneFn) => {
+    // Just to make sure it doesn't get called during the test
+    spyOn(MainPage.prototype, "fetchPosts");
+    const fixture = TestBed.createComponent(MainPage);
+    const mainPage = fixture.componentInstance;
+    const mainPageDOM = fixture.debugElement.nativeElement;
+    const isLoadingSpy = spyOn(mainPage.isLoading, "set").and.callThrough();
+
+    // set up mock data
+    const mockData = { recent: newItems, suggested: suggestedItems, success: true };
+    fixture.detectChanges();
+
+    // check the variables start empty
+    expect(mainPage.newPosts()).toEqual([]);
+    expect(mainPage.suggestedPosts()).toEqual([]);
+    expect(mainPage.isLoading()).toBeFalse();
+
+    // call the method
+    mainPage.updatePostsInterface(mockData);
+    fixture.detectChanges();
+
+    // check the new values
+    expect(mainPage.newPosts()).toEqual(newItems);
+    expect(mainPage.suggestedPosts()).toEqual(suggestedItems);
+    expect(mainPage.isLoading()).toBeFalse();
+    expect(isLoadingSpy).toHaveBeenCalledWith(false);
+
+    const newPosts = mainPageDOM.querySelectorAll(".newItem");
+    expect(newPosts.length).toBe(2);
+    expect(newPosts[0].querySelector(".itemText").textContent).toContain("test");
+
+    const suggestedPosts = mainPageDOM.querySelectorAll(".sugItem");
+    expect(suggestedPosts.length).toBe(2);
+    expect(suggestedPosts[0].querySelector(".itemText").textContent).toContain("test2");
+
+    done();
+  });
+
+  it("should show an error if posts are undefined", (done: DoneFn) => {
+    // Just to make sure it doesn't get called during the test
+    spyOn(MainPage.prototype, "fetchPosts");
+    const fixture = TestBed.createComponent(MainPage);
+    const mainPage = fixture.componentInstance;
+    const mainPageDOM = fixture.debugElement.nativeElement;
+    const newPostsSetSpy = spyOn(mainPage.newPosts, "set").and.callThrough();
+
+    // set up mock data
+    const mockData = { recent: undefined as any, suggested: suggestedItems, success: true };
+    fixture.detectChanges();
+
+    // check the variables start empty
+    expect(mainPage.newPosts()).toEqual([]);
+    expect(mainPage.suggestedPosts()).toEqual([]);
+
+    // call the method
+    mainPage.updatePostsInterface(mockData);
+    fixture.detectChanges();
+
+    // check the new posts are still an empty array
+    expect(mainPage.newPosts()).toEqual([]);
+    expect(mainPage.suggestedPosts()).toEqual(suggestedItems);
+    expect(newPostsSetSpy).not.toHaveBeenCalled();
+
+    const errorMessage = mainPageDOM.querySelectorAll(".errorMessage");
+    expect(errorMessage.length).toBe(1);
+    expect(errorMessage[0].textContent).toContain("There are no recent items");
+
     done();
   });
 });

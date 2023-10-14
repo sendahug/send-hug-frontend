@@ -49,25 +49,6 @@ import { ApiClientService } from "./apiClient.service";
   providedIn: "root",
 })
 export class ItemsService {
-  // User variables
-  otherUserData: OtherUser = {
-    id: 0,
-    displayName: "",
-    receivedHugs: 0,
-    givenHugs: 0,
-    postsNum: 0,
-    role: "",
-    selectedIcon: "kitty",
-    iconColours: {
-      character: "",
-      lbg: "",
-      rbg: "",
-      item: "",
-    },
-  };
-  isOtherUser = false;
-  isOtherUserResolved = new BehaviorSubject(false);
-  previousUser: number = 0;
   // search variables
   isSearching = false;
   userSearchResults: OtherUser[] = [];
@@ -77,10 +58,6 @@ export class ItemsService {
   postSearchPage = 1;
   totalPostSearchPages = 1;
   isSearchResolved = new BehaviorSubject(false);
-  // idb variables
-  idbResolved = {
-    user: new BehaviorSubject(false),
-  };
   // Posts variables
   isUpdated = new BehaviorSubject(false);
   currentlyOpenMenu = new BehaviorSubject(-1);
@@ -169,99 +146,6 @@ export class ItemsService {
         this.alertsService.toggleOfflineAlert();
         // Alert the posts that this item received a hug
         this.receivedAHug.next(item.id);
-      },
-    });
-  }
-
-  // USER-RELATED METHODS
-  // ==============================================================
-  /*
-  Function Name: sendUserHug()
-  Function Description: Send a hug to a user.
-  Parameters: userID (number) - the ID of the user.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  sendUserHug(userID: number) {
-    // update the users' data
-    this.otherUserData.receivedHugs += 1;
-    this.authService.userData.givenHugs += 1;
-
-    this.apiClient.post(`users/all/${userID}/hugs`, {}).subscribe({
-      next: (_response: any) => {
-        this.alertsService.createSuccessAlert("Your hug was sent!", true);
-        this.alertsService.toggleOfflineAlert();
-      },
-    });
-  }
-
-  /*
-  Function Name: getUser()
-  Function Description: Gets the data of a specific user.
-  Parameters: userID (number) - the ID of the user to fetch.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  getUser(userID: number) {
-    if (this.previousUser != 0 && this.previousUser != userID) {
-      this.otherUserData = {
-        id: 0,
-        displayName: "",
-        receivedHugs: 0,
-        givenHugs: 0,
-        postsNum: 0,
-        role: "",
-        selectedIcon: "kitty",
-        iconColours: {
-          character: "",
-          lbg: "",
-          rbg: "",
-          item: "",
-        },
-      };
-      this.isOtherUserResolved.next(false);
-      this.idbResolved.user.next(false);
-    }
-
-    // get the user's data from IDB
-    this.serviceWorkerM.queryUsers(userID)?.then((data: any) => {
-      // if the user's data exists in the IDB database
-      if (data) {
-        this.otherUserData = data;
-        this.idbResolved.user.next(true);
-      }
-    });
-
-    // try to get the user's data from the server
-    this.apiClient.get(`users/all/${userID}`).subscribe({
-      next: (response: any) => {
-        let user = response.user;
-        this.otherUserData = {
-          id: user.id,
-          displayName: user.displayName,
-          receivedHugs: user.receivedH,
-          givenHugs: user.givenH,
-          role: user.role,
-          postsNum: user.posts,
-          selectedIcon: user.selectedIcon,
-          iconColours: {
-            character: user.iconColours.character,
-            lbg: user.iconColours.lbg,
-            rbg: user.iconColours.rbg,
-            item: user.iconColours.item,
-          },
-        };
-        this.isOtherUserResolved.next(true);
-        this.idbResolved.user.next(true);
-        this.alertsService.toggleOfflineAlert();
-
-        // adds the user's data to the users store
-        this.serviceWorkerM.addItem("users", this.otherUserData);
-        // if there was an error, alert the user
-      },
-      error: (_err: HttpErrorResponse) => {
-        this.isOtherUserResolved.next(true);
-        this.idbResolved.user.next(true);
       },
     });
   }

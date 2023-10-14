@@ -44,9 +44,9 @@ export interface User {
   id?: number;
   auth0Id: string;
   displayName: string;
-  receivedHugs: number;
-  givenHugs: number;
-  postsNum: number;
+  receivedH: number;
+  givenH: number;
+  posts: number;
   loginCount: number;
   role: string;
   jwt: string;

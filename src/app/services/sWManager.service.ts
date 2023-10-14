@@ -42,6 +42,7 @@ import { IdbStoreType, iconCharacters } from "../interfaces/types";
 import { Message } from "../interfaces/message.interface";
 import { Post } from "../interfaces/post.interface";
 import { FullThread } from "../interfaces/thread.interface";
+import { OtherUser } from "../interfaces/otherUser.interface";
 
 // IndexedDB Database schema
 export interface MyDB extends DBSchema {
@@ -64,9 +65,9 @@ export interface MyDB extends DBSchema {
     value: {
       id: number;
       displayName: string;
-      givenHugs: number;
-      postsNum: number;
-      receivedHugs: number;
+      givenH: number;
+      posts: number;
+      receivedH: number;
       role: string;
       selectedIcon: iconCharacters;
       iconColours: {
@@ -162,7 +163,7 @@ interface IDBPost {
 export class SWManager {
   activeServiceWorkerReg: ServiceWorkerRegistration | undefined;
   currentDB: Promise<IDBPDatabase<MyDB>> | undefined;
-  databaseVersion = 3;
+  databaseVersion = 4;
 
   // CTOR
   constructor(private alertsService: AlertsService) {}
@@ -325,6 +326,13 @@ export class SWManager {
             let threadsStore = transaction.objectStore("threads");
             threadsStore.deleteIndex("latest");
             threadsStore.createIndex("latest", "isoDate");
+          // If the previous version is 3
+          case 3:
+            // Recreate the users store as the object type changed.
+            db.deleteObjectStore("users");
+            db.createObjectStore("users", {
+              keyPath: "id",
+            });
         }
       },
     });
@@ -543,15 +551,21 @@ export class SWManager {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  queryUsers(userID: number) {
-    return this.currentDB
-      ?.then(function (db) {
-        let userStore = db.transaction("users").store;
-        return userStore.get(userID);
-      })
-      .then(function (data) {
-        return data;
+  queryUsers(userID: number): Promise<OtherUser | undefined> {
+    if (this.currentDB) {
+      return this.currentDB
+        .then(function (db) {
+          let userStore = db.transaction("users").store;
+          return userStore.get(userID);
+        })
+        .then(function (data) {
+          return data;
+        });
+    } else {
+      return new Promise((resolve) => {
+        resolve(undefined);
       });
+    }
   }
 
   /**

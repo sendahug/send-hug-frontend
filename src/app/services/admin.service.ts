@@ -47,9 +47,9 @@ import { ApiClientService } from "./apiClient.service";
 interface BlockedUser {
   id: number;
   displayName: string;
-  receivedHugs: number;
-  givenHugs: number;
-  postsNum: number;
+  receivedH: number;
+  givenH: number;
+  posts: number;
   role: string;
   blocked?: boolean;
   releaseDate?: Date;

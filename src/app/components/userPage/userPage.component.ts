@@ -31,9 +31,9 @@
 */
 
 // Angular imports
-import { Component, OnInit, OnDestroy, AfterViewChecked } from "@angular/core";
+import { Component, OnInit, OnDestroy, AfterViewChecked, signal, computed } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
-import { Subscription } from "rxjs";
+import { Subscription, from, switchMap, tap } from "rxjs";
 import { faGratipay } from "@fortawesome/free-brands-svg-icons";
 
 // App-related imports
@@ -41,12 +41,33 @@ import { User } from "../../interfaces/user.interface";
 import { AuthService } from "../../services/auth.service";
 import { ItemsService } from "../../services/items.service";
 import { iconElements } from "../../interfaces/types";
+import { OtherUser } from "../../interfaces/otherUser.interface";
+import { SWManager } from "../../services/sWManager.service";
+import { ApiClientService } from "../../services/apiClient.service";
+import { HttpErrorResponse } from "@angular/common/http";
+import { AlertsService } from "../../services/alerts.service";
+
+interface OtherUserResponse {
+  user: OtherUser;
+  success: boolean;
+}
 
 @Component({
   selector: "app-user-page",
   templateUrl: "./userPage.component.html",
 })
 export class UserPage implements OnInit, OnDestroy, AfterViewChecked {
+  isIdbFetchResolved = signal(false);
+  isServerFetchResolved = signal(false);
+  otherUser = signal<OtherUser | undefined>(undefined);
+  displayUser = computed(() => {
+    if (this.otherUser()) {
+      return this.otherUser() as OtherUser;
+    } else {
+      return this.authService.userData;
+    }
+  });
+  isOtherUserProfile = computed(() => this.otherUser() != undefined);
   // edit popup sub-component variables
   userToEdit: any;
   editType: string | undefined;
@@ -68,6 +89,9 @@ export class UserPage implements OnInit, OnDestroy, AfterViewChecked {
     public authService: AuthService,
     private route: ActivatedRoute,
     public itemsService: ItemsService,
+    private swManager: SWManager,
+    private apiClient: ApiClientService,
+    private alertsService: AlertsService,
   ) {
     this.authService.checkHash();
     this.editMode = false;
@@ -76,46 +100,28 @@ export class UserPage implements OnInit, OnDestroy, AfterViewChecked {
     // if there's a user ID, set the user ID to it
     if (this.route.snapshot.paramMap.get("id")) {
       this.userId = Number(this.route.snapshot.paramMap.get("id"));
-
-      // if the user is logged in, just get the selected user's data
-      if (this.authService.userData.id && this.authService.userData.id != 0) {
-        // If the user ID from the URL params is different than the logged in
-        // user's ID, the user is trying to view another user's profile
-        if (this.userId != this.authService.userData.id) {
-          this.itemsService.isOtherUser = true;
-          this.waitFor = "other user";
-          this.itemsService.getUser(this.userId!);
-        }
-        // otherwise they're trying to view their own profile
-        else {
-          this.itemsService.isOtherUser = false;
-          this.waitFor = "user";
-        }
-      }
-      // otherwise wait for user data to come through
-      else {
-        // set the userDataSubscription to the subscription to isUserDataResolved
-        this.userDataSubscription = this.authService.isUserDataResolved.subscribe((value) => {
-          // if the user is logged in, fetch the profile of the user whose ID
-          // is used in the URL param
-          if (value == true && this.userDataCalls < 2) {
-            if (this.userId != this.authService.userData.id) {
-              this.userDataCalls++;
-              this.itemsService.getUser(this.userId!);
-            }
-            // also unsubscribe from this to avoid sending the same request
-            // multiple times
-            if (this.userDataSubscription) {
-              this.userDataSubscription.unsubscribe();
-            }
-          }
-        });
-      }
+    } else {
+      this.userId = undefined;
     }
-    // otherwise they're trying to view their own profile
-    else {
-      this.itemsService.isOtherUser = false;
-      this.waitFor = "user";
+
+    // If the user's logged in, fetch the user immediately;
+    // otherwise, wait for the user to login
+    if (this.authService.authenticated) {
+      this.getUser();
+    } else {
+      // set the userDataSubscription to the subscription to isUserDataResolved
+      this.userDataSubscription = this.authService.isUserDataResolved.subscribe((value) => {
+        // if the user is logged in, fetch the profile of the user whose ID
+        // is used in the URL param
+        if (value == true && this.userDataCalls < 2) {
+          this.getUser();
+          // also unsubscribe from this to avoid sending the same request
+          // multiple times
+          if (this.userDataSubscription) {
+            this.userDataSubscription.unsubscribe();
+          }
+        }
+      });
     }
   }
 
@@ -131,23 +137,18 @@ export class UserPage implements OnInit, OnDestroy, AfterViewChecked {
   Programmer: Shir Bar Lev.
   */
   ngAfterViewChecked() {
-    // if it's the logged in user, get the data from authService; otherwise get it from itemsService
-    let dataSource = this.itemsService.isOtherUser
-      ? this.itemsService.otherUserData
-      : this.authService.userData;
+    if (!document.querySelectorAll(".userIcon")[0]) return;
 
-    Object.keys(dataSource.iconColours).forEach((key) => {
-      if (document.querySelectorAll(".userIcon")[0]) {
-        document
-          .querySelectorAll(".userIcon")[0]
-          .querySelectorAll(`.${key as iconElements}`)
-          .forEach((element) => {
-            (element as SVGPathElement).setAttribute(
-              "style",
-              `fill:${dataSource.iconColours[key as iconElements]};`,
-            );
-          });
-      }
+    Object.keys(this.displayUser().iconColours).forEach((key) => {
+      document
+        .querySelectorAll(".userIcon")[0]
+        .querySelectorAll(`.${key as iconElements}`)
+        .forEach((element) => {
+          (element as SVGPathElement).setAttribute(
+            "style",
+            `fill:${this.displayUser().iconColours[key as iconElements]};`,
+          );
+        });
     });
   }
 
@@ -171,6 +172,58 @@ export class UserPage implements OnInit, OnDestroy, AfterViewChecked {
   */
   logout() {
     this.authService.logout();
+  }
+
+  /**
+   * Checks for whether the profile being viewed is the user's
+   * own profile and handles the fetch in both cases.
+   */
+  getUser() {
+    // If there's no user ID or the user ID is the same as the
+    // logged in user's ID, don't fetch the user but set everything
+    // to resolved so it can display the AuthService data in the template.
+    if (this.userId === undefined || this.userId == this.authService.userData?.id) {
+      this.otherUser.set(undefined);
+      this.waitFor = "user";
+      this.isIdbFetchResolved.set(true);
+      this.isServerFetchResolved.set(true);
+      return;
+    }
+
+    // Otherwise, fetch the user
+    this.isIdbFetchResolved.set(false);
+    this.isServerFetchResolved.set(false);
+    this.waitFor = "other user";
+    this.fetchOtherUsersData();
+  }
+
+  /**
+   * Fetches the user to display from IDB and then
+   * from the server.
+   */
+  fetchOtherUsersData() {
+    from(this.swManager.queryUsers(this.userId!))
+      .pipe(
+        tap((user) => {
+          if (user) this.otherUser.set(user);
+          this.isIdbFetchResolved.set(true);
+        }),
+      )
+      .pipe(switchMap(() => this.apiClient.get<OtherUserResponse>(`users/all/${this.userId!}`)))
+      .subscribe({
+        next: (response) => {
+          const user = response.user;
+          this.otherUser.set(user);
+          this.isServerFetchResolved.set(true);
+          this.alertsService.toggleOfflineAlert();
+
+          // adds the user's data to the users store
+          this.swManager.addItem("users", user);
+        },
+        error: (_err: HttpErrorResponse) => {
+          this.isServerFetchResolved.set(true);
+        },
+      });
   }
 
   /*
@@ -211,7 +264,14 @@ export class UserPage implements OnInit, OnDestroy, AfterViewChecked {
   Programmer: Shir Bar Lev.
   */
   sendHug(userID: number) {
-    this.itemsService.sendUserHug(userID);
+    this.apiClient.post(`users/all/${userID}/hugs`, {}).subscribe({
+      next: (_response) => {
+        this.otherUser()!.receivedH += 1;
+        this.authService.userData.givenH += 1;
+        this.alertsService.createSuccessAlert("Your hug was sent!", true);
+        this.alertsService.toggleOfflineAlert();
+      },
+    });
   }
 
   /*
@@ -231,7 +291,7 @@ export class UserPage implements OnInit, OnDestroy, AfterViewChecked {
 
   // When leaving the page, return "other user" to false
   ngOnDestroy() {
-    this.itemsService.isOtherUser = false;
+    this.otherUser.set(undefined);
     this.userDataCalls = 0;
   }
 }

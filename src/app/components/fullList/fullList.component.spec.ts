@@ -42,16 +42,47 @@ import { HttpClientModule } from "@angular/common/http";
 import { ServiceWorkerModule } from "@angular/service-worker";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { of } from "rxjs";
-import { ActivatedRoute, UrlSegment } from "@angular/router";
+import { ActivatedRoute, Router, UrlSegment } from "@angular/router";
 
 import { FullList } from "./fullList.component";
 import { PopUp } from "../popUp/popUp.component";
 import { SinglePost } from "../post/post.component";
-import { PostsService } from "../../services/posts.service";
-import { MockPostsService } from "../../services/posts.service.mock";
-import { AuthService } from "../../services/auth.service";
-import { MockAuthService } from "../../services/auth.service.mock";
 import { Loader } from "../loader/loader.component";
+import { ApiClientService } from "../../services/apiClient.service";
+import { SWManager } from "../../services/sWManager.service";
+import { AlertsService } from "../../services/alerts.service";
+
+const PageOnePosts = [
+  {
+    date: new Date("2020-06-27 19:17:31.072"),
+    givenHugs: 0,
+    id: 1,
+    text: "test",
+    userId: 1,
+    user: "test",
+    sentHugs: [],
+  },
+  {
+    date: new Date("2020-06-28 19:17:31.072"),
+    givenHugs: 0,
+    id: 2,
+    text: "test2",
+    userId: 1,
+    user: "test",
+    sentHugs: [],
+  },
+];
+const PageTwoPosts = [
+  {
+    date: new Date("2020-06-29 19:17:31.072"),
+    givenHugs: 0,
+    id: 3,
+    text: "test3",
+    userId: 1,
+    user: "test3",
+    sentHugs: [],
+  },
+];
 
 describe("FullList", () => {
   // Before each test, configure testing environment
@@ -67,226 +98,273 @@ describe("FullList", () => {
         FontAwesomeModule,
       ],
       declarations: [FullList, PopUp, Loader, SinglePost],
-      providers: [
-        { provide: APP_BASE_HREF, useValue: "/" },
-        { provide: PostsService, useClass: MockPostsService },
-        { provide: AuthService, useClass: MockAuthService },
-      ],
+      providers: [{ provide: APP_BASE_HREF, useValue: "/" }],
     }).compileComponents();
   });
 
   // Check that the component is created
   it("should create the component", () => {
+    const paramMap = TestBed.inject(ActivatedRoute);
+    paramMap.snapshot.url = [{ path: "New" }] as UrlSegment[];
     const fixture = TestBed.createComponent(FullList);
     const fullList = fixture.componentInstance;
     expect(fullList).toBeTruthy();
   });
 
-  // Check the posts' menu is shown if there's enough room for them
-  it("should show the posts's menu if wide enough", (done: DoneFn) => {
+  it("should set the type according to the URL param - new", () => {
+    spyOn(FullList.prototype, "fetchPosts");
     const paramMap = TestBed.inject(ActivatedRoute);
-    paramMap.url = of([{ path: "New" } as UrlSegment]);
+    paramMap.snapshot.url = [{ path: "New" }] as UrlSegment[];
+
+    // create the component
     const fixture = TestBed.createComponent(FullList);
     const fullList = fixture.componentInstance;
-    const fullListDOM = fixture.debugElement.nativeElement;
-    const authService = fullList.authService;
-    spyOn(authService, "canUser").and.returnValue(true);
     fixture.detectChanges();
 
-    // change the elements' width to make sure there's enough room for the menu
-    let sub = fullListDOM
-      .querySelectorAll(".newItem")[0]!
-      .querySelectorAll(".subMenu")[0] as HTMLDivElement;
-    sub.style.maxWidth = "";
-    sub.style.display = "flex";
+    expect(fullList.type).toBe("New");
+  });
+
+  it("should set the type according to the URL param - suggested", () => {
+    spyOn(FullList.prototype, "fetchPosts");
+    const paramMap = TestBed.inject(ActivatedRoute);
+    paramMap.snapshot.url = [{ path: "Suggested" }] as UrlSegment[];
+
+    // create the component
+    const fixture = TestBed.createComponent(FullList);
+    const fullList = fixture.componentInstance;
     fixture.detectChanges();
 
-    // check all menus are shown
-    let posts = fullListDOM.querySelectorAll(".newItem");
-    posts.forEach((element: HTMLLIElement) => {
-      expect(element.querySelectorAll(".buttonsContainer")[0].classList).not.toContain("float");
-      expect(element.querySelectorAll(".subMenu")[0].classList).not.toContain("hidden");
-      expect(element.querySelectorAll(".subMenu")[0].classList).not.toContain("float");
-      expect(element.querySelectorAll(".menuButton")[0].classList).toContain("hidden");
-    });
+    expect(fullList.type).toBe("Suggested");
+  });
+
+  it("should set the page according to the URL param", () => {
+    spyOn(FullList.prototype, "fetchPosts");
+    const paramMap = TestBed.inject(ActivatedRoute);
+    paramMap.snapshot.url = [{ path: "New" }] as UrlSegment[];
+    spyOn(paramMap.snapshot.queryParamMap, "get").and.returnValue("2");
+
+    // create the component
+    const fixture = TestBed.createComponent(FullList);
+    const fullList = fixture.componentInstance;
+    fixture.detectChanges();
+
+    expect(fullList.currentPage()).toBe(2);
+  });
+
+  it("should set the page to 1 if the URL param is invalid", () => {
+    spyOn(FullList.prototype, "fetchPosts");
+    const paramMap = TestBed.inject(ActivatedRoute);
+    paramMap.snapshot.url = [{ path: "New" }] as UrlSegment[];
+    spyOn(paramMap.snapshot.queryParamMap, "get").and.returnValue("abc");
+
+    // create the component
+    const fixture = TestBed.createComponent(FullList);
+    const fullList = fixture.componentInstance;
+    fixture.detectChanges();
+
+    expect(fullList.currentPage()).toBe(1);
+  });
+
+  it("should set the page to 1 if the URL param is not set", () => {
+    spyOn(FullList.prototype, "fetchPosts");
+    const paramMap = TestBed.inject(ActivatedRoute);
+    paramMap.snapshot.url = [{ path: "New" }] as UrlSegment[];
+    spyOn(paramMap.snapshot.queryParamMap, "get").and.returnValue(null);
+
+    // create the component
+    const fixture = TestBed.createComponent(FullList);
+    const fullList = fixture.componentInstance;
+    fixture.detectChanges();
+
+    expect(fullList.currentPage()).toBe(1);
+  });
+
+  it("should fetch posts from the server", (done: DoneFn) => {
+    // Inject services
+    const apiClient = TestBed.inject(ApiClientService);
+    const swManager = TestBed.inject(SWManager);
+    const alertsService = TestBed.inject(AlertsService);
+    const paramMap = TestBed.inject(ActivatedRoute);
+    paramMap.snapshot.url = [{ path: "New" }] as UrlSegment[];
+
+    const mockPageOneResponse = {
+      posts: PageOnePosts,
+      total_pages: 2,
+      success: true,
+    };
+
+    // set up spies
+    const idbSpy = spyOn(FullList.prototype, "fetchPostsFromIdb").and.returnValue(
+      of({ posts: [], total_pages: 1, success: true }),
+    );
+    const apiClientSpy = spyOn(apiClient, "get").and.returnValue(of(mockPageOneResponse));
+    const updateInterfaceSpy = spyOn(FullList.prototype, "updateInterface");
+    const addItemsSpy = spyOn(swManager, "addFetchedItems");
+    const alertsSpy = spyOn(alertsService, "toggleOfflineAlert");
+
+    TestBed.createComponent(FullList);
+
+    expect(idbSpy).toHaveBeenCalled();
+    expect(apiClientSpy).toHaveBeenCalledWith("posts/new", { page: 1 });
+    expect(updateInterfaceSpy).toHaveBeenCalledWith(mockPageOneResponse);
+    expect(alertsSpy).toHaveBeenCalled();
+    expect(addItemsSpy).toHaveBeenCalledWith("posts", PageOnePosts, "date");
     done();
   });
 
-  // FULL NEW LIST
-  // ==================================================================
-  describe("Full New List", () => {
-    // Before each test, configure testing environment
-    beforeEach(() => {
-      TestBed.resetTestEnvironment();
-      TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
+  it("should fetch posts from IDB - new", (done: DoneFn) => {
+    // Inject services
+    const swManager = TestBed.inject(SWManager);
+    const paramMap = TestBed.inject(ActivatedRoute);
+    paramMap.snapshot.url = [{ path: "New" }] as UrlSegment[];
+    spyOn(FullList.prototype, "fetchPosts");
 
-      TestBed.configureTestingModule({
-        imports: [
-          RouterTestingModule,
-          HttpClientModule,
-          ServiceWorkerModule.register("sw.js", { enabled: false }),
-          FontAwesomeModule,
-        ],
-        declarations: [FullList, PopUp, Loader, SinglePost],
-        providers: [
-          { provide: APP_BASE_HREF, useValue: "/" },
-          { provide: PostsService, useClass: MockPostsService },
-          { provide: AuthService, useClass: MockAuthService },
-        ],
-      }).compileComponents();
-    });
+    // set up spies
+    const idbSpy = spyOn(swManager, "fetchPosts").and.returnValue(
+      new Promise((resolve) => resolve({ posts: PageOnePosts, pages: 2 })),
+    );
+    const updateInterfaceSpy = spyOn(FullList.prototype, "updateInterface");
 
-    // Check that the type parameter has an affect on the page
-    it("has a type determined by the type parameter - new", (done: DoneFn) => {
-      // set up spies
-      const paramMap = TestBed.inject(ActivatedRoute);
-      paramMap.url = of([{ path: "New" } as UrlSegment]);
-      const postsService = TestBed.inject(PostsService);
-      const postsSpy = spyOn(postsService, "getPosts").and.callThrough();
+    const fixture = TestBed.createComponent(FullList);
+    const fullList = fixture.componentInstance;
 
-      // create the component
-      const fixture = TestBed.createComponent(FullList);
-      const fullList = fixture.componentInstance;
-
-      fixture.detectChanges();
-
-      expect(fullList.waitFor).toBe("new posts");
-      expect(postsSpy).toHaveBeenCalledWith("/posts/new", "new", 1);
-      expect(postsService.posts.newItems.value).toBeTruthy();
-      expect(postsService.posts.newItems.value.length).toBe(2);
-      done();
-    });
-
-    // Check that a different page gets different results
-    it("changes page when clicked", (done: DoneFn) => {
-      // set up spies
-      const paramMap = TestBed.inject(ActivatedRoute);
-      paramMap.url = of([{ path: "New" } as UrlSegment]);
-      const pageSpy = spyOn(paramMap.snapshot.queryParamMap, "get").and.returnValue("1");
-      const newPostsSpy = spyOn(TestBed.inject(PostsService), "getPosts").and.callThrough();
-
-      // create the component
-      const fixture = TestBed.createComponent(FullList);
-      const fullList = fixture.componentInstance;
-      const fullListDOM = fixture.nativeElement;
-      fixture.detectChanges();
-
-      // expectations for page 1
-      expect(pageSpy).toHaveBeenCalled();
-      expect(fullList.page).toBe(1);
-      expect(fullListDOM.querySelector("#fullItems").children.length).toBe(2);
-      expect(newPostsSpy).toHaveBeenCalled();
-      expect(newPostsSpy).toHaveBeenCalledTimes(1);
-
-      // change the page
-      fullListDOM.querySelectorAll(".nextButton")[0].click();
-      fixture.detectChanges();
-
-      // expectations for page 2
-      expect(pageSpy).toHaveBeenCalled();
-      expect(fullList.page).toBe(2);
-      expect(fullListDOM.querySelector("#fullItems").children.length).toBe(1);
-      expect(newPostsSpy).toHaveBeenCalledTimes(2);
-
-      // change the page again
-      fullListDOM.querySelectorAll(".prevButton")[0].click();
-      fixture.detectChanges();
-
-      // expectations for page 1
-      expect(pageSpy).toHaveBeenCalled();
-      expect(fullList.page).toBe(1);
-      expect(fullListDOM.querySelector("#fullItems").children.length).toBe(2);
-      expect(newPostsSpy).toHaveBeenCalledTimes(3);
+    fullList.fetchPostsFromIdb().subscribe((_data) => {
+      expect(idbSpy).toHaveBeenCalledWith("date", 5, undefined, 1, true);
+      expect(updateInterfaceSpy).toHaveBeenCalledWith({
+        posts: PageOnePosts,
+        total_pages: 2,
+        success: true,
+      });
       done();
     });
   });
 
-  // FULL SUGGESTED LIST
-  // ==================================================================
-  describe("Full Suggested List", () => {
-    // Before each test, configure testing environment
-    beforeEach(() => {
-      TestBed.resetTestEnvironment();
-      TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
+  it("should fetch posts from IDB - suggested", (done: DoneFn) => {
+    // Inject services
+    const swManager = TestBed.inject(SWManager);
+    const paramMap = TestBed.inject(ActivatedRoute);
+    paramMap.snapshot.url = [{ path: "Suggested" }] as UrlSegment[];
+    spyOn(FullList.prototype, "fetchPosts");
 
-      TestBed.configureTestingModule({
-        imports: [
-          RouterTestingModule,
-          HttpClientModule,
-          ServiceWorkerModule.register("sw.js", { enabled: false }),
-          FontAwesomeModule,
-        ],
-        declarations: [FullList, PopUp, Loader, SinglePost],
-        providers: [
-          { provide: APP_BASE_HREF, useValue: "/" },
-          { provide: PostsService, useClass: MockPostsService },
-          { provide: AuthService, useClass: MockAuthService },
-        ],
-      }).compileComponents();
-    });
+    // set up spies
+    const idbSpy = spyOn(swManager, "fetchPosts").and.returnValue(
+      new Promise((resolve) => resolve({ posts: PageOnePosts, pages: 2 })),
+    );
+    const updateInterfaceSpy = spyOn(FullList.prototype, "updateInterface");
 
-    // Check that the type parameter has an affect on the page
-    it("has a type determined by the type parameter - suggested", (done: DoneFn) => {
-      // set up spies
-      const paramMap = TestBed.inject(ActivatedRoute);
-      paramMap.url = of([{ path: "Suggested" } as UrlSegment]);
-      const postsService = TestBed.inject(PostsService);
-      const postsSpy = spyOn(postsService, "getPosts").and.callThrough();
+    const fixture = TestBed.createComponent(FullList);
+    const fullList = fixture.componentInstance;
 
-      // create the component
-      const fixture = TestBed.createComponent(FullList);
-      const fullList = fixture.componentInstance;
-
-      fixture.detectChanges();
-
-      expect(fullList.waitFor).toBe("suggested posts");
-      expect(postsSpy).toHaveBeenCalledWith("/posts/suggested", "suggested", 1);
-      expect(postsService.posts.newItems.value).toBeTruthy();
-      expect(postsService.posts.suggestedItems.value.length).toBe(2);
+    fullList.fetchPostsFromIdb().subscribe((_data) => {
+      expect(idbSpy).toHaveBeenCalledWith("hugs", 5, undefined, 1, false);
+      expect(updateInterfaceSpy).toHaveBeenCalledWith({
+        posts: PageOnePosts,
+        total_pages: 2,
+        success: true,
+      });
       done();
     });
+  });
 
-    // Check that a different page gets different results
-    it("changes page when clicked", (done: DoneFn) => {
-      // set up spies
-      const paramMap = TestBed.inject(ActivatedRoute);
-      paramMap.url = of([{ path: "Suggested" } as UrlSegment]);
-      const pageSpy = spyOn(paramMap.snapshot.queryParamMap, "get").and.returnValue("1");
-      const sugPostsSpy = spyOn(TestBed.inject(PostsService), "getPosts").and.callThrough();
+  it("should update the user interface", (done: DoneFn) => {
+    spyOn(FullList.prototype, "fetchPosts");
+    const paramMap = TestBed.inject(ActivatedRoute);
+    paramMap.snapshot.url = [{ path: "Suggested" }] as UrlSegment[];
 
-      // create the component
-      const fixture = TestBed.createComponent(FullList);
-      const fullList = fixture.componentInstance;
-      const fullListDOM = fixture.nativeElement;
-      fixture.detectChanges();
+    const fixture = TestBed.createComponent(FullList);
+    const fullList = fixture.componentInstance;
+    const fullListDOM = fixture.nativeElement;
+    fixture.detectChanges();
 
-      // expectations for page 1
-      expect(pageSpy).toHaveBeenCalled();
-      expect(fullList.page).toBe(1);
-      expect(fullListDOM.querySelector("#fullItems").children.length).toBe(2);
-      expect(sugPostsSpy).toHaveBeenCalled();
-      expect(sugPostsSpy).toHaveBeenCalledTimes(1);
+    const totalPagesSpy = spyOn(fullList.totalPages, "set").and.callThrough();
+    const postsSpy = spyOn(fullList.posts, "set").and.callThrough();
+    const isLoadingSpy = spyOn(fullList.isLoading, "set").and.callThrough();
 
-      // change the page
-      fullListDOM.querySelectorAll(".nextButton")[0].click();
-      fixture.detectChanges();
+    fullList.updateInterface({ posts: PageOnePosts, total_pages: 4, success: true });
+    fixture.detectChanges();
 
-      // expectations for page 2
-      expect(pageSpy).toHaveBeenCalled();
-      expect(fullList.page).toBe(2);
-      expect(fullListDOM.querySelector("#fullItems").children.length).toBe(1);
-      expect(sugPostsSpy).toHaveBeenCalledTimes(2);
+    expect(totalPagesSpy).toHaveBeenCalledWith(4);
+    expect(postsSpy).toHaveBeenCalledWith(PageOnePosts);
+    expect(isLoadingSpy).toHaveBeenCalledWith(false);
 
-      // change the page
-      fullListDOM.querySelectorAll(".prevButton")[0].click();
-      fixture.detectChanges();
+    const suggestedPosts = fullListDOM.querySelectorAll(".sugItem");
+    expect(suggestedPosts.length).toBe(2);
+    expect(suggestedPosts[0].querySelector(".itemText").textContent).toContain("test");
+    done();
+  });
 
-      // expectations for page 1
-      expect(pageSpy).toHaveBeenCalled();
-      expect(fullList.page).toBe(1);
-      expect(fullListDOM.querySelector("#fullItems").children.length).toBe(2);
-      expect(sugPostsSpy).toHaveBeenCalledTimes(3);
-      done();
+  it("should continue to the next page", (done: DoneFn) => {
+    const fetchSpy = spyOn(FullList.prototype, "fetchPosts");
+    const paramMap = TestBed.inject(ActivatedRoute);
+    paramMap.snapshot.url = [{ path: "Suggested" }] as UrlSegment[];
+
+    const fixture = TestBed.createComponent(FullList);
+    const fullList = fixture.componentInstance;
+    const fullListDOM = fixture.nativeElement;
+    fullList.totalPages.set(2);
+    fixture.detectChanges();
+
+    const updateURLSpy = spyOn(fullList, "updatePageUrlParam");
+
+    // before
+    expect(fullList.currentPage()).toBe(1);
+    expect(fetchSpy).toHaveBeenCalledTimes(1);
+
+    // click the next button
+    fullListDOM.querySelectorAll(".nextButton")[0].click();
+
+    // after
+    expect(fullList.currentPage()).toBe(2);
+    expect(fetchSpy).toHaveBeenCalledTimes(2);
+    expect(updateURLSpy).toHaveBeenCalled();
+    done();
+  });
+
+  it("should go to the previous page", (done: DoneFn) => {
+    const fetchSpy = spyOn(FullList.prototype, "fetchPosts");
+    const paramMap = TestBed.inject(ActivatedRoute);
+    paramMap.snapshot.url = [{ path: "Suggested" }] as UrlSegment[];
+    spyOn(paramMap.snapshot.queryParamMap, "get").and.returnValue("2");
+
+    const fixture = TestBed.createComponent(FullList);
+    const fullList = fixture.componentInstance;
+    const fullListDOM = fixture.nativeElement;
+    fullList.totalPages.set(2);
+    fixture.detectChanges();
+
+    const updateURLSpy = spyOn(fullList, "updatePageUrlParam");
+
+    // before
+    expect(fullList.currentPage()).toBe(2);
+    expect(fetchSpy).toHaveBeenCalledTimes(1);
+
+    fullListDOM.querySelectorAll(".prevButton")[0].click();
+
+    // after
+    expect(fullList.currentPage()).toBe(1);
+    expect(fetchSpy).toHaveBeenCalledTimes(2);
+    expect(updateURLSpy).toHaveBeenCalled();
+    done();
+  });
+
+  it("should trigger navigation when the page changes", () => {
+    spyOn(FullList.prototype, "fetchPosts");
+    const paramMap = TestBed.inject(ActivatedRoute);
+    paramMap.snapshot.url = [{ path: "Suggested" }] as UrlSegment[];
+    spyOn(paramMap.snapshot.queryParamMap, "get").and.returnValue("2");
+    const router = TestBed.inject(Router);
+    const navigateSpy = spyOn(router, "navigate");
+
+    const fixture = TestBed.createComponent(FullList);
+    const fullList = fixture.componentInstance;
+
+    fullList.currentPage.set(3);
+    fullList.updatePageUrlParam();
+
+    expect(navigateSpy).toHaveBeenCalledWith([], {
+      relativeTo: paramMap,
+      queryParams: { page: 3 },
+      replaceUrl: true,
     });
   });
 });

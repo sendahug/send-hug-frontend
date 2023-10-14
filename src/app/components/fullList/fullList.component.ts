@@ -70,28 +70,25 @@ export class FullList {
     private alertsService: AlertsService,
     private apiClient: ApiClientService,
   ) {
-    // get the type of list and the current page
-    this.route.url.subscribe((params) => {
-      const urlPath = params[0].path;
+    const urlPath = this.route.snapshot.url[0].path;
 
-      // set the type from the url only if a valid type is
-      // passed in
-      if (urlPath.toLowerCase() === "new" || urlPath.toLowerCase() === "suggested") {
-        this.type = urlPath as FullListType;
-      }
+    // set the type from the url only if a valid type is
+    // passed in
+    if (urlPath.toLowerCase() === "new" || urlPath.toLowerCase() === "suggested") {
+      this.type = urlPath as FullListType;
+    }
 
-      const requestedPage = Number(this.route.snapshot.queryParamMap.get("page"));
+    const requestedPage = Number(this.route.snapshot.queryParamMap.get("page"));
 
-      // set a default page if no page is set or it's invalid
-      if ((requestedPage && isNaN(requestedPage)) || !requestedPage) {
-        this.currentPage.set(1);
-      } else {
-        this.currentPage.set(requestedPage);
-      }
+    // set a default page if no page is set or it's invalid
+    if ((requestedPage && isNaN(requestedPage)) || !requestedPage) {
+      this.currentPage.set(1);
+    } else {
+      this.currentPage.set(requestedPage);
+    }
 
-      this.waitFor = `${this.type.toLowerCase()} posts`;
-      this.fetchPosts();
-    });
+    this.waitFor = `${this.type.toLowerCase()} posts`;
+    this.fetchPosts();
   }
 
   /**
@@ -111,9 +108,7 @@ export class FullList {
         ),
       )
       .subscribe((data) => {
-        this.totalPages.set(data.total_pages);
-        this.posts.set(data.posts);
-        this.isLoading.set(false);
+        this.updateInterface(data);
         this.alertsService.toggleOfflineAlert();
         this.swManager.addFetchedItems("posts", data.posts, "date");
       });
@@ -136,10 +131,6 @@ export class FullList {
         this.type.toLowerCase() === "new",
       ),
     ).pipe(
-      tap((data) => {
-        this.posts.set(data.posts);
-        this.isLoading.set(false);
-      }),
       map((data) => {
         return {
           posts: data.posts,
@@ -147,7 +138,20 @@ export class FullList {
           success: true,
         } as PostsListResponse;
       }),
+      tap((data) => {
+        this.updateInterface(data);
+      }),
     );
+  }
+
+  /**
+   * Updates the UI with the fetched posts.
+   * @param data - the data to update the UI with.
+   */
+  updateInterface(data: PostsListResponse) {
+    this.totalPages.set(data.total_pages);
+    this.posts.set(data.posts);
+    this.isLoading.set(false);
   }
 
   /**

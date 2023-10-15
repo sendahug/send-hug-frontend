@@ -34,7 +34,6 @@
 import { Component, Input, Output, EventEmitter } from "@angular/core";
 
 // App-related import
-import { AuthService } from "../../../services/auth.service";
 import { AdminService } from "../../../services/admin.service";
 import { ApiClientService } from "../../../services/apiClient.service";
 import { SWManager } from "../../../services/sWManager.service";
@@ -57,7 +56,6 @@ export class ItemDeleteForm {
 
   // CTOR
   constructor(
-    public authService: AuthService,
     private adminService: AdminService,
     private apiClient: ApiClientService,
     private swManager: SWManager,

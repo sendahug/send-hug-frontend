@@ -73,4 +73,17 @@ describe("Support Page", () => {
     expect(supportPage).toBeTruthy();
     expect(supportPageDOM).toBeTruthy();
   });
+
+  it("should add the FAQ items to the navigation list", (done: DoneFn) => {
+    const fixture = TestBed.createComponent(SupportPage);
+    const supportPage = fixture.componentInstance;
+    const supportPageDOM = fixture.nativeElement;
+    fixture.detectChanges();
+
+    expect(supportPage.faqItems.length).toBeGreaterThan(0);
+    expect(supportPageDOM.querySelectorAll(".supportNavLink").length).toEqual(
+      supportPage.faqItems.length,
+    );
+    done();
+  });
 });

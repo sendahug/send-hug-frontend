@@ -45,9 +45,6 @@ import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { AppComponent } from "../../../app.component";
 import { DisplayNameEditForm } from "./displayNameEditForm.component";
 import { AuthService } from "../../../services/auth.service";
-import { MockAuthService } from "../../../services/auth.service.mock";
-import { AdminService } from "../../../services/admin.service";
-import { MockAdminService } from "../../../services/admin.service.mock";
 
 // DISPLAY NAME EDIT
 // ==================================================================
@@ -65,12 +62,34 @@ describe("DisplayNameEditForm", () => {
         FontAwesomeModule,
       ],
       declarations: [AppComponent, DisplayNameEditForm],
-      providers: [
-        { provide: APP_BASE_HREF, useValue: "/" },
-        { provide: AuthService, useClass: MockAuthService },
-        { provide: AdminService, useClass: MockAdminService },
-      ],
+      providers: [{ provide: APP_BASE_HREF, useValue: "/" }],
     }).compileComponents();
+
+    const authService = TestBed.inject(AuthService);
+    authService.authenticated = true;
+    authService.userData = {
+      id: 4,
+      auth0Id: "",
+      displayName: "name",
+      receivedH: 2,
+      givenH: 2,
+      posts: 2,
+      loginCount: 3,
+      role: "admin",
+      jwt: "",
+      blocked: false,
+      releaseDate: undefined,
+      autoRefresh: false,
+      refreshRate: 20,
+      pushEnabled: false,
+      selectedIcon: "kitty",
+      iconColours: {
+        character: "#BA9F93",
+        lbg: "#e2a275",
+        rbg: "#f8eee4",
+        item: "#f4b56a",
+      },
+    };
   });
 
   // Check that the component is created

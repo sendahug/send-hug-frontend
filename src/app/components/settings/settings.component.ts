@@ -89,9 +89,9 @@ export class SettingsPage implements AfterViewChecked {
   toggleIconEditor(edit?: boolean) {
     if (edit) {
       this.editIcon = edit;
-      document.getElementById("editIcon")!.focus();
     } else {
-      this.editIcon = !this.editIcon;
+      this.editIcon = edit || false;
+      document.getElementById("editIcon")?.focus();
     }
   }
 
@@ -154,7 +154,7 @@ export class SettingsPage implements AfterViewChecked {
     e.preventDefault();
 
     // if there's a new rate, update user settings
-    if (newRate) {
+    if (newRate && newRate > 0) {
       this.notificationService.refreshRateSecs = Number(newRate);
       this.notificationService.updateUserSettings();
     }

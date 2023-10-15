@@ -228,7 +228,7 @@ export class MyPosts implements OnInit {
     this.toDelete = "All posts";
     // if there's a user ID, take the selected user's ID. Otherwise, it's the
     // user's own profile, so take their ID from the Auth Service.
-    this.itemToDelete = this.userID ? this.userID : this.authService.userData.id;
+    this.itemToDelete = this.userID;
   }
 
   /*

@@ -49,6 +49,7 @@ import { NotificationService } from "../../services/notifications.service";
 import { AuthService } from "../../services/auth.service";
 import { NotificationsTab } from "../notifications/notifications.component";
 import { AlertsService } from "../../services/alerts.service";
+import { mockAuthedUser } from "../../../../tests/mockData";
 
 describe("SettingsPage", () => {
   // Before each test, configure testing environment
@@ -69,29 +70,7 @@ describe("SettingsPage", () => {
 
     const authService = TestBed.inject(AuthService);
     authService.authenticated = true;
-    authService.userData = {
-      id: 4,
-      auth0Id: "",
-      displayName: "name",
-      receivedH: 2,
-      givenH: 2,
-      posts: 2,
-      loginCount: 3,
-      role: "admin",
-      jwt: "",
-      blocked: false,
-      releaseDate: undefined,
-      autoRefresh: false,
-      refreshRate: 20,
-      pushEnabled: false,
-      selectedIcon: "kitty",
-      iconColours: {
-        character: "#BA9F93",
-        lbg: "#e2a275",
-        rbg: "#f8eee4",
-        item: "#f4b56a",
-      },
-    };
+    authService.userData = mockAuthedUser;
 
     const notificationService = TestBed.inject(NotificationService);
     notificationService.pushStatus = false;

@@ -42,8 +42,7 @@ import { HttpClientModule } from "@angular/common/http";
 import { ServiceWorkerModule } from "@angular/service-worker";
 import { Component } from "@angular/core";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
-import { ActivatedRoute } from "@angular/router";
-import { Subscription, of } from "rxjs";
+import { of } from "rxjs";
 import { By } from "@angular/platform-browser";
 import { NO_ERRORS_SCHEMA } from "@angular/core";
 
@@ -51,8 +50,8 @@ import { MyPosts } from "./myPosts.component";
 import { PopUp } from "../popUp/popUp.component";
 import { Loader } from "../loader/loader.component";
 import { HeaderMessage } from "../headerMessage/headerMessage.component";
-import { ItemsService } from "../../services/items.service";
 import { AuthService } from "../../services/auth.service";
+import { mockAuthedUser } from "../../../../tests/mockData";
 
 const mockPosts = [
   {
@@ -117,29 +116,7 @@ describe("MyPosts", () => {
 
     const authService = TestBed.inject(AuthService);
     authService.authenticated = true;
-    authService.userData = {
-      id: 4,
-      auth0Id: "",
-      displayName: "name",
-      receivedH: 2,
-      givenH: 2,
-      posts: 2,
-      loginCount: 3,
-      role: "admin",
-      jwt: "",
-      blocked: false,
-      releaseDate: undefined,
-      autoRefresh: false,
-      refreshRate: 20,
-      pushEnabled: false,
-      selectedIcon: "kitty",
-      iconColours: {
-        character: "#BA9F93",
-        lbg: "#e2a275",
-        rbg: "#f8eee4",
-        item: "#f4b56a",
-      },
-    };
+    authService.userData = mockAuthedUser;
   });
 
   // Check that the component is created

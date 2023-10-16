@@ -17,7 +17,6 @@ localdev/assets/*
 localdev/manifest.webmanifest
 
 # Testing files
-tests/*
 src/tests.specs.ts
 cypress/*
 

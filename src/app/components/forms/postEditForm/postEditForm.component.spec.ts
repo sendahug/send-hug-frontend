@@ -62,9 +62,7 @@ describe("PostEditForm", () => {
         FontAwesomeModule,
       ],
       declarations: [AppComponent, PostEditForm],
-      providers: [
-        { provide: APP_BASE_HREF, useValue: "/" },
-      ],
+      providers: [{ provide: APP_BASE_HREF, useValue: "/" }],
     }).compileComponents();
   });
 

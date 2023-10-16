@@ -39,8 +39,6 @@ import {
 import {} from "jasmine";
 
 import { MyDB, SWManager } from "./sWManager.service";
-import { AlertsService } from "./alerts.service";
-import { MockAlertsService } from "./alerts.service.mock";
 import { IDBPDatabase } from "idb";
 
 function populateDB(
@@ -173,10 +171,10 @@ function populateDB(
       {
         id: 1,
         displayName: "shirb",
-        receivedHugs: 3,
-        givenHugs: 3,
+        receivedH: 3,
+        givenH: 3,
         role: "user",
-        postsNum: 10,
+        posts: 10,
         selectedIcon: "kitty" as "kitty",
         iconColours: {
           character: "#BA9F93",
@@ -188,10 +186,10 @@ function populateDB(
       {
         id: 4,
         displayName: "user14",
-        receivedHugs: 3,
-        givenHugs: 3,
+        receivedH: 3,
+        givenH: 3,
         role: "user",
-        postsNum: 10,
+        posts: 10,
         selectedIcon: "kitty" as "kitty",
         iconColours: {
           character: "#BA9F93",
@@ -261,7 +259,7 @@ function populateDB(
     ],
   };
 
-  dbPromise.then((db) => {
+  return dbPromise.then((db) => {
     // if there's a specific store to populate, populate it
     if (store != "all") {
       items[store].forEach((item: any) => {
@@ -297,7 +295,7 @@ describe("SWManagerService", () => {
 
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
-      providers: [SWManager, { provide: AlertsService, useClass: MockAlertsService }],
+      providers: [SWManager],
     }).compileComponents();
 
     sWManagerService = TestBed.inject(SWManager);
@@ -391,7 +389,7 @@ describe("SWManagerService", () => {
 
       TestBed.configureTestingModule({
         imports: [HttpClientTestingModule],
-        providers: [SWManager, { provide: AlertsService, useClass: MockAlertsService }],
+        providers: [SWManager],
       }).compileComponents();
 
       sWManagerService = TestBed.inject(SWManager);
@@ -499,26 +497,26 @@ describe("SWManagerService", () => {
   });
 
   // Query Messages Method Tests
-  describe("queryMessages()", () => {
+  describe("fetchMessages()", () => {
     // Before each test, configure testing environment
-    beforeEach(() => {
+    beforeEach(async () => {
       TestBed.resetTestEnvironment();
       TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
       TestBed.configureTestingModule({
         imports: [HttpClientTestingModule],
-        providers: [SWManager, { provide: AlertsService, useClass: MockAlertsService }],
+        providers: [SWManager],
       }).compileComponents();
 
       sWManagerService = TestBed.inject(SWManager);
       sWManagerService.currentDB = sWManagerService.openDatabase();
-      populateDB(sWManagerService.currentDB, "messages");
+      await populateDB(sWManagerService.currentDB, "messages");
       httpController = TestBed.inject(HttpTestingController);
     });
 
     // try to get inbox messages - page 1
     it("should get inbox messages correctly", () => {
-      const messPromise = sWManagerService.queryMessages("inbox", 4, 1);
+      const messPromise = sWManagerService.fetchMessages("forId", 4, 5, 1);
 
       return messPromise!.then((messages) => {
         // check all the posts are there and they're ordered in reverse date order
@@ -530,7 +528,7 @@ describe("SWManagerService", () => {
 
     // try to get inbox messages - page 2 (doesn't exist)
     it("should get inbox messages correctly - page 2", () => {
-      const messPromise = sWManagerService.queryMessages("inbox", 4, 2);
+      const messPromise = sWManagerService.fetchMessages("forId", 4, 5, 2);
 
       return messPromise!.then((messages) => {
         // check all the posts are there and they're ordered in reverse date order
@@ -541,7 +539,7 @@ describe("SWManagerService", () => {
 
     // try to get outbox messages - page 1
     it("should get outbox messages correctly", () => {
-      const messPromise = sWManagerService.queryMessages("outbox", 4, 1);
+      const messPromise = sWManagerService.fetchMessages("fromId", 4, 5, 1);
 
       return messPromise!.then((messages) => {
         // check all the posts are there and they're ordered in reverse date order
@@ -554,7 +552,7 @@ describe("SWManagerService", () => {
 
     // try to get outbox messages - page 2 (doesn't exist)
     it("should get outbox messages correctly - page 2", () => {
-      const messPromise = sWManagerService.queryMessages("outbox", 4, 2);
+      const messPromise = sWManagerService.fetchMessages("fromId", 4, 5, 2);
 
       return messPromise!.then((messages) => {
         // check all the posts are there and they're ordered in reverse date order
@@ -565,7 +563,7 @@ describe("SWManagerService", () => {
 
     // try to get thread - page 1
     it("should get thread correctly", () => {
-      const messPromise = sWManagerService.queryMessages("thread", 4, 1, 3);
+      const messPromise = sWManagerService.fetchMessages("threadID", 3, 5, 1);
 
       return messPromise!.then((messages) => {
         // check all the posts are there and they're ordered in reverse date order
@@ -577,7 +575,7 @@ describe("SWManagerService", () => {
 
     // try to get thread - page 2
     it("should get thread correctly", () => {
-      const messPromise = sWManagerService.queryMessages("thread", 4, 2);
+      const messPromise = sWManagerService.fetchMessages("threadID", 3, 5, 2);
 
       return messPromise!.then((messages) => {
         // check all the posts are there and they're ordered in reverse date order
@@ -596,7 +594,7 @@ describe("SWManagerService", () => {
 
       TestBed.configureTestingModule({
         imports: [HttpClientTestingModule],
-        providers: [SWManager, { provide: AlertsService, useClass: MockAlertsService }],
+        providers: [SWManager],
       }).compileComponents();
 
       sWManagerService = TestBed.inject(SWManager);
@@ -639,7 +637,7 @@ describe("SWManagerService", () => {
 
       TestBed.configureTestingModule({
         imports: [HttpClientTestingModule],
-        providers: [SWManager, { provide: AlertsService, useClass: MockAlertsService }],
+        providers: [SWManager],
       }).compileComponents();
 
       sWManagerService = TestBed.inject(SWManager);

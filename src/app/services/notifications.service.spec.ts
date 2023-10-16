@@ -30,21 +30,19 @@
   SOFTWARE.
 */
 
-import { discardPeriodicTasks, TestBed } from "@angular/core/testing";
+import { TestBed } from "@angular/core/testing";
 import { HttpClientTestingModule, HttpTestingController } from "@angular/common/http/testing";
 import {
   BrowserDynamicTestingModule,
   platformBrowserDynamicTesting,
 } from "@angular/platform-browser-dynamic/testing";
 import { ServiceWorkerModule } from "@angular/service-worker";
-import { Subscription } from "rxjs";
+import { Subscription, of } from "rxjs";
 import {} from "jasmine";
 
 import { NotificationService } from "./notifications.service";
 import { AuthService } from "./auth.service";
-import { MockAuthService } from "./auth.service.mock";
-import { AlertsService } from "./alerts.service";
-import { MockAlertsService } from "./alerts.service.mock";
+import { mockAuthedUser } from "../../../tests/mockData";
 
 const pushSub: PushSubscription = {
   endpoint: "endpoint",
@@ -81,16 +79,16 @@ describe("NotificationService", () => {
         HttpClientTestingModule,
         ServiceWorkerModule.register("/sw.js", { enabled: false }),
       ],
-      providers: [
-        NotificationService,
-        { provide: AuthService, useClass: MockAuthService },
-        { provide: AlertsService, useClass: MockAlertsService },
-      ],
+      providers: [NotificationService],
     }).compileComponents();
 
     notificationService = TestBed.inject(NotificationService);
-    notificationService["authService"].login();
     httpController = TestBed.inject(HttpTestingController);
+
+    const authService = TestBed.inject(AuthService);
+    authService.authenticated = true;
+    authService.userData = { ...mockAuthedUser };
+    authService.isUserDataResolved.next(true);
   });
 
   // Check the service is created
@@ -180,14 +178,13 @@ describe("NotificationService", () => {
       ],
     };
 
+    const apiClientSpy = spyOn(notificationService["apiClient"], "get").and.returnValue(
+      of(mockResponse),
+    );
+
     notificationService.getNotifications(false);
 
-    const req = httpController.expectOne(
-      `${notificationService.serverUrl}/notifications?silentRefresh=false`,
-    );
-    expect(req.request.method).toEqual("GET");
-    req.flush(mockResponse);
-
+    expect(apiClientSpy).toHaveBeenCalledWith("notifications", { silentRefresh: false });
     expect(notificationService.notifications.length).toBe(1);
     expect(notificationService.notifications[0].id).toBe(2);
     expect(notificationService.newNotifications).toBe(0);
@@ -212,14 +209,13 @@ describe("NotificationService", () => {
       ],
     };
 
+    const apiClientSpy = spyOn(notificationService["apiClient"], "get").and.returnValue(
+      of(mockResponse),
+    );
+
     notificationService.getNotifications(true);
 
-    const req = httpController.expectOne(
-      `${notificationService.serverUrl}/notifications?silentRefresh=true`,
-    );
-    expect(req.request.method).toEqual("GET");
-    req.flush(mockResponse);
-
+    expect(apiClientSpy).toHaveBeenCalledWith("notifications", { silentRefresh: true });
     expect(notificationService.notifications.length).toBe(1);
     expect(notificationService.notifications[0].id).toBe(2);
     expect(notificationService.newNotifications).toBe(1);
@@ -353,14 +349,19 @@ describe("NotificationService", () => {
 
     notificationService.refreshStatus = true;
     notificationService.refreshRateSecs = 20;
-    const spy = spyOn(notificationService["alertsService"], "createSuccessAlert");
+    const alertsSpy = spyOn(notificationService["alertsService"], "createSuccessAlert");
+    const apiClientSpy = spyOn(notificationService["apiClient"], "patch").and.returnValue(
+      of(mockResponse),
+    );
+
     notificationService.updateUserSettings();
 
-    const req = httpController.expectOne(`${notificationService.serverUrl}/users/all/4`);
-    expect(req.request.method).toEqual("PATCH");
-    req.flush(mockResponse);
-
-    expect(spy).toHaveBeenCalled();
-    expect(spy).toHaveBeenCalledWith("Settings updated successfully!");
+    expect(apiClientSpy).toHaveBeenCalledWith("users/all/4", {
+      autoRefresh: true,
+      pushEnabled: false,
+      refreshRate: 20,
+    });
+    expect(alertsSpy).toHaveBeenCalled();
+    expect(alertsSpy).toHaveBeenCalledWith("Settings updated successfully!");
   });
 });

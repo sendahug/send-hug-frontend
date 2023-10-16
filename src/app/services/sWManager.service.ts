@@ -474,7 +474,7 @@ export class SWManager {
           const filteredMessages = messages
             .filter((message: Message) => message[filterAttribute] == filterValue)
             .reverse();
-          const startIndex = (page || 1 - 1) * perPage;
+          const startIndex = ((page || 1) - 1) * perPage;
           const pages = Math.ceil(filteredMessages.length / 5);
 
           return {

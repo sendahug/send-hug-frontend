@@ -40,11 +40,7 @@ import { ReactiveFormsModule } from "@angular/forms";
 import { AppComponent } from "../../../app.component";
 import { ReportForm } from "./reportForm.component";
 import { AuthService } from "../../../services/auth.service";
-import { MockAuthService } from "../../../services/auth.service.mock";
-import { ItemsService } from "../../../services/items.service";
-import { MockItemsService } from "../../../services/items.service.mock";
-import { AlertsService } from "../../../services/alerts.service";
-import { MockAlertsService } from "../../../services/alerts.service.mock";
+import { mockAuthedUser } from "../../../../../tests/mockData";
 
 describe("Report", () => {
   // Before each test, configure testing environment
@@ -61,19 +57,17 @@ describe("Report", () => {
         ReactiveFormsModule,
       ],
       declarations: [AppComponent, ReportForm],
-      providers: [
-        { provide: APP_BASE_HREF, useValue: "/" },
-        { provide: AuthService, useClass: MockAuthService },
-        { provide: ItemsService, useClass: MockItemsService },
-        { provide: AlertsService, useClass: MockAlertsService },
-      ],
+      providers: [{ provide: APP_BASE_HREF, useValue: "/" }],
     }).compileComponents();
+
+    const authService = TestBed.inject(AuthService);
+    authService.authenticated = true;
+    authService.userData = { ...mockAuthedUser };
   });
 
   // Check that the reported post is shown
   it("shows the reported post", () => {
     TestBed.createComponent(AppComponent);
-    TestBed.inject(AuthService).login();
     const fixture = TestBed.createComponent(ReportForm);
     const popUp = fixture.componentInstance;
     const popUpDOM = fixture.nativeElement;
@@ -98,7 +92,6 @@ describe("Report", () => {
   // Check that the reported user's display name is shown
   it("shows the reported user's name", () => {
     TestBed.createComponent(AppComponent);
-    TestBed.inject(AuthService).login();
     const fixture = TestBed.createComponent(ReportForm);
     const popUp = fixture.componentInstance;
     const popUpDOM = fixture.nativeElement;
@@ -106,9 +99,9 @@ describe("Report", () => {
     popUp.reportedItem = {
       id: 3,
       displayName: "string",
-      receivedHugs: 3,
-      givenHugs: 4,
-      postsNum: 2,
+      receivedH: 3,
+      givenH: 4,
+      posts: 2,
       role: "user",
       selectedIcon: "kitty",
       iconColours: {
@@ -128,7 +121,6 @@ describe("Report", () => {
   // Check that the correct radio button is set as selected
   it("correctly identifies the chosen radio button", (done: DoneFn) => {
     TestBed.createComponent(AppComponent);
-    TestBed.inject(AuthService).login();
     const fixture = TestBed.createComponent(ReportForm);
     const popUp = fixture.componentInstance;
     const popUpDOM = fixture.nativeElement;
@@ -186,16 +178,15 @@ describe("Report", () => {
 
   it("checkSelectedForOther() - correctly enables/disables the 'other' text field", () => {
     TestBed.createComponent(AppComponent);
-    TestBed.inject(AuthService).login();
     const fixture = TestBed.createComponent(ReportForm);
     const popUp = fixture.componentInstance;
     popUp.reportType = "User";
     popUp.reportedItem = {
       id: 3,
       displayName: "string",
-      receivedHugs: 3,
-      givenHugs: 4,
-      postsNum: 2,
+      receivedH: 3,
+      givenH: 4,
+      posts: 2,
       role: "user",
       selectedIcon: "kitty",
       iconColours: {
@@ -224,7 +215,6 @@ describe("Report", () => {
 
   it("Correctly sets the required and aria-required attributes", (done: DoneFn) => {
     TestBed.createComponent(AppComponent);
-    TestBed.inject(AuthService).login();
     const fixture = TestBed.createComponent(ReportForm);
     const popUp = fixture.componentInstance;
     const popUpDOM = fixture.nativeElement;
@@ -265,7 +255,6 @@ describe("Report", () => {
 
   it("getSelectedReasonText() - correctly sets the selected reason - posts", (done: DoneFn) => {
     TestBed.createComponent(AppComponent);
-    TestBed.inject(AuthService).login();
     const fixture = TestBed.createComponent(ReportForm);
     const popUp = fixture.componentInstance;
     const popUpDOM = fixture.nativeElement;
@@ -304,7 +293,6 @@ describe("Report", () => {
 
   it("getSelectedReasonText() - correctly sets the selected reason - users", (done: DoneFn) => {
     TestBed.createComponent(AppComponent);
-    TestBed.inject(AuthService).login();
     const fixture = TestBed.createComponent(ReportForm);
     const popUp = fixture.componentInstance;
     const popUpDOM = fixture.nativeElement;
@@ -312,9 +300,9 @@ describe("Report", () => {
     popUp.reportedItem = {
       id: 3,
       displayName: "string",
-      receivedHugs: 3,
-      givenHugs: 4,
-      postsNum: 2,
+      receivedH: 3,
+      givenH: 4,
+      posts: 2,
       role: "user",
       selectedIcon: "kitty",
       iconColours: {
@@ -353,7 +341,6 @@ describe("Report", () => {
   // empty reason
   it("requires text if the chosen reason is other - invalid", (done: DoneFn) => {
     TestBed.createComponent(AppComponent);
-    TestBed.inject(AuthService).login();
     const fixture = TestBed.createComponent(ReportForm);
     const popUp = fixture.componentInstance;
     const popUpDOM = fixture.nativeElement;
@@ -383,13 +370,15 @@ describe("Report", () => {
     // check the report wasn't sent and the user was alerted
     expect(validateSpy).toHaveBeenCalledWith("reportOther", "", "rOption3Text");
     expect(reportServiceSpy).not.toHaveBeenCalled();
-    expect(alertServiceSpy).toHaveBeenCalled();
+    expect(alertServiceSpy).toHaveBeenCalledWith({
+      type: "Error",
+      message: "If you choose 'other', you must specify a reason.",
+    });
     done();
   });
 
   it("requires text if the chosen reason is other - valid", (done: DoneFn) => {
     TestBed.createComponent(AppComponent);
-    TestBed.inject(AuthService).login();
     const fixture = TestBed.createComponent(ReportForm);
     const popUp = fixture.componentInstance;
     const popUpDOM = fixture.nativeElement;
@@ -429,7 +418,6 @@ describe("Report", () => {
 
   it("creates the report and sends it to the itemsService - post", (done: DoneFn) => {
     TestBed.createComponent(AppComponent);
-    TestBed.inject(AuthService).login();
     const fixture = TestBed.createComponent(ReportForm);
     const popUp = fixture.componentInstance;
     const popUpDOM = fixture.nativeElement;
@@ -470,7 +458,6 @@ describe("Report", () => {
 
   it("creates the report and sends it to the itemsService - user", (done: DoneFn) => {
     TestBed.createComponent(AppComponent);
-    TestBed.inject(AuthService).login();
     const fixture = TestBed.createComponent(ReportForm);
     const popUp = fixture.componentInstance;
     const popUpDOM = fixture.nativeElement;
@@ -478,9 +465,9 @@ describe("Report", () => {
     popUp.reportedItem = {
       id: 3,
       displayName: "string",
-      receivedHugs: 3,
-      givenHugs: 4,
-      postsNum: 2,
+      receivedH: 3,
+      givenH: 4,
+      posts: 2,
       role: "user",
       selectedIcon: "kitty",
       iconColours: {

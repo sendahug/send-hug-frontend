@@ -37,7 +37,6 @@ import { Component, Input, Output, EventEmitter } from "@angular/core";
 import { Post } from "@app/interfaces/post.interface";
 import { ItemsService } from "@app/services/items.service";
 import { AdminService } from "@app/services/admin.service";
-import { AlertsService } from "@app/services/alerts.service";
 import { ValidationService } from "@app/services/validation.service";
 
 @Component({
@@ -56,7 +55,6 @@ export class PostEditForm {
   constructor(
     private itemsService: ItemsService,
     private adminService: AdminService,
-    private alertsService: AlertsService,
     private validationService: ValidationService,
   ) {}
 

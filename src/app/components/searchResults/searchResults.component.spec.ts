@@ -103,7 +103,6 @@ const mockPostSearchResults = [
   },
 ];
 
-
 describe("SearchResults", () => {
   // Before each test, configure testing environment
   beforeEach(() => {
@@ -118,9 +117,7 @@ describe("SearchResults", () => {
         FontAwesomeModule,
       ],
       declarations: [SearchResults, PopUp, Loader, SinglePost],
-      providers: [
-        { provide: APP_BASE_HREF, useValue: "/" },
-      ],
+      providers: [{ provide: APP_BASE_HREF, useValue: "/" }],
     }).compileComponents();
   });
 
@@ -209,9 +206,7 @@ describe("SearchResults", () => {
           FontAwesomeModule,
         ],
         declarations: [SearchResults, PopUp, Loader, SinglePost],
-        providers: [
-          { provide: APP_BASE_HREF, useValue: "/" },
-        ],
+        providers: [{ provide: APP_BASE_HREF, useValue: "/" }],
       }).compileComponents();
 
       spyOn(TestBed.inject(ItemsService), "sendSearch");
@@ -290,9 +285,7 @@ describe("SearchResults", () => {
           FontAwesomeModule,
         ],
         declarations: [SearchResults, PopUp, Loader, SinglePost],
-        providers: [
-          { provide: APP_BASE_HREF, useValue: "/" },
-        ],
+        providers: [{ provide: APP_BASE_HREF, useValue: "/" }],
       }).compileComponents();
 
       spyOn(TestBed.inject(ItemsService), "sendSearch");

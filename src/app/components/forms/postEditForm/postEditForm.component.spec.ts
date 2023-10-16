@@ -44,12 +44,6 @@ import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 
 import { AppComponent } from "../../../app.component";
 import { PostEditForm } from "./postEditForm.component";
-import { PostsService } from "../../../services/posts.service";
-import { MockPostsService } from "../../../services/posts.service.mock";
-import { AdminService } from "../../../services/admin.service";
-import { MockAdminService } from "../../../services/admin.service.mock";
-import { AlertsService } from "../../../services/alerts.service";
-import { MockAlertsService } from "../../../services/alerts.service.mock";
 import { Post } from "../../../interfaces/post.interface";
 
 // DISPLAY NAME EDIT
@@ -70,9 +64,6 @@ describe("PostEditForm", () => {
       declarations: [AppComponent, PostEditForm],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
-        { provide: PostsService, useClass: MockPostsService },
-        { provide: AdminService, useClass: MockAdminService },
-        { provide: AlertsService, useClass: MockAlertsService },
       ],
     }).compileComponents();
   });
@@ -87,7 +78,7 @@ describe("PostEditForm", () => {
     expect(popUp).toBeTruthy();
   });
 
-  it("should make the request to postsService to change the post", () => {
+  it("should make the request to itemsService to change the post", () => {
     const fixture = TestBed.createComponent(PostEditForm);
     const popUp = fixture.componentInstance;
     const popUpDOM = fixture.nativeElement;
@@ -106,8 +97,8 @@ describe("PostEditForm", () => {
     fixture.detectChanges();
 
     const validateSpy = spyOn(popUp["validationService"], "validateItem").and.returnValue(true);
-    const updateSpy = spyOn(popUp["postsService"], "editPost");
-    const isUpdatedSpy = spyOn(popUp["postsService"].isUpdated, "subscribe");
+    const updateSpy = spyOn(popUp["itemsService"], "editPost");
+    const isUpdatedSpy = spyOn(popUp["itemsService"].isUpdated, "subscribe");
 
     popUpDOM.querySelector("#postText").value = newText;
     popUpDOM.querySelectorAll(".sendData")[0].click();

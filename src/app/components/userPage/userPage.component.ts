@@ -40,7 +40,6 @@ import { HttpErrorResponse } from "@angular/common/http";
 // App-related imports
 import { User } from "@app/interfaces/user.interface";
 import { AuthService } from "@app/services/auth.service";
-import { ItemsService } from "@app/services/items.service";
 import { iconElements } from "@app/interfaces/types";
 import { OtherUser } from "@app/interfaces/otherUser.interface";
 import { SWManager } from "@app/services/sWManager.service";
@@ -88,7 +87,6 @@ export class UserPage implements OnInit, OnDestroy, AfterViewChecked {
   constructor(
     public authService: AuthService,
     private route: ActivatedRoute,
-    public itemsService: ItemsService,
     private swManager: SWManager,
     private apiClient: ApiClientService,
     private alertsService: AlertsService,
@@ -202,13 +200,7 @@ export class UserPage implements OnInit, OnDestroy, AfterViewChecked {
    * from the server.
    */
   fetchOtherUsersData() {
-    from(this.swManager.queryUsers(this.userId!))
-      .pipe(
-        tap((user) => {
-          if (user) this.otherUser.set(user);
-          this.isIdbFetchResolved.set(true);
-        }),
-      )
+    this.fetchOtherUserFromIdb()
       .pipe(switchMap(() => this.apiClient.get<OtherUserResponse>(`users/all/${this.userId!}`)))
       .subscribe({
         next: (response) => {
@@ -224,6 +216,19 @@ export class UserPage implements OnInit, OnDestroy, AfterViewChecked {
           this.isServerFetchResolved.set(true);
         },
       });
+  }
+
+  /**
+   * Fetches the user to display from IDB.
+   * @returns an observable that fetches the user from IDB
+   */
+  fetchOtherUserFromIdb() {
+    return from(this.swManager.queryUsers(this.userId!)).pipe(
+      tap((user) => {
+        if (user) this.otherUser.set(user);
+        this.isIdbFetchResolved.set(true);
+      }),
+    );
   }
 
   /*

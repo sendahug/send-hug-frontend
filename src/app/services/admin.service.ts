@@ -73,7 +73,7 @@ export class AdminService {
       }
     | undefined;
   isBlockDataResolved = new BehaviorSubject(false);
-  filteredPhrases: string[] = [];
+  filteredPhrases: { id: number; filter: string }[] = [];
   isFiltersResolved = new BehaviorSubject(false);
   // pagination
   currentPage = {

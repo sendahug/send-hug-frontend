@@ -31,29 +31,23 @@
 */
 import { TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
-import {} from "jasmine";
-import { APP_BASE_HREF } from "@angular/common";
-
-import { AppComponent } from "./app.component";
-import { NotificationsTab } from "./components/notifications/notifications.component";
 import {
   BrowserDynamicTestingModule,
   platformBrowserDynamicTesting,
 } from "@angular/platform-browser-dynamic/testing";
+import {} from "jasmine";
+import { APP_BASE_HREF } from "@angular/common";
 import { HttpClientModule } from "@angular/common/http";
 import { ServiceWorkerModule } from "@angular/service-worker";
 import { ReactiveFormsModule } from "@angular/forms";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
+
+import { AppComponent } from "./app.component";
+import { NotificationsTab } from "./components/notifications/notifications.component";
 import { AuthService } from "./services/auth.service";
-import { MockAuthService } from "./services/auth.service.mock";
-import { ItemsService } from "./services/items.service";
-import { MockItemsService } from "./services/items.service.mock";
-import { AlertsService } from "./services/alerts.service";
-import { MockAlertsService } from "./services/alerts.service.mock";
 import { SWManager } from "./services/sWManager.service";
-import { MockSWManager } from "./services/sWManager.service.mock";
 import { NotificationService } from "./services/notifications.service";
-import { MockNotificationService } from "./services/notifications.service.mock";
+import { mockAuthedUser } from "../../tests/mockData";
 
 declare const viewport: any;
 
@@ -71,15 +65,21 @@ describe("AppComponent", () => {
         FontAwesomeModule,
       ],
       declarations: [AppComponent, NotificationsTab],
-      providers: [
-        { provide: APP_BASE_HREF, useValue: "/" },
-        { provide: AuthService, useClass: MockAuthService },
-        { provide: ItemsService, useClass: MockItemsService },
-        { provide: AlertsService, useClass: MockAlertsService },
-        { provide: SWManager, useClass: MockSWManager },
-        { provide: NotificationService, useClass: MockNotificationService },
-      ],
+      providers: [{ provide: APP_BASE_HREF, useValue: "/" }],
     }).compileComponents();
+
+    const authService = TestBed.inject(AuthService);
+    spyOn(authService, "checkHash");
+    authService.authenticated = true;
+    authService.userData = { ...mockAuthedUser };
+
+    const swManager = TestBed.inject(SWManager);
+    spyOn(swManager, "registerSW");
+    spyOn(swManager, "updateSW");
+
+    const notificationService = TestBed.inject(NotificationService);
+    spyOn(notificationService, "getNotifications");
+    spyOn(notificationService, "startAutoRefresh");
   });
 
   // Check that the app is created
@@ -199,6 +199,7 @@ describe("AppComponent", () => {
     const componentHtml = fixture.nativeElement;
     const searchSpy = spyOn(component, "searchApp").and.callThrough();
     const searchServiceSpy = spyOn(component["itemsService"], "sendSearch");
+    const alertsSpy = spyOn(component["alertsService"], "createAlert");
 
     // open search panel and run search
     componentHtml.querySelector("#searchBtn").click();
@@ -210,7 +211,10 @@ describe("AppComponent", () => {
     // check one spy was triggered and one wasn't
     expect(searchSpy).toHaveBeenCalled();
     expect(searchServiceSpy).not.toHaveBeenCalled();
-    expect(componentHtml.querySelectorAll(".alertMessage")[0]).toBeTruthy();
+    expect(alertsSpy).toHaveBeenCalledWith({
+      message: "Search query is empty! Please write a term to search for.",
+      type: "Error",
+    });
     done();
   });
 

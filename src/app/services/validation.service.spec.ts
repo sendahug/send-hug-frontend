@@ -40,8 +40,6 @@ import {} from "jasmine";
 import { Component } from "@angular/core";
 
 import { ValidationService } from "./validation.service";
-import { AlertsService } from "./alerts.service";
-import { MockAlertsService } from "./alerts.service.mock";
 
 // Mock Page for testing toggleErrorIndicator
 // ==================================================
@@ -74,7 +72,7 @@ describe("PostsService", () => {
 
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
-      providers: [ValidationService, { provide: AlertsService, useClass: MockAlertsService }],
+      providers: [ValidationService],
       declarations: [MockPage],
     }).compileComponents();
 

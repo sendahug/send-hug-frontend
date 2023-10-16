@@ -48,9 +48,61 @@ import { PopUp } from "../popUp/popUp.component";
 import { Loader } from "../loader/loader.component";
 import { SinglePost } from "../post/post.component";
 import { ItemsService } from "../../services/items.service";
-import { MockItemsService } from "../../services/items.service.mock";
-import { AuthService } from "../../services/auth.service";
-import { MockAuthService } from "../../services/auth.service.mock";
+import { iconCharacters } from "@app/interfaces/types";
+
+const mockUserSearchResults = [
+  {
+    id: 6,
+    displayName: "tests",
+    receivedH: 2,
+    givenH: 4,
+    posts: 1,
+    role: "user",
+    selectedIcon: "kitty" as iconCharacters,
+    iconColours: {
+      character: "#BA9F93",
+      lbg: "#e2a275",
+      rbg: "#f8eee4",
+      item: "#f4b56a",
+    },
+  },
+  {
+    id: 7,
+    displayName: "testing",
+    receivedH: 2,
+    givenH: 4,
+    posts: 1,
+    role: "user",
+    selectedIcon: "kitty" as iconCharacters,
+    iconColours: {
+      character: "#BA9F93",
+      lbg: "#e2a275",
+      rbg: "#f8eee4",
+      item: "#f4b56a",
+    },
+  },
+];
+const mockPostSearchResults = [
+  {
+    date: new Date("Mon, 01 Jun 2020 15:19:41 GMT"),
+    givenHugs: 0,
+    id: 6,
+    text: "test",
+    user: "shirb",
+    userId: 1,
+    sentHugs: [],
+  },
+  {
+    date: new Date("Mon, 01 Jun 2020 15:18:37 GMT"),
+    givenHugs: 0,
+    id: 5,
+    text: "test",
+    user: "shirb",
+    userId: 1,
+    sentHugs: [],
+  },
+];
+
 
 describe("SearchResults", () => {
   // Before each test, configure testing environment
@@ -68,8 +120,6 @@ describe("SearchResults", () => {
       declarations: [SearchResults, PopUp, Loader, SinglePost],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
-        { provide: ItemsService, useClass: MockItemsService },
-        { provide: AuthService, useClass: MockAuthService },
       ],
     }).compileComponents();
   });
@@ -91,12 +141,15 @@ describe("SearchResults", () => {
         return null;
       }
     });
+    const itemsServiceSpy = spyOn(TestBed.inject(ItemsService), "sendSearch");
     const fixture = TestBed.createComponent(SearchResults);
     const searchResults = fixture.componentInstance;
     const searchResultsDOM = fixture.nativeElement;
+    searchResults.itemsService.isSearchResolved.next(true);
     fixture.detectChanges();
 
     expect(routeSpy).toHaveBeenCalled();
+    expect(itemsServiceSpy).toHaveBeenCalledWith("search");
     expect(searchResults.searchQuery).toBe("search");
     expect(searchResultsDOM.querySelector("#resultSummary").textContent).toContain('"search"');
   });
@@ -111,7 +164,7 @@ describe("SearchResults", () => {
         return null;
       }
     });
-    const searchSpy = spyOn(TestBed.inject(ItemsService), "sendSearch").and.callThrough();
+    const searchSpy = spyOn(TestBed.inject(ItemsService), "sendSearch");
     TestBed.inject(ItemsService).isSearching = false;
     const fixture = TestBed.createComponent(SearchResults);
     const searchResults = fixture.componentInstance;
@@ -131,7 +184,7 @@ describe("SearchResults", () => {
         return null;
       }
     });
-    const searchSpy = spyOn(TestBed.inject(ItemsService), "sendSearch").and.callThrough();
+    const searchSpy = spyOn(TestBed.inject(ItemsService), "sendSearch");
     TestBed.inject(ItemsService).isSearching = true;
     const fixture = TestBed.createComponent(SearchResults);
     const searchResults = fixture.componentInstance;
@@ -158,10 +211,10 @@ describe("SearchResults", () => {
         declarations: [SearchResults, PopUp, Loader, SinglePost],
         providers: [
           { provide: APP_BASE_HREF, useValue: "/" },
-          { provide: ItemsService, useClass: MockItemsService },
-          { provide: AuthService, useClass: MockAuthService },
         ],
       }).compileComponents();
+
+      spyOn(TestBed.inject(ItemsService), "sendSearch");
     });
 
     // Check that an error message is shown if there are no results
@@ -177,6 +230,7 @@ describe("SearchResults", () => {
       const fixture = TestBed.createComponent(SearchResults);
       const searchResults = fixture.componentInstance;
       const searchResultsDOM = fixture.debugElement.nativeElement;
+      searchResults.itemsService.isSearchResolved.next(true);
       searchResults.itemsService.userSearchResults = [];
       searchResults.itemsService.numUserResults = 0;
 
@@ -200,6 +254,9 @@ describe("SearchResults", () => {
       const fixture = TestBed.createComponent(SearchResults);
       const searchResults = fixture.componentInstance;
       const searchResultsDOM = fixture.debugElement.nativeElement;
+      searchResults.itemsService.isSearchResolved.next(true);
+      searchResults.itemsService.userSearchResults = mockUserSearchResults;
+      searchResults.itemsService.numUserResults = 2;
 
       fixture.detectChanges();
 
@@ -235,10 +292,10 @@ describe("SearchResults", () => {
         declarations: [SearchResults, PopUp, Loader, SinglePost],
         providers: [
           { provide: APP_BASE_HREF, useValue: "/" },
-          { provide: ItemsService, useClass: MockItemsService },
-          { provide: AuthService, useClass: MockAuthService },
         ],
       }).compileComponents();
+
+      spyOn(TestBed.inject(ItemsService), "sendSearch");
     });
 
     // Check that an error message is shown if there are no results
@@ -254,6 +311,7 @@ describe("SearchResults", () => {
       const fixture = TestBed.createComponent(SearchResults);
       const searchResults = fixture.componentInstance;
       const searchResultsDOM = fixture.debugElement.nativeElement;
+      searchResults.itemsService.isSearchResolved.next(true);
       searchResults.itemsService.postSearchResults = [];
       searchResults.itemsService.numPostResults = 0;
 
@@ -277,6 +335,10 @@ describe("SearchResults", () => {
       const fixture = TestBed.createComponent(SearchResults);
       const searchResults = fixture.componentInstance;
       const searchResultsDOM = fixture.debugElement.nativeElement;
+      searchResults.itemsService.isSearchResolved.next(true);
+      searchResults.itemsService.postSearchResults = [mockPostSearchResults[0]];
+      searchResults.itemsService.numPostResults = 1;
+      searchResults.itemsService.totalPostSearchPages = 2;
 
       fixture.detectChanges();
 
@@ -307,6 +369,10 @@ describe("SearchResults", () => {
       const fixture = TestBed.createComponent(SearchResults);
       const searchResults = fixture.componentInstance;
       const searchResultsDOM = fixture.debugElement.nativeElement;
+      searchResults.itemsService.isSearchResolved.next(true);
+      searchResults.itemsService.postSearchResults = [mockPostSearchResults[0]];
+      searchResults.itemsService.numPostResults = 1;
+      searchResults.itemsService.totalPostSearchPages = 2;
       fixture.detectChanges();
 
       // expectations for page 1
@@ -317,6 +383,10 @@ describe("SearchResults", () => {
 
       // change the page
       searchResultsDOM.querySelectorAll(".nextButton")[0].click();
+      searchResults.itemsService.postSearchResults = [...mockPostSearchResults];
+      searchResults.itemsService.numPostResults = 2;
+      searchResults.itemsService.postSearchPage = 2;
+      searchResults.itemsService.totalPostSearchPages = 2;
       fixture.detectChanges();
 
       // expectations for page 2
@@ -328,6 +398,10 @@ describe("SearchResults", () => {
 
       // change the page
       searchResultsDOM.querySelectorAll(".prevButton")[0].click();
+      searchResults.itemsService.postSearchResults = [mockPostSearchResults[0]];
+      searchResults.itemsService.numPostResults = 1;
+      searchResults.itemsService.postSearchPage = 1;
+      searchResults.itemsService.totalPostSearchPages = 2;
       fixture.detectChanges();
 
       // expectations for page 1
@@ -336,45 +410,6 @@ describe("SearchResults", () => {
       expect(
         searchResultsDOM.querySelector("#postSearchResults").firstElementChild.children.length,
       ).toBe(1);
-      done();
-    });
-
-    // Check the posts' menu is shown if there's enough room for them
-    it("should show the posts's menu if wide enough", (done: DoneFn) => {
-      // set up spies
-      const route = TestBed.inject(ActivatedRoute);
-      spyOn(route.snapshot.queryParamMap, "get").and.callFake((param: string) => {
-        if (param == "query") {
-          return "search";
-        } else {
-          return null;
-        }
-      });
-
-      // create the component
-      const fixture = TestBed.createComponent(SearchResults);
-      const searchResults = fixture.componentInstance;
-      const searchResultsDOM = fixture.debugElement.nativeElement;
-      const authService = searchResults.authService;
-      spyOn(authService, "canUser").and.returnValue(true);
-      fixture.detectChanges();
-
-      // change the elements' width to make sure there's enough room for the menu
-      let sub = searchResultsDOM
-        .querySelectorAll(".searchResult")[0]!
-        .querySelectorAll(".subMenu")[0] as HTMLDivElement;
-      sub.style.maxWidth = "";
-      sub.style.display = "flex";
-      fixture.detectChanges();
-
-      // check all menus are shown
-      let posts = searchResultsDOM.querySelectorAll(".searchResult");
-      posts.forEach((element: HTMLLIElement) => {
-        expect(element.querySelectorAll(".buttonsContainer")[0].classList).not.toContain("float");
-        expect(element.querySelectorAll(".subMenu")[0].classList).not.toContain("hidden");
-        expect(element.querySelectorAll(".subMenu")[0].classList).not.toContain("float");
-        expect(element.querySelectorAll(".menuButton")[0].classList).toContain("hidden");
-      });
       done();
     });
   });

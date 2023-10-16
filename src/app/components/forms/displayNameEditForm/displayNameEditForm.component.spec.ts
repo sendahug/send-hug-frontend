@@ -68,7 +68,7 @@ describe("DisplayNameEditForm", () => {
 
     const authService = TestBed.inject(AuthService);
     authService.authenticated = true;
-    authService.userData = mockAuthedUser;
+    authService.userData = { ...mockAuthedUser };
   });
 
   // Check that the component is created

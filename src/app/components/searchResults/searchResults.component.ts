@@ -36,7 +36,6 @@ import { ActivatedRoute, Router } from "@angular/router";
 
 // App-related imports
 import { ItemsService } from "@app/services/items.service";
-import { AuthService } from "@app/services/auth.service";
 
 @Component({
   selector: "app-search-results",
@@ -52,7 +51,6 @@ export class SearchResults {
   // CTOR
   constructor(
     public itemsService: ItemsService,
-    public authService: AuthService,
     private route: ActivatedRoute,
     private router: Router,
   ) {

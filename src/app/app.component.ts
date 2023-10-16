@@ -287,10 +287,7 @@ export class AppComponent implements OnInit, AfterViewInit {
       if (!this.showMenu()) {
         this.showMenu.set(true);
       }
-
-      if (document.documentElement.clientWidth > 650) {
-        this.showMenuButton.set(false);
-      }
+      this.showMenuButton.set(false);
     } else {
       if (this.showMenu()) {
         this.showMenuButton.set(true);

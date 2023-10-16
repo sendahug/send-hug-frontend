@@ -45,7 +45,7 @@ import { ReactiveFormsModule } from "@angular/forms";
 
 import { IconEditor } from "./iconEditor.component";
 import { AuthService } from "../../services/auth.service";
-import { MockAuthService } from "../../services/auth.service.mock";
+import { mockAuthedUser } from "../../../../tests/mockData";
 
 describe("IconEditor", () => {
   // Before each test, configure testing environment
@@ -62,14 +62,13 @@ describe("IconEditor", () => {
         ReactiveFormsModule,
       ],
       declarations: [IconEditor],
-      providers: [
-        { provide: APP_BASE_HREF, useValue: "/" },
-        { provide: AuthService, useClass: MockAuthService },
-      ],
+      providers: [{ provide: APP_BASE_HREF, useValue: "/" }],
     }).compileComponents();
 
     // trigger login
-    TestBed.inject(AuthService).login();
+    const authService = TestBed.inject(AuthService);
+    authService.authenticated = true;
+    authService.userData = { ...mockAuthedUser };
   });
 
   // Check the page is created

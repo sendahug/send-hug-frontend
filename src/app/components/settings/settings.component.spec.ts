@@ -70,7 +70,7 @@ describe("SettingsPage", () => {
 
     const authService = TestBed.inject(AuthService);
     authService.authenticated = true;
-    authService.userData = mockAuthedUser;
+    authService.userData = { ...mockAuthedUser };
 
     const notificationService = TestBed.inject(NotificationService);
     notificationService.pushStatus = false;

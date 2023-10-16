@@ -37,14 +37,9 @@ import {
   platformBrowserDynamicTesting,
 } from "@angular/platform-browser-dynamic/testing";
 import {} from "jasmine";
+import { of } from "rxjs";
 
 import { ItemsService } from "./items.service";
-import { AuthService } from "./auth.service";
-import { MockAuthService } from "./auth.service.mock";
-import { AlertsService } from "./alerts.service";
-import { MockAlertsService } from "./alerts.service.mock";
-import { SWManager } from "./sWManager.service";
-import { MockSWManager } from "./sWManager.service.mock";
 import { Report } from "../interfaces/report.interface";
 
 describe("ItemsService", () => {
@@ -58,12 +53,7 @@ describe("ItemsService", () => {
 
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
-      providers: [
-        ItemsService,
-        { provide: AuthService, useClass: MockAuthService },
-        { provide: AlertsService, useClass: MockAlertsService },
-        { provide: SWManager, useClass: MockSWManager },
-      ],
+      providers: [ItemsService],
     }).compileComponents();
 
     itemsService = TestBed.inject(ItemsService);
@@ -73,9 +63,9 @@ describe("ItemsService", () => {
       id: 4,
       auth0Id: "",
       displayName: "name",
-      receivedHugs: 2,
-      givenHugs: 2,
-      postsNum: 2,
+      receivedH: 2,
+      givenH: 2,
+      posts: 2,
       loginCount: 3,
       role: "admin",
       jwt: "",
@@ -94,7 +84,6 @@ describe("ItemsService", () => {
     };
     itemsService["authService"].authenticated = true;
     itemsService["authService"].isUserDataResolved.next(true);
-    itemsService["authService"].login();
   });
 
   // Check the service is created
@@ -102,731 +91,161 @@ describe("ItemsService", () => {
     expect(itemsService).toBeTruthy();
   });
 
-  // Check that the service gets the user's post
-  it("getUserPosts() - should get user posts", () => {
-    // mock response
-    const mockResponse = {
-      page: 1,
-      posts: [
-        {
-          date: "Mon, 08 Jun 2020 14:43:05 GMT",
-          givenHugs: 0,
-          id: 14,
-          text: "new here",
-          userId: 1,
-        },
-        {
-          date: "Mon, 08 Jun 2020 14:43:05 GMT",
-          givenHugs: 0,
-          id: 15,
-          text: "hi everyone",
-          userId: 1,
-        },
-      ],
-      success: true,
-      total_pages: 1,
-    };
-
-    itemsService["authService"].userData = {
-      id: 4,
-      auth0Id: "",
-      displayName: "name",
-      receivedHugs: 2,
-      givenHugs: 2,
-      postsNum: 2,
-      loginCount: 3,
-      role: "admin",
-      jwt: "",
-      blocked: false,
-      releaseDate: undefined,
-      autoRefresh: false,
-      refreshRate: 20,
-      pushEnabled: false,
-      selectedIcon: "kitty",
-      iconColours: {
-        character: "#BA9F93",
-        lbg: "#e2a275",
-        rbg: "#f8eee4",
-        item: "#f4b56a",
-      },
-    };
-    itemsService["authService"].authenticated = true;
-    itemsService["authService"].isUserDataResolved.next(true);
-    itemsService["authService"].login();
-    const querySpy = spyOn(itemsService["serviceWorkerM"], "fetchPosts");
-    const addSpy = spyOn(itemsService["serviceWorkerM"], "addItem");
-    const cleanSpy = spyOn(itemsService["serviceWorkerM"], "cleanDB");
-    itemsService.getUserPosts(1, 1);
-    // wait for the fetch to be resolved
-    itemsService.isUserPostsResolved.other.subscribe((value) => {
-      if (value) {
-        expect(itemsService.userPosts.other.length).toBe(2);
-        expect(itemsService.totalUserPostsPages.other).toBe(1);
-        expect(itemsService.userPostsPage.other).toBe(1);
-        expect(itemsService.previousUser).toBe(1);
-      }
-    });
-
-    const req = httpController.expectOne(`${itemsService.serverUrl}/users/all/1/posts?page=1`);
-    expect(req.request.method).toEqual("GET");
-    req.flush(mockResponse);
-
-    expect(querySpy).toHaveBeenCalled();
-    expect(addSpy).toHaveBeenCalled();
-    expect(addSpy).toHaveBeenCalledTimes(2);
-    expect(cleanSpy).toHaveBeenCalled();
-  });
-
-  // Check that the service correctly tells the difference between the logged in user
-  // and other users
-  it("getUserPosts() - should tell the difference between self and other user", () => {
-    // mock response for 'other user'
-    const mockOtherResponse = {
-      page: 1,
-      posts: [
-        {
-          date: "Mon, 08 Jun 2020 14:43:05 GMT",
-          givenHugs: 0,
-          id: 14,
-          text: "new here",
-          userId: 1,
-        },
-        {
-          date: "Mon, 08 Jun 2020 14:43:05 GMT",
-          givenHugs: 0,
-          id: 15,
-          text: "hi everyone",
-          userId: 1,
-        },
-      ],
-      success: true,
-      total_pages: 1,
-    };
-    // mock response for 'self'
-    // mock response
-    const mockSelfResponse = {
-      page: 1,
-      posts: [
-        {
-          date: "Mon, 08 Jun 2020 14:43:05 GMT",
-          givenHugs: 0,
-          id: 12,
-          text: "new here",
-          userId: 4,
-        },
-        {
-          date: "Mon, 08 Jun 2020 14:43:05 GMT",
-          givenHugs: 0,
-          id: 10,
-          text: "hi everyone",
-          userId: 4,
-        },
-        {
-          date: "Mon, 08 Jun 2020 14:43:05 GMT",
-          givenHugs: 0,
-          id: 11,
-          text: "hi everyone",
-          userId: 4,
-        },
-      ],
-      success: true,
-      total_pages: 1,
-    };
-
-    // run the test for the user's own profile
-    new Promise(() => {
-      // login and get the user's own posts
-      itemsService["authService"].userData = {
-        id: 4,
-        auth0Id: "",
-        displayName: "name",
-        receivedHugs: 2,
-        givenHugs: 2,
-        postsNum: 2,
-        loginCount: 3,
-        role: "admin",
-        jwt: "",
-        blocked: false,
-        releaseDate: undefined,
-        autoRefresh: false,
-        refreshRate: 20,
-        pushEnabled: false,
-        selectedIcon: "kitty",
-        iconColours: {
-          character: "#BA9F93",
-          lbg: "#e2a275",
-          rbg: "#f8eee4",
-          item: "#f4b56a",
-        },
-      };
-      itemsService["authService"].authenticated = true;
-      itemsService["authService"].isUserDataResolved.next(true);
-      itemsService["authService"].login();
-      itemsService.getUserPosts(4, 1);
-      // wait for the fetch to be resolved
-      itemsService.isUserPostsResolved.other.subscribe((value) => {
-        if (value) {
-          // check the items service correctly identified it as 'self' and didn't
-          // touch the 'other' variables
-          expect(itemsService.userPosts.self.length).toBe(3);
-          expect(itemsService.userPosts.other.length).toBe(0);
-          expect(itemsService.totalUserPostsPages.self).toBe(1);
-          expect(itemsService.userPostsPage.self).toBe(1);
-          expect(itemsService.previousUser).toBe(0);
-        }
-      });
-
-      const selfReq = httpController.expectOne(
-        `${itemsService.serverUrl}/users/all/4/posts?page=1`,
-      );
-      expect(selfReq.request.method).toEqual("GET");
-      selfReq.flush(mockSelfResponse);
-      // and once it's done, run the 'other' tests
-    }).then(() => {
-      // for comparison, then fetch another user's posts
-      itemsService.getUserPosts(1, 1);
-      // wait for the fetch to be resolved
-      itemsService.isUserPostsResolved.self.subscribe((value) => {
-        if (value) {
-          expect(itemsService.userPosts.other.length).toBe(2);
-          expect(itemsService.totalUserPostsPages.other).toBe(1);
-          expect(itemsService.userPostsPage.other).toBe(1);
-          expect(itemsService.previousUser).toBe(1);
-          expect(itemsService.userPosts.other[0].id).not.toEqual(itemsService.userPosts.self[0].id);
-          expect(itemsService.userPosts.other[1].id).not.toEqual(itemsService.userPosts.self[1].id);
-        }
-      });
-
-      const otherReq = httpController.expectOne(
-        `${itemsService.serverUrl}/users/all/1/posts?page=1`,
-      );
-      expect(otherReq.request.method).toEqual("GET");
-      otherReq.flush(mockOtherResponse);
-    });
-  });
-
-  // Check that the service sends the user a hug
-  it("sendUserHug() - should send a hug to a user", () => {
-    // mock response
-    const mockResponse = {
-      success: true,
-      updated: {
-        displayName: "user_14",
-        givenH: 0,
-        id: 2,
-        posts: 2,
-        receivedH: 1,
-        role: "user",
-      },
-    };
-
-    const alertSpy = spyOn(itemsService["alertsService"], "createSuccessAlert");
-    itemsService["authService"].userData = {
-      id: 4,
-      auth0Id: "",
-      displayName: "name",
-      receivedHugs: 2,
-      givenHugs: 2,
-      postsNum: 2,
-      loginCount: 3,
-      role: "admin",
-      jwt: "",
-      blocked: false,
-      releaseDate: undefined,
-      autoRefresh: false,
-      refreshRate: 20,
-      pushEnabled: false,
-      selectedIcon: "kitty",
-      iconColours: {
-        character: "#BA9F93",
-        lbg: "#e2a275",
-        rbg: "#f8eee4",
-        item: "#f4b56a",
-      },
-    };
-    itemsService["authService"].authenticated = true;
-    itemsService["authService"].isUserDataResolved.next(true);
-    itemsService["authService"].login();
-    itemsService.otherUserData = {
-      id: 2,
-      displayName: "user_14",
-      receivedHugs: 0,
+  it("sendPost() - should send a post", () => {
+    const mockNewPost = {
+      userId: 4,
+      user: "name",
+      text: "text",
+      date: new Date(),
       givenHugs: 0,
-      postsNum: 2,
-      role: "user",
-      selectedIcon: "kitty",
-      iconColours: {
-        character: "#BA9F93",
-        lbg: "#e2a275",
-        rbg: "#f8eee4",
-        item: "#f4b56a",
+    };
+    const apiClientSpy = spyOn(itemsService["apiClient"], "post").and.returnValue(
+      of({ success: true, posts: mockNewPost }),
+    );
+    const successAlertSpy = spyOn(itemsService["alertsService"], "createSuccessAlert");
+    const toggleAlertSpy = spyOn(itemsService["alertsService"], "toggleOfflineAlert");
+    const addItemSpy = spyOn(itemsService["serviceWorkerM"], "addItem");
+
+    itemsService.sendPost(mockNewPost);
+
+    expect(apiClientSpy).toHaveBeenCalledWith("posts", mockNewPost);
+    expect(successAlertSpy).toHaveBeenCalledWith(
+      "Your post was published! Return to home page to view the post.",
+      false,
+      "/",
+    );
+    expect(toggleAlertSpy).toHaveBeenCalled();
+    expect(addItemSpy).toHaveBeenCalledWith("posts", {
+      ...mockNewPost,
+      isoDate: new Date(mockNewPost.date).toISOString(),
+    });
+  });
+
+  it("sendPost() - should prevent sending a post if the user is blocked", () => {
+    const mockNewPost = {
+      userId: 4,
+      user: "name",
+      text: "text",
+      date: new Date(),
+      givenHugs: 0,
+    };
+    const apiClientSpy = spyOn(itemsService["apiClient"], "post").and.returnValue(
+      of({ success: true, posts: mockNewPost }),
+    );
+    const successAlertSpy = spyOn(itemsService["alertsService"], "createSuccessAlert");
+    const errorAlertSpy = spyOn(itemsService["alertsService"], "createAlert");
+    const toggleAlertSpy = spyOn(itemsService["alertsService"], "toggleOfflineAlert");
+    const addItemSpy = spyOn(itemsService["serviceWorkerM"], "addItem");
+    itemsService["authService"].userData.blocked = true;
+    itemsService["authService"].userData.releaseDate = new Date();
+
+    itemsService.sendPost(mockNewPost);
+
+    expect(apiClientSpy).not.toHaveBeenCalled();
+    expect(successAlertSpy).not.toHaveBeenCalled();
+    expect(toggleAlertSpy).not.toHaveBeenCalled();
+    expect(addItemSpy).not.toHaveBeenCalled();
+    expect(errorAlertSpy).toHaveBeenCalledWith({
+      type: "Error",
+      message: `You cannot post new posts while you're blocked. You're blocked until ${itemsService["authService"].userData.releaseDate}.`,
+    });
+  });
+
+  it("editPost() - should edit post", () => {
+    const mockPost = {
+      id: 1,
+      userId: 4,
+      user: "name",
+      text: "text",
+      date: new Date(),
+      givenHugs: 0,
+    };
+    const apiClientSpy = spyOn(itemsService["apiClient"], "patch").and.returnValue(
+      of({ success: true }),
+    );
+    const successAlertSpy = spyOn(itemsService["alertsService"], "createSuccessAlert");
+    const toggleAlertSpy = spyOn(itemsService["alertsService"], "toggleOfflineAlert");
+    const isUpdatedSpy = spyOn(itemsService.isUpdated, "next").and.callThrough();
+    itemsService.editPost(mockPost);
+
+    expect(apiClientSpy).toHaveBeenCalledWith(`posts/${mockPost.id}`, mockPost);
+    expect(successAlertSpy).toHaveBeenCalledWith(
+      "Your post was edited. Refresh to view the updated post.",
+      true,
+    );
+    expect(toggleAlertSpy).toHaveBeenCalled();
+    expect(isUpdatedSpy).toHaveBeenCalledWith(true);
+    expect(itemsService.isUpdated.value).toBe(true);
+  });
+
+  it("sendHug() - should send a hug for a post", () => {
+    const mockPost = {
+      id: 1,
+      userId: 4,
+      user: "name",
+      text: "text",
+      date: new Date(),
+      givenHugs: 0,
+    };
+    const apiClientSpy = spyOn(itemsService["apiClient"], "post").and.returnValue(
+      of({ success: true }),
+    );
+    const successAlertSpy = spyOn(itemsService["alertsService"], "createSuccessAlert");
+    const toggleAlertSpy = spyOn(itemsService["alertsService"], "toggleOfflineAlert");
+    itemsService.sendHug(mockPost);
+
+    expect(apiClientSpy).toHaveBeenCalledWith(`posts/${mockPost.id}/hugs`, {});
+    expect(successAlertSpy).toHaveBeenCalledWith("Your hug was sent!", false);
+    expect(toggleAlertSpy).toHaveBeenCalled();
+    expect(itemsService.receivedAHug.value).toBe(mockPost.id);
+  });
+
+  // Check the service correctly sends a message
+  it("sendMessage() - should send a message", () => {
+    // mock response
+    const mockResponse = {
+      message: {
+        date: "Mon, 08 Jun 2020 14:43:15 GMT",
+        from: {
+          displayName: "user",
+        },
+        fromId: 4,
+        for: {
+          displayName: "user2",
+        },
+        forId: 1,
+        id: 9,
+        messageText: "hang in there",
+        threadID: 1,
       },
-    };
-    itemsService.sendUserHug(2);
-
-    const req = httpController.expectOne(`${itemsService.serverUrl}/users/all/2/hugs`);
-    expect(req.request.method).toEqual("POST");
-    req.flush(mockResponse);
-
-    expect(itemsService["authService"].userData.givenHugs).toBe(3);
-    expect(itemsService.otherUserData.receivedHugs).toBe(1);
-    expect(alertSpy).toHaveBeenCalled();
-  });
-
-  // Check that the service gets other users' data
-  it("getUser() - should get user data", () => {
-    // mock response
-    const mockResponse = {
       success: true,
-      user: {
-        displayName: "user_14",
-        givenH: 0,
-        id: 2,
-        posts: 2,
-        receivedH: 1,
-        role: "user",
-        selectedIcon: "kitty",
-        iconColours: {
-          character: "#BA9F93",
-          lbg: "#e2a275",
-          rbg: "#f8eee4",
-          item: "#f4b56a",
-        },
+    };
+
+    const message = {
+      from: {
+        displayName: "user",
       },
+      fromId: 4,
+      for: {
+        displayName: "user2",
+      },
+      forId: 1,
+      messageText: "hang in there",
+      date: new Date("Mon, 08 Jun 2020 14:43:15 GMT"),
     };
-
-    const querySpy = spyOn(itemsService["serviceWorkerM"], "queryUsers");
+    const apiClientSpy = spyOn(itemsService["apiClient"], "post").and.returnValue(of(mockResponse));
+    const alertSpy = spyOn(itemsService["alertsService"], "createSuccessAlert");
+    const toggleSpy = spyOn(itemsService["alertsService"], "toggleOfflineAlert");
     const addSpy = spyOn(itemsService["serviceWorkerM"], "addItem");
-    itemsService.getUser(2);
+    itemsService.sendMessage(message);
 
-    const req = httpController.expectOne(`${itemsService.serverUrl}/users/all/2`);
-    expect(req.request.method).toEqual("GET");
-    req.flush(mockResponse);
-
-    // wait for the fetch to be resolved
-    itemsService.isOtherUserResolved.subscribe((value) => {
-      if (value) {
-        expect(itemsService.otherUserData.id).toBe(2);
-        expect(itemsService.otherUserData.displayName).toBe("user_14");
-        expect(itemsService.otherUserData.receivedHugs).toBe(1);
-        expect(itemsService.otherUserData.givenHugs).toBe(0);
-        expect(itemsService.otherUserData.role).toBe("user");
-        expect(itemsService.otherUserData.postsNum).toBe(2);
-      }
+    expect(apiClientSpy).toHaveBeenCalledWith("messages", message);
+    expect(alertSpy).toHaveBeenCalledWith("Your message was sent!", false, "/");
+    expect(toggleSpy).toHaveBeenCalled();
+    expect(addSpy).toHaveBeenCalledWith("messages", {
+      ...mockResponse.message,
+      isoDate: new Date(message.date).toISOString(),
     });
-
-    expect(querySpy).toHaveBeenCalled();
-    expect(querySpy).toHaveBeenCalledWith(2);
-    expect(addSpy).toHaveBeenCalled();
-  });
-
-  // Check that the service gets the user's inbox
-  it("getMessages() - should get inbox messages", () => {
-    // mock response
-    const mockResponse = {
-      current_page: 1,
-      messages: [
-        {
-          date: "Mon, 08 Jun 2020 14:44:55 GMT",
-          for: "user_14",
-          forId: 4,
-          from: "shirb",
-          fromId: 1,
-          id: 6,
-          messageText: "hiiii",
-        },
-        {
-          date: "Mon, 08 Jun 2020 14:50:19 GMT",
-          for: "user_14",
-          forId: 4,
-          from: "user52",
-          fromId: 5,
-          id: 8,
-          messageText: "hi there :)",
-        },
-      ],
-      success: true,
-      total_pages: 1,
-    };
-
-    const querySpy = spyOn(itemsService["serviceWorkerM"], "queryMessages");
-    const addSpy = spyOn(itemsService["serviceWorkerM"], "addItem");
-    const cleanSpy = spyOn(itemsService["serviceWorkerM"], "cleanDB");
-    itemsService.getMessages("inbox", 1);
-    // wait for the fetch to be resolved
-    itemsService.isMessagesResolved.subscribe((value) => {
-      if (value) {
-        expect(itemsService.userMessages.length).toBe(2);
-        expect(itemsService.userMessages[0].id).toBe(6);
-        expect(itemsService.currentMessagesPage).toBe(1);
-        expect(itemsService.totalMessagesPages).toBe(1);
-      }
-    });
-
-    const req = httpController.expectOne(
-      `${itemsService.serverUrl}/messages?userID=4&page=1&type=inbox`,
-    );
-    expect(req.request.method).toEqual("GET");
-    req.flush(mockResponse);
-
-    expect(querySpy).toHaveBeenCalled();
-    expect(addSpy).toHaveBeenCalled();
-    expect(addSpy).toHaveBeenCalledTimes(2);
-    expect(cleanSpy).toHaveBeenCalled();
-  });
-
-  // Check that the service gets the user's outbox
-  it("getMessages() - should get outbox messages", () => {
-    // mock response
-    const mockResponse = {
-      current_page: 1,
-      messages: [
-        {
-          date: "Mon, 08 Jun 2020 14:44:55 GMT",
-          for: "shirb",
-          forId: 1,
-          from: "user_14",
-          fromId: 4,
-          id: 9,
-          messageText: "hiiii",
-        },
-        {
-          date: "Mon, 08 Jun 2020 14:50:19 GMT",
-          for: "user52",
-          forId: 5,
-          from: "user_14",
-          fromId: 4,
-          id: 10,
-          messageText: "hi there :)",
-        },
-      ],
-      success: true,
-      total_pages: 1,
-    };
-
-    const querySpy = spyOn(itemsService["serviceWorkerM"], "queryMessages");
-    const addSpy = spyOn(itemsService["serviceWorkerM"], "addItem");
-    const cleanSpy = spyOn(itemsService["serviceWorkerM"], "cleanDB");
-    TestBed.inject(AuthService).login();
-    // itemsService.getMessages("outbox", 1);
-    // wait for the fetch to be resolved
-    itemsService.isMessagesResolved.subscribe((value) => {
-      if (value) {
-        expect(itemsService.userMessages.length).toBe(2);
-        expect(itemsService.userMessages[0].id).toBe(9);
-        expect(itemsService.currentMessagesPage).toBe(1);
-        expect(itemsService.totalMessagesPages).toBe(1);
-      }
-    });
-
-    const req = httpController.expectOne(
-      `${itemsService.serverUrl}/messages?userID=4&page=1&type=outbox`,
-    );
-    expect(req.request.method).toEqual("GET");
-    req.flush(mockResponse);
-
-    expect(querySpy).toHaveBeenCalled();
-    expect(addSpy).toHaveBeenCalled();
-    expect(addSpy).toHaveBeenCalledTimes(2);
-    expect(cleanSpy).toHaveBeenCalled();
-  });
-
-  // Check the service correctly gets the user's threads
-  // it("getMessages() - should get the user's threads", () => {
-  //   // mock response
-  //   const mockResponse = {
-  //     current_page: 1,
-  //     messages: [
-  //       {
-  //         id: 1,
-  //         user1: "user",
-  //         user1Id: 2,
-  //         user2: "user2",
-  //         user2Id: 4,
-  //         numMessages: 2,
-  //         latestMessage: "Mon, 08 Jun 2020 14:50:19 GMT",
-  //       },
-  //       {
-  //         id: 3,
-  //         user1: "user",
-  //         user1Id: 1,
-  //         user2: "user2",
-  //         user2Id: 4,
-  //         numMessages: 2,
-  //         latestMessage: "Mon, 08 Jun 2020 14:50:19 GMT",
-  //       },
-  //     ],
-  //     success: true,
-  //     total_pages: 1,
-  //   };
-
-  //   const querySpy = spyOn(itemsService["serviceWorkerM"], "queryThreads");
-  //   const addSpy = spyOn(itemsService["serviceWorkerM"], "addItem");
-  //   const cleanSpy = spyOn(itemsService["serviceWorkerM"], "cleanDB");
-  //   TestBed.inject(AuthService).login();
-  //   itemsService.getMessages("threads", 1);
-  //   // wait for the fetch to be resolved
-  //   itemsService.isMessagesResolved.subscribe((value) => {
-  //     if (value) {
-  //       expect(itemsService.userThreads().length).toBe(2);
-  //       expect(itemsService.userThreads()[0].id).toBe(1);
-  //       expect(itemsService.currentMessagesPage).toBe(1);
-  //       expect(itemsService.totalMessagesPages).toBe(1);
-  //     }
-  //   });
-
-  //   const req = httpController.expectOne(
-  //     `${itemsService.serverUrl}/messages?userID=4&page=1&type=threads`,
-  //   );
-  //   expect(req.request.method).toEqual("GET");
-  //   req.flush(mockResponse);
-
-  //   expect(querySpy).toHaveBeenCalled();
-  //   expect(querySpy).toHaveBeenCalledWith(1);
-  //   expect(addSpy).toHaveBeenCalled();
-  //   expect(addSpy).toHaveBeenCalledTimes(2);
-  //   expect(cleanSpy).toHaveBeenCalled();
-  // });
-
-  // // Check the service correctly gets the requested thread
-  // it("getMessages() - should get a specific thread", () => {
-  //   // mock response
-  //   const mockResponse = {
-  //     current_page: 1,
-  //     messages: [
-  //       {
-  //         date: "Mon, 08 Jun 2020 14:44:55 GMT",
-  //         for: "shirb",
-  //         forId: 1,
-  //         from: "user_14",
-  //         fromId: 4,
-  //         id: 9,
-  //         messageText: "hiiii",
-  //         threadID: 1,
-  //       },
-  //       {
-  //         date: "Mon, 08 Jun 2020 14:50:19 GMT",
-  //         for: "shirb",
-  //         forId: 1,
-  //         from: "user_14",
-  //         fromId: 4,
-  //         id: 10,
-  //         messageText: "hi there :)",
-  //         threadID: 1,
-  //       },
-  //     ],
-  //     success: true,
-  //     total_pages: 1,
-  //   };
-
-  //   const querySpy = spyOn(itemsService["serviceWorkerM"], "queryMessages");
-  //   const addSpy = spyOn(itemsService["serviceWorkerM"], "addItem");
-  //   const cleanSpy = spyOn(itemsService["serviceWorkerM"], "cleanDB");
-  //   TestBed.inject(AuthService).login();
-  //   itemsService.getMessages("thread", 1, 1);
-  //   // wait for the fetch to be resolved
-  //   itemsService.isMessagesResolved.subscribe((value) => {
-  //     if (value) {
-  //       expect(itemsService.userMessages.length).toBe(2);
-  //       expect(itemsService.userMessages[0].id).toBe(9);
-  //       expect(itemsService.userMessages[0].threadID).toBe(1);
-  //       expect(itemsService.currentMessagesPage).toBe(1);
-  //       expect(itemsService.totalMessagesPages).toBe(1);
-  //       expect(itemsService.activeThread).toBe(1);
-  //     }
-  //   });
-
-  //   const req = httpController.expectOne(
-  //     `${itemsService.serverUrl}/messages?userID=4&page=1&type=thread&threadID=1`,
-  //   );
-  //   expect(req.request.method).toEqual("GET");
-  //   req.flush(mockResponse);
-
-  //   expect(querySpy).toHaveBeenCalled();
-  //   expect(querySpy).toHaveBeenCalledWith("thread", 4, 1, 1);
-  //   expect(addSpy).toHaveBeenCalled();
-  //   expect(addSpy).toHaveBeenCalledTimes(2);
-  //   expect(cleanSpy).toHaveBeenCalled();
-  // });
-
-  // // Check the service correctly sends a message
-  // it("sendMessage() - should send a message", () => {
-  //   // mock response
-  //   const mockResponse = {
-  //     message: {
-  //       date: "Mon, 08 Jun 2020 14:43:15 GMT",
-  //       from: "user",
-  //       fromId: 4,
-  //       for: "user2",
-  //       forId: 1,
-  //       id: 9,
-  //       messageText: "hang in there",
-  //       threadID: 1,
-  //     },
-  //     success: true,
-  //   };
-
-  //   const message = {
-  //     from: {
-  //       displayName: "user",
-  //     },
-  //     fromId: 4,
-  //     for: {
-  //       displayName: "user2",
-  //     },
-  //     forId: 1,
-  //     messageText: "hang in there",
-  //     date: new Date("Mon, 08 Jun 2020 14:43:15 GMT"),
-  //   };
-  //   const alertSpy = spyOn(itemsService["alertsService"], "createSuccessAlert");
-  //   const addSpy = spyOn(itemsService["serviceWorkerM"], "addItem");
-  //   itemsService.sendMessage(message);
-
-  //   const req = httpController.expectOne(`${itemsService.serverUrl}/messages`);
-  //   expect(req.request.method).toEqual("POST");
-  //   req.flush(mockResponse);
-
-  //   expect(alertSpy).toHaveBeenCalled();
-  //   expect(alertSpy).toHaveBeenCalledWith("Your message was sent!", false, "/");
-  //   expect(addSpy).toHaveBeenCalled();
-  // });
-
-  // Check that the service deletes a message
-  it("deleteMessage() - should delete a message", () => {
-    // mock response
-    const mockResponse = {
-      deleted: "6",
-      success: true,
-    };
-
-    // make the request
-    const alertSpy = spyOn(itemsService["alertsService"], "createSuccessAlert");
-    const deleteSpy = spyOn(itemsService["serviceWorkerM"], "deleteItem");
-    itemsService.deleteMessage(6, "inbox");
-
-    const req = httpController.expectOne(`${itemsService.serverUrl}/messages/inbox/6`);
-    expect(req.request.method).toEqual("DELETE");
-    req.flush(mockResponse);
-
-    expect(alertSpy).toHaveBeenCalled();
-    expect(alertSpy).toHaveBeenCalledWith(
-      `Message 6 was deleted! Refresh to view the updated message list.`,
-      true,
-    );
-    expect(deleteSpy).toHaveBeenCalled();
-    expect(deleteSpy).toHaveBeenCalledWith("messages", 6);
-  });
-
-  // Check that the service deletes a thread
-  it("deleteThread() - should delete a thread", () => {
-    // mock response
-    const mockResponse = {
-      deleted: "2",
-      success: true,
-    };
-
-    // make the request
-    const alertSpy = spyOn(itemsService["alertsService"], "createSuccessAlert");
-    const deleteSpy = spyOn(itemsService["serviceWorkerM"], "deleteItem");
-    const deleteMultiSpy = spyOn(itemsService["serviceWorkerM"], "deleteItems");
-    itemsService.deleteThread(2);
-
-    const req = httpController.expectOne(`${itemsService.serverUrl}/messages/threads/2`);
-    expect(req.request.method).toEqual("DELETE");
-    req.flush(mockResponse);
-
-    expect(alertSpy).toHaveBeenCalled();
-    expect(alertSpy).toHaveBeenCalledWith(
-      `Thread 2 was deleted! Refresh to view the updated message list.`,
-      true,
-    );
-    expect(deleteSpy).toHaveBeenCalled();
-    expect(deleteSpy).toHaveBeenCalledWith("threads", 2);
-    expect(deleteMultiSpy).toHaveBeenCalled();
-    expect(deleteMultiSpy).toHaveBeenCalledWith("messages", "threadID", 2);
-  });
-
-  // Check that the service clears the mailbox - inbox
-  it("deleteAll() - should clear a mailbox - inbox", () => {
-    // mock response
-    const mockResponse = {
-      deleted: "2",
-      success: true,
-      userID: "4",
-    };
-
-    // make the request
-    const alertSpy = spyOn(itemsService["alertsService"], "createSuccessAlert");
-    const deleteSpy = spyOn(itemsService["serviceWorkerM"], "deleteItems");
-    itemsService.deleteAll("all inbox", 4);
-
-    const req = httpController.expectOne(`${itemsService.serverUrl}/messages/inbox?userID=4`);
-    expect(req.request.method).toEqual("DELETE");
-    req.flush(mockResponse);
-
-    expect(alertSpy).toHaveBeenCalled();
-    expect(alertSpy).toHaveBeenCalledWith(
-      `2 messages were deleted! Refresh to view the updated mailbox.`,
-      true,
-    );
-    expect(deleteSpy).toHaveBeenCalled();
-    expect(deleteSpy).toHaveBeenCalledWith("messages", "forId", 4);
-  });
-
-  // Check that the service clears the mailbox - outbox
-  it("deleteAll() - should clear a mailbox - outbox", () => {
-    // mock response
-    const mockResponse = {
-      deleted: "2",
-      success: true,
-      userID: "4",
-    };
-
-    // make the request
-    const alertSpy = spyOn(itemsService["alertsService"], "createSuccessAlert");
-    const deleteSpy = spyOn(itemsService["serviceWorkerM"], "deleteItems");
-    itemsService.deleteAll("all outbox", 4);
-
-    const req = httpController.expectOne(`${itemsService.serverUrl}/messages/outbox?userID=4`);
-    expect(req.request.method).toEqual("DELETE");
-    req.flush(mockResponse);
-
-    expect(alertSpy).toHaveBeenCalled();
-    expect(alertSpy).toHaveBeenCalledWith(
-      `2 messages were deleted! Refresh to view the updated mailbox.`,
-      true,
-    );
-    expect(deleteSpy).toHaveBeenCalled();
-    expect(deleteSpy).toHaveBeenCalledWith("messages", "fromId", 4);
-  });
-
-  // Check that the service clears the mailbox - threads
-  it("deleteAll() - should clear a mailbox - threads", () => {
-    // mock response
-    const mockResponse = {
-      deleted: "2",
-      success: true,
-      userID: "4",
-    };
-
-    // make the request
-    const alertSpy = spyOn(itemsService["alertsService"], "createSuccessAlert");
-    const clearSpy = spyOn(itemsService["serviceWorkerM"], "clearStore");
-    itemsService.deleteAll("all threads", 4);
-
-    const req = httpController.expectOne(`${itemsService.serverUrl}/messages/threads?userID=4`);
-    expect(req.request.method).toEqual("DELETE");
-    req.flush(mockResponse);
-
-    expect(alertSpy).toHaveBeenCalled();
-    expect(alertSpy).toHaveBeenCalledWith(
-      `2 messages were deleted! Refresh to view the updated mailbox.`,
-      true,
-    );
-    expect(clearSpy).toHaveBeenCalled();
-    expect(clearSpy).toHaveBeenCalledTimes(2);
-    expect(clearSpy).toHaveBeenCalledWith("messages");
-    expect(clearSpy).toHaveBeenCalledWith("threads");
   });
 
   // Check that the service runs the search and handles results correctly
@@ -899,6 +318,7 @@ describe("ItemsService", () => {
         },
       ],
     };
+    const apiClientSpy = spyOn(itemsService["apiClient"], "post").and.returnValue(of(mockResponse));
 
     itemsService.sendSearch("test");
     // wait until the search is resolved
@@ -911,12 +331,9 @@ describe("ItemsService", () => {
         expect(itemsService.postSearchPage).toBe(1);
         expect(itemsService.totalPostSearchPages).toBe(2);
         expect(itemsService.isSearching).toBeFalse();
+        expect(apiClientSpy).toHaveBeenCalledWith("", { search: "test" }, { page: "1" });
       }
     });
-
-    const req = httpController.expectOne(`${itemsService.serverUrl}?page=1`);
-    expect(req.request.method).toEqual("POST");
-    req.flush(mockResponse);
   });
 
   // Check the service sends a report
@@ -946,14 +363,13 @@ describe("ItemsService", () => {
       dismissed: false,
       closed: false,
     };
+    const apiClientSpy = spyOn(itemsService["apiClient"], "post").and.returnValue(of(mockResponse));
     const alertsSpy = spyOn(itemsService["alertsService"], "createSuccessAlert");
+    const toggleSpy = spyOn(itemsService["alertsService"], "toggleOfflineAlert");
     itemsService.sendReport(report);
 
-    const req = httpController.expectOne(`${itemsService.serverUrl}/reports`);
-    expect(req.request.method).toEqual("POST");
-    req.flush(mockResponse);
-
-    expect(alertsSpy).toHaveBeenCalled();
+    expect(apiClientSpy).toHaveBeenCalledWith("reports", report);
     expect(alertsSpy).toHaveBeenCalledWith(`User 5 was successfully reported.`, false, "/");
+    expect(toggleSpy).toHaveBeenCalled();
   });
 });

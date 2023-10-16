@@ -37,12 +37,12 @@ import { faHandHoldingHeart } from "@fortawesome/free-solid-svg-icons";
 import { from, map, switchMap, tap } from "rxjs";
 
 // App-related imports
-import { Post } from "../../interfaces/post.interface";
-import { AuthService } from "../../services/auth.service";
-import { ItemsService } from "../../services/items.service";
-import { SWManager } from "../../services/sWManager.service";
-import { ApiClientService } from "../../services/apiClient.service";
-import { AlertsService } from "../../services/alerts.service";
+import { Post } from "@app/interfaces/post.interface";
+import { AuthService } from "@app/services/auth.service";
+import { ItemsService } from "@app/services/items.service";
+import { SWManager } from "@app/services/sWManager.service";
+import { ApiClientService } from "@app/services/apiClient.service";
+import { AlertsService } from "@app/services/alerts.service";
 
 interface MyPostsResponse {
   page: number;

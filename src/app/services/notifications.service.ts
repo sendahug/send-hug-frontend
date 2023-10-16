@@ -39,7 +39,7 @@ import { interval, Subscription, Observable } from "rxjs";
 import { AuthService } from "./auth.service";
 import { AlertsService } from "./alerts.service";
 import { SWManager } from "./sWManager.service";
-import { environment } from "../../environments/environment";
+import { environment } from "@env/environment";
 import { ApiClientService } from "./apiClient.service";
 
 interface GetNotificationsResponse {

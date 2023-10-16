@@ -35,12 +35,12 @@ import { Component } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 
 // App-related imports
-import { Post } from "../../interfaces/post.interface";
-import { Message } from "../../interfaces/message.interface";
-import { ItemsService } from "../../services/items.service";
-import { AuthService } from "../../services/auth.service";
-import { AlertsService } from "../../services/alerts.service";
-import { ValidationService } from "../../services/validation.service";
+import { Post } from "@app/interfaces/post.interface";
+import { Message } from "@app/interfaces/message.interface";
+import { ItemsService } from "@app/services/items.service";
+import { AuthService } from "@app/services/auth.service";
+import { AlertsService } from "@app/services/alerts.service";
+import { ValidationService } from "@app/services/validation.service";
 
 @Component({
   selector: "app-new-item",

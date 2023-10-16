@@ -37,12 +37,12 @@ import { Injectable } from "@angular/core";
 import { openDB, IDBPDatabase, DBSchema } from "idb";
 
 // App-related imports
-import { AlertsService } from "./alerts.service";
-import { IdbStoreType, iconCharacters } from "../interfaces/types";
-import { Message } from "../interfaces/message.interface";
-import { Post } from "../interfaces/post.interface";
-import { FullThread } from "../interfaces/thread.interface";
-import { OtherUser } from "../interfaces/otherUser.interface";
+import { AlertsService } from "@app/services/alerts.service";
+import { IdbStoreType, iconCharacters } from "@app/interfaces/types";
+import { Message } from "@app/interfaces/message.interface";
+import { Post } from "@app/interfaces/post.interface";
+import { FullThread } from "@app/interfaces/thread.interface";
+import { OtherUser } from "@app/interfaces/otherUser.interface";
 
 // IndexedDB Database schema
 export interface MyDB extends DBSchema {

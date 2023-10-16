@@ -35,13 +35,13 @@ import { Component, Input, Output, EventEmitter } from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
 
 // App-related import
-import { Post } from "../../../interfaces/post.interface";
-import { Report } from "../../../interfaces/report.interface";
-import { OtherUser } from "../../../interfaces/otherUser.interface";
-import { AuthService } from "../../../services/auth.service";
-import { ItemsService } from "../../../services/items.service";
-import { AlertsService } from "../../../services/alerts.service";
-import { ValidationService } from "../../../services/validation.service";
+import { Post } from "@app/interfaces/post.interface";
+import { Report } from "@app/interfaces/report.interface";
+import { OtherUser } from "@app/interfaces/otherUser.interface";
+import { AuthService } from "@app/services/auth.service";
+import { ItemsService } from "@app/services/items.service";
+import { AlertsService } from "@app/services/alerts.service";
+import { ValidationService } from "@app/services/validation.service";
 
 // Reasons for submitting a report
 enum postReportReasons {

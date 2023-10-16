@@ -36,13 +36,13 @@ import { HttpErrorResponse } from "@angular/common/http";
 import { BehaviorSubject } from "rxjs";
 
 // App-related imports
-import { Report } from "../interfaces/report.interface";
-import { Message } from "../interfaces/message.interface";
-import { AuthService } from "./auth.service";
-import { AlertsService } from "./alerts.service";
-import { ItemsService } from "./items.service";
-import { SWManager } from "./sWManager.service";
-import { ApiClientService } from "./apiClient.service";
+import { Report } from "@app/interfaces/report.interface";
+import { Message } from "@app/interfaces/message.interface";
+import { AuthService } from "@app/services/auth.service";
+import { AlertsService } from "@app/services/alerts.service";
+import { ItemsService } from "@app/services/items.service";
+import { SWManager } from "@app/services/sWManager.service";
+import { ApiClientService } from "@app/services/apiClient.service";
 
 interface BlockedUser {
   id: number;

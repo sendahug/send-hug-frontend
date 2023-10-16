@@ -34,10 +34,10 @@
 import { Component, AfterViewChecked } from "@angular/core";
 
 // App-related imports
-import { NotificationService } from "../../services/notifications.service";
-import { AuthService } from "../../services/auth.service";
-import { AlertsService } from "../../services/alerts.service";
-import { iconElements } from "../../interfaces/types";
+import { NotificationService } from "@app/services/notifications.service";
+import { AuthService } from "@app/services/auth.service";
+import { AlertsService } from "@app/services/alerts.service";
+import { iconElements } from "@app/interfaces/types";
 
 @Component({
   selector: "app-settings",

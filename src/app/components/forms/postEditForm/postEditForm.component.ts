@@ -34,11 +34,11 @@
 import { Component, Input, Output, EventEmitter } from "@angular/core";
 
 // App-related import
-import { Post } from "../../../interfaces/post.interface";
-import { ItemsService } from "../../../services/items.service";
-import { AdminService } from "../../../services/admin.service";
-import { AlertsService } from "../../../services/alerts.service";
-import { ValidationService } from "../../../services/validation.service";
+import { Post } from "@app/interfaces/post.interface";
+import { ItemsService } from "@app/services/items.service";
+import { AdminService } from "@app/services/admin.service";
+import { AlertsService } from "@app/services/alerts.service";
+import { ValidationService } from "@app/services/validation.service";
 
 @Component({
   selector: "post-edit-form",

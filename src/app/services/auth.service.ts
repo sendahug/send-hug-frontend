@@ -39,11 +39,11 @@ import { BehaviorSubject } from "rxjs";
 import * as Auth0 from "auth0-js";
 
 // App-related imports
-import { User } from "../interfaces/user.interface";
-import { AlertsService } from "./alerts.service";
-import { SWManager } from "./sWManager.service";
-import { environment } from "../../environments/environment";
-import { ApiClientService } from "./apiClient.service";
+import { User } from "@app/interfaces/user.interface";
+import { AlertsService } from "@app/services/alerts.service";
+import { SWManager } from "@app/services/sWManager.service";
+import { environment } from "@env/environment";
+import { ApiClientService } from "@app/services/apiClient.service";
 
 @Injectable({
   providedIn: "root",

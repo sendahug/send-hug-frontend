@@ -34,12 +34,12 @@
 import { Component, Input, computed, AfterViewChecked, OnInit, OnDestroy } from "@angular/core";
 import { faComment, faEdit, faFlag } from "@fortawesome/free-regular-svg-icons";
 import { faHandHoldingHeart, faTimes, faEllipsisV } from "@fortawesome/free-solid-svg-icons";
+import { Subscription } from "rxjs";
 
 // App-related imports
-import { AuthService } from "../../services/auth.service";
-import { ItemsService } from "../../services/items.service";
-import { Post } from "../../interfaces/post.interface";
-import { Subscription } from "rxjs";
+import { AuthService } from "@app/services/auth.service";
+import { ItemsService } from "@app/services/items.service";
+import { Post } from "@app/interfaces/post.interface";
 
 @Component({
   selector: "app-single-post",

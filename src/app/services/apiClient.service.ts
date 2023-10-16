@@ -36,8 +36,8 @@ import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams } from "@angular
 import { Observable, catchError, throwError } from "rxjs";
 
 // App-related imports
-import { environment } from "../../environments/environment";
-import { AlertsService } from "./alerts.service";
+import { environment } from "@env/environment";
+import { AlertsService } from "@app/services/alerts.service";
 
 @Injectable({
   providedIn: "root",
@@ -156,6 +156,6 @@ export class ApiClientService {
       this.alertsService.createErrorAlert(error);
     }
 
-    return throwError(() => error)
+    return throwError(() => error);
   }
 }

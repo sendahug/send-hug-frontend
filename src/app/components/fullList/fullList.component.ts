@@ -36,11 +36,11 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { from, map, switchMap, tap } from "rxjs";
 
 // App-related imports
-import { FullListType } from "../../interfaces/types";
-import { Post } from "../../interfaces/post.interface";
-import { SWManager } from "../../services/sWManager.service";
-import { AlertsService } from "../../services/alerts.service";
-import { ApiClientService } from "../../services/apiClient.service";
+import { FullListType } from "@app/interfaces/types";
+import { Post } from "@app/interfaces/post.interface";
+import { SWManager } from "@app/services/sWManager.service";
+import { AlertsService } from "@app/services/alerts.service";
+import { ApiClientService } from "@app/services/apiClient.service";
 
 interface PostsListResponse {
   success: boolean;

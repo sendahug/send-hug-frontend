@@ -35,17 +35,17 @@ import { Component, OnInit, OnDestroy, AfterViewChecked, signal, computed } from
 import { ActivatedRoute } from "@angular/router";
 import { Subscription, from, switchMap, tap } from "rxjs";
 import { faGratipay } from "@fortawesome/free-brands-svg-icons";
+import { HttpErrorResponse } from "@angular/common/http";
 
 // App-related imports
-import { User } from "../../interfaces/user.interface";
-import { AuthService } from "../../services/auth.service";
-import { ItemsService } from "../../services/items.service";
-import { iconElements } from "../../interfaces/types";
-import { OtherUser } from "../../interfaces/otherUser.interface";
-import { SWManager } from "../../services/sWManager.service";
-import { ApiClientService } from "../../services/apiClient.service";
-import { HttpErrorResponse } from "@angular/common/http";
-import { AlertsService } from "../../services/alerts.service";
+import { User } from "@app/interfaces/user.interface";
+import { AuthService } from "@app/services/auth.service";
+import { ItemsService } from "@app/services/items.service";
+import { iconElements } from "@app/interfaces/types";
+import { OtherUser } from "@app/interfaces/otherUser.interface";
+import { SWManager } from "@app/services/sWManager.service";
+import { ApiClientService } from "@app/services/apiClient.service";
+import { AlertsService } from "@app/services/alerts.service";
 
 interface OtherUserResponse {
   user: OtherUser;

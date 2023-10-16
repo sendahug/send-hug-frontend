@@ -36,7 +36,7 @@ import { HttpErrorResponse } from "@angular/common/http";
 import { BehaviorSubject } from "rxjs";
 
 // App-related imports
-import { AlertMessage } from "../interfaces/alert.interface";
+import { AlertMessage } from "@app/interfaces/alert.interface";
 
 @Injectable({
   providedIn: "root",

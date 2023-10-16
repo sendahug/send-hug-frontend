@@ -35,10 +35,10 @@ import { Component, WritableSignal, signal } from "@angular/core";
 import { forkJoin, from, map, switchMap, tap } from "rxjs";
 
 // App-related imports
-import { ApiClientService } from "../../services/apiClient.service";
-import { SWManager } from "../../services/sWManager.service";
-import { Post } from "../../interfaces/post.interface";
-import { AlertsService } from "../../services/alerts.service";
+import { ApiClientService } from "@app/services/apiClient.service";
+import { SWManager } from "@app/services/sWManager.service";
+import { Post } from "@app/interfaces/post.interface";
+import { AlertsService } from "@app/services/alerts.service";
 
 interface MainPageResponse {
   recent: Post[];

@@ -36,14 +36,14 @@ import { HttpErrorResponse } from "@angular/common/http";
 import { BehaviorSubject } from "rxjs";
 
 // App-related imports
-import { Post } from "../interfaces/post.interface";
-import { Message } from "../interfaces/message.interface";
-import { OtherUser } from "../interfaces/otherUser.interface";
-import { Report } from "../interfaces/report.interface";
-import { AuthService } from "./auth.service";
-import { AlertsService } from "./alerts.service";
-import { SWManager } from "./sWManager.service";
-import { ApiClientService } from "./apiClient.service";
+import { Post } from "@app/interfaces/post.interface";
+import { Message } from "@app/interfaces/message.interface";
+import { OtherUser } from "@app/interfaces/otherUser.interface";
+import { Report } from "@app/interfaces/report.interface";
+import { AuthService } from "@app/services/auth.service";
+import { AlertsService } from "@app/services/alerts.service";
+import { SWManager } from "@app/services/sWManager.service";
+import { ApiClientService } from "@app/services/apiClient.service";
 
 @Injectable({
   providedIn: "root",

@@ -43,6 +43,7 @@ import { Message } from "@app/interfaces/message.interface";
 import { Post } from "@app/interfaces/post.interface";
 import { FullThread } from "@app/interfaces/thread.interface";
 import { OtherUser } from "@app/interfaces/otherUser.interface";
+import { UserIconColours } from "@app/interfaces/user.interface";
 
 // IndexedDB Database schema
 export interface MyDB extends DBSchema {
@@ -70,12 +71,7 @@ export interface MyDB extends DBSchema {
       receivedH: number;
       role: string;
       selectedIcon: iconCharacters;
-      iconColours: {
-        character: String;
-        lbg: String;
-        rbg: String;
-        item: String;
-      };
+      iconColours: UserIconColours;
     };
   };
   messages: {
@@ -85,23 +81,13 @@ export interface MyDB extends DBSchema {
       for: {
         displayName: string;
         selectedIcon?: iconCharacters;
-        iconColours?: {
-          character: String;
-          lbg: String;
-          rbg: String;
-          item: String;
-        };
+        iconColours?: UserIconColours;
       };
       forId: number;
       from: {
         displayName: string;
         selectedIcon?: iconCharacters;
-        iconColours?: {
-          character: String;
-          lbg: String;
-          rbg: String;
-          item: String;
-        };
+        iconColours?: UserIconColours;
       };
       fromId: number;
       id: number;
@@ -118,23 +104,13 @@ export interface MyDB extends DBSchema {
       user1: {
         displayName: string;
         selectedIcon: iconCharacters;
-        iconColours: {
-          character: String;
-          lbg: String;
-          rbg: String;
-          item: String;
-        };
+        iconColours: UserIconColours;
       };
       user1Id: number;
       user2: {
         displayName: string;
         selectedIcon: iconCharacters;
-        iconColours: {
-          character: String;
-          lbg: String;
-          rbg: String;
-          item: String;
-        };
+        iconColours: UserIconColours;
       };
       user2Id: number;
       numMessages: number;

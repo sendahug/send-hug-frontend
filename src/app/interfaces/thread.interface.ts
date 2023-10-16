@@ -51,23 +51,13 @@ export interface FullThread {
   user1: {
     displayName: string;
     selectedIcon: iconCharacters;
-    iconColours: {
-      character: String;
-      lbg: String;
-      rbg: String;
-      item: String;
-    };
+    iconColours: UserIconColours;
   };
   user1Id: number;
   user2: {
     displayName: string;
     selectedIcon: iconCharacters;
-    iconColours: {
-      character: String;
-      lbg: String;
-      rbg: String;
-      item: String;
-    };
+    iconColours: UserIconColours;
   };
   user2Id: number;
   numMessages: number;

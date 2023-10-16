@@ -34,10 +34,10 @@
 import { iconCharacters } from "./types";
 
 export interface UserIconColours {
-  character: String;
-  lbg: String;
-  rbg: String;
-  item: String;
+  character: string;
+  lbg: string;
+  rbg: string;
+  item: string;
 }
 
 export interface User {

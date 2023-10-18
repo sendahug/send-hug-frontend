@@ -32,7 +32,6 @@
 
 // Angular imports
 import { Injectable } from "@angular/core";
-import { HttpClient, HttpErrorResponse, HttpParams } from "@angular/common/http";
 import { SwPush } from "@angular/service-worker";
 import { interval, Subscription, Observable } from "rxjs";
 
@@ -40,13 +39,18 @@ import { interval, Subscription, Observable } from "rxjs";
 import { AuthService } from "./auth.service";
 import { AlertsService } from "./alerts.service";
 import { SWManager } from "./sWManager.service";
-import { environment } from "../../environments/environment";
+import { environment } from "@env/environment";
+import { ApiClientService } from "./apiClient.service";
+
+interface GetNotificationsResponse {
+  success: boolean;
+  notifications: Notification[];
+}
 
 @Injectable({
   providedIn: "root",
 })
 export class NotificationService {
-  readonly serverUrl = environment.backend.domain;
   readonly publicKey = environment.vapidKey;
   // notifications data
   notifications: any[] = [];
@@ -67,11 +71,11 @@ export class NotificationService {
 
   // CTOR
   constructor(
-    private Http: HttpClient,
     private authService: AuthService,
     private alertsService: AlertsService,
     private swPush: SwPush,
     private serviceWorkerM: SWManager,
+    private apiClient: ApiClientService,
   ) {
     // if the user is logged in, and their data is fetched, set the appropriate variables
     this.authService.isUserDataResolved.subscribe((value) => {
@@ -199,34 +203,21 @@ export class NotificationService {
   Programmer: Shir Bar Lev.
   */
   getNotifications(silentRefresh?: boolean) {
-    const Url = this.serverUrl + "/notifications";
     const silent = silentRefresh ? silentRefresh : false;
-    const params = new HttpParams().set("silentRefresh", `${silent}`);
 
     // gets Notifications
-    this.Http.get(Url, {
-      headers: this.authService.authHeader,
-      params: params,
-    }).subscribe(
-      (response: any) => {
-        this.notifications = response.notifications;
+    this.apiClient
+      .get<GetNotificationsResponse>("notifications", { silentRefresh: silent })
+      .subscribe({
+        next: (response) => {
+          this.notifications = response.notifications;
 
-        // if it's a silent refresh, check how many new notifications the user has
-        if (silentRefresh) {
-          this.newNotifications = this.notifications.length;
-        }
-      },
-      (err: HttpErrorResponse) => {
-        // if the user is offline, show the offline header message
-        if (!navigator.onLine) {
-          this.alertsService.toggleOfflineAlert();
-        }
-        // otherwise just create an error alert
-        else {
-          this.alertsService.createErrorAlert(err);
-        }
-      },
-    );
+          // if it's a silent refresh, check how many new notifications the user has
+          if (silentRefresh) {
+            this.newNotifications = this.notifications.length;
+          }
+        },
+      });
   }
 
   /*
@@ -237,9 +228,6 @@ export class NotificationService {
   Programmer: Shir Bar Lev.
   */
   subscribeToStream() {
-    const Url = this.serverUrl + "/notifications";
-    const headers = this.authService.authHeader.set("content-type", "application/json");
-
     if ("PushManager" in window) {
       // check the state of the Push permission
       this.serviceWorkerM.activeServiceWorkerReg?.pushManager
@@ -268,19 +256,14 @@ export class NotificationService {
                 this.setSubscription();
 
                 // send the info to the server
-                this.Http.post(Url, JSON.stringify(subscription), {
-                  headers: headers,
-                }).subscribe(
-                  (response: any) => {
+                this.apiClient.post("notifications", JSON.stringify(subscription)).subscribe({
+                  next: (response: any) => {
                     this.subId = response.subId;
                     this.alertsService.createSuccessAlert(
                       "Subscribed to push notifications successfully!",
                     );
                   },
-                  (err: HttpErrorResponse) => {
-                    this.alertsService.createErrorAlert(err);
-                  },
-                );
+                });
                 // if there was an error, alert the user
               })
               .catch((err) => {
@@ -304,8 +287,6 @@ export class NotificationService {
   Programmer: Shir Bar Lev.
   */
   renewPushSubscription(event: MessageEvent) {
-    const Url = this.serverUrl + `/subscriptions/${this.subId}`;
-
     // if it's been more than 24 hours since the last update, the push subscription
     // expired, so reset the resubscribe calls
     if (this.pushDate + 864e5 <= Date.now()) {
@@ -328,16 +309,13 @@ export class NotificationService {
           this.setSubscription();
 
           // update the saved subscription in the database
-          this.Http.patch(Url, JSON.stringify(subscription), {
-            headers: this.authService.authHeader,
-          }).subscribe(
-            (response: any) => {
-              this.subId = response.subId;
-            },
-            (err) => {
-              console.log(err);
-            },
-          );
+          this.apiClient
+            .patch(`subscriptions/${this.subId}`, JSON.stringify(subscription))
+            .subscribe({
+              next: (response: any) => {
+                this.subId = response.subId;
+              },
+            });
         });
     }
   }
@@ -404,7 +382,6 @@ export class NotificationService {
   Programmer: Shir Bar Lev.
   */
   updateUserSettings() {
-    const Url = this.serverUrl + `/users/all/${this.authService.userData.id}`;
     const newSettings = {
       autoRefresh: this.refreshStatus,
       pushEnabled: this.pushStatus,
@@ -412,15 +389,10 @@ export class NotificationService {
     };
 
     // send the data to the server
-    this.Http.patch(Url, newSettings, {
-      headers: this.authService.authHeader,
-    }).subscribe(
-      (_response: any) => {
+    this.apiClient.patch(`users/all/${this.authService.userData.id}`, newSettings).subscribe({
+      next: (_response: any) => {
         this.alertsService.createSuccessAlert("Settings updated successfully!");
       },
-      (err: HttpErrorResponse) => {
-        this.alertsService.createErrorAlert(err);
-      },
-    );
+    });
   }
 }

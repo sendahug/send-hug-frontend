@@ -45,9 +45,7 @@ import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { AppComponent } from "../../../app.component";
 import { DisplayNameEditForm } from "./displayNameEditForm.component";
 import { AuthService } from "../../../services/auth.service";
-import { MockAuthService } from "../../../services/auth.service.mock";
-import { AdminService } from "../../../services/admin.service";
-import { MockAdminService } from "../../../services/admin.service.mock";
+import { mockAuthedUser } from "@tests/mockData";
 
 // DISPLAY NAME EDIT
 // ==================================================================
@@ -65,12 +63,12 @@ describe("DisplayNameEditForm", () => {
         FontAwesomeModule,
       ],
       declarations: [AppComponent, DisplayNameEditForm],
-      providers: [
-        { provide: APP_BASE_HREF, useValue: "/" },
-        { provide: AuthService, useClass: MockAuthService },
-        { provide: AdminService, useClass: MockAdminService },
-      ],
+      providers: [{ provide: APP_BASE_HREF, useValue: "/" }],
     }).compileComponents();
+
+    const authService = TestBed.inject(AuthService);
+    authService.authenticated = true;
+    authService.userData = { ...mockAuthedUser };
   });
 
   // Check that the component is created

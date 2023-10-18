@@ -43,9 +43,6 @@ import { HttpErrorResponse, HttpHeaders, HttpEventType } from "@angular/common/h
 
 import { AuthService } from "./auth.service";
 import { AlertsService } from "./alerts.service";
-import { MockAlertsService } from "./alerts.service.mock";
-import { SWManager } from "./sWManager.service";
-import { MockSWManager } from "./sWManager.service.mock";
 
 class MockAuth0 {
   WebAuth() {}
@@ -93,16 +90,16 @@ describe("AuthService", () => {
         HttpClientTestingModule,
         ServiceWorkerModule.register("/sw.js", { enabled: false }),
       ],
-      providers: [
-        AuthService,
-        { provide: SWManager, useClass: MockSWManager },
-        { provide: AlertsService, useClass: MockAlertsService },
-        { provide: Auth0, useClass: MockAuth0 },
-      ],
+      providers: [AuthService, { provide: Auth0, useClass: MockAuth0 }],
     }).compileComponents();
 
     authService = TestBed.inject(AuthService);
     httpController = TestBed.inject(HttpTestingController);
+
+    const alertsService = TestBed.inject(AlertsService);
+    spyOn(alertsService, "createErrorAlert");
+    spyOn(alertsService, "toggleOfflineAlert");
+    spyOn(alertsService, "createAlert");
   });
 
   // Check the service is created
@@ -229,7 +226,7 @@ describe("AuthService", () => {
     });
 
     // flush mock response
-    const req = httpController.expectOne("http://localhost:5000/users/all/auth0");
+    const req = httpController.expectOne(`${authService.serverUrl}/users/all/auth0`);
     expect(req.request.method).toEqual("GET");
     req.flush(mockResponse);
 
@@ -261,7 +258,7 @@ describe("AuthService", () => {
     authService.getUserData(jwtPayload);
 
     // flush mock response
-    const req = httpController.expectOne("http://localhost:5000/users/all/auth0");
+    const req = httpController.expectOne(`${authService.serverUrl}/users/all/auth0`);
     expect(req.request.method).toEqual("GET");
     req.flush(null, mockResponse);
 
@@ -310,7 +307,7 @@ describe("AuthService", () => {
     authService.getUserData(jwtPayload);
 
     // flush mock response
-    const req = httpController.expectOne("http://localhost:5000/users/all/auth0");
+    const req = httpController.expectOne(`${authService.serverUrl}/users/all/auth0`);
     expect(req.request.method).toEqual("GET");
     req.flush(mockResponse);
 
@@ -381,7 +378,7 @@ describe("AuthService", () => {
     });
 
     // flush mock response
-    const req = httpController.expectOne("http://localhost:5000/users");
+    const req = httpController.expectOne(`${authService.serverUrl}/users`);
     expect(req.request.method).toEqual("POST");
     req.flush(mockResponse);
 
@@ -395,9 +392,9 @@ describe("AuthService", () => {
       id: 4,
       auth0Id: "",
       displayName: "name",
-      receivedHugs: 2,
-      givenHugs: 2,
-      postsNum: 2,
+      receivedH: 2,
+      givenH: 2,
+      posts: 2,
       loginCount: 3,
       role: "admin",
       jwt: "",
@@ -537,9 +534,9 @@ describe("AuthService", () => {
       id: 4,
       auth0Id: "auth0",
       displayName: "name",
-      receivedHugs: 2,
-      givenHugs: 2,
-      postsNum: 2,
+      receivedH: 2,
+      givenH: 2,
+      posts: 2,
       loginCount: 2,
       role: "admin",
       jwt: "",
@@ -559,7 +556,7 @@ describe("AuthService", () => {
     authService.updateUserData();
 
     // flush mock response
-    const req = httpController.expectOne("http://localhost:5000/users/all/4");
+    const req = httpController.expectOne(`${authService.serverUrl}/users/all/4`);
     expect(req.request.method).toEqual("PATCH");
     req.flush(mockResponse);
   });

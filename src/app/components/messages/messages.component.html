@@ -15,14 +15,16 @@
 <!-- If the user is logged in, displays the user's inbox. -->
 <div id="userInbox" *ngIf="authService.authenticated">
 	<app-loader
+		*ngIf="isIdbFetchLoading()"
 		[waitingFor]="waitFor"></app-loader>
 	
 	<app-header-message
+		*ngIf="isLoading()"
 		[waitingFor]="waitFor"></app-header-message>
 	
 	<!-- If there are messages in the user's inbox -->
-	<ul *ngIf="(messType == 'inbox' || messType == 'outbox') && itemsService.userMessages[messType].length" class="mailboxMessages" aria-describedby="messType">
-		<li *ngFor="let message of itemsService.userMessages[messType]" class="userMessage"  aria-describedby="messType" id="{{messType + message.id}}">
+	<ul *ngIf="(messType == 'inbox' || messType == 'outbox') && messages().length" class="mailboxMessages" aria-describedby="messType">
+		<li *ngFor="let message of messages()" class="userMessage"  aria-describedby="messType" id="{{messType + message.id}}">
 			<div class="messageProfilePic">
 				<div *ngIf="(messType == 'inbox' && message.from.selectedIcon == 'kitty') || (messType == 'outbox' && message.for.selectedIcon == 'kitty')">
 					<img src="../../../assets/img/kitty.svg" alt="" class="userIcon" >
@@ -52,8 +54,8 @@
 
 		<!-- If the user is looking at threads -->
 	<div *ngIf="messType == 'threads'">
-		<ul class="userThreads" *ngIf="itemsService.userMessages.threads.length" aria-describedby="messType">
-			<li class="userThread" *ngFor="let thread of itemsService.userMessages.threads" aria-describedby="messType" id="{{messType + thread.id}}">
+		<ul class="userThreads" *ngIf="userThreadsFormatted().length" aria-describedby="messType">
+			<li class="userThread" *ngFor="let thread of userThreadsFormatted()" aria-describedby="messType" id="{{messType + thread.id}}">
 				<div class="messageProfilePic">
 					<div *ngIf="thread.user.selectedIcon == 'kitty'">
 						<img src="../../../assets/img/kitty.svg" alt="" class="userIcon" >
@@ -87,7 +89,7 @@
 	<!-- If the user is looking at a specific thread -->
 	<div *ngIf="messType == 'thread'">
 		<ul class="threadMessages" aria-describedby="messType">
-			<li class="userMessage" *ngFor="let message of itemsService.userMessages.thread" aria-describedby="messType"  id="{{messType + message.id}}">
+			<li class="userMessage" *ngFor="let message of messages()" aria-describedby="messType"  id="{{messType + message.id}}">
 				<div class="messageProfilePic">
 					<div *ngIf="message.from.selectedIcon == 'kitty'">
 						<img src="../../../assets/img/kitty.svg" alt="" class="userIcon" >
@@ -122,18 +124,18 @@
 	</div>
 		
 	<!-- Message pagination -->
-	<div class="pagination" *ngIf="itemsService.userMessages[messType].length" role="navigation">
-		<button *ngIf="itemsService.userMessagesPage[messType] > 1" class="appButton prevButton" (click)="prevPage()" [attr.aria-label]="'previous page of the ' + messType + ' mailbox'">Previous Page</button>
-		<button *ngIf="itemsService.userMessagesPage[messType] <= 1" class="appButton placeHolder">Previous Page</button>
-		<div class="pageCount">Page {{ page }} of {{ itemsService.totalUserMessagesPages[messType] }}</div>
-		<button *ngIf="itemsService.totalUserMessagesPages[messType] > itemsService.userMessagesPage[messType]" class="appButton nextButton" (click)="nextPage()" [attr.aria-label]="'next page of the ' + messType + ' mailbox'">Next Page</button>
-		<button *ngIf="itemsService.totalUserMessagesPages[messType] <= itemsService.userMessagesPage[messType]" class="appButton placeHolder">Previous Page</button>
+	<div class="pagination" *ngIf="((messages().length && messType != 'threads') || (userThreadsFormatted().length && messType == 'threads')) && !isIdbFetchLoading()" role="navigation">
+		<button *ngIf="currentPage() > 1" class="appButton prevButton" (click)="prevPage()" [attr.aria-label]="'previous page of the ' + messType + ' mailbox'">Previous Page</button>
+		<button *ngIf="currentPage() <= 1" class="appButton placeHolder">Previous Page</button>
+		<div class="pageCount">Page {{ currentPage() }} of {{ totalPages() }}</div>
+		<button *ngIf="totalPages() > currentPage()" class="appButton nextButton" (click)="nextPage()" [attr.aria-label]="'next page of the ' + messType + ' mailbox'">Next Page</button>
+		<button *ngIf="totalPages() <= currentPage()" class="appButton placeHolder">Previous Page</button>
 	</div>
-	<button class="appButton deleteButton deleteAll" (click)="deleteAllMessages(messType)" *ngIf="itemsService.userMessages[messType].length && (messType == 'inbox' || messType == 'outbox')" [attr.aria-label]="'delete all ' + messType + ' messages'">Delete All Messages</button>
-	<button *ngIf="messType == 'threads' && itemsService.userMessages.threads.length" class="appButton deleteButton deleteAll" (click)="deleteAllMessages('threads')">Delete All Threads</button>
+	<button class="appButton deleteButton deleteAll" (click)="deleteAllMessages(messType)" *ngIf="messages().length && messType != 'threads'" [attr.aria-label]="'delete all ' + messType + ' messages'">Delete All Messages</button>
+	<button *ngIf="messType == 'threads' && userThreadsFormatted().length" class="appButton deleteButton deleteAll" (click)="deleteAllMessages('threads')">Delete All Threads</button>
 
 	<!-- If there are no messages in the user's outbox -->
-	<div *ngIf="!itemsService.userMessages[messType].length && itemsService.isUserMessagesResolved[messType].value">
+	<div *ngIf="((!messages().length && messType != 'threads') || (!userThreadsFormatted().length && messType == 'threads')) && !isIdbFetchLoading()">
 		<div class="errorMessage">You have no messages in this mailbox.</div>
 	</div>
 </div>	

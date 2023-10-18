@@ -107,6 +107,9 @@ a.appButton
 	vertical-align: middle
 	line-height: 34px
 
+.appButton.disabled
+	background: #404040
+
 .textlessButton
 	background-color: $itemBackground
 	color: $textColour
@@ -190,7 +193,7 @@ a.appButton
 	display: none
 
 /* Missing user input */
-.missing
+.missing, .ng-invalid.ng-submitted > .ng-invalid
 	border: solid medium #A20002
 
 /* Breadcrumb area */
@@ -696,7 +699,7 @@ app-main-page
 	padding-left: 0
 
 /* New & Suggested Item */
-.newItem, .sugItem
+.newItem, .sugItem, .suggestedItem
 	@extend #itemSample
 	border-color: $itemBackground
 	box-shadow: 3px 3px 7px 0 rgba(46, 61, 73, 0.5)

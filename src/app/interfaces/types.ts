@@ -1,7 +1,5 @@
 /*
-  User interface
-  Based on the User Model
-  For the user's own profile
+  Various types used by the app.
   ---------------------------------------------------
   MIT License
 
@@ -31,30 +29,9 @@
   SOFTWARE.
 */
 
-import { iconCharacters } from "./types";
-
-export interface UserIconColours {
-  character: string;
-  lbg: string;
-  rbg: string;
-  item: string;
-}
-
-export interface User {
-  id?: number;
-  auth0Id: string;
-  displayName: string;
-  receivedH: number;
-  givenH: number;
-  posts: number;
-  loginCount: number;
-  role: string;
-  jwt: string;
-  blocked: boolean;
-  releaseDate: Date | undefined;
-  autoRefresh: boolean;
-  pushEnabled: boolean;
-  refreshRate: number;
-  selectedIcon: iconCharacters;
-  iconColours: UserIconColours;
-}
+export type iconCharacters = "bear" | "kitty" | "dog";
+export type iconElements = "character" | "lbg" | "rbg" | "item";
+export type FullListType = "New" | "Suggested";
+export type LowercaseFullListType = "new" | "suggested";
+export type MessageType = "inbox" | "outbox" | "threads" | "thread";
+export type IdbStoreType = "posts" | "messages" | "users" | "threads";

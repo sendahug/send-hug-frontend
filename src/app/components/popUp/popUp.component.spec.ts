@@ -44,16 +44,6 @@ import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 
 import { AppComponent } from "../../app.component";
 import { PopUp } from "./popUp.component";
-import { AuthService } from "../../services/auth.service";
-import { MockAuthService } from "../../services/auth.service.mock";
-import { ItemsService } from "../../services/items.service";
-import { MockItemsService } from "../../services/items.service.mock";
-import { PostsService } from "../../services/posts.service";
-import { MockPostsService } from "../../services/posts.service.mock";
-import { AdminService } from "../../services/admin.service";
-import { MockAdminService } from "../../services/admin.service.mock";
-import { AlertsService } from "../../services/alerts.service";
-import { MockAlertsService } from "../../services/alerts.service.mock";
 import { NotificationsTab } from "../notifications/notifications.component";
 import { DisplayNameEditForm } from "../forms/displayNameEditForm/displayNameEditForm.component";
 import { ItemDeleteForm } from "../forms/itemDeleteForm/itemDeleteForm.component";
@@ -82,14 +72,7 @@ describe("Popup", () => {
         PostEditForm,
         ReportForm,
       ],
-      providers: [
-        { provide: APP_BASE_HREF, useValue: "/" },
-        { provide: PostsService, useClass: MockPostsService },
-        { provide: AuthService, useClass: MockAuthService },
-        { provide: ItemsService, useClass: MockItemsService },
-        { provide: AdminService, useClass: MockAdminService },
-        { provide: AlertsService, useClass: MockAlertsService },
-      ],
+      providers: [{ provide: APP_BASE_HREF, useValue: "/" }],
     }).compileComponents();
   });
 

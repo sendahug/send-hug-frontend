@@ -34,11 +34,10 @@
 import { Component, Input, Output, EventEmitter } from "@angular/core";
 
 // App-related import
-import { Post } from "../../../interfaces/post.interface";
-import { PostsService } from "../../../services/posts.service";
-import { AdminService } from "../../../services/admin.service";
-import { AlertsService } from "../../../services/alerts.service";
-import { ValidationService } from "../../../services/validation.service";
+import { Post } from "@app/interfaces/post.interface";
+import { ItemsService } from "@app/services/items.service";
+import { AdminService } from "@app/services/admin.service";
+import { ValidationService } from "@app/services/validation.service";
 
 @Component({
   selector: "post-edit-form",
@@ -54,9 +53,8 @@ export class PostEditForm {
 
   // CTOR
   constructor(
-    private postsService: PostsService,
+    private itemsService: ItemsService,
     private adminService: AdminService,
-    private alertsService: AlertsService,
     private validationService: ValidationService,
   ) {}
 
@@ -74,14 +72,14 @@ export class PostEditForm {
   editPost(e: Event, newText: string, closeReport: boolean | null) {
     e.preventDefault();
 
-    const serviceToUse = closeReport === null ? "postsService" : "adminService";
+    const serviceToUse = closeReport === null ? "itemsService" : "adminService";
 
     // if the post is valid, edit the text
     if (this.validationService.validateItem("post", newText, "postText")) {
       // if there isn't a value for closeReport, it means it's sent from the regular edit
       if (closeReport === null) {
         this.editedItem.text = newText;
-        this.postsService.editPost(this.editedItem);
+        this.itemsService.editPost(this.editedItem);
         // otherwise if there's a value it's coming from admin dashboard editing
       } else {
         let post = {

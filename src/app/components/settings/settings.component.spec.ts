@@ -46,10 +46,10 @@ import { AppComponent } from "../../app.component";
 import { SettingsPage } from "./settings.component";
 import { IconEditor } from "../iconEditor/iconEditor.component";
 import { NotificationService } from "../../services/notifications.service";
-import { MockNotificationService } from "../../services/notifications.service.mock";
 import { AuthService } from "../../services/auth.service";
-import { MockAuthService } from "../../services/auth.service.mock";
 import { NotificationsTab } from "../notifications/notifications.component";
+import { AlertsService } from "../../services/alerts.service";
+import { mockAuthedUser } from "@tests/mockData";
 
 describe("SettingsPage", () => {
   // Before each test, configure testing environment
@@ -65,14 +65,16 @@ describe("SettingsPage", () => {
         FontAwesomeModule,
       ],
       declarations: [AppComponent, SettingsPage, NotificationsTab, IconEditor],
-      providers: [
-        { provide: APP_BASE_HREF, useValue: "/" },
-        { provide: AuthService, useClass: MockAuthService },
-        { provide: NotificationService, useClass: MockNotificationService },
-      ],
+      providers: [{ provide: APP_BASE_HREF, useValue: "/" }],
     }).compileComponents();
 
-    TestBed.inject(MockAuthService);
+    const authService = TestBed.inject(AuthService);
+    authService.authenticated = true;
+    authService.userData = { ...mockAuthedUser };
+
+    const notificationService = TestBed.inject(NotificationService);
+    notificationService.pushStatus = false;
+    notificationService.refreshStatus = false;
   });
 
   // Check that the app is created
@@ -103,6 +105,34 @@ describe("SettingsPage", () => {
       );
       expect(settingsDOM.querySelector("#notificationSettings")).toBeNull();
     });
+    done();
+  });
+
+  it("should show the icon editor", (done: DoneFn) => {
+    TestBed.createComponent(AppComponent);
+    const fixture = TestBed.createComponent(SettingsPage);
+    const settingsPage = fixture.componentInstance;
+    settingsPage.authService.authenticated = false;
+
+    fixture.detectChanges();
+
+    settingsPage.toggleIconEditor(true);
+
+    expect(settingsPage.editIcon).toBeTrue();
+    done();
+  });
+
+  it("should hide the icon editor", (done: DoneFn) => {
+    TestBed.createComponent(AppComponent);
+    const fixture = TestBed.createComponent(SettingsPage);
+    const settingsPage = fixture.componentInstance;
+    settingsPage.authService.authenticated = false;
+
+    fixture.detectChanges();
+
+    settingsPage.toggleIconEditor(false);
+
+    expect(settingsPage.editIcon).toBeFalse();
     done();
   });
 
@@ -153,9 +183,9 @@ describe("SettingsPage", () => {
   it("has a button that toggles auto-refresh", (done: DoneFn) => {
     // set up spies
     const notificationsService = TestBed.inject(NotificationService);
-    const settingsSpy = spyOn(notificationsService, "updateUserSettings").and.callThrough();
-    const startRefreshSpy = spyOn(notificationsService, "startAutoRefresh").and.callThrough();
-    const stopRefreshSpy = spyOn(notificationsService, "stopAutoRefresh").and.callThrough();
+    const settingsSpy = spyOn(notificationsService, "updateUserSettings");
+    const startRefreshSpy = spyOn(notificationsService, "startAutoRefresh");
+    const stopRefreshSpy = spyOn(notificationsService, "stopAutoRefresh");
 
     // set up the component
     TestBed.createComponent(AppComponent);
@@ -199,7 +229,7 @@ describe("SettingsPage", () => {
   it("changes the refresh rate", (done: DoneFn) => {
     // set up spies
     const notificationsService = TestBed.inject(NotificationService);
-    const settingsSpy = spyOn(notificationsService, "updateUserSettings").and.callThrough();
+    const settingsSpy = spyOn(notificationsService, "updateUserSettings");
 
     // set up the component
     const fixture = TestBed.createComponent(SettingsPage);
@@ -224,6 +254,44 @@ describe("SettingsPage", () => {
       expect(settingsPage.notificationService.refreshRateSecs).toBe(30);
       expect(updateSpy).toHaveBeenCalled();
       expect(settingsSpy).toHaveBeenCalled();
+    });
+    done();
+  });
+
+  it("shows an error if there's no rate", (done: DoneFn) => {
+    // set up spies
+    const notificationsService = TestBed.inject(NotificationService);
+    const settingsSpy = spyOn(notificationsService, "updateUserSettings");
+
+    // set up the component
+    const fixture = TestBed.createComponent(SettingsPage);
+    const settingsPage = fixture.componentInstance;
+    const settingsDOM = fixture.nativeElement;
+    const alertsSpy = spyOn(TestBed.inject(AlertsService), "createAlert");
+    settingsPage.authService.authenticated = true;
+
+    fixture.detectChanges();
+
+    fixture.whenStable().then(() => {
+      // check the original refresh rate
+      expect(settingsPage.notificationService.refreshRateSecs).toBe(20);
+
+      // change the rate
+      settingsDOM.querySelectorAll("input")[0].value = "";
+      settingsDOM.querySelectorAll(".sendData")[0].click();
+      fixture.detectChanges();
+
+      // check the rate changed
+      expect(settingsPage.notificationService.refreshRateSecs).not.toBe(0);
+      expect(settingsSpy).not.toHaveBeenCalled();
+      expect(alertsSpy).toHaveBeenCalledWith({
+        type: "Error",
+        message: "Refresh rate cannot be empty or zero. Please fill the field and try again.",
+      });
+      expect(document.getElementById("notificationRate")!.className).toBe("missing");
+      expect(document.getElementById("notificationRate")!.getAttribute("aria-invalid")).toEqual(
+        "true",
+      );
     });
     done();
   });

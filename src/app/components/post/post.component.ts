@@ -31,25 +31,25 @@
 */
 
 // Angular imports
-import { Component, EventEmitter, Input, Output } from "@angular/core";
+import { Component, Input, computed, AfterViewChecked, OnInit, OnDestroy } from "@angular/core";
 import { faComment, faEdit, faFlag } from "@fortawesome/free-regular-svg-icons";
 import { faHandHoldingHeart, faTimes, faEllipsisV } from "@fortawesome/free-solid-svg-icons";
+import { Subscription } from "rxjs";
 
 // App-related imports
-import { AuthService } from "../../services/auth.service";
-import { ItemsService } from "../../services/items.service";
-import { PostsService } from "../../services/posts.service";
-import { Post } from "../../interfaces/post.interface";
+import { AuthService } from "@app/services/auth.service";
+import { ItemsService } from "@app/services/items.service";
+import { Post } from "@app/interfaces/post.interface";
 
 @Component({
   selector: "app-single-post",
   templateUrl: "./post.component.html",
 })
-export class SinglePost {
+export class SinglePost implements AfterViewChecked, OnInit, OnDestroy {
   @Input() post!: Post;
   @Input() type!: "n" | "s";
   @Input() class!: string;
-  @Output() showMenu = new EventEmitter<string>();
+  postId = computed(() => `${this.type}Post${this.post?.id || ""}`);
   // edit popup sub-component variables
   postToEdit: Post | undefined;
   editType: string | undefined;
@@ -62,6 +62,7 @@ export class SinglePost {
   reportType: "Post" | undefined;
   lastFocusedElement: any;
   waitFor = "main page";
+  subscriptions: Subscription[] = [];
   // icons
   faComment = faComment;
   faEdit = faEdit;
@@ -74,11 +75,76 @@ export class SinglePost {
   constructor(
     public itemsService: ItemsService,
     public authService: AuthService,
-    public postsService: PostsService,
   ) {
     this.editMode = false;
     this.delete = false;
     this.report = false;
+  }
+
+  ngOnInit(): void {
+    this.subscriptions.push(
+      this.itemsService.currentlyOpenMenu.subscribe((_currentlyOpenId) => {
+        this.checkMenuSize();
+      }),
+    );
+    this.subscriptions.push(
+      this.itemsService.receivedAHug.subscribe((postId) => {
+        if (
+          postId == this.post.id &&
+          !this.post.sentHugs?.includes(this.authService.userData.id!)
+        ) {
+          // TODO: Also update the parent list & IDB
+          this.post.givenHugs += 1;
+          this.post.sentHugs?.push(this.authService.userData.id!);
+          this.disableHugButton();
+        }
+      }),
+    );
+  }
+
+  ngAfterViewChecked(): void {
+    this.checkMenuSize();
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.forEach((sub) => sub.unsubscribe());
+  }
+
+  /**
+   * Checks whether the menu is too long to fit in the screen.
+   * If it is, it hides it or sets it to float.
+   */
+  checkMenuSize() {
+    const post = document.getElementById(this.postId())?.parentElement as HTMLLIElement;
+    if (!post) return;
+    const buttonsContainer = post?.querySelectorAll(".buttonsContainer")[0] as HTMLDivElement;
+    const sub = post?.querySelectorAll(".subMenu")[0] as HTMLDivElement;
+
+    // remove the hidden label check the menu's width
+    buttonsContainer.classList.remove("float");
+    sub.classList.remove("hidden");
+    sub.classList.remove("float");
+
+    // TODO: There has to be a better way to do this (without manually
+    // setting the element's classes).
+    // if the menu is too long, change it to a floating menu
+    if (sub.scrollWidth > sub.offsetWidth) {
+      buttonsContainer.classList.add("float");
+      sub.classList.add("float");
+      post.querySelector(".menuButton")?.classList.remove("hidden");
+
+      if (this.itemsService.currentlyOpenMenu.value != this.post?.id) {
+        sub.classList.add("hidden");
+      } else {
+        sub.classList.remove("hidden");
+      }
+      // Otherwise change it back to a regular menu
+    } else {
+      buttonsContainer.classList.remove("float");
+      sub.classList.remove("hidden");
+      sub.classList.remove("float");
+      post.querySelector(".menuButton")?.classList.add("hidden");
+    }
   }
 
   /*
@@ -90,7 +156,7 @@ export class SinglePost {
   Programmer: Shir Bar Lev.
   */
   sendHug() {
-    this.postsService.sendHug(this.post);
+    this.itemsService.sendHug(this.post);
   }
 
   /*
@@ -167,6 +233,25 @@ export class SinglePost {
   Programmer: Shir Bar Lev.
   */
   toggleOptions() {
-    this.showMenu.emit(`${this.type}Post${this.post.id}`);
+    if (this.itemsService.currentlyOpenMenu.value !== this.post.id) {
+      this.itemsService.currentlyOpenMenu.next(this.post.id as number);
+    } else {
+      this.itemsService.currentlyOpenMenu.next(-1);
+    }
+  }
+
+  /**
+   * Disables the current post's hug button to prevent attempting
+   * to send multiple hugs on one post. Is triggered by the user
+   * sending a hug for the post.
+   */
+  disableHugButton() {
+    // TODO: Ideally we shouldn't have to do this; this is only done
+    // because the post isn't fully reactive. This should be fixed.
+    let post = document.getElementById(this.postId())?.parentElement;
+    post?.querySelectorAll(".fa-hand-holding-heart").forEach((element) => {
+      (element.parentElement as HTMLButtonElement).disabled = true;
+      (element.parentElement as HTMLButtonElement).classList.add("active");
+    });
   }
 }

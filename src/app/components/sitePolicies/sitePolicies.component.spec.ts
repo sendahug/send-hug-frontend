@@ -41,6 +41,8 @@ import {
 import { HttpClientModule } from "@angular/common/http";
 import { ServiceWorkerModule } from "@angular/service-worker";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
+import { ActivatedRoute, UrlSegment } from "@angular/router";
+import { of } from "rxjs";
 
 import { SitePolicies } from "./sitePolicies.component";
 
@@ -67,5 +69,36 @@ describe("SitePolicies", () => {
     const fixture = TestBed.createComponent(SitePolicies);
     const sitePolicies = fixture.componentInstance;
     expect(sitePolicies).toBeTruthy();
+  });
+
+  // check the title is correct
+  it("should show the correct policy and title - terms", () => {
+    const paramMap = TestBed.inject(ActivatedRoute);
+    paramMap.url = of([{ path: "terms" } as UrlSegment]);
+    const fixture = TestBed.createComponent(SitePolicies);
+    const sitePolicies = fixture.componentInstance;
+
+    expect(sitePolicies.pageTitle).toEqual("Terms and Conditions");
+    expect(sitePolicies.currentPolicy).toEqual("TermsConditions");
+  });
+
+  it("should show the correct policy and title - privacy", () => {
+    const paramMap = TestBed.inject(ActivatedRoute);
+    paramMap.url = of([{ path: "privacy" } as UrlSegment]);
+    const fixture = TestBed.createComponent(SitePolicies);
+    const sitePolicies = fixture.componentInstance;
+
+    expect(sitePolicies.pageTitle).toEqual("Privacy Policy");
+    expect(sitePolicies.currentPolicy).toEqual("PrivacyPolicy");
+  });
+
+  it("should show the correct policy and title - cookies", () => {
+    const paramMap = TestBed.inject(ActivatedRoute);
+    paramMap.url = of([{ path: "cookies" } as UrlSegment]);
+    const fixture = TestBed.createComponent(SitePolicies);
+    const sitePolicies = fixture.componentInstance;
+
+    expect(sitePolicies.pageTitle).toEqual("Cookies Policy");
+    expect(sitePolicies.currentPolicy).toEqual("CookiePolicy");
   });
 });

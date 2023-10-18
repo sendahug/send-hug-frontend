@@ -31,146 +31,88 @@
 */
 
 // Angular imports
-import { Component, OnInit, AfterViewChecked } from "@angular/core";
+import { Component, WritableSignal, signal } from "@angular/core";
+import { forkJoin, from, map, switchMap, tap } from "rxjs";
 
 // App-related imports
-import { AuthService } from "../../services/auth.service";
-import { ItemsService } from "../../services/items.service";
-import { PostsService } from "../../services/posts.service";
+import { ApiClientService } from "@app/services/apiClient.service";
+import { SWManager } from "@app/services/sWManager.service";
+import { Post } from "@app/interfaces/post.interface";
+import { AlertsService } from "@app/services/alerts.service";
+
+interface MainPageResponse {
+  recent: Post[];
+  suggested: Post[];
+  success?: boolean;
+}
 
 @Component({
   selector: "app-main-page",
   templateUrl: "./mainPage.component.html",
 })
-export class MainPage implements OnInit, AfterViewChecked {
-  showMenuNum: string | null = null;
+export class MainPage {
+  isLoading = signal(false);
+  newPosts: WritableSignal<Post[]> = signal([]);
+  suggestedPosts: WritableSignal<Post[]> = signal([]);
   // loader sub-component variables
   waitFor = "main page";
 
   // CTOR
   constructor(
-    public itemsService: ItemsService,
-    public authService: AuthService,
-    public postsService: PostsService,
+    private apiClient: ApiClientService,
+    private swManager: SWManager,
+    private alertsService: AlertsService,
   ) {
-    this.postsService.getItems();
+    this.fetchPosts();
   }
 
-  ngOnInit() {}
+  /**
+   * Fetches the posts to display from IDB and then
+   * from the server.
+   */
+  fetchPosts() {
+    this.isLoading.set(true);
+    const fetchFromIdb$ = this.fetchFromIdb();
 
-  /*
-  Function Name: ngAfterViewInit()
-  Function Description: This method is automatically triggered by Angular once the component's
-                        view is intialised. It checks whether posts' buttons are
-                        too big for their container; if they are, changes the menu to be
-                        a floating one.
-  Parameters: None.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  ngAfterViewChecked() {
-    let newPosts = document.querySelectorAll(".newItem");
-    let sugPosts = document.querySelectorAll(".sugItem");
-
-    if (newPosts[0]) {
-      // check the first post; the others are the same
-      let firstPButtons = newPosts[0]!.querySelectorAll(".buttonsContainer")[0] as HTMLDivElement;
-      let sub = newPosts[0]!.querySelectorAll(".subMenu")[0] as HTMLDivElement;
-
-      // remove the hidden label check the menu's width
-      if (sub.classList.contains("hidden")) {
-        firstPButtons.classList.remove("float");
-        sub.classList.remove("hidden");
-        sub.classList.remove("float");
-      }
-
-      // if they're too long and there's no menu to show
-      if (sub.scrollWidth > sub.offsetWidth && !this.showMenuNum) {
-        // change each new post's menu to a floating, hidden menu
-        newPosts.forEach((element) => {
-          element.querySelectorAll(".buttonsContainer")[0].classList.add("float");
-          element.querySelectorAll(".subMenu")[0].classList.add("hidden");
-          element.querySelectorAll(".subMenu")[0].classList.add("float");
-          element.querySelectorAll(".menuButton")[0].classList.remove("hidden");
-        });
-
-        // change each suggested post's menu to a floating, hidden menu
-        sugPosts.forEach((element) => {
-          element.querySelectorAll(".buttonsContainer")[0].classList.add("float");
-          element.querySelectorAll(".subMenu")[0].classList.add("hidden");
-          element.querySelectorAll(".subMenu")[0].classList.add("float");
-          element.querySelectorAll(".menuButton")[0].classList.remove("hidden");
-        });
-      }
-      // if there's a menu to show, show that specific menu
-      else if (this.showMenuNum) {
-        // the relevant menu to visible
-        newPosts.forEach((element) => {
-          if (element.firstElementChild!.id == this.showMenuNum) {
-            element.querySelectorAll(".subMenu")[0].classList.remove("hidden");
-          } else {
-            element.querySelectorAll(".subMenu")[0].classList.add("hidden");
-
-            // if it's not the first element that needs an open menu, close
-            // the first item's menu like  it was opened above
-            if (element.firstElementChild!.id == newPosts[0].firstElementChild!.id) {
-              element.querySelectorAll(".buttonsContainer")[0].classList.add("float");
-              element.querySelectorAll(".subMenu")[0].classList.add("hidden");
-              element.querySelectorAll(".subMenu")[0].classList.add("float");
-            }
-          }
-        });
-
-        // the relevant menu to visible
-        sugPosts.forEach((element) => {
-          if (element.firstElementChild!.id == this.showMenuNum) {
-            element.querySelectorAll(".subMenu")[0].classList.remove("hidden");
-          } else {
-            element.querySelectorAll(".subMenu")[0].classList.add("hidden");
-          }
-        });
-      }
-      // otherwise make sure the menu button is hidden and the buttons container
-      // is in its normal design
-      else {
-        newPosts.forEach((element) => {
-          element.querySelectorAll(".buttonsContainer")[0].classList.remove("float");
-          element.querySelectorAll(".subMenu")[0].classList.remove("hidden");
-          element.querySelectorAll(".subMenu")[0].classList.remove("float");
-          element.querySelectorAll(".menuButton")[0].classList.add("hidden");
-        });
-
-        sugPosts.forEach((element) => {
-          element.querySelectorAll(".buttonsContainer")[0].classList.remove("float");
-          element.querySelectorAll(".subMenu")[0].classList.remove("hidden");
-          element.querySelectorAll(".subMenu")[0].classList.remove("float");
-          element.querySelectorAll(".menuButton")[0].classList.add("hidden");
-        });
-      }
-    }
+    fetchFromIdb$
+      .pipe(switchMap(() => this.apiClient.get<MainPageResponse>("")))
+      .subscribe((data) => {
+        this.updatePostsInterface(data);
+        this.alertsService.toggleOfflineAlert();
+        this.swManager.addFetchedItems("posts", [...data.recent, ...data.suggested], "date");
+      });
   }
 
-  /*
-  Function Name: openMenu()
-  Function Description: Opens a floating sub menu that contains the message, report, edit (if
-                        applicable) and delete (if applicable) options on smaller screens.
-  Parameters: menu (string) - ID of the item for which to open the submenu.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  openMenu(menu: string) {
-    let post = document.querySelector("#" + menu)!.parentElement;
-    let subMenu = post!.querySelectorAll(".subMenu")[0];
+  /**
+   * Generates the observable for fetching the data from IndexedDB.
+   * @returns an observable that handles fetching
+   *          posts from IndexedDB and transforming them.
+   */
+  fetchFromIdb() {
+    // Fetch from Idb
+    return forkJoin({
+      recent: from(this.swManager.fetchPosts("date", 10, undefined, 1, true)),
+      suggested: from(this.swManager.fetchPosts("hugs", 10, undefined, 1, false)),
+    }).pipe(
+      // Transform and update the UI
+      map((data) => {
+        return {
+          recent: data.recent.posts,
+          suggested: data.suggested.posts,
+          success: true,
+        } as MainPageResponse;
+      }),
+      tap((data) => this.updatePostsInterface(data)),
+    );
+  }
 
-    // if the submenu is hidden, show it
-    if (subMenu.classList.contains("hidden")) {
-      subMenu.classList.remove("hidden");
-      this.showMenuNum = menu;
-    }
-    // otherwise hide it
-    else {
-      subMenu.classList.add("hidden");
-      this.showMenuNum = null;
-    }
+  /**
+   * Updates the main page's interface with the newly fetched data.
+   * @param data - the posts to set as new and suggested posts.
+   */
+  updatePostsInterface(data: MainPageResponse) {
+    if (data.recent) this.newPosts.set(data.recent);
+    if (data.suggested) this.suggestedPosts.set(data.suggested);
+    this.isLoading.set(false);
   }
 }

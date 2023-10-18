@@ -31,25 +31,69 @@
 */
 
 // Angular imports
-import { Component, OnInit, AfterViewChecked } from "@angular/core";
+import { Component, OnInit, AfterViewChecked, signal, computed } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
+import { from, map, switchMap, tap } from "rxjs";
 
 // App-related imports
-import { AuthService } from "../../services/auth.service";
-import { ItemsService } from "../../services/items.service";
+import { AuthService } from "@app/services/auth.service";
+import { iconElements, MessageType } from "@app/interfaces/types";
+import { FullThread, ParsedThread } from "@app/interfaces/thread.interface";
+import { UserIconColours } from "@app/interfaces/user.interface";
+import { Message } from "@app/interfaces/message.interface";
+import { SWManager } from "@app/services/sWManager.service";
+import { ApiClientService } from "@app/services/apiClient.service";
+import { AlertsService } from "@app/services/alerts.service";
 
-type MessageType = "inbox" | "outbox" | "threads";
+interface MessagesResponse {
+  success: boolean;
+  messages: Message[];
+  total_pages: number;
+  current_page: number;
+}
+
+interface ThreadResponse {
+  success: boolean;
+  messages: FullThread[];
+  total_pages: number;
+  current_page: number;
+}
 
 @Component({
   selector: "app-messages",
   templateUrl: "./messages.component.html",
 })
 export class AppMessaging implements OnInit, AfterViewChecked {
-  messType: MessageType | "thread" = "inbox";
-  page: number;
+  messType: MessageType = "inbox";
+  idbFilterAttribute = computed(() => {
+    if (this.messType == "thread") {
+      return "threadID";
+    } else if (this.messType == "outbox") {
+      return "fromId";
+    } else {
+      return "forId";
+    }
+  });
+  currentPage = signal(1);
+  totalPages = signal(1);
+  isLoading = signal(false);
+  isIdbFetchLoading = signal(false);
+  threadId?: number;
+  messages = signal<Message[]>([]);
+  userThreads = signal<FullThread[]>([]);
+  userThreadsFormatted = computed<ParsedThread[]>(() => {
+    return this.userThreads().map((thread: FullThread) => {
+      return {
+        id: thread.id,
+        user: thread.user1Id == this.authService.userData.id ? thread.user2 : thread.user1,
+        userID: thread.user1Id == this.authService.userData.id ? thread.user2Id : thread.user1Id,
+        numMessages: thread.numMessages,
+        latestMessage: thread.latestMessage,
+      };
+    });
+  });
   // loader sub-component variable
   waitFor = `${this.messType} messages`;
-  threadId: number;
   // edit popup sub-component variables
   postToEdit: any;
   editType: string | undefined;
@@ -62,12 +106,17 @@ export class AppMessaging implements OnInit, AfterViewChecked {
   // CTOR
   constructor(
     public authService: AuthService,
-    public itemsService: ItemsService,
     public route: ActivatedRoute,
     public router: Router,
+    private swManager: SWManager,
+    private apiClient: ApiClientService,
+    private alertsService: AlertsService,
   ) {
     let messageType;
     this.threadId = Number(this.route.snapshot.paramMap.get("id"));
+    this.editMode = false;
+    this.delete = false;
+    this.currentPage.set(1);
 
     this.route.url.subscribe((params) => {
       messageType = params[0].path;
@@ -85,26 +134,13 @@ export class AppMessaging implements OnInit, AfterViewChecked {
       // if the value is true, user data has been fetched, so the app can
       // now fetch the user's messages
       if (value == true) {
-        // Gets the user's messages via the items service
-        if (this.messType == "inbox" || this.messType == "outbox") {
-          this.itemsService.getMailboxMessages(
-            this.messType,
-            this.authService.userData.id!,
-            this.page,
-          );
-        } else if (this.messType == "threads") {
-          this.itemsService.getThreads(this.authService.userData.id!, this.page);
-        }
-        // gets the thread's messages
-        else if (this.messType == "thread" && this.threadId) {
-          this.itemsService.getThread(this.authService.userData.id!, this.threadId);
+        if (this.messType == "threads") {
+          this.fetchThreads();
+        } else {
+          this.fetchMessages();
         }
       }
     });
-
-    this.editMode = false;
-    this.delete = false;
-    this.page = 1;
   }
 
   ngOnInit() {}
@@ -121,59 +157,156 @@ export class AppMessaging implements OnInit, AfterViewChecked {
   ngAfterViewChecked() {
     // wait for the DOM to load
     if (document.querySelectorAll(".userIcon")[0]) {
-      this.itemsService.userMessages[this.messType].forEach((message: any) => {
-        const messageDOM = document.getElementById(this.messType + message.id);
-
-        switch (this.messType) {
-          // If it's the inbox, get the the icon details of the user sending the message
-          case "inbox" || "thread":
-            Object.keys(message.from.iconColours).forEach((key) => {
-              messageDOM!
-                .querySelectorAll(".userIcon")[0]
-                .querySelectorAll(`.${key as "character" | "lbg" | "rbg" | "item"}`)
-                .forEach((element) => {
-                  (element as SVGPathElement).setAttribute(
-                    "style",
-                    `fill:${
-                      message.from.iconColours[key as "character" | "lbg" | "rbg" | "item"]
-                    };`,
-                  );
-                });
-            });
-            break;
-          // If it's the outbox, get the icon details of the user for which the message is meant
-          case "outbox":
-            Object.keys(message.for.iconColours).forEach((key) => {
-              messageDOM!
-                .querySelectorAll(".userIcon")[0]
-                .querySelectorAll(`.${key as "character" | "lbg" | "rbg" | "item"}`)
-                .forEach((element) => {
-                  (element as SVGPathElement).setAttribute(
-                    "style",
-                    `fill:${message.for.iconColours[key as "character" | "lbg" | "rbg" | "item"]};`,
-                  );
-                });
-            });
-            break;
-          // If it's the threads mailbox, get the icon details of the other user in the thread
-          case "threads":
-            Object.keys(message.user.iconColours).forEach((key) => {
-              messageDOM!
-                .querySelectorAll(".userIcon")[0]
-                .querySelectorAll(`.${key as "character" | "lbg" | "rbg" | "item"}`)
-                .forEach((element) => {
-                  (element as SVGPathElement).setAttribute(
-                    "style",
-                    `fill:${
-                      message.user.iconColours[key as "character" | "lbg" | "rbg" | "item"]
-                    };`,
-                  );
-                });
-            });
-            break;
-        }
-      });
+      // If it's the threads mailbox, get the icon details of the other user in the thread
+      if (this.messType == "threads") {
+        this.userThreadsFormatted().forEach((thread: ParsedThread) => {
+          this.setUpUserIcon(thread.id, thread.user.iconColours);
+        });
+      } else {
+        this.messages().forEach((message: any) => {
+          switch (this.messType) {
+            // If it's the inbox, get the the icon details of the user sending the message
+            case "inbox" || "thread":
+              this.setUpUserIcon(message.id, message.from.iconColours);
+              break;
+            // If it's the outbox, get the icon details of the user for which the message is meant
+            case "outbox":
+              this.setUpUserIcon(message.id, message.for.iconColours);
+              break;
+          }
+        });
+      }
     }
+  }
+
+  /**
+   * Fetches the messages to display from IDB and then
+   * from the server.
+   */
+  fetchMessages() {
+    this.isLoading.set(true);
+    this.isIdbFetchLoading.set(true);
+
+    const fetchFromIdb$ = this.fetchMessagesFromIdb();
+    const fetchParams: { [key: string]: any } = {
+      page: this.currentPage(),
+      userID: this.authService.userData.id!,
+      type: this.messType,
+    };
+
+    if (this.messType == "thread") fetchParams["threadID"] = this.threadId!;
+
+    fetchFromIdb$
+      .pipe(switchMap(() => this.apiClient.get<MessagesResponse>("messages", fetchParams)))
+      .subscribe({
+        next: (data) => {
+          this.messages.set(data.messages);
+          this.totalPages.set(data.total_pages);
+          this.isLoading.set(false);
+          this.alertsService.toggleOfflineAlert();
+          this.swManager.addFetchedItems("messages", [...data.messages], "date");
+        },
+      });
+  }
+
+  /**
+   * Generates the observable for fetching the data from IndexedDB.
+   * @returns an observable that handles fetching
+   *          messages from IndexedDB and transforming them.
+   */
+  fetchMessagesFromIdb() {
+    const filterValue = this.messType == "thread" ? this.threadId! : this.authService.userData.id!;
+
+    return from(
+      this.swManager.fetchMessages(this.idbFilterAttribute(), filterValue, 5, this.currentPage()),
+    ).pipe(
+      tap((data) => {
+        this.messages.set(data.messages);
+        this.totalPages.set(data.pages);
+        this.isIdbFetchLoading.set(false);
+      }),
+      map((data) => {
+        return {
+          messages: data.messages,
+          total_pages: data.pages,
+          current_page: this.currentPage(),
+          success: true,
+        } as MessagesResponse;
+      }),
+    );
+  }
+
+  /**
+   * Fetches the threads to display from IDB and then
+   * from the server.
+   */
+  fetchThreads() {
+    this.isLoading.set(true);
+    this.isIdbFetchLoading.set(true);
+
+    const fetchFromIdb$ = this.fetchThreadsFromIdb();
+
+    fetchFromIdb$
+      .pipe(
+        switchMap(() =>
+          this.apiClient.get<ThreadResponse>("messages", {
+            page: this.currentPage(),
+            userID: this.authService.userData.id!,
+            type: this.messType,
+          }),
+        ),
+      )
+      .subscribe({
+        next: (data) => {
+          this.userThreads.set(data.messages);
+          this.totalPages.set(data.total_pages);
+          this.isLoading.set(false);
+          this.alertsService.toggleOfflineAlert();
+          this.swManager.addFetchedItems("threads", [...data.messages], "latestMessage");
+        },
+      });
+  }
+
+  /**
+   * Generates the observable for fetching the data from IndexedDB.
+   * @returns an observable that handles fetching
+   *          threads from IndexedDB and transforming them.
+   */
+  fetchThreadsFromIdb() {
+    return from(this.swManager.queryThreads(this.currentPage())).pipe(
+      tap((data) => {
+        this.userThreads.set(data.messages);
+        this.totalPages.set(data.pages);
+        this.isIdbFetchLoading.set(false);
+      }),
+      map((data) => {
+        return {
+          messages: data.messages,
+          total_pages: data.pages,
+          current_page: this.currentPage(),
+          success: true,
+        } as ThreadResponse;
+      }),
+    );
+  }
+
+  /**
+   * Updates the user's icon with the right colours
+   * @param messageId the ID of the message
+   * @param userIconColours the user's icon colours
+   */
+  setUpUserIcon(messageId: number, userIconColours: UserIconColours) {
+    Object.keys(userIconColours).forEach((key) => {
+      document
+        .querySelectorAll(`#${this.messType}${messageId} .userIcon`)[0]
+        .querySelectorAll(`.${key as iconElements}`)
+        .forEach((element) => {
+          (element as SVGPathElement).setAttribute(
+            "style",
+            `fill:${userIconColours[key as iconElements]};`,
+          );
+        });
+    });
   }
 
   /*
@@ -212,15 +345,11 @@ export class AppMessaging implements OnInit, AfterViewChecked {
   Programmer: Shir Bar Lev.
   */
   nextPage() {
-    this.page += 1;
-
-    if (this.messType == "thread") {
-      this.itemsService.userMessagesPage.thread += 1;
-      this.itemsService.getThread(this.authService.userData.id!, this.threadId);
-    } else if (this.messType == "threads") {
-      this.itemsService.getThreads(this.authService.userData.id!, this.page);
+    this.currentPage.set(this.currentPage() + 1);
+    if (this.messType == "threads") {
+      this.fetchThreads();
     } else {
-      this.itemsService.getMailboxMessages(this.messType, this.authService.userData.id!, this.page);
+      this.fetchMessages();
     }
   }
 
@@ -233,15 +362,11 @@ export class AppMessaging implements OnInit, AfterViewChecked {
   Programmer: Shir Bar Lev.
   */
   prevPage() {
-    this.page -= 1;
-
-    if (this.messType == "thread") {
-      this.itemsService.userMessagesPage.thread -= 1;
-      this.itemsService.getThread(this.authService.userData.id!, this.threadId);
-    } else if (this.messType == "threads") {
-      this.itemsService.getThreads(this.authService.userData.id!, this.page);
+    this.currentPage.set(this.currentPage() - 1);
+    if (this.messType == "threads") {
+      this.fetchThreads();
     } else {
-      this.itemsService.getMailboxMessages(this.messType, this.authService.userData.id!, this.page);
+      this.fetchMessages();
     }
   }
 

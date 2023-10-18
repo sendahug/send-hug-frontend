@@ -3,8 +3,8 @@
 	<div id="noInternet" *ngIf="alertsService.isOffline.value" role="banner">You are not currently connected to the internet. For updated data, reconnect to the internet and try again.</div>
 	<nav id="navMenu" role="navigation">
 		<a [routerLink]="['/']"><img src="../assets/img/Logo.svg" alt="send a hug logo" id="siteLogo"></a>
-		<button class="navLink hidden" id="menuBtn" (click)="toggleMenu()" aria-hidden="true" aria-label="open navigation menu"><fa-icon [icon]="faBars" class="fa-bars"></fa-icon></button>
-		<div id="navLinks" class="navLinks">
+		<button [class]="menuButtonClass()" id="menuBtn" (click)="toggleMenu()" aria-hidden="true" aria-label="open navigation menu"><fa-icon [icon]="faBars" class="fa-bars"></fa-icon></button>
+		<div id="navLinks" [class]="navMenuClass()" [attr.aria-hidden]="showMenu()">
 			<a [routerLink]="['/']" [class]="currentlyActiveRoute() == '/' ? activeLinkClass : inactiveLinkClass">
 				<img src="../assets/img/home.svg" alt="">
 				<div class="navLinkText">Home</div>
@@ -43,11 +43,11 @@
 			</button>
 		</div>
 	</nav>
-	<form id="search" role="search" *ngIf="showSearch">
+	<form [formGroup]="searchForm" id="search" role="search" *ngIf="showSearch" (ngSubmit)="searchApp($event,searchQuery.value)">
 		<button id="exitButton" (click)="toggleSearch()" aria-label="close search panel"><fa-icon [icon]="faTimes" class="fa-times"></fa-icon></button>
 		<label class="pageCategory" for="searchQuery" id="searchLabel">Search: </label>
-		<input type="text" id="searchQuery" placeholder="Search" #searchQuery minlength="0">
-		<button type="submit" class="appButton sendData" (click)="searchApp($event,searchQuery.value)">Search</button>
+		<input type="text" id="searchQuery" placeholder="Search" #searchQuery minlength="1" formControlName="searchQuery">
+		<button type="submit" class="appButton sendData">Search</button>
 	</form>
 	<div id="textPanel" *ngIf="showTextPanel">
 		<button class="appButton" (click)="changeTextSize('smallest')" aria-label="change text size to smallest size">Smallest size</button>

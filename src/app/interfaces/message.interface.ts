@@ -30,28 +30,21 @@
   SOFTWARE.
 */
 
+import { iconCharacters } from "./types";
+import { UserIconColours } from "./user.interface";
+
 export interface Message {
   id?: number;
   from?: {
     displayName: string;
-    selectedIcon?: "bear" | "kitty" | "dog";
-    iconColours?: {
-      character: String;
-      lbg: String;
-      rbg: String;
-      item: String;
-    };
+    selectedIcon?: iconCharacters;
+    iconColours?: UserIconColours;
   };
   fromId: number;
   for?: {
     displayName: string;
-    selectedIcon?: "bear" | "kitty" | "dog";
-    iconColours?: {
-      character: String;
-      lbg: String;
-      rbg: String;
-      item: String;
-    };
+    selectedIcon?: iconCharacters;
+    iconColours?: UserIconColours;
   };
   forId: number;
   messageText: string;

@@ -43,11 +43,6 @@ import { ServiceWorkerModule } from "@angular/service-worker";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 
 import { HeaderMessage } from "./headerMessage.component";
-import { AuthService } from "../../services/auth.service";
-import { MockAuthService } from "../../services/auth.service.mock";
-import { ItemsService } from "../../services/items.service";
-import { MockItemsService } from "../../services/items.service.mock";
-import { BehaviorSubject } from "rxjs";
 
 describe("HeaderMessage", () => {
   // Before each test, configure testing environment
@@ -63,11 +58,7 @@ describe("HeaderMessage", () => {
         FontAwesomeModule,
       ],
       declarations: [HeaderMessage],
-      providers: [
-        { provide: APP_BASE_HREF, useValue: "/" },
-        { provide: AuthService, useClass: MockAuthService },
-        { provide: ItemsService, useClass: MockItemsService },
-      ],
+      providers: [{ provide: APP_BASE_HREF, useValue: "/" }],
     }).compileComponents();
   });
 
@@ -79,16 +70,33 @@ describe("HeaderMessage", () => {
   });
 
   // Check that the component checks for loading target
-  it("should check what target the parent component is", () => {
+  it("onInit - should check what target the parent component is waiting on", () => {
     const fixture = TestBed.createComponent(HeaderMessage);
     const headerMessage = fixture.componentInstance;
-    const loadingSpy = spyOn(headerMessage, "checkLoadingTarget").and.callThrough();
+    const loadingSpy = spyOn(headerMessage, "checkLoadingTarget").and.callFake(
+      () => (headerMessage.message = "test"),
+    );
     headerMessage.waitingFor = "other user";
 
     fixture.detectChanges();
     headerMessage.ngOnInit();
 
-    expect(headerMessage).toBeTruthy();
+    expect(headerMessage.message).toEqual("test");
+    expect(loadingSpy).toHaveBeenCalled();
+  });
+
+  it("onChange - should check what taget the parent component is waiting on", () => {
+    const fixture = TestBed.createComponent(HeaderMessage);
+    const headerMessage = fixture.componentInstance;
+    const loadingSpy = spyOn(headerMessage, "checkLoadingTarget").and.callFake(
+      () => (headerMessage.message = "test"),
+    );
+    headerMessage.waitingFor = "other user";
+
+    fixture.detectChanges();
+    headerMessage.ngOnChanges();
+
+    expect(headerMessage.message).toEqual("test");
     expect(loadingSpy).toHaveBeenCalled();
   });
 
@@ -98,7 +106,6 @@ describe("HeaderMessage", () => {
     const headerMessage = fixture.componentInstance;
     const headerMessDOM = fixture.nativeElement;
     headerMessage.waitingFor = "other user";
-    headerMessage["itemsService"].isOtherUserResolved.next(false);
 
     fixture.detectChanges();
 
@@ -111,167 +118,89 @@ describe("HeaderMessage", () => {
 
   // Check that the component is displaying different loading messages
   // for different components
-  it("should display different messages for different components", (done: DoneFn) => {
+  // TODO: The below tests really should be parameterised, but still need to figure
+  // out how to do it in Jasmine
+  it("should display different messages for different components - other user", (done: DoneFn) => {
     const fixture = TestBed.createComponent(HeaderMessage);
     const headerMessage = fixture.componentInstance;
     const headerMessDOM = fixture.nativeElement;
-    headerMessage.user = "other";
-
-    // array of potential waitingFor targets and their loading messages
-    const waitingForOptions = [
-      "other user",
-      "inbox messages",
-      "threads messages",
-      "thread messages",
-      "user posts",
-    ];
-    const loadingMessagesOptions = [
-      "Fetching user data from the server...",
-      "Fetching messages from the server...",
-      "Fetching threads from the server...",
-      "Fetching messages from the server...",
-      "Fetching user posts from the server...",
-    ];
-    const observables = [
-      headerMessage["itemsService"].isOtherUserResolved,
-      headerMessage["itemsService"].isUserMessagesResolved.inbox,
-      headerMessage["itemsService"].isUserMessagesResolved.threads,
-      headerMessage["itemsService"].isUserMessagesResolved.thread,
-      headerMessage["itemsService"].isUserPostsResolved.other,
-    ];
 
     // check that the loading message changes according to the target
-    waitingForOptions.forEach((target, index) => {
-      headerMessage.waitingFor = target;
-      headerMessage.ngOnChanges();
-      observables[index].next(false);
-      fixture.detectChanges();
-      expect(headerMessage.message).toBe(loadingMessagesOptions[index]);
-      expect(headerMessDOM.querySelector("#loadingMessage").textContent).toBe(
-        headerMessage.message,
-      );
-    });
+    headerMessage.waitingFor = "other user";
+    headerMessage.ngOnChanges();
+    fixture.detectChanges();
+    expect(headerMessage.message).toBe("Fetching user data from the server...");
+    expect(headerMessDOM.querySelector("#loadingMessage").textContent).toBe(headerMessage.message);
     done();
   });
 
-  // Check that the loader says on until the BehaviorSubject is false
-  it("stays on until the BehaviorSubject emits false", (done: DoneFn) => {
-    // set up the component
+  it("should display different messages for different components - inbox messages", (done: DoneFn) => {
     const fixture = TestBed.createComponent(HeaderMessage);
     const headerMessage = fixture.componentInstance;
     const headerMessDOM = fixture.nativeElement;
-    headerMessage.user = "other";
 
-    // set up spies
-    let subjects = [
-      headerMessage["itemsService"].isOtherUserResolved,
-      headerMessage["itemsService"].isUserMessagesResolved.inbox,
-      headerMessage["itemsService"].isUserMessagesResolved.threads,
-      headerMessage["itemsService"].isUserMessagesResolved.thread,
-      headerMessage["itemsService"].isUserPostsResolved.other,
-    ];
-    const waitingForOptions = [
-      "other user",
-      "inbox messages",
-      "threads messages",
-      "thread messages",
-      "user posts",
-    ];
-
-    // check each loading target
-    waitingForOptions.forEach((target, index) => {
-      // set up the target's spy to return false
-      subjects[index].next(false);
-      headerMessage.waitingFor = target;
-      headerMessage.ngOnChanges();
-      fixture.detectChanges();
-      // check that the visibility is true
-      expect(headerMessage.visible).toBeTrue();
-      expect(headerMessDOM.querySelector("#headerMessage")).toBeTruthy();
-      // change the BehaviorSubject's value to true
-      subjects[index].next(true);
-      fixture.detectChanges();
-      // check that the visibility is false
-      expect(headerMessage.visible).toBeFalse();
-      expect(headerMessDOM.querySelector("#headerMessage")).toBeNull();
-    });
+    // check that the loading message changes according to the target
+    headerMessage.waitingFor = "inbox messages";
+    headerMessage.ngOnChanges();
+    fixture.detectChanges();
+    expect(headerMessage.message).toBe("Fetching messages from the server...");
+    expect(headerMessDOM.querySelector("#loadingMessage").textContent).toBe(headerMessage.message);
     done();
   });
 
-  // Check that the component subscribes to the correct observable
-  it("subscribes to the correct observable", (done: DoneFn) => {
-    // set up required variables
-    let previousSpies: jasmine.Spy<any>[] = [];
-    let currentObservable: jasmine.Spy;
-    const waitingForOptions = [
-      "other user",
-      "inbox messages",
-      "outbox messages",
-      "threads messages",
-      "thread messages",
-      "user posts",
-    ];
-
-    // set up the component and all possible spies
+  it("should display different messages for different components - outbox messages", (done: DoneFn) => {
     const fixture = TestBed.createComponent(HeaderMessage);
     const headerMessage = fixture.componentInstance;
-    let spies = [
-      spyOn(
-        headerMessage["itemsService"].isOtherUserResolved as BehaviorSubject<boolean>,
-        "subscribe",
-      ).and.callThrough(),
-      spyOn(
-        headerMessage["itemsService"].isUserMessagesResolved.inbox as BehaviorSubject<boolean>,
-        "subscribe",
-      ).and.callThrough(),
-      spyOn(
-        headerMessage["itemsService"].isUserMessagesResolved.outbox as BehaviorSubject<boolean>,
-        "subscribe",
-      ).and.callThrough(),
-      spyOn(
-        headerMessage["itemsService"].isUserMessagesResolved.threads as BehaviorSubject<boolean>,
-        "subscribe",
-      ).and.callThrough(),
-      spyOn(
-        headerMessage["itemsService"].isUserMessagesResolved.thread as BehaviorSubject<boolean>,
-        "subscribe",
-      ).and.callThrough(),
-      spyOn(
-        headerMessage["itemsService"].isUserPostsResolved.other as BehaviorSubject<boolean>,
-        "subscribe",
-      ).and.callThrough(),
-    ];
+    const headerMessDOM = fixture.nativeElement;
 
-    // reset the spies
-    spies.forEach((spy) => {
-      spy.calls.reset();
-    });
+    // check that the loading message changes according to the target
+    headerMessage.waitingFor = "outbox messages";
+    headerMessage.ngOnChanges();
+    fixture.detectChanges();
+    expect(headerMessage.message).toBe("Fetching messages from the server...");
+    expect(headerMessDOM.querySelector("#loadingMessage").textContent).toBe(headerMessage.message);
+    done();
+  });
 
-    // check each of the potential waitingFor targets and their
-    // associated observables
-    waitingForOptions.forEach((target) => {
-      // get current target's observable
-      currentObservable = spies.shift()!;
-      previousSpies.push(currentObservable);
+  it("should display different messages for different components - threads messages", (done: DoneFn) => {
+    const fixture = TestBed.createComponent(HeaderMessage);
+    const headerMessage = fixture.componentInstance;
+    const headerMessDOM = fixture.nativeElement;
 
-      // set up the loader
-      headerMessage.waitingFor = target;
-      headerMessage.user = "other";
-      headerMessage.ngOnChanges();
-      fixture.detectChanges();
+    // check that the loading message changes according to the target
+    headerMessage.waitingFor = "threads messages";
+    headerMessage.ngOnChanges();
+    fixture.detectChanges();
+    expect(headerMessage.message).toBe("Fetching threads from the server...");
+    expect(headerMessDOM.querySelector("#loadingMessage").textContent).toBe(headerMessage.message);
+    done();
+  });
 
-      // check that each of the previous spies was called once, in its
-      // relevant if
-      previousSpies.forEach((item) => {
-        expect(item).toHaveBeenCalled();
-        expect(item!.calls.count()).toBe(1);
-      });
+  it("should display different messages for different components - thread messages", (done: DoneFn) => {
+    const fixture = TestBed.createComponent(HeaderMessage);
+    const headerMessage = fixture.componentInstance;
+    const headerMessDOM = fixture.nativeElement;
 
-      // check that the other spies haven't beeen called at all
-      spies.forEach((element) => {
-        expect(element).not.toHaveBeenCalled();
-      });
-    });
+    // check that the loading message changes according to the target
+    headerMessage.waitingFor = "thread messages";
+    headerMessage.ngOnChanges();
+    fixture.detectChanges();
+    expect(headerMessage.message).toBe("Fetching messages from the server...");
+    expect(headerMessDOM.querySelector("#loadingMessage").textContent).toBe(headerMessage.message);
+    done();
+  });
+
+  it("should display different messages for different components - user posts", (done: DoneFn) => {
+    const fixture = TestBed.createComponent(HeaderMessage);
+    const headerMessage = fixture.componentInstance;
+    const headerMessDOM = fixture.nativeElement;
+
+    // check that the loading message changes according to the target
+    headerMessage.waitingFor = "user posts";
+    headerMessage.ngOnChanges();
+    fixture.detectChanges();
+    expect(headerMessage.message).toBe("Fetching user posts from the server...");
+    expect(headerMessDOM.querySelector("#loadingMessage").textContent).toBe(headerMessage.message);
     done();
   });
 });

@@ -34,9 +34,9 @@
 import { Component, Input, Output, EventEmitter, OnInit } from "@angular/core";
 
 // App-related import
-import { AuthService } from "../../../services/auth.service";
-import { AdminService } from "../../../services/admin.service";
-import { ValidationService } from "../../../services/validation.service";
+import { AuthService } from "@app/services/auth.service";
+import { AdminService } from "@app/services/admin.service";
+import { ValidationService } from "@app/services/validation.service";
 
 @Component({
   selector: "display-name-edit-form",

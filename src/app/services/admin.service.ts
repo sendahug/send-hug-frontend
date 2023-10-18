@@ -32,24 +32,24 @@
 
 // Angular imports
 import { Injectable } from "@angular/core";
-import { HttpClient, HttpErrorResponse, HttpParams } from "@angular/common/http";
+import { HttpErrorResponse } from "@angular/common/http";
 import { BehaviorSubject } from "rxjs";
 
 // App-related imports
-import { Report } from "../interfaces/report.interface";
-import { Message } from "../interfaces/message.interface";
-import { AuthService } from "./auth.service";
-import { AlertsService } from "./alerts.service";
-import { ItemsService } from "./items.service";
-import { environment } from "../../environments/environment";
-import { SWManager } from "./sWManager.service";
+import { Report } from "@app/interfaces/report.interface";
+import { Message } from "@app/interfaces/message.interface";
+import { AuthService } from "@app/services/auth.service";
+import { AlertsService } from "@app/services/alerts.service";
+import { ItemsService } from "@app/services/items.service";
+import { SWManager } from "@app/services/sWManager.service";
+import { ApiClientService } from "@app/services/apiClient.service";
 
 interface BlockedUser {
   id: number;
   displayName: string;
-  receivedHugs: number;
-  givenHugs: number;
-  postsNum: number;
+  receivedH: number;
+  givenH: number;
+  posts: number;
   role: string;
   blocked?: boolean;
   releaseDate?: Date;
@@ -59,7 +59,6 @@ interface BlockedUser {
   providedIn: "root",
 })
 export class AdminService {
-  readonly serverUrl = environment.backend.domain;
   userReports: Report[] = [];
   postReports: Report[] = [];
   isReportsResolved = new BehaviorSubject(false);
@@ -74,7 +73,7 @@ export class AdminService {
       }
     | undefined;
   isBlockDataResolved = new BehaviorSubject(false);
-  filteredPhrases: string[] = [];
+  filteredPhrases: { id: number; filter: string }[] = [];
   isFiltersResolved = new BehaviorSubject(false);
   // pagination
   currentPage = {
@@ -92,11 +91,11 @@ export class AdminService {
   isUpdated = new BehaviorSubject(false);
 
   constructor(
-    private Http: HttpClient,
     private authService: AuthService,
     private alertsService: AlertsService,
     private itemsService: ItemsService,
     private serviceWorkerM: SWManager,
+    private apiClient: ApiClientService,
   ) {}
 
   // GENERAL METHODS
@@ -137,31 +136,26 @@ export class AdminService {
   Programmer: Shir Bar Lev.
   */
   getOpenReports() {
-    const Url = this.serverUrl + "/reports";
-    const params = new HttpParams()
-      .set("userPage", `${this.currentPage.userReports}`)
-      .set("postPage", `${this.currentPage.postReports}`);
     this.isReportsResolved.next(false);
 
     // Get reports
-    this.Http.get(Url, {
-      headers: this.authService.authHeader,
-      params: params,
-      // if successful, set the appropriate variables
-    }).subscribe(
-      (response: any) => {
-        this.userReports = response.userReports;
-        this.totalPages.userReports = response.totalUserPages;
-        this.postReports = response.postReports;
-        this.totalPages.postReports = response.totalPostPages;
-        this.isReportsResolved.next(true);
-        // if there's an error, alert the user
-      },
-      (err: HttpErrorResponse) => {
-        this.isReportsResolved.next(true);
-        this.alertsService.createErrorAlert(err);
-      },
-    );
+    this.apiClient
+      .get("reports", {
+        userPage: `${this.currentPage.userReports}`,
+        postPage: `${this.currentPage.postReports}`,
+      })
+      .subscribe({
+        next: (response: any) => {
+          this.userReports = response.userReports;
+          this.totalPages.userReports = response.totalUserPages;
+          this.postReports = response.postReports;
+          this.totalPages.postReports = response.totalPostPages;
+          this.isReportsResolved.next(true);
+        },
+        error: (_err: HttpErrorResponse) => {
+          this.isReportsResolved.next(true);
+        },
+      });
   }
 
   /*
@@ -175,26 +169,19 @@ export class AdminService {
   Programmer: Shir Bar Lev.
   */
   editPost(post: any, closeReport: boolean, reportID: number) {
-    const Url = this.serverUrl + `/posts/${post.id}`;
     // if the report should be closed
     if (closeReport) {
       post["closeReport"] = reportID;
     }
     this.isUpdated.next(false);
 
-    // try to edit the psot
-    this.Http.patch(Url, post, {
-      headers: this.authService.authHeader,
-    }).subscribe(
-      (response: any) => {
+    // try to edit the post
+    this.apiClient.patch(`posts/${post.id}`, post).subscribe({
+      next: (response: any) => {
         this.alertsService.createSuccessAlert(`Post ${response.updated.id} updated.`, closeReport);
         this.isUpdated.next(true);
-        // if there was an error, alert the user
       },
-      (err: HttpErrorResponse) => {
-        this.alertsService.createErrorAlert(err);
-      },
-    );
+    });
   }
 
   /*
@@ -208,13 +195,9 @@ export class AdminService {
   Programmer: Shir Bar Lev.
   */
   deletePost(postID: number, reportData: any, closeReport: boolean) {
-    const postUrl = this.serverUrl + `/posts/${postID}`;
-
     // delete the post from the database
-    this.Http.delete(postUrl, {
-      headers: this.authService.authHeader,
-    }).subscribe(
-      (response: any) => {
+    this.apiClient.delete(`posts/${postID}`).subscribe({
+      next: (response: any) => {
         this.alertsService.createSuccessAlert(`Post ${response.deleted} was successfully deleted.`);
         // create a message from the admin to the user whose post was deleted
         let message: Message = {
@@ -238,10 +221,7 @@ export class AdminService {
         // send the message about the deleted post
         this.itemsService.sendMessage(message);
       },
-      (err: HttpErrorResponse) => {
-        this.alertsService.createErrorAlert(err);
-      },
-    );
+    });
   }
 
   /*
@@ -255,26 +235,20 @@ export class AdminService {
   Programmer: Shir Bar Lev.
   */
   editUser(user: any, closeReport: boolean, reportID: number) {
-    const Url = this.serverUrl + `/users/all/${user.userID}`;
     // if the report should be closed
     if (closeReport) {
       user["closeReport"] = reportID;
     }
 
     // update the user's display name
-    this.Http.patch(Url, user, {
-      headers: this.authService.authHeader,
-    }).subscribe(
-      (response: any) => {
+    this.apiClient.patch(`users/all/${user.userID}`, user).subscribe({
+      next: (response: any) => {
         this.alertsService.createSuccessAlert(
           `User ${response.updated.displayName} updated.`,
           closeReport,
         );
       },
-      (err: HttpErrorResponse) => {
-        this.alertsService.createErrorAlert(err);
-      },
-    );
+    });
   }
 
   /*
@@ -285,8 +259,6 @@ export class AdminService {
   Programmer: Shir Bar Lev.
   */
   dismissReport(reportID: number) {
-    const Url = this.serverUrl + `/reports/${reportID}`;
-
     let report: Report;
 
     // if the item is a user report, gets it from user reports array
@@ -303,21 +275,15 @@ export class AdminService {
     report.closed = true;
 
     // send a request to update the report
-    this.Http.patch(Url, report, {
-      headers: this.authService.authHeader,
-    }).subscribe(
-      (response: any) => {
+    this.apiClient.patch(`reports/${reportID}`, report).subscribe({
+      next: (response: any) => {
         // if the report was dismissed, alert the user
         this.alertsService.createSuccessAlert(
           `Report ${response.updated.id} was dismissed! Refresh the page to view the updated list.`,
           true,
         );
-        // if there's an error, alert the user
       },
-      (err: HttpErrorResponse) => {
-        this.alertsService.createErrorAlert(err);
-      },
-    );
+    });
   }
 
   // BLOCKS-RELATED METHODS
@@ -330,26 +296,20 @@ export class AdminService {
   Programmer: Shir Bar Lev.
   */
   getBlockedUsers() {
-    const Url = this.serverUrl + `/users/blocked`;
-    const params = new HttpParams().set("page", `${this.currentPage.blockedUsers}`);
     this.isBlocksResolved.next(false);
 
     // try to fetch blocked users
-    this.Http.get(Url, {
-      headers: this.authService.authHeader,
-      params: params,
-    }).subscribe(
-      (response: any) => {
+    this.apiClient.get("users/blocked", { page: `${this.currentPage.blockedUsers}` }).subscribe({
+      next: (response: any) => {
         this.blockedUsers = response.users;
         this.totalPages.blockedUsers = response.total_pages;
         this.isBlocksResolved.next(true);
         // if there was an error, alert the user.
       },
-      (err: HttpErrorResponse) => {
+      error: (_err: HttpErrorResponse) => {
         this.isBlocksResolved.next(true);
-        this.alertsService.createErrorAlert(err);
       },
-    );
+    });
   }
 
   /*
@@ -361,14 +321,11 @@ export class AdminService {
   Programmer: Shir Bar Lev.
   */
   checkUserBlock(userID: number) {
-    const Url = this.serverUrl + `/users/all/${userID}`;
     this.isBlockDataResolved.next(false);
 
     // send the request to get the block data
-    this.Http.get(Url, {
-      headers: this.authService.authHeader,
-    }).subscribe(
-      (response: any) => {
+    this.apiClient.get(`users/all/${userID}`).subscribe({
+      next: (response: any) => {
         // set the user's block data
         let user = response.user;
         this.userBlockData = {
@@ -380,11 +337,10 @@ export class AdminService {
         this.isBlockDataResolved.next(true);
         // if there was an error, alert the user.
       },
-      (err: HttpErrorResponse) => {
+      error: (_err: HttpErrorResponse) => {
         this.isBlockDataResolved.next(true);
-        this.alertsService.createErrorAlert(err);
       },
-    );
+    });
   }
 
   /*
@@ -395,36 +351,25 @@ export class AdminService {
   Programmer: Shir Bar Lev.
   */
   blockUser(userID: number, releaseDate: Date, reportID?: number) {
-    const Url = this.serverUrl + `/users/all/${userID}`;
-
     // try to block the user
-    this.Http.patch(
-      Url,
-      {
+    this.apiClient
+      .patch(`users/all/${userID}`, {
         id: userID,
         releaseDate: releaseDate,
         blocked: true,
-      },
-      {
-        headers: this.authService.authHeader,
-        // If successful, let the user know
-      },
-    ).subscribe(
-      (response: any) => {
-        this.alertsService.createSuccessAlert(
-          `User ${response.updated.displayName} has been blocked until ${releaseDate}`,
-          true,
-        );
-        // if the block was done via the reports page, also dismiss the report
-        if (reportID) {
-          this.dismissReport(reportID);
-        }
-        // if there was an error, alert the user.
-      },
-      (err: HttpErrorResponse) => {
-        this.alertsService.createErrorAlert(err);
-      },
-    );
+      })
+      .subscribe({
+        next: (response: any) => {
+          this.alertsService.createSuccessAlert(
+            `User ${response.updated.displayName} has been blocked until ${releaseDate}`,
+            true,
+          );
+          // if the block was done via the reports page, also dismiss the report
+          if (reportID) {
+            this.dismissReport(reportID);
+          }
+        },
+      });
   }
 
   /*
@@ -435,31 +380,21 @@ export class AdminService {
   Programmer: Shir Bar Lev.
   */
   unblockUser(userID: number) {
-    const Url = this.serverUrl + `/users/all/${userID}`;
-
     // try to unblock the user
-    this.Http.patch(
-      Url,
-      {
+    this.apiClient
+      .patch(`users/all/${userID}`, {
         id: userID,
         releaseDate: null,
         blocked: false,
-      },
-      {
-        headers: this.authService.authHeader,
-      },
-    ).subscribe(
-      (response: any) => {
-        this.alertsService.createSuccessAlert(
-          `User ${response.updated.displayName} has been unblocked.`,
-          true,
-        );
-        // if there was an error, alert the user.
-      },
-      (err: HttpErrorResponse) => {
-        this.alertsService.createErrorAlert(err);
-      },
-    );
+      })
+      .subscribe({
+        next: (response: any) => {
+          this.alertsService.createSuccessAlert(
+            `User ${response.updated.displayName} has been unblocked.`,
+            true,
+          );
+        },
+      });
   }
 
   // FILTERS-RELATED METHODS
@@ -472,26 +407,20 @@ export class AdminService {
   Programmer: Shir Bar Lev.
   */
   getFilters() {
-    const Url = this.serverUrl + "/filters";
-    const params = new HttpParams().set("page", `${this.currentPage.filteredPhrases}`);
     this.isFiltersResolved.next(false);
 
     // try to fetch the list of words
-    this.Http.get(Url, {
-      headers: this.authService.authHeader,
-      params: params,
-    }).subscribe(
-      (response: any) => {
+    this.apiClient.get("filters", { page: `${this.currentPage.filteredPhrases}` }).subscribe({
+      next: (response: any) => {
         this.filteredPhrases = response.words;
         this.totalPages.filteredPhrases = response.total_pages;
         this.isFiltersResolved.next(true);
         // if there was an error, alert the user.
       },
-      (err: HttpErrorResponse) => {
+      error: (_err: HttpErrorResponse) => {
         this.isFiltersResolved.next(true);
-        this.alertsService.createErrorAlert(err);
       },
-    );
+    });
   }
 
   /*
@@ -502,29 +431,15 @@ export class AdminService {
   Programmer: Shir Bar Lev.
   */
   addFilter(filter: string) {
-    const Url = this.serverUrl + "/filters";
-
     // try to add the filter
-    this.Http.post(
-      Url,
-      {
-        word: filter,
-      },
-      {
-        headers: this.authService.authHeader,
-      },
-    ).subscribe(
-      (response: any) => {
+    this.apiClient.post("filters", { word: filter }).subscribe({
+      next: (response: any) => {
         this.alertsService.createSuccessAlert(
           `The phrase ${response.added.filter} was added to the list of filtered words! Refresh to see the updated list.`,
           true,
         );
-        // if there was an error, alert the user.
       },
-      (err: HttpErrorResponse) => {
-        this.alertsService.createErrorAlert(err);
-      },
-    );
+    });
   }
 
   /*
@@ -535,22 +450,14 @@ export class AdminService {
   Programmer: Shir Bar Lev.
   */
   removeFilter(filter: number) {
-    const Url = this.serverUrl + `/filters/${filter}`;
-
     // try to delete the filter
-    this.Http.delete(Url, {
-      headers: this.authService.authHeader,
-    }).subscribe(
-      (response: any) => {
+    this.apiClient.delete(`filters/${filter}`).subscribe({
+      next: (response: any) => {
         this.alertsService.createSuccessAlert(
           `The phrase ${response.deleted.filter} was removed from the list of filtered words. Refresh to see the updated list.`,
           true,
         );
-        // if there was an error, alert the user.
       },
-      (err: HttpErrorResponse) => {
-        this.alertsService.createErrorAlert(err);
-      },
-    );
+    });
   }
 }

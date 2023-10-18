@@ -45,9 +45,8 @@ import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { AppComponent } from "../../app.component";
 import { NotificationsTab } from "./notifications.component";
 import { NotificationService } from "../../services/notifications.service";
-import { MockNotificationService } from "../../services/notifications.service.mock";
 import { AuthService } from "../../services/auth.service";
-import { MockAuthService } from "../../services/auth.service.mock";
+import { mockAuthedUser } from "@tests/mockData";
 
 describe("Notifications", () => {
   // Before each test, configure testing environment
@@ -63,12 +62,13 @@ describe("Notifications", () => {
         FontAwesomeModule,
       ],
       declarations: [AppComponent, NotificationsTab],
-      providers: [
-        { provide: APP_BASE_HREF, useValue: "/" },
-        { provide: NotificationService, useClass: MockNotificationService },
-        { provide: AuthService, useClass: MockAuthService },
-      ],
+      providers: [{ provide: APP_BASE_HREF, useValue: "/" }],
     }).compileComponents();
+
+    const authService = TestBed.inject(AuthService);
+    authService.authenticated = true;
+    authService.userData = { ...mockAuthedUser };
+    authService.isUserDataResolved.next(true);
   });
 
   // Check that the component is created
@@ -85,7 +85,7 @@ describe("Notifications", () => {
   it("should check whether the user is logged in", () => {
     // set up spies
     const notificationsService = TestBed.inject(NotificationService);
-    const notificationSpy = spyOn(notificationsService, "getNotifications").and.callThrough();
+    const notificationSpy = spyOn(notificationsService, "getNotifications");
     const authService = TestBed.inject(AuthService);
     const authSpy = spyOn(authService.isUserDataResolved, "subscribe").and.callThrough();
 
@@ -110,9 +110,9 @@ describe("Notifications", () => {
     const notifTabDOM = fixture.nativeElement;
     const toggleSpy = spyOn(notificationsTab, "togglePushNotifications").and.callThrough();
     const notificationsService = notificationsTab.notificationService;
-    const settingsSpy = spyOn(notificationsService, "updateUserSettings").and.callThrough();
-    const subscribeSpy = spyOn(notificationsService, "subscribeToStream").and.callThrough();
-    const unsubscribeSpy = spyOn(notificationsService, "unsubscribeFromStream").and.callThrough();
+    const settingsSpy = spyOn(notificationsService, "updateUserSettings");
+    const subscribeSpy = spyOn(notificationsService, "subscribeToStream");
+    const unsubscribeSpy = spyOn(notificationsService, "unsubscribeFromStream");
 
     fixture.detectChanges();
 
@@ -148,9 +148,9 @@ describe("Notifications", () => {
   it("has a button that toggles auto-refresh", (done: DoneFn) => {
     // set up spies
     const notificationsService = TestBed.inject(NotificationService);
-    const settingsSpy = spyOn(notificationsService, "updateUserSettings").and.callThrough();
-    const startRefreshSpy = spyOn(notificationsService, "startAutoRefresh").and.callThrough();
-    const stopRefreshSpy = spyOn(notificationsService, "stopAutoRefresh").and.callThrough();
+    const settingsSpy = spyOn(notificationsService, "updateUserSettings");
+    const startRefreshSpy = spyOn(notificationsService, "startAutoRefresh");
+    const stopRefreshSpy = spyOn(notificationsService, "stopAutoRefresh");
 
     // set up the component
     TestBed.createComponent(AppComponent);

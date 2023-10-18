@@ -48,7 +48,6 @@ import { AppComponent } from "../../app.component";
 import { SiteMap } from "./siteMap.component";
 import { NotificationsTab } from "../notifications/notifications.component";
 import { AuthService } from "../../services/auth.service";
-import { MockAuthService } from "../../services/auth.service.mock";
 
 // Mock Component for testing the sitemap
 // ==================================================
@@ -124,10 +123,7 @@ describe("SiteMap", () => {
         FontAwesomeModule,
       ],
       declarations: [AppComponent, MockComp, NotificationsTab, SiteMap],
-      providers: [
-        { provide: APP_BASE_HREF, useValue: "/" },
-        { provide: AuthService, useClass: MockAuthService },
-      ],
+      providers: [{ provide: APP_BASE_HREF, useValue: "/" }],
     }).compileComponents();
   });
 

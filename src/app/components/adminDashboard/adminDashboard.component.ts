@@ -36,9 +36,9 @@ import { ActivatedRoute } from "@angular/router";
 import { Subscription } from "rxjs";
 
 // App imports
-import { AuthService } from "../../services/auth.service";
-import { AdminService } from "../../services/admin.service";
-import { AlertsService } from "../../services/alerts.service";
+import { AuthService } from "@app/services/auth.service";
+import { AdminService } from "@app/services/admin.service";
+import { AlertsService } from "@app/services/alerts.service";
 
 type AdminList = "userReports" | "postReports" | "blockedUsers" | "filteredPhrases";
 
@@ -81,6 +81,8 @@ export class AdminDashboard implements OnInit {
   itemToDelete: number | undefined;
   report: boolean;
   lastFocusedElement: any;
+  nextButtonClass = "appButton nextButton";
+  previousButtonClass = "appButton prevButton";
   // loader sub-component variable
   waitFor = `admin ${this.screen}`;
 

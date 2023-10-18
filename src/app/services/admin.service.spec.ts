@@ -37,14 +37,11 @@ import {
   platformBrowserDynamicTesting,
 } from "@angular/platform-browser-dynamic/testing";
 import {} from "jasmine";
+import { of } from "rxjs";
 
 import { AdminService } from "./admin.service";
 import { AuthService } from "./auth.service";
-import { MockAuthService } from "./auth.service.mock";
-import { AlertsService } from "./alerts.service";
-import { MockAlertsService } from "./alerts.service.mock";
-import { ItemsService } from "./items.service";
-import { MockItemsService } from "./items.service.mock";
+import { mockAuthedUser } from "@tests/mockData";
 
 describe("AdminService", () => {
   let httpController: HttpTestingController;
@@ -57,16 +54,16 @@ describe("AdminService", () => {
 
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
-      providers: [
-        AdminService,
-        { provide: AuthService, useClass: MockAuthService },
-        { provide: AlertsService, useClass: MockAlertsService },
-        { provide: ItemsService, useClass: MockItemsService },
-      ],
+      providers: [AdminService],
     }).compileComponents();
 
     adminService = TestBed.inject(AdminService);
     httpController = TestBed.inject(HttpTestingController);
+
+    const authService = TestBed.inject(AuthService);
+    authService.authenticated = true;
+    authService.userData = { ...mockAuthedUser };
+    authService.isUserDataResolved.next(true);
   });
 
   // Check the service is created
@@ -145,6 +142,7 @@ describe("AdminService", () => {
       ],
       totalPostPages: 1,
     };
+    const apiClientSpy = spyOn(adminService["apiClient"], "get").and.returnValue(of(mockResponse));
 
     adminService.getOpenReports();
     // wait for the request to be resolved
@@ -159,10 +157,10 @@ describe("AdminService", () => {
         expect(adminService.postReports[0].id).toBe(2);
       }
     });
-
-    const req = httpController.expectOne("http://localhost:5000/reports?userPage=1&postPage=1");
-    expect(req.request.method).toEqual("GET");
-    req.flush(mockResponse);
+    expect(apiClientSpy).toHaveBeenCalledWith("reports", {
+      userPage: "1",
+      postPage: "1",
+    });
   });
 
   // Check that the service edits the post
@@ -185,18 +183,18 @@ describe("AdminService", () => {
       id: 2,
     };
     const spy = spyOn(adminService["alertsService"], "createSuccessAlert");
+    const patchSpy = spyOn(adminService["apiClient"], "patch").and.returnValue(of(mockResponse));
+
     adminService.editPost(post, true, 2);
+
     // wait for the request to be resolved
     adminService.isUpdated.subscribe((value) => {
       if (value) {
         expect(spy).toHaveBeenCalled();
         expect(spy).toHaveBeenCalledWith("Post 2 updated.", true);
+        expect(patchSpy).toHaveBeenCalledWith(`posts/${post.id}`, post);
       }
     });
-
-    const req = httpController.expectOne("http://localhost:5000/posts/2");
-    expect(req.request.method).toEqual("PATCH");
-    req.flush(mockResponse);
   });
 
   // Check that the service deletes the post
@@ -214,20 +212,17 @@ describe("AdminService", () => {
     const alertSpy = spyOn(adminService["alertsService"], "createSuccessAlert");
     const dismissSpy = spyOn(adminService, "dismissReport");
     const messageSpy = spyOn(adminService["itemsService"], "sendMessage");
-    const deleteSpy = spyOn(adminService["serviceWorkerM"], "deleteItem").and.callThrough();
+    const deleteSWSpy = spyOn(adminService["serviceWorkerM"], "deleteItem");
+    const deleteAPISpy = spyOn(adminService["apiClient"], "delete").and.returnValue(
+      of(mockResponse),
+    );
     adminService.deletePost(10, reportData, true);
 
-    const req = httpController.expectOne("http://localhost:5000/posts/10");
-    expect(req.request.method).toEqual("DELETE");
-    req.flush(mockResponse);
-
-    expect(alertSpy).toHaveBeenCalled();
     expect(alertSpy).toHaveBeenCalledWith("Post 10 was successfully deleted.");
-    expect(dismissSpy).toHaveBeenCalled();
     expect(dismissSpy).toHaveBeenCalledWith(5);
     expect(messageSpy).toHaveBeenCalled();
-    expect(deleteSpy).toHaveBeenCalled();
-    expect(deleteSpy).toHaveBeenCalledWith("posts", 10);
+    expect(deleteSWSpy).toHaveBeenCalledWith("posts", 10);
+    expect(deleteAPISpy).toHaveBeenCalledWith("posts/10");
   });
 
   // Check that the service edits a user's display name
@@ -249,14 +244,13 @@ describe("AdminService", () => {
       displayName: "user",
     };
     const alertSpy = spyOn(adminService["alertsService"], "createSuccessAlert");
-    adminService.editUser(userData, true, 6);
+    const patchSpy = spyOn(adminService["apiClient"], "patch").and.returnValue(of(mockResponse));
 
-    const req = httpController.expectOne("http://localhost:5000/users/all/2");
-    expect(req.request.method).toEqual("PATCH");
-    req.flush(mockResponse);
+    adminService.editUser(userData, true, 6);
 
     expect(alertSpy).toHaveBeenCalled();
     expect(alertSpy).toHaveBeenCalledWith("User user updated.", true);
+    expect(patchSpy).toHaveBeenCalledWith("users/all/2", userData);
   });
 
   // Check that the service dismisses a report
@@ -290,17 +284,19 @@ describe("AdminService", () => {
       },
     ];
     const alertSpy = spyOn(adminService["alertsService"], "createSuccessAlert");
-    adminService.dismissReport(1);
+    const patchSpy = spyOn(adminService["apiClient"], "patch").and.returnValue(of(mockResponse));
 
-    const req = httpController.expectOne("http://localhost:5000/reports/1");
-    expect(req.request.method).toEqual("PATCH");
-    req.flush(mockResponse);
+    adminService.dismissReport(1);
 
     expect(alertSpy).toHaveBeenCalled();
     expect(alertSpy).toHaveBeenCalledWith(
       "Report 1 was dismissed! Refresh the page to view the updated list.",
       true,
     );
+    expect(patchSpy).toHaveBeenCalledWith("reports/1", {
+      ...adminService.userReports[0],
+      dismissed: true,
+    });
   });
 
   // Check that the service gets a list of blocked users
@@ -322,6 +318,7 @@ describe("AdminService", () => {
       ],
       total_pages: 1,
     };
+    const apiClientSpy = spyOn(adminService["apiClient"], "get").and.returnValue(of(mockResponse));
 
     adminService.getBlockedUsers();
     // wait for the request to be resolved
@@ -333,10 +330,7 @@ describe("AdminService", () => {
         expect(adminService.blockedUsers[0].id).toBe(15);
       }
     });
-
-    const req = httpController.expectOne("http://localhost:5000/users/blocked?page=1");
-    expect(req.request.method).toEqual("GET");
-    req.flush(mockResponse);
+    expect(apiClientSpy).toHaveBeenCalledWith("users/blocked", { page: "1" });
   });
 
   // Check that the user's block data is fetched from the server
@@ -356,6 +350,7 @@ describe("AdminService", () => {
       },
       total_pages: 1,
     };
+    const getSpy = spyOn(adminService["apiClient"], "get").and.returnValue(of(mockResponse));
 
     adminService.checkUserBlock(15);
     // wait for the request to be resolved
@@ -369,10 +364,7 @@ describe("AdminService", () => {
         );
       }
     });
-
-    const req = httpController.expectOne("http://localhost:5000/users/all/15");
-    expect(req.request.method).toEqual("GET");
-    req.flush(mockResponse);
+    expect(getSpy).toHaveBeenCalledWith("users/all/15");
   });
 
   // Check that the service blocks the user
@@ -392,14 +384,16 @@ describe("AdminService", () => {
       },
       total_pages: 1,
     };
-
+    const patchSpy = spyOn(adminService["apiClient"], "patch").and.returnValue(of(mockResponse));
     const alertSpy = spyOn(adminService["alertsService"], "createSuccessAlert");
+
     adminService.blockUser(15, new Date("2020-09-29 19:17:31.072"));
 
-    const req = httpController.expectOne("http://localhost:5000/users/all/15");
-    expect(req.request.method).toEqual("PATCH");
-    req.flush(mockResponse);
-
+    expect(patchSpy).toHaveBeenCalledWith("users/all/15", {
+      id: 15,
+      releaseDate: new Date("2020-09-29 19:17:31.072"),
+      blocked: true,
+    });
     expect(alertSpy).toHaveBeenCalled();
     expect(alertSpy).toHaveBeenCalledWith(
       `User ${mockResponse.updated.displayName} has been blocked until ${mockResponse.updated.releaseDate}`,
@@ -424,15 +418,17 @@ describe("AdminService", () => {
       },
       total_pages: 1,
     };
-
+    const patchSpy = spyOn(adminService["apiClient"], "patch").and.returnValue(of(mockResponse));
     const alertSpy = spyOn(adminService["alertsService"], "createSuccessAlert");
     const dismissSpy = spyOn(adminService, "dismissReport");
+
     adminService.blockUser(15, new Date("2020-09-29 19:17:31.072"), 3);
 
-    const req = httpController.expectOne("http://localhost:5000/users/all/15");
-    expect(req.request.method).toEqual("PATCH");
-    req.flush(mockResponse);
-
+    expect(patchSpy).toHaveBeenCalledWith("users/all/15", {
+      id: 15,
+      releaseDate: new Date("2020-09-29 19:17:31.072"),
+      blocked: true,
+    });
     expect(alertSpy).toHaveBeenCalled();
     expect(alertSpy).toHaveBeenCalledWith(
       `User ${mockResponse.updated.displayName} has been blocked until ${mockResponse.updated.releaseDate}`,
@@ -459,14 +455,16 @@ describe("AdminService", () => {
       },
       total_pages: 1,
     };
-
+    const patchSpy = spyOn(adminService["apiClient"], "patch").and.returnValue(of(mockResponse));
     const alertSpy = spyOn(adminService["alertsService"], "createSuccessAlert");
+
     adminService.unblockUser(15);
 
-    const req = httpController.expectOne("http://localhost:5000/users/all/15");
-    expect(req.request.method).toEqual("PATCH");
-    req.flush(mockResponse);
-
+    expect(patchSpy).toHaveBeenCalledWith("users/all/15", {
+      id: 15,
+      releaseDate: null,
+      blocked: false,
+    });
     expect(alertSpy).toHaveBeenCalled();
     expect(alertSpy).toHaveBeenCalledWith(
       `User ${mockResponse.updated.displayName} has been unblocked.`,
@@ -482,6 +480,7 @@ describe("AdminService", () => {
       total_pages: 1,
       words: ["word1", "word2"],
     };
+    const apiClientSpy = spyOn(adminService["apiClient"], "get").and.returnValue(of(mockResponse));
 
     adminService.getFilters();
     // wait for the request to be resolved
@@ -492,10 +491,7 @@ describe("AdminService", () => {
         expect(adminService.totalPages.filteredPhrases).toBe(1);
       }
     });
-
-    const req = httpController.expectOne("http://localhost:5000/filters?page=1");
-    expect(req.request.method).toEqual("GET");
-    req.flush(mockResponse);
+    expect(apiClientSpy).toHaveBeenCalledWith("filters", { page: "1" });
   });
 
   // Check that the service adds a filter
@@ -508,14 +504,12 @@ describe("AdminService", () => {
         id: 1,
       },
     };
-
+    const postSpy = spyOn(adminService["apiClient"], "post").and.returnValue(of(mockResponse));
     const alertSpy = spyOn(adminService["alertsService"], "createSuccessAlert");
+
     adminService.addFilter("sample");
 
-    const req = httpController.expectOne("http://localhost:5000/filters");
-    expect(req.request.method).toEqual("POST");
-    req.flush(mockResponse);
-
+    expect(postSpy).toHaveBeenCalledWith("filters", { word: "sample" });
     expect(alertSpy).toHaveBeenCalled();
     expect(alertSpy).toHaveBeenCalledWith(
       `The phrase ${mockResponse.added.filter} was added to the list of filtered words! Refresh to see the updated list.`,
@@ -534,14 +528,16 @@ describe("AdminService", () => {
       },
     };
 
-    adminService.filteredPhrases = ["word1", "word2"];
+    adminService.filteredPhrases = [
+      { id: 1, filter: "word1" },
+      { id: 2, filter: "word2" },
+    ];
     const alertSpy = spyOn(adminService["alertsService"], "createSuccessAlert");
+    const deleteSpy = spyOn(adminService["apiClient"], "delete").and.returnValue(of(mockResponse));
+
     adminService.removeFilter(1);
 
-    const req = httpController.expectOne("http://localhost:5000/filters/1");
-    expect(req.request.method).toEqual("DELETE");
-    req.flush(mockResponse);
-
+    expect(deleteSpy).toHaveBeenCalledWith("filters/1");
     expect(alertSpy).toHaveBeenCalled();
     expect(alertSpy).toHaveBeenCalledWith(
       `The phrase ${mockResponse.deleted.filter} was removed from the list of filtered words. Refresh to see the updated list.`,

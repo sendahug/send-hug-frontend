@@ -31,20 +31,18 @@
   SOFTWARE.
 */
 
+import { iconCharacters } from "./types";
+import { UserIconColours } from "./user.interface";
+
 export interface OtherUser {
   id: number;
   displayName: string;
-  receivedHugs: number;
-  givenHugs: number;
-  postsNum: number;
+  receivedH: number;
+  givenH: number;
+  posts: number;
   role: string;
   blocked?: boolean;
   releaseDate?: Date;
-  selectedIcon: "bear" | "kitty" | "dog";
-  iconColours: {
-    character: String;
-    lbg: String;
-    rbg: String;
-    item: String;
-  };
+  selectedIcon: iconCharacters;
+  iconColours: UserIconColours;
 }

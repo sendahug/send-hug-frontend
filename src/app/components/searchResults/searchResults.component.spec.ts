@@ -48,9 +48,60 @@ import { PopUp } from "../popUp/popUp.component";
 import { Loader } from "../loader/loader.component";
 import { SinglePost } from "../post/post.component";
 import { ItemsService } from "../../services/items.service";
-import { MockItemsService } from "../../services/items.service.mock";
-import { AuthService } from "../../services/auth.service";
-import { MockAuthService } from "../../services/auth.service.mock";
+import { iconCharacters } from "@app/interfaces/types";
+
+const mockUserSearchResults = [
+  {
+    id: 6,
+    displayName: "tests",
+    receivedH: 2,
+    givenH: 4,
+    posts: 1,
+    role: "user",
+    selectedIcon: "kitty" as iconCharacters,
+    iconColours: {
+      character: "#BA9F93",
+      lbg: "#e2a275",
+      rbg: "#f8eee4",
+      item: "#f4b56a",
+    },
+  },
+  {
+    id: 7,
+    displayName: "testing",
+    receivedH: 2,
+    givenH: 4,
+    posts: 1,
+    role: "user",
+    selectedIcon: "kitty" as iconCharacters,
+    iconColours: {
+      character: "#BA9F93",
+      lbg: "#e2a275",
+      rbg: "#f8eee4",
+      item: "#f4b56a",
+    },
+  },
+];
+const mockPostSearchResults = [
+  {
+    date: new Date("Mon, 01 Jun 2020 15:19:41 GMT"),
+    givenHugs: 0,
+    id: 6,
+    text: "test",
+    user: "shirb",
+    userId: 1,
+    sentHugs: [],
+  },
+  {
+    date: new Date("Mon, 01 Jun 2020 15:18:37 GMT"),
+    givenHugs: 0,
+    id: 5,
+    text: "test",
+    user: "shirb",
+    userId: 1,
+    sentHugs: [],
+  },
+];
 
 describe("SearchResults", () => {
   // Before each test, configure testing environment
@@ -66,11 +117,7 @@ describe("SearchResults", () => {
         FontAwesomeModule,
       ],
       declarations: [SearchResults, PopUp, Loader, SinglePost],
-      providers: [
-        { provide: APP_BASE_HREF, useValue: "/" },
-        { provide: ItemsService, useClass: MockItemsService },
-        { provide: AuthService, useClass: MockAuthService },
-      ],
+      providers: [{ provide: APP_BASE_HREF, useValue: "/" }],
     }).compileComponents();
   });
 
@@ -91,12 +138,15 @@ describe("SearchResults", () => {
         return null;
       }
     });
+    const itemsServiceSpy = spyOn(TestBed.inject(ItemsService), "sendSearch");
     const fixture = TestBed.createComponent(SearchResults);
     const searchResults = fixture.componentInstance;
     const searchResultsDOM = fixture.nativeElement;
+    searchResults.itemsService.isSearchResolved.next(true);
     fixture.detectChanges();
 
     expect(routeSpy).toHaveBeenCalled();
+    expect(itemsServiceSpy).toHaveBeenCalledWith("search");
     expect(searchResults.searchQuery).toBe("search");
     expect(searchResultsDOM.querySelector("#resultSummary").textContent).toContain('"search"');
   });
@@ -111,7 +161,7 @@ describe("SearchResults", () => {
         return null;
       }
     });
-    const searchSpy = spyOn(TestBed.inject(ItemsService), "sendSearch").and.callThrough();
+    const searchSpy = spyOn(TestBed.inject(ItemsService), "sendSearch");
     TestBed.inject(ItemsService).isSearching = false;
     const fixture = TestBed.createComponent(SearchResults);
     const searchResults = fixture.componentInstance;
@@ -131,7 +181,7 @@ describe("SearchResults", () => {
         return null;
       }
     });
-    const searchSpy = spyOn(TestBed.inject(ItemsService), "sendSearch").and.callThrough();
+    const searchSpy = spyOn(TestBed.inject(ItemsService), "sendSearch");
     TestBed.inject(ItemsService).isSearching = true;
     const fixture = TestBed.createComponent(SearchResults);
     const searchResults = fixture.componentInstance;
@@ -156,12 +206,10 @@ describe("SearchResults", () => {
           FontAwesomeModule,
         ],
         declarations: [SearchResults, PopUp, Loader, SinglePost],
-        providers: [
-          { provide: APP_BASE_HREF, useValue: "/" },
-          { provide: ItemsService, useClass: MockItemsService },
-          { provide: AuthService, useClass: MockAuthService },
-        ],
+        providers: [{ provide: APP_BASE_HREF, useValue: "/" }],
       }).compileComponents();
+
+      spyOn(TestBed.inject(ItemsService), "sendSearch");
     });
 
     // Check that an error message is shown if there are no results
@@ -177,6 +225,7 @@ describe("SearchResults", () => {
       const fixture = TestBed.createComponent(SearchResults);
       const searchResults = fixture.componentInstance;
       const searchResultsDOM = fixture.debugElement.nativeElement;
+      searchResults.itemsService.isSearchResolved.next(true);
       searchResults.itemsService.userSearchResults = [];
       searchResults.itemsService.numUserResults = 0;
 
@@ -200,6 +249,9 @@ describe("SearchResults", () => {
       const fixture = TestBed.createComponent(SearchResults);
       const searchResults = fixture.componentInstance;
       const searchResultsDOM = fixture.debugElement.nativeElement;
+      searchResults.itemsService.isSearchResolved.next(true);
+      searchResults.itemsService.userSearchResults = mockUserSearchResults;
+      searchResults.itemsService.numUserResults = 2;
 
       fixture.detectChanges();
 
@@ -233,12 +285,10 @@ describe("SearchResults", () => {
           FontAwesomeModule,
         ],
         declarations: [SearchResults, PopUp, Loader, SinglePost],
-        providers: [
-          { provide: APP_BASE_HREF, useValue: "/" },
-          { provide: ItemsService, useClass: MockItemsService },
-          { provide: AuthService, useClass: MockAuthService },
-        ],
+        providers: [{ provide: APP_BASE_HREF, useValue: "/" }],
       }).compileComponents();
+
+      spyOn(TestBed.inject(ItemsService), "sendSearch");
     });
 
     // Check that an error message is shown if there are no results
@@ -254,6 +304,7 @@ describe("SearchResults", () => {
       const fixture = TestBed.createComponent(SearchResults);
       const searchResults = fixture.componentInstance;
       const searchResultsDOM = fixture.debugElement.nativeElement;
+      searchResults.itemsService.isSearchResolved.next(true);
       searchResults.itemsService.postSearchResults = [];
       searchResults.itemsService.numPostResults = 0;
 
@@ -277,6 +328,10 @@ describe("SearchResults", () => {
       const fixture = TestBed.createComponent(SearchResults);
       const searchResults = fixture.componentInstance;
       const searchResultsDOM = fixture.debugElement.nativeElement;
+      searchResults.itemsService.isSearchResolved.next(true);
+      searchResults.itemsService.postSearchResults = [mockPostSearchResults[0]];
+      searchResults.itemsService.numPostResults = 1;
+      searchResults.itemsService.totalPostSearchPages = 2;
 
       fixture.detectChanges();
 
@@ -307,6 +362,10 @@ describe("SearchResults", () => {
       const fixture = TestBed.createComponent(SearchResults);
       const searchResults = fixture.componentInstance;
       const searchResultsDOM = fixture.debugElement.nativeElement;
+      searchResults.itemsService.isSearchResolved.next(true);
+      searchResults.itemsService.postSearchResults = [mockPostSearchResults[0]];
+      searchResults.itemsService.numPostResults = 1;
+      searchResults.itemsService.totalPostSearchPages = 2;
       fixture.detectChanges();
 
       // expectations for page 1
@@ -317,6 +376,10 @@ describe("SearchResults", () => {
 
       // change the page
       searchResultsDOM.querySelectorAll(".nextButton")[0].click();
+      searchResults.itemsService.postSearchResults = [...mockPostSearchResults];
+      searchResults.itemsService.numPostResults = 2;
+      searchResults.itemsService.postSearchPage = 2;
+      searchResults.itemsService.totalPostSearchPages = 2;
       fixture.detectChanges();
 
       // expectations for page 2
@@ -328,6 +391,10 @@ describe("SearchResults", () => {
 
       // change the page
       searchResultsDOM.querySelectorAll(".prevButton")[0].click();
+      searchResults.itemsService.postSearchResults = [mockPostSearchResults[0]];
+      searchResults.itemsService.numPostResults = 1;
+      searchResults.itemsService.postSearchPage = 1;
+      searchResults.itemsService.totalPostSearchPages = 2;
       fixture.detectChanges();
 
       // expectations for page 1
@@ -336,347 +403,6 @@ describe("SearchResults", () => {
       expect(
         searchResultsDOM.querySelector("#postSearchResults").firstElementChild.children.length,
       ).toBe(1);
-      done();
-    });
-
-    // Check the posts' menu is shown if there's enough room for them
-    it("should show the posts's menu if wide enough", (done: DoneFn) => {
-      // set up spies
-      const route = TestBed.inject(ActivatedRoute);
-      spyOn(route.snapshot.queryParamMap, "get").and.callFake((param: string) => {
-        if (param == "query") {
-          return "search";
-        } else {
-          return null;
-        }
-      });
-
-      // create the component
-      const fixture = TestBed.createComponent(SearchResults);
-      const searchResults = fixture.componentInstance;
-      const searchResultsDOM = fixture.debugElement.nativeElement;
-      const authService = searchResults.authService;
-      spyOn(authService, "canUser").and.returnValue(true);
-      fixture.detectChanges();
-
-      // change the elements' width to make sure there's enough room for the menu
-      let sub = searchResultsDOM
-        .querySelectorAll(".searchResult")[0]!
-        .querySelectorAll(".subMenu")[0] as HTMLDivElement;
-      sub.style.maxWidth = "";
-      sub.style.display = "flex";
-      fixture.detectChanges();
-
-      // check all menus are shown
-      let posts = searchResultsDOM.querySelectorAll(".searchResult");
-      posts.forEach((element: HTMLLIElement) => {
-        expect(element.querySelectorAll(".buttonsContainer")[0].classList).not.toContain("float");
-        expect(element.querySelectorAll(".subMenu")[0].classList).not.toContain("hidden");
-        expect(element.querySelectorAll(".subMenu")[0].classList).not.toContain("float");
-        expect(element.querySelectorAll(".menuButton")[0].classList).toContain("hidden");
-      });
-      done();
-    });
-
-    // check the posts' menu isn't shown if there isn't enough room for it
-    it("shouldn't show the posts's menu if not wide enough", (done: DoneFn) => {
-      // set up spies
-      const route = TestBed.inject(ActivatedRoute);
-      spyOn(route.snapshot.queryParamMap, "get").and.callFake((param: string) => {
-        if (param == "query") {
-          return "search";
-        } else {
-          return null;
-        }
-      });
-
-      // create the component
-      const fixture = TestBed.createComponent(SearchResults);
-      const searchResults = fixture.componentInstance;
-      const searchResultsDOM = fixture.debugElement.nativeElement;
-      const authService = searchResults.authService;
-      spyOn(authService, "canUser").and.returnValue(true);
-      fixture.detectChanges();
-
-      // change the elements' width to make sure there isn't enough room for the menu
-      let sub = searchResultsDOM
-        .querySelectorAll(".searchResult")[0]!
-        .querySelectorAll(".subMenu")[0] as HTMLDivElement;
-      sub.style.maxWidth = "40px";
-      sub.style.display = "flex";
-      (sub.firstElementChild! as HTMLAnchorElement).style.width = "100px";
-      fixture.detectChanges();
-
-      // check all menus aren't shown
-      let posts = searchResultsDOM.querySelectorAll(".searchResult");
-      posts.forEach((element: HTMLLIElement) => {
-        expect(element.querySelectorAll(".buttonsContainer")[0].classList).toContain("float");
-        expect(element.querySelectorAll(".subMenu")[0].classList).toContain("hidden");
-        expect(element.querySelectorAll(".subMenu")[0].classList).toContain("float");
-        expect(element.querySelectorAll(".menuButton")[0].classList).not.toContain("hidden");
-      });
-      done();
-    });
-
-    // check a menu is shown when clickinng the options button
-    it("should show the post's menu when clicked", (done: DoneFn) => {
-      // set up spies
-      const route = TestBed.inject(ActivatedRoute);
-      spyOn(route.snapshot.queryParamMap, "get").and.callFake((param: string) => {
-        if (param == "query") {
-          return "search";
-        } else {
-          return null;
-        }
-      });
-
-      // create the component
-      const fixture = TestBed.createComponent(SearchResults);
-      const searchResults = fixture.componentInstance;
-      const searchResultsDOM = fixture.debugElement.nativeElement;
-      const authService = searchResults.authService;
-      const toggleSpy = spyOn(searchResults, "openMenu").and.callThrough();
-      spyOn(authService, "canUser").and.returnValue(true);
-      fixture.detectChanges();
-
-      // change the elements' width to make sure there isn't enough room for the menu
-      const firstElement = searchResultsDOM.querySelectorAll(".searchResult")[0]!;
-      let sub = firstElement.querySelectorAll(".subMenu")[0] as HTMLDivElement;
-      sub.style.maxWidth = "40px";
-      sub.style.display = "flex";
-      (sub.firstElementChild! as HTMLAnchorElement).style.width = "100px";
-      fixture.detectChanges();
-
-      // pre-click check
-      expect(toggleSpy).not.toHaveBeenCalled();
-      expect(searchResults.showMenuNum).toBeNull();
-      expect(firstElement.querySelectorAll(".subMenu")[0].classList).toContain("hidden");
-      expect(firstElement.querySelectorAll(".menuButton")[0].classList).not.toContain("hidden");
-
-      // click the options buton for the first new post
-      firstElement.querySelectorAll(".menuButton")[0].click();
-      fixture.detectChanges();
-
-      // check the first post's menu is shown
-      expect(toggleSpy).toHaveBeenCalled();
-      expect(toggleSpy).toHaveBeenCalledWith("nPost7");
-      expect(searchResults.showMenuNum).toBe("nPost7");
-      expect(firstElement.querySelectorAll(".buttonsContainer")[0].classList).toContain("float");
-      expect(firstElement.querySelectorAll(".subMenu")[0].classList).not.toContain("hidden");
-      expect(firstElement.querySelectorAll(".subMenu")[0].classList).toContain("float");
-      expect(firstElement.querySelectorAll(".menuButton")[0].classList).not.toContain("hidden");
-      done();
-    });
-
-    // check only the selected menu is shown when clicking a button
-    it("should show the correct post's menu when clicked", (done: DoneFn) => {
-      // set up spies
-      const route = TestBed.inject(ActivatedRoute);
-      spyOn(route.snapshot.queryParamMap, "get").and.callFake((param: string) => {
-        if (param == "query") {
-          return "search";
-        } else {
-          return null;
-        }
-      });
-      TestBed.inject(ItemsService).postSearchPage = 2;
-
-      // create the component
-      const fixture = TestBed.createComponent(SearchResults);
-      const searchResults = fixture.componentInstance;
-      const searchResultsDOM = fixture.debugElement.nativeElement;
-      const authService = searchResults.authService;
-      const toggleSpy = spyOn(searchResults, "openMenu").and.callThrough();
-      spyOn(authService, "canUser").and.returnValue(true);
-      fixture.detectChanges();
-
-      // change the elements' width to make sure there isn't enough room for the menu
-      let sub = searchResultsDOM
-        .querySelectorAll(".searchResult")[0]!
-        .querySelectorAll(".subMenu")[0] as HTMLDivElement;
-      sub.style.maxWidth = "40px";
-      sub.style.display = "flex";
-      (sub.firstElementChild! as HTMLAnchorElement).style.width = "100px";
-      fixture.detectChanges();
-
-      // pre-click check
-      const clickElement = searchResultsDOM.querySelectorAll(".searchResult")[1]!;
-      expect(toggleSpy).not.toHaveBeenCalled();
-      expect(searchResults.showMenuNum).toBeNull();
-      expect(clickElement.querySelectorAll(".subMenu")[0].classList).toContain("hidden");
-      expect(clickElement.querySelectorAll(".menuButton")[0].classList).not.toContain("hidden");
-
-      // trigger click
-      clickElement.querySelectorAll(".menuButton")[0].click();
-      fixture.detectChanges();
-
-      // check only the second post's menu is shown
-      let posts = searchResultsDOM.querySelectorAll(".searchResult");
-      posts.forEach((element: HTMLLIElement) => {
-        expect(element.querySelectorAll(".buttonsContainer")[0].classList).toContain("float");
-        expect(element.querySelectorAll(".subMenu")[0].classList).toContain("float");
-        expect(element.querySelectorAll(".menuButton")[0].classList).not.toContain("hidden");
-        // if it's the second element, check the menu isn't hidden
-        if (element.firstElementChild!.id == "nPost5") {
-          expect(element.querySelectorAll(".subMenu")[0].classList).not.toContain("hidden");
-        }
-        // otherwise check it's hidden
-        else {
-          expect(element.querySelectorAll(".subMenu")[0].classList).toContain("hidden");
-        }
-      });
-      expect(toggleSpy).toHaveBeenCalled();
-      expect(toggleSpy).toHaveBeenCalledWith("nPost5");
-      expect(searchResults.showMenuNum).toBe("nPost5");
-      done();
-    });
-
-    // check that clicking the same menu button again hides it
-    it("should hide the post's menu when clicked again", (done: DoneFn) => {
-      // set up spies
-      const route = TestBed.inject(ActivatedRoute);
-      spyOn(route.snapshot.queryParamMap, "get").and.callFake((param: string) => {
-        if (param == "query") {
-          return "search";
-        } else {
-          return null;
-        }
-      });
-
-      // create the component
-      const fixture = TestBed.createComponent(SearchResults);
-      const searchResults = fixture.componentInstance;
-      const searchResultsDOM = fixture.debugElement.nativeElement;
-      const authService = searchResults.authService;
-      const toggleSpy = spyOn(searchResults, "openMenu").and.callThrough();
-      spyOn(authService, "canUser").and.returnValue(true);
-      fixture.detectChanges();
-
-      // change the elements' width to make sure there isn't enough room for the menu
-      const firstElement = searchResultsDOM.querySelectorAll(".searchResult")[0]!;
-      let sub = firstElement.querySelectorAll(".subMenu")[0] as HTMLDivElement;
-      sub.style.maxWidth = "40px";
-      sub.style.display = "flex";
-      (sub.firstElementChild! as HTMLAnchorElement).style.width = "100px";
-      fixture.detectChanges();
-
-      // pre-click check
-      expect(toggleSpy).not.toHaveBeenCalled();
-      expect(searchResults.showMenuNum).toBeNull();
-      expect(firstElement.querySelectorAll(".buttonsContainer")[0].classList).toContain("float");
-      expect(firstElement.querySelectorAll(".subMenu")[0].classList).toContain("hidden");
-      expect(firstElement.querySelectorAll(".subMenu")[0].classList).toContain("float");
-      expect(firstElement.querySelectorAll(".menuButton")[0].classList).not.toContain("hidden");
-
-      // click the options buton for the first new post
-      searchResultsDOM
-        .querySelectorAll(".searchResult")[0]!
-        .querySelectorAll(".menuButton")[0]
-        .click();
-      fixture.detectChanges();
-
-      // check the first post's menu is shown
-      expect(toggleSpy).toHaveBeenCalled();
-      expect(toggleSpy).toHaveBeenCalledWith("nPost7");
-      expect(searchResults.showMenuNum).toBe("nPost7");
-      expect(firstElement.querySelectorAll(".subMenu")[0].classList).not.toContain("hidden");
-      expect(firstElement.querySelectorAll(".menuButton")[0].classList).not.toContain("hidden");
-
-      // click the options buton for the first new post again
-      searchResultsDOM
-        .querySelectorAll(".searchResult")[0]!
-        .querySelectorAll(".menuButton")[0]
-        .click();
-      fixture.detectChanges();
-
-      // check the menu is hidden
-      expect(toggleSpy).toHaveBeenCalled();
-      expect(toggleSpy).toHaveBeenCalledTimes(2);
-      expect(toggleSpy).toHaveBeenCalledWith("nPost7");
-      expect(searchResults.showMenuNum).toBeNull();
-      expect(firstElement.querySelectorAll(".subMenu")[0].classList).toContain("hidden");
-      expect(firstElement.querySelectorAll(".menuButton")[0].classList).not.toContain("hidden");
-      done();
-    });
-
-    // check that clicking another menu button also closes the previous one
-    // and opens the new one
-    it("should hide the previous post's menu when another post's menu button is clicked", (done: DoneFn) => {
-      // set up spies
-      const route = TestBed.inject(ActivatedRoute);
-      spyOn(route.snapshot.queryParamMap, "get").and.callFake((param: string) => {
-        if (param == "query") {
-          return "search";
-        } else {
-          return null;
-        }
-      });
-      TestBed.inject(ItemsService).postSearchPage = 2;
-
-      // create the component
-      const fixture = TestBed.createComponent(SearchResults);
-      const searchResults = fixture.componentInstance;
-      const searchResultsDOM = fixture.debugElement.nativeElement;
-      const authService = searchResults.authService;
-      const toggleSpy = spyOn(searchResults, "openMenu").and.callThrough();
-      spyOn(authService, "canUser").and.returnValue(true);
-      fixture.detectChanges();
-
-      // change the elements' width to make sure there isn't enough room for the menu
-      const firstElement = searchResultsDOM.querySelectorAll(".searchResult")[0]!;
-      let sub = firstElement.querySelectorAll(".subMenu")[0] as HTMLDivElement;
-      sub.style.maxWidth = "40px";
-      sub.style.display = "flex";
-      (sub.firstElementChild! as HTMLAnchorElement).style.width = "100px";
-      fixture.detectChanges();
-
-      // pre-click check
-      expect(toggleSpy).not.toHaveBeenCalled();
-      expect(searchResults.showMenuNum).toBeNull();
-      expect(firstElement.querySelectorAll(".buttonsContainer")[0].classList).toContain("float");
-      expect(firstElement.querySelectorAll(".subMenu")[0].classList).toContain("hidden");
-      expect(firstElement.querySelectorAll(".subMenu")[0].classList).toContain("float");
-      expect(firstElement.querySelectorAll(".menuButton")[0].classList).not.toContain("hidden");
-      expect(
-        searchResultsDOM.querySelectorAll(".searchResult")[1]!.querySelectorAll(".subMenu")[0]
-          .classList,
-      ).toContain("hidden");
-
-      // click the options buton for the first new post
-      searchResultsDOM
-        .querySelectorAll(".searchResult")[0]!
-        .querySelectorAll(".menuButton")[0]
-        .click();
-      fixture.detectChanges();
-
-      // check the first post's menu is shown
-      expect(toggleSpy).toHaveBeenCalled();
-      expect(toggleSpy).toHaveBeenCalledWith("nPost6");
-      expect(searchResults.showMenuNum).toBe("nPost6");
-      expect(firstElement.querySelectorAll(".subMenu")[0].classList).not.toContain("hidden");
-      expect(firstElement.querySelectorAll(".menuButton")[0].classList).not.toContain("hidden");
-      expect(
-        searchResultsDOM.querySelectorAll(".searchResult")[1]!.querySelectorAll(".subMenu")[0]
-          .classList,
-      ).toContain("hidden");
-
-      // click the options button for another post
-      searchResultsDOM
-        .querySelectorAll(".searchResult")[1]!
-        .querySelectorAll(".menuButton")[0]
-        .click();
-      fixture.detectChanges();
-
-      // check the first post's menu is hidden and the new post's menu is shown
-      expect(toggleSpy).toHaveBeenCalled();
-      expect(toggleSpy).toHaveBeenCalledTimes(2);
-      expect(toggleSpy).toHaveBeenCalledWith("nPost5");
-      expect(searchResults.showMenuNum).toBe("nPost5");
-      expect(firstElement.querySelectorAll(".subMenu")[0].classList).toContain("hidden");
-      expect(
-        searchResultsDOM.querySelectorAll(".searchResult")[1]!.querySelectorAll(".subMenu")[0]
-          .classList,
-      ).not.toContain("hidden");
       done();
     });
   });

@@ -1,7 +1,6 @@
 /*
-  User interface
-  Based on the User Model
-  For the user's own profile
+  Notification interface
+  Based on the Notification Model
   ---------------------------------------------------
   MIT License
 
@@ -31,30 +30,13 @@
   SOFTWARE.
 */
 
-import { iconCharacters } from "./types";
-
-export interface UserIconColours {
-  character: string;
-  lbg: string;
-  rbg: string;
-  item: string;
-}
-
-export interface User {
-  id?: number;
-  auth0Id: string;
-  displayName: string;
-  receivedH: number;
-  givenH: number;
-  posts: number;
-  loginCount: number;
-  role: string;
-  jwt: string;
-  blocked: boolean;
-  releaseDate: Date | undefined;
-  autoRefresh: boolean;
-  pushEnabled: boolean;
-  refreshRate: number;
-  selectedIcon: iconCharacters;
-  iconColours: UserIconColours;
+export interface Notification {
+  id: number;
+  fromId: number;
+  from: string;
+  forId: number;
+  for: string;
+  type: string;
+  text: string;
+  date: Date;
 }

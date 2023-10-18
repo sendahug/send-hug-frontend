@@ -31,22 +31,34 @@
 */
 
 // Angular imports
-import { Component, AfterViewChecked } from "@angular/core";
+import { Component, WritableSignal, signal } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
+import { from, map, switchMap, tap } from "rxjs";
 
 // App-related imports
-import { AuthService } from "../../services/auth.service";
-import { PostsService } from "../../services/posts.service";
+import { FullListType } from "@app/interfaces/types";
+import { Post } from "@app/interfaces/post.interface";
+import { SWManager } from "@app/services/sWManager.service";
+import { AlertsService } from "@app/services/alerts.service";
+import { ApiClientService } from "@app/services/apiClient.service";
+
+interface PostsListResponse {
+  success: boolean;
+  posts: Post[];
+  total_pages: number;
+}
 
 @Component({
   selector: "app-full-list",
   templateUrl: "./fullList.component.html",
 })
-export class FullList implements AfterViewChecked {
+export class FullList {
   // current page and type of list
-  type: any;
-  page: any;
-  showMenuNum: string | null = null;
+  type: FullListType = "New";
+  currentPage = signal(1);
+  totalPages = signal(1);
+  isLoading = signal(false);
+  posts: WritableSignal<Post[]> = signal([]);
   // loader sub-component variables
   waitFor = "";
 
@@ -54,187 +66,124 @@ export class FullList implements AfterViewChecked {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    public authService: AuthService,
-    public postsService: PostsService,
+    private swManager: SWManager,
+    private alertsService: AlertsService,
+    private apiClient: ApiClientService,
   ) {
-    // get the type of list and the current page
-    this.route.url.subscribe((params) => {
-      this.type = params[0].path;
-    });
-    this.page = Number(this.route.snapshot.queryParamMap.get("page"));
+    const urlPath = this.route.snapshot.url[0].path;
 
-    // set a default page if no page is set
-    if (this.page) {
-      // if it was a string, set it to 1
-      if (this.page.isNaN) {
-        this.page = 1;
-      }
-    }
-    // if there's no page, set it to 1
-    else {
-      this.page = 1;
+    // set the type from the url only if a valid type is
+    // passed in
+    if (urlPath.toLowerCase() === "new" || urlPath.toLowerCase() === "suggested") {
+      this.type = urlPath as FullListType;
     }
 
-    // if the type is new items, get the new items
-    if (this.type == "New") {
-      this.waitFor = "new posts";
-      this.postsService.getNewItems(this.page);
+    const requestedPage = Number(this.route.snapshot.queryParamMap.get("page"));
+
+    // set a default page if no page is set or it's invalid
+    if ((requestedPage && isNaN(requestedPage)) || !requestedPage) {
+      this.currentPage.set(1);
+    } else {
+      this.currentPage.set(requestedPage);
     }
-    // if the type is suggested items, get the suggested items
-    else if (this.type == "Suggested") {
-      this.waitFor = "suggested posts";
-      this.postsService.getSuggestedItems(this.page);
-    }
+
+    this.waitFor = `${this.type.toLowerCase()} posts`;
+    this.fetchPosts();
   }
 
-  /*
-  Function Name: ngAfterViewInit()
-  Function Description: This method is automatically triggered by Angular once the component's
-                        view is intialised. It checks whether posts' buttons are
-                        too big for their container; if they are, changes the menu to be
-                        a floating one.
-  Parameters: None.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  ngAfterViewChecked() {
-    let posts = document.querySelectorAll(".newItem");
+  /**
+   * Fetches the posts to display from IDB and then
+   * from the server.
+   */
+  fetchPosts() {
+    const fetchFromIdb$ = this.fetchPostsFromIdb();
+    this.isLoading.set(true);
 
-    if (posts[0]) {
-      // check the first post; the others are the same
-      let firstPButtons = posts[0]!.querySelectorAll(".buttonsContainer")[0] as HTMLDivElement;
-      let sub = posts[0]!.querySelectorAll(".subMenu")[0] as HTMLDivElement;
-
-      // remove the hidden label check the menu's width
-      if (sub.classList.contains("hidden")) {
-        firstPButtons.classList.remove("float");
-        sub.classList.remove("hidden");
-        sub.classList.remove("float");
-      }
-
-      // if they're too long and there's no menu to show
-      if (sub.scrollWidth > sub.offsetWidth && !this.showMenuNum) {
-        // change each menu to a floating, hidden menu
-        posts.forEach((element) => {
-          element.querySelectorAll(".buttonsContainer")[0].classList.add("float");
-          element.querySelectorAll(".subMenu")[0].classList.add("hidden");
-          element.querySelectorAll(".subMenu")[0].classList.add("float");
-          element.querySelectorAll(".menuButton")[0].classList.remove("hidden");
-        });
-      }
-      // if there's a menu to show, show that specific menu
-      else if (this.showMenuNum) {
-        // change each menu to a floating menu
-        posts.forEach((element) => {
-          if (element.firstElementChild!.id == this.showMenuNum) {
-            element.querySelectorAll(".subMenu")[0].classList.remove("hidden");
-          } else {
-            element.querySelectorAll(".subMenu")[0].classList.add("hidden");
-
-            // if it's not the first element that needs an open menu, close
-            // the first item's menu like  it was opened above
-            if (element.firstElementChild!.id == posts[0].firstElementChild!.id) {
-              element.querySelectorAll(".buttonsContainer")[0].classList.add("float");
-              element.querySelectorAll(".subMenu")[0].classList.add("hidden");
-              element.querySelectorAll(".subMenu")[0].classList.add("float");
-            }
-          }
-        });
-      }
-      // otherwise make sure the menu button is hidden and the buttons container
-      // is in its normal design
-      else {
-        posts.forEach((element) => {
-          element.querySelectorAll(".buttonsContainer")[0].classList.remove("float");
-          element.querySelectorAll(".subMenu")[0].classList.remove("hidden");
-          element.querySelectorAll(".subMenu")[0].classList.remove("float");
-          element.querySelectorAll(".menuButton")[0].classList.add("hidden");
-        });
-      }
-    }
+    fetchFromIdb$
+      .pipe(
+        switchMap(() =>
+          this.apiClient.get<PostsListResponse>(`posts/${this.type.toLowerCase()}`, {
+            page: this.currentPage(),
+          }),
+        ),
+      )
+      .subscribe((data) => {
+        this.updateInterface(data);
+        this.alertsService.toggleOfflineAlert();
+        this.swManager.addFetchedItems("posts", data.posts, "date");
+      });
   }
 
-  /*
-  Function Name: nextPage()
-  Function Description: Go to the next page of posts. Sends a request to the
-                        items service to get the data for the next page.
-  Parameters: None.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
+  /**
+   * Generates the observable for fetching the data from IndexedDB.
+   * @returns an observable that handles fetching
+   *          posts from IndexedDB and transforming them.
+   */
+  fetchPostsFromIdb() {
+    const index = this.type.toLowerCase() === "new" ? "date" : "hugs";
+
+    return from(
+      this.swManager.fetchPosts(
+        index,
+        5,
+        undefined,
+        this.currentPage(),
+        this.type.toLowerCase() === "new",
+      ),
+    ).pipe(
+      map((data) => {
+        return {
+          posts: data.posts,
+          total_pages: data.pages,
+          success: true,
+        } as PostsListResponse;
+      }),
+      tap((data) => {
+        this.updateInterface(data);
+      }),
+    );
+  }
+
+  /**
+   * Updates the UI with the fetched posts.
+   * @param data - the data to update the UI with.
+   */
+  updateInterface(data: PostsListResponse) {
+    this.totalPages.set(data.total_pages);
+    this.posts.set(data.posts);
+    this.isLoading.set(false);
+  }
+
+  /**
+   * Go to the next page of posts. Sends a request to the
+   * IDB and API clients to get the data for the next page.
+   */
   nextPage() {
-    // if the list is the new posts list, get the next page of new posts
-    if (this.type == "New") {
-      this.page += 1;
-      this.postsService.getNewItems(this.page);
-    }
-    // if the list is the suggested posts list, get the next page of suggested posts
-    else if (this.type == "Suggested") {
-      this.page += 1;
-      this.postsService.getSuggestedItems(this.page);
-    }
-
-    // changes the URL query parameter (page) according to the new page
-    this.router.navigate([], {
-      relativeTo: this.route,
-      queryParams: {
-        page: this.page,
-      },
-      replaceUrl: true,
-    });
+    this.currentPage.set(this.currentPage() + 1);
+    this.fetchPosts();
+    this.updatePageUrlParam();
   }
 
-  /*
-  Function Name: prevPage()
-  Function Description: Go to the previous page of posts. Sends a request to the
-                        items service to get the data for the previous page.
-  Parameters: None.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
+  /**
+   * Go to the previous page of posts. Sends a request to the
+   * IDB and API clients to get the data for the next page.
+   */
   prevPage() {
-    // if the list is the new posts list, get the previous page of new posts
-    if (this.type == "New") {
-      this.page -= 1;
-      this.postsService.getNewItems(this.page);
-    }
-    // if the list is the suggested posts list, get the previous page of suggested posts
-    else if (this.type == "Suggested") {
-      this.page -= 1;
-      this.postsService.getSuggestedItems(this.page);
-    }
+    this.currentPage.set(this.currentPage() - 1);
+    this.fetchPosts();
+    this.updatePageUrlParam();
+  }
 
-    // changes the URL query parameter (page) according to the new page
+  /**
+   * Updates the URL query parameter (page) according to the new page.
+   */
+  updatePageUrlParam() {
     this.router.navigate([], {
       relativeTo: this.route,
       queryParams: {
-        page: this.page,
+        page: this.currentPage(),
       },
       replaceUrl: true,
     });
-  }
-
-  /*
-  Function Name: openMenu()
-  Function Description: Opens a floating sub menu that contains the message, report, edit (if
-                        applicable) and delete (if applicable) options on smaller screens.
-  Parameters: menu (string) - ID of the item for which to open the submenu.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  openMenu(menu: string) {
-    let post = document.querySelector("#" + menu)!.parentElement;
-    let subMenu = post!.querySelectorAll(".subMenu")[0];
-
-    // if the submenu is hidden, show it
-    if (subMenu.classList.contains("hidden")) {
-      subMenu.classList.remove("hidden");
-      this.showMenuNum = menu;
-    }
-    // otherwise hide it
-    else {
-      subMenu.classList.add("hidden");
-      this.showMenuNum = null;
-    }
   }
 }

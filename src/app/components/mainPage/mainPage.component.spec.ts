@@ -41,16 +41,57 @@ import {
 import { HttpClientModule } from "@angular/common/http";
 import { ServiceWorkerModule } from "@angular/service-worker";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
+import { of } from "rxjs";
 
 // App imports
 import { MainPage } from "./mainPage.component";
 import { Loader } from "../loader/loader.component";
 import { PopUp } from "../popUp/popUp.component";
 import { SinglePost } from "../post/post.component";
-import { PostsService } from "../../services/posts.service";
-import { MockPostsService } from "../../services/posts.service.mock";
-import { AuthService } from "../../services/auth.service";
-import { MockAuthService } from "../../services/auth.service.mock";
+import { ApiClientService } from "../../services/apiClient.service";
+import { SWManager } from "../../services/sWManager.service";
+import { AlertsService } from "../../services/alerts.service";
+
+const newItems = [
+  {
+    date: new Date("2020-06-27 19:17:31.072"),
+    givenHugs: 0,
+    id: 1,
+    text: "test",
+    userId: 1,
+    user: "test",
+    sentHugs: [],
+  },
+  {
+    date: new Date("2020-06-28 19:17:31.072"),
+    givenHugs: 0,
+    id: 2,
+    text: "test2",
+    userId: 1,
+    user: "test",
+    sentHugs: [],
+  },
+];
+const suggestedItems = [
+  {
+    date: new Date("2020-06-28 19:17:31.072"),
+    givenHugs: 0,
+    id: 2,
+    text: "test2",
+    userId: 1,
+    user: "test",
+    sentHugs: [],
+  },
+  {
+    date: new Date("2020-06-27 19:17:31.072"),
+    givenHugs: 0,
+    id: 1,
+    text: "test",
+    userId: 1,
+    user: "test",
+    sentHugs: [],
+  },
+];
 
 describe("MainPage", () => {
   // Before each test, configure testing environment
@@ -66,11 +107,7 @@ describe("MainPage", () => {
         FontAwesomeModule,
       ],
       declarations: [MainPage, Loader, PopUp, SinglePost],
-      providers: [
-        { provide: APP_BASE_HREF, useValue: "/" },
-        { provide: PostsService, useClass: MockPostsService },
-        { provide: AuthService, useClass: MockAuthService },
-      ],
+      providers: [{ provide: APP_BASE_HREF, useValue: "/" }],
     }).compileComponents();
   });
 
@@ -81,265 +118,153 @@ describe("MainPage", () => {
     expect(mainPage).toBeTruthy();
   });
 
-  // Check that the a call to getItems() is made
-  it("should get posts via the posts service", (done: DoneFn) => {
-    const fixture = TestBed.createComponent(MainPage);
-    const mainPage = fixture.componentInstance;
-    const mainPageDOM = fixture.nativeElement;
+  it("should requests posts upon creation", () => {
+    const fetchSpy = spyOn(MainPage.prototype, "fetchPosts");
+    TestBed.createComponent(MainPage);
 
-    fixture.detectChanges();
+    expect(fetchSpy).toHaveBeenCalled();
+  });
 
-    expect(mainPage.postsService.newItemsArray.length).toEqual(2);
-    expect(mainPageDOM.querySelector("#newItemsList").children.length).toBe(2);
-    expect(mainPage.postsService.sugItemsArray.length).toEqual(2);
-    expect(mainPageDOM.querySelector("#sugItemsList").children.length).toBe(2);
+  it("should fetch posts from the server", (done: DoneFn) => {
+    // Inject services
+    const apiClient = TestBed.inject(ApiClientService);
+    const swManager = TestBed.inject(SWManager);
+    const alertsService = TestBed.inject(AlertsService);
+
+    // set up mock data
+    const mockNetworkResponse = { recent: newItems, suggested: suggestedItems, success: true };
+
+    // set up spies
+    const idbSpy = spyOn(MainPage.prototype, "fetchFromIdb").and.returnValue(
+      of({ recent: [], suggested: [], success: true }),
+    );
+    const apiClientSpy = spyOn(apiClient, "get").and.returnValue(of(mockNetworkResponse));
+    const updateInterfaceSpy = spyOn(MainPage.prototype, "updatePostsInterface");
+    const addItemsSpy = spyOn(swManager, "addFetchedItems");
+    const alertsSpy = spyOn(alertsService, "toggleOfflineAlert");
+
+    TestBed.createComponent(MainPage);
+
+    expect(idbSpy).toHaveBeenCalled();
+    expect(apiClientSpy).toHaveBeenCalledWith("");
+    expect(updateInterfaceSpy).toHaveBeenCalledWith(mockNetworkResponse);
+    expect(alertsSpy).toHaveBeenCalled();
+    expect(addItemsSpy).toHaveBeenCalledWith(
+      "posts",
+      [...mockNetworkResponse.recent, ...mockNetworkResponse.suggested],
+      "date",
+    );
+
     done();
   });
 
-  // Check the posts' menu is shown if there's enough room for them
-  it("should show the posts's menu if wide enough", (done: DoneFn) => {
-    const fixture = TestBed.createComponent(MainPage);
-    const mainPageDOM = fixture.debugElement.nativeElement;
-    fixture.detectChanges();
+  it("should fetch posts from Idb", (done: DoneFn) => {
+    // Just to make sure it doesn't get called during the test
+    spyOn(MainPage.prototype, "fetchPosts");
 
-    // change the elements' width to make sure there's enough room for the menu
-    let sub = mainPageDOM
-      .querySelectorAll(".newItem")[0]!
-      .querySelectorAll(".subMenu")[0] as HTMLDivElement;
-    sub.style.maxWidth = "";
-    sub.style.display = "flex";
-    fixture.detectChanges();
+    // Inject services
+    const swManager = TestBed.inject(SWManager);
 
-    // check all menus are shown
-    let posts = mainPageDOM.querySelectorAll(".newItem");
-    // new posts
-    posts.forEach((element: HTMLLIElement) => {
-      expect(element.querySelectorAll(".buttonsContainer")[0].classList).not.toContain("float");
-      expect(element.querySelectorAll(".subMenu")[0].classList).not.toContain("hidden");
-      expect(element.querySelectorAll(".subMenu")[0].classList).not.toContain("float");
-      expect(element.querySelectorAll(".menuButton")[0].classList).toContain("hidden");
+    // set up mock data
+    const mockNewPosts = { posts: newItems, success: true, pages: 1 };
+    const mockSuggestedPosts = { posts: suggestedItems, success: true, pages: 1 };
+
+    // set up spies
+    const idbSpy = spyOn(swManager, "fetchPosts").and.callFake(
+      (sortBy, _perPage, _userID, _page, _reverseOrder) => {
+        return new Promise((resolve, _reject) => {
+          if (sortBy == "date") {
+            resolve(mockNewPosts);
+          } else {
+            resolve(mockSuggestedPosts);
+          }
+        });
+      },
+    );
+    const updateInterfaceSpy = spyOn(MainPage.prototype, "updatePostsInterface");
+
+    const mainPage = TestBed.createComponent(MainPage);
+
+    mainPage.componentInstance.fetchFromIdb().subscribe((_data) => {
+      expect(idbSpy).toHaveBeenCalledWith("date", 10, undefined, 1, true);
+      expect(idbSpy).toHaveBeenCalledWith("hugs", 10, undefined, 1, false);
+      expect(idbSpy).toHaveBeenCalledTimes(2);
+      expect(updateInterfaceSpy).toHaveBeenCalledOnceWith({
+        recent: mockNewPosts.posts,
+        suggested: mockSuggestedPosts.posts,
+        success: true,
+      });
+      done();
     });
-    done();
   });
 
-  // check the posts' menu isn't shown if there isn't enough room for it
-  it("shouldn't show the posts's menu if not wide enough", (done: DoneFn) => {
-    spyOn(TestBed.inject(AuthService), "canUser").and.returnValue(true);
-    const fixture = TestBed.createComponent(MainPage);
-    const mainPageDOM = fixture.debugElement.nativeElement;
-    fixture.detectChanges();
-
-    // change the elements' width to make sure there isn't enough room for the menu
-    let sub = mainPageDOM
-      .querySelectorAll(".newItem")[0]!
-      .querySelectorAll(".subMenu")[0] as HTMLDivElement;
-    sub.style.maxWidth = "40px";
-    sub.style.display = "flex";
-    (sub.firstElementChild! as HTMLAnchorElement).style.width = "100px";
-    fixture.detectChanges();
-
-    // check all menus aren't shown
-    let posts = mainPageDOM.querySelectorAll(".newItem");
-    // new posts
-    posts.forEach((element: HTMLLIElement) => {
-      expect(element.querySelectorAll(".buttonsContainer")[0].classList).toContain("float");
-      expect(element.querySelectorAll(".subMenu")[0].classList).toContain("hidden");
-      expect(element.querySelectorAll(".subMenu")[0].classList).toContain("float");
-      expect(element.querySelectorAll(".menuButton")[0].classList).not.toContain("hidden");
-    });
-    done();
-  });
-
-  // check a menu is shown when clickinng the options button
-  it("should show the post's menu when clicked", (done: DoneFn) => {
-    spyOn(TestBed.inject(AuthService), "canUser").and.returnValue(true);
+  it("should update the interface with the fetched posts", (done: DoneFn) => {
+    // Just to make sure it doesn't get called during the test
+    spyOn(MainPage.prototype, "fetchPosts");
     const fixture = TestBed.createComponent(MainPage);
     const mainPage = fixture.componentInstance;
     const mainPageDOM = fixture.debugElement.nativeElement;
-    const toggleSpy = spyOn(mainPage, "openMenu").and.callThrough();
+    const isLoadingSpy = spyOn(mainPage.isLoading, "set").and.callThrough();
+
+    // set up mock data
+    const mockData = { recent: newItems, suggested: suggestedItems, success: true };
     fixture.detectChanges();
 
-    // change the elements' width to make sure there isn't enough room for the menu
-    const firstElement = mainPageDOM.querySelectorAll(".newItem")[0]!;
-    let sub = firstElement.querySelectorAll(".subMenu")[0] as HTMLDivElement;
-    sub.style.maxWidth = "40px";
-    sub.style.display = "flex";
-    (sub.firstElementChild! as HTMLAnchorElement).style.width = "100px";
+    // check the variables start empty
+    expect(mainPage.newPosts()).toEqual([]);
+    expect(mainPage.suggestedPosts()).toEqual([]);
+    expect(mainPage.isLoading()).toBeFalse();
+
+    // call the method
+    mainPage.updatePostsInterface(mockData);
     fixture.detectChanges();
 
-    // pre-click check
-    expect(toggleSpy).not.toHaveBeenCalled();
-    expect(mainPage.showMenuNum).toBeNull();
-    expect(firstElement.querySelectorAll(".subMenu")[0].classList).toContain("hidden");
-    expect(firstElement.querySelectorAll(".menuButton")[0].classList).not.toContain("hidden");
+    // check the new values
+    expect(mainPage.newPosts()).toEqual(newItems);
+    expect(mainPage.suggestedPosts()).toEqual(suggestedItems);
+    expect(mainPage.isLoading()).toBeFalse();
+    expect(isLoadingSpy).toHaveBeenCalledWith(false);
 
-    // click the options buton for the first new post
-    mainPageDOM.querySelectorAll(".newItem")[0]!.querySelectorAll(".menuButton")[0].click();
-    fixture.detectChanges();
+    const newPosts = mainPageDOM.querySelectorAll(".newItem");
+    expect(newPosts.length).toBe(2);
+    expect(newPosts[0].querySelector(".itemText").textContent).toContain("test");
 
-    // check the first post's menu is shown
-    expect(toggleSpy).toHaveBeenCalled();
-    expect(toggleSpy).toHaveBeenCalledWith("nPost1");
-    expect(mainPage.showMenuNum).toBe("nPost1");
-    expect(firstElement.querySelectorAll(".buttonsContainer")[0].classList).toContain("float");
-    expect(firstElement.querySelectorAll(".subMenu")[0].classList).not.toContain("hidden");
-    expect(firstElement.querySelectorAll(".subMenu")[0].classList).toContain("float");
-    expect(firstElement.querySelectorAll(".menuButton")[0].classList).not.toContain("hidden");
+    const suggestedPosts = mainPageDOM.querySelectorAll(".sugItem");
+    expect(suggestedPosts.length).toBe(2);
+    expect(suggestedPosts[0].querySelector(".itemText").textContent).toContain("test2");
+
     done();
   });
 
-  // check that clicking the same menu button again hides it
-  it("should hide the post's menu when clicked again", (done: DoneFn) => {
-    spyOn(TestBed.inject(AuthService), "canUser").and.returnValue(true);
+  it("should show an error if posts are undefined", (done: DoneFn) => {
+    // Just to make sure it doesn't get called during the test
+    spyOn(MainPage.prototype, "fetchPosts");
     const fixture = TestBed.createComponent(MainPage);
     const mainPage = fixture.componentInstance;
     const mainPageDOM = fixture.debugElement.nativeElement;
-    const toggleSpy = spyOn(mainPage, "openMenu").and.callThrough();
+    const newPostsSetSpy = spyOn(mainPage.newPosts, "set").and.callThrough();
+
+    // set up mock data
+    const mockData = { recent: undefined as any, suggested: suggestedItems, success: true };
     fixture.detectChanges();
 
-    // change the elements' width to make sure there isn't enough room for the menu
-    const firstElement = mainPageDOM.querySelectorAll(".newItem")[0]!;
-    let sub = firstElement.querySelectorAll(".subMenu")[0] as HTMLDivElement;
-    sub.style.maxWidth = "40px";
-    sub.style.display = "flex";
-    (sub.firstElementChild! as HTMLAnchorElement).style.width = "100px";
+    // check the variables start empty
+    expect(mainPage.newPosts()).toEqual([]);
+    expect(mainPage.suggestedPosts()).toEqual([]);
+
+    // call the method
+    mainPage.updatePostsInterface(mockData);
     fixture.detectChanges();
 
-    // pre-click check
-    expect(toggleSpy).not.toHaveBeenCalled();
-    expect(mainPage.showMenuNum).toBeNull();
-    expect(firstElement.querySelectorAll(".buttonsContainer")[0].classList).toContain("float");
-    expect(firstElement.querySelectorAll(".subMenu")[0].classList).toContain("hidden");
-    expect(firstElement.querySelectorAll(".subMenu")[0].classList).toContain("float");
-    expect(firstElement.querySelectorAll(".menuButton")[0].classList).not.toContain("hidden");
+    // check the new posts are still an empty array
+    expect(mainPage.newPosts()).toEqual([]);
+    expect(mainPage.suggestedPosts()).toEqual(suggestedItems);
+    expect(newPostsSetSpy).not.toHaveBeenCalled();
 
-    // click the options buton for the first new post
-    mainPageDOM.querySelectorAll(".newItem")[0]!.querySelectorAll(".menuButton")[0].click();
-    fixture.detectChanges();
+    const errorMessage = mainPageDOM.querySelectorAll(".errorMessage");
+    expect(errorMessage.length).toBe(1);
+    expect(errorMessage[0].textContent).toContain("There are no recent items");
 
-    // check the first post's menu is shown
-    expect(toggleSpy).toHaveBeenCalled();
-    expect(toggleSpy).toHaveBeenCalledWith("nPost1");
-    expect(mainPage.showMenuNum).toBe("nPost1");
-    expect(firstElement.querySelectorAll(".subMenu")[0].classList).not.toContain("hidden");
-    expect(firstElement.querySelectorAll(".menuButton")[0].classList).not.toContain("hidden");
-
-    // click the options buton for the first new post again
-    mainPageDOM.querySelectorAll(".newItem")[0]!.querySelectorAll(".menuButton")[0].click();
-    fixture.detectChanges();
-
-    // check the menu is hidden
-    expect(toggleSpy).toHaveBeenCalled();
-    expect(toggleSpy).toHaveBeenCalledTimes(2);
-    expect(toggleSpy).toHaveBeenCalledWith("nPost1");
-    expect(mainPage.showMenuNum).toBeNull();
-    expect(firstElement.querySelectorAll(".subMenu")[0].classList).toContain("hidden");
-    expect(firstElement.querySelectorAll(".menuButton")[0].classList).not.toContain("hidden");
-    done();
-  });
-
-  // check only the selected menu is shown when clicking a button
-  it("should show the correct post's menu when clicked", (done: DoneFn) => {
-    spyOn(TestBed.inject(AuthService), "canUser").and.returnValue(true);
-    const fixture = TestBed.createComponent(MainPage);
-    const mainPage = fixture.componentInstance;
-    const mainPageDOM = fixture.debugElement.nativeElement;
-    fixture.detectChanges();
-
-    // change the elements' width to make sure there isn't enough room for the menu
-    let sub = mainPageDOM
-      .querySelectorAll(".newItem")[0]!
-      .querySelectorAll(".subMenu")[0] as HTMLDivElement;
-    sub.style.maxWidth = "40px";
-    sub.style.display = "flex";
-    (sub.firstElementChild! as HTMLAnchorElement).style.width = "100px";
-    fixture.detectChanges();
-
-    // pre-click check
-    const clickElement = mainPageDOM.querySelectorAll(".newItem")[1]!;
-    expect(mainPage.showMenuNum).toBeNull();
-    expect(clickElement.querySelectorAll(".subMenu")[0].classList).toContain("hidden");
-    expect(clickElement.querySelectorAll(".menuButton")[0].classList).not.toContain("hidden");
-
-    // trigger click
-    clickElement.querySelectorAll(".menuButton")[0].click();
-    fixture.detectChanges();
-
-    // check only the second post's menu is shown
-    let posts = mainPageDOM.querySelectorAll(".newItem");
-
-    // new posts
-    posts.forEach((element: HTMLLIElement) => {
-      expect(element.querySelectorAll(".buttonsContainer")[0].classList).toContain("float");
-      expect(element.querySelectorAll(".subMenu")[0].classList).toContain("float");
-      expect(element.querySelectorAll(".menuButton")[0].classList).not.toContain("hidden");
-      // if it's the second element, check the menu isn't hidden
-      if (element.firstElementChild!.id == "nPost2") {
-        expect(element.querySelectorAll(".subMenu")[0].classList).not.toContain("hidden");
-      }
-      // otherwise check it's hidden
-      else {
-        expect(element.querySelectorAll(".subMenu")[0].classList).toContain("hidden");
-      }
-    });
-    expect(mainPage.showMenuNum).toBe("nPost2");
-    done();
-  });
-
-  // check that clicking another menu button also closes the previous one
-  // and opens the new one
-  it("should hide the previous post's menu when another post's menu button is clicked", (done: DoneFn) => {
-    spyOn(TestBed.inject(AuthService), "canUser").and.returnValue(true);
-    const fixture = TestBed.createComponent(MainPage);
-    const mainPage = fixture.componentInstance;
-    const mainPageDOM = fixture.debugElement.nativeElement;
-    fixture.detectChanges();
-
-    // change the elements' width to make sure there isn't enough room for the menu
-    const firstElement = mainPageDOM.querySelectorAll(".newItem")[0]!;
-    let sub = firstElement.querySelectorAll(".subMenu")[0] as HTMLDivElement;
-    sub.style.maxWidth = "40px";
-    sub.style.display = "flex";
-    (sub.firstElementChild! as HTMLAnchorElement).style.width = "100px";
-    fixture.detectChanges();
-
-    // pre-click check
-    expect(mainPage.showMenuNum).toBeNull();
-    expect(firstElement.querySelectorAll(".buttonsContainer")[0].classList).toContain("float");
-    expect(firstElement.querySelectorAll(".subMenu")[0].classList).toContain("hidden");
-    expect(firstElement.querySelectorAll(".subMenu")[0].classList).toContain("float");
-    expect(firstElement.querySelectorAll(".menuButton")[0].classList).not.toContain("hidden");
-    expect(
-      mainPageDOM.querySelectorAll(".newItem")[0]!.querySelectorAll(".subMenu")[0].classList,
-    ).toContain("hidden");
-
-    // click the options buton for the first new post
-    mainPageDOM.querySelectorAll(".newItem")[0]!.querySelectorAll(".menuButton")[0].click();
-    fixture.detectChanges();
-
-    // check the first post's menu is shown
-    expect(mainPage.showMenuNum).toBe("nPost1");
-    expect(firstElement.querySelectorAll(".subMenu")[0].classList).not.toContain("hidden");
-    expect(firstElement.querySelectorAll(".menuButton")[0].classList).not.toContain("hidden");
-    expect(
-      mainPageDOM.querySelectorAll(".newItem")[0]!.querySelectorAll(".subMenu")[0].classList,
-    ).not.toContain("hidden");
-    expect(
-      mainPageDOM.querySelectorAll(".newItem")[1]!.querySelectorAll(".subMenu")[0].classList,
-    ).toContain("hidden");
-
-    // click the options button for another post
-    mainPageDOM.querySelectorAll(".newItem")[1]!.querySelectorAll(".menuButton")[0].click();
-    fixture.detectChanges();
-
-    // check the first post's menu is hidden and the new post's menu is shown
-    expect(firstElement.querySelectorAll(".subMenu")[0].classList).toContain("hidden");
-    expect(
-      mainPageDOM.querySelectorAll(".newItem")[0]!.querySelectorAll(".subMenu")[0].classList,
-    ).toContain("hidden");
-    expect(
-      mainPageDOM.querySelectorAll(".newItem")[1]!.querySelectorAll(".subMenu")[0].classList,
-    ).not.toContain("hidden");
     done();
   });
 });

@@ -1,7 +1,5 @@
 /*
-  User interface
-  Based on the User Model
-  For the user's own profile
+	Mock Data for tests
   ---------------------------------------------------
   MIT License
 
@@ -31,30 +29,28 @@
   SOFTWARE.
 */
 
-import { iconCharacters } from "./types";
+import { User } from "../app/interfaces/user.interface";
 
-export interface UserIconColours {
-  character: string;
-  lbg: string;
-  rbg: string;
-  item: string;
-}
-
-export interface User {
-  id?: number;
-  auth0Id: string;
-  displayName: string;
-  receivedH: number;
-  givenH: number;
-  posts: number;
-  loginCount: number;
-  role: string;
-  jwt: string;
-  blocked: boolean;
-  releaseDate: Date | undefined;
-  autoRefresh: boolean;
-  pushEnabled: boolean;
-  refreshRate: number;
-  selectedIcon: iconCharacters;
-  iconColours: UserIconColours;
-}
+export const mockAuthedUser: User = {
+  id: 4,
+  auth0Id: "",
+  displayName: "name",
+  receivedH: 2,
+  givenH: 2,
+  posts: 2,
+  loginCount: 3,
+  role: "admin",
+  jwt: "",
+  blocked: false,
+  releaseDate: undefined,
+  autoRefresh: false,
+  refreshRate: 20,
+  pushEnabled: false,
+  selectedIcon: "kitty",
+  iconColours: {
+    character: "#BA9F93",
+    lbg: "#e2a275",
+    rbg: "#f8eee4",
+    item: "#f4b56a",
+  },
+};

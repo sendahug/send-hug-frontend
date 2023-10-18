@@ -37,7 +37,13 @@ import { Injectable } from "@angular/core";
 import { openDB, IDBPDatabase, DBSchema } from "idb";
 
 // App-related imports
-import { AlertsService } from "./alerts.service";
+import { AlertsService } from "@app/services/alerts.service";
+import { IdbStoreType, iconCharacters } from "@app/interfaces/types";
+import { Message } from "@app/interfaces/message.interface";
+import { Post } from "@app/interfaces/post.interface";
+import { FullThread } from "@app/interfaces/thread.interface";
+import { OtherUser } from "@app/interfaces/otherUser.interface";
+import { UserIconColours } from "@app/interfaces/user.interface";
 
 // IndexedDB Database schema
 export interface MyDB extends DBSchema {
@@ -60,17 +66,12 @@ export interface MyDB extends DBSchema {
     value: {
       id: number;
       displayName: string;
-      givenHugs: number;
-      postsNum: number;
-      receivedHugs: number;
+      givenH: number;
+      posts: number;
+      receivedH: number;
       role: string;
-      selectedIcon: "bear" | "kitty" | "dog";
-      iconColours: {
-        character: String;
-        lbg: String;
-        rbg: String;
-        item: String;
-      };
+      selectedIcon: iconCharacters;
+      iconColours: UserIconColours;
     };
   };
   messages: {
@@ -79,24 +80,14 @@ export interface MyDB extends DBSchema {
       date: Date;
       for: {
         displayName: string;
-        selectedIcon?: "bear" | "kitty" | "dog";
-        iconColours?: {
-          character: String;
-          lbg: String;
-          rbg: String;
-          item: String;
-        };
+        selectedIcon?: iconCharacters;
+        iconColours?: UserIconColours;
       };
       forId: number;
       from: {
         displayName: string;
-        selectedIcon?: "bear" | "kitty" | "dog";
-        iconColours?: {
-          character: String;
-          lbg: String;
-          rbg: String;
-          item: String;
-        };
+        selectedIcon?: iconCharacters;
+        iconColours?: UserIconColours;
       };
       fromId: number;
       id: number;
@@ -112,24 +103,14 @@ export interface MyDB extends DBSchema {
       latestMessage: Date;
       user1: {
         displayName: string;
-        selectedIcon: "bear" | "kitty" | "dog";
-        iconColours: {
-          character: String;
-          lbg: String;
-          rbg: String;
-          item: String;
-        };
+        selectedIcon: iconCharacters;
+        iconColours: UserIconColours;
       };
       user1Id: number;
       user2: {
         displayName: string;
-        selectedIcon: "bear" | "kitty" | "dog";
-        iconColours: {
-          character: String;
-          lbg: String;
-          rbg: String;
-          item: String;
-        };
+        selectedIcon: iconCharacters;
+        iconColours: UserIconColours;
       };
       user2Id: number;
       numMessages: number;
@@ -158,7 +139,7 @@ interface IDBPost {
 export class SWManager {
   activeServiceWorkerReg: ServiceWorkerRegistration | undefined;
   currentDB: Promise<IDBPDatabase<MyDB>> | undefined;
-  databaseVersion = 3;
+  databaseVersion = 4;
 
   // CTOR
   constructor(private alertsService: AlertsService) {}
@@ -321,127 +302,105 @@ export class SWManager {
             let threadsStore = transaction.objectStore("threads");
             threadsStore.deleteIndex("latest");
             threadsStore.createIndex("latest", "isoDate");
+          // If the previous version is 3
+          case 3:
+            // Recreate the users store as the object type changed.
+            db.deleteObjectStore("users");
+            db.createObjectStore("users", {
+              keyPath: "id",
+            });
         }
       },
     });
   }
 
-  /*
-  Function Name: queryPosts()
-  Function Description: Gets data matching the provided query from IndexedDB database.
-  Parameters: target (string) - The target of the query.
-              userID (number) - ID of the user whose posts to fetch.
-              page (number) - the current page.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  queryPosts(target: string, userID?: number, page?: number) {
+  /**
+   * Fetches posts based on the given attributes.
+   *
+   * queryPosts (the original method) mapping:
+   * (old target: new parameters)
+   * -  main new: "date", 10, undefined, 1, true
+   * -  main suggested: "hugs", 10, undefined, 1, false
+   * -  new posts: "date", 5, undefined, page, true
+   * -  suggested posts: "hugs", 5, undefined, page, false
+   * -  user posts: "user", 5, userID, page, false
+   *
+   * @param sortBy - index to sort by
+   * @param perPage - number of posts per page
+   * @param userID (optional) - the user ID for which to fetch posts
+   * @param page (optional) - the current page
+   * @param reverseOrder (optional) - whether to reverse the posts' order
+   * @returns A promise that resolves to an object containing the
+   *          posts and the number of pages.
+   */
+  fetchPosts(
+    sortBy: "date" | "user" | "hugs",
+    perPage: number,
+    userID?: number,
+    page?: number,
+    reverseOrder: boolean = false,
+  ): Promise<{ posts: Post[]; pages: number }> {
     if (this.currentDB) {
       return this.currentDB
-        .then(function (db) {
-          let postsStore = db.transaction("posts").store;
+        .then((db) => {
+          let postsStore = db.transaction("posts").store.index(sortBy);
 
-          // if the target is the main page's new posts, get the data from
-          // the posts store
-          if (target == "main new" || target == "new posts") {
-            let newPosts = postsStore.index("date");
-            return newPosts.getAll();
-          }
-          // if the target is the main page's suggested posts, get the data from
-          // the posts store
-          else if (target == "main suggested" || target == "suggested posts") {
-            let suggestedPosts = postsStore.index("hugs");
-            return suggestedPosts.getAll();
-          }
-          // if the target is a specific user's posts, get the data from
-          // the posts store
-          else if (target == "user posts") {
-            let userPosts = postsStore.index("user");
-            return userPosts.getAll(userID);
+          if (userID) {
+            return postsStore.getAll(userID);
+          } else {
+            return postsStore.getAll();
           }
         })
         .then((posts) => {
           // if there are any posts, check each post
-          if (posts) {
-            posts.forEach((element) => {
-              // if there's no display name for that post, get it through the
-              // queryUsers method and add it
-              if (!element.user) {
-                this.queryUsers(element.userId)!.then((userData) => {
-                  // if the user exists in the database, get it
-                  if (userData) {
-                    element.user = userData.displayName;
-                  }
-                });
-              }
-            });
-          }
+          posts.forEach((element) => {
+            // if there's no display name for that post, get it through the
+            // queryUsers method and add it
+            if (!element.user) {
+              this.queryUsers(element.userId)!.then((userData) => {
+                // if the user exists in the database, get it
+                if (userData) {
+                  element.user = userData.displayName;
+                }
+              });
+            }
+          });
           return posts;
         })
         .then((posts) => {
-          // get the current page and the start index for the paginated list
-          // if the target is one of the main page's lists, each list should contain
-          // 10 posts; otherwise each list should contain 5 items
-          let currentPage = page ? page : 1;
-          let startIndex =
-            target == "main new" || target == "main suggested" ? 0 : (currentPage - 1) * 5;
+          const currentPage = page ? page : 1;
+          const startIndex = (currentPage - 1) * perPage;
+          const pages = Math.ceil(posts!.length / 5);
 
-          // if the target is the main page's new posts, reverse the order of
-          // the posts (to show the latest posts) and return paginated posts
-          if (target == "main new") {
-            let newPosts = posts!.reverse();
+          let finalPosts: Post[];
 
-            return newPosts.slice(startIndex, startIndex + 10);
+          if (sortBy == "hugs") {
+            finalPosts = this.sortSuggestedPosts(posts);
+          } else {
+            finalPosts = reverseOrder ? posts.reverse() : posts;
           }
-          // if the target is the main page's new posts, return paginated posts
-          else if (target == "main suggested") {
-            let sortedPosts = this.sortPosts(posts!);
-            return sortedPosts.slice(startIndex, startIndex + 10);
-          }
-          // if the target is the fullList's new posts, reverse the order of
-          // the posts (to show the latest posts) and return paginated posts
-          else if (target == "new posts") {
-            let newPosts = posts!.reverse();
-            let pages = Math.ceil(newPosts.length / 5);
 
-            return {
-              posts: newPosts.slice(startIndex, startIndex + 5),
-              pages: pages,
-            };
-          }
-          // if the target is the fullList's suggested posts, order them and
-          // return paginated posts (as-is).
-          else if (target == "suggested posts") {
-            let pages = Math.ceil(posts!.length / 5);
-            let sortedPosts = this.sortPosts(posts!);
-
-            return {
-              posts: sortedPosts.slice(startIndex, startIndex + 5),
-              pages: pages,
-            };
-          }
-          // if the target is a specific user's posts, return paginated posts (as-is).
-          else if (target == "user posts") {
-            let pages = Math.ceil(posts!.length / 5);
-
-            return {
-              posts: posts!.slice(startIndex, startIndex + 5),
-              pages: pages,
-            };
-          }
+          return {
+            posts: finalPosts.slice(startIndex, startIndex + perPage),
+            pages,
+          };
         });
+    } else {
+      return new Promise((resolve) => {
+        resolve({ posts: [], pages: 1 });
+      });
     }
   }
 
   /*
-  Function Name: sortPosts()
+  Function Name: sortSuggestedPosts()
   Function Description: Orders suggested posts by number of hugs (ascending) and
                         date (descending).
   Parameters: posts (IDBPost[]) - list of posts to order
   ----------------
   Programmer: Shir Bar Lev.
   */
-  sortPosts(posts: IDBPost[]) {
+  sortSuggestedPosts(posts: IDBPost[]) {
     let postHugs: { [hugs: number]: IDBPost[] } = {};
     let orderedPosts: IDBPost[] = [];
 
@@ -484,67 +443,50 @@ export class SWManager {
     return orderedPosts;
   }
 
-  /*
-  Function Name: queryMessages()
-  Function Description: Gets data matching the provided query from IndexedDB database.
-  Parameters: target (string) - The target of the query.
-              currentUser (number) - ID of the current user.
-              page (number) - the current page.
-              threadID (number) - the ID of the thread for which to fetch messages.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  queryMessages(target: string, currentUser: number, page: number, threadID?: number) {
-    return this.currentDB
-      ?.then(function (db) {
-        // if the target is any of the single-message mailboxes, get the data
-        // from the messages objectStore
-        let messagesStore = db.transaction("messages").store.index("date");
-        return messagesStore.getAll();
-      })
-      .then(function (messages) {
-        // get the current page and the start index for the paginated list
-        // if the target is one of the main page's lists, each list should contain
-        // 10 posts; otherwise each list should contain 5 items
-        let startIndex = (page - 1) * 5;
-
-        // if the target is inbox, keep only messages sent to the user and
-        // return paginated inbox messages
-        if (target == "inbox") {
-          let inbox = messages.filter((e: any) => e.forId == currentUser);
-          let orderedInbox = inbox.reverse();
-          let pages = Math.ceil(orderedInbox!.length / 5);
-
-          return {
-            posts: orderedInbox.slice(startIndex, startIndex + 5),
-            pages: pages,
-          };
-        }
-        // if the target is outbox, keep only messages sent from the user and
-        // return paginated outbox messages
-        else if (target == "outbox") {
-          let outbox = messages.filter((e: any) => e.fromId == currentUser);
-          let orderedOutbox = outbox.reverse();
-          let pages = Math.ceil(orderedOutbox!.length / 5);
+  /**
+   * Fetch posts based on the given filters.
+   *
+   * queryMessages (the original method) mapping:
+   * (old target: new parameters)
+   * - inbox: "forId", currentUser, 5, page
+   * - outbox: "fromId", currentUser, 5, page
+   * - thread: "threadID", threadID, 5, page
+   *
+   * @param filterAttribute - the attribute to filter by.
+   * @param filterValue - the value to match.
+   * @param perPage - number of messages per page
+   * @param page (optional) - the current page
+   * @returns A promise that resolves into a list of messages and the number of pages.
+   */
+  fetchMessages(
+    filterAttribute: "forId" | "fromId" | "threadID",
+    filterValue: number,
+    perPage: number,
+    page?: number,
+  ): Promise<{ messages: Message[]; pages: number }> {
+    if (this.currentDB) {
+      return this.currentDB
+        .then(function (db) {
+          let messagesStore = db.transaction("messages").store.index("date");
+          return messagesStore.getAll();
+        })
+        .then((messages) => {
+          const filteredMessages = messages
+            .filter((message: Message) => message[filterAttribute] == filterValue)
+            .reverse();
+          const startIndex = ((page || 1) - 1) * perPage;
+          const pages = Math.ceil(filteredMessages.length / 5);
 
           return {
-            posts: orderedOutbox.slice(startIndex, startIndex + 5),
+            messages: filteredMessages.slice(startIndex, startIndex + perPage),
             pages: pages,
           };
-        }
-        // if the target is a specific thread, keep only messages belonging to
-        // that thread nad return paginated messages
-        else if (target == "thread") {
-          let thread = messages.filter((e: any) => e.threadID == threadID);
-          let orderedThread = thread.reverse();
-          let pages = Math.ceil(orderedThread!.length / 5);
-
-          return {
-            posts: orderedThread.slice(startIndex, startIndex + 5),
-            pages: pages,
-          };
-        }
+        });
+    } else {
+      return new Promise((resolve) => {
+        resolve({ messages: [], pages: 1 });
       });
+    }
   }
 
   /*
@@ -554,22 +496,28 @@ export class SWManager {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  queryThreads(currentPage: number) {
-    return this.currentDB
-      ?.then(function (db) {
-        let threadsStore = db.transaction("threads").store.index("latest");
-        return threadsStore.getAll();
-      })
-      .then(function (threads) {
-        let startIndex = (currentPage - 1) * 5;
-        let orderedThreads = threads.reverse();
-        let pages = Math.ceil(orderedThreads!.length / 5);
+  queryThreads(currentPage: number): Promise<{ messages: FullThread[]; pages: number }> {
+    if (this.currentDB) {
+      return this.currentDB
+        .then(function (db) {
+          let threadsStore = db.transaction("threads").store.index("latest");
+          return threadsStore.getAll();
+        })
+        .then(function (threads) {
+          let startIndex = (currentPage - 1) * 5;
+          let orderedThreads = threads.reverse();
+          let pages = Math.ceil(orderedThreads!.length / 5);
 
-        return {
-          posts: orderedThreads.slice(startIndex, startIndex + 5),
-          pages: pages,
-        };
+          return {
+            messages: orderedThreads.slice(startIndex, startIndex + 5),
+            pages: pages,
+          };
+        });
+    } else {
+      return new Promise((resolve) => {
+        resolve({ messages: [], pages: 1 });
       });
+    }
   }
 
   /*
@@ -579,14 +527,47 @@ export class SWManager {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  queryUsers(userID: number) {
+  queryUsers(userID: number): Promise<OtherUser | undefined> {
+    if (this.currentDB) {
+      return this.currentDB
+        .then(function (db) {
+          let userStore = db.transaction("users").store;
+          return userStore.get(userID);
+        })
+        .then(function (data) {
+          return data;
+        });
+    } else {
+      return new Promise((resolve) => {
+        resolve(undefined);
+      });
+    }
+  }
+
+  /**
+   * Adds an ISO date to each item in the list of items, and then adds
+   * them to the store. It also cleans the store after adding all items.
+   *
+   * @param store - the type of store to add to
+   * @param data - the data to add
+   * @param dateParam - the name of the attribute that contains the date
+   *                    to use (to convert to ISO Date) for each of the items.
+   * @returns A promise that resolves to void.
+   */
+  addFetchedItems(store: IdbStoreType, data: any[], dateParam: string) {
     return this.currentDB
-      ?.then(function (db) {
-        let userStore = db.transaction("users").store;
-        return userStore.get(userID);
+      ?.then((db) => {
+        // start a new transaction
+        let dbStore = db.transaction(store, "readwrite").objectStore(store);
+        data.forEach((item) => {
+          item["isoDate"] = new Date(item[dateParam]).toISOString();
+          dbStore.put(item);
+        });
       })
-      .then(function (data) {
-        return data;
+      .then(() => {
+        if (store != "users") {
+          this.cleanDB(store);
+        }
       });
   }
 
@@ -598,7 +579,7 @@ export class SWManager {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  addItem(store: "posts" | "messages" | "users" | "threads", item: any) {
+  addItem(store: IdbStoreType, item: any) {
     return this.currentDB?.then((db) => {
       // start a new transaction
       let dbStore = db.transaction(store, "readwrite").objectStore(store);
@@ -614,7 +595,7 @@ export class SWManager {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  deleteItem(store: "posts" | "messages" | "users" | "threads", itemID: number) {
+  deleteItem(store: IdbStoreType, itemID: number) {
     return this.currentDB?.then((db) => {
       // start a new transaction
       let tx = db.transaction(store, "readwrite");
@@ -634,11 +615,7 @@ export class SWManager {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  deleteItems(
-    store: "posts" | "messages" | "users" | "threads",
-    parentType: string,
-    parentID: number,
-  ) {
+  deleteItems(store: IdbStoreType, parentType: string, parentID: number) {
     return this.currentDB?.then((db) => {
       // start a new transaction
       let tx = db.transaction(store, "readwrite");
@@ -663,7 +640,7 @@ export class SWManager {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  clearStore(storeID: "posts" | "messages" | "users" | "threads") {
+  clearStore(storeID: IdbStoreType) {
     // checks that there's IDB database currently working
     if (this.currentDB) {
       // gets the current database, and then gets the given store and clears it

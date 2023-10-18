@@ -33,7 +33,7 @@
 import { TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
 import {} from "jasmine";
-import { APP_BASE_HREF, Location } from "@angular/common";
+import { APP_BASE_HREF } from "@angular/common";
 import {
   BrowserDynamicTestingModule,
   platformBrowserDynamicTesting,
@@ -44,12 +44,6 @@ import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 
 // App imports
 import { ErrorPage } from "./errorPage.component";
-
-class MockLocation {
-  back() {
-    return "went back!";
-  }
-}
 
 describe("ErrorPage", () => {
   // Before each test, configure testing environment
@@ -65,10 +59,7 @@ describe("ErrorPage", () => {
         FontAwesomeModule,
       ],
       declarations: [ErrorPage],
-      providers: [
-        { provide: APP_BASE_HREF, useValue: "/" },
-        { provide: Location, useClass: MockLocation },
-      ],
+      providers: [{ provide: APP_BASE_HREF, useValue: "/" }],
     }).compileComponents();
   });
 
@@ -104,7 +95,7 @@ describe("ErrorPage", () => {
     const errorPage = fixture.componentInstance;
     const errorPageDOM = fixture.nativeElement;
     const backSpy = spyOn(errorPage, "goBack").and.callThrough();
-    const mockLocationSpy = spyOn(errorPage["location"], "back").and.callThrough();
+    const mockLocationSpy = spyOn(errorPage["location"], "back");
 
     fixture.detectChanges();
 

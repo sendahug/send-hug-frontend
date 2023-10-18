@@ -30,19 +30,36 @@
   SOFTWARE.
 */
 
-export interface Thread {
+import { iconCharacters } from "./types";
+import { UserIconColours } from "./user.interface";
+
+export interface ParsedThread {
   id: number;
   user: {
     displayName: string;
-    selectedIcon: "bear" | "kitty" | "dog";
-    iconColours: {
-      character: String;
-      lbg: String;
-      rbg: String;
-      item: String;
-    };
+    selectedIcon: iconCharacters;
+    iconColours: UserIconColours;
   };
   userID: number;
+  numMessages: number;
+  latestMessage: Date;
+  isoDate?: string;
+}
+
+export interface FullThread {
+  id: number;
+  user1: {
+    displayName: string;
+    selectedIcon: iconCharacters;
+    iconColours: UserIconColours;
+  };
+  user1Id: number;
+  user2: {
+    displayName: string;
+    selectedIcon: iconCharacters;
+    iconColours: UserIconColours;
+  };
+  user2Id: number;
   numMessages: number;
   latestMessage: Date;
   isoDate?: string;

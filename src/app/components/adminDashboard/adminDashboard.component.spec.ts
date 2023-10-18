@@ -47,12 +47,57 @@ import { NO_ERRORS_SCHEMA } from "@angular/core";
 import { AdminDashboard } from "./adminDashboard.component";
 import { PopUp } from "../popUp/popUp.component";
 import { AdminService } from "../../services/admin.service";
-import { MockAdminService } from "../../services/admin.service.mock";
 import { AuthService } from "../../services/auth.service";
-import { MockAuthService } from "../../services/auth.service.mock";
-import { AlertsService } from "../../services/alerts.service";
-import { MockAlertsService } from "../../services/alerts.service.mock";
 import { Loader } from "../loader/loader.component";
+import { mockAuthedUser } from "@tests/mockData";
+
+const mockUserReports = [
+  {
+    id: 1,
+    type: "User" as "User" | "Post",
+    userID: 10,
+    reporter: 4,
+    reportReason: "something",
+    date: new Date("2020-06-29 19:17:31.072"),
+    dismissed: false,
+    closed: false,
+  },
+];
+const mockPostReports = [
+  {
+    id: 2,
+    type: "Post" as "User" | "Post",
+    userID: 11,
+    postID: 5,
+    reporter: 4,
+    reportReason: "reason",
+    date: new Date("2020-06-29 19:17:31.072"),
+    dismissed: false,
+    closed: false,
+  },
+];
+const mockBlockedUsers = [
+  {
+    id: 15,
+    displayName: "name",
+    receivedH: 2,
+    givenH: 2,
+    role: "user",
+    blocked: true,
+    releaseDate: new Date("2120-09-29 19:17:31.072"),
+    posts: 1,
+  },
+];
+const mockFilteredPhrases = [
+  {
+    filter: "word",
+    id: 1,
+  },
+  {
+    filter: "word2",
+    id: 2,
+  },
+];
 
 describe("AdminDashboard", () => {
   // Before each test, configure testing environment
@@ -69,13 +114,15 @@ describe("AdminDashboard", () => {
         FontAwesomeModule,
       ],
       declarations: [AdminDashboard, PopUp, Loader],
-      providers: [
-        { provide: APP_BASE_HREF, useValue: "/" },
-        { provide: AdminService, useClass: MockAdminService },
-        { provide: AuthService, useClass: MockAuthService },
-        { provide: AlertsService, useClass: MockAlertsService },
-      ],
+      providers: [{ provide: APP_BASE_HREF, useValue: "/" }],
     }).compileComponents();
+
+    // make sure the test goes through with admin permission
+    const authService = TestBed.inject(AuthService) as AuthService;
+    spyOn(authService, "canUser").and.returnValue(true);
+    authService.isUserDataResolved.next(true);
+    authService.authenticated = true;
+    authService.userData = { ...mockAuthedUser };
   });
 
   // Check that the component is created
@@ -100,7 +147,6 @@ describe("AdminDashboard", () => {
     const fixture = TestBed.createComponent(AdminDashboard);
     const adminDashboard = fixture.componentInstance;
     const changeSpy = spyOn(adminDashboard, "changeMode").and.callThrough();
-    adminDashboard["authService"].login();
 
     fixture.detectChanges();
 
@@ -142,28 +188,28 @@ describe("AdminDashboard", () => {
           FontAwesomeModule,
         ],
         declarations: [AdminDashboard, PopUp, Loader],
-        providers: [
-          { provide: APP_BASE_HREF, useValue: "/" },
-          { provide: AdminService, useClass: MockAdminService },
-          { provide: AuthService, useClass: MockAuthService },
-          { provide: AlertsService, useClass: MockAlertsService },
-        ],
+        providers: [{ provide: APP_BASE_HREF, useValue: "/" }],
       }).compileComponents();
 
       // make sure the test goes through with admin permission
       const authService = TestBed.inject(AuthService) as AuthService;
       spyOn(authService, "canUser").and.returnValue(true);
       authService.isUserDataResolved.next(true);
+      authService.authenticated = true;
+      authService.userData = { ...mockAuthedUser };
     });
 
     // Check that a call is made to get open reports
     it("should get open reports", (done: DoneFn) => {
       // set up the spy and the component
       const adminService = TestBed.inject(AdminService);
-      const reportSpy = spyOn(adminService, "getOpenReports").and.callThrough();
+      const reportSpy = spyOn(adminService, "getOpenReports");
       const fixture = TestBed.createComponent(AdminDashboard);
       const adminDashboard = fixture.componentInstance;
       const adminDashboardDOM = fixture.nativeElement;
+      adminService.postReports = [...mockPostReports];
+      adminService.userReports = [...mockUserReports];
+      adminService.isReportsResolved.next(true);
       adminDashboard.screen = "reports";
 
       fixture.detectChanges();
@@ -192,7 +238,13 @@ describe("AdminDashboard", () => {
       const checkBlockSpy = spyOn(adminDashboard, "checkBlock").and.callThrough();
       const setBlockSpy = spyOn(adminDashboard, "setBlock").and.callThrough();
       const adminService = adminDashboard.adminService;
-      const blockServiceSpy = spyOn(adminService, "blockUser").and.callThrough();
+      const blockServiceSpy = spyOn(adminService, "blockUser");
+      spyOn(adminService, "getOpenReports");
+      spyOn(adminService, "checkUserBlock");
+      adminService.postReports = [...mockPostReports];
+      adminService.userReports = [...mockUserReports];
+      adminService.isReportsResolved.next(true);
+      adminService.isBlockDataResolved.next(true);
       adminDashboard.screen = "reports";
 
       fixture.detectChanges();
@@ -220,6 +272,11 @@ describe("AdminDashboard", () => {
       const adminDashboard = fixture.componentInstance;
       const adminDashboardDOM = fixture.nativeElement;
       const editSpy = spyOn(adminDashboard, "editUser").and.callThrough();
+      const adminService = adminDashboard.adminService;
+      spyOn(adminService, "getOpenReports");
+      adminService.postReports = [...mockPostReports];
+      adminService.userReports = [...mockUserReports];
+      adminService.isReportsResolved.next(true);
       adminDashboard.screen = "reports";
 
       fixture.detectChanges();
@@ -247,6 +304,11 @@ describe("AdminDashboard", () => {
       const adminDashboard = fixture.componentInstance;
       const adminDashboardDOM = fixture.nativeElement;
       const editSpy = spyOn(adminDashboard, "editPost").and.callThrough();
+      const adminService = adminDashboard.adminService;
+      spyOn(adminService, "getOpenReports");
+      adminService.postReports = [...mockPostReports];
+      adminService.userReports = [...mockUserReports];
+      adminService.isReportsResolved.next(true);
       adminDashboard.screen = "reports";
 
       fixture.detectChanges();
@@ -274,6 +336,11 @@ describe("AdminDashboard", () => {
       const adminDashboard = fixture.componentInstance;
       const adminDashboardDOM = fixture.nativeElement;
       const deleteSpy = spyOn(adminDashboard, "deletePost").and.callThrough();
+      const adminService = adminDashboard.adminService;
+      spyOn(adminService, "getOpenReports");
+      adminService.postReports = [...mockPostReports];
+      adminService.userReports = [...mockUserReports];
+      adminService.isReportsResolved.next(true);
       adminDashboard.screen = "reports";
 
       fixture.detectChanges();
@@ -303,6 +370,10 @@ describe("AdminDashboard", () => {
       const dismissSpy = spyOn(adminDashboard, "dismissReport").and.callThrough();
       const adminService = adminDashboard.adminService;
       const dismissServiceSpy = spyOn(adminService, "dismissReport").and.callThrough();
+      spyOn(adminService, "getOpenReports");
+      adminService.postReports = [...mockPostReports];
+      adminService.userReports = [...mockUserReports];
+      adminService.isReportsResolved.next(true);
 
       adminDashboard.screen = "reports";
 
@@ -338,12 +409,7 @@ describe("AdminDashboard", () => {
           FontAwesomeModule,
         ],
         declarations: [AdminDashboard, PopUp, Loader],
-        providers: [
-          { provide: APP_BASE_HREF, useValue: "/" },
-          { provide: AdminService, useClass: MockAdminService },
-          { provide: AuthService, useClass: MockAuthService },
-          { provide: AlertsService, useClass: MockAlertsService },
-        ],
+        providers: [{ provide: APP_BASE_HREF, useValue: "/" }],
       }).compileComponents();
 
       // make sure the test goes through with admin permission
@@ -356,10 +422,15 @@ describe("AdminDashboard", () => {
     it("should get blocked users", (done: DoneFn) => {
       // set up the spy and the component
       const adminService = TestBed.inject(AdminService);
-      const blockSpy = spyOn(adminService, "getBlockedUsers").and.callThrough();
+      const blockSpy = spyOn(adminService, "getBlockedUsers");
+      spyOn(adminService, "checkUserBlock");
       const fixture = TestBed.createComponent(AdminDashboard);
       const adminDashboard = fixture.componentInstance;
       const adminDashboardDOM = fixture.nativeElement;
+      adminService.blockedUsers = [...mockBlockedUsers];
+      adminService.isBlocksResolved.next(true);
+      adminService.totalPages.blockedUsers = 1;
+      adminService.isBlockDataResolved.next(true);
       adminDashboard.screen = "blocks";
 
       fixture.detectChanges();
@@ -383,7 +454,13 @@ describe("AdminDashboard", () => {
       const checkBlockSpy = spyOn(adminDashboard, "checkBlock").and.callThrough();
       const setBlockSpy = spyOn(adminDashboard, "setBlock").and.callThrough();
       const adminService = adminDashboard.adminService;
-      const blockServiceSpy = spyOn(adminService, "blockUser").and.callThrough();
+      const blockServiceSpy = spyOn(adminService, "blockUser");
+      spyOn(adminService, "checkUserBlock");
+      spyOn(adminService, "getBlockedUsers");
+      adminService.blockedUsers = [...mockBlockedUsers];
+      adminService.isBlocksResolved.next(true);
+      adminService.totalPages.blockedUsers = 1;
+      adminService.isBlockDataResolved.next(true);
       adminDashboard.screen = "blocks";
 
       fixture.detectChanges();
@@ -413,7 +490,13 @@ describe("AdminDashboard", () => {
       const adminDashboardDOM = fixture.nativeElement;
       const unblockSpy = spyOn(adminDashboard, "unblock").and.callThrough();
       const adminService = adminDashboard.adminService;
-      const unblockServiceSpy = spyOn(adminService, "unblockUser").and.callThrough();
+      const unblockServiceSpy = spyOn(adminService, "unblockUser");
+      spyOn(adminService, "checkUserBlock");
+      spyOn(adminService, "getBlockedUsers");
+      adminService.blockedUsers = [...mockBlockedUsers];
+      adminService.isBlocksResolved.next(true);
+      adminService.totalPages.blockedUsers = 1;
+      adminService.isBlockDataResolved.next(true);
       adminDashboard.screen = "blocks";
 
       fixture.detectChanges();
@@ -438,7 +521,13 @@ describe("AdminDashboard", () => {
       const adminDashboardDOM = fixture.nativeElement;
       const setBlockSpy = spyOn(adminDashboard, "setBlock").and.callThrough();
       const adminService = adminDashboard.adminService;
-      const blockServiceSpy = spyOn(adminService, "blockUser").and.callThrough();
+      const blockServiceSpy = spyOn(adminService, "blockUser");
+      spyOn(adminService, "checkUserBlock");
+      spyOn(adminService, "getBlockedUsers");
+      adminService.blockedUsers = [...mockBlockedUsers];
+      adminService.isBlocksResolved.next(true);
+      adminService.totalPages.blockedUsers = 1;
+      adminService.isBlockDataResolved.next(true);
       const blockLengthNum = 864e5 * 1;
       const blockLengthStr = "oneDay";
       const blockedUser = 6;
@@ -471,7 +560,13 @@ describe("AdminDashboard", () => {
       const adminDashboardDOM = fixture.nativeElement;
       const setBlockSpy = spyOn(adminDashboard, "setBlock").and.callThrough();
       const adminService = adminDashboard.adminService;
-      const blockServiceSpy = spyOn(adminService, "blockUser").and.callThrough();
+      const blockServiceSpy = spyOn(adminService, "blockUser");
+      spyOn(adminService, "checkUserBlock");
+      spyOn(adminService, "getBlockedUsers");
+      adminService.blockedUsers = [...mockBlockedUsers];
+      adminService.isBlocksResolved.next(true);
+      adminService.totalPages.blockedUsers = 1;
+      adminService.isBlockDataResolved.next(true);
       const blockLengthNum = 864e5 * 7;
       const blockLengthStr = "oneWeek";
       const blockedUser = 7;
@@ -504,7 +599,13 @@ describe("AdminDashboard", () => {
       const adminDashboardDOM = fixture.nativeElement;
       const setBlockSpy = spyOn(adminDashboard, "setBlock").and.callThrough();
       const adminService = adminDashboard.adminService;
-      const blockServiceSpy = spyOn(adminService, "blockUser").and.callThrough();
+      const blockServiceSpy = spyOn(adminService, "blockUser");
+      spyOn(adminService, "checkUserBlock");
+      spyOn(adminService, "getBlockedUsers");
+      adminService.blockedUsers = [...mockBlockedUsers];
+      adminService.isBlocksResolved.next(true);
+      adminService.totalPages.blockedUsers = 1;
+      adminService.isBlockDataResolved.next(true);
       const blockLengthNum = 864e5 * 30;
       const blockLengthStr = "oneMonth";
       const blockedUser = 8;
@@ -537,7 +638,13 @@ describe("AdminDashboard", () => {
       const adminDashboardDOM = fixture.nativeElement;
       const setBlockSpy = spyOn(adminDashboard, "setBlock").and.callThrough();
       const adminService = adminDashboard.adminService;
-      const blockServiceSpy = spyOn(adminService, "blockUser").and.callThrough();
+      const blockServiceSpy = spyOn(adminService, "blockUser");
+      spyOn(adminService, "checkUserBlock");
+      spyOn(adminService, "getBlockedUsers");
+      adminService.blockedUsers = [...mockBlockedUsers];
+      adminService.isBlocksResolved.next(true);
+      adminService.totalPages.blockedUsers = 1;
+      adminService.isBlockDataResolved.next(true);
       const blockLengthNum = 864e5 * 36500;
       const blockLengthStr = "forever";
       const blockedUser = 9;
@@ -570,8 +677,19 @@ describe("AdminDashboard", () => {
       const adminDashboardDOM = fixture.nativeElement;
       const setBlockSpy = spyOn(adminDashboard, "setBlock").and.callThrough();
       const adminService = adminDashboard.adminService;
-      const blockServiceSpy = spyOn(adminService, "blockUser").and.callThrough();
-      const releaseDate = new Date(new Date("2020-09-29 19:17:31.072").getTime() + 864e5 * 7);
+      const blockServiceSpy = spyOn(adminService, "blockUser");
+      spyOn(adminService, "checkUserBlock");
+      spyOn(adminService, "getBlockedUsers");
+      adminService.blockedUsers = [...mockBlockedUsers];
+      adminService.isBlocksResolved.next(true);
+      adminService.totalPages.blockedUsers = 1;
+      adminService.isBlockDataResolved.next(true);
+      adminService.userBlockData = {
+        userID: 15,
+        isBlocked: true,
+        releaseDate: new Date("2120-09-29 19:17:31.072"),
+      };
+      const releaseDate = new Date(new Date("2120-09-29 19:17:31.072").getTime() + 864e5 * 7);
       const blockLengthStr = "oneWeek";
       const blockedUser = 15;
       adminDashboard.screen = "blocks";
@@ -608,28 +726,28 @@ describe("AdminDashboard", () => {
           FontAwesomeModule,
         ],
         declarations: [AdminDashboard, PopUp, Loader],
-        providers: [
-          { provide: APP_BASE_HREF, useValue: "/" },
-          { provide: AdminService, useClass: MockAdminService },
-          { provide: AuthService, useClass: MockAuthService },
-          { provide: AlertsService, useClass: MockAlertsService },
-        ],
+        providers: [{ provide: APP_BASE_HREF, useValue: "/" }],
       }).compileComponents();
 
       // make sure the test goes through with admin permission
       const authService = TestBed.inject(AuthService);
       spyOn(authService, "canUser").and.returnValue(true);
       authService.isUserDataResolved.next(true);
+      authService.authenticated = true;
+      authService.userData = { ...mockAuthedUser };
     });
 
     // Check that a call is made to get filtered phrases
     it("should get filtered phrases", (done: DoneFn) => {
       // set up the spy and the component
       const adminService = TestBed.inject(AdminService);
-      const filterSpy = spyOn(adminService, "getFilters").and.callThrough();
+      const filterSpy = spyOn(adminService, "getFilters");
       const fixture = TestBed.createComponent(AdminDashboard);
       const adminDashboard = fixture.componentInstance;
       const adminDashboardDOM = fixture.nativeElement;
+      adminService.filteredPhrases = [...mockFilteredPhrases];
+      adminService.isFiltersResolved.next(true);
+      adminService.totalPages.filteredPhrases = 1;
       adminDashboard.screen = "filters";
 
       fixture.detectChanges();
@@ -651,7 +769,11 @@ describe("AdminDashboard", () => {
       const adminDashboardDOM = fixture.nativeElement;
       const addSpy = spyOn(adminDashboard, "addFilter").and.callThrough();
       const adminService = adminDashboard.adminService;
-      const addServiceSpy = spyOn(adminService, "addFilter").and.callThrough();
+      const addServiceSpy = spyOn(adminService, "addFilter");
+      spyOn(adminService, "getFilters");
+      adminService.filteredPhrases = [...mockFilteredPhrases];
+      adminService.isFiltersResolved.next(true);
+      adminService.totalPages.filteredPhrases = 1;
       adminDashboard.screen = "filters";
 
       fixture.detectChanges();
@@ -676,7 +798,11 @@ describe("AdminDashboard", () => {
       const adminDashboardDOM = fixture.nativeElement;
       const removeSpy = spyOn(adminDashboard, "removeFilter").and.callThrough();
       const adminService = adminDashboard.adminService;
-      const removeServiceSpy = spyOn(adminService, "removeFilter").and.callThrough();
+      const removeServiceSpy = spyOn(adminService, "removeFilter");
+      spyOn(adminService, "getFilters");
+      adminService.filteredPhrases = [...mockFilteredPhrases];
+      adminService.isFiltersResolved.next(true);
+      adminService.totalPages.filteredPhrases = 1;
       adminDashboard.screen = "filters";
 
       fixture.detectChanges();

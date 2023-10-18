@@ -39,8 +39,6 @@ import {
 import {} from "jasmine";
 
 import { MyDB, SWManager } from "./sWManager.service";
-import { AlertsService } from "./alerts.service";
-import { MockAlertsService } from "./alerts.service.mock";
 import { IDBPDatabase } from "idb";
 
 function populateDB(
@@ -173,10 +171,10 @@ function populateDB(
       {
         id: 1,
         displayName: "shirb",
-        receivedHugs: 3,
-        givenHugs: 3,
+        receivedH: 3,
+        givenH: 3,
         role: "user",
-        postsNum: 10,
+        posts: 10,
         selectedIcon: "kitty" as "kitty",
         iconColours: {
           character: "#BA9F93",
@@ -188,10 +186,10 @@ function populateDB(
       {
         id: 4,
         displayName: "user14",
-        receivedHugs: 3,
-        givenHugs: 3,
+        receivedH: 3,
+        givenH: 3,
         role: "user",
-        postsNum: 10,
+        posts: 10,
         selectedIcon: "kitty" as "kitty",
         iconColours: {
           character: "#BA9F93",
@@ -261,7 +259,7 @@ function populateDB(
     ],
   };
 
-  dbPromise.then((db) => {
+  return dbPromise.then((db) => {
     // if there's a specific store to populate, populate it
     if (store != "all") {
       items[store].forEach((item: any) => {
@@ -297,7 +295,7 @@ describe("SWManagerService", () => {
 
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
-      providers: [SWManager, { provide: AlertsService, useClass: MockAlertsService }],
+      providers: [SWManager],
     }).compileComponents();
 
     sWManagerService = TestBed.inject(SWManager);
@@ -373,7 +371,7 @@ describe("SWManagerService", () => {
       },
     ];
 
-    const orderedPosts = sWManagerService.sortPosts(posts);
+    const orderedPosts = sWManagerService.sortSuggestedPosts(posts);
 
     expect(orderedPosts[0].id).toBe(1);
     expect(orderedPosts[1].id).toBe(3);
@@ -383,7 +381,7 @@ describe("SWManagerService", () => {
   });
 
   // Query Posts Method Tests
-  describe("queryPosts()", () => {
+  describe("fetchPosts()", () => {
     // Before each test, configure testing environment
     beforeEach(() => {
       TestBed.resetTestEnvironment();
@@ -391,7 +389,7 @@ describe("SWManagerService", () => {
 
       TestBed.configureTestingModule({
         imports: [HttpClientTestingModule],
-        providers: [SWManager, { provide: AlertsService, useClass: MockAlertsService }],
+        providers: [SWManager],
       }).compileComponents();
 
       sWManagerService = TestBed.inject(SWManager);
@@ -402,33 +400,33 @@ describe("SWManagerService", () => {
 
     // try to get main page's new posts
     it("should get new posts correctly", () => {
-      const postsPromise = sWManagerService.queryPosts("main new");
+      const postsPromise = sWManagerService.fetchPosts("date", 10, undefined, 1, true);
 
       return postsPromise!.then((posts: any) => {
         // check all the posts are there and they're ordered in reverse date order
-        expect(posts).toBeDefined();
-        expect(posts!.length).toBe(3);
-        expect(Number(posts![0].isoDate)).toBeGreaterThan(Number(posts![1].isoDate));
-        expect(Number(posts![1].isoDate)).toBeGreaterThan(Number(posts![2].isoDate));
+        expect(posts.posts).toBeDefined();
+        expect(posts.posts!.length).toBe(3);
+        expect(Number(posts.posts![0].isoDate)).toBeGreaterThan(Number(posts.posts![1].isoDate));
+        expect(Number(posts.posts![1].isoDate)).toBeGreaterThan(Number(posts.posts![2].isoDate));
       });
     });
 
     // try to get main page's suggested posts
     it("should get suggested posts correctly", () => {
-      const postsPromise = sWManagerService.queryPosts("main suggested");
+      const postsPromise = sWManagerService.fetchPosts("hugs", 10, undefined, 1, false);
 
       return postsPromise!.then((posts: any) => {
         // check all the posts are there and they're ordered in reverse date order
-        expect(posts).toBeDefined();
-        expect(posts!.length).toBe(3);
-        expect(posts![1].givenHugs).toBeGreaterThan(posts![0].givenHugs);
-        expect(posts![2].givenHugs).toBeGreaterThan(posts![1].givenHugs);
+        expect(posts.posts).toBeDefined();
+        expect(posts.posts!.length).toBe(3);
+        expect(posts.posts![1].givenHugs).toBeGreaterThan(posts.posts![0].givenHugs);
+        expect(posts.posts![2].givenHugs).toBeGreaterThan(posts.posts![1].givenHugs);
       });
     });
 
     // try to get new posts
     it("should get new posts correctly - page 1", () => {
-      const postsPromise = sWManagerService.queryPosts("new posts", undefined, 1);
+      const postsPromise = sWManagerService.fetchPosts("date", 5, undefined, 1, true);
 
       return postsPromise!.then((posts: any) => {
         // check all the posts are there and they're ordered in reverse date order
@@ -441,7 +439,7 @@ describe("SWManagerService", () => {
 
     // try to get new posts page 2 (doesn't exist)
     it("should get new posts correctly - page 2", () => {
-      const postsPromise = sWManagerService.queryPosts("new posts", undefined, 2);
+      const postsPromise = sWManagerService.fetchPosts("date", 5, undefined, 2, true);
 
       return postsPromise!.then((posts: any) => {
         // check all the posts are there and they're ordered in reverse date order
@@ -452,7 +450,7 @@ describe("SWManagerService", () => {
 
     // try to get suggested posts
     it("should get suggested posts correctly - page 1", () => {
-      const postsPromise = sWManagerService.queryPosts("suggested posts", undefined, 1);
+      const postsPromise = sWManagerService.fetchPosts("hugs", 5, undefined, 1, false);
 
       return postsPromise!.then((posts: any) => {
         // check all the posts are there and they're ordered in reverse date order
@@ -465,7 +463,7 @@ describe("SWManagerService", () => {
 
     // try to get suggested posts page 2 (doesn't exist)
     it("should get suggested posts correctly - page 2", () => {
-      const postsPromise = sWManagerService.queryPosts("suggested posts", undefined, 2);
+      const postsPromise = sWManagerService.fetchPosts("hugs", 5, undefined, 2, false);
 
       return postsPromise!.then((posts: any) => {
         // check all the posts are there and they're ordered in reverse date order
@@ -476,7 +474,7 @@ describe("SWManagerService", () => {
 
     // try to get user's posts
     it("should get a user's posts correctly", () => {
-      const postsPromise = sWManagerService.queryPosts("user posts", 1, 1);
+      const postsPromise = sWManagerService.fetchPosts("user", 5, 1, 1, false);
 
       return postsPromise!.then((posts: any) => {
         expect(posts).toBeDefined();
@@ -488,7 +486,7 @@ describe("SWManagerService", () => {
 
     // try to get another user's posts
     it("should get other users' posts", () => {
-      const postsPromise = sWManagerService.queryPosts("user posts", 3, 1);
+      const postsPromise = sWManagerService.fetchPosts("user", 5, 3, 1, false);
 
       return postsPromise!.then((posts: any) => {
         expect(posts).toBeDefined();
@@ -499,90 +497,90 @@ describe("SWManagerService", () => {
   });
 
   // Query Messages Method Tests
-  describe("queryMessages()", () => {
+  describe("fetchMessages()", () => {
     // Before each test, configure testing environment
-    beforeEach(() => {
+    beforeEach(async () => {
       TestBed.resetTestEnvironment();
       TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
       TestBed.configureTestingModule({
         imports: [HttpClientTestingModule],
-        providers: [SWManager, { provide: AlertsService, useClass: MockAlertsService }],
+        providers: [SWManager],
       }).compileComponents();
 
       sWManagerService = TestBed.inject(SWManager);
       sWManagerService.currentDB = sWManagerService.openDatabase();
-      populateDB(sWManagerService.currentDB, "messages");
+      await populateDB(sWManagerService.currentDB, "messages");
       httpController = TestBed.inject(HttpTestingController);
     });
 
     // try to get inbox messages - page 1
     it("should get inbox messages correctly", () => {
-      const messPromise = sWManagerService.queryMessages("inbox", 4, 1);
+      const messPromise = sWManagerService.fetchMessages("forId", 4, 5, 1);
 
       return messPromise!.then((messages) => {
         // check all the posts are there and they're ordered in reverse date order
         expect(messages).toBeDefined();
-        expect(messages!.posts.length).toBe(1);
-        expect(messages!.posts[0].id).toBe(14);
+        expect(messages!.messages.length).toBe(1);
+        expect(messages!.messages[0].id).toBe(14);
       });
     });
 
     // try to get inbox messages - page 2 (doesn't exist)
     it("should get inbox messages correctly - page 2", () => {
-      const messPromise = sWManagerService.queryMessages("inbox", 4, 2);
+      const messPromise = sWManagerService.fetchMessages("forId", 4, 5, 2);
 
       return messPromise!.then((messages) => {
         // check all the posts are there and they're ordered in reverse date order
         expect(messages).toBeDefined();
-        expect(messages!.posts.length).toBe(0);
+        expect(messages!.messages.length).toBe(0);
       });
     });
 
     // try to get outbox messages - page 1
     it("should get outbox messages correctly", () => {
-      const messPromise = sWManagerService.queryMessages("outbox", 4, 1);
+      const messPromise = sWManagerService.fetchMessages("fromId", 4, 5, 1);
 
       return messPromise!.then((messages) => {
         // check all the posts are there and they're ordered in reverse date order
         expect(messages).toBeDefined();
-        expect(messages!.posts.length).toBe(2);
-        expect(messages!.posts[0].id).toBe(1);
-        expect(messages!.posts[1].id).toBe(9);
+        expect(messages!.messages.length).toBe(2);
+        expect(messages!.messages[0].id).toBe(1);
+        expect(messages!.messages[1].id).toBe(9);
       });
     });
 
     // try to get outbox messages - page 2 (doesn't exist)
     it("should get outbox messages correctly - page 2", () => {
-      const messPromise = sWManagerService.queryMessages("outbox", 4, 2);
+      const messPromise = sWManagerService.fetchMessages("fromId", 4, 5, 2);
 
       return messPromise!.then((messages) => {
         // check all the posts are there and they're ordered in reverse date order
         expect(messages).toBeDefined();
-        expect(messages!.posts.length).toBe(0);
+        expect(messages!.messages.length).toBe(0);
       });
     });
 
     // try to get thread - page 1
     it("should get thread correctly", () => {
-      const messPromise = sWManagerService.queryMessages("thread", 4, 1, 3);
+      const messPromise = sWManagerService.fetchMessages("threadID", 3, 5, 1);
 
       return messPromise!.then((messages) => {
         // check all the posts are there and they're ordered in reverse date order
         expect(messages).toBeDefined();
-        expect(messages!.posts.length).toBe(1);
-        expect(messages!.posts[0].id).toBe(9);
+        expect(messages!.messages.length).toBe(1);
+        expect(messages!.messages[0].id).toBe(9);
       });
     });
 
     // try to get thread - page 2
     it("should get thread correctly", () => {
-      const messPromise = sWManagerService.queryMessages("thread", 4, 2);
+      const messPromise = sWManagerService.fetchMessages("threadID", 3, 5, 2);
 
       return messPromise!.then((messages) => {
         // check all the posts are there and they're ordered in reverse date order
         expect(messages).toBeDefined();
-        expect(messages!.posts.length).toBe(0);
+        expect(messages!.messages.length).toBe(0);
       });
     });
   });
@@ -596,7 +594,7 @@ describe("SWManagerService", () => {
 
       TestBed.configureTestingModule({
         imports: [HttpClientTestingModule],
-        providers: [SWManager, { provide: AlertsService, useClass: MockAlertsService }],
+        providers: [SWManager],
       }).compileComponents();
 
       sWManagerService = TestBed.inject(SWManager);
@@ -612,9 +610,9 @@ describe("SWManagerService", () => {
       return messPromise!.then((threads) => {
         // check all the posts are there and they're ordered in reverse date order
         expect(threads).toBeDefined();
-        expect(threads!.posts.length).toBe(2);
-        expect(threads!.posts[0].id).toBe(5);
-        expect(threads!.posts[1].id).toBe(3);
+        expect(threads!.messages.length).toBe(2);
+        expect(threads!.messages[0].id).toBe(5);
+        expect(threads!.messages[1].id).toBe(3);
       });
     });
 
@@ -625,7 +623,7 @@ describe("SWManagerService", () => {
       return messPromise!.then((threads) => {
         // check all the posts are there and they're ordered in reverse date order
         expect(threads).toBeDefined();
-        expect(threads!.posts.length).toBe(0);
+        expect(threads!.messages.length).toBe(0);
       });
     });
   });
@@ -639,7 +637,7 @@ describe("SWManagerService", () => {
 
       TestBed.configureTestingModule({
         imports: [HttpClientTestingModule],
-        providers: [SWManager, { provide: AlertsService, useClass: MockAlertsService }],
+        providers: [SWManager],
       }).compileComponents();
 
       sWManagerService = TestBed.inject(SWManager);

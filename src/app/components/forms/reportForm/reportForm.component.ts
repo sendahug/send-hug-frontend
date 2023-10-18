@@ -32,15 +32,16 @@
 
 // Angular imports
 import { Component, Input, Output, EventEmitter } from "@angular/core";
+import { FormBuilder, Validators } from "@angular/forms";
 
 // App-related import
-import { Post } from "../../../interfaces/post.interface";
-import { Report } from "../../../interfaces/report.interface";
-import { OtherUser } from "../../../interfaces/otherUser.interface";
-import { AuthService } from "../../../services/auth.service";
-import { ItemsService } from "../../../services/items.service";
-import { AlertsService } from "../../../services/alerts.service";
-import { ValidationService } from "../../../services/validation.service";
+import { Post } from "@app/interfaces/post.interface";
+import { Report } from "@app/interfaces/report.interface";
+import { OtherUser } from "@app/interfaces/otherUser.interface";
+import { AuthService } from "@app/services/auth.service";
+import { ItemsService } from "@app/services/items.service";
+import { AlertsService } from "@app/services/alerts.service";
+import { ValidationService } from "@app/services/validation.service";
 
 // Reasons for submitting a report
 enum postReportReasons {
@@ -82,8 +83,11 @@ export class ReportForm {
   @Input() reportedItem: Post | OtherUser | undefined;
   // type of item to report
   @Input() reportType: "User" | "Post" | undefined;
-  selectedReason: string | undefined;
   reportReasonsText = reportReasonsText;
+  reportForm = this.fb.group({
+    selectedReason: this.fb.control(undefined as string | undefined, [Validators.required]),
+    otherReason: this.fb.control({ value: undefined as string | undefined, disabled: true }),
+  });
 
   // CTOR
   constructor(
@@ -91,45 +95,59 @@ export class ReportForm {
     private itemsService: ItemsService,
     private alertsService: AlertsService,
     private validationService: ValidationService,
+    private fb: FormBuilder,
   ) {}
 
   /*
-  Function Name: setSelected()
-  Function Description: Sets the selected reason for reporting the post. The method is
-                        triggered by the user checking radio buttons.
+  Function Name: checkSelectedForOther()
+  Function Description: Checks whether to enable or disable the 'other'
+                        text input, based on the selected reason.
   Parameters: selectedItem (number) - the ID of the slected option.
   ----------------
   Programmer: Shir Bar Lev.
   */
-  setSelected(selectedItem: string | number) {
+  checkSelectedForOther(selectedItem: string | number) {
     selectedItem = Number(selectedItem);
-    let otherText = document.getElementById("rOption3Text") as HTMLInputElement;
 
     // If the selected reason is one of the set reasons, simply send it as is
-    if (selectedItem == 0 || selectedItem == 1 || selectedItem == 2) {
-      // if the item being reported is a post
-      if (this.reportType == "Post") {
-        this.selectedReason = `The post is ${postReportReasons[selectedItem]}`;
-      }
-      // if the item being reported is a user
-      else {
-        if (selectedItem == 2) {
-          this.selectedReason = `The user is behaving in an ${userReportReasons[selectedItem]}`;
-        } else {
-          this.selectedReason = `The user is posting ${userReportReasons[selectedItem]}`;
-        }
-      }
-
-      otherText.disabled = true;
-      otherText.required = false;
-      otherText.setAttribute("aria-required", "false");
+    if (selectedItem <= 2) {
+      this.reportForm.get("otherReason")?.disable();
     }
     // If the user chose to put their own input, take that as the reason
     else {
-      otherText.disabled = false;
-      otherText.required = true;
-      this.selectedReason = "other";
-      otherText.setAttribute("aria-required", "true");
+      this.reportForm.get("otherReason")?.enable();
+    }
+  }
+
+  /**
+   * Gets the reason text from the enums above to match
+   * the selected reason.
+   * @returns the text of the selected reason or undefined if none is selected.
+   */
+  getSelectedReasonText() {
+    const selectedItem = this.reportForm.get("selectedReason")?.value;
+
+    if (selectedItem == null || selectedItem == undefined) {
+      return undefined;
+    } else {
+      const selectedItemNumber = Number(selectedItem);
+
+      if (selectedItemNumber < 3) {
+        // if the item being reported is a post
+        if (this.reportType == "Post") {
+          return `The post is ${postReportReasons[selectedItemNumber]}`;
+        }
+        // if the item being reported is a user
+        else {
+          if (selectedItemNumber == 2) {
+            return `The user is behaving in an ${userReportReasons[selectedItemNumber]}`;
+          } else {
+            return `The user is posting ${userReportReasons[selectedItemNumber]}`;
+          }
+        }
+      } else {
+        return "other";
+      }
     }
   }
 
@@ -146,16 +164,26 @@ export class ReportForm {
     e.preventDefault();
     let item =
       this.reportType == "User" ? (this.reportedItem as OtherUser) : (this.reportedItem as Post);
-    let otherText = document.getElementById("rOption3Text") as HTMLInputElement;
+    let reportReason = this.getSelectedReasonText();
 
     // if the selected reason for the report is 'other', get the value of the text inputted
-    if (this.selectedReason == "other") {
+    if (reportReason == "other") {
+      const otherReasonValue = this.reportForm.get("otherReason")?.value;
+      const isValid = this.validationService.validateItem(
+        "reportOther",
+        otherReasonValue || "",
+        "rOption3Text",
+      );
       // if the input is valid, get the value
-      if (this.validationService.validateItem("reportOther", otherText.value, "rOption3Text")) {
-        this.selectedReason = otherText.value;
-      } else {
+      if (!isValid) {
+        this.alertsService.createAlert({
+          type: "Error",
+          message: "If you choose 'other', you must specify a reason.",
+        });
         return;
       }
+
+      reportReason = otherReasonValue!;
     }
 
     // create a new report
@@ -164,7 +192,7 @@ export class ReportForm {
       userID: 0,
       postID: undefined,
       reporter: this.authService.userData.id!,
-      reportReason: this.selectedReason!,
+      reportReason: reportReason!,
       date: new Date(),
       dismissed: false,
       closed: false,

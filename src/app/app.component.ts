@@ -31,15 +31,9 @@
 */
 
 // Angular imports
-import {
-  Component,
-  OnInit,
-  HostListener,
-  AfterViewInit,
-  AfterViewChecked,
-  signal,
-} from "@angular/core";
+import { Component, OnInit, HostListener, AfterViewInit, signal, computed } from "@angular/core";
 import { Router, NavigationStart } from "@angular/router";
+import { FormBuilder, Validators } from "@angular/forms";
 import { faComments, faUserCircle, faCompass, faBell } from "@fortawesome/free-regular-svg-icons";
 import { faBars, faSearch, faTimes, faTextHeight } from "@fortawesome/free-solid-svg-icons";
 
@@ -54,15 +48,21 @@ import { NotificationService } from "./services/notifications.service";
   selector: "app-root",
   templateUrl: "./app.component.html",
 })
-export class AppComponent implements OnInit, AfterViewInit, AfterViewChecked {
+export class AppComponent implements OnInit, AfterViewInit {
   showNotifications = false;
   showSearch = false;
   showTextPanel = false;
-  showMenu = false;
+  showMenu = signal(false);
+  navMenuClass = computed(() => (this.showMenu() ? "navLinks" : "navLinks hidden"));
+  showMenuButton = signal(false);
+  menuButtonClass = computed(() => (this.showMenuButton() ? "navLink" : "navLink hidden"));
   canShare = false;
   inactiveLinkClass = "navLink";
   activeLinkClass = "navLink active";
   currentlyActiveRoute = signal("/");
+  searchForm = this.fb.group({
+    searchQuery: this.fb.control("", [Validators.required, Validators.minLength(1)]),
+  });
   // font awesome icons
   faBars = faBars;
   faComments = faComments;
@@ -80,6 +80,7 @@ export class AppComponent implements OnInit, AfterViewInit, AfterViewChecked {
     private router: Router,
     private serviceWorkerM: SWManager,
     public notificationService: NotificationService,
+    private fb: FormBuilder,
   ) {
     this.authService.checkHash();
 
@@ -111,16 +112,22 @@ export class AppComponent implements OnInit, AfterViewInit, AfterViewChecked {
   */
   ngOnInit() {
     this.serviceWorkerM.registerSW();
-    let navMenu = document.getElementById("navLinks") as HTMLDivElement;
+
+    if (document.documentElement.clientWidth > 650) {
+      this.showMenu.set(true);
+      this.showMenuButton.set(false);
+    } else {
+      this.showMenu.set(false);
+      this.showMenuButton.set(true);
+    }
 
     // when navigating to another page, check for updates to the ServiceWorker
     this.router.events.subscribe((event) => {
       if (event instanceof NavigationStart) {
         this.serviceWorkerM.updateSW();
+
         // if the menu was open and the user navigated to another page, close it
-        if (!navMenu.classList.contains("hidden")) {
-          navMenu.classList.add("hidden");
-        }
+        if (this.showMenu() && document.documentElement.clientWidth < 650) this.showMenu.set(false);
       }
     });
 
@@ -140,10 +147,6 @@ export class AppComponent implements OnInit, AfterViewInit, AfterViewChecked {
   Programmer: Shir Bar Lev.
   */
   ngAfterViewInit() {
-    if (document.documentElement.clientWidth > 650) {
-      this.showMenu = true;
-    }
-
     this.router.events.subscribe((event) => {
       if (event instanceof NavigationStart) {
         // if the current URL is the main page
@@ -172,43 +175,6 @@ export class AppComponent implements OnInit, AfterViewInit, AfterViewChecked {
   }
 
   /*
-  Function Name: ngAfterViewChecked()
-  Function Description: This method is automatically triggered by Angular once the component's
-                        view is intialised. It checks the width of the screen and determines
-                        whether to display the navigation menu.
-  Parameters: None.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  ngAfterViewChecked() {
-    let navLinks = document.getElementById("navLinks") as HTMLDivElement;
-    let menuBtn = document.getElementById("menuBtn") as HTMLDivElement;
-
-    // check the client width; if it's bigger than 650px and the menu needs to
-    // be shown, show it
-    if ((document.documentElement.clientWidth > 650 && this.showMenu) || this.showMenu) {
-      if (navLinks.classList.contains("hidden")) {
-        navLinks.classList.remove("hidden");
-        navLinks.classList.remove("large");
-        navLinks.setAttribute("aria-hidden", "false");
-        this.showMenu = true;
-
-        if (document.documentElement.clientWidth > 650) {
-          menuBtn.classList.add("hidden");
-        }
-      }
-    }
-    // otherwise hide it
-    else {
-      navLinks.classList.add("large");
-      navLinks.classList.add("hidden");
-      menuBtn.classList.remove("hidden");
-      navLinks.setAttribute("aria-hidden", "true");
-      this.showMenu = false;
-    }
-  }
-
-  /*
   Function Name: searchApp()
   Function Description: Initiates a search for the given query.
   Parameters: e (Event) - Click event (on the search button).
@@ -218,19 +184,13 @@ export class AppComponent implements OnInit, AfterViewInit, AfterViewChecked {
   */
   searchApp(e: Event, searchQuery: string) {
     e.preventDefault();
-    this.showSearch = false;
 
     // if there's something in the search query text field, search for it
     if (searchQuery) {
-      // if the textfield was marked red, remove it
-      if (document.getElementById("searchQuery")!.classList.contains("missing")) {
-        document.getElementById("searchQuery")!.classList.remove("missing");
-      }
-
+      this.showSearch = false;
       this.itemsService.sendSearch(searchQuery);
       // clears the search box
-      let searchBox = document.getElementById("searchQuery") as HTMLInputElement;
-      searchBox.value = "";
+      this.searchForm.reset();
       //navigate to search results
       this.router.navigate(["search"], {
         queryParams: {
@@ -244,7 +204,6 @@ export class AppComponent implements OnInit, AfterViewInit, AfterViewChecked {
         message: "Search query is empty! Please write a term to search for.",
         type: "Error",
       });
-      document.getElementById("searchQuery")!.classList.add("missing");
     }
   }
 
@@ -257,15 +216,12 @@ export class AppComponent implements OnInit, AfterViewInit, AfterViewChecked {
   */
   toggleNotifications() {
     let width = document.documentElement.clientWidth;
-    let navMenu = document.getElementById("navLinks") as HTMLDivElement;
-
     this.showNotifications = true;
 
     // if the viewport is smaller than 650px, the user opened the panel through the
     // menu, which needs to be closed
     if (width < 650) {
-      this.showMenu = false;
-      navMenu.classList.add("hidden");
+      this.showMenu.set(false);
     }
   }
 
@@ -278,7 +234,6 @@ export class AppComponent implements OnInit, AfterViewInit, AfterViewChecked {
   */
   toggleSearch() {
     let width = document.documentElement.clientWidth;
-    let navMenu = document.getElementById("navLinks") as HTMLDivElement;
 
     // if the search is displayed, close it
     if (this.showSearch) {
@@ -287,7 +242,7 @@ export class AppComponent implements OnInit, AfterViewInit, AfterViewChecked {
       // if the viewport is smaller than 650px, the user opened the panel through the
       // menu, which needs to be closed
       if (width < 650) {
-        navMenu.classList.remove("hidden");
+        this.showMenu.set(true);
       }
     }
     // otherwise show it
@@ -295,7 +250,7 @@ export class AppComponent implements OnInit, AfterViewInit, AfterViewChecked {
       // if the viewport is smaller than 650px, the user opened the panel through the
       // menu, which needs to be closed
       if (width < 650) {
-        navMenu.classList.add("hidden");
+        this.showMenu.set(false);
       }
 
       this.showSearch = true;
@@ -311,17 +266,7 @@ export class AppComponent implements OnInit, AfterViewInit, AfterViewChecked {
   Programmer: Shir Bar Lev.
   */
   toggleMenu() {
-    let navMenu = document.getElementById("navLinks") as HTMLDivElement;
-    // if the menu is displayed, close it
-    if (!navMenu.classList.contains("hidden")) {
-      navMenu.classList.add("hidden");
-      this.showMenu = false;
-    }
-    // otherwise show it
-    else {
-      navMenu.classList.remove("hidden");
-      this.showMenu = true;
-    }
+    this.showMenu.set(!this.showMenu());
   }
 
   /*
@@ -337,26 +282,16 @@ export class AppComponent implements OnInit, AfterViewInit, AfterViewChecked {
     let width = document.documentElement.clientWidth;
     let navMenu = document.getElementById("navMenu") as HTMLDivElement;
     let navLinks = document.getElementById("navLinks") as HTMLDivElement;
-    let menuBtn = document.getElementById("menuBtn") as HTMLDivElement;
 
     if (width > 650 && navLinks.scrollWidth < navMenu.offsetWidth) {
-      if (navLinks.classList.contains("hidden")) {
-        navLinks.classList.remove("hidden");
-        navLinks.classList.remove("large");
-        navLinks.setAttribute("aria-hidden", "false");
-        this.showMenu = true;
+      if (!this.showMenu()) {
+        this.showMenu.set(true);
       }
-
-      if (document.documentElement.clientWidth > 650) {
-        menuBtn.classList.add("hidden");
-      }
+      this.showMenuButton.set(false);
     } else {
-      if (!navLinks.classList.contains("hidden")) {
-        navLinks.classList.add("large");
-        navLinks.classList.add("hidden");
-        menuBtn.classList.remove("hidden");
-        navLinks.setAttribute("aria-hidden", "true");
-        this.showMenu = false;
+      if (this.showMenu()) {
+        this.showMenuButton.set(true);
+        this.showMenu.set(false);
       }
     }
   }
@@ -420,32 +355,22 @@ export class AppComponent implements OnInit, AfterViewInit, AfterViewChecked {
   checkMenuSize() {
     let navMenu = document.getElementById("navMenu") as HTMLDivElement;
     let navLinks = document.getElementById("navLinks") as HTMLDivElement;
-    let menuBtn = document.getElementById("menuBtn") as HTMLDivElement;
 
     // remove the hidden label check the menu's width
-    if (navLinks.classList.contains("hidden")) {
-      navLinks.classList.remove("hidden");
-      navLinks.classList.remove("large");
+    if (!this.showMenu()) {
+      this.showMenu.set(true);
     }
 
     // if the larger text makes the navigation menu too long, turn it back
     // to the small-viewport menu
     if (navLinks.scrollWidth + 50 >= navMenu.offsetWidth) {
-      this.showMenu = false;
-      navLinks.classList.add("large");
-      navLinks.classList.add("hidden");
-      menuBtn.classList.remove("hidden");
-      navLinks.setAttribute("aria-hidden", "true");
+      this.showMenu.set(false);
+      this.showMenuButton.set(true);
     } else {
-      if (navLinks.classList.contains("hidden")) {
-        navLinks.classList.remove("hidden");
-        navLinks.classList.remove("large");
-      }
-      navLinks.setAttribute("aria-hidden", "false");
-      this.showMenu = true;
+      this.showMenu.set(true);
 
       if (document.documentElement.clientWidth > 650) {
-        menuBtn.classList.add("hidden");
+        this.showMenuButton.set(false);
       }
     }
   }

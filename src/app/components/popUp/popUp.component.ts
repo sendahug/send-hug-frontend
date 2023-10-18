@@ -43,9 +43,8 @@ import {
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 
 // App-related import
-import { Post } from "../../interfaces/post.interface";
-import { OtherUser } from "../../interfaces/otherUser.interface";
-import { AuthService } from "../../services/auth.service";
+import { Post } from "@app/interfaces/post.interface";
+import { OtherUser } from "@app/interfaces/otherUser.interface";
 
 @Component({
   selector: "app-pop-up",
@@ -79,7 +78,7 @@ export class PopUp implements OnInit, OnChanges, AfterViewChecked {
   faTimes = faTimes;
 
   // CTOR
-  constructor(public authService: AuthService) {}
+  constructor() {}
 
   /*
   Function Name: ngOnInit()

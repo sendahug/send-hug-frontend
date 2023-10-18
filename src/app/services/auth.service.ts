@@ -32,17 +32,18 @@
 
 // Angular imports
 import { Injectable } from "@angular/core";
-import { HttpClient, HttpHeaders, HttpErrorResponse } from "@angular/common/http";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
 
 // Other essential imports
 import { BehaviorSubject } from "rxjs";
 import * as Auth0 from "auth0-js";
 
 // App-related imports
-import { User } from "../interfaces/user.interface";
-import { AlertsService } from "./alerts.service";
-import { SWManager } from "./sWManager.service";
-import { environment } from "../../environments/environment";
+import { User } from "@app/interfaces/user.interface";
+import { AlertsService } from "@app/services/alerts.service";
+import { SWManager } from "@app/services/sWManager.service";
+import { environment } from "@env/environment";
+import { ApiClientService } from "@app/services/apiClient.service";
 
 @Injectable({
   providedIn: "root",
@@ -60,17 +61,15 @@ export class AuthService {
   readonly serverUrl = environment.backend.domain;
   // authentication information
   token: string = "";
-  authHeader: HttpHeaders = new HttpHeaders();
   authenticated: boolean = false;
   // user data
-  userProfile: any;
   userData: User = {
     id: 0,
     auth0Id: "",
     displayName: "",
-    receivedHugs: 0,
-    givenHugs: 0,
-    postsNum: 0,
+    receivedH: 0,
+    givenH: 0,
+    posts: 0,
     loginCount: 0,
     role: "",
     jwt: "",
@@ -98,6 +97,7 @@ export class AuthService {
     private Http: HttpClient,
     private alertsService: AlertsService,
     private serviceWorkerM: SWManager,
+    private apiClient: ApiClientService,
   ) {}
 
   /*
@@ -189,9 +189,9 @@ export class AuthService {
         id: 0,
         auth0Id: "",
         displayName: "",
-        receivedHugs: 0,
-        givenHugs: 0,
-        postsNum: 0,
+        receivedH: 0,
+        givenH: 0,
+        posts: 0,
         loginCount: 0,
         role: "",
         jwt: "",
@@ -212,39 +212,22 @@ export class AuthService {
 
     // if there's a JWT
     if (jwtPayload) {
+      this.apiClient.setAuthToken(this.token);
+
       // attempts to get the user's data
       this.Http.get(`${this.serverUrl}/users/all/${jwtPayload.sub}`, {
         headers: new HttpHeaders({ Authorization: `Bearer ${this.token}` }),
         // if successful, get the user data
-      }).subscribe(
-        (response: any) => {
-          let data = response.user;
+      }).subscribe({
+        next: (response: any) => {
+          const data = response.user;
           this.userData = {
-            id: data.id,
+            ...data,
             auth0Id: jwtPayload.sub,
-            displayName: data.displayName,
-            receivedHugs: data.receivedH,
-            givenHugs: data.givenH,
-            postsNum: data.posts,
-            loginCount: data.loginCount,
-            role: data.role,
             jwt: this.token,
-            blocked: data.blocked,
-            releaseDate: data.releaseDate,
-            autoRefresh: data.autoRefresh,
-            refreshRate: data.refreshRate,
-            pushEnabled: data.pushEnabled,
-            selectedIcon: data.selectedIcon,
-            iconColours: {
-              character: data.iconColours?.character,
-              lbg: data.iconColours?.lbg,
-              rbg: data.iconColours?.rbg,
-              item: data.iconColours?.item,
-            },
           };
           // set the authentication-variables accordingly
           this.authenticated = true;
-          this.authHeader = new HttpHeaders({ Authorization: `Bearer ${this.token}` });
           this.setToken();
           this.isUserDataResolved.next(true);
           this.tokenExpired = false;
@@ -259,9 +242,9 @@ export class AuthService {
             id: data.id,
             auth0Id: jwtPayload.sub,
             displayName: data.displayName,
-            receivedHugs: data.receivedH,
-            givenHugs: data.givenH,
-            postsNum: data.posts,
+            receivedH: data.receivedH,
+            givenH: data.givenH,
+            posts: data.posts,
             loginCount: data.loginCount,
             role: data.role,
             blocked: data.blocked,
@@ -279,7 +262,7 @@ export class AuthService {
           this.serviceWorkerM.addItem("users", user);
           // if there's an error, check the error type
         },
-        (err) => {
+        error: (err) => {
           let statusCode = err.status;
 
           // if a user with that ID doens't exist, try to create it
@@ -298,7 +281,7 @@ export class AuthService {
             this.isUserDataResolved.next(true);
           }
         },
-      );
+      });
     }
     // If there's no currently-saved token
     else {
@@ -331,35 +314,16 @@ export class AuthService {
         headers: new HttpHeaders({ Authorization: `Bearer ${this.token}` }),
         //if the request succeeds, get the user's data
       },
-    ).subscribe(
-      (response: any) => {
-        let data = response.user;
+    ).subscribe({
+      next: (response: any) => {
+        const data = response.user;
         this.userData = {
-          id: data.id,
+          ...data,
           auth0Id: jwtPayload.sub,
-          displayName: data.displayName,
-          receivedHugs: data.receivedH,
-          givenHugs: data.givenH,
-          postsNum: data.postsNum,
-          loginCount: data.loginCount,
-          role: data.role,
           jwt: this.token,
-          blocked: data.blocked,
-          releaseDate: data.releaseDate,
-          autoRefresh: data.autoRefresh,
-          refreshRate: data.refreshRate,
-          pushEnabled: data.pushEnabled,
-          selectedIcon: data.selectedIcon,
-          iconColours: {
-            character: data.iconColours.character,
-            lbg: data.iconColours.leftbg,
-            rbg: data.iconColours.rightbg,
-            item: data.iconColours.item,
-          },
         };
         // set the authentication-variables accordingly
         this.authenticated = true;
-        this.authHeader = new HttpHeaders({ Authorization: `Bearer ${this.token}` });
         this.setToken();
         this.isUserDataResolved.next(true);
 
@@ -368,9 +332,9 @@ export class AuthService {
           id: data.id,
           auth0Id: jwtPayload.sub,
           displayName: data.displayName,
-          receivedHugs: data.receivedH,
-          givenHugs: data.givenH,
-          postsNum: data.posts,
+          receivedH: data.receivedH,
+          givenH: data.givenH,
+          posts: data.posts,
           loginCount: data.loginCount,
           role: data.role,
           blocked: data.blocked,
@@ -381,7 +345,7 @@ export class AuthService {
         this.serviceWorkerM.addItem("users", user);
         // error handling
       },
-      (err) => {
+      error: (err) => {
         this.isUserDataResolved.next(true);
 
         // if the user is offline, show the offline header message
@@ -393,7 +357,7 @@ export class AuthService {
           this.alertsService.createErrorAlert(err);
         }
       },
-    );
+    });
   }
 
   /*
@@ -413,9 +377,9 @@ export class AuthService {
     let user = {
       id: this.userData.id,
       displayName: this.userData.displayName,
-      receivedHugs: this.userData.receivedHugs,
-      givenHugs: this.userData.givenHugs,
-      postsNum: this.userData.postsNum,
+      receivedH: this.userData.receivedH,
+      givenH: this.userData.givenH,
+      posts: this.userData.posts,
       role: this.userData.role,
     };
     this.serviceWorkerM.addItem("users", user);
@@ -427,9 +391,9 @@ export class AuthService {
       id: 0,
       auth0Id: "",
       displayName: "",
-      receivedHugs: 0,
-      givenHugs: 0,
-      postsNum: 0,
+      receivedH: 0,
+      givenH: 0,
+      posts: 0,
       loginCount: 0,
       role: "",
       jwt: "",
@@ -539,38 +503,22 @@ export class AuthService {
   Programmer: Shir Bar Lev.
   */
   updateUserData() {
-    this.Http.patch(
-      `${this.serverUrl}/users/all/${this.userData.id}`,
-      {
-        displayName: this.userData.displayName,
-        receivedH: this.userData.receivedHugs,
-        givenH: this.userData.givenHugs,
-        posts: this.userData.postsNum,
-        loginCount: this.userData.loginCount + 1,
-        selectedIcon: this.userData.selectedIcon,
-        iconColours: {
-          character: this.userData.iconColours.character,
-          lbg: this.userData.iconColours.lbg,
-          rbg: this.userData.iconColours.rbg,
-          item: this.userData.iconColours.item,
-        },
+    const updatedUser = {
+      displayName: this.userData.displayName,
+      receivedH: this.userData.receivedH,
+      givenH: this.userData.givenH,
+      posts: this.userData.posts,
+      loginCount: this.userData.loginCount + 1,
+      selectedIcon: this.userData.selectedIcon,
+      iconColours: {
+        character: this.userData.iconColours.character,
+        lbg: this.userData.iconColours.lbg,
+        rbg: this.userData.iconColours.rbg,
+        item: this.userData.iconColours.item,
       },
-      {
-        headers: this.authHeader,
-      },
-    ).subscribe(
-      (_response: any) => {},
-      (err: HttpErrorResponse) => {
-        // if the user is offline, show the offline header message
-        if (!navigator.onLine) {
-          this.alertsService.toggleOfflineAlert();
-        }
-        // otherwise just create an error alert
-        else {
-          this.alertsService.createErrorAlert(err);
-        }
-      },
-    );
+    };
+
+    this.apiClient.patch(`users/all/${this.userData.id}`, updatedUser).subscribe({});
   }
 
   /*

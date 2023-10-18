@@ -46,7 +46,7 @@ import { AppComponent } from "../../app.component";
 import { NotificationsTab } from "./notifications.component";
 import { NotificationService } from "../../services/notifications.service";
 import { AuthService } from "../../services/auth.service";
-import { mockAuthedUser } from "../../../../tests/mockData";
+import { mockAuthedUser } from "@tests/mockData";
 
 describe("Notifications", () => {
   // Before each test, configure testing environment

@@ -45,7 +45,7 @@ import { ReactiveFormsModule } from "@angular/forms";
 
 import { IconEditor } from "./iconEditor.component";
 import { AuthService } from "../../services/auth.service";
-import { mockAuthedUser } from "../../../../tests/mockData";
+import { mockAuthedUser } from "@tests/mockData";
 
 describe("IconEditor", () => {
   // Before each test, configure testing environment

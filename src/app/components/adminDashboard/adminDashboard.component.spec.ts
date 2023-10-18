@@ -49,7 +49,7 @@ import { PopUp } from "../popUp/popUp.component";
 import { AdminService } from "../../services/admin.service";
 import { AuthService } from "../../services/auth.service";
 import { Loader } from "../loader/loader.component";
-import { mockAuthedUser } from "../../../../tests/mockData";
+import { mockAuthedUser } from "@tests/mockData";
 
 const mockUserReports = [
   {

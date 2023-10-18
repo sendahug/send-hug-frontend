@@ -49,7 +49,7 @@ import { of } from "rxjs";
 import { UserPage } from "./userPage.component";
 import { PopUp } from "../popUp/popUp.component";
 import { AuthService } from "../../services/auth.service";
-import { mockAuthedUser } from "../../../../tests/mockData";
+import { mockAuthedUser } from "@tests/mockData";
 import { OtherUser } from "@app/interfaces/otherUser.interface";
 import { iconCharacters } from "@app/interfaces/types";
 

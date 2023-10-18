@@ -40,7 +40,7 @@ import { ReactiveFormsModule } from "@angular/forms";
 import { AppComponent } from "../../../app.component";
 import { ReportForm } from "./reportForm.component";
 import { AuthService } from "../../../services/auth.service";
-import { mockAuthedUser } from "../../../../../tests/mockData";
+import { mockAuthedUser } from "@tests/mockData";
 
 describe("Report", () => {
   // Before each test, configure testing environment

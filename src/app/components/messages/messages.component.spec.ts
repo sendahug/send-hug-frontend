@@ -41,16 +41,15 @@ import {
 import { HttpClientModule } from "@angular/common/http";
 import { ServiceWorkerModule } from "@angular/service-worker";
 import { ActivatedRoute, UrlSegment } from "@angular/router";
-import { BehaviorSubject, of } from "rxjs";
+import { of } from "rxjs";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { By } from "@angular/platform-browser";
 import { NO_ERRORS_SCHEMA } from "@angular/core";
 
 import { AppMessaging } from "./messages.component";
 import { PopUp } from "../popUp/popUp.component";
-import { ItemsService } from "../../services/items.service";
 import { AuthService } from "../../services/auth.service";
-import { mockAuthedUser } from "../../../../tests/mockData";
+import { mockAuthedUser } from "@tests/mockData";
 import { FullThread } from "@app/interfaces/thread.interface";
 
 const mockMessages = [

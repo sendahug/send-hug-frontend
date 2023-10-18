@@ -47,7 +47,7 @@ import { NotificationsTab } from "./components/notifications/notifications.compo
 import { AuthService } from "./services/auth.service";
 import { SWManager } from "./services/sWManager.service";
 import { NotificationService } from "./services/notifications.service";
-import { mockAuthedUser } from "../../tests/mockData";
+import { mockAuthedUser } from "@tests/mockData";
 
 declare const viewport: any;
 

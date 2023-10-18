@@ -41,7 +41,7 @@ import { of } from "rxjs";
 
 import { AdminService } from "./admin.service";
 import { AuthService } from "./auth.service";
-import { mockAuthedUser } from "../../../tests/mockData";
+import { mockAuthedUser } from "@tests/mockData";
 
 describe("AdminService", () => {
   let httpController: HttpTestingController;

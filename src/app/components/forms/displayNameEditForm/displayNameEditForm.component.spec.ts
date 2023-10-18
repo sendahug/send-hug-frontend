@@ -45,7 +45,7 @@ import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { AppComponent } from "../../../app.component";
 import { DisplayNameEditForm } from "./displayNameEditForm.component";
 import { AuthService } from "../../../services/auth.service";
-import { mockAuthedUser } from "../../../../../tests/mockData";
+import { mockAuthedUser } from "@tests/mockData";
 
 // DISPLAY NAME EDIT
 // ==================================================================

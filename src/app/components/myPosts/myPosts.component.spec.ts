@@ -51,7 +51,7 @@ import { PopUp } from "../popUp/popUp.component";
 import { Loader } from "../loader/loader.component";
 import { HeaderMessage } from "../headerMessage/headerMessage.component";
 import { AuthService } from "../../services/auth.service";
-import { mockAuthedUser } from "../../../../tests/mockData";
+import { mockAuthedUser } from "@tests/mockData";
 
 const mockPosts = [
   {

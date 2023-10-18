@@ -49,7 +49,7 @@ import { NotificationService } from "../../services/notifications.service";
 import { AuthService } from "../../services/auth.service";
 import { NotificationsTab } from "../notifications/notifications.component";
 import { AlertsService } from "../../services/alerts.service";
-import { mockAuthedUser } from "../../../../tests/mockData";
+import { mockAuthedUser } from "@tests/mockData";
 
 describe("SettingsPage", () => {
   // Before each test, configure testing environment

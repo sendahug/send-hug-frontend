@@ -42,7 +42,7 @@ import {} from "jasmine";
 
 import { NotificationService } from "./notifications.service";
 import { AuthService } from "./auth.service";
-import { mockAuthedUser } from "../../../tests/mockData";
+import { mockAuthedUser } from "@tests/mockData";
 
 const pushSub: PushSubscription = {
   endpoint: "endpoint",

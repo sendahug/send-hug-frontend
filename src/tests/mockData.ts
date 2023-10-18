@@ -29,7 +29,7 @@
   SOFTWARE.
 */
 
-import { User } from "../src/app/interfaces/user.interface";
+import { User } from "../app/interfaces/user.interface";
 
 export const mockAuthedUser: User = {
   id: 4,

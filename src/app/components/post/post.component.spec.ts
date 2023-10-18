@@ -47,8 +47,7 @@ import { NO_ERRORS_SCHEMA } from "@angular/core";
 
 import { SinglePost } from "./post.component";
 import { PopUp } from "../popUp/popUp.component";
-import { mockAuthedUser } from "../../../../tests/mockData";
-import { BehaviorSubject } from "rxjs";
+import { mockAuthedUser } from "@tests/mockData";
 
 // Mock User Page for testing the sub-component
 // ==================================================

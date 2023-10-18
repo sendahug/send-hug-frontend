@@ -46,7 +46,7 @@ import { ActivatedRoute, UrlSegment } from "@angular/router";
 
 import { NewItem } from "./newItem.component";
 import { AuthService } from "../../services/auth.service";
-import { mockAuthedUser } from "../../../../tests/mockData";
+import { mockAuthedUser } from "@tests/mockData";
 
 describe("NewItem", () => {
   // Before each test, configure testing environment

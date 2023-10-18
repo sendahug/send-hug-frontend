@@ -32,7 +32,7 @@
 
 // Angular imports
 import { Injectable } from "@angular/core";
-import { HttpClient, HttpHeaders, HttpErrorResponse } from "@angular/common/http";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
 
 // Other essential imports
 import { BehaviorSubject } from "rxjs";
@@ -61,10 +61,8 @@ export class AuthService {
   readonly serverUrl = environment.backend.domain;
   // authentication information
   token: string = "";
-  authHeader: HttpHeaders = new HttpHeaders();
   authenticated: boolean = false;
   // user data
-  userProfile: any;
   userData: User = {
     id: 0,
     auth0Id: "",
@@ -230,7 +228,6 @@ export class AuthService {
           };
           // set the authentication-variables accordingly
           this.authenticated = true;
-          this.authHeader = new HttpHeaders({ Authorization: `Bearer ${this.token}` });
           this.setToken();
           this.isUserDataResolved.next(true);
           this.tokenExpired = false;
@@ -327,7 +324,6 @@ export class AuthService {
         };
         // set the authentication-variables accordingly
         this.authenticated = true;
-        this.authHeader = new HttpHeaders({ Authorization: `Bearer ${this.token}` });
         this.setToken();
         this.isUserDataResolved.next(true);
 

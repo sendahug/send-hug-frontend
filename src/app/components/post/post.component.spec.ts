@@ -47,48 +47,32 @@ import { NO_ERRORS_SCHEMA } from "@angular/core";
 
 import { SinglePost } from "./post.component";
 import { PopUp } from "../popUp/popUp.component";
-import { ItemsService } from "../../services/items.service";
-import { MockItemsService } from "../../services/items.service.mock";
-import { AuthService } from "../../services/auth.service";
-import { MockAuthService } from "../../services/auth.service.mock";
-import { PostsService } from "../../services/posts.service";
-import { MockPostsService } from "../../services/posts.service.mock";
+import { mockAuthedUser } from "../../../../tests/mockData";
+import { BehaviorSubject } from "rxjs";
 
 // Mock User Page for testing the sub-component
 // ==================================================
 @Component({
   selector: "app-page-mock",
   template: `
-    <ul
-      class="itemList"
-      *ngIf="
-        postsService.posts.newItems.value.length > 0 && postsService.isFetchResolved.newItems.value
-      "
-      role="region"
-      aria-describedby="newTitle"
-      id="newItemsList"
-    >
-      <app-single-post
-        *ngFor="let item of postsService.posts.newItems.value"
-        [post]="item"
-        [type]="'n'"
-        [class]="'newItem'"
-      ></app-single-post>
-    </ul>
+    <app-single-post [post]="mockPost" [type]="'n'" [class]="'newItem'"></app-single-post>
   `,
 })
 class MockPage {
   showMenuNum: string | null = null;
   // loader sub-component variables
   waitFor = "main page";
+  mockPost = {
+    date: new Date("2020-06-27 19:17:31.072"),
+    givenHugs: 0,
+    id: 1,
+    text: "test",
+    userId: 1,
+    user: "test",
+    sentHugs: [],
+  };
 
-  constructor(
-    public authService: AuthService,
-    public itemsService: ItemsService,
-    private postsService: PostsService,
-  ) {
-    this.postsService.getPosts("", "new");
-  }
+  constructor() {}
 }
 
 // Sub-component testing
@@ -108,12 +92,7 @@ describe("Post", () => {
         FontAwesomeModule,
       ],
       declarations: [MockPage, SinglePost, PopUp],
-      providers: [
-        { provide: APP_BASE_HREF, useValue: "/" },
-        { provide: ItemsService, useClass: MockItemsService },
-        { provide: AuthService, useClass: MockAuthService },
-        { provide: PostsService, useClass: MockPostsService },
-      ],
+      providers: [{ provide: APP_BASE_HREF, useValue: "/" }],
     }).compileComponents();
   });
 
@@ -128,25 +107,22 @@ describe("Post", () => {
     expect(myPosts.report).toBeFalse();
   });
 
-  // Check that sending a hug triggers the posts service
-  it("should trigger posts service on hug", (done: DoneFn) => {
+  // Check that sending a hug triggers the items service
+  it("should trigger items service on hug", (done: DoneFn) => {
     const upFixture = TestBed.createComponent(MockPage);
     const pageDOM = upFixture.nativeElement;
     upFixture.detectChanges();
-    const myPosts = upFixture.debugElement.children[0].children[0].componentInstance;
-    const myPostsDOM = upFixture.debugElement.children[0].children[0].nativeElement;
-    const postsService = myPosts.postsService;
+    const myPosts = upFixture.debugElement.children[0].componentInstance;
+    const myPostsDOM = upFixture.debugElement.children[0].nativeElement;
     const hugSpy = spyOn(myPosts, "sendHug").and.callThrough();
-    const spy = spyOn(postsService, "sendHug").and.callThrough();
-    const disableButton = spyOn(postsService, "disableHugButton");
-    (myPosts.authService as AuthService).login();
+    const spy = spyOn(myPosts.itemsService, "sendHug");
+    const authService = myPosts.authService;
+    authService.authenticated = true;
+    authService.userData = { ...mockAuthedUser };
 
     upFixture.detectChanges();
 
     //  before the click
-    const newItems = pageDOM.querySelector("#newItemsList");
-    expect(myPosts.postsService.posts.newItems.value[0].givenHugs).toBe(0);
-    expect(newItems.querySelectorAll(".badge")[0].textContent).toBe("0");
     expect(hugSpy).not.toHaveBeenCalled();
     upFixture.detectChanges();
 
@@ -158,9 +134,6 @@ describe("Post", () => {
     expect(spy).toHaveBeenCalled();
     expect(spy.calls.count()).toBe(1);
     expect(hugSpy).toHaveBeenCalled();
-    expect(myPosts.postsService.posts.newItems.value[0].givenHugs).toBe(1);
-    expect(newItems.querySelectorAll(".badge")[0].textContent).toBe("1");
-    expect(disableButton).toHaveBeenCalled();
     done();
   });
 
@@ -169,10 +142,9 @@ describe("Post", () => {
     const upFixture = TestBed.createComponent(MockPage);
     const pageDOM = upFixture.nativeElement;
     upFixture.detectChanges();
-    const myPosts = upFixture.debugElement.children[0].children[0].componentInstance;
-    const myPostsDOM = upFixture.debugElement.children[0].children[0].nativeElement;
+    const myPosts = upFixture.debugElement.children[0].componentInstance;
+    const myPostsDOM = upFixture.debugElement.children[0].nativeElement;
     const authService = myPosts.authService;
-
     const authSpy = spyOn(authService, "canUser").and.returnValue(true);
     upFixture.detectChanges();
 
@@ -181,8 +153,7 @@ describe("Post", () => {
     expect(authSpy).toHaveBeenCalled();
 
     // trigger click
-    const newItems = pageDOM.querySelector("#newItemsList");
-    newItems.querySelectorAll(".editButton")[0].click();
+    pageDOM.querySelectorAll(".editButton")[0].click();
     upFixture.detectChanges();
 
     // after the click
@@ -197,10 +168,9 @@ describe("Post", () => {
     const upFixture = TestBed.createComponent(MockPage);
     const pageDOM = upFixture.nativeElement;
     upFixture.detectChanges();
-    const myPosts = upFixture.debugElement.children[0].children[0].componentInstance;
-    const myPostsDOM = upFixture.debugElement.children[0].children[0].nativeElement;
+    const myPosts = upFixture.debugElement.children[0].componentInstance;
+    const myPostsDOM = upFixture.debugElement.children[0].nativeElement;
     const authService = myPosts.authService;
-
     const authSpy = spyOn(authService, "canUser").and.returnValue(true);
     upFixture.detectChanges();
 
@@ -209,8 +179,7 @@ describe("Post", () => {
     expect(authSpy).toHaveBeenCalled();
 
     // trigger click
-    const newItems = pageDOM.querySelector("#newItemsList");
-    newItems.querySelectorAll(".deleteButton")[0].click();
+    pageDOM.querySelectorAll(".deleteButton")[0].click();
     upFixture.detectChanges();
 
     // after the click
@@ -227,10 +196,9 @@ describe("Post", () => {
     const upFixture = TestBed.createComponent(MockPage);
     const pageDOM = upFixture.nativeElement;
     upFixture.detectChanges();
-    const myPosts = upFixture.debugElement.children[0].children[0].componentInstance;
-    const myPostsDOM = upFixture.debugElement.children[0].children[0].nativeElement;
+    const myPosts = upFixture.debugElement.children[0].componentInstance;
+    const myPostsDOM = upFixture.debugElement.children[0].nativeElement;
     const authService = myPosts.authService;
-
     const authSpy = spyOn(authService, "canUser").and.returnValue(true);
     const reportSpy = spyOn(myPosts, "reportPost").and.callThrough();
     upFixture.detectChanges();
@@ -246,8 +214,7 @@ describe("Post", () => {
     expect(reportSpy).not.toHaveBeenCalled();
 
     // trigger click
-    const newItems = pageDOM.querySelector("#newItemsList");
-    newItems.querySelectorAll(".reportButton")[0].click();
+    pageDOM.querySelectorAll(".reportButton")[0].click();
     upFixture.detectChanges();
 
     // after the click
@@ -266,9 +233,8 @@ describe("Post", () => {
   it("should change mode when the event emitter emits false", (done: DoneFn) => {
     const upFixture = TestBed.createComponent(MockPage);
     upFixture.detectChanges();
-    const myPosts = upFixture.debugElement.children[0].children[0].componentInstance;
+    const myPosts = upFixture.debugElement.children[0].componentInstance;
     const changeSpy = spyOn(myPosts, "changeMode").and.callThrough();
-
     upFixture.detectChanges();
 
     // start the popup
@@ -295,12 +261,12 @@ describe("Post", () => {
   it("toggleMenu() - should set the currently open menu to the given post's id", () => {
     const upFixture = TestBed.createComponent(MockPage);
     upFixture.detectChanges();
-    const myPosts = upFixture.debugElement.children[0].children[0].componentInstance;
-    myPosts.postsService.currentlyOpenMenu.next(3);
-    const openMenuSpy = spyOn(myPosts.postsService.currentlyOpenMenu, "next").and.callThrough();
+    const myPosts = upFixture.debugElement.children[0].componentInstance;
+    myPosts.itemsService.currentlyOpenMenu.next(3);
+    const openMenuSpy = spyOn(myPosts.itemsService.currentlyOpenMenu, "next").and.callThrough();
 
     // before the change
-    expect(myPosts.postsService.currentlyOpenMenu.value).toBe(3);
+    expect(myPosts.itemsService.currentlyOpenMenu.value).toBe(3);
     expect(openMenuSpy).not.toHaveBeenCalled();
 
     // trigger the function
@@ -308,19 +274,19 @@ describe("Post", () => {
     upFixture.detectChanges();
 
     // after the change
-    expect(myPosts.postsService.currentlyOpenMenu.value).toBe(1);
+    expect(myPosts.itemsService.currentlyOpenMenu.value).toBe(1);
     expect(openMenuSpy).toHaveBeenCalledWith(1);
   });
 
   it("toggleMenu() - should set the currently open menu to -1 if the given post's id is already open", () => {
     const upFixture = TestBed.createComponent(MockPage);
     upFixture.detectChanges();
-    const myPosts = upFixture.debugElement.children[0].children[0].componentInstance;
-    myPosts.postsService.currentlyOpenMenu.next(1);
-    const openMenuSpy = spyOn(myPosts.postsService.currentlyOpenMenu, "next").and.callThrough();
+    const myPosts = upFixture.debugElement.children[0].componentInstance;
+    myPosts.itemsService.currentlyOpenMenu.next(1);
+    const openMenuSpy = spyOn(myPosts.itemsService.currentlyOpenMenu, "next").and.callThrough();
 
     // before the call
-    expect(myPosts.postsService.currentlyOpenMenu.value).toBe(1);
+    expect(myPosts.itemsService.currentlyOpenMenu.value).toBe(1);
     expect(openMenuSpy).not.toHaveBeenCalled();
 
     // trigger the function
@@ -328,7 +294,7 @@ describe("Post", () => {
     upFixture.detectChanges();
 
     // after the call
-    expect(myPosts.postsService.currentlyOpenMenu.value).toBe(-1);
+    expect(myPosts.itemsService.currentlyOpenMenu.value).toBe(-1);
     expect(openMenuSpy).toHaveBeenCalledWith(-1);
   });
 
@@ -336,8 +302,8 @@ describe("Post", () => {
   it("checkMenuSize() - shouldn't show the posts's menu if not wide enough", (done: DoneFn) => {
     const upFixture = TestBed.createComponent(MockPage);
     upFixture.detectChanges();
-    const myPosts = upFixture.debugElement.children[0].children[0].componentInstance;
-    const myPostsDOM = upFixture.debugElement.children[0].children[0].nativeElement;
+    const myPosts = upFixture.debugElement.children[0].componentInstance;
+    const myPostsDOM = upFixture.debugElement.children[0].nativeElement;
     const authService = myPosts.authService;
     spyOn(authService, "canUser").and.returnValue(true);
 
@@ -361,8 +327,8 @@ describe("Post", () => {
   it("checkMenuSize() - should show the menu if it's wide enough for it", (done: DoneFn) => {
     const upFixture = TestBed.createComponent(MockPage);
     upFixture.detectChanges();
-    const myPosts = upFixture.debugElement.children[0].children[0].componentInstance;
-    const myPostsDOM = upFixture.debugElement.children[0].children[0].nativeElement;
+    const myPosts = upFixture.debugElement.children[0].componentInstance;
+    const myPostsDOM = upFixture.debugElement.children[0].nativeElement;
     const authService = myPosts.authService;
     spyOn(authService, "canUser").and.returnValue(true);
 
@@ -386,8 +352,8 @@ describe("Post", () => {
   it("checkMenuSize() - should float the menu if it's wide enough for it", (done: DoneFn) => {
     const upFixture = TestBed.createComponent(MockPage);
     upFixture.detectChanges();
-    const myPosts = upFixture.debugElement.children[0].children[0].componentInstance;
-    const myPostsDOM = upFixture.debugElement.children[0].children[0].nativeElement;
+    const myPosts = upFixture.debugElement.children[0].componentInstance;
+    const myPostsDOM = upFixture.debugElement.children[0].nativeElement;
     const authService = myPosts.authService;
     spyOn(authService, "canUser").and.returnValue(true);
 
@@ -414,6 +380,64 @@ describe("Post", () => {
     expect(post.querySelectorAll(".subMenu")[0].classList).not.toContain("hidden");
     expect(post.querySelectorAll(".subMenu")[0].classList).toContain("float");
     expect(post.querySelectorAll(".menuButton")[0].classList).not.toContain("hidden");
+    done();
+  });
+
+  it("should update the post's givenHugs and sentHugs when a hug is sent", (done: DoneFn) => {
+    const upFixture = TestBed.createComponent(MockPage);
+    upFixture.detectChanges();
+    const myPosts = upFixture.debugElement.children[0].componentInstance;
+    const myPostsDOM = upFixture.debugElement.children[0].nativeElement;
+    const itemsService = myPosts.itemsService;
+    const disableButtonSpy = spyOn(myPosts, "disableHugButton");
+    const authService = myPosts.authService;
+    authService.authenticated = true;
+    authService.userData = { ...mockAuthedUser };
+
+    // before
+    expect(myPosts.post.givenHugs).toBe(0);
+    expect(myPosts.post.sentHugs).toEqual([]);
+
+    // trigger the function
+    itemsService.receivedAHug.next(1);
+    upFixture.detectChanges();
+
+    // after
+    expect(myPosts.post.givenHugs).toBe(1);
+    expect(myPosts.post.sentHugs).toEqual([4]);
+    expect(myPostsDOM.querySelectorAll(".badge")[0].textContent).toBe("1");
+    expect(disableButtonSpy).toHaveBeenCalled();
+    done();
+  });
+
+  it("should disable the hug button", (done: DoneFn) => {
+    const upFixture = TestBed.createComponent(MockPage);
+    const myPosts = upFixture.debugElement.children[0].componentInstance;
+    myPosts.post = {
+      date: new Date("2020-06-27 19:17:31.072"),
+      givenHugs: 0,
+      id: 1,
+      text: "test",
+      userId: 1,
+      user: "test",
+      sentHugs: [],
+    };
+    myPosts.authService.authenticated = true;
+    const myPostsDOM = upFixture.debugElement.children[0].nativeElement;
+    upFixture.detectChanges();
+
+    // before
+    const hugButton = myPostsDOM.querySelectorAll(".hugButton")[0] as HTMLButtonElement;
+    expect(hugButton.disabled).toBeFalse();
+    expect(hugButton.classList).not.toContain("active");
+
+    // trigger the function
+    myPosts.disableHugButton();
+    upFixture.detectChanges();
+
+    // after
+    expect(hugButton.disabled).toBeTrue();
+    expect(hugButton.classList).toContain("active");
     done();
   });
 });

@@ -204,8 +204,7 @@ export class AppMessaging implements OnInit, AfterViewChecked {
           this.totalPages.set(data.total_pages);
           this.isLoading.set(false);
           this.alertsService.toggleOfflineAlert();
-          const idbMessages = [...data.messages];
-          this.swManager.addFetchedItems("messages", idbMessages, "date");
+          this.swManager.addFetchedItems("messages", [...data.messages], "date");
         },
       });
   }
@@ -263,8 +262,7 @@ export class AppMessaging implements OnInit, AfterViewChecked {
           this.totalPages.set(data.total_pages);
           this.isLoading.set(false);
           this.alertsService.toggleOfflineAlert();
-          const idbThreads = [...data.messages];
-          this.swManager.addFetchedItems("threads", idbThreads, "latestMessage");
+          this.swManager.addFetchedItems("threads", [...data.messages], "latestMessage");
         },
       });
   }

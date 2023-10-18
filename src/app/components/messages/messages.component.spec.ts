@@ -49,9 +49,69 @@ import { NO_ERRORS_SCHEMA } from "@angular/core";
 import { AppMessaging } from "./messages.component";
 import { PopUp } from "../popUp/popUp.component";
 import { ItemsService } from "../../services/items.service";
-import { MockItemsService } from "../../services/items.service.mock";
 import { AuthService } from "../../services/auth.service";
-import { MockAuthService } from "../../services/auth.service.mock";
+import { mockAuthedUser } from "../../../../tests/mockData";
+import { FullThread } from "@app/interfaces/thread.interface";
+
+const mockMessages = [
+  {
+    date: new Date("Mon, 22 Jun 2020 14:32:38 GMT"),
+    for: {
+      displayName: "user14",
+    },
+    forId: 4,
+    from: {
+      displayName: "user14",
+    },
+    fromId: 4,
+    id: 1,
+    messageText: "Your post (ID 19) was deleted due to violating our community rules.",
+    threadID: 4,
+  },
+  {
+    date: new Date("Mon, 22 Jun 2020 14:32:38 GMT"),
+    for: {
+      displayName: "user14",
+    },
+    forId: 4,
+    from: {
+      displayName: "user14",
+    },
+    fromId: 4,
+    id: 14,
+    messageText: "Your post (ID 19) was deleted due to violating our community rules.",
+    threadID: 4,
+  },
+];
+const mockThreads: FullThread[] = [
+  {
+    id: 3,
+    user1: {
+      displayName: "shirb",
+      selectedIcon: "kitty",
+      iconColours: {
+        character: "#BA9F93",
+        lbg: "#e2a275",
+        rbg: "#f8eee4",
+        item: "#f4b56a",
+      },
+    },
+    user1Id: 1,
+    user2: {
+      displayName: "test",
+      selectedIcon: "kitty",
+      iconColours: {
+        character: "#BA9F93",
+        lbg: "#e2a275",
+        rbg: "#f8eee4",
+        item: "#f4b56a",
+      },
+    },
+    user2Id: 4,
+    numMessages: 1,
+    latestMessage: new Date("Mon, 08 Jun 2020 14:43:15 GMT"),
+  },
+];
 
 describe("AppMessaging", () => {
   // Before each test, configure testing environment
@@ -68,12 +128,12 @@ describe("AppMessaging", () => {
         FontAwesomeModule,
       ],
       declarations: [AppMessaging, PopUp],
-      providers: [
-        { provide: APP_BASE_HREF, useValue: "/" },
-        { provide: ItemsService, useClass: MockItemsService },
-        { provide: AuthService, useClass: MockAuthService },
-      ],
+      providers: [{ provide: APP_BASE_HREF, useValue: "/" }],
     }).compileComponents();
+
+    const authService = TestBed.inject(AuthService);
+    authService.authenticated = true;
+    authService.userData = { ...mockAuthedUser };
   });
 
   // Check that the component is created
@@ -93,10 +153,7 @@ describe("AppMessaging", () => {
 
   // Check that the component checks whether the user is logged in
   it("should check if the user is logged in", () => {
-    const authSpy = spyOn(
-      TestBed.inject(AuthService).isUserDataResolved as BehaviorSubject<boolean>,
-      "subscribe",
-    ).and.callThrough();
+    const authSpy = spyOn(TestBed.inject(AuthService).isUserDataResolved, "subscribe");
     const fixture = TestBed.createComponent(AppMessaging);
     const appMessaging = fixture.componentInstance;
 
@@ -111,6 +168,175 @@ describe("AppMessaging", () => {
 
     expect(appMessaging.editMode).toBeFalse();
     expect(appMessaging.delete).toBeFalse();
+  });
+
+  // TODO: Add test for the user icon setup (onInit and setUpUserIcon)
+
+  it("should fetch messages from the server", () => {
+    const fixture = TestBed.createComponent(AppMessaging);
+    const appMessaging = fixture.componentInstance;
+    const idbFetchSpy = spyOn(appMessaging, "fetchMessagesFromIdb").and.returnValue(
+      of({ messages: [], total_pages: 1, current_page: 1, success: true }),
+    );
+    const apiClientSpy = spyOn(appMessaging["apiClient"], "get").and.returnValue(
+      of({ messages: mockMessages, total_pages: 2, current_page: 1, success: true }),
+    );
+    const toggleSpy = spyOn(appMessaging["alertsService"], "toggleOfflineAlert");
+    const swManagerSpy = spyOn(appMessaging["swManager"], "addFetchedItems");
+
+    // before
+    expect(appMessaging.messages()).toEqual([]);
+    expect(appMessaging.totalPages()).toBe(1);
+    expect(appMessaging.currentPage()).toBe(1);
+
+    fixture.detectChanges();
+
+    appMessaging.fetchMessages();
+
+    // after
+    expect(idbFetchSpy).toHaveBeenCalled();
+    expect(apiClientSpy).toHaveBeenCalledWith("messages", {
+      page: 1,
+      userID: 4,
+      type: "inbox",
+    });
+    expect(appMessaging.messages()).toEqual(mockMessages);
+    expect(appMessaging.totalPages()).toBe(2);
+    expect(appMessaging.currentPage()).toBe(1);
+    expect(toggleSpy).toHaveBeenCalled();
+    expect(swManagerSpy).toHaveBeenCalledWith("messages", mockMessages, "date");
+  });
+
+  it("should add the thread ID param to the fetch if the message type is thread", () => {
+    const fixture = TestBed.createComponent(AppMessaging);
+    const appMessaging = fixture.componentInstance;
+    appMessaging.messType = "thread";
+    appMessaging.threadId = 4;
+    const idbFetchSpy = spyOn(appMessaging, "fetchMessagesFromIdb").and.returnValue(
+      of({ messages: [], total_pages: 1, current_page: 1, success: true }),
+    );
+    const apiClientSpy = spyOn(appMessaging["apiClient"], "get").and.returnValue(
+      of({ messages: mockMessages, total_pages: 2, current_page: 1, success: true }),
+    );
+
+    fixture.detectChanges();
+
+    appMessaging.fetchMessages();
+
+    expect(idbFetchSpy).toHaveBeenCalled();
+    expect(apiClientSpy).toHaveBeenCalledWith("messages", {
+      page: 1,
+      userID: 4,
+      type: "thread",
+      threadID: 4,
+    });
+  });
+
+  it("should fetch messages from IDB", (done: DoneFn) => {
+    const fixture = TestBed.createComponent(AppMessaging);
+    const appMessaging = fixture.componentInstance;
+    const idbSpy = spyOn(appMessaging["swManager"], "fetchMessages").and.returnValue(
+      new Promise((resolve) => resolve({ messages: mockMessages, pages: 2 })),
+    );
+
+    fixture.detectChanges();
+
+    appMessaging.fetchMessagesFromIdb().subscribe((response) => {
+      expect(idbSpy).toHaveBeenCalledWith("forId", 4, 5, 1);
+      expect(appMessaging.messages()).toEqual(mockMessages);
+      expect(appMessaging.totalPages()).toBe(2);
+      expect(response).toEqual({
+        messages: mockMessages,
+        total_pages: 2,
+        current_page: 1,
+        success: true,
+      });
+      done();
+    });
+  });
+
+  it("should set the filter value to the thread ID if the message type is thread", (done: DoneFn) => {
+    const fixture = TestBed.createComponent(AppMessaging);
+    const appMessaging = fixture.componentInstance;
+    appMessaging.messType = "thread";
+    appMessaging.threadId = 2;
+    const idbSpy = spyOn(appMessaging["swManager"], "fetchMessages").and.returnValue(
+      new Promise((resolve) => resolve({ messages: mockMessages, pages: 2 })),
+    );
+
+    fixture.detectChanges();
+
+    appMessaging.fetchMessagesFromIdb().subscribe((response) => {
+      expect(idbSpy).toHaveBeenCalledWith("threadID", 2, 5, 1);
+      expect(appMessaging.messages()).toEqual(mockMessages);
+      expect(appMessaging.totalPages()).toBe(2);
+      expect(response).toEqual({
+        messages: mockMessages,
+        total_pages: 2,
+        current_page: 1,
+        success: true,
+      });
+      done();
+    });
+  });
+
+  it("should fetch threads from the server", () => {
+    const fixture = TestBed.createComponent(AppMessaging);
+    const appMessaging = fixture.componentInstance;
+    appMessaging.messType = "threads";
+    const idbFetchSpy = spyOn(appMessaging, "fetchThreadsFromIdb").and.returnValue(
+      of({ messages: [], total_pages: 1, current_page: 1, success: true }),
+    );
+    const apiClientSpy = spyOn(appMessaging["apiClient"], "get").and.returnValue(
+      of({ messages: mockThreads, total_pages: 2, current_page: 1, success: true }),
+    );
+    const toggleSpy = spyOn(appMessaging["alertsService"], "toggleOfflineAlert");
+    const swManagerSpy = spyOn(appMessaging["swManager"], "addFetchedItems");
+
+    // before
+    expect(appMessaging.userThreads()).toEqual([]);
+    expect(appMessaging.totalPages()).toBe(1);
+    expect(appMessaging.currentPage()).toBe(1);
+
+    fixture.detectChanges();
+
+    appMessaging.fetchThreads();
+
+    // after
+    expect(idbFetchSpy).toHaveBeenCalled();
+    expect(apiClientSpy).toHaveBeenCalledWith("messages", {
+      page: 1,
+      userID: 4,
+      type: "threads",
+    });
+    expect(appMessaging.userThreads()).toEqual(mockThreads);
+    expect(appMessaging.totalPages()).toBe(2);
+    expect(appMessaging.currentPage()).toBe(1);
+    expect(toggleSpy).toHaveBeenCalled();
+    expect(swManagerSpy).toHaveBeenCalledWith("threads", mockThreads, "latestMessage");
+  });
+
+  it("should fetch threads from IDB", (done: DoneFn) => {
+    const fixture = TestBed.createComponent(AppMessaging);
+    const appMessaging = fixture.componentInstance;
+    const idbSpy = spyOn(appMessaging["swManager"], "queryThreads").and.returnValue(
+      new Promise((resolve) => resolve({ messages: mockThreads, pages: 2 })),
+    );
+
+    fixture.detectChanges();
+
+    appMessaging.fetchThreadsFromIdb().subscribe((response) => {
+      expect(idbSpy).toHaveBeenCalledWith(1);
+      expect(appMessaging.userThreads()).toEqual(mockThreads);
+      expect(appMessaging.totalPages()).toBe(2);
+      expect(response).toEqual({
+        messages: mockThreads,
+        total_pages: 2,
+        current_page: 1,
+        success: true,
+      });
+      done();
+    });
   });
 
   // Check that an error is shown if the user isn't logged in
@@ -139,12 +365,13 @@ describe("AppMessaging", () => {
     const appMessagingDOM = fixture.nativeElement;
     appMessaging.authService.authenticated = false;
     const loginSpy = spyOn(appMessaging, "login").and.callThrough();
-    const loginServiceSpy = spyOn(appMessaging.authService, "login").and.callThrough();
+    const loginServiceSpy = spyOn(appMessaging.authService, "login");
 
     fixture.detectChanges();
 
     // simulate click
     appMessagingDOM.querySelector("#logIn").click();
+    appMessaging.authService.authenticated = true;
     fixture.detectChanges();
 
     // check the spies are called
@@ -154,15 +381,225 @@ describe("AppMessaging", () => {
     done();
   });
 
+  // Check deleting a single message triggers the poppup
+  it("should trigger the popup upon delete", (done: DoneFn) => {
+    TestBed.inject(ActivatedRoute).url = of([{ path: "inbox" } as UrlSegment]);
+    const fixture = TestBed.createComponent(AppMessaging);
+    const appMessaging = fixture.componentInstance;
+    const appMessagingDOM = fixture.nativeElement;
+    appMessaging.messages.set(mockMessages);
+
+    fixture.detectChanges();
+
+    // before the click
+    expect(appMessaging.editMode).toBeFalse();
+    expect(appMessaging.delete).toBeFalse();
+
+    // trigger click
+    const messages = appMessagingDOM.querySelectorAll(".mailboxMessages")[0];
+    messages.querySelectorAll(".deleteButton")[0].click();
+    fixture.detectChanges();
+
+    // after the click
+    expect(appMessaging.editMode).toBeTrue();
+    expect(appMessaging.delete).toBeTrue();
+    expect(appMessaging.toDelete).toBe("Message");
+    expect(appMessaging.itemToDelete).toBe(1);
+    expect(appMessagingDOM.querySelector("app-pop-up")).toBeTruthy();
+    done();
+  });
+
+  it("should navigate to the next page - messages", (done: DoneFn) => {
+    TestBed.inject(ActivatedRoute).url = of([{ path: "inbox" } as UrlSegment]);
+    const fixture = TestBed.createComponent(AppMessaging);
+    const appMessaging = fixture.componentInstance;
+    const appMessagingDOM = fixture.nativeElement;
+    const fetchSpy = spyOn(appMessaging, "fetchMessages");
+    appMessaging.messages.set(mockMessages);
+    appMessaging.totalPages.set(2);
+    fixture.detectChanges();
+
+    appMessagingDOM.querySelectorAll(".nextButton")[0].click();
+    fixture.detectChanges();
+
+    expect(appMessaging.currentPage()).toBe(2);
+    expect(fetchSpy).toHaveBeenCalled();
+    done();
+  });
+
+  it("should navigate to the next page - threads", (done: DoneFn) => {
+    TestBed.inject(ActivatedRoute).url = of([{ path: "threads" } as UrlSegment]);
+    const fixture = TestBed.createComponent(AppMessaging);
+    const appMessaging = fixture.componentInstance;
+    const appMessagingDOM = fixture.nativeElement;
+    const fetchSpy = spyOn(appMessaging, "fetchThreads");
+    appMessaging.userThreads.set(mockThreads);
+    appMessaging.totalPages.set(2);
+    fixture.detectChanges();
+
+    appMessagingDOM.querySelectorAll(".nextButton")[0].click();
+    fixture.detectChanges();
+
+    expect(appMessaging.currentPage()).toBe(2);
+    expect(fetchSpy).toHaveBeenCalled();
+    done();
+  });
+
+  it("should navigate to the previous page", (done: DoneFn) => {
+    TestBed.inject(ActivatedRoute).url = of([{ path: "inbox" } as UrlSegment]);
+    const fixture = TestBed.createComponent(AppMessaging);
+    const appMessaging = fixture.componentInstance;
+    const appMessagingDOM = fixture.nativeElement;
+    const fetchSpy = spyOn(appMessaging, "fetchMessages");
+    appMessaging.messages.set(mockMessages);
+    appMessaging.totalPages.set(2);
+    appMessaging.currentPage.set(2);
+    fixture.detectChanges();
+
+    appMessagingDOM.querySelectorAll(".prevButton")[0].click();
+    fixture.detectChanges();
+
+    expect(appMessaging.currentPage()).toBe(1);
+    expect(fetchSpy).toHaveBeenCalled();
+    done();
+  });
+
+  it("should navigate to the previous page - threads", (done: DoneFn) => {
+    TestBed.inject(ActivatedRoute).url = of([{ path: "threads" } as UrlSegment]);
+    const fixture = TestBed.createComponent(AppMessaging);
+    const appMessaging = fixture.componentInstance;
+    const appMessagingDOM = fixture.nativeElement;
+    const fetchSpy = spyOn(appMessaging, "fetchThreads");
+    appMessaging.userThreads.set(mockThreads);
+    appMessaging.totalPages.set(2);
+    appMessaging.currentPage.set(2);
+    fixture.detectChanges();
+
+    appMessagingDOM.querySelectorAll(".prevButton")[0].click();
+    fixture.detectChanges();
+
+    expect(appMessaging.currentPage()).toBe(1);
+    expect(fetchSpy).toHaveBeenCalled();
+    done();
+  });
+
+  it("should change mailbox when clicking the icons - not thread", (done: DoneFn) => {
+    TestBed.inject(ActivatedRoute).url = of([{ path: "inbox" } as UrlSegment]);
+    const fixture = TestBed.createComponent(AppMessaging);
+    const appMessaging = fixture.componentInstance;
+    const appMessagingDOM = fixture.nativeElement;
+    const navigateSpy = spyOn(appMessaging["router"], "navigate");
+    fixture.detectChanges();
+
+    appMessagingDOM.querySelectorAll(".messNavOption")[1].click();
+    fixture.detectChanges();
+
+    expect(navigateSpy).toHaveBeenCalledWith(["../outbox"], {
+      relativeTo: TestBed.inject(ActivatedRoute),
+      replaceUrl: true,
+    });
+    done();
+  });
+
+  it("should change mailbox when clicking the icons - thread", (done: DoneFn) => {
+    TestBed.inject(ActivatedRoute).url = of([
+      { path: "thread" } as UrlSegment,
+      { path: "3" } as UrlSegment,
+    ]);
+    const fixture = TestBed.createComponent(AppMessaging);
+    const appMessaging = fixture.componentInstance;
+    const appMessagingDOM = fixture.nativeElement;
+    const navigateSpy = spyOn(appMessaging["router"], "navigate");
+    fixture.detectChanges();
+
+    appMessagingDOM.querySelectorAll(".messNavOption")[2].click();
+    fixture.detectChanges();
+
+    expect(navigateSpy).toHaveBeenCalledWith(["../../threads"], {
+      relativeTo: TestBed.inject(ActivatedRoute),
+      replaceUrl: true,
+    });
+    done();
+  });
+
+  it("should load a thread", (done: DoneFn) => {
+    TestBed.inject(ActivatedRoute).url = of([{ path: "threads" } as UrlSegment]);
+    const fixture = TestBed.createComponent(AppMessaging);
+    const appMessaging = fixture.componentInstance;
+    const appMessagingDOM = fixture.nativeElement;
+    const navigateSpy = spyOn(appMessaging["router"], "navigate");
+    appMessaging.userThreads.set(mockThreads);
+    fixture.detectChanges();
+
+    appMessagingDOM.querySelectorAll(".viewButton")[0].click();
+    fixture.detectChanges();
+
+    expect(navigateSpy).toHaveBeenCalledWith(["../thread/3"], {
+      relativeTo: TestBed.inject(ActivatedRoute),
+      replaceUrl: true,
+    });
+    done();
+  });
+
+  it("should trigger the popup upon delete - delete thread", (done: DoneFn) => {
+    TestBed.inject(ActivatedRoute).url = of([{ path: "threads" } as UrlSegment]);
+    const fixture = TestBed.createComponent(AppMessaging);
+    const appMessaging = fixture.componentInstance;
+    const appMessagingDOM = fixture.nativeElement;
+    appMessaging.userThreads.set(mockThreads);
+
+    fixture.detectChanges();
+
+    // before the click
+    expect(appMessaging.editMode).toBeFalse();
+    expect(appMessaging.delete).toBeFalse();
+
+    // trigger click
+    const messages = appMessagingDOM.querySelectorAll(".userThread")[0];
+    messages.querySelectorAll(".deleteButton")[0].click();
+    fixture.detectChanges();
+
+    // after the click
+    expect(appMessaging.editMode).toBeTrue();
+    expect(appMessaging.delete).toBeTrue();
+    expect(appMessaging.toDelete).toBe("Thread");
+    expect(appMessaging.itemToDelete).toBe(3);
+    expect(appMessagingDOM.querySelector("app-pop-up")).toBeTruthy();
+    done();
+  });
+
+  // Check that deleting all messages triggers the popup
+  it("should trigger the popup upon deleting all", (done: DoneFn) => {
+    TestBed.inject(ActivatedRoute).url = of([{ path: "inbox" } as UrlSegment]);
+    const fixture = TestBed.createComponent(AppMessaging);
+    const appMessaging = fixture.componentInstance;
+    const appMessagingDOM = fixture.nativeElement;
+    appMessaging.messages.set(mockMessages);
+    fixture.detectChanges();
+
+    // before the click
+    expect(appMessaging.editMode).toBeFalse();
+    expect(appMessaging.delete).toBeFalse();
+
+    // trigger click
+    appMessagingDOM.querySelectorAll(".deleteAll")[0].click();
+    fixture.detectChanges();
+
+    // after the click
+    expect(appMessaging.editMode).toBeTrue();
+    expect(appMessaging.delete).toBeTrue();
+    expect(appMessaging.toDelete).toBe("All inbox");
+    expect(appMessaging.itemToDelete).toBe(4);
+    expect(appMessagingDOM.querySelector("app-pop-up")).toBeTruthy();
+    done();
+  });
+
   // Check the popup exits when 'false' is emitted
   it("should change mode when the event emitter emits false", (done: DoneFn) => {
     TestBed.inject(ActivatedRoute).url = of([{ path: "inbox" } as UrlSegment]);
     const fixture = TestBed.createComponent(AppMessaging);
     const appMessaging = fixture.componentInstance;
-    appMessaging.login();
     const changeSpy = spyOn(appMessaging, "changeMode").and.callThrough();
-
-    fixture.detectChanges();
 
     // start the popup
     appMessaging.lastFocusedElement = document.querySelectorAll("a")[0];
@@ -184,501 +621,26 @@ describe("AppMessaging", () => {
     done();
   });
 
-  // Check that a different page gets different results
-  it("should change pages when clicked", (done: DoneFn) => {
+  // Check each message has delete button and reply link
+  it("should have the relevant buttons for each message", (done: DoneFn) => {
     TestBed.inject(ActivatedRoute).url = of([{ path: "inbox" } as UrlSegment]);
     const fixture = TestBed.createComponent(AppMessaging);
     const appMessaging = fixture.componentInstance;
     const appMessagingDOM = fixture.nativeElement;
-    appMessaging.login();
+    appMessaging.messages.set(mockMessages);
 
     fixture.detectChanges();
 
-    // before the click, page 1
-    expect(appMessaging.itemsService.currentMessagesPage).toBe(1);
-    expect(appMessagingDOM.querySelectorAll(".mailboxMessages")[0].children.length).toBe(2);
-
-    expect(appMessagingDOM.querySelectorAll(".pagination").children.length).toBe(3);
-
-    // trigger click
-    appMessagingDOM.querySelectorAll(".nextButton")[0].click();
-    fixture.detectChanges();
-
-    // after click, page 2
-    expect(appMessaging.itemsService.currentMessagesPage).toBe(2);
-    expect(appMessagingDOM.querySelectorAll(".mailboxMessages")[0].children.length).toBe(3);
-
-    // trigger another click
-    appMessagingDOM.querySelectorAll(".prevButton")[0].click();
-    fixture.detectChanges();
-
-    // after click, page 1
-    expect(appMessaging.itemsService.currentMessagesPage).toBe(1);
-    expect(appMessagingDOM.querySelectorAll(".mailboxMessages")[0].children.length).toBe(2);
+    expect(appMessagingDOM.querySelectorAll(".mailboxMessages")[0]).toBeTruthy();
+    const messages = appMessagingDOM.querySelectorAll(".userMessage");
+    expect(messages.length).toBe(2);
+    messages.forEach((message: HTMLLIElement) => {
+      expect(message.querySelectorAll(".messageButton")[0].tagName.toLowerCase()).toBe("a");
+      expect(message.querySelectorAll(".messageButton")[0].textContent).toBe("Reply");
+      expect(message.querySelectorAll(".messageButton")[0].getAttribute("href")).toContain("/new");
+      expect(message.querySelectorAll(".deleteButton")[0].tagName.toLowerCase()).toBe("button");
+      expect(message.querySelectorAll(".deleteButton")[0].textContent).toBe("Delete Message");
+    });
     done();
-  });
-
-  // INBOX
-  // ==================================================================
-  describe("Inbox", () => {
-    // Before each test, configure testing environment
-    beforeEach(() => {
-      TestBed.resetTestEnvironment();
-      TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
-
-      TestBed.configureTestingModule({
-        schemas: [NO_ERRORS_SCHEMA],
-        imports: [
-          RouterTestingModule,
-          HttpClientModule,
-          ServiceWorkerModule.register("sw.js", { enabled: false }),
-          FontAwesomeModule,
-        ],
-        declarations: [AppMessaging, PopUp],
-        providers: [
-          { provide: APP_BASE_HREF, useValue: "/" },
-          { provide: ItemsService, useClass: MockItemsService },
-          { provide: AuthService, useClass: MockAuthService },
-        ],
-      }).compileComponents();
-    });
-
-    // Check that the inbox is loaded correctly
-    it("should load the correct mailbox - inbox", () => {
-      TestBed.inject(ActivatedRoute).url = of([{ path: "inbox" } as UrlSegment]);
-      const getMessagesSpy = spyOn(
-        TestBed.inject(ItemsService),
-        "getMessages",
-      ).and.callThrough();
-      const fixture = TestBed.createComponent(AppMessaging);
-      const appMessaging = fixture.componentInstance;
-      appMessaging.login();
-
-      fixture.detectChanges();
-
-      expect(appMessaging.messType).toBe("inbox");
-      expect(getMessagesSpy).toHaveBeenCalledWith("inbox", 1, 0);
-    });
-
-    // Check each message has delete button and reply link
-    it("should have the relevant buttons for each message", (done: DoneFn) => {
-      TestBed.inject(ActivatedRoute).url = of([{ path: "inbox" } as UrlSegment]);
-      const fixture = TestBed.createComponent(AppMessaging);
-      const appMessaging = fixture.componentInstance;
-      const appMessagingDOM = fixture.nativeElement;
-      appMessaging.login();
-
-      fixture.detectChanges();
-
-      expect(appMessagingDOM.querySelectorAll(".mailboxMessages")[0]).toBeTruthy();
-      const messages = appMessagingDOM.querySelectorAll(".userMessage");
-      expect(messages.length).toBe(2);
-      messages.forEach((message: HTMLLIElement) => {
-        expect(message.querySelectorAll(".messageButton")[0].tagName.toLowerCase()).toBe("a");
-        expect(message.querySelectorAll(".messageButton")[0].textContent).toBe("Reply");
-        expect(message.querySelectorAll(".messageButton")[0].getAttribute("href")).toContain(
-          "/new",
-        );
-        expect(message.querySelectorAll(".deleteButton")[0].tagName.toLowerCase()).toBe("button");
-        expect(message.querySelectorAll(".deleteButton")[0].textContent).toBe("Delete Message");
-      });
-      done();
-    });
-
-    // Check deleting a single message triggers the poppup
-    it("should trigger the popup upon delete", (done: DoneFn) => {
-      TestBed.inject(ActivatedRoute).url = of([{ path: "inbox" } as UrlSegment]);
-      const fixture = TestBed.createComponent(AppMessaging);
-      const appMessaging = fixture.componentInstance;
-      const appMessagingDOM = fixture.nativeElement;
-      appMessaging.login();
-
-      fixture.detectChanges();
-
-      // before the click
-      expect(appMessaging.editMode).toBeFalse();
-      expect(appMessaging.delete).toBeFalse();
-
-      // trigger click
-      const messages = appMessagingDOM.querySelectorAll(".mailboxMessages")[0];
-      messages.querySelectorAll(".deleteButton")[0].click();
-      fixture.detectChanges();
-
-      // after the click
-      expect(appMessaging.editMode).toBeTrue();
-      expect(appMessaging.delete).toBeTrue();
-      expect(appMessaging.toDelete).toBe("Message");
-      expect(appMessaging.itemToDelete).toBe(1);
-      expect(appMessagingDOM.querySelector("app-pop-up")).toBeTruthy();
-      done();
-    });
-
-    // Check that deleting all messages triggers the popup
-    it("should trigger the popup upon deleting all", (done: DoneFn) => {
-      TestBed.inject(ActivatedRoute).url = of([{ path: "inbox" } as UrlSegment]);
-      const fixture = TestBed.createComponent(AppMessaging);
-      const appMessaging = fixture.componentInstance;
-      const appMessagingDOM = fixture.nativeElement;
-      appMessaging.login();
-
-      fixture.detectChanges();
-
-      // before the click
-      expect(appMessaging.editMode).toBeFalse();
-      expect(appMessaging.delete).toBeFalse();
-
-      // trigger click
-      appMessagingDOM.querySelectorAll(".deleteAll")[0].click();
-      fixture.detectChanges();
-
-      // after the click
-      expect(appMessaging.editMode).toBeTrue();
-      expect(appMessaging.delete).toBeTrue();
-      expect(appMessaging.toDelete).toBe("All inbox");
-      expect(appMessaging.itemToDelete).toBe(4);
-      expect(appMessagingDOM.querySelector("app-pop-up")).toBeTruthy();
-      done();
-    });
-  });
-
-  // OUTBOX
-  // ==================================================================
-  describe("Outbox", () => {
-    // Before each test, configure testing environment
-    beforeEach(() => {
-      TestBed.resetTestEnvironment();
-      TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
-
-      TestBed.configureTestingModule({
-        schemas: [NO_ERRORS_SCHEMA],
-        imports: [
-          RouterTestingModule,
-          HttpClientModule,
-          ServiceWorkerModule.register("sw.js", { enabled: false }),
-          FontAwesomeModule,
-        ],
-        declarations: [AppMessaging, PopUp],
-        providers: [
-          { provide: APP_BASE_HREF, useValue: "/" },
-          { provide: ItemsService, useClass: MockItemsService },
-          { provide: AuthService, useClass: MockAuthService },
-        ],
-      }).compileComponents();
-    });
-
-    // Check that the outbox is loaded correctly
-    it("should load the correct mailbox - outbox", () => {
-      TestBed.inject(ActivatedRoute).url = of([{ path: "outbox" } as UrlSegment]);
-      const getMessagesSpy = spyOn(
-        TestBed.inject(ItemsService),
-        "getMessages",
-      ).and.callThrough();
-      const fixture = TestBed.createComponent(AppMessaging);
-      const appMessaging = fixture.componentInstance;
-      appMessaging.login();
-
-      fixture.detectChanges();
-
-      expect(appMessaging.messType).toBe("outbox");
-      expect(getMessagesSpy).toHaveBeenCalledWith("outbox", 1, 0);
-    });
-
-    // Check each message has delete button and reply link
-    it("should have the relevant buttons for each message", (done: DoneFn) => {
-      TestBed.inject(ActivatedRoute).url = of([{ path: "outbox" } as UrlSegment]);
-      const fixture = TestBed.createComponent(AppMessaging);
-      const appMessaging = fixture.componentInstance;
-      const appMessagingDOM = fixture.nativeElement;
-      appMessaging.login();
-
-      fixture.detectChanges();
-
-      expect(appMessagingDOM.querySelectorAll(".mailboxMessages")[0]).toBeTruthy();
-      const messages = appMessagingDOM.querySelectorAll(".userMessage");
-      expect(messages.length).toBe(2);
-      messages.forEach((message: HTMLLIElement) => {
-        expect(message.querySelectorAll(".deleteButton")[0].tagName.toLowerCase()).toBe("button");
-        expect(message.querySelectorAll(".deleteButton")[0].textContent).toBe("Delete Message");
-      });
-      done();
-    });
-
-    // Check deleting a single message triggers the poppup
-    it("should trigger the popup upon delete", (done: DoneFn) => {
-      TestBed.inject(ActivatedRoute).url = of([{ path: "outbox" } as UrlSegment]);
-      const fixture = TestBed.createComponent(AppMessaging);
-      const appMessaging = fixture.componentInstance;
-      const appMessagingDOM = fixture.nativeElement;
-      appMessaging.login();
-
-      fixture.detectChanges();
-
-      // before the click
-      expect(appMessaging.editMode).toBeFalse();
-      expect(appMessaging.delete).toBeFalse();
-
-      // trigger click
-      const messages = appMessagingDOM.querySelectorAll(".mailboxMessages")[0];
-      messages.querySelectorAll(".deleteButton")[0].click();
-      fixture.detectChanges();
-
-      // after the click
-      expect(appMessaging.editMode).toBeTrue();
-      expect(appMessaging.delete).toBeTrue();
-      expect(appMessaging.toDelete).toBe("Message");
-      expect(appMessaging.itemToDelete).toBe(18);
-      expect(appMessagingDOM.querySelector("app-pop-up")).toBeTruthy();
-      done();
-    });
-
-    // Check that deleting all messages triggers the popup
-    it("should trigger the popup upon deleting all", (done: DoneFn) => {
-      TestBed.inject(ActivatedRoute).url = of([{ path: "outbox" } as UrlSegment]);
-      const fixture = TestBed.createComponent(AppMessaging);
-      const appMessaging = fixture.componentInstance;
-      const appMessagingDOM = fixture.nativeElement;
-      appMessaging.login();
-
-      fixture.detectChanges();
-
-      // before the click
-      expect(appMessaging.editMode).toBeFalse();
-      expect(appMessaging.delete).toBeFalse();
-
-      // trigger click
-      appMessagingDOM.querySelectorAll(".deleteAll")[0].click();
-      fixture.detectChanges();
-
-      // after the click
-      expect(appMessaging.editMode).toBeTrue();
-      expect(appMessaging.delete).toBeTrue();
-      expect(appMessaging.toDelete).toBe("All outbox");
-      expect(appMessaging.itemToDelete).toBe(4);
-      expect(appMessagingDOM.querySelector("app-pop-up")).toBeTruthy();
-      done();
-    });
-  });
-
-  // THREADS
-  // ==================================================================
-  describe("Threads", () => {
-    // Before each test, configure testing environment
-    beforeEach(() => {
-      TestBed.resetTestEnvironment();
-      TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
-
-      TestBed.configureTestingModule({
-        schemas: [NO_ERRORS_SCHEMA],
-        imports: [
-          RouterTestingModule,
-          HttpClientModule,
-          ServiceWorkerModule.register("sw.js", { enabled: false }),
-          FontAwesomeModule,
-        ],
-        declarations: [AppMessaging, PopUp],
-        providers: [
-          { provide: APP_BASE_HREF, useValue: "/" },
-          { provide: ItemsService, useClass: MockItemsService },
-          { provide: AuthService, useClass: MockAuthService },
-        ],
-      }).compileComponents();
-    });
-
-    // Check that the threads mailbox is loaded correctly
-    it("should load the correct mailbox - threads", () => {
-      TestBed.inject(ActivatedRoute).url = of([{ path: "threads" } as UrlSegment]);
-      const getMessagesSpy = spyOn(TestBed.inject(ItemsService), "getMessages").and.callThrough();
-      const fixture = TestBed.createComponent(AppMessaging);
-      const appMessaging = fixture.componentInstance;
-      appMessaging.login();
-
-      fixture.detectChanges();
-
-      expect(appMessaging.messType).toBe("threads");
-      expect(getMessagesSpy).toHaveBeenCalledWith("threads", 1, 0);
-    });
-
-    // Check each message has delete button and view thread link
-    it("should have the relevant buttons for each message", (done: DoneFn) => {
-      TestBed.inject(ActivatedRoute).url = of([{ path: "threads" } as UrlSegment]);
-      const fixture = TestBed.createComponent(AppMessaging);
-      const appMessaging = fixture.componentInstance;
-      const appMessagingDOM = fixture.nativeElement;
-      appMessaging.login();
-
-      fixture.detectChanges();
-
-      expect(appMessagingDOM.querySelectorAll(".userThreads")[0]).toBeTruthy();
-      const threads = appMessagingDOM.querySelectorAll(".userThread");
-      expect(threads.length).toBe(1);
-      threads.forEach((thread: HTMLLIElement) => {
-        expect(thread.querySelectorAll(".viewButton")[0].tagName.toLowerCase()).toBe("button");
-        expect(thread.querySelectorAll(".viewButton")[0].textContent).toBe("View Thread Messages");
-        expect(thread.querySelectorAll(".deleteButton")[0].tagName.toLowerCase()).toBe("button");
-        expect(thread.querySelectorAll(".deleteButton")[0].textContent).toBe("Delete Thread");
-      });
-      done();
-    });
-
-    // Check deleting a single message triggers the poppup
-    it("should trigger the popup upon delete", (done: DoneFn) => {
-      TestBed.inject(ActivatedRoute).url = of([{ path: "threads" } as UrlSegment]);
-      const fixture = TestBed.createComponent(AppMessaging);
-      const appMessaging = fixture.componentInstance;
-      const appMessagingDOM = fixture.nativeElement;
-      appMessaging.login();
-
-      fixture.detectChanges();
-
-      // before the click
-      expect(appMessaging.editMode).toBeFalse();
-      expect(appMessaging.delete).toBeFalse();
-
-      // trigger click
-      const threads = appMessagingDOM.querySelectorAll(".userThreads")[0];
-      threads.querySelectorAll(".deleteButton")[0].click();
-      fixture.detectChanges();
-
-      // after the click
-      expect(appMessaging.editMode).toBeTrue();
-      expect(appMessaging.delete).toBeTrue();
-      expect(appMessaging.toDelete).toBe("Thread");
-      expect(appMessaging.itemToDelete).toBe(3);
-      expect(appMessagingDOM.querySelector("app-pop-up")).toBeTruthy();
-      done();
-    });
-
-    // Check that deleting all messages triggers the popup
-    it("should trigger the popup upon deleting all", (done: DoneFn) => {
-      TestBed.inject(ActivatedRoute).url = of([{ path: "threads" } as UrlSegment]);
-      const fixture = TestBed.createComponent(AppMessaging);
-      const appMessaging = fixture.componentInstance;
-      const appMessagingDOM = fixture.nativeElement;
-      appMessaging.login();
-
-      fixture.detectChanges();
-
-      // before the click
-      expect(appMessaging.editMode).toBeFalse();
-      expect(appMessaging.delete).toBeFalse();
-
-      // trigger click
-      appMessagingDOM.querySelectorAll(".deleteAll")[0].click();
-      fixture.detectChanges();
-
-      // after the click
-      expect(appMessaging.editMode).toBeTrue();
-      expect(appMessaging.delete).toBeTrue();
-      expect(appMessaging.toDelete).toBe("All threads");
-      expect(appMessaging.itemToDelete).toBe(4);
-      expect(appMessagingDOM.querySelector("app-pop-up")).toBeTruthy();
-      done();
-    });
-  });
-
-  // THREAD
-  // ==================================================================
-  describe("Thread", () => {
-    // Before each test, configure testing environment
-    beforeEach(() => {
-      TestBed.resetTestEnvironment();
-      TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
-
-      TestBed.configureTestingModule({
-        schemas: [NO_ERRORS_SCHEMA],
-        imports: [
-          RouterTestingModule,
-          HttpClientModule,
-          ServiceWorkerModule.register("sw.js", { enabled: false }),
-          FontAwesomeModule,
-        ],
-        declarations: [AppMessaging, PopUp],
-        providers: [
-          { provide: APP_BASE_HREF, useValue: "/" },
-          { provide: ItemsService, useClass: MockItemsService },
-          { provide: AuthService, useClass: MockAuthService },
-        ],
-      }).compileComponents();
-    });
-
-    // Check that the specific thread is loaded correctly
-    it("should load the correct mailbox - thread", () => {
-      TestBed.inject(ActivatedRoute).url = of([{ path: "thread" } as UrlSegment]);
-      const paramSpy = spyOn(
-        (TestBed.inject(ActivatedRoute) as ActivatedRoute).snapshot.paramMap,
-        "get",
-      ).and.returnValue("3");
-      const getMessagesSpy = spyOn(TestBed.inject(ItemsService), "getMessages").and.callThrough();
-      const fixture = TestBed.createComponent(AppMessaging);
-      const appMessaging = fixture.componentInstance;
-      appMessaging.login();
-
-      fixture.detectChanges();
-
-      expect(paramSpy).toHaveBeenCalled();
-      expect(appMessaging.messType).toBe("thread");
-      expect(getMessagesSpy).toHaveBeenCalledWith("thread", 1, 3);
-    });
-
-    // Check each message has delete button and reply link
-    it("should have the relevant buttons for each message", (done: DoneFn) => {
-      TestBed.inject(ActivatedRoute).url = of([{ path: "thread" } as UrlSegment]);
-      spyOn(
-        (TestBed.inject(ActivatedRoute) as ActivatedRoute).snapshot.paramMap,
-        "get",
-      ).and.returnValue("3");
-      const fixture = TestBed.createComponent(AppMessaging);
-      const appMessaging = fixture.componentInstance;
-      const appMessagingDOM = fixture.nativeElement;
-      appMessaging.login();
-
-      fixture.detectChanges();
-
-      expect(appMessagingDOM.querySelectorAll(".threadMessages")[0]).toBeTruthy();
-      const messages = appMessagingDOM.querySelectorAll(".userMessage");
-      expect(messages.length).toBe(2);
-      messages.forEach((message: HTMLLIElement) => {
-        expect(message.querySelectorAll(".messageButton")[0].tagName.toLowerCase()).toBe("a");
-        expect(message.querySelectorAll(".messageButton")[0].textContent).toBe("Reply");
-        expect(message.querySelectorAll(".messageButton")[0].getAttribute("href")).toContain(
-          "/new",
-        );
-        expect(message.querySelectorAll(".deleteButton")[0].tagName.toLowerCase()).toBe("button");
-        expect(message.querySelectorAll(".deleteButton")[0].textContent).toBe("Delete Message");
-      });
-      done();
-    });
-
-    // Check deleting a single message triggers the poppup
-    it("should trigger the popup upon delete", (done: DoneFn) => {
-      TestBed.inject(ActivatedRoute).url = of([{ path: "thread" } as UrlSegment]);
-      spyOn(
-        (TestBed.inject(ActivatedRoute) as ActivatedRoute).snapshot.paramMap,
-        "get",
-      ).and.returnValue("3");
-      const fixture = TestBed.createComponent(AppMessaging);
-      const appMessaging = fixture.componentInstance;
-      const appMessagingDOM = fixture.nativeElement;
-      appMessaging.login();
-
-      fixture.detectChanges();
-
-      // before the click
-      expect(appMessaging.editMode).toBeFalse();
-      expect(appMessaging.delete).toBeFalse();
-
-      // trigger click
-      const threads = appMessagingDOM.querySelectorAll(".threadMessages")[0];
-      threads.querySelectorAll(".deleteButton")[0].click();
-      fixture.detectChanges();
-
-      // after the click
-      expect(appMessaging.editMode).toBeTrue();
-      expect(appMessaging.delete).toBeTrue();
-      expect(appMessaging.toDelete).toBe("Message");
-      expect(appMessaging.itemToDelete).toBe(9);
-      expect(appMessagingDOM.querySelector("app-pop-up")).toBeTruthy();
-      done();
-    });
   });
 });

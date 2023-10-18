@@ -21,7 +21,7 @@
     "@rollup/plugin-node-resolve": "^15.2.3",
     "@rollup/plugin-typescript": "^11.1.5",
     "@rollup/stream": "^3.0.0",
-    "@types/auth0-js": "^9.21.1",
+    "@types/auth0-js": "^9.21.2",
     "@types/jasmine": "^4.3.6",
     "@types/node": "^20.8.5",
     "autoprefixer": "^10.4.16",

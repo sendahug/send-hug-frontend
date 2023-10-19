@@ -74,93 +74,20 @@ describe("AdminService", () => {
   // Check the getPage method gets the correct type of data
   it("getPage() - should get the correct type of data for the current page", () => {
     const pageSpy = spyOn(adminService, "getPage").and.callThrough();
-    const reportsSpy = spyOn(adminService, "getOpenReports");
     const blocksSpy = spyOn(adminService, "getBlockedUsers");
     const filtersSpy = spyOn(adminService, "getFilters");
 
-    // try the user reports
-    adminService.getPage("userReports");
-    expect(pageSpy).toHaveBeenCalledTimes(1);
-    expect(reportsSpy).toHaveBeenCalledTimes(1);
-    expect(blocksSpy).not.toHaveBeenCalled();
-    expect(filtersSpy).not.toHaveBeenCalled();
-
-    // try the post reports
-    adminService.getPage("postReports");
-    expect(pageSpy).toHaveBeenCalledTimes(2);
-    expect(reportsSpy).toHaveBeenCalledTimes(2);
-    expect(blocksSpy).not.toHaveBeenCalled();
-    expect(filtersSpy).not.toHaveBeenCalled();
-
     // try the blocked users
     adminService.getPage("blockedUsers");
-    expect(pageSpy).toHaveBeenCalledTimes(3);
-    expect(reportsSpy).toHaveBeenCalledTimes(2);
+    expect(pageSpy).toHaveBeenCalledTimes(1);
     expect(blocksSpy).toHaveBeenCalledTimes(1);
     expect(filtersSpy).not.toHaveBeenCalled();
 
     // try the filters page
     adminService.getPage("filteredPhrases");
-    expect(pageSpy).toHaveBeenCalledTimes(4);
-    expect(reportsSpy).toHaveBeenCalledTimes(2);
+    expect(pageSpy).toHaveBeenCalledTimes(2);
     expect(blocksSpy).toHaveBeenCalledTimes(1);
     expect(filtersSpy).toHaveBeenCalledTimes(1);
-  });
-
-  // Check that the service gets open reports from the backend
-  it("getOpenReports() - should get open reports", () => {
-    // mock response
-    const mockResponse = {
-      success: true,
-      userReports: [
-        {
-          id: 1,
-          type: "user",
-          userID: 2,
-          displayName: "name",
-          reporter: 3,
-          reportReason: "reason",
-          date: new Date(),
-          dismissed: false,
-          closed: false,
-        },
-      ],
-      totalUserPages: 1,
-      postReports: [
-        {
-          id: 2,
-          type: "user",
-          postID: 3,
-          userID: 2,
-          displayName: "name",
-          reporter: 3,
-          reportReason: "reason",
-          date: new Date(),
-          dismissed: false,
-          closed: false,
-        },
-      ],
-      totalPostPages: 1,
-    };
-    const apiClientSpy = spyOn(adminService["apiClient"], "get").and.returnValue(of(mockResponse));
-
-    adminService.getOpenReports();
-    // wait for the request to be resolved
-    adminService.isReportsResolved.subscribe((value) => {
-      if (value) {
-        // once it is, check that the response was handled correctly
-        expect(adminService.totalPages.userReports).toBe(1);
-        expect(adminService.userReports.length).toBe(1);
-        expect(adminService.userReports[0].id).toBe(1);
-        expect(adminService.totalPages.postReports).toBe(1);
-        expect(adminService.postReports.length).toBe(1);
-        expect(adminService.postReports[0].id).toBe(2);
-      }
-    });
-    expect(apiClientSpy).toHaveBeenCalledWith("reports", {
-      userPage: "1",
-      postPage: "1",
-    });
   });
 
   // Check that the service edits the post

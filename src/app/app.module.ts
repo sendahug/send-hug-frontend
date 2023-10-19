@@ -63,6 +63,7 @@ import { PostEditForm } from "./components/forms/postEditForm/postEditForm.compo
 import { DisplayNameEditForm } from "./components/forms/displayNameEditForm/displayNameEditForm.component";
 import { ReportForm } from "./components/forms/reportForm/reportForm.component";
 import { ItemDeleteForm } from "./components/forms/itemDeleteForm/itemDeleteForm.component";
+import { AdminReports } from "./components/adminReports/adminReports.component";
 
 @NgModule({
   imports: [
@@ -99,6 +100,7 @@ import { ItemDeleteForm } from "./components/forms/itemDeleteForm/itemDeleteForm
     DisplayNameEditForm,
     ReportForm,
     ItemDeleteForm,
+    AdminReports,
   ],
   providers: [],
   bootstrap: [AppComponent],

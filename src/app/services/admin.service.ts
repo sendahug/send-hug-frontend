@@ -111,12 +111,6 @@ export class AdminService {
   */
   getPage(list: string) {
     switch (list) {
-      case "userReports":
-        this.getOpenReports();
-        break;
-      case "postReports":
-        this.getOpenReports();
-        break;
       case "blockedUsers":
         this.getBlockedUsers();
         break;
@@ -128,36 +122,6 @@ export class AdminService {
 
   // REPORTS-RELATED METHODS
   // ==============================================================
-  /*
-  Function Name: getOpenReports()
-  Function Description: Gets a paginated list of the currently open reports.
-  Parameters: None.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  getOpenReports() {
-    this.isReportsResolved.next(false);
-
-    // Get reports
-    this.apiClient
-      .get("reports", {
-        userPage: `${this.currentPage.userReports}`,
-        postPage: `${this.currentPage.postReports}`,
-      })
-      .subscribe({
-        next: (response: any) => {
-          this.userReports = response.userReports;
-          this.totalPages.userReports = response.totalUserPages;
-          this.postReports = response.postReports;
-          this.totalPages.postReports = response.totalPostPages;
-          this.isReportsResolved.next(true);
-        },
-        error: (_err: HttpErrorResponse) => {
-          this.isReportsResolved.next(true);
-        },
-      });
-  }
-
   /*
   Function Name: editPost()
   Function Description: Edits a reported post's text. If necessary,
@@ -341,6 +305,51 @@ export class AdminService {
         this.isBlockDataResolved.next(true);
       },
     });
+  }
+
+  /**
+   * Calculates the date when the user should be unblocked.
+   *
+   * @param length (string) - length of time for which the user should be blocked
+   * @param currentReleaseDate (date) - the current release date, if the user is
+   *                                    already blocked
+   * @returns - the date when the user should be unblocked
+   */
+  calculateUserReleaseDate(length: string, currentReleaseDate?: Date): Date {
+    const currentDate = new Date();
+    const millisecondsPerDay = 864e5;
+    let releaseDate: Date;
+    let millisecondsUntilReleaseDate: number;
+
+    // calculates when the user should be unblocked
+    switch (length) {
+      case "oneDay":
+        millisecondsUntilReleaseDate = millisecondsPerDay * 1;
+        releaseDate = new Date(currentDate.getTime() + millisecondsUntilReleaseDate);
+        break;
+      case "oneWeek":
+        millisecondsUntilReleaseDate = millisecondsPerDay * 7;
+        releaseDate = new Date(currentDate.getTime() + millisecondsUntilReleaseDate);
+        break;
+      case "oneMonth":
+        millisecondsUntilReleaseDate = millisecondsPerDay * 30;
+        releaseDate = new Date(currentDate.getTime() + millisecondsUntilReleaseDate);
+        break;
+      case "forever":
+        millisecondsUntilReleaseDate = millisecondsPerDay * 36500;
+        releaseDate = new Date(currentDate.getTime() + millisecondsUntilReleaseDate);
+        break;
+      default:
+        millisecondsUntilReleaseDate = millisecondsPerDay * 1;
+        releaseDate = new Date(currentDate.getTime() + millisecondsUntilReleaseDate);
+        break;
+    }
+
+    if (currentReleaseDate) {
+      releaseDate = new Date(millisecondsUntilReleaseDate + currentReleaseDate.getTime());
+    }
+
+    return releaseDate;
   }
 
   /*

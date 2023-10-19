@@ -120,12 +120,8 @@ export class AdminDashboard implements OnInit {
     this.userDataSubscription = this.authService.isUserDataResolved.subscribe((value) => {
       // if the user is logged in, fetch requested data for the current page
       if (value == true) {
-        // if the current screen is the reports screen
-        if (this.screen == "reports") {
-          this.adminService.getOpenReports();
-        }
         // if the current screen is the blocks screen
-        else if (this.screen == "blocks") {
+        if (this.screen == "blocks") {
           this.adminService.getBlockedUsers();
         }
         // if the current screen is the filters screen
@@ -142,86 +138,6 @@ export class AdminDashboard implements OnInit {
         }
       }
     });
-  }
-
-  // REPORTS PAGE
-  // ==================================================================
-  /*
-  Function Name: blockUser()
-  Function Description: Sends a request to block a user.
-  Parameters: userID (number) - the ID of the user to block.
-              reportID (number) - the ID of the report.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  blockUser(userID: number, reportID: number) {
-    this.checkBlock(userID, "oneDay", reportID);
-  }
-
-  /*
-  Function Name: editUser()
-  Function Description: Edits a user's display name.
-  Parameters: userID (number) - the ID of the user to edit.
-              reportID (number) - the ID of the report triggering the edit.
-              displayName (string) - the user's current display name.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  editUser(reportID: number, userID: number, displayName: string) {
-    this.lastFocusedElement = document.activeElement;
-    this.editType = "other user";
-    this.toEdit = displayName;
-    this.editMode = true;
-    this.reportData.reportID = reportID;
-    this.reportData.userID = userID;
-  }
-
-  /*
-  Function Name: editPost()
-  Function Description: Edits a reported post's text.
-  Parameters: postID (number) - the ID of the post to edit.
-              reportID (number) - the ID of the report triggering the edit.
-              postText (string) - the post's current text.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  editPost(postID: number, postText: string, reportID: number) {
-    this.lastFocusedElement = document.activeElement;
-    this.editType = "admin post";
-    this.toEdit = { text: postText, id: postID };
-    this.editMode = true;
-    this.reportData.reportID = reportID;
-    this.reportData.postID = postID;
-  }
-
-  /*
-  Function Name: deletePost()
-  Function Description: Sends a request to delete a post.
-  Parameters: postID (number) - the ID of the post to delete.
-              userID (number) - the ID of the user who wrote the post.
-              reportID (number) - the ID of the report.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  deletePost(postID: number, userID: number, reportID: number) {
-    this.lastFocusedElement = document.activeElement;
-    this.editMode = true;
-    this.delete = true;
-    this.toDelete = "ad post";
-    this.itemToDelete = postID;
-    this.reportData.reportID = reportID;
-    this.reportData.userID = userID;
-  }
-
-  /*
-  Function Name: dismissReport()
-  Function Description: Closes an open report without taking further action.
-  Parameters: reportID (number) - the ID of the report to close.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  dismissReport(reportID: number) {
-    this.adminService.dismissReport(reportID);
   }
 
   // BLOCKS PAGE

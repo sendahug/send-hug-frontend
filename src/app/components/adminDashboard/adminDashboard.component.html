@@ -24,7 +24,7 @@
 		</ul>
 	</div>
 	
-	<div *ngIf="(screen == 'blocks' && !adminService.isBlocksResolved.value) || (screen == 'filters' && !adminService.isFiltersResolved.value)" id="loaderDiv">
+	<div *ngIf="(screen == 'filters' && !adminService.isFiltersResolved.value)" id="loaderDiv">
 		<app-loader
 		[waitingFor]="waitFor"></app-loader>
 	</div>
@@ -33,74 +33,7 @@
 	<app-admin-reports *ngIf="screen == 'reports'"></app-admin-reports>
 
 	<!-- Admin dashboard blocks -->
-	<h3 class="adminTitle" *ngIf="screen == 'blocks' && adminService.isBlocksResolved.value">Blocks</h3>
-	<div class="adminScreen" id="adminBlocks" *ngIf="screen == 'blocks' && adminService.isBlocksResolved.value" role="main">
-		
-		<h4 class="subTitle">Block User</h4>
-		<!-- Block a user by ID -->
-		<form>
-			<div class="formElement">
-				<label class="pageCategory required" for="blockID">User I.D.: </label>
-				<input type="text" id="blockID" placeholder="user I.D." #blockID required  minlength="0" aria-invalid="false" aria-required="true">
-			</div>
-			<div class="formElement">
-				<label class="pageCategory" for="blockLength">Length of block time: </label>
-				<select id="blockLength" name="blockLength" #blockLength required>
-					<option value="oneDay">One Day</option>
-					<option value="oneWeek">One Week</option>
-					<option value="oneMonth">30 Days</option>
-					<option value="forever">Permanently</option>
-				</select>
-			</div>
-			<button type="submit" class="appButton sendData" (click)="block($event,blockID.value, blockLength.value)">Block User</button>
-		</form>
-		
-		<h4 class="subTitle">Blocked Users</h4>
-		<!-- Blocked users table -->
-		<div class="tableContainer" *ngIf="adminService.blockedUsers.length">
-			<table>
-				<thead>
-					<tr>
-						<td scope="col">User I.D.</td>
-						<td scope="col">Display Name</td>
-						<td scope="col">Blocked Until</td>
-						<td scope="col">Action</td>
-					</tr>
-				</thead>
-				<tbody>
-					<tr *ngFor="let user of adminService.blockedUsers">
-						<td aria-describedby="bUserID">{{ user.id }}</td>
-						<td aria-describedby="bUserDisplay" id="{{ 'user' + user.id }}">{{ user.displayName }}</td>
-						<td [attr.aria-describedby]="'user' + user.id + ' bUntil'">{{ user.releaseDate }}</td>
-						<td>
-							<span id="{{ 'unblock' + user.id }}" class="labels">{{ 'unblock user ' + user.displayName }}</span>
-							<button class="appButton adminButton" (click)="unblock(user.id)" [attr.aria-labelledby]="'unblock' + user.id">Unblock User</button>
-						</td>
-					</tr>
-				</tbody>
-			</table>
-		</div>
-		
-		<!-- Blocked users pagination -->
-		<div class="pagination" *ngIf="adminService.blockedUsers.length" role="navigation">
-			<button
-				[class]="adminService.currentPage.blockedUsers > 1 ? previousButtonClass : previousButtonClass + ' disabled'"
-				[disabled]="adminService.currentPage.blockedUsers <= 1"
-				(click)="prevPage('blockedUsers')"
-				aria-label="previous page of blocked users"
-			>Previous Page</button>
-			<div class="pageCount">Page {{ adminService.currentPage.blockedUsers }} of {{ adminService.totalPages.blockedUsers }}</div>
-			<button 
-				[class]="adminService.totalPages.blockedUsers > adminService.currentPage.blockedUsers ? nextButtonClass : nextButtonClass + ' disabled'"
-				[disabled]="adminService.totalPages.blockedUsers <= adminService.currentPage.blockedUsers"
-				(click)="nextPage('blockedUsers')"
-				aria-label="next page of blocked users"
-			>Next Page</button>
-		</div>
-		
-		<!-- If there are no blocked users -->
-		<div *ngIf="!adminService.blockedUsers.length" class="errorMessage">There are no blocked users.</div>
-	</div>
+	<app-admin-blocks *ngIf="screen == 'blocks'"></app-admin-blocks>
 
 	<!-- Admin dashboard filters -->
 	<h3 class="adminTitle" *ngIf="screen == 'filters' && adminService.isFiltersResolved.value">Filters</h3>

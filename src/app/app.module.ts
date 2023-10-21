@@ -65,6 +65,7 @@ import { ReportForm } from "./components/forms/reportForm/reportForm.component";
 import { ItemDeleteForm } from "./components/forms/itemDeleteForm/itemDeleteForm.component";
 import { AdminReports } from "./components/adminReports/adminReports.component";
 import { AdminBlocks } from "./components/adminBlocks/adminBlocks.component";
+import { AdminFilters } from "./components/adminFilters/adminFilters.component";
 
 @NgModule({
   imports: [
@@ -103,6 +104,7 @@ import { AdminBlocks } from "./components/adminBlocks/adminBlocks.component";
     ItemDeleteForm,
     AdminReports,
     AdminBlocks,
+    AdminFilters,
   ],
   providers: [],
   bootstrap: [AppComponent],

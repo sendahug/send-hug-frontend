@@ -38,9 +38,6 @@ import { Subscription } from "rxjs";
 // App imports
 import { AuthService } from "@app/services/auth.service";
 import { AdminService } from "@app/services/admin.service";
-import { AlertsService } from "@app/services/alerts.service";
-
-type AdminList = "userReports" | "postReports" | "blockedUsers" | "filteredPhrases";
 
 @Component({
   selector: "app-admin-dashboard",
@@ -64,25 +61,6 @@ export class AdminDashboard implements OnInit {
     },
   ];
   userDataSubscription: Subscription | undefined;
-  blockSubscription: Subscription | undefined;
-  // edit popup sub-component variables
-  toEdit: any;
-  editType: string | undefined;
-  editMode: boolean;
-  reportData: {
-    userID?: number;
-    reportID: number;
-    postID?: number;
-  } = {
-    reportID: 0,
-  };
-  delete: boolean;
-  toDelete: string | undefined;
-  itemToDelete: number | undefined;
-  report: boolean;
-  lastFocusedElement: any;
-  nextButtonClass = "appButton nextButton";
-  previousButtonClass = "appButton prevButton";
   // loader sub-component variable
   waitFor = `admin ${this.screen}`;
 
@@ -91,7 +69,6 @@ export class AdminDashboard implements OnInit {
     private route: ActivatedRoute,
     public authService: AuthService,
     public adminService: AdminService,
-    private alertsService: AlertsService,
   ) {
     this.route.url.subscribe((params) => {
       if (params[0] && params[0].path) {
@@ -100,10 +77,6 @@ export class AdminDashboard implements OnInit {
         this.screen = "main";
       }
     });
-
-    this.editMode = false;
-    this.delete = false;
-    this.report = false;
   }
 
   /*
@@ -120,11 +93,6 @@ export class AdminDashboard implements OnInit {
     this.userDataSubscription = this.authService.isUserDataResolved.subscribe((value) => {
       // if the user is logged in, fetch requested data for the current page
       if (value == true) {
-        // if the current screen is the filters screen
-        if (this.screen == "filters") {
-          this.adminService.getFilters();
-        }
-
         this.waitFor = `admin ${this.screen}`;
 
         // also unsubscribe from this to avoid sending the same request
@@ -134,91 +102,5 @@ export class AdminDashboard implements OnInit {
         }
       }
     });
-  }
-
-  // FILTERS PAGE
-  // ==================================================================
-  /*
-  Function Name: addFilter()
-  Function Description: Add a filtered phrase to the list.
-  Parameters: e (Event) - The sending event (clicking the 'add filter' button)
-              filter (string) - The string to filter.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  addFilter(e: Event, filter: string) {
-    e.preventDefault();
-
-    // if there's a filter in the textfield, continue
-    if (filter) {
-      // if the textfield was marked red, remove it
-      if (document.getElementById("filter")!.classList.contains("missing")) {
-        document.getElementById("filter")!.classList.remove("missing");
-      }
-      document.getElementById("filter")!.setAttribute("aria-invalid", "false");
-
-      this.adminService.addFilter(filter);
-    }
-    // otherwise alert the user a filter is required
-    else {
-      this.alertsService.createAlert({
-        type: "Error",
-        message: "A filtered phrase is required in order to add to the filters list.",
-      });
-      document.getElementById("filter")!.classList.add("missing");
-      document.getElementById("filter")!.setAttribute("aria-invalid", "true");
-    }
-  }
-
-  /*
-  Function Name: removeFilter()
-  Function Description: Remove a filter from the filtered phrases list.
-  Parameters: filter (number) - The string to remove from the filters list.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  removeFilter(filter: number) {
-    this.adminService.removeFilter(filter);
-  }
-
-  // GENERAL METHODS
-  /*
-  // ==================================================================
-  Function Name: nextPage()
-  Function Description: Go to the next page.
-  Parameters: None.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  nextPage(type: AdminList) {
-    this.adminService.currentPage[type] += 1;
-    this.adminService.getPage(type);
-  }
-
-  /*
-  Function Name: prevPage()
-  Function Description: Go to the previous page.
-  Parameters: None.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  prevPage(type: AdminList) {
-    this.adminService.currentPage[type] -= 1;
-    this.adminService.getPage(type);
-  }
-
-  /*
-  Function Name: changeMode()
-  Function Description: Remove the edit popup.
-  Parameters: edit (boolean) - indicating whether edit mode should be active.
-                               When the user finishes editing, the event emitter
-                               in the popup component sends 'false' to this function
-                               to remove the popup.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  changeMode(edit: boolean) {
-    this.editMode = edit;
-    this.lastFocusedElement.focus();
   }
 }

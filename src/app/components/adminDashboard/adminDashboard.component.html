@@ -23,11 +23,6 @@
 			</li>
 		</ul>
 	</div>
-	
-	<div *ngIf="(screen == 'filters' && !adminService.isFiltersResolved.value)" id="loaderDiv">
-		<app-loader
-		[waitingFor]="waitFor"></app-loader>
-	</div>
 
 	<!-- Admin dashboard reports -->
 	<app-admin-reports *ngIf="screen == 'reports'"></app-admin-reports>
@@ -36,61 +31,7 @@
 	<app-admin-blocks *ngIf="screen == 'blocks'"></app-admin-blocks>
 
 	<!-- Admin dashboard filters -->
-	<h3 class="adminTitle" *ngIf="screen == 'filters' && adminService.isFiltersResolved.value">Filters</h3>
-	<div class="adminScreen" id="adminFilters" *ngIf="screen == 'filters' && adminService.isFiltersResolved.value" role="main">
-		
-		<h4 class="subTitle">Add Filter</h4>
-		<!-- Add a word/phrase to filtered words list -->
-		<form>
-			<div class="formElement">
-				<label class="pageCategory required" for="filter">Filter: </label>
-				<input type="text" id="filter" placeholder="Filter" #filter required  minlength="0" aria-invalid="false" aria-required="true">
-			</div>
-			<button type="submit" class="appButton sendData" (click)="addFilter($event,filter.value)">Add Filter</button>
-		</form>
-		
-		<h4 class="subTitle">Filtered Phrases</h4>
-		<!-- Filtered phrases table -->
-		<div class="tableContainer" *ngIf="adminService.filteredPhrases.length">
-			<table>
-				<thead>
-					<tr>
-						<td scope="col">Phrase</td>
-						<td scope="col">Action</td>
-					</tr>
-				</thead>
-				<tbody>
-					<tr *ngFor="let phrase of adminService.filteredPhrases">
-						<td aria-describedby="filteredP" id="{{ phrase.filter }}">{{ phrase.filter }}</td>
-						<td>
-							<span id= "{{ 'f_' + phrase.id }}" class="labels">{{ 'Remove filter ' + filter.filter }}</span>
-							<button class="appButton adminButton" (click)="removeFilter(phrase.id)" [attr.aria-labelledby]="'f_' + phrase.id">Remove Filter</button>
-						</td>
-					</tr>
-				</tbody>
-			</table>
-		</div>
-		
-		<!-- Filtered words pagination -->
-		<div class="pagination" *ngIf="adminService.filteredPhrases.length" role="navigation">
-			<button
-				[class]="adminService.currentPage.filteredPhrases > 1 ? previousButtonClass : previousButtonClass + ' disabled'"
-				[disabled]="adminService.currentPage.filteredPhrases <= 1"
-				(click)="prevPage('filteredPhrases')"
-				aria-label="previous page of filtered phrases"
-			>Previous Page</button>
-			<div class="pageCount">Page {{ adminService.currentPage.filteredPhrases }} of {{ adminService.totalPages.filteredPhrases }}</div>
-			<button
-				[class]="adminService.totalPages.filteredPhrases > adminService.currentPage.filteredPhrases ? nextButtonClass : nextButtonClass + ' disabled'"
-				[disabled]="adminService.totalPages.filteredPhrases <= adminService.currentPage.filteredPhrases"
-				(click)="nextPage('filteredPhrases')"
-				aria-label="next page of filtered phrases"
-			>Next Page</button>
-		</div>
-		
-		<!-- If there are no filtered phrases -->
-		<div *ngIf="!adminService.filteredPhrases.length" class="errorMessage">There are no filtered phrases.</div>
-	</div>
+	<app-admin-filters *ngIf="screen == 'filters'"></app-admin-filters>
 	
 	<!-- Labels for screen readers -->
 		<div id="labels" class="labels" aria-hidden="true">
@@ -114,13 +55,3 @@
 	<div class="errorMessage">You do not have permission to view thie page!</div>
 	<a [routerLink]="" class="appButton">Back to homepage</a>
 </div>
-
-<app-pop-up *ngIf="editMode"
-			[editedItem]="toEdit"
-			[toEdit]="editType"
-			(editMode)="changeMode($event)"
-			[delete]="delete"
-			[toDelete]="toDelete"
-			[itemToDelete]="itemToDelete"
-			[report]="report"
-			[reportData]="reportData"></app-pop-up>

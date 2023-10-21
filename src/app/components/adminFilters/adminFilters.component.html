@@ -1,0 +1,60 @@
+<div *ngIf="isLoading" id="loaderDiv">
+  <app-loader
+  [waitingFor]="'admin filters'"></app-loader>
+</div>
+
+<h3 class="adminTitle" *ngIf="!isLoading">Filters</h3>
+<div class="adminScreen" id="adminFilters" *ngIf="!isLoading" role="main">
+  
+  <h4 class="subTitle">Add Filter</h4>
+  <!-- Add a word/phrase to filtered words list -->
+  <form>
+    <div class="formElement">
+      <label class="pageCategory required" for="filter">Filter: </label>
+      <input type="text" id="filter" placeholder="Filter" #filter required  minlength="0" aria-invalid="false" aria-required="true">
+    </div>
+    <button type="submit" class="appButton sendData" (click)="addFilter($event,filter.value)">Add Filter</button>
+  </form>
+  
+  <h4 class="subTitle">Filtered Phrases</h4>
+  <!-- Filtered phrases table -->
+  <div class="tableContainer" *ngIf="filteredPhrases.length">
+    <table>
+      <thead>
+        <tr>
+          <td scope="col">Phrase</td>
+          <td scope="col">Action</td>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let phrase of filteredPhrases">
+          <td aria-describedby="filteredP" id="{{ phrase.filter }}">{{ phrase.filter }}</td>
+          <td>
+            <span id= "{{ 'f_' + phrase.id }}" class="labels">{{ 'Remove filter ' + filter.filter }}</span>
+            <button class="appButton adminButton" (click)="removeFilter(phrase.id)" [attr.aria-labelledby]="'f_' + phrase.id">Remove Filter</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  
+  <!-- Filtered words pagination -->
+  <div class="pagination" *ngIf="filteredPhrases.length" role="navigation">
+    <button
+      [class]="currentPage > 1 ? previousButtonClass : previousButtonClass + ' disabled'"
+      [disabled]="currentPage <= 1"
+      (click)="prevPage()"
+      aria-label="previous page of filtered phrases"
+    >Previous Page</button>
+    <div class="pageCount">Page {{ currentPage }} of {{ totalPages }}</div>
+    <button
+      [class]="totalPages > currentPage ? nextButtonClass : nextButtonClass + ' disabled'"
+      [disabled]="totalPages <= currentPage"
+      (click)="nextPage()"
+      aria-label="next page of filtered phrases"
+    >Next Page</button>
+  </div>
+  
+  <!-- If there are no filtered phrases -->
+  <div *ngIf="!filteredPhrases.length" class="errorMessage">There are no filtered phrases.</div>
+</div>

@@ -48,18 +48,6 @@ import { ApiClientService } from "@app/services/apiClient.service";
   providedIn: "root",
 })
 export class AdminService {
-  userReports: Report[] = [];
-  postReports: Report[] = [];
-  isReportsResolved = new BehaviorSubject(false);
-  // blocked user data
-  userBlockData:
-    | {
-        userID: number;
-        isBlocked: boolean;
-        releaseDate: Date;
-      }
-    | undefined;
-  isBlockDataResolved = new BehaviorSubject(false);
   isUpdated = new BehaviorSubject(false);
 
   constructor(
@@ -173,20 +161,11 @@ export class AdminService {
   Programmer: Shir Bar Lev.
   */
   dismissReport(reportID: number) {
-    let report: Report;
-
-    // if the item is a user report, gets it from user reports array
-    if (this.userReports.filter((e) => e.id == reportID).length) {
-      report = this.userReports.filter((e) => e.id == reportID)[0];
+    let report: Partial<Report> = {
+      id: reportID,
+      dismissed: true,
+      closed: true,
     }
-    // if not, the item must be a post report, so gets it from the post reports array
-    else {
-      report = this.postReports.filter((e) => e.id == reportID)[0];
-    }
-
-    // sets the dismissed and closed values to true
-    report.dismissed = true;
-    report.closed = true;
 
     // send a request to update the report
     this.apiClient.patch(`reports/${reportID}`, report).subscribe({

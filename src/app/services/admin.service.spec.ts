@@ -178,19 +178,6 @@ describe("AdminService", () => {
         closed: true,
       },
     };
-
-    adminService.userReports = [
-      {
-        id: 1,
-        type: "User",
-        userID: 2,
-        reporter: 3,
-        reportReason: "reason",
-        date: new Date(),
-        dismissed: false,
-        closed: false,
-      },
-    ];
     const alertSpy = spyOn(adminService["alertsService"], "createSuccessAlert");
     const patchSpy = spyOn(adminService["apiClient"], "patch").and.returnValue(of(mockResponse));
 
@@ -202,8 +189,9 @@ describe("AdminService", () => {
       true,
     );
     expect(patchSpy).toHaveBeenCalledWith("reports/1", {
-      ...adminService.userReports[0],
+      id: 1,
       dismissed: true,
+      closed: true,
     });
   });
 

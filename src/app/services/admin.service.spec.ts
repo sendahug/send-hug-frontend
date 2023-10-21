@@ -71,25 +71,6 @@ describe("AdminService", () => {
     expect(adminService).toBeTruthy();
   });
 
-  // Check the getPage method gets the correct type of data
-  it("getPage() - should get the correct type of data for the current page", () => {
-    const pageSpy = spyOn(adminService, "getPage").and.callThrough();
-    const blocksSpy = spyOn(adminService, "getBlockedUsers");
-    const filtersSpy = spyOn(adminService, "getFilters");
-
-    // try the blocked users
-    adminService.getPage("blockedUsers");
-    expect(pageSpy).toHaveBeenCalledTimes(1);
-    expect(blocksSpy).toHaveBeenCalledTimes(1);
-    expect(filtersSpy).not.toHaveBeenCalled();
-
-    // try the filters page
-    adminService.getPage("filteredPhrases");
-    expect(pageSpy).toHaveBeenCalledTimes(2);
-    expect(blocksSpy).toHaveBeenCalledTimes(1);
-    expect(filtersSpy).toHaveBeenCalledTimes(1);
-  });
-
   // Check that the service edits the post
   it("editPost() - should edit a post", () => {
     // mock response
@@ -226,74 +207,6 @@ describe("AdminService", () => {
     });
   });
 
-  // Check that the service gets a list of blocked users
-  it("getBlockedUsers() - should get blocked users", () => {
-    // mock response
-    const mockResponse = {
-      success: true,
-      users: [
-        {
-          id: 15,
-          displayName: "name",
-          receivedHugs: 2,
-          givenHugs: 2,
-          role: "user",
-          blocked: true,
-          releaseDate: new Date("2020-09-29 19:17:31.072"),
-          postsNum: 1,
-        },
-      ],
-      total_pages: 1,
-    };
-    const apiClientSpy = spyOn(adminService["apiClient"], "get").and.returnValue(of(mockResponse));
-
-    adminService.getBlockedUsers();
-    // wait for the request to be resolved
-    adminService.isBlocksResolved.subscribe((value) => {
-      // once it is, check that the response was handled correctly
-      if (value) {
-        expect(adminService.blockedUsers.length).toBe(1);
-        expect(adminService.totalPages.blockedUsers).toBe(1);
-        expect(adminService.blockedUsers[0].id).toBe(15);
-      }
-    });
-    expect(apiClientSpy).toHaveBeenCalledWith("users/blocked", { page: "1" });
-  });
-
-  // Check that the user's block data is fetched from the server
-  it("checkUserBlock() - should check whether a user is blocked", () => {
-    // mock response
-    const mockResponse = {
-      success: true,
-      user: {
-        id: 15,
-        displayName: "name",
-        receivedHugs: 2,
-        givenHugs: 2,
-        role: "user",
-        blocked: true,
-        releaseDate: new Date("2020-09-29 19:17:31.072"),
-        postsNum: 1,
-      },
-      total_pages: 1,
-    };
-    const getSpy = spyOn(adminService["apiClient"], "get").and.returnValue(of(mockResponse));
-
-    adminService.checkUserBlock(15);
-    // wait for the request to be resolved
-    adminService.isBlocksResolved.subscribe((value) => {
-      // once it is, check that the response was handled correctly
-      if (value) {
-        expect(adminService.userBlockData!.userID).toBe(15);
-        expect(adminService.userBlockData!.isBlocked).toBeTrue();
-        expect(adminService.userBlockData!.releaseDate).toEqual(
-          new Date("2020-09-29 19:17:31.072"),
-        );
-      }
-    });
-    expect(getSpy).toHaveBeenCalledWith("users/all/15");
-  });
-
   // Check that the service blocks the user
   it("blockUser() - should block a user", () => {
     // mock response
@@ -399,28 +312,6 @@ describe("AdminService", () => {
     );
   });
 
-  // Check the service gets filtered words
-  it("should get filtered words", () => {
-    // mock response
-    const mockResponse = {
-      success: true,
-      total_pages: 1,
-      words: ["word1", "word2"],
-    };
-    const apiClientSpy = spyOn(adminService["apiClient"], "get").and.returnValue(of(mockResponse));
-
-    adminService.getFilters();
-    // wait for the request to be resolved
-    adminService.isFiltersResolved.subscribe((value) => {
-      // once it is, check that the response was handled correctly
-      if (value) {
-        expect(adminService.filteredPhrases.length).toBe(2);
-        expect(adminService.totalPages.filteredPhrases).toBe(1);
-      }
-    });
-    expect(apiClientSpy).toHaveBeenCalledWith("filters", { page: "1" });
-  });
-
   // Check that the service adds a filter
   it("should add a filter", () => {
     // mock response
@@ -455,10 +346,6 @@ describe("AdminService", () => {
       },
     };
 
-    adminService.filteredPhrases = [
-      { id: 1, filter: "word1" },
-      { id: 2, filter: "word2" },
-    ];
     const alertSpy = spyOn(adminService["alertsService"], "createSuccessAlert");
     const deleteSpy = spyOn(adminService["apiClient"], "delete").and.returnValue(of(mockResponse));
 

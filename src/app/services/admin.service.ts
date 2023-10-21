@@ -44,16 +44,6 @@ import { ItemsService } from "@app/services/items.service";
 import { SWManager } from "@app/services/sWManager.service";
 import { ApiClientService } from "@app/services/apiClient.service";
 
-interface BlockedUser {
-  id: number;
-  displayName: string;
-  receivedH: number;
-  givenH: number;
-  posts: number;
-  role: string;
-  blocked?: boolean;
-  releaseDate?: Date;
-}
 
 @Injectable({
   providedIn: "root",
@@ -62,8 +52,6 @@ export class AdminService {
   userReports: Report[] = [];
   postReports: Report[] = [];
   isReportsResolved = new BehaviorSubject(false);
-  blockedUsers: BlockedUser[] = [];
-  isBlocksResolved = new BehaviorSubject(false);
   // blocked user data
   userBlockData:
     | {
@@ -73,21 +61,6 @@ export class AdminService {
       }
     | undefined;
   isBlockDataResolved = new BehaviorSubject(false);
-  filteredPhrases: { id: number; filter: string }[] = [];
-  isFiltersResolved = new BehaviorSubject(false);
-  // pagination
-  currentPage = {
-    userReports: 1,
-    postReports: 1,
-    blockedUsers: 1,
-    filteredPhrases: 1,
-  };
-  totalPages = {
-    userReports: 1,
-    postReports: 1,
-    blockedUsers: 1,
-    filteredPhrases: 1,
-  };
   isUpdated = new BehaviorSubject(false);
 
   constructor(
@@ -97,28 +70,6 @@ export class AdminService {
     private serviceWorkerM: SWManager,
     private apiClient: ApiClientService,
   ) {}
-
-  // GENERAL METHODS
-  // ==============================================================
-  /*
-  Function Name: getPage()
-  Function Description: Checks which list's page was changed and fetches the
-                        data for the given page.
-  Parameters: list (string) - The list for which to fetch another page.
-              page (number) - The page number to fetch.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  getPage(list: string) {
-    switch (list) {
-      case "blockedUsers":
-        this.getBlockedUsers();
-        break;
-      case "filteredPhrases":
-        this.getFilters();
-        break;
-    }
-  }
 
   // REPORTS-RELATED METHODS
   // ==============================================================
@@ -252,61 +203,6 @@ export class AdminService {
 
   // BLOCKS-RELATED METHODS
   // ==============================================================
-  /*
-  Function Name: getBlockedUsers()
-  Function Description: Gets a paginated list of the currently blocked users.
-  Parameters: None.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  getBlockedUsers() {
-    this.isBlocksResolved.next(false);
-
-    // try to fetch blocked users
-    this.apiClient.get("users/blocked", { page: `${this.currentPage.blockedUsers}` }).subscribe({
-      next: (response: any) => {
-        this.blockedUsers = response.users;
-        this.totalPages.blockedUsers = response.total_pages;
-        this.isBlocksResolved.next(true);
-        // if there was an error, alert the user.
-      },
-      error: (_err: HttpErrorResponse) => {
-        this.isBlocksResolved.next(true);
-      },
-    });
-  }
-
-  /*
-  Function Name: checkUserBlock()
-  Function Description: Gets a specific user's block data (meaning, whether the
-                        user is blocked and if they are, how long for)
-  Parameters: None.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  checkUserBlock(userID: number) {
-    this.isBlockDataResolved.next(false);
-
-    // send the request to get the block data
-    this.apiClient.get(`users/all/${userID}`).subscribe({
-      next: (response: any) => {
-        // set the user's block data
-        let user = response.user;
-        this.userBlockData = {
-          userID: user.id,
-          isBlocked: user.blocked,
-          releaseDate: new Date(user.releaseDate),
-        };
-        // set the variable monitoring whether the request is resolved to true
-        this.isBlockDataResolved.next(true);
-        // if there was an error, alert the user.
-      },
-      error: (_err: HttpErrorResponse) => {
-        this.isBlockDataResolved.next(true);
-      },
-    });
-  }
-
   /**
    * Calculates the date when the user should be unblocked.
    *
@@ -408,30 +304,6 @@ export class AdminService {
 
   // FILTERS-RELATED METHODS
   // ==============================================================
-  /*
-  Function Name: getFilters()
-  Function Description: Gets a paginated list of user-added filtered words.
-  Parameters: None.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  getFilters() {
-    this.isFiltersResolved.next(false);
-
-    // try to fetch the list of words
-    this.apiClient.get("filters", { page: `${this.currentPage.filteredPhrases}` }).subscribe({
-      next: (response: any) => {
-        this.filteredPhrases = response.words;
-        this.totalPages.filteredPhrases = response.total_pages;
-        this.isFiltersResolved.next(true);
-        // if there was an error, alert the user.
-      },
-      error: (_err: HttpErrorResponse) => {
-        this.isFiltersResolved.next(true);
-      },
-    });
-  }
-
   /*
   Function Name: addFilter()
   Function Description: Adds a new string to the filtered phrases list.

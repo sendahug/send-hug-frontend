@@ -41,15 +41,16 @@ import {
 import { HttpClientModule } from "@angular/common/http";
 import { ServiceWorkerModule } from "@angular/service-worker";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
-import { By } from "@angular/platform-browser";
 import { NO_ERRORS_SCHEMA } from "@angular/core";
+import { ActivatedRoute, UrlSegment } from "@angular/router";
+import { of } from "rxjs";
 
 import { AdminDashboard } from "./adminDashboard.component";
-import { PopUp } from "../popUp/popUp.component";
-import { AdminService } from "../../services/admin.service";
-import { AuthService } from "../../services/auth.service";
-import { Loader } from "../loader/loader.component";
+import { AuthService } from "@app/services/auth.service";
 import { mockAuthedUser } from "@tests/mockData";
+import { AdminReports } from "@app/components/adminReports/adminReports.component";
+import { AdminBlocks } from "@app/components/adminBlocks/adminBlocks.component";
+import { AdminFilters } from "@app/components/adminFilters/adminFilters.component";
 
 describe("AdminDashboard", () => {
   // Before each test, configure testing environment
@@ -65,7 +66,7 @@ describe("AdminDashboard", () => {
         ServiceWorkerModule.register("sw.js", { enabled: false }),
         FontAwesomeModule,
       ],
-      declarations: [AdminDashboard, PopUp, Loader],
+      declarations: [AdminDashboard, AdminReports, AdminBlocks, AdminFilters],
       providers: [{ provide: APP_BASE_HREF, useValue: "/" }],
     }).compileComponents();
 
@@ -82,5 +83,46 @@ describe("AdminDashboard", () => {
     const fixture = TestBed.createComponent(AdminDashboard);
     const adminDashboard = fixture.componentInstance;
     expect(adminDashboard).toBeTruthy();
+  });
+
+  it("should set the page correctly - reports", () => {
+    TestBed.inject(ActivatedRoute).url = of([{ path: "reports" } as UrlSegment]);
+    const fixture = TestBed.createComponent(AdminDashboard);
+    const adminDashboard = fixture.componentInstance;
+
+    expect(adminDashboard.screen).toEqual("reports");
+  });
+
+  it("should set the page correctly - blocks", () => {
+    TestBed.inject(ActivatedRoute).url = of([{ path: "blocks" } as UrlSegment]);
+    const fixture = TestBed.createComponent(AdminDashboard);
+    const adminDashboard = fixture.componentInstance;
+
+    expect(adminDashboard.screen).toEqual("blocks");
+  });
+
+  it("should set the page correctly - filters", () => {
+    TestBed.inject(ActivatedRoute).url = of([{ path: "filters" } as UrlSegment]);
+    const fixture = TestBed.createComponent(AdminDashboard);
+    const adminDashboard = fixture.componentInstance;
+
+    expect(adminDashboard.screen).toEqual("filters");
+  });
+
+  it("should wait for user data to be resolved", () => {
+    const authService = TestBed.inject(AuthService);
+    authService.isUserDataResolved.next(false);
+    const authServiceSpy = spyOn(authService.isUserDataResolved, "subscribe").and.callThrough();
+    const fixture = TestBed.createComponent(AdminDashboard);
+    const adminDashboard = fixture.componentInstance;
+
+    adminDashboard.ngOnInit();
+
+    expect(authServiceSpy).toHaveBeenCalled();
+    expect(adminDashboard.waitFor).toEqual("admin ");
+
+    authService.isUserDataResolved.next(true);
+
+    expect(adminDashboard.waitFor).toEqual("admin main");
   });
 });

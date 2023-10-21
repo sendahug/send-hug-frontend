@@ -37,7 +37,6 @@ import { Subscription } from "rxjs";
 
 // App imports
 import { AuthService } from "@app/services/auth.service";
-import { AdminService } from "@app/services/admin.service";
 
 @Component({
   selector: "app-admin-dashboard",
@@ -68,7 +67,6 @@ export class AdminDashboard implements OnInit {
   constructor(
     private route: ActivatedRoute,
     public authService: AuthService,
-    public adminService: AdminService,
   ) {
     this.route.url.subscribe((params) => {
       if (params[0] && params[0].path) {

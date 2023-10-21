@@ -277,38 +277,4 @@ describe("AdminService", () => {
     expect(dismissSpy).toHaveBeenCalled();
     expect(dismissSpy).toHaveBeenCalledWith(3);
   });
-
-  // Check the service unblocks a user
-  it("should unblock a user", () => {
-    // mock response
-    const mockResponse = {
-      success: true,
-      updated: {
-        id: 15,
-        displayName: "name",
-        receivedHugs: 2,
-        givenHugs: 2,
-        role: "user",
-        blocked: false,
-        releaseDate: null,
-        postsNum: 1,
-      },
-      total_pages: 1,
-    };
-    const patchSpy = spyOn(adminService["apiClient"], "patch").and.returnValue(of(mockResponse));
-    const alertSpy = spyOn(adminService["alertsService"], "createSuccessAlert");
-
-    adminService.unblockUser(15);
-
-    expect(patchSpy).toHaveBeenCalledWith("users/all/15", {
-      id: 15,
-      releaseDate: null,
-      blocked: false,
-    });
-    expect(alertSpy).toHaveBeenCalled();
-    expect(alertSpy).toHaveBeenCalledWith(
-      `User ${mockResponse.updated.displayName} has been unblocked.`,
-      true,
-    );
-  });
 });

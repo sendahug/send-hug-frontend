@@ -189,7 +189,20 @@ export class AdminBlocks {
   Programmer: Shir Bar Lev.
   */
   unblock(userID: number) {
-    this.adminService.unblockUser(userID);
+    this.apiClient
+      .patch(`users/all/${userID}`, {
+        id: userID,
+        releaseDate: null,
+        blocked: false,
+      })
+      .subscribe({
+        next: (response: any) => {
+          this.alertsService.createSuccessAlert(
+            `User ${response.updated.displayName} has been unblocked.`,
+            true,
+          );
+        },
+      });
   }
 
   // GENERAL METHODS

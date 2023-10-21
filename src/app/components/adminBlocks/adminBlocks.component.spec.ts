@@ -303,13 +303,29 @@ describe("Blocks Page", () => {
 
   // Check that you can unblock a user
   it("should unblock a user", (done: DoneFn) => {
+    // mock response
+    const mockResponse = {
+      success: true,
+      updated: {
+        id: 15,
+        displayName: "name",
+        receivedHugs: 2,
+        givenHugs: 2,
+        role: "user",
+        blocked: false,
+        releaseDate: null,
+        postsNum: 1,
+      },
+      total_pages: 1,
+    };
+
     // set up the spy and the component
     const fixture = TestBed.createComponent(AdminBlocks);
     const adminBlocks = fixture.componentInstance;
     const adminBlocksDOM = fixture.nativeElement;
     const unblockSpy = spyOn(adminBlocks, "unblock").and.callThrough();
-    const adminService = adminBlocks.adminService;
-    const unblockServiceSpy = spyOn(adminService, "unblockUser");
+    const patchSpy = spyOn(adminBlocks["apiClient"], "patch").and.returnValue(of(mockResponse));
+    const alertSpy = spyOn(adminBlocks["alertsService"], "createSuccessAlert");
     spyOn(adminBlocks, "fetchBlocks");
     adminBlocks.blockedUsers = [...mockBlockedUsers];
     adminBlocks.isLoading = false;
@@ -321,10 +337,17 @@ describe("Blocks Page", () => {
     fixture.detectChanges();
 
     // check expectations
-    expect(unblockSpy).toHaveBeenCalled();
     expect(unblockSpy).toHaveBeenCalledWith(15);
-    expect(unblockServiceSpy).toHaveBeenCalled();
-    expect(unblockServiceSpy).toHaveBeenCalledWith(15);
+    expect(patchSpy).toHaveBeenCalledWith("users/all/15", {
+      id: 15,
+      releaseDate: null,
+      blocked: false,
+    });
+    expect(alertSpy).toHaveBeenCalled();
+    expect(alertSpy).toHaveBeenCalledWith(
+      `User ${mockResponse.updated.displayName} has been unblocked.`,
+      true,
+    );
     done();
   });
 

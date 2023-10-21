@@ -44,7 +44,6 @@ import { ItemsService } from "@app/services/items.service";
 import { SWManager } from "@app/services/sWManager.service";
 import { ApiClientService } from "@app/services/apiClient.service";
 
-
 @Injectable({
   providedIn: "root",
 })
@@ -300,45 +299,5 @@ export class AdminService {
           );
         },
       });
-  }
-
-  // FILTERS-RELATED METHODS
-  // ==============================================================
-  /*
-  Function Name: addFilter()
-  Function Description: Adds a new string to the filtered phrases list.
-  Parameters: filter (string) - String to add to filtered words.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  addFilter(filter: string) {
-    // try to add the filter
-    this.apiClient.post("filters", { word: filter }).subscribe({
-      next: (response: any) => {
-        this.alertsService.createSuccessAlert(
-          `The phrase ${response.added.filter} was added to the list of filtered words! Refresh to see the updated list.`,
-          true,
-        );
-      },
-    });
-  }
-
-  /*
-  Function Name: removeFilter()
-  Function Description: Removes a string from the filtered phrases list.
-  Parameters: filter (number) - String to remove from filtered words.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  removeFilter(filter: number) {
-    // try to delete the filter
-    this.apiClient.delete(`filters/${filter}`).subscribe({
-      next: (response: any) => {
-        this.alertsService.createSuccessAlert(
-          `The phrase ${response.deleted.filter} was removed from the list of filtered words. Refresh to see the updated list.`,
-          true,
-        );
-      },
-    });
   }
 }

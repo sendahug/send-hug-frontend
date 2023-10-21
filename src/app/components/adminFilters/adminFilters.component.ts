@@ -64,6 +64,8 @@ export class AdminFilters {
    * Fetches the filters from the server.
    */
   fetchFilters() {
+    this.isLoading = true;
+
     // try to fetch the list of words
     this.apiClient.get("filters", { page: `${this.currentPage}` }).subscribe({
       next: (response: any) => {
@@ -97,7 +99,15 @@ export class AdminFilters {
       }
       document.getElementById("filter")!.setAttribute("aria-invalid", "false");
 
-      this.adminService.addFilter(filter);
+      // try to add the filter
+      this.apiClient.post("filters", { word: filter }).subscribe({
+        next: (response: any) => {
+          this.alertsService.createSuccessAlert(
+            `The phrase ${response.added.filter} was added to the list of filtered words! Refresh to see the updated list.`,
+            true,
+          );
+        },
+      });
     }
     // otherwise alert the user a filter is required
     else {
@@ -118,7 +128,15 @@ export class AdminFilters {
   Programmer: Shir Bar Lev.
   */
   removeFilter(filter: number) {
-    this.adminService.removeFilter(filter);
+    // try to delete the filter
+    this.apiClient.delete(`filters/${filter}`).subscribe({
+      next: (response: any) => {
+        this.alertsService.createSuccessAlert(
+          `The phrase ${response.deleted.filter} was removed from the list of filtered words. Refresh to see the updated list.`,
+          true,
+        );
+      },
+    });
   }
 
   /*

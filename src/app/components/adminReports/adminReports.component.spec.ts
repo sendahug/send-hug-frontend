@@ -43,6 +43,7 @@ import { ServiceWorkerModule } from "@angular/service-worker";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { NO_ERRORS_SCHEMA } from "@angular/core";
 import { of } from "rxjs";
+import { By } from "@angular/platform-browser";
 
 import { AdminReports } from "./adminReports.component";
 import { PopUp } from "../popUp/popUp.component";
@@ -434,25 +435,32 @@ describe("AdminReports", () => {
     done();
   });
 
-  it("should change mode", () => {
-    // set up the spy and the component
+  // Check the popup exits when 'false' is emitted
+  it("should change mode when the event emitter emits false", (done: DoneFn) => {
     const fixture = TestBed.createComponent(AdminReports);
     const adminReports = fixture.componentInstance;
-    // const adminReportsDOM = fixture.nativeElement;
-    spyOn(adminReports, "fetchReports");
-    adminReports.userReports = [...mockUserReports];
-    adminReports.isLoading = false;
-    adminReports.totalPostReportsPages = 2;
-    adminReports.currentPostReportsPage = 1;
-    // TODO: Figure out why this fails
-    // adminReports.lastFocusedElement = adminReportsDOM.querySelectorAll("h3")[0];
-    // expect(adminReports.lastFocusedElement).not.toBeNull();
+    const changeSpy = spyOn(adminReports, "changeMode").and.callThrough();
+
     fixture.detectChanges();
 
-    adminReports.changeMode(false);
+    // start the popup
+    adminReports.lastFocusedElement = document.querySelectorAll("a")[0];
+    adminReports.editType = "other user";
+    adminReports.toEdit = "displayName";
+    adminReports.editMode = true;
+    adminReports.reportData.reportID = 5;
+    adminReports.reportData.userID = 2;
+    fixture.detectChanges();
 
-    // check expectations
+    // exit the popup
+    const popup = fixture.debugElement.query(By.css("app-pop-up")).componentInstance as PopUp;
+    popup.exitEdit();
+    fixture.detectChanges();
+
+    // check the popup is exited
+    expect(changeSpy).toHaveBeenCalled();
     expect(adminReports.editMode).toBeFalse();
-    // expect(adminReportsDOM.activeElement).toBe(adminReportsDOM.querySelector("#loaderDiv"));
+    expect(document.activeElement).toBe(document.querySelectorAll("a")[0]);
+    done();
   });
 });

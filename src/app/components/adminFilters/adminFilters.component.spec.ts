@@ -120,8 +120,10 @@ describe("Filters Page", () => {
     const adminFilters = fixture.componentInstance;
     const adminFiltersDOM = fixture.nativeElement;
     const addSpy = spyOn(adminFilters, "addFilter").and.callThrough();
-    const adminService = adminFilters.adminService;
-    const addServiceSpy = spyOn(adminService, "addFilter");
+    const apiClientSpy = spyOn(adminFilters["apiClient"], "post").and.returnValue(
+      of({ success: true, added: { id: 3, filter: "text" } }),
+    );
+    const alertsSpy = spyOn(adminFilters["alertsService"], "createSuccessAlert");
     spyOn(adminFilters, "fetchFilters");
     adminFilters.filteredPhrases = [...mockFilteredPhrases];
     adminFilters.totalPages = 1;
@@ -135,8 +137,11 @@ describe("Filters Page", () => {
 
     // check expectations
     expect(addSpy).toHaveBeenCalled();
-    expect(addServiceSpy).toHaveBeenCalled();
-    expect(addServiceSpy).toHaveBeenCalledWith("text");
+    expect(apiClientSpy).toHaveBeenCalledWith("filters", { word: "text" });
+    expect(alertsSpy).toHaveBeenCalledWith(
+      `The phrase text was added to the list of filtered words! Refresh to see the updated list.`,
+      true,
+    );
     done();
   });
 
@@ -146,8 +151,7 @@ describe("Filters Page", () => {
     const adminFilters = fixture.componentInstance;
     const adminFiltersDOM = fixture.nativeElement;
     const addSpy = spyOn(adminFilters, "addFilter").and.callThrough();
-    const adminService = adminFilters.adminService;
-    const addServiceSpy = spyOn(adminService, "addFilter");
+    const apiClientSpy = spyOn(adminFilters["apiClient"], "post");
     const alertSpy = spyOn(adminFilters["alertsService"], "createAlert");
     spyOn(adminFilters, "fetchFilters");
     adminFilters.filteredPhrases = [...mockFilteredPhrases];
@@ -161,7 +165,7 @@ describe("Filters Page", () => {
 
     // check expectations
     expect(addSpy).toHaveBeenCalled();
-    expect(addServiceSpy).not.toHaveBeenCalled();
+    expect(apiClientSpy).not.toHaveBeenCalled();
     expect(alertSpy).toHaveBeenCalledWith({
       type: "Error",
       message: "A filtered phrase is required in order to add to the filters list.",
@@ -171,13 +175,22 @@ describe("Filters Page", () => {
 
   // Check that you can remove a filter
   it("should remove a filter", (done: DoneFn) => {
+    // mock response
+    const mockResponse = {
+      success: true,
+      deleted: {
+        filter: "word1",
+        id: 1,
+      },
+    };
+
     // set up the spy and the component
     const fixture = TestBed.createComponent(AdminFilters);
     const adminFilters = fixture.componentInstance;
     const adminFiltersDOM = fixture.nativeElement;
     const removeSpy = spyOn(adminFilters, "removeFilter").and.callThrough();
-    const adminService = adminFilters.adminService;
-    const removeServiceSpy = spyOn(adminService, "removeFilter");
+    const alertSpy = spyOn(adminFilters["alertsService"], "createSuccessAlert");
+    const deleteSpy = spyOn(adminFilters["apiClient"], "delete").and.returnValue(of(mockResponse));
     spyOn(adminFilters, "fetchFilters");
     adminFilters.filteredPhrases = [...mockFilteredPhrases];
     adminFilters.totalPages = 1;
@@ -191,8 +204,11 @@ describe("Filters Page", () => {
 
     // check expectations
     expect(removeSpy).toHaveBeenCalled();
-    expect(removeServiceSpy).toHaveBeenCalled();
-    expect(removeServiceSpy).toHaveBeenCalledWith(1);
+    expect(deleteSpy).toHaveBeenCalledWith("filters/1");
+    expect(alertSpy).toHaveBeenCalledWith(
+      `The phrase ${mockResponse.deleted.filter} was removed from the list of filtered words. Refresh to see the updated list.`,
+      true,
+    );
     done();
   });
 

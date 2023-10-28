@@ -47,7 +47,7 @@
     "postcss": "^8.4.31",
     "prettier": "^3.0.3",
     "puppeteer": "^21.4.1",
-    "rollup": "^3.29.4",
+    "rollup": "^4.1.4",
     "rollup-plugin-istanbul": "^4.0.0",
     "sass": "^1.69.4",
     "tslib": "^2.6.2",

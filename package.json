@@ -72,7 +72,7 @@
     "@fortawesome/free-brands-svg-icons": "^6.5.1",
     "@fortawesome/free-regular-svg-icons": "^6.5.1",
     "@fortawesome/free-solid-svg-icons": "^6.5.1",
-    "auth0-js": "^9.24.0",
+    "auth0-js": "^9.24.1",
     "compression": "^1.7.4",
     "core-js": "^3.35.0",
     "cypress": "^13.6.2",

@@ -23,7 +23,7 @@
     "@rollup/stream": "^3.0.1",
     "@types/auth0-js": "^9.21.5",
     "@types/jasmine": "^4.3.6",
-    "@types/node": "^20.11.0",
+    "@types/node": "^20.11.3",
     "autoprefixer": "^10.4.16",
     "browser-sync": "^3.0.2",
     "glob": "^10.3.10",

@@ -10,7 +10,7 @@ jobs:
       - image: cimg/node:lts
     steps:
       - checkout
-      - npx prettier --check .
+      - run: npx prettier --check .
   test:
     docker:
       - image: cimg/node:lts

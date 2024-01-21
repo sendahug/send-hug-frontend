@@ -5,6 +5,12 @@ orbs:
   cypress: cypress-io/cypress@1
   codecov: codecov/codecov@3.1.1
 jobs:
+  format:
+    docker:
+      - image: cimg/node:lts
+    steps:
+      - checkout
+      - run: npx prettier --check .
   test:
     docker:
       - image: cimg/node:lts
@@ -164,6 +170,7 @@ jobs:
 workflows:
   run-testing:
     jobs:
+      - format
       - test
       - e2e
       - accessibility

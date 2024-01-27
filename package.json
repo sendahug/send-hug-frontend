@@ -46,7 +46,7 @@
     "magic-string": "^0.30.5",
     "postcss": "^8.4.33",
     "prettier": "^3.2.4",
-    "puppeteer": "^21.7.0",
+    "puppeteer": "^21.9.0",
     "rollup": "^4.9.5",
     "rollup-plugin-istanbul": "^5.0.0",
     "sass": "^1.70.0",

@@ -44,7 +44,7 @@ jobs:
           FLASK_APP: send-hug-backend/app.py
           FLASK_ENV: development
           FRONTEND: http://localhost:3000
-      - image: circleci/postgres:12.5
+      - image: cimg/postgres:14.10
         auth:
           username: mydockerhub-user
           password: $DOCKERHUB_PASSWORD # context / project UI env-var reference
@@ -112,7 +112,7 @@ jobs:
           FLASK_APP: send-hug-backend/app.py
           FLASK_ENV: development
           FRONTEND: http://localhost:3000
-      - image: circleci/postgres:12.5
+      - image: cimg/postgres:14.10
         auth:
           username: mydockerhub-user
           password: $DOCKERHUB_PASSWORD # context / project UI env-var reference

@@ -7,21 +7,21 @@
   
   <h4 class="subTitle">Block User</h4>
   <!-- Block a user by ID -->
-  <form>
+  <form [formGroup]="blockForm">
     <div class="formElement">
       <label class="pageCategory required" for="blockID">User I.D.: </label>
-      <input type="text" id="blockID" placeholder="user I.D." #blockID required  minlength="0" aria-invalid="false" aria-required="true">
+      <input type="text" id="blockID" placeholder="user I.D." required  minlength="1" [attr.aria-invalid]="!this.blockForm.get('blockID')?.valid" aria-required="true" formControlName="blockID">
     </div>
     <div class="formElement">
       <label class="pageCategory" for="blockLength">Length of block time: </label>
-      <select id="blockLength" name="blockLength" #blockLength required>
+      <select id="blockLength" name="blockLength" required formControlName="blockLength">
         <option value="oneDay">One Day</option>
         <option value="oneWeek">One Week</option>
         <option value="oneMonth">30 Days</option>
         <option value="forever">Permanently</option>
       </select>
     </div>
-    <button type="submit" class="appButton sendData" (click)="block($event,blockID.value, blockLength.value)">Block User</button>
+    <button type="submit" class="appButton sendData" (click)="block()">Block User</button>
   </form>
   
   <h4 class="subTitle">Blocked Users</h4>

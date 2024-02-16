@@ -38,6 +38,7 @@ import { AuthService } from "@app/services/auth.service";
 import { AdminService } from "@app/services/admin.service";
 import { AlertsService } from "@app/services/alerts.service";
 import { ApiClientService } from "@app/services/apiClient.service";
+import { FormBuilder, Validators } from "@angular/forms";
 
 interface BlockedUser {
   id: number;
@@ -61,6 +62,10 @@ export class AdminBlocks {
   isLoading = false;
   nextButtonClass = "appButton nextButton";
   previousButtonClass = "appButton prevButton";
+  blockForm = this.fb.group({
+    blockID: [undefined as number | undefined, [Validators.required, Validators.min(1)]],
+    blockLength: ["oneDay", [Validators.required]],
+  });
 
   // CTOR
   constructor(
@@ -68,6 +73,7 @@ export class AdminBlocks {
     public adminService: AdminService,
     private alertsService: AlertsService,
     private apiClient: ApiClientService,
+    private fb: FormBuilder,
   ) {
     this.fetchBlocks();
   }
@@ -97,59 +103,37 @@ export class AdminBlocks {
   /*
   Function Name: block()
   Function Description: Triggers user blocking.
-  Parameters: e (Event) - The sending event (clicking the 'block button')
-              userID (number) - The ID of the user to block
-              length (string) - length of time for which the user should be blocked
+  Parameters: None.
   ----------------
   Programmer: Shir Bar Lev.
   */
-  block(e: Event, userID: number, length: string) {
-    // prevent submit button default behaviour
-    e.preventDefault();
+  block() {
+    const userId = Number(this.blockForm.get("blockID")?.value);
+    let errorMessage: string | undefined = undefined;
 
-    // if there's a user ID, proceed
-    if (userID) {
-      userID = Number(userID);
-      // if the user is trying to block another user, let them
-      if (userID != this.authService.userData.id) {
-        // if the user ID is a number, check the user's block
-        if (!isNaN(userID)) {
-          // if the textfield was marked red, remove it
-          if (document.getElementById("blockID")!.classList.contains("missing")) {
-            document.getElementById("blockID")!.classList.remove("missing");
-          }
-          document.getElementById("blockID")!.setAttribute("aria-invalid", "false");
-
-          this.checkBlock(userID, length);
-        }
-        // otherwise alert the user that user ID has to be a number
-        else {
-          this.alertsService.createAlert({
-            type: "Error",
-            message: "User ID must be a number. Please correct the User ID and try again.",
-          });
-          document.getElementById("blockID")!.classList.add("missing");
-        }
-      }
-      // otherwise alert that they can't block themselves
-      else {
-        this.alertsService.createAlert({ type: "Error", message: "You cannot block yourself." });
-      }
+    if (!userId && !isNaN(userId)) {
+      errorMessage =
+        "A user ID is needed to block a user. Please add user ID to the textfield and try again.";
+    } else if (userId == this.authService.userData.id) {
+      errorMessage = "You cannot block yourself.";
+    } else if (isNaN(userId)) {
+      errorMessage = "User ID must be a number. Please correct the User ID and try again.";
     }
-    // otherwise alert the user a user ID is needed to block someone
-    else {
+
+    if (errorMessage) {
       this.alertsService.createAlert({
         type: "Error",
-        message:
-          "A user ID is needed to block a user. Please add user ID to the textfield and try again.",
+        message: errorMessage,
       });
-      document.getElementById("blockID")!.classList.add("missing");
-      document.getElementById("blockID")!.setAttribute("aria-invalid", "true");
+      return;
     }
+
+    // if there's a user ID and it's valid, proceed
+    this.blockUser(Number(userId), this.blockForm.get("blockLength")?.value || "oneDay");
   }
 
   /*
-  Function Name: checkBlock()
+  Function Name: blockUser()
   Function Description: Trigers fetching block data and passes the current
                         length and reportID data to setBlock to calculate
                         the user's release date.
@@ -159,7 +143,7 @@ export class AdminBlocks {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  checkBlock(userID: number, length: string, reportID?: number) {
+  blockUser(userID: number, length: string, reportID?: number) {
     // send the request to get the block data
     this.apiClient.get(`users/all/${userID}`).subscribe({
       next: (response: any) => {

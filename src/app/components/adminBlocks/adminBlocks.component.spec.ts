@@ -51,6 +51,7 @@ import { Loader } from "../loader/loader.component";
 import { mockAuthedUser } from "@tests/mockData";
 import { of } from "rxjs";
 import { ApiClientService } from "@app/services/apiClient.service";
+import { ReactiveFormsModule } from "@angular/forms";
 
 const mockBlockedUsers = [
   {
@@ -80,6 +81,7 @@ describe("Blocks Page", () => {
         HttpClientModule,
         ServiceWorkerModule.register("sw.js", { enabled: false }),
         FontAwesomeModule,
+        ReactiveFormsModule,
       ],
       declarations: [AdminBlocks, PopUp, Loader],
       providers: [{ provide: APP_BASE_HREF, useValue: "/" }],
@@ -125,7 +127,7 @@ describe("Blocks Page", () => {
     const adminBlocks = fixture.componentInstance;
     const adminBlocksDOM = fixture.nativeElement;
     const blockSpy = spyOn(adminBlocks, "block").and.callThrough();
-    const checkBlockSpy = spyOn(adminBlocks, "checkBlock");
+    const checkBlockSpy = spyOn(adminBlocks, "blockUser");
     spyOn(adminBlocks, "fetchBlocks");
     adminBlocks.blockedUsers = [...mockBlockedUsers];
     adminBlocks.isLoading = false;
@@ -134,6 +136,7 @@ describe("Blocks Page", () => {
 
     // trigger a click
     adminBlocksDOM.querySelector("#blockID").value = 5;
+    adminBlocksDOM.querySelector("#blockID").dispatchEvent(new Event("input"));
     adminBlocksDOM.querySelector("#blockLength").value = "oneDay";
     adminBlocksDOM.querySelectorAll(".sendData")[0].click();
     fixture.detectChanges();
@@ -151,7 +154,7 @@ describe("Blocks Page", () => {
     const adminBlocks = fixture.componentInstance;
     const adminBlocksDOM = fixture.nativeElement;
     const blockSpy = spyOn(adminBlocks, "block").and.callThrough();
-    const checkBlockSpy = spyOn(adminBlocks, "checkBlock");
+    const checkBlockSpy = spyOn(adminBlocks, "blockUser");
     const alertSpy = spyOn(adminBlocks["alertsService"], "createAlert");
     spyOn(adminBlocks, "fetchBlocks");
     adminBlocks.blockedUsers = [...mockBlockedUsers];
@@ -161,6 +164,7 @@ describe("Blocks Page", () => {
 
     // trigger a click
     adminBlocksDOM.querySelector("#blockID").value = null;
+    adminBlocksDOM.querySelector("#blockID").dispatchEvent(new Event("input"));
     adminBlocksDOM.querySelector("#blockLength").value = "oneDay";
     adminBlocksDOM.querySelectorAll(".sendData")[0].click();
     fixture.detectChanges();
@@ -181,7 +185,7 @@ describe("Blocks Page", () => {
     const adminBlocks = fixture.componentInstance;
     const adminBlocksDOM = fixture.nativeElement;
     const blockSpy = spyOn(adminBlocks, "block").and.callThrough();
-    const checkBlockSpy = spyOn(adminBlocks, "checkBlock");
+    const checkBlockSpy = spyOn(adminBlocks, "blockUser");
     const alertSpy = spyOn(adminBlocks["alertsService"], "createAlert");
     spyOn(adminBlocks, "fetchBlocks");
     adminBlocks.blockedUsers = [...mockBlockedUsers];
@@ -191,6 +195,7 @@ describe("Blocks Page", () => {
 
     // trigger a click
     adminBlocksDOM.querySelector("#blockID").value = 4;
+    adminBlocksDOM.querySelector("#blockID").dispatchEvent(new Event("input"));
     adminBlocksDOM.querySelector("#blockLength").value = "oneDay";
     adminBlocksDOM.querySelectorAll(".sendData")[0].click();
     fixture.detectChanges();
@@ -210,7 +215,7 @@ describe("Blocks Page", () => {
     const adminBlocks = fixture.componentInstance;
     const adminBlocksDOM = fixture.nativeElement;
     const blockSpy = spyOn(adminBlocks, "block").and.callThrough();
-    const checkBlockSpy = spyOn(adminBlocks, "checkBlock");
+    const checkBlockSpy = spyOn(adminBlocks, "blockUser");
     const alertSpy = spyOn(adminBlocks["alertsService"], "createAlert");
     spyOn(adminBlocks, "fetchBlocks");
     adminBlocks.blockedUsers = [...mockBlockedUsers];
@@ -220,6 +225,7 @@ describe("Blocks Page", () => {
 
     // trigger a click
     adminBlocksDOM.querySelector("#blockID").value = "hello";
+    adminBlocksDOM.querySelector("#blockID").dispatchEvent(new Event("input"));
     adminBlocksDOM.querySelector("#blockLength").value = "oneDay";
     adminBlocksDOM.querySelectorAll(".sendData")[0].click();
     fixture.detectChanges();
@@ -259,7 +265,7 @@ describe("Blocks Page", () => {
     adminBlocks.totalPages = 1;
     fixture.detectChanges();
 
-    adminBlocks.checkBlock(10, "oneDay", undefined);
+    adminBlocks.blockUser(10, "oneDay", undefined);
     fixture.detectChanges();
 
     // check expectations
@@ -293,7 +299,7 @@ describe("Blocks Page", () => {
     adminBlocks.totalPages = 1;
     fixture.detectChanges();
 
-    adminBlocks.checkBlock(10, "oneDay", undefined);
+    adminBlocks.blockUser(10, "oneDay", undefined);
 
     // check expectations
     expect(apiClientSpy).toHaveBeenCalledWith("users/all/10");

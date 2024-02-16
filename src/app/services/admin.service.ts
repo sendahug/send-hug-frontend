@@ -165,7 +165,7 @@ export class AdminService {
       id: reportID,
       dismissed: true,
       closed: true,
-    }
+    };
 
     // send a request to update the report
     this.apiClient.patch(`reports/${reportID}`, report).subscribe({

@@ -7,12 +7,12 @@
   
   <h4 class="subTitle">Add Filter</h4>
   <!-- Add a word/phrase to filtered words list -->
-  <form>
+  <form [formGroup]="addFilterForm">
     <div class="formElement">
       <label class="pageCategory required" for="filter">Filter: </label>
-      <input type="text" id="filter" placeholder="Filter" #filter required  minlength="0" aria-invalid="false" aria-required="true">
+      <input type="text" id="filter" placeholder="Filter" required  minlength="1" [attr.aria-invalid]="!this.addFilterForm.get('filter')?.valid" aria-required="true" formControlName="filter">
     </div>
-    <button type="submit" class="appButton sendData" (click)="addFilter($event,filter.value)">Add Filter</button>
+    <button type="submit" class="appButton sendData" (click)="addFilter()">Add Filter</button>
   </form>
   
   <h4 class="subTitle">Filtered Phrases</h4>
@@ -29,7 +29,7 @@
         <tr *ngFor="let phrase of filteredPhrases">
           <td aria-describedby="filteredP" id="{{ phrase.filter }}">{{ phrase.filter }}</td>
           <td>
-            <span id= "{{ 'f_' + phrase.id }}" class="labels">{{ 'Remove filter ' + filter.filter }}</span>
+            <span id= "{{ 'f_' + phrase.id }}" class="labels">{{ 'Remove filter ' + phrase.filter }}</span>
             <button class="appButton adminButton" (click)="removeFilter(phrase.id)" [attr.aria-labelledby]="'f_' + phrase.id">Remove Filter</button>
           </td>
         </tr>

@@ -42,14 +42,14 @@ import { HttpClientModule } from "@angular/common/http";
 import { ServiceWorkerModule } from "@angular/service-worker";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { NO_ERRORS_SCHEMA } from "@angular/core";
+import { ReactiveFormsModule } from "@angular/forms";
+import { of } from "rxjs";
 
 import { AdminFilters } from "./adminFilters.component";
 import { PopUp } from "../popUp/popUp.component";
-import { AdminService } from "../../services/admin.service";
 import { AuthService } from "../../services/auth.service";
 import { Loader } from "../loader/loader.component";
 import { mockAuthedUser } from "@tests/mockData";
-import { of } from "rxjs";
 import { ApiClientService } from "@app/services/apiClient.service";
 
 const mockFilteredPhrases = [
@@ -76,6 +76,7 @@ describe("Filters Page", () => {
         HttpClientModule,
         ServiceWorkerModule.register("sw.js", { enabled: false }),
         FontAwesomeModule,
+        ReactiveFormsModule,
       ],
       declarations: [AdminFilters, PopUp, Loader],
       providers: [{ provide: APP_BASE_HREF, useValue: "/" }],
@@ -132,6 +133,7 @@ describe("Filters Page", () => {
 
     // add filter to the text-field and click the button
     adminFiltersDOM.querySelector("#filter").value = "text";
+    adminFiltersDOM.querySelector("#filter").dispatchEvent(new Event("input"));
     adminFiltersDOM.querySelectorAll(".sendData")[0].click();
     fixture.detectChanges();
 

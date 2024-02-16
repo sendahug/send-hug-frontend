@@ -33,6 +33,7 @@
 // Angular imports
 import { HttpErrorResponse } from "@angular/common/http";
 import { Component } from "@angular/core";
+import { FormBuilder, Validators } from "@angular/forms";
 
 // App imports
 import { AdminService } from "@app/services/admin.service";
@@ -50,12 +51,16 @@ export class AdminFilters {
   isLoading = false;
   nextButtonClass = "appButton nextButton";
   previousButtonClass = "appButton prevButton";
+  addFilterForm = this.fb.group({
+    filter: ["", Validators.required],
+  });
 
   // CTOR
   constructor(
     public adminService: AdminService,
     private alertsService: AlertsService,
     private apiClient: ApiClientService,
+    private fb: FormBuilder,
   ) {
     this.fetchFilters();
   }
@@ -83,41 +88,31 @@ export class AdminFilters {
   /*
   Function Name: addFilter()
   Function Description: Add a filtered phrase to the list.
-  Parameters: e (Event) - The sending event (clicking the 'add filter' button)
-              filter (string) - The string to filter.
+  Parameters: None.
   ----------------
   Programmer: Shir Bar Lev.
   */
-  addFilter(e: Event, filter: string) {
-    e.preventDefault();
+  addFilter() {
+    const filter = this.addFilterForm.get("filter")?.value;
 
-    // if there's a filter in the textfield, continue
-    if (filter) {
-      // if the textfield was marked red, remove it
-      if (document.getElementById("filter")!.classList.contains("missing")) {
-        document.getElementById("filter")!.classList.remove("missing");
-      }
-      document.getElementById("filter")!.setAttribute("aria-invalid", "false");
-
-      // try to add the filter
-      this.apiClient.post("filters", { word: filter }).subscribe({
-        next: (response: any) => {
-          this.alertsService.createSuccessAlert(
-            `The phrase ${response.added.filter} was added to the list of filtered words! Refresh to see the updated list.`,
-            true,
-          );
-        },
-      });
-    }
-    // otherwise alert the user a filter is required
-    else {
+    // if there's no filter, alert the user a filter is required
+    if (!filter) {
       this.alertsService.createAlert({
         type: "Error",
         message: "A filtered phrase is required in order to add to the filters list.",
       });
-      document.getElementById("filter")!.classList.add("missing");
-      document.getElementById("filter")!.setAttribute("aria-invalid", "true");
+      return;
     }
+
+    // try to add the filter
+    this.apiClient.post("filters", { word: filter }).subscribe({
+      next: (response: any) => {
+        this.alertsService.createSuccessAlert(
+          `The phrase ${response.added.filter} was added to the list of filtered words! Refresh to see the updated list.`,
+          true,
+        );
+      },
+    });
   }
 
   /*

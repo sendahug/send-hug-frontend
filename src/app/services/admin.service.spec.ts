@@ -265,4 +265,79 @@ describe("AdminService", () => {
     expect(dismissSpy).toHaveBeenCalled();
     expect(dismissSpy).toHaveBeenCalledWith(3);
   });
+
+  // Check that blocks are calculated correctly - day
+  it("should calculate block length - day", () => {
+    // set up the spy and the component
+    const blockLengthNum = 864e5 * 1;
+    const blockLengthStr = "oneDay";
+    const releaseDate = new Date(new Date().getTime() + blockLengthNum);
+
+    const calculatedReleaseDate = adminService.calculateUserReleaseDate(blockLengthStr, undefined);
+
+    expect(calculatedReleaseDate.getTime() / 1000).toBeCloseTo(releaseDate.getTime() / 1000, 1);
+  });
+
+  // Check that blocks are calculated correctly - week
+  it("should calculate block length - week", () => {
+    // set up the spy and the component
+    const blockLengthNum = 864e5 * 7;
+    const blockLengthStr = "oneWeek";
+    const releaseDate = new Date(new Date().getTime() + blockLengthNum);
+
+    const calculatedReleaseDate = adminService.calculateUserReleaseDate(blockLengthStr, undefined);
+
+    expect(calculatedReleaseDate.getTime() / 1000).toBeCloseTo(releaseDate.getTime() / 1000, 1);
+  });
+
+  // Check that blocks are calculated correctly - month
+  it("should calculate block length - month", () => {
+    // set up the spy and the component
+    const blockLengthNum = 864e5 * 30;
+    const blockLengthStr = "oneMonth";
+    const releaseDate = new Date(new Date().getTime() + blockLengthNum);
+
+    const calculatedReleaseDate = adminService.calculateUserReleaseDate(blockLengthStr, undefined);
+
+    expect(calculatedReleaseDate.getTime() / 1000).toBeCloseTo(releaseDate.getTime() / 1000, 1);
+  });
+
+  // Check that blocks are calculated correctly - forever
+  it("should calculate block length - forever", () => {
+    // set up the spy and the component
+    const blockLengthNum = 864e5 * 36500;
+    const blockLengthStr = "forever";
+    const releaseDate = new Date(new Date().getTime() + blockLengthNum);
+
+    const calculatedReleaseDate = adminService.calculateUserReleaseDate(blockLengthStr, undefined);
+
+    expect(calculatedReleaseDate.getTime() / 1000).toBeCloseTo(releaseDate.getTime() / 1000, 1);
+  });
+
+  // Check that blocks are calculated correctly - default case
+  it("should calculate block length - default", () => {
+    // set up the spy and the component
+    const blockLengthNum = 864e5 * 1;
+    const blockLengthStr = "a";
+    const releaseDate = new Date(new Date().getTime() + blockLengthNum);
+
+    const calculatedReleaseDate = adminService.calculateUserReleaseDate(blockLengthStr, undefined);
+
+    expect(calculatedReleaseDate.getTime() / 1000).toBeCloseTo(releaseDate.getTime() / 1000, 1);
+  });
+
+  // Check that blocks are calculated correctly - extending a block
+  it("should calculate block length - extending an existing block", () => {
+    // set up the spy and the component
+    const currentRelease = new Date("2120-09-29 19:17:31.072");
+    const releaseDate = new Date(currentRelease.getTime() + 864e5 * 7);
+    const blockLengthStr = "oneWeek";
+
+    const calculatedReleaseDate = adminService.calculateUserReleaseDate(
+      blockLengthStr,
+      currentRelease,
+    );
+
+    expect(calculatedReleaseDate.getTime() / 1000).toBeCloseTo(releaseDate.getTime() / 1000, 1);
+  });
 });

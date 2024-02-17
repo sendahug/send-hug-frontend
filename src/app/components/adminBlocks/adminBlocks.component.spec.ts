@@ -45,7 +45,6 @@ import { NO_ERRORS_SCHEMA } from "@angular/core";
 
 import { AdminBlocks } from "./adminBlocks.component";
 import { PopUp } from "../popUp/popUp.component";
-import { AdminService } from "../../services/admin.service";
 import { AuthService } from "../../services/auth.service";
 import { Loader } from "../loader/loader.component";
 import { mockAuthedUser } from "@tests/mockData";
@@ -239,27 +238,13 @@ describe("Blocks Page", () => {
     done();
   });
 
-  // Check that you can block users
-  it("should check the block length", (done: DoneFn) => {
+  it("should make the request to block the user", (done: DoneFn) => {
     // set up the spy and the component
     const fixture = TestBed.createComponent(AdminBlocks);
     const adminBlocks = fixture.componentInstance;
     const adminService = adminBlocks["adminService"];
     const blockServiceSpy = spyOn(adminService, "blockUser");
-    spyOn(adminBlocks, "fetchBlocks");
-    const apiClientSpy = spyOn(adminBlocks["apiClient"], "get").and.returnValue(
-      of({
-        user: {
-          id: 10,
-          blocked: false,
-          releaseDate: null,
-        },
-      }),
-    );
-    const mockReleaseDate = new Date();
-    const calculateReleaseDateSpy = spyOn(adminService, "calculateUserReleaseDate").and.returnValue(
-      mockReleaseDate,
-    );
+
     adminBlocks.blockedUsers = [...mockBlockedUsers];
     adminBlocks.isLoading = false;
     adminBlocks.totalPages = 1;
@@ -269,42 +254,8 @@ describe("Blocks Page", () => {
     fixture.detectChanges();
 
     // check expectations
-    expect(apiClientSpy).toHaveBeenCalledWith("users/all/10");
-    expect(calculateReleaseDateSpy).toHaveBeenCalledWith("oneDay", undefined);
-    expect(blockServiceSpy).toHaveBeenCalledWith(10, mockReleaseDate, undefined);
+    expect(blockServiceSpy).toHaveBeenCalledWith(10, "oneDay", undefined);
     done();
-  });
-
-  it("should pass the current release date to calculateUserReleaseDate", () => {
-    // set up the spy and the component
-    const fixture = TestBed.createComponent(AdminBlocks);
-    const adminBlocks = fixture.componentInstance;
-    const adminService = adminBlocks["adminService"];
-    const blockServiceSpy = spyOn(adminService, "blockUser");
-    spyOn(adminBlocks, "fetchBlocks");
-    const mockBlockData = {
-      user: {
-        id: 10,
-        blocked: true,
-        releaseDate: new Date(),
-      },
-    };
-    const apiClientSpy = spyOn(adminBlocks["apiClient"], "get").and.returnValue(of(mockBlockData));
-    const mockReleaseDate = new Date();
-    const calculateReleaseDateSpy = spyOn(adminService, "calculateUserReleaseDate").and.returnValue(
-      mockReleaseDate,
-    );
-    adminBlocks.blockedUsers = [...mockBlockedUsers];
-    adminBlocks.isLoading = false;
-    adminBlocks.totalPages = 1;
-    fixture.detectChanges();
-
-    adminBlocks.blockUser(10, "oneDay", undefined);
-
-    // check expectations
-    expect(apiClientSpy).toHaveBeenCalledWith("users/all/10");
-    expect(calculateReleaseDateSpy).toHaveBeenCalledWith("oneDay", mockBlockData.user.releaseDate);
-    expect(blockServiceSpy).toHaveBeenCalledWith(10, mockReleaseDate, undefined);
   });
 
   // Check that you can unblock a user

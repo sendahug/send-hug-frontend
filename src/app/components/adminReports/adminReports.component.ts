@@ -117,26 +117,7 @@ export class AdminReports {
   */
   blockUser(userID: number, reportID: number) {
     const length = "oneDay";
-
-    // send the request to get the block data
-    this.apiClient.get(`users/all/${userID}`).subscribe({
-      next: (response: any) => {
-        // set the user's block data
-        const user = response.user;
-        const blockData = {
-          userID: user.id,
-          isBlocked: user.blocked,
-          releaseDate: user.releaseDate ? new Date(user.releaseDate) : undefined,
-        };
-
-        const releaseDate = this.adminService.calculateUserReleaseDate(
-          length,
-          blockData.releaseDate,
-        );
-
-        this.adminService.blockUser(userID, releaseDate, reportID);
-      },
-    });
+    this.adminService.blockUser(userID, length, reportID);
   }
 
   /*

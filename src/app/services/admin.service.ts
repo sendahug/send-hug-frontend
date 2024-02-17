@@ -32,8 +32,7 @@
 
 // Angular imports
 import { Injectable } from "@angular/core";
-import { HttpErrorResponse } from "@angular/common/http";
-import { BehaviorSubject } from "rxjs";
+import { BehaviorSubject, map, switchMap } from "rxjs";
 
 // App-related imports
 import { Report } from "@app/interfaces/report.interface";
@@ -43,6 +42,18 @@ import { AlertsService } from "@app/services/alerts.service";
 import { ItemsService } from "@app/services/items.service";
 import { SWManager } from "@app/services/sWManager.service";
 import { ApiClientService } from "@app/services/apiClient.service";
+import { OtherUser } from "@app/interfaces/otherUser.interface";
+
+interface UserBlockData {
+  userID: number;
+  isBlocked: boolean;
+  releaseDate?: Date;
+}
+
+interface OtherUserResponse {
+  user: OtherUser;
+  success: boolean;
+}
 
 @Injectable({
   providedIn: "root",
@@ -182,6 +193,25 @@ export class AdminService {
   // BLOCKS-RELATED METHODS
   // ==============================================================
   /**
+   * Fetches the block data for a user.
+   * @param userID - the ID of the user to fetch the block data for
+   * @returns - an observable of the user's block data
+   */
+  fetchUserBlockData(userID: number) {
+    // send the request to get the block data
+    return this.apiClient.get<OtherUserResponse>(`users/all/${userID}`).pipe(
+      map((res) => {
+        return {
+          userID: res.user.id,
+          isBlocked: res.user.blocked,
+          releaseDate:
+            res.user.blocked && res.user.releaseDate ? new Date(res.user.releaseDate) : undefined,
+        };
+      }),
+    );
+  }
+
+  /**
    * Calculates the date when the user should be unblocked.
    *
    * @param length (string) - length of time for which the user should be blocked
@@ -233,18 +263,28 @@ export class AdminService {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  blockUser(userID: number, releaseDate: Date, reportID?: number) {
-    // try to block the user
-    this.apiClient
-      .patch(`users/all/${userID}`, {
-        id: userID,
-        releaseDate: releaseDate,
-        blocked: true,
-      })
+  blockUser(userID: number, blockLength: string, reportID?: number) {
+    const fetchUserBlockData$ = this.fetchUserBlockData(userID);
+
+    fetchUserBlockData$
+      .pipe(
+        // set the user's block data
+        map((blockData) => {
+          const newReleaseDate = this.calculateUserReleaseDate(blockLength, blockData.releaseDate);
+
+          return {
+            id: userID,
+            releaseDate: newReleaseDate,
+            blocked: true,
+          };
+        }),
+      )
+      // try to block the user
+      .pipe(switchMap((blockData) => this.apiClient.patch(`users/all/${userID}`, blockData)))
       .subscribe({
         next: (response: any) => {
           this.alertsService.createSuccessAlert(
-            `User ${response.updated.displayName} has been blocked until ${releaseDate}`,
+            `User ${response.updated.displayName} has been blocked until ${response.updated.releaseDate}`,
             true,
           );
           // if the block was done via the reports page, also dismiss the report

@@ -141,8 +141,7 @@ describe("AdminReports", () => {
     done();
   });
 
-  // Check that you can block users
-  it("should block a user", (done: DoneFn) => {
+  it("should blcok a user", (done: DoneFn) => {
     // set up the spy and the component
     const fixture = TestBed.createComponent(AdminReports);
     const adminReports = fixture.componentInstance;
@@ -150,20 +149,7 @@ describe("AdminReports", () => {
     const blockSpy = spyOn(adminReports, "blockUser").and.callThrough();
     const adminService = adminReports["adminService"];
     const blockServiceSpy = spyOn(adminService, "blockUser");
-    spyOn(adminReports, "fetchReports");
-    const apiClientSpy = spyOn(adminReports["apiClient"], "get").and.returnValue(
-      of({
-        user: {
-          id: 10,
-          blocked: false,
-          releaseDate: null,
-        },
-      }),
-    );
-    const mockReleaseDate = new Date();
-    const calculateReleaseDateSpy = spyOn(adminService, "calculateUserReleaseDate").and.returnValue(
-      mockReleaseDate,
-    );
+
     adminReports.postReports = [...mockPostReports];
     adminReports.userReports = [...mockUserReports];
     adminReports.isLoading = false;
@@ -177,42 +163,8 @@ describe("AdminReports", () => {
 
     // check expectations
     expect(blockSpy).toHaveBeenCalledWith(10, 1);
-    expect(apiClientSpy).toHaveBeenCalledWith("users/all/10");
-    expect(calculateReleaseDateSpy).toHaveBeenCalledWith("oneDay", undefined);
-    expect(blockServiceSpy).toHaveBeenCalledWith(10, mockReleaseDate, 1);
+    expect(blockServiceSpy).toHaveBeenCalledWith(10, "oneDay", 1);
     done();
-  });
-
-  it("should pass the current release date to calculateUserReleaseDate", () => {
-    // set up the spy and the component
-    const fixture = TestBed.createComponent(AdminReports);
-    const adminReports = fixture.componentInstance;
-    const adminService = adminReports["adminService"];
-    const blockServiceSpy = spyOn(adminService, "blockUser");
-    spyOn(adminReports, "fetchReports");
-    const mockBlockData = {
-      user: {
-        id: 10,
-        blocked: true,
-        releaseDate: new Date(),
-      },
-    };
-    const apiClientSpy = spyOn(adminReports["apiClient"], "get").and.returnValue(of(mockBlockData));
-    const mockReleaseDate = new Date();
-    const calculateReleaseDateSpy = spyOn(adminService, "calculateUserReleaseDate").and.returnValue(
-      mockReleaseDate,
-    );
-    adminReports.postReports = [...mockPostReports];
-    adminReports.userReports = [...mockUserReports];
-    adminReports.isLoading = false;
-    fixture.detectChanges();
-
-    adminReports.blockUser(10, 1);
-
-    // check expectations
-    expect(apiClientSpy).toHaveBeenCalledWith("users/all/10");
-    expect(calculateReleaseDateSpy).toHaveBeenCalledWith("oneDay", mockBlockData.user.releaseDate);
-    expect(blockServiceSpy).toHaveBeenCalledWith(10, mockReleaseDate, 1);
   });
 
   // Check that user editing triggers the popup

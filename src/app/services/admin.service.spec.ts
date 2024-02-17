@@ -212,14 +212,25 @@ describe("AdminService", () => {
       },
       total_pages: 1,
     };
+    const blockDate = new Date("2020-09-29 19:17:31.072");
+    const fetchUserDataSpy = spyOn(adminService, "fetchUserBlockData").and.returnValue(
+      of({
+        userID: 15,
+        isBlocked: false,
+        releaseDate: undefined,
+      }),
+    );
+    const calculateSpy = spyOn(adminService, "calculateUserReleaseDate").and.returnValue(blockDate);
     const patchSpy = spyOn(adminService["apiClient"], "patch").and.returnValue(of(mockResponse));
     const alertSpy = spyOn(adminService["alertsService"], "createSuccessAlert");
 
-    adminService.blockUser(15, new Date("2020-09-29 19:17:31.072"));
+    adminService.blockUser(15, "oneDay");
 
+    expect(fetchUserDataSpy).toHaveBeenCalledWith(15);
+    expect(calculateSpy).toHaveBeenCalledWith("oneDay", undefined);
     expect(patchSpy).toHaveBeenCalledWith("users/all/15", {
       id: 15,
-      releaseDate: new Date("2020-09-29 19:17:31.072"),
+      releaseDate: blockDate,
       blocked: true,
     });
     expect(alertSpy).toHaveBeenCalled();
@@ -246,15 +257,26 @@ describe("AdminService", () => {
       },
       total_pages: 1,
     };
+    const blockDate = new Date("2020-09-29 19:17:31.072");
+    const fetchUserDataSpy = spyOn(adminService, "fetchUserBlockData").and.returnValue(
+      of({
+        userID: 15,
+        isBlocked: false,
+        releaseDate: undefined,
+      }),
+    );
+    const calculateSpy = spyOn(adminService, "calculateUserReleaseDate").and.returnValue(blockDate);
     const patchSpy = spyOn(adminService["apiClient"], "patch").and.returnValue(of(mockResponse));
     const alertSpy = spyOn(adminService["alertsService"], "createSuccessAlert");
     const dismissSpy = spyOn(adminService, "dismissReport");
 
-    adminService.blockUser(15, new Date("2020-09-29 19:17:31.072"), 3);
+    adminService.blockUser(15, "oneDay", 3);
 
+    expect(fetchUserDataSpy).toHaveBeenCalledWith(15);
+    expect(calculateSpy).toHaveBeenCalledWith("oneDay", undefined);
     expect(patchSpy).toHaveBeenCalledWith("users/all/15", {
       id: 15,
-      releaseDate: new Date("2020-09-29 19:17:31.072"),
+      releaseDate: blockDate,
       blocked: true,
     });
     expect(alertSpy).toHaveBeenCalled();
@@ -264,6 +286,55 @@ describe("AdminService", () => {
     );
     expect(dismissSpy).toHaveBeenCalled();
     expect(dismissSpy).toHaveBeenCalledWith(3);
+  });
+
+  it("fetchUserBlockData() - should fetch user data for blocking - unblocked user", (done: DoneFn) => {
+    const apiClientSpy = spyOn(adminService["apiClient"], "get").and.returnValue(
+      of({
+        user: {
+          id: 10,
+          blocked: false,
+          releaseDate: null,
+        },
+      }),
+    );
+
+    adminService.fetchUserBlockData(10).subscribe({
+      next: (data) => {
+        expect(apiClientSpy).toHaveBeenCalledWith("users/all/10");
+        expect(data).toEqual({
+          userID: 10,
+          isBlocked: false,
+          releaseDate: undefined,
+        });
+        done();
+      },
+    });
+  });
+
+  it("fetchUserBlockData() - should fetch user data for blocking - blocked user", (done: DoneFn) => {
+    const blockedUntil = "Tue Sep 29 2020 19:17:31 GMT+0100 (British Summer Time)";
+    const apiClientSpy = spyOn(adminService["apiClient"], "get").and.returnValue(
+      of({
+        user: {
+          id: 10,
+          blocked: true,
+          releaseDate: blockedUntil,
+        },
+      }),
+    );
+
+    adminService.fetchUserBlockData(10).subscribe({
+      next: (data) => {
+        expect(apiClientSpy).toHaveBeenCalledWith("users/all/10");
+        expect(data).toEqual({
+          userID: 10,
+          isBlocked: true,
+          releaseDate: new Date(blockedUntil),
+        });
+        done();
+      },
+    });
   });
 
   // Check that blocks are calculated correctly - day

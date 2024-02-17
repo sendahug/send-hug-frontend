@@ -32,13 +32,13 @@
 
 // Angular imports
 import { Component } from "@angular/core";
+import { FormBuilder, Validators } from "@angular/forms";
 
 // App imports
 import { AuthService } from "@app/services/auth.service";
 import { AdminService } from "@app/services/admin.service";
 import { AlertsService } from "@app/services/alerts.service";
 import { ApiClientService } from "@app/services/apiClient.service";
-import { FormBuilder, Validators } from "@angular/forms";
 
 interface BlockedUser {
   id: number;
@@ -144,25 +144,7 @@ export class AdminBlocks {
   Programmer: Shir Bar Lev.
   */
   blockUser(userID: number, length: string, reportID?: number) {
-    // send the request to get the block data
-    this.apiClient.get(`users/all/${userID}`).subscribe({
-      next: (response: any) => {
-        // set the user's block data
-        const user = response.user;
-        const blockData = {
-          userID: user.id,
-          isBlocked: user.blocked,
-          releaseDate: user.releaseDate ? new Date(user.releaseDate) : undefined,
-        };
-
-        const releaseDate = this.adminService.calculateUserReleaseDate(
-          length,
-          blockData.releaseDate,
-        );
-
-        this.adminService.blockUser(userID, releaseDate, reportID);
-      },
-    });
+    this.adminService.blockUser(userID, length, reportID);
   }
 
   /*

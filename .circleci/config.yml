@@ -24,7 +24,8 @@ jobs:
       CHROME_BIN: /usr/bin/google-chrome
     steps:
       - checkout
-      - browser-tools/install-chrome
+      - browser-tools/install-chrome:
+          chrome-version: "120.0.6099.224"
       - browser-tools/install-chromedriver
       - run: google-chrome --version
       - restore_cache:
@@ -81,7 +82,8 @@ jobs:
             cd ..
             flask run
           background: true
-      - browser-tools/install-chrome
+      - browser-tools/install-chrome:
+          chrome-version: "120.0.6099.224"
       - browser-tools/install-chromedriver
       - run: google-chrome --version
       - cypress/install
@@ -149,7 +151,8 @@ jobs:
             cd ..
             flask run
           background: true
-      - browser-tools/install-chrome
+      - browser-tools/install-chrome:
+          chrome-version: "120.0.6099.224"
       - browser-tools/install-chromedriver
       - run: google-chrome --version
       - restore_cache:

@@ -25,7 +25,7 @@ jobs:
     steps:
       - checkout
       - browser-tools/install-browser-tools:
-          chrome-version: 120.0.6099.62  # temporary, until https://github.com/CircleCI-Public/browser-tools-orb/issues/104 is fixed
+          chrome-version: 120.0.6099.62 # temporary, until https://github.com/CircleCI-Public/browser-tools-orb/issues/104 is fixed
       - run: google-chrome --version
       - restore_cache:
           key: my-project-{{ .Branch }}-{{ checksum "package-lock.json" }}
@@ -82,7 +82,7 @@ jobs:
             flask run
           background: true
       - browser-tools/install-browser-tools:
-          chrome-version: 120.0.6099.62  # temporary, until https://github.com/CircleCI-Public/browser-tools-orb/issues/104 is fixed
+          chrome-version: 120.0.6099.62 # temporary, until https://github.com/CircleCI-Public/browser-tools-orb/issues/104 is fixed
       - run: google-chrome --version
       - cypress/install
       - restore_cache:
@@ -150,7 +150,7 @@ jobs:
             flask run
           background: true
       - browser-tools/install-browser-tools:
-          chrome-version: 120.0.6099.62  # temporary, until https://github.com/CircleCI-Public/browser-tools-orb/issues/104 is fixed
+          chrome-version: 120.0.6099.62 # temporary, until https://github.com/CircleCI-Public/browser-tools-orb/issues/104 is fixed
       - run: google-chrome --version
       - restore_cache:
           key: my-project-{{ .Branch }}-{{ checksum "package-lock.json" }}

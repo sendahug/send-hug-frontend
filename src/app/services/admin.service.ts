@@ -32,8 +32,7 @@
 
 // Angular imports
 import { Injectable } from "@angular/core";
-import { HttpErrorResponse } from "@angular/common/http";
-import { BehaviorSubject } from "rxjs";
+import { BehaviorSubject, map, switchMap } from "rxjs";
 
 // App-related imports
 import { Report } from "@app/interfaces/report.interface";
@@ -43,51 +42,23 @@ import { AlertsService } from "@app/services/alerts.service";
 import { ItemsService } from "@app/services/items.service";
 import { SWManager } from "@app/services/sWManager.service";
 import { ApiClientService } from "@app/services/apiClient.service";
+import { OtherUser } from "@app/interfaces/otherUser.interface";
 
-interface BlockedUser {
-  id: number;
-  displayName: string;
-  receivedH: number;
-  givenH: number;
-  posts: number;
-  role: string;
-  blocked?: boolean;
+interface UserBlockData {
+  userID: number;
+  isBlocked: boolean;
   releaseDate?: Date;
+}
+
+interface OtherUserResponse {
+  user: OtherUser;
+  success: boolean;
 }
 
 @Injectable({
   providedIn: "root",
 })
 export class AdminService {
-  userReports: Report[] = [];
-  postReports: Report[] = [];
-  isReportsResolved = new BehaviorSubject(false);
-  blockedUsers: BlockedUser[] = [];
-  isBlocksResolved = new BehaviorSubject(false);
-  // blocked user data
-  userBlockData:
-    | {
-        userID: number;
-        isBlocked: boolean;
-        releaseDate: Date;
-      }
-    | undefined;
-  isBlockDataResolved = new BehaviorSubject(false);
-  filteredPhrases: { id: number; filter: string }[] = [];
-  isFiltersResolved = new BehaviorSubject(false);
-  // pagination
-  currentPage = {
-    userReports: 1,
-    postReports: 1,
-    blockedUsers: 1,
-    filteredPhrases: 1,
-  };
-  totalPages = {
-    userReports: 1,
-    postReports: 1,
-    blockedUsers: 1,
-    filteredPhrases: 1,
-  };
   isUpdated = new BehaviorSubject(false);
 
   constructor(
@@ -98,66 +69,8 @@ export class AdminService {
     private apiClient: ApiClientService,
   ) {}
 
-  // GENERAL METHODS
-  // ==============================================================
-  /*
-  Function Name: getPage()
-  Function Description: Checks which list's page was changed and fetches the
-                        data for the given page.
-  Parameters: list (string) - The list for which to fetch another page.
-              page (number) - The page number to fetch.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  getPage(list: string) {
-    switch (list) {
-      case "userReports":
-        this.getOpenReports();
-        break;
-      case "postReports":
-        this.getOpenReports();
-        break;
-      case "blockedUsers":
-        this.getBlockedUsers();
-        break;
-      case "filteredPhrases":
-        this.getFilters();
-        break;
-    }
-  }
-
   // REPORTS-RELATED METHODS
   // ==============================================================
-  /*
-  Function Name: getOpenReports()
-  Function Description: Gets a paginated list of the currently open reports.
-  Parameters: None.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  getOpenReports() {
-    this.isReportsResolved.next(false);
-
-    // Get reports
-    this.apiClient
-      .get("reports", {
-        userPage: `${this.currentPage.userReports}`,
-        postPage: `${this.currentPage.postReports}`,
-      })
-      .subscribe({
-        next: (response: any) => {
-          this.userReports = response.userReports;
-          this.totalPages.userReports = response.totalUserPages;
-          this.postReports = response.postReports;
-          this.totalPages.postReports = response.totalPostPages;
-          this.isReportsResolved.next(true);
-        },
-        error: (_err: HttpErrorResponse) => {
-          this.isReportsResolved.next(true);
-        },
-      });
-  }
-
   /*
   Function Name: editPost()
   Function Description: Edits a reported post's text. If necessary,
@@ -259,20 +172,11 @@ export class AdminService {
   Programmer: Shir Bar Lev.
   */
   dismissReport(reportID: number) {
-    let report: Report;
-
-    // if the item is a user report, gets it from user reports array
-    if (this.userReports.filter((e) => e.id == reportID).length) {
-      report = this.userReports.filter((e) => e.id == reportID)[0];
-    }
-    // if not, the item must be a post report, so gets it from the post reports array
-    else {
-      report = this.postReports.filter((e) => e.id == reportID)[0];
-    }
-
-    // sets the dismissed and closed values to true
-    report.dismissed = true;
-    report.closed = true;
+    let report: Partial<Report> = {
+      id: reportID,
+      dismissed: true,
+      closed: true,
+    };
 
     // send a request to update the report
     this.apiClient.patch(`reports/${reportID}`, report).subscribe({
@@ -288,59 +192,68 @@ export class AdminService {
 
   // BLOCKS-RELATED METHODS
   // ==============================================================
-  /*
-  Function Name: getBlockedUsers()
-  Function Description: Gets a paginated list of the currently blocked users.
-  Parameters: None.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  getBlockedUsers() {
-    this.isBlocksResolved.next(false);
-
-    // try to fetch blocked users
-    this.apiClient.get("users/blocked", { page: `${this.currentPage.blockedUsers}` }).subscribe({
-      next: (response: any) => {
-        this.blockedUsers = response.users;
-        this.totalPages.blockedUsers = response.total_pages;
-        this.isBlocksResolved.next(true);
-        // if there was an error, alert the user.
-      },
-      error: (_err: HttpErrorResponse) => {
-        this.isBlocksResolved.next(true);
-      },
-    });
+  /**
+   * Fetches the block data for a user.
+   * @param userID - the ID of the user to fetch the block data for
+   * @returns - an observable of the user's block data
+   */
+  fetchUserBlockData(userID: number) {
+    // send the request to get the block data
+    return this.apiClient.get<OtherUserResponse>(`users/all/${userID}`).pipe(
+      map((res) => {
+        return {
+          userID: res.user.id,
+          isBlocked: res.user.blocked,
+          releaseDate:
+            res.user.blocked && res.user.releaseDate ? new Date(res.user.releaseDate) : undefined,
+        };
+      }),
+    );
   }
 
-  /*
-  Function Name: checkUserBlock()
-  Function Description: Gets a specific user's block data (meaning, whether the
-                        user is blocked and if they are, how long for)
-  Parameters: None.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  checkUserBlock(userID: number) {
-    this.isBlockDataResolved.next(false);
+  /**
+   * Calculates the date when the user should be unblocked.
+   *
+   * @param length (string) - length of time for which the user should be blocked
+   * @param currentReleaseDate (date) - the current release date, if the user is
+   *                                    already blocked
+   * @returns - the date when the user should be unblocked
+   */
+  calculateUserReleaseDate(length: string, currentReleaseDate?: Date): Date {
+    const currentDate = new Date();
+    const millisecondsPerDay = 864e5;
+    let releaseDate: Date;
+    let millisecondsUntilReleaseDate: number;
 
-    // send the request to get the block data
-    this.apiClient.get(`users/all/${userID}`).subscribe({
-      next: (response: any) => {
-        // set the user's block data
-        let user = response.user;
-        this.userBlockData = {
-          userID: user.id,
-          isBlocked: user.blocked,
-          releaseDate: new Date(user.releaseDate),
-        };
-        // set the variable monitoring whether the request is resolved to true
-        this.isBlockDataResolved.next(true);
-        // if there was an error, alert the user.
-      },
-      error: (_err: HttpErrorResponse) => {
-        this.isBlockDataResolved.next(true);
-      },
-    });
+    // calculates when the user should be unblocked
+    switch (length) {
+      case "oneDay":
+        millisecondsUntilReleaseDate = millisecondsPerDay * 1;
+        releaseDate = new Date(currentDate.getTime() + millisecondsUntilReleaseDate);
+        break;
+      case "oneWeek":
+        millisecondsUntilReleaseDate = millisecondsPerDay * 7;
+        releaseDate = new Date(currentDate.getTime() + millisecondsUntilReleaseDate);
+        break;
+      case "oneMonth":
+        millisecondsUntilReleaseDate = millisecondsPerDay * 30;
+        releaseDate = new Date(currentDate.getTime() + millisecondsUntilReleaseDate);
+        break;
+      case "forever":
+        millisecondsUntilReleaseDate = millisecondsPerDay * 36500;
+        releaseDate = new Date(currentDate.getTime() + millisecondsUntilReleaseDate);
+        break;
+      default:
+        millisecondsUntilReleaseDate = millisecondsPerDay * 1;
+        releaseDate = new Date(currentDate.getTime() + millisecondsUntilReleaseDate);
+        break;
+    }
+
+    if (currentReleaseDate) {
+      releaseDate = new Date(millisecondsUntilReleaseDate + currentReleaseDate.getTime());
+    }
+
+    return releaseDate;
   }
 
   /*
@@ -350,18 +263,28 @@ export class AdminService {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  blockUser(userID: number, releaseDate: Date, reportID?: number) {
-    // try to block the user
-    this.apiClient
-      .patch(`users/all/${userID}`, {
-        id: userID,
-        releaseDate: releaseDate,
-        blocked: true,
-      })
+  blockUser(userID: number, blockLength: string, reportID?: number) {
+    const fetchUserBlockData$ = this.fetchUserBlockData(userID);
+
+    fetchUserBlockData$
+      .pipe(
+        // set the user's block data
+        map((blockData) => {
+          const newReleaseDate = this.calculateUserReleaseDate(blockLength, blockData.releaseDate);
+
+          return {
+            id: userID,
+            releaseDate: newReleaseDate,
+            blocked: true,
+          };
+        }),
+      )
+      // try to block the user
+      .pipe(switchMap((blockData) => this.apiClient.patch(`users/all/${userID}`, blockData)))
       .subscribe({
         next: (response: any) => {
           this.alertsService.createSuccessAlert(
-            `User ${response.updated.displayName} has been blocked until ${releaseDate}`,
+            `User ${response.updated.displayName} has been blocked until ${response.updated.releaseDate}`,
             true,
           );
           // if the block was done via the reports page, also dismiss the report
@@ -370,94 +293,5 @@ export class AdminService {
           }
         },
       });
-  }
-
-  /*
-  Function Name: unblockUser()
-  Function Description: Blocks a user for the default amount of time (one day).
-  Parameters: userID (number) - the ID of the user to block.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  unblockUser(userID: number) {
-    // try to unblock the user
-    this.apiClient
-      .patch(`users/all/${userID}`, {
-        id: userID,
-        releaseDate: null,
-        blocked: false,
-      })
-      .subscribe({
-        next: (response: any) => {
-          this.alertsService.createSuccessAlert(
-            `User ${response.updated.displayName} has been unblocked.`,
-            true,
-          );
-        },
-      });
-  }
-
-  // FILTERS-RELATED METHODS
-  // ==============================================================
-  /*
-  Function Name: getFilters()
-  Function Description: Gets a paginated list of user-added filtered words.
-  Parameters: None.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  getFilters() {
-    this.isFiltersResolved.next(false);
-
-    // try to fetch the list of words
-    this.apiClient.get("filters", { page: `${this.currentPage.filteredPhrases}` }).subscribe({
-      next: (response: any) => {
-        this.filteredPhrases = response.words;
-        this.totalPages.filteredPhrases = response.total_pages;
-        this.isFiltersResolved.next(true);
-        // if there was an error, alert the user.
-      },
-      error: (_err: HttpErrorResponse) => {
-        this.isFiltersResolved.next(true);
-      },
-    });
-  }
-
-  /*
-  Function Name: addFilter()
-  Function Description: Adds a new string to the filtered phrases list.
-  Parameters: filter (string) - String to add to filtered words.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  addFilter(filter: string) {
-    // try to add the filter
-    this.apiClient.post("filters", { word: filter }).subscribe({
-      next: (response: any) => {
-        this.alertsService.createSuccessAlert(
-          `The phrase ${response.added.filter} was added to the list of filtered words! Refresh to see the updated list.`,
-          true,
-        );
-      },
-    });
-  }
-
-  /*
-  Function Name: removeFilter()
-  Function Description: Removes a string from the filtered phrases list.
-  Parameters: filter (number) - String to remove from filtered words.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  removeFilter(filter: number) {
-    // try to delete the filter
-    this.apiClient.delete(`filters/${filter}`).subscribe({
-      next: (response: any) => {
-        this.alertsService.createSuccessAlert(
-          `The phrase ${response.deleted.filter} was removed from the list of filtered words. Refresh to see the updated list.`,
-          true,
-        );
-      },
-    });
   }
 }

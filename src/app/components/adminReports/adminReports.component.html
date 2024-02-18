@@ -1,0 +1,122 @@
+<div *ngIf="isLoading" id="loaderDiv">
+  <app-loader
+  [waitingFor]="'admin reports'"></app-loader>
+</div>
+
+<!-- Admin dashboard reports -->
+<div class="adminScreen" id="adminReports" *ngIf="!isLoading" role="main">
+  
+  <h4 class="subTitle">Reported Users</h4>
+  <!-- Reported users table -->
+  <div class="tableContainer" *ngIf="userReports.length">
+    <table>
+      <thead>
+        <tr>
+          <td scope="col">User I.D.</td>
+          <td scope="col">Display Name</td>
+          <td scope="col">Reporter</td>
+          <td scope="col">Report Reason</td>
+          <td scope="col">Action</td>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let report of userReports">
+          <td aria-describedby="rUserID">{{ report.userID }}</td>
+          <td aria-describedby="rUserDisplay" id="{{ 'user' + report.id }}">{{ report.displayName }}</td>
+          <td [attr.aria-describedby]="'user' + report.id + ' rUserBy'">{{ report.reporter }}</td>
+          <td [attr.aria-describedby]="'user' + report.id + ' rUserFor'">{{ report.reportReason }}</td>
+          <td>
+            <span id="{{ 'editU' + report.id }}" class="labels">{{ 'Edit user ' + report.displayName }}</span>
+            <span id="{{ 'blockU' + report.id }}" class="labels">{{ 'block user ' + report.text + ' for one day' }}</span>
+            <button class="appButton adminButton" (click)="blockUser(report.userID, report.id)" [attr.aria-labelledby]="'blockU' + report.id">Block User (One Day)</button>
+            <button class="appButton adminButton" (click)="editUser(report.id, report.userID, report.displayName)" [attr.aria-labelledby]="'editU' + report.id">Edit User</button>
+            <button class="appButton adminButton" (click)="dismissReport(report.id)">Dismiss Report</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  
+  <!-- User reports pagination -->
+  <div class="pagination" *ngIf="userReports.length" role="navigation">
+    <button
+      [class]="currentUserReportsPage > 1 ? previousButtonClass : previousButtonClass + ' disabled'"
+      [disabled]="currentUserReportsPage <= 1"
+      (click)="prevPage('users')"
+      aria-label="previous page of user reports"
+    >Previous Page</button>
+    <div class="pageCount">Page {{ currentUserReportsPage }} of {{ totalUserReportsPages }}</div>
+    <button
+      class="totalUserReportsPages > currentUserReportsPage ? nextButtonClass : nextButtonClass + ' disabled'"
+      [disabled]="totalUserReportsPages <= currentUserReportsPage"
+      (click)="nextPage('users')"
+      aria-label="next page of user reports"
+    >Next Page</button>
+  </div>
+  
+  <!-- If there are no open user reports -->
+  <div *ngIf="!userReports.length" class="errorMessage">There are no user reports waiting for review.</div>
+  
+  <h4 class="subTitle">Reported Posts</h4>
+  <!-- Reported posts table -->
+  <div class="tableContainer" *ngIf="postReports.length">
+    <table>
+      <thead>
+        <tr>
+          <td scope="col">Post I.D.</td>
+          <td scope="col">User I.D.</td>
+          <td scope="col">Post Text</td>
+          <td scope="col">Reporter</td>
+          <td scope="col">Report Reason</td>
+          <td scope="col">Action</td>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let report of postReports">
+          <td aria-describedby="pPostID">{{ report.postID }}</td>
+          <td aria-describedby="pUserID">{{ report.userID }}</td>
+          <td aria-describedby="pText" id="{{ 'post' + report.id }}">{{ report.text }}</td>
+          <td [attr.aria-describedby]="'post' + report.id + ' pUserBy'">{{ report.reporter }}</td>
+          <td [attr.aria-describedby]="'post' + report.id + ' pUserFor'">{{ report.reportReason }}</td>
+          <td>
+            <span id="{{ 'edit' + report.id }}" class="labels">{{ 'Edit post ' + report.text }}</span>
+            <span id="{{ 'delete' + report.id }}" class="labels">{{ 'Delete post ' + report.text }}</span>
+            <button class="appButton adminButton" (click)="editPost(report.postID, report.text, report.id)" [attr.aria-labelledby]="'edit' + report.id">Edit Post</button>
+            <button class="appButton adminButton" (click)="deletePost(report.postID, report.userID, report.id)" [attr.aria-labelledby]="'delete' + report.id">Delete Post</button>
+            <button class="appButton adminButton" (click)="dismissReport(report.id)">Dismiss Report</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  
+  <!-- Post reports pagination -->
+  <div class="pagination" *ngIf="postReports.length" role="navigation">
+    <button
+      class="currentPostReportsPage > 1 ? previousButtonClass : previousButtonClass + ' disabled'"
+      [disabled]="currentPostReportsPage <= 1"
+      (click)="prevPage('posts')"
+      aria-label="previous page of post reports"
+    >Previous Page</button>
+    <div class="pageCount">Page {{ currentPostReportsPage }} of {{ totalPostReportsPages }}</div>
+    <button
+      [class]="totalPostReportsPages > currentPostReportsPage ? nextButtonClass : nextButtonClass + ' disabled'"
+      [disabled]="totalPostReportsPages <= currentPostReportsPage"
+      (click)="nextPage('posts')"
+      aria-label="next page of post reports"
+    >Next Page</button>
+  </div>
+  
+  <!-- If there are no open post reports -->
+  <div *ngIf="!postReports.length" class="errorMessage">There are no post reports waiting for review.</div>
+</div>
+
+<app-pop-up *ngIf="editMode"
+			[editedItem]="toEdit"
+			[toEdit]="editType"
+			(editMode)="changeMode($event)"
+			[delete]="delete"
+			[toDelete]="toDelete"
+			[itemToDelete]="itemToDelete"
+			[report]="report"
+			[reportData]="reportData"></app-pop-up>

@@ -1,0 +1,72 @@
+<div *ngIf="isLoading" id="loaderDiv">
+  <app-loader
+  [waitingFor]="'admin blocks'"></app-loader>
+</div>
+
+<div class="adminScreen" id="adminBlocks" *ngIf="!isLoading" role="main">
+  
+  <h4 class="subTitle">Block User</h4>
+  <!-- Block a user by ID -->
+  <form [formGroup]="blockForm">
+    <div class="formElement">
+      <label class="pageCategory required" for="blockID">User I.D.: </label>
+      <input type="text" id="blockID" placeholder="user I.D." required  minlength="1" [attr.aria-invalid]="!this.blockForm.get('blockID')?.valid" aria-required="true" formControlName="blockID">
+    </div>
+    <div class="formElement">
+      <label class="pageCategory" for="blockLength">Length of block time: </label>
+      <select id="blockLength" name="blockLength" required formControlName="blockLength">
+        <option value="oneDay">One Day</option>
+        <option value="oneWeek">One Week</option>
+        <option value="oneMonth">30 Days</option>
+        <option value="forever">Permanently</option>
+      </select>
+    </div>
+    <button type="submit" class="appButton sendData" (click)="block()">Block User</button>
+  </form>
+  
+  <h4 class="subTitle">Blocked Users</h4>
+  <!-- Blocked users table -->
+  <div class="tableContainer" *ngIf="blockedUsers.length">
+    <table>
+      <thead>
+        <tr>
+          <td scope="col">User I.D.</td>
+          <td scope="col">Display Name</td>
+          <td scope="col">Blocked Until</td>
+          <td scope="col">Action</td>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let user of blockedUsers">
+          <td aria-describedby="bUserID">{{ user.id }}</td>
+          <td aria-describedby="bUserDisplay" id="{{ 'user' + user.id }}">{{ user.displayName }}</td>
+          <td [attr.aria-describedby]="'user' + user.id + ' bUntil'">{{ user.releaseDate }}</td>
+          <td>
+            <span id="{{ 'unblock' + user.id }}" class="labels">{{ 'unblock user ' + user.displayName }}</span>
+            <button class="appButton adminButton" (click)="unblock(user.id)" [attr.aria-labelledby]="'unblock' + user.id">Unblock User</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  
+  <!-- Blocked users pagination -->
+  <div class="pagination" *ngIf="blockedUsers.length" role="navigation">
+    <button
+      [class]="currentPage > 1 ? previousButtonClass : previousButtonClass + ' disabled'"
+      [disabled]="currentPage <= 1"
+      (click)="prevPage()"
+      aria-label="previous page of blocked users"
+    >Previous Page</button>
+    <div class="pageCount">Page {{ currentPage }} of {{ totalPages }}</div>
+    <button 
+      [class]="totalPages > currentPage ? nextButtonClass : nextButtonClass + ' disabled'"
+      [disabled]="totalPages <= currentPage"
+      (click)="nextPage()"
+      aria-label="next page of blocked users"
+    >Next Page</button>
+  </div>
+  
+  <!-- If there are no blocked users -->
+  <div *ngIf="!blockedUsers.length" class="errorMessage">There are no blocked users.</div>
+</div>

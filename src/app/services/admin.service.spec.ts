@@ -71,98 +71,6 @@ describe("AdminService", () => {
     expect(adminService).toBeTruthy();
   });
 
-  // Check the getPage method gets the correct type of data
-  it("getPage() - should get the correct type of data for the current page", () => {
-    const pageSpy = spyOn(adminService, "getPage").and.callThrough();
-    const reportsSpy = spyOn(adminService, "getOpenReports");
-    const blocksSpy = spyOn(adminService, "getBlockedUsers");
-    const filtersSpy = spyOn(adminService, "getFilters");
-
-    // try the user reports
-    adminService.getPage("userReports");
-    expect(pageSpy).toHaveBeenCalledTimes(1);
-    expect(reportsSpy).toHaveBeenCalledTimes(1);
-    expect(blocksSpy).not.toHaveBeenCalled();
-    expect(filtersSpy).not.toHaveBeenCalled();
-
-    // try the post reports
-    adminService.getPage("postReports");
-    expect(pageSpy).toHaveBeenCalledTimes(2);
-    expect(reportsSpy).toHaveBeenCalledTimes(2);
-    expect(blocksSpy).not.toHaveBeenCalled();
-    expect(filtersSpy).not.toHaveBeenCalled();
-
-    // try the blocked users
-    adminService.getPage("blockedUsers");
-    expect(pageSpy).toHaveBeenCalledTimes(3);
-    expect(reportsSpy).toHaveBeenCalledTimes(2);
-    expect(blocksSpy).toHaveBeenCalledTimes(1);
-    expect(filtersSpy).not.toHaveBeenCalled();
-
-    // try the filters page
-    adminService.getPage("filteredPhrases");
-    expect(pageSpy).toHaveBeenCalledTimes(4);
-    expect(reportsSpy).toHaveBeenCalledTimes(2);
-    expect(blocksSpy).toHaveBeenCalledTimes(1);
-    expect(filtersSpy).toHaveBeenCalledTimes(1);
-  });
-
-  // Check that the service gets open reports from the backend
-  it("getOpenReports() - should get open reports", () => {
-    // mock response
-    const mockResponse = {
-      success: true,
-      userReports: [
-        {
-          id: 1,
-          type: "user",
-          userID: 2,
-          displayName: "name",
-          reporter: 3,
-          reportReason: "reason",
-          date: new Date(),
-          dismissed: false,
-          closed: false,
-        },
-      ],
-      totalUserPages: 1,
-      postReports: [
-        {
-          id: 2,
-          type: "user",
-          postID: 3,
-          userID: 2,
-          displayName: "name",
-          reporter: 3,
-          reportReason: "reason",
-          date: new Date(),
-          dismissed: false,
-          closed: false,
-        },
-      ],
-      totalPostPages: 1,
-    };
-    const apiClientSpy = spyOn(adminService["apiClient"], "get").and.returnValue(of(mockResponse));
-
-    adminService.getOpenReports();
-    // wait for the request to be resolved
-    adminService.isReportsResolved.subscribe((value) => {
-      if (value) {
-        // once it is, check that the response was handled correctly
-        expect(adminService.totalPages.userReports).toBe(1);
-        expect(adminService.userReports.length).toBe(1);
-        expect(adminService.userReports[0].id).toBe(1);
-        expect(adminService.totalPages.postReports).toBe(1);
-        expect(adminService.postReports.length).toBe(1);
-        expect(adminService.postReports[0].id).toBe(2);
-      }
-    });
-    expect(apiClientSpy).toHaveBeenCalledWith("reports", {
-      userPage: "1",
-      postPage: "1",
-    });
-  });
-
   // Check that the service edits the post
   it("editPost() - should edit a post", () => {
     // mock response
@@ -270,19 +178,6 @@ describe("AdminService", () => {
         closed: true,
       },
     };
-
-    adminService.userReports = [
-      {
-        id: 1,
-        type: "User",
-        userID: 2,
-        reporter: 3,
-        reportReason: "reason",
-        date: new Date(),
-        dismissed: false,
-        closed: false,
-      },
-    ];
     const alertSpy = spyOn(adminService["alertsService"], "createSuccessAlert");
     const patchSpy = spyOn(adminService["apiClient"], "patch").and.returnValue(of(mockResponse));
 
@@ -294,77 +189,10 @@ describe("AdminService", () => {
       true,
     );
     expect(patchSpy).toHaveBeenCalledWith("reports/1", {
-      ...adminService.userReports[0],
+      id: 1,
       dismissed: true,
+      closed: true,
     });
-  });
-
-  // Check that the service gets a list of blocked users
-  it("getBlockedUsers() - should get blocked users", () => {
-    // mock response
-    const mockResponse = {
-      success: true,
-      users: [
-        {
-          id: 15,
-          displayName: "name",
-          receivedHugs: 2,
-          givenHugs: 2,
-          role: "user",
-          blocked: true,
-          releaseDate: new Date("2020-09-29 19:17:31.072"),
-          postsNum: 1,
-        },
-      ],
-      total_pages: 1,
-    };
-    const apiClientSpy = spyOn(adminService["apiClient"], "get").and.returnValue(of(mockResponse));
-
-    adminService.getBlockedUsers();
-    // wait for the request to be resolved
-    adminService.isBlocksResolved.subscribe((value) => {
-      // once it is, check that the response was handled correctly
-      if (value) {
-        expect(adminService.blockedUsers.length).toBe(1);
-        expect(adminService.totalPages.blockedUsers).toBe(1);
-        expect(adminService.blockedUsers[0].id).toBe(15);
-      }
-    });
-    expect(apiClientSpy).toHaveBeenCalledWith("users/blocked", { page: "1" });
-  });
-
-  // Check that the user's block data is fetched from the server
-  it("checkUserBlock() - should check whether a user is blocked", () => {
-    // mock response
-    const mockResponse = {
-      success: true,
-      user: {
-        id: 15,
-        displayName: "name",
-        receivedHugs: 2,
-        givenHugs: 2,
-        role: "user",
-        blocked: true,
-        releaseDate: new Date("2020-09-29 19:17:31.072"),
-        postsNum: 1,
-      },
-      total_pages: 1,
-    };
-    const getSpy = spyOn(adminService["apiClient"], "get").and.returnValue(of(mockResponse));
-
-    adminService.checkUserBlock(15);
-    // wait for the request to be resolved
-    adminService.isBlocksResolved.subscribe((value) => {
-      // once it is, check that the response was handled correctly
-      if (value) {
-        expect(adminService.userBlockData!.userID).toBe(15);
-        expect(adminService.userBlockData!.isBlocked).toBeTrue();
-        expect(adminService.userBlockData!.releaseDate).toEqual(
-          new Date("2020-09-29 19:17:31.072"),
-        );
-      }
-    });
-    expect(getSpy).toHaveBeenCalledWith("users/all/15");
   });
 
   // Check that the service blocks the user
@@ -384,14 +212,25 @@ describe("AdminService", () => {
       },
       total_pages: 1,
     };
+    const blockDate = new Date("2020-09-29 19:17:31.072");
+    const fetchUserDataSpy = spyOn(adminService, "fetchUserBlockData").and.returnValue(
+      of({
+        userID: 15,
+        isBlocked: false,
+        releaseDate: undefined,
+      }),
+    );
+    const calculateSpy = spyOn(adminService, "calculateUserReleaseDate").and.returnValue(blockDate);
     const patchSpy = spyOn(adminService["apiClient"], "patch").and.returnValue(of(mockResponse));
     const alertSpy = spyOn(adminService["alertsService"], "createSuccessAlert");
 
-    adminService.blockUser(15, new Date("2020-09-29 19:17:31.072"));
+    adminService.blockUser(15, "oneDay");
 
+    expect(fetchUserDataSpy).toHaveBeenCalledWith(15);
+    expect(calculateSpy).toHaveBeenCalledWith("oneDay", undefined);
     expect(patchSpy).toHaveBeenCalledWith("users/all/15", {
       id: 15,
-      releaseDate: new Date("2020-09-29 19:17:31.072"),
+      releaseDate: blockDate,
       blocked: true,
     });
     expect(alertSpy).toHaveBeenCalled();
@@ -418,15 +257,26 @@ describe("AdminService", () => {
       },
       total_pages: 1,
     };
+    const blockDate = new Date("2020-09-29 19:17:31.072");
+    const fetchUserDataSpy = spyOn(adminService, "fetchUserBlockData").and.returnValue(
+      of({
+        userID: 15,
+        isBlocked: false,
+        releaseDate: undefined,
+      }),
+    );
+    const calculateSpy = spyOn(adminService, "calculateUserReleaseDate").and.returnValue(blockDate);
     const patchSpy = spyOn(adminService["apiClient"], "patch").and.returnValue(of(mockResponse));
     const alertSpy = spyOn(adminService["alertsService"], "createSuccessAlert");
     const dismissSpy = spyOn(adminService, "dismissReport");
 
-    adminService.blockUser(15, new Date("2020-09-29 19:17:31.072"), 3);
+    adminService.blockUser(15, "oneDay", 3);
 
+    expect(fetchUserDataSpy).toHaveBeenCalledWith(15);
+    expect(calculateSpy).toHaveBeenCalledWith("oneDay", undefined);
     expect(patchSpy).toHaveBeenCalledWith("users/all/15", {
       id: 15,
-      releaseDate: new Date("2020-09-29 19:17:31.072"),
+      releaseDate: blockDate,
       blocked: true,
     });
     expect(alertSpy).toHaveBeenCalled();
@@ -438,110 +288,127 @@ describe("AdminService", () => {
     expect(dismissSpy).toHaveBeenCalledWith(3);
   });
 
-  // Check the service unblocks a user
-  it("should unblock a user", () => {
-    // mock response
-    const mockResponse = {
-      success: true,
-      updated: {
-        id: 15,
-        displayName: "name",
-        receivedHugs: 2,
-        givenHugs: 2,
-        role: "user",
-        blocked: false,
-        releaseDate: null,
-        postsNum: 1,
+  it("fetchUserBlockData() - should fetch user data for blocking - unblocked user", (done: DoneFn) => {
+    const apiClientSpy = spyOn(adminService["apiClient"], "get").and.returnValue(
+      of({
+        user: {
+          id: 10,
+          blocked: false,
+          releaseDate: null,
+        },
+      }),
+    );
+
+    adminService.fetchUserBlockData(10).subscribe({
+      next: (data) => {
+        expect(apiClientSpy).toHaveBeenCalledWith("users/all/10");
+        expect(data).toEqual({
+          userID: 10,
+          isBlocked: false,
+          releaseDate: undefined,
+        });
+        done();
       },
-      total_pages: 1,
-    };
-    const patchSpy = spyOn(adminService["apiClient"], "patch").and.returnValue(of(mockResponse));
-    const alertSpy = spyOn(adminService["alertsService"], "createSuccessAlert");
-
-    adminService.unblockUser(15);
-
-    expect(patchSpy).toHaveBeenCalledWith("users/all/15", {
-      id: 15,
-      releaseDate: null,
-      blocked: false,
     });
-    expect(alertSpy).toHaveBeenCalled();
-    expect(alertSpy).toHaveBeenCalledWith(
-      `User ${mockResponse.updated.displayName} has been unblocked.`,
-      true,
-    );
   });
 
-  // Check the service gets filtered words
-  it("should get filtered words", () => {
-    // mock response
-    const mockResponse = {
-      success: true,
-      total_pages: 1,
-      words: ["word1", "word2"],
-    };
-    const apiClientSpy = spyOn(adminService["apiClient"], "get").and.returnValue(of(mockResponse));
+  it("fetchUserBlockData() - should fetch user data for blocking - blocked user", (done: DoneFn) => {
+    const blockedUntil = "Tue Sep 29 2020 19:17:31 GMT+0100 (British Summer Time)";
+    const apiClientSpy = spyOn(adminService["apiClient"], "get").and.returnValue(
+      of({
+        user: {
+          id: 10,
+          blocked: true,
+          releaseDate: blockedUntil,
+        },
+      }),
+    );
 
-    adminService.getFilters();
-    // wait for the request to be resolved
-    adminService.isFiltersResolved.subscribe((value) => {
-      // once it is, check that the response was handled correctly
-      if (value) {
-        expect(adminService.filteredPhrases.length).toBe(2);
-        expect(adminService.totalPages.filteredPhrases).toBe(1);
-      }
+    adminService.fetchUserBlockData(10).subscribe({
+      next: (data) => {
+        expect(apiClientSpy).toHaveBeenCalledWith("users/all/10");
+        expect(data).toEqual({
+          userID: 10,
+          isBlocked: true,
+          releaseDate: new Date(blockedUntil),
+        });
+        done();
+      },
     });
-    expect(apiClientSpy).toHaveBeenCalledWith("filters", { page: "1" });
   });
 
-  // Check that the service adds a filter
-  it("should add a filter", () => {
-    // mock response
-    const mockResponse = {
-      success: true,
-      added: {
-        filter: "sample",
-        id: 1,
-      },
-    };
-    const postSpy = spyOn(adminService["apiClient"], "post").and.returnValue(of(mockResponse));
-    const alertSpy = spyOn(adminService["alertsService"], "createSuccessAlert");
+  // Check that blocks are calculated correctly - day
+  it("should calculate block length - day", () => {
+    // set up the spy and the component
+    const blockLengthNum = 864e5 * 1;
+    const blockLengthStr = "oneDay";
+    const releaseDate = new Date(new Date().getTime() + blockLengthNum);
 
-    adminService.addFilter("sample");
+    const calculatedReleaseDate = adminService.calculateUserReleaseDate(blockLengthStr, undefined);
 
-    expect(postSpy).toHaveBeenCalledWith("filters", { word: "sample" });
-    expect(alertSpy).toHaveBeenCalled();
-    expect(alertSpy).toHaveBeenCalledWith(
-      `The phrase ${mockResponse.added.filter} was added to the list of filtered words! Refresh to see the updated list.`,
-      true,
-    );
+    expect(calculatedReleaseDate.getTime() / 1000).toBeCloseTo(releaseDate.getTime() / 1000, 1);
   });
 
-  // Check that the service removes a filter
-  it("should remove a filter", () => {
-    // mock response
-    const mockResponse = {
-      success: true,
-      deleted: {
-        filter: "word1",
-        id: 1,
-      },
-    };
+  // Check that blocks are calculated correctly - week
+  it("should calculate block length - week", () => {
+    // set up the spy and the component
+    const blockLengthNum = 864e5 * 7;
+    const blockLengthStr = "oneWeek";
+    const releaseDate = new Date(new Date().getTime() + blockLengthNum);
 
-    adminService.filteredPhrases = [
-      { id: 1, filter: "word1" },
-      { id: 2, filter: "word2" },
-    ];
-    const alertSpy = spyOn(adminService["alertsService"], "createSuccessAlert");
-    const deleteSpy = spyOn(adminService["apiClient"], "delete").and.returnValue(of(mockResponse));
+    const calculatedReleaseDate = adminService.calculateUserReleaseDate(blockLengthStr, undefined);
 
-    adminService.removeFilter(1);
+    expect(calculatedReleaseDate.getTime() / 1000).toBeCloseTo(releaseDate.getTime() / 1000, 1);
+  });
 
-    expect(deleteSpy).toHaveBeenCalledWith("filters/1");
-    expect(alertSpy).toHaveBeenCalled();
-    expect(alertSpy).toHaveBeenCalledWith(
-      `The phrase ${mockResponse.deleted.filter} was removed from the list of filtered words. Refresh to see the updated list.`,
-      true,
+  // Check that blocks are calculated correctly - month
+  it("should calculate block length - month", () => {
+    // set up the spy and the component
+    const blockLengthNum = 864e5 * 30;
+    const blockLengthStr = "oneMonth";
+    const releaseDate = new Date(new Date().getTime() + blockLengthNum);
+
+    const calculatedReleaseDate = adminService.calculateUserReleaseDate(blockLengthStr, undefined);
+
+    expect(calculatedReleaseDate.getTime() / 1000).toBeCloseTo(releaseDate.getTime() / 1000, 1);
+  });
+
+  // Check that blocks are calculated correctly - forever
+  it("should calculate block length - forever", () => {
+    // set up the spy and the component
+    const blockLengthNum = 864e5 * 36500;
+    const blockLengthStr = "forever";
+    const releaseDate = new Date(new Date().getTime() + blockLengthNum);
+
+    const calculatedReleaseDate = adminService.calculateUserReleaseDate(blockLengthStr, undefined);
+
+    expect(calculatedReleaseDate.getTime() / 1000).toBeCloseTo(releaseDate.getTime() / 1000, 1);
+  });
+
+  // Check that blocks are calculated correctly - default case
+  it("should calculate block length - default", () => {
+    // set up the spy and the component
+    const blockLengthNum = 864e5 * 1;
+    const blockLengthStr = "a";
+    const releaseDate = new Date(new Date().getTime() + blockLengthNum);
+
+    const calculatedReleaseDate = adminService.calculateUserReleaseDate(blockLengthStr, undefined);
+
+    expect(calculatedReleaseDate.getTime() / 1000).toBeCloseTo(releaseDate.getTime() / 1000, 1);
+  });
+
+  // Check that blocks are calculated correctly - extending a block
+  it("should calculate block length - extending an existing block", () => {
+    // set up the spy and the component
+    const currentRelease = new Date("2120-09-29 19:17:31.072");
+    const releaseDate = new Date(currentRelease.getTime() + 864e5 * 7);
+    const blockLengthStr = "oneWeek";
+
+    const calculatedReleaseDate = adminService.calculateUserReleaseDate(
+      blockLengthStr,
+      currentRelease,
     );
+
+    expect(calculatedReleaseDate.getTime() / 1000).toBeCloseTo(releaseDate.getTime() / 1000, 1);
   });
 });

@@ -89,7 +89,6 @@ export class ItemsService {
             false,
             "/",
           );
-          this.alertsService.toggleOfflineAlert();
 
           let isoDate = new Date(response.posts.date).toISOString();
           let iDBPost = {
@@ -126,7 +125,6 @@ export class ItemsService {
           "Your post was edited. Refresh to view the updated post.",
           true,
         );
-        this.alertsService.toggleOfflineAlert();
         this.isUpdated.next(true);
       },
     });
@@ -143,7 +141,6 @@ export class ItemsService {
     this.apiClient.post(`posts/${item.id}/hugs`, {}).subscribe({
       next: (_response: any) => {
         this.alertsService.createSuccessAlert("Your hug was sent!", false);
-        this.alertsService.toggleOfflineAlert();
         // Alert the posts that this item received a hug
         this.receivedAHug.next(item.id);
       },
@@ -163,7 +160,6 @@ export class ItemsService {
     this.apiClient.post("messages", message).subscribe({
       next: (response: any) => {
         this.alertsService.createSuccessAlert("Your message was sent!", false, "/");
-        this.alertsService.toggleOfflineAlert();
 
         let isoDate = new Date(response.message.date).toISOString();
         let message = {
@@ -197,7 +193,6 @@ export class ItemsService {
         this.numPostResults = response.post_results;
         this.isSearching = false;
         this.isSearchResolved.next(true);
-        this.alertsService.toggleOfflineAlert();
       },
       error: (_err: HttpErrorResponse) => {
         this.isSearchResolved.next(true);
@@ -234,7 +229,6 @@ export class ItemsService {
             "/",
           );
         }
-        this.alertsService.toggleOfflineAlert();
       },
     });
   }

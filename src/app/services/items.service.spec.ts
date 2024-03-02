@@ -103,7 +103,6 @@ describe("ItemsService", () => {
       of({ success: true, posts: mockNewPost }),
     );
     const successAlertSpy = spyOn(itemsService["alertsService"], "createSuccessAlert");
-    const toggleAlertSpy = spyOn(itemsService["alertsService"], "toggleOfflineAlert");
     const addItemSpy = spyOn(itemsService["serviceWorkerM"], "addItem");
 
     itemsService.sendPost(mockNewPost);
@@ -114,7 +113,6 @@ describe("ItemsService", () => {
       false,
       "/",
     );
-    expect(toggleAlertSpy).toHaveBeenCalled();
     expect(addItemSpy).toHaveBeenCalledWith("posts", {
       ...mockNewPost,
       isoDate: new Date(mockNewPost.date).toISOString(),
@@ -134,7 +132,6 @@ describe("ItemsService", () => {
     );
     const successAlertSpy = spyOn(itemsService["alertsService"], "createSuccessAlert");
     const errorAlertSpy = spyOn(itemsService["alertsService"], "createAlert");
-    const toggleAlertSpy = spyOn(itemsService["alertsService"], "toggleOfflineAlert");
     const addItemSpy = spyOn(itemsService["serviceWorkerM"], "addItem");
     itemsService["authService"].userData.blocked = true;
     itemsService["authService"].userData.releaseDate = new Date();
@@ -143,7 +140,6 @@ describe("ItemsService", () => {
 
     expect(apiClientSpy).not.toHaveBeenCalled();
     expect(successAlertSpy).not.toHaveBeenCalled();
-    expect(toggleAlertSpy).not.toHaveBeenCalled();
     expect(addItemSpy).not.toHaveBeenCalled();
     expect(errorAlertSpy).toHaveBeenCalledWith({
       type: "Error",
@@ -164,7 +160,6 @@ describe("ItemsService", () => {
       of({ success: true }),
     );
     const successAlertSpy = spyOn(itemsService["alertsService"], "createSuccessAlert");
-    const toggleAlertSpy = spyOn(itemsService["alertsService"], "toggleOfflineAlert");
     const isUpdatedSpy = spyOn(itemsService.isUpdated, "next").and.callThrough();
     itemsService.editPost(mockPost);
 
@@ -173,7 +168,6 @@ describe("ItemsService", () => {
       "Your post was edited. Refresh to view the updated post.",
       true,
     );
-    expect(toggleAlertSpy).toHaveBeenCalled();
     expect(isUpdatedSpy).toHaveBeenCalledWith(true);
     expect(itemsService.isUpdated.value).toBe(true);
   });
@@ -191,12 +185,10 @@ describe("ItemsService", () => {
       of({ success: true }),
     );
     const successAlertSpy = spyOn(itemsService["alertsService"], "createSuccessAlert");
-    const toggleAlertSpy = spyOn(itemsService["alertsService"], "toggleOfflineAlert");
     itemsService.sendHug(mockPost);
 
     expect(apiClientSpy).toHaveBeenCalledWith(`posts/${mockPost.id}/hugs`, {});
     expect(successAlertSpy).toHaveBeenCalledWith("Your hug was sent!", false);
-    expect(toggleAlertSpy).toHaveBeenCalled();
     expect(itemsService.receivedAHug.value).toBe(mockPost.id);
   });
 
@@ -235,13 +227,11 @@ describe("ItemsService", () => {
     };
     const apiClientSpy = spyOn(itemsService["apiClient"], "post").and.returnValue(of(mockResponse));
     const alertSpy = spyOn(itemsService["alertsService"], "createSuccessAlert");
-    const toggleSpy = spyOn(itemsService["alertsService"], "toggleOfflineAlert");
     const addSpy = spyOn(itemsService["serviceWorkerM"], "addItem");
     itemsService.sendMessage(message);
 
     expect(apiClientSpy).toHaveBeenCalledWith("messages", message);
     expect(alertSpy).toHaveBeenCalledWith("Your message was sent!", false, "/");
-    expect(toggleSpy).toHaveBeenCalled();
     expect(addSpy).toHaveBeenCalledWith("messages", {
       ...mockResponse.message,
       isoDate: new Date(message.date).toISOString(),
@@ -365,11 +355,9 @@ describe("ItemsService", () => {
     };
     const apiClientSpy = spyOn(itemsService["apiClient"], "post").and.returnValue(of(mockResponse));
     const alertsSpy = spyOn(itemsService["alertsService"], "createSuccessAlert");
-    const toggleSpy = spyOn(itemsService["alertsService"], "toggleOfflineAlert");
     itemsService.sendReport(report);
 
     expect(apiClientSpy).toHaveBeenCalledWith("reports", report);
     expect(alertsSpy).toHaveBeenCalledWith(`User 5 was successfully reported.`, false, "/");
-    expect(toggleSpy).toHaveBeenCalled();
   });
 });

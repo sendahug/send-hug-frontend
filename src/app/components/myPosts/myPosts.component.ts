@@ -71,6 +71,14 @@ export class MyPosts implements OnInit {
   reportedItem: Post | undefined;
   reportType = "Post";
   lastFocusedElement: any;
+  previousPageButtonClass = computed(() => ({
+    "appButton prevButton": true,
+    disabled: this.currentPage() <= 1,
+  }));
+  nextPageButtonClass = computed(() => ({
+    "appButton nextButton": true,
+    disabled: this.totalPages() <= this.currentPage(),
+  }));
   // loader sub-component variable
   waitFor = "user posts";
   // The user whose posts to fetch

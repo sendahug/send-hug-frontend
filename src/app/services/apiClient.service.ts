@@ -33,7 +33,7 @@
 // Angular imports
 import { Injectable } from "@angular/core";
 import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams } from "@angular/common/http";
-import { Observable, catchError, throwError } from "rxjs";
+import { Observable, catchError, tap, throwError } from "rxjs";
 
 // App-related imports
 import { environment } from "@env/environment";
@@ -82,7 +82,10 @@ export class ApiClientService {
         headers: this.authHeader,
         params: this.getHttpParams(params || {}),
       })
-      .pipe(catchError(this.handleRequestError.bind(this)));
+      .pipe(
+        tap((_res) => this.alertsService.toggleOfflineAlert()),
+        catchError(this.handleRequestError.bind(this)),
+      );
   }
 
   /**
@@ -102,7 +105,10 @@ export class ApiClientService {
         headers: this.authHeader,
         params: this.getHttpParams(params || {}),
       })
-      .pipe(catchError(this.handleRequestError.bind(this)));
+      .pipe(
+        tap((_res) => this.alertsService.toggleOfflineAlert()),
+        catchError(this.handleRequestError.bind(this))
+      );
   }
 
   /**
@@ -122,7 +128,10 @@ export class ApiClientService {
         headers: this.authHeader,
         params: this.getHttpParams(params || {}),
       })
-      .pipe(catchError(this.handleRequestError.bind(this)));
+      .pipe(
+        tap((_res) => this.alertsService.toggleOfflineAlert()),
+        catchError(this.handleRequestError.bind(this))
+      );
   }
 
   /**
@@ -137,7 +146,10 @@ export class ApiClientService {
         headers: this.authHeader,
         params: this.getHttpParams(params || {}),
       })
-      .pipe(catchError(this.handleRequestError.bind(this)));
+      .pipe(
+        tap((_res) => this.alertsService.toggleOfflineAlert()),
+        catchError(this.handleRequestError.bind(this))
+      );
   }
 
   /**

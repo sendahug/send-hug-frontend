@@ -163,8 +163,12 @@ export class ApiClientService {
    * @returns an observable of the error.
    */
   handleRequestError<T>(error: HttpErrorResponse, _caught: Observable<T>): Observable<T> {
-    // If the error isn't that we're offline, create an error alert
-    if (navigator.onLine) {
+    // if the server is unavilable due to the user being offline, tell the user
+    if (!navigator.onLine) {
+      this.alertsService.toggleOfflineAlert();
+    }
+    // otherwise just create an error alert
+    else {
       this.alertsService.createErrorAlert(error);
     }
 

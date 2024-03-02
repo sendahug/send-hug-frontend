@@ -231,7 +231,7 @@ describe("APIClient Service", () => {
     });
   });
 
-  it("should not alert when a request fails (offline) as it's likely connected", (done: DoneFn) => {
+  it("should toggle the offline alert when a request fails (offline)", (done: DoneFn) => {
     spyOnProperty(navigator, "onLine").and.returnValue(false);
     const alertSpy = spyOn(apiClientService["alertsService"], "createErrorAlert");
     const sampleErrorData = {
@@ -240,10 +240,12 @@ describe("APIClient Service", () => {
       error: { message: "sample error" },
     };
     const sampleError = new HttpErrorResponse(sampleErrorData);
+    const toggleSpy = spyOn(apiClientService["alertsService"], "toggleOfflineAlert");
 
     apiClientService.handleRequestError(sampleError, of(null)).subscribe({
       error: (error: HttpErrorResponse) => {
         expect(alertSpy).not.toHaveBeenCalled();
+        expect(toggleSpy).toHaveBeenCalled();
         done();
       },
     });

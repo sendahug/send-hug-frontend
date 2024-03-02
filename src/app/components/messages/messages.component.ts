@@ -43,7 +43,6 @@ import { UserIconColours } from "@app/interfaces/user.interface";
 import { Message } from "@app/interfaces/message.interface";
 import { SWManager } from "@app/services/sWManager.service";
 import { ApiClientService } from "@app/services/apiClient.service";
-import { AlertsService } from "@app/services/alerts.service";
 
 interface MessagesResponse {
   success: boolean;
@@ -110,7 +109,6 @@ export class AppMessaging implements OnInit, AfterViewChecked {
     public router: Router,
     private swManager: SWManager,
     private apiClient: ApiClientService,
-    private alertsService: AlertsService,
   ) {
     let messageType;
     this.threadId = Number(this.route.snapshot.paramMap.get("id"));
@@ -203,7 +201,6 @@ export class AppMessaging implements OnInit, AfterViewChecked {
           this.messages.set(data.messages);
           this.totalPages.set(data.total_pages);
           this.isLoading.set(false);
-          this.alertsService.toggleOfflineAlert();
           this.swManager.addFetchedItems("messages", [...data.messages], "date");
         },
       });
@@ -261,7 +258,6 @@ export class AppMessaging implements OnInit, AfterViewChecked {
           this.userThreads.set(data.messages);
           this.totalPages.set(data.total_pages);
           this.isLoading.set(false);
-          this.alertsService.toggleOfflineAlert();
           this.swManager.addFetchedItems("threads", [...data.messages], "latestMessage");
         },
       });

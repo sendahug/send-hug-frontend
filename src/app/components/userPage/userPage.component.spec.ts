@@ -335,14 +335,12 @@ describe("UserPage", () => {
     const apiClientSpy = spyOn(userPage["apiClient"], "get").and.returnValue(
       of({ user: mockUser }),
     );
-    const alertsSpy = spyOn(userPage["alertsService"], "toggleOfflineAlert");
     const addItemSpy = spyOn(userPage["swManager"], "addItem");
 
     userPage.fetchOtherUsersData();
 
     expect(idbSpy).toHaveBeenCalled();
     expect(apiClientSpy).toHaveBeenCalledWith("users/all/1");
-    expect(alertsSpy).toHaveBeenCalled();
     expect(addItemSpy).toHaveBeenCalledWith("users", mockUser);
     expect(userPage.otherUser() as OtherUser).toEqual(mockUser);
     expect(userPage.isServerFetchResolved()).toBeTrue();
@@ -475,7 +473,6 @@ describe("UserPage", () => {
     const hugSpy = spyOn(userPage, "sendHug").and.callThrough();
     const apiClientSpy = spyOn(userPage["apiClient"], "post").and.returnValue(of({}));
     const alertsSpy = spyOn(userPage["alertsService"], "createSuccessAlert");
-    const toggleSpy = spyOn(userPage["alertsService"], "toggleOfflineAlert");
     userPage.otherUser.set({
       id: 1,
       displayName: "shirb",
@@ -519,7 +516,6 @@ describe("UserPage", () => {
       userPageDOM.querySelector("#rHugsElement").querySelectorAll(".pageData")[0].textContent,
     ).toBe("4");
     expect(alertsSpy).toHaveBeenCalledWith("Your hug was sent!", true);
-    expect(toggleSpy).toHaveBeenCalled();
     done();
   });
 

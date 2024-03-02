@@ -42,7 +42,6 @@ import { AuthService } from "@app/services/auth.service";
 import { ItemsService } from "@app/services/items.service";
 import { SWManager } from "@app/services/sWManager.service";
 import { ApiClientService } from "@app/services/apiClient.service";
-import { AlertsService } from "@app/services/alerts.service";
 
 interface MyPostsResponse {
   page: number;
@@ -90,7 +89,6 @@ export class MyPosts implements OnInit {
     private itemsService: ItemsService,
     private swManager: SWManager,
     private apiClient: ApiClientService,
-    private alertsService: AlertsService,
   ) {
     if (!this.userID) {
       this.userID = this.authService.userData.id!;
@@ -141,7 +139,6 @@ export class MyPosts implements OnInit {
         this.posts.set(data.posts);
         this.isLoading.set(false);
         this.isServerFetchResolved.set(true);
-        this.alertsService.toggleOfflineAlert();
         this.swManager.addFetchedItems("posts", data.posts, "date");
       });
   }

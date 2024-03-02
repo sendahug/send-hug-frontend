@@ -50,7 +50,6 @@ import { SinglePost } from "../post/post.component";
 import { Loader } from "../loader/loader.component";
 import { ApiClientService } from "../../services/apiClient.service";
 import { SWManager } from "../../services/sWManager.service";
-import { AlertsService } from "../../services/alerts.service";
 
 const PageOnePosts = [
   {
@@ -183,7 +182,6 @@ describe("FullList", () => {
     // Inject services
     const apiClient = TestBed.inject(ApiClientService);
     const swManager = TestBed.inject(SWManager);
-    const alertsService = TestBed.inject(AlertsService);
     const paramMap = TestBed.inject(ActivatedRoute);
     paramMap.snapshot.url = [{ path: "New" }] as UrlSegment[];
 
@@ -200,14 +198,12 @@ describe("FullList", () => {
     const apiClientSpy = spyOn(apiClient, "get").and.returnValue(of(mockPageOneResponse));
     const updateInterfaceSpy = spyOn(FullList.prototype, "updateInterface");
     const addItemsSpy = spyOn(swManager, "addFetchedItems");
-    const alertsSpy = spyOn(alertsService, "toggleOfflineAlert");
 
     TestBed.createComponent(FullList);
 
     expect(idbSpy).toHaveBeenCalled();
     expect(apiClientSpy).toHaveBeenCalledWith("posts/new", { page: 1 });
     expect(updateInterfaceSpy).toHaveBeenCalledWith(mockPageOneResponse);
-    expect(alertsSpy).toHaveBeenCalled();
     expect(addItemsSpy).toHaveBeenCalledWith("posts", PageOnePosts, "date");
     done();
   });

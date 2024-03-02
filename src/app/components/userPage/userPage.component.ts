@@ -207,7 +207,6 @@ export class UserPage implements OnInit, OnDestroy, AfterViewChecked {
           const user = response.user;
           this.otherUser.set(user);
           this.isServerFetchResolved.set(true);
-          this.alertsService.toggleOfflineAlert();
 
           // adds the user's data to the users store
           this.swManager.addItem("users", user);
@@ -274,7 +273,6 @@ export class UserPage implements OnInit, OnDestroy, AfterViewChecked {
         this.otherUser()!.receivedH += 1;
         this.authService.userData.givenH += 1;
         this.alertsService.createSuccessAlert("Your hug was sent!", true);
-        this.alertsService.toggleOfflineAlert();
       },
     });
   }

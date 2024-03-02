@@ -180,7 +180,6 @@ describe("AppMessaging", () => {
     const apiClientSpy = spyOn(appMessaging["apiClient"], "get").and.returnValue(
       of({ messages: mockMessages, total_pages: 2, current_page: 1, success: true }),
     );
-    const toggleSpy = spyOn(appMessaging["alertsService"], "toggleOfflineAlert");
     const swManagerSpy = spyOn(appMessaging["swManager"], "addFetchedItems");
 
     // before
@@ -202,7 +201,6 @@ describe("AppMessaging", () => {
     expect(appMessaging.messages()).toEqual(mockMessages);
     expect(appMessaging.totalPages()).toBe(2);
     expect(appMessaging.currentPage()).toBe(1);
-    expect(toggleSpy).toHaveBeenCalled();
     expect(swManagerSpy).toHaveBeenCalledWith("messages", mockMessages, "date");
   });
 
@@ -289,7 +287,6 @@ describe("AppMessaging", () => {
     const apiClientSpy = spyOn(appMessaging["apiClient"], "get").and.returnValue(
       of({ messages: mockThreads, total_pages: 2, current_page: 1, success: true }),
     );
-    const toggleSpy = spyOn(appMessaging["alertsService"], "toggleOfflineAlert");
     const swManagerSpy = spyOn(appMessaging["swManager"], "addFetchedItems");
 
     // before
@@ -311,7 +308,6 @@ describe("AppMessaging", () => {
     expect(appMessaging.userThreads()).toEqual(mockThreads);
     expect(appMessaging.totalPages()).toBe(2);
     expect(appMessaging.currentPage()).toBe(1);
-    expect(toggleSpy).toHaveBeenCalled();
     expect(swManagerSpy).toHaveBeenCalledWith("threads", mockThreads, "latestMessage");
   });
 

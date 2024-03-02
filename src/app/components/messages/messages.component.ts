@@ -91,6 +91,14 @@ export class AppMessaging implements OnInit, AfterViewChecked {
       };
     });
   });
+  previousPageButtonClass = computed(() => ({
+    "appButton prevButton": true,
+    disabled: this.currentPage() <= 1,
+  }));
+  nextPageButtonClass = computed(() => ({
+    "appButton nextButton": true,
+    disabled: this.totalPages() <= this.currentPage(),
+  }));
   // loader sub-component variable
   waitFor = `${this.messType} messages`;
   // edit popup sub-component variables

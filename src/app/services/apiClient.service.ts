@@ -83,6 +83,7 @@ export class ApiClientService {
         params: this.getHttpParams(params || {}),
       })
       .pipe(
+        // if the server is unavilable due to the user being offline, tell the user
         tap((_res) => this.alertsService.toggleOfflineAlert()),
         catchError(this.handleRequestError.bind(this)),
       );
@@ -106,8 +107,9 @@ export class ApiClientService {
         params: this.getHttpParams(params || {}),
       })
       .pipe(
+        // if the server is unavilable due to the user being offline, tell the user
         tap((_res) => this.alertsService.toggleOfflineAlert()),
-        catchError(this.handleRequestError.bind(this))
+        catchError(this.handleRequestError.bind(this)),
       );
   }
 
@@ -129,8 +131,9 @@ export class ApiClientService {
         params: this.getHttpParams(params || {}),
       })
       .pipe(
+        // if the server is unavilable due to the user being offline, tell the user
         tap((_res) => this.alertsService.toggleOfflineAlert()),
-        catchError(this.handleRequestError.bind(this))
+        catchError(this.handleRequestError.bind(this)),
       );
   }
 
@@ -147,8 +150,9 @@ export class ApiClientService {
         params: this.getHttpParams(params || {}),
       })
       .pipe(
+        // if the server is unavilable due to the user being offline, tell the user
         tap((_res) => this.alertsService.toggleOfflineAlert()),
-        catchError(this.handleRequestError.bind(this))
+        catchError(this.handleRequestError.bind(this)),
       );
   }
 
@@ -159,12 +163,8 @@ export class ApiClientService {
    * @returns an observable of the error.
    */
   handleRequestError<T>(error: HttpErrorResponse, _caught: Observable<T>): Observable<T> {
-    // if the server is unavilable due to the user being offline, tell the user
-    if (!navigator.onLine) {
-      this.alertsService.toggleOfflineAlert();
-    }
-    // otherwise just create an error alert
-    else {
+    // If the error isn't that we're offline, create an error alert
+    if (navigator.onLine) {
       this.alertsService.createErrorAlert(error);
     }
 

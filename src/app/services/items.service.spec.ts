@@ -318,8 +318,8 @@ describe("ItemsService", () => {
         expect(itemsService.postSearchResults.length).toBe(5);
         expect(itemsService.numUserResults).toBe(2);
         expect(itemsService.numPostResults).toBe(7);
-        expect(itemsService.postSearchPage).toBe(1);
-        expect(itemsService.totalPostSearchPages).toBe(2);
+        expect(itemsService.postSearchPage()).toBe(1);
+        expect(itemsService.totalPostSearchPages()).toBe(2);
         expect(itemsService.isSearching).toBeFalse();
         expect(apiClientSpy).toHaveBeenCalledWith("", { search: "test" }, { page: "1" });
       }

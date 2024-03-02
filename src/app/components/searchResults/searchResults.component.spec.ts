@@ -369,7 +369,7 @@ describe("SearchResults", () => {
       fixture.detectChanges();
 
       // expectations for page 1
-      expect(searchResults.itemsService.postSearchPage).toBe(1);
+      expect(searchResults.itemsService.postSearchPage()).toBe(1);
       expect(
         searchResultsDOM.querySelector("#postSearchResults").firstElementChild.children.length,
       ).toBe(1);
@@ -378,13 +378,11 @@ describe("SearchResults", () => {
       searchResultsDOM.querySelectorAll(".nextButton")[0].click();
       searchResults.itemsService.postSearchResults = [...mockPostSearchResults];
       searchResults.itemsService.numPostResults = 2;
-      searchResults.itemsService.postSearchPage.set(2);
-      searchResults.itemsService.totalPostSearchPages.set(2);
       fixture.detectChanges();
 
       // expectations for page 2
       expect(routeSpy).toHaveBeenCalled();
-      expect(searchResults.itemsService.postSearchPage).toBe(2);
+      expect(searchResults.itemsService.postSearchPage()).toBe(2);
       expect(
         searchResultsDOM.querySelector("#postSearchResults").firstElementChild.children.length,
       ).toBe(2);
@@ -393,13 +391,11 @@ describe("SearchResults", () => {
       searchResultsDOM.querySelectorAll(".prevButton")[0].click();
       searchResults.itemsService.postSearchResults = [mockPostSearchResults[0]];
       searchResults.itemsService.numPostResults = 1;
-      searchResults.itemsService.postSearchPage.set(1);
-      searchResults.itemsService.totalPostSearchPages.set(2);
       fixture.detectChanges();
 
       // expectations for page 1
       expect(routeSpy).toHaveBeenCalledTimes(2);
-      expect(searchResults.itemsService.postSearchPage).toBe(1);
+      expect(searchResults.itemsService.postSearchPage()).toBe(1);
       expect(
         searchResultsDOM.querySelector("#postSearchResults").firstElementChild.children.length,
       ).toBe(1);

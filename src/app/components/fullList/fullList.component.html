@@ -18,10 +18,18 @@
 	
 	<!-- Post pagination -->
 	<div class="pagination" role="navigation">
-		<button *ngIf="currentPage() > 1" class="appButton prevButton" (click)="prevPage()" [attr.aria-label]="'previous page of ' + type + ' posts'">Previous Page</button>
-		<button *ngIf="currentPage() <= 1" class="appButton placeHolder">Next Page</button>
+		<button
+			[ngClass]="previousPageButtonClass()" 
+			(click)="prevPage()" 
+			[attr.aria-label]="'previous page of ' + type + ' posts'"
+			[disabled]="currentPage() <= 1"
+		>Previous Page</button>
 		<div class="pageCount">Page {{ currentPage() }} of {{ totalPages() }}</div>
-		<button *ngIf="totalPages() > currentPage()" class="appButton nextButton" (click)="nextPage()" [attr.aria-label]="'next page of ' + type + ' posts'">Next Page</button>
-		<button *ngIf="totalPages() <= currentPage()" class="appButton placeHolder">Previous Page</button>
+		<button 
+			[ngClass]="nextPageButtonClass()" 
+			(click)="nextPage()" 
+			[attr.aria-label]="'next page of ' + type + ' posts'"
+			[disabled]="totalPages() <= currentPage()"
+		>Next Page</button>
 	</div>
 </div>

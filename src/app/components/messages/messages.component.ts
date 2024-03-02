@@ -31,7 +31,7 @@
 */
 
 // Angular imports
-import { Component, OnInit, AfterViewChecked, signal, computed } from "@angular/core";
+import { Component, AfterViewChecked, signal, computed } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { from, map, switchMap, tap } from "rxjs";
 
@@ -62,7 +62,7 @@ interface ThreadResponse {
   selector: "app-messages",
   templateUrl: "./messages.component.html",
 })
-export class AppMessaging implements OnInit, AfterViewChecked {
+export class AppMessaging implements AfterViewChecked {
   messType: MessageType = "inbox";
   idbFilterAttribute = computed(() => {
     if (this.messType == "thread") {
@@ -91,6 +91,14 @@ export class AppMessaging implements OnInit, AfterViewChecked {
       };
     });
   });
+  previousPageButtonClass = computed(() => ({
+    "appButton prevButton": true,
+    disabled: this.currentPage() <= 1,
+  }));
+  nextPageButtonClass = computed(() => ({
+    "appButton nextButton": true,
+    disabled: this.totalPages() <= this.currentPage(),
+  }));
   // loader sub-component variable
   waitFor = `${this.messType} messages`;
   // edit popup sub-component variables
@@ -140,8 +148,6 @@ export class AppMessaging implements OnInit, AfterViewChecked {
       }
     });
   }
-
-  ngOnInit() {}
 
   /*
   Function Name: ngAfterViewChecked()

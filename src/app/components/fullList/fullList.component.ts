@@ -39,7 +39,6 @@ import { from, map, switchMap, tap } from "rxjs";
 import { FullListType } from "@app/interfaces/types";
 import { Post } from "@app/interfaces/post.interface";
 import { SWManager } from "@app/services/sWManager.service";
-import { AlertsService } from "@app/services/alerts.service";
 import { ApiClientService } from "@app/services/apiClient.service";
 
 interface PostsListResponse {
@@ -67,7 +66,6 @@ export class FullList {
     private route: ActivatedRoute,
     private router: Router,
     private swManager: SWManager,
-    private alertsService: AlertsService,
     private apiClient: ApiClientService,
   ) {
     const urlPath = this.route.snapshot.url[0].path;
@@ -109,7 +107,6 @@ export class FullList {
       )
       .subscribe((data) => {
         this.updateInterface(data);
-        this.alertsService.toggleOfflineAlert();
         this.swManager.addFetchedItems("posts", data.posts, "date");
       });
   }

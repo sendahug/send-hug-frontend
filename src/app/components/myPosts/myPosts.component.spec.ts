@@ -189,7 +189,6 @@ describe("MyPosts", () => {
     const apiClientSpy = spyOn(myPosts["apiClient"], "get").and.returnValue(
       of({ page: 1, posts: mockPosts, total_pages: 2, success: true }),
     );
-    const alertsSpy = spyOn(myPosts["alertsService"], "toggleOfflineAlert");
     const swSpy = spyOn(myPosts["swManager"], "addFetchedItems");
 
     // before
@@ -201,7 +200,6 @@ describe("MyPosts", () => {
     // after
     expect(idbSpy).toHaveBeenCalled();
     expect(apiClientSpy).toHaveBeenCalledWith("users/all/1/posts", { page: 1 });
-    expect(alertsSpy).toHaveBeenCalled();
     expect(swSpy).toHaveBeenCalledWith("posts", mockPosts, "date");
     expect(myPosts.totalPages()).toEqual(2);
     expect(myPosts.posts()).toEqual(mockPosts);

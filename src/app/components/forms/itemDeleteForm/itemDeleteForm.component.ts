@@ -137,7 +137,6 @@ export class ItemDeleteForm {
           } list.`,
           true,
         );
-        this.alertsService.toggleOfflineAlert();
 
         // delete the item from idb
         this.swManager.deleteItem(idbStore, response.deleted);
@@ -172,7 +171,6 @@ export class ItemDeleteForm {
     return this.apiClient
       .delete<{ success: boolean; userID: number; deleted: number }>(url, params)
       .pipe(
-        tap(() => this.alertsService.toggleOfflineAlert()),
         tap((response) =>
           this.alertsService.createSuccessAlert(
             `${response.deleted} ${itemType} were deleted. Refresh to view the updated page.`,

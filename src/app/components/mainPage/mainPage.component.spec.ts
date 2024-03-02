@@ -50,7 +50,6 @@ import { PopUp } from "../popUp/popUp.component";
 import { SinglePost } from "../post/post.component";
 import { ApiClientService } from "../../services/apiClient.service";
 import { SWManager } from "../../services/sWManager.service";
-import { AlertsService } from "../../services/alerts.service";
 
 const newItems = [
   {
@@ -129,7 +128,6 @@ describe("MainPage", () => {
     // Inject services
     const apiClient = TestBed.inject(ApiClientService);
     const swManager = TestBed.inject(SWManager);
-    const alertsService = TestBed.inject(AlertsService);
 
     // set up mock data
     const mockNetworkResponse = { recent: newItems, suggested: suggestedItems, success: true };
@@ -141,14 +139,12 @@ describe("MainPage", () => {
     const apiClientSpy = spyOn(apiClient, "get").and.returnValue(of(mockNetworkResponse));
     const updateInterfaceSpy = spyOn(MainPage.prototype, "updatePostsInterface");
     const addItemsSpy = spyOn(swManager, "addFetchedItems");
-    const alertsSpy = spyOn(alertsService, "toggleOfflineAlert");
 
     TestBed.createComponent(MainPage);
 
     expect(idbSpy).toHaveBeenCalled();
     expect(apiClientSpy).toHaveBeenCalledWith("");
     expect(updateInterfaceSpy).toHaveBeenCalledWith(mockNetworkResponse);
-    expect(alertsSpy).toHaveBeenCalled();
     expect(addItemsSpy).toHaveBeenCalledWith(
       "posts",
       [...mockNetworkResponse.recent, ...mockNetworkResponse.suggested],

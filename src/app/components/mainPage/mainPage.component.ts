@@ -38,7 +38,6 @@ import { forkJoin, from, map, switchMap, tap } from "rxjs";
 import { ApiClientService } from "@app/services/apiClient.service";
 import { SWManager } from "@app/services/sWManager.service";
 import { Post } from "@app/interfaces/post.interface";
-import { AlertsService } from "@app/services/alerts.service";
 
 interface MainPageResponse {
   recent: Post[];
@@ -61,7 +60,6 @@ export class MainPage {
   constructor(
     private apiClient: ApiClientService,
     private swManager: SWManager,
-    private alertsService: AlertsService,
   ) {
     this.fetchPosts();
   }
@@ -78,7 +76,6 @@ export class MainPage {
       .pipe(switchMap(() => this.apiClient.get<MainPageResponse>("")))
       .subscribe((data) => {
         this.updatePostsInterface(data);
-        this.alertsService.toggleOfflineAlert();
         this.swManager.addFetchedItems("posts", [...data.recent, ...data.suggested], "date");
       });
   }

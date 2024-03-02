@@ -249,7 +249,6 @@ describe("Popup", () => {
       of({ success: true, deleted: 4 }),
     );
     const alertsSpy = spyOn(itemDeleteForm["alertsService"], "createSuccessAlert");
-    const toggleSpy = spyOn(itemDeleteForm["alertsService"], "toggleOfflineAlert");
     const swManagerSpy = spyOn(itemDeleteForm["swManager"], "deleteItem");
     itemDeleteForm.toDelete = "Post";
     itemDeleteForm.itemToDelete = 4;
@@ -263,7 +262,6 @@ describe("Popup", () => {
       "Post 4 was deleted. Refresh to view the updated post list.",
       true,
     );
-    expect(toggleSpy).toHaveBeenCalled();
     expect(swManagerSpy).toHaveBeenCalledWith("posts", 4);
   });
 
@@ -274,7 +272,6 @@ describe("Popup", () => {
       of({ success: true, deleted: 4 }),
     );
     const alertsSpy = spyOn(itemDeleteForm["alertsService"], "createSuccessAlert");
-    const toggleSpy = spyOn(itemDeleteForm["alertsService"], "toggleOfflineAlert");
     const swManagerSpy = spyOn(itemDeleteForm["swManager"], "deleteItems");
     itemDeleteForm.toDelete = "Thread";
     itemDeleteForm.itemToDelete = 4;
@@ -288,7 +285,6 @@ describe("Popup", () => {
       "Thread 4 was deleted. Refresh to view the updated thread list.",
       true,
     );
-    expect(toggleSpy).toHaveBeenCalled();
     expect(swManagerSpy).toHaveBeenCalledWith("messages", "threadID", 4);
   });
 
@@ -341,7 +337,6 @@ describe("Popup", () => {
       of({ success: true, userID: 2, deleted: 4 }),
     );
     const alertsSpy = spyOn(itemDeleteForm["alertsService"], "createSuccessAlert");
-    const toggleSpy = spyOn(itemDeleteForm["alertsService"], "toggleOfflineAlert");
     itemDeleteForm.toDelete = "All posts";
     itemDeleteForm.itemToDelete = 2;
 
@@ -354,7 +349,6 @@ describe("Popup", () => {
       "4 posts were deleted. Refresh to view the updated page.",
       true,
     );
-    expect(toggleSpy).toHaveBeenCalled();
   });
 
   // Check that the popup is exited and the item isn't deleted if the user picks 'never mind'

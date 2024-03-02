@@ -73,7 +73,7 @@ export class SearchResults {
   Programmer: Shir Bar Lev.
   */
   nextPage() {
-    this.itemsService.postSearchPage += 1;
+    this.itemsService.postSearchPage.set(this.itemsService.postSearchPage() + 1);
     this.page += 1;
     this.itemsService.sendSearch(this.searchQuery!);
 
@@ -97,7 +97,7 @@ export class SearchResults {
   Programmer: Shir Bar Lev.
   */
   prevPage() {
-    this.itemsService.postSearchPage -= 1;
+    this.itemsService.postSearchPage.set(this.itemsService.postSearchPage() - 1);
     this.page -= 1;
     this.itemsService.sendSearch(this.searchQuery!);
 

@@ -29,11 +29,19 @@
 
 	<!-- Post pagination -->
 		<div class="pagination" role="navigation">
-			<button *ngIf="itemsService.postSearchPage > 1" class="appButton prevButton" (click)="prevPage()" aria-label="previous page of post search results">Previous Page</button>
-			<button *ngIf="itemsService.postSearchPage <= 1" class="appButton placeHolder">Prev Page</button>
-			<div class="pageCount">Page {{ itemsService.postSearchPage }} of {{ itemsService.totalPostSearchPages }}</div>
-			<button *ngIf="itemsService.totalPostSearchPages > itemsService.postSearchPage" class="appButton nextButton" (click)="nextPage()" aria-label="next page of post search results">Next Page</button>
-			<button *ngIf="itemsService.totalPostSearchPages <= itemsService.postSearchPage" class="appButton placeHolder">Next Page</button>
+			<button 
+				[ngClass]="itemsService.previousPageButtonClass()" 
+				(click)="prevPage()" 
+				aria-label="previous page of post search results"
+				[disabled]="itemsService.postSearchPage() <= 1"
+			>Previous Page</button>
+			<div class="pageCount">Page {{ itemsService.postSearchPage() }} of {{ itemsService.totalPostSearchPages() }}</div>
+			<button 
+				[ngClass]="itemsService.nextPageButtonClass()" 
+				(click)="nextPage()" 
+				aria-label="next page of post search results"
+				[disabled]="itemsService.totalPostSearchPages() <= itemsService.postSearchPage()"
+			>Next Page</button>
 		</div>
 	</div>
 

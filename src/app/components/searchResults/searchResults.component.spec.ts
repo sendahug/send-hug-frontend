@@ -331,7 +331,7 @@ describe("SearchResults", () => {
       searchResults.itemsService.isSearchResolved.next(true);
       searchResults.itemsService.postSearchResults = [mockPostSearchResults[0]];
       searchResults.itemsService.numPostResults = 1;
-      searchResults.itemsService.totalPostSearchPages = 2;
+      searchResults.itemsService.totalPostSearchPages.set(2);
 
       fixture.detectChanges();
 
@@ -365,7 +365,7 @@ describe("SearchResults", () => {
       searchResults.itemsService.isSearchResolved.next(true);
       searchResults.itemsService.postSearchResults = [mockPostSearchResults[0]];
       searchResults.itemsService.numPostResults = 1;
-      searchResults.itemsService.totalPostSearchPages = 2;
+      searchResults.itemsService.totalPostSearchPages.set(2);
       fixture.detectChanges();
 
       // expectations for page 1
@@ -378,8 +378,8 @@ describe("SearchResults", () => {
       searchResultsDOM.querySelectorAll(".nextButton")[0].click();
       searchResults.itemsService.postSearchResults = [...mockPostSearchResults];
       searchResults.itemsService.numPostResults = 2;
-      searchResults.itemsService.postSearchPage = 2;
-      searchResults.itemsService.totalPostSearchPages = 2;
+      searchResults.itemsService.postSearchPage.set(2);
+      searchResults.itemsService.totalPostSearchPages.set(2);
       fixture.detectChanges();
 
       // expectations for page 2
@@ -393,8 +393,8 @@ describe("SearchResults", () => {
       searchResultsDOM.querySelectorAll(".prevButton")[0].click();
       searchResults.itemsService.postSearchResults = [mockPostSearchResults[0]];
       searchResults.itemsService.numPostResults = 1;
-      searchResults.itemsService.postSearchPage = 1;
-      searchResults.itemsService.totalPostSearchPages = 2;
+      searchResults.itemsService.postSearchPage.set(1);
+      searchResults.itemsService.totalPostSearchPages.set(2);
       fixture.detectChanges();
 
       // expectations for page 1

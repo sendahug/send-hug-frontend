@@ -4,9 +4,9 @@
 		*ngIf="isLoading()"
 		[waitingFor]="waitFor"></app-loader>
 	
-	<app-header-message
-		*ngIf="!isServerFetchResolved()"
-		[waitingFor]="waitFor"></app-header-message>
+<app-header-message
+	*ngIf="!isServerFetchResolved()"
+	[waitingFor]="waitFor"></app-header-message>
 
 <div id="myPosts">
 	<!-- If the user has posts, displays them -->

@@ -87,9 +87,11 @@ describe("APIClient Service", () => {
     const mockResponse = {
       data: "test",
     };
+    const toggleSpy = spyOn(apiClientService["alertsService"], "toggleOfflineAlert");
 
     apiClientService.get("test").subscribe((res) => {
       expect(res).toEqual(mockResponse);
+      expect(toggleSpy).toHaveBeenCalled();
     });
 
     const req = httpController.expectOne(`${apiClientService["serverUrl"]}/test`);
@@ -117,9 +119,11 @@ describe("APIClient Service", () => {
     const mockResponse = {
       data: "test",
     };
+    const toggleSpy = spyOn(apiClientService["alertsService"], "toggleOfflineAlert");
 
     apiClientService.post("test", {}).subscribe((res) => {
       expect(res).toEqual(mockResponse);
+      expect(toggleSpy).toHaveBeenCalled();
     });
 
     const req = httpController.expectOne(`${apiClientService["serverUrl"]}/test`);
@@ -147,9 +151,11 @@ describe("APIClient Service", () => {
     const mockResponse = {
       data: "test",
     };
+    const toggleSpy = spyOn(apiClientService["alertsService"], "toggleOfflineAlert");
 
     apiClientService.patch("test", {}).subscribe((res) => {
       expect(res).toEqual(mockResponse);
+      expect(toggleSpy).toHaveBeenCalled();
     });
 
     const req = httpController.expectOne(`${apiClientService["serverUrl"]}/test`);
@@ -177,9 +183,11 @@ describe("APIClient Service", () => {
     const mockResponse = {
       data: "test",
     };
+    const toggleSpy = spyOn(apiClientService["alertsService"], "toggleOfflineAlert");
 
     apiClientService.delete("test").subscribe((res) => {
       expect(res).toEqual(mockResponse);
+      expect(toggleSpy).toHaveBeenCalled();
     });
 
     const req = httpController.expectOne(`${apiClientService["serverUrl"]}/test`);
@@ -223,10 +231,9 @@ describe("APIClient Service", () => {
     });
   });
 
-  it("should toggle the offline alert when a request fails (offline)", (done: DoneFn) => {
+  it("should not alert when a request fails (offline) as it's likely connected", (done: DoneFn) => {
     spyOnProperty(navigator, "onLine").and.returnValue(false);
     const alertSpy = spyOn(apiClientService["alertsService"], "createErrorAlert");
-    const toggleSpy = spyOn(apiClientService["alertsService"], "toggleOfflineAlert");
     const sampleErrorData = {
       status: 404,
       statusText: "Not Found",
@@ -237,7 +244,6 @@ describe("APIClient Service", () => {
     apiClientService.handleRequestError(sampleError, of(null)).subscribe({
       error: (error: HttpErrorResponse) => {
         expect(alertSpy).not.toHaveBeenCalled();
-        expect(toggleSpy).toHaveBeenCalled();
         done();
       },
     });

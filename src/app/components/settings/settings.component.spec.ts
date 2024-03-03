@@ -50,6 +50,7 @@ import { AuthService } from "../../services/auth.service";
 import { NotificationsTab } from "../notifications/notifications.component";
 import { AlertsService } from "../../services/alerts.service";
 import { mockAuthedUser } from "@tests/mockData";
+import { AppAlert } from "../appAlert/appAlert.component";
 
 describe("SettingsPage", () => {
   // Before each test, configure testing environment
@@ -64,7 +65,7 @@ describe("SettingsPage", () => {
         ServiceWorkerModule.register("sw.js", { enabled: false }),
         FontAwesomeModule,
       ],
-      declarations: [AppComponent, SettingsPage, NotificationsTab, IconEditor],
+      declarations: [AppComponent, SettingsPage, NotificationsTab, IconEditor, AppAlert],
       providers: [{ provide: APP_BASE_HREF, useValue: "/" }],
     }).compileComponents();
 

@@ -93,7 +93,7 @@ export class AlertsService {
   */
   reloadPage() {
     this.shouldDisplayAlert.set(false);
-    
+
     // if the 'reload' came from a ServiceWorker-related popup, tell
     // the SW to skip waiting and activate the new SW
     if (this.isSWRelated && this.waitingServiceWorker) {

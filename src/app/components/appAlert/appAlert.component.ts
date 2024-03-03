@@ -51,6 +51,7 @@ export class AppAlert {
   alertAriaLabel = computed(() =>
     this.alertsService.alertType() === "Error" ? "An error has occurred" : "",
   );
+  alertAriaLive = computed(() => (this.alertsService.shouldDisplayAlert() ? "assertive" : "off"));
   alertIconClass = computed(() => {
     const iconBaseClass = "alertIcon";
 

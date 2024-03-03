@@ -1,4 +1,10 @@
-<div [ngClass]="alertClass()" [role]="alertRole()" [attr.aria-label]="alertAriaLabel()">
+<div 
+  [ngClass]="alertClass()" 
+  [role]="alertRole()" 
+  [attr.aria-label]="alertAriaLabel()"
+  [attr.aria-hidden]="!alertsService.shouldDisplayAlert()"
+  [attr.aria-live]="alertAriaLive()"
+>
   <i [ngClass]="alertIconClass()"></i>
   <h3 class="alertType">{{ alertsService.alertType() }}</h3>
   <div class="alertText">{{ alertsService.alertMessage() }}</div>

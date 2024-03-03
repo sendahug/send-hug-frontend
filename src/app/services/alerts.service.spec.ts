@@ -152,6 +152,85 @@ describe("AlertsService", () => {
     expect(alertsService.isSWRelated).toBeFalse();
   });
 
+  it("createErrorAlert() - should create error alert with 403 status", () => {
+    const alertSpy = spyOn(alertsService, "createAlert");
+
+    alertsService.createErrorAlert({
+      status: 403,
+      message: "",
+      error: {
+        message: {
+          description: "Forbidden",
+        },
+      },
+      statusText: "",
+      url: "",
+      type: HttpEventType.Response,
+      name: new HttpErrorResponse({}).name,
+      ok: false,
+      headers: new HttpHeaders(),
+    });
+
+    expect(alertSpy).toHaveBeenCalled();
+    expect(alertSpy).toHaveBeenCalledWith({
+      type: "Error",
+      message: "Forbidden",
+    });
+    expect(alertsService.isSWRelated).toBeFalse();
+  });
+
+  it("createErrorAlert() - should create error alert with 400 status", () => {
+    const alertSpy = spyOn(alertsService, "createAlert");
+
+    alertsService.createErrorAlert({
+      status: 400,
+      message: "",
+      error: {
+        message: {
+          description: "Bad request",
+        },
+      },
+      statusText: "",
+      url: "",
+      type: HttpEventType.Response,
+      name: new HttpErrorResponse({}).name,
+      ok: false,
+      headers: new HttpHeaders(),
+    });
+
+    expect(alertSpy).toHaveBeenCalled();
+    expect(alertSpy).toHaveBeenCalledWith({
+      type: "Error",
+      message: "Bad request",
+    });
+    expect(alertsService.isSWRelated).toBeFalse();
+  });
+
+  it("createErrorAlert() - should create error alert with 503 status", () => {
+    const alertSpy = spyOn(alertsService, "createAlert");
+
+    alertsService.createErrorAlert({
+      status: 503,
+      message: "",
+      error: {
+        message: "Service Unavailable",
+      },
+      statusText: "Service Unavailable",
+      url: "",
+      type: HttpEventType.Response,
+      name: new HttpErrorResponse({}).name,
+      ok: false,
+      headers: new HttpHeaders(),
+    });
+
+    expect(alertSpy).toHaveBeenCalled();
+    expect(alertSpy).toHaveBeenCalledWith({
+      type: "Error",
+      message: "Service Unavailable",
+    });
+    expect(alertsService.isSWRelated).toBeFalse();
+  });
+
   // Check the service toggles the offline alert
   it("toggleOfflineAlert() - should add offline alert", () => {
     const onlineSpy = spyOnProperty(Navigator.prototype, "onLine").and.returnValue(true);

@@ -31,17 +31,23 @@
 */
 
 // Angular imports
-import { Injectable } from "@angular/core";
+import { Injectable, signal } from "@angular/core";
 import { HttpErrorResponse } from "@angular/common/http";
 import { BehaviorSubject } from "rxjs";
 
 // App-related imports
-import { AlertMessage } from "@app/interfaces/alert.interface";
+import { AlertMessage, MessageType } from "@app/interfaces/alert.interface";
 
 @Injectable({
   providedIn: "root",
 })
 export class AlertsService {
+  // Alert-component variables
+  alertMessage = signal("");
+  shouldDisplayAlert = signal(false);
+  alertType = signal<MessageType>("Success");
+  shouldDisplayReloadBtn = signal(false);
+  shouldDisplayNavBtn = signal(false);
   // ServiceWorker variables
   waitingServiceWorker: ServiceWorker | undefined;
   isSWRelated = false;
@@ -64,45 +70,18 @@ export class AlertsService {
   Programmer: Shir Bar Lev.
   */
   createAlert(alert: AlertMessage, reload: boolean = false, navigate?: string) {
-    // checks if there's already an alert, in which case it's removed
-    if (document.querySelector(".alertMessage")) {
-      document.querySelector(".alertMessage")!.remove();
-    }
-
-    // builds the alert and adds it to the DOM; also adds an event listener to
-    // the 'close' button.
-    let alertMessage = this.buildAlertElement(alert);
-    document.getElementById("alertContainer")!.append(alertMessage);
-    document.getElementById("alertButton")!.addEventListener("click", this.closeAlert);
-    // if it's an error, change the role to an alertdialog and focus on the button
-    if (alert.type == "Error") {
-      alertMessage.setAttribute("role", "alertdialog");
-      alertMessage.setAttribute("aria-label", "an error has occurred");
-      (alertMessage.querySelector("#alertButton")! as HTMLButtonElement).focus();
-    }
+    this.alertType.set(alert.type);
+    this.alertMessage.set(alert.message);
+    this.shouldDisplayAlert.set(true);
 
     // if reload option is required
     if (reload) {
-      this.addReloadButton(alertMessage);
-      // add an event listener and bind 'this' to the AlertsService
-      document.getElementById("reloadBtn")!.addEventListener("click", this.reloadPage.bind(this));
+      this.shouldDisplayReloadBtn.set(true);
     }
     // if return to homepage option is required
     else if (navigate) {
-      this.addNavigateButton(alertMessage, navigate);
+      this.shouldDisplayNavBtn.set(true);
     }
-  }
-
-  /*
-  Function Name: closeAlert()
-  Function Description: Removes the alert.
-  Parameters: None.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  closeAlert() {
-    this.isSWRelated = false;
-    document.querySelector(".alertMessage")!.remove();
   }
 
   /*
@@ -113,8 +92,8 @@ export class AlertsService {
   Programmer: Shir Bar Lev.
   */
   reloadPage() {
-    document.querySelector(".alertMessage")!.remove();
-
+    this.shouldDisplayAlert.set(false);
+    
     // if the 'reload' came from a ServiceWorker-related popup, tell
     // the SW to skip waiting and activate the new SW
     if (this.isSWRelated && this.waitingServiceWorker) {
@@ -129,88 +108,6 @@ export class AlertsService {
     else {
       window.location.reload();
     }
-  }
-
-  /*
-  Function Name: buildAlertElement()
-  Function Description: Builds the alert div element to add to the DOM.
-  Parameters: alert (AlertMessage) - The alert message to display (based on the alert interface).
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  buildAlertElement(alert: AlertMessage) {
-    // alert div
-    let alertMessage = document.createElement("div");
-    alertMessage.className = `alertMessage ${alert.type}`;
-    alertMessage.setAttribute("role", "alert");
-
-    let icon = document.createElement("i");
-    let className: string;
-    switch (alert.type) {
-      case "Success":
-        className = "far fa-check-circle";
-        break;
-      case "Error":
-        className = "far fa-times-circle";
-        break;
-      case "Notification":
-        className = "far fa-bel";
-        break;
-    }
-    icon.className = `alertIcon ${className}`;
-    alertMessage.append(icon);
-
-    // alert title
-    let alertHeadline = document.createElement("h3");
-    alertHeadline.className = `alertType`;
-    alertHeadline.textContent = alert.type;
-    alertMessage.append(alertHeadline);
-
-    // alert text
-    let alertText = document.createElement("div");
-    alertText.className = "alertText";
-    alertText.textContent = alert.message;
-    alertMessage.append(alertText);
-
-    // 'close alert' button
-    let closeButton = document.createElement("button");
-    closeButton.className = "appButton";
-    closeButton.id = "alertButton";
-    closeButton.textContent = "Close";
-    alertMessage.append(closeButton);
-
-    return alertMessage;
-  }
-
-  /*
-  Function Name: addReloadButton()
-  Function Description: Adds a 'reload page' button to the alert message div.
-  Parameters: alertMessage (HTMLDivElement) - The alert message div.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  addReloadButton(alertMessage: HTMLDivElement) {
-    let reloadButton = document.createElement("button");
-    reloadButton.className = "appButton";
-    reloadButton.id = "reloadBtn";
-    reloadButton.textContent = "Reload Page";
-    alertMessage.append(reloadButton);
-  }
-
-  /*
-  Function Name: addNavigateButton()
-  Function Description: Adds a 'navigate to page' button to the alert message div.
-  Parameters: alertMessage (HTMLDivElement) - The alert message div.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  addNavigateButton(alertMessage: HTMLDivElement, location: string) {
-    let navButton = document.createElement("a");
-    navButton.href = location;
-    navButton.className = "appButton";
-    navButton.id = "navButton";
-    navButton.textContent = `Home Page`;
-    alertMessage.append(navButton);
   }
 
   // CONVENIENCE METHODS

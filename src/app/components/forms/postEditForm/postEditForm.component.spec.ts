@@ -45,6 +45,7 @@ import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { AppComponent } from "../../../app.component";
 import { PostEditForm } from "./postEditForm.component";
 import { Post } from "../../../interfaces/post.interface";
+import { AppAlert } from "@app/components/appAlert/appAlert.component";
 
 // DISPLAY NAME EDIT
 // ==================================================================
@@ -61,7 +62,7 @@ describe("PostEditForm", () => {
         ServiceWorkerModule.register("sw.js", { enabled: false }),
         FontAwesomeModule,
       ],
-      declarations: [AppComponent, PostEditForm],
+      declarations: [AppComponent, PostEditForm, AppAlert],
       providers: [{ provide: APP_BASE_HREF, useValue: "/" }],
     }).compileComponents();
   });

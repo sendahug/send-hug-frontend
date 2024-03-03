@@ -49,6 +49,7 @@ import { DisplayNameEditForm } from "../forms/displayNameEditForm/displayNameEdi
 import { ItemDeleteForm } from "../forms/itemDeleteForm/itemDeleteForm.component";
 import { PostEditForm } from "../forms/postEditForm/postEditForm.component";
 import { ReportForm } from "../forms/reportForm/reportForm.component";
+import { AppAlert } from "../appAlert/appAlert.component";
 
 describe("Popup", () => {
   // Before each test, configure testing environment
@@ -71,6 +72,7 @@ describe("Popup", () => {
         ItemDeleteForm,
         PostEditForm,
         ReportForm,
+        AppAlert,
       ],
       providers: [{ provide: APP_BASE_HREF, useValue: "/" }],
     }).compileComponents();

@@ -46,6 +46,7 @@ import { AppComponent } from "../../../app.component";
 import { DisplayNameEditForm } from "./displayNameEditForm.component";
 import { AuthService } from "../../../services/auth.service";
 import { mockAuthedUser } from "@tests/mockData";
+import { AppAlert } from "@app/components/appAlert/appAlert.component";
 
 // DISPLAY NAME EDIT
 // ==================================================================
@@ -62,7 +63,7 @@ describe("DisplayNameEditForm", () => {
         ServiceWorkerModule.register("sw.js", { enabled: false }),
         FontAwesomeModule,
       ],
-      declarations: [AppComponent, DisplayNameEditForm],
+      declarations: [AppComponent, DisplayNameEditForm, AppAlert],
       providers: [{ provide: APP_BASE_HREF, useValue: "/" }],
     }).compileComponents();
 

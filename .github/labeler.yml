@@ -1,51 +1,51 @@
 Docs:
-- changed-files:
-  - any-glob-to-any-file: '**/*.md'
+  - changed-files:
+      - any-glob-to-any-file: "**/*.md"
 
 src/components:
-- changed-files:
-  - any-glob-to-any-file: 
-    - src/app/**/*.component.ts
-    - src/app/**/*.component.html
+  - changed-files:
+      - any-glob-to-any-file:
+          - src/app/**/*.component.ts
+          - src/app/**/*.component.html
 
 src/services:
-- changed-files:
-  - any-glob-to-any-file: src/app/**/*.service.ts
+  - changed-files:
+      - any-glob-to-any-file: src/app/**/*.service.ts
 
 src/styles:
-- changed-files:
-  - any-glob-to-any-file: src/sass/*
+  - changed-files:
+      - any-glob-to-any-file: src/sass/*
 
 src/assets:
-- changed-files:
-  - any-glob-to-any-file: src/assets/*
+  - changed-files:
+      - any-glob-to-any-file: src/assets/*
 
 src/env:
-- changed-files:
-  - any-glob-to-any-file: src/environments/*
+  - changed-files:
+      - any-glob-to-any-file: src/environments/*
 
 tests:
-- changed-files:
-  - any-glob-to-any-file: 
-    - src/tests/*
-    - src/tests.ts
-    - src/**/*.spec.ts
-    - e2e/*
-    - cypress.config.ts
-    - .pa11yci
-    - .prettierrc.json
+  - changed-files:
+      - any-glob-to-any-file:
+          - src/tests/*
+          - src/tests.ts
+          - src/**/*.spec.ts
+          - e2e/*
+          - cypress.config.ts
+          - .pa11yci
+          - .prettierrc.json
 
 dependencies:
-- changed-files:
-  - any-glob-to-any-file:
-    - package.json
-    - package-lock.json
+  - changed-files:
+      - any-glob-to-any-file:
+          - package.json
+          - package-lock.json
 
 CI/CD:
-- changed-files:
-  - any-glob-to-any-file:
-    - .github/*
-    - .circleci/*
+  - changed-files:
+      - any-glob-to-any-file:
+          - .github/*
+          - .circleci/*
 
 release:
-- head-branch: 'dev'
+  - head-branch: "dev"

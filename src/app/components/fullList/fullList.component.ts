@@ -31,7 +31,7 @@
 */
 
 // Angular imports
-import { Component, WritableSignal, signal } from "@angular/core";
+import { Component, WritableSignal, computed, signal } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { from, map, switchMap, tap } from "rxjs";
 
@@ -58,6 +58,14 @@ export class FullList {
   totalPages = signal(1);
   isLoading = signal(false);
   posts: WritableSignal<Post[]> = signal([]);
+  previousPageButtonClass = computed(() => ({
+    "appButton prevButton": true,
+    disabled: this.currentPage() <= 1,
+  }));
+  nextPageButtonClass = computed(() => ({
+    "appButton nextButton": true,
+    disabled: this.totalPages() <= this.currentPage(),
+  }));
   // loader sub-component variables
   waitFor = "";
 

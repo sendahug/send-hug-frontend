@@ -125,11 +125,19 @@
 		
 	<!-- Message pagination -->
 	<div class="pagination" *ngIf="((messages().length && messType != 'threads') || (userThreadsFormatted().length && messType == 'threads')) && !isIdbFetchLoading()" role="navigation">
-		<button *ngIf="currentPage() > 1" class="appButton prevButton" (click)="prevPage()" [attr.aria-label]="'previous page of the ' + messType + ' mailbox'">Previous Page</button>
-		<button *ngIf="currentPage() <= 1" class="appButton placeHolder">Previous Page</button>
+		<button 
+			[ngClass]="previousPageButtonClass()" 
+			(click)="prevPage()" 
+			[attr.aria-label]="'previous page of the ' + messType + ' mailbox'"
+			[disabled]="currentPage() <= 1"
+		>Previous Page</button>
 		<div class="pageCount">Page {{ currentPage() }} of {{ totalPages() }}</div>
-		<button *ngIf="totalPages() > currentPage()" class="appButton nextButton" (click)="nextPage()" [attr.aria-label]="'next page of the ' + messType + ' mailbox'">Next Page</button>
-		<button *ngIf="totalPages() <= currentPage()" class="appButton placeHolder">Previous Page</button>
+		<button 
+			[ngClass]="nextPageButtonClass()" 
+			(click)="nextPage()" 
+			[attr.aria-label]="'next page of the ' + messType + ' mailbox'"
+			[disabled]="totalPages() <= currentPage()"
+		>Next Page</button>
 	</div>
 	<button class="appButton deleteButton deleteAll" (click)="deleteAllMessages(messType)" *ngIf="messages().length && messType != 'threads'" [attr.aria-label]="'delete all ' + messType + ' messages'">Delete All Messages</button>
 	<button *ngIf="messType == 'threads' && userThreadsFormatted().length" class="appButton deleteButton deleteAll" (click)="deleteAllMessages('threads')">Delete All Threads</button>

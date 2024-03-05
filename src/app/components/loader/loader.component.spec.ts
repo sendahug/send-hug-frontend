@@ -44,6 +44,7 @@ import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 
 import { AppComponent } from "../../app.component";
 import { Loader } from "./loader.component";
+import { AppAlert } from "../appAlert/appAlert.component";
 
 describe("Loader", () => {
   // Before each test, configure testing environment
@@ -58,7 +59,7 @@ describe("Loader", () => {
         ServiceWorkerModule.register("sw.js", { enabled: false }),
         FontAwesomeModule,
       ],
-      declarations: [AppComponent, Loader],
+      declarations: [AppComponent, Loader, AppAlert],
       providers: [{ provide: APP_BASE_HREF, useValue: "/" }],
     }).compileComponents();
   });

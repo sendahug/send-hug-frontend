@@ -31,7 +31,7 @@
 */
 
 // Angular imports
-import { Injectable } from "@angular/core";
+import { Injectable, computed, signal } from "@angular/core";
 import { HttpErrorResponse } from "@angular/common/http";
 import { BehaviorSubject } from "rxjs";
 
@@ -55,9 +55,17 @@ export class ItemsService {
   numUserResults = 0;
   numPostResults = 0;
   postSearchResults: Post[] = [];
-  postSearchPage = 1;
-  totalPostSearchPages = 1;
+  postSearchPage = signal(1);
+  totalPostSearchPages = signal(1);
   isSearchResolved = new BehaviorSubject(false);
+  previousPageButtonClass = computed(() => ({
+    "appButton prevButton": true,
+    disabled: this.postSearchPage() <= 1,
+  }));
+  nextPageButtonClass = computed(() => ({
+    "appButton nextButton": true,
+    disabled: this.totalPostSearchPages() <= this.postSearchPage(),
+  }));
   // Posts variables
   isUpdated = new BehaviorSubject(false);
   currentlyOpenMenu = new BehaviorSubject(-1);
@@ -89,7 +97,6 @@ export class ItemsService {
             false,
             "/",
           );
-          this.alertsService.toggleOfflineAlert();
 
           let isoDate = new Date(response.posts.date).toISOString();
           let iDBPost = {
@@ -126,7 +133,6 @@ export class ItemsService {
           "Your post was edited. Refresh to view the updated post.",
           true,
         );
-        this.alertsService.toggleOfflineAlert();
         this.isUpdated.next(true);
       },
     });
@@ -143,7 +149,6 @@ export class ItemsService {
     this.apiClient.post(`posts/${item.id}/hugs`, {}).subscribe({
       next: (_response: any) => {
         this.alertsService.createSuccessAlert("Your hug was sent!", false);
-        this.alertsService.toggleOfflineAlert();
         // Alert the posts that this item received a hug
         this.receivedAHug.next(item.id);
       },
@@ -163,7 +168,6 @@ export class ItemsService {
     this.apiClient.post("messages", message).subscribe({
       next: (response: any) => {
         this.alertsService.createSuccessAlert("Your message was sent!", false, "/");
-        this.alertsService.toggleOfflineAlert();
 
         let isoDate = new Date(response.message.date).toISOString();
         let message = {
@@ -187,23 +191,24 @@ export class ItemsService {
   sendSearch(searchQuery: string) {
     this.isSearching = true;
 
-    this.apiClient.post("", { search: searchQuery }, { page: `${this.postSearchPage}` }).subscribe({
-      next: (response: any) => {
-        this.userSearchResults = response.users;
-        this.postSearchResults = response.posts;
-        this.postSearchPage = response.current_page;
-        this.totalPostSearchPages = response.total_pages;
-        this.numUserResults = response.user_results;
-        this.numPostResults = response.post_results;
-        this.isSearching = false;
-        this.isSearchResolved.next(true);
-        this.alertsService.toggleOfflineAlert();
-      },
-      error: (_err: HttpErrorResponse) => {
-        this.isSearchResolved.next(true);
-        this.isSearching = false;
-      },
-    });
+    this.apiClient
+      .post("", { search: searchQuery }, { page: `${this.postSearchPage()}` })
+      .subscribe({
+        next: (response: any) => {
+          this.userSearchResults = response.users;
+          this.postSearchResults = response.posts;
+          this.postSearchPage.set(response.current_page);
+          this.totalPostSearchPages.set(response.total_pages);
+          this.numUserResults = response.user_results;
+          this.numPostResults = response.post_results;
+          this.isSearching = false;
+          this.isSearchResolved.next(true);
+        },
+        error: (_err: HttpErrorResponse) => {
+          this.isSearchResolved.next(true);
+          this.isSearching = false;
+        },
+      });
   }
 
   // REPORT METHODS
@@ -234,7 +239,6 @@ export class ItemsService {
             "/",
           );
         }
-        this.alertsService.toggleOfflineAlert();
       },
     });
   }

@@ -346,7 +346,7 @@ describe("UserPage", () => {
     expect(userPage.isServerFetchResolved()).toBeTrue();
   });
 
-  it("should fetch user data from Idb", () => {
+  it("should fetch user data from Idb", (done: DoneFn) => {
     const paramMap = TestBed.inject(ActivatedRoute);
     spyOn(paramMap.snapshot.paramMap, "get").and.returnValue("1");
     const authService = TestBed.inject(AuthService);
@@ -380,6 +380,7 @@ describe("UserPage", () => {
       expect(userPage.isIdbFetchResolved()).toBeTrue();
       expect(userPage.otherUser()).toEqual(mockUser);
       expect(userData).toEqual(mockUser);
+      done();
     });
   });
 

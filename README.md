@@ -166,7 +166,7 @@ The project was hosted live on Heroku (we're currently looking at alternatives, 
 3. In your Terminal, enter `heroku login`. This triggers logging in via the CLI.
 4. Enter `heroku create <APP_NAME>` (with your own app name). If successful, Heroku returns the live version's URL (will be referred to as <LIVE_URL>) and the Git repo link (will be referred to as <GIT_URL>).
 5. Make sure you're in the top directory (FSND-capstone). In your terminal, enter `git remote add heroku-client <GIT_URL>`.
-6. Enter `git subtree push --prefix frontend heroku-client master`. This triggers the app build. If successful, you'll get a 'Verifying deploy... done.' message.
+6. Enter `git push heroku-client master`. This triggers the app build. If successful, you'll get a 'Verifying deploy... done.' message.
 7. Add the following environment variables (via CLI or via the Heroku website):
    - PRODUCTION - set to true
    - AUTH0_DOMAIN - set with your own Auth0 domain

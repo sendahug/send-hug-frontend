@@ -1,0 +1,157 @@
+/* Original design by Macy Tyler */
+/* Responsive adjustments by Send a Hug team */
+@import "./variables.less";
+
+/* =================== Alert Styling =================== */
+/* Base Alert */
+.alertMessage {
+	width: 70%;
+	box-shadow: 12px 15px 20px 0 rgba(46, 61, 73, 0.5);
+	border-radius: 5px;
+	text-align: center;
+	padding: 10px;
+	position: fixed;
+	bottom: 50px;
+	left: 0;
+	right: 0;
+	margin-right: 15%;
+	margin-left: 15%;
+	z-index: 100;
+	background: @boxesBackground;
+	/* Responsive design for screens above 500px width */
+	@media screen and (min-width:700px) {
+		width: 500px;
+		margin: 10px Calc((100% - 500px) / 2);
+  }
+}
+
+/* Alert icon */
+.alertIcon {
+	.fontSize(24);
+	padding-top: 10px;
+}
+
+/* Alert Title */
+.alertType {
+	margin: 0;
+	padding: 5px;
+	font-family: @mainFont;
+}
+
+/* Alert Text */
+.alertText {
+	.fontSize(16);
+	font-family: @mainFont;
+	padding: 10px;
+}
+
+/* Alert Button */
+#alertButton, #navButton, #reloadBtn {
+	.fontSize(16);
+	margin: 10px;
+	border-radius: 5px;
+	text-decoration: none;
+	padding-top: 8px;
+	padding-bottom: 8px;
+}
+
+/* =================== Popup Styling =================== */
+/* Modal box */
+#modalBox {
+	display: block;
+	height: 100%;
+	width: 100%;
+	background-color: rgba(0,0,0,0.60);
+	position: fixed;
+	left: 0;
+	top: 0;
+	z-index: 10;
+}
+
+/* Edit popup */
+#editPopup {
+	background-color: @itemBackground;
+	box-shadow: 12px 15px 20px 0 rgba(46, 61, 73, 0.5);
+	border-radius: 5px;
+	width: 80%;
+	text-align: center;
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 100px;
+	padding: 10px;
+	position: fixed;
+	top: 100px;
+	left: 8%;
+	/* Responsive styling for screens above 700px width */
+	@media screen and (min-width: 700px) {
+		width: 70%;
+		left: 15%;
+  }
+}
+
+/* Edit post textarea */
+#editPopup textarea {
+	margin: 10px;
+	border-radius: 10px;
+	width: 75%;
+	/* Responsive styling for screens above 700px width */
+	@media screen and (min-width: 700px) {
+		width: 80%;
+  }
+}
+
+/* Exit button */
+#exitButton {
+	&:extend(.textlessButton);
+	margin: 5px Calc(100% - 35px) 5px 2px;
+	// font-family: $mainFont // TODO: Do we need this?
+}
+
+/* Delete/report buttons */
+.popupDeleteBtn, #editPopup .reportButton {
+  .fontSize(16);
+	margin: 5px 10px;
+}
+
+/* Popup text */
+.popupText {
+	.fontSize(17);
+	font-family: @mainFont;
+	margin: 0 10px 10px;
+}
+
+/* Popup title */
+.popupTitle {
+	.fontSize(20);
+	font-family: @mainFont;
+	margin-top: 0;
+}
+
+/* Reported post */
+#editPopup .userPost {
+	.fontSize(15);
+	width: 90%;
+	margin:  0 4% 15px;
+	/* Responsive styling for screens above 450px width */
+	@media screen and (min-width: 450px) {
+		width: 80%;
+		margin:  0 9% 15px;
+  }
+	/* Responsive styling for screens above 550px width */
+	@media screen and (min-width: 550px) {
+		width: 400px;
+		margin: 0 Calc((100% - 410px) / 2) 15px;
+  }
+}
+
+/* Report radio button */
+.radioButtonLabel {
+	.fontSize(16);
+}
+
+/* Report option 3 free text */
+#uOption3Text, #rOption3Text {
+	margin: 0 5px;
+}
+
+

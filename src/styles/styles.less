@@ -48,16 +48,6 @@ a.appButton {
 	background: #404040;
 }
 
-.textlessButton {
-	background-color: @itemBackground;
-	color: @textColour;
-	padding: 5px;
-	min-width: 44px;
-	min-height: 44px;
-	text-align: center;
-	border: none;
-}
-
 /* Required field */
 /* Via https://stackoverflow.com/a/11197803 */
 .required:after {
@@ -175,9 +165,8 @@ app-admin-dashboard #breadcrumb {
 
 /* Notification block */
 .notification {
+	&:extend(.notificationBlockSample);
 	padding: 6px 10px;
-	position: relative;
-	display: inline-block;
 }
 
 /* Notification badge */

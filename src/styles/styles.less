@@ -187,3 +187,41 @@ app-admin-dashboard #breadcrumb {
   background: @boxesBackground;
   color: @headlineColour;
 }
+
+/* =================== Footer Styling =================== */
+/* Site Footer */
+#siteFooter {
+	width: 94%;
+	max-width: 94%;
+	margin: 0 2%;
+}
+
+/* Footer text */
+.footerText, .footerText .textlessButton {
+	font-family: @mainFont;
+	text-align: center;
+	padding: 0;
+	color: rgba(22,22,22,1.00);
+	/* Responsive styling for screens up to 600px width */
+	@media screen and (max-width: 650px) {
+		.fontSize(12);
+		margin: 5px;
+	}
+	/* Responsive styling for screens above 600px width */
+	@media screen and (min-width: 650px) {
+		.fontSize(13);
+		margin: 10px;
+	}
+}
+
+.footerText a {
+	color: @linkColour;
+}
+
+.footerText .textlessButton {
+	color: @linkColour;
+	background-color: @mainBackground;
+	text-decoration: underline;
+	min-width: 0;
+	min-height: 0;
+}

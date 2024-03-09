@@ -14,7 +14,7 @@ src/services:
 
 src/styles:
   - changed-files:
-      - any-glob-to-any-file: src/sass/*
+      - any-glob-to-any-file: src/styles/*
 
 src/assets:
   - changed-files:

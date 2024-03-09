@@ -4,120 +4,121 @@
 
 .textBasedView {
   width: 90%;
-	padding: 0 5%;
-	left: 0;
-	right: 0;
+  padding: 0 5%;
+  left: 0;
+  right: 0;
   font-family: @mainFont;
 
   /* Responsive styling for screens above 600px width */
-	@media screen and (min-width: 600px) {
-		width: 80%;
-		padding: 0 10%;
+  @media screen and (min-width: 600px) {
+    width: 80%;
+    padding: 0 10%;
   }
 
   /* Responsive styling for screens above 600px width */
-	@media screen and (min-width: 800px) {
-		width: 70%;
-		padding: 0 15%;
+  @media screen and (min-width: 800px) {
+    width: 70%;
+    padding: 0 15%;
   }
 }
 
 .textViewTitle {
   text-align: center;
-	color: @headlineColour;
+  color: @headlineColour;
 }
 
 .textViewTextBlock {
   .fontSize(17);
-	padding: 5px;
-	margin: 5px 10px;
-	color: @textColour;
-	line-height: 1.8em;
-	/* Responsive styling for screens above 600px width */
-	@media screen and (min-width: 600px) {
-		line-height: 2em;
+  padding: 5px;
+  margin: 5px 10px;
+  color: @textColour;
+  line-height: 1.8em;
+  /* Responsive styling for screens above 600px width */
+  @media screen and (min-width: 600px) {
+    line-height: 2em;
   }
 }
 
 .textViewLink {
   .fontSize(15);
-	text-align: center;
-	color: @linkColour;
-	margin: 10px Calc((100% - 100px) / 2) 20px;
-	padding-bottom: 20px;
-	white-space: nowrap;
-	/* Responsive styling for screens above 700px width */
-	@media screen and (min-width: 700px) {
-		.fontSize(16);
-		margin: 10px Calc((100% - 105px) / 2) 20px;
+  text-align: center;
+  color: @linkColour;
+  margin: 10px Calc((100% - 100px) / 2) 20px;
+  padding-bottom: 20px;
+  white-space: nowrap;
+  /* Responsive styling for screens above 700px width */
+  @media screen and (min-width: 700px) {
+    .fontSize(16);
+    margin: 10px Calc((100% - 105px) / 2) 20px;
   }
 }
 
 /* =================== About & Policies Components Styling =================== */
 /* About Component */
 app-about {
-	&:extend(.textBasedView);
+  &:extend(.textBasedView);
 }
 
 /* About component title */
 #aboutTitle {
-	.fontSize(24);
+  .fontSize(24);
   &:extend(.textViewTitle);
-	margin: 20px;
+  margin: 20px;
 }
 
 /* About component text */
 .aboutText {
-	&:extend(.textViewTextBlock);
+  &:extend(.textViewTextBlock);
 }
 
 /* About component links */
 .aboutLink {
-	&:extend(.textViewLink);
+  &:extend(.textViewLink);
 }
 
 /* About component policies paragraph */
 #policies {
-	padding: 10px  Calc((100% - 440px) / 2);
-	margin: 10px;
+  padding: 10px Calc((100% - 440px) / 2);
+  margin: 10px;
 }
 
 /* About component policy links */
 .aboutInnerLink {
-	.fontSize(15);
-	text-align: center;
-	color: @linkColour;
-	margin: 10px;
+  .fontSize(15);
+  text-align: center;
+  color: @linkColour;
+  margin: 10px;
 }
 
 /* =================== Policies Component Styling =================== */
 /* Policies Component */
 app-policies {
-	&:extend(.textBasedView);
+  &:extend(.textBasedView);
 }
 
 /* Policies Component main title */
 #policyTitle {
-	.fontSize(26);
-	&:extend(.textViewTitle);
-	margin: 10px 20px;
+  .fontSize(26);
+  &:extend(.textViewTitle);
+  margin: 10px 20px;
 }
 
 /* Policies Component sub-titles */
-app-policies h3, app-policies h4 {
-	text-align: center;
-	padding-top: 10px;
-	margin: 0;
+app-policies h3,
+app-policies h4 {
+  text-align: center;
+  padding-top: 10px;
+  margin: 0;
 }
 
 /* Policies Component sub-titles */
 app-policies h3 {
-	.fontSize(22);
+  .fontSize(22);
 }
-	
+
 /* Policies Component sub-title */
 app-policies h4 {
-	.fontSize(20);
+  .fontSize(20);
 }
 
 /* Policies Component text */
@@ -127,154 +128,155 @@ app-policies h4 {
 
 /* Policies Component links */
 app-policies a {
-	&:extend(.textViewLink);
+  &:extend(.textViewLink);
 }
 
 /* Policies Component last update date */
 .updateDate {
-	.fontSize(15);
-	text-align: center;
-	margin-top: 0;
-	padding-top: 0;
+  .fontSize(15);
+  text-align: center;
+  margin-top: 0;
+  padding-top: 0;
 }
 
 /* =================== Site Map Component Styling =================== */
 /* Site Map Component */
 app-site-map {
-	&:extend(.textBasedView);
+  &:extend(.textBasedView);
 }
 
 /* Map title */
 #siteMap {
-	text-align: center;
-	margin-top: 5px;
-	padding-top: 5px;
+  text-align: center;
+  margin-top: 5px;
+  padding-top: 5px;
 }
 
 /* Map list */
 app-site-map ul {
-	list-style: none;
-	text-align: center;
-	padding-inline-start: 0;
+  list-style: none;
+  text-align: center;
+  padding-inline-start: 0;
 }
 
 /* Route list item */
 .mainRoute {
-	margin: 20px 0;
+  margin: 20px 0;
 }
 
 /* Route name (parent route) */
 .mainRoute h4 {
-	.fontSize(16);
-	padding: 0;
-	margin: 6px 0;
-	/* Responsive styling for screens above 700px width */
-	@media screen and (min-width: 700px) {
-		.fontSize(17);
+  .fontSize(16);
+  padding: 0;
+  margin: 6px 0;
+  /* Responsive styling for screens above 700px width */
+  @media screen and (min-width: 700px) {
+    .fontSize(17);
   }
 }
 
 /* Sub-route list item */
 .subRoute {
-	margin: 7px;
+  margin: 7px;
 }
 
 /* Route links */
 app-site-map a {
-	.fontSize(15);
-	color: @linkColour;
-	/* Responsive styling for screens above 700px width */
-	@media screen and (min-width: 700px) {
-		.fontSize(16);
+  .fontSize(15);
+  color: @linkColour;
+  /* Responsive styling for screens above 700px width */
+  @media screen and (min-width: 700px) {
+    .fontSize(16);
   }
 }
 
 /* =================== Support Page Component Styling =================== */
 /* Support Page Component */
 app-support {
-	width: 90%;
-	padding: 10px 5%;
-	text-align: center;
+  width: 90%;
+  padding: 10px 5%;
+  text-align: center;
   font-family: @mainFont;
 }
 
 /* Support Page Navigation */
 #supportNav {
-	&:extend(#itemSample);
-	padding: 10px;
-	width: 90%;
-	margin: 0 5% 30px;
-	text-align: left;
+  &:extend(#itemSample);
+  padding: 10px;
+  width: 90%;
+  margin: 0 5% 30px;
+  text-align: left;
 }
 
 /* Support Page Navigation title */
 .supportNavTitle {
-	.fontSize(18);
-	color: @linkColour; 
+  .fontSize(18);
+  color: @linkColour;
 }
 
 /* Support Page Navigation - questions list */
 #supportNav ul {
-	list-style: none;
-	margin: 0 5px;
-	padding: 5px 10px;
+  list-style: none;
+  margin: 0 5px;
+  padding: 5px 10px;
 }
 
 /* Support Page Navigation - questions list - single question */
 #supportNav li {
-	padding: 2px;
+  padding: 2px;
 }
 
 /* Support Page Navigatio link */
 .supportNavLink {
-	.fontSize(16);
-	color: @linkColour;
+  .fontSize(16);
+  color: @linkColour;
 }
 
 /* Support Page title */
 app-support h3 {
-	.fontSize(22);
-	color: @headlineColour;
-	text-align: center;
-	/* Responsive styling for screens above 800px width */
-	@media screen and (min-width: 800px) {
-		.fontSize(24);
-		order: 0;
-		width: 100%;
-		padding-top: 0;
-		margin-top: 0;
+  .fontSize(22);
+  color: @headlineColour;
+  text-align: center;
+  /* Responsive styling for screens above 800px width */
+  @media screen and (min-width: 800px) {
+    .fontSize(24);
+    order: 0;
+    width: 100%;
+    padding-top: 0;
+    margin-top: 0;
   }
 }
 
 /* Frequently asked questions list */
 #faq {
-	list-style: none;
-	margin: 10px 5px;
-	padding: 0 0 15px;
+  list-style: none;
+  margin: 10px 5px;
+  padding: 0 0 15px;
 }
 
 /* Frequently asked questions item */
 .faqItem {
-	&:extend(#itemSample);
-	background: @boxesBackground;
-	padding: 10px;
-	width: 90%;
-	margin: 20px 5%;
+  &:extend(#itemSample);
+  background: @boxesBackground;
+  padding: 10px;
+  width: 90%;
+  margin: 20px 5%;
 }
 
 /* Frequently asked questions item question & answer */
-.faqItem .pageCategory, .faqItem .pageData {
-	color: @textColour;
+.faqItem .pageCategory,
+.faqItem .pageData {
+  color: @textColour;
 }
 
 /* Frequently asked questions item question */
 .faqItem .pageCategory {
-	.fontSize(18);
+  .fontSize(18);
 }
-	
+
 /* Frequently asked questions item answer */
 .faqItem .pageData {
-	.fontSize(16);
+  .fontSize(16);
 }
 
 /* Frequently asked questions example icons */
@@ -289,14 +291,15 @@ fa-icon.supportIcon .fa-hand-holding-heart {
 
 /* Any questions section text */
 .furtherQuestions {
-	.fontSize(16);
-	color: @textColour;
-	padding: 10px;
-	width: 90%;
-	margin: 0 5%;
+  .fontSize(16);
+  color: @textColour;
+  padding: 10px;
+  width: 90%;
+  margin: 0 5%;
 }
 
 /* Any questions section links */
-.furtherQuestions a, .faqItem a {
-	color: @linkColour;
+.furtherQuestions a,
+.faqItem a {
+  color: @linkColour;
 }

@@ -4,286 +4,297 @@
 
 .postIntenalText {
   text-align: center;
-	font-family: @mainFont;
-	width: 80%;
-	margin: 5px;
-	padding: 0 10%;
+  font-family: @mainFont;
+  width: 80%;
+  margin: 5px;
+  padding: 0 10%;
 }
 
 /* =================== Main Page Styling =================== */
 /* Main Page Component */
 app-main-page {
-	display: flex;
-	flex-direction: column;
-	padding: 5px;
-	left: 0;
-	right: 0;
-	align-content: space-between;
-	justify-content: space-between;
-	/* Responsive styling for screens above 600px width */
-	@media screen and (min-width: 600px) {
-		flex-direction: row;
-		justify-content: space-evenly;
+  display: flex;
+  flex-direction: column;
+  padding: 5px;
+  left: 0;
+  right: 0;
+  align-content: space-between;
+  justify-content: space-between;
+  /* Responsive styling for screens above 600px width */
+  @media screen and (min-width: 600px) {
+    flex-direction: row;
+    justify-content: space-evenly;
   }
 }
 
 /* Item list container */
 .listContainer {
-	width: 90%;
-	margin: 0 5%;
-	/* Responsive styling for screens above 400px width */
-	@media screen and (min-width: 400px) {
-		width: 80%;
-		margin: 0 10%;
+  width: 90%;
+  margin: 0 5%;
+  /* Responsive styling for screens above 400px width */
+  @media screen and (min-width: 400px) {
+    width: 80%;
+    margin: 0 10%;
   }
-	/* Responsive styling for screens above 500px width */
-	@media screen and (min-width: 500px) {
-		width: 74%;
-		margin: 0 13%;
+  /* Responsive styling for screens above 500px width */
+  @media screen and (min-width: 500px) {
+    width: 74%;
+    margin: 0 13%;
   }
-	/* Responsive styling for screens above 600px width */
-	@media screen and (min-width: 600px) {
-		width: 45%;
-		height: 85%;
-		margin: 0 10px;
+  /* Responsive styling for screens above 600px width */
+  @media screen and (min-width: 600px) {
+    width: 45%;
+    height: 85%;
+    margin: 0 10px;
   }
 }
 
 /* Suggested items list container */
 #suggestedItems {
-	/* Responsive styling for screens up to 600px width */
-	@media screen and (max-width: 600px) {
-		margin-top: 20px;
+  /* Responsive styling for screens up to 600px width */
+  @media screen and (max-width: 600px) {
+    margin-top: 20px;
   }
 }
 
 /* Item List Title */
 .listTitle {
-	.fontSize(24);
-	color: @headlineColour;
-	font-family: @mainFont;
-	text-align: center;
-	padding-top: 5px;
-	margin-top: 5px;
+  .fontSize(24);
+  color: @headlineColour;
+  font-family: @mainFont;
+  text-align: center;
+  padding-top: 5px;
+  margin-top: 5px;
 }
 
 /* New & Suggested Item */
-.newItem, .sugItem, .suggestedItem {
-	&:extend(#itemSample);
-	border-color: @itemBackground;
-	box-shadow: 3px 3px 7px 0 rgba(46, 61, 73, 0.5);
-	margin: 20px auto;
-	padding: 5px;
-	background: @itemBackground;
-	display: flex;
-	flex-wrap: wrap;
-	max-width: 430px;
-	/* Responsive styling for screens above 800px width */
-	@media screen and (min-width: 800px) {
-		padding: 7px;
+.newItem,
+.sugItem,
+.suggestedItem {
+  &:extend(#itemSample);
+  border-color: @itemBackground;
+  box-shadow: 3px 3px 7px 0 rgba(46, 61, 73, 0.5);
+  margin: 20px auto;
+  padding: 5px;
+  background: @itemBackground;
+  display: flex;
+  flex-wrap: wrap;
+  max-width: 430px;
+  /* Responsive styling for screens above 800px width */
+  @media screen and (min-width: 800px) {
+    padding: 7px;
   }
 }
 
 /* Item Text */
 .itemText {
-	.fontSize(17.5);
+  .fontSize(17.5);
   &:extend(.postIntenalText);
-	order: 0;
-	line-height: 1.5em;
-	/* Responsive styling for screens above 500px width */
-	@media screen and (min-width: 500px) {
-		.fontSize(18.5);
+  order: 0;
+  line-height: 1.5em;
+  /* Responsive styling for screens above 500px width */
+  @media screen and (min-width: 500px) {
+    .fontSize(18.5);
   }
-	/* Responsive styling for screens above 600px width */
-	@media screen and (min-width: 600px) {
-		line-height: 1.8em;
+  /* Responsive styling for screens above 600px width */
+  @media screen and (min-width: 600px) {
+    line-height: 1.8em;
   }
 }
 
 /* Item User */
 .itemUser {
-	.fontSize(15.5);
+  .fontSize(15.5);
   &:extend(.postIntenalText);
-	order: 1;
-	/* Responsive styling for screens above 500px width */
-	@media screen and (min-width: 500px) {
-		.fontSize(16.5);
+  order: 1;
+  /* Responsive styling for screens above 500px width */
+  @media screen and (min-width: 500px) {
+    .fontSize(16.5);
   }
 }
 
 /* Item User Profile Link */
 .profileLink {
-	color: @profileLinkColour;
-	text-decoration: none;
-	font-weight: bold;
+  color: @profileLinkColour;
+  text-decoration: none;
+  font-weight: bold;
 }
 
 /* Item User Profile Link (hover) */
 .profileLink:hover {
-	text-decoration: underline;
-	color: #7C1E1B;
+  text-decoration: underline;
+  color: #7c1e1b;
 }
 
 /* Buttons div */
 .buttonsContainer {
-	order: 2;
-	display: flex;
-	align-content: space-between;
-	justify-content: space-around;
-	width: 100%;
+  order: 2;
+  display: flex;
+  align-content: space-between;
+  justify-content: space-around;
+  width: 100%;
 }
 
 /* Buttons div when using floating menu (smaller viewports) */
 .buttonsContainer.float {
-	flex-wrap: wrap;
+  flex-wrap: wrap;
 }
 
 /* Hugs button and Sub-menu button when using floating menu (smaller viewports) */
-.buttonsContainer.float .notification, .buttonsContainer.float .menuButton {
-	margin-left: 10%;
-	margin-right: 10%;
+.buttonsContainer.float .notification,
+.buttonsContainer.float .menuButton {
+  margin-left: 10%;
+  margin-right: 10%;
 }
 
 /* Buttons sub-menu */
 .subMenu:not(.hidden) {
-	display: flex;
-	flex-direction: row;
-	align-content: space-between;
-	justify-content: space-between;
-	min-width: 66%;
-	flex-grow: 1;
-	margin: 0 10px;
+  display: flex;
+  flex-direction: row;
+  align-content: space-between;
+  justify-content: space-between;
+  min-width: 66%;
+  flex-grow: 1;
+  margin: 0 10px;
 }
 
 /* Buttons sub-menu when floating */
 .subMenu.float {
-	overflow-y: visible;
-	position: relative;
-	top: 50px;
-	z-index: 100;
-	width: 100%;
-	background: @itemBackground;
-	align-items: center;
-	justify-content: center;
-	padding: 10px;
-	box-shadow: 3px 3px 7px 0 rgba(46, 61, 73, 0.5);
-	border-radius: 5px;
+  overflow-y: visible;
+  position: relative;
+  top: 50px;
+  z-index: 100;
+  width: 100%;
+  background: @itemBackground;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  box-shadow: 3px 3px 7px 0 rgba(46, 61, 73, 0.5);
+  border-radius: 5px;
 }
 
 /* Send a hug button container */
 .notification {
-	margin: 5px;
-	padding: 4px;
-	max-width: 20%;
+  margin: 5px;
+  padding: 4px;
+  max-width: 20%;
 }
 
 /* Notification badge */
 .badge {
-	top: -7px;
-	right: -13px;
+  top: -7px;
+  right: -13px;
 }
 
 /* Send Hug Button */
 .hugButton {
-	width: 33px;
-	border: none;
-	padding: 15px 5px 3px;
+  width: 33px;
+  border: none;
+  padding: 15px 5px 3px;
 }
 
 /* Send Hug Button on a post on which the user already sent a hug */
 .hugButton.active fa-icon {
-	color: #9D154E;
+  color: #9d154e;
 }
 
 /* Report, Send Message, Edit, Delete Buttons */
-.reportButton, .messageButton, .editButton, .deleteButton {
-	border: none;
-	margin: 10px auto;
-	padding: 5px;
+.reportButton,
+.messageButton,
+.editButton,
+.deleteButton {
+  border: none;
+  margin: 10px auto;
+  padding: 5px;
 }
 
 /* Button icons */
-.fa-gratipay, .fa-comment, .fa-flag, .fa-edit, .fa-times, .fa-hand-holding-heart {
-	font-size: 22px;
-	/* Responsive styling for screens above 400px width */
-	@media screen and (min-width: 400px) {
-		font-size: 24px;
+.fa-gratipay,
+.fa-comment,
+.fa-flag,
+.fa-edit,
+.fa-times,
+.fa-hand-holding-heart {
+  font-size: 22px;
+  /* Responsive styling for screens above 400px width */
+  @media screen and (min-width: 400px) {
+    font-size: 24px;
   }
-	/* Responsive styling for screens above 500px width */
-	@media screen and (min-width: 500px) {
-		font-size: 25px;
+  /* Responsive styling for screens above 500px width */
+  @media screen and (min-width: 500px) {
+    font-size: 25px;
   }
 }
 
 /* Message button's icon */
 .subMenu .fa-comment {
-	margin-top: 10px;
+  margin-top: 10px;
 }
 
 /* Main page error message */
 app-main-page .errorMessage {
-	font-family: @mainFont;
-	margin: 10px;
+  font-family: @mainFont;
+  margin: 10px;
 }
 
 /* View full list buttons */
 .fullButton {
-	// font-family: @mainFont; // TODO: do we need this?
-	background: @mainBackground;
-	padding-bottom: 10px;
-	text-align: center;
-	width: 100%;
-	display: inline-block;
+  // font-family: @mainFont; // TODO: do we need this?
+  background: @mainBackground;
+  padding-bottom: 10px;
+  text-align: center;
+  width: 100%;
+  display: inline-block;
 }
 
 /* =================== Full List Styling =================== */
 /* List container*/
 #items {
-	width: 90%;
-	margin: 0;
-	padding: 10px 5%;
-	left: 0;
-	right: 0;
+  width: 90%;
+  margin: 0;
+  padding: 10px 5%;
+  left: 0;
+  right: 0;
 }
 
 #items .listTitle {
-	margin-bottom: 0;
+  margin-bottom: 0;
 }
 
 /* Full items list */
 #fullItems {
-	width: 100%;
-	border: none;
-	border-radius: 5px;
-	padding: 5px;
-	/* Responsive styling for screens above 400px width */
-	@media screen and (min-width: 400px) {
-		width: 90%;
-		margin: 0 5%;
+  width: 100%;
+  border: none;
+  border-radius: 5px;
+  padding: 5px;
+  /* Responsive styling for screens above 400px width */
+  @media screen and (min-width: 400px) {
+    width: 90%;
+    margin: 0 5%;
   }
-	/* Responsive styling for screens above 600px width */
-	@media screen and (min-width: 600px) {
-		width: 80%;
-		margin: 0 10%;
+  /* Responsive styling for screens above 600px width */
+  @media screen and (min-width: 600px) {
+    width: 80%;
+    margin: 0 10%;
   }
 }
 
 /* Full items list pagination */
 #items .pagination {
-	margin-bottom: 10px;
-	/* Responsive styling for screens above 400px width */
-	@media screen and (min-width: 400px) {
-		width: 90%;
-		margin: 0 5% 10px;
+  margin-bottom: 10px;
+  /* Responsive styling for screens above 400px width */
+  @media screen and (min-width: 400px) {
+    width: 90%;
+    margin: 0 5% 10px;
   }
-	/* Responsive styling for screens above 500px width */
-	@media screen and (min-width: 500px) {
-		width: 80%;
-		margin: 0 10% 15px;
+  /* Responsive styling for screens above 500px width */
+  @media screen and (min-width: 500px) {
+    width: 80%;
+    margin: 0 10% 15px;
   }
-	/* Responsive styling for screens above 550px width */
-	@media screen and (min-width: 550px) {
-		width: 400px;
-		margin: 0 Calc((100% - 400px) / 2) 10px;
+  /* Responsive styling for screens above 550px width */
+  @media screen and (min-width: 550px) {
+    width: 400px;
+    margin: 0 Calc((100% - 400px) / 2) 10px;
   }
 }

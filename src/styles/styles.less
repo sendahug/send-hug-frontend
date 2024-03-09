@@ -196,473 +196,476 @@ app-admin-dashboard #breadcrumb {
 /* =================== Footer Styling =================== */
 /* Site Footer */
 #siteFooter {
-	width: 94%;
-	max-width: 94%;
-	margin: 0 2%;
+  width: 94%;
+  max-width: 94%;
+  margin: 0 2%;
 }
 
 /* Footer text */
-.footerText, .footerText .textlessButton {
-	font-family: @mainFont;
-	text-align: center;
-	padding: 0;
-	color: rgba(22,22,22,1.00);
-	/* Responsive styling for screens up to 600px width */
-	@media screen and (max-width: 650px) {
-		.fontSize(12);
-		margin: 5px;
-	}
-	/* Responsive styling for screens above 600px width */
-	@media screen and (min-width: 650px) {
-		.fontSize(13);
-		margin: 10px;
-	}
+.footerText,
+.footerText .textlessButton {
+  font-family: @mainFont;
+  text-align: center;
+  padding: 0;
+  color: rgba(22, 22, 22, 1);
+  /* Responsive styling for screens up to 600px width */
+  @media screen and (max-width: 650px) {
+    .fontSize(12);
+    margin: 5px;
+  }
+  /* Responsive styling for screens above 600px width */
+  @media screen and (min-width: 650px) {
+    .fontSize(13);
+    margin: 10px;
+  }
 }
 
 .footerText a {
-	color: @linkColour;
+  color: @linkColour;
 }
 
 .footerText .textlessButton {
-	color: @linkColour;
-	background-color: @mainBackground;
-	text-decoration: underline;
-	min-width: 0;
-	min-height: 0;
+  color: @linkColour;
+  background-color: @mainBackground;
+  text-decoration: underline;
+  min-width: 0;
+  min-height: 0;
 }
 
 // TODO: Move the below elsewhere. Need to refactor quite a bit of code first though.
 /* =================== New Item Page Styling =================== */
 /* New Item Page Component */
 app-new-item {
-	width: 100%;
-	left: 0;
-	right: 0;
+  width: 100%;
+  left: 0;
+  right: 0;
 }
 
 /* New Item frame */
 #newItem {
-	width: 90%;
-	margin: 10px 5%;
+  width: 90%;
+  margin: 10px 5%;
 }
 
 /* New Item title */
 #newItem h3 {
-	.fontSize(24);
-	text-align: center;
-	color: @headlineColour;
-	font-family: @mainFont;
-	padding: 10px;
-	margin: 0;
+  .fontSize(24);
+  text-align: center;
+  color: @headlineColour;
+  font-family: @mainFont;
+  padding: 10px;
+  margin: 0;
 }
 
 /* New Item form */
-#newMessage .newItem, #newPost .newItem {
-	background: @boxesBackground;
-	/* Responsive styling for screens above 525px width */
-	@media screen and (min-width: 525px) {
-		width: 90%;
+#newMessage .newItem,
+#newPost .newItem {
+  background: @boxesBackground;
+  /* Responsive styling for screens above 525px width */
+  @media screen and (min-width: 525px) {
+    width: 90%;
   }
 }
 
 /* New Item field + title */
 .formElement {
-	text-align: center;
-	font-family: @mainFont;
-	color: @textColour;
-	padding: 7px 2px;
-	margin: 10px 5px;
-	width: 100%;
+  text-align: center;
+  font-family: @mainFont;
+  color: @textColour;
+  padding: 7px 2px;
+  margin: 10px 5px;
+  width: 100%;
 }
 
 /* New message / post text field */
 .newTextArea {
-	margin:  10px;
-	border-radius: 10px;
-	border: none;
-	width: 75%;
-	/* Responsive styling for screens above 700px width */
-	@media screen and (min-width: 700px) {
-		width: 80%;
+  margin: 10px;
+  border-radius: 10px;
+  border: none;
+  width: 75%;
+  /* Responsive styling for screens above 700px width */
+  @media screen and (min-width: 700px) {
+    width: 80%;
   }
 }
 
 /* New Item field button */
 .sendData {
-	.fontSize(14);
-	padding: 5px;
-	margin: 5px Calc((100% - 102px) / 2) 20px;
-	border-radius: 10px;
+  .fontSize(14);
+  padding: 5px;
+  margin: 5px Calc((100% - 102px) / 2) 20px;
+  border-radius: 10px;
 }
 
 /* =================== Error Page Styling =================== */
 /* Error Page frame */
 #errorPage {
-	&:extend(#frameSample);
-	width: 80%;
-	margin: 15px 10%;
-	@media screen and (min-width: 690px) {
-		width: 550px;
-		max-width: 550px;
-		margin: 15px Calc((100% - 550px) / 2);
+  &:extend(#frameSample);
+  width: 80%;
+  margin: 15px 10%;
+  @media screen and (min-width: 690px) {
+    width: 550px;
+    max-width: 550px;
+    margin: 15px Calc((100% - 550px) / 2);
   }
 }
 
 /* Error Page title */
 #errorPage h3 {
-	.fontSize(24);
-	text-align: center;
-	font-family: @mainFont;
-	color: @headlineColour;
-	padding: 10px;
-	margin: 0;
+  .fontSize(24);
+  text-align: center;
+  font-family: @mainFont;
+  color: @headlineColour;
+  padding: 10px;
+  margin: 0;
 }
 
 /* Error Page text */
 .pageData {
-	.fontSize(16);
-	text-align: center;
-	font-family: @mainFont;
-	color: @textColour;
-	padding: 10px 2px;
+  .fontSize(16);
+  text-align: center;
+  font-family: @mainFont;
+  color: @textColour;
+  padding: 10px 2px;
 }
 
 /* Error Page error code */
 #errorCode {
-	.fontSize(13);
-	text-align: center;
-	font-family: @mainFont;
-	color: @textColour;
-	padding: 10px 2px;
+  .fontSize(13);
+  text-align: center;
+  font-family: @mainFont;
+  color: @textColour;
+  padding: 10px 2px;
 }
 
 /* Go Back Button */
 #backBtn {
-	padding: 4px;
-	margin: 7px Calc((100% - 20px) / 2);
-	border: none;
-	border-radius: 10px;
-	background: @mainBackground;
+  padding: 4px;
+  margin: 7px Calc((100% - 20px) / 2);
+  border: none;
+  border-radius: 10px;
+  background: @mainBackground;
 }
 
 /* Arrow in Go Back Button */
 .fa-arrow-alt-circle-left {
-	font-size: 18px;
+  font-size: 18px;
 }
 
 /* =================== Loader Component Styling =================== */
 /* Via https://www.w3schools.com/howto/howto_css_loader.asp */
 /* Loader */
 #loading {
-	position: relative;
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	justify-content: center;
-	height: 80%;
-	width: 80%;
-	margin: 10%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 80%;
+  width: 80%;
+  margin: 10%;
 }
 
 /* Loader text */
 #loading #loadingMessage {
-	.fontSize(18);
-	font-family: @mainFont;
-	color: @headlineColour;
+  .fontSize(18);
+  font-family: @mainFont;
+  color: @headlineColour;
 }
 
 /* Loader spinner */
 #loading .spinner {
-	&:extend(.spinnerSample);
-	height: 100px;
-	width: 100px;
-	transform-origin: center center;
-	position: relative;
-	margin: 20%;
-	border-width: 6px;
-	border-top-width: 6px;
+  &:extend(.spinnerSample);
+  height: 100px;
+  width: 100px;
+  transform-origin: center center;
+  position: relative;
+  margin: 20%;
+  border-width: 6px;
+  border-top-width: 6px;
 }
 
 /* =================== Search Results Component Styling =================== */
 /* Search Results Component */
 app-search-results {
-	width: 90%;
-	padding: 20px 5%;
-	left: 0;
-	right: 0;
-	/* Responsivce styling for screen above 750px width */
-	@media screen and (min-width: 750px) {
-		padding: 20px 2%;
-		width: 96%;
+  width: 90%;
+  padding: 20px 5%;
+  left: 0;
+  right: 0;
+  /* Responsivce styling for screen above 750px width */
+  @media screen and (min-width: 750px) {
+    padding: 20px 2%;
+    width: 96%;
   }
-	/* Responsivce styling for screen above 850px width */
-	@media screen and (min-width: 850px) {
-		padding: 20px;
+  /* Responsivce styling for screen above 850px width */
+  @media screen and (min-width: 850px) {
+    padding: 20px;
   }
 }
 
 /* Search Results title */
 app-search-results h2 {
-	.fontSize(24);
-	font-family: @mainFont;
-	color: @headlineColour;
-	text-align: center;
-	padding: 0px 5px 10px;
-	margin: 0 5px 10px;
-	padding-top: 10px;
+  .fontSize(24);
+  font-family: @mainFont;
+  color: @headlineColour;
+  text-align: center;
+  padding: 0px 5px 10px;
+  margin: 0 5px 10px;
+  padding-top: 10px;
 }
 
 #searchResultsMain {
-	display: flex;
-	flex-direction: column;
-	/* Responsivce styling for screen above 625px width */
-	@media screen and (min-width: 625px) {
-		flex-direction: row;
-		flex-wrap: wrap;
+  display: flex;
+  flex-direction: column;
+  /* Responsivce styling for screen above 625px width */
+  @media screen and (min-width: 625px) {
+    flex-direction: row;
+    flex-wrap: wrap;
   }
 }
 
 /* Results summary title */
 #resultSummary {
-	text-align: center;
-	font-family: @mainFont;
-	order: 0;
-	width: 100%;
+  text-align: center;
+  font-family: @mainFont;
+  order: 0;
+  width: 100%;
 }
 
 /* Users / Posts title */
 app-search-results h3 {
-	.fontSize(22);
-	text-align: center;
-	color: @headlineColour;
-	font-family: @mainFont;
+  .fontSize(22);
+  text-align: center;
+  color: @headlineColour;
+  font-family: @mainFont;
 }
 
 /* Users title */
 #usersTitle {
-	order: 1;
-	/* Responsivce styling for screen above 625px width */
-	@media screen and (min-width: 625px) {
-		padding: 5px Calc((100% - 140px) / 4);
+  order: 1;
+  /* Responsivce styling for screen above 625px width */
+  @media screen and (min-width: 625px) {
+    padding: 5px Calc((100% - 140px) / 4);
   }
 }
 
 /* Posts title */
 #postsTitle {
-	order: 3;
-	/* Responsivce styling for screen above 625px width */
-	@media screen and (min-width: 625px) {
-		order: 2;
-		padding: 5px Calc((100% - 140px) / 4);
+  order: 3;
+  /* Responsivce styling for screen above 625px width */
+  @media screen and (min-width: 625px) {
+    order: 2;
+    padding: 5px Calc((100% - 140px) / 4);
   }
 }
 
 /* Post/user Results list */
 .searchResults {
-	border-radius: 5px;
-	width: 80%;
-	padding: 15px 5%;
-	margin: 5px 5%;
-	background: @boxesBackground;
-	list-style: none;
-	border: none;
-	box-shadow: 5px 5px 7px 0 rgba(46, 61, 73, 0.5);
-	/* Responsivce styling for screen above 450px width */
-	@media screen and (min-width: 450px) {
-		width: 70%;
-		margin: 5px 10%;
+  border-radius: 5px;
+  width: 80%;
+  padding: 15px 5%;
+  margin: 5px 5%;
+  background: @boxesBackground;
+  list-style: none;
+  border: none;
+  box-shadow: 5px 5px 7px 0 rgba(46, 61, 73, 0.5);
+  /* Responsivce styling for screen above 450px width */
+  @media screen and (min-width: 450px) {
+    width: 70%;
+    margin: 5px 10%;
   }
 }
 
 /* user Results list */
 #userSearchResults {
-	order: 2;
-	/* Responsivce styling for screen above 625px width */
-	@media screen and (min-width: 625px) {
-		order: 3;
-		width: 20%;
-		margin: 5px 0 5px 10%;
+  order: 2;
+  /* Responsivce styling for screen above 625px width */
+  @media screen and (min-width: 625px) {
+    order: 3;
+    width: 20%;
+    margin: 5px 0 5px 10%;
   }
 }
 
 /* no user Results message */
 #uSearchResErr {
-	order: 2;
-	/* Responsivce styling for screen above 625px width */
-	@media screen and (min-width: 625px) {
-		order: 3;
-		width: 20%;
-		margin: 5px 5% 5px 15%;
+  order: 2;
+  /* Responsivce styling for screen above 625px width */
+  @media screen and (min-width: 625px) {
+    order: 3;
+    width: 20%;
+    margin: 5px 5% 5px 15%;
   }
 }
 
 /* Post Results list */
 #postSearchResults {
-	order:  4;
-	/* Responsivce styling for screen above 625px width */
-	@media screen and (min-width: 625px) {
-		order: 3;
-		width: 55%;
-		margin: 5px 0 5px 5%;
+  order: 4;
+  /* Responsivce styling for screen above 625px width */
+  @media screen and (min-width: 625px) {
+    order: 3;
+    width: 55%;
+    margin: 5px 0 5px 5%;
   }
 }
 
 /* no post Results message */
 #pSearchResErr {
-	order: 4;
-	/* Responsivce styling for screen above 625px width */
-	@media screen and (min-width: 625px) {
-		order: 3;
-		width: 55%;
-		margin: 5px 0 5px 5%;
+  order: 4;
+  /* Responsivce styling for screen above 625px width */
+  @media screen and (min-width: 625px) {
+    order: 3;
+    width: 55%;
+    margin: 5px 0 5px 5%;
   }
 }
 
 /* User result */
 .searchResultUser {
-	text-align: center;
-	font-family: @mainFont;
-	padding: 5px;
-	margin: 5px;
-	/* Responsivce styling for screen above 700px width */
-	@media screen and (min-width: 700px) {
-		padding: 8px 5px;
+  text-align: center;
+  font-family: @mainFont;
+  padding: 5px;
+  margin: 5px;
+  /* Responsivce styling for screen above 700px width */
+  @media screen and (min-width: 700px) {
+    padding: 8px 5px;
   }
 }
 
 /* User result - link to profile page */
 .searchResultUser a {
-	.fontSize(16);
-	color: @profileLinkColour;
-	/* Responsivce styling for screen above 700px width */
-	@media screen and (min-width: 700px) {
-		.fontSize(17);
+  .fontSize(16);
+  color: @profileLinkColour;
+  /* Responsivce styling for screen above 700px width */
+  @media screen and (min-width: 700px) {
+    .fontSize(17);
   }
 }
 
 /* User result - link to profile page when hovered on */
 .searchResultsUser a:hover {
-	text-decoration: underline;
-	color: #7C1E1B;
+  text-decoration: underline;
+  color: #7c1e1b;
 }
 
 /* Post Result */
 .searchResult {
-	&:extend(.newItem);
+  &:extend(.newItem);
 }
 
 /* Pagination in search */
 #searchResultsMain .pagination {
-	width: 100%;
-	margin: 10px 0;
-	left: 0;
-	right: 0;
+  width: 100%;
+  margin: 10px 0;
+  left: 0;
+  right: 0;
 }
 
 /* =================== Notifications Tab Component Styling =================== */
 /* Notifications Component */
 app-notifications {
-	z-index: 200;
+  z-index: 200;
 }
 
 /* Notifications panel */
 #notificationsTab {
-	float: right;
-	box-shadow: 12px 15px 20px 0 rgba(46, 61, 73, 0.5);
-	border-radius: 5px;
-	background-color: #EEE;
-	margin: 0;
-	position: fixed;
-	top: 0;
-	bottom: 0;
-	width: 70%;
-	margin-left: 30%;
-	/* Responsive design for screens above 500px width */
-	@media screen and (min-width: 500px) {
-		width: 67%;
-		margin-left: 33%;
+  float: right;
+  box-shadow: 12px 15px 20px 0 rgba(46, 61, 73, 0.5);
+  border-radius: 5px;
+  background-color: #eee;
+  margin: 0;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  width: 70%;
+  margin-left: 30%;
+  /* Responsive design for screens above 500px width */
+  @media screen and (min-width: 500px) {
+    width: 67%;
+    margin-left: 33%;
   }
-	/* Responsive design for screens above 600px width */
-	@media screen and (min-width: 600px) {
-		width: 400px;
-		margin-left: Calc(100% - 400px);
+  /* Responsive design for screens above 600px width */
+  @media screen and (min-width: 600px) {
+    width: 400px;
+    margin-left: Calc(100% - 400px);
   }
-		/* Responsive styling for screens above 600px height */
-	@media screen and (max-height: 600px) {
-		overflow-y: scroll;
+  /* Responsive styling for screens above 600px height */
+  @media screen and (max-height: 600px) {
+    overflow-y: scroll;
   }
 }
 
 /* Notifications exit button */
 #notificationsTab #exitButton {
-	margin: 10px;
-	background: #EEE;
+  margin: 10px;
+  background: #eee;
 }
 
 /* Notifications Title */
 app-notifications h4 {
-	.fontSize(22);
-	color: @headlineColour;
-	font-family: @mainFont;
-	text-align: center;
-	padding: 5px 5px 0;
-	margin: 10px 5px 15px;
-	/* Responsive design for screens above 500px width */
-	@media screen and (min-width: 550px) {
-		.fontSize(24);
+  .fontSize(22);
+  color: @headlineColour;
+  font-family: @mainFont;
+  text-align: center;
+  padding: 5px 5px 0;
+  margin: 10px 5px 15px;
+  /* Responsive design for screens above 500px width */
+  @media screen and (min-width: 550px) {
+    .fontSize(24);
   }
 }
 
 /* Notifications settings buttons container */
 #nButtons {
-	display: flex;
-	flex-wrap: wrap;
-	justify-content: center;
-	align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
 }
 
 /* Notifications list / no notificatioins message */
-#notificationsList , #noNotifications {
-	margin: 10px 5px;
+#notificationsList,
+#noNotifications {
+  margin: 10px 5px;
 }
 
 /* Notifications list */
 #notificationsList {
-	list-style: none;
-	padding: 10px;
+  list-style: none;
+  padding: 10px;
 }
 
 /* Notification */
 .notificationItem {
-	border: none;
-	box-shadow: 5px 5px 7px 0 rgba(46, 61, 73, 0.5);
-	background: @itemBackground;
-	border-radius: 10px;
-	width: 80%;
-	margin: 15px 5%;
-	padding: 10px 5%;
+  border: none;
+  box-shadow: 5px 5px 7px 0 rgba(46, 61, 73, 0.5);
+  background: @itemBackground;
+  border-radius: 10px;
+  width: 80%;
+  margin: 15px 5%;
+  padding: 10px 5%;
 }
 
 /* Notification title */
 .notificationTitle {
-	.fontSize(16);
-	font-family: @mainFont;
-	text-align: center;
-	color: @headlineColour;
-	margin: 5px;
-	font-weight: bold;
+  .fontSize(16);
+  font-family: @mainFont;
+  text-align: center;
+  color: @headlineColour;
+  margin: 5px;
+  font-weight: bold;
 }
 
 /* Notification text */
 .notificationText {
-	.fontSize(14);
-	font-family: @mainFont;
-	text-align: center;
-	color: @textColour;
-	margin: 5px;
+  .fontSize(14);
+  font-family: @mainFont;
+  text-align: center;
+  color: @textColour;
+  margin: 5px;
 }
 
 /* Notification link */
 .notificationText a {
-	color: @linkColour;
+  color: @linkColour;
 }

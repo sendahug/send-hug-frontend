@@ -5,76 +5,77 @@
 /* =================== Settings Component Styling =================== */
 /* Settings Component */
 app-settings {
-	width: 90%;
-	padding: 0 5%;
-	left: 0;
-	right: 0;
+  width: 90%;
+  padding: 0 5%;
+  left: 0;
+  right: 0;
 }
 
 /* Main title */
 app-settings h3 {
-	.fontSize(22);
-	font-family: @mainFont;
-	color: @headlineColour;
-	text-align: center;
-	/* Responsive styling for screens above 800px width */
-	@media screen and (min-width: 800px) {
-		.fontSize(24);
-		order: 0;
-		width: 100%;
+  .fontSize(22);
+  font-family: @mainFont;
+  color: @headlineColour;
+  text-align: center;
+  /* Responsive styling for screens above 800px width */
+  @media screen and (min-width: 800px) {
+    .fontSize(24);
+    order: 0;
+    width: 100%;
   }
 }
 
 /* Section title */
 app-settings h4 {
-	.fontSize(17);
-	font-family: @mainFont;
-	color: @headlineColour;
-	text-align: center;
+  .fontSize(17);
+  font-family: @mainFont;
+  color: @headlineColour;
+  text-align: center;
 }
 
 /* Notification Settings */
-#notificationSettings, #iconSettings {
-	border-radius: 5px;
-	width: 90%;
-	padding: 15px 3%;
-	margin: 5px 2%;
-	background: @boxesBackground;
-	border: none;
-	box-shadow: 5px 5px 7px 0 rgba(46, 61, 73, 0.5);
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	justify-content: center;
-	/* Responsive styling for screens above 500px width */
-	@media screen and (min-width: 500px) {
-		width: 80%;
-		padding: 15px 5%;
-		margin: 10px 5%;
+#notificationSettings,
+#iconSettings {
+  border-radius: 5px;
+  width: 90%;
+  padding: 15px 3%;
+  margin: 5px 2%;
+  background: @boxesBackground;
+  border: none;
+  box-shadow: 5px 5px 7px 0 rgba(46, 61, 73, 0.5);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  /* Responsive styling for screens above 500px width */
+  @media screen and (min-width: 500px) {
+    width: 80%;
+    padding: 15px 5%;
+    margin: 10px 5%;
   }
-	/* Responsive styling for screens above 800px width */
-	@media screen and (min-width: 800px) {
-		order: 2;
-		width: 70%;
-		margin: 10px 10%;
-		padding: 15px 5% 20px;
+  /* Responsive styling for screens above 800px width */
+  @media screen and (min-width: 800px) {
+    order: 2;
+    width: 70%;
+    margin: 10px 10%;
+    padding: 15px 5% 20px;
   }
-	/* Responsive styling for screens above 900px width */
-	@media screen and (min-width: 1900px) {
-		width: 650px;
-		max-width: 650px;
-		padding: 15px Calc((100% - 650px) / 4);
-		margin: 10px Calc((100% - 650px) / 4);
+  /* Responsive styling for screens above 900px width */
+  @media screen and (min-width: 1900px) {
+    width: 650px;
+    max-width: 650px;
+    padding: 15px Calc((100% - 650px) / 4);
+    margin: 10px Calc((100% - 650px) / 4);
   }
 }
 
 /* User icons */
 .userIcon {
-	width: 100px;
-	margin: 5px;
-	border-radius: 10px;
-	padding: 0;
-	border: 3px solid #000;
+  width: 100px;
+  margin: 5px;
+  border-radius: 10px;
+  padding: 0;
+  border: 3px solid #000;
 }
 
 /* User icon settings - edit button */
@@ -83,8 +84,9 @@ app-settings h4 {
 }
 
 /* Notification Settings - notification buttons/rate textfield */
-#notificationSettings .NotificationButton, #notificationRate {
-	margin: 5px;
+#notificationSettings .NotificationButton,
+#notificationRate {
+  margin: 5px;
 }
 
 /* Notification Settings - update settings button */
@@ -94,89 +96,89 @@ app-settings h4 {
 
 /* Back to homepage div */
 #errorBox {
-	&:extend(#errorMessBox);
-	&:extend(#frameSample);
-	width: 90%;
-	margin: 10px 5%;
-	padding-bottom: 20px;
-	/* Responsive styling for screens above 450px width */
-	@media screen and (min-width: 450px) {
-		width: 84%;
-		margin: 10px 8%;
+  &:extend(#errorMessBox);
+  &:extend(#frameSample);
+  width: 90%;
+  margin: 10px 5%;
+  padding-bottom: 20px;
+  /* Responsive styling for screens above 450px width */
+  @media screen and (min-width: 450px) {
+    width: 84%;
+    margin: 10px 8%;
   }
-	/* Responsive styling for screens above 550px width */
-	@media screen and (min-width: 550px) {
-		width: 80%;
-		margin: 10px 10%;
+  /* Responsive styling for screens above 550px width */
+  @media screen and (min-width: 550px) {
+    width: 80%;
+    margin: 10px 10%;
   }
-	/* Responsive styling for screens above 700px width */
-	@media screen and (min-width: 700px) {
-		width: 70%;
-		margin: 10px 15%;
+  /* Responsive styling for screens above 700px width */
+  @media screen and (min-width: 700px) {
+    width: 70%;
+    margin: 10px 15%;
   }
-	/* Responsive styling for screens above 800px width */
-	@media screen and (min-width: 800px) {
-		width: 70%;
-		margin: 2% 15%;
+  /* Responsive styling for screens above 800px width */
+  @media screen and (min-width: 800px) {
+    width: 70%;
+    margin: 2% 15%;
   }
 }
 
 /* Error Message Text */
 .errorMessage {
-	text-align: center;
-	padding-bottom: 20px;
-	padding-top: 10px;
-	font-family: @mainFont;
+  text-align: center;
+  padding-bottom: 20px;
+  padding-top: 10px;
+  font-family: @mainFont;
 }
 
 /* Back to homepage Link */
 #errorBox .appButton {
-	margin: 20px Calc((100% - 170px) / 2) 10px;
-	color: #FFF;
-	text-decoration: none;
+  margin: 20px Calc((100% - 170px) / 2) 10px;
+  color: #fff;
+  text-decoration: none;
 }
 
 /* =================== Icon Editor Component Styling =================== */
 app-icon-editor label {
-	.fontSize(16);
-	font-family: @mainFont;
-	color: @headlineColour;
-	text-align: center;
-	margin: 5px;
+  .fontSize(16);
+  font-family: @mainFont;
+  color: @headlineColour;
+  text-align: center;
+  margin: 5px;
 }
 
 /* Character selection area */
 #characterSelect {
-	display: flex;
+  display: flex;
 }
 
 /* Character selection options */
 #characterSelect .formElement {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	justify-content: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 /* Character selection - single option icon */
 .editIconOption {
-	width: 80px;
-	margin: 5px;
-	border-radius: 10px;
-	padding: 0;
-	border: 3px solid #000;
+  width: 80px;
+  margin: 5px;
+  border-radius: 10px;
+  padding: 0;
+  border: 3px solid #000;
 }
 
 /* Character selection - currently selected character */
 .selectedCharacter {
-	border-radius: 10px;
-	padding: 0;
-	margin: 5px;
-	border: 3px solid #000;
+  border-radius: 10px;
+  padding: 0;
+  margin: 5px;
+  border: 3px solid #000;
 }
 
 /* Buttons */
 .iconButton {
-	&:extend(.NotificationButton);
-	margin: 5px Calc((100% - 180px) / 4);
+  &:extend(.NotificationButton);
+  margin: 5px Calc((100% - 180px) / 4);
 }

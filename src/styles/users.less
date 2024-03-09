@@ -1,0 +1,627 @@
+/* Original design by Macy Tyler */
+/* Responsive adjustments by Send a Hug team */
+@import "./variables.less";
+
+.fullWidthContainer() {
+  width: 100%;
+	left: 0;
+	right: 0;
+}
+
+.centredTextElements {
+  font-family: @mainFont;
+	text-align: center;
+}
+
+/* =================== User Page Styling =================== */
+/* User Page Component */
+app-user-page {
+	.fullWidthContainer();
+}
+
+/* User / Error Message Container */
+app-user-page > div {
+	width: 90%;
+	max-width: 90%;
+	margin: 10px 5%;
+	/* Responsive styling for screens above 600px width */
+	@media screen and (min-width: 600px) {
+		width: 100%;
+		margin: 10px 0;
+  }
+}
+
+#profileContainer {
+	/* Responsive styling for screens above 600px width */
+	@media screen and (min-width: 600px) {
+		margin: 10px 0 10px 3%;
+		padding: 0;
+		left: 0;
+		right: 0;
+  }
+}
+
+/* User Page Title */
+app-user-page h3 {
+	font-family: @mainFont;
+	text-align: center;
+	margin-top: 5px;
+	padding-top: 5px;
+}
+
+/* User Page */
+#userPage {
+	display: flex;
+	flex-wrap: wrap;
+	align-content: space-between;
+	justify-content: space-between;
+	padding: 0 3%;
+	flex-direction: column;
+	/* Responsive styling for screens above 600px width */
+	@media screen and (min-width: 600px) {
+		flex-direction: row;
+		.fullWidthContainer();
+  }
+}
+
+/* User Profile */
+#profileData {
+	&:extend(#frameSample);
+	order: 0;
+	width: 96%;
+	margin: 2%;
+	border-radius: 5px;
+	padding-top: 15px;
+	padding-top: 15px;
+	border: none;
+	background: @boxesBackground;
+	box-shadow: 5px 5px 7px 0 rgba(46, 61, 73, 0.5);
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: center;
+	/* Responsive styling for screens above 425px width */
+	@media screen and (min-width: 425px) {
+		width: 90%;
+		margin: 2% 5%;
+  }
+	/* Responsive styling for screens above 525px width */
+	@media screen and (min-width: 525px) {
+		width: 80%;
+		margin: 2% 10%;
+  }
+	/* Responsive styling for screens above 600px width */
+	@media screen and (min-width: 600px) {
+		width: 39%;
+		margin: 2% 3% 2% 0;
+  }
+}
+
+/* User Page Profile pic container */
+#profilePic {
+	margin: 5px 0 5px 10px;
+}
+
+/* User Page username + role container */
+#userNameRole {
+	display: flex;
+	flex-direction: column;
+	align-content: space-around;
+	justify-content: space-evenly;
+	align-items: center;
+	margin: 0;
+}
+
+/* User Page Field Container */
+.profileElement {
+	border: none;
+	border-radius: 5px;
+	background: @itemBackground;
+	margin: 10px 5%;
+	width: 90%;
+	/* Responsive styling for screens above 525px width */
+	@media screen and (min-width: 525px) {
+		width: 80%;
+		margin: 10px 10%;
+  }
+}
+
+/* Display name */
+.displayName {
+	.fontSize(18);
+	background: @boxesBackground;
+	font-weight: bold;
+	text-align: center;
+	margin: 0;
+}
+
+/* Profile hug button */
+.displayName .hugButton {
+	background: @boxesBackground;
+}
+
+/* Role Field Container */
+#roleElement {
+	background: @boxesBackground;
+	padding: 4px;
+	text-align: center;
+	margin: 10px 0;
+	text-transform: uppercase;
+}
+
+/* Role Field */
+#roleElement .pageCategory {
+	.fontSize(16);
+	font-weight: normal;
+}
+
+/* Role Field data */
+#roleElement .pageData {
+	.fontSize(16);
+	text-transform: uppercase;
+}
+
+/* Hugs/posts Field Containers */
+#rHugsElement, #gHugsElement, #postsElement {
+	padding: 4px;
+}
+
+/* Posts Field title */
+#postsElement .pageCategory {
+	padding: 0 0 10px;
+}
+
+/* User Page Field Title */
+.pageCategory {
+	.fontSize(14);
+	font-family: @mainFont;
+	font-weight: bold;
+	text-align: center;
+	margin: 0 5px;
+	color: @headlineColour;
+	padding: 0 5px 10px;
+}
+
+/* User Page Field Text */
+.pageData {
+	.fontSize(14);
+	font-family: @mainFont;
+	color: @textColour;
+	padding-bottom: 0;
+	margin-bottom: 0;
+}
+
+#profileData .buttons {
+	display: flex;
+	flex-direction: column;
+	align-content: space-between;
+	justify-content: space-between;
+	margin: 0 10px 10px;
+	/* Responsive styling for screens above 800px width */
+	@media screen and (min-width: 800px) {
+		flex-direction: row;
+		flex-wrap: wrap;
+		margin: 0 0 10px;
+		width: 90%;
+  }
+}
+
+
+/* edit display name button */
+#editName, #profileData .reportButton, #settingsLink, #logout {
+	.fontSize(15);
+	margin: 5px 5px;
+	border-radius: 10px;
+	/* Responsive styling for screens above 800px width */
+	@media screen and (min-width: 800px) {
+		.fontSize(16);
+		margin: 15px auto;
+  }
+}
+
+/* Settings link */
+#settingsLink {
+	text-align: center;
+	text-decoration: none;
+}
+
+/* Logout button */
+#logout {
+	order: 3;
+	margin-top: 10px;
+	/* Responsive styling for screens above 600px width */
+	@media screen and (min-width: 600px) {
+		.fontSize(16);
+		margin: 15px auto;
+  }
+}
+
+/* User Posts */
+app-my-posts {
+	order: 2;
+	width: 96%;
+	align-self: flex-start;
+	border: none;
+	background: @boxesBackground;
+	box-shadow: 5px 5px 7px 0 rgba(46, 61, 73, 0.5);
+	margin: 4% 2%;
+	border-radius: 5px;
+	/* Responsive styling for screens above 425px width */
+	@media screen and (min-width: 425px) {
+		width: 90%;
+		margin: 4% 5%;
+  }
+	/* Responsive styling for screens above 525px width */
+	@media screen and (min-width: 525px) {
+		width: 80%;
+		margin: 4% 10%;
+  }
+	/* Responsive styling for screens above 600px width */
+	@media screen and (min-width: 600px) {
+		width: 51%;
+		margin: 2% 2%;
+  }
+}
+
+/* User Posts title */
+app-my-posts #postsTitle {
+	margin-top: 10px;
+}
+
+/* List of user Posts */
+app-my-posts .itemList {
+	margin: 10px 5%;
+	width: 90%;
+}
+
+/* User Post */
+.userPost {
+	&:extend(#frameSample);
+	width: 80%;
+	border-radius: 10px;
+	border: none;
+	background: @itemBackground;
+	margin: 15px 7%;
+	padding: 10px;
+}
+
+/* Post text */
+.postText {
+	.fontSize(17);
+	&:extend(.centredTextElements);
+	margin-bottom: 10px;
+	line-height: 1.5em;
+	/* Responsive styling for screens above 600px width */
+	@media screen and (min-width: 600px) {
+		line-height: 1.8em;
+  }
+}
+
+/* Post date */
+.postDate {
+	.fontSize(14);
+	&:extend(.centredTextElements);
+}
+
+/* Post buttons */
+.userPost .buttons {
+	display: flex;
+	align-items: center;
+	justify-content: space-evenly;
+}
+
+/* Post buttons */
+.userPost .editButton, .userPost .deleteButton, .userPost .reportButton {
+	.fontSize(16);
+	margin: 25px auto 10px;
+	font-family: @mainFont;
+}
+
+/* Notification block in user's posts */
+.userPost .notification {
+	margin: 10px auto 0;
+}
+
+/* Pagination in user's posts */
+app-my-posts .pagination {
+	width: 94%;
+	margin: 0 2.5%;
+	padding: 0;
+}
+
+/* Page count in user's posts */
+app-my-posts .pageCount {
+	.fontSize(15);
+	font-family: @mainFont;
+	text-align: center;
+	margin: 5px 0;
+	padding: 2px;
+	/* Responsive styling for screens above 600px width */
+	@media screen and (min-width: 600px) {
+		.fontSize(16);
+  }
+}
+
+/* Page count in user's posts */
+app-my-posts .pagination button {
+	margin: 5px 0;
+	padding: 5px;
+	font-weight: normal;
+	/* Responsive styling for screens above 600px width */
+	@media screen and (min-width: 600px) {
+		.fontSize(16);
+  }
+}
+
+/* Delete all posts button */
+#deleteAll {
+	.fontSize(15);
+	margin: 10px Calc((100% - 130px) / 2) 20px;
+	margin-top: 10px;
+	/* Responsive styling for screens above 600px width */
+	@media screen and (min-width: 600px) {
+		.fontSize(16);
+		margin: 10px Calc((100% - 140px) / 2) 20px;
+  }
+}
+
+/* =================== Messages Page Styling =================== */
+/* Message Page Component */
+app-messages {
+	.fullWidthContainer();
+	margin: 0;
+	padding: 0;
+	display: flex;
+	flex-direction: column;
+	/* Responsive styling for screens above 800px width */
+	@media screen and (min-width: 800px) {
+    flex-direction: row;
+  }
+}
+
+/* Headline + navigation */
+#mailboxNav {
+	/* Responsive styling for screens above 800px width */
+	@media screen and (min-width: 800px) {
+		width: 24%;
+		margin: 20px 2% 20px 4%;
+  }
+}
+
+/* Page Headline */
+app-messages h3 {
+	.fontSize(24);
+	text-align: center;
+	font-family: @mainFont;
+	color: @headlineColour;
+	margin-bottom: 10px;
+	padding-top: 0;
+	margin-top: 5px;
+	text-transform: capitalize;
+	/* Responsive styling for screens above 800px width */
+	@media screen and (min-width: 800px) {
+		margin: 5px 5px 10px;
+  }
+}
+
+/* Mailbox navigation */
+#messagesNav {
+	width: 90%;
+	margin: 5px 0;
+	padding: 5px 5% 10px 5%;
+	left: 0;
+	right: 0;
+	align-self: center;
+	text-align: center;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	/* Responsive styling for screens above 800px width */
+	@media screen and (min-width: 800px) {
+		flex-direction: column;
+  }
+}
+
+/* Mailbox navigation button */
+.messNavOption {
+	margin: 5px;
+	background: @buttonBackground;
+	color: #FFF;
+	border-radius: 10px;
+	font-weight: bold;
+	padding: 7px;
+	/* Responsive styling for screens above 500px width */
+	@media screen and (min-width: 500px) {
+		margin: 5px 10px;
+  }
+	/* Responsive styling for screens above 550px width */
+	@media screen and (min-width: 550px) {
+		.fontSize(14);
+  }
+	/* Responsive styling for screens above 800px width */
+	@media screen and (min-width: 800px) {
+		width: 80px;
+  }
+}
+
+/* Inbox Container */
+#userInbox {
+	&:extend(#frameSample);
+	width: 90%;
+	margin: 10px 5%;
+	background: @boxesBackground;
+	border-radius: 5px;
+	border: none;
+	box-shadow: 5px 5px 7px 0 rgba(46, 61, 73, 0.5);
+	min-height: 100px;
+	overflow: auto;
+	/* Responsive styling for screens above 450px width */
+	@media screen and (min-width: 450px) {
+		width: 84%;
+		margin: 10px 8%;
+  }
+	/* Responsive styling for screens above 550px width */
+	@media screen and (min-width: 550px) {
+		width: 80%;
+		margin: 10px 10%;
+  }
+	/* Responsive styling for screens above 700px width */
+	@media screen and (min-width: 700px) {
+		width: 70%;
+		margin: 10px 15%;
+  }
+	/* Responsive styling for screens above 800px width */
+	@media screen and (min-width: 800px) {
+		width: 65%;
+		margin: 2% 10px;
+  }
+}
+
+/* Inbox / Outbox / Threads / single thread container */
+.userThreads, .threadMessages, .mailboxMessages {
+	&:extend(.itemList);
+	border: none;
+}
+
+/* A Message / message thread */
+.userMessage, .userThread {
+	width: 80%;
+	border-radius: 10px;
+	border: none;
+	background: @itemBackground;
+	margin: 15px 7%;
+	padding: 10px;
+	display: flex;
+	justify-content: center;
+}
+
+/* User icon */
+.messageProfilePic .userIcon {
+	width: 60px;
+	border-width: 2px;
+}
+
+/* From field */
+.messageField {
+	font-family: @mainFont;
+	text-align: center;
+	padding: 5px;
+	margin: 5px;
+}
+
+/* Message text */
+.messageText {
+	.fontSize(17);
+	text-align: center;
+	font-family: @mainFont;
+	color: @textColour;
+	line-height: 1.5em;
+	margin-top: 5px;
+	/* Responsive styling for screens above 600px width */
+	@media screen and (min-width: 600px) {
+		line-height: 1.8em;
+  }
+}
+
+/* Field title */
+app-messages .pageCategory {
+	.fontSize(16);
+	text-align: center;
+	font-family: @mainFont;
+	color: @headlineColour;
+}
+
+/* Field text */
+app-messages .pageData {
+	text-align: center;
+	font-family: @mainFont;
+	color: @textColour;
+	line-height: 1.5em;
+	/* Responsive styling for screens above 600px width */
+	@media screen and (min-width: 600px) {
+		line-height: 1.8em;
+  }
+}
+
+/* Field text - inbox/outbox */
+.mailboxMessages .pageData {
+	.fontSize(15);
+}
+
+/* Message / message thread buttons */
+.userMessage .buttons, .threadBtns {
+	display: flex;
+	justify-content: center;
+	margin: 5px;
+	padding: 5px;
+}
+
+/* Messages: Delete Message, Reply buttons */
+/* Threads View thread, Delete thread buttons */
+.userMessage .deleteButton, .userMessage .messageButton, .viewButton, .userThread .deleteButton{
+	.fontSize(15);
+	margin: 5px 10px;
+	padding: 5px;
+	text-decoration: none;
+	/* Responsive styling for screens above 550px width */
+	@media screen and (min-width: 550px) {
+		.fontSize(16);
+  }
+}
+
+/* Delete all messages / threads button */
+.deleteAll {
+	.fontSize(16);
+	text-align: center;
+	margin: 10px Calc((100% - 170px) / 2) 15px;
+	width: 170px;
+}
+
+/* =================== Login/Error Box Styling =================== */
+/* Login div */
+#loginBox {
+  &:extend(#errorMessBox);
+  &:extend(#frameSample);
+	font-family: @mainFont;
+	padding: 10px 15px;
+	margin: 5px Calc((20% - 30px) / 2);
+  width: 90%;
+	/* Responsive styling for screens above 450px width */
+	@media screen and (min-width: 450px) {
+		width: 84%;
+		margin: 10px 8%;
+  }
+	/* Responsive styling for screens above 550px width */
+	@media screen and (min-width: 550px) {
+		width: 80%;
+		margin: 10px 10%;
+  }
+	/* Responsive styling for screens above 700px width */
+	@media screen and (min-width: 700px) {
+		width: 70%;
+		margin: 10px 15%;
+  }
+	/* Responsive styling for screens above 800px width */
+	@media screen and (min-width: 800px) {
+		width: 70%;
+		margin: 2% 15%;
+  }
+}
+
+/* Login button div */
+#logIn {
+	.fontSize(15);
+	font-family: @mainFont;
+  text-align: center;
+	margin: 10px Calc((100% - 50px) / 2);
+	color: #FFF;
+	border-radius: 5px;
+}
+
+/* Error Message Text */
+.errorMessage {
+	text-align: center;
+	padding-bottom: 10px;
+	padding-top: 10px;
+	font-family: @mainFont;
+}

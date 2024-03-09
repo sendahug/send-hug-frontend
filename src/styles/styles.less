@@ -1,0 +1,194 @@
+/* Original design by Macy Tyler */
+/* Responsive adjustments by Send a Hug team */
+
+@import "./variables.less";
+@import "./headers.less";
+
+/* =================== General Styling =================== */
+img, picture, video, embed, textarea, textfield {
+	max-width: 100%;
+}
+
+fieldset {
+	border: none;
+	padding: 0;
+	margin: 0;
+}
+
+/* Font awesome icon within a link */
+a fa-icon {
+	padding: 5px;
+	vertical-align: middle;
+	line-height: 44px;
+}
+
+/* App button */
+.appButton {
+	background: @buttonBackground;
+	color: #FFF;
+	padding: 7px;
+	border: none;
+	font-family: @mainFont;
+	min-width: 44px;
+	min-height: 34px;
+	text-align: center;
+  font-weight: bold;
+  border-radius: 10px;
+}
+
+/* Link with App button class */
+a.appButton {
+	padding: 0 5px;
+	margin: 5px;
+	vertical-align: middle;
+	line-height: 34px;
+}
+
+.appButton.disabled {
+	background: #404040;
+}
+
+.textlessButton {
+	background-color: @itemBackground;
+	color: @textColour;
+	padding: 5px;
+	min-width: 44px;
+	min-height: 44px;
+	text-align: center;
+	border: none;
+}
+
+/* Required field */
+/* Via https://stackoverflow.com/a/11197803 */
+.required:after {
+	content: ' *';
+	color: red;
+}
+
+/* ARIA labels */
+.labels {
+	position: absolute;
+	right: -300px;
+	display: none;
+}
+
+/* Missing user input */
+.missing, .ng-invalid.ng-submitted .ng-invalid {
+	border: solid medium #A20002;
+}
+
+/* Pagination area */
+.pagination {
+	display: flex;
+	align-content: space-between;
+	justify-content: space-between;
+	width: 90%;
+	margin: 0 5%;
+	padding: 0;
+}
+
+/* Page count */
+.pageCount {
+	padding: 5px;
+	margin: 0;
+	font-weight: bold;
+	font-family: @mainFont;
+}
+
+/* Hidden items */
+.hidden {
+	display: none;
+}
+
+body {
+	overflow-x: hidden;
+	background: @mainBackground;
+}
+
+#contentContainer {
+	z-index: 1;
+	position: absolute;
+	overflow-y: scroll;
+	width: 96%;
+	max-width: 96%;
+	margin-right: 4%;
+	margin-left: 0;
+	/* Responsive styling for screens up to 650px width */
+	@media screen and (max-width: 650px) {
+		top: 125px;
+		bottom: 10px;
+  }
+	/* Responsive styling for screens above 650px width */
+	@media screen and (min-width: 650px) {
+		bottom: 30px;
+		top: 130px;
+  }
+}
+
+#mainContent {
+	padding-bottom: 20px;
+	display: flex;
+	flex-direction: column;
+}
+
+/* Breadcrumb area */
+#breadcrumb {
+	font-family: @mainFont;
+	width: 40%;
+	margin: 0 0 0 6%;
+	padding: 5px;
+	left: 0;
+	right: 0;
+	text-align: left;
+	display: flex;
+	align-items: center;
+	justify-content: left;
+	white-space: nowrap;
+	/* Responsive styling for screens above 800px width */
+	@media screen and (min-width: 800px) {
+		width: 90%;
+		align-self: center;
+  }
+}
+
+app-admin-dashboard #breadcrumb {
+	margin: 0 0 0 1.5%;
+}
+
+/* Breadcrumb (current page) */
+.breadcrumb {
+	.fontSize(15);
+	color: @textColour;
+	text-transform: capitalize;
+	margin: 2px;
+	padding: 2px;
+	/* Responsive styling for screens above 800px width */
+	@media screen and (min-width: 800px) {
+		.fontSize(14);
+  }
+}
+	
+/* Breadcrumb link */
+.bLink {
+	color: @linkColour;
+}
+
+/* Notification block */
+.notification {
+	padding: 6px 10px;
+	position: relative;
+	display: inline-block;
+}
+
+/* Notification badge */
+.badge {
+	.fontSize(14);
+	position: absolute;
+	top: -5px;
+	right: -10px;
+	padding: 3px 8px;
+	border-radius: 50%;
+	background: @boxesBackground;
+	color: @headlineColour;
+}
+

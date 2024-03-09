@@ -4,7 +4,7 @@
 /* =================== Variables & Mixins =================== */
 /* Font size mixin */
 .fontSize(@pxSize) {
-  @remValue: @pxSize / 10 * 0.625;
+  @remValue: @pxSize * 0.0625; // px to rem conversion: px / 10 * 0.625
   font-size: ~"@{remValue}rem";
 }
 

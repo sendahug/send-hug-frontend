@@ -57,6 +57,18 @@ app-main-page {
   }
 }
 
+#sugItemsList, #newItemsList {
+  max-width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+app-single-post {
+  max-width: 90%;
+}
+
 /* Item List Title */
 .listTitle {
   .fontSize(24);
@@ -74,7 +86,7 @@ app-main-page {
   &:extend(#itemSample);
   border-color: @itemBackground;
   box-shadow: 3px 3px 7px 0 rgba(46, 61, 73, 0.5);
-  margin: 20px auto;
+  margin: 10px auto;
   padding: 5px;
   background: @itemBackground;
   display: flex;

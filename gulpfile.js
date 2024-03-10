@@ -1,7 +1,6 @@
 const gulp = require("gulp");
 const postcss = require("gulp-postcss");
 const autoprefixer = require("autoprefixer");
-const terser = require("gulp-terser");
 const browserSync = require("browser-sync").create();
 const source = require("vinyl-source-stream");
 const buffer = require("vinyl-buffer");
@@ -11,7 +10,6 @@ const fs = require("fs");
 const Server = require('karma').Server;
 const parseConfig = require('karma').config.parseConfig;
 const glob = require("glob");
-let bs;
 const rollupStream = require("@rollup/stream");
 const commonjs = require("@rollup/plugin-commonjs");
 const nodeResolve = require("@rollup/plugin-node-resolve").nodeResolve;
@@ -20,6 +18,9 @@ const { exec } = require("child_process");
 const setProductionEnv = require("./processor").setProductionEnv;
 const updateComponentTemplateUrl = require("./processor").updateComponentTemplateUrl;
 const sass = require('gulp-sass')(require('sass'));
+const terser = require('@rollup/plugin-terser');
+
+let bs;
 
 // LOCAL DEVELOPMENT TASKS
 // ===============================================
@@ -105,8 +106,8 @@ function scripts()
  				extensions: ['.js', '.ts'],
  				transformMixedEsModules: true
  			})
-     	]
-    	};
+    ]
+  };
 
  	return rollupStream(options)
       .pipe(source("src/main.ts"))
@@ -230,7 +231,11 @@ function scriptsDist()
 {
 	const options = {
 		input: 'src/main.ts',
-		output: { sourcemap: 'hidden' },
+		output: {
+			file: "app.bundle.min.js",
+			sourcemap: 'hidden',
+			plugins: [terser()]
+		},
 		plugins: [
 			setProductionEnv(),
 			updateComponentTemplateUrl(),
@@ -241,14 +246,13 @@ function scriptsDist()
 			commonjs({
 				extensions: ['.js', '.ts'],
 				transformMixedEsModules: true
-			})
-    	]
-   	};
+			}),
+    ]
+  };
 
 	return rollupStream(options)
       .pipe(source("src/main.ts"))
       .pipe(buffer())
-			.pipe(terser())
  			.pipe(rename("app.bundle.min.js"))
       .pipe(gulp.dest("./dist"));
 }

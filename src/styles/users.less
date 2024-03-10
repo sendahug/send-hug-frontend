@@ -468,6 +468,10 @@ app-messages h3 {
   box-shadow: 5px 5px 7px 0 rgba(46, 61, 73, 0.5);
   min-height: 100px;
   overflow: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   /* Responsive styling for screens above 450px width */
   @media screen and (min-width: 450px) {
     width: 84%;
@@ -496,6 +500,8 @@ app-messages h3 {
 .mailboxMessages {
   &:extend(.itemList);
   border: none;
+  width: 90%;
+  margin: 0;
 }
 
 /* A Message / message thread */
@@ -583,10 +589,18 @@ app-messages .pageData {
   margin: 5px 10px;
   padding: 5px;
   text-decoration: none;
+  font-weight: normal !important;
   /* Responsive styling for screens above 550px width */
   @media screen and (min-width: 550px) {
     .fontSize(16);
   }
+}
+
+.threadsContainer {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 /* Delete all messages / threads button */
@@ -595,6 +609,7 @@ app-messages .pageData {
   text-align: center;
   margin: 10px Calc((100% - 170px) / 2) 15px;
   width: 170px;
+  font-weight: normal !important;
 }
 
 /* =================== Login/Error Box Styling =================== */

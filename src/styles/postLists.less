@@ -239,7 +239,7 @@ app-main-page .errorMessage {
 
 /* View full list buttons */
 .fullButton {
-  // font-family: @mainFont; // TODO: do we need this?
+  font-family: @mainFont;
   background: @mainBackground;
   padding-bottom: 10px;
   text-align: center;
@@ -255,6 +255,10 @@ app-main-page .errorMessage {
   padding: 10px 5%;
   left: 0;
   right: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 #items .listTitle {
@@ -285,16 +289,13 @@ app-main-page .errorMessage {
   /* Responsive styling for screens above 400px width */
   @media screen and (min-width: 400px) {
     width: 90%;
-    margin: 0 5% 10px;
   }
   /* Responsive styling for screens above 500px width */
   @media screen and (min-width: 500px) {
     width: 80%;
-    margin: 0 10% 15px;
   }
   /* Responsive styling for screens above 550px width */
   @media screen and (min-width: 550px) {
     width: 400px;
-    margin: 0 Calc((100% - 400px) / 2) 10px;
   }
 }

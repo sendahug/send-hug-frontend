@@ -261,6 +261,9 @@ app-new-item {
 #newMessage .newItem,
 #newPost .newItem {
   background: @boxesBackground;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   /* Responsive styling for screens above 525px width */
   @media screen and (min-width: 525px) {
     width: 90%;
@@ -293,8 +296,6 @@ app-new-item {
 .sendData {
   .fontSize(14);
   padding: 5px;
-  margin: 5px Calc((100% - 102px) / 2) 20px;
-  border-radius: 10px;
 }
 
 /* =================== Error Page Styling =================== */

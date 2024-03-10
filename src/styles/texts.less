@@ -43,13 +43,14 @@
   .fontSize(15);
   text-align: center;
   color: @linkColour;
-  margin: 10px Calc((100% - 100px) / 2) 20px;
-  padding-bottom: 20px;
+  margin: 10px;
+  padding-bottom: 0px;
+  display: block;
   white-space: nowrap;
   /* Responsive styling for screens above 700px width */
   @media screen and (min-width: 700px) {
     .fontSize(16);
-    margin: 10px Calc((100% - 105px) / 2) 20px;
+    margin: 10px;
   }
 }
 
@@ -74,12 +75,15 @@ app-about {
 /* About component links */
 .aboutLink {
   &:extend(.textViewLink);
+  width: 100%;
 }
 
 /* About component policies paragraph */
 #policies {
-  padding: 10px Calc((100% - 440px) / 2);
-  margin: 10px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* About component policy links */

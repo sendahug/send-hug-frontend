@@ -216,6 +216,7 @@ app-user-page h3 {
   .fontSize(15);
   margin: 5px 5px;
   border-radius: 10px;
+  font-weight: normal !important;
   /* Responsive styling for screens above 800px width */
   @media screen and (min-width: 800px) {
     .fontSize(16);
@@ -270,6 +271,7 @@ app-my-posts {
 /* User Posts title */
 app-my-posts #postsTitle {
   margin-top: 10px;
+  margin-bottom: 0;
 }
 
 /* List of user Posts */
@@ -325,7 +327,7 @@ app-my-posts .itemList {
 
 /* Notification block in user's posts */
 .userPost .notification {
-  margin: 10px auto 0;
+  margin: 10px 10px 0;
 }
 
 /* Pagination in user's posts */
@@ -371,6 +373,7 @@ app-my-posts #myPosts > div {
   .fontSize(15);
   margin: 10px Calc((100% - 130px) / 2) 20px;
   margin-top: 10px;
+  font-weight: normal;
   /* Responsive styling for screens above 600px width */
   @media screen and (min-width: 600px) {
     .fontSize(16);

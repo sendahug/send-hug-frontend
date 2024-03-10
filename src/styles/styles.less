@@ -257,6 +257,13 @@ app-new-item {
   margin: 0;
 }
 
+#newMessage,
+#newPost {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 /* New Item form */
 #newMessage .newItem,
 #newPost .newItem {
@@ -264,6 +271,7 @@ app-new-item {
   display: flex;
   flex-direction: column;
   align-items: center;
+  margin: 20px;
   /* Responsive styling for screens above 525px width */
   @media screen and (min-width: 525px) {
     width: 90%;
@@ -277,7 +285,7 @@ app-new-item {
   color: @textColour;
   padding: 7px 2px;
   margin: 10px 5px;
-  width: 100%;
+  width: calc(100% - 14px);
 }
 
 /* New message / post text field */
@@ -296,6 +304,8 @@ app-new-item {
 .sendData {
   .fontSize(14);
   padding: 5px;
+  font-weight: normal;
+  margin-bottom: 10px;
 }
 
 /* =================== Error Page Styling =================== */

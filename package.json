@@ -38,7 +38,6 @@
     "gulp-postcss": "^10.0.0",
     "gulp-rename": "^2.0.0",
     "gulp-replace": "^1.1.4",
-    "gulp-terser": "^2.1.0",
     "jasmine-core": "^5.1.2",
     "jasmine-spec-reporter": "^7.0.0",
     "karma": "^6.4.3",

@@ -12,7 +12,7 @@
     "test": "gulp test",
     "cypress": "cypress run",
     "e2e": "gulp e2e",
-    "build": "node env-config.js",
+    "build": "gulp dist",
     "start": "node server.js"
   },
   "overrides": {

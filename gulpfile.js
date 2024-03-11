@@ -19,6 +19,7 @@ const typescript = require("@rollup/plugin-typescript");
 const { exec } = require("child_process");
 const setProductionEnv = require("./processor").setProductionEnv;
 const updateComponentTemplateUrl = require("./processor").updateComponentTemplateUrl;
+const updateEnvironmentVariables = require("./processor").updateEnvironmentVariables;
 const less = require('gulp-less');
 
 // LOCAL DEVELOPMENT TASKS
@@ -95,6 +96,7 @@ function scripts()
  		input: 'src/main.ts',
  		output: { sourcemap: 'inline' },
  		plugins: [
+			updateEnvironmentVariables("development"),
 			updateComponentTemplateUrl(),
  			typescript({ exclude: ['**/*.spec.ts', 'e2e/**/*'] }),
  			nodeResolve({
@@ -230,6 +232,7 @@ function scriptsDist()
 		input: 'src/main.ts',
 		output: { sourcemap: 'hidden' },
 		plugins: [
+			updateEnvironmentVariables("live"),
 			setProductionEnv(),
 			updateComponentTemplateUrl(),
 			typescript({ exclude: ['**/*.spec.ts', 'e2e/**/*'] }),

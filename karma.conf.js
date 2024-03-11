@@ -1,6 +1,7 @@
 const path = require("path");
 const inlineComponentTemplate = require("./processor").inlineComponentTemplate;
 const inlineSVGs = require("./processor").inlineSVGs;
+const updateEnvironmentVariables = require("./processor").updateEnvironmentVariables;
 const coverage = require("rollup-plugin-istanbul");
 const commonjs = require("@rollup/plugin-commonjs");
 const nodeResolve = require("@rollup/plugin-node-resolve").nodeResolve;
@@ -19,6 +20,7 @@ module.exports = function (karma) {
     },
     rollupPreprocessor: {
       plugins: [
+        updateEnvironmentVariables("development"),
         coverage({
           exclude: ["node_modules/**", "**/*.spec.ts", "**/*.mock.ts"],
         }),

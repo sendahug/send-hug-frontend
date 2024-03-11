@@ -246,7 +246,7 @@ export class NotificationService {
             // request subscription
             this.swPush
               .requestSubscription({
-                serverPublicKey: this.publicKey,
+                serverPublicKey: this.publicKey as string,
                 // if it went successfully, send the subscription data to the server
               })
               .then((subscription) => {
@@ -300,7 +300,7 @@ export class NotificationService {
       // request a new push subscription
       this.swPush
         .requestSubscription({
-          serverPublicKey: this.publicKey,
+          serverPublicKey: this.publicKey as string,
         })
         .then((subscription) => {
           this.notificationsSub = subscription;

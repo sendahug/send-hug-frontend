@@ -105,7 +105,7 @@ exports.setProductionEnv = function () {
 
 /**
  * Updates the environment variables in the app based on
- * the environment variables 
+ * the environment variables
  */
 exports.updateEnvironmentVariables = function (currentMode = "development") {
   return {
@@ -126,8 +126,8 @@ exports.updateEnvironmentVariables = function (currentMode = "development") {
         code: magicString.toString(),
         map: magicString.generateMap(),
       };
-    }
-  }
+    },
+  };
 };
 
 /**

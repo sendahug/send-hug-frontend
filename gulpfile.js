@@ -17,9 +17,11 @@ const commonjs = require("@rollup/plugin-commonjs");
 const nodeResolve = require("@rollup/plugin-node-resolve").nodeResolve;
 const typescript = require("@rollup/plugin-typescript");
 const { exec } = require("child_process");
-const setProductionEnv = require("./processor").setProductionEnv;
-const updateComponentTemplateUrl = require("./processor").updateComponentTemplateUrl;
-const updateEnvironmentVariables = require("./processor").updateEnvironmentVariables;
+const {
+	setProductionEnv,
+	updateComponentTemplateUrl,
+	updateEnvironmentVariables
+} = require("./processor");
 const less = require('gulp-less');
 
 // LOCAL DEVELOPMENT TASKS

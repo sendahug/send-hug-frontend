@@ -1,7 +1,5 @@
 const path = require("path");
-const inlineComponentTemplate = require("./processor").inlineComponentTemplate;
-const inlineSVGs = require("./processor").inlineSVGs;
-const updateEnvironmentVariables = require("./processor").updateEnvironmentVariables;
+const { inlineComponentTemplate, inlineSVGs, updateEnvironmentVariables } = require("./processor");
 const coverage = require("rollup-plugin-istanbul");
 const commonjs = require("@rollup/plugin-commonjs");
 const nodeResolve = require("@rollup/plugin-node-resolve").nodeResolve;

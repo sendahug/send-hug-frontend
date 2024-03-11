@@ -1,0 +1,513 @@
+/* Original design by Macy Tyler */
+/* Responsive adjustments by Send a Hug team */
+@import "./variables.less";
+
+.headerAlerts {
+  left: 0;
+  right: 0;
+  box-shadow: 5px 5px 5px 0 rgba(46, 61, 73, 0.5);
+  border-radius: 5px;
+  text-align: center;
+  display: flex;
+  align-content: center;
+  justify-content: center;
+  background-color: #eaeaea;
+  margin: 0 5%;
+}
+
+.limitedSpaceNavLink() {
+  flex-direction: column;
+  height: 100%;
+  max-height: 600px;
+  width: 75%;
+  overflow-y: visible;
+  position: fixed;
+  left: -10px;
+  top: 0;
+  z-index: 100;
+  background: @boxesBackground;
+  align-items: center;
+  justify-content: center;
+}
+
+.navLinkButtonSample() {
+  text-align: center;
+
+  /* Responsive styling for screens up to 650px width */
+  @media screen and (max-width: 650px) {
+    padding: 10px 15px;
+    background: @boxesBackground;
+  }
+
+  /* Responsive styling for screens above 650px width */
+  @media screen and (min-width: 650px) {
+    background: @mainBackground;
+  }
+}
+
+/* =================== Header Styling =================== */
+/* Skip link */
+.skip-link {
+  position: absolute;
+  left: -400px;
+}
+
+/* Skip link when focused */
+.skip-link:focus {
+  .fontSize(16);
+  left: 0;
+  top: 0;
+}
+
+/* Site Header */
+#siteHeader {
+  width: 94%;
+  max-width: 94%;
+  background-color: @mainBackground;
+  margin: 0 3%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  /* Responsive styling for screens up to 650px width */
+  @media screen and (max-width: 650px) {
+    padding-top: 2%;
+  }
+}
+
+/* Site Header when the popup is on */
+#siteHeader.modal {
+  z-index: 0;
+}
+
+/* No internet connection message */
+#noInternet {
+  .fontSize(14);
+  &:extend(.headerAlerts);
+  width: 90%;
+  padding: 5px;
+  color: @headlineColour;
+  padding: 0;
+  /* Responsive styling for screens above 900px width */
+  @media screen and (min-width: 900px) {
+    height: 22px;
+    max-height: 22px;
+  }
+}
+
+/* Site logo */
+#siteLogo {
+  margin: 0 10px 0 0;
+  padding: 0 10px 0 0;
+  height: 100px;
+  width: 100px;
+  min-width: 60px;
+  /* Responsive styling for screens above 600px width */
+  @media screen and (min-width: 600px) and (max-width: 750px) {
+    height: 75px;
+    width: 75px;
+  }
+  /* Responsive styling for screens between 750px and 800px width */
+  @media screen and (min-width: 750px) and (max-width: 800px) {
+    height: 90px;
+    width: 90px;
+    margin: 0 15px 0 0;
+  }
+  /* Responsive styling for screens above 800px width */
+  @media screen and (min-width: 800px) {
+    padding: 0 15px 0 0;
+  }
+}
+
+/* Navigation Menu */
+#navMenu {
+  width: 100%;
+  max-width: 100%;
+  left: 0;
+  top: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: thin solid #cfcfcf;
+  /* Responsive styling for screens up to 400px width */
+  @media screen and (max-width: 400px) {
+    padding: 0;
+  }
+  /* Responsive styling for screens between 400px and 650px width */
+  @media screen and (min-width: 400px) and (max-width: 650px) {
+    width: 90%;
+    max-width: 90%;
+    margin: 0 5%;
+  }
+  /* Responsive styling for screens above 650px width */
+  @media screen and (min-width: 650px) {
+    margin: 0;
+    padding: 10px 0 0;
+  }
+}
+
+/* Menu button */
+#menuBtn:not(.hidden) {
+  display: block;
+  background: @mainBackground;
+}
+
+/* Menu button icon */
+.fa-bars {
+  font-size: 24px;
+  text-align: center;
+}
+
+/* Navigation menu - inner */
+.navLinks {
+  /* Responsive styling for screens up to 650px width */
+  @media screen and (max-width: 650px) {
+    .limitedSpaceNavLink();
+    padding: 10px;
+  }
+  /* Responsive styling for screens above 650px width */
+  @media screen and (min-width: 650px) {
+    flex-direction: row;
+    width: 100%;
+    background: @mainBackground;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+  }
+  /* Responsive styling for screens above 600px height */
+  @media screen and (max-height: 600px) {
+    overflow-y: scroll;
+  }
+}
+
+.navLinks:not(.hidden) {
+  display: flex;
+}
+
+/* Navigation menu - inner - for larger font size */
+.navLinks.large {
+  .limitedSpaceNavLink();
+  padding: 30px 10px;
+  overflow-y: scroll;
+}
+
+/* Navigation Item */
+.navLink {
+  .navLinkButtonSample();
+  color: @linkColour;
+  display: block;
+  border: none;
+  padding: 0 15px;
+  text-decoration: none;
+
+  /* Responsive styling for screens between 650px and 800px width */
+  @media screen and (min-width: 650px) and (max-width: 800px) {
+    padding: 0 10px;
+  }
+}
+
+/* Navigation Item in the large menu */
+.navLinks.large .navLink,
+.navLinks.large .navButton {
+  padding: 10px 15px;
+  background: @boxesBackground;
+}
+
+/* Navigation Item (hover) */
+.navLink:hover,
+.navLink.active:hover {
+  color: #a50d0d;
+}
+
+/* Navigation Item (current page) */
+.navLink.active {
+  color: #9d154e;
+}
+
+/* Navigation Item's text (current page) */
+.navLink.active .navLinkText {
+  .fontSize(15);
+}
+
+/* Navigation item pic (when it's an SVG rather than font awesome) */
+.navPic {
+  height: 30px;
+  padding: 7px 5px 4px;
+  text-align: center;
+  /* Responsive styling for screens above 650px width */
+  @media screen and (min-width: 650px) and (max-width: 700px) {
+    height: 26px;
+  }
+  /* Responsive styling for screens between 700px and 800px width */
+  @media screen and (min-width: 700px) and (max-width: 800px) {
+    height: 28px;
+  }
+}
+
+/* Navigation item icon */
+.navIcon {
+  font-size: 30px;
+  text-align: center;
+  /* Responsive styling for screens above 650px width */
+  @media screen and (min-width: 650px) and (max-width: 700px) {
+    font-size: 26px;
+  }
+  /* Responsive styling for screens between 700px and 800px width */
+  @media screen and (min-width: 700px) and (max-width: 800px) {
+    font-size: 28px;
+  }
+}
+
+/* Navigation item text */
+.navLinkText {
+  .fontSize(13);
+  padding-top: 5px;
+  white-space: nowrap;
+  /* Responsive styling for screens above 700px width */
+  @media screen and (min-width: 700px) {
+    .fontSize(14);
+  }
+}
+
+/* Navigation item image (for those that have it) */
+.navLink img {
+  padding: 5px 5px 6px;
+}
+
+/* Navigation buttons (notifications / search) */
+.navButton {
+  .navLinkButtonSample();
+  font-size: 24px;
+  /* Responsive styling for screens up to 650px width */
+  @media screen and (max-width: 650px) {
+    margin: 0;
+  }
+  /* Responsive styling for screens above 650px width */
+  @media screen and (min-width: 650px) {
+    font-size: 20px;
+  }
+  /* Responsive styling for screens above 700px width */
+  @media screen and (min-width: 700px) {
+    margin: 0 5px;
+    font-size: 23px;
+  }
+  /* Responsive styling for screens above 800px width */
+  @media screen and (min-width: 800px) {
+    font-size: 24px;
+  }
+}
+
+/* Notifications button */
+.newNotification {
+  &:extend(.notificationBlockSample);
+  padding: 2px;
+  background-color: @boxesBackground;
+  /* Responsive styling for screens up to 650px width */
+  @media screen and (max-width: 650px) {
+    margin-top: 20px;
+  }
+  /* Responsive styling for screens above 650px width */
+  @media screen and (min-width: 650px) {
+    margin-left: 10px;
+    background: @mainBackground;
+  }
+  /* Responsive styling for screens above 700px width */
+  @media screen and (min-width: 700px) {
+    margin-left: 5px;
+  }
+}
+
+/* Notifications button - badge */
+.newNotification .badge {
+  right: -5px;
+}
+
+/* Notifications button icon */
+#navNotific {
+  /* Responsive styling for screens up to 650px width */
+  @media screen and (max-width: 650px) {
+    padding: 2px;
+  }
+}
+
+.newNotification .badge {
+  background: #cfcfcf;
+}
+
+/* Text size button icon */
+#textSize {
+  margin: 2px;
+  padding: 2px;
+}
+
+/* Search form / font size adjustment */
+#search,
+#textPanel {
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  width: 100%;
+  max-width: 100%;
+  margin: 10px 0 5px;
+  left: 0;
+  right: 0;
+  border-radius: 5px;
+  box-shadow: 3px 3px 7px 0 rgba(46, 61, 73, 0.5);
+  position: relative;
+  /* Responsive design for screens above 400px width */
+  @media screen and (min-width: 400px) {
+    width: 90%;
+    max-width: 90%;
+    margin: 10px 5% 5px;
+  }
+  /* Responsive design for screens above 450px width */
+  @media screen and (min-width: 450px) {
+    justify-content: space-evenly;
+    padding: 0 20px;
+    width: calc(90% - 20px);
+    max-width: calc(90% - 20px);
+    margin: 10px calc(5% - 10px) 5px;
+  }
+  /* Responsive design for screens above 525px width */
+  @media screen and (min-width: 525px) {
+    width: calc(84% - 20px);
+    max-width: calc(84% - 20px);
+    margin: 10px calc(8% - 10px) 5px;
+  }
+  /* Responsive design for screens above 575px width */
+  @media screen and (min-width: 575px) {
+    width: calc(80% - 20px);
+    max-width: calc(80% - 20px);
+    margin: 10px calc(10% - 10px) 5px;
+  }
+  /* Responsive design for screens above 625px width */
+  @media screen and (min-width: 625px) {
+    width: calc(76% - 20px);
+    max-width: calc(76% - 20px);
+    margin: 10px calc(12% - 10px) 5px;
+  }
+  /* Responsive design for screens above 650px width */
+  @media screen and (min-width: 650px) {
+    justify-content: center;
+    width: calc(70% - 20px);
+    max-width: calc(70% - 20px);
+    margin: 10px calc(15% - 10px) 5px;
+  }
+  /* Responsive design for screens above 700px width */
+  @media screen and (min-width: 700px) {
+    width: calc(60% - 20px);
+    max-width: calc(60% - 20px);
+    margin: 10px calc(20% - 10px) 5px;
+  }
+}
+
+/* font size adjustment panel */
+#textPanel .appButton {
+  margin: 5px;
+  font-weight: normal;
+}
+
+/* Search form exit button */
+#search #exitButton {
+  &:extend(.textlessButton);
+  margin: 5px;
+  background: @mainBackground;
+  padding: 1px;
+  /* Responsive design for screens above 400px width */
+  @media screen and (min-width: 400px) {
+    padding: 1px 2px;
+  }
+}
+
+/* Search label */
+#searchLabel {
+  order: 1;
+  left: 0;
+  margin: 0;
+  align-self: center;
+  padding: 10px 0;
+  /* Responsive design for screens above 400px width */
+  @media screen and (min-width: 400px) {
+    margin: 0 7px;
+  }
+}
+
+/* Search field */
+#searchQuery {
+  order: 2;
+  padding: 0;
+  margin: 2px 3px;
+  height: 20px;
+  align-self: center;
+  /* Responsive design for screens above 400px width */
+  @media screen and (min-width: 400px) {
+    margin: 2px 5px;
+  }
+  /* Responsive design for screens above 550px width */
+  @media screen and (min-width: 550px) {
+    margin: 2px 10px;
+  }
+}
+
+/* Search button */
+#search .sendData {
+  order: 3;
+  margin: 1px;
+  align-self: center;
+  /* Responsive design for screens above 400px width */
+  @media screen and (min-width: 400px) {
+    margin: 1px 2px;
+  }
+}
+
+/* =================== Header Message Component Styling =================== */
+/* Via https://www.w3schools.com/howto/howto_css_loader.asp */
+/*  Header Message component */
+app-header-message {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 90%;
+  margin: 0 5%;
+  text-align: center;
+  z-index: 200;
+  height: 20px;
+}
+
+/*  Header Message div */
+app-header-message #headerMessage {
+  &:extend(.headerAlerts);
+  height: 20px;
+  max-height: 20px;
+  padding: 10px;
+}
+
+/*  Header Message message */
+#headerMessage #loadingMessage {
+  .fontSize(13);
+  color: @headlineColour;
+  margin: 0;
+  padding: 0;
+  /* Responsive styling for screens above 390px width */
+  @media screen and (min-width: 390px) {
+    .fontSize(14);
+  }
+  /* Responsive styling for screens above 500px width */
+  @media screen and (min-width: 500px) {
+    .fontSize(16);
+  }
+}
+
+/*  Header Message spinner */
+#headerMessage .spinner {
+  &:extend(.spinnerSample);
+  width: 15px;
+  height: 15px;
+  margin: 0 10px;
+  /* Responsive styling for screens above 500px width */
+  @media screen and (min-width: 500px) {
+    margin: 0 20px;
+  }
+}

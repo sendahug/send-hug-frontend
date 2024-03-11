@@ -17,7 +17,7 @@ const typescript = require("@rollup/plugin-typescript");
 const { exec } = require("child_process");
 const setProductionEnv = require("./processor").setProductionEnv;
 const updateComponentTemplateUrl = require("./processor").updateComponentTemplateUrl;
-const sass = require('gulp-sass')(require('sass'));
+const less = require('gulp-less');
 const terser = require('@rollup/plugin-terser');
 
 let bs;
@@ -79,13 +79,12 @@ function copyAssets()
 		.pipe(gulp.dest("localdev/assets/"));
 }
 
-//sets gulp to add prefixes with Autoprefixer after Dreamweaver outputs the Sass filee to CSS
-//once the prefixer finishes its job, outputs the file to the distribution folder
+//converts the less files to css and adds prefixes with Autoprefixer
 function styles()
 {
 	return gulp
-		.src("src/sass/*.sass")
-		.pipe(sass().on('error', sass.logError))
+		.src("src/styles/*.less")
+		.pipe(less())
 		.pipe(postcss([autoprefixer()]))
 		.pipe(gulp.dest("./localdev/css"));
 }
@@ -129,7 +128,7 @@ function watch()
 	gulp.watch("src/app/**/*.html", copyHtml)
 	gulp.watch("index.html", copyIndex);
 	gulp.watch("src/assets/**/*", gulp.parallel(copyAssets, copyHtml));
-	gulp.watch("src/sass/*.sass", styles);
+	gulp.watch("src/styles/*.less", styles);
 	gulp.watch(["src/**/*.ts", "!src/**/*.spec.ts", "!src/**/*.mock.ts"], scripts);
 	gulp.watch("src/manifest.webmanifest", copyManifest);
 }
@@ -215,13 +214,12 @@ function copyAssetsDist()
 		.pipe(gulp.dest("dist/assets/"));
 }
 
-//sets gulp to add prefixes with Autoprefixer after Dreamweaver outputs the Sass filee to CSS
-//once the prefixer finishes its job, outputs the file to the distribution folder
+//converts the less files to css and adds prefixes with Autoprefixer
 function stylesDist()
 {
 	return gulp
-		.src("src/sass/*.sass")
-		.pipe(sass().on('error', sass.logError))
+		.src("src/styles/*.less")
+		.pipe(less())
 		.pipe(postcss([autoprefixer()]))
 		.pipe(gulp.dest("./dist/css"));
 }

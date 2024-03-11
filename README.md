@@ -64,7 +64,7 @@ The site uses several tools to maximise compatibility:
 4. **Gulp-terser** - A Gulp plugin which minimises the single ES6 file (Rollup's output). For more info check the [Gulp-uglify](https://www.npmjs.com/package/gulp-uglify) page on NPM.
 5. **Gulp-Rename** - A gulp plugin used to rename files. Used to rename the main module JS and to change the directory name of all HTML files. For more info check the [Gulp-rename](https://www.npmjs.com/package/gulp-rename) page on NPM.
 6. **Gulp-replace** - A string replace plugin for Gulp. Used to change the templateUrls in the final JS file. For more info, check the [Gulp-replace](https://www.npmjs.com/package/gulp-replace) page on NPM.
-7. **Gulp-sass** - A gulp plugin for sass compilation. Used to compile the app's main styles, written in Sass, to the CSS used in deployment. For more info, check the [gulp-sass](https://www.npmjs.com/package/gulp-sass) page on NPM.
+7. **Gulp-less** - A gulp plugin for Less compilation. Used to compile the app's main styles, written in Less, to the CSS used in deployment. For more info, check the [gulp-less](https://www.npmjs.com/package/gulp-less) page on NPM.
 
 ### Angular
 

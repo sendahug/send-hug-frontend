@@ -40,14 +40,14 @@
   <!-- User reports pagination -->
   <div class="pagination" *ngIf="userReports.length" role="navigation">
     <button
-      [class]="currentUserReportsPage > 1 ? previousButtonClass : previousButtonClass + ' disabled'"
+      [ngClass]="currentUserReportsPage > 1 ? previousButtonClass : previousButtonClass + ' disabled'"
       [disabled]="currentUserReportsPage <= 1"
       (click)="prevPage('users')"
       aria-label="previous page of user reports"
     >Previous Page</button>
     <div class="pageCount">Page {{ currentUserReportsPage }} of {{ totalUserReportsPages }}</div>
     <button
-      class="totalUserReportsPages > currentUserReportsPage ? nextButtonClass : nextButtonClass + ' disabled'"
+      [ngClass]="totalUserReportsPages > currentUserReportsPage ? nextButtonClass : nextButtonClass + ' disabled'"
       [disabled]="totalUserReportsPages <= currentUserReportsPage"
       (click)="nextPage('users')"
       aria-label="next page of user reports"
@@ -93,14 +93,14 @@
   <!-- Post reports pagination -->
   <div class="pagination" *ngIf="postReports.length" role="navigation">
     <button
-      class="currentPostReportsPage > 1 ? previousButtonClass : previousButtonClass + ' disabled'"
+      [ngClass]="currentPostReportsPage > 1 ? previousButtonClass : previousButtonClass + ' disabled'"
       [disabled]="currentPostReportsPage <= 1"
       (click)="prevPage('posts')"
       aria-label="previous page of post reports"
     >Previous Page</button>
     <div class="pageCount">Page {{ currentPostReportsPage }} of {{ totalPostReportsPages }}</div>
     <button
-      [class]="totalPostReportsPages > currentPostReportsPage ? nextButtonClass : nextButtonClass + ' disabled'"
+      [ngClass]="totalPostReportsPages > currentPostReportsPage ? nextButtonClass : nextButtonClass + ' disabled'"
       [disabled]="totalPostReportsPages <= currentPostReportsPage"
       (click)="nextPage('posts')"
       aria-label="next page of post reports"

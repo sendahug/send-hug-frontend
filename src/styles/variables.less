@@ -1,0 +1,121 @@
+/* Original design by Macy Tyler */
+/* Responsive adjustments by Send a Hug team */
+
+/* =================== Variables & Mixins =================== */
+/* Font size mixin */
+.fontSize(@pxSize) {
+  @remValue: @pxSize * 0.0625; // px to rem conversion: px / 10 * 0.625
+  font-size: ~"@{remValue}rem";
+}
+
+/* Fonts */
+@font-face {
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 400;
+  src:
+    local("Montserrat Regular"),
+    local("Montserrat-Regular"),
+    url("../assets/fonts/Montserrat-Regular.ttf") format("ttf");
+}
+
+@font-face {
+  font-family: "Montserrat";
+  font-style: bold;
+  font-weight: 700;
+  src:
+    local("Montserrat Bold"),
+    local("Montserrat-Bold"),
+    url("../assets/fonts/Montserrat-Bold.ttf") format("ttf");
+}
+
+/* Colour Palette */
+@mainBackground: #f2f2f2;
+@boxesBackground: #e2e2e2;
+@itemBackground: #ffffff;
+@buttonBackground: linear-gradient(90deg, rgba(224, 31, 111, 1) 40%, rgba(231, 8, 46, 1) 100%);
+@headlineColour: #1f1f1f;
+@textColour: #000000;
+@linkColour: #404040;
+@profileLinkColour: #70315b;
+
+/* Fonts */
+@mainFont: "Montserrat", sans-serif;
+
+/* =================== Classes for extension =================== */
+/* Frame Sample */
+#frameSample {
+  border: thin solid rgba(37, 37, 37, 1);
+  border-radius: 5px;
+}
+
+/* Item (message/post) Sample */
+#itemSample {
+  border: thin solid #ffffff;
+  border-radius: 10px;
+  box-shadow: 3px 3px 7px 0 rgba(46, 61, 73, 0.5);
+}
+
+/* Error message sample */
+#errorMessBox {
+  padding: 10px;
+  width: 80%;
+  margin: 5px calc((20% - 20px) / 2);
+}
+
+.spinnerSample {
+  border-radius: 50%;
+  animation: spin 2s linear infinite;
+  border: 3px solid #f3f3f3; /* Light grey */
+  border-top: 3px solid #e01f6f; /* Pink-ish */
+}
+
+/*  Header Message spinner rotate animation */
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.notificationBlockSample {
+  position: relative;
+  display: inline-block;
+}
+
+.textlessButton {
+  background-color: @itemBackground;
+  color: @textColour;
+  padding: 5px;
+  min-width: 44px;
+  min-height: 44px;
+  text-align: center;
+  border: none;
+  border-radius: 5px;
+}
+
+/* Item List */
+.itemList {
+  padding-left: 0;
+  list-style: none;
+}
+
+/* Notifications settings buttons */
+.NotificationButton {
+  .fontSize(13);
+  text-align: center;
+  border-radius: 10px;
+  padding: 5px;
+  margin: 5px;
+  /* Responsive design for screens above 500px width */
+  @media screen and (min-width: 550px) {
+    .fontSize(14);
+    margin: 5px 8px;
+  }
+  /* Responsive design for screens above 650px width */
+  @media screen and (min-width: 650px) {
+    margin: 5px 10px;
+  }
+}

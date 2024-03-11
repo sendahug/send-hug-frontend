@@ -46,6 +46,8 @@
 		<input type="color" id="itemColour" value="{{ iconEditForm.get('itemColour')?.value }}" formControlName="itemColour">
 	</div>
 	
-	<button type="submit" (click)="updateIcon($event)" class="appButton iconButton">Update Icon</button>
-	<button type="submit" (click)="dismiss()" class="appButton iconButton">Never Mind</button>
+	<div class="buttonsContainer">
+		<button type="submit" (click)="dismiss()" class="appButton iconButton">Never Mind</button>
+		<button type="submit" (click)="updateIcon($event)" class="appButton iconButton">Update Icon</button>
+	</div>
 </form>

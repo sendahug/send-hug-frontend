@@ -53,7 +53,7 @@
 	</ul>
 
 		<!-- If the user is looking at threads -->
-	<div *ngIf="messType == 'threads'">
+	<div class="threadsContainer" *ngIf="messType == 'threads'">
 		<ul class="userThreads" *ngIf="userThreadsFormatted().length" aria-describedby="messType">
 			<li class="userThread" *ngFor="let thread of userThreadsFormatted()" aria-describedby="messType" id="{{messType + thread.id}}">
 				<div class="messageProfilePic">
@@ -87,7 +87,7 @@
 	</div>
 	
 	<!-- If the user is looking at a specific thread -->
-	<div *ngIf="messType == 'thread'">
+	<div class="threadsContainer" *ngIf="messType == 'thread'">
 		<ul class="threadMessages" aria-describedby="messType">
 			<li class="userMessage" *ngFor="let message of messages()" aria-describedby="messType"  id="{{messType + message.id}}">
 				<div class="messageProfilePic">

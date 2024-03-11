@@ -1,5 +1,6 @@
 const MagicString = require("magic-string");
 const fs = require("fs");
+const dotenv = require("dotenv");
 
 /**
  * Rollup plugin that replaces the Angular templateUrl in test files with
@@ -100,6 +101,33 @@ exports.setProductionEnv = function () {
       };
     },
   };
+};
+
+/**
+ * Updates the environment variables in the app based on
+ * the environment variables 
+ */
+exports.updateEnvironmentVariables = function (currentMode = "development") {
+  return {
+    name: "rollup-plugin-update-environment-variables",
+    transform(code) {
+      const magicString = new MagicString(code);
+      dotenv.config({
+        path: `./.env.${currentMode}`,
+      });
+
+      magicString.replaceAll(/process\.env\.(.+),/g, (match) => {
+        const envVar = match.split(".")[2].split(",")[0];
+        const value = process.env[envVar];
+        return `'${value}',`;
+      });
+
+      return {
+        code: magicString.toString(),
+        map: magicString.generateMap(),
+      };
+    }
+  }
 };
 
 /**

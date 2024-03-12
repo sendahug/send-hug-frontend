@@ -11,7 +11,7 @@
 		<app-single-post  *ngFor="let item of newPosts()"
 						 [post]="item"
 						 [type]="'n'"
-						 [class]="'newItem'"></app-single-post>
+						 [containerClass]="'newItem'"></app-single-post>
 	</ul>
 	
 	<!-- If there are no items in the list -->
@@ -33,7 +33,7 @@
 		<app-single-post  *ngFor="let item of suggestedPosts()"
 						 [post]="item"
 						 [type]="'s'"
-						 [class]="'sugItem'"></app-single-post>
+						 [containerClass]="'sugItem'"></app-single-post>
 	</ul>
 
 	<!-- If there are no items in the list -->

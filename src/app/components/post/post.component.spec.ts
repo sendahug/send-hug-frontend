@@ -54,7 +54,7 @@ import { mockAuthedUser } from "@tests/mockData";
 @Component({
   selector: "app-page-mock",
   template: `
-    <app-single-post [post]="mockPost" [type]="'n'" [class]="'newItem'"></app-single-post>
+    <app-single-post [post]="mockPost" [type]="'n'" [containerClass]="'newItem'"></app-single-post>
   `,
 })
 class MockPage {

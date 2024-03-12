@@ -48,7 +48,7 @@ import { Post } from "@app/interfaces/post.interface";
 export class SinglePost implements AfterViewChecked, OnInit, OnDestroy {
   @Input() post!: Post;
   @Input() type!: "n" | "s";
-  @Input() class!: string;
+  @Input() containerClass!: string;
   postId = computed(() => `${this.type}Post${this.post?.id || ""}`);
   // edit popup sub-component variables
   postToEdit: Post | undefined;

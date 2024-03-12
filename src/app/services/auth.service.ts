@@ -51,8 +51,8 @@ import { ApiClientService } from "@app/services/apiClient.service";
 export class AuthService {
   // Auth0 variable
   auth0 = new Auth0.WebAuth({
-    clientID: environment.auth0.clientID,
-    domain: environment.auth0.domain,
+    clientID: environment.auth0.clientID as string,
+    domain: environment.auth0.domain as string,
     responseType: "token",
     redirectUri: environment.auth0.redirectUri,
     audience: environment.auth0.audience,

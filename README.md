@@ -165,22 +165,23 @@ The project was hosted live on Heroku (we're currently looking at alternatives, 
 2. Install the Heroku command line interface.
 3. In your Terminal, enter `heroku login`. This triggers logging in via the CLI.
 4. Enter `heroku create <APP_NAME>` (with your own app name). If successful, Heroku returns the live version's URL (will be referred to as <LIVE_URL>) and the Git repo link (will be referred to as <GIT_URL>).
-5. Make sure you're in the top directory (FSND-capstone). In your terminal, enter `git remote add heroku-client <GIT_URL>`.
-6. Enter `git push heroku-client master`. This triggers the app build. If successful, you'll get a 'Verifying deploy... done.' message.
-7. Add the following environment variables (via CLI or via the Heroku website):
-   - PRODUCTION - set to true
+5. In your terminal, enter `git remote add heroku-client <GIT_URL>`.
+6. Update the live environment file with the correct variable values:
    - AUTH0_DOMAIN - set with your own Auth0 domain
    - AUTH0_CLIENT - set with your own client ID from Auth0
    - AUDIENCE - set with your own audience from Auth0
    - LOGIN_REDIRECT - set to your <LIVE_URL> (or wherever in the app you want the user to be redirected to) to ensure after login the user will be redirected to your app
    - LOGOUT_REDIRECT - set to your <LIVE_URL> (or wherever in the app you want the user to be redirected to) to ensure after login the user will be redirected to your app
    - BACKEND_URL - set with your own backend URL (necessary for making requests to the backend!)
-8. On your Auth0 application configuration, make sure to:
+7. Enter `git push heroku-client master`. This triggers the app build. If successful, you'll get a 'Verifying deploy... done.' message.
+8. Add the following environment variables (via CLI or via the Heroku website):
+   - PRODUCTION - set to true
+9. On your Auth0 application configuration, make sure to:
    - Add your new <LIVE_URL> to 'Allowed Callback URLs'
    - Add your new <LIVE_URL> to 'Allowed Logout URLs'
    - Add your new <LIVE_URL> to 'Allowed Web Origins'
    - Add your new <LIVE_URL> to 'Allowed Origins (CORS)'
-9. All done! Now you can visit your <GIT_URL> to see the live app.
+10. All done! Now you can visit your <GIT_URL> to see the live app.
 
 ## Known Issues
 

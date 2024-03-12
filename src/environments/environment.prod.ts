@@ -1,14 +1,14 @@
 export const environment = {
   production: true,
   auth0: {
-    domain: process.env.auth0domain,
-    clientID: process.env.auth0client,
-    audience: process.env.audience,
-    redirectUri: process.env.loginurl,
-    logoutUri: process.env.logouturl,
+    domain: process.env.AUTH0_DOMAIN,
+    clientID: process.env.AUTH0_CLIENT,
+    audience: process.env.AUDIENCE,
+    redirectUri: process.env.LOGIN_REDIRECT,
+    logoutUri: process.env.LOGOUT_REDIRECT,
   },
   backend: {
-    domain: process.env.apiurl,
+    domain: process.env.BACKEND_URL,
   },
-  vapidKey: "",
+  vapidKey: process.env.PUBLIC_KEY,
 };

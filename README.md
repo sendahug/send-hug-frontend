@@ -25,7 +25,8 @@ The project is open source, so feel free to use parts of the code. However, the 
 
 ### Requirements
 
-- Node.js
+- Node.js LTS
+- The back-end of the project (which you can clone [here](https://github.com/sendahug/send-hug-backend)).
 
 ### Developers
 
@@ -47,56 +48,9 @@ The project is open source, so feel free to use parts of the code. However, the 
 
 The app (located in [src/app](./src/app)) contains the main module (AppModule), defined in **app.module.ts**, and a routing module, defined in **app-routing.module.ts**.
 
-The main module contains 15 components, 7 services and 7 interfaces. Each component folder contains both the HTML template and the component TypeScript file.
+The main module contains over 20 components, 8 services and 9 interfaces. Each component folder contains both the HTML template and the component TypeScript file.
 
-### Components
-
-**Located in:** [src/app/components](./src/app/components)
-
-1. **aboutApp** - Displays an 'about the app' page.
-2. **adminDashboard** - An admin dashboard, allowing admins to handle reports, user blocks and filtered words easily.
-3. **errorPage** - Displays a 'not found' error page if the user attempts to navigate (via Angular's router) to a location that doesn't exist.
-4. **fullList** - Displays a full list of paginated posts, depending on the list requested by the user (new or suggested).
-5. **headerMessage** - A loader displayed, displayed while the app is fetching data from the backend.
-6. **iconEditor** - A settings sub-component for choosing and editing user icons.
-7. **loader** - A loader, displayed while the app is fetching data from the backend; if this isn't the user's first visit to the app, the loader only stays while the app is fetching data from IndexedDB.
-8. **mainPage** - The main page of the app. Displays two lists to the user ('suggested' and 'new') - each with ten posts, as well as 'view full list' links.
-9. **messages** - A messages screen. Displays a paginated list of messages sent to the user.
-10. **myPosts** - A sub-component of the userPage component. Displays a paginated list of posts by the user whose profile is viewed.
-11. **newItem** - A form component allowing users to create a new item (message or post).
-12. **notifications** - A tab component to display the latest notifications for the currently logged-in user.
-13. **popUp** - A sub-component displaying a popup screen with a form for editing items (posts or a user's display name).
-14. **post** - A single post sub-component, containing all of a post's functionality.
-15. **searchResults** - A component to display the results of the user's search.
-16. **settings** - Lets the user control their settings for various components, such as the notifications component.
-17. **siteMap** - A site map, containing a list of the site's pages.
-18. **sitePolicies** - A component containing the site's T&Cs, privacy policy and cookies policy.
-19. **supportPage** - A component containing FAQs and details about communicating with the Send A Hug team.
-20. **userPage** - Displays the user's data as fetched from the backend, as well as a list of the user's posts (as myPost component).
-
-### Interfaces
-
-**Located in:** [src/app/interfaces](./src/app/interfaces)
-
-1. **alert** - An alert interface. Displays a popup alert in the bottom of the screen with an error/success message (depending on the response from the server).
-2. **message** - A message interface. Used when fetching messages and displaying them to the user, as well as when the user creates a new message. Reflects the Message model in the backend.
-3. **otherUser** - A light version of the user interface, used to display other users' data (excluding more sensitive information like JWT and Auth0 ID).
-4. **post** - A post interface. Used for all posts lists, as well as for creating a new post. Reflects the Post model in the backend.
-5. **report** - A report interface, for submitting and reading user and post reports.
-6. **thread** - A thread interface, for easily displaying message threads.
-7. **user** - A user interface. Used for holding user data as fetched from the server. Reflects the User model in the backend.
-
-### Services
-
-**Located in:** [src/app/services](./src/app/services)
-
-1. **admin** - An admin service for handling all admin dashboard related methods. This includes handling user and post reports, blocking and unblocking users and managing filters list.
-2. **alerts** - Creates and displays an alert to the user, based on the response from the server and using the alert interface.
-3. **auth** - Handles authentication-related methods, including login, logout, token refresh and getting and changing user data. View [Authentication](#Authentication) for more details about the authentication process.
-4. **items** - Handles communications with the backend for non-post related communications. Deals with fetching user posts, handling messages (fetching, sending and deleting), running a search and sending a report.
-5. **notifications** - Handles all notification-related communication, including push notifications subscription and setting the notifications' refresh time.
-6. **posts** - Handles all backend communication for post-related communications (except for a specific user's posts). This includes getting, creating, editing and deleting posts.
-7. **swmanager** - Handles the Service Worker and the IDBPromised database created for offline usage.
+The components (both view-defining components and smaller components) are located in [src/app/components](./src/app/components). The interfaces, used to define the types of objects in the app, are located in [src/app/interfaces](./src/app/interfaces). The injectable services, which perform a various array of tasks, are located in [src/app/services](./src/app/services).
 
 ## Dependencies
 
@@ -107,11 +61,10 @@ The site uses several tools to maximise compatibility:
 1. **Gulp** - Gulp enables running tasks automatically. You can read more on the [Gulp website](https://gulpjs.com). Gulp is a Node.js tool, so it requires installing Node.
 2. **Gulp-Postcss** with **Autoprefixer** Plugin - A Gulp plugin which adds the necessary browser prefixes to the CSS file. For more info check the [Gulp-postcss](https://www.npmjs.com/package/gulp-postcss) page and the [Autoprefixer](https://www.npmjs.com/package/autoprefixer) page on NPM.
 3. **Rollup** (with @rollup/stream) - A module bundler for JS. Rollup bundles up the main module (AppModule) and converts it from TypeScript to ES6. For more info, check the [Rollup repo](https://github.com/rollup/rollup) and Gulp's [Rollup + Gulp recipe](https://github.com/gulpjs/gulp/blob/master/docs/recipes/rollup-with-rollup-stream.md).
-4. **Gulp-Babel** - A Gulp plugin for the transpiler Babel. Converts ES6 output to the highly supported ES5 (currently isn't used). For more info check the plugin's [GitHub](https://github.com/babel/gulp-babel) repository.
-5. **Gulp-Uglify** - A Gulp plugin which minimises the single ES5 file (Babel's output). For more info check the [Gulp-uglify](https://www.npmjs.com/package/gulp-uglify) page on NPM.
-6. **Gulp-Sourcemaps** - A Gulp plugin utilizing the source maps tool. For more info check the [Gulp-sourcemaps](https://www.npmjs.com/package/gulp-sourcemaps) page on NPM.
-7. **Gulp-Rename** - A gulp plugin used to rename files. Used to rename the main module JS and to change the directory name of all HTML files. For more info check the [Gulp-rename](https://www.npmjs.com/package/gulp-rename) page on NPM.
-8. **Gulp-replace** - A string replace plugin for Gulp. Used to change the templateUrls in the final JS file. For more info, check the [Gulp-replace](https://www.npmjs.com/package/gulp-replace) page on NPM.
+4. **Gulp-terser** - A Gulp plugin which minimises the single ES6 file (Rollup's output). For more info check the [Gulp-uglify](https://www.npmjs.com/package/gulp-uglify) page on NPM.
+5. **Gulp-Rename** - A gulp plugin used to rename files. Used to rename the main module JS and to change the directory name of all HTML files. For more info check the [Gulp-rename](https://www.npmjs.com/package/gulp-rename) page on NPM.
+6. **Gulp-replace** - A string replace plugin for Gulp. Used to change the templateUrls in the final JS file. For more info, check the [Gulp-replace](https://www.npmjs.com/package/gulp-replace) page on NPM.
+7. **Gulp-less** - A gulp plugin for Less compilation. Used to compile the app's main styles, written in Less, to the CSS used in deployment. For more info, check the [gulp-less](https://www.npmjs.com/package/gulp-less) page on NPM.
 
 ### Angular
 
@@ -155,7 +108,7 @@ This project's tests are run using the Jasmine framework and the Karma runner. T
    - **karma-sourcemap-loader** - A preprocessor that loads existing source maps. [NPM page.](https://www.npmjs.com/package/karma-sourcemap-loader)
    - **karma-rollup-preprocessor** - A rollup preprocessor for karma, used to bundle up the tests. [NPM page.](https://www.npmjs.com/package/karma-rollup-preprocessor)
    - **karma-viewport** - A karma framework used to gain access to the viewport in tests. [NPM page.](https://www.npmjs.com/package/karma-viewport)
-3. **Protractor** - An open-source end-to-end test framework. For more information, check Protractor's [official site](http://www.protractortest.org/#/).
+3. **Cypress** - An open-source end-to-end test framework. For more information, check Cypress's [official site](https://www.cypress.io/).
 
 ### Production Dependencies
 
@@ -196,7 +149,7 @@ Tests are written in TypeScript and each component's tests are located in the sa
 
 ### Running Tests
 
-Running tests is done through the dedicated Gulp task. All you need to do is run `gulp test` in the terminal; this will start Karma and trigger Webpack's compilation of tests and project files.
+Running tests is done through the dedicated Gulp task. All you need to do is run `gulp test` or `npm run test` in the terminal; this will start Karma and trigger Webpack's compilation of tests and project files.
 
 ### End-to-End Tests
 
@@ -212,22 +165,23 @@ The project was hosted live on Heroku (we're currently looking at alternatives, 
 2. Install the Heroku command line interface.
 3. In your Terminal, enter `heroku login`. This triggers logging in via the CLI.
 4. Enter `heroku create <APP_NAME>` (with your own app name). If successful, Heroku returns the live version's URL (will be referred to as <LIVE_URL>) and the Git repo link (will be referred to as <GIT_URL>).
-5. Make sure you're in the top directory (FSND-capstone). In your terminal, enter `git remote add heroku-client <GIT_URL>`.
-6. Enter `git subtree push --prefix frontend heroku-client master`. This triggers the app build. If successful, you'll get a 'Verifying deploy... done.' message.
-7. Add the following environment variables (via CLI or via the Heroku website):
-   - PRODUCTION - set to true
+5. In your terminal, enter `git remote add heroku-client <GIT_URL>`.
+6. Update the live environment file with the correct variable values:
    - AUTH0_DOMAIN - set with your own Auth0 domain
    - AUTH0_CLIENT - set with your own client ID from Auth0
    - AUDIENCE - set with your own audience from Auth0
    - LOGIN_REDIRECT - set to your <LIVE_URL> (or wherever in the app you want the user to be redirected to) to ensure after login the user will be redirected to your app
    - LOGOUT_REDIRECT - set to your <LIVE_URL> (or wherever in the app you want the user to be redirected to) to ensure after login the user will be redirected to your app
    - BACKEND_URL - set with your own backend URL (necessary for making requests to the backend!)
-8. On your Auth0 application configuration, make sure to:
+7. Enter `git push heroku-client master`. This triggers the app build. If successful, you'll get a 'Verifying deploy... done.' message.
+8. Add the following environment variables (via CLI or via the Heroku website):
+   - PRODUCTION - set to true
+9. On your Auth0 application configuration, make sure to:
    - Add your new <LIVE_URL> to 'Allowed Callback URLs'
    - Add your new <LIVE_URL> to 'Allowed Logout URLs'
    - Add your new <LIVE_URL> to 'Allowed Web Origins'
    - Add your new <LIVE_URL> to 'Allowed Origins (CORS)'
-9. All done! Now you can visit your <GIT_URL> to see the live app.
+10. All done! Now you can visit your <GIT_URL> to see the live app.
 
 ## Known Issues
 

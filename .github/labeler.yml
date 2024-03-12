@@ -1,0 +1,52 @@
+Docs:
+  - changed-files:
+      - any-glob-to-any-file: "**/*.md"
+
+src/components:
+  - changed-files:
+      - any-glob-to-any-file:
+          - src/app/**/*.component.ts
+          - src/app/**/*.component.html
+
+src/services:
+  - changed-files:
+      - any-glob-to-any-file: src/app/**/*.service.ts
+
+src/styles:
+  - changed-files:
+      - any-glob-to-any-file: src/styles/*
+
+src/assets:
+  - changed-files:
+      - any-glob-to-any-file: src/assets/*
+
+src/env:
+  - changed-files:
+      - any-glob-to-any-file: src/environments/*
+
+tests:
+  - changed-files:
+      - any-glob-to-any-file:
+          - src/tests/*
+          - src/tests.ts
+          - src/**/*.spec.ts
+          - e2e/*
+          - cypress.config.ts
+          - .pa11yci
+          - .prettierrc.json
+
+dependencies:
+  - changed-files:
+      - any-glob-to-any-file:
+          - package.json
+          - package-lock.json
+          - .github/workflows/*
+
+CI/CD:
+  - changed-files:
+      - any-glob-to-any-file:
+          - .github/*
+          - .circleci/*
+
+release:
+  - head-branch: "dev"

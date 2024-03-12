@@ -48,6 +48,7 @@ import { AuthService } from "./services/auth.service";
 import { SWManager } from "./services/sWManager.service";
 import { NotificationService } from "./services/notifications.service";
 import { mockAuthedUser } from "@tests/mockData";
+import { AppAlert } from "./components/appAlert/appAlert.component";
 
 declare const viewport: any;
 
@@ -64,7 +65,7 @@ describe("AppComponent", () => {
         ServiceWorkerModule.register("sw.js", { enabled: false }),
         FontAwesomeModule,
       ],
-      declarations: [AppComponent, NotificationsTab],
+      declarations: [AppComponent, NotificationsTab, AppAlert],
       providers: [{ provide: APP_BASE_HREF, useValue: "/" }],
     }).compileComponents();
 

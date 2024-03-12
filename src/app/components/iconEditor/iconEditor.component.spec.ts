@@ -191,7 +191,7 @@ describe("IconEditor", () => {
     iconEditor.iconEditForm.get("itemColour")?.setValue("#000000");
 
     // after the update
-    iconEditorDOM.querySelectorAll(".iconButton")[0].click();
+    iconEditorDOM.querySelectorAll(".iconButton")[1].click();
     expect(iconEditor.authService.userData.selectedIcon).toBe("bear");
     expect(iconEditor.authService.userData.iconColours.character).toBe("#000000");
     expect(iconEditor.authService.userData.iconColours.lbg).toBe("#000000");

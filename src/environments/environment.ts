@@ -5,17 +5,16 @@
 export const environment = {
   production: false,
   auth0: {
-    domain: "dev-sbac.auth0.com",
-    clientID: "rgZL4I04pep3P2GRIEVQtDkWcHjv9sru",
-    audience: "sendhug",
-    redirectUri: "http://localhost:3000/user",
-    logoutUri: "http://localhost:3000",
+    domain: process.env.AUTH0_DOMAIN,
+    clientID: process.env.AUTH0_CLIENT,
+    audience: process.env.AUDIENCE,
+    redirectUri: process.env.LOGIN_REDIRECT,
+    logoutUri: process.env.LOGOUT_REDIRECT,
   },
   backend: {
-    domain: "http://localhost:5000",
+    domain: process.env.BACKEND_URL,
   },
-  vapidKey:
-    "BOpyfsj3-e89Gao4zPQHULL1alKy5z7oMnTCT3ZhgND_wGCNGbL_fPXnD5heYAT2kZLDN-XznXk0mVvBlbjm96o",
+  vapidKey: process.env.PUBLIC_KEY,
 };
 
 /*

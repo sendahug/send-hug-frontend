@@ -31,7 +31,7 @@
 */
 
 // Angular imports
-import { Component } from "@angular/core";
+import { Component, signal, computed } from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
 
 // App imports
@@ -57,11 +57,17 @@ interface BlockedUser {
 })
 export class AdminBlocks {
   blockedUsers: BlockedUser[] = [];
-  currentPage = 1;
-  totalPages = 1;
+  currentPage = signal(1);
+  totalPages = signal(1);
   isLoading = false;
-  nextButtonClass = "appButton nextButton";
-  previousButtonClass = "appButton prevButton";
+  previousButtonClass = computed(() => ({
+    "appButton prevButton": true,
+    disabled: this.currentPage() <= 1,
+  }));
+  nextButtonClass = computed(() => ({
+    "appButton nextButton": true,
+    disabled: this.currentPage() >= this.totalPages(),
+  }));
   blockForm = this.fb.group({
     blockID: [undefined as number | undefined, [Validators.required, Validators.min(1)]],
     blockLength: ["oneDay", [Validators.required]],
@@ -86,12 +92,12 @@ export class AdminBlocks {
 
     this.apiClient
       .get<{ success: boolean; users: BlockedUser[]; total_pages: number }>("users/blocked", {
-        page: `${this.currentPage}`,
+        page: `${this.currentPage()}`,
       })
       .subscribe({
         next: (data) => {
           this.blockedUsers = data.users;
-          this.totalPages = data.total_pages;
+          this.totalPages.set(data.total_pages);
           this.isLoading = false;
         },
         error: () => {
@@ -181,7 +187,7 @@ export class AdminBlocks {
   Programmer: Shir Bar Lev.
   */
   nextPage() {
-    this.currentPage += 1;
+    this.currentPage.set(this.currentPage() + 1);
     this.fetchBlocks();
   }
 
@@ -193,7 +199,7 @@ export class AdminBlocks {
   Programmer: Shir Bar Lev.
   */
   prevPage() {
-    this.currentPage -= 1;
+    this.currentPage.set(this.currentPage() - 1);
     this.fetchBlocks();
   }
 }

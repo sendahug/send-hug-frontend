@@ -31,7 +31,15 @@
 */
 
 // Angular imports
-import { Component, Input, computed, AfterViewChecked, OnInit, OnDestroy } from "@angular/core";
+import {
+  Component,
+  Input,
+  computed,
+  AfterViewChecked,
+  OnInit,
+  OnDestroy,
+  signal,
+} from "@angular/core";
 import { faComment, faEdit, faFlag } from "@fortawesome/free-regular-svg-icons";
 import { faHandHoldingHeart, faTimes, faEllipsisV } from "@fortawesome/free-solid-svg-icons";
 import { Subscription } from "rxjs";
@@ -63,6 +71,34 @@ export class SinglePost implements AfterViewChecked, OnInit, OnDestroy {
   lastFocusedElement: any;
   waitFor = "main page";
   subscriptions: Subscription[] = [];
+  shouldShowSubmenu = signal(true);
+  shouldMenuFloat = signal(false);
+  menuButtonClass = computed(() => ({
+    "textlessButton menuButton": true,
+    hidden: !this.shouldMenuFloat(),
+  }));
+  buttonsContainerClass = computed(() => ({
+    buttonsContainer: true,
+    float: this.shouldMenuFloat(),
+  }));
+  subMenuClass = computed(() => ({
+    subMenu: true,
+    float: this.shouldMenuFloat(),
+    hidden: !this.shouldShowSubmenu(),
+  }));
+  displayedButtons = computed(() => {
+    let initialButtonsCount = 2;
+
+    if (this.authService.canUser("patch:any-post")) {
+      initialButtonsCount += 1;
+    }
+
+    if (this.authService.canUser("delete:any-post")) {
+      initialButtonsCount += 1;
+    }
+
+    return initialButtonsCount;
+  });
   // icons
   faComment = faComment;
   faEdit = faEdit;
@@ -118,32 +154,24 @@ export class SinglePost implements AfterViewChecked, OnInit, OnDestroy {
     const post = document.getElementById(this.postId())?.parentElement as HTMLLIElement;
     if (!post) return;
     const buttonsContainer = post?.querySelectorAll(".buttonsContainer")[0] as HTMLDivElement;
-    const sub = post?.querySelectorAll(".subMenu")[0] as HTMLDivElement;
 
-    // remove the hidden label check the menu's width
-    buttonsContainer.classList.remove("float");
-    sub.classList.remove("hidden");
-    sub.classList.remove("float");
+    // Calculate the width of the buttons
+    // 55px per non-hug button + 65px for the hug button + 10px for its margin
+    // TODO: There's got to be a way to do this that doesn't require copying
+    // and pasting the same measurement from the LESS file.
+    const buttonsWidth = this.displayedButtons() * 55 + 75;
 
-    // TODO: There has to be a better way to do this (without manually
-    // setting the element's classes).
-    // if the menu is too long, change it to a floating menu
-    if (sub.scrollWidth > sub.offsetWidth) {
-      buttonsContainer.classList.add("float");
-      sub.classList.add("float");
-      post.querySelector(".menuButton")?.classList.remove("hidden");
+    if (buttonsContainer.offsetWidth < buttonsWidth) {
+      this.shouldMenuFloat.set(true);
 
       if (this.itemsService.currentlyOpenMenu.value != this.post?.id) {
-        sub.classList.add("hidden");
+        this.shouldShowSubmenu.set(false);
       } else {
-        sub.classList.remove("hidden");
+        this.shouldShowSubmenu.set(true);
       }
-      // Otherwise change it back to a regular menu
     } else {
-      buttonsContainer.classList.remove("float");
-      sub.classList.remove("hidden");
-      sub.classList.remove("float");
-      post.querySelector(".menuButton")?.classList.add("hidden");
+      this.shouldMenuFloat.set(false);
+      this.shouldShowSubmenu.set(true);
     }
   }
 

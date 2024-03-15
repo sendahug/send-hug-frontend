@@ -2,6 +2,131 @@
 
 ## v1.0.0 Beta 1
 
+### 2020-06-10
+
+#### Features
+
+- Added an outbox to the messaging component ([c72bb82](https://github.com/sendahug/send-hug-frontend/commit/c72bb8243e56747a165dcee60e6093cd60b7d148)).
+
+#### Fixes
+
+- Fixed a bug where switching mailbox didn't show the loader ([4663857](https://github.com/sendahug/send-hug-frontend/commit/466385773be52a64c404d657397914233264bbb7)).
+
+### 2020-06-09
+
+#### Features
+
+- Added a page to display information about the app ([64efbce](https://github.com/sendahug/send-hug-frontend/commit/64efbce6ac25d69586a1fb84745a6be304670324)).
+- Added a 'role' field to the user profile view ([a9ee5cc](https://github.com/sendahug/send-hug-frontend/commit/a9ee5cc01c54c50db01e235c105d12524d1dc5c3)).
+
+#### Documentation
+
+- Updated the README with information about the project's structure and files ([6362dea](https://github.com/sendahug/send-hug-frontend/commit/6362dea31b94101e9f09a7f696ee2bfccf3869d6)).
+
+### 2020-06-08
+
+#### Features
+
+- Added the option to edit and delete posts from the 'main page' view if the user can edit and delete any post ([bebedfd](https://github.com/sendahug/send-hug-frontend/commit/bebedfdbf189d475437bc1ee3a687baa36eb4c61)).
+
+#### Fixes
+
+- Fixed a bug where the permissions checker crashed when a user wasn't logged in, rather than return false ([0daf6df](https://github.com/sendahug/send-hug-frontend/commit/0daf6df4a8e547430e625ab8f7eab3be4f393a31)).
+- Fixed a bug where the loader remained onscreen after the fetch was resolved but ended with an error ([2a62786](https://github.com/sendahug/send-hug-frontend/commit/2a62786e7ab9d45e65e32e04e1f4e8c0e47d904c)).
+- Fixed a bug where the 'no messages' alert showed while data fetching was still in progress ([c8d484f](https://github.com/sendahug/send-hug-frontend/commit/c8d484fccc531243666ff5e1d7f5935fab5eeba5)).
+- Fixed a bug where the pagination area showed 'page 1 of 0' due to a mismatch between the front-end's page handling and the back-end's page handling ([9ed1932](https://github.com/sendahug/send-hug-frontend/commit/9ed1932aa5ac122eb734fe47668c3ed8431f154b)).
+
+### 2020-06-05
+
+#### Features
+
+- Added a loader component to display while waiting for the responses of network requests ([a3e7aa2](https://github.com/sendahug/send-hug-frontend/commit/a3e7aa2d95c83036122cdc95ea529cf29eda1a88)).
+
+#### Documentation
+
+- Added information about the authentication workflow to the README ([3c3a108](https://github.com/sendahug/send-hug-frontend/commit/3c3a1088219c86bacbdfba5db3445c4ebac8d0fb)).
+
+### 2020-06-04
+
+#### Features
+
+- Added the options to return to the home page and to reload the page in 'success' alerts ([e459ea6](https://github.com/sendahug/send-hug-frontend/commit/e459ea6f12331843d0fed361a15f0b457a42893b)).
+- Added a helper function for checking user permissions ([c0b954e](https://github.com/sendahug/send-hug-frontend/commit/c0b954ec9bf5c7d521a34b683a4838b804b61e8b)).
+- Added the option to edit and delete posts from the 'full list' view if the user can edit and delete any post ([181d88c](https://github.com/sendahug/send-hug-frontend/commit/181d88ca2fc1928e71bb686fb78731bdd2c301d6)).
+- Added a badge to 'send hug' buttons to display the number of hugs currently sent for the post ([9f7a7eb](https://github.com/sendahug/send-hug-frontend/commit/9f7a7eb5d1ec68da2d572f04f8398353a9379c22)).
+
+#### Fixes
+
+- Added the post edit form (which was accidentally left out) to the full list view ([2438c5c](https://github.com/sendahug/send-hug-frontend/commit/2438c5cf7ccea31da6da5b9e99cc3fdf4f27ff03)).
+
+### 2020-06-03
+
+#### Features
+
+- Added support for pagination in views that can contain multiple pages ([09239f5](https://github.com/sendahug/send-hug-frontend/commit/09239f5e93871ef6fe3a551c9fba328ade0b6e48)).
+- Added a popup component with support for editing posts ([037f66c](https://github.com/sendahug/send-hug-frontend/commit/037f66cf0fbf486e0cd9064aa9e82d1d0dca4b5b)).
+- Added the ability to change a user's display name ([04b1933](https://github.com/sendahug/send-hug-frontend/commit/04b19335767601f05af7b597c4edece2401e892e)).
+- Added a component to display a full list of posts ([c11e054](https://github.com/sendahug/send-hug-frontend/commit/c11e0542e49ea7e60f8af2cdc616e869e3670c95)).
+
+#### Changes
+
+- The text box in the 'new item' form was replaced with a multiline text area to make entering longer texts easier ([c219fe6](https://github.com/sendahug/send-hug-frontend/commit/c219fe6b73fe71b3cdd17acbd2e5857b9bf059d3)).
+- The 'page' query parameter now changes when navigating between pages within the same component ([3775554](https://github.com/sendahug/send-hug-frontend/commit/37755544938666f2a748e398e4e764ffa11b31d3)).
+
+### 2020-06-02
+
+#### Features
+
+- Added the ability to delete messages ([432e272](https://github.com/sendahug/send-hug-frontend/commit/432e272bb1ed32c492471aca26bd657899bbc79f)).
+- Added a check to ensure users can't message themselves ([a68407c](https://github.com/sendahug/send-hug-frontend/commit/a68407cbe4548e1bd727c7dacf019ab9ea752517)).
+
+#### Changes
+
+- Moved the authentication logic from the messages component to the auth service ([ce8ec88](https://github.com/sendahug/send-hug-frontend/commit/ce8ec88f381a85fec984db64ff6ace5018e83ef4)).
+- Moved the messages' fetch from the messages component to the items service ([11373f0](https://github.com/sendahug/send-hug-frontend/commit/11373f064c42e5d7fa2cd0d07b8acf3342170216)).
+
+#### Fixes
+
+- Fixed a bug where the 'send hug' request was made to the 'create post' endpoint instead of the 'specific post's' endpoint ([0bbdb4e](https://github.com/sendahug/send-hug-frontend/commit/0bbdb4eac90cac526a5f535d24290b1eed9df5ee)).
+- Fixed the parsing of auth errors in back-end responses to match the structure of the response ([01ea9a3](https://github.com/sendahug/send-hug-frontend/commit/01ea9a3b70c161c5d856f9e136d7ba37e586d96f)).
+- Added a check for whether the user just logged in before updating the login count. This fixes a bug where the login count was incorrectly updated every time the user refreshed the page ([4527432](https://github.com/sendahug/send-hug-frontend/commit/452743256c3fe32d63ccf035e12e492c34295e91)).
+
+### 2020-06-01
+
+#### Features
+
+- Added the functionality for returning to the previous page when the user inputs a route that doesn't exist and ends up in the error page ([82524eb](https://github.com/sendahug/send-hug-frontend/commit/82524eb96044a6db5b9895386dff4a6fd16d2071)).
+
+#### Changes
+
+- Changed the icon used for the 'send hug' button ([55315c1](https://github.com/sendahug/send-hug-frontend/commit/55315c17f7118e6dd76e8ca5ea42581281d167be)).
+
+#### Fixes
+
+- The new item links accidentally used Post and Message as query parameters instead of path parameters. They now set the item type as a path parameter instead ([3510eec](https://github.com/sendahug/send-hug-frontend/commit/3510eecc6db34c826f7fa1628776cc3d1d6289e3)).
+- Fixed a bug where clicking the 'post' button in the new post form caused the page to reload immediately, before a request was made to the server ([905c4dd](https://github.com/sendahug/send-hug-frontend/commit/905c4ddfe3ab9f43ce26e91ad84366f667d770e4)).
+- Fixed a bug where multiple alerts could be created and displayed on top of each other. Now, the alerts service removes the previous alert before creating a new one ([45b4a2f](https://github.com/sendahug/send-hug-frontend/commit/45b4a2fb24a4c6842ceb1246533b2d1a3984bede)).
+
+### 2020-05-31
+
+#### Features
+
+- Added handling for users without posts in the user's page ([f0715e7](https://github.com/sendahug/send-hug-frontend/commit/f0715e76296ae1a45ec34bfee16183c44dfcf686)).
+- Added support for refreshing tokens for already-logged in users, which lets active users remain logged in for longer ([0463a79](https://github.com/sendahug/send-hug-frontend/commit/0463a79c01f97fae71854d84e55e89f84751299d)).
+
+#### Changes
+
+- Instead of making a separate call to fetch user data, the 'add user' function in the Auth Service now uses the response from the POST request to populate the user's data ([b55b3d6](https://github.com/sendahug/send-hug-frontend/commit/b55b3d60ab4987ed799ca3894f895a6a48a4f90a)).
+- Moved all user data handling from the user's page to the Auth Service ([2771e27](https://github.com/sendahug/send-hug-frontend/commit/2771e275eb5aa38783eba4287a1f383229b3a820)).
+- Moved the authentication logic from the main page to the Auth service ([a97af3b](https://github.com/sendahug/send-hug-frontend/commit/a97af3bfd6988c0fc32524015d6c784dcfbe4acf)).
+- Moved posts storage from the posts' components to the Items Service ([74ed135](https://github.com/sendahug/send-hug-frontend/commit/74ed135d728b2032fc22bbb6a86edf5a4b51ec73)).
+
+#### Fixes
+
+- Fixed a bug where an empty authorisation header was accidentally sent to the back-end when fetching user data ([846634c](https://github.com/sendahug/send-hug-frontend/commit/846634ceadd6129aa668c9e0ce75a3cdce7473d3)).
+- Fixed a bug where the fetch request for the currently logged in user was sent even when no user is logged in ([24e8bc8](https://github.com/sendahug/send-hug-frontend/commit/24e8bc80cc31694d4d75ee48964a424402545f2e)).
+- Fixed a bug where multiple versions of the same service were accidentally injected into components ([e53833b](https://github.com/sendahug/send-hug-frontend/commit/e53833b03c2dd2183d07ff144ac9c51e46ca5d51)).
+
 ### 2020-05-30
 
 #### Features
@@ -131,7 +256,6 @@
 #### Features
 
 - Added an initial AppComponent template ([c1cc8f9](https://github.com/sendahug/send-hug-frontend/commit/c1cc8f9275b7c7cd89ae11ffda82854a385aa326)).
-
 
 ### 2020-05-14
 

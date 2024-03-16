@@ -2,9 +2,228 @@
 
 ## Unreleased
 
+### 2022-01-24
+
+#### Chores
+
+- Regenerated the package-lock file to bump dependencies' dependencies and fix security vulnerabilities ([56dd113](https://github.com/sendahug/send-hug-frontend/commit/56dd113aac0c46b3715266004c82a9e1a1e06d4f)).
+- Deleted an unneeded test dependency. Since jasmine-core is a dependency of karma-jasmine, there was no need to separately include jasmine-core as dependency in the repo. ([05770dd](https://github.com/sendahug/send-hug-frontend/commit/05770dd0c48767b9a840d2d39ada8535d623f5a5))
+
+### 2021-12-18
+
+#### Chores
+
+- Updated Angular to v12.2.15 ([4d8a752](https://github.com/sendahug/send-hug-frontend/commit/4d8a7522d819f486131c7d137a622d99b1ae00a0)).
+
+### 2021-10-31
+
+#### Chores
+
+- Updated Angular to v12.2.12 ([ad16ccb](https://github.com/sendahug/send-hug-frontend/commit/ad16ccb0d5d3e2b5ee40a05320251f187d4bf8d0)).
+
+### 2021-09-21
+
+#### Chores
+
+- Updated Angular to v12.2.6 ([1310d81](https://github.com/sendahug/send-hug-frontend/commit/1310d813ea8db01c07297fd7307fac97230d154b)).
+
+### 2021-09-07
+
+#### Chores
+
+- Updated Angular to v12.2.4 ([315d0d6](https://github.com/sendahug/send-hug-frontend/commit/315d0d66559e8eb146d2174cb63f29c856ae1c67)).
+
+### 2021-08-29
+
+#### Chores
+
+- Updated Angular to v12.2.3 ([89de0a1](https://github.com/sendahug/send-hug-frontend/commit/89de0a1d6df089c9bfad4cd9c4dcb60dd834679f)).
+
+### 2021-08-14
+
+#### Chores
+
+- Updated Angular to v12.2.1 ([3802485](https://github.com/sendahug/send-hug-frontend/commit/3802485e69c177e7f3f71004b7916c1120b9ed78)).
+
+### 2021-08-08
+
+#### Chores
+
+- Updated Angular to v12.2.0 ([df2a364](https://github.com/sendahug/send-hug-frontend/commit/df2a364602080582482d6979111cd8cc19b81042)).
+- Updated rxjs (major update) to v7.3.0 ([eef01ea](https://github.com/sendahug/send-hug-frontend/commit/eef01ea53613814faf3b370368fa40851bd321f4)).
+
+### 2021-08-01
+
+#### Chores
+
+- Updated Angular to v12.1.4 ([a548a21](https://github.com/sendahug/send-hug-frontend/commit/a548a21c2537e6d290d097460ad746bace58943c)).
+
+### 2021-07-24
+
+#### Chores
+
+- Updated Angular to v12.1.3 ([a37172e](https://github.com/sendahug/send-hug-frontend/commit/a37172eaa5d0c6b06cfa348d04b2020bab1af2f8)).
+
+### 2021-07-18
+
+#### Chores
+
+- Updated Angular to v12.1.2 ([7c28997](https://github.com/sendahug/send-hug-frontend/commit/7c28997fe46655b3b0a0e13e8dda8a60b9522346)).
+
+### 2021-07-02
+
+#### Chores
+
+- Changed the repository's primary branches to remove the reference "master" and to add a staging environment.
+- Updated the GitHub Actions workflows to reflect the branches' change ([c228fda](https://github.com/sendahug/send-hug-frontend/commit/c228fdab106abfe6aac973f958cc50a156f823c0)).
+- Updated Angular v12.1.1 ([a95cf8c](https://github.com/sendahug/send-hug-frontend/commit/a95cf8c60d746d0a6e90fa56a014fd25a3be4665)).
+- Bumped the pa11yci timeout to allow more time for the page to load in CI ([c3d958e](https://github.com/sendahug/send-hug-frontend/commit/c3d958e5442e908d1546911a73a4d5f2d5d97124)).
+
+### 2021-06-26
+
+#### Fixes
+
+- Fixed a bug where the button for closing the search form did nothing due to the click handler calling the wrong method ([d7a162e](https://github.com/sendahug/send-hug-frontend/commit/d7a162e18c2cb9c909f89335f9cbb74eb9bff57e)).
+
+#### Chores
+
+- Upgraded Angular to v12.1.0 ([32abf39](https://github.com/sendahug/send-hug-frontend/commit/32abf39f4905ab42aa302aa7b58bd90bca7813a5)).
+
+### 2021-05-11
+
+#### Chores
+
+- Re-enabled dependabot's rebasing to easily resolve conflicts in its pull requests ([bbf8544](https://github.com/sendahug/send-hug-frontend/commit/bbf854427642f54e30c8078f14bec31ba1d5733d)).
+
+### 2021-05-09
+
+#### Chores
+
+- Updated Angular from v11.2.12 to v11.2.13 ([478e9ac](https://github.com/sendahug/send-hug-frontend/commit/478e9ac696c01cea7d60a81fbc3108f051e08833)).
+
+### 2021-05-01
+
+#### Chores
+
+- Updated Angular from v11.2.11 to v11.2.12 ([25f0a1e](https://github.com/sendahug/send-hug-frontend/commit/25f0a1e016c4326436831808f6262c16330a30f9)).
+
+### 2021-04-28
+
+#### Chores
+
+- Upgraded to GitHub-native Dependabot ([e6949ba](https://github.com/sendahug/send-hug-frontend/commit/e6949ba47f7e8cd396b2e67ecc5db1cbac3abc71)).
+
+### 2021-04-25
+
+#### Changes
+
+- Changed the production VAPID keys due to a security issue, which exposed the previous private key ([1b51dad](https://github.com/sendahug/send-hug-frontend/commit/1b51dad795c40f62cf39d74c1dad01eafd88e4ee)).
+
+### 2021-04-22
+
+#### Chores
+
+- Updated Angular from v11.2.10 to v11.2.11 ([ae1ebe3](https://github.com/sendahug/send-hug-frontend/commit/ae1ebe3c04b6101270ed6f29532abd4e2bd6f460)).
+
+### 2021-04-16
+
+#### Chores
+
+- Updated Angular from v11.2.9 to v11.2.10 ([5dc289e](https://github.com/sendahug/send-hug-frontend/commit/5dc289e8a98696dbad0598d92fe455086a20c3d6)).
+
+### 2021-04-10
+
+#### Chores
+
+- Split the "block is being calculated correctly" test into several tests, each for one selected length ([569b063](https://github.com/sendahug/send-hug-frontend/commit/569b063044c47002360d66e35ff0a77994bd3d8e)).
+- Changed admin dashboard reports and blocks tests to look for a date object, rather than a specific date. Since there are tests specifically for checking the blocks are calculated correctly, it's not necessary to also run these checks in the functions calling the calculate method. ([13aa15a](https://github.com/sendahug/send-hug-frontend/commit/13aa15a054eacb38a10228943291ae6cea7f0aec))
+- Changed admin dashboard tests to check date string instead of date. The Date checks compare the dates up to the milliseconds, which aren't really relevant when comparing days/weeks. The strings contain only the date and time (up to seconds), which is more appropriate. ([c8fa840](https://github.com/sendahug/send-hug-frontend/commit/c8fa840c64cf585b3e516470e2f58a3b9fafef30))
+
+### 2021-04-09
+
+#### Chores
+
+- Replaced all old `fakeAsync` calls in the unit tests with the updated way of indicating that a Jasmine test is async ([08eb858](https://github.com/sendahug/send-hug-frontend/commit/08eb858e195d28f0ac0a1027a4929b8a024db340)).
+- Removed date information from some of the unit tests. Since the tests were relying on a date field, any minor difference between the expected date and the date returned by the function that was tested caused the test to fail, even when the date wasn't part of the test. ([3a310d4](https://github.com/sendahug/send-hug-frontend/commit/3a310d4b81224a321c5e507f00b1a92ca1887710))
+
+### 2021-04-08
+
+#### Chores
+
+- Updated Angular from v11.2.8 to v11.2.9. Also updated typescript (v4.2.3 to v4.2.4) and core-js (v3.10.0 to v3.10.1). ([aca0228](https://github.com/sendahug/send-hug-frontend/commit/aca02289c2b7f6f40d7e158c6dc182b9743396a4))
+
+### 2021-04-02
+
+#### Chores
+
+- Updated package-lock file to fix vulnerabilities ([00a25f7](https://github.com/sendahug/send-hug-frontend/commit/00a25f79bac49fa534a296fca167013903af97ad)).
+- Updated Angular from v11.2.7 to v11.2.8 ([00e88f5](https://github.com/sendahug/send-hug-frontend/commit/00e88f59daec2c27d0a70f9d03c97b29eb6b58d8)).
+
+### 2021-03-28
+
+#### Chores
+
+- Updated Angular from v11.2.3 to v11.2.7 ([c302ab4](https://github.com/sendahug/send-hug-frontend/commit/c302ab47225351217e2b506dd0ef34b00741c7b7)).
+
+### 2021-03-26
+
+#### Chores
+
+- Deleted the Travis CI workflow file. Since tests were already moved to Circle CI, there was no need for that file anymore and it caused errors in Travis CI due to the team having no remaining credits ([fab4e28](https://github.com/sendahug/send-hug-frontend/commit/fab4e283901941905653c1a5f91f27497daab58c)).
+
+### 2021-02-25
+
+#### Chores
+
+- Bumped the pa11yci timeout to allow more time for the page to load in CI ([1b471e4](https://github.com/sendahug/send-hug-frontend/commit/1b471e40a3d156c196dc9838dc6d63100ee30bc6)).
+- Updated Angular from v11.1.2 to v11.2.3 ([9a35589](https://github.com/sendahug/send-hug-frontend/commit/9a35589924bb4433e139f129990fdb0e27d470a2)).
+
+### 2021-02-07
+
+#### Chores
+
+- Updated Angular from v11.0.9 to v11.1.2 ([1c2b456](https://github.com/sendahug/send-hug-frontend/commit/1c2b456dd67aec5914de1ca3fe638258c76fe851)).
+- Changed the location of webdriver-manager as used by Protractor for the e2e tests. The one installed as a dependency of Protractor was unreliable and caused issues running e2e tests ([a7f9b27](https://github.com/sendahug/send-hug-frontend/commit/a7f9b27b3bfbd45c42e13ea96ac01a5345a0b0bf) & [5131180](https://github.com/sendahug/send-hug-frontend/commit/5131180f8e4fd6b1da03f680a90d4b3910ce271b))
+
+### 2021-01-19
+
+#### Fixes
+
+- Added the previously missing transaction type to all IDB transactions. Transaction types are required by IDB and should've been added when that code was written ([9682930](https://github.com/sendahug/send-hug-frontend/commit/9682930398dce206899f9b48c746c888094bd941) & [9228b75](https://github.com/sendahug/send-hug-frontend/commit/9228b75f04c9d3acd421c27f8214b8606754eae6)).
+
+### 2021-01-18
+
+#### Chores
+
+- Added a GitHub Actions workflow to automatically update the superproject repository when a release to live is made ([60e8615](https://github.com/sendahug/send-hug-frontend/commit/60e86151492b16f6d932c12d8133a36c0c7d367a)).
+
+### 2021-01-17
+
+#### Chores
+
+- Updated all Angular dependencies from v11.0.5 to v11.0.9 ([ca8ca90](https://github.com/sendahug/send-hug-frontend/commit/ca8ca9064f6ff5f41fbca5b155dc913e1fa80fa1)).
+- Updated the package-lock file to fix a vulnerability ([904923f](https://github.com/sendahug/send-hug-frontend/commit/904923fcda1dc4b752daa194b6ecae58d81f100d)).
+- Added a missing sub-package required by Font Awesome ([fae9988](https://github.com/sendahug/send-hug-frontend/commit/fae9988b13f94a03861f4a986594cf775f2a96ae)).
+
+### 2020-12-25
+
+#### Chores
+
+- Deleted the unneeded create-release GitHub Actions workflow ([6b32afa](https://github.com/sendahug/send-hug-frontend/commit/6b32afa3efc5b3b5e1748867786f381217da3e14)).
+
+### 2020-12-24
+
+#### Chores
+
+- Instead of finding test files using regex and manually reading every directory in the project, the gulp task now finds paths by using glob patterns. These patterns found by the `glob` package are then added to the main tests file before the code is bundled ([9b2f08e](https://github.com/sendahug/send-hug-frontend/commit/9b2f08e9eb90226dae58023c279219fcf1efa049)).
+
 ## V1.0.0 Beta 2
 
+# TODO: FINISH THIS
+
 ## v1.0.0 Beta 1
+
+# TODO: FINISH THIS
 
 ### 2020-07-02
 

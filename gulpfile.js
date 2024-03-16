@@ -1,28 +1,34 @@
+// node
+const fs = require("fs");
+const { exec } = require("child_process");
+// gulp deps
 const gulp = require("gulp");
 const postcss = require("gulp-postcss");
-const autoprefixer = require("autoprefixer");
-const terser = require("gulp-terser");
-const browserSync = require("browser-sync").create();
-const source = require("vinyl-source-stream");
-const buffer = require("vinyl-buffer");
 const rename = require("gulp-rename");
 const replace = require("gulp-replace");
-const fs = require("fs");
-const Server = require('karma').Server;
-const parseConfig = require('karma').config.parseConfig;
-const glob = require("glob");
-let bs;
+const source = require("vinyl-source-stream");
+const buffer = require("vinyl-buffer");
+const less = require('gulp-less');
+// rollup deps
 const rollupStream = require("@rollup/stream");
 const commonjs = require("@rollup/plugin-commonjs");
 const nodeResolve = require("@rollup/plugin-node-resolve").nodeResolve;
 const typescript = require("@rollup/plugin-typescript");
-const { exec } = require("child_process");
+const terser = require('@rollup/plugin-terser');
+// everything else
+const autoprefixer = require("autoprefixer");
+const browserSync = require("browser-sync").create();
+const Server = require('karma').Server;
+const parseConfig = require('karma').config.parseConfig;
+const glob = require("glob");
+// internal plugins
 const {
   setProductionEnv,
   updateComponentTemplateUrl,
   updateEnvironmentVariables
 } = require("./processor");
-const less = require('gulp-less');
+
+let bs;
 
 // LOCAL DEVELOPMENT TASKS
 // ===============================================
@@ -232,7 +238,11 @@ function scriptsDist()
 {
   const options = {
     input: 'src/main.ts',
-    output: { sourcemap: 'hidden' },
+    output: {
+      file: "app.bundle.min.js",
+      sourcemap: 'hidden',
+      plugins: [terser()]
+    },
     plugins: [
       updateEnvironmentVariables("live"),
       setProductionEnv(),
@@ -251,8 +261,7 @@ function scriptsDist()
   return rollupStream(options)
       .pipe(source("src/main.ts"))
       .pipe(buffer())
-      .pipe(terser())
-       .pipe(rename("app.bundle.min.js"))
+      .pipe(rename("app.bundle.min.js"))
       .pipe(gulp.dest("./dist"));
 }
 

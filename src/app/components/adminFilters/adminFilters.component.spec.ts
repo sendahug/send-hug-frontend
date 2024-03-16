@@ -107,7 +107,7 @@ describe("Filters Page", () => {
 
     expect(apiClientSpy).toHaveBeenCalledWith("filters", { page: "1" });
     expect(adminFilters.filteredPhrases.length).toBe(2);
-    expect(adminFilters.totalPages).toBe(1);
+    expect(adminFilters.totalPages()).toBe(1);
     expect(
       adminFiltersDOM.querySelectorAll(".tableContainer")[0].querySelectorAll("tbody tr").length,
     ).toBe(2);
@@ -127,7 +127,7 @@ describe("Filters Page", () => {
     const alertsSpy = spyOn(adminFilters["alertsService"], "createSuccessAlert");
     spyOn(adminFilters, "fetchFilters");
     adminFilters.filteredPhrases = [...mockFilteredPhrases];
-    adminFilters.totalPages = 1;
+    adminFilters.totalPages.set(1);
     adminFilters.isLoading = false;
     fixture.detectChanges();
 
@@ -157,7 +157,7 @@ describe("Filters Page", () => {
     const alertSpy = spyOn(adminFilters["alertsService"], "createAlert");
     spyOn(adminFilters, "fetchFilters");
     adminFilters.filteredPhrases = [...mockFilteredPhrases];
-    adminFilters.totalPages = 1;
+    adminFilters.totalPages.set(1);
     adminFilters.isLoading = false;
     fixture.detectChanges();
 
@@ -195,7 +195,7 @@ describe("Filters Page", () => {
     const deleteSpy = spyOn(adminFilters["apiClient"], "delete").and.returnValue(of(mockResponse));
     spyOn(adminFilters, "fetchFilters");
     adminFilters.filteredPhrases = [...mockFilteredPhrases];
-    adminFilters.totalPages = 1;
+    adminFilters.totalPages.set(1);
     adminFilters.isLoading = false;
 
     fixture.detectChanges();
@@ -222,7 +222,7 @@ describe("Filters Page", () => {
     const nextPageSpy = spyOn(adminFilters, "nextPage").and.callThrough();
     const fetchSpy = spyOn(adminFilters, "fetchFilters");
     adminFilters.filteredPhrases = [...mockFilteredPhrases];
-    adminFilters.totalPages = 2;
+    adminFilters.totalPages.set(2);
     adminFilters.isLoading = false;
 
     fixture.detectChanges();
@@ -245,9 +245,9 @@ describe("Filters Page", () => {
     const prevPageSpy = spyOn(adminFilters, "prevPage").and.callThrough();
     const fetchSpy = spyOn(adminFilters, "fetchFilters");
     adminFilters.filteredPhrases = [...mockFilteredPhrases];
-    adminFilters.totalPages = 2;
+    adminFilters.totalPages.set(2);
     adminFilters.isLoading = false;
-    adminFilters.currentPage = 2;
+    adminFilters.currentPage.set(2);
 
     fixture.detectChanges();
 

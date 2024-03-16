@@ -40,15 +40,15 @@
   <!-- Filtered words pagination -->
   <div class="pagination" *ngIf="filteredPhrases.length" role="navigation">
     <button
-      [class]="currentPage > 1 ? previousButtonClass : previousButtonClass + ' disabled'"
-      [disabled]="currentPage <= 1"
+      [ngClass]="previousButtonClass()"
+      [disabled]="currentPage() <= 1"
       (click)="prevPage()"
       aria-label="previous page of filtered phrases"
     >Previous Page</button>
-    <div class="pageCount">Page {{ currentPage }} of {{ totalPages }}</div>
+    <div class="pageCount">Page {{ currentPage() }} of {{ totalPages()}}</div>
     <button
-      [class]="totalPages > currentPage ? nextButtonClass : nextButtonClass + ' disabled'"
-      [disabled]="totalPages <= currentPage"
+      [ngClass]="nextButtonClass()"
+      [disabled]="totalPages() <= currentPage()"
       (click)="nextPage()"
       aria-label="next page of filtered phrases"
     >Next Page</button>

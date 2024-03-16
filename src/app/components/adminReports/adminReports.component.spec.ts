@@ -132,12 +132,12 @@ describe("AdminReports", () => {
     expect(
       adminReportsDOM.querySelectorAll(".tableContainer")[0].querySelectorAll("tbody tr").length,
     ).toBe(1);
-    expect(adminReports.totalPostReportsPages).toBe(2);
+    expect(adminReports.totalPostReportsPages()).toBe(2);
     expect(adminReports.postReports.length).toBe(1);
     expect(
       adminReportsDOM.querySelectorAll(".tableContainer")[1].querySelectorAll("tbody tr").length,
     ).toBe(1);
-    expect(adminReports.totalUserReportsPages).toBe(2);
+    expect(adminReports.totalUserReportsPages()).toBe(2);
     done();
   });
 
@@ -294,8 +294,8 @@ describe("AdminReports", () => {
     const nextPageSpy = spyOn(adminReports, "nextPage").and.callThrough();
     adminReports.userReports = [...mockUserReports];
     adminReports.isLoading = false;
-    adminReports.totalUserReportsPages = 2;
-    adminReports.currentUserReportsPage = 1;
+    adminReports.totalUserReportsPages.set(2);
+    adminReports.currentUserReportsPage.set(1);
     fixture.detectChanges();
 
     // trigger click
@@ -306,7 +306,7 @@ describe("AdminReports", () => {
 
     // check expectations
     expect(nextPageSpy).toHaveBeenCalled();
-    expect(adminReports.currentUserReportsPage).toBe(2);
+    expect(adminReports.currentUserReportsPage()).toBe(2);
     expect(fetchSpy).toHaveBeenCalled();
     done();
   });
@@ -320,8 +320,8 @@ describe("AdminReports", () => {
     const nextPageSpy = spyOn(adminReports, "nextPage").and.callThrough();
     adminReports.postReports = [...mockPostReports];
     adminReports.isLoading = false;
-    adminReports.totalPostReportsPages = 2;
-    adminReports.currentPostReportsPage = 1;
+    adminReports.totalPostReportsPages.set(2);
+    adminReports.currentPostReportsPage.set(1);
     fixture.detectChanges();
 
     // trigger click
@@ -330,7 +330,7 @@ describe("AdminReports", () => {
 
     // check expectations
     expect(nextPageSpy).toHaveBeenCalled();
-    expect(adminReports.currentPostReportsPage).toBe(2);
+    expect(adminReports.currentPostReportsPage()).toBe(2);
     expect(fetchSpy).toHaveBeenCalled();
     done();
   });
@@ -344,8 +344,8 @@ describe("AdminReports", () => {
     const prevPageSpy = spyOn(adminReports, "prevPage").and.callThrough();
     adminReports.userReports = [...mockUserReports];
     adminReports.isLoading = false;
-    adminReports.totalUserReportsPages = 2;
-    adminReports.currentUserReportsPage = 2;
+    adminReports.totalUserReportsPages.set(2);
+    adminReports.currentUserReportsPage.set(2);
     fixture.detectChanges();
 
     // trigger click
@@ -356,7 +356,7 @@ describe("AdminReports", () => {
 
     // check expectations
     expect(prevPageSpy).toHaveBeenCalled();
-    expect(adminReports.currentUserReportsPage).toBe(1);
+    expect(adminReports.currentUserReportsPage()).toBe(1);
     expect(fetchSpy).toHaveBeenCalled();
     done();
   });
@@ -370,8 +370,8 @@ describe("AdminReports", () => {
     const prevPageSpy = spyOn(adminReports, "prevPage").and.callThrough();
     adminReports.postReports = [...mockPostReports];
     adminReports.isLoading = false;
-    adminReports.totalPostReportsPages = 2;
-    adminReports.currentPostReportsPage = 2;
+    adminReports.totalPostReportsPages.set(2);
+    adminReports.currentPostReportsPage.set(2);
     fixture.detectChanges();
 
     // trigger click
@@ -382,7 +382,7 @@ describe("AdminReports", () => {
 
     // check expectations
     expect(prevPageSpy).toHaveBeenCalled();
-    expect(adminReports.currentPostReportsPage).toBe(1);
+    expect(adminReports.currentPostReportsPage()).toBe(1);
     expect(fetchSpy).toHaveBeenCalled();
     done();
   });

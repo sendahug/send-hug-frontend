@@ -53,12 +53,16 @@ export class AppComponent implements OnInit, AfterViewInit {
   showSearch = false;
   showTextPanel = false;
   showMenu = signal(false);
-  navMenuClass = computed(() => (this.showMenu() ? "navLinks" : "navLinks hidden"));
+  navMenuClass = computed(() => ({
+    navLinks: true,
+    hidden: !this.showMenu(),
+  }));
   showMenuButton = signal(false);
-  menuButtonClass = computed(() => (this.showMenuButton() ? "navLink" : "navLink hidden"));
+  menuButtonClass = computed(() => ({
+    navLink: true,
+    hidden: !this.showMenuButton(),
+  }));
   canShare = false;
-  inactiveLinkClass = "navLink";
-  activeLinkClass = "navLink active";
   currentlyActiveRoute = signal("/");
   searchForm = this.fb.group({
     searchQuery: this.fb.control("", [Validators.required, Validators.minLength(1)]),
@@ -172,6 +176,19 @@ export class AppComponent implements OnInit, AfterViewInit {
         }
       }
     });
+  }
+
+  /**
+   * Gets the class for the given navigation item, with the
+   * 'active' class if the given path is currently active.
+   * @param path - The path to check for.
+   * @returns The class object.
+   */
+  getClassForNavItem(path: string) {
+    return {
+      navLink: true,
+      active: this.currentlyActiveRoute() == path,
+    };
   }
 
   /*

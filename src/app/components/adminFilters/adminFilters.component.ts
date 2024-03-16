@@ -32,7 +32,7 @@
 
 // Angular imports
 import { HttpErrorResponse } from "@angular/common/http";
-import { Component } from "@angular/core";
+import { Component, computed, signal } from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
 
 // App imports
@@ -46,11 +46,17 @@ import { ApiClientService } from "@app/services/apiClient.service";
 })
 export class AdminFilters {
   filteredPhrases: { id: number; filter: string }[] = [];
-  currentPage = 1;
-  totalPages = 1;
+  currentPage = signal(1);
+  totalPages = signal(1);
   isLoading = false;
-  nextButtonClass = "appButton nextButton";
-  previousButtonClass = "appButton prevButton";
+  previousButtonClass = computed(() => ({
+    "appButton nextButton": true,
+    disabled: this.currentPage() >= this.totalPages(),
+  }));
+  nextButtonClass = computed(() => ({
+    "appButton prevButton": true,
+    disabled: this.currentPage() <= 1,
+  }));
   addFilterForm = this.fb.group({
     filter: ["", Validators.required],
   });
@@ -72,10 +78,10 @@ export class AdminFilters {
     this.isLoading = true;
 
     // try to fetch the list of words
-    this.apiClient.get("filters", { page: `${this.currentPage}` }).subscribe({
+    this.apiClient.get("filters", { page: `${this.currentPage()}` }).subscribe({
       next: (response: any) => {
         this.filteredPhrases = response.words;
-        this.totalPages = response.total_pages;
+        this.totalPages.set(response.total_pages);
         this.isLoading = false;
         // if there was an error, alert the user.
       },
@@ -142,7 +148,7 @@ export class AdminFilters {
   Programmer: Shir Bar Lev.
   */
   nextPage() {
-    this.currentPage += 1;
+    this.currentPage.set(this.currentPage() + 1);
     this.fetchFilters();
   }
 
@@ -154,7 +160,7 @@ export class AdminFilters {
   Programmer: Shir Bar Lev.
   */
   prevPage() {
-    this.currentPage -= 1;
+    this.currentPage.set(this.currentPage() - 1);
     this.fetchFilters();
   }
 }

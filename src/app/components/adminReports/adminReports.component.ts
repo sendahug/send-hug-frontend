@@ -31,7 +31,7 @@
 */
 
 // Angular imports
-import { Component } from "@angular/core";
+import { Component, computed, signal } from "@angular/core";
 
 // App imports
 import { AdminService } from "@app/services/admin.service";
@@ -46,10 +46,10 @@ import { Report } from "@app/interfaces/report.interface";
 export class AdminReports {
   postReports: Report[] = [];
   userReports: Report[] = [];
-  totalPostReportsPages = 1;
-  totalUserReportsPages = 1;
-  currentPostReportsPage = 1;
-  currentUserReportsPage = 1;
+  totalPostReportsPages = signal(1);
+  totalUserReportsPages = signal(1);
+  currentPostReportsPage = signal(1);
+  currentUserReportsPage = signal(1);
   isLoading = false;
   // edit popup sub-component variables
   toEdit: any;
@@ -67,8 +67,22 @@ export class AdminReports {
   itemToDelete: number | undefined;
   report: boolean;
   lastFocusedElement: any;
-  nextButtonClass = "appButton nextButton";
-  previousButtonClass = "appButton prevButton";
+  usersPrevButtonClass = computed(() => ({
+    "appButton prevButton": true,
+    disabled: this.currentUserReportsPage() <= 1,
+  }));
+  usersNextButtonClass = computed(() => ({
+    "appButton nextButton": true,
+    disabled: this.currentUserReportsPage() >= this.totalUserReportsPages(),
+  }));
+  postsPrevButtonClass = computed(() => ({
+    "appButton prevButton": true,
+    disabled: this.currentPostReportsPage() <= 1,
+  }));
+  postsNextButtonClass = computed(() => ({
+    "appButton nextButton": true,
+    disabled: this.currentPostReportsPage() >= this.totalPostReportsPages(),
+  }));
 
   constructor(
     private apiClient: ApiClientService,
@@ -90,15 +104,15 @@ export class AdminReports {
     // Get reports
     this.apiClient
       .get("reports", {
-        userPage: `${this.currentUserReportsPage}`,
-        postPage: `${this.currentPostReportsPage}`,
+        userPage: `${this.currentUserReportsPage()}`,
+        postPage: `${this.currentPostReportsPage()}`,
       })
       .subscribe({
         next: (response: any) => {
           this.userReports = response.userReports;
-          this.totalUserReportsPages = response.totalUserPages;
+          this.totalUserReportsPages.set(response.totalUserPages);
           this.postReports = response.postReports;
-          this.totalPostReportsPages = response.totalPostPages;
+          this.totalPostReportsPages.set(response.totalPostPages);
           this.isLoading = false;
         },
         error: (_err: HttpErrorResponse) => {
@@ -194,8 +208,8 @@ export class AdminReports {
   Programmer: Shir Bar Lev.
   */
   nextPage(type: "posts" | "users") {
-    if (type == "posts") this.currentPostReportsPage += 1;
-    else this.currentUserReportsPage += 1;
+    if (type == "posts") this.currentPostReportsPage.set(this.currentPostReportsPage() + 1);
+    else this.currentUserReportsPage.set(this.currentUserReportsPage() + 1);
     this.fetchReports();
   }
 
@@ -207,8 +221,8 @@ export class AdminReports {
   Programmer: Shir Bar Lev.
   */
   prevPage(type: "posts" | "users") {
-    if (type == "posts") this.currentPostReportsPage -= 1;
-    else this.currentUserReportsPage -= 1;
+    if (type == "posts") this.currentPostReportsPage.set(this.currentPostReportsPage() - 1);
+    else this.currentUserReportsPage.set(this.currentUserReportsPage() - 1);
     this.fetchReports();
   }
 

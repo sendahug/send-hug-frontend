@@ -1,6 +1,260 @@
 # Changelog
 
+## Unreleased
+
+## V1.0.0 Beta 2
+
 ## v1.0.0 Beta 1
+
+### 2020-07-02
+
+#### Features
+
+- Added a skip link so that people relying on keyboard navigation can skip the menu and get to the main content easily ([5424c43](https://github.com/sendahug/send-hug-frontend/commit/5424c4381f64d88f2d141ca5bfc115b51b669f24)).
+
+### 2020-07-01
+
+#### Features
+
+- Added the functionality for clearing the IndexedDB database when a certain threshold of items is reached. This is done to ensure we don't keep too many items stored locally at once ([69bcfa8](https://github.com/sendahug/send-hug-frontend/commit/69bcfa80ff4592bd4f9509d71181ad7b222526cc)).
+
+#### Changes
+
+- Previously, upon fetching from IDB the isIDBResolved variable would turn to true and thus allow the relevant component to appear. This introduced an issue when IDB did not have the requested data. Now, isIDBResolved turns true only if the data exists, and if it does not, once the data is fetched from the server ([9fb9a4f](https://github.com/sendahug/send-hug-frontend/commit/9fb9a4f6b20ef5bdcdc484e1d03b9385784918b8)).
+- Moved the "offline" alert from the header message component to the main app component ([7846f2a](https://github.com/sendahug/send-hug-frontend/commit/7846f2ac0a58c74bd939dfce682e4ab3beb316ce)).
+- All services now check for whether the user is offline during the fetch. If the user is offline, they trigger the offline alert ([8a3c515](https://github.com/sendahug/send-hug-frontend/commit/8a3c5150f2758ecf990c0149cb004d8c3ced3309)).
+
+#### Fixes
+
+- Fixed a bug where the "fetching from the server" header message showed indefinitely ([3b75bc9](https://github.com/sendahug/send-hug-frontend/commit/3b75bc9fbca06035618842ea9832f50c7b8a1b35)).
+- Fixed a bug where the header message itself remained onscreen indefinitely ([10647e2](https://github.com/sendahug/send-hug-frontend/commit/10647e2ee50f3fa66bf82692421aa673a7e2108f)).
+
+### 2020-06-30
+
+#### Changes
+
+- Previously, the loader disappeared as soon as a request for data (from IDB) was resolved, even if it returned no data. Now, the loader is only turned off if that request returns data ([d696a61](https://github.com/sendahug/send-hug-frontend/commit/d696a61e8b76930cb6a04ec89ab4eebb740a66ad)).
+
+#### Fixes
+
+- Fixed a bug where an attempt to access the IDB database when it didn't exist threw an error. Now, the app checks the database exists before trying to access it ([29e2381](https://github.com/sendahug/send-hug-frontend/commit/29e2381f4a2aaf987337a6ea4759e73d57a4c3ce)).
+- Fixed a bug where the user's display name didn't show when showing posts fetched from IDB ([98ee61c](https://github.com/sendahug/send-hug-frontend/commit/98ee61c9002ec3cc928562f80c7356b6b1e7de1a)).
+
+### 2020-06-28
+
+#### Features
+
+- Added data caching for data coming from the back-end (posts, users and messages). This includes:
+  - Added an IndexedDB database to store the data in ([01cd7b1](https://github.com/sendahug/send-hug-frontend/commit/01cd7b125b57f4a1e641a021d12dcddf4ce2c456)).
+  - Added a caching step in the posts', users' and messages' fetches ([11e748b](https://github.com/sendahug/send-hug-frontend/commit/11e748b8850eb2e1a0085571a8404e9d3ba4f75a) & [b4f786f](https://github.com/sendahug/send-hug-frontend/commit/b4f786f7b3d714bcb1829e316fae58ffc393ac60)).
+  - Methods for querying IndexedDB for messages and users ([7c56f4b](https://github.com/sendahug/send-hug-frontend/commit/7c56f4b55a606d3ce317df95e4f2cacaca74fbf1)).
+  - Support for fetching posts from IndexedDB ([10439b8](https://github.com/sendahug/send-hug-frontend/commit/10439b87448ea55cfe1028e8df7b7ce1609df6d1)).
+  - Updated all fetches to first fetch from IndexedDB to ensure there's data to view while the updated data is being fetched from the back-end ([779f3ce](https://github.com/sendahug/send-hug-frontend/commit/779f3ce2a4c3f9357b0ef4b556881b789631f1db)).
+  - Added a new header message to display when fetching data from the back-end. This allows showing the main loader up until data is fetched from IDB so that users can interact with the app, whilst still letting them know that "fresher" data is being fetched ([125d278](https://github.com/sendahug/send-hug-frontend/commit/125d278e9e036b82f533224326055b3c52e47226)).
+
+#### Changes
+
+- Changed the ServiceWorker to return a "user is offline" error when the user is offline ([2aaa758](https://github.com/sendahug/send-hug-frontend/commit/2aaa758174d18d7e48552d5a691d789b2f7fdebf)).
+- Previously, when a fetch failed due to the user being offline, the alerts service created an alert telling them what the error was. Now, the service doesn't throw an error, but shows a header message letting users know they're offline instead ([c277b3e](https://github.com/sendahug/send-hug-frontend/commit/c277b3e59348e7e2a7f33629671f3b44edbd0354)).
+
+#### Chores
+
+- Added a build step to update the ServiceWorker's cache upon when building for production ([c72e355](https://github.com/sendahug/send-hug-frontend/commit/c72e355d1f3b7a2c3326c4e3ce11a1bc38d544af)).
+- Updated non-major dependencies ([50be09e](https://github.com/sendahug/send-hug-frontend/commit/50be09eb913e295db8db1121ea8d404dadb1d860)).
+- Updated major dependencies ([0230813](https://github.com/sendahug/send-hug-frontend/commit/023081373bf699540ac20e6ceb1c50dbb18724e5))
+
+### 2020-06-27
+
+#### Features
+
+- Added an initial ServiceWorker. This includes:
+  - A ServiceWorker with handling for install and fetch events ([c766e24](https://github.com/sendahug/send-hug-frontend/commit/c766e24659052e29eb01a97809529a5bfb21e78e)).
+  - Added the request headers to the fetch requests ([51b680c](https://github.com/sendahug/send-hug-frontend/commit/51b680c2b236d1b4d56b1a375ec9279cf8312049)).
+  - Added handling for the 'activate' event ([99edd77](https://github.com/sendahug/send-hug-frontend/commit/99edd77476b1adb7f47bd02f047a7f5a81020617)).
+  - An alert to the user when a new ServiceWorker is installed and ready to take over, to allow them to trigger the ServiceWorker replacement ([da45c52](https://github.com/sendahug/send-hug-frontend/commit/da45c5254a54227a5feaf3f7d5762ae691dcead5)).
+  - A new service for handling the ServiceWorker ([eccc6f6](https://github.com/sendahug/send-hug-frontend/commit/eccc6f6d10777d7772542ea53d810cdf316a5643)).
+
+### 2020-06-24
+
+#### Changes
+
+- The 'user successfully blocked' alert now shows the user's name instead of the user's ID ([59be153](https://github.com/sendahug/send-hug-frontend/commit/59be153cae9a283f325c629e42b35dd7f47fe34e)).
+
+### 2020-06-23
+
+#### Changes
+
+- Blocking a previously blocked user now extends the block instead of setting the release date relative to today ([5771689](https://github.com/sendahug/send-hug-frontend/commit/577168930920317b1edf10418447d0ee571785ed)).
+
+#### Fixes
+
+- Fixed a bug where the confirmation popup didn't show when trying to delete messages ([7572a71](https://github.com/sendahug/send-hug-frontend/commit/7572a713c83fd524a518e74ea19f1925ed0d7a94)).
+- Added a missing check to ensure admins can't block themselves ([a8bbca0](https://github.com/sendahug/send-hug-frontend/commit/a8bbca01ea32d9d15184679abfd56af548ad583e)).
+
+#### Documentation
+
+- Updated the README with information about the new components and services ([8707cbb](https://github.com/sendahug/send-hug-frontend/commit/8707cbb8eb59586c845bdad57bd9b6b01aa6cf78)).
+
+### 2020-06-22
+
+#### Features
+
+- Added checks to prevent blocked users from writing new posts ([b47eafb](https://github.com/sendahug/send-hug-frontend/commit/b47eafbdfabb5d32b940c0b8c0b4bd6ea14b3704)).
+- Added pagination handling in the admin service and the admin dashboard ([541fb48](https://github.com/sendahug/send-hug-frontend/commit/541fb484b8dd3f253e22ff1998db137bb011b7b6) & [6953389](https://github.com/sendahug/send-hug-frontend/commit/695338944053a22a23e0bd2b76b842c45f421a84)).
+- Added the ability to edit a reported user's display name ([0f6a2b8](https://github.com/sendahug/send-hug-frontend/commit/0f6a2b8d722e909a5d9f2bf24d6d153578c34992)).
+- Added the ability to edit a reported post from the admin dashboard ([e678581](https://github.com/sendahug/send-hug-frontend/commit/e6785817d6d66d243bebeca2c010229d2a6fb3fb)).
+
+#### Changes
+
+- Changed the users' endpoints' URLS to match the new structure in the back-end ([f362b3e](https://github.com/sendahug/send-hug-frontend/commit/f362b3efe9d203a2a7ddc01a2033c71648377b50)).
+- Moved all alerts' handling from the various services to the alerts service ([a74066f](https://github.com/sendahug/send-hug-frontend/commit/a74066fa13472ee5e502f754d257ec0c57b522ea)).
+- Blocking a user from the site now automatically closes the report about them as well ([0181a07](https://github.com/sendahug/send-hug-frontend/commit/0181a076e181e10f9ee093072ce72f03da595cff)).
+- The process of closing reports when editing users and posts was moved to the back-end ([7acadc8](https://github.com/sendahug/send-hug-frontend/commit/7acadc803ab312e43e144c6a1172ae3f999859d2)).
+- Changed admin dashboard fetches to only run once the logged in user's data has been fetched from the back-end ([eeb7f5e](https://github.com/sendahug/send-hug-frontend/commit/eeb7f5eb7d6948ea80ccde7014144044d806acde)).
+
+#### Fixes
+
+- Fixed a bug where the filters table was shown only when there were no filters ([92d45df](https://github.com/sendahug/send-hug-frontend/commit/92d45dfdcc98a1e713097447d70e1a0c959e1336)).
+- Fixed a bug where the page refreshed upon submitting a form in the popup before the data was sent to the back-end ([5a0ea86](https://github.com/sendahug/send-hug-frontend/commit/5a0ea8607078981db19fa13b9cb1e79b766d0bae)).
+
+### 2020-06-21
+
+#### Features
+
+- Added the ability to report posts ([0fa96c3](https://github.com/sendahug/send-hug-frontend/commit/0fa96c3d712a60174d130a6de6ee3e55cf3b3ac1) & [be3093e](https://github.com/sendahug/send-hug-frontend/commit/be3093e28ae29a2a2b839aed0d9346e3f726a39a)).
+- Added the ability to report users ([2889c53](https://github.com/sendahug/send-hug-frontend/commit/2889c53907a97433ca0ab380789ddd38e4a9d6f0) & [d13c5f7](https://github.com/sendahug/send-hug-frontend/commit/d13c5f79f1c7d97c8f8e559329dcb902b5365152)).
+- Added the ability to block users ([a15467a](https://github.com/sendahug/send-hug-frontend/commit/a15467a9838abda2cdd1e3ac0e07430489135f88)).
+- Added the ability to unblock previously blocked users ([b8a4145](https://github.com/sendahug/send-hug-frontend/commit/b8a414550cefbf9b0447f4e0f20cb2b0d66fafec)).
+- Added the ability to add items to the filtered words list ([e8fbdb8](https://github.com/sendahug/send-hug-frontend/commit/e8fbdb87b3f58d12041dbe2cb6fb5e49ff27c226)),
+- Added the ability to remove items from the filtered words list ([35cb139](https://github.com/sendahug/send-hug-frontend/commit/35cb1397a0b27338bddb7485101c8147231d8cd9)).
+
+### 2020-06-20
+
+#### Features
+
+- Added the ability to dismiss open reports ([00943e9](https://github.com/sendahug/send-hug-frontend/commit/00943e9eee45ad198050b46ae79418fc16dbeb08)).
+- Added the option to delete a post and close a report via the Admin Service ([92c02c3](https://github.com/sendahug/send-hug-frontend/commit/92c02c3621964cb25b3735ceba28cf3e6634cde4)).
+
+### 2020-06-19
+
+#### Features
+
+- Added a new admin dashboard to allow reporting users and posts, blocking users and filtering words. This includes:
+  - Initial admin dashboard component and routes ([c661dd2](https://github.com/sendahug/send-hug-frontend/commit/c661dd2cdda7c88bb2d499fc33df60f8de3ab767)).
+  - An Admin Service for handling admin-related data and actions ([4eb8fbd](https://github.com/sendahug/send-hug-frontend/commit/4eb8fbde8fe344f1287585b316a6ad1bacee52f4)).
+  - A basic reports page for viewing post and user reports ([60a0034](https://github.com/sendahug/send-hug-frontend/commit/60a0034014f7bf3ffe8c9543669669730400bc97))
+  - A basic blocks page for blocking users ([4e5fcc0](https://github.com/sendahug/send-hug-frontend/commit/4e5fcc04d50e03c70a48cd2c53a7e58629032c76)).
+  - A basic filters page for filtering out words ([8b12f1d](https://github.com/sendahug/send-hug-frontend/commit/8b12f1d5ebbc30ee9badb4f03afbd739075fbd4f)).
+
+### 2020-06-18
+
+#### Features
+
+- Added a confirmation popup for deleting items to ensure the user wants to delete them ([56feb9d](https://github.com/sendahug/send-hug-frontend/commit/56feb9d634f85d683f73acdce398e34ab560a758)).
+- Added the ability to search the app for users and posts. This includes:
+  - A component for displaying search results ([8a48f6e](https://github.com/sendahug/send-hug-frontend/commit/8a48f6ea7aa2a17121226488f9a2e8ce54ed556a)).
+  - A search form to the header, which enables searching for posts and users ([645c4ad](https://github.com/sendahug/send-hug-frontend/commit/645c4ad1e39ff1d196ac7824ac7fa20880ac4c2e)).
+  - Search-related methods for sending the search query to the back-end ([6546871](https://github.com/sendahug/send-hug-frontend/commit/6546871d73bb464da960361ac117d0ab49bc7e28)).
+- When the user's JWT expires, the app now presents an alert to the user telling them they have been logged out ([43efa31](https://github.com/sendahug/send-hug-frontend/commit/43efa317d91427c7d8437d26d70c888d0dc54811)).
+- Added the ability to delete all of a user's posts ([ec473db](https://github.com/sendahug/send-hug-frontend/commit/ec473db0aa5b036893d942665175ba4b8bd6dd20) & [7db7f16](https://github.com/sendahug/send-hug-frontend/commit/7db7f16d4654d93b5764cd38af6cd0d1f82dc522)).
+- Added the ability to delete all of a user's messages in a single mailbox ([426dce5](https://github.com/sendahug/send-hug-frontend/commit/426dce56b8e7c6d26d7cf97ec4af7482d3557b43) & [cfa68ed](https://github.com/sendahug/send-hug-frontend/commit/cfa68ed15d431f1d11e475972fe5613fdd7837d7)).
+
+#### Changes
+
+- Moved all the posts' data and methods from the Items Service to a new Posts Service ([d24b1c5](https://github.com/sendahug/send-hug-frontend/commit/d24b1c54c0905f2a046a3932de84b3098e261265)).
+- Adjusted the alerts service's navigation button to allow for different destination rather than just the home page ([8f1787a](https://github.com/sendahug/send-hug-frontend/commit/8f1787a1702aafb0474e6c3e0aedc3ffb181d7d2)).
+
+### 2020-06-17
+
+#### Features
+
+- Added the ability to send hugs to users directly from their profiles ([bf54557](https://github.com/sendahug/send-hug-frontend/commit/bf545572115784da87bf0ddaf234ebf349ac18b8)).
+
+#### Changes
+
+- Changed the name of the property holding user data in the Items Service to indicate it's another user's data, rather than the logged in user's data ([4eec5ce](https://github.com/sendahug/send-hug-frontend/commit/4eec5ce8f85daf4cf1ef1f6278b72fc20ee40d3b)).
+
+#### Fixes
+
+- Fixed a bug where attempting to view another page of another user's posts resulted in fetching that page of the logged in user's posts instead ([61c5dce](https://github.com/sendahug/send-hug-frontend/commit/61c5dce37522caf4d6a2bb84891f2c37e3f9fb7d)).
+- Fixed a bug where the loader didn't show when viewing multiple user profiles in a row ([dc3a93c](https://github.com/sendahug/send-hug-frontend/commit/dc3a93ca44c6a8c97b91013a3092fa73011f662d)).
+- Fixed a bug where the user page was stuck in indefinite loading status after the page was refreshed ([04fead4](https://github.com/sendahug/send-hug-frontend/commit/04fead4dc31e59ff190acaab99d412468ecf0672)).
+- Fixed a bug that caused posts page to display other users' posts for the logged in user's own profile ([7cbb80d](https://github.com/sendahug/send-hug-frontend/commit/7cbb80d115d33ad97ef33e316a2be69517bf9bc9)).
+- Fixed a bug where loader was displayed on above the empty profile (while loading), instead of showing just the loader ([6fd68d0](https://github.com/sendahug/send-hug-frontend/commit/6fd68d0909315a3ab3315b15e2200420d6b32a0f)).
+
+### 2020-06-16
+
+#### Features
+
+- Added the ability to view other users' profiles ([057f262](https://github.com/sendahug/send-hug-frontend/commit/057f262574e52150e41c814f5206602963606c23)).
+
+#### Changes
+
+- User display names in posts are now links to their profile ([8600be6](https://github.com/sendahug/send-hug-frontend/commit/8600be630e7ad322179cda60d24aeee01d8c12ae)).
+
+### 2020-06-15
+
+#### Fixes
+
+- Fixed a bug where attempting to view different pages in a messaging thread accidentally fetched another mailbox's data ([5aa21f7](https://github.com/sendahug/send-hug-frontend/commit/5aa21f74252bcea516f129925f0cb793986ab66a)).
+
+#### Documentation
+
+- Updated the link to the main README file in the front-end README ([853c86f](https://github.com/sendahug/send-hug-frontend/commit/853c86f0209bc00af87d3af7ec53fe6083b1f492)).
+
+### 2020-06-14
+
+#### Features
+
+- Added the ability to reply to user messages ([ab37cc6](https://github.com/sendahug/send-hug-frontend/commit/ab37cc603f39ea3342ec136373eb2a10fd31e444)).
+- Added a threads mailbox to display a list of the user's threads ([7841812](https://github.com/sendahug/send-hug-frontend/commit/78418126f460e5292315676024ff406515d769bb)).
+- Added the functionality for showing and deleting single threads ([995e368](https://github.com/sendahug/send-hug-frontend/commit/995e36893034cc2e58ad5a4a5c8b0957716905e0) & [a630fe0](https://github.com/sendahug/send-hug-frontend/commit/a630fe07b702636f35957b4eda30c476313f9537)).
+- Added the ability to delete threads ([a42d648](https://github.com/sendahug/send-hug-frontend/commit/a42d648fb4ef78f0b9c06ed51f0f432abb7829d8)).
+
+#### Changes
+
+- The messaging component now uses path parameters to check which mailbox should be displayed ([06a19d7](https://github.com/sendahug/send-hug-frontend/commit/06a19d705484b382ab1b39bacb517714f5cf4d21)).
+
+#### Fixes
+
+- Fixed a bug where the loader component remained visible even after the threads' fetch has been completed ([aea465b](https://github.com/sendahug/send-hug-frontend/commit/aea465bfaa134f01ea3323af87b9b658f7ed1a08)).
+
+#### Chores
+
+- Changed the GitHub URL in the app to the newly created Send A Hug organisation's URL ([de23f6b](https://github.com/sendahug/send-hug-frontend/commit/de23f6b803cfc2ec4a3de2771d97d48186b41908)).
+
+### 2020-06-12
+
+#### Changes
+
+- Changed the names of the environment variables to make them slightly more descriptive and clear ([7efc593](https://github.com/sendahug/send-hug-frontend/commit/7efc593c6a2ea7f50607436a4c5f052140478329)).
+
+#### Fixes
+
+- Fixed a bug where post-logout redirect attempted to send users to the development URL in production due to the wrong environment being used by the auth service ([2d9b29d](https://github.com/sendahug/send-hug-frontend/commit/2d9b29dcac847795f2dcf4f3bd6854aeac99f549)).
+
+#### Documentation
+
+- Updated the README with information about the dependencies for running the front-end server ([1c88477](https://github.com/sendahug/send-hug-frontend/commit/1c884778e5bdca41c0f06727f754e04906a04bdf)).
+
+### 2020-06-11
+
+#### Features
+
+- Added a post-install script, which updates the final JavaScript bundle with the correct values for all environment variables, as they're set in the machine's environment ([b5ec6b6](https://github.com/sendahug/send-hug-frontend/commit/b5ec6b6a56f331d1b43eb25af9f3638b560c4ac1)).
+
+#### Changes
+
+- Changed all environment-based variables to check for whether the app is run in production, and if so, use the production environment variables ([abd42d5](https://github.com/sendahug/send-hug-frontend/commit/abd42d52f3c98dfc88ddce6d4a356e2847cd5534)).
+- Changed the base directory from which browser-sync serves files to account for the production/local development split ([1ade966](https://github.com/sendahug/send-hug-frontend/commit/1ade966265140e05361be551072ed395a422562f)).
+
+#### Chores
+
+- Split the local development gulp tasks from production build gulp tasks. There's no need to run production build for local development, and production builds often require slightly different processes. ([f863cfe](https://github.com/sendahug/send-hug-frontend/commit/f863cfefaf32e50f18fff4941702332d9e885d24))
+
+#### Documentation
+
+- Added hosting instructions to the README ([6db7c8b](https://github.com/sendahug/send-hug-frontend/commit/6db7c8b183b1233ba5302cfd90a53bd79a8fada0)).
 
 ### 2020-06-10
 

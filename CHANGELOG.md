@@ -2,6 +2,330 @@
 
 ## Unreleased
 
+### 2023-01-08
+
+#### Chores
+
+- Updated the location of the back-end's tests in CI to match the updated structure in the back-end's repo ([9fd5e35](https://github.com/sendahug/send-hug-frontend/commit/9fd5e352dfcbd0f63aadb4618011a8033ccd654d)).
+
+### 2022-12-18
+
+#### Chores
+
+- Updated Angular to v15.0.4 ([0dc960d](https://github.com/sendahug/send-hug-frontend/commit/0dc960dfa0cd6f9853b81502002bf5ff55f79231)).
+- Updated non-major dev dependencies ([32467d2](https://github.com/sendahug/send-hug-frontend/commit/32467d288bb85cd90ad9cd06591d3b5e74a649bb)).
+
+### 2022-12-11
+
+#### Chores
+
+- Updated Angular to v15.0.3 ([d1ea4e9](https://github.com/sendahug/send-hug-frontend/commit/d1ea4e91c7aa26d5766deee7b8816a402774d089)).
+
+### 2022-12-04
+
+#### Fixes
+
+- Fixed a bug where fetching the logged in user's data caused an error if the user didn't pick colours for their icon ([1bae979](https://github.com/sendahug/send-hug-frontend/commit/1bae979c1d1fa4c07fffc702e6dd140d1d728ed7)).
+
+#### Chores
+
+- Updated Angular to v15.0.2 ([c58bb1c](https://github.com/sendahug/send-hug-frontend/commit/c58bb1ced84a4dbfa11a0cf03ad33a6ba5f832e3)).
+
+### 2022-11-27
+
+#### Chores
+
+- Updated the copyright notices throughout the repo to include the current year ([aad8227](https://github.com/sendahug/send-hug-frontend/commit/aad82273f1981618af8ca0f10c7a7bab4aca430b)).
+
+### 2022-11-13
+
+#### Chores
+
+- Updated Angular to v14.2.10 ([3de9bd6](https://github.com/sendahug/send-hug-frontend/commit/3de9bd6d0ebd70d5d6ef4025c6a177f0eea54750)).
+
+### 2022-11-08
+
+#### Chores
+
+- Updated Angular to v14.2.9 ([e070095](https://github.com/sendahug/send-hug-frontend/commit/e07009505ccfae8ceccc4fc8ed61650d5b760f9f)).
+
+### 2022-10-30
+
+#### Chores
+
+- Updated Angular to v14.2.8 ([eba8cac](https://github.com/sendahug/send-hug-frontend/commit/eba8cac8beb6b824a6c609e90dd4b4df6dfe4280)).
+
+### 2022-10-23
+
+#### Chores
+
+- Updated Angular to v14.2.7 ([6702fb1](https://github.com/sendahug/send-hug-frontend/commit/6702fb1cbb12d6d0ef945174424fa66e7bc086e4)).
+- Removed the distribution folder's content from the repo. Now that the `dist` task runs as part of the deployment build, there's no need to have those files in the repo anymore ([5e7f983](https://github.com/sendahug/send-hug-frontend/commit/5e7f9832645355bab464900c170b5dbd3017625d)).
+
+### 2022-10-16
+
+#### Chores
+
+- Updated Angular to v14.2.6 and added a missing dependency - rollup ([eb9dc32](https://github.com/sendahug/send-hug-frontend/commit/eb9dc32f0392837afc9f98f93434feced56cc907)).
+
+### 2022-10-09
+
+#### Chores
+
+- Updated Angular to v14.2.5 ([b9aa692](https://github.com/sendahug/send-hug-frontend/commit/b9aa692e664b2a264543d03e9463f7aaf2a6120d)).
+
+### 2022-10-03
+
+#### Chores
+
+- Updated Angular to v14.2.4 ([9d619fa](https://github.com/sendahug/send-hug-frontend/commit/9d619fa0411423e60829ea433777fa6edbe65a2d)).
+
+### 2022-09-25
+
+#### Chores
+
+- Deleted the no-longer-used Babel dependencies ([c99f970](https://github.com/sendahug/send-hug-frontend/commit/c99f9703674b9a72416d9f9a7cd68b9a14aa2695)).
+- Updated Angular to v14.2.3 ([2348b7a](https://github.com/sendahug/send-hug-frontend/commit/2348b7a04b23cfbed541efa937c2efbedca3379f)).
+
+### 2022-09-24
+
+#### Chores
+
+- Replaced the manual coverage results upload in CI with codecov's CircleCI orb ([caabc79](https://github.com/sendahug/send-hug-frontend/commit/caabc79c065f3e0f4f4102d6fec0db90a9454b41)).
+
+### 2022-09-18
+
+#### Chores
+
+- Updated Angular to v14.2.2 ([a3eeae3](https://github.com/sendahug/send-hug-frontend/commit/a3eeae35c0dd190912bdd46787dce42306dfa684)).
+
+### 2022-09-12
+
+#### Chores
+
+- Updated the version of the docker image used in CI ([a94e6b9](https://github.com/sendahug/send-hug-frontend/commit/a94e6b95d78864682d76e0b88dfd9c9e9997d513)).
+- Replaced deprecated convenience CircleCI images used in CI with the updated convenience images ([5e5f922](https://github.com/sendahug/send-hug-frontend/commit/5e5f922aab2f48b57d0932398afefb57d9889fe9)).
+
+### 2022-09-11
+
+#### Chores
+
+- Updated Angular to v14.2.1 ([528ca5a](https://github.com/sendahug/send-hug-frontend/commit/528ca5a280e8923f5b870029fa7816fb3ffe4a20)).
+
+### 2022-08-27
+
+#### Chores
+
+- Updated Angular to v14.2.0 ([8f1b3d6](https://github.com/sendahug/send-hug-frontend/commit/8f1b3d63f588fbb9083276d2389d2c744e1e4ca8)).
+
+### 2022-08-21
+
+#### Chores
+
+- Updated Angular to v14.1.3 ([af4b1fe](https://github.com/sendahug/send-hug-frontend/commit/af4b1fe3ce3ca7f0ecbc80ed18829f766136e885)).
+
+### 2022-08-13
+
+#### Chores
+
+- Updated Angular to v14.1.2 ([9f27627](https://github.com/sendahug/send-hug-frontend/commit/9f27627c90ba71a0d3327b5de62aa668328bdab1)).
+
+### 2022-08-07
+
+#### Chores
+
+- Updated Angular to v14.1.1 ([d3f7aee](https://github.com/sendahug/send-hug-frontend/commit/d3f7aeeeab10e66e90ad0d595b20c444fb172150)).
+
+### 2022-07-24
+
+#### Chores
+
+- Updated Angular to v14.1.0 ([381dfa2](https://github.com/sendahug/send-hug-frontend/commit/381dfa2297ed87025cee0071f42cf414030caab5)).
+
+### 2022-07-17
+
+#### Chores
+
+- Updated Angular to v14.0.6 ([37cbce8](https://github.com/sendahug/send-hug-frontend/commit/37cbce8a64b42f530e3d7e60714287ec8f00ace0)).
+
+### 2022-07-10
+
+#### Chores
+
+- Updated Angular to v14.0.5 ([06f407d](https://github.com/sendahug/send-hug-frontend/commit/06f407d544a9016aa508a623e922a7822d14367c)).
+
+### 2022-07-03
+
+#### Chores
+
+- Updated Angular to v14.0.4 ([f633610](https://github.com/sendahug/send-hug-frontend/commit/f633610089259224286523a484ec099a6706f6f9)).
+
+### 2022-06-26
+
+#### Chores
+
+- Updated Angular to v14.0.3 ([d4b8291](https://github.com/sendahug/send-hug-frontend/commit/d4b8291fb1753bee75693af326193d213bbc577f)).
+
+### 2022-06-19
+
+#### Chores
+
+- Added the development compilation script to the package.json scripts ([78106b3](https://github.com/sendahug/send-hug-frontend/commit/78106b330fee3000fc369360d39235aff0a1982a)).
+- Upgraded Cypress to v10 ([16f5e6a](https://github.com/sendahug/send-hug-frontend/commit/16f5e6a6e4fc81b04622a6367464f413f4c6db54)).
+- Added a funding.yml file to enable sponsoring the team ([cf555de](https://github.com/sendahug/send-hug-frontend/commit/cf555decb443428424d44f25b89d20b3d872e719)).
+
+### 2022-06-18
+
+#### Chores
+
+- Updated Angular to v14.0.2 ([aecd726](https://github.com/sendahug/send-hug-frontend/commit/aecd726b730e7a9120fd524bb77601a74f731301)).
+
+### 2022-06-12
+
+#### Chores
+
+- Updated the environment variables' replacer function to look for the correct output. The replacer was still looking for the browserify output, but the switch to rollup caused a slightly different output to be passed in. The expected output was changed to match the rollup output ([74db0c2](https://github.com/sendahug/send-hug-frontend/commit/74db0c241fd1915267df1628c6647b40c071db3d)).
+- Instead of requiring the app to be built ahead of deployment, the env-config script (which runs the environment variables' replacer) now runs the distribution tasks before making the replacement and deploying the updated files ([6e83edb](https://github.com/sendahug/send-hug-frontend/commit/6e83edb3dd88242c56670f48990babf6c5a9888d) & [f41c887](https://github.com/sendahug/send-hug-frontend/commit/f41c887b7584cad2b76bec46c31e818783900ba4)).
+
+### 2022-05-29
+
+#### Chores
+
+- Updated Angular to v13.3.10 ([4403fc8](https://github.com/sendahug/send-hug-frontend/commit/4403fc818d3c68ff590a51344b5d8c7d6e1cdb87)).
+
+#### Documentation
+
+- Replaced the Libraries.io badge in the README with more detailed and accurate Depfu badges ([3ff4b1a](https://github.com/sendahug/send-hug-frontend/commit/3ff4b1a75b43022ab7d081b7b156acbbe3da4e8a)).
+
+### 2022-05-22
+
+#### Chores
+
+- Updated Angular to v13.3.9 ([f408978](https://github.com/sendahug/send-hug-frontend/commit/f4089785c41299d9514c2a43bd34a8602f4c09b3)).
+
+### 2022-05-14
+
+#### Chores
+
+- Updated Angular to v13.3.8 ([17aa300](https://github.com/sendahug/send-hug-frontend/commit/17aa300f67ea6a8c0c6e4d7c7423b5405a405139)).
+
+### 2022-05-08
+
+#### Chores
+
+- Updated Angular to v13.3.6 ([9ba7b48](https://github.com/sendahug/send-hug-frontend/commit/9ba7b4855554a4d6b381ddd84a0353b4207c73bf)).
+
+### 2022-05-01
+
+#### Chores
+
+- Updated Angular to v13.3.5 ([1f77ab5](https://github.com/sendahug/send-hug-frontend/commit/1f77ab5b12a9c890cfe9e3c5b2c142f2ecd671c5)).
+
+### 2022-04-24
+
+#### Chores
+
+- Updated Angular to v13.3.4 ([40d6f1f](https://github.com/sendahug/send-hug-frontend/commit/40d6f1fcd8d6b7ff78d757e3c15f372f7417984b)).
+
+### 2022-04-18
+
+#### Features
+
+- Added a new service to handle form validation across the whole app ([234590c](https://github.com/sendahug/send-hug-frontend/commit/234590cef49ab5d0ed3624492167100418180c29) - [bec654d](https://github.com/sendahug/send-hug-frontend/commit/bec654d19394eb837237c2f5d31b57da404d30fc)).
+
+### 2022-04-17
+
+#### Fixes
+
+- Added missing aria-invalid attribute to the report form ([db8c991](https://github.com/sendahug/send-hug-frontend/commit/db8c9917c5bb7369bf7963e897b55bda5788421a) & [4d7a3b6](https://github.com/sendahug/send-hug-frontend/commit/4d7a3b63509696982d6eb96ec6b941e0a4e9b901))
+
+#### Chores
+
+- Added tests for the new forms ([f236036](https://github.com/sendahug/send-hug-frontend/commit/f236036aa1b2238ff73a2af92e310bac04ac71a5) - [d73d7f8](https://github.com/sendahug/send-hug-frontend/commit/d73d7f892a1d891ad271b62dc032bff139bc551f)).
+- Updated Angular from v13.3.0 to v13.3.3 ([a5905df](https://github.com/sendahug/send-hug-frontend/commit/a5905df4af3fedd444b04ddc143098f4763225a4)).
+
+### 2022-04-16
+
+#### Features
+
+- Added a new Post Edit Form component ([27af905](https://github.com/sendahug/send-hug-frontend/commit/27af905d6f0e65973dff456211703cca1aa90f14)).
+- Added a new Display Name Edit Form component ([54da9a8](https://github.com/sendahug/send-hug-frontend/commit/54da9a803f04ea1c843d7fb519510f028898bbfc)).
+- Added a new Report Form component ([0c2f9c7](https://github.com/sendahug/send-hug-frontend/commit/0c2f9c7575f5aafeef7e3f358368ccf7fd4aca6f)).
+- Added a new Delete Item Form component ([6160470](https://github.com/sendahug/send-hug-frontend/commit/616047083971156c3a7e68d3b3dce4a5f9c902b6)).
+
+#### Changes
+
+- Moved the edit form's functionality from the popup to the new edit form component ([18388c8](https://github.com/sendahug/send-hug-frontend/commit/18388c84a37deca2d77a030daa9bdde589f342a1)).
+- United the two post edit forms. The admin and non-admin edit forms were mostly identical, so it's far cleaner to unite the identical parts and leave the unique parts separate ([39c39e3](https://github.com/sendahug/send-hug-frontend/commit/39c39e33726405087d4c7a83bb60a871d9f40fea)).
+- Moved the display name edit functionality from the popup to the new component ([db45bf1](https://github.com/sendahug/send-hug-frontend/commit/db45bf1c746af4dc4e839fc36e4a953e2c6dc844)).
+- United the two display name edit forms and re-organised the form's methods to better reflect their functionality ([8ce5c38](https://github.com/sendahug/send-hug-frontend/commit/8ce5c387680d323fc0616563241856511010e461)).
+- Moved the report functionality from the popup to the new component ([0c2f9c7](https://github.com/sendahug/send-hug-frontend/commit/0c2f9c7575f5aafeef7e3f358368ccf7fd4aca6f)).
+- United the similar parts of the two report forms and re-organised the form's methods to better reflect their functionality ([ffda05d](https://github.com/sendahug/send-hug-frontend/commit/ffda05d942eef35a90c408c45d53f6fe1d236563)).
+- Unified the delete forms in the Delete Item Form ([](https://github.com/sendahug/send-hug-frontend/commit/156e0f7e1563863ff0fac8e4824fa76e90835b8c)).
+- Previously, if the user didn't select a report reason, the 'submit' button was still enabled. Now, the submit button is disabled until a reason is selected ([177efbf](https://github.com/sendahug/send-hug-frontend/commit/177efbf2e2fbd3613bcc4917a7110318056fa172)).
+
+### 2022-03-20
+
+#### Chores
+
+- Updated Angular to v13.3.0 ([bd426b7](https://github.com/sendahug/send-hug-frontend/commit/bd426b7dcd5b69f7dc0c1e1a7b030933fbdc5c9e)).
+
+### 2022-03-13
+
+#### Chores
+
+- Updated Angular to v13.2.6 ([9ec94c6](https://github.com/sendahug/send-hug-frontend/commit/9ec94c6274ff13e131c3862c85f1b1353dfece91)).
+
+### 2022-03-06
+
+#### Chores
+
+- Code simplified: Updated the template-url-replacer plugin to use Magic-String's new `replace` method instead of manually finding and replacing the things in the templates ([657f533](https://github.com/sendahug/send-hug-frontend/commit/657f5337224fad15ded2172777845f3d41423a5b)).
+- Updated Angular from v13.0.0 to v13.2.5 ([7c175a9](https://github.com/sendahug/send-hug-frontend/commit/7c175a9bb9bbbfbf2338337f327ee93b18114bfa)).
+
+### 2022-02-28
+
+#### Chores
+
+- Updated the branch names in GitHub Actions workflow from 'Dev' to 'dev' to reflect the change in the branch's name ([fdb31a9](https://github.com/sendahug/send-hug-frontend/commit/fdb31a9ff2224b4ef4a5b6b1b51a291dd7befd0c)).
+- Changed the build-app GitHub Actions workflow to create a pull request instead of pushing the build to the main branch ([a610f08](https://github.com/sendahug/send-hug-frontend/commit/a610f086d7cadc75a113af853bb65b6a1154fc55)).
+
+### 2022-02-27
+
+#### Chores
+
+- Replaced browserify with rollup as the app's bundler. This simplified the migration to Angular v13 and allowed us to use a better-supported bundler. This includes:
+  - Replaced browserify with rollup in development and in production tasks ([b765ea7](https://github.com/sendahug/send-hug-frontend/commit/b765ea754e5a3851ab6b6a0c42ad0ea5ee8eea53) & [4228ed4](https://github.com/sendahug/send-hug-frontend/commit/4228ed4deac6e98fb58120c9a96b18060e25b823)).
+  - Turned the browserify transform into a rollup plugin ([1008614](https://github.com/sendahug/send-hug-frontend/commit/1008614b1a9ce9c4ca1db33b071bdde40aad3985)).
+  - Replaced browserify with rollup in the Karma config ([e501e4f](https://github.com/sendahug/send-hug-frontend/commit/e501e4fb050b397884e1c90b02847ed3baeb8b76)).
+  - Removed the old packages and the gulp tasks written for browserify ([c52bbfb](https://github.com/sendahug/send-hug-frontend/commit/c52bbfb0b695fed81e72f0224d7246887ef56160)).
+  - Moved the SVG Inliner to its own rollup plugin ([896e20](https://github.com/sendahug/send-hug-frontend/commit/896e20e3e6b7a20dadfaa7adf62146ddbd87a837)).
+  - Added a rollup plugin for setting the environment to production in the distribution task ([e860e52](https://github.com/sendahug/send-hug-frontend/commit/e860e52365baa13cd796a698407d5c3de970143e)).
+- Updated Angular to v13 ([f883f49](https://github.com/sendahug/send-hug-frontend/commit/f883f49df5b5572d9f5020c8111ea4375a2bbe1b)).
+- Replaced the deprecated Protractor with Cypress for e2e tests. This includes:
+  - Replaced Protractor-related gulp tasks with Cypress-related gulp tasks ([0678f23](https://github.com/sendahug/send-hug-frontend/commit/0678f23d8265c9919a24445f1f6c74c13eb763a9)).
+  - Updated the main specs file to the Cypress syntax ([2f865a4](https://github.com/sendahug/send-hug-frontend/commit/2f865a4e8fec9cda8d463bdf96a4e63e4ac276f9)).
+  - Updated the router specs file to the Cypress syntax ([1432db1](https://github.com/sendahug/send-hug-frontend/commit/1432db112ff49191c8e8b3309fd33742b51078b1)).
+  - Updated the CI config for Cypress ([a143746](https://github.com/sendahug/send-hug-frontend/commit/a143746b17ae643ab23d8ed646f76522aff98eed)).
+  - Changed the CI config to run each of the e2e gulp tasks separately in order to run Cypress directly ([43b7e9a](https://github.com/sendahug/send-hug-frontend/commit/43b7e9a9a23f32e0f382270d3ee5f1b37cbd9848)).
+- Updated the docker image used in CI ([0526b58](https://github.com/sendahug/send-hug-frontend/commit/0526b580d4a415bb5712d41aa0e6d383206fbeba)).
+
+#### Documentation
+
+- Replaced browserify and its plugins in the main README with rollup and its plugins ([e538e93](https://github.com/sendahug/send-hug-frontend/commit/e538e9314492847d0ca3ce3606ad07cf8fc258d7)).
+
+### 2022-02-20
+
+#### Chores
+
+- Updated Angular to v12.2.16 ([fb6d233](https://github.com/sendahug/send-hug-frontend/commit/fb6d2332c697cbd7de5445c5d230a4543a2e7d92)).
+
+### 2022-02-19
+
+#### Documentation
+
+- Deleted the david-dm badges from the main README, as the site hasn't been responsive in a long time ([004b3e2](https://github.com/sendahug/send-hug-frontend/commit/004b3e21fdfa4f70e2929dfc5eb7254a2bc3d129)).
+
 ### 2022-01-24
 
 #### Chores

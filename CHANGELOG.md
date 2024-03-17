@@ -2,6 +2,163 @@
 
 ## Unreleased
 
+### 2023-09-09
+
+#### Chores
+
+- Updated the version of CircleCI's browser-tools orb ([43ba748](https://github.com/sendahug/send-hug-frontend/commit/43ba7486ab158d1808eb8156245497e1778680c1)).
+
+### 2023-08-20
+
+#### Chores
+
+- Updated Angular from v15.2.9 to v16.2.1 ([41fac4e](https://github.com/sendahug/send-hug-frontend/commit/41fac4e74a06b72897f8a5846fc037fe7eae28f5)).
+- Updated all development dependencies ([982deff](https://github.com/sendahug/send-hug-frontend/commit/982deffb07fb48a13cfb1b345912edd8728359a2)).
+
+### 2023-07-28
+
+#### Chores
+
+- Updated the version of CircleCI's browser-tools orb, which should fix the test issue in CI - as shown in CircleCI-Public/browser-tools-orb#79 ([c2b70eb](https://github.com/sendahug/send-hug-frontend/commit/c2b70eb32b38826da368a850510d9f558a21928a)).
+
+### 2023-06-04
+
+#### Chores
+
+- Updated Angular to v15.2.9 ([c5fb1ce](https://github.com/sendahug/send-hug-frontend/commit/c5fb1cec0d08ccb7c862c64d2076c5c960be856b)).
+
+### 2023-05-14
+
+#### Chores
+
+- Changed the precision in the AdminDashboard's time-based tests, which should fix failures due to the time passing between the test's start and the call to the function being tested ([baec31d](https://github.com/sendahug/send-hug-frontend/commit/baec31d5bcddf2540cd5de402a6a606c8524de67)).
+
+### 2023-05-08
+
+#### Chores
+
+- Fixed the types configuration in unit tests. Up until now, VSCode used Cypress/Chai types in unit tests (due to misconfigured 'types'). Now, unit tests correctly use Jasmine types and the tsconfig for e2e is separated from the tsconfig for unit tests ([2d44036](https://github.com/sendahug/send-hug-frontend/commit/2d44036ff048ff0217ec73127031bfe8c35bcb8f)).
+- Changed AdminDashboard's time-based tests to check for closeness to a specific time, rather than compare the string versions. Since it takes a while between the check and the actual call,those tests that relied on specific timing occasionally failed. This was replaced by a "close to" check (which should account for that time). ([41aaa98](https://github.com/sendahug/send-hug-frontend/commit/41aaa9848b24f64822eac738de5d1928be19242c) & [57fea28](https://github.com/sendahug/send-hug-frontend/commit/57fea286c68263b06d486ed5b0070f3df0b2aa53)).
+
+### 2023-05-07
+
+#### Changes
+
+- Deleted an unneeded service injection in the Search Results component ([4894e18](https://github.com/sendahug/send-hug-frontend/commit/4894e187608ad3ae53c8a8a1c4060c4d01093ab2)).
+
+#### Chores
+
+- Updated the versions of actions used in the current GitHub Actions workflows ([0532839](https://github.com/sendahug/send-hug-frontend/commit/0532839a0938df4b8bb63c253d0e02d822626fea)).
+
+### 2023-05-01
+
+#### Chores
+
+- Updated Angular to v15.2.8 ([f17cc1a](https://github.com/sendahug/send-hug-frontend/commit/f17cc1a4f42b5917903f44db750cd3d973fc0bb0)).
+
+### 2023-04-16
+
+#### Chores
+
+- Updated Angular to v15.2.7 ([4f4a72a](https://github.com/sendahug/send-hug-frontend/commit/4f4a72ae01517f0885dc99fedeaf5e8d175c223a)).
+
+### 2023-04-10
+
+#### Chores
+
+- Updated Angular to v15.2.6 ([4fbb802](https://github.com/sendahug/send-hug-frontend/commit/4fbb80231d13c51dd4ce509daeb04e4c0e37c376)).
+
+### 2023-04-02
+
+#### Chores
+
+- Updated Angular to v15.2.5 ([0bb1655](https://github.com/sendahug/send-hug-frontend/commit/0bb16554e67aa3706687049560a02e2ffbb1af24)).
+
+### 2023-03-15
+
+#### Chores
+
+- Updated Angular to v15.2.4 ([7d0e9b7](https://github.com/sendahug/send-hug-frontend/commit/7d0e9b70c483d7a0b9c06e025cb223a19025c4cd)).
+
+### 2023-03-18
+
+#### Chores
+
+- Updated Angular to v15.2.3 ([5afc44f](https://github.com/sendahug/send-hug-frontend/commit/5afc44f388d7f3de7b4965fc8f79166aadd9909f)).
+
+### 2023-03-12
+
+#### Chores
+
+- Updated Angular to v15.2.2 ([4423a0e](https://github.com/sendahug/send-hug-frontend/commit/4423a0ea5f8c5a76966a2023f1c683c5387e3284)).
+
+### 2023-03-05
+
+#### Changes
+
+- Updated all hug-sending methods to call the newly created endpoints for sending hugs, added in sendahug/send-hug-backend#363 ([bc5b31e](https://github.com/sendahug/send-hug-frontend/commit/bc5b31ec560b9878ac73521b82e2d9b40c8e9648)).
+
+### 2023-03-04
+
+#### Changes
+
+- Added a check to the `getMailboxMessages` method to ensure the mailbox type is only inbox or outbox, rather than any string, which could create a vulnerability ([497875f](https://github.com/sendahug/send-hug-frontend/commit/497875f3987ebcb46449f8c74bc7474b2d90107a)).
+
+#### Chores
+
+- Installed sass and gulp-sass to transform Sass files. Previously, we relied on Dreamweaver's auto-conversion to transform Sass files into CSS files. This means styling can now be updated in any IDE. ([396f418](https://github.com/sendahug/send-hug-frontend/commit/396f418b9da02d242ff7734d4bbf51d881794d45))
+- Updated Angular to v15.2.1 ([6375c49](https://github.com/sendahug/send-hug-frontend/commit/6375c49b6fba1bda1636d4777920c2ed8a05d5c9)).
+
+### 2023-02-25
+
+#### Chores
+
+- Updated Angular to v15.2.0 ([3a4a0fb](https://github.com/sendahug/send-hug-frontend/commit/3a4a0fbaee8f226076a970730d1c8cafbfe51bdf)).
+
+### 2023-02-18
+
+#### Chores
+
+- Updated Angular to v15.1.5 ([0b2bdd2](https://github.com/sendahug/send-hug-frontend/commit/0b2bdd2a2cecc399edfc0f7e3d1ed5dff6ac7732)).
+
+### 2023-02-12
+
+#### Chores
+
+- Updated Angular to v15.1.4 ([3b23746](https://github.com/sendahug/send-hug-frontend/commit/3b23746c82b0f7a6390bb33782d2911dd96112a8)).
+
+### 2023-02-05
+
+#### Chores
+
+- Re-enabled Chrome web security in e2e tests and updated the login process to use Cypress's new `cy.origin` workflow instead ([a7dc681](https://github.com/sendahug/send-hug-frontend/commit/a7dc6816198ca7e56588448baabaa4512f9ad708)).
+- Updated Rollup's sourcemaps configuration to match the new options in v3 and switched production's sourcemaps to be hidden to prevent a clash with the tsconfig settings ([c923317](https://github.com/sendahug/send-hug-frontend/commit/c9233178d4b332fa60b342180e873c1531ea4b41) & [3f748a5](https://github.com/sendahug/send-hug-frontend/commit/3f748a5d415dc95980afba15946905334a20eccd)).
+
+### 2023-02-04
+
+#### Chores
+
+- Updated Angular to v15.1.3 ([9debce5](https://github.com/sendahug/send-hug-frontend/commit/9debce5bd1046778bad3e9fb117011f8926a84cc)).
+
+### 2023-01-29
+
+#### Chores
+
+- Updated Angular to v15.1.2 ([62bb5ea](https://github.com/sendahug/send-hug-frontend/commit/62bb5eac897782ef464248ce822f71950a7ffcf1)).
+- Updated the database's name in e2e tests (in CI) to match the rename in the back-end ([5220ebd](https://github.com/sendahug/send-hug-frontend/commit/5220ebd7514d87c1a9a0ddc78ac9d529fcaa5c5f)).
+
+### 2023-01-22
+
+#### Chores
+
+- Updated Angular to v15.1.1 ([8dd872c](https://github.com/sendahug/send-hug-frontend/commit/8dd872cdbe00d976df021b7046e95659aa7febb6)).
+
+### 2023-01-15
+
+#### Chores
+
+- Updated Angular to v15.1.0 ([0d5966a](https://github.com/sendahug/send-hug-frontend/commit/0d5966a905c36a2d2688334ce604288e409158e3)).
+
 ### 2023-01-08
 
 #### Chores

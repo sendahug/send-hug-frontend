@@ -3,29 +3,29 @@
 	<div id="noInternet" *ngIf="alertsService.isOffline.value" role="banner">You are not currently connected to the internet. For updated data, reconnect to the internet and try again.</div>
 	<nav id="navMenu" role="navigation">
 		<a [routerLink]="['/']"><img src="../assets/img/Logo.svg" alt="send a hug logo" id="siteLogo"></a>
-		<button [class]="menuButtonClass()" id="menuBtn" (click)="toggleMenu()" aria-hidden="true" aria-label="open navigation menu"><fa-icon [icon]="faBars" class="fa-bars"></fa-icon></button>
-		<div id="navLinks" [class]="navMenuClass()" [attr.aria-hidden]="showMenu()">
-			<a [routerLink]="['/']" [class]="currentlyActiveRoute() == '/' ? activeLinkClass : inactiveLinkClass">
+		<button [ngClass]="menuButtonClass()" id="menuBtn" (click)="toggleMenu()" aria-hidden="true" aria-label="open navigation menu"><fa-icon [icon]="faBars" class="fa-bars"></fa-icon></button>
+		<div id="navLinks" [ngClass]="navMenuClass()" [attr.aria-hidden]="showMenu()">
+			<a [routerLink]="['/']" [ngClass]="getClassForNavItem('/')">
 				<img src="../assets/img/home.svg" alt="">
 				<div class="navLinkText">Home</div>
 			</a>
-			<a [routerLink]="['/messages']" [class]="currentlyActiveRoute() == '/messages' ? activeLinkClass : inactiveLinkClass">
+			<a [routerLink]="['/messages']" [ngClass]="getClassForNavItem('/messages')">
 				<fa-icon [icon]="faComments" class="navIcon fa-comments" aria-label="Messages"></fa-icon>
 				<div class="navLinkText">Messages</div>
 			</a>
-			<a *ngIf="authService.authenticated && !authService.userData.blocked" [routerLink]="['/new', 'Post']" [class]="currentlyActiveRoute() == '/new' ? activeLinkClass : inactiveLinkClass">
+			<a *ngIf="authService.authenticated && !authService.userData.blocked" [routerLink]="['/new', 'Post']" [ngClass]="getClassForNavItem('/new')">
 				<img src="../assets/img/post.svg" alt="">
 				<div class="navLinkText">New Post</div>
 			</a>
-			<a [routerLink]="['/user']" [class]="currentlyActiveRoute() == '/user' ? activeLinkClass : inactiveLinkClass">
+			<a [routerLink]="['/user']" [ngClass]="getClassForNavItem('/user')">
 				<fa-icon [icon]="faUserCircle" class="navIcon fa-user-circle" aria-label="Profile"></fa-icon>
 				<div class="navLinkText">Profile</div>
 			</a>
-			<a [routerLink]="['/about']" [class]="currentlyActiveRoute() == '/about' ? activeLinkClass : inactiveLinkClass">
+			<a [routerLink]="['/about']" [ngClass]="getClassForNavItem('/about')">
 				<fa-icon [icon]="faCompass" class="fa-compass navIcon" aria-label="About"></fa-icon>
 				<div class="navLinkText">About</div>
 			</a>
-			<a *ngIf="authService.canUser('read:admin-board')" [routerLink]="['/admin']" [class]="currentlyActiveRoute() == '/admin' ? activeLinkClass : inactiveLinkClass">
+			<a *ngIf="authService.canUser('read:admin-board')" [routerLink]="['/admin']" [ngClass]="getClassForNavItem('/admin')">
 				<img src="../assets/img/admin.svg" alt="">
 				<div class="navLinkText">Admin Panel</div>
 			</a>

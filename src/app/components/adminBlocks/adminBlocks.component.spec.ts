@@ -130,7 +130,7 @@ describe("Blocks Page", () => {
     spyOn(adminBlocks, "fetchBlocks");
     adminBlocks.blockedUsers = [...mockBlockedUsers];
     adminBlocks.isLoading = false;
-    adminBlocks.totalPages = 1;
+    adminBlocks.totalPages.set(1);
     fixture.detectChanges();
 
     // trigger a click
@@ -158,7 +158,7 @@ describe("Blocks Page", () => {
     spyOn(adminBlocks, "fetchBlocks");
     adminBlocks.blockedUsers = [...mockBlockedUsers];
     adminBlocks.isLoading = false;
-    adminBlocks.totalPages = 1;
+    adminBlocks.totalPages.set(1);
     fixture.detectChanges();
 
     // trigger a click
@@ -189,7 +189,7 @@ describe("Blocks Page", () => {
     spyOn(adminBlocks, "fetchBlocks");
     adminBlocks.blockedUsers = [...mockBlockedUsers];
     adminBlocks.isLoading = false;
-    adminBlocks.totalPages = 1;
+    adminBlocks.totalPages.set(1);
     fixture.detectChanges();
 
     // trigger a click
@@ -219,7 +219,7 @@ describe("Blocks Page", () => {
     spyOn(adminBlocks, "fetchBlocks");
     adminBlocks.blockedUsers = [...mockBlockedUsers];
     adminBlocks.isLoading = false;
-    adminBlocks.totalPages = 1;
+    adminBlocks.totalPages.set(1);
     fixture.detectChanges();
 
     // trigger a click
@@ -247,7 +247,7 @@ describe("Blocks Page", () => {
 
     adminBlocks.blockedUsers = [...mockBlockedUsers];
     adminBlocks.isLoading = false;
-    adminBlocks.totalPages = 1;
+    adminBlocks.totalPages.set(1);
     fixture.detectChanges();
 
     adminBlocks.blockUser(10, "oneDay", undefined);
@@ -286,7 +286,7 @@ describe("Blocks Page", () => {
     spyOn(adminBlocks, "fetchBlocks");
     adminBlocks.blockedUsers = [...mockBlockedUsers];
     adminBlocks.isLoading = false;
-    adminBlocks.totalPages = 1;
+    adminBlocks.totalPages.set(1);
     fixture.detectChanges();
 
     // trigger a click
@@ -317,8 +317,8 @@ describe("Blocks Page", () => {
     const fetchSpy = spyOn(adminBlocks, "fetchBlocks");
     adminBlocks.blockedUsers = [...mockBlockedUsers];
     adminBlocks.isLoading = false;
-    adminBlocks.totalPages = 2;
-    adminBlocks.currentPage = 1;
+    adminBlocks.totalPages.set(2);
+    adminBlocks.currentPage.set(1);
     fixture.detectChanges();
 
     // trigger a click
@@ -327,7 +327,7 @@ describe("Blocks Page", () => {
 
     // check expectations
     expect(nextPageSpy).toHaveBeenCalled();
-    expect(adminBlocks.currentPage).toBe(2);
+    expect(adminBlocks.currentPage()).toBe(2);
     expect(fetchSpy).toHaveBeenCalled();
     done();
   });
@@ -341,8 +341,8 @@ describe("Blocks Page", () => {
     const fetchSpy = spyOn(adminBlocks, "fetchBlocks");
     adminBlocks.blockedUsers = [...mockBlockedUsers];
     adminBlocks.isLoading = false;
-    adminBlocks.totalPages = 2;
-    adminBlocks.currentPage = 2;
+    adminBlocks.totalPages.set(2);
+    adminBlocks.currentPage.set(2);
     fixture.detectChanges();
 
     // trigger a click
@@ -351,7 +351,7 @@ describe("Blocks Page", () => {
 
     // check expectations
     expect(prevPageSpy).toHaveBeenCalled();
-    expect(adminBlocks.currentPage).toBe(1);
+    expect(adminBlocks.currentPage()).toBe(1);
     expect(fetchSpy).toHaveBeenCalled();
     done();
   });

@@ -1,7 +1,7 @@
-<li class="{{class}}" aria-describedby="newTitle" role="article">
+<li class="{{containerClass}}" aria-describedby="newTitle" role="article">
 	<div class="itemText" aria-describedby="pText" id="{{ postId() }}">{{ post.text }}</div>
 	<div class="itemUser">By <a [routerLink]="['/user', post.userId ]" class="profileLink" aria-describedby="pUser" id="{{ type + 'User' + post.id }}">{{ post.user }}</a> </div>
-	<div class="buttonsContainer">
+	<div [ngClass]="buttonsContainerClass()">
 		<div class="notification" [attr.aria-describedby]="'pHug ' + type + 'User' + post.id">
 			<!-- TODO: Check why we're checking for strings -->
 			<!-- TODO: Also move these checks to the component -->
@@ -16,8 +16,8 @@
 			</button>
 			<span class="badge" aria-describedby="pGivenH">{{ post.givenHugs }}</span>
 		</div>
-		<button class="textlessButton menuButton hidden" [attr.aria-labelledby]="'pOptions ' + type + 'Post' + post.id" name="post options" (click)="toggleOptions()"><fa-icon [icon]="faEllipsisV" class="fa-comment"></fa-icon></button>
-		<div class="subMenu">
+		<button [ngClass]="menuButtonClass()" [attr.aria-labelledby]="'pOptions ' + type + 'Post' + post.id" name="post options" (click)="toggleOptions()"><fa-icon [icon]="faEllipsisV" class="fa-comment"></fa-icon></button>
+		<div [ngClass]="subMenuClass()">
 			<a [routerLink]="['/new', 'Message']" [queryParams]="{user: post.user, userID: post.userId}" class="textlessButton messageButton" [attr.aria-labelledby]="'pMessage ' + type + 'User' + post.id" name="send a message"><fa-icon [icon]="faComment" class="fa-comment"></fa-icon></a>
 			<button class="textlessButton reportButton" (click)="reportPost()" [attr.aria-labelledby]="'pReport ' + type +  'Post' + post.id" name="report"><fa-icon [icon]="faFlag" class="fa-flag"></fa-icon></button>
 			<button *ngIf="authService.canUser('patch:any-post')" class="textlessButton editButton" (click)="editPost()" [attr.aria-labelledby]="'pEdit ' + type + 'Post' + post.id"><fa-icon [icon]="faEdit" class="fa-edit"></fa-icon></button>

@@ -54,7 +54,7 @@ import { mockAuthedUser } from "@tests/mockData";
 @Component({
   selector: "app-page-mock",
   template: `
-    <app-single-post [post]="mockPost" [type]="'n'" [class]="'newItem'"></app-single-post>
+    <app-single-post [post]="mockPost" [type]="'n'" [containerClass]="'newItem'"></app-single-post>
   `,
 })
 class MockPage {
@@ -308,10 +308,8 @@ describe("Post", () => {
 
     // change the elements' width to make sure there isn't enough room for the menu
     const post = myPostsDOM.querySelector(".newItem");
-    const sub = post.querySelector(".subMenu") as HTMLDivElement;
-    sub.style.maxWidth = "40px";
-    sub.style.display = "flex";
-    (sub.firstElementChild! as HTMLAnchorElement).style.width = "100px";
+    const container = post.querySelector(".buttonsContainer") as HTMLDivElement;
+    container.style.width = "40px";
     upFixture.detectChanges();
 
     // check all menus aren't shown
@@ -333,10 +331,8 @@ describe("Post", () => {
 
     // change the elements' width to make sure there isn't enough room for the menu
     const post = myPostsDOM.querySelector(".newItem");
-    const sub = post.querySelector(".subMenu") as HTMLDivElement;
-    sub.style.maxWidth = "120px";
-    sub.style.display = "flex";
-    (sub.firstElementChild! as HTMLAnchorElement).style.width = "100px";
+    const container = post.querySelector(".buttonsContainer") as HTMLDivElement;
+    container.style.width = "400px";
     upFixture.detectChanges();
 
     // check all menus aren't shown
@@ -358,10 +354,8 @@ describe("Post", () => {
 
     // change the elements' width to make sure there isn't enough room for the menu
     const post = myPostsDOM.querySelector(".newItem");
-    const sub = post.querySelector(".subMenu") as HTMLDivElement;
-    sub.style.maxWidth = "40px";
-    sub.style.display = "flex";
-    (sub.firstElementChild! as HTMLAnchorElement).style.width = "100px";
+    const container = post.querySelector(".buttonsContainer") as HTMLDivElement;
+    container.style.width = "40px";
     upFixture.detectChanges();
 
     // check all menus aren't shown

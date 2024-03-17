@@ -2,6 +2,329 @@
 
 ## Unreleased
 
+### 2024-03-16
+
+#### Changes
+
+- Replaced most classes that are set by the code with Angular's `ngClass` syntax. This allows us to write cleaner code and skip the manual update of elements' classes ([#1531](https://github.com/sendahug/send-hug-frontend/pull/1531)).
+
+#### Chores
+
+- Replaced `gulp-terser` with Rollup's terser plugin. This moves the last aspect of the script generation to Rollup, which essentially ensures the whole process is handled entirely by the bundler ([#1528](https://github.com/sendahug/send-hug-frontend/pull/1528)).
+
+### 2024-03-12
+
+#### Chores
+
+- Moved the environment variables' substition from the `env-config` script to its own Rollup plugin. This also allows us to move from an environment-defined-variables-based structure to an environment-files-based structure ([#1527](https://github.com/sendahug/send-hug-frontend/pull/1527)).
+
+### 2024-03-11
+
+#### Changes
+
+- Replaced Sass with LESS as the CSS pre-processor. Since the Sass team has made it clear they support hate-speech and terrorism, we've opted for removing Sass from the project and rebuilding the stylesheets with LESS ([#1525](https://github.com/sendahug/send-hug-frontend/pull/1525)).
+
+### 2024-03-08
+
+#### Documentation
+
+- Updated the README's sections about the source code, about dependencies and about tests ([#1522](https://github.com/sendahug/send-hug-frontend/pull/1522)).
+
+### 2024-03-05
+
+#### Chores
+
+- Added the GitHub Actions dependencies to dependabot to allow auto-updating Actions ([#1507](https://github.com/sendahug/send-hug-frontend/pull/1507)).
+- Added a workflow for adding new issues and pull requests to the primary project ([#1509](https://github.com/sendahug/send-hug-frontend/pull/1509)).
+- Added a workflow for auto-labelling pull requests ([#1519](https://github.com/sendahug/send-hug-frontend/pull/1519)).
+
+### 2024-03-03
+
+#### Changes
+
+- Turned the alert element created by the alerts service into a static component. Previously, we were creating and adding the element to the DOM every time an alert was needed. Now, the element remains in the DOM and is only shown (with updated content) whenever it's needed. ([#1511](https://github.com/sendahug/send-hug-frontend/pull/1511))
+
+### 2024-03-02
+
+#### Changes
+
+- Moved the offline alert toggle to the APIClient. Instead of running the check for whether the user is offline in every component that uses the API client, it's cleaner to have that check within the API client itself ([#1508](https://github.com/sendahug/send-hug-frontend/pull/1508)).
+- Replaced all the hidden pagination buttons with disabled ones. This expands the change in [96f5282](https://github.com/sendahug/send-hug-frontend/commit/96f52827ddd8a722abd78e1dca3a0a66f0d56b7d) to all components that have lists that allow pagination. Previously there were no "next" or "previous" buttons if the user was in the last or first page (respectively). Now, the buttons are shown but disabled, which provides better UX. ([#1510](https://github.com/sendahug/send-hug-frontend/commit/15b14516277bd0647b8a90eff112eb9a4b8f005c))
+
+### 2024-02-18
+
+#### Chores
+
+- Updated Angular to v17.2.1 ([039678b](https://github.com/sendahug/send-hug-frontend/commit/039678b669d7dd02eb8c281d186590449c0d5cce)).
+- Updated dotenv, puppeteer and rollup dependencies ([636c786](https://github.com/sendahug/send-hug-frontend/commit/636c78651b476b28579527532e999dfc9ef73864)).
+
+### 2024-02-17
+
+#### Changes
+
+- Moved block-related methods, which are used in both the reports and the blocks pages, back to the admin service ([6e0b35c](https://github.com/sendahug/send-hug-frontend/commit/6e0b35c504f40149bc5737a67e07a5fd82fca8d4)).
+
+#### Chores
+
+- Temporarily pinned Chrome in CI to allow tests to run while waiting for a fix for the CircleCI browser-tools orb ([276ac4d](https://github.com/sendahug/send-hug-frontend/commit/276ac4d9e142871bf6afa6abfb85a35f829c1130) & [95d759e](https://github.com/sendahug/send-hug-frontend/commit/95d759ea8e4876eeb669b64bd20c236554146c5c))
+
+### 2024-02-16
+
+#### Changes
+
+- Replaced the Admin Blocks' form with an Angular reactive form ([1e8de13](https://github.com/sendahug/send-hug-frontend/commit/1e8de139a66ff0734f9a8c6e52b60a12e1e2d3a6)).
+- Replaced the Admin Filters' form with an Angular reactive form ([b0b85cd](https://github.com/sendahug/send-hug-frontend/commit/b0b85cde47c4c4688c02202adda98708b030b8dd)).
+
+#### Chores
+
+- Bumped the version of Postgres in CI to v14 ([00f64b6](https://github.com/sendahug/send-hug-frontend/commit/00f64b65f539482245d7067ac34260e2efb3f456)).
+- Updated the Admin Service's tests to include the newly added functions ([f860d64](https://github.com/sendahug/send-hug-frontend/commit/f860d645746b40d64ce0bbd42f0ca41520d48a6b)).
+
+### 2023-11-09
+
+#### Fixes
+
+- The character `@` was accidentally used in the HTML templates instead of the unicode version of it (`&#64;`). All `@` occurrences were replaced with the unicode string to fix that ([207cd51](https://github.com/sendahug/send-hug-frontend/commit/207cd5126705f16464dafe1ea6b0784ffbe9d065)).
+
+#### Chores
+
+- Updated Angular to v17 ([679a595](https://github.com/sendahug/send-hug-frontend/commit/679a595c8f9b68d3fcbeeb97a36428debe7590d8)).
+- Updated Angular's peer dependencies - the Font Awesome package, zone.js and typescript ([93dddb2](https://github.com/sendahug/send-hug-frontend/commit/93dddb2b6e1ff5677d85d22dfdd1bcf63b4f2913)).
+- Updated the zone.js imports in the main TypeScript file and the main tests file to match the updated format in v0.14 ([00ace3f](https://github.com/sendahug/send-hug-frontend/commit/00ace3fad3f53bdd21f87a333cd3a046be354e3d)).
+
+### 2023-10-28
+
+#### Chores
+
+- Updated zone.js to v0.14.0 ([c780547](https://github.com/sendahug/send-hug-frontend/commit/c780547ad0b4d432229d23a7b597a4a42d0ad2d3)).
+- Reverted the zone.js update. Zone.js is a peer dependency of Angular, and v0.14 was only added in Angular v17 ([4a131d2](https://github.com/sendahug/send-hug-frontend/commit/4a131d240f7d4e322b3582a6fc7eb80b720e1507)).
+
+### 2023-10-22
+
+#### Chores
+
+- Moved the template URL replacement from a step in the Gulp task bundling the code to a rollup plugin. ([7c1318a](https://github.com/sendahug/send-hug-frontend/commit/7c1318a063e122019922d1fb0567891a62ef3a91))
+
+### 2023-10-21
+
+#### Changes
+
+- Split the Admin Dashboard's filters page to its own component ([6a14caf](https://github.com/sendahug/send-hug-frontend/commit/6a14caf97de1cbc31f57f630ab18c922e4f296d8)).
+- Deleted the old fetch methods from the Admin Service. The new methods are written directly into the relevant components, so there's no need to have them in the service anymore ([56e809f](https://github.com/sendahug/send-hug-frontend/commit/56e809f445b8c57c1e9a1dabc1d5596880f203da)).
+- Moved the filters' methods, which are only used in the filters' view, from the admin service to the filters page ([dfd9734](https://github.com/sendahug/send-hug-frontend/commit/dfd97343511804bbc57ac843396a5d8b0a3fca18)).
+- Moved the `unblock` method, which was only used in the blocks' view, from the admin service to the blocks page ([c71a692](https://github.com/sendahug/send-hug-frontend/commit/c71a692f1abcc6587505662c65296a9f0bc31f7f)).
+- Instead of searching for a report with the given ID in the reports' list, the `dismissReport` method now creates a partial report object with the given ID. We don't need to send an entire report back in order to dismiss/close it, so there's no need to force it to rely on a list of reports that no longer exists in the admin service ([088698f](https://github.com/sendahug/send-hug-frontend/commit/088698f5c45275ae326948fb0b26ac470446687c)).
+
+#### Fixes
+
+- Fixed the placement of the admin dashboard's page titles. In the splitting of the admin dashboard, the titles were moved into the newly created components, which caused them to be misaligned with the rest of the design. This was fixed by moving the titles back to the main admin dashboard ([796e0c8](https://github.com/sendahug/send-hug-frontend/commit/796e0c87753b8e588b0aed00ed6085219190f739)).
+
+### 2023-10-20
+
+#### Changes
+
+- Split the Admin Dashboard's blocks page to its own component ([bdc1566](https://github.com/sendahug/send-hug-frontend/commit/bdc15661b0ce4d4031083d9b7c06acde06c40961)).
+
+### 2023-10-19
+
+#### Changes
+
+- Split the Admin Dashboard's reports page to its own component ([35a9fb1](https://github.com/sendahug/send-hug-frontend/commit/35a9fb14ab67cb7d1b3becdd491edc0c74ebac7e)).
+
+### 2023-10-18
+
+#### Changes
+
+- Deleted the old auth header property from the auth service. Now that the API client handles the auth header, there's no need to keep it in the auth service anymore ([4358de8](https://github.com/sendahug/send-hug-frontend/commit/4358de8c86961c785e09f40eb809fd22f54291c2)).
+
+#### Chores
+
+- Updated more tests to account for the updated structures of components ([cbf384f](https://github.com/sendahug/send-hug-frontend/commit/cbf384f900829f2562055dc979909018bfec0a48) - [42bc2bf](https://github.com/sendahug/send-hug-frontend/commit/42bc2bfc64f213faf2dbc20202abbaf65aab43ad)).
+
+### 2023-10-17
+
+#### Chores
+
+- Fixed a critical-severity security alert in `@babel/traverse` ([000622e](https://github.com/sendahug/send-hug-frontend/commit/000622e870777d3c5a4ec085369d2e43067a000b)).
+
+### 2023-10-16
+
+#### Changes
+
+- Replaced all the relative imports with absolute imports. The app, environment and tests directories have their own absolute path aliases defined in the tsconfig in order to do that ([eba37f1](https://github.com/sendahug/send-hug-frontend/commit/eba37f1711ec487d5bf2ec966cb541985f2b85c6) & [68cba7d](https://github.com/sendahug/send-hug-frontend/commit/68cba7df54f7606a84b4101a01b568fb398a6da1)).
+
+#### Fixes
+
+- Some interfaces had string fields accidentally typed as `String`, instead of `string`. This was fixed to show the correct version ([81f9675](https://github.com/sendahug/send-hug-frontend/commit/81f9675d7aaf722f8f20ec4a7939b3eb0640bac8)).
+- Fixed a bug in settings where the icon edit form couldn't be opened ([bd02346](https://github.com/sendahug/send-hug-frontend/commit/bd0234616faa98d53ef124d50a37a3a3e5c9900b)).
+
+#### Chores
+
+- Moved the mock user data to a separate file, which allows us to import it into various tests, instead of repeatedly defining it in all of them ([c078471](https://github.com/sendahug/send-hug-frontend/commit/c078471f4ed3734dccb41301671e28c2325cd442)).
+- Replaced the service mocks in more components' and services' tests ([1ab81f1](https://github.com/sendahug/send-hug-frontend/commit/1ab81f1edecfcf9e9d80774c822566030bc7d15d)).
+- Updated various tests to account for the restructured components and removal of mock services ([bbb5d68](https://github.com/sendahug/send-hug-frontend/commit/bbb5d682ad8fc3dedb8fc523805d17b40bc09c58) - [1f19597](https://github.com/sendahug/send-hug-frontend/commit/1f195976ae3a0671fa60ba94d860665dc79ee8d3)).
+- Deleted the mock services, which are no longer used ([7b47b6a](https://github.com/sendahug/send-hug-frontend/commit/7b47b6a89b8eaf5967ff385d25b2760358fd7f9e)).
+
+### 2023-10-15
+
+#### Chores
+
+- Replaced the service mocks in tests with spies. There's no need to maintain two versions of the same service just for tests. It makes more sense to simply mock the service request ([90914ec](https://github.com/sendahug/send-hug-frontend/commit/90914ec521feb2abb1d52836650328bf2465a073)).
+- Updated Item Delete Form and My Posts tests to account for the updated strctures of these component ([c78fd08](https://github.com/sendahug/send-hug-frontend/commit/c78fd086dab3959b38bdb5e7c25d99f194e03422) & [cf7257d](https://github.com/sendahug/send-hug-frontend/commit/cf7257d0ab430fe31d220bee1843243b163adaf4)).
+
+### 2023-10-14
+
+#### Changes
+
+- Moved user-related calls and data to the User Page component ([9204ca7](https://github.com/sendahug/send-hug-frontend/commit/9204ca70cfe4a61f8d4afa59f02d62b2c761f2d6)).
+
+#### Chores
+
+- Updated Main Page, Header Message, Loader, Error Page and Full List tests to account for the updated strctures of these component ([b2890b1](https://github.com/sendahug/send-hug-frontend/commit/b2890b120db211892153efdaaeab06471b486988) - [ca4674f](https://github.com/sendahug/send-hug-frontend/commit/ca4674f646c2f0029047a5ea7b8782bb7a6ec85b)).
+
+### 2023-10-12
+
+#### Changes
+
+- Unified the "delete items" methods into a single method ([2592ccf](https://github.com/sendahug/send-hug-frontend/commit/2592ccfd90c8875d0bddb1efcdd336702285bd34)).
+- Unified the posts service and the items service. The posts-related methods were moved to their own service because both services got very big; now that most of the methods were moved away from these services, there's no need for two separate ones. ([d5ae07c](https://github.com/sendahug/send-hug-frontend/commit/d5ae07ccc5c95cab7454d8dbbc0392f89c39c1bb))
+- Switched most API calls to use the new API service instead of manually running the Http Client ([d003a3e](https://github.com/sendahug/send-hug-frontend/commit/d003a3eddf8c7e09397d3b8c2c0082bdc1837166)).
+
+### 2023-10-11
+
+#### Changes
+
+- Unified the "delete item" methods into a single delete method ([cb0078c](https://github.com/sendahug/send-hug-frontend/commit/cb0078c5366468539dea3a5c5e3373dbeafb5bfe)).
+
+### 2023-10-07
+
+#### Features
+
+- Added a new type alias with the available stores in the IndexedDB database ([6f8d702](https://github.com/sendahug/send-hug-frontend/commit/6f8d702ef2a87fab50d4d050477004494f8f77c5)).
+
+#### Changes
+
+- United the various `addToIdb` methods to a single one, since they all do the same thing - they add an ISO date field and add to IndexedDB ([fed9fd9](https://github.com/sendahug/send-hug-frontend/commit/fed9fd9f0234e8975581f6cde2ce75376d05b297)).
+- Moved the "delete item/s" methods to the Item Delete Form. They're not reused anywhere else, so this ensures all the functionality is kept where it's used ([e2ab9d2](https://github.com/sendahug/send-hug-frontend/commit/e2ab9d214eb86bf1afef16187768b9c5fc77129c)).
+
+### 2023-10-06
+
+#### Changes
+
+- Unified the messages-fetching methods in the Items Service to one method. This also included adding new types and a new helper method for setting up user icons ([df010e7])(https://github.com/sendahug/send-hug-frontend/commit/df010e706749d78aa2790cb03411a2f9bbe56793).
+- Moved the messages and threads from the items service to the app messaging component. Again, it's not reused anywhere else, so there's no need to have it in a shared service ([ab77a8e](https://github.com/sendahug/send-hug-frontend/commit/ab77a8e4101c92034ec795925ae469c0b1c1d62a)).
+
+### 2023-10-05
+
+#### Features
+
+- Added an initial API Client service to handle all the networking logic ([7f9aa3e](https://github.com/sendahug/send-hug-frontend/commit/7f9aa3e0b5406471da59a3c5bf6a3674b1adec16)).
+
+#### Changes
+
+- Moved the main page's data from the Posts Service to the main page itself. Since the data's not reused anywhere else, there's no need to have it elsewhere ([03bade1](https://github.com/sendahug/send-hug-frontend/commit/03bade14bd7cd8fae7a744916816dde72dd1e889)).
+- Moved the full list's data from the posts service to the full list itself. Since the data's not reused anywhere else, there's no need to have it elsewhere ([f059fdd](https://github.com/sendahug/send-hug-frontend/commit/f059fdd76f9faf9a0236b88a46c831b9b2aeffac)).
+- Moved the hug sending functionality to the post component. Instead of the postsService running the data and DOM update (after the server has been updated), it makes more sense for each post component to update its own data and DOM. The post that received a hug is now broadcasted by the PostsService, and each post updates its own hug button accordingly. ([098a735](https://github.com/sendahug/send-hug-frontend/commit/098a735886c47293af8c917c6a4592525e9d341b))
+- Moved the user post's data from the posts service to the user posts component. Since the data's not reused anywhere else, there's no need to have it elsewhere ([2c72808](https://github.com/sendahug/send-hug-frontend/commit/2c7280802f4af6e2257e4ca02893a10eb26e71be)).
+- Refactored the `queryMessages` method in the Service Worker Manager to fetch the data based on parameters such as index and count. This is a change from the previous method, which required specifying a target and hardcoded the index, count and filters in the method. ([a4a4e8d](https://github.com/sendahug/send-hug-frontend/commit/a4a4e8d43edc4ae5d0f938eb67abc194aecd633b))
+
+### 2023-10-04
+
+#### Changes
+
+- Deleted the old `queryPosts` method, which is no longer needed ([0784466](https://github.com/sendahug/send-hug-frontend/commit/07844669c9913290fff682af5210b15a47540f72)).
+
+### 2023-10-03
+
+#### Changes
+
+- Refactored the `queryPosts` method in the Service Worker Manager to fetch the data based on parameters such as index and count. This is a change from the previous method, which required specifying a target and hardcoded the index, count and filters in the method. ([a310501](https://github.com/sendahug/send-hug-frontend/commit/a310501d66e43a2520d9bd77d9e5f6f39a7e1c93))
+- Network fetches now wait for the IndexedDB fetches to complete before making the network requests. This means we no longer need to check which source the data is coming from and can always treat the later response as the most up-to-date one ([e2aadf5](https://github.com/sendahug/send-hug-frontend/commit/e2aadf5fc38c394c551554d850bc610e5949d168)).
+
+#### Fixes
+
+- Added a missing class to the stylesheet used by the app, which fixes those elements' styling ([34add85](https://github.com/sendahug/send-hug-frontend/commit/34add8593de5198b5f0bdcaa279736cc5e327cd9)).
+
+#### Chores
+
+- Deleted the no longer needed CSS directory. Now that the Sass is transformed directly to localdev/dist folders, there's no need to keep the old compiled CSS ([254ce7f](https://github.com/sendahug/send-hug-frontend/commit/254ce7f4db6f03b3e5b76d31755712dec4945a6a)).
+
+### 2023-10-02
+
+#### Changes
+
+- Converted the Icon Colours definition to its own interface instead of redefining it in multiple interfaces ([dd4b862](https://github.com/sendahug/send-hug-frontend/commit/dd4b86286d8a193cae8fc68c274d5a12d48a9e2c)).
+- Updated the Service Worker Manager's return values for fetching messages and threads to better reflect the types of items returned ([15965df](https://github.com/sendahug/send-hug-frontend/commit/15965df2163d01ad2be1604042eb9b9799c854af)).
+
+### 2023-09-28
+
+#### Changes
+
+- Moved repeated type declarations to a new types file ([d699baf](https://github.com/sendahug/send-hug-frontend/commit/d699baf7879c7425bbb84ae085bdcd82633a175b)).
+- The Icon Editor now uses a reactive form for its icon form, instead of manually updating the component's data based on the inputs' values ([c58e535](https://github.com/sendahug/send-hug-frontend/commit/c58e535e004cc2137e222d338e6ac00af69021ca)).
+
+### 2023-09-27
+
+#### Changes
+
+- Previously, in order to ensure only one post's menu was open at once (when the viewport is too small to display the menus), the parent components dealt with keeping track of the open menu and closing the menus that shouldn't be open. This caused unnecessary duplication as the full list, main page and search results all had to set and unset the classes for the menus of all posts currently present in the DOM. Now, the post component deals with setting its own menus' classes, and the currently open menu is kept in the posts service ([f4db6d4](https://github.com/sendahug/send-hug-frontend/commit/f4db6d482af5e065d0bc7caaec9c38f8e49d7083)).
+- Moved the loader's "is loading" subscription to the parent components. There's no need to check whether the data is fetched both in the loader and in the parent components; it's more efficient to have it only in the parent. ([d7ae5f5](https://github.com/sendahug/send-hug-frontend/commit/d7ae5f50a8980772f676b7b1ef6657b2de7c58d1))
+- Moved the header message's visibility check to the parent components. There's no need to keep track of the loading status in two different components. Instead, it's better to handle showing/hiding the loader in the parent component and keep the header message focused on generating the correct message and displaying it. ([04a64d5](https://github.com/sendahug/send-hug-frontend/commit/04a64d57529edd1f4f3a847fbb2de8b567361ae8))
+
+### 2023-09-26
+
+#### Changes
+
+- Unified the post-fetching methods in the Posts Service to one method. This also included moving various pieces of functionality to their own, separate functions ([7b7f7cc](https://github.com/sendahug/send-hug-frontend/commit/7b7f7cc3ef5e590f500d1a697cdc8a23fa0502ea)).
+- Updated all HttpClient's calls to use the updated signature for `subscribe` (rather than the deprecated one we've been using). ([df02a54](https://github.com/sendahug/send-hug-frontend/commit/df02a54672147a2ce8ba5f51c4bca37e813a5bbf))
+
+### 2023-09-21
+
+#### Changes
+
+- Replaced the hidden pagination buttons in the Admin Dashboard with disabled ones. Previously there were no "next" or "previous" buttons if the user was in the last or first page (respectively). Now, the buttons are shown but disabled, which provides better UX. ([96f5282](https://github.com/sendahug/send-hug-frontend/commit/96f52827ddd8a722abd78e1dca3a0a66f0d56b7d))
+
+### 2023-09-20
+
+#### Changes
+
+- Replaced the report form with a reactive, Angular-managed form. There was no need for manually setting the value of the report reason in the component's TypeScript. It's a lot cleaner to let Angular handle the Code-Template sync. ([c95ef83](https://github.com/sendahug/send-hug-frontend/commit/c95ef83b2a9b18b1493fb5d0da29fc95aeb076d4) - [92e80cb](https://github.com/sendahug/send-hug-frontend/commit/92e80cb5e07d016f0e733d194184349e6a1c6236))
+
+### 2023-09-19
+
+#### Changes
+
+- Replaced the search form with a reactive, Angular-managed form. Instead of setting the classes and validating the input manually, we now use Angular's reactive forms module to fetch the search query from the input element and to validate the input. ([426b6b4](https://github.com/sendahug/send-hug-frontend/commit/426b6b4619f4c495897724e3d49df402c020c4d7))
+
+### 2023-09-18
+
+#### Changes
+
+- Simplified the way the navigation menu's class is set. Previously, the classes of the navigation menu and the button that opens it were set manually. Now, the classes are set dynamtically based on whether the menu should be shown and whether the button should be
+  shown. ([8e7519c](https://github.com/sendahug/send-hug-frontend/commit/8e7519c052fde65f5d877f5c8b307481e28f1aaa))
+
+#### Chores
+
+- Added the Angular dependencies to Dependabot's config as a dependency group to ensure they're updated together at the same pull request ([184f409](https://github.com/sendahug/send-hug-frontend/commit/184f4096407bfe870a7908977f5c88cbabea619a)).
+
+### 2023-09-17
+
+#### Chores
+
+- Updated Karma's initialisation to use the updated method for passing configuration to Karma, rather than the deprecated old method ([cdc6b20](https://github.com/sendahug/send-hug-frontend/commit/cdc6b207dbde7b020d11ca583652401d3b9efd13)).
+- Fixed two bugs in tests caused by previous changes: one where a missing `"` broke tests, and one where a change to a spy broke tests that relied on it ([cb63d15](https://github.com/sendahug/send-hug-frontend/commit/cb63d1522b9c3ce67f0398b973fdc27659f0f8ac) & [b958c58](https://github.com/sendahug/send-hug-frontend/commit/b958c58872bb0b05b21106feea4b15e2267a7a70))
+
+### 2023-09-16
+
+#### Changes
+
+- Instead of setting the navigation links' classes manually every time the user navigates, the classes are no calculated dynamically based on the currently active route ([da9fb8a](https://github.com/sendahug/send-hug-frontend/commit/da9fb8a1434f5b32e46ad3b7bd1a65e248626333)).
+
+#### Chores
+
+- Added prettier for code-formatting ([15a2d84](https://github.com/sendahug/send-hug-frontend/commit/15a2d84a7de2bf319c8d852a786c75a9c63a2325) & [ae43478](https://github.com/sendahug/send-hug-frontend/commit/ae43478f57d0915013ff80af77e7171bb1e2f562)).
+- Fixed the typing in several test files ([49cb108](https://github.com/sendahug/send-hug-frontend/commit/49cb108e0c0a3838ef3e72825004dcfe74b99ef5)).
+
 ### 2023-09-09
 
 #### Chores
@@ -705,6 +1028,36 @@
 ## v1.0.0 Beta 1
 
 # TODO: FINISH THIS
+
+### 2020-07-06
+
+### 2020-07-05
+
+#### Features
+
+- The Popup component now traps keyboard focus within it, and when the popup is closed, the focus is automatically moved back to where the user was ([0c942f3](https://github.com/sendahug/send-hug-frontend/commit/0c942f3b21b0e040de03d693f04cae53a218532e) & [0e636ff](https://github.com/sendahug/send-hug-frontend/commit/0e636ff38aff38963ec10ebf5cb611bf7b5dd880))
+
+#### Changes
+
+- Disabled the the horizontal scrollbar in the main app to ensure the off-screen aria-labels remain off-screen ([](https://github.com/sendahug/send-hug-frontend/commit/b91a2e98a74074280007452582fdbe9898f728f7)).
+
+### 2020-07-04
+
+#### Features
+
+- Added the language attribute to the app's main HTML ([a43afb2](https://github.com/sendahug/send-hug-frontend/commit/a43afb2f163e30be25309e1ca246ad932bf9bbc4)).
+
+#### Fixes
+
+- Re-added the alerts container to the HTML, as it was accidentally deleted ([4669c1d](https://github.com/sendahug/send-hug-frontend/commit/4669c1dd0769e05de1c868e1d6665800e5346b05)).
+
+### 2020-07-03
+
+#### Features
+
+- Improved various aspects of the accessibility of the app ([aa14bdd](https://github.com/sendahug/send-hug-frontend/commit/aa14bdd12160af323fb2407dc8819537177d0298) - [ff4be59](https://github.com/sendahug/send-hug-frontend/commit/ff4be59541bcd6815148b2bee2e90eb20c14e693)). This includes:
+  - Roles, aria-descriptions and aria-labels in various components.
+  - Replaced generic elements (like `div`) with the correct semantic elements (like `ul`).
 
 ### 2020-07-02
 

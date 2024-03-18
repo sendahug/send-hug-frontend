@@ -1029,7 +1029,460 @@
 
 # TODO: FINISH THIS
 
+### 2020-08-31
+
+#### Features
+
+- Added a breadcrumb to complex componnents to make navigation around the app easier for users ([ad0814a](https://github.com/sendahug/send-hug-frontend/commit/ad0814ad9080d78638b04944d692f591484388c0)).
+
+#### Fixes
+
+- Fixed an error in the query parameters' getter in the New Item and Full List components ([d513fc7](https://github.com/sendahug/send-hug-frontend/commit/d513fc7f0afca74bbad269804a631e05e136acda)).
+
+#### Chores
+
+- Added a GitHub Actions workflow to run unit tests ([7b88ae4](https://github.com/sendahug/send-hug-frontend/commit/7b88ae4aceac29f912f0c314991f4c60d7722063) - [b0b5499](https://github.com/sendahug/send-hug-frontend/commit/b0b5499573ebb528f868c72714f6d5022ac3abb0)).
+
+#### Documentation
+
+- Added status badges to the README ([182630b](https://github.com/sendahug/send-hug-frontend/commit/182630be3518c19c4a24b97cb1e27cea82b3f444) - [f511ac1](https://github.com/sendahug/send-hug-frontend/commit/f511ac15f83db396b2cb95dab0d5f1982a3be172)).
+
+### 2020-08-30
+
+#### Features
+
+- Added a new site map component to display the list of paths in the app ([a7fda42](https://github.com/sendahug/send-hug-frontend/commit/a7fda421c27c877e2d9d7bf8de7cd721f6ff884f) - [d2f12bc](https://github.com/sendahug/send-hug-frontend/commit/d2f12bc3f37fd042c43fe07f92d410f803099a7e)).
+
+#### Changes
+
+- Replaced the Font Awesome script kit and its icons with the Font Awesome Angular module and its icons ([933dae8](https://github.com/sendahug/send-hug-frontend/commit/933dae813ee60c5df884a9f4d45b6e2d0f320267) - [c4c69b7](https://github.com/sendahug/send-hug-frontend/commit/c4c69b7bad21e34fb3b90f3e8c1cfa7c143d0e77)).
+
+#### Fixes
+
+- Fixed a bug where posts fetch upon signup resulted in an error ([ba256f5](https://github.com/sendahug/send-hug-frontend/commit/ba256f590511d0f6cb37403d540780e6877726d1)).
+- Fixed a bug that caused the ServiceWorker alert to appear upon the first visit to the site ([80ea96b](https://github.com/sendahug/send-hug-frontend/commit/80ea96b3187a88dcd4b90bdc20c486b323ba80a1)).
+
+#### Chores
+
+- Updated the version of Node used in CI ([1b772dd](https://github.com/sendahug/send-hug-frontend/commit/1b772ddf9f9e7f9cc10a638e4185154c9b2f5d79)).
+
+### 2020-08-29
+
+#### Features
+
+- Added Font Awesome's Angular module as an import ([86c4981](https://github.com/sendahug/send-hug-frontend/commit/86c49817c5ba489ca4981d71a6c58387941d7e49) & [c7da9ca](https://github.com/sendahug/send-hug-frontend/commit/c7da9caf7a6d07305b88b50cf116cc8a9e45e2ea)).
+
+#### Chores
+
+- Added and fixed more tests ([a546314](https://github.com/sendahug/send-hug-frontend/commit/a5463140656780ba9ff98051689694f3445b078f) & [3d1839b](https://github.com/sendahug/send-hug-frontend/commit/3d1839b90a55c79e2999ade42e5e6c801b7d650d)).
+- Added the license to the services and the mock services ([cad8252](https://github.com/sendahug/send-hug-frontend/commit/cad82525278b72a8784a73566934fe5762f93cb1)).
+
+### 2020-08-28
+
+#### Chores
+
+- Switched Karma back to use Chrome Headless instead of Chrome ([3257dc5](https://github.com/sendahug/send-hug-frontend/commit/3257dc5e74e5b2fc0f800ec1e08318356db32783) - [e4147d9](https://github.com/sendahug/send-hug-frontend/commit/e4147d905e978b8ff5ef89ae4dd4a37b8149cd33)).
+- Added AuthService tests and fixed some Popup tests ([aa7e96f](https://github.com/sendahug/send-hug-frontend/commit/aa7e96fca6b616cf202f89a7888b7a22ae77c933) & [d53c5e3](https://github.com/sendahug/send-hug-frontend/commit/d53c5e3a9fd464aff7bfc3d7958bf78fe0696b35)).
+
+### 2020-08-27
+
+#### Chores
+
+- Updated Angular to v10.0.14 ([30b19dd](https://github.com/sendahug/send-hug-frontend/commit/30b19dd244a3f346e44234746df985a85f230ff4)).
+- Updated various other dependencies ([0140e54](https://github.com/sendahug/send-hug-frontend/commit/0140e54c37e8898a954b729b08b3510bf20d6b7f)).
+- Updated the Karma configuration to include the flags needed to run Chrome in CI ([3daf9a4](https://github.com/sendahug/send-hug-frontend/commit/3daf9a4a51550e7160397bd3da7a15c8d34d89ea)).
+
+### 2020-08-25
+
+#### Changes
+
+- Renamed the home icon's file to match the other icons' files ([43f74d3](https://github.com/sendahug/send-hug-frontend/commit/43f74d3b7818a00ea22329a09235a2ba0da985ae)).
+
+### 2020-08-20
+
+#### Chores
+
+- Added missing flags to Chrome in the Karma config ([6aba0d0](https://github.com/sendahug/send-hug-frontend/commit/6aba0d0cc91ef7fbf7cbb299b5fb6399622ab33e)).
+- Switched Chrome back to 'stable' from beta in CI ([4296ed5](https://github.com/sendahug/send-hug-frontend/commit/4296ed5327fa7b6789f1a1cd5412c3d8063a15c9)).
+
+### 2020-08-19
+
+#### Chores
+
+- Set up Chrome in the Travis CI config ([957a78f](https://github.com/sendahug/send-hug-frontend/commit/957a78fe0994574e78f494d5f5117aee3819bdf4) - [6c83a6e](https://github.com/sendahug/send-hug-frontend/commit/6c83a6e42e676a2ae9d4604b8497006c7de6fd73)).
+
+### 2020-08-18
+
+#### Chores
+
+- Added config file for running tests in CircleCI ([6f0c99b](https://github.com/sendahug/send-hug-frontend/commit/6f0c99b645acf04e72f323ed1c7d0e381adf2f9c) - [cbcb15e](https://github.com/sendahug/send-hug-frontend/commit/cbcb15ea33c11df07ee4bdaf40ba9b2f76e025d9)).
+- Replaced the Circle CI config file with a Travis CI config ([977302b](https://github.com/sendahug/send-hug-frontend/commit/977302b5ea37d5c261c4afabe4cc89a0cdbb6049) & [34cdf50](https://github.com/sendahug/send-hug-frontend/commit/34cdf501265346a8bcf6e11416658a091e334bb4)).
+
+### 2020-08-17
+
+#### Features
+
+- Added a link from the user profile to the settings page ([b6e67d5](https://github.com/sendahug/send-hug-frontend/commit/b6e67d5a2ad6943ccfc632afc076a929c77145ec)).
+
+#### Fixes
+
+- Fixed the link back to the home page from the settings page ([3aa38c2](https://github.com/sendahug/send-hug-frontend/commit/3aa38c24362669c16f7d91952b1a4080079eb438)).
+- Fixed the display of the posts element in user profiles ([84c5dd3](https://github.com/sendahug/send-hug-frontend/commit/84c5dd36a1d57a9c80c5d0e7cc13542fbf7d7b61)).
+- Fixed the mobile site navigation menu ([623105d](https://github.com/sendahug/send-hug-frontend/commit/623105d382329d4c5b96ec295f18cceae01f2de3)).
+
+#### Chores
+
+- Fixed errors in a number of tests ([6a1e885](https://github.com/sendahug/send-hug-frontend/commit/6a1e885bb509bc1d853eb99f54c908eca4fe63b2) & [1b4cb8c](https://github.com/sendahug/send-hug-frontend/commit/1b4cb8c90af4d1ade31e134702ca5b836a045874)).
+
+### 2020-08-16
+
+#### Chores
+
+- Added a license file ([cf87ef5](https://github.com/sendahug/send-hug-frontend/commit/cf87ef560b761c82bde57dba02e70d06dd7f1915)).
+- Added the license to most of the TypeScript files in the app ([fad51db](https://github.com/sendahug/send-hug-frontend/commit/fad51db7b844ec1a182325655d1921d60d5cf020) & [bc6c766](https://github.com/sendahug/send-hug-frontend/commit/bc6c7668bf2877ab9262f10e951913b8b8f799b4)).
+
+### 2020-08-15
+
+#### Chores
+
+- Added further tests and fixed issues in existing ones ([6f001c5](https://github.com/sendahug/send-hug-frontend/commit/6f001c55327ccad852c036780943d98c8cf6cf80) - [920e7ea](https://github.com/sendahug/send-hug-frontend/commit/920e7ea8b9e2998772f15941bcaca9182a22bdb3)).
+
+### 2020-08-14
+
+#### Changes
+
+- Added missing push status (which specifies whether to send push notifications) to the notifications service ([4620f65](https://github.com/sendahug/send-hug-frontend/commit/4620f65ffabb15538097c5d071c2e1021f381fd7)).
+
+#### Chores
+
+- Added more tests ([51b29fb](https://github.com/sendahug/send-hug-frontend/commit/51b29fb572616162d7f86f8613b6b1905f298e41) - [02f1a1c](https://github.com/sendahug/send-hug-frontend/commit/02f1a1c44d47072331564bf55229d70559244b8d)).
+
+### 2020-08-13
+
+#### Chores
+
+- Added more tests ([f11ea75](https://github.com/sendahug/send-hug-frontend/commit/f11ea75e1b892f33a3c420afd4fa7991b6fa713e) & [2cd2ffe](https://github.com/sendahug/send-hug-frontend/commit/2cd2ffe78b9dc4ba39fb963293177984c4f577f5)).
+
+#### Documentation
+
+- Cleaned up and updated the README ([e00ce99](https://github.com/sendahug/send-hug-frontend/commit/e00ce999776d862327c599ed80cd87f2e3d23201) & [81a4713](https://github.com/sendahug/send-hug-frontend/commit/81a471349a2b5c79c8c10e36b7e3e3a585c11ea8)).
+
+### 2020-08-12
+
+#### Fixes
+
+- Fixed a bug where the report form set the report reason incorrectly due to the radio buttons returning a string value instead of a number ([886879c](https://github.com/sendahug/send-hug-frontend/commit/886879cecb402d39236a4f0953a91f6be65974be)).
+
+#### Chores
+
+- Added further tests and fixed errors in existing ones ([4fa770f](https://github.com/sendahug/send-hug-frontend/commit/4fa770fcc34d998974bb4a980a8f90ddb01c1cbd) - [6ef957c](https://github.com/sendahug/send-hug-frontend/commit/6ef957c0478cca8ce6f322de1426c0a7536aca6c)).
+
+### 2020-08-11
+
+#### Changes
+
+- Changed the way the template checks for user/post search results to use the length of the results arrays instead of using a separate length variable ([27a50d5](https://github.com/sendahug/send-hug-frontend/commit/27a50d55e6809e048547ed4babe3e0b51201b1bd)).
+
+#### Fixes
+
+- Fixed a bug where navigating between different pages in the search results failed due to incorrect parameter configuration in the router's `navigate` call ([21781a3](https://github.com/sendahug/send-hug-frontend/commit/21781a37e4908a999dbe36399b2f2e70020c8b68)).
+
+#### Chores
+
+- Added further tests and fixed errors in existing ones ([19d273e](https://github.com/sendahug/send-hug-frontend/commit/19d273efbaddc349c05b6bb69d3077f83a35716f) - [911cc81](https://github.com/sendahug/send-hug-frontend/commit/911cc81b9c957221d6463e4afba8ab528b33a432))
+
+### 2020-08-10
+
+#### Fixes
+
+- Fixed a bug in the search results component where sending a hug failed because the method tried to access the wrong property to fetch the post's data ([a4c2cb1](https://github.com/sendahug/send-hug-frontend/commit/a4c2cb1f0e3257e63109ae8f478ec2016c5f5920)).
+
+#### Chores
+
+- Added more unit tests ([759a9a2](https://github.com/sendahug/send-hug-frontend/commit/759a9a28a0036e156601d960329c8adcd2f45c04) - [c6c9e06](https://github.com/sendahug/send-hug-frontend/commit/c6c9e062a49326d46bac6666a4abaacfddd7ff21)).
+- Gulp's `watch` task no longer triggers the code bundling when changes are made to spec and mock files ([0286f51](https://github.com/sendahug/send-hug-frontend/commit/0286f5132b4647070138976ef3bcd1a2bbb21805)).
+
+### 2020-08-09
+
+#### Fixes
+
+- Added checks to prevent the loader and header message from subscribing to the same BehaviourSubject multiple times ([ff44c46](https://github.com/sendahug/send-hug-frontend/commit/ff44c468fb169d4262aba263aefe0da77b8baefe) & [f2ae5a5](https://github.com/sendahug/send-hug-frontend/commit/f2ae5a59b52673fb1106079d25e0d574075f5011)).
+- Added missing call to `unsubscribe` to ensure the loader doesn't keep a no-longer-needed subscription active ([664399d](https://github.com/sendahug/send-hug-frontend/commit/664399d25de667348d7f0ab2a51230d36ef3eff6)).
+
+#### Chores
+
+- Added further unit tests and updated test data ([2b6534e](https://github.com/sendahug/send-hug-frontend/commit/2b6534e4ae405a912fac34acc51bbab59fddffc3) - [40f7954](https://github.com/sendahug/send-hug-frontend/commit/40f79540810972f8f108f1a1791e3ce811aab71e)).
+- Added a gulp task to compile the project for local development ([28085d1](https://github.com/sendahug/send-hug-frontend/commit/28085d1074c15d6d6f2c8dc6baa88042bf5a9a55)).
+
+#### Documentation
+
+- Updated the README with details about running tests ([4633d1d](https://github.com/sendahug/send-hug-frontend/commit/4633d1dba5adefc3b96de485b0118ea6176ded49)).
+
+### 2020-08-08
+
+#### Features
+
+- Added a check to prevent logged-out users from writing posts ([e98299e](https://github.com/sendahug/send-hug-frontend/commit/e98299ec6eec917fa54f3ab63d1c46148bfb05f6)).
+- Added a check to prevent logged-out users from sending messages ([52369ea](https://github.com/sendahug/send-hug-frontend/commit/52369ea056b9fe24139fa3b31a38467d1c152e2c)).
+- Added an error message if there's no user ID for writing a new message ([00c744a](https://github.com/sendahug/send-hug-frontend/commit/00c744a1edb04b72cf5a26d31cf3857b8bf021e4)).
+
+#### Chores
+
+- Added further unit tests, updated some tests' data and fixed errors in some tests ([e643126](https://github.com/sendahug/send-hug-frontend/commit/e64312696ef29d67a2158fa1270acb414c5c5400) - [bbc07b3](https://github.com/sendahug/send-hug-frontend/commit/bbc07b36b4b887296356fd3479420bd582892244)).
+
+### 2020-08-07
+
+#### Fixes
+
+- Fixed a bug where the notifications' refresh rate wasn't updated due to the text field returning a string instead of a number ([46acab3](https://github.com/sendahug/send-hug-frontend/commit/46acab35dd80b4ca8165b56128e0e7d4e0b35bbd)).
+
+#### Chores
+
+- Added further unit tests ([46e22e0](https://github.com/sendahug/send-hug-frontend/commit/46e22e05ef720755ef6a8826b48ad8afd7f78b9e) - [0c2feb8](https://github.com/sendahug/send-hug-frontend/commit/0c2feb832a9fd1864c1135a13c2f577371222431)).
+
+### 2020-08-06
+
+#### Changes
+
+- The settings view now updates the Auth service's user data when the refresh rate is changed in the notifications form ([152c2db](https://github.com/sendahug/send-hug-frontend/commit/152c2db418a6bd057f7f0691f6d9f6caf5f130a6)).
+
+#### Fixes
+
+- Fixed a bug where the notifications tab attempted to call `focus` on an element that doesn't exist due to a missing check for element existence ([6c30f54](https://github.com/sendahug/send-hug-frontend/commit/6c30f5437be9e4435afe93d51a3bcaf57bfea575)).
+- Added a missing dependency injection to the settings view ([6336bc5](https://github.com/sendahug/send-hug-frontend/commit/6336bc59250ba61e0683f5fefcd80a588defc828)).
+
+#### Chores
+
+- Added further tests and added missing properties and methods to the mocks ([4a80b23](https://github.com/sendahug/send-hug-frontend/commit/4a80b23ea423bc3f4e976d7855a24d421c084ee3) - [a1fd0a3](https://github.com/sendahug/send-hug-frontend/commit/a1fd0a3f88ae4d7687e583adb0bea13afad37fe4)).
+
+### 2020-08-05
+
+#### Fixes
+
+- Fixed a bug where the popup attempted to call `focus` on an element that doesn't exist due to a missing check for element existence ((db86211)[https://github.com/sendahug/send-hug-frontend/commit/db8621159716ab9b6efd6460cbdc21fb012251d1]).
+- Added a default `page` value for the full list component. This fixes a bug where the page was blank and showed an error due to a missing `page` value in the URL ([8825a70](https://github.com/sendahug/send-hug-frontend/commit/8825a705b822f9818e4f499f31e1b757e6408b8d)).
+
+#### Chores
+
+- Added further unit tests and fixed errors and bugs in existing tests ([d7db291](https://github.com/sendahug/send-hug-frontend/commit/d7db2910ce9010a8cefe39f0d14a7d7c9aa1065d) - [1de6a8a](https://github.com/sendahug/send-hug-frontend/commit/1de6a8ab774d1e131c381cb182d2a1833d5aa252)). This includes:
+  - Added new unit tests.
+  - Added another mock service and replaced all real services with mocks.
+
+### 2020-08-04
+
+#### Chores
+
+- Added a mock Service Worker Manager service to use in tests ([2d97c9e](https://github.com/sendahug/send-hug-frontend/commit/2d97c9efbf498b23c7ad60222e69991790e04031)).
+
+### 2020-08-03
+
+#### Chores
+
+- Added a missing import to the Main Page's tests ([65b3779](https://github.com/sendahug/send-hug-frontend/commit/65b3779996bed8eab8b31c2844ddafe4afba84d5)).
+- Added mock services to replace the actual services in tests with ([95dd207](https://github.com/sendahug/send-hug-frontend/commit/95dd2071e3b2590b8e92bdc01d0663471b99b83c) - [6908f5e](https://github.com/sendahug/send-hug-frontend/commit/6908f5e0fd8f4ad868c0248cf583bf3e725e8a1f)).
+
+### 2020-08-02
+
+#### Chores
+
+- Added tests for the Main Page component ([ed06162](https://github.com/sendahug/send-hug-frontend/commit/ed06162e720776bdb79d3bf6de28fa35125c8065)).
+- Fixed errors in unit tests, including the removal of `fakeAsync` from specs, the removal of duplicate imports, and an updated specs file test ([9c4dd40](https://github.com/sendahug/send-hug-frontend/commit/9c4dd402d0ecc58a54e11f064ba86faab4dba3e2) & [7b26e26](https://github.com/sendahug/send-hug-frontend/commit/7b26e26fd0085b20eb11980849c77491f34c0bd2)).
+
+### 2020-08-01
+
+#### Chores
+
+- Updated Angular and various other dependencies ([df03a3c](https://github.com/sendahug/send-hug-frontend/commit/df03a3cabad15d35d68c7369907849e128667690)).
+- Replaced Puppeteer with Chrome in unit tests ([be3a4f4](https://github.com/sendahug/send-hug-frontend/commit/be3a4f422435a58bd5a86d9049f7dd1a0df860a0)).
+- Added initial tests for App Component ([795ab85](https://github.com/sendahug/send-hug-frontend/commit/795ab8540b35b39bcf6ae104f7913fcf04cccb72)).
+
+### 2020-07-31
+
+#### Chores
+
+- Added missing modules to the App Component tests ([77816b1](https://github.com/sendahug/send-hug-frontend/commit/77816b1933511e596ffeff7344ba335f5f0775ef)).
+
+### 2020-07-30
+
+#### Chores
+
+- Updated the package-lock to resolve security vulnerabilities ([f3a7a51](https://github.com/sendahug/send-hug-frontend/commit/f3a7a51692d43bb0a1fd205b9466d204084421c5)).
+- Replaced Chrome with Puppeteer in unit tests ([b3c2361](https://github.com/sendahug/send-hug-frontend/commit/b3c2361bef9bd32008d5eed7451e2a66463dbb7e)).
+
+### 2020-07-29
+
+#### Chores
+
+- Set up the unit tests framework for the app, using Karma, Jasmine and Webpack for running tests, and added an initial tests file for the App Component ([34b5f78](https://github.com/sendahug/send-hug-frontend/commit/34b5f78623e792e2d846684d030b6b6a17880d3f) - [0f2fbce](https://github.com/sendahug/send-hug-frontend/commit/0f2fbce0cbdef345315df62ef52cc1c8c9e2b4c3)).
+
+### 2020-07-24
+
+#### Features
+
+- Added a new settings page to allow users to update their notification settings ([d3b329d](https://github.com/sendahug/send-hug-frontend/commit/d3b329d485c0897559793b7b79b6517e14f60052) - [21b268e](https://github.com/sendahug/send-hug-frontend/commit/21b268e5a4cf76880243bf68e6e171ec8d903226)).
+
+#### Documentation
+
+- Added the new settings page to the README's list of components ([2661579](https://github.com/sendahug/send-hug-frontend/commit/2661579663fe07d0e3a67f247afa38d73eed182d)).
+
+### 2020-07-22
+
+#### Changes
+
+- Replaced the font-awesome script with the kit script ([b444fb1](https://github.com/sendahug/send-hug-frontend/commit/b444fb1aa7553bf2bc18b86473de8003b23b74df)).
+- Changed the post's hug-sending mechanism to prevent users who already sent a hug from sending another hug for it. This includes a check for whether the current user is in the "sent hugs" array and a design for the disabled "send a hug" button (if the user already sent hugs). ([927326a](https://github.com/sendahug/send-hug-frontend/commit/927326af385f5c5dfcce21e9397c0eec26bb68e1) - [60b0f6b](https://github.com/sendahug/send-hug-frontend/commit/60b0f6b7c0564e9f45e5e922e433cbaa0adaf7b7))
+
+### 2020-07-21
+
+#### Changes
+
+- Added an array containing the IDs of users who sent hugs on a post to the Post interface ([9536ce0](https://github.com/sendahug/send-hug-frontend/commit/9536ce0bfdd4ebf6b941bfc33c288a6b3a882c12)).
+
+### 2020-07-19
+
+#### Features
+
+- Added handling for min and max length in inputs, including setting the length in the text fields themselves, designs for text fields that have an error, and alerts for when the data length is wrong ([ab17ab3](https://github.com/sendahug/send-hug-frontend/commit/ab17ab370ea7cba61436ea234beda61793d05e03) - [374ee80](https://github.com/sendahug/send-hug-frontend/commit/374ee8007b93885b4fd1cc63817a16d6b8992889)).
+
+#### Fixes
+
+- The popup now remains on if the user's request returned a validation error. This fixes a bug where users couldn't fix the validation error because the popup disappeared upon getting a response, even if the response wasn't successful ([7a14314](https://github.com/sendahug/send-hug-frontend/commit/7a14314fdaaf6ea81beab633f202a4a471d41b9e)).
+
+### 2020-07-18
+
+#### Chores
+
+- Updated Angular and various other dependencies ([5786352](https://github.com/sendahug/send-hug-frontend/commit/5786352a939b71064ca3ac25b02b7a0d0df9a7e7)).
+
+### 2020-07-15
+
+#### Features
+
+- Improved the app's accessibility ([b279e3c](https://github.com/sendahug/send-hug-frontend/commit/b279e3cc9efdca53063457c48d9c528898acd857) - [46f41e3](https://github.com/sendahug/send-hug-frontend/commit/46f41e35edc21fbe2f3bd5a358f6848793f59e4f)). This includes:
+  - Moved related fields to fieldsets.
+  - Improved buttons' accessible names,
+  - Changed the links' colours and hover behaviour.
+  - Improved ARIA labels.
+
+#### Changes
+
+- Improved the design of the search results when there are no results ([8ebdc4e](https://github.com/sendahug/send-hug-frontend/commit/8ebdc4ea971631d59c65d5ced5f93f6198e131a0)).
+
+### 2020-07-14
+
+#### Features
+
+- Final part of the site's design update ([a99f184](https://github.com/sendahug/send-hug-frontend/commit/a99f18401b7461e5e9f65c0a8cda52dd6eddd71b) - [a4b9e2a](https://github.com/sendahug/send-hug-frontend/commit/a4b9e2a7f401ef5ca3520c3c0dc362941acc0391)). This includes:
+  - Responsive design for the admin dashboard.
+  - Added the logo to the push notifications sent by the back-end.
+  - Turned the logo to a vector graphic.
+  - Added the new icons to the ServiceWorker's cache.
+- Made further accessibility improvements, including colour contrast improvement in all links and the addition of more ARIA labels. ([42ef5a5](https://github.com/sendahug/send-hug-frontend/commit/42ef5a58ec1813b2bde988283cc4e1c96ecb0e97) - [c71d7dd](https://github.com/sendahug/send-hug-frontend/commit/c71d7dd3675e75fed24acd18512c4028f57ff82c))
+
+#### Changes
+
+- The admin dashboard's page titles are now hidden while the fetch is in progress. They're only shown while the fetch has resolved ([222fb3a](https://github.com/sendahug/send-hug-frontend/commit/222fb3aa4012645bd166f0189af9daf1dd78ade2)).
+
+#### Fixes
+
+- Added a missing `rel` attribute to all external links to fix a safety issue around cross-origin links ([30a2ebee](https://github.com/sendahug/send-hug-frontend/commit/30a2ebeeabe8f89ece4d4b525bbd3880b9fbc386)).
+
+### 2020-07-13
+
+#### Features
+
+- Continued updating the site's design to the new one ([3f8acb1](https://github.com/sendahug/send-hug-frontend/commit/3f8acb17a3c2677ac23c05b6e94cb3a20e861d25) - [4062aea](https://github.com/sendahug/send-hug-frontend/commit/4062aea7025b848b120b356aa0fdac5205c7edb2)). This includes:
+  - Added responsive design for various other components.
+  - Added an exit button to the search form.
+  - The navigation menu is now hidden when the search or the notifications tab are opened in smaller viewports, which don't allow both to be open.
+  - Added hover and active adjustments to the navigation links
+
+### 2020-07-12
+
+#### Features
+
+- Continued updating the site's design to the new one ([d17a221](https://github.com/sendahug/send-hug-frontend/commit/d17a2218f262a859b5753e4e8784cbb144b9dec6) - [d8e1b89](https://github.com/sendahug/send-hug-frontend/commit/d8e1b894166467651862e9fc3f38034f74cc1f74)). This includes:
+  - Changed the main font used by the site.
+  - Changed the design of the rest of the components.
+  - Added responsive styling for various components.
+  - Added credit and a link to the designer's social media account.
+
+#### Changes
+
+- All outgoing links now open in a new tab instead of in the current tab ([24ea8d3](https://github.com/sendahug/send-hug-frontend/commit/24ea8d38afb9982a3b90810e641af84ebca954b0)).
+
+#### Fixes
+
+- Added a missing check to ensure the "reply" button is only shown in the inbox mailbox, rather than in the outbox ([e0ccf87](https://github.com/sendahug/send-hug-frontend/commit/e0ccf8763ce752e9a030dd9acc656ae187efd676)).
+
+#### Chores
+
+- Updated Angular and various other dependencies ([75353ed](https://github.com/sendahug/send-hug-frontend/commit/75353ed4f1a84481bf0ca7915819536aabe22793)).
+
+### 2020-07-11
+
+#### Features
+
+- Started replacing the site's previous design with the new one, designed by [Macy Tyler](https://instagram.com/alphamacy). This includes:
+  - Updated the colour palette ([3b6a3e1](https://github.com/sendahug/send-hug-frontend/commit/3b6a3e1004521500d286ad7b46980bd9acfc4fd0)).
+  - Updated the navigation menu's design ([9534e4b](https://github.com/sendahug/send-hug-frontend/commit/9534e4b9ea6b1f361dd806747aaa63ac5cb86f75) & [3f67759](https://github.com/sendahug/send-hug-frontend/commit/3f6775922d00b3e0a54d9859d64dda486da38d46)).
+  - Updated the item list's design ([4e0f366](https://github.com/sendahug/send-hug-frontend/commit/4e0f366e82807c062465235c64aed47b5393a239)).
+  - Updated the post's design ([a8c1e6d](https://github.com/sendahug/send-hug-frontend/commit/a8c1e6d02f02a0b8bcaad691e97da50562d58149) & [a0a1db3](https://github.com/sendahug/send-hug-frontend/commit/a0a1db3d2885fd0d7a1feabdbb4c4456b5f95ca5)).
+- Added a way to toggle the search form on and off ([3cc4649](https://github.com/sendahug/send-hug-frontend/commit/3cc4649585a4e772b78317db63689cd4576785a1)).
+
+### 2020-07-09
+
+#### Features
+
+- Added a "push" event listener to the ServiceWorker to enable displaying push notifications ([d0ca9b8](https://github.com/sendahug/send-hug-frontend/commit/d0ca9b886207bbe27290761afbf99132eac868f6)).
+- Added a badge to the notifications buttons to display the number of unread notifications to the user ([dd80136](https://github.com/sendahug/send-hug-frontend/commit/dd80136dfc78a98a7c7a113db95b93dd64c4b027)).
+- Notifications settings now persist in localStorage ([2d607c4](https://github.com/sendahug/send-hug-frontend/commit/2d607c4c3d551e1efe71924e90b5a9f99dd16462)).
+- The user's settings are now also saved in the back-end to ensure persistence across devices ([9fcd004](https://github.com/sendahug/send-hug-frontend/commit/9fcd004ad8d7be0f953164a61dace129722153ac)).
+
+#### Fixes
+
+- Added a missing check to ensure the app doesn't try to auto-refresh notifications when the user's not logged in, which raised an error by the back-end ([f2e255f](https://github.com/sendahug/send-hug-frontend/commit/f2e255fe81326535d30e32a68e28c569bba256d5)).
+
+### 2020-07-08
+
+#### Features
+
+- Added the ability to toggle push notifications ([d7f2655](https://github.com/sendahug/send-hug-frontend/commit/d7f265567187d65944ea3fa2fab4d108930ec78f)).
+- Added the ability to refresh notifications in the background ([7a7742c](https://github.com/sendahug/send-hug-frontend/commit/7a7742c9447fe03d71bf2140b97d18b84155b24a) & [4d63243](https://github.com/sendahug/send-hug-frontend/commit/4d63243a97590a61974d19861d399759ec1b15c5) & [ad5942f](https://github.com/sendahug/send-hug-frontend/commit/ad5942f6ad8e9a49b43c25f26e5481e4b7eff14e))
+- Added the ability to unsubscribe from push notifications ([0fb2983](https://github.com/sendahug/send-hug-frontend/commit/0fb298351d4501459329c9fc540c4084af6bec6d)).
+- Added a check for whether push notifications are supported by the browser before attempting to create a push subscription ([8b8a8f7](https://github.com/sendahug/send-hug-frontend/commit/8b8a8f7b10d86e74194863b25d85fa7674bf38f1)).
+
+#### Changes
+
+- Updated the ServiceWorker to save the details of the user's PushSubscription ([f742ea0](https://github.com/sendahug/send-hug-frontend/commit/f742ea0be57a20d979168d92ebd75065aff1a94b)).
+
+#### Fixes
+
+- Fixed a bug where the loader animation didn't work when the loader's HTML was served from cache ([216163e](https://github.com/sendahug/send-hug-frontend/commit/216163e305e7d6afde778c07d8f1e5b9e7fd3709)).
+
+### 2020-07-07
+
+#### Features
+
+- Added a new component to display user notifications ([1911e4f](https://github.com/sendahug/send-hug-frontend/commit/1911e4f94692ae372927b2a13fa0ccf5624c43fb) - [b603424](https://github.com/sendahug/send-hug-frontend/commit/b603424595ecb8c118673af6d62c2383f3db64bb)).
+- Added a new service for fetching and handling user notifications, including push notifications ([fe89f5c](https://github.com/sendahug/send-hug-frontend/commit/fe89f5ca81a0b543eeae5b41ec37a2c499177782) & [a9818c6](https://github.com/sendahug/send-hug-frontend/commit/a9818c6e45cf1a500a6f97ec04e7f5a26ce94a74)).
+
 ### 2020-07-06
+
+#### Features
+
+- Improved the Admin Dashboard's accessibility by adding ARIA roles and descriptions ([0ff4bf1](https://github.com/sendahug/send-hug-frontend/commit/0ff4bf163d82a58b1826cfef70f4ff4f9fd124e0)).
+- Added accessible names to buttons and links across the app ([2920174](https://github.com/sendahug/send-hug-frontend/commit/292017461dd7688a99cfb24666f2ede41d6d82bc)).
+- Added checks to ensure form fields aren't blank when submitting the forms ([0038c05](https://github.com/sendahug/send-hug-frontend/commit/0038c05f47aa4340c3e5c07039dedcc2f3c14985)).
+
+#### Changes
+
+- The report form's "other" text field is now disabled when the user selected any other reason for reporting ([4201f2e](https://github.com/sendahug/send-hug-frontend/commit/4201f2ebdd78f0cebecbfbb6322f509950a2570e)).
+- The report form's "other" text field is now required if the user selected "other" as the report reason ([10ae138](https://github.com/sendahug/send-hug-frontend/commit/10ae13839ee61ec843aa98a616390ef473412379)).
+
+#### Fixes
+
+- Fixed a bug where the popup showed both the edit form and the report form at once ([11461eb](https://github.com/sendahug/send-hug-frontend/commit/11461eb8e42eb8c47fece9428d7460aa7452d086)).
 
 ### 2020-07-05
 

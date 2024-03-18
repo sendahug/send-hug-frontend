@@ -1023,11 +1023,336 @@
 
 ## V1.0.0 Beta 2
 
-# TODO: FINISH THIS
+### 2020-12-23
+
+#### Feature
+
+- When changing the colours selected in the colour pickers (even before closing the colour picker), the user's icon now updates its colours. This allows users to preview what their new icon would look like ifi they pick the colours currently highlighted ([117ef37](https://github.com/sendahug/send-hug-frontend/commit/117ef37410bc9d1526c3705d84da77b631406960)).
+- Added a background pattern to the SVG icons ([7aea759](https://github.com/sendahug/send-hug-frontend/commit/7aea7591074e974496e03757653a68e098c41a79)).
+
+#### Chores
+
+- Added the HTML copying gulp task to the watcher for static assets, since the SVGs are inlined in the HTML ([de8e929](https://github.com/sendahug/send-hug-frontend/commit/de8e9294ed1907ff5010182254ecd5a2a76d1e69)).
+
+#### Documentation
+
+- Updated the README with details about the new components ([1a7629b](https://github.com/sendahug/send-hug-frontend/commit/1a7629b9810dc8baf2185ac5c9583469f8fab684)).
+
+### 2020-12-22
+
+#### Feature
+
+- Added the user icon to the User View ([d6c7dc5](https://github.com/sendahug/send-hug-frontend/commit/d6c7dc5805bb64c74de73bd851e1731c2122157f) - [66fa358](https://github.com/sendahug/send-hug-frontend/commit/66fa358f34d9cc54c71464752201be3643f47324)).
+- The users' store in IndexedDB now saves the user's icon data ([de8b1e8](https://github.com/sendahug/send-hug-frontend/commit/de8b1e80ed2ae672cf69724289bf02fa2eb3c193)).
+- Added the user icons to threads' and messages' interfaces and views ([7041c67](https://github.com/sendahug/send-hug-frontend/commit/7041c6779e39382520f02948bc4f2f58381f2a87) - [6180d4d](https://github.com/sendahug/send-hug-frontend/commit/6180d4dadd64614a843b1fd1f3b6c56909a9009c)).
+
+### 2020-12-21
+
+#### Feature
+
+- When the user picks a new colour in the colour pickers, the user's icon now updates its colours. This allows users to view what their new icon would look like if they save the icon ([5017a42](https://github.com/sendahug/send-hug-frontend/commit/5017a426f58656674f14f9e8965bcaabb8b384fa)).
+- Added the icon editor to the settings page ([3f4e3f6](https://github.com/sendahug/send-hug-frontend/commit/3f4e3f67f6d8bd7d1b7553c9dd50da46eadc0734) - [8c35f11](https://github.com/sendahug/send-hug-frontend/commit/8c35f110d44da80cf2bf1ab73d32db0f5488e64a)).
+- Added the functionality for closing the icon edit form ([d96141a](https://github.com/sendahug/send-hug-frontend/commit/d96141a261e5312d713bf6c7831f8502aebcb08f)).
+- The user's icon in the Icon Editor now shows the user's selected colours when the form is opened ([c080046](https://github.com/sendahug/send-hug-frontend/commit/c080046022541c6dbdc7e4e72fc5599d4fe0ee3b)).
+
+#### Changes
+
+- Replaced the full User interface in the Admin Service with a Blocked User interface, which excludes some unnecessary properties that aren't used by Admin screens ([129701e](https://github.com/sendahug/send-hug-frontend/commit/129701e842667fe65cb7e59aca8cafa203d0b55e)).
+- Simplified the SVG icons' strcture to allow changing their colours ([d403174](https://github.com/sendahug/send-hug-frontend/commit/d4031745bf62988bdede3c5546fb2e714ea34137)).
+
+#### Chores
+
+- Updated the gulp tasks for editing the HTML files to inline the SVGs, which allows us to colour them using CSS ([](https://github.com/sendahug/send-hug-frontend/commit/a5a7916d2a83f245ac6305590dfb41c363c37319) - [88a95e7](https://github.com/sendahug/send-hug-frontend/commit/88a95e7272022f313af2c20cb8224511a5484778)).
+
+### 2020-12-20
+
+#### Features
+
+- Added a new form to allow users to edit user icons' colours ([0e0cd7b](https://github.com/sendahug/send-hug-frontend/commit/0e0cd7bd7ab1d810f7d4cb0ae43e37720d542730)).
+- Added the user icons' data to all interfaces and services that have user-related data ([1cea50e](https://github.com/sendahug/send-hug-frontend/commit/1cea50e98571658e7f577bd29a00c21897b3fae1) - [f29e745](https://github.com/sendahug/send-hug-frontend/commit/f29e74513dc84dca124210cff3a7dc949274f452)).
+- The icon editor's icon colours are no pre-filled from the Auth Service's user data ([739c438](https://github.com/sendahug/send-hug-frontend/commit/739c438b889e3376d64d482cd53bdec71a538ef8)).
+- Added support for updating icon colours ([6af92f](https://github.com/sendahug/send-hug-frontend/commit/6af92f9c3e85075e7956e5760120acbd12f11625)).
+
+#### Chores
+
+- Updated the sitemap, the gulp tasks, the pa11y config and the CircleCI config for running accessibility tests in CI ([f553063](https://github.com/sendahug/send-hug-frontend/commit/f55306346e3c132ddb58940d3a0ec2a57b01b9b0) - [8f7f4ec](https://github.com/sendahug/send-hug-frontend/commit/8f7f4ece0d6e4f4501eb02a6460cd5a8e3d6f83b)).
+- Updated Angular to v11.0.5 ([8d8cb98](https://github.com/sendahug/send-hug-frontend/commit/8d8cb982503166d952069113ea4fb213968efeb8)).
+- Updated the env-config build script's replacement string to match the string the bundler outputs ([8481e8d](https://github.com/sendahug/send-hug-frontend/commit/8481e8d64071fe29bb895bb2750ba327a60ed278)).
+
+### 2020-12-19
+
+#### Chores
+
+- Set up initial gulp tasks and workflow for running accessibility tests (with pa11yci) in CI ([d51ce90](https://github.com/sendahug/send-hug-frontend/commit/d51ce903bed5b9c09d4b340a3207759bf6fae838) - [f9ea97](https://github.com/sendahug/send-hug-frontend/commit/f9ea979b05af06f0562fdc5e2325e8fff29e6a4c))
+
+### 2020-12-18
+
+#### Chores
+
+- Fixed the workflow of running e2e tests in CI ([4389f69](https://github.com/sendahug/send-hug-frontend/commit/4389f69878d5137c3e00cc6944c06e97d7675578) - [7cac89b](https://github.com/sendahug/send-hug-frontend/commit/7cac89b4d6001710474ff48e36a9a6d4e8b2d052)).
+- Updated the package-lock file ([b5dcda1](https://github.com/sendahug/send-hug-frontend/commit/b5dcda1d9bb80b4aa4f1a110bfce86b152a9cab0)).
+- Installed a site-map generator for running accessibility testing in CI ([f8a64c8](https://github.com/sendahug/send-hug-frontend/commit/f8a64c890f98cdc5cdb8098091b9a729f3748de2)).
+
+### 2020-12-17
+
+#### Chores
+
+- Made various fixes to the e2e tests in CI, including an updated docker image for tests, updated gulp tasks for e2e and an updated Karma config ([05aa9d5](https://github.com/sendahug/send-hug-frontend/commit/05aa9d5a988b102f84e41094e6d2d47769d5e7c2) - [d136ce3](https://github.com/sendahug/send-hug-frontend/commit/d136ce3590ee22e0d4c926ba140bf904701f2712)).
+
+### 2020-12-16
+
+#### Chores
+
+- Added an npm script for running e2e tests ([1edc2a9](https://github.com/sendahug/send-hug-frontend/commit/1edc2a92efd706bd86cf71aaee4578133976f37c)).
+- Added e2e tests to the CircleCI workflow ([952cd5c](https://github.com/sendahug/send-hug-frontend/commit/952cd5c1151ea92ca3492f555855629a250bf252) - [7a26941](https://github.com/sendahug/send-hug-frontend/commit/7a26941ef0f3fd93ebe344f0ac8d88f9bcb7a8ab)).
+
+### 2020-12-15
+
+#### Features
+
+- Added a new component for icon editing ([0027b12](https://github.com/sendahug/send-hug-frontend/commit/0027b12608064fa6ecf1ba2e29e2a9f2dc73160c)).
+- Added initial user icons designed by [Macy Tyler](https://instagram.com/alphamacy) ([1304eff](https://github.com/sendahug/send-hug-frontend/commit/1304eff873ed6e22fdd15b10c946b238f6165fb5)).
+
+#### Chores
+
+- Updated Angular to v11.0.4 ([0191430](https://github.com/sendahug/send-hug-frontend/commit/0191430776acabc0ceb234ff639f38097c048c18)).
+
+### 2020-12-13
+
+#### Features
+
+- Added a new Site Policies component with the terms and conditions, the privacy policy and the cookies policy ([0edd19e](https://github.com/sendahug/send-hug-frontend/commit/0edd19ea0221da46a675cdbce596c8242325154c) - [90d3742](https://github.com/sendahug/send-hug-frontend/commit/90d374289456d577b7046c36ea9ea9bddedc6648)).
+
+### 2020-12-07
+
+#### Documentation
+
+- Replaced the Travis CI badge in the README with a CircleCI badge ([6fd1743](https://github.com/sendahug/send-hug-frontend/commit/6fd1743b529216ecd74248d488dd4ca59ca2cbf0)).
+
+### 2020-12-01
+
+#### Chores
+
+- Set up an initial workflow file for CircleCI ([d7be2e2](https://github.com/sendahug/send-hug-frontend/commit/d7be2e2b23f5421d4679a49fcb6b0d9ddc3b24fd) - [f9baecd](https://github.com/sendahug/send-hug-frontend/commit/f9baecdbcd10186121d315946b9a21e867e24368)).
+
+### 2020-11-29
+
+#### Chores
+
+- Changed the create-release workflow to remove the branch restriction as a temporary workaround for it ([a02cb41](https://github.com/sendahug/send-hug-frontend/commit/a02cb410cfcc2f8322b5324a77ee45e8e43a7fb4)).
+
+### 2020-11-24
+
+#### Chores
+
+- Changed the way the environment variables are updated in production. Previously, we used an environment variable to check which environment file to use in each file where the environment was used. Now, the development environment file is replaced as part of the build process ([5489859](https://github.com/sendahug/send-hug-frontend/commit/54898591354ffc0951f7a2064eccd11b34da5433)).
+- Updated dev dependencies ([c46be25](https://github.com/sendahug/send-hug-frontend/commit/c46be25bf76551750ad368494c9976fb8d9e1932)).
+
+### 2020-11-20
+
+#### Chores
+
+- Updated Angular and TypeScript ([b061182](https://github.com/sendahug/send-hug-frontend/commit/b061182294c6220c4e8dc9da0c34d80b55a68977)).
+
+### 2020-11-15
+
+#### Features
+
+- Added ARIA label to the skip link ([68f31c7](https://github.com/sendahug/send-hug-frontend/commit/68f31c7f45a77ab45e8fbc716c98d2928d40e49e)).
+
+#### Chores
+
+- Updated the package-lock file ([9bdf331](https://github.com/sendahug/send-hug-frontend/commit/9bdf33198e4a2a150deb2f09164a45d925b2c2d6) & [19703b2](https://github.com/sendahug/send-hug-frontend/commit/19703b2f4db65add5ca1766abddf183625638910)).
+
+### 2020-11-14
+
+#### Features
+
+- Added a link to the support page in the app's footer ([872e93b](https://github.com/sendahug/send-hug-frontend/commit/872e93b2373d9a86096e7337509dcb419e32d870)).
+- Added an error message to display if the user disabled JavaScript ([2f02cb4](https://github.com/sendahug/send-hug-frontend/commit/2f02cb4ce52e4130f1ed990d62019654d825d32d)).
+
+### 2020-11-13
+
+#### Fixes
+
+- Fixed the selectors used for the design of the Font Awesome icons ([ad18ead](https://github.com/sendahug/send-hug-frontend/commit/ad18ead75e7d6d73cfe7caaa106303e7667e3b78)).
+- Fixed the design of the main content area ([2b2d083](https://github.com/sendahug/send-hug-frontend/commit/2b2d083bd7136150a474d1522d42c3ec39788d36)).
+
+#### Documentation
+
+- Added the new components to the main README ([cfa1516](https://github.com/sendahug/send-hug-frontend/commit/cfa15168385c973e66cc6e1ad5938492d171d528)).
+
+### 2020-11-12
+
+#### Features
+
+- Added a navigation menu to the Support Page ([f3271a0](https://github.com/sendahug/send-hug-frontend/commit/f3271a0de8883c7e5e4aac5acc742aafa0b8b8ba)).
+
+#### Chores
+
+- Updated Angular to v11 ([90b27f7](https://github.com/sendahug/send-hug-frontend/commit/90b27f7a9f8188e1334fd74a53f4bc7f066b25fe)).
+
+### 2020-11-10
+
+#### Features
+
+- Added initial questions and details to the new support page, as well as an initial design ([4ccf379](https://github.com/sendahug/send-hug-frontend/commit/4ccf37909c93bcc64c6a77cd26a8e113a07e5e8d) - [36e5bb7](https://github.com/sendahug/send-hug-frontend/commit/36e5bb70b8345f12e0c519ca54c45e045c1915b9)).
+
+#### Chores
+
+- Updated Angular to v10.2.3, as well as other dependencies ([eacd649](https://github.com/sendahug/send-hug-frontend/commit/eacd649a3bf59f4ceed5ad0d8c457589487caa75)).
+
+### 2020-11-09
+
+#### Changes
+
+- Replaced the post, admin dashboard and home icons in the navigation menu with path-based SVG icons ([e27c1a8](https://github.com/sendahug/send-hug-frontend/commit/e27c1a8acc84ddfe1f07018c85b20d05bcb520e3) - [a3bf4d1](https://github.com/sendahug/send-hug-frontend/commit/a3bf4d1fc0fb4c0c645feb56f1de466a26d4c8f0)).
+
+#### Chores
+
+- Changed gulp's HTML copying task to inline the navigation menu's SVGs. This keeps the AppComponent source HTML clean in development while letting us leverage SVGs' CSS capabilities ([fe2ea66](https://github.com/sendahug/send-hug-frontend/commit/fe2ea665ebd716b0bacaa065a8567098bcb78c22)).
+
+### 2020-11-08
+
+#### Features
+
+- Added a basic new support page ([4d1acdc](https://github.com/sendahug/send-hug-frontend/commit/4d1acdc3e7f66c9ac1c6aebfdc370c0a3ba362cf)).
+
+#### Changes
+
+- The suggested posts' fetch from IndexedDB now orders the posts based on both date and hugs, which is the same as in the back-end ([28ffb6f](https://github.com/sendahug/send-hug-frontend/commit/28ffb6f7b9e91d88d8d676cd8ede344fb9465623)).
+- The "send hugs" button is now disabled if the user isn't logged in, since they can't send a hug anyway in that state ([0f53958](https://github.com/sendahug/send-hug-frontend/commit/0f53958f272b1de62e1c099624cf411e61d2e9ae)).
+
+### 2020-11-07
+
+#### Features
+
+- Added a post component to encapsulate all of a post's functionality in a single component ([ecef076](https://github.com/sendahug/send-hug-frontend/commit/ecef0762fb7f61abf4d0e2bc6b4e81e0ea4fa15a) - [0665dd8](https://github.com/sendahug/send-hug-frontend/commit/0665dd87b873f9195b1fe49738bff81171518e43)).
+
+#### Changes
+
+- Replaced the posts in the Main Page, the Full List and the Search Results with the new post component ([e7a929f](https://github.com/sendahug/send-hug-frontend/commit/e7a929f0cfe3989163f6d281f2f0fb45e058cbc9) & [5049420](https://github.com/sendahug/send-hug-frontend/commit/5049420f579c32bd07e5d04af1478c0ac748c6d4) & [6588ba6](https://github.com/sendahug/send-hug-frontend/commit/6588ba6c5d3b7dfde1d47eb11f0fbc12f6bf87f3)).
 
 ## v1.0.0 Beta 1
 
 # TODO: FINISH THIS
+
+### 2020-09-18
+
+#### Features
+
+- Added checks for whether the post's menu is too wide to be displayed, in order to show/hide the menu automatically when there is/isn't enough space, respectively ([1256091](https://github.com/sendahug/send-hug-frontend/commit/12560919efb36e04f183988213349ac2d64a8fe2)).
+- Added the small-viewport floating menu to the search results and to the main page ([b1c29f5](https://github.com/sendahug/send-hug-frontend/commit/b1c29f5bce774ea2e36b16b898d25b5159255d7f)).
+
+#### Changes
+
+- Downloaded the main font from Google Fonts and replaced the Google Fonts link with a local link ([b39e23f](https://github.com/sendahug/send-hug-frontend/commit/b39e23fbf4e6b349ee5a8bd1446e356fd18607e4)).
+- Deleted the local development assets as we don't need them in the repo ([680d7f6](https://github.com/sendahug/send-hug-frontend/commit/680d7f60a39412b567be90a7cb89b5595e73e3aa) & [e35bb07](https://github.com/sendahug/send-hug-frontend/commit/e35bb078a5abc515c9eb8a0ae3c88cd8c5a90398)).
+
+#### Fixes
+
+- Fixed a bug that caused first post's menu to reappear randomly ([30414c8](https://github.com/sendahug/send-hug-frontend/commit/30414c8aa64343680df5933aa901ef553eff0a5a)).
+
+#### Chores
+
+- Updated the gulp task for copying images to copy all static assets ([bcd412d](https://github.com/sendahug/send-hug-frontend/commit/bcd412dec5ce2e0859304af45771fb3de378657f)).
+
+### 2020-09-17
+
+#### Features
+
+- Added the functionality (toggling on/off) and design for the new minimised menus ([daf356c](https://github.com/sendahug/send-hug-frontend/commit/daf356c2bb48c38465c30cde21b4b84f3797eaa4) & [19773da](https://github.com/sendahug/send-hug-frontend/commit/19773da6ce62c0a8be2e829d5614c7c1d1e9614f)).
+
+#### Changes
+
+- Deleted the menu button from the My Posts component, which doesn't require a menu for the posts ([dccfa2b](https://github.com/sendahug/send-hug-frontend/commit/dccfa2bf67235c7ca2a2d8e3ba4a37e70b8e2e83)).
+- Changed all buttons to have a minimum size of 44x44px to ensure there's enough space to click buttons, as per WCAG 2 ([3a67a1c](https://github.com/sendahug/send-hug-frontend/commit/3a67a1ca0117944862df8e12741335c71b39b7fd)).
+
+### 2020-09-16
+
+#### Features
+
+- On smaller viewports, the posts' menu is now minimised and accessible via a button which opens the menu for a given post ([8ef4189](https://github.com/sendahug/send-hug-frontend/commit/8ef41893f6a31a49114fb11eb5bd141173cfd975)).
+
+#### Fixes
+
+- Fixed a bug where the navigation menu was hidden even when the screen is wide enough to display it ([e796923](https://github.com/sendahug/send-hug-frontend/commit/e7969230782b40859cb1e89fdc93f74d393b2031)).
+
+### 2020-09-15
+
+#### Changes
+
+- Changed the menu's appearance in larger font sizes to account for the limited space available onscreen. Now, if the larger font size makes the menu too wide for the screen, the mobile navigation menu appears onscreen. This is checked upon every font size change and every window resize event. ([4b826c7](https://github.com/sendahug/send-hug-frontend/commit/4b826c7dc4d3194c13c70cbe0e90c6bb3ba186ab) & [8b03dec](https://github.com/sendahug/send-hug-frontend/commit/8b03deccad7a32ab61fcc98e2aff6b467b909340))
+- Added missing `aria-hidden` attribute to hidden elements in the App Component ([3d278ec](https://github.com/sendahug/send-hug-frontend/commit/3d278ec6cf889ec16a74fdf9e1ea69b3c0a45aa5)).
+
+#### Fixes
+
+- Fixed a bug where the `log in` button's text wasn't updated when the user changed their selected text size ([1159530](https://github.com/sendahug/send-hug-frontend/commit/115953095e58796ed74f542a05409161708de163)).
+
+#### Chores
+
+- Updated various dependencies ([1ffd9e2](https://github.com/sendahug/send-hug-frontend/commit/1ffd9e24a2aa90e3e9827c79d282605cbe2d7dc3)).
+
+### 2020-09-14
+
+#### Features
+
+- Added a new Sass mixin for converting pixel text sizes to rem. This allows users to change the font size throughout the site ([06022c1](https://github.com/sendahug/send-hug-frontend/commit/06022c1edca81f250f9681a4ce08e10c24806549)).
+- Added the functionality for adjusting the app's font size ([1479b38](https://github.com/sendahug/send-hug-frontend/commit/1479b38150b0c99598e5746c6db235875996ece1)).
+
+#### Changes
+
+- Replaced all pixel text sizes throughout the app (except for Font Awesome) with rem sizes ([64500c](https://github.com/sendahug/send-hug-frontend/commit/064500ccf8cc8d06f81f51ae89e5dbb222a71588)).
+- Adjusted the about page to show less than 80 characters per line, as per WCAG 2 ([81b52d4](https://github.com/sendahug/send-hug-frontend/commit/81b52d4f3d3a6e7e9092ed628ea50bef4eed8086)).
+
+#### Fixes
+
+- Added a container for the main and footer elements, which fixes the styling issues in smaller viewports caused by the fixed styling previously used ([e280aa0](https://github.com/sendahug/send-hug-frontend/commit/e280aa010fada406bffc559ca110e8efc5426f6c)).
+
+### 2020-09-11
+
+#### Features
+
+- Added a new Text Size button to allow users to change the site's font-size ([c69ce2f](https://github.com/sendahug/send-hug-frontend/commit/c69ce2f60efea8b569f7ce5e6dbf7c9a57d405c1)).
+
+#### Fixes
+
+- Some of the ARIA labels in the App Component were accidentally set on the icon instead of on the containing buttons. This was fixed ([e6b847b](https://github.com/sendahug/send-hug-frontend/commit/e6b847bd4b62e8d9ccd37ceeb45b65a27efb168e)).
+
+### 2020-09-10
+
+#### Chores
+
+- Updated Angular to v10.1.1 ([0fde836](https://github.com/sendahug/send-hug-frontend/commit/0fde83691c82b67db81124beed74f06cc3c450cd)).
+- Updated various other dependencies ([5a84eb8](https://github.com/sendahug/send-hug-frontend/commit/5a84eb8109104f697bd6cb265a30bb111c50f0e0)).
+- Updated the package-lock file to fix vulnerabilities ([103d76c](https://github.com/sendahug/send-hug-frontend/commit/103d76c018ba0cb460aea3759c5abd85d122d0e3) & [0b9363c](https://github.com/sendahug/send-hug-frontend/commit/0b9363c52c9b65500423be1f718ee768d5dabaa4)).
+
+### 2020-09-03
+
+#### Chores
+
+- Fixed various tests errors ([5ea681e](https://github.com/sendahug/send-hug-frontend/commit/5ea681e80f102d66a0cc229db354cb7af64aa90c) - [66483c3](https://github.com/sendahug/send-hug-frontend/commit/66483c3ff7679f9e90577be71b1bf7a5954cd5e9) & [722aec6](https://github.com/sendahug/send-hug-frontend/commit/722aec60d78bd705d72de48bf731753b60565a5c) & [3472a3a](https://github.com/sendahug/send-hug-frontend/commit/3472a3ad55bfa5b71a2008c1b753b33cc70bb722)).
+- Added codecov to handle coverage reports in CI ([223cc60](https://github.com/sendahug/send-hug-frontend/commit/223cc601eb9f8415a6b7a730dd1efa5932c57fc0) - [dc700e7](https://github.com/sendahug/send-hug-frontend/commit/dc700e7eefbef32094662364df7d65f69c636ea2)).
+- Updated the GitHub Actions workflow's branches and tasks config ([029c980](https://github.com/sendahug/send-hug-frontend/commit/029c9804b1417a5946d91a63cb60c7a8d6c99d6f) & [6d22d10](https://github.com/sendahug/send-hug-frontend/commit/6d22d10e6833b66fa82084dc8d5775d2ad940318)).
+- Fixed the reporters config in Karma ([759386c](https://github.com/sendahug/send-hug-frontend/commit/759386c5dfa9b650ccebfd79ddabdf849884d87d) & [c727ea6](https://github.com/sendahug/send-hug-frontend/commit/c727ea660ddd78241aa10959e29253c1972c8f39)).
+
+#### Documentation
+
+- Added CI-related badges to the README ([d1bcde4](https://github.com/sendahug/send-hug-frontend/commit/d1bcde476aeb7149995131c7de19303504b3b07f) & [b5868d4](https://github.com/sendahug/send-hug-frontend/commit/b5868d4b85de09c25e17b95c8620ffc236330be7)).
+
+### 2020-09-02
+
+#### Chores
+
+- Updated various dev dependencies ([f30a27c](https://github.com/sendahug/send-hug-frontend/commit/f30a27cd9a3287db1f552cd5f211c74d315136f5)).
+- Added gulp task to bundle the code before running tests ([530085d](https://github.com/sendahug/send-hug-frontend/commit/530085d3e75bc29f3fda33a4d910dd6b86bd00f2)).
+- Adjusted Karma's config to use the pre-bundled code instead of bundling the code as well as the tests. This lowers Node's memory usage by a third or so. ([2b7bc95](https://github.com/sendahug/send-hug-frontend/commit/2b7bc9508b08e83ae1a9300c971bde62eb4e7679))
+
+### 2020-09-01
+
+#### Chores
+
+- Updated the Travis and Karma config files to enable running tests in CI ([b36f5b1](https://github.com/sendahug/send-hug-frontend/commit/b36f5b1629d4c0391e3dcd0c27cbf0207e747d1f) - [ba95825](https://github.com/sendahug/send-hug-frontend/commit/ba9582570fd1783a741ebe99f5a059159f4d3037)).
 
 ### 2020-08-31
 

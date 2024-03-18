@@ -51,7 +51,7 @@
     "karma-viewport": "^1.0.9",
     "less": "^4.2.0",
     "magic-string": "^0.30.8",
-    "postcss": "^8.4.35",
+    "postcss": "^8.4.36",
     "prettier": "^3.2.5",
     "puppeteer": "^22.4.1",
     "rollup": "^4.13.0",

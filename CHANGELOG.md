@@ -1235,7 +1235,357 @@
 
 ## v1.0.0 Beta 1
 
-# TODO: FINISH THIS
+### 2020-11-06
+
+#### Chores
+
+- Added missing input to the GitHub Actions workflow for creating a release ([af167a9](https://github.com/sendahug/send-hug-frontend/commit/af167a99ad6c0bd8ae5c473b08783d19f5127b7a)).
+
+### 2020-11-05
+
+#### Features
+
+- Added a web manifest to create a Progressive Web App (PWA). This also includes an icon to display on Apple devices and new Gulp tasks for copying the manifest and related files ([d968f86](https://github.com/sendahug/send-hug-frontend/commit/d968f863fde76c9f804bbadfd1cecdba14453048) - [d18d269](https://github.com/sendahug/send-hug-frontend/commit/d18d2695760c5657bb22be4b1c61ba92bbd8613d)).
+
+#### Fixes
+
+- The push notifications permissions check was accidentally checking for whether the user denied permission, and if so, attempted to send a notification (which threw an error). The check now looks for granted permission before sending a notification. ([67ef0b2](https://github.com/sendahug/send-hug-frontend/commit/67ef0b2b27ad1f76614858f2d424e0fbf4a02000))
+
+#### Chores
+
+- Updated Angular to v10.2.2 ([3141910](https://github.com/sendahug/send-hug-frontend/commit/3141910f4337ae060f23da5df4b97d5664d9bbbe)).
+- Added a GitHub Actions workflow to create a release ([abc90bf](https://github.com/sendahug/send-hug-frontend/commit/abc90bfd590a0192851ede6879c1d66e4c6e1dcb)).
+
+### 2020-11-03
+
+#### Features
+
+- The threads store in IndexedDB is now cleared when the user logs out ([8e6a801](https://github.com/sendahug/send-hug-frontend/commit/8e6a80116ff8e3b6868dec99cb1744d8e6229839)).
+
+#### Changes
+
+- Adjusted the filters views to the updated format returned by the filters' endpoints ([f66d9f9](https://github.com/sendahug/send-hug-frontend/commit/f66d9f9802526cfe8c5b2728b8ca660b9606b387) - [28d79c1](https://github.com/sendahug/send-hug-frontend/commit/28d79c189aff0793d130bbbecc54f1526605c812)).
+- The user IDs and names in threads saved in IndexedDB are now taken from the data returned by the back-end, rather than based on the assumption that user 1 is always the logged in user (which isn't always correct). ([11759c0](https://github.com/sendahug/send-hug-frontend/commit/11759c03a809440d507f0e4e352afa6b9c2f4641))
+
+### 2020-10-31
+
+#### Fixes
+
+- Fixed a bug disabling the hug button after a hug is sent ([a6cbc8d](https://github.com/sendahug/send-hug-frontend/commit/a6cbc8da4fb8e0baf27dbf7fb44964950e64eecd)).
+- Added a missing parameter when checking for push notifications permissions ([1b0317d](https://github.com/sendahug/send-hug-frontend/commit/1b0317d4926269a9c7c90e752010eadb67b1125c)).
+- Fixed styling errors in buttons and alerts ([aa3b51e](https://github.com/sendahug/send-hug-frontend/commit/aa3b51ee7afad84ae41078a3d94768567b6965f5) & [e1370ce](https://github.com/sendahug/send-hug-frontend/commit/e1370cef15ee6c43398046cbf5e6a43f7968feed)).
+
+### 2020-10-30
+
+#### Features
+
+- Added a check for existing push notifications permissions to ensure we have permission before attempting to send push notifications ([4457c1f](https://github.com/sendahug/send-hug-frontend/commit/4457c1fa3662c950b170c481ab9e533a6505b3d3)).
+
+#### Chores
+
+- Added templates for pull requests and updated existing templates ([0325585](https://github.com/sendahug/send-hug-frontend/commit/0325585067ede5e4dc3ba446e149004f02057c1b) - [d92c9d4](https://github.com/sendahug/send-hug-frontend/commit/d92c9d4be76c4338c565f86ce87ae8f99604b768)).
+
+### 2020-10-29
+
+#### Fixes
+
+- Fixed the design of various elements when using larger font sizes or higher text spacing ([f4b0b28](https://github.com/sendahug/send-hug-frontend/commit/f4b0b281c898dafe9154dbc0a58720e448ff5ad8) & [bff20df](https://github.com/sendahug/send-hug-frontend/commit/bff20dfb77ca4d4740c165f9ec22a60e013cb81d)).
+- Added a missing ARIA role ([4cee30a](https://github.com/sendahug/send-hug-frontend/commit/4cee30a12802dae78ee471e8a417d782967fcb1c)).
+- Fixed the design of the notifications block ([0545bff](https://github.com/sendahug/send-hug-frontend/commit/0545bff1ad61dc10fc6d7e066b6d3ee54dbde234)).
+- The text on the 'enable/disable push notifications' button now shows the correct value when unsubscribing ([3795de6](https://github.com/sendahug/send-hug-frontend/commit/3795de6fb9b224eb63c0b56a0532020acc580a27)).
+
+#### Chores
+
+- Updated the email address used as the site's main address ([6c52588](https://github.com/sendahug/send-hug-frontend/commit/6c52588bdf97dd74716400850fbba9099ed53ee2)).
+- Updated Angular to v10.2.1 ([56751e1](https://github.com/sendahug/send-hug-frontend/commit/56751e141b2c1d8ae5d3fb964a9ccdbf50553a6e)).
+- Added a CONTRIBUTING file to provide information about contributing to the repo ([fcec6cc](https://github.com/sendahug/send-hug-frontend/commit/fcec6cc9492ebd21773d458a3318847f284d1e9d) & [f983c4d](https://github.com/sendahug/send-hug-frontend/commit/f983c4d8ecc444d62953bedbb677dd06ae77cc8a)).
+- Updated the issue templates ([965d1ba](https://github.com/sendahug/send-hug-frontend/commit/965d1ba09c4bf5e80f27bbf5eb2864c5e0dc6d8f) & [1efff3d](https://github.com/sendahug/send-hug-frontend/commit/1efff3d021d9d0685c6b8fe7332f0cffda637dc9) & [e0b8465](https://github.com/sendahug/send-hug-frontend/commit/e0b8465b8db8bfa51e735e35fa3f422b56c871c2)).
+
+### 2020-10-28
+
+#### Features
+
+- The push subscription's ID is now saved in the Notifications Service once it's posted to the back-end ([6ce4152](https://github.com/sendahug/send-hug-frontend/commit/6ce41521d9a0c2d0f36de9bea0275386bb662ef8)).
+- Added support for renewing expired push subscriptions ([9e57778](https://github.com/sendahug/send-hug-frontend/commit/9e57778b7c777ab964d2511454549540bddfa668) & [ac3263b](https://github.com/sendahug/send-hug-frontend/commit/ac3263bb0ef8e46d7992e39b9d14f68bd2f5dfe7)).
+- Added handling for 'push subscription change' event in the ServiceWorker ([1e683ae](https://github.com/sendahug/send-hug-frontend/commit/1e683aec8909317e72b3baa3b87ae99b2a5f814c)).
+
+#### Chores
+
+- Added templates for opening new issues in GitHub ([9fe2d1f](https://github.com/sendahug/send-hug-frontend/commit/9fe2d1fc1483b74f361bddc05d01f4e89e1f76c6)).
+- Added code of conduct to the repo ([ea519cd](https://github.com/sendahug/send-hug-frontend/commit/ea519cd57498f4722c091b07e22c2b413554980d)).
+
+### 2020-10-27
+
+#### Changes
+
+- The user's data is now cleared when the user logs out ([836f2d8](https://github.com/sendahug/send-hug-frontend/commit/836f2d87cbb0fb8781f00de9471563b1978cb4be)).
+
+#### Fixes
+
+- Fixed a bug that caused the user's own profile to change rapidly ([75044df](https://github.com/sendahug/send-hug-frontend/commit/75044df09983340c41cd2ca094bea8540e81524c)).
+- Added a check for whether a user exists before attempting to fetch their posts from IndexedDB, which fixes an error that was thrown by IDB when the user hasn't been cached yet ([3cee83c](https://github.com/sendahug/send-hug-frontend/commit/3cee83cee1da2d742fb8ae170ace7bedc4868673)).
+
+### 2020-10-26
+
+#### Changes
+
+- Deleted an unneeded subscription in the user posts component ([f2133c7](https://github.com/sendahug/send-hug-frontend/commit/f2133c7fcf1c1f4a51b30673b551650d1df4e4d5)).
+
+#### Fixes
+
+- Fixed a bug with user page not updating user data correctly ([0f2117a](https://github.com/sendahug/send-hug-frontend/commit/0f2117aa2ac0640a81c544834389608be203369f)).
+- Fixed a bug that caused the user profile to change rapidly for no reason ([444ee04](https://github.com/sendahug/send-hug-frontend/commit/444ee04c295438ed9df3aadf6facc5f6255ec7b5)).
+
+#### Chores
+
+- Updated Angular to v10.2.0 ([00e9d95](https://github.com/sendahug/send-hug-frontend/commit/00e9d95a64baa4db48b97f2a529dba7ee30d7f80)).
+
+### 2020-10-25
+
+#### Features
+
+- Added support for pagination in IndexedDB calls ([2b1e184](https://github.com/sendahug/send-hug-frontend/commit/2b1e184de025135243d5cb0dab4fb23c48f16a6f) & [72f1563](https://github.com/sendahug/send-hug-frontend/commit/72f1563398bc4ee0d7306390244e49e4ce5f6ec6)).
+- Enabled pagination in single thread views ([5adbd9b](https://github.com/sendahug/send-hug-frontend/commit/5adbd9bb1b533c29a62be0c678dba14cc2be7f08) & [cb38bc3](https://github.com/sendahug/send-hug-frontend/commit/cb38bc35a6daa0d9c8379a8d7ed1e546b216a594)).
+
+#### Fixes
+
+- Fixed an error in property access when checking the length of the array of posts returned by IDB ([e028243](https://github.com/sendahug/send-hug-frontend/commit/e028243269a1a369c31f995a28e36dc0b7eb2552)).
+- User posts returned by the back-end were accidentally used to update the wrong property in the Items Service, which broke the user posts component. The name of the property was fixed ([f450d41](https://github.com/sendahug/send-hug-frontend/commit/f450d41c7b7f4f274a86e869a5b4b3382ea910d8)).
+
+### 2020-10-24
+
+#### Changes
+
+- Adjusted all post fetches to include details about the latest fetch time and location. This presents source and time checks for all post fetches, in order to ensure the information the user sees is the most updated one (from the server), as opposed to the cached one (from IDB), even if IDB fetch is resolved after the server fetch ([7e400a6](https://github.com/sendahug/send-hug-frontend/commit/7e400a698284bd8e810477b44ee35c67f0036e0d) & [e4e2f86](https://github.com/sendahug/send-hug-frontend/commit/e4e2f860839e8c6a7b3651faca7b98202b418c4f)).
+- Added last fetch data to messages and user posts ([57b2b48](https://github.com/sendahug/send-hug-frontend/commit/57b2b4856da6550f2eac5f4761d170a46c4a1f15) & [283e181](https://github.com/sendahug/send-hug-frontend/commit/283e181fd2515c0aa1b8415c92e7b1330eeea7c4)).
+
+#### Fixes
+
+- Fixed a bug where the page number in the Full List component was incorrect due to being fetched from the wrong place ([9f291fd](https://github.com/sendahug/send-hug-frontend/commit/9f291fd384db460aabc49e4e666b1a6f32f94025)).
+- Fixed a bug where the wrong page number was sent to the server in the user posts' fetch ([383bd6f](https://github.com/sendahug/send-hug-frontend/commit/383bd6fedb9af164d78475c52e073629f4290164)).
+
+### 2020-10-23
+
+#### Features
+
+- When the user posts a new post, the newly published post is now added to IndexedDB as soon as a success response is returned ([91f2d9e](https://github.com/sendahug/send-hug-frontend/commit/91f2d9ee3556ad5cb0f7fd4723dc9dbed8a08bff)).
+- When the user sends a new post, the newly sent message is now added to IndexedDB as soon as a success response is returned ([1ee75aa](https://github.com/sendahug/send-hug-frontend/commit/1ee75aac590260e7a8a5c4584fa5ab8526327ae6)).
+
+#### Fixes
+
+- Fixed the designs of the posts' buttons ([e16f5f6](https://github.com/sendahug/send-hug-frontend/commit/e16f5f615bf80289d02aa0ac13de64957efd28e6)).
+- Fixed the design of the navigation menu ([9830d79](https://github.com/sendahug/send-hug-frontend/commit/9830d79c8d360dce310c714e31cc344ff3816421) & [b149e35](https://github.com/sendahug/send-hug-frontend/commit/b149e353f38f6e9fd271e0d90d6755336af19688)).
+
+#### Chores
+
+- Added tests for the new features and for another keyboard focus process ([f16ad8b](https://github.com/sendahug/send-hug-frontend/commit/f16ad8b718dd3306c2d6756fd8dce6f4ecea795f) & [ddef9b9](https://github.com/sendahug/send-hug-frontend/commit/ddef9b93829a86bcded62b1758c811f30d67898f) & [714cb10](https://github.com/sendahug/send-hug-frontend/commit/714cb10f96d7933b404d07826edf40ce6ed29202)).
+
+### 2020-10-22
+
+#### Changes
+
+- The keyboard focus is now returned to the element it was on before the popup was opened ([4228721](https://github.com/sendahug/send-hug-frontend/commit/42287218ad7723766e4ca64d3b88bac2557c9d57)).
+
+#### Fixes
+
+- Fixed the styling (width) of the posts' sub-menu ([ad13cf8](https://github.com/sendahug/send-hug-frontend/commit/ad13cf81b025a2aa5cabbc2c94540ba29a5010c6)).
+
+### 2020-10-20
+
+#### Chores
+
+- Added a GitHub Actions workflow to build the app for deployment automatically when a pull request to the live branch is opened ([5361408](https://github.com/sendahug/send-hug-frontend/commit/5361408aa439f05bae592520c56ac97707a1a694) - [8df9fa8](https://github.com/sendahug/send-hug-frontend/commit/8df9fa843fbb1b8989572e2157de107a07b4680f))
+
+### 2020-10-18
+
+#### Chores
+
+- Updated Angular and various other dependencies ([102fb58](https://github.com/sendahug/send-hug-frontend/commit/102fb58e45144083edd1273e5d8c4fed7ea84009)).
+
+### 2020-10-08
+
+#### Chores
+
+- Added tests for the new share button ([d60a4e9](https://github.com/sendahug/send-hug-frontend/commit/d60a4e988901f362768d1b09f294b23f304300b9)).
+
+### 2020-10-07
+
+#### Features
+
+- Added a button and the functionality to share the site via the Web Share API in supported browsers ([2178721](https://github.com/sendahug/send-hug-frontend/commit/217872195e86f82a4dd161ff13dd62d51e94529f) - [25c9962](https://github.com/sendahug/send-hug-frontend/commit/25c99621ce859e686370cadb2022bf10d86b1c1a)).
+
+### 2020-10-06
+
+#### Chores
+
+- Added environment variables to contain the login details to use in e2e tests ([8632e99](https://github.com/sendahug/send-hug-frontend/commit/8632e99713a1253ef6f5a8981b779639ef6a1aa5)).
+
+### 2020-10-05
+
+#### Chores
+
+- Adjusted the e2e, local development and serve tasks to allow using the local development tasks in e2e tests ([7c4c16e](https://github.com/sendahug/send-hug-frontend/commit/7c4c16e8f54334db350292deefbf5dc04cdd3137) - [32b0f0a](https://github.com/sendahug/send-hug-frontend/commit/32b0f0ab832a85310bb8cf65710cc597aea61fa9)).
+- Added missing `login` call in the notification service's unit tests ([c65d640](https://github.com/sendahug/send-hug-frontend/commit/c65d640c8a7b848f1438d6d89b19831d80e5f55b)).
+
+#### Documentation
+
+- Added information about e2e tests, Protractor and the new site map component to the README ([d2a0570](https://github.com/sendahug/send-hug-frontend/commit/d2a0570c7e74081348fb29f2ad28376ab53b145d)).
+
+### 2020-10-04
+
+#### Chores
+
+- Fixed a bug in the Browserify transform for inlining the templates ([de2da9e](https://github.com/sendahug/send-hug-frontend/commit/de2da9e93778644c93cee82583c85a72f1d692b7)).
+- Added gulp tasks for running e2e tests ([0fd56ce](https://github.com/sendahug/send-hug-frontend/commit/0fd56ce96dcee7ceffb77040239737558a5b5e41) - [285ed46](https://github.com/sendahug/send-hug-frontend/commit/285ed466255fb4c4e6e4d16cb265eff467f4db02)).
+
+### 2020-10-02
+
+#### Chores
+
+- Updated the license to add a clause about copying the project ([45adb47](https://github.com/sendahug/send-hug-frontend/commit/45adb4704ad32b191d3bf38e57b7a473bb4b1855) & [b622714](https://github.com/sendahug/send-hug-frontend/commit/b6227146027dec114a6e7bcd11ee779f36a7e620)).
+
+#### Documentation
+
+- Deleted the license badge from the README ([d1dbcbb](https://github.com/sendahug/send-hug-frontend/commit/d1dbcbb3a32c918b77b5bdf3cf3a0395ec57c66c)).
+
+### 2020-10-01
+
+#### Chores
+
+- Added e2e tests for navigation and search ([25cf91f](https://github.com/sendahug/send-hug-frontend/commit/25cf91fe96396becba4b86c5f808d7b816184c1e) & [b075769](https://github.com/sendahug/send-hug-frontend/commit/b075769d944d99a7690d4effa06cd06cc6e2917a)).
+- Updated Angular and a few other dependencies ([00e1949](https://github.com/sendahug/send-hug-frontend/commit/00e19495871a0f654207bf22ba30d13876794cb2)).
+- Added missing Chrome flags to the Protractor config ([4f65f02](https://github.com/sendahug/send-hug-frontend/commit/4f65f02c682a6c6436955cbc36858a7fc1597b43)).
+- Added an e2e spec file for router tests ([c3bbe3d](https://github.com/sendahug/send-hug-frontend/commit/c3bbe3dea6e6ec2c6a9bfbc0772ace9603999193)).
+
+### 2020-09-30
+
+#### Chores
+
+- Added missing package and fixed errors in the Protractor config ([065c537](https://github.com/sendahug/send-hug-frontend/commit/065c5374de4a116a458d597936bf64bfdaff47fd) & [5c26e82](https://github.com/sendahug/send-hug-frontend/commit/5c26e82f71a4974486e96fcc36bf221bc5494e7a)).
+- Added an initial e2e specs file ([3b32613](https://github.com/sendahug/send-hug-frontend/commit/3b3261323e4ec1196047985905e430b0cedcecb0)).
+
+### 2020-09-26
+
+#### Chores
+
+- Installed Protractor and added Protractor config for e2e tests ([22ac203](https://github.com/sendahug/send-hug-frontend/commit/22ac2033252fcdad7cc84ae3928d76fe69c93b9f) & [c201ff1](https://github.com/sendahug/send-hug-frontend/commit/c201ff1c72707ea8658565600a9d83611c8ffcc5)).
+
+### 2020-09-25
+
+#### Fixes
+
+- Added missing transaction type to the IDB interaction in the `addItem` method ([050c968](https://github.com/sendahug/send-hug-frontend/commit/050c9686816aef69fe9c9e0860545730f81d39b9)).
+- Added missing transaction type to the IDB interaction in the `clearStore` method and fixed the way a store was selected in `addItem` ([e0d3a10](https://github.com/sendahug/send-hug-frontend/commit/e0d3a1024bb04c0715b0573a4eebea4caf61b44b)).
+
+#### Chores
+
+- Fixed an issue in App Component tests, which is caused by checking initial style, but that style is controlled by Karma in the test context. This check was now removed ([71a41bf](https://github.com/sendahug/send-hug-frontend/commit/71a41bf7e452c89a86aead2f51eaab972de8b09b)).
+- Removed the test files from the coverage reports ([f2f72fc](https://github.com/sendahug/send-hug-frontend/commit/f2f72fc61c1c71bfefaeaa935309177bf51a3080)).
+- Updated Angular and various other dependencies ([04c161f](https://github.com/sendahug/send-hug-frontend/commit/04c161f1d99217906fdfcd4a82f65fb9f50212de)).
+- Added and updated more tests ([35e4558](https://github.com/sendahug/send-hug-frontend/commit/35e4558b3fce38ef5540a433e7084ab67704b3a1) - [2a79ca4](https://github.com/sendahug/send-hug-frontend/commit/2a79ca4b4acf20cc1b4497e6fbbb9cf5e95fefb8)).
+
+#### Documentation
+
+- Fixed the formatting in the README ([21cb806](https://github.com/sendahug/send-hug-frontend/commit/21cb80634de5e3e20d6f7cf7740c90e55358afb2) & [1a7f192](https://github.com/sendahug/send-hug-frontend/commit/1a7f19253ef13c63dddab137a749c6b7faa87d08)).
+
+### 2020-09-24
+
+#### Features
+
+- Added new helper methods to the Service Worker Manager for adding and removing items from IndexedDB ([f6ce103](https://github.com/sendahug/send-hug-frontend/commit/f6ce103436ce7f27cd8e2d5fe37f4ef11f59b0af) & [0f1b2ff](https://github.com/sendahug/send-hug-frontend/commit/0f1b2ffd38ba77b6e25c628d434bff50e9365be2)).
+
+#### Changes
+
+- Replaced the `keyCode` accessor with `key` for keyboard event handlers in the Notifications Tab, as the `keyCode` accessor is deprecated ([ecc1bcd](https://github.com/sendahug/send-hug-frontend/commit/ecc1bcd70a6745213719e256fa1bbf9811a28980)).
+- Previously, various services made calls to the IndexedDB client when they needed to add/remove items from the database. Now, the Service Worker Manager handles all interactions with the database, and services that need to make these changes call the relevant Service Worker Manager methods instead ([70062a6](https://github.com/sendahug/send-hug-frontend/commit/70062a6a9b7e8d9099998aea05a70e51ef0244a3)).
+
+#### Fixes
+
+- Fixed an error in clearing mailboxes, caused by a mismatch between the front-end's expectation and the back-end's response ([5d7d6de](https://github.com/sendahug/send-hug-frontend/commit/5d7d6de9469a377b32380565b1ddfc733086b1fe)).
+
+#### Chores
+
+- Replaced the codecov package with codecov's bash uploader in CI ([5650269](https://github.com/sendahug/send-hug-frontend/commit/5650269188dd66ea59d82a606ec06d9c7fb79ff7) & [e45ea5e](https://github.com/sendahug/send-hug-frontend/commit/e45ea5ecdbb89a944311621574f769d2f680e885)).
+- Added keyboard focus tests for the popup and notifications tab ([296eecd](https://github.com/sendahug/send-hug-frontend/commit/296eecd379a525e71dcbe8457f10b731625d41da) & [db9b917](https://github.com/sendahug/send-hug-frontend/commit/db9b917f8ae9abc7b64397e1be515c68fe311c8d)).
+- Updated and added more tests ([a9b7603](https://github.com/sendahug/send-hug-frontend/commit/a9b7603e4ded0f8a0fa18e5f1d9761db5fedc88d) - [f5ea84a](https://github.com/sendahug/send-hug-frontend/commit/f5ea84af43f29855f8696c120985378589726e41)).
+- Updated the Travis CI workflow to lower the required memory and update the process of pushing the results to codecov ([c448b9f](https://github.com/sendahug/send-hug-frontend/commit/c448b9fbafdafa5e3ae81135ec9f7f1ce7c0e83d)).
+
+#### Documentation
+
+- Updated the README with updated details about running tests ([0db49b3](https://github.com/sendahug/send-hug-frontend/commit/0db49b32525028dcd43c0e8ab152b2c030cace2d)).
+
+### 2020-09-23
+
+#### Chores
+
+- Added a Browserify transform for inlining the templates in the tests' bundle ([d0cb971](https://github.com/sendahug/send-hug-frontend/commit/d0cb971da5801ebfecb05184d09386e743b7405b) - [3498c37](https://github.com/sendahug/send-hug-frontend/commit/3498c3777e091f281498502337bf2cabb1afc037)).
+- Improved anad added further unit tests, including tests relying on the newly-installed karma-viewport plugin ([02a7684](https://github.com/sendahug/send-hug-frontend/commit/02a76847d371301aa11ab7da2726cebc0d3f5bbd) - [4e41c95](https://github.com/sendahug/send-hug-frontend/commit/4e41c95bfa46bcfd655edc2b428f375feb7984bc)).
+
+### 2020-09-22
+
+#### Chores
+
+- Fixed various issues in the new testing workflow ([84aec10](https://github.com/sendahug/send-hug-frontend/commit/84aec10a7dd5ae0777fd44391e4d7a35363dc068) - [cf999a4](https://github.com/sendahug/send-hug-frontend/commit/cf999a4802a7e0654df1f748ee4fe54fbea3b377)). This includes:
+  - Fixed an error in the task responsible for finding tests.
+  - Added missing testing plugins and packages (e.g., browserify-istanbul) and added them to the Karma config.
+  - Changed the code bundling to inline the templates and the SVGs in the final bundle to allow Karma to run tests that include the DOM.
+
+### 2020-09-21
+
+#### Chores
+
+- Fixed various issues in tests ([58f0c94](https://github.com/sendahug/send-hug-frontend/commit/58f0c94711afa64bffd571a76d189023a8bb407c) - [d6adfdf](https://github.com/sendahug/send-hug-frontend/commit/d6adfdfc6881a8baf881d7e9762917bad8e66a97)). This includes:
+  - Added missing components to tests and deleted unneeded components from tests.
+  - Replaced the routes with mock routes for testing.
+  - Changed the Karma config to use a pre-bundled version of the code in tests (instead of bundling it).
+  - Updated gulp's tasks to handle the new testing process and dependencies.
+  - Deleted unneeded testing dependencies.
+
+#### Documentation
+
+- Updated the details about the dependencies in the README ([001ef85](https://github.com/sendahug/send-hug-frontend/commit/001ef85c8a69b9d2536bce9da47b1fbe54cf69cd)).
+
+### 2020-09-20
+
+#### Fixes
+
+- Fixed an error that caused deleting items from IDB to fail because the wrong value was passed to the IDB client ([4585c17](https://github.com/sendahug/send-hug-frontend/commit/4585c17af5ff69817716387f9036ce26e15809da)).
+
+#### Chores
+
+- Replaced Webpack with browserify for test bundling ([0806966](https://github.com/sendahug/send-hug-frontend/commit/08069660a2ba2330513a4de2937806d9a3689f47) - [aff2e0a](https://github.com/sendahug/send-hug-frontend/commit/aff2e0a44a7d6ee8351a6258056246d67be9454f)).
+
+#### Documentation
+
+- Re-added the david-dm badges as the issue appears to have been fixed ([ef07736](https://github.com/sendahug/send-hug-frontend/commit/ef07736edc4f9d5f28b3ef3ce8a6e8a22a582821)).
+
+### 2020-09-19
+
+#### Features
+
+- Added ARIA live attribute to alert container ([b18cdab](https://github.com/sendahug/send-hug-frontend/commit/b18cdab7aa19d87bda8a20ce06bd1844cce2c2de)).
+- Added ARIA invalid attributes to all text fields ([20481bd](https://github.com/sendahug/send-hug-frontend/commit/20481bddef1343183380531cc05bc4439b7939f3)).
+- Added input validation to the settings' edit form ([a9b3912](https://github.com/sendahug/send-hug-frontend/commit/a9b3912c2d7a12c6c93205e93ecfe38e5a272043)).
+- Required fields now have a marking (`*`) to indicate they're required ([f8f9c2f](https://github.com/sendahug/send-hug-frontend/commit/f8f9c2fc7459d2301ad825a8f562839efe97012f)).
+- Added ARIA required attribute to required inputs ([5225063](https://github.com/sendahug/send-hug-frontend/commit/52250634f2d80474a7e2c0accd80e199942b463b)).
+- Added further ARIA attributes to the alert element to ensure an accessible experience ([cb7ca12](https://github.com/sendahug/send-hug-frontend/commit/cb7ca12a5dfaa0c1545e277b185a468b0e20c114)).
+- Previously, deleted items remained in IndexedDB until the store was cleaned. Now, when a success response is returned by the API, the items are  deleted from IndexedDB too ([277c91e](https://github.com/sendahug/send-hug-frontend/commit/277c91ea0ffc9947000deaa4309a497dc527fb24)).
+
+#### Changes
+
+- Replaced the `keyCode` accessor with `key` for keyboard event handlers, as the `keyCode` accessor is deprecated ([bc96f41](https://github.com/sendahug/send-hug-frontend/commit/bc96f414f945a591d2e7cd2faa36451da5f867ff)).
+
+#### Fixes
+
+- Fixed a bug where post menus changed from float to regular rapidly even though there was no change to the size of the viewport ([1493951](https://github.com/sendahug/send-hug-frontend/commit/149395185ab80a85f63bca991e6e5d8fd87f0bda)).
+
+#### Chores
+
+- Updated Angular and other dependencies ([6cf0565](https://github.com/sendahug/send-hug-frontend/commit/6cf0565e6757baa6db20a0d6918b8b1fdda10e84)).
+
+#### Documentation
+
+- Deleted the dependecies (david-dm) badges from the README as the site has been down for a while ([ccc70ac](https://github.com/sendahug/send-hug-frontend/commit/ccc70ac6c707051daf68890fd6233ff4f56c11e0)).
 
 ### 2020-09-18
 

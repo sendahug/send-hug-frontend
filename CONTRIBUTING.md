@@ -63,6 +63,7 @@ Also, make sure that your code:
 ## Pull Request Title
 
 The title of the pull request must contain a brief description of the main change, and be prefixed with one of the following, depending on the type of change included:
+
 - `feature:` - For new features.
 - `change:` - For any changes to existing functionality in the app.
 - `fix:` - For any bug fixes.
@@ -74,6 +75,7 @@ Note that there's also a `deps:` prefix, but it's reserved to Dependabot's pull 
 ## Changelog
 
 Changes in the changelog are divided into six groups in the following order:
+
 - **Features**
 - **Changes**
 - **Fixes**

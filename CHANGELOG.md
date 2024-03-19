@@ -1569,7 +1569,7 @@
 - Required fields now have a marking (`*`) to indicate they're required ([f8f9c2f](https://github.com/sendahug/send-hug-frontend/commit/f8f9c2fc7459d2301ad825a8f562839efe97012f)).
 - Added ARIA required attribute to required inputs ([5225063](https://github.com/sendahug/send-hug-frontend/commit/52250634f2d80474a7e2c0accd80e199942b463b)).
 - Added further ARIA attributes to the alert element to ensure an accessible experience ([cb7ca12](https://github.com/sendahug/send-hug-frontend/commit/cb7ca12a5dfaa0c1545e277b185a468b0e20c114)).
-- Previously, deleted items remained in IndexedDB until the store was cleaned. Now, when a success response is returned by the API, the items are  deleted from IndexedDB too ([277c91e](https://github.com/sendahug/send-hug-frontend/commit/277c91ea0ffc9947000deaa4309a497dc527fb24)).
+- Previously, deleted items remained in IndexedDB until the store was cleaned. Now, when a success response is returned by the API, the items are deleted from IndexedDB too ([277c91e](https://github.com/sendahug/send-hug-frontend/commit/277c91ea0ffc9947000deaa4309a497dc527fb24)).
 
 #### Changes
 

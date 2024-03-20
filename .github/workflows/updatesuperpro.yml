@@ -12,3 +12,4 @@ jobs:
     with:
       branch: "dev"
       ssh_url: "git@github.com:sendahug/sendahug.git"
+    secrets: inherit

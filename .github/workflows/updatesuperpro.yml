@@ -3,12 +3,12 @@ name: Update Superproject
 
 on:
   push:
-    branches: [live, change/move_to_reusable_workflows]
+    branches: [live]
 
 jobs:
   build:
     # Use the reusable workflow
     uses: sendahug/send-a-workflow/.github/workflows/update_superproject.yml@feature/initial_workflows
     with:
-      branch: "dev"
+      branch: "live"
     secrets: inherit

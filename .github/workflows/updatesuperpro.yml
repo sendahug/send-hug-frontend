@@ -1,4 +1,4 @@
-# Update the superproject repo
+# Update the superproject repo's submodules
 name: Update Superproject
 
 on:

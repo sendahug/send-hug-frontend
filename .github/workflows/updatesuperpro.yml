@@ -2,7 +2,6 @@ name: Update Superproject
 
 # Controls when the action will run.
 on:
-  # Triggers the workflow on push events for the Dev branch
   push:
     branches: [live, change/move_to_reusable_workflows]
 

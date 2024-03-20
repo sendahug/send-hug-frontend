@@ -1,6 +1,5 @@
 name: Update Superproject
 
-# Controls when the action will run.
 on:
   push:
     branches: [live, change/move_to_reusable_workflows]

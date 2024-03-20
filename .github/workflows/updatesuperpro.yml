@@ -7,7 +7,7 @@ on:
 
 jobs:
   build:
-    # Use the reusable workflow we have
+    # Use the reusable workflow
     uses: sendahug/send-a-workflow/.github/workflows/update_superproject.yml@feature/initial_workflows
     with:
       branch: "dev"

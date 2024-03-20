@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+#### Chores
+
+- Added a changelog and instructions for writing changelog entries ([#1532](https://github.com/sendahug/send-hug-frontend/pull/1532)).
+
 ### 2024-03-16
 
 #### Changes

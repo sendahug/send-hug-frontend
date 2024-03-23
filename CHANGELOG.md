@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+#### Changes
+
+- The individual parameters to the Alerts Service's `createAlert` and `createSuccessAlert` methods (specifying whether to display the `reload` and `navigate to home screen` buttons) were replaced with a configuration object, which also includes the navigation button's target and its text ([#1555](https://github.com/sendahug/send-hug-frontend/pull/1555)).
+
+#### Fixes
+
+- The alert component's `navigate` button was accidentally hardcoded to only allow navigating to the home page. This was updated to allow whichever destination passed into the component ([#1555](https://github.com/sendahug/send-hug-frontend/pull/1555)).
+
+### 2024-03-22
+
 #### Chores
 
 - Added a changelog and instructions for writing changelog entries ([#1532](https://github.com/sendahug/send-hug-frontend/pull/1532)).

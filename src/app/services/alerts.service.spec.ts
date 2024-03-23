@@ -102,7 +102,7 @@ describe("AlertsService", () => {
         type: "Error",
         message: "error",
       },
-      { navigate: true, navText: "Home", navTarget: ["/string"] },
+      { navigate: true, navText: "Home", navTarget: "/string" },
     );
 
     expect(alertsService.shouldDisplayNavBtn()).toBe(true);

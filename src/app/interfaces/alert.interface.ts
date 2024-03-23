@@ -40,6 +40,6 @@ export type MessageType = "Error" | "Success" | "Notification";
 export interface AlertConfig {
   reload?: boolean;
   navigate?: boolean;
-  navTarget?: string[];
+  navTarget?: string;
   navText?: string;
 }

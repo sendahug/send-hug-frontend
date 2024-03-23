@@ -426,7 +426,7 @@ export class AuthService {
         },
         {
           navigate: true,
-          navTarget: ["/user"],
+          navTarget: "/user",
           navText: "User Page",
         },
       );

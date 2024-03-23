@@ -96,7 +96,7 @@ export class ItemsService {
             "Your post was published! Return to home page to view the post.",
             {
               navigate: true,
-              navTarget: ["/"],
+              navTarget: "/",
               navText: "Home Page",
             },
           );
@@ -172,7 +172,7 @@ export class ItemsService {
       next: (response: any) => {
         this.alertsService.createSuccessAlert("Your message was sent!", {
           navigate: true,
-          navTarget: ["/"],
+          navTarget: "/",
           navText: "Home Page",
         });
 
@@ -236,12 +236,12 @@ export class ItemsService {
         if (sent_report.type == "Post") {
           this.alertsService.createSuccessAlert(
             `Post number ${sent_report.postID} was successfully reported.`,
-            { navigate: true, navTarget: ["/"], navText: "Home Page" },
+            { navigate: true, navTarget: "/", navText: "Home Page" },
           );
         } else {
           this.alertsService.createSuccessAlert(
             `User ${sent_report.userID} was successfully reported.`,
-            { navigate: true, navTarget: ["/"], navText: "Home Page" },
+            { navigate: true, navTarget: "/", navText: "Home Page" },
           );
         }
       },

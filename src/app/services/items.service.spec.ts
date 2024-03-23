@@ -110,7 +110,7 @@ describe("ItemsService", () => {
     expect(apiClientSpy).toHaveBeenCalledWith("posts", mockNewPost);
     expect(successAlertSpy).toHaveBeenCalledWith(
       "Your post was published! Return to home page to view the post.",
-      { navigate: true, navTarget: ["/"], navText: "Home Page" },
+      { navigate: true, navTarget: "/", navText: "Home Page" },
     );
     expect(addItemSpy).toHaveBeenCalledWith("posts", {
       ...mockNewPost,
@@ -232,7 +232,7 @@ describe("ItemsService", () => {
     expect(apiClientSpy).toHaveBeenCalledWith("messages", message);
     expect(alertSpy).toHaveBeenCalledWith("Your message was sent!", {
       navigate: true,
-      navTarget: ["/"],
+      navTarget: "/",
       navText: "Home Page",
     });
     expect(addSpy).toHaveBeenCalledWith("messages", {
@@ -363,7 +363,7 @@ describe("ItemsService", () => {
     expect(apiClientSpy).toHaveBeenCalledWith("reports", report);
     expect(alertsSpy).toHaveBeenCalledWith(`User 5 was successfully reported.`, {
       navigate: true,
-      navTarget: ["/"],
+      navTarget: "/",
       navText: "Home Page",
     });
   });

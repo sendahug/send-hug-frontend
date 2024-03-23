@@ -48,7 +48,7 @@ export class AlertsService {
   alertType = signal<MessageType>("Success");
   shouldDisplayReloadBtn = signal(false);
   shouldDisplayNavBtn = signal(false);
-  navBtnTarget = signal(["/"]);
+  navBtnTarget = signal("/");
   navBtnText = signal("Home Page");
   // ServiceWorker variables
   waitingServiceWorker: ServiceWorker | undefined;
@@ -79,7 +79,7 @@ export class AlertsService {
     else if (config.navigate) {
       this.shouldDisplayNavBtn.set(true);
       this.navBtnText.set(config.navText || "Home Page");
-      this.navBtnTarget.set(config.navTarget || ["/"]);
+      this.navBtnTarget.set(config.navTarget || "/");
     }
   }
 

@@ -36,7 +36,7 @@ import { HttpErrorResponse } from "@angular/common/http";
 import { BehaviorSubject } from "rxjs";
 
 // App-related imports
-import { AlertMessage, MessageType } from "@app/interfaces/alert.interface";
+import { AlertConfig, AlertMessage, MessageType } from "@app/interfaces/alert.interface";
 
 @Injectable({
   providedIn: "root",
@@ -48,6 +48,8 @@ export class AlertsService {
   alertType = signal<MessageType>("Success");
   shouldDisplayReloadBtn = signal(false);
   shouldDisplayNavBtn = signal(false);
+  navBtnTarget = signal(["/"]);
+  navBtnText = signal("Home Page");
   // ServiceWorker variables
   waitingServiceWorker: ServiceWorker | undefined;
   isSWRelated = false;
@@ -57,30 +59,27 @@ export class AlertsService {
   // CTOR
   constructor() {}
 
-  /*
-  Function Name: createAlert()
-  Function Description: Create a new alert and display it to the user. Checks to
-                        ensure there's only one active alert and displays required
-                        buttons/links.
-  Parameters: alert (AlertMessage) - The alert message to display (based on the alert interface).
-              reload (boolean) - Indicating whether a reload button is required.
-              navigate (string) - Optional parameter indicating whether there needs to
-                                  be a navigation link in the alert.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  createAlert(alert: AlertMessage, reload: boolean = false, navigate?: string) {
+  /**
+   * Create a new alert and display it to the user, including required
+   * buttons/links.
+   * @param alert (AlertMessage) - The alert message to display (based on the alert interface).
+   * @param config (AlertConfig) - Further configuration for the alert, including whether
+   *                               to allow navigation and reloading (optional).
+   */
+  createAlert(alert: AlertMessage, config: AlertConfig = {}) {
     this.alertType.set(alert.type);
     this.alertMessage.set(alert.message);
     this.shouldDisplayAlert.set(true);
 
     // if reload option is required
-    if (reload) {
+    if (config.reload) {
       this.shouldDisplayReloadBtn.set(true);
     }
     // if return to homepage option is required
-    else if (navigate) {
+    else if (config.navigate) {
       this.shouldDisplayNavBtn.set(true);
+      this.navBtnText.set(config.navText || "Home Page");
+      this.navBtnTarget.set(config.navTarget || ["/"]);
     }
   }
 
@@ -121,7 +120,7 @@ export class AlertsService {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  createSuccessAlert(message: string, reload: boolean = false, navigate?: string) {
+  createSuccessAlert(message: string, config: AlertConfig = {}) {
     // an alert message
     let alert: AlertMessage = {
       type: "Success",
@@ -129,7 +128,7 @@ export class AlertsService {
     };
 
     this.isSWRelated = false;
-    this.createAlert(alert, reload, navigate);
+    this.createAlert(alert, config);
   }
 
   /*
@@ -186,7 +185,7 @@ export class AlertsService {
     };
     this.waitingServiceWorker = worker;
     this.isSWRelated = true;
-    this.createAlert(alert, true);
+    this.createAlert(alert, { reload: true });
   }
 
   /*

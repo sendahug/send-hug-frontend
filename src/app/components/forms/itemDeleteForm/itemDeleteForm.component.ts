@@ -135,7 +135,7 @@ export class ItemDeleteForm {
           `${this.toDelete} ${response.deleted} was deleted. Refresh to view the updated ${
             this.toDelete?.toLowerCase() || ""
           } list.`,
-          true,
+          { reload: true },
         );
 
         // delete the item from idb
@@ -174,7 +174,7 @@ export class ItemDeleteForm {
         tap((response) =>
           this.alertsService.createSuccessAlert(
             `${response.deleted} ${itemType} were deleted. Refresh to view the updated page.`,
-            true,
+            { reload: true },
           ),
         ),
       );

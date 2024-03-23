@@ -303,7 +303,7 @@ describe("Blocks Page", () => {
     expect(alertSpy).toHaveBeenCalled();
     expect(alertSpy).toHaveBeenCalledWith(
       `User ${mockResponse.updated.displayName} has been unblocked.`,
-      true,
+      { reload: true },
     );
     done();
   });

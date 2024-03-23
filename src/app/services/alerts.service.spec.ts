@@ -88,7 +88,7 @@ describe("AlertsService", () => {
         type: "Error",
         message: "error",
       },
-      true,
+      { reload: true },
     );
 
     expect(alertsService.shouldDisplayReloadBtn()).toBe(true);
@@ -102,8 +102,7 @@ describe("AlertsService", () => {
         type: "Error",
         message: "error",
       },
-      false,
-      "string",
+      { navigate: true, navText: "Home", navTarget: ["/string"] },
     );
 
     expect(alertsService.shouldDisplayNavBtn()).toBe(true);
@@ -113,7 +112,7 @@ describe("AlertsService", () => {
   it("createSuccessAlert() - should create a success alert", () => {
     const alertSpy = spyOn(alertsService, "createAlert");
 
-    alertsService.createSuccessAlert("string", false);
+    alertsService.createSuccessAlert("string", { reload: false });
 
     expect(alertSpy).toHaveBeenCalled();
     expect(alertSpy).toHaveBeenCalledWith(
@@ -121,8 +120,7 @@ describe("AlertsService", () => {
         type: "Success",
         message: "string",
       },
-      false,
-      undefined,
+      { reload: false },
     );
   });
 

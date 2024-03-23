@@ -260,7 +260,7 @@ describe("Popup", () => {
     expect(deleteSpy).toHaveBeenCalledWith("posts/4");
     expect(alertsSpy).toHaveBeenCalledWith(
       "Post 4 was deleted. Refresh to view the updated post list.",
-      true,
+      { reload: true },
     );
     expect(swManagerSpy).toHaveBeenCalledWith("posts", 4);
   });
@@ -283,7 +283,7 @@ describe("Popup", () => {
     expect(deleteSpy).toHaveBeenCalledWith("messages/threads/4");
     expect(alertsSpy).toHaveBeenCalledWith(
       "Thread 4 was deleted. Refresh to view the updated thread list.",
-      true,
+      { reload: true },
     );
     expect(swManagerSpy).toHaveBeenCalledWith("messages", "threadID", 4);
   });
@@ -347,7 +347,7 @@ describe("Popup", () => {
     expect(deleteSpy).toHaveBeenCalledWith("users/all/4/posts", {});
     expect(alertsSpy).toHaveBeenCalledWith(
       "4 posts were deleted. Refresh to view the updated page.",
-      true,
+      { reload: true },
     );
   });
 

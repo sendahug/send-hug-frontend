@@ -115,7 +115,7 @@ export class AdminFilters {
       next: (response: any) => {
         this.alertsService.createSuccessAlert(
           `The phrase ${response.added.filter} was added to the list of filtered words! Refresh to see the updated list.`,
-          true,
+          { reload: true },
         );
       },
     });
@@ -134,7 +134,7 @@ export class AdminFilters {
       next: (response: any) => {
         this.alertsService.createSuccessAlert(
           `The phrase ${response.deleted.filter} was removed from the list of filtered words. Refresh to see the updated list.`,
-          true,
+          { reload: true },
         );
       },
     });

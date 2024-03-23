@@ -110,8 +110,7 @@ describe("ItemsService", () => {
     expect(apiClientSpy).toHaveBeenCalledWith("posts", mockNewPost);
     expect(successAlertSpy).toHaveBeenCalledWith(
       "Your post was published! Return to home page to view the post.",
-      false,
-      "/",
+      { navigate: true, navTarget: ["/"], navText: "Home Page" },
     );
     expect(addItemSpy).toHaveBeenCalledWith("posts", {
       ...mockNewPost,
@@ -166,7 +165,7 @@ describe("ItemsService", () => {
     expect(apiClientSpy).toHaveBeenCalledWith(`posts/${mockPost.id}`, mockPost);
     expect(successAlertSpy).toHaveBeenCalledWith(
       "Your post was edited. Refresh to view the updated post.",
-      true,
+      { reload: true },
     );
     expect(isUpdatedSpy).toHaveBeenCalledWith(true);
     expect(itemsService.isUpdated.value).toBe(true);
@@ -188,7 +187,7 @@ describe("ItemsService", () => {
     itemsService.sendHug(mockPost);
 
     expect(apiClientSpy).toHaveBeenCalledWith(`posts/${mockPost.id}/hugs`, {});
-    expect(successAlertSpy).toHaveBeenCalledWith("Your hug was sent!", false);
+    expect(successAlertSpy).toHaveBeenCalledWith("Your hug was sent!");
     expect(itemsService.receivedAHug.value).toBe(mockPost.id);
   });
 
@@ -231,7 +230,11 @@ describe("ItemsService", () => {
     itemsService.sendMessage(message);
 
     expect(apiClientSpy).toHaveBeenCalledWith("messages", message);
-    expect(alertSpy).toHaveBeenCalledWith("Your message was sent!", false, "/");
+    expect(alertSpy).toHaveBeenCalledWith("Your message was sent!", {
+      navigate: true,
+      navTarget: ["/"],
+      navText: "Home Page",
+    });
     expect(addSpy).toHaveBeenCalledWith("messages", {
       ...mockResponse.message,
       isoDate: new Date(message.date).toISOString(),
@@ -358,6 +361,10 @@ describe("ItemsService", () => {
     itemsService.sendReport(report);
 
     expect(apiClientSpy).toHaveBeenCalledWith("reports", report);
-    expect(alertsSpy).toHaveBeenCalledWith(`User 5 was successfully reported.`, false, "/");
+    expect(alertsSpy).toHaveBeenCalledWith(`User 5 was successfully reported.`, {
+      navigate: true,
+      navTarget: ["/"],
+      navText: "Home Page",
+    });
   });
 });

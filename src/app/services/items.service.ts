@@ -94,8 +94,11 @@ export class ItemsService {
         next: (response: any) => {
           this.alertsService.createSuccessAlert(
             "Your post was published! Return to home page to view the post.",
-            false,
-            "/",
+            {
+              navigate: true,
+              navTarget: ["/"],
+              navText: "Home Page",
+            },
           );
 
           let isoDate = new Date(response.posts.date).toISOString();
@@ -131,7 +134,7 @@ export class ItemsService {
       next: (_response: any) => {
         this.alertsService.createSuccessAlert(
           "Your post was edited. Refresh to view the updated post.",
-          true,
+          { reload: true },
         );
         this.isUpdated.next(true);
       },
@@ -148,7 +151,7 @@ export class ItemsService {
   sendHug(item: any) {
     this.apiClient.post(`posts/${item.id}/hugs`, {}).subscribe({
       next: (_response: any) => {
-        this.alertsService.createSuccessAlert("Your hug was sent!", false);
+        this.alertsService.createSuccessAlert("Your hug was sent!");
         // Alert the posts that this item received a hug
         this.receivedAHug.next(item.id);
       },
@@ -167,7 +170,11 @@ export class ItemsService {
   sendMessage(message: Message) {
     this.apiClient.post("messages", message).subscribe({
       next: (response: any) => {
-        this.alertsService.createSuccessAlert("Your message was sent!", false, "/");
+        this.alertsService.createSuccessAlert("Your message was sent!", {
+          navigate: true,
+          navTarget: ["/"],
+          navText: "Home Page",
+        });
 
         let isoDate = new Date(response.message.date).toISOString();
         let message = {
@@ -229,14 +236,12 @@ export class ItemsService {
         if (sent_report.type == "Post") {
           this.alertsService.createSuccessAlert(
             `Post number ${sent_report.postID} was successfully reported.`,
-            false,
-            "/",
+            { navigate: true, navTarget: ["/"], navText: "Home Page" },
           );
         } else {
           this.alertsService.createSuccessAlert(
             `User ${sent_report.userID} was successfully reported.`,
-            false,
-            "/",
+            { navigate: true, navTarget: ["/"], navText: "Home Page" },
           );
         }
       },

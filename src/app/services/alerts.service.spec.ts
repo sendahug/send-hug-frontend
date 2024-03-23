@@ -108,6 +108,22 @@ describe("AlertsService", () => {
     expect(alertsService.shouldDisplayNavBtn()).toBe(true);
   });
 
+  it("createAlert() - should create an alert with default navigation text and target", () => {
+    expect(alertsService.shouldDisplayNavBtn()).toBe(false);
+
+    alertsService.createAlert(
+      {
+        type: "Error",
+        message: "error",
+      },
+      { navigate: true },
+    );
+
+    expect(alertsService.shouldDisplayNavBtn()).toBe(true);
+    expect(alertsService.navBtnText()).toBe("Home Page");
+    expect(alertsService.navBtnTarget()).toBe("/");
+  });
+
   // Check the service creates a success alert
   it("createSuccessAlert() - should create a success alert", () => {
     const alertSpy = spyOn(alertsService, "createAlert");

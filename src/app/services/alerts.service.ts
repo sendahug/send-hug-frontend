@@ -111,15 +111,12 @@ export class AlertsService {
 
   // CONVENIENCE METHODS
   // ==============================================================
-  /*
-  Function Name: createSuccessAlert()
-  Function Description: Creates an alert for the user to know their action succeeded.
-  Parameters: message (string) - the alert text.
-              reload (boolean) - whether a reload button is required; defaults to false.
-              navigate (string) - Optional parameter indicating the navigation target (if needed).
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
+  /**
+   *  Creates an alert for the user to know their action succeeded.
+   * @param message (string) - the alert text.
+   * @param config (AlertConfig) - Further configuration for the alert, including whether
+   *                               to allow navigation and reloading (optional).
+   */
   createSuccessAlert(message: string, config: AlertConfig = {}) {
     // an alert message
     let alert: AlertMessage = {

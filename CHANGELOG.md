@@ -2,7 +2,7 @@
 
 ## Unreleased
 
-#### Fixes
+#### Fixes
 
 - Fixed a bug where opening the menu of a post that appears in both the 'recent' and the 'suggested' lists caused the menu to show in both lists, instead of just the list in which the button was clicked ([]()).
 

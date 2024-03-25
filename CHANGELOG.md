@@ -2,7 +2,7 @@
 
 ## Unreleased
 
-#### Chores
+#### Chores
 
 - Deleted the unnecessary heading section from the pull request template ([#1558](https://github.com/sendahug/send-hug-frontend/pull/1558)).
 

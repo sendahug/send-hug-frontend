@@ -1,7 +1,7 @@
 Docs:
   - changed-files:
       - any-glob-to-any-file: "**/*.md"
-      - all-globs-to-all-files: '!.github/*'
+      - all-globs-to-all-files: "!.github/*"
 
 src/components:
   - changed-files:

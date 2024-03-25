@@ -2,9 +2,12 @@
 
 ## Unreleased
 
+### 2024-03-25
+
 #### Fixes
 
 - Fixed a bug where opening the menu of a post that appears in both the 'recent' and the 'suggested' lists caused the menu to show in both lists, instead of just the list in which the button was clicked ([#1556](https://github.com/sendahug/send-hug-frontend/pull/1556)).
+- Fixed a bug where requesting permission to send push notifications failed due to a missing key (`userVisibleOnly`) in the object passed to the permission-checking function ([#1557](https://github.com/sendahug/send-hug-frontend/pull/1556)).
 
 #### Chores
 

@@ -164,7 +164,7 @@ export class SinglePost implements AfterViewChecked, OnInit, OnDestroy {
     if (buttonsContainer.offsetWidth < buttonsWidth) {
       this.shouldMenuFloat.set(true);
 
-      if (this.itemsService.currentlyOpenMenu.value != this.post?.id) {
+      if (this.itemsService.currentlyOpenMenu.value != this.postId()) {
         this.shouldShowSubmenu.set(false);
       } else {
         this.shouldShowSubmenu.set(true);
@@ -261,10 +261,10 @@ export class SinglePost implements AfterViewChecked, OnInit, OnDestroy {
   Programmer: Shir Bar Lev.
   */
   toggleOptions() {
-    if (this.itemsService.currentlyOpenMenu.value !== this.post.id) {
-      this.itemsService.currentlyOpenMenu.next(this.post.id as number);
+    if (this.itemsService.currentlyOpenMenu.value !== this.postId()) {
+      this.itemsService.currentlyOpenMenu.next(this.postId());
     } else {
-      this.itemsService.currentlyOpenMenu.next(-1);
+      this.itemsService.currentlyOpenMenu.next("");
     }
   }
 

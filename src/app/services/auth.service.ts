@@ -424,8 +424,11 @@ export class AuthService {
           message: `Your session had become inactive and you have been safely logged out.
                   Log back in to continue.`,
         },
-        false,
-        "/user",
+        {
+          navigate: true,
+          navTarget: "/user",
+          navText: "User Page",
+        },
       );
     }
   }

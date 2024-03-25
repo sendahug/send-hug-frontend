@@ -91,7 +91,9 @@ export class AdminService {
     // try to edit the post
     this.apiClient.patch(`posts/${post.id}`, post).subscribe({
       next: (response: any) => {
-        this.alertsService.createSuccessAlert(`Post ${response.updated.id} updated.`, closeReport);
+        this.alertsService.createSuccessAlert(`Post ${response.updated.id} updated.`, {
+          reload: closeReport,
+        });
         this.isUpdated.next(true);
       },
     });
@@ -156,10 +158,9 @@ export class AdminService {
     // update the user's display name
     this.apiClient.patch(`users/all/${user.userID}`, user).subscribe({
       next: (response: any) => {
-        this.alertsService.createSuccessAlert(
-          `User ${response.updated.displayName} updated.`,
-          closeReport,
-        );
+        this.alertsService.createSuccessAlert(`User ${response.updated.displayName} updated.`, {
+          reload: closeReport,
+        });
       },
     });
   }
@@ -184,7 +185,7 @@ export class AdminService {
         // if the report was dismissed, alert the user
         this.alertsService.createSuccessAlert(
           `Report ${response.updated.id} was dismissed! Refresh the page to view the updated list.`,
-          true,
+          { reload: true },
         );
       },
     });
@@ -285,7 +286,7 @@ export class AdminService {
         next: (response: any) => {
           this.alertsService.createSuccessAlert(
             `User ${response.updated.displayName} has been blocked until ${response.updated.releaseDate}`,
-            true,
+            { reload: true },
           );
           // if the block was done via the reports page, also dismiss the report
           if (reportID) {

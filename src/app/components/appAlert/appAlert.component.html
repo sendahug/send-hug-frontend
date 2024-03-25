@@ -22,8 +22,9 @@
   >Reload Page</button>
   <a
     *ngIf="alertsService.shouldDisplayNavBtn()"
-    [routerLink]="['/']"
+    [routerLink]="alertsService.navBtnTarget()"
     class="appButton"
     id="navButton"
-  >Home Page</a>
+    (click)="closeAlert()"
+  >{{ alertsService.navBtnText() }}</a>
 </div>

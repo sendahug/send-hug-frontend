@@ -99,7 +99,7 @@ describe("AdminService", () => {
     adminService.isUpdated.subscribe((value) => {
       if (value) {
         expect(spy).toHaveBeenCalled();
-        expect(spy).toHaveBeenCalledWith("Post 2 updated.", true);
+        expect(spy).toHaveBeenCalledWith("Post 2 updated.", { reload: true });
         expect(patchSpy).toHaveBeenCalledWith(`posts/${post.id}`, post);
       }
     });
@@ -157,7 +157,7 @@ describe("AdminService", () => {
     adminService.editUser(userData, true, 6);
 
     expect(alertSpy).toHaveBeenCalled();
-    expect(alertSpy).toHaveBeenCalledWith("User user updated.", true);
+    expect(alertSpy).toHaveBeenCalledWith("User user updated.", { reload: true });
     expect(patchSpy).toHaveBeenCalledWith("users/all/2", userData);
   });
 
@@ -186,7 +186,7 @@ describe("AdminService", () => {
     expect(alertSpy).toHaveBeenCalled();
     expect(alertSpy).toHaveBeenCalledWith(
       "Report 1 was dismissed! Refresh the page to view the updated list.",
-      true,
+      { reload: true },
     );
     expect(patchSpy).toHaveBeenCalledWith("reports/1", {
       id: 1,
@@ -236,7 +236,7 @@ describe("AdminService", () => {
     expect(alertSpy).toHaveBeenCalled();
     expect(alertSpy).toHaveBeenCalledWith(
       `User ${mockResponse.updated.displayName} has been blocked until ${mockResponse.updated.releaseDate}`,
-      true,
+      { reload: true },
     );
   });
 
@@ -282,7 +282,7 @@ describe("AdminService", () => {
     expect(alertSpy).toHaveBeenCalled();
     expect(alertSpy).toHaveBeenCalledWith(
       `User ${mockResponse.updated.displayName} has been blocked until ${mockResponse.updated.releaseDate}`,
-      true,
+      { reload: true },
     );
     expect(dismissSpy).toHaveBeenCalled();
     expect(dismissSpy).toHaveBeenCalledWith(3);

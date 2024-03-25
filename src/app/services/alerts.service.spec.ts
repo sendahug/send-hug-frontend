@@ -88,7 +88,7 @@ describe("AlertsService", () => {
         type: "Error",
         message: "error",
       },
-      true,
+      { reload: true },
     );
 
     expect(alertsService.shouldDisplayReloadBtn()).toBe(true);
@@ -102,18 +102,33 @@ describe("AlertsService", () => {
         type: "Error",
         message: "error",
       },
-      false,
-      "string",
+      { navigate: true, navText: "Home", navTarget: "/string" },
     );
 
     expect(alertsService.shouldDisplayNavBtn()).toBe(true);
+  });
+
+  it("createAlert() - should create an alert with default navigation text and target", () => {
+    expect(alertsService.shouldDisplayNavBtn()).toBe(false);
+
+    alertsService.createAlert(
+      {
+        type: "Error",
+        message: "error",
+      },
+      { navigate: true },
+    );
+
+    expect(alertsService.shouldDisplayNavBtn()).toBe(true);
+    expect(alertsService.navBtnText()).toBe("Home Page");
+    expect(alertsService.navBtnTarget()).toBe("/");
   });
 
   // Check the service creates a success alert
   it("createSuccessAlert() - should create a success alert", () => {
     const alertSpy = spyOn(alertsService, "createAlert");
 
-    alertsService.createSuccessAlert("string", false);
+    alertsService.createSuccessAlert("string", { reload: false });
 
     expect(alertSpy).toHaveBeenCalled();
     expect(alertSpy).toHaveBeenCalledWith(
@@ -121,8 +136,7 @@ describe("AlertsService", () => {
         type: "Success",
         message: "string",
       },
-      false,
-      undefined,
+      { reload: false },
     );
   });
 

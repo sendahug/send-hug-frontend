@@ -142,7 +142,7 @@ describe("Filters Page", () => {
     expect(apiClientSpy).toHaveBeenCalledWith("filters", { word: "text" });
     expect(alertsSpy).toHaveBeenCalledWith(
       `The phrase text was added to the list of filtered words! Refresh to see the updated list.`,
-      true,
+      { reload: true },
     );
     done();
   });
@@ -209,7 +209,7 @@ describe("Filters Page", () => {
     expect(deleteSpy).toHaveBeenCalledWith("filters/1");
     expect(alertSpy).toHaveBeenCalledWith(
       `The phrase ${mockResponse.deleted.filter} was removed from the list of filtered words. Refresh to see the updated list.`,
-      true,
+      { reload: true },
     );
     done();
   });

@@ -68,7 +68,7 @@ export class ItemsService {
   }));
   // Posts variables
   isUpdated = new BehaviorSubject(false);
-  currentlyOpenMenu = new BehaviorSubject(-1);
+  currentlyOpenMenu = new BehaviorSubject("");
   receivedAHug = new BehaviorSubject(0);
 
   // CTOR

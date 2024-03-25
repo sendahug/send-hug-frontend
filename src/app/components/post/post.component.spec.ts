@@ -261,11 +261,11 @@ describe("Post", () => {
     const upFixture = TestBed.createComponent(MockPage);
     upFixture.detectChanges();
     const myPosts = upFixture.debugElement.children[0].componentInstance;
-    myPosts.itemsService.currentlyOpenMenu.next(3);
+    myPosts.itemsService.currentlyOpenMenu.next("nPost3");
     const openMenuSpy = spyOn(myPosts.itemsService.currentlyOpenMenu, "next").and.callThrough();
 
     // before the change
-    expect(myPosts.itemsService.currentlyOpenMenu.value).toBe(3);
+    expect(myPosts.itemsService.currentlyOpenMenu.value).toBe("nPost3");
     expect(openMenuSpy).not.toHaveBeenCalled();
 
     // trigger the function
@@ -273,19 +273,19 @@ describe("Post", () => {
     upFixture.detectChanges();
 
     // after the change
-    expect(myPosts.itemsService.currentlyOpenMenu.value).toBe(1);
-    expect(openMenuSpy).toHaveBeenCalledWith(1);
+    expect(myPosts.itemsService.currentlyOpenMenu.value).toBe("nPost1");
+    expect(openMenuSpy).toHaveBeenCalledWith("nPost1");
   });
 
-  it("toggleMenu() - should set the currently open menu to -1 if the given post's id is already open", () => {
+  it("toggleMenu() - should set the currently open menu to an emptpy string if the given post's id is already open", () => {
     const upFixture = TestBed.createComponent(MockPage);
     upFixture.detectChanges();
     const myPosts = upFixture.debugElement.children[0].componentInstance;
-    myPosts.itemsService.currentlyOpenMenu.next(1);
+    myPosts.itemsService.currentlyOpenMenu.next("nPost1");
     const openMenuSpy = spyOn(myPosts.itemsService.currentlyOpenMenu, "next").and.callThrough();
 
     // before the call
-    expect(myPosts.itemsService.currentlyOpenMenu.value).toBe(1);
+    expect(myPosts.itemsService.currentlyOpenMenu.value).toBe("nPost1");
     expect(openMenuSpy).not.toHaveBeenCalled();
 
     // trigger the function
@@ -293,8 +293,8 @@ describe("Post", () => {
     upFixture.detectChanges();
 
     // after the call
-    expect(myPosts.itemsService.currentlyOpenMenu.value).toBe(-1);
-    expect(openMenuSpy).toHaveBeenCalledWith(-1);
+    expect(myPosts.itemsService.currentlyOpenMenu.value).toBe("");
+    expect(openMenuSpy).toHaveBeenCalledWith("");
   });
 
   // check the posts' menu isn't shown if there isn't enough room for it

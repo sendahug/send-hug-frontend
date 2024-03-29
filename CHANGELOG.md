@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+### Chores
+
+- Bumped the version of the browser-tools orb, which allowed us to remove the workaround used to ensure Chorme is installed correctly in tests ([#1566](https://github.com/sendahug/send-hug-frontend/pull/1566)).
+- Updated the way caching works in the Circle CI workflow. Previously, the cache and restore operations used a specific key made of the branch name and the package-lock's checksum. This meant that since it was specific to each branch, we were hardly ever using the cache we built. Instead, we just kept adding to it. This update ensures we actually use the cache, which should also lower the cache-storing costs ([#1566](https://github.com/sendahug/send-hug-frontend/pull/1566)).
+
 ### 2024-03-25
 
 #### Fixes

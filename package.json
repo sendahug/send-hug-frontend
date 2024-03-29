@@ -32,7 +32,7 @@
     "@types/node": "^20.11.30",
     "autoprefixer": "^10.4.19",
     "browser-sync": "^3.0.2",
-    "glob": "^10.3.10",
+    "glob": "^10.3.12",
     "gulp": "^4.0.2",
     "gulp-less": "^5.0.0",
     "gulp-postcss": "^10.0.0",

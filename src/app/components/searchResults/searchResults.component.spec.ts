@@ -31,7 +31,6 @@
 */
 
 import { TestBed } from "@angular/core/testing";
-import { RouterTestingModule } from "@angular/router/testing";
 import {} from "jasmine";
 import { APP_BASE_HREF } from "@angular/common";
 import {
@@ -40,7 +39,7 @@ import {
 } from "@angular/platform-browser-dynamic/testing";
 import { HttpClientModule } from "@angular/common/http";
 import { ServiceWorkerModule } from "@angular/service-worker";
-import { ActivatedRoute, Router } from "@angular/router";
+import { ActivatedRoute, Router, RouterModule } from "@angular/router";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 
 import { SearchResults } from "./searchResults.component";
@@ -111,7 +110,7 @@ describe("SearchResults", () => {
 
     TestBed.configureTestingModule({
       imports: [
-        RouterTestingModule,
+        RouterModule.forRoot([]),
         HttpClientModule,
         ServiceWorkerModule.register("sw.js", { enabled: false }),
         FontAwesomeModule,
@@ -200,7 +199,7 @@ describe("SearchResults", () => {
 
       TestBed.configureTestingModule({
         imports: [
-          RouterTestingModule,
+          RouterModule.forRoot([]),
           HttpClientModule,
           ServiceWorkerModule.register("sw.js", { enabled: false }),
           FontAwesomeModule,
@@ -279,7 +278,7 @@ describe("SearchResults", () => {
 
       TestBed.configureTestingModule({
         imports: [
-          RouterTestingModule,
+          RouterModule.forRoot([]),
           HttpClientModule,
           ServiceWorkerModule.register("sw.js", { enabled: false }),
           FontAwesomeModule,

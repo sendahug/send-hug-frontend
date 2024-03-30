@@ -31,7 +31,6 @@
 */
 
 import { TestBed } from "@angular/core/testing";
-import { RouterTestingModule } from "@angular/router/testing";
 import {} from "jasmine";
 import { APP_BASE_HREF } from "@angular/common";
 import {
@@ -40,7 +39,7 @@ import {
 } from "@angular/platform-browser-dynamic/testing";
 import { HttpClientModule } from "@angular/common/http";
 import { ServiceWorkerModule } from "@angular/service-worker";
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, RouterModule } from "@angular/router";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { By } from "@angular/platform-browser";
 import { NO_ERRORS_SCHEMA } from "@angular/core";
@@ -62,7 +61,7 @@ describe("UserPage", () => {
     TestBed.configureTestingModule({
       schemas: [NO_ERRORS_SCHEMA],
       imports: [
-        RouterTestingModule,
+        RouterModule.forRoot([]),
         HttpClientModule,
         ServiceWorkerModule.register("sw.js", { enabled: false }),
         FontAwesomeModule,

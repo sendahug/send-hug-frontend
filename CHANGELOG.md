@@ -8,8 +8,25 @@
 
 #### Fixes
 
+- The alert component's `navigate` button was accidentally hardcoded to only allow navigating to the home page. This was updated to allow whichever destination passed into the component ([#1555](https://github.com/sendahug/send-hug-frontend/pull/1555))
+
+### 2024-03-29
+
+#### Chores
+
+- Bumped the version of the browser-tools orb, which allowed us to remove the workaround used to ensure Chorme is installed correctly in tests ([#1566](https://github.com/sendahug/send-hug-frontend/pull/1566)).
+- Updated the way caching works in the Circle CI workflow. Previously, the cache and restore operations used a specific key made of the branch name and the package-lock's checksum. This meant that since it was specific to each branch, we were hardly ever using the cache we built. Instead, we just kept adding to it. This update ensures we actually use the cache, which should also lower the cache-storing costs ([#1566](https://github.com/sendahug/send-hug-frontend/pull/1566)).
+
+### 2024-03-25
+
+#### Fixes
+
 - Fixed a bug where opening the menu of a post that appears in both the 'recent' and the 'suggested' lists caused the menu to show in both lists, instead of just the list in which the button was clicked ([#1556](https://github.com/sendahug/send-hug-frontend/pull/1556)).
-- The alert component's `navigate` button was accidentally hardcoded to only allow navigating to the home page. This was updated to allow whichever destination passed into the component ([#1555](https://github.com/sendahug/send-hug-frontend/pull/1555)).
+- Fixed a bug where requesting permission to send push notifications failed due to a missing key (`userVisibleOnly`) in the object passed to the permission-checking function ([#1557](https://github.com/sendahug/send-hug-frontend/pull/1556)).
+
+#### Chores
+
+- Replaced the "update superproject repo" and "add to project" workflows to use the new reusable workflows defined in [sendahug/send-a-workflow](https://github.com/sendahug/send-a-workflow) ([#1547](https://github.com/sendahug/send-hug-frontend/pull/1547)).
 
 ### 2024-03-22
 

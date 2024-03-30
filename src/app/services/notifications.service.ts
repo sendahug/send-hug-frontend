@@ -95,7 +95,10 @@ export class NotificationService {
       if ("PushManager" in window && this.serviceWorkerM.activeServiceWorkerReg) {
         // check the state of the Push permission
         this.serviceWorkerM.activeServiceWorkerReg.pushManager
-          .permissionState({})
+          .permissionState({
+            applicationServerKey: this.publicKey as string,
+            userVisibleOnly: true,
+          })
           .then((permission) => {
             // If permission was denied and the user's Push status is true, alert the
             // user they can't get push notifications in this browser
@@ -231,7 +234,10 @@ export class NotificationService {
     if ("PushManager" in window) {
       // check the state of the Push permission
       this.serviceWorkerM.activeServiceWorkerReg?.pushManager
-        .permissionState({})
+        .permissionState({
+          applicationServerKey: this.publicKey as string,
+          userVisibleOnly: true,
+        })
         .then((permission) => {
           // If permission was denied, alert the user they can't get push notifications in this browser
           if (permission == "denied") {

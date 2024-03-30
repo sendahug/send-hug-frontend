@@ -127,6 +127,10 @@ jobs:
     steps:
       - checkout
       - run: |
+          sudo npm install -g gulp pa11y-ci --unsafe-perm=true --allow-root
+          sudo apt-get update
+          sudo apt-get install -y postgresql-client python3-pip xvfb
+      - run: |
           cd ..
           git clone https://github.com/sendahug/send-hug-backend
       - run:

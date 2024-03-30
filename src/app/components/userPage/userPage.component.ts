@@ -272,7 +272,7 @@ export class UserPage implements OnInit, OnDestroy, AfterViewChecked {
       next: (_response) => {
         this.otherUser()!.receivedH += 1;
         this.authService.userData.givenH += 1;
-        this.alertsService.createSuccessAlert("Your hug was sent!", true);
+        this.alertsService.createSuccessAlert("Your hug was sent!", { reload: true });
       },
     });
   }

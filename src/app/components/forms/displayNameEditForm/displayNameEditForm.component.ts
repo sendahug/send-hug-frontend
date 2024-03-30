@@ -37,6 +37,7 @@ import { Component, Input, Output, EventEmitter, OnInit } from "@angular/core";
 import { AuthService } from "@app/services/auth.service";
 import { AdminService } from "@app/services/admin.service";
 import { ValidationService } from "@app/services/validation.service";
+import { FormBuilder, Validators } from "@angular/forms";
 
 @Component({
   selector: "display-name-edit-form",
@@ -50,12 +51,16 @@ export class DisplayNameEditForm implements OnInit {
   // indicates whether edit/delete mode is still required
   @Output() editMode = new EventEmitter<boolean>();
   @Input() reportData: any;
+  editNameForm = this.fb.group({
+    newDisplayName: ["", [Validators.required, Validators.minLength(1)]],
+  });
 
   // CTOR
   constructor(
     public authService: AuthService,
     private adminService: AdminService,
     private validationService: ValidationService,
+    private fb: FormBuilder,
   ) {}
 
   /*
@@ -68,8 +73,8 @@ export class DisplayNameEditForm implements OnInit {
   Programmer: Shir Bar Lev.
   */
   ngOnInit() {
-    this.editedItem =
-      this.toEdit == "user" ? this.authService.userData.displayName : this.editedItem;
+    const name = this.toEdit == "user" ? this.authService.userData.displayName : this.editedItem;
+    this.editNameForm.get("newDisplayName")?.setValue(name);
   }
 
   /*
@@ -83,11 +88,15 @@ export class DisplayNameEditForm implements OnInit {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  updateDisplayName(e: Event, newDisplayName: string, closeReport: boolean | null) {
+  updateDisplayName(e: Event, closeReport: boolean | null) {
     e.preventDefault();
 
+    const newName = this.editNameForm.get('newDisplayName')?.value;
+
     // if the name is valid, set it
-    if (this.validationService.validateItem("displayName", newDisplayName, "displayName")) {
+    if (this.editNameForm.valid && this.validationService.validateItem("displayName", newName || "", "displayName")) {
+      const newDisplayName = String(newName);
+
       // if the user is editing their own name
       if (closeReport == null) {
         this.authService.userData.displayName = newDisplayName;

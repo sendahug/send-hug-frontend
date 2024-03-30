@@ -108,7 +108,7 @@ jobs:
           command: npm run cypress
   accessibility:
     docker:
-      - image: shirblc/python-npm-tools:3.0
+      - image: cimg/python:3.11-node
         environment:
           DATABASE_URL: postgresql://postgres:password@localhost:5432/test_sah?sslmode=disable
           FLASK_APP: send-hug-backend/app.py

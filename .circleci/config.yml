@@ -37,7 +37,7 @@ jobs:
       - codecov/upload
   e2e:
     docker:
-      - image: shirblc/python-npm-tools:3.0
+      - image: cimg/python:3.11-node
         environment:
           DATABASE_URL: postgresql://postgres:password@localhost:5432/test_sah?sslmode=disable
           FLASK_APP: send-hug-backend/app.py
@@ -55,6 +55,10 @@ jobs:
       CHROME_BIN: /usr/bin/google-chrome
     steps:
       - checkout
+      - run: |
+          sudo npm install -g gulp pa11y-ci --unsafe-perm=true --allow-root
+          sudo apt-get update
+          sudo apt-get install -y postgresql-client python3-pip xvfb
       - run: |
           cd ..
           git clone https://github.com/sendahug/send-hug-backend
@@ -104,7 +108,7 @@ jobs:
           command: npm run cypress
   accessibility:
     docker:
-      - image: shirblc/python-npm-tools:3.0
+      - image: cimg/python:3.11-node
         environment:
           DATABASE_URL: postgresql://postgres:password@localhost:5432/test_sah?sslmode=disable
           FLASK_APP: send-hug-backend/app.py
@@ -122,6 +126,10 @@ jobs:
       CHROME_BIN: /usr/bin/google-chrome
     steps:
       - checkout
+      - run: |
+          sudo npm install -g gulp pa11y-ci --unsafe-perm=true --allow-root
+          sudo apt-get update
+          sudo apt-get install -y postgresql-client python3-pip xvfb
       - run: |
           cd ..
           git clone https://github.com/sendahug/send-hug-backend

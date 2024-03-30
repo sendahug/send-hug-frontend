@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+### 2024-03-30
+
 #### Changes
 
 - The individual parameters to the Alerts Service's `createAlert` and `createSuccessAlert` methods (specifying whether to display the `reload` and `navigate to home screen` buttons) were replaced with a configuration object, which also includes the navigation button's target and its text ([#1555](https://github.com/sendahug/send-hug-frontend/pull/1555)).
@@ -9,6 +11,11 @@
 #### Fixes
 
 - The alert component's `navigate` button was accidentally hardcoded to only allow navigating to the home page. This was updated to allow whichever destination passed into the component ([#1555](https://github.com/sendahug/send-hug-frontend/pull/1555))
+
+#### Chores
+
+- Upgraded Gulp from v4 to v5! ([#1563](https://github.com/sendahug/send-hug-frontend/pull/1563))
+- Updated the CircleCI workflow to use the CircleCI Python + Node image instead of the custom image we've been using. The custom image was required when we needed Python, Node and browser tools (as CircleCI only has combinations of two of those, rather than all three), but since we moved to using Cypress in e2e tests (with the Cypress orb), we no longer need to manually install browser tools (the orb does that for us). Now that we only need Node + Python, we can simply use the CircleCI image, as it's cleaner to let CircleCI manage the docker images instead of updating them manually ([#1563](https://github.com/sendahug/send-hug-frontend/pull/1563)).
 
 ### 2024-03-29
 

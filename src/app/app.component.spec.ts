@@ -30,7 +30,7 @@
   SOFTWARE.
 */
 import { TestBed } from "@angular/core/testing";
-import { RouterTestingModule } from "@angular/router/testing";
+import { RouterModule } from "@angular/router";
 import {
   BrowserDynamicTestingModule,
   platformBrowserDynamicTesting,
@@ -59,7 +59,7 @@ describe("AppComponent", () => {
 
     TestBed.configureTestingModule({
       imports: [
-        RouterTestingModule,
+        RouterModule.forRoot([]),
         HttpClientModule,
         ReactiveFormsModule,
         ServiceWorkerModule.register("sw.js", { enabled: false }),

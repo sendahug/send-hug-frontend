@@ -31,7 +31,6 @@
 */
 
 import { TestBed } from "@angular/core/testing";
-import { RouterTestingModule } from "@angular/router/testing";
 import {} from "jasmine";
 import { APP_BASE_HREF } from "@angular/common";
 import {
@@ -41,7 +40,7 @@ import {
 import { HttpClientModule } from "@angular/common/http";
 import { ServiceWorkerModule } from "@angular/service-worker";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
-import { ActivatedRoute, UrlSegment } from "@angular/router";
+import { ActivatedRoute, RouterModule, UrlSegment } from "@angular/router";
 import { of } from "rxjs";
 
 import { SitePolicies } from "./sitePolicies.component";
@@ -54,7 +53,7 @@ describe("SitePolicies", () => {
 
     TestBed.configureTestingModule({
       imports: [
-        RouterTestingModule,
+        RouterModule.forRoot([]),
         HttpClientModule,
         ServiceWorkerModule.register("sw.js", { enabled: false }),
         FontAwesomeModule,

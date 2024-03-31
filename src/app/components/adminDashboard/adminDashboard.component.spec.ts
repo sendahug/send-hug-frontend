@@ -31,7 +31,6 @@
 */
 
 import { TestBed } from "@angular/core/testing";
-import { RouterTestingModule } from "@angular/router/testing";
 import {} from "jasmine";
 import { APP_BASE_HREF } from "@angular/common";
 import {
@@ -42,7 +41,7 @@ import { HttpClientModule } from "@angular/common/http";
 import { ServiceWorkerModule } from "@angular/service-worker";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { NO_ERRORS_SCHEMA } from "@angular/core";
-import { ActivatedRoute, UrlSegment } from "@angular/router";
+import { ActivatedRoute, RouterModule, UrlSegment } from "@angular/router";
 import { of } from "rxjs";
 
 import { AdminDashboard } from "./adminDashboard.component";
@@ -61,7 +60,7 @@ describe("AdminDashboard", () => {
     TestBed.configureTestingModule({
       schemas: [NO_ERRORS_SCHEMA],
       imports: [
-        RouterTestingModule,
+        RouterModule.forRoot([]),
         HttpClientModule,
         ServiceWorkerModule.register("sw.js", { enabled: false }),
         FontAwesomeModule,

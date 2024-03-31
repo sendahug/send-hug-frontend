@@ -31,7 +31,6 @@
 */
 
 import { TestBed } from "@angular/core/testing";
-import { RouterTestingModule } from "@angular/router/testing";
 import {
   BrowserDynamicTestingModule,
   platformBrowserDynamicTesting,
@@ -51,7 +50,7 @@ describe("AlertsService", () => {
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
-      imports: [RouterTestingModule],
+      imports: [],
       declarations: [],
       providers: [AlertsService, { provide: APP_BASE_HREF, useValue: "/" }],
     }).compileComponents();

@@ -31,7 +31,7 @@
 */
 
 import { TestBed } from "@angular/core/testing";
-import { RouterTestingModule } from "@angular/router/testing";
+import { RouterModule } from "@angular/router";
 import {} from "jasmine";
 import { APP_BASE_HREF } from "@angular/common";
 import {
@@ -54,7 +54,7 @@ describe("Loader", () => {
 
     TestBed.configureTestingModule({
       imports: [
-        RouterTestingModule,
+        RouterModule.forRoot([]),
         HttpClientModule,
         ServiceWorkerModule.register("sw.js", { enabled: false }),
         FontAwesomeModule,

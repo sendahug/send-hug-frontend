@@ -82,7 +82,6 @@ export class DisplayNameEditForm implements OnInit {
   Function Description: Sends a request via the auth service to edit the user's display name.
   Parameters: e (event) - This method is triggered by pressing a button; this parameter
                           contains the click event data.
-              newDisplayName (string) - A string containing the user's new name.
               closeReport (optional boolean) - whether to also close the report if the sender
                                                is the admin's report page.
   ----------------
@@ -91,10 +90,13 @@ export class DisplayNameEditForm implements OnInit {
   updateDisplayName(e: Event, closeReport: boolean | null) {
     e.preventDefault();
 
-    const newName = this.editNameForm.get('newDisplayName')?.value;
+    const newName = this.editNameForm.get("newDisplayName")?.value;
 
     // if the name is valid, set it
-    if (this.editNameForm.valid && this.validationService.validateItem("displayName", newName || "", "displayName")) {
+    if (
+      this.editNameForm.valid &&
+      this.validationService.validateItem("displayName", newName || "", "displayName")
+    ) {
       const newDisplayName = String(newName);
 
       // if the user is editing their own name

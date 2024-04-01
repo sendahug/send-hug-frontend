@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+#### Fixes
+
+- Fixed a bug where the "new messages" screen accidentally showed `[object object]` instead of the name of the user to send a message to in the "for" field when users tried to send a new message from the messages' views ([#1569](https://github.com/sendahug/send-hug-frontend/pull/1569)).
+
+### 2024-03-31
+
 #### Chores
 
 - Replaced the deprecated Router Testing Module in unit tests with the regular Router Module, as per Angular's guidance ([#1567](https://github.com/sendahug/send-hug-frontend/pull/1567)).

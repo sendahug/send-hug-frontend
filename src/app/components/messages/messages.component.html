@@ -45,7 +45,7 @@
 					<span class="pageData">For</span><span class="pageData" aria-describedby="mUserFor">{{ message.for.displayName }}</span>
 				</div>
 				<div class="buttons">
-					<a [routerLink]="['/new', 'Message']" [queryParams]="{user: message.from, userID: message.fromId}" class="appButton messageButton" [attr.aria-describedby]="'mReply ' +  'text' + message.id" *ngIf="messType == 'inbox'">Reply</a>
+					<a [routerLink]="['/new', 'Message']" [queryParams]="{user: message.from.displayName, userID: message.fromId}" class="appButton messageButton" [attr.aria-describedby]="'mReply ' +  'text' + message.id" *ngIf="messType == 'inbox'">Reply</a>
 					<button class="appButton deleteButton" (click)="deleteMessage(message.id)" [attr.aria-describedby]="'mDelete ' + text + message.id">Delete Message</button>
 				</div>
 			</div>
@@ -115,7 +115,7 @@
 						<span class="pageCategory">Date:</span> <span class="pageData" aria-describedby="mDate">{{ message.date }}</span>
 					</div>
 					<div class="threadBtns">
-						<a [routerLink]="['/new', 'Message']" [queryParams]="{user: message.from, userID: message.fromId}" class="appButton messageButton" [attr.aria-describedby]="'mReply ' + 'mText' + message.id">Reply</a>
+						<a [routerLink]="['/new', 'Message']" [queryParams]="{user: message.from.displayName, userID: message.fromId}" class="appButton messageButton" [attr.aria-describedby]="'mReply ' + 'mText' + message.id">Reply</a>
 						<button class="appButton deleteButton" (click)="deleteMessage(message.id)" [attr.aria-describedby]="'mDelete ' + 'mText' + message.id">Delete Message</button>
 					</div>
 				</div>

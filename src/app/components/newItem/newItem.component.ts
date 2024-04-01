@@ -102,8 +102,8 @@ export class NewItem {
     const postText = this.newPostForm.get("postText")?.value || "";
 
     if (
-      this.newPostForm.valid &&
-      this.validationService.validateItem("post", postText, "postText")
+      this.validationService.validateItem("post", postText, "postText") &&
+      this.newPostForm.valid
     ) {
       // if there's no logged in user, alert the user
       if (!this.authService.authenticated) {
@@ -139,11 +139,11 @@ export class NewItem {
 
     // if there's text in the textfield, try to create a new message
     if (
-      this.newMessageForm.valid &&
-      this.validationService.validateItem("message", messageText, "messageText")
+      this.validationService.validateItem("message", messageText, "messageText") &&
+      this.newMessageForm.valid
     ) {
       // if the user is attempting to send a message to themselves
-      if (this.authService.userData.id == this.forID) {
+      if (this.authService.userData.id == Number(this.forID)) {
         this.alertService.createAlert({
           type: "Error",
           message: "You can't send a message to yourself!",

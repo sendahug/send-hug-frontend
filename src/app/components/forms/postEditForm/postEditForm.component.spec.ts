@@ -46,7 +46,7 @@ import { ReactiveFormsModule } from "@angular/forms";
 import { PostEditForm } from "./postEditForm.component";
 import { Post } from "@app/interfaces/post.interface";
 
-// DISPLAY NAME EDIT
+// POST EDIT
 // ==================================================================
 describe("PostEditForm", () => {
   // Before each test, configure testing environment

@@ -31,51 +31,63 @@
 */
 
 // Angular imports
-import { Component, Input, Output, EventEmitter } from "@angular/core";
+import { Component, Input, Output, EventEmitter, OnInit } from "@angular/core";
 
 // App-related import
 import { Post } from "@app/interfaces/post.interface";
 import { ItemsService } from "@app/services/items.service";
 import { AdminService } from "@app/services/admin.service";
 import { ValidationService } from "@app/services/validation.service";
+import { FormBuilder, Validators } from "@angular/forms";
 
 @Component({
   selector: "post-edit-form",
   templateUrl: "./postEditForm.component.html",
 })
-export class PostEditForm {
+export class PostEditForm implements OnInit {
   // item to edit
   @Input() editedItem!: Post;
   // indicates whether edit/delete mode is still required
   @Output() editMode = new EventEmitter<boolean>();
   @Input() reportData: any;
   @Input() isAdmin = false;
+  postEditForm = this.fb.group({
+    postText: ["", [Validators.required, Validators.minLength(1)]],
+  });
 
   // CTOR
   constructor(
     private itemsService: ItemsService,
     private adminService: AdminService,
     private validationService: ValidationService,
+    private fb: FormBuilder,
   ) {}
+
+  ngOnInit(): void {
+    this.postEditForm.get("postText")?.setValue(this.editedItem.text);
+  }
 
   /*
   Function Name: editPost()
   Function Description: Edits a post's text from admin dashboard.
   Parameters: e (event) - This method is triggered by pressing a button; this parameter
                           contains the click event data.
-              newText (string) - A string containing the new post's text.
               closeReport (optional boolean) - whether to also close the report if the sender
                                                is the admin's report page.
   ----------------
   Programmer: Shir Bar Lev.
   */
-  editPost(e: Event, newText: string, closeReport: boolean | null) {
+  editPost(e: Event, closeReport: boolean | null) {
     e.preventDefault();
 
     const serviceToUse = closeReport === null ? "itemsService" : "adminService";
+    const newText = this.postEditForm.get("postText")?.value || "";
 
     // if the post is valid, edit the text
-    if (this.validationService.validateItem("post", newText, "postText")) {
+    if (
+      this.postEditForm.valid &&
+      this.validationService.validateItem("post", newText, "postText")
+    ) {
       // if there isn't a value for closeReport, it means it's sent from the regular edit
       if (closeReport === null) {
         this.editedItem.text = newText;

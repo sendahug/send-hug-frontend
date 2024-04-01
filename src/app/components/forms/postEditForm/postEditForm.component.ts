@@ -32,13 +32,13 @@
 
 // Angular imports
 import { Component, Input, Output, EventEmitter, OnInit } from "@angular/core";
+import { FormBuilder, Validators } from "@angular/forms";
 
 // App-related import
 import { Post } from "@app/interfaces/post.interface";
 import { ItemsService } from "@app/services/items.service";
 import { AdminService } from "@app/services/admin.service";
 import { ValidationService } from "@app/services/validation.service";
-import { FormBuilder, Validators } from "@angular/forms";
 
 @Component({
   selector: "post-edit-form",

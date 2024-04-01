@@ -32,12 +32,12 @@
 
 // Angular imports
 import { Component, Input, Output, EventEmitter, OnInit } from "@angular/core";
+import { FormBuilder, Validators } from "@angular/forms";
 
 // App-related import
 import { AuthService } from "@app/services/auth.service";
 import { AdminService } from "@app/services/admin.service";
 import { ValidationService } from "@app/services/validation.service";
-import { FormBuilder, Validators } from "@angular/forms";
 
 @Component({
   selector: "display-name-edit-form",

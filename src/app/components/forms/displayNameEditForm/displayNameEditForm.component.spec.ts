@@ -41,12 +41,11 @@ import {
 import { HttpClientModule } from "@angular/common/http";
 import { ServiceWorkerModule } from "@angular/service-worker";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
+import { ReactiveFormsModule } from "@angular/forms";
 
-import { AppComponent } from "../../../app.component";
 import { DisplayNameEditForm } from "./displayNameEditForm.component";
-import { AuthService } from "../../../services/auth.service";
+import { AuthService } from "@app/services/auth.service";
 import { mockAuthedUser } from "@tests/mockData";
-import { AppAlert } from "@app/components/appAlert/appAlert.component";
 
 // DISPLAY NAME EDIT
 // ==================================================================
@@ -62,8 +61,9 @@ describe("DisplayNameEditForm", () => {
         HttpClientModule,
         ServiceWorkerModule.register("sw.js", { enabled: false }),
         FontAwesomeModule,
+        ReactiveFormsModule,
       ],
-      declarations: [AppComponent, DisplayNameEditForm, AppAlert],
+      declarations: [DisplayNameEditForm],
       providers: [{ provide: APP_BASE_HREF, useValue: "/" }],
     }).compileComponents();
 
@@ -74,11 +74,8 @@ describe("DisplayNameEditForm", () => {
 
   // Check that the component is created
   it("should create the component", () => {
-    const acFixture = TestBed.createComponent(AppComponent);
-    const appComponent = acFixture.componentInstance;
     const fixture = TestBed.createComponent(DisplayNameEditForm);
     const popUp = fixture.componentInstance;
-    expect(appComponent).toBeTruthy();
     expect(popUp).toBeTruthy();
   });
 
@@ -88,7 +85,9 @@ describe("DisplayNameEditForm", () => {
     popUp.toEdit = "user";
     popUp.ngOnInit();
 
-    expect(popUp.editedItem).toEqual(popUp.authService.userData.displayName);
+    expect(popUp.editNameForm.get("newDisplayName")?.value).toEqual(
+      popUp.authService.userData.displayName,
+    );
 
     popUp.toEdit = "other user";
     popUp.editedItem = "test";
@@ -119,6 +118,7 @@ describe("DisplayNameEditForm", () => {
     const emitSpy = spyOn(popUp.editMode, "emit");
 
     popUpDOM.querySelector("#displayName").value = newName;
+    popUpDOM.querySelector("#displayName").dispatchEvent(new Event("input"));
     popUpDOM.querySelectorAll(".updateItem")[0].click();
     fixture.detectChanges();
 
@@ -154,6 +154,7 @@ describe("DisplayNameEditForm", () => {
     const emitSpy = spyOn(popUp.editMode, "emit");
 
     popUpDOM.querySelector("#displayName").value = newName;
+    popUpDOM.querySelector("#displayName").dispatchEvent(new Event("input"));
     popUpDOM.querySelectorAll(".updateItem")[0].click();
     fixture.detectChanges();
 
@@ -195,6 +196,7 @@ describe("DisplayNameEditForm", () => {
     const emitSpy = spyOn(popUp.editMode, "emit");
 
     popUpDOM.querySelector("#displayName").value = newName;
+    popUpDOM.querySelector("#displayName").dispatchEvent(new Event("input"));
     popUpDOM.querySelectorAll(".updateItem")[1].click();
     fixture.detectChanges();
 

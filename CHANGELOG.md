@@ -4,8 +4,8 @@
 
 #### Changes
 
-- Replaced the "enable/disable push notifications" and the "enable/disable auto-refresh" buttons in the Settings view with checkboxes. The new checkboxes are now part of the form in the view (instead of the "save" button only impacting the "refresh rate" field). This makes the "update settings" section (and the form within it) considerably more intuitive to use ([#1571](https://github.com/sendahug/send-hug-frontend/pull/1571)).
-- Replaced the old "settings update" form with an Angular reactive form, which simplifies form validation ([#1571](https://github.com/sendahug/send-hug-frontend/pull/1571)).
+- Replaced the "enable/disable push notifications" and the "enable/disable auto-refresh" buttons in the Settings view with checkboxes. The new checkboxes are now part of the form in the view (instead of the "save" button only impacting the "refresh rate" field). This makes the "update settings" section (and the form within it) considerably more intuitive to use ([#1572](https://github.com/sendahug/send-hug-frontend/pull/1572)).
+- Replaced the old "settings update" form with an Angular reactive form, which simplifies form validation ([#1572](https://github.com/sendahug/send-hug-frontend/pull/1572)).
 
 ### 2024-04-01
 

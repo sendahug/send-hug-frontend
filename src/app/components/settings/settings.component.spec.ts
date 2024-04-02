@@ -130,50 +130,55 @@ describe("SettingsPage", () => {
     done();
   });
 
-  // Check that the button toggles push notifications
-  // it("has a button that toggles push notifications", (done: DoneFn) => {
-  //   // set up the component and its spies
-  //   TestBed.createComponent(AppComponent);
-  //   const fixture = TestBed.createComponent(SettingsPage);
-  //   const settingsPage = fixture.componentInstance;
-  //   const settingsDOM = fixture.nativeElement;
-  //   const toggleSpy = spyOn(settingsPage, "togglePushNotifications").and.callThrough();
-  //   const notificationsService = settingsPage.notificationService;
-  //   const settingsSpy = spyOn(notificationsService, "updateUserSettings").and.callThrough();
-  //   const subscribeSpy = spyOn(notificationsService, "subscribeToStream").and.callThrough();
-  //   const unsubscribeSpy = spyOn(notificationsService, "unsubscribeFromStream").and.callThrough();
+  // Check that the checkbox toggles push notifications
+  it("has a checkbox that toggles push notifications", (done: DoneFn) => {
+    const notificationsService = TestBed.inject(NotificationService);
+    notificationsService.refreshStatus = false;
 
-  //   fixture.detectChanges();
+    // set up the component and its spies
+    const fixture = TestBed.createComponent(SettingsPage);
+    const settingsPage = fixture.componentInstance;
+    const settingsDOM = fixture.nativeElement;
+    const toggleSpy = spyOn(settingsPage, "updateSettings").and.callThrough();
+    const settingsSpy = spyOn(notificationsService, "updateUserSettings");
+    const subscribeSpy = spyOn(notificationsService, "subscribeToStream");
+    const unsubscribeSpy = spyOn(notificationsService, "unsubscribeFromStream");
 
-  //   // before the click
-  //   expect(settingsPage.notificationService.pushStatus).toBeFalse();
+    fixture.detectChanges();
 
-  //   // simulate click
-  //   settingsDOM.querySelectorAll(".NotificationButton")[0].click();
-  //   fixture.detectChanges();
+    // before the click
+    expect(settingsPage.notificationService.pushStatus).toBeFalse();
 
-  //   // after the first click, check 'subscribe' was called
-  //   expect(toggleSpy).toHaveBeenCalled();
-  //   expect(settingsPage.notificationService.pushStatus).toBeTrue();
-  //   expect(settingsSpy).toHaveBeenCalled();
-  //   expect(subscribeSpy).toHaveBeenCalled();
-  //   expect(unsubscribeSpy).not.toHaveBeenCalled();
+    // simulate click
+    settingsDOM.querySelector("#enableNotifications").click();
+    settingsDOM.querySelector("#enableNotifications").dispatchEvent(new Event("input"));
+    settingsDOM.querySelectorAll(".sendData")[0].click();
+    fixture.detectChanges();
 
-  //   // simulate another click
-  //   settingsDOM.querySelectorAll(".NotificationButton")[0].click();
-  //   fixture.detectChanges();
+    // after the first click, check 'subscribe' was called
+    expect(toggleSpy).toHaveBeenCalled();
+    expect(settingsPage.notificationService.pushStatus).toBeTrue();
+    expect(settingsSpy).toHaveBeenCalled();
+    expect(subscribeSpy).toHaveBeenCalled();
+    expect(unsubscribeSpy).not.toHaveBeenCalled();
 
-  //   // after the second click, chcek 'unsubscribe' was called
-  //   expect(toggleSpy.calls.count()).toBe(2);
-  //   expect(settingsPage.notificationService.pushStatus).toBeFalse();
-  //   expect(settingsSpy.calls.count()).toBe(2);
-  //   expect(subscribeSpy.calls.count()).toBe(1);
-  //   expect(unsubscribeSpy).toHaveBeenCalled();
-  //   expect(unsubscribeSpy.calls.count()).toBe(1);
-  //   done();
-  // });
+    // simulate another click
+    settingsDOM.querySelector("#enableNotifications").click();
+    settingsDOM.querySelector("#enableNotifications").dispatchEvent(new Event("input"));
+    settingsDOM.querySelectorAll(".sendData")[0].click();
+    fixture.detectChanges();
 
-  // Check that the button toggles auto refresh
+    // after the second click, chcek 'unsubscribe' was called
+    expect(toggleSpy.calls.count()).toBe(2);
+    expect(settingsPage.notificationService.pushStatus).toBeFalse();
+    expect(settingsSpy.calls.count()).toBe(2);
+    expect(subscribeSpy.calls.count()).toBe(1);
+    expect(unsubscribeSpy).toHaveBeenCalled();
+    expect(unsubscribeSpy.calls.count()).toBe(1);
+    done();
+  });
+
+  // Check that the checkbox toggles auto refresh
   it("has a checkbox that toggles auto-refresh", (done: DoneFn) => {
     // set up spies
     const notificationsService = TestBed.inject(NotificationService);

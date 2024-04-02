@@ -137,9 +137,9 @@ export class SettingsPage implements AfterViewChecked {
     }
 
     if (this.editSettingsForm.valid) {
-      this.notificationService.pushStatus = refreshStatus;
-      this.notificationService.refreshStatus =
-        this.editSettingsForm.get("enableAutoRefresh")?.value || false;
+      this.notificationService.pushStatus =
+        this.editSettingsForm.get("enableNotifications")?.value || false;
+      this.notificationService.refreshStatus = refreshStatus;
       this.notificationService.refreshRateSecs = Number(newRate);
       this.notificationService.updateUserSettings();
 

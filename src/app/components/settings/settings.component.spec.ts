@@ -130,6 +130,28 @@ describe("SettingsPage", () => {
     done();
   });
 
+  it("pre-fills the form based on the user's settings", (done: DoneFn) => {
+    const authService = TestBed.inject(AuthService);
+    authService.isUserDataResolved.next(false);
+
+    // set up the component and its spies
+    const fixture = TestBed.createComponent(SettingsPage);
+    const settingsPage = fixture.componentInstance;
+    fixture.detectChanges();
+
+    expect(settingsPage.editSettingsForm.get("enableAutoRefresh")?.value).toBeFalse();
+    expect(settingsPage.editSettingsForm.get("notificationRate")?.value).toBe(20);
+
+    authService.userData.autoRefresh = true;
+    authService.userData.refreshRate = 60;
+    authService.isUserDataResolved.next(true);
+    fixture.detectChanges();
+
+    expect(settingsPage.editSettingsForm.get("enableAutoRefresh")?.value).toBeTrue();
+    expect(settingsPage.editSettingsForm.get("notificationRate")?.value).toBe(60);
+    done();
+  });
+
   // Check that the checkbox toggles push notifications
   it("has a checkbox that toggles push notifications", (done: DoneFn) => {
     const notificationsService = TestBed.inject(NotificationService);

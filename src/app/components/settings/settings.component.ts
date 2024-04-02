@@ -70,11 +70,11 @@ export class SettingsPage implements AfterViewChecked {
       }
     });
 
-    this.editSettingsForm.get("enableAutoRefresh")?.valueChanges.subscribe(() => {
+    this.editSettingsForm.controls.enableAutoRefresh.valueChanges.subscribe(() => {
       this.updateNotificationRateValidators();
     });
 
-    this.editSettingsForm.get("notificationRate")?.valueChanges.subscribe(() => {
+    this.editSettingsForm.controls.notificationRate.valueChanges.subscribe(() => {
       this.setRateInvalidStatus();
     });
   }
@@ -158,9 +158,10 @@ export class SettingsPage implements AfterViewChecked {
    */
   updateNotificationRateValidators() {
     if (this.editSettingsForm.get("enableAutoRefresh")?.value) {
-      this.editSettingsForm
-        .get("notificationRate")
-        ?.setValidators([Validators.required, Validators.min(20)]);
+      this.editSettingsForm.controls.notificationRate.setValidators([
+        Validators.required,
+        Validators.min(20),
+      ]);
     } else {
       this.editSettingsForm.get("notificationRate")?.clearValidators();
     }

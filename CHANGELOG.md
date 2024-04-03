@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+#### Chores
+
+- Added the Font Awesome dependencies to Dependabot's config as a dependency group to ensure they're updated together at the same pull request ([#1582](https://github.com/sendahug/send-hug-frontend/pull/1582)).
+
+### 2024-04-01
+
 #### Fixes
 
 - Fixed a bug where the "new messages" screen accidentally showed `[object object]` instead of the name of the user to send a message to in the "for" field when users tried to send a new message from the messages' views ([#1569](https://github.com/sendahug/send-hug-frontend/pull/1569)).

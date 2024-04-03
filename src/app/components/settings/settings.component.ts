@@ -32,6 +32,7 @@
 
 // Angular imports
 import { Component, AfterViewChecked } from "@angular/core";
+import { FormBuilder, Validators } from "@angular/forms";
 
 // App-related imports
 import { NotificationService } from "@app/services/notifications.service";
@@ -45,13 +46,38 @@ import { iconElements } from "@app/interfaces/types";
 })
 export class SettingsPage implements AfterViewChecked {
   editIcon = false;
+  editSettingsForm = this.fb.group({
+    enableNotifications: [false],
+    enableAutoRefresh: [false],
+    notificationRate: [20],
+  });
 
   // CTOR
   constructor(
     public notificationService: NotificationService,
     public authService: AuthService,
     private alertsService: AlertsService,
-  ) {}
+    private fb: FormBuilder,
+  ) {
+    // TODO: There's got to be a better way to do this for refreshes...
+    this.authService.isUserDataResolved.subscribe((value) => {
+      if (value) {
+        this.editSettingsForm.setValue({
+          enableNotifications: this.notificationService.pushStatus || false,
+          enableAutoRefresh: this.notificationService.refreshStatus || false,
+          notificationRate: this.notificationService.refreshRateSecs,
+        });
+      }
+    });
+
+    this.editSettingsForm.controls.enableAutoRefresh.valueChanges.subscribe(() => {
+      this.updateNotificationRateValidators();
+    });
+
+    this.editSettingsForm.controls.notificationRate.valueChanges.subscribe(() => {
+      this.setRateInvalidStatus();
+    });
+  }
 
   /*
   Function Name: ngAfterViewChecked()
@@ -95,77 +121,71 @@ export class SettingsPage implements AfterViewChecked {
     }
   }
 
-  /*
-  Function Name: togglePushNotifications()
-  Function Description: Enables and disables push notifications.
-  Parameters: None.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  togglePushNotifications() {
-    // if notifications are enabled, disable them
-    if (this.notificationService.pushStatus) {
-      this.notificationService.pushStatus = false;
-      this.notificationService.updateUserSettings();
-      this.notificationService.unsubscribeFromStream();
-    }
-    // otherwise enable them
-    else {
-      this.notificationService.pushStatus = true;
-      this.notificationService.updateUserSettings();
-      this.notificationService.subscribeToStream();
-    }
-  }
+  /**
+   * Updates the user's settings based on the form values.
+   */
+  updateSettings() {
+    const newRate = this.editSettingsForm.get("notificationRate")?.value;
+    const refreshStatus = this.editSettingsForm.get("enableAutoRefresh")?.value || false;
 
-  /*
-  Function Name: togglePushNotifications()
-  Function Description: Enables and disables automatically refreshing the user's
-                        notifications in the background.
-  Parameters: None.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  toggleAutoRefresh() {
-    // if auto-refresh is enabled, disable it
-    if (this.notificationService.refreshStatus) {
-      this.notificationService.refreshStatus = false;
-      this.notificationService.refreshRateSecs = 0;
-      this.notificationService.updateUserSettings();
-      this.notificationService.stopAutoRefresh();
-    }
-    // otherwise enable it
-    else {
-      this.notificationService.refreshStatus = true;
-      this.notificationService.refreshRateSecs = 20;
-      this.notificationService.updateUserSettings();
-      this.notificationService.startAutoRefresh();
-    }
-  }
-
-  /*
-  Function Name: updateRefreshRate()
-  Function Description: Updates the user's auto-refersh rate.
-  Parameters: e (event) - the button click that triggers the method.
-              newRate (number) - the new refresh rate in seconds.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  updateRefreshRate(e: Event, newRate: number) {
-    e.preventDefault();
-
-    // if there's a new rate, update user settings
-    if (newRate && newRate > 0) {
-      this.notificationService.refreshRateSecs = Number(newRate);
-      this.notificationService.updateUserSettings();
-    }
     // if there's no rate or it's zero, alert the user it can't be
-    else {
+    if ((!newRate || newRate <= 0) && refreshStatus) {
       this.alertsService.createAlert({
         type: "Error",
         message: "Refresh rate cannot be empty or zero. Please fill the field and try again.",
       });
-      document.getElementById("notificationRate")!.classList.add("missing");
-      document.getElementById("notificationRate")!.setAttribute("aria-invalid", "true");
+    }
+
+    if (this.editSettingsForm.valid) {
+      this.notificationService.pushStatus =
+        this.editSettingsForm.get("enableNotifications")?.value || false;
+      this.notificationService.refreshStatus = refreshStatus;
+      this.notificationService.refreshRateSecs = Number(newRate);
+      this.notificationService.updateUserSettings();
+
+      if (this.notificationService.refreshStatus) this.notificationService.startAutoRefresh();
+      else this.notificationService.stopAutoRefresh();
+
+      if (this.notificationService.pushStatus) this.notificationService.subscribeToStream();
+      else this.notificationService.unsubscribeFromStream();
+    }
+  }
+
+  /**
+   * Changes the validators of the rate field based on the auto-refresh status.
+   * If auto-refresh is enabled, the rate field is required and must be higher than
+   * 20 (seconds); otherwise it's not.
+   */
+  updateNotificationRateValidators() {
+    if (this.editSettingsForm.get("enableAutoRefresh")?.value) {
+      this.editSettingsForm.controls.notificationRate.setValidators([
+        Validators.required,
+        Validators.min(20),
+      ]);
+    } else {
+      this.editSettingsForm.get("notificationRate")?.clearValidators();
+    }
+
+    this.setRateInvalidStatus();
+  }
+
+  /**
+   * Sets the aria-invalid attribute of the rate field based on its validity.
+   * TODO: We shouldn't have to do this manually, but it seems that process
+   * of changing it is running too slowly, which causes an
+   * ExpressionChangedAfterItHasBeenCheckedError error.
+   */
+  setRateInvalidStatus() {
+    const currentRate = this.editSettingsForm.get("notificationRate");
+
+    if (this.editSettingsForm.get("enableAutoRefresh")?.value === true) {
+      if (currentRate && (!currentRate.value || (currentRate.value && currentRate.value < 20))) {
+        document.querySelector("#notificationRate")?.setAttribute("aria-invalid", "true");
+      } else {
+        document.querySelector("#notificationRate")?.setAttribute("aria-invalid", "false");
+      }
+    } else {
+      document.querySelector("#notificationRate")?.setAttribute("aria-invalid", "false");
     }
   }
 }

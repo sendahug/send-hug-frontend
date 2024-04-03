@@ -59,12 +59,12 @@ export class NotificationService {
   notificationsSub: PushSubscription | undefined;
   subId = 0;
   newNotifications = 0;
-  pushStatus!: Boolean;
+  pushStatus: boolean = false;
   resubscribeCalls = 0;
   pushDate = 0;
   // notifications refresh variables
   refreshBtn!: "Enable" | "Disable";
-  refreshStatus!: Boolean;
+  refreshStatus: boolean = false;
   refreshRateSecs = 20;
   refreshCounter: Observable<number> | undefined;
   refreshSub: Subscription | undefined;
@@ -83,9 +83,6 @@ export class NotificationService {
         this.pushStatus = this.authService.userData.pushEnabled;
         this.refreshStatus = this.authService.userData.autoRefresh;
         this.refreshRateSecs = this.authService.userData.refreshRate;
-      } else {
-        this.pushStatus = false;
-        this.refreshStatus = false;
       }
 
       this.toggleBtn = this.pushStatus ? "Disable" : "Enable";

@@ -22,14 +22,36 @@
 	
 	<div id="notificationSettings">
 		<h4>Notifications</h4>
-		<button class="appButton NotificationButton" (click)="togglePushNotifications()">{{ notificationService.toggleBtn }} Push Notifications</button>
-		<button class="appButton NotificationButton" (click)="toggleAutoRefresh()">{{ notificationService.refreshBtn }} Auto-Refresh</button>
-		<form id="refreshRateForm">
+		<form [formGroup]="editSettingsForm" id="refreshRateForm">
+			<div class="formElement">
+				<label for="enableNotifications" class="required">Push Notifications Enabled?:</label>
+				<input
+					formControlName="enableNotifications"
+					type="checkbox"
+					id="enableNotifications"
+				>
+			</div>
+			<div class="formElement">
+				<label for="enableAutoRefresh" class="required">Auto-Refresh Enabled?:</label>
+				<input
+					formControlName="enableAutoRefresh"
+					type="checkbox"
+					id="enableAutoRefresh"
+				>
+			</div>
 			<div class="formElement">
 				<label for="notificationRate" class="required">Notifications auto-refresh rate:</label>
-				<input type="number" min="20" max="3600" id="notificationRate" value="(notificationService.refreshRateSecs)" #notificationRate aria-invalid="false" required aria-required="true">
+				<input
+					formControlName="notificationRate"
+					type="number"
+					min="20"
+					max="3600"
+					id="notificationRate"
+					[required]="this.editSettingsForm.get('enableAutoRefresh')?.value == true"
+					[attr.aria-required]="this.editSettingsForm.get('enableAutoRefresh')?.value == true"
+				>
 			</div>
-			<button type="submit" (click)="updateRefreshRate($event, notificationRate.value)" class="appButton sendData" aria-label="save auto-refresh settings">Save</button>
+			<button type="submit" (click)="updateSettings()" class="appButton sendData" aria-label="save auto-refresh settings">Save</button>
 		</form>
 		
 	</div>

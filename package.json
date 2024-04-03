@@ -73,7 +73,7 @@
     "@angular/router": "^17.3.2",
     "@angular/service-worker": "^17.3.2",
     "@fortawesome/angular-fontawesome": "^0.14.1",
-    "@fortawesome/fontawesome-common-types": "^6.5.1",
+    "@fortawesome/fontawesome-common-types": "^6.5.2",
     "@fortawesome/fontawesome-svg-core": "^6.5.1",
     "@fortawesome/free-brands-svg-icons": "^6.5.2",
     "@fortawesome/free-regular-svg-icons": "^6.5.2",

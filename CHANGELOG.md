@@ -4,6 +4,25 @@
 
 #### Chores
 
+- Added the Font Awesome dependencies to Dependabot's config as a dependency group to ensure they're updated together at the same pull request ([#1582](https://github.com/sendahug/send-hug-frontend/pull/1582)).
+
+### 2024-04-03
+
+#### Changes
+
+- Replaced the "enable/disable push notifications" and the "enable/disable auto-refresh" buttons in the Settings view with checkboxes. The new checkboxes are now part of the form in the view (instead of the "save" button only impacting the "refresh rate" field). This makes the "update settings" section (and the form within it) considerably more intuitive to use ([#1572](https://github.com/sendahug/send-hug-frontend/pull/1572)).
+- Replaced the old "settings update" form with an Angular reactive form, which simplifies form validation ([#1572](https://github.com/sendahug/send-hug-frontend/pull/1572)).
+
+### 2024-04-01
+
+#### Fixes
+
+- Fixed a bug where the "new messages" screen accidentally showed `[object object]` instead of the name of the user to send a message to in the "for" field when users tried to send a new message from the messages' views ([#1569](https://github.com/sendahug/send-hug-frontend/pull/1569)).
+
+### 2024-03-31
+
+#### Chores
+
 - Replaced the deprecated Router Testing Module in unit tests with the regular Router Module, as per Angular's guidance ([#1567](https://github.com/sendahug/send-hug-frontend/pull/1567)).
 
 ### 2024-03-30

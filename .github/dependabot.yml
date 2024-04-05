@@ -9,6 +9,10 @@ updates:
       angular-dependencies:
         patterns:
           - "@angular/*"
+      font-awesome:
+        patterns:
+          - "@fortawesome/fontawesome-*"
+          - "@fortawesome/free-*"
     rebase-strategy: auto
     commit-message:
       prefix: "deps:"

@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+### 2024-04-05
+
 #### Chores
 
 - Added the Font Awesome dependencies to Dependabot's config as a dependency group to ensure they're updated together at the same pull request ([#1582](https://github.com/sendahug/send-hug-frontend/pull/1582)).

@@ -7,7 +7,7 @@
   <a *ngIf="reportType == 'User'" [routerLink]="['/user', reportedItem.userId]" id="uReportText">{{ reportedItem.displayName }}</a>
 
   <div id="reportQ" class="popupText required">{{ "What is the problem with this " + reportType.toLowerCase() + "?" }}</div>
-  <form id="reportPost" role="radiogroup"  [formGroup]="reportForm">
+  <form [formGroup]="reportForm" id="reportPost" role="radiogroup">
     <div class="formElement">
       <input type="radio" class="radioButton" id="pRadioOption0" value="0" (click)="checkSelectedForOther($event.target.value)" aria-describedby="reportQ" formControlName="selectedReason">
       <label class="radioButtonLabel" for="pRadioOption0">{{ reportReasonsText[reportType][0] }}</label>

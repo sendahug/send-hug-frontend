@@ -41,13 +41,12 @@ import {
 import { HttpClientModule } from "@angular/common/http";
 import { ServiceWorkerModule } from "@angular/service-worker";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
+import { ReactiveFormsModule } from "@angular/forms";
 
-import { AppComponent } from "../../../app.component";
 import { PostEditForm } from "./postEditForm.component";
-import { Post } from "../../../interfaces/post.interface";
-import { AppAlert } from "@app/components/appAlert/appAlert.component";
+import { Post } from "@app/interfaces/post.interface";
 
-// DISPLAY NAME EDIT
+// POST EDIT
 // ==================================================================
 describe("PostEditForm", () => {
   // Before each test, configure testing environment
@@ -61,19 +60,17 @@ describe("PostEditForm", () => {
         HttpClientModule,
         ServiceWorkerModule.register("sw.js", { enabled: false }),
         FontAwesomeModule,
+        ReactiveFormsModule,
       ],
-      declarations: [AppComponent, PostEditForm, AppAlert],
+      declarations: [PostEditForm],
       providers: [{ provide: APP_BASE_HREF, useValue: "/" }],
     }).compileComponents();
   });
 
   // Check that the component is created
   it("should create the component", () => {
-    const acFixture = TestBed.createComponent(AppComponent);
-    const appComponent = acFixture.componentInstance;
     const fixture = TestBed.createComponent(PostEditForm);
     const popUp = fixture.componentInstance;
-    expect(appComponent).toBeTruthy();
     expect(popUp).toBeTruthy();
   });
 
@@ -100,6 +97,7 @@ describe("PostEditForm", () => {
     const isUpdatedSpy = spyOn(popUp["itemsService"].isUpdated, "subscribe");
 
     popUpDOM.querySelector("#postText").value = newText;
+    popUpDOM.querySelector("#postText").dispatchEvent(new Event("input"));
     popUpDOM.querySelectorAll(".sendData")[0].click();
     fixture.detectChanges();
 
@@ -129,6 +127,7 @@ describe("PostEditForm", () => {
     const isUpdatedSpy = spyOn(popUp["adminService"].isUpdated, "subscribe");
 
     popUpDOM.querySelector("#postText").value = newText;
+    popUpDOM.querySelector("#postText").dispatchEvent(new Event("input"));
     popUpDOM.querySelector("#updateAndClose").click();
     fixture.detectChanges();
 
@@ -163,6 +162,7 @@ describe("PostEditForm", () => {
     const isUpdatedSpy = spyOn(popUp["adminService"].isUpdated, "subscribe");
 
     popUpDOM.querySelector("#postText").value = newText;
+    popUpDOM.querySelector("#postText").dispatchEvent(new Event("input"));
     popUpDOM.querySelector("#updateDontClose").click();
     fixture.detectChanges();
 

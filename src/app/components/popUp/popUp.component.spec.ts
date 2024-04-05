@@ -41,6 +41,7 @@ import {
 import { HttpClientModule } from "@angular/common/http";
 import { ServiceWorkerModule } from "@angular/service-worker";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
+import { ReactiveFormsModule } from "@angular/forms";
 
 import { AppComponent } from "../../app.component";
 import { PopUp } from "./popUp.component";
@@ -63,6 +64,7 @@ describe("Popup", () => {
         HttpClientModule,
         ServiceWorkerModule.register("sw.js", { enabled: false }),
         FontAwesomeModule,
+        ReactiveFormsModule,
       ],
       declarations: [
         AppComponent,

@@ -42,9 +42,10 @@ import { ServiceWorkerModule } from "@angular/service-worker";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { of } from "rxjs";
 import { ActivatedRoute, RouterModule, UrlSegment } from "@angular/router";
+import { ReactiveFormsModule } from "@angular/forms";
 
 import { NewItem } from "./newItem.component";
-import { AuthService } from "../../services/auth.service";
+import { AuthService } from "@app/services/auth.service";
 import { mockAuthedUser } from "@tests/mockData";
 
 describe("NewItem", () => {
@@ -59,6 +60,7 @@ describe("NewItem", () => {
         HttpClientModule,
         ServiceWorkerModule.register("sw.js", { enabled: false }),
         FontAwesomeModule,
+        ReactiveFormsModule,
       ],
       declarations: [NewItem],
       providers: [{ provide: APP_BASE_HREF, useValue: "/" }],
@@ -112,6 +114,7 @@ describe("NewItem", () => {
     // fill in post's text and trigger a click
     const postText = "new post";
     newItemDOM.querySelector("#postText").value = postText;
+    newItemDOM.querySelector("#postText").dispatchEvent(new Event("input"));
     newItemDOM.querySelectorAll(".sendData")[0].click();
     fixture.detectChanges();
 
@@ -144,6 +147,7 @@ describe("NewItem", () => {
     // fill in post's text and trigger a click
     const postText = "";
     newItemDOM.querySelector("#postText").value = postText;
+    newItemDOM.querySelector("#postText").dispatchEvent(new Event("input"));
     newItemDOM.querySelectorAll(".sendData")[0].click();
     fixture.detectChanges();
 
@@ -190,6 +194,7 @@ describe("NewItem", () => {
     // fill in post's text and trigger a click
     const postText = "textfield";
     newItemDOM.querySelector("#postText").value = postText;
+    newItemDOM.querySelector("#postText").dispatchEvent(new Event("input"));
     newItemDOM.querySelectorAll(".sendData")[0].click();
     fixture.detectChanges();
 
@@ -227,7 +232,7 @@ describe("NewItem", () => {
 
     expect(queryParamsSpy).toHaveBeenCalled();
     expect(newItem.itemType).toBe("Message");
-    expect(newItem.user).toBe("hello");
+    expect(newItem.newMessageForm.get("messageFor")?.value).toBe("hello");
     expect(newItem.forID).toBe(2);
     expect(newItemDOM.querySelector("#newPost")).toBeNull();
     expect(newItemDOM.querySelector("#newMessage")).toBeTruthy();
@@ -259,6 +264,7 @@ describe("NewItem", () => {
     // fill in message's text and trigger a click
     const messageText = "hello";
     newItemDOM.querySelector("#messageText").value = messageText;
+    newItemDOM.querySelector("#messageText").dispatchEvent(new Event("input"));
     newItemDOM.querySelectorAll(".sendData")[0].click();
     fixture.detectChanges();
 
@@ -301,6 +307,7 @@ describe("NewItem", () => {
     // fill in message's text and trigger a click
     const messageText = "";
     newItemDOM.querySelector("#messageText").value = messageText;
+    newItemDOM.querySelector("#messageText").dispatchEvent(new Event("input"));
     newItemDOM.querySelectorAll(".sendData")[0].click();
     fixture.detectChanges();
 
@@ -336,6 +343,7 @@ describe("NewItem", () => {
     // fill in message's text and trigger a click
     const messageText = "text";
     newItemDOM.querySelector("#messageText").value = messageText;
+    newItemDOM.querySelector("#messageText").dispatchEvent(new Event("input"));
     newItemDOM.querySelectorAll(".sendData")[0].click();
     fixture.detectChanges();
 
@@ -394,6 +402,7 @@ describe("NewItem", () => {
     // fill in message's text and trigger a click
     const messageText = "text";
     newItemDOM.querySelector("#messageText").value = messageText;
+    newItemDOM.querySelector("#messageText").dispatchEvent(new Event("input"));
     newItemDOM.querySelectorAll(".sendData")[0].click();
     fixture.detectChanges();
 

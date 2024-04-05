@@ -33,6 +33,7 @@
 // Angular imports
 import { Component } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
+import { FormBuilder, Validators } from "@angular/forms";
 
 // App-related imports
 import { Post } from "@app/interfaces/post.interface";
@@ -49,8 +50,16 @@ import { ValidationService } from "@app/services/validation.service";
 export class NewItem {
   // variable declaration
   itemType: String = "";
-  user: any;
   forID: any;
+  // TODO: These two should be united, they're practically
+  // the same apart from some configuration changes
+  newMessageForm = this.fb.group({
+    messageText: ["", [Validators.required, Validators.minLength(1)]],
+    messageFor: [""],
+  });
+  newPostForm = this.fb.group({
+    postText: ["", [Validators.required, Validators.minLength(1)]],
+  });
 
   // CTOR
   constructor(
@@ -59,6 +68,7 @@ export class NewItem {
     private route: ActivatedRoute,
     private alertService: AlertsService,
     private validationService: ValidationService,
+    private fb: FormBuilder,
   ) {
     let type;
     // Gets the URL parameters
@@ -75,7 +85,8 @@ export class NewItem {
 
     // If there's a user parameter, sets the user property
     if (user && userID) {
-      this.user = user;
+      // this.user = user;
+      this.newMessageForm.get("messageFor")?.setValue(user);
       this.forID = Number(userID);
     }
   }
@@ -83,16 +94,17 @@ export class NewItem {
   /*
   Function Name: sendPost()
   Function Description: Sends a request to create a new post to the items service.
-  Parameters: e (event) - This method is triggered by pressing a button; this parameter
-                          contains the click event data.
-              postText (string) - A string containing the post's text.
+  Parameters: None.
   ----------------
   Programmer: Shir Bar Lev.
   */
-  sendPost(e: Event, postText: string) {
-    e.preventDefault();
+  sendPost() {
+    const postText = this.newPostForm.get("postText")?.value || "";
 
-    if (this.validationService.validateItem("post", postText, "postText")) {
+    if (
+      this.validationService.validateItem("post", postText, "postText") &&
+      this.newPostForm.valid
+    ) {
       // if there's no logged in user, alert the user
       if (!this.authService.authenticated) {
         this.alertService.createAlert({
@@ -118,19 +130,20 @@ export class NewItem {
   /*
   Function Name: sendMessage()
   Function Description: Sends a request to create a new message to the items service.
-  Parameters: e (event) - This method is triggered by pressing a button; this parameter
-                          contains the click event data.
-              messageText (string) - A string containing the new message's text.
+  Parameters: None.
   ----------------
   Programmer: Shir Bar Lev.
   */
-  sendMessage(e: Event, messageText: string) {
-    e.preventDefault();
+  sendMessage() {
+    const messageText = this.newMessageForm.get("messageText")?.value || "";
 
     // if there's text in the textfield, try to create a new message
-    if (this.validationService.validateItem("message", messageText, "messageText")) {
+    if (
+      this.validationService.validateItem("message", messageText, "messageText") &&
+      this.newMessageForm.valid
+    ) {
       // if the user is attempting to send a message to themselves
-      if (this.authService.userData.id == this.forID) {
+      if (this.authService.userData.id == Number(this.forID)) {
         this.alertService.createAlert({
           type: "Error",
           message: "You can't send a message to yourself!",

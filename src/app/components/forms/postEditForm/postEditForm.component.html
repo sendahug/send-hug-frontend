@@ -1,4 +1,4 @@
-<form id="postEdit" class="postEdit">
+<form [formGroup]="postEditForm" id="postEdit" class="postEdit">
   <div class="formElement">
     <span class="pageCategory">By:</span> <span class="pageData" aria-describedby="pUser">{{ editedItem.user }}</span>
   </div>
@@ -6,23 +6,25 @@
   <div class="formElement">
     <label class="pageCategory required" for="postText">Post Text:</label>
     <br>
-    <textarea #postText
+    <textarea
+      formControlName="postText"
       id="postText"
       cols="40"
       rows="8"
       aria-describedby="pText"
       minlength="0"
       maxlength="480"
-      required aria-invalid="false"
-      aria-required="true">{{ editedItem.text }}
-    </textarea>
+      required
+      [attr.aria-invalid]="!this.postEditForm.get('postText')?.valid"
+      aria-required="true"
+    ></textarea>
   </div>
   <!-- If the user is editing a post from anywhere else -->
   <button
     *ngIf="!isAdmin"
     type="submit"
     class="appButton sendData"
-    (click)="editPost($event, postText.value, null)"
+    (click)="editPost($event, null)"
     [attr.aria-label]="'update post ' + editedItem.text">
       Update Post
   </button>
@@ -32,7 +34,7 @@
     type="submit"
     class="appButton sendData"
     id="updateAndClose"
-    (click)="editPost($event, postText.value, true)">
+    (click)="editPost($event, true)">
       Update Post and Close Report
   </button>
   <button
@@ -40,7 +42,7 @@
     type="submit"
     class="appButton sendData"
     id="updateDontClose"
-    (click)="editPost($event, postText.value, false)">
+    (click)="editPost($event, false)">
       Update Post without Closing Report
   </button>
 </form>

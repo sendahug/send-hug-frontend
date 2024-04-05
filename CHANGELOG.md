@@ -2,9 +2,13 @@
 
 ## Unreleased
 
+### 2024-04-05
+
 #### Chores
 
 - Added the Font Awesome dependencies to Dependabot's config as a dependency group to ensure they're updated together at the same pull request ([#1582](https://github.com/sendahug/send-hug-frontend/pull/1582)).
+- Automated the process of updating the changelog file when commits are merged to dev. This allows us to insert the date at the same time as the change, and ensures that we don't get repeated merge conflicts (due to different pull requests updating the changelog file). ([#1573](https://github.com/sendahug/send-hug-frontend/pull/1573))
+- Updated the instructions for updating the changelog file to reflect the new automated process. ([#1573](https://github.com/sendahug/send-hug-frontend/pull/1573))
 
 ### 2024-04-03
 

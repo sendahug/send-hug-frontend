@@ -1,9 +1,0 @@
-{
-  "pr_number": 1570,
-  "changes": [
-    {
-      "change": "Changes",
-      "description": "Replaced the forms in the PostEditForm, DisplayNameEditForm and NewItem components with Angular's reactive forms."
-    }
-  ]
-}

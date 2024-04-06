@@ -184,7 +184,7 @@ describe("ItemsService", () => {
       of({ success: true }),
     );
     const successAlertSpy = spyOn(itemsService["alertsService"], "createSuccessAlert");
-    itemsService.sendHug(mockPost);
+    itemsService.sendHug(mockPost.id);
 
     expect(apiClientSpy).toHaveBeenCalledWith(`posts/${mockPost.id}/hugs`, {});
     expect(successAlertSpy).toHaveBeenCalledWith("Your hug was sent!");

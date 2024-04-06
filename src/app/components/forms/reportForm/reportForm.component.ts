@@ -86,7 +86,7 @@ export class ReportForm {
   reportReasonsText = reportReasonsText;
   reportForm = this.fb.group({
     selectedReason: this.fb.control(undefined as string | undefined, [Validators.required]),
-    otherReason: this.fb.control({ value: undefined as string | undefined, disabled: true }),
+    otherReason: this.fb.control({ value: undefined as string | undefined, disabled: true }, []),
   });
 
   // CTOR
@@ -111,11 +111,16 @@ export class ReportForm {
 
     // If the selected reason is one of the set reasons, simply send it as is
     if (selectedItem <= 2) {
-      this.reportForm.get("otherReason")?.disable();
+      this.reportForm.controls.otherReason.disable();
+      this.reportForm.controls.otherReason.setValidators([]);
     }
     // If the user chose to put their own input, take that as the reason
     else {
-      this.reportForm.get("otherReason")?.enable();
+      this.reportForm.controls.otherReason.enable();
+      this.reportForm.controls.otherReason.setValidators([
+        Validators.required,
+        this.validationService.validateItemAgainst("reportOther"),
+      ]);
     }
   }
 
@@ -125,7 +130,7 @@ export class ReportForm {
    * @returns the text of the selected reason or undefined if none is selected.
    */
   getSelectedReasonText() {
-    const selectedItem = this.reportForm.get("selectedReason")?.value;
+    const selectedItem = this.reportForm.controls.selectedReason.value;
 
     if (selectedItem == null || selectedItem == undefined) {
       return undefined;
@@ -156,34 +161,30 @@ export class ReportForm {
   Function Description: Creates a report and passes it on to the items service.
                         The method is triggered by pressing the 'report' button
                         in the report popup.
-  Parameters: e (Event) - clicking the report button.
+  Parameters: None.
   ----------------
   Programmer: Shir Bar Lev.
   */
-  createReport(e: Event) {
-    e.preventDefault();
+  createReport() {
     let item =
       this.reportType == "User" ? (this.reportedItem as OtherUser) : (this.reportedItem as Post);
     let reportReason = this.getSelectedReasonText();
 
+    if (!this.reportForm.valid) {
+      const errorMessage =
+        reportReason == "other"
+          ? "If you choose 'other', you must specify a reason."
+          : "Please select a reason for the report.";
+      this.alertsService.createAlert({
+        type: "Error",
+        message: errorMessage,
+      });
+      return;
+    }
+
     // if the selected reason for the report is 'other', get the value of the text inputted
     if (reportReason == "other") {
-      const otherReasonValue = this.reportForm.get("otherReason")?.value;
-      const isValid = this.validationService.validateItem(
-        "reportOther",
-        otherReasonValue || "",
-        "rOption3Text",
-      );
-      // if the input is valid, get the value
-      if (!isValid) {
-        this.alertsService.createAlert({
-          type: "Error",
-          message: "If you choose 'other', you must specify a reason.",
-        });
-        return;
-      }
-
-      reportReason = otherReasonValue!;
+      reportReason = this.reportForm.controls.otherReason.value!;
     }
 
     // create a new report

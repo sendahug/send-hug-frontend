@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+### 2024-04-06
+
+#### Chores
+
+- Updated the process of populating the test database in CI to match the updated structure of the test data in the back-end (see [sendahug/send-hug#601](https://github.com/sendahug/send-hug-backend/pull/601)). ([#1588](https://github.com/sendahug/send-hug-frontend/pull/1588))
+
 ### 2024-04-05
 
 #### Changes

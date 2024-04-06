@@ -157,7 +157,6 @@ export class SinglePost implements AfterViewChecked, OnInit, OnDestroy {
 
   ngAfterViewChecked(): void {
     this.checkMenuSize();
-    // console.log(this.shouldDisableHugBtn())
   }
 
   ngOnDestroy(): void {

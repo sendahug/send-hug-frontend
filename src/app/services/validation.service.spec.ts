@@ -37,30 +37,9 @@ import {
   platformBrowserDynamicTesting,
 } from "@angular/platform-browser-dynamic/testing";
 import {} from "jasmine";
-import { Component } from "@angular/core";
+import { FormControl } from "@angular/forms";
 
 import { ValidationService } from "./validation.service";
-
-// Mock Page for testing toggleErrorIndicator
-// ==================================================
-@Component({
-  selector: "app-page-mock",
-  template: `
-    <input
-      type="text"
-      id="mockTextField"
-      value="{{ editedItem }}"
-      required
-      aria-invalid="false"
-      aria-required="true"
-    />
-  `,
-})
-class MockPage {
-  editedItem = "";
-
-  constructor(private validationService: ValidationService) {}
-}
 
 describe("PostsService", () => {
   let validationService: ValidationService;
@@ -73,7 +52,7 @@ describe("PostsService", () => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
       providers: [ValidationService],
-      declarations: [MockPage],
+      declarations: [],
     }).compileComponents();
 
     validationService = TestBed.inject(ValidationService);
@@ -84,192 +63,147 @@ describe("PostsService", () => {
     expect(validationService).toBeTruthy();
   });
 
-  it("should validate posts correctly", () => {
-    const validPost = "hello";
-    let longPost = "";
+  it("should validate posts correctly - too short", () => {
+    const post = "";
+    const control = new FormControl(post);
+    const res = validationService.validateItemAgainst("post")(control);
+
+    expect(res).toEqual({
+      error: "Post text cannot be empty. Please fill the field and try again.",
+    });
+  });
+
+  it("should validate posts correctly - too long", () => {
+    let post = "";
 
     for (let i = 100; i < 200; i++) {
-      longPost += i * 500;
+      post += i * 500;
     }
 
-    const postsToTest = ["", longPost];
-    const responses = [
-      "Post text cannot be empty. Please fill the field and try again.",
-      "Post text cannot be over 480 characters! Please shorten the post and try again.",
-    ];
+    const control = new FormControl(post);
+    const res = validationService.validateItemAgainst("post")(control);
 
-    const alertSpy = spyOn(validationService["alertsService"], "createAlert");
-    const toggleSpy = spyOn(validationService, "toggleErrorIndicator");
-
-    // check the valid post
-    const res = validationService.validateItem("post", validPost, "el");
-
-    expect(res).toBe(true);
-    expect(toggleSpy).toHaveBeenCalledWith(true, "el");
-    expect(alertSpy).not.toHaveBeenCalled();
-
-    // check the invalid posts
-    postsToTest.forEach((post, index) => {
-      const res = validationService.validateItem("post", post, "el");
-
-      expect(res).toBe(false);
-      expect(toggleSpy).toHaveBeenCalledWith(false, "el");
-      expect(alertSpy).toHaveBeenCalledWith({ type: "Error", message: responses[index] });
+    expect(res).toEqual({
+      error: "Post text cannot be over 480 characters! Please shorten the post and try again.",
     });
   });
 
-  it("should validate messages correctly", () => {
-    const validMessage = "hello";
-    let longMessage = "";
+  it("should validate posts correctly - valid", () => {
+    const post = "hello";
+    const control = new FormControl(post);
+    const res = validationService.validateItemAgainst("post")(control);
+
+    expect(res).toBeNull();
+  });
+
+  it("should validate messages correctly - too short", () => {
+    const message = "";
+    const control = new FormControl(message);
+    const res = validationService.validateItemAgainst("message")(control);
+
+    expect(res).toEqual({
+      error: "A message cannot be empty. Please fill the field and try again.",
+    });
+  });
+
+  it("should validate messages correctly - too long", () => {
+    let message = "";
 
     for (let i = 100; i < 200; i++) {
-      longMessage += i * 500;
+      message += i * 500;
     }
 
-    const messagesToTest = ["", longMessage];
-    const responses = [
-      "A message cannot be empty. Please fill the field and try again.",
-      "Message text cannot be over 480 characters! Please shorten the message and try again.",
-    ];
+    const control = new FormControl(message);
+    const res = validationService.validateItemAgainst("message")(control);
 
-    const alertSpy = spyOn(validationService["alertsService"], "createAlert");
-    const toggleSpy = spyOn(validationService, "toggleErrorIndicator");
-
-    // check the valid message
-    const res = validationService.validateItem("message", validMessage, "el");
-
-    expect(res).toBe(true);
-    expect(toggleSpy).toHaveBeenCalledWith(true, "el");
-    expect(alertSpy).not.toHaveBeenCalled();
-
-    // check the invalid messages
-    messagesToTest.forEach((mess, index) => {
-      const res = validationService.validateItem("message", mess, "el");
-
-      expect(res).toBe(false);
-      expect(toggleSpy).toHaveBeenCalledWith(false, "el");
-      expect(alertSpy).toHaveBeenCalledWith({ type: "Error", message: responses[index] });
+    expect(res).toEqual({
+      error:
+        "Message text cannot be over 480 characters! Please shorten the message and try again.",
     });
   });
 
-  it("should validate display names correctly", () => {
-    const validName = "hello";
-    let longName = "";
+  it("should validate messages correctly - valid", () => {
+    const message = "hello";
+    const control = new FormControl(message);
+    const res = validationService.validateItemAgainst("message")(control);
 
-    for (let i = 0; i < 50; i++) {
-      longName += i;
-    }
+    expect(res).toBeNull();
+  });
 
-    const namesToTest = ["", longName];
-    const responses = [
-      "New display name cannot be empty. Please fill the field and try again.",
-      "New display name cannot be over 60 characters! Please shorten the name and try again.",
-    ];
+  it("should validate display names correctly - too short", () => {
+    const name = "";
+    const control = new FormControl(name);
+    const res = validationService.validateItemAgainst("displayName")(control);
 
-    const alertSpy = spyOn(validationService["alertsService"], "createAlert");
-    const toggleSpy = spyOn(validationService, "toggleErrorIndicator");
-
-    // check the valid name
-    const res = validationService.validateItem("displayName", validName, "el");
-
-    expect(res).toBe(true);
-    expect(toggleSpy).toHaveBeenCalledWith(true, "el");
-    expect(alertSpy).not.toHaveBeenCalled();
-
-    // check the invalid namesToTest
-    namesToTest.forEach((name, index) => {
-      const res = validationService.validateItem("displayName", name, "el");
-
-      expect(res).toBe(false);
-      expect(toggleSpy).toHaveBeenCalledWith(false, "el");
-      expect(alertSpy).toHaveBeenCalledWith({ type: "Error", message: responses[index] });
+    expect(res).toEqual({
+      error: "New display name cannot be empty. Please fill the field and try again.",
     });
   });
 
-  it("should validate report - other reason correctly", () => {
-    const validReason = "hello";
-    let longReason = "";
+  it("should validate display names correctly - too long", () => {
+    let name = "";
 
     for (let i = 100; i < 200; i++) {
-      longReason += i * 10;
+      name += i * 500;
     }
 
-    const reasonsToTest = ["", longReason];
-    const responses = [
-      "The 'other' field cannot be empty.",
-      "Report reason cannot be over 120 characters! Please shorten the message and try again.",
-    ];
+    const control = new FormControl(name);
+    const res = validationService.validateItemAgainst("displayName")(control);
 
-    const alertSpy = spyOn(validationService["alertsService"], "createAlert");
-    const toggleSpy = spyOn(validationService, "toggleErrorIndicator");
-
-    // check the valid reason
-    const res = validationService.validateItem("reportOther", validReason, "el");
-
-    expect(res).toBe(true);
-    expect(toggleSpy).toHaveBeenCalledWith(true, "el");
-    expect(alertSpy).not.toHaveBeenCalled();
-
-    // check the invalid reason
-    reasonsToTest.forEach((reason, index) => {
-      const res = validationService.validateItem("reportOther", reason, "el");
-
-      expect(res).toBe(false);
-      expect(toggleSpy).toHaveBeenCalledWith(false, "el");
-      expect(alertSpy).toHaveBeenCalledWith({ type: "Error", message: responses[index] });
+    expect(res).toEqual({
+      error:
+        "New display name cannot be over 60 characters! Please shorten the name and try again.",
     });
   });
 
-  it("should return true for emptyAllowed", () => {
+  it("should validate display names correctly - valid", () => {
+    const name = "hello";
+    const control = new FormControl(name);
+    const res = validationService.validateItemAgainst("displayName")(control);
+
+    expect(res).toBeNull();
+  });
+
+  it("should validated report - other reason correctly - too short", () => {
+    const reason = "";
+    const control = new FormControl(reason);
+    const res = validationService.validateItemAgainst("reportOther")(control);
+
+    expect(res).toEqual({ error: "The 'other' field cannot be empty." });
+  });
+
+  it("should validate report - other reason correctly - too long", () => {
+    let reason = "";
+
+    for (let i = 100; i < 200; i++) {
+      reason += i * 10;
+    }
+
+    const control = new FormControl(reason);
+    const res = validationService.validateItemAgainst("reportOther")(control);
+
+    expect(res).toEqual({
+      error:
+        "Report reason cannot be over 120 characters! Please shorten the message and try again.",
+    });
+  });
+
+  it("should validate report - other reason correctly - valid", () => {
+    const reason = "hello";
+    const control = new FormControl(reason);
+    const res = validationService.validateItemAgainst("reportOther")(control);
+
+    expect(res).toBeNull();
+  });
+
+  it("should return true for not required", () => {
     const emptyReason = "";
-    const alertSpy = spyOn(validationService["alertsService"], "createAlert");
-    const toggleSpy = spyOn(validationService, "toggleErrorIndicator");
-    validationService.validationRules.reportOther.emptyAllowed = true;
+    validationService.validationRules.reportOther.required = false;
+    const control = new FormControl(emptyReason);
 
     // check the valid reason
-    const res = validationService.validateItem("reportOther", emptyReason, "el");
+    const res = validationService.validateItemAgainst("reportOther")(control);
 
-    expect(res).toBe(true);
-    expect(toggleSpy).toHaveBeenCalledWith(true, "el");
-    expect(alertSpy).not.toHaveBeenCalled();
-  });
-
-  it("should toggle error indicator on", () => {
-    const fixture = TestBed.createComponent(MockPage);
-    const mockPage = fixture.componentInstance;
-    const mockPageDOM = fixture.nativeElement;
-    const textField = mockPageDOM.querySelector("#mockTextField");
-
-    mockPage["validationService"].toggleErrorIndicator(false, "mockTextField");
-
-    expect(textField.classList).toContain("missing");
-    expect(textField.getAttribute("aria-invalid")).toEqual("true");
-  });
-
-  it("should toggle error indicator off", () => {
-    const fixture = TestBed.createComponent(MockPage);
-    const mockPage = fixture.componentInstance;
-    const mockPageDOM = fixture.nativeElement;
-    const textField = mockPageDOM.querySelector("#mockTextField");
-
-    mockPage["validationService"].toggleErrorIndicator(true, "mockTextField");
-
-    expect(textField.classList).not.toContain("missing");
-    expect(textField.getAttribute("aria-invalid")).toEqual("false");
-  });
-
-  it("should toggle missing off if it's on", () => {
-    const fixture = TestBed.createComponent(MockPage);
-    const mockPage = fixture.componentInstance;
-    const mockPageDOM = fixture.nativeElement;
-    const textField = mockPageDOM.querySelector("#mockTextField");
-
-    mockPage["validationService"].toggleErrorIndicator(false, "mockTextField");
-
-    expect(textField.classList).toContain("missing");
-
-    mockPage["validationService"].toggleErrorIndicator(true, "mockTextField");
-
-    expect(textField.classList).not.toContain("missing");
+    expect(res).toBeNull();
   });
 });

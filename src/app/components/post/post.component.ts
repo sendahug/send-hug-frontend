@@ -150,7 +150,7 @@ export class SinglePost implements AfterViewChecked, OnInit, OnDestroy {
           // TODO: Also update the parent list & IDB
           const sent_hugs = this._post()!.sentHugs || [];
           sent_hugs.push(this.authService.userData.id!);
-          this._post.set({ 
+          this._post.set({
             ...this._post()!,
             givenHugs: this._post()!.givenHugs + 1,
             sentHugs: sent_hugs,

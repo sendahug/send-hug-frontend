@@ -76,8 +76,9 @@ jobs:
       - run:
           name: Restore database
           command: |
-            cd ..
-            psql -h localhost -p 5432 -U postgres test_sah < send-hug-backend/tests/capstone_db.sql
+            cd ../send-hug-backend
+            mv ../send-hug-frontend/e2e/setup.py .
+            python3 -m setup.py
       - run:
           name: Start backend
           command: |
@@ -147,8 +148,9 @@ jobs:
       - run:
           name: Restore database
           command: |
-            cd ..
-            psql -h localhost -p 5432 -U postgres test_sah < send-hug-backend/tests/capstone_db.sql
+            cd ../send-hug-backend
+            mv ../send-hug-frontend/e2e/setup.py .
+            python3 -m setup.py
       - run:
           name: Start backend
           command: |

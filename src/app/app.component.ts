@@ -43,6 +43,7 @@ import { ItemsService } from "./services/items.service";
 import { AlertsService } from "./services/alerts.service";
 import { SWManager } from "./services/sWManager.service";
 import { NotificationService } from "./services/notifications.service";
+import { ValidationService } from "./services/validation.service";
 
 @Component({
   selector: "app-root",
@@ -85,6 +86,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     private serviceWorkerM: SWManager,
     public notificationService: NotificationService,
     private fb: FormBuilder,
+    private validationService: ValidationService,
   ) {
     this.authService.checkHash();
 
@@ -195,12 +197,12 @@ export class AppComponent implements OnInit, AfterViewInit {
   Function Name: searchApp()
   Function Description: Initiates a search for the given query.
   Parameters: e (Event) - Click event (on the search button).
-              searchQuery (string) - Term to search for.
   ----------------
   Programmer: Shir Bar Lev.
   */
-  searchApp(e: Event, searchQuery: string) {
+  searchApp(e: Event) {
     e.preventDefault();
+    const searchQuery = this.searchForm.controls.searchQuery.value;
 
     // if there's something in the search query text field, search for it
     if (searchQuery) {

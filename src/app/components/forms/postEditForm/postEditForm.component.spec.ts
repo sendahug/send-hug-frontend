@@ -45,6 +45,7 @@ import { ReactiveFormsModule } from "@angular/forms";
 
 import { PostEditForm } from "./postEditForm.component";
 import { Post } from "@app/interfaces/post.interface";
+import { ValidationService } from "@app/services/validation.service";
 
 // POST EDIT
 // ==================================================================
@@ -75,6 +76,11 @@ describe("PostEditForm", () => {
   });
 
   it("should make the request to itemsService to change the post", () => {
+    const validationService = TestBed.inject(ValidationService);
+    const validateSpy = spyOn(validationService, "validateItemAgainst").and.returnValue(
+      (control) => null,
+    );
+
     const fixture = TestBed.createComponent(PostEditForm);
     const popUp = fixture.componentInstance;
     const popUpDOM = fixture.nativeElement;
@@ -92,7 +98,6 @@ describe("PostEditForm", () => {
     const newText = "new text";
     fixture.detectChanges();
 
-    const validateSpy = spyOn(popUp["validationService"], "validateItem").and.returnValue(true);
     const updateSpy = spyOn(popUp["itemsService"], "editPost");
     const isUpdatedSpy = spyOn(popUp["itemsService"].isUpdated, "subscribe");
 
@@ -101,7 +106,7 @@ describe("PostEditForm", () => {
     popUpDOM.querySelectorAll(".sendData")[0].click();
     fixture.detectChanges();
 
-    expect(validateSpy).toHaveBeenCalledWith("post", newText, "postText");
+    expect(validateSpy).toHaveBeenCalledWith("post");
     const updatedItem = { ...originalItem };
     updatedItem["text"] = newText;
     expect(updateSpy).toHaveBeenCalledWith(updatedItem);
@@ -109,6 +114,11 @@ describe("PostEditForm", () => {
   });
 
   it("should make the request to adminService to change the post - close report", () => {
+    const validationService = TestBed.inject(ValidationService);
+    const validateSpy = spyOn(validationService, "validateItemAgainst").and.returnValue(
+      (control) => null,
+    );
+
     const fixture = TestBed.createComponent(PostEditForm);
     const popUp = fixture.componentInstance;
     const popUpDOM = fixture.nativeElement;
@@ -122,7 +132,6 @@ describe("PostEditForm", () => {
     const newText = "new text";
     fixture.detectChanges();
 
-    const validateSpy = spyOn(popUp["validationService"], "validateItem").and.returnValue(true);
     const updateSpy = spyOn(popUp["adminService"], "editPost");
     const isUpdatedSpy = spyOn(popUp["adminService"].isUpdated, "subscribe");
 
@@ -131,7 +140,7 @@ describe("PostEditForm", () => {
     popUpDOM.querySelector("#updateAndClose").click();
     fixture.detectChanges();
 
-    expect(validateSpy).toHaveBeenCalledWith("post", newText, "postText");
+    expect(validateSpy).toHaveBeenCalledWith("post");
     expect(updateSpy).toHaveBeenCalledWith(
       {
         id: 2,
@@ -144,6 +153,11 @@ describe("PostEditForm", () => {
   });
 
   it("should make the request to adminService to change the post - don't close report", () => {
+    const validationService = TestBed.inject(ValidationService);
+    const validateSpy = spyOn(validationService, "validateItemAgainst").and.returnValue(
+      (control) => null,
+    );
+
     const fixture = TestBed.createComponent(PostEditForm);
     const popUp = fixture.componentInstance;
     const popUpDOM = fixture.nativeElement;
@@ -157,7 +171,6 @@ describe("PostEditForm", () => {
     const newText = "new text";
     fixture.detectChanges();
 
-    const validateSpy = spyOn(popUp["validationService"], "validateItem").and.returnValue(true);
     const updateSpy = spyOn(popUp["adminService"], "editPost");
     const isUpdatedSpy = spyOn(popUp["adminService"].isUpdated, "subscribe");
 
@@ -166,7 +179,7 @@ describe("PostEditForm", () => {
     popUpDOM.querySelector("#updateDontClose").click();
     fixture.detectChanges();
 
-    expect(validateSpy).toHaveBeenCalledWith("post", newText, "postText");
+    expect(validateSpy).toHaveBeenCalledWith("post");
     expect(updateSpy).toHaveBeenCalledWith(
       {
         id: 2,

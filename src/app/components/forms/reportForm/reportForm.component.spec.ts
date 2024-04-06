@@ -42,6 +42,7 @@ import { ReportForm } from "./reportForm.component";
 import { AuthService } from "../../../services/auth.service";
 import { mockAuthedUser } from "@tests/mockData";
 import { AppAlert } from "@app/components/appAlert/appAlert.component";
+import { ValidationService } from "@app/services/validation.service";
 
 describe("Report", () => {
   // Before each test, configure testing environment
@@ -341,6 +342,11 @@ describe("Report", () => {
   // Check that if the user chooses 'other' as reason they can't submit an
   // empty reason
   it("requires text if the chosen reason is other - invalid", (done: DoneFn) => {
+    const validationService = TestBed.inject(ValidationService);
+    const validateSpy = spyOn(validationService, "validateItemAgainst").and.returnValue(
+      (control) => null,
+    );
+
     TestBed.createComponent(AppComponent);
     const fixture = TestBed.createComponent(ReportForm);
     const popUp = fixture.componentInstance;
@@ -355,7 +361,6 @@ describe("Report", () => {
       text: "hi",
       date: new Date(),
     };
-    const validateSpy = spyOn(popUp["validationService"], "validateItem").and.returnValue(false);
     const reportServiceSpy = spyOn(popUp["itemsService"], "sendReport");
     const alertServiceSpy = spyOn(popUp["alertsService"], "createAlert");
     fixture.detectChanges();
@@ -369,7 +374,7 @@ describe("Report", () => {
     fixture.detectChanges();
 
     // check the report wasn't sent and the user was alerted
-    expect(validateSpy).toHaveBeenCalledWith("reportOther", "", "rOption3Text");
+    expect(validateSpy).toHaveBeenCalledWith("reportOther");
     expect(reportServiceSpy).not.toHaveBeenCalled();
     expect(alertServiceSpy).toHaveBeenCalledWith({
       type: "Error",
@@ -379,6 +384,11 @@ describe("Report", () => {
   });
 
   it("requires text if the chosen reason is other - valid", (done: DoneFn) => {
+    const validationService = TestBed.inject(ValidationService);
+    const validateSpy = spyOn(validationService, "validateItemAgainst").and.returnValue(
+      (control) => null,
+    );
+
     TestBed.createComponent(AppComponent);
     const fixture = TestBed.createComponent(ReportForm);
     const popUp = fixture.componentInstance;
@@ -393,7 +403,6 @@ describe("Report", () => {
       text: "hi",
       date: new Date(),
     };
-    const validateSpy = spyOn(popUp["validationService"], "validateItem").and.returnValue(true);
     const reportServiceSpy = spyOn(popUp["itemsService"], "sendReport");
     const reportReason = "because";
     const otherText = popUpDOM.querySelector("#rOption3Text");
@@ -412,7 +421,7 @@ describe("Report", () => {
     fixture.detectChanges();
 
     // check the report was sent
-    expect(validateSpy).toHaveBeenCalledWith("reportOther", reportReason, "rOption3Text");
+    expect(validateSpy).toHaveBeenCalledWith("reportOther");
     expect(reportServiceSpy).toHaveBeenCalled();
     done();
   });

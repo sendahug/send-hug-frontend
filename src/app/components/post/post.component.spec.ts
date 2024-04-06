@@ -387,8 +387,8 @@ describe("Post", () => {
     authService.userData = { ...mockAuthedUser };
 
     // before
-    expect(singlePost.post.givenHugs).toBe(0);
-    expect(singlePost.post.sentHugs).toEqual([]);
+    expect(singlePost._post().givenHugs).toBe(0);
+    expect(singlePost._post().sentHugs).toEqual([]);
     expect(singlePost.shouldDisableHugBtn()).toBeFalse();
     expect(singlePost.sendHugButtonClass()).toEqual({
       "textlessButton hugButton": true,
@@ -400,8 +400,8 @@ describe("Post", () => {
     upFixture.detectChanges();
 
     // after
-    expect(singlePost.post.givenHugs).toBe(1);
-    expect(singlePost.post.sentHugs).toEqual([4]);
+    expect(singlePost._post().givenHugs).toBe(1);
+    expect(singlePost._post().sentHugs).toEqual([4]);
     expect(singlePostDOM.querySelectorAll(".badge")[0].textContent).toBe("1");
     expect(singlePost.shouldDisableHugBtn()).toBeTrue();
     expect(singlePost.sendHugButtonClass()).toEqual({

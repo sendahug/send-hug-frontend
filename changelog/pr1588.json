@@ -1,0 +1,9 @@
+{
+  "pr_number": 1588,
+  "changes": [
+    {
+      "change": "Chores",
+      "description": "Updated the process in which we populate the test database in CI to match the updated structure of the test data in the back-end (see [sendahug/send-hug#601](https://github.com/sendahug/send-hug-backend/pull/601))."
+    }
+  ]
+}

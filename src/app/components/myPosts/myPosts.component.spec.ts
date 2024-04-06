@@ -420,7 +420,7 @@ describe("MyPosts", () => {
 
     // after the click
     expect(hugSpy).toHaveBeenCalledWith(1);
-    expect(hugServiceSpy).toHaveBeenCalledWith(mockPosts[0]);
+    expect(hugServiceSpy).toHaveBeenCalledWith(mockPosts[0].id);
     done();
   });
 

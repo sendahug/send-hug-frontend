@@ -84,7 +84,7 @@ describe("PostsService", () => {
     const res = validationService.validateItemAgainst("post")(control);
 
     expect(res).toEqual({
-      error: "Post text cannot be over 480 characters! Please shorten the post and try again.",
+      error: "Post text cannot be over 480 characters! Please shorten it and try again.",
     });
   });
 
@@ -117,8 +117,7 @@ describe("PostsService", () => {
     const res = validationService.validateItemAgainst("message")(control);
 
     expect(res).toEqual({
-      error:
-        "Message text cannot be over 480 characters! Please shorten the message and try again.",
+      error: "A message cannot be over 480 characters! Please shorten it and try again.",
     });
   });
 
@@ -151,8 +150,7 @@ describe("PostsService", () => {
     const res = validationService.validateItemAgainst("displayName")(control);
 
     expect(res).toEqual({
-      error:
-        "New display name cannot be over 60 characters! Please shorten the name and try again.",
+      error: "New display name cannot be over 60 characters! Please shorten it and try again.",
     });
   });
 
@@ -169,7 +167,9 @@ describe("PostsService", () => {
     const control = new FormControl(reason);
     const res = validationService.validateItemAgainst("reportOther")(control);
 
-    expect(res).toEqual({ error: "The 'other' field cannot be empty." });
+    expect(res).toEqual({
+      error: "Report reason cannot be empty. Please fill the field and try again.",
+    });
   });
 
   it("should validate report - other reason correctly - too long", () => {
@@ -183,8 +183,7 @@ describe("PostsService", () => {
     const res = validationService.validateItemAgainst("reportOther")(control);
 
     expect(res).toEqual({
-      error:
-        "Report reason cannot be over 120 characters! Please shorten the message and try again.",
+      error: "Report reason cannot be over 120 characters! Please shorten it and try again.",
     });
   });
 

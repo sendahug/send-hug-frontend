@@ -40,41 +40,28 @@ type ValidatableItems = "post" | "message" | "displayName" | "reportOther";
   providedIn: "root",
 })
 export class ValidationService {
+  private zeroLengthTemplate = "cannot be empty. Please fill the field and try again.";
+  private tooLongTemplate = "cannot be over {0} characters! Please shorten it and try again.";
   validationRules = {
     post: {
       max: 480,
       required: true,
-      errorMessages: {
-        zeroLength: "Post text cannot be empty. Please fill the field and try again.",
-        tooLong: "Post text cannot be over 480 characters! Please shorten the post and try again.",
-      },
+      editedItem: "Post text",
     },
     message: {
       max: 480,
       required: true,
-      errorMessages: {
-        zeroLength: "A message cannot be empty. Please fill the field and try again.",
-        tooLong:
-          "Message text cannot be over 480 characters! Please shorten the message and try again.",
-      },
+      editedItem: "A message",
     },
     displayName: {
       max: 60,
       required: true,
-      errorMessages: {
-        zeroLength: "New display name cannot be empty. Please fill the field and try again.",
-        tooLong:
-          "New display name cannot be over 60 characters! Please shorten the name and try again.",
-      },
+      editedItem: "New display name",
     },
     reportOther: {
       max: 120,
       required: true,
-      errorMessages: {
-        zeroLength: "The 'other' field cannot be empty.",
-        tooLong:
-          "Report reason cannot be over 120 characters! Please shorten the message and try again.",
-      },
+      editedItem: "Report reason",
     },
   };
 
@@ -95,10 +82,16 @@ export class ValidationService {
 
       // if there's no text and it's required, return an error
       if (!currentValue && testValidationRules["required"])
-        return { error: testValidationRules["errorMessages"]["zeroLength"] };
+        return { error: `${testValidationRules["editedItem"]} ${this.zeroLengthTemplate}` };
 
-      if (currentValue && currentValue.length > testValidationRules["max"])
-        return { error: testValidationRules["errorMessages"]["tooLong"] };
+      if (currentValue && currentValue.length > testValidationRules["max"]) {
+        const errorMessage = this.tooLongTemplate.replace(
+          "{0}",
+          testValidationRules["max"].toString(),
+        );
+
+        return { error: `${testValidationRules["editedItem"]} ${errorMessage}` };
+      }
 
       return null;
     };

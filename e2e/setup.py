@@ -11,3 +11,6 @@ def setup_e2e():
         db.drop_all()
         db.create_all()
         create_data(db)
+
+if __name__ == "__main__":
+    setup_e2e()

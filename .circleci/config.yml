@@ -76,10 +76,11 @@ jobs:
       - run:
           name: Restore database
           command: |
+            cd ..
             ls
-            cd ../send-hug-backend
-            mv ../send-hug-frontend/e2e/setup.py .
-            python3 -m setup.py
+            mv ./send-hug-frontend/e2e/setup.py ./send-hug-backend
+            cd send-hug-backend
+            python3 setup.py
       - run:
           name: Start backend
           command: |

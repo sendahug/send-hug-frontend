@@ -224,4 +224,43 @@ describe("DisplayNameEditForm", () => {
     );
     expect(emitSpy).toHaveBeenCalledWith(false);
   });
+
+  it("should prevent invalid names", () => {
+    const validationService = TestBed.inject(ValidationService);
+    const validateSpy = spyOn(validationService, "validateItemAgainst").and.returnValue(
+      (control) => {
+        return { error: "error" };
+      },
+    );
+
+    const fixture = TestBed.createComponent(DisplayNameEditForm);
+    const popUp = fixture.componentInstance;
+    const popUpDOM = fixture.nativeElement;
+    popUp.toEdit = "user";
+    popUp.editedItem = {
+      id: 4,
+      displayName: "name",
+      receivedHugs: 2,
+      givenHugs: 2,
+      postsNum: 2,
+      loginCount: 3,
+      role: "admin",
+    };
+    const newName = "new name";
+    fixture.detectChanges();
+
+    const updateSpy = spyOn(popUp.authService, "updateUserData");
+    const emitSpy = spyOn(popUp.editMode, "emit");
+    const alertSpy = spyOn(popUp["alertService"], "createAlert");
+
+    popUpDOM.querySelector("#displayName").value = newName;
+    popUpDOM.querySelector("#displayName").dispatchEvent(new Event("input"));
+    popUpDOM.querySelectorAll(".updateItem")[0].click();
+    fixture.detectChanges();
+
+    expect(validateSpy).toHaveBeenCalledWith("displayName");
+    expect(updateSpy).not.toHaveBeenCalled();
+    expect(emitSpy).not.toHaveBeenCalled();
+    expect(alertSpy).toHaveBeenCalledWith({ type: "Error", message: "error" });
+  });
 });

@@ -82,7 +82,7 @@ describe("ItemsService", () => {
         item: "#f4b56a",
       },
     };
-    itemsService["authService"].authenticated = true;
+    itemsService["authService"].authenticated.set(true);
     itemsService["authService"].isUserDataResolved.next(true);
   });
 

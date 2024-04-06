@@ -103,7 +103,7 @@ describe("AdminReports", () => {
     const authService = TestBed.inject(AuthService) as AuthService;
     spyOn(authService, "canUser").and.returnValue(true);
     authService.isUserDataResolved.next(true);
-    authService.authenticated = true;
+    authService.authenticated.set(true);
     authService.userData = { ...mockAuthedUser };
   });
 

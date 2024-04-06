@@ -116,7 +116,7 @@ describe("Post", () => {
     const hugSpy = spyOn(myPosts, "sendHug").and.callThrough();
     const spy = spyOn(myPosts.itemsService, "sendHug");
     const authService = myPosts.authService;
-    authService.authenticated = true;
+    authService.authenticated.set(true);
     authService.userData = { ...mockAuthedUser };
 
     upFixture.detectChanges();
@@ -384,7 +384,7 @@ describe("Post", () => {
     const itemsService = myPosts.itemsService;
     const disableButtonSpy = spyOn(myPosts, "disableHugButton");
     const authService = myPosts.authService;
-    authService.authenticated = true;
+    authService.authenticated.set(true);
     authService.userData = { ...mockAuthedUser };
 
     // before
@@ -415,7 +415,7 @@ describe("Post", () => {
       user: "test",
       sentHugs: [],
     };
-    myPosts.authService.authenticated = true;
+    myPosts.authService.authenticated.set(true);
     const myPostsDOM = upFixture.debugElement.children[0].nativeElement;
     upFixture.detectChanges();
 

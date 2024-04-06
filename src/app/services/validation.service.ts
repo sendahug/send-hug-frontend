@@ -32,9 +32,6 @@
 
 // Angular imports
 import { Injectable } from "@angular/core";
-
-// App-related imports
-import { AlertsService } from "./alerts.service";
 import { AbstractControl, ValidationErrors, ValidatorFn } from "@angular/forms";
 
 type ValidatableItems = "post" | "message" | "displayName" | "reportOther";
@@ -82,48 +79,15 @@ export class ValidationService {
   };
 
   // CTOR
-  constructor(private alertsService: AlertsService) {}
+  constructor() {}
 
   /*
-  Function Name: validateItem()
+  Function Name: validateItemAgainst()
   Function Description: Validates the given item to ensure it fits the rules.
   Parameters: typeOfTest (ValidatableItems) - the type of item being tested
-              textToValidate (string) - the string to validate.
-              elementId (string) - the ID of the HTML element of the text field.
   ----------------
   Programmer: Shir Bar Lev.
   */
-  validateItem(typeOfTest: ValidatableItems, textToValidate: string, elementId: string): boolean {
-    const testValidationRules = this.validationRules[typeOfTest];
-    // if there's text, check its length
-    if (textToValidate) {
-      if (textToValidate.length > testValidationRules["max"]) {
-        this.alertsService.createAlert({
-          type: "Error",
-          message: testValidationRules["errorMessages"]["tooLong"],
-        });
-        this.toggleErrorIndicator(false, elementId);
-        return false;
-      } else {
-        this.toggleErrorIndicator(true, elementId);
-        return true;
-      }
-      // if there isn't text, check if empty texts are allowed
-    } else {
-      if (!testValidationRules["required"]) {
-        this.toggleErrorIndicator(true, elementId);
-        return true;
-      } else {
-        this.alertsService.createAlert({
-          type: "Error",
-          message: testValidationRules["errorMessages"]["zeroLength"],
-        });
-        this.toggleErrorIndicator(false, elementId);
-        return false;
-      }
-    }
-  }
-
   validateItemAgainst(typeOfTest: ValidatableItems): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       const currentValue = control.value;
@@ -138,28 +102,5 @@ export class ValidationService {
 
       return null;
     };
-  }
-
-  /*
-  Function Name: toggleErrorIndicator()
-  Function Description: Adds or removes error indicators from the text fields.
-  Parameters: isValid (boolean) - whether or not the value is valid.
-              elementId (string) - the ID of the HTML element of the text field.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  toggleErrorIndicator(isValid: boolean, elementId: string) {
-    // if the data isn't valid, alert the users
-    if (!isValid) {
-      document.getElementById(elementId)!.classList.add("missing");
-      document.getElementById(elementId)!.setAttribute("aria-invalid", "true");
-      // otherwise make sure it's set to false
-    } else {
-      // if the textfield was marked red, remove it
-      if (document.getElementById(elementId)!.classList.contains("missing")) {
-        document.getElementById(elementId)!.classList.remove("missing");
-      }
-      document.getElementById(elementId)!.setAttribute("aria-invalid", "false");
-    }
   }
 }

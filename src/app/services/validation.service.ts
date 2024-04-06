@@ -35,6 +35,7 @@ import { Injectable } from "@angular/core";
 
 // App-related imports
 import { AlertsService } from "./alerts.service";
+import { AbstractControl, ValidationErrors, ValidatorFn } from "@angular/forms";
 
 type ValidatableItems = "post" | "message" | "displayName" | "reportOther";
 
@@ -45,7 +46,7 @@ export class ValidationService {
   validationRules = {
     post: {
       max: 480,
-      emptyAllowed: false,
+      required: true,
       errorMessages: {
         zeroLength: "Post text cannot be empty. Please fill the field and try again.",
         tooLong: "Post text cannot be over 480 characters! Please shorten the post and try again.",
@@ -53,7 +54,7 @@ export class ValidationService {
     },
     message: {
       max: 480,
-      emptyAllowed: false,
+      required: true,
       errorMessages: {
         zeroLength: "A message cannot be empty. Please fill the field and try again.",
         tooLong:
@@ -62,7 +63,7 @@ export class ValidationService {
     },
     displayName: {
       max: 60,
-      emptyAllowed: false,
+      required: true,
       errorMessages: {
         zeroLength: "New display name cannot be empty. Please fill the field and try again.",
         tooLong:
@@ -71,7 +72,7 @@ export class ValidationService {
     },
     reportOther: {
       max: 120,
-      emptyAllowed: false,
+      required: true,
       errorMessages: {
         zeroLength: "The 'other' field cannot be empty.",
         tooLong:
@@ -109,7 +110,7 @@ export class ValidationService {
       }
       // if there isn't text, check if empty texts are allowed
     } else {
-      if (testValidationRules["emptyAllowed"]) {
+      if (!testValidationRules["required"]) {
         this.toggleErrorIndicator(true, elementId);
         return true;
       } else {
@@ -121,6 +122,22 @@ export class ValidationService {
         return false;
       }
     }
+  }
+
+  validateItemAgainst(typeOfTest: ValidatableItems): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      const currentValue = control.value;
+      const testValidationRules = this.validationRules[typeOfTest];
+
+      // if there's no text and it's required, return an error
+      if (!currentValue && testValidationRules["required"])
+        return { error: testValidationRules["errorMessages"]["zeroLength"] };
+
+      if (currentValue && currentValue.length > testValidationRules["max"])
+        return { error: testValidationRules["errorMessages"]["tooLong"] };
+
+      return null;
+    };
   }
 
   /*

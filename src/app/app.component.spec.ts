@@ -183,6 +183,7 @@ describe("AppComponent", () => {
     fixture.detectChanges();
     // tick();
     componentHtml.querySelector("#searchQuery").value = "search";
+    componentHtml.querySelector("#searchQuery").dispatchEvent(new Event("input"));
     componentHtml.querySelectorAll(".sendData")[0].click();
 
     // check the spies were triggered

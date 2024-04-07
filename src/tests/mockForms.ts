@@ -32,7 +32,7 @@ import { Component, EventEmitter, Output } from "@angular/core";
 
 @Component({
   selector: "item-delete-form",
-  template: "<app-pop-up (editMode)='editMode.emit(false)></app-pop-up>",
+  template: "<app-pop-up (editMode)='editMode.emit(false)'></app-pop-up>",
 })
 export class MockDeleteForm {
   @Output() editMode = new EventEmitter<boolean>();
@@ -40,7 +40,7 @@ export class MockDeleteForm {
 
 @Component({
   selector: "report-form",
-  template: "<app-pop-up (editMode)='editMode.emit(false)></app-pop-up>",
+  template: "<app-pop-up (editMode)='editMode.emit(false)'></app-pop-up>",
 })
 export class MockReportForm {
   @Output() editMode = new EventEmitter<boolean>();

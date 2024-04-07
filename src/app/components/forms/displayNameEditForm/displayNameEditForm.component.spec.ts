@@ -46,6 +46,7 @@ import { ReactiveFormsModule } from "@angular/forms";
 import { DisplayNameEditForm } from "./displayNameEditForm.component";
 import { AuthService } from "@app/services/auth.service";
 import { mockAuthedUser } from "@tests/mockData";
+import { PopUp } from "@app/components/popUp/popUp.component";
 
 // DISPLAY NAME EDIT
 // ==================================================================
@@ -63,7 +64,7 @@ describe("DisplayNameEditForm", () => {
         FontAwesomeModule,
         ReactiveFormsModule,
       ],
-      declarations: [DisplayNameEditForm],
+      declarations: [DisplayNameEditForm, PopUp],
       providers: [{ provide: APP_BASE_HREF, useValue: "/" }],
     }).compileComponents();
 

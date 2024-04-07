@@ -44,6 +44,7 @@ import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { of } from "rxjs";
 
 import { ItemDeleteForm } from "./itemDeleteForm.component";
+import { PopUp } from "@app/components/popUp/popUp.component";
 
 describe("Popup", () => {
   // Before each test, configure testing environment
@@ -58,7 +59,7 @@ describe("Popup", () => {
         ServiceWorkerModule.register("sw.js", { enabled: false }),
         FontAwesomeModule,
       ],
-      declarations: [ItemDeleteForm],
+      declarations: [ItemDeleteForm, PopUp],
       providers: [{ provide: APP_BASE_HREF, useValue: "/" }],
     }).compileComponents();
   });

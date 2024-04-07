@@ -42,6 +42,7 @@ import { ReportForm } from "./reportForm.component";
 import { AuthService } from "../../../services/auth.service";
 import { mockAuthedUser } from "@tests/mockData";
 import { AppAlert } from "@app/components/appAlert/appAlert.component";
+import { PopUp } from "@app/components/popUp/popUp.component";
 
 describe("Report", () => {
   // Before each test, configure testing environment
@@ -57,7 +58,7 @@ describe("Report", () => {
         FontAwesomeModule,
         ReactiveFormsModule,
       ],
-      declarations: [AppComponent, ReportForm, AppAlert],
+      declarations: [AppComponent, ReportForm, AppAlert, PopUp],
       providers: [{ provide: APP_BASE_HREF, useValue: "/" }],
     }).compileComponents();
 

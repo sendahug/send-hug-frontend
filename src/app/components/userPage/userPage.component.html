@@ -75,11 +75,17 @@
 	<p id="pEdit">Edit post</p>
 	<p id="pDelete">Delete post</p>
 </div>
+		
+<report-form
+	*ngIf="reportMode"
+	(reportMode)="changeMode($event, 'Report')"
+	[reportedItem]="reportedItem"
+	[reportType]="reportType"
+></report-form>
 
-<app-pop-up *ngIf="editMode"
-			[editedItem]="userToEdit"
-			[toEdit]="editType"
-			(editMode)="changeMode($event)"
-			[report]="report"
-			[reportedItem]="reportedItem"
-			[reportType]="reportType"></app-pop-up>
+<display-name-edit-form
+	*ngIf="editMode"
+	[editedItem]="userToEdit"
+	[toEdit]="editType"
+	(editMode)="changeMode($event, 'Edit')"
+></display-name-edit-form>

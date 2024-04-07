@@ -43,14 +43,20 @@ import { ServiceWorkerModule } from "@angular/service-worker";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { ReactiveFormsModule } from "@angular/forms";
 
-import { AppComponent } from "../../app.component";
 import { PopUp } from "./popUp.component";
-import { NotificationsTab } from "../notifications/notifications.component";
-import { DisplayNameEditForm } from "../forms/displayNameEditForm/displayNameEditForm.component";
-import { ItemDeleteForm } from "../forms/itemDeleteForm/itemDeleteForm.component";
-import { PostEditForm } from "../forms/postEditForm/postEditForm.component";
-import { ReportForm } from "../forms/reportForm/reportForm.component";
-import { AppAlert } from "../appAlert/appAlert.component";
+import { Component } from "@angular/core";
+
+// Mock page
+@Component({
+  selector: "app-user-page",
+  template: `
+    <app-pop-up>
+      <input type="text" id="postText" />
+      <button id="sendBtn"></button>
+    </app-pop-up>
+  `,
+})
+class MockPage {}
 
 describe("Popup", () => {
   // Before each test, configure testing environment
@@ -66,53 +72,31 @@ describe("Popup", () => {
         FontAwesomeModule,
         ReactiveFormsModule,
       ],
-      declarations: [
-        AppComponent,
-        PopUp,
-        NotificationsTab,
-        DisplayNameEditForm,
-        ItemDeleteForm,
-        PostEditForm,
-        ReportForm,
-        AppAlert,
-      ],
+      declarations: [MockPage, PopUp],
       providers: [{ provide: APP_BASE_HREF, useValue: "/" }],
     }).compileComponents();
   });
 
   // Check that the component is created
   it("should create the component", () => {
-    const acFixture = TestBed.createComponent(AppComponent);
-    const appComponent = acFixture.componentInstance;
     const fixture = TestBed.createComponent(PopUp);
     const popUp = fixture.componentInstance;
-    expect(appComponent).toBeTruthy();
     expect(popUp).toBeTruthy();
   });
 
   // check tab and tab+shift let the user navigate
   it("should navigate using tab and shift+tab", (done: DoneFn) => {
-    TestBed.createComponent(AppComponent);
-    const fixture = TestBed.createComponent(PopUp);
-    const popUp = fixture.componentInstance;
-    const popUpDOM = fixture.nativeElement;
+    const mockPage = TestBed.createComponent(MockPage);
+    const popUp: PopUp = mockPage.debugElement.children[0].children[0].componentInstance;
+    const popUpDOM = mockPage.debugElement.children[0].children[0].nativeElement;
     const focusBindedSpy = spyOn(popUp, "checkFocusBinded").and.callThrough();
-    popUp.toEdit = "admin post";
-    popUp.delete = false;
-    popUp.report = false;
-    popUp.editedItem = "hi";
-    popUp.reportData = {
-      reportID: 1,
-      postID: 2,
-    };
-    fixture.detectChanges();
+    mockPage.detectChanges();
 
     // spies
     const spies = [
       spyOn(popUpDOM.querySelector("#exitButton"), "focus").and.callThrough(),
       spyOn(popUpDOM.querySelector("#postText"), "focus").and.callThrough(),
-      spyOn(popUpDOM.querySelectorAll(".sendData")[0], "focus").and.callThrough(),
-      spyOn(popUpDOM.querySelectorAll(".sendData")[1], "focus").and.callThrough(),
+      spyOn(popUpDOM.querySelector("#sendBtn"), "focus").and.callThrough(),
     ];
 
     spies.forEach((spy) => {
@@ -143,7 +127,7 @@ describe("Popup", () => {
             shiftKey: false,
           }),
         );
-        fixture.detectChanges();
+        mockPage.detectChanges();
 
         // check the focus shifted to the next element
         expect(focusBindedSpy).toHaveBeenCalled();
@@ -168,7 +152,7 @@ describe("Popup", () => {
             shiftKey: true,
           }),
         );
-        fixture.detectChanges();
+        mockPage.detectChanges();
 
         // check the focus shifted to the previous element
         expect(focusBindedSpy).toHaveBeenCalled();
@@ -190,27 +174,17 @@ describe("Popup", () => {
 
   // check the focus is trapped
   it("should trap focus in the modal", (done: DoneFn) => {
-    TestBed.createComponent(AppComponent);
-    const fixture = TestBed.createComponent(PopUp);
-    const popUp = fixture.componentInstance;
-    const popUpDOM = fixture.nativeElement;
+    const mockPage = TestBed.createComponent(MockPage);
+    const popUp: PopUp = mockPage.debugElement.children[0].children[0].componentInstance;
+    const popUpDOM = mockPage.debugElement.children[0].children[0].nativeElement;
     const focusBindedSpy = spyOn(popUp, "checkFocusBinded").and.callThrough();
-    popUp.toEdit = "admin post";
-    popUp.delete = false;
-    popUp.report = false;
-    popUp.editedItem = "hi";
-    popUp.reportData = {
-      reportID: 1,
-      postID: 2,
-    };
-    fixture.detectChanges();
+    mockPage.detectChanges();
 
     // spies
     const spies = [
       spyOn(popUpDOM.querySelector("#exitButton"), "focus").and.callThrough(),
       spyOn(popUpDOM.querySelector("#postText"), "focus").and.callThrough(),
-      spyOn(popUpDOM.querySelectorAll(".sendData")[0], "focus").and.callThrough(),
-      spyOn(popUpDOM.querySelectorAll(".sendData")[1], "focus").and.callThrough(),
+      spyOn(popUpDOM.querySelector("#sendBtn"), "focus").and.callThrough(),
     ];
 
     spies.forEach((spy) => {
@@ -242,7 +216,7 @@ describe("Popup", () => {
             shiftKey: false,
           }),
         );
-        fixture.detectChanges();
+        mockPage.detectChanges();
 
         // check the focus shifted to the first element
         expect(focusBindedSpy).toHaveBeenCalled();
@@ -264,7 +238,7 @@ describe("Popup", () => {
             shiftKey: true,
           }),
         );
-        fixture.detectChanges();
+        mockPage.detectChanges();
 
         // check the focus shifted to the last element
         expect(focusBindedSpy).toHaveBeenCalled();
@@ -286,22 +260,9 @@ describe("Popup", () => {
 
   // Check that the event emitter emits false if the user clicks 'exit'
   it("exits the popup if the user decides not to edit", (done: DoneFn) => {
-    TestBed.createComponent(AppComponent);
     const fixture = TestBed.createComponent(PopUp);
     const popUp = fixture.componentInstance;
     const popUpDOM = fixture.nativeElement;
-    popUp.toEdit = "post";
-    popUp.delete = false;
-    popUp.report = false;
-    popUp.editedItem = {
-      id: 1,
-      userId: 4,
-      user: "me",
-      text: "hi",
-      date: new Date(),
-      givenHugs: 0,
-      sentHugs: [],
-    };
     const exitSpy = spyOn(popUp, "exitEdit").and.callThrough();
     fixture.detectChanges();
 

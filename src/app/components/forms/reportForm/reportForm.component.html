@@ -1,37 +1,39 @@
-<div id="reportItem">
-  <h3 class="popupTitle">{{ "Report " + reportType }}</h3>
-  <div *ngIf="reportType == 'Post'" class="userPost">
-    <div class="itemText" id="reportText">{{ reportedItem.text }}</div>
-    <div class="itemUser">By {{ reportedItem.user }}</div>
+<app-pop-up (editMode)="reportMode.emit(false)">
+  <div id="reportItem">
+    <h3 class="popupTitle">{{ "Report " + reportType }}</h3>
+    <div *ngIf="reportType == 'Post'" class="userPost">
+      <div class="itemText" id="reportText">{{ reportedItem.text }}</div>
+      <div class="itemUser">By {{ reportedItem.user }}</div>
+    </div>
+    <a *ngIf="reportType == 'User'" [routerLink]="['/user', reportedItem.userId]" id="uReportText">{{ reportedItem.displayName }}</a>
+  
+    <div id="reportQ" class="popupText required">{{ "What is the problem with this " + reportType.toLowerCase() + "?" }}</div>
+    <form [formGroup]="reportForm" id="reportPost" role="radiogroup">
+      <div class="formElement">
+        <input type="radio" class="radioButton" id="pRadioOption0" value="0" (click)="checkSelectedForOther($event.target.value)" aria-describedby="reportQ" formControlName="selectedReason">
+        <label class="radioButtonLabel" for="pRadioOption0">{{ reportReasonsText[reportType][0] }}</label>
+      </div>
+      <div class="formElement">
+        <input type="radio" class="radioButton" id="pRadioOption1" value="1" (click)="checkSelectedForOther($event.target.value)" aria-describedby="reportQ" formControlName="selectedReason">
+        <label class="radioButtonLabel" for="pRadioOption1">{{ reportReasonsText[reportType][1] }}</label>
+      </div>
+      <div class="formElement">
+        <input type="radio" class="radioButton" id="pRadioOption2" value="2" (click)="checkSelectedForOther($event.target.value)" aria-describedby="reportQ" formControlName="selectedReason">
+        <label class="radioButtonLabel" for="pRadioOption2">{{ reportReasonsText[reportType][2] }}</label>
+      </div>
+      <div class="formElement">
+        <fieldset>
+          <legend class="hidden" aria-hidden="false" id="rPostLegend">{{ "There's another problem with this " + reportType.toLowerCase() + ":" }}</legend>
+          <input type="radio" class="radioButton" id="pRadioOption3" value="3" (click)="checkSelectedForOther($event.target.value)" aria-describedby="reportQ" formControlName="selectedReason">
+          <label class="radioButtonLabel" for="pRadioOption3">{{ reportReasonsText[reportType][3] }}</label> <input type="text" placeholder="Enter the response" id="rOption3Text" aria-labelledby="rPostLegend" [required]="reportForm.get('selectedReason')?.value == '3'" minlength="0" maxlength="120" [attr.aria-required]="reportForm.get('selectedReason')?.value == '3'" formControlName="otherReason">
+        </fieldset>
+      </div>
+  
+      <div *ngIf="reportType == 'Post'" id="reportPText" class="labels">{{ 'report post ' + reportedItem.text }}</div>
+      <button *ngIf="reportType == 'Post'" type="submit" class="appButton reportButton" (click)="createReport($event)" aria-labelledby="reportPText" [disabled]="reportForm.get('selectedReason')?.value == undefined">Report Post</button>
+  
+      <div *ngIf="reportType == 'User'" id="reportUText" class="labels">{{ 'Report user ' + reportedItem.displayName }}</div>
+      <button *ngIf="reportType == 'User'" type="submit" class="appButton reportButton" (click)="createReport($event)" aria-labelledby="reportUText" [disabled]="reportForm.get('selectedReason')?.value == undefined">Report User</button>
+    </form>
   </div>
-  <a *ngIf="reportType == 'User'" [routerLink]="['/user', reportedItem.userId]" id="uReportText">{{ reportedItem.displayName }}</a>
-
-  <div id="reportQ" class="popupText required">{{ "What is the problem with this " + reportType.toLowerCase() + "?" }}</div>
-  <form [formGroup]="reportForm" id="reportPost" role="radiogroup">
-    <div class="formElement">
-      <input type="radio" class="radioButton" id="pRadioOption0" value="0" (click)="checkSelectedForOther($event.target.value)" aria-describedby="reportQ" formControlName="selectedReason">
-      <label class="radioButtonLabel" for="pRadioOption0">{{ reportReasonsText[reportType][0] }}</label>
-    </div>
-    <div class="formElement">
-      <input type="radio" class="radioButton" id="pRadioOption1" value="1" (click)="checkSelectedForOther($event.target.value)" aria-describedby="reportQ" formControlName="selectedReason">
-      <label class="radioButtonLabel" for="pRadioOption1">{{ reportReasonsText[reportType][1] }}</label>
-    </div>
-    <div class="formElement">
-      <input type="radio" class="radioButton" id="pRadioOption2" value="2" (click)="checkSelectedForOther($event.target.value)" aria-describedby="reportQ" formControlName="selectedReason">
-      <label class="radioButtonLabel" for="pRadioOption2">{{ reportReasonsText[reportType][2] }}</label>
-    </div>
-    <div class="formElement">
-      <fieldset>
-        <legend class="hidden" aria-hidden="false" id="rPostLegend">{{ "There's another problem with this " + reportType.toLowerCase() + ":" }}</legend>
-        <input type="radio" class="radioButton" id="pRadioOption3" value="3" (click)="checkSelectedForOther($event.target.value)" aria-describedby="reportQ" formControlName="selectedReason">
-        <label class="radioButtonLabel" for="pRadioOption3">{{ reportReasonsText[reportType][3] }}</label> <input type="text" placeholder="Enter the response" id="rOption3Text" aria-labelledby="rPostLegend" [required]="reportForm.get('selectedReason')?.value == '3'" minlength="0" maxlength="120" [attr.aria-required]="reportForm.get('selectedReason')?.value == '3'" formControlName="otherReason">
-      </fieldset>
-    </div>
-
-    <div *ngIf="reportType == 'Post'" id="reportPText" class="labels">{{ 'report post ' + reportedItem.text }}</div>
-    <button *ngIf="reportType == 'Post'" type="submit" class="appButton reportButton" (click)="createReport($event)" aria-labelledby="reportPText" [disabled]="reportForm.get('selectedReason')?.value == undefined">Report Post</button>
-
-    <div *ngIf="reportType == 'User'" id="reportUText" class="labels">{{ 'Report user ' + reportedItem.displayName }}</div>
-    <button *ngIf="reportType == 'User'" type="submit" class="appButton reportButton" (click)="createReport($event)" aria-labelledby="reportUText" [disabled]="reportForm.get('selectedReason')?.value == undefined">Report User</button>
-  </form>
-</div>
+</app-pop-up>

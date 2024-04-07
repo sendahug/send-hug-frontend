@@ -62,10 +62,10 @@ export class SinglePost implements AfterViewChecked, OnInit, OnDestroy {
   postToEdit: Post | undefined;
   editType: string | undefined;
   editMode: boolean;
-  delete: boolean;
+  deleteMode: boolean;
   toDelete: string | undefined;
   itemToDelete: number | undefined;
-  report: boolean;
+  reportMode: boolean;
   reportedItem: Post | undefined;
   reportType: "Post" | undefined;
   lastFocusedElement: any;
@@ -113,8 +113,8 @@ export class SinglePost implements AfterViewChecked, OnInit, OnDestroy {
     public authService: AuthService,
   ) {
     this.editMode = false;
-    this.delete = false;
-    this.report = false;
+    this.deleteMode = false;
+    this.reportMode = false;
   }
 
   ngOnInit(): void {
@@ -199,8 +199,6 @@ export class SinglePost implements AfterViewChecked, OnInit, OnDestroy {
     this.editType = "post";
     this.postToEdit = this.post;
     this.editMode = true;
-    this.delete = false;
-    this.report = false;
   }
 
   /*
@@ -213,8 +211,19 @@ export class SinglePost implements AfterViewChecked, OnInit, OnDestroy {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  changeMode(edit: boolean) {
-    this.editMode = edit;
+  changeMode(edit: boolean, type: "Edit" | "Delete" | "Report") {
+    switch (type) {
+      case "Edit":
+        this.editMode = edit;
+        break;
+      case "Delete":
+        this.deleteMode = edit;
+        break;
+      case "Report":
+        this.reportMode = edit;
+        break;
+    }
+
     this.lastFocusedElement.focus();
   }
 
@@ -227,11 +236,9 @@ export class SinglePost implements AfterViewChecked, OnInit, OnDestroy {
   */
   deletePost() {
     this.lastFocusedElement = document.activeElement;
-    this.editMode = true;
-    this.delete = true;
+    this.deleteMode = true;
     this.toDelete = "Post";
     this.itemToDelete = this.post.id;
-    this.report = false;
   }
 
   /*
@@ -243,11 +250,7 @@ export class SinglePost implements AfterViewChecked, OnInit, OnDestroy {
   */
   reportPost() {
     this.lastFocusedElement = document.activeElement;
-    this.editMode = true;
-    this.postToEdit = undefined;
-    this.editType = undefined;
-    this.delete = false;
-    this.report = true;
+    this.reportMode = true;
     this.reportedItem = this.post;
     this.reportType = "Post";
   }

@@ -169,11 +169,8 @@
 	<p id="tDelete">Delete thread with</p>
 </div>
 
-<app-pop-up *ngIf="editMode"
-			[editedItem]="postToEdit"
-			[toEdit]="editType"
+<item-delete-form *ngIf="editMode"
 			(editMode)="changeMode($event)"
-			[delete]="delete"
 			[toDelete]="toDelete"
 			[itemToDelete]="itemToDelete"
-			[messType]="messType"></app-pop-up>
+			[messType]="messType"></item-delete-form>

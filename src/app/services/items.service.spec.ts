@@ -82,7 +82,7 @@ describe("ItemsService", () => {
         item: "#f4b56a",
       },
     };
-    itemsService["authService"].authenticated = true;
+    itemsService["authService"].authenticated.set(true);
     itemsService["authService"].isUserDataResolved.next(true);
   });
 
@@ -184,7 +184,7 @@ describe("ItemsService", () => {
       of({ success: true }),
     );
     const successAlertSpy = spyOn(itemsService["alertsService"], "createSuccessAlert");
-    itemsService.sendHug(mockPost);
+    itemsService.sendHug(mockPost.id);
 
     expect(apiClientSpy).toHaveBeenCalledWith(`posts/${mockPost.id}/hugs`, {});
     expect(successAlertSpy).toHaveBeenCalledWith("Your hug was sent!");

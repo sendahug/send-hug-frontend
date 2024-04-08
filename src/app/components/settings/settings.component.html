@@ -1,4 +1,4 @@
-<div  *ngIf="authService.authenticated">
+<div  *ngIf="authService.authenticated()">
 	<h3>Settings</h3>
 	
 	<div id="iconSettings">
@@ -57,7 +57,7 @@
 	</div>
 </div>
 
-<div *ngIf="!authService.authenticated" id="errorBox">
+<div *ngIf="!authService.authenticated()" id="errorBox">
 	<div class="errorMessage">You do not have permission to view thie page!</div>
 	<a [routerLink]="['/']" class="appButton">Back to homepage</a>
 </div>

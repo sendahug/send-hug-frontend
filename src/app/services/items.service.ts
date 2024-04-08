@@ -45,11 +45,6 @@ import { AlertsService } from "@app/services/alerts.service";
 import { SWManager } from "@app/services/sWManager.service";
 import { ApiClientService } from "@app/services/apiClient.service";
 
-interface PostEditResponse {
-  success: boolean;
-  updated: Post;
-}
-
 @Injectable({
   providedIn: "root",
 })
@@ -121,18 +116,6 @@ export class ItemsService {
         message: `You cannot post new posts while you're blocked. You're blocked until ${this.authService.userData.releaseDate}.`,
       });
     }
-  }
-
-  /*
-  Function Name: editPost()
-  Function Description: Edit an existing post. This is used only for editing the post's text.
-  Parameters: post (Post) - the updated data of the post.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  editPost(post: Post) {
-    // send update request
-    return this.apiClient.patch<PostEditResponse>(`posts/${post.id}`, post);
   }
 
   /*

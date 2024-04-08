@@ -33,16 +33,21 @@
 // Angular imports
 import { Component, Input, Output, EventEmitter, OnInit } from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
-import { map, mergeMap, of, tap } from "rxjs";
+import { map, mergeMap, of } from "rxjs";
 
 // App-related import
 import { Post } from "@app/interfaces/post.interface";
-import { ItemsService } from "@app/services/items.service";
 import { AdminService } from "@app/services/admin.service";
 import { ValidationService } from "@app/services/validation.service";
 import { AlertsService } from "@app/services/alerts.service";
+import { ApiClientService } from "@app/services/apiClient.service";
 
 interface PostEditResponse {
+  success: boolean;
+  updated: Post;
+}
+
+interface PostAndReportResponse {
   success: boolean;
   postId?: number;
   reportId?: number;
@@ -65,10 +70,10 @@ export class PostEditForm implements OnInit {
 
   // CTOR
   constructor(
-    private itemsService: ItemsService,
     private adminService: AdminService,
     private validationService: ValidationService,
     private alertService: AlertsService,
+    private apiClient: ApiClientService,
     private fb: FormBuilder,
   ) {}
 
@@ -103,8 +108,8 @@ export class PostEditForm implements OnInit {
     this.editedItem.text = newText;
 
     // Edit the post
-    this.itemsService
-      .editPost(this.editedItem)
+    this.apiClient
+      .patch<PostEditResponse>(`posts/${this.editedItem.id}`, this.editedItem)
       .pipe(
         mergeMap((postResponse) => {
           // If there's a Close Report value and the admin selected
@@ -131,7 +136,7 @@ export class PostEditForm implements OnInit {
         }),
       )
       .subscribe({
-        next: (response: PostEditResponse) => {
+        next: (response: PostAndReportResponse) => {
           this.editMode.emit(false);
           const editMessage = response.reportId
             ? `Report ${response.reportId} was close, and the associated post was edited!`

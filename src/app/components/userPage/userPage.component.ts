@@ -70,8 +70,8 @@ export class UserPage implements OnInit, OnDestroy, AfterViewChecked {
   // edit popup sub-component variables
   userToEdit: any;
   editType: string | undefined;
-  editMode: boolean;
-  report: boolean;
+  editMode: boolean = false;
+  reportMode: boolean = false;
   reportedItem: User | undefined;
   reportType = "User";
   lastFocusedElement: any;
@@ -92,8 +92,6 @@ export class UserPage implements OnInit, OnDestroy, AfterViewChecked {
     private alertsService: AlertsService,
   ) {
     this.authService.checkHash();
-    this.editMode = false;
-    this.report = false;
 
     // if there's a user ID, set the user ID to it
     if (this.route.snapshot.paramMap.get("id")) {
@@ -242,7 +240,6 @@ export class UserPage implements OnInit, OnDestroy, AfterViewChecked {
     this.userToEdit = this.authService.userData;
     this.editMode = true;
     this.editType = "user";
-    this.report = false;
   }
 
   /*
@@ -255,8 +252,10 @@ export class UserPage implements OnInit, OnDestroy, AfterViewChecked {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  changeMode(edit: boolean) {
-    this.editMode = edit;
+  changeMode(edit: boolean, type: "Edit" | "Report") {
+    if (type === "Edit") this.editMode = edit;
+    else this.reportMode = edit;
+
     this.lastFocusedElement.focus();
   }
 
@@ -286,9 +285,7 @@ export class UserPage implements OnInit, OnDestroy, AfterViewChecked {
   */
   reportUser(user: User) {
     this.lastFocusedElement = document.activeElement;
-    this.editMode = true;
-    this.editType = undefined;
-    this.report = true;
+    this.reportMode = true;
     this.reportedItem = user;
   }
 

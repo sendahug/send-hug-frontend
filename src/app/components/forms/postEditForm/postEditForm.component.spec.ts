@@ -45,6 +45,7 @@ import { ReactiveFormsModule } from "@angular/forms";
 
 import { PostEditForm } from "./postEditForm.component";
 import { Post } from "@app/interfaces/post.interface";
+import { PopUp } from "@app/components/popUp/popUp.component";
 import { ValidationService } from "@app/services/validation.service";
 
 // POST EDIT
@@ -63,7 +64,7 @@ describe("PostEditForm", () => {
         FontAwesomeModule,
         ReactiveFormsModule,
       ],
-      declarations: [PostEditForm],
+      declarations: [PostEditForm, PopUp],
       providers: [{ provide: APP_BASE_HREF, useValue: "/" }],
     }).compileComponents();
   });

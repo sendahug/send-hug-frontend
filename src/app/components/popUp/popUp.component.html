@@ -1,37 +1,7 @@
 <div id="modalBox">
 	<div id="editPopup" role="dialog" aria-label="edit popup">
 		<button id="exitButton" (click)="exitEdit()" aria-label="close popup"><fa-icon [icon]="faTimes" class="fa-times"></fa-icon></button>
-		<post-edit-form
-			*ngIf="toEdit == 'post' || toEdit == 'admin post'"
-			[editedItem]="editedItem"
-			[reportData]="reportData"
-			(editMode)="exitEdit()"
-			[isAdmin]="toEdit == 'post' ? false : true">
-		</post-edit-form>
-
-		<display-name-edit-form
-			*ngIf="toEdit == 'user' || toEdit == 'other user'"
-			[toEdit]="toEdit"
-			[editedItem]="editedItem"
-			[reportData]="reportData"
-			(editMode)="exitEdit()">
-		</display-name-edit-form>
-
-		<report-form
-			*ngIf="report"
-			[reportedItem]="reportedItem"
-			[reportType]="reportType"
-			(reportMode)="exitEdit()">
-		</report-form>
-
-		<item-delete-form
-			*ngIf="delete"
-			[toDelete]="toDelete"
-			[itemToDelete]="itemToDelete"
-			[messType]="messType"
-			[reportData]="reportData"
-			(editMode)="exitEdit()">
-		</item-delete-form>
+		<ng-content></ng-content>
 	</div>
 </div>
 

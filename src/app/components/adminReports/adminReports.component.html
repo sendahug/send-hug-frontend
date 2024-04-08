@@ -111,12 +111,22 @@
   <div *ngIf="!postReports.length" class="errorMessage">There are no post reports waiting for review.</div>
 </div>
 
-<app-pop-up *ngIf="editMode"
-			[editedItem]="toEdit"
-			[toEdit]="editType"
-			(editMode)="changeMode($event)"
-			[delete]="delete"
-			[toDelete]="toDelete"
-			[itemToDelete]="itemToDelete"
-			[report]="report"
-			[reportData]="reportData"></app-pop-up>
+<display-name-edit-form
+  *ngIf="nameEditMode"
+  [editedItem]="toEdit"
+  [toEdit]="editType"
+  (editMode)="changeMode($event, 'EditName')"
+></display-name-edit-form>
+
+<item-delete-form
+	*ngIf="deleteMode"
+	(editMode)="changeMode($event, 'Delete')"
+	[toDelete]="toDelete"
+	[itemToDelete]="itemToDelete"
+></item-delete-form>
+
+<post-edit-form
+	*ngIf="postEditMode"
+	[editedItem]="toEdit"
+	(editMode)="changeMode($event, 'EditPost')"
+></post-edit-form>

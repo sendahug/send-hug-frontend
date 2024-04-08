@@ -108,7 +108,7 @@ export class NewItem {
         message: "You're currently logged out. Log back in to post a new post.",
       });
       return;
-    };
+    }
 
     if (!this.newPostForm.valid) {
       this.alertService.createAlert({

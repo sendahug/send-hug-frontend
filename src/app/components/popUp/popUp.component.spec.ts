@@ -87,6 +87,7 @@ describe("Popup", () => {
   // check tab and tab+shift let the user navigate
   it("should navigate using tab and shift+tab", (done: DoneFn) => {
     const mockPage = TestBed.createComponent(MockPage);
+    const mockPageDOM = mockPage.nativeElement;
     const popUp: PopUp = mockPage.debugElement.children[0].children[0].componentInstance;
     const popUpDOM = mockPage.debugElement.children[0].children[0].nativeElement;
     const focusBindedSpy = spyOn(popUp, "checkFocusBinded").and.callThrough();
@@ -95,8 +96,8 @@ describe("Popup", () => {
     // spies
     const spies = [
       spyOn(popUpDOM.querySelector("#exitButton"), "focus").and.callThrough(),
-      spyOn(popUpDOM.querySelector("#postText"), "focus").and.callThrough(),
-      spyOn(popUpDOM.querySelector("#sendBtn"), "focus").and.callThrough(),
+      spyOn(mockPageDOM.querySelector("#postText"), "focus").and.callThrough(),
+      spyOn(mockPageDOM.querySelector("#sendBtn"), "focus").and.callThrough(),
     ];
 
     spies.forEach((spy) => {
@@ -175,6 +176,7 @@ describe("Popup", () => {
   // check the focus is trapped
   it("should trap focus in the modal", (done: DoneFn) => {
     const mockPage = TestBed.createComponent(MockPage);
+    const mockPageDOM = mockPage.nativeElement;
     const popUp: PopUp = mockPage.debugElement.children[0].children[0].componentInstance;
     const popUpDOM = mockPage.debugElement.children[0].children[0].nativeElement;
     const focusBindedSpy = spyOn(popUp, "checkFocusBinded").and.callThrough();
@@ -183,8 +185,8 @@ describe("Popup", () => {
     // spies
     const spies = [
       spyOn(popUpDOM.querySelector("#exitButton"), "focus").and.callThrough(),
-      spyOn(popUpDOM.querySelector("#postText"), "focus").and.callThrough(),
-      spyOn(popUpDOM.querySelector("#sendBtn"), "focus").and.callThrough(),
+      spyOn(mockPageDOM.querySelector("#postText"), "focus").and.callThrough(),
+      spyOn(mockPageDOM.querySelector("#sendBtn"), "focus").and.callThrough(),
     ];
 
     spies.forEach((spy) => {
@@ -196,16 +198,12 @@ describe("Popup", () => {
     // step 1: check the last element is focused
     new Promise(() => {
       // focus on the last element
-      popUpDOM.querySelectorAll(".sendData")[1].focus();
+      mockPageDOM.querySelector("#sendBtn").focus();
 
       // check the last element has focus
-      spies.forEach((spy, index: number) => {
-        if (index == 3) {
-          expect(spy).toHaveBeenCalled();
-        } else {
-          expect(spy).not.toHaveBeenCalled();
-        }
-      });
+      expect(spies[0]).not.toHaveBeenCalled();
+      expect(spies[1]).not.toHaveBeenCalled();
+      expect(spies[2]).toHaveBeenCalled();
       // step 2: check what happens when clicking tab
     })
       .then(() => {
@@ -220,14 +218,11 @@ describe("Popup", () => {
 
         // check the focus shifted to the first element
         expect(focusBindedSpy).toHaveBeenCalled();
-        spies.forEach((spy, index: number) => {
-          if (index == 3 || index == 0) {
-            expect(spy).toHaveBeenCalled();
-            expect(spy).toHaveBeenCalledTimes(1);
-          } else {
-            expect(spy).not.toHaveBeenCalled();
-          }
-        });
+        expect(spies[0]).toHaveBeenCalled();
+        expect(spies[0]).toHaveBeenCalledTimes(1);
+        expect(spies[1]).not.toHaveBeenCalled();
+        expect(spies[2]).toHaveBeenCalled();
+        expect(spies[2]).toHaveBeenCalledTimes(1);
         // check what happens when clicking shift + tab
       })
       .then(() => {
@@ -243,17 +238,11 @@ describe("Popup", () => {
         // check the focus shifted to the last element
         expect(focusBindedSpy).toHaveBeenCalled();
         expect(focusBindedSpy).toHaveBeenCalledTimes(2);
-        spies.forEach((spy, index: number) => {
-          if (index == 3) {
-            expect(spy).toHaveBeenCalled();
-            expect(spy).toHaveBeenCalledTimes(2);
-          } else if (index == 0) {
-            expect(spy).toHaveBeenCalled();
-            expect(spy).toHaveBeenCalledTimes(1);
-          } else {
-            expect(spy).not.toHaveBeenCalled();
-          }
-        });
+        expect(spies[0]).toHaveBeenCalled();
+        expect(spies[0]).toHaveBeenCalledTimes(1);
+        expect(spies[1]).not.toHaveBeenCalled();
+        expect(spies[2]).toHaveBeenCalled();
+        expect(spies[2]).toHaveBeenCalledTimes(2);
         done();
       });
   });

@@ -102,7 +102,7 @@ export class AdminService {
 
         // if the report needs to be closed
         if (closeReport) {
-          this.dismissReport(reportData.reportID);
+          this.closeReport(reportData.reportID, false, postID);
         }
 
         // delete the post from idb
@@ -158,32 +158,6 @@ export class AdminService {
 
     // send a request to update the report
     return this.apiClient.patch<ReportResponse>(`reports/${reportID}`, report);
-  }
-
-  /*
-  Function Name: dismissReport()
-  Function Description: Dismiss an open report without taking further action.
-  Parameters: reportID (number) - the ID of the report to dismiss.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  dismissReport(reportID: number) {
-    let report: Partial<Report> = {
-      id: reportID,
-      dismissed: true,
-      closed: true,
-    };
-
-    // send a request to update the report
-    this.apiClient.patch(`reports/${reportID}`, report).subscribe({
-      next: (response: any) => {
-        // if the report was dismissed, alert the user
-        this.alertsService.createSuccessAlert(
-          `Report ${response.updated.id} was dismissed! Refresh the page to view the updated list.`,
-          { reload: true },
-        );
-      },
-    });
   }
 
   // BLOCKS-RELATED METHODS
@@ -285,7 +259,7 @@ export class AdminService {
           );
           // if the block was done via the reports page, also dismiss the report
           if (reportID) {
-            this.dismissReport(reportID);
+            this.closeReport(reportID, false, undefined, userID);
           }
         },
       });

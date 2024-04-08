@@ -30,7 +30,7 @@
             <span id="{{ 'blockU' + report.id }}" class="labels">{{ 'block user ' + report.text + ' for one day' }}</span>
             <button class="appButton adminButton" (click)="blockUser(report.userID, report.id)" [attr.aria-labelledby]="'blockU' + report.id">Block User (One Day)</button>
             <button class="appButton adminButton" (click)="editUser(report.id, report.userID, report.displayName)" [attr.aria-labelledby]="'editU' + report.id">Edit User</button>
-            <button class="appButton adminButton" (click)="dismissReport(report.id)">Dismiss Report</button>
+            <button class="appButton adminButton" (click)="closeReport(report.id, true, report.userID)">Dismiss Report</button>
           </td>
         </tr>
       </tbody>
@@ -83,7 +83,7 @@
             <span id="{{ 'delete' + report.id }}" class="labels">{{ 'Delete post ' + report.text }}</span>
             <button class="appButton adminButton" (click)="editPost(report.postID, report.text, report.id)" [attr.aria-labelledby]="'edit' + report.id">Edit Post</button>
             <button class="appButton adminButton" (click)="deletePost(report.postID, report.userID, report.id)" [attr.aria-labelledby]="'delete' + report.id">Delete Post</button>
-            <button class="appButton adminButton" (click)="dismissReport(report.id)">Dismiss Report</button>
+            <button class="appButton adminButton" (click)="closeReport(report.id, true, report.postID)">Dismiss Report</button>
           </td>
         </tr>
       </tbody>

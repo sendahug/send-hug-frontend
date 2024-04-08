@@ -33,6 +33,7 @@
 // Angular imports
 import { Component, Input, Output, EventEmitter, OnInit } from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
+import { map, mergeMap, of, tap } from "rxjs";
 
 // App-related import
 import { Post } from "@app/interfaces/post.interface";
@@ -40,6 +41,12 @@ import { ItemsService } from "@app/services/items.service";
 import { AdminService } from "@app/services/admin.service";
 import { ValidationService } from "@app/services/validation.service";
 import { AlertsService } from "@app/services/alerts.service";
+
+interface PostEditResponse {
+  success: boolean;
+  postId?: number;
+  reportId?: number;
+}
 
 @Component({
   selector: "post-edit-form",
@@ -66,7 +73,7 @@ export class PostEditForm implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.postEditForm.get("postText")?.setValue(this.editedItem.text);
+    this.postEditForm.controls.postText.setValue(this.editedItem.text);
   }
 
   /*
@@ -82,8 +89,7 @@ export class PostEditForm implements OnInit {
   editPost(e: Event, closeReport: boolean | null) {
     e.preventDefault();
 
-    const serviceToUse = closeReport === null ? "itemsService" : "adminService";
-    const newText = this.postEditForm.get("postText")?.value || "";
+    const newText = this.postEditForm.controls.postText.value || "";
 
     // if the post is invalid, show an error message
     if (!this.postEditForm.valid) {
@@ -94,28 +100,47 @@ export class PostEditForm implements OnInit {
       return;
     }
 
-    // if the post is valid, edit the text
-    // if there isn't a value for closeReport, it means it's sent from the regular edit
-    if (closeReport === null) {
-      this.editedItem.text = newText;
-      this.itemsService.editPost(this.editedItem);
-      // otherwise if there's a value it's coming from admin dashboard editing
-    } else {
-      let post = {
-        text: newText,
-        id: this.reportData.postID,
-      };
+    this.editedItem.text = newText;
 
-      this.adminService.editPost(post, closeReport, this.reportData.reportID);
-    }
+    // Edit the post
+    this.itemsService
+      .editPost(this.editedItem)
+      .pipe(
+        mergeMap((postResponse) => {
+          // If there's a Close Report value and the admin selected
+          // to close it, also close the report.
+          if (closeReport === true) {
+            return this.adminService
+              .closeReport(this.reportData.reportID, false, postResponse.updated.id)
+              .pipe(
+                map((reportResponse) => {
+                  return {
+                    success: reportResponse.success,
+                    postId: postResponse.updated.id,
+                    reportId: reportResponse.updated.id,
+                  };
+                }),
+              );
+          } else {
+            return of({
+              success: postResponse.success,
+              postId: postResponse.updated.id,
+              reportId: undefined,
+            });
+          }
+        }),
+      )
+      .subscribe({
+        next: (response: PostEditResponse) => {
+          this.editMode.emit(false);
+          const editMessage = response.reportId
+            ? `Report ${response.reportId} was close, and the associated post was edited!`
+            : `Post ${response.postId} was edited.`;
 
-    // check whether the post's data was updated in the database
-    this[serviceToUse].isUpdated.subscribe((value: Boolean) => {
-      // if it has, close the popup; otherwise, leave it on so that the user
-      // can fix whatever errors they have and try again
-      if (value) {
-        this.editMode.emit(false);
-      }
-    });
+          this.alertService.createSuccessAlert(`${editMessage} Refresh to view the updated post.`, {
+            reload: closeReport || true,
+          });
+        },
+      });
   }
 }

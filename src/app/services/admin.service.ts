@@ -32,7 +32,7 @@
 
 // Angular imports
 import { Injectable } from "@angular/core";
-import { BehaviorSubject, Observable, map, switchMap } from "rxjs";
+import { Observable, map, switchMap } from "rxjs";
 
 // App-related imports
 import { Report } from "@app/interfaces/report.interface";
@@ -55,12 +55,15 @@ interface OtherUserResponse {
   success: boolean;
 }
 
+interface ReportResponse {
+  success: boolean;
+  updated: Report;
+}
+
 @Injectable({
   providedIn: "root",
 })
 export class AdminService {
-  isUpdated = new BehaviorSubject(false);
-
   constructor(
     private authService: AuthService,
     private alertsService: AlertsService,
@@ -71,34 +74,6 @@ export class AdminService {
 
   // REPORTS-RELATED METHODS
   // ==============================================================
-  /*
-  Function Name: editPost()
-  Function Description: Edits a reported post's text. If necessary,
-                        also closes the report.
-  Parameters: post (any) - the ID and new text of the post.
-              reportID (number) - the ID of the report triggering the edit.
-              closeReport (boolean) - whether or not to also close the report.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  editPost(post: any, closeReport: boolean, reportID: number) {
-    // if the report should be closed
-    if (closeReport) {
-      post["closeReport"] = reportID;
-    }
-    this.isUpdated.next(false);
-
-    // try to edit the post
-    this.apiClient.patch(`posts/${post.id}`, post).subscribe({
-      next: (response: any) => {
-        this.alertsService.createSuccessAlert(`Post ${response.updated.id} updated.`, {
-          reload: closeReport,
-        });
-        this.isUpdated.next(true);
-      },
-    });
-  }
-
   /*
   Function Name: deletePost()
   Function Description: Sends a request to delete the post. If successful, alerts
@@ -169,24 +144,20 @@ export class AdminService {
    * Close/dismiss a report.
    * @param reportID (number) - the ID of the report to dismiss.
    * @param dismiss (boolean) - whether to dismiss the report without taking action.
+   * @param postID (number) - the ID of the post associated with the report (for post reports).
+   * @param userID (number) - the ID of the user associated with the report (for user reports).
    */
-  closeReport(reportID: number, dismiss: boolean) {
+  closeReport(reportID: number, dismiss: boolean, postID?: number, userID?: number) {
     let report: Partial<Report> = {
       id: reportID,
       closed: true,
       dismissed: dismiss,
+      postID,
+      userID,
     };
 
     // send a request to update the report
-    this.apiClient.patch(`reports/${reportID}`, report).subscribe({
-      next: (response: any) => {
-        // if the report was closed, alert the user
-        this.alertsService.createSuccessAlert(
-          `Report ${response.updated.id} was closed! Refresh the page to view the updated list.`,
-          { reload: true },
-        );
-      },
-    });
+    return this.apiClient.patch<ReportResponse>(`reports/${reportID}`, report);
   }
 
   /*

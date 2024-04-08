@@ -45,6 +45,11 @@ import { AlertsService } from "@app/services/alerts.service";
 import { SWManager } from "@app/services/sWManager.service";
 import { ApiClientService } from "@app/services/apiClient.service";
 
+interface PostEditResponse {
+  success: boolean;
+  updated: Post;
+}
+
 @Injectable({
   providedIn: "root",
 })
@@ -67,7 +72,6 @@ export class ItemsService {
     disabled: this.totalPostSearchPages() <= this.postSearchPage(),
   }));
   // Posts variables
-  isUpdated = new BehaviorSubject(false);
   currentlyOpenMenu = new BehaviorSubject("");
   receivedAHug = new BehaviorSubject(0);
 
@@ -127,18 +131,8 @@ export class ItemsService {
   Programmer: Shir Bar Lev.
   */
   editPost(post: Post) {
-    this.isUpdated.next(false);
-
     // send update request
-    this.apiClient.patch(`posts/${post.id}`, post).subscribe({
-      next: (_response: any) => {
-        this.alertsService.createSuccessAlert(
-          "Your post was edited. Refresh to view the updated post.",
-          { reload: true },
-        );
-        this.isUpdated.next(true);
-      },
-    });
+    return this.apiClient.patch<PostEditResponse>(`posts/${post.id}`, post);
   }
 
   /*

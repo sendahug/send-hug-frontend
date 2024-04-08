@@ -42,12 +42,12 @@ import { HttpClientModule } from "@angular/common/http";
 import { ServiceWorkerModule } from "@angular/service-worker";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { ReactiveFormsModule } from "@angular/forms";
+import { of } from "rxjs";
 
 import { PostEditForm } from "./postEditForm.component";
 import { Post } from "@app/interfaces/post.interface";
 import { PopUp } from "@app/components/popUp/popUp.component";
 import { ValidationService } from "@app/services/validation.service";
-import { of } from "rxjs";
 
 // POST EDIT
 // ==================================================================

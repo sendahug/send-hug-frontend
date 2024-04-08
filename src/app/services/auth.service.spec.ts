@@ -220,7 +220,7 @@ describe("AuthService", () => {
       if (value) {
         expect(authService.userData.id).toBe(4);
         expect(authService.userData.displayName).toBe("name");
-        expect(authService.authenticated).toBeTrue();
+        expect(authService.authenticated()).toBeTrue();
         expect(setSpy).toHaveBeenCalled();
       }
     });
@@ -361,7 +361,7 @@ describe("AuthService", () => {
 
     // check the user is logged out at first
     expect(authService.userData.id).toBe(0);
-    expect(authService.authenticated).toBeFalse();
+    expect(authService.authenticated()).toBeFalse();
 
     const jwtPayload = {
       sub: "auth0",
@@ -373,7 +373,7 @@ describe("AuthService", () => {
       if (value) {
         expect(authService.userData.id).toBe(5);
         expect(authService.userData.auth0Id).toBe("auth0");
-        expect(authService.authenticated).toBeTrue();
+        expect(authService.authenticated()).toBeTrue();
       }
     });
 
@@ -411,7 +411,7 @@ describe("AuthService", () => {
         item: "#f4b56a",
       },
     };
-    authService.authenticated = true;
+    authService.authenticated.set(true);
     authService.tokenExpired = false;
 
     const authSpy = spyOn(authService.auth0, "logout");

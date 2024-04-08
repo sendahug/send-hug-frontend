@@ -69,7 +69,7 @@ describe("SettingsPage", () => {
     }).compileComponents();
 
     const authService = TestBed.inject(AuthService);
-    authService.authenticated = true;
+    authService.authenticated.set(true);
     authService.userData = { ...mockAuthedUser };
 
     const notificationService = TestBed.inject(NotificationService);
@@ -89,12 +89,12 @@ describe("SettingsPage", () => {
     const fixture = TestBed.createComponent(SettingsPage);
     const settingsPage = fixture.componentInstance;
     const settingsDOM = fixture.nativeElement;
-    settingsPage.authService.authenticated = false;
+    settingsPage.authService.authenticated.set(false);
 
     fixture.detectChanges();
 
     fixture.whenStable().then(() => {
-      expect(settingsPage.authService.authenticated).toBeFalse();
+      expect(settingsPage.authService.authenticated()).toBeFalse();
       expect(settingsDOM.querySelectorAll(".errorMessage")[0]).toBeTruthy();
       expect(settingsDOM.querySelectorAll(".errorMessage")[0].textContent).toBe(
         "You do not have permission to view thie page!",
@@ -107,7 +107,7 @@ describe("SettingsPage", () => {
   it("should show the icon editor", (done: DoneFn) => {
     const fixture = TestBed.createComponent(SettingsPage);
     const settingsPage = fixture.componentInstance;
-    settingsPage.authService.authenticated = false;
+    settingsPage.authService.authenticated.set(false);
 
     fixture.detectChanges();
 
@@ -120,7 +120,7 @@ describe("SettingsPage", () => {
   it("should hide the icon editor", (done: DoneFn) => {
     const fixture = TestBed.createComponent(SettingsPage);
     const settingsPage = fixture.componentInstance;
-    settingsPage.authService.authenticated = false;
+    settingsPage.authService.authenticated.set(false);
 
     fixture.detectChanges();
 
@@ -262,7 +262,7 @@ describe("SettingsPage", () => {
     const settingsPage = fixture.componentInstance;
     const settingsDOM = fixture.nativeElement;
     const updateSpy = spyOn(settingsPage, "updateSettings").and.callThrough();
-    settingsPage.authService.authenticated = true;
+    settingsPage.authService.authenticated.set(true);
 
     fixture.detectChanges();
 
@@ -297,7 +297,7 @@ describe("SettingsPage", () => {
     const settingsPage = fixture.componentInstance;
     const settingsDOM = fixture.nativeElement;
     const alertsSpy = spyOn(TestBed.inject(AlertsService), "createAlert");
-    settingsPage.authService.authenticated = true;
+    settingsPage.authService.authenticated.set(true);
 
     fixture.detectChanges();
 

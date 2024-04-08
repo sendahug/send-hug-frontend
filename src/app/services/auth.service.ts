@@ -31,7 +31,7 @@
 */
 
 // Angular imports
-import { Injectable } from "@angular/core";
+import { Injectable, signal } from "@angular/core";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 
 // Other essential imports
@@ -61,7 +61,7 @@ export class AuthService {
   readonly serverUrl = environment.backend.domain;
   // authentication information
   token: string = "";
-  authenticated: boolean = false;
+  authenticated = signal<boolean>(false);
   // user data
   userData: User = {
     id: 0,
@@ -227,7 +227,7 @@ export class AuthService {
             jwt: this.token,
           };
           // set the authentication-variables accordingly
-          this.authenticated = true;
+          this.authenticated.set(true);
           this.setToken();
           this.isUserDataResolved.next(true);
           this.tokenExpired = false;
@@ -323,7 +323,7 @@ export class AuthService {
           jwt: this.token,
         };
         // set the authentication-variables accordingly
-        this.authenticated = true;
+        this.authenticated.set(true);
         this.setToken();
         this.isUserDataResolved.next(true);
 
@@ -385,7 +385,7 @@ export class AuthService {
     this.serviceWorkerM.addItem("users", user);
 
     //clears the user's data
-    this.authenticated = false;
+    this.authenticated.set(false);
     this.token = "";
     this.userData = {
       id: 0,

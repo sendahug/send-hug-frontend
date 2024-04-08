@@ -144,16 +144,16 @@ export class ItemsService {
   /*
   Function Name: sendHug()
   Function Description: Send a hug to a user through a post they've written.
-  Parameters: item (Post) - the post for which to send a hug.
+  Parameters: postId (number) - the ID of the post for which to send a hug.
   ----------------
   Programmer: Shir Bar Lev.
   */
-  sendHug(item: any) {
-    this.apiClient.post(`posts/${item.id}/hugs`, {}).subscribe({
+  sendHug(postId: number) {
+    this.apiClient.post(`posts/${postId}/hugs`, {}).subscribe({
       next: (_response: any) => {
         this.alertsService.createSuccessAlert("Your hug was sent!");
         // Alert the posts that this item received a hug
-        this.receivedAHug.next(item.id);
+        this.receivedAHug.next(postId);
       },
     });
   }

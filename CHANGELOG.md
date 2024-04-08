@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+### 2024-04-08
+
+#### Changes
+
+- Changed the way a post's data is passed into and handled by the Single Post component. Previously, the passed-in post was simply used internally as is. Now, the external `post` attribute is a setter and a getter, which are used to update and fetch (respectively) the internal property's data. The internal, private property is a signal, instead of a raw post, which ensures Angular keeps track of changes to it. ([#1589](https://github.com/sendahug/send-hug-frontend/pull/1589))
+- The Auth Service's `authenticated` property was updated to be a signal, instead of a boolean, to ensure Angular keeps track of changes to it. ([#1589](https://github.com/sendahug/send-hug-frontend/pull/1589))
+- The single post's method for updating the class and whether the post's 'send hug' button was replaced with two computed properties, one to determine whether to disable the button, and one to determine the button's class (which is applied using Angular's `ngClass`). This way, the button is automatically disabled and its class is set to `active` if the user's ID appears in the post's 'sent hugs' array or if the user isn't logged in. ([#1589](https://github.com/sendahug/send-hug-frontend/pull/1589))
+- The sendHug method in the Items Service, which is responsible for sending a hug for a post, now takes a Post ID as a parameter, instead of the entire post. Since we only need the ID to send a hug, there was no reason to pass the whole post to the method. ([#1589](https://github.com/sendahug/send-hug-frontend/pull/1589))
+
 ### 2024-04-06
 
 #### Chores

@@ -101,19 +101,19 @@ export class NewItem {
   sendPost() {
     const postText = this.newPostForm.controls.postText.value || "";
 
+    // if there's no logged in user, alert the user
+    if (!this.authService.authenticated()) {
+      this.alertService.createAlert({
+        type: "Error",
+        message: "You're currently logged out. Log back in to post a new post.",
+      });
+      return;
+    };
+
     if (!this.newPostForm.valid) {
       this.alertService.createAlert({
         type: "Error",
         message: this.newPostForm.controls.postText.errors?.error,
-      });
-      return;
-    }
-
-    // if there's no logged in user, alert the user
-    if (!this.authService.authenticated) {
-      this.alertService.createAlert({
-        type: "Error",
-        message: "You're currently logged out. Log back in to post a new post.",
       });
       return;
     }
@@ -150,7 +150,7 @@ export class NewItem {
     }
 
     // if there's no logged in user, alert the user
-    if (!this.authService.authenticated) {
+    if (!this.authService.authenticated()) {
       this.alertService.createAlert({
         type: "Error",
         message: "You're currently logged out. Log back in to send a message.",
@@ -168,7 +168,6 @@ export class NewItem {
     }
 
     // if there's text in the textfield, try to create a new message
-
     // if the user is sending a message to someone else and there's text
     // in the text field, make the request
     // create a new message object to send

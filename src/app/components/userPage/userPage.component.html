@@ -1,5 +1,5 @@
 <!-- If the user is logged in, displays a user page. -->
-<div *ngIf="authService.authenticated" id="profileContainer">
+<div *ngIf="authService.authenticated()" id="profileContainer">
 	<app-loader
 		*ngIf="!isIdbFetchResolved()"
 		[waitingFor]="waitFor"></app-loader>
@@ -61,7 +61,7 @@
 </div>
 
 <!-- If the user isn't logged in, prompts the user to log in. -->
-<div  id="loginBox" *ngIf="!authService.authenticated">
+<div  id="loginBox" *ngIf="!authService.authenticated()">
 	<div class="errorMessage">You are not currently logged in. To view user information, log in.</div>
 
 	<button id="logIn" class="appButton" (click)="login()">Login</button>

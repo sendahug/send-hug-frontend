@@ -193,58 +193,53 @@ describe("Popup", () => {
       spy.calls.reset();
     });
 
-    // run the tests, with each stage wrapped in a promise to ensure they
-    // happen by the correct order
     // step 1: check the last element is focused
-    new Promise(() => {
-      // focus on the last element
-      mockPageDOM.querySelector("#sendBtn").focus();
+    // focus on the last element
+    mockPageDOM.querySelector("#sendBtn").focus();
+    mockPage.detectChanges();
 
-      // check the last element has focus
-      expect(spies[0]).not.toHaveBeenCalled();
-      expect(spies[1]).not.toHaveBeenCalled();
-      expect(spies[2]).toHaveBeenCalled();
-      // step 2: check what happens when clicking tab
-    })
-      .then(() => {
-        // trigger tab event
-        document.getElementById("modalBox")!.dispatchEvent(
-          new KeyboardEvent("keydown", {
-            key: "tab",
-            shiftKey: false,
-          }),
-        );
-        mockPage.detectChanges();
+    // check the last element has focus
+    expect(spies[0]).not.toHaveBeenCalled();
+    expect(spies[1]).not.toHaveBeenCalled();
+    expect(spies[2]).toHaveBeenCalled();
 
-        // check the focus shifted to the first element
-        expect(focusBindedSpy).toHaveBeenCalled();
-        expect(spies[0]).toHaveBeenCalled();
-        expect(spies[0]).toHaveBeenCalledTimes(1);
-        expect(spies[1]).not.toHaveBeenCalled();
-        expect(spies[2]).toHaveBeenCalled();
-        expect(spies[2]).toHaveBeenCalledTimes(1);
-        // check what happens when clicking shift + tab
-      })
-      .then(() => {
-        // trigger shift + tab event
-        document.getElementById("modalBox")!.dispatchEvent(
-          new KeyboardEvent("keydown", {
-            key: "tab",
-            shiftKey: true,
-          }),
-        );
-        mockPage.detectChanges();
+    // step 2: check what happens when clicking tab
+    // trigger tab event
+    document.getElementById("modalBox")!.dispatchEvent(
+      new KeyboardEvent("keydown", {
+        key: "tab",
+        shiftKey: false,
+      }),
+    );
+    mockPage.detectChanges();
 
-        // check the focus shifted to the last element
-        expect(focusBindedSpy).toHaveBeenCalled();
-        expect(focusBindedSpy).toHaveBeenCalledTimes(2);
-        expect(spies[0]).toHaveBeenCalled();
-        expect(spies[0]).toHaveBeenCalledTimes(1);
-        expect(spies[1]).not.toHaveBeenCalled();
-        expect(spies[2]).toHaveBeenCalled();
-        expect(spies[2]).toHaveBeenCalledTimes(2);
-        done();
-      });
+    // check the focus shifted to the first element
+    expect(focusBindedSpy).toHaveBeenCalled();
+    expect(spies[0]).toHaveBeenCalled();
+    expect(spies[0]).toHaveBeenCalledTimes(1);
+    expect(spies[1]).not.toHaveBeenCalled();
+    expect(spies[2]).toHaveBeenCalled();
+    expect(spies[2]).toHaveBeenCalledTimes(1);
+
+    // step 3: check what happens when clicking shift + tab
+    // trigger shift + tab event
+    document.getElementById("modalBox")!.dispatchEvent(
+      new KeyboardEvent("keydown", {
+        key: "tab",
+        shiftKey: true,
+      }),
+    );
+    mockPage.detectChanges();
+
+    // check the focus shifted to the last element
+    expect(focusBindedSpy).toHaveBeenCalled();
+    expect(focusBindedSpy).toHaveBeenCalledTimes(2);
+    expect(spies[0]).toHaveBeenCalled();
+    expect(spies[0]).toHaveBeenCalledTimes(1);
+    expect(spies[1]).not.toHaveBeenCalled();
+    expect(spies[2]).toHaveBeenCalled();
+    expect(spies[2]).toHaveBeenCalledTimes(2);
+    done();
   });
 
   // Check that the event emitter emits false if the user clicks 'exit'

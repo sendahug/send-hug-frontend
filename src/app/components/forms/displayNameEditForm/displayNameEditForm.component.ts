@@ -38,6 +38,7 @@ import { FormBuilder, Validators } from "@angular/forms";
 import { AuthService } from "@app/services/auth.service";
 import { AdminService } from "@app/services/admin.service";
 import { ValidationService } from "@app/services/validation.service";
+import { AlertsService } from "@app/services/alerts.service";
 
 @Component({
   selector: "display-name-edit-form",
@@ -52,7 +53,10 @@ export class DisplayNameEditForm implements OnInit {
   @Output() editMode = new EventEmitter<boolean>();
   @Input() reportData: any;
   editNameForm = this.fb.group({
-    newDisplayName: ["", [Validators.required, Validators.minLength(1)]],
+    newDisplayName: [
+      "",
+      [Validators.required, this.validationService.validateItemAgainst("displayName")],
+    ],
   });
 
   // CTOR
@@ -60,6 +64,7 @@ export class DisplayNameEditForm implements OnInit {
     public authService: AuthService,
     private adminService: AdminService,
     private validationService: ValidationService,
+    private alertService: AlertsService,
     private fb: FormBuilder,
   ) {}
 
@@ -90,30 +95,31 @@ export class DisplayNameEditForm implements OnInit {
   updateDisplayName(e: Event, closeReport: boolean | null) {
     e.preventDefault();
 
-    const newName = this.editNameForm.get("newDisplayName")?.value;
+    if (!this.editNameForm.valid) {
+      this.alertService.createAlert({
+        type: "Error",
+        message: this.editNameForm.controls.newDisplayName.errors?.error,
+      });
+      return;
+    }
 
     // if the name is valid, set it
-    if (
-      this.editNameForm.valid &&
-      this.validationService.validateItem("displayName", newName || "", "displayName")
-    ) {
-      const newDisplayName = String(newName);
+    const newDisplayName = String(this.editNameForm.controls.newDisplayName.value);
 
-      // if the user is editing their own name
-      if (closeReport == null) {
-        this.authService.userData.displayName = newDisplayName;
-        this.authService.updateUserData();
-        // if they're editing someone else's name from the reports page
-      } else {
-        let user = {
-          userID: this.reportData.userID,
-          displayName: newDisplayName,
-        };
+    // if the user is editing their own name
+    if (closeReport == null) {
+      this.authService.userData.displayName = newDisplayName;
+      this.authService.updateUserData();
+      // if they're editing someone else's name from the reports page
+    } else {
+      let user = {
+        userID: this.reportData.userID,
+        displayName: newDisplayName,
+      };
 
-        this.adminService.editUser(user, closeReport, this.reportData.reportID);
-      }
-
-      this.editMode.emit(false);
+      this.adminService.editUser(user, closeReport, this.reportData.reportID);
     }
+
+    this.editMode.emit(false);
   }
 }

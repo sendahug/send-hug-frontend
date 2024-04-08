@@ -54,11 +54,11 @@ export class NewItem {
   // TODO: These two should be united, they're practically
   // the same apart from some configuration changes
   newMessageForm = this.fb.group({
-    messageText: ["", [Validators.required, Validators.minLength(1)]],
+    messageText: ["", [Validators.required, this.validationService.validateItemAgainst("message")]],
     messageFor: [""],
   });
   newPostForm = this.fb.group({
-    postText: ["", [Validators.required, Validators.minLength(1)]],
+    postText: ["", [Validators.required, this.validationService.validateItemAgainst("post")]],
   });
 
   // CTOR
@@ -99,32 +99,36 @@ export class NewItem {
   Programmer: Shir Bar Lev.
   */
   sendPost() {
-    const postText = this.newPostForm.get("postText")?.value || "";
+    const postText = this.newPostForm.controls.postText.value || "";
 
-    if (
-      this.validationService.validateItem("post", postText, "postText") &&
-      this.newPostForm.valid
-    ) {
-      // if there's no logged in user, alert the user
-      if (!this.authService.authenticated()) {
-        this.alertService.createAlert({
-          type: "Error",
-          message: "You're currently logged out. Log back in to post a new post.",
-        });
-      } else {
-        // otherwise create the post
-        // create a new post object to send
-        let newPost: Post = {
-          userId: this.authService.userData.id!,
-          user: this.authService.userData.displayName!,
-          text: postText,
-          date: new Date(),
-          givenHugs: 0,
-        };
-
-        this.itemsService.sendPost(newPost);
-      }
+    // if there's no logged in user, alert the user
+    if (!this.authService.authenticated()) {
+      this.alertService.createAlert({
+        type: "Error",
+        message: "You're currently logged out. Log back in to post a new post.",
+      });
+      return;
     }
+
+    if (!this.newPostForm.valid) {
+      this.alertService.createAlert({
+        type: "Error",
+        message: this.newPostForm.controls.postText.errors?.error,
+      });
+      return;
+    }
+
+    // otherwise create the post
+    // create a new post object to send
+    let newPost: Post = {
+      userId: this.authService.userData.id!,
+      user: this.authService.userData.displayName!,
+      text: postText,
+      date: new Date(),
+      givenHugs: 0,
+    };
+
+    this.itemsService.sendPost(newPost);
   }
 
   /*
@@ -135,43 +139,48 @@ export class NewItem {
   Programmer: Shir Bar Lev.
   */
   sendMessage() {
-    const messageText = this.newMessageForm.get("messageText")?.value || "";
+    const messageText = this.newMessageForm.controls.messageText.value || "";
+
+    if (!this.newMessageForm.valid) {
+      this.alertService.createAlert({
+        type: "Error",
+        message: this.newMessageForm.controls.messageText.errors?.error,
+      });
+      return;
+    }
+
+    // if there's no logged in user, alert the user
+    if (!this.authService.authenticated()) {
+      this.alertService.createAlert({
+        type: "Error",
+        message: "You're currently logged out. Log back in to send a message.",
+      });
+      return;
+    }
+
+    // if the user is attempting to send a message to themselves
+    if (this.authService.userData.id == Number(this.forID)) {
+      this.alertService.createAlert({
+        type: "Error",
+        message: "You can't send a message to yourself!",
+      });
+      return;
+    }
 
     // if there's text in the textfield, try to create a new message
-    if (
-      this.validationService.validateItem("message", messageText, "messageText") &&
-      this.newMessageForm.valid
-    ) {
-      // if the user is attempting to send a message to themselves
-      if (this.authService.userData.id == Number(this.forID)) {
-        this.alertService.createAlert({
-          type: "Error",
-          message: "You can't send a message to yourself!",
-        });
-      }
-      // if the user is sending a message to someone else, make the request
-      else {
-        // if there's no logged in user, alert the user
-        if (!this.authService.authenticated()) {
-          this.alertService.createAlert({
-            type: "Error",
-            message: "You're currently logged out. Log back in to send a message.",
-          });
-        } else {
-          // create a new message object to send
-          let newMessage: Message = {
-            from: {
-              displayName: this.authService.userData.displayName!,
-            },
-            fromId: this.authService.userData.id!,
-            forId: this.forID,
-            messageText: messageText,
-            date: new Date(),
-          };
+    // if the user is sending a message to someone else and there's text
+    // in the text field, make the request
+    // create a new message object to send
+    let newMessage: Message = {
+      from: {
+        displayName: this.authService.userData.displayName!,
+      },
+      fromId: this.authService.userData.id!,
+      forId: this.forID,
+      messageText: messageText,
+      date: new Date(),
+    };
 
-          this.itemsService.sendMessage(newMessage);
-        }
-      }
-    }
+    this.itemsService.sendMessage(newMessage);
   }
 }

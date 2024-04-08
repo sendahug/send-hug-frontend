@@ -32,9 +32,7 @@
 
 // Angular imports
 import { Injectable } from "@angular/core";
-
-// App-related imports
-import { AlertsService } from "./alerts.service";
+import { AbstractControl, ValidationErrors, ValidatorFn } from "@angular/forms";
 
 type ValidatableItems = "post" | "message" | "displayName" | "reportOther";
 
@@ -42,107 +40,60 @@ type ValidatableItems = "post" | "message" | "displayName" | "reportOther";
   providedIn: "root",
 })
 export class ValidationService {
+  private zeroLengthTemplate = "cannot be empty. Please fill the field and try again.";
+  private tooLongTemplate = "cannot be over {0} characters! Please shorten it and try again.";
   validationRules = {
     post: {
       max: 480,
-      emptyAllowed: false,
-      errorMessages: {
-        zeroLength: "Post text cannot be empty. Please fill the field and try again.",
-        tooLong: "Post text cannot be over 480 characters! Please shorten the post and try again.",
-      },
+      required: true,
+      editedItem: "Post text",
     },
     message: {
       max: 480,
-      emptyAllowed: false,
-      errorMessages: {
-        zeroLength: "A message cannot be empty. Please fill the field and try again.",
-        tooLong:
-          "Message text cannot be over 480 characters! Please shorten the message and try again.",
-      },
+      required: true,
+      editedItem: "A message",
     },
     displayName: {
       max: 60,
-      emptyAllowed: false,
-      errorMessages: {
-        zeroLength: "New display name cannot be empty. Please fill the field and try again.",
-        tooLong:
-          "New display name cannot be over 60 characters! Please shorten the name and try again.",
-      },
+      required: true,
+      editedItem: "New display name",
     },
     reportOther: {
       max: 120,
-      emptyAllowed: false,
-      errorMessages: {
-        zeroLength: "The 'other' field cannot be empty.",
-        tooLong:
-          "Report reason cannot be over 120 characters! Please shorten the message and try again.",
-      },
+      required: true,
+      editedItem: "Report reason",
     },
   };
 
   // CTOR
-  constructor(private alertsService: AlertsService) {}
+  constructor() {}
 
   /*
-  Function Name: validateItem()
+  Function Name: validateItemAgainst()
   Function Description: Validates the given item to ensure it fits the rules.
   Parameters: typeOfTest (ValidatableItems) - the type of item being tested
-              textToValidate (string) - the string to validate.
-              elementId (string) - the ID of the HTML element of the text field.
   ----------------
   Programmer: Shir Bar Lev.
   */
-  validateItem(typeOfTest: ValidatableItems, textToValidate: string, elementId: string): boolean {
-    const testValidationRules = this.validationRules[typeOfTest];
-    // if there's text, check its length
-    if (textToValidate) {
-      if (textToValidate.length > testValidationRules["max"]) {
-        this.alertsService.createAlert({
-          type: "Error",
-          message: testValidationRules["errorMessages"]["tooLong"],
-        });
-        this.toggleErrorIndicator(false, elementId);
-        return false;
-      } else {
-        this.toggleErrorIndicator(true, elementId);
-        return true;
-      }
-      // if there isn't text, check if empty texts are allowed
-    } else {
-      if (testValidationRules["emptyAllowed"]) {
-        this.toggleErrorIndicator(true, elementId);
-        return true;
-      } else {
-        this.alertsService.createAlert({
-          type: "Error",
-          message: testValidationRules["errorMessages"]["zeroLength"],
-        });
-        this.toggleErrorIndicator(false, elementId);
-        return false;
-      }
-    }
-  }
+  validateItemAgainst(typeOfTest: ValidatableItems): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      const currentValue = control.value;
+      const testValidationRules = this.validationRules[typeOfTest];
 
-  /*
-  Function Name: toggleErrorIndicator()
-  Function Description: Adds or removes error indicators from the text fields.
-  Parameters: isValid (boolean) - whether or not the value is valid.
-              elementId (string) - the ID of the HTML element of the text field.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  toggleErrorIndicator(isValid: boolean, elementId: string) {
-    // if the data isn't valid, alert the users
-    if (!isValid) {
-      document.getElementById(elementId)!.classList.add("missing");
-      document.getElementById(elementId)!.setAttribute("aria-invalid", "true");
-      // otherwise make sure it's set to false
-    } else {
-      // if the textfield was marked red, remove it
-      if (document.getElementById(elementId)!.classList.contains("missing")) {
-        document.getElementById(elementId)!.classList.remove("missing");
+      // if there's no text and it's required, return an error
+      if (!currentValue && testValidationRules["required"])
+        return { error: `${testValidationRules["editedItem"]} ${this.zeroLengthTemplate}` };
+
+      if (currentValue && currentValue.length > testValidationRules["max"]) {
+        const errorMessage = this.tooLongTemplate.replace(
+          "{0}",
+          testValidationRules["max"].toString(),
+        );
+
+        return { error: `${testValidationRules["editedItem"]} ${errorMessage}` };
       }
-      document.getElementById(elementId)!.setAttribute("aria-invalid", "false");
-    }
+
+      return null;
+    };
   }
 }

@@ -39,6 +39,7 @@ import { Post } from "@app/interfaces/post.interface";
 import { ItemsService } from "@app/services/items.service";
 import { AdminService } from "@app/services/admin.service";
 import { ValidationService } from "@app/services/validation.service";
+import { AlertsService } from "@app/services/alerts.service";
 
 @Component({
   selector: "post-edit-form",
@@ -52,7 +53,7 @@ export class PostEditForm implements OnInit {
   @Input() reportData: any;
   @Input() isAdmin = false;
   postEditForm = this.fb.group({
-    postText: ["", [Validators.required, Validators.minLength(1)]],
+    postText: ["", [Validators.required, this.validationService.validateItemAgainst("post")]],
   });
 
   // CTOR
@@ -60,6 +61,7 @@ export class PostEditForm implements OnInit {
     private itemsService: ItemsService,
     private adminService: AdminService,
     private validationService: ValidationService,
+    private alertService: AlertsService,
     private fb: FormBuilder,
   ) {}
 
@@ -83,33 +85,37 @@ export class PostEditForm implements OnInit {
     const serviceToUse = closeReport === null ? "itemsService" : "adminService";
     const newText = this.postEditForm.get("postText")?.value || "";
 
-    // if the post is valid, edit the text
-    if (
-      this.postEditForm.valid &&
-      this.validationService.validateItem("post", newText, "postText")
-    ) {
-      // if there isn't a value for closeReport, it means it's sent from the regular edit
-      if (closeReport === null) {
-        this.editedItem.text = newText;
-        this.itemsService.editPost(this.editedItem);
-        // otherwise if there's a value it's coming from admin dashboard editing
-      } else {
-        let post = {
-          text: newText,
-          id: this.reportData.postID,
-        };
-
-        this.adminService.editPost(post, closeReport, this.reportData.reportID);
-      }
-
-      // check whether the post's data was updated in the database
-      this[serviceToUse].isUpdated.subscribe((value: Boolean) => {
-        // if it has, close the popup; otherwise, leave it on so that the user
-        // can fix whatever errors they have and try again
-        if (value) {
-          this.editMode.emit(false);
-        }
+    // if the post is invalid, show an error message
+    if (!this.postEditForm.valid) {
+      this.alertService.createAlert({
+        type: "Error",
+        message: this.postEditForm.controls.postText.errors?.error,
       });
+      return;
     }
+
+    // if the post is valid, edit the text
+    // if there isn't a value for closeReport, it means it's sent from the regular edit
+    if (closeReport === null) {
+      this.editedItem.text = newText;
+      this.itemsService.editPost(this.editedItem);
+      // otherwise if there's a value it's coming from admin dashboard editing
+    } else {
+      let post = {
+        text: newText,
+        id: this.reportData.postID,
+      };
+
+      this.adminService.editPost(post, closeReport, this.reportData.reportID);
+    }
+
+    // check whether the post's data was updated in the database
+    this[serviceToUse].isUpdated.subscribe((value: Boolean) => {
+      // if it has, close the popup; otherwise, leave it on so that the user
+      // can fix whatever errors they have and try again
+      if (value) {
+        this.editMode.emit(false);
+      }
+    });
   }
 }

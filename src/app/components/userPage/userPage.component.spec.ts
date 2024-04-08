@@ -52,6 +52,7 @@ import { mockAuthedUser } from "@tests/mockData";
 import { OtherUser } from "@app/interfaces/otherUser.interface";
 import { iconCharacters } from "@app/interfaces/types";
 import { MockDisplayNameForm, MockReportForm } from "@tests/mockForms";
+import { User } from "@app/interfaces/user.interface";
 
 describe("UserPage", () => {
   // Before each test, configure testing environment
@@ -519,7 +520,7 @@ describe("UserPage", () => {
   });
 
   // Check the popup exits when 'false' is emitted
-  it("should change mode when the event emitter emits false", (done: DoneFn) => {
+  it("should change mode when the event emitter emits false - display name edit", (done: DoneFn) => {
     const paramMap = TestBed.inject(ActivatedRoute);
     spyOn(paramMap.snapshot.paramMap, "get").and.returnValue("1");
     const authService = TestBed.inject(AuthService);
@@ -540,13 +541,47 @@ describe("UserPage", () => {
     fixture.detectChanges();
 
     // exit the popup
-    const popup = fixture.debugElement.query(By.css("app-pop-up")).componentInstance as PopUp;
-    popup.exitEdit();
+    const popup = fixture.debugElement.query(By.css("display-name-edit-form"))
+      .componentInstance as MockDisplayNameForm;
+    popup.editMode.emit(false);
     fixture.detectChanges();
 
     // check the popup is exited
     expect(changeSpy).toHaveBeenCalled();
     expect(userPage.editMode).toBeFalse();
+    expect(document.activeElement).toBe(document.querySelectorAll("a")[0]);
+    done();
+  });
+
+  it("should change mode when the event emitter emits false - report", (done: DoneFn) => {
+    const paramMap = TestBed.inject(ActivatedRoute);
+    spyOn(paramMap.snapshot.paramMap, "get").and.returnValue("1");
+    const authService = TestBed.inject(AuthService);
+    spyOn(authService, "checkHash");
+    authService.authenticated = true;
+    authService.userData = { ...mockAuthedUser };
+    const fixture = TestBed.createComponent(UserPage);
+    const userPage = fixture.componentInstance;
+    const changeSpy = spyOn(userPage, "changeMode").and.callThrough();
+
+    fixture.detectChanges();
+
+    // start the popup
+    userPage.lastFocusedElement = document.querySelectorAll("a")[0];
+    userPage.reportedItem = userPage.otherUser() as User;
+    userPage.reportMode = true;
+    userPage.reportType = "User";
+    fixture.detectChanges();
+
+    // exit the popup
+    const popup = fixture.debugElement.query(By.css("report-form"))
+      .componentInstance as MockReportForm;
+    popup.reportMode.emit(false);
+    fixture.detectChanges();
+
+    // check the popup is exited
+    expect(changeSpy).toHaveBeenCalled();
+    expect(userPage.reportMode).toBeFalse();
     expect(document.activeElement).toBe(document.querySelectorAll("a")[0]);
     done();
   });

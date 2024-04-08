@@ -220,7 +220,7 @@ describe("Post", () => {
   });
 
   // Check the popup exits when 'false' is emitted
-  it("should change mode when the event emitter emits false", (done: DoneFn) => {
+  it("should change mode when the event emitter emits false - edit mode", (done: DoneFn) => {
     const upFixture = TestBed.createComponent(MockPage);
     upFixture.detectChanges();
     const singlePost: SinglePost = upFixture.debugElement.children[0].componentInstance;
@@ -233,13 +233,64 @@ describe("Post", () => {
     upFixture.detectChanges();
 
     // exit the popup
-    const popup = upFixture.debugElement.query(By.css("app-pop-up")).componentInstance as PopUp;
-    popup.exitEdit();
+    const popup = upFixture.debugElement.query(By.css("post-edit-form"))
+      .componentInstance as MockEditForm;
+    popup.editMode.emit(false);
     upFixture.detectChanges();
 
     // check the popup is exited
     expect(changeSpy).toHaveBeenCalled();
     expect(singlePost.editMode).toBeFalse();
+    expect(document.activeElement).toBe(document.querySelectorAll("a")[0]);
+    done();
+  });
+
+  it("should change mode when the event emitter emits false - delete mode", (done: DoneFn) => {
+    const upFixture = TestBed.createComponent(MockPage);
+    upFixture.detectChanges();
+    const singlePost: SinglePost = upFixture.debugElement.children[0].componentInstance;
+    const changeSpy = spyOn(singlePost, "changeMode").and.callThrough();
+    upFixture.detectChanges();
+
+    // start the popup
+    singlePost.lastFocusedElement = document.querySelectorAll("a")[0];
+    singlePost.deleteMode = true;
+    upFixture.detectChanges();
+
+    // exit the popup
+    const popup = upFixture.debugElement.query(By.css("item-delete-form"))
+      .componentInstance as MockDeleteForm;
+    popup.editMode.emit(false);
+    upFixture.detectChanges();
+
+    // check the popup is exited
+    expect(changeSpy).toHaveBeenCalled();
+    expect(singlePost.deleteMode).toBeFalse();
+    expect(document.activeElement).toBe(document.querySelectorAll("a")[0]);
+    done();
+  });
+
+  it("should change mode when the event emitter emits false - report mode", (done: DoneFn) => {
+    const upFixture = TestBed.createComponent(MockPage);
+    upFixture.detectChanges();
+    const singlePost: SinglePost = upFixture.debugElement.children[0].componentInstance;
+    const changeSpy = spyOn(singlePost, "changeMode").and.callThrough();
+    upFixture.detectChanges();
+
+    // start the popup
+    singlePost.lastFocusedElement = document.querySelectorAll("a")[0];
+    singlePost.reportMode = true;
+    upFixture.detectChanges();
+
+    // exit the popup
+    const popup = upFixture.debugElement.query(By.css("report-form"))
+      .componentInstance as MockReportForm;
+    popup.reportMode.emit(false);
+    upFixture.detectChanges();
+
+    // check the popup is exited
+    expect(changeSpy).toHaveBeenCalled();
+    expect(singlePost.reportMode).toBeFalse();
     expect(document.activeElement).toBe(document.querySelectorAll("a")[0]);
     done();
   });

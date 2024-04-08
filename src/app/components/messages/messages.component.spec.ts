@@ -597,8 +597,9 @@ describe("AppMessaging", () => {
     fixture.detectChanges();
 
     // exit the popup
-    const popup = fixture.debugElement.query(By.css("app-pop-up")).componentInstance as PopUp;
-    popup.exitEdit();
+    const popup = fixture.debugElement.query(By.css("item-delete-form"))
+      .componentInstance as MockDeleteForm;
+    popup.editMode.emit(false);
     fixture.detectChanges();
 
     // check the popup is exited

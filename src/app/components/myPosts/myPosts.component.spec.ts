@@ -282,7 +282,7 @@ describe("MyPosts", () => {
   });
 
   // Check the popup exits when 'false' is emitted
-  it("should change mode when the event emitter emits false", (done: DoneFn) => {
+  it("should change mode when the event emitter emits false - post delete", (done: DoneFn) => {
     // create the component
     const fixture = TestBed.createComponent(MockUserPage);
     const userPage = fixture.componentInstance;
@@ -302,14 +302,78 @@ describe("MyPosts", () => {
     fixture.detectChanges();
 
     // exit the popup
-    const popup = fixture.debugElement.children[0].children[0].query(By.css("app-pop-up"))
-      .componentInstance as PopUp;
-    popup.exitEdit();
+    const popup = fixture.debugElement.children[0].children[0].query(By.css("item-delete-form"))
+      .componentInstance as MockDeleteForm;
+    popup.editMode.emit(false);
     fixture.detectChanges();
 
     // check the popup is exited
     expect(changeSpy).toHaveBeenCalled();
     expect(myPosts.deleteMode).toBeFalse();
+    expect(document.activeElement).toBe(document.querySelectorAll("a")[0]);
+    done();
+  });
+
+  it("should change mode when the event emitter emits false - post report", (done: DoneFn) => {
+    // create the component
+    const fixture = TestBed.createComponent(MockUserPage);
+    const userPage = fixture.componentInstance;
+    userPage.userId = 4;
+    fixture.detectChanges();
+    const myPosts: MyPosts = fixture.debugElement.children[0].children[0].componentInstance;
+    const changeSpy = spyOn(myPosts, "changeMode").and.callThrough();
+    myPosts.posts.set(mockPosts);
+    myPosts.isLoading.set(false);
+    fixture.detectChanges();
+
+    // start the popup
+    myPosts.lastFocusedElement = document.querySelectorAll("a")[0];
+    myPosts.reportMode = true;
+    myPosts.reportType = "Post";
+    myPosts.reportedItem = mockPosts[0];
+    fixture.detectChanges();
+
+    // exit the popup
+    const popup = fixture.debugElement.children[0].children[0].query(By.css("report-form"))
+      .componentInstance as MockReportForm;
+    popup.reportMode.emit(false);
+    fixture.detectChanges();
+
+    // check the popup is exited
+    expect(changeSpy).toHaveBeenCalled();
+    expect(myPosts.reportMode).toBeFalse();
+    expect(document.activeElement).toBe(document.querySelectorAll("a")[0]);
+    done();
+  });
+
+  it("should change mode when the event emitter emits false - post edit", (done: DoneFn) => {
+    // create the component
+    const fixture = TestBed.createComponent(MockUserPage);
+    const userPage = fixture.componentInstance;
+    userPage.userId = 4;
+    fixture.detectChanges();
+    const myPosts: MyPosts = fixture.debugElement.children[0].children[0].componentInstance;
+    const changeSpy = spyOn(myPosts, "changeMode").and.callThrough();
+    myPosts.posts.set(mockPosts);
+    myPosts.isLoading.set(false);
+    fixture.detectChanges();
+
+    // start the popup
+    myPosts.lastFocusedElement = document.querySelectorAll("a")[0];
+    myPosts.editMode = true;
+    myPosts.editType = "post";
+    myPosts.postToEdit = mockPosts[0];
+    fixture.detectChanges();
+
+    // exit the popup
+    const popup = fixture.debugElement.children[0].children[0].query(By.css("post-edit-form"))
+      .componentInstance as MockEditForm;
+    popup.editMode.emit(false);
+    fixture.detectChanges();
+
+    // check the popup is exited
+    expect(changeSpy).toHaveBeenCalled();
+    expect(myPosts.editMode).toBeFalse();
     expect(document.activeElement).toBe(document.querySelectorAll("a")[0]);
     done();
   });

@@ -396,7 +396,7 @@ describe("AdminReports", () => {
   });
 
   // Check the popup exits when 'false' is emitted
-  it("should change mode when the event emitter emits false", (done: DoneFn) => {
+  it("should change mode when the event emitter emits false - display name edit", (done: DoneFn) => {
     const fixture = TestBed.createComponent(AdminReports);
     const adminReports = fixture.componentInstance;
     const changeSpy = spyOn(adminReports, "changeMode").and.callThrough();
@@ -413,13 +413,70 @@ describe("AdminReports", () => {
     fixture.detectChanges();
 
     // exit the popup
-    const popup = fixture.debugElement.query(By.css("app-pop-up")).componentInstance as PopUp;
-    popup.exitEdit();
+    const popup = fixture.debugElement.query(By.css("display-name-edit-form"))
+      .componentInstance as MockDisplayNameForm;
+    popup.editMode.emit(false);
     fixture.detectChanges();
 
     // check the popup is exited
     expect(changeSpy).toHaveBeenCalled();
     expect(adminReports.nameEditMode).toBeFalse();
+    expect(document.activeElement).toBe(document.querySelectorAll("a")[0]);
+    done();
+  });
+
+  it("should change mode when the event emitter emits false - post edit", (done: DoneFn) => {
+    const fixture = TestBed.createComponent(AdminReports);
+    const adminReports = fixture.componentInstance;
+    const changeSpy = spyOn(adminReports, "changeMode").and.callThrough();
+
+    fixture.detectChanges();
+
+    // start the popup
+    adminReports.lastFocusedElement = document.querySelectorAll("a")[0];
+    adminReports.editType = "admin post";
+    adminReports.toEdit = "post";
+    adminReports.postEditMode = true;
+    adminReports.reportData.reportID = 5;
+    adminReports.reportData.postID = 2;
+    fixture.detectChanges();
+
+    // exit the popup
+    const popup = fixture.debugElement.query(By.css("post-edit-form"))
+      .componentInstance as MockEditForm;
+    popup.editMode.emit(false);
+    fixture.detectChanges();
+
+    // check the popup is exited
+    expect(changeSpy).toHaveBeenCalled();
+    expect(adminReports.postEditMode).toBeFalse();
+    expect(document.activeElement).toBe(document.querySelectorAll("a")[0]);
+    done();
+  });
+
+  it("should change mode when the event emitter emits false - delete post", (done: DoneFn) => {
+    const fixture = TestBed.createComponent(AdminReports);
+    const adminReports = fixture.componentInstance;
+    const changeSpy = spyOn(adminReports, "changeMode").and.callThrough();
+
+    fixture.detectChanges();
+
+    // start the popup
+    adminReports.lastFocusedElement = document.querySelectorAll("a")[0];
+    adminReports.deleteMode = true;
+    adminReports.toDelete = "post";
+    adminReports.itemToDelete = 2;
+    fixture.detectChanges();
+
+    // exit the popup
+    const popup = fixture.debugElement.query(By.css("item-delete-form"))
+      .componentInstance as MockDeleteForm;
+    popup.editMode.emit(false);
+    fixture.detectChanges();
+
+    // check the popup is exited
+    expect(changeSpy).toHaveBeenCalled();
+    expect(adminReports.deleteMode).toBeFalse();
     expect(document.activeElement).toBe(document.querySelectorAll("a")[0]);
     done();
   });

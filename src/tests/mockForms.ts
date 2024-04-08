@@ -43,7 +43,7 @@ export class MockDeleteForm {
   template: "<app-pop-up (editMode)='editMode.emit(false)'></app-pop-up>",
 })
 export class MockReportForm {
-  @Output() editMode = new EventEmitter<boolean>();
+  @Output() reportMode = new EventEmitter<boolean>();
 }
 
 @Component({

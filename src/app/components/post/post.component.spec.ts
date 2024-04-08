@@ -46,8 +46,9 @@ import { By } from "@angular/platform-browser";
 import { NO_ERRORS_SCHEMA } from "@angular/core";
 
 import { SinglePost } from "./post.component";
-import { PopUp } from "../popUp/popUp.component";
+import { PopUp } from "@app/components/popUp/popUp.component";
 import { mockAuthedUser } from "@tests/mockData";
+import { MockDeleteForm, MockEditForm, MockReportForm } from "@tests/mockForms";
 
 // Mock User Page for testing the sub-component
 // ==================================================
@@ -90,7 +91,7 @@ describe("Post", () => {
         ServiceWorkerModule.register("sw.js", { enabled: false }),
         FontAwesomeModule,
       ],
-      declarations: [MockPage, SinglePost, PopUp],
+      declarations: [MockPage, SinglePost, PopUp, MockDeleteForm, MockReportForm, MockEditForm],
       providers: [{ provide: APP_BASE_HREF, useValue: "/" }],
     }).compileComponents();
   });
@@ -99,19 +100,18 @@ describe("Post", () => {
   it("should have all popup variables set to false", () => {
     const upFixture = TestBed.createComponent(MockPage);
     upFixture.detectChanges();
-    const singlePost = upFixture.debugElement.children[0].children[0].componentInstance;
+    const singlePost: SinglePost = upFixture.debugElement.children[0].children[0].componentInstance;
 
     expect(singlePost.editMode).toBeFalse();
-    expect(singlePost.delete).toBeFalse();
-    expect(singlePost.report).toBeFalse();
+    expect(singlePost.deleteMode).toBeFalse();
+    expect(singlePost.reportMode).toBeFalse();
   });
 
   // Check that sending a hug triggers the items service
   it("should trigger items service on hug", (done: DoneFn) => {
     const upFixture = TestBed.createComponent(MockPage);
-    const pageDOM = upFixture.nativeElement;
     upFixture.detectChanges();
-    const singlePost = upFixture.debugElement.children[0].componentInstance;
+    const singlePost: SinglePost = upFixture.debugElement.children[0].componentInstance;
     const singlePostDOM = upFixture.debugElement.children[0].nativeElement;
     const hugSpy = spyOn(singlePost, "sendHug").and.callThrough();
     const spy = spyOn(singlePost.itemsService, "sendHug");
@@ -141,7 +141,7 @@ describe("Post", () => {
     const upFixture = TestBed.createComponent(MockPage);
     const pageDOM = upFixture.nativeElement;
     upFixture.detectChanges();
-    const singlePost = upFixture.debugElement.children[0].componentInstance;
+    const singlePost: SinglePost = upFixture.debugElement.children[0].componentInstance;
     const singlePostDOM = upFixture.debugElement.children[0].nativeElement;
     const authService = singlePost.authService;
     const authSpy = spyOn(authService, "canUser").and.returnValue(true);
@@ -167,14 +167,14 @@ describe("Post", () => {
     const upFixture = TestBed.createComponent(MockPage);
     const pageDOM = upFixture.nativeElement;
     upFixture.detectChanges();
-    const singlePost = upFixture.debugElement.children[0].componentInstance;
+    const singlePost: SinglePost = upFixture.debugElement.children[0].componentInstance;
     const singlePostDOM = upFixture.debugElement.children[0].nativeElement;
     const authService = singlePost.authService;
     const authSpy = spyOn(authService, "canUser").and.returnValue(true);
     upFixture.detectChanges();
 
     // before the click
-    expect(singlePost.editMode).toBeFalse();
+    expect(singlePost.deleteMode).toBeFalse();
     expect(authSpy).toHaveBeenCalled();
 
     // trigger click
@@ -182,8 +182,7 @@ describe("Post", () => {
     upFixture.detectChanges();
 
     // after the click
-    expect(singlePost.editMode).toBeTrue();
-    expect(singlePost.delete).toBeTrue();
+    expect(singlePost.deleteMode).toBeTrue();
     expect(singlePost.toDelete).toBe("Post");
     expect(singlePost.itemToDelete).toBe(1);
     expect(singlePostDOM.querySelector("app-pop-up")).toBeTruthy();
@@ -195,7 +194,7 @@ describe("Post", () => {
     const upFixture = TestBed.createComponent(MockPage);
     const pageDOM = upFixture.nativeElement;
     upFixture.detectChanges();
-    const singlePost = upFixture.debugElement.children[0].componentInstance;
+    const singlePost: SinglePost = upFixture.debugElement.children[0].componentInstance;
     const singlePostDOM = upFixture.debugElement.children[0].nativeElement;
     const authService = singlePost.authService;
     const authSpy = spyOn(authService, "canUser").and.returnValue(true);
@@ -203,11 +202,7 @@ describe("Post", () => {
     upFixture.detectChanges();
 
     // before the click
-    expect(singlePost.editMode).toBeFalse();
-    expect(singlePost.postToEdit).toBeUndefined();
-    expect(singlePost.editType).toBeUndefined();
-    expect(singlePost.delete).toBeFalse();
-    expect(singlePost.report).toBeFalse();
+    expect(singlePost.reportMode).toBeFalse();
     expect(singlePost.reportType).toBeUndefined();
     expect(authSpy).toHaveBeenCalled();
     expect(reportSpy).not.toHaveBeenCalled();
@@ -217,11 +212,7 @@ describe("Post", () => {
     upFixture.detectChanges();
 
     // after the click
-    expect(singlePost.editMode).toBeTrue();
-    expect(singlePost.postToEdit).toBeUndefined();
-    expect(singlePost.editType).toBeUndefined();
-    expect(singlePost.delete).toBeFalse();
-    expect(singlePost.report).toBeTrue();
+    expect(singlePost.reportMode).toBeTrue();
     expect(singlePost.reportType).toBe("Post");
     expect(reportSpy).toHaveBeenCalled();
     expect(singlePostDOM.querySelector("app-pop-up")).toBeTruthy();
@@ -229,25 +220,22 @@ describe("Post", () => {
   });
 
   // Check the popup exits when 'false' is emitted
-  it("should change mode when the event emitter emits false", (done: DoneFn) => {
+  it("should change mode when the event emitter emits false - edit mode", (done: DoneFn) => {
     const upFixture = TestBed.createComponent(MockPage);
     upFixture.detectChanges();
-    const singlePost = upFixture.debugElement.children[0].componentInstance;
+    const singlePost: SinglePost = upFixture.debugElement.children[0].componentInstance;
     const changeSpy = spyOn(singlePost, "changeMode").and.callThrough();
     upFixture.detectChanges();
 
     // start the popup
     singlePost.lastFocusedElement = document.querySelectorAll("a")[0];
     singlePost.editMode = true;
-    singlePost.delete = true;
-    singlePost.toDelete = "Post";
-    singlePost.itemToDelete = 1;
-    singlePost.report = false;
     upFixture.detectChanges();
 
     // exit the popup
-    const popup = upFixture.debugElement.query(By.css("app-pop-up")).componentInstance as PopUp;
-    popup.exitEdit();
+    const popup = upFixture.debugElement.query(By.css("post-edit-form"))
+      .componentInstance as MockEditForm;
+    popup.editMode.emit(false);
     upFixture.detectChanges();
 
     // check the popup is exited
@@ -257,10 +245,60 @@ describe("Post", () => {
     done();
   });
 
+  it("should change mode when the event emitter emits false - delete mode", (done: DoneFn) => {
+    const upFixture = TestBed.createComponent(MockPage);
+    upFixture.detectChanges();
+    const singlePost: SinglePost = upFixture.debugElement.children[0].componentInstance;
+    const changeSpy = spyOn(singlePost, "changeMode").and.callThrough();
+    upFixture.detectChanges();
+
+    // start the popup
+    singlePost.lastFocusedElement = document.querySelectorAll("a")[0];
+    singlePost.deleteMode = true;
+    upFixture.detectChanges();
+
+    // exit the popup
+    const popup = upFixture.debugElement.query(By.css("item-delete-form"))
+      .componentInstance as MockDeleteForm;
+    popup.editMode.emit(false);
+    upFixture.detectChanges();
+
+    // check the popup is exited
+    expect(changeSpy).toHaveBeenCalled();
+    expect(singlePost.deleteMode).toBeFalse();
+    expect(document.activeElement).toBe(document.querySelectorAll("a")[0]);
+    done();
+  });
+
+  it("should change mode when the event emitter emits false - report mode", (done: DoneFn) => {
+    const upFixture = TestBed.createComponent(MockPage);
+    upFixture.detectChanges();
+    const singlePost: SinglePost = upFixture.debugElement.children[0].componentInstance;
+    const changeSpy = spyOn(singlePost, "changeMode").and.callThrough();
+    upFixture.detectChanges();
+
+    // start the popup
+    singlePost.lastFocusedElement = document.querySelectorAll("a")[0];
+    singlePost.reportMode = true;
+    upFixture.detectChanges();
+
+    // exit the popup
+    const popup = upFixture.debugElement.query(By.css("report-form"))
+      .componentInstance as MockReportForm;
+    popup.reportMode.emit(false);
+    upFixture.detectChanges();
+
+    // check the popup is exited
+    expect(changeSpy).toHaveBeenCalled();
+    expect(singlePost.reportMode).toBeFalse();
+    expect(document.activeElement).toBe(document.querySelectorAll("a")[0]);
+    done();
+  });
+
   it("toggleMenu() - should set the currently open menu to the given post's id", () => {
     const upFixture = TestBed.createComponent(MockPage);
     upFixture.detectChanges();
-    const singlePost = upFixture.debugElement.children[0].componentInstance;
+    const singlePost: SinglePost = upFixture.debugElement.children[0].componentInstance;
     singlePost.itemsService.currentlyOpenMenu.next("nPost3");
     const openMenuSpy = spyOn(singlePost.itemsService.currentlyOpenMenu, "next").and.callThrough();
 
@@ -280,7 +318,7 @@ describe("Post", () => {
   it("toggleMenu() - should set the currently open menu to an emptpy string if the given post's id is already open", () => {
     const upFixture = TestBed.createComponent(MockPage);
     upFixture.detectChanges();
-    const singlePost = upFixture.debugElement.children[0].componentInstance;
+    const singlePost: SinglePost = upFixture.debugElement.children[0].componentInstance;
     singlePost.itemsService.currentlyOpenMenu.next("nPost1");
     const openMenuSpy = spyOn(singlePost.itemsService.currentlyOpenMenu, "next").and.callThrough();
 
@@ -301,7 +339,7 @@ describe("Post", () => {
   it("checkMenuSize() - shouldn't show the posts's menu if not wide enough", (done: DoneFn) => {
     const upFixture = TestBed.createComponent(MockPage);
     upFixture.detectChanges();
-    const singlePost = upFixture.debugElement.children[0].componentInstance;
+    const singlePost: SinglePost = upFixture.debugElement.children[0].componentInstance;
     const singlePostDOM = upFixture.debugElement.children[0].nativeElement;
     const authService = singlePost.authService;
     spyOn(authService, "canUser").and.returnValue(true);
@@ -324,7 +362,7 @@ describe("Post", () => {
   it("checkMenuSize() - should show the menu if it's wide enough for it", (done: DoneFn) => {
     const upFixture = TestBed.createComponent(MockPage);
     upFixture.detectChanges();
-    const singlePost = upFixture.debugElement.children[0].componentInstance;
+    const singlePost: SinglePost = upFixture.debugElement.children[0].componentInstance;
     const singlePostDOM = upFixture.debugElement.children[0].nativeElement;
     const authService = singlePost.authService;
     spyOn(authService, "canUser").and.returnValue(true);
@@ -347,7 +385,7 @@ describe("Post", () => {
   it("checkMenuSize() - should float the menu if it's wide enough for it", (done: DoneFn) => {
     const upFixture = TestBed.createComponent(MockPage);
     upFixture.detectChanges();
-    const singlePost = upFixture.debugElement.children[0].componentInstance;
+    const singlePost: SinglePost = upFixture.debugElement.children[0].componentInstance;
     const singlePostDOM = upFixture.debugElement.children[0].nativeElement;
     const authService = singlePost.authService;
     spyOn(authService, "canUser").and.returnValue(true);

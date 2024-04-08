@@ -55,7 +55,8 @@ export class AdminReports {
   // edit popup sub-component variables
   toEdit: any;
   editType: string | undefined;
-  editMode: boolean;
+  nameEditMode: boolean = false;
+  postEditMode: boolean = false;
   reportData: {
     userID?: number;
     reportID: number;
@@ -63,10 +64,9 @@ export class AdminReports {
   } = {
     reportID: 0,
   };
-  delete: boolean;
+  deleteMode: boolean = false;
   toDelete: string | undefined;
   itemToDelete: number | undefined;
-  report: boolean;
   lastFocusedElement: any;
   usersPrevButtonClass = computed(() => ({
     "appButton prevButton": true,
@@ -90,10 +90,6 @@ export class AdminReports {
     private adminService: AdminService,
     private alertsService: AlertsService,
   ) {
-    this.editMode = false;
-    this.delete = false;
-    this.report = false;
-
     this.fetchReports();
   }
 
@@ -149,7 +145,7 @@ export class AdminReports {
     this.lastFocusedElement = document.activeElement;
     this.editType = "other user";
     this.toEdit = displayName;
-    this.editMode = true;
+    this.nameEditMode = true;
     this.reportData.reportID = reportID;
     this.reportData.userID = userID;
   }
@@ -167,7 +163,7 @@ export class AdminReports {
     this.lastFocusedElement = document.activeElement;
     this.editType = "admin post";
     this.toEdit = { text: postText, id: postID };
-    this.editMode = true;
+    this.postEditMode = true;
     this.reportData.reportID = reportID;
     this.reportData.postID = postID;
   }
@@ -183,8 +179,7 @@ export class AdminReports {
   */
   deletePost(postID: number, userID: number, reportID: number) {
     this.lastFocusedElement = document.activeElement;
-    this.editMode = true;
-    this.delete = true;
+    this.deleteMode = true;
     this.toDelete = "ad post";
     this.itemToDelete = postID;
     this.reportData.reportID = reportID;
@@ -246,8 +241,10 @@ export class AdminReports {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  changeMode(edit: boolean) {
-    this.editMode = edit;
+  changeMode(edit: boolean, type: "EditName" | "Delete" | "EditPost") {
+    if (type === "EditName") this.nameEditMode = edit;
+    else if (type === "EditPost") this.postEditMode = edit;
+    else this.deleteMode = edit;
     this.lastFocusedElement?.focus();
   }
 }

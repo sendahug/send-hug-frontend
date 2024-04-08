@@ -106,7 +106,7 @@ export class NewItem {
       this.newPostForm.valid
     ) {
       // if there's no logged in user, alert the user
-      if (!this.authService.authenticated) {
+      if (!this.authService.authenticated()) {
         this.alertService.createAlert({
           type: "Error",
           message: "You're currently logged out. Log back in to post a new post.",
@@ -152,7 +152,7 @@ export class NewItem {
       // if the user is sending a message to someone else, make the request
       else {
         // if there's no logged in user, alert the user
-        if (!this.authService.authenticated) {
+        if (!this.authService.authenticated()) {
           this.alertService.createAlert({
             type: "Error",
             message: "You're currently logged out. Log back in to send a message.",

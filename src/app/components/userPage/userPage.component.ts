@@ -102,7 +102,7 @@ export class UserPage implements OnInit, OnDestroy, AfterViewChecked {
 
     // If the user's logged in, fetch the user immediately;
     // otherwise, wait for the user to login
-    if (this.authService.authenticated) {
+    if (this.authService.authenticated()) {
       this.getUser();
     } else {
       // set the userDataSubscription to the subscription to isUserDataResolved

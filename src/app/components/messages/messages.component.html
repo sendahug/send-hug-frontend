@@ -5,7 +5,7 @@
 	
 	<h3>{{ messType }}</h3>
 <!-- Messages area navigation. -->
-	<div id="messagesNav" role="navigation" *ngIf="authService.authenticated">
+	<div id="messagesNav" role="navigation" *ngIf="authService.authenticated()">
 		<button class="messNavOption appButton" (click)="changeMailbox('inbox')">Inbox</button>
 		<button class="messNavOption appButton" (click)="changeMailbox('outbox')">Outbox</button>
 		<button class="messNavOption appButton" (click)="changeMailbox('threads')">Threads</button>
@@ -13,7 +13,7 @@
 </div>
 
 <!-- If the user is logged in, displays the user's inbox. -->
-<div id="userInbox" *ngIf="authService.authenticated">
+<div id="userInbox" *ngIf="authService.authenticated()">
 	<app-loader
 		*ngIf="isIdbFetchLoading()"
 		[waitingFor]="waitFor"></app-loader>
@@ -149,7 +149,7 @@
 </div>	
 
 <!-- If the user isn't logged in, prompts the user to log in. -->
-<div id="loginBox" *ngIf="!authService.authenticated">
+<div id="loginBox" *ngIf="!authService.authenticated()">
 	<div class="errorMessage">You are not currently logged in. To view your inbox, log in.</div>
 
 	<button id="logIn" class="appButton" (click)="login()">Login</button>

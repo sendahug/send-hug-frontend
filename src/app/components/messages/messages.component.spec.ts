@@ -131,7 +131,7 @@ describe("AppMessaging", () => {
     }).compileComponents();
 
     const authService = TestBed.inject(AuthService);
-    authService.authenticated = true;
+    authService.authenticated.set(true);
     authService.userData = { ...mockAuthedUser };
   });
 
@@ -335,12 +335,12 @@ describe("AppMessaging", () => {
 
   // Check that an error is shown if the user isn't logged in
   it("should show an error if the user isn't logged in", (done: DoneFn) => {
-    TestBed.inject(AuthService).authenticated = false;
+    TestBed.inject(AuthService).authenticated.set(false);
     // create the component and set up spies
     const fixture = TestBed.createComponent(AppMessaging);
     const appMessaging = fixture.componentInstance;
     const appMessagingDOM = fixture.nativeElement;
-    appMessaging.authService.authenticated = false;
+    appMessaging.authService.authenticated.set(false);
 
     fixture.detectChanges();
 
@@ -352,12 +352,12 @@ describe("AppMessaging", () => {
   // Check that the login method triggers the auth service
   it("should trigger the auth service upon login", (done: DoneFn) => {
     // set authenticated to false
-    TestBed.inject(AuthService).authenticated = false;
+    TestBed.inject(AuthService).authenticated.set(false);
     // create the component and set up spies
     const fixture = TestBed.createComponent(AppMessaging);
     const appMessaging = fixture.componentInstance;
     const appMessagingDOM = fixture.nativeElement;
-    appMessaging.authService.authenticated = false;
+    appMessaging.authService.authenticated.set(false);
     const loginSpy = spyOn(appMessaging, "login").and.callThrough();
     const loginServiceSpy = spyOn(appMessaging.authService, "login");
 
@@ -365,13 +365,13 @@ describe("AppMessaging", () => {
 
     // simulate click
     appMessagingDOM.querySelector("#logIn").click();
-    appMessaging.authService.authenticated = true;
+    appMessaging.authService.authenticated.set(true);
     fixture.detectChanges();
 
     // check the spies are called
     expect(loginSpy).toHaveBeenCalled();
     expect(loginServiceSpy).toHaveBeenCalled();
-    expect(appMessaging.authService.authenticated).toBeTrue();
+    expect(appMessaging.authService.authenticated()).toBeTrue();
     done();
   });
 

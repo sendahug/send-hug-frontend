@@ -84,7 +84,7 @@ describe("UserPage", () => {
   it("should check for a logged in user", () => {
     const authService = TestBed.inject(AuthService);
     const authSpy = spyOn(authService, "checkHash");
-    authService.authenticated = true;
+    authService.authenticated.set(true);
     authService.userData = { ...mockAuthedUser };
     const fixture = TestBed.createComponent(UserPage);
     const userPage = fixture.componentInstance;
@@ -106,7 +106,7 @@ describe("UserPage", () => {
   it("should show the logged in user if not provided with ID", (done: DoneFn) => {
     const authService = TestBed.inject(AuthService);
     spyOn(authService, "checkHash");
-    authService.authenticated = true;
+    authService.authenticated.set(true);
     authService.userData = { ...mockAuthedUser };
     const fixture = TestBed.createComponent(UserPage);
     const userPage = fixture.componentInstance;
@@ -142,7 +142,7 @@ describe("UserPage", () => {
     const routeSpy = spyOn(paramMap.snapshot.paramMap, "get").and.returnValue("4");
     const authService = TestBed.inject(AuthService);
     spyOn(authService, "checkHash");
-    authService.authenticated = true;
+    authService.authenticated.set(true);
     authService.userData = { ...mockAuthedUser };
     const fixture = TestBed.createComponent(UserPage);
     const userPage = fixture.componentInstance;
@@ -180,7 +180,7 @@ describe("UserPage", () => {
     const routeSpy = spyOn(paramMap.snapshot.paramMap, "get").and.returnValue("1");
     const authService = TestBed.inject(AuthService);
     spyOn(authService, "checkHash");
-    authService.authenticated = true;
+    authService.authenticated.set(true);
     authService.userData = { ...mockAuthedUser };
     const fixture = TestBed.createComponent(UserPage);
     const userPage = fixture.componentInstance;
@@ -234,11 +234,11 @@ describe("UserPage", () => {
     const paramMap = TestBed.inject(ActivatedRoute);
     spyOn(paramMap.snapshot.paramMap, "get").and.returnValue("4");
     const authService = TestBed.inject(AuthService);
-    authService.authenticated = false;
+    authService.authenticated.set(false);
     const fixture = TestBed.createComponent(UserPage);
     const userPage = fixture.componentInstance;
     const userPageDOM = fixture.nativeElement;
-    userPage.authService.authenticated = false;
+    userPage.authService.authenticated.set(false);
 
     fixture.detectChanges();
 
@@ -253,18 +253,18 @@ describe("UserPage", () => {
     const paramMap = TestBed.inject(ActivatedRoute);
     spyOn(paramMap.snapshot.paramMap, "get").and.returnValue("4");
     const authService = TestBed.inject(AuthService);
-    authService.authenticated = false;
+    authService.authenticated.set(false);
     const fixture = TestBed.createComponent(UserPage);
     const userPage = fixture.componentInstance;
     const userPageDOM = fixture.nativeElement;
     const loginSpy = spyOn(userPage, "login").and.callThrough();
     const serviceLoginSpy = spyOn(userPage.authService, "login");
-    userPage.authService.authenticated = false;
+    userPage.authService.authenticated.set(false);
 
     fixture.detectChanges();
 
     // check that the user isn't logged in before the click
-    expect(userPage.authService.authenticated).toBeFalse();
+    expect(userPage.authService.authenticated()).toBeFalse();
     expect(userPageDOM.querySelector("#loginBox")).toBeTruthy();
 
     // trigger click on the login button
@@ -283,7 +283,7 @@ describe("UserPage", () => {
     spyOn(paramMap.snapshot.paramMap, "get").and.returnValue("4");
     const authService = TestBed.inject(AuthService);
     spyOn(authService, "checkHash");
-    authService.authenticated = true;
+    authService.authenticated.set(true);
     authService.userData = { ...mockAuthedUser };
     const fixture = TestBed.createComponent(UserPage);
     const userPage = fixture.componentInstance;
@@ -294,7 +294,7 @@ describe("UserPage", () => {
     fixture.detectChanges();
 
     // check the user is logged in
-    expect(userPage.authService.authenticated).toBeTrue();
+    expect(userPage.authService.authenticated()).toBeTrue();
     expect(userPageDOM.querySelector("#profileContainer")).toBeTruthy();
 
     // trigger click on the logout button
@@ -312,7 +312,7 @@ describe("UserPage", () => {
     spyOn(paramMap.snapshot.paramMap, "get").and.returnValue("1");
     const authService = TestBed.inject(AuthService);
     spyOn(authService, "checkHash");
-    authService.authenticated = true;
+    authService.authenticated.set(true);
     authService.userData = { ...mockAuthedUser };
     const fixture = TestBed.createComponent(UserPage);
     const userPage = fixture.componentInstance;
@@ -352,7 +352,7 @@ describe("UserPage", () => {
     spyOn(paramMap.snapshot.paramMap, "get").and.returnValue("1");
     const authService = TestBed.inject(AuthService);
     spyOn(authService, "checkHash");
-    authService.authenticated = true;
+    authService.authenticated.set(true);
     authService.userData = { ...mockAuthedUser };
     const fixture = TestBed.createComponent(UserPage);
     const userPage = fixture.componentInstance;
@@ -391,7 +391,7 @@ describe("UserPage", () => {
     spyOn(paramMap.snapshot.paramMap, "get").and.returnValue("4");
     const authService = TestBed.inject(AuthService);
     spyOn(authService, "checkHash");
-    authService.authenticated = true;
+    authService.authenticated.set(true);
     authService.userData = { ...mockAuthedUser };
     const fixture = TestBed.createComponent(UserPage);
     const userPage = fixture.componentInstance;
@@ -419,7 +419,7 @@ describe("UserPage", () => {
     spyOn(paramMap.snapshot.paramMap, "get").and.returnValue("1");
     const authService = TestBed.inject(AuthService);
     spyOn(authService, "checkHash");
-    authService.authenticated = true;
+    authService.authenticated.set(true);
     authService.userData = { ...mockAuthedUser };
     const fixture = TestBed.createComponent(UserPage);
     const userPage = fixture.componentInstance;
@@ -465,7 +465,7 @@ describe("UserPage", () => {
     spyOn(paramMap.snapshot.paramMap, "get").and.returnValue("1");
     const authService = TestBed.inject(AuthService);
     spyOn(authService, "checkHash");
-    authService.authenticated = true;
+    authService.authenticated.set(true);
     authService.userData = { ...mockAuthedUser };
     const fixture = TestBed.createComponent(UserPage);
     const userPage = fixture.componentInstance;
@@ -525,7 +525,7 @@ describe("UserPage", () => {
     spyOn(paramMap.snapshot.paramMap, "get").and.returnValue("1");
     const authService = TestBed.inject(AuthService);
     spyOn(authService, "checkHash");
-    authService.authenticated = true;
+    authService.authenticated.set(true);
     authService.userData = { ...mockAuthedUser };
     const fixture = TestBed.createComponent(UserPage);
     const userPage = fixture.componentInstance;

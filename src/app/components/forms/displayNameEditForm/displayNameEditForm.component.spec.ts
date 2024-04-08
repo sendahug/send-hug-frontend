@@ -69,7 +69,7 @@ describe("DisplayNameEditForm", () => {
     }).compileComponents();
 
     const authService = TestBed.inject(AuthService);
-    authService.authenticated = true;
+    authService.authenticated.set(true);
     authService.userData = { ...mockAuthedUser };
   });
 

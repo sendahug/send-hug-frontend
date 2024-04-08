@@ -67,7 +67,7 @@ describe("NewItem", () => {
     }).compileComponents();
 
     const authService = TestBed.inject(AuthService);
-    authService.authenticated = true;
+    authService.authenticated.set(true);
     authService.userData = { ...mockAuthedUser };
   });
 
@@ -187,7 +187,7 @@ describe("NewItem", () => {
     const newPostServiceSpy = spyOn(newItem["itemsService"], "sendPost");
     const alertsService = newItem["alertService"];
     const alertSpy = spyOn(alertsService, "createAlert");
-    newItem["authService"].authenticated = false;
+    newItem["authService"].authenticated.set(false);
 
     fixture.detectChanges();
 
@@ -336,7 +336,7 @@ describe("NewItem", () => {
     const newMessageSpy = spyOn(newItem, "sendMessage").and.callThrough();
     const newMessServiceSpy = spyOn(newItem["itemsService"], "sendMessage");
     const alertSpy = spyOn(newItem["alertService"], "createAlert");
-    newItem["authService"].authenticated = false;
+    newItem["authService"].authenticated.set(false);
 
     fixture.detectChanges();
 

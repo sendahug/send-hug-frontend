@@ -116,7 +116,7 @@ describe("Post", () => {
     const hugSpy = spyOn(singlePost, "sendHug").and.callThrough();
     const spy = spyOn(singlePost.itemsService, "sendHug");
     const authService = singlePost.authService;
-    authService.authenticated = true;
+    authService.authenticated.set(true);
     authService.userData = { ...mockAuthedUser };
 
     upFixture.detectChanges();
@@ -417,58 +417,35 @@ describe("Post", () => {
   it("should update the post's givenHugs and sentHugs when a hug is sent", (done: DoneFn) => {
     const upFixture = TestBed.createComponent(MockPage);
     upFixture.detectChanges();
-    const singlePost: SinglePost = upFixture.debugElement.children[0].componentInstance;
+    const singlePost = upFixture.debugElement.children[0].componentInstance;
     const singlePostDOM = upFixture.debugElement.children[0].nativeElement;
     const itemsService = singlePost.itemsService;
-    const disableButtonSpy = spyOn(singlePost, "disableHugButton");
     const authService = singlePost.authService;
-    authService.authenticated = true;
+    authService.authenticated.set(true);
     authService.userData = { ...mockAuthedUser };
 
     // before
-    expect(singlePost.post.givenHugs).toBe(0);
-    expect(singlePost.post.sentHugs).toEqual([]);
+    expect(singlePost._post().givenHugs).toBe(0);
+    expect(singlePost._post().sentHugs).toEqual([]);
+    expect(singlePost.shouldDisableHugBtn()).toBeFalse();
+    expect(singlePost.sendHugButtonClass()).toEqual({
+      "textlessButton hugButton": true,
+      active: false,
+    });
 
     // trigger the function
     itemsService.receivedAHug.next(1);
     upFixture.detectChanges();
 
     // after
-    expect(singlePost.post.givenHugs).toBe(1);
-    expect(singlePost.post.sentHugs).toEqual([4]);
+    expect(singlePost._post().givenHugs).toBe(1);
+    expect(singlePost._post().sentHugs).toEqual([4]);
     expect(singlePostDOM.querySelectorAll(".badge")[0].textContent).toBe("1");
-    expect(disableButtonSpy).toHaveBeenCalled();
-    done();
-  });
-
-  it("should disable the hug button", (done: DoneFn) => {
-    const upFixture = TestBed.createComponent(MockPage);
-    const singlePost: SinglePost = upFixture.debugElement.children[0].componentInstance;
-    singlePost.post = {
-      date: new Date("2020-06-27 19:17:31.072"),
-      givenHugs: 0,
-      id: 1,
-      text: "test",
-      userId: 1,
-      user: "test",
-      sentHugs: [],
-    };
-    singlePost.authService.authenticated = true;
-    const singlePostDOM = upFixture.debugElement.children[0].nativeElement;
-    upFixture.detectChanges();
-
-    // before
-    const hugButton = singlePostDOM.querySelectorAll(".hugButton")[0] as HTMLButtonElement;
-    expect(hugButton.disabled).toBeFalse();
-    expect(hugButton.classList).not.toContain("active");
-
-    // trigger the function
-    singlePost.disableHugButton();
-    upFixture.detectChanges();
-
-    // after
-    expect(hugButton.disabled).toBeTrue();
-    expect(hugButton.classList).toContain("active");
+    expect(singlePost.shouldDisableHugBtn()).toBeTrue();
+    expect(singlePost.sendHugButtonClass()).toEqual({
+      "textlessButton hugButton": true,
+      active: true,
+    });
     done();
   });
 });

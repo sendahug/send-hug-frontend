@@ -169,7 +169,8 @@ export class AppComponent implements OnInit, AfterViewInit {
           // if they're viewing the /user page
           if (
             event.url == `/user` ||
-            (this.authService.authenticated && event.url == `/user/${this.authService.userData.id}`)
+            (this.authService.authenticated() &&
+              event.url == `/user/${this.authService.userData.id}`)
           ) {
             this.currentlyActiveRoute.set("/user");
           }

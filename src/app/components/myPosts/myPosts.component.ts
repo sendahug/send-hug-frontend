@@ -267,9 +267,7 @@ export class MyPosts implements OnInit {
   Programmer: Shir Bar Lev.
   */
   sendHug(itemID: number) {
-    let item = {};
-    item = this.posts().filter((e) => e.id == itemID)[0];
-    this.itemsService.sendHug(item);
+    this.itemsService.sendHug(itemID);
   }
 
   /*

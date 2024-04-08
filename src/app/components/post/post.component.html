@@ -6,11 +6,11 @@
 			<!-- TODO: Check why we're checking for strings -->
 			<!-- TODO: Also move these checks to the component -->
 			<button
-				[class]="(post.sentHugs.includes(authService.userData.id.toString()) || !authService.authenticated) ? 'textlessButton hugButton active' : 'textlessButton hugButton'"
+				[ngClass]="sendHugButtonClass()"
 				(click)="sendHug()"
 				[attr.aria-labelledby]="'pHug ' + type + 'User' + post.id"
 				name="send a hug"
-				[disabled]="post.sentHugs.includes(authService.userData.id.toString()) || !authService.authenticated"
+				[disabled]="shouldDisableHugBtn()"
 			>
 				<fa-icon [icon]="faHandHoldingHeart" class="fa-hand-holding-heart"></fa-icon>
 			</button>

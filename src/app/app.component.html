@@ -13,7 +13,7 @@
 				<fa-icon [icon]="faComments" class="navIcon fa-comments" aria-label="Messages"></fa-icon>
 				<div class="navLinkText">Messages</div>
 			</a>
-			<a *ngIf="authService.authenticated && !authService.userData.blocked" [routerLink]="['/new', 'Post']" [ngClass]="getClassForNavItem('/new')">
+			<a *ngIf="authService.authenticated() && !authService.userData.blocked" [routerLink]="['/new', 'Post']" [ngClass]="getClassForNavItem('/new')">
 				<img src="../assets/img/post.svg" alt="">
 				<div class="navLinkText">New Post</div>
 			</a>

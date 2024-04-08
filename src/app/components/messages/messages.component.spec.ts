@@ -50,6 +50,7 @@ import { PopUp } from "../popUp/popUp.component";
 import { AuthService } from "../../services/auth.service";
 import { mockAuthedUser } from "@tests/mockData";
 import { FullThread } from "@app/interfaces/thread.interface";
+import { MockDeleteForm } from "@tests/mockForms";
 
 const mockMessages = [
   {
@@ -125,7 +126,7 @@ describe("AppMessaging", () => {
         ServiceWorkerModule.register("sw.js", { enabled: false }),
         FontAwesomeModule,
       ],
-      declarations: [AppMessaging, PopUp],
+      declarations: [AppMessaging, PopUp, MockDeleteForm],
       providers: [{ provide: APP_BASE_HREF, useValue: "/" }],
     }).compileComponents();
 
@@ -164,8 +165,7 @@ describe("AppMessaging", () => {
     const fixture = TestBed.createComponent(AppMessaging);
     const appMessaging = fixture.componentInstance;
 
-    expect(appMessaging.editMode).toBeFalse();
-    expect(appMessaging.delete).toBeFalse();
+    expect(appMessaging.deleteMode).toBeFalse();
   });
 
   // TODO: Add test for the user icon setup (onInit and setUpUserIcon)
@@ -386,8 +386,7 @@ describe("AppMessaging", () => {
     fixture.detectChanges();
 
     // before the click
-    expect(appMessaging.editMode).toBeFalse();
-    expect(appMessaging.delete).toBeFalse();
+    expect(appMessaging.deleteMode).toBeFalse();
 
     // trigger click
     const messages = appMessagingDOM.querySelectorAll(".mailboxMessages")[0];
@@ -395,8 +394,7 @@ describe("AppMessaging", () => {
     fixture.detectChanges();
 
     // after the click
-    expect(appMessaging.editMode).toBeTrue();
-    expect(appMessaging.delete).toBeTrue();
+    expect(appMessaging.deleteMode).toBeTrue();
     expect(appMessaging.toDelete).toBe("Message");
     expect(appMessaging.itemToDelete).toBe(1);
     expect(appMessagingDOM.querySelector("app-pop-up")).toBeTruthy();
@@ -545,8 +543,7 @@ describe("AppMessaging", () => {
     fixture.detectChanges();
 
     // before the click
-    expect(appMessaging.editMode).toBeFalse();
-    expect(appMessaging.delete).toBeFalse();
+    expect(appMessaging.deleteMode).toBeFalse();
 
     // trigger click
     const messages = appMessagingDOM.querySelectorAll(".userThread")[0];
@@ -554,8 +551,7 @@ describe("AppMessaging", () => {
     fixture.detectChanges();
 
     // after the click
-    expect(appMessaging.editMode).toBeTrue();
-    expect(appMessaging.delete).toBeTrue();
+    expect(appMessaging.deleteMode).toBeTrue();
     expect(appMessaging.toDelete).toBe("Thread");
     expect(appMessaging.itemToDelete).toBe(3);
     expect(appMessagingDOM.querySelector("app-pop-up")).toBeTruthy();
@@ -572,16 +568,14 @@ describe("AppMessaging", () => {
     fixture.detectChanges();
 
     // before the click
-    expect(appMessaging.editMode).toBeFalse();
-    expect(appMessaging.delete).toBeFalse();
+    expect(appMessaging.deleteMode).toBeFalse();
 
     // trigger click
     appMessagingDOM.querySelectorAll(".deleteAll")[0].click();
     fixture.detectChanges();
 
     // after the click
-    expect(appMessaging.editMode).toBeTrue();
-    expect(appMessaging.delete).toBeTrue();
+    expect(appMessaging.deleteMode).toBeTrue();
     expect(appMessaging.toDelete).toBe("All inbox");
     expect(appMessaging.itemToDelete).toBe(4);
     expect(appMessagingDOM.querySelector("app-pop-up")).toBeTruthy();
@@ -597,8 +591,7 @@ describe("AppMessaging", () => {
 
     // start the popup
     appMessaging.lastFocusedElement = document.querySelectorAll("a")[0];
-    appMessaging.editMode = true;
-    appMessaging.delete = true;
+    appMessaging.deleteMode = true;
     appMessaging.toDelete = "Thread";
     appMessaging.itemToDelete = 1;
     fixture.detectChanges();
@@ -610,7 +603,7 @@ describe("AppMessaging", () => {
 
     // check the popup is exited
     expect(changeSpy).toHaveBeenCalled();
-    expect(appMessaging.editMode).toBeFalse();
+    expect(appMessaging.deleteMode).toBeFalse();
     expect(document.activeElement).toBe(document.querySelectorAll("a")[0]);
     done();
   });

@@ -52,6 +52,7 @@ import { Loader } from "../loader/loader.component";
 import { mockAuthedUser } from "@tests/mockData";
 import { Report } from "@app/interfaces/report.interface";
 import { ApiClientService } from "@app/services/apiClient.service";
+import { MockDeleteForm, MockDisplayNameForm, MockEditForm } from "@tests/mockForms";
 
 const mockUserReports: Report[] = [
   {
@@ -95,7 +96,14 @@ describe("AdminReports", () => {
         ServiceWorkerModule.register("sw.js", { enabled: false }),
         FontAwesomeModule,
       ],
-      declarations: [AdminReports, PopUp, Loader],
+      declarations: [
+        AdminReports,
+        PopUp,
+        Loader,
+        MockDeleteForm,
+        MockDisplayNameForm,
+        MockEditForm,
+      ],
       providers: [{ provide: APP_BASE_HREF, useValue: "/" }],
     }).compileComponents();
 
@@ -182,7 +190,7 @@ describe("AdminReports", () => {
     fixture.detectChanges();
 
     // before the click
-    expect(adminReports.editMode).toBeFalse();
+    expect(adminReports.nameEditMode).toBeFalse();
 
     // trigger click
     const userTable = adminReportsDOM.querySelectorAll(".tableContainer")[0];
@@ -191,7 +199,7 @@ describe("AdminReports", () => {
 
     // check expectations
     expect(editSpy).toHaveBeenCalled();
-    expect(adminReports.editMode).toBeTrue();
+    expect(adminReports.nameEditMode).toBeTrue();
     expect(adminReports.editType).toBe("other user");
     expect(adminReportsDOM.querySelector("app-pop-up")).toBeTruthy();
     done();
@@ -212,7 +220,7 @@ describe("AdminReports", () => {
     fixture.detectChanges();
 
     // before the click
-    expect(adminReports.editMode).toBeFalse();
+    expect(adminReports.postEditMode).toBeFalse();
 
     // trigger click
     const postTable = adminReportsDOM.querySelectorAll(".tableContainer")[1];
@@ -221,7 +229,7 @@ describe("AdminReports", () => {
 
     // check expectations
     expect(editSpy).toHaveBeenCalled();
-    expect(adminReports.editMode).toBeTrue();
+    expect(adminReports.postEditMode).toBeTrue();
     expect(adminReports.editType).toBe("admin post");
     expect(adminReportsDOM.querySelector("app-pop-up")).toBeTruthy();
     done();
@@ -242,7 +250,7 @@ describe("AdminReports", () => {
     fixture.detectChanges();
 
     // before the click
-    expect(adminReports.editMode).toBeFalse();
+    expect(adminReports.deleteMode).toBeFalse();
 
     // trigger click
     const postTable = adminReportsDOM.querySelectorAll(".tableContainer")[1];
@@ -251,7 +259,7 @@ describe("AdminReports", () => {
 
     // check expectations
     expect(deleteSpy).toHaveBeenCalled();
-    expect(adminReports.editMode).toBeTrue();
+    expect(adminReports.deleteMode).toBeTrue();
     expect(adminReports.toDelete).toBe("ad post");
     expect(adminReportsDOM.querySelector("app-pop-up")).toBeTruthy();
     done();
@@ -399,7 +407,7 @@ describe("AdminReports", () => {
     adminReports.lastFocusedElement = document.querySelectorAll("a")[0];
     adminReports.editType = "other user";
     adminReports.toEdit = "displayName";
-    adminReports.editMode = true;
+    adminReports.nameEditMode = true;
     adminReports.reportData.reportID = 5;
     adminReports.reportData.userID = 2;
     fixture.detectChanges();
@@ -411,7 +419,7 @@ describe("AdminReports", () => {
 
     // check the popup is exited
     expect(changeSpy).toHaveBeenCalled();
-    expect(adminReports.editMode).toBeFalse();
+    expect(adminReports.nameEditMode).toBeFalse();
     expect(document.activeElement).toBe(document.querySelectorAll("a")[0]);
     done();
   });

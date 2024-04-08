@@ -102,7 +102,7 @@ export class AppMessaging implements AfterViewChecked {
   // loader sub-component variable
   waitFor = `${this.messType} messages`;
   // edit popup sub-component variables
-  editMode: boolean;
+  deleteMode: boolean;
   toDelete: string | undefined;
   itemToDelete: number | undefined;
   lastFocusedElement: any;
@@ -117,7 +117,7 @@ export class AppMessaging implements AfterViewChecked {
   ) {
     let messageType;
     this.threadId = Number(this.route.snapshot.paramMap.get("id"));
-    this.editMode = false;
+    this.deleteMode = false;
     this.currentPage.set(1);
 
     this.route.url.subscribe((params) => {
@@ -328,7 +328,7 @@ export class AppMessaging implements AfterViewChecked {
   */
   deleteMessage(messageID: number) {
     this.lastFocusedElement = document.activeElement;
-    this.editMode = true;
+    this.deleteMode = true;
     this.toDelete = "Message";
     this.itemToDelete = messageID;
   }
@@ -415,7 +415,7 @@ export class AppMessaging implements AfterViewChecked {
   */
   deleteThread(threadId: number) {
     this.lastFocusedElement = document.activeElement;
-    this.editMode = true;
+    this.deleteMode = true;
     this.toDelete = "Thread";
     this.itemToDelete = threadId;
   }
@@ -429,7 +429,7 @@ export class AppMessaging implements AfterViewChecked {
   */
   deleteAllMessages(type: string) {
     this.lastFocusedElement = document.activeElement;
-    this.editMode = true;
+    this.deleteMode = true;
     this.toDelete = `All ${type}`;
     this.itemToDelete = this.authService.userData.id;
   }
@@ -445,7 +445,7 @@ export class AppMessaging implements AfterViewChecked {
   Programmer: Shir Bar Lev.
   */
   changeMode(edit: boolean) {
-    this.editMode = edit;
+    this.deleteMode = edit;
     this.lastFocusedElement.focus();
   }
 }

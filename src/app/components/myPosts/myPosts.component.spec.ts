@@ -52,6 +52,7 @@ import { Loader } from "../loader/loader.component";
 import { HeaderMessage } from "../headerMessage/headerMessage.component";
 import { AuthService } from "../../services/auth.service";
 import { mockAuthedUser } from "@tests/mockData";
+import { MockReportForm, MockDeleteForm, MockEditForm } from "@tests/mockForms";
 
 const mockPosts = [
   {
@@ -110,7 +111,16 @@ describe("MyPosts", () => {
         ServiceWorkerModule.register("sw.js", { enabled: false }),
         FontAwesomeModule,
       ],
-      declarations: [MockUserPage, MyPosts, PopUp, Loader, HeaderMessage],
+      declarations: [
+        MockUserPage,
+        MyPosts,
+        PopUp,
+        Loader,
+        HeaderMessage,
+        MockDeleteForm,
+        MockEditForm,
+        MockReportForm,
+      ],
       providers: [{ provide: APP_BASE_HREF, useValue: "/" }],
     }).compileComponents();
 
@@ -124,7 +134,7 @@ describe("MyPosts", () => {
     const upFixture = TestBed.createComponent(MockUserPage);
     const userPage = upFixture.componentInstance;
     upFixture.detectChanges();
-    const myPosts = upFixture.debugElement.children[0].children[0].componentInstance;
+    const myPosts: MyPosts = upFixture.debugElement.children[0].children[0].componentInstance;
     expect(userPage).toBeTruthy();
     expect(myPosts).toBeTruthy();
   });
@@ -133,11 +143,11 @@ describe("MyPosts", () => {
   it("should have all popup variables set to false", () => {
     const upFixture = TestBed.createComponent(MockUserPage);
     upFixture.detectChanges();
-    const myPosts = upFixture.debugElement.children[0].children[0].componentInstance;
+    const myPosts: MyPosts = upFixture.debugElement.children[0].children[0].componentInstance;
 
     expect(myPosts.editMode).toBeFalse();
-    expect(myPosts.delete).toBeFalse();
-    expect(myPosts.report).toBeFalse();
+    expect(myPosts.deleteMode).toBeFalse();
+    expect(myPosts.reportMode).toBeFalse();
   });
 
   // Check that the component gets the user ID correctly
@@ -146,7 +156,7 @@ describe("MyPosts", () => {
     const userPage = upFixture.componentInstance;
     userPage.userId = 1;
     upFixture.detectChanges();
-    const myPosts = upFixture.debugElement.children[0].children[0].componentInstance;
+    const myPosts: MyPosts = upFixture.debugElement.children[0].children[0].componentInstance;
 
     expect(myPosts.userID).toBe(1);
     expect(myPosts.user()).toBe("other");
@@ -158,7 +168,7 @@ describe("MyPosts", () => {
     const userPage = upFixture.componentInstance;
     userPage.userId = 1;
     upFixture.detectChanges();
-    const myPosts = upFixture.debugElement.children[0].children[0].componentInstance;
+    const myPosts: MyPosts = upFixture.debugElement.children[0].children[0].componentInstance;
     const fetchSpy = spyOn(myPosts, "fetchPosts");
 
     myPosts.ngOnInit();
@@ -171,9 +181,9 @@ describe("MyPosts", () => {
     const userPage = upFixture.componentInstance;
     userPage.userId = undefined;
     upFixture.detectChanges();
-    const myPosts = upFixture.debugElement.children[0].children[0].componentInstance;
+    const myPosts: MyPosts = upFixture.debugElement.children[0].children[0].componentInstance;
 
-    expect(myPosts.userID).toBe(userPage.authService.userData.id);
+    expect(myPosts.userID).toBe(userPage.authService.userData.id as number);
     expect(myPosts.user()).toBe("self");
   });
 
@@ -182,7 +192,7 @@ describe("MyPosts", () => {
     const userPage = upFixture.componentInstance;
     userPage.userId = 1;
     upFixture.detectChanges();
-    const myPosts = upFixture.debugElement.children[0].children[0].componentInstance;
+    const myPosts: MyPosts = upFixture.debugElement.children[0].children[0].componentInstance;
     const idbSpy = spyOn(myPosts, "fetchPostsFromIdb").and.returnValue(
       of({ page: 1, posts: [], total_pages: 1, success: true }),
     );
@@ -278,7 +288,7 @@ describe("MyPosts", () => {
     const userPage = fixture.componentInstance;
     userPage.userId = 4;
     fixture.detectChanges();
-    const myPosts = fixture.debugElement.children[0].children[0].componentInstance;
+    const myPosts: MyPosts = fixture.debugElement.children[0].children[0].componentInstance;
     const changeSpy = spyOn(myPosts, "changeMode").and.callThrough();
     myPosts.posts.set(mockPosts);
     myPosts.isLoading.set(false);
@@ -286,8 +296,7 @@ describe("MyPosts", () => {
 
     // start the popup
     myPosts.lastFocusedElement = document.querySelectorAll("a")[0];
-    myPosts.editMode = true;
-    myPosts.delete = true;
+    myPosts.deleteMode = true;
     myPosts.toDelete = "Post";
     myPosts.itemToDelete = 2;
     fixture.detectChanges();
@@ -300,7 +309,7 @@ describe("MyPosts", () => {
 
     // check the popup is exited
     expect(changeSpy).toHaveBeenCalled();
-    expect(myPosts.editMode).toBeFalse();
+    expect(myPosts.deleteMode).toBeFalse();
     expect(document.activeElement).toBe(document.querySelectorAll("a")[0]);
     done();
   });
@@ -311,7 +320,7 @@ describe("MyPosts", () => {
     const userPage = fixture.componentInstance;
     userPage.userId = 4;
     fixture.detectChanges();
-    const myPosts = fixture.debugElement.children[0].children[0].componentInstance;
+    const myPosts: MyPosts = fixture.debugElement.children[0].children[0].componentInstance;
     const myPostsDOM = fixture.debugElement.children[0].children[0].nativeElement;
     const deleteSpy = spyOn(myPosts, "deletePost").and.callThrough();
     myPosts.posts.set(mockPosts);
@@ -319,8 +328,7 @@ describe("MyPosts", () => {
     fixture.detectChanges();
 
     // before the click
-    expect(myPosts.editMode).toBeFalse();
-    expect(myPosts.delete).toBeFalse();
+    expect(myPosts.deleteMode).toBeFalse();
     expect(deleteSpy).not.toHaveBeenCalled();
 
     // trigger click
@@ -328,8 +336,7 @@ describe("MyPosts", () => {
     fixture.detectChanges();
 
     // after the click
-    expect(myPosts.editMode).toBeTrue();
-    expect(myPosts.delete).toBeTrue();
+    expect(myPosts.deleteMode).toBeTrue();
     expect(myPosts.toDelete).toBe("Post");
     expect(myPosts.itemToDelete).toBe(1);
     expect(myPostsDOM.querySelector("app-pop-up")).toBeTruthy();
@@ -342,7 +349,7 @@ describe("MyPosts", () => {
     const userPage = fixture.componentInstance;
     userPage.userId = 4;
     fixture.detectChanges();
-    const myPosts = fixture.debugElement.children[0].children[0].componentInstance;
+    const myPosts: MyPosts = fixture.debugElement.children[0].children[0].componentInstance;
     const myPostsDOM = fixture.debugElement.children[0].children[0].nativeElement;
     const deleteSpy = spyOn(myPosts, "deleteAllPosts").and.callThrough();
     myPosts.posts.set(mockPosts);
@@ -350,8 +357,7 @@ describe("MyPosts", () => {
     fixture.detectChanges();
 
     // before the click
-    expect(myPosts.editMode).toBeFalse();
-    expect(myPosts.delete).toBeFalse();
+    expect(myPosts.deleteMode).toBeFalse();
     expect(deleteSpy).not.toHaveBeenCalled();
 
     // trigger click
@@ -359,8 +365,7 @@ describe("MyPosts", () => {
     fixture.detectChanges();
 
     // after the click
-    expect(myPosts.editMode).toBeTrue();
-    expect(myPosts.delete).toBeTrue();
+    expect(myPosts.deleteMode).toBeTrue();
     expect(myPosts.toDelete).toBe("All posts");
     expect(myPosts.itemToDelete).toBe(4);
     expect(myPostsDOM.querySelector("app-pop-up")).toBeTruthy();
@@ -373,7 +378,7 @@ describe("MyPosts", () => {
     const userPage = fixture.componentInstance;
     userPage.userId = 1;
     fixture.detectChanges();
-    const myPosts = fixture.debugElement.children[0].children[0].componentInstance;
+    const myPosts: MyPosts = fixture.debugElement.children[0].children[0].componentInstance;
     const myPostsDOM = fixture.debugElement.children[0].children[0].nativeElement;
     const reportSpy = spyOn(myPosts, "reportPost").and.callThrough();
     myPosts.posts.set(mockPosts);
@@ -382,8 +387,7 @@ describe("MyPosts", () => {
     fixture.detectChanges();
 
     // before the click
-    expect(myPosts.editMode).toBeFalse();
-    expect(myPosts.report).toBeFalse();
+    expect(myPosts.reportMode).toBeFalse();
     expect(reportSpy).not.toHaveBeenCalled();
 
     // trigger click
@@ -391,9 +395,7 @@ describe("MyPosts", () => {
     fixture.detectChanges();
 
     // after the click
-    expect(myPosts.editMode).toBeTrue();
-    expect(myPosts.delete).toBeFalse();
-    expect(myPosts.report).toBeTrue();
+    expect(myPosts.reportMode).toBeTrue();
     expect(myPosts.reportType).toBe("Post");
     expect(myPostsDOM.querySelector("app-pop-up")).toBeTruthy();
     done();
@@ -405,7 +407,7 @@ describe("MyPosts", () => {
     const userPage = fixture.componentInstance;
     userPage.userId = 1;
     fixture.detectChanges();
-    const myPosts = fixture.debugElement.children[0].children[0].componentInstance;
+    const myPosts: MyPosts = fixture.debugElement.children[0].children[0].componentInstance;
     const myPostsDOM = fixture.debugElement.children[0].children[0].nativeElement;
     const hugSpy = spyOn(myPosts, "sendHug").and.callThrough();
     const hugServiceSpy = spyOn(myPosts["itemsService"], "sendHug");
@@ -429,7 +431,7 @@ describe("MyPosts", () => {
     const userPage = fixture.componentInstance;
     userPage.userId = 1;
     fixture.detectChanges();
-    const myPosts = fixture.debugElement.children[0].children[0].componentInstance;
+    const myPosts: MyPosts = fixture.debugElement.children[0].children[0].componentInstance;
     const myPostsDOM = fixture.debugElement.children[0].children[0].nativeElement;
     const nextPageSpy = spyOn(myPosts, "nextPage").and.callThrough();
     const fetchSpy = spyOn(myPosts, "fetchPosts");
@@ -452,7 +454,7 @@ describe("MyPosts", () => {
     const userPage = fixture.componentInstance;
     userPage.userId = 1;
     fixture.detectChanges();
-    const myPosts = fixture.debugElement.children[0].children[0].componentInstance;
+    const myPosts: MyPosts = fixture.debugElement.children[0].children[0].componentInstance;
     const myPostsDOM = fixture.debugElement.children[0].children[0].nativeElement;
     const prevPageSpy = spyOn(myPosts, "prevPage").and.callThrough();
     const fetchSpy = spyOn(myPosts, "fetchPosts");

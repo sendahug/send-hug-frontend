@@ -61,11 +61,11 @@ export class SinglePost implements AfterViewChecked, OnInit, OnDestroy {
   // edit popup sub-component variables
   postToEdit: Post | undefined;
   editType: string | undefined;
-  editMode: boolean;
-  deleteMode: boolean;
+  editMode: boolean = false;
+  deleteMode: boolean = false;
   toDelete: string | undefined;
   itemToDelete: number | undefined;
-  reportMode: boolean;
+  reportMode: boolean = false;
   reportedItem: Post | undefined;
   reportType: "Post" | undefined;
   lastFocusedElement: any;
@@ -111,11 +111,7 @@ export class SinglePost implements AfterViewChecked, OnInit, OnDestroy {
   constructor(
     public itemsService: ItemsService,
     public authService: AuthService,
-  ) {
-    this.editMode = false;
-    this.deleteMode = false;
-    this.reportMode = false;
-  }
+  ) {}
 
   ngOnInit(): void {
     this.subscriptions.push(

@@ -169,7 +169,7 @@
 	<p id="tDelete">Delete thread with</p>
 </div>
 
-<item-delete-form *ngIf="editMode"
+<item-delete-form *ngIf="deleteMode"
 			(editMode)="changeMode($event)"
 			[toDelete]="toDelete"
 			[itemToDelete]="itemToDelete"

@@ -46,11 +46,12 @@ import { NO_ERRORS_SCHEMA } from "@angular/core";
 import { of } from "rxjs";
 
 import { UserPage } from "./userPage.component";
-import { PopUp } from "../popUp/popUp.component";
-import { AuthService } from "../../services/auth.service";
+import { PopUp } from "@app/components/popUp/popUp.component";
+import { AuthService } from "@app/services/auth.service";
 import { mockAuthedUser } from "@tests/mockData";
 import { OtherUser } from "@app/interfaces/otherUser.interface";
 import { iconCharacters } from "@app/interfaces/types";
+import { MockDisplayNameForm, MockReportForm } from "@tests/mockForms";
 
 describe("UserPage", () => {
   // Before each test, configure testing environment
@@ -66,7 +67,7 @@ describe("UserPage", () => {
         ServiceWorkerModule.register("sw.js", { enabled: false }),
         FontAwesomeModule,
       ],
-      declarations: [UserPage, PopUp],
+      declarations: [UserPage, PopUp, MockDisplayNameForm, MockReportForm],
       providers: [{ provide: APP_BASE_HREF, useValue: "/" }],
     }).compileComponents();
   });
@@ -97,7 +98,7 @@ describe("UserPage", () => {
     const userPage = fixture.componentInstance;
 
     expect(userPage.editMode).toBeFalse();
-    expect(userPage.report).toBeFalse();
+    expect(userPage.reportMode).toBeFalse();
   });
 
   // Check that when there's no ID the component defaults to the logged in user
@@ -407,7 +408,6 @@ describe("UserPage", () => {
     // after the click
     expect(userPage.editMode).toBeTrue();
     expect(userPage.editType).toBe("user");
-    expect(userPage.report).toBeFalse();
     expect(userPageDOM.querySelector("app-pop-up")).toBeTruthy();
     done();
   });
@@ -444,17 +444,16 @@ describe("UserPage", () => {
     fixture.detectChanges();
 
     // before the click
-    expect(userPage.editMode).toBeFalse();
-    expect(userPage.report).toBeFalse();
+    expect(userPage.reportMode).toBeFalse();
 
     // trigger click
     userPageDOM.querySelectorAll(".reportButton")[0].click();
     fixture.detectChanges();
 
     // after the click
-    expect(userPage.editMode).toBeTrue();
-    expect(userPage.editType).toBeUndefined();
-    expect(userPage.report).toBeTrue();
+    expect(userPage.reportMode).toBeTrue();
+    expect(userPage.reportType).toEqual("User");
+    expect(userPage.reportedItem as OtherUser).toEqual(userPage.otherUser() as OtherUser);
     expect(userPageDOM.querySelector("app-pop-up")).toBeTruthy();
     done();
   });
@@ -538,7 +537,6 @@ describe("UserPage", () => {
     userPage.userToEdit = userPage.authService.userData;
     userPage.editMode = true;
     userPage.editType = "user";
-    userPage.report = false;
     fixture.detectChanges();
 
     // exit the popup

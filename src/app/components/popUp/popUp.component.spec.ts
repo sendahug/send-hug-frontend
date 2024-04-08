@@ -254,8 +254,8 @@ describe("Popup", () => {
             expect(spy).not.toHaveBeenCalled();
           }
         });
+        done();
       });
-    done();
   });
 
   // Check that the event emitter emits false if the user clicks 'exit'

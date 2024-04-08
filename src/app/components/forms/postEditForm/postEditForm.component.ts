@@ -110,36 +110,12 @@ export class PostEditForm implements OnInit {
     // Edit the post
     this.apiClient
       .patch<PostEditResponse>(`posts/${this.editedItem.id}`, this.editedItem)
-      .pipe(
-        mergeMap((postResponse) => {
-          // If there's a Close Report value and the admin selected
-          // to close it, also close the report.
-          if (closeReport === true) {
-            return this.adminService
-              .closeReport(this.reportData.reportID, false, postResponse.updated.id)
-              .pipe(
-                map((reportResponse) => {
-                  return {
-                    success: reportResponse.success,
-                    postId: postResponse.updated.id,
-                    reportId: reportResponse.updated.id,
-                  };
-                }),
-              );
-          } else {
-            return of({
-              success: postResponse.success,
-              postId: postResponse.updated.id,
-              reportId: undefined,
-            });
-          }
-        }),
-      )
+      .pipe(mergeMap((postResponse) => this.updateReportIfNecessary(closeReport, postResponse)))
       .subscribe({
         next: (response: PostAndReportResponse) => {
           this.editMode.emit(false);
           const editMessage = response.reportId
-            ? `Report ${response.reportId} was close, and the associated post was edited!`
+            ? `Report ${response.reportId} was closed, and the associated post was edited!`
             : `Post ${response.postId} was edited.`;
 
           this.alertService.createSuccessAlert(`${editMessage} Refresh to view the updated post.`, {
@@ -147,5 +123,35 @@ export class PostEditForm implements OnInit {
           });
         },
       });
+  }
+
+  /**
+   * Updates the report if there's a report to update and the user chooses to.
+   * @param closeReport - whether to close the report.
+   * @param postResponse - the post edit response from the API.
+   * @returns
+   */
+  updateReportIfNecessary(closeReport: boolean | null, postResponse: PostEditResponse) {
+    // If there's a Close Report value and the admin selected
+    // to close it, also close the report.
+    if (closeReport === true) {
+      return this.adminService
+        .closeReport(this.reportData.reportID, false, postResponse.updated.id)
+        .pipe(
+          map((reportResponse) => {
+            return {
+              success: reportResponse.success,
+              postId: postResponse.updated.id,
+              reportId: reportResponse.updated.id,
+            };
+          }),
+        );
+    } else {
+      return of({
+        success: postResponse.success,
+        postId: postResponse.updated.id,
+        reportId: undefined,
+      });
+    }
   }
 }

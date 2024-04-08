@@ -273,7 +273,23 @@ describe("AdminReports", () => {
     const adminReportsDOM = fixture.nativeElement;
     const dismissSpy = spyOn(adminReports, "dismissReport").and.callThrough();
     const adminService = adminReports["adminService"];
-    const dismissServiceSpy = spyOn(adminService, "dismissReport");
+    const dismissServiceSpy = spyOn(adminService, "closeReport").and.returnValue(
+      of({
+        success: true,
+        updated: {
+          id: 2,
+          type: "Post" as "User" | "Post",
+          userID: 11,
+          postID: 5,
+          reporter: 4,
+          reportReason: "reason",
+          date: new Date("2020-06-29 19:17:31.072"),
+          dismissed: true,
+          closed: true,
+        },
+      }),
+    );
+    const alertsSpy = spyOn(adminReports["alertsService"], "createSuccessAlert");
     spyOn(adminReports, "fetchReports");
     adminReports.postReports = [...mockPostReports];
     adminReports.userReports = [...mockUserReports];
@@ -289,7 +305,11 @@ describe("AdminReports", () => {
     // check expectations
     expect(dismissSpy).toHaveBeenCalled();
     expect(dismissServiceSpy).toHaveBeenCalled();
-    expect(dismissServiceSpy).toHaveBeenCalledWith(2);
+    expect(dismissServiceSpy).toHaveBeenCalledWith(2, true, 5, undefined);
+    expect(alertsSpy).toHaveBeenCalledWith(
+      `Report 2 was dismissed! Refresh the page to view the updated list.`,
+      { reload: true },
+    );
     done();
   });
 

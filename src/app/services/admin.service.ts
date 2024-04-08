@@ -32,7 +32,7 @@
 
 // Angular imports
 import { Injectable } from "@angular/core";
-import { BehaviorSubject, map, switchMap } from "rxjs";
+import { BehaviorSubject, Observable, map, switchMap } from "rxjs";
 
 // App-related imports
 import { Report } from "@app/interfaces/report.interface";
@@ -165,6 +165,30 @@ export class AdminService {
     });
   }
 
+  /**
+   * Close/dismiss a report.
+   * @param reportID (number) - the ID of the report to dismiss.
+   * @param dismiss (boolean) - whether to dismiss the report without taking action.
+   */
+  closeReport(reportID: number, dismiss: boolean) {
+    let report: Partial<Report> = {
+      id: reportID,
+      closed: true,
+      dismissed: dismiss,
+    };
+
+    // send a request to update the report
+    this.apiClient.patch(`reports/${reportID}`, report).subscribe({
+      next: (response: any) => {
+        // if the report was closed, alert the user
+        this.alertsService.createSuccessAlert(
+          `Report ${response.updated.id} was closed! Refresh the page to view the updated list.`,
+          { reload: true },
+        );
+      },
+    });
+  }
+
   /*
   Function Name: dismissReport()
   Function Description: Dismiss an open report without taking further action.
@@ -198,13 +222,13 @@ export class AdminService {
    * @param userID - the ID of the user to fetch the block data for
    * @returns - an observable of the user's block data
    */
-  fetchUserBlockData(userID: number) {
+  fetchUserBlockData(userID: number): Observable<UserBlockData> {
     // send the request to get the block data
     return this.apiClient.get<OtherUserResponse>(`users/all/${userID}`).pipe(
       map((res) => {
         return {
           userID: res.user.id,
-          isBlocked: res.user.blocked,
+          isBlocked: res.user.blocked as boolean,
           releaseDate:
             res.user.blocked && res.user.releaseDate ? new Date(res.user.releaseDate) : undefined,
         };

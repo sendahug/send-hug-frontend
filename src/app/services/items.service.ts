@@ -81,45 +81,6 @@ export class ItemsService {
 
   // POST-RELATED METHODS
   /*
-  Function Name: sendPost()
-  Function Description: Create a new post.
-  Parameters: post (Post) - the post to attempt to add to the database.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  sendPost(post: Post) {
-    // if the user isn't blocked, let them post
-    if (!this.authService.userData.blocked) {
-      this.apiClient.post("posts", post).subscribe({
-        next: (response: any) => {
-          this.alertsService.createSuccessAlert(
-            "Your post was published! Return to home page to view the post.",
-            {
-              navigate: true,
-              navTarget: "/",
-              navText: "Home Page",
-            },
-          );
-
-          let isoDate = new Date(response.posts.date).toISOString();
-          let iDBPost = {
-            ...response.posts,
-            isoDate: isoDate,
-          };
-          this.serviceWorkerM.addItem("posts", iDBPost);
-        },
-      });
-    }
-    // if they're blocked, alert them they cannot post while blocked
-    else {
-      this.alertsService.createAlert({
-        type: "Error",
-        message: `You cannot post new posts while you're blocked. You're blocked until ${this.authService.userData.releaseDate}.`,
-      });
-    }
-  }
-
-  /*
   Function Name: editPost()
   Function Description: Edit an existing post. This is used only for editing the post's text.
   Parameters: post (Post) - the updated data of the post.

@@ -91,61 +91,6 @@ describe("ItemsService", () => {
     expect(itemsService).toBeTruthy();
   });
 
-  it("sendPost() - should send a post", () => {
-    const mockNewPost = {
-      userId: 4,
-      user: "name",
-      text: "text",
-      date: new Date(),
-      givenHugs: 0,
-    };
-    const apiClientSpy = spyOn(itemsService["apiClient"], "post").and.returnValue(
-      of({ success: true, posts: mockNewPost }),
-    );
-    const successAlertSpy = spyOn(itemsService["alertsService"], "createSuccessAlert");
-    const addItemSpy = spyOn(itemsService["serviceWorkerM"], "addItem");
-
-    itemsService.sendPost(mockNewPost);
-
-    expect(apiClientSpy).toHaveBeenCalledWith("posts", mockNewPost);
-    expect(successAlertSpy).toHaveBeenCalledWith(
-      "Your post was published! Return to home page to view the post.",
-      { navigate: true, navTarget: "/", navText: "Home Page" },
-    );
-    expect(addItemSpy).toHaveBeenCalledWith("posts", {
-      ...mockNewPost,
-      isoDate: new Date(mockNewPost.date).toISOString(),
-    });
-  });
-
-  it("sendPost() - should prevent sending a post if the user is blocked", () => {
-    const mockNewPost = {
-      userId: 4,
-      user: "name",
-      text: "text",
-      date: new Date(),
-      givenHugs: 0,
-    };
-    const apiClientSpy = spyOn(itemsService["apiClient"], "post").and.returnValue(
-      of({ success: true, posts: mockNewPost }),
-    );
-    const successAlertSpy = spyOn(itemsService["alertsService"], "createSuccessAlert");
-    const errorAlertSpy = spyOn(itemsService["alertsService"], "createAlert");
-    const addItemSpy = spyOn(itemsService["serviceWorkerM"], "addItem");
-    itemsService["authService"].userData.blocked = true;
-    itemsService["authService"].userData.releaseDate = new Date();
-
-    itemsService.sendPost(mockNewPost);
-
-    expect(apiClientSpy).not.toHaveBeenCalled();
-    expect(successAlertSpy).not.toHaveBeenCalled();
-    expect(addItemSpy).not.toHaveBeenCalled();
-    expect(errorAlertSpy).toHaveBeenCalledWith({
-      type: "Error",
-      message: `You cannot post new posts while you're blocked. You're blocked until ${itemsService["authService"].userData.releaseDate}.`,
-    });
-  });
-
   it("editPost() - should edit post", () => {
     const mockPost = {
       id: 1,

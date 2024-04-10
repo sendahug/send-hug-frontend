@@ -158,10 +158,13 @@ describe("AlertsService", () => {
     });
 
     expect(alertSpy).toHaveBeenCalled();
-    expect(alertSpy).toHaveBeenCalledWith({
-      type: "Error",
-      message: "Not found",
-    }, { reload: false, navigate: false });
+    expect(alertSpy).toHaveBeenCalledWith(
+      {
+        type: "Error",
+        message: "Not found",
+      },
+      { reload: false, navigate: false },
+    );
     expect(alertsService.isSWRelated).toBeFalse();
   });
 
@@ -185,10 +188,13 @@ describe("AlertsService", () => {
     });
 
     expect(alertSpy).toHaveBeenCalled();
-    expect(alertSpy).toHaveBeenCalledWith({
-      type: "Error",
-      message: "Forbidden",
-    }, { reload: false, navigate: false });
+    expect(alertSpy).toHaveBeenCalledWith(
+      {
+        type: "Error",
+        message: "Forbidden",
+      },
+      { reload: false, navigate: false },
+    );
     expect(alertsService.isSWRelated).toBeFalse();
   });
 
@@ -212,10 +218,13 @@ describe("AlertsService", () => {
     });
 
     expect(alertSpy).toHaveBeenCalled();
-    expect(alertSpy).toHaveBeenCalledWith({
-      type: "Error",
-      message: "Bad request",
-    }, { reload: false, navigate: false });
+    expect(alertSpy).toHaveBeenCalledWith(
+      {
+        type: "Error",
+        message: "Bad request",
+      },
+      { reload: false, navigate: false },
+    );
     expect(alertsService.isSWRelated).toBeFalse();
   });
 
@@ -237,10 +246,13 @@ describe("AlertsService", () => {
     });
 
     expect(alertSpy).toHaveBeenCalled();
-    expect(alertSpy).toHaveBeenCalledWith({
-      type: "Error",
-      message: "Service Unavailable",
-    }, { reload: false, navigate: false });
+    expect(alertSpy).toHaveBeenCalledWith(
+      {
+        type: "Error",
+        message: "Service Unavailable",
+      },
+      { reload: false, navigate: false },
+    );
     expect(alertsService.isSWRelated).toBeFalse();
   });
 

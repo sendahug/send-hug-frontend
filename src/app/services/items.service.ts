@@ -89,7 +89,7 @@ export class ItemsService {
   */
   sendPost(post: Post) {
     // if the user isn't blocked, let them post
-    if (!this.authService.userData.blocked) {
+    if (!this.authService.userData?.blocked) {
       this.apiClient.post("posts", post).subscribe({
         next: (response: any) => {
           this.alertsService.createSuccessAlert(

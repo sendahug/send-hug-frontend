@@ -56,7 +56,11 @@ const mockUserSearchResults = [
     receivedH: 2,
     givenH: 4,
     posts: 1,
-    role: "user",
+    role: {
+      id: 1,
+      name: "user",
+      permissions: [],
+    },
     selectedIcon: "kitty" as iconCharacters,
     iconColours: {
       character: "#BA9F93",
@@ -71,7 +75,11 @@ const mockUserSearchResults = [
     receivedH: 2,
     givenH: 4,
     posts: 1,
-    role: "user",
+    role: {
+      id: 1,
+      name: "user",
+      permissions: [],
+    },
     selectedIcon: "kitty" as iconCharacters,
     iconColours: {
       character: "#BA9F93",

@@ -84,8 +84,8 @@ export class AppMessaging implements AfterViewChecked {
     return this.userThreads().map((thread: FullThread) => {
       return {
         id: thread.id,
-        user: thread.user1Id == this.authService.userData.id ? thread.user2 : thread.user1,
-        userID: thread.user1Id == this.authService.userData.id ? thread.user2Id : thread.user1Id,
+        user: thread.user1Id == this.authService.userData!.id ? thread.user2 : thread.user1,
+        userID: thread.user1Id == this.authService.userData!.id ? thread.user2Id : thread.user1Id,
         numMessages: thread.numMessages,
         latestMessage: thread.latestMessage,
       };
@@ -190,7 +190,7 @@ export class AppMessaging implements AfterViewChecked {
     const fetchFromIdb$ = this.fetchMessagesFromIdb();
     const fetchParams: { [key: string]: any } = {
       page: this.currentPage(),
-      userID: this.authService.userData.id!,
+      userID: this.authService.userData!.id!,
       type: this.messType,
     };
 
@@ -214,7 +214,7 @@ export class AppMessaging implements AfterViewChecked {
    *          messages from IndexedDB and transforming them.
    */
   fetchMessagesFromIdb() {
-    const filterValue = this.messType == "thread" ? this.threadId! : this.authService.userData.id!;
+    const filterValue = this.messType == "thread" ? this.threadId! : this.authService.userData!.id!;
 
     return from(
       this.swManager.fetchMessages(this.idbFilterAttribute(), filterValue, 5, this.currentPage()),
@@ -250,7 +250,7 @@ export class AppMessaging implements AfterViewChecked {
         switchMap(() =>
           this.apiClient.get<ThreadResponse>("messages", {
             page: this.currentPage(),
-            userID: this.authService.userData.id!,
+            userID: this.authService.userData!.id!,
             type: this.messType,
           }),
         ),
@@ -431,7 +431,7 @@ export class AppMessaging implements AfterViewChecked {
     this.lastFocusedElement = document.activeElement;
     this.deleteMode = true;
     this.toDelete = `All ${type}`;
-    this.itemToDelete = this.authService.userData.id;
+    this.itemToDelete = this.authService.userData!.id;
   }
 
   /*

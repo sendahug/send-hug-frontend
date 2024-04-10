@@ -105,7 +105,11 @@ describe("Report", () => {
       receivedH: 3,
       givenH: 4,
       posts: 2,
-      role: "user",
+      role: {
+        id: 1,
+        name: "user",
+        permissions: [],
+      },
       selectedIcon: "kitty",
       iconColours: {
         character: "#BA9F93",
@@ -190,7 +194,11 @@ describe("Report", () => {
       receivedH: 3,
       givenH: 4,
       posts: 2,
-      role: "user",
+      role: {
+        id: 1,
+        name: "user",
+        permissions: [],
+      },
       selectedIcon: "kitty",
       iconColours: {
         character: "#BA9F93",
@@ -306,7 +314,11 @@ describe("Report", () => {
       receivedH: 3,
       givenH: 4,
       posts: 2,
-      role: "user",
+      role: {
+        id: 1,
+        name: "user",
+        permissions: [],
+      },
       selectedIcon: "kitty",
       iconColours: {
         character: "#BA9F93",
@@ -479,7 +491,11 @@ describe("Report", () => {
       receivedH: 3,
       givenH: 4,
       posts: 2,
-      role: "user",
+      role: {
+        id: 1,
+        name: "user",
+        permissions: [],
+      },
       selectedIcon: "kitty",
       iconColours: {
         character: "#BA9F93",

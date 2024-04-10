@@ -67,7 +67,11 @@ describe("ItemsService", () => {
       givenH: 2,
       posts: 2,
       loginCount: 3,
-      role: "admin",
+      role: {
+        id: 1,
+        name: "admin",
+        permissions: [],
+      },
       jwt: "",
       blocked: false,
       releaseDate: undefined,
@@ -132,8 +136,8 @@ describe("ItemsService", () => {
     const successAlertSpy = spyOn(itemsService["alertsService"], "createSuccessAlert");
     const errorAlertSpy = spyOn(itemsService["alertsService"], "createAlert");
     const addItemSpy = spyOn(itemsService["serviceWorkerM"], "addItem");
-    itemsService["authService"].userData.blocked = true;
-    itemsService["authService"].userData.releaseDate = new Date();
+    itemsService["authService"].userData!.blocked = true;
+    itemsService["authService"].userData!.releaseDate = new Date();
 
     itemsService.sendPost(mockNewPost);
 
@@ -142,7 +146,7 @@ describe("ItemsService", () => {
     expect(addItemSpy).not.toHaveBeenCalled();
     expect(errorAlertSpy).toHaveBeenCalledWith({
       type: "Error",
-      message: `You cannot post new posts while you're blocked. You're blocked until ${itemsService["authService"].userData.releaseDate}.`,
+      message: `You cannot post new posts while you're blocked. You're blocked until ${itemsService["authService"].userData!.releaseDate}.`,
     });
   });
 

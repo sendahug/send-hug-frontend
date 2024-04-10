@@ -43,7 +43,7 @@ import { Message } from "@app/interfaces/message.interface";
 import { Post } from "@app/interfaces/post.interface";
 import { FullThread } from "@app/interfaces/thread.interface";
 import { OtherUser } from "@app/interfaces/otherUser.interface";
-import { UserIconColours } from "@app/interfaces/user.interface";
+import { UserIconColours, Role } from "@app/interfaces/user.interface";
 
 // IndexedDB Database schema
 export interface MyDB extends DBSchema {
@@ -69,7 +69,7 @@ export interface MyDB extends DBSchema {
       givenH: number;
       posts: number;
       receivedH: number;
-      role: string;
+      role: Role;
       selectedIcon: iconCharacters;
       iconColours: UserIconColours;
     };
@@ -139,7 +139,7 @@ interface IDBPost {
 export class SWManager {
   activeServiceWorkerReg: ServiceWorkerRegistration | undefined;
   currentDB: Promise<IDBPDatabase<MyDB>> | undefined;
-  databaseVersion = 4;
+  databaseVersion = 5;
 
   // CTOR
   constructor(private alertsService: AlertsService) {}
@@ -304,6 +304,12 @@ export class SWManager {
             threadsStore.createIndex("latest", "isoDate");
           // If the previous version is 3
           case 3:
+            // Recreate the users store as the object type changed.
+            db.deleteObjectStore("users");
+            db.createObjectStore("users", {
+              keyPath: "id",
+            });
+          case 4:
             // Recreate the users store as the object type changed.
             db.deleteObjectStore("users");
             db.createObjectStore("users", {

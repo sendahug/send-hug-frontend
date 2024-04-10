@@ -164,12 +164,12 @@ describe("NewItem", () => {
     const fixture = TestBed.createComponent(NewItem);
     const newItem = fixture.componentInstance;
     const newItemDOM = fixture.nativeElement;
-    newItem["authService"].userData.blocked = true;
-    newItem["authService"].userData.releaseDate = new Date(new Date().getTime() + 864e5 * 7);
+    newItem["authService"].userData!.blocked = true;
+    newItem["authService"].userData!.releaseDate = new Date(new Date().getTime() + 864e5 * 7);
 
     fixture.detectChanges();
 
-    const alert = `You are currently blocked until ${newItem["authService"].userData.releaseDate}. You cannot post new posts.`;
+    const alert = `You are currently blocked until ${newItem["authService"].userData!.releaseDate}. You cannot post new posts.`;
     expect(newItemDOM.querySelectorAll(".newItem")[0]).toBeUndefined();
     expect(newItemDOM.querySelectorAll(".errorMessage")[0]).toBeTruthy();
     expect(newItemDOM.querySelectorAll(".errorMessage")[0].textContent).toContain(alert);

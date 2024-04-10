@@ -32,7 +32,7 @@
 */
 
 import { iconCharacters } from "./types";
-import { UserIconColours } from "./user.interface";
+import { UserIconColours, Role } from "./user.interface";
 
 export interface OtherUser {
   id: number;
@@ -40,7 +40,7 @@ export interface OtherUser {
   receivedH: number;
   givenH: number;
   posts: number;
-  role: string;
+  role: Role;
   blocked?: boolean;
   releaseDate?: Date;
   selectedIcon: iconCharacters;

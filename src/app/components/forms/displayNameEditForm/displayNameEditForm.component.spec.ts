@@ -88,7 +88,7 @@ describe("DisplayNameEditForm", () => {
     popUp.ngOnInit();
 
     expect(popUp.editNameForm.controls.newDisplayName.value).toEqual(
-      popUp.authService.userData.displayName,
+      popUp.authService.userData!.displayName,
     );
 
     popUp.toEdit = "other user";
@@ -129,7 +129,7 @@ describe("DisplayNameEditForm", () => {
     fixture.detectChanges();
 
     expect(validateSpy).toHaveBeenCalledWith("displayName");
-    expect(popUp.authService.userData.displayName).toEqual(newName);
+    expect(popUp.authService.userData!.displayName).toEqual(newName);
     expect(updateSpy).toHaveBeenCalled();
     expect(emitSpy).toHaveBeenCalledWith(false);
   });

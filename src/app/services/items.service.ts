@@ -39,7 +39,6 @@ import { BehaviorSubject } from "rxjs";
 import { Post } from "@app/interfaces/post.interface";
 import { Message } from "@app/interfaces/message.interface";
 import { OtherUser } from "@app/interfaces/otherUser.interface";
-import { Report } from "@app/interfaces/report.interface";
 import { AuthService } from "@app/services/auth.service";
 import { AlertsService } from "@app/services/alerts.service";
 import { SWManager } from "@app/services/sWManager.service";
@@ -177,35 +176,5 @@ export class ItemsService {
           this.isSearching = false;
         },
       });
-  }
-
-  // REPORT METHODS
-  // ==============================================================
-  /*
-  Function Name: sendReport()
-  Function Description: Sends a new post/user report to the database.
-  Parameters: report (Report) - the report.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  sendReport(report: Report) {
-    // sends the report
-    this.apiClient.post("reports", report).subscribe({
-      next: (response: any) => {
-        // if successful, alert the user
-        let sent_report: Report = response.report;
-        if (sent_report.type == "Post") {
-          this.alertsService.createSuccessAlert(
-            `Post number ${sent_report.postID} was successfully reported.`,
-            { navigate: true, navTarget: "/", navText: "Home Page" },
-          );
-        } else {
-          this.alertsService.createSuccessAlert(
-            `User ${sent_report.userID} was successfully reported.`,
-            { navigate: true, navTarget: "/", navText: "Home Page" },
-          );
-        }
-      },
-    });
   }
 }

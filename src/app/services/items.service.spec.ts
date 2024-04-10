@@ -31,7 +31,7 @@
 */
 
 import { TestBed } from "@angular/core/testing";
-import { HttpClientTestingModule, HttpTestingController } from "@angular/common/http/testing";
+import { HttpClientTestingModule } from "@angular/common/http/testing";
 import {
   BrowserDynamicTestingModule,
   platformBrowserDynamicTesting,
@@ -40,10 +40,8 @@ import {} from "jasmine";
 import { of } from "rxjs";
 
 import { ItemsService } from "./items.service";
-import { Report } from "../interfaces/report.interface";
 
 describe("ItemsService", () => {
-  let httpController: HttpTestingController;
   let itemsService: ItemsService;
 
   // Before each test, configure testing environment
@@ -57,7 +55,6 @@ describe("ItemsService", () => {
     }).compileComponents();
 
     itemsService = TestBed.inject(ItemsService);
-    httpController = TestBed.inject(HttpTestingController);
     // set the user data as if the user is logged in
     itemsService["authService"].userData = {
       id: 4,
@@ -271,45 +268,6 @@ describe("ItemsService", () => {
         expect(itemsService.isSearching).toBeFalse();
         expect(apiClientSpy).toHaveBeenCalledWith("", { search: "test" }, { page: "1" });
       }
-    });
-  });
-
-  // Check the service sends a report
-  it("sendReport() - should send a report", () => {
-    // mock response
-    const mockResponse = {
-      report: {
-        closed: false,
-        date: "Tue Jun 23 2020 14:59:31 GMT+0300",
-        dismissed: false,
-        id: 36,
-        reportReason: "reason",
-        reporter: 2,
-        type: "User",
-        userID: 5,
-      },
-      success: true,
-    };
-
-    // request data
-    const report: Report = {
-      type: "User",
-      userID: 5,
-      reporter: 2,
-      reportReason: "reason",
-      date: new Date("Tue Jun 23 2020 14:59:31 GMT+0300"),
-      dismissed: false,
-      closed: false,
-    };
-    const apiClientSpy = spyOn(itemsService["apiClient"], "post").and.returnValue(of(mockResponse));
-    const alertsSpy = spyOn(itemsService["alertsService"], "createSuccessAlert");
-    itemsService.sendReport(report);
-
-    expect(apiClientSpy).toHaveBeenCalledWith("reports", report);
-    expect(alertsSpy).toHaveBeenCalledWith(`User 5 was successfully reported.`, {
-      navigate: true,
-      navTarget: "/",
-      navText: "Home Page",
     });
   });
 });

@@ -42,6 +42,7 @@ import { AuthService } from "@app/services/auth.service";
 import { ItemsService } from "@app/services/items.service";
 import { AlertsService } from "@app/services/alerts.service";
 import { ValidationService } from "@app/services/validation.service";
+import { ApiClientService } from "@app/services/apiClient.service";
 
 // Reasons for submitting a report
 enum postReportReasons {
@@ -95,6 +96,7 @@ export class ReportForm {
     private itemsService: ItemsService,
     private alertsService: AlertsService,
     private validationService: ValidationService,
+    private apiClient: ApiClientService,
     private fb: FormBuilder,
   ) {}
 
@@ -207,7 +209,22 @@ export class ReportForm {
     }
 
     // pass it on to the items service to send
-    this.itemsService.sendReport(report);
-    this.reportMode.emit(false);
+    // sends the report
+    this.apiClient.post("reports", report).subscribe({
+      next: (response: any) => {
+        // if successful, alert the user
+        const sent_report: Report = response.report;
+        let successMessage =
+          sent_report.type == "Post"
+            ? `Post number ${sent_report.postID} was successfully reported.`
+            : `User ${sent_report.userID} was successfully reported.`;
+        this.alertsService.createSuccessAlert(successMessage, {
+          navigate: true,
+          navTarget: "/",
+          navText: "Home Page",
+        });
+        this.reportMode.emit(false);
+      },
+    });
   }
 }

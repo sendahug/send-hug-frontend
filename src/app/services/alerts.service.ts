@@ -72,14 +72,15 @@ export class AlertsService {
     this.shouldDisplayAlert.set(true);
 
     // if reload option is required
-    if (config.reload) {
-      this.shouldDisplayReloadBtn.set(true);
-    }
+    this.shouldDisplayReloadBtn.set(config.reload || false);
+    
     // if return to homepage option is required
-    else if (config.navigate) {
+    if (config.navigate) {
       this.shouldDisplayNavBtn.set(true);
       this.navBtnText.set(config.navText || "Home Page");
       this.navBtnTarget.set(config.navTarget || "/");
+    } else {
+      this.shouldDisplayNavBtn.set(false);
     }
   }
 
@@ -163,7 +164,7 @@ export class AlertsService {
     }
 
     this.isSWRelated = false;
-    this.createAlert(alert);
+    this.createAlert(alert, { reload: false, navigate: false });
   }
 
   /*

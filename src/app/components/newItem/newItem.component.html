@@ -2,7 +2,7 @@
 	<h3 id="newTitle">New {{ itemType }}</h3>
 	
 	<div id="newMessage" *ngIf="itemType == 'Message'">
-		<form [formGroup]="newMessageForm" class="newItem" aria-describedby="newTitle" *ngIf="this.newMessageForm.get('messageFor')?.value && forID">
+		<form [formGroup]="newMessageForm" class="newItem" aria-describedby="newTitle" *ngIf="this.newMessageForm.controls.messageFor.value && forID">
 			<div class="formElement">
 				<label class="pageCategory" for="messageFor">For:</label>
 				<input formControlName="messageFor" type="text" id="messageFor" aria-labelledby="mUser" readonly>
@@ -19,7 +19,7 @@
 					class="newTextArea"
 					minlength="0"
 					maxlength="480"
-					[attr.aria-invalid]="!this.newMessageForm.get('messageText')?.valid"
+					[attr.aria-invalid]="!this.newMessageForm.controls.messageText.valid"
 					required
 					aria-required="true"
 				></textarea>
@@ -27,7 +27,7 @@
 			<button type="submit" class="appButton sendData" (click)="sendMessage()">Send Message</button>
 		</form>
 		
-		<div class="errorMessage" *ngIf="!this.newMessageForm.get('messageFor')?.value || !forID" role="alert">
+		<div class="errorMessage" *ngIf="!this.newMessageForm.controls.messageFor.value || !forID" role="alert">
 			User ID and display name are required for sending a message. Please add numerical user ID and the user's display name and try again.
 		</div>
 	</div>
@@ -49,7 +49,7 @@
 					class="newTextArea"
 					minlength="0"
 					maxlength="480"
-					[attr.aria-invalid]="!this.newPostForm.get('postText')?.valid"
+					[attr.aria-invalid]="!this.newPostForm.controls.postText.valid"
 					required
 					aria-required="true"
 				></textarea>

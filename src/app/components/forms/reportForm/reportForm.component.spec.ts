@@ -3,7 +3,7 @@
 	Send a Hug Component Tests
   ---------------------------------------------------
   MIT License
-  Copyright (c) 2020-2023 Send A Hug
+  Copyright (c) 2020-2024 Send A Hug
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
   in the Software without restriction, including without limitation the rights
@@ -148,7 +148,7 @@ describe("Report", () => {
     // check the first option was selected
     expect(selectSpy).toHaveBeenCalled();
     expect(selectSpy).toHaveBeenCalledWith("0");
-    expect(popUp.reportForm.get("selectedReason")?.value).toEqual("0");
+    expect(popUp.reportForm.controls.selectedReason.value).toEqual("0");
 
     // select option 2
     popUpDOM.querySelector("#pRadioOption1").click();
@@ -157,7 +157,7 @@ describe("Report", () => {
     // check the second option was selected
     expect(selectSpy).toHaveBeenCalled();
     expect(selectSpy).toHaveBeenCalledWith("1");
-    expect(popUp.reportForm.get("selectedReason")?.value).toEqual("1");
+    expect(popUp.reportForm.controls.selectedReason.value).toEqual("1");
 
     // select option 3
     popUpDOM.querySelector("#pRadioOption2").click();
@@ -166,7 +166,7 @@ describe("Report", () => {
     // check the third option was selected
     expect(selectSpy).toHaveBeenCalled();
     expect(selectSpy).toHaveBeenCalledWith("2");
-    expect(popUp.reportForm.get("selectedReason")?.value).toEqual("2");
+    expect(popUp.reportForm.controls.selectedReason.value).toEqual("2");
 
     // select option 4
     popUpDOM.querySelector("#pRadioOption3").click();
@@ -175,7 +175,7 @@ describe("Report", () => {
     // check the fourth option was selected
     expect(selectSpy).toHaveBeenCalled();
     expect(selectSpy).toHaveBeenCalledWith("3");
-    expect(popUp.reportForm.get("selectedReason")?.value).toEqual("3");
+    expect(popUp.reportForm.controls.selectedReason.value).toEqual("3");
     done();
   });
 
@@ -415,7 +415,7 @@ describe("Report", () => {
     otherText.dispatchEvent(new Event("input"));
     fixture.detectChanges();
 
-    expect(popUp.reportForm.get("otherReason")?.value).toEqual(reportReason);
+    expect(popUp.reportForm.controls.otherReason.value).toEqual(reportReason);
 
     // try to submit it
     popUpDOM.querySelectorAll(".reportButton")[0].click();

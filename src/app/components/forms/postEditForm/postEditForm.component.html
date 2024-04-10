@@ -16,7 +16,7 @@
         minlength="0"
         maxlength="480"
         required
-        [attr.aria-invalid]="!this.postEditForm.get('postText')?.valid"
+        [attr.aria-invalid]="!this.postEditForm.controls.postText.valid"
         aria-required="true"
       ></textarea>
     </div>

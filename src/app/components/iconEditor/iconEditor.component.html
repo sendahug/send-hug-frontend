@@ -16,34 +16,34 @@
 	</div>
 	
 	<!-- This is done that way to ensure we inline all three icons -->
-	<div *ngIf="iconEditForm.get('selectedIcon')?.value == 'bear'">
+	<div *ngIf="iconEditForm.controls.selectedIcon.value == 'bear'">
 		<img src="../../../assets/img/bear.svg" alt="" class="selectedCharacter" >
 	</div>
-	<div *ngIf="iconEditForm.get('selectedIcon')?.value == 'kitty'">
+	<div *ngIf="iconEditForm.controls.selectedIcon.value == 'kitty'">
 		<img src="../../../assets/img/kitty.svg" alt="" class="selectedCharacter" >
 	</div>
-	<div *ngIf="iconEditForm.get('selectedIcon')?.value == 'dog'">
+	<div *ngIf="iconEditForm.controls.selectedIcon.value == 'dog'">
 		<img src="../../../assets/img/dog.svg" alt="" class="selectedCharacter" >
 	</div>
 		
 	<div class="formElement">
 		<label for="characterC">Select Character Colour: </label>
-		<input type="color" id="characterC" value="{{ iconEditForm.get('CharacterColour')?.value }}" formControlName="characterColour">
+		<input type="color" id="characterC" value="{{ iconEditForm.controls.characterColour.value }}" formControlName="characterColour">
 	</div>
 	
 	<div class="formElement">
 		<label for="lbgColour">Select Left Background Colour: </label>
-		<input type="color" id="lbgColour" value="{{ iconEditForm.get('lbgColour')?.value }}" formControlName="lbgColour">
+		<input type="color" id="lbgColour" value="{{ iconEditForm.controls.lbgColour.value }}" formControlName="lbgColour">
 	</div>
 	
 	<div class="formElement">
 		<label for="rbgColour">Select Right Background Colour: </label>
-		<input type="color" id="rbgColour" value="{{ iconEditForm.get('rbgColour')?.value }}" formControlName="rbgColour">
+		<input type="color" id="rbgColour" value="{{ iconEditForm.controls.rbgColour.value }}" formControlName="rbgColour">
 	</div>
 	
 	<div class="formElement">
 		<label for="itemColour">Select Hand-Held Item Colour: </label>
-		<input type="color" id="itemColour" value="{{ iconEditForm.get('itemColour')?.value }}" formControlName="itemColour">
+		<input type="color" id="itemColour" value="{{ iconEditForm.controls.itemColour.value }}" formControlName="itemColour">
 	</div>
 	
 	<div class="buttonsContainer">

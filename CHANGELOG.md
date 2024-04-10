@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+### 2024-04-10
+
+#### Chores
+
+- Updated the copyright notices to include 2024. ([#1598](https://github.com/sendahug/send-hug-frontend/pull/1598))
+- Standardised and cleaned up the way reactive form controls are accessed across the various forms. ([#1598](https://github.com/sendahug/send-hug-frontend/pull/1598))
+
 ### 2024-04-08
 
 #### Changes

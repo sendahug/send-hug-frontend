@@ -122,7 +122,7 @@ describe("UserPage", () => {
     );
     expect(
       userPageDOM.querySelector("#roleElement").querySelectorAll(".pageData")[0].textContent,
-    ).toBe(userData?.role);
+    ).toBe(userData?.role.name);
     expect(
       userPageDOM.querySelector("#rHugsElement").querySelectorAll(".pageData")[0].textContent,
     ).toBe(String(userData?.receivedH));
@@ -159,7 +159,7 @@ describe("UserPage", () => {
     );
     expect(
       userPageDOM.querySelector("#roleElement").querySelectorAll(".pageData")[0].textContent,
-    ).toBe(userData?.role);
+    ).toBe(userData?.role.name);
     expect(
       userPageDOM.querySelector("#rHugsElement").querySelectorAll(".pageData")[0].textContent,
     ).toBe(String(userData?.receivedH));
@@ -218,7 +218,7 @@ describe("UserPage", () => {
     );
     expect(
       userPageDOM.querySelector("#roleElement").querySelectorAll(".pageData")[0].textContent,
-    ).toBe(userData.role);
+    ).toBe(userData.role.name);
     expect(
       userPageDOM.querySelector("#rHugsElement").querySelectorAll(".pageData")[0].textContent,
     ).toBe(String(userData.receivedH));

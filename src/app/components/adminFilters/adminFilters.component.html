@@ -10,7 +10,7 @@
   <form [formGroup]="addFilterForm">
     <div class="formElement">
       <label class="pageCategory required" for="filter">Filter: </label>
-      <input type="text" id="filter" placeholder="Filter" required  minlength="1" [attr.aria-invalid]="!this.addFilterForm.get('filter')?.valid" aria-required="true" formControlName="filter">
+      <input type="text" id="filter" placeholder="Filter" required  minlength="1" [attr.aria-invalid]="!this.addFilterForm.controls.filter.valid" aria-required="true" formControlName="filter">
     </div>
     <button type="submit" class="appButton sendData" (click)="addFilter()">Add Filter</button>
   </form>

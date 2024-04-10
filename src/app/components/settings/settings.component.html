@@ -47,8 +47,8 @@
 					min="20"
 					max="3600"
 					id="notificationRate"
-					[required]="this.editSettingsForm.get('enableAutoRefresh')?.value == true"
-					[attr.aria-required]="this.editSettingsForm.get('enableAutoRefresh')?.value == true"
+					[required]="this.editSettingsForm.controls.enableAutoRefresh.value == true"
+					[attr.aria-required]="this.editSettingsForm.controls.enableAutoRefresh.value == true"
 				>
 			</div>
 			<button type="submit" (click)="updateSettings()" class="appButton sendData" aria-label="save auto-refresh settings">Save</button>

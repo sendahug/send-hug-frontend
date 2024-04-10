@@ -4,7 +4,7 @@
   ---------------------------------------------------
   MIT License
 
-  Copyright (c) 2020-2023 Send A Hug
+  Copyright (c) 2020-2024 Send A Hug
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -125,8 +125,8 @@ export class SettingsPage implements AfterViewChecked {
    * Updates the user's settings based on the form values.
    */
   updateSettings() {
-    const newRate = this.editSettingsForm.get("notificationRate")?.value;
-    const refreshStatus = this.editSettingsForm.get("enableAutoRefresh")?.value || false;
+    const newRate = this.editSettingsForm.controls.notificationRate.value;
+    const refreshStatus = this.editSettingsForm.controls.enableAutoRefresh.value || false;
 
     // if there's no rate or it's zero, alert the user it can't be
     if ((!newRate || newRate <= 0) && refreshStatus) {
@@ -138,7 +138,7 @@ export class SettingsPage implements AfterViewChecked {
 
     if (this.editSettingsForm.valid) {
       this.notificationService.pushStatus =
-        this.editSettingsForm.get("enableNotifications")?.value || false;
+        this.editSettingsForm.controls.enableNotifications.value || false;
       this.notificationService.refreshStatus = refreshStatus;
       this.notificationService.refreshRateSecs = Number(newRate);
       this.notificationService.updateUserSettings();
@@ -157,13 +157,13 @@ export class SettingsPage implements AfterViewChecked {
    * 20 (seconds); otherwise it's not.
    */
   updateNotificationRateValidators() {
-    if (this.editSettingsForm.get("enableAutoRefresh")?.value) {
+    if (this.editSettingsForm.controls.enableAutoRefresh.value) {
       this.editSettingsForm.controls.notificationRate.setValidators([
         Validators.required,
         Validators.min(20),
       ]);
     } else {
-      this.editSettingsForm.get("notificationRate")?.clearValidators();
+      this.editSettingsForm.controls.notificationRate.clearValidators();
     }
 
     this.setRateInvalidStatus();
@@ -176,9 +176,9 @@ export class SettingsPage implements AfterViewChecked {
    * ExpressionChangedAfterItHasBeenCheckedError error.
    */
   setRateInvalidStatus() {
-    const currentRate = this.editSettingsForm.get("notificationRate");
+    const currentRate = this.editSettingsForm.controls.notificationRate;
 
-    if (this.editSettingsForm.get("enableAutoRefresh")?.value === true) {
+    if (this.editSettingsForm.controls.enableAutoRefresh.value === true) {
       if (currentRate && (!currentRate.value || (currentRate.value && currentRate.value < 20))) {
         document.querySelector("#notificationRate")?.setAttribute("aria-invalid", "true");
       } else {

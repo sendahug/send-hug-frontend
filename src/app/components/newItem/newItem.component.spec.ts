@@ -4,7 +4,7 @@
   ---------------------------------------------------
   MIT License
 
-  Copyright (c) 2020-2023 Send A Hug
+  Copyright (c) 2020-2024 Send A Hug
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -274,7 +274,7 @@ describe("NewItem", () => {
 
     expect(queryParamsSpy).toHaveBeenCalled();
     expect(newItem.itemType).toBe("Message");
-    expect(newItem.newMessageForm.get("messageFor")?.value).toBe("hello");
+    expect(newItem.newMessageForm.controls.messageFor.value).toBe("hello");
     expect(newItem.forID).toBe(2);
     expect(newItemDOM.querySelector("#newPost")).toBeNull();
     expect(newItemDOM.querySelector("#newMessage")).toBeTruthy();

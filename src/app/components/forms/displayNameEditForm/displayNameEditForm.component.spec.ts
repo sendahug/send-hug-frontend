@@ -4,7 +4,7 @@
   ---------------------------------------------------
   MIT License
 
-  Copyright (c) 2020-2023 Send A Hug
+  Copyright (c) 2020-2024 Send A Hug
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -87,7 +87,7 @@ describe("DisplayNameEditForm", () => {
     popUp.toEdit = "user";
     popUp.ngOnInit();
 
-    expect(popUp.editNameForm.get("newDisplayName")?.value).toEqual(
+    expect(popUp.editNameForm.controls.newDisplayName.value).toEqual(
       popUp.authService.userData.displayName,
     );
 

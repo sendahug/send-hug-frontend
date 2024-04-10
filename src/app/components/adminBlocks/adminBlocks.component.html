@@ -10,7 +10,7 @@
   <form [formGroup]="blockForm">
     <div class="formElement">
       <label class="pageCategory required" for="blockID">User I.D.: </label>
-      <input type="text" id="blockID" placeholder="user I.D." required  minlength="1" [attr.aria-invalid]="!this.blockForm.get('blockID')?.valid" aria-required="true" formControlName="blockID">
+      <input type="text" id="blockID" placeholder="user I.D." required  minlength="1" [attr.aria-invalid]="!this.blockForm.controls.blockID.valid" aria-required="true" formControlName="blockID">
     </div>
     <div class="formElement">
       <label class="pageCategory" for="blockLength">Length of block time: </label>

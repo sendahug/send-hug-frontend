@@ -25,7 +25,21 @@
         <fieldset>
           <legend class="hidden" aria-hidden="false" id="rPostLegend">{{ "There's another problem with this " + reportType.toLowerCase() + ":" }}</legend>
           <input type="radio" class="radioButton" id="pRadioOption3" value="3" (click)="checkSelectedForOther($event.target.value)" aria-describedby="reportQ" formControlName="selectedReason">
-          <label class="radioButtonLabel" for="pRadioOption3">{{ reportReasonsText[reportType][3] }}</label> <input type="text" placeholder="Enter the response" id="rOption3Text" aria-labelledby="rPostLegend" [required]="reportForm.get('selectedReason')?.value == '3'" minlength="0" maxlength="120" [attr.aria-required]="reportForm.get('selectedReason')?.value == '3'" formControlName="otherReason">
+          <label
+            class="radioButtonLabel"
+            for="pRadioOption3"
+          >
+            {{ reportReasonsText[reportType][3] }}
+          </label> <input
+            type="text"
+            placeholder="Enter the response"
+            id="rOption3Text"
+            aria-labelledby="rPostLegend"
+            [required]="reportForm.controls.selectedReason.value == '3'"
+            minlength="0"
+            maxlength="120" [attr.aria-required]="reportForm.controls.selectedReason.value == '3'"
+            formControlName="otherReason"
+          >
         </fieldset>
       </div>
 

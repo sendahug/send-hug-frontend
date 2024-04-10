@@ -9,7 +9,7 @@
         minlength="0"
         maxlength="60"
         required
-        [attr.aria-invalid]="!this.editNameForm.get('newDisplayName')?.valid"
+        [attr.aria-invalid]="!this.editNameForm.controls.newDisplayName.valid"
         aria-required="true">
     </div>
   

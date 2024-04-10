@@ -4,7 +4,7 @@
   ---------------------------------------------------
   MIT License
 
-  Copyright (c) 2020-2023 Send A Hug
+  Copyright (c) 2020-2024 Send A Hug
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -86,7 +86,7 @@ export class NewItem {
     // If there's a user parameter, sets the user property
     if (user && userID) {
       // this.user = user;
-      this.newMessageForm.get("messageFor")?.setValue(user);
+      this.newMessageForm.controls.messageFor.setValue(user);
       this.forID = Number(userID);
     }
   }

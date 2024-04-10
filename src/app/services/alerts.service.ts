@@ -73,7 +73,7 @@ export class AlertsService {
 
     // if reload option is required
     this.shouldDisplayReloadBtn.set(config.reload || false);
-    
+
     // if return to homepage option is required
     if (config.navigate) {
       this.shouldDisplayNavBtn.set(true);

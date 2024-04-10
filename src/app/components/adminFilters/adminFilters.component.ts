@@ -99,7 +99,7 @@ export class AdminFilters {
   Programmer: Shir Bar Lev.
   */
   addFilter() {
-    const filter = this.addFilterForm.get("filter")?.value;
+    const filter = this.addFilterForm.controls.filter.value;
 
     // if there's no filter, alert the user a filter is required
     if (!filter) {

@@ -114,7 +114,7 @@ export class AdminBlocks {
   Programmer: Shir Bar Lev.
   */
   block() {
-    const userId = Number(this.blockForm.get("blockID")?.value);
+    const userId = Number(this.blockForm.controls.blockID.value);
     let errorMessage: string | undefined = undefined;
 
     if (!userId && !isNaN(userId)) {
@@ -135,7 +135,7 @@ export class AdminBlocks {
     }
 
     // if there's a user ID and it's valid, proceed
-    this.blockUser(Number(userId), this.blockForm.get("blockLength")?.value || "oneDay");
+    this.blockUser(Number(userId), this.blockForm.controls.blockLength.value || "oneDay");
   }
 
   /*

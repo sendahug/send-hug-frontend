@@ -79,7 +79,7 @@ export class DisplayNameEditForm implements OnInit {
   */
   ngOnInit() {
     const name = this.toEdit == "user" ? this.authService.userData.displayName : this.editedItem;
-    this.editNameForm.get("newDisplayName")?.setValue(name);
+    this.editNameForm.controls.newDisplayName.setValue(name);
   }
 
   /*

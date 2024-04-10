@@ -139,16 +139,16 @@ describe("SettingsPage", () => {
     const settingsPage = fixture.componentInstance;
     fixture.detectChanges();
 
-    expect(settingsPage.editSettingsForm.get("enableAutoRefresh")?.value).toBeFalse();
-    expect(settingsPage.editSettingsForm.get("notificationRate")?.value).toBe(20);
+    expect(settingsPage.editSettingsForm.controls.enableAutoRefresh.value).toBeFalse();
+    expect(settingsPage.editSettingsForm.controls.notificationRate.value).toBe(20);
 
     authService.userData.autoRefresh = true;
     authService.userData.refreshRate = 60;
     authService.isUserDataResolved.next(true);
     fixture.detectChanges();
 
-    expect(settingsPage.editSettingsForm.get("enableAutoRefresh")?.value).toBeTrue();
-    expect(settingsPage.editSettingsForm.get("notificationRate")?.value).toBe(60);
+    expect(settingsPage.editSettingsForm.controls.enableAutoRefresh.value).toBeTrue();
+    expect(settingsPage.editSettingsForm.controls.notificationRate.value).toBe(60);
     done();
   });
 

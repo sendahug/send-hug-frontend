@@ -83,11 +83,11 @@ describe("IconEditor", () => {
     const fixture = TestBed.createComponent(IconEditor);
     const iconEditor = fixture.componentInstance;
 
-    expect(iconEditor.iconEditForm.get("selectedIcon")?.value).toBe("kitty");
-    expect(iconEditor.iconEditForm.get("characterColour")?.value).toBe("#BA9F93");
-    expect(iconEditor.iconEditForm.get("lbgColour")?.value).toBe("#e2a275");
-    expect(iconEditor.iconEditForm.get("rbgColour")?.value).toBe("#f8eee4");
-    expect(iconEditor.iconEditForm.get("itemColour")?.value).toBe("#f4b56a");
+    expect(iconEditor.iconEditForm.controls.selectedIcon.value).toBe("kitty");
+    expect(iconEditor.iconEditForm.controls.characterColour.value).toBe("#BA9F93");
+    expect(iconEditor.iconEditForm.controls.lbgColour.value).toBe("#e2a275");
+    expect(iconEditor.iconEditForm.controls.rbgColour.value).toBe("#f8eee4");
+    expect(iconEditor.iconEditForm.controls.itemColour.value).toBe("#f4b56a");
   });
 
   // Check the icon changes when the radio button is clicked
@@ -98,19 +98,19 @@ describe("IconEditor", () => {
     fixture.detectChanges();
 
     // before changing icon
-    expect(iconEditor.iconEditForm.get("selectedIcon")?.value).toBe("kitty");
+    expect(iconEditor.iconEditForm.controls.selectedIcon.value).toBe("kitty");
 
     iconEditorDOM.querySelector("#cRadioOption1").click();
     fixture.detectChanges();
 
     // before changing icon
-    expect(iconEditor.iconEditForm.get("selectedIcon")?.value).toBe("bear");
+    expect(iconEditor.iconEditForm.controls.selectedIcon.value).toBe("bear");
 
     iconEditorDOM.querySelector("#cRadioOption3").click();
     fixture.detectChanges();
 
     // before changing icon
-    expect(iconEditor.iconEditForm.get("selectedIcon")?.value).toBe("dog");
+    expect(iconEditor.iconEditForm.controls.selectedIcon.value).toBe("dog");
     done();
   });
 
@@ -121,17 +121,17 @@ describe("IconEditor", () => {
     fixture.detectChanges();
 
     // before changing icon
-    expect(iconEditor.iconEditForm.get("characterColour")?.value).toBe("#BA9F93");
-    expect(iconEditor.iconEditForm.get("lbgColour")?.value).toBe("#e2a275");
-    expect(iconEditor.iconEditForm.get("rbgColour")?.value).toBe("#f8eee4");
-    expect(iconEditor.iconEditForm.get("itemColour")?.value).toBe("#f4b56a");
+    expect(iconEditor.iconEditForm.controls.characterColour.value).toBe("#BA9F93");
+    expect(iconEditor.iconEditForm.controls.lbgColour.value).toBe("#e2a275");
+    expect(iconEditor.iconEditForm.controls.rbgColour.value).toBe("#f8eee4");
+    expect(iconEditor.iconEditForm.controls.itemColour.value).toBe("#f4b56a");
 
     // change the character colour
     iconEditorDOM.querySelector("#characterC").value = "#000000";
     iconEditorDOM.querySelector("#characterC").dispatchEvent(new Event("input"));
     fixture.detectChanges();
 
-    expect(iconEditor.iconEditForm.get("characterColour")?.value).toBe("#000000");
+    expect(iconEditor.iconEditForm.controls.characterColour.value).toBe("#000000");
     iconEditorDOM.querySelectorAll(".character").forEach((path: SVGPathElement) => {
       expect(path.getAttribute("style")).toBe("fill:#000000;");
     });
@@ -141,7 +141,7 @@ describe("IconEditor", () => {
     iconEditorDOM.querySelector("#lbgColour").dispatchEvent(new Event("input"));
     fixture.detectChanges();
 
-    expect(iconEditor.iconEditForm.get("lbgColour")?.value).toBe("#121212");
+    expect(iconEditor.iconEditForm.controls.lbgColour.value).toBe("#121212");
     iconEditorDOM.querySelectorAll(".lbg").forEach((path: SVGPathElement) => {
       expect(path.getAttribute("style")).toBe("fill:#121212;");
     });
@@ -151,7 +151,7 @@ describe("IconEditor", () => {
     iconEditorDOM.querySelector("#rbgColour").dispatchEvent(new Event("input"));
     fixture.detectChanges();
 
-    expect(iconEditor.iconEditForm.get("rbgColour")?.value).toBe("#ffffff");
+    expect(iconEditor.iconEditForm.controls.rbgColour.value).toBe("#ffffff");
     iconEditorDOM.querySelectorAll(".rbg").forEach((path: SVGPathElement) => {
       expect(path.getAttribute("style")).toBe("fill:#ffffff;");
     });
@@ -161,7 +161,7 @@ describe("IconEditor", () => {
     iconEditorDOM.querySelector("#itemColour").dispatchEvent(new Event("input"));
     fixture.detectChanges();
 
-    expect(iconEditor.iconEditForm.get("itemColour")?.value).toBe("#e1e1e1");
+    expect(iconEditor.iconEditForm.controls.itemColour.value).toBe("#e1e1e1");
     iconEditorDOM.querySelectorAll(".item").forEach((path: SVGPathElement) => {
       expect(path.getAttribute("style")).toBe("fill:#e1e1e1;");
     });
@@ -185,10 +185,10 @@ describe("IconEditor", () => {
 
     // update the icon and colours
     iconEditorDOM.querySelector("#cRadioOption1").click();
-    iconEditor.iconEditForm.get("characterColour")?.setValue("#000000");
-    iconEditor.iconEditForm.get("lbgColour")?.setValue("#000000");
-    iconEditor.iconEditForm.get("rbgColour")?.setValue("#000000");
-    iconEditor.iconEditForm.get("itemColour")?.setValue("#000000");
+    iconEditor.iconEditForm.controls.characterColour.setValue("#000000");
+    iconEditor.iconEditForm.controls.lbgColour.setValue("#000000");
+    iconEditor.iconEditForm.controls.rbgColour.setValue("#000000");
+    iconEditor.iconEditForm.controls.itemColour.setValue("#000000");
 
     // after the update
     iconEditorDOM.querySelectorAll(".iconButton")[1].click();

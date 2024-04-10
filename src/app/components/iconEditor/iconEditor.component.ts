@@ -80,18 +80,18 @@ export class IconEditor {
     public authService: AuthService,
     private fb: FormBuilder,
   ) {
-    this.iconEditForm
-      .get("characterColour")
-      ?.valueChanges.subscribe((newValue) => this.showNewColour(newValue as string, "character"));
-    this.iconEditForm
-      .get("lbgColour")
-      ?.valueChanges.subscribe((newValue) => this.showNewColour(newValue as string, "lbg"));
-    this.iconEditForm
-      .get("rbgColour")
-      ?.valueChanges.subscribe((newValue) => this.showNewColour(newValue as string, "rbg"));
-    this.iconEditForm
-      .get("itemColour")
-      ?.valueChanges.subscribe((newValue) => this.showNewColour(newValue as string, "item"));
+    this.iconEditForm.controls.characterColour.valueChanges.subscribe((newValue) =>
+      this.showNewColour(newValue as string, "character"),
+    );
+    this.iconEditForm.controls.lbgColour.valueChanges.subscribe((newValue) =>
+      this.showNewColour(newValue as string, "lbg"),
+    );
+    this.iconEditForm.controls.rbgColour.valueChanges.subscribe((newValue) =>
+      this.showNewColour(newValue as string, "rbg"),
+    );
+    this.iconEditForm.controls.itemColour.valueChanges.subscribe((newValue) =>
+      this.showNewColour(newValue as string, "item"),
+    );
   }
 
   /*
@@ -126,14 +126,14 @@ export class IconEditor {
 
     // set the userService with the new icon data
     this.authService.userData.selectedIcon =
-      this.iconEditForm.get("selectedIcon")?.value ||
+      this.iconEditForm.controls.selectedIcon.value ||
       (this.iconDefaults.selectedIcon as iconCharacters);
     this.authService.userData.iconColours = {
       character:
-        this.iconEditForm.get("characterColour")?.value || this.iconDefaults.characterColour,
-      lbg: this.iconEditForm.get("lbgColour")?.value || this.iconDefaults.lbgColour,
-      rbg: this.iconEditForm.get("rbgColour")?.value || this.iconDefaults.rbgColour,
-      item: this.iconEditForm.get("itemColour")?.value || this.iconDefaults.itemColour,
+        this.iconEditForm.controls.characterColour.value || this.iconDefaults.characterColour,
+      lbg: this.iconEditForm.controls.lbgColour.value || this.iconDefaults.lbgColour,
+      rbg: this.iconEditForm.controls.rbgColour.value || this.iconDefaults.rbgColour,
+      item: this.iconEditForm.controls.itemColour.value || this.iconDefaults.itemColour,
     };
 
     // update the backend

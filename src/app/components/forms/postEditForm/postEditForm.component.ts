@@ -66,7 +66,7 @@ export class PostEditForm implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.postEditForm.get("postText")?.setValue(this.editedItem.text);
+    this.postEditForm.controls.postText.setValue(this.editedItem.text);
   }
 
   /*
@@ -83,7 +83,7 @@ export class PostEditForm implements OnInit {
     e.preventDefault();
 
     const serviceToUse = closeReport === null ? "itemsService" : "adminService";
-    const newText = this.postEditForm.get("postText")?.value || "";
+    const newText = this.postEditForm.controls.postText.value || "";
 
     // if the post is invalid, show an error message
     if (!this.postEditForm.valid) {

@@ -86,7 +86,7 @@ export class NewItem {
     // If there's a user parameter, sets the user property
     if (user && userID) {
       // this.user = user;
-      this.newMessageForm.get("messageFor")?.setValue(user);
+      this.newMessageForm.controls.messageFor.setValue(user);
       this.forID = Number(userID);
     }
   }

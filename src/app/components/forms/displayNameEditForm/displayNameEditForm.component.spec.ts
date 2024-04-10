@@ -87,7 +87,7 @@ describe("DisplayNameEditForm", () => {
     popUp.toEdit = "user";
     popUp.ngOnInit();
 
-    expect(popUp.editNameForm.get("newDisplayName")?.value).toEqual(
+    expect(popUp.editNameForm.controls.newDisplayName.value).toEqual(
       popUp.authService.userData.displayName,
     );
 

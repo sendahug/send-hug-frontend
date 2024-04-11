@@ -2,6 +2,18 @@
 
 ## Unreleased
 
+### 2024-04-11
+
+#### Changes
+
+- Moved SendPost and SendReport methods from the ItemsService to the NewItem and ReportForm components (respectively). Since these two methods aren't used by any other compnent, there was no need to have them in the common service. ([#1597](https://github.com/sendahug/send-hug-frontend/pull/1597))
+- Moved the two methods for editing posts to the PostEditForm and combined them. Previously, when the form was submitted, the PostEditForm triggered the ItemsService or the AdminService to update the back-end with the edited post. Now, the PostEditForm uses the APIClient to make the request to edit the post in either case. If the form was triggered from the admin dashboard and the user chose to close the report, that request is sent to the AdminService separately. ([#1594](https://github.com/sendahug/send-hug-frontend/pull/1594))
+- Changed the AdminService's `dismissReport` method to allow closing a report instead of dismissing it. The name was updated to `closeReport` to match the new functionality. ([#1594](https://github.com/sendahug/send-hug-frontend/pull/1594))
+
+#### Fixes
+
+- Fixed a bug where the alert component persisted the 'should display reload' button and 'should display navigation' button because there was no check to see if the alert's config set either of those to false. That check was added to ensure that alerts that shouldn't have those buttons don't display them. ([#1597](https://github.com/sendahug/send-hug-frontend/pull/1597))
+
 ### 2024-04-10
 
 #### Chores

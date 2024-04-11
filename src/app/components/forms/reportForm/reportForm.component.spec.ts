@@ -36,14 +36,14 @@ import { HttpClientModule } from "@angular/common/http";
 import { ServiceWorkerModule } from "@angular/service-worker";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { ReactiveFormsModule } from "@angular/forms";
+import { of } from "rxjs";
 
-import { AppComponent } from "../../../app.component";
 import { ReportForm } from "./reportForm.component";
-import { AuthService } from "../../../services/auth.service";
+import { AuthService } from "@app/services/auth.service";
 import { mockAuthedUser } from "@tests/mockData";
-import { AppAlert } from "@app/components/appAlert/appAlert.component";
 import { PopUp } from "@app/components/popUp/popUp.component";
 import { ValidationService } from "@app/services/validation.service";
+import { Report } from "@app/interfaces/report.interface";
 
 describe("Report", () => {
   // Before each test, configure testing environment
@@ -59,7 +59,7 @@ describe("Report", () => {
         FontAwesomeModule,
         ReactiveFormsModule,
       ],
-      declarations: [AppComponent, ReportForm, AppAlert, PopUp],
+      declarations: [ReportForm, PopUp],
       providers: [{ provide: APP_BASE_HREF, useValue: "/" }],
     }).compileComponents();
 
@@ -70,7 +70,6 @@ describe("Report", () => {
 
   // Check that the reported post is shown
   it("shows the reported post", () => {
-    TestBed.createComponent(AppComponent);
     const fixture = TestBed.createComponent(ReportForm);
     const popUp = fixture.componentInstance;
     const popUpDOM = fixture.nativeElement;
@@ -94,7 +93,6 @@ describe("Report", () => {
 
   // Check that the reported user's display name is shown
   it("shows the reported user's name", () => {
-    TestBed.createComponent(AppComponent);
     const fixture = TestBed.createComponent(ReportForm);
     const popUp = fixture.componentInstance;
     const popUpDOM = fixture.nativeElement;
@@ -127,7 +125,6 @@ describe("Report", () => {
 
   // Check that the correct radio button is set as selected
   it("correctly identifies the chosen radio button", (done: DoneFn) => {
-    TestBed.createComponent(AppComponent);
     const fixture = TestBed.createComponent(ReportForm);
     const popUp = fixture.componentInstance;
     const popUpDOM = fixture.nativeElement;
@@ -184,7 +181,6 @@ describe("Report", () => {
   });
 
   it("checkSelectedForOther() - correctly enables/disables the 'other' text field", () => {
-    TestBed.createComponent(AppComponent);
     const fixture = TestBed.createComponent(ReportForm);
     const popUp = fixture.componentInstance;
     popUp.reportType = "User";
@@ -225,7 +221,6 @@ describe("Report", () => {
   });
 
   it("Correctly sets the required and aria-required attributes", (done: DoneFn) => {
-    TestBed.createComponent(AppComponent);
     const fixture = TestBed.createComponent(ReportForm);
     const popUp = fixture.componentInstance;
     const popUpDOM = fixture.nativeElement;
@@ -265,7 +260,6 @@ describe("Report", () => {
   });
 
   it("getSelectedReasonText() - correctly sets the selected reason - posts", (done: DoneFn) => {
-    TestBed.createComponent(AppComponent);
     const fixture = TestBed.createComponent(ReportForm);
     const popUp = fixture.componentInstance;
     const popUpDOM = fixture.nativeElement;
@@ -303,7 +297,6 @@ describe("Report", () => {
   });
 
   it("getSelectedReasonText() - correctly sets the selected reason - users", (done: DoneFn) => {
-    TestBed.createComponent(AppComponent);
     const fixture = TestBed.createComponent(ReportForm);
     const popUp = fixture.componentInstance;
     const popUpDOM = fixture.nativeElement;
@@ -360,7 +353,6 @@ describe("Report", () => {
       (control) => null,
     );
 
-    TestBed.createComponent(AppComponent);
     const fixture = TestBed.createComponent(ReportForm);
     const popUp = fixture.componentInstance;
     const popUpDOM = fixture.nativeElement;
@@ -374,7 +366,7 @@ describe("Report", () => {
       text: "hi",
       date: new Date(),
     };
-    const reportServiceSpy = spyOn(popUp["itemsService"], "sendReport");
+    const apiClientSpy = spyOn(popUp["apiClient"], "post");
     const alertServiceSpy = spyOn(popUp["alertsService"], "createAlert");
     fixture.detectChanges();
 
@@ -388,7 +380,7 @@ describe("Report", () => {
 
     // check the report wasn't sent and the user was alerted
     expect(validateSpy).toHaveBeenCalledWith("reportOther");
-    expect(reportServiceSpy).not.toHaveBeenCalled();
+    expect(apiClientSpy).not.toHaveBeenCalled();
     expect(alertServiceSpy).toHaveBeenCalledWith({
       type: "Error",
       message: "If you choose 'other', you must specify a reason.",
@@ -397,12 +389,26 @@ describe("Report", () => {
   });
 
   it("requires text if the chosen reason is other - valid", (done: DoneFn) => {
+    // mock response
+    const mockResponse = {
+      report: {
+        closed: false,
+        date: "Tue Jun 23 2020 14:59:31 GMT+0300",
+        dismissed: false,
+        id: 36,
+        reportReason: "because",
+        reporter: 2,
+        type: "Post",
+        postID: 1,
+      },
+      success: true,
+    };
+
     const validationService = TestBed.inject(ValidationService);
     const validateSpy = spyOn(validationService, "validateItemAgainst").and.returnValue(
       (control) => null,
     );
 
-    TestBed.createComponent(AppComponent);
     const fixture = TestBed.createComponent(ReportForm);
     const popUp = fixture.componentInstance;
     const popUpDOM = fixture.nativeElement;
@@ -416,7 +422,9 @@ describe("Report", () => {
       text: "hi",
       date: new Date(),
     };
-    const reportServiceSpy = spyOn(popUp["itemsService"], "sendReport");
+    const apiClientSpy = spyOn(popUp["apiClient"], "post").and.returnValue(of(mockResponse));
+    const alertsSpy = spyOn(popUp["alertsService"], "createSuccessAlert");
+    const emitSpy = spyOn(popUp.reportMode, "emit");
     const reportReason = "because";
     const otherText = popUpDOM.querySelector("#rOption3Text");
     fixture.detectChanges();
@@ -434,13 +442,41 @@ describe("Report", () => {
     fixture.detectChanges();
 
     // check the report was sent
+    const report = {
+      type: "Post",
+      postID: 1,
+      reporter: 4,
+      reportReason: "because",
+      dismissed: false,
+      closed: false,
+    };
     expect(validateSpy).toHaveBeenCalledWith("reportOther");
-    expect(reportServiceSpy).toHaveBeenCalled();
+    expect(apiClientSpy).toHaveBeenCalledWith("reports", jasmine.objectContaining(report));
+    expect(alertsSpy).toHaveBeenCalledWith(`Post number 1 was successfully reported.`, {
+      navigate: true,
+      navTarget: "/",
+      navText: "Home Page",
+    });
+    expect(emitSpy).toHaveBeenCalledWith(false);
     done();
   });
 
   it("creates the report and sends it to the itemsService - post", (done: DoneFn) => {
-    TestBed.createComponent(AppComponent);
+    // mock response
+    const mockResponse = {
+      report: {
+        closed: false,
+        date: "Tue Jun 23 2020 14:59:31 GMT+0300",
+        dismissed: false,
+        id: 36,
+        reportReason: "The user is posting Spam",
+        reporter: 2,
+        type: "Post",
+        postID: 1,
+      },
+      success: true,
+    };
+
     const fixture = TestBed.createComponent(ReportForm);
     const popUp = fixture.componentInstance;
     const popUpDOM = fixture.nativeElement;
@@ -454,7 +490,9 @@ describe("Report", () => {
       text: "hi",
       date: new Date(),
     };
-    const reportServiceSpy = spyOn(popUp["itemsService"], "sendReport");
+    const apiClientSpy = spyOn(popUp["apiClient"], "post").and.returnValue(of(mockResponse));
+    const alertsSpy = spyOn(popUp["alertsService"], "createSuccessAlert");
+    const emitSpy = spyOn(popUp.reportMode, "emit");
     fixture.detectChanges();
 
     // select option 1
@@ -475,12 +513,32 @@ describe("Report", () => {
       dismissed: false,
       closed: false,
     };
-    expect(reportServiceSpy).toHaveBeenCalledWith(jasmine.objectContaining(report));
+    expect(apiClientSpy).toHaveBeenCalledWith("reports", jasmine.objectContaining(report));
+    expect(alertsSpy).toHaveBeenCalledWith(`Post number 1 was successfully reported.`, {
+      navigate: true,
+      navTarget: "/",
+      navText: "Home Page",
+    });
+    expect(emitSpy).toHaveBeenCalledWith(false);
     done();
   });
 
   it("creates the report and sends it to the itemsService - user", (done: DoneFn) => {
-    TestBed.createComponent(AppComponent);
+    // mock response
+    const mockResponse = {
+      report: {
+        closed: false,
+        date: "Tue Jun 23 2020 14:59:31 GMT+0300",
+        dismissed: false,
+        id: 36,
+        reportReason: "The user is posting Spam",
+        reporter: 2,
+        type: "User",
+        userID: 3,
+      },
+      success: true,
+    };
+
     const fixture = TestBed.createComponent(ReportForm);
     const popUp = fixture.componentInstance;
     const popUpDOM = fixture.nativeElement;
@@ -504,7 +562,9 @@ describe("Report", () => {
         item: "#f4b56a",
       },
     };
-    const reportServiceSpy = spyOn(popUp["itemsService"], "sendReport");
+    const apiClientSpy = spyOn(popUp["apiClient"], "post").and.returnValue(of(mockResponse));
+    const alertsSpy = spyOn(popUp["alertsService"], "createSuccessAlert");
+    const emitSpy = spyOn(popUp.reportMode, "emit");
     fixture.detectChanges();
 
     // select option 1
@@ -525,7 +585,13 @@ describe("Report", () => {
       dismissed: false,
       closed: false,
     };
-    expect(reportServiceSpy).toHaveBeenCalledWith(jasmine.objectContaining(report));
+    expect(apiClientSpy).toHaveBeenCalledWith("reports", jasmine.objectContaining(report));
+    expect(alertsSpy).toHaveBeenCalledWith(`User 3 was successfully reported.`, {
+      navigate: true,
+      navTarget: "/",
+      navText: "Home Page",
+    });
+    expect(emitSpy).toHaveBeenCalledWith(false);
     done();
   });
 });

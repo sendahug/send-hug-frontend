@@ -42,6 +42,8 @@ import { ItemsService } from "@app/services/items.service";
 import { AuthService } from "@app/services/auth.service";
 import { AlertsService } from "@app/services/alerts.service";
 import { ValidationService } from "@app/services/validation.service";
+import { ApiClientService } from "@app/services/apiClient.service";
+import { SWManager } from "@app/services/sWManager.service";
 
 @Component({
   selector: "app-new-item",
@@ -68,6 +70,8 @@ export class NewItem {
     private route: ActivatedRoute,
     private alertService: AlertsService,
     private validationService: ValidationService,
+    private apiClient: ApiClientService,
+    private swManager: SWManager,
     private fb: FormBuilder,
   ) {
     let type;
@@ -118,6 +122,15 @@ export class NewItem {
       return;
     }
 
+    // if they're blocked, alert them they cannot post while blocked
+    if (this.authService.userData?.blocked) {
+      this.alertService.createAlert({
+        type: "Error",
+        message: `You cannot post new posts while you're blocked. You're blocked until ${this.authService.userData.releaseDate}.`,
+      });
+      return;
+    }
+
     // otherwise create the post
     // create a new post object to send
     let newPost: Post = {
@@ -128,7 +141,19 @@ export class NewItem {
       givenHugs: 0,
     };
 
-    this.itemsService.sendPost(newPost);
+    this.apiClient.post("posts", newPost).subscribe({
+      next: (response: any) => {
+        this.alertService.createSuccessAlert(
+          "Your post was published! Return to home page to view the post.",
+          {
+            navigate: true,
+            navTarget: "/",
+            navText: "Home Page",
+          },
+        );
+        this.swManager.addFetchedItems("posts", [response.posts], "date");
+      },
+    });
   }
 
   /*
@@ -167,7 +192,6 @@ export class NewItem {
       return;
     }
 
-    // if there's text in the textfield, try to create a new message
     // if the user is sending a message to someone else and there's text
     // in the text field, make the request
     // create a new message object to send

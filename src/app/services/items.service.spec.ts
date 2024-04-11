@@ -31,7 +31,7 @@
 */
 
 import { TestBed } from "@angular/core/testing";
-import { HttpClientTestingModule, HttpTestingController } from "@angular/common/http/testing";
+import { HttpClientTestingModule } from "@angular/common/http/testing";
 import {
   BrowserDynamicTestingModule,
   platformBrowserDynamicTesting,
@@ -40,10 +40,8 @@ import {} from "jasmine";
 import { of } from "rxjs";
 
 import { ItemsService } from "./items.service";
-import { Report } from "../interfaces/report.interface";
 
 describe("ItemsService", () => {
-  let httpController: HttpTestingController;
   let itemsService: ItemsService;
 
   // Before each test, configure testing environment
@@ -57,7 +55,6 @@ describe("ItemsService", () => {
     }).compileComponents();
 
     itemsService = TestBed.inject(ItemsService);
-    httpController = TestBed.inject(HttpTestingController);
     // set the user data as if the user is logged in
     itemsService["authService"].userData = {
       id: 4,
@@ -93,86 +90,6 @@ describe("ItemsService", () => {
   // Check the service is created
   it("should be created", () => {
     expect(itemsService).toBeTruthy();
-  });
-
-  it("sendPost() - should send a post", () => {
-    const mockNewPost = {
-      userId: 4,
-      user: "name",
-      text: "text",
-      date: new Date(),
-      givenHugs: 0,
-    };
-    const apiClientSpy = spyOn(itemsService["apiClient"], "post").and.returnValue(
-      of({ success: true, posts: mockNewPost }),
-    );
-    const successAlertSpy = spyOn(itemsService["alertsService"], "createSuccessAlert");
-    const addItemSpy = spyOn(itemsService["serviceWorkerM"], "addItem");
-
-    itemsService.sendPost(mockNewPost);
-
-    expect(apiClientSpy).toHaveBeenCalledWith("posts", mockNewPost);
-    expect(successAlertSpy).toHaveBeenCalledWith(
-      "Your post was published! Return to home page to view the post.",
-      { navigate: true, navTarget: "/", navText: "Home Page" },
-    );
-    expect(addItemSpy).toHaveBeenCalledWith("posts", {
-      ...mockNewPost,
-      isoDate: new Date(mockNewPost.date).toISOString(),
-    });
-  });
-
-  it("sendPost() - should prevent sending a post if the user is blocked", () => {
-    const mockNewPost = {
-      userId: 4,
-      user: "name",
-      text: "text",
-      date: new Date(),
-      givenHugs: 0,
-    };
-    const apiClientSpy = spyOn(itemsService["apiClient"], "post").and.returnValue(
-      of({ success: true, posts: mockNewPost }),
-    );
-    const successAlertSpy = spyOn(itemsService["alertsService"], "createSuccessAlert");
-    const errorAlertSpy = spyOn(itemsService["alertsService"], "createAlert");
-    const addItemSpy = spyOn(itemsService["serviceWorkerM"], "addItem");
-    itemsService["authService"].userData!.blocked = true;
-    itemsService["authService"].userData!.releaseDate = new Date();
-
-    itemsService.sendPost(mockNewPost);
-
-    expect(apiClientSpy).not.toHaveBeenCalled();
-    expect(successAlertSpy).not.toHaveBeenCalled();
-    expect(addItemSpy).not.toHaveBeenCalled();
-    expect(errorAlertSpy).toHaveBeenCalledWith({
-      type: "Error",
-      message: `You cannot post new posts while you're blocked. You're blocked until ${itemsService["authService"].userData!.releaseDate}.`,
-    });
-  });
-
-  it("editPost() - should edit post", () => {
-    const mockPost = {
-      id: 1,
-      userId: 4,
-      user: "name",
-      text: "text",
-      date: new Date(),
-      givenHugs: 0,
-    };
-    const apiClientSpy = spyOn(itemsService["apiClient"], "patch").and.returnValue(
-      of({ success: true }),
-    );
-    const successAlertSpy = spyOn(itemsService["alertsService"], "createSuccessAlert");
-    const isUpdatedSpy = spyOn(itemsService.isUpdated, "next").and.callThrough();
-    itemsService.editPost(mockPost);
-
-    expect(apiClientSpy).toHaveBeenCalledWith(`posts/${mockPost.id}`, mockPost);
-    expect(successAlertSpy).toHaveBeenCalledWith(
-      "Your post was edited. Refresh to view the updated post.",
-      { reload: true },
-    );
-    expect(isUpdatedSpy).toHaveBeenCalledWith(true);
-    expect(itemsService.isUpdated.value).toBe(true);
   });
 
   it("sendHug() - should send a hug for a post", () => {
@@ -330,45 +247,6 @@ describe("ItemsService", () => {
         expect(itemsService.isSearching).toBeFalse();
         expect(apiClientSpy).toHaveBeenCalledWith("", { search: "test" }, { page: "1" });
       }
-    });
-  });
-
-  // Check the service sends a report
-  it("sendReport() - should send a report", () => {
-    // mock response
-    const mockResponse = {
-      report: {
-        closed: false,
-        date: "Tue Jun 23 2020 14:59:31 GMT+0300",
-        dismissed: false,
-        id: 36,
-        reportReason: "reason",
-        reporter: 2,
-        type: "User",
-        userID: 5,
-      },
-      success: true,
-    };
-
-    // request data
-    const report: Report = {
-      type: "User",
-      userID: 5,
-      reporter: 2,
-      reportReason: "reason",
-      date: new Date("Tue Jun 23 2020 14:59:31 GMT+0300"),
-      dismissed: false,
-      closed: false,
-    };
-    const apiClientSpy = spyOn(itemsService["apiClient"], "post").and.returnValue(of(mockResponse));
-    const alertsSpy = spyOn(itemsService["alertsService"], "createSuccessAlert");
-    itemsService.sendReport(report);
-
-    expect(apiClientSpy).toHaveBeenCalledWith("reports", report);
-    expect(alertsSpy).toHaveBeenCalledWith(`User 5 was successfully reported.`, {
-      navigate: true,
-      navTarget: "/",
-      navText: "Home Page",
     });
   });
 });

@@ -40,6 +40,7 @@ export interface Report {
   date: Date;
   dismissed: boolean;
   closed: boolean;
+  displayName?: string;
 }
 
 export interface ReportData {

@@ -38,7 +38,7 @@ import { faGratipay } from "@fortawesome/free-brands-svg-icons";
 import { HttpErrorResponse } from "@angular/common/http";
 
 // App-related imports
-import { User } from "@app/interfaces/user.interface";
+import { PartialUser, User } from "@app/interfaces/user.interface";
 import { AuthService } from "@app/services/auth.service";
 import { iconElements } from "@app/interfaces/types";
 import { OtherUser } from "@app/interfaces/otherUser.interface";
@@ -68,8 +68,7 @@ export class UserPage implements OnInit, OnDestroy, AfterViewChecked {
   });
   isOtherUserProfile = computed(() => this.otherUser() != undefined);
   // edit popup sub-component variables
-  userToEdit: any;
-  editType: string | undefined;
+  userToEdit?: PartialUser;
   editMode: boolean = false;
   reportMode: boolean = false;
   reportedItem: User | undefined;
@@ -237,9 +236,11 @@ export class UserPage implements OnInit, OnDestroy, AfterViewChecked {
   */
   editName() {
     this.lastFocusedElement = document.activeElement;
-    this.userToEdit = this.authService.userData;
+    this.userToEdit = {
+      displayName: this.displayUser().displayName,
+      id: this.displayUser().id as number,
+    };
     this.editMode = true;
-    this.editType = "user";
   }
 
   /*

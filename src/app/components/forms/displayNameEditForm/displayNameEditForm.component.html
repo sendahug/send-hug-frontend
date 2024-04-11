@@ -15,7 +15,7 @@
   
     <!-- If the user is editing their own display name -->
     <button
-      *ngIf="toEdit == 'user'"
+      *ngIf="!reportData"
       type="submit"
       class="appButton updateItem"
       (click)="updateDisplayName($event, null)"
@@ -25,14 +25,14 @@
   
     <!-- If the user is editing another user -->
     <button
-      *ngIf="toEdit == 'other user'"
+      *ngIf="reportData"
       (click)="updateDisplayName($event, true)"
       type="submit"
       class="appButton updateItem">
         Update User and Close Report
     </button>
     <button
-      *ngIf="toEdit == 'other user'"
+      *ngIf="reportData"
       (click)="updateDisplayName($event, false)"
       type="submit"
       class="appButton updateItem">

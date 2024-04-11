@@ -43,6 +43,7 @@ import { ItemsService } from "@app/services/items.service";
 import { SWManager } from "@app/services/sWManager.service";
 import { ApiClientService } from "@app/services/apiClient.service";
 import { OtherUser } from "@app/interfaces/otherUser.interface";
+import { PartialUser } from "@app/interfaces/user.interface";
 
 interface UserBlockData {
   userID: number;
@@ -124,18 +125,18 @@ export class AdminService {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  editUser(user: any, closeReport: boolean, reportID: number) {
-    // if the report should be closed
-    if (closeReport) {
-      user["closeReport"] = reportID;
-    }
-
+  editUser(user: PartialUser, closeReport: boolean, reportID: number) {
     // update the user's display name
-    this.apiClient.patch(`users/all/${user.userID}`, user).subscribe({
+    this.apiClient.patch(`users/all/${user.id}`, user).subscribe({
       next: (response: any) => {
         this.alertsService.createSuccessAlert(`User ${response.updated.displayName} updated.`, {
           reload: closeReport,
         });
+
+        // if the report should be closed
+        if (closeReport) {
+          this.closeReport(reportID, false, undefined, user.id).subscribe({});
+        }
       },
     });
   }

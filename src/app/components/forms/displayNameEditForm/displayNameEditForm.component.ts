@@ -39,19 +39,19 @@ import { AuthService } from "@app/services/auth.service";
 import { AdminService } from "@app/services/admin.service";
 import { ValidationService } from "@app/services/validation.service";
 import { AlertsService } from "@app/services/alerts.service";
+import { ReportData } from "@app/interfaces/report.interface";
+import { PartialUser } from "@app/interfaces/user.interface";
 
 @Component({
   selector: "display-name-edit-form",
   templateUrl: "./displayNameEditForm.component.html",
 })
 export class DisplayNameEditForm implements OnInit {
-  // type of item to edit
-  @Input() toEdit: string | undefined;
   // item to edit
-  @Input() editedItem: any;
+  @Input() editedItem!: PartialUser;
   // indicates whether edit/delete mode is still required
   @Output() editMode = new EventEmitter<boolean>();
-  @Input() reportData: any;
+  @Input() reportData?: ReportData;
   editNameForm = this.fb.group({
     newDisplayName: [
       "",
@@ -78,8 +78,7 @@ export class DisplayNameEditForm implements OnInit {
   Programmer: Shir Bar Lev.
   */
   ngOnInit() {
-    const name = this.toEdit == "user" ? this.authService.userData.displayName : this.editedItem;
-    this.editNameForm.controls.newDisplayName.setValue(name);
+    this.editNameForm.controls.newDisplayName.setValue(this.editedItem.displayName);
   }
 
   /*
@@ -107,19 +106,24 @@ export class DisplayNameEditForm implements OnInit {
     const newDisplayName = String(this.editNameForm.controls.newDisplayName.value);
 
     // if the user is editing their own name
-    if (closeReport == null) {
+    if (this.editedItem.id == this.authService.userData.id) {
       this.authService.userData.displayName = newDisplayName;
       this.authService.updateUserData();
-      // if they're editing someone else's name from the reports page
     } else {
-      let user = {
-        userID: this.reportData.userID,
-        displayName: newDisplayName,
-      };
+      // if they're editing someone else's name from the reports page
+      if (!this.reportData || closeReport === null) {
+        this.alertService.createAlert({
+          type: "Error",
+          message: "Editing someone else's username can only be done via the admin page.",
+        });
+        return;
+      }
 
-      this.adminService.editUser(user, closeReport, this.reportData.reportID);
+      this.editedItem.displayName = newDisplayName;
+      this.adminService.editUser(this.editedItem, closeReport, this.reportData.reportID);
     }
 
+    // TODO: We want to only run this after a successful response!
     this.editMode.emit(false);
   }
 }

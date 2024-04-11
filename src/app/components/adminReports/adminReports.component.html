@@ -114,7 +114,7 @@
 <display-name-edit-form
   *ngIf="nameEditMode"
   [editedItem]="toEdit"
-  [toEdit]="editType"
+  [reportData]="reportData"
   (editMode)="changeMode($event, 'EditName')"
 ></display-name-edit-form>
 
@@ -122,11 +122,14 @@
 	*ngIf="deleteMode"
 	(editMode)="changeMode($event, 'Delete')"
 	[toDelete]="toDelete"
+  [reportData]="reportData"
 	[itemToDelete]="itemToDelete"
 ></item-delete-form>
 
 <post-edit-form
 	*ngIf="postEditMode"
 	[editedItem]="toEdit"
+  [reportData]="reportData"
+  [isAdmin]="true"
 	(editMode)="changeMode($event, 'EditPost')"
 ></post-edit-form>

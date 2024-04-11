@@ -1,4 +1,4 @@
-const currentCache = "send-hug-v6";
+const currentCache = "send-hug-v7";
 const serverUrl = "localhost:5000";
 
 // upon installing a new service worker
@@ -115,6 +115,10 @@ self.addEventListener("fetch", function (event) {
       statusText:
         "The server isn't available at the moment as you are currently offline. Try again when you're connected to the internet.",
     });
+    // If the request is for the server, it's going to get cached by the SWManager
+    // so we don't need to do anything
+  } else if (fetchTarget.includes(serverUrl)) {
+    return;
   }
 
   // if the request is a non-GET and the user is offline, return an error

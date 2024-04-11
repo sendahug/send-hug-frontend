@@ -222,7 +222,9 @@ export class AuthService {
           let statusCode = err.status;
 
           // if a user with that ID doens't exist, try to create it
-          if (statusCode == 404) {
+          // because of the way we check permissions in that endpoint vs
+          // the create users endpoint
+          if (statusCode == 404 || statusCode == 401) {
             this.createUser(jwtPayload);
           } else {
             // if the user is offline, show the offline header message

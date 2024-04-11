@@ -270,11 +270,11 @@ function copyServiceWorker()
 {
   return gulp
     .src('localdev/sw.js')
-    .pipe(replace(/localhost:5000/g, (match) => {
+    .pipe(replace(/127.0.0.1:5000/g, (match) => {
             let newString = `send-hug-server.herokuapp.com`
             return newString;
           }))
-    .pipe(replace(/send-hug-v2/g, (match) => {
+    .pipe(replace(/send-hug-v7/g, (match) => {
             let currentVersion = Number(match.substring(10, match.length));
             let newVersion = currentVersion + 1;
             let newString = `send-hug-v${newVersion}`

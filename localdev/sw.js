@@ -1,5 +1,5 @@
 const currentCache = "send-hug-v7";
-const serverUrl = "localhost:5000";
+const serverUrl = "127.0.0.1:5000";
 
 // upon installing a new service worker
 self.addEventListener("install", function (event) {
@@ -116,7 +116,7 @@ self.addEventListener("fetch", function (event) {
         "The server isn't available at the moment as you are currently offline. Try again when you're connected to the internet.",
     });
   }
-  
+
   // if the request is a non-GET and the user is offline, return an error
   if (event.request.method != "GET" && !navigator.onLine) {
     return new Response("You are currently offline; try again when you're online.", {

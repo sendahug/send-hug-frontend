@@ -39,7 +39,6 @@ import { Post } from "@app/interfaces/post.interface";
 import { Report } from "@app/interfaces/report.interface";
 import { OtherUser } from "@app/interfaces/otherUser.interface";
 import { AuthService } from "@app/services/auth.service";
-import { ItemsService } from "@app/services/items.service";
 import { AlertsService } from "@app/services/alerts.service";
 import { ValidationService } from "@app/services/validation.service";
 import { ApiClientService } from "@app/services/apiClient.service";
@@ -93,7 +92,6 @@ export class ReportForm {
   // CTOR
   constructor(
     public authService: AuthService,
-    private itemsService: ItemsService,
     private alertsService: AlertsService,
     private validationService: ValidationService,
     private apiClient: ApiClientService,

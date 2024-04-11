@@ -142,7 +142,7 @@ describe("Blocks Page", () => {
 
     // check expectations
     expect(blockSpy).toHaveBeenCalled();
-    expect(blockServiceSpy).toHaveBeenCalledWith(10, "oneDay");
+    expect(blockServiceSpy).toHaveBeenCalledWith(5, "oneDay");
     done();
   });
 

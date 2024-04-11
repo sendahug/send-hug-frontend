@@ -88,31 +88,6 @@ describe("ItemsService", () => {
     expect(itemsService).toBeTruthy();
   });
 
-  it("editPost() - should edit post", () => {
-    const mockPost = {
-      id: 1,
-      userId: 4,
-      user: "name",
-      text: "text",
-      date: new Date(),
-      givenHugs: 0,
-    };
-    const apiClientSpy = spyOn(itemsService["apiClient"], "patch").and.returnValue(
-      of({ success: true }),
-    );
-    const successAlertSpy = spyOn(itemsService["alertsService"], "createSuccessAlert");
-    const isUpdatedSpy = spyOn(itemsService.isUpdated, "next").and.callThrough();
-    itemsService.editPost(mockPost);
-
-    expect(apiClientSpy).toHaveBeenCalledWith(`posts/${mockPost.id}`, mockPost);
-    expect(successAlertSpy).toHaveBeenCalledWith(
-      "Your post was edited. Refresh to view the updated post.",
-      { reload: true },
-    );
-    expect(isUpdatedSpy).toHaveBeenCalledWith(true);
-    expect(itemsService.isUpdated.value).toBe(true);
-  });
-
   it("sendHug() - should send a hug for a post", () => {
     const mockPost = {
       id: 1,

@@ -66,7 +66,6 @@ export class ItemsService {
     disabled: this.totalPostSearchPages() <= this.postSearchPage(),
   }));
   // Posts variables
-  isUpdated = new BehaviorSubject(false);
   currentlyOpenMenu = new BehaviorSubject("");
   receivedAHug = new BehaviorSubject(0);
 
@@ -79,28 +78,6 @@ export class ItemsService {
   ) {}
 
   // POST-RELATED METHODS
-  /*
-  Function Name: editPost()
-  Function Description: Edit an existing post. This is used only for editing the post's text.
-  Parameters: post (Post) - the updated data of the post.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  editPost(post: Post) {
-    this.isUpdated.next(false);
-
-    // send update request
-    this.apiClient.patch(`posts/${post.id}`, post).subscribe({
-      next: (_response: any) => {
-        this.alertsService.createSuccessAlert(
-          "Your post was edited. Refresh to view the updated post.",
-          { reload: true },
-        );
-        this.isUpdated.next(true);
-      },
-    });
-  }
-
   /*
   Function Name: sendHug()
   Function Description: Send a hug to a user through a post they've written.

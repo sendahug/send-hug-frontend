@@ -38,6 +38,7 @@ import { AdminService } from "@app/services/admin.service";
 import { ApiClientService } from "@app/services/apiClient.service";
 import { HttpErrorResponse } from "@angular/common/http";
 import { Report } from "@app/interfaces/report.interface";
+import { AlertsService } from "@app/services/alerts.service";
 
 @Component({
   selector: "app-admin-reports",
@@ -87,6 +88,7 @@ export class AdminReports {
   constructor(
     private apiClient: ApiClientService,
     private adminService: AdminService,
+    private alertsService: AlertsService,
   ) {
     this.fetchReports();
   }
@@ -191,8 +193,16 @@ export class AdminReports {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  dismissReport(reportID: number) {
-    this.adminService.dismissReport(reportID);
+  dismissReport(reportID: number, dismiss: boolean, postID?: number, userID?: number) {
+    this.adminService.closeReport(reportID, dismiss, postID, userID).subscribe({
+      next: (response: any) => {
+        // if the report was dismissed, alert the user
+        this.alertsService.createSuccessAlert(
+          `Report ${response.updated.id} was dismissed! Refresh the page to view the updated list.`,
+          { reload: true },
+        );
+      },
+    });
   }
 
   /*

@@ -45,7 +45,7 @@
       (click)="prevPage('users')"
       aria-label="previous page of user reports"
     >Previous Page</button>
-    <div class="pageCount">Page {{ currentUserReportsPage }} of {{ totalUserReportsPages }}</div>
+    <div class="pageCount">Page {{ currentUserReportsPage() }} of {{ totalUserReportsPages() }}</div>
     <button
       [ngClass]="usersNextButtonClass()"
       [disabled]="totalUserReportsPages() <= currentUserReportsPage()"

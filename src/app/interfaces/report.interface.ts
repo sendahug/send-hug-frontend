@@ -41,3 +41,8 @@ export interface Report {
   dismissed: boolean;
   closed: boolean;
 }
+
+export interface ReportData {
+  userID: number;
+  reportID: number;
+}

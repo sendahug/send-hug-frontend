@@ -102,7 +102,7 @@ export class AdminService {
 
         // if the report needs to be closed
         if (closeReport) {
-          this.closeReport(reportData.reportID, false, postID);
+          this.closeReport(reportData.reportID, false, postID).subscribe({});
         }
 
         // delete the post from idb
@@ -259,7 +259,7 @@ export class AdminService {
           );
           // if the block was done via the reports page, also dismiss the report
           if (reportID) {
-            this.closeReport(reportID, false, undefined, userID);
+            this.closeReport(reportID, false, undefined, userID).subscribe({});
           }
         },
       });

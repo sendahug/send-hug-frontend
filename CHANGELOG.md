@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+### 2024-04-11
+
+#### Changes
+
+- Moved SendPost and SendReport methods from the ItemsService to the NewItem and ReportForm components (respectively). Since these two methods aren't used by any other compnent, there was no need to have them in the common service. ([#1597](https://github.com/sendahug/send-hug-frontend/pull/1597))
+
+#### Fixes
+
+- Fixed a bug where the alert component persisted the 'should display reload' button and 'should display navigation' button because there was no check to see if the alert's config set either of those to false. That check was added to ensure that alerts that shouldn't have those buttons don't display them. ([#1597](https://github.com/sendahug/send-hug-frontend/pull/1597))
+
 ### 2024-04-10
 
 #### Chores

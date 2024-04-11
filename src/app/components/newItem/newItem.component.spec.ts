@@ -100,15 +100,27 @@ describe("NewItem", () => {
   });
 
   // Check that it triggers the items service when creating a new post
-  it("New Post - triggers the items service when creating a new post", (done: DoneFn) => {
+  it("sendPost() - should send a post", () => {
+    const mockNewPost = {
+      userId: 4,
+      user: "name",
+      text: "new post",
+      givenHugs: 0,
+    };
+    const mockResponsePost = {
+      ...mockNewPost,
+      date: new Date("Tue Apr 09 2024 17:06:17 GMT+0100 (British Summer Time)"),
+    };
     const paramMap = TestBed.inject(ActivatedRoute);
     paramMap.url = of([{ path: "Post" } as UrlSegment]);
     const fixture = TestBed.createComponent(NewItem);
     const newItem = fixture.componentInstance;
     const newItemDOM = fixture.nativeElement;
-    const newPostSpy = spyOn(newItem, "sendPost").and.callThrough();
-    const newPostServiceSpy = spyOn(newItem["itemsService"], "sendPost");
-
+    const apiClientSpy = spyOn(newItem["apiClient"], "post").and.returnValue(
+      of({ success: true, posts: mockNewPost }),
+    );
+    const successAlertSpy = spyOn(newItem["alertService"], "createSuccessAlert");
+    const addItemSpy = spyOn(newItem["swManager"], "addFetchedItems");
     fixture.detectChanges();
 
     // fill in post's text and trigger a click
@@ -118,16 +130,12 @@ describe("NewItem", () => {
     newItemDOM.querySelectorAll(".sendData")[0].click();
     fixture.detectChanges();
 
-    const newPost = {
-      userId: 4,
-      user: "name",
-      text: postText,
-      givenHugs: 0,
-    };
-    expect(newPostSpy).toHaveBeenCalled();
-    expect(newPostServiceSpy).toHaveBeenCalled();
-    expect(newPostServiceSpy).toHaveBeenCalledWith(jasmine.objectContaining(newPost));
-    done();
+    expect(apiClientSpy).toHaveBeenCalledWith("posts", jasmine.objectContaining(mockNewPost));
+    expect(successAlertSpy).toHaveBeenCalledWith(
+      "Your post was published! Return to home page to view the post.",
+      { navigate: true, navTarget: "/", navText: "Home Page" },
+    );
+    expect(addItemSpy).toHaveBeenCalledWith("posts", [mockNewPost], "date");
   });
 
   // Check that an empty post triggers an alert
@@ -138,7 +146,7 @@ describe("NewItem", () => {
     const newItem = fixture.componentInstance;
     const newItemDOM = fixture.nativeElement;
     const newPostSpy = spyOn(newItem, "sendPost").and.callThrough();
-    const newPostServiceSpy = spyOn(newItem["itemsService"], "sendPost");
+    const apiClientSpy = spyOn(newItem["apiClient"], "post");
     const alertsService = newItem["alertService"];
     const alertSpy = spyOn(alertsService, "createAlert");
 
@@ -153,26 +161,7 @@ describe("NewItem", () => {
 
     expect(newPostSpy).toHaveBeenCalled();
     expect(alertSpy).toHaveBeenCalled();
-    expect(newPostServiceSpy).not.toHaveBeenCalled();
-    done();
-  });
-
-  // Check that a user can't post if they're blocked
-  it("New Post - should prevent blocked users from posting", (done: DoneFn) => {
-    const paramMap = TestBed.inject(ActivatedRoute);
-    paramMap.url = of([{ path: "Post" } as UrlSegment]);
-    const fixture = TestBed.createComponent(NewItem);
-    const newItem = fixture.componentInstance;
-    const newItemDOM = fixture.nativeElement;
-    newItem["authService"].userData.blocked = true;
-    newItem["authService"].userData.releaseDate = new Date(new Date().getTime() + 864e5 * 7);
-
-    fixture.detectChanges();
-
-    const alert = `You are currently blocked until ${newItem["authService"].userData.releaseDate}. You cannot post new posts.`;
-    expect(newItemDOM.querySelectorAll(".newItem")[0]).toBeUndefined();
-    expect(newItemDOM.querySelectorAll(".errorMessage")[0]).toBeTruthy();
-    expect(newItemDOM.querySelectorAll(".errorMessage")[0].textContent).toContain(alert);
+    expect(apiClientSpy).not.toHaveBeenCalled();
     done();
   });
 
@@ -184,11 +173,11 @@ describe("NewItem", () => {
     const newItem = fixture.componentInstance;
     const newItemDOM = fixture.nativeElement;
     const newPostSpy = spyOn(newItem, "sendPost").and.callThrough();
-    const newPostServiceSpy = spyOn(newItem["itemsService"], "sendPost");
     const alertsService = newItem["alertService"];
     const alertSpy = spyOn(alertsService, "createAlert");
     newItem["authService"].authenticated.set(false);
-
+    const apiClientSpy = spyOn(newItem["apiClient"], "post");
+    const addItemSpy = spyOn(newItem["swManager"], "addFetchedItems");
     fixture.detectChanges();
 
     // fill in post's text and trigger a click
@@ -203,8 +192,61 @@ describe("NewItem", () => {
       type: "Error",
       message: "You're currently logged out. Log back in to post a new post.",
     });
-    expect(newPostServiceSpy).not.toHaveBeenCalled();
+    expect(apiClientSpy).not.toHaveBeenCalled();
+    expect(addItemSpy).not.toHaveBeenCalled();
     done();
+  });
+
+  it("shouldn't show the post form if the user is blocked", () => {
+    const paramMap = TestBed.inject(ActivatedRoute);
+    paramMap.url = of([{ path: "Post" } as UrlSegment]);
+    const fixture = TestBed.createComponent(NewItem);
+    const newItem = fixture.componentInstance;
+    const newItemDOM = fixture.nativeElement;
+    newItem["authService"].userData.blocked = true;
+    newItem["authService"].userData.releaseDate = new Date(
+      "Tue Apr 09 2124 17:06:17 GMT+0100 (British Summer Time)",
+    );
+    fixture.detectChanges();
+
+    expect(newItemDOM.querySelector("#postText")).toBeNull();
+    const errorMessage = newItemDOM.querySelectorAll(".errorMessage")[0];
+    expect(errorMessage.textContent).toContain(
+      `You are currently blocked until ${newItem["authService"].userData.releaseDate}. You cannot post new posts.`,
+    );
+  });
+
+  it("sendPost() - should prevent sending a post if the user is blocked", () => {
+    const paramMap = TestBed.inject(ActivatedRoute);
+    paramMap.url = of([{ path: "Post" } as UrlSegment]);
+    const fixture = TestBed.createComponent(NewItem);
+    const newItem = fixture.componentInstance;
+    const newItemDOM = fixture.nativeElement;
+    const apiClientSpy = spyOn(newItem["apiClient"], "post");
+    const successAlertSpy = spyOn(newItem["alertService"], "createSuccessAlert");
+    const addItemSpy = spyOn(newItem["swManager"], "addFetchedItems");
+    const errorAlertSpy = spyOn(newItem["alertService"], "createAlert");
+    newItem["authService"].userData.blocked = false;
+    newItem["authService"].userData.releaseDate = new Date(
+      "Tue Apr 09 2124 17:06:17 GMT+0100 (British Summer Time)",
+    );
+    fixture.detectChanges();
+
+    // fill in post's text and trigger a click
+    const postText = "new post";
+    newItemDOM.querySelector("#postText").value = postText;
+    newItemDOM.querySelector("#postText").dispatchEvent(new Event("input"));
+    newItem["authService"].userData.blocked = true;
+    newItemDOM.querySelectorAll(".sendData")[0].click();
+    fixture.detectChanges();
+
+    expect(apiClientSpy).not.toHaveBeenCalled();
+    expect(successAlertSpy).not.toHaveBeenCalled();
+    expect(addItemSpy).not.toHaveBeenCalled();
+    expect(errorAlertSpy).toHaveBeenCalledWith({
+      type: "Error",
+      message: `You cannot post new posts while you're blocked. You're blocked until ${newItem["authService"].userData.releaseDate}.`,
+    });
   });
 
   // NEW MESSAGE

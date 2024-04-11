@@ -126,7 +126,7 @@ describe("Blocks Page", () => {
     const adminBlocks = fixture.componentInstance;
     const adminBlocksDOM = fixture.nativeElement;
     const blockSpy = spyOn(adminBlocks, "block").and.callThrough();
-    const checkBlockSpy = spyOn(adminBlocks, "blockUser");
+    const blockServiceSpy = spyOn(adminBlocks.adminService, "blockUser");
     spyOn(adminBlocks, "fetchBlocks");
     adminBlocks.blockedUsers = [...mockBlockedUsers];
     adminBlocks.isLoading = false;
@@ -142,8 +142,7 @@ describe("Blocks Page", () => {
 
     // check expectations
     expect(blockSpy).toHaveBeenCalled();
-    expect(checkBlockSpy).toHaveBeenCalled();
-    expect(checkBlockSpy).toHaveBeenCalledWith(5, "oneDay");
+    expect(blockServiceSpy).toHaveBeenCalledWith(10, "oneDay");
     done();
   });
 
@@ -153,7 +152,7 @@ describe("Blocks Page", () => {
     const adminBlocks = fixture.componentInstance;
     const adminBlocksDOM = fixture.nativeElement;
     const blockSpy = spyOn(adminBlocks, "block").and.callThrough();
-    const checkBlockSpy = spyOn(adminBlocks, "blockUser");
+    const blockServiceSpy = spyOn(adminBlocks.adminService, "blockUser");
     const alertSpy = spyOn(adminBlocks["alertsService"], "createAlert");
     spyOn(adminBlocks, "fetchBlocks");
     adminBlocks.blockedUsers = [...mockBlockedUsers];
@@ -169,7 +168,7 @@ describe("Blocks Page", () => {
     fixture.detectChanges();
 
     expect(blockSpy).toHaveBeenCalled();
-    expect(checkBlockSpy).not.toHaveBeenCalled();
+    expect(blockServiceSpy).not.toHaveBeenCalled();
     expect(alertSpy).toHaveBeenCalledWith({
       type: "Error",
       message:
@@ -184,7 +183,7 @@ describe("Blocks Page", () => {
     const adminBlocks = fixture.componentInstance;
     const adminBlocksDOM = fixture.nativeElement;
     const blockSpy = spyOn(adminBlocks, "block").and.callThrough();
-    const checkBlockSpy = spyOn(adminBlocks, "blockUser");
+    const blockServiceSpy = spyOn(adminBlocks.adminService, "blockUser");
     const alertSpy = spyOn(adminBlocks["alertsService"], "createAlert");
     spyOn(adminBlocks, "fetchBlocks");
     adminBlocks.blockedUsers = [...mockBlockedUsers];
@@ -200,7 +199,7 @@ describe("Blocks Page", () => {
     fixture.detectChanges();
 
     expect(blockSpy).toHaveBeenCalled();
-    expect(checkBlockSpy).not.toHaveBeenCalled();
+    expect(blockServiceSpy).not.toHaveBeenCalled();
     expect(alertSpy).toHaveBeenCalledWith({
       type: "Error",
       message: "You cannot block yourself.",
@@ -214,7 +213,7 @@ describe("Blocks Page", () => {
     const adminBlocks = fixture.componentInstance;
     const adminBlocksDOM = fixture.nativeElement;
     const blockSpy = spyOn(adminBlocks, "block").and.callThrough();
-    const checkBlockSpy = spyOn(adminBlocks, "blockUser");
+    const blockServiceSpy = spyOn(adminBlocks.adminService, "blockUser");
     const alertSpy = spyOn(adminBlocks["alertsService"], "createAlert");
     spyOn(adminBlocks, "fetchBlocks");
     adminBlocks.blockedUsers = [...mockBlockedUsers];
@@ -230,31 +229,11 @@ describe("Blocks Page", () => {
     fixture.detectChanges();
 
     expect(blockSpy).toHaveBeenCalled();
-    expect(checkBlockSpy).not.toHaveBeenCalled();
+    expect(blockServiceSpy).not.toHaveBeenCalled();
     expect(alertSpy).toHaveBeenCalledWith({
       type: "Error",
       message: "User ID must be a number. Please correct the User ID and try again.",
     });
-    done();
-  });
-
-  it("should make the request to block the user", (done: DoneFn) => {
-    // set up the spy and the component
-    const fixture = TestBed.createComponent(AdminBlocks);
-    const adminBlocks = fixture.componentInstance;
-    const adminService = adminBlocks["adminService"];
-    const blockServiceSpy = spyOn(adminService, "blockUser");
-
-    adminBlocks.blockedUsers = [...mockBlockedUsers];
-    adminBlocks.isLoading = false;
-    adminBlocks.totalPages.set(1);
-    fixture.detectChanges();
-
-    adminBlocks.blockUser(10, "oneDay", undefined);
-    fixture.detectChanges();
-
-    // check expectations
-    expect(blockServiceSpy).toHaveBeenCalledWith(10, "oneDay", undefined);
     done();
   });
 

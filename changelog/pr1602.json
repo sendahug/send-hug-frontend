@@ -1,0 +1,21 @@
+{
+  "pr_number": 1602,
+  "changes": [
+    {
+      "change": "Fixes",
+      "description": "Fixed a bug where the Admin Reports' report list accidentally showed `singal` instead of the current page and total page values."
+    },
+    {
+      "change": "Fixes",
+      "description": "Added the missing reportData input to all forms in the Admin Reports component. This fixes an error that caused the forms to ignore attempts to close reports when editing posts and users and when deleting posts."
+    },
+    {
+      "change": "Changes",
+      "description": "Simplified the inputs to the Display Name Edit Form. Previously, the form relied on a separate input to indicate whether it should fetch the name to edit from the Auth Service or from the form input (which was a string). This was unnecessarily complicated. Now, both the Admin Reports screen and the User page screen pass in an object that contains the ID and name of the user to edit. When the form is submitted, the ID of the user is compared to the ID of the currently logged in user (in the Auth Service). If it's the same, the request is made via the auth service; otherwise, it's made via the Admin Service."
+    },
+    {
+      "change": "Fixes",
+      "description": "Added missing calls to `subscribe` in Admin Service methods that call the `closeReport` method. Since the method returns a cold observable, those `closeReport` requests weren't executed until a subscription was made to the observable, which means reports weren't closed in those workflows."
+    }
+  ]
+}

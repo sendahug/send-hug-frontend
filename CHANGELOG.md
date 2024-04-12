@@ -7,6 +7,11 @@
 #### Changes
 
 - Merged the two block methods in the AdminBlocks component. Previously, one of the methods consisted only of a call to the AdminService. This was merged into the method checking the form's input before making an attempt to block the user. ([#1603](https://github.com/sendahug/send-hug-frontend/pull/1603))
+- Updated the structure of the `role` field in the user interface (and in all code that uses it) to be an object containing the name and permissions a role includes. This mirrors the structure change in the backend (see [sendahug/send-hug-backend#605](https://github.com/sendahug/send-hug-backend/pull/605)). ([#1599](https://github.com/sendahug/send-hug-frontend/pull/1599))
+- Updated the `role` field in the user profile to display the name of the role (as part of the replacement of the role name with a role object). ([#1599](https://github.com/sendahug/send-hug-frontend/pull/1599))
+- The Auth Service's userData property is now optional. This means that when the user is not logged in, we don't need to replace the userData with an empty user the way we previously did; we set it to `undefined` instead. ([#1599](https://github.com/sendahug/send-hug-frontend/pull/1599))
+- The Auth Service will now attempt to create a user if the response to the 'get current user' request is 401. This happens due to the change in the way user roles and permissions are handled. Since all endpoints (apart from the 'create user' endpoint now use internal roles and permissions, we need to create a user in the frontend if the user doesn't exist (therefore the back-end returns a 401 error). (see [sendahug/send-hug-backend#605](https://github.com/sendahug/send-hug-backend/pull/605)). ([#1599](https://github.com/sendahug/send-hug-frontend/pull/1599))
+- The Auth Service now checks whether the user has permission to perform actions against the user's permissions (as returned by the back-end), instead of the permissions set in the Auth0 token. ([#1599](https://github.com/sendahug/send-hug-frontend/pull/1599))
 
 ### 2024-04-11
 

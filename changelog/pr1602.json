@@ -16,6 +16,10 @@
     {
       "change": "Fixes",
       "description": "Added missing calls to `subscribe` in Admin Service methods that call the `closeReport` method. Since the method returns a cold observable, those `closeReport` requests weren't executed until a subscription was made to the observable, which means reports weren't closed in those workflows."
+    },
+    {
+      "change": "Changes",
+      "description": "Adjusted the way reports are closed when it's done via the 'edit display name' form. Previously, the 'edit user' request made to the back-end included a key that included the ID of the report to close. Now, the two requests are separated - once the user has been updated, the Admin Service makes the request to close the report."
     }
   ]
 }

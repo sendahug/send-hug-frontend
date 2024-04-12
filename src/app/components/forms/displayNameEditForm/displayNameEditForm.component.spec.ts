@@ -100,7 +100,7 @@ describe("DisplayNameEditForm", () => {
     };
     popUp.ngOnInit();
 
-    expect(popUp.editedItem.displayName).not.toEqual(popUp.authService.userData.displayName);
+    expect(popUp.editedItem.displayName).not.toEqual(popUp.authService.userData!.displayName);
   });
 
   it("should make the request to authService to change the name", () => {

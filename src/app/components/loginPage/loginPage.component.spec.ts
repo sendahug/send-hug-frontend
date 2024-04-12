@@ -125,7 +125,10 @@ describe("LoginPage", () => {
 
     expect(loginPageDOM.querySelector("#loginBox")).toBeNull();
     expect(loginPageDOM.querySelector("#logoutBox")).toBeTruthy();
-    expect(loginPageDOM.querySelector(".errorMessage").textContent).toContain(
+    expect(loginPageDOM.querySelectorAll(".errorMessage")[0].textContent).toContain(
+      "You are already logged in",
+    );
+    expect(loginPageDOM.querySelectorAll(".errorMessage")[1].textContent).toContain(
       `You are currently logged in as ${mockAuthedUser.displayName}`,
     );
     done();

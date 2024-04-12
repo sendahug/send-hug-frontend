@@ -9,7 +9,7 @@
 				<img src="../assets/img/home.svg" alt="">
 				<div class="navLinkText">Home</div>
 			</a>
-			<a [routerLink]="['/messages']" [ngClass]="getClassForNavItem('/messages')">
+			<a *ngIf="authService.authenticated()" [routerLink]="['/messages']" [ngClass]="getClassForNavItem('/messages')">
 				<fa-icon [icon]="faComments" class="navIcon fa-comments" aria-label="Messages"></fa-icon>
 				<div class="navLinkText">Messages</div>
 			</a>
@@ -17,9 +17,13 @@
 				<img src="../assets/img/post.svg" alt="">
 				<div class="navLinkText">New Post</div>
 			</a>
-			<a [routerLink]="['/user']" [ngClass]="getClassForNavItem('/user')">
+			<a *ngIf="authService.authenticated()" [routerLink]="['/user']" [ngClass]="getClassForNavItem('/user')">
 				<fa-icon [icon]="faUserCircle" class="navIcon fa-user-circle" aria-label="Profile"></fa-icon>
 				<div class="navLinkText">Profile</div>
+			</a>
+			<a *ngIf="!authService.authenticated()" [routerLink]="['/login']" [ngClass]="getClassForNavItem('/login')">
+				<fa-icon [icon]="faUserCircle" class="navIcon fa-user-circle" aria-label="Profile"></fa-icon>
+				<div class="navLinkText">Login</div>
 			</a>
 			<a [routerLink]="['/about']" [ngClass]="getClassForNavItem('/about')">
 				<fa-icon [icon]="faCompass" class="fa-compass navIcon" aria-label="About"></fa-icon>

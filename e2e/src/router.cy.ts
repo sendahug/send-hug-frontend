@@ -67,21 +67,29 @@ describe("Send A Hug Router", () => {
     cy.visit("http://localhost:3000/messages/inbox");
     cy.get("app-messages").should("be.visible").should("not.be.undefined");
     cy.get("h3").eq(0).should("have.text", "inbox");
+    // check messages route is marked active
+    cy.get(".navLink").eq(2).should("have.class", "active");
 
     // outbox
     cy.visit("http://localhost:3000/messages/outbox");
     cy.get("app-messages").should("be.visible").should("not.be.undefined");
     cy.get("h3").eq(0).should("have.text", "outbox");
+    // check messages route is marked active
+    cy.get(".navLink").eq(2).should("have.class", "active");
 
     // threads
     cy.visit("http://localhost:3000/messages/threads");
     cy.get("app-messages").should("be.visible").should("not.be.undefined");
     cy.get("h3").eq(0).should("have.text", "threads");
+    // check messages route is marked active
+    cy.get(".navLink").eq(2).should("have.class", "active");
 
     // thread
     cy.visit("http://localhost:3000/messages/thread/1");
     cy.get("app-messages").should("be.visible").should("not.be.undefined");
     cy.get("h3").eq(0).should("have.text", "thread");
+    // check messages route is marked active
+    cy.get(".navLink").eq(2).should("have.class", "active");
   });
 
   // check the correct sub-route is shown for those paths that have sub-routes
@@ -108,41 +116,6 @@ describe("Send A Hug Router", () => {
     cy.visit("http://localhost:3000/list/Suggested");
     cy.get("app-full-list").should("be.visible").should("not.be.undefined");
     cy.get("#listTitle").should("have.text", "Suggested Items");
-  });
-
-  // Check that all messages routes make 'messages' link active
-  it("should make messages link active for all messages sub-routes", () => {
-    // get the inbox route
-    cy.visit("http://localhost:3000/messages/inbox");
-
-    // check messages route is marked active
-    cy.get(".navLink").eq(2).should("have.class", "active");
-
-    // get the home route (for 'reset')
-    cy.visit("http://localhost:3000/");
-
-    // check the messages route isn't marked active anymore
-    cy.get(".navLink").eq(1).should("have.class", "active");
-    cy.get(".navLink").eq(2).should("not.have.class", "active");
-
-    // get the outbox route
-    cy.visit("http://localhost:3000/messages/outbox");
-
-    // check messages route is marked active
-    cy.get(".navLink").eq(2).should("have.class", "active");
-
-    // get the home route (for 'reset')
-    cy.visit("http://localhost:3000/");
-
-    // check the messages route isn't marked active anymore
-    cy.get(".navLink").eq(1).should("have.class", "active");
-    cy.get(".navLink").eq(2).should("not.have.class", "active");
-
-    // get the threads route
-    cy.visit("http://localhost:3000/messages/threads");
-
-    // check messages route is marked active
-    cy.get(".navLink").eq(2).should("have.class", "active");
   });
 
   // TODO: Mailbox navigation (using buttons)

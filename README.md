@@ -154,7 +154,7 @@ Running tests is done through the dedicated Gulp task. All you need to do is run
 
 End to end tests are similarly written in TypeScript and named in the following format: `<component_name>.spec.ts`. They're all located in [e2e/src](./e2e/src).
 
-Since this is a full-stack application, running end-to-end tests requires running the [backend](https://github.com/sendahug/send-hug-backend) prior to running the tests. Once the backend is up and running, run `gulp e2e` in another terminal tab. This will compile all files, run the frontend server and then run Protractor.
+Since this is a full-stack application, running end-to-end tests requires running the [backend](https://github.com/sendahug/send-hug-backend) prior to running the tests. Once the backend is up and running, run `gulp e2e` in another terminal tab. This will compile all files, run the frontend server and then run Cypress.
 
 ## Hosting
 

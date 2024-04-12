@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+### 2024-04-12
+
+#### Changes
+
+- Merged the two block methods in the AdminBlocks component. Previously, one of the methods consisted only of a call to the AdminService. This was merged into the method checking the form's input before making an attempt to block the user. ([#1603](https://github.com/sendahug/send-hug-frontend/pull/1603))
+
 ### 2024-04-11
 
 #### Changes

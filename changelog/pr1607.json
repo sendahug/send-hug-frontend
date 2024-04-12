@@ -1,0 +1,13 @@
+{
+  "pr_number": 1607,
+  "changes": [
+    {
+      "change": "Features",
+      "description": "Added a new login view, which enables users to login or logout (if they're already logged in). The new route is accessible to all users in the `/login` route."
+    },
+    {
+      "change": "Features",
+      "description": "The link to the login view now replaces the links to the messages and users views in the main navigation menu for logged out users. The links to the messages and users views are still available in the main navigation menu for logged in users (while the new login link is hidden from them)."
+    }
+  ]
+}

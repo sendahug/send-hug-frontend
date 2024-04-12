@@ -1,9 +1,0 @@
-{
-  "pr_number": 1603,
-  "changes": [
-    {
-      "change": "Changes",
-      "description": "Merged the two block methods in the AdminBlocks component. Previously, one of the methods consisted only of a call to the AdminService. This was merged into the method checking the form's input before making an attempt to block the user."
-    }
-  ]
-}

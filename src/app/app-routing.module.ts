@@ -45,6 +45,7 @@ import { SettingsPage } from "./components/settings/settings.component";
 import { SiteMap } from "./components/siteMap/siteMap.component";
 import { SupportPage } from "./components/supportPage/supportPage.component";
 import { SitePolicies } from "./components/sitePolicies/sitePolicies.component";
+import { LoginPage } from "./components/loginPage/loginPage.component";
 
 export const routes: Routes = [
   { path: "", component: MainPage, data: { name: "Home Page" } },
@@ -152,6 +153,7 @@ export const routes: Routes = [
     ],
     data: { name: "Site Policies" },
   },
+  { path: "login", component: LoginPage, data: { name: "Login Page" } },
   { path: "**", component: ErrorPage, data: { name: "Error Page" } },
 ];
 

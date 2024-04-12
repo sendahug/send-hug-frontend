@@ -110,6 +110,41 @@ describe("Send A Hug Router", () => {
     cy.get("#listTitle").should("have.text", "Suggested Items");
   });
 
+  // Check that all messages routes make 'messages' link active
+  it("should make messages link active for all messages sub-routes", () => {
+    // get the inbox route
+    cy.visit("http://localhost:3000/messages/inbox");
+
+    // check messages route is marked active
+    cy.get(".navLink").eq(2).should("have.class", "active");
+
+    // get the home route (for 'reset')
+    cy.visit("http://localhost:3000/");
+
+    // check the messages route isn't marked active anymore
+    cy.get(".navLink").eq(1).should("have.class", "active");
+    cy.get(".navLink").eq(2).should("not.have.class", "active");
+
+    // get the outbox route
+    cy.visit("http://localhost:3000/messages/outbox");
+
+    // check messages route is marked active
+    cy.get(".navLink").eq(2).should("have.class", "active");
+
+    // get the home route (for 'reset')
+    cy.visit("http://localhost:3000/");
+
+    // check the messages route isn't marked active anymore
+    cy.get(".navLink").eq(1).should("have.class", "active");
+    cy.get(".navLink").eq(2).should("not.have.class", "active");
+
+    // get the threads route
+    cy.visit("http://localhost:3000/messages/threads");
+
+    // check messages route is marked active
+    cy.get(".navLink").eq(2).should("have.class", "active");
+  });
+
   // TODO: Mailbox navigation (using buttons)
   // TODO: Admin dashboard navigation
 

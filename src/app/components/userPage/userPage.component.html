@@ -1,5 +1,5 @@
 <!-- If the user is logged in, displays a user page. -->
-<div *ngIf="authService.authenticated" id="profileContainer">
+<div *ngIf="authService.authenticated()" id="profileContainer">
 	<app-loader
 		*ngIf="!isIdbFetchResolved()"
 		[waitingFor]="waitFor"></app-loader>
@@ -31,7 +31,7 @@
 					</span>
 				</div>
 				<div id="roleElement">
-					<span class="pageCategory" id="userRole">Role:</span><span class="pageData" aria-describedby="userName userRole">{{ displayUser().role }}</span>
+					<span class="pageCategory" id="userRole">Role:</span><span class="pageData" aria-describedby="userName userRole">{{ displayUser().role.name }}</span>
 				</div>
 			</div>
 			<div class="profileElement" id="rHugsElement">
@@ -61,7 +61,7 @@
 </div>
 
 <!-- If the user isn't logged in, prompts the user to log in. -->
-<div  id="loginBox" *ngIf="!authService.authenticated">
+<div  id="loginBox" *ngIf="!authService.authenticated()">
 	<div class="errorMessage">You are not currently logged in. To view user information, log in.</div>
 
 	<button id="logIn" class="appButton" (click)="login()">Login</button>
@@ -75,11 +75,17 @@
 	<p id="pEdit">Edit post</p>
 	<p id="pDelete">Delete post</p>
 </div>
+		
+<report-form
+	*ngIf="reportMode"
+	(reportMode)="changeMode($event, 'Report')"
+	[reportedItem]="reportedItem"
+	[reportType]="reportType"
+></report-form>
 
-<app-pop-up *ngIf="editMode"
-			[editedItem]="userToEdit"
-			[toEdit]="editType"
-			(editMode)="changeMode($event)"
-			[report]="report"
-			[reportedItem]="reportedItem"
-			[reportType]="reportType"></app-pop-up>
+<display-name-edit-form
+	*ngIf="editMode"
+	[editedItem]="userToEdit"
+	[toEdit]="editType"
+	(editMode)="changeMode($event, 'Edit')"
+></display-name-edit-form>

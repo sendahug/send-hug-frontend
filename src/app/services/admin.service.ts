@@ -4,7 +4,7 @@
   ---------------------------------------------------
   MIT License
 
-  Copyright (c) 2020-2023 Send A Hug
+  Copyright (c) 2020-2024 Send A Hug
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -32,7 +32,7 @@
 
 // Angular imports
 import { Injectable } from "@angular/core";
-import { BehaviorSubject, map, switchMap } from "rxjs";
+import { Observable, map, switchMap } from "rxjs";
 
 // App-related imports
 import { Report } from "@app/interfaces/report.interface";
@@ -55,12 +55,15 @@ interface OtherUserResponse {
   success: boolean;
 }
 
+interface ReportResponse {
+  success: boolean;
+  updated: Report;
+}
+
 @Injectable({
   providedIn: "root",
 })
 export class AdminService {
-  isUpdated = new BehaviorSubject(false);
-
   constructor(
     private authService: AuthService,
     private alertsService: AlertsService,
@@ -71,32 +74,6 @@ export class AdminService {
 
   // REPORTS-RELATED METHODS
   // ==============================================================
-  /*
-  Function Name: editPost()
-  Function Description: Edits a reported post's text. If necessary,
-                        also closes the report.
-  Parameters: post (any) - the ID and new text of the post.
-              reportID (number) - the ID of the report triggering the edit.
-              closeReport (boolean) - whether or not to also close the report.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  editPost(post: any, closeReport: boolean, reportID: number) {
-    // if the report should be closed
-    if (closeReport) {
-      post["closeReport"] = reportID;
-    }
-    this.isUpdated.next(false);
-
-    // try to edit the post
-    this.apiClient.patch(`posts/${post.id}`, post).subscribe({
-      next: (response: any) => {
-        this.alertsService.createSuccessAlert(`Post ${response.updated.id} updated.`, closeReport);
-        this.isUpdated.next(true);
-      },
-    });
-  }
-
   /*
   Function Name: deletePost()
   Function Description: Sends a request to delete the post. If successful, alerts
@@ -115,9 +92,9 @@ export class AdminService {
         // create a message from the admin to the user whose post was deleted
         let message: Message = {
           from: {
-            displayName: this.authService.userData.displayName,
+            displayName: this.authService.userData!.displayName,
           },
-          fromId: this.authService.userData.id!,
+          fromId: this.authService.userData!.id!,
           forId: reportData.userID,
           messageText: `Your post (ID ${response.deleted}) was deleted due to violating our community rules.`,
           date: new Date(),
@@ -125,7 +102,7 @@ export class AdminService {
 
         // if the report needs to be closed
         if (closeReport) {
-          this.dismissReport(reportData.reportID);
+          this.closeReport(reportData.reportID, false, postID);
         }
 
         // delete the post from idb
@@ -156,38 +133,31 @@ export class AdminService {
     // update the user's display name
     this.apiClient.patch(`users/all/${user.userID}`, user).subscribe({
       next: (response: any) => {
-        this.alertsService.createSuccessAlert(
-          `User ${response.updated.displayName} updated.`,
-          closeReport,
-        );
+        this.alertsService.createSuccessAlert(`User ${response.updated.displayName} updated.`, {
+          reload: closeReport,
+        });
       },
     });
   }
 
-  /*
-  Function Name: dismissReport()
-  Function Description: Dismiss an open report without taking further action.
-  Parameters: reportID (number) - the ID of the report to dismiss.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  dismissReport(reportID: number) {
+  /**
+   * Close/dismiss a report.
+   * @param reportID (number) - the ID of the report to dismiss.
+   * @param dismiss (boolean) - whether to dismiss the report without taking action.
+   * @param postID (number) - the ID of the post associated with the report (for post reports).
+   * @param userID (number) - the ID of the user associated with the report (for user reports).
+   */
+  closeReport(reportID: number, dismiss: boolean, postID?: number, userID?: number) {
     let report: Partial<Report> = {
       id: reportID,
-      dismissed: true,
       closed: true,
+      dismissed: dismiss,
+      postID,
+      userID,
     };
 
     // send a request to update the report
-    this.apiClient.patch(`reports/${reportID}`, report).subscribe({
-      next: (response: any) => {
-        // if the report was dismissed, alert the user
-        this.alertsService.createSuccessAlert(
-          `Report ${response.updated.id} was dismissed! Refresh the page to view the updated list.`,
-          true,
-        );
-      },
-    });
+    return this.apiClient.patch<ReportResponse>(`reports/${reportID}`, report);
   }
 
   // BLOCKS-RELATED METHODS
@@ -197,13 +167,13 @@ export class AdminService {
    * @param userID - the ID of the user to fetch the block data for
    * @returns - an observable of the user's block data
    */
-  fetchUserBlockData(userID: number) {
+  fetchUserBlockData(userID: number): Observable<UserBlockData> {
     // send the request to get the block data
     return this.apiClient.get<OtherUserResponse>(`users/all/${userID}`).pipe(
       map((res) => {
         return {
           userID: res.user.id,
-          isBlocked: res.user.blocked,
+          isBlocked: res.user.blocked as boolean,
           releaseDate:
             res.user.blocked && res.user.releaseDate ? new Date(res.user.releaseDate) : undefined,
         };
@@ -285,11 +255,11 @@ export class AdminService {
         next: (response: any) => {
           this.alertsService.createSuccessAlert(
             `User ${response.updated.displayName} has been blocked until ${response.updated.releaseDate}`,
-            true,
+            { reload: true },
           );
           // if the block was done via the reports page, also dismiss the report
           if (reportID) {
-            this.dismissReport(reportID);
+            this.closeReport(reportID, false, undefined, userID);
           }
         },
       });

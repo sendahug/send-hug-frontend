@@ -4,7 +4,7 @@
   ---------------------------------------------------
   MIT License
 
-  Copyright (c) 2020-2023 Send A Hug
+  Copyright (c) 2020-2024 Send A Hug
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -31,7 +31,7 @@
 */
 
 import { TestBed } from "@angular/core/testing";
-import { HttpClientTestingModule, HttpTestingController } from "@angular/common/http/testing";
+import { HttpClientTestingModule } from "@angular/common/http/testing";
 import {
   BrowserDynamicTestingModule,
   platformBrowserDynamicTesting,
@@ -44,7 +44,6 @@ import { AuthService } from "./auth.service";
 import { mockAuthedUser } from "@tests/mockData";
 
 describe("AdminService", () => {
-  let httpController: HttpTestingController;
   let adminService: AdminService;
 
   // Before each test, configure testing environment
@@ -58,10 +57,9 @@ describe("AdminService", () => {
     }).compileComponents();
 
     adminService = TestBed.inject(AdminService);
-    httpController = TestBed.inject(HttpTestingController);
 
     const authService = TestBed.inject(AuthService);
-    authService.authenticated = true;
+    authService.authenticated.set(true);
     authService.userData = { ...mockAuthedUser };
     authService.isUserDataResolved.next(true);
   });
@@ -69,40 +67,6 @@ describe("AdminService", () => {
   // Check the service is created
   it("should be created", () => {
     expect(adminService).toBeTruthy();
-  });
-
-  // Check that the service edits the post
-  it("editPost() - should edit a post", () => {
-    // mock response
-    const mockResponse = {
-      success: true,
-      updated: {
-        id: 2,
-        userId: 1,
-        text: "edited",
-        date: new Date("2020-06-29 19:17:31.072"),
-        givenHugs: 1,
-        sentHugs: [],
-      },
-    };
-
-    const post = {
-      text: "edited",
-      id: 2,
-    };
-    const spy = spyOn(adminService["alertsService"], "createSuccessAlert");
-    const patchSpy = spyOn(adminService["apiClient"], "patch").and.returnValue(of(mockResponse));
-
-    adminService.editPost(post, true, 2);
-
-    // wait for the request to be resolved
-    adminService.isUpdated.subscribe((value) => {
-      if (value) {
-        expect(spy).toHaveBeenCalled();
-        expect(spy).toHaveBeenCalledWith("Post 2 updated.", true);
-        expect(patchSpy).toHaveBeenCalledWith(`posts/${post.id}`, post);
-      }
-    });
   });
 
   // Check that the service deletes the post
@@ -118,7 +82,7 @@ describe("AdminService", () => {
       userID: 2,
     };
     const alertSpy = spyOn(adminService["alertsService"], "createSuccessAlert");
-    const dismissSpy = spyOn(adminService, "dismissReport");
+    const dismissSpy = spyOn(adminService, "closeReport");
     const messageSpy = spyOn(adminService["itemsService"], "sendMessage");
     const deleteSWSpy = spyOn(adminService["serviceWorkerM"], "deleteItem");
     const deleteAPISpy = spyOn(adminService["apiClient"], "delete").and.returnValue(
@@ -127,7 +91,7 @@ describe("AdminService", () => {
     adminService.deletePost(10, reportData, true);
 
     expect(alertSpy).toHaveBeenCalledWith("Post 10 was successfully deleted.");
-    expect(dismissSpy).toHaveBeenCalledWith(5);
+    expect(dismissSpy).toHaveBeenCalledWith(5, false, 10);
     expect(messageSpy).toHaveBeenCalled();
     expect(deleteSWSpy).toHaveBeenCalledWith("posts", 10);
     expect(deleteAPISpy).toHaveBeenCalledWith("posts/10");
@@ -157,12 +121,12 @@ describe("AdminService", () => {
     adminService.editUser(userData, true, 6);
 
     expect(alertSpy).toHaveBeenCalled();
-    expect(alertSpy).toHaveBeenCalledWith("User user updated.", true);
+    expect(alertSpy).toHaveBeenCalledWith("User user updated.", { reload: true });
     expect(patchSpy).toHaveBeenCalledWith("users/all/2", userData);
   });
 
   // Check that the service dismisses a report
-  it("dismissReport() - should dismiss report", () => {
+  it("closeReport() - should dismiss report", (done: DoneFn) => {
     // mock response
     const mockResponse = {
       success: true,
@@ -178,20 +142,19 @@ describe("AdminService", () => {
         closed: true,
       },
     };
-    const alertSpy = spyOn(adminService["alertsService"], "createSuccessAlert");
     const patchSpy = spyOn(adminService["apiClient"], "patch").and.returnValue(of(mockResponse));
 
-    adminService.dismissReport(1);
-
-    expect(alertSpy).toHaveBeenCalled();
-    expect(alertSpy).toHaveBeenCalledWith(
-      "Report 1 was dismissed! Refresh the page to view the updated list.",
-      true,
-    );
-    expect(patchSpy).toHaveBeenCalledWith("reports/1", {
-      id: 1,
-      dismissed: true,
-      closed: true,
+    adminService.closeReport(1, true).subscribe({
+      next: (_response) => {
+        expect(patchSpy).toHaveBeenCalledWith("reports/1", {
+          id: 1,
+          dismissed: true,
+          closed: true,
+          postID: undefined,
+          userID: undefined,
+        });
+        done();
+      },
     });
   });
 
@@ -236,7 +199,7 @@ describe("AdminService", () => {
     expect(alertSpy).toHaveBeenCalled();
     expect(alertSpy).toHaveBeenCalledWith(
       `User ${mockResponse.updated.displayName} has been blocked until ${mockResponse.updated.releaseDate}`,
-      true,
+      { reload: true },
     );
   });
 
@@ -268,7 +231,7 @@ describe("AdminService", () => {
     const calculateSpy = spyOn(adminService, "calculateUserReleaseDate").and.returnValue(blockDate);
     const patchSpy = spyOn(adminService["apiClient"], "patch").and.returnValue(of(mockResponse));
     const alertSpy = spyOn(adminService["alertsService"], "createSuccessAlert");
-    const dismissSpy = spyOn(adminService, "dismissReport");
+    const dismissSpy = spyOn(adminService, "closeReport");
 
     adminService.blockUser(15, "oneDay", 3);
 
@@ -282,10 +245,10 @@ describe("AdminService", () => {
     expect(alertSpy).toHaveBeenCalled();
     expect(alertSpy).toHaveBeenCalledWith(
       `User ${mockResponse.updated.displayName} has been blocked until ${mockResponse.updated.releaseDate}`,
-      true,
+      { reload: true },
     );
     expect(dismissSpy).toHaveBeenCalled();
-    expect(dismissSpy).toHaveBeenCalledWith(3);
+    expect(dismissSpy).toHaveBeenCalledWith(3, false, undefined, 15);
   });
 
   it("fetchUserBlockData() - should fetch user data for blocking - unblocked user", (done: DoneFn) => {

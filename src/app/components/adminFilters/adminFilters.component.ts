@@ -4,7 +4,7 @@
   ---------------------------------------------------
   MIT License
 
-  Copyright (c) 2020-2023 Send A Hug
+  Copyright (c) 2020-2024 Send A Hug
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -99,7 +99,7 @@ export class AdminFilters {
   Programmer: Shir Bar Lev.
   */
   addFilter() {
-    const filter = this.addFilterForm.get("filter")?.value;
+    const filter = this.addFilterForm.controls.filter.value;
 
     // if there's no filter, alert the user a filter is required
     if (!filter) {
@@ -115,7 +115,7 @@ export class AdminFilters {
       next: (response: any) => {
         this.alertsService.createSuccessAlert(
           `The phrase ${response.added.filter} was added to the list of filtered words! Refresh to see the updated list.`,
-          true,
+          { reload: true },
         );
       },
     });
@@ -134,7 +134,7 @@ export class AdminFilters {
       next: (response: any) => {
         this.alertsService.createSuccessAlert(
           `The phrase ${response.deleted.filter} was removed from the list of filtered words. Refresh to see the updated list.`,
-          true,
+          { reload: true },
         );
       },
     });

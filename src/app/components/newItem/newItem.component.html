@@ -2,35 +2,59 @@
 	<h3 id="newTitle">New {{ itemType }}</h3>
 	
 	<div id="newMessage" *ngIf="itemType == 'Message'">
-		<form class="newItem" aria-describedby="newTitle" *ngIf="user && forID">
+		<form [formGroup]="newMessageForm" class="newItem" aria-describedby="newTitle" *ngIf="this.newMessageForm.controls.messageFor.value && forID">
 			<div class="formElement">
 				<label class="pageCategory" for="messageFor">For:</label>
-				<input #messageFor type="text" id="messageFor" value="{{ user }}" aria-labelledby="mUser" readonly>
+				<input formControlName="messageFor" type="text" id="messageFor" aria-labelledby="mUser" readonly>
 			</div>
 			<div class="formElement">
 				<label class="pageCategory required" for="messageText">Message</label>
 				<br>
-				<textarea #messageText id="messageText" cols="40" rows="8" aria-labelledby="mText" class="newTextArea" minlength="0" maxlength="480" aria-invalid="false" required aria-required="true"></textarea>
+				<textarea
+					formControlName="messageText"
+					id="messageText"
+					cols="40"
+					rows="8"
+					aria-labelledby="mText"
+					class="newTextArea"
+					minlength="0"
+					maxlength="480"
+					[attr.aria-invalid]="!this.newMessageForm.controls.messageText.valid"
+					required
+					aria-required="true"
+				></textarea>
 			</div>
-			<button type="submit" class="appButton sendData" (click)="sendMessage($event, messageText.value)">Send Message</button>
+			<button type="submit" class="appButton sendData" (click)="sendMessage()">Send Message</button>
 		</form>
 		
-		<div class="errorMessage" *ngIf="!user || !forID" role="alert">
+		<div class="errorMessage" *ngIf="!this.newMessageForm.controls.messageFor.value || !forID" role="alert">
 			User ID and display name are required for sending a message. Please add numerical user ID and the user's display name and try again.
 		</div>
 	</div>
 	
 	<div id="newPost" *ngIf="itemType == 'Post'">
-		<form class="newItem" *ngIf="!authService.userData.blocked" aria-describedby="newTitle">
+		<form [formGroup]="newPostForm" class="newItem" *ngIf="!authService.userData.blocked" aria-describedby="newTitle">
 			<div class="formElement">
 				<span class="pageCategory">By:</span> <span class="pageData" aria-describedby="pUser">{{ authService.userData.displayName }}</span>
 			</div>
 			<div class="formElement">
 				<label class="pageCategory required" for="postText">Text:</label>
 				<br>
-				<textarea #postText id="postText" cols="40" rows="8" aria-labelledby="pText" class="newTextArea" minlength="0" maxlength="480" aria-invalid="false" required aria-required="true"></textarea>
+				<textarea
+					formControlName="postText"
+					id="postText"
+					cols="40"
+					rows="8"
+					aria-labelledby="pText"
+					class="newTextArea"
+					minlength="0"
+					maxlength="480"
+					[attr.aria-invalid]="!this.newPostForm.controls.postText.valid"
+					required
+					aria-required="true"
+				></textarea>
 			</div>
-			<button type="submit" class="appButton sendData" (click)="sendPost($event, postText.value)">Publish Post</button>
+			<button type="submit" class="appButton sendData" (click)="sendPost()">Publish Post</button>
 		</form>
 		
 		<div class="errorMessage" *ngIf="authService.userData.blocked" role="alert">

@@ -4,7 +4,7 @@
   ---------------------------------------------------
   MIT License
 
-  Copyright (c) 2020-2023 Send A Hug
+  Copyright (c) 2020-2024 Send A Hug
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -31,7 +31,7 @@
 */
 
 import { TestBed } from "@angular/core/testing";
-import { RouterTestingModule } from "@angular/router/testing";
+import { RouterModule } from "@angular/router";
 import {} from "jasmine";
 import { APP_BASE_HREF } from "@angular/common";
 import {
@@ -72,7 +72,7 @@ describe("Filters Page", () => {
     TestBed.configureTestingModule({
       schemas: [NO_ERRORS_SCHEMA],
       imports: [
-        RouterTestingModule,
+        RouterModule.forRoot([]),
         HttpClientModule,
         ServiceWorkerModule.register("sw.js", { enabled: false }),
         FontAwesomeModule,
@@ -86,7 +86,7 @@ describe("Filters Page", () => {
     const authService = TestBed.inject(AuthService);
     spyOn(authService, "canUser").and.returnValue(true);
     authService.isUserDataResolved.next(true);
-    authService.authenticated = true;
+    authService.authenticated.set(true);
     authService.userData = { ...mockAuthedUser };
   });
 
@@ -142,7 +142,7 @@ describe("Filters Page", () => {
     expect(apiClientSpy).toHaveBeenCalledWith("filters", { word: "text" });
     expect(alertsSpy).toHaveBeenCalledWith(
       `The phrase text was added to the list of filtered words! Refresh to see the updated list.`,
-      true,
+      { reload: true },
     );
     done();
   });
@@ -209,7 +209,7 @@ describe("Filters Page", () => {
     expect(deleteSpy).toHaveBeenCalledWith("filters/1");
     expect(alertSpy).toHaveBeenCalledWith(
       `The phrase ${mockResponse.deleted.filter} was removed from the list of filtered words. Refresh to see the updated list.`,
-      true,
+      { reload: true },
     );
     done();
   });

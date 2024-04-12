@@ -4,7 +4,7 @@
   ---------------------------------------------------
   MIT License
 
-  Copyright (c) 2020-2023 Send A Hug
+  Copyright (c) 2020-2024 Send A Hug
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -135,7 +135,7 @@ export class ItemDeleteForm {
           `${this.toDelete} ${response.deleted} was deleted. Refresh to view the updated ${
             this.toDelete?.toLowerCase() || ""
           } list.`,
-          true,
+          { reload: true },
         );
 
         // delete the item from idb
@@ -174,7 +174,7 @@ export class ItemDeleteForm {
         tap((response) =>
           this.alertsService.createSuccessAlert(
             `${response.deleted} ${itemType} were deleted. Refresh to view the updated page.`,
-            true,
+            { reload: true },
           ),
         ),
       );

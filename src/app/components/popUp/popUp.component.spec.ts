@@ -4,7 +4,7 @@
   ---------------------------------------------------
   MIT License
 
-  Copyright (c) 2020-2023 Send A Hug
+  Copyright (c) 2020-2024 Send A Hug
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -31,7 +31,7 @@
 */
 
 import { TestBed } from "@angular/core/testing";
-import { RouterTestingModule } from "@angular/router/testing";
+import { RouterModule } from "@angular/router";
 import {} from "jasmine";
 import { APP_BASE_HREF } from "@angular/common";
 import {
@@ -41,15 +41,22 @@ import {
 import { HttpClientModule } from "@angular/common/http";
 import { ServiceWorkerModule } from "@angular/service-worker";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
+import { ReactiveFormsModule } from "@angular/forms";
 
-import { AppComponent } from "../../app.component";
 import { PopUp } from "./popUp.component";
-import { NotificationsTab } from "../notifications/notifications.component";
-import { DisplayNameEditForm } from "../forms/displayNameEditForm/displayNameEditForm.component";
-import { ItemDeleteForm } from "../forms/itemDeleteForm/itemDeleteForm.component";
-import { PostEditForm } from "../forms/postEditForm/postEditForm.component";
-import { ReportForm } from "../forms/reportForm/reportForm.component";
-import { AppAlert } from "../appAlert/appAlert.component";
+import { Component } from "@angular/core";
+
+// Mock page
+@Component({
+  selector: "app-user-page",
+  template: `
+    <app-pop-up>
+      <input type="text" id="postText" />
+      <button id="sendBtn"></button>
+    </app-pop-up>
+  `,
+})
+class MockPage {}
 
 describe("Popup", () => {
   // Before each test, configure testing environment
@@ -59,58 +66,38 @@ describe("Popup", () => {
 
     TestBed.configureTestingModule({
       imports: [
-        RouterTestingModule,
+        RouterModule.forRoot([]),
         HttpClientModule,
         ServiceWorkerModule.register("sw.js", { enabled: false }),
         FontAwesomeModule,
+        ReactiveFormsModule,
       ],
-      declarations: [
-        AppComponent,
-        PopUp,
-        NotificationsTab,
-        DisplayNameEditForm,
-        ItemDeleteForm,
-        PostEditForm,
-        ReportForm,
-        AppAlert,
-      ],
+      declarations: [MockPage, PopUp],
       providers: [{ provide: APP_BASE_HREF, useValue: "/" }],
     }).compileComponents();
   });
 
   // Check that the component is created
   it("should create the component", () => {
-    const acFixture = TestBed.createComponent(AppComponent);
-    const appComponent = acFixture.componentInstance;
     const fixture = TestBed.createComponent(PopUp);
     const popUp = fixture.componentInstance;
-    expect(appComponent).toBeTruthy();
     expect(popUp).toBeTruthy();
   });
 
   // check tab and tab+shift let the user navigate
   it("should navigate using tab and shift+tab", (done: DoneFn) => {
-    TestBed.createComponent(AppComponent);
-    const fixture = TestBed.createComponent(PopUp);
-    const popUp = fixture.componentInstance;
-    const popUpDOM = fixture.nativeElement;
+    const mockPage = TestBed.createComponent(MockPage);
+    const mockPageDOM = mockPage.nativeElement;
+    const popUp: PopUp = mockPage.debugElement.children[0].children[0].componentInstance;
+    const popUpDOM = mockPage.debugElement.children[0].children[0].nativeElement;
     const focusBindedSpy = spyOn(popUp, "checkFocusBinded").and.callThrough();
-    popUp.toEdit = "admin post";
-    popUp.delete = false;
-    popUp.report = false;
-    popUp.editedItem = "hi";
-    popUp.reportData = {
-      reportID: 1,
-      postID: 2,
-    };
-    fixture.detectChanges();
+    mockPage.detectChanges();
 
     // spies
     const spies = [
       spyOn(popUpDOM.querySelector("#exitButton"), "focus").and.callThrough(),
-      spyOn(popUpDOM.querySelector("#postText"), "focus").and.callThrough(),
-      spyOn(popUpDOM.querySelectorAll(".sendData")[0], "focus").and.callThrough(),
-      spyOn(popUpDOM.querySelectorAll(".sendData")[1], "focus").and.callThrough(),
+      spyOn(mockPageDOM.querySelector("#postText"), "focus").and.callThrough(),
+      spyOn(mockPageDOM.querySelector("#sendBtn"), "focus").and.callThrough(),
     ];
 
     spies.forEach((spy) => {
@@ -141,7 +128,7 @@ describe("Popup", () => {
             shiftKey: false,
           }),
         );
-        fixture.detectChanges();
+        mockPage.detectChanges();
 
         // check the focus shifted to the next element
         expect(focusBindedSpy).toHaveBeenCalled();
@@ -166,7 +153,7 @@ describe("Popup", () => {
             shiftKey: true,
           }),
         );
-        fixture.detectChanges();
+        mockPage.detectChanges();
 
         // check the focus shifted to the previous element
         expect(focusBindedSpy).toHaveBeenCalled();
@@ -188,118 +175,78 @@ describe("Popup", () => {
 
   // check the focus is trapped
   it("should trap focus in the modal", (done: DoneFn) => {
-    TestBed.createComponent(AppComponent);
-    const fixture = TestBed.createComponent(PopUp);
-    const popUp = fixture.componentInstance;
-    const popUpDOM = fixture.nativeElement;
+    const mockPage = TestBed.createComponent(MockPage);
+    const mockPageDOM = mockPage.nativeElement;
+    const popUp: PopUp = mockPage.debugElement.children[0].children[0].componentInstance;
+    const popUpDOM = mockPage.debugElement.children[0].children[0].nativeElement;
     const focusBindedSpy = spyOn(popUp, "checkFocusBinded").and.callThrough();
-    popUp.toEdit = "admin post";
-    popUp.delete = false;
-    popUp.report = false;
-    popUp.editedItem = "hi";
-    popUp.reportData = {
-      reportID: 1,
-      postID: 2,
-    };
-    fixture.detectChanges();
+    mockPage.detectChanges();
 
     // spies
     const spies = [
       spyOn(popUpDOM.querySelector("#exitButton"), "focus").and.callThrough(),
-      spyOn(popUpDOM.querySelector("#postText"), "focus").and.callThrough(),
-      spyOn(popUpDOM.querySelectorAll(".sendData")[0], "focus").and.callThrough(),
-      spyOn(popUpDOM.querySelectorAll(".sendData")[1], "focus").and.callThrough(),
+      spyOn(mockPageDOM.querySelector("#postText"), "focus").and.callThrough(),
+      spyOn(mockPageDOM.querySelector("#sendBtn"), "focus").and.callThrough(),
     ];
 
     spies.forEach((spy) => {
       spy.calls.reset();
     });
 
-    // run the tests, with each stage wrapped in a promise to ensure they
-    // happen by the correct order
     // step 1: check the last element is focused
-    new Promise(() => {
-      // focus on the last element
-      popUpDOM.querySelectorAll(".sendData")[1].focus();
+    // focus on the last element
+    mockPageDOM.querySelector("#sendBtn").focus();
+    mockPage.detectChanges();
 
-      // check the last element has focus
-      spies.forEach((spy, index: number) => {
-        if (index == 3) {
-          expect(spy).toHaveBeenCalled();
-        } else {
-          expect(spy).not.toHaveBeenCalled();
-        }
-      });
-      // step 2: check what happens when clicking tab
-    })
-      .then(() => {
-        // trigger tab event
-        document.getElementById("modalBox")!.dispatchEvent(
-          new KeyboardEvent("keydown", {
-            key: "tab",
-            shiftKey: false,
-          }),
-        );
-        fixture.detectChanges();
+    // check the last element has focus
+    expect(spies[0]).not.toHaveBeenCalled();
+    expect(spies[1]).not.toHaveBeenCalled();
+    expect(spies[2]).toHaveBeenCalled();
 
-        // check the focus shifted to the first element
-        expect(focusBindedSpy).toHaveBeenCalled();
-        spies.forEach((spy, index: number) => {
-          if (index == 3 || index == 0) {
-            expect(spy).toHaveBeenCalled();
-            expect(spy).toHaveBeenCalledTimes(1);
-          } else {
-            expect(spy).not.toHaveBeenCalled();
-          }
-        });
-        // check what happens when clicking shift + tab
-      })
-      .then(() => {
-        // trigger shift + tab event
-        document.getElementById("modalBox")!.dispatchEvent(
-          new KeyboardEvent("keydown", {
-            key: "tab",
-            shiftKey: true,
-          }),
-        );
-        fixture.detectChanges();
+    // step 2: check what happens when clicking tab
+    // trigger tab event
+    document.getElementById("modalBox")!.dispatchEvent(
+      new KeyboardEvent("keydown", {
+        key: "tab",
+        shiftKey: false,
+      }),
+    );
+    mockPage.detectChanges();
 
-        // check the focus shifted to the last element
-        expect(focusBindedSpy).toHaveBeenCalled();
-        expect(focusBindedSpy).toHaveBeenCalledTimes(2);
-        spies.forEach((spy, index: number) => {
-          if (index == 3) {
-            expect(spy).toHaveBeenCalled();
-            expect(spy).toHaveBeenCalledTimes(2);
-          } else if (index == 0) {
-            expect(spy).toHaveBeenCalled();
-            expect(spy).toHaveBeenCalledTimes(1);
-          } else {
-            expect(spy).not.toHaveBeenCalled();
-          }
-        });
-      });
+    // check the focus shifted to the first element
+    expect(focusBindedSpy).toHaveBeenCalled();
+    expect(spies[0]).toHaveBeenCalled();
+    expect(spies[0]).toHaveBeenCalledTimes(1);
+    expect(spies[1]).not.toHaveBeenCalled();
+    expect(spies[2]).toHaveBeenCalled();
+    expect(spies[2]).toHaveBeenCalledTimes(1);
+
+    // step 3: check what happens when clicking shift + tab
+    // trigger shift + tab event
+    document.getElementById("modalBox")!.dispatchEvent(
+      new KeyboardEvent("keydown", {
+        key: "tab",
+        shiftKey: true,
+      }),
+    );
+    mockPage.detectChanges();
+
+    // check the focus shifted to the last element
+    expect(focusBindedSpy).toHaveBeenCalled();
+    expect(focusBindedSpy).toHaveBeenCalledTimes(2);
+    expect(spies[0]).toHaveBeenCalled();
+    expect(spies[0]).toHaveBeenCalledTimes(1);
+    expect(spies[1]).not.toHaveBeenCalled();
+    expect(spies[2]).toHaveBeenCalled();
+    expect(spies[2]).toHaveBeenCalledTimes(2);
     done();
   });
 
   // Check that the event emitter emits false if the user clicks 'exit'
   it("exits the popup if the user decides not to edit", (done: DoneFn) => {
-    TestBed.createComponent(AppComponent);
     const fixture = TestBed.createComponent(PopUp);
     const popUp = fixture.componentInstance;
     const popUpDOM = fixture.nativeElement;
-    popUp.toEdit = "post";
-    popUp.delete = false;
-    popUp.report = false;
-    popUp.editedItem = {
-      id: 1,
-      userId: 4,
-      user: "me",
-      text: "hi",
-      date: new Date(),
-      givenHugs: 0,
-      sentHugs: [],
-    };
     const exitSpy = spyOn(popUp, "exitEdit").and.callThrough();
     fixture.detectChanges();
 

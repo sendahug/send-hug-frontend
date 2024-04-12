@@ -3,7 +3,7 @@
 	Send a Hug Component Tests
   ---------------------------------------------------
   MIT License
-  Copyright (c) 2020-2023 Send A Hug
+  Copyright (c) 2020-2024 Send A Hug
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
   in the Software without restriction, including without limitation the rights
@@ -25,7 +25,7 @@
   SOFTWARE.
 */
 import { TestBed } from "@angular/core/testing";
-import { RouterTestingModule } from "@angular/router/testing";
+import { RouterModule } from "@angular/router";
 import {} from "jasmine";
 import { APP_BASE_HREF } from "@angular/common";
 import {
@@ -36,12 +36,14 @@ import { HttpClientModule } from "@angular/common/http";
 import { ServiceWorkerModule } from "@angular/service-worker";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { ReactiveFormsModule } from "@angular/forms";
+import { of } from "rxjs";
 
-import { AppComponent } from "../../../app.component";
 import { ReportForm } from "./reportForm.component";
-import { AuthService } from "../../../services/auth.service";
+import { AuthService } from "@app/services/auth.service";
 import { mockAuthedUser } from "@tests/mockData";
-import { AppAlert } from "@app/components/appAlert/appAlert.component";
+import { PopUp } from "@app/components/popUp/popUp.component";
+import { ValidationService } from "@app/services/validation.service";
+import { Report } from "@app/interfaces/report.interface";
 
 describe("Report", () => {
   // Before each test, configure testing environment
@@ -51,24 +53,23 @@ describe("Report", () => {
 
     TestBed.configureTestingModule({
       imports: [
-        RouterTestingModule,
+        RouterModule.forRoot([]),
         HttpClientModule,
         ServiceWorkerModule.register("sw.js", { enabled: false }),
         FontAwesomeModule,
         ReactiveFormsModule,
       ],
-      declarations: [AppComponent, ReportForm, AppAlert],
+      declarations: [ReportForm, PopUp],
       providers: [{ provide: APP_BASE_HREF, useValue: "/" }],
     }).compileComponents();
 
     const authService = TestBed.inject(AuthService);
-    authService.authenticated = true;
+    authService.authenticated.set(true);
     authService.userData = { ...mockAuthedUser };
   });
 
   // Check that the reported post is shown
   it("shows the reported post", () => {
-    TestBed.createComponent(AppComponent);
     const fixture = TestBed.createComponent(ReportForm);
     const popUp = fixture.componentInstance;
     const popUpDOM = fixture.nativeElement;
@@ -92,7 +93,6 @@ describe("Report", () => {
 
   // Check that the reported user's display name is shown
   it("shows the reported user's name", () => {
-    TestBed.createComponent(AppComponent);
     const fixture = TestBed.createComponent(ReportForm);
     const popUp = fixture.componentInstance;
     const popUpDOM = fixture.nativeElement;
@@ -103,7 +103,11 @@ describe("Report", () => {
       receivedH: 3,
       givenH: 4,
       posts: 2,
-      role: "user",
+      role: {
+        id: 1,
+        name: "user",
+        permissions: [],
+      },
       selectedIcon: "kitty",
       iconColours: {
         character: "#BA9F93",
@@ -121,7 +125,6 @@ describe("Report", () => {
 
   // Check that the correct radio button is set as selected
   it("correctly identifies the chosen radio button", (done: DoneFn) => {
-    TestBed.createComponent(AppComponent);
     const fixture = TestBed.createComponent(ReportForm);
     const popUp = fixture.componentInstance;
     const popUpDOM = fixture.nativeElement;
@@ -146,7 +149,7 @@ describe("Report", () => {
     // check the first option was selected
     expect(selectSpy).toHaveBeenCalled();
     expect(selectSpy).toHaveBeenCalledWith("0");
-    expect(popUp.reportForm.get("selectedReason")?.value).toEqual("0");
+    expect(popUp.reportForm.controls.selectedReason.value).toEqual("0");
 
     // select option 2
     popUpDOM.querySelector("#pRadioOption1").click();
@@ -155,7 +158,7 @@ describe("Report", () => {
     // check the second option was selected
     expect(selectSpy).toHaveBeenCalled();
     expect(selectSpy).toHaveBeenCalledWith("1");
-    expect(popUp.reportForm.get("selectedReason")?.value).toEqual("1");
+    expect(popUp.reportForm.controls.selectedReason.value).toEqual("1");
 
     // select option 3
     popUpDOM.querySelector("#pRadioOption2").click();
@@ -164,7 +167,7 @@ describe("Report", () => {
     // check the third option was selected
     expect(selectSpy).toHaveBeenCalled();
     expect(selectSpy).toHaveBeenCalledWith("2");
-    expect(popUp.reportForm.get("selectedReason")?.value).toEqual("2");
+    expect(popUp.reportForm.controls.selectedReason.value).toEqual("2");
 
     // select option 4
     popUpDOM.querySelector("#pRadioOption3").click();
@@ -173,12 +176,11 @@ describe("Report", () => {
     // check the fourth option was selected
     expect(selectSpy).toHaveBeenCalled();
     expect(selectSpy).toHaveBeenCalledWith("3");
-    expect(popUp.reportForm.get("selectedReason")?.value).toEqual("3");
+    expect(popUp.reportForm.controls.selectedReason.value).toEqual("3");
     done();
   });
 
   it("checkSelectedForOther() - correctly enables/disables the 'other' text field", () => {
-    TestBed.createComponent(AppComponent);
     const fixture = TestBed.createComponent(ReportForm);
     const popUp = fixture.componentInstance;
     popUp.reportType = "User";
@@ -188,7 +190,11 @@ describe("Report", () => {
       receivedH: 3,
       givenH: 4,
       posts: 2,
-      role: "user",
+      role: {
+        id: 1,
+        name: "user",
+        permissions: [],
+      },
       selectedIcon: "kitty",
       iconColours: {
         character: "#BA9F93",
@@ -215,7 +221,6 @@ describe("Report", () => {
   });
 
   it("Correctly sets the required and aria-required attributes", (done: DoneFn) => {
-    TestBed.createComponent(AppComponent);
     const fixture = TestBed.createComponent(ReportForm);
     const popUp = fixture.componentInstance;
     const popUpDOM = fixture.nativeElement;
@@ -255,7 +260,6 @@ describe("Report", () => {
   });
 
   it("getSelectedReasonText() - correctly sets the selected reason - posts", (done: DoneFn) => {
-    TestBed.createComponent(AppComponent);
     const fixture = TestBed.createComponent(ReportForm);
     const popUp = fixture.componentInstance;
     const popUpDOM = fixture.nativeElement;
@@ -293,7 +297,6 @@ describe("Report", () => {
   });
 
   it("getSelectedReasonText() - correctly sets the selected reason - users", (done: DoneFn) => {
-    TestBed.createComponent(AppComponent);
     const fixture = TestBed.createComponent(ReportForm);
     const popUp = fixture.componentInstance;
     const popUpDOM = fixture.nativeElement;
@@ -304,7 +307,11 @@ describe("Report", () => {
       receivedH: 3,
       givenH: 4,
       posts: 2,
-      role: "user",
+      role: {
+        id: 1,
+        name: "user",
+        permissions: [],
+      },
       selectedIcon: "kitty",
       iconColours: {
         character: "#BA9F93",
@@ -341,7 +348,11 @@ describe("Report", () => {
   // Check that if the user chooses 'other' as reason they can't submit an
   // empty reason
   it("requires text if the chosen reason is other - invalid", (done: DoneFn) => {
-    TestBed.createComponent(AppComponent);
+    const validationService = TestBed.inject(ValidationService);
+    const validateSpy = spyOn(validationService, "validateItemAgainst").and.returnValue(
+      (control) => null,
+    );
+
     const fixture = TestBed.createComponent(ReportForm);
     const popUp = fixture.componentInstance;
     const popUpDOM = fixture.nativeElement;
@@ -355,8 +366,7 @@ describe("Report", () => {
       text: "hi",
       date: new Date(),
     };
-    const validateSpy = spyOn(popUp["validationService"], "validateItem").and.returnValue(false);
-    const reportServiceSpy = spyOn(popUp["itemsService"], "sendReport");
+    const apiClientSpy = spyOn(popUp["apiClient"], "post");
     const alertServiceSpy = spyOn(popUp["alertsService"], "createAlert");
     fixture.detectChanges();
 
@@ -369,8 +379,8 @@ describe("Report", () => {
     fixture.detectChanges();
 
     // check the report wasn't sent and the user was alerted
-    expect(validateSpy).toHaveBeenCalledWith("reportOther", "", "rOption3Text");
-    expect(reportServiceSpy).not.toHaveBeenCalled();
+    expect(validateSpy).toHaveBeenCalledWith("reportOther");
+    expect(apiClientSpy).not.toHaveBeenCalled();
     expect(alertServiceSpy).toHaveBeenCalledWith({
       type: "Error",
       message: "If you choose 'other', you must specify a reason.",
@@ -379,7 +389,26 @@ describe("Report", () => {
   });
 
   it("requires text if the chosen reason is other - valid", (done: DoneFn) => {
-    TestBed.createComponent(AppComponent);
+    // mock response
+    const mockResponse = {
+      report: {
+        closed: false,
+        date: "Tue Jun 23 2020 14:59:31 GMT+0300",
+        dismissed: false,
+        id: 36,
+        reportReason: "because",
+        reporter: 2,
+        type: "Post",
+        postID: 1,
+      },
+      success: true,
+    };
+
+    const validationService = TestBed.inject(ValidationService);
+    const validateSpy = spyOn(validationService, "validateItemAgainst").and.returnValue(
+      (control) => null,
+    );
+
     const fixture = TestBed.createComponent(ReportForm);
     const popUp = fixture.componentInstance;
     const popUpDOM = fixture.nativeElement;
@@ -393,8 +422,9 @@ describe("Report", () => {
       text: "hi",
       date: new Date(),
     };
-    const validateSpy = spyOn(popUp["validationService"], "validateItem").and.returnValue(true);
-    const reportServiceSpy = spyOn(popUp["itemsService"], "sendReport");
+    const apiClientSpy = spyOn(popUp["apiClient"], "post").and.returnValue(of(mockResponse));
+    const alertsSpy = spyOn(popUp["alertsService"], "createSuccessAlert");
+    const emitSpy = spyOn(popUp.reportMode, "emit");
     const reportReason = "because";
     const otherText = popUpDOM.querySelector("#rOption3Text");
     fixture.detectChanges();
@@ -405,20 +435,48 @@ describe("Report", () => {
     otherText.dispatchEvent(new Event("input"));
     fixture.detectChanges();
 
-    expect(popUp.reportForm.get("otherReason")?.value).toEqual(reportReason);
+    expect(popUp.reportForm.controls.otherReason.value).toEqual(reportReason);
 
     // try to submit it
     popUpDOM.querySelectorAll(".reportButton")[0].click();
     fixture.detectChanges();
 
     // check the report was sent
-    expect(validateSpy).toHaveBeenCalledWith("reportOther", reportReason, "rOption3Text");
-    expect(reportServiceSpy).toHaveBeenCalled();
+    const report = {
+      type: "Post",
+      postID: 1,
+      reporter: 4,
+      reportReason: "because",
+      dismissed: false,
+      closed: false,
+    };
+    expect(validateSpy).toHaveBeenCalledWith("reportOther");
+    expect(apiClientSpy).toHaveBeenCalledWith("reports", jasmine.objectContaining(report));
+    expect(alertsSpy).toHaveBeenCalledWith(`Post number 1 was successfully reported.`, {
+      navigate: true,
+      navTarget: "/",
+      navText: "Home Page",
+    });
+    expect(emitSpy).toHaveBeenCalledWith(false);
     done();
   });
 
   it("creates the report and sends it to the itemsService - post", (done: DoneFn) => {
-    TestBed.createComponent(AppComponent);
+    // mock response
+    const mockResponse = {
+      report: {
+        closed: false,
+        date: "Tue Jun 23 2020 14:59:31 GMT+0300",
+        dismissed: false,
+        id: 36,
+        reportReason: "The user is posting Spam",
+        reporter: 2,
+        type: "Post",
+        postID: 1,
+      },
+      success: true,
+    };
+
     const fixture = TestBed.createComponent(ReportForm);
     const popUp = fixture.componentInstance;
     const popUpDOM = fixture.nativeElement;
@@ -432,7 +490,9 @@ describe("Report", () => {
       text: "hi",
       date: new Date(),
     };
-    const reportServiceSpy = spyOn(popUp["itemsService"], "sendReport");
+    const apiClientSpy = spyOn(popUp["apiClient"], "post").and.returnValue(of(mockResponse));
+    const alertsSpy = spyOn(popUp["alertsService"], "createSuccessAlert");
+    const emitSpy = spyOn(popUp.reportMode, "emit");
     fixture.detectChanges();
 
     // select option 1
@@ -453,12 +513,32 @@ describe("Report", () => {
       dismissed: false,
       closed: false,
     };
-    expect(reportServiceSpy).toHaveBeenCalledWith(jasmine.objectContaining(report));
+    expect(apiClientSpy).toHaveBeenCalledWith("reports", jasmine.objectContaining(report));
+    expect(alertsSpy).toHaveBeenCalledWith(`Post number 1 was successfully reported.`, {
+      navigate: true,
+      navTarget: "/",
+      navText: "Home Page",
+    });
+    expect(emitSpy).toHaveBeenCalledWith(false);
     done();
   });
 
   it("creates the report and sends it to the itemsService - user", (done: DoneFn) => {
-    TestBed.createComponent(AppComponent);
+    // mock response
+    const mockResponse = {
+      report: {
+        closed: false,
+        date: "Tue Jun 23 2020 14:59:31 GMT+0300",
+        dismissed: false,
+        id: 36,
+        reportReason: "The user is posting Spam",
+        reporter: 2,
+        type: "User",
+        userID: 3,
+      },
+      success: true,
+    };
+
     const fixture = TestBed.createComponent(ReportForm);
     const popUp = fixture.componentInstance;
     const popUpDOM = fixture.nativeElement;
@@ -469,7 +549,11 @@ describe("Report", () => {
       receivedH: 3,
       givenH: 4,
       posts: 2,
-      role: "user",
+      role: {
+        id: 1,
+        name: "user",
+        permissions: [],
+      },
       selectedIcon: "kitty",
       iconColours: {
         character: "#BA9F93",
@@ -478,7 +562,9 @@ describe("Report", () => {
         item: "#f4b56a",
       },
     };
-    const reportServiceSpy = spyOn(popUp["itemsService"], "sendReport");
+    const apiClientSpy = spyOn(popUp["apiClient"], "post").and.returnValue(of(mockResponse));
+    const alertsSpy = spyOn(popUp["alertsService"], "createSuccessAlert");
+    const emitSpy = spyOn(popUp.reportMode, "emit");
     fixture.detectChanges();
 
     // select option 1
@@ -499,7 +585,13 @@ describe("Report", () => {
       dismissed: false,
       closed: false,
     };
-    expect(reportServiceSpy).toHaveBeenCalledWith(jasmine.objectContaining(report));
+    expect(apiClientSpy).toHaveBeenCalledWith("reports", jasmine.objectContaining(report));
+    expect(alertsSpy).toHaveBeenCalledWith(`User 3 was successfully reported.`, {
+      navigate: true,
+      navTarget: "/",
+      navText: "Home Page",
+    });
+    expect(emitSpy).toHaveBeenCalledWith(false);
     done();
   });
 });

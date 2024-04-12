@@ -4,7 +4,7 @@
   ---------------------------------------------------
   MIT License
 
-  Copyright (c) 2020-2023 Send A Hug
+  Copyright (c) 2020-2024 Send A Hug
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -42,6 +42,7 @@ import { AuthService } from "@app/services/auth.service";
 import { ItemsService } from "@app/services/items.service";
 import { AlertsService } from "@app/services/alerts.service";
 import { ValidationService } from "@app/services/validation.service";
+import { ApiClientService } from "@app/services/apiClient.service";
 
 // Reasons for submitting a report
 enum postReportReasons {
@@ -86,7 +87,7 @@ export class ReportForm {
   reportReasonsText = reportReasonsText;
   reportForm = this.fb.group({
     selectedReason: this.fb.control(undefined as string | undefined, [Validators.required]),
-    otherReason: this.fb.control({ value: undefined as string | undefined, disabled: true }),
+    otherReason: this.fb.control({ value: undefined as string | undefined, disabled: true }, []),
   });
 
   // CTOR
@@ -95,6 +96,7 @@ export class ReportForm {
     private itemsService: ItemsService,
     private alertsService: AlertsService,
     private validationService: ValidationService,
+    private apiClient: ApiClientService,
     private fb: FormBuilder,
   ) {}
 
@@ -111,11 +113,16 @@ export class ReportForm {
 
     // If the selected reason is one of the set reasons, simply send it as is
     if (selectedItem <= 2) {
-      this.reportForm.get("otherReason")?.disable();
+      this.reportForm.controls.otherReason.disable();
+      this.reportForm.controls.otherReason.setValidators([]);
     }
     // If the user chose to put their own input, take that as the reason
     else {
-      this.reportForm.get("otherReason")?.enable();
+      this.reportForm.controls.otherReason.enable();
+      this.reportForm.controls.otherReason.setValidators([
+        Validators.required,
+        this.validationService.validateItemAgainst("reportOther"),
+      ]);
     }
   }
 
@@ -125,7 +132,7 @@ export class ReportForm {
    * @returns the text of the selected reason or undefined if none is selected.
    */
   getSelectedReasonText() {
-    const selectedItem = this.reportForm.get("selectedReason")?.value;
+    const selectedItem = this.reportForm.controls.selectedReason.value;
 
     if (selectedItem == null || selectedItem == undefined) {
       return undefined;
@@ -156,34 +163,30 @@ export class ReportForm {
   Function Description: Creates a report and passes it on to the items service.
                         The method is triggered by pressing the 'report' button
                         in the report popup.
-  Parameters: e (Event) - clicking the report button.
+  Parameters: None.
   ----------------
   Programmer: Shir Bar Lev.
   */
-  createReport(e: Event) {
-    e.preventDefault();
+  createReport() {
     let item =
       this.reportType == "User" ? (this.reportedItem as OtherUser) : (this.reportedItem as Post);
     let reportReason = this.getSelectedReasonText();
 
+    if (!this.reportForm.valid) {
+      const errorMessage =
+        reportReason == "other"
+          ? "If you choose 'other', you must specify a reason."
+          : "Please select a reason for the report.";
+      this.alertsService.createAlert({
+        type: "Error",
+        message: errorMessage,
+      });
+      return;
+    }
+
     // if the selected reason for the report is 'other', get the value of the text inputted
     if (reportReason == "other") {
-      const otherReasonValue = this.reportForm.get("otherReason")?.value;
-      const isValid = this.validationService.validateItem(
-        "reportOther",
-        otherReasonValue || "",
-        "rOption3Text",
-      );
-      // if the input is valid, get the value
-      if (!isValid) {
-        this.alertsService.createAlert({
-          type: "Error",
-          message: "If you choose 'other', you must specify a reason.",
-        });
-        return;
-      }
-
-      reportReason = otherReasonValue!;
+      reportReason = this.reportForm.controls.otherReason.value!;
     }
 
     // create a new report
@@ -191,7 +194,7 @@ export class ReportForm {
       type: this.reportType as "Post" | "User",
       userID: 0,
       postID: undefined,
-      reporter: this.authService.userData.id!,
+      reporter: this.authService.userData!.id!,
       reportReason: reportReason!,
       date: new Date(),
       dismissed: false,
@@ -206,7 +209,22 @@ export class ReportForm {
     }
 
     // pass it on to the items service to send
-    this.itemsService.sendReport(report);
-    this.reportMode.emit(false);
+    // sends the report
+    this.apiClient.post("reports", report).subscribe({
+      next: (response: any) => {
+        // if successful, alert the user
+        const sent_report: Report = response.report;
+        let successMessage =
+          sent_report.type == "Post"
+            ? `Post number ${sent_report.postID} was successfully reported.`
+            : `User ${sent_report.userID} was successfully reported.`;
+        this.alertsService.createSuccessAlert(successMessage, {
+          navigate: true,
+          navTarget: "/",
+          navText: "Home Page",
+        });
+        this.reportMode.emit(false);
+      },
+    });
   }
 }

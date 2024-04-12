@@ -4,7 +4,7 @@
   ---------------------------------------------------
   MIT License
 
-  Copyright (c) 2020-2023 Send A Hug
+  Copyright (c) 2020-2024 Send A Hug
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -31,7 +31,6 @@
 */
 
 import { TestBed } from "@angular/core/testing";
-import { RouterTestingModule } from "@angular/router/testing";
 import {} from "jasmine";
 import { APP_BASE_HREF } from "@angular/common";
 import {
@@ -40,7 +39,7 @@ import {
 } from "@angular/platform-browser-dynamic/testing";
 import { HttpClientModule } from "@angular/common/http";
 import { ServiceWorkerModule } from "@angular/service-worker";
-import { ActivatedRoute, UrlSegment } from "@angular/router";
+import { ActivatedRoute, RouterModule, UrlSegment } from "@angular/router";
 import { of } from "rxjs";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { By } from "@angular/platform-browser";
@@ -51,6 +50,7 @@ import { PopUp } from "../popUp/popUp.component";
 import { AuthService } from "../../services/auth.service";
 import { mockAuthedUser } from "@tests/mockData";
 import { FullThread } from "@app/interfaces/thread.interface";
+import { MockDeleteForm } from "@tests/mockForms";
 
 const mockMessages = [
   {
@@ -121,17 +121,17 @@ describe("AppMessaging", () => {
     TestBed.configureTestingModule({
       schemas: [NO_ERRORS_SCHEMA],
       imports: [
-        RouterTestingModule,
+        RouterModule.forRoot([]),
         HttpClientModule,
         ServiceWorkerModule.register("sw.js", { enabled: false }),
         FontAwesomeModule,
       ],
-      declarations: [AppMessaging, PopUp],
+      declarations: [AppMessaging, PopUp, MockDeleteForm],
       providers: [{ provide: APP_BASE_HREF, useValue: "/" }],
     }).compileComponents();
 
     const authService = TestBed.inject(AuthService);
-    authService.authenticated = true;
+    authService.authenticated.set(true);
     authService.userData = { ...mockAuthedUser };
   });
 
@@ -165,8 +165,7 @@ describe("AppMessaging", () => {
     const fixture = TestBed.createComponent(AppMessaging);
     const appMessaging = fixture.componentInstance;
 
-    expect(appMessaging.editMode).toBeFalse();
-    expect(appMessaging.delete).toBeFalse();
+    expect(appMessaging.deleteMode).toBeFalse();
   });
 
   // TODO: Add test for the user icon setup (onInit and setUpUserIcon)
@@ -336,12 +335,12 @@ describe("AppMessaging", () => {
 
   // Check that an error is shown if the user isn't logged in
   it("should show an error if the user isn't logged in", (done: DoneFn) => {
-    TestBed.inject(AuthService).authenticated = false;
+    TestBed.inject(AuthService).authenticated.set(false);
     // create the component and set up spies
     const fixture = TestBed.createComponent(AppMessaging);
     const appMessaging = fixture.componentInstance;
     const appMessagingDOM = fixture.nativeElement;
-    appMessaging.authService.authenticated = false;
+    appMessaging.authService.authenticated.set(false);
 
     fixture.detectChanges();
 
@@ -353,12 +352,12 @@ describe("AppMessaging", () => {
   // Check that the login method triggers the auth service
   it("should trigger the auth service upon login", (done: DoneFn) => {
     // set authenticated to false
-    TestBed.inject(AuthService).authenticated = false;
+    TestBed.inject(AuthService).authenticated.set(false);
     // create the component and set up spies
     const fixture = TestBed.createComponent(AppMessaging);
     const appMessaging = fixture.componentInstance;
     const appMessagingDOM = fixture.nativeElement;
-    appMessaging.authService.authenticated = false;
+    appMessaging.authService.authenticated.set(false);
     const loginSpy = spyOn(appMessaging, "login").and.callThrough();
     const loginServiceSpy = spyOn(appMessaging.authService, "login");
 
@@ -366,13 +365,13 @@ describe("AppMessaging", () => {
 
     // simulate click
     appMessagingDOM.querySelector("#logIn").click();
-    appMessaging.authService.authenticated = true;
+    appMessaging.authService.authenticated.set(true);
     fixture.detectChanges();
 
     // check the spies are called
     expect(loginSpy).toHaveBeenCalled();
     expect(loginServiceSpy).toHaveBeenCalled();
-    expect(appMessaging.authService.authenticated).toBeTrue();
+    expect(appMessaging.authService.authenticated()).toBeTrue();
     done();
   });
 
@@ -387,8 +386,7 @@ describe("AppMessaging", () => {
     fixture.detectChanges();
 
     // before the click
-    expect(appMessaging.editMode).toBeFalse();
-    expect(appMessaging.delete).toBeFalse();
+    expect(appMessaging.deleteMode).toBeFalse();
 
     // trigger click
     const messages = appMessagingDOM.querySelectorAll(".mailboxMessages")[0];
@@ -396,8 +394,7 @@ describe("AppMessaging", () => {
     fixture.detectChanges();
 
     // after the click
-    expect(appMessaging.editMode).toBeTrue();
-    expect(appMessaging.delete).toBeTrue();
+    expect(appMessaging.deleteMode).toBeTrue();
     expect(appMessaging.toDelete).toBe("Message");
     expect(appMessaging.itemToDelete).toBe(1);
     expect(appMessagingDOM.querySelector("app-pop-up")).toBeTruthy();
@@ -546,8 +543,7 @@ describe("AppMessaging", () => {
     fixture.detectChanges();
 
     // before the click
-    expect(appMessaging.editMode).toBeFalse();
-    expect(appMessaging.delete).toBeFalse();
+    expect(appMessaging.deleteMode).toBeFalse();
 
     // trigger click
     const messages = appMessagingDOM.querySelectorAll(".userThread")[0];
@@ -555,8 +551,7 @@ describe("AppMessaging", () => {
     fixture.detectChanges();
 
     // after the click
-    expect(appMessaging.editMode).toBeTrue();
-    expect(appMessaging.delete).toBeTrue();
+    expect(appMessaging.deleteMode).toBeTrue();
     expect(appMessaging.toDelete).toBe("Thread");
     expect(appMessaging.itemToDelete).toBe(3);
     expect(appMessagingDOM.querySelector("app-pop-up")).toBeTruthy();
@@ -573,16 +568,14 @@ describe("AppMessaging", () => {
     fixture.detectChanges();
 
     // before the click
-    expect(appMessaging.editMode).toBeFalse();
-    expect(appMessaging.delete).toBeFalse();
+    expect(appMessaging.deleteMode).toBeFalse();
 
     // trigger click
     appMessagingDOM.querySelectorAll(".deleteAll")[0].click();
     fixture.detectChanges();
 
     // after the click
-    expect(appMessaging.editMode).toBeTrue();
-    expect(appMessaging.delete).toBeTrue();
+    expect(appMessaging.deleteMode).toBeTrue();
     expect(appMessaging.toDelete).toBe("All inbox");
     expect(appMessaging.itemToDelete).toBe(4);
     expect(appMessagingDOM.querySelector("app-pop-up")).toBeTruthy();
@@ -598,20 +591,20 @@ describe("AppMessaging", () => {
 
     // start the popup
     appMessaging.lastFocusedElement = document.querySelectorAll("a")[0];
-    appMessaging.editMode = true;
-    appMessaging.delete = true;
+    appMessaging.deleteMode = true;
     appMessaging.toDelete = "Thread";
     appMessaging.itemToDelete = 1;
     fixture.detectChanges();
 
     // exit the popup
-    const popup = fixture.debugElement.query(By.css("app-pop-up")).componentInstance as PopUp;
-    popup.exitEdit();
+    const popup = fixture.debugElement.query(By.css("item-delete-form"))
+      .componentInstance as MockDeleteForm;
+    popup.editMode.emit(false);
     fixture.detectChanges();
 
     // check the popup is exited
     expect(changeSpy).toHaveBeenCalled();
-    expect(appMessaging.editMode).toBeFalse();
+    expect(appMessaging.deleteMode).toBeFalse();
     expect(document.activeElement).toBe(document.querySelectorAll("a")[0]);
     done();
   });

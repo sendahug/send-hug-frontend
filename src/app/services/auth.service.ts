@@ -4,7 +4,7 @@
   ---------------------------------------------------
   MIT License
 
-  Copyright (c) 2020-2023 Send A Hug
+  Copyright (c) 2020-2024 Send A Hug
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -31,7 +31,7 @@
 */
 
 // Angular imports
-import { Injectable } from "@angular/core";
+import { Injectable, signal } from "@angular/core";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 
 // Other essential imports
@@ -61,31 +61,9 @@ export class AuthService {
   readonly serverUrl = environment.backend.domain;
   // authentication information
   token: string = "";
-  authenticated: boolean = false;
+  authenticated = signal<boolean>(false);
   // user data
-  userData: User = {
-    id: 0,
-    auth0Id: "",
-    displayName: "",
-    receivedH: 0,
-    givenH: 0,
-    posts: 0,
-    loginCount: 0,
-    role: "",
-    jwt: "",
-    blocked: false,
-    releaseDate: undefined,
-    autoRefresh: false,
-    refreshRate: 20,
-    pushEnabled: false,
-    selectedIcon: "kitty",
-    iconColours: {
-      character: "",
-      lbg: "",
-      rbg: "",
-      item: "",
-    },
-  };
+  userData?: User;
   // documents whether the user just logged in or they're still logged in following
   // their previous login
   loggedIn = false;
@@ -178,36 +156,14 @@ export class AuthService {
   getUserData(jwtPayload: any) {
     // turn the BehaviorSubject dealing with whether user data was resolved to
     // false only if there's no user data
-    if (this.userData.id == 0 || !this.userData.id) {
+    if (this.userData?.id == 0 || !this.userData?.id) {
       this.isUserDataResolved.next(false);
     }
     // if the JWTs don't match (shouldn't happen, but just in case), change the BehaviorSubject
     // and reset the user's data
     else if (this.userData.auth0Id != jwtPayload.sub) {
       this.isUserDataResolved.next(false);
-      this.userData = {
-        id: 0,
-        auth0Id: "",
-        displayName: "",
-        receivedH: 0,
-        givenH: 0,
-        posts: 0,
-        loginCount: 0,
-        role: "",
-        jwt: "",
-        blocked: false,
-        releaseDate: undefined,
-        autoRefresh: false,
-        refreshRate: 20,
-        pushEnabled: false,
-        selectedIcon: "kitty",
-        iconColours: {
-          character: "",
-          lbg: "",
-          rbg: "",
-          item: "",
-        },
-      };
+      this.userData = undefined;
     }
 
     // if there's a JWT
@@ -227,7 +183,7 @@ export class AuthService {
             jwt: this.token,
           };
           // set the authentication-variables accordingly
-          this.authenticated = true;
+          this.authenticated.set(true);
           this.setToken();
           this.isUserDataResolved.next(true);
           this.tokenExpired = false;
@@ -266,7 +222,9 @@ export class AuthService {
           let statusCode = err.status;
 
           // if a user with that ID doens't exist, try to create it
-          if (statusCode == 404) {
+          // because of the way we check permissions in that endpoint vs
+          // the create users endpoint
+          if (statusCode == 404 || statusCode == 401) {
             this.createUser(jwtPayload);
           } else {
             // if the user is offline, show the offline header message
@@ -323,7 +281,7 @@ export class AuthService {
           jwt: this.token,
         };
         // set the authentication-variables accordingly
-        this.authenticated = true;
+        this.authenticated.set(true);
         this.setToken();
         this.isUserDataResolved.next(true);
 
@@ -375,41 +333,19 @@ export class AuthService {
 
     // update the user's data in IDB to remove all user data
     let user = {
-      id: this.userData.id,
-      displayName: this.userData.displayName,
-      receivedH: this.userData.receivedH,
-      givenH: this.userData.givenH,
-      posts: this.userData.posts,
-      role: this.userData.role,
+      id: this.userData?.id,
+      displayName: this.userData?.displayName,
+      receivedH: this.userData?.receivedH,
+      givenH: this.userData?.givenH,
+      posts: this.userData?.posts,
+      role: this.userData?.role,
     };
     this.serviceWorkerM.addItem("users", user);
 
     //clears the user's data
-    this.authenticated = false;
+    this.authenticated.set(false);
     this.token = "";
-    this.userData = {
-      id: 0,
-      auth0Id: "",
-      displayName: "",
-      receivedH: 0,
-      givenH: 0,
-      posts: 0,
-      loginCount: 0,
-      role: "",
-      jwt: "",
-      blocked: false,
-      releaseDate: undefined,
-      autoRefresh: false,
-      refreshRate: 20,
-      pushEnabled: false,
-      selectedIcon: "kitty",
-      iconColours: {
-        character: "",
-        lbg: "",
-        rbg: "",
-        item: "",
-      },
-    };
+    this.userData = undefined;
     localStorage.setItem("ACTIVE_JWT", "");
 
     // clears all the messages data (as that's private per user)
@@ -424,8 +360,11 @@ export class AuthService {
           message: `Your session had become inactive and you have been safely logged out.
                   Log back in to continue.`,
         },
-        false,
-        "/user",
+        {
+          navigate: true,
+          navTarget: "/user",
+          navText: "User Page",
+        },
       );
     }
   }
@@ -504,21 +443,21 @@ export class AuthService {
   */
   updateUserData() {
     const updatedUser = {
-      displayName: this.userData.displayName,
-      receivedH: this.userData.receivedH,
-      givenH: this.userData.givenH,
-      posts: this.userData.posts,
-      loginCount: this.userData.loginCount + 1,
-      selectedIcon: this.userData.selectedIcon,
+      displayName: this.userData?.displayName,
+      receivedH: this.userData?.receivedH,
+      givenH: this.userData?.givenH,
+      posts: this.userData?.posts,
+      loginCount: (this.userData?.loginCount || 0) + 1,
+      selectedIcon: this.userData?.selectedIcon,
       iconColours: {
-        character: this.userData.iconColours.character,
-        lbg: this.userData.iconColours.lbg,
-        rbg: this.userData.iconColours.rbg,
-        item: this.userData.iconColours.item,
+        character: this.userData?.iconColours.character,
+        lbg: this.userData?.iconColours.lbg,
+        rbg: this.userData?.iconColours.rbg,
+        item: this.userData?.iconColours.item,
       },
     };
 
-    this.apiClient.patch(`users/all/${this.userData.id}`, updatedUser).subscribe({});
+    this.apiClient.patch(`users/all/${this.userData?.id}`, updatedUser).subscribe({});
   }
 
   /*
@@ -530,14 +469,10 @@ export class AuthService {
   */
   canUser(permission: string) {
     // if there's an active token, check the logged in user's permissions
-    if (this.token) {
-      let canUserDo: boolean;
-      let tokenPayload = this.parseJWT(this.token);
-      let permissions = tokenPayload["permissions"];
-
+    if (this.userData) {
       // if it's within the user's permissions, return true;
       // otherwise return false
-      canUserDo = permissions.includes(permission);
+      const canUserDo = this.userData.role["permissions"].includes(permission);
       return canUserDo;
     }
     // if there isn't, no user is logged in, so of course there's no permission

@@ -4,7 +4,7 @@
   ---------------------------------------------------
   MIT License
 
-  Copyright (c) 2020-2023 Send A Hug
+  Copyright (c) 2020-2024 Send A Hug
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -38,6 +38,7 @@ import { AdminService } from "@app/services/admin.service";
 import { ApiClientService } from "@app/services/apiClient.service";
 import { HttpErrorResponse } from "@angular/common/http";
 import { Report } from "@app/interfaces/report.interface";
+import { AlertsService } from "@app/services/alerts.service";
 
 @Component({
   selector: "app-admin-reports",
@@ -54,7 +55,8 @@ export class AdminReports {
   // edit popup sub-component variables
   toEdit: any;
   editType: string | undefined;
-  editMode: boolean;
+  nameEditMode: boolean = false;
+  postEditMode: boolean = false;
   reportData: {
     userID?: number;
     reportID: number;
@@ -62,10 +64,9 @@ export class AdminReports {
   } = {
     reportID: 0,
   };
-  delete: boolean;
+  deleteMode: boolean = false;
   toDelete: string | undefined;
   itemToDelete: number | undefined;
-  report: boolean;
   lastFocusedElement: any;
   usersPrevButtonClass = computed(() => ({
     "appButton prevButton": true,
@@ -87,11 +88,8 @@ export class AdminReports {
   constructor(
     private apiClient: ApiClientService,
     private adminService: AdminService,
+    private alertsService: AlertsService,
   ) {
-    this.editMode = false;
-    this.delete = false;
-    this.report = false;
-
     this.fetchReports();
   }
 
@@ -147,7 +145,7 @@ export class AdminReports {
     this.lastFocusedElement = document.activeElement;
     this.editType = "other user";
     this.toEdit = displayName;
-    this.editMode = true;
+    this.nameEditMode = true;
     this.reportData.reportID = reportID;
     this.reportData.userID = userID;
   }
@@ -165,7 +163,7 @@ export class AdminReports {
     this.lastFocusedElement = document.activeElement;
     this.editType = "admin post";
     this.toEdit = { text: postText, id: postID };
-    this.editMode = true;
+    this.postEditMode = true;
     this.reportData.reportID = reportID;
     this.reportData.postID = postID;
   }
@@ -181,8 +179,7 @@ export class AdminReports {
   */
   deletePost(postID: number, userID: number, reportID: number) {
     this.lastFocusedElement = document.activeElement;
-    this.editMode = true;
-    this.delete = true;
+    this.deleteMode = true;
     this.toDelete = "ad post";
     this.itemToDelete = postID;
     this.reportData.reportID = reportID;
@@ -196,8 +193,16 @@ export class AdminReports {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  dismissReport(reportID: number) {
-    this.adminService.dismissReport(reportID);
+  dismissReport(reportID: number, dismiss: boolean, postID?: number, userID?: number) {
+    this.adminService.closeReport(reportID, dismiss, postID, userID).subscribe({
+      next: (response: any) => {
+        // if the report was dismissed, alert the user
+        this.alertsService.createSuccessAlert(
+          `Report ${response.updated.id} was dismissed! Refresh the page to view the updated list.`,
+          { reload: true },
+        );
+      },
+    });
   }
 
   /*
@@ -236,8 +241,10 @@ export class AdminReports {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  changeMode(edit: boolean) {
-    this.editMode = edit;
+  changeMode(edit: boolean, type: "EditName" | "Delete" | "EditPost") {
+    if (type === "EditName") this.nameEditMode = edit;
+    else if (type === "EditPost") this.postEditMode = edit;
+    else this.deleteMode = edit;
     this.lastFocusedElement?.focus();
   }
 }

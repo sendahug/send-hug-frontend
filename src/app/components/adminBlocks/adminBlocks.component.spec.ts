@@ -4,7 +4,7 @@
   ---------------------------------------------------
   MIT License
 
-  Copyright (c) 2020-2023 Send A Hug
+  Copyright (c) 2020-2024 Send A Hug
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -31,7 +31,7 @@
 */
 
 import { TestBed } from "@angular/core/testing";
-import { RouterTestingModule } from "@angular/router/testing";
+import { RouterModule } from "@angular/router";
 import {} from "jasmine";
 import { APP_BASE_HREF } from "@angular/common";
 import {
@@ -76,7 +76,7 @@ describe("Blocks Page", () => {
     TestBed.configureTestingModule({
       schemas: [NO_ERRORS_SCHEMA],
       imports: [
-        RouterTestingModule,
+        RouterModule.forRoot([]),
         HttpClientModule,
         ServiceWorkerModule.register("sw.js", { enabled: false }),
         FontAwesomeModule,
@@ -126,7 +126,7 @@ describe("Blocks Page", () => {
     const adminBlocks = fixture.componentInstance;
     const adminBlocksDOM = fixture.nativeElement;
     const blockSpy = spyOn(adminBlocks, "block").and.callThrough();
-    const checkBlockSpy = spyOn(adminBlocks, "blockUser");
+    const blockServiceSpy = spyOn(adminBlocks.adminService, "blockUser");
     spyOn(adminBlocks, "fetchBlocks");
     adminBlocks.blockedUsers = [...mockBlockedUsers];
     adminBlocks.isLoading = false;
@@ -142,8 +142,7 @@ describe("Blocks Page", () => {
 
     // check expectations
     expect(blockSpy).toHaveBeenCalled();
-    expect(checkBlockSpy).toHaveBeenCalled();
-    expect(checkBlockSpy).toHaveBeenCalledWith(5, "oneDay");
+    expect(blockServiceSpy).toHaveBeenCalledWith(5, "oneDay");
     done();
   });
 
@@ -153,7 +152,7 @@ describe("Blocks Page", () => {
     const adminBlocks = fixture.componentInstance;
     const adminBlocksDOM = fixture.nativeElement;
     const blockSpy = spyOn(adminBlocks, "block").and.callThrough();
-    const checkBlockSpy = spyOn(adminBlocks, "blockUser");
+    const blockServiceSpy = spyOn(adminBlocks.adminService, "blockUser");
     const alertSpy = spyOn(adminBlocks["alertsService"], "createAlert");
     spyOn(adminBlocks, "fetchBlocks");
     adminBlocks.blockedUsers = [...mockBlockedUsers];
@@ -169,7 +168,7 @@ describe("Blocks Page", () => {
     fixture.detectChanges();
 
     expect(blockSpy).toHaveBeenCalled();
-    expect(checkBlockSpy).not.toHaveBeenCalled();
+    expect(blockServiceSpy).not.toHaveBeenCalled();
     expect(alertSpy).toHaveBeenCalledWith({
       type: "Error",
       message:
@@ -184,7 +183,7 @@ describe("Blocks Page", () => {
     const adminBlocks = fixture.componentInstance;
     const adminBlocksDOM = fixture.nativeElement;
     const blockSpy = spyOn(adminBlocks, "block").and.callThrough();
-    const checkBlockSpy = spyOn(adminBlocks, "blockUser");
+    const blockServiceSpy = spyOn(adminBlocks.adminService, "blockUser");
     const alertSpy = spyOn(adminBlocks["alertsService"], "createAlert");
     spyOn(adminBlocks, "fetchBlocks");
     adminBlocks.blockedUsers = [...mockBlockedUsers];
@@ -200,7 +199,7 @@ describe("Blocks Page", () => {
     fixture.detectChanges();
 
     expect(blockSpy).toHaveBeenCalled();
-    expect(checkBlockSpy).not.toHaveBeenCalled();
+    expect(blockServiceSpy).not.toHaveBeenCalled();
     expect(alertSpy).toHaveBeenCalledWith({
       type: "Error",
       message: "You cannot block yourself.",
@@ -214,7 +213,7 @@ describe("Blocks Page", () => {
     const adminBlocks = fixture.componentInstance;
     const adminBlocksDOM = fixture.nativeElement;
     const blockSpy = spyOn(adminBlocks, "block").and.callThrough();
-    const checkBlockSpy = spyOn(adminBlocks, "blockUser");
+    const blockServiceSpy = spyOn(adminBlocks.adminService, "blockUser");
     const alertSpy = spyOn(adminBlocks["alertsService"], "createAlert");
     spyOn(adminBlocks, "fetchBlocks");
     adminBlocks.blockedUsers = [...mockBlockedUsers];
@@ -230,31 +229,11 @@ describe("Blocks Page", () => {
     fixture.detectChanges();
 
     expect(blockSpy).toHaveBeenCalled();
-    expect(checkBlockSpy).not.toHaveBeenCalled();
+    expect(blockServiceSpy).not.toHaveBeenCalled();
     expect(alertSpy).toHaveBeenCalledWith({
       type: "Error",
       message: "User ID must be a number. Please correct the User ID and try again.",
     });
-    done();
-  });
-
-  it("should make the request to block the user", (done: DoneFn) => {
-    // set up the spy and the component
-    const fixture = TestBed.createComponent(AdminBlocks);
-    const adminBlocks = fixture.componentInstance;
-    const adminService = adminBlocks["adminService"];
-    const blockServiceSpy = spyOn(adminService, "blockUser");
-
-    adminBlocks.blockedUsers = [...mockBlockedUsers];
-    adminBlocks.isLoading = false;
-    adminBlocks.totalPages.set(1);
-    fixture.detectChanges();
-
-    adminBlocks.blockUser(10, "oneDay", undefined);
-    fixture.detectChanges();
-
-    // check expectations
-    expect(blockServiceSpy).toHaveBeenCalledWith(10, "oneDay", undefined);
     done();
   });
 
@@ -303,7 +282,7 @@ describe("Blocks Page", () => {
     expect(alertSpy).toHaveBeenCalled();
     expect(alertSpy).toHaveBeenCalledWith(
       `User ${mockResponse.updated.displayName} has been unblocked.`,
-      true,
+      { reload: true },
     );
     done();
   });

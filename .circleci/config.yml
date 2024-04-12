@@ -1,7 +1,7 @@
 version: 2.1
 orbs:
-  browser-tools: circleci/browser-tools@1.4.6
-  cypress: cypress-io/cypress@3.3.0
+  browser-tools: circleci/browser-tools@1.4.8
+  cypress: cypress-io/cypress@3.3.1
   codecov: codecov/codecov@4.0.1
 jobs:
   format:
@@ -10,10 +10,10 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: my-project-{{ .Branch }}-{{ checksum "package-lock.json" }}
+          key: send-hug-v1-
       - run: npm install
       - save_cache:
-          key: my-project-{{ .Branch }}-{{ checksum "package-lock.json" }}
+          key: send-hug-v1-{{ checksum "package-lock.json" }}
           paths:
             - "node_modules"
       - run: npx prettier --check .
@@ -24,21 +24,20 @@ jobs:
       CHROME_BIN: /usr/bin/google-chrome
     steps:
       - checkout
-      - browser-tools/install-browser-tools:
-          chrome-version: 120.0.6099.62 # temporary, until https://github.com/CircleCI-Public/browser-tools-orb/issues/104 is fixed
+      - browser-tools/install-browser-tools
       - run: google-chrome --version
       - restore_cache:
-          key: my-project-{{ .Branch }}-{{ checksum "package-lock.json" }}
+          key: send-hug-v1-
       - run: npm install
       - save_cache:
-          key: my-project-{{ .Branch }}-{{ checksum "package-lock.json" }}
+          key: send-hug-v1-{{ checksum "package-lock.json" }}
           paths:
             - "node_modules"
       - run: npm run test -- --no-watch --no-progress --browsers=ChromeHeadlessCI
       - codecov/upload
   e2e:
     docker:
-      - image: shirblc/python-npm-tools:3.0
+      - image: cimg/python:3.11-node
         environment:
           DATABASE_URL: postgresql://postgres:password@localhost:5432/test_sah?sslmode=disable
           FLASK_APP: send-hug-backend/app.py
@@ -57,6 +56,10 @@ jobs:
     steps:
       - checkout
       - run: |
+          sudo npm install -g gulp pa11y-ci --unsafe-perm=true --allow-root
+          sudo apt-get update
+          sudo apt-get install -y postgresql-client python3-pip xvfb
+      - run: |
           cd ..
           git clone https://github.com/sendahug/send-hug-backend
       - run:
@@ -73,25 +76,25 @@ jobs:
       - run:
           name: Restore database
           command: |
-            cd ..
-            psql -h localhost -p 5432 -U postgres test_sah < send-hug-backend/tests/capstone_db.sql
+            mv e2e/setup.py ../send-hug-backend
+            cd ../send-hug-backend
+            python3 setup.py
       - run:
           name: Start backend
           command: |
             cd ..
             flask run
           background: true
-      - browser-tools/install-browser-tools:
-          chrome-version: 120.0.6099.62 # temporary, until https://github.com/CircleCI-Public/browser-tools-orb/issues/104 is fixed
+      - browser-tools/install-browser-tools
       - run: google-chrome --version
       - cypress/install
       - restore_cache:
-          key: my-project-{{ .Branch }}-{{ checksum "package-lock.json" }}
+          key: send-hug-v1-
       - run:
           name: Install dependencies
           command: npm install
       - save_cache:
-          key: my-project-{{ .Branch }}-{{ checksum "package-lock.json" }}
+          key: send-hug-v1-{{ checksum "package-lock.json" }}
           paths:
             - "node_modules"
       - run:
@@ -106,7 +109,7 @@ jobs:
           command: npm run cypress
   accessibility:
     docker:
-      - image: shirblc/python-npm-tools:3.0
+      - image: cimg/python:3.11-node
         environment:
           DATABASE_URL: postgresql://postgres:password@localhost:5432/test_sah?sslmode=disable
           FLASK_APP: send-hug-backend/app.py
@@ -125,6 +128,10 @@ jobs:
     steps:
       - checkout
       - run: |
+          sudo npm install -g gulp pa11y-ci --unsafe-perm=true --allow-root
+          sudo apt-get update
+          sudo apt-get install -y postgresql-client python3-pip xvfb
+      - run: |
           cd ..
           git clone https://github.com/sendahug/send-hug-backend
       - run:
@@ -141,24 +148,24 @@ jobs:
       - run:
           name: Restore database
           command: |
-            cd ..
-            psql -h localhost -p 5432 -U postgres test_sah < send-hug-backend/tests/capstone_db.sql
+            mv e2e/setup.py ../send-hug-backend
+            cd ../send-hug-backend
+            python3 setup.py
       - run:
           name: Start backend
           command: |
             cd ..
             flask run
           background: true
-      - browser-tools/install-browser-tools:
-          chrome-version: 120.0.6099.62 # temporary, until https://github.com/CircleCI-Public/browser-tools-orb/issues/104 is fixed
+      - browser-tools/install-browser-tools
       - run: google-chrome --version
       - restore_cache:
-          key: my-project-{{ .Branch }}-{{ checksum "package-lock.json" }}
+          key: send-hug-v1-
       - run:
           name: Install dependencies
           command: npm install
       - save_cache:
-          key: my-project-{{ .Branch }}-{{ checksum "package-lock.json" }}
+          key: send-hug-v1-{{ checksum "package-lock.json" }}
           paths:
             - "node_modules"
       - run:

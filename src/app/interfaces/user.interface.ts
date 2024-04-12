@@ -5,7 +5,7 @@
   ---------------------------------------------------
   MIT License
 
-  Copyright (c) 2020-2023 Send A Hug
+  Copyright (c) 2020-2024 Send A Hug
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -40,6 +40,12 @@ export interface UserIconColours {
   item: string;
 }
 
+export interface Role {
+  id: number;
+  name: string;
+  permissions: string[];
+}
+
 export interface User {
   id?: number;
   auth0Id: string;
@@ -48,7 +54,7 @@ export interface User {
   givenH: number;
   posts: number;
   loginCount: number;
-  role: string;
+  role: Role;
   jwt: string;
   blocked: boolean;
   releaseDate: Date | undefined;

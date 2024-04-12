@@ -4,7 +4,7 @@
   ---------------------------------------------------
   MIT License
 
-  Copyright (c) 2020-2023 Send A Hug
+  Copyright (c) 2020-2024 Send A Hug
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -51,24 +51,24 @@ export class IconEditor {
   // form for the icon editor
   iconEditForm = this.fb.group({
     selectedIcon: [
-      this.authService.userData.selectedIcon ||
+      this.authService.userData?.selectedIcon ||
         (this.iconDefaults.characterColour as iconCharacters),
       Validators.required,
     ],
     characterColour: [
-      this.authService.userData.iconColours.character || this.iconDefaults.characterColour,
+      this.authService.userData?.iconColours.character || this.iconDefaults.characterColour,
       Validators.required,
     ],
     lbgColour: [
-      this.authService.userData.iconColours.lbg || this.iconDefaults.lbgColour,
+      this.authService.userData?.iconColours.lbg || this.iconDefaults.lbgColour,
       Validators.required,
     ],
     rbgColour: [
-      this.authService.userData.iconColours.rbg || this.iconDefaults.rbgColour,
+      this.authService.userData?.iconColours.rbg || this.iconDefaults.rbgColour,
       Validators.required,
     ],
     itemColour: [
-      this.authService.userData.iconColours.item || this.iconDefaults.itemColour,
+      this.authService.userData?.iconColours.item || this.iconDefaults.itemColour,
       Validators.required,
     ],
   });
@@ -80,18 +80,18 @@ export class IconEditor {
     public authService: AuthService,
     private fb: FormBuilder,
   ) {
-    this.iconEditForm
-      .get("characterColour")
-      ?.valueChanges.subscribe((newValue) => this.showNewColour(newValue as string, "character"));
-    this.iconEditForm
-      .get("lbgColour")
-      ?.valueChanges.subscribe((newValue) => this.showNewColour(newValue as string, "lbg"));
-    this.iconEditForm
-      .get("rbgColour")
-      ?.valueChanges.subscribe((newValue) => this.showNewColour(newValue as string, "rbg"));
-    this.iconEditForm
-      .get("itemColour")
-      ?.valueChanges.subscribe((newValue) => this.showNewColour(newValue as string, "item"));
+    this.iconEditForm.controls.characterColour.valueChanges.subscribe((newValue) =>
+      this.showNewColour(newValue as string, "character"),
+    );
+    this.iconEditForm.controls.lbgColour.valueChanges.subscribe((newValue) =>
+      this.showNewColour(newValue as string, "lbg"),
+    );
+    this.iconEditForm.controls.rbgColour.valueChanges.subscribe((newValue) =>
+      this.showNewColour(newValue as string, "rbg"),
+    );
+    this.iconEditForm.controls.itemColour.valueChanges.subscribe((newValue) =>
+      this.showNewColour(newValue as string, "item"),
+    );
   }
 
   /*
@@ -125,15 +125,15 @@ export class IconEditor {
     event.preventDefault();
 
     // set the userService with the new icon data
-    this.authService.userData.selectedIcon =
-      this.iconEditForm.get("selectedIcon")?.value ||
+    this.authService.userData!.selectedIcon =
+      this.iconEditForm.controls.selectedIcon.value ||
       (this.iconDefaults.selectedIcon as iconCharacters);
-    this.authService.userData.iconColours = {
+    this.authService.userData!.iconColours = {
       character:
-        this.iconEditForm.get("characterColour")?.value || this.iconDefaults.characterColour,
-      lbg: this.iconEditForm.get("lbgColour")?.value || this.iconDefaults.lbgColour,
-      rbg: this.iconEditForm.get("rbgColour")?.value || this.iconDefaults.rbgColour,
-      item: this.iconEditForm.get("itemColour")?.value || this.iconDefaults.itemColour,
+        this.iconEditForm.controls.characterColour.value || this.iconDefaults.characterColour,
+      lbg: this.iconEditForm.controls.lbgColour.value || this.iconDefaults.lbgColour,
+      rbg: this.iconEditForm.controls.rbgColour.value || this.iconDefaults.rbgColour,
+      item: this.iconEditForm.controls.itemColour.value || this.iconDefaults.itemColour,
     };
 
     // update the backend

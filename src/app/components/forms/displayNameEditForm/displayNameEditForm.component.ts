@@ -4,7 +4,7 @@
   ---------------------------------------------------
   MIT License
 
-  Copyright (c) 2020-2023 Send A Hug
+  Copyright (c) 2020-2024 Send A Hug
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -32,11 +32,13 @@
 
 // Angular imports
 import { Component, Input, Output, EventEmitter, OnInit } from "@angular/core";
+import { FormBuilder, Validators } from "@angular/forms";
 
 // App-related import
 import { AuthService } from "@app/services/auth.service";
 import { AdminService } from "@app/services/admin.service";
 import { ValidationService } from "@app/services/validation.service";
+import { AlertsService } from "@app/services/alerts.service";
 
 @Component({
   selector: "display-name-edit-form",
@@ -50,12 +52,20 @@ export class DisplayNameEditForm implements OnInit {
   // indicates whether edit/delete mode is still required
   @Output() editMode = new EventEmitter<boolean>();
   @Input() reportData: any;
+  editNameForm = this.fb.group({
+    newDisplayName: [
+      "",
+      [Validators.required, this.validationService.validateItemAgainst("displayName")],
+    ],
+  });
 
   // CTOR
   constructor(
     public authService: AuthService,
     private adminService: AdminService,
     private validationService: ValidationService,
+    private alertService: AlertsService,
+    private fb: FormBuilder,
   ) {}
 
   /*
@@ -68,8 +78,8 @@ export class DisplayNameEditForm implements OnInit {
   Programmer: Shir Bar Lev.
   */
   ngOnInit() {
-    this.editedItem =
-      this.toEdit == "user" ? this.authService.userData.displayName : this.editedItem;
+    const name = this.toEdit == "user" ? this.authService.userData!.displayName : this.editedItem;
+    this.editNameForm.controls.newDisplayName.setValue(name);
   }
 
   /*
@@ -77,32 +87,39 @@ export class DisplayNameEditForm implements OnInit {
   Function Description: Sends a request via the auth service to edit the user's display name.
   Parameters: e (event) - This method is triggered by pressing a button; this parameter
                           contains the click event data.
-              newDisplayName (string) - A string containing the user's new name.
               closeReport (optional boolean) - whether to also close the report if the sender
                                                is the admin's report page.
   ----------------
   Programmer: Shir Bar Lev.
   */
-  updateDisplayName(e: Event, newDisplayName: string, closeReport: boolean | null) {
+  updateDisplayName(e: Event, closeReport: boolean | null) {
     e.preventDefault();
 
-    // if the name is valid, set it
-    if (this.validationService.validateItem("displayName", newDisplayName, "displayName")) {
-      // if the user is editing their own name
-      if (closeReport == null) {
-        this.authService.userData.displayName = newDisplayName;
-        this.authService.updateUserData();
-        // if they're editing someone else's name from the reports page
-      } else {
-        let user = {
-          userID: this.reportData.userID,
-          displayName: newDisplayName,
-        };
-
-        this.adminService.editUser(user, closeReport, this.reportData.reportID);
-      }
-
-      this.editMode.emit(false);
+    if (!this.editNameForm.valid) {
+      this.alertService.createAlert({
+        type: "Error",
+        message: this.editNameForm.controls.newDisplayName.errors?.error,
+      });
+      return;
     }
+
+    // if the name is valid, set it
+    const newDisplayName = String(this.editNameForm.controls.newDisplayName.value);
+
+    // if the user is editing their own name
+    if (closeReport == null) {
+      this.authService.userData!.displayName = newDisplayName;
+      this.authService.updateUserData();
+      // if they're editing someone else's name from the reports page
+    } else {
+      let user = {
+        userID: this.reportData.userID,
+        displayName: newDisplayName,
+      };
+
+      this.adminService.editUser(user, closeReport, this.reportData.reportID);
+    }
+
+    this.editMode.emit(false);
   }
 }

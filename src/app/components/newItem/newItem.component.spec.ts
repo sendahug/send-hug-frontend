@@ -4,7 +4,7 @@
   ---------------------------------------------------
   MIT License
 
-  Copyright (c) 2020-2023 Send A Hug
+  Copyright (c) 2020-2024 Send A Hug
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -31,7 +31,6 @@
 */
 
 import { TestBed } from "@angular/core/testing";
-import { RouterTestingModule } from "@angular/router/testing";
 import {} from "jasmine";
 import { APP_BASE_HREF } from "@angular/common";
 import {
@@ -42,10 +41,11 @@ import { HttpClientModule } from "@angular/common/http";
 import { ServiceWorkerModule } from "@angular/service-worker";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { of } from "rxjs";
-import { ActivatedRoute, UrlSegment } from "@angular/router";
+import { ActivatedRoute, RouterModule, UrlSegment } from "@angular/router";
+import { ReactiveFormsModule } from "@angular/forms";
 
 import { NewItem } from "./newItem.component";
-import { AuthService } from "../../services/auth.service";
+import { AuthService } from "@app/services/auth.service";
 import { mockAuthedUser } from "@tests/mockData";
 
 describe("NewItem", () => {
@@ -56,17 +56,18 @@ describe("NewItem", () => {
 
     TestBed.configureTestingModule({
       imports: [
-        RouterTestingModule,
+        RouterModule.forRoot([]),
         HttpClientModule,
         ServiceWorkerModule.register("sw.js", { enabled: false }),
         FontAwesomeModule,
+        ReactiveFormsModule,
       ],
       declarations: [NewItem],
       providers: [{ provide: APP_BASE_HREF, useValue: "/" }],
     }).compileComponents();
 
     const authService = TestBed.inject(AuthService);
-    authService.authenticated = true;
+    authService.authenticated.set(true);
     authService.userData = { ...mockAuthedUser };
   });
 
@@ -99,33 +100,42 @@ describe("NewItem", () => {
   });
 
   // Check that it triggers the items service when creating a new post
-  it("New Post - triggers the items service when creating a new post", (done: DoneFn) => {
+  it("sendPost() - should send a post", () => {
+    const mockNewPost = {
+      userId: 4,
+      user: "name",
+      text: "new post",
+      givenHugs: 0,
+    };
+    const mockResponsePost = {
+      ...mockNewPost,
+      date: new Date("Tue Apr 09 2024 17:06:17 GMT+0100 (British Summer Time)"),
+    };
     const paramMap = TestBed.inject(ActivatedRoute);
     paramMap.url = of([{ path: "Post" } as UrlSegment]);
     const fixture = TestBed.createComponent(NewItem);
     const newItem = fixture.componentInstance;
     const newItemDOM = fixture.nativeElement;
-    const newPostSpy = spyOn(newItem, "sendPost").and.callThrough();
-    const newPostServiceSpy = spyOn(newItem["itemsService"], "sendPost");
-
+    const apiClientSpy = spyOn(newItem["apiClient"], "post").and.returnValue(
+      of({ success: true, posts: mockNewPost }),
+    );
+    const successAlertSpy = spyOn(newItem["alertService"], "createSuccessAlert");
+    const addItemSpy = spyOn(newItem["swManager"], "addFetchedItems");
     fixture.detectChanges();
 
     // fill in post's text and trigger a click
     const postText = "new post";
     newItemDOM.querySelector("#postText").value = postText;
+    newItemDOM.querySelector("#postText").dispatchEvent(new Event("input"));
     newItemDOM.querySelectorAll(".sendData")[0].click();
     fixture.detectChanges();
 
-    const newPost = {
-      userId: 4,
-      user: "name",
-      text: postText,
-      givenHugs: 0,
-    };
-    expect(newPostSpy).toHaveBeenCalled();
-    expect(newPostServiceSpy).toHaveBeenCalled();
-    expect(newPostServiceSpy).toHaveBeenCalledWith(jasmine.objectContaining(newPost));
-    done();
+    expect(apiClientSpy).toHaveBeenCalledWith("posts", jasmine.objectContaining(mockNewPost));
+    expect(successAlertSpy).toHaveBeenCalledWith(
+      "Your post was published! Return to home page to view the post.",
+      { navigate: true, navTarget: "/", navText: "Home Page" },
+    );
+    expect(addItemSpy).toHaveBeenCalledWith("posts", [mockNewPost], "date");
   });
 
   // Check that an empty post triggers an alert
@@ -136,7 +146,7 @@ describe("NewItem", () => {
     const newItem = fixture.componentInstance;
     const newItemDOM = fixture.nativeElement;
     const newPostSpy = spyOn(newItem, "sendPost").and.callThrough();
-    const newPostServiceSpy = spyOn(newItem["itemsService"], "sendPost");
+    const apiClientSpy = spyOn(newItem["apiClient"], "post");
     const alertsService = newItem["alertService"];
     const alertSpy = spyOn(alertsService, "createAlert");
 
@@ -145,31 +155,13 @@ describe("NewItem", () => {
     // fill in post's text and trigger a click
     const postText = "";
     newItemDOM.querySelector("#postText").value = postText;
+    newItemDOM.querySelector("#postText").dispatchEvent(new Event("input"));
     newItemDOM.querySelectorAll(".sendData")[0].click();
     fixture.detectChanges();
 
     expect(newPostSpy).toHaveBeenCalled();
     expect(alertSpy).toHaveBeenCalled();
-    expect(newPostServiceSpy).not.toHaveBeenCalled();
-    done();
-  });
-
-  // Check that a user can't post if they're blocked
-  it("New Post - should prevent blocked users from posting", (done: DoneFn) => {
-    const paramMap = TestBed.inject(ActivatedRoute);
-    paramMap.url = of([{ path: "Post" } as UrlSegment]);
-    const fixture = TestBed.createComponent(NewItem);
-    const newItem = fixture.componentInstance;
-    const newItemDOM = fixture.nativeElement;
-    newItem["authService"].userData.blocked = true;
-    newItem["authService"].userData.releaseDate = new Date(new Date().getTime() + 864e5 * 7);
-
-    fixture.detectChanges();
-
-    const alert = `You are currently blocked until ${newItem["authService"].userData.releaseDate}. You cannot post new posts.`;
-    expect(newItemDOM.querySelectorAll(".newItem")[0]).toBeUndefined();
-    expect(newItemDOM.querySelectorAll(".errorMessage")[0]).toBeTruthy();
-    expect(newItemDOM.querySelectorAll(".errorMessage")[0].textContent).toContain(alert);
+    expect(apiClientSpy).not.toHaveBeenCalled();
     done();
   });
 
@@ -181,16 +173,17 @@ describe("NewItem", () => {
     const newItem = fixture.componentInstance;
     const newItemDOM = fixture.nativeElement;
     const newPostSpy = spyOn(newItem, "sendPost").and.callThrough();
-    const newPostServiceSpy = spyOn(newItem["itemsService"], "sendPost");
     const alertsService = newItem["alertService"];
     const alertSpy = spyOn(alertsService, "createAlert");
-    newItem["authService"].authenticated = false;
-
+    newItem["authService"].authenticated.set(false);
+    const apiClientSpy = spyOn(newItem["apiClient"], "post");
+    const addItemSpy = spyOn(newItem["swManager"], "addFetchedItems");
     fixture.detectChanges();
 
     // fill in post's text and trigger a click
     const postText = "textfield";
     newItemDOM.querySelector("#postText").value = postText;
+    newItemDOM.querySelector("#postText").dispatchEvent(new Event("input"));
     newItemDOM.querySelectorAll(".sendData")[0].click();
     fixture.detectChanges();
 
@@ -199,8 +192,61 @@ describe("NewItem", () => {
       type: "Error",
       message: "You're currently logged out. Log back in to post a new post.",
     });
-    expect(newPostServiceSpy).not.toHaveBeenCalled();
+    expect(apiClientSpy).not.toHaveBeenCalled();
+    expect(addItemSpy).not.toHaveBeenCalled();
     done();
+  });
+
+  it("shouldn't show the post form if the user is blocked", () => {
+    const paramMap = TestBed.inject(ActivatedRoute);
+    paramMap.url = of([{ path: "Post" } as UrlSegment]);
+    const fixture = TestBed.createComponent(NewItem);
+    const newItem = fixture.componentInstance;
+    const newItemDOM = fixture.nativeElement;
+    newItem["authService"].userData!.blocked = true;
+    newItem["authService"].userData!.releaseDate = new Date(
+      "Tue Apr 09 2124 17:06:17 GMT+0100 (British Summer Time)",
+    );
+    fixture.detectChanges();
+
+    expect(newItemDOM.querySelector("#postText")).toBeNull();
+    const errorMessage = newItemDOM.querySelectorAll(".errorMessage")[0];
+    expect(errorMessage.textContent).toContain(
+      `You are currently blocked until ${newItem["authService"].userData?.releaseDate}. You cannot post new posts.`,
+    );
+  });
+
+  it("sendPost() - should prevent sending a post if the user is blocked", () => {
+    const paramMap = TestBed.inject(ActivatedRoute);
+    paramMap.url = of([{ path: "Post" } as UrlSegment]);
+    const fixture = TestBed.createComponent(NewItem);
+    const newItem = fixture.componentInstance;
+    const newItemDOM = fixture.nativeElement;
+    const apiClientSpy = spyOn(newItem["apiClient"], "post");
+    const successAlertSpy = spyOn(newItem["alertService"], "createSuccessAlert");
+    const addItemSpy = spyOn(newItem["swManager"], "addFetchedItems");
+    const errorAlertSpy = spyOn(newItem["alertService"], "createAlert");
+    newItem["authService"].userData!.blocked = false;
+    newItem["authService"].userData!.releaseDate = new Date(
+      "Tue Apr 09 2124 17:06:17 GMT+0100 (British Summer Time)",
+    );
+    fixture.detectChanges();
+
+    // fill in post's text and trigger a click
+    const postText = "new post";
+    newItemDOM.querySelector("#postText").value = postText;
+    newItemDOM.querySelector("#postText").dispatchEvent(new Event("input"));
+    newItem["authService"].userData!.blocked = true;
+    newItemDOM.querySelectorAll(".sendData")[0].click();
+    fixture.detectChanges();
+
+    expect(apiClientSpy).not.toHaveBeenCalled();
+    expect(successAlertSpy).not.toHaveBeenCalled();
+    expect(addItemSpy).not.toHaveBeenCalled();
+    expect(errorAlertSpy).toHaveBeenCalledWith({
+      type: "Error",
+      message: `You cannot post new posts while you're blocked. You're blocked until ${newItem["authService"].userData?.releaseDate}.`,
+    });
   });
 
   // NEW MESSAGE
@@ -228,7 +274,7 @@ describe("NewItem", () => {
 
     expect(queryParamsSpy).toHaveBeenCalled();
     expect(newItem.itemType).toBe("Message");
-    expect(newItem.user).toBe("hello");
+    expect(newItem.newMessageForm.controls.messageFor.value).toBe("hello");
     expect(newItem.forID).toBe(2);
     expect(newItemDOM.querySelector("#newPost")).toBeNull();
     expect(newItemDOM.querySelector("#newMessage")).toBeTruthy();
@@ -260,6 +306,7 @@ describe("NewItem", () => {
     // fill in message's text and trigger a click
     const messageText = "hello";
     newItemDOM.querySelector("#messageText").value = messageText;
+    newItemDOM.querySelector("#messageText").dispatchEvent(new Event("input"));
     newItemDOM.querySelectorAll(".sendData")[0].click();
     fixture.detectChanges();
 
@@ -302,6 +349,7 @@ describe("NewItem", () => {
     // fill in message's text and trigger a click
     const messageText = "";
     newItemDOM.querySelector("#messageText").value = messageText;
+    newItemDOM.querySelector("#messageText").dispatchEvent(new Event("input"));
     newItemDOM.querySelectorAll(".sendData")[0].click();
     fixture.detectChanges();
 
@@ -330,13 +378,14 @@ describe("NewItem", () => {
     const newMessageSpy = spyOn(newItem, "sendMessage").and.callThrough();
     const newMessServiceSpy = spyOn(newItem["itemsService"], "sendMessage");
     const alertSpy = spyOn(newItem["alertService"], "createAlert");
-    newItem["authService"].authenticated = false;
+    newItem["authService"].authenticated.set(false);
 
     fixture.detectChanges();
 
     // fill in message's text and trigger a click
     const messageText = "text";
     newItemDOM.querySelector("#messageText").value = messageText;
+    newItemDOM.querySelector("#messageText").dispatchEvent(new Event("input"));
     newItemDOM.querySelectorAll(".sendData")[0].click();
     fixture.detectChanges();
 
@@ -395,6 +444,7 @@ describe("NewItem", () => {
     // fill in message's text and trigger a click
     const messageText = "text";
     newItemDOM.querySelector("#messageText").value = messageText;
+    newItemDOM.querySelector("#messageText").dispatchEvent(new Event("input"));
     newItemDOM.querySelectorAll(".sendData")[0].click();
     fixture.detectChanges();
 

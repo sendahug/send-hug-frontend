@@ -5,7 +5,7 @@
   ---------------------------------------------------
   MIT License
 
-  Copyright (c) 2020-2023 Send A Hug
+  Copyright (c) 2020-2024 Send A Hug
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -32,7 +32,7 @@
 */
 
 import { iconCharacters } from "./types";
-import { UserIconColours } from "./user.interface";
+import { UserIconColours, Role } from "./user.interface";
 
 export interface OtherUser {
   id: number;
@@ -40,7 +40,7 @@ export interface OtherUser {
   receivedH: number;
   givenH: number;
   posts: number;
-  role: string;
+  role: Role;
   blocked?: boolean;
   releaseDate?: Date;
   selectedIcon: iconCharacters;

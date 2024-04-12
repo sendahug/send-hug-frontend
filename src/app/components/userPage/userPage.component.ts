@@ -4,7 +4,7 @@
   ---------------------------------------------------
   MIT License
 
-  Copyright (c) 2020-2023 Send A Hug
+  Copyright (c) 2020-2024 Send A Hug
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -63,15 +63,15 @@ export class UserPage implements OnInit, OnDestroy, AfterViewChecked {
     if (this.otherUser()) {
       return this.otherUser() as OtherUser;
     } else {
-      return this.authService.userData;
+      return this.authService.userData as User;
     }
   });
   isOtherUserProfile = computed(() => this.otherUser() != undefined);
   // edit popup sub-component variables
   userToEdit: any;
   editType: string | undefined;
-  editMode: boolean;
-  report: boolean;
+  editMode: boolean = false;
+  reportMode: boolean = false;
   reportedItem: User | undefined;
   reportType = "User";
   lastFocusedElement: any;
@@ -92,8 +92,6 @@ export class UserPage implements OnInit, OnDestroy, AfterViewChecked {
     private alertsService: AlertsService,
   ) {
     this.authService.checkHash();
-    this.editMode = false;
-    this.report = false;
 
     // if there's a user ID, set the user ID to it
     if (this.route.snapshot.paramMap.get("id")) {
@@ -104,7 +102,7 @@ export class UserPage implements OnInit, OnDestroy, AfterViewChecked {
 
     // If the user's logged in, fetch the user immediately;
     // otherwise, wait for the user to login
-    if (this.authService.authenticated) {
+    if (this.authService.authenticated()) {
       this.getUser();
     } else {
       // set the userDataSubscription to the subscription to isUserDataResolved
@@ -242,7 +240,6 @@ export class UserPage implements OnInit, OnDestroy, AfterViewChecked {
     this.userToEdit = this.authService.userData;
     this.editMode = true;
     this.editType = "user";
-    this.report = false;
   }
 
   /*
@@ -255,8 +252,10 @@ export class UserPage implements OnInit, OnDestroy, AfterViewChecked {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  changeMode(edit: boolean) {
-    this.editMode = edit;
+  changeMode(edit: boolean, type: "Edit" | "Report") {
+    if (type === "Edit") this.editMode = edit;
+    else this.reportMode = edit;
+
     this.lastFocusedElement.focus();
   }
 
@@ -271,8 +270,8 @@ export class UserPage implements OnInit, OnDestroy, AfterViewChecked {
     this.apiClient.post(`users/all/${userID}/hugs`, {}).subscribe({
       next: (_response) => {
         this.otherUser()!.receivedH += 1;
-        this.authService.userData.givenH += 1;
-        this.alertsService.createSuccessAlert("Your hug was sent!", true);
+        this.authService.userData!.givenH += 1;
+        this.alertsService.createSuccessAlert("Your hug was sent!", { reload: true });
       },
     });
   }
@@ -286,9 +285,7 @@ export class UserPage implements OnInit, OnDestroy, AfterViewChecked {
   */
   reportUser(user: User) {
     this.lastFocusedElement = document.activeElement;
-    this.editMode = true;
-    this.editType = undefined;
-    this.report = true;
+    this.reportMode = true;
     this.reportedItem = user;
   }
 

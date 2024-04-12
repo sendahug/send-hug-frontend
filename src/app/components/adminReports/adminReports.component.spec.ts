@@ -4,7 +4,7 @@
   ---------------------------------------------------
   MIT License
 
-  Copyright (c) 2020-2023 Send A Hug
+  Copyright (c) 2020-2024 Send A Hug
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -31,7 +31,7 @@
 */
 
 import { TestBed } from "@angular/core/testing";
-import { RouterTestingModule } from "@angular/router/testing";
+import { RouterModule } from "@angular/router";
 import {} from "jasmine";
 import { APP_BASE_HREF } from "@angular/common";
 import {
@@ -52,6 +52,7 @@ import { Loader } from "../loader/loader.component";
 import { mockAuthedUser } from "@tests/mockData";
 import { Report } from "@app/interfaces/report.interface";
 import { ApiClientService } from "@app/services/apiClient.service";
+import { MockDeleteForm, MockDisplayNameForm, MockEditForm } from "@tests/mockForms";
 
 const mockUserReports: Report[] = [
   {
@@ -90,12 +91,19 @@ describe("AdminReports", () => {
     TestBed.configureTestingModule({
       schemas: [NO_ERRORS_SCHEMA],
       imports: [
-        RouterTestingModule,
+        RouterModule.forRoot([]),
         HttpClientModule,
         ServiceWorkerModule.register("sw.js", { enabled: false }),
         FontAwesomeModule,
       ],
-      declarations: [AdminReports, PopUp, Loader],
+      declarations: [
+        AdminReports,
+        PopUp,
+        Loader,
+        MockDeleteForm,
+        MockDisplayNameForm,
+        MockEditForm,
+      ],
       providers: [{ provide: APP_BASE_HREF, useValue: "/" }],
     }).compileComponents();
 
@@ -103,7 +111,7 @@ describe("AdminReports", () => {
     const authService = TestBed.inject(AuthService) as AuthService;
     spyOn(authService, "canUser").and.returnValue(true);
     authService.isUserDataResolved.next(true);
-    authService.authenticated = true;
+    authService.authenticated.set(true);
     authService.userData = { ...mockAuthedUser };
   });
 
@@ -182,7 +190,7 @@ describe("AdminReports", () => {
     fixture.detectChanges();
 
     // before the click
-    expect(adminReports.editMode).toBeFalse();
+    expect(adminReports.nameEditMode).toBeFalse();
 
     // trigger click
     const userTable = adminReportsDOM.querySelectorAll(".tableContainer")[0];
@@ -191,7 +199,7 @@ describe("AdminReports", () => {
 
     // check expectations
     expect(editSpy).toHaveBeenCalled();
-    expect(adminReports.editMode).toBeTrue();
+    expect(adminReports.nameEditMode).toBeTrue();
     expect(adminReports.editType).toBe("other user");
     expect(adminReportsDOM.querySelector("app-pop-up")).toBeTruthy();
     done();
@@ -212,7 +220,7 @@ describe("AdminReports", () => {
     fixture.detectChanges();
 
     // before the click
-    expect(adminReports.editMode).toBeFalse();
+    expect(adminReports.postEditMode).toBeFalse();
 
     // trigger click
     const postTable = adminReportsDOM.querySelectorAll(".tableContainer")[1];
@@ -221,7 +229,7 @@ describe("AdminReports", () => {
 
     // check expectations
     expect(editSpy).toHaveBeenCalled();
-    expect(adminReports.editMode).toBeTrue();
+    expect(adminReports.postEditMode).toBeTrue();
     expect(adminReports.editType).toBe("admin post");
     expect(adminReportsDOM.querySelector("app-pop-up")).toBeTruthy();
     done();
@@ -242,7 +250,7 @@ describe("AdminReports", () => {
     fixture.detectChanges();
 
     // before the click
-    expect(adminReports.editMode).toBeFalse();
+    expect(adminReports.deleteMode).toBeFalse();
 
     // trigger click
     const postTable = adminReportsDOM.querySelectorAll(".tableContainer")[1];
@@ -251,7 +259,7 @@ describe("AdminReports", () => {
 
     // check expectations
     expect(deleteSpy).toHaveBeenCalled();
-    expect(adminReports.editMode).toBeTrue();
+    expect(adminReports.deleteMode).toBeTrue();
     expect(adminReports.toDelete).toBe("ad post");
     expect(adminReportsDOM.querySelector("app-pop-up")).toBeTruthy();
     done();
@@ -265,7 +273,23 @@ describe("AdminReports", () => {
     const adminReportsDOM = fixture.nativeElement;
     const dismissSpy = spyOn(adminReports, "dismissReport").and.callThrough();
     const adminService = adminReports["adminService"];
-    const dismissServiceSpy = spyOn(adminService, "dismissReport");
+    const dismissServiceSpy = spyOn(adminService, "closeReport").and.returnValue(
+      of({
+        success: true,
+        updated: {
+          id: 2,
+          type: "Post" as "User" | "Post",
+          userID: 11,
+          postID: 5,
+          reporter: 4,
+          reportReason: "reason",
+          date: new Date("2020-06-29 19:17:31.072"),
+          dismissed: true,
+          closed: true,
+        },
+      }),
+    );
+    const alertsSpy = spyOn(adminReports["alertsService"], "createSuccessAlert");
     spyOn(adminReports, "fetchReports");
     adminReports.postReports = [...mockPostReports];
     adminReports.userReports = [...mockUserReports];
@@ -281,7 +305,11 @@ describe("AdminReports", () => {
     // check expectations
     expect(dismissSpy).toHaveBeenCalled();
     expect(dismissServiceSpy).toHaveBeenCalled();
-    expect(dismissServiceSpy).toHaveBeenCalledWith(2);
+    expect(dismissServiceSpy).toHaveBeenCalledWith(2, true, 5, undefined);
+    expect(alertsSpy).toHaveBeenCalledWith(
+      `Report 2 was dismissed! Refresh the page to view the updated list.`,
+      { reload: true },
+    );
     done();
   });
 
@@ -388,7 +416,7 @@ describe("AdminReports", () => {
   });
 
   // Check the popup exits when 'false' is emitted
-  it("should change mode when the event emitter emits false", (done: DoneFn) => {
+  it("should change mode when the event emitter emits false - display name edit", (done: DoneFn) => {
     const fixture = TestBed.createComponent(AdminReports);
     const adminReports = fixture.componentInstance;
     const changeSpy = spyOn(adminReports, "changeMode").and.callThrough();
@@ -399,19 +427,76 @@ describe("AdminReports", () => {
     adminReports.lastFocusedElement = document.querySelectorAll("a")[0];
     adminReports.editType = "other user";
     adminReports.toEdit = "displayName";
-    adminReports.editMode = true;
+    adminReports.nameEditMode = true;
     adminReports.reportData.reportID = 5;
     adminReports.reportData.userID = 2;
     fixture.detectChanges();
 
     // exit the popup
-    const popup = fixture.debugElement.query(By.css("app-pop-up")).componentInstance as PopUp;
-    popup.exitEdit();
+    const popup = fixture.debugElement.query(By.css("display-name-edit-form"))
+      .componentInstance as MockDisplayNameForm;
+    popup.editMode.emit(false);
     fixture.detectChanges();
 
     // check the popup is exited
     expect(changeSpy).toHaveBeenCalled();
-    expect(adminReports.editMode).toBeFalse();
+    expect(adminReports.nameEditMode).toBeFalse();
+    expect(document.activeElement).toBe(document.querySelectorAll("a")[0]);
+    done();
+  });
+
+  it("should change mode when the event emitter emits false - post edit", (done: DoneFn) => {
+    const fixture = TestBed.createComponent(AdminReports);
+    const adminReports = fixture.componentInstance;
+    const changeSpy = spyOn(adminReports, "changeMode").and.callThrough();
+
+    fixture.detectChanges();
+
+    // start the popup
+    adminReports.lastFocusedElement = document.querySelectorAll("a")[0];
+    adminReports.editType = "admin post";
+    adminReports.toEdit = "post";
+    adminReports.postEditMode = true;
+    adminReports.reportData.reportID = 5;
+    adminReports.reportData.postID = 2;
+    fixture.detectChanges();
+
+    // exit the popup
+    const popup = fixture.debugElement.query(By.css("post-edit-form"))
+      .componentInstance as MockEditForm;
+    popup.editMode.emit(false);
+    fixture.detectChanges();
+
+    // check the popup is exited
+    expect(changeSpy).toHaveBeenCalled();
+    expect(adminReports.postEditMode).toBeFalse();
+    expect(document.activeElement).toBe(document.querySelectorAll("a")[0]);
+    done();
+  });
+
+  it("should change mode when the event emitter emits false - delete post", (done: DoneFn) => {
+    const fixture = TestBed.createComponent(AdminReports);
+    const adminReports = fixture.componentInstance;
+    const changeSpy = spyOn(adminReports, "changeMode").and.callThrough();
+
+    fixture.detectChanges();
+
+    // start the popup
+    adminReports.lastFocusedElement = document.querySelectorAll("a")[0];
+    adminReports.deleteMode = true;
+    adminReports.toDelete = "post";
+    adminReports.itemToDelete = 2;
+    fixture.detectChanges();
+
+    // exit the popup
+    const popup = fixture.debugElement.query(By.css("item-delete-form"))
+      .componentInstance as MockDeleteForm;
+    popup.editMode.emit(false);
+    fixture.detectChanges();
+
+    // check the popup is exited
+    expect(changeSpy).toHaveBeenCalled();
+    expect(adminReports.deleteMode).toBeFalse();
     expect(document.activeElement).toBe(document.querySelectorAll("a")[0]);
     done();
   });

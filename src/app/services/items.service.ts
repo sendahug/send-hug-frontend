@@ -4,7 +4,7 @@
   ---------------------------------------------------
   MIT License
 
-  Copyright (c) 2020-2023 Send A Hug
+  Copyright (c) 2020-2024 Send A Hug
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -39,7 +39,6 @@ import { BehaviorSubject } from "rxjs";
 import { Post } from "@app/interfaces/post.interface";
 import { Message } from "@app/interfaces/message.interface";
 import { OtherUser } from "@app/interfaces/otherUser.interface";
-import { Report } from "@app/interfaces/report.interface";
 import { AuthService } from "@app/services/auth.service";
 import { AlertsService } from "@app/services/alerts.service";
 import { SWManager } from "@app/services/sWManager.service";
@@ -67,8 +66,7 @@ export class ItemsService {
     disabled: this.totalPostSearchPages() <= this.postSearchPage(),
   }));
   // Posts variables
-  isUpdated = new BehaviorSubject(false);
-  currentlyOpenMenu = new BehaviorSubject(-1);
+  currentlyOpenMenu = new BehaviorSubject("");
   receivedAHug = new BehaviorSubject(0);
 
   // CTOR
@@ -81,76 +79,18 @@ export class ItemsService {
 
   // POST-RELATED METHODS
   /*
-  Function Name: sendPost()
-  Function Description: Create a new post.
-  Parameters: post (Post) - the post to attempt to add to the database.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  sendPost(post: Post) {
-    // if the user isn't blocked, let them post
-    if (!this.authService.userData.blocked) {
-      this.apiClient.post("posts", post).subscribe({
-        next: (response: any) => {
-          this.alertsService.createSuccessAlert(
-            "Your post was published! Return to home page to view the post.",
-            false,
-            "/",
-          );
-
-          let isoDate = new Date(response.posts.date).toISOString();
-          let iDBPost = {
-            ...response.posts,
-            isoDate: isoDate,
-          };
-          this.serviceWorkerM.addItem("posts", iDBPost);
-        },
-      });
-    }
-    // if they're blocked, alert them they cannot post while blocked
-    else {
-      this.alertsService.createAlert({
-        type: "Error",
-        message: `You cannot post new posts while you're blocked. You're blocked until ${this.authService.userData.releaseDate}.`,
-      });
-    }
-  }
-
-  /*
-  Function Name: editPost()
-  Function Description: Edit an existing post. This is used only for editing the post's text.
-  Parameters: post (Post) - the updated data of the post.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  editPost(post: Post) {
-    this.isUpdated.next(false);
-
-    // send update request
-    this.apiClient.patch(`posts/${post.id}`, post).subscribe({
-      next: (_response: any) => {
-        this.alertsService.createSuccessAlert(
-          "Your post was edited. Refresh to view the updated post.",
-          true,
-        );
-        this.isUpdated.next(true);
-      },
-    });
-  }
-
-  /*
   Function Name: sendHug()
   Function Description: Send a hug to a user through a post they've written.
-  Parameters: item (Post) - the post for which to send a hug.
+  Parameters: postId (number) - the ID of the post for which to send a hug.
   ----------------
   Programmer: Shir Bar Lev.
   */
-  sendHug(item: any) {
-    this.apiClient.post(`posts/${item.id}/hugs`, {}).subscribe({
+  sendHug(postId: number) {
+    this.apiClient.post(`posts/${postId}/hugs`, {}).subscribe({
       next: (_response: any) => {
-        this.alertsService.createSuccessAlert("Your hug was sent!", false);
+        this.alertsService.createSuccessAlert("Your hug was sent!");
         // Alert the posts that this item received a hug
-        this.receivedAHug.next(item.id);
+        this.receivedAHug.next(postId);
       },
     });
   }
@@ -167,7 +107,11 @@ export class ItemsService {
   sendMessage(message: Message) {
     this.apiClient.post("messages", message).subscribe({
       next: (response: any) => {
-        this.alertsService.createSuccessAlert("Your message was sent!", false, "/");
+        this.alertsService.createSuccessAlert("Your message was sent!", {
+          navigate: true,
+          navTarget: "/",
+          navText: "Home Page",
+        });
 
         let isoDate = new Date(response.message.date).toISOString();
         let message = {
@@ -209,37 +153,5 @@ export class ItemsService {
           this.isSearching = false;
         },
       });
-  }
-
-  // REPORT METHODS
-  // ==============================================================
-  /*
-  Function Name: sendReport()
-  Function Description: Sends a new post/user report to the database.
-  Parameters: report (Report) - the report.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  sendReport(report: Report) {
-    // sends the report
-    this.apiClient.post("reports", report).subscribe({
-      next: (response: any) => {
-        // if successful, alert the user
-        let sent_report: Report = response.report;
-        if (sent_report.type == "Post") {
-          this.alertsService.createSuccessAlert(
-            `Post number ${sent_report.postID} was successfully reported.`,
-            false,
-            "/",
-          );
-        } else {
-          this.alertsService.createSuccessAlert(
-            `User ${sent_report.userID} was successfully reported.`,
-            false,
-            "/",
-          );
-        }
-      },
-    });
   }
 }

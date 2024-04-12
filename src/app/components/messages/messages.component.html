@@ -5,7 +5,7 @@
 	
 	<h3>{{ messType }}</h3>
 <!-- Messages area navigation. -->
-	<div id="messagesNav" role="navigation" *ngIf="authService.authenticated">
+	<div id="messagesNav" role="navigation" *ngIf="authService.authenticated()">
 		<button class="messNavOption appButton" (click)="changeMailbox('inbox')">Inbox</button>
 		<button class="messNavOption appButton" (click)="changeMailbox('outbox')">Outbox</button>
 		<button class="messNavOption appButton" (click)="changeMailbox('threads')">Threads</button>
@@ -13,7 +13,7 @@
 </div>
 
 <!-- If the user is logged in, displays the user's inbox. -->
-<div id="userInbox" *ngIf="authService.authenticated">
+<div id="userInbox" *ngIf="authService.authenticated()">
 	<app-loader
 		*ngIf="isIdbFetchLoading()"
 		[waitingFor]="waitFor"></app-loader>
@@ -45,7 +45,7 @@
 					<span class="pageData">For</span><span class="pageData" aria-describedby="mUserFor">{{ message.for.displayName }}</span>
 				</div>
 				<div class="buttons">
-					<a [routerLink]="['/new', 'Message']" [queryParams]="{user: message.from, userID: message.fromId}" class="appButton messageButton" [attr.aria-describedby]="'mReply ' +  'text' + message.id" *ngIf="messType == 'inbox'">Reply</a>
+					<a [routerLink]="['/new', 'Message']" [queryParams]="{user: message.from.displayName, userID: message.fromId}" class="appButton messageButton" [attr.aria-describedby]="'mReply ' +  'text' + message.id" *ngIf="messType == 'inbox'">Reply</a>
 					<button class="appButton deleteButton" (click)="deleteMessage(message.id)" [attr.aria-describedby]="'mDelete ' + text + message.id">Delete Message</button>
 				</div>
 			</div>
@@ -115,7 +115,7 @@
 						<span class="pageCategory">Date:</span> <span class="pageData" aria-describedby="mDate">{{ message.date }}</span>
 					</div>
 					<div class="threadBtns">
-						<a [routerLink]="['/new', 'Message']" [queryParams]="{user: message.from, userID: message.fromId}" class="appButton messageButton" [attr.aria-describedby]="'mReply ' + 'mText' + message.id">Reply</a>
+						<a [routerLink]="['/new', 'Message']" [queryParams]="{user: message.from.displayName, userID: message.fromId}" class="appButton messageButton" [attr.aria-describedby]="'mReply ' + 'mText' + message.id">Reply</a>
 						<button class="appButton deleteButton" (click)="deleteMessage(message.id)" [attr.aria-describedby]="'mDelete ' + 'mText' + message.id">Delete Message</button>
 					</div>
 				</div>
@@ -149,7 +149,7 @@
 </div>	
 
 <!-- If the user isn't logged in, prompts the user to log in. -->
-<div id="loginBox" *ngIf="!authService.authenticated">
+<div id="loginBox" *ngIf="!authService.authenticated()">
 	<div class="errorMessage">You are not currently logged in. To view your inbox, log in.</div>
 
 	<button id="logIn" class="appButton" (click)="login()">Login</button>
@@ -169,11 +169,8 @@
 	<p id="tDelete">Delete thread with</p>
 </div>
 
-<app-pop-up *ngIf="editMode"
-			[editedItem]="postToEdit"
-			[toEdit]="editType"
+<item-delete-form *ngIf="deleteMode"
 			(editMode)="changeMode($event)"
-			[delete]="delete"
 			[toDelete]="toDelete"
 			[itemToDelete]="itemToDelete"
-			[messType]="messType"></app-pop-up>
+			[messType]="messType"></item-delete-form>

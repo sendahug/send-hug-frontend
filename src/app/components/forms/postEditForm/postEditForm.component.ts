@@ -4,7 +4,7 @@
   ---------------------------------------------------
   MIT License
 
-  Copyright (c) 2020-2023 Send A Hug
+  Copyright (c) 2020-2024 Send A Hug
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -31,72 +31,126 @@
 */
 
 // Angular imports
-import { Component, Input, Output, EventEmitter } from "@angular/core";
+import { Component, Input, Output, EventEmitter, OnInit } from "@angular/core";
+import { FormBuilder, Validators } from "@angular/forms";
+import { map, mergeMap, of } from "rxjs";
 
 // App-related import
 import { Post } from "@app/interfaces/post.interface";
-import { ItemsService } from "@app/services/items.service";
 import { AdminService } from "@app/services/admin.service";
 import { ValidationService } from "@app/services/validation.service";
+import { AlertsService } from "@app/services/alerts.service";
+import { ApiClientService } from "@app/services/apiClient.service";
+
+interface PostEditResponse {
+  success: boolean;
+  updated: Post;
+}
+
+interface PostAndReportResponse {
+  success: boolean;
+  postId?: number;
+  reportId?: number;
+}
 
 @Component({
   selector: "post-edit-form",
   templateUrl: "./postEditForm.component.html",
 })
-export class PostEditForm {
+export class PostEditForm implements OnInit {
   // item to edit
   @Input() editedItem!: Post;
   // indicates whether edit/delete mode is still required
   @Output() editMode = new EventEmitter<boolean>();
   @Input() reportData: any;
   @Input() isAdmin = false;
+  postEditForm = this.fb.group({
+    postText: ["", [Validators.required, this.validationService.validateItemAgainst("post")]],
+  });
 
   // CTOR
   constructor(
-    private itemsService: ItemsService,
     private adminService: AdminService,
     private validationService: ValidationService,
+    private alertService: AlertsService,
+    private apiClient: ApiClientService,
+    private fb: FormBuilder,
   ) {}
+
+  ngOnInit(): void {
+    this.postEditForm.controls.postText.setValue(this.editedItem.text);
+  }
 
   /*
   Function Name: editPost()
   Function Description: Edits a post's text from admin dashboard.
   Parameters: e (event) - This method is triggered by pressing a button; this parameter
                           contains the click event data.
-              newText (string) - A string containing the new post's text.
               closeReport (optional boolean) - whether to also close the report if the sender
                                                is the admin's report page.
   ----------------
   Programmer: Shir Bar Lev.
   */
-  editPost(e: Event, newText: string, closeReport: boolean | null) {
+  editPost(e: Event, closeReport: boolean | null) {
     e.preventDefault();
 
-    const serviceToUse = closeReport === null ? "itemsService" : "adminService";
+    const newText = this.postEditForm.controls.postText.value || "";
 
-    // if the post is valid, edit the text
-    if (this.validationService.validateItem("post", newText, "postText")) {
-      // if there isn't a value for closeReport, it means it's sent from the regular edit
-      if (closeReport === null) {
-        this.editedItem.text = newText;
-        this.itemsService.editPost(this.editedItem);
-        // otherwise if there's a value it's coming from admin dashboard editing
-      } else {
-        let post = {
-          text: newText,
-          id: this.reportData.postID,
-        };
+    // if the post is invalid, show an error message
+    if (!this.postEditForm.valid) {
+      this.alertService.createAlert({
+        type: "Error",
+        message: this.postEditForm.controls.postText.errors?.error,
+      });
+      return;
+    }
 
-        this.adminService.editPost(post, closeReport, this.reportData.reportID);
-      }
+    this.editedItem.text = newText;
 
-      // check whether the post's data was updated in the database
-      this[serviceToUse].isUpdated.subscribe((value: Boolean) => {
-        // if it has, close the popup; otherwise, leave it on so that the user
-        // can fix whatever errors they have and try again
-        if (value) {
+    // Edit the post
+    this.apiClient
+      .patch<PostEditResponse>(`posts/${this.editedItem.id}`, this.editedItem)
+      .pipe(mergeMap((postResponse) => this.updateReportIfNecessary(closeReport, postResponse)))
+      .subscribe({
+        next: (response: PostAndReportResponse) => {
           this.editMode.emit(false);
-        }
+          const editMessage = response.reportId
+            ? `Report ${response.reportId} was closed, and the associated post was edited!`
+            : `Post ${response.postId} was edited.`;
+
+          this.alertService.createSuccessAlert(`${editMessage} Refresh to view the updated post.`, {
+            reload: closeReport || true,
+          });
+        },
+      });
+  }
+
+  /**
+   * Updates the report if there's a report to update and the user chooses to.
+   * @param closeReport - whether to close the report.
+   * @param postResponse - the post edit response from the API.
+   * @returns
+   */
+  updateReportIfNecessary(closeReport: boolean | null, postResponse: PostEditResponse) {
+    // If there's a Close Report value and the admin selected
+    // to close it, also close the report.
+    if (closeReport === true) {
+      return this.adminService
+        .closeReport(this.reportData.reportID, false, postResponse.updated.id)
+        .pipe(
+          map((reportResponse) => {
+            return {
+              success: reportResponse.success,
+              postId: postResponse.updated.id,
+              reportId: reportResponse.updated.id,
+            };
+          }),
+        );
+    } else {
+      return of({
+        success: postResponse.success,
+        postId: postResponse.updated.id,
+        reportId: undefined,
       });
     }
   }

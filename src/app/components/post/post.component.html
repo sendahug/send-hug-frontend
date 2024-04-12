@@ -6,11 +6,11 @@
 			<!-- TODO: Check why we're checking for strings -->
 			<!-- TODO: Also move these checks to the component -->
 			<button
-				[class]="(post.sentHugs.includes(authService.userData.id.toString()) || !authService.authenticated) ? 'textlessButton hugButton active' : 'textlessButton hugButton'"
+				[ngClass]="sendHugButtonClass()"
 				(click)="sendHug()"
 				[attr.aria-labelledby]="'pHug ' + type + 'User' + post.id"
 				name="send a hug"
-				[disabled]="post.sentHugs.includes(authService.userData.id.toString()) || !authService.authenticated"
+				[disabled]="shouldDisableHugBtn()"
 			>
 				<fa-icon [icon]="faHandHoldingHeart" class="fa-hand-holding-heart"></fa-icon>
 			</button>
@@ -26,13 +26,22 @@
 	</div>
 </li>
 
-<app-pop-up *ngIf="editMode"
-			[editedItem]="postToEdit"
-			[toEdit]="editType"
-			(editMode)="changeMode($event)"
-			[delete]="delete"
-			[toDelete]="toDelete"
-			[itemToDelete]="itemToDelete"
-			[report]="report"
-			[reportedItem]="reportedItem"
-			[reportType]="reportType"></app-pop-up>
+<item-delete-form
+	*ngIf="deleteMode"
+	(editMode)="changeMode($event, 'Delete')"
+	[toDelete]="toDelete"
+	[itemToDelete]="itemToDelete"
+></item-delete-form>
+
+<post-edit-form
+	*ngIf="editMode"
+	[editedItem]="postToEdit"
+	(editMode)="changeMode($event, 'Edit')"
+></post-edit-form>
+
+<report-form
+	*ngIf="reportMode"
+	(reportMode)="changeMode($event, 'Report')"
+	[reportedItem]="reportedItem"
+	[reportType]="reportType"
+></report-form>

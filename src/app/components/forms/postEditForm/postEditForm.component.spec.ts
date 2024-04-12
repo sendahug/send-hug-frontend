@@ -4,7 +4,7 @@
   ---------------------------------------------------
   MIT License
 
-  Copyright (c) 2020-2023 Send A Hug
+  Copyright (c) 2020-2024 Send A Hug
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -31,7 +31,7 @@
 */
 
 import { TestBed } from "@angular/core/testing";
-import { RouterTestingModule } from "@angular/router/testing";
+import { RouterModule } from "@angular/router";
 import {} from "jasmine";
 import { APP_BASE_HREF } from "@angular/common";
 import {
@@ -41,13 +41,15 @@ import {
 import { HttpClientModule } from "@angular/common/http";
 import { ServiceWorkerModule } from "@angular/service-worker";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
+import { ReactiveFormsModule } from "@angular/forms";
+import { of } from "rxjs";
 
-import { AppComponent } from "../../../app.component";
 import { PostEditForm } from "./postEditForm.component";
-import { Post } from "../../../interfaces/post.interface";
-import { AppAlert } from "@app/components/appAlert/appAlert.component";
+import { Post } from "@app/interfaces/post.interface";
+import { PopUp } from "@app/components/popUp/popUp.component";
+import { ValidationService } from "@app/services/validation.service";
 
-// DISPLAY NAME EDIT
+// POST EDIT
 // ==================================================================
 describe("PostEditForm", () => {
   // Before each test, configure testing environment
@@ -57,27 +59,30 @@ describe("PostEditForm", () => {
 
     TestBed.configureTestingModule({
       imports: [
-        RouterTestingModule,
+        RouterModule.forRoot([]),
         HttpClientModule,
         ServiceWorkerModule.register("sw.js", { enabled: false }),
         FontAwesomeModule,
+        ReactiveFormsModule,
       ],
-      declarations: [AppComponent, PostEditForm, AppAlert],
+      declarations: [PostEditForm, PopUp],
       providers: [{ provide: APP_BASE_HREF, useValue: "/" }],
     }).compileComponents();
   });
 
   // Check that the component is created
   it("should create the component", () => {
-    const acFixture = TestBed.createComponent(AppComponent);
-    const appComponent = acFixture.componentInstance;
     const fixture = TestBed.createComponent(PostEditForm);
     const popUp = fixture.componentInstance;
-    expect(appComponent).toBeTruthy();
     expect(popUp).toBeTruthy();
   });
 
   it("should make the request to itemsService to change the post", () => {
+    const validationService = TestBed.inject(ValidationService);
+    const validateSpy = spyOn(validationService, "validateItemAgainst").and.returnValue(
+      (control) => null,
+    );
+
     const fixture = TestBed.createComponent(PostEditForm);
     const popUp = fixture.componentInstance;
     const popUpDOM = fixture.nativeElement;
@@ -93,24 +98,52 @@ describe("PostEditForm", () => {
     popUp.isAdmin = false;
     popUp.editedItem = originalItem;
     const newText = "new text";
+    const serverResponse = {
+      success: true,
+      updated: {
+        id: 1,
+        userId: 4,
+        user: "me",
+        text: newText,
+        date: new Date(),
+        givenHugs: 0,
+      },
+    };
     fixture.detectChanges();
 
-    const validateSpy = spyOn(popUp["validationService"], "validateItem").and.returnValue(true);
-    const updateSpy = spyOn(popUp["itemsService"], "editPost");
-    const isUpdatedSpy = spyOn(popUp["itemsService"].isUpdated, "subscribe");
+    const apiClientSpy = spyOn(popUp["apiClient"], "patch").and.returnValue(of(serverResponse));
+    const updateReportSpy = spyOn(popUp, "updateReportIfNecessary").and.returnValue(
+      of({
+        success: true,
+        postId: 1,
+        reportId: undefined,
+      }),
+    );
+    const emitSpy = spyOn(popUp.editMode, "emit");
+    const alertSpy = spyOn(popUp["alertService"], "createSuccessAlert");
 
     popUpDOM.querySelector("#postText").value = newText;
+    popUpDOM.querySelector("#postText").dispatchEvent(new Event("input"));
     popUpDOM.querySelectorAll(".sendData")[0].click();
     fixture.detectChanges();
 
-    expect(validateSpy).toHaveBeenCalledWith("post", newText, "postText");
+    expect(validateSpy).toHaveBeenCalledWith("post");
     const updatedItem = { ...originalItem };
     updatedItem["text"] = newText;
-    expect(updateSpy).toHaveBeenCalledWith(updatedItem);
-    expect(isUpdatedSpy).toHaveBeenCalled();
+    expect(apiClientSpy).toHaveBeenCalledWith(`posts/${originalItem.id}`, updatedItem);
+    expect(updateReportSpy).toHaveBeenCalledWith(null, serverResponse);
+    expect(emitSpy).toHaveBeenCalledWith(false);
+    expect(alertSpy).toHaveBeenCalledWith("Post 1 was edited. Refresh to view the updated post.", {
+      reload: true,
+    });
   });
 
-  it("should make the request to adminService to change the post - close report", () => {
+  it("should send a different message if the report was closed", () => {
+    const validationService = TestBed.inject(ValidationService);
+    const validateSpy = spyOn(validationService, "validateItemAgainst").and.returnValue(
+      (control) => null,
+    );
+
     const fixture = TestBed.createComponent(PostEditForm);
     const popUp = fixture.componentInstance;
     const popUpDOM = fixture.nativeElement;
@@ -122,29 +155,235 @@ describe("PostEditForm", () => {
     popUp.isAdmin = true;
     popUp.editedItem = originalItem;
     const newText = "new text";
+    const serverResponse = {
+      success: true,
+      updated: {
+        id: 1,
+        userId: 4,
+        user: "me",
+        text: newText,
+        date: new Date(),
+        givenHugs: 0,
+      },
+    };
     fixture.detectChanges();
 
-    const validateSpy = spyOn(popUp["validationService"], "validateItem").and.returnValue(true);
-    const updateSpy = spyOn(popUp["adminService"], "editPost");
-    const isUpdatedSpy = spyOn(popUp["adminService"].isUpdated, "subscribe");
+    const apiClientSpy = spyOn(popUp["apiClient"], "patch").and.returnValue(of(serverResponse));
+    const updateReportSpy = spyOn(popUp, "updateReportIfNecessary").and.returnValue(
+      of({
+        success: true,
+        postId: 1,
+        reportId: 1,
+      }),
+    );
+    const emitSpy = spyOn(popUp.editMode, "emit");
+    const alertSpy = spyOn(popUp["alertService"], "createSuccessAlert");
 
     popUpDOM.querySelector("#postText").value = newText;
+    popUpDOM.querySelector("#postText").dispatchEvent(new Event("input"));
     popUpDOM.querySelector("#updateAndClose").click();
     fixture.detectChanges();
 
-    expect(validateSpy).toHaveBeenCalledWith("post", newText, "postText");
-    expect(updateSpy).toHaveBeenCalledWith(
-      {
-        id: 2,
-        text: newText,
-      },
-      true,
-      1,
+    expect(validateSpy).toHaveBeenCalledWith("post");
+    const updatedItem = { ...originalItem };
+    updatedItem["text"] = newText;
+    expect(apiClientSpy).toHaveBeenCalledWith(`posts/${originalItem.id}`, updatedItem);
+    expect(updateReportSpy).toHaveBeenCalledWith(true, serverResponse);
+    expect(emitSpy).toHaveBeenCalledWith(false);
+    expect(alertSpy).toHaveBeenCalledWith(
+      "Report 1 was closed, and the associated post was edited! Refresh to view the updated post.",
+      { reload: true },
     );
-    expect(isUpdatedSpy).toHaveBeenCalled();
   });
 
-  it("should make the request to adminService to change the post - don't close report", () => {
+  it("should not try to close the report if the user chose not to", () => {
+    const validationService = TestBed.inject(ValidationService);
+    const validateSpy = spyOn(validationService, "validateItemAgainst").and.returnValue(
+      (control) => null,
+    );
+
+    const fixture = TestBed.createComponent(PostEditForm);
+    const popUp = fixture.componentInstance;
+    const popUpDOM = fixture.nativeElement;
+    const originalItem = { text: "hi", id: 2 } as Post;
+    popUp.reportData = {
+      reportID: 1,
+      postID: 2,
+    };
+    popUp.isAdmin = true;
+    popUp.editedItem = originalItem;
+    const newText = "new text";
+    const serverResponse = {
+      success: true,
+      updated: {
+        id: 1,
+        userId: 4,
+        user: "me",
+        text: newText,
+        date: new Date(),
+        givenHugs: 0,
+      },
+    };
+    fixture.detectChanges();
+
+    const apiClientSpy = spyOn(popUp["apiClient"], "patch").and.returnValue(of(serverResponse));
+    const updateReportSpy = spyOn(popUp, "updateReportIfNecessary").and.returnValue(
+      of({
+        success: true,
+        postId: 1,
+        reportId: undefined,
+      }),
+    );
+    const emitSpy = spyOn(popUp.editMode, "emit");
+    const alertSpy = spyOn(popUp["alertService"], "createSuccessAlert");
+
+    popUpDOM.querySelector("#postText").value = newText;
+    popUpDOM.querySelector("#postText").dispatchEvent(new Event("input"));
+    popUpDOM.querySelector("#updateDontClose").click();
+    fixture.detectChanges();
+
+    expect(validateSpy).toHaveBeenCalledWith("post");
+    const updatedItem = { ...originalItem };
+    updatedItem["text"] = newText;
+    expect(apiClientSpy).toHaveBeenCalledWith(`posts/${originalItem.id}`, updatedItem);
+    expect(updateReportSpy).toHaveBeenCalledWith(false, serverResponse);
+    expect(emitSpy).toHaveBeenCalledWith(false);
+    expect(alertSpy).toHaveBeenCalledWith("Post 1 was edited. Refresh to view the updated post.", {
+      reload: true,
+    });
+  });
+
+  it("should close the report if the user chooses to", (done: DoneFn) => {
+    const serverResponse = {
+      success: true,
+      updated: {
+        id: 1,
+        userId: 4,
+        user: "me",
+        text: "new text",
+        date: new Date(),
+        givenHugs: 0,
+      },
+    };
+
+    const fixture = TestBed.createComponent(PostEditForm);
+    const popUp = fixture.componentInstance;
+    const originalItem = { text: "hi", id: 2 } as Post;
+    popUp.reportData = {
+      reportID: 2,
+      postID: 1,
+    };
+    popUp.isAdmin = true;
+    popUp.editedItem = originalItem;
+    const closeReportResponse = {
+      success: true,
+      updated: {
+        id: 2,
+        postID: 1,
+        dismissed: false,
+        closed: true,
+        reportReason: "reason",
+        date: new Date(),
+        type: "Post" as "Post",
+        userID: 4,
+        reporter: 1,
+      },
+    };
+    const adminServiceSpy = spyOn(popUp["adminService"], "closeReport").and.returnValue(
+      of(closeReportResponse),
+    );
+
+    popUp.updateReportIfNecessary(true, serverResponse).subscribe({
+      next: (response) => {
+        expect(response).toEqual({
+          success: true,
+          postId: 1,
+          reportId: 2,
+        });
+        expect(adminServiceSpy).toHaveBeenCalledWith(2, false, 1);
+        done();
+      },
+    });
+  });
+
+  it("should not close the report if the user chooses not to", (done: DoneFn) => {
+    const serverResponse = {
+      success: true,
+      updated: {
+        id: 1,
+        userId: 4,
+        user: "me",
+        text: "new text",
+        date: new Date(),
+        givenHugs: 0,
+      },
+    };
+
+    const fixture = TestBed.createComponent(PostEditForm);
+    const popUp = fixture.componentInstance;
+    const originalItem = { text: "hi", id: 2 } as Post;
+    popUp.reportData = {
+      reportID: 1,
+      postID: 2,
+    };
+    popUp.isAdmin = true;
+    popUp.editedItem = originalItem;
+    const adminServiceSpy = spyOn(popUp["adminService"], "closeReport");
+
+    popUp.updateReportIfNecessary(false, serverResponse).subscribe({
+      next: (response) => {
+        expect(response).toEqual({
+          success: true,
+          postId: 1,
+          reportId: undefined,
+        });
+        expect(adminServiceSpy).not.toHaveBeenCalled();
+        done();
+      },
+    });
+  });
+
+  it("should not close the report if it's not the admin menu", (done: DoneFn) => {
+    const fixture = TestBed.createComponent(PostEditForm);
+    const popUp = fixture.componentInstance;
+    const originalItem = { text: "hi", id: 2 } as Post;
+    popUp.reportData = undefined;
+    popUp.isAdmin = false;
+    popUp.editedItem = originalItem;
+    const newText = "new text";
+    const serverResponse = {
+      success: true,
+      updated: {
+        id: 1,
+        userId: 4,
+        user: "me",
+        text: newText,
+        date: new Date(),
+        givenHugs: 0,
+      },
+    };
+    fixture.detectChanges();
+    const adminServiceSpy = spyOn(popUp["adminService"], "closeReport");
+
+    popUp.updateReportIfNecessary(false, serverResponse).subscribe({
+      next: (response) => {
+        expect(response).toEqual({
+          success: true,
+          postId: 1,
+          reportId: undefined,
+        });
+        expect(adminServiceSpy).not.toHaveBeenCalled();
+        done();
+      },
+    });
+  });
+
+  it("should alert if the post isn't valid", () => {
+    const validationService = TestBed.inject(ValidationService);
+    const validateSpy = spyOn(validationService, "validateItemAgainst").and.returnValue(
+      (control) => ({ error: "error" }),
+    );
+
     const fixture = TestBed.createComponent(PostEditForm);
     const popUp = fixture.componentInstance;
     const popUpDOM = fixture.nativeElement;
@@ -158,23 +397,16 @@ describe("PostEditForm", () => {
     const newText = "new text";
     fixture.detectChanges();
 
-    const validateSpy = spyOn(popUp["validationService"], "validateItem").and.returnValue(true);
-    const updateSpy = spyOn(popUp["adminService"], "editPost");
-    const isUpdatedSpy = spyOn(popUp["adminService"].isUpdated, "subscribe");
+    const apiClientSpy = spyOn(popUp["apiClient"], "patch");
+    const alertSpy = spyOn(popUp["alertService"], "createAlert");
 
     popUpDOM.querySelector("#postText").value = newText;
+    popUpDOM.querySelector("#postText").dispatchEvent(new Event("input"));
     popUpDOM.querySelector("#updateDontClose").click();
     fixture.detectChanges();
 
-    expect(validateSpy).toHaveBeenCalledWith("post", newText, "postText");
-    expect(updateSpy).toHaveBeenCalledWith(
-      {
-        id: 2,
-        text: newText,
-      },
-      false,
-      1,
-    );
-    expect(isUpdatedSpy).toHaveBeenCalled();
+    expect(validateSpy).toHaveBeenCalledWith("post");
+    expect(apiClientSpy).not.toHaveBeenCalled();
+    expect(alertSpy).toHaveBeenCalledWith({ type: "Error", message: "error" });
   });
 });

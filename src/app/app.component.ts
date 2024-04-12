@@ -4,7 +4,7 @@
   ---------------------------------------------------
   MIT License
 
-  Copyright (c) 2020-2023 Send A Hug
+  Copyright (c) 2020-2024 Send A Hug
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -43,6 +43,7 @@ import { ItemsService } from "./services/items.service";
 import { AlertsService } from "./services/alerts.service";
 import { SWManager } from "./services/sWManager.service";
 import { NotificationService } from "./services/notifications.service";
+import { ValidationService } from "./services/validation.service";
 
 @Component({
   selector: "app-root",
@@ -85,6 +86,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     private serviceWorkerM: SWManager,
     public notificationService: NotificationService,
     private fb: FormBuilder,
+    private validationService: ValidationService,
   ) {
     this.authService.checkHash();
 
@@ -92,12 +94,12 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.authService.isUserDataResolved.subscribe((value) => {
       if (value) {
         // if push notifications are enabled, get subscription and auto-refresh data from localStorage
-        if (this.authService.userData.pushEnabled) {
+        if (this.authService.userData!.pushEnabled) {
           this.notificationService.getSubscription();
         }
 
         // if auto-refresh is enabled, start auto-refresh
-        if (this.authService.userData.autoRefresh) {
+        if (this.authService.userData!.autoRefresh) {
           this.notificationService.startAutoRefresh();
         }
       }
@@ -169,7 +171,8 @@ export class AppComponent implements OnInit, AfterViewInit {
           // if they're viewing the /user page
           if (
             event.url == `/user` ||
-            (this.authService.authenticated && event.url == `/user/${this.authService.userData.id}`)
+            (this.authService.authenticated() &&
+              event.url == `/user/${this.authService.userData!.id}`)
           ) {
             this.currentlyActiveRoute.set("/user");
           }
@@ -195,12 +198,12 @@ export class AppComponent implements OnInit, AfterViewInit {
   Function Name: searchApp()
   Function Description: Initiates a search for the given query.
   Parameters: e (Event) - Click event (on the search button).
-              searchQuery (string) - Term to search for.
   ----------------
   Programmer: Shir Bar Lev.
   */
-  searchApp(e: Event, searchQuery: string) {
+  searchApp(e: Event) {
     e.preventDefault();
+    const searchQuery = this.searchForm.controls.searchQuery.value;
 
     // if there's something in the search query text field, search for it
     if (searchQuery) {

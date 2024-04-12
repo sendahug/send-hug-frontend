@@ -4,7 +4,7 @@
   ---------------------------------------------------
   MIT License
 
-  Copyright (c) 2020-2023 Send A Hug
+  Copyright (c) 2020-2024 Send A Hug
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -30,7 +30,7 @@
   SOFTWARE.
 */
 import { TestBed } from "@angular/core/testing";
-import { RouterTestingModule } from "@angular/router/testing";
+import { RouterModule } from "@angular/router";
 import {
   BrowserDynamicTestingModule,
   platformBrowserDynamicTesting,
@@ -59,7 +59,7 @@ describe("AppComponent", () => {
 
     TestBed.configureTestingModule({
       imports: [
-        RouterTestingModule,
+        RouterModule.forRoot([]),
         HttpClientModule,
         ReactiveFormsModule,
         ServiceWorkerModule.register("sw.js", { enabled: false }),
@@ -71,7 +71,7 @@ describe("AppComponent", () => {
 
     const authService = TestBed.inject(AuthService);
     spyOn(authService, "checkHash");
-    authService.authenticated = true;
+    authService.authenticated.set(true);
     authService.userData = { ...mockAuthedUser };
 
     const swManager = TestBed.inject(SWManager);
@@ -183,6 +183,7 @@ describe("AppComponent", () => {
     fixture.detectChanges();
     // tick();
     componentHtml.querySelector("#searchQuery").value = "search";
+    componentHtml.querySelector("#searchQuery").dispatchEvent(new Event("input"));
     componentHtml.querySelectorAll(".sendData")[0].click();
 
     // check the spies were triggered

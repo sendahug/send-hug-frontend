@@ -1,4 +1,6 @@
 /*
+	Mock Forms for tests
+  ---------------------------------------------------
   MIT License
 
   Copyright (c) 2020-2024 Send A Hug
@@ -26,18 +28,36 @@
   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
   SOFTWARE.
 */
+import { Component, EventEmitter, Output } from "@angular/core";
 
-import "core-js/full/reflect";
-import "zone.js";
-
-import { enableProdMode } from "@angular/core";
-import { platformBrowserDynamic } from "@angular/platform-browser-dynamic";
-
-import { AppModule } from "./app/app.module";
-import { environment } from "./environments/environment";
-
-if (environment.production) {
-  enableProdMode();
+@Component({
+  selector: "item-delete-form",
+  template: "<app-pop-up (editMode)='editMode.emit(false)'></app-pop-up>",
+})
+export class MockDeleteForm {
+  @Output() editMode = new EventEmitter<boolean>();
 }
 
-platformBrowserDynamic().bootstrapModule(AppModule);
+@Component({
+  selector: "report-form",
+  template: "<app-pop-up (editMode)='editMode.emit(false)'></app-pop-up>",
+})
+export class MockReportForm {
+  @Output() reportMode = new EventEmitter<boolean>();
+}
+
+@Component({
+  selector: "post-edit-form",
+  template: "<app-pop-up (editMode)='editMode.emit(false)'></app-pop-up>",
+})
+export class MockEditForm {
+  @Output() editMode = new EventEmitter<boolean>();
+}
+
+@Component({
+  selector: "display-name-edit-form",
+  template: "<app-pop-up (editMode)='editMode.emit(false)'></app-pop-up>",
+})
+export class MockDisplayNameForm {
+  @Output() editMode = new EventEmitter<boolean>();
+}

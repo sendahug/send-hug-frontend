@@ -4,7 +4,7 @@
   ---------------------------------------------------
   MIT License
 
-  Copyright (c) 2020-2023 Send A Hug
+  Copyright (c) 2020-2024 Send A Hug
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -84,8 +84,8 @@ export class AppMessaging implements AfterViewChecked {
     return this.userThreads().map((thread: FullThread) => {
       return {
         id: thread.id,
-        user: thread.user1Id == this.authService.userData.id ? thread.user2 : thread.user1,
-        userID: thread.user1Id == this.authService.userData.id ? thread.user2Id : thread.user1Id,
+        user: thread.user1Id == this.authService.userData!.id ? thread.user2 : thread.user1,
+        userID: thread.user1Id == this.authService.userData!.id ? thread.user2Id : thread.user1Id,
         numMessages: thread.numMessages,
         latestMessage: thread.latestMessage,
       };
@@ -102,10 +102,7 @@ export class AppMessaging implements AfterViewChecked {
   // loader sub-component variable
   waitFor = `${this.messType} messages`;
   // edit popup sub-component variables
-  postToEdit: any;
-  editType: string | undefined;
-  editMode: boolean;
-  delete: boolean;
+  deleteMode: boolean;
   toDelete: string | undefined;
   itemToDelete: number | undefined;
   lastFocusedElement: any;
@@ -120,8 +117,7 @@ export class AppMessaging implements AfterViewChecked {
   ) {
     let messageType;
     this.threadId = Number(this.route.snapshot.paramMap.get("id"));
-    this.editMode = false;
-    this.delete = false;
+    this.deleteMode = false;
     this.currentPage.set(1);
 
     this.route.url.subscribe((params) => {
@@ -194,7 +190,7 @@ export class AppMessaging implements AfterViewChecked {
     const fetchFromIdb$ = this.fetchMessagesFromIdb();
     const fetchParams: { [key: string]: any } = {
       page: this.currentPage(),
-      userID: this.authService.userData.id!,
+      userID: this.authService.userData!.id!,
       type: this.messType,
     };
 
@@ -218,7 +214,7 @@ export class AppMessaging implements AfterViewChecked {
    *          messages from IndexedDB and transforming them.
    */
   fetchMessagesFromIdb() {
-    const filterValue = this.messType == "thread" ? this.threadId! : this.authService.userData.id!;
+    const filterValue = this.messType == "thread" ? this.threadId! : this.authService.userData!.id!;
 
     return from(
       this.swManager.fetchMessages(this.idbFilterAttribute(), filterValue, 5, this.currentPage()),
@@ -254,7 +250,7 @@ export class AppMessaging implements AfterViewChecked {
         switchMap(() =>
           this.apiClient.get<ThreadResponse>("messages", {
             page: this.currentPage(),
-            userID: this.authService.userData.id!,
+            userID: this.authService.userData!.id!,
             type: this.messType,
           }),
         ),
@@ -332,8 +328,7 @@ export class AppMessaging implements AfterViewChecked {
   */
   deleteMessage(messageID: number) {
     this.lastFocusedElement = document.activeElement;
-    this.editMode = true;
-    this.delete = true;
+    this.deleteMode = true;
     this.toDelete = "Message";
     this.itemToDelete = messageID;
   }
@@ -420,8 +415,7 @@ export class AppMessaging implements AfterViewChecked {
   */
   deleteThread(threadId: number) {
     this.lastFocusedElement = document.activeElement;
-    this.editMode = true;
-    this.delete = true;
+    this.deleteMode = true;
     this.toDelete = "Thread";
     this.itemToDelete = threadId;
   }
@@ -435,10 +429,9 @@ export class AppMessaging implements AfterViewChecked {
   */
   deleteAllMessages(type: string) {
     this.lastFocusedElement = document.activeElement;
-    this.editMode = true;
-    this.delete = true;
+    this.deleteMode = true;
     this.toDelete = `All ${type}`;
-    this.itemToDelete = this.authService.userData.id;
+    this.itemToDelete = this.authService.userData!.id;
   }
 
   /*
@@ -452,7 +445,7 @@ export class AppMessaging implements AfterViewChecked {
   Programmer: Shir Bar Lev.
   */
   changeMode(edit: boolean) {
-    this.editMode = edit;
+    this.deleteMode = edit;
     this.lastFocusedElement.focus();
   }
 }

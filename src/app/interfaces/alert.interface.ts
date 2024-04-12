@@ -4,7 +4,7 @@
   ---------------------------------------------------
   MIT License
 
-  Copyright (c) 2020-2023 Send A Hug
+  Copyright (c) 2020-2024 Send A Hug
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -36,3 +36,10 @@ export interface AlertMessage {
 }
 
 export type MessageType = "Error" | "Success" | "Notification";
+
+export interface AlertConfig {
+  reload?: boolean;
+  navigate?: boolean;
+  navTarget?: string;
+  navText?: string;
+}

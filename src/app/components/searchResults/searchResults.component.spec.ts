@@ -4,7 +4,7 @@
   ---------------------------------------------------
   MIT License
 
-  Copyright (c) 2020-2023 Send A Hug
+  Copyright (c) 2020-2024 Send A Hug
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -31,7 +31,6 @@
 */
 
 import { TestBed } from "@angular/core/testing";
-import { RouterTestingModule } from "@angular/router/testing";
 import {} from "jasmine";
 import { APP_BASE_HREF } from "@angular/common";
 import {
@@ -40,7 +39,7 @@ import {
 } from "@angular/platform-browser-dynamic/testing";
 import { HttpClientModule } from "@angular/common/http";
 import { ServiceWorkerModule } from "@angular/service-worker";
-import { ActivatedRoute, Router } from "@angular/router";
+import { ActivatedRoute, Router, RouterModule } from "@angular/router";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 
 import { SearchResults } from "./searchResults.component";
@@ -57,7 +56,11 @@ const mockUserSearchResults = [
     receivedH: 2,
     givenH: 4,
     posts: 1,
-    role: "user",
+    role: {
+      id: 1,
+      name: "user",
+      permissions: [],
+    },
     selectedIcon: "kitty" as iconCharacters,
     iconColours: {
       character: "#BA9F93",
@@ -72,7 +75,11 @@ const mockUserSearchResults = [
     receivedH: 2,
     givenH: 4,
     posts: 1,
-    role: "user",
+    role: {
+      id: 1,
+      name: "user",
+      permissions: [],
+    },
     selectedIcon: "kitty" as iconCharacters,
     iconColours: {
       character: "#BA9F93",
@@ -111,7 +118,7 @@ describe("SearchResults", () => {
 
     TestBed.configureTestingModule({
       imports: [
-        RouterTestingModule,
+        RouterModule.forRoot([]),
         HttpClientModule,
         ServiceWorkerModule.register("sw.js", { enabled: false }),
         FontAwesomeModule,
@@ -200,7 +207,7 @@ describe("SearchResults", () => {
 
       TestBed.configureTestingModule({
         imports: [
-          RouterTestingModule,
+          RouterModule.forRoot([]),
           HttpClientModule,
           ServiceWorkerModule.register("sw.js", { enabled: false }),
           FontAwesomeModule,
@@ -279,7 +286,7 @@ describe("SearchResults", () => {
 
       TestBed.configureTestingModule({
         imports: [
-          RouterTestingModule,
+          RouterModule.forRoot([]),
           HttpClientModule,
           ServiceWorkerModule.register("sw.js", { enabled: false }),
           FontAwesomeModule,

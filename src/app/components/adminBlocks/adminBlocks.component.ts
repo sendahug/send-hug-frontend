@@ -4,7 +4,7 @@
   ---------------------------------------------------
   MIT License
 
-  Copyright (c) 2020-2023 Send A Hug
+  Copyright (c) 2020-2024 Send A Hug
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -114,13 +114,13 @@ export class AdminBlocks {
   Programmer: Shir Bar Lev.
   */
   block() {
-    const userId = Number(this.blockForm.get("blockID")?.value);
+    const userId = Number(this.blockForm.controls.blockID.value);
     let errorMessage: string | undefined = undefined;
 
     if (!userId && !isNaN(userId)) {
       errorMessage =
         "A user ID is needed to block a user. Please add user ID to the textfield and try again.";
-    } else if (userId == this.authService.userData.id) {
+    } else if (userId == this.authService.userData?.id) {
       errorMessage = "You cannot block yourself.";
     } else if (isNaN(userId)) {
       errorMessage = "User ID must be a number. Please correct the User ID and try again.";
@@ -135,22 +135,10 @@ export class AdminBlocks {
     }
 
     // if there's a user ID and it's valid, proceed
-    this.blockUser(Number(userId), this.blockForm.get("blockLength")?.value || "oneDay");
-  }
-
-  /*
-  Function Name: blockUser()
-  Function Description: Trigers fetching block data and passes the current
-                        length and reportID data to setBlock to calculate
-                        the user's release date.
-  Parameters: userID (number) - The ID of the user to block
-              length (string) - length of time for which the user should be blocked
-              reportID (number) - the ID of the report triggering the block (if any)
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  blockUser(userID: number, length: string, reportID?: number) {
-    this.adminService.blockUser(userID, length, reportID);
+    this.adminService.blockUser(
+      Number(userId),
+      this.blockForm.controls.blockLength.value || "oneDay",
+    );
   }
 
   /*
@@ -171,7 +159,7 @@ export class AdminBlocks {
         next: (response: any) => {
           this.alertsService.createSuccessAlert(
             `User ${response.updated.displayName} has been unblocked.`,
-            true,
+            { reload: true },
           );
         },
       });

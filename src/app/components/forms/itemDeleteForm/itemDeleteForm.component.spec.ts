@@ -4,7 +4,7 @@
   ---------------------------------------------------
   MIT License
 
-  Copyright (c) 2020-2023 Send A Hug
+  Copyright (c) 2020-2024 Send A Hug
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -31,7 +31,7 @@
 */
 
 import { TestBed } from "@angular/core/testing";
-import { RouterTestingModule } from "@angular/router/testing";
+import { RouterModule } from "@angular/router";
 import {} from "jasmine";
 import { APP_BASE_HREF } from "@angular/common";
 import {
@@ -44,6 +44,7 @@ import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { of } from "rxjs";
 
 import { ItemDeleteForm } from "./itemDeleteForm.component";
+import { PopUp } from "@app/components/popUp/popUp.component";
 
 describe("Popup", () => {
   // Before each test, configure testing environment
@@ -53,12 +54,12 @@ describe("Popup", () => {
 
     TestBed.configureTestingModule({
       imports: [
-        RouterTestingModule,
+        RouterModule.forRoot([]),
         HttpClientModule,
         ServiceWorkerModule.register("sw.js", { enabled: false }),
         FontAwesomeModule,
       ],
-      declarations: [ItemDeleteForm],
+      declarations: [ItemDeleteForm, PopUp],
       providers: [{ provide: APP_BASE_HREF, useValue: "/" }],
     }).compileComponents();
   });
@@ -260,7 +261,7 @@ describe("Popup", () => {
     expect(deleteSpy).toHaveBeenCalledWith("posts/4");
     expect(alertsSpy).toHaveBeenCalledWith(
       "Post 4 was deleted. Refresh to view the updated post list.",
-      true,
+      { reload: true },
     );
     expect(swManagerSpy).toHaveBeenCalledWith("posts", 4);
   });
@@ -283,7 +284,7 @@ describe("Popup", () => {
     expect(deleteSpy).toHaveBeenCalledWith("messages/threads/4");
     expect(alertsSpy).toHaveBeenCalledWith(
       "Thread 4 was deleted. Refresh to view the updated thread list.",
-      true,
+      { reload: true },
     );
     expect(swManagerSpy).toHaveBeenCalledWith("messages", "threadID", 4);
   });
@@ -347,7 +348,7 @@ describe("Popup", () => {
     expect(deleteSpy).toHaveBeenCalledWith("users/all/4/posts", {});
     expect(alertsSpy).toHaveBeenCalledWith(
       "4 posts were deleted. Refresh to view the updated page.",
-      true,
+      { reload: true },
     );
   });
 

@@ -3,7 +3,7 @@
   ---------------------------------------------------
   MIT License
 
-  Copyright (c) 2020-2023 Send A Hug
+  Copyright (c) 2020-2024 Send A Hug
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -39,7 +39,11 @@ export const mockAuthedUser: User = {
   givenH: 2,
   posts: 2,
   loginCount: 3,
-  role: "admin",
+  role: {
+    id: 1,
+    name: "admin",
+    permissions: [],
+  },
   jwt: "",
   blocked: false,
   releaseDate: undefined,

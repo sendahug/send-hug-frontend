@@ -4,7 +4,7 @@
   ---------------------------------------------------
   MIT License
 
-  Copyright (c) 2020-2023 Send A Hug
+  Copyright (c) 2020-2024 Send A Hug
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -31,7 +31,6 @@
 */
 
 import { TestBed } from "@angular/core/testing";
-import { RouterTestingModule } from "@angular/router/testing";
 import {} from "jasmine";
 import { APP_BASE_HREF } from "@angular/common";
 import {
@@ -40,18 +39,20 @@ import {
 } from "@angular/platform-browser-dynamic/testing";
 import { HttpClientModule } from "@angular/common/http";
 import { ServiceWorkerModule } from "@angular/service-worker";
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, RouterModule } from "@angular/router";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { By } from "@angular/platform-browser";
 import { NO_ERRORS_SCHEMA } from "@angular/core";
 import { of } from "rxjs";
 
 import { UserPage } from "./userPage.component";
-import { PopUp } from "../popUp/popUp.component";
-import { AuthService } from "../../services/auth.service";
+import { PopUp } from "@app/components/popUp/popUp.component";
+import { AuthService } from "@app/services/auth.service";
 import { mockAuthedUser } from "@tests/mockData";
 import { OtherUser } from "@app/interfaces/otherUser.interface";
 import { iconCharacters } from "@app/interfaces/types";
+import { MockDisplayNameForm, MockReportForm } from "@tests/mockForms";
+import { User } from "@app/interfaces/user.interface";
 
 describe("UserPage", () => {
   // Before each test, configure testing environment
@@ -62,12 +63,12 @@ describe("UserPage", () => {
     TestBed.configureTestingModule({
       schemas: [NO_ERRORS_SCHEMA],
       imports: [
-        RouterTestingModule,
+        RouterModule.forRoot([]),
         HttpClientModule,
         ServiceWorkerModule.register("sw.js", { enabled: false }),
         FontAwesomeModule,
       ],
-      declarations: [UserPage, PopUp],
+      declarations: [UserPage, PopUp, MockDisplayNameForm, MockReportForm],
       providers: [{ provide: APP_BASE_HREF, useValue: "/" }],
     }).compileComponents();
   });
@@ -83,7 +84,7 @@ describe("UserPage", () => {
   it("should check for a logged in user", () => {
     const authService = TestBed.inject(AuthService);
     const authSpy = spyOn(authService, "checkHash");
-    authService.authenticated = true;
+    authService.authenticated.set(true);
     authService.userData = { ...mockAuthedUser };
     const fixture = TestBed.createComponent(UserPage);
     const userPage = fixture.componentInstance;
@@ -98,14 +99,14 @@ describe("UserPage", () => {
     const userPage = fixture.componentInstance;
 
     expect(userPage.editMode).toBeFalse();
-    expect(userPage.report).toBeFalse();
+    expect(userPage.reportMode).toBeFalse();
   });
 
   // Check that when there's no ID the component defaults to the logged in user
   it("should show the logged in user if not provided with ID", (done: DoneFn) => {
     const authService = TestBed.inject(AuthService);
     spyOn(authService, "checkHash");
-    authService.authenticated = true;
+    authService.authenticated.set(true);
     authService.userData = { ...mockAuthedUser };
     const fixture = TestBed.createComponent(UserPage);
     const userPage = fixture.componentInstance;
@@ -117,20 +118,20 @@ describe("UserPage", () => {
     expect(userPage.userId).toBeUndefined();
     expect(userPage.isOtherUserProfile()).toBeFalse();
     expect(userPageDOM.querySelectorAll(".displayName")[0].firstElementChild.textContent).toBe(
-      userData.displayName,
+      userData?.displayName,
     );
     expect(
       userPageDOM.querySelector("#roleElement").querySelectorAll(".pageData")[0].textContent,
-    ).toBe(userData.role);
+    ).toBe(userData?.role.name);
     expect(
       userPageDOM.querySelector("#rHugsElement").querySelectorAll(".pageData")[0].textContent,
-    ).toBe(String(userData.receivedH));
+    ).toBe(String(userData?.receivedH));
     expect(
       userPageDOM.querySelector("#gHugsElement").querySelectorAll(".pageData")[0].textContent,
-    ).toBe(String(userData.givenH));
+    ).toBe(String(userData?.givenH));
     expect(
       userPageDOM.querySelector("#postsElement").querySelectorAll(".pageData")[0].textContent,
-    ).toBe(String(userData.posts));
+    ).toBe(String(userData?.posts));
     expect(userPageDOM.querySelector("#logout")).toBeTruthy();
     done();
   });
@@ -141,7 +142,7 @@ describe("UserPage", () => {
     const routeSpy = spyOn(paramMap.snapshot.paramMap, "get").and.returnValue("4");
     const authService = TestBed.inject(AuthService);
     spyOn(authService, "checkHash");
-    authService.authenticated = true;
+    authService.authenticated.set(true);
     authService.userData = { ...mockAuthedUser };
     const fixture = TestBed.createComponent(UserPage);
     const userPage = fixture.componentInstance;
@@ -154,20 +155,20 @@ describe("UserPage", () => {
     expect(userPage.userId).toBe(4);
     expect(userPage.isOtherUserProfile()).toBeFalse();
     expect(userPageDOM.querySelectorAll(".displayName")[0].firstElementChild.textContent).toBe(
-      userData.displayName,
+      userData?.displayName,
     );
     expect(
       userPageDOM.querySelector("#roleElement").querySelectorAll(".pageData")[0].textContent,
-    ).toBe(userData.role);
+    ).toBe(userData?.role.name);
     expect(
       userPageDOM.querySelector("#rHugsElement").querySelectorAll(".pageData")[0].textContent,
-    ).toBe(String(userData.receivedH));
+    ).toBe(String(userData?.receivedH));
     expect(
       userPageDOM.querySelector("#gHugsElement").querySelectorAll(".pageData")[0].textContent,
-    ).toBe(String(userData.givenH));
+    ).toBe(String(userData?.givenH));
     expect(
       userPageDOM.querySelector("#postsElement").querySelectorAll(".pageData")[0].textContent,
-    ).toBe(String(userData.posts));
+    ).toBe(String(userData?.posts));
     expect(userPageDOM.querySelector("#logout")).toBeTruthy();
     expect(userPageDOM.querySelectorAll(".reportButton")[0]).toBeUndefined();
     done();
@@ -179,7 +180,7 @@ describe("UserPage", () => {
     const routeSpy = spyOn(paramMap.snapshot.paramMap, "get").and.returnValue("1");
     const authService = TestBed.inject(AuthService);
     spyOn(authService, "checkHash");
-    authService.authenticated = true;
+    authService.authenticated.set(true);
     authService.userData = { ...mockAuthedUser };
     const fixture = TestBed.createComponent(UserPage);
     const userPage = fixture.componentInstance;
@@ -189,7 +190,11 @@ describe("UserPage", () => {
       displayName: "shirb",
       receivedH: 3,
       givenH: 3,
-      role: "user",
+      role: {
+        id: 1,
+        name: "user",
+        permissions: [],
+      },
       posts: 10,
       selectedIcon: "kitty",
       iconColours: {
@@ -213,7 +218,7 @@ describe("UserPage", () => {
     );
     expect(
       userPageDOM.querySelector("#roleElement").querySelectorAll(".pageData")[0].textContent,
-    ).toBe(userData.role);
+    ).toBe(userData.role.name);
     expect(
       userPageDOM.querySelector("#rHugsElement").querySelectorAll(".pageData")[0].textContent,
     ).toBe(String(userData.receivedH));
@@ -233,11 +238,11 @@ describe("UserPage", () => {
     const paramMap = TestBed.inject(ActivatedRoute);
     spyOn(paramMap.snapshot.paramMap, "get").and.returnValue("4");
     const authService = TestBed.inject(AuthService);
-    authService.authenticated = false;
+    authService.authenticated.set(false);
     const fixture = TestBed.createComponent(UserPage);
     const userPage = fixture.componentInstance;
     const userPageDOM = fixture.nativeElement;
-    userPage.authService.authenticated = false;
+    userPage.authService.authenticated.set(false);
 
     fixture.detectChanges();
 
@@ -252,18 +257,18 @@ describe("UserPage", () => {
     const paramMap = TestBed.inject(ActivatedRoute);
     spyOn(paramMap.snapshot.paramMap, "get").and.returnValue("4");
     const authService = TestBed.inject(AuthService);
-    authService.authenticated = false;
+    authService.authenticated.set(false);
     const fixture = TestBed.createComponent(UserPage);
     const userPage = fixture.componentInstance;
     const userPageDOM = fixture.nativeElement;
     const loginSpy = spyOn(userPage, "login").and.callThrough();
     const serviceLoginSpy = spyOn(userPage.authService, "login");
-    userPage.authService.authenticated = false;
+    userPage.authService.authenticated.set(false);
 
     fixture.detectChanges();
 
     // check that the user isn't logged in before the click
-    expect(userPage.authService.authenticated).toBeFalse();
+    expect(userPage.authService.authenticated()).toBeFalse();
     expect(userPageDOM.querySelector("#loginBox")).toBeTruthy();
 
     // trigger click on the login button
@@ -282,7 +287,7 @@ describe("UserPage", () => {
     spyOn(paramMap.snapshot.paramMap, "get").and.returnValue("4");
     const authService = TestBed.inject(AuthService);
     spyOn(authService, "checkHash");
-    authService.authenticated = true;
+    authService.authenticated.set(true);
     authService.userData = { ...mockAuthedUser };
     const fixture = TestBed.createComponent(UserPage);
     const userPage = fixture.componentInstance;
@@ -293,7 +298,7 @@ describe("UserPage", () => {
     fixture.detectChanges();
 
     // check the user is logged in
-    expect(userPage.authService.authenticated).toBeTrue();
+    expect(userPage.authService.authenticated()).toBeTrue();
     expect(userPageDOM.querySelector("#profileContainer")).toBeTruthy();
 
     // trigger click on the logout button
@@ -311,7 +316,7 @@ describe("UserPage", () => {
     spyOn(paramMap.snapshot.paramMap, "get").and.returnValue("1");
     const authService = TestBed.inject(AuthService);
     spyOn(authService, "checkHash");
-    authService.authenticated = true;
+    authService.authenticated.set(true);
     authService.userData = { ...mockAuthedUser };
     const fixture = TestBed.createComponent(UserPage);
     const userPage = fixture.componentInstance;
@@ -320,7 +325,11 @@ describe("UserPage", () => {
       displayName: "shirb",
       receivedH: 3,
       givenH: 3,
-      role: "user",
+      role: {
+        id: 1,
+        name: "user",
+        permissions: [],
+      },
       posts: 10,
       selectedIcon: "kitty" as iconCharacters,
       iconColours: {
@@ -351,7 +360,7 @@ describe("UserPage", () => {
     spyOn(paramMap.snapshot.paramMap, "get").and.returnValue("1");
     const authService = TestBed.inject(AuthService);
     spyOn(authService, "checkHash");
-    authService.authenticated = true;
+    authService.authenticated.set(true);
     authService.userData = { ...mockAuthedUser };
     const fixture = TestBed.createComponent(UserPage);
     const userPage = fixture.componentInstance;
@@ -360,7 +369,11 @@ describe("UserPage", () => {
       displayName: "shirb",
       receivedH: 3,
       givenH: 3,
-      role: "user",
+      role: {
+        id: 1,
+        name: "user",
+        permissions: [],
+      },
       posts: 10,
       selectedIcon: "kitty" as iconCharacters,
       iconColours: {
@@ -390,7 +403,7 @@ describe("UserPage", () => {
     spyOn(paramMap.snapshot.paramMap, "get").and.returnValue("4");
     const authService = TestBed.inject(AuthService);
     spyOn(authService, "checkHash");
-    authService.authenticated = true;
+    authService.authenticated.set(true);
     authService.userData = { ...mockAuthedUser };
     const fixture = TestBed.createComponent(UserPage);
     const userPage = fixture.componentInstance;
@@ -408,7 +421,6 @@ describe("UserPage", () => {
     // after the click
     expect(userPage.editMode).toBeTrue();
     expect(userPage.editType).toBe("user");
-    expect(userPage.report).toBeFalse();
     expect(userPageDOM.querySelector("app-pop-up")).toBeTruthy();
     done();
   });
@@ -419,7 +431,7 @@ describe("UserPage", () => {
     spyOn(paramMap.snapshot.paramMap, "get").and.returnValue("1");
     const authService = TestBed.inject(AuthService);
     spyOn(authService, "checkHash");
-    authService.authenticated = true;
+    authService.authenticated.set(true);
     authService.userData = { ...mockAuthedUser };
     const fixture = TestBed.createComponent(UserPage);
     const userPage = fixture.componentInstance;
@@ -429,7 +441,11 @@ describe("UserPage", () => {
       displayName: "shirb",
       receivedH: 3,
       givenH: 3,
-      role: "user",
+      role: {
+        id: 1,
+        name: "user",
+        permissions: [],
+      },
       posts: 10,
       selectedIcon: "kitty",
       iconColours: {
@@ -445,17 +461,16 @@ describe("UserPage", () => {
     fixture.detectChanges();
 
     // before the click
-    expect(userPage.editMode).toBeFalse();
-    expect(userPage.report).toBeFalse();
+    expect(userPage.reportMode).toBeFalse();
 
     // trigger click
     userPageDOM.querySelectorAll(".reportButton")[0].click();
     fixture.detectChanges();
 
     // after the click
-    expect(userPage.editMode).toBeTrue();
-    expect(userPage.editType).toBeUndefined();
-    expect(userPage.report).toBeTrue();
+    expect(userPage.reportMode).toBeTrue();
+    expect(userPage.reportType).toEqual("User");
+    expect(userPage.reportedItem as OtherUser).toEqual(userPage.otherUser() as OtherUser);
     expect(userPageDOM.querySelector("app-pop-up")).toBeTruthy();
     done();
   });
@@ -466,7 +481,7 @@ describe("UserPage", () => {
     spyOn(paramMap.snapshot.paramMap, "get").and.returnValue("1");
     const authService = TestBed.inject(AuthService);
     spyOn(authService, "checkHash");
-    authService.authenticated = true;
+    authService.authenticated.set(true);
     authService.userData = { ...mockAuthedUser };
     const fixture = TestBed.createComponent(UserPage);
     const userPage = fixture.componentInstance;
@@ -479,7 +494,11 @@ describe("UserPage", () => {
       displayName: "shirb",
       receivedH: 3,
       givenH: 3,
-      role: "user",
+      role: {
+        id: 1,
+        name: "user",
+        permissions: [],
+      },
       posts: 10,
       selectedIcon: "kitty",
       iconColours: {
@@ -498,7 +517,7 @@ describe("UserPage", () => {
     expect(hugSpy).not.toHaveBeenCalled();
     expect(apiClientSpy).not.toHaveBeenCalled();
     expect(userPage.isOtherUserProfile()).toBeTrue();
-    expect(userPage["authService"].userData.givenH).toBe(2);
+    expect(userPage["authService"].userData?.givenH).toBe(2);
     expect(userPage.otherUser()!.receivedH).toBe(3);
     expect(
       userPageDOM.querySelector("#rHugsElement").querySelectorAll(".pageData")[0].textContent,
@@ -511,22 +530,22 @@ describe("UserPage", () => {
     // after the click
     expect(hugSpy).toHaveBeenCalled();
     expect(apiClientSpy).toHaveBeenCalled();
-    expect(userPage["authService"].userData.givenH).toBe(3);
+    expect(userPage["authService"].userData?.givenH).toBe(3);
     expect(userPage.otherUser()!.receivedH).toBe(4);
     expect(
       userPageDOM.querySelector("#rHugsElement").querySelectorAll(".pageData")[0].textContent,
     ).toBe("4");
-    expect(alertsSpy).toHaveBeenCalledWith("Your hug was sent!", true);
+    expect(alertsSpy).toHaveBeenCalledWith("Your hug was sent!", { reload: true });
     done();
   });
 
   // Check the popup exits when 'false' is emitted
-  it("should change mode when the event emitter emits false", (done: DoneFn) => {
+  it("should change mode when the event emitter emits false - display name edit", (done: DoneFn) => {
     const paramMap = TestBed.inject(ActivatedRoute);
     spyOn(paramMap.snapshot.paramMap, "get").and.returnValue("1");
     const authService = TestBed.inject(AuthService);
     spyOn(authService, "checkHash");
-    authService.authenticated = true;
+    authService.authenticated.set(true);
     authService.userData = { ...mockAuthedUser };
     const fixture = TestBed.createComponent(UserPage);
     const userPage = fixture.componentInstance;
@@ -539,17 +558,50 @@ describe("UserPage", () => {
     userPage.userToEdit = userPage.authService.userData;
     userPage.editMode = true;
     userPage.editType = "user";
-    userPage.report = false;
     fixture.detectChanges();
 
     // exit the popup
-    const popup = fixture.debugElement.query(By.css("app-pop-up")).componentInstance as PopUp;
-    popup.exitEdit();
+    const popup = fixture.debugElement.query(By.css("display-name-edit-form"))
+      .componentInstance as MockDisplayNameForm;
+    popup.editMode.emit(false);
     fixture.detectChanges();
 
     // check the popup is exited
     expect(changeSpy).toHaveBeenCalled();
     expect(userPage.editMode).toBeFalse();
+    expect(document.activeElement).toBe(document.querySelectorAll("a")[0]);
+    done();
+  });
+
+  it("should change mode when the event emitter emits false - report", (done: DoneFn) => {
+    const paramMap = TestBed.inject(ActivatedRoute);
+    spyOn(paramMap.snapshot.paramMap, "get").and.returnValue("1");
+    const authService = TestBed.inject(AuthService);
+    spyOn(authService, "checkHash");
+    authService.authenticated.set(true);
+    authService.userData = { ...mockAuthedUser };
+    const fixture = TestBed.createComponent(UserPage);
+    const userPage = fixture.componentInstance;
+    const changeSpy = spyOn(userPage, "changeMode").and.callThrough();
+
+    fixture.detectChanges();
+
+    // start the popup
+    userPage.lastFocusedElement = document.querySelectorAll("a")[0];
+    userPage.reportedItem = userPage.otherUser() as User;
+    userPage.reportMode = true;
+    userPage.reportType = "User";
+    fixture.detectChanges();
+
+    // exit the popup
+    const popup = fixture.debugElement.query(By.css("report-form"))
+      .componentInstance as MockReportForm;
+    popup.reportMode.emit(false);
+    fixture.detectChanges();
+
+    // check the popup is exited
+    expect(changeSpy).toHaveBeenCalled();
+    expect(userPage.reportMode).toBeFalse();
     expect(document.activeElement).toBe(document.querySelectorAll("a")[0]);
     done();
   });

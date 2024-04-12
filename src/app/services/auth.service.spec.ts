@@ -4,7 +4,7 @@
   ---------------------------------------------------
   MIT License
 
-  Copyright (c) 2020-2023 Send A Hug
+  Copyright (c) 2020-2024 Send A Hug
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -218,9 +218,9 @@ describe("AuthService", () => {
     // wait for user data to be resolved
     authService.isUserDataResolved.subscribe((value) => {
       if (value) {
-        expect(authService.userData.id).toBe(4);
-        expect(authService.userData.displayName).toBe("name");
-        expect(authService.authenticated).toBeTrue();
+        expect(authService.userData?.id).toBe(4);
+        expect(authService.userData?.displayName).toBe("name");
+        expect(authService.authenticated()).toBeTrue();
         expect(setSpy).toHaveBeenCalled();
       }
     });
@@ -360,8 +360,8 @@ describe("AuthService", () => {
     const addSpy = spyOn(authService["serviceWorkerM"], "addItem");
 
     // check the user is logged out at first
-    expect(authService.userData.id).toBe(0);
-    expect(authService.authenticated).toBeFalse();
+    expect(authService.userData).toBeUndefined();
+    expect(authService.authenticated()).toBeFalse();
 
     const jwtPayload = {
       sub: "auth0",
@@ -371,9 +371,9 @@ describe("AuthService", () => {
     // wait for user data to be resolved
     authService.isUserDataResolved.subscribe((value) => {
       if (value) {
-        expect(authService.userData.id).toBe(5);
-        expect(authService.userData.auth0Id).toBe("auth0");
-        expect(authService.authenticated).toBeTrue();
+        expect(authService.userData?.id).toBe(5);
+        expect(authService.userData?.auth0Id).toBe("auth0");
+        expect(authService.authenticated()).toBeTrue();
       }
     });
 
@@ -396,7 +396,11 @@ describe("AuthService", () => {
       givenH: 2,
       posts: 2,
       loginCount: 3,
-      role: "admin",
+      role: {
+        id: 1,
+        name: "admin",
+        permissions: [],
+      },
       jwt: "",
       blocked: false,
       releaseDate: undefined,
@@ -411,7 +415,7 @@ describe("AuthService", () => {
         item: "#f4b56a",
       },
     };
-    authService.authenticated = true;
+    authService.authenticated.set(true);
     authService.tokenExpired = false;
 
     const authSpy = spyOn(authService.auth0, "logout");
@@ -423,7 +427,7 @@ describe("AuthService", () => {
 
     expect(authSpy).toHaveBeenCalled();
     expect(storageSpy).toHaveBeenCalled();
-    expect(authService.userData.id).toBe(0);
+    expect(authService.userData).toBeUndefined();
     expect(addSpy).toHaveBeenCalled();
     expect(clearSpy).toHaveBeenCalledTimes(2);
   });
@@ -538,7 +542,11 @@ describe("AuthService", () => {
       givenH: 2,
       posts: 2,
       loginCount: 2,
-      role: "admin",
+      role: {
+        id: 1,
+        name: "admin",
+        permissions: [],
+      },
       jwt: "",
       blocked: false,
       releaseDate: undefined,
@@ -563,32 +571,80 @@ describe("AuthService", () => {
 
   // Check the service checks user permissions correctly
   it("canUser() - checks for user permissions", () => {
-    authService.token = "abcdef";
-    const parseSpy = spyOn(authService, "parseJWT").and.returnValue({
-      permissions: [
-        "block:user",
-        "delete:any-post",
-        "delete:messages",
-        "patch:any-post",
-        "patch:any-user",
-        "post:message",
-        "post:post",
-        "post:report",
-        "read:admin-board",
-        "read:messages",
-        "read:user",
-      ],
-    });
+    authService.userData = {
+      id: 4,
+      auth0Id: "auth0",
+      displayName: "name",
+      receivedH: 2,
+      givenH: 2,
+      posts: 2,
+      loginCount: 2,
+      role: {
+        id: 1,
+        name: "admin",
+        permissions: [
+          "block:user",
+          "delete:any-post",
+          "delete:messages",
+          "patch:any-post",
+          "patch:any-user",
+          "post:message",
+          "post:post",
+          "post:report",
+          "read:admin-board",
+          "read:messages",
+          "read:user",
+        ],
+      },
+      jwt: "",
+      blocked: false,
+      releaseDate: undefined,
+      autoRefresh: false,
+      refreshRate: 20,
+      pushEnabled: false,
+      selectedIcon: "kitty",
+      iconColours: {
+        character: "#BA9F93",
+        lbg: "#e2a275",
+        rbg: "#f8eee4",
+        item: "#f4b56a",
+      },
+    };
 
     const res = authService.canUser("block:user");
 
-    expect(parseSpy).toHaveBeenCalled();
     expect(res).toBeTrue();
   });
 
   // Check the service returns false if there's no logged in user
   it("canUser() - returns false if the user doesn't have permission", () => {
-    authService.token = "";
+    authService.userData = {
+      id: 4,
+      auth0Id: "auth0",
+      displayName: "name",
+      receivedH: 2,
+      givenH: 2,
+      posts: 2,
+      loginCount: 2,
+      role: {
+        id: 1,
+        name: "admin",
+        permissions: [],
+      },
+      jwt: "",
+      blocked: false,
+      releaseDate: undefined,
+      autoRefresh: false,
+      refreshRate: 20,
+      pushEnabled: false,
+      selectedIcon: "kitty",
+      iconColours: {
+        character: "#BA9F93",
+        lbg: "#e2a275",
+        rbg: "#f8eee4",
+        item: "#f4b56a",
+      },
+    };
 
     const res = authService.canUser("block:user");
 
@@ -597,7 +653,7 @@ describe("AuthService", () => {
 
   // Check the service returns false if there's no token
   it("canUser() - returns false if there's no saved token", () => {
-    authService.token = "";
+    authService.userData = undefined;
 
     const response = authService.canUser("do something");
 

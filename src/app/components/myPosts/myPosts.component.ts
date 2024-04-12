@@ -4,7 +4,7 @@
   ---------------------------------------------------
   MIT License
 
-  Copyright (c) 2020-2023 Send A Hug
+  Copyright (c) 2020-2024 Send A Hug
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -64,10 +64,10 @@ export class MyPosts implements OnInit {
   postToEdit: Post | undefined;
   editType: string | undefined;
   editMode: boolean;
-  delete: boolean;
+  deleteMode: boolean;
   toDelete: string | undefined;
   itemToDelete: number | undefined;
-  report: boolean;
+  reportMode: boolean;
   reportedItem: Post | undefined;
   reportType = "Post";
   lastFocusedElement: any;
@@ -85,7 +85,7 @@ export class MyPosts implements OnInit {
   @Input()
   userID!: number;
   user = computed(() =>
-    this.userID && this.userID != this.authService.userData.id! ? "other" : "self",
+    this.userID && this.userID != this.authService.userData!.id! ? "other" : "self",
   );
   // icons
   faFlag = faFlag;
@@ -99,12 +99,12 @@ export class MyPosts implements OnInit {
     private apiClient: ApiClientService,
   ) {
     if (!this.userID) {
-      this.userID = this.authService.userData.id!;
+      this.userID = this.authService.userData!.id!;
     }
 
     this.editMode = false;
-    this.delete = false;
-    this.report = false;
+    this.deleteMode = false;
+    this.reportMode = false;
     this.currentPage.set(1);
   }
 
@@ -119,7 +119,7 @@ export class MyPosts implements OnInit {
   */
   ngOnInit() {
     if (!this.userID) {
-      this.userID = this.authService.userData.id!;
+      this.userID = this.authService.userData!.id!;
     }
 
     this.fetchPosts();
@@ -198,8 +198,19 @@ export class MyPosts implements OnInit {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  changeMode(edit: boolean) {
-    this.editMode = edit;
+  changeMode(edit: boolean, type: "Edit" | "Delete" | "Report") {
+    switch (type) {
+      case "Edit":
+        this.editMode = edit;
+        break;
+      case "Delete":
+        this.deleteMode = edit;
+        break;
+      case "Report":
+        this.reportMode = edit;
+        break;
+    }
+
     this.lastFocusedElement.focus();
   }
 
@@ -212,8 +223,7 @@ export class MyPosts implements OnInit {
   */
   deletePost(post_id: number) {
     this.lastFocusedElement = document.activeElement;
-    this.editMode = true;
-    this.delete = true;
+    this.deleteMode = true;
     this.toDelete = "Post";
     this.itemToDelete = post_id;
   }
@@ -228,8 +238,7 @@ export class MyPosts implements OnInit {
   */
   deleteAllPosts() {
     this.lastFocusedElement = document.activeElement;
-    this.editMode = true;
-    this.delete = true;
+    this.deleteMode = true;
     this.toDelete = "All posts";
     // if there's a user ID, take the selected user's ID. Otherwise, it's the
     // user's own profile, so take their ID from the Auth Service.
@@ -245,9 +254,7 @@ export class MyPosts implements OnInit {
   */
   reportPost(post: Post) {
     this.lastFocusedElement = document.activeElement;
-    this.editMode = true;
-    this.delete = false;
-    this.report = true;
+    this.reportMode = true;
     this.reportedItem = post;
   }
 
@@ -260,9 +267,7 @@ export class MyPosts implements OnInit {
   Programmer: Shir Bar Lev.
   */
   sendHug(itemID: number) {
-    let item = {};
-    item = this.posts().filter((e) => e.id == itemID)[0];
-    this.itemsService.sendHug(item);
+    this.itemsService.sendHug(itemID);
   }
 
   /*

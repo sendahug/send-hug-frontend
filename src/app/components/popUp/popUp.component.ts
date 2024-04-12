@@ -4,7 +4,7 @@
   ---------------------------------------------------
   MIT License
 
-  Copyright (c) 2020-2023 Send A Hug
+  Copyright (c) 2020-2024 Send A Hug
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -31,47 +31,16 @@
 */
 
 // Angular imports
-import {
-  Component,
-  Input,
-  Output,
-  EventEmitter,
-  OnInit,
-  OnChanges,
-  AfterViewChecked,
-} from "@angular/core";
+import { Component, Output, EventEmitter, OnInit, AfterViewChecked } from "@angular/core";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
-
-// App-related import
-import { Post } from "@app/interfaces/post.interface";
-import { OtherUser } from "@app/interfaces/otherUser.interface";
 
 @Component({
   selector: "app-pop-up",
   templateUrl: "./popUp.component.html",
 })
-export class PopUp implements OnInit, OnChanges, AfterViewChecked {
-  // type of item to edit
-  @Input() toEdit: string | undefined;
-  // item to edit
-  @Input() editedItem: any;
+export class PopUp implements OnInit, AfterViewChecked {
   // indicates whether edit/delete mode is still required
   @Output() editMode = new EventEmitter<boolean>();
-  // whether we're in delete (or edit) mode
-  @Input() delete = false;
-  // type of item to delete
-  @Input() toDelete: string | undefined;
-  // the item to delete itself
-  @Input() itemToDelete: number | undefined;
-  @Input() messType: string | undefined;
-  // whether the user is reporting an item
-  @Input() report = false;
-  // reported post
-  @Input() reportedItem: Post | OtherUser | undefined;
-  // type of item to report
-  @Input() reportType: "User" | "Post" | undefined;
-  selectedReason: string | undefined;
-  @Input() reportData: any;
   focusableElements: any;
   checkFocusBinded = this.checkFocus.bind(this);
   // icons
@@ -90,17 +59,6 @@ export class PopUp implements OnInit, OnChanges, AfterViewChecked {
   Programmer: Shir Bar Lev.
   */
   ngOnInit() {
-    // if we're in delete mode, turn the values of edit variables to undefined
-    if (this.delete) {
-      this.toEdit = undefined;
-      this.editedItem = undefined;
-    }
-    // if we're in edit mode, turn the values of delete variables to undefined
-    else {
-      this.toDelete = undefined;
-      this.itemToDelete = undefined;
-    }
-
     document.getElementById("exitButton")!.focus();
     if (document.getElementById("siteHeader")) {
       document.getElementById("siteHeader")!.className = "modal";
@@ -122,28 +80,6 @@ export class PopUp implements OnInit, OnChanges, AfterViewChecked {
           input:not([disabled]), textarea:not([disabled]), select:not([disabled]),
           details, iframe, object, embed, [tabindex]:not([tabindex="-1"]`);
     modal!.addEventListener("keydown", this.checkFocusBinded);
-  }
-
-  /*
-  Function Name: ngOnChanges()
-  Function Description: This method is automatically triggered by Angular upon
-                        changes in parent component. It checks for the mode the user is in (edit
-                        or delete) and sets the component's variables accordingly.
-  Parameters: None.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  ngOnChanges() {
-    // if we're in delete mode, turn the values of edit variables to undefined
-    if (this.delete) {
-      this.toEdit = undefined;
-      this.editedItem = undefined;
-    }
-    // if we're in edit mode, turn the values of delete variables to undefined
-    else {
-      this.toDelete = undefined;
-      this.itemToDelete = undefined;
-    }
   }
 
   /*

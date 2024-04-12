@@ -17,7 +17,8 @@ Pull requests are welcome in this project. When submitting a bug-related PR, mak
 
 - Include a link to the issue, if your PR is a fix for a reported bug (from our repo's open issues).
 - Include information about the bug itself, the behaviour you expected, the circumstances around the appearance of this bug, how you fixed it, and any other relevant data in the PR description.
-- Give the PR an informative title.
+- Give the PR an informative title (guidance below).
+- Add a changelog entry (see guidance [here](https://github.com/sendahug/send-hug-frontend/blob/dev/changelog/README.md)).
 
 Also, make sure that your code:
 
@@ -49,7 +50,8 @@ Pull requests are welcome in this project. When submitting a feature-related PR,
 - Include a link to the feature request, if your PR is meant to close an open feature request.
 - Include information about the feature, how you implemented it, and any other relevant data in the PR description.
 - Include the relevant tests for your feature. This is just as essential as the feature itself.
-- Give the PR an informative title.
+- Give the PR an informative title (guidance below).
+- Add a changelog entry (see guidance [here](https://github.com/sendahug/send-hug-frontend/blob/dev/changelog/README.md)).
 
 Also, make sure that your code:
 
@@ -57,6 +59,18 @@ Also, make sure that your code:
 - Is concise and solves the bug.
 - Follows the same styling as the project.
 - Clears all checks (particularly the tests).
+
+## Pull Request Title
+
+The title of the pull request must contain a brief description of the main change, and be prefixed with one of the following, depending on the type of change included:
+
+- `feature:` - For new features.
+- `change:` - For any changes to existing functionality in the app.
+- `fix:` - For any bug fixes.
+- `chore:` - For dependency updates, CI/CD, repository files (e.g., contributing.md), build/deployment-related files and general code cleanup.
+- `docs:` - For any updates to the dodcumentation.
+
+Note that there's also a `deps:` prefix, but it's reserved to Dependabot's pull requests.
 
 ## Anything Else
 

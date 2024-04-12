@@ -4,7 +4,7 @@
   ---------------------------------------------------
   MIT License
 
-  Copyright (c) 2020-2023 Send A Hug
+  Copyright (c) 2020-2024 Send A Hug
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -59,12 +59,12 @@ export class NotificationService {
   notificationsSub: PushSubscription | undefined;
   subId = 0;
   newNotifications = 0;
-  pushStatus!: Boolean;
+  pushStatus: boolean = false;
   resubscribeCalls = 0;
   pushDate = 0;
   // notifications refresh variables
   refreshBtn!: "Enable" | "Disable";
-  refreshStatus!: Boolean;
+  refreshStatus: boolean = false;
   refreshRateSecs = 20;
   refreshCounter: Observable<number> | undefined;
   refreshSub: Subscription | undefined;
@@ -80,12 +80,9 @@ export class NotificationService {
     // if the user is logged in, and their data is fetched, set the appropriate variables
     this.authService.isUserDataResolved.subscribe((value) => {
       if (value) {
-        this.pushStatus = this.authService.userData.pushEnabled;
-        this.refreshStatus = this.authService.userData.autoRefresh;
-        this.refreshRateSecs = this.authService.userData.refreshRate;
-      } else {
-        this.pushStatus = false;
-        this.refreshStatus = false;
+        this.pushStatus = this.authService.userData!.pushEnabled;
+        this.refreshStatus = this.authService.userData!.autoRefresh;
+        this.refreshRateSecs = this.authService.userData!.refreshRate;
       }
 
       this.toggleBtn = this.pushStatus ? "Disable" : "Enable";
@@ -95,7 +92,10 @@ export class NotificationService {
       if ("PushManager" in window && this.serviceWorkerM.activeServiceWorkerReg) {
         // check the state of the Push permission
         this.serviceWorkerM.activeServiceWorkerReg.pushManager
-          .permissionState({})
+          .permissionState({
+            applicationServerKey: this.publicKey as string,
+            userVisibleOnly: true,
+          })
           .then((permission) => {
             // If permission was denied and the user's Push status is true, alert the
             // user they can't get push notifications in this browser
@@ -231,7 +231,10 @@ export class NotificationService {
     if ("PushManager" in window) {
       // check the state of the Push permission
       this.serviceWorkerM.activeServiceWorkerReg?.pushManager
-        .permissionState({})
+        .permissionState({
+          applicationServerKey: this.publicKey as string,
+          userVisibleOnly: true,
+        })
         .then((permission) => {
           // If permission was denied, alert the user they can't get push notifications in this browser
           if (permission == "denied") {
@@ -389,7 +392,7 @@ export class NotificationService {
     };
 
     // send the data to the server
-    this.apiClient.patch(`users/all/${this.authService.userData.id}`, newSettings).subscribe({
+    this.apiClient.patch(`users/all/${this.authService.userData!.id}`, newSettings).subscribe({
       next: (_response: any) => {
         this.alertsService.createSuccessAlert("Settings updated successfully!");
       },

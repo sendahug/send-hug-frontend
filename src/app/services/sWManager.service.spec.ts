@@ -4,7 +4,7 @@
   ---------------------------------------------------
   MIT License
 
-  Copyright (c) 2020-2023 Send A Hug
+  Copyright (c) 2020-2024 Send A Hug
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -173,7 +173,11 @@ function populateDB(
         displayName: "shirb",
         receivedH: 3,
         givenH: 3,
-        role: "user",
+        role: {
+          id: 1,
+          name: "user",
+          permissions: [],
+        },
         posts: 10,
         selectedIcon: "kitty" as "kitty",
         iconColours: {
@@ -188,7 +192,11 @@ function populateDB(
         displayName: "user14",
         receivedH: 3,
         givenH: 3,
-        role: "user",
+        role: {
+          id: 1,
+          name: "user",
+          permissions: [],
+        },
         posts: 10,
         selectedIcon: "kitty" as "kitty",
         iconColours: {

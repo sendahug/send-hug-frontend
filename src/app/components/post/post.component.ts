@@ -4,7 +4,7 @@
   ---------------------------------------------------
   MIT License
 
-  Copyright (c) 2020-2023 Send A Hug
+  Copyright (c) 2020-2024 Send A Hug
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -39,6 +39,7 @@ import {
   OnInit,
   OnDestroy,
   signal,
+  WritableSignal,
 } from "@angular/core";
 import { faComment, faEdit, faFlag } from "@fortawesome/free-regular-svg-icons";
 import { faHandHoldingHeart, faTimes, faEllipsisV } from "@fortawesome/free-solid-svg-icons";
@@ -54,18 +55,25 @@ import { Post } from "@app/interfaces/post.interface";
   templateUrl: "./post.component.html",
 })
 export class SinglePost implements AfterViewChecked, OnInit, OnDestroy {
-  @Input() post!: Post;
+  @Input()
+  get post(): Post | undefined {
+    return this._post();
+  }
+  set post(value: Post) {
+    this._post.set(value);
+  }
   @Input() type!: "n" | "s";
   @Input() containerClass!: string;
-  postId = computed(() => `${this.type}Post${this.post?.id || ""}`);
+  private _post: WritableSignal<Post | undefined> = signal(undefined);
+  postId = computed(() => `${this.type}Post${this._post()?.id || ""}`);
   // edit popup sub-component variables
   postToEdit: Post | undefined;
   editType: string | undefined;
-  editMode: boolean;
-  delete: boolean;
+  editMode: boolean = false;
+  deleteMode: boolean = false;
   toDelete: string | undefined;
   itemToDelete: number | undefined;
-  report: boolean;
+  reportMode: boolean = false;
   reportedItem: Post | undefined;
   reportType: "Post" | undefined;
   lastFocusedElement: any;
@@ -73,6 +81,12 @@ export class SinglePost implements AfterViewChecked, OnInit, OnDestroy {
   subscriptions: Subscription[] = [];
   shouldShowSubmenu = signal(true);
   shouldMenuFloat = signal(false);
+  shouldDisableHugBtn = computed(
+    () =>
+      !this.authService.authenticated() ||
+      this._post()?.sentHugs?.includes(this.authService.userData!.id!),
+  );
+  // Classes
   menuButtonClass = computed(() => ({
     "textlessButton menuButton": true,
     hidden: !this.shouldMenuFloat(),
@@ -99,6 +113,10 @@ export class SinglePost implements AfterViewChecked, OnInit, OnDestroy {
 
     return initialButtonsCount;
   });
+  sendHugButtonClass = computed(() => ({
+    "textlessButton hugButton": true,
+    active: this.shouldDisableHugBtn(),
+  }));
   // icons
   faComment = faComment;
   faEdit = faEdit;
@@ -111,11 +129,7 @@ export class SinglePost implements AfterViewChecked, OnInit, OnDestroy {
   constructor(
     public itemsService: ItemsService,
     public authService: AuthService,
-  ) {
-    this.editMode = false;
-    this.delete = false;
-    this.report = false;
-  }
+  ) {}
 
   ngOnInit(): void {
     this.subscriptions.push(
@@ -126,13 +140,17 @@ export class SinglePost implements AfterViewChecked, OnInit, OnDestroy {
     this.subscriptions.push(
       this.itemsService.receivedAHug.subscribe((postId) => {
         if (
-          postId == this.post.id &&
-          !this.post.sentHugs?.includes(this.authService.userData.id!)
+          postId == this._post()?.id &&
+          !this._post()?.sentHugs?.includes(this.authService.userData!.id!)
         ) {
           // TODO: Also update the parent list & IDB
-          this.post.givenHugs += 1;
-          this.post.sentHugs?.push(this.authService.userData.id!);
-          this.disableHugButton();
+          const sent_hugs = this._post()!.sentHugs || [];
+          sent_hugs.push(this.authService.userData!.id!);
+          this._post.set({
+            ...this._post()!,
+            givenHugs: this._post()!.givenHugs + 1,
+            sentHugs: sent_hugs,
+          });
         }
       }),
     );
@@ -164,7 +182,7 @@ export class SinglePost implements AfterViewChecked, OnInit, OnDestroy {
     if (buttonsContainer.offsetWidth < buttonsWidth) {
       this.shouldMenuFloat.set(true);
 
-      if (this.itemsService.currentlyOpenMenu.value != this.post?.id) {
+      if (this.itemsService.currentlyOpenMenu.value != this.postId()) {
         this.shouldShowSubmenu.set(false);
       } else {
         this.shouldShowSubmenu.set(true);
@@ -184,7 +202,8 @@ export class SinglePost implements AfterViewChecked, OnInit, OnDestroy {
   Programmer: Shir Bar Lev.
   */
   sendHug() {
-    this.itemsService.sendHug(this.post);
+    if (!this._post()?.id) return;
+    this.itemsService.sendHug(this._post()!.id!);
   }
 
   /*
@@ -197,10 +216,8 @@ export class SinglePost implements AfterViewChecked, OnInit, OnDestroy {
   editPost() {
     this.lastFocusedElement = document.activeElement;
     this.editType = "post";
-    this.postToEdit = this.post;
+    this.postToEdit = this._post();
     this.editMode = true;
-    this.delete = false;
-    this.report = false;
   }
 
   /*
@@ -213,8 +230,19 @@ export class SinglePost implements AfterViewChecked, OnInit, OnDestroy {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  changeMode(edit: boolean) {
-    this.editMode = edit;
+  changeMode(edit: boolean, type: "Edit" | "Delete" | "Report") {
+    switch (type) {
+      case "Edit":
+        this.editMode = edit;
+        break;
+      case "Delete":
+        this.deleteMode = edit;
+        break;
+      case "Report":
+        this.reportMode = edit;
+        break;
+    }
+
     this.lastFocusedElement.focus();
   }
 
@@ -227,11 +255,9 @@ export class SinglePost implements AfterViewChecked, OnInit, OnDestroy {
   */
   deletePost() {
     this.lastFocusedElement = document.activeElement;
-    this.editMode = true;
-    this.delete = true;
+    this.deleteMode = true;
     this.toDelete = "Post";
-    this.itemToDelete = this.post.id;
-    this.report = false;
+    this.itemToDelete = this._post()?.id;
   }
 
   /*
@@ -243,12 +269,8 @@ export class SinglePost implements AfterViewChecked, OnInit, OnDestroy {
   */
   reportPost() {
     this.lastFocusedElement = document.activeElement;
-    this.editMode = true;
-    this.postToEdit = undefined;
-    this.editType = undefined;
-    this.delete = false;
-    this.report = true;
-    this.reportedItem = this.post;
+    this.reportMode = true;
+    this.reportedItem = this._post();
     this.reportType = "Post";
   }
 
@@ -261,25 +283,10 @@ export class SinglePost implements AfterViewChecked, OnInit, OnDestroy {
   Programmer: Shir Bar Lev.
   */
   toggleOptions() {
-    if (this.itemsService.currentlyOpenMenu.value !== this.post.id) {
-      this.itemsService.currentlyOpenMenu.next(this.post.id as number);
+    if (this.itemsService.currentlyOpenMenu.value !== this.postId()) {
+      this.itemsService.currentlyOpenMenu.next(this.postId());
     } else {
-      this.itemsService.currentlyOpenMenu.next(-1);
+      this.itemsService.currentlyOpenMenu.next("");
     }
-  }
-
-  /**
-   * Disables the current post's hug button to prevent attempting
-   * to send multiple hugs on one post. Is triggered by the user
-   * sending a hug for the post.
-   */
-  disableHugButton() {
-    // TODO: Ideally we shouldn't have to do this; this is only done
-    // because the post isn't fully reactive. This should be fixed.
-    let post = document.getElementById(this.postId())?.parentElement;
-    post?.querySelectorAll(".fa-hand-holding-heart").forEach((element) => {
-      (element.parentElement as HTMLButtonElement).disabled = true;
-      (element.parentElement as HTMLButtonElement).classList.add("active");
-    });
   }
 }

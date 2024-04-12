@@ -183,7 +183,7 @@ describe("MyPosts", () => {
     upFixture.detectChanges();
     const myPosts: MyPosts = upFixture.debugElement.children[0].children[0].componentInstance;
 
-    expect(myPosts.userID).toBe(userPage.authService.userData.id as number);
+    expect(myPosts.userID).toBe(userPage.authService.userData!.id as number);
     expect(myPosts.user()).toBe("self");
   });
 

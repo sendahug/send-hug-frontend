@@ -80,9 +80,9 @@ export class NotificationService {
     // if the user is logged in, and their data is fetched, set the appropriate variables
     this.authService.isUserDataResolved.subscribe((value) => {
       if (value) {
-        this.pushStatus = this.authService.userData.pushEnabled;
-        this.refreshStatus = this.authService.userData.autoRefresh;
-        this.refreshRateSecs = this.authService.userData.refreshRate;
+        this.pushStatus = this.authService.userData!.pushEnabled;
+        this.refreshStatus = this.authService.userData!.autoRefresh;
+        this.refreshRateSecs = this.authService.userData!.refreshRate;
       }
 
       this.toggleBtn = this.pushStatus ? "Disable" : "Enable";
@@ -392,7 +392,7 @@ export class NotificationService {
     };
 
     // send the data to the server
-    this.apiClient.patch(`users/all/${this.authService.userData.id}`, newSettings).subscribe({
+    this.apiClient.patch(`users/all/${this.authService.userData!.id}`, newSettings).subscribe({
       next: (_response: any) => {
         this.alertsService.createSuccessAlert("Settings updated successfully!");
       },

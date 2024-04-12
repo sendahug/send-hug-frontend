@@ -1,5 +1,5 @@
-const currentCache = "send-hug-v6";
-const serverUrl = "localhost:5000";
+const currentCache = "send-hug-v7";
+const serverUrl = "127.0.0.1:5000";
 
 // upon installing a new service worker
 self.addEventListener("install", function (event) {

@@ -118,20 +118,20 @@ describe("UserPage", () => {
     expect(userPage.userId).toBeUndefined();
     expect(userPage.isOtherUserProfile()).toBeFalse();
     expect(userPageDOM.querySelectorAll(".displayName")[0].firstElementChild.textContent).toBe(
-      userData.displayName,
+      userData?.displayName,
     );
     expect(
       userPageDOM.querySelector("#roleElement").querySelectorAll(".pageData")[0].textContent,
-    ).toBe(userData.role);
+    ).toBe(userData?.role.name);
     expect(
       userPageDOM.querySelector("#rHugsElement").querySelectorAll(".pageData")[0].textContent,
-    ).toBe(String(userData.receivedH));
+    ).toBe(String(userData?.receivedH));
     expect(
       userPageDOM.querySelector("#gHugsElement").querySelectorAll(".pageData")[0].textContent,
-    ).toBe(String(userData.givenH));
+    ).toBe(String(userData?.givenH));
     expect(
       userPageDOM.querySelector("#postsElement").querySelectorAll(".pageData")[0].textContent,
-    ).toBe(String(userData.posts));
+    ).toBe(String(userData?.posts));
     expect(userPageDOM.querySelector("#logout")).toBeTruthy();
     done();
   });
@@ -155,20 +155,20 @@ describe("UserPage", () => {
     expect(userPage.userId).toBe(4);
     expect(userPage.isOtherUserProfile()).toBeFalse();
     expect(userPageDOM.querySelectorAll(".displayName")[0].firstElementChild.textContent).toBe(
-      userData.displayName,
+      userData?.displayName,
     );
     expect(
       userPageDOM.querySelector("#roleElement").querySelectorAll(".pageData")[0].textContent,
-    ).toBe(userData.role);
+    ).toBe(userData?.role.name);
     expect(
       userPageDOM.querySelector("#rHugsElement").querySelectorAll(".pageData")[0].textContent,
-    ).toBe(String(userData.receivedH));
+    ).toBe(String(userData?.receivedH));
     expect(
       userPageDOM.querySelector("#gHugsElement").querySelectorAll(".pageData")[0].textContent,
-    ).toBe(String(userData.givenH));
+    ).toBe(String(userData?.givenH));
     expect(
       userPageDOM.querySelector("#postsElement").querySelectorAll(".pageData")[0].textContent,
-    ).toBe(String(userData.posts));
+    ).toBe(String(userData?.posts));
     expect(userPageDOM.querySelector("#logout")).toBeTruthy();
     expect(userPageDOM.querySelectorAll(".reportButton")[0]).toBeUndefined();
     done();
@@ -190,7 +190,11 @@ describe("UserPage", () => {
       displayName: "shirb",
       receivedH: 3,
       givenH: 3,
-      role: "user",
+      role: {
+        id: 1,
+        name: "user",
+        permissions: [],
+      },
       posts: 10,
       selectedIcon: "kitty",
       iconColours: {
@@ -214,7 +218,7 @@ describe("UserPage", () => {
     );
     expect(
       userPageDOM.querySelector("#roleElement").querySelectorAll(".pageData")[0].textContent,
-    ).toBe(userData.role);
+    ).toBe(userData.role.name);
     expect(
       userPageDOM.querySelector("#rHugsElement").querySelectorAll(".pageData")[0].textContent,
     ).toBe(String(userData.receivedH));
@@ -321,7 +325,11 @@ describe("UserPage", () => {
       displayName: "shirb",
       receivedH: 3,
       givenH: 3,
-      role: "user",
+      role: {
+        id: 1,
+        name: "user",
+        permissions: [],
+      },
       posts: 10,
       selectedIcon: "kitty" as iconCharacters,
       iconColours: {
@@ -361,7 +369,11 @@ describe("UserPage", () => {
       displayName: "shirb",
       receivedH: 3,
       givenH: 3,
-      role: "user",
+      role: {
+        id: 1,
+        name: "user",
+        permissions: [],
+      },
       posts: 10,
       selectedIcon: "kitty" as iconCharacters,
       iconColours: {
@@ -429,7 +441,11 @@ describe("UserPage", () => {
       displayName: "shirb",
       receivedH: 3,
       givenH: 3,
-      role: "user",
+      role: {
+        id: 1,
+        name: "user",
+        permissions: [],
+      },
       posts: 10,
       selectedIcon: "kitty",
       iconColours: {
@@ -478,7 +494,11 @@ describe("UserPage", () => {
       displayName: "shirb",
       receivedH: 3,
       givenH: 3,
-      role: "user",
+      role: {
+        id: 1,
+        name: "user",
+        permissions: [],
+      },
       posts: 10,
       selectedIcon: "kitty",
       iconColours: {
@@ -497,7 +517,7 @@ describe("UserPage", () => {
     expect(hugSpy).not.toHaveBeenCalled();
     expect(apiClientSpy).not.toHaveBeenCalled();
     expect(userPage.isOtherUserProfile()).toBeTrue();
-    expect(userPage["authService"].userData.givenH).toBe(2);
+    expect(userPage["authService"].userData?.givenH).toBe(2);
     expect(userPage.otherUser()!.receivedH).toBe(3);
     expect(
       userPageDOM.querySelector("#rHugsElement").querySelectorAll(".pageData")[0].textContent,
@@ -510,7 +530,7 @@ describe("UserPage", () => {
     // after the click
     expect(hugSpy).toHaveBeenCalled();
     expect(apiClientSpy).toHaveBeenCalled();
-    expect(userPage["authService"].userData.givenH).toBe(3);
+    expect(userPage["authService"].userData?.givenH).toBe(3);
     expect(userPage.otherUser()!.receivedH).toBe(4);
     expect(
       userPageDOM.querySelector("#rHugsElement").querySelectorAll(".pageData")[0].textContent,

@@ -120,7 +120,7 @@ export class AdminBlocks {
     if (!userId && !isNaN(userId)) {
       errorMessage =
         "A user ID is needed to block a user. Please add user ID to the textfield and try again.";
-    } else if (userId == this.authService.userData.id) {
+    } else if (userId == this.authService.userData?.id) {
       errorMessage = "You cannot block yourself.";
     } else if (isNaN(userId)) {
       errorMessage = "User ID must be a number. Please correct the User ID and try again.";

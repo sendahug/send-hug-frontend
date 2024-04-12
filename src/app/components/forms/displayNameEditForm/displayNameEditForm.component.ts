@@ -78,7 +78,7 @@ export class DisplayNameEditForm implements OnInit {
   Programmer: Shir Bar Lev.
   */
   ngOnInit() {
-    const name = this.toEdit == "user" ? this.authService.userData.displayName : this.editedItem;
+    const name = this.toEdit == "user" ? this.authService.userData!.displayName : this.editedItem;
     this.editNameForm.controls.newDisplayName.setValue(name);
   }
 
@@ -108,7 +108,7 @@ export class DisplayNameEditForm implements OnInit {
 
     // if the user is editing their own name
     if (closeReport == null) {
-      this.authService.userData.displayName = newDisplayName;
+      this.authService.userData!.displayName = newDisplayName;
       this.authService.updateUserData();
       // if they're editing someone else's name from the reports page
     } else {

@@ -123,7 +123,7 @@ export class NewItem {
     }
 
     // if they're blocked, alert them they cannot post while blocked
-    if (this.authService.userData.blocked) {
+    if (this.authService.userData?.blocked) {
       this.alertService.createAlert({
         type: "Error",
         message: `You cannot post new posts while you're blocked. You're blocked until ${this.authService.userData.releaseDate}.`,
@@ -134,8 +134,8 @@ export class NewItem {
     // otherwise create the post
     // create a new post object to send
     let newPost: Post = {
-      userId: this.authService.userData.id!,
-      user: this.authService.userData.displayName!,
+      userId: this.authService.userData!.id!,
+      user: this.authService.userData!.displayName!,
       text: postText,
       date: new Date(),
       givenHugs: 0,
@@ -184,7 +184,7 @@ export class NewItem {
     }
 
     // if the user is attempting to send a message to themselves
-    if (this.authService.userData.id == Number(this.forID)) {
+    if (this.authService.userData!.id == Number(this.forID)) {
       this.alertService.createAlert({
         type: "Error",
         message: "You can't send a message to yourself!",
@@ -197,9 +197,9 @@ export class NewItem {
     // create a new message object to send
     let newMessage: Message = {
       from: {
-        displayName: this.authService.userData.displayName!,
+        displayName: this.authService.userData!.displayName!,
       },
-      fromId: this.authService.userData.id!,
+      fromId: this.authService.userData!.id!,
       forId: this.forID,
       messageText: messageText,
       date: new Date(),

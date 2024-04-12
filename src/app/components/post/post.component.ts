@@ -84,7 +84,7 @@ export class SinglePost implements AfterViewChecked, OnInit, OnDestroy {
   shouldDisableHugBtn = computed(
     () =>
       !this.authService.authenticated() ||
-      this._post()?.sentHugs?.includes(this.authService.userData.id!),
+      this._post()?.sentHugs?.includes(this.authService.userData!.id!),
   );
   // Classes
   menuButtonClass = computed(() => ({
@@ -141,11 +141,11 @@ export class SinglePost implements AfterViewChecked, OnInit, OnDestroy {
       this.itemsService.receivedAHug.subscribe((postId) => {
         if (
           postId == this._post()?.id &&
-          !this._post()?.sentHugs?.includes(this.authService.userData.id!)
+          !this._post()?.sentHugs?.includes(this.authService.userData!.id!)
         ) {
           // TODO: Also update the parent list & IDB
           const sent_hugs = this._post()!.sentHugs || [];
-          sent_hugs.push(this.authService.userData.id!);
+          sent_hugs.push(this.authService.userData!.id!);
           this._post.set({
             ...this._post()!,
             givenHugs: this._post()!.givenHugs + 1,

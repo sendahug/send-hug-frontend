@@ -40,6 +40,12 @@ export interface UserIconColours {
   item: string;
 }
 
+export interface Role {
+  id: number;
+  name: string;
+  permissions: string[];
+}
+
 export interface User {
   id?: number;
   auth0Id: string;
@@ -48,7 +54,7 @@ export interface User {
   givenH: number;
   posts: number;
   loginCount: number;
-  role: string;
+  role: Role;
   jwt: string;
   blocked: boolean;
   releaseDate: Date | undefined;

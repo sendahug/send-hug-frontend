@@ -173,7 +173,11 @@ function populateDB(
         displayName: "shirb",
         receivedH: 3,
         givenH: 3,
-        role: "user",
+        role: {
+          id: 1,
+          name: "user",
+          permissions: [],
+        },
         posts: 10,
         selectedIcon: "kitty" as "kitty",
         iconColours: {
@@ -188,7 +192,11 @@ function populateDB(
         displayName: "user14",
         receivedH: 3,
         givenH: 3,
-        role: "user",
+        role: {
+          id: 1,
+          name: "user",
+          permissions: [],
+        },
         posts: 10,
         selectedIcon: "kitty" as "kitty",
         iconColours: {

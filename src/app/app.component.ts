@@ -94,12 +94,12 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.authService.isUserDataResolved.subscribe((value) => {
       if (value) {
         // if push notifications are enabled, get subscription and auto-refresh data from localStorage
-        if (this.authService.userData.pushEnabled) {
+        if (this.authService.userData!.pushEnabled) {
           this.notificationService.getSubscription();
         }
 
         // if auto-refresh is enabled, start auto-refresh
-        if (this.authService.userData.autoRefresh) {
+        if (this.authService.userData!.autoRefresh) {
           this.notificationService.startAutoRefresh();
         }
       }
@@ -172,7 +172,7 @@ export class AppComponent implements OnInit, AfterViewInit {
           if (
             event.url == `/user` ||
             (this.authService.authenticated() &&
-              event.url == `/user/${this.authService.userData.id}`)
+              event.url == `/user/${this.authService.userData!.id}`)
           ) {
             this.currentlyActiveRoute.set("/user");
           }

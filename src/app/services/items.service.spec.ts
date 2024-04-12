@@ -64,7 +64,11 @@ describe("ItemsService", () => {
       givenH: 2,
       posts: 2,
       loginCount: 3,
-      role: "admin",
+      role: {
+        id: 1,
+        name: "admin",
+        permissions: [],
+      },
       jwt: "",
       blocked: false,
       releaseDate: undefined,

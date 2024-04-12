@@ -156,6 +156,8 @@ End to end tests are similarly written in TypeScript and named in the following 
 
 Since this is a full-stack application, running end-to-end tests requires running the [backend](https://github.com/sendahug/send-hug-backend) prior to running the tests. Once the backend is up and running, run `gulp e2e` in another terminal tab. This will compile all files, run the frontend server and then run Cypress.
 
+Note that you will need the username and password of an admin set to two environment variables in order to run some of the tests (`CYPRESS_ADMIN_USERNAME` and `CYPRESS_ADMIN_PASSWORD`).
+
 ## Hosting
 
 The project was hosted live on Heroku (we're currently looking at alternatives, due to Heroku removing their free tier). If you want to clone and host your own version, you can do so by using the following guide (the following commands are for Heroku, but they can be adjusted depending on your host):

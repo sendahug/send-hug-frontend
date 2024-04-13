@@ -16,6 +16,13 @@ src/styles:
   - changed-files:
       - any-glob-to-any-file: src/styles/*
 
+src/common:
+  - changed-files:
+      - any-glob-to-any-file:
+        - src/app/common/**/*.service.ts
+        - src/app/common/**/*.component.ts
+        - src/app/common/**/*.component.html
+
 src/assets:
   - changed-files:
       - any-glob-to-any-file: src/assets/*

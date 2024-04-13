@@ -18,7 +18,7 @@
 
 - Added missing calls to `subscribe` in Admin Service methods that call the `closeReport` method. Since the method returns a cold observable, those `closeReport` requests weren't executed until a subscription was made to the observable, which means reports weren't closed in those workflows. ([#1602](https://github.com/sendahug/send-hug-frontend/pull/1602))
 - Added the missing reportData input to all forms in the Admin Reports component. This fixes an error that caused the forms to ignore attempts to close reports when editing posts and users and when deleting posts. ([#1602](https://github.com/sendahug/send-hug-frontend/pull/1602))
-- Fixed a bug where the Admin Reports' report list accidentally showed `singal` instead of the current page and total page values. ([#1602](https://github.com/sendahug/send-hug-frontend/pull/1602))
+- Fixed a bug where the Admin Reports' report list accidentally showed `signal` instead of the current page and total page values. ([#1602](https://github.com/sendahug/send-hug-frontend/pull/1602))
 
 ### 2024-04-12
 

@@ -47,8 +47,8 @@ import { By } from "@angular/platform-browser";
 import { NO_ERRORS_SCHEMA } from "@angular/core";
 
 import { MyPosts } from "./myPosts.component";
-import { Loader } from "../loader/loader.component";
-import { HeaderMessage } from "../headerMessage/headerMessage.component";
+import { Loader } from "../../common/components/loader/loader.component";
+import { HeaderMessage } from "../../common/components/headerMessage/headerMessage.component";
 import { AuthService } from "../../common/services/auth.service";
 import { mockAuthedUser } from "@tests/mockData";
 import { MockReportForm, MockDeleteForm, MockEditForm } from "@tests/mockForms";

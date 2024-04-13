@@ -41,11 +41,9 @@ import {
 import { HttpClientModule } from "@angular/common/http";
 import { ServiceWorkerModule } from "@angular/service-worker";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
+import { Component } from "@angular/core";
 
-import { AppComponent } from "../../app.component";
 import { Loader } from "./loader.component";
-import { AppAlert } from "../appAlert/appAlert.component";
-import { AppCommonModule } from "@app/common/common.module";
 
 describe("Loader", () => {
   // Before each test, configure testing environment
@@ -59,20 +57,16 @@ describe("Loader", () => {
         HttpClientModule,
         ServiceWorkerModule.register("sw.js", { enabled: false }),
         FontAwesomeModule,
-        AppCommonModule,
       ],
-      declarations: [AppComponent, Loader, AppAlert],
+      declarations: [Loader],
       providers: [{ provide: APP_BASE_HREF, useValue: "/" }],
     }).compileComponents();
   });
 
   // Check that the component is created
   it("should create the component", () => {
-    const acFixture = TestBed.createComponent(AppComponent);
-    const appComponent = acFixture.componentInstance;
     const fixture = TestBed.createComponent(Loader);
     const loader = fixture.componentInstance;
-    expect(appComponent).toBeTruthy();
     expect(loader).toBeTruthy();
   });
 
@@ -109,7 +103,6 @@ describe("Loader", () => {
 
   // Check that the component displays a loading message
   it("should display a loading message", (done: DoneFn) => {
-    TestBed.createComponent(AppComponent);
     const fixture = TestBed.createComponent(Loader);
     const loader = fixture.componentInstance;
     const loaderDOM = fixture.nativeElement;
@@ -128,7 +121,6 @@ describe("Loader", () => {
   // TODO: The below tests really should be parameterised, but still need to figure
   // out how to do it in Jasmine
   it("should display different messages for different components - user", (done: DoneFn) => {
-    TestBed.createComponent(AppComponent);
     const fixture = TestBed.createComponent(Loader);
     const loader = fixture.componentInstance;
     const loaderDOM = fixture.nativeElement;
@@ -143,7 +135,6 @@ describe("Loader", () => {
   });
 
   it("should display different messages for different components - other user", (done: DoneFn) => {
-    TestBed.createComponent(AppComponent);
     const fixture = TestBed.createComponent(Loader);
     const loader = fixture.componentInstance;
     const loaderDOM = fixture.nativeElement;
@@ -158,7 +149,6 @@ describe("Loader", () => {
   });
 
   it("should display different messages for different components - inbox messages", (done: DoneFn) => {
-    TestBed.createComponent(AppComponent);
     const fixture = TestBed.createComponent(Loader);
     const loader = fixture.componentInstance;
     const loaderDOM = fixture.nativeElement;
@@ -173,7 +163,6 @@ describe("Loader", () => {
   });
 
   it("should display different messages for different components - outbox messages", (done: DoneFn) => {
-    TestBed.createComponent(AppComponent);
     const fixture = TestBed.createComponent(Loader);
     const loader = fixture.componentInstance;
     const loaderDOM = fixture.nativeElement;
@@ -188,7 +177,6 @@ describe("Loader", () => {
   });
 
   it("should display different messages for different components - threads messages", (done: DoneFn) => {
-    TestBed.createComponent(AppComponent);
     const fixture = TestBed.createComponent(Loader);
     const loader = fixture.componentInstance;
     const loaderDOM = fixture.nativeElement;
@@ -203,7 +191,6 @@ describe("Loader", () => {
   });
 
   it("should display different messages for different components - thread messages", (done: DoneFn) => {
-    TestBed.createComponent(AppComponent);
     const fixture = TestBed.createComponent(Loader);
     const loader = fixture.componentInstance;
     const loaderDOM = fixture.nativeElement;
@@ -218,7 +205,6 @@ describe("Loader", () => {
   });
 
   it("should display different messages for different components - main page", (done: DoneFn) => {
-    TestBed.createComponent(AppComponent);
     const fixture = TestBed.createComponent(Loader);
     const loader = fixture.componentInstance;
     const loaderDOM = fixture.nativeElement;
@@ -233,7 +219,6 @@ describe("Loader", () => {
   });
 
   it("should display different messages for different components - new posts", (done: DoneFn) => {
-    TestBed.createComponent(AppComponent);
     const fixture = TestBed.createComponent(Loader);
     const loader = fixture.componentInstance;
     const loaderDOM = fixture.nativeElement;
@@ -248,7 +233,6 @@ describe("Loader", () => {
   });
 
   it("should display different messages for different components - suggested posts", (done: DoneFn) => {
-    TestBed.createComponent(AppComponent);
     const fixture = TestBed.createComponent(Loader);
     const loader = fixture.componentInstance;
     const loaderDOM = fixture.nativeElement;
@@ -263,7 +247,6 @@ describe("Loader", () => {
   });
 
   it("should display different messages for different components - user posts", (done: DoneFn) => {
-    TestBed.createComponent(AppComponent);
     const fixture = TestBed.createComponent(Loader);
     const loader = fixture.componentInstance;
     const loaderDOM = fixture.nativeElement;
@@ -278,7 +261,6 @@ describe("Loader", () => {
   });
 
   it("should display different messages for different components - search", (done: DoneFn) => {
-    TestBed.createComponent(AppComponent);
     const fixture = TestBed.createComponent(Loader);
     const loader = fixture.componentInstance;
     const loaderDOM = fixture.nativeElement;
@@ -293,7 +275,6 @@ describe("Loader", () => {
   });
 
   it("should display different messages for different components - admin reports", (done: DoneFn) => {
-    TestBed.createComponent(AppComponent);
     const fixture = TestBed.createComponent(Loader);
     const loader = fixture.componentInstance;
     const loaderDOM = fixture.nativeElement;
@@ -308,7 +289,6 @@ describe("Loader", () => {
   });
 
   it("should display different messages for different components - admin blocks", (done: DoneFn) => {
-    TestBed.createComponent(AppComponent);
     const fixture = TestBed.createComponent(Loader);
     const loader = fixture.componentInstance;
     const loaderDOM = fixture.nativeElement;
@@ -323,7 +303,6 @@ describe("Loader", () => {
   });
 
   it("should display different messages for different components - admin filters", (done: DoneFn) => {
-    TestBed.createComponent(AppComponent);
     const fixture = TestBed.createComponent(Loader);
     const loader = fixture.componentInstance;
     const loaderDOM = fixture.nativeElement;

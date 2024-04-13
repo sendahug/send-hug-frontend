@@ -39,7 +39,7 @@ import { Component, OnInit, Input, OnChanges } from "@angular/core";
 })
 export class Loader implements OnInit, OnChanges {
   // the sort of data the parent component is waiting for
-  @Input() waitingFor!: string;
+  @Input() waitingFor?: string;
   // message to display to the user while waiting
   message = "";
 

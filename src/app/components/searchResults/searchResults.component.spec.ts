@@ -44,7 +44,7 @@ import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 
 import { SearchResults } from "./searchResults.component";
 import { PopUp } from "@common/components/popUp/popUp.component";
-import { Loader } from "../loader/loader.component";
+import { Loader } from "../../common/components/loader/loader.component";
 import { SinglePost } from "@common/components/post/post.component";
 import { ItemsService } from "../../common/services/items.service";
 import { iconCharacters } from "@app/interfaces/types";

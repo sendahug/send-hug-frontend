@@ -46,7 +46,7 @@ import { NO_ERRORS_SCHEMA } from "@angular/core";
 import { AdminBlocks } from "./adminBlocks.component";
 import { PopUp } from "@common/components/popUp/popUp.component";
 import { AuthService } from "../../common/services/auth.service";
-import { Loader } from "../loader/loader.component";
+import { Loader } from "../../common/components/loader/loader.component";
 import { mockAuthedUser } from "@tests/mockData";
 import { of } from "rxjs";
 import { ApiClientService } from "@common/services/apiClient.service";

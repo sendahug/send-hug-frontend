@@ -45,6 +45,8 @@ import { PostEditForm } from "./components/postEditForm/postEditForm.component";
 import { DisplayNameEditForm } from "./components/displayNameEditForm/displayNameEditForm.component";
 import { ReportForm } from "./components/reportForm/reportForm.component";
 import { ItemDeleteForm } from "./components/itemDeleteForm/itemDeleteForm.component";
+import { Loader } from "./components/loader/loader.component";
+import { HeaderMessage } from "./components/headerMessage/headerMessage.component";
 
 @NgModule({
   imports: [
@@ -55,9 +57,27 @@ import { ItemDeleteForm } from "./components/itemDeleteForm/itemDeleteForm.compo
     AppRoutingModule,
     ServiceWorkerModule.register("sw.js"),
   ],
-  declarations: [PopUp, SinglePost, PostEditForm, DisplayNameEditForm, ReportForm, ItemDeleteForm],
+  declarations: [
+    PopUp,
+    SinglePost,
+    PostEditForm,
+    DisplayNameEditForm,
+    ReportForm,
+    ItemDeleteForm,
+    Loader,
+    HeaderMessage,
+  ],
   providers: [],
   bootstrap: [],
-  exports: [PopUp, SinglePost, PostEditForm, DisplayNameEditForm, ReportForm, ItemDeleteForm],
+  exports: [
+    PopUp,
+    SinglePost,
+    PostEditForm,
+    DisplayNameEditForm,
+    ReportForm,
+    ItemDeleteForm,
+    Loader,
+    HeaderMessage,
+  ],
 })
 export class AppCommonModule {}

@@ -1,5 +1,5 @@
 /*
-  App Module
+  Common Module
   Send a Hug Module
   ---------------------------------------------------
   MIT License

@@ -45,9 +45,6 @@ import { of } from "rxjs";
 
 // App imports
 import { MainPage } from "./mainPage.component";
-import { Loader } from "../../common/components/loader/loader.component";
-import { PopUp } from "@common/components/popUp/popUp.component";
-import { SinglePost } from "@common/components/post/post.component";
 import { ApiClientService } from "../../common/services/apiClient.service";
 import { SWManager } from "../../common/services/sWManager.service";
 import { AppCommonModule } from "@app/common/common.module";
@@ -107,7 +104,7 @@ describe("MainPage", () => {
         FontAwesomeModule,
         AppCommonModule,
       ],
-      declarations: [MainPage, Loader, PopUp, SinglePost],
+      declarations: [MainPage],
       providers: [{ provide: APP_BASE_HREF, useValue: "/" }],
     }).compileComponents();
   });

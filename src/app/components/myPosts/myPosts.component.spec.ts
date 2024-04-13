@@ -47,7 +47,6 @@ import { By } from "@angular/platform-browser";
 import { NO_ERRORS_SCHEMA } from "@angular/core";
 
 import { MyPosts } from "./myPosts.component";
-import { PopUp } from "@common/components/popUp/popUp.component";
 import { Loader } from "../loader/loader.component";
 import { HeaderMessage } from "../headerMessage/headerMessage.component";
 import { AuthService } from "../../common/services/auth.service";
@@ -113,16 +112,7 @@ describe("MyPosts", () => {
         FontAwesomeModule,
         AppCommonModule,
       ],
-      declarations: [
-        MockUserPage,
-        MyPosts,
-        PopUp,
-        Loader,
-        HeaderMessage,
-        MockDeleteForm,
-        MockEditForm,
-        MockReportForm,
-      ],
+      declarations: [MockUserPage, MyPosts, Loader, HeaderMessage],
       providers: [{ provide: APP_BASE_HREF, useValue: "/" }],
     }).compileComponents();
 

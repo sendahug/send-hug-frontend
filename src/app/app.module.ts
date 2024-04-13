@@ -67,6 +67,7 @@ import { AdminReports } from "./components/adminReports/adminReports.component";
 import { AdminBlocks } from "./components/adminBlocks/adminBlocks.component";
 import { AdminFilters } from "./components/adminFilters/adminFilters.component";
 import { AppAlert } from "./components/appAlert/appAlert.component";
+import { LoginPage } from "./components/loginPage/loginPage.component";
 
 @NgModule({
   imports: [
@@ -107,6 +108,7 @@ import { AppAlert } from "./components/appAlert/appAlert.component";
     AdminBlocks,
     AdminFilters,
     AppAlert,
+    LoginPage,
   ],
   providers: [],
   bootstrap: [AppComponent],

@@ -68,4 +68,8 @@
     <loc>http://localhost:3000/policies/cookies</loc>
     <lastmod>Sat, 19 Dec 2020 19:10:29 GMT</lastmod>
   </url>
+  <url>
+    <loc>http://localhost:3000/login</loc>
+    <lastmod>Sat, 19 Dec 2020 19:10:29 GMT</lastmod>
+  </url>
 </urlset>

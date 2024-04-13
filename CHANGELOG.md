@@ -4,16 +4,21 @@
 
 ### 2024-04-13
 
+#### Features
+
+- Added a new login view, which enables users to login or logout (if they're already logged in). The new route is accessible to all users in the `/login` route. ([#1607](https://github.com/sendahug/send-hug-frontend/pull/1607))
+- The link to the login view now replaces the links to the messages and users views in the main navigation menu for logged out users. The links to the messages and users views are still available in the main navigation menu for logged in users (while the new login link is hidden from them). ([#1607](https://github.com/sendahug/send-hug-frontend/pull/1607))
+
 #### Changes
 
-- Simplified the inputs to the Display Name Edit Form. Previously, the form relied on a separate input to indicate whether it should fetch the name to edit from the Auth Service or from the form input (which was a string). This was unnecessarily complicated. Now, both the Admin Reports screen and the User page screen pass in an object that contains the ID and name of the user to edit. When the form is submitted, the ID of the user is compared to the ID of the currently logged in user (in the Auth Service). If it's the same, the request is made via the auth service; otherwise, it's made via the Admin Service. ([#1602](https://github.com/sendahug/send-hug-frontend/pull/1602))
 - Adjusted the way reports are closed when it's done via the 'edit display name' form. Previously, the 'edit user' request made to the back-end included a key that included the ID of the report to close. Now, the two requests are separated - once the user has been updated, the Admin Service makes the request to close the report. ([#1602](https://github.com/sendahug/send-hug-frontend/pull/1602))
+- Simplified the inputs to the Display Name Edit Form. Previously, the form relied on a separate input to indicate whether it should fetch the name to edit from the Auth Service or from the form input (which was a string). This was unnecessarily complicated. Now, both the Admin Reports screen and the User page screen pass in an object that contains the ID and name of the user to edit. When the form is submitted, the ID of the user is compared to the ID of the currently logged in user (in the Auth Service). If it's the same, the request is made via the auth service; otherwise, it's made via the Admin Service. ([#1602](https://github.com/sendahug/send-hug-frontend/pull/1602))
 
 #### Fixes
 
-- Fixed a bug where the Admin Reports' report list accidentally showed `singal` instead of the current page and total page values. ([#1602](https://github.com/sendahug/send-hug-frontend/pull/1602))
-- Added the missing reportData input to all forms in the Admin Reports component. This fixes an error that caused the forms to ignore attempts to close reports when editing posts and users and when deleting posts. ([#1602](https://github.com/sendahug/send-hug-frontend/pull/1602))
 - Added missing calls to `subscribe` in Admin Service methods that call the `closeReport` method. Since the method returns a cold observable, those `closeReport` requests weren't executed until a subscription was made to the observable, which means reports weren't closed in those workflows. ([#1602](https://github.com/sendahug/send-hug-frontend/pull/1602))
+- Added the missing reportData input to all forms in the Admin Reports component. This fixes an error that caused the forms to ignore attempts to close reports when editing posts and users and when deleting posts. ([#1602](https://github.com/sendahug/send-hug-frontend/pull/1602))
+- Fixed a bug where the Admin Reports' report list accidentally showed `singal` instead of the current page and total page values. ([#1602](https://github.com/sendahug/send-hug-frontend/pull/1602))
 
 ### 2024-04-12
 

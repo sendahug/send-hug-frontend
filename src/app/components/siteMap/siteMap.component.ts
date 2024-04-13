@@ -96,6 +96,8 @@ export class SiteMap {
           }
         } else if (route.path == "login") {
           if (!this.authService.authenticated()) this.routes.push(route);
+        } else if (route.path == "settings") {
+          if (this.authService.authenticated()) this.routes.push(route);
         }
         // otherwise just add the route as-is
         else {

@@ -35,6 +35,7 @@ import { BrowserModule } from "@angular/platform-browser";
 import { HttpClientModule } from "@angular/common/http";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { ReactiveFormsModule } from "@angular/forms";
+import { ServiceWorkerModule } from "@angular/service-worker";
 
 import { AppRoutingModule } from "@app/app-routing.module";
 
@@ -52,6 +53,7 @@ import { ItemDeleteForm } from "./components/itemDeleteForm/itemDeleteForm.compo
     ReactiveFormsModule,
     FontAwesomeModule,
     AppRoutingModule,
+    ServiceWorkerModule.register("sw.js"),
   ],
   declarations: [PopUp, SinglePost, PostEditForm, DisplayNameEditForm, ReportForm, ItemDeleteForm],
   providers: [],

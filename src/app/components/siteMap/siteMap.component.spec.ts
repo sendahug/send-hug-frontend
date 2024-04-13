@@ -43,11 +43,8 @@ import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { Component } from "@angular/core";
 import { Route, RouterModule, Routes } from "@angular/router";
 
-import { AppComponent } from "../../app.component";
 import { SiteMap } from "./siteMap.component";
-import { NotificationsTab } from "../notifications/notifications.component";
 import { AuthService } from "../../common/services/auth.service";
-import { AppAlert } from "../appAlert/appAlert.component";
 import { AppCommonModule } from "@app/common/common.module";
 
 // Mock Component for testing the sitemap
@@ -124,24 +121,20 @@ describe("SiteMap", () => {
         FontAwesomeModule,
         AppCommonModule,
       ],
-      declarations: [AppComponent, MockComp, NotificationsTab, SiteMap, AppAlert],
+      declarations: [MockComp, SiteMap],
       providers: [{ provide: APP_BASE_HREF, useValue: "/" }],
     }).compileComponents();
   });
 
   // Check the page is created
   it("should create the component", () => {
-    const acFixture = TestBed.createComponent(AppComponent);
-    const appComponent = acFixture.componentInstance;
     const fixture = TestBed.createComponent(SiteMap);
     const siteMap = fixture.componentInstance;
-    expect(appComponent).toBeTruthy();
     expect(siteMap).toBeTruthy();
   });
 
   // Check that there are valid navigation links
   it("should contain valid navigation links", () => {
-    TestBed.createComponent(AppComponent);
     const fixture = TestBed.createComponent(SiteMap);
     const siteMap = fixture.componentInstance;
     const siteMapDOM = fixture.nativeElement;
@@ -164,7 +157,6 @@ describe("SiteMap", () => {
   // Check that the admin board links are shown if the user has permission
   it("should show admin board links if the user has permission", () => {
     const authSpy = spyOn(TestBed.inject(AuthService), "canUser").and.returnValue(true);
-    TestBed.createComponent(AppComponent);
     const fixture = TestBed.createComponent(SiteMap);
     const siteMap = fixture.componentInstance;
     const siteMapDOM = fixture.nativeElement;
@@ -206,7 +198,6 @@ describe("SiteMap", () => {
   // Check that the admin board links aren't shown if the user doesn't have permission
   it("should hide admin board links if the user doesn't have permission", () => {
     const authSpy = spyOn(TestBed.inject(AuthService), "canUser").and.returnValue(false);
-    TestBed.createComponent(AppComponent);
     const fixture = TestBed.createComponent(SiteMap);
     const siteMap = fixture.componentInstance;
     const siteMapDOM = fixture.nativeElement;
@@ -252,7 +243,6 @@ describe("SiteMap", () => {
   // Check that the first and last messages routes are removed
   it("should remove the first and last children of the messages route", () => {
     spyOn(TestBed.inject(AuthService), "canUser").and.returnValue(false);
-    TestBed.createComponent(AppComponent);
     const fixture = TestBed.createComponent(SiteMap);
     const siteMap = fixture.componentInstance;
     const siteMapDOM = fixture.nativeElement;
@@ -299,7 +289,6 @@ describe("SiteMap", () => {
   // Check that the last route is removed from user routes
   it("should remove the last child of the user route", () => {
     spyOn(TestBed.inject(AuthService), "canUser").and.returnValue(false);
-    TestBed.createComponent(AppComponent);
     const fixture = TestBed.createComponent(SiteMap);
     const siteMap = fixture.componentInstance;
     const siteMapDOM = fixture.nativeElement;

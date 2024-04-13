@@ -38,8 +38,8 @@ import { ReactiveFormsModule } from "@angular/forms";
 
 import { AppRoutingModule } from "@app/app-routing.module";
 
-import { PopUp } from "@app/common/components/popUp/popUp.component";
-import { SinglePost } from "@app/common/components/post/post.component";
+import { PopUp } from "@common/components/popUp/popUp.component";
+import { SinglePost } from "@common/components/post/post.component";
 import { PostEditForm } from "./components/postEditForm/postEditForm.component";
 import { DisplayNameEditForm } from "./components/displayNameEditForm/displayNameEditForm.component";
 import { ReportForm } from "./components/reportForm/reportForm.component";

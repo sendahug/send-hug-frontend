@@ -43,7 +43,7 @@ import { ServiceWorkerModule } from "@angular/service-worker";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 
 import { AppAlert } from "./appAlert.component";
-import { AlertsService } from "@app/common/services/alerts.service";
+import { AlertsService } from "@common/services/alerts.service";
 
 describe("AppAlert", () => {
   // Before each test, configure testing environment

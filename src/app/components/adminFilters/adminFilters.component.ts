@@ -36,9 +36,9 @@ import { Component, computed, signal } from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
 
 // App imports
-import { AdminService } from "@app/common/services/admin.service";
-import { AlertsService } from "@app/common/services/alerts.service";
-import { ApiClientService } from "@app/common/services/apiClient.service";
+import { AdminService } from "@common/services/admin.service";
+import { AlertsService } from "@common/services/alerts.service";
+import { ApiClientService } from "@common/services/apiClient.service";
 
 @Component({
   selector: "app-admin-filters",

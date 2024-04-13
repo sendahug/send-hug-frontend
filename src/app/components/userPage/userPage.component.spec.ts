@@ -46,8 +46,8 @@ import { NO_ERRORS_SCHEMA } from "@angular/core";
 import { of } from "rxjs";
 
 import { UserPage } from "./userPage.component";
-import { PopUp } from "@app/common/components/popUp/popUp.component";
-import { AuthService } from "@app/common/services/auth.service";
+import { PopUp } from "@common/components/popUp/popUp.component";
+import { AuthService } from "@common/services/auth.service";
 import { mockAuthedUser } from "@tests/mockData";
 import { OtherUser } from "@app/interfaces/otherUser.interface";
 import { iconCharacters } from "@app/interfaces/types";

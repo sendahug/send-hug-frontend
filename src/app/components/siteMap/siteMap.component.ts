@@ -35,7 +35,7 @@ import { Component } from "@angular/core";
 import { Router, Route } from "@angular/router";
 
 // App-related imports
-import { AuthService } from "@app/common/services/auth.service";
+import { AuthService } from "@common/services/auth.service";
 
 @Component({
   selector: "app-site-map",

@@ -44,7 +44,7 @@ import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { of } from "rxjs";
 
 import { ItemDeleteForm } from "./itemDeleteForm.component";
-import { PopUp } from "@app/common/components/popUp/popUp.component";
+import { PopUp } from "@common/components/popUp/popUp.component";
 
 describe("Popup", () => {
   // Before each test, configure testing environment

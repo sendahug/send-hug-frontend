@@ -44,7 +44,7 @@ import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { NO_ERRORS_SCHEMA } from "@angular/core";
 
 import { LoginPage } from "./loginPage.component";
-import { AuthService } from "@app/common/services/auth.service";
+import { AuthService } from "@common/services/auth.service";
 import { mockAuthedUser } from "@tests/mockData";
 
 describe("LoginPage", () => {

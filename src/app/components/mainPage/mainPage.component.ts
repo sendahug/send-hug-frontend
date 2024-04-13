@@ -35,8 +35,8 @@ import { Component, WritableSignal, signal } from "@angular/core";
 import { forkJoin, from, map, switchMap, tap } from "rxjs";
 
 // App-related imports
-import { ApiClientService } from "@app/common/services/apiClient.service";
-import { SWManager } from "@app/common/services/sWManager.service";
+import { ApiClientService } from "@common/services/apiClient.service";
+import { SWManager } from "@common/services/sWManager.service";
 import { Post } from "@app/interfaces/post.interface";
 
 interface MainPageResponse {

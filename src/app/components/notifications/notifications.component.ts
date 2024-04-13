@@ -35,7 +35,7 @@ import { Component, OnInit, EventEmitter, Output } from "@angular/core";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 
 // App-relateed imports
-import { AuthService } from "@app/common/services/auth.service";
+import { AuthService } from "@common/services/auth.service";
 import { NotificationService } from "@app/services/notifications.service";
 
 @Component({

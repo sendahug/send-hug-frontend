@@ -40,10 +40,10 @@ import * as Auth0 from "auth0-js";
 
 // App-related imports
 import { User } from "@app/interfaces/user.interface";
-import { AlertsService } from "@app/common/services/alerts.service";
-import { SWManager } from "@app/common/services/sWManager.service";
+import { AlertsService } from "@common/services/alerts.service";
+import { SWManager } from "@common/services/sWManager.service";
 import { environment } from "@env/environment";
-import { ApiClientService } from "@app/common/services/apiClient.service";
+import { ApiClientService } from "@common/services/apiClient.service";
 
 @Injectable({
   providedIn: "root",

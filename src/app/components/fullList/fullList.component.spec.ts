@@ -44,8 +44,8 @@ import { of } from "rxjs";
 import { ActivatedRoute, Router, RouterModule, UrlSegment } from "@angular/router";
 
 import { FullList } from "./fullList.component";
-import { PopUp } from "@app/common/components/popUp/popUp.component";
-import { SinglePost } from "@app/common/components/post/post.component";
+import { PopUp } from "@common/components/popUp/popUp.component";
+import { SinglePost } from "@common/components/post/post.component";
 import { Loader } from "../loader/loader.component";
 import { ApiClientService } from "../../common/services/apiClient.service";
 import { SWManager } from "../../common/services/sWManager.service";

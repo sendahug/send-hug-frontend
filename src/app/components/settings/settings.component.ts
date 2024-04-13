@@ -36,8 +36,8 @@ import { FormBuilder, Validators } from "@angular/forms";
 
 // App-related imports
 import { NotificationService } from "@app/services/notifications.service";
-import { AuthService } from "@app/common/services/auth.service";
-import { AlertsService } from "@app/common/services/alerts.service";
+import { AuthService } from "@common/services/auth.service";
+import { AlertsService } from "@common/services/alerts.service";
 import { iconElements } from "@app/interfaces/types";
 
 @Component({

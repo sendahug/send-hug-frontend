@@ -420,7 +420,10 @@ describe("UserPage", () => {
 
     // after the click
     expect(userPage.editMode).toBeTrue();
-    expect(userPage.editType).toBe("user");
+    expect(userPage.userToEdit).toEqual({
+      displayName: userPage.authService.userData!.displayName,
+      id: userPage.authService.userData!.id as number,
+    });
     expect(userPageDOM.querySelector("app-pop-up")).toBeTruthy();
     done();
   });
@@ -555,9 +558,11 @@ describe("UserPage", () => {
 
     // start the popup
     userPage.lastFocusedElement = document.querySelectorAll("a")[0];
-    userPage.userToEdit = userPage.authService.userData;
+    userPage.userToEdit = {
+      displayName: userPage.authService.userData!.displayName,
+      id: userPage.authService.userData!.id as number,
+    };
     userPage.editMode = true;
-    userPage.editType = "user";
     fixture.detectChanges();
 
     // exit the popup

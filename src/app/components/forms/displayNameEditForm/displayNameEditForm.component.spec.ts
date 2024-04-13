@@ -84,18 +84,23 @@ describe("DisplayNameEditForm", () => {
   it("should set editedItem depending on toEdit", () => {
     const fixture = TestBed.createComponent(DisplayNameEditForm);
     const popUp = fixture.componentInstance;
-    popUp.toEdit = "user";
+    popUp.editedItem = {
+      id: 4,
+      displayName: "name",
+    };
     popUp.ngOnInit();
 
     expect(popUp.editNameForm.controls.newDisplayName.value).toEqual(
       popUp.authService.userData!.displayName,
     );
 
-    popUp.toEdit = "other user";
-    popUp.editedItem = "test";
+    popUp.editedItem = {
+      displayName: "test",
+      id: 1,
+    };
     popUp.ngOnInit();
 
-    expect(popUp.editedItem).toEqual("test");
+    expect(popUp.editedItem.displayName).not.toEqual(popUp.authService.userData!.displayName);
   });
 
   it("should make the request to authService to change the name", () => {
@@ -107,15 +112,9 @@ describe("DisplayNameEditForm", () => {
     const fixture = TestBed.createComponent(DisplayNameEditForm);
     const popUp = fixture.componentInstance;
     const popUpDOM = fixture.nativeElement;
-    popUp.toEdit = "user";
     popUp.editedItem = {
       id: 4,
       displayName: "name",
-      receivedHugs: 2,
-      givenHugs: 2,
-      postsNum: 2,
-      loginCount: 3,
-      role: "admin",
     };
     const newName = "new name";
     fixture.detectChanges();
@@ -143,19 +142,13 @@ describe("DisplayNameEditForm", () => {
     const fixture = TestBed.createComponent(DisplayNameEditForm);
     const popUp = fixture.componentInstance;
     const popUpDOM = fixture.nativeElement;
-    popUp.toEdit = "other user";
     popUp.editedItem = {
-      id: 4,
+      id: 2,
       displayName: "name",
-      receivedHugs: 2,
-      givenHugs: 2,
-      postsNum: 2,
-      loginCount: 3,
-      role: "admin",
     };
     popUp.reportData = {
       reportID: 1,
-      userID: 4,
+      userID: 2,
     };
     const newName = "new name";
     fixture.detectChanges();
@@ -171,7 +164,7 @@ describe("DisplayNameEditForm", () => {
     expect(validateSpy).toHaveBeenCalledWith("displayName");
     expect(updateSpy).toHaveBeenCalledWith(
       {
-        userID: 4,
+        id: 2,
         displayName: newName,
       },
       true,
@@ -189,19 +182,13 @@ describe("DisplayNameEditForm", () => {
     const fixture = TestBed.createComponent(DisplayNameEditForm);
     const popUp = fixture.componentInstance;
     const popUpDOM = fixture.nativeElement;
-    popUp.toEdit = "other user";
     popUp.editedItem = {
-      id: 4,
+      id: 2,
       displayName: "name",
-      receivedHugs: 2,
-      givenHugs: 2,
-      postsNum: 2,
-      loginCount: 3,
-      role: "admin",
     };
     popUp.reportData = {
       reportID: 1,
-      userID: 4,
+      userID: 2,
     };
     const newName = "new name";
     fixture.detectChanges();
@@ -217,7 +204,7 @@ describe("DisplayNameEditForm", () => {
     expect(validateSpy).toHaveBeenCalledWith("displayName");
     expect(updateSpy).toHaveBeenCalledWith(
       {
-        userID: 4,
+        id: 2,
         displayName: newName,
       },
       false,
@@ -237,15 +224,9 @@ describe("DisplayNameEditForm", () => {
     const fixture = TestBed.createComponent(DisplayNameEditForm);
     const popUp = fixture.componentInstance;
     const popUpDOM = fixture.nativeElement;
-    popUp.toEdit = "user";
     popUp.editedItem = {
       id: 4,
       displayName: "name",
-      receivedHugs: 2,
-      givenHugs: 2,
-      postsNum: 2,
-      loginCount: 3,
-      role: "admin",
     };
     const newName = "new name";
     fixture.detectChanges();

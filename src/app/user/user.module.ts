@@ -57,21 +57,9 @@ import { IconEditor } from "@app/user/components/iconEditor/iconEditor.component
     FontAwesomeModule,
     AppCommonModule,
   ],
-  declarations: [
-    UserPage,
-    AppMessaging,
-    MyPosts,
-    SettingsPage,
-    IconEditor,
-  ],
+  declarations: [UserPage, AppMessaging, MyPosts, SettingsPage, IconEditor],
   providers: [],
   bootstrap: [],
-  exports: [
-    UserPage,
-    AppMessaging,
-    MyPosts,
-    SettingsPage,
-    IconEditor,
-  ]
+  exports: [UserPage, AppMessaging, MyPosts, SettingsPage, IconEditor],
 })
 export class AppUserModule {}

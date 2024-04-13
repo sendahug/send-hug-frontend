@@ -46,6 +46,9 @@ import { Route, RouterModule, Routes } from "@angular/router";
 import { SiteMap } from "./siteMap.component";
 import { AuthService } from "../../common/services/auth.service";
 import { AppCommonModule } from "@app/common/common.module";
+import { mockAuthedUser } from "@tests/mockData";
+
+
 
 // Mock Component for testing the sitemap
 // ==================================================
@@ -105,6 +108,7 @@ export const routes: Routes = [
     ],
     data: { name: "Mailbox" },
   },
+  { path: "login", component: MockComp, data: { name: "Login Page" } },
 ];
 
 describe("SiteMap", () => {
@@ -156,7 +160,9 @@ describe("SiteMap", () => {
 
   // Check that the admin board links are shown if the user has permission
   it("should show admin board links if the user has permission", () => {
-    const authSpy = spyOn(TestBed.inject(AuthService), "canUser").and.returnValue(true);
+    const authService = TestBed.inject(AuthService);
+    const authSpy = spyOn(authService, "canUser").and.returnValue(true);
+    authService.authenticated.set(true);
     const fixture = TestBed.createComponent(SiteMap);
     const siteMap = fixture.componentInstance;
     const siteMapDOM = fixture.nativeElement;
@@ -197,7 +203,9 @@ describe("SiteMap", () => {
 
   // Check that the admin board links aren't shown if the user doesn't have permission
   it("should hide admin board links if the user doesn't have permission", () => {
-    const authSpy = spyOn(TestBed.inject(AuthService), "canUser").and.returnValue(false);
+    const authService = TestBed.inject(AuthService);
+    const authSpy = spyOn(authService, "canUser").and.returnValue(false);
+    authService.authenticated.set(true);
     const fixture = TestBed.createComponent(SiteMap);
     const siteMap = fixture.componentInstance;
     const siteMapDOM = fixture.nativeElement;
@@ -242,7 +250,9 @@ describe("SiteMap", () => {
 
   // Check that the first and last messages routes are removed
   it("should remove the first and last children of the messages route", () => {
-    spyOn(TestBed.inject(AuthService), "canUser").and.returnValue(false);
+    const authService = TestBed.inject(AuthService);
+    spyOn(authService, "canUser").and.returnValue(false);
+    authService.authenticated.set(true);
     const fixture = TestBed.createComponent(SiteMap);
     const siteMap = fixture.componentInstance;
     const siteMapDOM = fixture.nativeElement;
@@ -288,7 +298,9 @@ describe("SiteMap", () => {
 
   // Check that the last route is removed from user routes
   it("should remove the last child of the user route", () => {
-    spyOn(TestBed.inject(AuthService), "canUser").and.returnValue(false);
+    const authService = TestBed.inject(AuthService);
+    spyOn(authService, "canUser").and.returnValue(false);
+    authService.authenticated.set(true);
     const fixture = TestBed.createComponent(SiteMap);
     const siteMap = fixture.componentInstance;
     const siteMapDOM = fixture.nativeElement;
@@ -324,6 +336,80 @@ describe("SiteMap", () => {
     expect(siteMap.routes).toContain(userPath);
     for (var i = 0; i < navLinks.length; i++) {
       expect(navLinks[i].textContent).not.toBe("Other User's Page");
+    }
+  });
+
+  it("should remove the login route if the user is authenticated", () => {
+    const authService = TestBed.inject(AuthService);
+    spyOn(authService, "authenticated").and.returnValue(true);
+    const fixture = TestBed.createComponent(SiteMap);
+    const siteMap = fixture.componentInstance;
+    const siteMapDOM = fixture.nativeElement;
+    fixture.detectChanges();
+
+    let routeList = siteMapDOM.querySelector("#routeList");
+    let navLinks = routeList!.querySelectorAll(".routerLink");
+    let loginPath: Route = { path: "login", component: MockComp, data: { name: "Login Page" } };
+
+    expect(siteMap.routes).not.toContain(loginPath);
+    for (var i = 0; i < navLinks.length; i++) {
+      expect(navLinks[i].textContent).not.toBe("Login Page");
+    }
+  });
+
+  it("should keep the login route if the user is not authenticated", () => {
+    const authService = TestBed.inject(AuthService);
+    spyOn(authService, "authenticated").and.returnValue(false);
+    const fixture = TestBed.createComponent(SiteMap);
+    const siteMap = fixture.componentInstance;
+    const siteMapDOM = fixture.nativeElement;
+    fixture.detectChanges();
+
+    let routeList = siteMapDOM.querySelector("#routeList");
+    let navLinks = routeList!.querySelectorAll(".routerLink");
+    let loginPath: Route = { path: "login", component: MockComp, data: { name: "Login Page" } };
+
+    expect(siteMap.routes).toContain(loginPath);
+    expect(navLinks[navLinks.length - 1].textContent).toBe("Login Page");
+  });
+
+  it("should update the site map if the user authenticates after the component is created", () => {
+    const authService = TestBed.inject(AuthService);
+    authService.authenticated.set(false);
+    const fixture = TestBed.createComponent(SiteMap);
+    const siteMap = fixture.componentInstance;
+    const siteMapDOM = fixture.nativeElement;
+    fixture.detectChanges();
+
+    let routeList = siteMapDOM.querySelector("#routeList");
+    let navLinks = routeList!.querySelectorAll(".routerLink");
+    let loginPath: Route = { path: "login", component: MockComp, data: { name: "Login Page" } };
+    let userPath: Route = {
+      path: "user",
+      children: [
+        { path: "", pathMatch: "prefix", component: MockComp, data: { name: "Your Page" } },
+      ],
+      data: { name: "User Page" },
+    };
+
+    expect(siteMap.routes).toContain(loginPath);
+    expect(siteMap.routes).not.toContain(userPath);
+    expect(navLinks[navLinks.length - 1].textContent).toBe("Login Page");
+    for (var i = 0; i < navLinks.length; i++) {
+      expect(navLinks[i].textContent).not.toBe(userPath.children![0].data!.name);
+    }
+
+    authService.authenticated.set(true);
+    authService.userData = { ...mockAuthedUser };
+    authService.isUserDataResolved.next(true);
+    fixture.detectChanges();
+
+    navLinks = routeList!.querySelectorAll(".routerLink");
+    expect(siteMap.routes).not.toContain(loginPath);
+    expect(siteMap.routes).toContain(userPath);
+    expect(navLinks[1].textContent).toBe(userPath.children![0].data!.name);
+    for (var i = 0; i < navLinks.length; i++) {
+      expect(navLinks[i].textContent).not.toBe(loginPath.data!.name);
     }
   });
 });

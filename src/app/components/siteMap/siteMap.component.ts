@@ -49,6 +49,25 @@ export class SiteMap {
     private router: Router,
     private authService: AuthService,
   ) {
+    this.updateSiteMap();
+
+    if (!this.authService.authenticated()) {
+      const userSubscription = this.authService.isUserDataResolved.subscribe((value) => {
+        if (value) {
+          this.updateSiteMap();
+          userSubscription.unsubscribe();
+        }
+      });
+    }
+  }
+
+  /**
+   * Updates the site map based on the user's permissions and whether they're
+   * logged in.
+   */
+  updateSiteMap() {
+    this.routes.splice(0, this.routes.length);
+
     this.router.config.forEach((route) => {
       // make sure the path isn't the error page or the search results
       if (route.path != "**" && route.path != "search") {
@@ -61,16 +80,24 @@ export class SiteMap {
         // if it's the mailbox component, remove the first child path, as it's a
         // redirect, and remove the last one, as it requires a parameter
         else if (route.path!.includes("messages")) {
-          const fixedRoute = route;
-          fixedRoute.children!.shift();
-          fixedRoute.children!.pop();
-          this.routes.push(fixedRoute);
+          if (this.authService.authenticated()) {
+            const fixedRoute = route;
+            fixedRoute.children!.shift();
+            fixedRoute.children!.pop();
+            this.routes.push(fixedRoute);
+          }
         }
         // if it's the user page, show just the user's own page, as it requires a parameter
         else if (route.path!.includes("user")) {
-          const fixedRoute = route;
-          fixedRoute.children!.pop();
-          this.routes.push(fixedRoute);
+          if (this.authService.authenticated()) {
+            const fixedRoute = route;
+            fixedRoute.children!.pop();
+            this.routes.push(fixedRoute);
+          }
+        } else if (route.path == "login") {
+          if (!this.authService.authenticated()) this.routes.push(route);
+        } else if (route.path == "settings") {
+          if (this.authService.authenticated()) this.routes.push(route);
         }
         // otherwise just add the route as-is
         else {

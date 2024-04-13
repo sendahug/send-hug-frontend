@@ -44,8 +44,8 @@ import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 
 import { AppComponent } from "./app.component";
 import { NotificationsTab } from "./components/notifications/notifications.component";
-import { AuthService } from "./services/auth.service";
-import { SWManager } from "./services/sWManager.service";
+import { AuthService } from "./common/services/auth.service";
+import { SWManager } from "./common/services/sWManager.service";
 import { NotificationService } from "./services/notifications.service";
 import { mockAuthedUser } from "@tests/mockData";
 import { AppAlert } from "./components/appAlert/appAlert.component";

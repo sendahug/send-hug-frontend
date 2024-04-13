@@ -34,7 +34,7 @@
 import { Component } from "@angular/core";
 
 // App-related imports
-import { AuthService } from "@app/services/auth.service";
+import { AuthService } from "@app/common/services/auth.service";
 
 @Component({
   selector: "app-login-page",

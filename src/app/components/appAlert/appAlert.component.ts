@@ -34,7 +34,7 @@
 import { Component, computed } from "@angular/core";
 
 // App-related imports
-import { AlertsService } from "@app/services/alerts.service";
+import { AlertsService } from "@app/common/services/alerts.service";
 
 @Component({
   selector: "app-alert",

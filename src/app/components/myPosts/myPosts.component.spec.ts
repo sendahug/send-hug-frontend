@@ -50,7 +50,7 @@ import { MyPosts } from "./myPosts.component";
 import { PopUp } from "@app/common/components/popUp/popUp.component";
 import { Loader } from "../loader/loader.component";
 import { HeaderMessage } from "../headerMessage/headerMessage.component";
-import { AuthService } from "../../services/auth.service";
+import { AuthService } from "../../common/services/auth.service";
 import { mockAuthedUser } from "@tests/mockData";
 import { MockReportForm, MockDeleteForm, MockEditForm } from "@tests/mockForms";
 

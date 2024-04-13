@@ -37,7 +37,7 @@ import { Injectable } from "@angular/core";
 import { openDB, IDBPDatabase, DBSchema } from "idb";
 
 // App-related imports
-import { AlertsService } from "@app/services/alerts.service";
+import { AlertsService } from "@app/common/services/alerts.service";
 import { IdbStoreType, iconCharacters } from "@app/interfaces/types";
 import { Message } from "@app/interfaces/message.interface";
 import { Post } from "@app/interfaces/post.interface";

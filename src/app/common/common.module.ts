@@ -40,6 +40,10 @@ import { AppRoutingModule } from "@app/app-routing.module";
 
 import { PopUp } from "@app/common/components/popUp/popUp.component";
 import { SinglePost } from "@app/common/components/post/post.component";
+import { PostEditForm } from "./components/postEditForm/postEditForm.component";
+import { DisplayNameEditForm } from "./components/displayNameEditForm/displayNameEditForm.component";
+import { ReportForm } from "./components/reportForm/reportForm.component";
+import { ItemDeleteForm } from "./components/itemDeleteForm/itemDeleteForm.component";
 
 @NgModule({
   imports: [
@@ -49,9 +53,9 @@ import { SinglePost } from "@app/common/components/post/post.component";
     FontAwesomeModule,
     AppRoutingModule,
   ],
-  declarations: [PopUp, SinglePost],
+  declarations: [PopUp, SinglePost, PostEditForm, DisplayNameEditForm, ReportForm, ItemDeleteForm],
   providers: [],
   bootstrap: [],
-  exports: [PopUp, SinglePost],
+  exports: [PopUp, SinglePost, PostEditForm, DisplayNameEditForm, ReportForm, ItemDeleteForm],
 })
 export class AppCommonModule {}

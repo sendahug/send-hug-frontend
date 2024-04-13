@@ -44,7 +44,7 @@ import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { ReactiveFormsModule } from "@angular/forms";
 
 import { IconEditor } from "./iconEditor.component";
-import { AuthService } from "../../services/auth.service";
+import { AuthService } from "../../common/services/auth.service";
 import { mockAuthedUser } from "@tests/mockData";
 
 describe("IconEditor", () => {

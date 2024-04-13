@@ -46,8 +46,8 @@ import { faHandHoldingHeart, faTimes, faEllipsisV } from "@fortawesome/free-soli
 import { Subscription } from "rxjs";
 
 // App-related imports
-import { AuthService } from "@app/services/auth.service";
-import { ItemsService } from "@app/services/items.service";
+import { AuthService } from "@app/common/services/auth.service";
+import { ItemsService } from "@app/common/services/items.service";
 import { Post } from "@app/interfaces/post.interface";
 
 @Component({

@@ -46,7 +46,7 @@ import { SearchResults } from "./searchResults.component";
 import { PopUp } from "@app/common/components/popUp/popUp.component";
 import { Loader } from "../loader/loader.component";
 import { SinglePost } from "@app/common/components/post/post.component";
-import { ItemsService } from "../../services/items.service";
+import { ItemsService } from "../../common/services/items.service";
 import { iconCharacters } from "@app/interfaces/types";
 
 const mockUserSearchResults = [

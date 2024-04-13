@@ -47,11 +47,11 @@ import { By } from "@angular/platform-browser";
 
 import { AdminReports } from "./adminReports.component";
 import { PopUp } from "@app/common/components/popUp/popUp.component";
-import { AuthService } from "../../services/auth.service";
+import { AuthService } from "../../common/services/auth.service";
 import { Loader } from "../loader/loader.component";
 import { mockAuthedUser } from "@tests/mockData";
 import { Report } from "@app/interfaces/report.interface";
-import { ApiClientService } from "@app/services/apiClient.service";
+import { ApiClientService } from "@app/common/services/apiClient.service";
 import { MockDeleteForm, MockDisplayNameForm, MockEditForm } from "@tests/mockForms";
 
 const mockUserReports: Report[] = [

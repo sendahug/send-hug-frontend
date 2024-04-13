@@ -38,8 +38,8 @@ import { from, map, switchMap, tap } from "rxjs";
 // App-related imports
 import { FullListType } from "@app/interfaces/types";
 import { Post } from "@app/interfaces/post.interface";
-import { SWManager } from "@app/services/sWManager.service";
-import { ApiClientService } from "@app/services/apiClient.service";
+import { SWManager } from "@app/common/services/sWManager.service";
+import { ApiClientService } from "@app/common/services/apiClient.service";
 
 interface PostsListResponse {
   success: boolean;

@@ -46,7 +46,7 @@ import { Route, RouterModule, Routes } from "@angular/router";
 import { AppComponent } from "../../app.component";
 import { SiteMap } from "./siteMap.component";
 import { NotificationsTab } from "../notifications/notifications.component";
-import { AuthService } from "../../services/auth.service";
+import { AuthService } from "../../common/services/auth.service";
 import { AppAlert } from "../appAlert/appAlert.component";
 
 // Mock Component for testing the sitemap

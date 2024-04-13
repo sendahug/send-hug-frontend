@@ -35,7 +35,7 @@ import { Component } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 
 // App-related imports
-import { ItemsService } from "@app/services/items.service";
+import { ItemsService } from "@app/common/services/items.service";
 
 @Component({
   selector: "app-search-results",

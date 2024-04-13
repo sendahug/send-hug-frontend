@@ -38,10 +38,10 @@ import { from, map, switchMap, tap } from "rxjs";
 
 // App-related imports
 import { Post } from "@app/interfaces/post.interface";
-import { AuthService } from "@app/services/auth.service";
-import { ItemsService } from "@app/services/items.service";
-import { SWManager } from "@app/services/sWManager.service";
-import { ApiClientService } from "@app/services/apiClient.service";
+import { AuthService } from "@app/common/services/auth.service";
+import { ItemsService } from "@app/common/services/items.service";
+import { SWManager } from "@app/common/services/sWManager.service";
+import { ApiClientService } from "@app/common/services/apiClient.service";
 
 interface MyPostsResponse {
   page: number;

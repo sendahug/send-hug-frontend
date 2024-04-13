@@ -47,7 +47,7 @@ import { of } from "rxjs";
 
 import { UserPage } from "./userPage.component";
 import { PopUp } from "@app/common/components/popUp/popUp.component";
-import { AuthService } from "@app/services/auth.service";
+import { AuthService } from "@app/common/services/auth.service";
 import { mockAuthedUser } from "@tests/mockData";
 import { OtherUser } from "@app/interfaces/otherUser.interface";
 import { iconCharacters } from "@app/interfaces/types";

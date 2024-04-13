@@ -41,7 +41,7 @@ import { Subscription, of } from "rxjs";
 import {} from "jasmine";
 
 import { NotificationService } from "./notifications.service";
-import { AuthService } from "./auth.service";
+import { AuthService } from "../common/services/auth.service";
 import { mockAuthedUser } from "@tests/mockData";
 
 const pushSub: PushSubscription = {

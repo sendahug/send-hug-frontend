@@ -45,7 +45,7 @@ import { ActivatedRoute, RouterModule, UrlSegment } from "@angular/router";
 import { of } from "rxjs";
 
 import { AdminDashboard } from "./adminDashboard.component";
-import { AuthService } from "@app/services/auth.service";
+import { AuthService } from "@app/common/services/auth.service";
 import { mockAuthedUser } from "@tests/mockData";
 import { AdminReports } from "@app/components/adminReports/adminReports.component";
 import { AdminBlocks } from "@app/components/adminBlocks/adminBlocks.component";

@@ -45,7 +45,7 @@ import { ActivatedRoute, RouterModule, UrlSegment } from "@angular/router";
 import { ReactiveFormsModule } from "@angular/forms";
 
 import { NewItem } from "./newItem.component";
-import { AuthService } from "@app/services/auth.service";
+import { AuthService } from "@app/common/services/auth.service";
 import { mockAuthedUser } from "@tests/mockData";
 
 describe("NewItem", () => {

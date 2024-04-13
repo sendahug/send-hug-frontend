@@ -37,11 +37,11 @@ import { Observable, map, switchMap } from "rxjs";
 // App-related imports
 import { Report } from "@app/interfaces/report.interface";
 import { Message } from "@app/interfaces/message.interface";
-import { AuthService } from "@app/services/auth.service";
-import { AlertsService } from "@app/services/alerts.service";
-import { ItemsService } from "@app/services/items.service";
-import { SWManager } from "@app/services/sWManager.service";
-import { ApiClientService } from "@app/services/apiClient.service";
+import { AuthService } from "@app/common/services/auth.service";
+import { AlertsService } from "@app/common/services/alerts.service";
+import { ItemsService } from "@app/common/services/items.service";
+import { SWManager } from "@app/common/services/sWManager.service";
+import { ApiClientService } from "@app/common/services/apiClient.service";
 import { OtherUser } from "@app/interfaces/otherUser.interface";
 import { PartialUser } from "@app/interfaces/user.interface";
 

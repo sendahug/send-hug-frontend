@@ -47,7 +47,7 @@ import { NO_ERRORS_SCHEMA } from "@angular/core";
 
 import { AppMessaging } from "./messages.component";
 import { PopUp } from "@app/common/components/popUp/popUp.component";
-import { AuthService } from "../../services/auth.service";
+import { AuthService } from "../../common/services/auth.service";
 import { mockAuthedUser } from "@tests/mockData";
 import { FullThread } from "@app/interfaces/thread.interface";
 import { MockDeleteForm } from "@tests/mockForms";

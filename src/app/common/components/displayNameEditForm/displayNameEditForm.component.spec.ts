@@ -44,10 +44,10 @@ import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { ReactiveFormsModule } from "@angular/forms";
 
 import { DisplayNameEditForm } from "./displayNameEditForm.component";
-import { AuthService } from "@app/services/auth.service";
+import { AuthService } from "@app/common/services/auth.service";
 import { mockAuthedUser } from "@tests/mockData";
 import { PopUp } from "@app/common/components/popUp/popUp.component";
-import { ValidationService } from "@app/services/validation.service";
+import { ValidationService } from "@app/common/services/validation.service";
 
 // DISPLAY NAME EDIT
 // ==================================================================

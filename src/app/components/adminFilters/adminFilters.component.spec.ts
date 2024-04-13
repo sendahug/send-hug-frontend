@@ -47,10 +47,10 @@ import { of } from "rxjs";
 
 import { AdminFilters } from "./adminFilters.component";
 import { PopUp } from "@app/common/components/popUp/popUp.component";
-import { AuthService } from "../../services/auth.service";
+import { AuthService } from "../../common/services/auth.service";
 import { Loader } from "../loader/loader.component";
 import { mockAuthedUser } from "@tests/mockData";
-import { ApiClientService } from "@app/services/apiClient.service";
+import { ApiClientService } from "@app/common/services/apiClient.service";
 
 const mockFilteredPhrases = [
   {

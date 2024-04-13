@@ -60,10 +60,6 @@ import { SiteMap } from "./components/siteMap/siteMap.component";
 import { SupportPage } from "./components/supportPage/supportPage.component";
 import { SitePolicies } from "./components/sitePolicies/sitePolicies.component";
 import { IconEditor } from "./components/iconEditor/iconEditor.component";
-import { PostEditForm } from "./components/forms/postEditForm/postEditForm.component";
-import { DisplayNameEditForm } from "./components/forms/displayNameEditForm/displayNameEditForm.component";
-import { ReportForm } from "./components/forms/reportForm/reportForm.component";
-import { ItemDeleteForm } from "./components/forms/itemDeleteForm/itemDeleteForm.component";
 import { AdminReports } from "./components/adminReports/adminReports.component";
 import { AdminBlocks } from "./components/adminBlocks/adminBlocks.component";
 import { AdminFilters } from "./components/adminFilters/adminFilters.component";
@@ -100,10 +96,6 @@ import { LoginPage } from "./components/loginPage/loginPage.component";
     SupportPage,
     SitePolicies,
     IconEditor,
-    PostEditForm,
-    DisplayNameEditForm,
-    ReportForm,
-    ItemDeleteForm,
     AdminReports,
     AdminBlocks,
     AdminFilters,

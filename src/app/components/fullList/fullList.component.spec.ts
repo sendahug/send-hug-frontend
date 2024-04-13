@@ -47,8 +47,8 @@ import { FullList } from "./fullList.component";
 import { PopUp } from "@app/common/components/popUp/popUp.component";
 import { SinglePost } from "@app/common/components/post/post.component";
 import { Loader } from "../loader/loader.component";
-import { ApiClientService } from "../../services/apiClient.service";
-import { SWManager } from "../../services/sWManager.service";
+import { ApiClientService } from "../../common/services/apiClient.service";
+import { SWManager } from "../../common/services/sWManager.service";
 
 const PageOnePosts = [
   {

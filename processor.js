@@ -15,6 +15,7 @@ exports.inlineComponentTemplate = function () {
     name: "plugin-inline-template",
     transform(code) {
       const magicString = new MagicString(code);
+      const commonComponents = fs.readdirSync("./src/app/common/components");
 
       magicString.replace(/(templateUrl:)(.*)(\.component\.html")/, (match) => {
         const componentName = match.split(".")[1].substring(1);
@@ -23,10 +24,10 @@ exports.inlineComponentTemplate = function () {
 
         if (componentName == "app") {
           componentTemplateURL = __dirname + `/src/app/${componentName}.component.html`;
-        } else if (componentName.includes("Form")) {
+        } else if (commonComponents.includes(componentName)) {
           componentTemplateURL =
             __dirname +
-            `/src/app/components/forms/${componentName}/${componentName}.component.html`;
+            `/src/app/common/components/${componentName}/${componentName}.component.html`;
         } else {
           componentTemplateURL =
             __dirname + `/src/app/components/${componentName}/${componentName}.component.html`;

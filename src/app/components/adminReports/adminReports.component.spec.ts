@@ -64,6 +64,7 @@ const mockUserReports: Report[] = [
     date: new Date("2020-06-29 19:17:31.072"),
     dismissed: false,
     closed: false,
+    displayName: "user",
   },
 ];
 const mockPostReports: Report[] = [
@@ -198,9 +199,12 @@ describe("AdminReports", () => {
     fixture.detectChanges();
 
     // check expectations
-    expect(editSpy).toHaveBeenCalled();
+    expect(editSpy).toHaveBeenCalledWith(1, 10, "user");
     expect(adminReports.nameEditMode).toBeTrue();
-    expect(adminReports.editType).toBe("other user");
+    expect(adminReports.toEdit).toEqual({
+      displayName: "user",
+      id: 10,
+    });
     expect(adminReportsDOM.querySelector("app-pop-up")).toBeTruthy();
     done();
   });
@@ -230,7 +234,6 @@ describe("AdminReports", () => {
     // check expectations
     expect(editSpy).toHaveBeenCalled();
     expect(adminReports.postEditMode).toBeTrue();
-    expect(adminReports.editType).toBe("admin post");
     expect(adminReportsDOM.querySelector("app-pop-up")).toBeTruthy();
     done();
   });
@@ -425,8 +428,10 @@ describe("AdminReports", () => {
 
     // start the popup
     adminReports.lastFocusedElement = document.querySelectorAll("a")[0];
-    adminReports.editType = "other user";
-    adminReports.toEdit = "displayName";
+    adminReports.toEdit = {
+      displayName: "displayName",
+      id: 2,
+    };
     adminReports.nameEditMode = true;
     adminReports.reportData.reportID = 5;
     adminReports.reportData.userID = 2;
@@ -454,7 +459,6 @@ describe("AdminReports", () => {
 
     // start the popup
     adminReports.lastFocusedElement = document.querySelectorAll("a")[0];
-    adminReports.editType = "admin post";
     adminReports.toEdit = "post";
     adminReports.postEditMode = true;
     adminReports.reportData.reportID = 5;

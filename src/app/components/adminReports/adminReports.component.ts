@@ -54,7 +54,6 @@ export class AdminReports {
   isLoading = false;
   // edit popup sub-component variables
   toEdit: any;
-  editType: string | undefined;
   nameEditMode: boolean = false;
   postEditMode: boolean = false;
   reportData: {
@@ -143,8 +142,10 @@ export class AdminReports {
   */
   editUser(reportID: number, userID: number, displayName: string) {
     this.lastFocusedElement = document.activeElement;
-    this.editType = "other user";
-    this.toEdit = displayName;
+    this.toEdit = {
+      displayName,
+      id: userID,
+    };
     this.nameEditMode = true;
     this.reportData.reportID = reportID;
     this.reportData.userID = userID;
@@ -161,7 +162,6 @@ export class AdminReports {
   */
   editPost(postID: number, postText: string, reportID: number) {
     this.lastFocusedElement = document.activeElement;
-    this.editType = "admin post";
     this.toEdit = { text: postText, id: postID };
     this.postEditMode = true;
     this.reportData.reportID = reportID;

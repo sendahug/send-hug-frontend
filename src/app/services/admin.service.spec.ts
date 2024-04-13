@@ -82,7 +82,22 @@ describe("AdminService", () => {
       userID: 2,
     };
     const alertSpy = spyOn(adminService["alertsService"], "createSuccessAlert");
-    const dismissSpy = spyOn(adminService, "closeReport");
+    const dismissSpy = spyOn(adminService, "closeReport").and.returnValue(
+      of({
+        success: true,
+        updated: {
+          id: 1,
+          type: "User",
+          userID: 15,
+          displayName: "name",
+          reporter: 3,
+          reportReason: "reason",
+          date: new Date(),
+          dismissed: true,
+          closed: true,
+        },
+      }),
+    );
     const messageSpy = spyOn(adminService["itemsService"], "sendMessage");
     const deleteSWSpy = spyOn(adminService["serviceWorkerM"], "deleteItem");
     const deleteAPISpy = spyOn(adminService["apiClient"], "delete").and.returnValue(
@@ -112,7 +127,7 @@ describe("AdminService", () => {
     };
 
     const userData = {
-      userID: 2,
+      id: 2,
       displayName: "user",
     };
     const alertSpy = spyOn(adminService["alertsService"], "createSuccessAlert");
@@ -231,7 +246,22 @@ describe("AdminService", () => {
     const calculateSpy = spyOn(adminService, "calculateUserReleaseDate").and.returnValue(blockDate);
     const patchSpy = spyOn(adminService["apiClient"], "patch").and.returnValue(of(mockResponse));
     const alertSpy = spyOn(adminService["alertsService"], "createSuccessAlert");
-    const dismissSpy = spyOn(adminService, "closeReport");
+    const dismissSpy = spyOn(adminService, "closeReport").and.returnValue(
+      of({
+        success: true,
+        updated: {
+          id: 1,
+          type: "User",
+          userID: 15,
+          displayName: "name",
+          reporter: 3,
+          reportReason: "reason",
+          date: new Date(),
+          dismissed: true,
+          closed: true,
+        },
+      }),
+    );
 
     adminService.blockUser(15, "oneDay", 3);
 

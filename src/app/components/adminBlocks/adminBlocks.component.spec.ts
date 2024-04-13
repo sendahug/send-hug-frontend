@@ -44,13 +44,14 @@ import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { NO_ERRORS_SCHEMA } from "@angular/core";
 
 import { AdminBlocks } from "./adminBlocks.component";
-import { PopUp } from "../popUp/popUp.component";
-import { AuthService } from "../../services/auth.service";
-import { Loader } from "../loader/loader.component";
+import { PopUp } from "@common/components/popUp/popUp.component";
+import { AuthService } from "../../common/services/auth.service";
+import { Loader } from "../../common/components/loader/loader.component";
 import { mockAuthedUser } from "@tests/mockData";
 import { of } from "rxjs";
-import { ApiClientService } from "@app/services/apiClient.service";
+import { ApiClientService } from "@common/services/apiClient.service";
 import { ReactiveFormsModule } from "@angular/forms";
+import { AppCommonModule } from "@app/common/common.module";
 
 const mockBlockedUsers = [
   {
@@ -81,6 +82,7 @@ describe("Blocks Page", () => {
         ServiceWorkerModule.register("sw.js", { enabled: false }),
         FontAwesomeModule,
         ReactiveFormsModule,
+        AppCommonModule,
       ],
       declarations: [AdminBlocks, PopUp, Loader],
       providers: [{ provide: APP_BASE_HREF, useValue: "/" }],

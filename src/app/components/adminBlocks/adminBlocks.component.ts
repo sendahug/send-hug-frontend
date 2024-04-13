@@ -35,10 +35,10 @@ import { Component, signal, computed } from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
 
 // App imports
-import { AuthService } from "@app/services/auth.service";
-import { AdminService } from "@app/services/admin.service";
-import { AlertsService } from "@app/services/alerts.service";
-import { ApiClientService } from "@app/services/apiClient.service";
+import { AuthService } from "@common/services/auth.service";
+import { AdminService } from "@common/services/admin.service";
+import { AlertsService } from "@common/services/alerts.service";
+import { ApiClientService } from "@common/services/apiClient.service";
 
 interface BlockedUser {
   id: number;

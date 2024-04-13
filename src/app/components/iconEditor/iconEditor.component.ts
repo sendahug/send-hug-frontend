@@ -33,7 +33,7 @@
 import { Component, EventEmitter, Output } from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
 
-import { AuthService } from "@app/services/auth.service";
+import { AuthService } from "@common/services/auth.service";
 import { iconCharacters, iconElements } from "@app/interfaces/types";
 
 @Component({

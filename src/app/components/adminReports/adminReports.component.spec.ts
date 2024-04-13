@@ -46,13 +46,13 @@ import { of } from "rxjs";
 import { By } from "@angular/platform-browser";
 
 import { AdminReports } from "./adminReports.component";
-import { PopUp } from "../popUp/popUp.component";
-import { AuthService } from "../../services/auth.service";
-import { Loader } from "../loader/loader.component";
+import { AuthService } from "../../common/services/auth.service";
+import { Loader } from "../../common/components/loader/loader.component";
 import { mockAuthedUser } from "@tests/mockData";
 import { Report } from "@app/interfaces/report.interface";
-import { ApiClientService } from "@app/services/apiClient.service";
+import { ApiClientService } from "@common/services/apiClient.service";
 import { MockDeleteForm, MockDisplayNameForm, MockEditForm } from "@tests/mockForms";
+import { AppCommonModule } from "@app/common/common.module";
 
 const mockUserReports: Report[] = [
   {
@@ -96,15 +96,9 @@ describe("AdminReports", () => {
         HttpClientModule,
         ServiceWorkerModule.register("sw.js", { enabled: false }),
         FontAwesomeModule,
+        AppCommonModule,
       ],
-      declarations: [
-        AdminReports,
-        PopUp,
-        Loader,
-        MockDeleteForm,
-        MockDisplayNameForm,
-        MockEditForm,
-      ],
+      declarations: [AdminReports, Loader],
       providers: [{ provide: APP_BASE_HREF, useValue: "/" }],
     }).compileComponents();
 

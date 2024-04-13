@@ -41,13 +41,11 @@ import { HttpClientModule } from "@angular/common/http";
 import { ServiceWorkerModule } from "@angular/service-worker";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { Component } from "@angular/core";
-import { Route, RouterModule, Routes } from "@angular/router";
+import { Route, Router, RouterModule, Routes } from "@angular/router";
 
-import { AppComponent } from "../../app.component";
 import { SiteMap } from "./siteMap.component";
-import { NotificationsTab } from "../notifications/notifications.component";
-import { AuthService } from "../../services/auth.service";
-import { AppAlert } from "../appAlert/appAlert.component";
+import { AuthService } from "../../common/services/auth.service";
+import { AppCommonModule } from "@app/common/common.module";
 import { mockAuthedUser } from "@tests/mockData";
 
 // Mock Component for testing the sitemap
@@ -68,54 +66,76 @@ class MockComp {
   }
 }
 
-// Routes
-export const routes: Routes = [
-  { path: "", component: MockComp, data: { name: "Home Page" } },
-  {
-    path: "user",
-    children: [
-      { path: "", pathMatch: "prefix", component: MockComp, data: { name: "Your Page" } },
-      {
-        path: ":id",
-        pathMatch: "prefix",
-        component: MockComp,
-        data: { name: "Other User's Page" },
-      },
-    ],
-    data: { name: "User Page" },
-  },
-  { path: "settings", component: MockComp, data: { name: "Settings Page" } },
-  { path: "sitemap", component: SiteMap, data: { name: "Site Map" } },
-  { path: "**", component: MockComp, data: { name: "Error Page" } },
-  {
-    path: "admin",
-    children: [
-      { path: "", pathMatch: "prefix", component: MockComp, data: { name: "Main Page" } },
-      { path: "reports", pathMatch: "prefix", component: MockComp, data: { name: "Reports Page" } },
-      { path: "blocks", pathMatch: "prefix", component: MockComp, data: { name: "Blocks Page" } },
-      { path: "filters", pathMatch: "prefix", component: MockComp, data: { name: "Filters Page" } },
-    ],
-    data: { name: "Admin Dashboard" },
-  },
-  {
-    path: "messages",
-    children: [
-      { path: "", pathMatch: "prefix", redirectTo: "inbox", data: { name: "Inbox" } },
-      { path: "inbox", pathMatch: "prefix", component: MockComp, data: { name: "Inbox" } },
-      { path: "outbox", pathMatch: "prefix", component: MockComp, data: { name: "Outbox" } },
-      { path: "threads", pathMatch: "prefix", component: MockComp, data: { name: "Threads" } },
-      { path: "thread/:id", pathMatch: "prefix", component: MockComp, data: { name: "Thread" } },
-    ],
-    data: { name: "Mailbox" },
-  },
-  { path: "login", component: MockComp, data: { name: "Login Page" } },
-];
-
 describe("SiteMap", () => {
+  let routes: Routes = [];
+
   // Before each test, configure testing environment
   beforeEach(() => {
     TestBed.resetTestEnvironment();
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
+
+    // Routes
+    routes = [
+      { path: "", component: MockComp, data: { name: "Home Page" } },
+      {
+        path: "user",
+        children: [
+          { path: "", pathMatch: "prefix", component: MockComp, data: { name: "Your Page" } },
+          {
+            path: ":id",
+            pathMatch: "prefix",
+            component: MockComp,
+            data: { name: "Other User's Page" },
+          },
+        ],
+        data: { name: "User Page" },
+      },
+      { path: "settings", component: MockComp, data: { name: "Settings Page" } },
+      { path: "sitemap", component: SiteMap, data: { name: "Site Map" } },
+      { path: "**", component: MockComp, data: { name: "Error Page" } },
+      {
+        path: "admin",
+        children: [
+          { path: "", pathMatch: "prefix", component: MockComp, data: { name: "Main Page" } },
+          {
+            path: "reports",
+            pathMatch: "prefix",
+            component: MockComp,
+            data: { name: "Reports Page" },
+          },
+          {
+            path: "blocks",
+            pathMatch: "prefix",
+            component: MockComp,
+            data: { name: "Blocks Page" },
+          },
+          {
+            path: "filters",
+            pathMatch: "prefix",
+            component: MockComp,
+            data: { name: "Filters Page" },
+          },
+        ],
+        data: { name: "Admin Dashboard" },
+      },
+      {
+        path: "messages",
+        children: [
+          { path: "", pathMatch: "prefix", redirectTo: "inbox", data: { name: "Inbox" } },
+          { path: "inbox", pathMatch: "prefix", component: MockComp, data: { name: "Inbox" } },
+          { path: "outbox", pathMatch: "prefix", component: MockComp, data: { name: "Outbox" } },
+          { path: "threads", pathMatch: "prefix", component: MockComp, data: { name: "Threads" } },
+          {
+            path: "thread/:id",
+            pathMatch: "prefix",
+            component: MockComp,
+            data: { name: "Thread" },
+          },
+        ],
+        data: { name: "Mailbox" },
+      },
+      { path: "login", component: MockComp, data: { name: "Login Page" } },
+    ];
 
     TestBed.configureTestingModule({
       imports: [
@@ -123,25 +143,25 @@ describe("SiteMap", () => {
         HttpClientModule,
         ServiceWorkerModule.register("sw.js", { enabled: false }),
         FontAwesomeModule,
+        AppCommonModule,
       ],
-      declarations: [AppComponent, MockComp, NotificationsTab, SiteMap, AppAlert],
+      declarations: [MockComp, SiteMap],
       providers: [{ provide: APP_BASE_HREF, useValue: "/" }],
     }).compileComponents();
+
+    const router = TestBed.inject(Router);
+    router.config = [...routes];
   });
 
   // Check the page is created
   it("should create the component", () => {
-    const acFixture = TestBed.createComponent(AppComponent);
-    const appComponent = acFixture.componentInstance;
     const fixture = TestBed.createComponent(SiteMap);
     const siteMap = fixture.componentInstance;
-    expect(appComponent).toBeTruthy();
     expect(siteMap).toBeTruthy();
   });
 
   // Check that there are valid navigation links
   it("should contain valid navigation links", () => {
-    TestBed.createComponent(AppComponent);
     const fixture = TestBed.createComponent(SiteMap);
     const siteMap = fixture.componentInstance;
     const siteMapDOM = fixture.nativeElement;
@@ -166,7 +186,6 @@ describe("SiteMap", () => {
     const authService = TestBed.inject(AuthService);
     const authSpy = spyOn(authService, "canUser").and.returnValue(true);
     authService.authenticated.set(true);
-    TestBed.createComponent(AppComponent);
     const fixture = TestBed.createComponent(SiteMap);
     const siteMap = fixture.componentInstance;
     const siteMapDOM = fixture.nativeElement;
@@ -210,7 +229,6 @@ describe("SiteMap", () => {
     const authService = TestBed.inject(AuthService);
     const authSpy = spyOn(authService, "canUser").and.returnValue(false);
     authService.authenticated.set(true);
-    TestBed.createComponent(AppComponent);
     const fixture = TestBed.createComponent(SiteMap);
     const siteMap = fixture.componentInstance;
     const siteMapDOM = fixture.nativeElement;
@@ -242,9 +260,7 @@ describe("SiteMap", () => {
     // check the admin pages' links don't appear
     expect(authSpy).toHaveBeenCalled();
     expect(siteMap.routes).not.toContain(adminPath);
-    expect(
-      navLinks[4].parentElement.parentElement.parentElement.firstElementChild.textContent,
-    ).not.toBe("Admin Dashboard");
+    expect(navLinks.length).toBeLessThan(routes.length);
     for (var i = 0; i < navLinks.length; i++) {
       expect(navLinks[i].textContent).not.toBe("Main Page");
       expect(navLinks[i].textContent).not.toBe("Reports Page");
@@ -258,7 +274,6 @@ describe("SiteMap", () => {
     const authService = TestBed.inject(AuthService);
     spyOn(authService, "canUser").and.returnValue(false);
     authService.authenticated.set(true);
-    TestBed.createComponent(AppComponent);
     const fixture = TestBed.createComponent(SiteMap);
     const siteMap = fixture.componentInstance;
     const siteMapDOM = fixture.nativeElement;
@@ -307,7 +322,6 @@ describe("SiteMap", () => {
     const authService = TestBed.inject(AuthService);
     spyOn(authService, "canUser").and.returnValue(false);
     authService.authenticated.set(true);
-    TestBed.createComponent(AppComponent);
     const fixture = TestBed.createComponent(SiteMap);
     const siteMap = fixture.componentInstance;
     const siteMapDOM = fixture.nativeElement;
@@ -349,7 +363,6 @@ describe("SiteMap", () => {
   it("should remove the login route if the user is authenticated", () => {
     const authService = TestBed.inject(AuthService);
     spyOn(authService, "authenticated").and.returnValue(true);
-    TestBed.createComponent(AppComponent);
     const fixture = TestBed.createComponent(SiteMap);
     const siteMap = fixture.componentInstance;
     const siteMapDOM = fixture.nativeElement;
@@ -368,7 +381,6 @@ describe("SiteMap", () => {
   it("should keep the login route if the user is not authenticated", () => {
     const authService = TestBed.inject(AuthService);
     spyOn(authService, "authenticated").and.returnValue(false);
-    TestBed.createComponent(AppComponent);
     const fixture = TestBed.createComponent(SiteMap);
     const siteMap = fixture.componentInstance;
     const siteMapDOM = fixture.nativeElement;
@@ -385,7 +397,6 @@ describe("SiteMap", () => {
   it("should update the site map if the user authenticates after the component is created", () => {
     const authService = TestBed.inject(AuthService);
     authService.authenticated.set(false);
-    TestBed.createComponent(AppComponent);
     const fixture = TestBed.createComponent(SiteMap);
     const siteMap = fixture.componentInstance;
     const siteMapDOM = fixture.nativeElement;

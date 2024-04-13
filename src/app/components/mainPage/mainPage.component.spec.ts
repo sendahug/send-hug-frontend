@@ -45,11 +45,9 @@ import { of } from "rxjs";
 
 // App imports
 import { MainPage } from "./mainPage.component";
-import { Loader } from "../loader/loader.component";
-import { PopUp } from "../popUp/popUp.component";
-import { SinglePost } from "../post/post.component";
-import { ApiClientService } from "../../services/apiClient.service";
-import { SWManager } from "../../services/sWManager.service";
+import { ApiClientService } from "../../common/services/apiClient.service";
+import { SWManager } from "../../common/services/sWManager.service";
+import { AppCommonModule } from "@app/common/common.module";
 
 const newItems = [
   {
@@ -104,8 +102,9 @@ describe("MainPage", () => {
         HttpClientModule,
         ServiceWorkerModule.register("sw.js", { enabled: false }),
         FontAwesomeModule,
+        AppCommonModule,
       ],
-      declarations: [MainPage, Loader, PopUp, SinglePost],
+      declarations: [MainPage],
       providers: [{ provide: APP_BASE_HREF, useValue: "/" }],
     }).compileComponents();
   });

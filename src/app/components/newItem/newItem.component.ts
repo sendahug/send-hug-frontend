@@ -38,12 +38,12 @@ import { FormBuilder, Validators } from "@angular/forms";
 // App-related imports
 import { Post } from "@app/interfaces/post.interface";
 import { Message } from "@app/interfaces/message.interface";
-import { ItemsService } from "@app/services/items.service";
-import { AuthService } from "@app/services/auth.service";
-import { AlertsService } from "@app/services/alerts.service";
-import { ValidationService } from "@app/services/validation.service";
-import { ApiClientService } from "@app/services/apiClient.service";
-import { SWManager } from "@app/services/sWManager.service";
+import { ItemsService } from "@common/services/items.service";
+import { AuthService } from "@common/services/auth.service";
+import { AlertsService } from "@common/services/alerts.service";
+import { ValidationService } from "@common/services/validation.service";
+import { ApiClientService } from "@common/services/apiClient.service";
+import { SWManager } from "@common/services/sWManager.service";
 
 @Component({
   selector: "app-new-item",

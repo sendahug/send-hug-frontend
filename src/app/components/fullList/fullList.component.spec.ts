@@ -44,11 +44,9 @@ import { of } from "rxjs";
 import { ActivatedRoute, Router, RouterModule, UrlSegment } from "@angular/router";
 
 import { FullList } from "./fullList.component";
-import { PopUp } from "../popUp/popUp.component";
-import { SinglePost } from "../post/post.component";
-import { Loader } from "../loader/loader.component";
-import { ApiClientService } from "../../services/apiClient.service";
-import { SWManager } from "../../services/sWManager.service";
+import { ApiClientService } from "../../common/services/apiClient.service";
+import { SWManager } from "../../common/services/sWManager.service";
+import { AppCommonModule } from "@app/common/common.module";
 
 const PageOnePosts = [
   {
@@ -94,8 +92,9 @@ describe("FullList", () => {
         HttpClientModule,
         ServiceWorkerModule.register("sw.js", { enabled: false }),
         FontAwesomeModule,
+        AppCommonModule,
       ],
-      declarations: [FullList, PopUp, Loader, SinglePost],
+      declarations: [FullList],
       providers: [{ provide: APP_BASE_HREF, useValue: "/" }],
     }).compileComponents();
   });

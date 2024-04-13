@@ -1,6 +1,6 @@
 /*
-  About App
-  Send a Hug Component Tests
+  Common Module
+  Send a Hug Module
   ---------------------------------------------------
   MIT License
 
@@ -30,44 +30,54 @@
   SOFTWARE.
 */
 
-import { TestBed } from "@angular/core/testing";
-import { RouterModule } from "@angular/router";
-import {} from "jasmine";
-import { APP_BASE_HREF } from "@angular/common";
-import {
-  BrowserDynamicTestingModule,
-  platformBrowserDynamicTesting,
-} from "@angular/platform-browser-dynamic/testing";
+import { NgModule } from "@angular/core";
+import { BrowserModule } from "@angular/platform-browser";
 import { HttpClientModule } from "@angular/common/http";
-import { ServiceWorkerModule } from "@angular/service-worker";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
+import { ReactiveFormsModule } from "@angular/forms";
+import { ServiceWorkerModule } from "@angular/service-worker";
 
-import { AboutApp } from "./aboutApp.component";
-import { AppCommonModule } from "@app/common/common.module";
+import { AppRoutingModule } from "@app/app-routing.module";
 
-describe("AboutApp", () => {
-  // Before each test, configure testing environment
-  beforeEach(() => {
-    TestBed.resetTestEnvironment();
-    TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
+import { PopUp } from "@common/components/popUp/popUp.component";
+import { SinglePost } from "@common/components/post/post.component";
+import { PostEditForm } from "./components/postEditForm/postEditForm.component";
+import { DisplayNameEditForm } from "./components/displayNameEditForm/displayNameEditForm.component";
+import { ReportForm } from "./components/reportForm/reportForm.component";
+import { ItemDeleteForm } from "./components/itemDeleteForm/itemDeleteForm.component";
+import { Loader } from "./components/loader/loader.component";
+import { HeaderMessage } from "./components/headerMessage/headerMessage.component";
 
-    TestBed.configureTestingModule({
-      imports: [
-        RouterModule.forRoot([]),
-        HttpClientModule,
-        ServiceWorkerModule.register("sw.js", { enabled: false }),
-        FontAwesomeModule,
-        AppCommonModule,
-      ],
-      declarations: [AboutApp],
-      providers: [{ provide: APP_BASE_HREF, useValue: "/" }],
-    }).compileComponents();
-  });
-
-  // Check the page is created
-  it("should create the component", () => {
-    const fixture = TestBed.createComponent(AboutApp);
-    const aboutApp = fixture.componentInstance;
-    expect(aboutApp).toBeTruthy();
-  });
-});
+@NgModule({
+  imports: [
+    BrowserModule,
+    HttpClientModule,
+    ReactiveFormsModule,
+    FontAwesomeModule,
+    AppRoutingModule,
+    ServiceWorkerModule.register("sw.js"),
+  ],
+  declarations: [
+    PopUp,
+    SinglePost,
+    PostEditForm,
+    DisplayNameEditForm,
+    ReportForm,
+    ItemDeleteForm,
+    Loader,
+    HeaderMessage,
+  ],
+  providers: [],
+  bootstrap: [],
+  exports: [
+    PopUp,
+    SinglePost,
+    PostEditForm,
+    DisplayNameEditForm,
+    ReportForm,
+    ItemDeleteForm,
+    Loader,
+    HeaderMessage,
+  ],
+})
+export class AppCommonModule {}

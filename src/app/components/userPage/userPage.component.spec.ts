@@ -46,13 +46,13 @@ import { NO_ERRORS_SCHEMA } from "@angular/core";
 import { of } from "rxjs";
 
 import { UserPage } from "./userPage.component";
-import { PopUp } from "@app/components/popUp/popUp.component";
-import { AuthService } from "@app/services/auth.service";
+import { AuthService } from "@common/services/auth.service";
 import { mockAuthedUser } from "@tests/mockData";
 import { OtherUser } from "@app/interfaces/otherUser.interface";
 import { iconCharacters } from "@app/interfaces/types";
 import { MockDisplayNameForm, MockReportForm } from "@tests/mockForms";
 import { User } from "@app/interfaces/user.interface";
+import { AppCommonModule } from "@app/common/common.module";
 
 describe("UserPage", () => {
   // Before each test, configure testing environment
@@ -67,8 +67,9 @@ describe("UserPage", () => {
         HttpClientModule,
         ServiceWorkerModule.register("sw.js", { enabled: false }),
         FontAwesomeModule,
+        AppCommonModule,
       ],
-      declarations: [UserPage, PopUp, MockDisplayNameForm, MockReportForm],
+      declarations: [UserPage],
       providers: [{ provide: APP_BASE_HREF, useValue: "/" }],
     }).compileComponents();
   });
@@ -587,6 +588,25 @@ describe("UserPage", () => {
     authService.userData = { ...mockAuthedUser };
     const fixture = TestBed.createComponent(UserPage);
     const userPage = fixture.componentInstance;
+    userPage.otherUser.set({
+      id: 1,
+      displayName: "shirb",
+      receivedH: 3,
+      givenH: 3,
+      role: {
+        id: 1,
+        name: "user",
+        permissions: [],
+      },
+      posts: 10,
+      selectedIcon: "kitty",
+      iconColours: {
+        character: "#BA9F93",
+        lbg: "#e2a275",
+        rbg: "#f8eee4",
+        item: "#f4b56a",
+      },
+    });
     const changeSpy = spyOn(userPage, "changeMode").and.callThrough();
 
     fixture.detectChanges();

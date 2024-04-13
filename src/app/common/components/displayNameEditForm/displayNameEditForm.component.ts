@@ -35,10 +35,10 @@ import { Component, Input, Output, EventEmitter, OnInit } from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
 
 // App-related import
-import { AuthService } from "@app/services/auth.service";
-import { AdminService } from "@app/services/admin.service";
-import { ValidationService } from "@app/services/validation.service";
-import { AlertsService } from "@app/services/alerts.service";
+import { AuthService } from "@common/services/auth.service";
+import { AdminService } from "@common/services/admin.service";
+import { ValidationService } from "@common/services/validation.service";
+import { AlertsService } from "@common/services/alerts.service";
 import { ReportData } from "@app/interfaces/report.interface";
 import { PartialUser } from "@app/interfaces/user.interface";
 

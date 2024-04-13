@@ -47,12 +47,10 @@ import { By } from "@angular/platform-browser";
 import { NO_ERRORS_SCHEMA } from "@angular/core";
 
 import { MyPosts } from "./myPosts.component";
-import { PopUp } from "../popUp/popUp.component";
-import { Loader } from "../loader/loader.component";
-import { HeaderMessage } from "../headerMessage/headerMessage.component";
-import { AuthService } from "../../services/auth.service";
+import { AuthService } from "../../common/services/auth.service";
 import { mockAuthedUser } from "@tests/mockData";
 import { MockReportForm, MockDeleteForm, MockEditForm } from "@tests/mockForms";
+import { AppCommonModule } from "@app/common/common.module";
 
 const mockPosts = [
   {
@@ -110,17 +108,9 @@ describe("MyPosts", () => {
         HttpClientModule,
         ServiceWorkerModule.register("sw.js", { enabled: false }),
         FontAwesomeModule,
+        AppCommonModule,
       ],
-      declarations: [
-        MockUserPage,
-        MyPosts,
-        PopUp,
-        Loader,
-        HeaderMessage,
-        MockDeleteForm,
-        MockEditForm,
-        MockReportForm,
-      ],
+      declarations: [MockUserPage, MyPosts],
       providers: [{ provide: APP_BASE_HREF, useValue: "/" }],
     }).compileComponents();
 

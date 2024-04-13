@@ -36,11 +36,11 @@ import { SwPush } from "@angular/service-worker";
 import { interval, Subscription, Observable } from "rxjs";
 
 // App-related imports
-import { AuthService } from "./auth.service";
-import { AlertsService } from "./alerts.service";
-import { SWManager } from "./sWManager.service";
+import { AuthService } from "../common/services/auth.service";
+import { AlertsService } from "../common/services/alerts.service";
+import { SWManager } from "../common/services/sWManager.service";
 import { environment } from "@env/environment";
-import { ApiClientService } from "./apiClient.service";
+import { ApiClientService } from "../common/services/apiClient.service";
 
 interface GetNotificationsResponse {
   success: boolean;

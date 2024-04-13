@@ -46,9 +46,10 @@ import { ReactiveFormsModule } from "@angular/forms";
 import { SettingsPage } from "./settings.component";
 import { IconEditor } from "@app/components/iconEditor/iconEditor.component";
 import { NotificationService } from "@app/services/notifications.service";
-import { AuthService } from "@app/services/auth.service";
-import { AlertsService } from "@app/services/alerts.service";
+import { AuthService } from "@common/services/auth.service";
+import { AlertsService } from "@common/services/alerts.service";
 import { mockAuthedUser } from "@tests/mockData";
+import { AppCommonModule } from "@app/common/common.module";
 
 describe("SettingsPage", () => {
   // Before each test, configure testing environment
@@ -63,6 +64,7 @@ describe("SettingsPage", () => {
         ServiceWorkerModule.register("sw.js", { enabled: false }),
         FontAwesomeModule,
         ReactiveFormsModule,
+        AppCommonModule,
       ],
       declarations: [SettingsPage, IconEditor],
       providers: [{ provide: APP_BASE_HREF, useValue: "/" }],

@@ -45,11 +45,12 @@ import { ActivatedRoute, RouterModule, UrlSegment } from "@angular/router";
 import { of } from "rxjs";
 
 import { AdminDashboard } from "./adminDashboard.component";
-import { AuthService } from "@app/services/auth.service";
+import { AuthService } from "@common/services/auth.service";
 import { mockAuthedUser } from "@tests/mockData";
 import { AdminReports } from "@app/components/adminReports/adminReports.component";
 import { AdminBlocks } from "@app/components/adminBlocks/adminBlocks.component";
 import { AdminFilters } from "@app/components/adminFilters/adminFilters.component";
+import { AppCommonModule } from "@app/common/common.module";
 
 describe("AdminDashboard", () => {
   // Before each test, configure testing environment
@@ -64,6 +65,7 @@ describe("AdminDashboard", () => {
         HttpClientModule,
         ServiceWorkerModule.register("sw.js", { enabled: false }),
         FontAwesomeModule,
+        AppCommonModule,
       ],
       declarations: [AdminDashboard, AdminReports, AdminBlocks, AdminFilters],
       providers: [{ provide: APP_BASE_HREF, useValue: "/" }],

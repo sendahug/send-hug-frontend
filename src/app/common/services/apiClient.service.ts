@@ -37,7 +37,7 @@ import { Observable, catchError, tap, throwError } from "rxjs";
 
 // App-related imports
 import { environment } from "@env/environment";
-import { AlertsService } from "@app/services/alerts.service";
+import { AlertsService } from "@common/services/alerts.service";
 
 @Injectable({
   providedIn: "root",

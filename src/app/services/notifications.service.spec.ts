@@ -41,8 +41,9 @@ import { Subscription, of } from "rxjs";
 import {} from "jasmine";
 
 import { NotificationService } from "./notifications.service";
-import { AuthService } from "./auth.service";
+import { AuthService } from "../common/services/auth.service";
 import { mockAuthedUser } from "@tests/mockData";
+import { AppCommonModule } from "@app/common/common.module";
 
 const pushSub: PushSubscription = {
   endpoint: "endpoint",
@@ -78,6 +79,7 @@ describe("NotificationService", () => {
       imports: [
         HttpClientTestingModule,
         ServiceWorkerModule.register("/sw.js", { enabled: false }),
+        AppCommonModule,
       ],
       providers: [NotificationService],
     }).compileComponents();

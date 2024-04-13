@@ -46,11 +46,12 @@ import { ReactiveFormsModule } from "@angular/forms";
 import { of } from "rxjs";
 
 import { AdminFilters } from "./adminFilters.component";
-import { PopUp } from "../popUp/popUp.component";
-import { AuthService } from "../../services/auth.service";
-import { Loader } from "../loader/loader.component";
+import { PopUp } from "@common/components/popUp/popUp.component";
+import { AuthService } from "../../common/services/auth.service";
+import { Loader } from "../../common/components/loader/loader.component";
 import { mockAuthedUser } from "@tests/mockData";
-import { ApiClientService } from "@app/services/apiClient.service";
+import { ApiClientService } from "@common/services/apiClient.service";
+import { AppCommonModule } from "@app/common/common.module";
 
 const mockFilteredPhrases = [
   {
@@ -77,6 +78,7 @@ describe("Filters Page", () => {
         ServiceWorkerModule.register("sw.js", { enabled: false }),
         FontAwesomeModule,
         ReactiveFormsModule,
+        AppCommonModule,
       ],
       declarations: [AdminFilters, PopUp, Loader],
       providers: [{ provide: APP_BASE_HREF, useValue: "/" }],

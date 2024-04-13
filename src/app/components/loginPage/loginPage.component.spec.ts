@@ -44,8 +44,9 @@ import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { NO_ERRORS_SCHEMA } from "@angular/core";
 
 import { LoginPage } from "./loginPage.component";
-import { AuthService } from "@app/services/auth.service";
+import { AuthService } from "@common/services/auth.service";
 import { mockAuthedUser } from "@tests/mockData";
+import { AppCommonModule } from "@app/common/common.module";
 
 describe("LoginPage", () => {
   // Before each test, configure testing environment
@@ -60,6 +61,7 @@ describe("LoginPage", () => {
         HttpClientModule,
         ServiceWorkerModule.register("sw.js", { enabled: false }),
         FontAwesomeModule,
+        AppCommonModule,
       ],
       declarations: [LoginPage],
       providers: [{ provide: APP_BASE_HREF, useValue: "/" }],

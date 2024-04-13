@@ -45,9 +45,10 @@ import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { AppComponent } from "../../app.component";
 import { NotificationsTab } from "./notifications.component";
 import { NotificationService } from "../../services/notifications.service";
-import { AuthService } from "../../services/auth.service";
+import { AuthService } from "../../common/services/auth.service";
 import { mockAuthedUser } from "@tests/mockData";
 import { AppAlert } from "../appAlert/appAlert.component";
+import { AppCommonModule } from "@app/common/common.module";
 
 describe("Notifications", () => {
   // Before each test, configure testing environment
@@ -61,6 +62,7 @@ describe("Notifications", () => {
         HttpClientModule,
         ServiceWorkerModule.register("sw.js", { enabled: false }),
         FontAwesomeModule,
+        AppCommonModule,
       ],
       declarations: [AppComponent, NotificationsTab, AppAlert],
       providers: [{ provide: APP_BASE_HREF, useValue: "/" }],

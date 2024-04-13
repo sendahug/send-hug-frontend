@@ -38,10 +38,10 @@ import { faComments, faUserCircle, faCompass, faBell } from "@fortawesome/free-r
 import { faBars, faSearch, faTimes, faTextHeight } from "@fortawesome/free-solid-svg-icons";
 
 // App-related imports
-import { AuthService } from "./services/auth.service";
-import { ItemsService } from "./services/items.service";
-import { AlertsService } from "./services/alerts.service";
-import { SWManager } from "./services/sWManager.service";
+import { AuthService } from "./common/services/auth.service";
+import { ItemsService } from "./common/services/items.service";
+import { AlertsService } from "./common/services/alerts.service";
+import { SWManager } from "./common/services/sWManager.service";
 import { NotificationService } from "./services/notifications.service";
 
 @Component({

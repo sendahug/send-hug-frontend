@@ -46,11 +46,11 @@ import { By } from "@angular/platform-browser";
 import { NO_ERRORS_SCHEMA } from "@angular/core";
 
 import { AppMessaging } from "./messages.component";
-import { PopUp } from "../popUp/popUp.component";
-import { AuthService } from "../../services/auth.service";
+import { AuthService } from "../../common/services/auth.service";
 import { mockAuthedUser } from "@tests/mockData";
 import { FullThread } from "@app/interfaces/thread.interface";
 import { MockDeleteForm } from "@tests/mockForms";
+import { AppCommonModule } from "@app/common/common.module";
 
 const mockMessages = [
   {
@@ -125,8 +125,9 @@ describe("AppMessaging", () => {
         HttpClientModule,
         ServiceWorkerModule.register("sw.js", { enabled: false }),
         FontAwesomeModule,
+        AppCommonModule,
       ],
-      declarations: [AppMessaging, PopUp, MockDeleteForm],
+      declarations: [AppMessaging],
       providers: [{ provide: APP_BASE_HREF, useValue: "/" }],
     }).compileComponents();
 

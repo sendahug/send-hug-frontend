@@ -37,10 +37,10 @@ import { map, mergeMap, of } from "rxjs";
 
 // App-related import
 import { Post } from "@app/interfaces/post.interface";
-import { AdminService } from "@app/services/admin.service";
-import { ValidationService } from "@app/services/validation.service";
-import { AlertsService } from "@app/services/alerts.service";
-import { ApiClientService } from "@app/services/apiClient.service";
+import { AdminService } from "@common/services/admin.service";
+import { ValidationService } from "@common/services/validation.service";
+import { AlertsService } from "@common/services/alerts.service";
+import { ApiClientService } from "@common/services/apiClient.service";
 
 interface PostEditResponse {
   success: boolean;

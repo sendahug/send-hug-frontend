@@ -46,8 +46,8 @@ import { of } from "rxjs";
 
 import { PostEditForm } from "./postEditForm.component";
 import { Post } from "@app/interfaces/post.interface";
-import { PopUp } from "@app/components/popUp/popUp.component";
-import { ValidationService } from "@app/services/validation.service";
+import { PopUp } from "@common/components/popUp/popUp.component";
+import { ValidationService } from "@common/services/validation.service";
 
 // POST EDIT
 // ==================================================================

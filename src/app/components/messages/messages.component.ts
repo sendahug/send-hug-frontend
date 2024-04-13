@@ -36,13 +36,13 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { from, map, switchMap, tap } from "rxjs";
 
 // App-related imports
-import { AuthService } from "@app/services/auth.service";
+import { AuthService } from "@common/services/auth.service";
 import { iconElements, MessageType } from "@app/interfaces/types";
 import { FullThread, ParsedThread } from "@app/interfaces/thread.interface";
 import { UserIconColours } from "@app/interfaces/user.interface";
 import { Message } from "@app/interfaces/message.interface";
-import { SWManager } from "@app/services/sWManager.service";
-import { ApiClientService } from "@app/services/apiClient.service";
+import { SWManager } from "@common/services/sWManager.service";
+import { ApiClientService } from "@common/services/apiClient.service";
 
 interface MessagesResponse {
   success: boolean;

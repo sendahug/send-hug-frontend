@@ -36,7 +36,7 @@ import { ActivatedRoute } from "@angular/router";
 import { Subscription } from "rxjs";
 
 // App imports
-import { AuthService } from "@app/services/auth.service";
+import { AuthService } from "@common/services/auth.service";
 
 @Component({
   selector: "app-admin-dashboard",

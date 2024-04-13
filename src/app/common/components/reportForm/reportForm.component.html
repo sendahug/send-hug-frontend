@@ -5,7 +5,7 @@
       <div class="itemText" id="reportText">{{ reportedItem.text }}</div>
       <div class="itemUser">By {{ reportedItem.user }}</div>
     </div>
-    <a *ngIf="reportType == 'User'" [routerLink]="['/user', reportedItem.userId]" id="uReportText">{{ reportedItem.displayName }}</a>
+    <a *ngIf="reportType == 'User'" [routerLink]="['/user', reportedItem.id]" id="uReportText">{{ reportedItem.displayName }}</a>
 
     <div id="reportQ" class="popupText required">{{ "What is the problem with this " + reportType.toLowerCase() + "?" }}</div>
     <form [formGroup]="reportForm" id="reportPost" role="radiogroup">

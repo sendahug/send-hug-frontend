@@ -44,8 +44,9 @@ import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { ReactiveFormsModule } from "@angular/forms";
 
 import { IconEditor } from "./iconEditor.component";
-import { AuthService } from "../../services/auth.service";
+import { AuthService } from "../../common/services/auth.service";
 import { mockAuthedUser } from "@tests/mockData";
+import { AppCommonModule } from "@app/common/common.module";
 
 describe("IconEditor", () => {
   // Before each test, configure testing environment
@@ -60,6 +61,7 @@ describe("IconEditor", () => {
         ServiceWorkerModule.register("sw.js", { enabled: false }),
         FontAwesomeModule,
         ReactiveFormsModule,
+        AppCommonModule,
       ],
       declarations: [IconEditor],
       providers: [{ provide: APP_BASE_HREF, useValue: "/" }],

@@ -43,11 +43,9 @@ import { ActivatedRoute, Router, RouterModule } from "@angular/router";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 
 import { SearchResults } from "./searchResults.component";
-import { PopUp } from "../popUp/popUp.component";
-import { Loader } from "../loader/loader.component";
-import { SinglePost } from "../post/post.component";
-import { ItemsService } from "../../services/items.service";
+import { ItemsService } from "../../common/services/items.service";
 import { iconCharacters } from "@app/interfaces/types";
+import { AppCommonModule } from "@app/common/common.module";
 
 const mockUserSearchResults = [
   {
@@ -122,8 +120,9 @@ describe("SearchResults", () => {
         HttpClientModule,
         ServiceWorkerModule.register("sw.js", { enabled: false }),
         FontAwesomeModule,
+        AppCommonModule,
       ],
-      declarations: [SearchResults, PopUp, Loader, SinglePost],
+      declarations: [SearchResults],
       providers: [{ provide: APP_BASE_HREF, useValue: "/" }],
     }).compileComponents();
   });
@@ -211,8 +210,9 @@ describe("SearchResults", () => {
           HttpClientModule,
           ServiceWorkerModule.register("sw.js", { enabled: false }),
           FontAwesomeModule,
+          AppCommonModule,
         ],
-        declarations: [SearchResults, PopUp, Loader, SinglePost],
+        declarations: [SearchResults],
         providers: [{ provide: APP_BASE_HREF, useValue: "/" }],
       }).compileComponents();
 
@@ -290,8 +290,9 @@ describe("SearchResults", () => {
           HttpClientModule,
           ServiceWorkerModule.register("sw.js", { enabled: false }),
           FontAwesomeModule,
+          AppCommonModule,
         ],
-        declarations: [SearchResults, PopUp, Loader, SinglePost],
+        declarations: [SearchResults],
         providers: [{ provide: APP_BASE_HREF, useValue: "/" }],
       }).compileComponents();
 

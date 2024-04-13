@@ -45,8 +45,9 @@ import { ActivatedRoute, RouterModule, UrlSegment } from "@angular/router";
 import { ReactiveFormsModule } from "@angular/forms";
 
 import { NewItem } from "./newItem.component";
-import { AuthService } from "@app/services/auth.service";
+import { AuthService } from "@common/services/auth.service";
 import { mockAuthedUser } from "@tests/mockData";
+import { AppCommonModule } from "@app/common/common.module";
 
 describe("NewItem", () => {
   // Before each test, configure testing environment
@@ -61,6 +62,7 @@ describe("NewItem", () => {
         ServiceWorkerModule.register("sw.js", { enabled: false }),
         FontAwesomeModule,
         ReactiveFormsModule,
+        AppCommonModule,
       ],
       declarations: [NewItem],
       providers: [{ provide: APP_BASE_HREF, useValue: "/" }],

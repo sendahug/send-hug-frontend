@@ -38,10 +38,10 @@ import { FormBuilder, Validators } from "@angular/forms";
 import { Post } from "@app/interfaces/post.interface";
 import { Report } from "@app/interfaces/report.interface";
 import { OtherUser } from "@app/interfaces/otherUser.interface";
-import { AuthService } from "@app/services/auth.service";
-import { AlertsService } from "@app/services/alerts.service";
-import { ValidationService } from "@app/services/validation.service";
-import { ApiClientService } from "@app/services/apiClient.service";
+import { AuthService } from "@common/services/auth.service";
+import { AlertsService } from "@common/services/alerts.service";
+import { ValidationService } from "@common/services/validation.service";
+import { ApiClientService } from "@common/services/apiClient.service";
 
 // Reasons for submitting a report
 enum postReportReasons {

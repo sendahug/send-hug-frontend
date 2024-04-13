@@ -39,12 +39,12 @@ import { HttpErrorResponse } from "@angular/common/http";
 
 // App-related imports
 import { PartialUser, User } from "@app/interfaces/user.interface";
-import { AuthService } from "@app/services/auth.service";
+import { AuthService } from "@common/services/auth.service";
 import { iconElements } from "@app/interfaces/types";
 import { OtherUser } from "@app/interfaces/otherUser.interface";
-import { SWManager } from "@app/services/sWManager.service";
-import { ApiClientService } from "@app/services/apiClient.service";
-import { AlertsService } from "@app/services/alerts.service";
+import { SWManager } from "@common/services/sWManager.service";
+import { ApiClientService } from "@common/services/apiClient.service";
+import { AlertsService } from "@common/services/alerts.service";
 
 interface OtherUserResponse {
   user: OtherUser;

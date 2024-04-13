@@ -35,10 +35,10 @@ import { Component, Input, Output, EventEmitter } from "@angular/core";
 import { tap } from "rxjs";
 
 // App-related import
-import { AdminService } from "@app/services/admin.service";
-import { ApiClientService } from "@app/services/apiClient.service";
-import { SWManager } from "@app/services/sWManager.service";
-import { AlertsService } from "@app/services/alerts.service";
+import { AdminService } from "@common/services/admin.service";
+import { ApiClientService } from "@common/services/apiClient.service";
+import { SWManager } from "@common/services/sWManager.service";
+import { AlertsService } from "@common/services/alerts.service";
 
 @Component({
   selector: "item-delete-form",

@@ -40,7 +40,7 @@ import { NewItem } from "./components/newItem/newItem.component";
 import { FullList } from "./components/fullList/fullList.component";
 import { AboutApp } from "./components/aboutApp/aboutApp.component";
 import { SearchResults } from "./components/searchResults/searchResults.component";
-import { AdminDashboard } from "./components/adminDashboard/adminDashboard.component";
+import { AdminDashboard } from "./admin/components/adminDashboard/adminDashboard.component";
 import { SettingsPage } from "./components/settings/settings.component";
 import { SiteMap } from "./components/siteMap/siteMap.component";
 import { SupportPage } from "./components/supportPage/supportPage.component";

@@ -46,8 +46,8 @@ import { of } from "rxjs";
 import { By } from "@angular/platform-browser";
 
 import { AdminReports } from "./adminReports.component";
-import { AuthService } from "../../common/services/auth.service";
-import { Loader } from "../../common/components/loader/loader.component";
+import { AuthService } from "../../../common/services/auth.service";
+import { Loader } from "../../../common/components/loader/loader.component";
 import { mockAuthedUser } from "@tests/mockData";
 import { Report } from "@app/interfaces/report.interface";
 import { ApiClientService } from "@common/services/apiClient.service";

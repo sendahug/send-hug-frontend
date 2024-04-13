@@ -16,6 +16,7 @@ exports.inlineComponentTemplate = function () {
     transform(code) {
       const magicString = new MagicString(code);
       const commonComponents = fs.readdirSync("./src/app/common/components");
+      const adminComponents = fs.readdirSync("./src/app/admin/components");
 
       magicString.replace(/(templateUrl:)(.*)(\.component\.html")/, (match) => {
         const componentName = match.split(".")[1].substring(1);
@@ -28,6 +29,10 @@ exports.inlineComponentTemplate = function () {
           componentTemplateURL =
             __dirname +
             `/src/app/common/components/${componentName}/${componentName}.component.html`;
+        } else if (adminComponents.includes(componentName)) {
+          componentTemplateURL =
+            __dirname +
+            `/src/app/admin/components/${componentName}/${componentName}.component.html`;
         } else {
           componentTemplateURL =
             __dirname + `/src/app/components/${componentName}/${componentName}.component.html`;

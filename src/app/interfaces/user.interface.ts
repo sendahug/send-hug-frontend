@@ -64,3 +64,8 @@ export interface User {
   selectedIcon: iconCharacters;
   iconColours: UserIconColours;
 }
+
+export interface PartialUser {
+  id: number;
+  displayName: string;
+}

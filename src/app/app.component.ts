@@ -43,7 +43,6 @@ import { ItemsService } from "./services/items.service";
 import { AlertsService } from "./services/alerts.service";
 import { SWManager } from "./services/sWManager.service";
 import { NotificationService } from "./services/notifications.service";
-import { ValidationService } from "./services/validation.service";
 
 @Component({
   selector: "app-root",
@@ -86,7 +85,6 @@ export class AppComponent implements OnInit, AfterViewInit {
     private serviceWorkerM: SWManager,
     public notificationService: NotificationService,
     private fb: FormBuilder,
-    private validationService: ValidationService,
   ) {
     this.authService.checkHash();
 
@@ -157,7 +155,7 @@ export class AppComponent implements OnInit, AfterViewInit {
       if (event instanceof NavigationStart) {
         // if the current URL is the main page
         // or the about page
-        if (event.url == "/" || event.url == "/about") {
+        if (["/", "/about", "/login"].includes(event.url)) {
           this.currentlyActiveRoute.set(event.url);
           // if it's any of the messages/admin/new pages
         } else if (

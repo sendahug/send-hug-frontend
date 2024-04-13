@@ -14,7 +14,7 @@ describe("Send A Hug App", function () {
 
     // click the second nav button
     cy.navigateTo(2);
-    cy.url().should("equal", "http://localhost:3000/messages/inbox");
+    cy.url().should("equal", "http://localhost:3000/login");
 
     // check the second element is marked active and the first isn't
     cy.get(".navLink").eq(2).should("have.class", "active");
@@ -22,19 +22,11 @@ describe("Send A Hug App", function () {
 
     // click the third nav button
     cy.navigateTo(3);
-    cy.url().should("equal", "http://localhost:3000/user");
+    cy.url().should("equal", "http://localhost:3000/about");
 
     // check the third element is marked active and the second isn't
     cy.get(".navLink").eq(3).should("have.class", "active");
     cy.get(".navLink").eq(2).should("not.have.class", "active");
-
-    // click the fourth nav button
-    cy.navigateTo(4);
-    cy.url().should("equal", "http://localhost:3000/about");
-
-    // check the fourth element is marked active and the third isn't
-    cy.get(".navLink").eq(4).should("have.class", "active");
-    cy.get(".navLink").eq(3).should("not.have.class", "active");
   });
 
   // Check that when clicking the logo, it navigates to the home page
@@ -58,14 +50,14 @@ describe("Send A Hug App", function () {
     cy.visit("http://localhost:3000/about");
 
     // check the correct route is marked active
-    cy.get(".navLink").eq(4).should("have.class", "active");
+    cy.get(".navLink").eq(3).should("have.class", "active");
 
     // get the messages route
-    cy.visit("http://localhost:3000/messages/outbox");
+    cy.visit("http://localhost:3000/login");
 
     // check the correct route is marked active and the previous route isn't
     cy.get(".navLink").eq(2).should("have.class", "active");
-    cy.get(".navLink").eq(4).should("not.have.class", "active");
+    cy.get(".navLink").eq(3).should("not.have.class", "active");
 
     // get the home route
     cy.visit("http://localhost:3000/");
@@ -73,48 +65,6 @@ describe("Send A Hug App", function () {
     // check the correct route is marked active and the previous route isn't
     cy.get(".navLink").eq(1).should("have.class", "active");
     cy.get(".navLink").eq(2).should("not.have.class", "active");
-
-    // get the user route
-    cy.visit("http://localhost:3000/user");
-
-    // check the correct route is marked active and the previous route isn't
-    cy.get(".navLink").eq(3).should("have.class", "active");
-    cy.get(".navLink").eq(1).should("not.have.class", "active");
-  });
-
-  // Check that all messages routes make 'messages' link active
-  it("should make messages link active for all messages sub-routes", () => {
-    // get the inbox route
-    cy.visit("http://localhost:3000/messages/inbox");
-
-    // check messages route is marked active
-    cy.get(".navLink").eq(2).should("have.class", "active");
-
-    // get the home route (for 'reset')
-    cy.visit("http://localhost:3000/");
-
-    // check the messages route isn't marked active anymore
-    cy.get(".navLink").eq(1).should("have.class", "active");
-    cy.get(".navLink").eq(2).should("not.have.class", "active");
-
-    // get the outbox route
-    cy.visit("http://localhost:3000/messages/outbox");
-
-    // check messages route is marked active
-    cy.get(".navLink").eq(2).should("have.class", "active");
-
-    // get the home route (for 'reset')
-    cy.visit("http://localhost:3000/");
-
-    // check the messages route isn't marked active anymore
-    cy.get(".navLink").eq(1).should("have.class", "active");
-    cy.get(".navLink").eq(2).should("not.have.class", "active");
-
-    // get the threads route
-    cy.visit("http://localhost:3000/messages/threads");
-
-    // check messages route is marked active
-    cy.get(".navLink").eq(2).should("have.class", "active");
   });
 
   // check the user is redirected to the search results page upon searching

@@ -53,6 +53,7 @@ import { OtherUser } from "@app/interfaces/otherUser.interface";
 import { iconCharacters } from "@app/interfaces/types";
 import { MockDisplayNameForm, MockReportForm } from "@tests/mockForms";
 import { User } from "@app/interfaces/user.interface";
+import { AppCommonModule } from "@app/common/common.module";
 
 describe("UserPage", () => {
   // Before each test, configure testing environment
@@ -67,6 +68,7 @@ describe("UserPage", () => {
         HttpClientModule,
         ServiceWorkerModule.register("sw.js", { enabled: false }),
         FontAwesomeModule,
+        AppCommonModule,
       ],
       declarations: [UserPage, PopUp, MockDisplayNameForm, MockReportForm],
       providers: [{ provide: APP_BASE_HREF, useValue: "/" }],

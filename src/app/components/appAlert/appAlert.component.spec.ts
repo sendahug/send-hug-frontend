@@ -44,6 +44,7 @@ import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 
 import { AppAlert } from "./appAlert.component";
 import { AlertsService } from "@common/services/alerts.service";
+import { AppCommonModule } from "@app/common/common.module";
 
 describe("AppAlert", () => {
   // Before each test, configure testing environment
@@ -57,6 +58,7 @@ describe("AppAlert", () => {
         HttpClientModule,
         ServiceWorkerModule.register("sw.js", { enabled: false }),
         FontAwesomeModule,
+        AppCommonModule,
       ],
       declarations: [AppAlert],
       providers: [{ provide: APP_BASE_HREF, useValue: "/" }],

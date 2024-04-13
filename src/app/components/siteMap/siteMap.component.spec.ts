@@ -48,6 +48,7 @@ import { SiteMap } from "./siteMap.component";
 import { NotificationsTab } from "../notifications/notifications.component";
 import { AuthService } from "../../common/services/auth.service";
 import { AppAlert } from "../appAlert/appAlert.component";
+import { AppCommonModule } from "@app/common/common.module";
 
 // Mock Component for testing the sitemap
 // ==================================================
@@ -121,6 +122,7 @@ describe("SiteMap", () => {
         HttpClientModule,
         ServiceWorkerModule.register("sw.js", { enabled: false }),
         FontAwesomeModule,
+        AppCommonModule,
       ],
       declarations: [AppComponent, MockComp, NotificationsTab, SiteMap, AppAlert],
       providers: [{ provide: APP_BASE_HREF, useValue: "/" }],

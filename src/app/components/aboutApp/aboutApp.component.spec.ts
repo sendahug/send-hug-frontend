@@ -43,6 +43,7 @@ import { ServiceWorkerModule } from "@angular/service-worker";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 
 import { AboutApp } from "./aboutApp.component";
+import { AppCommonModule } from "@app/common/common.module";
 
 describe("AboutApp", () => {
   // Before each test, configure testing environment
@@ -56,6 +57,7 @@ describe("AboutApp", () => {
         HttpClientModule,
         ServiceWorkerModule.register("sw.js", { enabled: false }),
         FontAwesomeModule,
+        AppCommonModule,
       ],
       declarations: [AboutApp],
       providers: [{ provide: APP_BASE_HREF, useValue: "/" }],

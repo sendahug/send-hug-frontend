@@ -49,6 +49,7 @@ import { SinglePost } from "@common/components/post/post.component";
 import { Loader } from "../loader/loader.component";
 import { ApiClientService } from "../../common/services/apiClient.service";
 import { SWManager } from "../../common/services/sWManager.service";
+import { AppCommonModule } from "@app/common/common.module";
 
 const PageOnePosts = [
   {
@@ -94,6 +95,7 @@ describe("FullList", () => {
         HttpClientModule,
         ServiceWorkerModule.register("sw.js", { enabled: false }),
         FontAwesomeModule,
+        AppCommonModule,
       ],
       declarations: [FullList, PopUp, Loader, SinglePost],
       providers: [{ provide: APP_BASE_HREF, useValue: "/" }],

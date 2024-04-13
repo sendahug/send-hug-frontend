@@ -44,6 +44,7 @@ import { ActivatedRoute, RouterModule, UrlSegment } from "@angular/router";
 import { of } from "rxjs";
 
 import { SitePolicies } from "./sitePolicies.component";
+import { AppCommonModule } from "@app/common/common.module";
 
 describe("SitePolicies", () => {
   // Before each test, configure testing environment
@@ -57,6 +58,7 @@ describe("SitePolicies", () => {
         HttpClientModule,
         ServiceWorkerModule.register("sw.js", { enabled: false }),
         FontAwesomeModule,
+        AppCommonModule,
       ],
       declarations: [SitePolicies],
       providers: [{ provide: APP_BASE_HREF, useValue: "/" }],

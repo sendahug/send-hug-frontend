@@ -50,6 +50,7 @@ import { PopUp } from "@common/components/popUp/popUp.component";
 import { SinglePost } from "@common/components/post/post.component";
 import { ApiClientService } from "../../common/services/apiClient.service";
 import { SWManager } from "../../common/services/sWManager.service";
+import { AppCommonModule } from "@app/common/common.module";
 
 const newItems = [
   {
@@ -104,6 +105,7 @@ describe("MainPage", () => {
         HttpClientModule,
         ServiceWorkerModule.register("sw.js", { enabled: false }),
         FontAwesomeModule,
+        AppCommonModule,
       ],
       declarations: [MainPage, Loader, PopUp, SinglePost],
       providers: [{ provide: APP_BASE_HREF, useValue: "/" }],

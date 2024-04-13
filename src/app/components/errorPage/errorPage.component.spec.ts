@@ -44,6 +44,7 @@ import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 
 // App imports
 import { ErrorPage } from "./errorPage.component";
+import { AppCommonModule } from "@app/common/common.module";
 
 describe("ErrorPage", () => {
   // Before each test, configure testing environment
@@ -57,6 +58,7 @@ describe("ErrorPage", () => {
         HttpClientModule,
         ServiceWorkerModule.register("sw.js", { enabled: false }),
         FontAwesomeModule,
+        AppCommonModule,
       ],
       declarations: [ErrorPage],
       providers: [{ provide: APP_BASE_HREF, useValue: "/" }],

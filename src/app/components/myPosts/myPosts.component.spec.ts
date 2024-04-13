@@ -53,6 +53,7 @@ import { HeaderMessage } from "../headerMessage/headerMessage.component";
 import { AuthService } from "../../common/services/auth.service";
 import { mockAuthedUser } from "@tests/mockData";
 import { MockReportForm, MockDeleteForm, MockEditForm } from "@tests/mockForms";
+import { AppCommonModule } from "@app/common/common.module";
 
 const mockPosts = [
   {
@@ -110,6 +111,7 @@ describe("MyPosts", () => {
         HttpClientModule,
         ServiceWorkerModule.register("sw.js", { enabled: false }),
         FontAwesomeModule,
+        AppCommonModule,
       ],
       declarations: [
         MockUserPage,

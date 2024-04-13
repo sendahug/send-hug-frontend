@@ -53,6 +53,7 @@ import { mockAuthedUser } from "@tests/mockData";
 import { Report } from "@app/interfaces/report.interface";
 import { ApiClientService } from "@common/services/apiClient.service";
 import { MockDeleteForm, MockDisplayNameForm, MockEditForm } from "@tests/mockForms";
+import { AppCommonModule } from "@app/common/common.module";
 
 const mockUserReports: Report[] = [
   {
@@ -96,6 +97,7 @@ describe("AdminReports", () => {
         HttpClientModule,
         ServiceWorkerModule.register("sw.js", { enabled: false }),
         FontAwesomeModule,
+        AppCommonModule,
       ],
       declarations: [
         AdminReports,

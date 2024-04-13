@@ -49,6 +49,7 @@ import { SWManager } from "./common/services/sWManager.service";
 import { NotificationService } from "./services/notifications.service";
 import { mockAuthedUser } from "@tests/mockData";
 import { AppAlert } from "./components/appAlert/appAlert.component";
+import { AppCommonModule } from "./common/common.module";
 
 declare const viewport: any;
 
@@ -64,6 +65,7 @@ describe("AppComponent", () => {
         ReactiveFormsModule,
         ServiceWorkerModule.register("sw.js", { enabled: false }),
         FontAwesomeModule,
+        AppCommonModule,
       ],
       declarations: [AppComponent, NotificationsTab, AppAlert],
       providers: [{ provide: APP_BASE_HREF, useValue: "/" }],

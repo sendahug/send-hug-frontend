@@ -44,6 +44,7 @@ import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 
 // App imports
 import { SupportPage } from "./supportPage.component";
+import { AppCommonModule } from "@app/common/common.module";
 
 describe("Support Page", () => {
   // Before each test, configure testing environment
@@ -57,6 +58,7 @@ describe("Support Page", () => {
         HttpClientModule,
         ServiceWorkerModule.register("sw.js", { enabled: false }),
         FontAwesomeModule,
+        AppCommonModule,
       ],
       declarations: [SupportPage],
       providers: [{ provide: APP_BASE_HREF, useValue: "/" }],

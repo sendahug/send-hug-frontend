@@ -51,6 +51,7 @@ import { mockAuthedUser } from "@tests/mockData";
 import { of } from "rxjs";
 import { ApiClientService } from "@common/services/apiClient.service";
 import { ReactiveFormsModule } from "@angular/forms";
+import { AppCommonModule } from "@app/common/common.module";
 
 const mockBlockedUsers = [
   {
@@ -81,6 +82,7 @@ describe("Blocks Page", () => {
         ServiceWorkerModule.register("sw.js", { enabled: false }),
         FontAwesomeModule,
         ReactiveFormsModule,
+        AppCommonModule,
       ],
       declarations: [AdminBlocks, PopUp, Loader],
       providers: [{ provide: APP_BASE_HREF, useValue: "/" }],

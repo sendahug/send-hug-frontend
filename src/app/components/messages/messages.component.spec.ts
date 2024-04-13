@@ -51,6 +51,7 @@ import { AuthService } from "../../common/services/auth.service";
 import { mockAuthedUser } from "@tests/mockData";
 import { FullThread } from "@app/interfaces/thread.interface";
 import { MockDeleteForm } from "@tests/mockForms";
+import { AppCommonModule } from "@app/common/common.module";
 
 const mockMessages = [
   {
@@ -125,6 +126,7 @@ describe("AppMessaging", () => {
         HttpClientModule,
         ServiceWorkerModule.register("sw.js", { enabled: false }),
         FontAwesomeModule,
+        AppCommonModule,
       ],
       declarations: [AppMessaging, PopUp, MockDeleteForm],
       providers: [{ provide: APP_BASE_HREF, useValue: "/" }],

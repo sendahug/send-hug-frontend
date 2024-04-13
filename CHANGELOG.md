@@ -6,22 +6,31 @@
 
 #### Features
 
-- Added a new login view, which enables users to login or logout (if they're already logged in). The new route is accessible to all users in the `/login` route. ([#1607](https://github.com/sendahug/send-hug-frontend/pull/1607))
 - The link to the login view now replaces the links to the messages and users views in the main navigation menu for logged out users. The links to the messages and users views are still available in the main navigation menu for logged in users (while the new login link is hidden from them). ([#1607](https://github.com/sendahug/send-hug-frontend/pull/1607))
+- Added a new login view, which enables users to login or logout (if they're already logged in). The new route is accessible to all users in the `/login` route. ([#1607](https://github.com/sendahug/send-hug-frontend/pull/1607))
+- Added a new App Common Module to contain the commonly used components in the app. This module will be used to import the commonly used components and services into other modules, which should also make the project more maintainable and make it easier for us to split the main script bundle into chunks. ([#1609](https://github.com/sendahug/send-hug-frontend/pull/1609))
 
 #### Changes
 
-- Removed the user, messages and settings routes from the displayed routes in the site map if the user isn't authenticated. Instead of these routes, the user is now shown the login route. This matches the behaviour of the main navigation menu. ([#1608](https://github.com/sendahug/send-hug-frontend/pull/1608))
-- Adjusted the way reports are closed when it's done via the 'edit display name' form. Previously, the 'edit user' request made to the back-end included a key that included the ID of the report to close. Now, the two requests are separated - once the user has been updated, the Admin Service makes the request to close the report. ([#1602](https://github.com/sendahug/send-hug-frontend/pull/1602))
 - Simplified the inputs to the Display Name Edit Form. Previously, the form relied on a separate input to indicate whether it should fetch the name to edit from the Auth Service or from the form input (which was a string). This was unnecessarily complicated. Now, both the Admin Reports screen and the User page screen pass in an object that contains the ID and name of the user to edit. When the form is submitted, the ID of the user is compared to the ID of the currently logged in user (in the Auth Service). If it's the same, the request is made via the auth service; otherwise, it's made via the Admin Service. ([#1602](https://github.com/sendahug/send-hug-frontend/pull/1602))
+- Adjusted the way reports are closed when it's done via the 'edit display name' form. Previously, the 'edit user' request made to the back-end included a key that included the ID of the report to close. Now, the two requests are separated - once the user has been updated, the Admin Service makes the request to close the report. ([#1602](https://github.com/sendahug/send-hug-frontend/pull/1602))
+- Removed the user, messages and settings routes from the displayed routes in the site map if the user isn't authenticated. Instead of these routes, the user is now shown the login route. This matches the behaviour of the main navigation menu. ([#1608](https://github.com/sendahug/send-hug-frontend/pull/1608))
+- Moved the Post, DisplayNameEditForm, ItemDeleteForm, PostEditForm, ReportForm, Loader, HeaderMessage and Popup components to the new App Common module (which exports them so they can be used in other modules). ([#1609](https://github.com/sendahug/send-hug-frontend/pull/1609))
+- Moved the Admin Service, Alerts Service, APIClient, Auth Service, Items Service, Validation Service and SWManager to the new App Common module. ([#1609](https://github.com/sendahug/send-hug-frontend/pull/1609))
 
 #### Fixes
 
-- Fixed a bug where the sitemap hid the admin routes when users refreshed the page, even if they had permission to view it. This happened as a result of the re-authentication process (which runs automatically when the page is refreshed) took longer than it took to set up the component and the sitemap was only built when the component was set up. Now, if the user isn't authenticated 'yet', the component shows the unauthenticated routes but subscribes to the subject indicating whether the user is authenticated, and once they're authenticated, the component rebuilds the list of available paths. ([#1608](https://github.com/sendahug/send-hug-frontend/pull/1608))
-- Added missing calls to `subscribe` in Admin Service methods that call the `closeReport` method. Since the method returns a cold observable, those `closeReport` requests weren't executed until a subscription was made to the observable, which means reports weren't closed in those workflows. ([#1602](https://github.com/sendahug/send-hug-frontend/pull/1602))
-- Added the missing reportData input to all forms in the Admin Reports component. This fixes an error that caused the forms to ignore attempts to close reports when editing posts and users and when deleting posts. ([#1602](https://github.com/sendahug/send-hug-frontend/pull/1602))
-- Fixed a bug where the Admin Reports' report list accidentally showed `signal` instead of the current page and total page values. ([#1602](https://github.com/sendahug/send-hug-frontend/pull/1602))
 - Updated the link to the site's designer's new social media profile from the old, broken link to her previous profile. ([#1541](https://github.com/sendahug/send-hug-frontend/pull/1541))
+- Fixed a bug where the Admin Reports' report list accidentally showed `signal` instead of the current page and total page values. ([#1602](https://github.com/sendahug/send-hug-frontend/pull/1602))
+- Added the missing reportData input to all forms in the Admin Reports component. This fixes an error that caused the forms to ignore attempts to close reports when editing posts and users and when deleting posts. ([#1602](https://github.com/sendahug/send-hug-frontend/pull/1602))
+- Added missing calls to `subscribe` in Admin Service methods that call the `closeReport` method. Since the method returns a cold observable, those `closeReport` requests weren't executed until a subscription was made to the observable, which means reports weren't closed in those workflows. ([#1602](https://github.com/sendahug/send-hug-frontend/pull/1602))
+- Fixed a bug where the sitemap hid the admin routes when users refreshed the page, even if they had permission to view it. This happened as a result of the re-authentication process (which runs automatically when the page is refreshed) took longer than it took to set up the component and the sitemap was only built when the component was set up. Now, if the user isn't authenticated 'yet', the component shows the unauthenticated routes but subscribes to the subject indicating whether the user is authenticated, and once they're authenticated, the component rebuilds the list of available paths. ([#1608](https://github.com/sendahug/send-hug-frontend/pull/1608))
+- Fixed a bug where the link to the reported user's profile in the report form was broken because the wrong attribute was used to fetch the user's ID in the report form. ([#1609](https://github.com/sendahug/send-hug-frontend/pull/1609))
+
+#### Chores
+
+- Fixed an error that caused the App's real router to be used when testing the Site Map component. Now, the tests use a mock router instead, which allows us to test only the component itself. ([#1609](https://github.com/sendahug/send-hug-frontend/pull/1609))
+- Updated the template inliner, which is used for tests, to handle the new App Common module and its folder structure. ([#1609](https://github.com/sendahug/send-hug-frontend/pull/1609))
 
 ### 2024-04-12
 

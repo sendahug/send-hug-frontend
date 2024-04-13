@@ -44,7 +44,7 @@ import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { ReactiveFormsModule } from "@angular/forms";
 
 import { SettingsPage } from "./settings.component";
-import { IconEditor } from "@app/user/components/iconEditor/iconEditor.component";
+import { IconEditor } from "@user//components/iconEditor/iconEditor.component";
 import { NotificationService } from "@app/services/notifications.service";
 import { AuthService } from "@common/services/auth.service";
 import { AlertsService } from "@common/services/alerts.service";

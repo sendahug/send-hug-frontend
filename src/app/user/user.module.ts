@@ -41,11 +41,11 @@ import { ReactiveFormsModule } from "@angular/forms";
 import { AppRoutingModule } from "@app/app-routing.module";
 import { AppCommonModule } from "@common/common.module";
 
-import { UserPage } from "@app/user/components/userPage/userPage.component";
-import { AppMessaging } from "@app/user/components/messages/messages.component";
-import { MyPosts } from "@app/user/components/myPosts/myPosts.component";
-import { SettingsPage } from "@app/user/components/settings/settings.component";
-import { IconEditor } from "@app/user/components/iconEditor/iconEditor.component";
+import { UserPage } from "@user//components/userPage/userPage.component";
+import { AppMessaging } from "@user//components/messages/messages.component";
+import { MyPosts } from "@user//components/myPosts/myPosts.component";
+import { SettingsPage } from "@user//components/settings/settings.component";
+import { IconEditor } from "@user//components/iconEditor/iconEditor.component";
 
 @NgModule({
   imports: [

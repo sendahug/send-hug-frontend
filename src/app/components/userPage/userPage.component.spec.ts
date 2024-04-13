@@ -588,6 +588,25 @@ describe("UserPage", () => {
     authService.userData = { ...mockAuthedUser };
     const fixture = TestBed.createComponent(UserPage);
     const userPage = fixture.componentInstance;
+    userPage.otherUser.set({
+      id: 1,
+      displayName: "shirb",
+      receivedH: 3,
+      givenH: 3,
+      role: {
+        id: 1,
+        name: "user",
+        permissions: [],
+      },
+      posts: 10,
+      selectedIcon: "kitty",
+      iconColours: {
+        character: "#BA9F93",
+        lbg: "#e2a275",
+        rbg: "#f8eee4",
+        item: "#f4b56a",
+      },
+    });
     const changeSpy = spyOn(userPage, "changeMode").and.callThrough();
 
     fixture.detectChanges();

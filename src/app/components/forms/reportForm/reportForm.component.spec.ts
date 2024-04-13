@@ -41,7 +41,7 @@ import { of } from "rxjs";
 import { ReportForm } from "./reportForm.component";
 import { AuthService } from "@app/services/auth.service";
 import { mockAuthedUser } from "@tests/mockData";
-import { PopUp } from "@app/components/popUp/popUp.component";
+import { PopUp } from "@app/common/components/popUp/popUp.component";
 import { ValidationService } from "@app/services/validation.service";
 import { Report } from "@app/interfaces/report.interface";
 

@@ -43,9 +43,9 @@ import { ActivatedRoute, Router, RouterModule } from "@angular/router";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 
 import { SearchResults } from "./searchResults.component";
-import { PopUp } from "../popUp/popUp.component";
+import { PopUp } from "@app/common/components/popUp/popUp.component";
 import { Loader } from "../loader/loader.component";
-import { SinglePost } from "../post/post.component";
+import { SinglePost } from "@app/common/components/post/post.component";
 import { ItemsService } from "../../services/items.service";
 import { iconCharacters } from "@app/interfaces/types";
 

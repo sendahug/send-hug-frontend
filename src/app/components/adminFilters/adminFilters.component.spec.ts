@@ -46,7 +46,7 @@ import { ReactiveFormsModule } from "@angular/forms";
 import { of } from "rxjs";
 
 import { AdminFilters } from "./adminFilters.component";
-import { PopUp } from "../popUp/popUp.component";
+import { PopUp } from "@app/common/components/popUp/popUp.component";
 import { AuthService } from "../../services/auth.service";
 import { Loader } from "../loader/loader.component";
 import { mockAuthedUser } from "@tests/mockData";

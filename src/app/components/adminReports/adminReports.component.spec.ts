@@ -46,7 +46,7 @@ import { of } from "rxjs";
 import { By } from "@angular/platform-browser";
 
 import { AdminReports } from "./adminReports.component";
-import { PopUp } from "../popUp/popUp.component";
+import { PopUp } from "@app/common/components/popUp/popUp.component";
 import { AuthService } from "../../services/auth.service";
 import { Loader } from "../loader/loader.component";
 import { mockAuthedUser } from "@tests/mockData";

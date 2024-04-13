@@ -46,7 +46,7 @@ import { ReactiveFormsModule } from "@angular/forms";
 import { DisplayNameEditForm } from "./displayNameEditForm.component";
 import { AuthService } from "@app/services/auth.service";
 import { mockAuthedUser } from "@tests/mockData";
-import { PopUp } from "@app/components/popUp/popUp.component";
+import { PopUp } from "@app/common/components/popUp/popUp.component";
 import { ValidationService } from "@app/services/validation.service";
 
 // DISPLAY NAME EDIT

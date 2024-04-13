@@ -46,8 +46,8 @@ import { of } from "rxjs";
 // App imports
 import { MainPage } from "./mainPage.component";
 import { Loader } from "../loader/loader.component";
-import { PopUp } from "../popUp/popUp.component";
-import { SinglePost } from "../post/post.component";
+import { PopUp } from "@app/common/components/popUp/popUp.component";
+import { SinglePost } from "@app/common/components/post/post.component";
 import { ApiClientService } from "../../services/apiClient.service";
 import { SWManager } from "../../services/sWManager.service";
 

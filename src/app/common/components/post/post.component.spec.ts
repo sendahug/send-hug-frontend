@@ -46,7 +46,7 @@ import { By } from "@angular/platform-browser";
 import { NO_ERRORS_SCHEMA } from "@angular/core";
 
 import { SinglePost } from "./post.component";
-import { PopUp } from "@app/components/popUp/popUp.component";
+import { PopUp } from "@app/common/components/popUp/popUp.component";
 import { mockAuthedUser } from "@tests/mockData";
 import { MockDeleteForm, MockEditForm, MockReportForm } from "@tests/mockForms";
 

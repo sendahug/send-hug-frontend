@@ -60,6 +60,6 @@ import { IconEditor } from "@user//components/iconEditor/iconEditor.component";
   declarations: [UserPage, AppMessaging, MyPosts, SettingsPage, IconEditor],
   providers: [],
   bootstrap: [],
-  exports: [UserPage, AppMessaging, MyPosts, SettingsPage, IconEditor],
+  exports: [UserPage, AppMessaging, SettingsPage],
 })
 export class AppUserModule {}

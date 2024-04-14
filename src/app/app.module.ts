@@ -40,6 +40,7 @@ import { ReactiveFormsModule } from "@angular/forms";
 // Internal Modules
 import { AppRoutingModule } from "./app-routing.module";
 import { AppCommonModule } from "./common/common.module";
+import { AppAdminModule } from "./admin/admin.module";
 
 import { AppComponent } from "./app.component";
 import { MainPage } from "./components/mainPage/mainPage.component";
@@ -51,16 +52,12 @@ import { MyPosts } from "./components/myPosts/myPosts.component";
 import { FullList } from "./components/fullList/fullList.component";
 import { AboutApp } from "./components/aboutApp/aboutApp.component";
 import { SearchResults } from "./components/searchResults/searchResults.component";
-import { AdminDashboard } from "./components/adminDashboard/adminDashboard.component";
 import { NotificationsTab } from "./components/notifications/notifications.component";
 import { SettingsPage } from "./components/settings/settings.component";
 import { SiteMap } from "./components/siteMap/siteMap.component";
 import { SupportPage } from "./components/supportPage/supportPage.component";
 import { SitePolicies } from "./components/sitePolicies/sitePolicies.component";
 import { IconEditor } from "./components/iconEditor/iconEditor.component";
-import { AdminReports } from "./components/adminReports/adminReports.component";
-import { AdminBlocks } from "./components/adminBlocks/adminBlocks.component";
-import { AdminFilters } from "./components/adminFilters/adminFilters.component";
 import { AppAlert } from "./components/appAlert/appAlert.component";
 import { LoginPage } from "./components/loginPage/loginPage.component";
 
@@ -73,6 +70,7 @@ import { LoginPage } from "./components/loginPage/loginPage.component";
     ServiceWorkerModule.register("sw.js"),
     FontAwesomeModule,
     AppCommonModule,
+    AppAdminModule,
   ],
   declarations: [
     AppComponent,
@@ -85,16 +83,12 @@ import { LoginPage } from "./components/loginPage/loginPage.component";
     FullList,
     AboutApp,
     SearchResults,
-    AdminDashboard,
     NotificationsTab,
     SettingsPage,
     SiteMap,
     SupportPage,
     SitePolicies,
     IconEditor,
-    AdminReports,
-    AdminBlocks,
-    AdminFilters,
     AppAlert,
     LoginPage,
   ],

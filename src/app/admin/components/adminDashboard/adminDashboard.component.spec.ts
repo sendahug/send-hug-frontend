@@ -47,9 +47,9 @@ import { of } from "rxjs";
 import { AdminDashboard } from "./adminDashboard.component";
 import { AuthService } from "@common/services/auth.service";
 import { mockAuthedUser } from "@tests/mockData";
-import { AdminReports } from "@app/components/adminReports/adminReports.component";
-import { AdminBlocks } from "@app/components/adminBlocks/adminBlocks.component";
-import { AdminFilters } from "@app/components/adminFilters/adminFilters.component";
+import { AdminReports } from "@admin/components/adminReports/adminReports.component";
+import { AdminBlocks } from "@admin/components/adminBlocks/adminBlocks.component";
+import { AdminFilters } from "@admin/components/adminFilters/adminFilters.component";
 import { AppCommonModule } from "@app/common/common.module";
 
 describe("AdminDashboard", () => {

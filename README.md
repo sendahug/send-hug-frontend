@@ -46,11 +46,17 @@ The project is open source, so feel free to use parts of the code. However, the 
 
 ## Contents
 
-The app (located in [src/app](./src/app)) contains the main module (AppModule), defined in **app.module.ts**, and a routing module, defined in **app-routing.module.ts**.
+The app (located in [src/app](./src/app)) contains several modules:
 
-The main module contains over 20 components, 8 services and 9 interfaces. Each component folder contains both the HTML template and the component TypeScript file.
+- The root module (AppModule), defined in **app.module.ts**. Contains mainly the components that are available to all users, whether or not they're logged in.
+- A routing module, defined in **app-routing.module.ts**. Contains the app's routing.
+- An Admin module, defined in **admin/admin.module.ts**. Contains the components that handle admin actions.
+- A Common module, defined in **common/common.module.ts**. Contains components and services which are used throughout the whole app.
+- A User module, defined in **user/user.module.ts**. Contians the components that handle authenticated users' actions.
 
-The components (both view-defining components and smaller components) are located in [src/app/components](./src/app/components). The interfaces, used to define the types of objects in the app, are located in [src/app/interfaces](./src/app/interfaces). The injectable services, which perform a various array of tasks, are located in [src/app/services](./src/app/services).
+Each component folder contains both the HTML template and the component TypeScript file.
+
+The components (both view-defining components and smaller components) are located in eac module's `components` folder (for example: [src/app/components](./src/app/components)). The interfaces, used to define the types of objects in the app, are located in [src/app/interfaces](./src/app/interfaces). The injectable services, which perform a various array of tasks, are located in each module's `services` folder (for example: [src/app/services](./src/app/services)).
 
 ## Dependencies
 

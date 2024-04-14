@@ -2,6 +2,20 @@
 
 ## Unreleased
 
+### 2024-04-14
+
+#### Features
+
+- Added a new App Admin Module to contain the admin-related components in the app. This module will be used to contain the admin dashboard and all components related to admin actions, which should also make the project more maintainable and make it easier for us to split the main script bundle into chunks. ([#1610](https://github.com/sendahug/send-hug-frontend/pull/1610))
+
+#### Changes
+
+- Moved the AdminBlocks, AdminDashboard, AdminFilters and AdminReports components to the new App Admin module. The Admin module then exports the Admin Dashboard component so it can be used in other modules. ([#1610](https://github.com/sendahug/send-hug-frontend/pull/1610))
+
+#### Chores
+
+- Updated the template inliner, which is used for tests, to handle the new App Admin module and its folder structure. ([#1610](https://github.com/sendahug/send-hug-frontend/pull/1610))
+
 ### 2024-04-13
 
 #### Features

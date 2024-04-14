@@ -1,0 +1,17 @@
+{
+  "pr_number": 1611,
+  "changes": [
+    {
+      "change": "Features",
+      "description": "Added a new App User Module to contain the authenticated-users-related components in the app. This module will be used to contain the user page, settings and messaging components (all components that are only available to authenticated users), which should also make the project more maintainable and make it easier for us to split the main script bundle into chunks."
+    },
+    {
+      "change": "Changes",
+      "description": "Moved the IconEditor, Messages, MyPost, Settings and UserPage components to the new App User module. The User module then exports the UserPage, AppMessaging and ettingsPage components so they can be used in other modules."
+    },
+    {
+      "change": "Chores",
+      "description": "Updated the template inliner, which is used for tests, to handle the new App User module and its folder structure."
+    }
+  ]
+}

@@ -88,7 +88,7 @@ describe("SiteMap", () => {
             data: { name: "Other User's Page" },
           },
         ],
-        data: { name: "User Page" },
+        data: { name: "User Page", mapRoutes: [{ path: "", name: "Your Page" }] },
       },
       { path: "settings", component: MockComp, data: { name: "Settings Page" } },
       { path: "sitemap", component: SiteMap, data: { name: "Site Map" } },
@@ -116,7 +116,15 @@ describe("SiteMap", () => {
             data: { name: "Filters Page" },
           },
         ],
-        data: { name: "Admin Dashboard" },
+        data: {
+          name: "Admin Dashboard",
+          mapRoutes: [
+            { path: "", name: "Main Page" },
+            { path: "reports", name: "Reports Page" },
+            { path: "blocks", name: "Blocks Page" },
+            { path: "filters", name: "Filters Page" },
+          ],
+        },
       },
       {
         path: "messages",
@@ -132,7 +140,14 @@ describe("SiteMap", () => {
             data: { name: "Thread" },
           },
         ],
-        data: { name: "Mailbox" },
+        data: {
+          name: "Mailbox",
+          mapRoutes: [
+            { path: "inbox", name: "Inbox" },
+            { path: "outbox", name: "Outbox" },
+            { path: "threads", name: "Threads" },
+          ],
+        },
       },
       { path: "login", component: MockComp, data: { name: "Login Page" } },
     ];
@@ -211,7 +226,15 @@ describe("SiteMap", () => {
           data: { name: "Filters Page" },
         },
       ],
-      data: { name: "Admin Dashboard" },
+      data: {
+        name: "Admin Dashboard",
+        mapRoutes: [
+          { path: "", name: "Main Page" },
+          { path: "reports", name: "Reports Page" },
+          { path: "blocks", name: "Blocks Page" },
+          { path: "filters", name: "Filters Page" },
+        ],
+      },
     };
 
     // check the admin pages' linkes appear
@@ -269,97 +292,6 @@ describe("SiteMap", () => {
     }
   });
 
-  // Check that the first and last messages routes are removed
-  it("should remove the first and last children of the messages route", () => {
-    const authService = TestBed.inject(AuthService);
-    spyOn(authService, "canUser").and.returnValue(false);
-    authService.authenticated.set(true);
-    const fixture = TestBed.createComponent(SiteMap);
-    const siteMap = fixture.componentInstance;
-    const siteMapDOM = fixture.nativeElement;
-    fixture.detectChanges();
-
-    let routeList = siteMapDOM.querySelector("#routeList");
-    let navLinks = routeList!.querySelectorAll(".routerLink");
-    // the path as it should appear
-    let messagesPath: Route = {
-      path: "messages",
-      children: [
-        { path: "inbox", pathMatch: "prefix", component: MockComp, data: { name: "Inbox" } },
-        { path: "outbox", pathMatch: "prefix", component: MockComp, data: { name: "Outbox" } },
-        { path: "threads", pathMatch: "prefix", component: MockComp, data: { name: "Threads" } },
-      ],
-      data: { name: "Mailbox" },
-    };
-    // the full path
-    let messagesFullPath: Route = {
-      path: "messages",
-      children: [
-        { path: "", pathMatch: "prefix", redirectTo: "inbox", data: { name: "Inbox" } },
-        { path: "inbox", pathMatch: "prefix", component: MockComp, data: { name: "Inbox" } },
-        { path: "outbox", pathMatch: "prefix", component: MockComp, data: { name: "Outbox" } },
-        { path: "threads", pathMatch: "prefix", component: MockComp, data: { name: "Threads" } },
-        { path: "thread/:id", pathMatch: "prefix", component: MockComp, data: { name: "Thread" } },
-      ],
-      data: { name: "Mailbox" },
-    };
-
-    // check the first and last children were removed
-    expect(siteMap.routes).not.toContain(messagesFullPath);
-    expect(siteMap.routes).toContain(messagesPath);
-    expect(navLinks[4].parentElement.parentElement.children.length).toBe(3);
-    // check inbox doesn't appear twice
-    expect(navLinks[3].textContent).not.toBe("Inbox");
-    expect(navLinks[5].textContent).not.toBe("Inbox");
-    // check thread doesn't appear at all
-    for (var i = 0; i < navLinks.length; i++) {
-      expect(navLinks[i].textContent).not.toBe("Thread");
-    }
-  });
-
-  // Check that the last route is removed from user routes
-  it("should remove the last child of the user route", () => {
-    const authService = TestBed.inject(AuthService);
-    spyOn(authService, "canUser").and.returnValue(false);
-    authService.authenticated.set(true);
-    const fixture = TestBed.createComponent(SiteMap);
-    const siteMap = fixture.componentInstance;
-    const siteMapDOM = fixture.nativeElement;
-    fixture.detectChanges();
-
-    let routeList = siteMapDOM.querySelector("#routeList");
-    let navLinks = routeList!.querySelectorAll(".routerLink");
-    // the path as it should appear
-    let userPath: Route = {
-      path: "user",
-      children: [
-        { path: "", pathMatch: "prefix", component: MockComp, data: { name: "Your Page" } },
-      ],
-      data: { name: "User Page" },
-    };
-    // the full path
-    let userFullPath: Route = {
-      path: "user",
-      children: [
-        { path: "", pathMatch: "prefix", component: MockComp, data: { name: "Your Page" } },
-        {
-          path: ":id",
-          pathMatch: "prefix",
-          component: MockComp,
-          data: { name: "Other User's Page" },
-        },
-      ],
-      data: { name: "User Page" },
-    };
-
-    // check the final child was removed
-    expect(siteMap.routes).not.toContain(userFullPath);
-    expect(siteMap.routes).toContain(userPath);
-    for (var i = 0; i < navLinks.length; i++) {
-      expect(navLinks[i].textContent).not.toBe("Other User's Page");
-    }
-  });
-
   it("should remove the login route if the user is authenticated", () => {
     const authService = TestBed.inject(AuthService);
     spyOn(authService, "authenticated").and.returnValue(true);
@@ -409,8 +341,14 @@ describe("SiteMap", () => {
       path: "user",
       children: [
         { path: "", pathMatch: "prefix", component: MockComp, data: { name: "Your Page" } },
+        {
+          path: ":id",
+          pathMatch: "prefix",
+          component: MockComp,
+          data: { name: "Other User's Page" },
+        },
       ],
-      data: { name: "User Page" },
+      data: { name: "User Page", mapRoutes: [{ path: "", name: "Your Page" }] },
     };
 
     expect(siteMap.routes).toContain(loginPath);

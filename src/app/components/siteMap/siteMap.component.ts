@@ -80,20 +80,11 @@ export class SiteMap {
         // if it's the mailbox component, remove the first child path, as it's a
         // redirect, and remove the last one, as it requires a parameter
         else if (route.path!.includes("messages")) {
-          if (this.authService.authenticated()) {
-            const fixedRoute = route;
-            fixedRoute.children!.shift();
-            fixedRoute.children!.pop();
-            this.routes.push(fixedRoute);
-          }
+          if (this.authService.authenticated()) this.routes.push(route);
         }
         // if it's the user page, show just the user's own page, as it requires a parameter
         else if (route.path!.includes("user")) {
-          if (this.authService.authenticated()) {
-            const fixedRoute = route;
-            fixedRoute.children!.pop();
-            this.routes.push(fixedRoute);
-          }
+          if (this.authService.authenticated()) this.routes.push(route);
         } else if (route.path == "login") {
           if (!this.authService.authenticated()) this.routes.push(route);
         } else if (route.path == "settings") {

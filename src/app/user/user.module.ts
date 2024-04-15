@@ -1,5 +1,5 @@
 /*
-  App Module
+  User Module
   Send a Hug Module
   ---------------------------------------------------
   MIT License
@@ -38,24 +38,14 @@ import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { ReactiveFormsModule } from "@angular/forms";
 
 // Internal Modules
-import { AppRoutingModule } from "./app-routing.module";
-import { AppCommonModule } from "./common/common.module";
-import { AppAdminModule } from "./admin/admin.module";
-import { AppUserModule } from "./user/user.module";
+import { AppRoutingModule } from "@app/app-routing.module";
+import { AppCommonModule } from "@common/common.module";
 
-import { AppComponent } from "./app.component";
-import { MainPage } from "./components/mainPage/mainPage.component";
-import { ErrorPage } from "./components/errorPage/errorPage.component";
-import { NewItem } from "./components/newItem/newItem.component";
-import { FullList } from "./components/fullList/fullList.component";
-import { AboutApp } from "./components/aboutApp/aboutApp.component";
-import { SearchResults } from "./components/searchResults/searchResults.component";
-import { NotificationsTab } from "./components/notifications/notifications.component";
-import { SiteMap } from "./components/siteMap/siteMap.component";
-import { SupportPage } from "./components/supportPage/supportPage.component";
-import { SitePolicies } from "./components/sitePolicies/sitePolicies.component";
-import { AppAlert } from "./components/appAlert/appAlert.component";
-import { LoginPage } from "./components/loginPage/loginPage.component";
+import { UserPage } from "@user//components/userPage/userPage.component";
+import { AppMessaging } from "@user//components/messages/messages.component";
+import { MyPosts } from "@user//components/myPosts/myPosts.component";
+import { SettingsPage } from "@user//components/settings/settings.component";
+import { IconEditor } from "@user//components/iconEditor/iconEditor.component";
 
 @NgModule({
   imports: [
@@ -66,25 +56,10 @@ import { LoginPage } from "./components/loginPage/loginPage.component";
     ServiceWorkerModule.register("sw.js"),
     FontAwesomeModule,
     AppCommonModule,
-    AppAdminModule,
-    AppUserModule,
   ],
-  declarations: [
-    AppComponent,
-    MainPage,
-    ErrorPage,
-    NewItem,
-    FullList,
-    AboutApp,
-    SearchResults,
-    NotificationsTab,
-    SiteMap,
-    SupportPage,
-    SitePolicies,
-    AppAlert,
-    LoginPage,
-  ],
+  declarations: [UserPage, AppMessaging, MyPosts, SettingsPage, IconEditor],
   providers: [],
-  bootstrap: [AppComponent],
+  bootstrap: [],
+  exports: [UserPage, AppMessaging, SettingsPage],
 })
-export class AppModule {}
+export class AppUserModule {}

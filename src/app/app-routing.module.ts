@@ -33,15 +33,15 @@ import { NgModule } from "@angular/core";
 import { Routes, RouterModule } from "@angular/router";
 
 import { MainPage } from "./components/mainPage/mainPage.component";
-import { UserPage } from "./components/userPage/userPage.component";
-import { AppMessaging } from "./components/messages/messages.component";
+import { UserPage } from "./user/components/userPage/userPage.component";
+import { AppMessaging } from "./user/components/messages/messages.component";
 import { ErrorPage } from "./components/errorPage/errorPage.component";
 import { NewItem } from "./components/newItem/newItem.component";
 import { FullList } from "./components/fullList/fullList.component";
 import { AboutApp } from "./components/aboutApp/aboutApp.component";
 import { SearchResults } from "./components/searchResults/searchResults.component";
 import { AdminDashboard } from "./admin/components/adminDashboard/adminDashboard.component";
-import { SettingsPage } from "./components/settings/settings.component";
+import { SettingsPage } from "./user/components/settings/settings.component";
 import { SiteMap } from "./components/siteMap/siteMap.component";
 import { SupportPage } from "./components/supportPage/supportPage.component";
 import { SitePolicies } from "./components/sitePolicies/sitePolicies.component";

@@ -47,7 +47,7 @@ import { By } from "@angular/platform-browser";
 import { NO_ERRORS_SCHEMA } from "@angular/core";
 
 import { MyPosts } from "./myPosts.component";
-import { AuthService } from "../../common/services/auth.service";
+import { AuthService } from "../../../common/services/auth.service";
 import { mockAuthedUser } from "@tests/mockData";
 import { MockReportForm, MockDeleteForm, MockEditForm } from "@tests/mockForms";
 import { AppCommonModule } from "@app/common/common.module";

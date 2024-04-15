@@ -2,6 +2,20 @@
 
 ## Unreleased
 
+### 2024-04-15
+
+#### Features
+
+- Added a new App User Module to contain the authenticated-users-related components in the app. This module will be used to contain the user page, settings and messaging components (all components that are only available to authenticated users), which should also make the project more maintainable and make it easier for us to split the main script bundle into chunks. ([#1611](https://github.com/sendahug/send-hug-frontend/pull/1611))
+
+#### Changes
+
+- Moved the IconEditor, Messages, MyPost, Settings and UserPage components to the new App User module. The User module then exports the UserPage, AppMessaging and ettingsPage components so they can be used in other modules. ([#1611](https://github.com/sendahug/send-hug-frontend/pull/1611))
+
+#### Chores
+
+- Updated the template inliner, which is used for tests, to handle the new App User module and its folder structure. ([#1611](https://github.com/sendahug/send-hug-frontend/pull/1611))
+
 ### 2024-04-14
 
 #### Features

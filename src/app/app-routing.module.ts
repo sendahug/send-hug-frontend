@@ -60,7 +60,7 @@ export const routes: Routes = [
         data: { name: "Other User's Page" },
       },
     ],
-    data: { name: "User Page" },
+    data: { name: "User Page", mapRoutes: [{ path: "", name: "Your Page" }] },
   },
   {
     path: "messages",
@@ -76,7 +76,14 @@ export const routes: Routes = [
         data: { name: "Thread" },
       },
     ],
-    data: { name: "Mailbox" },
+    data: {
+      name: "Mailbox",
+      mapRoutes: [
+        { path: "inbox", name: "Inbox" },
+        { path: "outbox", name: "Outbox" },
+        { path: "threads", name: "Threads" },
+      ],
+    },
   },
   {
     path: "new",
@@ -84,7 +91,13 @@ export const routes: Routes = [
       { path: "Post", pathMatch: "prefix", component: NewItem, data: { name: "New post" } },
       { path: "Message", pathMatch: "prefix", component: NewItem, data: { name: "New message" } },
     ],
-    data: { name: "New Item" },
+    data: {
+      name: "New Item",
+      mapRoutes: [
+        { path: "Post", name: "New post" },
+        { path: "Message", name: "New message" },
+      ],
+    },
   },
   {
     path: "list",
@@ -97,7 +110,13 @@ export const routes: Routes = [
         data: { name: "Full suggested list" },
       },
     ],
-    data: { name: "Full Items List" },
+    data: {
+      name: "Full Items List",
+      mapRoutes: [
+        { path: "New", name: "Full new list" },
+        { path: "Suggested", name: "Full suggested list" },
+      ],
+    },
   },
   { path: "about", component: AboutApp, data: { name: "About Page" } },
   { path: "search", component: SearchResults, data: { name: "Search Results" } },
@@ -124,7 +143,15 @@ export const routes: Routes = [
         data: { name: "Filters Page" },
       },
     ],
-    data: { name: "Admin Dashboard" },
+    data: {
+      name: "Admin Dashboard",
+      mapRoutes: [
+        { path: "", name: "Main Page" },
+        { path: "reports", name: "Reports Page" },
+        { path: "blocks", name: "Blocks Page" },
+        { path: "filters", name: "Filters Page" },
+      ],
+    },
   },
   { path: "settings", component: SettingsPage, data: { name: "Settings Page" } },
   { path: "sitemap", component: SiteMap, data: { name: "Site Map" } },
@@ -151,7 +178,14 @@ export const routes: Routes = [
         data: { name: "Cookie Policy" },
       },
     ],
-    data: { name: "Site Policies" },
+    data: {
+      name: "Site Policies",
+      mapRoutes: [
+        { path: "terms", name: "Terms and Conditions" },
+        { path: "privacy", name: "Privacy Policy" },
+        { path: "cookies", name: "Cookie Policy" },
+      ],
+    },
   },
   { path: "login", component: LoginPage, data: { name: "Login Page" } },
   { path: "**", component: ErrorPage, data: { name: "Error Page" } },

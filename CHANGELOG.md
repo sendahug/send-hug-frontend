@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+### 2024-04-16
+
+#### Changes
+
+- Changed the way the site map component fetches routes to display in the map. Previously, it relied on the routes and child routes defined in the router (and removed unnecessary routes). Now, it fetches the child routes to display from a separate `mapRoutes` property defined in the route's metadata. This allows us to only include the routes we want to show ahead of time, and, in the future, to remove the specific child-route definitions. ([#1614](https://github.com/sendahug/send-hug-frontend/pull/1614))
+
 ### 2024-04-15
 
 #### Features

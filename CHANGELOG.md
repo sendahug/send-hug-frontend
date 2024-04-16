@@ -8,6 +8,10 @@
 
 - Changed the way the site map component fetches routes to display in the map. Previously, it relied on the routes and child routes defined in the router (and removed unnecessary routes). Now, it fetches the child routes to display from a separate `mapRoutes` property defined in the route's metadata. This allows us to only include the routes we want to show ahead of time, and, in the future, to remove the specific child-route definitions. ([#1614](https://github.com/sendahug/send-hug-frontend/pull/1614))
 
+#### Chores
+
+- Updated the syntax of the gulp tasks which copy static assets to the new Gulp 5 syntax. This also fixes a bug where the PNG icons (used in our webmanifest) were copied as invalid photos (see [the relevant Gulp issue](https://github.com/gulpjs/gulp/issues/2766) for explanation). ([#1615](https://github.com/sendahug/send-hug-frontend/pull/1615))
+
 ### 2024-04-15
 
 #### Features

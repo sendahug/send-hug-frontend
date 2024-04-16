@@ -1,9 +1,0 @@
-{
-  "pr_number": 1615,
-  "changes": [
-    {
-      "change": "Chores",
-      "description": "Updated the syntax of the gulp tasks which copy static assets to the new Gulp 5 syntax. This also fixes a bug where the PNG icons (used in our webmanifest) were copied as invalid photos (see [the relevant Gulp issue](https://github.com/gulpjs/gulp/issues/2766) for explanation)."
-    }
-  ]
-}

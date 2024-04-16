@@ -76,17 +76,16 @@ export class SiteMap {
           if (this.authService.canUser("read:admin-board")) {
             this.routes.push(route);
           }
-        }
-        // if it's the mailbox component, remove the first child path, as it's a
-        // redirect, and remove the last one, as it requires a parameter
-        else if (route.path!.includes("messages")) {
+          // if it's the mailbox component, check the user is authenticated
+        } else if (route.path!.includes("messages")) {
           if (this.authService.authenticated()) this.routes.push(route);
-        }
-        // if it's the user page, show just the user's own page, as it requires a parameter
-        else if (route.path!.includes("user")) {
+          // if it's the user page, check the user is authenticated
+        } else if (route.path!.includes("user")) {
           if (this.authService.authenticated()) this.routes.push(route);
+          // if it's the login component, check the user isn't authenticated
         } else if (route.path == "login") {
           if (!this.authService.authenticated()) this.routes.push(route);
+          // if it's the settings, check the user is authenticated
         } else if (route.path == "settings") {
           if (this.authService.authenticated()) this.routes.push(route);
         }

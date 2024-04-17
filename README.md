@@ -32,7 +32,7 @@ The project is open source, so feel free to use parts of the code. However, the 
 
 1. Download or clone the repo.
 2. cd into the project directory.
-3. cd into frontend.
+3. Run `git config core.hooksPath .githooks` to install the pre-commit hook, which runs prettier.
 4. Run `npm install` to install dependencies.
 5. Run `gulp localdev` to compile the whole project for local development.
 6. Run `gulp serve` to start the local server.

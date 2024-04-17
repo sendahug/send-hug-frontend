@@ -65,6 +65,13 @@
         "dist/app/settings.component.html",
         "dist/app/userPage.component.html"
       ]
+    },
+    {
+      "name": "Static Assets",
+      "limit": "300 kB",
+      "path": [
+        "dist/assets/**/*"
+      ]
     }
   ],
   "directories": {

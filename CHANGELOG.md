@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+### 2024-04-17
+
+#### Chores
+
+- Added a pre-commit hook to automatically run prettier before committing. This should prevent styling issues in pull requests. ([#1616](https://github.com/sendahug/send-hug-frontend/pull/1616))
+
 ### 2024-04-16
 
 #### Changes

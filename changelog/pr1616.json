@@ -1,9 +1,0 @@
-{
-  "pr_number": 1616,
-  "changes": [
-    {
-      "change": "Chores",
-      "description": "Added a pre-commit hook to automatically run prettier before committing. This should prevent styling issues in pull requests."
-    }
-  ]
-}

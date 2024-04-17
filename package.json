@@ -13,7 +13,9 @@
     "cypress": "cypress run",
     "e2e": "gulp e2e",
     "build": "gulp dist",
-    "start": "node server.js"
+    "start": "node server.js",
+    "rollup:dev": "rollup --config --mode development",
+    "rollup:live": "rollup --config"
   },
   "overrides": {
     "karma-jasmine": {

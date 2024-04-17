@@ -28,7 +28,6 @@
     "@rollup/plugin-node-resolve": "^15.2.3",
     "@rollup/plugin-terser": "^0.4.4",
     "@rollup/plugin-typescript": "^11.1.6",
-    "@rollup/stream": "^3.0.1",
     "@types/auth0-js": "^9.21.5",
     "@types/jasmine": "^5.1.4",
     "@types/node": "^20.12.7",

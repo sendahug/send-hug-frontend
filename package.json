@@ -3,6 +3,15 @@
   "version": "1.0.0",
   "description": "Send a hug site.",
   "main": "app.bundle.js",
+  "size-limit": [
+    {
+      "name": "Bundle",
+      "limit": "360 kB",
+      "path": [
+        "dist/app.bundle.js"
+      ]
+    }
+  ],
   "directories": {
     "test": "tests"
   },
@@ -15,7 +24,8 @@
     "build": "gulp dist",
     "start": "node server.js",
     "rollup:dev": "rollup --config --mode development",
-    "rollup:live": "rollup --config"
+    "rollup:live": "rollup --config",
+    "size": "npm run build && size-limit"
   },
   "overrides": {
     "karma-jasmine": {
@@ -28,6 +38,10 @@
     "@rollup/plugin-node-resolve": "^15.2.3",
     "@rollup/plugin-terser": "^0.4.4",
     "@rollup/plugin-typescript": "^11.1.6",
+    "@rollup/stream": "^3.0.1",
+    "@size-limit/file": "^11.1.2",
+    "@size-limit/preset-app": "^11.1.2",
+    "@size-limit/time": "^11.1.2",
     "@types/auth0-js": "^9.21.5",
     "@types/jasmine": "^5.1.4",
     "@types/node": "^20.12.7",
@@ -57,6 +71,7 @@
     "puppeteer": "^22.6.5",
     "rollup": "^4.14.3",
     "rollup-plugin-istanbul": "^5.0.0",
+    "size-limit": "^11.1.2",
     "tslib": "^2.6.2",
     "typescript": "^5.4.5",
     "vinyl-buffer": "^1.0.1",

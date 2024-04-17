@@ -175,10 +175,6 @@ function copyIndexDist()
 {
   return gulp
     .src("index.html")
-    .pipe(replace(/src="app.bundle.js"/, () => {
-      let newString = `src="app.bundle.min.js"`
-      return newString;
-    }))
     .pipe(gulp.dest("./dist"));
 }
 

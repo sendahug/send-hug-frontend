@@ -12,7 +12,7 @@ export default (commandLineArgs) => {
     output: {
       sourcemap: currentMode == "development" ? "inline" : "hidden",
       dir: currentMode == "development" ? "localdev" : "dist",
-      entryFileNames: currentMode == "development" ? "app.bundle.js" : "app.bundle.min.js",
+      entryFileNames: "app.bundle.js",
     },
     plugins: [
       updateEnvironmentVariables(currentMode),

@@ -26,6 +26,13 @@ export default (commandLineArgs) => {
         transformMixedEsModules: true,
       }),
     ],
+    onwarn(warning, warn) {
+      if (warning.code === "UNKNOWN_OPTION") {
+        // This allows using test flag
+        if (warning.message.includes("Unknown CLI flags: mode")) return;
+      }
+      warn(warning);
+    },
   };
 
   // Only run terser in production, as it's quite a long and expensive

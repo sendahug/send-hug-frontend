@@ -5,10 +5,65 @@
   "main": "app.bundle.js",
   "size-limit": [
     {
-      "name": "Bundle",
+      "name": "JS Bundle",
       "limit": "360 kB",
       "path": [
         "dist/app.bundle.js"
+      ]
+    },
+    {
+      "name": "CSS",
+      "limit": "25 kB",
+      "path": [
+        "dist/css/*"
+      ]
+    },
+    {
+      "name": "Public Templates",
+      "limit": "30 kB",
+      "path": [
+        "dist/app/aboutApp.component.html",
+        "dist/app/app.component.html",
+        "dist/app/appAlert.component.html",
+        "dist/app/displayNameEditForm.component.html",
+        "dist/app/errorPage.component.html",
+        "dist/app/fullList.component.html",
+        "dist/app/headerMessages.component.html",
+        "dist/app/itemDeleteForm.component.html",
+        "dist/app/loader.component.html",
+        "dist/app/loginPage.component.html",
+        "dist/app/mainPage.component.html",
+        "dist/app/newItem.component.html",
+        "dist/app/notifications.component.html",
+        "dist/app/popUp.component.html",
+        "dist/app/post.component.html",
+        "dist/app/postEditForm.component.html",
+        "dist/app/reportForm.component.html",
+        "dist/app/searchResults.component.html",
+        "dist/app/siteMap.component.html",
+        "dist/app/sitePolicies.component.html",
+        "dist/app/supportPage.component.html"
+      ]
+    },
+    {
+      "name": "Admin Templates",
+      "limit": "5 kB",
+      "path": [
+        "dist/app/adminBlocks.component.html",
+        "dist/app/adminDashboard.component.html",
+        "dist/app/adminFilters.component.html",
+        "dist/app/adminReports.component.html"
+      ]
+    },
+    {
+      "name": "User Templates",
+      "limit": "150 kB",
+      "path": [
+        "dist/app/iconEditor.component.html",
+        "dist/app/messages.component.html",
+        "dist/app/myPosts.component.html",
+        "dist/app/settings.component.html",
+        "dist/app/userPage.component.html"
       ]
     }
   ],

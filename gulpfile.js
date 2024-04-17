@@ -88,7 +88,15 @@ async function scripts()
 {
   // A bit hacky, but worth it considering the massive size improvement
   // rollup provides vs @rollup/stream
-  await exec("npm run rollup:dev");
+  await exec("npm run rollup:dev", (error, stdout, stderr) => {
+    if (error) {
+       console.log(`error: ${error.message}`);
+    }
+    if (stderr) {
+       console.log(`stderr: ${stderr}`);
+    }
+    console.log(`stdout: ${stdout}`);
+  });
 }
 
 // copy webmanifest

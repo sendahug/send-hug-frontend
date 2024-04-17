@@ -8,7 +8,7 @@
   },
   "scripts": {
     "format": "prettier .  --write",
-    "compile:dev": "gulp localDev",
+    "localDev": "gulp localDev",
     "test": "gulp test",
     "cypress": "cypress run",
     "e2e": "gulp e2e",

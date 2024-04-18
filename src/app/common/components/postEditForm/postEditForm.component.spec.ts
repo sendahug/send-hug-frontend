@@ -115,7 +115,9 @@ describe("PostEditForm", () => {
     const updateReportSpy = spyOn(popUp, "updateReportIfNecessary").and.returnValue(
       of({
         success: true,
-        postId: 1,
+        updatedPost: {
+          ...serverResponse.updated,
+        },
         reportId: undefined,
       }),
     );
@@ -172,7 +174,9 @@ describe("PostEditForm", () => {
     const updateReportSpy = spyOn(popUp, "updateReportIfNecessary").and.returnValue(
       of({
         success: true,
-        postId: 1,
+        updatedPost: {
+          ...serverResponse.updated,
+        },
         reportId: 1,
       }),
     );
@@ -230,7 +234,9 @@ describe("PostEditForm", () => {
     const updateReportSpy = spyOn(popUp, "updateReportIfNecessary").and.returnValue(
       of({
         success: true,
-        postId: 1,
+        updatedPost: {
+          ...serverResponse.updated,
+        },
         reportId: undefined,
       }),
     );
@@ -297,7 +303,9 @@ describe("PostEditForm", () => {
       next: (response) => {
         expect(response).toEqual({
           success: true,
-          postId: 1,
+          updatedPost: {
+            ...serverResponse.updated,
+          },
           reportId: 2,
         });
         expect(adminServiceSpy).toHaveBeenCalledWith(2, false, 1);
@@ -334,7 +342,9 @@ describe("PostEditForm", () => {
       next: (response) => {
         expect(response).toEqual({
           success: true,
-          postId: 1,
+          updatedPost: {
+            ...serverResponse.updated,
+          },
           reportId: undefined,
         });
         expect(adminServiceSpy).not.toHaveBeenCalled();
@@ -369,7 +379,9 @@ describe("PostEditForm", () => {
       next: (response) => {
         expect(response).toEqual({
           success: true,
-          postId: 1,
+          updatedPost: {
+            ...serverResponse.updated,
+          },
           reportId: undefined,
         });
         expect(adminServiceSpy).not.toHaveBeenCalled();

@@ -76,9 +76,6 @@ export class NotificationsTab implements OnInit {
   */
   ngOnInit() {
     document.getElementById("exitButton")!.focus();
-    if (document.getElementById("siteHeader")) {
-      document.getElementById("siteHeader")!.className = "modal";
-    }
   }
 
   /*
@@ -191,9 +188,6 @@ export class NotificationsTab implements OnInit {
     modal!.removeEventListener("keydown", this.checkFocusBinded);
     if (document.getElementById("skipLink")) {
       document.getElementById("skipLink")!.focus();
-    }
-    if (document.getElementById("siteHeader")) {
-      document.getElementById("siteHeader")!.className = "";
     }
     this.NotificationsMode.emit(false);
   }

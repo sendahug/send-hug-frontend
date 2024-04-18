@@ -95,7 +95,8 @@
     "start": "node server.js",
     "rollup:dev": "rollup --config --mode development",
     "rollup:live": "rollup --config",
-    "size": "npm run build && size-limit"
+    "size": "npm run build && size-limit",
+    "cleanBuild": "node cleanDist.js"
   },
   "overrides": {
     "karma-jasmine": {

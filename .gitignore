@@ -8,13 +8,11 @@ coverage
 .DS_Store
 
 # local development files
-localdev/app
-localdev/css
-localdev/app.bundle.js
-localdev/app.bundle.js.map
-localdev/index.html
-localdev/assets/*
-localdev/manifest.webmanifest
+localdev/*
+# TODO: These should really be moved to the src folder
+!localdev/favicon.ico
+!localdev/sitemap.xml
+!localdev/sw.js
 
 # Testing files
 src/tests.specs.ts

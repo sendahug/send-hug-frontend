@@ -6,27 +6,13 @@ const gulp = require("gulp");
 const postcss = require("gulp-postcss");
 const rename = require("gulp-rename");
 const replace = require("gulp-replace");
-const source = require("vinyl-source-stream");
-const buffer = require("vinyl-buffer");
 const less = require('gulp-less');
-// rollup deps
-const rollupStream = require("@rollup/stream");
-const commonjs = require("@rollup/plugin-commonjs");
-const nodeResolve = require("@rollup/plugin-node-resolve").nodeResolve;
-const typescript = require("@rollup/plugin-typescript");
-const terser = require('@rollup/plugin-terser');
 // everything else
 const autoprefixer = require("autoprefixer");
 const browserSync = require("browser-sync").create();
 const Server = require('karma').Server;
 const parseConfig = require('karma').config.parseConfig;
 const glob = require("glob");
-// internal plugins
-const {
-  setProductionEnv,
-  updateComponentTemplateUrl,
-  updateEnvironmentVariables
-} = require("./processor");
 
 let bs;
 
@@ -98,30 +84,19 @@ function styles()
 }
 
 //deals with transforming the scripts while in development mode
-function scripts()
+async function scripts()
 {
-  const options = {
-     input: 'src/main.ts',
-     output: { sourcemap: 'inline' },
-     plugins: [
-      updateEnvironmentVariables("development"),
-      updateComponentTemplateUrl(),
-       typescript({ exclude: ['**/*.spec.ts', 'e2e/**/*'] }),
-       nodeResolve({
-         extensions: ['.js', '.ts']
-       }),
-       commonjs({
-         extensions: ['.js', '.ts'],
-         transformMixedEsModules: true
-       })
-       ]
-      };
-
-   return rollupStream(options)
-      .pipe(source("src/main.ts"))
-      .pipe(buffer())
-      .pipe(rename("app.bundle.js"))
-      .pipe(gulp.dest("./localdev"));
+  // A bit hacky, but worth it considering the massive size improvement
+  // rollup provides vs @rollup/stream
+  await exec("npm run rollup:dev", (error, stdout, stderr) => {
+    if (error) {
+       console.log(`error: ${error.message}`);
+    }
+    if (stderr) {
+       console.log(`stderr: ${stderr}`);
+    }
+    console.log(`stdout: ${stdout}`);
+  });
 }
 
 // copy webmanifest
@@ -208,10 +183,6 @@ function copyIndexDist()
 {
   return gulp
     .src("index.html")
-    .pipe(replace(/src="app.bundle.js"/, () => {
-      let newString = `src="app.bundle.min.js"`
-      return newString;
-    }))
     .pipe(gulp.dest("./dist"));
 }
 
@@ -234,35 +205,11 @@ function stylesDist()
 }
 
 //deals with transforming and bundling the scripts while in production mode
-function scriptsDist()
+async function scriptsDist()
 {
-  const options = {
-    input: 'src/main.ts',
-    output: {
-      file: "app.bundle.min.js",
-      sourcemap: 'hidden',
-      plugins: [terser()]
-    },
-    plugins: [
-      updateEnvironmentVariables("live"),
-      setProductionEnv(),
-      updateComponentTemplateUrl(),
-      typescript({ exclude: ['**/*.spec.ts', 'e2e/**/*'] }),
-      nodeResolve({
-        extensions: ['.js', '.ts']
-      }),
-      commonjs({
-        extensions: ['.js', '.ts'],
-        transformMixedEsModules: true
-      })
-      ]
-     };
-
-  return rollupStream(options)
-      .pipe(source("src/main.ts"))
-      .pipe(buffer())
-      .pipe(rename("app.bundle.min.js"))
-      .pipe(gulp.dest("./dist"));
+  // A bit hacky, but worth it considering the massive size improvement
+  // rollup provides vs @rollup/stream
+  await exec("npm run rollup:live");
 }
 
 //copy the service worker to the distribution folder; update the cache version on each build

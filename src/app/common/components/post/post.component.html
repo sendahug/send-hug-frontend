@@ -18,9 +18,9 @@
 		<button [ngClass]="menuButtonClass()" [attr.aria-labelledby]="'pOptions ' + type + 'Post' + post.id" name="post options" (click)="toggleOptions()"><fa-icon [icon]="faEllipsisV" class="fa-comment"></fa-icon></button>
 		<div [ngClass]="subMenuClass()">
 			<a [routerLink]="['/new', 'Message']" [queryParams]="{user: post.user, userID: post.userId}" class="textlessButton messageButton" [attr.aria-labelledby]="'pMessage ' + type + 'User' + post.id" name="send a message"><fa-icon [icon]="faComment" class="fa-comment"></fa-icon></a>
-			<button class="textlessButton reportButton" (click)="reportPost()" [attr.aria-labelledby]="'pReport ' + type +  'Post' + post.id" name="report"><fa-icon [icon]="faFlag" class="fa-flag"></fa-icon></button>
-			<button *ngIf="authService.canUser('patch:any-post')" class="textlessButton editButton" (click)="editPost()" [attr.aria-labelledby]="'pEdit ' + type + 'Post' + post.id"><fa-icon [icon]="faEdit" class="fa-edit"></fa-icon></button>
-			<button *ngIf="authService.canUser('delete:any-post')" class="textlessButton deleteButton" (click)="deletePost()" [attr.aria-labelledby]="'pDelete ' + type + 'Post' + post.id"><fa-icon [icon]="faTimes" class="fa-times"></fa-icon></button>
+			<button *ngIf="authService.userData && authService.userData.id != post.userId" class="textlessButton reportButton" (click)="reportPost()" [attr.aria-labelledby]="'pReport ' + type +  'Post' + post.id" name="report"><fa-icon [icon]="faFlag" class="fa-flag"></fa-icon></button>
+			<button *ngIf="authService.canUser('patch:any-post') || (authService.userData && authService.userData.id == post.userId)" class="textlessButton editButton" (click)="editPost()" [attr.aria-labelledby]="'pEdit ' + type + 'Post' + post.id"><fa-icon [icon]="faEdit" class="fa-edit"></fa-icon></button>
+			<button *ngIf="authService.canUser('delete:any-post') || (authService.userData && authService.userData.id == post.userId)" class="textlessButton deleteButton" (click)="deletePost()" [attr.aria-labelledby]="'pDelete ' + type + 'Post' + post.id"><fa-icon [icon]="faTimes" class="fa-times"></fa-icon></button>
 		</div>
 	</div>
 </li>

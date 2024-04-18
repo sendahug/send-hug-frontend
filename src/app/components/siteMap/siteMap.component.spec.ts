@@ -359,7 +359,7 @@ describe("SiteMap", () => {
     }
 
     authService.authenticated.set(true);
-    authService.userData = { ...mockAuthedUser };
+    authService.userData.set({ ...mockAuthedUser });
     authService.isUserDataResolved.next(true);
     fixture.detectChanges();
 

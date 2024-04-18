@@ -117,7 +117,7 @@ describe("Post", () => {
     const spy = spyOn(singlePost.itemsService, "sendHug");
     const authService = singlePost.authService;
     authService.authenticated.set(true);
-    authService.userData = { ...mockAuthedUser };
+    authService.userData.set({ ...mockAuthedUser });
 
     upFixture.detectChanges();
 
@@ -422,7 +422,7 @@ describe("Post", () => {
     const itemsService = singlePost.itemsService;
     const authService = singlePost.authService;
     authService.authenticated.set(true);
-    authService.userData = { ...mockAuthedUser };
+    authService.userData.set({ ...mockAuthedUser });
 
     // before
     expect(singlePost._post().givenHugs).toBe(0);

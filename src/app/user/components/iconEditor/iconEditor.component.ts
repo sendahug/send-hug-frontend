@@ -51,24 +51,24 @@ export class IconEditor {
   // form for the icon editor
   iconEditForm = this.fb.group({
     selectedIcon: [
-      this.authService.userData?.selectedIcon ||
+      this.authService.userData()?.selectedIcon ||
         (this.iconDefaults.characterColour as iconCharacters),
       Validators.required,
     ],
     characterColour: [
-      this.authService.userData?.iconColours.character || this.iconDefaults.characterColour,
+      this.authService.userData()?.iconColours.character || this.iconDefaults.characterColour,
       Validators.required,
     ],
     lbgColour: [
-      this.authService.userData?.iconColours.lbg || this.iconDefaults.lbgColour,
+      this.authService.userData()?.iconColours.lbg || this.iconDefaults.lbgColour,
       Validators.required,
     ],
     rbgColour: [
-      this.authService.userData?.iconColours.rbg || this.iconDefaults.rbgColour,
+      this.authService.userData()?.iconColours.rbg || this.iconDefaults.rbgColour,
       Validators.required,
     ],
     itemColour: [
-      this.authService.userData?.iconColours.item || this.iconDefaults.itemColour,
+      this.authService.userData()?.iconColours.item || this.iconDefaults.itemColour,
       Validators.required,
     ],
   });
@@ -125,10 +125,10 @@ export class IconEditor {
     event.preventDefault();
 
     // set the userService with the new icon data
-    this.authService.userData!.selectedIcon =
+    this.authService.userData()!.selectedIcon =
       this.iconEditForm.controls.selectedIcon.value ||
       (this.iconDefaults.selectedIcon as iconCharacters);
-    this.authService.userData!.iconColours = {
+    this.authService.userData()!.iconColours = {
       character:
         this.iconEditForm.controls.characterColour.value || this.iconDefaults.characterColour,
       lbg: this.iconEditForm.controls.lbgColour.value || this.iconDefaults.lbgColour,

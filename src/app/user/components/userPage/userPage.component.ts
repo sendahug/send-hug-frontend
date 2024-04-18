@@ -63,7 +63,7 @@ export class UserPage implements OnInit, OnDestroy, AfterViewChecked {
     if (this.otherUser()) {
       return this.otherUser() as OtherUser;
     } else {
-      return this.authService.userData as User;
+      return this.authService.userData() as User;
     }
   });
   isOtherUserProfile = computed(() => this.otherUser() != undefined);
@@ -177,7 +177,7 @@ export class UserPage implements OnInit, OnDestroy, AfterViewChecked {
     // If there's no user ID or the user ID is the same as the
     // logged in user's ID, don't fetch the user but set everything
     // to resolved so it can display the AuthService data in the template.
-    if (this.userId === undefined || this.userId == this.authService.userData?.id) {
+    if (this.userId === undefined || this.userId == this.authService.userData()?.id) {
       this.otherUser.set(undefined);
       this.waitFor = "user";
       this.isIdbFetchResolved.set(true);
@@ -271,7 +271,10 @@ export class UserPage implements OnInit, OnDestroy, AfterViewChecked {
     this.apiClient.post(`users/all/${userID}/hugs`, {}).subscribe({
       next: (_response) => {
         this.otherUser()!.receivedH += 1;
-        this.authService.userData!.givenH += 1;
+        this.authService.userData.set({
+          ...this.authService.userData()!,
+          givenH: this.authService.userData()!.givenH + 1,
+        });
         this.alertsService.createSuccessAlert("Your hug was sent!", { reload: true });
       },
     });

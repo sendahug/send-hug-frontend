@@ -63,7 +63,7 @@ export class AuthService {
   token: string = "";
   authenticated = signal<boolean>(false);
   // user data
-  userData?: User;
+  userData = signal<User | undefined>(undefined);
   // documents whether the user just logged in or they're still logged in following
   // their previous login
   loggedIn = false;
@@ -156,14 +156,14 @@ export class AuthService {
   getUserData(jwtPayload: any) {
     // turn the BehaviorSubject dealing with whether user data was resolved to
     // false only if there's no user data
-    if (this.userData?.id == 0 || !this.userData?.id) {
+    if (this.userData()?.id == 0 || !this.userData()?.id) {
       this.isUserDataResolved.next(false);
     }
     // if the JWTs don't match (shouldn't happen, but just in case), change the BehaviorSubject
     // and reset the user's data
-    else if (this.userData.auth0Id != jwtPayload.sub) {
+    else if (this.userData()?.auth0Id != jwtPayload.sub) {
       this.isUserDataResolved.next(false);
-      this.userData = undefined;
+      this.userData.set(undefined);
     }
 
     // if there's a JWT
@@ -177,11 +177,11 @@ export class AuthService {
       }).subscribe({
         next: (response: any) => {
           const data = response.user;
-          this.userData = {
+          this.userData.set({
             ...data,
             auth0Id: jwtPayload.sub,
             jwt: this.token,
-          };
+          });
           // set the authentication-variables accordingly
           this.authenticated.set(true);
           this.setToken();
@@ -275,11 +275,11 @@ export class AuthService {
     ).subscribe({
       next: (response: any) => {
         const data = response.user;
-        this.userData = {
+        this.userData.set({
           ...data,
           auth0Id: jwtPayload.sub,
           jwt: this.token,
-        };
+        });
         // set the authentication-variables accordingly
         this.authenticated.set(true);
         this.setToken();
@@ -333,19 +333,19 @@ export class AuthService {
 
     // update the user's data in IDB to remove all user data
     let user = {
-      id: this.userData?.id,
-      displayName: this.userData?.displayName,
-      receivedH: this.userData?.receivedH,
-      givenH: this.userData?.givenH,
-      posts: this.userData?.posts,
-      role: this.userData?.role,
+      id: this.userData()?.id,
+      displayName: this.userData()?.displayName,
+      receivedH: this.userData()?.receivedH,
+      givenH: this.userData()?.givenH,
+      posts: this.userData()?.posts,
+      role: this.userData()?.role,
     };
     this.serviceWorkerM.addItem("users", user);
 
     //clears the user's data
     this.authenticated.set(false);
     this.token = "";
-    this.userData = undefined;
+    this.userData.set(undefined);
     localStorage.setItem("ACTIVE_JWT", "");
 
     // clears all the messages data (as that's private per user)
@@ -443,21 +443,21 @@ export class AuthService {
   */
   updateUserData() {
     const updatedUser = {
-      displayName: this.userData?.displayName,
-      receivedH: this.userData?.receivedH,
-      givenH: this.userData?.givenH,
-      posts: this.userData?.posts,
-      loginCount: (this.userData?.loginCount || 0) + 1,
-      selectedIcon: this.userData?.selectedIcon,
+      displayName: this.userData()?.displayName,
+      receivedH: this.userData()?.receivedH,
+      givenH: this.userData()?.givenH,
+      posts: this.userData()?.posts,
+      loginCount: (this.userData()?.loginCount || 0) + 1,
+      selectedIcon: this.userData()?.selectedIcon,
       iconColours: {
-        character: this.userData?.iconColours.character,
-        lbg: this.userData?.iconColours.lbg,
-        rbg: this.userData?.iconColours.rbg,
-        item: this.userData?.iconColours.item,
+        character: this.userData()?.iconColours.character,
+        lbg: this.userData()?.iconColours.lbg,
+        rbg: this.userData()?.iconColours.rbg,
+        item: this.userData()?.iconColours.item,
       },
     };
 
-    this.apiClient.patch(`users/all/${this.userData?.id}`, updatedUser).subscribe({});
+    this.apiClient.patch(`users/all/${this.userData()?.id}`, updatedUser).subscribe({});
   }
 
   /*
@@ -469,10 +469,10 @@ export class AuthService {
   */
   canUser(permission: string) {
     // if there's an active token, check the logged in user's permissions
-    if (this.userData) {
+    if (this.userData()) {
       // if it's within the user's permissions, return true;
       // otherwise return false
-      const canUserDo = this.userData.role["permissions"].includes(permission);
+      const canUserDo = this.userData()?.role["permissions"].includes(permission);
       return canUserDo;
     }
     // if there isn't, no user is logged in, so of course there's no permission

@@ -116,7 +116,7 @@ describe("MyPosts", () => {
 
     const authService = TestBed.inject(AuthService);
     authService.authenticated.set(true);
-    authService.userData = { ...mockAuthedUser };
+    authService.userData.set({ ...mockAuthedUser });
   });
 
   // Check that the component is created
@@ -173,7 +173,7 @@ describe("MyPosts", () => {
     upFixture.detectChanges();
     const myPosts: MyPosts = upFixture.debugElement.children[0].children[0].componentInstance;
 
-    expect(myPosts.userID).toBe(userPage.authService.userData!.id as number);
+    expect(myPosts.userID).toBe(userPage.authService.userData()!.id as number);
     expect(myPosts.user()).toBe("self");
   });
 

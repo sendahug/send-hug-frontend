@@ -92,7 +92,7 @@ describe("Blocks Page", () => {
     const authService = TestBed.inject(AuthService);
     spyOn(authService, "canUser").and.returnValue(true);
     authService.isUserDataResolved.next(true);
-    authService.userData = { ...mockAuthedUser };
+    authService.userData.set({ ...mockAuthedUser });
   });
 
   // Check that a call is made to get blocked users

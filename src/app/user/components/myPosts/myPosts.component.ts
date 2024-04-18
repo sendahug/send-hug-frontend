@@ -85,7 +85,7 @@ export class MyPosts implements OnInit {
   @Input()
   userID!: number;
   user = computed(() =>
-    this.userID && this.userID != this.authService.userData!.id! ? "other" : "self",
+    this.userID && this.userID != this.authService.userData()!.id! ? "other" : "self",
   );
   // icons
   faFlag = faFlag;
@@ -99,7 +99,7 @@ export class MyPosts implements OnInit {
     private apiClient: ApiClientService,
   ) {
     if (!this.userID) {
-      this.userID = this.authService.userData!.id!;
+      this.userID = this.authService.userData()!.id!;
     }
 
     this.editMode = false;
@@ -119,7 +119,7 @@ export class MyPosts implements OnInit {
   */
   ngOnInit() {
     if (!this.userID) {
-      this.userID = this.authService.userData!.id!;
+      this.userID = this.authService.userData()!.id!;
     }
 
     this.fetchPosts();

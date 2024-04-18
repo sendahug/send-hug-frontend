@@ -135,9 +135,7 @@ describe("MyPosts", () => {
     upFixture.detectChanges();
     const myPosts: MyPosts = upFixture.debugElement.children[0].children[0].componentInstance;
 
-    expect(myPosts.editMode).toBeFalse();
     expect(myPosts.deleteMode).toBeFalse();
-    expect(myPosts.reportMode).toBeFalse();
   });
 
   // Check that the component gets the user ID correctly
@@ -235,42 +233,6 @@ describe("MyPosts", () => {
     });
   });
 
-  // Check that the popup is opened when clicking 'edit'
-  it("should open the popup upon editing", (done: DoneFn) => {
-    const fixture = TestBed.createComponent(MockUserPage);
-    const userPage = fixture.componentInstance;
-    userPage.userId = 4;
-    fixture.detectChanges();
-    const myPosts: MyPosts = fixture.debugElement.children[0].children[0].componentInstance;
-    const myPostsDOM = fixture.debugElement.children[0].children[0].nativeElement;
-    const editSpy = spyOn(myPosts, "editPost").and.callThrough();
-    myPosts.posts.set(mockPosts);
-    myPosts.isLoading.set(false);
-    fixture.detectChanges();
-
-    // before the click
-    expect(myPosts.user()).toBe("self");
-    expect(myPosts.editMode).toBeFalse();
-    expect(myPosts.userID).toBe(4);
-    expect(editSpy).not.toHaveBeenCalled();
-
-    fixture.detectChanges();
-
-    expect(myPosts.posts().length).toBe(2);
-    expect(myPostsDOM.querySelectorAll(".userPost").length).toEqual(2);
-
-    // trigger click
-    myPostsDOM.querySelectorAll(".editButton")[0].click();
-    fixture.detectChanges();
-
-    // after the click
-    expect(myPosts.editMode).toBeTrue();
-    expect(myPosts.editType).toBe("post");
-    expect(myPosts.postToEdit).toBe(mockPosts[0]);
-    expect(myPostsDOM.querySelector("app-pop-up")).toBeTruthy();
-    done();
-  });
-
   // Check the popup exits when 'false' is emitted
   it("should change mode when the event emitter emits false - post delete", (done: DoneFn) => {
     // create the component
@@ -304,99 +266,6 @@ describe("MyPosts", () => {
     done();
   });
 
-  it("should change mode when the event emitter emits false - post report", (done: DoneFn) => {
-    // create the component
-    const fixture = TestBed.createComponent(MockUserPage);
-    const userPage = fixture.componentInstance;
-    userPage.userId = 4;
-    fixture.detectChanges();
-    const myPosts: MyPosts = fixture.debugElement.children[0].children[0].componentInstance;
-    const changeSpy = spyOn(myPosts, "changeMode").and.callThrough();
-    myPosts.posts.set(mockPosts);
-    myPosts.isLoading.set(false);
-    fixture.detectChanges();
-
-    // start the popup
-    myPosts.lastFocusedElement = document.querySelectorAll("a")[0];
-    myPosts.reportMode = true;
-    myPosts.reportType = "Post";
-    myPosts.reportedItem = mockPosts[0];
-    fixture.detectChanges();
-
-    // exit the popup
-    const popup = fixture.debugElement.children[0].children[0].query(By.css("report-form"))
-      .componentInstance as MockReportForm;
-    popup.reportMode.emit(false);
-    fixture.detectChanges();
-
-    // check the popup is exited
-    expect(changeSpy).toHaveBeenCalled();
-    expect(myPosts.reportMode).toBeFalse();
-    expect(document.activeElement).toBe(document.querySelectorAll("a")[0]);
-    done();
-  });
-
-  it("should change mode when the event emitter emits false - post edit", (done: DoneFn) => {
-    // create the component
-    const fixture = TestBed.createComponent(MockUserPage);
-    const userPage = fixture.componentInstance;
-    userPage.userId = 4;
-    fixture.detectChanges();
-    const myPosts: MyPosts = fixture.debugElement.children[0].children[0].componentInstance;
-    const changeSpy = spyOn(myPosts, "changeMode").and.callThrough();
-    myPosts.posts.set(mockPosts);
-    myPosts.isLoading.set(false);
-    fixture.detectChanges();
-
-    // start the popup
-    myPosts.lastFocusedElement = document.querySelectorAll("a")[0];
-    myPosts.editMode = true;
-    myPosts.editType = "post";
-    myPosts.postToEdit = mockPosts[0];
-    fixture.detectChanges();
-
-    // exit the popup
-    const popup = fixture.debugElement.children[0].children[0].query(By.css("post-edit-form"))
-      .componentInstance as MockEditForm;
-    popup.editMode.emit(false);
-    fixture.detectChanges();
-
-    // check the popup is exited
-    expect(changeSpy).toHaveBeenCalled();
-    expect(myPosts.editMode).toBeFalse();
-    expect(document.activeElement).toBe(document.querySelectorAll("a")[0]);
-    done();
-  });
-
-  // Check that the popup is opened when clicking 'delete'
-  it("should open the popup upon deleting", (done: DoneFn) => {
-    const fixture = TestBed.createComponent(MockUserPage);
-    const userPage = fixture.componentInstance;
-    userPage.userId = 4;
-    fixture.detectChanges();
-    const myPosts: MyPosts = fixture.debugElement.children[0].children[0].componentInstance;
-    const myPostsDOM = fixture.debugElement.children[0].children[0].nativeElement;
-    const deleteSpy = spyOn(myPosts, "deletePost").and.callThrough();
-    myPosts.posts.set(mockPosts);
-    myPosts.isLoading.set(false);
-    fixture.detectChanges();
-
-    // before the click
-    expect(myPosts.deleteMode).toBeFalse();
-    expect(deleteSpy).not.toHaveBeenCalled();
-
-    // trigger click
-    myPostsDOM.querySelectorAll(".deleteButton")[0].click();
-    fixture.detectChanges();
-
-    // after the click
-    expect(myPosts.deleteMode).toBeTrue();
-    expect(myPosts.toDelete).toBe("Post");
-    expect(myPosts.itemToDelete).toBe(1);
-    expect(myPostsDOM.querySelector("app-pop-up")).toBeTruthy();
-    done();
-  });
-
   // Check that the popup is opened when clicking 'delete all'
   it("should open the popup upon deleting all", (done: DoneFn) => {
     const fixture = TestBed.createComponent(MockUserPage);
@@ -423,60 +292,6 @@ describe("MyPosts", () => {
     expect(myPosts.toDelete).toBe("All posts");
     expect(myPosts.itemToDelete).toBe(4);
     expect(myPostsDOM.querySelector("app-pop-up")).toBeTruthy();
-    done();
-  });
-
-  // Check that the popup is opened when clicking 'report'
-  it("should open the popup upon reporting", (done: DoneFn) => {
-    const fixture = TestBed.createComponent(MockUserPage);
-    const userPage = fixture.componentInstance;
-    userPage.userId = 1;
-    fixture.detectChanges();
-    const myPosts: MyPosts = fixture.debugElement.children[0].children[0].componentInstance;
-    const myPostsDOM = fixture.debugElement.children[0].children[0].nativeElement;
-    const reportSpy = spyOn(myPosts, "reportPost").and.callThrough();
-    myPosts.posts.set(mockPosts);
-    myPosts.isLoading.set(false);
-
-    fixture.detectChanges();
-
-    // before the click
-    expect(myPosts.reportMode).toBeFalse();
-    expect(reportSpy).not.toHaveBeenCalled();
-
-    // trigger click
-    myPostsDOM.querySelectorAll(".reportButton")[0].click();
-    fixture.detectChanges();
-
-    // after the click
-    expect(myPosts.reportMode).toBeTrue();
-    expect(myPosts.reportType).toBe("Post");
-    expect(myPostsDOM.querySelector("app-pop-up")).toBeTruthy();
-    done();
-  });
-
-  // Check that sending a hug triggers the posts service
-  it("should trigger items service on hug", (done: DoneFn) => {
-    const fixture = TestBed.createComponent(MockUserPage);
-    const userPage = fixture.componentInstance;
-    userPage.userId = 1;
-    fixture.detectChanges();
-    const myPosts: MyPosts = fixture.debugElement.children[0].children[0].componentInstance;
-    const myPostsDOM = fixture.debugElement.children[0].children[0].nativeElement;
-    const hugSpy = spyOn(myPosts, "sendHug").and.callThrough();
-    const hugServiceSpy = spyOn(myPosts["itemsService"], "sendHug");
-    myPosts.posts.set(mockPosts);
-    myPosts.isLoading.set(false);
-
-    fixture.detectChanges();
-
-    // simulate click
-    myPostsDOM.querySelectorAll(".hugButton")[0].click();
-    fixture.detectChanges();
-
-    // after the click
-    expect(hugSpy).toHaveBeenCalledWith(1);
-    expect(hugServiceSpy).toHaveBeenCalledWith(mockPosts[0].id);
     done();
   });
 

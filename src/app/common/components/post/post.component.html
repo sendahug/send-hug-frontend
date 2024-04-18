@@ -49,11 +49,11 @@
 	<p [id]="'pText' + postId()">Post Text</p>
 	<p [id]="'pUser' + postId()">Post Writer</p>
 	<p [id]="'pDate' + postId()">Posted at</p>
-	<p [id]="'pHug' + postId()">Send a hug to user</p>
+	<p [id]="'pHug' + postId()">{{ "Send a hug to user for post" + post.text }}</p>
 	<p [id]="'pGivenH' + postId()">Hugs given to this post</p>
-	<p [id]="'pOptions' + postId()">show options for post</p>
-	<p [id]="'pMessage' + postId()">Send a message to user</p>
-	<p [id]="'pReport' + postId()">Report post</p>
-	<p [id]="'pEdit' + postId()">Edit post</p>
-	<p [id]="'pDelete' + postId()">Delete post</p>
+	<p [id]="'pOptions' + postId()">{{ "show options for post" + post.text }}</p>
+	<p [id]="'pMessage' + postId()">{{ "Send a message to user" + post.user }}</p>
+	<p [id]="'pReport' + postId()">{{ "Report post" + post.text }}</p>
+	<p [id]="'pEdit' + postId()">{{ "Edit post" + post.text }}</p>
+	<p [id]="'pDelete' + postId()">{{ "Delete post" + post.text }}</p>
 </div>

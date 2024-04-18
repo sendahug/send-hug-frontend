@@ -199,6 +199,7 @@ describe("Post", () => {
     const authService = singlePost.authService;
     const authSpy = spyOn(authService, "canUser").and.returnValue(true);
     const reportSpy = spyOn(singlePost, "reportPost").and.callThrough();
+    authService.userData.set({ ...mockAuthedUser });
     upFixture.detectChanges();
 
     // before the click

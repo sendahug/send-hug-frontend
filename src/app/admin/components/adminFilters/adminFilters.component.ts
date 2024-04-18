@@ -114,9 +114,9 @@ export class AdminFilters {
     this.apiClient.post("filters", { word: filter }).subscribe({
       next: (response: any) => {
         this.alertsService.createSuccessAlert(
-          `The phrase ${response.added.filter} was added to the list of filtered words! Refresh to see the updated list.`,
-          { reload: true },
+          `The phrase ${response.added.filter} was added to the list of filtered words!`,
         );
+        this.filteredPhrases.push(response.added);
       },
     });
   }
@@ -133,9 +133,9 @@ export class AdminFilters {
     this.apiClient.delete(`filters/${filter}`).subscribe({
       next: (response: any) => {
         this.alertsService.createSuccessAlert(
-          `The phrase ${response.deleted.filter} was removed from the list of filtered words. Refresh to see the updated list.`,
-          { reload: true },
+          `The phrase ${response.deleted.filter} was removed from the list of filtered words.`,
         );
+        this.filteredPhrases = this.filteredPhrases.filter((existingF) => existingF.id == filter);
       },
     });
   }

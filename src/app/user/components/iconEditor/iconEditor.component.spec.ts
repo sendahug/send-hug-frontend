@@ -194,12 +194,15 @@ describe("IconEditor", () => {
 
     // after the update
     iconEditorDOM.querySelectorAll(".iconButton")[1].click();
-    expect(iconEditor.authService.userData()?.selectedIcon).toBe("bear");
-    expect(iconEditor.authService.userData()?.iconColours.character).toBe("#000000");
-    expect(iconEditor.authService.userData()?.iconColours.lbg).toBe("#000000");
-    expect(iconEditor.authService.userData()?.iconColours.rbg).toBe("#000000");
-    expect(iconEditor.authService.userData()?.iconColours.item).toBe("#000000");
-    expect(updateSpy).toHaveBeenCalled();
+    expect(updateSpy).toHaveBeenCalledWith({
+      selectedIcon: "bear",
+      iconColours: {
+        character: "#000000",
+        lbg: "#000000",
+        rbg: "#000000",
+        item: "#000000",
+      },
+    });
     expect(dismissSpy).toHaveBeenCalledWith(false);
     done();
   });

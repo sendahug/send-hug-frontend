@@ -4,13 +4,25 @@
 
 ### 2024-04-18
 
+#### Features
+
+- Added the date a post was posted to the Single Post template. ([#1622](https://github.com/sendahug/send-hug-frontend/pull/1622))
+- Added styling for disabled textless buttons. ([#1622](https://github.com/sendahug/send-hug-frontend/pull/1622))
+
+#### Changes
+
+- Converted the AuthService's `userData` property to a signal to ensure changes to it are tracked by Angular across all components. ([#1622](https://github.com/sendahug/send-hug-frontend/pull/1622))
+- Replaced the post template in the MyPosts component with the SinglePost component instead. This means that all post-related functionality is now contained in the SinglePost component and isn't repeated anywhere else. As such, the post-related methods in the MyPosts component were deleted. ([#1622](https://github.com/sendahug/send-hug-frontend/pull/1622))
+- Changed the way the post's buttons are handled. Previously, the report and message buttons were shown only to authenticated users, and the edit and delete buttons were shown only to moderators and admins. Now, the message and report buttons are shown to all users but are disabled if the user isn't authenticated, and the edit and delete buttons are shown if the user can edit and delete the post (i.e., if they're moderator/admin or if it's their own post). ([#1622](https://github.com/sendahug/send-hug-frontend/pull/1622))
+
+#### Fixes
+
+- Moved the posts' ARIA descriptions to the Post component. This ensures that all elements are correctly described/labelled for assistive technology and that users don't get conflicted descriptions due to the same IDs being used twice (once in the AppComponent and once in other views that didn't include posts). ([#1622](https://github.com/sendahug/send-hug-frontend/pull/1622))
+
 #### Chores
 
-- Replaced @rollup/stream with rollup in the process of bundling the site's scripts. Since @rollup/stream is the recommended plugin for making rollup work with gulp, we've been using it in script compilation. However, @rollup/stream doesn't support chunking, and the process of using it with gulp produces considerably larger JavaScript bundles than rollup itself. Moving to rollup allows us to generate smaller packages, and, in the future, it will allow us to start splitting the code. The change includes:
-  - Added a new rollup configuration file.
-  - Converted the old processor CommonJS file (with the rollup plugins we use in compilation and in tests) to an ES module with the plugins we use.
-  - The gulp tasks for bundling the scripts now run rollup via a child process (Node.js's `exec`) instead of running @rollup/stream. ([#1618](https://github.com/sendahug/send-hug-frontend/pull/1618))
 - Combined the rollup plugin for setting the environment to production with the rollup plugin for replacing the environment variables. Since they both update the environment variables and the production environment setter now consists of one line of code, there was no need to keep them separated. ([#1618](https://github.com/sendahug/send-hug-frontend/pull/1618))
+- Replaced @rollup/stream with rollup in the process of bundling the site's scripts. Since @rollup/stream is the recommended plugin for making rollup work with gulp, we've been using it in script compilation. However, @rollup/stream doesn't support chunking, and the process of using it with gulp produces considerably larger JavaScript bundles than rollup itself. Moving to rollup allows us to generate smaller packages, and, in the future, it will allow us to start splitting the code. The change includes:
 
 ### 2024-04-17
 

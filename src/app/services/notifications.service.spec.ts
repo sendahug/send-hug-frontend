@@ -331,39 +331,28 @@ describe("NotificationService", () => {
   });
 
   // Check the service updates the user's settings
-  it("updateUserSettings() - should update user settings", () => {
-    // mock response
-    const mockResponse = {
-      success: true,
-      updated: {
-        auth0Id: "auth0",
-        displayName: "user_14",
-        givenH: 0,
-        id: 4,
-        loginCount: 2,
-        receivedH: 0,
-        role: "admin",
-        autoRefresh: true,
-        pushEnabled: false,
-        refreshRate: 20,
-      },
-    };
-
+  it("updateUserSettings() - should update user settings", (done: DoneFn) => {
+    const subscription = new Subscription();
+    subscription.unsubscribe();
     notificationService.refreshStatus = true;
     notificationService.refreshRateSecs = 20;
     const alertsSpy = spyOn(notificationService["alertsService"], "createSuccessAlert");
-    const apiClientSpy = spyOn(notificationService["apiClient"], "patch").and.returnValue(
-      of(mockResponse),
-    );
+    const updateUserSpy = spyOn(
+      notificationService["authService"],
+      "updateUserData",
+    ).and.returnValue(subscription);
 
     notificationService.updateUserSettings();
 
-    expect(apiClientSpy).toHaveBeenCalledWith("users/all/4", {
+    expect(updateUserSpy).toHaveBeenCalledWith({
       autoRefresh: true,
       pushEnabled: false,
       refreshRate: 20,
     });
-    expect(alertsSpy).toHaveBeenCalled();
-    expect(alertsSpy).toHaveBeenCalledWith("Settings updated successfully!");
+    subscription.add(() => {
+      expect(alertsSpy).toHaveBeenCalled();
+      expect(alertsSpy).toHaveBeenCalledWith("Settings updated successfully!");
+      done();
+    });
   });
 });

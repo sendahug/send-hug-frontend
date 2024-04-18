@@ -107,11 +107,7 @@ export class DisplayNameEditForm implements OnInit {
 
     // if the user is editing their own name
     if (this.editedItem.id == this.authService.userData()?.id) {
-      this.authService.userData.set({
-        ...this.authService.userData()!,
-        displayName: newDisplayName,
-      });
-      this.authService.updateUserData();
+      this.authService.updateUserData({ displayName: newDisplayName });
     } else {
       // if they're editing someone else's name from the reports page
       if (!this.reportData || closeReport === null) {

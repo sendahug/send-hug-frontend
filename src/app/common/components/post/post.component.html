@@ -15,12 +15,50 @@
 			</button>
 			<span class="badge" [attr.aria-describedby]="'pGivenH' + postId()">{{ post.givenHugs }}</span>
 		</div>
-		<button [ngClass]="menuButtonClass()" [attr.aria-labelledby]="'pOptions' + postId()" name="post options" (click)="toggleOptions()"><fa-icon [icon]="faEllipsisV" class="fa-comment"></fa-icon></button>
+		<button
+			[ngClass]="menuButtonClass()"
+			[attr.aria-labelledby]="'pOptions' + postId()"
+			name="post options"
+			(click)="toggleOptions()"
+		>
+			<fa-icon [icon]="faEllipsisV" class="fa-comment"></fa-icon>
+		</button>
 		<div [ngClass]="subMenuClass()">
-			<a [routerLink]="['/new', 'Message']" [queryParams]="{user: post.user, userID: post.userId}" class="textlessButton messageButton" [attr.aria-labelledby]="'pMessage' + postId()" name="send a message"><fa-icon [icon]="faComment" class="fa-comment"></fa-icon></a>
-			<button *ngIf="authService.userData && authService.userData.id != post.userId" class="textlessButton reportButton" (click)="reportPost()" [attr.aria-labelledby]="'pReport' + postId()" name="report"><fa-icon [icon]="faFlag" class="fa-flag"></fa-icon></button>
-			<button *ngIf="authService.canUser('patch:any-post') || (authService.userData && authService.userData.id == post.userId)" class="textlessButton editButton" (click)="editPost()" [attr.aria-labelledby]="'pEdit' + postId()"><fa-icon [icon]="faEdit" class="fa-edit"></fa-icon></button>
-			<button *ngIf="authService.canUser('delete:any-post') || (authService.userData && authService.userData.id == post.userId)" class="textlessButton deleteButton" (click)="deletePost()" [attr.aria-labelledby]="'pDelete' + postId()"><fa-icon [icon]="faTimes" class="fa-times"></fa-icon></button>
+			<a
+				[routerLink]="['/new', 'Message']"
+				*ngIf="authService.userData && authService.userData.id != post.userId"
+				[queryParams]="{user: post.user, userID: post.userId}"
+				class="textlessButton messageButton"
+				[attr.aria-labelledby]="'pMessage' + postId()"
+				name="send a message"
+			>
+				<fa-icon [icon]="faComment" class="fa-comment"></fa-icon>
+			</a>
+			<button
+				*ngIf="authService.userData && authService.userData.id != post.userId"
+				class="textlessButton reportButton"
+				(click)="reportPost()"
+				[attr.aria-labelledby]="'pReport' + postId()"
+				name="report"
+			>
+				<fa-icon [icon]="faFlag" class="fa-flag"></fa-icon>
+			</button>
+			<button
+				*ngIf="authService.canUser('patch:any-post') || (authService.userData && authService.userData.id == post.userId)"
+				class="textlessButton editButton"
+				(click)="editPost()"
+				[attr.aria-labelledby]="'pEdit' + postId()"
+			>
+				<fa-icon [icon]="faEdit" class="fa-edit"></fa-icon>
+			</button>
+			<button
+				*ngIf="authService.canUser('delete:any-post') || (authService.userData && authService.userData.id == post.userId)"
+				class="textlessButton deleteButton"
+				(click)="deletePost()"
+				[attr.aria-labelledby]="'pDelete' + postId()"
+			>
+				<fa-icon [icon]="faTimes" class="fa-times"></fa-icon>
+			</button>
 		</div>
 	</div>
 </li>

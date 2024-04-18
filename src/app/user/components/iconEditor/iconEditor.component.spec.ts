@@ -70,7 +70,7 @@ describe("IconEditor", () => {
     // trigger login
     const authService = TestBed.inject(AuthService);
     authService.authenticated.set(true);
-    authService.userData = { ...mockAuthedUser };
+    authService.userData.set({ ...mockAuthedUser });
   });
 
   // Check the page is created
@@ -179,11 +179,11 @@ describe("IconEditor", () => {
     fixture.detectChanges();
 
     // before the update
-    expect(iconEditor.authService.userData?.selectedIcon).toBe("kitty");
-    expect(iconEditor.authService.userData?.iconColours.character).toBe("#BA9F93");
-    expect(iconEditor.authService.userData?.iconColours.lbg).toBe("#e2a275");
-    expect(iconEditor.authService.userData?.iconColours.rbg).toBe("#f8eee4");
-    expect(iconEditor.authService.userData?.iconColours.item).toBe("#f4b56a");
+    expect(iconEditor.authService.userData()?.selectedIcon).toBe("kitty");
+    expect(iconEditor.authService.userData()?.iconColours.character).toBe("#BA9F93");
+    expect(iconEditor.authService.userData()?.iconColours.lbg).toBe("#e2a275");
+    expect(iconEditor.authService.userData()?.iconColours.rbg).toBe("#f8eee4");
+    expect(iconEditor.authService.userData()?.iconColours.item).toBe("#f4b56a");
 
     // update the icon and colours
     iconEditorDOM.querySelector("#cRadioOption1").click();
@@ -194,12 +194,15 @@ describe("IconEditor", () => {
 
     // after the update
     iconEditorDOM.querySelectorAll(".iconButton")[1].click();
-    expect(iconEditor.authService.userData?.selectedIcon).toBe("bear");
-    expect(iconEditor.authService.userData?.iconColours.character).toBe("#000000");
-    expect(iconEditor.authService.userData?.iconColours.lbg).toBe("#000000");
-    expect(iconEditor.authService.userData?.iconColours.rbg).toBe("#000000");
-    expect(iconEditor.authService.userData?.iconColours.item).toBe("#000000");
-    expect(updateSpy).toHaveBeenCalled();
+    expect(updateSpy).toHaveBeenCalledWith({
+      selectedIcon: "bear",
+      iconColours: {
+        character: "#000000",
+        lbg: "#000000",
+        rbg: "#000000",
+        item: "#000000",
+      },
+    });
     expect(dismissSpy).toHaveBeenCalledWith(false);
     done();
   });

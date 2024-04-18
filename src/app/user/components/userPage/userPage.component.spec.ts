@@ -86,7 +86,7 @@ describe("UserPage", () => {
     const authService = TestBed.inject(AuthService);
     const authSpy = spyOn(authService, "checkHash");
     authService.authenticated.set(true);
-    authService.userData = { ...mockAuthedUser };
+    authService.userData.set({ ...mockAuthedUser });
     const fixture = TestBed.createComponent(UserPage);
     const userPage = fixture.componentInstance;
 
@@ -108,14 +108,14 @@ describe("UserPage", () => {
     const authService = TestBed.inject(AuthService);
     spyOn(authService, "checkHash");
     authService.authenticated.set(true);
-    authService.userData = { ...mockAuthedUser };
+    authService.userData.set({ ...mockAuthedUser });
     const fixture = TestBed.createComponent(UserPage);
     const userPage = fixture.componentInstance;
     const userPageDOM = fixture.nativeElement;
 
     fixture.detectChanges();
 
-    const userData = userPage.authService.userData;
+    const userData = userPage.authService.userData();
     expect(userPage.userId).toBeUndefined();
     expect(userPage.isOtherUserProfile()).toBeFalse();
     expect(userPageDOM.querySelectorAll(".displayName")[0].firstElementChild.textContent).toBe(
@@ -144,14 +144,14 @@ describe("UserPage", () => {
     const authService = TestBed.inject(AuthService);
     spyOn(authService, "checkHash");
     authService.authenticated.set(true);
-    authService.userData = { ...mockAuthedUser };
+    authService.userData.set({ ...mockAuthedUser });
     const fixture = TestBed.createComponent(UserPage);
     const userPage = fixture.componentInstance;
     const userPageDOM = fixture.nativeElement;
 
     fixture.detectChanges();
 
-    const userData = userPage.authService.userData;
+    const userData = userPage.authService.userData();
     expect(routeSpy).toHaveBeenCalled();
     expect(userPage.userId).toBe(4);
     expect(userPage.isOtherUserProfile()).toBeFalse();
@@ -182,7 +182,7 @@ describe("UserPage", () => {
     const authService = TestBed.inject(AuthService);
     spyOn(authService, "checkHash");
     authService.authenticated.set(true);
-    authService.userData = { ...mockAuthedUser };
+    authService.userData.set({ ...mockAuthedUser });
     const fixture = TestBed.createComponent(UserPage);
     const userPage = fixture.componentInstance;
     const userPageDOM = fixture.nativeElement;
@@ -289,7 +289,7 @@ describe("UserPage", () => {
     const authService = TestBed.inject(AuthService);
     spyOn(authService, "checkHash");
     authService.authenticated.set(true);
-    authService.userData = { ...mockAuthedUser };
+    authService.userData.set({ ...mockAuthedUser });
     const fixture = TestBed.createComponent(UserPage);
     const userPage = fixture.componentInstance;
     const userPageDOM = fixture.nativeElement;
@@ -318,7 +318,7 @@ describe("UserPage", () => {
     const authService = TestBed.inject(AuthService);
     spyOn(authService, "checkHash");
     authService.authenticated.set(true);
-    authService.userData = { ...mockAuthedUser };
+    authService.userData.set({ ...mockAuthedUser });
     const fixture = TestBed.createComponent(UserPage);
     const userPage = fixture.componentInstance;
     const mockUser = {
@@ -362,7 +362,7 @@ describe("UserPage", () => {
     const authService = TestBed.inject(AuthService);
     spyOn(authService, "checkHash");
     authService.authenticated.set(true);
-    authService.userData = { ...mockAuthedUser };
+    authService.userData.set({ ...mockAuthedUser });
     const fixture = TestBed.createComponent(UserPage);
     const userPage = fixture.componentInstance;
     const mockUser = {
@@ -405,7 +405,7 @@ describe("UserPage", () => {
     const authService = TestBed.inject(AuthService);
     spyOn(authService, "checkHash");
     authService.authenticated.set(true);
-    authService.userData = { ...mockAuthedUser };
+    authService.userData.set({ ...mockAuthedUser });
     const fixture = TestBed.createComponent(UserPage);
     const userPage = fixture.componentInstance;
     const userPageDOM = fixture.nativeElement;
@@ -422,8 +422,8 @@ describe("UserPage", () => {
     // after the click
     expect(userPage.editMode).toBeTrue();
     expect(userPage.userToEdit).toEqual({
-      displayName: userPage.authService.userData!.displayName,
-      id: userPage.authService.userData!.id as number,
+      displayName: userPage.authService.userData()!.displayName,
+      id: userPage.authService.userData()!.id as number,
     });
     expect(userPageDOM.querySelector("app-pop-up")).toBeTruthy();
     done();
@@ -436,7 +436,7 @@ describe("UserPage", () => {
     const authService = TestBed.inject(AuthService);
     spyOn(authService, "checkHash");
     authService.authenticated.set(true);
-    authService.userData = { ...mockAuthedUser };
+    authService.userData.set({ ...mockAuthedUser });
     const fixture = TestBed.createComponent(UserPage);
     const userPage = fixture.componentInstance;
     const userPageDOM = fixture.nativeElement;
@@ -486,7 +486,7 @@ describe("UserPage", () => {
     const authService = TestBed.inject(AuthService);
     spyOn(authService, "checkHash");
     authService.authenticated.set(true);
-    authService.userData = { ...mockAuthedUser };
+    authService.userData.set({ ...mockAuthedUser });
     const fixture = TestBed.createComponent(UserPage);
     const userPage = fixture.componentInstance;
     const userPageDOM = fixture.nativeElement;
@@ -521,7 +521,7 @@ describe("UserPage", () => {
     expect(hugSpy).not.toHaveBeenCalled();
     expect(apiClientSpy).not.toHaveBeenCalled();
     expect(userPage.isOtherUserProfile()).toBeTrue();
-    expect(userPage["authService"].userData?.givenH).toBe(2);
+    expect(userPage["authService"].userData()?.givenH).toBe(2);
     expect(userPage.otherUser()!.receivedH).toBe(3);
     expect(
       userPageDOM.querySelector("#rHugsElement").querySelectorAll(".pageData")[0].textContent,
@@ -534,7 +534,7 @@ describe("UserPage", () => {
     // after the click
     expect(hugSpy).toHaveBeenCalled();
     expect(apiClientSpy).toHaveBeenCalled();
-    expect(userPage["authService"].userData?.givenH).toBe(3);
+    expect(userPage["authService"].userData()?.givenH).toBe(3);
     expect(userPage.otherUser()!.receivedH).toBe(4);
     expect(
       userPageDOM.querySelector("#rHugsElement").querySelectorAll(".pageData")[0].textContent,
@@ -550,7 +550,7 @@ describe("UserPage", () => {
     const authService = TestBed.inject(AuthService);
     spyOn(authService, "checkHash");
     authService.authenticated.set(true);
-    authService.userData = { ...mockAuthedUser };
+    authService.userData.set({ ...mockAuthedUser });
     const fixture = TestBed.createComponent(UserPage);
     const userPage = fixture.componentInstance;
     const changeSpy = spyOn(userPage, "changeMode").and.callThrough();
@@ -560,8 +560,8 @@ describe("UserPage", () => {
     // start the popup
     userPage.lastFocusedElement = document.querySelectorAll("a")[0];
     userPage.userToEdit = {
-      displayName: userPage.authService.userData!.displayName,
-      id: userPage.authService.userData!.id as number,
+      displayName: userPage.authService.userData()!.displayName,
+      id: userPage.authService.userData()!.id as number,
     };
     userPage.editMode = true;
     fixture.detectChanges();
@@ -585,7 +585,7 @@ describe("UserPage", () => {
     const authService = TestBed.inject(AuthService);
     spyOn(authService, "checkHash");
     authService.authenticated.set(true);
-    authService.userData = { ...mockAuthedUser };
+    authService.userData.set({ ...mockAuthedUser });
     const fixture = TestBed.createComponent(UserPage);
     const userPage = fixture.componentInstance;
     userPage.otherUser.set({

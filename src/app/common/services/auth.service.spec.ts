@@ -218,8 +218,8 @@ describe("AuthService", () => {
     // wait for user data to be resolved
     authService.isUserDataResolved.subscribe((value) => {
       if (value) {
-        expect(authService.userData?.id).toBe(4);
-        expect(authService.userData?.displayName).toBe("name");
+        expect(authService.userData()?.id).toBe(4);
+        expect(authService.userData()?.displayName).toBe("name");
         expect(authService.authenticated()).toBeTrue();
         expect(setSpy).toHaveBeenCalled();
       }
@@ -314,7 +314,7 @@ describe("AuthService", () => {
     // wait for user data to be resolved
     authService.isUserDataResolved.subscribe((value) => {
       if (value) {
-        expect(updateSpy).toHaveBeenCalled();
+        expect(updateSpy).toHaveBeenCalledWith({ loginCount: 4 });
       }
     });
   });
@@ -360,7 +360,7 @@ describe("AuthService", () => {
     const addSpy = spyOn(authService["serviceWorkerM"], "addItem");
 
     // check the user is logged out at first
-    expect(authService.userData).toBeUndefined();
+    expect(authService.userData()).toBeUndefined();
     expect(authService.authenticated()).toBeFalse();
 
     const jwtPayload = {
@@ -371,8 +371,8 @@ describe("AuthService", () => {
     // wait for user data to be resolved
     authService.isUserDataResolved.subscribe((value) => {
       if (value) {
-        expect(authService.userData?.id).toBe(5);
-        expect(authService.userData?.auth0Id).toBe("auth0");
+        expect(authService.userData()?.id).toBe(5);
+        expect(authService.userData()?.auth0Id).toBe("auth0");
         expect(authService.authenticated()).toBeTrue();
       }
     });
@@ -388,7 +388,7 @@ describe("AuthService", () => {
   // Check logout is triggered
   it("logout() - triggers logout", () => {
     // set the user data as if the user is logged in
-    authService.userData = {
+    authService.userData.set({
       id: 4,
       auth0Id: "",
       displayName: "name",
@@ -414,7 +414,7 @@ describe("AuthService", () => {
         rbg: "#f8eee4",
         item: "#f4b56a",
       },
-    };
+    });
     authService.authenticated.set(true);
     authService.tokenExpired = false;
 
@@ -427,7 +427,7 @@ describe("AuthService", () => {
 
     expect(authSpy).toHaveBeenCalled();
     expect(storageSpy).toHaveBeenCalled();
-    expect(authService.userData).toBeUndefined();
+    expect(authService.userData()).toBeUndefined();
     expect(addSpy).toHaveBeenCalled();
     expect(clearSpy).toHaveBeenCalledTimes(2);
   });
@@ -534,10 +534,10 @@ describe("AuthService", () => {
       },
     };
 
-    authService.userData = {
+    authService.userData.set({
       id: 4,
       auth0Id: "auth0",
-      displayName: "name",
+      displayName: "beep",
       receivedH: 2,
       givenH: 2,
       posts: 2,
@@ -560,18 +560,19 @@ describe("AuthService", () => {
         rbg: "#f8eee4",
         item: "#f4b56a",
       },
-    };
-    authService.updateUserData();
+    });
+    authService.updateUserData({ displayName: "name" });
 
     // flush mock response
     const req = httpController.expectOne(`${authService.serverUrl}/users/all/4`);
     expect(req.request.method).toEqual("PATCH");
     req.flush(mockResponse);
+    expect(authService.userData()!.displayName).toBe("name");
   });
 
   // Check the service checks user permissions correctly
   it("canUser() - checks for user permissions", () => {
-    authService.userData = {
+    authService.userData.set({
       id: 4,
       auth0Id: "auth0",
       displayName: "name",
@@ -609,7 +610,7 @@ describe("AuthService", () => {
         rbg: "#f8eee4",
         item: "#f4b56a",
       },
-    };
+    });
 
     const res = authService.canUser("block:user");
 
@@ -618,7 +619,7 @@ describe("AuthService", () => {
 
   // Check the service returns false if there's no logged in user
   it("canUser() - returns false if the user doesn't have permission", () => {
-    authService.userData = {
+    authService.userData.set({
       id: 4,
       auth0Id: "auth0",
       displayName: "name",
@@ -644,7 +645,7 @@ describe("AuthService", () => {
         rbg: "#f8eee4",
         item: "#f4b56a",
       },
-    };
+    });
 
     const res = authService.canUser("block:user");
 
@@ -653,7 +654,7 @@ describe("AuthService", () => {
 
   // Check the service returns false if there's no token
   it("canUser() - returns false if there's no saved token", () => {
-    authService.userData = undefined;
+    authService.userData.set(undefined);
 
     const response = authService.canUser("do something");
 

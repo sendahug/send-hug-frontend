@@ -1,27 +1,72 @@
 <li class="{{containerClass}}" aria-describedby="newTitle" role="article">
-	<div class="itemText" aria-describedby="pText" id="{{ postId() }}">{{ post.text }}</div>
-	<div class="itemUser">By <a [routerLink]="['/user', post.userId ]" class="profileLink" aria-describedby="pUser" id="{{ type + 'User' + post.id }}">{{ post.user }}</a> </div>
+	<div class="itemText" [attr.aria-describedby]="'pText' + postId()" id="{{ postId() }}">{{ post.text }}</div>
+	<div class="itemUser">By <a [routerLink]="['/user', post.userId ]" class="profileLink" [attr.aria-describedby]="'pUser' + postId()" id="{{ type + 'User' + post.id }}">{{ post.user }}</a> </div>
+	<div class="itemDate" [attr.aria-describedby]="'pDate' + postId()">{{ post.date }}</div>
 	<div [ngClass]="buttonsContainerClass()">
-		<div class="notification" [attr.aria-describedby]="'pHug ' + type + 'User' + post.id">
-			<!-- TODO: Check why we're checking for strings -->
-			<!-- TODO: Also move these checks to the component -->
+		<div class="notification" [attr.aria-describedby]="'pHug' + postId()">
 			<button
 				[ngClass]="sendHugButtonClass()"
 				(click)="sendHug()"
-				[attr.aria-labelledby]="'pHug ' + type + 'User' + post.id"
+				[attr.aria-labelledby]="'pHug' + postId()"
 				name="send a hug"
 				[disabled]="shouldDisableHugBtn()"
 			>
 				<fa-icon [icon]="faHandHoldingHeart" class="fa-hand-holding-heart"></fa-icon>
 			</button>
-			<span class="badge" aria-describedby="pGivenH">{{ post.givenHugs }}</span>
+			<span class="badge" [attr.aria-describedby]="'pGivenH' + postId()">{{ post.givenHugs }}</span>
 		</div>
-		<button [ngClass]="menuButtonClass()" [attr.aria-labelledby]="'pOptions ' + type + 'Post' + post.id" name="post options" (click)="toggleOptions()"><fa-icon [icon]="faEllipsisV" class="fa-comment"></fa-icon></button>
+		<button
+			[ngClass]="menuButtonClass()"
+			[attr.aria-labelledby]="'pOptions' + postId()"
+			name="post options"
+			(click)="toggleOptions()"
+		>
+			<fa-icon [icon]="faEllipsisV" class="fa-comment"></fa-icon>
+		</button>
 		<div [ngClass]="subMenuClass()">
-			<a [routerLink]="['/new', 'Message']" [queryParams]="{user: post.user, userID: post.userId}" class="textlessButton messageButton" [attr.aria-labelledby]="'pMessage ' + type + 'User' + post.id" name="send a message"><fa-icon [icon]="faComment" class="fa-comment"></fa-icon></a>
-			<button class="textlessButton reportButton" (click)="reportPost()" [attr.aria-labelledby]="'pReport ' + type +  'Post' + post.id" name="report"><fa-icon [icon]="faFlag" class="fa-flag"></fa-icon></button>
-			<button *ngIf="authService.canUser('patch:any-post')" class="textlessButton editButton" (click)="editPost()" [attr.aria-labelledby]="'pEdit ' + type + 'Post' + post.id"><fa-icon [icon]="faEdit" class="fa-edit"></fa-icon></button>
-			<button *ngIf="authService.canUser('delete:any-post')" class="textlessButton deleteButton" (click)="deletePost()" [attr.aria-labelledby]="'pDelete ' + type + 'Post' + post.id"><fa-icon [icon]="faTimes" class="fa-times"></fa-icon></button>
+			<a
+				[routerLink]="['/new', 'Message']"
+				*ngIf="authService.userData() && authService.userData().id != post.userId"
+				[queryParams]="{user: post.user, userID: post.userId}"
+				class="textlessButton messageButton"
+				[attr.aria-labelledby]="'pMessage' + postId()"
+				name="send a message"
+			>
+				<fa-icon [icon]="faComment" class="fa-comment"></fa-icon>
+			</a>
+			<span
+				*ngIf="!(authService.userData() && authService.userData().id != _post()?.userId)"
+				class="textlessButton messageButton disabled"
+				[attr.aria-labelledby]="'pMessage' + postId()"
+				name="send a message"
+			>
+				<fa-icon [icon]="faComment" class="fa-comment"></fa-icon>
+			</span>
+			<button
+				[ngClass]="reportButtonClass()"
+				(click)="reportPost()"
+				[attr.aria-labelledby]="'pReport' + postId()"
+				name="report"
+				[disabled]="!(authService.userData() && authService.userData().id != _post()?.userId)"
+			>
+				<fa-icon [icon]="faFlag" class="fa-flag"></fa-icon>
+			</button>
+			<button
+				*ngIf="authService.canUser('patch:any-post') || (authService.userData() && authService.userData().id == post.userId)"
+				class="textlessButton editButton"
+				(click)="editPost()"
+				[attr.aria-labelledby]="'pEdit' + postId()"
+			>
+				<fa-icon [icon]="faEdit" class="fa-edit"></fa-icon>
+			</button>
+			<button
+				*ngIf="authService.canUser('delete:any-post') || (authService.userData() && authService.userData().id == post.userId)"
+				class="textlessButton deleteButton"
+				(click)="deletePost()"
+				[attr.aria-labelledby]="'pDelete' + postId()"
+			>
+				<fa-icon [icon]="faTimes" class="fa-times"></fa-icon>
+			</button>
 		</div>
 	</div>
 </li>
@@ -45,3 +90,16 @@
 	[reportedItem]="reportedItem"
 	[reportType]="reportType"
 ></report-form>
+
+<div id="labels" class="labels" aria-hidden="true">
+	<p [id]="'pText' + postId()">Post Text</p>
+	<p [id]="'pUser' + postId()">Post Writer</p>
+	<p [id]="'pDate' + postId()">Posted at</p>
+	<p [id]="'pHug' + postId()">{{ "Send a hug to user for post" + post.text }}</p>
+	<p [id]="'pGivenH' + postId()">Hugs given to this post</p>
+	<p [id]="'pOptions' + postId()">{{ "show options for post" + post.text }}</p>
+	<p [id]="'pMessage' + postId()">{{ "Send a message to user" + post.user }}</p>
+	<p [id]="'pReport' + postId()">{{ "Report post" + post.text }}</p>
+	<p [id]="'pEdit' + postId()">{{ "Edit post" + post.text }}</p>
+	<p [id]="'pDelete' + postId()">{{ "Delete post" + post.text }}</p>
+</div>

@@ -121,7 +121,7 @@ describe("LoginPage", () => {
     const loginPage = fixture.componentInstance;
     const loginPageDOM = fixture.nativeElement;
     loginPage.authService.authenticated.set(true);
-    loginPage.authService.userData = { ...mockAuthedUser };
+    loginPage.authService.userData.set({ ...mockAuthedUser });
 
     fixture.detectChanges();
 
@@ -141,7 +141,7 @@ describe("LoginPage", () => {
     const authService = TestBed.inject(AuthService);
     spyOn(authService, "checkHash");
     authService.authenticated.set(true);
-    authService.userData = { ...mockAuthedUser };
+    authService.userData.set({ ...mockAuthedUser });
     const fixture = TestBed.createComponent(LoginPage);
     const loginPage = fixture.componentInstance;
     const loginPageDOM = fixture.nativeElement;

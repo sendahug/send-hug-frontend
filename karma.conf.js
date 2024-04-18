@@ -1,4 +1,8 @@
 const path = require("path");
+// TODO: Figure out how to avoid defining the same module TWICE
+// However, seems like Karma doesn't like ESM and since it's deprecated
+// it's unlikely to get an update to fix that:
+// https://github.com/karma-runner/karma/issues/3677
 const { inlineComponentTemplate, inlineSVGs, updateEnvironmentVariables } = require("./processor");
 const coverage = require("rollup-plugin-istanbul");
 const commonjs = require("@rollup/plugin-commonjs");

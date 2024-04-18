@@ -106,9 +106,8 @@ export class DisplayNameEditForm implements OnInit {
     const newDisplayName = String(this.editNameForm.controls.newDisplayName.value);
 
     // if the user is editing their own name
-    if (this.editedItem.id == this.authService.userData?.id) {
-      this.authService.userData!.displayName = newDisplayName;
-      this.authService.updateUserData();
+    if (this.editedItem.id == this.authService.userData()?.id) {
+      this.authService.updateUserData({ displayName: newDisplayName });
     } else {
       // if they're editing someone else's name from the reports page
       if (!this.reportData || closeReport === null) {

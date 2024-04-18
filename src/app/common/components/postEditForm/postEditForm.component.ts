@@ -41,6 +41,7 @@ import { AdminService } from "@common/services/admin.service";
 import { ValidationService } from "@common/services/validation.service";
 import { AlertsService } from "@common/services/alerts.service";
 import { ApiClientService } from "@common/services/apiClient.service";
+import { SWManager } from "@app/common/services/sWManager.service";
 
 interface PostEditResponse {
   success: boolean;
@@ -49,7 +50,7 @@ interface PostEditResponse {
 
 interface PostAndReportResponse {
   success: boolean;
-  postId?: number;
+  updatedPost?: Post;
   reportId?: number;
 }
 
@@ -74,6 +75,7 @@ export class PostEditForm implements OnInit {
     private validationService: ValidationService,
     private alertService: AlertsService,
     private apiClient: ApiClientService,
+    private swManager: SWManager,
     private fb: FormBuilder,
   ) {}
 
@@ -113,14 +115,17 @@ export class PostEditForm implements OnInit {
       .pipe(mergeMap((postResponse) => this.updateReportIfNecessary(closeReport, postResponse)))
       .subscribe({
         next: (response: PostAndReportResponse) => {
-          this.editMode.emit(false);
           const editMessage = response.reportId
             ? `Report ${response.reportId} was closed, and the associated post was edited!`
-            : `Post ${response.postId} was edited.`;
+            : `Post ${response.updatedPost?.id} was edited.`;
 
           this.alertService.createSuccessAlert(`${editMessage} Refresh to view the updated post.`, {
             reload: closeReport || true,
           });
+
+          if (response.updatedPost)
+            this.swManager.addFetchedItems("posts", [response.updatedPost], "date");
+          this.editMode.emit(false);
         },
       });
   }
@@ -141,7 +146,7 @@ export class PostEditForm implements OnInit {
           map((reportResponse) => {
             return {
               success: reportResponse.success,
-              postId: postResponse.updated.id,
+              updatedPost: postResponse.updated,
               reportId: reportResponse.updated.id,
             };
           }),
@@ -149,7 +154,7 @@ export class PostEditForm implements OnInit {
     } else {
       return of({
         success: postResponse.success,
-        postId: postResponse.updated.id,
+        updatedPost: postResponse.updated,
         reportId: undefined,
       });
     }

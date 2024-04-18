@@ -72,7 +72,7 @@ describe("SettingsPage", () => {
 
     const authService = TestBed.inject(AuthService);
     authService.authenticated.set(true);
-    authService.userData = { ...mockAuthedUser };
+    authService.userData.set({ ...mockAuthedUser });
 
     const notificationService = TestBed.inject(NotificationService);
     notificationService.pushStatus = false;
@@ -144,8 +144,8 @@ describe("SettingsPage", () => {
     expect(settingsPage.editSettingsForm.controls.enableAutoRefresh.value).toBeFalse();
     expect(settingsPage.editSettingsForm.controls.notificationRate.value).toBe(20);
 
-    authService.userData!.autoRefresh = true;
-    authService.userData!.refreshRate = 60;
+    authService.userData()!.autoRefresh = true;
+    authService.userData()!.refreshRate = 60;
     authService.isUserDataResolved.next(true);
     fixture.detectChanges();
 

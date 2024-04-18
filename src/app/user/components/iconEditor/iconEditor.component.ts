@@ -35,6 +35,7 @@ import { FormBuilder, Validators } from "@angular/forms";
 
 import { AuthService } from "@common/services/auth.service";
 import { iconCharacters, iconElements } from "@app/interfaces/types";
+import { User } from "@app/interfaces/user.interface";
 
 @Component({
   selector: "app-icon-editor",
@@ -51,24 +52,24 @@ export class IconEditor {
   // form for the icon editor
   iconEditForm = this.fb.group({
     selectedIcon: [
-      this.authService.userData?.selectedIcon ||
+      this.authService.userData()?.selectedIcon ||
         (this.iconDefaults.characterColour as iconCharacters),
       Validators.required,
     ],
     characterColour: [
-      this.authService.userData?.iconColours.character || this.iconDefaults.characterColour,
+      this.authService.userData()?.iconColours.character || this.iconDefaults.characterColour,
       Validators.required,
     ],
     lbgColour: [
-      this.authService.userData?.iconColours.lbg || this.iconDefaults.lbgColour,
+      this.authService.userData()?.iconColours.lbg || this.iconDefaults.lbgColour,
       Validators.required,
     ],
     rbgColour: [
-      this.authService.userData?.iconColours.rbg || this.iconDefaults.rbgColour,
+      this.authService.userData()?.iconColours.rbg || this.iconDefaults.rbgColour,
       Validators.required,
     ],
     itemColour: [
-      this.authService.userData?.iconColours.item || this.iconDefaults.itemColour,
+      this.authService.userData()?.iconColours.item || this.iconDefaults.itemColour,
       Validators.required,
     ],
   });
@@ -124,11 +125,13 @@ export class IconEditor {
   updateIcon(event: Event) {
     event.preventDefault();
 
+    const updatedUser: Partial<User> = {};
+
     // set the userService with the new icon data
-    this.authService.userData!.selectedIcon =
+    updatedUser.selectedIcon =
       this.iconEditForm.controls.selectedIcon.value ||
       (this.iconDefaults.selectedIcon as iconCharacters);
-    this.authService.userData!.iconColours = {
+    updatedUser.iconColours = {
       character:
         this.iconEditForm.controls.characterColour.value || this.iconDefaults.characterColour,
       lbg: this.iconEditForm.controls.lbgColour.value || this.iconDefaults.lbgColour,
@@ -137,7 +140,7 @@ export class IconEditor {
     };
 
     // update the backend
-    this.authService.updateUserData();
+    this.authService.updateUserData(updatedUser);
     this.editMode.emit(false);
   }
 

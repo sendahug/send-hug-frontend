@@ -8,12 +8,14 @@
   },
   "scripts": {
     "format": "prettier .  --write",
-    "compile:dev": "gulp localDev",
+    "localDev": "gulp localDev",
     "test": "gulp test",
     "cypress": "cypress run",
     "e2e": "gulp e2e",
     "build": "gulp dist",
-    "start": "node server.js"
+    "start": "node server.js",
+    "rollup:dev": "rollup --config --mode development",
+    "rollup:live": "rollup --config"
   },
   "overrides": {
     "karma-jasmine": {
@@ -26,7 +28,6 @@
     "@rollup/plugin-node-resolve": "^15.2.3",
     "@rollup/plugin-terser": "^0.4.4",
     "@rollup/plugin-typescript": "^11.1.6",
-    "@rollup/stream": "^3.0.1",
     "@types/auth0-js": "^9.21.5",
     "@types/jasmine": "^5.1.4",
     "@types/node": "^20.12.7",
@@ -50,7 +51,7 @@
     "karma-sourcemap-loader": "^0.4.0",
     "karma-viewport": "^1.0.9",
     "less": "^4.2.0",
-    "magic-string": "^0.30.9",
+    "magic-string": "^0.30.10",
     "postcss": "^8.4.38",
     "prettier": "^3.2.5",
     "puppeteer": "^22.6.5",

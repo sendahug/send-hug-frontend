@@ -70,7 +70,7 @@ describe("NewItem", () => {
 
     const authService = TestBed.inject(AuthService);
     authService.authenticated.set(true);
-    authService.userData = { ...mockAuthedUser };
+    authService.userData.set({ ...mockAuthedUser });
   });
 
   // Check that the component is created
@@ -205,8 +205,8 @@ describe("NewItem", () => {
     const fixture = TestBed.createComponent(NewItem);
     const newItem = fixture.componentInstance;
     const newItemDOM = fixture.nativeElement;
-    newItem["authService"].userData!.blocked = true;
-    newItem["authService"].userData!.releaseDate = new Date(
+    newItem["authService"].userData()!.blocked = true;
+    newItem["authService"].userData()!.releaseDate = new Date(
       "Tue Apr 09 2124 17:06:17 GMT+0100 (British Summer Time)",
     );
     fixture.detectChanges();
@@ -214,7 +214,7 @@ describe("NewItem", () => {
     expect(newItemDOM.querySelector("#postText")).toBeNull();
     const errorMessage = newItemDOM.querySelectorAll(".errorMessage")[0];
     expect(errorMessage.textContent).toContain(
-      `You are currently blocked until ${newItem["authService"].userData?.releaseDate}. You cannot post new posts.`,
+      `You are currently blocked until ${newItem["authService"].userData()?.releaseDate}. You cannot post new posts.`,
     );
   });
 
@@ -228,8 +228,8 @@ describe("NewItem", () => {
     const successAlertSpy = spyOn(newItem["alertService"], "createSuccessAlert");
     const addItemSpy = spyOn(newItem["swManager"], "addFetchedItems");
     const errorAlertSpy = spyOn(newItem["alertService"], "createAlert");
-    newItem["authService"].userData!.blocked = false;
-    newItem["authService"].userData!.releaseDate = new Date(
+    newItem["authService"].userData()!.blocked = false;
+    newItem["authService"].userData()!.releaseDate = new Date(
       "Tue Apr 09 2124 17:06:17 GMT+0100 (British Summer Time)",
     );
     fixture.detectChanges();
@@ -238,7 +238,7 @@ describe("NewItem", () => {
     const postText = "new post";
     newItemDOM.querySelector("#postText").value = postText;
     newItemDOM.querySelector("#postText").dispatchEvent(new Event("input"));
-    newItem["authService"].userData!.blocked = true;
+    newItem["authService"].userData()!.blocked = true;
     newItemDOM.querySelectorAll(".sendData")[0].click();
     fixture.detectChanges();
 
@@ -247,7 +247,7 @@ describe("NewItem", () => {
     expect(addItemSpy).not.toHaveBeenCalled();
     expect(errorAlertSpy).toHaveBeenCalledWith({
       type: "Error",
-      message: `You cannot post new posts while you're blocked. You're blocked until ${newItem["authService"].userData?.releaseDate}.`,
+      message: `You cannot post new posts while you're blocked. You're blocked until ${newItem["authService"].userData()?.releaseDate}.`,
     });
   });
 

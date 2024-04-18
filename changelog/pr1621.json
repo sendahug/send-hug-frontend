@@ -1,0 +1,9 @@
+{
+  "pr_number": 1621,
+  "changes": [
+    {
+      "change": "Chores",
+      "description": "Added a size-limit GitHub Actions workflow (along with its configuration) to monitor the app's size."
+    }
+  ]
+}

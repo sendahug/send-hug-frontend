@@ -70,7 +70,15 @@
       "name": "Static Assets",
       "limit": "300 kB",
       "path": [
-        "dist/assets/**/*"
+        "dist/assets/fonts/*",
+        "dist/assets/icons/*",
+        "dist/assets/img/bear.svg",
+        "dist/assets/img/bg_pattern.svg",
+        "dist/assets/img/dog.svg",
+        "dist/assets/img/kitty.svg",
+        "dist/assets/img/Logo_notifications.png",
+        "dist/assets/img/Logo.svg",
+        "dist/assets/img/pwa_icon.svg"
       ]
     }
   ],

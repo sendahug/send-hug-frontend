@@ -1,0 +1,9 @@
+{
+  "pr_number": 1624,
+  "changes": [
+    {
+      "change": "Fixes",
+      "description": "Added a missing update to IndexedDB when editing posts. Previously, IndexedDB kept serving the old version of an edited post until the post was re-fetched, which was confusing to users. Now, the missing `addFetchedItems` call has been added to the Post Edit Form, so as soon as we get a successful response from the back-end, we also update IndexedDB, which provides consistency for users."
+    }
+  ]
+}

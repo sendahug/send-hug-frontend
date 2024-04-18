@@ -34,12 +34,20 @@
 			>
 				<fa-icon [icon]="faComment" class="fa-comment"></fa-icon>
 			</a>
+			<span
+				*ngIf="!(authService.userData() && authService.userData().id != _post()?.userId)"
+				class="textlessButton messageButton disabled"
+				[attr.aria-labelledby]="'pMessage' + postId()"
+				name="send a message"
+			>
+				<fa-icon [icon]="faComment" class="fa-comment"></fa-icon>
+			</span>
 			<button
-				*ngIf="authService.userData() && authService.userData().id != post.userId"
-				class="textlessButton reportButton"
+				[ngClass]="reportButtonClass()"
 				(click)="reportPost()"
 				[attr.aria-labelledby]="'pReport' + postId()"
 				name="report"
+				[disabled]="!(authService.userData() && authService.userData().id != _post()?.userId)"
 			>
 				<fa-icon [icon]="faFlag" class="fa-flag"></fa-icon>
 			</button>

@@ -103,11 +103,19 @@ export class SinglePost implements AfterViewChecked, OnInit, OnDestroy {
   displayedButtons = computed(() => {
     let initialButtonsCount = 2;
 
-    if (this.authService.canUser("patch:any-post")) {
+    if (
+      this.authService.userData() &&
+      (this.authService.canUser("patch:any-post") ||
+        this.authService.userData()?.id == this._post()?.id)
+    ) {
       initialButtonsCount += 1;
     }
 
-    if (this.authService.canUser("delete:any-post")) {
+    if (
+      this.authService.userData() &&
+      (this.authService.canUser("delete:any-post") ||
+        this.authService.userData()?.id != this._post()?.id)
+    ) {
       initialButtonsCount += 1;
     }
 
@@ -116,6 +124,12 @@ export class SinglePost implements AfterViewChecked, OnInit, OnDestroy {
   sendHugButtonClass = computed(() => ({
     "textlessButton hugButton": true,
     active: this.shouldDisableHugBtn(),
+  }));
+  reportButtonClass = computed(() => ({
+    "textlessButton reportButton": true,
+    disabled: !(
+      this.authService.userData() && this.authService.userData()?.id != this._post()?.userId
+    ),
   }));
   // icons
   faComment = faComment;

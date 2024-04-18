@@ -314,7 +314,7 @@ describe("AuthService", () => {
     // wait for user data to be resolved
     authService.isUserDataResolved.subscribe((value) => {
       if (value) {
-        expect(updateSpy).toHaveBeenCalled();
+        expect(updateSpy).toHaveBeenCalledWith({ loginCount: 4 });
       }
     });
   });
@@ -537,7 +537,7 @@ describe("AuthService", () => {
     authService.userData.set({
       id: 4,
       auth0Id: "auth0",
-      displayName: "name",
+      displayName: "beep",
       receivedH: 2,
       givenH: 2,
       posts: 2,
@@ -561,12 +561,13 @@ describe("AuthService", () => {
         item: "#f4b56a",
       },
     });
-    authService.updateUserData();
+    authService.updateUserData({ displayName: "name" });
 
     // flush mock response
     const req = httpController.expectOne(`${authService.serverUrl}/users/all/4`);
     expect(req.request.method).toEqual("PATCH");
     req.flush(mockResponse);
+    expect(authService.userData()!.displayName).toBe("name");
   });
 
   // Check the service checks user permissions correctly

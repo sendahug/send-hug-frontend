@@ -391,11 +391,8 @@ export class NotificationService {
       refreshRate: this.refreshRateSecs,
     };
 
-    // send the data to the server
-    this.apiClient.patch(`users/all/${this.authService.userData()!.id}`, newSettings).subscribe({
-      next: (_response: any) => {
-        this.alertsService.createSuccessAlert("Settings updated successfully!");
-      },
-    });
+    this.authService
+      .updateUserData(newSettings)
+      .add(() => this.alertsService.createSuccessAlert("Settings updated successfully!"));
   }
 }

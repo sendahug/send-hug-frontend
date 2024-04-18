@@ -45,6 +45,11 @@ import { SWManager } from "@common/services/sWManager.service";
 import { environment } from "@env/environment";
 import { ApiClientService } from "@common/services/apiClient.service";
 
+interface UserUpdateResponse {
+  success: boolean;
+  updated: User;
+}
+
 @Injectable({
   providedIn: "root",
 })
@@ -190,7 +195,7 @@ export class AuthService {
 
           // if the user just logged in, update the login count
           if (this.loggedIn) {
-            this.updateUserData();
+            this.updateUserData({ loginCount: data.loginCount + 1 });
           }
 
           // adds the user's data to the users store
@@ -437,27 +442,25 @@ export class AuthService {
   Function Name: updateUserData()
   Function Description: Sends a request to the server to update the login count
                         and display name in the database.
-  Parameters: None.
+  Parameters: user (partial User) - the updated details to set the userData to.
   ----------------
   Programmer: Shir Bar Lev.
   */
-  updateUserData() {
-    const updatedUser = {
-      displayName: this.userData()?.displayName,
-      receivedH: this.userData()?.receivedH,
-      givenH: this.userData()?.givenH,
-      posts: this.userData()?.posts,
-      loginCount: (this.userData()?.loginCount || 0) + 1,
-      selectedIcon: this.userData()?.selectedIcon,
-      iconColours: {
-        character: this.userData()?.iconColours.character,
-        lbg: this.userData()?.iconColours.lbg,
-        rbg: this.userData()?.iconColours.rbg,
-        item: this.userData()?.iconColours.item,
-      },
-    };
+  updateUserData(user: Partial<User>) {
+    this.userData.set({
+      ...this.userData()!,
+      ...user,
+    });
 
-    this.apiClient.patch(`users/all/${this.userData()?.id}`, updatedUser).subscribe({});
+    const updatedUser = { ...this.userData() };
+
+    return this.apiClient
+      .patch<UserUpdateResponse>(`users/all/${this.userData()?.id}`, updatedUser)
+      .subscribe({
+        next: (response) => {
+          this.serviceWorkerM.addItem("users", response.updated);
+        },
+      });
   }
 
   /*

@@ -128,8 +128,7 @@ describe("DisplayNameEditForm", () => {
     fixture.detectChanges();
 
     expect(validateSpy).toHaveBeenCalledWith("displayName");
-    expect(popUp.authService.userData()!.displayName).toEqual(newName);
-    expect(updateSpy).toHaveBeenCalled();
+    expect(updateSpy).toHaveBeenCalledWith({ displayName: newName });
     expect(emitSpy).toHaveBeenCalledWith(false);
   });
 

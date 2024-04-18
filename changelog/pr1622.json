@@ -22,7 +22,7 @@
       "description": "Changed the way the post's buttons are handled. Previously, the report and message buttons were shown only to authenticated users, and the edit and delete buttons were shown only to moderators and admins. Now, the message and report buttons are shown to all users but are disabled if the user isn't authenticated, and the edit and delete buttons are shown if the user can edit and delete the post (i.e., if they're moderator/admin or if it's their own post)."
     },
     {
-      "change": "FEatures",
+      "change": "Features",
       "description": "Added styling for disabled textless buttons."
     }
   ]

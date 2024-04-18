@@ -89,7 +89,7 @@ describe("Filters Page", () => {
     spyOn(authService, "canUser").and.returnValue(true);
     authService.isUserDataResolved.next(true);
     authService.authenticated.set(true);
-    authService.userData = { ...mockAuthedUser };
+    authService.userData.set({ ...mockAuthedUser });
   });
 
   // Check that a call is made to get filtered phrases

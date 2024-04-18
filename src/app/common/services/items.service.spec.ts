@@ -56,7 +56,7 @@ describe("ItemsService", () => {
 
     itemsService = TestBed.inject(ItemsService);
     // set the user data as if the user is logged in
-    itemsService["authService"].userData = {
+    itemsService["authService"].userData.set({
       id: 4,
       auth0Id: "",
       displayName: "name",
@@ -82,7 +82,7 @@ describe("ItemsService", () => {
         rbg: "#f8eee4",
         item: "#f4b56a",
       },
-    };
+    });
     itemsService["authService"].authenticated.set(true);
     itemsService["authService"].isUserDataResolved.next(true);
   });

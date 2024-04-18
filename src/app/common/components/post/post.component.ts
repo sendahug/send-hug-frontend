@@ -84,7 +84,7 @@ export class SinglePost implements AfterViewChecked, OnInit, OnDestroy {
   shouldDisableHugBtn = computed(
     () =>
       !this.authService.authenticated() ||
-      this._post()?.sentHugs?.includes(this.authService.userData!.id!),
+      this._post()?.sentHugs?.includes(this.authService.userData()!.id!),
   );
   // Classes
   menuButtonClass = computed(() => ({
@@ -103,11 +103,19 @@ export class SinglePost implements AfterViewChecked, OnInit, OnDestroy {
   displayedButtons = computed(() => {
     let initialButtonsCount = 2;
 
-    if (this.authService.canUser("patch:any-post")) {
+    if (
+      this.authService.userData() &&
+      (this.authService.canUser("patch:any-post") ||
+        this.authService.userData()?.id == this._post()?.id)
+    ) {
       initialButtonsCount += 1;
     }
 
-    if (this.authService.canUser("delete:any-post")) {
+    if (
+      this.authService.userData() &&
+      (this.authService.canUser("delete:any-post") ||
+        this.authService.userData()?.id != this._post()?.id)
+    ) {
       initialButtonsCount += 1;
     }
 
@@ -116,6 +124,12 @@ export class SinglePost implements AfterViewChecked, OnInit, OnDestroy {
   sendHugButtonClass = computed(() => ({
     "textlessButton hugButton": true,
     active: this.shouldDisableHugBtn(),
+  }));
+  reportButtonClass = computed(() => ({
+    "textlessButton reportButton": true,
+    disabled: !(
+      this.authService.userData() && this.authService.userData()?.id != this._post()?.userId
+    ),
   }));
   // icons
   faComment = faComment;
@@ -141,11 +155,11 @@ export class SinglePost implements AfterViewChecked, OnInit, OnDestroy {
       this.itemsService.receivedAHug.subscribe((postId) => {
         if (
           postId == this._post()?.id &&
-          !this._post()?.sentHugs?.includes(this.authService.userData!.id!)
+          !this._post()?.sentHugs?.includes(this.authService.userData()!.id!)
         ) {
           // TODO: Also update the parent list & IDB
           const sent_hugs = this._post()!.sentHugs || [];
-          sent_hugs.push(this.authService.userData!.id!);
+          sent_hugs.push(this.authService.userData()!.id!);
           this._post.set({
             ...this._post()!,
             givenHugs: this._post()!.givenHugs + 1,

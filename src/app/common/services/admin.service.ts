@@ -93,9 +93,9 @@ export class AdminService {
         // create a message from the admin to the user whose post was deleted
         let message: Message = {
           from: {
-            displayName: this.authService.userData!.displayName,
+            displayName: this.authService.userData()!.displayName,
           },
-          fromId: this.authService.userData!.id!,
+          fromId: this.authService.userData()!.id!,
           forId: reportData.userID,
           messageText: `Your post (ID ${response.deleted}) was deleted due to violating our community rules.`,
           date: new Date(),

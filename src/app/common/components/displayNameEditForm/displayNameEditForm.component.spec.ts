@@ -71,7 +71,7 @@ describe("DisplayNameEditForm", () => {
 
     const authService = TestBed.inject(AuthService);
     authService.authenticated.set(true);
-    authService.userData = { ...mockAuthedUser };
+    authService.userData.set({ ...mockAuthedUser });
   });
 
   // Check that the component is created
@@ -91,7 +91,7 @@ describe("DisplayNameEditForm", () => {
     popUp.ngOnInit();
 
     expect(popUp.editNameForm.controls.newDisplayName.value).toEqual(
-      popUp.authService.userData!.displayName,
+      popUp.authService.userData()!.displayName,
     );
 
     popUp.editedItem = {
@@ -100,7 +100,7 @@ describe("DisplayNameEditForm", () => {
     };
     popUp.ngOnInit();
 
-    expect(popUp.editedItem.displayName).not.toEqual(popUp.authService.userData!.displayName);
+    expect(popUp.editedItem.displayName).not.toEqual(popUp.authService.userData()!.displayName);
   });
 
   it("should make the request to authService to change the name", () => {
@@ -128,7 +128,7 @@ describe("DisplayNameEditForm", () => {
     fixture.detectChanges();
 
     expect(validateSpy).toHaveBeenCalledWith("displayName");
-    expect(popUp.authService.userData!.displayName).toEqual(newName);
+    expect(popUp.authService.userData()!.displayName).toEqual(newName);
     expect(updateSpy).toHaveBeenCalled();
     expect(emitSpy).toHaveBeenCalledWith(false);
   });

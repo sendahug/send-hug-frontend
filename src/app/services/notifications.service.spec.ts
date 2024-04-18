@@ -89,7 +89,7 @@ describe("NotificationService", () => {
 
     const authService = TestBed.inject(AuthService);
     authService.authenticated.set(true);
-    authService.userData = { ...mockAuthedUser };
+    authService.userData.set({ ...mockAuthedUser });
     authService.isUserDataResolved.next(true);
   });
 

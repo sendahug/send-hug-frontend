@@ -192,7 +192,7 @@ export class ReportForm {
       type: this.reportType as "Post" | "User",
       userID: 0,
       postID: undefined,
-      reporter: this.authService.userData!.id!,
+      reporter: this.authService.userData()!.id!,
       reportReason: reportReason!,
       date: new Date(),
       dismissed: false,

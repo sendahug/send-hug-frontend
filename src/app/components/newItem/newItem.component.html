@@ -33,9 +33,9 @@
 	</div>
 	
 	<div id="newPost" *ngIf="itemType == 'Post'">
-		<form [formGroup]="newPostForm" class="newItem" *ngIf="!authService.userData.blocked" aria-describedby="newTitle">
+		<form [formGroup]="newPostForm" class="newItem" *ngIf="!authService.userData().blocked" aria-describedby="newTitle">
 			<div class="formElement">
-				<span class="pageCategory">By:</span> <span class="pageData" aria-describedby="pUser">{{ authService.userData.displayName }}</span>
+				<span class="pageCategory">By:</span> <span class="pageData" aria-describedby="pUser">{{ authService.userData().displayName }}</span>
 			</div>
 			<div class="formElement">
 				<label class="pageCategory required" for="postText">Text:</label>
@@ -57,8 +57,8 @@
 			<button type="submit" class="appButton sendData" (click)="sendPost()">Publish Post</button>
 		</form>
 		
-		<div class="errorMessage" *ngIf="authService.userData.blocked" role="alert">
-			You are currently blocked until {{ authService.userData.releaseDate }}. You cannot post new posts.
+		<div class="errorMessage" *ngIf="authService.userData().blocked" role="alert">
+			You are currently blocked until {{ authService.userData().releaseDate }}. You cannot post new posts.
 		</div>
 	</div>
 	

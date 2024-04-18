@@ -89,7 +89,7 @@ export class SettingsPage implements AfterViewChecked {
   Programmer: Shir Bar Lev.
   */
   ngAfterViewChecked() {
-    Object.keys(this.authService.userData!.iconColours).forEach((key) => {
+    Object.keys(this.authService.userData()!.iconColours).forEach((key) => {
       if (document.querySelectorAll(".userIcon")[0]) {
         document
           .querySelectorAll(".userIcon")[0]
@@ -97,7 +97,7 @@ export class SettingsPage implements AfterViewChecked {
           .forEach((element) => {
             (element as SVGPathElement).setAttribute(
               "style",
-              `fill:${this.authService.userData!.iconColours[key as iconElements]};`,
+              `fill:${this.authService.userData()!.iconColours[key as iconElements]};`,
             );
           });
       }

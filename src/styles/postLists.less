@@ -119,9 +119,20 @@ app-single-post {
   .fontSize(15.5);
   &:extend(.postIntenalText);
   order: 1;
+  padding-bottom: 10px;
   /* Responsive styling for screens above 500px width */
   @media screen and (min-width: 500px) {
     .fontSize(16.5);
+  }
+}
+
+.itemDate {
+  .fontSize(12);
+  &:extend(.postIntenalText);
+  order: 2;
+  /* Responsive styling for screens above 500px width */
+  @media screen and (min-width: 500px) {
+    .fontSize(13);
   }
 }
 

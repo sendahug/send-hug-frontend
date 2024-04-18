@@ -4,13 +4,13 @@
 	<div id="iconSettings">
 		<h4>User Icon</h4>
 		<div *ngIf="editIcon == false">
-			<div *ngIf="authService.userData.selectedIcon == 'kitty'">
+			<div *ngIf="authService.userData().selectedIcon == 'kitty'">
 				<img src="../../../assets/img/kitty.svg" alt="" class="userIcon" >
 			</div>
-			<div *ngIf="authService.userData.selectedIcon == 'dog'">
+			<div *ngIf="authService.userData().selectedIcon == 'dog'">
 				<img src="../../../assets/img/dog.svg" alt="" class="userIcon" >
 			</div>
-			<div *ngIf="authService.userData.selectedIcon == 'bear'">
+			<div *ngIf="authService.userData().selectedIcon == 'bear'">
 				<img src="../../../assets/img/bear.svg" alt=""  class="userIcon" >
 			</div>
 		</div>

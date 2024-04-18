@@ -74,7 +74,7 @@ describe("AppComponent", () => {
     const authService = TestBed.inject(AuthService);
     spyOn(authService, "checkHash");
     authService.authenticated.set(true);
-    authService.userData = { ...mockAuthedUser };
+    authService.userData.set({ ...mockAuthedUser });
 
     const swManager = TestBed.inject(SWManager);
     spyOn(swManager, "registerSW");

@@ -61,15 +61,9 @@ export class MyPosts implements OnInit {
   currentPage = signal(1);
   totalPages = signal(1);
   // edit popup sub-component variables
-  postToEdit: Post | undefined;
-  editType: string | undefined;
-  editMode: boolean;
   deleteMode: boolean;
   toDelete: string | undefined;
   itemToDelete: number | undefined;
-  reportMode: boolean;
-  reportedItem: Post | undefined;
-  reportType = "Post";
   lastFocusedElement: any;
   previousPageButtonClass = computed(() => ({
     "appButton prevButton": true,
@@ -85,7 +79,7 @@ export class MyPosts implements OnInit {
   @Input()
   userID!: number;
   user = computed(() =>
-    this.userID && this.userID != this.authService.userData!.id! ? "other" : "self",
+    this.userID && this.userID != this.authService.userData()!.id! ? "other" : "self",
   );
   // icons
   faFlag = faFlag;
@@ -99,12 +93,10 @@ export class MyPosts implements OnInit {
     private apiClient: ApiClientService,
   ) {
     if (!this.userID) {
-      this.userID = this.authService.userData!.id!;
+      this.userID = this.authService.userData()!.id!;
     }
 
-    this.editMode = false;
     this.deleteMode = false;
-    this.reportMode = false;
     this.currentPage.set(1);
   }
 
@@ -119,7 +111,7 @@ export class MyPosts implements OnInit {
   */
   ngOnInit() {
     if (!this.userID) {
-      this.userID = this.authService.userData!.id!;
+      this.userID = this.authService.userData()!.id!;
     }
 
     this.fetchPosts();
@@ -175,20 +167,6 @@ export class MyPosts implements OnInit {
   }
 
   /*
-  Function Name: editPost()
-  Function Description: Triggers edit mode in order to edit a post.
-  Parameters: post (Post) - Post to edit.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  editPost(post: Post) {
-    this.lastFocusedElement = document.activeElement;
-    this.editType = "post";
-    this.postToEdit = post;
-    this.editMode = true;
-  }
-
-  /*
   Function Name: changeMode()
   Function Description: Remove the edit popup.
   Parameters: edit (boolean) - indicating whether edit mode should be active.
@@ -198,34 +176,9 @@ export class MyPosts implements OnInit {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  changeMode(edit: boolean, type: "Edit" | "Delete" | "Report") {
-    switch (type) {
-      case "Edit":
-        this.editMode = edit;
-        break;
-      case "Delete":
-        this.deleteMode = edit;
-        break;
-      case "Report":
-        this.reportMode = edit;
-        break;
-    }
-
+  changeMode(edit: boolean) {
+    this.deleteMode = edit;
     this.lastFocusedElement.focus();
-  }
-
-  /*
-  Function Name: deletePost()
-  Function Description: Send a request to the items service to delete a post.
-  Parameters: post_id (number) - ID of the post to delete.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  deletePost(post_id: number) {
-    this.lastFocusedElement = document.activeElement;
-    this.deleteMode = true;
-    this.toDelete = "Post";
-    this.itemToDelete = post_id;
   }
 
   /*
@@ -243,31 +196,6 @@ export class MyPosts implements OnInit {
     // if there's a user ID, take the selected user's ID. Otherwise, it's the
     // user's own profile, so take their ID from the Auth Service.
     this.itemToDelete = this.userID;
-  }
-
-  /*
-  Function Name: reportPost()
-  Function Description: Opens the popup to report a post.
-  Parameters: post (Post) - the Post to report.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  reportPost(post: Post) {
-    this.lastFocusedElement = document.activeElement;
-    this.reportMode = true;
-    this.reportedItem = post;
-  }
-
-  /*
-  Function Name: sendHug()
-  Function Description: Send a hug to a user through a post they've written. The hug
-                        itself is sent by the items service.
-  Parameters: itemID (number) - ID of the post.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  sendHug(itemID: number) {
-    this.itemsService.sendHug(itemID);
   }
 
   /*

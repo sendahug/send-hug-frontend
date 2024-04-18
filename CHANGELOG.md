@@ -7,9 +7,9 @@
 #### Chores
 
 - Replaced @rollup/stream with rollup in the process of bundling the site's scripts. Since @rollup/stream is the recommended plugin for making rollup work with gulp, we've been using it in script compilation. However, @rollup/stream doesn't support chunking, and the process of using it with gulp produces considerably larger JavaScript bundles than rollup itself. Moving to rollup allows us to generate smaller packages, and, in the future, it will allow us to start splitting the code. The change includes:
-	- Added a new rollup configuration file.
-	- Converted the old processor CommonJS file (with the rollup plugins we use in compilation and in tests) to an ES module with the plugins we use.
-	- The gulp tasks for bundling the scripts now run rollup via a child process (Node.js's `exec`) instead of running @rollup/stream. ([#1618](https://github.com/sendahug/send-hug-frontend/pull/1618))
+  - Added a new rollup configuration file.
+  - Converted the old processor CommonJS file (with the rollup plugins we use in compilation and in tests) to an ES module with the plugins we use.
+  - The gulp tasks for bundling the scripts now run rollup via a child process (Node.js's `exec`) instead of running @rollup/stream. ([#1618](https://github.com/sendahug/send-hug-frontend/pull/1618))
 - Combined the rollup plugin for setting the environment to production with the rollup plugin for replacing the environment variables. Since they both update the environment variables and the production environment setter now consists of one line of code, there was no need to keep them separated. ([#1618](https://github.com/sendahug/send-hug-frontend/pull/1618))
 
 ### 2024-04-17

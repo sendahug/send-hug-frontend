@@ -39,7 +39,7 @@ import { ApiClientService } from "@common/services/apiClient.service";
 import { HttpErrorResponse } from "@angular/common/http";
 import { Report } from "@app/interfaces/report.interface";
 import { AlertsService } from "@common/services/alerts.service";
-import { PostAndReportResponse } from "@app/interfaces/responses";
+import { PostAndReportResponse, UpdatedUserReportResponse } from "@app/interfaces/responses";
 
 @Component({
   selector: "app-admin-reports",
@@ -268,6 +268,22 @@ export class AdminReports {
       if (!(updatedReport && updatedReport.text)) return;
 
       updatedReport.text = response.updatedPost?.text;
+    }
+  }
+
+  /**
+   *
+   * @param response The name/report response returned by the Display Name Edit Form.
+   */
+  updateUserReport(response: UpdatedUserReportResponse) {
+    if (response.closed) {
+      this.userReports = this.userReports.filter((report) => report.id != response.reportID);
+    } else {
+      const updatedReport = this.userReports.find((report) => report.id == response.reportID);
+
+      if (!(updatedReport && updatedReport.displayName)) return;
+
+      updatedReport.displayName = response.displayName;
     }
   }
 }

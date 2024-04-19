@@ -113,7 +113,7 @@ describe("AdminService", () => {
   });
 
   // Check that the service edits a user's display name
-  it("editUser() - should edit a user's display name", () => {
+  it("editUser() - should edit a user's display name", (done: DoneFn) => {
     // mock response
     const mockResponse = {
       success: true,
@@ -132,12 +132,30 @@ describe("AdminService", () => {
     };
     const alertSpy = spyOn(adminService["alertsService"], "createSuccessAlert");
     const patchSpy = spyOn(adminService["apiClient"], "patch").and.returnValue(of(mockResponse));
+    const closeSpy = spyOn(adminService, "closeReport").and.returnValue(
+      of({
+        success: true,
+        updated: {
+          id: 6,
+          type: "User",
+          userID: 2,
+          displayName: "name",
+          reporter: 3,
+          reportReason: "reason",
+          date: new Date(),
+          dismissed: true,
+          closed: true,
+        },
+      }),
+    );
 
-    adminService.editUser(userData, true, 6);
-
-    expect(alertSpy).toHaveBeenCalled();
-    expect(alertSpy).toHaveBeenCalledWith("User user updated.", { reload: true });
-    expect(patchSpy).toHaveBeenCalledWith("users/all/2", userData);
+    adminService.editUser(userData, true, 6).add(() => {
+      expect(alertSpy).toHaveBeenCalled();
+      expect(alertSpy).toHaveBeenCalledWith("User user updated.");
+      expect(patchSpy).toHaveBeenCalledWith("users/all/2", userData);
+      expect(closeSpy).toHaveBeenCalledWith(6, false, undefined, 2);
+      done();
+    });
   });
 
   // Check that the service dismisses a report

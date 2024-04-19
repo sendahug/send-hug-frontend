@@ -36,3 +36,9 @@ export interface PostAndReportResponse {
   updatedPost?: Post;
   reportId?: number;
 }
+
+export interface UpdatedUserReportResponse {
+  reportID: number;
+  closed: boolean;
+  displayName: string;
+}

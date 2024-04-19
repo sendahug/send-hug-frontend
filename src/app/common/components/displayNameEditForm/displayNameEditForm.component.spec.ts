@@ -48,6 +48,7 @@ import { AuthService } from "@common/services/auth.service";
 import { mockAuthedUser } from "@tests/mockData";
 import { PopUp } from "@common/components/popUp/popUp.component";
 import { ValidationService } from "@common/services/validation.service";
+import { Subscription } from "rxjs";
 
 // DISPLAY NAME EDIT
 // ==================================================================
@@ -150,9 +151,11 @@ describe("DisplayNameEditForm", () => {
       userID: 2,
     };
     const newName = "new name";
+    const mockSubscription = new Subscription();
+    mockSubscription.unsubscribe();
     fixture.detectChanges();
 
-    const updateSpy = spyOn(popUp["adminService"], "editUser");
+    const updateSpy = spyOn(popUp["adminService"], "editUser").and.returnValue(mockSubscription);
     const emitSpy = spyOn(popUp.editMode, "emit");
 
     popUpDOM.querySelector("#displayName").value = newName;
@@ -190,9 +193,11 @@ describe("DisplayNameEditForm", () => {
       userID: 2,
     };
     const newName = "new name";
+    const mockSubscription = new Subscription();
+    mockSubscription.unsubscribe();
     fixture.detectChanges();
 
-    const updateSpy = spyOn(popUp["adminService"], "editUser");
+    const updateSpy = spyOn(popUp["adminService"], "editUser").and.returnValue(mockSubscription);
     const emitSpy = spyOn(popUp.editMode, "emit");
 
     popUpDOM.querySelector("#displayName").value = newName;

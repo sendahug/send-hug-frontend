@@ -127,18 +127,31 @@ export class AdminService {
   */
   editUser(user: PartialUser, closeReport: boolean, reportID: number) {
     // update the user's display name
-    this.apiClient.patch(`users/all/${user.id}`, user).subscribe({
-      next: (response: any) => {
-        this.alertsService.createSuccessAlert(`User ${response.updated.displayName} updated.`, {
-          reload: closeReport,
-        });
-
-        // if the report should be closed
-        if (closeReport) {
-          this.closeReport(reportID, false, undefined, user.id).subscribe({});
-        }
-      },
-    });
+    return this.apiClient
+      .patch<{ success: boolean; updated: OtherUser }>(`users/all/${user.id}`, user)
+      .pipe(
+        switchMap((userResponse) => {
+          // if the report should be closed
+          if (closeReport) {
+            return this.closeReport(reportID, false, undefined, user.id).pipe(
+              map((response) => ({
+                reportID: response.updated.id,
+                user: userResponse.updated,
+              })),
+            );
+          } else {
+            return of({
+              reportID: undefined,
+              user: userResponse.updated,
+            });
+          }
+        }),
+      )
+      .subscribe({
+        next: (response: any) => {
+          this.alertsService.createSuccessAlert(`User ${response.user.displayName} updated.`);
+        },
+      });
   }
 
   /**

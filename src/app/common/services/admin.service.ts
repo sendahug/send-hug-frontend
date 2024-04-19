@@ -32,7 +32,7 @@
 
 // Angular imports
 import { Injectable } from "@angular/core";
-import { Observable, map, switchMap } from "rxjs";
+import { Observable, map, mergeMap, of, switchMap, tap } from "rxjs";
 
 // App-related imports
 import { Report } from "@app/interfaces/report.interface";
@@ -237,32 +237,59 @@ export class AdminService {
   blockUser(userID: number, blockLength: string, reportID?: number) {
     const fetchUserBlockData$ = this.fetchUserBlockData(userID);
 
-    fetchUserBlockData$
-      .pipe(
-        // set the user's block data
-        map((blockData) => {
-          const newReleaseDate = this.calculateUserReleaseDate(blockLength, blockData.releaseDate);
+    return (
+      fetchUserBlockData$
+        .pipe(
+          // set the user's block data
+          map((blockData) => {
+            const newReleaseDate = this.calculateUserReleaseDate(
+              blockLength,
+              blockData.releaseDate,
+            );
 
-          return {
-            id: userID,
-            releaseDate: newReleaseDate,
-            blocked: true,
-          };
-        }),
-      )
-      // try to block the user
-      .pipe(switchMap((blockData) => this.apiClient.patch(`users/all/${userID}`, blockData)))
-      .subscribe({
-        next: (response: any) => {
-          this.alertsService.createSuccessAlert(
-            `User ${response.updated.displayName} has been blocked until ${response.updated.releaseDate}`,
-            { reload: true },
-          );
-          // if the block was done via the reports page, also dismiss the report
-          if (reportID) {
-            this.closeReport(reportID, false, undefined, userID).subscribe({});
-          }
-        },
-      });
+            return {
+              id: userID,
+              releaseDate: newReleaseDate,
+              blocked: true,
+            };
+          }),
+        )
+        // try to block the user
+        .pipe(
+          switchMap((blockData) =>
+            this.apiClient.patch<{ success: boolean; updated: OtherUser }>(
+              `users/all/${userID}`,
+              blockData,
+            ),
+          ),
+        )
+        // close the report if there is one
+        .pipe(
+          mergeMap((response) => {
+            if (reportID) {
+              return this.closeReport(reportID, false, undefined, userID).pipe(
+                map((closeResponse) => ({
+                  success: true,
+                  updated: response.updated,
+                  reportID: closeResponse.updated.id,
+                })),
+              );
+            } else {
+              return of({
+                success: true,
+                updated: response.updated,
+                reportID: undefined,
+              });
+            }
+          }),
+        )
+        .pipe(
+          tap((response: any) =>
+            this.alertsService.createSuccessAlert(
+              `User ${response.updated.displayName} has been blocked until ${response.updated.releaseDate}`,
+            ),
+          ),
+        )
+    );
   }
 }

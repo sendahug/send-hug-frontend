@@ -129,7 +129,11 @@ export class AdminReports {
   */
   blockUser(userID: number, reportID: number) {
     const length = "oneDay";
-    this.adminService.blockUser(userID, length, reportID);
+    this.adminService.blockUser(userID, length, reportID).subscribe((response) => {
+      if (response.reportID) {
+        this.userReports = this.userReports.filter((report) => report.id != response.reportID);
+      }
+    });
   }
 
   /*

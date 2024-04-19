@@ -135,10 +135,17 @@ export class AdminBlocks {
     }
 
     // if there's a user ID and it's valid, proceed
-    this.adminService.blockUser(
-      Number(userId),
-      this.blockForm.controls.blockLength.value || "oneDay",
-    );
+    this.adminService
+      .blockUser(Number(userId), this.blockForm.controls.blockLength.value || "oneDay")
+      .subscribe((response) => {
+        const blockedUser = this.blockedUsers.find((user) => user.id == response.updated.id);
+
+        if (blockedUser) {
+          blockedUser.releaseDate = response.updated.releaseDate;
+        } else {
+          this.blockedUsers.push(response.updated);
+        }
+      });
   }
 
   /*

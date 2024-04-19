@@ -146,14 +146,30 @@ describe("AdminReports", () => {
     done();
   });
 
-  it("should blcok a user", (done: DoneFn) => {
+  it("should block a user", (done: DoneFn) => {
     // set up the spy and the component
     const fixture = TestBed.createComponent(AdminReports);
     const adminReports = fixture.componentInstance;
     const adminReportsDOM = fixture.nativeElement;
     const blockSpy = spyOn(adminReports, "blockUser").and.callThrough();
     const adminService = adminReports["adminService"];
-    const blockServiceSpy = spyOn(adminService, "blockUser");
+    const blockServiceSpy = spyOn(adminService, "blockUser").and.returnValue(
+      of({
+        success: true,
+        updated: {
+          id: 1,
+          type: "User",
+          userID: 10,
+          displayName: "name",
+          reporter: 3,
+          reportReason: "reason",
+          date: new Date(),
+          dismissed: true,
+          closed: true,
+        },
+        reportID: 1,
+      }),
+    );
 
     adminReports.postReports = [...mockPostReports];
     adminReports.userReports = [...mockUserReports];
@@ -169,6 +185,7 @@ describe("AdminReports", () => {
     // check expectations
     expect(blockSpy).toHaveBeenCalledWith(10, 1);
     expect(blockServiceSpy).toHaveBeenCalledWith(10, "oneDay", 1);
+    expect(adminReports.userReports.length).toBe(0);
     done();
   });
 

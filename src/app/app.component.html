@@ -62,13 +62,13 @@
 	</div>
 </header>
 
+<div *ngIf="showNotifications">
+	<app-notifications (NotificationsMode)="changeMode($event)"></app-notifications>
+</div>
+
 <!-- Container for the main element and the footer (to ensure they follow one another, rather than have fixed styling) -->
 <div id="contentContainer">
 	<main id="mainContent" role="main">
-		<div *ngIf="showNotifications">
-			<app-notifications
-							   (NotificationsMode)="changeMode($event)"></app-notifications>
-		</div>
 		<router-outlet></router-outlet>
 		<div id="alertContainer">
 			<app-alert></app-alert>

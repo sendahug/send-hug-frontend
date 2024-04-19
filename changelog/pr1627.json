@@ -1,0 +1,9 @@
+{
+  "pr_number": 1627,
+  "changes": [
+    {
+      "change": "Chores",
+      "description": "Changed the CircleCI workflow to only install Chrome as the Firefox install currently gets stuck and breaks all tests in CI."
+    }
+  ]
+}

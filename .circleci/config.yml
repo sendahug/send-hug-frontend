@@ -2,7 +2,7 @@ version: 2.1
 orbs:
   browser-tools: circleci/browser-tools@1.4.8
   cypress: cypress-io/cypress@3.3.1
-  codecov: codecov/codecov@4.0.1
+  codecov: codecov/codecov@4.1.0
 jobs:
   format:
     docker:
@@ -24,7 +24,8 @@ jobs:
       CHROME_BIN: /usr/bin/google-chrome
     steps:
       - checkout
-      - browser-tools/install-browser-tools
+      - browser-tools/install-chrome
+      - browser-tools/install-chromedriver
       - run: google-chrome --version
       - restore_cache:
           key: send-hug-v1-
@@ -85,7 +86,8 @@ jobs:
             cd ..
             flask run
           background: true
-      - browser-tools/install-browser-tools
+      - browser-tools/install-chrome
+      - browser-tools/install-chromedriver
       - run: google-chrome --version
       - cypress/install
       - restore_cache:
@@ -157,7 +159,8 @@ jobs:
             cd ..
             flask run
           background: true
-      - browser-tools/install-browser-tools
+      - browser-tools/install-chrome
+      - browser-tools/install-chromedriver
       - run: google-chrome --version
       - restore_cache:
           key: send-hug-v1-

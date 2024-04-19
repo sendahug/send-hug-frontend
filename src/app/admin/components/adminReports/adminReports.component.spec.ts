@@ -598,4 +598,31 @@ describe("AdminReports", () => {
     expect(adminReports.postReports[0].text).toBe(reportPostResponse.updatedPost.text);
     done();
   });
+
+  it("should update the UI when the post is deleted - delete post", (done: DoneFn) => {
+    const fixture = TestBed.createComponent(AdminReports);
+    const adminReports = fixture.componentInstance;
+    const removeSpy = spyOn(adminReports, "removeReport").and.callThrough();
+    adminReports.postReports = [...mockPostReports];
+
+    fixture.detectChanges();
+
+    // start the popup
+    adminReports.lastFocusedElement = document.querySelectorAll("a")[0];
+    adminReports.deleteMode = true;
+    adminReports.toDelete = "post";
+    adminReports.itemToDelete = 5;
+    fixture.detectChanges();
+
+    // exit the popup
+    const popup = fixture.debugElement.query(By.css("item-delete-form"))
+      .componentInstance as MockDeleteForm;
+    popup.deleted.emit(5);
+    fixture.detectChanges();
+
+    // check the popup is exited
+    expect(removeSpy).toHaveBeenCalled();
+    expect(adminReports.postReports.length).toBe(0);
+    done();
+  });
 });

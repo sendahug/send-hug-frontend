@@ -292,6 +292,6 @@ export class AdminReports {
    * @param deletedId the ID of the deleted post.
    */
   removeReport(deletedId: number) {
-    this.postReports = this.postReports.filter((report) => report.postID == deletedId);
+    this.postReports = this.postReports.filter((report) => report.postID != deletedId);
   }
 }

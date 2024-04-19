@@ -29,7 +29,7 @@
   SOFTWARE.
 */
 import { Component, EventEmitter, Output } from "@angular/core";
-import { PostAndReportResponse } from "@app/interfaces/responses";
+import { PostAndReportResponse, UpdatedUserReportResponse } from "@app/interfaces/responses";
 
 @Component({
   selector: "item-delete-form",
@@ -37,6 +37,7 @@ import { PostAndReportResponse } from "@app/interfaces/responses";
 })
 export class MockDeleteForm {
   @Output() editMode = new EventEmitter<boolean>();
+  @Output() deleted = new EventEmitter<number>();
 }
 
 @Component({
@@ -62,4 +63,5 @@ export class MockEditForm {
 })
 export class MockDisplayNameForm {
   @Output() editMode = new EventEmitter<boolean>();
+  @Output() updatedDetails = new EventEmitter<UpdatedUserReportResponse>();
 }

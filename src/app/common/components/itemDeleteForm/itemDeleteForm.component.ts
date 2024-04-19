@@ -47,6 +47,7 @@ import { AlertsService } from "@common/services/alerts.service";
 export class ItemDeleteForm {
   // indicates whether edit/delete mode is still required
   @Output() editMode = new EventEmitter<boolean>();
+  @Output() deleted = new EventEmitter<number>();
   // type of item to delete
   @Input() toDelete: string | undefined;
   // the item to delete itself
@@ -83,7 +84,10 @@ export class ItemDeleteForm {
         store = this.toDelete == "Message" ? "messages" : "threads";
       }
 
-      this.deleteSingleItem(url, store);
+      this.deleteSingleItem(url, store).add(() => {
+        this.deleted.emit(this.itemToDelete);
+        this.editMode.emit(false);
+      });
     }
     // if the user is attempting to delete all of the user's posts
     else if (this.toDelete == "All posts") {
@@ -91,6 +95,8 @@ export class ItemDeleteForm {
         (response) => {
           // delete the posts from idb
           this.swManager.deleteItems("posts", "userId", response.userID);
+          this.deleted.emit(response.userID);
+          this.editMode.emit(false);
         },
       );
     }
@@ -115,11 +121,12 @@ export class ItemDeleteForm {
           } else if (mailbox_type == "outbox") {
             this.swManager.deleteItems("messages", "fromId", response.userID);
           }
+
+          this.deleted.emit(this.itemToDelete);
+          this.editMode.emit(false);
         },
       );
     }
-
-    this.editMode.emit(false);
   }
 
   /**
@@ -131,12 +138,7 @@ export class ItemDeleteForm {
     return this.apiClient
       .delete<{ success: boolean; deleted: number }>(url)
       .subscribe((response) => {
-        this.alertsService.createSuccessAlert(
-          `${this.toDelete} ${response.deleted} was deleted. Refresh to view the updated ${
-            this.toDelete?.toLowerCase() || ""
-          } list.`,
-          { reload: true },
-        );
+        this.alertsService.createSuccessAlert(`${this.toDelete} ${response.deleted} was deleted.`);
 
         // delete the item from idb
         this.swManager.deleteItem(idbStore, response.deleted);
@@ -172,10 +174,7 @@ export class ItemDeleteForm {
       .delete<{ success: boolean; userID: number; deleted: number }>(url, params)
       .pipe(
         tap((response) =>
-          this.alertsService.createSuccessAlert(
-            `${response.deleted} ${itemType} were deleted. Refresh to view the updated page.`,
-            { reload: true },
-          ),
+          this.alertsService.createSuccessAlert(`${response.deleted} ${itemType} were deleted.`),
         ),
       );
   }

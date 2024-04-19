@@ -40,6 +40,8 @@ import {
   OnDestroy,
   signal,
   WritableSignal,
+  Output,
+  EventEmitter,
 } from "@angular/core";
 import { faComment, faEdit, faFlag } from "@fortawesome/free-regular-svg-icons";
 import { faHandHoldingHeart, faTimes, faEllipsisV } from "@fortawesome/free-solid-svg-icons";
@@ -66,6 +68,7 @@ export class SinglePost implements AfterViewChecked, OnInit, OnDestroy {
   }
   @Input() type!: "n" | "s";
   @Input() containerClass!: string;
+  @Output() deletedId = new EventEmitter<number>();
   private _post: WritableSignal<Post | undefined> = signal(undefined);
   postId = computed(() => `${this.type}Post${this._post()?.id || ""}`);
   // edit popup sub-component variables

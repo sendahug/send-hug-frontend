@@ -193,9 +193,15 @@ export class MyPosts implements OnInit {
     this.lastFocusedElement = document.activeElement;
     this.deleteMode = true;
     this.toDelete = "All posts";
-    // if there's a user ID, take the selected user's ID. Otherwise, it's the
-    // user's own profile, so take their ID from the Auth Service.
     this.itemToDelete = this.userID;
+  }
+
+  /**
+   * Deletes all posts from the current page once they're deleted
+   * in the backend.
+   */
+  updatePostsList() {
+    this.posts.set([]);
   }
 
   /*

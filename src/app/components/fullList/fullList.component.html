@@ -10,7 +10,8 @@
 		<app-single-post  *ngFor="let item of posts()"
 						 [post]="item"
 						 [type]="'n'"
-						 [containerClass]="type == 'New' ? 'newItem' : 'sugItem'"></app-single-post>
+						 [containerClass]="type == 'New' ? 'newItem' : 'sugItem'"
+						 (deletedId)="removeDeletedPost($event)"></app-single-post>
 	</ul>
 	
 	<!-- If there are no items in the list -->

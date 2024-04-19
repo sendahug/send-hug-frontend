@@ -76,6 +76,7 @@
 	(editMode)="changeMode($event, 'Delete')"
 	[toDelete]="toDelete"
 	[itemToDelete]="itemToDelete"
+	(deleted)="deletedId.emit(post.id)"
 ></item-delete-form>
 
 <post-edit-form

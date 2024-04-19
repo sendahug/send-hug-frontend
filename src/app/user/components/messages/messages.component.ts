@@ -435,6 +435,28 @@ export class AppMessaging implements AfterViewChecked {
     this.itemToDelete = this.authService.userData()!.id;
   }
 
+  /**
+   * Deletes the deleted item/items once they've been deleted
+   * in the backend.
+   * @param deletedId the ID of the message deleted (if it's a single message)
+   *                  of the user ID (if it's a 'clear mailbox' situation).
+   */
+  updateMessageList(deletedId: number) {
+    if (this.toDelete?.includes("All")) {
+      if (this.messType.toLowerCase() == "threads") {
+        this.userThreads.set([]);
+      } else {
+        this.messages.set([]);
+      }
+    } else {
+      if (this.messType.toLowerCase() == "threads") {
+        this.userThreads.set(this.userThreads().filter((thread) => thread.id != deletedId));
+      } else {
+        this.messages.set(this.messages().filter((message) => message.id != deletedId));
+      }
+    }
+  }
+
   /*
   Function Name: changeMode()
   Function Description: Remove the edit popup.

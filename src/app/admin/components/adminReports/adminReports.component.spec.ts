@@ -55,37 +55,12 @@ import { MockDeleteForm, MockDisplayNameForm, MockEditForm } from "@tests/mockFo
 import { AppCommonModule } from "@app/common/common.module";
 import { PostEditForm } from "@app/common/components/postEditForm/postEditForm.component";
 
-const mockUserReports: Report[] = [
-  {
-    id: 1,
-    type: "User" as "User" | "Post",
-    userID: 10,
-    reporter: 4,
-    reportReason: "something",
-    date: new Date("2020-06-29 19:17:31.072"),
-    dismissed: false,
-    closed: false,
-    displayName: "user",
-  },
-];
-const mockPostReports: Report[] = [
-  {
-    id: 2,
-    type: "Post" as "User" | "Post",
-    userID: 11,
-    postID: 5,
-    reporter: 4,
-    reportReason: "reason",
-    date: new Date("2020-06-29 19:17:31.072"),
-    dismissed: false,
-    closed: false,
-    text: "hi",
-  },
-];
-
 // REPORTS PAGE
 // ==================================================================
 describe("AdminReports", () => {
+  let mockUserReports: Report[];
+  let mockPostReports: Report[];
+
   // Before each test, configure testing environment
   beforeEach(() => {
     TestBed.resetTestEnvironment();
@@ -110,6 +85,35 @@ describe("AdminReports", () => {
     authService.isUserDataResolved.next(true);
     authService.authenticated.set(true);
     authService.userData.set({ ...mockAuthedUser });
+
+    // set up mock data
+    mockUserReports = [
+      {
+        id: 1,
+        type: "User" as "User" | "Post",
+        userID: 10,
+        reporter: 4,
+        reportReason: "something",
+        date: new Date("2020-06-29 19:17:31.072"),
+        dismissed: false,
+        closed: false,
+        displayName: "user",
+      },
+    ];
+    mockPostReports = [
+      {
+        id: 2,
+        type: "Post" as "User" | "Post",
+        userID: 11,
+        postID: 5,
+        reporter: 4,
+        reportReason: "reason",
+        date: new Date("2020-06-29 19:17:31.072"),
+        dismissed: false,
+        closed: false,
+        text: "hi",
+      },
+    ];
   });
 
   // Check that a call is made to get open reports
@@ -513,6 +517,83 @@ describe("AdminReports", () => {
     expect(changeSpy).toHaveBeenCalled();
     expect(adminReports.deleteMode).toBeFalse();
     expect(document.activeElement).toBe(document.querySelectorAll("a")[0]);
+    done();
+  });
+
+  it("should update the UI when the edit is done - display name edit + close report", (done: DoneFn) => {
+    const fixture = TestBed.createComponent(AdminReports);
+    const adminReports = fixture.componentInstance;
+    const updateSpy = spyOn(adminReports, "updateUserReport").and.callThrough();
+    adminReports.userReports = [...mockUserReports];
+    fixture.detectChanges();
+
+    // start the popup
+    adminReports.lastFocusedElement = document.querySelectorAll("a")[0];
+    adminReports.toEdit = {
+      displayName: "displayName",
+      id: 2,
+    };
+    adminReports.nameEditMode = true;
+    adminReports.reportData.reportID = 1;
+    adminReports.reportData.userID = 10;
+    fixture.detectChanges();
+
+    // exit the popup
+    const popup = fixture.debugElement.query(By.css("display-name-edit-form"))
+      .componentInstance as MockDisplayNameForm;
+    popup.updatedDetails.emit({
+      closed: true,
+      reportID: 1,
+      displayName: "beep",
+    });
+    fixture.detectChanges();
+
+    // check the popup is exited
+    expect(updateSpy).toHaveBeenCalledWith({
+      closed: true,
+      reportID: 1,
+      displayName: "beep",
+    });
+    expect(adminReports.userReports.length).toBe(0);
+    done();
+  });
+
+  it("should update the UI when the edit is done - display name edit + don't close report", (done: DoneFn) => {
+    const fixture = TestBed.createComponent(AdminReports);
+    const adminReports = fixture.componentInstance;
+    const updateSpy = spyOn(adminReports, "updateUserReport").and.callThrough();
+    adminReports.userReports = [...mockUserReports];
+    fixture.detectChanges();
+
+    // start the popup
+    adminReports.lastFocusedElement = document.querySelectorAll("a")[0];
+    adminReports.toEdit = {
+      displayName: "displayName",
+      id: 2,
+    };
+    adminReports.nameEditMode = true;
+    adminReports.reportData.reportID = 1;
+    adminReports.reportData.userID = 10;
+    fixture.detectChanges();
+
+    // exit the popup
+    const popup = fixture.debugElement.query(By.css("display-name-edit-form"))
+      .componentInstance as MockDisplayNameForm;
+    popup.updatedDetails.emit({
+      closed: false,
+      reportID: 1,
+      displayName: "beep",
+    });
+    fixture.detectChanges();
+
+    // check the popup is exited
+    expect(updateSpy).toHaveBeenCalledWith({
+      closed: false,
+      reportID: 1,
+      displayName: "beep",
+    });
+    expect(adminReports.userReports.length).toBe(1);
+    expect(adminReports.userReports[0].displayName).toBe("beep");
     done();
   });
 

@@ -1,9 +1,0 @@
-{
-  "pr_number": 1625,
-  "changes": [
-    {
-      "change": "Fixes",
-      "description": "Fixed a bug where the header wasn't properly hidden behind the modal box when the notifications tab was opened (on Safari only, due to the way Safari renders handles stacking contexts). This made it impossible to close the tab, as the close button was rendered below the header."
-    }
-  ]
-}

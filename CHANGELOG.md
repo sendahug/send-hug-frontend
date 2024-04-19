@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+### 2024-04-19
+
+#### Fixes
+
+- Fixed a bug where the header wasn't properly hidden behind the modal box when the notifications tab was opened (on Safari only, due to the way Safari renders handles stacking contexts). This made it impossible to close the tab, as the close button was rendered below the header. ([#1625](https://github.com/sendahug/send-hug-frontend/pull/1625))
+
 ### 2024-04-18
 
 #### Features

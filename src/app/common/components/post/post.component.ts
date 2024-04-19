@@ -49,6 +49,7 @@ import { Subscription } from "rxjs";
 import { AuthService } from "@common/services/auth.service";
 import { ItemsService } from "@common/services/items.service";
 import { Post } from "@app/interfaces/post.interface";
+import { SWManager } from "@app/common/services/sWManager.service";
 
 @Component({
   selector: "app-single-post",
@@ -143,6 +144,7 @@ export class SinglePost implements AfterViewChecked, OnInit, OnDestroy {
   constructor(
     public itemsService: ItemsService,
     public authService: AuthService,
+    private swManager: SWManager,
   ) {}
 
   ngOnInit(): void {
@@ -165,6 +167,7 @@ export class SinglePost implements AfterViewChecked, OnInit, OnDestroy {
             givenHugs: this._post()!.givenHugs + 1,
             sentHugs: sent_hugs,
           });
+          this.swManager.addFetchedItems("posts", [this._post()], "date");
         }
       }),
     );

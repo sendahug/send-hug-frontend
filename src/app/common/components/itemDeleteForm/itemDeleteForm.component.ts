@@ -158,8 +158,10 @@ export class ItemDeleteForm {
   Programmer: Shir Bar Lev.
   */
   deletePost(closeReport: boolean) {
-    this.adminService.deletePost(this.itemToDelete!, this.reportData, closeReport);
-    this.editMode.emit(false);
+    this.adminService.deletePost(this.itemToDelete!, this.reportData, closeReport).add(() => {
+      this.deleted.emit(this.itemToDelete);
+      this.editMode.emit(false);
+    });
   }
 
   /**

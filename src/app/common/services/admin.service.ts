@@ -87,32 +87,48 @@ export class AdminService {
   */
   deletePost(postID: number, reportData: any, closeReport: boolean) {
     // delete the post from the database
-    this.apiClient.delete(`posts/${postID}`).subscribe({
-      next: (response: any) => {
-        this.alertsService.createSuccessAlert(`Post ${response.deleted} was successfully deleted.`);
-        // create a message from the admin to the user whose post was deleted
-        let message: Message = {
-          from: {
-            displayName: this.authService.userData()!.displayName,
-          },
-          fromId: this.authService.userData()!.id!,
-          forId: reportData.userID,
-          messageText: `Your post (ID ${response.deleted}) was deleted due to violating our community rules.`,
-          date: new Date(),
-        };
+    return this.apiClient
+      .delete<{ success: boolean; deleted: number }>(`posts/${postID}`)
+      .pipe(
+        switchMap((response) => {
+          if (closeReport) {
+            return this.closeReport(reportData.reportID, false, postID).pipe(
+              map((updateResponse) => ({
+                deleted: response.deleted,
+                reportID: updateResponse.updated.id,
+              })),
+            );
+          } else {
+            return of({
+              deleted: response.deleted,
+              reportID: undefined,
+            });
+          }
+        }),
+      )
+      .subscribe({
+        next: (response: any) => {
+          this.alertsService.createSuccessAlert(
+            `Post ${response.deleted} was successfully deleted.`,
+          );
+          // create a message from the admin to the user whose post was deleted
+          let message: Message = {
+            from: {
+              displayName: this.authService.userData()!.displayName,
+            },
+            fromId: this.authService.userData()!.id!,
+            forId: reportData.userID,
+            messageText: `Your post (ID ${response.deleted}) was deleted due to violating our community rules.`,
+            date: new Date(),
+          };
 
-        // if the report needs to be closed
-        if (closeReport) {
-          this.closeReport(reportData.reportID, false, postID).subscribe({});
-        }
+          // delete the post from idb
+          this.serviceWorkerM.deleteItem("posts", postID);
 
-        // delete the post from idb
-        this.serviceWorkerM.deleteItem("posts", postID);
-
-        // send the message about the deleted post
-        this.itemsService.sendMessage(message);
-      },
-    });
+          // send the message about the deleted post
+          this.itemsService.sendMessage(message);
+        },
+      });
   }
 
   /*

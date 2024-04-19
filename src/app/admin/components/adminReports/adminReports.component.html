@@ -116,6 +116,7 @@
   [editedItem]="toEdit"
   [reportData]="reportData"
   (editMode)="changeMode($event, 'EditName')"
+  (updatedDetails)="updateUserReport($event)"
 ></display-name-edit-form>
 
 <item-delete-form
@@ -124,6 +125,7 @@
 	[toDelete]="toDelete"
   [reportData]="reportData"
 	[itemToDelete]="itemToDelete"
+  (deleted)="removeReport($event)"
 ></item-delete-form>
 
 <post-edit-form

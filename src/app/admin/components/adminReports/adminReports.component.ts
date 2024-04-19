@@ -272,7 +272,7 @@ export class AdminReports {
   }
 
   /**
-   *
+   * Updates the UI with the updated details of the user and the report.
    * @param response The name/report response returned by the Display Name Edit Form.
    */
   updateUserReport(response: UpdatedUserReportResponse) {
@@ -285,5 +285,13 @@ export class AdminReports {
 
       updatedReport.displayName = response.displayName;
     }
+  }
+
+  /**
+   * Removes the deleted post's report from the list.
+   * @param deletedId the ID of the deleted post.
+   */
+  removeReport(deletedId: number) {
+    this.postReports = this.postReports.filter((report) => report.postID == deletedId);
   }
 }

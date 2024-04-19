@@ -46,7 +46,7 @@ import { of, Subscription } from "rxjs";
 import { ItemDeleteForm } from "./itemDeleteForm.component";
 import { PopUp } from "@common/components/popUp/popUp.component";
 
-describe("Popup", () => {
+describe("ItemDeleteForm", () => {
   // Before each test, configure testing environment
   beforeEach(() => {
     TestBed.resetTestEnvironment();
@@ -307,8 +307,12 @@ describe("Popup", () => {
       reportID: 2,
       postID: 4,
     };
+    const mockSubscription = new Subscription();
+    mockSubscription.unsubscribe();
     const deleteSpy = spyOn(itemDeleteForm, "deletePost").and.callThrough();
-    const deleteServiceSpy = spyOn(itemDeleteForm["adminService"], "deletePost");
+    const deleteServiceSpy = spyOn(itemDeleteForm["adminService"], "deletePost").and.returnValue(
+      mockSubscription,
+    );
     const emitSpy = spyOn(itemDeleteForm.editMode, "emit");
 
     fixture.detectChanges();

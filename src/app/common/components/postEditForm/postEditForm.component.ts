@@ -42,16 +42,11 @@ import { ValidationService } from "@common/services/validation.service";
 import { AlertsService } from "@common/services/alerts.service";
 import { ApiClientService } from "@common/services/apiClient.service";
 import { SWManager } from "@app/common/services/sWManager.service";
+import { PostAndReportResponse } from "@app/interfaces/responses";
 
 interface PostEditResponse {
   success: boolean;
   updated: Post;
-}
-
-interface PostAndReportResponse {
-  success: boolean;
-  updatedPost?: Post;
-  reportId?: number;
 }
 
 @Component({
@@ -63,6 +58,7 @@ export class PostEditForm implements OnInit {
   @Input() editedItem!: Post;
   // indicates whether edit/delete mode is still required
   @Output() editMode = new EventEmitter<boolean>();
+  @Output() updateResult = new EventEmitter<PostAndReportResponse>();
   @Input() reportData: any;
   @Input() isAdmin = false;
   postEditForm = this.fb.group({
@@ -119,12 +115,11 @@ export class PostEditForm implements OnInit {
             ? `Report ${response.reportId} was closed, and the associated post was edited!`
             : `Post ${response.updatedPost?.id} was edited.`;
 
-          this.alertService.createSuccessAlert(`${editMessage} Refresh to view the updated post.`, {
-            reload: closeReport || true,
-          });
+          this.alertService.createSuccessAlert(editMessage);
 
           if (response.updatedPost)
             this.swManager.addFetchedItems("posts", [response.updatedPost], "date");
+          this.updateResult.emit(response);
           this.editMode.emit(false);
         },
       });

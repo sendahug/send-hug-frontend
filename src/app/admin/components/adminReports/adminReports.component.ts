@@ -39,6 +39,7 @@ import { ApiClientService } from "@common/services/apiClient.service";
 import { HttpErrorResponse } from "@angular/common/http";
 import { Report } from "@app/interfaces/report.interface";
 import { AlertsService } from "@common/services/alerts.service";
+import { PostAndReportResponse } from "@app/interfaces/responses";
 
 @Component({
   selector: "app-admin-reports",
@@ -245,5 +246,24 @@ export class AdminReports {
     else if (type === "EditPost") this.postEditMode = edit;
     else this.deleteMode = edit;
     this.lastFocusedElement?.focus();
+  }
+
+  /**
+   * Updates the UI with the updated details of the post and report.
+   * @param response The post/report response returned by the PostEditForm.
+   */
+  updatePostReport(response: PostAndReportResponse) {
+    // If the report was closed, remove it
+    if (response.reportId) {
+      this.postReports = this.postReports.filter((report) => report.id != response.reportId);
+    } else {
+      // otherwise at least update the post's test
+      const updatedReport = this.postReports.find(
+        (report) => report.postID == response.updatedPost?.id,
+      );
+      if (!(updatedReport && updatedReport.text)) return;
+
+      updatedReport.text = response.updatedPost?.text;
+    }
   }
 }

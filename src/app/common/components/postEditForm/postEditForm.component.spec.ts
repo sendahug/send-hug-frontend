@@ -109,19 +109,21 @@ describe("PostEditForm", () => {
         givenHugs: 0,
       },
     };
+    const reportPostResponse = {
+      success: true,
+      updatedPost: {
+        ...serverResponse.updated,
+      },
+      reportId: undefined,
+    };
     fixture.detectChanges();
 
     const apiClientSpy = spyOn(popUp["apiClient"], "patch").and.returnValue(of(serverResponse));
     const updateReportSpy = spyOn(popUp, "updateReportIfNecessary").and.returnValue(
-      of({
-        success: true,
-        updatedPost: {
-          ...serverResponse.updated,
-        },
-        reportId: undefined,
-      }),
+      of(reportPostResponse),
     );
     const emitSpy = spyOn(popUp.editMode, "emit");
+    const resultSpy = spyOn(popUp.updateResult, "emit");
     const alertSpy = spyOn(popUp["alertService"], "createSuccessAlert");
 
     popUpDOM.querySelector("#postText").value = newText;
@@ -135,9 +137,8 @@ describe("PostEditForm", () => {
     expect(apiClientSpy).toHaveBeenCalledWith(`posts/${originalItem.id}`, updatedItem);
     expect(updateReportSpy).toHaveBeenCalledWith(null, serverResponse);
     expect(emitSpy).toHaveBeenCalledWith(false);
-    expect(alertSpy).toHaveBeenCalledWith("Post 1 was edited. Refresh to view the updated post.", {
-      reload: true,
-    });
+    expect(alertSpy).toHaveBeenCalledWith("Post 1 was edited.");
+    expect(resultSpy).toHaveBeenCalledWith(reportPostResponse);
   });
 
   it("should send a different message if the report was closed", () => {
@@ -168,19 +169,21 @@ describe("PostEditForm", () => {
         givenHugs: 0,
       },
     };
+    const reportPostResponse = {
+      success: true,
+      updatedPost: {
+        ...serverResponse.updated,
+      },
+      reportId: 1,
+    };
     fixture.detectChanges();
 
     const apiClientSpy = spyOn(popUp["apiClient"], "patch").and.returnValue(of(serverResponse));
     const updateReportSpy = spyOn(popUp, "updateReportIfNecessary").and.returnValue(
-      of({
-        success: true,
-        updatedPost: {
-          ...serverResponse.updated,
-        },
-        reportId: 1,
-      }),
+      of(reportPostResponse),
     );
     const emitSpy = spyOn(popUp.editMode, "emit");
+    const resultSpy = spyOn(popUp.updateResult, "emit");
     const alertSpy = spyOn(popUp["alertService"], "createSuccessAlert");
 
     popUpDOM.querySelector("#postText").value = newText;
@@ -195,9 +198,9 @@ describe("PostEditForm", () => {
     expect(updateReportSpy).toHaveBeenCalledWith(true, serverResponse);
     expect(emitSpy).toHaveBeenCalledWith(false);
     expect(alertSpy).toHaveBeenCalledWith(
-      "Report 1 was closed, and the associated post was edited! Refresh to view the updated post.",
-      { reload: true },
+      "Report 1 was closed, and the associated post was edited!",
     );
+    expect(resultSpy).toHaveBeenCalledWith(reportPostResponse);
   });
 
   it("should not try to close the report if the user chose not to", () => {
@@ -228,19 +231,21 @@ describe("PostEditForm", () => {
         givenHugs: 0,
       },
     };
+    const reportPostResponse = {
+      success: true,
+      updatedPost: {
+        ...serverResponse.updated,
+      },
+      reportId: undefined,
+    };
     fixture.detectChanges();
 
     const apiClientSpy = spyOn(popUp["apiClient"], "patch").and.returnValue(of(serverResponse));
     const updateReportSpy = spyOn(popUp, "updateReportIfNecessary").and.returnValue(
-      of({
-        success: true,
-        updatedPost: {
-          ...serverResponse.updated,
-        },
-        reportId: undefined,
-      }),
+      of(reportPostResponse),
     );
     const emitSpy = spyOn(popUp.editMode, "emit");
+    const resultSpy = spyOn(popUp.updateResult, "emit");
     const alertSpy = spyOn(popUp["alertService"], "createSuccessAlert");
 
     popUpDOM.querySelector("#postText").value = newText;
@@ -254,9 +259,8 @@ describe("PostEditForm", () => {
     expect(apiClientSpy).toHaveBeenCalledWith(`posts/${originalItem.id}`, updatedItem);
     expect(updateReportSpy).toHaveBeenCalledWith(false, serverResponse);
     expect(emitSpy).toHaveBeenCalledWith(false);
-    expect(alertSpy).toHaveBeenCalledWith("Post 1 was edited. Refresh to view the updated post.", {
-      reload: true,
-    });
+    expect(alertSpy).toHaveBeenCalledWith("Post 1 was edited.");
+    expect(resultSpy).toHaveBeenCalledWith(reportPostResponse);
   });
 
   it("should close the report if the user chooses to", (done: DoneFn) => {

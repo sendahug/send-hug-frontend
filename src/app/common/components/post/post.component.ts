@@ -50,6 +50,7 @@ import { AuthService } from "@common/services/auth.service";
 import { ItemsService } from "@common/services/items.service";
 import { Post } from "@app/interfaces/post.interface";
 import { SWManager } from "@app/common/services/sWManager.service";
+import { PostAndReportResponse } from "@app/interfaces/responses";
 
 @Component({
   selector: "app-single-post",
@@ -305,5 +306,19 @@ export class SinglePost implements AfterViewChecked, OnInit, OnDestroy {
     } else {
       this.itemsService.currentlyOpenMenu.next("");
     }
+  }
+
+  /**
+   * Updates the post's text with the new text.
+   * @param updatedPost The post/report response returned by the PostEditForm.
+   */
+  updatePostText(updatedPost: PostAndReportResponse) {
+    if (!updatedPost.updatedPost) return;
+
+    this._post.set({
+      ...this._post()!,
+      ...updatedPost.updatedPost,
+    });
+    this.swManager.addFetchedItems("posts", [this._post()], "date");
   }
 }

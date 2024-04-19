@@ -82,6 +82,7 @@
 	*ngIf="editMode"
 	[editedItem]="postToEdit"
 	(editMode)="changeMode($event, 'Edit')"
+	(updateResult)="updatePostText($event)"
 ></post-edit-form>
 
 <report-form

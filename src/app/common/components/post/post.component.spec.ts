@@ -449,4 +449,41 @@ describe("Post", () => {
     });
     done();
   });
+
+  it("should change update the UI when a report isn't closed - post edit", (done: DoneFn) => {
+    const upFixture = TestBed.createComponent(MockPage);
+    upFixture.detectChanges();
+    const singlePost: SinglePost = upFixture.debugElement.children[0].componentInstance;
+    const updateSpy = spyOn(singlePost, "updatePostText").and.callThrough();
+    const reportPostResponse = {
+      success: true,
+      updatedPost: {
+        date: new Date("2020-06-27 19:17:31.072"),
+        givenHugs: 0,
+        id: 1,
+        text: "boooop",
+        userId: 1,
+        user: "test",
+        sentHugs: [],
+      },
+      reportId: undefined,
+    };
+
+    // start the popup
+    singlePost.lastFocusedElement = document.querySelectorAll("a")[0];
+    singlePost.editMode = true;
+    upFixture.detectChanges();
+
+    // exit the popup
+    const popup = upFixture.debugElement.query(By.css("post-edit-form"))
+      .componentInstance as MockEditForm;
+    popup.editMode.emit(false);
+    popup.updateResult.emit(reportPostResponse);
+    upFixture.detectChanges();
+
+    // check the popup is exited
+    expect(updateSpy).toHaveBeenCalled();
+    expect(singlePost.post?.text).toBe(reportPostResponse.updatedPost.text);
+    done();
+  });
 });

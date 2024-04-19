@@ -41,6 +41,7 @@ export interface Report {
   dismissed: boolean;
   closed: boolean;
   displayName?: string;
+  text?: string;
 }
 
 export interface ReportData {

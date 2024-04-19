@@ -160,7 +160,7 @@ export class AdminBlocks {
           this.alertsService.createSuccessAlert(
             `User ${response.updated.displayName} has been unblocked.`,
           );
-          this.blockedUsers = this.blockedUsers.filter((user) => user.id == userID);
+          this.blockedUsers = this.blockedUsers.filter((user) => user.id != userID);
         },
       });
   }

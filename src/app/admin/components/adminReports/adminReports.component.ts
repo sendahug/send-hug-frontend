@@ -198,8 +198,8 @@ export class AdminReports {
       next: (response: any) => {
         // if the report was dismissed, alert the user
         this.alertsService.createSuccessAlert(`Report ${response.updated.id} was dismissed!`);
-        if (userID) this.userReports = this.userReports.filter((report) => report.id == reportID);
-        if (postID) this.postReports = this.postReports.filter((report) => report.id == reportID);
+        if (userID) this.userReports = this.userReports.filter((report) => report.id != reportID);
+        if (postID) this.postReports = this.postReports.filter((report) => report.id != reportID);
       },
     });
   }

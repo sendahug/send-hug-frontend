@@ -303,10 +303,8 @@ describe("AdminReports", () => {
     expect(dismissSpy).toHaveBeenCalled();
     expect(dismissServiceSpy).toHaveBeenCalled();
     expect(dismissServiceSpy).toHaveBeenCalledWith(2, true, 5, undefined);
-    expect(alertsSpy).toHaveBeenCalledWith(
-      `Report 2 was dismissed! Refresh the page to view the updated list.`,
-      { reload: true },
-    );
+    expect(alertsSpy).toHaveBeenCalledWith(`Report 2 was dismissed!`);
+    expect(adminReports.postReports.length).toEqual(0);
     done();
   });
 

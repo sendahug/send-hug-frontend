@@ -539,7 +539,7 @@ describe("UserPage", () => {
     expect(
       userPageDOM.querySelector("#rHugsElement").querySelectorAll(".pageData")[0].textContent,
     ).toBe("4");
-    expect(alertsSpy).toHaveBeenCalledWith("Your hug was sent!", { reload: true });
+    expect(alertsSpy).toHaveBeenCalledWith("Your hug was sent!");
     done();
   });
 

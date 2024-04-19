@@ -135,7 +135,7 @@ export class AdminFilters {
         this.alertsService.createSuccessAlert(
           `The phrase ${response.deleted.filter} was removed from the list of filtered words.`,
         );
-        this.filteredPhrases = this.filteredPhrases.filter((existingF) => existingF.id == filter);
+        this.filteredPhrases = this.filteredPhrases.filter((existingF) => existingF.id != filter);
       },
     });
   }

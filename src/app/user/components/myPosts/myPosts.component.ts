@@ -229,4 +229,12 @@ export class MyPosts implements OnInit {
     this.currentPage.set(this.currentPage() - 1);
     this.fetchPosts();
   }
+
+  /**
+   * Removes the deleted post from the list of posts.
+   * @param postId the ID of the post that was deleted.
+   */
+  removeDeletedPost(postId: number) {
+    this.posts.set(this.posts().filter((post) => post.id != postId));
+  }
 }

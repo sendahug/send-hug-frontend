@@ -51,68 +51,12 @@ import { mockAuthedUser } from "@tests/mockData";
 import { FullThread } from "@app/interfaces/thread.interface";
 import { MockDeleteForm } from "@tests/mockForms";
 import { AppCommonModule } from "@app/common/common.module";
-
-const mockMessages = [
-  {
-    date: new Date("Mon, 22 Jun 2020 14:32:38 GMT"),
-    for: {
-      displayName: "user14",
-    },
-    forId: 4,
-    from: {
-      displayName: "user14",
-    },
-    fromId: 4,
-    id: 1,
-    messageText: "Your post (ID 19) was deleted due to violating our community rules.",
-    threadID: 4,
-  },
-  {
-    date: new Date("Mon, 22 Jun 2020 14:32:38 GMT"),
-    for: {
-      displayName: "user14",
-    },
-    forId: 4,
-    from: {
-      displayName: "user14",
-    },
-    fromId: 4,
-    id: 14,
-    messageText: "Your post (ID 19) was deleted due to violating our community rules.",
-    threadID: 4,
-  },
-];
-const mockThreads: FullThread[] = [
-  {
-    id: 3,
-    user1: {
-      displayName: "shirb",
-      selectedIcon: "kitty",
-      iconColours: {
-        character: "#BA9F93",
-        lbg: "#e2a275",
-        rbg: "#f8eee4",
-        item: "#f4b56a",
-      },
-    },
-    user1Id: 1,
-    user2: {
-      displayName: "test",
-      selectedIcon: "kitty",
-      iconColours: {
-        character: "#BA9F93",
-        lbg: "#e2a275",
-        rbg: "#f8eee4",
-        item: "#f4b56a",
-      },
-    },
-    user2Id: 4,
-    numMessages: 1,
-    latestMessage: new Date("Mon, 08 Jun 2020 14:43:15 GMT"),
-  },
-];
+import { Message } from "@app/interfaces/message.interface";
 
 describe("AppMessaging", () => {
+  let mockMessages: Message[];
+  let mockThreads: FullThread[];
+
   // Before each test, configure testing environment
   beforeEach(() => {
     TestBed.resetTestEnvironment();
@@ -134,6 +78,67 @@ describe("AppMessaging", () => {
     const authService = TestBed.inject(AuthService);
     authService.authenticated.set(true);
     authService.userData.set({ ...mockAuthedUser });
+
+    mockMessages = [
+      {
+        date: new Date("Mon, 22 Jun 2020 14:32:38 GMT"),
+        for: {
+          displayName: "user14",
+        },
+        forId: 4,
+        from: {
+          displayName: "user14",
+        },
+        fromId: 4,
+        id: 1,
+        messageText: "Your post (ID 19) was deleted due to violating our community rules.",
+        threadID: 4,
+      },
+      {
+        date: new Date("Mon, 22 Jun 2020 14:32:38 GMT"),
+        for: {
+          displayName: "user14",
+        },
+        forId: 4,
+        from: {
+          displayName: "user14",
+        },
+        fromId: 4,
+        id: 14,
+        messageText: "Your post (ID 19) was deleted due to violating our community rules.",
+        threadID: 4,
+      },
+    ];
+
+    mockThreads = [
+      {
+        id: 3,
+        user1: {
+          displayName: "shirb",
+          selectedIcon: "kitty",
+          iconColours: {
+            character: "#BA9F93",
+            lbg: "#e2a275",
+            rbg: "#f8eee4",
+            item: "#f4b56a",
+          },
+        },
+        user1Id: 1,
+        user2: {
+          displayName: "test",
+          selectedIcon: "kitty",
+          iconColours: {
+            character: "#BA9F93",
+            lbg: "#e2a275",
+            rbg: "#f8eee4",
+            item: "#f4b56a",
+          },
+        },
+        user2Id: 4,
+        numMessages: 1,
+        latestMessage: new Date("Mon, 08 Jun 2020 14:43:15 GMT"),
+      },
+    ];
   });
 
   // Check that the component is created
@@ -630,6 +635,119 @@ describe("AppMessaging", () => {
       expect(message.querySelectorAll(".deleteButton")[0].tagName.toLowerCase()).toBe("button");
       expect(message.querySelectorAll(".deleteButton")[0].textContent).toBe("Delete Message");
     });
+    done();
+  });
+
+  it("should update the message list post delete - single message", (done: DoneFn) => {
+    TestBed.inject(ActivatedRoute).url = of([{ path: "inbox" } as UrlSegment]);
+    const fixture = TestBed.createComponent(AppMessaging);
+    const appMessaging = fixture.componentInstance;
+    const updateSpy = spyOn(appMessaging, "updateMessageList").and.callThrough();
+    spyOn(appMessaging, "fetchMessages");
+    appMessaging.messages.set(mockMessages);
+
+    // start the popup
+    appMessaging.lastFocusedElement = document.querySelectorAll("a")[0];
+    appMessaging.deleteMode = true;
+    appMessaging.toDelete = "Message";
+    appMessaging.itemToDelete = 1;
+    fixture.detectChanges();
+
+    // exit the popup
+    const popup = fixture.debugElement.query(By.css("item-delete-form"))
+      .componentInstance as MockDeleteForm;
+    popup.deleted.emit(1);
+    popup.editMode.emit(false);
+    fixture.detectChanges();
+
+    // check the popup is exited
+    expect(updateSpy).toHaveBeenCalled();
+    expect(appMessaging.messages().length).toBe(1);
+    expect(appMessaging.messages()[0].id).not.toBe(1);
+    done();
+  });
+
+  it("should update the message list post delete - single thread", (done: DoneFn) => {
+    TestBed.inject(ActivatedRoute).url = of([{ path: "Threads" } as UrlSegment]);
+    const fixture = TestBed.createComponent(AppMessaging);
+    const appMessaging = fixture.componentInstance;
+    const updateSpy = spyOn(appMessaging, "updateMessageList").and.callThrough();
+    spyOn(appMessaging, "fetchMessages");
+    appMessaging.userThreads.set(mockThreads);
+
+    // start the popup
+    appMessaging.lastFocusedElement = document.querySelectorAll("a")[0];
+    appMessaging.deleteMode = true;
+    appMessaging.toDelete = "Thread";
+    appMessaging.itemToDelete = 3;
+    fixture.detectChanges();
+
+    // exit the popup
+    const popup = fixture.debugElement.query(By.css("item-delete-form"))
+      .componentInstance as MockDeleteForm;
+    popup.deleted.emit(3);
+    popup.editMode.emit(false);
+    fixture.detectChanges();
+
+    // check the popup is exited
+    expect(updateSpy).toHaveBeenCalled();
+    expect(appMessaging.userThreads().length).toBe(0);
+    done();
+  });
+
+  it("should update the message list post delete - all messages", (done: DoneFn) => {
+    TestBed.inject(ActivatedRoute).url = of([{ path: "inbox" } as UrlSegment]);
+    const fixture = TestBed.createComponent(AppMessaging);
+    const appMessaging = fixture.componentInstance;
+    const updateSpy = spyOn(appMessaging, "updateMessageList").and.callThrough();
+    spyOn(appMessaging, "fetchMessages");
+    appMessaging.messages.set(mockMessages);
+
+    // start the popup
+    appMessaging.lastFocusedElement = document.querySelectorAll("a")[0];
+    appMessaging.deleteMode = true;
+    appMessaging.toDelete = "All inbox";
+    appMessaging.itemToDelete = 1;
+    fixture.detectChanges();
+
+    // exit the popup
+    const popup = fixture.debugElement.query(By.css("item-delete-form"))
+      .componentInstance as MockDeleteForm;
+    popup.deleted.emit(1);
+    popup.editMode.emit(false);
+    fixture.detectChanges();
+
+    // check the popup is exited
+    expect(updateSpy).toHaveBeenCalled();
+    expect(appMessaging.messages().length).toBe(0);
+    done();
+  });
+
+  it("should update the message list post delete - all threads", (done: DoneFn) => {
+    TestBed.inject(ActivatedRoute).url = of([{ path: "Threads" } as UrlSegment]);
+    const fixture = TestBed.createComponent(AppMessaging);
+    const appMessaging = fixture.componentInstance;
+    const updateSpy = spyOn(appMessaging, "updateMessageList").and.callThrough();
+    spyOn(appMessaging, "fetchMessages");
+    appMessaging.userThreads.set(mockThreads);
+
+    // start the popup
+    appMessaging.lastFocusedElement = document.querySelectorAll("a")[0];
+    appMessaging.deleteMode = true;
+    appMessaging.toDelete = "All threads";
+    appMessaging.itemToDelete = 3;
+    fixture.detectChanges();
+
+    // exit the popup
+    const popup = fixture.debugElement.query(By.css("item-delete-form"))
+      .componentInstance as MockDeleteForm;
+    popup.deleted.emit(3);
+    popup.editMode.emit(false);
+    fixture.detectChanges();
+
+    // check the popup is exited
+    expect(updateSpy).toHaveBeenCalled();
+    expect(appMessaging.userThreads().length).toBe(0);
     done();
   });
 });

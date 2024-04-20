@@ -42,45 +42,19 @@ import { ServiceWorkerModule } from "@angular/service-worker";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { of } from "rxjs";
 import { ActivatedRoute, Router, RouterModule, UrlSegment } from "@angular/router";
+import { By } from "@angular/platform-browser";
 
 import { FullList } from "./fullList.component";
-import { ApiClientService } from "../../common/services/apiClient.service";
-import { SWManager } from "../../common/services/sWManager.service";
+import { ApiClientService } from "@common/services/apiClient.service";
+import { SWManager } from "@common/services/sWManager.service";
 import { AppCommonModule } from "@app/common/common.module";
-
-const PageOnePosts = [
-  {
-    date: new Date("2020-06-27 19:17:31.072"),
-    givenHugs: 0,
-    id: 1,
-    text: "test",
-    userId: 1,
-    user: "test",
-    sentHugs: [],
-  },
-  {
-    date: new Date("2020-06-28 19:17:31.072"),
-    givenHugs: 0,
-    id: 2,
-    text: "test2",
-    userId: 1,
-    user: "test",
-    sentHugs: [],
-  },
-];
-const PageTwoPosts = [
-  {
-    date: new Date("2020-06-29 19:17:31.072"),
-    givenHugs: 0,
-    id: 3,
-    text: "test3",
-    userId: 1,
-    user: "test3",
-    sentHugs: [],
-  },
-];
+import { Post } from "@app/interfaces/post.interface";
+import { SinglePost } from "@app/common/components/post/post.component";
 
 describe("FullList", () => {
+  let pageOnePosts: Post[];
+  let PageTwoPosts: Post[];
+
   // Before each test, configure testing environment
   beforeEach(() => {
     TestBed.resetTestEnvironment();
@@ -97,6 +71,39 @@ describe("FullList", () => {
       declarations: [FullList],
       providers: [{ provide: APP_BASE_HREF, useValue: "/" }],
     }).compileComponents();
+
+    pageOnePosts = [
+      {
+        date: new Date("2020-06-27 19:17:31.072"),
+        givenHugs: 0,
+        id: 1,
+        text: "test",
+        userId: 1,
+        user: "test",
+        sentHugs: [],
+      },
+      {
+        date: new Date("2020-06-28 19:17:31.072"),
+        givenHugs: 0,
+        id: 2,
+        text: "test2",
+        userId: 1,
+        user: "test",
+        sentHugs: [],
+      },
+    ];
+
+    PageTwoPosts = [
+      {
+        date: new Date("2020-06-29 19:17:31.072"),
+        givenHugs: 0,
+        id: 3,
+        text: "test3",
+        userId: 1,
+        user: "test3",
+        sentHugs: [],
+      },
+    ];
   });
 
   // Check that the component is created
@@ -184,7 +191,7 @@ describe("FullList", () => {
     paramMap.snapshot.url = [{ path: "New" }] as UrlSegment[];
 
     const mockPageOneResponse = {
-      posts: PageOnePosts,
+      posts: pageOnePosts,
       total_pages: 2,
       success: true,
     };
@@ -202,7 +209,7 @@ describe("FullList", () => {
     expect(idbSpy).toHaveBeenCalled();
     expect(apiClientSpy).toHaveBeenCalledWith("posts/new", { page: 1 });
     expect(updateInterfaceSpy).toHaveBeenCalledWith(mockPageOneResponse);
-    expect(addItemsSpy).toHaveBeenCalledWith("posts", PageOnePosts, "date");
+    expect(addItemsSpy).toHaveBeenCalledWith("posts", pageOnePosts, "date");
     done();
   });
 
@@ -215,7 +222,7 @@ describe("FullList", () => {
 
     // set up spies
     const idbSpy = spyOn(swManager, "fetchPosts").and.returnValue(
-      new Promise((resolve) => resolve({ posts: PageOnePosts, pages: 2 })),
+      new Promise((resolve) => resolve({ posts: pageOnePosts, pages: 2 })),
     );
     const updateInterfaceSpy = spyOn(FullList.prototype, "updateInterface");
 
@@ -225,7 +232,7 @@ describe("FullList", () => {
     fullList.fetchPostsFromIdb().subscribe((_data) => {
       expect(idbSpy).toHaveBeenCalledWith("date", 5, undefined, 1, true);
       expect(updateInterfaceSpy).toHaveBeenCalledWith({
-        posts: PageOnePosts,
+        posts: pageOnePosts,
         total_pages: 2,
         success: true,
       });
@@ -242,7 +249,7 @@ describe("FullList", () => {
 
     // set up spies
     const idbSpy = spyOn(swManager, "fetchPosts").and.returnValue(
-      new Promise((resolve) => resolve({ posts: PageOnePosts, pages: 2 })),
+      new Promise((resolve) => resolve({ posts: pageOnePosts, pages: 2 })),
     );
     const updateInterfaceSpy = spyOn(FullList.prototype, "updateInterface");
 
@@ -252,7 +259,7 @@ describe("FullList", () => {
     fullList.fetchPostsFromIdb().subscribe((_data) => {
       expect(idbSpy).toHaveBeenCalledWith("hugs", 5, undefined, 1, false);
       expect(updateInterfaceSpy).toHaveBeenCalledWith({
-        posts: PageOnePosts,
+        posts: pageOnePosts,
         total_pages: 2,
         success: true,
       });
@@ -274,11 +281,11 @@ describe("FullList", () => {
     const postsSpy = spyOn(fullList.posts, "set").and.callThrough();
     const isLoadingSpy = spyOn(fullList.isLoading, "set").and.callThrough();
 
-    fullList.updateInterface({ posts: PageOnePosts, total_pages: 4, success: true });
+    fullList.updateInterface({ posts: pageOnePosts, total_pages: 4, success: true });
     fixture.detectChanges();
 
     expect(totalPagesSpy).toHaveBeenCalledWith(4);
-    expect(postsSpy).toHaveBeenCalledWith(PageOnePosts);
+    expect(postsSpy).toHaveBeenCalledWith(pageOnePosts);
     expect(isLoadingSpy).toHaveBeenCalledWith(false);
 
     const suggestedPosts = fullListDOM.querySelectorAll(".sugItem");
@@ -360,5 +367,25 @@ describe("FullList", () => {
       queryParams: { page: 3 },
       replaceUrl: true,
     });
+  });
+
+  it("should remove a deleted post", () => {
+    spyOn(FullList.prototype, "fetchPosts");
+    const paramMap = TestBed.inject(ActivatedRoute);
+    paramMap.snapshot.url = [{ path: "Suggested" }] as UrlSegment[];
+    const fixture = TestBed.createComponent(FullList);
+    const fullList = fixture.componentInstance;
+    fullList.posts.set(pageOnePosts);
+    const removeSpy = spyOn(fullList, "removeDeletedPost").and.callThrough();
+    fixture.detectChanges();
+
+    const singlePost = fixture.debugElement.query(By.css("app-single-post"))
+      .componentInstance as SinglePost;
+    singlePost.deletedId.emit(2);
+    fixture.detectChanges();
+
+    expect(removeSpy).toHaveBeenCalledWith(2);
+    expect(fullList.posts().length).toBe(1);
+    expect(fullList.posts()[0].id).not.toBe(2);
   });
 });

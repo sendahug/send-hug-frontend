@@ -41,11 +41,13 @@ import { HttpClientModule } from "@angular/common/http";
 import { ServiceWorkerModule } from "@angular/service-worker";
 import { ActivatedRoute, Router, RouterModule } from "@angular/router";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
+import { By } from "@angular/platform-browser";
 
 import { SearchResults } from "./searchResults.component";
-import { ItemsService } from "../../common/services/items.service";
+import { ItemsService } from "@common/services/items.service";
 import { iconCharacters } from "@app/interfaces/types";
 import { AppCommonModule } from "@app/common/common.module";
+import { SinglePost } from "@app/common/components/post/post.component";
 
 const mockUserSearchResults = [
   {
@@ -408,6 +410,33 @@ describe("SearchResults", () => {
         searchResultsDOM.querySelector("#postSearchResults").firstElementChild.children.length,
       ).toBe(1);
       done();
+    });
+
+    it("should remove a deleted post", () => {
+      const route = TestBed.inject(ActivatedRoute);
+      spyOn(route.snapshot.queryParamMap, "get").and.callFake((param: string) => {
+        if (param == "query") {
+          return "test";
+        } else {
+          return null;
+        }
+      });
+      const fixture = TestBed.createComponent(SearchResults);
+      const searchResults = fixture.componentInstance;
+      searchResults.itemsService.isSearchResolved.next(true);
+      searchResults.itemsService.postSearchResults = [...mockPostSearchResults];
+      searchResults.itemsService.numPostResults = 1;
+      const removeSpy = spyOn(searchResults, "removeDeletedPost").and.callThrough();
+      fixture.detectChanges();
+
+      const singlePost = fixture.debugElement.query(By.css("app-single-post"))
+        .componentInstance as SinglePost;
+      singlePost.deletedId.emit(5);
+      fixture.detectChanges();
+
+      expect(removeSpy).toHaveBeenCalledWith(5);
+      expect(searchResults.itemsService.postSearchResults.length).toBe(1);
+      expect(searchResults.itemsService.postSearchResults[0].id).not.toBe(5);
     });
   });
 });

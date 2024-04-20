@@ -486,4 +486,28 @@ describe("Post", () => {
     expect(singlePost.post?.text).toBe(reportPostResponse.updatedPost.text);
     done();
   });
+
+  it("should update the parent about the deleted post - delete mode", (done: DoneFn) => {
+    const upFixture = TestBed.createComponent(MockPage);
+    upFixture.detectChanges();
+    const singlePost: SinglePost = upFixture.debugElement.children[0].componentInstance;
+    const emitSpy = spyOn(singlePost.deletedId, "emit");
+    upFixture.detectChanges();
+
+    // start the popup
+    singlePost.lastFocusedElement = document.querySelectorAll("a")[0];
+    singlePost.deleteMode = true;
+    upFixture.detectChanges();
+
+    // exit the popup
+    const popup = upFixture.debugElement.query(By.css("item-delete-form"))
+      .componentInstance as MockDeleteForm;
+    popup.deleted.emit(1);
+    popup.editMode.emit(false);
+    upFixture.detectChanges();
+
+    // check the popup is exited
+    expect(emitSpy).toHaveBeenCalledWith(1);
+    done();
+  });
 });

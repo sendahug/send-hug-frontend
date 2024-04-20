@@ -101,6 +101,7 @@ describe("ItemDeleteForm", () => {
       mockSubscription,
     );
     const editModeSpy = spyOn(itemDeleteForm.editMode, "emit");
+    const deletedEmitSpy = spyOn(itemDeleteForm.deleted, "emit");
     itemDeleteForm.toDelete = "Post";
     itemDeleteForm.itemToDelete = 2;
 
@@ -111,6 +112,7 @@ describe("ItemDeleteForm", () => {
 
     expect(deleteSingleItemSpy).toHaveBeenCalledWith("posts/2", "posts");
     expect(editModeSpy).toHaveBeenCalledWith(false);
+    expect(deletedEmitSpy).toHaveBeenCalledWith(2);
     done();
   });
 
@@ -173,6 +175,7 @@ describe("ItemDeleteForm", () => {
     itemDeleteForm.itemToDelete = 2;
     const deleteIdbSpy = spyOn(itemDeleteForm["swManager"], "deleteItems");
     const editModeSpy = spyOn(itemDeleteForm.editMode, "emit");
+    const deletedEmitSpy = spyOn(itemDeleteForm.deleted, "emit");
 
     fixture.detectChanges();
 
@@ -182,6 +185,7 @@ describe("ItemDeleteForm", () => {
     expect(deleteMultipleSpy).toHaveBeenCalledWith("users/all/2/posts", "posts");
     expect(deleteIdbSpy).toHaveBeenCalledWith("posts", "userId", 2);
     expect(editModeSpy).toHaveBeenCalledWith(false);
+    expect(deletedEmitSpy).toHaveBeenCalledWith(2);
     done();
   });
 
@@ -196,6 +200,7 @@ describe("ItemDeleteForm", () => {
     itemDeleteForm.itemToDelete = 2;
     const deleteIdbSpy = spyOn(itemDeleteForm["swManager"], "deleteItems");
     const editModeSpy = spyOn(itemDeleteForm.editMode, "emit");
+    const deletedEmitSpy = spyOn(itemDeleteForm.deleted, "emit");
 
     fixture.detectChanges();
 
@@ -205,6 +210,7 @@ describe("ItemDeleteForm", () => {
     expect(deleteMultipleSpy).toHaveBeenCalledWith("messages/inbox", "messages", { userID: 2 });
     expect(deleteIdbSpy).toHaveBeenCalledWith("messages", "forId", 2);
     expect(editModeSpy).toHaveBeenCalledWith(false);
+    expect(deletedEmitSpy).toHaveBeenCalledWith(2);
     done();
   });
 
@@ -314,6 +320,7 @@ describe("ItemDeleteForm", () => {
       mockSubscription,
     );
     const emitSpy = spyOn(itemDeleteForm.editMode, "emit");
+    const deletedEmitSpy = spyOn(itemDeleteForm.deleted, "emit");
 
     fixture.detectChanges();
 
@@ -338,6 +345,7 @@ describe("ItemDeleteForm", () => {
     expect(deleteSpy).toHaveBeenCalledWith(false);
     expect(deleteServiceSpy).toHaveBeenCalledWith(2, report, false);
     expect(emitSpy).toHaveBeenCalledTimes(2);
+    expect(deletedEmitSpy).toHaveBeenCalledWith(2);
     done();
   });
 

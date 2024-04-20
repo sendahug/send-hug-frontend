@@ -157,6 +157,7 @@ describe("DisplayNameEditForm", () => {
 
     const updateSpy = spyOn(popUp["adminService"], "editUser").and.returnValue(mockSubscription);
     const emitSpy = spyOn(popUp.editMode, "emit");
+    const updatedDetailsSpy = spyOn(popUp.updatedDetails, "emit");
 
     popUpDOM.querySelector("#displayName").value = newName;
     popUpDOM.querySelector("#displayName").dispatchEvent(new Event("input"));
@@ -173,6 +174,11 @@ describe("DisplayNameEditForm", () => {
       1,
     );
     expect(emitSpy).toHaveBeenCalledWith(false);
+    expect(updatedDetailsSpy).toHaveBeenCalledWith({
+      displayName: newName,
+      closed: true,
+      reportID: 1,
+    });
   });
 
   it("should make the request to adminService to change the name - don't close report", () => {
@@ -199,6 +205,7 @@ describe("DisplayNameEditForm", () => {
 
     const updateSpy = spyOn(popUp["adminService"], "editUser").and.returnValue(mockSubscription);
     const emitSpy = spyOn(popUp.editMode, "emit");
+    const updatedDetailsSpy = spyOn(popUp.updatedDetails, "emit");
 
     popUpDOM.querySelector("#displayName").value = newName;
     popUpDOM.querySelector("#displayName").dispatchEvent(new Event("input"));
@@ -215,6 +222,11 @@ describe("DisplayNameEditForm", () => {
       1,
     );
     expect(emitSpy).toHaveBeenCalledWith(false);
+    expect(updatedDetailsSpy).toHaveBeenCalledWith({
+      displayName: newName,
+      closed: false,
+      reportID: 1,
+    });
   });
 
   it("should prevent invalid names", () => {

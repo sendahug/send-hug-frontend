@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+### 2024-04-22
+
+#### Changes
+
+- Changed all create/edit/delete operations to update the UI with the new/updated/deleted item. Previously, most of these methods displayed an alert that recommended users to reload the page to see the changes they've made. Now, these methods updated the UI once the back-end returns a successful response, which means users can immediately view the results of the changes they've made. ([#1628](https://github.com/sendahug/send-hug-frontend/pull/1628))
+
 ### 2024-04-19
 
 #### Fixes

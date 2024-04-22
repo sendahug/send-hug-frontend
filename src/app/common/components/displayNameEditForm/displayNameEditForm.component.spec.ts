@@ -48,6 +48,7 @@ import { AuthService } from "@common/services/auth.service";
 import { mockAuthedUser } from "@tests/mockData";
 import { PopUp } from "@common/components/popUp/popUp.component";
 import { ValidationService } from "@common/services/validation.service";
+import { Subscription } from "rxjs";
 
 // DISPLAY NAME EDIT
 // ==================================================================
@@ -150,10 +151,13 @@ describe("DisplayNameEditForm", () => {
       userID: 2,
     };
     const newName = "new name";
+    const mockSubscription = new Subscription();
+    mockSubscription.unsubscribe();
     fixture.detectChanges();
 
-    const updateSpy = spyOn(popUp["adminService"], "editUser");
+    const updateSpy = spyOn(popUp["adminService"], "editUser").and.returnValue(mockSubscription);
     const emitSpy = spyOn(popUp.editMode, "emit");
+    const updatedDetailsSpy = spyOn(popUp.updatedDetails, "emit");
 
     popUpDOM.querySelector("#displayName").value = newName;
     popUpDOM.querySelector("#displayName").dispatchEvent(new Event("input"));
@@ -170,6 +174,11 @@ describe("DisplayNameEditForm", () => {
       1,
     );
     expect(emitSpy).toHaveBeenCalledWith(false);
+    expect(updatedDetailsSpy).toHaveBeenCalledWith({
+      displayName: newName,
+      closed: true,
+      reportID: 1,
+    });
   });
 
   it("should make the request to adminService to change the name - don't close report", () => {
@@ -190,10 +199,13 @@ describe("DisplayNameEditForm", () => {
       userID: 2,
     };
     const newName = "new name";
+    const mockSubscription = new Subscription();
+    mockSubscription.unsubscribe();
     fixture.detectChanges();
 
-    const updateSpy = spyOn(popUp["adminService"], "editUser");
+    const updateSpy = spyOn(popUp["adminService"], "editUser").and.returnValue(mockSubscription);
     const emitSpy = spyOn(popUp.editMode, "emit");
+    const updatedDetailsSpy = spyOn(popUp.updatedDetails, "emit");
 
     popUpDOM.querySelector("#displayName").value = newName;
     popUpDOM.querySelector("#displayName").dispatchEvent(new Event("input"));
@@ -210,6 +222,11 @@ describe("DisplayNameEditForm", () => {
       1,
     );
     expect(emitSpy).toHaveBeenCalledWith(false);
+    expect(updatedDetailsSpy).toHaveBeenCalledWith({
+      displayName: newName,
+      closed: false,
+      reportID: 1,
+    });
   });
 
   it("should prevent invalid names", () => {

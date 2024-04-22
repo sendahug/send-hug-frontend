@@ -41,6 +41,7 @@ import { ValidationService } from "@common/services/validation.service";
 import { AlertsService } from "@common/services/alerts.service";
 import { ReportData } from "@app/interfaces/report.interface";
 import { PartialUser } from "@app/interfaces/user.interface";
+import { UpdatedUserReportResponse } from "@app/interfaces/responses";
 
 @Component({
   selector: "display-name-edit-form",
@@ -49,6 +50,7 @@ import { PartialUser } from "@app/interfaces/user.interface";
 export class DisplayNameEditForm implements OnInit {
   // item to edit
   @Input() editedItem!: PartialUser;
+  @Output() updatedDetails = new EventEmitter<UpdatedUserReportResponse>();
   // indicates whether edit/delete mode is still required
   @Output() editMode = new EventEmitter<boolean>();
   @Input() reportData?: ReportData;
@@ -119,7 +121,13 @@ export class DisplayNameEditForm implements OnInit {
       }
 
       this.editedItem.displayName = newDisplayName;
-      this.adminService.editUser(this.editedItem, closeReport, this.reportData.reportID);
+      this.adminService.editUser(this.editedItem, closeReport, this.reportData.reportID).add(() => {
+        this.updatedDetails.emit({
+          displayName: newDisplayName,
+          closed: closeReport,
+          reportID: this.reportData!.reportID,
+        });
+      });
     }
 
     // TODO: We want to only run this after a successful response!

@@ -15,7 +15,8 @@
 			<app-single-post  *ngFor="let post of posts()"
 				[post]="post"
 				[type]="'n'"
-				[containerClass]="'userPost'"></app-single-post>
+				[containerClass]="'userPost'"
+				(deletedId)="removeDeletedPost($event)"></app-single-post>
 		</ul>
 		
 		<!-- Post pagination -->
@@ -60,4 +61,5 @@
 	(editMode)="changeMode($event)"
 	[toDelete]="toDelete"
 	[itemToDelete]="itemToDelete"
+	(deleted)="updatePostsList()"
 ></item-delete-form>

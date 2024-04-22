@@ -47,31 +47,13 @@ import { By } from "@angular/platform-browser";
 import { NO_ERRORS_SCHEMA } from "@angular/core";
 
 import { MyPosts } from "./myPosts.component";
-import { AuthService } from "../../../common/services/auth.service";
+import { AuthService } from "@common/services/auth.service";
 import { mockAuthedUser } from "@tests/mockData";
-import { MockReportForm, MockDeleteForm, MockEditForm } from "@tests/mockForms";
+import { MockDeleteForm } from "@tests/mockForms";
 import { AppCommonModule } from "@app/common/common.module";
-
-const mockPosts = [
-  {
-    date: new Date("Mon, 01 Jun 2020 15:05:01 GMT"),
-    givenHugs: 1,
-    id: 1,
-    sentHugs: [],
-    text: "test",
-    userId: 1,
-    user: "shirb",
-  },
-  {
-    date: new Date("Mon, 01 Jun 2020 15:05:01 GMT"),
-    givenHugs: 1,
-    id: 2,
-    sentHugs: [],
-    text: "test",
-    userId: 1,
-    user: "shirb",
-  },
-];
+import { Post } from "@app/interfaces/post.interface";
+import { SinglePost } from "@app/common/components/post/post.component";
+import { ItemDeleteForm } from "@app/common/components/itemDeleteForm/itemDeleteForm.component";
 
 // Mock User Page for testing the sub-component
 // ==================================================
@@ -96,6 +78,8 @@ class MockUserPage {
 // Sub-component testing
 // ==================================================
 describe("MyPosts", () => {
+  let mockPosts: Post[];
+
   // Before each test, configure testing environment
   beforeEach(() => {
     TestBed.resetTestEnvironment();
@@ -117,6 +101,27 @@ describe("MyPosts", () => {
     const authService = TestBed.inject(AuthService);
     authService.authenticated.set(true);
     authService.userData.set({ ...mockAuthedUser });
+
+    mockPosts = [
+      {
+        date: new Date("Mon, 01 Jun 2020 15:05:01 GMT"),
+        givenHugs: 1,
+        id: 1,
+        sentHugs: [],
+        text: "test",
+        userId: 1,
+        user: "shirb",
+      },
+      {
+        date: new Date("Mon, 01 Jun 2020 15:05:01 GMT"),
+        givenHugs: 1,
+        id: 2,
+        sentHugs: [],
+        text: "test",
+        userId: 1,
+        user: "shirb",
+      },
+    ];
   });
 
   // Check that the component is created
@@ -340,5 +345,56 @@ describe("MyPosts", () => {
     expect(fetchSpy).toHaveBeenCalled();
     expect(myPosts.currentPage()).toEqual(1);
     done();
+  });
+
+  it("should remove a deleted post", () => {
+    // create the component
+    const fixture = TestBed.createComponent(MockUserPage);
+    const userPage = fixture.componentInstance;
+    userPage.userId = 4;
+    fixture.detectChanges();
+    const myPosts: MyPosts = fixture.debugElement.children[0].children[0].componentInstance;
+    spyOn(myPosts, "fetchPosts");
+    myPosts.posts.set(mockPosts);
+    myPosts.isLoading.set(false);
+    const removeSpy = spyOn(myPosts, "removeDeletedPost").and.callThrough();
+    fixture.detectChanges();
+
+    const singlePost = fixture.debugElement.query(By.css("app-single-post"))
+      .componentInstance as SinglePost;
+    singlePost.deletedId.emit(2);
+    fixture.detectChanges();
+
+    expect(removeSpy).toHaveBeenCalledWith(2);
+    expect(myPosts.posts().length).toBe(1);
+    expect(myPosts.posts()[0].id).not.toBe(2);
+  });
+
+  it("should delete all posts", () => {
+    // create the component
+    const fixture = TestBed.createComponent(MockUserPage);
+    const userPage = fixture.componentInstance;
+    userPage.userId = 4;
+    fixture.detectChanges();
+    const myPosts: MyPosts = fixture.debugElement.children[0].children[0].componentInstance;
+    spyOn(myPosts, "fetchPosts");
+    myPosts.posts.set(mockPosts);
+    const updateListSpy = spyOn(myPosts, "updatePostsList").and.callThrough();
+    fixture.detectChanges();
+
+    // start the popup
+    myPosts.lastFocusedElement = document.querySelectorAll("a")[0];
+    myPosts.deleteMode = true;
+    myPosts.toDelete = "Post";
+    myPosts.itemToDelete = 2;
+    fixture.detectChanges();
+
+    const singlePost = fixture.debugElement.query(By.css("item-delete-form"))
+      .componentInstance as ItemDeleteForm;
+    singlePost.deleted.emit(4);
+    fixture.detectChanges();
+
+    expect(updateListSpy).toHaveBeenCalled();
+    expect(myPosts.posts().length).toBe(0);
   });
 });

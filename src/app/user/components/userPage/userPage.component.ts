@@ -271,11 +271,8 @@ export class UserPage implements OnInit, OnDestroy, AfterViewChecked {
     this.apiClient.post(`users/all/${userID}/hugs`, {}).subscribe({
       next: (_response) => {
         this.otherUser()!.receivedH += 1;
-        this.authService.userData.set({
-          ...this.authService.userData()!,
-          givenH: this.authService.userData()!.givenH + 1,
-        });
-        this.alertsService.createSuccessAlert("Your hug was sent!", { reload: true });
+        this.authService.updateUserData({ givenH: this.authService.userData()!.givenH + 1 });
+        this.alertsService.createSuccessAlert("Your hug was sent!");
       },
     });
   }

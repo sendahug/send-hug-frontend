@@ -113,7 +113,7 @@ describe("AdminService", () => {
   });
 
   // Check that the service edits a user's display name
-  it("editUser() - should edit a user's display name", () => {
+  it("editUser() - should edit a user's display name", (done: DoneFn) => {
     // mock response
     const mockResponse = {
       success: true,
@@ -132,12 +132,30 @@ describe("AdminService", () => {
     };
     const alertSpy = spyOn(adminService["alertsService"], "createSuccessAlert");
     const patchSpy = spyOn(adminService["apiClient"], "patch").and.returnValue(of(mockResponse));
+    const closeSpy = spyOn(adminService, "closeReport").and.returnValue(
+      of({
+        success: true,
+        updated: {
+          id: 6,
+          type: "User",
+          userID: 2,
+          displayName: "name",
+          reporter: 3,
+          reportReason: "reason",
+          date: new Date(),
+          dismissed: true,
+          closed: true,
+        },
+      }),
+    );
 
-    adminService.editUser(userData, true, 6);
-
-    expect(alertSpy).toHaveBeenCalled();
-    expect(alertSpy).toHaveBeenCalledWith("User user updated.", { reload: true });
-    expect(patchSpy).toHaveBeenCalledWith("users/all/2", userData);
+    adminService.editUser(userData, true, 6).add(() => {
+      expect(alertSpy).toHaveBeenCalled();
+      expect(alertSpy).toHaveBeenCalledWith("User user updated.");
+      expect(patchSpy).toHaveBeenCalledWith("users/all/2", userData);
+      expect(closeSpy).toHaveBeenCalledWith(6, false, undefined, 2);
+      done();
+    });
   });
 
   // Check that the service dismisses a report
@@ -174,7 +192,7 @@ describe("AdminService", () => {
   });
 
   // Check that the service blocks the user
-  it("blockUser() - should block a user", () => {
+  it("blockUser() - should block a user", (done: DoneFn) => {
     // mock response
     const mockResponse = {
       success: true,
@@ -202,24 +220,29 @@ describe("AdminService", () => {
     const patchSpy = spyOn(adminService["apiClient"], "patch").and.returnValue(of(mockResponse));
     const alertSpy = spyOn(adminService["alertsService"], "createSuccessAlert");
 
-    adminService.blockUser(15, "oneDay");
-
-    expect(fetchUserDataSpy).toHaveBeenCalledWith(15);
-    expect(calculateSpy).toHaveBeenCalledWith("oneDay", undefined);
-    expect(patchSpy).toHaveBeenCalledWith("users/all/15", {
-      id: 15,
-      releaseDate: blockDate,
-      blocked: true,
+    adminService.blockUser(15, "oneDay").subscribe((res) => {
+      expect(fetchUserDataSpy).toHaveBeenCalledWith(15);
+      expect(calculateSpy).toHaveBeenCalledWith("oneDay", undefined);
+      expect(patchSpy).toHaveBeenCalledWith("users/all/15", {
+        id: 15,
+        releaseDate: blockDate,
+        blocked: true,
+      });
+      expect(alertSpy).toHaveBeenCalled();
+      expect(alertSpy).toHaveBeenCalledWith(
+        `User ${mockResponse.updated.displayName} has been blocked until ${mockResponse.updated.releaseDate}`,
+      );
+      expect(res).toEqual({
+        success: true,
+        updated: mockResponse.updated,
+        reportID: undefined,
+      });
+      done();
     });
-    expect(alertSpy).toHaveBeenCalled();
-    expect(alertSpy).toHaveBeenCalledWith(
-      `User ${mockResponse.updated.displayName} has been blocked until ${mockResponse.updated.releaseDate}`,
-      { reload: true },
-    );
   });
 
   // Check that the service blocks the user and dismisses the report
-  it("blockUser() - should block a user and dismiss a report", () => {
+  it("blockUser() - should block a user and dismiss a report", (done: DoneFn) => {
     // mock response
     const mockResponse = {
       success: true,
@@ -250,7 +273,7 @@ describe("AdminService", () => {
       of({
         success: true,
         updated: {
-          id: 1,
+          id: 3,
           type: "User",
           userID: 15,
           displayName: "name",
@@ -263,22 +286,27 @@ describe("AdminService", () => {
       }),
     );
 
-    adminService.blockUser(15, "oneDay", 3);
-
-    expect(fetchUserDataSpy).toHaveBeenCalledWith(15);
-    expect(calculateSpy).toHaveBeenCalledWith("oneDay", undefined);
-    expect(patchSpy).toHaveBeenCalledWith("users/all/15", {
-      id: 15,
-      releaseDate: blockDate,
-      blocked: true,
+    adminService.blockUser(15, "oneDay", 3).subscribe((res) => {
+      expect(fetchUserDataSpy).toHaveBeenCalledWith(15);
+      expect(calculateSpy).toHaveBeenCalledWith("oneDay", undefined);
+      expect(patchSpy).toHaveBeenCalledWith("users/all/15", {
+        id: 15,
+        releaseDate: blockDate,
+        blocked: true,
+      });
+      expect(alertSpy).toHaveBeenCalled();
+      expect(alertSpy).toHaveBeenCalledWith(
+        `User ${mockResponse.updated.displayName} has been blocked until ${mockResponse.updated.releaseDate}`,
+      );
+      expect(dismissSpy).toHaveBeenCalled();
+      expect(dismissSpy).toHaveBeenCalledWith(3, false, undefined, 15);
+      expect(res).toEqual({
+        success: true,
+        updated: mockResponse.updated,
+        reportID: 3,
+      });
+      done();
     });
-    expect(alertSpy).toHaveBeenCalled();
-    expect(alertSpy).toHaveBeenCalledWith(
-      `User ${mockResponse.updated.displayName} has been blocked until ${mockResponse.updated.releaseDate}`,
-      { reload: true },
-    );
-    expect(dismissSpy).toHaveBeenCalled();
-    expect(dismissSpy).toHaveBeenCalledWith(3, false, undefined, 15);
   });
 
   it("fetchUserBlockData() - should fetch user data for blocking - unblocked user", (done: DoneFn) => {

@@ -111,4 +111,14 @@ export class SearchResults {
       replaceUrl: true,
     });
   }
+
+  /**
+   * Removes the deleted post from the list of posts.
+   * @param postId the ID of the post that was deleted.
+   */
+  removeDeletedPost(postId: number) {
+    this.itemsService.postSearchResults = this.itemsService.postSearchResults.filter(
+      (post) => post.id != postId,
+    );
+  }
 }

@@ -42,12 +42,14 @@ import { HttpClientModule } from "@angular/common/http";
 import { ServiceWorkerModule } from "@angular/service-worker";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { of } from "rxjs";
+import { By } from "@angular/platform-browser";
 
 // App imports
 import { MainPage } from "./mainPage.component";
 import { ApiClientService } from "../../common/services/apiClient.service";
 import { SWManager } from "../../common/services/sWManager.service";
 import { AppCommonModule } from "@app/common/common.module";
+import { SinglePost } from "@app/common/components/post/post.component";
 
 const newItems = [
   {
@@ -261,5 +263,26 @@ describe("MainPage", () => {
     expect(errorMessage[0].textContent).toContain("There are no recent items");
 
     done();
+  });
+
+  it("should remove a deleted post", () => {
+    spyOn(MainPage.prototype, "fetchPosts");
+    const fixture = TestBed.createComponent(MainPage);
+    const mainPage = fixture.componentInstance;
+    mainPage.newPosts.set([...newItems]);
+    mainPage.suggestedPosts.set([...suggestedItems]);
+    const removeSpy = spyOn(mainPage, "removeDeletedPost").and.callThrough();
+    fixture.detectChanges();
+
+    const singlePost = fixture.debugElement.query(By.css("app-single-post"))
+      .componentInstance as SinglePost;
+    singlePost.deletedId.emit(2);
+    fixture.detectChanges();
+
+    expect(removeSpy).toHaveBeenCalledWith(2);
+    expect(mainPage.newPosts().length).toBe(1);
+    expect(mainPage.newPosts()[0].id).not.toBe(2);
+    expect(mainPage.suggestedPosts().length).toBe(1);
+    expect(mainPage.suggestedPosts()[0].id).not.toBe(2);
   });
 });

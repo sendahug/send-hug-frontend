@@ -76,12 +76,14 @@
 	(editMode)="changeMode($event, 'Delete')"
 	[toDelete]="toDelete"
 	[itemToDelete]="itemToDelete"
+	(deleted)="deletedId.emit(post.id)"
 ></item-delete-form>
 
 <post-edit-form
 	*ngIf="editMode"
 	[editedItem]="postToEdit"
 	(editMode)="changeMode($event, 'Edit')"
+	(updateResult)="updatePostText($event)"
 ></post-edit-form>
 
 <report-form

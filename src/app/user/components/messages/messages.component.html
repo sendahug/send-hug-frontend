@@ -173,4 +173,5 @@
 			(editMode)="changeMode($event)"
 			[toDelete]="toDelete"
 			[itemToDelete]="itemToDelete"
-			[messType]="messType"></item-delete-form>
+			[messType]="messType"
+			(deleted)="updateMessageList($event)"></item-delete-form>

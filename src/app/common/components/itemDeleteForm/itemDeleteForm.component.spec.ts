@@ -41,12 +41,12 @@ import {
 import { HttpClientModule } from "@angular/common/http";
 import { ServiceWorkerModule } from "@angular/service-worker";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
-import { of } from "rxjs";
+import { of, Subscription } from "rxjs";
 
 import { ItemDeleteForm } from "./itemDeleteForm.component";
 import { PopUp } from "@common/components/popUp/popUp.component";
 
-describe("Popup", () => {
+describe("ItemDeleteForm", () => {
   // Before each test, configure testing environment
   beforeEach(() => {
     TestBed.resetTestEnvironment();
@@ -95,8 +95,13 @@ describe("Popup", () => {
     const fixture = TestBed.createComponent(ItemDeleteForm);
     const itemDeleteForm = fixture.componentInstance;
     const itemDeleteFormDOM = fixture.nativeElement;
-    const deleteSingleItemSpy = spyOn(itemDeleteForm, "deleteSingleItem");
+    const mockSubscription = new Subscription();
+    mockSubscription.unsubscribe();
+    const deleteSingleItemSpy = spyOn(itemDeleteForm, "deleteSingleItem").and.returnValue(
+      mockSubscription,
+    );
     const editModeSpy = spyOn(itemDeleteForm.editMode, "emit");
+    const deletedEmitSpy = spyOn(itemDeleteForm.deleted, "emit");
     itemDeleteForm.toDelete = "Post";
     itemDeleteForm.itemToDelete = 2;
 
@@ -107,6 +112,7 @@ describe("Popup", () => {
 
     expect(deleteSingleItemSpy).toHaveBeenCalledWith("posts/2", "posts");
     expect(editModeSpy).toHaveBeenCalledWith(false);
+    expect(deletedEmitSpy).toHaveBeenCalledWith(2);
     done();
   });
 
@@ -114,7 +120,11 @@ describe("Popup", () => {
     const fixture = TestBed.createComponent(ItemDeleteForm);
     const itemDeleteForm = fixture.componentInstance;
     const itemDeleteFormDOM = fixture.nativeElement;
-    const deleteSingleItemSpy = spyOn(itemDeleteForm, "deleteSingleItem");
+    const mockSubscription = new Subscription();
+    mockSubscription.unsubscribe();
+    const deleteSingleItemSpy = spyOn(itemDeleteForm, "deleteSingleItem").and.returnValue(
+      mockSubscription,
+    );
     const editModeSpy = spyOn(itemDeleteForm.editMode, "emit");
     itemDeleteForm.toDelete = "Message";
     itemDeleteForm.itemToDelete = 2;
@@ -134,7 +144,11 @@ describe("Popup", () => {
     const fixture = TestBed.createComponent(ItemDeleteForm);
     const itemDeleteForm = fixture.componentInstance;
     const itemDeleteFormDOM = fixture.nativeElement;
-    const deleteSingleItemSpy = spyOn(itemDeleteForm, "deleteSingleItem");
+    const mockSubscription = new Subscription();
+    mockSubscription.unsubscribe();
+    const deleteSingleItemSpy = spyOn(itemDeleteForm, "deleteSingleItem").and.returnValue(
+      mockSubscription,
+    );
     const editModeSpy = spyOn(itemDeleteForm.editMode, "emit");
     itemDeleteForm.toDelete = "Thread";
     itemDeleteForm.itemToDelete = 2;
@@ -161,6 +175,7 @@ describe("Popup", () => {
     itemDeleteForm.itemToDelete = 2;
     const deleteIdbSpy = spyOn(itemDeleteForm["swManager"], "deleteItems");
     const editModeSpy = spyOn(itemDeleteForm.editMode, "emit");
+    const deletedEmitSpy = spyOn(itemDeleteForm.deleted, "emit");
 
     fixture.detectChanges();
 
@@ -170,6 +185,7 @@ describe("Popup", () => {
     expect(deleteMultipleSpy).toHaveBeenCalledWith("users/all/2/posts", "posts");
     expect(deleteIdbSpy).toHaveBeenCalledWith("posts", "userId", 2);
     expect(editModeSpy).toHaveBeenCalledWith(false);
+    expect(deletedEmitSpy).toHaveBeenCalledWith(2);
     done();
   });
 
@@ -184,6 +200,7 @@ describe("Popup", () => {
     itemDeleteForm.itemToDelete = 2;
     const deleteIdbSpy = spyOn(itemDeleteForm["swManager"], "deleteItems");
     const editModeSpy = spyOn(itemDeleteForm.editMode, "emit");
+    const deletedEmitSpy = spyOn(itemDeleteForm.deleted, "emit");
 
     fixture.detectChanges();
 
@@ -193,6 +210,7 @@ describe("Popup", () => {
     expect(deleteMultipleSpy).toHaveBeenCalledWith("messages/inbox", "messages", { userID: 2 });
     expect(deleteIdbSpy).toHaveBeenCalledWith("messages", "forId", 2);
     expect(editModeSpy).toHaveBeenCalledWith(false);
+    expect(deletedEmitSpy).toHaveBeenCalledWith(2);
     done();
   });
 
@@ -259,10 +277,7 @@ describe("Popup", () => {
     itemDeleteForm.deleteSingleItem("posts/4", "posts");
 
     expect(deleteSpy).toHaveBeenCalledWith("posts/4");
-    expect(alertsSpy).toHaveBeenCalledWith(
-      "Post 4 was deleted. Refresh to view the updated post list.",
-      { reload: true },
-    );
+    expect(alertsSpy).toHaveBeenCalledWith("Post 4 was deleted.");
     expect(swManagerSpy).toHaveBeenCalledWith("posts", 4);
   });
 
@@ -282,10 +297,7 @@ describe("Popup", () => {
     itemDeleteForm.deleteSingleItem("messages/threads/4", "threads");
 
     expect(deleteSpy).toHaveBeenCalledWith("messages/threads/4");
-    expect(alertsSpy).toHaveBeenCalledWith(
-      "Thread 4 was deleted. Refresh to view the updated thread list.",
-      { reload: true },
-    );
+    expect(alertsSpy).toHaveBeenCalledWith("Thread 4 was deleted.");
     expect(swManagerSpy).toHaveBeenCalledWith("messages", "threadID", 4);
   });
 
@@ -301,9 +313,14 @@ describe("Popup", () => {
       reportID: 2,
       postID: 4,
     };
+    const mockSubscription = new Subscription();
+    mockSubscription.unsubscribe();
     const deleteSpy = spyOn(itemDeleteForm, "deletePost").and.callThrough();
-    const deleteServiceSpy = spyOn(itemDeleteForm["adminService"], "deletePost");
+    const deleteServiceSpy = spyOn(itemDeleteForm["adminService"], "deletePost").and.returnValue(
+      mockSubscription,
+    );
     const emitSpy = spyOn(itemDeleteForm.editMode, "emit");
+    const deletedEmitSpy = spyOn(itemDeleteForm.deleted, "emit");
 
     fixture.detectChanges();
 
@@ -328,6 +345,7 @@ describe("Popup", () => {
     expect(deleteSpy).toHaveBeenCalledWith(false);
     expect(deleteServiceSpy).toHaveBeenCalledWith(2, report, false);
     expect(emitSpy).toHaveBeenCalledTimes(2);
+    expect(deletedEmitSpy).toHaveBeenCalledWith(2);
     done();
   });
 
@@ -346,10 +364,7 @@ describe("Popup", () => {
     itemDeleteForm.deleteMultipleItems("users/all/4/posts", "posts", {}).subscribe(() => {});
 
     expect(deleteSpy).toHaveBeenCalledWith("users/all/4/posts", {});
-    expect(alertsSpy).toHaveBeenCalledWith(
-      "4 posts were deleted. Refresh to view the updated page.",
-      { reload: true },
-    );
+    expect(alertsSpy).toHaveBeenCalledWith("4 posts were deleted.");
   });
 
   // Check that the popup is exited and the item isn't deleted if the user picks 'never mind'

@@ -122,13 +122,29 @@ describe("Blocks Page", () => {
   });
 
   // Check that you can block a user
-  it("should block a user", (done: DoneFn) => {
+  it("should block a user - new block", (done: DoneFn) => {
     // set up the spy and the component
     const fixture = TestBed.createComponent(AdminBlocks);
     const adminBlocks = fixture.componentInstance;
     const adminBlocksDOM = fixture.nativeElement;
     const blockSpy = spyOn(adminBlocks, "block").and.callThrough();
-    const blockServiceSpy = spyOn(adminBlocks.adminService, "blockUser");
+    const blockServiceSpy = spyOn(adminBlocks.adminService, "blockUser").and.returnValue(
+      of({
+        success: true,
+        updated: {
+          id: 5,
+          type: "User",
+          userID: 15,
+          displayName: "name",
+          reporter: 3,
+          reportReason: "reason",
+          date: new Date(),
+          dismissed: true,
+          closed: true,
+        },
+        reportID: undefined,
+      }),
+    );
     spyOn(adminBlocks, "fetchBlocks");
     adminBlocks.blockedUsers = [...mockBlockedUsers];
     adminBlocks.isLoading = false;
@@ -145,6 +161,51 @@ describe("Blocks Page", () => {
     // check expectations
     expect(blockSpy).toHaveBeenCalled();
     expect(blockServiceSpy).toHaveBeenCalledWith(5, "oneDay");
+    expect(adminBlocks.blockedUsers.length).toBe(2);
+    done();
+  });
+
+  // Check that you can block a user
+  it("should block a user - extended block", (done: DoneFn) => {
+    // set up the spy and the component
+    const fixture = TestBed.createComponent(AdminBlocks);
+    const adminBlocks = fixture.componentInstance;
+    const adminBlocksDOM = fixture.nativeElement;
+    const blockSpy = spyOn(adminBlocks, "block").and.callThrough();
+    const blockServiceSpy = spyOn(adminBlocks.adminService, "blockUser").and.returnValue(
+      of({
+        success: true,
+        updated: {
+          id: 15,
+          type: "User",
+          userID: 15,
+          displayName: "name",
+          reporter: 3,
+          reportReason: "reason",
+          date: new Date(),
+          dismissed: true,
+          closed: true,
+        },
+        reportID: undefined,
+      }),
+    );
+    spyOn(adminBlocks, "fetchBlocks");
+    adminBlocks.blockedUsers = [...mockBlockedUsers];
+    adminBlocks.isLoading = false;
+    adminBlocks.totalPages.set(1);
+    fixture.detectChanges();
+
+    // trigger a click
+    adminBlocksDOM.querySelector("#blockID").value = 15;
+    adminBlocksDOM.querySelector("#blockID").dispatchEvent(new Event("input"));
+    adminBlocksDOM.querySelector("#blockLength").value = "oneDay";
+    adminBlocksDOM.querySelectorAll(".sendData")[0].click();
+    fixture.detectChanges();
+
+    // check expectations
+    expect(blockSpy).toHaveBeenCalled();
+    expect(blockServiceSpy).toHaveBeenCalledWith(15, "oneDay");
+    expect(adminBlocks.blockedUsers.length).toBe(1);
     done();
   });
 
@@ -284,8 +345,8 @@ describe("Blocks Page", () => {
     expect(alertSpy).toHaveBeenCalled();
     expect(alertSpy).toHaveBeenCalledWith(
       `User ${mockResponse.updated.displayName} has been unblocked.`,
-      { reload: true },
     );
+    expect(adminBlocks.blockedUsers.length).toEqual(0);
     done();
   });
 

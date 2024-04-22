@@ -493,6 +493,13 @@ describe("UserPage", () => {
     const hugSpy = spyOn(userPage, "sendHug").and.callThrough();
     const apiClientSpy = spyOn(userPage["apiClient"], "post").and.returnValue(of({}));
     const alertsSpy = spyOn(userPage["alertsService"], "createSuccessAlert");
+    const updateSpy = spyOn(userPage["authService"], "updateUserData").and.callThrough();
+    spyOn(userPage["authService"]["apiClient"], "patch").and.returnValue(
+      of({
+        success: true,
+        updated: { ...mockAuthedUser },
+      }),
+    );
     userPage.otherUser.set({
       id: 1,
       displayName: "shirb",
@@ -534,12 +541,13 @@ describe("UserPage", () => {
     // after the click
     expect(hugSpy).toHaveBeenCalled();
     expect(apiClientSpy).toHaveBeenCalled();
+    expect(updateSpy).toHaveBeenCalled();
     expect(userPage["authService"].userData()?.givenH).toBe(3);
     expect(userPage.otherUser()!.receivedH).toBe(4);
     expect(
       userPageDOM.querySelector("#rHugsElement").querySelectorAll(".pageData")[0].textContent,
     ).toBe("4");
-    expect(alertsSpy).toHaveBeenCalledWith("Your hug was sent!", { reload: true });
+    expect(alertsSpy).toHaveBeenCalledWith("Your hug was sent!");
     done();
   });
 

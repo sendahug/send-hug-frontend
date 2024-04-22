@@ -32,7 +32,7 @@
 
 // Angular imports
 import { Injectable } from "@angular/core";
-import { Observable, map, switchMap } from "rxjs";
+import { Observable, map, mergeMap, of, switchMap, tap } from "rxjs";
 
 // App-related imports
 import { Report } from "@app/interfaces/report.interface";
@@ -87,32 +87,48 @@ export class AdminService {
   */
   deletePost(postID: number, reportData: any, closeReport: boolean) {
     // delete the post from the database
-    this.apiClient.delete(`posts/${postID}`).subscribe({
-      next: (response: any) => {
-        this.alertsService.createSuccessAlert(`Post ${response.deleted} was successfully deleted.`);
-        // create a message from the admin to the user whose post was deleted
-        let message: Message = {
-          from: {
-            displayName: this.authService.userData()!.displayName,
-          },
-          fromId: this.authService.userData()!.id!,
-          forId: reportData.userID,
-          messageText: `Your post (ID ${response.deleted}) was deleted due to violating our community rules.`,
-          date: new Date(),
-        };
+    return this.apiClient
+      .delete<{ success: boolean; deleted: number }>(`posts/${postID}`)
+      .pipe(
+        switchMap((response) => {
+          if (closeReport) {
+            return this.closeReport(reportData.reportID, false, postID).pipe(
+              map((updateResponse) => ({
+                deleted: response.deleted,
+                reportID: updateResponse.updated.id,
+              })),
+            );
+          } else {
+            return of({
+              deleted: response.deleted,
+              reportID: undefined,
+            });
+          }
+        }),
+      )
+      .subscribe({
+        next: (response: any) => {
+          this.alertsService.createSuccessAlert(
+            `Post ${response.deleted} was successfully deleted.`,
+          );
+          // create a message from the admin to the user whose post was deleted
+          let message: Message = {
+            from: {
+              displayName: this.authService.userData()!.displayName,
+            },
+            fromId: this.authService.userData()!.id!,
+            forId: reportData.userID,
+            messageText: `Your post (ID ${response.deleted}) was deleted due to violating our community rules.`,
+            date: new Date(),
+          };
 
-        // if the report needs to be closed
-        if (closeReport) {
-          this.closeReport(reportData.reportID, false, postID).subscribe({});
-        }
+          // delete the post from idb
+          this.serviceWorkerM.deleteItem("posts", postID);
 
-        // delete the post from idb
-        this.serviceWorkerM.deleteItem("posts", postID);
-
-        // send the message about the deleted post
-        this.itemsService.sendMessage(message);
-      },
-    });
+          // send the message about the deleted post
+          this.itemsService.sendMessage(message);
+        },
+      });
   }
 
   /*
@@ -127,18 +143,31 @@ export class AdminService {
   */
   editUser(user: PartialUser, closeReport: boolean, reportID: number) {
     // update the user's display name
-    this.apiClient.patch(`users/all/${user.id}`, user).subscribe({
-      next: (response: any) => {
-        this.alertsService.createSuccessAlert(`User ${response.updated.displayName} updated.`, {
-          reload: closeReport,
-        });
-
-        // if the report should be closed
-        if (closeReport) {
-          this.closeReport(reportID, false, undefined, user.id).subscribe({});
-        }
-      },
-    });
+    return this.apiClient
+      .patch<{ success: boolean; updated: OtherUser }>(`users/all/${user.id}`, user)
+      .pipe(
+        switchMap((userResponse) => {
+          // if the report should be closed
+          if (closeReport) {
+            return this.closeReport(reportID, false, undefined, user.id).pipe(
+              map((response) => ({
+                reportID: response.updated.id,
+                user: userResponse.updated,
+              })),
+            );
+          } else {
+            return of({
+              reportID: undefined,
+              user: userResponse.updated,
+            });
+          }
+        }),
+      )
+      .subscribe({
+        next: (response: any) => {
+          this.alertsService.createSuccessAlert(`User ${response.user.displayName} updated.`);
+        },
+      });
   }
 
   /**
@@ -237,32 +266,59 @@ export class AdminService {
   blockUser(userID: number, blockLength: string, reportID?: number) {
     const fetchUserBlockData$ = this.fetchUserBlockData(userID);
 
-    fetchUserBlockData$
-      .pipe(
-        // set the user's block data
-        map((blockData) => {
-          const newReleaseDate = this.calculateUserReleaseDate(blockLength, blockData.releaseDate);
+    return (
+      fetchUserBlockData$
+        .pipe(
+          // set the user's block data
+          map((blockData) => {
+            const newReleaseDate = this.calculateUserReleaseDate(
+              blockLength,
+              blockData.releaseDate,
+            );
 
-          return {
-            id: userID,
-            releaseDate: newReleaseDate,
-            blocked: true,
-          };
-        }),
-      )
-      // try to block the user
-      .pipe(switchMap((blockData) => this.apiClient.patch(`users/all/${userID}`, blockData)))
-      .subscribe({
-        next: (response: any) => {
-          this.alertsService.createSuccessAlert(
-            `User ${response.updated.displayName} has been blocked until ${response.updated.releaseDate}`,
-            { reload: true },
-          );
-          // if the block was done via the reports page, also dismiss the report
-          if (reportID) {
-            this.closeReport(reportID, false, undefined, userID).subscribe({});
-          }
-        },
-      });
+            return {
+              id: userID,
+              releaseDate: newReleaseDate,
+              blocked: true,
+            };
+          }),
+        )
+        // try to block the user
+        .pipe(
+          switchMap((blockData) =>
+            this.apiClient.patch<{ success: boolean; updated: OtherUser }>(
+              `users/all/${userID}`,
+              blockData,
+            ),
+          ),
+        )
+        // close the report if there is one
+        .pipe(
+          mergeMap((response) => {
+            if (reportID) {
+              return this.closeReport(reportID, false, undefined, userID).pipe(
+                map((closeResponse) => ({
+                  success: true,
+                  updated: response.updated,
+                  reportID: closeResponse.updated.id,
+                })),
+              );
+            } else {
+              return of({
+                success: true,
+                updated: response.updated,
+                reportID: undefined,
+              });
+            }
+          }),
+        )
+        .pipe(
+          tap((response: any) =>
+            this.alertsService.createSuccessAlert(
+              `User ${response.updated.displayName} has been blocked until ${response.updated.releaseDate}`,
+            ),
+          ),
+        )
+    );
   }
 }

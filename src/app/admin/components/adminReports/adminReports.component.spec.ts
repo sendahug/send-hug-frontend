@@ -53,37 +53,14 @@ import { Report } from "@app/interfaces/report.interface";
 import { ApiClientService } from "@common/services/apiClient.service";
 import { MockDeleteForm, MockDisplayNameForm, MockEditForm } from "@tests/mockForms";
 import { AppCommonModule } from "@app/common/common.module";
-
-const mockUserReports: Report[] = [
-  {
-    id: 1,
-    type: "User" as "User" | "Post",
-    userID: 10,
-    reporter: 4,
-    reportReason: "something",
-    date: new Date("2020-06-29 19:17:31.072"),
-    dismissed: false,
-    closed: false,
-    displayName: "user",
-  },
-];
-const mockPostReports: Report[] = [
-  {
-    id: 2,
-    type: "Post" as "User" | "Post",
-    userID: 11,
-    postID: 5,
-    reporter: 4,
-    reportReason: "reason",
-    date: new Date("2020-06-29 19:17:31.072"),
-    dismissed: false,
-    closed: false,
-  },
-];
+import { PostEditForm } from "@app/common/components/postEditForm/postEditForm.component";
 
 // REPORTS PAGE
 // ==================================================================
 describe("AdminReports", () => {
+  let mockUserReports: Report[];
+  let mockPostReports: Report[];
+
   // Before each test, configure testing environment
   beforeEach(() => {
     TestBed.resetTestEnvironment();
@@ -108,6 +85,35 @@ describe("AdminReports", () => {
     authService.isUserDataResolved.next(true);
     authService.authenticated.set(true);
     authService.userData.set({ ...mockAuthedUser });
+
+    // set up mock data
+    mockUserReports = [
+      {
+        id: 1,
+        type: "User" as "User" | "Post",
+        userID: 10,
+        reporter: 4,
+        reportReason: "something",
+        date: new Date("2020-06-29 19:17:31.072"),
+        dismissed: false,
+        closed: false,
+        displayName: "user",
+      },
+    ];
+    mockPostReports = [
+      {
+        id: 2,
+        type: "Post" as "User" | "Post",
+        userID: 11,
+        postID: 5,
+        reporter: 4,
+        reportReason: "reason",
+        date: new Date("2020-06-29 19:17:31.072"),
+        dismissed: false,
+        closed: false,
+        text: "hi",
+      },
+    ];
   });
 
   // Check that a call is made to get open reports
@@ -144,14 +150,30 @@ describe("AdminReports", () => {
     done();
   });
 
-  it("should blcok a user", (done: DoneFn) => {
+  it("should block a user", (done: DoneFn) => {
     // set up the spy and the component
     const fixture = TestBed.createComponent(AdminReports);
     const adminReports = fixture.componentInstance;
     const adminReportsDOM = fixture.nativeElement;
     const blockSpy = spyOn(adminReports, "blockUser").and.callThrough();
     const adminService = adminReports["adminService"];
-    const blockServiceSpy = spyOn(adminService, "blockUser");
+    const blockServiceSpy = spyOn(adminService, "blockUser").and.returnValue(
+      of({
+        success: true,
+        updated: {
+          id: 1,
+          type: "User",
+          userID: 10,
+          displayName: "name",
+          reporter: 3,
+          reportReason: "reason",
+          date: new Date(),
+          dismissed: true,
+          closed: true,
+        },
+        reportID: 1,
+      }),
+    );
 
     adminReports.postReports = [...mockPostReports];
     adminReports.userReports = [...mockUserReports];
@@ -167,6 +189,7 @@ describe("AdminReports", () => {
     // check expectations
     expect(blockSpy).toHaveBeenCalledWith(10, 1);
     expect(blockServiceSpy).toHaveBeenCalledWith(10, "oneDay", 1);
+    expect(adminReports.userReports.length).toBe(0);
     done();
   });
 
@@ -303,10 +326,8 @@ describe("AdminReports", () => {
     expect(dismissSpy).toHaveBeenCalled();
     expect(dismissServiceSpy).toHaveBeenCalled();
     expect(dismissServiceSpy).toHaveBeenCalledWith(2, true, 5, undefined);
-    expect(alertsSpy).toHaveBeenCalledWith(
-      `Report 2 was dismissed! Refresh the page to view the updated list.`,
-      { reload: true },
-    );
+    expect(alertsSpy).toHaveBeenCalledWith(`Report 2 was dismissed!`);
+    expect(adminReports.postReports.length).toEqual(0);
     done();
   });
 
@@ -496,6 +517,193 @@ describe("AdminReports", () => {
     expect(changeSpy).toHaveBeenCalled();
     expect(adminReports.deleteMode).toBeFalse();
     expect(document.activeElement).toBe(document.querySelectorAll("a")[0]);
+    done();
+  });
+
+  it("should update the UI when the edit is done - display name edit + close report", (done: DoneFn) => {
+    const fixture = TestBed.createComponent(AdminReports);
+    const adminReports = fixture.componentInstance;
+    const updateSpy = spyOn(adminReports, "updateUserReport").and.callThrough();
+    adminReports.userReports = [...mockUserReports];
+    fixture.detectChanges();
+
+    // start the popup
+    adminReports.lastFocusedElement = document.querySelectorAll("a")[0];
+    adminReports.toEdit = {
+      displayName: "displayName",
+      id: 2,
+    };
+    adminReports.nameEditMode = true;
+    adminReports.reportData.reportID = 1;
+    adminReports.reportData.userID = 10;
+    fixture.detectChanges();
+
+    // exit the popup
+    const popup = fixture.debugElement.query(By.css("display-name-edit-form"))
+      .componentInstance as MockDisplayNameForm;
+    popup.updatedDetails.emit({
+      closed: true,
+      reportID: 1,
+      displayName: "beep",
+    });
+    fixture.detectChanges();
+
+    // check the popup is exited
+    expect(updateSpy).toHaveBeenCalledWith({
+      closed: true,
+      reportID: 1,
+      displayName: "beep",
+    });
+    expect(adminReports.userReports.length).toBe(0);
+    done();
+  });
+
+  it("should update the UI when the edit is done - display name edit + don't close report", (done: DoneFn) => {
+    const fixture = TestBed.createComponent(AdminReports);
+    const adminReports = fixture.componentInstance;
+    const updateSpy = spyOn(adminReports, "updateUserReport").and.callThrough();
+    adminReports.userReports = [...mockUserReports];
+    fixture.detectChanges();
+
+    // start the popup
+    adminReports.lastFocusedElement = document.querySelectorAll("a")[0];
+    adminReports.toEdit = {
+      displayName: "displayName",
+      id: 2,
+    };
+    adminReports.nameEditMode = true;
+    adminReports.reportData.reportID = 1;
+    adminReports.reportData.userID = 10;
+    fixture.detectChanges();
+
+    // exit the popup
+    const popup = fixture.debugElement.query(By.css("display-name-edit-form"))
+      .componentInstance as MockDisplayNameForm;
+    popup.updatedDetails.emit({
+      closed: false,
+      reportID: 1,
+      displayName: "beep",
+    });
+    fixture.detectChanges();
+
+    // check the popup is exited
+    expect(updateSpy).toHaveBeenCalledWith({
+      closed: false,
+      reportID: 1,
+      displayName: "beep",
+    });
+    expect(adminReports.userReports.length).toBe(1);
+    expect(adminReports.userReports[0].displayName).toBe("beep");
+    done();
+  });
+
+  it("should change update the UI when a report is closed - post edit", (done: DoneFn) => {
+    const fixture = TestBed.createComponent(AdminReports);
+    const adminReports = fixture.componentInstance;
+    const updateSpy = spyOn(adminReports, "updatePostReport").and.callThrough();
+    adminReports.postReports = [...mockPostReports];
+    const reportPostResponse = {
+      success: true,
+      updatedPost: {
+        id: 5,
+        userId: 4,
+        user: "me",
+        text: "test",
+        date: new Date(),
+        givenHugs: 0,
+      },
+      reportId: 2,
+    };
+
+    fixture.detectChanges();
+
+    // start the popup
+    adminReports.lastFocusedElement = document.querySelectorAll("a")[0];
+    adminReports.toEdit = "post";
+    adminReports.postEditMode = true;
+    adminReports.reportData.reportID = 5;
+    adminReports.reportData.postID = 2;
+    fixture.detectChanges();
+
+    // exit the popup
+    const popup = fixture.debugElement.query(By.css("post-edit-form"))
+      .componentInstance as PostEditForm;
+    popup.editMode.emit(false);
+    popup.updateResult.emit(reportPostResponse);
+    fixture.detectChanges();
+
+    // check the popup is exited
+    expect(updateSpy).toHaveBeenCalled();
+    expect(adminReports.postReports.length).toBe(0);
+    done();
+  });
+
+  it("should change update the UI when a report isn't closed - post edit", (done: DoneFn) => {
+    const fixture = TestBed.createComponent(AdminReports);
+    const adminReports = fixture.componentInstance;
+    const updateSpy = spyOn(adminReports, "updatePostReport").and.callThrough();
+    adminReports.postReports = [...mockPostReports];
+    const reportPostResponse = {
+      success: true,
+      updatedPost: {
+        id: 5,
+        userId: 4,
+        user: "me",
+        text: "test",
+        date: new Date(),
+        givenHugs: 0,
+      },
+      reportId: undefined,
+    };
+
+    fixture.detectChanges();
+
+    // start the popup
+    adminReports.lastFocusedElement = document.querySelectorAll("a")[0];
+    adminReports.toEdit = "post";
+    adminReports.postEditMode = true;
+    adminReports.reportData.reportID = 5;
+    adminReports.reportData.postID = 2;
+    fixture.detectChanges();
+
+    // exit the popup
+    const popup = fixture.debugElement.query(By.css("post-edit-form"))
+      .componentInstance as PostEditForm;
+    popup.editMode.emit(false);
+    popup.updateResult.emit(reportPostResponse);
+    fixture.detectChanges();
+
+    // check the popup is exited
+    expect(updateSpy).toHaveBeenCalled();
+    expect(adminReports.postReports.length).toBe(1);
+    expect(adminReports.postReports[0].text).toBe(reportPostResponse.updatedPost.text);
+    done();
+  });
+
+  it("should update the UI when the post is deleted - delete post", (done: DoneFn) => {
+    const fixture = TestBed.createComponent(AdminReports);
+    const adminReports = fixture.componentInstance;
+    const removeSpy = spyOn(adminReports, "removeReport").and.callThrough();
+    adminReports.postReports = [...mockPostReports];
+
+    fixture.detectChanges();
+
+    // start the popup
+    adminReports.lastFocusedElement = document.querySelectorAll("a")[0];
+    adminReports.deleteMode = true;
+    adminReports.toDelete = "post";
+    adminReports.itemToDelete = 5;
+    fixture.detectChanges();
+
+    // exit the popup
+    const popup = fixture.debugElement.query(By.css("item-delete-form"))
+      .componentInstance as MockDeleteForm;
+    popup.deleted.emit(5);
+    fixture.detectChanges();
+
+    // check the popup is exited
+    expect(removeSpy).toHaveBeenCalled();
+    expect(adminReports.postReports.length).toBe(0);
     done();
   });
 });

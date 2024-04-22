@@ -39,6 +39,7 @@ import { ApiClientService } from "@common/services/apiClient.service";
 import { HttpErrorResponse } from "@angular/common/http";
 import { Report } from "@app/interfaces/report.interface";
 import { AlertsService } from "@common/services/alerts.service";
+import { PostAndReportResponse, UpdatedUserReportResponse } from "@app/interfaces/responses";
 
 @Component({
   selector: "app-admin-reports",
@@ -128,7 +129,11 @@ export class AdminReports {
   */
   blockUser(userID: number, reportID: number) {
     const length = "oneDay";
-    this.adminService.blockUser(userID, length, reportID);
+    this.adminService.blockUser(userID, length, reportID).subscribe((response) => {
+      if (response.reportID) {
+        this.userReports = this.userReports.filter((report) => report.id != response.reportID);
+      }
+    });
   }
 
   /*
@@ -197,10 +202,9 @@ export class AdminReports {
     this.adminService.closeReport(reportID, dismiss, postID, userID).subscribe({
       next: (response: any) => {
         // if the report was dismissed, alert the user
-        this.alertsService.createSuccessAlert(
-          `Report ${response.updated.id} was dismissed! Refresh the page to view the updated list.`,
-          { reload: true },
-        );
+        this.alertsService.createSuccessAlert(`Report ${response.updated.id} was dismissed!`);
+        if (userID) this.userReports = this.userReports.filter((report) => report.id != reportID);
+        if (postID) this.postReports = this.postReports.filter((report) => report.id != reportID);
       },
     });
   }
@@ -246,5 +250,48 @@ export class AdminReports {
     else if (type === "EditPost") this.postEditMode = edit;
     else this.deleteMode = edit;
     this.lastFocusedElement?.focus();
+  }
+
+  /**
+   * Updates the UI with the updated details of the post and report.
+   * @param response The post/report response returned by the PostEditForm.
+   */
+  updatePostReport(response: PostAndReportResponse) {
+    // If the report was closed, remove it
+    if (response.reportId) {
+      this.postReports = this.postReports.filter((report) => report.id != response.reportId);
+    } else {
+      // otherwise at least update the post's test
+      const updatedReport = this.postReports.find(
+        (report) => report.postID == response.updatedPost?.id,
+      );
+      if (!(updatedReport && updatedReport.text)) return;
+
+      updatedReport.text = response.updatedPost?.text;
+    }
+  }
+
+  /**
+   * Updates the UI with the updated details of the user and the report.
+   * @param response The name/report response returned by the Display Name Edit Form.
+   */
+  updateUserReport(response: UpdatedUserReportResponse) {
+    if (response.closed) {
+      this.userReports = this.userReports.filter((report) => report.id != response.reportID);
+    } else {
+      const updatedReport = this.userReports.find((report) => report.id == response.reportID);
+
+      if (!(updatedReport && updatedReport.displayName)) return;
+
+      updatedReport.displayName = response.displayName;
+    }
+  }
+
+  /**
+   * Removes the deleted post's report from the list.
+   * @param deletedId the ID of the deleted post.
+   */
+  removeReport(deletedId: number) {
+    this.postReports = this.postReports.filter((report) => report.postID != deletedId);
   }
 }

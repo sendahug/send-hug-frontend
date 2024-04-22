@@ -1,5 +1,5 @@
 /*
-	Mock Forms for tests
+  Various response interfaces used by the app.
   ---------------------------------------------------
   MIT License
 
@@ -28,40 +28,17 @@
   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
   SOFTWARE.
 */
-import { Component, EventEmitter, Output } from "@angular/core";
-import { PostAndReportResponse, UpdatedUserReportResponse } from "@app/interfaces/responses";
 
-@Component({
-  selector: "item-delete-form",
-  template: "<app-pop-up (editMode)='editMode.emit(false)'></app-pop-up>",
-})
-export class MockDeleteForm {
-  @Output() editMode = new EventEmitter<boolean>();
-  @Output() deleted = new EventEmitter<number>();
+import { Post } from "./post.interface";
+
+export interface PostAndReportResponse {
+  success: boolean;
+  updatedPost?: Post;
+  reportId?: number;
 }
 
-@Component({
-  selector: "report-form",
-  template: "<app-pop-up (editMode)='editMode.emit(false)'></app-pop-up>",
-})
-export class MockReportForm {
-  @Output() reportMode = new EventEmitter<boolean>();
-}
-
-@Component({
-  selector: "post-edit-form",
-  template: "<app-pop-up (editMode)='editMode.emit(false)'></app-pop-up>",
-})
-export class MockEditForm {
-  @Output() editMode = new EventEmitter<boolean>();
-  @Output() updateResult = new EventEmitter<PostAndReportResponse>();
-}
-
-@Component({
-  selector: "display-name-edit-form",
-  template: "<app-pop-up (editMode)='editMode.emit(false)'></app-pop-up>",
-})
-export class MockDisplayNameForm {
-  @Output() editMode = new EventEmitter<boolean>();
-  @Output() updatedDetails = new EventEmitter<UpdatedUserReportResponse>();
+export interface UpdatedUserReportResponse {
+  reportID: number;
+  closed: boolean;
+  displayName: string;
 }

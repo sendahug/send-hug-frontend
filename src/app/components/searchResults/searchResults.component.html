@@ -24,7 +24,8 @@
 			<app-single-post  *ngFor="let item of itemsService.postSearchResults"
 						 [post]="item"
 						 [type]="'n'"
-						 [containerClass]="'searchResult'"></app-single-post>
+						 [containerClass]="'searchResult'"
+						 (deletedId)="removeDeletedPost($event)"></app-single-post>
 		</ul>
 
 	<!-- Post pagination -->

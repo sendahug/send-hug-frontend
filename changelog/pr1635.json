@@ -1,9 +1,0 @@
-{
-  "pr_number": 1635,
-  "changes": [
-    {
-      "change": "Chores",
-      "description": "Updated the e2e setup script to mirror the changes in the back-end (from [PR #611](https://github.com/sendahug/send-hug-backend/pull/611))."
-    }
-  ]
-}

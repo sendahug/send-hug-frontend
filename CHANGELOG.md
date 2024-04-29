@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+### 2024-04-29
+
+#### Chores
+
+- Updated the e2e setup script to mirror the changes in the back-end (from [PR #618](https://github.com/sendahug/send-hug-backend/pull/618)). ([#1640](https://github.com/sendahug/send-hug-frontend/pull/1640))
+
 ### 2024-04-24
 
 #### Chores

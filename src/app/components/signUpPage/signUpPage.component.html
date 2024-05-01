@@ -1,0 +1,23 @@
+<div id="loginBox" *ngIf="!authService.authenticated()">
+  <form [formGroup]="signUpForm" id="loginForm">
+    <div class="formElement">
+      <label class="pageCategory" for="displayName">Display Name:</label>
+			<input formControlName="displayName" type="text" id="displayName">
+    </div>
+    <div class="formElement">
+			<input formControlName="acceptedTerms" type="checkbox" id="acceptedTerms">
+      <label class="pageCategory" for="acceptedTerms">I accept the 
+        <a [routerLink]="['/policies/terms']" class="profileLink" target="_blank">terms and conditions</a>
+        and the
+        <a [routerLink]="['/policies/privacy']" class="profileLink" target="_blank">privacy policy</a>.
+      </label>
+    </div>
+    <button type="submit" class="appButton sendData" (click)="signUp()" id="logIn">Sign Up</button>
+  </form>
+</div>
+
+<div id="logoutBox" *ngIf="authService.authenticated()">
+  <div class="errorMessage">You are already registered!</div>
+
+  <div class="errorMessage">You are currently logged in as {{ authService.userData().displayName }}.</div>
+</div>

@@ -90,7 +90,7 @@ export class SiteMap {
           if (this.authService.authenticated()) this.routes.push(route);
         }
         // otherwise just add the route as-is
-        else {
+        else if (route.path != "signup") {
           this.routes.push(route);
         }
       }

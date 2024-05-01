@@ -32,11 +32,35 @@
 
 // Angular imports
 import { Injectable, signal } from "@angular/core";
-import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { HttpClient, HttpErrorResponse, HttpHeaders } from "@angular/common/http";
 
 // Other essential imports
-import { BehaviorSubject } from "rxjs";
+import {
+  BehaviorSubject,
+  catchError,
+  from,
+  map,
+  mergeMap,
+  Observable,
+  switchMap,
+  tap,
+  throwError,
+} from "rxjs";
 import * as Auth0 from "auth0-js";
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+import {
+  signInWithEmailAndPassword,
+  signInWithPopup,
+  GoogleAuthProvider,
+  OAuthProvider,
+  getAuth,
+  signOut,
+  AuthProvider,
+  UserCredential,
+  getIdToken,
+  createUserWithEmailAndPassword,
+} from "firebase/auth";
 
 // App-related imports
 import { User } from "@app/interfaces/user.interface";
@@ -48,6 +72,11 @@ import { ApiClientService } from "@common/services/apiClient.service";
 interface UserUpdateResponse {
   success: boolean;
   updated: User;
+}
+
+interface GetUserResponse {
+  success: boolean;
+  user: User;
 }
 
 @Injectable({
@@ -62,6 +91,17 @@ export class AuthService {
     redirectUri: environment.auth0.redirectUri,
     audience: environment.auth0.audience,
   });
+  firebase = initializeApp({
+    apiKey: environment.firebase.apiKey,
+    authDomain: environment.firebase.authDomain,
+    projectId: environment.firebase.projectId,
+    storageBucket: environment.firebase.storageBucket,
+    messagingSenderId: environment.firebase.messagingSenderId,
+    appId: environment.firebase.appId,
+    measurementId: environment.firebase.measurementId,
+  });
+  analytics = getAnalytics(this.firebase);
+  auth = getAuth(this.firebase);
 
   readonly serverUrl = environment.backend.domain;
   // authentication information
@@ -74,6 +114,7 @@ export class AuthService {
   loggedIn = false;
   tokenExpired = false;
   isUserDataResolved = new BehaviorSubject(false);
+  firebaseUser = signal<UserCredential | undefined>(undefined);
 
   // CTOR
   constructor(
@@ -92,6 +133,178 @@ export class AuthService {
   */
   login() {
     this.auth0.authorize();
+  }
+
+  /**
+   * Creates a new user with email and password.
+   * @param email - the email to use for sign up.
+   * @param password - the password to use.
+   * @returns a observable of a user credentials.
+   */
+  signUpWithEmail(email: string, password: string) {
+    return from(createUserWithEmailAndPassword(this.auth, email, password));
+  }
+
+  /**
+   * Logs a user in with username and password.
+   * @param email - the email to use for sign up.
+   * @param password - the password to use.
+   * @returns a observable of a user credentials.
+   */
+  loginWithEmail(email: string, password: string) {
+    return from(signInWithEmailAndPassword(this.auth, email, password));
+  }
+
+  /**
+   * Logs in/signs up using an OAuth provider.
+   * @param provider whether to use apple or google for oauth.
+   */
+  loginWithPopup(provider: "google" | "apple") {
+    let authProvider: AuthProvider;
+
+    switch (provider) {
+      case "google":
+        authProvider = new GoogleAuthProvider();
+        break;
+      case "apple":
+        authProvider = new OAuthProvider("apple.com");
+        break;
+    }
+
+    return from(signInWithPopup(this.auth, authProvider));
+  }
+
+  /**
+   * Gets a JWT and adds it to the user credential object.
+   * @param firebaseUserObservable observable of a user credentials.
+   * @returns an observable of a user credentials + jwt.
+   */
+  addTokenToUser(firebaseUserObservable: Observable<UserCredential>) {
+    return firebaseUserObservable.pipe(
+      mergeMap((currentUser) => {
+        return from(getIdToken(currentUser.user)).pipe(
+          map((token) => ({
+            ...currentUser,
+            jwt: token,
+          })),
+        );
+      }),
+    );
+  }
+
+  /**
+   * Fetches the logged in user's details.
+   * @param firebaseUserObservable observable of a user credentials.
+   * @returns an observable with the user's details from the back-end.
+   */
+  fetchUser(firebaseUserObservable: Observable<UserCredential>) {
+    return this.addTokenToUser(firebaseUserObservable)
+      .pipe(
+        tap((firebaseUser) => {
+          // turn the BehaviorSubject dealing with whether user data was resolved to
+          // false only if there's no user data
+          if (this.userData()?.id == 0 || !this.userData()?.id) {
+            this.isUserDataResolved.next(false);
+          }
+          // if the JWTs don't match (shouldn't happen, but just in case), change the BehaviorSubject
+          // and reset the user's data
+          else if (this.userData()?.firebaseId != firebaseUser.user.uid) {
+            this.isUserDataResolved.next(false);
+            this.userData.set(undefined);
+          }
+
+          this.firebaseUser.set(firebaseUser);
+        }),
+      )
+      .pipe(
+        switchMap((firebaseUser) => {
+          return this.Http.get<GetUserResponse>(
+            `${this.serverUrl}/users/all/${firebaseUser.user.uid}`,
+            {
+              headers: new HttpHeaders({ Authorization: `Bearer ${firebaseUser.jwt}` }),
+            },
+          ).pipe(
+            map((response) => {
+              return {
+                ...response.user,
+                auth0Id: "",
+                jwt: firebaseUser.jwt,
+                firebaseId: firebaseUser.user.uid,
+              };
+            }),
+          );
+        }),
+      )
+      .pipe(tap((userData) => this.setCurrentUser(userData)))
+      .pipe(
+        catchError((err: HttpErrorResponse, caught) => {
+          const statusCode = err.status;
+
+          // if a user with that ID doens't exist, try to create it
+          // because of the way we check permissions in that endpoint vs
+          // the create users endpoint
+          if (statusCode == 404 || statusCode == 401) {
+            return throwError(() => Error("User doesn't exist yet"));
+          } else {
+            // if the user is offline, show the offline header message
+            if (!navigator.onLine) {
+              this.alertsService.toggleOfflineAlert();
+            }
+            // otherwise just create an error alert
+            else {
+              this.alertsService.createErrorAlert(err);
+            }
+
+            this.isUserDataResolved.next(true);
+          }
+
+          return caught;
+        }),
+      );
+  }
+
+  /**
+   * Updates the AuthService's user-related attributes with the logged in user.
+   * @param userData the user data returned by the back-end.
+   */
+  setCurrentUser(userData: User) {
+    this.userData.set(userData);
+    // set the authentication-variables accordingly
+    this.authenticated.set(true);
+    this.token = userData.jwt;
+    this.setToken();
+    this.isUserDataResolved.next(true);
+    this.tokenExpired = false;
+
+    // if the user just logged in, update the login count
+    if (this.loggedIn) {
+      this.updateUserData({ loginCount: userData.loginCount + 1 });
+    }
+
+    // adds the user's data to the users store
+    let user = {
+      id: userData.id,
+      displayName: userData.displayName,
+      receivedH: userData.receivedH,
+      givenH: userData.givenH,
+      posts: userData.posts,
+      role: userData.role,
+      selectedIcon: userData.selectedIcon,
+      iconColours: {
+        character: userData.iconColours?.character,
+        lbg: userData.iconColours?.lbg,
+        rbg: userData.iconColours?.rbg,
+        item: userData.iconColours?.item,
+      },
+    };
+    this.serviceWorkerM.addItem("users", user);
+  }
+
+  /**
+   * Signs the user out in Firebase.
+   */
+  signOut() {
+    return signOut(this.auth);
   }
 
   /*

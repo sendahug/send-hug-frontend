@@ -63,6 +63,7 @@ export interface User {
   refreshRate: number;
   selectedIcon: iconCharacters;
   iconColours: UserIconColours;
+  firebaseId: string;
 }
 
 export interface PartialUser {

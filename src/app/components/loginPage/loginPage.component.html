@@ -1,7 +1,44 @@
 <div  id="loginBox" *ngIf="!authService.authenticated()">
 	<div class="errorMessage">You are not currently logged in. To view user information, log in.</div>
 
-	<button id="logIn" class="appButton" (click)="login()">Login</button>
+  <span class="socialLogins">
+    <button class="appButton loginButton" (click)="loginWithPopup('apple')">
+      <fa-icon [icon]="faApple" class="socialIcon fa-apple" aria-hidden="true"></fa-icon>
+      {{ signInUpTitle() + " with Apple" }}
+    </button>
+  
+    <button class="appButton loginButton" (click)="loginWithPopup('google')">
+      <fa-icon [icon]="faGoogle" class="socialIcon fa-google" aria-hidden="true"></fa-icon>
+      {{ signInUpTitle() + " with Google" }}
+    </button>
+  </span>
+  
+  <span class="errorMessage">{{ "Or " + signInUpTitle().toLowerCase() + " using username and password below" }}</span>
+
+  <form [formGroup]="loginForm" id="loginForm">
+    <div class="formElement">
+      <label class="pageCategory" for="username">Username:</label>
+			<input formControlName="username" type="text" id="username">
+    </div>
+    <div class="formElement">
+      <label class="pageCategory" for="password">Password:</label>
+			<input formControlName="password" type="password" id="password">
+    </div>
+    <button type="submit" class="appButton sendData" (click)="sendUsernameAndPassword()" id="logIn">{{ signInUpTitle() }}</button>
+  </form>
+
+  <button *ngIf="!isNewUser()" class="internalButton">Forgot Your Password?</button>
+
+  <span *ngIf="!isNewUser()" class="errorMessage">
+    Don't have an account? <button class="internalButton" (click)="isNewUser.set(true)">
+      Create one now.
+    </button>
+  </span>
+  <span *ngIf="isNewUser()" class="errorMessage">
+    Already have an account? <button class="internalButton" (click)="isNewUser.set(false)">
+      Log in now.
+    </button>
+  </span>
 </div>
 
 <div id="logoutBox" *ngIf="authService.authenticated()">

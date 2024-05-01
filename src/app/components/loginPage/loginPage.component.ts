@@ -31,18 +31,38 @@
 */
 
 // Angular imports
-import { Component } from "@angular/core";
+import { Component, computed, signal } from "@angular/core";
+import { FormBuilder, Validators } from "@angular/forms";
+import { faGoogle, faApple } from "@fortawesome/free-brands-svg-icons";
+import { Observable } from "rxjs";
+import { UserCredential } from "firebase/auth";
+import { Router } from "@angular/router";
 
 // App-related imports
 import { AuthService } from "@common/services/auth.service";
+import { AlertsService } from "@app/common/services/alerts.service";
 
 @Component({
   selector: "app-login-page",
   templateUrl: "./loginPage.component.html",
 })
 export class LoginPage {
+  isNewUser = signal<boolean>(false);
+  signInUpTitle = computed(() => (this.isNewUser() ? "Sign up" : "Sign in"));
+  loginForm = this.fb.group({
+    username: ["", [Validators.email, Validators.required]],
+    password: ["", [Validators.required]],
+  });
+  faGoogle = faGoogle;
+  faApple = faApple;
+
   // CTOR
-  constructor(public authService: AuthService) {}
+  constructor(
+    public authService: AuthService,
+    private fb: FormBuilder,
+    private router: Router,
+    private alertsService: AlertsService,
+  ) {}
 
   /*
   Function Name: login()
@@ -54,6 +74,84 @@ export class LoginPage {
   login() {
     this.authService.login();
   }
+
+  /**
+   * Triggers the 'sign in with popup' workflow in firebase.
+   * @param provider whether to use apple or google for oauth.
+   */
+  signInWithPopup(provider: "google" | "apple") {
+    const firebaseUser$ = this.authService.loginWithPopup(provider);
+
+    if (this.isNewUser()) {
+      firebaseUser$.subscribe({
+        next: (firebaseUser) => {
+          this.authService.firebaseUser.set(firebaseUser);
+          this.router.navigate(["/signup"]);
+        },
+      });
+    } else {
+      this.authService.fetchUser(firebaseUser$).subscribe({
+        next: (userData) => {
+          if (userData.id) {
+            this.router.navigate(["/"]);
+          }
+        },
+        error: (_err) => {
+          this.router.navigate(["/signup"]);
+        },
+      });
+    }
+  }
+
+  /**
+   * Creates user/logs in with username and password.
+   */
+  sendUsernameAndPassword() {
+    if (!this.loginForm.valid) {
+      return;
+    }
+
+    let firebaseUser$: Observable<UserCredential>;
+
+    if (this.isNewUser()) {
+      this.authService
+        .signUpWithEmail(
+          this.loginForm.controls.username.value!,
+          this.loginForm.controls.password.value!,
+        )
+        .subscribe({
+          next: (firebaseUser) => {
+            this.authService.firebaseUser.set(firebaseUser);
+            this.router.navigate(["/signup"]);
+          },
+        });
+    } else {
+      firebaseUser$ = this.authService.loginWithEmail(
+        this.loginForm.controls.username.value!,
+        this.loginForm.controls.password.value!,
+      );
+
+      this.authService.fetchUser(firebaseUser$).subscribe({
+        next: (userData) => {
+          if (userData.id) {
+            this.router.navigate(["/"]);
+          }
+        },
+        error: (_err) => {
+          this.alertsService.createAlert({
+            type: "Error",
+            message: "Cannot find user with these details. Did you mean to register?",
+          });
+        },
+      });
+    }
+  }
+
+  /**
+   * Triggers password reset.
+   * TODO: Still need to fill this method.
+   */
+  resetPassword() {}
 
   /*
   Function Name: logout()

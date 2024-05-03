@@ -67,7 +67,6 @@ import { User } from "@app/interfaces/user.interface";
 import { AlertsService } from "@common/services/alerts.service";
 import { SWManager } from "@common/services/sWManager.service";
 import { environment } from "@env/environment";
-import { ApiClientService } from "@common/services/apiClient.service";
 
 interface UserUpdateResponse {
   success: boolean;
@@ -114,14 +113,12 @@ export class AuthService {
   loggedIn = false;
   tokenExpired = false;
   isUserDataResolved = new BehaviorSubject(false);
-  firebaseUser = signal<UserCredential | undefined>(undefined);
 
   // CTOR
   constructor(
     private Http: HttpClient,
     private alertsService: AlertsService,
     private serviceWorkerM: SWManager,
-    private apiClient: ApiClientService,
   ) {}
 
   /*
@@ -212,8 +209,6 @@ export class AuthService {
             this.isUserDataResolved.next(false);
             this.userData.set(undefined);
           }
-
-          this.firebaseUser.set(firebaseUser);
         }),
       )
       .pipe(
@@ -386,8 +381,6 @@ export class AuthService {
 
     // if there's a JWT
     if (jwtPayload) {
-      this.apiClient.setAuthToken(this.token);
-
       // attempts to get the user's data
       this.Http.get(`${this.serverUrl}/users/all/${jwtPayload.sub}`, {
         headers: new HttpHeaders({ Authorization: `Bearer ${this.token}` }),
@@ -667,13 +660,18 @@ export class AuthService {
 
     const updatedUser = { ...this.userData() };
 
-    return this.apiClient
-      .patch<UserUpdateResponse>(`users/all/${this.userData()?.id}`, updatedUser)
-      .subscribe({
-        next: (response) => {
-          this.serviceWorkerM.addItem("users", response.updated);
-        },
-      });
+    return this.Http.patch<UserUpdateResponse>(
+      `${this.serverUrl}/users/all/${this.userData()?.id}`,
+      updatedUser,
+      {
+        headers: new HttpHeaders({ Authorization: `Bearer ${this.token}` }),
+        // if successful, get the user data
+      },
+    ).subscribe({
+      next: (response) => {
+        this.serviceWorkerM.addItem("users", response.updated);
+      },
+    });
   }
 
   /*

@@ -84,8 +84,7 @@ export class LoginPage {
 
     if (this.isNewUser()) {
       firebaseUser$.subscribe({
-        next: (firebaseUser) => {
-          this.authService.firebaseUser.set(firebaseUser);
+        next: (_firebaseUser) => {
           this.router.navigate(["/signup"]);
         },
       });
@@ -120,8 +119,7 @@ export class LoginPage {
           this.loginForm.controls.password.value!,
         )
         .subscribe({
-          next: (firebaseUser) => {
-            this.authService.firebaseUser.set(firebaseUser);
+          next: (_firebaseUser) => {
             this.router.navigate(["/signup"]);
           },
         });

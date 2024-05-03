@@ -333,6 +333,9 @@ export class AuthService {
       next: (response) => {
         this.serviceWorkerM.addItem("users", response.updated);
       },
+      error: (err: HttpErrorResponse) => {
+        this.alertsService.createErrorAlert(err);
+      },
     });
   }
 

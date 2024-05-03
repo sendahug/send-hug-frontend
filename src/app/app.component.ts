@@ -86,8 +86,6 @@ export class AppComponent implements OnInit, AfterViewInit {
     public notificationService: NotificationService,
     private fb: FormBuilder,
   ) {
-    this.authService.checkHash();
-
     // if the user is logged in, and their data is fetched, start auto-refresh
     this.authService.isUserDataResolved.subscribe((value) => {
       if (value) {

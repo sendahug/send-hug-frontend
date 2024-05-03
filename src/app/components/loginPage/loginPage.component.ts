@@ -64,17 +64,6 @@ export class LoginPage {
     private alertsService: AlertsService,
   ) {}
 
-  /*
-  Function Name: login()
-  Function Description: Activates Auth0 login via the authentication service.
-  Parameters: None.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  login() {
-    this.authService.login();
-  }
-
   /**
    * Triggers the 'sign in with popup' workflow in firebase.
    * @param provider whether to use apple or google for oauth.

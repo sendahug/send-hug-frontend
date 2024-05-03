@@ -309,17 +309,6 @@ export class AppMessaging implements AfterViewChecked {
   }
 
   /*
-  Function Name: login()
-  Function Description: Activates Auth0 login via the authentication service.
-  Parameters: None.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  login() {
-    this.authService.login();
-  }
-
-  /*
   Function Name: deleteMessage()
   Function Description: Delete a specific message from the user's messages, via
                         the items service.

@@ -1,3 +1,7 @@
+<app-loader
+  *ngIf="isLoading()"
+  [waitingFor]="waitFor"></app-loader>
+
 <div  id="loginBox" *ngIf="!authService.authenticated()">
 	<div class="errorMessage">You are not currently logged in. To view user information, log in.</div>
 

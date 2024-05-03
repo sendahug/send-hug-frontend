@@ -35,17 +35,7 @@ import { Injectable, signal } from "@angular/core";
 import { HttpClient, HttpErrorResponse, HttpHeaders } from "@angular/common/http";
 
 // Other essential imports
-import {
-  BehaviorSubject,
-  catchError,
-  from,
-  map,
-  mergeMap,
-  Observable,
-  switchMap,
-  tap,
-  throwError,
-} from "rxjs";
+import { BehaviorSubject, catchError, from, map, of, switchMap, tap, throwError } from "rxjs";
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import {
@@ -153,31 +143,27 @@ export class AuthService {
 
   /**
    * Gets a JWT and adds it to the user credential object.
-   * @param firebaseUserObservable observable of a user credentials.
    * @returns an observable of a user credentials + jwt.
    */
-  addTokenToUser(firebaseUserObservable: Observable<UserCredential>) {
-    return firebaseUserObservable.pipe(
-      mergeMap((currentUser) => {
-        return from(getIdToken(currentUser.user)).pipe(
-          map((token) => ({
-            ...currentUser,
-            jwt: token,
-          })),
-        );
-      }),
+  getUserToken() {
+    if (!this.auth.currentUser) return of();
+
+    return from(getIdToken(this.auth.currentUser)).pipe(
+      map((token) => ({
+        ...this.auth.currentUser,
+        jwt: token,
+      })),
     );
   }
 
   /**
    * Fetches the logged in user's details.
-   * @param firebaseUserObservable observable of a user credentials.
    * @returns an observable with the user's details from the back-end.
    */
-  fetchUser(firebaseUserObservable: Observable<UserCredential>) {
-    return this.addTokenToUser(firebaseUserObservable)
+  fetchUser() {
+    return this.getUserToken()
       .pipe(
-        tap((firebaseUser) => {
+        tap((firebaseUser: any) => {
           // turn the BehaviorSubject dealing with whether user data was resolved to
           // false only if there's no user data
           if (this.userData()?.id == 0 || !this.userData()?.id) {
@@ -185,7 +171,7 @@ export class AuthService {
           }
           // if the JWTs don't match (shouldn't happen, but just in case), change the BehaviorSubject
           // and reset the user's data
-          else if (this.userData()?.firebaseId != firebaseUser.user.uid) {
+          else if (this.userData()?.firebaseId != firebaseUser.uid) {
             this.isUserDataResolved.next(false);
             this.userData.set(undefined);
           }
@@ -193,47 +179,45 @@ export class AuthService {
       )
       .pipe(
         switchMap((firebaseUser) => {
-          return this.Http.get<GetUserResponse>(
-            `${this.serverUrl}/users/all/${firebaseUser.user.uid}`,
-            {
-              headers: new HttpHeaders({ Authorization: `Bearer ${firebaseUser.jwt}` }),
-            },
-          ).pipe(
-            map((response) => {
-              return {
-                ...response.user,
-                auth0Id: "",
-                jwt: firebaseUser.jwt,
-                firebaseId: firebaseUser.user.uid,
-              };
-            }),
-          );
-        }),
-      )
-      .pipe(tap((userData) => this.setCurrentUser(userData)))
-      .pipe(
-        catchError((err: HttpErrorResponse, caught) => {
-          const statusCode = err.status;
+          return this.Http.get<GetUserResponse>(`${this.serverUrl}/users/all/${firebaseUser.uid}`, {
+            headers: new HttpHeaders({ Authorization: `Bearer ${firebaseUser.accessToken}` }),
+          })
+            .pipe(
+              map((response) => {
+                return {
+                  ...response.user,
+                  auth0Id: "",
+                  jwt: firebaseUser.jwt,
+                  firebaseId: firebaseUser.uid,
+                };
+              }),
+            )
+            .pipe(tap((userData) => this.setCurrentUser(userData)))
+            .pipe(
+              catchError((err: HttpErrorResponse, caught) => {
+                const statusCode = err.status;
 
-          // if a user with that ID doens't exist, try to create it
-          // because of the way we check permissions in that endpoint vs
-          // the create users endpoint
-          if (statusCode == 404 || statusCode == 401) {
-            return throwError(() => Error("User doesn't exist yet"));
-          } else {
-            // if the user is offline, show the offline header message
-            if (!navigator.onLine) {
-              this.alertsService.toggleOfflineAlert();
-            }
-            // otherwise just create an error alert
-            else {
-              this.alertsService.createErrorAlert(err);
-            }
+                // if a user with that ID doens't exist, try to create it
+                // because of the way we check permissions in that endpoint vs
+                // the create users endpoint
+                if (statusCode == 404 || statusCode == 401) {
+                  return throwError(() => Error("User doesn't exist yet"));
+                } else {
+                  // if the user is offline, show the offline header message
+                  if (!navigator.onLine) {
+                    this.alertsService.toggleOfflineAlert();
+                  }
+                  // otherwise just create an error alert
+                  else {
+                    this.alertsService.createErrorAlert(err);
+                  }
 
-            this.isUserDataResolved.next(true);
-          }
+                  this.isUserDataResolved.next(true);
+                }
 
-          return caught;
+                return caught;
+              }),
+            );
         }),
       );
   }

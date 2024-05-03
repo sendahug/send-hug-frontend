@@ -34,8 +34,7 @@
 import { Component, computed, signal } from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
 import { faGoogle, faApple } from "@fortawesome/free-brands-svg-icons";
-import { Observable } from "rxjs";
-import { UserCredential } from "firebase/auth";
+import { switchMap, tap } from "rxjs";
 import { Router } from "@angular/router";
 
 // App-related imports
@@ -53,6 +52,8 @@ export class LoginPage {
     username: ["", [Validators.email, Validators.required]],
     password: ["", [Validators.required]],
   });
+  isLoading = signal(false);
+  waitFor = "user";
   faGoogle = faGoogle;
   faApple = faApple;
 
@@ -69,25 +70,31 @@ export class LoginPage {
    * @param provider whether to use apple or google for oauth.
    */
   signInWithPopup(provider: "google" | "apple") {
-    const firebaseUser$ = this.authService.loginWithPopup(provider);
-
     if (this.isNewUser()) {
-      firebaseUser$.subscribe({
+      this.authService.loginWithPopup(provider).subscribe({
         next: (_firebaseUser) => {
           this.router.navigate(["/signup"]);
         },
       });
     } else {
-      this.authService.fetchUser(firebaseUser$).subscribe({
-        next: (userData) => {
-          if (userData.id) {
-            this.router.navigate(["/"]);
-          }
-        },
-        error: (_err) => {
-          this.router.navigate(["/signup"]);
-        },
-      });
+      this.authService
+        .loginWithPopup(provider)
+        .pipe(tap((_user) => this.isLoading.set(true)))
+        .pipe(
+          switchMap((_userToken) => {
+            return this.authService.fetchUser();
+          }),
+        )
+        .subscribe({
+          next: (userData) => {
+            if (userData.id) {
+              this.router.navigate(["/user"]);
+            }
+          },
+          error: (_err) => {
+            this.router.navigate(["/signup"]);
+          },
+        });
     }
   }
 
@@ -98,8 +105,6 @@ export class LoginPage {
     if (!this.loginForm.valid) {
       return;
     }
-
-    let firebaseUser$: Observable<UserCredential>;
 
     if (this.isNewUser()) {
       this.authService
@@ -113,24 +118,30 @@ export class LoginPage {
           },
         });
     } else {
-      firebaseUser$ = this.authService.loginWithEmail(
-        this.loginForm.controls.username.value!,
-        this.loginForm.controls.password.value!,
-      );
-
-      this.authService.fetchUser(firebaseUser$).subscribe({
-        next: (userData) => {
-          if (userData.id) {
-            this.router.navigate(["/"]);
-          }
-        },
-        error: (_err) => {
-          this.alertsService.createAlert({
-            type: "Error",
-            message: "Cannot find user with these details. Did you mean to register?",
-          });
-        },
-      });
+      this.authService
+        .loginWithEmail(
+          this.loginForm.controls.username.value!,
+          this.loginForm.controls.password.value!,
+        )
+        .pipe(tap((_user) => this.isLoading.set(true)))
+        .pipe(
+          switchMap((_userToken) => {
+            return this.authService.fetchUser();
+          }),
+        )
+        .subscribe({
+          next: (userData) => {
+            if (userData.id) {
+              this.router.navigate(["/user"]);
+            }
+          },
+          error: (_err) => {
+            this.alertsService.createAlert({
+              type: "Error",
+              message: "Cannot find user with these details. Did you mean to register?",
+            });
+          },
+        });
     }
   }
 

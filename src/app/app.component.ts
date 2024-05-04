@@ -36,6 +36,7 @@ import { Router, NavigationStart } from "@angular/router";
 import { FormBuilder, Validators } from "@angular/forms";
 import { faComments, faUserCircle, faCompass, faBell } from "@fortawesome/free-regular-svg-icons";
 import { faBars, faSearch, faTimes, faTextHeight } from "@fortawesome/free-solid-svg-icons";
+import { onAuthStateChanged, getRedirectResult } from "firebase/auth";
 
 // App-related imports
 import { AuthService } from "./common/services/auth.service";
@@ -100,6 +101,46 @@ export class AppComponent implements OnInit, AfterViewInit {
         }
       }
     });
+
+    // Update the user state based on the logged in firebase user
+    // (if there is one)
+    onAuthStateChanged(
+      this.authService.auth,
+      (user) => {
+        if (user) {
+          this.authService.fetchUser().subscribe({
+            error: (err) => {
+              if (err.message == "User doesn't exist yet") {
+                this.alertsService.createAlert(
+                  {
+                    type: "Error",
+                    message: "User doesn't exist yet. Did you mean to finish registering?",
+                  },
+                  {
+                    navigate: true,
+                    navTarget: "/signup",
+                    navText: "Finish Registering",
+                  },
+                );
+              } else {
+                this.alertsService.createAlert({
+                  type: "Error",
+                  message: `An error occurred. ${err.message}`,
+                });
+              }
+            },
+          });
+        } else {
+          this.authService.logout();
+        }
+      },
+      (err) => {
+        this.alertsService.createAlert({
+          type: "Error",
+          message: `An error occurred. ${err.message}`,
+        });
+      },
+    );
   }
 
   /*

@@ -46,7 +46,6 @@ import {
   getAuth,
   signOut,
   AuthProvider,
-  UserCredential,
   getIdToken,
   createUserWithEmailAndPassword,
 } from "firebase/auth";
@@ -85,7 +84,6 @@ export class AuthService {
 
   readonly serverUrl = environment.backend.domain;
   // authentication information
-  token: string = "";
   authenticated = signal<boolean>(false);
   // user data
   userData = signal<User | undefined>(undefined);
@@ -180,7 +178,7 @@ export class AuthService {
       .pipe(
         switchMap((firebaseUser) => {
           return this.Http.get<GetUserResponse>(`${this.serverUrl}/users/all/${firebaseUser.uid}`, {
-            headers: new HttpHeaders({ Authorization: `Bearer ${firebaseUser.accessToken}` }),
+            headers: new HttpHeaders({ Authorization: `Bearer ${firebaseUser.jwt}` }),
           })
             .pipe(
               map((response) => {
@@ -230,7 +228,6 @@ export class AuthService {
     this.userData.set(userData);
     // set the authentication-variables accordingly
     this.authenticated.set(true);
-    this.token = userData.jwt;
     this.isUserDataResolved.next(true);
     this.tokenExpired = false;
 
@@ -265,7 +262,6 @@ export class AuthService {
     return signOut(this.auth).then(() => {
       //clears the user's data
       this.authenticated.set(false);
-      this.token = "";
       this.userData.set(undefined);
 
       // clears all the messages data (as that's private per user)
@@ -306,21 +302,27 @@ export class AuthService {
 
     const updatedUser = { ...this.userData() };
 
-    return this.Http.patch<UserUpdateResponse>(
-      `${this.serverUrl}/users/all/${this.userData()?.id}`,
-      updatedUser,
-      {
-        headers: new HttpHeaders({ Authorization: `Bearer ${this.token}` }),
-        // if successful, get the user data
-      },
-    ).subscribe({
-      next: (response) => {
-        this.serviceWorkerM.addItem("users", response.updated);
-      },
-      error: (err: HttpErrorResponse) => {
-        this.alertsService.createErrorAlert(err);
-      },
-    });
+    return this.getUserToken()
+      .pipe(
+        switchMap((user) =>
+          this.Http.patch<UserUpdateResponse>(
+            `${this.serverUrl}/users/all/${this.userData()?.id}`,
+            updatedUser,
+            {
+              headers: new HttpHeaders({ Authorization: `Bearer ${user.jwt}` }),
+              // if successful, get the user data
+            },
+          ),
+        ),
+      )
+      .subscribe({
+        next: (response) => {
+          this.serviceWorkerM.addItem("users", response.updated);
+        },
+        error: (err: HttpErrorResponse) => {
+          this.alertsService.createErrorAlert(err);
+        },
+      });
   }
 
   /*

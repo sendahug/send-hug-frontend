@@ -156,12 +156,15 @@ export class AuthService {
 
   /**
    * Fetches the logged in user's details.
+   * @param loggedIn - whether the user just logged in.
    * @returns an observable with the user's details from the back-end.
    */
-  fetchUser() {
+  fetchUser(loggedIn: boolean = false) {
     return this.getUserToken()
       .pipe(
         tap((firebaseUser: any) => {
+          this.loggedIn = loggedIn;
+
           // turn the BehaviorSubject dealing with whether user data was resolved to
           // false only if there's no user data
           if (this.userData()?.id == 0 || !this.userData()?.id) {
@@ -234,6 +237,7 @@ export class AuthService {
     // if the user just logged in, update the login count
     if (this.loggedIn) {
       this.updateUserData({ loginCount: userData.loginCount + 1 });
+      this.loggedIn = false;
     }
 
     // adds the user's data to the users store

@@ -82,7 +82,7 @@ export class LoginPage {
         .pipe(tap((_user) => this.isLoading.set(true)))
         .pipe(
           switchMap((_userToken) => {
-            return this.authService.fetchUser();
+            return this.authService.fetchUser(true);
           }),
         )
         .subscribe({
@@ -126,7 +126,7 @@ export class LoginPage {
         .pipe(tap((_user) => this.isLoading.set(true)))
         .pipe(
           switchMap((_userToken) => {
-            return this.authService.fetchUser();
+            return this.authService.fetchUser(true);
           }),
         )
         .subscribe({

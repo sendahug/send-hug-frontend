@@ -32,6 +32,8 @@
 
 import { Component } from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
+import { Router } from "@angular/router";
+
 import { AuthService } from "@app/common/services/auth.service";
 
 @Component({
@@ -47,16 +49,25 @@ export class SignUpPage {
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
+    private router: Router,
   ) {}
 
   /**
    * Creates the user in the Send a Hug back-end.
    */
   signUp() {
-    if (!this.signUpForm) {
+    if (
+      !this.signUpForm.valid ||
+      !this.authService.auth.currentUser ||
+      this.authService.authenticated()
+    ) {
       return;
     }
 
-    // TODO: Connect to a signup method in the Auth service.
+    this.authService.createUser(this.signUpForm.controls.displayName.value).subscribe({
+      next: (_currentUser) => {
+        this.router.navigate(["/user"]);
+      },
+    });
   }
 }

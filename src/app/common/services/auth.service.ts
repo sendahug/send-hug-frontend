@@ -182,43 +182,93 @@ export class AuthService {
         switchMap((firebaseUser) => {
           return this.Http.get<GetUserResponse>(`${this.serverUrl}/users/all/${firebaseUser.uid}`, {
             headers: new HttpHeaders({ Authorization: `Bearer ${firebaseUser.jwt}` }),
-          })
-            .pipe(
-              map((response) => {
-                return {
-                  ...response.user,
-                  auth0Id: "",
-                  jwt: firebaseUser.jwt,
-                  firebaseId: firebaseUser.uid,
-                };
-              }),
-            )
-            .pipe(tap((userData) => this.setCurrentUser(userData)))
-            .pipe(
-              catchError((err: HttpErrorResponse, caught) => {
-                const statusCode = err.status;
+          }).pipe(
+            map((response) => {
+              return {
+                ...response.user,
+                auth0Id: "",
+                jwt: firebaseUser.jwt,
+                firebaseId: firebaseUser.uid,
+              };
+            }),
+          );
+        }),
+      )
+      .pipe(tap((userData) => this.setCurrentUser(userData)))
+      .pipe(
+        catchError((err: HttpErrorResponse, _caught) => {
+          const statusCode = err.status;
 
-                // if a user with that ID doens't exist, try to create it
-                // because of the way we check permissions in that endpoint vs
-                // the create users endpoint
-                if (statusCode == 404 || statusCode == 401) {
-                  return throwError(() => Error("User doesn't exist yet"));
-                } else {
-                  // if the user is offline, show the offline header message
-                  if (!navigator.onLine) {
-                    this.alertsService.toggleOfflineAlert();
-                  }
-                  // otherwise just create an error alert
-                  else {
-                    this.alertsService.createErrorAlert(err);
-                  }
+          // if a user with that ID doens't exist, try to create it
+          // because of the way we check permissions in that endpoint vs
+          // the create users endpoint
+          if (statusCode == 401 && err.error.message.description.includes("User not found")) {
+            return throwError(() => Error("User doesn't exist yet"));
+          } else {
+            // if the user is offline, show the offline header message
+            if (!navigator.onLine) {
+              this.alertsService.toggleOfflineAlert();
+            }
+            // otherwise just create an error alert
+            else {
+              this.alertsService.createErrorAlert(err);
+            }
 
-                  this.isUserDataResolved.next(true);
-                }
+            this.isUserDataResolved.next(true);
+          }
 
-                return caught;
-              }),
-            );
+          return throwError(() => err);
+        }),
+      );
+  }
+
+  /**
+   * Creates the new user in the Send A Hug backend.
+   * @returns an observable with the user's details from the back-end.
+   */
+  createUser(displayName: string | null) {
+    return this.getUserToken()
+      .pipe(tap((_firebaseUser) => this.isUserDataResolved.next(false)))
+      .pipe(
+        switchMap((firebaseUser) => {
+          // post request to create the user
+          return this.Http.post<GetUserResponse>(
+            `${this.serverUrl}/users`,
+            {
+              firebaseId: firebaseUser.uid,
+              displayName: displayName || "user" + Math.round(Math.random() * 100),
+            },
+            {
+              headers: new HttpHeaders({ Authorization: `Bearer ${firebaseUser.jwt}` }),
+              //if the request succeeds, get the user's data
+            },
+          ).pipe(
+            map((newUser) => {
+              return {
+                ...newUser.user,
+                auth0Id: "",
+                jwt: firebaseUser.jwt,
+                firebaseId: firebaseUser.uid as string,
+              };
+            }),
+          );
+        }),
+      )
+      .pipe(tap((userData) => this.setCurrentUser(userData)))
+      .pipe(
+        catchError((err: HttpErrorResponse, _caught) => {
+          this.isUserDataResolved.next(true);
+
+          // if the user is offline, show the offline header message
+          if (!navigator.onLine) {
+            this.alertsService.toggleOfflineAlert();
+          }
+          // otherwise just create an error alert
+          else {
+            this.alertsService.createErrorAlert(err);
+          }
+
+          return throwError(() => err);
         }),
       );
   }

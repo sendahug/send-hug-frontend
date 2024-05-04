@@ -75,6 +75,12 @@ export class LoginPage {
         next: (_firebaseUser) => {
           this.router.navigate(["/signup"]);
         },
+        error: (err) => {
+          this.alertsService.createAlert({
+            type: "Error",
+            message: `An error occurred. ${err}`,
+          });
+        },
       });
     } else {
       this.authService
@@ -115,6 +121,12 @@ export class LoginPage {
         .subscribe({
           next: (_firebaseUser) => {
             this.router.navigate(["/signup"]);
+          },
+          error: (err) => {
+            this.alertsService.createAlert({
+              type: "Error",
+              message: `An error occurred. ${err}`,
+            });
           },
         });
     } else {

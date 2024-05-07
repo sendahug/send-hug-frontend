@@ -82,6 +82,7 @@ describe("ItemsService", () => {
         rbg: "#f8eee4",
         item: "#f4b56a",
       },
+      firebaseId: "",
     });
     itemsService["authService"].authenticated.set(true);
     itemsService["authService"].isUserDataResolved.next(true);

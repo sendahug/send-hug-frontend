@@ -57,4 +57,5 @@ export const mockAuthedUser: User = {
     rbg: "#f8eee4",
     item: "#f4b56a",
   },
+  firebaseId: "",
 };

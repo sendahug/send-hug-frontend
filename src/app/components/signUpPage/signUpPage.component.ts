@@ -33,6 +33,7 @@
 import { Component } from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
+import { AlertsService } from "@app/common/services/alerts.service";
 
 import { AuthService } from "@app/common/services/auth.service";
 
@@ -42,7 +43,7 @@ import { AuthService } from "@app/common/services/auth.service";
 })
 export class SignUpPage {
   signUpForm = this.fb.group({
-    displayName: ["", [Validators.required, Validators.minLength(1), Validators.maxLength(50)]],
+    displayName: ["", [Validators.required, Validators.maxLength(50)]],
     acceptedTerms: [false, [Validators.requiredTrue]],
   });
 
@@ -50,17 +51,37 @@ export class SignUpPage {
     private fb: FormBuilder,
     private authService: AuthService,
     private router: Router,
+    private alertsService: AlertsService,
   ) {}
 
   /**
    * Creates the user in the Send a Hug back-end.
    */
   signUp() {
-    if (
-      !this.signUpForm.valid ||
-      !this.authService.auth.currentUser ||
-      this.authService.authenticated()
-    ) {
+    let errorMessage = "";
+
+    if (!this.authService.getCurrentFirebaseUser()) {
+      errorMessage =
+        "You're not currently logged in with Firebase. Did you forget to log in or register?";
+    } else if (this.authService.authenticated()) {
+      errorMessage = "You cannot create another user when you're already registered!";
+    } else if (!this.signUpForm.valid) {
+      if (this.signUpForm.controls.displayName.errors?.required) {
+        errorMessage += "A display name is required. ";
+      } else if (this.signUpForm.controls.displayName.errors?.maxlength) {
+        errorMessage += "Display name is too long. Please shorten it and try again. ";
+      }
+
+      if (this.signUpForm.controls.acceptedTerms.errors?.required) {
+        errorMessage += "You must accept the terms and conditions before creating an account.";
+      }
+    }
+
+    if (errorMessage) {
+      this.alertsService.createAlert({
+        type: "Error",
+        message: `Error creating a new user. ${errorMessage}`,
+      });
       return;
     }
 

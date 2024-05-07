@@ -101,6 +101,14 @@ export class AuthService {
   ) {}
 
   /**
+   * Gets the currently-logged in user from firebase.
+   * @returns the currently-logged in user from firebase if there is one.
+   */
+  getCurrentFirebaseUser() {
+    return this.auth.currentUser;
+  }
+
+  /**
    * Creates a new user with email and password.
    * @param email - the email to use for sign up.
    * @param password - the password to use.

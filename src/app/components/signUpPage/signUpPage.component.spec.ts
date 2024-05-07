@@ -42,11 +42,17 @@ import { ServiceWorkerModule } from "@angular/service-worker";
 import { RouterModule } from "@angular/router";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { NO_ERRORS_SCHEMA } from "@angular/core";
+import { ReactiveFormsModule } from "@angular/forms";
+import { User as FirebaseUser } from "firebase/auth";
+import { of } from "rxjs";
 
 import { SignUpPage } from "./signUpPage.component";
 import { AppCommonModule } from "@app/common/common.module";
+import { getMockFirebaseUser, mockAuthedUser } from "@tests/mockData";
 
 describe("SignUpPage", () => {
+  let mockFirebaseUser: FirebaseUser;
+
   // Before each test, configure testing environment
   beforeEach(() => {
     TestBed.resetTestEnvironment();
@@ -60,10 +66,13 @@ describe("SignUpPage", () => {
         ServiceWorkerModule.register("sw.js", { enabled: false }),
         FontAwesomeModule,
         AppCommonModule,
+        ReactiveFormsModule,
       ],
       declarations: [SignUpPage],
       providers: [{ provide: APP_BASE_HREF, useValue: "/" }],
     }).compileComponents();
+
+    mockFirebaseUser = getMockFirebaseUser();
   });
 
   // Check that the component is created
@@ -71,5 +80,202 @@ describe("SignUpPage", () => {
     const fixture = TestBed.createComponent(SignUpPage);
     const signUpPage = fixture.componentInstance;
     expect(signUpPage).toBeTruthy();
+  });
+
+  it("should show the signup form if the user isn't logged in", () => {
+    const fixture = TestBed.createComponent(SignUpPage);
+    const signUpPage = fixture.componentInstance;
+    const signUpPageDOM = fixture.nativeElement;
+    signUpPage["authService"].authenticated.set(false);
+    fixture.detectChanges();
+
+    expect(signUpPageDOM.querySelector("#loginBox")).toBeDefined();
+    expect(signUpPageDOM.querySelector("#logoutBox")).toBeNull();
+  });
+
+  it("should prevent users not logged in with firebase from signing up", () => {
+    const fixture = TestBed.createComponent(SignUpPage);
+    const signUpPage = fixture.componentInstance;
+    const signUpPageDOM = fixture.nativeElement;
+    signUpPage["authService"].authenticated.set(false);
+    const signUpSpy = spyOn(signUpPage, "signUp").and.callThrough();
+    const currentUserSpy = spyOn(
+      signUpPage["authService"],
+      "getCurrentFirebaseUser",
+    ).and.returnValue(null);
+    const createUserSpy = spyOn(signUpPage["authService"], "createUser");
+    const alertsSpy = spyOn(signUpPage["alertsService"], "createAlert");
+    fixture.detectChanges();
+
+    signUpPageDOM.querySelector("#displayName").value = "name";
+    signUpPageDOM.querySelector("#displayName").dispatchEvent(new Event("input"));
+    signUpPageDOM.querySelector("#acceptedTerms").click();
+    signUpPageDOM.querySelector("#logIn").click();
+    fixture.detectChanges();
+
+    expect(signUpSpy).toHaveBeenCalled();
+    expect(currentUserSpy).toHaveBeenCalled();
+    expect(createUserSpy).not.toHaveBeenCalled();
+    expect(alertsSpy).toHaveBeenCalledWith({
+      type: "Error",
+      message:
+        "Error creating a new user. You're not currently logged in with Firebase. Did you forget to log in or register?",
+    });
+  });
+
+  it("should prevent signed in users from registering again", () => {
+    const fixture = TestBed.createComponent(SignUpPage);
+    const signUpPage = fixture.componentInstance;
+    signUpPage["authService"].authenticated.set(true);
+    signUpPage["authService"].userData.set({ ...mockAuthedUser });
+    const currentUserSpy = spyOn(
+      signUpPage["authService"],
+      "getCurrentFirebaseUser",
+    ).and.returnValue(mockFirebaseUser);
+    const createUserSpy = spyOn(signUpPage["authService"], "createUser");
+    const alertsSpy = spyOn(signUpPage["alertsService"], "createAlert");
+    signUpPage.signUpForm.controls.displayName.setValue("name");
+    signUpPage.signUpForm.controls.acceptedTerms.setValue(true);
+    fixture.detectChanges();
+
+    signUpPage.signUp();
+
+    expect(currentUserSpy).toHaveBeenCalled();
+    expect(createUserSpy).not.toHaveBeenCalled();
+    expect(alertsSpy).toHaveBeenCalledWith({
+      type: "Error",
+      message:
+        "Error creating a new user. You cannot create another user when you're already registered!",
+    });
+  });
+
+  it("should prevent invalid sign up forms from being submitted - display name too long", () => {
+    const fixture = TestBed.createComponent(SignUpPage);
+    const signUpPage = fixture.componentInstance;
+    const signUpPageDOM = fixture.nativeElement;
+    signUpPage["authService"].authenticated.set(false);
+    const signUpSpy = spyOn(signUpPage, "signUp").and.callThrough();
+    const currentUserSpy = spyOn(
+      signUpPage["authService"],
+      "getCurrentFirebaseUser",
+    ).and.returnValue(mockFirebaseUser);
+    const createUserSpy = spyOn(signUpPage["authService"], "createUser");
+    const alertsSpy = spyOn(signUpPage["alertsService"], "createAlert");
+    fixture.detectChanges();
+
+    let nameStr = "";
+    for (let i = 0; i <= 20; i++) {
+      nameStr += "abc";
+    }
+
+    signUpPageDOM.querySelector("#displayName").value = nameStr;
+    signUpPageDOM.querySelector("#displayName").dispatchEvent(new Event("input"));
+    signUpPageDOM.querySelector("#acceptedTerms").click();
+    signUpPageDOM.querySelector("#logIn").click();
+    fixture.detectChanges();
+
+    expect(signUpSpy).toHaveBeenCalled();
+    expect(currentUserSpy).toHaveBeenCalled();
+    expect(createUserSpy).not.toHaveBeenCalled();
+    expect(alertsSpy).toHaveBeenCalledWith({
+      type: "Error",
+      message:
+        "Error creating a new user. Display name is too long. Please shorten it and try again. ",
+    });
+  });
+
+  it("should prevent invalid sign up forms from being submitted - no display name", () => {
+    const fixture = TestBed.createComponent(SignUpPage);
+    const signUpPage = fixture.componentInstance;
+    const signUpPageDOM = fixture.nativeElement;
+    signUpPage["authService"].authenticated.set(false);
+    const signUpSpy = spyOn(signUpPage, "signUp").and.callThrough();
+    const currentUserSpy = spyOn(
+      signUpPage["authService"],
+      "getCurrentFirebaseUser",
+    ).and.returnValue(mockFirebaseUser);
+    const createUserSpy = spyOn(signUpPage["authService"], "createUser");
+    const alertsSpy = spyOn(signUpPage["alertsService"], "createAlert");
+    fixture.detectChanges();
+
+    signUpPageDOM.querySelector("#acceptedTerms").click();
+    signUpPageDOM.querySelector("#logIn").click();
+    fixture.detectChanges();
+
+    expect(signUpSpy).toHaveBeenCalled();
+    expect(currentUserSpy).toHaveBeenCalled();
+    expect(createUserSpy).not.toHaveBeenCalled();
+    expect(alertsSpy).toHaveBeenCalledWith({
+      type: "Error",
+      message: "Error creating a new user. A display name is required. ",
+    });
+  });
+
+  it("should prevent invalid sign up forms from being submitted - terms not accepted", () => {
+    const fixture = TestBed.createComponent(SignUpPage);
+    const signUpPage = fixture.componentInstance;
+    const signUpPageDOM = fixture.nativeElement;
+    signUpPage["authService"].authenticated.set(false);
+    const signUpSpy = spyOn(signUpPage, "signUp").and.callThrough();
+    const currentUserSpy = spyOn(
+      signUpPage["authService"],
+      "getCurrentFirebaseUser",
+    ).and.returnValue(mockFirebaseUser);
+    const createUserSpy = spyOn(signUpPage["authService"], "createUser");
+    const alertsSpy = spyOn(signUpPage["alertsService"], "createAlert");
+    fixture.detectChanges();
+
+    signUpPageDOM.querySelector("#displayName").value = "name";
+    signUpPageDOM.querySelector("#displayName").dispatchEvent(new Event("input"));
+    signUpPageDOM.querySelector("#acceptedTerms").click();
+    signUpPageDOM.querySelector("#acceptedTerms").click();
+    signUpPageDOM.querySelector("#logIn").click();
+    fixture.detectChanges();
+
+    expect(signUpSpy).toHaveBeenCalled();
+    expect(currentUserSpy).toHaveBeenCalled();
+    expect(createUserSpy).not.toHaveBeenCalled();
+    expect(alertsSpy).toHaveBeenCalledWith({
+      type: "Error",
+      message:
+        "Error creating a new user. You must accept the terms and conditions before creating an account.",
+    });
+  });
+
+  it("should create a new user via the AuthService", (done: DoneFn) => {
+    const fixture = TestBed.createComponent(SignUpPage);
+    const signUpPage = fixture.componentInstance;
+    const signUpPageDOM = fixture.nativeElement;
+    signUpPage["authService"].authenticated.set(false);
+    const signUpSpy = spyOn(signUpPage, "signUp").and.callThrough();
+    spyOn(signUpPage["authService"], "getCurrentFirebaseUser").and.returnValue(mockFirebaseUser);
+    const createUserSpy = spyOn(signUpPage["authService"], "createUser").and.returnValue(
+      of({ ...mockAuthedUser }),
+    );
+    const routerSpy = spyOn(signUpPage["router"], "navigate");
+    fixture.detectChanges();
+
+    signUpPageDOM.querySelector("#displayName").value = "name";
+    signUpPageDOM.querySelector("#displayName").dispatchEvent(new Event("input"));
+    signUpPageDOM.querySelector("#acceptedTerms").click();
+    signUpPageDOM.querySelector("#logIn").click();
+    fixture.detectChanges();
+
+    expect(signUpSpy).toHaveBeenCalled();
+    expect(createUserSpy).toHaveBeenCalledWith("name");
+    expect(routerSpy).toHaveBeenCalledWith(["/user"]);
+    done();
+  });
+
+  it("should show an error message if the user is logged in", () => {
+    const fixture = TestBed.createComponent(SignUpPage);
+    const signUpPage = fixture.componentInstance;
+    const signUpPageDOM = fixture.nativeElement;
+    signUpPage["authService"].authenticated.set(true);
+    signUpPage["authService"].userData.set({ ...mockAuthedUser });
+    fixture.detectChanges();
+
+    expect(signUpPageDOM.querySelector("#loginBox")).toBeNull();
+    expect(signUpPageDOM.querySelector("#logoutBox")).toBeDefined();
   });
 });

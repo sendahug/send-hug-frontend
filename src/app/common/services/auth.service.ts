@@ -140,13 +140,23 @@ export class AuthService {
   }
 
   /**
+   * Fetches an ID token for the currently logged in user.
+   * @returns an observable of a user's JWT.
+   */
+  getIdTokenForCurrentUser() {
+    if (!this.auth.currentUser) return of("");
+
+    return from(getIdToken(this.auth.currentUser));
+  }
+
+  /**
    * Gets a JWT and adds it to the user credential object.
    * @returns an observable of a user credentials + jwt.
    */
   getUserToken() {
     if (!this.auth.currentUser) return of();
 
-    return from(getIdToken(this.auth.currentUser)).pipe(
+    return this.getIdTokenForCurrentUser().pipe(
       map((token) => ({
         ...this.auth.currentUser,
         jwt: token,

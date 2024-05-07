@@ -33,8 +33,7 @@
 // Angular imports
 import { Injectable } from "@angular/core";
 import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams } from "@angular/common/http";
-import { Observable, catchError, from, of, switchMap, tap, throwError } from "rxjs";
-import { getIdToken } from "firebase/auth";
+import { Observable, catchError, of, switchMap, tap, throwError } from "rxjs";
 
 // App-related imports
 import { environment } from "@env/environment";
@@ -58,11 +57,13 @@ export class ApiClientService {
    * Updates the auth header with the current user token.
    */
   updateAuthToken(): Observable<string | undefined> {
-    if (!this.authService.auth.currentUser) return of();
+    if (!this.authService.authenticated()) return of("");
 
-    return from(getIdToken(this.authService.auth.currentUser)).pipe(
+    return this.authService.getIdTokenForCurrentUser().pipe(
       tap((token) => {
-        this.authHeader = this.authHeader.set("Authorization", `Bearer ${token}`);
+        if (token) {
+          this.authHeader = this.authHeader.set("Authorization", `Bearer ${token}`);
+        }
       }),
     );
   }

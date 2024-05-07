@@ -29,6 +29,8 @@
   SOFTWARE.
 */
 
+import { User as FirebaseUser } from "firebase/auth";
+
 import { User } from "../app/interfaces/user.interface";
 
 export const mockAuthedUser: User = {
@@ -59,3 +61,25 @@ export const mockAuthedUser: User = {
   },
   firebaseId: "",
 };
+
+export function getMockFirebaseUser(): FirebaseUser {
+  return {
+    emailVerified: false,
+    isAnonymous: false,
+    email: "",
+    providerData: [],
+    refreshToken: "",
+    tenantId: "",
+    delete: () => new Promise(() => undefined),
+    getIdToken: (forceRefresh?: boolean) => new Promise(() => ""),
+    getIdTokenResult: (forceRefresh?: boolean) => new Promise(() => ({})),
+    reload: () => new Promise(() => undefined),
+    toJSON: () => ({}),
+    metadata: {},
+    displayName: "",
+    phoneNumber: "",
+    photoURL: "",
+    providerId: "",
+    uid: "",
+  };
+}

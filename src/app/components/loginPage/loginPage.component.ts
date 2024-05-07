@@ -109,6 +109,22 @@ export class LoginPage {
    */
   sendUsernameAndPassword() {
     if (!this.loginForm.valid) {
+      let errorMessage = "";
+
+      if (this.loginForm.controls.username.errors?.required) {
+        errorMessage += "An email is required to log in or sign up. ";
+      } else if (this.loginForm.controls.username.errors?.email) {
+        errorMessage += "Invalid email. ";
+      }
+
+      if (this.loginForm.controls.password.errors?.required) {
+        errorMessage += "A password is required to log in or sign up.";
+      }
+
+      this.alertsService.createAlert({
+        type: "Error",
+        message: `Invalid login details. ${errorMessage}`,
+      });
       return;
     }
 

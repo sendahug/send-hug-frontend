@@ -72,7 +72,6 @@ describe("AppComponent", () => {
     }).compileComponents();
 
     const authService = TestBed.inject(AuthService);
-    spyOn(authService, "checkHash");
     authService.authenticated.set(true);
     authService.userData.set({ ...mockAuthedUser });
 
@@ -84,6 +83,8 @@ describe("AppComponent", () => {
     spyOn(notificationService, "getNotifications");
     spyOn(notificationService, "startAutoRefresh");
   });
+
+  // TODO: Check that the component checks for a logged in use
 
   // Check that the app is created
   it("should create the app", () => {

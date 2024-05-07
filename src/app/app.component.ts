@@ -36,7 +36,7 @@ import { Router, NavigationStart } from "@angular/router";
 import { FormBuilder, Validators } from "@angular/forms";
 import { faComments, faUserCircle, faCompass, faBell } from "@fortawesome/free-regular-svg-icons";
 import { faBars, faSearch, faTimes, faTextHeight } from "@fortawesome/free-solid-svg-icons";
-import { onAuthStateChanged, getRedirectResult } from "firebase/auth";
+import { onAuthStateChanged } from "firebase/auth";
 
 // App-related imports
 import { AuthService } from "./common/services/auth.service";

@@ -59,7 +59,7 @@ export const mockAuthedUser: User = {
     rbg: "#f8eee4",
     item: "#f4b56a",
   },
-  firebaseId: "",
+  firebaseId: "fb",
 };
 
 export function getMockFirebaseUser(): FirebaseUser {
@@ -80,6 +80,6 @@ export function getMockFirebaseUser(): FirebaseUser {
     phoneNumber: "",
     photoURL: "",
     providerId: "",
-    uid: "",
+    uid: "fb",
   };
 }

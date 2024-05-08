@@ -1,6 +1,6 @@
 /*
-	Auth Service
-	Send a Hug Service Tests
+  Auth Service
+  Send a Hug Service Tests
   ---------------------------------------------------
   MIT License
 
@@ -38,47 +38,21 @@ import {
 } from "@angular/platform-browser-dynamic/testing";
 import { ServiceWorkerModule } from "@angular/service-worker";
 import {} from "jasmine";
-import * as Auth0 from "auth0-js";
+import { User as FirebaseUser } from "firebase/auth";
 import { HttpErrorResponse, HttpHeaders, HttpEventType } from "@angular/common/http";
+import { isEmpty, of } from "rxjs";
 
 import { AuthService } from "./auth.service";
 import { AlertsService } from "./alerts.service";
-
-class MockAuth0 {
-  WebAuth() {}
-
-  authorize() {}
-
-  checkSession = ({}, cb: Auth0.Auth0Callback<any, Auth0.Auth0Error>): void => {
-    const authResult = {
-      accessToken: "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjUxUm1CQkZqRy1lMDBxNDVKUm1TMiJ9",
-    };
-    let err: Auth0.Auth0Error | null = null;
-    cb(err, authResult);
-  };
-
-  parseHash = (
-    _options: Auth0.ParseHashOptions,
-    callback: Auth0.Auth0Callback<Auth0.Auth0DecodedHash, Auth0.Auth0ParseHashError>,
-  ): void => {
-    const authResult: Auth0.Auth0DecodedHash = {
-      accessToken: "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjUxUm1CQkZqRy1lMDBxNDVKUm1TMiJ9",
-    };
-    let err: Auth0.Auth0Error = {
-      error: "",
-    };
-    callback(err, authResult);
-  };
-
-  logout() {}
-}
-
-const hash =
-  "#access_token=eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjUxUm1CQkZqRy1lMDBxNDVKUm1TMiJ9&scope=openid%20profile%20email&expires_in=86390&token_type=Bearer&state=1c84KBfutr83655.sOdM~EYpFgEOF9US";
+import { getMockFirebaseUser, mockAuthedUser } from "@tests/mockData";
+import { User } from "@app/interfaces/user.interface";
 
 describe("AuthService", () => {
   let httpController: HttpTestingController;
   let authService: AuthService;
+  let mockFirebaseUser: FirebaseUser;
+  let mockUser: User;
+  let createAlertSpy: jasmine.Spy;
 
   // Before each test, configure testing environment
   beforeEach(() => {
@@ -90,7 +64,7 @@ describe("AuthService", () => {
         HttpClientTestingModule,
         ServiceWorkerModule.register("/sw.js", { enabled: false }),
       ],
-      providers: [AuthService, { provide: Auth0, useClass: MockAuth0 }],
+      providers: [AuthService],
     }).compileComponents();
 
     authService = TestBed.inject(AuthService);
@@ -99,7 +73,11 @@ describe("AuthService", () => {
     const alertsService = TestBed.inject(AlertsService);
     spyOn(alertsService, "createErrorAlert");
     spyOn(alertsService, "toggleOfflineAlert");
-    spyOn(alertsService, "createAlert");
+    createAlertSpy = spyOn(alertsService, "createAlert");
+    createAlertSpy;
+
+    mockFirebaseUser = getMockFirebaseUser();
+    mockUser = { ...mockAuthedUser };
   });
 
   // Check the service is created
@@ -107,79 +85,42 @@ describe("AuthService", () => {
     expect(authService).toBeTruthy();
   });
 
-  // Check login is triggered
-  it("login() - should trigger login", () => {
-    const authSpy = spyOn(authService.auth0, "authorize");
+  it("getUserToken() - returns an empty observable if there's no logged in user", (done: DoneFn) => {
+    const currentUserSpy = spyOn(authService, "getCurrentFirebaseUser").and.returnValue(null);
+    const idTokenSpy = spyOn(authService, "getIdTokenForCurrentUser");
 
-    authService.login();
-
-    expect(authSpy).toHaveBeenCalled();
+    authService
+      .getUserToken()
+      .pipe(isEmpty())
+      .subscribe({
+        next: (isEmptyObs) => {
+          expect(currentUserSpy).toHaveBeenCalled();
+          expect(idTokenSpy).not.toHaveBeenCalled();
+          expect(isEmptyObs).toEqual(true);
+          done();
+        },
+      });
   });
 
-  // Check the hash is checked and parsed
-  it("checkHash() - parses the hash to get the token", () => {
-    // set up spies
-    //@ts-ignore
-    const hashSpy = spyOn(authService.auth0, "parseHash").and.callFake(
-      //@ts-ignore
-      (
-        _options: Auth0.ParseHashOptions,
-        callback: Auth0.Auth0Callback<Auth0.Auth0DecodedHash, Auth0.Auth0ParseHashError>,
-      ): void => {
-        const authResult: Auth0.Auth0DecodedHash = {
-          accessToken:
-            "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjUxUm1CQkZqRy1lMDBxNDVKUm1TMiJ9",
-        };
-        let err: Auth0.Auth0Error = {
-          error: "",
-        };
-        callback(err, authResult);
-      },
+  it("getUserToken() - returns an observable with user data if there is one", (done: DoneFn) => {
+    const currentUserSpy = spyOn(authService, "getCurrentFirebaseUser").and.returnValue(
+      mockFirebaseUser,
     );
-    const parseSpy = spyOn(authService, "parseJWT").and.returnValue({
-      token: "fdsfd",
+    const idTokenSpy = spyOn(authService, "getIdTokenForCurrentUser").and.returnValue(of("token"));
+
+    authService.getUserToken().subscribe((user) => {
+      expect(currentUserSpy).toHaveBeenCalled();
+      expect(idTokenSpy).toHaveBeenCalled();
+      expect(user).toEqual({
+        ...mockFirebaseUser,
+        jwt: "token",
+      });
+      done();
     });
-    const getDataSpy = spyOn(authService, "getUserData");
-
-    // call checkHash
-    window.location.hash = hash;
-    authService.checkHash();
-
-    // check expectations
-    expect(hashSpy).toHaveBeenCalled();
-    expect(parseSpy).toHaveBeenCalled();
-    expect(getDataSpy).toHaveBeenCalledWith({
-      token: "fdsfd",
-    });
-  });
-
-  // Check getToken is called if there's no token in the hash
-  it("checkHash() - calls getToken if there's no token in the hash", () => {
-    // set up spies
-    const parseSpy = spyOn(authService, "parseJWT");
-    const getSpy = spyOn(authService, "getToken");
-
-    // call checkHash
-    window.location.hash = "";
-    authService.checkHash();
-
-    expect(parseSpy).not.toHaveBeenCalled();
-    expect(getSpy).toHaveBeenCalled();
-  });
-
-  // Check the token is parsed correctly
-  it("parseJWT() - parses the JWT", () => {
-    const token =
-      "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjUxUm1CQkZqRy1lMDBxNDVKUm1TMiJ9.eyJpc3MiOiJodHRwczovL2Rldi1zYmFjLmF1dGgwLmNvbS8iLCJzdWIiOiJhdXRoMHw1ZWQ4ZTNkMGRlZjc1ZDBiZWZiYzdlNTAiLCJhdWQiOlsic2VuZGh1ZyIsImh0dHBzOi8vZGV2LXNiYWMuYXV0aDAuY29tL3VzZXJpbmZvIl0sImlhdCI6MTU5ODYyNzQyNywiZXhwIjoxNTk4NzEzODE3LCJhenAiOiJyZ1pMNEkwNHBlcDNQMkdSSUVWUXREa1djSGp2OXNydSIsInNjb3BlIjoib3BlbmlkIHByb2ZpbGUgZW1haWwiLCJwZXJtaXNzaW9ucyI6WyJibG9jazp1c2VyIiwiZGVsZXRlOmFueS1wb3N0IiwiZGVsZXRlOm1lc3NhZ2VzIiwicGF0Y2g6YW55LXBvc3QiLCJwYXRjaDphbnktdXNlciIsInBvc3Q6bWVzc2FnZSIsInBvc3Q6cG9zdCIsInBvc3Q6cmVwb3J0IiwicmVhZDphZG1pbi1ib2FyZCIsInJlYWQ6bWVzc2FnZXMiLCJyZWFkOnVzZXIiXX0.juNfvoBVoC4X8NXSvy8y3byEdTFnGVCZy3_frehLnXV50ehzUC9cl5dHbvQ8mTjK4SaPlHtJPUR4L8lZDt-p6OW0OwjFlPUmkNefmLxyeumTUMKZ-r_MUi3cH0IXssid3GlOAo0fJ1Xv6koyBTHtPLEDBqQAdSH5VnMupMqu1BHvbQSPoyMDQ2P1nkb0cFVX1yh0ApM3dZTJc01Fl55DwW1rD8ECvRncp-Y6h-inNG_rqBvYnxJoTlpwwCenyMdwf7dQ7D-M8Dvr2tmDvRPoVEs40p7WwdqLcFoauyf1t8LHbHyn4HVioFulckZCJRM9J5X-q8JO5GKsD0j45JwWaQ";
-
-    const payload = authService.parseJWT(token);
-
-    expect(payload["sub"]).toBe("auth0|5ed8e3d0def75d0befbc7e50");
-    expect(payload["iss"]).toBe("https://dev-sbac.auth0.com/");
   });
 
   // Check the service gets the user's data
-  it("getUserData() - gets the user's data", () => {
+  it("fetchUser() - gets the user's data", (done: DoneFn) => {
     // mock response
     const mockResponse = {
       success: true,
@@ -187,161 +128,15 @@ describe("AuthService", () => {
         id: 4,
         auth0Id: "auth0",
         displayName: "name",
-        receivedHugs: 2,
-        givenHugs: 2,
-        postsNum: 2,
+        receivedH: 2,
+        givenH: 2,
+        posts: 2,
         loginCount: 3,
-        role: "admin",
-        jwt: "",
-        blocked: false,
-        releaseDate: undefined,
-        autoRefresh: false,
-        refreshRate: 20,
-        pushEnabled: false,
-        selectedIcon: "kitty",
-        iconColours: {
-          character: "#BA9F93",
-          leftbg: "#e2a275",
-          rightbg: "#f8eee4",
-          item: "#f4b56a",
+        role: {
+          id: 1,
+          name: "admin",
+          permissions: [],
         },
-      },
-    };
-
-    const jwtPayload = {
-      sub: "auth0",
-    };
-    const setSpy = spyOn(authService, "setToken");
-    const addSpy = spyOn(authService["serviceWorkerM"], "addItem");
-
-    authService.getUserData(jwtPayload);
-    // wait for user data to be resolved
-    authService.isUserDataResolved.subscribe((value) => {
-      if (value) {
-        expect(authService.userData()?.id).toBe(4);
-        expect(authService.userData()?.displayName).toBe("name");
-        expect(authService.authenticated()).toBeTrue();
-        expect(setSpy).toHaveBeenCalled();
-      }
-    });
-
-    // flush mock response
-    const req = httpController.expectOne(`${authService.serverUrl}/users/all/auth0`);
-    expect(req.request.method).toEqual("GET");
-    req.flush(mockResponse);
-
-    expect(addSpy).toHaveBeenCalled();
-  });
-
-  // Check the service triggers user creating if the user doesn't exist
-  it("getUserData() - calls createUser() if used doesn't exist", () => {
-    // mock response
-    const mockResponse: HttpErrorResponse = {
-      message: "",
-      error: {
-        message: "error",
-      },
-      headers: new HttpHeaders(),
-      ok: false,
-      status: 404,
-      statusText: "",
-      url: "",
-      type: HttpEventType.Response,
-      name: "HttpErrorResponse",
-    };
-
-    const jwtPayload = {
-      sub: "auth0",
-    };
-    const createSpy = spyOn(authService, "createUser");
-
-    authService.getUserData(jwtPayload);
-
-    // flush mock response
-    const req = httpController.expectOne(`${authService.serverUrl}/users/all/auth0`);
-    expect(req.request.method).toEqual("GET");
-    req.flush(null, mockResponse);
-
-    expect(authService.isUserDataResolved.value).toBeFalse();
-    expect(createSpy).toHaveBeenCalled();
-    expect(createSpy).toHaveBeenCalledWith(jwtPayload);
-  });
-
-  // Check the service updates user data if the user just logged in
-  it("getUserData() - calls updateUserData() if the user just logged in", () => {
-    // mock response
-    const mockResponse = {
-      success: true,
-      user: {
-        id: 4,
-        auth0Id: "auth0",
-        displayName: "name",
-        receivedHugs: 2,
-        givenHugs: 2,
-        postsNum: 2,
-        loginCount: 3,
-        role: "admin",
-        jwt: "",
-        blocked: false,
-        releaseDate: undefined,
-        autoRefresh: false,
-        refreshRate: 20,
-        pushEnabled: false,
-        selectedIcon: "kitty",
-        iconColours: {
-          character: "#BA9F93",
-          leftbg: "#e2a275",
-          rightbg: "#f8eee4",
-          item: "#f4b56a",
-        },
-      },
-    };
-
-    const jwtPayload = {
-      sub: "auth0",
-    };
-    const updateSpy = spyOn(authService, "updateUserData");
-    spyOn(authService, "setToken");
-
-    authService.loggedIn = true;
-    authService.getUserData(jwtPayload);
-
-    // flush mock response
-    const req = httpController.expectOne(`${authService.serverUrl}/users/all/auth0`);
-    expect(req.request.method).toEqual("GET");
-    req.flush(mockResponse);
-
-    // wait for user data to be resolved
-    authService.isUserDataResolved.subscribe((value) => {
-      if (value) {
-        expect(updateSpy).toHaveBeenCalledWith({ loginCount: 4 });
-      }
-    });
-  });
-
-  // Check the service gets a token if there's none
-  it("getUserData() - calls getToken() if there's no saved token", () => {
-    const getSpy = spyOn(authService, "getToken");
-
-    authService.getUserData("");
-
-    expect(getSpy).toHaveBeenCalled();
-  });
-
-  // Check a new user is created
-  it("createUser() - creates a new user", () => {
-    // mock response
-    const mockResponse = {
-      success: true,
-      user: {
-        id: 5,
-        auth0Id: "auth0",
-        displayName: "name",
-        receivedHugs: 2,
-        givenHugs: 2,
-        postsNum: 2,
-        loginCount: 3,
-        role: "admin",
         jwt: "",
         blocked: false,
         releaseDate: undefined,
@@ -355,38 +150,208 @@ describe("AuthService", () => {
           rbg: "#f8eee4",
           item: "#f4b56a",
         },
+        firebaseId: "fb",
       },
     };
-    const addSpy = spyOn(authService["serviceWorkerM"], "addItem");
+    const getTokenSpy = spyOn(authService, "getUserToken").and.returnValue(
+      of({
+        ...mockFirebaseUser,
+        jwt: "token",
+      }),
+    );
+    const isResolvedSpy = spyOn(authService.isUserDataResolved, "next").and.callThrough();
+    const userDataSpy = spyOn(authService.userData, "set").and.callThrough();
+    const setUserSpy = spyOn(authService, "setCurrentUser");
+
+    authService.fetchUser().subscribe({
+      next: (user) => {
+        expect(getTokenSpy).toHaveBeenCalled();
+        expect(authService.loggedIn).toBeFalse();
+        expect(isResolvedSpy).toHaveBeenCalledWith(false);
+        expect(userDataSpy).toHaveBeenCalledWith(undefined);
+        expect(setUserSpy).toHaveBeenCalled();
+        expect(user).toEqual({
+          ...mockUser,
+          jwt: "token",
+          auth0Id: "",
+        });
+        done();
+      },
+    });
+
+    // flush mock response
+    const req = httpController.expectOne(`${authService.serverUrl}/users/all/fb`);
+    expect(req.request.method).toEqual("GET");
+    req.flush(mockResponse);
+  });
+
+  // Check the service triggers user creating if the user doesn't exist
+  it("fetchUser() - throws a specific error if used doesn't exist", (done: DoneFn) => {
+    // mock response
+    const mockError = {
+      message: {
+        description: "User not found",
+        statusCode: 401,
+      },
+    };
+    const mockResponse: HttpErrorResponse = {
+      message: "error",
+      error: mockError,
+      headers: new HttpHeaders(),
+      ok: false,
+      status: 401,
+      statusText: "",
+      url: "",
+      type: HttpEventType.Response,
+      name: "HttpErrorResponse",
+    };
+    const getTokenSpy = spyOn(authService, "getUserToken").and.returnValue(
+      of({
+        ...mockFirebaseUser,
+        jwt: "token",
+      }),
+    );
+
+    authService.fetchUser().subscribe({
+      error: (err) => {
+        expect(getTokenSpy).toHaveBeenCalled();
+        expect(authService.isUserDataResolved.value).toBeFalse();
+        expect(err.message).toBe("User doesn't exist yet");
+        done();
+      },
+    });
+
+    // flush mock response
+    const req = httpController.expectOne(`${authService.serverUrl}/users/all/fb`);
+    expect(req.request.method).toEqual("GET");
+    req.flush(mockError, mockResponse);
+  });
+
+  // Check a new user is created
+  it("createUser() - creates a new user - name provided", (done: DoneFn) => {
+    // mock response
+    const mockResponse = {
+      success: true,
+      user: {
+        id: 4,
+        auth0Id: "auth0",
+        displayName: "name",
+        receivedH: 2,
+        givenH: 2,
+        posts: 2,
+        loginCount: 3,
+        role: {
+          id: 1,
+          name: "admin",
+          permissions: [],
+        },
+        jwt: "",
+        blocked: false,
+        releaseDate: undefined,
+        autoRefresh: false,
+        refreshRate: 20,
+        pushEnabled: false,
+        selectedIcon: "kitty",
+        iconColours: {
+          character: "#BA9F93",
+          lbg: "#e2a275",
+          rbg: "#f8eee4",
+          item: "#f4b56a",
+        },
+        firebaseId: "fb",
+      },
+    };
+    const getTokenSpy = spyOn(authService, "getUserToken").and.returnValue(
+      of({
+        ...mockFirebaseUser,
+        jwt: "token",
+      }),
+    );
+    const isResolvedSpy = spyOn(authService.isUserDataResolved, "next").and.callThrough();
+    const setUserSpy = spyOn(authService, "setCurrentUser");
 
     // check the user is logged out at first
     expect(authService.userData()).toBeUndefined();
     expect(authService.authenticated()).toBeFalse();
 
-    const jwtPayload = {
-      sub: "auth0",
-    };
-    authService.createUser(jwtPayload);
-
-    // wait for user data to be resolved
-    authService.isUserDataResolved.subscribe((value) => {
-      if (value) {
-        expect(authService.userData()?.id).toBe(5);
-        expect(authService.userData()?.auth0Id).toBe("auth0");
-        expect(authService.authenticated()).toBeTrue();
-      }
+    authService.createUser("test").subscribe({
+      next: (userData) => {
+        expect(getTokenSpy).toHaveBeenCalled();
+        expect(isResolvedSpy).toHaveBeenCalledWith(false);
+        expect(setUserSpy).toHaveBeenCalled();
+        expect(userData).toEqual({
+          ...mockUser,
+          auth0Id: "",
+          jwt: "token",
+        });
+        done();
+      },
     });
 
     // flush mock response
     const req = httpController.expectOne(`${authService.serverUrl}/users`);
     expect(req.request.method).toEqual("POST");
+    expect(req.request.body).toEqual({
+      firebaseId: "fb",
+      displayName: "test",
+    });
     req.flush(mockResponse);
+  });
 
+  it("setCurrentUser() - sets the user's data locally", () => {
+    const updateSpy = spyOn(authService, "updateUserData");
+    const addSpy = spyOn(authService["serviceWorkerM"], "addItem");
+
+    // before
+    expect(authService.userData()).toBeUndefined();
+    expect(authService.authenticated()).toBeFalse();
+    expect(authService.isUserDataResolved.value).toBeFalse();
+
+    authService.setCurrentUser({
+      ...mockUser,
+      jwt: "token",
+    });
+
+    // after
+    expect(authService.userData()).toEqual({
+      ...mockUser,
+      jwt: "token",
+    });
+    expect(authService.authenticated()).toBeTrue();
+    expect(authService.isUserDataResolved.value).toBeTrue();
     expect(addSpy).toHaveBeenCalled();
+    expect(updateSpy).not.toHaveBeenCalled();
+  });
+
+  // Check the service updates user data if the user just logged in
+  it("setCurrentUser() - calls updateUserData() if the user just logged in", () => {
+    const updateSpy = spyOn(authService, "updateUserData");
+    const addSpy = spyOn(authService["serviceWorkerM"], "addItem");
+    authService.loggedIn = true;
+
+    // before
+    expect(authService.userData()).toBeUndefined();
+    expect(authService.authenticated()).toBeFalse();
+    expect(authService.isUserDataResolved.value).toBeFalse();
+
+    authService.setCurrentUser({
+      ...mockUser,
+      jwt: "token",
+    });
+
+    // after
+    expect(authService.userData()).toEqual({
+      ...mockUser,
+      jwt: "token",
+    });
+    expect(authService.authenticated()).toBeTrue();
+    expect(authService.isUserDataResolved.value).toBeTrue();
+    expect(addSpy).toHaveBeenCalled();
+    expect(updateSpy).toHaveBeenCalledWith({ loginCount: 4 });
   });
 
   // Check logout is triggered
-  it("logout() - triggers logout", () => {
+  it("logout() - triggers logout", (done: DoneFn) => {
     // set the user data as if the user is logged in
     authService.userData.set({
       id: 4,
@@ -414,105 +379,79 @@ describe("AuthService", () => {
         rbg: "#f8eee4",
         item: "#f4b56a",
       },
+      firebaseId: "",
     });
     authService.authenticated.set(true);
     authService.tokenExpired = false;
-
-    const authSpy = spyOn(authService.auth0, "logout");
-    const storageSpy = spyOn(localStorage, "setItem");
-    const addSpy = spyOn(authService["serviceWorkerM"], "addItem");
+    const signOutSpy = spyOn(authService, "signOut").and.returnValue(of(undefined));
     const clearSpy = spyOn(authService["serviceWorkerM"], "clearStore");
 
-    authService.logout();
-
-    expect(authSpy).toHaveBeenCalled();
-    expect(storageSpy).toHaveBeenCalled();
-    expect(authService.userData()).toBeUndefined();
-    expect(addSpy).toHaveBeenCalled();
-    expect(clearSpy).toHaveBeenCalledTimes(2);
-  });
-
-  // Check the service sets the token in localStorage
-  it("setToken() - sets the token in localStorage", () => {
-    authService.token = "!";
-    const setSpy = spyOn(localStorage, "setItem");
-
-    authService.setToken();
-
-    expect(setSpy).toHaveBeenCalled();
-    expect(setSpy).toHaveBeenCalledWith("ACTIVE_JWT", "!");
-  });
-
-  // Check the service gets the token from localStorage
-  it("getToken() - gets the token from localStorage", () => {
-    const storageSpy = spyOn(localStorage, "getItem").and.returnValue("abcdef");
-    const parseSpy = spyOn(authService, "parseJWT").and.returnValue({
-      exp: 159871381700000,
+    authService.logout().add(() => {
+      expect(signOutSpy).toHaveBeenCalled();
+      expect(authService.authenticated()).toBeFalse();
+      expect(authService.userData()).toBeUndefined();
+      expect(clearSpy).toHaveBeenCalledTimes(2);
+      done();
     });
-    const getSpy = spyOn(authService, "getUserData");
-    const refreshSpy = spyOn(authService, "refreshToken");
-
-    authService.getToken();
-
-    expect(storageSpy).toHaveBeenCalled();
-    expect(parseSpy).toHaveBeenCalled();
-    expect(parseSpy).toHaveBeenCalledWith("abcdef");
-    expect(getSpy).toHaveBeenCalled();
-    expect(refreshSpy).toHaveBeenCalled();
   });
 
-  // Check the service triggers
-  it("getToken() - triggers logout if the token expired", () => {
-    const storageSpy = spyOn(localStorage, "getItem").and.returnValue("abcdef");
-    const parseSpy = spyOn(authService, "parseJWT").and.returnValue({
-      exp: 159871,
-    });
-    const getSpy = spyOn(authService, "getUserData");
-    const refreshSpy = spyOn(authService, "refreshToken");
-    const logoutSpy = spyOn(authService, "logout");
-
-    authService.getToken();
-
-    expect(storageSpy).toHaveBeenCalled();
-    expect(parseSpy).toHaveBeenCalled();
-    expect(parseSpy).toHaveBeenCalledWith("abcdef");
-    expect(logoutSpy).toHaveBeenCalled();
-    expect(authService.tokenExpired).toBeTrue();
-    expect(getSpy).not.toHaveBeenCalled();
-    expect(refreshSpy).not.toHaveBeenCalled();
-  });
-
-  // Check the service refreshes the token
-  it("refreshToken() - refreshes the token", () => {
-    // set up spies
-    const sessionSpy = spyOn(authService.auth0, "checkSession").and.callFake(
-      ({}, cb: Auth0.Auth0Callback<any, Auth0.Auth0Error>): void => {
-        const authResult = {
-          accessToken:
-            "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjUxUm1CQkZqRy1lMDBxNDVKUm1TMiJ9",
-        };
-        let err: Auth0.Auth0Error | null = null;
-        cb(err, authResult);
+  it("logout() - triggers logout and alerts the user if the token expired", (done: DoneFn) => {
+    // set the user data as if the user is logged in
+    authService.userData.set({
+      id: 4,
+      auth0Id: "",
+      displayName: "name",
+      receivedH: 2,
+      givenH: 2,
+      posts: 2,
+      loginCount: 3,
+      role: {
+        id: 1,
+        name: "admin",
+        permissions: [],
       },
-    );
-    const parseSpy = spyOn(authService, "parseJWT").and.returnValue({
-      token: "fdsfd",
+      jwt: "",
+      blocked: false,
+      releaseDate: undefined,
+      autoRefresh: false,
+      refreshRate: 20,
+      pushEnabled: false,
+      selectedIcon: "kitty",
+      iconColours: {
+        character: "#BA9F93",
+        lbg: "#e2a275",
+        rbg: "#f8eee4",
+        item: "#f4b56a",
+      },
+      firebaseId: "",
     });
-    const getDataSpy = spyOn(authService, "getUserData");
+    authService.authenticated.set(true);
+    authService.tokenExpired = true;
+    const signOutSpy = spyOn(authService, "signOut").and.returnValue(of(undefined));
+    const clearSpy = spyOn(authService["serviceWorkerM"], "clearStore");
 
-    // call checkHash
-    authService.refreshToken();
-
-    // check expectations
-    expect(sessionSpy).toHaveBeenCalled();
-    expect(parseSpy).toHaveBeenCalled();
-    expect(getDataSpy).toHaveBeenCalledWith({
-      token: "fdsfd",
+    authService.logout().add(() => {
+      expect(signOutSpy).toHaveBeenCalled();
+      expect(authService.authenticated()).toBeFalse();
+      expect(authService.userData()).toBeUndefined();
+      expect(clearSpy).toHaveBeenCalledTimes(2);
+      expect(createAlertSpy).toHaveBeenCalledWith(
+        {
+          type: "Notification",
+          message: `Your session had become inactive and you have been safely logged out. Log back in to continue.`,
+        },
+        {
+          navigate: true,
+          navTarget: "/user",
+          navText: "User Page",
+        },
+      );
+      done();
     });
   });
 
   // Check the service makes an update request
-  it("updateUserData() - updates the user's data", () => {
+  it("updateUserData() - updates the user's data", (done: DoneFn) => {
     // mock response
     const mockResponse = {
       success: true,
@@ -520,9 +459,9 @@ describe("AuthService", () => {
         id: 4,
         auth0Id: "auth0",
         displayName: "name",
-        receivedHugs: 2,
-        givenHugs: 2,
-        postsNum: 2,
+        receivedH: 2,
+        givenH: 2,
+        posts: 2,
         loginCount: 3,
         role: "admin",
         jwt: "",
@@ -531,6 +470,7 @@ describe("AuthService", () => {
         autoRefresh: false,
         refreshRate: 20,
         pushEnabled: false,
+        firebaseId: "fb",
       },
     };
 
@@ -560,14 +500,27 @@ describe("AuthService", () => {
         rbg: "#f8eee4",
         item: "#f4b56a",
       },
+      firebaseId: "fb",
     });
-    authService.updateUserData({ displayName: "name" });
+    const getTokenSpy = spyOn(authService, "getUserToken").and.returnValue(
+      of({
+        ...mockFirebaseUser,
+        jwt: "token",
+      }),
+    );
+    const swSpy = spyOn(authService["serviceWorkerM"], "addItem");
+
+    authService.updateUserData({ displayName: "name" }).add(() => {
+      expect(authService.userData()!.displayName).toBe("name");
+      expect(getTokenSpy).toHaveBeenCalled();
+      expect(swSpy).toHaveBeenCalled();
+      done();
+    });
 
     // flush mock response
     const req = httpController.expectOne(`${authService.serverUrl}/users/all/4`);
     expect(req.request.method).toEqual("PATCH");
     req.flush(mockResponse);
-    expect(authService.userData()!.displayName).toBe("name");
   });
 
   // Check the service checks user permissions correctly
@@ -610,6 +563,7 @@ describe("AuthService", () => {
         rbg: "#f8eee4",
         item: "#f4b56a",
       },
+      firebaseId: "",
     });
 
     const res = authService.canUser("block:user");
@@ -645,6 +599,7 @@ describe("AuthService", () => {
         rbg: "#f8eee4",
         item: "#f4b56a",
       },
+      firebaseId: "",
     });
 
     const res = authService.canUser("block:user");

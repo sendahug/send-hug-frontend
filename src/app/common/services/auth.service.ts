@@ -162,11 +162,13 @@ export class AuthService {
    * @returns an observable of a user credentials + jwt.
    */
   getUserToken() {
-    if (!this.auth.currentUser) return of();
+    const currentUser = this.getCurrentFirebaseUser();
+
+    if (!currentUser) return of();
 
     return this.getIdTokenForCurrentUser().pipe(
       map((token) => ({
-        ...this.auth.currentUser,
+        ...currentUser,
         jwt: token,
       })),
     );
@@ -184,13 +186,13 @@ export class AuthService {
           this.loggedIn = loggedIn;
 
           // turn the BehaviorSubject dealing with whether user data was resolved to
-          // false only if there's no user data
-          if (this.userData()?.id == 0 || !this.userData()?.id) {
-            this.isUserDataResolved.next(false);
-          }
-          // if the JWTs don't match (shouldn't happen, but just in case), change the BehaviorSubject
+          // false only if there's no user data or if the JWTs don't match (shouldn't happen, but just in case), change the BehaviorSubject
           // and reset the user's data
-          else if (this.userData()?.firebaseId != firebaseUser.uid) {
+          if (
+            this.userData()?.id == 0 ||
+            !this.userData()?.id ||
+            this.userData()?.firebaseId != firebaseUser.uid
+          ) {
             this.isUserDataResolved.next(false);
             this.userData.set(undefined);
           }
@@ -329,32 +331,41 @@ export class AuthService {
 
   /**
    * Signs the user out in Firebase.
+   * @returns an empty observable.
+   */
+  signOut() {
+    return from(signOut(this.auth));
+  }
+
+  /**
+   * Signs the user out and then deletes the user's data locally.
    */
   logout() {
-    return signOut(this.auth).then(() => {
-      //clears the user's data
-      this.authenticated.set(false);
-      this.userData.set(undefined);
+    return this.signOut().subscribe({
+      next: () => {
+        //clears the user's data
+        this.authenticated.set(false);
+        this.userData.set(undefined);
 
-      // clears all the messages data (as that's private per user)
-      this.serviceWorkerM.clearStore("messages");
-      this.serviceWorkerM.clearStore("threads");
+        // clears all the messages data (as that's private per user)
+        this.serviceWorkerM.clearStore("messages");
+        this.serviceWorkerM.clearStore("threads");
 
-      // if the user has been logged out through their token expiring
-      if (this.tokenExpired) {
-        this.alertsService.createAlert(
-          {
-            type: "Notification",
-            message: `Your session had become inactive and you have been safely logged out.
-                    Log back in to continue.`,
-          },
-          {
-            navigate: true,
-            navTarget: "/user",
-            navText: "User Page",
-          },
-        );
-      }
+        // if the user has been logged out through their token expiring
+        if (this.tokenExpired) {
+          this.alertsService.createAlert(
+            {
+              type: "Notification",
+              message: `Your session had become inactive and you have been safely logged out. Log back in to continue.`,
+            },
+            {
+              navigate: true,
+              navTarget: "/user",
+              navText: "User Page",
+            },
+          );
+        }
+      },
     });
   }
 
@@ -382,7 +393,6 @@ export class AuthService {
             updatedUser,
             {
               headers: new HttpHeaders({ Authorization: `Bearer ${user.jwt}` }),
-              // if successful, get the user data
             },
           ),
         ),

@@ -181,7 +181,7 @@ export class LoginPage {
 
   /*
   Function Name: logout()
-  Function Description: Activates Auth0 logout via the authentication service.
+  Function Description: Activates Firebase logout via the authentication service.
   Parameters: None.
   ----------------
   Programmer: Shir Bar Lev.

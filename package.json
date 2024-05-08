@@ -40,6 +40,7 @@
         "dist/app/postEditForm.component.html",
         "dist/app/reportForm.component.html",
         "dist/app/searchResults.component.html",
+        "dist/app/signUpPage.component.html",
         "dist/app/siteMap.component.html",
         "dist/app/sitePolicies.component.html",
         "dist/app/supportPage.component.html"
@@ -90,6 +91,7 @@
     "localDev": "gulp localDev",
     "test": "gulp test",
     "cypress": "cypress run",
+    "cypress:open": "cypress open",
     "e2e": "gulp e2e",
     "build": "gulp dist",
     "start": "node server.js",

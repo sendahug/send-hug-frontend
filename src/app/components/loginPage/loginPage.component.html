@@ -31,7 +31,7 @@
     <button type="submit" class="appButton sendData" (click)="sendUsernameAndPassword()" id="logIn">{{ signInUpTitle() }}</button>
   </form>
 
-  <button *ngIf="!isNewUser()" class="internalButton">Forgot Your Password?</button>
+  <button *ngIf="!isNewUser()" class="internalButton" (click)="resetPassword()">Forgot Your Password?</button>
 
   <span *ngIf="!isNewUser()" class="errorMessage">
     Don't have an account? <button class="internalButton" (click)="isNewUser.set(true)">
@@ -52,3 +52,8 @@
   
   <button id="logout" class="appButton" (click)="logout()">Log Out</button>
 </div>
+
+<app-reset-pw-form
+	*ngIf="resetMode"
+	(editMode)="changeMode($event)"
+></app-reset-pw-form>

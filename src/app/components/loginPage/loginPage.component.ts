@@ -53,6 +53,8 @@ export class LoginPage {
     password: ["", [Validators.required]],
   });
   isLoading = signal(false);
+  resetMode = false;
+  lastFocusedElement: any;
   waitFor = "user";
   faGoogle = faGoogle;
   faApple = faApple;
@@ -174,10 +176,21 @@ export class LoginPage {
   }
 
   /**
-   * Triggers password reset.
-   * TODO: Still need to fill this method.
+   * Opens the password reset popup.
    */
-  resetPassword() {}
+  resetPassword() {
+    this.resetMode = true;
+    this.lastFocusedElement = document.activeElement;
+  }
+
+  /**
+   * Remove the password reset popup.
+   * @param edit whether edit mode should be active.
+   */
+  changeMode(edit: boolean) {
+    this.resetMode = edit;
+    this.lastFocusedElement?.focus();
+  }
 
   /*
   Function Name: logout()

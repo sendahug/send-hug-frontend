@@ -45,12 +45,14 @@ import { NO_ERRORS_SCHEMA } from "@angular/core";
 import { of, throwError } from "rxjs";
 import { User as FirebaseUser, UserCredential } from "firebase/auth";
 import { ReactiveFormsModule } from "@angular/forms";
+import { By } from "@angular/platform-browser";
 
 import { LoginPage } from "./loginPage.component";
 import { AuthService } from "@common/services/auth.service";
 import { getMockFirebaseUser, mockAuthedUser } from "@tests/mockData";
 import { AppCommonModule } from "@app/common/common.module";
 import { User } from "@app/interfaces/user.interface";
+import { PasswordResetForm } from "@app/common/components/passwordResetForm/passwordResetForm.component";
 
 describe("LoginPage", () => {
   let mockFirbeaseUser: FirebaseUser;
@@ -72,7 +74,7 @@ describe("LoginPage", () => {
         AppCommonModule,
         ReactiveFormsModule,
       ],
-      declarations: [LoginPage],
+      declarations: [LoginPage, PasswordResetForm],
       providers: [{ provide: APP_BASE_HREF, useValue: "/" }],
     }).compileComponents();
 
@@ -450,6 +452,46 @@ describe("LoginPage", () => {
       message: "An error occurred. Error: ERROR!",
     });
     done();
+  });
+
+  it("should show the reset form if the user chooses to", () => {
+    const fixture = TestBed.createComponent(LoginPage);
+    const loginPage = fixture.componentInstance;
+    const loginPageDOM = fixture.nativeElement;
+    loginPage.authService.authenticated.set(false);
+    loginPage.isNewUser.set(false);
+    fixture.detectChanges();
+
+    expect(loginPage.resetMode).toBeFalse();
+    expect(loginPageDOM.querySelector("app-reset-pw-form")).toBeNull();
+
+    loginPageDOM.querySelectorAll(".internalButton")[0].click();
+    fixture.detectChanges();
+
+    expect(loginPage.resetMode).toBeTrue();
+    expect(loginPageDOM.querySelector("app-reset-pw-form")).toBeTruthy();
+  });
+
+  it("should hide the reset form when it's exited", () => {
+    const fixture = TestBed.createComponent(LoginPage);
+    const loginPage = fixture.componentInstance;
+    const loginPageDOM = fixture.nativeElement;
+    loginPage.authService.authenticated.set(false);
+    loginPage.resetMode = true;
+    loginPage.lastFocusedElement = document.querySelectorAll("a")[0];
+    fixture.detectChanges();
+
+    expect(loginPage.resetMode).toBeTrue();
+    expect(loginPageDOM.querySelector("app-reset-pw-form")).toBeTruthy();
+
+    // exit the popup
+    const popup = fixture.debugElement.query(By.css("app-reset-pw-form"))
+      .componentInstance as PasswordResetForm;
+    popup.editMode.emit(false);
+    fixture.detectChanges();
+
+    expect(loginPage.resetMode).toBeFalse();
+    expect(loginPageDOM.querySelector("app-reset-pw-form")).toBeNull();
   });
 
   it("should show logout page if user is authenticated", (done: DoneFn) => {

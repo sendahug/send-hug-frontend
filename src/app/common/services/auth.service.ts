@@ -35,20 +35,31 @@ import { Injectable, signal } from "@angular/core";
 import { HttpClient, HttpErrorResponse, HttpHeaders } from "@angular/common/http";
 
 // Other essential imports
-import { BehaviorSubject, catchError, from, map, of, switchMap, tap, throwError } from "rxjs";
-import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
+import {
+  BehaviorSubject,
+  catchError,
+  EMPTY,
+  from,
+  map,
+  Observable,
+  of,
+  switchMap,
+  tap,
+  throwError,
+} from "rxjs";
 import {
   signInWithEmailAndPassword,
   signInWithPopup,
   GoogleAuthProvider,
   OAuthProvider,
-  getAuth,
   signOut,
   AuthProvider,
   getIdToken,
   createUserWithEmailAndPassword,
-} from "firebase/auth";
+  Auth,
+  User as FirebaseUser,
+  authState,
+} from "@angular/fire/auth";
 
 // App-related imports
 import { User } from "@app/interfaces/user.interface";
@@ -70,18 +81,6 @@ interface GetUserResponse {
   providedIn: "root",
 })
 export class AuthService {
-  firebase = initializeApp({
-    apiKey: environment.firebase.apiKey,
-    authDomain: environment.firebase.authDomain,
-    projectId: environment.firebase.projectId,
-    storageBucket: environment.firebase.storageBucket,
-    messagingSenderId: environment.firebase.messagingSenderId,
-    appId: environment.firebase.appId,
-    measurementId: environment.firebase.measurementId,
-  });
-  analytics = getAnalytics(this.firebase);
-  auth = getAuth(this.firebase);
-
   readonly serverUrl = environment.backend.domain;
   // authentication information
   authenticated = signal<boolean>(false);
@@ -98,7 +97,30 @@ export class AuthService {
     private Http: HttpClient,
     private alertsService: AlertsService,
     private serviceWorkerM: SWManager,
+    private auth: Auth,
   ) {}
+
+  /**
+   * Checks whether there's a user currently logged in. If there is,
+   * fetches the user's details. Otherwise, logs the previous user out.
+   * @returns an observable that resolves to an internal user.
+   */
+  checkForLoggedInUser() {
+    return authState(this.auth)
+      .pipe(
+        tap((currentUser) => {
+          if (!currentUser) {
+            this.logout();
+          }
+        }),
+      )
+      .pipe(
+        switchMap((currentUser) => {
+          if (!currentUser) return EMPTY;
+          return this.fetchUser();
+        }),
+      );
+  }
 
   /**
    * Gets the currently-logged in user from firebase.

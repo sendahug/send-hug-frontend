@@ -133,7 +133,6 @@ describe("AuthService", () => {
       success: true,
       user: {
         id: 4,
-        auth0Id: "auth0",
         displayName: "name",
         receivedH: 2,
         givenH: 2,
@@ -180,7 +179,6 @@ describe("AuthService", () => {
         expect(user).toEqual({
           ...mockUser,
           jwt: "token",
-          auth0Id: "",
         });
         done();
       },
@@ -241,7 +239,6 @@ describe("AuthService", () => {
       success: true,
       user: {
         id: 4,
-        auth0Id: "auth0",
         displayName: "name",
         receivedH: 2,
         givenH: 2,
@@ -288,7 +285,6 @@ describe("AuthService", () => {
         expect(setUserSpy).toHaveBeenCalled();
         expect(userData).toEqual({
           ...mockUser,
-          auth0Id: "",
           jwt: "token",
         });
         done();
@@ -362,7 +358,6 @@ describe("AuthService", () => {
     // set the user data as if the user is logged in
     authService.userData.set({
       id: 4,
-      auth0Id: "",
       displayName: "name",
       receivedH: 2,
       givenH: 2,
@@ -406,7 +401,6 @@ describe("AuthService", () => {
     // set the user data as if the user is logged in
     authService.userData.set({
       id: 4,
-      auth0Id: "",
       displayName: "name",
       receivedH: 2,
       givenH: 2,
@@ -464,7 +458,6 @@ describe("AuthService", () => {
       success: true,
       updated: {
         id: 4,
-        auth0Id: "auth0",
         displayName: "name",
         receivedH: 2,
         givenH: 2,
@@ -483,7 +476,6 @@ describe("AuthService", () => {
 
     authService.userData.set({
       id: 4,
-      auth0Id: "auth0",
       displayName: "beep",
       receivedH: 2,
       givenH: 2,
@@ -534,7 +526,6 @@ describe("AuthService", () => {
   it("canUser() - checks for user permissions", () => {
     authService.userData.set({
       id: 4,
-      auth0Id: "auth0",
       displayName: "name",
       receivedH: 2,
       givenH: 2,
@@ -582,7 +573,6 @@ describe("AuthService", () => {
   it("canUser() - returns false if the user doesn't have permission", () => {
     authService.userData.set({
       id: 4,
-      auth0Id: "auth0",
       displayName: "name",
       receivedH: 2,
       givenH: 2,

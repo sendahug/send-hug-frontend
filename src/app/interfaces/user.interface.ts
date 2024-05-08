@@ -48,7 +48,6 @@ export interface Role {
 
 export interface User {
   id?: number;
-  auth0Id: string;
   displayName: string;
   receivedH: number;
   givenH: number;

@@ -234,7 +234,6 @@ export class AuthService {
             map((response) => {
               return {
                 ...response.user,
-                auth0Id: "",
                 jwt: firebaseUser.jwt,
                 firebaseId: firebaseUser.uid,
               };
@@ -294,7 +293,6 @@ export class AuthService {
             map((newUser) => {
               return {
                 ...newUser.user,
-                auth0Id: "",
                 jwt: firebaseUser.jwt,
                 firebaseId: firebaseUser.uid as string,
               };

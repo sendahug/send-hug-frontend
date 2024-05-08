@@ -59,7 +59,6 @@ describe("ItemsService", () => {
     // set the user data as if the user is logged in
     itemsService["authService"].userData.set({
       id: 4,
-      auth0Id: "",
       displayName: "name",
       receivedH: 2,
       givenH: 2,

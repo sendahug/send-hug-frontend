@@ -35,7 +35,6 @@ import { User } from "../app/interfaces/user.interface";
 
 export const mockAuthedUser: User = {
   id: 4,
-  auth0Id: "",
   displayName: "name",
   receivedH: 2,
   givenH: 2,

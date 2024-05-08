@@ -2,14 +2,11 @@ describe("Send A Hug Router", () => {
   // login
   // TODO: drop this and do it in a better way
   before(() => {
-    cy.visit("http://localhost:3000/user");
-    cy.get("#logIn").click();
+    cy.visit("http://localhost:3000/login");
     cy.wait(500);
-    cy.origin("dev-sbac.auth0.com", () => {
-      cy.get('[type="email"]').type(Cypress.env("ADMIN_USERNAME"));
-      cy.get('[type="password"]').type(Cypress.env("ADMIN_PASSWORD"));
-      cy.get('button[type="submit"]').click();
-    });
+    cy.get("#username").type(Cypress.env("ADMIN_USERNAME"));
+    cy.get("#password").type(Cypress.env("ADMIN_PASSWORD"));
+    cy.get("#logIn").click();
   });
 
   // check the user is sent to the right page upon navigation

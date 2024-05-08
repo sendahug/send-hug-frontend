@@ -45,6 +45,7 @@ import { of, Subscription } from "rxjs";
 
 import { ItemDeleteForm } from "./itemDeleteForm.component";
 import { PopUp } from "@common/components/popUp/popUp.component";
+import { CommonTestModules } from "@tests/commonModules";
 
 describe("ItemDeleteForm", () => {
   // Before each test, configure testing environment
@@ -58,6 +59,7 @@ describe("ItemDeleteForm", () => {
         HttpClientModule,
         ServiceWorkerModule.register("sw.js", { enabled: false }),
         FontAwesomeModule,
+        ...CommonTestModules,
       ],
       declarations: [ItemDeleteForm, PopUp],
       providers: [{ provide: APP_BASE_HREF, useValue: "/" }],

@@ -43,6 +43,7 @@ import { ServiceWorkerModule } from "@angular/service-worker";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 
 import { HeaderMessage } from "./headerMessage.component";
+import { CommonTestModules } from "@tests/commonModules";
 
 describe("HeaderMessage", () => {
   // Before each test, configure testing environment
@@ -56,6 +57,7 @@ describe("HeaderMessage", () => {
         HttpClientModule,
         ServiceWorkerModule.register("sw.js", { enabled: false }),
         FontAwesomeModule,
+        ...CommonTestModules,
       ],
       declarations: [HeaderMessage],
       providers: [{ provide: APP_BASE_HREF, useValue: "/" }],

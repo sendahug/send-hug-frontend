@@ -41,11 +41,15 @@ import {} from "jasmine";
 import { User as FirebaseUser } from "firebase/auth";
 import { HttpErrorResponse, HttpHeaders, HttpEventType } from "@angular/common/http";
 import { isEmpty, of } from "rxjs";
+import { provideFirebaseApp, initializeApp } from "@angular/fire/app";
+import { provideAuth, getAuth } from "@angular/fire/auth";
+import { getAnalytics, provideAnalytics } from "@angular/fire/analytics";
 
 import { AuthService } from "./auth.service";
 import { AlertsService } from "./alerts.service";
 import { getMockFirebaseUser, mockAuthedUser } from "@tests/mockData";
 import { User } from "@app/interfaces/user.interface";
+import { environment } from "@env/environment";
 
 describe("AuthService", () => {
   let httpController: HttpTestingController;
@@ -63,6 +67,9 @@ describe("AuthService", () => {
       imports: [
         HttpClientTestingModule,
         ServiceWorkerModule.register("/sw.js", { enabled: false }),
+        provideFirebaseApp(() => initializeApp(environment.firebase)),
+        provideAuth(() => getAuth()),
+        provideAnalytics(() => getAnalytics()),
       ],
       providers: [AuthService],
     }).compileComponents();

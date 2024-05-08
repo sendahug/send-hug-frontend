@@ -37,10 +37,11 @@ import {
   platformBrowserDynamicTesting,
 } from "@angular/platform-browser-dynamic/testing";
 import {} from "jasmine";
-import { of, tap } from "rxjs";
+import { of } from "rxjs";
 import { HttpErrorResponse, HttpParams } from "@angular/common/http";
 
 import { ApiClientService } from "./apiClient.service";
+import { CommonTestModules } from "@tests/commonModules";
 
 describe("APIClient Service", () => {
   let httpController: HttpTestingController;
@@ -52,7 +53,7 @@ describe("APIClient Service", () => {
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
+      imports: [HttpClientTestingModule, ...CommonTestModules],
       providers: [ApiClientService],
     }).compileComponents();
 

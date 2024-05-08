@@ -36,9 +36,11 @@ import { HttpClientModule } from "@angular/common/http";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { ReactiveFormsModule } from "@angular/forms";
 import { ServiceWorkerModule } from "@angular/service-worker";
+import { provideFirebaseApp, initializeApp } from "@angular/fire/app";
+import { provideAuth, getAuth } from "@angular/fire/auth";
+import { getAnalytics, provideAnalytics } from "@angular/fire/analytics";
 
 import { AppRoutingModule } from "@app/app-routing.module";
-
 import { PopUp } from "@common/components/popUp/popUp.component";
 import { SinglePost } from "@common/components/post/post.component";
 import { PostEditForm } from "./components/postEditForm/postEditForm.component";
@@ -47,6 +49,7 @@ import { ReportForm } from "./components/reportForm/reportForm.component";
 import { ItemDeleteForm } from "./components/itemDeleteForm/itemDeleteForm.component";
 import { Loader } from "./components/loader/loader.component";
 import { HeaderMessage } from "./components/headerMessage/headerMessage.component";
+import { environment } from "@env/environment";
 
 @NgModule({
   imports: [
@@ -56,6 +59,9 @@ import { HeaderMessage } from "./components/headerMessage/headerMessage.componen
     FontAwesomeModule,
     AppRoutingModule,
     ServiceWorkerModule.register("sw.js"),
+    provideFirebaseApp(() => initializeApp(environment.firebase)),
+    provideAuth(() => getAuth()),
+    provideAnalytics(() => getAnalytics()),
   ],
   declarations: [
     PopUp,

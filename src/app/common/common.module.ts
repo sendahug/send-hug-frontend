@@ -50,6 +50,7 @@ import { ItemDeleteForm } from "./components/itemDeleteForm/itemDeleteForm.compo
 import { Loader } from "./components/loader/loader.component";
 import { HeaderMessage } from "./components/headerMessage/headerMessage.component";
 import { environment } from "@env/environment";
+import { PasswordResetForm } from "./components/passwordResetForm/passwordResetForm.component";
 
 @NgModule({
   imports: [
@@ -72,6 +73,7 @@ import { environment } from "@env/environment";
     ItemDeleteForm,
     Loader,
     HeaderMessage,
+    PasswordResetForm,
   ],
   providers: [],
   bootstrap: [],
@@ -84,6 +86,7 @@ import { environment } from "@env/environment";
     ItemDeleteForm,
     Loader,
     HeaderMessage,
+    PasswordResetForm,
   ],
 })
 export class AppCommonModule {}

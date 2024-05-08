@@ -35,6 +35,7 @@
         "dist/app/mainPage.component.html",
         "dist/app/newItem.component.html",
         "dist/app/notifications.component.html",
+        "dist/app/passwordResetForm.component.html",
         "dist/app/popUp.component.html",
         "dist/app/post.component.html",
         "dist/app/postEditForm.component.html",

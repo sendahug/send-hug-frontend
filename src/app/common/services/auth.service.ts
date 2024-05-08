@@ -41,7 +41,6 @@ import {
   EMPTY,
   from,
   map,
-  Observable,
   of,
   switchMap,
   tap,
@@ -57,8 +56,8 @@ import {
   getIdToken,
   createUserWithEmailAndPassword,
   Auth,
-  User as FirebaseUser,
   authState,
+  sendPasswordResetEmail,
 } from "@angular/fire/auth";
 
 // App-related imports
@@ -167,6 +166,13 @@ export class AuthService {
     }
 
     return from(signInWithPopup(this.auth, authProvider));
+  }
+
+  /**
+   * Makes the request to Firebase to send a password reset link.
+   */
+  resetPassword(email: string) {
+    return sendPasswordResetEmail(this.auth, email);
   }
 
   /**

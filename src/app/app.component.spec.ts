@@ -94,7 +94,7 @@ describe("AppComponent", () => {
   });
 
   // Check that the component checks for a logged in user
-  it("should check for a logged in user and raise an error if user doens't exist", () => {
+  it("should check for a logged in user and raise an error if user doesn't exist", () => {
     const authService = TestBed.inject(AuthService);
     authService.authenticated.set(false);
     const authSpy = spyOn(authService, "checkForLoggedInUser").and.returnValue(

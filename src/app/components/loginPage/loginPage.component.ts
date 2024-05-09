@@ -34,8 +34,9 @@
 import { Component, computed, signal } from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
 import { faGoogle, faApple } from "@fortawesome/free-brands-svg-icons";
-import { switchMap, tap } from "rxjs";
+import { Observable, switchMap, tap } from "rxjs";
 import { Router } from "@angular/router";
+import { UserCredential } from "@angular/fire/auth";
 
 // App-related imports
 import { AuthService } from "@common/services/auth.service";
@@ -68,41 +69,68 @@ export class LoginPage {
   ) {}
 
   /**
+   * Runs the sign in process from the given observable.
+   * @param userCreds$ - an observable of a Firebase UserCredential.
+   * @param provider - the provider used for logging in.
+   */
+  signIn(userCreds$: Observable<UserCredential>, provider: "google" | "apple" | "username") {
+    return userCreds$
+      .pipe(tap((_user) => this.isLoading.set(true)))
+      .pipe(
+        switchMap((_userToken) => {
+          return this.authService.fetchUser(true);
+        }),
+      )
+      .subscribe({
+        next: (userData) => {
+          if (userData.id) {
+            this.router.navigate(["/user"]);
+          }
+        },
+        error: (_error) => {
+          if (provider == "username") {
+            this.alertsService.createAlert({
+              type: "Error",
+              message: "Cannot find user with these details. Did you mean to register?",
+            });
+          } else {
+            this.router.navigate(["/signup"]);
+          }
+        },
+      });
+  }
+
+  /**
+   * Runs the sign-up process from the given observable.
+   * @param userCreds$ - an observable of a Firebase UserCredential.
+   */
+  signUp(userCreds$: Observable<UserCredential>) {
+    return userCreds$.subscribe({
+      next: (_firebaseUser) => {
+        this.router.navigate(["/signup"]);
+      },
+      error: (err) => {
+        this.alertsService.createAlert({
+          type: "Error",
+          message: `An error occurred. ${err}`,
+        });
+      },
+    });
+  }
+
+  /**
    * Triggers the 'sign in with popup' workflow in firebase.
    * @param provider whether to use apple or google for oauth.
    */
   signInWithPopup(provider: "google" | "apple") {
+    let userCreds$: Observable<UserCredential>;
+
     if (this.isNewUser()) {
-      this.authService.loginWithPopup(provider).subscribe({
-        next: (_firebaseUser) => {
-          this.router.navigate(["/signup"]);
-        },
-        error: (err) => {
-          this.alertsService.createAlert({
-            type: "Error",
-            message: `An error occurred. ${err}`,
-          });
-        },
-      });
+      userCreds$ = this.authService.loginWithPopup(provider);
+      this.signUp(userCreds$);
     } else {
-      this.authService
-        .loginWithPopup(provider)
-        .pipe(tap((_user) => this.isLoading.set(true)))
-        .pipe(
-          switchMap((_userToken) => {
-            return this.authService.fetchUser(true);
-          }),
-        )
-        .subscribe({
-          next: (userData) => {
-            if (userData.id) {
-              this.router.navigate(["/user"]);
-            }
-          },
-          error: (_err) => {
-            this.router.navigate(["/signup"]);
-          },
-        });
+      userCreds$ = this.authService.loginWithPopup(provider);
+      this.signIn(userCreds$, provider);
     }
   }
 
@@ -130,48 +158,20 @@ export class LoginPage {
       return;
     }
 
+    let userCreds$: Observable<UserCredential>;
+
     if (this.isNewUser()) {
-      this.authService
-        .signUpWithEmail(
-          this.loginForm.controls.username.value!,
-          this.loginForm.controls.password.value!,
-        )
-        .subscribe({
-          next: (_firebaseUser) => {
-            this.router.navigate(["/signup"]);
-          },
-          error: (err) => {
-            this.alertsService.createAlert({
-              type: "Error",
-              message: `An error occurred. ${err}`,
-            });
-          },
-        });
+      userCreds$ = this.authService.signUpWithEmail(
+        this.loginForm.controls.username.value!,
+        this.loginForm.controls.password.value!,
+      );
+      this.signUp(userCreds$);
     } else {
-      this.authService
-        .loginWithEmail(
-          this.loginForm.controls.username.value!,
-          this.loginForm.controls.password.value!,
-        )
-        .pipe(tap((_user) => this.isLoading.set(true)))
-        .pipe(
-          switchMap((_userToken) => {
-            return this.authService.fetchUser(true);
-          }),
-        )
-        .subscribe({
-          next: (userData) => {
-            if (userData.id) {
-              this.router.navigate(["/user"]);
-            }
-          },
-          error: (_err) => {
-            this.alertsService.createAlert({
-              type: "Error",
-              message: "Cannot find user with these details. Did you mean to register?",
-            });
-          },
-        });
+      userCreds$ = this.authService.loginWithEmail(
+        this.loginForm.controls.username.value!,
+        this.loginForm.controls.password.value!,
+      );
+      this.signIn(userCreds$, "username");
     }
   }
 

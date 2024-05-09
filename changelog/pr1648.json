@@ -28,6 +28,10 @@
     {
       "change": "Chores",
       "description": "Excluded the tests' data files (located in src/tests) from the tests' coverage report."
+    },
+    {
+      "change": "Chores",
+      "description": "Bumped the version of the codecov orb in CI."
     }
   ]
 }

@@ -40,6 +40,7 @@ import {} from "jasmine";
 import { of } from "rxjs";
 
 import { ItemsService } from "./items.service";
+import { CommonTestModules } from "@tests/commonModules";
 
 describe("ItemsService", () => {
   let itemsService: ItemsService;
@@ -50,7 +51,7 @@ describe("ItemsService", () => {
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
+      imports: [HttpClientTestingModule, ...CommonTestModules],
       providers: [ItemsService],
     }).compileComponents();
 
@@ -58,7 +59,6 @@ describe("ItemsService", () => {
     // set the user data as if the user is logged in
     itemsService["authService"].userData.set({
       id: 4,
-      auth0Id: "",
       displayName: "name",
       receivedH: 2,
       givenH: 2,
@@ -82,6 +82,7 @@ describe("ItemsService", () => {
         rbg: "#f8eee4",
         item: "#f4b56a",
       },
+      firebaseId: "",
     });
     itemsService["authService"].authenticated.set(true);
     itemsService["authService"].isUserDataResolved.next(true);

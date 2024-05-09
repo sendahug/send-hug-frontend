@@ -48,7 +48,6 @@ export interface Role {
 
 export interface User {
   id?: number;
-  auth0Id: string;
   displayName: string;
   receivedH: number;
   givenH: number;
@@ -63,6 +62,7 @@ export interface User {
   refreshRate: number;
   selectedIcon: iconCharacters;
   iconColours: UserIconColours;
+  firebaseId: string;
 }
 
 export interface PartialUser {

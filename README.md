@@ -34,9 +34,17 @@ The project is open source, so feel free to use parts of the code. However, the 
 2. cd into the project directory.
 3. Run `git config core.hooksPath .githooks` to install the pre-commit hook, which runs prettier.
 4. Run `npm install` to install dependencies.
-5. Run `npm run localdev` to compile the whole project for local development.
-6. Run `gulp serve` to start the local server.
-7. Open localhost:3000.
+5. Set the following environment variables (either as environment variables or within the development .env file):
+   - FIREBASE_API_KEY - the Firebase API key for your project.
+   - FIREBASE_PROJECT_ID - your Firebase project ID.
+   - FIREBASE_AUTH_DOMAIN - the Firebase auth domain for your project.
+   - FIREBASE_STORAGE_BUCKET - the Firebase storage bucket for your project.
+   - FIREBASE_MESSAGING_SENDER_ID - the Firebase messaging sender ID.
+   - FIREBASE_APP_ID - your Firebase App ID.
+   - FIREBASE_MEASUREMENT_ID - the Firebase measurement ID (for analytics).
+6. Run `npm run localdev` to compile the whole project for local development.
+7. Run `gulp serve` to start the local server.
+8. Open localhost:3000.
 
 **For your convenience,** this project utilises Gulp's 'watch' functionality. In order to activate it while developing, run `gulp watch`. For more information about Gulp watch, check the [Gulp documentation](https://gulpjs.com/docs/en/getting-started/watching-files/).
 
@@ -66,7 +74,7 @@ The site uses several tools to maximise compatibility:
 
 1. **Gulp** - Gulp enables running tasks automatically. You can read more on the [Gulp website](https://gulpjs.com). Gulp is a Node.js tool, so it requires installing Node.
 2. **Gulp-Postcss** with **Autoprefixer** Plugin - A Gulp plugin which adds the necessary browser prefixes to the CSS file. For more info check the [Gulp-postcss](https://www.npmjs.com/package/gulp-postcss) page and the [Autoprefixer](https://www.npmjs.com/package/autoprefixer) page on NPM.
-3. **Rollup** (with @rollup/stream) - A module bundler for JS. Rollup bundles up the main module (AppModule) and converts it from TypeScript to ES6. For more info, check the [Rollup repo](https://github.com/rollup/rollup) and Gulp's [Rollup + Gulp recipe](https://github.com/gulpjs/gulp/blob/master/docs/recipes/rollup-with-rollup-stream.md).
+3. **Rollup** - A module bundler for JS. Rollup bundles up the main module (AppModule) and converts it from TypeScript to ES6. For more info, check the [Rollup repo](https://github.com/rollup/rollup).
 4. **Gulp-Rename** - A gulp plugin used to rename files. Used to rename the main module JS and to change the directory name of all HTML files. For more info check the [Gulp-rename](https://www.npmjs.com/package/gulp-rename) page on NPM.
 5. **Gulp-replace** - A string replace plugin for Gulp. Used to change the templateUrls in the final JS file. For more info, check the [Gulp-replace](https://www.npmjs.com/package/gulp-replace) page on NPM.
 6. **Gulp-less** - A gulp plugin for Less compilation. Used to compile the app's main styles, written in Less, to the CSS used in deployment. For more info, check the [gulp-less](https://www.npmjs.com/package/gulp-less) page on NPM.
@@ -93,7 +101,7 @@ For more information about Angular's required NPM packages, check the [Angular d
 ### Other
 
 1. **IDB** (formerly IDBPromised) - An improved version of IndexedDB, which is Promise-based and includes various enhancements to improve the API's usability. For more information, check the [IDBP repo](https://github.com/jakearchibald/idb).
-2. **Auth0-js** - Auth0's JS library, used for user authentication. For more information, check [Auth0's documentation](https://auth0.com/docs/libraries/auth0js).
+2. **Firebase** - Firebase's JS SDK, used for user authentication. For more information, check the [Firebase SDK's repo](https://github.com/firebase/firebase-js-sdk).
 
 ### Testing Dependencies
 
@@ -123,28 +131,27 @@ This project's tests are run using the Jasmine framework and the Karma runner. T
 
 ## Authentication
 
-The project uses Auth0 as a third-party authentication provider. Authentication is done by Auth0, which in turn returns a JSON Web Token containing the user's data and permissions.
+The project uses Firebase as a third-party authentication provider. Authentication is done by Firebase, which in turn sets its internal `currentUser` property to the logged in user's data. This allows us to fetch a JWT for the given user for each of their requests.
 
-While the frontend decodes and uses the JWT, it doesn't verify the given token. This is done by the backend. Upon login, a request is made to the server to fetch the user's data. Since getting user's data requires authentication, if the server's response contains the user's data, the frontend can treat the token as valid. Once the token is verified, the user is marked as 'authenticated'.
+While the frontend uses the JWT, it doesn't verify the given token. This is done by the backend. Upon login, a request is made to the server to fetch the user's data. Since getting user's data requires authentication, if the server's response contains the user's data, the frontend can treat the token as valid. Once the token is verified, the user is marked as 'authenticated'.
 
-On top of fetching the user's data, the frontend also deals with login, logout, hash parsing and token refreshing. These are done using [Auth0-js](https://auth0.com/docs/libraries/auth0js/v9), Auth0's client-side library. All authentication handling in the frontend is done by the [AuthService](./src/app/services/auth.service.ts).
+On top of fetching the user's data, the frontend also deals with login, logout and sign-up. These are done using [Firebase's JS SDK](https://github.com/firebase/firebase-js-sdk), Firebase's client-side library. All authentication handling in the frontend is done by the [AuthService](./src/app/services/auth.service.ts).
 
 The frontend Authentication Process:
 
-1. Once the user logs in, Auth0-js parses the URL hash in order to extract the JWT.
+1. The user logs in via the login page. This passes the login details to the Auth Service, which passes them to Firebase to handle the actual login process.
 
-2. The token is then decoded and its payload is passed on.
+2. Once a successful response is received from Firebase, the Auth Service uses Firebase's `getIdToken` method to get a JWT for the current user.
 
 3. An attempt is made to fetch the user's data from the backend, where the token is verified. If successful, the fetched data is used as the user's data and the user is marked as authenticated.
 
-4. The verified token is added to localStorage, in order to be used later on.
+4. Token refresh and handling is done by Firebase whenever it's needed. In order to always have the most recent valid token, the API client fetches the current ID token (using the `getIdToken` method) before making each request.
 
-5. Upon logout, the frontend clears all user data, including the saved JWT.
+5. Upon logout, the frontend clears all user data.
 
 Notes:
 
-- If the user doesn't exist in the database (the request was rejected because of something other than an AuthError), that means it's a new user. AuthService then makes a request to the server to add the new user to the database.
-- If the user isn't redirected to the app from Auth0, there's no JWT in the URL. In that case, AuthService fetches the JWT from localStorage. If the JWT is still valid, AuthService attempts to refresh it while fetching the user's data. This lets the users stay logged in for longer periods of time without forcing them to actively login again.
+- If the user doesn't exist in the database (the request was rejected because of something other than an AuthError), that means it's a new user. The user is then redirected to the sign up page to complete registration. Using the details provided by the user there, the AuthService makes a request to the server to add the new user to the database.
 
 ## Testing
 
@@ -174,21 +181,20 @@ The project was hosted live on Heroku (we're currently looking at alternatives, 
 4. Enter `heroku create <APP_NAME>` (with your own app name). If successful, Heroku returns the live version's URL (will be referred to as <LIVE_URL>) and the Git repo link (will be referred to as <GIT_URL>).
 5. In your terminal, enter `git remote add heroku-client <GIT_URL>`.
 6. Update the live environment file with the correct variable values:
-   - AUTH0_DOMAIN - set with your own Auth0 domain
-   - AUTH0_CLIENT - set with your own client ID from Auth0
-   - AUDIENCE - set with your own audience from Auth0
    - LOGIN_REDIRECT - set to your <LIVE_URL> (or wherever in the app you want the user to be redirected to) to ensure after login the user will be redirected to your app
    - LOGOUT_REDIRECT - set to your <LIVE_URL> (or wherever in the app you want the user to be redirected to) to ensure after login the user will be redirected to your app
    - BACKEND_URL - set with your own backend URL (necessary for making requests to the backend!)
 7. Enter `git push heroku-client master`. This triggers the app build. If successful, you'll get a 'Verifying deploy... done.' message.
 8. Add the following environment variables (via CLI or via the Heroku website):
    - PRODUCTION - set to true
-9. On your Auth0 application configuration, make sure to:
-   - Add your new <LIVE_URL> to 'Allowed Callback URLs'
-   - Add your new <LIVE_URL> to 'Allowed Logout URLs'
-   - Add your new <LIVE_URL> to 'Allowed Web Origins'
-   - Add your new <LIVE_URL> to 'Allowed Origins (CORS)'
-10. All done! Now you can visit your <GIT_URL> to see the live app.
+   - FIREBASE_API_KEY - the Firebase API key for your project.
+   - FIREBASE_PROJECT_ID - your Firebase project ID.
+   - FIREBASE_AUTH_DOMAIN - the Firebase auth domain for your project.
+   - FIREBASE_STORAGE_BUCKET - the Firebase storage bucket for your project.
+   - FIREBASE_MESSAGING_SENDER_ID - the Firebase messaging sender ID.
+   - FIREBASE_APP_ID - your Firebase App ID.
+   - FIREBASE_MEASUREMENT_ID - the Firebase measurement ID (for analytics).
+9. All done! Now you can visit your <GIT_URL> to see the live app.
 
 ## Known Issues
 

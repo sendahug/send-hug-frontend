@@ -64,7 +64,7 @@
 <div  id="loginBox" *ngIf="!authService.authenticated()">
 	<div class="errorMessage">You are not currently logged in. To view user information, log in.</div>
 
-	<button id="logIn" class="appButton" (click)="login()">Login</button>
+	<a [routerLink]="['/login']" id="logIn" class="appButton">Go to Login</a>
 </div>
 
 <div id="labels" class="labels" aria-hidden="true">

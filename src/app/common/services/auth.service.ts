@@ -32,40 +32,56 @@
 
 // Angular imports
 import { Injectable, signal } from "@angular/core";
-import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { HttpClient, HttpErrorResponse, HttpHeaders } from "@angular/common/http";
 
 // Other essential imports
-import { BehaviorSubject } from "rxjs";
-import * as Auth0 from "auth0-js";
+import {
+  BehaviorSubject,
+  catchError,
+  EMPTY,
+  from,
+  map,
+  of,
+  switchMap,
+  tap,
+  throwError,
+} from "rxjs";
+import {
+  signInWithEmailAndPassword,
+  signInWithPopup,
+  GoogleAuthProvider,
+  OAuthProvider,
+  signOut,
+  AuthProvider,
+  getIdToken,
+  createUserWithEmailAndPassword,
+  Auth,
+  authState,
+  sendPasswordResetEmail,
+} from "@angular/fire/auth";
 
 // App-related imports
 import { User } from "@app/interfaces/user.interface";
 import { AlertsService } from "@common/services/alerts.service";
 import { SWManager } from "@common/services/sWManager.service";
 import { environment } from "@env/environment";
-import { ApiClientService } from "@common/services/apiClient.service";
 
 interface UserUpdateResponse {
   success: boolean;
   updated: User;
 }
 
+interface GetUserResponse {
+  success: boolean;
+  user: User;
+}
+
 @Injectable({
   providedIn: "root",
 })
 export class AuthService {
-  // Auth0 variable
-  auth0 = new Auth0.WebAuth({
-    clientID: environment.auth0.clientID as string,
-    domain: environment.auth0.domain as string,
-    responseType: "token",
-    redirectUri: environment.auth0.redirectUri,
-    audience: environment.auth0.audience,
-  });
-
   readonly serverUrl = environment.backend.domain;
   // authentication information
-  token: string = "";
   authenticated = signal<boolean>(false);
   // user data
   userData = signal<User | undefined>(undefined);
@@ -80,157 +96,161 @@ export class AuthService {
     private Http: HttpClient,
     private alertsService: AlertsService,
     private serviceWorkerM: SWManager,
-    private apiClient: ApiClientService,
+    private auth: Auth,
   ) {}
 
-  /*
-  Function Name: login()
-  Function Description: Activates Auth0 login/authorize.
-  Parameters: None.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  login() {
-    this.auth0.authorize();
-  }
-
-  /*
-  Function Name: checkHash()
-  Function Description: Checks the URL hash for a token.
-  Parameters: None.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  checkHash() {
-    // if there's a token in the hash, parse it
-    if (window.location.hash) {
-      // Parses the token (in the URL hash).
-      this.auth0.parseHash({ hash: window.location.hash }, (err, authResult) => {
-        if (authResult) {
-          window.location.hash = "";
-          if (authResult.accessToken) {
-            // parses the token payload
-            this.token = authResult.accessToken;
-            let payload = this.parseJWT(authResult.accessToken);
-            this.loggedIn = true;
-            // gets the user's data
-            this.getUserData(payload);
+  /**
+   * Checks whether there's a user currently logged in. If there is,
+   * fetches the user's details. Otherwise, logs the previous user out.
+   * @returns an observable that resolves to an internal user.
+   */
+  checkForLoggedInUser() {
+    return authState(this.auth)
+      .pipe(
+        tap((currentUser) => {
+          if (!currentUser) {
+            this.logout();
           }
-        } else if (err) {
-          return "Error: " + err;
-        }
-      });
-    }
-    // if there's no token in the hash, check localStorage to see if there's
-    // an active token there
-    this.getToken();
+        }),
+      )
+      .pipe(
+        switchMap((currentUser) => {
+          if (!currentUser) return EMPTY;
+          return this.fetchUser();
+        }),
+      );
   }
 
-  /*
-  Function Name: parseJWT()
-  Function Description: Parse the token payload.
-  Parameters: token (string) - A string containing the JWT.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  parseJWT(token: string) {
-    var base64Url = token.split(".")[1];
-    var base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
-    var jsonPayload = decodeURIComponent(
-      atob(base64)
-        .split("")
-        .map(function (c) {
-          return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
-        })
-        .join(""),
+  /**
+   * Gets the currently-logged in user from firebase.
+   * @returns the currently-logged in user from firebase if there is one.
+   */
+  getCurrentFirebaseUser() {
+    return this.auth.currentUser;
+  }
+
+  /**
+   * Creates a new user with email and password.
+   * @param email - the email to use for sign up.
+   * @param password - the password to use.
+   * @returns a observable of a user credentials.
+   */
+  signUpWithEmail(email: string, password: string) {
+    return from(createUserWithEmailAndPassword(this.auth, email, password));
+  }
+
+  /**
+   * Logs a user in with username and password.
+   * @param email - the email to use for sign up.
+   * @param password - the password to use.
+   * @returns a observable of a user credentials.
+   */
+  loginWithEmail(email: string, password: string) {
+    return from(signInWithEmailAndPassword(this.auth, email, password));
+  }
+
+  /**
+   * Logs in/signs up using an OAuth provider.
+   * @param provider whether to use apple or google for oauth.
+   */
+  loginWithPopup(provider: "google" | "apple") {
+    let authProvider: AuthProvider;
+
+    switch (provider) {
+      case "google":
+        authProvider = new GoogleAuthProvider();
+        break;
+      case "apple":
+        authProvider = new OAuthProvider("apple.com");
+        break;
+    }
+
+    return from(signInWithPopup(this.auth, authProvider));
+  }
+
+  /**
+   * Makes the request to Firebase to send a password reset link.
+   */
+  resetPassword(email: string) {
+    return sendPasswordResetEmail(this.auth, email);
+  }
+
+  /**
+   * Fetches an ID token for the currently logged in user.
+   * @returns an observable of a user's JWT.
+   */
+  getIdTokenForCurrentUser() {
+    if (!this.auth.currentUser) return of("");
+
+    return from(getIdToken(this.auth.currentUser));
+  }
+
+  /**
+   * Gets a JWT and adds it to the user credential object.
+   * @returns an observable of a user credentials + jwt.
+   */
+  getUserToken() {
+    const currentUser = this.getCurrentFirebaseUser();
+
+    if (!currentUser) return of();
+
+    return this.getIdTokenForCurrentUser().pipe(
+      map((token) => ({
+        ...currentUser,
+        jwt: token,
+      })),
     );
-
-    return JSON.parse(jsonPayload);
   }
 
-  /*
-  Function Name: getUserData()
-  Function Description: Sends a request to the server to get the user's data.
-                        Since getting a user's data requires permissions, a success
-                        response to this request means the JWT is valid and verified,
-                        so the user has successfully authenticated.
-  Parameters: jwtPayload (any) - The JWT payload.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  getUserData(jwtPayload: any) {
-    // turn the BehaviorSubject dealing with whether user data was resolved to
-    // false only if there's no user data
-    if (this.userData()?.id == 0 || !this.userData()?.id) {
-      this.isUserDataResolved.next(false);
-    }
-    // if the JWTs don't match (shouldn't happen, but just in case), change the BehaviorSubject
-    // and reset the user's data
-    else if (this.userData()?.auth0Id != jwtPayload.sub) {
-      this.isUserDataResolved.next(false);
-      this.userData.set(undefined);
-    }
+  /**
+   * Fetches the logged in user's details.
+   * @param loggedIn - whether the user just logged in.
+   * @returns an observable with the user's details from the back-end.
+   */
+  fetchUser(loggedIn: boolean = false) {
+    return this.getUserToken()
+      .pipe(
+        tap((firebaseUser: any) => {
+          this.loggedIn = loggedIn;
 
-    // if there's a JWT
-    if (jwtPayload) {
-      this.apiClient.setAuthToken(this.token);
-
-      // attempts to get the user's data
-      this.Http.get(`${this.serverUrl}/users/all/${jwtPayload.sub}`, {
-        headers: new HttpHeaders({ Authorization: `Bearer ${this.token}` }),
-        // if successful, get the user data
-      }).subscribe({
-        next: (response: any) => {
-          const data = response.user;
-          this.userData.set({
-            ...data,
-            auth0Id: jwtPayload.sub,
-            jwt: this.token,
-          });
-          // set the authentication-variables accordingly
-          this.authenticated.set(true);
-          this.setToken();
-          this.isUserDataResolved.next(true);
-          this.tokenExpired = false;
-
-          // if the user just logged in, update the login count
-          if (this.loggedIn) {
-            this.updateUserData({ loginCount: data.loginCount + 1 });
+          // turn the BehaviorSubject dealing with whether user data was resolved to
+          // false only if there's no user data or if the JWTs don't match (shouldn't happen, but just in case), change the BehaviorSubject
+          // and reset the user's data
+          if (
+            this.userData()?.id == 0 ||
+            !this.userData()?.id ||
+            this.userData()?.firebaseId != firebaseUser.uid
+          ) {
+            this.isUserDataResolved.next(false);
+            this.userData.set(undefined);
           }
-
-          // adds the user's data to the users store
-          let user = {
-            id: data.id,
-            auth0Id: jwtPayload.sub,
-            displayName: data.displayName,
-            receivedH: data.receivedH,
-            givenH: data.givenH,
-            posts: data.posts,
-            loginCount: data.loginCount,
-            role: data.role,
-            blocked: data.blocked,
-            releaseDate: data.releaseDate,
-            autoRefresh: data.autoRefresh,
-            pushEnabled: data.pushEnabled,
-            selectedIcon: data.selectedIcon,
-            iconColours: {
-              character: data.iconColours?.character,
-              lbg: data.iconColours?.lbg,
-              rbg: data.iconColours?.rbg,
-              item: data.iconColours?.item,
-            },
-          };
-          this.serviceWorkerM.addItem("users", user);
-          // if there's an error, check the error type
-        },
-        error: (err) => {
-          let statusCode = err.status;
+        }),
+      )
+      .pipe(
+        switchMap((firebaseUser) => {
+          return this.Http.get<GetUserResponse>(`${this.serverUrl}/users/all/${firebaseUser.uid}`, {
+            headers: new HttpHeaders({ Authorization: `Bearer ${firebaseUser.jwt}` }),
+          }).pipe(
+            map((response) => {
+              return {
+                ...response.user,
+                jwt: firebaseUser.jwt,
+                firebaseId: firebaseUser.uid,
+              };
+            }),
+          );
+        }),
+      )
+      .pipe(tap((userData) => this.setCurrentUser(userData)))
+      .pipe(
+        catchError((err: HttpErrorResponse, _caught) => {
+          const statusCode = err.status;
 
           // if a user with that ID doens't exist, try to create it
           // because of the way we check permissions in that endpoint vs
           // the create users endpoint
-          if (statusCode == 404 || statusCode == 401) {
-            this.createUser(jwtPayload);
+          if (statusCode == 401 && err.error.message.description.includes("User not found")) {
+            return throwError(() => Error("User doesn't exist yet"));
           } else {
             // if the user is offline, show the offline header message
             if (!navigator.onLine) {
@@ -243,198 +263,135 @@ export class AuthService {
 
             this.isUserDataResolved.next(true);
           }
-        },
-      });
-    }
-    // If there's no currently-saved token
-    else {
-      jwtPayload = this.getToken();
-    }
+
+          return throwError(() => err);
+        }),
+      );
   }
 
-  /*
-  Function Name: createUser()
-  Function Description: Sends a request to the server to create a new user.
-                        Since getting a user's data requires permissions, a success
-                        response to this request means the JWT is valid and verified,
-                        so the user has successfully authenticated. This method is
-                        only triggered if the user doesn't already exist.
-  Parameters: jwtPayload (any) - The JWT payload.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  createUser(jwtPayload: any) {
-    this.isUserDataResolved.next(false);
+  /**
+   * Creates the new user in the Send A Hug backend.
+   * @returns an observable with the user's details from the back-end.
+   */
+  createUser(displayName: string | null) {
+    return this.getUserToken()
+      .pipe(tap((_firebaseUser) => this.isUserDataResolved.next(false)))
+      .pipe(
+        switchMap((firebaseUser) => {
+          // post request to create the user
+          return this.Http.post<GetUserResponse>(
+            `${this.serverUrl}/users`,
+            {
+              firebaseId: firebaseUser.uid,
+              displayName: displayName || "user" + Math.round(Math.random() * 100),
+            },
+            {
+              headers: new HttpHeaders({ Authorization: `Bearer ${firebaseUser.jwt}` }),
+              //if the request succeeds, get the user's data
+            },
+          ).pipe(
+            map((newUser) => {
+              return {
+                ...newUser.user,
+                jwt: firebaseUser.jwt,
+                firebaseId: firebaseUser.uid as string,
+              };
+            }),
+          );
+        }),
+      )
+      .pipe(tap((userData) => this.setCurrentUser(userData)))
+      .pipe(
+        catchError((err: HttpErrorResponse, _caught) => {
+          this.isUserDataResolved.next(true);
 
-    // post request to create the user
-    this.Http.post(
-      `${this.serverUrl}/users`,
-      {
-        id: jwtPayload.sub,
-        displayName: "user" + Math.round(Math.random() * 100),
-      },
-      {
-        headers: new HttpHeaders({ Authorization: `Bearer ${this.token}` }),
-        //if the request succeeds, get the user's data
-      },
-    ).subscribe({
-      next: (response: any) => {
-        const data = response.user;
-        this.userData.set({
-          ...data,
-          auth0Id: jwtPayload.sub,
-          jwt: this.token,
-        });
-        // set the authentication-variables accordingly
-        this.authenticated.set(true);
-        this.setToken();
-        this.isUserDataResolved.next(true);
+          // if the user is offline, show the offline header message
+          if (!navigator.onLine) {
+            this.alertsService.toggleOfflineAlert();
+          }
+          // otherwise just create an error alert
+          else {
+            this.alertsService.createErrorAlert(err);
+          }
 
-        // adds the user's data to the users store
-        let user = {
-          id: data.id,
-          auth0Id: jwtPayload.sub,
-          displayName: data.displayName,
-          receivedH: data.receivedH,
-          givenH: data.givenH,
-          posts: data.posts,
-          loginCount: data.loginCount,
-          role: data.role,
-          blocked: data.blocked,
-          releaseDate: data.releaseDate,
-          autoRefresh: data.autoRefresh,
-          pushEnabled: data.pushEnabled,
-        };
-        this.serviceWorkerM.addItem("users", user);
-        // error handling
-      },
-      error: (err) => {
-        this.isUserDataResolved.next(true);
-
-        // if the user is offline, show the offline header message
-        if (!navigator.onLine) {
-          this.alertsService.toggleOfflineAlert();
-        }
-        // otherwise just create an error alert
-        else {
-          this.alertsService.createErrorAlert(err);
-        }
-      },
-    });
+          return throwError(() => err);
+        }),
+      );
   }
 
-  /*
-  Function Name: logout()
-  Function Description: Activates Auth0 logout.
-  Parameters: None.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  logout() {
-    this.auth0.logout({
-      returnTo: environment.auth0.logoutUri,
-      clientID: environment.auth0.clientID,
-    });
+  /**
+   * Updates the AuthService's user-related attributes with the logged in user.
+   * @param userData the user data returned by the back-end.
+   */
+  setCurrentUser(userData: User) {
+    this.userData.set(userData);
+    // set the authentication-variables accordingly
+    this.authenticated.set(true);
+    this.isUserDataResolved.next(true);
+    this.tokenExpired = false;
 
-    // update the user's data in IDB to remove all user data
+    // if the user just logged in, update the login count
+    if (this.loggedIn) {
+      this.updateUserData({ loginCount: userData.loginCount + 1 });
+      this.loggedIn = false;
+    }
+
+    // adds the user's data to the users store
     let user = {
-      id: this.userData()?.id,
-      displayName: this.userData()?.displayName,
-      receivedH: this.userData()?.receivedH,
-      givenH: this.userData()?.givenH,
-      posts: this.userData()?.posts,
-      role: this.userData()?.role,
+      id: userData.id,
+      displayName: userData.displayName,
+      receivedH: userData.receivedH,
+      givenH: userData.givenH,
+      posts: userData.posts,
+      role: userData.role,
+      selectedIcon: userData.selectedIcon,
+      iconColours: {
+        character: userData.iconColours?.character,
+        lbg: userData.iconColours?.lbg,
+        rbg: userData.iconColours?.rbg,
+        item: userData.iconColours?.item,
+      },
     };
     this.serviceWorkerM.addItem("users", user);
-
-    //clears the user's data
-    this.authenticated.set(false);
-    this.token = "";
-    this.userData.set(undefined);
-    localStorage.setItem("ACTIVE_JWT", "");
-
-    // clears all the messages data (as that's private per user)
-    this.serviceWorkerM.clearStore("messages");
-    this.serviceWorkerM.clearStore("threads");
-
-    // if the user has been logged out through their token expiring
-    if (this.tokenExpired) {
-      this.alertsService.createAlert(
-        {
-          type: "Notification",
-          message: `Your session had become inactive and you have been safely logged out.
-                  Log back in to continue.`,
-        },
-        {
-          navigate: true,
-          navTarget: "/user",
-          navText: "User Page",
-        },
-      );
-    }
   }
 
-  /*
-  Function Name: setToken()
-  Function Description: Sets the token in local storage.
-  Parameters: None.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  setToken() {
-    localStorage.setItem("ACTIVE_JWT", this.token);
+  /**
+   * Signs the user out in Firebase.
+   * @returns an empty observable.
+   */
+  signOut() {
+    return from(signOut(this.auth));
   }
 
-  /*
-  Function Name: getToken()
-  Function Description: Gets the currently active token from localStorage.
-  Parameters: None.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  getToken() {
-    let jwt = localStorage.getItem("ACTIVE_JWT");
-    if (jwt) {
-      // Parses the token and checks its expiration
-      let payload = this.parseJWT(jwt);
-      let expiration = (payload["exp"] as number) * 1000;
-      // If app auth token is not expired, request new token
-      if (expiration > Date.now()) {
-        this.token = jwt;
-        this.loggedIn = false;
-        // gets the user's data and refreshes the token at the same time in
-        // order to save time getting the information to the UI
-        this.getUserData(payload);
-        this.refreshToken();
-      }
-      // If it expired, clears the user's data
-      else {
-        this.tokenExpired = true;
-        this.logout();
-      }
-    }
-  }
+  /**
+   * Signs the user out and then deletes the user's data locally.
+   */
+  logout() {
+    return this.signOut().subscribe({
+      next: () => {
+        //clears the user's data
+        this.authenticated.set(false);
+        this.userData.set(undefined);
 
-  /*
-  Function Name: refreshToken()
-  Function Description: Attempts to silently refresh the token.
-  Parameters: None.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  refreshToken() {
-    this.auth0.checkSession({}, (err, authResult) => {
-      // if refreshing the token was successful, parse the JWT and get the
-      // token variable to the new token
-      if (authResult && authResult.accessToken) {
-        this.token = authResult.accessToken;
-        let payload = this.parseJWT(authResult.accessToken);
-        this.getUserData(payload);
-      }
-      // if there was an error refreshing the token
-      else if (err) {
-        return "Error: " + err;
-      }
+        // clears all the messages data (as that's private per user)
+        this.serviceWorkerM.clearStore("messages");
+        this.serviceWorkerM.clearStore("threads");
+
+        // if the user has been logged out through their token expiring
+        if (this.tokenExpired) {
+          this.alertsService.createAlert(
+            {
+              type: "Notification",
+              message: `Your session had become inactive and you have been safely logged out. Log back in to continue.`,
+            },
+            {
+              navigate: true,
+              navTarget: "/user",
+              navText: "User Page",
+            },
+          );
+        }
+      },
     });
   }
 
@@ -454,11 +411,24 @@ export class AuthService {
 
     const updatedUser = { ...this.userData() };
 
-    return this.apiClient
-      .patch<UserUpdateResponse>(`users/all/${this.userData()?.id}`, updatedUser)
+    return this.getUserToken()
+      .pipe(
+        switchMap((user) =>
+          this.Http.patch<UserUpdateResponse>(
+            `${this.serverUrl}/users/all/${this.userData()?.id}`,
+            updatedUser,
+            {
+              headers: new HttpHeaders({ Authorization: `Bearer ${user.jwt}` }),
+            },
+          ),
+        ),
+      )
       .subscribe({
         next: (response) => {
           this.serviceWorkerM.addItem("users", response.updated);
+        },
+        error: (err: HttpErrorResponse) => {
+          this.alertsService.createErrorAlert(err);
         },
       });
   }

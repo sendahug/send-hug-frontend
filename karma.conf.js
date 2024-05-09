@@ -24,7 +24,7 @@ module.exports = function (karma) {
       plugins: [
         updateEnvironmentVariables("development"),
         coverage({
-          exclude: ["node_modules/**", "**/*.spec.ts", "**/*.mock.ts"],
+          exclude: ["node_modules/**", "**/*.spec.ts", "**/*.mock.ts", "src/tests/**"],
         }),
         inlineComponentTemplate(),
         inlineSVGs(),

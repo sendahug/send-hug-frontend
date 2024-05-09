@@ -41,6 +41,7 @@ import { HttpClientModule } from "@angular/common/http";
 import { ServiceWorkerModule } from "@angular/service-worker";
 import { ReactiveFormsModule } from "@angular/forms";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
+import { throwError } from "rxjs";
 
 import { AppComponent } from "./app.component";
 import { NotificationsTab } from "./components/notifications/notifications.component";
@@ -50,6 +51,7 @@ import { NotificationService } from "./services/notifications.service";
 import { mockAuthedUser } from "@tests/mockData";
 import { AppAlert } from "./components/appAlert/appAlert.component";
 import { AppCommonModule } from "./common/common.module";
+import { AlertsService } from "./common/services/alerts.service";
 
 declare const viewport: any;
 
@@ -72,7 +74,6 @@ describe("AppComponent", () => {
     }).compileComponents();
 
     const authService = TestBed.inject(AuthService);
-    spyOn(authService, "checkHash");
     authService.authenticated.set(true);
     authService.userData.set({ ...mockAuthedUser });
 
@@ -90,6 +91,50 @@ describe("AppComponent", () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
     expect(app).toBeTruthy();
+  });
+
+  // Check that the component checks for a logged in user
+  it("should check for a logged in user and raise an error if user doesn't exist", () => {
+    const authService = TestBed.inject(AuthService);
+    authService.authenticated.set(false);
+    const authSpy = spyOn(authService, "checkForLoggedInUser").and.returnValue(
+      throwError(() => Error("User doesn't exist yet")),
+    );
+    const alertsService = TestBed.inject(AlertsService);
+    const alertSpy = spyOn(alertsService, "createAlert");
+    const fixture = TestBed.createComponent(AppComponent);
+    const component = fixture.componentInstance;
+
+    expect(authSpy).toHaveBeenCalled();
+    expect(alertSpy).toHaveBeenCalledWith(
+      {
+        type: "Error",
+        message: "User doesn't exist yet. Did you mean to finish registering?",
+      },
+      {
+        navigate: true,
+        navTarget: "/signup",
+        navText: "Finish Registering",
+      },
+    );
+  });
+
+  it("should check for a logged in user and raise an error if something else happens", () => {
+    const authService = TestBed.inject(AuthService);
+    authService.authenticated.set(false);
+    const authSpy = spyOn(authService, "checkForLoggedInUser").and.returnValue(
+      throwError(() => Error("ERROR!!!")),
+    );
+    const alertsService = TestBed.inject(AlertsService);
+    const alertSpy = spyOn(alertsService, "createAlert");
+    const fixture = TestBed.createComponent(AppComponent);
+    const component = fixture.componentInstance;
+
+    expect(authSpy).toHaveBeenCalled();
+    expect(alertSpy).toHaveBeenCalledWith({
+      type: "Error",
+      message: `An error occurred. ERROR!!!`,
+    });
   });
 
   // Check that there are valid navigation links

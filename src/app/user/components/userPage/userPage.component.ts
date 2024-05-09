@@ -90,8 +90,6 @@ export class UserPage implements OnInit, OnDestroy, AfterViewChecked {
     private apiClient: ApiClientService,
     private alertsService: AlertsService,
   ) {
-    this.authService.checkHash();
-
     // if there's a user ID, set the user ID to it
     if (this.route.snapshot.paramMap.get("id")) {
       this.userId = Number(this.route.snapshot.paramMap.get("id"));
@@ -148,19 +146,8 @@ export class UserPage implements OnInit, OnDestroy, AfterViewChecked {
   }
 
   /*
-  Function Name: login()
-  Function Description: Activates Auth0 login via the authentication service.
-  Parameters: None.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  login() {
-    this.authService.login();
-  }
-
-  /*
   Function Name: logout()
-  Function Description: Activates Auth0 logout via the authentication service.
+  Function Description: Activates Firebase logout via the authentication service.
   Parameters: None.
   ----------------
   Programmer: Shir Bar Lev.

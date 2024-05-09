@@ -31,33 +31,170 @@
 */
 
 // Angular imports
-import { Component } from "@angular/core";
+import { Component, computed, signal } from "@angular/core";
+import { FormBuilder, Validators } from "@angular/forms";
+import { faGoogle, faApple } from "@fortawesome/free-brands-svg-icons";
+import { Observable, switchMap, tap } from "rxjs";
+import { Router } from "@angular/router";
+import { UserCredential } from "@angular/fire/auth";
 
 // App-related imports
 import { AuthService } from "@common/services/auth.service";
+import { AlertsService } from "@app/common/services/alerts.service";
 
 @Component({
   selector: "app-login-page",
   templateUrl: "./loginPage.component.html",
 })
 export class LoginPage {
-  // CTOR
-  constructor(public authService: AuthService) {}
+  isNewUser = signal<boolean>(false);
+  signInUpTitle = computed(() => (this.isNewUser() ? "Sign up" : "Sign in"));
+  loginForm = this.fb.group({
+    username: ["", [Validators.email, Validators.required]],
+    password: ["", [Validators.required]],
+  });
+  isLoading = signal(false);
+  resetMode = false;
+  lastFocusedElement: any;
+  waitFor = "user";
+  faGoogle = faGoogle;
+  faApple = faApple;
 
-  /*
-  Function Name: login()
-  Function Description: Activates Auth0 login via the authentication service.
-  Parameters: None.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  login() {
-    this.authService.login();
+  // CTOR
+  constructor(
+    public authService: AuthService,
+    private fb: FormBuilder,
+    private router: Router,
+    private alertsService: AlertsService,
+  ) {}
+
+  /**
+   * Runs the sign in process from the given observable.
+   * @param userCreds$ - an observable of a Firebase UserCredential.
+   * @param provider - the provider used for logging in.
+   */
+  signIn(userCreds$: Observable<UserCredential>, provider: "google" | "apple" | "username") {
+    return userCreds$
+      .pipe(tap((_user) => this.isLoading.set(true)))
+      .pipe(
+        switchMap((_userToken) => {
+          return this.authService.fetchUser(true);
+        }),
+      )
+      .subscribe({
+        next: (userData) => {
+          if (userData.id) {
+            this.router.navigate(["/user"]);
+          }
+        },
+        error: (_error) => {
+          if (provider == "username") {
+            this.alertsService.createAlert({
+              type: "Error",
+              message: "Cannot find user with these details. Did you mean to register?",
+            });
+          } else {
+            this.router.navigate(["/signup"]);
+          }
+        },
+      });
+  }
+
+  /**
+   * Runs the sign-up process from the given observable.
+   * @param userCreds$ - an observable of a Firebase UserCredential.
+   */
+  signUp(userCreds$: Observable<UserCredential>) {
+    return userCreds$.subscribe({
+      next: (_firebaseUser) => {
+        this.router.navigate(["/signup"]);
+      },
+      error: (err) => {
+        this.alertsService.createAlert({
+          type: "Error",
+          message: `An error occurred. ${err}`,
+        });
+      },
+    });
+  }
+
+  /**
+   * Triggers the 'sign in with popup' workflow in firebase.
+   * @param provider whether to use apple or google for oauth.
+   */
+  signInWithPopup(provider: "google" | "apple") {
+    let userCreds$: Observable<UserCredential>;
+
+    if (this.isNewUser()) {
+      userCreds$ = this.authService.loginWithPopup(provider);
+      this.signUp(userCreds$);
+    } else {
+      userCreds$ = this.authService.loginWithPopup(provider);
+      this.signIn(userCreds$, provider);
+    }
+  }
+
+  /**
+   * Creates user/logs in with username and password.
+   */
+  sendUsernameAndPassword() {
+    if (!this.loginForm.valid) {
+      let errorMessage = "";
+
+      if (this.loginForm.controls.username.errors?.required) {
+        errorMessage += "An email is required to log in or sign up. ";
+      } else if (this.loginForm.controls.username.errors?.email) {
+        errorMessage += "Invalid email. ";
+      }
+
+      if (this.loginForm.controls.password.errors?.required) {
+        errorMessage += "A password is required to log in or sign up.";
+      }
+
+      this.alertsService.createAlert({
+        type: "Error",
+        message: `Invalid login details. ${errorMessage}`,
+      });
+      return;
+    }
+
+    let userCreds$: Observable<UserCredential>;
+
+    if (this.isNewUser()) {
+      userCreds$ = this.authService.signUpWithEmail(
+        this.loginForm.controls.username.value!,
+        this.loginForm.controls.password.value!,
+      );
+      this.signUp(userCreds$);
+    } else {
+      userCreds$ = this.authService.loginWithEmail(
+        this.loginForm.controls.username.value!,
+        this.loginForm.controls.password.value!,
+      );
+      this.signIn(userCreds$, "username");
+    }
+  }
+
+  /**
+   * Opens the password reset popup.
+   */
+  resetPassword() {
+    this.resetMode = true;
+    this.lastFocusedElement = document.activeElement;
+  }
+
+  /**
+   * Remove the password reset popup.
+   * @param edit whether edit mode should be active.
+   */
+  changeMode(edit: boolean) {
+    this.resetMode = edit;
+    this.lastFocusedElement?.focus();
   }
 
   /*
   Function Name: logout()
-  Function Description: Activates Auth0 logout via the authentication service.
+  Function Description: Activates Firebase logout via the authentication service.
   Parameters: None.
   ----------------
   Programmer: Shir Bar Lev.

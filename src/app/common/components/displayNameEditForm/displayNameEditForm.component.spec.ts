@@ -49,6 +49,7 @@ import { mockAuthedUser } from "@tests/mockData";
 import { PopUp } from "@common/components/popUp/popUp.component";
 import { ValidationService } from "@common/services/validation.service";
 import { Subscription } from "rxjs";
+import { CommonTestModules } from "@tests/commonModules";
 
 // DISPLAY NAME EDIT
 // ==================================================================
@@ -65,6 +66,7 @@ describe("DisplayNameEditForm", () => {
         ServiceWorkerModule.register("sw.js", { enabled: false }),
         FontAwesomeModule,
         ReactiveFormsModule,
+        ...CommonTestModules,
       ],
       declarations: [DisplayNameEditForm, PopUp],
       providers: [{ provide: APP_BASE_HREF, useValue: "/" }],

@@ -356,7 +356,7 @@ describe("AppMessaging", () => {
   });
 
   // Check that the login method triggers the auth service
-  it("should trigger the auth service upon login", (done: DoneFn) => {
+  it("should show a link to login if the user isn't logged in", (done: DoneFn) => {
     // set authenticated to false
     TestBed.inject(AuthService).authenticated.set(false);
     // create the component and set up spies
@@ -364,20 +364,11 @@ describe("AppMessaging", () => {
     const appMessaging = fixture.componentInstance;
     const appMessagingDOM = fixture.nativeElement;
     appMessaging.authService.authenticated.set(false);
-    const loginSpy = spyOn(appMessaging, "login").and.callThrough();
-    const loginServiceSpy = spyOn(appMessaging.authService, "login");
-
     fixture.detectChanges();
 
-    // simulate click
-    appMessagingDOM.querySelector("#logIn").click();
-    appMessaging.authService.authenticated.set(true);
-    fixture.detectChanges();
-
-    // check the spies are called
-    expect(loginSpy).toHaveBeenCalled();
-    expect(loginServiceSpy).toHaveBeenCalled();
-    expect(appMessaging.authService.authenticated()).toBeTrue();
+    const loginLink = appMessagingDOM.querySelector("#logIn");
+    expect(loginLink.textContent).toBe("Go to Login");
+    expect(loginLink.getAttribute("href")).toContain("/login");
     done();
   });
 

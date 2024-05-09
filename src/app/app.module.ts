@@ -56,6 +56,7 @@ import { SupportPage } from "./components/supportPage/supportPage.component";
 import { SitePolicies } from "./components/sitePolicies/sitePolicies.component";
 import { AppAlert } from "./components/appAlert/appAlert.component";
 import { LoginPage } from "./components/loginPage/loginPage.component";
+import { SignUpPage } from "./components/signUpPage/signUpPage.component";
 
 @NgModule({
   imports: [
@@ -83,6 +84,7 @@ import { LoginPage } from "./components/loginPage/loginPage.component";
     SitePolicies,
     AppAlert,
     LoginPage,
+    SignUpPage,
   ],
   providers: [],
   bootstrap: [AppComponent],

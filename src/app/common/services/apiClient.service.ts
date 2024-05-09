@@ -33,11 +33,12 @@
 // Angular imports
 import { Injectable } from "@angular/core";
 import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams } from "@angular/common/http";
-import { Observable, catchError, tap, throwError } from "rxjs";
+import { Observable, catchError, of, switchMap, tap, throwError } from "rxjs";
 
 // App-related imports
 import { environment } from "@env/environment";
 import { AlertsService } from "@common/services/alerts.service";
+import { AuthService } from "./auth.service";
 
 @Injectable({
   providedIn: "root",
@@ -49,14 +50,22 @@ export class ApiClientService {
   constructor(
     private http: HttpClient,
     private alertsService: AlertsService,
+    private authService: AuthService,
   ) {}
 
   /**
-   * Sets the given token as the authorization header.
-   * @param token - the JWT to set
+   * Updates the auth header with the current user token.
    */
-  setAuthToken(token: string) {
-    this.authHeader = this.authHeader.set("Authorization", `Bearer ${token}`);
+  updateAuthToken(): Observable<string | undefined> {
+    if (!this.authService.authenticated()) return of("");
+
+    return this.authService.getIdTokenForCurrentUser().pipe(
+      tap((token) => {
+        if (token) {
+          this.authHeader = this.authHeader.set("Authorization", `Bearer ${token}`);
+        }
+      }),
+    );
   }
 
   /**
@@ -77,11 +86,15 @@ export class ApiClientService {
    * @returns an observable of the response / an error if one occurred.
    */
   get<T extends Object>(endpoint: string, params?: { [key: string]: any }): Observable<T> {
-    return this.http
-      .get<T>(`${this.serverUrl}/${endpoint}`, {
-        headers: this.authHeader,
-        params: this.getHttpParams(params || {}),
-      })
+    return this.updateAuthToken()
+      .pipe(
+        switchMap((_token) =>
+          this.http.get<T>(`${this.serverUrl}/${endpoint}`, {
+            headers: this.authHeader,
+            params: this.getHttpParams(params || {}),
+          }),
+        ),
+      )
       .pipe(
         // if the server is unavilable due to the user being offline, tell the user
         tap((_res) => this.alertsService.toggleOfflineAlert()),
@@ -101,11 +114,15 @@ export class ApiClientService {
     body: any,
     params?: { [key: string]: any },
   ): Observable<T> {
-    return this.http
-      .post<T>(`${this.serverUrl}/${endpoint}`, body, {
-        headers: this.authHeader,
-        params: this.getHttpParams(params || {}),
-      })
+    return this.updateAuthToken()
+      .pipe(
+        switchMap((_token) =>
+          this.http.post<T>(`${this.serverUrl}/${endpoint}`, body, {
+            headers: this.authHeader,
+            params: this.getHttpParams(params || {}),
+          }),
+        ),
+      )
       .pipe(
         // if the server is unavilable due to the user being offline, tell the user
         tap((_res) => this.alertsService.toggleOfflineAlert()),
@@ -125,11 +142,15 @@ export class ApiClientService {
     body: any,
     params?: { [key: string]: any },
   ): Observable<T> {
-    return this.http
-      .patch<T>(`${this.serverUrl}/${endpoint}`, body, {
-        headers: this.authHeader,
-        params: this.getHttpParams(params || {}),
-      })
+    return this.updateAuthToken()
+      .pipe(
+        switchMap((_token) =>
+          this.http.patch<T>(`${this.serverUrl}/${endpoint}`, body, {
+            headers: this.authHeader,
+            params: this.getHttpParams(params || {}),
+          }),
+        ),
+      )
       .pipe(
         // if the server is unavilable due to the user being offline, tell the user
         tap((_res) => this.alertsService.toggleOfflineAlert()),
@@ -144,11 +165,15 @@ export class ApiClientService {
    * @returns an observable of the response / an error if one occurred.
    */
   delete<T extends Object>(endpoint: string, params?: { [key: string]: any }): Observable<T> {
-    return this.http
-      .delete<T>(`${this.serverUrl}/${endpoint}`, {
-        headers: this.authHeader,
-        params: this.getHttpParams(params || {}),
-      })
+    return this.updateAuthToken()
+      .pipe(
+        switchMap((_token) =>
+          this.http.delete<T>(`${this.serverUrl}/${endpoint}`, {
+            headers: this.authHeader,
+            params: this.getHttpParams(params || {}),
+          }),
+        ),
+      )
       .pipe(
         // if the server is unavilable due to the user being offline, tell the user
         tap((_res) => this.alertsService.toggleOfflineAlert()),

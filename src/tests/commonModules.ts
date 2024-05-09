@@ -1,5 +1,5 @@
 /*
-	Mock Data for tests
+	Common Modules list for tests
   ---------------------------------------------------
   MIT License
 
@@ -29,56 +29,18 @@
   SOFTWARE.
 */
 
-import { User as FirebaseUser } from "firebase/auth";
+import { ModuleWithProviders } from "@angular/core";
+import { provideFirebaseApp, initializeApp } from "@angular/fire/app";
+import { provideAuth, getAuth } from "@angular/fire/auth";
+import { getAnalytics, provideAnalytics } from "@angular/fire/analytics";
 
-import { User } from "../app/interfaces/user.interface";
+import { environment } from "@env/environment";
 
-export const mockAuthedUser: User = {
-  id: 4,
-  displayName: "name",
-  receivedH: 2,
-  givenH: 2,
-  posts: 2,
-  loginCount: 3,
-  role: {
-    id: 1,
-    name: "admin",
-    permissions: [],
-  },
-  jwt: "",
-  blocked: false,
-  releaseDate: undefined,
-  autoRefresh: false,
-  refreshRate: 20,
-  pushEnabled: false,
-  selectedIcon: "kitty",
-  iconColours: {
-    character: "#BA9F93",
-    lbg: "#e2a275",
-    rbg: "#f8eee4",
-    item: "#f4b56a",
-  },
-  firebaseId: "fb",
-};
-
-export function getMockFirebaseUser(): FirebaseUser {
-  return {
-    emailVerified: false,
-    isAnonymous: false,
-    email: "",
-    providerData: [],
-    refreshToken: "",
-    tenantId: "",
-    delete: () => new Promise(() => undefined),
-    getIdToken: (forceRefresh?: boolean) => new Promise(() => ""),
-    getIdTokenResult: (forceRefresh?: boolean) => new Promise(() => ({})),
-    reload: () => new Promise(() => undefined),
-    toJSON: () => ({}),
-    metadata: {},
-    displayName: "",
-    phoneNumber: "",
-    photoURL: "",
-    providerId: "",
-    uid: "fb",
-  };
-}
+/**
+ * Common Firebase modules required for unit tests in the Common Module.
+ */
+export const CommonTestModules: Array<ModuleWithProviders<any>> = [
+  provideFirebaseApp(() => initializeApp(environment.firebase)),
+  provideAuth(() => getAuth()),
+  provideAnalytics(() => getAnalytics()),
+];

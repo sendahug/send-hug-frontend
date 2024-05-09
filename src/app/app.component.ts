@@ -86,8 +86,6 @@ export class AppComponent implements OnInit, AfterViewInit {
     public notificationService: NotificationService,
     private fb: FormBuilder,
   ) {
-    this.authService.checkHash();
-
     // if the user is logged in, and their data is fetched, start auto-refresh
     this.authService.isUserDataResolved.subscribe((value) => {
       if (value) {
@@ -101,6 +99,31 @@ export class AppComponent implements OnInit, AfterViewInit {
           this.notificationService.startAutoRefresh();
         }
       }
+    });
+
+    // Update the user state based on the logged in firebase user
+    // (if there is one)
+    this.authService.checkForLoggedInUser().subscribe({
+      error: (err) => {
+        if (err.message == "User doesn't exist yet") {
+          this.alertsService.createAlert(
+            {
+              type: "Error",
+              message: "User doesn't exist yet. Did you mean to finish registering?",
+            },
+            {
+              navigate: true,
+              navTarget: "/signup",
+              navText: "Finish Registering",
+            },
+          );
+        } else {
+          this.alertsService.createAlert({
+            type: "Error",
+            message: `An error occurred. ${err.message}`,
+          });
+        }
+      },
     });
   }
 

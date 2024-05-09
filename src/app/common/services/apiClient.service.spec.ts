@@ -37,10 +37,11 @@ import {
   platformBrowserDynamicTesting,
 } from "@angular/platform-browser-dynamic/testing";
 import {} from "jasmine";
-import { of, tap } from "rxjs";
+import { of } from "rxjs";
+import { HttpErrorResponse, HttpParams } from "@angular/common/http";
 
 import { ApiClientService } from "./apiClient.service";
-import { HttpErrorResponse, HttpParams } from "@angular/common/http";
+import { CommonTestModules } from "@tests/commonModules";
 
 describe("APIClient Service", () => {
   let httpController: HttpTestingController;
@@ -52,7 +53,7 @@ describe("APIClient Service", () => {
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
+      imports: [HttpClientTestingModule, ...CommonTestModules],
       providers: [ApiClientService],
     }).compileComponents();
 
@@ -64,12 +65,33 @@ describe("APIClient Service", () => {
     expect(apiClientService).toBeTruthy();
   });
 
-  it("should set the auth token", () => {
-    expect(apiClientService["authHeader"].get("Authorization")).toBeNull();
+  it("should return an empty observable if there's no current user", (done: DoneFn) => {
+    const authSpy = spyOn(
+      apiClientService["authService"],
+      "getIdTokenForCurrentUser",
+    ).and.returnValue(of(""));
 
-    apiClientService.setAuthToken("token");
+    apiClientService.updateAuthToken().subscribe((token) => {
+      expect(authSpy).not.toHaveBeenCalled();
+      expect(token).toBe("");
+      expect(apiClientService["authHeader"].keys()).not.toContain("Authorization");
+      done();
+    });
+  });
 
-    expect(apiClientService["authHeader"].get("Authorization")).toEqual("Bearer token");
+  it("should return a token observable if there's a current user", (done: DoneFn) => {
+    apiClientService["authService"].authenticated.set(true);
+    const authSpy = spyOn(
+      apiClientService["authService"],
+      "getIdTokenForCurrentUser",
+    ).and.returnValue(of("token"));
+
+    apiClientService.updateAuthToken().subscribe((token) => {
+      expect(authSpy).toHaveBeenCalled();
+      expect(token).toBe("token");
+      expect(apiClientService["authHeader"].keys()).toContain("Authorization");
+      done();
+    });
   });
 
   it("should generate the HttpParams object", () => {
@@ -88,10 +110,12 @@ describe("APIClient Service", () => {
       data: "test",
     };
     const toggleSpy = spyOn(apiClientService["alertsService"], "toggleOfflineAlert");
+    const updateTokenSpy = spyOn(apiClientService, "updateAuthToken").and.returnValue(of(""));
 
     apiClientService.get("test").subscribe((res) => {
       expect(res).toEqual(mockResponse);
       expect(toggleSpy).toHaveBeenCalled();
+      expect(updateTokenSpy).toHaveBeenCalled();
     });
 
     const req = httpController.expectOne(`${apiClientService["serverUrl"]}/test`);
@@ -105,9 +129,11 @@ describe("APIClient Service", () => {
       statusText: "Not Found",
     };
     const handleErrorSpy = spyOn(apiClientService, "handleRequestError").and.returnValue(of(null));
+    const updateTokenSpy = spyOn(apiClientService, "updateAuthToken").and.returnValue(of(""));
 
     apiClientService.get("test").subscribe(() => {
       expect(handleErrorSpy).toHaveBeenCalled();
+      expect(updateTokenSpy).toHaveBeenCalled();
     });
 
     const req = httpController.expectOne(`${apiClientService["serverUrl"]}/test`);
@@ -120,10 +146,12 @@ describe("APIClient Service", () => {
       data: "test",
     };
     const toggleSpy = spyOn(apiClientService["alertsService"], "toggleOfflineAlert");
+    const updateTokenSpy = spyOn(apiClientService, "updateAuthToken").and.returnValue(of(""));
 
     apiClientService.post("test", {}).subscribe((res) => {
       expect(res).toEqual(mockResponse);
       expect(toggleSpy).toHaveBeenCalled();
+      expect(updateTokenSpy).toHaveBeenCalled();
     });
 
     const req = httpController.expectOne(`${apiClientService["serverUrl"]}/test`);
@@ -137,9 +165,11 @@ describe("APIClient Service", () => {
       statusText: "Not Found",
     };
     const handleErrorSpy = spyOn(apiClientService, "handleRequestError").and.returnValue(of(null));
+    const updateTokenSpy = spyOn(apiClientService, "updateAuthToken").and.returnValue(of(""));
 
     apiClientService.post("test", {}).subscribe(() => {
       expect(handleErrorSpy).toHaveBeenCalled();
+      expect(updateTokenSpy).toHaveBeenCalled();
     });
 
     const req = httpController.expectOne(`${apiClientService["serverUrl"]}/test`);
@@ -152,10 +182,12 @@ describe("APIClient Service", () => {
       data: "test",
     };
     const toggleSpy = spyOn(apiClientService["alertsService"], "toggleOfflineAlert");
+    const updateTokenSpy = spyOn(apiClientService, "updateAuthToken").and.returnValue(of(""));
 
     apiClientService.patch("test", {}).subscribe((res) => {
       expect(res).toEqual(mockResponse);
       expect(toggleSpy).toHaveBeenCalled();
+      expect(updateTokenSpy).toHaveBeenCalled();
     });
 
     const req = httpController.expectOne(`${apiClientService["serverUrl"]}/test`);
@@ -169,9 +201,11 @@ describe("APIClient Service", () => {
       statusText: "Not Found",
     };
     const handleErrorSpy = spyOn(apiClientService, "handleRequestError").and.returnValue(of(null));
+    const updateTokenSpy = spyOn(apiClientService, "updateAuthToken").and.returnValue(of(""));
 
     apiClientService.patch("test", {}).subscribe(() => {
       expect(handleErrorSpy).toHaveBeenCalled();
+      expect(updateTokenSpy).toHaveBeenCalled();
     });
 
     const req = httpController.expectOne(`${apiClientService["serverUrl"]}/test`);
@@ -184,10 +218,12 @@ describe("APIClient Service", () => {
       data: "test",
     };
     const toggleSpy = spyOn(apiClientService["alertsService"], "toggleOfflineAlert");
+    const updateTokenSpy = spyOn(apiClientService, "updateAuthToken").and.returnValue(of(""));
 
     apiClientService.delete("test").subscribe((res) => {
       expect(res).toEqual(mockResponse);
       expect(toggleSpy).toHaveBeenCalled();
+      expect(updateTokenSpy).toHaveBeenCalled();
     });
 
     const req = httpController.expectOne(`${apiClientService["serverUrl"]}/test`);
@@ -201,9 +237,11 @@ describe("APIClient Service", () => {
       statusText: "Not Found",
     };
     const handleErrorSpy = spyOn(apiClientService, "handleRequestError").and.returnValue(of(null));
+    const updateTokenSpy = spyOn(apiClientService, "updateAuthToken").and.returnValue(of(""));
 
     apiClientService.delete("test").subscribe(() => {
       expect(handleErrorSpy).toHaveBeenCalled();
+      expect(updateTokenSpy).toHaveBeenCalled();
     });
 
     const req = httpController.expectOne(`${apiClientService["serverUrl"]}/test`);

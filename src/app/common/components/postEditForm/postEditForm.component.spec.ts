@@ -48,6 +48,7 @@ import { PostEditForm } from "./postEditForm.component";
 import { Post } from "@app/interfaces/post.interface";
 import { PopUp } from "@common/components/popUp/popUp.component";
 import { ValidationService } from "@common/services/validation.service";
+import { CommonTestModules } from "@tests/commonModules";
 
 // POST EDIT
 // ==================================================================
@@ -64,6 +65,7 @@ describe("PostEditForm", () => {
         ServiceWorkerModule.register("sw.js", { enabled: false }),
         FontAwesomeModule,
         ReactiveFormsModule,
+        ...CommonTestModules,
       ],
       declarations: [PostEditForm, PopUp],
       providers: [{ provide: APP_BASE_HREF, useValue: "/" }],

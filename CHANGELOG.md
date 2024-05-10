@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+### 2024-05-10
+
+#### Chores
+
+- Updated the setup script for e2e tests to the new structure of the internal config, as introduced in [sendahug/send-hug-backend#622](https://github.com/sendahug/send-hug-backend/pull/622). ([#1655](https://github.com/sendahug/send-hug-frontend/pull/1655))
+
 ### 2024-05-09
 
 #### Features

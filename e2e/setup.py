@@ -1,9 +1,21 @@
 import asyncio
 
+from firebase_admin import initialize_app  # type: ignore
+
 from create_app import create_app
-from config import SAHConfig
 from tests.data_models import create_data
 from models.models import BaseModel
+from models.db import SendADatabase
+
+class SAHConfig:
+    """
+    Configuration class for the Send A Hug backend.
+    """
+
+    def __init__(self, database_url: str):
+        self.database_url = database_url
+        self.db = SendADatabase(database_url=database_url)
+        self.firebase_app = initialize_app()
 
 
 async def setup_e2e():

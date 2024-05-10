@@ -13,6 +13,10 @@ updates:
         patterns:
           - "@fortawesome/fontawesome-*"
           - "@fortawesome/free-*"
+      size-limit:
+        patterns:
+          - "size-limit"
+          - "@size-limit/*"
     rebase-strategy: auto
     commit-message:
       prefix: "deps:"

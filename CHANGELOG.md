@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+### 2024-05-11
+
+#### Breaking Changes
+
+- The build process now outputs JavaScript files written for [ES2020](https://caniuse.com/?feats=mdn-javascript_operators_optional_chaining,mdn-javascript_operators_nullish_coalescing,mdn-javascript_builtins_globalthis,es6-module-dynamic-import,bigint,mdn-javascript_builtins_promise_allsettled,mdn-javascript_builtins_string_matchall,mdn-javascript_statements_export_namespace,mdn-javascript_operators_import_meta). This means that browser versions from before 2020 are no longer supported. ([#1657](https://github.com/sendahug/send-hug-frontend/pull/1657))
+
 ### 2024-05-10
 
 #### Chores

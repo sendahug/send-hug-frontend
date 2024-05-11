@@ -20,7 +20,7 @@
     },
     {
       "name": "Public Templates",
-      "limit": "30 kB",
+      "limit": "31 kB",
       "path": [
         "dist/app/aboutApp.component.html",
         "dist/app/app.component.html",

@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+### 2024-05-16
+
+#### Chores
+
+- Removed @angular/fire from the angular-dependencies group in dependabot's grouped updates, as it's not part of the core angular packages. ([#1665](https://github.com/sendahug/send-hug-frontend/pull/1665))
+
 ### 2024-05-11
 
 #### Breaking Changes

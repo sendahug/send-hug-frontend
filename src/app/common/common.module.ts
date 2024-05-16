@@ -60,9 +60,6 @@ import { PasswordResetForm } from "./components/passwordResetForm/passwordResetF
     FontAwesomeModule,
     AppRoutingModule,
     ServiceWorkerModule.register("sw.js"),
-    provideFirebaseApp(() => initializeApp(environment.firebase)),
-    provideAuth(() => getAuth()),
-    provideAnalytics(() => getAnalytics()),
   ],
   declarations: [
     PopUp,
@@ -75,7 +72,11 @@ import { PasswordResetForm } from "./components/passwordResetForm/passwordResetF
     HeaderMessage,
     PasswordResetForm,
   ],
-  providers: [],
+  providers: [
+    provideFirebaseApp(() => initializeApp(environment.firebase)),
+    provideAuth(() => getAuth()),
+    provideAnalytics(() => getAnalytics()),
+  ],
   bootstrap: [],
   exports: [
     PopUp,

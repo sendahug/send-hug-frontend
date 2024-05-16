@@ -29,7 +29,7 @@
   SOFTWARE.
 */
 
-import { ModuleWithProviders } from "@angular/core";
+import { EnvironmentProviders } from "@angular/core";
 import { provideFirebaseApp, initializeApp } from "@angular/fire/app";
 import { provideAuth, getAuth } from "@angular/fire/auth";
 import { getAnalytics, provideAnalytics } from "@angular/fire/analytics";
@@ -39,7 +39,7 @@ import { environment } from "@env/environment";
 /**
  * Common Firebase modules required for unit tests in the Common Module.
  */
-export const CommonTestModules: Array<ModuleWithProviders<any>> = [
+export const CommonTestProviders: Array<EnvironmentProviders> = [
   provideFirebaseApp(() => initializeApp(environment.firebase)),
   provideAuth(() => getAuth()),
   provideAnalytics(() => getAnalytics()),

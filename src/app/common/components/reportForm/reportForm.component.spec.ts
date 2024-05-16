@@ -43,7 +43,7 @@ import { AuthService } from "@common/services/auth.service";
 import { mockAuthedUser } from "@tests/mockData";
 import { PopUp } from "@common/components/popUp/popUp.component";
 import { ValidationService } from "@common/services/validation.service";
-import { CommonTestModules } from "@tests/commonModules";
+import { CommonTestProviders } from "@tests/commonModules";
 
 describe("Report", () => {
   // Before each test, configure testing environment
@@ -58,10 +58,9 @@ describe("Report", () => {
         ServiceWorkerModule.register("sw.js", { enabled: false }),
         FontAwesomeModule,
         ReactiveFormsModule,
-        ...CommonTestModules,
       ],
       declarations: [ReportForm, PopUp],
-      providers: [{ provide: APP_BASE_HREF, useValue: "/" }],
+      providers: [{ provide: APP_BASE_HREF, useValue: "/" }, ...CommonTestProviders],
     }).compileComponents();
 
     const authService = TestBed.inject(AuthService);

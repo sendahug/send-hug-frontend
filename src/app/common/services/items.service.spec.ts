@@ -40,7 +40,7 @@ import {} from "jasmine";
 import { of } from "rxjs";
 
 import { ItemsService } from "./items.service";
-import { CommonTestModules } from "@tests/commonModules";
+import { CommonTestProviders } from "@tests/commonModules";
 
 describe("ItemsService", () => {
   let itemsService: ItemsService;
@@ -51,8 +51,8 @@ describe("ItemsService", () => {
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, ...CommonTestModules],
-      providers: [ItemsService],
+      imports: [HttpClientTestingModule],
+      providers: [ItemsService, ...CommonTestProviders],
     }).compileComponents();
 
     itemsService = TestBed.inject(ItemsService);

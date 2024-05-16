@@ -40,7 +40,6 @@ import {} from "jasmine";
 
 import { MyDB, SWManager } from "./sWManager.service";
 import { IDBPDatabase } from "idb";
-import { CommonTestModules } from "@tests/commonModules";
 
 function populateDB(
   dbPromise: Promise<IDBPDatabase<MyDB>>,
@@ -303,7 +302,7 @@ describe("SWManagerService", () => {
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, ...CommonTestModules],
+      imports: [HttpClientTestingModule],
       providers: [SWManager],
     }).compileComponents();
 

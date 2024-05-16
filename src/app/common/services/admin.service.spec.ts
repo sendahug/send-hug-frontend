@@ -42,7 +42,7 @@ import { of } from "rxjs";
 import { AdminService } from "./admin.service";
 import { AuthService } from "./auth.service";
 import { mockAuthedUser } from "@tests/mockData";
-import { CommonTestModules } from "@tests/commonModules";
+import { CommonTestProviders } from "@tests/commonModules";
 
 describe("AdminService", () => {
   let adminService: AdminService;
@@ -53,8 +53,8 @@ describe("AdminService", () => {
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, ...CommonTestModules],
-      providers: [AdminService],
+      imports: [HttpClientTestingModule],
+      providers: [AdminService, ...CommonTestProviders],
     }).compileComponents();
 
     adminService = TestBed.inject(AdminService);

@@ -67,11 +67,13 @@ describe("AuthService", () => {
       imports: [
         HttpClientTestingModule,
         ServiceWorkerModule.register("/sw.js", { enabled: false }),
+      ],
+      providers: [
+        AuthService,
         provideFirebaseApp(() => initializeApp(environment.firebase)),
         provideAuth(() => getAuth()),
         provideAnalytics(() => getAnalytics()),
       ],
-      providers: [AuthService],
     }).compileComponents();
 
     authService = TestBed.inject(AuthService);

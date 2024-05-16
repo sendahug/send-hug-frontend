@@ -40,7 +40,6 @@ import {} from "jasmine";
 import { FormControl } from "@angular/forms";
 
 import { ValidationService } from "./validation.service";
-import { CommonTestModules } from "@tests/commonModules";
 
 describe("PostsService", () => {
   let validationService: ValidationService;
@@ -51,7 +50,7 @@ describe("PostsService", () => {
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, ...CommonTestModules],
+      imports: [HttpClientTestingModule],
       providers: [ValidationService],
       declarations: [],
     }).compileComponents();

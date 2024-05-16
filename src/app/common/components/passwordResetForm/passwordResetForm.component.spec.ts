@@ -46,7 +46,7 @@ import { PasswordResetForm } from "./passwordResetForm.component";
 import { AuthService } from "@common/services/auth.service";
 import { mockAuthedUser } from "@tests/mockData";
 import { PopUp } from "@common/components/popUp/popUp.component";
-import { CommonTestModules } from "@tests/commonModules";
+import { CommonTestProviders } from "@tests/commonModules";
 
 // DISPLAY NAME EDIT
 // ==================================================================
@@ -63,10 +63,9 @@ describe("PasswordResetForm", () => {
         ServiceWorkerModule.register("sw.js", { enabled: false }),
         FontAwesomeModule,
         ReactiveFormsModule,
-        ...CommonTestModules,
       ],
       declarations: [PasswordResetForm, PopUp],
-      providers: [{ provide: APP_BASE_HREF, useValue: "/" }],
+      providers: [{ provide: APP_BASE_HREF, useValue: "/" }, ...CommonTestProviders],
     }).compileComponents();
 
     const authService = TestBed.inject(AuthService);

@@ -40,7 +40,6 @@ import { HttpEventType, HttpErrorResponse, HttpHeaders } from "@angular/common/h
 import {} from "jasmine";
 
 import { AlertsService } from "./alerts.service";
-import { CommonTestModules } from "@tests/commonModules";
 
 describe("AlertsService", () => {
   let alertsService: AlertsService;
@@ -51,7 +50,6 @@ describe("AlertsService", () => {
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
-      imports: [...CommonTestModules],
       declarations: [],
       providers: [AlertsService, { provide: APP_BASE_HREF, useValue: "/" }],
     }).compileComponents();

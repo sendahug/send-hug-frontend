@@ -43,7 +43,6 @@ import { ServiceWorkerModule } from "@angular/service-worker";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 
 import { Loader } from "./loader.component";
-import { CommonTestModules } from "@tests/commonModules";
 
 describe("Loader", () => {
   // Before each test, configure testing environment
@@ -57,7 +56,6 @@ describe("Loader", () => {
         HttpClientModule,
         ServiceWorkerModule.register("sw.js", { enabled: false }),
         FontAwesomeModule,
-        ...CommonTestModules,
       ],
       declarations: [Loader],
       providers: [{ provide: APP_BASE_HREF, useValue: "/" }],

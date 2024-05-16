@@ -41,7 +41,7 @@ import { of } from "rxjs";
 import { HttpErrorResponse, HttpParams } from "@angular/common/http";
 
 import { ApiClientService } from "./apiClient.service";
-import { CommonTestModules } from "@tests/commonModules";
+import { CommonTestProviders } from "@tests/commonModules";
 
 describe("APIClient Service", () => {
   let httpController: HttpTestingController;
@@ -53,8 +53,8 @@ describe("APIClient Service", () => {
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, ...CommonTestModules],
-      providers: [ApiClientService],
+      imports: [HttpClientTestingModule],
+      providers: [ApiClientService, ...CommonTestProviders],
     }).compileComponents();
 
     apiClientService = TestBed.inject(ApiClientService);

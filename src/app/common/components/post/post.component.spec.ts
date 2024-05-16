@@ -49,7 +49,7 @@ import { SinglePost } from "./post.component";
 import { PopUp } from "@common/components/popUp/popUp.component";
 import { mockAuthedUser } from "@tests/mockData";
 import { MockDeleteForm, MockEditForm, MockReportForm } from "@tests/mockForms";
-import { CommonTestModules } from "@tests/commonModules";
+import { CommonTestProviders } from "@tests/commonModules";
 
 // Mock User Page for testing the sub-component
 // ==================================================
@@ -91,10 +91,9 @@ describe("Post", () => {
         HttpClientModule,
         ServiceWorkerModule.register("sw.js", { enabled: false }),
         FontAwesomeModule,
-        ...CommonTestModules,
       ],
       declarations: [MockPage, SinglePost, PopUp, MockDeleteForm, MockReportForm, MockEditForm],
-      providers: [{ provide: APP_BASE_HREF, useValue: "/" }],
+      providers: [{ provide: APP_BASE_HREF, useValue: "/" }, ...CommonTestProviders],
     }).compileComponents();
   });
 

@@ -9,6 +9,8 @@ updates:
       angular-dependencies:
         patterns:
           - "@angular/*"
+        exclude-patterns:
+          - "@angular/fire"
       font-awesome:
         patterns:
           - "@fortawesome/fontawesome-*"

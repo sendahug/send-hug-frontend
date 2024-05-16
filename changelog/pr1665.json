@@ -1,0 +1,9 @@
+{
+  "pr_number": 1665,
+  "changes": [
+    {
+      "change": "Chores",
+      "description": "Removed @angular/fire from the angular-dependencies group in dependabot's grouped updates, as it's not part of the core angular packages."
+    }
+  ]
+}

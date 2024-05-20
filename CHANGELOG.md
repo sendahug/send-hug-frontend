@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+### 2024-05-20
+
+#### Chores
+
+- Changed the pre-commit hook to no longer commit the prettified files automatically. ([#1670](https://github.com/sendahug/send-hug-frontend/pull/1670))
+
 ### 2024-05-16
 
 #### Chores

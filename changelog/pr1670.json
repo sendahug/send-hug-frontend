@@ -1,9 +1,0 @@
-{
-  "pr_number": 1670,
-  "changes": [
-    {
-      "change": "Chores",
-      "description": "Changed the pre-commit hook to no longer commit the prettified files automatically."
-    }
-  ]
-}

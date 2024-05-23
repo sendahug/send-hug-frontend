@@ -1,0 +1,9 @@
+{
+  "pr_number": 1677,
+  "changes": [
+    {
+      "change": "Chores",
+      "description": "Updated the version of glob-stream (one of Gulp's dependencies) to fix a 'Maximum call stack size exceeded' error that was randomly thrown by Gulp during the build process (see [gulpjs/glob-stream#125](https://github.com/gulpjs/glob-stream/issues/125) for details)."
+    }
+  ]
+}

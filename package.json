@@ -119,7 +119,7 @@
     "@types/node": "^20.12.12",
     "autoprefixer": "^10.4.19",
     "browser-sync": "^3.0.2",
-    "glob": "^10.3.16",
+    "glob": "^10.4.1",
     "gulp": "^5.0.0",
     "gulp-less": "^5.0.0",
     "gulp-postcss": "^10.0.0",

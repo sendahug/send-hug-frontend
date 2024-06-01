@@ -36,10 +36,9 @@ import { HttpErrorResponse } from "@angular/common/http";
 import { BehaviorSubject } from "rxjs";
 
 // App-related imports
-import { Post } from "@app/interfaces/post.interface";
-import { Message } from "@app/interfaces/message.interface";
-import { OtherUser } from "@app/interfaces/otherUser.interface";
-import { AuthService } from "@common/services/auth.service";
+import { type Post } from "@app/interfaces/post.interface";
+import { type Message } from "@app/interfaces/message.interface";
+import { type OtherUser } from "@app/interfaces/otherUser.interface";
 import { AlertsService } from "@common/services/alerts.service";
 import { SWManager } from "@common/services/sWManager.service";
 import { ApiClientService } from "@common/services/apiClient.service";
@@ -71,7 +70,6 @@ export class ItemsService {
 
   // CTOR
   constructor(
-    private authService: AuthService,
     private alertsService: AlertsService,
     private serviceWorkerM: SWManager,
     private apiClient: ApiClientService,

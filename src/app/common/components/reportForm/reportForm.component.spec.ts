@@ -350,7 +350,7 @@ describe("Report", () => {
   it("requires text if the chosen reason is other - invalid", (done: DoneFn) => {
     const validationService = TestBed.inject(ValidationService);
     const validateSpy = spyOn(validationService, "validateItemAgainst").and.returnValue(
-      (control) => null,
+      (_control) => null,
     );
 
     const fixture = TestBed.createComponent(ReportForm);
@@ -406,7 +406,7 @@ describe("Report", () => {
 
     const validationService = TestBed.inject(ValidationService);
     const validateSpy = spyOn(validationService, "validateItemAgainst").and.returnValue(
-      (control) => null,
+      (_control) => null,
     );
 
     const fixture = TestBed.createComponent(ReportForm);

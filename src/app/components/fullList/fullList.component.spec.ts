@@ -53,7 +53,6 @@ import { SinglePost } from "@app/common/components/post/post.component";
 
 describe("FullList", () => {
   let pageOnePosts: Post[];
-  let PageTwoPosts: Post[];
 
   // Before each test, configure testing environment
   beforeEach(() => {
@@ -89,18 +88,6 @@ describe("FullList", () => {
         text: "test2",
         userId: 1,
         user: "test",
-        sentHugs: [],
-      },
-    ];
-
-    PageTwoPosts = [
-      {
-        date: new Date("2020-06-29 19:17:31.072"),
-        givenHugs: 0,
-        id: 3,
-        text: "test3",
-        userId: 1,
-        user: "test3",
         sentHugs: [],
       },
     ];

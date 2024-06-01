@@ -109,10 +109,6 @@ describe("NewItem", () => {
       text: "new post",
       givenHugs: 0,
     };
-    const mockResponsePost = {
-      ...mockNewPost,
-      date: new Date("Tue Apr 09 2024 17:06:17 GMT+0100 (British Summer Time)"),
-    };
     const paramMap = TestBed.inject(ActivatedRoute);
     paramMap.url = of([{ path: "Post" } as UrlSegment]);
     const fixture = TestBed.createComponent(NewItem);
@@ -408,7 +404,6 @@ describe("NewItem", () => {
       return "";
     });
     const fixture = TestBed.createComponent(NewItem);
-    const newItem = fixture.componentInstance;
     const newItemDOM = fixture.nativeElement;
 
     fixture.detectChanges();

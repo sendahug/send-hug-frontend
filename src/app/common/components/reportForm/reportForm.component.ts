@@ -35,9 +35,9 @@ import { Component, Input, Output, EventEmitter } from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
 
 // App-related import
-import { Post } from "@app/interfaces/post.interface";
-import { Report } from "@app/interfaces/report.interface";
-import { OtherUser } from "@app/interfaces/otherUser.interface";
+import { type Post } from "@app/interfaces/post.interface";
+import { type Report } from "@app/interfaces/report.interface";
+import { type OtherUser } from "@app/interfaces/otherUser.interface";
 import { AuthService } from "@common/services/auth.service";
 import { AlertsService } from "@common/services/alerts.service";
 import { ValidationService } from "@common/services/validation.service";

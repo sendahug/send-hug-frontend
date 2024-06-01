@@ -37,9 +37,8 @@ import { faHandHoldingHeart } from "@fortawesome/free-solid-svg-icons";
 import { from, map, switchMap, tap } from "rxjs";
 
 // App-related imports
-import { Post } from "@app/interfaces/post.interface";
+import { type Post } from "@app/interfaces/post.interface";
 import { AuthService } from "@common/services/auth.service";
-import { ItemsService } from "@common/services/items.service";
 import { SWManager } from "@common/services/sWManager.service";
 import { ApiClientService } from "@common/services/apiClient.service";
 
@@ -88,7 +87,6 @@ export class MyPosts implements OnInit {
   // CTOR
   constructor(
     public authService: AuthService,
-    private itemsService: ItemsService,
     private swManager: SWManager,
     private apiClient: ApiClientService,
   ) {

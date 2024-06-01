@@ -51,6 +51,7 @@ import { Loader } from "./components/loader/loader.component";
 import { HeaderMessage } from "./components/headerMessage/headerMessage.component";
 import { environment } from "@env/environment";
 import { PasswordResetForm } from "./components/passwordResetForm/passwordResetForm.component";
+import { SendHugForm } from "./components/sendHugForm/sendHugForm.component";
 
 @NgModule({
   imports: [
@@ -71,6 +72,7 @@ import { PasswordResetForm } from "./components/passwordResetForm/passwordResetF
     Loader,
     HeaderMessage,
     PasswordResetForm,
+    SendHugForm,
   ],
   providers: [
     provideFirebaseApp(() => initializeApp(environment.firebase)),
@@ -88,6 +90,7 @@ import { PasswordResetForm } from "./components/passwordResetForm/passwordResetF
     Loader,
     HeaderMessage,
     PasswordResetForm,
+    SendHugForm,
   ],
 })
 export class AppCommonModule {}

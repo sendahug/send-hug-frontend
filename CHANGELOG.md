@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+### 2024-05-24
+
+#### Chores
+
+- Updated the version of glob-stream (one of Gulp's dependencies) to fix a 'Maximum call stack size exceeded' error that was randomly thrown by Gulp during the build process (see [gulpjs/glob-stream#125](https://github.com/gulpjs/glob-stream/issues/125) for details). ([#1677](https://github.com/sendahug/send-hug-frontend/pull/1677))
+
 ### 2024-05-20
 
 #### Chores

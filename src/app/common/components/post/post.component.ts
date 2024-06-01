@@ -69,7 +69,7 @@ export class SinglePost implements AfterViewChecked, OnInit, OnDestroy {
   @Input() type!: "n" | "s";
   @Input() containerClass!: string;
   @Output() deletedId = new EventEmitter<number>();
-  private _post: WritableSignal<Post | undefined> = signal(undefined);
+  protected _post: WritableSignal<Post | undefined> = signal(undefined);
   postId = computed(() => `${this.type}Post${this._post()?.id || ""}`);
   // edit popup sub-component variables
   postToEdit: Post | undefined;
@@ -81,6 +81,7 @@ export class SinglePost implements AfterViewChecked, OnInit, OnDestroy {
   reportMode: boolean = false;
   reportedItem: Post | undefined;
   reportType: "Post" | undefined;
+  sendMessageMode: boolean = false;
   lastFocusedElement: any;
   waitFor = "main page";
   subscriptions: Subscription[] = [];
@@ -89,7 +90,8 @@ export class SinglePost implements AfterViewChecked, OnInit, OnDestroy {
   shouldDisableHugBtn = computed(
     () =>
       !this.authService.authenticated() ||
-      this._post()?.sentHugs?.includes(this.authService.userData()!.id!),
+      this._post()?.sentHugs?.includes(this.authService.userData()!.id!) ||
+      this._post()?.userId == this.authService.userData()?.id,
   );
   // Classes
   menuButtonClass = computed(() => ({
@@ -223,8 +225,10 @@ export class SinglePost implements AfterViewChecked, OnInit, OnDestroy {
   Programmer: Shir Bar Lev.
   */
   sendHug() {
-    if (!this._post()?.id) return;
-    this.itemsService.sendHug(this._post()!.id!);
+    if (!this._post()) return;
+
+    this.lastFocusedElement = document.activeElement;
+    this.sendMessageMode = true;
   }
 
   /*
@@ -251,7 +255,7 @@ export class SinglePost implements AfterViewChecked, OnInit, OnDestroy {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  changeMode(edit: boolean, type: "Edit" | "Delete" | "Report") {
+  changeMode(edit: boolean, type: "Edit" | "Delete" | "Report" | "Message") {
     switch (type) {
       case "Edit":
         this.editMode = edit;
@@ -261,6 +265,9 @@ export class SinglePost implements AfterViewChecked, OnInit, OnDestroy {
         break;
       case "Report":
         this.reportMode = edit;
+        break;
+      case "Message":
+        this.sendMessageMode = edit;
         break;
     }
 

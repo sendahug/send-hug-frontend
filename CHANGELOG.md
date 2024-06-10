@@ -2,6 +2,20 @@
 
 ## Unreleased
 
+### 2024-06-10
+
+#### Features
+
+- Added a new 'send hug' form, which includes a text area for sending a message. This allows users to send a message along with their hug at once (instead of having to do both separately). ([#1683](https://github.com/sendahug/send-hug-frontend/pull/1683))
+
+#### Changes
+
+- The workflow for sending a hug for a post was changed to open the new form instead of simply sending the request to the back-end. ([#1683](https://github.com/sendahug/send-hug-frontend/pull/1683))
+
+#### Chores
+
+- Cleaned up the tsconfig file and enabled various code quality related options within it. ([#1683](https://github.com/sendahug/send-hug-frontend/pull/1683))
+
 ### 2024-05-24
 
 #### Chores

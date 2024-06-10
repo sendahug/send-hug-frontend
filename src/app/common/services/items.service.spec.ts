@@ -56,36 +56,6 @@ describe("ItemsService", () => {
     }).compileComponents();
 
     itemsService = TestBed.inject(ItemsService);
-    // set the user data as if the user is logged in
-    itemsService["authService"].userData.set({
-      id: 4,
-      displayName: "name",
-      receivedH: 2,
-      givenH: 2,
-      posts: 2,
-      loginCount: 3,
-      role: {
-        id: 1,
-        name: "admin",
-        permissions: [],
-      },
-      jwt: "",
-      blocked: false,
-      releaseDate: undefined,
-      autoRefresh: false,
-      refreshRate: 20,
-      pushEnabled: false,
-      selectedIcon: "kitty",
-      iconColours: {
-        character: "#BA9F93",
-        lbg: "#e2a275",
-        rbg: "#f8eee4",
-        item: "#f4b56a",
-      },
-      firebaseId: "",
-    });
-    itemsService["authService"].authenticated.set(true);
-    itemsService["authService"].isUserDataResolved.next(true);
   });
 
   // Check the service is created

@@ -81,7 +81,7 @@ describe("PostEditForm", () => {
   it("should make the request to itemsService to change the post", () => {
     const validationService = TestBed.inject(ValidationService);
     const validateSpy = spyOn(validationService, "validateItemAgainst").and.returnValue(
-      (control) => null,
+      (_control) => null,
     );
 
     const fixture = TestBed.createComponent(PostEditForm);
@@ -145,7 +145,7 @@ describe("PostEditForm", () => {
   it("should send a different message if the report was closed", () => {
     const validationService = TestBed.inject(ValidationService);
     const validateSpy = spyOn(validationService, "validateItemAgainst").and.returnValue(
-      (control) => null,
+      (_control) => null,
     );
 
     const fixture = TestBed.createComponent(PostEditForm);
@@ -207,7 +207,7 @@ describe("PostEditForm", () => {
   it("should not try to close the report if the user chose not to", () => {
     const validationService = TestBed.inject(ValidationService);
     const validateSpy = spyOn(validationService, "validateItemAgainst").and.returnValue(
-      (control) => null,
+      (_control) => null,
     );
 
     const fixture = TestBed.createComponent(PostEditForm);
@@ -398,7 +398,7 @@ describe("PostEditForm", () => {
   it("should alert if the post isn't valid", () => {
     const validationService = TestBed.inject(ValidationService);
     const validateSpy = spyOn(validationService, "validateItemAgainst").and.returnValue(
-      (control) => ({ error: "error" }),
+      (_control) => ({ error: "error" }),
     );
 
     const fixture = TestBed.createComponent(PostEditForm);

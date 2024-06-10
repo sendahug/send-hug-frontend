@@ -289,15 +289,19 @@ app-new-item {
 }
 
 /* New message / post text field */
-.newTextArea {
+.newTextArea,
+#messageText {
   margin: 10px;
   border-radius: 10px;
-  border: none;
   width: 75%;
   /* Responsive styling for screens above 700px width */
   @media screen and (min-width: 700px) {
     width: 80%;
   }
+}
+
+.newTextArea {
+  border: none;
 }
 
 /* New Item field button */

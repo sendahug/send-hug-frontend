@@ -36,13 +36,13 @@ import { FormBuilder, Validators } from "@angular/forms";
 import { map, mergeMap, of } from "rxjs";
 
 // App-related import
-import { Post } from "@app/interfaces/post.interface";
+import { type Post } from "@app/interfaces/post.interface";
 import { AdminService } from "@common/services/admin.service";
 import { ValidationService } from "@common/services/validation.service";
 import { AlertsService } from "@common/services/alerts.service";
 import { ApiClientService } from "@common/services/apiClient.service";
 import { SWManager } from "@app/common/services/sWManager.service";
-import { PostAndReportResponse } from "@app/interfaces/responses";
+import { type PostAndReportResponse } from "@app/interfaces/responses";
 
 interface PostEditResponse {
   success: boolean;

@@ -39,8 +39,8 @@ import { AuthService } from "@common/services/auth.service";
 import { AdminService } from "@common/services/admin.service";
 import { ValidationService } from "@common/services/validation.service";
 import { AlertsService } from "@common/services/alerts.service";
-import { ReportData } from "@app/interfaces/report.interface";
-import { PartialUser } from "@app/interfaces/user.interface";
+import { type ReportData } from "@app/interfaces/report.interface";
+import { type PartialUser } from "@app/interfaces/user.interface";
 import { UpdatedUserReportResponse } from "@app/interfaces/responses";
 
 @Component({

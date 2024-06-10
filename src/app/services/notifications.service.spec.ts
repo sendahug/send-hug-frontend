@@ -31,7 +31,7 @@
 */
 
 import { TestBed } from "@angular/core/testing";
-import { HttpClientTestingModule, HttpTestingController } from "@angular/common/http/testing";
+import { HttpClientTestingModule } from "@angular/common/http/testing";
 import {
   BrowserDynamicTestingModule,
   platformBrowserDynamicTesting,
@@ -67,7 +67,6 @@ const pushSub: PushSubscription = {
 };
 
 describe("NotificationService", () => {
-  let httpController: HttpTestingController;
   let notificationService: NotificationService;
 
   // Before each test, configure testing environment
@@ -85,7 +84,6 @@ describe("NotificationService", () => {
     }).compileComponents();
 
     notificationService = TestBed.inject(NotificationService);
-    httpController = TestBed.inject(HttpTestingController);
 
     const authService = TestBed.inject(AuthService);
     authService.authenticated.set(true);

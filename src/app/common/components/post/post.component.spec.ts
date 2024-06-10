@@ -115,7 +115,6 @@ describe("Post", () => {
     const singlePost: SinglePost = upFixture.debugElement.children[0].componentInstance;
     const singlePostDOM = upFixture.debugElement.children[0].nativeElement;
     const hugSpy = spyOn(singlePost, "sendHug").and.callThrough();
-    const spy = spyOn(singlePost.itemsService, "sendHug");
     const authService = singlePost.authService;
     authService.authenticated.set(true);
     authService.userData.set({ ...mockAuthedUser });
@@ -131,8 +130,7 @@ describe("Post", () => {
     upFixture.detectChanges();
 
     // after the click
-    expect(spy).toHaveBeenCalled();
-    expect(spy.calls.count()).toBe(1);
+    expect(singlePost.sendMessageMode).toBeTrue();
     expect(hugSpy).toHaveBeenCalled();
     done();
   });

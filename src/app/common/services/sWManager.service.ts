@@ -38,12 +38,12 @@ import { openDB, IDBPDatabase, DBSchema } from "idb";
 
 // App-related imports
 import { AlertsService } from "@common/services/alerts.service";
-import { IdbStoreType, iconCharacters } from "@app/interfaces/types";
-import { Message } from "@app/interfaces/message.interface";
-import { Post } from "@app/interfaces/post.interface";
-import { FullThread } from "@app/interfaces/thread.interface";
-import { OtherUser } from "@app/interfaces/otherUser.interface";
-import { UserIconColours, Role } from "@app/interfaces/user.interface";
+import { type IdbStoreType, type iconCharacters } from "@app/interfaces/types";
+import { type Message } from "@app/interfaces/message.interface";
+import { type Post } from "@app/interfaces/post.interface";
+import { type FullThread } from "@app/interfaces/thread.interface";
+import { type OtherUser } from "@app/interfaces/otherUser.interface";
+import { type UserIconColours, type Role } from "@app/interfaces/user.interface";
 
 // IndexedDB Database schema
 export interface MyDB extends DBSchema {

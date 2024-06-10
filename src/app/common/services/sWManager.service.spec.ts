@@ -31,7 +31,7 @@
 */
 
 import { TestBed } from "@angular/core/testing";
-import { HttpClientTestingModule, HttpTestingController } from "@angular/common/http/testing";
+import { HttpClientTestingModule } from "@angular/common/http/testing";
 import {
   BrowserDynamicTestingModule,
   platformBrowserDynamicTesting,
@@ -293,7 +293,6 @@ function populateDB(
 }
 
 describe("SWManagerService", () => {
-  let httpController: HttpTestingController;
   let sWManagerService: SWManager;
 
   // Before each test, configure testing environment
@@ -307,7 +306,6 @@ describe("SWManagerService", () => {
     }).compileComponents();
 
     sWManagerService = TestBed.inject(SWManager);
-    httpController = TestBed.inject(HttpTestingController);
   });
 
   // Check the service is created
@@ -403,7 +401,6 @@ describe("SWManagerService", () => {
       sWManagerService = TestBed.inject(SWManager);
       sWManagerService.currentDB = sWManagerService.openDatabase();
       populateDB(sWManagerService.currentDB, "posts");
-      httpController = TestBed.inject(HttpTestingController);
     });
 
     // try to get main page's new posts
@@ -519,7 +516,6 @@ describe("SWManagerService", () => {
       sWManagerService = TestBed.inject(SWManager);
       sWManagerService.currentDB = sWManagerService.openDatabase();
       await populateDB(sWManagerService.currentDB, "messages");
-      httpController = TestBed.inject(HttpTestingController);
     });
 
     // try to get inbox messages - page 1
@@ -608,7 +604,6 @@ describe("SWManagerService", () => {
       sWManagerService = TestBed.inject(SWManager);
       sWManagerService.currentDB = sWManagerService.openDatabase();
       populateDB(sWManagerService.currentDB, "threads");
-      httpController = TestBed.inject(HttpTestingController);
     });
 
     // try to get threads
@@ -651,7 +646,6 @@ describe("SWManagerService", () => {
       sWManagerService = TestBed.inject(SWManager);
       sWManagerService.currentDB = sWManagerService.openDatabase();
       populateDB(sWManagerService.currentDB, "users");
-      httpController = TestBed.inject(HttpTestingController);
     });
 
     // try to get different users

@@ -281,7 +281,7 @@ describe("APIClient Service", () => {
     const toggleSpy = spyOn(apiClientService["alertsService"], "toggleOfflineAlert");
 
     apiClientService.handleRequestError(sampleError, of(null)).subscribe({
-      error: (error: HttpErrorResponse) => {
+      error: (_error: HttpErrorResponse) => {
         expect(alertSpy).not.toHaveBeenCalled();
         expect(toggleSpy).toHaveBeenCalled();
         done();

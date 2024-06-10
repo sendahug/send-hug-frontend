@@ -102,8 +102,7 @@ describe("AppComponent", () => {
     );
     const alertsService = TestBed.inject(AlertsService);
     const alertSpy = spyOn(alertsService, "createAlert");
-    const fixture = TestBed.createComponent(AppComponent);
-    const component = fixture.componentInstance;
+    TestBed.createComponent(AppComponent);
 
     expect(authSpy).toHaveBeenCalled();
     expect(alertSpy).toHaveBeenCalledWith(
@@ -127,8 +126,7 @@ describe("AppComponent", () => {
     );
     const alertsService = TestBed.inject(AlertsService);
     const alertSpy = spyOn(alertsService, "createAlert");
-    const fixture = TestBed.createComponent(AppComponent);
-    const component = fixture.componentInstance;
+    TestBed.createComponent(AppComponent);
 
     expect(authSpy).toHaveBeenCalled();
     expect(alertSpy).toHaveBeenCalledWith({

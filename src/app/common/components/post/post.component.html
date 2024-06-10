@@ -18,7 +18,7 @@
 		<button
 			[ngClass]="menuButtonClass()"
 			[attr.aria-labelledby]="'pOptions' + postId()"
-			name="post options"
+			name="post options"	
 			(click)="toggleOptions()"
 		>
 			<fa-icon [icon]="faEllipsisV" class="fa-comment"></fa-icon>
@@ -76,7 +76,7 @@
 	(editMode)="changeMode($event, 'Delete')"
 	[toDelete]="toDelete"
 	[itemToDelete]="itemToDelete"
-	(deleted)="deletedId.emit(post.id)"
+	(deleted)="deletedId.emit(_post().id)"
 ></item-delete-form>
 
 <post-edit-form
@@ -92,6 +92,14 @@
 	[reportedItem]="reportedItem"
 	[reportType]="reportType"
 ></report-form>
+
+<app-send-hug-form
+	*ngIf="sendMessageMode"
+	(sendMode)="changeMode($event, 'Message')"
+	[forUsername]="_post().user"
+	[forID]="_post().userId"
+	[postID]="_post().id"
+></app-send-hug-form>
 
 <div id="labels" class="labels" aria-hidden="true">
 	<p [id]="'pText' + postId()">Post Text</p>

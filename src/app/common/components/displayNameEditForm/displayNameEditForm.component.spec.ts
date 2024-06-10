@@ -108,7 +108,7 @@ describe("DisplayNameEditForm", () => {
   it("should make the request to authService to change the name", () => {
     const validationService = TestBed.inject(ValidationService);
     const validateSpy = spyOn(validationService, "validateItemAgainst").and.returnValue(
-      (control) => null,
+      (_control) => null,
     );
 
     const fixture = TestBed.createComponent(DisplayNameEditForm);
@@ -137,7 +137,7 @@ describe("DisplayNameEditForm", () => {
   it("should make the request to adminService to change the name - close report", () => {
     const validationService = TestBed.inject(ValidationService);
     const validateSpy = spyOn(validationService, "validateItemAgainst").and.returnValue(
-      (control) => null,
+      (_control) => null,
     );
 
     const fixture = TestBed.createComponent(DisplayNameEditForm);
@@ -185,7 +185,7 @@ describe("DisplayNameEditForm", () => {
   it("should make the request to adminService to change the name - don't close report", () => {
     const validationService = TestBed.inject(ValidationService);
     const validateSpy = spyOn(validationService, "validateItemAgainst").and.returnValue(
-      (control) => null,
+      (_control) => null,
     );
 
     const fixture = TestBed.createComponent(DisplayNameEditForm);
@@ -233,7 +233,7 @@ describe("DisplayNameEditForm", () => {
   it("should prevent invalid names", () => {
     const validationService = TestBed.inject(ValidationService);
     const validateSpy = spyOn(validationService, "validateItemAgainst").and.returnValue(
-      (control) => {
+      (_control) => {
         return { error: "error" };
       },
     );

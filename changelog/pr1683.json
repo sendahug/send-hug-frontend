@@ -1,0 +1,17 @@
+{
+  "pr_number": 1683,
+  "changes": [
+    {
+      "change": "Features",
+      "description": "Added a new 'send hug' form, which includes a text area for sending a message. This allows users to send a message along with their hug at once (instead of having to do both separately)."
+    },
+    {
+      "change": "Changes",
+      "description": "The workflow for sending a hug for a post was changed to open the new form instead of simply sending the request to the back-end."
+    },
+    {
+      "change": "Chores",
+      "description": "Cleaned up the tsconfig file and enabled various code quality related options within it."
+    }
+  ]
+}

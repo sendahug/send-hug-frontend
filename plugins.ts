@@ -237,7 +237,7 @@ export function AngularLinkerPlugin(): Plugin {
  *                  - route - the route that should serves the file (starting with `/`).
  *                  - fileType - the mime type of the file.
  */
-export function ProvideStandaloneFiles(files: FileRouteMapping[]): Plugin {
+export function ProvideStandaloneFilesPlugin(files: FileRouteMapping[]): Plugin {
   const routes = files.map((mapping) => mapping.route);
 
   return {

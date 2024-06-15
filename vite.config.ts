@@ -1,5 +1,5 @@
 import { defineConfig } from "vite";
-import { BuildAngularPlugin, AngularLinkerPlugin, ProvideStandaloneFiles } from "./plugins";
+import { BuildAngularPlugin, AngularLinkerPlugin, ProvideStandaloneFilesPlugin } from "./plugins";
 import * as path from "path";
 
 const standaloneFiles = [
@@ -13,7 +13,11 @@ const standaloneFiles = [
 ];
 
 export default defineConfig({
-  plugins: [AngularLinkerPlugin(), BuildAngularPlugin(), ProvideStandaloneFiles(standaloneFiles)],
+  plugins: [
+    AngularLinkerPlugin(),
+    BuildAngularPlugin(),
+    ProvideStandaloneFilesPlugin(standaloneFiles),
+  ],
   server: {
     port: 3000,
   },

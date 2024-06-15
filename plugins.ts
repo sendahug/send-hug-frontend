@@ -228,18 +228,24 @@ export function AngularLinkerPlugin(): Plugin {
   };
 }
 
-
-
+/**
+ * A filter for serving static files required by the app and copying them
+ * to the `dist` folder.
+ * @param files - a list of file mappings for the files to server and move.
+ *                Each file mapping consists of:
+ *                  - filePath - the relative path to the file (from the project root).
+ *                  - route - the route that should serves the file (starting with `/`).
+ *                  - fileType - the mime type of the file.
+ */
 export function ProvideStandaloneFiles(files: FileRouteMapping[]): Plugin {
-  const routes = files.map(mapping => mapping.route);
+  const routes = files.map((mapping) => mapping.route);
 
   return {
     name: "vite-provide-standalone-files",
     writeBundle(options, _outputBundle) {
-      console.log(options.dir)
-      files.forEach(file => {
+      files.forEach((file) => {
         fs.copyFileSync(file.filePath, `${options.dir}${file.route}`);
-      })
+      });
     },
     // Based on: https://github.com/vite-pwa/vite-plugin-pwa/blob/main/src/plugins/dev.ts
     /**
@@ -251,7 +257,7 @@ export function ProvideStandaloneFiles(files: FileRouteMapping[]): Plugin {
     configureServer(server) {
       server.middlewares.use((req, res, next) => {
         if (req.url && routes.includes(req.url)) {
-          const fileData = files.find(f => f.route == req.url);
+          const fileData = files.find((f) => f.route == req.url);
           if (!fileData) next();
 
           res.statusCode = 200;
@@ -263,5 +269,5 @@ export function ProvideStandaloneFiles(files: FileRouteMapping[]): Plugin {
         }
       });
     },
-  }
+  };
 }

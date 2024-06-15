@@ -31,8 +31,9 @@
 */
 
 // Angular imports
+import { CommonModule } from "@angular/common";
 import { Component } from "@angular/core";
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, RouterLink } from "@angular/router";
 
 enum policyTitles {
   TermsConditions = "Terms and Conditions",
@@ -43,6 +44,8 @@ enum policyTitles {
 @Component({
   selector: "app-policies",
   templateUrl: "./sitePolicies.component.html",
+  standalone: true,
+  imports: [CommonModule, RouterLink],
 })
 export class SitePolicies {
   currentPolicy!: "TermsConditions" | "PrivacyPolicy" | "CookiePolicy";

@@ -31,34 +31,41 @@
 */
 
 import { NgModule } from "@angular/core";
-import { BrowserModule } from "@angular/platform-browser";
-import { HttpClientModule } from "@angular/common/http";
-import { ServiceWorkerModule } from "@angular/service-worker";
+import { CommonModule } from "@angular/common";
+import { provideHttpClient } from "@angular/common/http";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { ReactiveFormsModule } from "@angular/forms";
+import { provideRouter, RouterLink } from "@angular/router";
 
 // Internal Modules
-import { AppRoutingModule } from "@app/app-routing.module";
-import { AppCommonModule } from "@common/common.module";
-
-import { UserPage } from "@user//components/userPage/userPage.component";
-import { AppMessaging } from "@user//components/messages/messages.component";
-import { MyPosts } from "@user//components/myPosts/myPosts.component";
-import { SettingsPage } from "@user//components/settings/settings.component";
-import { IconEditor } from "@user//components/iconEditor/iconEditor.component";
+import { UserPage } from "@user/components/userPage/userPage.component";
+import { AppMessaging } from "@user/components/messages/messages.component";
+import { MyPosts } from "@user/components/myPosts/myPosts.component";
+import { SettingsPage } from "@user/components/settings/settings.component";
+import { IconEditor } from "@user/components/iconEditor/iconEditor.component";
+import { DisplayNameEditForm } from "@app/components/displayNameEditForm/displayNameEditForm.component";
+import { ReportForm } from "@app/components/reportForm/reportForm.component";
+import { HeaderMessage } from "@app/components/headerMessage/headerMessage.component";
+import { ItemDeleteForm } from "@app/components/itemDeleteForm/itemDeleteForm.component";
+import { SinglePost } from "@app/components/post/post.component";
+import { Loader } from "@app/components/loader/loader.component";
+import { routes } from "@app/app.routes";
 
 @NgModule({
   imports: [
-    BrowserModule,
-    AppRoutingModule,
-    HttpClientModule,
+    CommonModule,
     ReactiveFormsModule,
-    ServiceWorkerModule.register("sw.js"),
     FontAwesomeModule,
-    AppCommonModule,
+    DisplayNameEditForm,
+    ReportForm,
+    HeaderMessage,
+    ItemDeleteForm,
+    SinglePost,
+    Loader,
+    RouterLink,
   ],
   declarations: [UserPage, AppMessaging, MyPosts, SettingsPage, IconEditor],
-  providers: [],
+  providers: [provideHttpClient(), provideRouter(routes)],
   bootstrap: [],
   exports: [UserPage, AppMessaging, SettingsPage],
 })

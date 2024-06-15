@@ -2,7 +2,7 @@
   *ngIf="isLoading()"
   [waitingFor]="waitFor"></app-loader>
 
-<div  id="loginBox" *ngIf="!authService.authenticated()">
+<div id="loginBox" *ngIf="!authService.authenticated()">
 	<div class="errorMessage">You are not currently logged in. To view user information, log in.</div>
 
   <span class="socialLogins">
@@ -48,7 +48,7 @@
 <div id="logoutBox" *ngIf="authService.authenticated()">
   <div class="errorMessage">You are already logged in!</div>
 
-  <div class="errorMessage">You are currently logged in as {{ authService.userData().displayName }}.</div>
+  <div class="errorMessage">You are currently logged in as {{ authService.userData()!.displayName }}.</div>
   
   <button id="logout" class="appButton" (click)="logout()">Log Out</button>
 </div>

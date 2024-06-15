@@ -39,12 +39,12 @@ import { HttpErrorResponse } from "@angular/common/http";
 
 // App-related imports
 import { PartialUser, User } from "@app/interfaces/user.interface";
-import { AuthService } from "@common/services/auth.service";
+import { AuthService } from "@app/services/auth.service";
 import { iconElements } from "@app/interfaces/types";
 import { OtherUser } from "@app/interfaces/otherUser.interface";
-import { SWManager } from "@common/services/sWManager.service";
-import { ApiClientService } from "@common/services/apiClient.service";
-import { AlertsService } from "@common/services/alerts.service";
+import { SWManager } from "@app/services/sWManager.service";
+import { ApiClientService } from "@app/services/apiClient.service";
+import { AlertsService } from "@app/services/alerts.service";
 
 interface OtherUserResponse {
   user: OtherUser;
@@ -71,8 +71,8 @@ export class UserPage implements OnInit, OnDestroy, AfterViewChecked {
   userToEdit?: PartialUser;
   editMode: boolean = false;
   reportMode: boolean = false;
-  reportedItem: User | undefined;
-  reportType = "User";
+  reportedItem: OtherUser | undefined;
+  reportType: "User" = "User";
   lastFocusedElement: any;
   userDataCalls = 0;
   // loader sub-component variable
@@ -271,7 +271,7 @@ export class UserPage implements OnInit, OnDestroy, AfterViewChecked {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  reportUser(user: User) {
+  reportUser(user: OtherUser) {
     this.lastFocusedElement = document.activeElement;
     this.reportMode = true;
     this.reportedItem = user;

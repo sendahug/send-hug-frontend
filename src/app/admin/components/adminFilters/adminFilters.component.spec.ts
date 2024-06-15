@@ -46,11 +46,11 @@ import { ReactiveFormsModule } from "@angular/forms";
 import { of } from "rxjs";
 
 import { AdminFilters } from "./adminFilters.component";
-import { PopUp } from "@common/components/popUp/popUp.component";
+import { PopUp } from "@app/components/popUp/popUp.component";
 import { AuthService } from "../../../common/services/auth.service";
 import { Loader } from "../../../common/components/loader/loader.component";
 import { mockAuthedUser } from "@tests/mockData";
-import { ApiClientService } from "@common/services/apiClient.service";
+import { ApiClientService } from "@app/services/apiClient.service";
 import { AppCommonModule } from "@app/common/common.module";
 
 const mockFilteredPhrases = [

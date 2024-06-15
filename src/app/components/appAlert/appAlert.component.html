@@ -1,6 +1,6 @@
 <div 
   [ngClass]="alertClass()" 
-  [role]="alertRole()" 
+  [attr.role]="alertRole()" 
   [attr.aria-label]="alertAriaLabel()"
   [attr.aria-hidden]="!alertsService.shouldDisplayAlert()"
   [attr.aria-live]="alertAriaLive()"

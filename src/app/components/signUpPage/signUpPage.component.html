@@ -19,5 +19,5 @@
 <div id="logoutBox" *ngIf="authService.authenticated()">
   <div class="errorMessage">You are already registered!</div>
 
-  <div class="errorMessage">You are currently logged in as {{ authService.userData().displayName }}.</div>
+  <div class="errorMessage">You are currently logged in as {{ authService.userData()!.displayName }}.</div>
 </div>

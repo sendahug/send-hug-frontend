@@ -48,7 +48,7 @@ import { ReactiveFormsModule } from "@angular/forms";
 import { By } from "@angular/platform-browser";
 
 import { LoginPage } from "./loginPage.component";
-import { AuthService } from "@common/services/auth.service";
+import { AuthService } from "@app/services/auth.service";
 import { getMockFirebaseUser, mockAuthedUser } from "@tests/mockData";
 import { AppCommonModule } from "@app/common/common.module";
 import { User } from "@app/interfaces/user.interface";

@@ -50,7 +50,7 @@ import { AuthService } from "../../../common/services/auth.service";
 import { Loader } from "../../../common/components/loader/loader.component";
 import { mockAuthedUser } from "@tests/mockData";
 import { Report } from "@app/interfaces/report.interface";
-import { ApiClientService } from "@common/services/apiClient.service";
+import { ApiClientService } from "@app/services/apiClient.service";
 import { MockDeleteForm, MockDisplayNameForm, MockEditForm } from "@tests/mockForms";
 import { AppCommonModule } from "@app/common/common.module";
 import { PostEditForm } from "@app/common/components/postEditForm/postEditForm.component";

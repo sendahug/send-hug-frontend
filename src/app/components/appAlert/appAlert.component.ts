@@ -31,14 +31,18 @@
 */
 
 // Angular imports
+import { CommonModule } from "@angular/common";
 import { Component, computed } from "@angular/core";
+import { RouterLink } from "@angular/router";
 
 // App-related imports
-import { AlertsService } from "@common/services/alerts.service";
+import { AlertsService } from "@app/services/alerts.service";
 
 @Component({
   selector: "app-alert",
   templateUrl: "./appAlert.component.html",
+  standalone: true,
+  imports: [CommonModule, RouterLink],
 })
 export class AppAlert {
   alertClass = computed(() => ({

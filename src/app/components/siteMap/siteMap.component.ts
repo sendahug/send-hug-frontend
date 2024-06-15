@@ -31,15 +31,18 @@
 */
 
 // Angular imports
+import { CommonModule } from "@angular/common";
 import { Component } from "@angular/core";
-import { Router, Route } from "@angular/router";
+import { Router, Route, RouterLink } from "@angular/router";
 
 // App-related imports
-import { AuthService } from "@common/services/auth.service";
+import { AuthService } from "@app/services/auth.service";
 
 @Component({
   selector: "app-site-map",
   templateUrl: "./siteMap.component.html",
+  standalone: true,
+  imports: [CommonModule, RouterLink],
 })
 export class SiteMap {
   routes: Route[] = [];

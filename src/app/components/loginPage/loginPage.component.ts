@@ -32,19 +32,25 @@
 
 // Angular imports
 import { Component, computed, signal } from "@angular/core";
-import { FormBuilder, Validators } from "@angular/forms";
+import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { faGoogle, faApple } from "@fortawesome/free-brands-svg-icons";
 import { Observable, switchMap, tap } from "rxjs";
 import { Router } from "@angular/router";
 import { UserCredential } from "@angular/fire/auth";
+import { CommonModule } from "@angular/common";
+import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 
 // App-related imports
-import { AuthService } from "@common/services/auth.service";
-import { AlertsService } from "@app/common/services/alerts.service";
+import { AuthService } from "@app/services/auth.service";
+import { AlertsService } from "@app/services/alerts.service";
+import { Loader } from "../loader/loader.component";
+import { PasswordResetForm } from "../passwordResetForm/passwordResetForm.component";
 
 @Component({
   selector: "app-login-page",
   templateUrl: "./loginPage.component.html",
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule, FontAwesomeModule, Loader, PasswordResetForm],
 })
 export class LoginPage {
   isNewUser = signal<boolean>(false);

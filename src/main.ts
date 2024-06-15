@@ -1,7 +1,7 @@
 /*
   MIT License
 
-  Copyright (c) 2020-2024 Send A Hug
+  Copyright (c) 2020-2024 Shir Bar Lev
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -27,17 +27,16 @@
   SOFTWARE.
 */
 
-import "core-js/full/reflect";
 import "zone.js";
 
 import { enableProdMode } from "@angular/core";
-import { platformBrowserDynamic } from "@angular/platform-browser-dynamic";
+import { bootstrapApplication } from "@angular/platform-browser";
 
-import { AppModule } from "./app/app.module";
-import { environment } from "./environments/environment";
+import { AppComponent } from "./app/app.component";
+import { appConfig } from "./app/app.config";
 
-if (environment.production) {
+if (import.meta.env["VITE_MODE"] == "production") {
   enableProdMode();
 }
 
-platformBrowserDynamic().bootstrapModule(AppModule);
+bootstrapApplication(AppComponent, appConfig).catch((error) => console.log(error));

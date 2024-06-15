@@ -33,14 +33,19 @@
 // Angular imports
 import { Component, OnInit, EventEmitter, Output } from "@angular/core";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
+import { CommonModule } from "@angular/common";
+import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
+import { RouterLink } from "@angular/router";
 
 // App-relateed imports
-import { AuthService } from "@common/services/auth.service";
+import { AuthService } from "@app/services/auth.service";
 import { NotificationService } from "@app/services/notifications.service";
 
 @Component({
   selector: "app-notifications",
   templateUrl: "./notifications.component.html",
+  standalone: true,
+  imports: [CommonModule, FontAwesomeModule, RouterLink],
 })
 export class NotificationsTab implements OnInit {
   // indicates whether notifications panel is still required

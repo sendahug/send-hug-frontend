@@ -3,13 +3,13 @@
 <div role="document">
 	<ul id="routeList">
 		<li *ngFor="let route of routes" class="mainRoute">
-			<h4>{{ route.data.name }}</h4>
-			<ul *ngIf="route.data && route.data.mapRoutes">
-				<li *ngFor="let child of route.data.mapRoutes" class="subRoute">
-					<a [routerLink]="['/' + route.path + '/' + child.path]" class="routerLink">{{ child.name }}</a>
+			<h4>{{ route.data!["name"] }}</h4>
+			<ul *ngIf="route.data && route.data['mapRoutes']">
+				<li *ngFor="let child of route.data['mapRoutes']" class="subRoute">
+					<a [routerLink]="['/' + route.path + '/' + child.path]" class="routerLink">{{ child["name"] }}</a>
 				</li>
 			</ul>
-			<a [routerLink]="['/' + route.path]" *ngIf="!route.children" class="routerLink">{{ route.data.name }}</a>
+			<a [routerLink]="['/' + route.path]" *ngIf="!route.children" class="routerLink">{{ route.data!["name"] }}</a>
 		</li>
 	</ul>
 </div>

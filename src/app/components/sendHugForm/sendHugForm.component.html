@@ -1,0 +1,35 @@
+<app-pop-up (editMode)="sendMode.emit(false)">
+  <h3>Send A Hug</h3>
+
+  <form [formGroup]="sendHugForm" class="postEdit" *ngIf="forUsername && forID">
+    <div class="formElement">
+      <label class="pageCategory" for="messageFor">To:</label>
+      <input formControlName="messageFor" type="text" id="messageFor" aria-labelledby="mUser" readonly>
+    </div>
+    <div class="formElement">
+      <input formControlName="sendMessage" type="checkbox" id="sendMessage">
+      <label class="pageCategory" for="sendMessage">Send a Message as well?</label>
+    </div>
+    <div>Sending a message along with your hug helps the other person feel less alone.</div>
+    <div class="formElement">
+      <label class="pageCategory required" for="messageText">Message</label>
+      <br>
+      <textarea
+        formControlName="messageText"
+        id="messageText"
+        cols="40"
+        rows="8"
+        aria-labelledby="mText"
+        minlength="0"
+        maxlength="480"
+        [required]="sendHugForm.controls.sendMessage.value ?? false"
+        [attr.aria-required]="sendHugForm.controls.sendMessage.value ?? false"
+      ></textarea>
+    </div>
+    <button type="submit" class="appButton sendData" (click)="sendHugAndMessage()">Send Hug</button>
+  </form>
+  
+  <div class="errorMessage" *ngIf="!forUsername || !forID" role="alert">
+    User ID and display name and post ID are required for sending a hug. Please return to the post and try sending the hug again.
+  </div>
+</app-pop-up>

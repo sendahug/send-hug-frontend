@@ -34,11 +34,11 @@
 import { Component, computed, signal } from "@angular/core";
 
 // App imports
-import { AdminService } from "@common/services/admin.service";
-import { ApiClientService } from "@common/services/apiClient.service";
+import { AdminService } from "@app/services/admin.service";
+import { ApiClientService } from "@app/services/apiClient.service";
 import { HttpErrorResponse } from "@angular/common/http";
 import { Report } from "@app/interfaces/report.interface";
-import { AlertsService } from "@common/services/alerts.service";
+import { AlertsService } from "@app/services/alerts.service";
 import { PostAndReportResponse, UpdatedUserReportResponse } from "@app/interfaces/responses";
 
 @Component({
@@ -58,11 +58,12 @@ export class AdminReports {
   nameEditMode: boolean = false;
   postEditMode: boolean = false;
   reportData: {
-    userID?: number;
+    userID: number;
     reportID: number;
     postID?: number;
   } = {
     reportID: 0,
+    userID: 0,
   };
   deleteMode: boolean = false;
   toDelete: string | undefined;

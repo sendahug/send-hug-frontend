@@ -45,8 +45,8 @@ import { ActivatedRoute, Router, RouterModule, UrlSegment } from "@angular/route
 import { By } from "@angular/platform-browser";
 
 import { FullList } from "./fullList.component";
-import { ApiClientService } from "@common/services/apiClient.service";
-import { SWManager } from "@common/services/sWManager.service";
+import { ApiClientService } from "@app/services/apiClient.service";
+import { SWManager } from "@app/services/sWManager.service";
 import { AppCommonModule } from "@app/common/common.module";
 import { Post } from "@app/interfaces/post.interface";
 import { SinglePost } from "@app/common/components/post/post.component";

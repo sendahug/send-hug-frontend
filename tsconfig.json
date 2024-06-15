@@ -1,54 +1,43 @@
 {
   "compilerOptions": {
-    /* Basic Options */
     "target": "ES2020",
-    "module": "es2020",
-    "lib": ["dom", "esnext"],
-    "declaration": false,
-    "sourceMap": true,
-    "rootDir": "./",
-    "removeComments": true,
-    "noEmit": true,
-    "importHelpers": true,
-    "isolatedModules": true,
-
-    /* Strict Type-Checking Options */
+    "useDefineForClassFields": false,
+    "module": "ES2020",
+    "lib": ["ES2020", "DOM"],
+    "moduleResolution": "bundler",
     "strict": true,
-
-    /* Additional Checks */
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "esModuleInterop": true,
+    "noEmit": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noImplicitReturns": true,
     "noImplicitOverride": true,
-    "noFallthroughCasesInSwitch": false,
-
-    /* Module Resolution Options */
-    "moduleResolution": "node",
+    "skipLibCheck": true,
+    "sourceMap": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": false,
+    "forceConsistentCasingInFileNames": true,
+    "noFallthroughCasesInSwitch": true,
+    "declaration": false,
+    "noPropertyAccessFromIndexSignature": true,
+    "importHelpers": true,
     "paths": {
       "@app/*": ["./src/app/*"],
-      "@env/*": ["./src/environments/*"],
-      "@tests/*": ["./src/tests/*"],
-      "@common/*": ["./src/app/common/*"],
       "@admin/*": ["./src/app/admin/*"],
       "@user/*": ["./src/app/user/*"]
     },
-    "types": ["jasmine", "node"],
-    "esModuleInterop": true,
-
-    /* Experimental Options */
-    "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
-
-    /* Advanced Options */
-    "forceConsistentCasingInFileNames": true,
-    "resolveJsonModule": true,
-    "skipLibCheck": true,
-    "noPropertyAccessFromIndexSignature": false
+    "removeComments": true
   },
   "include": ["src/**/*.ts"],
-  "exclude": ["e2e/tsconfig.json"],
+  "exclude": ["e2e/tsconfig.json", "src/**/*.spec.ts"],
   "angularCompilerOptions": {
     "enableIvy": true,
-    "enableResourceInlining": false
+    "enableResourceInlining": true,
+    "enableI18nLegacyMessageIdFormat": false,
+    "strictInjectionParameters": true,
+    "strictInputAccessModifiers": true,
+    "strictTemplates": true
   }
 }

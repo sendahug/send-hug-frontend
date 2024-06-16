@@ -100,6 +100,7 @@
     "@size-limit/time": "^11.1.4",
     "@types/babel__core": "^7.20.5",
     "@types/jasmine": "^5.1.4",
+    "@types/less": "^3.0.6",
     "@types/node": "^20.12.12",
     "@web/dev-server-esbuild": "^1.0.2",
     "@web/dev-server-rollup": "^0.6.3",

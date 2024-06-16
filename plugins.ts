@@ -41,6 +41,7 @@ import { transformAsync } from "@babel/core";
 import defaultLinkerPlugin from "@angular/compiler-cli/linker/babel";
 import ts from "typescript";
 import fs from "fs";
+import less from "less";
 import * as tsconfig from "./tsconfig.json";
 
 interface FileRouteMapping {
@@ -263,6 +264,88 @@ export function ProvideStandaloneFilesPlugin(files: FileRouteMapping[]): Plugin 
           res.statusCode = 200;
           res.setHeader("Content-Type", fileData!.fileType);
           res.write(fs.readFileSync(fileData!.filePath), "utf-8");
+          res.end();
+        } else {
+          next();
+        }
+      });
+    },
+  };
+}
+
+
+/**
+ * A plugin for transforming and including global stylesheets.
+ * @param globalStylesDir - The path to the global stylesheets folder.
+ *                          Example: "src/styles"
+ * @param entryStylesheet - The entrypoint to the global stylesheets.
+ *                          Example: "main.less"
+ */
+export function GlobalStylesPlugin(globalStylesDir: string, entryStylesheet: string): Plugin {
+  let entryCSSFile: string;
+  let globalStyleSheets: string[];
+
+  /**
+   * Runs the LESS transformation and returns the output
+   * CSS and sourcemap.
+   * @param path - The path of the file to transform.
+   * @returns The transformed CSS code and the sourcemap for it.
+   */
+  async function transformLessCode(path: string) {
+    const lessCode = fs.readFileSync(path, { encoding: "utf-8" });
+    const transformedCss = await less.render(lessCode, { paths: [globalStylesDir] });
+
+    return {
+      code: transformedCss.css,
+      map: transformedCss.map,
+    };
+  }
+
+  return {
+    name: "vite-global-styles-plugin",
+
+    /**
+     * Vite's config hook.
+     */
+    config(_config, _env) {
+      entryCSSFile = entryStylesheet.replace(".less", ".css");
+      globalStyleSheets = fs.readdirSync(globalStylesDir, { encoding: "utf-8" });
+    },
+
+    /**
+     * Vite's transformIndexHtml hook. Used to add the link
+     * to the global stylesheet to the index.html.
+     */
+    transformIndexHtml(html) {
+      return html.replace("<head>", `<head><link rel='stylesheet' href='./${entryCSSFile}'>`);
+    },
+
+    /**
+     * Vite's writeBundle hook. Used to transform and write the transformed
+     * CSS to the distribution folder.
+     */
+    async writeBundle(options, _outputBundle) {
+      const outputStylesheet = await transformLessCode(`${globalStylesDir}/${entryStylesheet}`);
+      fs.writeFileSync(`${options.dir}/${entryCSSFile}`, outputStylesheet.code);
+    },
+
+    /**
+     * Vite's configureServer hook. Returns the transformed CSS code when
+     * it's requested in development mode.
+     */
+    configureServer(server) {
+      server.middlewares.use(async (req, res, next) => {
+        if (
+          (req.url && globalStyleSheets.includes(req.url?.replace("/", ""))) ||
+          req.url == `/${entryCSSFile}`
+        ) {
+          const cssRes = await transformLessCode(
+            `${globalStylesDir}${req.url.replace(".css", ".less")}`,
+          );
+
+          res.statusCode = 200;
+          res.setHeader("Content-Type", "text/css");
+          res.write(cssRes.code, "utf-8");
           res.end();
         } else {
           next();

@@ -1,0 +1,13 @@
+{
+  "pr_number": 1700,
+  "changes": [
+    {
+      "change": "Chores",
+      "description": "Added GitHub Actions workflow files for deploying the app to Firebase."
+    },
+    {
+      "change": "Chores",
+      "description": "Fixed an error in the pre-commit script which caused it to proceed with committing the files even if there were formatting fixes that needed to be staged."
+    }
+  ]
+}

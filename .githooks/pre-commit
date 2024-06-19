@@ -3,5 +3,13 @@
 FILES=$(git diff --cached --name-only --diff-filter=ACMR | sed 's| |\\ |g')
 [ -z "$FILES" ] && exit 0
 
+ISFORMATTED=$(echo "$FILES" | xargs ./node_modules/.bin/prettier --list-different)
+
 # Prettify all selected files
 echo "$FILES" | xargs ./node_modules/.bin/prettier --ignore-unknown --write
+
+if [[ $ISFORMATTED ]]; then
+  exit 1
+else
+  exit 0
+fi

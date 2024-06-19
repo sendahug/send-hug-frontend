@@ -1,0 +1,13 @@
+{
+  "pr_number": 1709,
+  "changes": [
+    {
+      "change": "Chores",
+      "description": "Provided Dependabot with access to secrets in the `deploy-preview` workflow to allow deploying dependency-based pull requests to a Firebase preview channel."
+    },
+    {
+      "change": "Chores",
+      "description": "Added missing environment variable to the deployment workflows to allow sending a message to Slack when the staging/live branches have been deployed."
+    }
+  ]
+}

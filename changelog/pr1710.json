@@ -1,0 +1,9 @@
+{
+  "pr_number": 1710,
+  "changes": [
+    {
+      "change": "Chores",
+      "description": "Updated the Slack webhook payload to the format the Slack action expects to allow sending a message to Slack when the staging/live branches have been deployed."
+    }
+  ]
+}

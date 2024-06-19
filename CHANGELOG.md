@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+### 2024-06-19
+
+#### Chores
+
+- Provided Dependabot with access to secrets in the `deploy-preview` workflow to allow deploying dependency-based pull requests to a Firebase preview channel. ([#1709](https://github.com/sendahug/send-hug-frontend/pull/1709))
+- Added missing environment variable to the deployment workflows to allow sending a message to Slack when the staging/live branches have been deployed. ([#1709](https://github.com/sendahug/send-hug-frontend/pull/1709))
+
 ### 2024-06-18
 
 #### Chores

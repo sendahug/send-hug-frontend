@@ -250,7 +250,6 @@ export class AppMessaging implements AfterViewChecked {
         switchMap(() =>
           this.apiClient.get<ThreadResponse>("messages", {
             page: this.currentPage(),
-            userID: this.authService.userData()!.id!,
             type: this.messType,
           }),
         ),

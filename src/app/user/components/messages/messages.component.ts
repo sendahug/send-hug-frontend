@@ -190,7 +190,6 @@ export class AppMessaging implements AfterViewChecked {
     const fetchFromIdb$ = this.fetchMessagesFromIdb();
     const fetchParams: { [key: string]: any } = {
       page: this.currentPage(),
-      userID: this.authService.userData()!.id!,
       type: this.messType,
     };
 

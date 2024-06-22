@@ -141,7 +141,7 @@
     "magic-string": "^0.30.10",
     "postcss": "^8.4.38",
     "prettier": "^3.3.2",
-    "puppeteer": "^22.11.1",
+    "puppeteer": "^22.12.0",
     "rollup": "^4.18.0",
     "rollup-plugin-istanbul": "^5.0.0",
     "size-limit": "^11.1.3",

@@ -200,7 +200,6 @@ describe("AppMessaging", () => {
     expect(idbFetchSpy).toHaveBeenCalled();
     expect(apiClientSpy).toHaveBeenCalledWith("messages", {
       page: 1,
-      userID: 4,
       type: "inbox",
     });
     expect(appMessaging.messages()).toEqual(mockMessages);
@@ -228,7 +227,6 @@ describe("AppMessaging", () => {
     expect(idbFetchSpy).toHaveBeenCalled();
     expect(apiClientSpy).toHaveBeenCalledWith("messages", {
       page: 1,
-      userID: 4,
       type: "thread",
       threadID: 4,
     });
@@ -307,7 +305,6 @@ describe("AppMessaging", () => {
     expect(idbFetchSpy).toHaveBeenCalled();
     expect(apiClientSpy).toHaveBeenCalledWith("messages", {
       page: 1,
-      userID: 4,
       type: "threads",
     });
     expect(appMessaging.userThreads()).toEqual(mockThreads);

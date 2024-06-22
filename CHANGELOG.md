@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+### 2024-06-22
+
+#### Changes
+
+- Deleted the `userID` parameter from the messages' and threads' fetch and from the mailbox emptying as it's no longer required by the backend (see [sendahug/send-hug-backend#642](https://github.com/sendahug/send-hug-backend/pull/642)). ([#1715](https://github.com/sendahug/send-hug-frontend/pull/1715))
+
 ### 2024-06-19
 
 #### Chores

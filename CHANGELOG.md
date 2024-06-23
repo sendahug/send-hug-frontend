@@ -2,6 +2,27 @@
 
 ## Unreleased
 
+### 2024-06-22
+
+#### Changes
+
+- Deleted the `userID` parameter from the messages' and threads' fetch and from the mailbox emptying as it's no longer required by the backend (see [sendahug/send-hug-backend#642](https://github.com/sendahug/send-hug-backend/pull/642)). ([#1715](https://github.com/sendahug/send-hug-frontend/pull/1715))
+
+### 2024-06-19
+
+#### Chores
+
+- Added missing environment variable to the deployment workflows to allow sending a message to Slack when the staging/live branches have been deployed. ([#1709](https://github.com/sendahug/send-hug-frontend/pull/1709))
+- Provided Dependabot with access to secrets in the `deploy-preview` workflow to allow deploying dependency-based pull requests to a Firebase preview channel. ([#1709](https://github.com/sendahug/send-hug-frontend/pull/1709))
+- Updated the Slack webhook payload to the format the Slack action expects to allow sending a message to Slack when the staging/live branches have been deployed. ([#1710](https://github.com/sendahug/send-hug-frontend/pull/1710))
+
+### 2024-06-18
+
+#### Chores
+
+- Added GitHub Actions workflow files for deploying the app to Firebase. ([#1700](https://github.com/sendahug/send-hug-frontend/pull/1700))
+- Fixed an error in the pre-commit script which caused it to proceed with committing the files even if there were formatting fixes that needed to be staged. ([#1700](https://github.com/sendahug/send-hug-frontend/pull/1700))
+
 ### 2024-06-10
 
 #### Features

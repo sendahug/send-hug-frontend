@@ -208,7 +208,7 @@ describe("ItemDeleteForm", () => {
     // click 'delete'
     itemDeleteFormDOM.querySelectorAll(".popupDeleteBtn")[0].click();
 
-    expect(deleteMultipleSpy).toHaveBeenCalledWith("messages/inbox", "messages", { userID: 2 });
+    expect(deleteMultipleSpy).toHaveBeenCalledWith("messages/inbox", "messages");
     expect(deleteIdbSpy).toHaveBeenCalledWith("messages", "forId", 2);
     expect(editModeSpy).toHaveBeenCalledWith(false);
     expect(deletedEmitSpy).toHaveBeenCalledWith(2);
@@ -232,7 +232,7 @@ describe("ItemDeleteForm", () => {
     // click 'delete'
     itemDeleteFormDOM.querySelectorAll(".popupDeleteBtn")[0].click();
 
-    expect(deleteMultipleSpy).toHaveBeenCalledWith("messages/outbox", "messages", { userID: 2 });
+    expect(deleteMultipleSpy).toHaveBeenCalledWith("messages/outbox", "messages");
     expect(deleteIdbSpy).toHaveBeenCalledWith("messages", "fromId", 2);
     expect(editModeSpy).toHaveBeenCalledWith(false);
     done();
@@ -255,7 +255,7 @@ describe("ItemDeleteForm", () => {
     // click 'delete'
     itemDeleteFormDOM.querySelectorAll(".popupDeleteBtn")[0].click();
 
-    expect(deleteMultipleSpy).toHaveBeenCalledWith("messages/threads", "messages", { userID: 2 });
+    expect(deleteMultipleSpy).toHaveBeenCalledWith("messages/threads", "messages");
     expect(deleteIdbSpy).toHaveBeenCalledWith("messages");
     expect(deleteIdbSpy).toHaveBeenCalledWith("threads");
     expect(editModeSpy).toHaveBeenCalledWith(false);

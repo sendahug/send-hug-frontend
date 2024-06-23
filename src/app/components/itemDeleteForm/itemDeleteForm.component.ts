@@ -111,25 +111,22 @@ export class ItemDeleteForm {
       this.toDelete == "All threads"
     ) {
       const mailbox_type = this.toDelete!.split(" ")[1];
-      const params = { userID: this.itemToDelete };
 
-      this.deleteMultipleItems(`messages/${mailbox_type}`, "messages", params).subscribe(
-        (response) => {
-          // delete all messages from idb
-          // if the mailbox to be cleared is the threads mailbox, delete everything
-          if (mailbox_type == "threads") {
-            this.swManager.clearStore("messages");
-            this.swManager.clearStore("threads");
-          } else if (mailbox_type == "inbox") {
-            this.swManager.deleteItems("messages", "forId", response.userID);
-          } else if (mailbox_type == "outbox") {
-            this.swManager.deleteItems("messages", "fromId", response.userID);
-          }
+      this.deleteMultipleItems(`messages/${mailbox_type}`, "messages").subscribe((response) => {
+        // delete all messages from idb
+        // if the mailbox to be cleared is the threads mailbox, delete everything
+        if (mailbox_type == "threads") {
+          this.swManager.clearStore("messages");
+          this.swManager.clearStore("threads");
+        } else if (mailbox_type == "inbox") {
+          this.swManager.deleteItems("messages", "forId", response.userID);
+        } else if (mailbox_type == "outbox") {
+          this.swManager.deleteItems("messages", "fromId", response.userID);
+        }
 
-          this.deleted.emit(this.itemToDelete);
-          this.editMode.emit(false);
-        },
-      );
+        this.deleted.emit(this.itemToDelete);
+        this.editMode.emit(false);
+      });
     }
   }
 

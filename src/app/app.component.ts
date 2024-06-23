@@ -47,6 +47,7 @@ import { SWManager } from "./services/sWManager.service";
 import { NotificationService } from "./services/notifications.service";
 import { NotificationsTab } from "./components/notifications/notifications.component";
 import { AppAlert } from "./components/appAlert/appAlert.component";
+import SiteLogoSrc from "@/assets/img/Logo.svg";
 
 @Component({
   selector: "app-root",
@@ -81,6 +82,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   searchForm = this.fb.group({
     searchQuery: this.fb.control("", [Validators.required, Validators.minLength(1)]),
   });
+  SiteLogoSrc = SiteLogoSrc;
   // font awesome icons
   faBars = faBars;
   faComments = faComments;

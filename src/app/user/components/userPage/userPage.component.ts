@@ -31,7 +31,7 @@
 */
 
 // Angular imports
-import { Component, OnInit, OnDestroy, AfterViewChecked, signal, computed } from "@angular/core";
+import { Component, OnInit, OnDestroy, signal, computed } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { Subscription, from, switchMap, tap } from "rxjs";
 import { faGratipay } from "@fortawesome/free-brands-svg-icons";
@@ -40,7 +40,6 @@ import { HttpErrorResponse } from "@angular/common/http";
 // App-related imports
 import { PartialUser, User } from "@app/interfaces/user.interface";
 import { AuthService } from "@app/services/auth.service";
-import { iconElements } from "@app/interfaces/types";
 import { OtherUser } from "@app/interfaces/otherUser.interface";
 import { SWManager } from "@app/services/sWManager.service";
 import { ApiClientService } from "@app/services/apiClient.service";
@@ -55,7 +54,7 @@ interface OtherUserResponse {
   selector: "app-user-page",
   templateUrl: "./userPage.component.html",
 })
-export class UserPage implements OnInit, OnDestroy, AfterViewChecked {
+export class UserPage implements OnInit, OnDestroy {
   isIdbFetchResolved = signal(false);
   isServerFetchResolved = signal(false);
   otherUser = signal<OtherUser | undefined>(undefined);
@@ -119,31 +118,6 @@ export class UserPage implements OnInit, OnDestroy, AfterViewChecked {
   }
 
   ngOnInit() {}
-
-  /*
-  Function Name: ngAfterViewChecked()
-  Function Description: This method is automatically triggered by Angular once the component's
-                        view is checked by Angular. It updates the user's icon according to the colours
-                        chosen by the user.
-  Parameters: None.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  ngAfterViewChecked() {
-    if (!document.querySelectorAll(".userIcon")[0]) return;
-
-    Object.keys(this.displayUser().iconColours).forEach((key) => {
-      document
-        .querySelectorAll(".userIcon")[0]
-        .querySelectorAll(`.${key as iconElements}`)
-        .forEach((element) => {
-          (element as SVGPathElement).setAttribute(
-            "style",
-            `fill:${this.displayUser().iconColours[key as iconElements]};`,
-          );
-        });
-    });
-  }
 
   /*
   Function Name: logout()

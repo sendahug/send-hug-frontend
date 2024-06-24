@@ -11,15 +11,14 @@
 	<div id="userPage" *ngIf="isIdbFetchResolved()" role="region">
 		<div id="profileData">
 			<div id="profilePic">
-				<div *ngIf="displayUser().selectedIcon == 'kitty'">
-					<img src="../../../assets/img/kitty.svg" alt="" class="userIcon" >
-				</div>
-				<div *ngIf="displayUser().selectedIcon == 'dog'">
-					<img src="../../../assets/img/dog.svg" alt="" class="userIcon" >
-				</div>
-				<div *ngIf="displayUser().selectedIcon == 'bear'">
-					<img src="../../../assets/img/bear.svg" alt=""  class="userIcon" >
-				</div>	
+				<app-user-icon
+					[selectedIcon]="displayUser().selectedIcon"
+					[characterColour]="displayUser().iconColours.character"
+					[lbgColour]="displayUser().iconColours.lbg"
+					[rbgColour]="displayUser().iconColours.rbg"
+					[itemColour]="displayUser().iconColours.item"
+					[svgClass]="'userIcon'"
+				/>
 			</div>
 			<div id="userNameRole">
 				<div class="displayName">

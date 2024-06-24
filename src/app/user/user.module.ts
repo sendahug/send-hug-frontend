@@ -49,6 +49,7 @@ import { HeaderMessage } from "@app/components/headerMessage/headerMessage.compo
 import { ItemDeleteForm } from "@app/components/itemDeleteForm/itemDeleteForm.component";
 import { SinglePost } from "@app/components/post/post.component";
 import { Loader } from "@app/components/loader/loader.component";
+import { UserIcon } from "@app/components/userIcon/userIcon.component";
 import { routes } from "@app/app.routes";
 
 @NgModule({
@@ -63,6 +64,7 @@ import { routes } from "@app/app.routes";
     SinglePost,
     Loader,
     RouterLink,
+    UserIcon,
   ],
   declarations: [UserPage, AppMessaging, MyPosts, SettingsPage, IconEditor],
   providers: [provideHttpClient(), provideRouter(routes)],

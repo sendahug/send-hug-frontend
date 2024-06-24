@@ -26,15 +26,14 @@
 	<ul *ngIf="(messType == 'inbox' || messType == 'outbox') && messages().length" class="mailboxMessages" aria-describedby="messType">
 		<li *ngFor="let message of messages()" class="userMessage"  aria-describedby="messType" id="{{messType + message.id}}">
 			<div class="messageProfilePic">
-				<div *ngIf="(messType == 'inbox' && message.from?.selectedIcon == 'kitty') || (messType == 'outbox' && message.for?.selectedIcon == 'kitty')">
-					<img src="../../../assets/img/kitty.svg" alt="" class="userIcon" >
-				</div>
-				<div *ngIf="(messType == 'inbox' && message.from?.selectedIcon == 'dog') || (messType == 'outbox' && message.for?.selectedIcon == 'dog')">
-					<img src="../../../assets/img/dog.svg" alt="" class="userIcon" >
-				</div>
-				<div *ngIf="(messType == 'inbox' && message.from?.selectedIcon == 'bear') || (messType == 'outbox' && message.for?.selectedIcon == 'bear')">
-					<img src="../../../assets/img/bear.svg" alt=""  class="userIcon" >
-				</div>	
+				<app-user-icon
+					[selectedIcon]="getMessageUser(message)?.selectedIcon ?? 'kitty'"
+					[characterColour]="getMessageUser(message)?.iconColours?.character"
+					[lbgColour]="getMessageUser(message)?.iconColours?.lbg"
+					[rbgColour]="getMessageUser(message)?.iconColours?.rbg"
+					[itemColour]="getMessageUser(message)?.iconColours?.item"
+					[svgClass]="'userIcon'"
+				/>
 			</div>
 			<div class="messageContainer">
 				<div class="messageText" aria-describedby="mText" id="{{'text' + message.id}}">{{ message.messageText }}</div>
@@ -57,15 +56,14 @@
 		<ul class="userThreads" *ngIf="userThreadsFormatted().length" aria-describedby="messType">
 			<li class="userThread" *ngFor="let thread of userThreadsFormatted()" aria-describedby="messType" id="{{messType + thread.id}}">
 				<div class="messageProfilePic">
-					<div *ngIf="thread.user?.selectedIcon == 'kitty'">
-						<img src="../../../assets/img/kitty.svg" alt="" class="userIcon" >
-					</div>
-					<div *ngIf="thread.user?.selectedIcon == 'dog'">
-						<img src="../../../assets/img/dog.svg" alt="" class="userIcon" >
-					</div>
-					<div *ngIf="thread.user?.selectedIcon == 'bear'">
-						<img src="../../../assets/img/bear.svg" alt=""  class="userIcon" >
-					</div>	
+					<app-user-icon
+						[selectedIcon]="getMessageUser(thread)!.selectedIcon ?? 'kitty'"
+						[characterColour]="getMessageUser(thread)?.iconColours?.character"
+						[lbgColour]="getMessageUser(thread)?.iconColours?.lbg"
+						[rbgColour]="getMessageUser(thread)?.iconColours?.rbg"
+						[itemColour]="getMessageUser(thread)?.iconColours?.item"
+						[svgClass]="'userIcon'"
+					/>
 				</div>
 				<div class="messageContainer">
 					<div class="messageField">
@@ -91,15 +89,14 @@
 		<ul class="threadMessages" aria-describedby="messType">
 			<li class="userMessage" *ngFor="let message of messages()" aria-describedby="messType"  id="{{messType + message.id}}">
 				<div class="messageProfilePic">
-					<div *ngIf="message.from?.selectedIcon == 'kitty'">
-						<img src="../../../assets/img/kitty.svg" alt="" class="userIcon" >
-					</div>
-					<div *ngIf="message.from?.selectedIcon == 'dog'">
-						<img src="../../../assets/img/dog.svg" alt="" class="userIcon" >
-					</div>
-					<div *ngIf="message.from?.selectedIcon == 'bear'">
-						<img src="../../../assets/img/bear.svg" alt=""  class="userIcon" >
-					</div>	
+					<app-user-icon
+						[selectedIcon]="getMessageUser(message)?.selectedIcon ?? 'kitty'"
+						[characterColour]="getMessageUser(message)?.iconColours?.character"
+						[lbgColour]="getMessageUser(message)?.iconColours?.lbg"
+						[rbgColour]="getMessageUser(message)?.iconColours?.rbg"
+						[itemColour]="getMessageUser(message)?.iconColours?.item"
+						[svgClass]="'userIcon'"
+					/>
 				</div>
 				<div class="messageContainer">
 					<div class="messageField">

@@ -31,7 +31,7 @@
 */
 
 // Angular imports
-import { Component, AfterViewChecked, signal, computed } from "@angular/core";
+import { Component, signal, computed } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { from, map, switchMap, tap } from "rxjs";
 
@@ -62,7 +62,7 @@ interface ThreadResponse {
   selector: "app-messages",
   templateUrl: "./messages.component.html",
 })
-export class AppMessaging implements AfterViewChecked {
+export class AppMessaging {
   messType: MessageType = "inbox";
   idbFilterAttribute = computed(() => {
     if (this.messType == "thread") {
@@ -143,40 +143,6 @@ export class AppMessaging implements AfterViewChecked {
         }
       }
     });
-  }
-
-  /*
-  Function Name: ngAfterViewChecked()
-  Function Description: This method is automatically triggered by Angular once the component's
-                        view is checked by Angular. It updates the user's icon according to the colours
-                        chosen by the user.
-  Parameters: None.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  ngAfterViewChecked() {
-    // wait for the DOM to load
-    if (document.querySelectorAll(".userIcon")[0]) {
-      // If it's the threads mailbox, get the icon details of the other user in the thread
-      if (this.messType == "threads") {
-        this.userThreadsFormatted().forEach((thread: ParsedThread) => {
-          this.setUpUserIcon(thread.id, thread.user.iconColours);
-        });
-      } else {
-        this.messages().forEach((message: any) => {
-          switch (this.messType) {
-            // If it's the inbox, get the the icon details of the user sending the message
-            case "inbox" || "thread":
-              this.setUpUserIcon(message.id, message.from.iconColours);
-              break;
-            // If it's the outbox, get the icon details of the user for which the message is meant
-            case "outbox":
-              this.setUpUserIcon(message.id, message.for.iconColours);
-              break;
-          }
-        });
-      }
-    }
   }
 
   /**
@@ -304,6 +270,19 @@ export class AppMessaging implements AfterViewChecked {
           );
         });
     });
+  }
+
+  getMessageUser(message: Message | ParsedThread) {
+    switch (this.messType) {
+      case "inbox":
+        return (message as Message).for;
+      case "outbox":
+        return (message as Message).from;
+      case "threads":
+        return (message as ParsedThread).user;
+      case "thread":
+        return (message as Message).from;
+    }
   }
 
   /*

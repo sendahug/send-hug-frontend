@@ -54,6 +54,7 @@ export default defineConfig({
       "@app": path.resolve(__dirname, "./src/app"),
       "@admin": path.resolve(__dirname, "./src/app/admin"),
       "@user": path.resolve(__dirname, "./src/app/user"),
+      "@tests": path.resolve(__dirname, "./src/tests"),
     },
   },
 });

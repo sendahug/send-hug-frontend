@@ -26,12 +26,14 @@
     "paths": {
       "@app/*": ["./src/app/*"],
       "@admin/*": ["./src/app/admin/*"],
-      "@user/*": ["./src/app/user/*"]
+      "@user/*": ["./src/app/user/*"],
+      "@tests/*": ["./src/tests/*"],
+      "@/*": ["./src/*"]
     },
     "removeComments": true
   },
   "include": ["src/**/*.ts"],
-  "exclude": ["e2e/tsconfig.json", "src/**/*.spec.ts"],
+  "exclude": ["e2e/tsconfig.json"],
   "angularCompilerOptions": {
     "enableIvy": true,
     "enableResourceInlining": true,

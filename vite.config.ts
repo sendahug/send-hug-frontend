@@ -30,16 +30,18 @@ export default defineConfig({
   css: {
     preprocessorOptions: {
       less: {
-        additionalData: `@import "@/styles/styles.less";`,
+        additionalData: '@import "@/styles/styles.less";',
       },
     },
   },
   build: {
-    sourcemap: true,
+    sourcemap: false,
     rollupOptions: {
       output: {
         manualChunks(id) {
-          if (id.includes("node_modules")) {
+          if (id.includes("polyfill.js") || id.includes("zone.js")) {
+            return "polyfills";
+          } else if (id.includes("node_modules")) {
             return "vendor";
           }
         },

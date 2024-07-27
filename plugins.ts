@@ -27,22 +27,13 @@
   SOFTWARE.
 */
 
-import MagicString from "magic-string";
 import { ModuleNode, Plugin } from "vite";
-import {
-  CompilerHost as ngCompilerHost,
-  CompilerOptions as ngCompilerOptions,
-  createCompilerHost,
-  createProgram,
-  NgtscProgram,
-  readConfiguration,
-} from "@angular/compiler-cli";
 import { transformAsync } from "@babel/core";
 import defaultLinkerPlugin from "@angular/compiler-cli/linker/babel";
-import ts from "typescript";
 import less from "less";
 import fs from "node:fs";
-import * as tsconfig from "./tsconfig.json";
+import AngularBuilder from "./plugins/builder";
+import path from "node:path";
 
 interface FileRouteMapping {
   filePath: string;
@@ -50,153 +41,13 @@ interface FileRouteMapping {
   fileType: string;
 }
 
-const nameTemplate = "<compName>";
-const selectorTemplate = "<compSelector>";
-const hmrFooter = `\n\n
-import { APP_BOOTSTRAP_LISTENER, createComponent } from "@angular/core";
-
-if (import.meta.hot) {
-  if (!globalThis.__componentSelectorMapping) globalThis.__componentSelectorMapping = new Map();
-  globalThis.__componentSelectorMapping.set("${nameTemplate}", "${selectorTemplate}");
-
-  import.meta.hot.accept((newModule) => {
-    if (!(newModule && globalThis.__app)) return;
-    const currentModuleName = Object.keys(newModule)[0];
-    const updatedModule = newModule[currentModuleName];
-    const currentModuleSelector =
-      globalThis.__componentSelectorMapping.get(currentModuleName) ?? "app-root";
-    const currentNodes = document.querySelectorAll(currentModuleSelector);
-
-    currentNodes.forEach((node) => {
-      const parentElement = node.parentElement;
-      const newElement = document.createElement(currentModuleSelector);
-      parentElement?.removeChild(node);
-      parentElement?.appendChild(newElement);
-      const newInstance = createComponent(updatedModule, {
-        environmentInjector: globalThis.__app!.injector,
-        hostElement: newElement as Element,
-      });
-      globalThis.__app!.attachView(newInstance.hostView);
-      globalThis.__app!.tick();
-      globalThis.__app!.components.push(newInstance);
-      const listeners = globalThis.__app!.injector.get(APP_BOOTSTRAP_LISTENER, []);
-      listeners.forEach((listener) => listener(newInstance));
-    });
-  });
-}
-`;
-
 /**
  * A plugin that runs the Angular compiler in order to build the app.
  * @returns A Vite plugin for building the app.
  */
 export function BuildAngularPlugin(): Plugin {
   let isDev = false;
-  let compilerHost: ngCompilerHost;
-  let compilerOptions: ngCompilerOptions;
-  let currentAngularProgram: NgtscProgram | undefined = undefined;
-  let tsHost: ts.CompilerHost;
-  let builder: ts.BuilderProgram;
-  let rootFiles: string[];
-
-  /**
-   * Validates the app using the Angular Compiler.
-   * @returns the Angular Compiler's analysis result.
-   *
-   * Credit to nitedani for most of the transform
-   * https://github.com/nitedani/vite-plugin-angular
-   */
-  async function validateFiles() {
-    await currentAngularProgram?.compiler.analyzeAsync();
-    const diagnostics = currentAngularProgram!.compiler.getDiagnostics();
-    const res = ts.formatDiagnosticsWithColorAndContext(diagnostics, tsHost);
-
-    if (res) console.warn(res);
-
-    return res;
-  }
-
-  /**
-   * Creates the Angular program and the TypeScript builder.
-   */
-  function setupAngularProgram() {
-    currentAngularProgram = createProgram({
-      rootNames: rootFiles,
-      options: compilerOptions,
-      host: compilerHost,
-      oldProgram: currentAngularProgram,
-    }) as NgtscProgram;
-
-    // Credit to @nitedani for the next two lines
-    // https://github.com/nitedani/vite-plugin-angular
-    const typeScriptProgram = currentAngularProgram.getTsProgram();
-    builder = ts.createAbstractBuilder(typeScriptProgram, tsHost);
-  }
-
-  /**
-   * Compiles the given file using the Angular compiler.
-   * @param fileId the ID of the file to compile.
-   * @returns a MagicString with the transform result and a source map.
-   */
-  function build(fileId: string) {
-    // Credit to @nitedani for the next four lines
-    // https://github.com/nitedani/vite-plugin-angular
-    const transformers = currentAngularProgram!.compiler.prepareEmit();
-    let output: string = "";
-
-    if (!/\.[cm]?tsx?$/.test(fileId)) return;
-
-    let sourceFile = builder.getSourceFile(fileId);
-
-    if (!sourceFile) return;
-
-    const magicString = new MagicString(sourceFile.text);
-
-    // If you want to try the Babel Linker in development, comment out the
-    // the condition below and the line setting the AngularLinkerPlugin
-    // to run in build only.
-    // Note: it's REALLY slow.
-    if (fileId.includes("main.ts") && isDev) {
-      magicString.prepend("import '@angular/compiler';");
-    }
-
-    // Credit to @nitedani for this
-    // https://github.com/nitedani/vite-plugin-angular
-    builder.emit(
-      sourceFile,
-      (_filename, data) => {
-        if (data) output = data;
-      },
-      undefined,
-      undefined,
-      transformers.transformers,
-    );
-
-    magicString.overwrite(0, magicString.length(), `${output}${hmrFooter}`);
-
-    if (fileId.endsWith("component.ts") && isDev) {
-      // Fetches the selector and the class name from the code to add to the mapping.
-      // This is used to replace components using HMR.
-      const componentSelectorMatch = sourceFile.text.match(/selector:( )?("|')(.*)("|'),/);
-      const componentNameMatch = sourceFile.text.match(
-        /export class [a-zA-Z]* (extends (.*) )?(implements (.*) )?{/,
-      );
-      const componentSelectorParts = componentSelectorMatch![0].includes('"')
-        ? componentSelectorMatch![0].split('"')
-        : componentSelectorMatch![0].split("'");
-      const classIndex = componentNameMatch![0].indexOf("class");
-      const componentNameParts = componentNameMatch![0].substring(classIndex + 6).split(" ");
-      const fullFooter = hmrFooter
-        .replace(nameTemplate, componentNameParts[0])
-        .replace(selectorTemplate, componentSelectorParts[1]);
-
-      magicString.overwrite(0, magicString.length(), `${output}${fullFooter}`);
-    } else {
-      magicString.overwrite(0, magicString.length(), output);
-    }
-
-    return magicString;
-  }
+  let ngBuilder: AngularBuilder;
 
   return {
     name: "vite-build-angular",
@@ -209,11 +60,7 @@ export function BuildAngularPlugin(): Plugin {
      */
     config(_config, env) {
       isDev = env.command == "serve";
-      const { options, rootNames: parsedFiles } = readConfiguration("./tsconfig.json", {
-        noEmit: false,
-      });
-      compilerOptions = options;
-      rootFiles = parsedFiles;
+      ngBuilder = new AngularBuilder(isDev, path.resolve("./tsconfig.json"));
     },
 
     /**
@@ -221,34 +68,12 @@ export function BuildAngularPlugin(): Plugin {
      * host and builder, as well as the Angular compiler.
      */
     async buildStart(_options) {
-      tsHost = ts.createCompilerHost(tsconfig["compilerOptions"] as any);
-      const originalReadFile = tsHost.readFile;
-      // Override the host's readFile function to add an HMR handler
-      // to the main.ts file.
-      tsHost.readFile = (name) => {
-        let res: string | undefined = originalReadFile.call(tsHost, name);
-
-        if (name.includes("main.ts") && res && isDev) {
-          // The global app variable allows us to update the DOM
-          // and the angular app whenever a file changes
-          res = res.replace(/bootstrapApplication\([a-zA-Z]+, [a-zA-Z]+?\)/, (value) => {
-            return `${value}.then((app) => {
-              globalThis.__app = app;
-            })`;
-          });
-        }
-
-        return res;
-      };
-      compilerHost = createCompilerHost({
-        options: { ...compilerOptions },
-        tsHost,
-      });
-      setupAngularProgram();
+      ngBuilder.setupCompilerHost();
+      ngBuilder.setupAngularProgram();
 
       // Credit to @nitedani for the next two lines
       // https://github.com/nitedani/vite-plugin-angular
-      const validateResult = await validateFiles();
+      const validateResult = await ngBuilder.validateFiles();
       if (validateResult && !isDev) process.exit(1);
     },
 
@@ -259,10 +84,10 @@ export function BuildAngularPlugin(): Plugin {
     async transform(_code, id, _options) {
       // Credit to @nitedani for most of the transform
       // https://github.com/nitedani/vite-plugin-angular
-      const validateResult = await validateFiles();
+      const validateResult = await ngBuilder.validateFiles();
       if (validateResult && !isDev) process.exit(1);
 
-      const magicString = build(id);
+      const magicString = ngBuilder.buildFile(id);
       if (!magicString) return;
 
       return {
@@ -272,11 +97,25 @@ export function BuildAngularPlugin(): Plugin {
     },
 
     /**
+     * Vite's transformIndexHtml hook. Adds the link to the polyfills file.
+     */
+    transformIndexHtml(html) {
+      if (isDev) {
+        return html.replace(
+          "<head>",
+          "<head>\n\t<script type='module' src='/src/polyfills.ts'></script>",
+        );
+      } else {
+        return html;
+      }
+    },
+
+    /**
      * Vite's handleHotUpdate hook. Performs custom handling for HMR
      * updates.
      */
     handleHotUpdate(ctx) {
-      setupAngularProgram();
+      ngBuilder.setupAngularProgram();
       const affectedModules: ModuleNode[] = [];
       const moduleTsFile = ctx.file.replace(".html", ".ts").replace(".less", ".ts");
       const module = ctx.server.moduleGraph.getModuleById(moduleTsFile);

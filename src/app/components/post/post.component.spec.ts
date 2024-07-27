@@ -31,25 +31,30 @@
 */
 
 import { TestBed } from "@angular/core/testing";
-import { RouterModule } from "@angular/router";
+import { provideRouter, RouterLink } from "@angular/router";
 import {} from "jasmine";
-import { APP_BASE_HREF } from "@angular/common";
+import { APP_BASE_HREF, CommonModule } from "@angular/common";
 import {
   BrowserDynamicTestingModule,
   platformBrowserDynamicTesting,
 } from "@angular/platform-browser-dynamic/testing";
-import { HttpClientModule } from "@angular/common/http";
-import { ServiceWorkerModule } from "@angular/service-worker";
-import { Component } from "@angular/core";
+import { Component, signal } from "@angular/core";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { By } from "@angular/platform-browser";
 import { NO_ERRORS_SCHEMA } from "@angular/core";
+import { provideZoneChangeDetection } from "@angular/core";
+import { MockComponent, MockProvider } from "ng-mocks";
+import { BehaviorSubject } from "rxjs";
 
 import { SinglePost } from "./post.component";
-import { PopUp } from "@app/components/popUp/popUp.component";
 import { mockAuthedUser } from "@tests/mockData";
-import { MockDeleteForm, MockEditForm, MockReportForm } from "@tests/mockForms";
-import { CommonTestProviders } from "@tests/commonModules";
+import { ItemDeleteForm } from "@app/components/itemDeleteForm/itemDeleteForm.component";
+import { ReportForm } from "@app/components/reportForm/reportForm.component";
+import { PostEditForm } from "@app/components/postEditForm/postEditForm.component";
+import { SendHugForm } from "@app/components/sendHugForm/sendHugForm.component";
+import { routes } from "@app/app.routes";
+import { ItemsService } from "@app/services/items.service";
+import { AuthService } from "@app/services/auth.service";
 
 // Mock User Page for testing the sub-component
 // ==================================================
@@ -58,6 +63,8 @@ import { CommonTestProviders } from "@tests/commonModules";
   template: `
     <app-single-post [post]="mockPost" [type]="'n'" [containerClass]="'newItem'"></app-single-post>
   `,
+  standalone: true,
+  imports: [SinglePost],
 })
 class MockPage {
   showMenuNum: string | null = null;
@@ -81,19 +88,42 @@ class MockPage {
 describe("Post", () => {
   // Before each test, configure testing environment
   beforeEach(() => {
+    const MockItemDeleteForm = MockComponent(ItemDeleteForm);
+    const MockReportForm = MockComponent(ReportForm);
+    const MockPostEditForm = MockComponent(PostEditForm);
+    const MockSendHugForm = MockComponent(SendHugForm);
+    const MockItemsService = MockProvider(ItemsService, {
+      currentlyOpenMenu: new BehaviorSubject("n1"),
+      receivedAHug: new BehaviorSubject(0),
+    });
+    const MockAuthService = MockProvider(AuthService, {
+      authenticated: signal(false),
+      userData: signal(undefined),
+    });
+
     TestBed.resetTestEnvironment();
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
       schemas: [NO_ERRORS_SCHEMA],
       imports: [
-        RouterModule.forRoot([]),
-        HttpClientModule,
-        ServiceWorkerModule.register("sw.js", { enabled: false }),
+        CommonModule,
         FontAwesomeModule,
+        MockItemDeleteForm,
+        MockReportForm,
+        MockPostEditForm,
+        MockSendHugForm,
+        RouterLink,
+        MockPage,
+        SinglePost,
       ],
-      declarations: [MockPage, SinglePost, PopUp, MockDeleteForm, MockReportForm, MockEditForm],
-      providers: [{ provide: APP_BASE_HREF, useValue: "/" }, ...CommonTestProviders],
+      providers: [
+        { provide: APP_BASE_HREF, useValue: "/" },
+        provideZoneChangeDetection({ eventCoalescing: true }),
+        provideRouter(routes),
+        MockItemsService,
+        MockAuthService,
+      ],
     }).compileComponents();
   });
 
@@ -157,7 +187,7 @@ describe("Post", () => {
     // after the click
     expect(singlePost.editMode).toBeTrue();
     expect(singlePost.editType).toBe("post");
-    expect(singlePostDOM.querySelector("app-pop-up")).toBeTruthy();
+    expect(singlePostDOM.querySelector("post-edit-form")).toBeTruthy();
     done();
   });
 
@@ -184,7 +214,7 @@ describe("Post", () => {
     expect(singlePost.deleteMode).toBeTrue();
     expect(singlePost.toDelete).toBe("Post");
     expect(singlePost.itemToDelete).toBe(1);
-    expect(singlePostDOM.querySelector("app-pop-up")).toBeTruthy();
+    expect(singlePostDOM.querySelector("item-delete-form")).toBeTruthy();
     done();
   });
 
@@ -203,7 +233,6 @@ describe("Post", () => {
 
     // before the click
     expect(singlePost.reportMode).toBeFalse();
-    expect(singlePost.reportType).toBeUndefined();
     expect(authSpy).toHaveBeenCalled();
     expect(reportSpy).not.toHaveBeenCalled();
 
@@ -215,7 +244,7 @@ describe("Post", () => {
     expect(singlePost.reportMode).toBeTrue();
     expect(singlePost.reportType).toBe("Post");
     expect(reportSpy).toHaveBeenCalled();
-    expect(singlePostDOM.querySelector("app-pop-up")).toBeTruthy();
+    expect(singlePostDOM.querySelector("report-form")).toBeTruthy();
     done();
   });
 
@@ -234,7 +263,7 @@ describe("Post", () => {
 
     // exit the popup
     const popup = upFixture.debugElement.query(By.css("post-edit-form"))
-      .componentInstance as MockEditForm;
+      .componentInstance as PostEditForm;
     popup.editMode.emit(false);
     upFixture.detectChanges();
 
@@ -259,7 +288,7 @@ describe("Post", () => {
 
     // exit the popup
     const popup = upFixture.debugElement.query(By.css("item-delete-form"))
-      .componentInstance as MockDeleteForm;
+      .componentInstance as ItemDeleteForm;
     popup.editMode.emit(false);
     upFixture.detectChanges();
 
@@ -284,7 +313,7 @@ describe("Post", () => {
 
     // exit the popup
     const popup = upFixture.debugElement.query(By.css("report-form"))
-      .componentInstance as MockReportForm;
+      .componentInstance as ReportForm;
     popup.reportMode.emit(false);
     upFixture.detectChanges();
 
@@ -475,7 +504,7 @@ describe("Post", () => {
 
     // exit the popup
     const popup = upFixture.debugElement.query(By.css("post-edit-form"))
-      .componentInstance as MockEditForm;
+      .componentInstance as PostEditForm;
     popup.editMode.emit(false);
     popup.updateResult.emit(reportPostResponse);
     upFixture.detectChanges();
@@ -500,7 +529,7 @@ describe("Post", () => {
 
     // exit the popup
     const popup = upFixture.debugElement.query(By.css("item-delete-form"))
-      .componentInstance as MockDeleteForm;
+      .componentInstance as ItemDeleteForm;
     popup.deleted.emit(1);
     popup.editMode.emit(false);
     upFixture.detectChanges();

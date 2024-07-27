@@ -38,6 +38,7 @@ import {
   platformBrowserDynamicTesting,
 } from "@angular/platform-browser-dynamic/testing";
 import { CommonModule } from "@angular/common";
+import { provideZoneChangeDetection } from "@angular/core";
 
 import { UserIcon } from "./userIcon.component";
 
@@ -49,7 +50,10 @@ describe("IconEditor", () => {
 
     TestBed.configureTestingModule({
       imports: [CommonModule, UserIcon],
-      providers: [{ provide: APP_BASE_HREF, useValue: "/" }],
+      providers: [
+        { provide: APP_BASE_HREF, useValue: "/" },
+        provideZoneChangeDetection({ eventCoalescing: true }),
+      ],
     }).compileComponents();
   });
 

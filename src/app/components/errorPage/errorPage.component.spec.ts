@@ -31,20 +31,19 @@
 */
 
 import { TestBed } from "@angular/core/testing";
-import { RouterModule } from "@angular/router";
 import {} from "jasmine";
-import { APP_BASE_HREF } from "@angular/common";
+import { APP_BASE_HREF, CommonModule } from "@angular/common";
 import {
   BrowserDynamicTestingModule,
   platformBrowserDynamicTesting,
 } from "@angular/platform-browser-dynamic/testing";
-import { HttpClientModule } from "@angular/common/http";
-import { ServiceWorkerModule } from "@angular/service-worker";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
+import { provideZoneChangeDetection } from "@angular/core";
 
 // App imports
 import { ErrorPage } from "./errorPage.component";
-import { AppCommonModule } from "@app/common/common.module";
+import { provideRouter } from "@angular/router";
+import { routes } from "@app/app.routes";
 
 describe("ErrorPage", () => {
   // Before each test, configure testing environment
@@ -53,15 +52,12 @@ describe("ErrorPage", () => {
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
-      imports: [
-        RouterModule.forRoot([]),
-        HttpClientModule,
-        ServiceWorkerModule.register("sw.js", { enabled: false }),
-        FontAwesomeModule,
-        AppCommonModule,
+      imports: [FontAwesomeModule, CommonModule, ErrorPage],
+      providers: [
+        { provide: APP_BASE_HREF, useValue: "/" },
+        provideZoneChangeDetection({ eventCoalescing: true }),
+        provideRouter(routes),
       ],
-      declarations: [ErrorPage],
-      providers: [{ provide: APP_BASE_HREF, useValue: "/" }],
     }).compileComponents();
   });
 

@@ -31,27 +31,26 @@
 */
 
 import { TestBed } from "@angular/core/testing";
-import { RouterModule } from "@angular/router";
+import { provideRouter } from "@angular/router";
 import {} from "jasmine";
 import { APP_BASE_HREF } from "@angular/common";
 import {
   BrowserDynamicTestingModule,
   platformBrowserDynamicTesting,
 } from "@angular/platform-browser-dynamic/testing";
-import { HttpClientModule } from "@angular/common/http";
-import { ServiceWorkerModule } from "@angular/service-worker";
-import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
-import { NO_ERRORS_SCHEMA } from "@angular/core";
+import { NO_ERRORS_SCHEMA, signal } from "@angular/core";
 import { ReactiveFormsModule } from "@angular/forms";
-import { of } from "rxjs";
+import { BehaviorSubject, of } from "rxjs";
+import { MockProvider } from "ng-mocks";
 
 import { AdminFilters } from "./adminFilters.component";
 import { PopUp } from "@app/components/popUp/popUp.component";
-import { AuthService } from "../../../common/services/auth.service";
-import { Loader } from "../../../common/components/loader/loader.component";
+import { AuthService } from "@app/services/auth.service";
+import { Loader } from "@app/components/loader/loader.component";
 import { mockAuthedUser } from "@tests/mockData";
 import { ApiClientService } from "@app/services/apiClient.service";
-import { AppCommonModule } from "@app/common/common.module";
+import { routes } from "@app/app.routes";
+import { AdminService } from "@app/services/admin.service";
 
 const mockFilteredPhrases = [
   {
@@ -67,29 +66,33 @@ const mockFilteredPhrases = [
 describe("Filters Page", () => {
   // Before each test, configure testing environment
   beforeEach(() => {
+    // make sure the test goes through with admin permission
+    const MockAuthService = MockProvider(AuthService, {
+      isUserDataResolved: new BehaviorSubject(true),
+      userData: signal({ ...mockAuthedUser }),
+      authenticated: signal(true),
+      canUser: () => true,
+    });
+    const MockAdminService = MockProvider(AdminService);
+    const MockAPIClient = MockProvider(ApiClientService, {
+      get: () => of(),
+    });
+
     TestBed.resetTestEnvironment();
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
       schemas: [NO_ERRORS_SCHEMA],
-      imports: [
-        RouterModule.forRoot([]),
-        HttpClientModule,
-        ServiceWorkerModule.register("sw.js", { enabled: false }),
-        FontAwesomeModule,
-        ReactiveFormsModule,
-        AppCommonModule,
+      imports: [ReactiveFormsModule, PopUp, Loader],
+      declarations: [AdminFilters],
+      providers: [
+        { provide: APP_BASE_HREF, useValue: "/" },
+        provideRouter(routes),
+        MockAuthService,
+        MockAdminService,
+        MockAPIClient,
       ],
-      declarations: [AdminFilters, PopUp, Loader],
-      providers: [{ provide: APP_BASE_HREF, useValue: "/" }],
     }).compileComponents();
-
-    // make sure the test goes through with admin permission
-    const authService = TestBed.inject(AuthService);
-    spyOn(authService, "canUser").and.returnValue(true);
-    authService.isUserDataResolved.next(true);
-    authService.authenticated.set(true);
-    authService.userData.set({ ...mockAuthedUser });
   });
 
   // Check that a call is made to get filtered phrases

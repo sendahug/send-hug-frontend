@@ -37,12 +37,11 @@ import {
   BrowserDynamicTestingModule,
   platformBrowserDynamicTesting,
 } from "@angular/platform-browser-dynamic/testing";
-import { HttpClientModule } from "@angular/common/http";
-import { ServiceWorkerModule } from "@angular/service-worker";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
-import { NO_ERRORS_SCHEMA } from "@angular/core";
-import { ActivatedRoute, RouterModule, UrlSegment } from "@angular/router";
-import { of } from "rxjs";
+import { NO_ERRORS_SCHEMA, signal } from "@angular/core";
+import { ActivatedRoute, provideRouter, UrlSegment } from "@angular/router";
+import { BehaviorSubject, of } from "rxjs";
+import { MockProvider } from "ng-mocks";
 
 import { AdminDashboard } from "./adminDashboard.component";
 import { AuthService } from "@app/services/auth.service";
@@ -50,33 +49,32 @@ import { mockAuthedUser } from "@tests/mockData";
 import { AdminReports } from "@admin/components/adminReports/adminReports.component";
 import { AdminBlocks } from "@admin/components/adminBlocks/adminBlocks.component";
 import { AdminFilters } from "@admin/components/adminFilters/adminFilters.component";
-import { AppCommonModule } from "@app/common/common.module";
+import { routes } from "@app/app.routes";
 
 describe("AdminDashboard", () => {
   // Before each test, configure testing environment
   beforeEach(() => {
+    // make sure the test goes through with admin permission
+    const MockAuthService = MockProvider(AuthService, {
+      isUserDataResolved: new BehaviorSubject(true),
+      userData: signal({ ...mockAuthedUser }),
+      authenticated: signal(true),
+      canUser: () => true,
+    });
+
     TestBed.resetTestEnvironment();
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
       schemas: [NO_ERRORS_SCHEMA],
-      imports: [
-        RouterModule.forRoot([]),
-        HttpClientModule,
-        ServiceWorkerModule.register("sw.js", { enabled: false }),
-        FontAwesomeModule,
-        AppCommonModule,
-      ],
+      imports: [FontAwesomeModule],
       declarations: [AdminDashboard, AdminReports, AdminBlocks, AdminFilters],
-      providers: [{ provide: APP_BASE_HREF, useValue: "/" }],
+      providers: [
+        { provide: APP_BASE_HREF, useValue: "/" },
+        provideRouter(routes),
+        MockAuthService,
+      ],
     }).compileComponents();
-
-    // make sure the test goes through with admin permission
-    const authService = TestBed.inject(AuthService) as AuthService;
-    spyOn(authService, "canUser").and.returnValue(true);
-    authService.isUserDataResolved.next(true);
-    authService.authenticated.set(true);
-    authService.userData.set({ ...mockAuthedUser });
   });
 
   // Check that the component is created

@@ -32,20 +32,19 @@
 
 import { TestBed } from "@angular/core/testing";
 import {} from "jasmine";
-import { APP_BASE_HREF } from "@angular/common";
+import { APP_BASE_HREF, CommonModule } from "@angular/common";
 import {
   BrowserDynamicTestingModule,
   platformBrowserDynamicTesting,
 } from "@angular/platform-browser-dynamic/testing";
-import { HttpClientModule } from "@angular/common/http";
-import { ServiceWorkerModule } from "@angular/service-worker";
-import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
-import { Component } from "@angular/core";
-import { Route, Router, RouterModule, Routes } from "@angular/router";
+import { Component, signal } from "@angular/core";
+import { provideRouter, Route, Router, RouterLink, Routes } from "@angular/router";
+import { provideZoneChangeDetection } from "@angular/core";
+import { MockProvider } from "ng-mocks";
+import { BehaviorSubject } from "rxjs";
 
 import { SiteMap } from "./siteMap.component";
-import { AuthService } from "../../common/services/auth.service";
-import { AppCommonModule } from "@app/common/common.module";
+import { AuthService } from "@app/services/auth.service";
 import { mockAuthedUser } from "@tests/mockData";
 
 // Mock Component for testing the sitemap
@@ -56,6 +55,7 @@ import { mockAuthedUser } from "@tests/mockData";
     <!-- If the user is logged in, displays a user page. -->
     <div id="profileContainer">hi</div>
   `,
+  standalone: true,
 })
 class MockComp {
   waitFor = "user";
@@ -71,6 +71,12 @@ describe("SiteMap", () => {
 
   // Before each test, configure testing environment
   beforeEach(() => {
+    const MockAuthService = MockProvider(AuthService, {
+      authenticated: signal(true),
+      userData: signal({ ...mockAuthedUser }),
+      isUserDataResolved: new BehaviorSubject(true),
+    });
+
     TestBed.resetTestEnvironment();
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
@@ -153,15 +159,13 @@ describe("SiteMap", () => {
     ];
 
     TestBed.configureTestingModule({
-      imports: [
-        RouterModule.forRoot(routes),
-        HttpClientModule,
-        ServiceWorkerModule.register("sw.js", { enabled: false }),
-        FontAwesomeModule,
-        AppCommonModule,
+      imports: [CommonModule, RouterLink, MockComp, SiteMap],
+      providers: [
+        { provide: APP_BASE_HREF, useValue: "/" },
+        provideZoneChangeDetection({ eventCoalescing: true }),
+        provideRouter(routes),
+        MockAuthService,
       ],
-      declarations: [MockComp, SiteMap],
-      providers: [{ provide: APP_BASE_HREF, useValue: "/" }],
     }).compileComponents();
 
     const router = TestBed.inject(Router);
@@ -355,7 +359,7 @@ describe("SiteMap", () => {
     expect(siteMap.routes).not.toContain(userPath);
     expect(navLinks[navLinks.length - 1].textContent).toBe("Login Page");
     for (var i = 0; i < navLinks.length; i++) {
-      expect(navLinks[i].textContent).not.toBe(userPath.children![0].data!.name);
+      expect(navLinks[i].textContent).not.toBe(userPath.children![0].data!["name"]);
     }
 
     authService.authenticated.set(true);
@@ -366,9 +370,9 @@ describe("SiteMap", () => {
     navLinks = routeList!.querySelectorAll(".routerLink");
     expect(siteMap.routes).not.toContain(loginPath);
     expect(siteMap.routes).toContain(userPath);
-    expect(navLinks[1].textContent).toBe(userPath.children![0].data!.name);
+    expect(navLinks[1].textContent).toBe(userPath.children![0].data!["name"]);
     for (var i = 0; i < navLinks.length; i++) {
-      expect(navLinks[i].textContent).not.toBe(loginPath.data!.name);
+      expect(navLinks[i].textContent).not.toBe(loginPath.data!["name"]);
     }
   });
 });

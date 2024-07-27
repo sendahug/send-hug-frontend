@@ -31,28 +31,30 @@
 */
 
 import { TestBed } from "@angular/core/testing";
-import { HttpClientTestingModule } from "@angular/common/http/testing";
 import {
   BrowserDynamicTestingModule,
   platformBrowserDynamicTesting,
 } from "@angular/platform-browser-dynamic/testing";
 import {} from "jasmine";
 import { of } from "rxjs";
+import { MockProvider } from "ng-mocks";
 
 import { ItemsService } from "./items.service";
-import { CommonTestProviders } from "@tests/commonModules";
+import { ApiClientService } from "./apiClient.service";
 
 describe("ItemsService", () => {
   let itemsService: ItemsService;
 
   // Before each test, configure testing environment
   beforeEach(() => {
+    const MockAPIClient = MockProvider(ApiClientService);
+
     TestBed.resetTestEnvironment();
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
-      providers: [ItemsService, ...CommonTestProviders],
+      imports: [],
+      providers: [ItemsService, MockAPIClient],
     }).compileComponents();
 
     itemsService = TestBed.inject(ItemsService);

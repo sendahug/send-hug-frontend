@@ -30,47 +30,42 @@
   SOFTWARE.
 */
 import { TestBed } from "@angular/core/testing";
-import { RouterModule } from "@angular/router";
 import {} from "jasmine";
 import { APP_BASE_HREF } from "@angular/common";
 import {
   BrowserDynamicTestingModule,
   platformBrowserDynamicTesting,
 } from "@angular/platform-browser-dynamic/testing";
-import { HttpClientModule } from "@angular/common/http";
-import { ServiceWorkerModule } from "@angular/service-worker";
-import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { ReactiveFormsModule } from "@angular/forms";
+import { provideZoneChangeDetection, signal } from "@angular/core";
+import { MockProvider } from "ng-mocks";
 
 import { PasswordResetForm } from "./passwordResetForm.component";
 import { AuthService } from "@app/services/auth.service";
 import { mockAuthedUser } from "@tests/mockData";
 import { PopUp } from "@app/components/popUp/popUp.component";
-import { CommonTestProviders } from "@tests/commonModules";
 
 // DISPLAY NAME EDIT
 // ==================================================================
 describe("PasswordResetForm", () => {
   // Before each test, configure testing environment
   beforeEach(() => {
+    const MockAuthService = MockProvider(AuthService, {
+      authenticated: signal(true),
+      userData: signal({ ...mockAuthedUser }),
+    });
+
     TestBed.resetTestEnvironment();
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
-      imports: [
-        RouterModule.forRoot([]),
-        HttpClientModule,
-        ServiceWorkerModule.register("sw.js", { enabled: false }),
-        FontAwesomeModule,
-        ReactiveFormsModule,
+      imports: [ReactiveFormsModule, PopUp, PasswordResetForm],
+      providers: [
+        { provide: APP_BASE_HREF, useValue: "/" },
+        provideZoneChangeDetection({ eventCoalescing: true }),
+        MockAuthService,
       ],
-      declarations: [PasswordResetForm, PopUp],
-      providers: [{ provide: APP_BASE_HREF, useValue: "/" }, ...CommonTestProviders],
     }).compileComponents();
-
-    const authService = TestBed.inject(AuthService);
-    authService.authenticated.set(true);
-    authService.userData.set({ ...mockAuthedUser });
   });
 
   // Check that the component is created

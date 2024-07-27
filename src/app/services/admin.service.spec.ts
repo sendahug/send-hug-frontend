@@ -31,38 +31,43 @@
 */
 
 import { TestBed } from "@angular/core/testing";
-import { HttpClientTestingModule } from "@angular/common/http/testing";
 import {
   BrowserDynamicTestingModule,
   platformBrowserDynamicTesting,
 } from "@angular/platform-browser-dynamic/testing";
 import {} from "jasmine";
-import { of } from "rxjs";
+import { BehaviorSubject, of } from "rxjs";
+import { signal } from "@angular/core";
+import { MockProvider } from "ng-mocks";
 
 import { AdminService } from "./admin.service";
 import { AuthService } from "./auth.service";
 import { mockAuthedUser } from "@tests/mockData";
-import { CommonTestProviders } from "@tests/commonModules";
+import { ApiClientService } from "./apiClient.service";
+import { ItemsService } from "./items.service";
 
 describe("AdminService", () => {
   let adminService: AdminService;
 
   // Before each test, configure testing environment
   beforeEach(() => {
+    const MockAuthService = MockProvider(AuthService, {
+      isUserDataResolved: new BehaviorSubject(true),
+      userData: signal({ ...mockAuthedUser }),
+      authenticated: signal(true),
+    });
+    const MockAPIClient = MockProvider(ApiClientService);
+    const MockItemsService = MockProvider(ItemsService);
+
     TestBed.resetTestEnvironment();
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
-      providers: [AdminService, ...CommonTestProviders],
+      imports: [],
+      providers: [AdminService, MockAuthService, MockAPIClient, MockItemsService],
     }).compileComponents();
 
     adminService = TestBed.inject(AdminService);
-
-    const authService = TestBed.inject(AuthService);
-    authService.authenticated.set(true);
-    authService.userData.set({ ...mockAuthedUser });
-    authService.isUserDataResolved.next(true);
   });
 
   // Check the service is created

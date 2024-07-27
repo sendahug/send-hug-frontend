@@ -32,44 +32,46 @@
 
 import { TestBed } from "@angular/core/testing";
 import {} from "jasmine";
-import { APP_BASE_HREF } from "@angular/common";
+import { APP_BASE_HREF, CommonModule } from "@angular/common";
 import {
   BrowserDynamicTestingModule,
   platformBrowserDynamicTesting,
 } from "@angular/platform-browser-dynamic/testing";
-import { HttpClientModule } from "@angular/common/http";
-import { ServiceWorkerModule } from "@angular/service-worker";
-import { RouterModule } from "@angular/router";
-import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
-import { NO_ERRORS_SCHEMA } from "@angular/core";
+import { provideRouter, RouterLink } from "@angular/router";
+import { NO_ERRORS_SCHEMA, signal } from "@angular/core";
 import { ReactiveFormsModule } from "@angular/forms";
 import { User as FirebaseUser } from "firebase/auth";
 import { of } from "rxjs";
+import { provideZoneChangeDetection } from "@angular/core";
+import { MockProvider } from "ng-mocks";
 
 import { SignUpPage } from "./signUpPage.component";
-import { AppCommonModule } from "@app/common/common.module";
 import { getMockFirebaseUser, mockAuthedUser } from "@tests/mockData";
+import { AuthService } from "@app/services/auth.service";
+import { routes } from "@app/app.routes";
 
 describe("SignUpPage", () => {
   let mockFirebaseUser: FirebaseUser;
 
   // Before each test, configure testing environment
   beforeEach(() => {
+    const MockAuthService = MockProvider(AuthService, {
+      authenticated: signal(false),
+      userData: signal(undefined),
+    });
+
     TestBed.resetTestEnvironment();
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
       schemas: [NO_ERRORS_SCHEMA],
-      imports: [
-        RouterModule.forRoot([]),
-        HttpClientModule,
-        ServiceWorkerModule.register("sw.js", { enabled: false }),
-        FontAwesomeModule,
-        AppCommonModule,
-        ReactiveFormsModule,
+      imports: [ReactiveFormsModule, CommonModule, RouterLink, SignUpPage],
+      providers: [
+        { provide: APP_BASE_HREF, useValue: "/" },
+        provideZoneChangeDetection({ eventCoalescing: true }),
+        provideRouter(routes),
+        MockAuthService,
       ],
-      declarations: [SignUpPage],
-      providers: [{ provide: APP_BASE_HREF, useValue: "/" }],
     }).compileComponents();
 
     mockFirebaseUser = getMockFirebaseUser();

@@ -31,43 +31,49 @@
 */
 
 import { TestBed } from "@angular/core/testing";
-import { RouterModule } from "@angular/router";
 import {} from "jasmine";
-import { APP_BASE_HREF } from "@angular/common";
+import { APP_BASE_HREF, CommonModule } from "@angular/common";
 import {
   BrowserDynamicTestingModule,
   platformBrowserDynamicTesting,
 } from "@angular/platform-browser-dynamic/testing";
-import { HttpClientModule } from "@angular/common/http";
-import { ServiceWorkerModule } from "@angular/service-worker";
-import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { ReactiveFormsModule } from "@angular/forms";
 import { of } from "rxjs";
+import { provideZoneChangeDetection, signal } from "@angular/core";
 
 import { PostEditForm } from "./postEditForm.component";
 import { Post } from "@app/interfaces/post.interface";
 import { PopUp } from "@app/components/popUp/popUp.component";
 import { ValidationService } from "@app/services/validation.service";
-import { CommonTestProviders } from "@tests/commonModules";
+import { MockProvider } from "ng-mocks";
+import { AdminService } from "@app/services/admin.service";
+import { AuthService } from "@app/services/auth.service";
+import { ApiClientService } from "@app/services/apiClient.service";
 
 // POST EDIT
 // ==================================================================
 describe("PostEditForm", () => {
   // Before each test, configure testing environment
   beforeEach(() => {
+    const MockAdminService = MockProvider(AdminService);
+    const MockAuthService = MockProvider(AuthService, {
+      authenticated: signal(true),
+      userData: signal(undefined),
+    });
+    const MockAPIClient = MockProvider(ApiClientService);
+
     TestBed.resetTestEnvironment();
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
-      imports: [
-        RouterModule.forRoot([]),
-        HttpClientModule,
-        ServiceWorkerModule.register("sw.js", { enabled: false }),
-        FontAwesomeModule,
-        ReactiveFormsModule,
+      imports: [ReactiveFormsModule, CommonModule, PopUp, PostEditForm],
+      providers: [
+        { provide: APP_BASE_HREF, useValue: "/" },
+        provideZoneChangeDetection({ eventCoalescing: true }),
+        MockAdminService,
+        MockAuthService,
+        MockAPIClient,
       ],
-      declarations: [PostEditForm, PopUp],
-      providers: [{ provide: APP_BASE_HREF, useValue: "/" }, ...CommonTestProviders],
     }).compileComponents();
   });
 

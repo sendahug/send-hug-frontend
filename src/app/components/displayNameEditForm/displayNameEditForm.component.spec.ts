@@ -31,17 +31,15 @@
 */
 
 import { TestBed } from "@angular/core/testing";
-import { RouterModule } from "@angular/router";
 import {} from "jasmine";
-import { APP_BASE_HREF } from "@angular/common";
+import { APP_BASE_HREF, CommonModule } from "@angular/common";
 import {
   BrowserDynamicTestingModule,
   platformBrowserDynamicTesting,
 } from "@angular/platform-browser-dynamic/testing";
-import { HttpClientModule } from "@angular/common/http";
-import { ServiceWorkerModule } from "@angular/service-worker";
-import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { ReactiveFormsModule } from "@angular/forms";
+import { provideZoneChangeDetection, signal } from "@angular/core";
+import { MockProvider } from "ng-mocks";
 
 import { DisplayNameEditForm } from "./displayNameEditForm.component";
 import { AuthService } from "@app/services/auth.service";
@@ -49,31 +47,31 @@ import { mockAuthedUser } from "@tests/mockData";
 import { PopUp } from "@app/components/popUp/popUp.component";
 import { ValidationService } from "@app/services/validation.service";
 import { Subscription } from "rxjs";
-import { CommonTestProviders } from "@tests/commonModules";
+import { AdminService } from "@app/services/admin.service";
 
 // DISPLAY NAME EDIT
 // ==================================================================
 describe("DisplayNameEditForm", () => {
   // Before each test, configure testing environment
   beforeEach(() => {
+    const AuthServiceMock = MockProvider(AuthService, {
+      authenticated: signal(true),
+      userData: signal({ ...mockAuthedUser }),
+    });
+    const AdminServiceMock = MockProvider(AdminService);
+
     TestBed.resetTestEnvironment();
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
-      imports: [
-        RouterModule.forRoot([]),
-        HttpClientModule,
-        ServiceWorkerModule.register("sw.js", { enabled: false }),
-        FontAwesomeModule,
-        ReactiveFormsModule,
+      imports: [CommonModule, ReactiveFormsModule, PopUp, DisplayNameEditForm],
+      providers: [
+        { provide: APP_BASE_HREF, useValue: "/" },
+        provideZoneChangeDetection({ eventCoalescing: true }),
+        AuthServiceMock,
+        AdminServiceMock,
       ],
-      declarations: [DisplayNameEditForm, PopUp],
-      providers: [{ provide: APP_BASE_HREF, useValue: "/" }, ...CommonTestProviders],
     }).compileComponents();
-
-    const authService = TestBed.inject(AuthService);
-    authService.authenticated.set(true);
-    authService.userData.set({ ...mockAuthedUser });
   });
 
   // Check that the component is created

@@ -31,17 +31,14 @@
 */
 
 import { TestBed } from "@angular/core/testing";
-import { RouterModule } from "@angular/router";
 import {} from "jasmine";
-import { APP_BASE_HREF } from "@angular/common";
+import { APP_BASE_HREF, CommonModule } from "@angular/common";
 import {
   BrowserDynamicTestingModule,
   platformBrowserDynamicTesting,
 } from "@angular/platform-browser-dynamic/testing";
-import { HttpClientModule } from "@angular/common/http";
-import { ServiceWorkerModule } from "@angular/service-worker";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
-import { ReactiveFormsModule } from "@angular/forms";
+import { provideZoneChangeDetection } from "@angular/core";
 
 import { PopUp } from "./popUp.component";
 import { Component } from "@angular/core";
@@ -55,6 +52,8 @@ import { Component } from "@angular/core";
       <button id="sendBtn"></button>
     </app-pop-up>
   `,
+  standalone: true,
+  imports: [PopUp],
 })
 class MockPage {}
 
@@ -65,15 +64,11 @@ describe("Popup", () => {
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
-      imports: [
-        RouterModule.forRoot([]),
-        HttpClientModule,
-        ServiceWorkerModule.register("sw.js", { enabled: false }),
-        FontAwesomeModule,
-        ReactiveFormsModule,
+      imports: [CommonModule, FontAwesomeModule, MockPage, PopUp],
+      providers: [
+        { provide: APP_BASE_HREF, useValue: "/" },
+        provideZoneChangeDetection({ eventCoalescing: true }),
       ],
-      declarations: [MockPage, PopUp],
-      providers: [{ provide: APP_BASE_HREF, useValue: "/" }],
     }).compileComponents();
   });
 

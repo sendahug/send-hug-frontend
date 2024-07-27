@@ -31,37 +31,38 @@
 */
 
 import { TestBed } from "@angular/core/testing";
-import { RouterModule } from "@angular/router";
 import {} from "jasmine";
-import { APP_BASE_HREF } from "@angular/common";
+import { APP_BASE_HREF, CommonModule } from "@angular/common";
 import {
   BrowserDynamicTestingModule,
   platformBrowserDynamicTesting,
 } from "@angular/platform-browser-dynamic/testing";
-import { HttpClientModule } from "@angular/common/http";
-import { ServiceWorkerModule } from "@angular/service-worker";
-import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { of, Subscription } from "rxjs";
+import { provideZoneChangeDetection } from "@angular/core";
+import { MockProvider } from "ng-mocks";
 
 import { ItemDeleteForm } from "./itemDeleteForm.component";
 import { PopUp } from "@app/components/popUp/popUp.component";
-import { CommonTestProviders } from "@tests/commonModules";
+import { AdminService } from "@app/services/admin.service";
+import { ApiClientService } from "@app/services/apiClient.service";
 
 describe("ItemDeleteForm", () => {
   // Before each test, configure testing environment
   beforeEach(() => {
+    const MockAPIClient = MockProvider(ApiClientService);
+    const MockAdminService = MockProvider(AdminService);
+
     TestBed.resetTestEnvironment();
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
-      imports: [
-        RouterModule.forRoot([]),
-        HttpClientModule,
-        ServiceWorkerModule.register("sw.js", { enabled: false }),
-        FontAwesomeModule,
+      imports: [CommonModule, PopUp, ItemDeleteForm],
+      providers: [
+        { provide: APP_BASE_HREF, useValue: "/" },
+        provideZoneChangeDetection({ eventCoalescing: true }),
+        MockAPIClient,
+        MockAdminService,
       ],
-      declarations: [ItemDeleteForm, PopUp],
-      providers: [{ provide: APP_BASE_HREF, useValue: "/" }, ...CommonTestProviders],
     }).compileComponents();
   });
 

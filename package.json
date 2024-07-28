@@ -117,7 +117,7 @@
     "size-limit": "^11.1.4",
     "tslib": "^2.6.2",
     "typescript": "^5.4.5",
-    "vite": "^5.2.11",
+    "vite": "^5.3.5",
     "web-test-runner-jasmine": "^0.0.6"
   },
   "dependencies": {
@@ -133,14 +133,14 @@
     "@angular/router": "^18.0.3",
     "@angular/service-worker": "^18.0.3",
     "@fortawesome/angular-fontawesome": "^0.15.0",
-    "@fortawesome/fontawesome-common-types": "^6.5.2",
-    "@fortawesome/fontawesome-svg-core": "^6.5.2",
-    "@fortawesome/free-brands-svg-icons": "^6.5.2",
-    "@fortawesome/free-regular-svg-icons": "^6.5.2",
-    "@fortawesome/free-solid-svg-icons": "^6.5.2",
+    "@fortawesome/fontawesome-common-types": "^6.6.0",
+    "@fortawesome/fontawesome-svg-core": "^6.6.0",
+    "@fortawesome/free-brands-svg-icons": "^6.6.0",
+    "@fortawesome/free-regular-svg-icons": "^6.6.0",
+    "@fortawesome/free-solid-svg-icons": "^6.6.0",
     "firebase": "^10.12.2",
     "idb": "^8.0.0",
     "rxjs": "^7.8.1",
-    "zone.js": "^0.14.7"
+    "zone.js": "^0.14.8"
   }
 }

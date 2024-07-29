@@ -117,7 +117,7 @@
     "@size-limit/preset-app": "^11.1.4",
     "@size-limit/time": "^11.1.4",
     "@types/jasmine": "^5.1.4",
-    "@types/node": "^20.14.12",
+    "@types/node": "^22.0.0",
     "autoprefixer": "^10.4.19",
     "browser-sync": "^3.0.2",
     "glob": "^11.0.0",

@@ -31,56 +31,60 @@
 */
 
 import { TestBed } from "@angular/core/testing";
-import { RouterModule } from "@angular/router";
+import { provideRouter, RouterLink } from "@angular/router";
 import {} from "jasmine";
-import { APP_BASE_HREF } from "@angular/common";
+import { APP_BASE_HREF, CommonModule } from "@angular/common";
 import {
   BrowserDynamicTestingModule,
   platformBrowserDynamicTesting,
 } from "@angular/platform-browser-dynamic/testing";
-import { HttpClientModule } from "@angular/common/http";
-import { ServiceWorkerModule } from "@angular/service-worker";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
+import { provideZoneChangeDetection, signal } from "@angular/core";
+import { MockProvider } from "ng-mocks";
+import { BehaviorSubject } from "rxjs";
 
-import { AppComponent } from "../../app.component";
 import { NotificationsTab } from "./notifications.component";
-import { NotificationService } from "../../services/notifications.service";
-import { AuthService } from "../../common/services/auth.service";
+import { NotificationService } from "@app/services/notifications.service";
+import { AuthService } from "@app/services/auth.service";
 import { mockAuthedUser } from "@tests/mockData";
-import { AppAlert } from "../appAlert/appAlert.component";
-import { AppCommonModule } from "@app/common/common.module";
+import { AppAlert } from "@app/components/appAlert/appAlert.component";
+import { routes } from "@app/app.routes";
 
 describe("Notifications", () => {
   // Before each test, configure testing environment
   beforeEach(() => {
+    const MockAuthService = MockProvider(AuthService, {
+      authenticated: signal(true),
+      userData: signal({ ...mockAuthedUser }),
+      isUserDataResolved: new BehaviorSubject(true),
+    });
+    const MockNotificationService = MockProvider(NotificationService, {
+      toggleBtn: "Enable",
+      notifications: [],
+      pushStatus: false,
+      refreshStatus: false,
+    });
+
     TestBed.resetTestEnvironment();
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
-      imports: [
-        RouterModule.forRoot([]),
-        HttpClientModule,
-        ServiceWorkerModule.register("sw.js", { enabled: false }),
-        FontAwesomeModule,
-        AppCommonModule,
+      imports: [CommonModule, FontAwesomeModule, RouterLink, NotificationsTab, AppAlert],
+      providers: [
+        { provide: APP_BASE_HREF, useValue: "/" },
+        provideZoneChangeDetection({ eventCoalescing: true }),
+        provideRouter(routes),
+        MockAuthService,
+        MockNotificationService,
       ],
-      declarations: [AppComponent, NotificationsTab, AppAlert],
-      providers: [{ provide: APP_BASE_HREF, useValue: "/" }],
     }).compileComponents();
-
-    const authService = TestBed.inject(AuthService);
-    authService.authenticated.set(true);
-    authService.userData.set({ ...mockAuthedUser });
-    authService.isUserDataResolved.next(true);
   });
 
   // Check that the component is created
   it("should create the component", () => {
-    const acFixture = TestBed.createComponent(AppComponent);
-    const appComponent = acFixture.componentInstance;
     const fixture = TestBed.createComponent(NotificationsTab);
     const notificationsTab = fixture.componentInstance;
-    expect(appComponent).toBeTruthy();
+
     expect(notificationsTab).toBeTruthy();
   });
 
@@ -93,21 +97,17 @@ describe("Notifications", () => {
     const authSpy = spyOn(authService.isUserDataResolved, "subscribe").and.callThrough();
 
     // set up the component
-    TestBed.createComponent(AppComponent);
     const fixture = TestBed.createComponent(NotificationsTab);
     const notificationsTab = fixture.componentInstance;
 
     expect(notificationsTab["authService"].isUserDataResolved).toBeTruthy();
     expect(notificationSpy).toHaveBeenCalled();
     expect(authSpy).toHaveBeenCalled();
-    expect(notificationsTab.notificationService.pushStatus).toBeFalse();
-    expect(notificationsTab.notificationService.refreshStatus).toBeFalse();
   });
 
   // Check that the button toggles push notifications
   it("has a button that toggles push notifications", (done: DoneFn) => {
     // set up the component and its spies
-    TestBed.createComponent(AppComponent);
     const fixture = TestBed.createComponent(NotificationsTab);
     const notificationsTab = fixture.componentInstance;
     const notifTabDOM = fixture.nativeElement;
@@ -156,7 +156,6 @@ describe("Notifications", () => {
     const stopRefreshSpy = spyOn(notificationsService, "stopAutoRefresh");
 
     // set up the component
-    TestBed.createComponent(AppComponent);
     const fixture = TestBed.createComponent(NotificationsTab);
     const notificationsTab = fixture.componentInstance;
     const notifTabDOM = fixture.nativeElement;
@@ -369,7 +368,6 @@ describe("Notifications", () => {
   // Check that the exit button emits the correct boolean
   it("emits false upon clicking the exit button", (done: DoneFn) => {
     // set up the component
-    TestBed.createComponent(AppComponent);
     const fixture = TestBed.createComponent(NotificationsTab);
     const notificationsTab = fixture.componentInstance;
     const notifTabDOM = fixture.nativeElement;

@@ -31,15 +31,15 @@
 */
 
 import { TestBed } from "@angular/core/testing";
-import { HttpClientTestingModule } from "@angular/common/http/testing";
 import {
   BrowserDynamicTestingModule,
   platformBrowserDynamicTesting,
 } from "@angular/platform-browser-dynamic/testing";
 import {} from "jasmine";
+import { IDBPDatabase } from "idb";
 
 import { MyDB, SWManager } from "./sWManager.service";
-import { IDBPDatabase } from "idb";
+import { AlertsService } from "./alerts.service";
 
 function populateDB(
   dbPromise: Promise<IDBPDatabase<MyDB>>,
@@ -301,8 +301,8 @@ describe("SWManagerService", () => {
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
-      providers: [SWManager],
+      imports: [],
+      providers: [SWManager, AlertsService],
     }).compileComponents();
 
     sWManagerService = TestBed.inject(SWManager);
@@ -394,7 +394,7 @@ describe("SWManagerService", () => {
       TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
       TestBed.configureTestingModule({
-        imports: [HttpClientTestingModule],
+        imports: [],
         providers: [SWManager],
       }).compileComponents();
 
@@ -509,7 +509,7 @@ describe("SWManagerService", () => {
       TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
       TestBed.configureTestingModule({
-        imports: [HttpClientTestingModule],
+        imports: [],
         providers: [SWManager],
       }).compileComponents();
 
@@ -597,7 +597,7 @@ describe("SWManagerService", () => {
       TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
       TestBed.configureTestingModule({
-        imports: [HttpClientTestingModule],
+        imports: [],
         providers: [SWManager],
       }).compileComponents();
 
@@ -639,7 +639,7 @@ describe("SWManagerService", () => {
       TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
       TestBed.configureTestingModule({
-        imports: [HttpClientTestingModule],
+        imports: [],
         providers: [SWManager],
       }).compileComponents();
 

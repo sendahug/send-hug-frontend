@@ -31,52 +31,56 @@
 */
 
 import { TestBed } from "@angular/core/testing";
-import { RouterModule } from "@angular/router";
+import { provideRouter, RouterLink } from "@angular/router";
 import {} from "jasmine";
 import { APP_BASE_HREF } from "@angular/common";
 import {
   BrowserDynamicTestingModule,
   platformBrowserDynamicTesting,
 } from "@angular/platform-browser-dynamic/testing";
-import { HttpClientModule } from "@angular/common/http";
-import { ServiceWorkerModule } from "@angular/service-worker";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { ReactiveFormsModule } from "@angular/forms";
+import { MockComponent, MockProvider } from "ng-mocks";
+import { signal } from "@angular/core";
+import { BehaviorSubject } from "rxjs";
 
 import { SettingsPage } from "./settings.component";
-import { IconEditor } from "@user//components/iconEditor/iconEditor.component";
+import { IconEditor } from "@user/components/iconEditor/iconEditor.component";
 import { NotificationService } from "@app/services/notifications.service";
 import { AuthService } from "@app/services/auth.service";
 import { AlertsService } from "@app/services/alerts.service";
 import { mockAuthedUser } from "@tests/mockData";
-import { AppCommonModule } from "@app/common/common.module";
+import { routes } from "@app/app.routes";
+import { UserIcon } from "@app/components/userIcon/userIcon.component";
 
 describe("SettingsPage", () => {
   // Before each test, configure testing environment
   beforeEach(() => {
+    const MockAuthService = MockProvider(AuthService, {
+      authenticated: signal(true),
+      userData: signal({ ...mockAuthedUser }),
+      isUserDataResolved: new BehaviorSubject(true),
+    });
+    const MockNotificationsService = MockProvider(NotificationService, {
+      pushStatus: false,
+      refreshStatus: false,
+      refreshRateSecs: 20,
+    });
+    const MockIconEditor = MockComponent(IconEditor);
+
     TestBed.resetTestEnvironment();
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
-      imports: [
-        RouterModule.forRoot([]),
-        HttpClientModule,
-        ServiceWorkerModule.register("sw.js", { enabled: false }),
-        FontAwesomeModule,
-        ReactiveFormsModule,
-        AppCommonModule,
+      imports: [FontAwesomeModule, ReactiveFormsModule, RouterLink, UserIcon],
+      declarations: [SettingsPage, MockIconEditor],
+      providers: [
+        { provide: APP_BASE_HREF, useValue: "/" },
+        provideRouter(routes),
+        MockAuthService,
+        MockNotificationsService,
       ],
-      declarations: [SettingsPage, IconEditor],
-      providers: [{ provide: APP_BASE_HREF, useValue: "/" }],
     }).compileComponents();
-
-    const authService = TestBed.inject(AuthService);
-    authService.authenticated.set(true);
-    authService.userData.set({ ...mockAuthedUser });
-
-    const notificationService = TestBed.inject(NotificationService);
-    notificationService.pushStatus = false;
-    notificationService.refreshStatus = false;
   });
 
   // Check that the app is created
@@ -136,6 +140,8 @@ describe("SettingsPage", () => {
     const authService = TestBed.inject(AuthService);
     authService.isUserDataResolved.next(false);
 
+    const notificationService = TestBed.inject(NotificationService);
+
     // set up the component and its spies
     const fixture = TestBed.createComponent(SettingsPage);
     const settingsPage = fixture.componentInstance;
@@ -144,8 +150,8 @@ describe("SettingsPage", () => {
     expect(settingsPage.editSettingsForm.controls.enableAutoRefresh.value).toBeFalse();
     expect(settingsPage.editSettingsForm.controls.notificationRate.value).toBe(20);
 
-    authService.userData()!.autoRefresh = true;
-    authService.userData()!.refreshRate = 60;
+    notificationService.refreshStatus = true;
+    notificationService.refreshRateSecs = 60;
     authService.isUserDataResolved.next(true);
     fixture.detectChanges();
 

@@ -131,7 +131,7 @@ describe("SearchResults", () => {
         provideZoneChangeDetection({ eventCoalescing: true }),
         provideRouter(routes),
         ItemsService,
-        MockAPIClient
+        MockAPIClient,
       ],
     }).compileComponents();
   });

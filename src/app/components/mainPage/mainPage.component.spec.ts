@@ -31,25 +31,26 @@
 */
 
 import { TestBed } from "@angular/core/testing";
-import { RouterModule } from "@angular/router";
+import { provideRouter, RouterLink } from "@angular/router";
 import {} from "jasmine";
-import { APP_BASE_HREF } from "@angular/common";
+import { APP_BASE_HREF, CommonModule } from "@angular/common";
 import {
   BrowserDynamicTestingModule,
   platformBrowserDynamicTesting,
 } from "@angular/platform-browser-dynamic/testing";
-import { HttpClientModule } from "@angular/common/http";
-import { ServiceWorkerModule } from "@angular/service-worker";
-import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { of } from "rxjs";
 import { By } from "@angular/platform-browser";
+import { provideZoneChangeDetection, signal } from "@angular/core";
+import { MockComponent, MockProvider } from "ng-mocks";
 
 // App imports
 import { MainPage } from "./mainPage.component";
-import { ApiClientService } from "../../common/services/apiClient.service";
-import { SWManager } from "../../common/services/sWManager.service";
-import { AppCommonModule } from "@app/common/common.module";
-import { SinglePost } from "@app/common/components/post/post.component";
+import { ApiClientService } from "@app/services/apiClient.service";
+import { SWManager } from "@app/services/sWManager.service";
+import { SinglePost } from "@app/components/post/post.component";
+import { Loader } from "@app/components/loader/loader.component";
+import { routes } from "@app/app.routes";
+import { AuthService } from "@app/services/auth.service";
 
 const newItems = [
   {
@@ -95,19 +96,25 @@ const suggestedItems = [
 describe("MainPage", () => {
   // Before each test, configure testing environment
   beforeEach(() => {
+    const MockAPIClient = MockProvider(ApiClientService);
+    const mockAuthService = MockProvider(AuthService, {
+      authenticated: signal(false),
+      userData: signal(undefined),
+    });
+    const MockLoader = MockComponent(Loader);
+
     TestBed.resetTestEnvironment();
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
-      imports: [
-        RouterModule.forRoot([]),
-        HttpClientModule,
-        ServiceWorkerModule.register("sw.js", { enabled: false }),
-        FontAwesomeModule,
-        AppCommonModule,
+      imports: [CommonModule, MockLoader, SinglePost, RouterLink, MainPage],
+      providers: [
+        { provide: APP_BASE_HREF, useValue: "/" },
+        provideZoneChangeDetection({ eventCoalescing: true }),
+        provideRouter(routes),
+        MockAPIClient,
+        mockAuthService,
       ],
-      declarations: [MainPage],
-      providers: [{ provide: APP_BASE_HREF, useValue: "/" }],
     }).compileComponents();
   });
 

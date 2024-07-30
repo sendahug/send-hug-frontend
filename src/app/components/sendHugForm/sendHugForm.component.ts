@@ -110,7 +110,7 @@ export class SendHugForm implements OnInit {
     if (!this.sendHugForm.valid) {
       this.alertsService.createAlert({
         type: "Error",
-        message: this.sendHugForm.controls.messageText.errors?.error,
+        message: this.sendHugForm.controls.messageText.errors?.["error"],
       });
       return;
     }

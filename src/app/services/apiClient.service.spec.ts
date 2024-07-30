@@ -31,17 +31,19 @@
 */
 
 import { TestBed } from "@angular/core/testing";
-import { HttpClientTestingModule, HttpTestingController } from "@angular/common/http/testing";
+import { HttpTestingController, provideHttpClientTesting } from "@angular/common/http/testing";
 import {
   BrowserDynamicTestingModule,
   platformBrowserDynamicTesting,
 } from "@angular/platform-browser-dynamic/testing";
 import {} from "jasmine";
 import { of } from "rxjs";
-import { HttpErrorResponse, HttpParams } from "@angular/common/http";
+import { HttpErrorResponse, HttpParams, provideHttpClient } from "@angular/common/http";
+import { MockProvider } from "ng-mocks";
+import { signal } from "@angular/core";
 
 import { ApiClientService } from "./apiClient.service";
-import { CommonTestProviders } from "@tests/commonModules";
+import { AuthService } from "./auth.service";
 
 describe("APIClient Service", () => {
   let httpController: HttpTestingController;
@@ -49,12 +51,22 @@ describe("APIClient Service", () => {
 
   // Before each test, configure testing environment
   beforeEach(() => {
+    const MockAuthService = MockProvider(AuthService, {
+      getIdTokenForCurrentUser: () => of(),
+      authenticated: signal(false),
+    });
+
     TestBed.resetTestEnvironment();
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
-      providers: [ApiClientService, ...CommonTestProviders],
+      imports: [],
+      providers: [
+        ApiClientService,
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        MockAuthService,
+      ],
     }).compileComponents();
 
     apiClientService = TestBed.inject(ApiClientService);

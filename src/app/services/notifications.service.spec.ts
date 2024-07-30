@@ -31,19 +31,20 @@
 */
 
 import { TestBed } from "@angular/core/testing";
-import { HttpClientTestingModule } from "@angular/common/http/testing";
 import {
   BrowserDynamicTestingModule,
   platformBrowserDynamicTesting,
 } from "@angular/platform-browser-dynamic/testing";
 import { ServiceWorkerModule } from "@angular/service-worker";
-import { Subscription, of } from "rxjs";
+import { BehaviorSubject, Subscription, of } from "rxjs";
 import {} from "jasmine";
+import { MockProvider } from "ng-mocks";
+import { signal } from "@angular/core";
 
 import { NotificationService } from "./notifications.service";
-import { AuthService } from "../common/services/auth.service";
+import { AuthService } from "@app/services/auth.service";
 import { mockAuthedUser } from "@tests/mockData";
-import { AppCommonModule } from "@app/common/common.module";
+import { ApiClientService } from "./apiClient.service";
 
 const pushSub: PushSubscription = {
   endpoint: "endpoint",
@@ -71,24 +72,22 @@ describe("NotificationService", () => {
 
   // Before each test, configure testing environment
   beforeEach(() => {
+    const MockAuthService = MockProvider(AuthService, {
+      authenticated: signal(true),
+      userData: signal({ ...mockAuthedUser }),
+      isUserDataResolved: new BehaviorSubject(true),
+    });
+    const MockAPIClient = MockProvider(ApiClientService);
+
     TestBed.resetTestEnvironment();
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
-      imports: [
-        HttpClientTestingModule,
-        ServiceWorkerModule.register("/sw.js", { enabled: false }),
-        AppCommonModule,
-      ],
-      providers: [NotificationService],
+      imports: [ServiceWorkerModule.register("/sw.js", { enabled: false })],
+      providers: [NotificationService, MockAuthService, MockAPIClient],
     }).compileComponents();
 
     notificationService = TestBed.inject(NotificationService);
-
-    const authService = TestBed.inject(AuthService);
-    authService.authenticated.set(true);
-    authService.userData.set({ ...mockAuthedUser });
-    authService.isUserDataResolved.next(true);
   });
 
   // Check the service is created

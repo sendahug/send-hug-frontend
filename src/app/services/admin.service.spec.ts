@@ -63,7 +63,7 @@ describe("AdminService", () => {
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
-      imports: [],
+      declarations: [],
       providers: [AdminService, MockAuthService, MockAPIClient, MockItemsService],
     }).compileComponents();
 

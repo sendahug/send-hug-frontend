@@ -127,103 +127,103 @@ describe("Report", () => {
   });
 
   // Check that the correct radio button is set as selected
-  // it("correctly identifies the chosen radio button", (done: DoneFn) => {
-  //   const fixture = TestBed.createComponent(ReportForm);
-  //   const popUp = fixture.componentInstance;
-  //   const popUpDOM = fixture.nativeElement;
-  //   popUp.reportType = "Post";
-  //   popUp.reportedItem = {
-  //     id: 1,
-  //     givenHugs: 0,
-  //     sentHugs: [],
-  //     user: "name",
-  //     userId: 2,
-  //     text: "hi",
-  //     date: new Date(),
-  //   };
-  //   const selectSpy = spyOn(popUp, "checkSelectedForOther").and.callThrough();
+  it("correctly identifies the chosen radio button", (done: DoneFn) => {
+    const fixture = TestBed.createComponent(ReportForm);
+    const popUp = fixture.componentInstance;
+    const popUpDOM = fixture.nativeElement;
+    popUp.reportType = "Post";
+    popUp.reportedItem = {
+      id: 1,
+      givenHugs: 0,
+      sentHugs: [],
+      user: "name",
+      userId: 2,
+      text: "hi",
+      date: new Date(),
+    };
+    const selectSpy = spyOn(popUp, "checkSelectedForOther").and.callThrough();
+    fixture.detectChanges();
 
-  //   fixture.detectChanges();
+    // select option 1
+    popUpDOM.querySelector("#pRadioOption0").click();
+    fixture.detectChanges();
 
-  //   // select option 1
-  //   popUpDOM.querySelector("#pRadioOption0").click();
-  //   fixture.detectChanges();
+    // check the first option was selected
+    expect(selectSpy).toHaveBeenCalled();
+    expect(selectSpy).toHaveBeenCalledWith(popUpDOM.querySelector("#pRadioOption0"));
+    expect(popUp.reportForm.controls.selectedReason.value).toEqual("0");
 
-  //   // check the first option was selected
-  //   expect(selectSpy).toHaveBeenCalled();
-  //   expect(selectSpy).toHaveBeenCalledWith("0");
-  //   expect(popUp.reportForm.controls.selectedReason.value).toEqual("0");
+    // select option 2
+    popUpDOM.querySelector("#pRadioOption1").click();
+    fixture.detectChanges();
 
-  //   // select option 2
-  //   popUpDOM.querySelector("#pRadioOption1").click();
-  //   fixture.detectChanges();
+    // check the second option was selected
+    expect(selectSpy).toHaveBeenCalled();
+    expect(selectSpy).toHaveBeenCalledWith(popUpDOM.querySelector("#pRadioOption1"));
+    expect(popUp.reportForm.controls.selectedReason.value).toEqual("1");
 
-  //   // check the second option was selected
-  //   expect(selectSpy).toHaveBeenCalled();
-  //   expect(selectSpy).toHaveBeenCalledWith("1");
-  //   expect(popUp.reportForm.controls.selectedReason.value).toEqual("1");
+    // select option 3
+    popUpDOM.querySelector("#pRadioOption2").click();
+    fixture.detectChanges();
 
-  //   // select option 3
-  //   popUpDOM.querySelector("#pRadioOption2").click();
-  //   fixture.detectChanges();
+    // check the third option was selected
+    expect(selectSpy).toHaveBeenCalled();
+    expect(selectSpy).toHaveBeenCalledWith(popUpDOM.querySelector("#pRadioOption2"));
+    expect(popUp.reportForm.controls.selectedReason.value).toEqual("2");
 
-  //   // check the third option was selected
-  //   expect(selectSpy).toHaveBeenCalled();
-  //   expect(selectSpy).toHaveBeenCalledWith("2");
-  //   expect(popUp.reportForm.controls.selectedReason.value).toEqual("2");
+    // select option 4
+    popUpDOM.querySelector("#pRadioOption3").click();
+    fixture.detectChanges();
 
-  //   // select option 4
-  //   popUpDOM.querySelector("#pRadioOption3").click();
-  //   fixture.detectChanges();
+    // check the fourth option was selected
+    expect(selectSpy).toHaveBeenCalled();
+    expect(selectSpy).toHaveBeenCalledWith(popUpDOM.querySelector("#pRadioOption3"));
+    expect(popUp.reportForm.controls.selectedReason.value).toEqual("3");
+    done();
+  });
 
-  //   // check the fourth option was selected
-  //   expect(selectSpy).toHaveBeenCalled();
-  //   expect(selectSpy).toHaveBeenCalledWith("3");
-  //   expect(popUp.reportForm.controls.selectedReason.value).toEqual("3");
-  //   done();
-  // });
+  it("checkSelectedForOther() - correctly enables/disables the 'other' text field", () => {
+    const fixture = TestBed.createComponent(ReportForm);
+    const popUp = fixture.componentInstance;
+    const popUpDOM = fixture.nativeElement;
+    popUp.reportType = "User";
+    popUp.reportedItem = {
+      id: 3,
+      displayName: "string",
+      receivedH: 3,
+      givenH: 4,
+      posts: 2,
+      role: {
+        id: 1,
+        name: "user",
+        permissions: [],
+      },
+      selectedIcon: "kitty",
+      iconColours: {
+        character: "#BA9F93",
+        lbg: "#e2a275",
+        rbg: "#f8eee4",
+        item: "#f4b56a",
+      },
+    };
+    const otherTextField = document.getElementById("rOption3Text") as HTMLInputElement;
 
-  // it("checkSelectedForOther() - correctly enables/disables the 'other' text field", () => {
-  //   const fixture = TestBed.createComponent(ReportForm);
-  //   const popUp = fixture.componentInstance;
-  //   popUp.reportType = "User";
-  //   popUp.reportedItem = {
-  //     id: 3,
-  //     displayName: "string",
-  //     receivedH: 3,
-  //     givenH: 4,
-  //     posts: 2,
-  //     role: {
-  //       id: 1,
-  //       name: "user",
-  //       permissions: [],
-  //     },
-  //     selectedIcon: "kitty",
-  //     iconColours: {
-  //       character: "#BA9F93",
-  //       lbg: "#e2a275",
-  //       rbg: "#f8eee4",
-  //       item: "#f4b56a",
-  //     },
-  //   };
-  //   const otherTextField = document.getElementById("rOption3Text") as HTMLInputElement;
+    popUp.checkSelectedForOther(popUpDOM.querySelector("#pRadioOption0"));
+    fixture.detectChanges();
+    expect(otherTextField.disabled).toBe(true);
 
-  //   popUp.checkSelectedForOther("0");
-  //   fixture.detectChanges();
-  //   expect(otherTextField.disabled).toBe(true);
+    popUp.checkSelectedForOther(popUpDOM.querySelector("#pRadioOption1"));
+    fixture.detectChanges();
+    expect(otherTextField.disabled).toBe(true);
 
-  //   popUp.checkSelectedForOther("1");
-  //   fixture.detectChanges();
-  //   expect(otherTextField.disabled).toBe(true);
+    popUp.checkSelectedForOther(popUpDOM.querySelector("#pRadioOption2"));
+    fixture.detectChanges();
+    expect(otherTextField.disabled).toBe(true);
 
-  //   popUp.checkSelectedForOther("2");
-  //   fixture.detectChanges();
-  //   expect(otherTextField.disabled).toBe(true);
-
-  //   popUp.checkSelectedForOther("3");
-  //   fixture.detectChanges();
-  //   expect(otherTextField.disabled).toBe(false);
-  // });
+    popUp.checkSelectedForOther(popUpDOM.querySelector("#pRadioOption3"));
+    fixture.detectChanges();
+    expect(otherTextField.disabled).toBe(false);
+  });
 
   it("Correctly sets the required and aria-required attributes", (done: DoneFn) => {
     const fixture = TestBed.createComponent(ReportForm);

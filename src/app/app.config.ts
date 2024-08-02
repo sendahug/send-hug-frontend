@@ -31,7 +31,7 @@
 */
 
 import { ApplicationConfig, importProvidersFrom, provideZoneChangeDetection } from "@angular/core";
-import { provideRouter } from "@angular/router";
+import { provideRouter, withComponentInputBinding } from "@angular/router";
 import { provideHttpClient } from "@angular/common/http";
 import { ServiceWorkerModule } from "@angular/service-worker";
 import { initializeApp, provideFirebaseApp } from "@angular/fire/app";
@@ -43,7 +43,7 @@ import { routes } from "./app.routes";
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
-    provideRouter(routes),
+    provideRouter(routes, withComponentInputBinding()),
     importProvidersFrom(ServiceWorkerModule.register("sw.js")),
     provideHttpClient(),
     provideFirebaseApp(() =>

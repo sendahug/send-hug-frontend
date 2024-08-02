@@ -31,29 +31,29 @@
 */
 
 import { TestBed } from "@angular/core/testing";
-import { RouterModule } from "@angular/router";
+import { provideRouter } from "@angular/router";
 import {} from "jasmine";
-import { APP_BASE_HREF } from "@angular/common";
+import { APP_BASE_HREF, CommonModule } from "@angular/common";
 import {
   BrowserDynamicTestingModule,
   platformBrowserDynamicTesting,
 } from "@angular/platform-browser-dynamic/testing";
-import { HttpClientModule } from "@angular/common/http";
-import { ServiceWorkerModule } from "@angular/service-worker";
-import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
-import { NO_ERRORS_SCHEMA } from "@angular/core";
-import { of } from "rxjs";
+import { NO_ERRORS_SCHEMA, signal } from "@angular/core";
+import { BehaviorSubject, of } from "rxjs";
 import { By } from "@angular/platform-browser";
+import { MockComponent, MockProvider } from "ng-mocks";
 
 import { AdminReports } from "./adminReports.component";
-import { AuthService } from "../../../common/services/auth.service";
-import { Loader } from "../../../common/components/loader/loader.component";
+import { AuthService } from "@app/services/auth.service";
+import { Loader } from "@app/components/loader/loader.component";
 import { mockAuthedUser } from "@tests/mockData";
 import { Report } from "@app/interfaces/report.interface";
 import { ApiClientService } from "@app/services/apiClient.service";
-import { MockDeleteForm, MockDisplayNameForm, MockEditForm } from "@tests/mockForms";
-import { AppCommonModule } from "@app/common/common.module";
-import { PostEditForm } from "@app/common/components/postEditForm/postEditForm.component";
+import { PostEditForm } from "@app/components/postEditForm/postEditForm.component";
+import { DisplayNameEditForm } from "@app/components/displayNameEditForm/displayNameEditForm.component";
+import { ItemDeleteForm } from "@app/components/itemDeleteForm/itemDeleteForm.component";
+import { routes } from "@app/app.routes";
+import { AdminService } from "@app/services/admin.service";
 
 // REPORTS PAGE
 // ==================================================================
@@ -63,20 +63,35 @@ describe("AdminReports", () => {
 
   // Before each test, configure testing environment
   beforeEach(() => {
+    // make sure the test goes through with admin permission
+    const MockAuthService = MockProvider(AuthService, {
+      isUserDataResolved: new BehaviorSubject(true),
+      userData: signal({ ...mockAuthedUser }),
+      authenticated: signal(true),
+      canUser: () => true,
+    });
+    const MockAdminService = MockProvider(AdminService);
+    const MockAPIClient = MockProvider(ApiClientService, {
+      get: () => of(),
+    });
+    const MockEditForm = MockComponent(DisplayNameEditForm);
+    const MockDeleteForm = MockComponent(ItemDeleteForm);
+    const MockPostEditForm = MockComponent(PostEditForm);
+
     TestBed.resetTestEnvironment();
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
       schemas: [NO_ERRORS_SCHEMA],
-      imports: [
-        RouterModule.forRoot([]),
-        HttpClientModule,
-        ServiceWorkerModule.register("sw.js", { enabled: false }),
-        FontAwesomeModule,
-        AppCommonModule,
+      imports: [Loader, MockPostEditForm, MockDeleteForm, MockEditForm, CommonModule],
+      declarations: [AdminReports],
+      providers: [
+        { provide: APP_BASE_HREF, useValue: "/" },
+        provideRouter(routes),
+        MockAuthService,
+        MockAdminService,
+        MockAPIClient,
       ],
-      declarations: [AdminReports, Loader],
-      providers: [{ provide: APP_BASE_HREF, useValue: "/" }],
     }).compileComponents();
 
     // make sure the test goes through with admin permission
@@ -222,7 +237,7 @@ describe("AdminReports", () => {
       displayName: "user",
       id: 10,
     });
-    expect(adminReportsDOM.querySelector("app-pop-up")).toBeTruthy();
+    expect(adminReportsDOM.querySelector("display-name-edit-form")).toBeTruthy();
     done();
   });
 
@@ -251,7 +266,7 @@ describe("AdminReports", () => {
     // check expectations
     expect(editSpy).toHaveBeenCalled();
     expect(adminReports.postEditMode).toBeTrue();
-    expect(adminReportsDOM.querySelector("app-pop-up")).toBeTruthy();
+    expect(adminReportsDOM.querySelector("post-edit-form")).toBeTruthy();
     done();
   });
 
@@ -281,7 +296,7 @@ describe("AdminReports", () => {
     expect(deleteSpy).toHaveBeenCalled();
     expect(adminReports.deleteMode).toBeTrue();
     expect(adminReports.toDelete).toBe("ad post");
-    expect(adminReportsDOM.querySelector("app-pop-up")).toBeTruthy();
+    expect(adminReportsDOM.querySelector("item-delete-form")).toBeTruthy();
     done();
   });
 
@@ -438,11 +453,13 @@ describe("AdminReports", () => {
     const fixture = TestBed.createComponent(AdminReports);
     const adminReports = fixture.componentInstance;
     const changeSpy = spyOn(adminReports, "changeMode").and.callThrough();
-
+    adminReports.postReports = [...mockPostReports];
+    adminReports.userReports = [...mockUserReports];
+    adminReports.isLoading = false;
     fixture.detectChanges();
 
     // start the popup
-    adminReports.lastFocusedElement = document.querySelectorAll("a")[0];
+    adminReports.lastFocusedElement = document.querySelectorAll("button")[0];
     adminReports.toEdit = {
       displayName: "displayName",
       id: 2,
@@ -454,14 +471,14 @@ describe("AdminReports", () => {
 
     // exit the popup
     const popup = fixture.debugElement.query(By.css("display-name-edit-form"))
-      .componentInstance as MockDisplayNameForm;
+      .componentInstance as DisplayNameEditForm;
     popup.editMode.emit(false);
     fixture.detectChanges();
 
     // check the popup is exited
     expect(changeSpy).toHaveBeenCalled();
     expect(adminReports.nameEditMode).toBeFalse();
-    expect(document.activeElement).toBe(document.querySelectorAll("a")[0]);
+    expect(document.activeElement).toBe(document.querySelectorAll("button")[0]);
     done();
   });
 
@@ -469,11 +486,13 @@ describe("AdminReports", () => {
     const fixture = TestBed.createComponent(AdminReports);
     const adminReports = fixture.componentInstance;
     const changeSpy = spyOn(adminReports, "changeMode").and.callThrough();
-
+    adminReports.postReports = [...mockPostReports];
+    adminReports.userReports = [...mockUserReports];
+    adminReports.isLoading = false;
     fixture.detectChanges();
 
     // start the popup
-    adminReports.lastFocusedElement = document.querySelectorAll("a")[0];
+    adminReports.lastFocusedElement = document.querySelectorAll("button")[0];
     adminReports.toEdit = "post";
     adminReports.postEditMode = true;
     adminReports.reportData.reportID = 5;
@@ -482,26 +501,29 @@ describe("AdminReports", () => {
 
     // exit the popup
     const popup = fixture.debugElement.query(By.css("post-edit-form"))
-      .componentInstance as MockEditForm;
+      .componentInstance as PostEditForm;
     popup.editMode.emit(false);
     fixture.detectChanges();
 
     // check the popup is exited
     expect(changeSpy).toHaveBeenCalled();
     expect(adminReports.postEditMode).toBeFalse();
-    expect(document.activeElement).toBe(document.querySelectorAll("a")[0]);
+    expect(document.activeElement).toBe(document.querySelectorAll("button")[0]);
     done();
   });
 
   it("should change mode when the event emitter emits false - delete post", (done: DoneFn) => {
     const fixture = TestBed.createComponent(AdminReports);
     const adminReports = fixture.componentInstance;
+    const adminReportsDOM = fixture.nativeElement;
     const changeSpy = spyOn(adminReports, "changeMode").and.callThrough();
-
+    adminReports.postReports = [...mockPostReports];
+    adminReports.userReports = [...mockUserReports];
+    adminReports.isLoading = false;
     fixture.detectChanges();
 
     // start the popup
-    adminReports.lastFocusedElement = document.querySelectorAll("a")[0];
+    adminReports.lastFocusedElement = adminReportsDOM.querySelectorAll("button")[0];
     adminReports.deleteMode = true;
     adminReports.toDelete = "post";
     adminReports.itemToDelete = 2;
@@ -509,14 +531,14 @@ describe("AdminReports", () => {
 
     // exit the popup
     const popup = fixture.debugElement.query(By.css("item-delete-form"))
-      .componentInstance as MockDeleteForm;
+      .componentInstance as ItemDeleteForm;
     popup.editMode.emit(false);
     fixture.detectChanges();
 
     // check the popup is exited
     expect(changeSpy).toHaveBeenCalled();
     expect(adminReports.deleteMode).toBeFalse();
-    expect(document.activeElement).toBe(document.querySelectorAll("a")[0]);
+    expect(document.activeElement).toBe(adminReportsDOM.querySelectorAll("button")[0]);
     done();
   });
 
@@ -540,7 +562,7 @@ describe("AdminReports", () => {
 
     // exit the popup
     const popup = fixture.debugElement.query(By.css("display-name-edit-form"))
-      .componentInstance as MockDisplayNameForm;
+      .componentInstance as DisplayNameEditForm;
     popup.updatedDetails.emit({
       closed: true,
       reportID: 1,
@@ -578,7 +600,7 @@ describe("AdminReports", () => {
 
     // exit the popup
     const popup = fixture.debugElement.query(By.css("display-name-edit-form"))
-      .componentInstance as MockDisplayNameForm;
+      .componentInstance as DisplayNameEditForm;
     popup.updatedDetails.emit({
       closed: false,
       reportID: 1,
@@ -697,7 +719,7 @@ describe("AdminReports", () => {
 
     // exit the popup
     const popup = fixture.debugElement.query(By.css("item-delete-form"))
-      .componentInstance as MockDeleteForm;
+      .componentInstance as ItemDeleteForm;
     popup.deleted.emit(5);
     fixture.detectChanges();
 

@@ -482,7 +482,7 @@ describe("UserPage", () => {
     const hugSpy = spyOn(userPage, "sendHug").and.callThrough();
     const apiClientSpy = spyOn(userPage["apiClient"], "post").and.returnValue(of({}));
     const alertsSpy = spyOn(userPage["alertsService"], "createSuccessAlert");
-    const updateSpy = spyOn(userPage["authService"], "updateUserData").and.callThrough();
+    const updateSpy = spyOn(userPage["authService"], "updateUserData");
     userPage.otherUser.set({
       id: 1,
       displayName: "shirb",
@@ -524,8 +524,7 @@ describe("UserPage", () => {
     // after the click
     expect(hugSpy).toHaveBeenCalled();
     expect(apiClientSpy).toHaveBeenCalled();
-    expect(updateSpy).toHaveBeenCalled();
-    expect(userPage["authService"].userData()?.givenH).toBe(3);
+    expect(updateSpy).toHaveBeenCalledWith({ givenH: 3 });
     expect(userPage.otherUser()!.receivedH).toBe(4);
     expect(
       userPageDOM.querySelector("#rHugsElement").querySelectorAll(".pageData")[0].textContent,
@@ -537,18 +536,19 @@ describe("UserPage", () => {
   // Check the popup exits when 'false' is emitted
   it("should change mode when the event emitter emits false - display name edit", (done: DoneFn) => {
     const paramMap = TestBed.inject(ActivatedRoute);
-    spyOn(paramMap.snapshot.paramMap, "get").and.returnValue("1");
+    spyOn(paramMap.snapshot.paramMap, "get").and.returnValue("4");
     const authService = TestBed.inject(AuthService);
     authService.authenticated.set(true);
     authService.userData.set({ ...mockAuthedUser });
     const fixture = TestBed.createComponent(UserPage);
     const userPage = fixture.componentInstance;
+    userPage.isIdbFetchResolved.set(true);
     const changeSpy = spyOn(userPage, "changeMode").and.callThrough();
 
     fixture.detectChanges();
 
     // start the popup
-    userPage.lastFocusedElement = document.querySelectorAll("a")[0];
+    userPage.lastFocusedElement = document.querySelectorAll("button")[0];
     userPage.userToEdit = {
       displayName: userPage.authService.userData()!.displayName,
       id: userPage.authService.userData()!.id as number,
@@ -565,7 +565,7 @@ describe("UserPage", () => {
     // check the popup is exited
     expect(changeSpy).toHaveBeenCalled();
     expect(userPage.editMode).toBeFalse();
-    expect(document.activeElement).toBe(document.querySelectorAll("a")[0]);
+    expect(document.activeElement).toBe(document.querySelectorAll("button")[0]);
     done();
   });
 
@@ -596,12 +596,13 @@ describe("UserPage", () => {
         item: "#f4b56a",
       },
     });
+    userPage.isIdbFetchResolved.set(true);
     const changeSpy = spyOn(userPage, "changeMode").and.callThrough();
 
     fixture.detectChanges();
 
     // start the popup
-    userPage.lastFocusedElement = document.querySelectorAll("a")[0];
+    userPage.lastFocusedElement = document.querySelectorAll("button")[0];
     userPage.reportedItem = userPage.otherUser() as OtherUser;
     userPage.reportMode = true;
     userPage.reportType = "User";
@@ -615,7 +616,7 @@ describe("UserPage", () => {
     // check the popup is exited
     expect(changeSpy).toHaveBeenCalled();
     expect(userPage.reportMode).toBeFalse();
-    expect(document.activeElement).toBe(document.querySelectorAll("a")[0]);
+    expect(document.activeElement).toBe(document.querySelectorAll("button")[0]);
     done();
   });
 });

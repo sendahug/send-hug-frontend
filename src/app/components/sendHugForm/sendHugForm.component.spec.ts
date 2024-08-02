@@ -25,47 +25,55 @@
   SOFTWARE.
 */
 import { TestBed } from "@angular/core/testing";
-import { RouterModule } from "@angular/router";
 import {} from "jasmine";
-import { APP_BASE_HREF } from "@angular/common";
+import { APP_BASE_HREF, CommonModule } from "@angular/common";
 import {
   BrowserDynamicTestingModule,
   platformBrowserDynamicTesting,
 } from "@angular/platform-browser-dynamic/testing";
-import { HttpClientModule } from "@angular/common/http";
-import { ServiceWorkerModule } from "@angular/service-worker";
-import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { ReactiveFormsModule } from "@angular/forms";
-import { of } from "rxjs";
+import { BehaviorSubject, of } from "rxjs";
+import { provideZoneChangeDetection, signal } from "@angular/core";
+import { MockProvider } from "ng-mocks";
+import { provideRouter } from "@angular/router";
 
 import { SendHugForm } from "./sendHugForm.component";
 import { AuthService } from "@app/services/auth.service";
 import { mockAuthedUser } from "@tests/mockData";
 import { PopUp } from "@app/components/popUp/popUp.component";
 import { ValidationService } from "@app/services/validation.service";
-import { CommonTestProviders } from "@tests/commonModules";
+import { ApiClientService } from "@app/services/apiClient.service";
+import { ItemsService } from "@app/services/items.service";
+import { routes } from "@app/app.routes";
 
 describe("Send Hug Form", () => {
   // Before each test, configure testing environment
   beforeEach(() => {
+    const MockAuthService = MockProvider(AuthService, {
+      authenticated: signal(true),
+      userData: signal({ ...mockAuthedUser }),
+    });
+    const MockAPIClient = MockProvider(ApiClientService, {
+      post: () => of(),
+    });
+    const MockItemsService = MockProvider(ItemsService, {
+      receivedAHug: new BehaviorSubject(0),
+    });
+
     TestBed.resetTestEnvironment();
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
-      imports: [
-        RouterModule.forRoot([]),
-        HttpClientModule,
-        ServiceWorkerModule.register("sw.js", { enabled: false }),
-        FontAwesomeModule,
-        ReactiveFormsModule,
+      imports: [CommonModule, ReactiveFormsModule, PopUp, SendHugForm],
+      providers: [
+        { provide: APP_BASE_HREF, useValue: "/" },
+        provideZoneChangeDetection({ eventCoalescing: true }),
+        provideRouter(routes),
+        MockAuthService,
+        MockAPIClient,
+        MockItemsService,
       ],
-      declarations: [SendHugForm, PopUp],
-      providers: [{ provide: APP_BASE_HREF, useValue: "/" }, ...CommonTestProviders],
     }).compileComponents();
-
-    const authService = TestBed.inject(AuthService);
-    authService.authenticated.set(true);
-    authService.userData.set({ ...mockAuthedUser });
   });
 
   it("shows the name of the user who sent the post", () => {

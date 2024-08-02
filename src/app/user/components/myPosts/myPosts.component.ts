@@ -75,8 +75,7 @@ export class MyPosts implements OnInit {
   // loader sub-component variable
   waitFor = "user posts";
   // The user whose posts to fetch
-  @Input()
-  userID!: number;
+  @Input() userID!: number;
   user = computed(() =>
     this.userID && this.userID != this.authService.userData()!.id! ? "other" : "self",
   );

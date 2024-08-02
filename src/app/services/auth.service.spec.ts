@@ -31,15 +31,19 @@
 */
 
 import { TestBed } from "@angular/core/testing";
-import { HttpClientTestingModule, HttpTestingController } from "@angular/common/http/testing";
+import { HttpTestingController, provideHttpClientTesting } from "@angular/common/http/testing";
 import {
   BrowserDynamicTestingModule,
   platformBrowserDynamicTesting,
 } from "@angular/platform-browser-dynamic/testing";
-import { ServiceWorkerModule } from "@angular/service-worker";
 import {} from "jasmine";
 import { User as FirebaseUser } from "firebase/auth";
-import { HttpErrorResponse, HttpHeaders, HttpEventType } from "@angular/common/http";
+import {
+  HttpErrorResponse,
+  HttpHeaders,
+  HttpEventType,
+  provideHttpClient,
+} from "@angular/common/http";
 import { isEmpty, of } from "rxjs";
 import { provideFirebaseApp, initializeApp } from "@angular/fire/app";
 import { provideAuth, getAuth } from "@angular/fire/auth";
@@ -49,7 +53,6 @@ import { AuthService } from "./auth.service";
 import { AlertsService } from "./alerts.service";
 import { getMockFirebaseUser, mockAuthedUser } from "@tests/mockData";
 import { User } from "@app/interfaces/user.interface";
-import { environment } from "@env/environment";
 
 describe("AuthService", () => {
   let httpController: HttpTestingController;
@@ -64,13 +67,23 @@ describe("AuthService", () => {
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
-      imports: [
-        HttpClientTestingModule,
-        ServiceWorkerModule.register("/sw.js", { enabled: false }),
-      ],
+      imports: [],
       providers: [
         AuthService,
-        provideFirebaseApp(() => initializeApp(environment.firebase)),
+        AlertsService,
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        provideFirebaseApp(() =>
+          initializeApp({
+            apiKey: import.meta.env["VITE_FIREBASE_API_KEY"],
+            authDomain: import.meta.env["VITE_FIREBASE_AUTH_DOMAIN"],
+            projectId: import.meta.env["VITE_FIREBASE_PROJECT_ID"],
+            storageBucket: import.meta.env["VITE_FIREBASE_STORAGE_BUCKET"],
+            messagingSenderId: import.meta.env["VITE_FIREBASE_MESSAGING_SENDER_ID"],
+            appId: import.meta.env["VITE_FIREBASE_APP_ID"],
+            measurementId: import.meta.env["VITE_FIREBASE_MEASUREMENT_ID"],
+          }),
+        ),
         provideAuth(() => getAuth()),
         provideAnalytics(() => getAnalytics()),
       ],

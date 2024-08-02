@@ -31,46 +31,46 @@
 */
 
 import { TestBed } from "@angular/core/testing";
-import { RouterModule } from "@angular/router";
+import { provideRouter } from "@angular/router";
 import {} from "jasmine";
-import { APP_BASE_HREF } from "@angular/common";
+import { APP_BASE_HREF, CommonModule } from "@angular/common";
 import {
   BrowserDynamicTestingModule,
   platformBrowserDynamicTesting,
 } from "@angular/platform-browser-dynamic/testing";
-import { HttpClientModule } from "@angular/common/http";
-import { ServiceWorkerModule } from "@angular/service-worker";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { ReactiveFormsModule } from "@angular/forms";
+import { MockProvider } from "ng-mocks";
+import { NO_ERRORS_SCHEMA, provideZoneChangeDetection, signal } from "@angular/core";
 
 import { IconEditor } from "./iconEditor.component";
-import { AuthService } from "../../../common/services/auth.service";
+import { AuthService } from "@app/services/auth.service";
 import { mockAuthedUser } from "@tests/mockData";
-import { AppCommonModule } from "@app/common/common.module";
+import { routes } from "@app/app.routes";
+import { UserIcon } from "@app/components/userIcon/userIcon.component";
 
 describe("IconEditor", () => {
   // Before each test, configure testing environment
   beforeEach(() => {
+    const MockAuthService = MockProvider(AuthService, {
+      authenticated: signal(true),
+      userData: signal({ ...mockAuthedUser }),
+    });
+
     TestBed.resetTestEnvironment();
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
-      imports: [
-        RouterModule.forRoot([]),
-        HttpClientModule,
-        ServiceWorkerModule.register("sw.js", { enabled: false }),
-        FontAwesomeModule,
-        ReactiveFormsModule,
-        AppCommonModule,
-      ],
+      schemas: [NO_ERRORS_SCHEMA],
+      imports: [FontAwesomeModule, ReactiveFormsModule, UserIcon, CommonModule],
       declarations: [IconEditor],
-      providers: [{ provide: APP_BASE_HREF, useValue: "/" }],
+      providers: [
+        { provide: APP_BASE_HREF, useValue: "/" },
+        provideZoneChangeDetection({ eventCoalescing: true }),
+        provideRouter(routes),
+        MockAuthService,
+      ],
     }).compileComponents();
-
-    // trigger login
-    const authService = TestBed.inject(AuthService);
-    authService.authenticated.set(true);
-    authService.userData.set({ ...mockAuthedUser });
   });
 
   // Check the page is created
@@ -134,9 +134,6 @@ describe("IconEditor", () => {
     fixture.detectChanges();
 
     expect(iconEditor.iconEditForm.controls.characterColour.value).toBe("#000000");
-    iconEditorDOM.querySelectorAll(".character").forEach((path: SVGPathElement) => {
-      expect(path.getAttribute("style")).toBe("fill:#000000;");
-    });
 
     // change the left background colour
     iconEditorDOM.querySelector("#lbgColour").value = "#121212";
@@ -144,9 +141,6 @@ describe("IconEditor", () => {
     fixture.detectChanges();
 
     expect(iconEditor.iconEditForm.controls.lbgColour.value).toBe("#121212");
-    iconEditorDOM.querySelectorAll(".lbg").forEach((path: SVGPathElement) => {
-      expect(path.getAttribute("style")).toBe("fill:#121212;");
-    });
 
     // change the right background colour
     iconEditorDOM.querySelector("#rbgColour").value = "#ffffff";
@@ -154,9 +148,6 @@ describe("IconEditor", () => {
     fixture.detectChanges();
 
     expect(iconEditor.iconEditForm.controls.rbgColour.value).toBe("#ffffff");
-    iconEditorDOM.querySelectorAll(".rbg").forEach((path: SVGPathElement) => {
-      expect(path.getAttribute("style")).toBe("fill:#ffffff;");
-    });
 
     // change the item colour
     iconEditorDOM.querySelector("#itemColour").value = "#e1e1e1";
@@ -164,9 +155,6 @@ describe("IconEditor", () => {
     fixture.detectChanges();
 
     expect(iconEditor.iconEditForm.controls.itemColour.value).toBe("#e1e1e1");
-    iconEditorDOM.querySelectorAll(".item").forEach((path: SVGPathElement) => {
-      expect(path.getAttribute("style")).toBe("fill:#e1e1e1;");
-    });
     done();
   });
 

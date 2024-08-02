@@ -231,7 +231,10 @@ export class UserPage implements OnInit, OnDestroy {
   sendHug(userID: number) {
     this.apiClient.post(`users/all/${userID}/hugs`, {}).subscribe({
       next: (_response) => {
-        this.otherUser()!.receivedH += 1;
+        this.otherUser.set({
+          ...this.otherUser()!,
+          receivedH: this.otherUser()!.receivedH + 1,
+        });
         this.authService.updateUserData({ givenH: this.authService.userData()!.givenH + 1 });
         this.alertsService.createSuccessAlert("Your hug was sent!");
       },

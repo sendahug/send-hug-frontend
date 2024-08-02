@@ -33,7 +33,7 @@
 import { TestBed } from "@angular/core/testing";
 import { provideRouter, RouterLink } from "@angular/router";
 import {} from "jasmine";
-import { APP_BASE_HREF } from "@angular/common";
+import { APP_BASE_HREF, CommonModule } from "@angular/common";
 import {
   BrowserDynamicTestingModule,
   platformBrowserDynamicTesting,
@@ -41,7 +41,7 @@ import {
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { ReactiveFormsModule } from "@angular/forms";
 import { MockComponent, MockProvider } from "ng-mocks";
-import { signal } from "@angular/core";
+import { NO_ERRORS_SCHEMA, signal } from "@angular/core";
 import { BehaviorSubject } from "rxjs";
 
 import { SettingsPage } from "./settings.component";
@@ -67,18 +67,21 @@ describe("SettingsPage", () => {
       refreshRateSecs: 20,
     });
     const MockIconEditor = MockComponent(IconEditor);
+    const MockIcon = MockComponent(UserIcon);
 
     TestBed.resetTestEnvironment();
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
-      imports: [FontAwesomeModule, ReactiveFormsModule, RouterLink, UserIcon],
+      schemas: [NO_ERRORS_SCHEMA],
+      imports: [FontAwesomeModule, ReactiveFormsModule, RouterLink, MockIcon, CommonModule],
       declarations: [SettingsPage, MockIconEditor],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
         provideRouter(routes),
         MockAuthService,
         MockNotificationsService,
+        AlertsService,
       ],
     }).compileComponents();
   });

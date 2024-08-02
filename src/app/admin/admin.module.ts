@@ -31,7 +31,6 @@
 */
 
 import { NgModule } from "@angular/core";
-import { BrowserModule } from "@angular/platform-browser";
 import { provideHttpClient } from "@angular/common/http";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { ReactiveFormsModule } from "@angular/forms";
@@ -49,7 +48,6 @@ import { Loader } from "@app/components/loader/loader.component";
 
 @NgModule({
   imports: [
-    BrowserModule,
     ReactiveFormsModule,
     FontAwesomeModule,
     CommonModule,

@@ -31,9 +31,9 @@
 */
 
 import { CommonModule } from "@angular/common";
-import { Component, input } from "@angular/core";
+import { Component, computed, input } from "@angular/core";
 
-import { iconCharacters, iconElements } from "@app/interfaces/types";
+import { iconCharacters } from "@app/interfaces/types";
 import BgPatternSrc from "@/assets/img/bg_pattern.svg";
 
 export const DefaultColours = {
@@ -65,40 +65,22 @@ export const DefaultColours = {
 })
 export class UserIcon {
   selectedIcon = input<iconCharacters>("kitty");
+  selectedIconDefaultColours = computed(() => DefaultColours[this.selectedIcon()]);
   characterColour = input<string | undefined>(undefined);
+  characterStyle = computed(() => ({
+    fill: this.characterColour() ?? this.selectedIconDefaultColours().character,
+  }));
   lbgColour = input<string | undefined>(undefined);
+  lbgStyle = computed(() => ({ fill: this.lbgColour() ?? this.selectedIconDefaultColours().lbg }));
   rbgColour = input<string | undefined>(undefined);
+  rbgStyle = computed(() => ({ fill: this.rbgColour() ?? this.selectedIconDefaultColours().rbg }));
   itemColour = input<string | undefined>(undefined);
+  itemStyle = computed(() => ({
+    fill: this.itemColour() ?? this.selectedIconDefaultColours().item,
+  }));
   svgClass = input<string>("");
   BgPatternSrc = BgPatternSrc;
 
   // CTOR
   constructor() {}
-
-  /**
-   * Gets the fill colour for the given element.
-   * @param element - the part of the icon to colour.
-   * @returns an object with `fill` to include in the element's style.
-   */
-  getElementStyle(element: iconElements) {
-    let elementColour: string;
-    const defaultColours = DefaultColours[this.selectedIcon()];
-
-    switch (element) {
-      case "character":
-        elementColour = this.characterColour() ?? defaultColours.character;
-        break;
-      case "lbg":
-        elementColour = this.lbgColour() ?? defaultColours.lbg;
-        break;
-      case "rbg":
-        elementColour = this.rbgColour() ?? defaultColours.rbg;
-        break;
-      case "item":
-        elementColour = this.itemColour() ?? defaultColours.item;
-        break;
-    }
-
-    return { fill: elementColour };
-  }
 }

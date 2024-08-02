@@ -38,9 +38,42 @@ import {
   platformBrowserDynamicTesting,
 } from "@angular/platform-browser-dynamic/testing";
 import { CommonModule } from "@angular/common";
-import { provideZoneChangeDetection } from "@angular/core";
+import { Component, NO_ERRORS_SCHEMA, provideZoneChangeDetection, signal } from "@angular/core";
+import { By } from "@angular/platform-browser";
 
 import { UserIcon } from "./userIcon.component";
+import { DefaultColours } from "./userIcon.component";
+import { iconCharacters } from "@app/interfaces/types";
+
+@Component({
+  selector: "icon-container",
+  template: `
+    <div>
+      <app-user-icon
+        [selectedIcon]="selectedIcon()"
+        [characterColour]="characterColour()"
+        [lbgColour]="lbgColour()"
+        [rbgColour]="rbgColour()"
+        [itemColour]="itemColour()"
+        [svgClass]="'selectedCharacter'"
+      />
+    </div>
+  `,
+  standalone: true,
+  imports: [UserIcon],
+  schemas: [NO_ERRORS_SCHEMA],
+})
+class MockIconContainer {
+  selectedIcon = signal("kitty" as iconCharacters);
+  characterColour = signal(DefaultColours.kitty["character"]);
+  lbgColour = signal(DefaultColours.kitty["lbg"]);
+  rbgColour = signal(DefaultColours.kitty["rbg"]);
+  itemColour = signal(DefaultColours.kitty["item"]);
+
+  constructor() {
+    this.selectedIcon.set("kitty");
+  }
+}
 
 describe("IconEditor", () => {
   // Before each test, configure testing environment
@@ -49,7 +82,7 @@ describe("IconEditor", () => {
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
-      imports: [CommonModule, UserIcon],
+      imports: [CommonModule, MockIconContainer, UserIcon],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
         provideZoneChangeDetection({ eventCoalescing: true }),
@@ -62,5 +95,28 @@ describe("IconEditor", () => {
     const fixture = TestBed.createComponent(UserIcon);
     const userIcon = fixture.componentInstance;
     expect(userIcon).toBeTruthy();
+  });
+
+  it("should set the colours based on the incoming colours", (done: DoneFn) => {
+    const fixture = TestBed.createComponent(MockIconContainer);
+    const userIcon = fixture.debugElement.query(By.css("app-user-icon"));
+    const userIconDOM = userIcon.nativeElement;
+    fixture.detectChanges();
+
+    // Check the initial colours
+    // Angular converts hex codes to rgb for some reason, so...
+    userIconDOM.querySelectorAll(".character").forEach((path: SVGPathElement) => {
+      expect(path.getAttribute("style")).toBe(`fill: rgb(186, 159, 147);`);
+    });
+    userIconDOM.querySelectorAll(".lbg").forEach((path: SVGPathElement) => {
+      expect(path.getAttribute("style")).toBe(`fill: rgb(226, 162, 117);`);
+    });
+    userIconDOM.querySelectorAll(".rbg").forEach((path: SVGPathElement) => {
+      expect(path.getAttribute("style")).toBe(`fill: rgb(248, 238, 228);`);
+    });
+    userIconDOM.querySelectorAll(".item").forEach((path: SVGPathElement) => {
+      expect(path.getAttribute("style")).toBe(`fill: rgb(244, 181, 106);`);
+    });
+    done();
   });
 });

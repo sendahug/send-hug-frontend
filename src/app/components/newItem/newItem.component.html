@@ -1,8 +1,8 @@
 <div id="newItem">
-	<h3 id="newTitle">New {{ itemType }}</h3>
-	
-	<template *ngIf="authService.userData()">
-		<div id="newMessage" *ngIf="itemType == 'Message'">
+	<h3 id="newTitle">New {{ itemType() }}</h3>
+
+	<span *ngIf="authService.userData() !== undefined">
+		<div id="newMessage" *ngIf="itemType() == 'Message'">
 			<form [formGroup]="newMessageForm" class="newItem" aria-describedby="newTitle" *ngIf="this.newMessageForm.controls.messageFor.value && forID">
 				<div class="formElement">
 					<label class="pageCategory" for="messageFor">For:</label>
@@ -33,7 +33,7 @@
 			</div>
 		</div>
 
-		<div id="newPost" *ngIf="itemType == 'Post'">
+		<div id="newPost" *ngIf="itemType() == 'Post'">
 			<form [formGroup]="newPostForm" class="newItem" *ngIf="!authService.userData()!.blocked" aria-describedby="newTitle">
 				<div class="formElement">
 					<span class="pageCategory">By:</span> <span class="pageData" aria-describedby="pUser">{{ authService.userData()!.displayName }}</span>
@@ -62,9 +62,9 @@
 				You are currently blocked until {{ authService.userData()!.releaseDate }}. You cannot post new posts.
 			</div>
 		</div>
-	</template>
+	</span>
 
-	<div class="errorMessage" *ngIf="!authService.userData()" role="alert">
+	<div class="errorMessage" *ngIf="authService.userData() == undefined" role="alert">
 		You're not currently logged in. Please log in and then try again.
 	</div>
 

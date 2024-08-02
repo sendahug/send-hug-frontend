@@ -32,45 +32,54 @@
 
 import { TestBed } from "@angular/core/testing";
 import {} from "jasmine";
-import { APP_BASE_HREF } from "@angular/common";
+import { APP_BASE_HREF, CommonModule } from "@angular/common";
 import {
   BrowserDynamicTestingModule,
   platformBrowserDynamicTesting,
 } from "@angular/platform-browser-dynamic/testing";
-import { HttpClientModule } from "@angular/common/http";
-import { ServiceWorkerModule } from "@angular/service-worker";
-import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { of } from "rxjs";
-import { ActivatedRoute, RouterModule, UrlSegment } from "@angular/router";
+import {
+  ActivatedRoute,
+  provideRouter,
+  UrlSegment,
+  withComponentInputBinding,
+} from "@angular/router";
 import { ReactiveFormsModule } from "@angular/forms";
+import { NO_ERRORS_SCHEMA, provideZoneChangeDetection, signal } from "@angular/core";
+import { MockProvider } from "ng-mocks";
 
 import { NewItem } from "./newItem.component";
 import { AuthService } from "@app/services/auth.service";
 import { mockAuthedUser } from "@tests/mockData";
-import { AppCommonModule } from "@app/common/common.module";
+import { routes } from "@app/app.routes";
+import { ItemsService } from "@app/services/items.service";
+import { ApiClientService } from "@app/services/apiClient.service";
 
 describe("NewItem", () => {
   // Before each test, configure testing environment
-  beforeEach(() => {
+  beforeEach(async () => {
+    const MockAuthService = MockProvider(AuthService, {
+      authenticated: signal(true),
+      userData: signal({ ...mockAuthedUser }),
+    });
+    const MockItemsService = MockProvider(ItemsService);
+    const MockAPIClient = MockProvider(ApiClientService);
+
     TestBed.resetTestEnvironment();
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
-      imports: [
-        RouterModule.forRoot([]),
-        HttpClientModule,
-        ServiceWorkerModule.register("sw.js", { enabled: false }),
-        FontAwesomeModule,
-        ReactiveFormsModule,
-        AppCommonModule,
+      schemas: [NO_ERRORS_SCHEMA],
+      imports: [CommonModule, ReactiveFormsModule, NewItem],
+      providers: [
+        { provide: APP_BASE_HREF, useValue: "/" },
+        provideZoneChangeDetection({ eventCoalescing: true }),
+        provideRouter(routes, withComponentInputBinding()),
+        MockAuthService,
+        MockItemsService,
+        MockAPIClient,
       ],
-      declarations: [NewItem],
-      providers: [{ provide: APP_BASE_HREF, useValue: "/" }],
     }).compileComponents();
-
-    const authService = TestBed.inject(AuthService);
-    authService.authenticated.set(true);
-    authService.userData.set({ ...mockAuthedUser });
   });
 
   // Check that the component is created
@@ -84,15 +93,14 @@ describe("NewItem", () => {
   // ==================================================================
   // Check that the type of new item is determined by the parameter type
   it("New Post - has a type determined by the type parameter - post", (done: DoneFn) => {
-    const paramMap = TestBed.inject(ActivatedRoute);
-    paramMap.url = of([{ path: "Post" } as UrlSegment]);
+    TestBed.inject(ActivatedRoute).url = of([{ path: "Post" } as UrlSegment]);
     const fixture = TestBed.createComponent(NewItem);
     const newItem = fixture.componentInstance;
     const newItemDOM = fixture.nativeElement;
 
     fixture.detectChanges();
 
-    expect(newItem.itemType).toBe("Post");
+    expect(newItem.itemType()).toBe("Post");
     expect(newItemDOM.querySelector("#newPost")).toBeTruthy();
     expect(newItemDOM.querySelector("#newMessage")).toBeNull();
     expect(
@@ -109,8 +117,7 @@ describe("NewItem", () => {
       text: "new post",
       givenHugs: 0,
     };
-    const paramMap = TestBed.inject(ActivatedRoute);
-    paramMap.url = of([{ path: "Post" } as UrlSegment]);
+    TestBed.inject(ActivatedRoute).url = of([{ path: "Post" } as UrlSegment]);
     const fixture = TestBed.createComponent(NewItem);
     const newItem = fixture.componentInstance;
     const newItemDOM = fixture.nativeElement;
@@ -271,7 +278,7 @@ describe("NewItem", () => {
     fixture.detectChanges();
 
     expect(queryParamsSpy).toHaveBeenCalled();
-    expect(newItem.itemType).toBe("Message");
+    expect(newItem.itemType()).toBe("Message");
     expect(newItem.newMessageForm.controls.messageFor.value).toBe("hello");
     expect(newItem.forID).toBe(2);
     expect(newItemDOM.querySelector("#newPost")).toBeNull();

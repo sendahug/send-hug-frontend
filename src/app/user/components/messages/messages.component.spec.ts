@@ -45,9 +45,8 @@ import {
   withComponentInputBinding,
 } from "@angular/router";
 import { BehaviorSubject, of } from "rxjs";
-import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { By } from "@angular/platform-browser";
-import { NO_ERRORS_SCHEMA, signal } from "@angular/core";
+import { NO_ERRORS_SCHEMA, provideZoneChangeDetection, signal } from "@angular/core";
 import { MockProvider } from "ng-mocks";
 
 import { AppMessaging } from "./messages.component";
@@ -80,18 +79,11 @@ describe("AppMessaging", () => {
 
     TestBed.configureTestingModule({
       schemas: [NO_ERRORS_SCHEMA],
-      imports: [
-        FontAwesomeModule,
-        ItemDeleteForm,
-        HeaderMessage,
-        Loader,
-        UserIcon,
-        RouterLink,
-        CommonModule,
-      ],
+      imports: [ItemDeleteForm, HeaderMessage, Loader, UserIcon, RouterLink, CommonModule],
       declarations: [AppMessaging],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
+        provideZoneChangeDetection({ eventCoalescing: true }),
         provideRouter(routes, withComponentInputBinding()),
         MockAuthService,
         MockAPIClient,

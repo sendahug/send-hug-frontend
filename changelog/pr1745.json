@@ -1,9 +1,0 @@
-{
-  "pr_number": 1745,
-  "changes": [
-    {
-      "change": "Chores",
-      "description": "Removed Node.js version 18 from CI tests (in GitHub Actions) and added Node.js version 22."
-    }
-  ]
-}

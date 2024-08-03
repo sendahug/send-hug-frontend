@@ -102,7 +102,7 @@ export class PostEditForm implements OnInit {
     if (!this.postEditForm.valid) {
       this.alertService.createAlert({
         type: "Error",
-        message: this.postEditForm.controls.postText.errors?.error,
+        message: this.postEditForm.controls.postText.errors?.["error"],
       });
       return;
     }

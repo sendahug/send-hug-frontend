@@ -69,13 +69,13 @@ export class SignUpPage {
     } else if (this.authService.authenticated()) {
       errorMessage = "You cannot create another user when you're already registered!";
     } else if (!this.signUpForm.valid) {
-      if (this.signUpForm.controls.displayName.errors?.required) {
+      if (this.signUpForm.controls.displayName.errors?.["required"]) {
         errorMessage += "A display name is required. ";
-      } else if (this.signUpForm.controls.displayName.errors?.maxlength) {
+      } else if (this.signUpForm.controls.displayName.errors?.["maxlength"]) {
         errorMessage += "Display name is too long. Please shorten it and try again. ";
       }
 
-      if (this.signUpForm.controls.acceptedTerms.errors?.required) {
+      if (this.signUpForm.controls.acceptedTerms.errors?.["required"]) {
         errorMessage += "You must accept the terms and conditions before creating an account.";
       }
     }

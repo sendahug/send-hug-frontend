@@ -65,9 +65,9 @@ export class PasswordResetForm {
     if (!this.resetForm.valid) {
       let errorMessage = "";
 
-      if (this.resetForm.controls.username.errors?.required) {
+      if (this.resetForm.controls.username.errors?.["required"]) {
         errorMessage = "An email is required to reset the password.";
-      } else if (this.resetForm.controls.username.errors?.email) {
+      } else if (this.resetForm.controls.username.errors?.["email"]) {
         errorMessage = "The email entered in the username field is invalid.";
       }
 

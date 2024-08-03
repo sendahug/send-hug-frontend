@@ -148,6 +148,8 @@ export function TranspileDecoratorsVite(loadVarsFromEnv = []) {
 
         // We load these via env vars, so we need the extra processing bit.
         loadVarsFromEnv.forEach((v) => (env[v] = process.env[v]));
+        console.log(loadVarsFromEnv);
+        console.log(process.env["VITE_FIREBASE_MEASUREMENT_ID"]);
 
         magicString.overwrite(0, code.length, transpiled.outputText);
         magicString.prepend(`import.meta.env = ${JSON.stringify(env)};\n`);

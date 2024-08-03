@@ -91,6 +91,9 @@
     "preview": "vite preview",
     "format": "prettier .  --write",
     "cypress": "cypress run",
+    "cypress:open": "cypress open",
+    "size": "npm run build && size-limit",
+    "cleanBuild": "node cleanDist.js",
     "test": "web-test-runner",
     "test-open": "web-test-runner --open --manual"
   },

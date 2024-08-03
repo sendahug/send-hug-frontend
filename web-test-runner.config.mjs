@@ -36,6 +36,19 @@ import { fromRollup } from "@web/dev-server-rollup";
 import tsConfigPaths from "rollup-plugin-tsconfig-paths";
 import { TranspileDecoratorsVite, ReplaceTemplateUrlPlugin, ServeSVGsPlugin } from "./plugins.mjs";
 
+// We load these via env vars, so we need the extra processing bit.
+// Replace with an empty array if you're loading these from the env files.
+// const envBasedVariables = [];
+const envBasedVariables = [
+  "VITE_FIREBASE_API_KEY",
+  "VITE_FIREBASE_PROJECT_ID",
+  "VITE_FIREBASE_AUTH_DOMAIN",
+  "VITE_FIREBASE_STORAGE_BUCKET",
+  "VITE_FIREBASE_MESSAGING_SENDER_ID",
+  "VITE_FIREBASE_APP_ID",
+  "VITE_FIREBASE_MEASUREMENT_ID",
+];
+
 // TODO: Figure out how to replace these plugins with the angular compiler
 const templatePlugin = fromRollup(ReplaceTemplateUrlPlugin);
 const decoratorTranspiler = fromRollup(TranspileDecoratorsVite);
@@ -78,7 +91,7 @@ export default {
   plugins: [
     configPaths({}),
     templatePlugin(),
-    decoratorTranspiler(),
+    decoratorTranspiler(envBasedVariables),
     ServeSVGsPlugin(),
     esbuildPlugin({
       target: "es2020",

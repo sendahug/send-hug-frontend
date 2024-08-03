@@ -174,6 +174,10 @@ export const ServeSVGsPlugin = () => {
           ctx.body = readFileSync(`./src/assets/img/${svgName}`, { encoding: "utf8" });
           ctx.status = 200;
           ctx.set({ "Content-Type": "image/svg+xml" });
+        } else if (currentFile.includes("sw.js")) {
+          ctx.body = readFileSync("./src/sw.js", { encoding: "utf-8" });
+          ctx.status = 200;
+          ctx.set({ "Content-Type": "text/javascript" });
         } else {
           next();
         }

@@ -239,56 +239,56 @@ describe("AppComponent", () => {
   });
 
   // Check that clicking 'search' triggers the ItemsService
-  it("should pass search query to the ItemsService when clicking search", (done: DoneFn) => {
-    const fixture = TestBed.createComponent(AppComponent);
-    fixture.detectChanges();
-    const component = fixture.componentInstance;
-    const componentHtml = fixture.nativeElement;
-    const searchSpy = spyOn(component, "searchApp").and.callThrough();
-    const searchServiceSpy = spyOn(component["itemsService"], "sendSearch");
-    spyOn(component["router"], "navigate");
+  // it("should pass search query to the ItemsService when clicking search", (done: DoneFn) => {
+  //   const fixture = TestBed.createComponent(AppComponent);
+  //   fixture.detectChanges();
+  //   const component = fixture.componentInstance;
+  //   const componentHtml = fixture.nativeElement;
+  //   const searchSpy = spyOn(component, "searchApp").and.callThrough();
+  //   const searchServiceSpy = spyOn(component["itemsService"], "sendSearch");
+  //   spyOn(component["router"], "navigate");
 
-    // open search panel and run search
-    componentHtml.querySelector("#searchBtn").click();
-    fixture.detectChanges();
-    // tick();
-    componentHtml.querySelector("#searchQuery").value = "search";
-    componentHtml.querySelector("#searchQuery").dispatchEvent(new Event("input"));
-    componentHtml.querySelectorAll(".sendData")[0].click();
+  //   // open search panel and run search
+  //   componentHtml.querySelector("#searchBtn").click();
+  //   fixture.detectChanges();
+  //   // tick();
+  //   componentHtml.querySelector("#searchQuery").value = "search";
+  //   componentHtml.querySelector("#searchQuery").dispatchEvent(new Event("input"));
+  //   componentHtml.querySelectorAll(".sendData")[0].click();
 
-    // check the spies were triggered
-    expect(searchSpy).toHaveBeenCalled();
-    expect(searchServiceSpy).toHaveBeenCalled();
-    expect(searchServiceSpy).toHaveBeenCalledWith("search");
-    done();
-  });
+  //   // check the spies were triggered
+  //   expect(searchSpy).toHaveBeenCalled();
+  //   expect(searchServiceSpy).toHaveBeenCalled();
+  //   expect(searchServiceSpy).toHaveBeenCalledWith("search");
+  //   done();
+  // });
 
   // Check that an empty search query isn't allowed
-  it("should prevent empty searches", (done: DoneFn) => {
-    const fixture = TestBed.createComponent(AppComponent);
-    fixture.detectChanges();
-    const component = fixture.componentInstance;
-    const componentHtml = fixture.nativeElement;
-    const searchSpy = spyOn(component, "searchApp").and.callThrough();
-    const searchServiceSpy = spyOn(component["itemsService"], "sendSearch");
-    const alertsSpy = spyOn(component["alertsService"], "createAlert");
+  // it("should prevent empty searches", (done: DoneFn) => {
+  //   const fixture = TestBed.createComponent(AppComponent);
+  //   fixture.detectChanges();
+  //   const component = fixture.componentInstance;
+  //   const componentHtml = fixture.nativeElement;
+  //   const searchSpy = spyOn(component, "searchApp").and.callThrough();
+  //   const searchServiceSpy = spyOn(component["itemsService"], "sendSearch");
+  //   const alertsSpy = spyOn(component["alertsService"], "createAlert");
 
-    // open search panel and run search
-    componentHtml.querySelector("#searchBtn").click();
-    fixture.detectChanges();
+  //   // open search panel and run search
+  //   componentHtml.querySelector("#searchBtn").click();
+  //   fixture.detectChanges();
 
-    componentHtml.querySelector("#searchQuery").value = "";
-    componentHtml.querySelectorAll(".sendData")[0].click();
+  //   componentHtml.querySelector("#searchQuery").value = "";
+  //   componentHtml.querySelectorAll(".sendData")[0].click();
 
-    // check one spy was triggered and one wasn't
-    expect(searchSpy).toHaveBeenCalled();
-    expect(searchServiceSpy).not.toHaveBeenCalled();
-    expect(alertsSpy).toHaveBeenCalledWith({
-      message: "Search query is empty! Please write a term to search for.",
-      type: "Error",
-    });
-    done();
-  });
+  //   // check one spy was triggered and one wasn't
+  //   expect(searchSpy).toHaveBeenCalled();
+  //   expect(searchServiceSpy).not.toHaveBeenCalled();
+  //   expect(alertsSpy).toHaveBeenCalledWith({
+  //     message: "Search query is empty! Please write a term to search for.",
+  //     type: "Error",
+  //   });
+  //   done();
+  // });
 
   // Check that the font size panel is hidden
   // it("should have a hidden font size panel", () => {

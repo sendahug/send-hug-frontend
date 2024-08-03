@@ -50,8 +50,8 @@ jobs:
       - name: Upgrade npm
         run: npm install
 
-      - name: Install gulp
-        run: npm install -g gulp-cli
+      - name: Install playwright
+        run: npx playwright install
 
       - name: run tests
-        run: gulp test --max_old_space_size=8192
+        run: npm run test

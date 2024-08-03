@@ -1,5 +1,5 @@
 /*
-	Icon Editor
+	User Icon
 	Send a Hug Component Tests
   ---------------------------------------------------
   MIT License
@@ -75,7 +75,7 @@ class MockIconContainer {
   }
 }
 
-describe("IconEditor", () => {
+describe("UserIcon", () => {
   // Before each test, configure testing environment
   beforeEach(() => {
     TestBed.resetTestEnvironment();

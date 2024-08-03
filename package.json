@@ -6,82 +6,26 @@
   "type": "module",
   "size-limit": [
     {
-      "name": "JS Bundle",
-      "limit": "360 kB",
+      "name": "Main Bundle",
+      "limit": "200 kB",
       "path": [
-        "dist/app.bundle.js"
+        "dist/assets/index-*.js"
       ]
     },
     {
-      "name": "CSS",
-      "limit": "25 kB",
+      "name": "Vendor scripts",
+      "limit": "250 kB",
       "path": [
-        "dist/css/*"
-      ]
-    },
-    {
-      "name": "Public Templates",
-      "limit": "31 kB",
-      "path": [
-        "dist/app/aboutApp.component.html",
-        "dist/app/app.component.html",
-        "dist/app/appAlert.component.html",
-        "dist/app/displayNameEditForm.component.html",
-        "dist/app/errorPage.component.html",
-        "dist/app/fullList.component.html",
-        "dist/app/headerMessages.component.html",
-        "dist/app/itemDeleteForm.component.html",
-        "dist/app/loader.component.html",
-        "dist/app/loginPage.component.html",
-        "dist/app/mainPage.component.html",
-        "dist/app/newItem.component.html",
-        "dist/app/notifications.component.html",
-        "dist/app/passwordResetForm.component.html",
-        "dist/app/popUp.component.html",
-        "dist/app/post.component.html",
-        "dist/app/postEditForm.component.html",
-        "dist/app/reportForm.component.html",
-        "dist/app/searchResults.component.html",
-        "dist/app/signUpPage.component.html",
-        "dist/app/siteMap.component.html",
-        "dist/app/sitePolicies.component.html",
-        "dist/app/supportPage.component.html"
-      ]
-    },
-    {
-      "name": "Admin Templates",
-      "limit": "5 kB",
-      "path": [
-        "dist/app/adminBlocks.component.html",
-        "dist/app/adminDashboard.component.html",
-        "dist/app/adminFilters.component.html",
-        "dist/app/adminReports.component.html"
-      ]
-    },
-    {
-      "name": "User Templates",
-      "limit": "150 kB",
-      "path": [
-        "dist/app/iconEditor.component.html",
-        "dist/app/messages.component.html",
-        "dist/app/myPosts.component.html",
-        "dist/app/settings.component.html",
-        "dist/app/userPage.component.html"
+        "dist/assets/vendor-*.js",
+        "dist/assets/polyfills-*.js"
       ]
     },
     {
       "name": "Static Assets",
-      "limit": "300 kB",
+      "limit": "120 kB",
       "path": [
         "dist/assets/fonts/*",
-        "dist/assets/icons/*",
-        "dist/assets/img/bear.svg",
-        "dist/assets/img/bg_pattern.svg",
-        "dist/assets/img/dog.svg",
-        "dist/assets/img/kitty.svg",
-        "dist/assets/img/Logo_notifications.png",
-        "dist/assets/img/Logo.svg",
-        "dist/assets/img/pwa_icon.svg"
+        "dist/assets/*"
       ]
     }
   ],

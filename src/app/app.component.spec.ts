@@ -207,35 +207,36 @@ describe("AppComponent", () => {
     expect(mainContent.querySelector("app-notifications")).toBeDefined();
   });
 
-  // // Check that the search panel is hidden
-  // it("has hidden search", () => {
-  //   const fixture = TestBed.createComponent(AppComponent);
-  //   const component = fixture.componentInstance;
-  //   const componentHtml = fixture.debugElement.nativeElement;
+  // Check that the search panel is hidden
+  it("has hidden search", () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    const component = fixture.componentInstance;
+    const componentHtml = fixture.debugElement.nativeElement;
 
-  //   expect(component.showSearch).toBe(false);
-  //   expect(componentHtml.querySelector("#siteHeader").children.length).toEqual(2);
-  // });
+    expect(component.showSearch).toBe(false);
+    expect(componentHtml.querySelector("#siteHeader").children.length).toEqual(2);
+  });
 
-  // // Check that the search panel appears when the button is clicked
-  // it("has a search which appears when the icon is clicked", () => {
-  //   const fixture = TestBed.createComponent(AppComponent);
-  //   fixture.detectChanges();
-  //   const component = fixture.componentInstance;
-  //   const componentHtml = fixture.nativeElement;
-  //   const siteHeader = componentHtml.querySelector("#siteHeader");
+  // Check that the search panel appears when the button is clicked
+  it("has a search which appears when the icon is clicked", () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    fixture.detectChanges();
+    const component = fixture.componentInstance;
+    const componentHtml = fixture.nativeElement;
+    const siteHeader = componentHtml.querySelector("#siteHeader");
 
-  //   // Check the panel is initially hidden
-  //   expect(component.showSearch).toBe(false);
-  //   expect(siteHeader.querySelector("#search")).toBeNull();
+    // Check the panel is initially hidden
+    expect(component.showSearch).toBe(false);
+    expect(siteHeader.querySelector("#search")).toBeNull();
 
-  //   // Simulate a click on the button
-  //   componentHtml.querySelector("#searchBtn").click();
+    // Simulate a click on the button
+    componentHtml.querySelector("#searchBtn").click();
+    fixture.detectChanges();
 
-  //   // Check the panel is now visible
-  //   expect(component.showSearch).toBe(true);
-  //   expect(siteHeader.querySelector("#search")).toBeDefined();
-  // });
+    // Check the panel is now visible
+    expect(component.showSearch).toBe(true);
+    expect(siteHeader.querySelector("#search")).toBeDefined();
+  });
 
   // // Check that clicking 'search' triggers the ItemsService
   // it("should pass search query to the ItemsService when clicking search", (done: DoneFn) => {

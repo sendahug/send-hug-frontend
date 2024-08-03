@@ -176,34 +176,36 @@ describe("AppComponent", () => {
   });
 
   // Check that the notifications tab is hidden
-  // it("has hidden notifications tab", () => {
-  //   const fixture = TestBed.createComponent(AppComponent);
-  //   const component = fixture.componentInstance;
-  //   const componentHtml = fixture.debugElement.nativeElement;
+  it("has hidden notifications tab", () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    const component = fixture.componentInstance;
+    const componentHtml = fixture.debugElement.nativeElement;
+    fixture.detectChanges();
 
-  //   expect(component.showNotifications).toBe(false);
-  //   expect(componentHtml.querySelector("#mainContent").children.length).toEqual(2);
-  // });
+    expect(component.showNotifications).toBe(false);
+    expect(componentHtml.querySelector("#mainContent").children.length).toEqual(2);
+  });
 
-  // // Check that the notifications tab appears when the button is clicked
-  // it("has a notifications tab that appears when its icon is clicked", () => {
-  //   const fixture = TestBed.createComponent(AppComponent);
-  //   fixture.detectChanges();
-  //   const component = fixture.componentInstance;
-  //   const componentHtml = fixture.nativeElement;
-  //   const mainContent = componentHtml.querySelector("#mainContent");
+  // Check that the notifications tab appears when the button is clicked
+  it("has a notifications tab that appears when its icon is clicked", () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    fixture.detectChanges();
+    const component = fixture.componentInstance;
+    const componentHtml = fixture.nativeElement;
+    const mainContent = componentHtml.querySelector("#mainContent");
 
-  //   // Check the tab is initially hidden
-  //   expect(component.showNotifications).toBe(false);
-  //   expect(mainContent.querySelector("app-notifications")).toBeNull();
+    // Check the tab is initially hidden
+    expect(component.showNotifications).toBe(false);
+    expect(mainContent.querySelector("app-notifications")).toBeNull();
 
-  //   // Simulate a click on the button
-  //   componentHtml.querySelector("#notificationsBtn").click();
+    // Simulate a click on the button
+    componentHtml.querySelector("#notificationsBtn").click();
+    fixture.detectChanges();
 
-  //   // Check the tab is now visible
-  //   expect(component.showNotifications).toBe(true);
-  //   expect(mainContent.querySelector("app-notifications")).toBeDefined();
-  // });
+    // Check the tab is now visible
+    expect(component.showNotifications).toBe(true);
+    expect(mainContent.querySelector("app-notifications")).toBeDefined();
+  });
 
   // // Check that the search panel is hidden
   // it("has hidden search", () => {
@@ -532,19 +534,19 @@ describe("AppComponent", () => {
   //   expect(component.showMenu()).toBeTrue();
   // });
 
-  // // check the 'share' button is hidden
-  // it("shouldn't show the share button if it's not supported", () => {
-  //   const fixture = TestBed.createComponent(AppComponent);
-  //   fixture.detectChanges();
-  //   const component = fixture.componentInstance;
-  //   const componentHtml = fixture.nativeElement;
+  // check the 'share' button is hidden
+  it("shouldn't show the share button if it's not supported", () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    fixture.detectChanges();
+    const component = fixture.componentInstance;
+    const componentHtml = fixture.nativeElement;
 
-  //   // because tests run on Chrome, 'share' doesn't exist in navigator
-  //   expect(component.canShare).toBeFalse();
-  //   expect(
-  //     componentHtml.querySelector("#siteFooter").querySelectorAll("textlessButton")[0],
-  //   ).toBeUndefined();
-  // });
+    // because tests run on Chrome, 'share' doesn't exist in navigator
+    expect(component.canShare).toBeFalse();
+    expect(
+      componentHtml.querySelector("#siteFooter").querySelectorAll("textlessButton")[0],
+    ).toBeUndefined();
+  });
 
   // check the share method is called when the button is clicked
   it("should call the share method when the button is clicked", (done: DoneFn) => {

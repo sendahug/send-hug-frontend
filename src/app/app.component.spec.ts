@@ -238,87 +238,88 @@ describe("AppComponent", () => {
     expect(siteHeader.querySelector("#search")).toBeDefined();
   });
 
-  // // Check that clicking 'search' triggers the ItemsService
-  // it("should pass search query to the ItemsService when clicking search", (done: DoneFn) => {
-  //   const fixture = TestBed.createComponent(AppComponent);
-  //   fixture.detectChanges();
-  //   const component = fixture.componentInstance;
-  //   const componentHtml = fixture.nativeElement;
-  //   const searchSpy = spyOn(component, "searchApp").and.callThrough();
-  //   const searchServiceSpy = spyOn(component["itemsService"], "sendSearch");
-  //   spyOn(component["router"], "navigate");
+  // Check that clicking 'search' triggers the ItemsService
+  it("should pass search query to the ItemsService when clicking search", (done: DoneFn) => {
+    const fixture = TestBed.createComponent(AppComponent);
+    fixture.detectChanges();
+    const component = fixture.componentInstance;
+    const componentHtml = fixture.nativeElement;
+    const searchSpy = spyOn(component, "searchApp").and.callThrough();
+    const searchServiceSpy = spyOn(component["itemsService"], "sendSearch");
+    spyOn(component["router"], "navigate");
 
-  //   // open search panel and run search
-  //   componentHtml.querySelector("#searchBtn").click();
-  //   fixture.detectChanges();
-  //   // tick();
-  //   componentHtml.querySelector("#searchQuery").value = "search";
-  //   componentHtml.querySelector("#searchQuery").dispatchEvent(new Event("input"));
-  //   componentHtml.querySelectorAll(".sendData")[0].click();
+    // open search panel and run search
+    componentHtml.querySelector("#searchBtn").click();
+    fixture.detectChanges();
+    // tick();
+    componentHtml.querySelector("#searchQuery").value = "search";
+    componentHtml.querySelector("#searchQuery").dispatchEvent(new Event("input"));
+    componentHtml.querySelectorAll(".sendData")[0].click();
 
-  //   // check the spies were triggered
-  //   expect(searchSpy).toHaveBeenCalled();
-  //   expect(searchServiceSpy).toHaveBeenCalled();
-  //   expect(searchServiceSpy).toHaveBeenCalledWith("search");
-  //   done();
-  // });
+    // check the spies were triggered
+    expect(searchSpy).toHaveBeenCalled();
+    expect(searchServiceSpy).toHaveBeenCalled();
+    expect(searchServiceSpy).toHaveBeenCalledWith("search");
+    done();
+  });
 
-  // // Check that an empty search query isn't allowed
-  // it("should prevent empty searches", (done: DoneFn) => {
-  //   const fixture = TestBed.createComponent(AppComponent);
-  //   fixture.detectChanges();
-  //   const component = fixture.componentInstance;
-  //   const componentHtml = fixture.nativeElement;
-  //   const searchSpy = spyOn(component, "searchApp").and.callThrough();
-  //   const searchServiceSpy = spyOn(component["itemsService"], "sendSearch");
-  //   const alertsSpy = spyOn(component["alertsService"], "createAlert");
+  // Check that an empty search query isn't allowed
+  it("should prevent empty searches", (done: DoneFn) => {
+    const fixture = TestBed.createComponent(AppComponent);
+    fixture.detectChanges();
+    const component = fixture.componentInstance;
+    const componentHtml = fixture.nativeElement;
+    const searchSpy = spyOn(component, "searchApp").and.callThrough();
+    const searchServiceSpy = spyOn(component["itemsService"], "sendSearch");
+    const alertsSpy = spyOn(component["alertsService"], "createAlert");
 
-  //   // open search panel and run search
-  //   componentHtml.querySelector("#searchBtn").click();
-  //   fixture.detectChanges();
+    // open search panel and run search
+    componentHtml.querySelector("#searchBtn").click();
+    fixture.detectChanges();
 
-  //   componentHtml.querySelector("#searchQuery").value = "";
-  //   componentHtml.querySelectorAll(".sendData")[0].click();
+    componentHtml.querySelector("#searchQuery").value = "";
+    componentHtml.querySelectorAll(".sendData")[0].click();
 
-  //   // check one spy was triggered and one wasn't
-  //   expect(searchSpy).toHaveBeenCalled();
-  //   expect(searchServiceSpy).not.toHaveBeenCalled();
-  //   expect(alertsSpy).toHaveBeenCalledWith({
-  //     message: "Search query is empty! Please write a term to search for.",
-  //     type: "Error",
-  //   });
-  //   done();
-  // });
+    // check one spy was triggered and one wasn't
+    expect(searchSpy).toHaveBeenCalled();
+    expect(searchServiceSpy).not.toHaveBeenCalled();
+    expect(alertsSpy).toHaveBeenCalledWith({
+      message: "Search query is empty! Please write a term to search for.",
+      type: "Error",
+    });
+    done();
+  });
 
-  // // Check that the font size panel is hidden
-  // it("should have a hidden font size panel", () => {
-  //   const fixture = TestBed.createComponent(AppComponent);
-  //   const component = fixture.componentInstance;
-  //   const componentHtml = fixture.debugElement.nativeElement;
+  // Check that the font size panel is hidden
+  it("should have a hidden font size panel", () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    const component = fixture.componentInstance;
+    const componentHtml = fixture.debugElement.nativeElement;
 
-  //   expect(component.showTextPanel).toBe(false);
-  //   expect(componentHtml.querySelector("#siteHeader").children.length).toEqual(2);
-  // });
+    expect(component.showTextPanel).toBe(false);
+    expect(componentHtml.querySelector("#siteHeader").children.length).toEqual(2);
+  });
 
-  // // Check that the font size panel appears when the button is clicked
-  // it("has a font size which appears when the icon is clicked", () => {
-  //   const fixture = TestBed.createComponent(AppComponent);
-  //   fixture.detectChanges();
-  //   const component = fixture.componentInstance;
-  //   const componentHtml = fixture.nativeElement;
-  //   const siteHeader = componentHtml.querySelector("#siteHeader");
+  // Check that the font size panel appears when the button is clicked
+  it("has a font size which appears when the icon is clicked", () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    fixture.detectChanges();
+    const component = fixture.componentInstance;
+    const componentHtml = fixture.nativeElement;
+    const siteHeader = componentHtml.querySelector("#siteHeader");
 
-  //   // Check the panel is initially hidden
-  //   expect(component.showTextPanel).toBe(false);
-  //   expect(siteHeader.querySelector("#textPanel")).toBeNull();
+    // Check the panel is initially hidden
+    expect(component.showTextPanel).toBe(false);
+    expect(siteHeader.querySelector("#textPanel")).toBeNull();
 
-  //   // Simulate a click on the button
-  //   componentHtml.querySelector("#textSize").click();
+    // Simulate a click on the button
+    componentHtml.querySelector("#textSize").click();
+    fixture.detectChanges();
 
-  //   // Check the panel is now visible
-  //   expect(component.showTextPanel).toBe(true);
-  //   expect(siteHeader.querySelector("#textPanel")).toBeDefined();
-  // });
+    // Check the panel is now visible
+    expect(component.showTextPanel).toBe(true);
+    expect(siteHeader.querySelector("#textPanel")).toBeDefined();
+  });
 
   // // Check that the font size panel is hidden when the button is clicked again
   // it("has a font size which is hidden when the icon is clicked again", () => {

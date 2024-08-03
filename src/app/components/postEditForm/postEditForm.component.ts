@@ -44,7 +44,7 @@ import { AlertsService } from "@app/services/alerts.service";
 import { ApiClientService } from "@app/services/apiClient.service";
 import { SWManager } from "@app/services/sWManager.service";
 import { type PostAndReportResponse } from "@app/interfaces/responses";
-import { PopUp } from "../popUp/popUp.component";
+import { PopUp } from "@app/components/popUp/popUp.component";
 
 interface PostEditResponse {
   success: boolean;

@@ -37,8 +37,8 @@ import { ActivatedRoute, Router, RouterLink } from "@angular/router";
 
 // App-related imports
 import { ItemsService } from "@app/services/items.service";
-import { Loader } from "../loader/loader.component";
-import { SinglePost } from "../post/post.component";
+import { Loader } from "@app/components/loader/loader.component";
+import { SinglePost } from "@app/components/post/post.component";
 
 @Component({
   selector: "app-search-results",

@@ -37,7 +37,6 @@ import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { ReactiveFormsModule } from "@angular/forms";
 import { provideRouter, RouterLink } from "@angular/router";
 
-// Internal Modules
 import { UserPage } from "@user/components/userPage/userPage.component";
 import { AppMessaging } from "@user/components/messages/messages.component";
 import { MyPosts } from "@user/components/myPosts/myPosts.component";

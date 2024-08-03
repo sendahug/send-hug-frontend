@@ -40,8 +40,8 @@ import { ApiClientService } from "@app/services/apiClient.service";
 import { SWManager } from "@app/services/sWManager.service";
 import { Post } from "@app/interfaces/post.interface";
 import { CommonModule } from "@angular/common";
-import { Loader } from "../loader/loader.component";
-import { SinglePost } from "../post/post.component";
+import { Loader } from "@app/components/loader/loader.component";
+import { SinglePost } from "@app/components/post/post.component";
 
 interface MainPageResponse {
   recent: Post[];

@@ -56,10 +56,10 @@ import { ItemsService } from "@app/services/items.service";
 import { Post } from "@app/interfaces/post.interface";
 import { SWManager } from "@app/services/sWManager.service";
 import { PostAndReportResponse } from "@app/interfaces/responses";
-import { ItemDeleteForm } from "../itemDeleteForm/itemDeleteForm.component";
-import { ReportForm } from "../reportForm/reportForm.component";
-import { PostEditForm } from "../postEditForm/postEditForm.component";
-import { SendHugForm } from "../sendHugForm/sendHugForm.component";
+import { ItemDeleteForm } from "@app/components/itemDeleteForm/itemDeleteForm.component";
+import { ReportForm } from "@app/components/reportForm/reportForm.component";
+import { PostEditForm } from "@app/components/postEditForm/postEditForm.component";
+import { SendHugForm } from "@app/components/sendHugForm/sendHugForm.component";
 
 @Component({
   selector: "app-single-post",

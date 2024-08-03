@@ -43,7 +43,7 @@ import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { BehaviorSubject, of, throwError } from "rxjs";
 import { importProvidersFrom, provideZoneChangeDetection, signal } from "@angular/core";
 import { MockComponent, MockProvider } from "ng-mocks";
-import { setViewport } from "@web/test-runner-commands";
+// import { setViewport } from "@web/test-runner-commands";
 
 import { AppComponent } from "./app.component";
 import { NotificationsTab } from "./components/notifications/notifications.component";
@@ -66,9 +66,16 @@ describe("AppComponent", () => {
       checkForLoggedInUser: () => of(),
       canUser: (_permission) => true,
     });
-    const MockItemsService = MockProvider(ItemsService);
-    const MockNotificationsService = MockProvider(NotificationService);
-    const MockSWManager = MockProvider(SWManager);
+    const MockItemsService = MockProvider(ItemsService, {
+      sendSearch: (_search) => undefined,
+    });
+    const MockNotificationsService = MockProvider(NotificationService, {
+      getSubscription: () => undefined,
+      startAutoRefresh: () => undefined,
+    });
+    const MockSWManager = MockProvider(SWManager, {
+      registerSW: () => undefined,
+    });
 
     TestBed.resetTestEnvironment();
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());

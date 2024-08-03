@@ -74,7 +74,7 @@ export default {
   testRunnerHtml: (_path, _config) => fs.readFileSync("./plugins/tests.html", { encoding: "utf8" }),
   testsStartTimeout: 5000,
   testsFinishTimeout: 5000,
-  debug: true,
+  debug: false,
   plugins: [
     configPaths({}),
     templatePlugin(),

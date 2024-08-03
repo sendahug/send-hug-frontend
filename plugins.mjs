@@ -125,7 +125,7 @@ export function ReplaceTemplateUrlPlugin() {
  * transpile the TypeScript decorators - and by extension whole files - ourselves.
  * This only applies in development, as the production build uses rollup.
  */
-export function TranspileDecoratorsVite(loadVarsFromEnv = []) {
+export function TranspileDecoratorsVite() {
   return {
     name: "vite-plugin-transpile-decorators",
     transform(code, id) {
@@ -145,9 +145,6 @@ export function TranspileDecoratorsVite(loadVarsFromEnv = []) {
         });
 
         const env = loadEnv("tests", ".");
-
-        // We load these via env vars, so we need the extra processing bit.
-        // loadVarsFromEnv.forEach((v) => (env[v] = process.env[v]));
 
         magicString.overwrite(0, code.length, transpiled.outputText);
         magicString.prepend(`import.meta.env = ${JSON.stringify(env)};\n`);

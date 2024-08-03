@@ -86,5 +86,6 @@ export default {
       tsconfig: fileURLToPath(new URL("./tsconfig.json", import.meta.url)),
     }),
   ],
-  // concurrency: 1,
+  // TODO: Figure out why this is required for Circle CI.
+  concurrency: 1,
 };

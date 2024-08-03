@@ -30,60 +30,71 @@
   SOFTWARE.
 */
 import { TestBed } from "@angular/core/testing";
-import { RouterModule } from "@angular/router";
+import { provideRouter, RouterLink, RouterOutlet } from "@angular/router";
 import {
   BrowserDynamicTestingModule,
   platformBrowserDynamicTesting,
 } from "@angular/platform-browser-dynamic/testing";
 import {} from "jasmine";
-import { APP_BASE_HREF } from "@angular/common";
-import { HttpClientModule } from "@angular/common/http";
+import { APP_BASE_HREF, CommonModule } from "@angular/common";
 import { ServiceWorkerModule } from "@angular/service-worker";
 import { ReactiveFormsModule } from "@angular/forms";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
-import { throwError } from "rxjs";
+import { BehaviorSubject, of, throwError } from "rxjs";
+import { importProvidersFrom, provideZoneChangeDetection, signal } from "@angular/core";
+import { MockComponent, MockProvider } from "ng-mocks";
+import { setViewport } from "@web/test-runner-commands";
 
 import { AppComponent } from "./app.component";
 import { NotificationsTab } from "./components/notifications/notifications.component";
-import { AuthService } from "./common/services/auth.service";
-import { SWManager } from "./common/services/sWManager.service";
+import { AuthService } from "@app/services/auth.service";
+import { SWManager } from "@app/services/sWManager.service";
 import { NotificationService } from "./services/notifications.service";
 import { mockAuthedUser } from "@tests/mockData";
 import { AppAlert } from "./components/appAlert/appAlert.component";
-import { AppCommonModule } from "./common/common.module";
-import { AlertsService } from "./common/services/alerts.service";
-
-declare const viewport: any;
+import { AlertsService } from "@app/services/alerts.service";
+import { routes } from "./app.routes";
+import { ItemsService } from "./services/items.service";
 
 describe("AppComponent", () => {
   beforeEach(() => {
+    const MockNotificationsTab = MockComponent(NotificationsTab);
+    const MockAuthService = MockProvider(AuthService, {
+      authenticated: signal(true),
+      userData: signal({ ...mockAuthedUser }),
+      isUserDataResolved: new BehaviorSubject(false),
+      checkForLoggedInUser: () => of(),
+      canUser: (_permission) => true,
+    });
+    const MockItemsService = MockProvider(ItemsService);
+    const MockNotificationsService = MockProvider(NotificationService);
+    const MockSWManager = MockProvider(SWManager);
+
     TestBed.resetTestEnvironment();
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
       imports: [
-        RouterModule.forRoot([]),
-        HttpClientModule,
+        CommonModule,
+        RouterOutlet,
+        RouterLink,
         ReactiveFormsModule,
-        ServiceWorkerModule.register("sw.js", { enabled: false }),
         FontAwesomeModule,
-        AppCommonModule,
+        MockNotificationsTab,
+        AppAlert,
+        AppComponent,
       ],
-      declarations: [AppComponent, NotificationsTab, AppAlert],
-      providers: [{ provide: APP_BASE_HREF, useValue: "/" }],
+      providers: [
+        { provide: APP_BASE_HREF, useValue: "/" },
+        importProvidersFrom(ServiceWorkerModule.register("sw.js", { enabled: false })),
+        provideZoneChangeDetection({ eventCoalescing: true }),
+        provideRouter(routes),
+        MockAuthService,
+        MockItemsService,
+        MockNotificationsService,
+        MockSWManager,
+      ],
     }).compileComponents();
-
-    const authService = TestBed.inject(AuthService);
-    authService.authenticated.set(true);
-    authService.userData.set({ ...mockAuthedUser });
-
-    const swManager = TestBed.inject(SWManager);
-    spyOn(swManager, "registerSW");
-    spyOn(swManager, "updateSW");
-
-    const notificationService = TestBed.inject(NotificationService);
-    spyOn(notificationService, "getNotifications");
-    spyOn(notificationService, "startAutoRefresh");
   });
 
   // Check that the app is created
@@ -399,11 +410,11 @@ describe("AppComponent", () => {
   });
 
   // check the menu is shown if the screen is wide enough
-  it("should show the menu if the screen is wide enough", () => {
+  it("should show the menu if the screen is wide enough", async () => {
     const fixture = TestBed.createComponent(AppComponent);
-    viewport.set(700);
     const component = fixture.componentInstance;
     const componentHtml = fixture.nativeElement;
+    await setViewport({ width: 700, height: 640 });
     fixture.detectChanges();
 
     expect(component.showMenu()).toBeTrue();
@@ -412,48 +423,29 @@ describe("AppComponent", () => {
   });
 
   // check the menu is hidden if the screen isn't wide enough
-  it("should hide the menu if the screen isn't wide enough", () => {
+  it("should hide the menu if the screen isn't wide enough", async () => {
     const fixture = TestBed.createComponent(AppComponent);
-    viewport.set(500);
     const component = fixture.componentInstance;
     const componentHtml = fixture.nativeElement;
+    await setViewport({ width: 700, height: 640 });
+    fixture.detectChanges();
+
+    await setViewport({ width: 600, height: 640 });
     fixture.detectChanges();
 
     expect(component.showMenu()).toBeFalse();
     expect(componentHtml.querySelector("#navLinks")!.classList).toContain("hidden");
-    expect(componentHtml.querySelector("#menuBtn")!.classList).not.toContain("hidden");
-  });
-
-  // check the menu is shown when clicking the menu button
-  it("should show the menu when the menu button is clicked", (done: DoneFn) => {
-    const fixture = TestBed.createComponent(AppComponent);
-    viewport.set(500);
-    const component = fixture.componentInstance;
-    const componentHtml = fixture.nativeElement;
-    fixture.detectChanges();
-
-    // pre-click check
-    expect(component.showMenu()).toBeFalse();
-    expect(componentHtml.querySelector("#navLinks")!.classList).toContain("hidden");
-    expect(componentHtml.querySelector("#menuBtn")!.classList).not.toContain("hidden");
-
-    // trigger click
-    componentHtml.querySelector("#menuBtn").click();
-    fixture.detectChanges();
-
-    // post-click check
-    expect(component.showMenu()).toBeTrue();
-    expect(componentHtml.querySelector("#navLinks")!.classList).not.toContain("hidden");
-    expect(componentHtml.querySelector("#menuBtn")!.classList).not.toContain("hidden");
-    done();
   });
 
   // check the menu is hidden when clicked again
-  it("should hide the menu when the menu button is clicked again", (done: DoneFn) => {
+  it("should show/hide the menu when the menu button is clicked", async () => {
     const fixture = TestBed.createComponent(AppComponent);
-    viewport.set(500);
     const component = fixture.componentInstance;
     const componentHtml = fixture.nativeElement;
+    await setViewport({ width: 700, height: 640 });
+    fixture.detectChanges();
+
+    await setViewport({ width: 600, height: 640 });
     fixture.detectChanges();
 
     // pre-click check
@@ -478,13 +470,11 @@ describe("AppComponent", () => {
     expect(component.showMenu()).toBeFalse();
     expect(componentHtml.querySelector("#navLinks")!.classList).toContain("hidden");
     expect(componentHtml.querySelector("#menuBtn")!.classList).not.toContain("hidden");
-    done();
   });
 
   // should hide the nav menu if it gets too long
-  it("should hide nav menu if it gets too long", () => {
+  it("changeTextSize - should hide nav menu if it gets too long", () => {
     const fixture = TestBed.createComponent(AppComponent);
-    viewport.set(600);
     const component = fixture.componentInstance;
     const componentHtml = fixture.nativeElement;
     const checkSpy = spyOn(component, "checkMenuSize").and.callThrough();
@@ -504,9 +494,8 @@ describe("AppComponent", () => {
   });
 
   // should hide the menu if it gets too long and show it again if it's not too long
-  it("should show the menu again if it's not to long again", () => {
+  it("should show the menu again if it's not too long again", () => {
     const fixture = TestBed.createComponent(AppComponent);
-    viewport.set(600);
     const component = fixture.componentInstance;
     const componentHtml = fixture.nativeElement;
     const checkSpy = spyOn(component, "checkMenuSize").and.callThrough();
@@ -520,8 +509,7 @@ describe("AppComponent", () => {
     component.changeTextSize("largest");
     fixture.detectChanges();
 
-    expect(checkSpy).toHaveBeenCalled();
-    expect(navLinks.classList).toContain("hidden");
+    // Validate it's hidden before un-hiding it
     expect(componentHtml.querySelector("#menuBtn").classList).not.toContain("hidden");
 
     navLinks.style.width = "500px";

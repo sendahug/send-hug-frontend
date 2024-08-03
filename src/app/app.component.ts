@@ -120,7 +120,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     // Update the user state based on the logged in firebase user
     // (if there is one)
     this.authService.checkForLoggedInUser().subscribe({
-      error: (err) => {
+      error: (err: Error) => {
         if (err.message == "User doesn't exist yet") {
           this.alertsService.createAlert(
             {

@@ -59,6 +59,7 @@ import { ItemsService } from "./services/items.service";
 describe("AppComponent", () => {
   beforeEach(() => {
     const MockNotificationsTab = MockComponent(NotificationsTab);
+    const MockAppAlert = MockComponent(AppAlert);
     const MockAuthService = MockProvider(AuthService, {
       authenticated: signal(true),
       userData: signal({ ...mockAuthedUser }),
@@ -88,7 +89,7 @@ describe("AppComponent", () => {
         ReactiveFormsModule,
         FontAwesomeModule,
         MockNotificationsTab,
-        AppAlert,
+        MockAppAlert,
         AppComponent,
       ],
       providers: [

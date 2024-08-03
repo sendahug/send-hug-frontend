@@ -37,7 +37,7 @@ jobs:
         run: npm install
 
       - name: Build
-        run: npm run build:staging
+        run: npx vite build --mode=staging
         env:
           FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
           FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}

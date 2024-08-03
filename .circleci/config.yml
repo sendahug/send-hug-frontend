@@ -24,8 +24,6 @@ jobs:
       CHROME_BIN: /usr/bin/google-chrome
     steps:
       - checkout
-      - browser-tools/install-browser-tools
-      - run: google-chrome --version
       - restore_cache:
           key: send-hug-v1-
       - run: npm install

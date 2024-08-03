@@ -1,6 +1,5 @@
 {
   "name": "send-a-hug",
-  "private": true,
   "version": "1.0.0",
   "description": "Send a hug site.",
   "type": "module",

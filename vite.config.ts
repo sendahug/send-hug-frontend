@@ -26,6 +26,12 @@ export default defineConfig({
   ],
   server: {
     port: 3000,
+    watch: {
+      ignored: ["**/coverage/**"],
+    },
+  },
+  optimizeDeps: {
+    exclude: ["/__web-dev-server__web-socket.js", "@web/test-runner-core"],
   },
   css: {
     preprocessorOptions: {

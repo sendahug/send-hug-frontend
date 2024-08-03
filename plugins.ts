@@ -60,7 +60,7 @@ export function BuildAngularPlugin(): Plugin {
      */
     config(_config, env) {
       isDev = env.command == "serve";
-      ngBuilder = new AngularBuilder(isDev, path.resolve("./tsconfig.json"));
+      ngBuilder = new AngularBuilder(isDev, path.resolve("./tsconfig.dev.json"));
     },
 
     /**
@@ -68,7 +68,7 @@ export function BuildAngularPlugin(): Plugin {
      * host and builder, as well as the Angular compiler.
      */
     async buildStart(_options) {
-      ngBuilder.setupCompilerHost();
+      await ngBuilder.setupCompilerHost();
       ngBuilder.setupAngularProgram();
 
       // Credit to @nitedani for the next two lines
@@ -294,10 +294,12 @@ export function GlobalStylesPlugin(globalStylesDir: string, entryStylesheet: str
       server.middlewares.use(async (req, res, next) => {
         if (
           (req.url && globalStyleSheets.includes(req.url?.replace("/", ""))) ||
-          req.url == `/${entryCSSFile}`
+          req.url?.includes(`${entryCSSFile}`)
         ) {
+          const urlParts = req.url.split("/");
+
           const cssRes = await transformLessCode(
-            `${globalStylesDir}${req.url.replace(".css", ".less")}`,
+            `${globalStylesDir}/${urlParts[urlParts.length - 1].replace(".css", ".less")}`,
           );
 
           res.statusCode = 200;

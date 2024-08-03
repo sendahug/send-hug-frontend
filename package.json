@@ -91,7 +91,8 @@
     "preview": "vite preview",
     "format": "prettier .  --write",
     "cypress": "cypress run",
-    "test": "web-test-runner"
+    "test": "web-test-runner",
+    "test-open": "web-test-runner --open --manual"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
@@ -117,8 +118,7 @@
     "size-limit": "^11.1.4",
     "tslib": "^2.6.3",
     "typescript": "^5.5.4",
-    "vite": "^5.3.5",
-    "web-test-runner-jasmine": "^0.0.6"
+    "vite": "^5.3.5"
   },
   "dependencies": {
     "@angular/animations": "^18.1.3",

@@ -25,7 +25,8 @@
       "limit": "120 kB",
       "path": [
         "dist/assets/fonts/*",
-        "dist/assets/*"
+        "dist/assets/icons/*",
+        "dist/assets/*.svg"
       ]
     }
   ],

@@ -59,11 +59,6 @@ if (import.meta.hot) {
     currentNodes.forEach((node) => {
       const parentElement = node.parentElement;
       const newElement = document.createElement(currentModuleSelector);
-      // for(const attr in node.attributes) {
-      //   const currentAttr = node.attributes.item(Number(attr));
-      //   if (!currentAttr) continue;
-      //   newElement.setAttribute(currentAttr.name, currentAttr.value ?? “”);
-      // }
       parentElement?.removeChild(node);
       parentElement?.appendChild(newElement);
       const newInstance = createComponent(updatedModule, {

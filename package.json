@@ -170,7 +170,7 @@
     "@fortawesome/free-solid-svg-icons": "^6.6.0",
     "compression": "^1.7.4",
     "core-js": "^3.37.1",
-    "cypress": "^13.13.1",
+    "cypress": "^13.13.2",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "firebase": "^10.12.3",

@@ -40,7 +40,7 @@ jobs:
       - image: cimg/python:3.11-node
         environment:
           DATABASE_URL: postgresql+asyncpg://postgres:password@localhost:5432/test_sah?sslmode=disable
-          FLASK_APP: send-hug-backend/app.py
+          FLASK_APP: send-hug-backend/app.py:app
           FLASK_ENV: development
           FRONTEND: http://localhost:3000
           FIREBASE_CREDENTIALS_FILE: send-hug-backend/test_creds.json
@@ -114,7 +114,7 @@ jobs:
       - image: cimg/python:3.11-node
         environment:
           DATABASE_URL: postgresql+asyncpg://postgres:password@localhost:5432/test_sah?sslmode=disable
-          FLASK_APP: send-hug-backend/app.py
+          FLASK_APP: send-hug-backend/app.py:app
           FLASK_ENV: development
           FRONTEND: http://localhost:3000
           FIREBASE_CREDENTIALS_FILE: send-hug-backend/test_creds.json

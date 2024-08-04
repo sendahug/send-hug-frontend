@@ -6,5 +6,6 @@
     "threshold": 2
   },
   "ignore": [],
-  "runner": "axe"
+  "runners": ["axe"],
+  "concurrency": 1
 }

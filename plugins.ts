@@ -34,6 +34,7 @@ import less from "less";
 import fs from "node:fs";
 import AngularBuilder from "./plugins/builder";
 import path from "node:path";
+import MagicString from "magic-string";
 
 interface FileRouteMapping {
   filePath: string;
@@ -195,15 +196,42 @@ export function AngularLinkerPlugin(): Plugin {
  *                  - filePath - the relative path to the file (from the project root).
  *                  - route - the route that should serves the file (starting with `/`).
  *                  - fileType - the mime type of the file.
+ * @param serverUrls - a mapping of environment name - server url (for the given environment)
+ *                     to replace the serverURL in the ServiceWorker (if there is one).
+ * @param currentMode - the current environment to build for.
  */
-export function ProvideStandaloneFilesPlugin(files: FileRouteMapping[]): Plugin {
+export function ProvideStandaloneFilesPlugin(
+  files: FileRouteMapping[],
+  serverUrls: { [key: string]: string },
+  currentMode: string,
+): Plugin {
   const routes = files.map((mapping) => mapping.route);
 
   return {
     name: "vite-provide-standalone-files",
-    writeBundle(options, _outputBundle) {
+    enforce: "post",
+    writeBundle(options, outputBundle) {
       files.forEach((file) => {
-        fs.copyFileSync(file.filePath, `${options.dir}${file.route}`);
+        if (file.filePath.includes("sw.js")) {
+          const swFileData = fs.readFileSync(file.filePath, { encoding: "utf8" });
+          const magicString = new MagicString(swFileData);
+
+          magicString.replace(
+            `const serverUrl = "127.0.0.1:5000";`,
+            `const serverUrl = "${serverUrls[currentMode]}";`,
+          );
+          magicString.replace(/const toCache =(.|\n)+?];/, (_match) => {
+            return `const toCache = [
+              ${Object.keys(outputBundle)
+                .map((file) => `"/${file}"`)
+                .join(",\n")}
+            ];`;
+          });
+
+          fs.writeFileSync(`${options.dir}${file.route}`, magicString.toString());
+        } else {
+          fs.copyFileSync(file.filePath, `${options.dir}${file.route}`);
+        }
       });
     },
     // Based on: https://github.com/vite-pwa/vite-plugin-pwa/blob/main/src/plugins/dev.ts

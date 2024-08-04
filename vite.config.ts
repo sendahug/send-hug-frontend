@@ -15,12 +15,16 @@ const standaloneFiles = [
     route: "/manifest.webmanifest",
   },
 ];
+const serverUrlMapping = {
+  staging: "https://api-staging.send-hug.com",
+  production: "https://api.send-hug.com",
+};
 
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
   plugins: [
     AngularLinkerPlugin(),
     BuildAngularPlugin(),
-    ProvideStandaloneFilesPlugin(standaloneFiles),
+    ProvideStandaloneFilesPlugin(standaloneFiles, serverUrlMapping, mode),
     GlobalStylesPlugin("src/styles", "styles.less"),
   ],
   server: {
@@ -62,4 +66,4 @@ export default defineConfig({
       "@tests": path.resolve(__dirname, "./src/tests"),
     },
   },
-});
+}));

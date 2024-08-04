@@ -182,7 +182,7 @@ jobs:
       - run: sleep 15
       - run:
           name: Run accessibility tests
-          command: pa11y-ci --sitemap http://localhost:3000/sitemap.xml
+          command: pa11y-ci --sitemap http://localhost:3000/sitemap.xml --config .pa11yci
 
 workflows:
   run-testing:

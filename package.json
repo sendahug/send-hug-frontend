@@ -40,7 +40,8 @@
     "size": "npm run build && size-limit",
     "cleanBuild": "node cleanDist.js",
     "test": "web-test-runner",
-    "test-open": "web-test-runner --open --manual"
+    "test:open": "web-test-runner --open --manual",
+    "sitemap:gen": "tsx plugins/SitemapGen.ts"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
@@ -66,6 +67,7 @@
     "rollup-plugin-tsconfig-paths": "^1.5.2",
     "size-limit": "^11.1.4",
     "tslib": "^2.6.3",
+    "tsx": "^4.16.5",
     "typescript": "^5.5.4",
     "vite": "^5.3.5"
   },

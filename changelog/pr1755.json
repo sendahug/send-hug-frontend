@@ -48,6 +48,10 @@
     {
       "change": "Features",
       "description": "Added a new User Icon component. The component displays the icon the user selected and styles it with the colours the user selected. This allows us to remove the icon selection logic from various components (e.g., messaging, settings) and replace the previous method for updating the icon colours (by manipulating DOM elements directly) with styling using NgStyle."
+    },
+    {
+      "change": "Chores",
+      "description": "Added a script for auto-generating the sitemap based on the Angular router routes."
     }
   ]
 }

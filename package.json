@@ -25,6 +25,7 @@
       "path": [
         "dist/assets/fonts/*",
         "dist/assets/icons/*",
+        "dist/assets/img/*",
         "dist/assets/*.svg"
       ]
     }

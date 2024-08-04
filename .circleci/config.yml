@@ -43,7 +43,7 @@ jobs:
           FLASK_APP: send-hug-backend/app.py
           FLASK_ENV: development
           FRONTEND: http://localhost:3000
-          FIREBASE_CREDENTIALS_FILE: "../send-hug-frontend/e2e/mock_creds.json"
+          FIREBASE_CREDENTIALS_FILE: send-hug-backend/mock_creds.json
       - image: cimg/postgres:14.10
         auth:
           username: mydockerhub-user
@@ -78,6 +78,7 @@ jobs:
           name: Restore database
           command: |
             mv e2e/setup.py ../send-hug-backend
+            mv e2e/mock_creds.json ../send-hug-backend
             cd ../send-hug-backend
             python3 setup.py
       - run:
@@ -116,7 +117,7 @@ jobs:
           FLASK_APP: send-hug-backend/app.py
           FLASK_ENV: development
           FRONTEND: http://localhost:3000
-          FIREBASE_CREDENTIALS_FILE: "../send-hug-frontend/e2e/mock_creds.json"
+          FIREBASE_CREDENTIALS_FILE: send-hug-backend/mock_creds.json
       - image: cimg/postgres:14.10
         auth:
           username: mydockerhub-user
@@ -151,6 +152,7 @@ jobs:
           name: Restore database
           command: |
             mv e2e/setup.py ../send-hug-backend
+            mv e2e/mock_creds.json ../send-hug-backend
             cd ../send-hug-backend
             python3 setup.py
       - run:

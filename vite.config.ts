@@ -9,7 +9,6 @@ import * as path from "path";
 
 const standaloneFiles = [
   { filePath: "src/sw.js", fileType: "text/javascript", route: "/sw.js" },
-  { filePath: "src/sitemap.xml", fileType: "application/xml", route: "/sitemap.xml" },
   {
     filePath: "src/manifest.webmanifest",
     fileType: "application/manifest+json",

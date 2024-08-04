@@ -34,7 +34,7 @@ import { writeFileSync } from "node:fs";
 
 const routesFiles = ["./src/app/app.routes.ts"];
 const baseUrl = "http://localhost:3000";
-const outputFileName = "src/sitemap.xml";
+const outputFileName = "public/sitemap.xml";
 
 /**
  * Reads the list of links from the provided routes files

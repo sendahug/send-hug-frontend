@@ -10,6 +10,5 @@
     }
   },
   "ignore": [],
-  "runners": ["axe"],
-  "concurrency": 1
+  "runners": ["axe"]
 }

@@ -424,6 +424,7 @@ describe("AppComponent", () => {
     done();
   });
 
+  // TODO: Figure out why this is broken in CI.
   // check the menu is shown if the screen is wide enough
   // it("should show the menu if the screen is wide enough", async () => {
   //   const fixture = TestBed.createComponent(AppComponent);

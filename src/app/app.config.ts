@@ -36,7 +36,7 @@ import { provideHttpClient } from "@angular/common/http";
 import { ServiceWorkerModule } from "@angular/service-worker";
 import { initializeApp, provideFirebaseApp } from "@angular/fire/app";
 import { getAuth, provideAuth } from "@angular/fire/auth";
-// import { provideAnalytics, getAnalytics } from "@angular/fire/analytics";
+import { provideAnalytics, getAnalytics } from "@angular/fire/analytics";
 
 import { routes } from "./app.routes";
 
@@ -58,6 +58,6 @@ export const appConfig: ApplicationConfig = {
       }),
     ),
     provideAuth(() => getAuth()),
-    // provideAnalytics(() => getAnalytics()),
+    provideAnalytics(() => getAnalytics()),
   ],
 };

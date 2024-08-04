@@ -180,7 +180,6 @@ jobs:
           command: gulp e2eServe
           background: true
       - run: sleep 15
-      - run: curl http://localhost:3000
       - run:
           name: Run accessibility tests
           command: pa11y-ci --sitemap http://localhost:3000/sitemap.xml --config .pa11yci

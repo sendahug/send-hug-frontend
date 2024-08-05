@@ -38,7 +38,7 @@ import {
   platformBrowserDynamicTesting,
 } from "@angular/platform-browser-dynamic/testing";
 import { ReactiveFormsModule } from "@angular/forms";
-import { of } from "rxjs";
+import { Observable, of } from "rxjs";
 import { provideZoneChangeDetection, signal } from "@angular/core";
 
 import { PostEditForm } from "./postEditForm.component";
@@ -49,6 +49,12 @@ import { MockProvider } from "ng-mocks";
 import { AdminService } from "@app/services/admin.service";
 import { AuthService } from "@app/services/auth.service";
 import { ApiClientService } from "@app/services/apiClient.service";
+
+interface UpdatePostResult {
+  success: boolean;
+  updatedPost: PostGet;
+  reportId?: number;
+}
 
 // POST EDIT
 // ==================================================================
@@ -310,19 +316,21 @@ describe("PostEditForm", () => {
       of(closeReportResponse),
     );
 
-    popUp.updateReportIfNecessary(true, serverResponse).subscribe({
-      next: (response) => {
-        expect(response).toEqual({
-          success: true,
-          updatedPost: {
-            ...serverResponse.updated,
-          },
-          reportId: 2,
-        });
-        expect(adminServiceSpy).toHaveBeenCalledWith(2, false, 1);
-        done();
+    (popUp.updateReportIfNecessary(true, serverResponse) as Observable<UpdatePostResult>).subscribe(
+      {
+        next: (response) => {
+          expect(response).toEqual({
+            success: true,
+            updatedPost: {
+              ...serverResponse.updated,
+            },
+            reportId: 2,
+          });
+          expect(adminServiceSpy).toHaveBeenCalledWith(2, false, 1);
+          done();
+        },
       },
-    });
+    );
   });
 
   it("should not close the report if the user chooses not to", (done: DoneFn) => {
@@ -349,7 +357,9 @@ describe("PostEditForm", () => {
     popUp.editedItem = originalItem;
     const adminServiceSpy = spyOn(popUp["adminService"], "closeReport");
 
-    popUp.updateReportIfNecessary(false, serverResponse).subscribe({
+    (
+      popUp.updateReportIfNecessary(false, serverResponse) as Observable<UpdatePostResult>
+    ).subscribe({
       next: (response) => {
         expect(response).toEqual({
           success: true,
@@ -386,7 +396,9 @@ describe("PostEditForm", () => {
     fixture.detectChanges();
     const adminServiceSpy = spyOn(popUp["adminService"], "closeReport");
 
-    popUp.updateReportIfNecessary(false, serverResponse).subscribe({
+    (
+      popUp.updateReportIfNecessary(false, serverResponse) as Observable<UpdatePostResult>
+    ).subscribe({
       next: (response) => {
         expect(response).toEqual({
           success: true,

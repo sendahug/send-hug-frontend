@@ -3,28 +3,29 @@
 	<div id="characterSelect" role="radiogroup">
 		<div class="formElement">
 			<input type="radio" class="radioButton" id="cRadioOption1" value="bear" aria-describedby="" formControlName="selectedIcon">
-			<label class="radioButtonLabel" for="cRadioOption1"><img src="../../../assets/img/bear.svg" alt="" class="editIconOption"></label>
+			<label class="radioButtonLabel" for="cRadioOption1"><img [src]="BearIconSrc" alt="" class="editIconOption"></label>
 		</div>
 		<div class="formElement">
 			<input type="radio" class="radioButton" id="cRadioOption2" value="kitty" aria-describedby="" formControlName="selectedIcon">
-			<label class="radioButtonLabel" for="cRadioOption2"><img src="../../../assets/img/kitty.svg" alt="" class="editIconOption"></label>
+			<label class="radioButtonLabel" for="cRadioOption2"><img [src]="KittyIconSrc" alt="" class="editIconOption"></label>
 		</div>
 		<div class="formElement">
 			<input type="radio" class="radioButton" id="cRadioOption3" value="dog" aria-describedby="" formControlName="selectedIcon">
-			<label class="radioButtonLabel" for="cRadioOption3"><img src="../../../assets/img/dog.svg" alt="" class="editIconOption"></label>
+			<label class="radioButtonLabel" for="cRadioOption3"><img [src]="DogIconSrc" alt="" class="editIconOption"></label>
 		</div>
 	</div>
+
+	<div class="hint"><strong>Note: </strong>Changing your icon resets any unsaved colour changes!</div>
 	
 	<!-- This is done that way to ensure we inline all three icons -->
-	<div *ngIf="iconEditForm.controls.selectedIcon.value == 'bear'">
-		<img src="../../../assets/img/bear.svg" alt="" class="selectedCharacter" >
-	</div>
-	<div *ngIf="iconEditForm.controls.selectedIcon.value == 'kitty'">
-		<img src="../../../assets/img/kitty.svg" alt="" class="selectedCharacter" >
-	</div>
-	<div *ngIf="iconEditForm.controls.selectedIcon.value == 'dog'">
-		<img src="../../../assets/img/dog.svg" alt="" class="selectedCharacter" >
-	</div>
+	<app-user-icon
+		[selectedIcon]="iconEditForm.controls.selectedIcon.value || 'kitty'"
+		[characterColour]="iconEditForm.controls.characterColour.value || undefined"
+		[lbgColour]="iconEditForm.controls.lbgColour.value || undefined"
+		[rbgColour]="iconEditForm.controls.rbgColour.value || undefined"
+		[itemColour]="iconEditForm.controls.itemColour.value || undefined"
+		[svgClass]="'selectedCharacter'"
+	/>
 		
 	<div class="formElement">
 		<label for="characterC">Select Character Colour: </label>

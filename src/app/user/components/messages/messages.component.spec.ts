@@ -32,26 +32,34 @@
 
 import { TestBed } from "@angular/core/testing";
 import {} from "jasmine";
-import { APP_BASE_HREF } from "@angular/common";
+import { APP_BASE_HREF, CommonModule } from "@angular/common";
 import {
   BrowserDynamicTestingModule,
   platformBrowserDynamicTesting,
 } from "@angular/platform-browser-dynamic/testing";
-import { HttpClientModule } from "@angular/common/http";
-import { ServiceWorkerModule } from "@angular/service-worker";
-import { ActivatedRoute, RouterModule, UrlSegment } from "@angular/router";
-import { of } from "rxjs";
-import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
+import {
+  ActivatedRoute,
+  provideRouter,
+  RouterLink,
+  UrlSegment,
+  withComponentInputBinding,
+} from "@angular/router";
+import { BehaviorSubject, of } from "rxjs";
 import { By } from "@angular/platform-browser";
-import { NO_ERRORS_SCHEMA } from "@angular/core";
+import { NO_ERRORS_SCHEMA, provideZoneChangeDetection, signal } from "@angular/core";
+import { MockProvider } from "ng-mocks";
 
 import { AppMessaging } from "./messages.component";
-import { AuthService } from "../../../common/services/auth.service";
+import { AuthService } from "@app/services/auth.service";
 import { mockAuthedUser } from "@tests/mockData";
 import { FullThread } from "@app/interfaces/thread.interface";
-import { MockDeleteForm } from "@tests/mockForms";
-import { AppCommonModule } from "@app/common/common.module";
 import { Message } from "@app/interfaces/message.interface";
+import { ItemDeleteForm } from "@app/components/itemDeleteForm/itemDeleteForm.component";
+import { routes } from "@app/app.routes";
+import { ApiClientService } from "@app/services/apiClient.service";
+import { HeaderMessage } from "@app/components/headerMessage/headerMessage.component";
+import { Loader } from "@app/components/loader/loader.component";
+import { UserIcon } from "@app/components/userIcon/userIcon.component";
 
 describe("AppMessaging", () => {
   let mockMessages: Message[];
@@ -59,25 +67,28 @@ describe("AppMessaging", () => {
 
   // Before each test, configure testing environment
   beforeEach(() => {
+    const MockAuthService = MockProvider(AuthService, {
+      authenticated: signal(true),
+      userData: signal({ ...mockAuthedUser }),
+      isUserDataResolved: new BehaviorSubject(true),
+    });
+    const MockAPIClient = MockProvider(ApiClientService);
+
     TestBed.resetTestEnvironment();
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
       schemas: [NO_ERRORS_SCHEMA],
-      imports: [
-        RouterModule.forRoot([]),
-        HttpClientModule,
-        ServiceWorkerModule.register("sw.js", { enabled: false }),
-        FontAwesomeModule,
-        AppCommonModule,
-      ],
+      imports: [ItemDeleteForm, HeaderMessage, Loader, UserIcon, RouterLink, CommonModule],
       declarations: [AppMessaging],
-      providers: [{ provide: APP_BASE_HREF, useValue: "/" }],
+      providers: [
+        { provide: APP_BASE_HREF, useValue: "/" },
+        provideZoneChangeDetection({ eventCoalescing: true }),
+        provideRouter(routes, withComponentInputBinding()),
+        MockAuthService,
+        MockAPIClient,
+      ],
     }).compileComponents();
-
-    const authService = TestBed.inject(AuthService);
-    authService.authenticated.set(true);
-    authService.userData.set({ ...mockAuthedUser });
 
     mockMessages = [
       {
@@ -174,8 +185,6 @@ describe("AppMessaging", () => {
     expect(appMessaging.deleteMode).toBeFalse();
   });
 
-  // TODO: Add test for the user icon setup (onInit and setUpUserIcon)
-
   it("should fetch messages from the server", () => {
     const fixture = TestBed.createComponent(AppMessaging);
     const appMessaging = fixture.componentInstance;
@@ -256,6 +265,10 @@ describe("AppMessaging", () => {
   });
 
   it("should set the filter value to the thread ID if the message type is thread", (done: DoneFn) => {
+    TestBed.inject(ActivatedRoute).url = of([
+      { path: "thread" } as UrlSegment,
+      { path: "2" } as UrlSegment,
+    ]);
     const fixture = TestBed.createComponent(AppMessaging);
     const appMessaging = fixture.componentInstance;
     appMessaging.messType = "thread";
@@ -319,7 +332,6 @@ describe("AppMessaging", () => {
     const idbSpy = spyOn(appMessaging["swManager"], "queryThreads").and.returnValue(
       new Promise((resolve) => resolve({ messages: mockThreads, pages: 2 })),
     );
-
     fixture.detectChanges();
 
     appMessaging.fetchThreadsFromIdb().subscribe((response) => {
@@ -355,7 +367,9 @@ describe("AppMessaging", () => {
   // Check that the login method triggers the auth service
   it("should show a link to login if the user isn't logged in", (done: DoneFn) => {
     // set authenticated to false
-    TestBed.inject(AuthService).authenticated.set(false);
+    const authService = TestBed.inject(AuthService);
+    authService.authenticated.set(false);
+
     // create the component and set up spies
     const fixture = TestBed.createComponent(AppMessaging);
     const appMessaging = fixture.componentInstance;
@@ -376,7 +390,7 @@ describe("AppMessaging", () => {
     const appMessaging = fixture.componentInstance;
     const appMessagingDOM = fixture.nativeElement;
     appMessaging.messages.set(mockMessages);
-
+    appMessaging.isIdbFetchLoading.set(false);
     fixture.detectChanges();
 
     // before the click
@@ -403,6 +417,7 @@ describe("AppMessaging", () => {
     const fetchSpy = spyOn(appMessaging, "fetchMessages");
     appMessaging.messages.set(mockMessages);
     appMessaging.totalPages.set(2);
+    appMessaging.isIdbFetchLoading.set(false);
     fixture.detectChanges();
 
     appMessagingDOM.querySelectorAll(".nextButton")[0].click();
@@ -421,6 +436,7 @@ describe("AppMessaging", () => {
     const fetchSpy = spyOn(appMessaging, "fetchThreads");
     appMessaging.userThreads.set(mockThreads);
     appMessaging.totalPages.set(2);
+    appMessaging.isIdbFetchLoading.set(false);
     fixture.detectChanges();
 
     appMessagingDOM.querySelectorAll(".nextButton")[0].click();
@@ -440,6 +456,7 @@ describe("AppMessaging", () => {
     appMessaging.messages.set(mockMessages);
     appMessaging.totalPages.set(2);
     appMessaging.currentPage.set(2);
+    appMessaging.isIdbFetchLoading.set(false);
     fixture.detectChanges();
 
     appMessagingDOM.querySelectorAll(".prevButton")[0].click();
@@ -459,6 +476,7 @@ describe("AppMessaging", () => {
     appMessaging.userThreads.set(mockThreads);
     appMessaging.totalPages.set(2);
     appMessaging.currentPage.set(2);
+    appMessaging.isIdbFetchLoading.set(false);
     fixture.detectChanges();
 
     appMessagingDOM.querySelectorAll(".prevButton")[0].click();
@@ -475,6 +493,7 @@ describe("AppMessaging", () => {
     const appMessaging = fixture.componentInstance;
     const appMessagingDOM = fixture.nativeElement;
     const navigateSpy = spyOn(appMessaging["router"], "navigate");
+    appMessaging.isIdbFetchLoading.set(false);
     fixture.detectChanges();
 
     appMessagingDOM.querySelectorAll(".messNavOption")[1].click();
@@ -496,6 +515,7 @@ describe("AppMessaging", () => {
     const appMessaging = fixture.componentInstance;
     const appMessagingDOM = fixture.nativeElement;
     const navigateSpy = spyOn(appMessaging["router"], "navigate");
+    appMessaging.isIdbFetchLoading.set(false);
     fixture.detectChanges();
 
     appMessagingDOM.querySelectorAll(".messNavOption")[2].click();
@@ -515,6 +535,7 @@ describe("AppMessaging", () => {
     const appMessagingDOM = fixture.nativeElement;
     const navigateSpy = spyOn(appMessaging["router"], "navigate");
     appMessaging.userThreads.set(mockThreads);
+    appMessaging.isIdbFetchLoading.set(false);
     fixture.detectChanges();
 
     appMessagingDOM.querySelectorAll(".viewButton")[0].click();
@@ -533,7 +554,7 @@ describe("AppMessaging", () => {
     const appMessaging = fixture.componentInstance;
     const appMessagingDOM = fixture.nativeElement;
     appMessaging.userThreads.set(mockThreads);
-
+    appMessaging.isIdbFetchLoading.set(false);
     fixture.detectChanges();
 
     // before the click
@@ -552,13 +573,14 @@ describe("AppMessaging", () => {
     done();
   });
 
-  // Check that deleting all messages triggers the popup
+  // // Check that deleting all messages triggers the popup
   it("should trigger the popup upon deleting all", (done: DoneFn) => {
     TestBed.inject(ActivatedRoute).url = of([{ path: "inbox" } as UrlSegment]);
     const fixture = TestBed.createComponent(AppMessaging);
     const appMessaging = fixture.componentInstance;
     const appMessagingDOM = fixture.nativeElement;
     appMessaging.messages.set(mockMessages);
+    appMessaging.isIdbFetchLoading.set(false);
     fixture.detectChanges();
 
     // before the click
@@ -582,6 +604,8 @@ describe("AppMessaging", () => {
     const fixture = TestBed.createComponent(AppMessaging);
     const appMessaging = fixture.componentInstance;
     const changeSpy = spyOn(appMessaging, "changeMode").and.callThrough();
+    appMessaging.messages.set(mockMessages);
+    appMessaging.isIdbFetchLoading.set(false);
 
     // start the popup
     appMessaging.lastFocusedElement = document.querySelectorAll("a")[0];
@@ -592,7 +616,7 @@ describe("AppMessaging", () => {
 
     // exit the popup
     const popup = fixture.debugElement.query(By.css("item-delete-form"))
-      .componentInstance as MockDeleteForm;
+      .componentInstance as ItemDeleteForm;
     popup.editMode.emit(false);
     fixture.detectChanges();
 
@@ -610,6 +634,7 @@ describe("AppMessaging", () => {
     const appMessaging = fixture.componentInstance;
     const appMessagingDOM = fixture.nativeElement;
     appMessaging.messages.set(mockMessages);
+    appMessaging.isIdbFetchLoading.set(false);
 
     fixture.detectChanges();
 
@@ -633,6 +658,7 @@ describe("AppMessaging", () => {
     const updateSpy = spyOn(appMessaging, "updateMessageList").and.callThrough();
     spyOn(appMessaging, "fetchMessages");
     appMessaging.messages.set(mockMessages);
+    appMessaging.isIdbFetchLoading.set(false);
 
     // start the popup
     appMessaging.lastFocusedElement = document.querySelectorAll("a")[0];
@@ -643,7 +669,7 @@ describe("AppMessaging", () => {
 
     // exit the popup
     const popup = fixture.debugElement.query(By.css("item-delete-form"))
-      .componentInstance as MockDeleteForm;
+      .componentInstance as ItemDeleteForm;
     popup.deleted.emit(1);
     popup.editMode.emit(false);
     fixture.detectChanges();
@@ -662,6 +688,7 @@ describe("AppMessaging", () => {
     const updateSpy = spyOn(appMessaging, "updateMessageList").and.callThrough();
     spyOn(appMessaging, "fetchMessages");
     appMessaging.userThreads.set(mockThreads);
+    appMessaging.isIdbFetchLoading.set(false);
 
     // start the popup
     appMessaging.lastFocusedElement = document.querySelectorAll("a")[0];
@@ -672,7 +699,7 @@ describe("AppMessaging", () => {
 
     // exit the popup
     const popup = fixture.debugElement.query(By.css("item-delete-form"))
-      .componentInstance as MockDeleteForm;
+      .componentInstance as ItemDeleteForm;
     popup.deleted.emit(3);
     popup.editMode.emit(false);
     fixture.detectChanges();
@@ -690,6 +717,7 @@ describe("AppMessaging", () => {
     const updateSpy = spyOn(appMessaging, "updateMessageList").and.callThrough();
     spyOn(appMessaging, "fetchMessages");
     appMessaging.messages.set(mockMessages);
+    appMessaging.isIdbFetchLoading.set(false);
 
     // start the popup
     appMessaging.lastFocusedElement = document.querySelectorAll("a")[0];
@@ -700,7 +728,7 @@ describe("AppMessaging", () => {
 
     // exit the popup
     const popup = fixture.debugElement.query(By.css("item-delete-form"))
-      .componentInstance as MockDeleteForm;
+      .componentInstance as ItemDeleteForm;
     popup.deleted.emit(1);
     popup.editMode.emit(false);
     fixture.detectChanges();
@@ -718,6 +746,7 @@ describe("AppMessaging", () => {
     const updateSpy = spyOn(appMessaging, "updateMessageList").and.callThrough();
     spyOn(appMessaging, "fetchMessages");
     appMessaging.userThreads.set(mockThreads);
+    appMessaging.isIdbFetchLoading.set(false);
 
     // start the popup
     appMessaging.lastFocusedElement = document.querySelectorAll("a")[0];
@@ -728,7 +757,7 @@ describe("AppMessaging", () => {
 
     // exit the popup
     const popup = fixture.debugElement.query(By.css("item-delete-form"))
-      .componentInstance as MockDeleteForm;
+      .componentInstance as ItemDeleteForm;
     popup.deleted.emit(3);
     popup.editMode.emit(false);
     fixture.detectChanges();

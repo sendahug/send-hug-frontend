@@ -31,15 +31,20 @@
 */
 
 // Angular imports
+import { CommonModule } from "@angular/common";
 import { Component } from "@angular/core";
-import { ActivatedRoute, Router } from "@angular/router";
+import { ActivatedRoute, Router, RouterLink } from "@angular/router";
 
 // App-related imports
-import { ItemsService } from "@common/services/items.service";
+import { ItemsService } from "@app/services/items.service";
+import { Loader } from "@app/components/loader/loader.component";
+import { SinglePost } from "@app/components/post/post.component";
 
 @Component({
   selector: "app-search-results",
   templateUrl: "./searchResults.component.html",
+  standalone: true,
+  imports: [CommonModule, Loader, SinglePost, RouterLink],
 })
 export class SearchResults {
   searchQuery: string | null;

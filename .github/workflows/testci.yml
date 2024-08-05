@@ -12,7 +12,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
     strategy:
       matrix:
         node-version: ["20", "22"]
@@ -50,8 +49,8 @@ jobs:
       - name: Upgrade npm
         run: npm install
 
-      - name: Install gulp
-        run: npm install -g gulp-cli
+      - name: Install playwright
+        run: npx playwright install --with-deps
 
       - name: run tests
-        run: gulp test --max_old_space_size=8192
+        run: npm run test

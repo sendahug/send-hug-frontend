@@ -30,16 +30,19 @@
   SOFTWARE.
 */
 
+import { CommonModule } from "@angular/common";
 import { Component } from "@angular/core";
-import { FormBuilder, Validators } from "@angular/forms";
-import { Router } from "@angular/router";
-import { AlertsService } from "@app/common/services/alerts.service";
+import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
+import { Router, RouterLink } from "@angular/router";
 
-import { AuthService } from "@app/common/services/auth.service";
+import { AlertsService } from "@app/services/alerts.service";
+import { AuthService } from "@app/services/auth.service";
 
 @Component({
   selector: "app-signup-page",
   templateUrl: "./signUpPage.component.html",
+  standalone: true,
+  imports: [ReactiveFormsModule, CommonModule, RouterLink],
 })
 export class SignUpPage {
   signUpForm = this.fb.group({
@@ -49,7 +52,7 @@ export class SignUpPage {
 
   constructor(
     private fb: FormBuilder,
-    private authService: AuthService,
+    protected authService: AuthService,
     private router: Router,
     private alertsService: AlertsService,
   ) {}
@@ -66,13 +69,13 @@ export class SignUpPage {
     } else if (this.authService.authenticated()) {
       errorMessage = "You cannot create another user when you're already registered!";
     } else if (!this.signUpForm.valid) {
-      if (this.signUpForm.controls.displayName.errors?.required) {
+      if (this.signUpForm.controls.displayName.errors?.["required"]) {
         errorMessage += "A display name is required. ";
-      } else if (this.signUpForm.controls.displayName.errors?.maxlength) {
+      } else if (this.signUpForm.controls.displayName.errors?.["maxlength"]) {
         errorMessage += "Display name is too long. Please shorten it and try again. ";
       }
 
-      if (this.signUpForm.controls.acceptedTerms.errors?.required) {
+      if (this.signUpForm.controls.acceptedTerms.errors?.["required"]) {
         errorMessage += "You must accept the terms and conditions before creating an account.";
       }
     }

@@ -32,27 +32,37 @@
 
 import { TestBed } from "@angular/core/testing";
 import {} from "jasmine";
-import { APP_BASE_HREF } from "@angular/common";
+import { APP_BASE_HREF, CommonModule } from "@angular/common";
 import {
   BrowserDynamicTestingModule,
   platformBrowserDynamicTesting,
 } from "@angular/platform-browser-dynamic/testing";
-import { HttpClientModule } from "@angular/common/http";
-import { ServiceWorkerModule } from "@angular/service-worker";
-import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { of } from "rxjs";
-import { ActivatedRoute, Router, RouterModule, UrlSegment } from "@angular/router";
+import {
+  ActivatedRoute,
+  provideRouter,
+  Router,
+  RouterLink,
+  RouterModule,
+  UrlSegment,
+} from "@angular/router";
 import { By } from "@angular/platform-browser";
+import { provideZoneChangeDetection } from "@angular/core";
+import { MockComponent, MockProvider } from "ng-mocks";
 
 import { FullList } from "./fullList.component";
-import { ApiClientService } from "@common/services/apiClient.service";
-import { SWManager } from "@common/services/sWManager.service";
-import { AppCommonModule } from "@app/common/common.module";
+import { ApiClientService } from "@app/services/apiClient.service";
+import { SWManager } from "@app/services/sWManager.service";
 import { Post } from "@app/interfaces/post.interface";
-import { SinglePost } from "@app/common/components/post/post.component";
+import { SinglePost } from "@app/components/post/post.component";
+import { Loader } from "@app/components/loader/loader.component";
+import { routes } from "@app/app.routes";
 
 describe("FullList", () => {
   let pageOnePosts: Post[];
+  const MockSinglePost = MockComponent(SinglePost);
+  const MockLoader = MockComponent(Loader);
+  const MockAPIClient = MockProvider(ApiClientService);
 
   // Before each test, configure testing environment
   beforeEach(() => {
@@ -62,13 +72,18 @@ describe("FullList", () => {
     TestBed.configureTestingModule({
       imports: [
         RouterModule.forRoot([]),
-        HttpClientModule,
-        ServiceWorkerModule.register("sw.js", { enabled: false }),
-        FontAwesomeModule,
-        AppCommonModule,
+        CommonModule,
+        MockSinglePost,
+        RouterLink,
+        MockLoader,
+        FullList,
       ],
-      declarations: [FullList],
-      providers: [{ provide: APP_BASE_HREF, useValue: "/" }],
+      providers: [
+        { provide: APP_BASE_HREF, useValue: "/" },
+        provideZoneChangeDetection({ eventCoalescing: true }),
+        provideRouter(routes),
+        MockAPIClient,
+      ],
     }).compileComponents();
 
     pageOnePosts = [
@@ -275,9 +290,13 @@ describe("FullList", () => {
     expect(postsSpy).toHaveBeenCalledWith(pageOnePosts);
     expect(isLoadingSpy).toHaveBeenCalledWith(false);
 
-    const suggestedPosts = fullListDOM.querySelectorAll(".sugItem");
+    const suggestedPosts = fullListDOM.querySelectorAll("app-single-post");
     expect(suggestedPosts.length).toBe(2);
-    expect(suggestedPosts[0].querySelector(".itemText").textContent).toContain("test");
+
+    const firstPost = fixture.debugElement.query(By.css("app-single-post"))
+      .componentInstance as SinglePost;
+    expect(firstPost.post?.text).toEqual("test");
+
     done();
   });
 

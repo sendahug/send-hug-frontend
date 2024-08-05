@@ -1,4 +1,6 @@
 /*
+  Main entrypoint
+  ---------------------------------------------------
   MIT License
 
   Copyright (c) 2020-2024 Send A Hug
@@ -27,17 +29,14 @@
   SOFTWARE.
 */
 
-import "core-js/full/reflect";
-import "zone.js";
-
 import { enableProdMode } from "@angular/core";
-import { platformBrowserDynamic } from "@angular/platform-browser-dynamic";
+import { bootstrapApplication } from "@angular/platform-browser";
 
-import { AppModule } from "./app/app.module";
-import { environment } from "./environments/environment";
+import { AppComponent } from "./app/app.component";
+import { appConfig } from "./app/app.config";
 
-if (environment.production) {
+if (import.meta.env["VITE_MODE"] == "production") {
   enableProdMode();
 }
 
-platformBrowserDynamic().bootstrapModule(AppModule);
+bootstrapApplication(AppComponent, appConfig).catch((error) => console.log(error));

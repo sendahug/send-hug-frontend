@@ -33,43 +33,40 @@
 import { Component, EventEmitter, Output } from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
 
-import { AuthService } from "@common/services/auth.service";
-import { iconCharacters, iconElements } from "@app/interfaces/types";
+import { AuthService } from "@app/services/auth.service";
+import { iconCharacters } from "@app/interfaces/types";
 import { User } from "@app/interfaces/user.interface";
+import { DefaultColours } from "@app/components/userIcon/userIcon.component";
+import BearIconSrc from "@/assets/img/bear.svg";
+import KittyIconSrc from "@/assets/img/kitty.svg";
+import DogIconSrc from "@/assets/img/dog.svg";
 
 @Component({
   selector: "app-icon-editor",
   templateUrl: "./iconEditor.component.html",
+  styleUrl: "./iconEditor.component.less",
 })
 export class IconEditor {
-  iconDefaults = {
-    selectedIcon: "kitty",
-    characterColour: "#BA9F93",
-    lbgColour: "#E2A275",
-    rbgColour: "#F8EEE4",
-    itemColour: "#F4B56A",
-  };
+  BearIconSrc = BearIconSrc;
+  KittyIconSrc = KittyIconSrc;
+  DogIconSrc = DogIconSrc;
   // form for the icon editor
   iconEditForm = this.fb.group({
-    selectedIcon: [
-      this.authService.userData()?.selectedIcon ||
-        (this.iconDefaults.characterColour as iconCharacters),
-      Validators.required,
-    ],
+    selectedIcon: [this.authService.userData()?.selectedIcon || "kitty", Validators.required],
     characterColour: [
-      this.authService.userData()?.iconColours.character || this.iconDefaults.characterColour,
+      this.authService.userData()?.iconColours.character || DefaultColours["kitty"].character,
       Validators.required,
     ],
     lbgColour: [
-      this.authService.userData()?.iconColours.lbg || this.iconDefaults.lbgColour,
+      this.authService.userData()?.iconColours.lbg || DefaultColours["kitty"].lbg,
       Validators.required,
     ],
     rbgColour: [
-      this.authService.userData()?.iconColours.rbg || this.iconDefaults.rbgColour,
+      this.authService.userData()?.iconColours.rbg || DefaultColours["kitty"].rbg,
       Validators.required,
     ],
     itemColour: [
-      this.authService.userData()?.iconColours.item || this.iconDefaults.itemColour,
+      this.authService.userData()?.iconColours.item || DefaultColours["kitty"].item,
       Validators.required,
     ],
   });
@@ -81,38 +78,16 @@ export class IconEditor {
     public authService: AuthService,
     private fb: FormBuilder,
   ) {
-    this.iconEditForm.controls.characterColour.valueChanges.subscribe((newValue) =>
-      this.showNewColour(newValue as string, "character"),
-    );
-    this.iconEditForm.controls.lbgColour.valueChanges.subscribe((newValue) =>
-      this.showNewColour(newValue as string, "lbg"),
-    );
-    this.iconEditForm.controls.rbgColour.valueChanges.subscribe((newValue) =>
-      this.showNewColour(newValue as string, "rbg"),
-    );
-    this.iconEditForm.controls.itemColour.valueChanges.subscribe((newValue) =>
-      this.showNewColour(newValue as string, "item"),
-    );
-  }
-
-  /*
-  Function Name: showNewColour()
-  Function Description: Updates the colour of the selected icon element in the icon itself without
-                        updating the saved colours (in the iconColours array). This method is
-                        executed upon every input() event.
-  Parameters: newValue (String) - The value of the selected colour.
-              element - the element that needs to be recoloured.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  showNewColour(newValue: string, element: iconElements) {
-    // update the image
-    document
-      .querySelectorAll(".selectedCharacter")[0]
-      .querySelectorAll(`.${element}`)
-      .forEach((path: Element) => {
-        (path as SVGPathElement).setAttribute("style", `fill:${newValue};`);
-      });
+    this.iconEditForm.controls.selectedIcon.valueChanges.subscribe((newValue) => {
+      this.iconEditForm.controls.characterColour.setValue(
+        DefaultColours[newValue as iconCharacters].character,
+      );
+      this.iconEditForm.controls.lbgColour.setValue(DefaultColours[newValue as iconCharacters].lbg);
+      this.iconEditForm.controls.rbgColour.setValue(DefaultColours[newValue as iconCharacters].rbg);
+      this.iconEditForm.controls.itemColour.setValue(
+        DefaultColours[newValue as iconCharacters].item,
+      );
+    });
   }
 
   /*
@@ -128,15 +103,13 @@ export class IconEditor {
     const updatedUser: Partial<User> = {};
 
     // set the userService with the new icon data
-    updatedUser.selectedIcon =
-      this.iconEditForm.controls.selectedIcon.value ||
-      (this.iconDefaults.selectedIcon as iconCharacters);
+    updatedUser.selectedIcon = this.iconEditForm.controls.selectedIcon.value || "kitty";
     updatedUser.iconColours = {
       character:
-        this.iconEditForm.controls.characterColour.value || this.iconDefaults.characterColour,
-      lbg: this.iconEditForm.controls.lbgColour.value || this.iconDefaults.lbgColour,
-      rbg: this.iconEditForm.controls.rbgColour.value || this.iconDefaults.rbgColour,
-      item: this.iconEditForm.controls.itemColour.value || this.iconDefaults.itemColour,
+        this.iconEditForm.controls.characterColour.value || DefaultColours["kitty"].character,
+      lbg: this.iconEditForm.controls.lbgColour.value || DefaultColours["kitty"].lbg,
+      rbg: this.iconEditForm.controls.rbgColour.value || DefaultColours["kitty"].rbg,
+      item: this.iconEditForm.controls.itemColour.value || DefaultColours["kitty"].item,
     };
 
     // update the backend

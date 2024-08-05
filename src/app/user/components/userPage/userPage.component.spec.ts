@@ -32,45 +32,65 @@
 
 import { TestBed } from "@angular/core/testing";
 import {} from "jasmine";
-import { APP_BASE_HREF } from "@angular/common";
+import { APP_BASE_HREF, CommonModule } from "@angular/common";
 import {
   BrowserDynamicTestingModule,
   platformBrowserDynamicTesting,
 } from "@angular/platform-browser-dynamic/testing";
-import { HttpClientModule } from "@angular/common/http";
-import { ServiceWorkerModule } from "@angular/service-worker";
-import { ActivatedRoute, RouterModule } from "@angular/router";
+import { ActivatedRoute, provideRouter, RouterLink } from "@angular/router";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { By } from "@angular/platform-browser";
-import { NO_ERRORS_SCHEMA } from "@angular/core";
-import { of } from "rxjs";
+import { NO_ERRORS_SCHEMA, signal } from "@angular/core";
+import { BehaviorSubject, of } from "rxjs";
+import { MockProvider } from "ng-mocks";
 
 import { UserPage } from "./userPage.component";
-import { AuthService } from "@common/services/auth.service";
+import { AuthService } from "@app/services/auth.service";
 import { mockAuthedUser } from "@tests/mockData";
 import { OtherUser } from "@app/interfaces/otherUser.interface";
 import { iconCharacters } from "@app/interfaces/types";
-import { MockDisplayNameForm, MockReportForm } from "@tests/mockForms";
-import { User } from "@app/interfaces/user.interface";
-import { AppCommonModule } from "@app/common/common.module";
+import { DisplayNameEditForm } from "@app/components/displayNameEditForm/displayNameEditForm.component";
+import { ReportForm } from "@app/components/reportForm/reportForm.component";
+import { routes } from "@app/app.routes";
+import { ApiClientService } from "@app/services/apiClient.service";
+import { PopUp } from "@app/components/popUp/popUp.component";
+import { Loader } from "@app/components/loader/loader.component";
+import { UserIcon } from "@app/components/userIcon/userIcon.component";
+import { HeaderMessage } from "@app/components/headerMessage/headerMessage.component";
 
 describe("UserPage", () => {
   // Before each test, configure testing environment
   beforeEach(() => {
+    const MockAuthService = MockProvider(AuthService, {
+      authenticated: signal(false),
+      userData: signal(undefined),
+      isUserDataResolved: new BehaviorSubject(false),
+    });
+    const MockAPIClient = MockProvider(ApiClientService);
+
     TestBed.resetTestEnvironment();
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
       schemas: [NO_ERRORS_SCHEMA],
       imports: [
-        RouterModule.forRoot([]),
-        HttpClientModule,
-        ServiceWorkerModule.register("sw.js", { enabled: false }),
         FontAwesomeModule,
-        AppCommonModule,
+        PopUp,
+        DisplayNameEditForm,
+        ReportForm,
+        CommonModule,
+        HeaderMessage,
+        Loader,
+        RouterLink,
+        UserIcon,
       ],
       declarations: [UserPage],
-      providers: [{ provide: APP_BASE_HREF, useValue: "/" }],
+      providers: [
+        { provide: APP_BASE_HREF, useValue: "/" },
+        provideRouter(routes),
+        MockAuthService,
+        MockAPIClient,
+      ],
     }).compileComponents();
   });
 
@@ -462,13 +482,7 @@ describe("UserPage", () => {
     const hugSpy = spyOn(userPage, "sendHug").and.callThrough();
     const apiClientSpy = spyOn(userPage["apiClient"], "post").and.returnValue(of({}));
     const alertsSpy = spyOn(userPage["alertsService"], "createSuccessAlert");
-    const updateSpy = spyOn(userPage["authService"], "updateUserData").and.callThrough();
-    // spyOn(userPage["authService"]["apiClient"], "patch").and.returnValue(
-    //   of({
-    //     success: true,
-    //     updated: { ...mockAuthedUser },
-    //   }),
-    // );
+    const updateSpy = spyOn(userPage["authService"], "updateUserData");
     userPage.otherUser.set({
       id: 1,
       displayName: "shirb",
@@ -510,8 +524,7 @@ describe("UserPage", () => {
     // after the click
     expect(hugSpy).toHaveBeenCalled();
     expect(apiClientSpy).toHaveBeenCalled();
-    expect(updateSpy).toHaveBeenCalled();
-    expect(userPage["authService"].userData()?.givenH).toBe(3);
+    expect(updateSpy).toHaveBeenCalledWith({ givenH: 3 });
     expect(userPage.otherUser()!.receivedH).toBe(4);
     expect(
       userPageDOM.querySelector("#rHugsElement").querySelectorAll(".pageData")[0].textContent,
@@ -523,18 +536,19 @@ describe("UserPage", () => {
   // Check the popup exits when 'false' is emitted
   it("should change mode when the event emitter emits false - display name edit", (done: DoneFn) => {
     const paramMap = TestBed.inject(ActivatedRoute);
-    spyOn(paramMap.snapshot.paramMap, "get").and.returnValue("1");
+    spyOn(paramMap.snapshot.paramMap, "get").and.returnValue("4");
     const authService = TestBed.inject(AuthService);
     authService.authenticated.set(true);
     authService.userData.set({ ...mockAuthedUser });
     const fixture = TestBed.createComponent(UserPage);
     const userPage = fixture.componentInstance;
+    userPage.isIdbFetchResolved.set(true);
     const changeSpy = spyOn(userPage, "changeMode").and.callThrough();
 
     fixture.detectChanges();
 
     // start the popup
-    userPage.lastFocusedElement = document.querySelectorAll("a")[0];
+    userPage.lastFocusedElement = document.querySelectorAll("button")[0];
     userPage.userToEdit = {
       displayName: userPage.authService.userData()!.displayName,
       id: userPage.authService.userData()!.id as number,
@@ -544,14 +558,14 @@ describe("UserPage", () => {
 
     // exit the popup
     const popup = fixture.debugElement.query(By.css("display-name-edit-form"))
-      .componentInstance as MockDisplayNameForm;
+      .componentInstance as DisplayNameEditForm;
     popup.editMode.emit(false);
     fixture.detectChanges();
 
     // check the popup is exited
     expect(changeSpy).toHaveBeenCalled();
     expect(userPage.editMode).toBeFalse();
-    expect(document.activeElement).toBe(document.querySelectorAll("a")[0]);
+    expect(document.activeElement).toBe(document.querySelectorAll("button")[0]);
     done();
   });
 
@@ -582,27 +596,27 @@ describe("UserPage", () => {
         item: "#f4b56a",
       },
     });
+    userPage.isIdbFetchResolved.set(true);
     const changeSpy = spyOn(userPage, "changeMode").and.callThrough();
 
     fixture.detectChanges();
 
     // start the popup
-    userPage.lastFocusedElement = document.querySelectorAll("a")[0];
-    userPage.reportedItem = userPage.otherUser() as User;
+    userPage.lastFocusedElement = document.querySelectorAll("button")[0];
+    userPage.reportedItem = userPage.otherUser() as OtherUser;
     userPage.reportMode = true;
     userPage.reportType = "User";
     fixture.detectChanges();
 
     // exit the popup
-    const popup = fixture.debugElement.query(By.css("report-form"))
-      .componentInstance as MockReportForm;
+    const popup = fixture.debugElement.query(By.css("report-form")).componentInstance as ReportForm;
     popup.reportMode.emit(false);
     fixture.detectChanges();
 
     // check the popup is exited
     expect(changeSpy).toHaveBeenCalled();
     expect(userPage.reportMode).toBeFalse();
-    expect(document.activeElement).toBe(document.querySelectorAll("a")[0]);
+    expect(document.activeElement).toBe(document.querySelectorAll("button")[0]);
     done();
   });
 });

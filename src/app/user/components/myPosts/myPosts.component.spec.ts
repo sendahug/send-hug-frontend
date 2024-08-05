@@ -31,29 +31,30 @@
 */
 
 import { TestBed } from "@angular/core/testing";
-import { RouterModule } from "@angular/router";
+import { provideRouter } from "@angular/router";
 import {} from "jasmine";
 import { APP_BASE_HREF } from "@angular/common";
 import {
   BrowserDynamicTestingModule,
   platformBrowserDynamicTesting,
 } from "@angular/platform-browser-dynamic/testing";
-import { HttpClientModule } from "@angular/common/http";
-import { ServiceWorkerModule } from "@angular/service-worker";
-import { Component } from "@angular/core";
+import { Component, signal } from "@angular/core";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { of } from "rxjs";
 import { By } from "@angular/platform-browser";
 import { NO_ERRORS_SCHEMA } from "@angular/core";
+import { MockProvider } from "ng-mocks";
 
 import { MyPosts } from "./myPosts.component";
-import { AuthService } from "@common/services/auth.service";
+import { AuthService } from "@app/services/auth.service";
 import { mockAuthedUser } from "@tests/mockData";
-import { MockDeleteForm } from "@tests/mockForms";
-import { AppCommonModule } from "@app/common/common.module";
 import { Post } from "@app/interfaces/post.interface";
-import { SinglePost } from "@app/common/components/post/post.component";
-import { ItemDeleteForm } from "@app/common/components/itemDeleteForm/itemDeleteForm.component";
+import { SinglePost } from "@app/components/post/post.component";
+import { ItemDeleteForm } from "@app/components/itemDeleteForm/itemDeleteForm.component";
+import { routes } from "@app/app.routes";
+import { ApiClientService } from "@app/services/apiClient.service";
+import { PopUp } from "@app/components/popUp/popUp.component";
+import { SWManager } from "@app/services/sWManager.service";
 
 // Mock User Page for testing the sub-component
 // ==================================================
@@ -70,7 +71,7 @@ class MockUserPage {
   waitFor = "user";
   userId: number | undefined;
 
-  constructor(public authService: AuthService) {
+  constructor() {
     this.userId = 1;
   }
 }
@@ -82,25 +83,30 @@ describe("MyPosts", () => {
 
   // Before each test, configure testing environment
   beforeEach(() => {
+    const MockAuthService = MockProvider(AuthService, {
+      authenticated: signal(true),
+      userData: signal({ ...mockAuthedUser }),
+    });
+    const MockAPIClient = MockProvider(ApiClientService);
+    const MockSWManager = MockProvider(SWManager, {
+      fetchPosts: () => new Promise(() => {}),
+    });
+
     TestBed.resetTestEnvironment();
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
       schemas: [NO_ERRORS_SCHEMA],
-      imports: [
-        RouterModule.forRoot([]),
-        HttpClientModule,
-        ServiceWorkerModule.register("sw.js", { enabled: false }),
-        FontAwesomeModule,
-        AppCommonModule,
+      imports: [FontAwesomeModule, PopUp, ItemDeleteForm, SinglePost],
+      declarations: [MyPosts, MockUserPage],
+      providers: [
+        { provide: APP_BASE_HREF, useValue: "/" },
+        provideRouter(routes),
+        MockAuthService,
+        MockAPIClient,
+        MockSWManager,
       ],
-      declarations: [MockUserPage, MyPosts],
-      providers: [{ provide: APP_BASE_HREF, useValue: "/" }],
     }).compileComponents();
-
-    const authService = TestBed.inject(AuthService);
-    authService.authenticated.set(true);
-    authService.userData.set({ ...mockAuthedUser });
 
     mockPosts = [
       {
@@ -175,8 +181,9 @@ describe("MyPosts", () => {
     userPage.userId = undefined;
     upFixture.detectChanges();
     const myPosts: MyPosts = upFixture.debugElement.children[0].children[0].componentInstance;
+    const authService = TestBed.inject(AuthService);
 
-    expect(myPosts.userID).toBe(userPage.authService.userData()!.id as number);
+    expect(myPosts.userID).toBe(authService.userData()!.id as number);
     expect(myPosts.user()).toBe("self");
   });
 
@@ -260,7 +267,7 @@ describe("MyPosts", () => {
 
     // exit the popup
     const popup = fixture.debugElement.children[0].children[0].query(By.css("item-delete-form"))
-      .componentInstance as MockDeleteForm;
+      .componentInstance as ItemDeleteForm;
     popup.editMode.emit(false);
     fixture.detectChanges();
 

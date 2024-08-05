@@ -36,11 +36,10 @@ import { SwPush } from "@angular/service-worker";
 import { interval, Subscription, Observable } from "rxjs";
 
 // App-related imports
-import { AuthService } from "../common/services/auth.service";
-import { AlertsService } from "../common/services/alerts.service";
-import { SWManager } from "../common/services/sWManager.service";
-import { environment } from "@env/environment";
-import { ApiClientService } from "../common/services/apiClient.service";
+import { AuthService } from "./auth.service";
+import { AlertsService } from "./alerts.service";
+import { SWManager } from "./sWManager.service";
+import { ApiClientService } from "./apiClient.service";
 
 interface GetNotificationsResponse {
   success: boolean;
@@ -51,7 +50,7 @@ interface GetNotificationsResponse {
   providedIn: "root",
 })
 export class NotificationService {
-  readonly publicKey = environment.vapidKey;
+  readonly publicKey = import.meta.env["VITE_PUBLIC_KEY"];
   // notifications data
   notifications: any[] = [];
   // push notifications variables

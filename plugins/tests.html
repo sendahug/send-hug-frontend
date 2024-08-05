@@ -1,0 +1,95 @@
+<html>
+
+<head>
+  <!-- Mostly copied from https://github.com/blueprintui/web-test-runner-jasmine/blob/main/src/index.ts -->
+  <script>window.process = { env: { NODE_ENV: "test" } }</script>
+  <script src="../node_modules/jasmine-core/lib/jasmine-core/jasmine.js"></script>
+  <script type="module">
+    import {
+      getConfig,
+      sessionStarted,
+      sessionFinished,
+      sessionFailed,
+    } from '@web/test-runner-core/browser/session.js';
+
+    const jasmine = jasmineRequire.core(window.jasmineRequire);
+    const global = jasmine.getGlobal();
+    global.jasmine = jasmine;
+    const env = jasmine.getEnv();
+    Object.assign(window, jasmineRequire.interface(jasmine, env));
+
+    const failedSpecs = [];
+    const allSpecs = [];
+    const failedImports = [];
+
+    env.addReporter({
+      specDone: result => {
+        if (result.status !== "passed") {
+          console.log(result);
+        }
+        
+        [...result.passedExpectations, ...result.failedExpectations].forEach(e => {
+          allSpecs.push({
+            name: e.description,
+            passed: e.passed,
+          });
+        });
+
+        if (result.status !== 'passed' || result.status !== 'incomplete') {
+          result.failedExpectations.forEach(e => {
+            failedSpecs.push({
+              message: result.fullName + ': ' + e.message,
+              name: e.description,
+              stack: e.stack,
+              expected: e.expected,
+              actual: e.actual,
+            });
+          });
+        }
+      },
+      jasmineDone: result => {
+        if (result.overallStatus !== "passed") {
+          console.log("Finished all tests. Tearing down.");
+          console.log("res",result)
+        }
+        
+        sessionFinished({
+          passed: result.overallStatus === 'passed',
+          errors: [...failedSpecs, ...failedImports],
+          testResults: {
+            name: 'Test run',
+            suites: [],
+            tests: allSpecs,
+          },
+        });
+      },
+    });
+
+    (async () => {
+      await import("./plugins/tests.ts");
+
+      await sessionStarted();
+      const { testFile, watch, debug, testFrameworkConfig } = await getConfig();
+      const config = { defaultTimeoutInterval: 5000, random: true, ...(testFrameworkConfig ?? {}) };
+
+      jasmine.DEFAULT_TIMEOUT_INTERVAL = config.defaultTimeoutInterval;
+      jasmine.random = true;
+
+      await import(new URL(testFile, document.baseURI).href).catch(error => {
+        failedImports.push({ file: testFile, error: { message: error.message, stack: error.stack } });
+      });
+
+      try {
+        env.execute();
+      } catch (error) {
+        console.log(error);
+        sessionFailed(error);
+        return;
+      }
+    })();
+  </script>
+</head>
+
+<body></body>
+
+</html>

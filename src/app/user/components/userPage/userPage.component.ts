@@ -31,7 +31,7 @@
 */
 
 // Angular imports
-import { Component, OnInit, OnDestroy, AfterViewChecked, signal, computed } from "@angular/core";
+import { Component, OnInit, OnDestroy, signal, computed } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { Subscription, from, switchMap, tap } from "rxjs";
 import { faGratipay } from "@fortawesome/free-brands-svg-icons";
@@ -39,12 +39,11 @@ import { HttpErrorResponse } from "@angular/common/http";
 
 // App-related imports
 import { PartialUser, User } from "@app/interfaces/user.interface";
-import { AuthService } from "@common/services/auth.service";
-import { iconElements } from "@app/interfaces/types";
+import { AuthService } from "@app/services/auth.service";
 import { OtherUser } from "@app/interfaces/otherUser.interface";
-import { SWManager } from "@common/services/sWManager.service";
-import { ApiClientService } from "@common/services/apiClient.service";
-import { AlertsService } from "@common/services/alerts.service";
+import { SWManager } from "@app/services/sWManager.service";
+import { ApiClientService } from "@app/services/apiClient.service";
+import { AlertsService } from "@app/services/alerts.service";
 
 interface OtherUserResponse {
   user: OtherUser;
@@ -55,7 +54,7 @@ interface OtherUserResponse {
   selector: "app-user-page",
   templateUrl: "./userPage.component.html",
 })
-export class UserPage implements OnInit, OnDestroy, AfterViewChecked {
+export class UserPage implements OnInit, OnDestroy {
   isIdbFetchResolved = signal(false);
   isServerFetchResolved = signal(false);
   otherUser = signal<OtherUser | undefined>(undefined);
@@ -71,8 +70,8 @@ export class UserPage implements OnInit, OnDestroy, AfterViewChecked {
   userToEdit?: PartialUser;
   editMode: boolean = false;
   reportMode: boolean = false;
-  reportedItem: User | undefined;
-  reportType = "User";
+  reportedItem: OtherUser | undefined;
+  reportType: "User" = "User";
   lastFocusedElement: any;
   userDataCalls = 0;
   // loader sub-component variable
@@ -119,31 +118,6 @@ export class UserPage implements OnInit, OnDestroy, AfterViewChecked {
   }
 
   ngOnInit() {}
-
-  /*
-  Function Name: ngAfterViewChecked()
-  Function Description: This method is automatically triggered by Angular once the component's
-                        view is checked by Angular. It updates the user's icon according to the colours
-                        chosen by the user.
-  Parameters: None.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  ngAfterViewChecked() {
-    if (!document.querySelectorAll(".userIcon")[0]) return;
-
-    Object.keys(this.displayUser().iconColours).forEach((key) => {
-      document
-        .querySelectorAll(".userIcon")[0]
-        .querySelectorAll(`.${key as iconElements}`)
-        .forEach((element) => {
-          (element as SVGPathElement).setAttribute(
-            "style",
-            `fill:${this.displayUser().iconColours[key as iconElements]};`,
-          );
-        });
-    });
-  }
 
   /*
   Function Name: logout()
@@ -257,7 +231,10 @@ export class UserPage implements OnInit, OnDestroy, AfterViewChecked {
   sendHug(userID: number) {
     this.apiClient.post(`users/all/${userID}/hugs`, {}).subscribe({
       next: (_response) => {
-        this.otherUser()!.receivedH += 1;
+        this.otherUser.set({
+          ...this.otherUser()!,
+          receivedH: this.otherUser()!.receivedH + 1,
+        });
         this.authService.updateUserData({ givenH: this.authService.userData()!.givenH + 1 });
         this.alertsService.createSuccessAlert("Your hug was sent!");
       },
@@ -271,7 +248,7 @@ export class UserPage implements OnInit, OnDestroy, AfterViewChecked {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  reportUser(user: User) {
+  reportUser(user: OtherUser) {
     this.lastFocusedElement = document.activeElement;
     this.reportMode = true;
     this.reportedItem = user;

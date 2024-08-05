@@ -31,27 +31,30 @@
 */
 
 // Angular imports
-import { Component } from "@angular/core";
+import { Component, OnInit, signal } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
-import { FormBuilder, Validators } from "@angular/forms";
+import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
+import { CommonModule } from "@angular/common";
 
 // App-related imports
 import { type Post } from "@app/interfaces/post.interface";
 import { type Message } from "@app/interfaces/message.interface";
-import { ItemsService } from "@common/services/items.service";
-import { AuthService } from "@common/services/auth.service";
-import { AlertsService } from "@common/services/alerts.service";
-import { ValidationService } from "@common/services/validation.service";
-import { ApiClientService } from "@common/services/apiClient.service";
-import { SWManager } from "@common/services/sWManager.service";
+import { ItemsService } from "@app/services/items.service";
+import { AuthService } from "@app/services/auth.service";
+import { AlertsService } from "@app/services/alerts.service";
+import { ValidationService } from "@app/services/validation.service";
+import { ApiClientService } from "@app/services/apiClient.service";
+import { SWManager } from "@app/services/sWManager.service";
 
 @Component({
   selector: "app-new-item",
   templateUrl: "./newItem.component.html",
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule],
 })
-export class NewItem {
+export class NewItem implements OnInit {
   // variable declaration
-  itemType: String = "";
+  itemType = signal<string>("");
   forID: any;
   // TODO: These two should be united, they're practically
   // the same apart from some configuration changes
@@ -66,7 +69,7 @@ export class NewItem {
   // CTOR
   constructor(
     private itemsService: ItemsService,
-    private authService: AuthService,
+    protected authService: AuthService,
     private route: ActivatedRoute,
     private alertService: AlertsService,
     private validationService: ValidationService,
@@ -74,18 +77,26 @@ export class NewItem {
     private swManager: SWManager,
     private fb: FormBuilder,
   ) {
-    let type;
     // Gets the URL parameters
     this.route.url.subscribe((params) => {
-      type = params[0].path;
+      // If there's a type parameter, sets the type property
+      if (params[0] && params[0].path) this.itemType.set(params[0].path);
     });
+  }
+
+  /*
+  Function Name: ngOnInit()
+  Function Description: This method is automatically triggered by Angular upon
+                        page initiation. It checks what type of new item is created
+                        and what the ID and name of the user the message is sent to
+                        (if it's a new message) is.
+  Parameters: None.
+  ----------------
+  Programmer: Shir Bar Lev.
+  */
+  ngOnInit(): void {
     const user = this.route.snapshot.queryParamMap.get("user");
     const userID = this.route.snapshot.queryParamMap.get("userID");
-
-    // If there's a type parameter, sets the type property
-    if (type) {
-      this.itemType = type;
-    }
 
     // If there's a user parameter, sets the user property
     if (user && userID) {
@@ -117,7 +128,7 @@ export class NewItem {
     if (!this.newPostForm.valid) {
       this.alertService.createAlert({
         type: "Error",
-        message: this.newPostForm.controls.postText.errors?.error,
+        message: this.newPostForm.controls.postText.errors?.["error"],
       });
       return;
     }
@@ -169,7 +180,7 @@ export class NewItem {
     if (!this.newMessageForm.valid) {
       this.alertService.createAlert({
         type: "Error",
-        message: this.newMessageForm.controls.messageText.errors?.error,
+        message: this.newMessageForm.controls.messageText.errors?.["error"],
       });
       return;
     }

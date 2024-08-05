@@ -32,19 +32,17 @@
 
 import { TestBed } from "@angular/core/testing";
 import {} from "jasmine";
-import { APP_BASE_HREF } from "@angular/common";
+import { APP_BASE_HREF, CommonModule } from "@angular/common";
 import {
   BrowserDynamicTestingModule,
   platformBrowserDynamicTesting,
 } from "@angular/platform-browser-dynamic/testing";
-import { HttpClientModule } from "@angular/common/http";
-import { ServiceWorkerModule } from "@angular/service-worker";
-import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
-import { ActivatedRoute, RouterModule, UrlSegment } from "@angular/router";
+import { ActivatedRoute, provideRouter, RouterLink, UrlSegment } from "@angular/router";
 import { of } from "rxjs";
+import { provideZoneChangeDetection } from "@angular/core";
 
 import { SitePolicies } from "./sitePolicies.component";
-import { AppCommonModule } from "@app/common/common.module";
+import { routes } from "@app/app.routes";
 
 describe("SitePolicies", () => {
   // Before each test, configure testing environment
@@ -53,15 +51,12 @@ describe("SitePolicies", () => {
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
-      imports: [
-        RouterModule.forRoot([]),
-        HttpClientModule,
-        ServiceWorkerModule.register("sw.js", { enabled: false }),
-        FontAwesomeModule,
-        AppCommonModule,
+      imports: [CommonModule, RouterLink, SitePolicies],
+      providers: [
+        { provide: APP_BASE_HREF, useValue: "/" },
+        provideZoneChangeDetection({ eventCoalescing: true }),
+        provideRouter(routes),
       ],
-      declarations: [SitePolicies],
-      providers: [{ provide: APP_BASE_HREF, useValue: "/" }],
     }).compileComponents();
   });
 

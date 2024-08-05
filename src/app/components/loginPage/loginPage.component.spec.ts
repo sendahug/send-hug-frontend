@@ -32,27 +32,28 @@
 
 import { TestBed } from "@angular/core/testing";
 import {} from "jasmine";
-import { APP_BASE_HREF } from "@angular/common";
+import { APP_BASE_HREF, CommonModule } from "@angular/common";
 import {
   BrowserDynamicTestingModule,
   platformBrowserDynamicTesting,
 } from "@angular/platform-browser-dynamic/testing";
-import { HttpClientModule } from "@angular/common/http";
-import { ServiceWorkerModule } from "@angular/service-worker";
-import { RouterModule } from "@angular/router";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
-import { NO_ERRORS_SCHEMA } from "@angular/core";
+import { NO_ERRORS_SCHEMA, signal } from "@angular/core";
 import { of, throwError } from "rxjs";
 import { User as FirebaseUser, UserCredential } from "firebase/auth";
 import { ReactiveFormsModule } from "@angular/forms";
 import { By } from "@angular/platform-browser";
+import { provideZoneChangeDetection } from "@angular/core";
+import { MockProvider } from "ng-mocks";
+import { provideRouter } from "@angular/router";
 
 import { LoginPage } from "./loginPage.component";
-import { AuthService } from "@common/services/auth.service";
+import { AuthService } from "@app/services/auth.service";
 import { getMockFirebaseUser, mockAuthedUser } from "@tests/mockData";
-import { AppCommonModule } from "@app/common/common.module";
 import { User } from "@app/interfaces/user.interface";
-import { PasswordResetForm } from "@app/common/components/passwordResetForm/passwordResetForm.component";
+import { PasswordResetForm } from "@app/components/passwordResetForm/passwordResetForm.component";
+import { Loader } from "@app/components/loader/loader.component";
+import { routes } from "@app/app.routes";
 
 describe("LoginPage", () => {
   let mockFirbeaseUser: FirebaseUser;
@@ -61,21 +62,30 @@ describe("LoginPage", () => {
 
   // Before each test, configure testing environment
   beforeEach(() => {
+    const MockAuthService = MockProvider(AuthService, {
+      authenticated: signal(false),
+      userData: signal(undefined),
+    });
+
     TestBed.resetTestEnvironment();
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
       schemas: [NO_ERRORS_SCHEMA],
       imports: [
-        RouterModule.forRoot([]),
-        HttpClientModule,
-        ServiceWorkerModule.register("sw.js", { enabled: false }),
-        FontAwesomeModule,
-        AppCommonModule,
+        CommonModule,
         ReactiveFormsModule,
+        FontAwesomeModule,
+        Loader,
+        PasswordResetForm,
+        LoginPage,
       ],
-      declarations: [LoginPage, PasswordResetForm],
-      providers: [{ provide: APP_BASE_HREF, useValue: "/" }],
+      providers: [
+        { provide: APP_BASE_HREF, useValue: "/" },
+        provideZoneChangeDetection({ eventCoalescing: true }),
+        provideRouter(routes),
+        MockAuthService,
+      ],
     }).compileComponents();
 
     mockFirbeaseUser = getMockFirebaseUser();

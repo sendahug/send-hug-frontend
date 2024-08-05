@@ -32,8 +32,9 @@
 
 // Angular imports
 import { Component } from "@angular/core";
-import { Location } from "@angular/common";
+import { CommonModule, Location } from "@angular/common";
 import { faArrowAltCircleLeft } from "@fortawesome/free-regular-svg-icons";
+import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 
 // Error message interface
 interface ErrorMessage {
@@ -45,6 +46,8 @@ interface ErrorMessage {
 @Component({
   selector: "app-error-page",
   templateUrl: "./errorPage.component.html",
+  standalone: true,
+  imports: [CommonModule, FontAwesomeModule],
 })
 export class ErrorPage {
   // Error message to display onscreen

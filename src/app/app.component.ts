@@ -32,21 +32,36 @@
 
 // Angular imports
 import { Component, OnInit, HostListener, AfterViewInit, signal, computed } from "@angular/core";
-import { Router, NavigationStart } from "@angular/router";
-import { FormBuilder, Validators } from "@angular/forms";
+import { Router, NavigationStart, RouterOutlet, RouterLink } from "@angular/router";
+import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { faComments, faUserCircle, faCompass, faBell } from "@fortawesome/free-regular-svg-icons";
 import { faBars, faSearch, faTimes, faTextHeight } from "@fortawesome/free-solid-svg-icons";
+import { CommonModule } from "@angular/common";
+import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 
 // App-related imports
-import { AuthService } from "./common/services/auth.service";
-import { ItemsService } from "./common/services/items.service";
-import { AlertsService } from "./common/services/alerts.service";
-import { SWManager } from "./common/services/sWManager.service";
+import { AuthService } from "./services/auth.service";
+import { ItemsService } from "./services/items.service";
+import { AlertsService } from "./services/alerts.service";
+import { SWManager } from "./services/sWManager.service";
 import { NotificationService } from "./services/notifications.service";
+import { NotificationsTab } from "./components/notifications/notifications.component";
+import { AppAlert } from "./components/appAlert/appAlert.component";
+import SiteLogoSrc from "@/assets/img/Logo.svg";
 
 @Component({
   selector: "app-root",
   templateUrl: "./app.component.html",
+  standalone: true,
+  imports: [
+    CommonModule,
+    RouterOutlet,
+    RouterLink,
+    ReactiveFormsModule,
+    FontAwesomeModule,
+    NotificationsTab,
+    AppAlert,
+  ],
 })
 export class AppComponent implements OnInit, AfterViewInit {
   showNotifications = false;
@@ -67,6 +82,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   searchForm = this.fb.group({
     searchQuery: this.fb.control("", [Validators.required, Validators.minLength(1)]),
   });
+  SiteLogoSrc = SiteLogoSrc;
   // font awesome icons
   faBars = faBars;
   faComments = faComments;
@@ -78,12 +94,12 @@ export class AppComponent implements OnInit, AfterViewInit {
   faTextHeight = faTextHeight;
 
   constructor(
-    public authService: AuthService,
-    private itemsService: ItemsService,
-    private alertsService: AlertsService,
+    protected authService: AuthService,
+    protected itemsService: ItemsService,
+    protected alertsService: AlertsService,
     private router: Router,
     private serviceWorkerM: SWManager,
-    public notificationService: NotificationService,
+    protected notificationService: NotificationService,
     private fb: FormBuilder,
   ) {
     // if the user is logged in, and their data is fetched, start auto-refresh
@@ -104,7 +120,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     // Update the user state based on the logged in firebase user
     // (if there is one)
     this.authService.checkForLoggedInUser().subscribe({
-      error: (err) => {
+      error: (err: Error) => {
         if (err.message == "User doesn't exist yet") {
           this.alertsService.createAlert(
             {
@@ -426,8 +442,8 @@ export class AppComponent implements OnInit, AfterViewInit {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  changeMode(notificationsOn: boolean) {
-    this.showNotifications = notificationsOn;
+  changeMode(notificationsOn: any) {
+    this.showNotifications = notificationsOn as boolean;
   }
 
   /*

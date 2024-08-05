@@ -32,22 +32,24 @@
 
 import { TestBed } from "@angular/core/testing";
 import {} from "jasmine";
-import { APP_BASE_HREF } from "@angular/common";
+import { APP_BASE_HREF, CommonModule } from "@angular/common";
 import {
   BrowserDynamicTestingModule,
   platformBrowserDynamicTesting,
 } from "@angular/platform-browser-dynamic/testing";
-import { HttpClientModule } from "@angular/common/http";
-import { ServiceWorkerModule } from "@angular/service-worker";
-import { ActivatedRoute, Router, RouterModule } from "@angular/router";
-import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
+import { ActivatedRoute, provideRouter, Router, RouterLink } from "@angular/router";
 import { By } from "@angular/platform-browser";
+import { provideZoneChangeDetection } from "@angular/core";
+import { MockComponent, MockProvider } from "ng-mocks";
+import { of } from "rxjs";
 
 import { SearchResults } from "./searchResults.component";
-import { ItemsService } from "@common/services/items.service";
+import { ItemsService } from "@app/services/items.service";
 import { iconCharacters } from "@app/interfaces/types";
-import { AppCommonModule } from "@app/common/common.module";
-import { SinglePost } from "@app/common/components/post/post.component";
+import { SinglePost } from "@app/components/post/post.component";
+import { Loader } from "../loader/loader.component";
+import { routes } from "@app/app.routes";
+import { ApiClientService } from "@app/services/apiClient.service";
 
 const mockUserSearchResults = [
   {
@@ -113,19 +115,24 @@ const mockPostSearchResults = [
 describe("SearchResults", () => {
   // Before each test, configure testing environment
   beforeEach(() => {
+    const MockPost = MockComponent(SinglePost);
+    const MockLoader = MockComponent(Loader);
+    const MockAPIClient = MockProvider(ApiClientService, {
+      post: () => of(),
+    });
+
     TestBed.resetTestEnvironment();
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
-      imports: [
-        RouterModule.forRoot([]),
-        HttpClientModule,
-        ServiceWorkerModule.register("sw.js", { enabled: false }),
-        FontAwesomeModule,
-        AppCommonModule,
+      imports: [CommonModule, MockLoader, MockPost, RouterLink, SearchResults],
+      providers: [
+        { provide: APP_BASE_HREF, useValue: "/" },
+        provideZoneChangeDetection({ eventCoalescing: true }),
+        provideRouter(routes),
+        ItemsService,
+        MockAPIClient,
       ],
-      declarations: [SearchResults],
-      providers: [{ provide: APP_BASE_HREF, useValue: "/" }],
     }).compileComponents();
   });
 
@@ -200,243 +207,198 @@ describe("SearchResults", () => {
 
   // USER SEARCH RESULTS
   // ==================================================================
-  describe("User Results", () => {
-    // Before each test, configure testing environment
-    beforeEach(() => {
-      TestBed.resetTestEnvironment();
-      TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
-
-      TestBed.configureTestingModule({
-        imports: [
-          RouterModule.forRoot([]),
-          HttpClientModule,
-          ServiceWorkerModule.register("sw.js", { enabled: false }),
-          FontAwesomeModule,
-          AppCommonModule,
-        ],
-        declarations: [SearchResults],
-        providers: [{ provide: APP_BASE_HREF, useValue: "/" }],
-      }).compileComponents();
-
-      spyOn(TestBed.inject(ItemsService), "sendSearch");
+  // Check that an error message is shown if there are no results
+  it("User Results - should show error message if there are no user results", (done: DoneFn) => {
+    const route = TestBed.inject(ActivatedRoute);
+    spyOn(route.snapshot.queryParamMap, "get").and.callFake((param: string) => {
+      if (param == "query") {
+        return "search";
+      } else {
+        return null;
+      }
     });
+    const fixture = TestBed.createComponent(SearchResults);
+    const searchResults = fixture.componentInstance;
+    const searchResultsDOM = fixture.debugElement.nativeElement;
+    searchResults.itemsService.isSearchResolved.next(true);
+    searchResults.itemsService.userSearchResults = [];
+    searchResults.itemsService.numUserResults = 0;
 
-    // Check that an error message is shown if there are no results
-    it("should show error message if there are no user results", (done: DoneFn) => {
-      const route = TestBed.inject(ActivatedRoute);
-      spyOn(route.snapshot.queryParamMap, "get").and.callFake((param: string) => {
-        if (param == "query") {
-          return "search";
-        } else {
-          return null;
-        }
-      });
-      const fixture = TestBed.createComponent(SearchResults);
-      const searchResults = fixture.componentInstance;
-      const searchResultsDOM = fixture.debugElement.nativeElement;
-      searchResults.itemsService.isSearchResolved.next(true);
-      searchResults.itemsService.userSearchResults = [];
-      searchResults.itemsService.numUserResults = 0;
+    fixture.detectChanges();
 
-      fixture.detectChanges();
+    expect(searchResultsDOM.querySelector("#userSearchResults")).toBeNull();
+    expect(searchResultsDOM.querySelector("#uSearchResErr")).toBeTruthy();
+    done();
+  });
 
-      expect(searchResultsDOM.querySelector("#userSearchResults")).toBeNull();
-      expect(searchResultsDOM.querySelector("#uSearchResErr")).toBeTruthy();
-      done();
+  // Check that the result list is shown when there are results
+  it("User Results - should show a list of users with links to their pages", (done: DoneFn) => {
+    const route = TestBed.inject(ActivatedRoute);
+    spyOn(route.snapshot.queryParamMap, "get").and.callFake((param: string) => {
+      if (param == "query") {
+        return "test";
+      } else {
+        return null;
+      }
     });
+    const fixture = TestBed.createComponent(SearchResults);
+    const searchResults = fixture.componentInstance;
+    const searchResultsDOM = fixture.debugElement.nativeElement;
+    searchResults.itemsService.isSearchResolved.next(true);
+    searchResults.itemsService.userSearchResults = mockUserSearchResults;
+    searchResults.itemsService.numUserResults = 2;
 
-    // Check that the result list is shown when there are results
-    it("should show a list of users with links to their pages", (done: DoneFn) => {
-      const route = TestBed.inject(ActivatedRoute);
-      spyOn(route.snapshot.queryParamMap, "get").and.callFake((param: string) => {
-        if (param == "query") {
-          return "test";
-        } else {
-          return null;
-        }
-      });
-      const fixture = TestBed.createComponent(SearchResults);
-      const searchResults = fixture.componentInstance;
-      const searchResultsDOM = fixture.debugElement.nativeElement;
-      searchResults.itemsService.isSearchResolved.next(true);
-      searchResults.itemsService.userSearchResults = mockUserSearchResults;
-      searchResults.itemsService.numUserResults = 2;
+    fixture.detectChanges();
 
-      fixture.detectChanges();
-
-      expect(searchResults.itemsService.userSearchResults).toBeTruthy();
-      expect(searchResults.itemsService.userSearchResults.length).toBe(2);
-      expect(searchResultsDOM.querySelector("#userSearchResults")).toBeTruthy();
-      expect(searchResultsDOM.querySelectorAll(".searchResultUser").length).toBe(2);
-      searchResultsDOM.querySelectorAll(".searchResultUser").forEach((item: HTMLElement) => {
-        expect(item.firstElementChild).toBeTruthy();
-        expect(item.firstElementChild!.getAttribute("href")).toContain("/user");
-        expect(item.firstElementChild!.textContent).toContain("test");
-      });
-      expect(searchResultsDOM.querySelector("#uSearchResErr")).toBeNull();
-      done();
+    expect(searchResults.itemsService.userSearchResults).toBeTruthy();
+    expect(searchResults.itemsService.userSearchResults.length).toBe(2);
+    expect(searchResultsDOM.querySelector("#userSearchResults")).toBeTruthy();
+    expect(searchResultsDOM.querySelectorAll(".searchResultUser").length).toBe(2);
+    searchResultsDOM.querySelectorAll(".searchResultUser").forEach((item: HTMLElement) => {
+      expect(item.firstElementChild).toBeTruthy();
+      expect(item.firstElementChild!.getAttribute("href")).toContain("/user");
+      expect(item.firstElementChild!.textContent).toContain("test");
     });
+    expect(searchResultsDOM.querySelector("#uSearchResErr")).toBeNull();
+    done();
   });
 
   // POST SEARCH RESULTS
   // ==================================================================
-  describe("Post Results", () => {
-    // Before each test, configure testing environment
-    beforeEach(() => {
-      TestBed.resetTestEnvironment();
-      TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
-
-      TestBed.configureTestingModule({
-        imports: [
-          RouterModule.forRoot([]),
-          HttpClientModule,
-          ServiceWorkerModule.register("sw.js", { enabled: false }),
-          FontAwesomeModule,
-          AppCommonModule,
-        ],
-        declarations: [SearchResults],
-        providers: [{ provide: APP_BASE_HREF, useValue: "/" }],
-      }).compileComponents();
-
-      spyOn(TestBed.inject(ItemsService), "sendSearch");
+  // Check that an error message is shown if there are no results
+  it("Post Results - should show error message if there are no post results", (done: DoneFn) => {
+    const route = TestBed.inject(ActivatedRoute);
+    spyOn(route.snapshot.queryParamMap, "get").and.callFake((param: string) => {
+      if (param == "query") {
+        return "search";
+      } else {
+        return null;
+      }
     });
+    const fixture = TestBed.createComponent(SearchResults);
+    const searchResults = fixture.componentInstance;
+    const searchResultsDOM = fixture.debugElement.nativeElement;
+    searchResults.itemsService.isSearchResolved.next(true);
+    searchResults.itemsService.postSearchResults = [];
+    searchResults.itemsService.numPostResults = 0;
 
-    // Check that an error message is shown if there are no results
-    it("should show error message if there are no post results", (done: DoneFn) => {
-      const route = TestBed.inject(ActivatedRoute);
-      spyOn(route.snapshot.queryParamMap, "get").and.callFake((param: string) => {
-        if (param == "query") {
-          return "search";
-        } else {
-          return null;
-        }
-      });
-      const fixture = TestBed.createComponent(SearchResults);
-      const searchResults = fixture.componentInstance;
-      const searchResultsDOM = fixture.debugElement.nativeElement;
-      searchResults.itemsService.isSearchResolved.next(true);
-      searchResults.itemsService.postSearchResults = [];
-      searchResults.itemsService.numPostResults = 0;
+    fixture.detectChanges();
 
-      fixture.detectChanges();
+    expect(searchResultsDOM.querySelector("#postSearchResults")).toBeNull();
+    expect(searchResultsDOM.querySelector("#pSearchResErr")).toBeTruthy();
+    done();
+  });
 
-      expect(searchResultsDOM.querySelector("#postSearchResults")).toBeNull();
-      expect(searchResultsDOM.querySelector("#pSearchResErr")).toBeTruthy();
-      done();
+  // Check that the result list is shown when there are results
+  it("Post Results - should show a list of posts", (done: DoneFn) => {
+    const route = TestBed.inject(ActivatedRoute);
+    spyOn(route.snapshot.queryParamMap, "get").and.callFake((param: string) => {
+      if (param == "query") {
+        return "test";
+      } else {
+        return null;
+      }
     });
+    const fixture = TestBed.createComponent(SearchResults);
+    const searchResults = fixture.componentInstance;
+    const searchResultsDOM = fixture.debugElement.nativeElement;
+    searchResults.itemsService.isSearchResolved.next(true);
+    searchResults.itemsService.postSearchResults = [mockPostSearchResults[0]];
+    searchResults.itemsService.numPostResults = 1;
+    searchResults.itemsService.totalPostSearchPages.set(2);
 
-    // Check that the result list is shown when there are results
-    it("should show a list of posts", (done: DoneFn) => {
-      const route = TestBed.inject(ActivatedRoute);
-      spyOn(route.snapshot.queryParamMap, "get").and.callFake((param: string) => {
-        if (param == "query") {
-          return "test";
-        } else {
-          return null;
-        }
-      });
-      const fixture = TestBed.createComponent(SearchResults);
-      const searchResults = fixture.componentInstance;
-      const searchResultsDOM = fixture.debugElement.nativeElement;
-      searchResults.itemsService.isSearchResolved.next(true);
-      searchResults.itemsService.postSearchResults = [mockPostSearchResults[0]];
-      searchResults.itemsService.numPostResults = 1;
-      searchResults.itemsService.totalPostSearchPages.set(2);
+    fixture.detectChanges();
 
-      fixture.detectChanges();
+    expect(searchResults.itemsService.postSearchResults).toBeTruthy();
+    expect(searchResults.itemsService.postSearchResults.length).toBe(1);
+    expect(searchResultsDOM.querySelector("#postSearchResults")).toBeTruthy();
+    expect(searchResultsDOM.querySelectorAll("app-single-post").length).toBe(1);
+    expect(searchResultsDOM.querySelector("#pSearchResErr")).toBeNull();
+    done();
+  });
 
-      expect(searchResults.itemsService.postSearchResults).toBeTruthy();
-      expect(searchResults.itemsService.postSearchResults.length).toBe(1);
-      expect(searchResultsDOM.querySelector("#postSearchResults")).toBeTruthy();
-      expect(searchResultsDOM.querySelectorAll(".searchResult").length).toBe(1);
-      expect(searchResultsDOM.querySelectorAll(".searchResult")[0]).toBeTruthy();
-      expect(searchResultsDOM.querySelector("#pSearchResErr")).toBeNull();
-      done();
+  // Check that a different page gets different results
+  it("Post Results - changes page when clicked", (done: DoneFn) => {
+    // set up spies
+    const route = TestBed.inject(ActivatedRoute);
+    spyOn(route.snapshot.queryParamMap, "get").and.callFake((param: string) => {
+      if (param == "query") {
+        return "search";
+      } else {
+        return null;
+      }
     });
+    const router = TestBed.inject(Router);
+    const routeSpy = spyOn(router, "navigate");
 
-    // Check that a different page gets different results
-    it("changes page when clicked", (done: DoneFn) => {
-      // set up spies
-      const route = TestBed.inject(ActivatedRoute);
-      spyOn(route.snapshot.queryParamMap, "get").and.callFake((param: string) => {
-        if (param == "query") {
-          return "search";
-        } else {
-          return null;
-        }
-      });
-      const router = TestBed.inject(Router);
-      const routeSpy = spyOn(router, "navigate");
+    // create the component
+    const fixture = TestBed.createComponent(SearchResults);
+    const searchResults = fixture.componentInstance;
+    const searchResultsDOM = fixture.debugElement.nativeElement;
+    searchResults.itemsService.isSearchResolved.next(true);
+    searchResults.itemsService.postSearchResults = [mockPostSearchResults[0]];
+    searchResults.itemsService.numPostResults = 1;
+    searchResults.itemsService.totalPostSearchPages.set(2);
+    fixture.detectChanges();
 
-      // create the component
-      const fixture = TestBed.createComponent(SearchResults);
-      const searchResults = fixture.componentInstance;
-      const searchResultsDOM = fixture.debugElement.nativeElement;
-      searchResults.itemsService.isSearchResolved.next(true);
-      searchResults.itemsService.postSearchResults = [mockPostSearchResults[0]];
-      searchResults.itemsService.numPostResults = 1;
-      searchResults.itemsService.totalPostSearchPages.set(2);
-      fixture.detectChanges();
+    // expectations for page 1
+    expect(searchResults.itemsService.postSearchPage()).toBe(1);
+    expect(
+      searchResultsDOM.querySelector("#postSearchResults").firstElementChild.children.length,
+    ).toBe(1);
 
-      // expectations for page 1
-      expect(searchResults.itemsService.postSearchPage()).toBe(1);
-      expect(
-        searchResultsDOM.querySelector("#postSearchResults").firstElementChild.children.length,
-      ).toBe(1);
+    // change the page
+    searchResultsDOM.querySelectorAll(".nextButton")[0].click();
+    searchResults.itemsService.postSearchResults = [...mockPostSearchResults];
+    searchResults.itemsService.numPostResults = 2;
+    fixture.detectChanges();
 
-      // change the page
-      searchResultsDOM.querySelectorAll(".nextButton")[0].click();
-      searchResults.itemsService.postSearchResults = [...mockPostSearchResults];
-      searchResults.itemsService.numPostResults = 2;
-      fixture.detectChanges();
+    // expectations for page 2
+    expect(routeSpy).toHaveBeenCalled();
+    expect(searchResults.itemsService.postSearchPage()).toBe(2);
+    expect(
+      searchResultsDOM.querySelector("#postSearchResults").firstElementChild.children.length,
+    ).toBe(2);
 
-      // expectations for page 2
-      expect(routeSpy).toHaveBeenCalled();
-      expect(searchResults.itemsService.postSearchPage()).toBe(2);
-      expect(
-        searchResultsDOM.querySelector("#postSearchResults").firstElementChild.children.length,
-      ).toBe(2);
+    // change the page
+    searchResultsDOM.querySelectorAll(".prevButton")[0].click();
+    searchResults.itemsService.postSearchResults = [mockPostSearchResults[0]];
+    searchResults.itemsService.numPostResults = 1;
+    fixture.detectChanges();
 
-      // change the page
-      searchResultsDOM.querySelectorAll(".prevButton")[0].click();
-      searchResults.itemsService.postSearchResults = [mockPostSearchResults[0]];
-      searchResults.itemsService.numPostResults = 1;
-      fixture.detectChanges();
+    // expectations for page 1
+    expect(routeSpy).toHaveBeenCalledTimes(2);
+    expect(searchResults.itemsService.postSearchPage()).toBe(1);
+    expect(
+      searchResultsDOM.querySelector("#postSearchResults").firstElementChild.children.length,
+    ).toBe(1);
+    done();
+  });
 
-      // expectations for page 1
-      expect(routeSpy).toHaveBeenCalledTimes(2);
-      expect(searchResults.itemsService.postSearchPage()).toBe(1);
-      expect(
-        searchResultsDOM.querySelector("#postSearchResults").firstElementChild.children.length,
-      ).toBe(1);
-      done();
+  it("Post Results - should remove a deleted post", () => {
+    const route = TestBed.inject(ActivatedRoute);
+    spyOn(route.snapshot.queryParamMap, "get").and.callFake((param: string) => {
+      if (param == "query") {
+        return "test";
+      } else {
+        return null;
+      }
     });
+    const fixture = TestBed.createComponent(SearchResults);
+    const searchResults = fixture.componentInstance;
+    searchResults.itemsService.isSearchResolved.next(true);
+    searchResults.itemsService.postSearchResults = [...mockPostSearchResults];
+    searchResults.itemsService.numPostResults = 1;
+    const removeSpy = spyOn(searchResults, "removeDeletedPost").and.callThrough();
+    fixture.detectChanges();
 
-    it("should remove a deleted post", () => {
-      const route = TestBed.inject(ActivatedRoute);
-      spyOn(route.snapshot.queryParamMap, "get").and.callFake((param: string) => {
-        if (param == "query") {
-          return "test";
-        } else {
-          return null;
-        }
-      });
-      const fixture = TestBed.createComponent(SearchResults);
-      const searchResults = fixture.componentInstance;
-      searchResults.itemsService.isSearchResolved.next(true);
-      searchResults.itemsService.postSearchResults = [...mockPostSearchResults];
-      searchResults.itemsService.numPostResults = 1;
-      const removeSpy = spyOn(searchResults, "removeDeletedPost").and.callThrough();
-      fixture.detectChanges();
+    const singlePost = fixture.debugElement.query(By.css("app-single-post"))
+      .componentInstance as SinglePost;
+    singlePost.deletedId.emit(5);
+    fixture.detectChanges();
 
-      const singlePost = fixture.debugElement.query(By.css("app-single-post"))
-        .componentInstance as SinglePost;
-      singlePost.deletedId.emit(5);
-      fixture.detectChanges();
-
-      expect(removeSpy).toHaveBeenCalledWith(5);
-      expect(searchResults.itemsService.postSearchResults.length).toBe(1);
-      expect(searchResults.itemsService.postSearchResults[0].id).not.toBe(5);
-    });
+    expect(removeSpy).toHaveBeenCalledWith(5);
+    expect(searchResults.itemsService.postSearchResults.length).toBe(1);
+    expect(searchResults.itemsService.postSearchResults[0].id).not.toBe(5);
   });
 });

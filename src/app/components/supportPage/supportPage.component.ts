@@ -34,10 +34,15 @@ import { Component, OnInit } from "@angular/core";
 import { faComment, faFlag } from "@fortawesome/free-regular-svg-icons";
 import { faHandHoldingHeart, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { faGratipay } from "@fortawesome/free-brands-svg-icons";
+import { CommonModule } from "@angular/common";
+import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
+import { RouterLink } from "@angular/router";
 
 @Component({
   selector: "app-support",
   templateUrl: "./supportPage.component.html",
+  standalone: true,
+  imports: [CommonModule, FontAwesomeModule, RouterLink],
 })
 export class SupportPage implements OnInit {
   faqItems: any[] = [];

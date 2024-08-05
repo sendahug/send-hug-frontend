@@ -31,20 +31,19 @@
 */
 
 // Angular imports
-import { Component, AfterViewChecked } from "@angular/core";
+import { Component } from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
 
 // App-related imports
 import { NotificationService } from "@app/services/notifications.service";
-import { AuthService } from "@common/services/auth.service";
-import { AlertsService } from "@common/services/alerts.service";
-import { iconElements } from "@app/interfaces/types";
+import { AuthService } from "@app/services/auth.service";
+import { AlertsService } from "@app/services/alerts.service";
 
 @Component({
   selector: "app-settings",
   templateUrl: "./settings.component.html",
 })
-export class SettingsPage implements AfterViewChecked {
+export class SettingsPage {
   editIcon = false;
   editSettingsForm = this.fb.group({
     enableNotifications: [false],
@@ -76,31 +75,6 @@ export class SettingsPage implements AfterViewChecked {
 
     this.editSettingsForm.controls.notificationRate.valueChanges.subscribe(() => {
       this.setRateInvalidStatus();
-    });
-  }
-
-  /*
-  Function Name: ngAfterViewChecked()
-  Function Description: This method is automatically triggered by Angular once the component's
-                        view is checked by Angular. It updates the user's icon according to the colours
-                        chosen by the user.
-  Parameters: None.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  ngAfterViewChecked() {
-    Object.keys(this.authService.userData()!.iconColours).forEach((key) => {
-      if (document.querySelectorAll(".userIcon")[0]) {
-        document
-          .querySelectorAll(".userIcon")[0]
-          .querySelectorAll(`.${key as iconElements}`)
-          .forEach((element) => {
-            (element as SVGPathElement).setAttribute(
-              "style",
-              `fill:${this.authService.userData()!.iconColours[key as iconElements]};`,
-            );
-          });
-      }
     });
   }
 

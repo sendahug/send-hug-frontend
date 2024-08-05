@@ -31,33 +31,34 @@
 */
 
 import { NgModule } from "@angular/core";
-import { BrowserModule } from "@angular/platform-browser";
-import { HttpClientModule } from "@angular/common/http";
+import { provideHttpClient } from "@angular/common/http";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { ReactiveFormsModule } from "@angular/forms";
-import { ServiceWorkerModule } from "@angular/service-worker";
 import { CommonModule } from "@angular/common";
+import { RouterLink } from "@angular/router";
 
-import { AppRoutingModule } from "@app/app-routing.module";
-import { AppCommonModule } from "@app/common/common.module";
 import { AdminBlocks } from "./components/adminBlocks/adminBlocks.component";
 import { AdminDashboard } from "./components/adminDashboard/adminDashboard.component";
 import { AdminFilters } from "./components/adminFilters/adminFilters.component";
 import { AdminReports } from "./components/adminReports/adminReports.component";
+import { PostEditForm } from "@app/components/postEditForm/postEditForm.component";
+import { ItemDeleteForm } from "@app/components/itemDeleteForm/itemDeleteForm.component";
+import { DisplayNameEditForm } from "@app/components/displayNameEditForm/displayNameEditForm.component";
+import { Loader } from "@app/components/loader/loader.component";
 
 @NgModule({
   imports: [
-    BrowserModule,
-    HttpClientModule,
     ReactiveFormsModule,
     FontAwesomeModule,
-    AppRoutingModule,
-    ServiceWorkerModule.register("sw.js"),
-    AppCommonModule,
     CommonModule,
+    PostEditForm,
+    ItemDeleteForm,
+    DisplayNameEditForm,
+    Loader,
+    RouterLink,
   ],
   declarations: [AdminBlocks, AdminDashboard, AdminFilters, AdminReports],
-  providers: [],
+  providers: [provideHttpClient()],
   bootstrap: [AdminDashboard],
   exports: [AdminDashboard],
 })

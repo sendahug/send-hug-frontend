@@ -32,14 +32,17 @@
 
 // Angular imports
 import { Component, WritableSignal, computed, signal } from "@angular/core";
-import { ActivatedRoute, Router } from "@angular/router";
+import { ActivatedRoute, Router, RouterLink } from "@angular/router";
 import { from, map, switchMap, tap } from "rxjs";
+import { CommonModule } from "@angular/common";
 
 // App-related imports
 import { FullListType } from "@app/interfaces/types";
 import { Post } from "@app/interfaces/post.interface";
-import { SWManager } from "@common/services/sWManager.service";
-import { ApiClientService } from "@common/services/apiClient.service";
+import { SWManager } from "@app/services/sWManager.service";
+import { ApiClientService } from "@app/services/apiClient.service";
+import { SinglePost } from "@app/components/post/post.component";
+import { Loader } from "../loader/loader.component";
 
 interface PostsListResponse {
   success: boolean;
@@ -50,6 +53,8 @@ interface PostsListResponse {
 @Component({
   selector: "app-full-list",
   templateUrl: "./fullList.component.html",
+  standalone: true,
+  imports: [CommonModule, SinglePost, RouterLink, Loader],
 })
 export class FullList {
   // current page and type of list

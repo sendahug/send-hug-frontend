@@ -33,11 +33,15 @@
 // Angular imports
 import { Component, WritableSignal, signal } from "@angular/core";
 import { forkJoin, from, map, switchMap, tap } from "rxjs";
+import { RouterLink } from "@angular/router";
 
 // App-related imports
-import { ApiClientService } from "@common/services/apiClient.service";
-import { SWManager } from "@common/services/sWManager.service";
+import { ApiClientService } from "@app/services/apiClient.service";
+import { SWManager } from "@app/services/sWManager.service";
 import { Post } from "@app/interfaces/post.interface";
+import { CommonModule } from "@angular/common";
+import { Loader } from "@app/components/loader/loader.component";
+import { SinglePost } from "@app/components/post/post.component";
 
 interface MainPageResponse {
   recent: Post[];
@@ -48,6 +52,8 @@ interface MainPageResponse {
 @Component({
   selector: "app-main-page",
   templateUrl: "./mainPage.component.html",
+  standalone: true,
+  imports: [CommonModule, Loader, SinglePost, RouterLink],
 })
 export class MainPage {
   isLoading = signal(false);
@@ -117,8 +123,8 @@ export class MainPage {
    * Removes the deleted post from the list of posts.
    * @param postId the ID of the post that was deleted.
    */
-  removeDeletedPost(postId: number) {
-    this.newPosts.set(this.newPosts().filter((post) => post.id != postId));
-    this.suggestedPosts.set(this.suggestedPosts().filter((post) => post.id != postId));
+  removeDeletedPost(postId: any) {
+    this.newPosts.set(this.newPosts().filter((post) => post.id != (postId as number)));
+    this.suggestedPosts.set(this.suggestedPosts().filter((post) => post.id != (postId as number)));
   }
 }

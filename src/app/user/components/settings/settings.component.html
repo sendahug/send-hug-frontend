@@ -1,18 +1,17 @@
-<div  *ngIf="authService.authenticated()">
+<div *ngIf="authService.authenticated()">
 	<h3>Settings</h3>
 	
 	<div id="iconSettings">
 		<h4>User Icon</h4>
 		<div *ngIf="editIcon == false">
-			<div *ngIf="authService.userData().selectedIcon == 'kitty'">
-				<img src="../../../assets/img/kitty.svg" alt="" class="userIcon" >
-			</div>
-			<div *ngIf="authService.userData().selectedIcon == 'dog'">
-				<img src="../../../assets/img/dog.svg" alt="" class="userIcon" >
-			</div>
-			<div *ngIf="authService.userData().selectedIcon == 'bear'">
-				<img src="../../../assets/img/bear.svg" alt=""  class="userIcon" >
-			</div>
+			<app-user-icon
+					[selectedIcon]="authService.userData()?.selectedIcon ?? 'kitty'"
+					[characterColour]="authService.userData()?.iconColours?.character"
+					[lbgColour]="authService.userData()?.iconColours?.lbg"
+					[rbgColour]="authService.userData()?.iconColours?.rbg"
+					[itemColour]="authService.userData()?.iconColours?.item"
+					[svgClass]="'userIcon'"
+				/>
 		</div>
 		<button *ngIf="editIcon == false" (click)="toggleIconEditor(true)" class="appButton" id="editIcon">Edit User Icon</button>
 		

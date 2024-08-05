@@ -39,7 +39,7 @@ import { openDB, IDBPDatabase, DBSchema } from "idb";
 // App-related imports
 import { AlertsService } from "@app/services/alerts.service";
 import { type IdbStoreType, type iconCharacters } from "@app/interfaces/types";
-import { type Message } from "@app/interfaces/message.interface";
+import { type MessageGet } from "@app/interfaces/message.interface";
 import { type Post } from "@app/interfaces/post.interface";
 import { type FullThread } from "@app/interfaces/thread.interface";
 import { type OtherUser } from "@app/interfaces/otherUser.interface";
@@ -474,7 +474,7 @@ export class SWManager {
     filterValue: number,
     perPage: number,
     page?: number,
-  ): Promise<{ messages: Message[]; pages: number }> {
+  ): Promise<{ messages: MessageGet[]; pages: number }> {
     if (this.currentDB) {
       return this.currentDB
         .then(function (db) {
@@ -483,7 +483,7 @@ export class SWManager {
         })
         .then((messages) => {
           const filteredMessages = messages
-            .filter((message: Message) => message[filterAttribute] == filterValue)
+            .filter((message: MessageGet) => message[filterAttribute] == filterValue)
             .reverse();
           const startIndex = ((page || 1) - 1) * perPage;
           const pages = Math.ceil(filteredMessages.length / 5);

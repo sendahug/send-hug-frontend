@@ -319,7 +319,6 @@ describe("NewItem", () => {
       from: {
         displayName: "name",
       },
-      fromId: 4,
       forId: 2,
       messageText: messageText,
     };

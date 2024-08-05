@@ -37,7 +37,7 @@ import { BehaviorSubject } from "rxjs";
 
 // App-related imports
 import { type Post } from "@app/interfaces/post.interface";
-import { type Message } from "@app/interfaces/message.interface";
+import { type MessageCreate } from "@app/interfaces/message.interface";
 import { type OtherUser } from "@app/interfaces/otherUser.interface";
 import { AlertsService } from "@app/services/alerts.service";
 import { SWManager } from "@app/services/sWManager.service";
@@ -102,7 +102,7 @@ export class ItemsService {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  sendMessage(message: Message) {
+  sendMessage(message: MessageCreate) {
     this.apiClient.post("messages", message).subscribe({
       next: (response: any) => {
         this.alertsService.createSuccessAlert("Your message was sent!", {

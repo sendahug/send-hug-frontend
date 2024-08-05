@@ -38,7 +38,7 @@ import { CommonModule } from "@angular/common";
 
 // App-related imports
 import { type Post } from "@app/interfaces/post.interface";
-import { type Message } from "@app/interfaces/message.interface";
+import { type MessageCreate } from "@app/interfaces/message.interface";
 import { ItemsService } from "@app/services/items.service";
 import { AuthService } from "@app/services/auth.service";
 import { AlertsService } from "@app/services/alerts.service";
@@ -206,11 +206,10 @@ export class NewItem implements OnInit {
     // if the user is sending a message to someone else and there's text
     // in the text field, make the request
     // create a new message object to send
-    let newMessage: Message = {
+    let newMessage: MessageCreate = {
       from: {
         displayName: this.authService.userData()!.displayName!,
       },
-      fromId: this.authService.userData()!.id!,
       forId: this.forID,
       messageText: messageText,
       date: new Date(),

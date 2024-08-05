@@ -33,22 +33,41 @@
 import { iconCharacters } from "./types";
 import { UserIconColours } from "./user.interface";
 
-export interface Message {
+interface Message {
   id?: number;
   from?: {
     displayName: string;
     selectedIcon?: iconCharacters;
     iconColours?: UserIconColours;
   };
-  fromId: number;
+  fromId?: number;
   for?: {
     displayName: string;
     selectedIcon?: iconCharacters;
     iconColours?: UserIconColours;
   };
-  forId: number;
+  forId?: number;
   messageText: string;
   date: Date;
   threadID?: number;
   isoDate?: string;
+}
+
+export interface MessageCreate extends Message {
+  from: {
+    displayName: string;
+  };
+}
+
+export interface MessageGet extends Message {
+  id: number;
+  from: {
+    displayName: string;
+  };
+  fromId: number;
+  for: {
+    displayName: string;
+  };
+  forId: number;
+  threadID: number;
 }

@@ -30,13 +30,25 @@
   SOFTWARE.
 */
 
-export interface Post {
+interface Post {
   id?: number;
+  userId?: number;
+  user?: string;
+  text: string;
+  date: Date;
+  givenHugs?: number;
+  isoDate?: string;
+  sentHugs?: number[];
+}
+
+export interface PostCreate extends Post {}
+
+export interface PostGet extends Post {
+  id: number;
   userId: number;
   user: string;
   text: string;
   date: Date;
   givenHugs: number;
-  isoDate?: string;
   sentHugs?: number[];
 }

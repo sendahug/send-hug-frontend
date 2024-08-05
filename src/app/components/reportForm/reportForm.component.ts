@@ -36,7 +36,7 @@ import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { CommonModule } from "@angular/common";
 
 // App-related import
-import { type Post } from "@app/interfaces/post.interface";
+import { type PostGet } from "@app/interfaces/post.interface";
 import { type Report } from "@app/interfaces/report.interface";
 import { type OtherUser } from "@app/interfaces/otherUser.interface";
 import { AuthService } from "@app/services/auth.service";
@@ -85,10 +85,10 @@ export class ReportForm implements OnInit {
   // indicates whether edit/delete mode is still required
   @Output() reportMode = new EventEmitter<boolean>();
   // reported post
-  @Input() reportedItem: Post | OtherUser | undefined;
+  @Input() reportedItem: PostGet | OtherUser | undefined;
   // type of item to report
   @Input() reportType: "User" | "Post" = "Post";
-  protected reportedPost: Post | undefined;
+  protected reportedPost: PostGet | undefined;
   protected reportedUser: OtherUser | undefined;
   reportReasonsText = reportReasonsText;
   reportForm = this.fb.group({
@@ -110,7 +110,7 @@ export class ReportForm implements OnInit {
    */
   ngOnInit(): void {
     if (this.reportType == "Post") {
-      this.reportedPost = this.reportedItem as Post;
+      this.reportedPost = this.reportedItem as PostGet;
       this.reportedUser = undefined;
     } else {
       this.reportedUser = this.reportedItem as OtherUser;
@@ -187,7 +187,7 @@ export class ReportForm implements OnInit {
   */
   createReport() {
     let item =
-      this.reportType == "User" ? (this.reportedItem as OtherUser) : (this.reportedItem as Post);
+      this.reportType == "User" ? (this.reportedItem as OtherUser) : (this.reportedItem as PostGet);
     let reportReason = this.getSelectedReasonText();
 
     if (!this.reportForm.valid) {
@@ -220,8 +220,8 @@ export class ReportForm implements OnInit {
     };
 
     if (this.reportType == "Post") {
-      report["userID"] = (item as Post).userId;
-      report["postID"] = (item as Post).id;
+      report["userID"] = (item as PostGet).userId;
+      report["postID"] = (item as PostGet).id;
     } else {
       report["userID"] = (item as OtherUser).id;
     }

@@ -112,8 +112,6 @@ describe("NewItem", () => {
   // Check that it triggers the items service when creating a new post
   it("sendPost() - should send a post", () => {
     const mockNewPost = {
-      userId: 4,
-      user: "name",
       text: "new post",
       givenHugs: 0,
     };

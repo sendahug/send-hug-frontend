@@ -40,7 +40,7 @@ import { openDB, IDBPDatabase, DBSchema } from "idb";
 import { AlertsService } from "@app/services/alerts.service";
 import { type IdbStoreType, type iconCharacters } from "@app/interfaces/types";
 import { type MessageGet } from "@app/interfaces/message.interface";
-import { type Post } from "@app/interfaces/post.interface";
+import { type PostGet } from "@app/interfaces/post.interface";
 import { type FullThread } from "@app/interfaces/thread.interface";
 import { type OtherUser } from "@app/interfaces/otherUser.interface";
 import { type UserIconColours, type Role } from "@app/interfaces/user.interface";
@@ -350,7 +350,7 @@ export class SWManager {
     userID?: number,
     page?: number,
     reverseOrder: boolean = false,
-  ): Promise<{ posts: Post[]; pages: number }> {
+  ): Promise<{ posts: PostGet[]; pages: number }> {
     if (this.currentDB) {
       return this.currentDB
         .then((db) => {
@@ -383,7 +383,7 @@ export class SWManager {
           const startIndex = (currentPage - 1) * perPage;
           const pages = Math.ceil(posts!.length / 5);
 
-          let finalPosts: Post[];
+          let finalPosts: PostGet[];
 
           if (sortBy == "hugs") {
             finalPosts = this.sortSuggestedPosts(posts);

@@ -37,7 +37,7 @@ import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { CommonModule } from "@angular/common";
 
 // App-related imports
-import { type Post } from "@app/interfaces/post.interface";
+import { type PostCreate } from "@app/interfaces/post.interface";
 import { type MessageCreate } from "@app/interfaces/message.interface";
 import { ItemsService } from "@app/services/items.service";
 import { AuthService } from "@app/services/auth.service";
@@ -144,9 +144,7 @@ export class NewItem implements OnInit {
 
     // otherwise create the post
     // create a new post object to send
-    let newPost: Post = {
-      userId: this.authService.userData()!.id!,
-      user: this.authService.userData()!.displayName!,
+    let newPost: PostCreate = {
       text: postText,
       date: new Date(),
       givenHugs: 0,

@@ -36,7 +36,7 @@ import { HttpErrorResponse } from "@angular/common/http";
 import { BehaviorSubject } from "rxjs";
 
 // App-related imports
-import { type Post } from "@app/interfaces/post.interface";
+import { type PostGet } from "@app/interfaces/post.interface";
 import { type MessageCreate } from "@app/interfaces/message.interface";
 import { type OtherUser } from "@app/interfaces/otherUser.interface";
 import { AlertsService } from "@app/services/alerts.service";
@@ -52,7 +52,7 @@ export class ItemsService {
   userSearchResults: OtherUser[] = [];
   numUserResults = 0;
   numPostResults = 0;
-  postSearchResults: Post[] = [];
+  postSearchResults: PostGet[] = [];
   postSearchPage = signal(1);
   totalPostSearchPages = signal(1);
   isSearchResolved = new BehaviorSubject(false);

@@ -118,7 +118,7 @@
     "@size-limit/time": "^11.1.4",
     "@types/jasmine": "^5.1.4",
     "@types/node": "^22.0.3",
-    "autoprefixer": "^10.4.19",
+    "autoprefixer": "^10.4.20",
     "axe-core": "^4.10.0",
     "browser-sync": "^3.0.2",
     "glob": "^11.0.0",

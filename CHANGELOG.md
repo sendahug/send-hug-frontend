@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+### 2024-08-05
+
+#### Chores
+
+- Removed Node.js version 18 from CI tests (in GitHub Actions) and added Node.js version 22. ([#1745](https://github.com/sendahug/send-hug-frontend/pull/1745))
+- Fixed the back-end startup in CI (during the e2e and accessibility testing workflows), which has apparently been broken since the migration to Firebase. ([#1758](https://github.com/sendahug/send-hug-frontend/pull/1758))
+- Added missing Chrome flags to pa11y config to fix accessibility tests. ([#1758](https://github.com/sendahug/send-hug-frontend/pull/1758))
+- Replaced the default pa11y runner with axe-core, which is more thorough than HTML_CodeSniffer. ([#1758](https://github.com/sendahug/send-hug-frontend/pull/1758))
+
 ### 2024-06-22
 
 #### Changes

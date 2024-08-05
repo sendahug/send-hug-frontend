@@ -11,7 +11,7 @@
 
 Version 1 (currently in development).
 
-Built using the [gulp-site-template](https://github.com/shirblc/gulp-site-template) repo.
+Originallyl built using the [gulp-site-template](https://github.com/shirblc/gulp-site-template) repo. Rebuilt with Vite (mostly) using the [vite-angular template](https://github.com/shirblc/vite-angular).
 
 For full project information, check the [`main README file`](https://github.com/sendahug/sendahug/blob/master/README.md).
 
@@ -42,11 +42,8 @@ The project is open source, so feel free to use parts of the code. However, the 
    - FIREBASE_MESSAGING_SENDER_ID - the Firebase messaging sender ID.
    - FIREBASE_APP_ID - your Firebase App ID.
    - FIREBASE_MEASUREMENT_ID - the Firebase measurement ID (for analytics).
-6. Run `npm run localdev` to compile the whole project for local development.
-7. Run `gulp serve` to start the local server.
-8. Open localhost:3000.
-
-**For your convenience,** this project utilises Gulp's 'watch' functionality. In order to activate it while developing, run `gulp watch`. For more information about Gulp watch, check the [Gulp documentation](https://gulpjs.com/docs/en/getting-started/watching-files/).
+6. Run `npm run dev` to compile the whole project for local development.
+7. Open localhost:3000.
 
 ### Users
 
@@ -54,13 +51,12 @@ The project is open source, so feel free to use parts of the code. However, the 
 
 ## Contents
 
-The app (located in [src/app](./src/app)) contains several modules:
+The app (located in [src/app](./src/app)) contains two modules:
 
-- The root module (AppModule), defined in **app.module.ts**. Contains mainly the components that are available to all users, whether or not they're logged in.
-- A routing module, defined in **app-routing.module.ts**. Contains the app's routing.
 - An Admin module, defined in **admin/admin.module.ts**. Contains the components that handle admin actions.
-- A Common module, defined in **common/common.module.ts**. Contains components and services which are used throughout the whole app.
 - A User module, defined in **user/user.module.ts**. Contians the components that handle authenticated users' actions.
+
+On top of these, the app contains various components and services. Any component that isn't part of the above modules is defined as a standalone component, and so can be used in any module.
 
 Each component folder contains both the HTML template and the component TypeScript file.
 
@@ -68,16 +64,13 @@ The components (both view-defining components and smaller components) are locate
 
 ## Dependencies
 
-### Gulp
+### Development
 
 The site uses several tools to maximise compatibility:
 
-1. **Gulp** - Gulp enables running tasks automatically. You can read more on the [Gulp website](https://gulpjs.com). Gulp is a Node.js tool, so it requires installing Node.
-2. **Gulp-Postcss** with **Autoprefixer** Plugin - A Gulp plugin which adds the necessary browser prefixes to the CSS file. For more info check the [Gulp-postcss](https://www.npmjs.com/package/gulp-postcss) page and the [Autoprefixer](https://www.npmjs.com/package/autoprefixer) page on NPM.
-3. **Rollup** - A module bundler for JS. Rollup bundles up the main module (AppModule) and converts it from TypeScript to ES6. For more info, check the [Rollup repo](https://github.com/rollup/rollup).
-4. **Gulp-Rename** - A gulp plugin used to rename files. Used to rename the main module JS and to change the directory name of all HTML files. For more info check the [Gulp-rename](https://www.npmjs.com/package/gulp-rename) page on NPM.
-5. **Gulp-replace** - A string replace plugin for Gulp. Used to change the templateUrls in the final JS file. For more info, check the [Gulp-replace](https://www.npmjs.com/package/gulp-replace) page on NPM.
-6. **Gulp-less** - A gulp plugin for Less compilation. Used to compile the app's main styles, written in Less, to the CSS used in deployment. For more info, check the [gulp-less](https://www.npmjs.com/package/gulp-less) page on NPM.
+1. **Vite** - The main tool used to power up the development server and the build process. It runs the development server, handles HMR, runs development builds using ESBuild, and runs production builds using Rollup. For more information, check out the [Vite docs](https://vitejs.dev).
+2. **LESS** - A CSS pre-processor. Used to compile the site's styles to CSS. For more information, check the [LESS docs](https://lesscss.org).
+3. **Babel** - A JavaScript compiler. Used to run the Angular Linker when building for production. For more information, check the [Babel docs](https://babeljs.io).
 
 ### Angular
 
@@ -94,7 +87,6 @@ The site uses several tools to maximise compatibility:
 11. **rxjs** - Contains an implementation of observables, which many Angular APIs use.
 12. **typescript** - TypeScript language server, which Angular uses.
 13. **zone.js** - Implementation of zones for JavaScript (used by Angular).
-14. **core-js** - Modular standard library for JavaScript. Contains polyfills. For more information, check the [GitHub repo](https://github.com/zloirock/core-js).
 
 For more information about Angular's required NPM packages, check the [Angular docs](https://angular.io/guide/npm-packages).
 
@@ -102,32 +94,27 @@ For more information about Angular's required NPM packages, check the [Angular d
 
 1. **IDB** (formerly IDBPromised) - An improved version of IndexedDB, which is Promise-based and includes various enhancements to improve the API's usability. For more information, check the [IDBP repo](https://github.com/jakearchibald/idb).
 2. **Firebase** - Firebase's JS SDK, used for user authentication. For more information, check the [Firebase SDK's repo](https://github.com/firebase/firebase-js-sdk).
+   - **@angular/fire** - For better Angular compatibility, we use @angular/fire.
+3. **Font Awesome** - The icon provider that provides the site's icons. For more information, check the [Font Awesome docs](https://docs.fontawesome.com).
 
 ### Testing Dependencies
 
-This project's tests are run using the Jasmine framework and the Karma runner. Thus, testing requires several packages:
+This project's tests are run using the Jasmine framework and web-test-runner. Thus, testing requires several packages:
 
 1. **Jasmine** - An open-source behaviour-driven testing framework. For more information, check Jasmine's [official site](https://jasmine.github.io). Included packages:
    - **jasmine-core**
-   - **jasmine-spec-reporter**
    - **@types/jasmine** - A typed version, required in order to write TypeScript tests.
-2. **Karma** - An open-source test-runner, used to run the tests on various devices with a test server. For more information, check Karma's [official site](https://karma-runner.github.io/latest/index.html). Included packages:
-   - **karma**
-   - **karma-jasmine** - A Karma adapter for the Jasmine framework. [Project repo.](https://github.com/karma-runner/karma-jasmine)
-   - **karma-jasmine-html-reporter** - A reporter that shows test results in HTML. [NPM page.](https://www.npmjs.com/package/karma-jasmine-html-reporter).
-   - **karma-chrome-launcher** - A launcher for Chrome, Chrome Canary and Chromuim. [Project repo.](https://github.com/karma-runner/karma-chrome-launcher).
-   - **karma-coverage** - Code coverage generator. [Project repo.](https://github.com/karma-runner/karma-coverage)
-   - **karma-coverage-istanbul-reporter** - Code coverage generator reporter. [NPM page.](https://www.npmjs.com/package/karma-coverage-istanbul-reporter)
-   - **karma-sourcemap-loader** - A preprocessor that loads existing source maps. [NPM page.](https://www.npmjs.com/package/karma-sourcemap-loader)
-   - **karma-rollup-preprocessor** - A rollup preprocessor for karma, used to bundle up the tests. [NPM page.](https://www.npmjs.com/package/karma-rollup-preprocessor)
-   - **karma-viewport** - A karma framework used to gain access to the viewport in tests. [NPM page.](https://www.npmjs.com/package/karma-viewport)
-3. **Cypress** - An open-source end-to-end test framework. For more information, check Cypress's [official site](https://www.cypress.io/).
-
-### Production Dependencies
-
-1. **Express** - This project uses Express in order to run a basic server in deployment. This server is used to send the static files and script to the user. For more information, check the [Express website](https://expressjs.com).
-2. **Compression** - A Node extension used to compress production files when sending them from the Express server to the client. For more information, check the [compression NPM page](https://www.npmjs.com/package/compression).
-3. **dotenv** - A Node extension for accessing environment variables. Used by the frontend while in production mode. For more information, check the [dotenv NPM page](https://www.npmjs.com/package/dotenv).
+2. **web-test-runner** - An open-source test-runner, used to run the tests on various devices with a test server. For more information, check web-test-runner's [official site](https://modern-web.dev/docs/test-runner/overview/). Included packages:
+   - **@web/test-runner**
+   - **@web/dev-server-esbuild** - An ESBuild plugin for the web-test-runner development server. Used to run the final compilation of test files.
+   - **@web/dev-server-rollup** - A rollup plugin for the web-test-runner development server. Used mostly to convert Rollup plugins (in [plugins.mjs](https://github.com/sendahug/send-hug-frontend/blob/dev/plugins.mjs)) to web-test-runner plugins.
+   - **@web/test-runner-playwright** - A playwright launcher (for running browser tests).
+   - **@web/test-runner-commands** - A group of commands for controlling various aspects of the browser.
+   - **rollup-plugin-tsconfig-paths** - A rollup plugin for converting paths defined in tsconfig to paths the esbuild plugin can parse.
+3. **ng-mocks** - An Angular mocking environment, which enables stubbing components and services in tests. For more information, check [ng-mock's docs](https://ng-mocks.sudo.eu).
+4. **Cypress** - An open-source end-to-end test framework. For more information, check Cypress's [official site](https://www.cypress.io/).
+5. **pa11y** - An open-source tool for running accessibility tests. For more information, check [the docs](https://pa11y.org).
+   - **axe-core** - The runner pa11y uses for accessibility tests in the project. See the [GitHub repo](https://github.com/dequelabs/axe-core) for more information.
 
 ## Authentication
 
@@ -161,40 +148,19 @@ Tests are written in TypeScript and each component's tests are located in the sa
 
 ### Running Tests
 
-Running tests is done through the dedicated Gulp task. All you need to do is run `gulp test` or `npm run test` in the terminal; this will start Karma and trigger Webpack's compilation of tests and project files.
+Running tests is done through the dedicated npm script. All you need to do is run `npm run test` in the terminal; this will start web-test-runner.
+
+**Note:** You might need to install Playwright first. If so, run `npx playwright install`.
 
 ### End-to-End Tests
 
 End to end tests are similarly written in TypeScript and named in the following format: `<component_name>.spec.ts`. They're all located in [e2e/src](./e2e/src).
 
-Since this is a full-stack application, running end-to-end tests requires running the [backend](https://github.com/sendahug/send-hug-backend) prior to running the tests. Once the backend is up and running, run `gulp e2e` in another terminal tab. This will compile all files, run the frontend server and then run Cypress.
+Since this is a full-stack application, running end-to-end tests requires running the [backend](https://github.com/sendahug/send-hug-backend) prior to running the tests. Once the backend is up and running, you'll need to run the front-end too. To do that, simply run `npm run dev`.
+
+With the Vite development server up and running, you can now run tests. In order to do that, run `npm run cypress` in another terminal tab. This will run Cypress.
 
 Note that you will need the username and password of an admin set to two environment variables in order to run some of the tests (`CYPRESS_ADMIN_USERNAME` and `CYPRESS_ADMIN_PASSWORD`).
-
-## Hosting
-
-The project was hosted live on Heroku (we're currently looking at alternatives, due to Heroku removing their free tier). If you want to clone and host your own version, you can do so by using the following guide (the following commands are for Heroku, but they can be adjusted depending on your host):
-
-1. Create a Heroku account (skip this step if you already have an account).
-2. Install the Heroku command line interface.
-3. In your Terminal, enter `heroku login`. This triggers logging in via the CLI.
-4. Enter `heroku create <APP_NAME>` (with your own app name). If successful, Heroku returns the live version's URL (will be referred to as <LIVE_URL>) and the Git repo link (will be referred to as <GIT_URL>).
-5. In your terminal, enter `git remote add heroku-client <GIT_URL>`.
-6. Update the live environment file with the correct variable values:
-   - LOGIN_REDIRECT - set to your <LIVE_URL> (or wherever in the app you want the user to be redirected to) to ensure after login the user will be redirected to your app
-   - LOGOUT_REDIRECT - set to your <LIVE_URL> (or wherever in the app you want the user to be redirected to) to ensure after login the user will be redirected to your app
-   - BACKEND_URL - set with your own backend URL (necessary for making requests to the backend!)
-7. Enter `git push heroku-client master`. This triggers the app build. If successful, you'll get a 'Verifying deploy... done.' message.
-8. Add the following environment variables (via CLI or via the Heroku website):
-   - PRODUCTION - set to true
-   - FIREBASE_API_KEY - the Firebase API key for your project.
-   - FIREBASE_PROJECT_ID - your Firebase project ID.
-   - FIREBASE_AUTH_DOMAIN - the Firebase auth domain for your project.
-   - FIREBASE_STORAGE_BUCKET - the Firebase storage bucket for your project.
-   - FIREBASE_MESSAGING_SENDER_ID - the Firebase messaging sender ID.
-   - FIREBASE_APP_ID - your Firebase App ID.
-   - FIREBASE_MEASUREMENT_ID - the Firebase measurement ID (for analytics).
-9. All done! Now you can visit your <GIT_URL> to see the live app.
 
 ## Known Issues
 

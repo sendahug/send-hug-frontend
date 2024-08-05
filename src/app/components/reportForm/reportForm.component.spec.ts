@@ -450,7 +450,6 @@ describe("Report", () => {
     const report = {
       type: "Post",
       postID: 1,
-      reporter: 4,
       reportReason: "because",
       dismissed: false,
       closed: false,
@@ -513,7 +512,6 @@ describe("Report", () => {
       type: "Post",
       userID: 2,
       postID: 1,
-      reporter: 4,
       reportReason: "The post is Inappropriate",
       dismissed: false,
       closed: false,
@@ -585,7 +583,6 @@ describe("Report", () => {
       type: "User",
       userID: 3,
       postID: undefined,
-      reporter: 4,
       reportReason: "The user is posting Spam",
       dismissed: false,
       closed: false,

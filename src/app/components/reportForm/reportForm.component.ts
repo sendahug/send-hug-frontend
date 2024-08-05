@@ -37,7 +37,7 @@ import { CommonModule } from "@angular/common";
 
 // App-related import
 import { type PostGet } from "@app/interfaces/post.interface";
-import { type Report } from "@app/interfaces/report.interface";
+import { ReportGet, type ReportCreate } from "@app/interfaces/report.interface";
 import { type OtherUser } from "@app/interfaces/otherUser.interface";
 import { AuthService } from "@app/services/auth.service";
 import { AlertsService } from "@app/services/alerts.service";
@@ -208,7 +208,7 @@ export class ReportForm implements OnInit {
     }
 
     // create a new report
-    let report: Report = {
+    let report: ReportCreate = {
       type: this.reportType as "Post" | "User",
       userID: 0,
       postID: undefined,
@@ -231,7 +231,7 @@ export class ReportForm implements OnInit {
     this.apiClient.post("reports", report).subscribe({
       next: (response: any) => {
         // if successful, alert the user
-        const sent_report: Report = response.report;
+        const sent_report: ReportGet = response.report;
         let successMessage =
           sent_report.type == "Post"
             ? `Post number ${sent_report.postID} was successfully reported.`

@@ -30,18 +30,27 @@
   SOFTWARE.
 */
 
-export interface Report {
+interface Report {
   id?: number;
   type: "User" | "Post";
   userID: number;
   postID?: number;
-  reporter: number;
+  reporter?: number;
   reportReason: string;
   date: Date;
-  dismissed: boolean;
-  closed: boolean;
+  dismissed?: boolean;
+  closed?: boolean;
   displayName?: string;
   text?: string;
+}
+
+export interface ReportCreate extends Report {}
+
+export interface ReportGet extends Report {
+  id: number;
+  reporter: number;
+  dismissed: boolean;
+  closed: boolean;
 }
 
 export interface ReportData {

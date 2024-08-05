@@ -1,0 +1,17 @@
+{
+  "pr_number": 1758,
+  "changes": [
+    {
+      "change": "Chores",
+      "description": "Fixed the back-end startup in CI (during the e2e and accessibility testing workflows), which has apparently been broken since the migration to Firebase."
+    },
+    {
+      "change": "Chores",
+      "description": "Added missing Chrome flags to pa11y config to fix accessibility tests."
+    },
+    {
+      "change": "Chores",
+      "description": "Replaced the default pa11y runner with axe-core, which is more thorough than HTML_CodeSniffer."
+    }
+  ]
+}

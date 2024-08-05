@@ -3,7 +3,12 @@
   "level": "error",
   "defaults": {
     "timeout": 15000,
-    "threshold": 2
+    "threshold": 2,
+    "chromeLaunchConfig": {
+      "ignoreHTTPSErrors": true,
+      "args": ["--disable-dev-shm-usage", "--no-sandbox"]
+    }
   },
-  "ignore": []
+  "ignore": [],
+  "runners": ["axe"]
 }

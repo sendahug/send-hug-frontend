@@ -20,3 +20,4 @@ cypress/*
 
 dist/*
 !dist/README.md
+.env

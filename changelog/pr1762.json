@@ -1,9 +1,0 @@
-{
-  "pr_number": 1762,
-  "changes": [
-    {
-      "change": "Documentation",
-      "description": "Updated the README with details about the updated dependencies and project structure (post [#1755](https://github.com/sendahug/send-hug-frontend/pull/1755))."
-    }
-  ]
-}

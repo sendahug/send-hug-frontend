@@ -27,24 +27,24 @@
 		<li *ngFor="let message of messages()" class="userMessage"  aria-describedby="messType" id="{{messType + message.id}}">
 			<div class="messageProfilePic">
 				<app-user-icon
-					[selectedIcon]="getMessageUser(message)?.selectedIcon ?? 'kitty'"
-					[characterColour]="getMessageUser(message)?.iconColours?.character"
-					[lbgColour]="getMessageUser(message)?.iconColours?.lbg"
-					[rbgColour]="getMessageUser(message)?.iconColours?.rbg"
-					[itemColour]="getMessageUser(message)?.iconColours?.item"
+					[selectedIcon]="getMessageUser(message).selectedIcon ?? 'kitty'"
+					[characterColour]="getMessageUser(message).iconColours?.character"
+					[lbgColour]="getMessageUser(message).iconColours?.lbg"
+					[rbgColour]="getMessageUser(message).iconColours?.rbg"
+					[itemColour]="getMessageUser(message).iconColours?.item"
 					[svgClass]="'userIcon'"
 				/>
 			</div>
 			<div class="messageContainer">
 				<div class="messageText" aria-describedby="mText" id="{{'text' + message.id}}">{{ message.messageText }}</div>
 				<div class="messageField" *ngIf="messType == 'inbox'">
-					<span class="pageData">From</span><span class="pageData" aria-describedby="mUserFrom">{{ message.from?.displayName }}</span>
+					<span class="pageData">From</span><span class="pageData" aria-describedby="mUserFrom">{{ message.from.displayName }}</span>
 				</div>
 				<div class="messageField" *ngIf="messType == 'outbox'">
-					<span class="pageData">For</span><span class="pageData" aria-describedby="mUserFor">{{ message.for?.displayName }}</span>
+					<span class="pageData">For</span><span class="pageData" aria-describedby="mUserFor">{{ message.for.displayName }}</span>
 				</div>
 				<div class="buttons">
-					<a [routerLink]="['/new', 'Message']" [queryParams]="{user: message.from?.displayName, userID: message.fromId}" class="appButton messageButton" [attr.aria-describedby]="'mReply ' +  'text' + message.id" *ngIf="messType == 'inbox'">Reply</a>
+					<a [routerLink]="['/new', 'Message']" [queryParams]="{user: message.from.displayName, userID: message.fromId}" class="appButton messageButton" [attr.aria-describedby]="'mReply ' +  'text' + message.id" *ngIf="messType == 'inbox'">Reply</a>
 					<button class="appButton deleteButton" (click)="deleteMessage(message.id!)" [attr.aria-describedby]="'mDelete ' + 'mText' + message.id">Delete Message</button>
 				</div>
 			</div>
@@ -57,11 +57,11 @@
 			<li class="userThread" *ngFor="let thread of userThreadsFormatted()" aria-describedby="messType" id="{{messType + thread.id}}">
 				<div class="messageProfilePic">
 					<app-user-icon
-						[selectedIcon]="getMessageUser(thread)!.selectedIcon ?? 'kitty'"
-						[characterColour]="getMessageUser(thread)?.iconColours?.character"
-						[lbgColour]="getMessageUser(thread)?.iconColours?.lbg"
-						[rbgColour]="getMessageUser(thread)?.iconColours?.rbg"
-						[itemColour]="getMessageUser(thread)?.iconColours?.item"
+						[selectedIcon]="getMessageUser(thread).selectedIcon ?? 'kitty'"
+						[characterColour]="getMessageUser(thread).iconColours?.character"
+						[lbgColour]="getMessageUser(thread).iconColours?.lbg"
+						[rbgColour]="getMessageUser(thread).iconColours?.rbg"
+						[itemColour]="getMessageUser(thread).iconColours?.item"
 						[svgClass]="'userIcon'"
 					/>
 				</div>
@@ -90,20 +90,20 @@
 			<li class="userMessage" *ngFor="let message of messages()" aria-describedby="messType"  id="{{messType + message.id}}">
 				<div class="messageProfilePic">
 					<app-user-icon
-						[selectedIcon]="getMessageUser(message)?.selectedIcon ?? 'kitty'"
-						[characterColour]="getMessageUser(message)?.iconColours?.character"
-						[lbgColour]="getMessageUser(message)?.iconColours?.lbg"
-						[rbgColour]="getMessageUser(message)?.iconColours?.rbg"
-						[itemColour]="getMessageUser(message)?.iconColours?.item"
+						[selectedIcon]="getMessageUser(message).selectedIcon ?? 'kitty'"
+						[characterColour]="getMessageUser(message).iconColours?.character"
+						[lbgColour]="getMessageUser(message).iconColours?.lbg"
+						[rbgColour]="getMessageUser(message).iconColours?.rbg"
+						[itemColour]="getMessageUser(message).iconColours?.item"
 						[svgClass]="'userIcon'"
 					/>
 				</div>
 				<div class="messageContainer">
 					<div class="messageField">
-						<span class="pageCategory">From:</span> <span class="pageData" aria-describedby="mUserFrom">{{ message.from?.displayName }}</span>
+						<span class="pageCategory">From:</span> <span class="pageData" aria-describedby="mUserFrom">{{ message.from.displayName }}</span>
 					</div>
 					<div class="messageField">
-						<span class="pageCategory">For:</span> <span class="pageData" aria-describedby="mUserFor">{{ message.for?.displayName }}</span>
+						<span class="pageCategory">For:</span> <span class="pageData" aria-describedby="mUserFor">{{ message.for.displayName }}</span>
 					</div>
 					<div class="messageField">
 						<span class="pageCategory">Text:</span> <span class="pageData" aria-describedby="mText" id="{{ 'mText' + message.id }}">{{ message.messageText }}</span>
@@ -112,7 +112,7 @@
 						<span class="pageCategory">Date:</span> <span class="pageData" aria-describedby="mDate">{{ message.date }}</span>
 					</div>
 					<div class="threadBtns">
-						<a [routerLink]="['/new', 'Message']" [queryParams]="{user: message.from?.displayName, userID: message.fromId}" class="appButton messageButton" [attr.aria-describedby]="'mReply ' + 'mText' + message.id">Reply</a>
+						<a [routerLink]="['/new', 'Message']" [queryParams]="{user: message.from.displayName, userID: message.fromId}" class="appButton messageButton" [attr.aria-describedby]="'mReply ' + 'mText' + message.id">Reply</a>
 						<button class="appButton deleteButton" (click)="deleteMessage(message.id!)" [attr.aria-describedby]="'mDelete ' + 'mText' + message.id">Delete Message</button>
 					</div>
 				</div>

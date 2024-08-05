@@ -63,10 +63,14 @@ export interface MessageGet extends Message {
   id: number;
   from: {
     displayName: string;
+    selectedIcon?: iconCharacters;
+    iconColours?: UserIconColours;
   };
   fromId: number;
   for: {
     displayName: string;
+    selectedIcon?: iconCharacters;
+    iconColours?: UserIconColours;
   };
   forId: number;
   threadID: number;

@@ -42,7 +42,7 @@ import { of } from "rxjs";
 import { provideZoneChangeDetection, signal } from "@angular/core";
 
 import { PostEditForm } from "./postEditForm.component";
-import { Post } from "@app/interfaces/post.interface";
+import { type PostGet } from "@app/interfaces/post.interface";
 import { PopUp } from "@app/components/popUp/popUp.component";
 import { ValidationService } from "@app/services/validation.service";
 import { MockProvider } from "ng-mocks";
@@ -157,7 +157,7 @@ describe("PostEditForm", () => {
     const fixture = TestBed.createComponent(PostEditForm);
     const popUp = fixture.componentInstance;
     const popUpDOM = fixture.nativeElement;
-    const originalItem = { text: "hi", id: 2 } as Post;
+    const originalItem = { text: "hi", id: 2 } as PostGet;
     popUp.reportData = {
       reportID: 1,
       postID: 2,
@@ -219,7 +219,7 @@ describe("PostEditForm", () => {
     const fixture = TestBed.createComponent(PostEditForm);
     const popUp = fixture.componentInstance;
     const popUpDOM = fixture.nativeElement;
-    const originalItem = { text: "hi", id: 2 } as Post;
+    const originalItem = { text: "hi", id: 2 } as PostGet;
     popUp.reportData = {
       reportID: 1,
       postID: 2,
@@ -285,7 +285,7 @@ describe("PostEditForm", () => {
 
     const fixture = TestBed.createComponent(PostEditForm);
     const popUp = fixture.componentInstance;
-    const originalItem = { text: "hi", id: 2 } as Post;
+    const originalItem = { text: "hi", id: 2 } as PostGet;
     popUp.reportData = {
       reportID: 2,
       postID: 1,
@@ -340,7 +340,7 @@ describe("PostEditForm", () => {
 
     const fixture = TestBed.createComponent(PostEditForm);
     const popUp = fixture.componentInstance;
-    const originalItem = { text: "hi", id: 2 } as Post;
+    const originalItem = { text: "hi", id: 2 } as PostGet;
     popUp.reportData = {
       reportID: 1,
       postID: 2,
@@ -367,7 +367,7 @@ describe("PostEditForm", () => {
   it("should not close the report if it's not the admin menu", (done: DoneFn) => {
     const fixture = TestBed.createComponent(PostEditForm);
     const popUp = fixture.componentInstance;
-    const originalItem = { text: "hi", id: 2 } as Post;
+    const originalItem = { text: "hi", id: 2 } as PostGet;
     popUp.reportData = undefined;
     popUp.isAdmin = false;
     popUp.editedItem = originalItem;
@@ -410,7 +410,7 @@ describe("PostEditForm", () => {
     const fixture = TestBed.createComponent(PostEditForm);
     const popUp = fixture.componentInstance;
     const popUpDOM = fixture.nativeElement;
-    const originalItem = { text: "hi", id: 2 } as Post;
+    const originalItem = { text: "hi", id: 2 } as PostGet;
     popUp.reportData = {
       reportID: 1,
       postID: 2,

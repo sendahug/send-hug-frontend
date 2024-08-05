@@ -29,11 +29,11 @@
   SOFTWARE.
 */
 
-import { Post } from "./post.interface";
+import { type PostGet } from "./post.interface";
 
 export interface PostAndReportResponse {
   success: boolean;
-  updatedPost?: Post;
+  updatedPost?: PostGet;
   reportId?: number;
 }
 

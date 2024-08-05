@@ -38,7 +38,7 @@ import { CommonModule } from "@angular/common";
 
 // App-related imports
 import { FullListType } from "@app/interfaces/types";
-import { Post } from "@app/interfaces/post.interface";
+import { type PostGet } from "@app/interfaces/post.interface";
 import { SWManager } from "@app/services/sWManager.service";
 import { ApiClientService } from "@app/services/apiClient.service";
 import { SinglePost } from "@app/components/post/post.component";
@@ -46,7 +46,7 @@ import { Loader } from "../loader/loader.component";
 
 interface PostsListResponse {
   success: boolean;
-  posts: Post[];
+  posts: PostGet[];
   total_pages: number;
 }
 
@@ -62,7 +62,7 @@ export class FullList {
   currentPage = signal(1);
   totalPages = signal(1);
   isLoading = signal(false);
-  posts: WritableSignal<Post[]> = signal([]);
+  posts: WritableSignal<PostGet[]> = signal([]);
   previousPageButtonClass = computed(() => ({
     "appButton prevButton": true,
     disabled: this.currentPage() <= 1,

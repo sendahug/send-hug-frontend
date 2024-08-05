@@ -53,13 +53,13 @@ import { MockComponent, MockProvider } from "ng-mocks";
 import { FullList } from "./fullList.component";
 import { ApiClientService } from "@app/services/apiClient.service";
 import { SWManager } from "@app/services/sWManager.service";
-import { Post } from "@app/interfaces/post.interface";
+import { type PostGet } from "@app/interfaces/post.interface";
 import { SinglePost } from "@app/components/post/post.component";
 import { Loader } from "@app/components/loader/loader.component";
 import { routes } from "@app/app.routes";
 
 describe("FullList", () => {
-  let pageOnePosts: Post[];
+  let pageOnePosts: PostGet[];
   const MockSinglePost = MockComponent(SinglePost);
   const MockLoader = MockComponent(Loader);
   const MockAPIClient = MockProvider(ApiClientService);

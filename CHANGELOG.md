@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+### 2024-08-06
+
+#### Changes
+
+- The user ID, from ID and reporter ID in the POST requests for creating posts, messages and reports (respectively) are now set based on the user's JWT in the back-end. ([#1763](https://github.com/sendahug/send-hug-frontend/pull/1763))
+
+#### Chores
+
+- Split the User, Post and Report interfaces into Get/Create versions. This means fewer typecasts and non-null assertions in development are required in order to ensure the app functions correctly. ([#1763](https://github.com/sendahug/send-hug-frontend/pull/1763))
+
 ### 2024-08-05
 
 #### Features

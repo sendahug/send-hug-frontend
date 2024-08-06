@@ -37,7 +37,7 @@ import { Component, computed, signal } from "@angular/core";
 import { AdminService } from "@app/services/admin.service";
 import { ApiClientService } from "@app/services/apiClient.service";
 import { HttpErrorResponse } from "@angular/common/http";
-import { Report } from "@app/interfaces/report.interface";
+import { type ReportGet } from "@app/interfaces/report.interface";
 import { AlertsService } from "@app/services/alerts.service";
 import { PostAndReportResponse, UpdatedUserReportResponse } from "@app/interfaces/responses";
 
@@ -46,8 +46,8 @@ import { PostAndReportResponse, UpdatedUserReportResponse } from "@app/interface
   templateUrl: "./adminReports.component.html",
 })
 export class AdminReports {
-  postReports: Report[] = [];
-  userReports: Report[] = [];
+  postReports: ReportGet[] = [];
+  userReports: ReportGet[] = [];
   totalPostReportsPages = signal(1);
   totalUserReportsPages = signal(1);
   currentPostReportsPage = signal(1);

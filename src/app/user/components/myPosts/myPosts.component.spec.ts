@@ -48,7 +48,7 @@ import { MockProvider } from "ng-mocks";
 import { MyPosts } from "./myPosts.component";
 import { AuthService } from "@app/services/auth.service";
 import { mockAuthedUser } from "@tests/mockData";
-import { Post } from "@app/interfaces/post.interface";
+import { type PostGet } from "@app/interfaces/post.interface";
 import { SinglePost } from "@app/components/post/post.component";
 import { ItemDeleteForm } from "@app/components/itemDeleteForm/itemDeleteForm.component";
 import { routes } from "@app/app.routes";
@@ -79,7 +79,7 @@ class MockUserPage {
 // Sub-component testing
 // ==================================================
 describe("MyPosts", () => {
-  let mockPosts: Post[];
+  let mockPosts: PostGet[];
 
   // Before each test, configure testing environment
   beforeEach(() => {

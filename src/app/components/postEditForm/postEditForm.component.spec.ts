@@ -38,17 +38,23 @@ import {
   platformBrowserDynamicTesting,
 } from "@angular/platform-browser-dynamic/testing";
 import { ReactiveFormsModule } from "@angular/forms";
-import { of } from "rxjs";
+import { Observable, of } from "rxjs";
 import { provideZoneChangeDetection, signal } from "@angular/core";
 
 import { PostEditForm } from "./postEditForm.component";
-import { Post } from "@app/interfaces/post.interface";
+import { type PostGet } from "@app/interfaces/post.interface";
 import { PopUp } from "@app/components/popUp/popUp.component";
 import { ValidationService } from "@app/services/validation.service";
 import { MockProvider } from "ng-mocks";
 import { AdminService } from "@app/services/admin.service";
 import { AuthService } from "@app/services/auth.service";
 import { ApiClientService } from "@app/services/apiClient.service";
+
+interface UpdatePostResult {
+  success: boolean;
+  updatedPost: PostGet;
+  reportId?: number;
+}
 
 // POST EDIT
 // ==================================================================
@@ -157,7 +163,7 @@ describe("PostEditForm", () => {
     const fixture = TestBed.createComponent(PostEditForm);
     const popUp = fixture.componentInstance;
     const popUpDOM = fixture.nativeElement;
-    const originalItem = { text: "hi", id: 2 } as Post;
+    const originalItem = { text: "hi", id: 2 } as PostGet;
     popUp.reportData = {
       reportID: 1,
       postID: 2,
@@ -219,7 +225,7 @@ describe("PostEditForm", () => {
     const fixture = TestBed.createComponent(PostEditForm);
     const popUp = fixture.componentInstance;
     const popUpDOM = fixture.nativeElement;
-    const originalItem = { text: "hi", id: 2 } as Post;
+    const originalItem = { text: "hi", id: 2 } as PostGet;
     popUp.reportData = {
       reportID: 1,
       postID: 2,
@@ -285,7 +291,7 @@ describe("PostEditForm", () => {
 
     const fixture = TestBed.createComponent(PostEditForm);
     const popUp = fixture.componentInstance;
-    const originalItem = { text: "hi", id: 2 } as Post;
+    const originalItem = { text: "hi", id: 2 } as PostGet;
     popUp.reportData = {
       reportID: 2,
       postID: 1,
@@ -310,19 +316,21 @@ describe("PostEditForm", () => {
       of(closeReportResponse),
     );
 
-    popUp.updateReportIfNecessary(true, serverResponse).subscribe({
-      next: (response) => {
-        expect(response).toEqual({
-          success: true,
-          updatedPost: {
-            ...serverResponse.updated,
-          },
-          reportId: 2,
-        });
-        expect(adminServiceSpy).toHaveBeenCalledWith(2, false, 1);
-        done();
+    (popUp.updateReportIfNecessary(true, serverResponse) as Observable<UpdatePostResult>).subscribe(
+      {
+        next: (response) => {
+          expect(response).toEqual({
+            success: true,
+            updatedPost: {
+              ...serverResponse.updated,
+            },
+            reportId: 2,
+          });
+          expect(adminServiceSpy).toHaveBeenCalledWith(2, false, 1);
+          done();
+        },
       },
-    });
+    );
   });
 
   it("should not close the report if the user chooses not to", (done: DoneFn) => {
@@ -340,7 +348,7 @@ describe("PostEditForm", () => {
 
     const fixture = TestBed.createComponent(PostEditForm);
     const popUp = fixture.componentInstance;
-    const originalItem = { text: "hi", id: 2 } as Post;
+    const originalItem = { text: "hi", id: 2 } as PostGet;
     popUp.reportData = {
       reportID: 1,
       postID: 2,
@@ -349,7 +357,9 @@ describe("PostEditForm", () => {
     popUp.editedItem = originalItem;
     const adminServiceSpy = spyOn(popUp["adminService"], "closeReport");
 
-    popUp.updateReportIfNecessary(false, serverResponse).subscribe({
+    (
+      popUp.updateReportIfNecessary(false, serverResponse) as Observable<UpdatePostResult>
+    ).subscribe({
       next: (response) => {
         expect(response).toEqual({
           success: true,
@@ -367,7 +377,7 @@ describe("PostEditForm", () => {
   it("should not close the report if it's not the admin menu", (done: DoneFn) => {
     const fixture = TestBed.createComponent(PostEditForm);
     const popUp = fixture.componentInstance;
-    const originalItem = { text: "hi", id: 2 } as Post;
+    const originalItem = { text: "hi", id: 2 } as PostGet;
     popUp.reportData = undefined;
     popUp.isAdmin = false;
     popUp.editedItem = originalItem;
@@ -386,7 +396,9 @@ describe("PostEditForm", () => {
     fixture.detectChanges();
     const adminServiceSpy = spyOn(popUp["adminService"], "closeReport");
 
-    popUp.updateReportIfNecessary(false, serverResponse).subscribe({
+    (
+      popUp.updateReportIfNecessary(false, serverResponse) as Observable<UpdatePostResult>
+    ).subscribe({
       next: (response) => {
         expect(response).toEqual({
           success: true,
@@ -410,7 +422,7 @@ describe("PostEditForm", () => {
     const fixture = TestBed.createComponent(PostEditForm);
     const popUp = fixture.componentInstance;
     const popUpDOM = fixture.nativeElement;
-    const originalItem = { text: "hi", id: 2 } as Post;
+    const originalItem = { text: "hi", id: 2 } as PostGet;
     popUp.reportData = {
       reportID: 1,
       postID: 2,

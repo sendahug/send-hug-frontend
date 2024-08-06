@@ -1,0 +1,13 @@
+{
+  "pr_number": 1763,
+  "changes": [
+    {
+      "change": "Changes",
+      "description": "The user ID, from ID and reporter ID in the POST requests for creating posts, messages and reports (respectively) are now set based on the user's JWT in the back-end."
+    },
+    {
+      "change": "Chores",
+      "description": "Split the User, Post and Report interfaces into Get/Create versions. This means fewer typecasts and non-null assertions in development are required in order to ensure the app functions correctly."
+    }
+  ]
+}

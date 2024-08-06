@@ -53,7 +53,7 @@ import { RouterLink } from "@angular/router";
 // App-related imports
 import { AuthService } from "@app/services/auth.service";
 import { ItemsService } from "@app/services/items.service";
-import { Post } from "@app/interfaces/post.interface";
+import { type PostGet } from "@app/interfaces/post.interface";
 import { SWManager } from "@app/services/sWManager.service";
 import { PostAndReportResponse } from "@app/interfaces/responses";
 import { ItemDeleteForm } from "@app/components/itemDeleteForm/itemDeleteForm.component";
@@ -77,26 +77,26 @@ import { SendHugForm } from "@app/components/sendHugForm/sendHugForm.component";
 })
 export class SinglePost implements AfterViewChecked, OnInit, OnDestroy {
   @Input()
-  get post(): Post | undefined {
+  get post(): PostGet | undefined {
     return this._post();
   }
-  set post(value: Post) {
+  set post(value: PostGet) {
     this._post.set(value);
   }
   @Input() type!: "n" | "s";
   @Input() containerClass!: string;
   @Output() deletedId = new EventEmitter<number>();
-  protected _post: WritableSignal<Post | undefined> = signal(undefined);
+  protected _post: WritableSignal<PostGet | undefined> = signal(undefined);
   postId = computed(() => `${this.type}Post${this._post()?.id || ""}`);
   // edit popup sub-component variables
-  postToEdit: Post | undefined;
+  postToEdit: PostGet | undefined;
   editType: string | undefined;
   editMode: boolean = false;
   deleteMode: boolean = false;
   toDelete: string | undefined;
   itemToDelete: number | undefined;
   reportMode: boolean = false;
-  reportedItem: Post | undefined;
+  reportedItem: PostGet | undefined;
   reportType: "Post" = "Post";
   sendMessageMode: boolean = false;
   lastFocusedElement: any;

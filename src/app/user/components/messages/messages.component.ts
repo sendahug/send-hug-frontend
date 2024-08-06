@@ -40,13 +40,13 @@ import { AuthService } from "@app/services/auth.service";
 import { iconElements, MessageType } from "@app/interfaces/types";
 import { FullThread, ParsedThread } from "@app/interfaces/thread.interface";
 import { UserIconColours } from "@app/interfaces/user.interface";
-import { Message } from "@app/interfaces/message.interface";
+import { type MessageGet } from "@app/interfaces/message.interface";
 import { SWManager } from "@app/services/sWManager.service";
 import { ApiClientService } from "@app/services/apiClient.service";
 
 interface MessagesResponse {
   success: boolean;
-  messages: Message[];
+  messages: MessageGet[];
   total_pages: number;
   current_page: number;
 }
@@ -78,7 +78,7 @@ export class AppMessaging {
   isLoading = signal(false);
   isIdbFetchLoading = signal(false);
   threadId?: number;
-  messages = signal<Message[]>([]);
+  messages = signal<MessageGet[]>([]);
   userThreads = signal<FullThread[]>([]);
   userThreadsFormatted = computed<ParsedThread[]>(() => {
     return this.userThreads().map((thread: FullThread) => {
@@ -272,16 +272,16 @@ export class AppMessaging {
     });
   }
 
-  getMessageUser(message: Message | ParsedThread) {
+  getMessageUser(message: MessageGet | ParsedThread) {
     switch (this.messType) {
       case "inbox":
-        return (message as Message).for;
+        return (message as MessageGet).for;
       case "outbox":
-        return (message as Message).from;
+        return (message as MessageGet).from;
       case "threads":
         return (message as ParsedThread).user;
       case "thread":
-        return (message as Message).from;
+        return (message as MessageGet).from;
     }
   }
 

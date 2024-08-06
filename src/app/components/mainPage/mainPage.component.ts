@@ -38,14 +38,14 @@ import { RouterLink } from "@angular/router";
 // App-related imports
 import { ApiClientService } from "@app/services/apiClient.service";
 import { SWManager } from "@app/services/sWManager.service";
-import { Post } from "@app/interfaces/post.interface";
+import { type PostGet } from "@app/interfaces/post.interface";
 import { CommonModule } from "@angular/common";
 import { Loader } from "@app/components/loader/loader.component";
 import { SinglePost } from "@app/components/post/post.component";
 
 interface MainPageResponse {
-  recent: Post[];
-  suggested: Post[];
+  recent: PostGet[];
+  suggested: PostGet[];
   success?: boolean;
 }
 
@@ -57,8 +57,8 @@ interface MainPageResponse {
 })
 export class MainPage {
   isLoading = signal(false);
-  newPosts: WritableSignal<Post[]> = signal([]);
-  suggestedPosts: WritableSignal<Post[]> = signal([]);
+  newPosts: WritableSignal<PostGet[]> = signal([]);
+  suggestedPosts: WritableSignal<PostGet[]> = signal([]);
   // loader sub-component variables
   waitFor = "main page";
 

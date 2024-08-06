@@ -36,8 +36,8 @@ import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { CommonModule } from "@angular/common";
 
 // App-related import
-import { type Post } from "@app/interfaces/post.interface";
-import { type Report } from "@app/interfaces/report.interface";
+import { type PostGet } from "@app/interfaces/post.interface";
+import { ReportGet, type ReportCreate } from "@app/interfaces/report.interface";
 import { type OtherUser } from "@app/interfaces/otherUser.interface";
 import { AuthService } from "@app/services/auth.service";
 import { AlertsService } from "@app/services/alerts.service";
@@ -85,10 +85,10 @@ export class ReportForm implements OnInit {
   // indicates whether edit/delete mode is still required
   @Output() reportMode = new EventEmitter<boolean>();
   // reported post
-  @Input() reportedItem: Post | OtherUser | undefined;
+  @Input() reportedItem: PostGet | OtherUser | undefined;
   // type of item to report
   @Input() reportType: "User" | "Post" = "Post";
-  protected reportedPost: Post | undefined;
+  protected reportedPost: PostGet | undefined;
   protected reportedUser: OtherUser | undefined;
   reportReasonsText = reportReasonsText;
   reportForm = this.fb.group({
@@ -110,7 +110,7 @@ export class ReportForm implements OnInit {
    */
   ngOnInit(): void {
     if (this.reportType == "Post") {
-      this.reportedPost = this.reportedItem as Post;
+      this.reportedPost = this.reportedItem as PostGet;
       this.reportedUser = undefined;
     } else {
       this.reportedUser = this.reportedItem as OtherUser;
@@ -187,7 +187,7 @@ export class ReportForm implements OnInit {
   */
   createReport() {
     let item =
-      this.reportType == "User" ? (this.reportedItem as OtherUser) : (this.reportedItem as Post);
+      this.reportType == "User" ? (this.reportedItem as OtherUser) : (this.reportedItem as PostGet);
     let reportReason = this.getSelectedReasonText();
 
     if (!this.reportForm.valid) {
@@ -208,11 +208,10 @@ export class ReportForm implements OnInit {
     }
 
     // create a new report
-    let report: Report = {
+    let report: ReportCreate = {
       type: this.reportType as "Post" | "User",
       userID: 0,
       postID: undefined,
-      reporter: this.authService.userData()!.id!,
       reportReason: reportReason!,
       date: new Date(),
       dismissed: false,
@@ -220,8 +219,8 @@ export class ReportForm implements OnInit {
     };
 
     if (this.reportType == "Post") {
-      report["userID"] = (item as Post).userId;
-      report["postID"] = (item as Post).id;
+      report["userID"] = (item as PostGet).userId;
+      report["postID"] = (item as PostGet).id;
     } else {
       report["userID"] = (item as OtherUser).id;
     }
@@ -231,7 +230,7 @@ export class ReportForm implements OnInit {
     this.apiClient.post("reports", report).subscribe({
       next: (response: any) => {
         // if successful, alert the user
-        const sent_report: Report = response.report;
+        const sent_report: ReportGet = response.report;
         let successMessage =
           sent_report.type == "Post"
             ? `Post number ${sent_report.postID} was successfully reported.`

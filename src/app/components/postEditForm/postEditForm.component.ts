@@ -37,7 +37,7 @@ import { map, mergeMap, of } from "rxjs";
 import { CommonModule } from "@angular/common";
 
 // App-related import
-import { type Post } from "@app/interfaces/post.interface";
+import { type PostGet } from "@app/interfaces/post.interface";
 import { AdminService } from "@app/services/admin.service";
 import { ValidationService } from "@app/services/validation.service";
 import { AlertsService } from "@app/services/alerts.service";
@@ -48,7 +48,7 @@ import { PopUp } from "@app/components/popUp/popUp.component";
 
 interface PostEditResponse {
   success: boolean;
-  updated: Post;
+  updated: PostGet;
 }
 
 @Component({
@@ -59,7 +59,7 @@ interface PostEditResponse {
 })
 export class PostEditForm implements OnInit {
   // item to edit
-  @Input() editedItem!: Post;
+  @Input() editedItem!: PostGet;
   // indicates whether edit/delete mode is still required
   @Output() editMode = new EventEmitter<boolean>();
   @Output() updateResult = new EventEmitter<PostAndReportResponse>();

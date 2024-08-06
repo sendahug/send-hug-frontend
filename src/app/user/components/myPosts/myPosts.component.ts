@@ -37,14 +37,14 @@ import { faHandHoldingHeart } from "@fortawesome/free-solid-svg-icons";
 import { from, map, switchMap, tap } from "rxjs";
 
 // App-related imports
-import { type Post } from "@app/interfaces/post.interface";
+import { type PostGet } from "@app/interfaces/post.interface";
 import { AuthService } from "@app/services/auth.service";
 import { SWManager } from "@app/services/sWManager.service";
 import { ApiClientService } from "@app/services/apiClient.service";
 
 interface MyPostsResponse {
   page: number;
-  posts: Post[];
+  posts: PostGet[];
   total_pages: number;
   success: boolean;
 }
@@ -56,7 +56,7 @@ interface MyPostsResponse {
 export class MyPosts implements OnInit {
   isLoading = signal(false);
   isServerFetchResolved = signal(false);
-  posts = signal<Post[]>([]);
+  posts = signal<PostGet[]>([]);
   currentPage = signal(1);
   totalPages = signal(1);
   // edit popup sub-component variables

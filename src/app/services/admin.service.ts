@@ -35,8 +35,8 @@ import { Injectable } from "@angular/core";
 import { Observable, map, mergeMap, of, switchMap, tap } from "rxjs";
 
 // App-related imports
-import { Report } from "@app/interfaces/report.interface";
-import { Message } from "@app/interfaces/message.interface";
+import { type ReportGet } from "@app/interfaces/report.interface";
+import { type MessageCreate } from "@app/interfaces/message.interface";
 import { AuthService } from "@app/services/auth.service";
 import { AlertsService } from "@app/services/alerts.service";
 import { ItemsService } from "@app/services/items.service";
@@ -58,7 +58,7 @@ interface OtherUserResponse {
 
 interface ReportResponse {
   success: boolean;
-  updated: Report;
+  updated: ReportGet;
 }
 
 @Injectable({
@@ -112,11 +112,10 @@ export class AdminService {
             `Post ${response.deleted} was successfully deleted.`,
           );
           // create a message from the admin to the user whose post was deleted
-          let message: Message = {
+          let message: MessageCreate = {
             from: {
               displayName: this.authService.userData()!.displayName,
             },
-            fromId: this.authService.userData()!.id!,
             forId: reportData.userID,
             messageText: `Your post (ID ${response.deleted}) was deleted due to violating our community rules.`,
             date: new Date(),
@@ -178,7 +177,7 @@ export class AdminService {
    * @param userID (number) - the ID of the user associated with the report (for user reports).
    */
   closeReport(reportID: number, dismiss: boolean, postID?: number, userID?: number) {
-    let report: Partial<Report> = {
+    let report: Partial<ReportGet> = {
       id: reportID,
       closed: true,
       dismissed: dismiss,

@@ -53,7 +53,7 @@ import { AppMessaging } from "./messages.component";
 import { AuthService } from "@app/services/auth.service";
 import { mockAuthedUser } from "@tests/mockData";
 import { FullThread } from "@app/interfaces/thread.interface";
-import { Message } from "@app/interfaces/message.interface";
+import { type MessageGet } from "@app/interfaces/message.interface";
 import { ItemDeleteForm } from "@app/components/itemDeleteForm/itemDeleteForm.component";
 import { routes } from "@app/app.routes";
 import { ApiClientService } from "@app/services/apiClient.service";
@@ -62,7 +62,7 @@ import { Loader } from "@app/components/loader/loader.component";
 import { UserIcon } from "@app/components/userIcon/userIcon.component";
 
 describe("AppMessaging", () => {
-  let mockMessages: Message[];
+  let mockMessages: MessageGet[];
   let mockThreads: FullThread[];
 
   // Before each test, configure testing environment

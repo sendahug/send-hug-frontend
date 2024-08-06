@@ -47,7 +47,7 @@ import { AdminReports } from "./adminReports.component";
 import { AuthService } from "@app/services/auth.service";
 import { Loader } from "@app/components/loader/loader.component";
 import { mockAuthedUser } from "@tests/mockData";
-import { Report } from "@app/interfaces/report.interface";
+import { type ReportGet } from "@app/interfaces/report.interface";
 import { ApiClientService } from "@app/services/apiClient.service";
 import { PostEditForm } from "@app/components/postEditForm/postEditForm.component";
 import { DisplayNameEditForm } from "@app/components/displayNameEditForm/displayNameEditForm.component";
@@ -58,8 +58,8 @@ import { AdminService } from "@app/services/admin.service";
 // REPORTS PAGE
 // ==================================================================
 describe("AdminReports", () => {
-  let mockUserReports: Report[];
-  let mockPostReports: Report[];
+  let mockUserReports: ReportGet[];
+  let mockPostReports: ReportGet[];
 
   // Before each test, configure testing environment
   beforeEach(() => {

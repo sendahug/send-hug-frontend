@@ -352,4 +352,36 @@ describe("NotificationService", () => {
       done();
     });
   });
+
+  it("updateUserSettings() - updates an existing error message if there is one", (done: DoneFn) => {
+    const subscription = new Subscription();
+    subscription.unsubscribe();
+    notificationService.refreshStatus = true;
+    notificationService.refreshRateSecs = 20;
+    const successAlertsSpy = spyOn(notificationService["alertsService"], "createSuccessAlert");
+    const createAlertSpy = spyOn(notificationService["alertsService"], "createAlert");
+    notificationService["alertsService"].alertType.set("Error");
+    notificationService["alertsService"].alertMessage.set("meow");
+    notificationService["alertsService"].shouldDisplayAlert.set(true);
+    const updateUserSpy = spyOn(
+      notificationService["authService"],
+      "updateUserData",
+    ).and.returnValue(subscription);
+
+    notificationService.updateUserSettings();
+
+    expect(updateUserSpy).toHaveBeenCalledWith({
+      autoRefresh: true,
+      pushEnabled: false,
+      refreshRate: 20,
+    });
+    subscription.add(() => {
+      expect(successAlertsSpy).not.toHaveBeenCalled();
+      expect(createAlertSpy).toHaveBeenCalledWith({
+        type: "Error",
+        message: "Settings updated successfully but encountered error: meow",
+      });
+      done();
+    });
+  });
 });

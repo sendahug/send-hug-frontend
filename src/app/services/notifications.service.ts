@@ -46,6 +46,9 @@ interface GetNotificationsResponse {
   notifications: Notification[];
 }
 
+const pushPermissionDeniedErr =
+  "Push notifications permission has been denied. Go to your browser settings, remove Send A Hug from the denied list, and then activate push notifications again.";
+
 @Injectable({
   providedIn: "root",
 })
@@ -104,8 +107,7 @@ export class NotificationService {
                 this.toggleBtn = "Enable";
                 this.alertsService.createAlert({
                   type: "Error",
-                  message:
-                    "Push notifications permission has been denied. Go to your browser settings, remove Send A Hug from the denied list, and then activate push notifications again.",
+                  message: pushPermissionDeniedErr,
                 });
               }
             }
@@ -239,8 +241,7 @@ export class NotificationService {
           if (permission == "denied") {
             this.alertsService.createAlert({
               type: "Error",
-              message:
-                "Push notifications permission has been denied. Go to your browser settings, remove Send A Hug from the denied list, and then activate push notifications again.",
+              message: pushPermissionDeniedErr,
             });
           }
           // otherwise, request a subscription
@@ -269,7 +270,15 @@ export class NotificationService {
                 // if there was an error, alert the user
               })
               .catch((err) => {
-                this.alertsService.createAlert({ type: "Error", message: err });
+                console.log(err);
+                if (typeof err == "string" && err.includes("permission denied")) {
+                  this.alertsService.createAlert({
+                    type: "Error",
+                    message: pushPermissionDeniedErr,
+                  });
+                } else {
+                  this.alertsService.createAlert({ type: "Error", message: err });
+                }
               });
           }
         });
@@ -390,8 +399,16 @@ export class NotificationService {
       refreshRate: this.refreshRateSecs,
     };
 
-    this.authService
-      .updateUserData(newSettings)
-      .add(() => this.alertsService.createSuccessAlert("Settings updated successfully!"));
+    this.authService.updateUserData(newSettings).add(() => {
+      // If there isn't already an error alert
+      if (!(this.alertsService.shouldDisplayAlert() && this.alertsService.alertType() == "Error")) {
+        this.alertsService.createSuccessAlert("Settings updated successfully!");
+      } else {
+        this.alertsService.createAlert({
+          type: "Error",
+          message: `Settings updated successfully but encountered error: ${this.alertsService.alertMessage()}`,
+        });
+      }
+    });
   }
 }

@@ -2,6 +2,17 @@
 
 ## Unreleased
 
+### 2024-08-11
+
+#### Fixes
+
+- Updated the URL of the site when shared using the share button to the current URL. It was accidentally still set to the Heroku URL, which is no longer where we deploy the site. ([#1768](https://github.com/sendahug/send-hug-frontend/pull/1768))
+- Fixed a bug where clicking the exit button in the search form triggered the search functionality of the app (which threw an error if the form was empty). This happened due to a misconfigured button in the form. The button's type is now set correctly, which fixes that issue. ([#1768](https://github.com/sendahug/send-hug-frontend/pull/1768))
+
+#### Chores
+
+- Updated the e2e tests' setup script to match the new structure of the models in the back-end. ([#1769](https://github.com/sendahug/send-hug-frontend/pull/1769))
+
 ### 2024-08-06
 
 #### Changes

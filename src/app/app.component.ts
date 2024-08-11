@@ -457,7 +457,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     navigator
       .share({
         title: "Send A Hug",
-        url: "https://send-hug.herokuapp.com/",
+        url: "https://app.send-hug.com/",
       })
       .catch((_err) => {
         this.alertsService.createAlert({

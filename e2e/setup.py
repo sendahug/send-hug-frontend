@@ -4,7 +4,7 @@ from firebase_admin import initialize_app  # type: ignore
 
 from create_app import create_app
 from tests.data_models import create_data
-from models.models import BaseModel
+from models.common import BaseModel
 from models.db import SendADatabase
 
 class SAHConfig:

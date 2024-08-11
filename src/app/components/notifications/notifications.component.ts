@@ -44,6 +44,7 @@ import { NotificationService } from "@app/services/notifications.service";
 @Component({
   selector: "app-notifications",
   templateUrl: "./notifications.component.html",
+  styleUrl: "./notifications.component.less",
   standalone: true,
   imports: [CommonModule, FontAwesomeModule, RouterLink],
 })

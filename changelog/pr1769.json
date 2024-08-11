@@ -1,9 +1,0 @@
-{
-  "pr_number": 1769,
-  "changes": [
-    {
-      "change": "Chores",
-      "description": "Updated the e2e tests' setup script to match the new structure of the models in the back-end."
-    }
-  ]
-}

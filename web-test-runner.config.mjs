@@ -81,6 +81,7 @@ export default {
   debug: false,
   plugins: [
     configPaths({}),
+    templatePlugin(),
     // From
     // https://modern-web.dev/docs/test-runner/writing-tests/code-coverage/#coverage-browser-support
     babel({
@@ -95,7 +96,6 @@ export default {
       ],
       extensions: [".ts"],
     }),
-    templatePlugin(),
     decoratorTranspiler(),
     ServeSVGsPlugin(),
     esbuildPlugin({

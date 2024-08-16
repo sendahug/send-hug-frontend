@@ -34,12 +34,14 @@ import { playwrightLauncher } from "@web/test-runner-playwright";
 import { esbuildPlugin } from "@web/dev-server-esbuild";
 import { fromRollup } from "@web/dev-server-rollup";
 import tsConfigPaths from "rollup-plugin-tsconfig-paths";
+import rollupBabel from "@rollup/plugin-babel";
 import { TranspileDecoratorsVite, ReplaceTemplateUrlPlugin, ServeSVGsPlugin } from "./plugins.mjs";
 
 // TODO: Figure out how to replace these plugins with the angular compiler
 const templatePlugin = fromRollup(ReplaceTemplateUrlPlugin);
 const decoratorTranspiler = fromRollup(TranspileDecoratorsVite);
 const configPaths = fromRollup(tsConfigPaths);
+const babel = fromRollup(rollupBabel);
 
 /** @type {import("@web/test-runner").TestRunnerConfig} */
 export default {
@@ -52,7 +54,7 @@ export default {
     // playwrightLauncher({ product: 'firefox' }),
   ],
   nodeResolve: true,
-  CoverageConfig: {
+  coverageConfig: {
     include: ["src/**/*.ts"],
     exclude: [
       "node_modules/**",
@@ -68,6 +70,8 @@ export default {
     report: true,
     reportDir: "./coverage",
     reporters: ["html", "lcovonly", "text-summary"],
+    // Commented out until https://github.com/modernweb-dev/web/issues/2777 is resolved
+    // nativeInstrumentation: false,
   },
   // Credit to @blueprintui for most of the HTML.
   // https://github.com/blueprintui/web-test-runner-jasmine/blob/main/src/index.ts
@@ -77,6 +81,20 @@ export default {
   debug: false,
   plugins: [
     configPaths({}),
+    // From
+    // https://modern-web.dev/docs/test-runner/writing-tests/code-coverage/#coverage-browser-support
+    babel({
+      // avoid running babel on code that doesn't need it
+      include: ["src/**/*.ts"],
+      exclude: ["node_modules/**", "src/**/*.spec.ts"],
+      babelHelpers: "bundled",
+      plugins: [
+        ["istanbul"],
+        ["@babel/plugin-syntax-decorators", { decoratorsBeforeExport: true }],
+        ["@babel/plugin-syntax-typescript"],
+      ],
+      extensions: [".ts"],
+    }),
     templatePlugin(),
     decoratorTranspiler(),
     ServeSVGsPlugin(),

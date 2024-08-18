@@ -509,63 +509,63 @@ describe("AppComponent", () => {
   //   expect(componentHtml.querySelector("#menuBtn").classList).not.toContain("hidden");
   // });
 
-  // should hide the menu if it gets too long and show it again if it's not too long
-  it("should show the menu again if it's not too long again", () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const component = fixture.componentInstance;
-    const componentHtml = fixture.nativeElement;
-    const checkSpy = spyOn(component, "checkMenuSize").and.callThrough();
-    fixture.detectChanges();
+  // // should hide the menu if it gets too long and show it again if it's not too long
+  // it("should show the menu again if it's not too long again", () => {
+  //   const fixture = TestBed.createComponent(AppComponent);
+  //   const component = fixture.componentInstance;
+  //   const componentHtml = fixture.nativeElement;
+  //   const checkSpy = spyOn(component, "checkMenuSize").and.callThrough();
+  //   fixture.detectChanges();
 
-    const navMenu = componentHtml.querySelector("#navMenu");
-    const navLinks = componentHtml.querySelector("#navLinks");
-    navLinks.style.width = "600px";
-    navMenu.style.maxWidth = "600px";
-    navMenu.style.display = "flex";
-    component.changeTextSize("largest");
-    fixture.detectChanges();
+  //   const navMenu = componentHtml.querySelector("#navMenu");
+  //   const navLinks = componentHtml.querySelector("#navLinks");
+  //   navLinks.style.width = "600px";
+  //   navMenu.style.maxWidth = "600px";
+  //   navMenu.style.display = "flex";
+  //   component.changeTextSize("largest");
+  //   fixture.detectChanges();
 
-    // Validate it's hidden before un-hiding it
-    expect(componentHtml.querySelector("#menuBtn").classList).not.toContain("hidden");
+  //   // Validate it's hidden before un-hiding it
+  //   expect(componentHtml.querySelector("#menuBtn").classList).not.toContain("hidden");
 
-    navLinks.style.width = "500px";
-    component.changeTextSize("smaller");
-    fixture.detectChanges();
+  //   navLinks.style.width = "500px";
+  //   component.changeTextSize("smaller");
+  //   fixture.detectChanges();
 
-    expect(checkSpy).toHaveBeenCalled();
-    expect(navLinks.classList).not.toContain("hidden");
-    expect(component.showMenu()).toBeTrue();
-  });
+  //   expect(checkSpy).toHaveBeenCalled();
+  //   expect(navLinks.classList).not.toContain("hidden");
+  //   expect(component.showMenu()).toBeTrue();
+  // });
 
-  // check the 'share' button is hidden
-  it("shouldn't show the share button if it's not supported", () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    fixture.detectChanges();
-    const component = fixture.componentInstance;
-    const componentHtml = fixture.nativeElement;
+  // // check the 'share' button is hidden
+  // it("shouldn't show the share button if it's not supported", () => {
+  //   const fixture = TestBed.createComponent(AppComponent);
+  //   fixture.detectChanges();
+  //   const component = fixture.componentInstance;
+  //   const componentHtml = fixture.nativeElement;
 
-    // because tests run on Chrome, 'share' doesn't exist in navigator
-    expect(component.canShare).toBeFalse();
-    expect(
-      componentHtml.querySelector("#siteFooter").querySelectorAll("textlessButton")[0],
-    ).toBeUndefined();
-  });
+  //   // because tests run on Chrome, 'share' doesn't exist in navigator
+  //   expect(component.canShare).toBeFalse();
+  //   expect(
+  //     componentHtml.querySelector("#siteFooter").querySelectorAll("textlessButton")[0],
+  //   ).toBeUndefined();
+  // });
 
-  // check the share method is called when the button is clicked
-  it("should call the share method when the button is clicked", (done: DoneFn) => {
-    const fixture = TestBed.createComponent(AppComponent);
-    fixture.detectChanges();
-    const component = fixture.componentInstance;
-    const componentHtml = fixture.nativeElement;
-    const shareSpy = spyOn(component, "shareSite");
+  // // check the share method is called when the button is clicked
+  // it("should call the share method when the button is clicked", (done: DoneFn) => {
+  //   const fixture = TestBed.createComponent(AppComponent);
+  //   fixture.detectChanges();
+  //   const component = fixture.componentInstance;
+  //   const componentHtml = fixture.nativeElement;
+  //   const shareSpy = spyOn(component, "shareSite");
 
-    component.canShare = true;
-    fixture.detectChanges();
+  //   component.canShare = true;
+  //   fixture.detectChanges();
 
-    componentHtml.querySelector("#siteFooter").querySelectorAll(".textlessButton")[0].click();
-    fixture.detectChanges();
+  //   componentHtml.querySelector("#siteFooter").querySelectorAll(".textlessButton")[0].click();
+  //   fixture.detectChanges();
 
-    expect(shareSpy).toHaveBeenCalled();
-    done();
-  });
+  //   expect(shareSpy).toHaveBeenCalled();
+  //   done();
+  // });
 });

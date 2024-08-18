@@ -44,7 +44,7 @@ import {} from "jasmine";
 import { APP_BASE_HREF, CommonModule } from "@angular/common";
 import { ReactiveFormsModule } from "@angular/forms";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
-import { BehaviorSubject, of } from "rxjs";
+import { BehaviorSubject, of, throwError } from "rxjs";
 import { provideZoneChangeDetection, signal } from "@angular/core";
 import { MockComponent, MockProvider } from "ng-mocks";
 // import { setViewport } from "@web/test-runner-commands";
@@ -56,7 +56,7 @@ import { SWManager } from "@app/services/sWManager.service";
 import { NotificationService } from "./services/notifications.service";
 import { mockAuthedUser } from "@tests/mockData";
 import { AppAlert } from "./components/appAlert/appAlert.component";
-// import { AlertsService } from "@app/services/alerts.service";
+import { AlertsService } from "@app/services/alerts.service";
 import { routes } from "./app.routes";
 import { ItemsService } from "./services/items.service";
 
@@ -115,65 +115,65 @@ describe("AppComponent", () => {
     expect(app).toBeTruthy();
   });
 
-  // // Check that the component checks for a logged in user
-  // it("should check for a logged in user and raise an error if user doesn't exist", () => {
-  //   const authService = TestBed.inject(AuthService);
-  //   authService.authenticated.set(false);
-  //   const authSpy = spyOn(authService, "checkForLoggedInUser").and.returnValue(
-  //     throwError(() => Error("User doesn't exist yet")),
-  //   );
-  //   const alertsService = TestBed.inject(AlertsService);
-  //   const alertSpy = spyOn(alertsService, "createAlert");
-  //   TestBed.createComponent(AppComponent);
+  // Check that the component checks for a logged in user
+  it("should check for a logged in user and raise an error if user doesn't exist", () => {
+    const authService = TestBed.inject(AuthService);
+    authService.authenticated.set(false);
+    const authSpy = spyOn(authService, "checkForLoggedInUser").and.returnValue(
+      throwError(() => Error("User doesn't exist yet")),
+    );
+    const alertsService = TestBed.inject(AlertsService);
+    const alertSpy = spyOn(alertsService, "createAlert");
+    TestBed.createComponent(AppComponent);
 
-  //   expect(authSpy).toHaveBeenCalled();
-  //   expect(alertSpy).toHaveBeenCalledWith(
-  //     {
-  //       type: "Error",
-  //       message: "User doesn't exist yet. Did you mean to finish registering?",
-  //     },
-  //     {
-  //       navigate: true,
-  //       navTarget: "/signup",
-  //       navText: "Finish Registering",
-  //     },
-  //   );
-  // });
+    expect(authSpy).toHaveBeenCalled();
+    expect(alertSpy).toHaveBeenCalledWith(
+      {
+        type: "Error",
+        message: "User doesn't exist yet. Did you mean to finish registering?",
+      },
+      {
+        navigate: true,
+        navTarget: "/signup",
+        navText: "Finish Registering",
+      },
+    );
+  });
 
-  // it("should check for a logged in user and raise an error if something else happens", () => {
-  //   const authService = TestBed.inject(AuthService);
-  //   authService.authenticated.set(false);
-  //   const authSpy = spyOn(authService, "checkForLoggedInUser").and.returnValue(
-  //     throwError(() => Error("ERROR!!!")),
-  //   );
-  //   const alertsService = TestBed.inject(AlertsService);
-  //   const alertSpy = spyOn(alertsService, "createAlert");
-  //   TestBed.createComponent(AppComponent);
+  it("should check for a logged in user and raise an error if something else happens", () => {
+    const authService = TestBed.inject(AuthService);
+    authService.authenticated.set(false);
+    const authSpy = spyOn(authService, "checkForLoggedInUser").and.returnValue(
+      throwError(() => Error("ERROR!!!")),
+    );
+    const alertsService = TestBed.inject(AlertsService);
+    const alertSpy = spyOn(alertsService, "createAlert");
+    TestBed.createComponent(AppComponent);
 
-  //   expect(authSpy).toHaveBeenCalled();
-  //   expect(alertSpy).toHaveBeenCalledWith({
-  //     type: "Error",
-  //     message: `An error occurred. ERROR!!!`,
-  //   });
-  // });
+    expect(authSpy).toHaveBeenCalled();
+    expect(alertSpy).toHaveBeenCalledWith({
+      type: "Error",
+      message: `An error occurred. ERROR!!!`,
+    });
+  });
 
-  // // Check that there are valid navigation links
-  // it("should contain valid navigation links", () => {
-  //   const fixture = TestBed.createComponent(AppComponent);
-  //   const componentHtml = fixture.debugElement.nativeElement;
+  // Check that there are valid navigation links
+  it("should contain valid navigation links", () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    const componentHtml = fixture.debugElement.nativeElement;
 
-  //   let navMenu = componentHtml.querySelector("#navLinks");
-  //   expect(navMenu).toBeDefined();
-  //   expect(navMenu!.children.length).not.toBe(0);
+    let navMenu = componentHtml.querySelector("#navLinks");
+    expect(navMenu).toBeDefined();
+    expect(navMenu!.children.length).not.toBe(0);
 
-  //   // check each navingation item to ensure it contains a link
-  //   let navMenuItems = navMenu!.children;
-  //   for (var i = 0; i < navMenuItems.length; i++) {
-  //     expect(navMenuItems.item(i)).toBeDefined();
-  //     expect(navMenuItems!.item(i)!.children.item(0)!.getAttribute("href")).toBeDefined();
-  //     expect(navMenuItems!.item(i)!.children.item(0)!.getAttribute("href")).not.toBe("");
-  //   }
-  // });
+    // check each navingation item to ensure it contains a link
+    let navMenuItems = navMenu!.children;
+    for (var i = 0; i < navMenuItems.length; i++) {
+      expect(navMenuItems.item(i)).toBeDefined();
+      expect(navMenuItems!.item(i)!.children.item(0)!.getAttribute("href")).toBeDefined();
+      expect(navMenuItems!.item(i)!.children.item(0)!.getAttribute("href")).not.toBe("");
+    }
+  });
 
   // // Check that the notifications tab is hidden
   // it("has hidden notifications tab", () => {

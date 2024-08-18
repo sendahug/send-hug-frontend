@@ -439,19 +439,19 @@ describe("AppComponent", () => {
   });
 
   // check the menu is hidden if the screen isn't wide enough
-  // it("should hide the menu if the screen isn't wide enough", async () => {
-  //   const fixture = TestBed.createComponent(AppComponent);
-  //   const component = fixture.componentInstance;
-  //   const componentHtml = fixture.nativeElement;
-  //   await setViewport({ width: 700, height: 640 });
-  //   fixture.detectChanges();
+  it("should hide the menu if the screen isn't wide enough", async () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    const component = fixture.componentInstance;
+    const componentHtml = fixture.nativeElement;
+    await setViewport({ width: 700, height: 640 });
+    fixture.detectChanges();
 
-  //   await setViewport({ width: 600, height: 640 });
-  //   fixture.detectChanges();
+    await setViewport({ width: 600, height: 640 });
+    fixture.detectChanges();
 
-  //   expect(component.showMenu()).toBeFalse();
-  //   expect(componentHtml.querySelector("#navLinks")!.classList).toContain("hidden");
-  // });
+    expect(component.showMenu()).toBeFalse();
+    expect(componentHtml.querySelector("#navLinks")!.classList).toContain("hidden");
+  });
 
   // check the menu is hidden when clicked again
   // it("should show/hide the menu when the menu button is clicked", async () => {

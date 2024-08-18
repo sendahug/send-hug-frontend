@@ -48,30 +48,30 @@ export default {
   browsers: [
     // Commented out until https://github.com/modernweb-dev/web/issues/2777 is resolved
     // Also until we figure out why CircleCI doesn't seem to like the playwright launcher
-    // playwrightLauncher({
-    //   product: "chromium",
-    //   args: [
-    //     "--disable-gpu",
-    //     "--no-sandbox",
-    //     "--disable-setuid-sandbox",
-    //     "--disable-extensions",
-    //     "--disable-dev-shm-usage",
-    //   ],
-    // }),
+    playwrightLauncher({
+      product: "chromium",
+      args: [
+        "--disable-gpu",
+        "--no-sandbox",
+        "--disable-setuid-sandbox",
+        "--disable-extensions",
+        "--disable-dev-shm-usage",
+      ],
+    }),
     // playwrightLauncher({ product: 'webkit' }),
     // playwrightLauncher({ product: 'firefox' }),
-    chromeLauncher({
-      launchOptions: {
-        headless: true,
-        args: [
-          "--disable-gpu",
-          "--no-sandbox",
-          "--disable-setuid-sandbox",
-          "--disable-extensions",
-          "--disable-dev-shm-usage",
-        ],
-      },
-    }),
+    // chromeLauncher({
+    //   launchOptions: {
+    //     headless: true,
+    //     args: [
+    //       "--disable-gpu",
+    //       "--no-sandbox",
+    //       "--disable-setuid-sandbox",
+    //       "--disable-extensions",
+    //       "--disable-dev-shm-usage",
+    //     ],
+    //   },
+    // }),
   ],
   nodeResolve: true,
   coverageConfig: {
@@ -90,7 +90,8 @@ export default {
     report: true,
     reportDir: "./coverage",
     reporters: ["html", "lcovonly", "text-summary"],
-    nativeInstrumentation: false,
+    // Commented out until https://github.com/modernweb-dev/web/issues/2777 is resolved
+    // nativeInstrumentation: false,
   },
   // Credit to @blueprintui for most of the HTML.
   // https://github.com/blueprintui/web-test-runner-jasmine/blob/main/src/index.ts

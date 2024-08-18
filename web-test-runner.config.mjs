@@ -47,6 +47,7 @@ export default {
   files: ["src/**/*.spec.ts", "!plugins/tests.ts"],
   browsers: [
     // Commented out until https://github.com/modernweb-dev/web/issues/2777 is resolved
+    // Also until we figure out why CircleCI doesn't seem to like the playwright launcher
     // playwrightLauncher({
     //   product: "chromium",
     //   args: [

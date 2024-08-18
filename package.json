@@ -48,7 +48,6 @@
     "@babel/core": "^7.25.2",
     "@babel/plugin-syntax-decorators": "^7.24.7",
     "@babel/plugin-syntax-typescript": "^7.24.7",
-    "@rollup/plugin-babel": "^6.0.4",
     "@size-limit/file": "^11.1.4",
     "@size-limit/preset-app": "^11.1.4",
     "@size-limit/time": "^11.1.4",

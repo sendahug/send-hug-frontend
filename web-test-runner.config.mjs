@@ -50,13 +50,17 @@ export default {
     // Also until we figure out why CircleCI doesn't seem to like the playwright launcher
     playwrightLauncher({
       product: "chromium",
-      args: [
-        "--disable-gpu",
-        "--no-sandbox",
-        "--disable-setuid-sandbox",
-        "--disable-extensions",
-        "--disable-dev-shm-usage",
-      ],
+      launchOptions: {
+        args: [
+          "--disable-gpu",
+          "--no-sandbox",
+          "--disable-setuid-sandbox",
+          "--disable-extensions",
+          "--disable-dev-shm-usage",
+        ],
+      },
+      // TODO: Figure out why this is required for Circle CI.
+      concurrency: 1,
     }),
     // playwrightLauncher({ product: 'webkit' }),
     // playwrightLauncher({ product: 'firefox' }),
@@ -113,6 +117,4 @@ export default {
       tsconfig: fileURLToPath(new URL("./tsconfig.json", import.meta.url)),
     }),
   ],
-  // TODO: Figure out why this is required for Circle CI.
-  concurrency: 1,
 };

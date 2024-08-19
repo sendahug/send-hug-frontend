@@ -93,6 +93,10 @@ export default {
     // Commented out until https://github.com/modernweb-dev/web/issues/2777 is resolved
     // nativeInstrumentation: false,
   },
+  filterBrowserLogs(log) {
+    // Filter out the firebase logs
+    if (log.args.includes("heartbeats")) return false;
+  },
   // Credit to @blueprintui for most of the HTML.
   // https://github.com/blueprintui/web-test-runner-jasmine/blob/main/src/index.ts
   testRunnerHtml: (_path, _config) => fs.readFileSync("./plugins/tests.html", { encoding: "utf8" }),

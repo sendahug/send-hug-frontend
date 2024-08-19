@@ -290,139 +290,139 @@ describe("AppComponent", () => {
     done();
   });
 
-  // // Check that the font size panel is hidden
-  // it("should have a hidden font size panel", () => {
-  //   const fixture = TestBed.createComponent(AppComponent);
-  //   const component = fixture.componentInstance;
-  //   const componentHtml = fixture.debugElement.nativeElement;
+  // Check that the font size panel is hidden
+  it("should have a hidden font size panel", () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    const component = fixture.componentInstance;
+    const componentHtml = fixture.debugElement.nativeElement;
 
-  //   expect(component.showTextPanel()).toBe(false);
-  //   expect(componentHtml.querySelector("#siteHeader").children.length).toEqual(2);
-  // });
+    expect(component.showTextPanel()).toBe(false);
+    expect(componentHtml.querySelector("#siteHeader").children.length).toEqual(2);
+  });
 
-  // // Check that the font size panel appears when the button is clicked
-  // it("has a font size which appears when the icon is clicked", () => {
-  //   const fixture = TestBed.createComponent(AppComponent);
-  //   fixture.detectChanges();
-  //   const component = fixture.componentInstance;
-  //   const componentHtml = fixture.nativeElement;
-  //   const siteHeader = componentHtml.querySelector("#siteHeader");
+  // Check that the font size panel appears when the button is clicked
+  it("has a font size which appears when the icon is clicked", () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    fixture.detectChanges();
+    const component = fixture.componentInstance;
+    const componentHtml = fixture.nativeElement;
+    const siteHeader = componentHtml.querySelector("#siteHeader");
 
-  //   // Check the panel is initially hidden
-  //   expect(component.showTextPanel()).toBe(false);
-  //   expect(siteHeader.querySelector("#textPanel")).toBeNull();
+    // Check the panel is initially hidden
+    expect(component.showTextPanel()).toBe(false);
+    expect(siteHeader.querySelector("#textPanel")).toBeNull();
 
-  //   // Simulate a click on the button
-  //   componentHtml.querySelector("#textSize").click();
-  //   fixture.detectChanges();
+    // Simulate a click on the button
+    componentHtml.querySelector("#textSize").click();
+    fixture.detectChanges();
 
-  //   // Check the panel is now visible
-  //   expect(component.showTextPanel()).toBe(true);
-  //   expect(siteHeader.querySelector("#textPanel")).toBeDefined();
-  // });
+    // Check the panel is now visible
+    expect(component.showTextPanel()).toBe(true);
+    expect(siteHeader.querySelector("#textPanel")).toBeDefined();
+  });
 
   // // Check that the font size panel is hidden when the button is clicked again
-  // it("has a font size which is hidden when the icon is clicked again", () => {
-  //   const fixture = TestBed.createComponent(AppComponent);
-  //   fixture.detectChanges();
-  //   const component = fixture.componentInstance;
-  //   const componentHtml = fixture.nativeElement;
-  //   const siteHeader = componentHtml.querySelector("#siteHeader");
+  it("has a font size which is hidden when the icon is clicked again", () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    fixture.detectChanges();
+    const component = fixture.componentInstance;
+    const componentHtml = fixture.nativeElement;
+    const siteHeader = componentHtml.querySelector("#siteHeader");
 
-  //   // Check the panel is initially hidden
-  //   expect(component.showTextPanel()).toBe(false);
-  //   expect(siteHeader.querySelector("#textPanel")).toBeNull();
+    // Check the panel is initially hidden
+    expect(component.showTextPanel()).toBe(false);
+    expect(siteHeader.querySelector("#textPanel")).toBeNull();
 
-  //   // Simulate a click on the button
-  //   componentHtml.querySelector("#textSize").click();
+    // Simulate a click on the button
+    componentHtml.querySelector("#textSize").click();
 
-  //   // Check the panel is now visible
-  //   expect(component.showTextPanel()).toBe(true);
-  //   expect(siteHeader.querySelector("#textPanel")).toBeDefined();
+    // Check the panel is now visible
+    expect(component.showTextPanel()).toBe(true);
+    expect(siteHeader.querySelector("#textPanel")).toBeDefined();
 
-  //   // Simulate another click on the button
-  //   componentHtml.querySelector("#textSize").click();
+    // Simulate another click on the button
+    componentHtml.querySelector("#textSize").click();
 
-  //   // check the panel is hidden again
-  //   expect(component.showTextPanel()).toBe(false);
-  //   expect(siteHeader.querySelector("#textPanel")).toBeNull();
-  // });
+    // check the panel is hidden again
+    expect(component.showTextPanel()).toBe(false);
+    expect(siteHeader.querySelector("#textPanel")).toBeNull();
+  });
 
   // Check that the font size panel changes the site's font size
-  // it("has a font size that changes according to user choice", (done: DoneFn) => {
-  //   const fixture = TestBed.createComponent(AppComponent);
-  //   fixture.detectChanges();
-  //   const component = fixture.componentInstance;
-  //   const componentHtml = fixture.nativeElement;
-  //   const fontButton = componentHtml.querySelector("#textSize");
-  //   const menuSpy = spyOn(component, "checkMenuSize");
+  it("has a font size that changes according to user choice", (done: DoneFn) => {
+    const fixture = TestBed.createComponent(AppComponent);
+    fixture.detectChanges();
+    const component = fixture.componentInstance;
+    const componentHtml = fixture.nativeElement;
+    const fontButton = componentHtml.querySelector("#textSize");
+    const menuSpy = spyOn(component, "checkMenuSize");
 
-  //   // open the text panel
-  //   fontButton.click();
-  //   fixture.detectChanges();
+    // open the text panel
+    fontButton.click();
+    fixture.detectChanges();
 
-  //   const fontPanelButtons = componentHtml
-  //     .querySelector("#textPanel")
-  //     .querySelectorAll(".appButton");
+    const fontPanelButtons = componentHtml
+      .querySelector("#textPanel")
+      .querySelectorAll(".appButton");
 
-  //   // wrap tests in a promise to make sure they run fully and by the order
-  //   // step 1: regular size
-  //   new Promise(() => {
-  //     // change the font size to the smallest
-  //     fontPanelButtons[0]!.click();
-  //     fixture.detectChanges();
+    // wrap tests in a promise to make sure they run fully and by the order
+    // step 1: regular size
+    new Promise(() => {
+      // change the font size to the smallest
+      fontPanelButtons[0]!.click();
+      fixture.detectChanges();
 
-  //     // check the font size was changed
-  //     expect(document.getElementsByTagName("html")[0]!.style.fontSize).toBe("75%");
-  //     expect(menuSpy).toHaveBeenCalled();
-  //     expect(menuSpy).toHaveBeenCalledTimes(1);
-  //     // step 3: smaller size
-  //   })
-  //     .then(() => {
-  //       // change the font size to the smaller
-  //       fontPanelButtons[1]!.click();
-  //       fixture.detectChanges();
+      // check the font size was changed
+      expect(document.getElementsByTagName("html")[0]!.style.fontSize).toBe("75%");
+      expect(menuSpy).toHaveBeenCalled();
+      expect(menuSpy).toHaveBeenCalledTimes(1);
+      // step 3: smaller size
+    })
+      .then(() => {
+        // change the font size to the smaller
+        fontPanelButtons[1]!.click();
+        fixture.detectChanges();
 
-  //       // check the font size was changed
-  //       expect(document.getElementsByTagName("html")[0]!.style.fontSize).toBe("87.5%");
-  //       expect(menuSpy).toHaveBeenCalled();
-  //       expect(menuSpy).toHaveBeenCalledTimes(2);
-  //       // step 4: regular size
-  //     })
-  //     .then(() => {
-  //       // change the font size to the normal
-  //       fontPanelButtons[2]!.click();
-  //       fixture.detectChanges();
+        // check the font size was changed
+        expect(document.getElementsByTagName("html")[0]!.style.fontSize).toBe("87.5%");
+        expect(menuSpy).toHaveBeenCalled();
+        expect(menuSpy).toHaveBeenCalledTimes(2);
+        // step 4: regular size
+      })
+      .then(() => {
+        // change the font size to the normal
+        fontPanelButtons[2]!.click();
+        fixture.detectChanges();
 
-  //       // check the font size was changed
-  //       expect(document.getElementsByTagName("html")[0]!.style.fontSize).toBe("100%");
-  //       expect(menuSpy).toHaveBeenCalled();
-  //       expect(menuSpy).toHaveBeenCalledTimes(3);
-  //       // step 5: larger size
-  //     })
-  //     .then(() => {
-  //       // change the font size to the larger
-  //       fontPanelButtons[3]!.click();
-  //       fixture.detectChanges();
+        // check the font size was changed
+        expect(document.getElementsByTagName("html")[0]!.style.fontSize).toBe("100%");
+        expect(menuSpy).toHaveBeenCalled();
+        expect(menuSpy).toHaveBeenCalledTimes(3);
+        // step 5: larger size
+      })
+      .then(() => {
+        // change the font size to the larger
+        fontPanelButtons[3]!.click();
+        fixture.detectChanges();
 
-  //       // check the font size was changed
-  //       expect(document.getElementsByTagName("html")[0]!.style.fontSize).toBe("150%");
-  //       expect(menuSpy).toHaveBeenCalled();
-  //       expect(menuSpy).toHaveBeenCalledTimes(4);
-  //       // step 6: largest size
-  //     })
-  //     .then(() => {
-  //       // change the font size to the largest
-  //       fontPanelButtons[4]!.click();
-  //       fixture.detectChanges();
+        // check the font size was changed
+        expect(document.getElementsByTagName("html")[0]!.style.fontSize).toBe("150%");
+        expect(menuSpy).toHaveBeenCalled();
+        expect(menuSpy).toHaveBeenCalledTimes(4);
+        // step 6: largest size
+      })
+      .then(() => {
+        // change the font size to the largest
+        fontPanelButtons[4]!.click();
+        fixture.detectChanges();
 
-  //       // check the font size was changed
-  //       expect(document.getElementsByTagName("html")[0]!.style.fontSize).toBe("200%");
-  //       expect(menuSpy).toHaveBeenCalled();
-  //       expect(menuSpy).toHaveBeenCalledTimes(5);
-  //     });
-  //   done();
-  // });
+        // check the font size was changed
+        expect(document.getElementsByTagName("html")[0]!.style.fontSize).toBe("200%");
+        expect(menuSpy).toHaveBeenCalled();
+        expect(menuSpy).toHaveBeenCalledTimes(5);
+      });
+    done();
+  });
 
   // TODO: Figure out why this is broken in CI.
   // check the menu is shown if the screen is wide enough

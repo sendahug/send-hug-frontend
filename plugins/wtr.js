@@ -42,8 +42,9 @@ export const AngularTestsPlugin = () => {
       ngBuilder.setupAngularProgram();
     },
 
-    transform(code, id) {
+    async transform(code, id) {
       if (!id.includes("@web/test-runner") && !id.includes("web-dev-server")) {
+        await ngBuilder.validateFiles();
         const transformResult = ngBuilder.buildFile(resolve(id));
 
         if (!transformResult) return;

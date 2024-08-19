@@ -45,6 +45,7 @@ import {
   RouterLink,
   RouterModule,
   UrlSegment,
+  withComponentInputBinding,
 } from "@angular/router";
 import { By } from "@angular/platform-browser";
 import { provideZoneChangeDetection } from "@angular/core";
@@ -56,7 +57,6 @@ import { SWManager } from "@app/services/sWManager.service";
 import { type PostGet } from "@app/interfaces/post.interface";
 import { SinglePost } from "@app/components/post/post.component";
 import { Loader } from "@app/components/loader/loader.component";
-import { routes } from "@app/app.routes";
 
 describe("FullList", () => {
   let pageOnePosts: PostGet[];
@@ -81,7 +81,35 @@ describe("FullList", () => {
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
         provideZoneChangeDetection({ eventCoalescing: true }),
-        provideRouter(routes),
+        provideRouter(
+          [
+            {
+              path: "list",
+              children: [
+                {
+                  path: "New",
+                  pathMatch: "prefix",
+                  component: FullList,
+                  data: { name: "Full new list" },
+                },
+                {
+                  path: "Suggested",
+                  pathMatch: "prefix",
+                  component: FullList,
+                  data: { name: "Full suggested list" },
+                },
+              ],
+              data: {
+                name: "Full Items List",
+                mapRoutes: [
+                  { path: "New", name: "Full new list" },
+                  { path: "Suggested", name: "Full suggested list" },
+                ],
+              },
+            },
+          ],
+          withComponentInputBinding(),
+        ),
         MockAPIClient,
       ],
     }).compileComponents();

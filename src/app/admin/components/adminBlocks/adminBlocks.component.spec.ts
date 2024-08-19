@@ -49,7 +49,6 @@ import { AuthService } from "@app/services/auth.service";
 import { Loader } from "@app/components/loader/loader.component";
 import { mockAuthedUser } from "@tests/mockData";
 import { ApiClientService } from "@app/services/apiClient.service";
-import { routes } from "@app/app.routes";
 import { AdminService } from "@app/services/admin.service";
 import { BrowserModule } from "@angular/platform-browser";
 
@@ -91,7 +90,7 @@ describe("Blocks Page", () => {
       declarations: [AdminBlocks],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
-        provideRouter(routes),
+        provideRouter([]),
         MockAdminService,
         MockAuthService,
         MockAPIClient,

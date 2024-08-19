@@ -50,13 +50,17 @@ export default {
     // Also until we figure out why CircleCI doesn't seem to like the playwright launcher
     playwrightLauncher({
       product: "chromium",
-      args: [
-        "--disable-gpu",
-        "--no-sandbox",
-        "--disable-setuid-sandbox",
-        "--disable-extensions",
-        "--disable-dev-shm-usage",
-      ],
+      launchOptions: {
+        args: [
+          "--disable-gpu",
+          "--no-sandbox",
+          "--disable-setuid-sandbox",
+          "--disable-extensions",
+          "--disable-dev-shm-usage",
+        ],
+      },
+      // TODO: Figure out why this is required for Circle CI.
+      concurrency: 1,
     }),
     // playwrightLauncher({ product: 'webkit' }),
     // playwrightLauncher({ product: 'firefox' }),
@@ -93,6 +97,10 @@ export default {
     // Commented out until https://github.com/modernweb-dev/web/issues/2777 is resolved
     // nativeInstrumentation: false,
   },
+  filterBrowserLogs(log) {
+    // Filter out the firebase logs
+    if (log.args.includes("heartbeats")) return false;
+  },
   // Credit to @blueprintui for most of the HTML.
   // https://github.com/blueprintui/web-test-runner-jasmine/blob/main/src/index.ts
   testRunnerHtml: (_path, _config) => fs.readFileSync("./plugins/tests.html", { encoding: "utf8" }),
@@ -109,6 +117,4 @@ export default {
       tsconfig: fileURLToPath(new URL("./tsconfig.json", import.meta.url)),
     }),
   ],
-  // TODO: Figure out why this is required for Circle CI.
-  concurrency: 1,
 };

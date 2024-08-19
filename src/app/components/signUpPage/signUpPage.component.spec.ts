@@ -48,7 +48,6 @@ import { MockProvider } from "ng-mocks";
 import { SignUpPage } from "./signUpPage.component";
 import { getMockFirebaseUser, mockAuthedUser } from "@tests/mockData";
 import { AuthService } from "@app/services/auth.service";
-import { routes } from "@app/app.routes";
 
 describe("SignUpPage", () => {
   let mockFirebaseUser: FirebaseUser;
@@ -69,7 +68,7 @@ describe("SignUpPage", () => {
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
         provideZoneChangeDetection({ eventCoalescing: true }),
-        provideRouter(routes),
+        provideRouter([]),
         MockAuthService,
       ],
     }).compileComponents();

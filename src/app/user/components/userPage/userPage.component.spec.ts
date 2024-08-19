@@ -51,7 +51,6 @@ import { OtherUser } from "@app/interfaces/otherUser.interface";
 import { iconCharacters } from "@app/interfaces/types";
 import { DisplayNameEditForm } from "@app/components/displayNameEditForm/displayNameEditForm.component";
 import { ReportForm } from "@app/components/reportForm/reportForm.component";
-import { routes } from "@app/app.routes";
 import { ApiClientService } from "@app/services/apiClient.service";
 import { PopUp } from "@app/components/popUp/popUp.component";
 import { Loader } from "@app/components/loader/loader.component";
@@ -87,7 +86,21 @@ describe("UserPage", () => {
       declarations: [UserPage],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
-        provideRouter(routes),
+        provideRouter([
+          {
+            path: "user",
+            children: [
+              { path: "", pathMatch: "prefix", component: UserPage, data: { name: "Your Page" } },
+              {
+                path: ":id",
+                pathMatch: "prefix",
+                component: UserPage,
+                data: { name: "Other User's Page" },
+              },
+            ],
+            data: { name: "User Page", mapRoutes: [{ path: "", name: "Your Page" }] },
+          },
+        ]),
         MockAuthService,
         MockAPIClient,
       ],

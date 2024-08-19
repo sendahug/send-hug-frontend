@@ -57,7 +57,6 @@ import { NotificationService } from "./services/notifications.service";
 import { mockAuthedUser } from "@tests/mockData";
 import { AppAlert } from "./components/appAlert/appAlert.component";
 import { AlertsService } from "@app/services/alerts.service";
-import { routes } from "./app.routes";
 import { ItemsService } from "./services/items.service";
 
 describe("AppComponent", () => {
@@ -80,6 +79,7 @@ describe("AppComponent", () => {
     });
     const MockSWManager = MockProvider(SWManager, {
       registerSW: () => undefined,
+      updateSW: () => undefined,
     });
 
     TestBed.resetTestEnvironment();
@@ -99,7 +99,7 @@ describe("AppComponent", () => {
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
         provideZoneChangeDetection({ eventCoalescing: true }),
-        provideRouter(routes, withComponentInputBinding()),
+        provideRouter([], withComponentInputBinding()),
         MockAuthService,
         MockItemsService,
         MockNotificationsService,
@@ -182,7 +182,7 @@ describe("AppComponent", () => {
     const componentHtml = fixture.debugElement.nativeElement;
     fixture.detectChanges();
 
-    expect(component.showNotifications).toBe(false);
+    expect(component.showNotifications()).toBe(false);
     expect(componentHtml.querySelector("#mainContent").children.length).toEqual(2);
   });
 
@@ -195,7 +195,7 @@ describe("AppComponent", () => {
     const mainContent = componentHtml.querySelector("#mainContent");
 
     // Check the tab is initially hidden
-    expect(component.showNotifications).toBe(false);
+    expect(component.showNotifications()).toBe(false);
     expect(mainContent.querySelector("app-notifications")).toBeNull();
 
     // Simulate a click on the button
@@ -203,7 +203,7 @@ describe("AppComponent", () => {
     fixture.detectChanges();
 
     // Check the tab is now visible
-    expect(component.showNotifications).toBe(true);
+    expect(component.showNotifications()).toBe(true);
     expect(mainContent.querySelector("app-notifications")).toBeDefined();
   });
 
@@ -213,7 +213,7 @@ describe("AppComponent", () => {
     const component = fixture.componentInstance;
     const componentHtml = fixture.debugElement.nativeElement;
 
-    expect(component.showSearch).toBe(false);
+    expect(component.showSearch()).toBe(false);
     expect(componentHtml.querySelector("#siteHeader").children.length).toEqual(2);
   });
 
@@ -226,7 +226,7 @@ describe("AppComponent", () => {
     const siteHeader = componentHtml.querySelector("#siteHeader");
 
     // Check the panel is initially hidden
-    expect(component.showSearch).toBe(false);
+    expect(component.showSearch()).toBe(false);
     expect(siteHeader.querySelector("#search")).toBeNull();
 
     // Simulate a click on the button
@@ -234,7 +234,7 @@ describe("AppComponent", () => {
     fixture.detectChanges();
 
     // Check the panel is now visible
-    expect(component.showSearch).toBe(true);
+    expect(component.showSearch()).toBe(true);
     expect(siteHeader.querySelector("#search")).toBeDefined();
   });
 
@@ -296,7 +296,7 @@ describe("AppComponent", () => {
     const component = fixture.componentInstance;
     const componentHtml = fixture.debugElement.nativeElement;
 
-    expect(component.showTextPanel).toBe(false);
+    expect(component.showTextPanel()).toBe(false);
     expect(componentHtml.querySelector("#siteHeader").children.length).toEqual(2);
   });
 
@@ -309,7 +309,7 @@ describe("AppComponent", () => {
     const siteHeader = componentHtml.querySelector("#siteHeader");
 
     // Check the panel is initially hidden
-    expect(component.showTextPanel).toBe(false);
+    expect(component.showTextPanel()).toBe(false);
     expect(siteHeader.querySelector("#textPanel")).toBeNull();
 
     // Simulate a click on the button
@@ -317,11 +317,11 @@ describe("AppComponent", () => {
     fixture.detectChanges();
 
     // Check the panel is now visible
-    expect(component.showTextPanel).toBe(true);
+    expect(component.showTextPanel()).toBe(true);
     expect(siteHeader.querySelector("#textPanel")).toBeDefined();
   });
 
-  // Check that the font size panel is hidden when the button is clicked again
+  // // Check that the font size panel is hidden when the button is clicked again
   it("has a font size which is hidden when the icon is clicked again", () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
@@ -330,21 +330,21 @@ describe("AppComponent", () => {
     const siteHeader = componentHtml.querySelector("#siteHeader");
 
     // Check the panel is initially hidden
-    expect(component.showTextPanel).toBe(false);
+    expect(component.showTextPanel()).toBe(false);
     expect(siteHeader.querySelector("#textPanel")).toBeNull();
 
     // Simulate a click on the button
     componentHtml.querySelector("#textSize").click();
 
     // Check the panel is now visible
-    expect(component.showTextPanel).toBe(true);
+    expect(component.showTextPanel()).toBe(true);
     expect(siteHeader.querySelector("#textPanel")).toBeDefined();
 
     // Simulate another click on the button
     componentHtml.querySelector("#textSize").click();
 
     // check the panel is hidden again
-    expect(component.showTextPanel).toBe(false);
+    expect(component.showTextPanel()).toBe(false);
     expect(siteHeader.querySelector("#textPanel")).toBeNull();
   });
 

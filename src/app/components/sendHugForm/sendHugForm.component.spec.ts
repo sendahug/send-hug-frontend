@@ -44,7 +44,6 @@ import { PopUp } from "@app/components/popUp/popUp.component";
 import { ValidationService } from "@app/services/validation.service";
 import { ApiClientService } from "@app/services/apiClient.service";
 import { ItemsService } from "@app/services/items.service";
-import { routes } from "@app/app.routes";
 
 describe("Send Hug Form", () => {
   // Before each test, configure testing environment
@@ -68,7 +67,7 @@ describe("Send Hug Form", () => {
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
         provideZoneChangeDetection({ eventCoalescing: true }),
-        provideRouter(routes),
+        provideRouter([]),
         MockAuthService,
         MockAPIClient,
         MockItemsService,

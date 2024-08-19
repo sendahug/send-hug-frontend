@@ -37,7 +37,13 @@ import {
   BrowserDynamicTestingModule,
   platformBrowserDynamicTesting,
 } from "@angular/platform-browser-dynamic/testing";
-import { ActivatedRoute, provideRouter, Router, RouterLink } from "@angular/router";
+import {
+  ActivatedRoute,
+  provideRouter,
+  Router,
+  RouterLink,
+  withComponentInputBinding,
+} from "@angular/router";
 import { By } from "@angular/platform-browser";
 import { provideZoneChangeDetection } from "@angular/core";
 import { MockComponent, MockProvider } from "ng-mocks";
@@ -48,7 +54,6 @@ import { ItemsService } from "@app/services/items.service";
 import { iconCharacters } from "@app/interfaces/types";
 import { SinglePost } from "@app/components/post/post.component";
 import { Loader } from "../loader/loader.component";
-import { routes } from "@app/app.routes";
 import { ApiClientService } from "@app/services/apiClient.service";
 
 const mockUserSearchResults = [
@@ -129,7 +134,10 @@ describe("SearchResults", () => {
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
         provideZoneChangeDetection({ eventCoalescing: true }),
-        provideRouter(routes),
+        provideRouter(
+          [{ path: "search", component: SearchResults, data: { name: "Search Results" } }],
+          withComponentInputBinding(),
+        ),
         ItemsService,
         MockAPIClient,
       ],

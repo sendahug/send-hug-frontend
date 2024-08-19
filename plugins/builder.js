@@ -120,6 +120,25 @@ export default class AngularBuilder {
   }
 
   /**
+   * Validates the app using the Angular Compiler.
+   * @returns the Angular Compiler's analysis result.
+   *
+   * Credit to nitedani for most of the transform
+   * https://github.com/nitedani/vite-plugin-angular
+   */
+  async validateFiles() {
+    if (!this.currentAngularProgram) return;
+
+    await this.currentAngularProgram.compiler.analyzeAsync();
+    const diagnostics = this.currentAngularProgram.compiler.getDiagnostics();
+    const res = ts.formatDiagnosticsWithColorAndContext(diagnostics, this.tsHost);
+
+    if (res) console.warn(res);
+
+    return res;
+  }
+
+  /**
    * Compiles the given file using the Angular compiler.
    * @param { string } fileId the ID of the file to compile.
    * @returns a MagicString with the transform result and a source map.

@@ -46,7 +46,6 @@ import { NO_ERRORS_SCHEMA, provideZoneChangeDetection, signal } from "@angular/c
 import { IconEditor } from "./iconEditor.component";
 import { AuthService } from "@app/services/auth.service";
 import { mockAuthedUser } from "@tests/mockData";
-import { routes } from "@app/app.routes";
 import { UserIcon } from "@app/components/userIcon/userIcon.component";
 
 describe("IconEditor", () => {
@@ -67,7 +66,7 @@ describe("IconEditor", () => {
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
         provideZoneChangeDetection({ eventCoalescing: true }),
-        provideRouter(routes),
+        provideRouter([]),
         MockAuthService,
       ],
     }).compileComponents();

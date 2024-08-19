@@ -51,7 +51,6 @@ import { mockAuthedUser } from "@tests/mockData";
 import { type PostGet } from "@app/interfaces/post.interface";
 import { SinglePost } from "@app/components/post/post.component";
 import { ItemDeleteForm } from "@app/components/itemDeleteForm/itemDeleteForm.component";
-import { routes } from "@app/app.routes";
 import { ApiClientService } from "@app/services/apiClient.service";
 import { PopUp } from "@app/components/popUp/popUp.component";
 import { SWManager } from "@app/services/sWManager.service";
@@ -101,7 +100,7 @@ describe("MyPosts", () => {
       declarations: [MyPosts, MockUserPage],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
-        provideRouter(routes),
+        provideRouter([]),
         MockAuthService,
         MockAPIClient,
         MockSWManager,

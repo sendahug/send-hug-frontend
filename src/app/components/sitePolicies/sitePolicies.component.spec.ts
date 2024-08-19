@@ -42,7 +42,6 @@ import { of } from "rxjs";
 import { provideZoneChangeDetection } from "@angular/core";
 
 import { SitePolicies } from "./sitePolicies.component";
-import { routes } from "@app/app.routes";
 
 describe("SitePolicies", () => {
   // Before each test, configure testing environment
@@ -55,7 +54,31 @@ describe("SitePolicies", () => {
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
         provideZoneChangeDetection({ eventCoalescing: true }),
-        provideRouter(routes),
+        provideRouter([
+          {
+            path: "policies",
+            children: [
+              {
+                path: "terms",
+                pathMatch: "prefix",
+                component: SitePolicies,
+                data: { name: "Terms and Conditions" },
+              },
+              {
+                path: "privacy",
+                pathMatch: "prefix",
+                component: SitePolicies,
+                data: { name: "Privacy Policy" },
+              },
+              {
+                path: "cookies",
+                pathMatch: "prefix",
+                component: SitePolicies,
+                data: { name: "Cookie Policy" },
+              },
+            ],
+          },
+        ]),
       ],
     }).compileComponents();
   });

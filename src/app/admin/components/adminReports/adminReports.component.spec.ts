@@ -52,7 +52,6 @@ import { ApiClientService } from "@app/services/apiClient.service";
 import { PostEditForm } from "@app/components/postEditForm/postEditForm.component";
 import { DisplayNameEditForm } from "@app/components/displayNameEditForm/displayNameEditForm.component";
 import { ItemDeleteForm } from "@app/components/itemDeleteForm/itemDeleteForm.component";
-import { routes } from "@app/app.routes";
 import { AdminService } from "@app/services/admin.service";
 
 // REPORTS PAGE
@@ -87,7 +86,7 @@ describe("AdminReports", () => {
       declarations: [AdminReports],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
-        provideRouter(routes),
+        provideRouter([]),
         MockAuthService,
         MockAdminService,
         MockAPIClient,

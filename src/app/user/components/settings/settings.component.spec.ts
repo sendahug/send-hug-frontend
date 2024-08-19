@@ -50,7 +50,6 @@ import { NotificationService } from "@app/services/notifications.service";
 import { AuthService } from "@app/services/auth.service";
 import { AlertsService } from "@app/services/alerts.service";
 import { mockAuthedUser } from "@tests/mockData";
-import { routes } from "@app/app.routes";
 import { UserIcon } from "@app/components/userIcon/userIcon.component";
 
 describe("SettingsPage", () => {
@@ -78,7 +77,7 @@ describe("SettingsPage", () => {
       declarations: [SettingsPage, MockIconEditor],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
-        provideRouter(routes),
+        provideRouter([]),
         MockAuthService,
         MockNotificationsService,
         AlertsService,

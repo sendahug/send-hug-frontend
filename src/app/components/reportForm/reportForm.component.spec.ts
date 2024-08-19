@@ -43,7 +43,6 @@ import { mockAuthedUser } from "@tests/mockData";
 import { PopUp } from "@app/components/popUp/popUp.component";
 import { ValidationService } from "@app/services/validation.service";
 import { ApiClientService } from "@app/services/apiClient.service";
-import { routes } from "@app/app.routes";
 
 describe("Report", () => {
   // Before each test, configure testing environment
@@ -64,7 +63,7 @@ describe("Report", () => {
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
         provideZoneChangeDetection({ eventCoalescing: true }),
-        provideRouter(routes),
+        provideRouter([]),
         MockAuthService,
         MockAPIClient,
       ],

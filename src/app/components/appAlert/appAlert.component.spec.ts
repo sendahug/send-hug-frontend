@@ -42,7 +42,6 @@ import { provideZoneChangeDetection } from "@angular/core";
 
 import { AppAlert } from "./appAlert.component";
 import { AlertsService } from "@app/services/alerts.service";
-import { routes } from "@app/app.routes";
 
 describe("AppAlert", () => {
   // Before each test, configure testing environment
@@ -55,7 +54,7 @@ describe("AppAlert", () => {
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
         provideZoneChangeDetection({ eventCoalescing: true }),
-        provideRouter(routes),
+        provideRouter([]),
       ],
     }).compileComponents();
   });

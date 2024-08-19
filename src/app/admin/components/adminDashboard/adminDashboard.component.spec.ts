@@ -49,7 +49,6 @@ import { mockAuthedUser } from "@tests/mockData";
 import { AdminReports } from "@admin/components/adminReports/adminReports.component";
 import { AdminBlocks } from "@admin/components/adminBlocks/adminBlocks.component";
 import { AdminFilters } from "@admin/components/adminFilters/adminFilters.component";
-import { routes } from "@app/app.routes";
 
 describe("AdminDashboard", () => {
   // Before each test, configure testing environment
@@ -71,7 +70,37 @@ describe("AdminDashboard", () => {
       declarations: [AdminDashboard, AdminReports, AdminBlocks, AdminFilters],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
-        provideRouter(routes),
+        provideRouter([
+          {
+            path: "admin",
+            children: [
+              {
+                path: "",
+                pathMatch: "prefix",
+                component: AdminDashboard,
+                data: { name: "Main Page" },
+              },
+              {
+                path: "reports",
+                pathMatch: "prefix",
+                component: AdminDashboard,
+                data: { name: "Reports Page" },
+              },
+              {
+                path: "blocks",
+                pathMatch: "prefix",
+                component: AdminDashboard,
+                data: { name: "Blocks Page" },
+              },
+              {
+                path: "filters",
+                pathMatch: "prefix",
+                component: AdminDashboard,
+                data: { name: "Filters Page" },
+              },
+            ],
+          },
+        ]),
         MockAuthService,
       ],
     }).compileComponents();

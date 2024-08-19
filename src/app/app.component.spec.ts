@@ -158,54 +158,54 @@ describe("AppComponent", () => {
   });
 
   // Check that there are valid navigation links
-  // it("should contain valid navigation links", () => {
-  //   const fixture = TestBed.createComponent(AppComponent);
-  //   const componentHtml = fixture.debugElement.nativeElement;
+  it("should contain valid navigation links", () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    const componentHtml = fixture.debugElement.nativeElement;
 
-  //   let navMenu = componentHtml.querySelector("#navLinks");
-  //   expect(navMenu).toBeDefined();
-  //   expect(navMenu!.children.length).not.toBe(0);
+    let navMenu = componentHtml.querySelector("#navLinks");
+    expect(navMenu).toBeDefined();
+    expect(navMenu!.children.length).not.toBe(0);
 
-  //   // check each navingation item to ensure it contains a link
-  //   let navMenuItems = navMenu!.children;
-  //   for (var i = 0; i < navMenuItems.length; i++) {
-  //     expect(navMenuItems.item(i)).toBeDefined();
-  //     expect(navMenuItems!.item(i)!.children.item(0)!.getAttribute("href")).toBeDefined();
-  //     expect(navMenuItems!.item(i)!.children.item(0)!.getAttribute("href")).not.toBe("");
-  //   }
-  // });
+    // check each navingation item to ensure it contains a link
+    let navMenuItems = navMenu!.children;
+    for (var i = 0; i < navMenuItems.length; i++) {
+      expect(navMenuItems.item(i)).toBeDefined();
+      expect(navMenuItems!.item(i)!.children.item(0)!.getAttribute("href")).toBeDefined();
+      expect(navMenuItems!.item(i)!.children.item(0)!.getAttribute("href")).not.toBe("");
+    }
+  });
 
   // Check that the notifications tab is hidden
-  // it("has hidden notifications tab", () => {
-  //   const fixture = TestBed.createComponent(AppComponent);
-  //   const component = fixture.componentInstance;
-  //   const componentHtml = fixture.nativeElement;
-  //   fixture.detectChanges();
+  it("has hidden notifications tab", () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    const component = fixture.componentInstance;
+    const componentHtml = fixture.debugElement.nativeElement;
+    fixture.detectChanges();
 
-  //   expect(component.showNotifications()).toBe(false);
-  //   expect(componentHtml.querySelector("#mainContent").children.length).toEqual(2);
-  // });
+    expect(component.showNotifications()).toBe(false);
+    expect(componentHtml.querySelector("#mainContent").children.length).toEqual(2);
+  });
 
   // Check that the notifications tab appears when the button is clicked
-  // it("has a notifications tab that appears when its icon is clicked", () => {
-  //   const fixture = TestBed.createComponent(AppComponent);
-  //   fixture.detectChanges();
-  //   const component = fixture.componentInstance;
-  //   const componentHtml = fixture.nativeElement;
-  //   const mainContent = componentHtml.querySelector("#mainContent");
+  it("has a notifications tab that appears when its icon is clicked", () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    fixture.detectChanges();
+    const component = fixture.componentInstance;
+    const componentHtml = fixture.nativeElement;
+    const mainContent = componentHtml.querySelector("#mainContent");
 
-  //   // Check the tab is initially hidden
-  //   expect(component.showNotifications()).toBe(false);
-  //   expect(mainContent.querySelector("app-notifications")).toBeNull();
+    // Check the tab is initially hidden
+    expect(component.showNotifications()).toBe(false);
+    expect(mainContent.querySelector("app-notifications")).toBeNull();
 
-  //   // Simulate a click on the button
-  //   componentHtml.querySelector("#notificationsBtn").click();
-  //   fixture.detectChanges();
+    // Simulate a click on the button
+    componentHtml.querySelector("#notificationsBtn").click();
+    fixture.detectChanges();
 
-  //   // Check the tab is now visible
-  //   expect(component.showNotifications()).toBe(true);
-  //   expect(mainContent.querySelector("app-notifications")).toBeDefined();
-  // });
+    // Check the tab is now visible
+    expect(component.showNotifications()).toBe(true);
+    expect(mainContent.querySelector("app-notifications")).toBeDefined();
+  });
 
   // // Check that the search panel is hidden
   // it("has hidden search", () => {

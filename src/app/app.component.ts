@@ -64,9 +64,9 @@ import SiteLogoSrc from "@/assets/img/Logo.svg";
   ],
 })
 export class AppComponent implements OnInit, AfterViewInit {
-  showNotifications = false;
-  showSearch = false;
-  showTextPanel = false;
+  showNotifications = signal(false);
+  showSearch = signal(false);
+  showTextPanel = signal(false);
   showMenu = signal(false);
   navMenuClass = computed(() => ({
     navLinks: true,
@@ -244,7 +244,7 @@ export class AppComponent implements OnInit, AfterViewInit {
 
     // if there's something in the search query text field, search for it
     if (searchQuery) {
-      this.showSearch = false;
+      this.showSearch.set(false);
       this.itemsService.sendSearch(searchQuery);
       // clears the search box
       this.searchForm.reset();
@@ -273,7 +273,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   */
   toggleNotifications() {
     let width = document.documentElement.clientWidth;
-    this.showNotifications = true;
+    this.showNotifications.set(true);
 
     // if the viewport is smaller than 650px, the user opened the panel through the
     // menu, which needs to be closed
@@ -293,8 +293,8 @@ export class AppComponent implements OnInit, AfterViewInit {
     let width = document.documentElement.clientWidth;
 
     // if the search is displayed, close it
-    if (this.showSearch) {
-      this.showSearch = false;
+    if (this.showSearch()) {
+      this.showSearch.set(false);
 
       // if the viewport is smaller than 650px, the user opened the panel through the
       // menu, which needs to be closed
@@ -310,7 +310,7 @@ export class AppComponent implements OnInit, AfterViewInit {
         this.showMenu.set(false);
       }
 
-      this.showSearch = true;
+      this.showSearch.set(true);
     }
   }
 
@@ -362,11 +362,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   Programmer: Shir Bar Lev.
   */
   toggleSizePanel() {
-    if (this.showTextPanel) {
-      this.showTextPanel = false;
-    } else {
-      this.showTextPanel = true;
-    }
+    this.showTextPanel.set(!this.showTextPanel());
   }
 
   /*
@@ -443,7 +439,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   Programmer: Shir Bar Lev.
   */
   changeMode(notificationsOn: any) {
-    this.showNotifications = notificationsOn as boolean;
+    this.showNotifications.set(notificationsOn as boolean);
   }
 
   /*

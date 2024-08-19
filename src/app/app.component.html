@@ -92,13 +92,13 @@
 			</button>
 		</div>
 	</nav>
-	<form [formGroup]="searchForm" id="search" role="search" *ngIf="showSearch" (ngSubmit)="searchApp($event)">
+	<form [formGroup]="searchForm" id="search" role="search" *ngIf="showSearch()" (ngSubmit)="searchApp($event)">
 		<button id="exitButton" (click)="toggleSearch()" aria-label="close search panel" type="button"><fa-icon [icon]="faTimes" class="fa-times"></fa-icon></button>
 		<label class="pageCategory" for="searchQuery" id="searchLabel">Search: </label>
 		<input type="text" id="searchQuery" placeholder="Search" minlength="1" formControlName="searchQuery">
 		<button type="submit" class="appButton sendData">Search</button>
 	</form>
-	<div id="textPanel" *ngIf="showTextPanel">
+	<div id="textPanel" *ngIf="showTextPanel()">
 		<button class="appButton" (click)="changeTextSize('smallest')" aria-label="change text size to smallest size">Smallest size</button>
 		<button class="appButton" (click)="changeTextSize('smaller')" aria-label="change text size to small size">Small size</button>
 		<button class="appButton" (click)="changeTextSize('regular')" aria-label="change text size to regular size">Regular size</button>
@@ -107,7 +107,7 @@
 	</div>
 </header>
 
-<div *ngIf="showNotifications">
+<div *ngIf="showNotifications()">
 	<app-notifications (NotificationsMode)="changeMode($event)"></app-notifications>
 </div>
 

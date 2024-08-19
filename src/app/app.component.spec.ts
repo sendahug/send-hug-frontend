@@ -182,7 +182,7 @@ describe("AppComponent", () => {
     const componentHtml = fixture.debugElement.nativeElement;
     fixture.detectChanges();
 
-    expect(component.showNotifications).toBe(false);
+    expect(component.showNotifications()).toBe(false);
     expect(componentHtml.querySelector("#mainContent").children.length).toEqual(2);
   });
 
@@ -195,7 +195,7 @@ describe("AppComponent", () => {
     const mainContent = componentHtml.querySelector("#mainContent");
 
     // Check the tab is initially hidden
-    expect(component.showNotifications).toBe(false);
+    expect(component.showNotifications()).toBe(false);
     expect(mainContent.querySelector("app-notifications")).toBeNull();
 
     // Simulate a click on the button
@@ -203,7 +203,7 @@ describe("AppComponent", () => {
     fixture.detectChanges();
 
     // Check the tab is now visible
-    expect(component.showNotifications).toBe(true);
+    expect(component.showNotifications()).toBe(true);
     expect(mainContent.querySelector("app-notifications")).toBeDefined();
   });
 
@@ -213,7 +213,7 @@ describe("AppComponent", () => {
     const component = fixture.componentInstance;
     const componentHtml = fixture.debugElement.nativeElement;
 
-    expect(component.showSearch).toBe(false);
+    expect(component.showSearch()).toBe(false);
     expect(componentHtml.querySelector("#siteHeader").children.length).toEqual(2);
   });
 
@@ -226,7 +226,7 @@ describe("AppComponent", () => {
     const siteHeader = componentHtml.querySelector("#siteHeader");
 
     // Check the panel is initially hidden
-    expect(component.showSearch).toBe(false);
+    expect(component.showSearch()).toBe(false);
     expect(siteHeader.querySelector("#search")).toBeNull();
 
     // Simulate a click on the button
@@ -234,7 +234,7 @@ describe("AppComponent", () => {
     fixture.detectChanges();
 
     // Check the panel is now visible
-    expect(component.showSearch).toBe(true);
+    expect(component.showSearch()).toBe(true);
     expect(siteHeader.querySelector("#search")).toBeDefined();
   });
 
@@ -296,7 +296,7 @@ describe("AppComponent", () => {
     const component = fixture.componentInstance;
     const componentHtml = fixture.debugElement.nativeElement;
 
-    expect(component.showTextPanel).toBe(false);
+    expect(component.showTextPanel()).toBe(false);
     expect(componentHtml.querySelector("#siteHeader").children.length).toEqual(2);
   });
 
@@ -309,7 +309,7 @@ describe("AppComponent", () => {
     const siteHeader = componentHtml.querySelector("#siteHeader");
 
     // Check the panel is initially hidden
-    expect(component.showTextPanel).toBe(false);
+    expect(component.showTextPanel()).toBe(false);
     expect(siteHeader.querySelector("#textPanel")).toBeNull();
 
     // Simulate a click on the button
@@ -317,7 +317,7 @@ describe("AppComponent", () => {
     fixture.detectChanges();
 
     // Check the panel is now visible
-    expect(component.showTextPanel).toBe(true);
+    expect(component.showTextPanel()).toBe(true);
     expect(siteHeader.querySelector("#textPanel")).toBeDefined();
   });
 
@@ -330,21 +330,21 @@ describe("AppComponent", () => {
     const siteHeader = componentHtml.querySelector("#siteHeader");
 
     // Check the panel is initially hidden
-    expect(component.showTextPanel).toBe(false);
+    expect(component.showTextPanel()).toBe(false);
     expect(siteHeader.querySelector("#textPanel")).toBeNull();
 
     // Simulate a click on the button
     componentHtml.querySelector("#textSize").click();
 
     // Check the panel is now visible
-    expect(component.showTextPanel).toBe(true);
+    expect(component.showTextPanel()).toBe(true);
     expect(siteHeader.querySelector("#textPanel")).toBeDefined();
 
     // Simulate another click on the button
     componentHtml.querySelector("#textSize").click();
 
     // check the panel is hidden again
-    expect(component.showTextPanel).toBe(false);
+    expect(component.showTextPanel()).toBe(false);
     expect(siteHeader.querySelector("#textPanel")).toBeNull();
   });
 
@@ -424,6 +424,7 @@ describe("AppComponent", () => {
     done();
   });
 
+  // TODO: Figure out why this is broken in CI.
   // check the menu is shown if the screen is wide enough
   // it("should show the menu if the screen is wide enough", async () => {
   //   const fixture = TestBed.createComponent(AppComponent);
@@ -437,7 +438,6 @@ describe("AppComponent", () => {
   //   expect(componentHtml.querySelector("#menuBtn")!.classList).toContain("hidden");
   // });
 
-  // TODO: Figure out why this is broken in CI.
   // check the menu is hidden if the screen isn't wide enough
   // it("should hide the menu if the screen isn't wide enough", async () => {
   //   const fixture = TestBed.createComponent(AppComponent);

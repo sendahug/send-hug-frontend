@@ -35,7 +35,6 @@ import { esbuildPlugin } from "@web/dev-server-esbuild";
 import { fromRollup } from "@web/dev-server-rollup";
 import tsConfigPaths from "rollup-plugin-tsconfig-paths";
 import { AngularTestsPlugin, ServeSVGsPlugin } from "./plugins/wtr.js";
-import { chromeLauncher } from "@web/test-runner-chrome";
 
 const configPaths = fromRollup(tsConfigPaths);
 const compileAngular = fromRollup(AngularTestsPlugin);
@@ -46,8 +45,6 @@ export default {
   coverage: true,
   files: ["src/**/*.spec.ts", "!plugins/tests.ts"],
   browsers: [
-    // Commented out until https://github.com/modernweb-dev/web/issues/2777 is resolved
-    // Also until we figure out why CircleCI doesn't seem to like the playwright launcher
     playwrightLauncher({
       product: "chromium",
       launchOptions: {
@@ -64,18 +61,6 @@ export default {
     }),
     // playwrightLauncher({ product: 'webkit' }),
     // playwrightLauncher({ product: 'firefox' }),
-    // chromeLauncher({
-    //   launchOptions: {
-    //     headless: true,
-    //     args: [
-    //       "--disable-gpu",
-    //       "--no-sandbox",
-    //       "--disable-setuid-sandbox",
-    //       "--disable-extensions",
-    //       "--disable-dev-shm-usage",
-    //     ],
-    //   },
-    // }),
   ],
   nodeResolve: true,
   coverageConfig: {

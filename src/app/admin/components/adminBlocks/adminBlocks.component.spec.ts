@@ -40,7 +40,7 @@ import {
 } from "@angular/platform-browser-dynamic/testing";
 import { MockProvider } from "ng-mocks";
 import { ReactiveFormsModule } from "@angular/forms";
-import { BehaviorSubject, of } from "rxjs";
+import { BehaviorSubject, of, throwError } from "rxjs";
 import { NO_ERRORS_SCHEMA, signal } from "@angular/core";
 
 import { AdminBlocks } from "./adminBlocks.component";
@@ -127,6 +127,29 @@ describe("Blocks Page", () => {
     expect(
       adminBlocksDOM.querySelectorAll(".tableContainer")[0].querySelectorAll("tbody tr").length,
     ).toBe(1);
+    done();
+  });
+
+  it("should remove the loading screen if there was an error", (done: DoneFn) => {
+    // set up the spy and the component
+    const apiClientSpy = spyOn(TestBed.inject(ApiClientService), "get").and.returnValue(
+      throwError(() => new Error("ERROR")),
+    );
+    const fixture = TestBed.createComponent(AdminBlocks);
+    const adminBlocks = fixture.componentInstance;
+    const adminBlocksDOM = fixture.nativeElement;
+    fixture.detectChanges();
+
+    adminBlocks.fetchBlocks();
+
+    expect(apiClientSpy).toHaveBeenCalledWith("users/blocked", { page: "1" });
+    expect(adminBlocks.blockedUsers.length).toBe(0);
+    expect(adminBlocks.isLoading).toBeFalse();
+    expect(adminBlocksDOM.querySelectorAll(".tableContainer").length).toBe(0);
+    expect(adminBlocksDOM.querySelector("app-loader")).toBeNull();
+    expect(adminBlocksDOM.querySelectorAll(".errorMessage")[0].textContent).toBe(
+      "There are no blocked users.",
+    );
     done();
   });
 

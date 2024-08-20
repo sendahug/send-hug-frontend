@@ -40,7 +40,7 @@ import {
 } from "@angular/platform-browser-dynamic/testing";
 import { NO_ERRORS_SCHEMA, signal } from "@angular/core";
 import { ReactiveFormsModule } from "@angular/forms";
-import { BehaviorSubject, of } from "rxjs";
+import { BehaviorSubject, of, throwError } from "rxjs";
 import { MockProvider } from "ng-mocks";
 
 import { AdminFilters } from "./adminFilters.component";
@@ -115,6 +115,27 @@ describe("Filters Page", () => {
     expect(
       adminFiltersDOM.querySelectorAll(".tableContainer")[0].querySelectorAll("tbody tr").length,
     ).toBe(2);
+    done();
+  });
+
+  it("should remove the loading screen if there was an error", (done: DoneFn) => {
+    const apiClientSpy = spyOn(TestBed.inject(ApiClientService), "get").and.returnValue(
+      throwError(() => new Error("ERROR")),
+    );
+    const fixture = TestBed.createComponent(AdminFilters);
+    const adminFilters = fixture.componentInstance;
+    const adminFiltersDOM = fixture.nativeElement;
+
+    fixture.detectChanges();
+
+    expect(apiClientSpy).toHaveBeenCalledWith("filters", { page: "1" });
+    expect(adminFilters.filteredPhrases.length).toBe(0);
+    expect(adminFilters.totalPages()).toBe(1);
+    expect(adminFiltersDOM.querySelectorAll(".tableContainer").length).toBe(0);
+    expect(adminFilters.isLoading).toBeFalse();
+    expect(adminFiltersDOM.querySelectorAll(".errorMessage")[0].textContent).toBe(
+      "There are no filtered phrases.",
+    );
     done();
   });
 

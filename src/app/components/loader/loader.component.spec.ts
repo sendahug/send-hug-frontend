@@ -308,4 +308,17 @@ describe("Loader", () => {
     expect(loaderDOM.querySelector("#loadingMessage").textContent).toBe(loader.message);
     done();
   });
+
+  it("shouldn't display a message if waitingFor is null", () => {
+    const fixture = TestBed.createComponent(Loader);
+    const loader = fixture.componentInstance;
+    const loaderDOM = fixture.nativeElement;
+
+    // check that the loading message changes according to the target
+    loader.waitingFor = undefined;
+    loader.ngOnChanges();
+    fixture.detectChanges();
+    expect(loader.message).toBe("");
+    expect(loaderDOM.querySelector("#loadingMessage").textContent).toBe("");
+  });
 });

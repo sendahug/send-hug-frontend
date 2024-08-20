@@ -197,4 +197,17 @@ describe("HeaderMessage", () => {
     expect(headerMessDOM.querySelector("#loadingMessage").textContent).toBe(headerMessage.message);
     done();
   });
+
+  it("shouldn't display a message if waitingFor is null", () => {
+    const fixture = TestBed.createComponent(HeaderMessage);
+    const headerMessage = fixture.componentInstance;
+    const headerMessDOM = fixture.nativeElement;
+
+    // check that the loading message changes according to the target
+    headerMessage.waitingFor = undefined;
+    headerMessage.ngOnChanges();
+    fixture.detectChanges();
+    expect(headerMessage.message).toBe("");
+    expect(headerMessDOM.querySelector("#loadingMessage").textContent).toBe("");
+  });
 });

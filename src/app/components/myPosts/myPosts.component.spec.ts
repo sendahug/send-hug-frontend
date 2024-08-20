@@ -70,7 +70,7 @@ import { SWManager } from "@app/services/sWManager.service";
 })
 class MockUserPage {
   waitFor = "user";
-  userId: number | undefined;
+  userId: number;
 
   constructor() {
     this.userId = 1;
@@ -177,11 +177,9 @@ describe("MyPosts", () => {
   });
 
   it("should set the user ID to the logged in user's ID if no ID is provided", () => {
-    const upFixture = TestBed.createComponent(MockUserPage);
-    const userPage = upFixture.componentInstance;
-    userPage.userId = undefined;
+    const upFixture = TestBed.createComponent(MyPosts);
+    const myPosts = upFixture.componentInstance;
     upFixture.detectChanges();
-    const myPosts: MyPosts = upFixture.debugElement.children[0].children[0].componentInstance;
     const authService = TestBed.inject(AuthService);
 
     expect(myPosts.userID).toBe(authService.userData()!.id as number);

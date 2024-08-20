@@ -481,7 +481,6 @@ describe("AppComponent", () => {
     expect(componentHtml.querySelector("#navLinks")!.classList).toContain("hidden");
   });
 
-  // TODO: Figure out why this is broken in CI.
   // check the menu is hidden when clicked again
   it("should show/hide the menu when the menu button is clicked", async () => {
     const fixture = TestBed.createComponent(AppComponent);

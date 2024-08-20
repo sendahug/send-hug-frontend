@@ -55,9 +55,9 @@ export default {
           "--disable-extensions",
           "--disable-dev-shm-usage",
         ],
+        chromiumSandbox: false,
+        headless: true,
       },
-      // TODO: Figure out why this is required for Circle CI.
-      concurrency: 1,
     }),
     // playwrightLauncher({ product: 'webkit' }),
     // playwrightLauncher({ product: 'firefox' }),
@@ -102,4 +102,6 @@ export default {
       tsconfig: fileURLToPath(new URL("./tsconfig.json", import.meta.url)),
     }),
   ],
+  // TODO: Figure out why this is required for Circle CI.
+  concurrency: 1,
 };

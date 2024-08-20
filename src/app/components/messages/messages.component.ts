@@ -38,9 +38,8 @@ import { CommonModule } from "@angular/common";
 
 // App-related imports
 import { AuthService } from "@app/services/auth.service";
-import { type iconElements, type MessageType } from "@app/interfaces/types";
+import { type MessageType } from "@app/interfaces/types";
 import { FullThread, ParsedThread } from "@app/interfaces/thread.interface";
-import { UserIconColours } from "@app/interfaces/user.interface";
 import { type MessageGet } from "@app/interfaces/message.interface";
 import { SWManager } from "@app/services/sWManager.service";
 import { ApiClientService } from "@app/services/apiClient.service";
@@ -258,25 +257,6 @@ export class AppMessaging {
         } as ThreadResponse;
       }),
     );
-  }
-
-  /**
-   * Updates the user's icon with the right colours
-   * @param messageId the ID of the message
-   * @param userIconColours the user's icon colours
-   */
-  setUpUserIcon(messageId: number, userIconColours: UserIconColours) {
-    Object.keys(userIconColours).forEach((key) => {
-      document
-        .querySelectorAll(`#${this.messType}${messageId} .userIcon`)[0]
-        .querySelectorAll(`.${key as iconElements}`)
-        .forEach((element) => {
-          (element as SVGPathElement).setAttribute(
-            "style",
-            `fill:${userIconColours[key as iconElements]};`,
-          );
-        });
-    });
   }
 
   getMessageUser(message: MessageGet | ParsedThread) {

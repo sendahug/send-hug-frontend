@@ -36,7 +36,15 @@ export const AngularTestsPlugin = () => {
     async buildStart(options) {
       ngBuilder = new AngularBuilder(resolve("./tsconfig.json"), {
         include: ["src/**/*.ts"],
-        exclude: ["node_modules/**", "src/**/*.spec.ts"],
+        exclude: [
+          "src/**/*.spec.ts",
+          "src/main.ts",
+          "src/app/app.config.ts",
+          "src/app/app.routes.ts",
+          "src/polyfills.ts",
+          "src/assets/*",
+          "src/tests/**/*.ts",
+        ],
       });
       await ngBuilder.setupCompilerHost();
       ngBuilder.setupAngularProgram();

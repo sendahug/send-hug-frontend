@@ -157,6 +157,38 @@ describe("AppComponent", () => {
     });
   });
 
+  it("should check for a logged in user - enable push and auto-refresh", () => {
+    const authService = TestBed.inject(AuthService);
+    authService.authenticated.set(true);
+    authService.userData.set({ ...mockAuthedUser, pushEnabled: true, autoRefresh: true });
+
+    const notificationService = TestBed.inject(NotificationService);
+    const getSubscriptionSpy = spyOn(notificationService, "getSubscription");
+    const startRefreshSpy = spyOn(notificationService, "startAutoRefresh");
+
+    TestBed.createComponent(AppComponent);
+    authService.isUserDataResolved.next(true);
+
+    expect(getSubscriptionSpy).toHaveBeenCalled();
+    expect(startRefreshSpy).toHaveBeenCalled();
+  });
+
+  it("should check for a logged in user - don't enable push and auto-refresh", () => {
+    const authService = TestBed.inject(AuthService);
+    authService.authenticated.set(true);
+    authService.userData.set({ ...mockAuthedUser });
+
+    const notificationService = TestBed.inject(NotificationService);
+    const getSubscriptionSpy = spyOn(notificationService, "getSubscription");
+    const startRefreshSpy = spyOn(notificationService, "startAutoRefresh");
+
+    TestBed.createComponent(AppComponent);
+    authService.isUserDataResolved.next(true);
+
+    expect(getSubscriptionSpy).not.toHaveBeenCalled();
+    expect(startRefreshSpy).not.toHaveBeenCalled();
+  });
+
   // Check that there are valid navigation links
   it("should contain valid navigation links", () => {
     const fixture = TestBed.createComponent(AppComponent);

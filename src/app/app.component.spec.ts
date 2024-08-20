@@ -505,13 +505,13 @@ describe("AppComponent", () => {
     expect(componentHtml.querySelector("#menuBtn")!.classList).not.toContain("hidden");
 
     // trigger another click
-    // componentHtml.querySelector("#menuBtn").click();
-    // fixture.detectChanges();
+    componentHtml.querySelector("#menuBtn").click();
+    fixture.detectChanges();
 
-    // // post-click check
-    // expect(component.showMenu()).toBeFalse();
-    // expect(componentHtml.querySelector("#navLinks")!.classList).toContain("hidden");
-    // expect(componentHtml.querySelector("#menuBtn")!.classList).not.toContain("hidden");
+    // post-click check
+    expect(component.showMenu()).toBeFalse();
+    expect(componentHtml.querySelector("#navLinks")!.classList).toContain("hidden");
+    expect(componentHtml.querySelector("#menuBtn")!.classList).not.toContain("hidden");
   });
 
   // should hide the nav menu if it gets too long

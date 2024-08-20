@@ -177,9 +177,9 @@ describe("MyPosts", () => {
   });
 
   it("should set the user ID to the logged in user's ID if no ID is provided", () => {
-    const upFixture = TestBed.createComponent(MyPosts);
-    const myPosts = upFixture.componentInstance;
-    upFixture.detectChanges();
+    const fixture = TestBed.createComponent(MyPosts);
+    const myPosts = fixture.componentInstance;
+    fixture.detectChanges();
     const authService = TestBed.inject(AuthService);
 
     expect(myPosts.userID).toBe(authService.userData()!.id as number);

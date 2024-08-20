@@ -161,6 +161,21 @@ describe("MainPage", () => {
     done();
   });
 
+  it("should fetch posts from the server and not change the value if the returned value is undefined", () => {
+    // set up mock data
+    const mockNetworkResponse = { recent: undefined, suggested: undefined, success: true };
+
+    const fixture = TestBed.createComponent(MainPage);
+    const mainPage = fixture.componentInstance;
+    // This shouldn't be possible but just to be on the safe side
+    // @ts-ignore
+    mainPage.updatePostsInterface(mockNetworkResponse);
+
+    expect(mainPage.newPosts()).toEqual([]);
+    expect(mainPage.suggestedPosts()).toEqual([]);
+    expect(mainPage.isLoading()).toBeFalse();
+  });
+
   it("should fetch posts from Idb", (done: DoneFn) => {
     // Just to make sure it doesn't get called during the test
     spyOn(MainPage.prototype, "fetchPosts");

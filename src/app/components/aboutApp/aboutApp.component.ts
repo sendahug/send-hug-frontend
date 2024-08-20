@@ -31,16 +31,31 @@
 */
 
 // Angular imports
+import { NgFor } from "@angular/common";
 import { Component } from "@angular/core";
 import { RouterLink } from "@angular/router";
+
+import { SitePolicyMapping } from "@app/components/sitePolicies/sitePolicies.component";
+
+interface AboutLink {
+  path: string;
+  title: string;
+}
 
 @Component({
   selector: "app-about",
   templateUrl: "./aboutApp.component.html",
   standalone: true,
-  imports: [RouterLink],
+  imports: [RouterLink, NgFor],
 })
 export class AboutApp {
+  aboutLinks: AboutLink[];
+
   // CTOR
-  constructor() {}
+  constructor() {
+    this.aboutLinks = SitePolicyMapping.map((link) => ({
+      path: `/policies/${link.path}`,
+      title: link.title,
+    }));
+  }
 }

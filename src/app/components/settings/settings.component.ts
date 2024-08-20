@@ -32,16 +32,22 @@
 
 // Angular imports
 import { Component } from "@angular/core";
-import { FormBuilder, Validators } from "@angular/forms";
+import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
+import { CommonModule } from "@angular/common";
+import { RouterLink } from "@angular/router";
 
 // App-related imports
 import { NotificationService } from "@app/services/notifications.service";
 import { AuthService } from "@app/services/auth.service";
 import { AlertsService } from "@app/services/alerts.service";
+import { IconEditor } from "@app/components/iconEditor/iconEditor.component";
+import { UserIcon } from "@app/components/userIcon/userIcon.component";
 
 @Component({
   selector: "app-settings",
   templateUrl: "./settings.component.html",
+  standalone: true,
+  imports: [CommonModule, IconEditor, UserIcon, ReactiveFormsModule, RouterLink],
 })
 export class SettingsPage {
   editIcon = false;

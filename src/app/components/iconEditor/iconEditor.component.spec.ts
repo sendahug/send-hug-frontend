@@ -33,12 +33,11 @@
 import { TestBed } from "@angular/core/testing";
 import { provideRouter } from "@angular/router";
 import {} from "jasmine";
-import { APP_BASE_HREF, CommonModule } from "@angular/common";
+import { APP_BASE_HREF } from "@angular/common";
 import {
   BrowserDynamicTestingModule,
   platformBrowserDynamicTesting,
 } from "@angular/platform-browser-dynamic/testing";
-import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { ReactiveFormsModule } from "@angular/forms";
 import { MockProvider } from "ng-mocks";
 import { NO_ERRORS_SCHEMA, provideZoneChangeDetection, signal } from "@angular/core";
@@ -61,8 +60,7 @@ describe("IconEditor", () => {
 
     TestBed.configureTestingModule({
       schemas: [NO_ERRORS_SCHEMA],
-      imports: [FontAwesomeModule, ReactiveFormsModule, UserIcon, CommonModule],
-      declarations: [IconEditor],
+      imports: [ReactiveFormsModule, UserIcon, IconEditor],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
         provideZoneChangeDetection({ eventCoalescing: true }),

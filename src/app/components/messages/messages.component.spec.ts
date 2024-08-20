@@ -78,8 +78,15 @@ describe("AppMessaging", () => {
 
     TestBed.configureTestingModule({
       schemas: [NO_ERRORS_SCHEMA],
-      imports: [ItemDeleteForm, HeaderMessage, Loader, UserIcon, RouterLink, CommonModule],
-      declarations: [AppMessaging],
+      imports: [
+        ItemDeleteForm,
+        HeaderMessage,
+        Loader,
+        UserIcon,
+        RouterLink,
+        CommonModule,
+        AppMessaging,
+      ],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
         provideZoneChangeDetection({ eventCoalescing: true }),

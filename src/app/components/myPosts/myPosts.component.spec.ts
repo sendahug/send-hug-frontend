@@ -65,6 +65,8 @@ import { SWManager } from "@app/services/sWManager.service";
       <app-my-posts [userID]="userId"></app-my-posts>
     </div>
   `,
+  standalone: true,
+  imports: [MyPosts],
 })
 class MockUserPage {
   waitFor = "user";
@@ -96,8 +98,8 @@ describe("MyPosts", () => {
 
     TestBed.configureTestingModule({
       schemas: [NO_ERRORS_SCHEMA],
-      imports: [FontAwesomeModule, PopUp, ItemDeleteForm, SinglePost],
-      declarations: [MyPosts, MockUserPage],
+      imports: [FontAwesomeModule, PopUp, ItemDeleteForm, SinglePost, MyPosts, MockUserPage],
+      declarations: [],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
         provideRouter([]),

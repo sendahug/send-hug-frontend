@@ -82,8 +82,9 @@ describe("UserPage", () => {
         Loader,
         RouterLink,
         UserIcon,
+        UserPage,
       ],
-      declarations: [UserPage],
+      declarations: [],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
         provideRouter([

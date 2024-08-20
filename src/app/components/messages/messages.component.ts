@@ -32,17 +32,22 @@
 
 // Angular imports
 import { Component, signal, computed } from "@angular/core";
-import { ActivatedRoute, Router } from "@angular/router";
+import { ActivatedRoute, Router, RouterLink } from "@angular/router";
 import { from, map, switchMap, tap } from "rxjs";
+import { CommonModule } from "@angular/common";
 
 // App-related imports
 import { AuthService } from "@app/services/auth.service";
-import { iconElements, MessageType } from "@app/interfaces/types";
+import { type iconElements, type MessageType } from "@app/interfaces/types";
 import { FullThread, ParsedThread } from "@app/interfaces/thread.interface";
 import { UserIconColours } from "@app/interfaces/user.interface";
 import { type MessageGet } from "@app/interfaces/message.interface";
 import { SWManager } from "@app/services/sWManager.service";
 import { ApiClientService } from "@app/services/apiClient.service";
+import { Loader } from "@app/components/loader/loader.component";
+import { UserIcon } from "@app/components/userIcon/userIcon.component";
+import { HeaderMessage } from "@app/components/headerMessage/headerMessage.component";
+import { ItemDeleteForm } from "@app/components/itemDeleteForm/itemDeleteForm.component";
 
 interface MessagesResponse {
   success: boolean;
@@ -61,6 +66,8 @@ interface ThreadResponse {
 @Component({
   selector: "app-messages",
   templateUrl: "./messages.component.html",
+  standalone: true,
+  imports: [CommonModule, RouterLink, Loader, UserIcon, HeaderMessage, ItemDeleteForm],
 })
 export class AppMessaging {
   messType: MessageType = "inbox";

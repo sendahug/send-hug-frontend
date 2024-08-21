@@ -41,7 +41,6 @@ import { provideRouter, RouterLink } from "@angular/router";
 import { provideZoneChangeDetection } from "@angular/core";
 
 import { AboutApp } from "./aboutApp.component";
-import { routes } from "@app/app.routes";
 
 describe("AboutApp", () => {
   // Before each test, configure testing environment
@@ -54,7 +53,7 @@ describe("AboutApp", () => {
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
         provideZoneChangeDetection({ eventCoalescing: true }),
-        provideRouter(routes),
+        provideRouter([]),
       ],
     }).compileComponents();
   });

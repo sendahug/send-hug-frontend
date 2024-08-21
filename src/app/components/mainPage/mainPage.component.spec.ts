@@ -49,7 +49,6 @@ import { ApiClientService } from "@app/services/apiClient.service";
 import { SWManager } from "@app/services/sWManager.service";
 import { SinglePost } from "@app/components/post/post.component";
 import { Loader } from "@app/components/loader/loader.component";
-import { routes } from "@app/app.routes";
 import { AuthService } from "@app/services/auth.service";
 
 const newItems = [
@@ -111,7 +110,7 @@ describe("MainPage", () => {
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
         provideZoneChangeDetection({ eventCoalescing: true }),
-        provideRouter(routes),
+        provideRouter([]),
         MockAPIClient,
         mockAuthService,
       ],
@@ -160,6 +159,21 @@ describe("MainPage", () => {
     );
 
     done();
+  });
+
+  it("should fetch posts from the server and not change the value if the returned value is undefined", () => {
+    // set up mock data
+    const mockNetworkResponse = { recent: undefined, suggested: undefined, success: true };
+
+    const fixture = TestBed.createComponent(MainPage);
+    const mainPage = fixture.componentInstance;
+    // This shouldn't be possible but just to be on the safe side
+    // @ts-ignore
+    mainPage.updatePostsInterface(mockNetworkResponse);
+
+    expect(mainPage.newPosts()).toEqual([]);
+    expect(mainPage.suggestedPosts()).toEqual([]);
+    expect(mainPage.isLoading()).toBeFalse();
   });
 
   it("should fetch posts from Idb", (done: DoneFn) => {

@@ -38,19 +38,17 @@ import {
   BrowserDynamicTestingModule,
   platformBrowserDynamicTesting,
 } from "@angular/platform-browser-dynamic/testing";
-import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { ReactiveFormsModule } from "@angular/forms";
 import { MockComponent, MockProvider } from "ng-mocks";
 import { NO_ERRORS_SCHEMA, signal } from "@angular/core";
 import { BehaviorSubject } from "rxjs";
 
 import { SettingsPage } from "./settings.component";
-import { IconEditor } from "@user/components/iconEditor/iconEditor.component";
+import { IconEditor } from "@app/components/iconEditor/iconEditor.component";
 import { NotificationService } from "@app/services/notifications.service";
 import { AuthService } from "@app/services/auth.service";
 import { AlertsService } from "@app/services/alerts.service";
 import { mockAuthedUser } from "@tests/mockData";
-import { routes } from "@app/app.routes";
 import { UserIcon } from "@app/components/userIcon/userIcon.component";
 
 describe("SettingsPage", () => {
@@ -74,11 +72,17 @@ describe("SettingsPage", () => {
 
     TestBed.configureTestingModule({
       schemas: [NO_ERRORS_SCHEMA],
-      imports: [FontAwesomeModule, ReactiveFormsModule, RouterLink, MockIcon, CommonModule],
-      declarations: [SettingsPage, MockIconEditor],
+      imports: [
+        ReactiveFormsModule,
+        RouterLink,
+        MockIcon,
+        CommonModule,
+        SettingsPage,
+        MockIconEditor,
+      ],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
-        provideRouter(routes),
+        provideRouter([]),
         MockAuthService,
         MockNotificationsService,
         AlertsService,

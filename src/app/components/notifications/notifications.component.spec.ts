@@ -48,7 +48,6 @@ import { NotificationService } from "@app/services/notifications.service";
 import { AuthService } from "@app/services/auth.service";
 import { mockAuthedUser } from "@tests/mockData";
 import { AppAlert } from "@app/components/appAlert/appAlert.component";
-import { routes } from "@app/app.routes";
 
 describe("Notifications", () => {
   // Before each test, configure testing environment
@@ -73,7 +72,7 @@ describe("Notifications", () => {
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
         provideZoneChangeDetection({ eventCoalescing: true }),
-        provideRouter(routes),
+        provideRouter([]),
         MockAuthService,
         MockNotificationService,
       ],

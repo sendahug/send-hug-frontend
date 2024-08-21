@@ -35,11 +35,19 @@ import { CommonModule } from "@angular/common";
 import { Component } from "@angular/core";
 import { ActivatedRoute, RouterLink } from "@angular/router";
 
-enum policyTitles {
-  TermsConditions = "Terms and Conditions",
-  PrivacyPolicy = "Privacy Policy",
-  CookiePolicy = "Cookies Policy",
+type PolicyType = "TermsConditions" | "PrivacyPolicy" | "CookiePolicy";
+
+interface SitePolicy {
+  path: string;
+  title: string;
+  policy: PolicyType;
 }
+
+export const SitePolicyMapping: SitePolicy[] = [
+  { path: "terms", title: "Terms and Conditions", policy: "TermsConditions" },
+  { path: "privacy", title: "Privacy Policy", policy: "PrivacyPolicy" },
+  { path: "cookies", title: "Cookies Policy", policy: "CookiePolicy" },
+];
 
 @Component({
   selector: "app-policies",
@@ -48,26 +56,17 @@ enum policyTitles {
   imports: [CommonModule, RouterLink],
 })
 export class SitePolicies {
-  currentPolicy!: "TermsConditions" | "PrivacyPolicy" | "CookiePolicy";
+  currentPolicy!: PolicyType;
   pageTitle: string = "";
 
   // CTOR
   constructor(private route: ActivatedRoute) {
     // Get the URL param to determine which policy to show
     this.route.url.subscribe((params) => {
-      switch (params[0].path) {
-        case "terms":
-          this.currentPolicy = "TermsConditions";
-          break;
-        case "privacy":
-          this.currentPolicy = "PrivacyPolicy";
-          break;
-        case "cookies":
-          this.currentPolicy = "CookiePolicy";
-          break;
-      }
-
-      this.pageTitle = policyTitles[this.currentPolicy];
+      const currentPath = params[0].path;
+      const currentPolicy = SitePolicyMapping.find((policy) => policy.path == currentPath);
+      this.pageTitle = currentPolicy?.title || "Terms and Conditions";
+      this.currentPolicy = currentPolicy?.policy || "TermsConditions";
     });
   }
 }

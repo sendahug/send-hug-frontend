@@ -10,6 +10,9 @@
 	<a href="https://github.com/sendahug/sendahug" class="aboutLink" target="_blank" rel="noreferrer">GitHub Repo</a>
 	
 	<div id="policies">
-		<a [routerLink]="['/policies/terms']" class="aboutInnerLink">Terms and Conditions</a> | <a [routerLink]="['/policies/privacy']" class="aboutInnerLink">Privacy Policy</a> | <a [routerLink]="['/policies/cookies']" class="aboutInnerLink">Cookies Policy</a>
+		<span *ngFor="let link of aboutLinks">
+			<a [routerLink]="[link.path]" class="aboutInnerLink">{{link.title}}</a> |
+		</span>
+		<a [routerLink]="['/sitemap']" class="aboutInnerLink">Site Map</a>
 	</div>
 </div>

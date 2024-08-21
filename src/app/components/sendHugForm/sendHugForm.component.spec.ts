@@ -44,7 +44,6 @@ import { PopUp } from "@app/components/popUp/popUp.component";
 import { ValidationService } from "@app/services/validation.service";
 import { ApiClientService } from "@app/services/apiClient.service";
 import { ItemsService } from "@app/services/items.service";
-import { routes } from "@app/app.routes";
 
 describe("Send Hug Form", () => {
   // Before each test, configure testing environment
@@ -68,7 +67,7 @@ describe("Send Hug Form", () => {
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
         provideZoneChangeDetection({ eventCoalescing: true }),
-        provideRouter(routes),
+        provideRouter([]),
         MockAuthService,
         MockAPIClient,
         MockItemsService,
@@ -163,6 +162,106 @@ describe("Send Hug Form", () => {
     expect(alertServiceSpy).toHaveBeenCalledWith({
       type: "Error",
       message: "ERROR!",
+    });
+    done();
+  });
+
+  it("doesn't allow unauthenticated users to send a hug", (done: DoneFn) => {
+    const validationService = TestBed.inject(ValidationService);
+    const validateSpy = spyOn(validationService, "validateItemAgainst").and.returnValue(
+      (_control) => null,
+    );
+
+    const authSerivce = TestBed.inject(AuthService);
+    authSerivce.authenticated.set(false);
+
+    const fixture = TestBed.createComponent(SendHugForm);
+    const shForm = fixture.componentInstance;
+    const shformDOM = fixture.nativeElement;
+    shForm.forUsername = "meow";
+    shForm.forID = 1;
+    shForm.postID = 1;
+    const apiClientSpy = spyOn(shForm["apiClient"], "post");
+    const alertServiceSpy = spyOn(shForm["alertsService"], "createAlert");
+    fixture.detectChanges();
+
+    // try to submit it without text in the textfield
+    const messageTextField = document.getElementById("messageText") as HTMLInputElement;
+    messageTextField.value = "text";
+    messageTextField.dispatchEvent(new Event("input"));
+    shformDOM.querySelectorAll(".sendData")[0].click();
+    fixture.detectChanges();
+
+    // check the report wasn't sent and the user was alerted
+    expect(validateSpy).toHaveBeenCalledWith("message");
+    expect(apiClientSpy).not.toHaveBeenCalled();
+    expect(alertServiceSpy).toHaveBeenCalledWith({
+      type: "Error",
+      message: "You're currently logged out. Log back in to send a message.",
+    });
+    done();
+  });
+
+  it("doesn't allow sending hugs to self", (done: DoneFn) => {
+    const validationService = TestBed.inject(ValidationService);
+    const validateSpy = spyOn(validationService, "validateItemAgainst").and.returnValue(
+      (_control) => null,
+    );
+
+    const fixture = TestBed.createComponent(SendHugForm);
+    const shForm = fixture.componentInstance;
+    const shformDOM = fixture.nativeElement;
+    shForm.forUsername = "meow";
+    shForm.forID = 4;
+    shForm.postID = 1;
+    const apiClientSpy = spyOn(shForm["apiClient"], "post");
+    const alertServiceSpy = spyOn(shForm["alertsService"], "createAlert");
+    fixture.detectChanges();
+
+    // try to submit it without text in the textfield
+    const messageTextField = document.getElementById("messageText") as HTMLInputElement;
+    messageTextField.value = "text";
+    messageTextField.dispatchEvent(new Event("input"));
+    shformDOM.querySelectorAll(".sendData")[0].click();
+    fixture.detectChanges();
+
+    // check the report wasn't sent and the user was alerted
+    expect(validateSpy).toHaveBeenCalledWith("message");
+    expect(apiClientSpy).not.toHaveBeenCalled();
+    expect(alertServiceSpy).toHaveBeenCalledWith({
+      type: "Error",
+      message: "You can't send a message to yourself!",
+    });
+    done();
+  });
+
+  it("doesn't allow sending hugs without postID", (done: DoneFn) => {
+    const validationService = TestBed.inject(ValidationService);
+    const validateSpy = spyOn(validationService, "validateItemAgainst").and.returnValue(
+      (_control) => null,
+    );
+
+    const fixture = TestBed.createComponent(SendHugForm);
+    const shForm = fixture.componentInstance;
+    shForm.forUsername = "meow";
+    shForm.forID = 1;
+    shForm.postID = undefined;
+    const apiClientSpy = spyOn(shForm["apiClient"], "post");
+    const alertServiceSpy = spyOn(shForm["alertsService"], "createAlert");
+    fixture.detectChanges();
+
+    // try to submit it without text in the textfield
+    shForm.sendHugForm.controls.sendMessage.setValue(true);
+    shForm.sendHugForm.controls.messageFor.setValue("s");
+    shForm.sendHugForm.controls.messageText.setValue("m");
+    shForm.sendHugAndMessage();
+
+    // check the report wasn't sent and the user was alerted
+    expect(validateSpy).toHaveBeenCalledWith("message");
+    expect(apiClientSpy).not.toHaveBeenCalled();
+    expect(alertServiceSpy).toHaveBeenCalledWith({
+      type: "Error",
+      message: "A post ID is required to send a hug for a post.",
     });
     done();
   });

@@ -118,6 +118,33 @@ describe("AdminService", () => {
     expect(deleteAPISpy).toHaveBeenCalledWith("posts/10");
   });
 
+  it("deletePost() - should delete a post without closing the report", () => {
+    // mock response
+    const mockResponse = {
+      success: true,
+      deleted: 10,
+    };
+
+    const reportData = {
+      reportID: 5,
+      userID: 2,
+    };
+    const alertSpy = spyOn(adminService["alertsService"], "createSuccessAlert");
+    const dismissSpy = spyOn(adminService, "closeReport");
+    const messageSpy = spyOn(adminService["itemsService"], "sendMessage");
+    const deleteSWSpy = spyOn(adminService["serviceWorkerM"], "deleteItem");
+    const deleteAPISpy = spyOn(adminService["apiClient"], "delete").and.returnValue(
+      of(mockResponse),
+    );
+    adminService.deletePost(10, reportData, false);
+
+    expect(alertSpy).toHaveBeenCalledWith("Post 10 was successfully deleted.");
+    expect(dismissSpy).not.toHaveBeenCalled();
+    expect(messageSpy).toHaveBeenCalled();
+    expect(deleteSWSpy).toHaveBeenCalledWith("posts", 10);
+    expect(deleteAPISpy).toHaveBeenCalledWith("posts/10");
+  });
+
   // Check that the service edits a user's display name
   it("editUser() - should edit a user's display name", (done: DoneFn) => {
     // mock response
@@ -160,6 +187,36 @@ describe("AdminService", () => {
       expect(alertSpy).toHaveBeenCalledWith("User user updated.");
       expect(patchSpy).toHaveBeenCalledWith("users/all/2", userData);
       expect(closeSpy).toHaveBeenCalledWith(6, false, undefined, 2);
+      done();
+    });
+  });
+
+  it("editUser() - should edit a user's display name without closing report", (done: DoneFn) => {
+    // mock response
+    const mockResponse = {
+      success: true,
+      updated: {
+        id: 2,
+        displayName: "user",
+        receivedH: 2,
+        givenH: 4,
+        role: "user",
+      },
+    };
+
+    const userData = {
+      id: 2,
+      displayName: "user",
+    };
+    const alertSpy = spyOn(adminService["alertsService"], "createSuccessAlert");
+    const patchSpy = spyOn(adminService["apiClient"], "patch").and.returnValue(of(mockResponse));
+    const closeSpy = spyOn(adminService, "closeReport");
+
+    adminService.editUser(userData, false, 6).add(() => {
+      expect(alertSpy).toHaveBeenCalled();
+      expect(alertSpy).toHaveBeenCalledWith("User user updated.");
+      expect(patchSpy).toHaveBeenCalledWith("users/all/2", userData);
+      expect(closeSpy).not.toHaveBeenCalled();
       done();
     });
   });

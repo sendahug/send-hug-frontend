@@ -55,7 +55,6 @@ import { mockAuthedUser } from "@tests/mockData";
 import { FullThread } from "@app/interfaces/thread.interface";
 import { type MessageGet } from "@app/interfaces/message.interface";
 import { ItemDeleteForm } from "@app/components/itemDeleteForm/itemDeleteForm.component";
-import { routes } from "@app/app.routes";
 import { ApiClientService } from "@app/services/apiClient.service";
 import { HeaderMessage } from "@app/components/headerMessage/headerMessage.component";
 import { Loader } from "@app/components/loader/loader.component";
@@ -79,12 +78,61 @@ describe("AppMessaging", () => {
 
     TestBed.configureTestingModule({
       schemas: [NO_ERRORS_SCHEMA],
-      imports: [ItemDeleteForm, HeaderMessage, Loader, UserIcon, RouterLink, CommonModule],
-      declarations: [AppMessaging],
+      imports: [
+        ItemDeleteForm,
+        HeaderMessage,
+        Loader,
+        UserIcon,
+        RouterLink,
+        CommonModule,
+        AppMessaging,
+      ],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
         provideZoneChangeDetection({ eventCoalescing: true }),
-        provideRouter(routes, withComponentInputBinding()),
+        provideRouter(
+          [
+            {
+              path: "messages",
+              children: [
+                { path: "", pathMatch: "prefix", redirectTo: "inbox", data: { name: "Inbox" } },
+                {
+                  path: "inbox",
+                  pathMatch: "prefix",
+                  component: AppMessaging,
+                  data: { name: "Inbox" },
+                },
+                {
+                  path: "outbox",
+                  pathMatch: "prefix",
+                  component: AppMessaging,
+                  data: { name: "Outbox" },
+                },
+                {
+                  path: "threads",
+                  pathMatch: "prefix",
+                  component: AppMessaging,
+                  data: { name: "Threads" },
+                },
+                {
+                  path: "thread/:id",
+                  pathMatch: "prefix",
+                  component: AppMessaging,
+                  data: { name: "Thread" },
+                },
+              ],
+              data: {
+                name: "Mailbox",
+                mapRoutes: [
+                  { path: "inbox", name: "Inbox" },
+                  { path: "outbox", name: "Outbox" },
+                  { path: "threads", name: "Threads" },
+                ],
+              },
+            },
+          ],
+          withComponentInputBinding(),
+        ),
         MockAuthService,
         MockAPIClient,
       ],

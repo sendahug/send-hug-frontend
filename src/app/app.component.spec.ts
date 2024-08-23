@@ -29,7 +29,7 @@
   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
   SOFTWARE.
 */
-import { TestBed } from "@angular/core/testing";
+import { fakeAsync, TestBed, tick } from "@angular/core/testing";
 import {
   provideRouter,
   RouterLink,
@@ -158,7 +158,7 @@ describe("AppComponent", () => {
     });
   });
 
-  it("should check for a logged in user - enable push and auto-refresh", () => {
+  it("should check for a logged in user - enable push and auto-refresh", fakeAsync(() => {
     const authService = TestBed.inject(AuthService);
     const authSpy = spyOn(authService, "checkForLoggedInUser").and.returnValue(
       of({ ...mockAuthedUser, pushEnabled: true, autoRefresh: true }),
@@ -168,18 +168,20 @@ describe("AppComponent", () => {
     const checkStateSpy = spyOn(notificationService, "checkInitialPermissionState").and.returnValue(
       new Promise((resolve) => resolve("granted")),
     );
-    // const getSubscriptionSpy = spyOn(notificationService, "getCachedSubscription");
+    const getSubscriptionSpy = spyOn(notificationService, "getCachedSubscription");
     const startRefreshSpy = spyOn(notificationService, "startAutoRefresh");
 
     TestBed.createComponent(AppComponent);
 
+    tick(100);
+
     expect(authSpy).toHaveBeenCalled();
     expect(checkStateSpy).toHaveBeenCalled();
-    // expect(getSubscriptionSpy).toHaveBeenCalled();
+    expect(getSubscriptionSpy).toHaveBeenCalled();
     expect(startRefreshSpy).toHaveBeenCalled();
-  });
+  }));
 
-  it("should check for a logged in user - don't enable push and auto-refresh", () => {
+  it("should check for a logged in user - don't enable push and auto-refresh", fakeAsync(() => {
     const authService = TestBed.inject(AuthService);
     const authSpy = spyOn(authService, "checkForLoggedInUser").and.returnValue(
       of({ ...mockAuthedUser }),
@@ -194,13 +196,15 @@ describe("AppComponent", () => {
 
     TestBed.createComponent(AppComponent);
 
+    tick(100);
+
     expect(authSpy).toHaveBeenCalled();
     expect(checkStateSpy).toHaveBeenCalled();
     expect(getSubscriptionSpy).not.toHaveBeenCalled();
     expect(startRefreshSpy).not.toHaveBeenCalled();
-  });
+  }));
 
-  it("should check for a logged in user - push permission not granted", () => {
+  it("should check for a logged in user - push permission not granted", fakeAsync(() => {
     const authService = TestBed.inject(AuthService);
     const authSpy = spyOn(authService, "checkForLoggedInUser").and.returnValue(
       of({ ...mockAuthedUser, pushEnabled: true }),
@@ -214,10 +218,12 @@ describe("AppComponent", () => {
 
     TestBed.createComponent(AppComponent);
 
+    tick(100);
+
     expect(authSpy).toHaveBeenCalled();
     expect(checkStateSpy).toHaveBeenCalled();
     expect(getSubscriptionSpy).not.toHaveBeenCalled();
-  });
+  }));
 
   // Check that there are valid navigation links
   it("should contain valid navigation links", () => {

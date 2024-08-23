@@ -106,8 +106,6 @@ export class AppComponent implements OnInit, AfterViewInit {
     // (if there is one)
     this.authService.checkForLoggedInUser().subscribe({
       next: (user) => {
-        // TODO: Is this even possible? I'm almost certain it just wouldn't
-        // be called if it's undefined
         if (!user) return;
 
         // if push notifications are enabled, check the permission

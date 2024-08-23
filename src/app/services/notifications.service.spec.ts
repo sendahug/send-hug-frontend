@@ -338,6 +338,39 @@ describe("NotificationService", () => {
     });
   });
 
+  it("requestSubscription() - should request a subscription", (done: DoneFn) => {
+    const requestSpy = spyOn(notificationService["swPush"], "requestSubscription").and.returnValue(
+      new Promise((resolve) => resolve(pushSub)),
+    );
+    // setSubscription is protected, but we need to spy on it
+    // @ts-ignore
+    const setSpy = spyOn(notificationService, "setSubscription");
+
+    notificationService.requestSubscription().then((sub) => {
+      expect(requestSpy).toHaveBeenCalled();
+      expect(notificationService.notificationsSub).toBe(sub as PushSubscription);
+      expect(setSpy).toHaveBeenCalled();
+      done();
+    });
+  });
+
+  it("requestSubscription() - handles an error", (done: DoneFn) => {
+    const requestSpy = spyOn(notificationService["swPush"], "requestSubscription").and.rejectWith(
+      new Error("ERROR!"),
+    );
+    // setSubscription is protected, but we need to spy on it
+    // @ts-ignore
+    const setSpy = spyOn(notificationService, "setSubscription");
+    const alertSpy = spyOn(notificationService["alertsService"], "createAlert");
+
+    notificationService.requestSubscription().then((_sub) => {
+      expect(requestSpy).toHaveBeenCalled();
+      expect(setSpy).not.toHaveBeenCalled();
+      expect(alertSpy).toHaveBeenCalled();
+      done();
+    });
+  });
+
   it("renewPushSubscription() - should renew the push subscription", fakeAsync(() => {
     notificationService.subscriptionDate = Date.now();
     notificationService.resubscribeCalls = 0;

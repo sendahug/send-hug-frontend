@@ -83,7 +83,7 @@ describe("PasswordResetForm", () => {
     fixture.detectChanges();
 
     const resetSpy = spyOn(popUp["authService"], "resetPassword").and.returnValue(
-      new Promise(() => {}),
+      new Promise((resolve) => resolve(undefined)),
     );
 
     popUpDOM.querySelector("#username").value = email;
@@ -101,7 +101,7 @@ describe("PasswordResetForm", () => {
     fixture.detectChanges();
 
     const resetSpy = spyOn(popUp["authService"], "resetPassword").and.returnValue(
-      new Promise(() => {}),
+      new Promise((resolve) => resolve(undefined)),
     );
     const emitSpy = spyOn(popUp.editMode, "emit");
     const alertSpy = spyOn(popUp["alertsService"], "createAlert");
@@ -126,7 +126,7 @@ describe("PasswordResetForm", () => {
     fixture.detectChanges();
 
     const resetSpy = spyOn(popUp["authService"], "resetPassword").and.returnValue(
-      new Promise(() => {}),
+      new Promise((resolve) => resolve(undefined)),
     );
     const emitSpy = spyOn(popUp.editMode, "emit");
     const alertSpy = spyOn(popUp["alertsService"], "createAlert");

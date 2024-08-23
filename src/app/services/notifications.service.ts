@@ -127,18 +127,18 @@ export class NotificationService {
    * Get the current Push Permission state.
    * @returns a promise that resolves to a PermissionState or undefined.
    */
-  getPushPermissionState(): Promise<PermissionState> {
+  getPushPermissionState(): Promise<PermissionState | undefined> {
     if (!("PushManager" in window)) {
       this.alertsService.createAlert({
         type: "Error",
         message: "Push notifications aren't supported in this browser.",
       });
-      return new Promise(() => undefined);
+      return new Promise((resolve) => resolve(undefined));
     }
 
     if (!this.serviceWorkerM.activeServiceWorkerReg) {
       // TODO: Should we alert the user?
-      return new Promise(() => undefined);
+      return new Promise((resolve) => resolve(undefined));
     }
 
     return this.serviceWorkerM.activeServiceWorkerReg.pushManager.permissionState({
@@ -148,9 +148,9 @@ export class NotificationService {
   }
 
   /**
-   *
-   * @param pushEanbled
-   * @returns
+   * Checks the current push permission state.
+   * @param pushEanbled - whether the user has push notifications enabled.
+   * @returns a promise that resolves to the permission state.
    */
   checkInitialPermissionState(pushEanbled: boolean): Promise<PermissionState | undefined> {
     // If the user hasn't enabled push notifications, none
@@ -203,13 +203,10 @@ export class NotificationService {
       });
   }
 
-  /*
-  Function Name: subscribeToStream()
-  Function Description: Subscribes the user to push notifications.
-  Parameters: None.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
+  /**
+   * Subscribes the user to push notifications.
+   * @returns a promise that resolves to undefined.
+   */
   subscribeToStream() {
     return this.requestSubscription()
       .then((subscription) => {
@@ -240,7 +237,6 @@ export class NotificationService {
       this.resubscribeCalls = 0;
     }
 
-    //
     if (event.data.action == "resubscribe" && this.resubscribeCalls < 2) {
       this.resubscribeCalls++;
 

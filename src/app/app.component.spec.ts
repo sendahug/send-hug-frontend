@@ -429,7 +429,7 @@ describe("AppComponent", () => {
 
     // wrap tests in a promise to make sure they run fully and by the order
     // step 1: regular size
-    new Promise(() => {
+    new Promise((resolve) => {
       // change the font size to the smallest
       fontPanelButtons[0]!.click();
       fixture.detectChanges();
@@ -438,6 +438,7 @@ describe("AppComponent", () => {
       expect(document.getElementsByTagName("html")[0]!.style.fontSize).toBe("75%");
       expect(menuSpy).toHaveBeenCalled();
       expect(menuSpy).toHaveBeenCalledTimes(1);
+      resolve(undefined);
       // step 3: smaller size
     })
       .then(() => {
@@ -482,8 +483,8 @@ describe("AppComponent", () => {
         expect(document.getElementsByTagName("html")[0]!.style.fontSize).toBe("200%");
         expect(menuSpy).toHaveBeenCalled();
         expect(menuSpy).toHaveBeenCalledTimes(5);
+        done();
       });
-    done();
   });
 
   // check the menu is shown if the screen is wide enough

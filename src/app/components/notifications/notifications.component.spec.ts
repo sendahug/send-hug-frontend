@@ -195,6 +195,7 @@ describe("Notifications Tab", () => {
   });
 
   // check tab and tab+shift let the user navigate
+  // TODO: Figure out why this test isn't working
   it("should navigate using tab and shift+tab", (done: DoneFn) => {
     const fixture = TestBed.createComponent(NotificationsTab);
     const notificationsTab = fixture.componentInstance;

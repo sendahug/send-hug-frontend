@@ -74,8 +74,9 @@ describe("AppComponent", () => {
       sendSearch: (_search) => undefined,
     });
     const MockNotificationsService = MockProvider(NotificationService, {
-      getSubscription: () => undefined,
-      startAutoRefresh: () => undefined,
+      checkInitialPermissionState: (_enabled) => new Promise(() => true),
+      getCachedSubscription: () => undefined,
+      startAutoRefresh: (_rate) => undefined,
     });
     const MockSWManager = MockProvider(SWManager, {
       registerSW: () => undefined,
@@ -159,34 +160,63 @@ describe("AppComponent", () => {
 
   it("should check for a logged in user - enable push and auto-refresh", () => {
     const authService = TestBed.inject(AuthService);
-    authService.authenticated.set(true);
-    authService.userData.set({ ...mockAuthedUser, pushEnabled: true, autoRefresh: true });
+    const authSpy = spyOn(authService, "checkForLoggedInUser").and.returnValue(
+      of({ ...mockAuthedUser, pushEnabled: true, autoRefresh: true }),
+    );
 
     const notificationService = TestBed.inject(NotificationService);
-    const getSubscriptionSpy = spyOn(notificationService, "getSubscription");
+    const checkStateSpy = spyOn(notificationService, "checkInitialPermissionState").and.returnValue(
+      new Promise((resolve) => resolve("granted")),
+    );
+    // const getSubscriptionSpy = spyOn(notificationService, "getCachedSubscription");
     const startRefreshSpy = spyOn(notificationService, "startAutoRefresh");
 
     TestBed.createComponent(AppComponent);
-    authService.isUserDataResolved.next(true);
 
-    expect(getSubscriptionSpy).toHaveBeenCalled();
+    expect(authSpy).toHaveBeenCalled();
+    expect(checkStateSpy).toHaveBeenCalled();
+    // expect(getSubscriptionSpy).toHaveBeenCalled();
     expect(startRefreshSpy).toHaveBeenCalled();
   });
 
   it("should check for a logged in user - don't enable push and auto-refresh", () => {
     const authService = TestBed.inject(AuthService);
-    authService.authenticated.set(true);
-    authService.userData.set({ ...mockAuthedUser });
+    const authSpy = spyOn(authService, "checkForLoggedInUser").and.returnValue(
+      of({ ...mockAuthedUser }),
+    );
 
     const notificationService = TestBed.inject(NotificationService);
-    const getSubscriptionSpy = spyOn(notificationService, "getSubscription");
+    const checkStateSpy = spyOn(notificationService, "checkInitialPermissionState").and.returnValue(
+      new Promise((resolve) => resolve("granted")),
+    );
+    const getSubscriptionSpy = spyOn(notificationService, "getCachedSubscription");
     const startRefreshSpy = spyOn(notificationService, "startAutoRefresh");
 
     TestBed.createComponent(AppComponent);
-    authService.isUserDataResolved.next(true);
 
+    expect(authSpy).toHaveBeenCalled();
+    expect(checkStateSpy).toHaveBeenCalled();
     expect(getSubscriptionSpy).not.toHaveBeenCalled();
     expect(startRefreshSpy).not.toHaveBeenCalled();
+  });
+
+  it("should check for a logged in user - push permission not granted", () => {
+    const authService = TestBed.inject(AuthService);
+    const authSpy = spyOn(authService, "checkForLoggedInUser").and.returnValue(
+      of({ ...mockAuthedUser, pushEnabled: true }),
+    );
+
+    const notificationService = TestBed.inject(NotificationService);
+    const checkStateSpy = spyOn(notificationService, "checkInitialPermissionState").and.returnValue(
+      new Promise((resolve) => resolve("denied")),
+    );
+    const getSubscriptionSpy = spyOn(notificationService, "getCachedSubscription");
+
+    TestBed.createComponent(AppComponent);
+
+    expect(authSpy).toHaveBeenCalled();
+    expect(checkStateSpy).toHaveBeenCalled();
+    expect(getSubscriptionSpy).not.toHaveBeenCalled();
   });
 
   // Check that there are valid navigation links

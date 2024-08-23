@@ -108,6 +108,33 @@ describe("AuthService", () => {
     expect(authService).toBeTruthy();
   });
 
+  it("should return the user's settings and show the right button names", () => {
+    authService.userData.set({ ...mockAuthedUser });
+
+    expect(authService.pushEnabled()).toBe(mockAuthedUser.pushEnabled);
+    expect(authService.toggleBtn()).toBe("Enable");
+    expect(authService.autoRefresh()).toBe(mockAuthedUser.autoRefresh);
+    expect(authService.refreshBtn()).toBe("Enable");
+    expect(authService.refreshRate()).toBe(mockAuthedUser.refreshRate);
+  });
+
+  it("should return the default settings and show the right button names if the user isn't logged in", () => {
+    authService.userData.set(undefined);
+
+    expect(authService.pushEnabled()).toBe(false);
+    expect(authService.toggleBtn()).toBe("Enable");
+    expect(authService.autoRefresh()).toBe(false);
+    expect(authService.refreshBtn()).toBe("Enable");
+    expect(authService.refreshRate()).toBe(20);
+  });
+
+  it("should set the button names based on the settings", () => {
+    authService.userData.set({ ...mockAuthedUser, pushEnabled: true, autoRefresh: true });
+
+    expect(authService.toggleBtn()).toBe("Disable");
+    expect(authService.refreshBtn()).toBe("Disable");
+  });
+
   it("getUserToken() - returns an empty observable if there's no logged in user", (done: DoneFn) => {
     const currentUserSpy = spyOn(authService, "getCurrentFirebaseUser").and.returnValue(null);
     const idTokenSpy = spyOn(authService, "getIdTokenForCurrentUser");
@@ -238,6 +265,50 @@ describe("AuthService", () => {
         expect(getTokenSpy).toHaveBeenCalled();
         expect(authService.isUserDataResolved.value).toBeFalse();
         expect(err.message).toBe("User doesn't exist yet");
+        done();
+      },
+    });
+
+    // flush mock response
+    const req = httpController.expectOne(`${authService.serverUrl}/users/all/fb`);
+    expect(req.request.method).toEqual("GET");
+    req.flush(mockError, mockResponse);
+  });
+
+  // Check the service triggers user creating if the user doesn't exist
+  it("fetchUser() - handles an error", (done: DoneFn) => {
+    // mock response
+    const mockError = {
+      message: {
+        description: "ERROR",
+        statusCode: 404,
+      },
+    };
+    const mockResponse: HttpErrorResponse = {
+      message: "error",
+      error: mockError,
+      headers: new HttpHeaders(),
+      ok: false,
+      status: 404,
+      statusText: "",
+      url: "",
+      type: HttpEventType.Response,
+      name: "HttpErrorResponse",
+    };
+    spyOn(authService, "getUserToken").and.returnValue(
+      of({
+        ...mockFirebaseUser,
+        jwt: "token",
+      }),
+    );
+    const isResolvedSpy = spyOn(authService.isUserDataResolved, "next").and.callThrough();
+
+    authService.fetchUser().subscribe({
+      error: (err) => {
+        expect(isResolvedSpy).toHaveBeenCalled();
+        expect(createErrorAlertSpy).toHaveBeenCalled();
+        expect(authService.isUserDataResolved.value).toBeTrue();
+        expect(err.status).toBe(404);
         done();
       },
     });
@@ -381,6 +452,55 @@ describe("AuthService", () => {
     expect(req.request.body["firebaseId"]).toEqual("fb");
     expect(req.request.body["displayName"]).toContain("user");
     req.flush(mockResponse);
+  });
+
+  it("createUser() - handles an error", (done: DoneFn) => {
+    // mock response
+    const mockError = {
+      message: {
+        description: "User not found",
+        statusCode: 404,
+      },
+    };
+    const mockResponse: HttpErrorResponse = {
+      message: "error",
+      error: mockError,
+      headers: new HttpHeaders(),
+      ok: false,
+      status: 404,
+      statusText: "",
+      url: "",
+      type: HttpEventType.Response,
+      name: "HttpErrorResponse",
+    };
+    spyOn(authService, "getUserToken").and.returnValue(
+      of({
+        ...mockFirebaseUser,
+        jwt: "token",
+      }),
+    );
+    const isResolvedSpy = spyOn(authService.isUserDataResolved, "next").and.callThrough();
+    spyOn(authService, "setCurrentUser");
+
+    // check the user is logged out at first
+    expect(authService.userData()).toBeUndefined();
+    expect(authService.authenticated()).toBeFalse();
+
+    authService.createUser(null).subscribe({
+      error: (error: HttpErrorResponse) => {
+        expect(isResolvedSpy).toHaveBeenCalledWith(true);
+        expect(createErrorAlertSpy).toHaveBeenCalled();
+        expect(error.status).toEqual(mockResponse.status);
+        done();
+      },
+    });
+
+    // flush mock response
+    const req = httpController.expectOne(`${authService.serverUrl}/users`);
+    expect(req.request.method).toEqual("POST");
+    expect(req.request.body["firebaseId"]).toEqual("fb");
+    expect(req.request.body["displayName"]).toContain("user");
+    req.flush(mockError, mockResponse);
   });
 
   it("setCurrentUser() - sets the user's data locally", () => {

@@ -39,29 +39,34 @@ import {
   platformBrowserDynamicTesting,
 } from "@angular/platform-browser-dynamic/testing";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
-import { provideZoneChangeDetection, signal } from "@angular/core";
+import { computed, provideZoneChangeDetection, signal } from "@angular/core";
 import { MockProvider } from "ng-mocks";
-import { BehaviorSubject } from "rxjs";
+import { BehaviorSubject, Subscription } from "rxjs";
 
 import { NotificationsTab } from "./notifications.component";
 import { NotificationService } from "@app/services/notifications.service";
-import { AuthService } from "@app/services/auth.service";
+import { AuthService, ToggleButtonOption } from "@app/services/auth.service";
 import { mockAuthedUser } from "@tests/mockData";
 import { AppAlert } from "@app/components/appAlert/appAlert.component";
 
-describe("Notifications", () => {
+describe("Notifications Tab", () => {
   // Before each test, configure testing environment
   beforeEach(() => {
+    const mockSubscription = new Subscription();
+    mockSubscription.unsubscribe();
+
     const MockAuthService = MockProvider(AuthService, {
       authenticated: signal(true),
       userData: signal({ ...mockAuthedUser }),
       isUserDataResolved: new BehaviorSubject(true),
+      pushEnabled: computed(() => false),
+      autoRefresh: computed(() => false),
+      toggleBtn: computed(() => "Enable" as ToggleButtonOption),
+      refreshBtn: computed(() => "Enable" as ToggleButtonOption),
+      updateUserData: (_user) => mockSubscription,
     });
     const MockNotificationService = MockProvider(NotificationService, {
-      toggleBtn: "Enable",
       notifications: [],
-      pushStatus: false,
-      refreshStatus: false,
     });
 
     TestBed.resetTestEnvironment();
@@ -111,35 +116,34 @@ describe("Notifications", () => {
     const notificationsTab = fixture.componentInstance;
     const notifTabDOM = fixture.nativeElement;
     const toggleSpy = spyOn(notificationsTab, "togglePushNotifications").and.callThrough();
-    const notificationsService = notificationsTab.notificationService;
-    const settingsSpy = spyOn(notificationsService, "updateUserSettings");
+    const notificationsService = notificationsTab["notificationService"];
+    const settingsSpy = spyOn(notificationsTab["authService"], "updateUserData");
     const subscribeSpy = spyOn(notificationsService, "subscribeToStream");
     const unsubscribeSpy = spyOn(notificationsService, "unsubscribeFromStream");
-
     fixture.detectChanges();
 
     // before the click
-    expect(notificationsTab.notificationService.pushStatus).toBeFalse();
+    expect(notificationsTab["authService"].pushEnabled()).toBeFalse();
 
     // simulate click
-    notifTabDOM.querySelector("#nButtons").children.item(0).click();
+    notifTabDOM.querySelectorAll(".NotificationButton")[0].click();
     fixture.detectChanges();
 
     // after the first click, check 'subscribe' was called
     expect(toggleSpy).toHaveBeenCalled();
-    expect(notificationsTab.notificationService.pushStatus).toBeTrue();
-    expect(settingsSpy).toHaveBeenCalled();
+    expect(settingsSpy).toHaveBeenCalledWith({ pushEnabled: true });
     expect(subscribeSpy).toHaveBeenCalled();
     expect(unsubscribeSpy).not.toHaveBeenCalled();
 
     // simulate another click
+    spyOn(notificationsTab["authService"], "pushEnabled").and.returnValue(true);
     notifTabDOM.querySelectorAll(".NotificationButton")[0].click();
     fixture.detectChanges();
 
     // after the second click, chcek 'unsubscribe' was called
     expect(toggleSpy.calls.count()).toBe(2);
-    expect(notificationsTab.notificationService.pushStatus).toBeFalse();
     expect(settingsSpy.calls.count()).toBe(2);
+    expect(settingsSpy).toHaveBeenCalledWith({ pushEnabled: false });
     expect(subscribeSpy.calls.count()).toBe(1);
     expect(unsubscribeSpy).toHaveBeenCalled();
     expect(unsubscribeSpy.calls.count()).toBe(1);
@@ -150,7 +154,7 @@ describe("Notifications", () => {
   it("has a button that toggles auto-refresh", (done: DoneFn) => {
     // set up spies
     const notificationsService = TestBed.inject(NotificationService);
-    const settingsSpy = spyOn(notificationsService, "updateUserSettings");
+    const settingsSpy = spyOn(TestBed.inject(AuthService), "updateUserData");
     const startRefreshSpy = spyOn(notificationsService, "startAutoRefresh");
     const stopRefreshSpy = spyOn(notificationsService, "stopAutoRefresh");
 
@@ -162,7 +166,7 @@ describe("Notifications", () => {
     fixture.detectChanges();
 
     // before the click
-    expect(notificationsTab.notificationService.refreshStatus).toBeFalse();
+    expect(notificationsTab["authService"].autoRefresh()).toBeFalse();
 
     // simulate click
     notifTabDOM.querySelectorAll(".NotificationButton")[1].click();
@@ -170,20 +174,19 @@ describe("Notifications", () => {
 
     // after the first click, check 'subscribe' was called
     expect(toggleSpy).toHaveBeenCalled();
-    expect(notificationsTab.notificationService.refreshStatus).toBeTrue();
-    expect(notificationsTab.notificationService.refreshRateSecs).toBe(20);
     expect(settingsSpy).toHaveBeenCalled();
+    expect(settingsSpy).toHaveBeenCalledWith({ refreshRate: 20, autoRefresh: true });
     expect(startRefreshSpy).toHaveBeenCalled();
     expect(stopRefreshSpy).not.toHaveBeenCalled();
 
     // simulate another click
+    spyOn(notificationsTab["authService"], "autoRefresh").and.returnValue(true);
     notifTabDOM.querySelectorAll(".NotificationButton")[1].click();
     fixture.detectChanges();
 
     // after the second click, chcek 'unsubscribe' was called
     expect(toggleSpy.calls.count()).toBe(2);
-    expect(notificationsTab.notificationService.refreshStatus).toBeFalse();
-    expect(notificationsTab.notificationService.refreshRateSecs).toBe(0);
+    expect(settingsSpy).toHaveBeenCalledWith({ autoRefresh: false });
     expect(settingsSpy.calls.count()).toBe(2);
     expect(startRefreshSpy.calls.count()).toBe(1);
     expect(stopRefreshSpy).toHaveBeenCalled();
@@ -289,78 +292,64 @@ describe("Notifications", () => {
 
     // spies
     const spies = [
-      spyOn(notifTabDOM.querySelector("#exitButton"), "focus"),
-      spyOn(notifTabDOM.querySelectorAll(".NotificationButton")[0], "focus"),
-      spyOn(notifTabDOM.querySelectorAll(".NotificationButton")[1], "focus"),
+      spyOn(notifTabDOM.querySelector("#exitButton"), "focus").and.callThrough(),
+      spyOn(notifTabDOM.querySelectorAll(".NotificationButton")[0], "focus").and.callThrough(),
+      spyOn(notifTabDOM.querySelectorAll(".NotificationButton")[1], "focus").and.callThrough(),
     ];
     spies.forEach((spy) => {
       spy.calls.reset();
     });
 
-    // run the tests, with each stage wrapped in a promise to ensure they
-    // happen by the correct order
     // step 1: check the last element is focused
-    new Promise(() => {
-      // focus on the last element
-      notifTabDOM.querySelectorAll(".NotificationButton")[1].focus();
+    // focus on the last element
+    notifTabDOM.querySelectorAll(".NotificationButton")[1].focus();
 
-      // check the last element has focus
-      spies.forEach((spy, index: number) => {
-        if (index == 2) {
-          expect(spy).toHaveBeenCalled();
-        } else {
-          expect(spy).not.toHaveBeenCalled();
-        }
-      });
-      // step 2: check what happens when clicking tab
-    })
-      .then(() => {
-        // trigger tab event
-        document.getElementById("modalBox")!.dispatchEvent(
-          new KeyboardEvent("keydown", {
-            key: "tab",
-            shiftKey: false,
-          }),
-        );
-        fixture.detectChanges();
+    // check the last element has focus
+    spies.forEach((spy, index: number) => {
+      if (index == 2) {
+        expect(spy).toHaveBeenCalled();
+      } else {
+        expect(spy).not.toHaveBeenCalled();
+      }
+    });
 
-        // check the focus shifted to the first element
-        expect(focusBindedSpy).toHaveBeenCalled();
-        spies.forEach((spy, index: number) => {
-          if (index != 1) {
-            expect(spy).toHaveBeenCalled();
-            expect(spy).toHaveBeenCalledTimes(1);
-          } else {
-            expect(spy).not.toHaveBeenCalled();
-          }
-        });
-        // check what happens when clicking shift + tab
-      })
-      .then(() => {
-        // trigger shift + tab event
-        document.getElementById("modalBox")!.dispatchEvent(
-          new KeyboardEvent("keydown", {
-            key: "tab",
-            shiftKey: true,
-          }),
-        );
-        fixture.detectChanges();
+    // step 2: check what happens when clicking tab
+    // trigger tab event
+    document.getElementById("modalBox")!.dispatchEvent(
+      new KeyboardEvent("keydown", {
+        key: "tab",
+        shiftKey: false,
+      }),
+    );
+    fixture.detectChanges();
 
-        // check the focus shifted to the last element
-        expect(focusBindedSpy).toHaveBeenCalled();
-        expect(focusBindedSpy).toHaveBeenCalledTimes(2);
-        spies.forEach((spy, index: number) => {
-          if (index == 2) {
-            expect(spy).toHaveBeenCalled();
-            expect(spy).toHaveBeenCalledTimes(2);
-          } else if (index == 0) {
-            expect(spy).toHaveBeenCalled();
-            expect(spy).toHaveBeenCalledTimes(1);
-          } else {
-            expect(spy).not.toHaveBeenCalled();
-          }
-        });
-      });
+    // check the focus shifted to the first element
+    expect(focusBindedSpy).toHaveBeenCalled();
+    spies.forEach((spy, index: number) => {
+      if (index != 1) {
+        expect(spy).toHaveBeenCalled();
+        expect(spy).toHaveBeenCalledTimes(1);
+      } else {
+        expect(spy).not.toHaveBeenCalled();
+      }
+    });
+
+    // check what happens when clicking shift + tab
+    // trigger shift + tab event
+    document.getElementById("modalBox")!.dispatchEvent(
+      new KeyboardEvent("keydown", {
+        key: "tab",
+        shiftKey: true,
+      }),
+    );
+    fixture.detectChanges();
+
+    // check the focus shifted to the last element
+    expect(focusBindedSpy).toHaveBeenCalled();
+    expect(focusBindedSpy).toHaveBeenCalledTimes(2);
+    expect(spies[0]).toHaveBeenCalledTimes(1);
+    expect(spies[1]).not.toHaveBeenCalled();
+    expect(spies[2]).toHaveBeenCalledTimes(2);
     done();
   });
 

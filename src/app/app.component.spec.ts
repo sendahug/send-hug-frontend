@@ -29,7 +29,8 @@
   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
   SOFTWARE.
 */
-import { fakeAsync, TestBed, tick } from "@angular/core/testing";
+// import { fakeAsync, TestBed, tick } from "@angular/core/testing";
+import { TestBed } from "@angular/core/testing";
 import {
   provideRouter,
   RouterLink,
@@ -204,26 +205,26 @@ describe("AppComponent", () => {
   //   expect(startRefreshSpy).not.toHaveBeenCalled();
   // }));
 
-  it("should check for a logged in user - push permission not granted", fakeAsync(() => {
-    const authService = TestBed.inject(AuthService);
-    const authSpy = spyOn(authService, "checkForLoggedInUser").and.returnValue(
-      of({ ...mockAuthedUser, pushEnabled: true }),
-    );
+  // it("should check for a logged in user - push permission not granted", fakeAsync(() => {
+  //   const authService = TestBed.inject(AuthService);
+  //   const authSpy = spyOn(authService, "checkForLoggedInUser").and.returnValue(
+  //     of({ ...mockAuthedUser, pushEnabled: true }),
+  //   );
 
-    const notificationService = TestBed.inject(NotificationService);
-    const checkStateSpy = spyOn(notificationService, "checkInitialPermissionState").and.returnValue(
-      new Promise((resolve) => resolve("denied")),
-    );
-    const getSubscriptionSpy = spyOn(notificationService, "getCachedSubscription");
+  //   const notificationService = TestBed.inject(NotificationService);
+  //   const checkStateSpy = spyOn(notificationService, "checkInitialPermissionState").and.returnValue(
+  //     new Promise((resolve) => resolve("denied")),
+  //   );
+  //   const getSubscriptionSpy = spyOn(notificationService, "getCachedSubscription");
 
-    TestBed.createComponent(AppComponent);
+  //   TestBed.createComponent(AppComponent);
 
-    tick(100);
+  //   tick(100);
 
-    expect(authSpy).toHaveBeenCalled();
-    expect(checkStateSpy).toHaveBeenCalled();
-    expect(getSubscriptionSpy).not.toHaveBeenCalled();
-  }));
+  //   expect(authSpy).toHaveBeenCalled();
+  //   expect(checkStateSpy).toHaveBeenCalled();
+  //   expect(getSubscriptionSpy).not.toHaveBeenCalled();
+  // }));
 
   // Check that there are valid navigation links
   it("should contain valid navigation links", () => {

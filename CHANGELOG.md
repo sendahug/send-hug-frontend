@@ -2,6 +2,22 @@
 
 ## Unreleased
 
+### 2024-08-26
+
+#### Changes
+
+- Subscribing/unsubscribing users to/from auto updates and push notifications is now done after the network request for changing the settings in the backend. Previously, the two processes ran independently, which meant the request to the back-end could fail, but the front-end still acted on the new settings (e.g., subscribed users to push notifications) instead of the ones saved in the back-end. Now, we only subscribe/unsubscribe users once we get a successful response, which ensures a consistent experience across browsers/devices. ([#1787](https://github.com/sendahug/send-hug-frontend/pull/1787))
+
+#### Chores
+
+- Simplified the structure of the NotificationService. This includes:
+- Removed the user-settings-related properties. These were unneeded duplicates of the AuthService properties, and so they were removed.
+- Removed the AuthService dependency from the NotificationService. The NotificationService now handles only the process of auto-refresh and the process of subscribing ot push notifications. This makes it easier to update the user-related logic and the push-related logic.
+- Moved the logic for the initial push permission check into a separate method (instead of running it in the service's constructor).
+- Moved duplicate code for requesting push subscriptions to its own helper method.
+- Added user-settings-related computed properties to the AuthService, as well as computed properties for setting the title of the buttons in the NotificationsTab. ([#1787](https://github.com/sendahug/send-hug-frontend/pull/1787))
+- Simplified the logic for handling logged-in users in the AppComponent. Previously, we waited for user data to be resolved before enabling push notifications and auto refresh (if necessary), and in another part of the code, we waited for the Firebase logged-in-user state to be resolved. Since both checks essentially wait for the same thing, they were unified. ([#1787](https://github.com/sendahug/send-hug-frontend/pull/1787))
+
 ### 2024-08-21
 
 #### Fixes

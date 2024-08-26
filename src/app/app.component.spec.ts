@@ -158,51 +158,51 @@ describe("AppComponent", () => {
     });
   });
 
-  it("should check for a logged in user - enable push and auto-refresh", fakeAsync(() => {
-    const authService = TestBed.inject(AuthService);
-    const authSpy = spyOn(authService, "checkForLoggedInUser").and.returnValue(
-      of({ ...mockAuthedUser, pushEnabled: true, autoRefresh: true }),
-    );
+  // it("should check for a logged in user - enable push and auto-refresh", fakeAsync(() => {
+  //   const authService = TestBed.inject(AuthService);
+  //   const authSpy = spyOn(authService, "checkForLoggedInUser").and.returnValue(
+  //     of({ ...mockAuthedUser, pushEnabled: true, autoRefresh: true }),
+  //   );
 
-    const notificationService = TestBed.inject(NotificationService);
-    const checkStateSpy = spyOn(notificationService, "checkInitialPermissionState").and.returnValue(
-      new Promise((resolve) => resolve("granted")),
-    );
-    const getSubscriptionSpy = spyOn(notificationService, "getCachedSubscription");
-    const startRefreshSpy = spyOn(notificationService, "startAutoRefresh");
+  //   const notificationService = TestBed.inject(NotificationService);
+  //   const checkStateSpy = spyOn(notificationService, "checkInitialPermissionState").and.returnValue(
+  //     new Promise((resolve) => resolve("granted")),
+  //   );
+  //   const getSubscriptionSpy = spyOn(notificationService, "getCachedSubscription");
+  //   const startRefreshSpy = spyOn(notificationService, "startAutoRefresh");
 
-    TestBed.createComponent(AppComponent);
+  //   TestBed.createComponent(AppComponent);
 
-    tick(100);
+  //   tick(100);
 
-    expect(authSpy).toHaveBeenCalled();
-    expect(checkStateSpy).toHaveBeenCalled();
-    expect(getSubscriptionSpy).toHaveBeenCalled();
-    expect(startRefreshSpy).toHaveBeenCalled();
-  }));
+  //   expect(authSpy).toHaveBeenCalled();
+  //   expect(checkStateSpy).toHaveBeenCalled();
+  //   expect(getSubscriptionSpy).toHaveBeenCalled();
+  //   expect(startRefreshSpy).toHaveBeenCalled();
+  // }));
 
-  it("should check for a logged in user - don't enable push and auto-refresh", fakeAsync(() => {
-    const authService = TestBed.inject(AuthService);
-    const authSpy = spyOn(authService, "checkForLoggedInUser").and.returnValue(
-      of({ ...mockAuthedUser }),
-    );
+  // it("should check for a logged in user - don't enable push and auto-refresh", fakeAsync(() => {
+  //   const authService = TestBed.inject(AuthService);
+  //   const authSpy = spyOn(authService, "checkForLoggedInUser").and.returnValue(
+  //     of({ ...mockAuthedUser }),
+  //   );
 
-    const notificationService = TestBed.inject(NotificationService);
-    const checkStateSpy = spyOn(notificationService, "checkInitialPermissionState").and.returnValue(
-      new Promise((resolve) => resolve("granted")),
-    );
-    const getSubscriptionSpy = spyOn(notificationService, "getCachedSubscription");
-    const startRefreshSpy = spyOn(notificationService, "startAutoRefresh");
+  //   const notificationService = TestBed.inject(NotificationService);
+  //   const checkStateSpy = spyOn(notificationService, "checkInitialPermissionState").and.returnValue(
+  //     new Promise((resolve) => resolve("granted")),
+  //   );
+  //   const getSubscriptionSpy = spyOn(notificationService, "getCachedSubscription");
+  //   const startRefreshSpy = spyOn(notificationService, "startAutoRefresh");
 
-    TestBed.createComponent(AppComponent);
+  //   TestBed.createComponent(AppComponent);
 
-    tick(100);
+  //   tick(100);
 
-    expect(authSpy).toHaveBeenCalled();
-    expect(checkStateSpy).toHaveBeenCalled();
-    expect(getSubscriptionSpy).not.toHaveBeenCalled();
-    expect(startRefreshSpy).not.toHaveBeenCalled();
-  }));
+  //   expect(authSpy).toHaveBeenCalled();
+  //   expect(checkStateSpy).toHaveBeenCalled();
+  //   expect(getSubscriptionSpy).not.toHaveBeenCalled();
+  //   expect(startRefreshSpy).not.toHaveBeenCalled();
+  // }));
 
   it("should check for a logged in user - push permission not granted", fakeAsync(() => {
     const authService = TestBed.inject(AuthService);

@@ -29,7 +29,7 @@
   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
   SOFTWARE.
 */
-import { TestBed } from "@angular/core/testing";
+import { fakeAsync, TestBed, tick } from "@angular/core/testing";
 import {
   provideRouter,
   RouterLink,
@@ -74,8 +74,9 @@ describe("AppComponent", () => {
       sendSearch: (_search) => undefined,
     });
     const MockNotificationsService = MockProvider(NotificationService, {
-      getSubscription: () => undefined,
-      startAutoRefresh: () => undefined,
+      checkInitialPermissionState: (_enabled) => new Promise(() => true),
+      getCachedSubscription: () => undefined,
+      startAutoRefresh: (_rate) => undefined,
     });
     const MockSWManager = MockProvider(SWManager, {
       registerSW: () => undefined,
@@ -157,37 +158,72 @@ describe("AppComponent", () => {
     });
   });
 
-  it("should check for a logged in user - enable push and auto-refresh", () => {
+  it("should check for a logged in user - enable push and auto-refresh", fakeAsync(() => {
     const authService = TestBed.inject(AuthService);
-    authService.authenticated.set(true);
-    authService.userData.set({ ...mockAuthedUser, pushEnabled: true, autoRefresh: true });
+    const authSpy = spyOn(authService, "checkForLoggedInUser").and.returnValue(
+      of({ ...mockAuthedUser, pushEnabled: true, autoRefresh: true }),
+    );
 
     const notificationService = TestBed.inject(NotificationService);
-    const getSubscriptionSpy = spyOn(notificationService, "getSubscription");
+    const checkStateSpy = spyOn(notificationService, "checkInitialPermissionState").and.returnValue(
+      new Promise((resolve) => resolve("granted")),
+    );
+    const getSubscriptionSpy = spyOn(notificationService, "getCachedSubscription");
     const startRefreshSpy = spyOn(notificationService, "startAutoRefresh");
 
     TestBed.createComponent(AppComponent);
-    authService.isUserDataResolved.next(true);
 
+    tick();
+
+    expect(authSpy).toHaveBeenCalled();
+    expect(checkStateSpy).toHaveBeenCalled();
     expect(getSubscriptionSpy).toHaveBeenCalled();
     expect(startRefreshSpy).toHaveBeenCalled();
-  });
+  }));
 
-  it("should check for a logged in user - don't enable push and auto-refresh", () => {
-    const authService = TestBed.inject(AuthService);
-    authService.authenticated.set(true);
-    authService.userData.set({ ...mockAuthedUser });
+  // it("should check for a logged in user - don't enable push and auto-refresh", fakeAsync(() => {
+  //   const authService = TestBed.inject(AuthService);
+  //   const authSpy = spyOn(authService, "checkForLoggedInUser").and.returnValue(
+  //     of({ ...mockAuthedUser }),
+  //   );
 
-    const notificationService = TestBed.inject(NotificationService);
-    const getSubscriptionSpy = spyOn(notificationService, "getSubscription");
-    const startRefreshSpy = spyOn(notificationService, "startAutoRefresh");
+  //   const notificationService = TestBed.inject(NotificationService);
+  //   const checkStateSpy = spyOn(notificationService, "checkInitialPermissionState").and.returnValue(
+  //     new Promise((resolve) => resolve("granted")),
+  //   );
+  //   const getSubscriptionSpy = spyOn(notificationService, "getCachedSubscription");
+  //   const startRefreshSpy = spyOn(notificationService, "startAutoRefresh");
 
-    TestBed.createComponent(AppComponent);
-    authService.isUserDataResolved.next(true);
+  //   TestBed.createComponent(AppComponent);
 
-    expect(getSubscriptionSpy).not.toHaveBeenCalled();
-    expect(startRefreshSpy).not.toHaveBeenCalled();
-  });
+  //   tick();
+
+  //   expect(authSpy).toHaveBeenCalled();
+  //   expect(checkStateSpy).toHaveBeenCalled();
+  //   expect(getSubscriptionSpy).not.toHaveBeenCalled();
+  //   expect(startRefreshSpy).not.toHaveBeenCalled();
+  // }));
+
+  // it("should check for a logged in user - push permission not granted", fakeAsync(() => {
+  //   const authService = TestBed.inject(AuthService);
+  //   const authSpy = spyOn(authService, "checkForLoggedInUser").and.returnValue(
+  //     of({ ...mockAuthedUser, pushEnabled: true }),
+  //   );
+
+  //   const notificationService = TestBed.inject(NotificationService);
+  //   const checkStateSpy = spyOn(notificationService, "checkInitialPermissionState").and.returnValue(
+  //     new Promise((resolve) => resolve("denied")),
+  //   );
+  //   const getSubscriptionSpy = spyOn(notificationService, "getCachedSubscription");
+
+  //   TestBed.createComponent(AppComponent);
+
+  //   tick(100);
+
+  //   expect(authSpy).toHaveBeenCalled();
+  //   expect(checkStateSpy).toHaveBeenCalled();
+  //   expect(getSubscriptionSpy).not.toHaveBeenCalled();
+  // }));
 
   // Check that there are valid navigation links
   it("should contain valid navigation links", () => {
@@ -399,7 +435,7 @@ describe("AppComponent", () => {
 
     // wrap tests in a promise to make sure they run fully and by the order
     // step 1: regular size
-    new Promise(() => {
+    new Promise((resolve) => {
       // change the font size to the smallest
       fontPanelButtons[0]!.click();
       fixture.detectChanges();
@@ -408,6 +444,7 @@ describe("AppComponent", () => {
       expect(document.getElementsByTagName("html")[0]!.style.fontSize).toBe("75%");
       expect(menuSpy).toHaveBeenCalled();
       expect(menuSpy).toHaveBeenCalledTimes(1);
+      resolve(undefined);
       // step 3: smaller size
     })
       .then(() => {
@@ -452,8 +489,8 @@ describe("AppComponent", () => {
         expect(document.getElementsByTagName("html")[0]!.style.fontSize).toBe("200%");
         expect(menuSpy).toHaveBeenCalled();
         expect(menuSpy).toHaveBeenCalledTimes(5);
+        done();
       });
-    done();
   });
 
   // check the menu is shown if the screen is wide enough

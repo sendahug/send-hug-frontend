@@ -40,8 +40,8 @@ import {
 } from "@angular/platform-browser-dynamic/testing";
 import { ReactiveFormsModule } from "@angular/forms";
 import { MockComponent, MockProvider } from "ng-mocks";
-import { NO_ERRORS_SCHEMA, signal } from "@angular/core";
-import { BehaviorSubject } from "rxjs";
+import { computed, NO_ERRORS_SCHEMA, signal } from "@angular/core";
+import { BehaviorSubject, Subscription } from "rxjs";
 
 import { SettingsPage } from "./settings.component";
 import { IconEditor } from "@app/components/iconEditor/iconEditor.component";
@@ -58,11 +58,14 @@ describe("SettingsPage", () => {
       authenticated: signal(true),
       userData: signal({ ...mockAuthedUser }),
       isUserDataResolved: new BehaviorSubject(true),
+      pushEnabled: computed(() => false),
+      autoRefresh: computed(() => false),
+      refreshRate: computed(() => 20),
+      updateUserData: (_user) => new Subscription(),
     });
     const MockNotificationsService = MockProvider(NotificationService, {
-      pushStatus: false,
-      refreshStatus: false,
-      refreshRateSecs: 20,
+      subscribeToStream: () => new Promise(() => undefined),
+      unsubscribeFromStream: () => new Promise(() => true),
     });
     const MockIconEditor = MockComponent(IconEditor);
     const MockIcon = MockComponent(UserIcon);
@@ -147,8 +150,6 @@ describe("SettingsPage", () => {
     const authService = TestBed.inject(AuthService);
     authService.isUserDataResolved.next(false);
 
-    const notificationService = TestBed.inject(NotificationService);
-
     // set up the component and its spies
     const fixture = TestBed.createComponent(SettingsPage);
     const settingsPage = fixture.componentInstance;
@@ -157,8 +158,8 @@ describe("SettingsPage", () => {
     expect(settingsPage.editSettingsForm.controls.enableAutoRefresh.value).toBeFalse();
     expect(settingsPage.editSettingsForm.controls.notificationRate.value).toBe(20);
 
-    notificationService.refreshStatus = true;
-    notificationService.refreshRateSecs = 60;
+    spyOn(authService, "autoRefresh").and.returnValue(true);
+    spyOn(authService, "refreshRate").and.returnValue(60);
     authService.isUserDataResolved.next(true);
     fixture.detectChanges();
 
@@ -170,34 +171,42 @@ describe("SettingsPage", () => {
   // Check that the checkbox toggles push notifications
   it("has a checkbox that toggles push notifications", (done: DoneFn) => {
     const notificationsService = TestBed.inject(NotificationService);
-    notificationsService.refreshStatus = false;
+    const authService = TestBed.inject(AuthService);
 
     // set up the component and its spies
     const fixture = TestBed.createComponent(SettingsPage);
     const settingsPage = fixture.componentInstance;
     const settingsDOM = fixture.nativeElement;
     const toggleSpy = spyOn(settingsPage, "updateSettings").and.callThrough();
-    const settingsSpy = spyOn(notificationsService, "updateUserSettings");
-    const subscribeSpy = spyOn(notificationsService, "subscribeToStream");
-    const unsubscribeSpy = spyOn(notificationsService, "unsubscribeFromStream");
+    const mockSubscription = new Subscription();
+    const settingsSpy = spyOn(authService, "updateUserData").and.returnValue(mockSubscription);
+    const subscribeSpy = spyOn(notificationsService, "subscribeToStream").and.callThrough();
+    const unsubscribeSpy = spyOn(notificationsService, "unsubscribeFromStream").and.callThrough();
+    const alertSpy = spyOn(settingsPage["alertsService"], "createSuccessAlert");
 
     fixture.detectChanges();
 
     // before the click
-    expect(settingsPage.notificationService.pushStatus).toBeFalse();
+    expect(settingsPage["authService"].pushEnabled()).toBeFalse();
 
     // simulate click
     settingsDOM.querySelector("#enableNotifications").click();
     settingsDOM.querySelector("#enableNotifications").dispatchEvent(new Event("input"));
     settingsDOM.querySelectorAll(".sendData")[0].click();
+    mockSubscription.unsubscribe();
     fixture.detectChanges();
 
     // after the first click, check 'subscribe' was called
     expect(toggleSpy).toHaveBeenCalled();
-    expect(settingsPage.notificationService.pushStatus).toBeTrue();
     expect(settingsSpy).toHaveBeenCalled();
+    expect(settingsSpy).toHaveBeenCalledWith({
+      pushEnabled: true,
+      autoRefresh: false,
+      refreshRate: 20,
+    });
     expect(subscribeSpy).toHaveBeenCalled();
     expect(unsubscribeSpy).not.toHaveBeenCalled();
+    expect(alertSpy).toHaveBeenCalledWith("Your settings have been updated!");
 
     // simulate another click
     settingsDOM.querySelector("#enableNotifications").click();
@@ -207,11 +216,16 @@ describe("SettingsPage", () => {
 
     // after the second click, chcek 'unsubscribe' was called
     expect(toggleSpy.calls.count()).toBe(2);
-    expect(settingsPage.notificationService.pushStatus).toBeFalse();
+    expect(settingsSpy).toHaveBeenCalledWith({
+      pushEnabled: false,
+      autoRefresh: false,
+      refreshRate: 20,
+    });
     expect(settingsSpy.calls.count()).toBe(2);
     expect(subscribeSpy.calls.count()).toBe(1);
     expect(unsubscribeSpy).toHaveBeenCalled();
     expect(unsubscribeSpy.calls.count()).toBe(1);
+    expect(alertSpy).toHaveBeenCalledTimes(2);
     done();
   });
 
@@ -219,7 +233,6 @@ describe("SettingsPage", () => {
   it("has a checkbox that toggles auto-refresh", (done: DoneFn) => {
     // set up spies
     const notificationsService = TestBed.inject(NotificationService);
-    const settingsSpy = spyOn(notificationsService, "updateUserSettings");
     const startRefreshSpy = spyOn(notificationsService, "startAutoRefresh");
     const stopRefreshSpy = spyOn(notificationsService, "stopAutoRefresh");
 
@@ -228,10 +241,14 @@ describe("SettingsPage", () => {
     const settingsPage = fixture.componentInstance;
     const settingsDOM = fixture.nativeElement;
     const toggleSpy = spyOn(settingsPage, "updateSettings").and.callThrough();
+    const mockSubscription = new Subscription();
+    const settingsSpy = spyOn(settingsPage["authService"], "updateUserData").and.returnValue(
+      mockSubscription,
+    );
     fixture.detectChanges();
 
     // before the click
-    expect(settingsPage.notificationService.refreshStatus).toBeFalse();
+    expect(settingsPage.authService.autoRefresh()).toBeFalse();
 
     // simulate click
     settingsDOM.querySelector("#enableAutoRefresh").click();
@@ -239,13 +256,16 @@ describe("SettingsPage", () => {
     settingsDOM.querySelector("#notificationRate").value = 30;
     settingsDOM.querySelector("#notificationRate").dispatchEvent(new Event("input"));
     settingsDOM.querySelectorAll(".sendData")[0].click();
+    mockSubscription.unsubscribe();
     fixture.detectChanges();
 
     // after the first click, check 'subscribe' was called
     expect(toggleSpy).toHaveBeenCalled();
-    expect(settingsPage.notificationService.refreshStatus).toBeTrue();
-    expect(settingsPage.notificationService.refreshRateSecs).toBe(30);
-    expect(settingsSpy).toHaveBeenCalled();
+    expect(settingsSpy).toHaveBeenCalledWith({
+      autoRefresh: true,
+      refreshRate: 30,
+      pushEnabled: false,
+    });
     expect(startRefreshSpy).toHaveBeenCalled();
     expect(stopRefreshSpy).not.toHaveBeenCalled();
 
@@ -257,9 +277,12 @@ describe("SettingsPage", () => {
 
     // after the second click, chcek 'unsubscribe' was called
     expect(toggleSpy.calls.count()).toBe(2);
-    expect(settingsPage.notificationService.refreshStatus).toBeFalse();
-    expect(settingsPage.notificationService.refreshRateSecs).toBe(30);
     expect(settingsSpy.calls.count()).toBe(2);
+    expect(settingsSpy).toHaveBeenCalledWith({
+      autoRefresh: false,
+      refreshRate: 30,
+      pushEnabled: false,
+    });
     expect(startRefreshSpy.calls.count()).toBe(1);
     expect(stopRefreshSpy).toHaveBeenCalled();
     expect(stopRefreshSpy.calls.count()).toBe(1);
@@ -268,78 +291,67 @@ describe("SettingsPage", () => {
 
   // Check that changing the refresh rate changes the set rate
   it("changes the refresh rate", (done: DoneFn) => {
-    // set up spies
-    const notificationsService = TestBed.inject(NotificationService);
-    const settingsSpy = spyOn(notificationsService, "updateUserSettings");
-
     // set up the component
     const fixture = TestBed.createComponent(SettingsPage);
     const settingsPage = fixture.componentInstance;
     const settingsDOM = fixture.nativeElement;
     const updateSpy = spyOn(settingsPage, "updateSettings").and.callThrough();
-    settingsPage.authService.authenticated.set(true);
+    const settingsSpy = spyOn(settingsPage["authService"], "updateUserData").and.callThrough();
 
     fixture.detectChanges();
 
-    fixture.whenStable().then(() => {
-      // check the original refresh rate
-      expect(settingsPage.notificationService.refreshRateSecs).toBe(20);
-      expect(updateSpy).not.toHaveBeenCalled();
+    // check the original refresh rate
+    expect(settingsPage.authService.refreshRate()).toBe(20);
+    expect(updateSpy).not.toHaveBeenCalled();
 
-      // change the rate
-      settingsDOM.querySelector("#enableAutoRefresh").click();
-      settingsDOM.querySelector("#enableAutoRefresh").dispatchEvent(new Event("input"));
-      settingsDOM.querySelector("#notificationRate").value = 30;
-      settingsDOM.querySelector("#notificationRate").dispatchEvent(new Event("input"));
-      settingsDOM.querySelectorAll(".sendData")[0].click();
-      fixture.detectChanges();
+    // change the rate
+    settingsDOM.querySelector("#notificationRate").value = 30;
+    settingsDOM.querySelector("#notificationRate").dispatchEvent(new Event("input"));
+    settingsDOM.querySelectorAll(".sendData")[0].click();
+    fixture.detectChanges();
 
-      // check the rate changed
-      expect(settingsPage.notificationService.refreshRateSecs).toBe(30);
-      expect(updateSpy).toHaveBeenCalled();
-      expect(settingsSpy).toHaveBeenCalled();
+    // check the rate changed
+    expect(updateSpy).toHaveBeenCalled();
+    expect(settingsSpy).toHaveBeenCalled();
+    expect(settingsSpy).toHaveBeenCalledWith({
+      autoRefresh: false,
+      pushEnabled: false,
+      refreshRate: 30,
     });
     done();
   });
 
   it("shows an error if there's no rate", (done: DoneFn) => {
-    // set up spies
-    const notificationsService = TestBed.inject(NotificationService);
-    const settingsSpy = spyOn(notificationsService, "updateUserSettings");
-
     // set up the component
     const fixture = TestBed.createComponent(SettingsPage);
     const settingsPage = fixture.componentInstance;
     const settingsDOM = fixture.nativeElement;
     const alertsSpy = spyOn(TestBed.inject(AlertsService), "createAlert");
-    settingsPage.authService.authenticated.set(true);
+    const settingsSpy = spyOn(settingsPage["authService"], "updateUserData").and.callThrough();
 
     fixture.detectChanges();
 
-    fixture.whenStable().then(() => {
-      // check the original refresh rate
-      expect(settingsPage.notificationService.refreshRateSecs).toBe(20);
+    // check the original refresh rate
+    expect(settingsPage.authService.refreshRate()).toBe(20);
 
-      // change the rate
-      settingsDOM.querySelector("#enableAutoRefresh").click();
-      settingsDOM.querySelector("#enableAutoRefresh").dispatchEvent(new Event("input"));
-      settingsDOM.querySelector("#notificationRate").value = 0;
-      settingsDOM.querySelector("#notificationRate").dispatchEvent(new Event("input"));
-      settingsDOM.querySelectorAll(".sendData")[0].click();
-      fixture.detectChanges();
+    // change the rate
+    settingsDOM.querySelector("#enableAutoRefresh").click();
+    settingsDOM.querySelector("#enableAutoRefresh").dispatchEvent(new Event("input"));
+    settingsDOM.querySelector("#notificationRate").value = 0;
+    settingsDOM.querySelector("#notificationRate").dispatchEvent(new Event("input"));
+    settingsDOM.querySelectorAll(".sendData")[0].click();
+    fixture.detectChanges();
 
-      // check the rate changed
-      expect(settingsPage.notificationService.refreshRateSecs).not.toBe(0);
-      expect(settingsSpy).not.toHaveBeenCalled();
-      expect(alertsSpy).toHaveBeenCalledWith({
-        type: "Error",
-        message: "Refresh rate cannot be empty or zero. Please fill the field and try again.",
-      });
-      expect(document.getElementById("notificationRate")!.className).toContain("ng-invalid");
-      expect(document.getElementById("notificationRate")!.getAttribute("aria-invalid")).toEqual(
-        "true",
-      );
+    // check the rate changed
+    expect(settingsSpy).not.toHaveBeenCalled();
+    expect(alertsSpy).toHaveBeenCalledWith({
+      type: "Error",
+      message: "Refresh rate cannot be empty or zero. Please fill the field and try again.",
     });
+    expect(document.getElementById("notificationRate")!.className).toContain("ng-invalid");
+    expect(document.getElementById("notificationRate")!.getAttribute("aria-invalid")).toEqual(
+      "true",
+    );
     done();
   });
 });

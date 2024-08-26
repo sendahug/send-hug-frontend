@@ -102,24 +102,24 @@ export class AppComponent implements OnInit, AfterViewInit {
     protected notificationService: NotificationService,
     private fb: FormBuilder,
   ) {
-    // if the user is logged in, and their data is fetched, start auto-refresh
-    this.authService.isUserDataResolved.subscribe((value) => {
-      if (value) {
-        // if push notifications are enabled, get subscription and auto-refresh data from localStorage
-        if (this.authService.userData()!.pushEnabled) {
-          this.notificationService.getSubscription();
-        }
-
-        // if auto-refresh is enabled, start auto-refresh
-        if (this.authService.userData()!.autoRefresh) {
-          this.notificationService.startAutoRefresh();
-        }
-      }
-    });
-
     // Update the user state based on the logged in firebase user
     // (if there is one)
     this.authService.checkForLoggedInUser().subscribe({
+      next: (user) => {
+        if (!user) return;
+
+        // if push notifications are enabled, check the permission
+        // state and get the cached subscription from localStorage
+        this.notificationService
+          .checkInitialPermissionState(user.pushEnabled)
+          .then((permission) => {
+            if (permission == "granted" && user.pushEnabled) {
+              this.notificationService.getCachedSubscription();
+            }
+          });
+        // if auto-refresh is enabled, start auto-refresh
+        if (user.autoRefresh) this.notificationService.startAutoRefresh(user.refreshRate);
+      },
       error: (err: Error) => {
         if (err.message == "User doesn't exist yet") {
           this.alertsService.createAlert(

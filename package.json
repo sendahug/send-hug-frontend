@@ -66,7 +66,7 @@
     "jasmine-core": "^5.2.0",
     "less": "^4.2.0",
     "magic-string": "^0.30.11",
-    "ng-mocks": "^14.13.0",
+    "ng-mocks": "^14.13.1",
     "prettier": "^3.3.3",
     "rollup-plugin-tsconfig-paths": "^1.5.2",
     "size-limit": "^11.1.4",

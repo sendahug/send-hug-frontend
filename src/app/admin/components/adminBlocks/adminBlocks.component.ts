@@ -136,7 +136,8 @@ export class AdminBlocks {
 
     // if there's a user ID and it's valid, proceed
     this.adminService
-      .blockUser(Number(userId), this.blockForm.controls.blockLength.value || "oneDay")
+      // it's not actually possible to submit the form without a value there
+      .blockUser(Number(userId), this.blockForm.controls.blockLength.value!)
       .subscribe((response) => {
         const blockedUser = this.blockedUsers.find((user) => user.id == response.updated.id);
 

@@ -11,7 +11,7 @@
 
 Version 1 (currently in development).
 
-Originallyl built using the [gulp-site-template](https://github.com/shirblc/gulp-site-template) repo. Rebuilt with Vite (mostly) using the [vite-angular template](https://github.com/shirblc/vite-angular).
+Originally built using the [gulp-site-template](https://github.com/shirblc/gulp-site-template) repo. Rebuilt with Vite (mostly) using the [vite-angular template](https://github.com/shirblc/vite-angular).
 
 For full project information, check the [`main README file`](https://github.com/sendahug/sendahug/blob/master/README.md).
 

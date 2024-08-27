@@ -51,7 +51,6 @@ import { MockProvider } from "ng-mocks";
 import { NewItem } from "./newItem.component";
 import { AuthService } from "@app/services/auth.service";
 import { mockAuthedUser } from "@tests/mockData";
-import { routes } from "@app/app.routes";
 import { ItemsService } from "@app/services/items.service";
 import { ApiClientService } from "@app/services/apiClient.service";
 
@@ -74,7 +73,35 @@ describe("NewItem", () => {
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
         provideZoneChangeDetection({ eventCoalescing: true }),
-        provideRouter(routes, withComponentInputBinding()),
+        provideRouter(
+          [
+            {
+              path: "new",
+              children: [
+                {
+                  path: "Post",
+                  pathMatch: "prefix",
+                  component: NewItem,
+                  data: { name: "New post" },
+                },
+                {
+                  path: "Message",
+                  pathMatch: "prefix",
+                  component: NewItem,
+                  data: { name: "New message" },
+                },
+              ],
+              data: {
+                name: "New Item",
+                mapRoutes: [
+                  { path: "Post", name: "New post" },
+                  { path: "Message", name: "New message" },
+                ],
+              },
+            },
+          ],
+          withComponentInputBinding(),
+        ),
         MockAuthService,
         MockItemsService,
         MockAPIClient,

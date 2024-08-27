@@ -180,6 +180,43 @@ describe("DisplayNameEditForm", () => {
     });
   });
 
+  it("should raise an error if trying to update another user's name without a report", () => {
+    const validationService = TestBed.inject(ValidationService);
+    const validateSpy = spyOn(validationService, "validateItemAgainst").and.returnValue(
+      (_control) => null,
+    );
+
+    const fixture = TestBed.createComponent(DisplayNameEditForm);
+    const popUp = fixture.componentInstance;
+    const popUpDOM = fixture.nativeElement;
+    popUp.editedItem = {
+      id: 2,
+      displayName: "name",
+    };
+    popUp.reportData = undefined;
+    const newName = "new name";
+    fixture.detectChanges();
+
+    const updateSpy = spyOn(popUp["adminService"], "editUser");
+    const emitSpy = spyOn(popUp.editMode, "emit");
+    const updatedDetailsSpy = spyOn(popUp.updatedDetails, "emit");
+    const alertsSpy = spyOn(popUp["alertService"], "createAlert");
+
+    popUpDOM.querySelector("#displayName").value = newName;
+    popUpDOM.querySelector("#displayName").dispatchEvent(new Event("input"));
+    popUp.updateDisplayName(new Event(""), true);
+    fixture.detectChanges();
+
+    expect(validateSpy).toHaveBeenCalledWith("displayName");
+    expect(updateSpy).not.toHaveBeenCalled();
+    expect(emitSpy).not.toHaveBeenCalled();
+    expect(updatedDetailsSpy).not.toHaveBeenCalled();
+    expect(alertsSpy).toHaveBeenCalledWith({
+      type: "Error",
+      message: "Editing someone else's username can only be done via the admin page.",
+    });
+  });
+
   it("should make the request to adminService to change the name - don't close report", () => {
     const validationService = TestBed.inject(ValidationService);
     const validateSpy = spyOn(validationService, "validateItemAgainst").and.returnValue(

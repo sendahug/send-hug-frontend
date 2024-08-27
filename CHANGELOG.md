@@ -2,6 +2,48 @@
 
 ## Unreleased
 
+### 2024-08-26
+
+#### Changes
+
+- Subscribing/unsubscribing users to/from auto updates and push notifications is now done after the network request for changing the settings in the backend. Previously, the two processes ran independently, which meant the request to the back-end could fail, but the front-end still acted on the new settings (e.g., subscribed users to push notifications) instead of the ones saved in the back-end. Now, we only subscribe/unsubscribe users once we get a successful response, which ensures a consistent experience across browsers/devices. ([#1787](https://github.com/sendahug/send-hug-frontend/pull/1787))
+
+#### Chores
+
+- Simplified the structure of the NotificationService. This includes:
+- Removed the user-settings-related properties. These were unneeded duplicates of the AuthService properties, and so they were removed.
+- Removed the AuthService dependency from the NotificationService. The NotificationService now handles only the process of auto-refresh and the process of subscribing ot push notifications. This makes it easier to update the user-related logic and the push-related logic.
+- Moved the logic for the initial push permission check into a separate method (instead of running it in the service's constructor).
+- Moved duplicate code for requesting push subscriptions to its own helper method.
+- Added user-settings-related computed properties to the AuthService, as well as computed properties for setting the title of the buttons in the NotificationsTab. ([#1787](https://github.com/sendahug/send-hug-frontend/pull/1787))
+- Simplified the logic for handling logged-in users in the AppComponent. Previously, we waited for user data to be resolved before enabling push notifications and auto refresh (if necessary), and in another part of the code, we waited for the Firebase logged-in-user state to be resolved. Since both checks essentially wait for the same thing, they were unified. ([#1787](https://github.com/sendahug/send-hug-frontend/pull/1787))
+
+### 2024-08-21
+
+#### Fixes
+
+- Fixed a bug where the button for dismissing user reports (in AdminReports) didn't correctly handle user reports. This happened due to a missing parameter, which caused the app to attempt to close a post report instead of a user report. The parameter was added to ensure the correct type of report is used. ([#1777](https://github.com/sendahug/send-hug-frontend/pull/1777))
+
+#### Chores
+
+- The tests' build process now utilises the Angular compiler in order to compile the app AOT, instead of using the TypeScript compiler to compile the app JIT. ([#1777](https://github.com/sendahug/send-hug-frontend/pull/1777))
+- V8 was replaced with Istanbul as the app's coverage provider. The V8 reports, while nice, turned out to be a little unreliable and not particularly useful; switching back to Istanbul provides us with meaningful coverage reports we can use to improve our code. ([#1777](https://github.com/sendahug/send-hug-frontend/pull/1777))
+- Deleted the user module and switched all components within it to standalone components. This cleans up some unnecessary extra code for setting up the module (without doing anything meaningful with it). ([#1777](https://github.com/sendahug/send-hug-frontend/pull/1777))
+- Cleaned up duplicate code in the AboutApp and SitePolicies components. Previously we set up the list of site policies in both components separately, which required updating in multiple places when a change was made. Now, the AboutApp component simply imports the data from the SitePolicies component. ([#1777](https://github.com/sendahug/send-hug-frontend/pull/1777))
+- Added further unit tests and cleaned up unnecessary imports (such as the app's full route list) from various tests. ([#1777](https://github.com/sendahug/send-hug-frontend/pull/1777))
+- Deleted unneeded code from the messages component. The deleted code was responsible for setting the colours in the users' icons; since this is now handled by the user icon component, the code was no longer needed (and should've been removed in [#1755](https://github.com/sendahug/send-hug-frontend/pull/1755)). ([#1777](https://github.com/sendahug/send-hug-frontend/pull/1777))
+
+### 2024-08-11
+
+#### Fixes
+
+- Updated the URL of the site when shared using the share button to the current URL. It was accidentally still set to the Heroku URL, which is no longer where we deploy the site. ([#1768](https://github.com/sendahug/send-hug-frontend/pull/1768))
+- Fixed a bug where clicking the exit button in the search form triggered the search functionality of the app (which threw an error if the form was empty). This happened due to a misconfigured button in the form. The button's type is now set correctly, which fixes that issue. ([#1768](https://github.com/sendahug/send-hug-frontend/pull/1768))
+
+#### Chores
+
+- Updated the e2e tests' setup script to match the new structure of the models in the back-end. ([#1769](https://github.com/sendahug/send-hug-frontend/pull/1769))
+
 ### 2024-08-06
 
 #### Changes

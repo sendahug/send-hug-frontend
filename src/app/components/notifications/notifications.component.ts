@@ -58,8 +58,8 @@ export class NotificationsTab implements OnInit {
 
   // CTOR
   constructor(
-    private authService: AuthService,
-    public notificationService: NotificationService,
+    protected authService: AuthService,
+    protected notificationService: NotificationService,
   ) {
     // if the user is authenticated, get all notifications from
     // the last time the user checked them
@@ -110,15 +110,13 @@ export class NotificationsTab implements OnInit {
   */
   togglePushNotifications() {
     // if notifications are enabled, disable them
-    if (this.notificationService.pushStatus) {
-      this.notificationService.pushStatus = false;
-      this.notificationService.updateUserSettings();
+    if (this.authService.pushEnabled()) {
+      this.authService.updateUserData({ pushEnabled: false });
       this.notificationService.unsubscribeFromStream();
     }
     // otherwise enable them
     else {
-      this.notificationService.pushStatus = true;
-      this.notificationService.updateUserSettings();
+      this.authService.updateUserData({ pushEnabled: true });
       this.notificationService.subscribeToStream();
     }
   }
@@ -133,18 +131,14 @@ export class NotificationsTab implements OnInit {
   */
   toggleAutoRefresh() {
     // if auto-refresh is enabled, disable it
-    if (this.notificationService.refreshStatus) {
-      this.notificationService.refreshStatus = false;
-      this.notificationService.refreshRateSecs = 0;
-      this.notificationService.updateUserSettings();
+    if (this.authService.autoRefresh()) {
+      this.authService.updateUserData({ autoRefresh: false });
       this.notificationService.stopAutoRefresh();
     }
     // otherwise enable it
     else {
-      this.notificationService.refreshStatus = true;
-      this.notificationService.refreshRateSecs = 20;
-      this.notificationService.updateUserSettings();
-      this.notificationService.startAutoRefresh();
+      this.authService.updateUserData({ refreshRate: 20, autoRefresh: true });
+      this.notificationService.startAutoRefresh(20);
     }
   }
 
@@ -192,9 +186,7 @@ export class NotificationsTab implements OnInit {
   exitNotifications() {
     let modal = document.getElementById("modalBox");
     modal!.removeEventListener("keydown", this.checkFocusBinded);
-    if (document.getElementById("skipLink")) {
-      document.getElementById("skipLink")!.focus();
-    }
+    document.getElementById("skipLink")?.focus();
     this.NotificationsMode.emit(false);
   }
 }

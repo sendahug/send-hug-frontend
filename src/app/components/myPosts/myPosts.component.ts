@@ -35,12 +35,18 @@ import { Component, OnInit, Input, signal, computed } from "@angular/core";
 import { faFlag } from "@fortawesome/free-regular-svg-icons";
 import { faHandHoldingHeart } from "@fortawesome/free-solid-svg-icons";
 import { from, map, switchMap, tap } from "rxjs";
+import { CommonModule } from "@angular/common";
+import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 
 // App-related imports
 import { type PostGet } from "@app/interfaces/post.interface";
 import { AuthService } from "@app/services/auth.service";
 import { SWManager } from "@app/services/sWManager.service";
 import { ApiClientService } from "@app/services/apiClient.service";
+import { Loader } from "@app/components/loader/loader.component";
+import { HeaderMessage } from "@app/components/headerMessage/headerMessage.component";
+import { SinglePost } from "@app/components/post/post.component";
+import { ItemDeleteForm } from "@app/components/itemDeleteForm/itemDeleteForm.component";
 
 interface MyPostsResponse {
   page: number;
@@ -52,6 +58,8 @@ interface MyPostsResponse {
 @Component({
   selector: "app-my-posts",
   templateUrl: "./myPosts.component.html",
+  standalone: true,
+  imports: [Loader, HeaderMessage, SinglePost, ItemDeleteForm, CommonModule, FontAwesomeModule],
 })
 export class MyPosts implements OnInit {
   isLoading = signal(false);

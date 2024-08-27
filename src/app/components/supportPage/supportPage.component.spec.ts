@@ -43,7 +43,6 @@ import { provideZoneChangeDetection } from "@angular/core";
 
 // App imports
 import { SupportPage } from "./supportPage.component";
-import { routes } from "@app/app.routes";
 
 describe("Support Page", () => {
   // Before each test, configure testing environment
@@ -56,7 +55,7 @@ describe("Support Page", () => {
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
         provideZoneChangeDetection({ eventCoalescing: true }),
-        provideRouter(routes),
+        provideRouter([]),
       ],
     }).compileComponents();
   });

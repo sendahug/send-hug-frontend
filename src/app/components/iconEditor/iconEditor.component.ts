@@ -31,12 +31,12 @@
 */
 
 import { Component, EventEmitter, Output } from "@angular/core";
-import { FormBuilder, Validators } from "@angular/forms";
+import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 
 import { AuthService } from "@app/services/auth.service";
 import { iconCharacters } from "@app/interfaces/types";
 import { User } from "@app/interfaces/user.interface";
-import { DefaultColours } from "@app/components/userIcon/userIcon.component";
+import { DefaultColours, UserIcon } from "@app/components/userIcon/userIcon.component";
 import BearIconSrc from "@/assets/img/bear.svg";
 import KittyIconSrc from "@/assets/img/kitty.svg";
 import DogIconSrc from "@/assets/img/dog.svg";
@@ -45,6 +45,8 @@ import DogIconSrc from "@/assets/img/dog.svg";
   selector: "app-icon-editor",
   templateUrl: "./iconEditor.component.html",
   styleUrl: "./iconEditor.component.less",
+  standalone: true,
+  imports: [ReactiveFormsModule, UserIcon],
 })
 export class IconEditor {
   BearIconSrc = BearIconSrc;

@@ -34,12 +34,10 @@ import { playwrightLauncher } from "@web/test-runner-playwright";
 import { esbuildPlugin } from "@web/dev-server-esbuild";
 import { fromRollup } from "@web/dev-server-rollup";
 import tsConfigPaths from "rollup-plugin-tsconfig-paths";
-import { TranspileDecoratorsVite, ReplaceTemplateUrlPlugin, ServeSVGsPlugin } from "./plugins.mjs";
+import { AngularTestsPlugin, ServeSVGsPlugin } from "./plugins/wtr.js";
 
-// TODO: Figure out how to replace these plugins with the angular compiler
-const templatePlugin = fromRollup(ReplaceTemplateUrlPlugin);
-const decoratorTranspiler = fromRollup(TranspileDecoratorsVite);
 const configPaths = fromRollup(tsConfigPaths);
+const compileAngular = fromRollup(AngularTestsPlugin);
 
 /** @type {import("@web/test-runner").TestRunnerConfig} */
 export default {
@@ -47,12 +45,25 @@ export default {
   coverage: true,
   files: ["src/**/*.spec.ts", "!plugins/tests.ts"],
   browsers: [
-    playwrightLauncher({ product: "chromium" }),
+    playwrightLauncher({
+      product: "chromium",
+      launchOptions: {
+        args: [
+          "--disable-gpu",
+          "--no-sandbox",
+          "--disable-setuid-sandbox",
+          "--disable-extensions",
+          "--disable-dev-shm-usage",
+        ],
+        chromiumSandbox: false,
+        headless: true,
+      },
+    }),
     // playwrightLauncher({ product: 'webkit' }),
     // playwrightLauncher({ product: 'firefox' }),
   ],
   nodeResolve: true,
-  CoverageConfig: {
+  coverageConfig: {
     include: ["src/**/*.ts"],
     exclude: [
       "node_modules/**",
@@ -68,6 +79,12 @@ export default {
     report: true,
     reportDir: "./coverage",
     reporters: ["html", "lcovonly", "text-summary"],
+    // Commented out until https://github.com/modernweb-dev/web/issues/2777 is resolved
+    // nativeInstrumentation: false,
+  },
+  filterBrowserLogs(log) {
+    // Filter out the firebase logs
+    if (log.args.includes("heartbeats")) return false;
   },
   // Credit to @blueprintui for most of the HTML.
   // https://github.com/blueprintui/web-test-runner-jasmine/blob/main/src/index.ts
@@ -77,8 +94,7 @@ export default {
   debug: false,
   plugins: [
     configPaths({}),
-    templatePlugin(),
-    decoratorTranspiler(),
+    compileAngular(),
     ServeSVGsPlugin(),
     esbuildPlugin({
       target: "es2020",

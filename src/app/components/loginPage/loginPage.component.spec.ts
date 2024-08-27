@@ -53,7 +53,6 @@ import { getMockFirebaseUser, mockAuthedUser } from "@tests/mockData";
 import { User } from "@app/interfaces/user.interface";
 import { PasswordResetForm } from "@app/components/passwordResetForm/passwordResetForm.component";
 import { Loader } from "@app/components/loader/loader.component";
-import { routes } from "@app/app.routes";
 
 describe("LoginPage", () => {
   let mockFirbeaseUser: FirebaseUser;
@@ -83,7 +82,7 @@ describe("LoginPage", () => {
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
         provideZoneChangeDetection({ eventCoalescing: true }),
-        provideRouter(routes),
+        provideRouter([]),
         MockAuthService,
       ],
     }).compileComponents();

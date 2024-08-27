@@ -36,7 +36,7 @@ import {
   platformBrowserDynamicTesting,
 } from "@angular/platform-browser-dynamic/testing";
 import {} from "jasmine";
-import { of } from "rxjs";
+import { of, throwError } from "rxjs";
 import { MockProvider } from "ng-mocks";
 
 import { ItemsService } from "./items.service";
@@ -217,6 +217,24 @@ describe("ItemsService", () => {
         expect(itemsService.numPostResults).toBe(7);
         expect(itemsService.postSearchPage()).toBe(1);
         expect(itemsService.totalPostSearchPages()).toBe(2);
+        expect(itemsService.isSearching).toBeFalse();
+        expect(apiClientSpy).toHaveBeenCalledWith("", { search: "test" }, { page: "1" });
+      }
+    });
+  });
+
+  it("sendSearch() - should run a search - should handle an error", () => {
+    // mock response
+    const apiClientSpy = spyOn(itemsService["apiClient"], "post").and.returnValue(
+      throwError(() => new Error("ERROR")),
+    );
+
+    itemsService.sendSearch("test");
+    // wait until the search is resolved
+    itemsService.isSearchResolved.subscribe((value) => {
+      if (value) {
+        expect(itemsService.userSearchResults.length).toBe(0);
+        expect(itemsService.postSearchResults.length).toBe(0);
         expect(itemsService.isSearching).toBeFalse();
         expect(apiClientSpy).toHaveBeenCalledWith("", { search: "test" }, { page: "1" });
       }

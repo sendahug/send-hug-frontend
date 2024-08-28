@@ -33,17 +33,20 @@
 // Angular imports
 import { Injectable } from "@angular/core";
 import { SwPush } from "@angular/service-worker";
-import { interval, Subscription, Observable } from "rxjs";
+import { interval, Subscription, Observable, tap } from "rxjs";
 
 // App-related imports
 import { AlertsService } from "./alerts.service";
 import { SWManager } from "./sWManager.service";
 import { ApiClientService } from "./apiClient.service";
+import { type Notification } from "@app/interfaces/notification.interface";
 
 interface GetNotificationsResponse {
   success: boolean;
   notifications: Notification[];
   newCount: number;
+  current_page: number;
+  total_pages: number;
 }
 
 export type ToggleButtonOption = "Enable" | "Disable";
@@ -90,7 +93,7 @@ export class NotificationService {
     // every ten seconds, when the counter is done, silently refres
     // the user's notifications
     this.refreshSub = this.refreshCounter.subscribe((_value) => {
-      this.getNotifications();
+      this.getNotifications().subscribe();
     });
   }
 
@@ -108,12 +111,12 @@ export class NotificationService {
    */
   getNotifications(page: number = 1) {
     // gets Notifications
-    this.apiClient.get<GetNotificationsResponse>("notifications", { page }).subscribe({
-      next: (response) => {
+    return this.apiClient.get<GetNotificationsResponse>("notifications", { page }).pipe(
+      tap((response) => {
         this.notifications = response.notifications;
         this.newNotifications = response.newCount;
-      },
-    });
+      }),
+    );
   }
 
   // PUSH SUBSCRIPTION METHODS

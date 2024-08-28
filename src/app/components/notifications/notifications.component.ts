@@ -31,7 +31,7 @@
 */
 
 // Angular imports
-import { Component, OnInit, EventEmitter, Output } from "@angular/core";
+import { Component, OnInit, EventEmitter, Output, signal, computed } from "@angular/core";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import { CommonModule } from "@angular/common";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
@@ -53,6 +53,16 @@ export class NotificationsTab implements OnInit {
   @Output() NotificationsMode = new EventEmitter<boolean>();
   focusableElements: any;
   checkFocusBinded = this.checkFocus.bind(this);
+  currentPage = signal(1);
+  totalPages = signal(1);
+  previousPageButtonClass = computed(() => ({
+    "appButton prevButton": true,
+    disabled: this.currentPage() <= 1,
+  }));
+  nextPageButtonClass = computed(() => ({
+    "appButton nextButton": true,
+    disabled: this.totalPages() <= this.currentPage(),
+  }));
   // icons
   faTimes = faTimes;
 
@@ -65,7 +75,8 @@ export class NotificationsTab implements OnInit {
     // the last time the user checked them
     this.authService.isUserDataResolved.subscribe((value) => {
       if (value) {
-        this.notificationService.getNotifications();
+        this.currentPage.set(1);
+        this.getNotifications();
       }
     });
   }
@@ -142,6 +153,19 @@ export class NotificationsTab implements OnInit {
     }
   }
 
+  /**
+   * Fetches the notifications using the notifications service
+   * and updates the current page and total page properties.
+   */
+  getNotifications() {
+    return this.notificationService.getNotifications(this.currentPage()).subscribe({
+      next: (response) => {
+        this.currentPage.set(response.current_page);
+        this.totalPages.set(response.total_pages);
+      },
+    });
+  }
+
   /*
   Function Name: checkFocus()
   Function Description: Checks the currently focused element to ensure that the
@@ -172,6 +196,24 @@ export class NotificationsTab implements OnInit {
         }
       }
     }
+  }
+
+  /**
+   * Go to the next page of posts. Sends a request to the
+   * API client to get the data for the next page.
+   */
+  nextPage() {
+    this.currentPage.set(this.currentPage() + 1);
+    this.getNotifications();
+  }
+
+  /**
+   * Go to the previous page of posts. Sends a request to the
+   * API client to get the data for the next page.
+   */
+  prevPage() {
+    this.currentPage.set(this.currentPage() - 1);
+    this.getNotifications();
   }
 
   /*

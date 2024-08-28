@@ -17,5 +17,22 @@
 
 		<!-- If there are no notifications -->
 		<div *ngIf="notificationService.notifications.length == 0" class="errorMessage" id="noNotifications">You have no new notifications!</div>
+
+		<!-- Notification pagination -->
+		<div class="pagination" role="navigation">
+			<button
+				[ngClass]="previousPageButtonClass()" 
+				(click)="prevPage()" 
+				[attr.aria-label]="'previous page of notifications'"
+				[disabled]="currentPage() <= 1"
+			>Previous Page</button>
+			<div class="pageCount">Page {{ currentPage() }} of {{ totalPages() }}</div>
+			<button 
+				[ngClass]="nextPageButtonClass()" 
+				(click)="nextPage()" 
+				[attr.aria-label]="'next page of notifications'"
+				[disabled]="totalPages() <= currentPage()"
+			>Next Page</button>
+		</div>
 	</div>
 </div>

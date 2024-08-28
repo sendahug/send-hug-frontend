@@ -90,7 +90,15 @@ describe("NotificationService", () => {
 
   // Check the service auto-refreshes
   it("autoRefresh() - should run auto-refresh with interval", fakeAsync(() => {
-    const notifSpy = spyOn(notificationService, "getNotifications");
+    const notifSpy = spyOn(notificationService, "getNotifications").and.returnValue(
+      of({
+        success: true,
+        notifications: [],
+        newCount: 0,
+        current_page: 1,
+        total_pages: 1,
+      }),
+    );
 
     // before triggering the method
     expect(notificationService.refreshCounter).toBeUndefined();
@@ -139,7 +147,7 @@ describe("NotificationService", () => {
   });
 
   // Check the service gets user notifications
-  it("getNotifications() - should get user notifications", () => {
+  it("getNotifications() - should get user notifications", (done: DoneFn) => {
     // mock response
     const mockResponse = {
       success: true,
@@ -162,16 +170,19 @@ describe("NotificationService", () => {
       of(mockResponse),
     );
 
-    notificationService.getNotifications();
-
-    expect(apiClientSpy).toHaveBeenCalledWith("notifications", { page: 1 });
-    expect(notificationService.notifications.length).toBe(1);
-    expect(notificationService.notifications[0].id).toBe(2);
-    expect(notificationService.newNotifications).toBe(0);
+    notificationService.getNotifications().subscribe({
+      next(_value) {
+        expect(apiClientSpy).toHaveBeenCalledWith("notifications", { page: 1 });
+        expect(notificationService.notifications.length).toBe(1);
+        expect(notificationService.notifications[0].id).toBe(2);
+        expect(notificationService.newNotifications).toBe(0);
+        done();
+      },
+    });
   });
 
   // Check that the service gets the user's notifications silently
-  it("getNotifications() - should get user notifications with silent refresh", () => {
+  it("getNotifications() - should get user notifications with silent refresh", (done: DoneFn) => {
     // mock response
     const mockResponse = {
       success: true,
@@ -194,12 +205,15 @@ describe("NotificationService", () => {
       of(mockResponse),
     );
 
-    notificationService.getNotifications(2);
-
-    expect(apiClientSpy).toHaveBeenCalledWith("notifications", { page: 2 });
-    expect(notificationService.notifications.length).toBe(1);
-    expect(notificationService.notifications[0].id).toBe(2);
-    expect(notificationService.newNotifications).toBe(1);
+    notificationService.getNotifications(2).subscribe({
+      next(_value) {
+        expect(apiClientSpy).toHaveBeenCalledWith("notifications", { page: 2 });
+        expect(notificationService.notifications.length).toBe(1);
+        expect(notificationService.notifications[0].id).toBe(2);
+        expect(notificationService.newNotifications).toBe(1);
+        done();
+      },
+    });
   });
 
   it("checkInitialPermissionState() - returns a promise that resolves to undefined if pushEnabled is false", (done: DoneFn) => {

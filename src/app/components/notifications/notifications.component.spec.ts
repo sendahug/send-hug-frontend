@@ -41,7 +41,7 @@ import {
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { computed, provideZoneChangeDetection, signal } from "@angular/core";
 import { MockProvider } from "ng-mocks";
-import { BehaviorSubject, Subscription } from "rxjs";
+import { BehaviorSubject, of, Subscription } from "rxjs";
 
 import { NotificationsTab } from "./notifications.component";
 import { NotificationService } from "@app/services/notifications.service";
@@ -67,6 +67,14 @@ describe("Notifications Tab", () => {
     });
     const MockNotificationService = MockProvider(NotificationService, {
       notifications: [],
+      getNotifications: (_page) =>
+        of({
+          notifications: [],
+          success: true,
+          newCount: 0,
+          total_pages: 1,
+          current_page: 1,
+        }),
     });
 
     TestBed.resetTestEnvironment();
@@ -94,15 +102,15 @@ describe("Notifications Tab", () => {
 
   // Check that the component checks whether the user is authenticated
   it("should check whether the user is logged in", () => {
-    // set up spies
-    const notificationsService = TestBed.inject(NotificationService);
-    const notificationSpy = spyOn(notificationsService, "getNotifications");
     const authService = TestBed.inject(AuthService);
+    authService.isUserDataResolved.next(false);
     const authSpy = spyOn(authService.isUserDataResolved, "subscribe").and.callThrough();
 
     // set up the component
     const fixture = TestBed.createComponent(NotificationsTab);
     const notificationsTab = fixture.componentInstance;
+    const notificationSpy = spyOn(notificationsTab, "getNotifications");
+    authService.isUserDataResolved.next(true);
 
     expect(notificationsTab["authService"].isUserDataResolved).toBeTruthy();
     expect(notificationSpy).toHaveBeenCalled();
@@ -192,6 +200,52 @@ describe("Notifications Tab", () => {
     expect(stopRefreshSpy).toHaveBeenCalled();
     expect(stopRefreshSpy.calls.count()).toBe(1);
     done();
+  });
+
+  it("getNotifications() - gets the notifications and updates the variables", (done: DoneFn) => {
+    // mock response
+    const mockResponse = {
+      success: true,
+      notifications: [
+        {
+          id: 2,
+          fromId: 2,
+          from: "test",
+          forId: 4,
+          for: "testing",
+          type: "hug",
+          text: "test sent you a hug",
+          date: new Date(),
+        },
+      ],
+      newCount: 1,
+      current_page: 2,
+      total_pages: 2,
+    };
+
+    const notificationService = TestBed.inject(NotificationService);
+    const getSpy = spyOn(notificationService, "getNotifications").and.returnValue(of(mockResponse));
+
+    // set up the component
+    const fixture = TestBed.createComponent(NotificationsTab);
+    const notificationsTab = fixture.componentInstance;
+    const notifTabDOM = fixture.nativeElement;
+    fixture.detectChanges();
+
+    notificationsTab.getNotifications().add(() => {
+      expect(getSpy).toHaveBeenCalledWith(1);
+      expect(notificationsTab.currentPage()).toBe(2);
+      expect(notificationsTab.totalPages()).toBe(2);
+
+      const prevPageButton = notifTabDOM.querySelectorAll(".prevButton")[0];
+      const nextPageButton = notifTabDOM.querySelectorAll(".nextButton")[0];
+      const pageCountDiv = notifTabDOM.querySelectorAll(".pageCount")[0];
+
+      expect(prevPageButton.disabled).toBeFalse();
+      expect(nextPageButton.disabled).toBeTrue();
+      expect(pageCountDiv.textContent.toLowerCase()).toBe("page 2 of 2");
+      done();
+    });
   });
 
   // check tab and tab+shift let the user navigate
@@ -354,12 +408,57 @@ describe("Notifications Tab", () => {
     done();
   });
 
+  it("nextPage() - should continue to the next page", (done: DoneFn) => {
+    const fixture = TestBed.createComponent(NotificationsTab);
+    const notificationsTab = fixture.componentInstance;
+    const notifTabDOM = fixture.nativeElement;
+    const getNotificationsSpy = spyOn(notificationsTab, "getNotifications");
+    notificationsTab.totalPages.set(2);
+    fixture.detectChanges();
+
+    // before
+    expect(notificationsTab.currentPage()).toBe(1);
+    expect(getNotificationsSpy).toHaveBeenCalledTimes(0);
+
+    // click the next button
+    notifTabDOM.querySelectorAll(".nextButton")[0].click();
+    fixture.detectChanges();
+
+    // after
+    expect(notificationsTab.currentPage()).toBe(2);
+    expect(getNotificationsSpy).toHaveBeenCalledTimes(1);
+    done();
+  });
+
+  it("prevPage() - should go to the previous page", (done: DoneFn) => {
+    const fixture = TestBed.createComponent(NotificationsTab);
+    const notificationsTab = fixture.componentInstance;
+    const notifTabDOM = fixture.nativeElement;
+    const getNotificationsSpy = spyOn(notificationsTab, "getNotifications");
+    notificationsTab.totalPages.set(2);
+    notificationsTab.currentPage.set(2);
+    fixture.detectChanges();
+
+    // before
+    expect(notificationsTab.currentPage()).toBe(2);
+    expect(getNotificationsSpy).toHaveBeenCalledTimes(0);
+
+    notifTabDOM.querySelectorAll(".prevButton")[0].click();
+    fixture.detectChanges();
+
+    // after
+    expect(notificationsTab.currentPage()).toBe(1);
+    expect(getNotificationsSpy).toHaveBeenCalledTimes(1);
+    done();
+  });
+
   // Check that the exit button emits the correct boolean
   it("emits false upon clicking the exit button", (done: DoneFn) => {
     // set up the component
     const fixture = TestBed.createComponent(NotificationsTab);
     const notificationsTab = fixture.componentInstance;
     const notifTabDOM = fixture.nativeElement;
+    spyOn(notificationsTab, "getNotifications");
     const emitterSpy = spyOn(notificationsTab.NotificationsMode, "emit");
     fixture.detectChanges();
 

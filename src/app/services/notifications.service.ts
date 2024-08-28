@@ -43,6 +43,7 @@ import { ApiClientService } from "./apiClient.service";
 interface GetNotificationsResponse {
   success: boolean;
   notifications: Notification[];
+  newCount: number;
 }
 
 export type ToggleButtonOption = "Enable" | "Disable";
@@ -89,7 +90,7 @@ export class NotificationService {
     // every ten seconds, when the counter is done, silently refres
     // the user's notifications
     this.refreshSub = this.refreshCounter.subscribe((_value) => {
-      this.getNotifications(true);
+      this.getNotifications();
     });
   }
 
@@ -103,22 +104,16 @@ export class NotificationService {
 
   /**
    * Gets all new user notifications.
-   * @param silentRefresh - whether to update the "last fetched" date in the backend.
+   * @param page - the current page to fetch.
    */
-  getNotifications(silentRefresh?: boolean) {
+  getNotifications(page: number = 1) {
     // gets Notifications
-    this.apiClient
-      .get<GetNotificationsResponse>("notifications", { silentRefresh: silentRefresh || false })
-      .subscribe({
-        next: (response) => {
-          this.notifications = response.notifications;
-
-          // if it's a silent refresh, check how many new notifications the user has
-          if (silentRefresh) {
-            this.newNotifications = this.notifications.length;
-          }
-        },
-      });
+    this.apiClient.get<GetNotificationsResponse>("notifications", { page }).subscribe({
+      next: (response) => {
+        this.notifications = response.notifications;
+        this.newNotifications = response.newCount;
+      },
+    });
   }
 
   // PUSH SUBSCRIPTION METHODS

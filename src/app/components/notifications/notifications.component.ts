@@ -65,7 +65,7 @@ export class NotificationsTab implements OnInit {
     // the last time the user checked them
     this.authService.isUserDataResolved.subscribe((value) => {
       if (value) {
-        this.notificationService.getNotifications(false);
+        this.notificationService.getNotifications();
       }
     });
   }

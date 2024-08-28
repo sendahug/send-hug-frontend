@@ -155,15 +155,16 @@ describe("NotificationService", () => {
           date: new Date(),
         },
       ],
+      newCount: 0,
     };
 
     const apiClientSpy = spyOn(notificationService["apiClient"], "get").and.returnValue(
       of(mockResponse),
     );
 
-    notificationService.getNotifications(false);
+    notificationService.getNotifications();
 
-    expect(apiClientSpy).toHaveBeenCalledWith("notifications", { silentRefresh: false });
+    expect(apiClientSpy).toHaveBeenCalledWith("notifications", { page: 1 });
     expect(notificationService.notifications.length).toBe(1);
     expect(notificationService.notifications[0].id).toBe(2);
     expect(notificationService.newNotifications).toBe(0);
@@ -186,15 +187,16 @@ describe("NotificationService", () => {
           date: new Date(),
         },
       ],
+      newCount: 1,
     };
 
     const apiClientSpy = spyOn(notificationService["apiClient"], "get").and.returnValue(
       of(mockResponse),
     );
 
-    notificationService.getNotifications(true);
+    notificationService.getNotifications(2);
 
-    expect(apiClientSpy).toHaveBeenCalledWith("notifications", { silentRefresh: true });
+    expect(apiClientSpy).toHaveBeenCalledWith("notifications", { page: 2 });
     expect(notificationService.notifications.length).toBe(1);
     expect(notificationService.notifications[0].id).toBe(2);
     expect(notificationService.newNotifications).toBe(1);

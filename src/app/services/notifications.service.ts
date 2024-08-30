@@ -31,7 +31,7 @@
 */
 
 // Angular imports
-import { Injectable } from "@angular/core";
+import { Injectable, signal } from "@angular/core";
 import { SwPush } from "@angular/service-worker";
 import { interval, Subscription, Observable, tap } from "rxjs";
 
@@ -61,7 +61,7 @@ export class NotificationService {
   // push notifications variables
   notificationsSub: PushSubscription | undefined;
   subId = 0;
-  newNotifications = 0;
+  newNotifications = signal(0);
   resubscribeCalls = 0;
   subscriptionDate = 0;
   // notifications refresh variables
@@ -114,7 +114,7 @@ export class NotificationService {
     return this.apiClient.get<GetNotificationsResponse>("notifications", { page }).pipe(
       tap((response) => {
         this.notifications = response.notifications;
-        this.newNotifications = response.newCount;
+        this.newNotifications.set(response.newCount);
       }),
     );
   }

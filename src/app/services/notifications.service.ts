@@ -209,7 +209,7 @@ export class NotificationService {
     return this.requestSubscription()
       .then((subscription) => {
         // send the info to the server
-        this.apiClient.post("notifications", JSON.stringify(subscription)).subscribe({
+        this.apiClient.post("push_subscriptions", JSON.stringify(subscription)).subscribe({
           next: (response: any) => {
             this.subId = response.subId;
             this.alertsService.createSuccessAlert("Subscribed to push notifications successfully!");
@@ -242,7 +242,7 @@ export class NotificationService {
       this.requestSubscription().then((subscription) => {
         // update the saved subscription in the database
         this.apiClient
-          .patch(`subscriptions/${this.subId}`, JSON.stringify(subscription))
+          .patch(`push_subscriptions/${this.subId}`, JSON.stringify(subscription))
           .subscribe({
             next: (response: any) => {
               this.subId = response.subId;

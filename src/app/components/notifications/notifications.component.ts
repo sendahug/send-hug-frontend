@@ -40,6 +40,14 @@ import { RouterLink } from "@angular/router";
 // App-relateed imports
 import { AuthService } from "@app/services/auth.service";
 import { NotificationService } from "@app/services/notifications.service";
+import { ApiClientService } from "@app/services/apiClient.service";
+import { Notification } from "@app/interfaces/notification.interface";
+
+interface UpdateNotificationsResponse {
+  success: boolean;
+  updated: Array<string> | "all";
+  read: boolean;
+}
 
 @Component({
   selector: "app-notifications",
@@ -55,6 +63,7 @@ export class NotificationsTab implements OnInit {
   checkFocusBinded = this.checkFocus.bind(this);
   currentPage = signal(1);
   totalPages = signal(1);
+  totalItems = signal(0);
   previousPageButtonClass = computed(() => ({
     "appButton prevButton": true,
     disabled: this.currentPage() <= 1,
@@ -63,6 +72,14 @@ export class NotificationsTab implements OnInit {
     "appButton nextButton": true,
     disabled: this.totalPages() <= this.currentPage(),
   }));
+  markAllLabel = computed(() =>
+    this.notificationService.newNotifications() == 0 ? "unread" : "read",
+  );
+  displayRead = signal(true);
+  displayReadButtonLabel = computed(() => (this.displayRead() ? "Hide" : "Show"));
+  displayUnread = signal(true);
+  displayUnreadButtonLabel = computed(() => (this.displayUnread() ? "Hide" : "Show"));
+  notifications = signal<Notification[]>([]);
   // icons
   faTimes = faTimes;
 
@@ -70,6 +87,7 @@ export class NotificationsTab implements OnInit {
   constructor(
     protected authService: AuthService,
     protected notificationService: NotificationService,
+    private apiClient: ApiClientService,
   ) {
     // if the user is authenticated, get all notifications from
     // the last time the user checked them
@@ -158,10 +176,20 @@ export class NotificationsTab implements OnInit {
    * and updates the current page and total page properties.
    */
   getNotifications() {
-    return this.notificationService.getNotifications(this.currentPage()).subscribe({
+    let readStatus: boolean | undefined;
+
+    if (this.displayRead() && this.displayUnread()) readStatus = undefined;
+    else if (this.displayRead() && !this.displayUnread()) readStatus = true;
+    else if (!this.displayRead() && this.displayUnread()) readStatus = false;
+    // TODO: We should raise an error here
+    else return;
+
+    return this.notificationService.getNotifications(this.currentPage(), readStatus).subscribe({
       next: (response) => {
         this.currentPage.set(response.current_page);
         this.totalPages.set(response.total_pages);
+        this.notifications.set(response.notifications);
+        this.totalItems.set(response.totalItems);
       },
     });
   }
@@ -214,6 +242,39 @@ export class NotificationsTab implements OnInit {
   prevPage() {
     this.currentPage.set(this.currentPage() - 1);
     this.getNotifications();
+  }
+
+  /**
+   * Shows/hides the unread notifications.
+   */
+  toggleUnread() {
+    this.displayUnread.set(!this.displayUnread());
+    this.getNotifications();
+  }
+
+  /**
+   * Shows/hides the read notifications.
+   */
+  toggleRead() {
+    this.displayRead.set(!this.displayRead());
+    this.getNotifications();
+  }
+
+  /**
+   * Mark all the notifications read/unread.
+   */
+  markAll() {
+    this.apiClient
+      .patch<UpdateNotificationsResponse>("notifications", {
+        notification_ids: "all",
+        read: this.notificationService.newNotifications() == 0 ? false : true,
+      })
+      .subscribe({
+        next: (response) => {
+          const newNotifications = response.read ? 0 : this.totalItems();
+          this.notificationService.newNotifications.set(newNotifications);
+        },
+      });
   }
 
   /*

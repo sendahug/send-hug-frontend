@@ -47,6 +47,7 @@ interface GetNotificationsResponse {
   newCount: number;
   current_page: number;
   total_pages: number;
+  totalItems: number;
 }
 
 export type ToggleButtonOption = "Enable" | "Disable";
@@ -56,8 +57,6 @@ export type ToggleButtonOption = "Enable" | "Disable";
 })
 export class NotificationService {
   readonly publicKey = import.meta.env["VITE_PUBLIC_KEY"];
-  // notifications data
-  notifications: any[] = [];
   // push notifications variables
   notificationsSub: PushSubscription | undefined;
   subId = 0;
@@ -108,12 +107,15 @@ export class NotificationService {
   /**
    * Gets all new user notifications.
    * @param page - the current page to fetch.
+   * @param read - type of notifications to fetch (read/unread only).
    */
-  getNotifications(page: number = 1) {
+  getNotifications(page: number = 1, read?: boolean) {
+    const params: { [key: string]: any } = { page };
+    if (read !== undefined) params["readStatus"] = read;
+
     // gets Notifications
-    return this.apiClient.get<GetNotificationsResponse>("notifications", { page }).pipe(
+    return this.apiClient.get<GetNotificationsResponse>("notifications", params).pipe(
       tap((response) => {
-        this.notifications = response.notifications;
         this.newNotifications.set(response.newCount);
       }),
     );

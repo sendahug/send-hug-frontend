@@ -74,6 +74,7 @@ describe("Notifications Tab", () => {
           newCount: 0,
           total_pages: 1,
           current_page: 1,
+          totalItems: 1,
         }),
     });
 
@@ -221,6 +222,7 @@ describe("Notifications Tab", () => {
       newCount: 1,
       current_page: 2,
       total_pages: 2,
+      totalItems: 1,
     };
 
     const notificationService = TestBed.inject(NotificationService);

@@ -97,6 +97,7 @@ describe("NotificationService", () => {
         newCount: 0,
         current_page: 1,
         total_pages: 1,
+        totalItems: 1,
       }),
     );
 
@@ -173,8 +174,6 @@ describe("NotificationService", () => {
     notificationService.getNotifications().subscribe({
       next(_value) {
         expect(apiClientSpy).toHaveBeenCalledWith("notifications", { page: 1 });
-        expect(notificationService.notifications.length).toBe(1);
-        expect(notificationService.notifications[0].id).toBe(2);
         expect(notificationService.newNotifications).toBe(0);
         done();
       },
@@ -208,8 +207,6 @@ describe("NotificationService", () => {
     notificationService.getNotifications(2).subscribe({
       next(_value) {
         expect(apiClientSpy).toHaveBeenCalledWith("notifications", { page: 2 });
-        expect(notificationService.notifications.length).toBe(1);
-        expect(notificationService.notifications[0].id).toBe(2);
         expect(notificationService.newNotifications).toBe(1);
         done();
       },

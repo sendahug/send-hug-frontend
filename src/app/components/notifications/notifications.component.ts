@@ -45,7 +45,7 @@ import { Notification } from "@app/interfaces/notification.interface";
 
 interface UpdateNotificationsResponse {
   success: boolean;
-  updated: Array<string> | "all";
+  updated: Array<number> | "all";
   read: boolean;
 }
 
@@ -273,12 +273,29 @@ export class NotificationsTab implements OnInit {
         next: (response) => {
           const newNotifications = response.read ? 0 : this.totalItems();
           this.notificationService.newNotifications.set(newNotifications);
-          this.notifications.set(
-            this.notifications().map((notification) => {
-              const updated = { ...notification, read: response.read };
-              return updated;
-            }),
-          );
+          this.notifications().forEach((n) => (n.read = response.read));
+        },
+      });
+  }
+
+  /**
+   * Mark the given notification as read/unread.
+   * @param id - the ID of the notification to mark.
+   * @param read - the new status to give it.
+   */
+  mark(id: number, read: boolean) {
+    this.apiClient
+      .patch<UpdateNotificationsResponse>("notifications", {
+        notification_ids: [id],
+        read,
+      })
+      .subscribe({
+        next: (response) => {
+          const newNotifications = response.read
+            ? this.notificationService.newNotifications() - 1
+            : this.notificationService.newNotifications() + 1;
+          this.notificationService.newNotifications.set(newNotifications);
+          this.notifications().find((n) => n.id == id)!.read = read;
         },
       });
   }

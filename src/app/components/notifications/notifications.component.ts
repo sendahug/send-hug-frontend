@@ -273,6 +273,12 @@ export class NotificationsTab implements OnInit {
         next: (response) => {
           const newNotifications = response.read ? 0 : this.totalItems();
           this.notificationService.newNotifications.set(newNotifications);
+          this.notifications.set(
+            this.notifications().map((notification) => {
+              const updated = { ...notification, read: response.read };
+              return updated;
+            }),
+          );
         },
       });
   }

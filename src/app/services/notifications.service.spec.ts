@@ -181,7 +181,7 @@ describe("NotificationService", () => {
   });
 
   // Check that the service gets the user's notifications silently
-  it("getNotifications() - should get user notifications with silent refresh", (done: DoneFn) => {
+  it("getNotifications() - should get user notifications without read status", (done: DoneFn) => {
     // mock response
     const mockResponse = {
       success: true,
@@ -207,6 +207,39 @@ describe("NotificationService", () => {
     notificationService.getNotifications(2).subscribe({
       next(_value) {
         expect(apiClientSpy).toHaveBeenCalledWith("notifications", { page: 2 });
+        expect(notificationService.newNotifications()).toBe(1);
+        done();
+      },
+    });
+  });
+
+  // Check that the service gets the user's notifications silently
+  it("getNotifications() - should get user notifications with read status", (done: DoneFn) => {
+    // mock response
+    const mockResponse = {
+      success: true,
+      notifications: [
+        {
+          id: 2,
+          fromId: 2,
+          from: "test",
+          forId: 4,
+          for: "testing",
+          type: "hug",
+          text: "test sent you a hug",
+          date: new Date(),
+        },
+      ],
+      newCount: 1,
+    };
+
+    const apiClientSpy = spyOn(notificationService["apiClient"], "get").and.returnValue(
+      of(mockResponse),
+    );
+
+    notificationService.getNotifications(2, true).subscribe({
+      next(_value) {
+        expect(apiClientSpy).toHaveBeenCalledWith("notifications", { page: 2, readStatus: true });
         expect(notificationService.newNotifications()).toBe(1);
         done();
       },

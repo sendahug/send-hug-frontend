@@ -30,7 +30,7 @@
   SOFTWARE.
 */
 
-import { TestBed } from "@angular/core/testing";
+import { fakeAsync, TestBed, tick } from "@angular/core/testing";
 import { provideRouter, RouterLink } from "@angular/router";
 import {} from "jasmine";
 import { APP_BASE_HREF, CommonModule } from "@angular/common";
@@ -253,6 +253,89 @@ describe("Notifications Tab", () => {
       done();
     });
   });
+
+  it("getNotifications() - gets only read notifications", (done: DoneFn) => {
+    // mock response
+    const mockResponse = {
+      success: true,
+      notifications: [],
+      newCount: 1,
+      current_page: 2,
+      total_pages: 2,
+      totalItems: 1,
+    };
+
+    // set up the component
+    const fixture = TestBed.createComponent(NotificationsTab);
+    const notificationsTab = fixture.componentInstance;
+    notificationsTab.displayUnread.set(false);
+    const getSpy = spyOn(
+      notificationsTab["notificationService"],
+      "getNotifications",
+    ).and.returnValue(of(mockResponse));
+    fixture.detectChanges();
+
+    notificationsTab.getNotifications()!.add(() => {
+      expect(getSpy).toHaveBeenCalledWith(1, true);
+      done();
+    });
+  });
+
+  it("getNotifications() - gets only unread notifications", (done: DoneFn) => {
+    // mock response
+    const mockResponse = {
+      success: true,
+      notifications: [],
+      newCount: 1,
+      current_page: 2,
+      total_pages: 2,
+      totalItems: 1,
+    };
+
+    // set up the component
+    const fixture = TestBed.createComponent(NotificationsTab);
+    const notificationsTab = fixture.componentInstance;
+    notificationsTab.displayRead.set(false);
+    const getSpy = spyOn(
+      notificationsTab["notificationService"],
+      "getNotifications",
+    ).and.returnValue(of(mockResponse));
+    fixture.detectChanges();
+
+    notificationsTab.getNotifications()!.add(() => {
+      expect(getSpy).toHaveBeenCalledWith(1, false);
+      done();
+    });
+  });
+
+  it("getNotifications() - returns without making a call", fakeAsync(() => {
+    // mock response
+    const mockResponse = {
+      success: true,
+      notifications: [],
+      newCount: 1,
+      current_page: 2,
+      total_pages: 2,
+      totalItems: 1,
+    };
+
+    // set up the component
+    const fixture = TestBed.createComponent(NotificationsTab);
+    const notificationsTab = fixture.componentInstance;
+    notificationsTab.displayUnread.set(false);
+    notificationsTab.displayRead.set(false);
+    const getSpy = spyOn(
+      notificationsTab["notificationService"],
+      "getNotifications",
+    ).and.returnValue(of(mockResponse));
+    fixture.detectChanges();
+
+    notificationsTab.getNotifications();
+
+    tick();
+
+    expect(getSpy).not.toHaveBeenCalled();
+  }));
 
   // check tab and tab+shift let the user navigate
   // TODO: Figure out why this test isn't working
@@ -655,6 +738,128 @@ describe("Notifications Tab", () => {
     notificationsTab.notifications().forEach((notification) => {
       expect(notification.read).toBeFalse();
     });
+  });
+
+  it("mark() - should mark a notification read", () => {
+    const apiClient = TestBed.inject(ApiClientService);
+    const apiClientSpy = spyOn(apiClient, "patch").and.returnValue(
+      of({
+        success: true,
+        updated: [2],
+        read: true,
+      }),
+    );
+
+    const fixture = TestBed.createComponent(NotificationsTab);
+    const notificationsTab = fixture.componentInstance;
+    const notifTabDOM = fixture.nativeElement;
+    notificationsTab["notificationService"].newNotifications.set(2);
+    notificationsTab.totalItems.set(3);
+    notificationsTab.notifications.set([
+      {
+        id: 2,
+        fromId: 2,
+        from: "test",
+        forId: 4,
+        for: "testing",
+        type: "hug",
+        text: "test sent you a hug",
+        date: new Date(),
+        read: false,
+      },
+      {
+        id: 3,
+        fromId: 2,
+        from: "test",
+        forId: 4,
+        for: "testing",
+        type: "hug",
+        text: "test sent you a hug",
+        date: new Date(),
+        read: false,
+      },
+    ]);
+    fixture.detectChanges();
+
+    // before
+    let notificationBadges = notifTabDOM.querySelectorAll(".badge");
+    expect(notificationBadges.length).toBe(2);
+    expect(notifTabDOM.querySelectorAll(".readToggle")[0].textContent).toBe("Mark Read");
+
+    notifTabDOM.querySelectorAll(".readToggle")[0].click();
+    fixture.detectChanges();
+
+    // after
+    notificationBadges = notifTabDOM.querySelectorAll(".badge");
+    expect(notificationBadges.length).toBe(1);
+    expect(notifTabDOM.querySelectorAll(".readToggle")[0].textContent).toBe("Mark Unread");
+    expect(notificationsTab["notificationService"].newNotifications()).toBe(1);
+    expect(apiClientSpy).toHaveBeenCalledWith("notifications", {
+      notification_ids: [2],
+      read: true,
+    });
+    expect(notificationsTab.notifications()[0].read).toBeTrue();
+  });
+
+  it("mark() - should mark a notification unread", () => {
+    const apiClient = TestBed.inject(ApiClientService);
+    const apiClientSpy = spyOn(apiClient, "patch").and.returnValue(
+      of({
+        success: true,
+        updated: [2],
+        read: false,
+      }),
+    );
+
+    const fixture = TestBed.createComponent(NotificationsTab);
+    const notificationsTab = fixture.componentInstance;
+    const notifTabDOM = fixture.nativeElement;
+    notificationsTab["notificationService"].newNotifications.set(1);
+    notificationsTab.totalItems.set(3);
+    notificationsTab.notifications.set([
+      {
+        id: 2,
+        fromId: 2,
+        from: "test",
+        forId: 4,
+        for: "testing",
+        type: "hug",
+        text: "test sent you a hug",
+        date: new Date(),
+        read: true,
+      },
+      {
+        id: 3,
+        fromId: 2,
+        from: "test",
+        forId: 4,
+        for: "testing",
+        type: "hug",
+        text: "test sent you a hug",
+        date: new Date(),
+        read: false,
+      },
+    ]);
+    fixture.detectChanges();
+
+    // before
+    let notificationBadges = notifTabDOM.querySelectorAll(".badge");
+    expect(notificationBadges.length).toBe(1);
+    expect(notifTabDOM.querySelectorAll(".readToggle")[0].textContent).toBe("Mark Unread");
+
+    notifTabDOM.querySelectorAll(".readToggle")[0].click();
+    fixture.detectChanges();
+
+    // after
+    notificationBadges = notifTabDOM.querySelectorAll(".badge");
+    expect(notificationBadges.length).toBe(2);
+    expect(notifTabDOM.querySelectorAll(".readToggle")[0].textContent).toBe("Mark Read");
+    expect(notificationsTab["notificationService"].newNotifications()).toBe(2);
+    expect(apiClientSpy).toHaveBeenCalledWith("notifications", {
+      notification_ids: [2],
+      read: false,
+    });
+    expect(notificationsTab.notifications()[0].read).toBeFalse();
   });
 
   // Check that the exit button emits the correct boolean

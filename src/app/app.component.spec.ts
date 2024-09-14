@@ -77,6 +77,7 @@ describe("AppComponent", () => {
       checkInitialPermissionState: (_enabled) => new Promise(() => true),
       getCachedSubscription: () => undefined,
       startAutoRefresh: (_rate) => undefined,
+      newNotifications: signal(0),
     });
     const MockSWManager = MockProvider(SWManager, {
       registerSW: () => undefined,

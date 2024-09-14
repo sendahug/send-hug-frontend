@@ -48,6 +48,7 @@ import { NotificationService } from "@app/services/notifications.service";
 import { AuthService, ToggleButtonOption } from "@app/services/auth.service";
 import { mockAuthedUser } from "@tests/mockData";
 import { AppAlert } from "@app/components/appAlert/appAlert.component";
+import { ApiClientService } from "@app/services/apiClient.service";
 
 describe("Notifications Tab", () => {
   // Before each test, configure testing environment
@@ -66,7 +67,7 @@ describe("Notifications Tab", () => {
       updateUserData: (_user) => mockSubscription,
     });
     const MockNotificationService = MockProvider(NotificationService, {
-      notifications: [],
+      newNotifications: signal(0),
       getNotifications: (_page) =>
         of({
           notifications: [],
@@ -77,6 +78,7 @@ describe("Notifications Tab", () => {
           totalItems: 1,
         }),
     });
+    const MockAPIClient = MockProvider(ApiClientService);
 
     TestBed.resetTestEnvironment();
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
@@ -89,6 +91,7 @@ describe("Notifications Tab", () => {
         provideRouter([]),
         MockAuthService,
         MockNotificationService,
+        MockAPIClient,
       ],
     }).compileComponents();
   });
@@ -217,6 +220,7 @@ describe("Notifications Tab", () => {
           type: "hug",
           text: "test sent you a hug",
           date: new Date(),
+          read: true,
         },
       ],
       newCount: 1,
@@ -234,8 +238,8 @@ describe("Notifications Tab", () => {
     const notifTabDOM = fixture.nativeElement;
     fixture.detectChanges();
 
-    notificationsTab.getNotifications().add(() => {
-      expect(getSpy).toHaveBeenCalledWith(1);
+    notificationsTab.getNotifications()!.add(() => {
+      expect(getSpy).toHaveBeenCalledWith(1, undefined);
       expect(notificationsTab.currentPage()).toBe(2);
       expect(notificationsTab.totalPages()).toBe(2);
 
@@ -352,6 +356,9 @@ describe("Notifications Tab", () => {
       spyOn(notifTabDOM.querySelector("#exitButton"), "focus").and.callThrough(),
       spyOn(notifTabDOM.querySelectorAll(".NotificationButton")[0], "focus").and.callThrough(),
       spyOn(notifTabDOM.querySelectorAll(".NotificationButton")[1], "focus").and.callThrough(),
+      spyOn(notifTabDOM.querySelectorAll(".NotificationButton")[2], "focus").and.callThrough(),
+      spyOn(notifTabDOM.querySelectorAll(".NotificationButton")[3], "focus").and.callThrough(),
+      spyOn(notifTabDOM.querySelectorAll(".NotificationButton")[4], "focus").and.callThrough(),
     ];
     spies.forEach((spy) => {
       spy.calls.reset();
@@ -359,16 +366,15 @@ describe("Notifications Tab", () => {
 
     // step 1: check the last element is focused
     // focus on the last element
-    notifTabDOM.querySelectorAll(".NotificationButton")[1].focus();
+    notifTabDOM.querySelectorAll(".NotificationButton")[4].focus();
 
     // check the last element has focus
-    spies.forEach((spy, index: number) => {
-      if (index == 2) {
-        expect(spy).toHaveBeenCalled();
-      } else {
-        expect(spy).not.toHaveBeenCalled();
-      }
-    });
+    expect(spies[0]).not.toHaveBeenCalled();
+    expect(spies[1]).not.toHaveBeenCalled();
+    expect(spies[2]).not.toHaveBeenCalled();
+    expect(spies[3]).not.toHaveBeenCalled();
+    expect(spies[4]).not.toHaveBeenCalled();
+    expect(spies[5]).toHaveBeenCalled();
 
     // step 2: check what happens when clicking tab
     // trigger tab event
@@ -382,14 +388,12 @@ describe("Notifications Tab", () => {
 
     // check the focus shifted to the first element
     expect(focusBindedSpy).toHaveBeenCalled();
-    spies.forEach((spy, index: number) => {
-      if (index != 1) {
-        expect(spy).toHaveBeenCalled();
-        expect(spy).toHaveBeenCalledTimes(1);
-      } else {
-        expect(spy).not.toHaveBeenCalled();
-      }
-    });
+    expect(spies[0]).toHaveBeenCalled();
+    expect(spies[1]).not.toHaveBeenCalled();
+    expect(spies[2]).not.toHaveBeenCalled();
+    expect(spies[3]).not.toHaveBeenCalled();
+    expect(spies[4]).not.toHaveBeenCalled();
+    expect(spies[5]).toHaveBeenCalled();
 
     // check what happens when clicking shift + tab
     // trigger shift + tab event
@@ -406,7 +410,11 @@ describe("Notifications Tab", () => {
     expect(focusBindedSpy).toHaveBeenCalledTimes(2);
     expect(spies[0]).toHaveBeenCalledTimes(1);
     expect(spies[1]).not.toHaveBeenCalled();
-    expect(spies[2]).toHaveBeenCalledTimes(2);
+    expect(spies[2]).not.toHaveBeenCalled();
+    expect(spies[3]).not.toHaveBeenCalled();
+    expect(spies[4]).not.toHaveBeenCalled();
+    expect(spies[5]).toHaveBeenCalledTimes(2);
+
     done();
   });
 
@@ -452,6 +460,201 @@ describe("Notifications Tab", () => {
     expect(notificationsTab.currentPage()).toBe(1);
     expect(getNotificationsSpy).toHaveBeenCalledTimes(1);
     done();
+  });
+
+  it("toggleUnread() - should toggle the visibility of unread messages", () => {
+    const fixture = TestBed.createComponent(NotificationsTab);
+    const notificationsTab = fixture.componentInstance;
+    const notifTabDOM = fixture.nativeElement;
+    const getNotificationsSpy = spyOn(notificationsTab, "getNotifications");
+    fixture.detectChanges();
+
+    // before
+    expect(notificationsTab.displayUnread()).toBeTrue();
+    expect(notifTabDOM.querySelectorAll(".NotificationButton")[2].textContent).toBe("Hide unread");
+
+    notifTabDOM.querySelectorAll(".NotificationButton")[2].click();
+    fixture.detectChanges();
+
+    // after
+    expect(notificationsTab.displayUnread()).toBeFalse();
+    expect(getNotificationsSpy).toHaveBeenCalled();
+    expect(notifTabDOM.querySelectorAll(".NotificationButton")[2].textContent).toBe("Show unread");
+  });
+
+  it("toggleRead() - should toggle the visibility of read messages", () => {
+    const fixture = TestBed.createComponent(NotificationsTab);
+    const notificationsTab = fixture.componentInstance;
+    const notifTabDOM = fixture.nativeElement;
+    const getNotificationsSpy = spyOn(notificationsTab, "getNotifications");
+    fixture.detectChanges();
+
+    // before
+    expect(notificationsTab.displayRead()).toBeTrue();
+    expect(notifTabDOM.querySelectorAll(".NotificationButton")[3].textContent).toBe("Hide read");
+
+    notifTabDOM.querySelectorAll(".NotificationButton")[3].click();
+    fixture.detectChanges();
+
+    // after
+    expect(notificationsTab.displayRead()).toBeFalse();
+    expect(getNotificationsSpy).toHaveBeenCalled();
+    expect(notifTabDOM.querySelectorAll(".NotificationButton")[3].textContent).toBe("Show read");
+  });
+
+  it("markAll() - should mark all notifications read", () => {
+    const apiClient = TestBed.inject(ApiClientService);
+    const apiClientSpy = spyOn(apiClient, "patch").and.returnValue(
+      of({
+        success: true,
+        updated: "all",
+        read: true,
+      }),
+    );
+
+    const fixture = TestBed.createComponent(NotificationsTab);
+    const notificationsTab = fixture.componentInstance;
+    const notifTabDOM = fixture.nativeElement;
+    notificationsTab["notificationService"].newNotifications.set(10);
+    notificationsTab.notifications.set([
+      {
+        id: 2,
+        fromId: 2,
+        from: "test",
+        forId: 4,
+        for: "testing",
+        type: "hug",
+        text: "test sent you a hug",
+        date: new Date(),
+        read: false,
+      },
+      {
+        id: 3,
+        fromId: 2,
+        from: "test",
+        forId: 4,
+        for: "testing",
+        type: "hug",
+        text: "test sent you a hug",
+        date: new Date(),
+        read: false,
+      },
+      {
+        id: 4,
+        fromId: 2,
+        from: "test",
+        forId: 4,
+        for: "testing",
+        type: "hug",
+        text: "test sent you a hug",
+        date: new Date(),
+        read: false,
+      },
+    ]);
+    fixture.detectChanges();
+
+    // before
+    let notificationBadges = notifTabDOM.querySelectorAll(".badge");
+    expect(notificationBadges.length).toBe(3);
+    expect(notifTabDOM.querySelectorAll(".NotificationButton")[4].textContent).toBe(
+      "Mark all read",
+    );
+
+    notifTabDOM.querySelectorAll(".NotificationButton")[4].click();
+    fixture.detectChanges();
+
+    // after
+    notificationBadges = notifTabDOM.querySelectorAll(".badge");
+    expect(notificationBadges.length).toBe(0);
+    expect(notifTabDOM.querySelectorAll(".NotificationButton")[4].textContent).toBe(
+      "Mark all unread",
+    );
+    expect(notificationsTab["notificationService"].newNotifications()).toBe(0);
+    expect(apiClientSpy).toHaveBeenCalledWith("notifications", {
+      notification_ids: "all",
+      read: true,
+    });
+    notificationsTab.notifications().forEach((notification) => {
+      expect(notification.read).toBeTrue();
+    });
+  });
+
+  it("markAll() - should mark all notifications unread", () => {
+    const apiClient = TestBed.inject(ApiClientService);
+    const apiClientSpy = spyOn(apiClient, "patch").and.returnValue(
+      of({
+        success: true,
+        updated: "all",
+        read: false,
+      }),
+    );
+
+    const fixture = TestBed.createComponent(NotificationsTab);
+    const notificationsTab = fixture.componentInstance;
+    const notifTabDOM = fixture.nativeElement;
+    notificationsTab["notificationService"].newNotifications.set(0);
+    notificationsTab.totalItems.set(3);
+    notificationsTab.notifications.set([
+      {
+        id: 2,
+        fromId: 2,
+        from: "test",
+        forId: 4,
+        for: "testing",
+        type: "hug",
+        text: "test sent you a hug",
+        date: new Date(),
+        read: true,
+      },
+      {
+        id: 3,
+        fromId: 2,
+        from: "test",
+        forId: 4,
+        for: "testing",
+        type: "hug",
+        text: "test sent you a hug",
+        date: new Date(),
+        read: true,
+      },
+      {
+        id: 4,
+        fromId: 2,
+        from: "test",
+        forId: 4,
+        for: "testing",
+        type: "hug",
+        text: "test sent you a hug",
+        date: new Date(),
+        read: true,
+      },
+    ]);
+    fixture.detectChanges();
+
+    // before
+    let notificationBadges = notifTabDOM.querySelectorAll(".badge");
+    expect(notificationBadges.length).toBe(0);
+    expect(notifTabDOM.querySelectorAll(".NotificationButton")[4].textContent).toBe(
+      "Mark all unread",
+    );
+
+    notifTabDOM.querySelectorAll(".NotificationButton")[4].click();
+    fixture.detectChanges();
+
+    // after
+    notificationBadges = notifTabDOM.querySelectorAll(".badge");
+    expect(notificationBadges.length).toBe(3);
+    expect(notifTabDOM.querySelectorAll(".NotificationButton")[4].textContent).toBe(
+      "Mark all read",
+    );
+    expect(notificationsTab["notificationService"].newNotifications()).toBe(3);
+    expect(apiClientSpy).toHaveBeenCalledWith("notifications", {
+      notification_ids: "all",
+      read: false,
+    });
+    notificationsTab.notifications().forEach((notification) => {
+      expect(notification.read).toBeFalse();
+    });
   });
 
   // Check that the exit button emits the correct boolean

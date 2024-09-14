@@ -171,6 +171,9 @@ describe("AppComponent", () => {
     );
     const getSubscriptionSpy = spyOn(notificationService, "getCachedSubscription");
     const startRefreshSpy = spyOn(notificationService, "startAutoRefresh");
+    const getNotificationsSpy = spyOn(notificationService, "getNotifications").and.returnValue(
+      of(),
+    );
 
     TestBed.createComponent(AppComponent);
 
@@ -180,6 +183,7 @@ describe("AppComponent", () => {
     expect(checkStateSpy).toHaveBeenCalled();
     expect(getSubscriptionSpy).toHaveBeenCalled();
     expect(startRefreshSpy).toHaveBeenCalled();
+    expect(getNotificationsSpy).toHaveBeenCalled();
   }));
 
   // it("should check for a logged in user - don't enable push and auto-refresh", fakeAsync(() => {

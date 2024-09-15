@@ -43,7 +43,7 @@ app-user-page {
   padding-top: 15px;
   padding-top: 15px;
   border: none;
-  background: @boxesBackground;
+  background: var(--boxesBackground);
   box-shadow: 5px 5px 7px 0 rgba(46, 61, 73, 0.5);
   display: flex;
   flex-wrap: wrap;
@@ -69,7 +69,7 @@ app-user-page {
 /* Display name */
 .displayName {
   .fontSize(18);
-  background: @boxesBackground;
+  background: var(--boxesBackground);
   font-weight: bold;
   text-align: center;
   margin: 0;
@@ -93,14 +93,14 @@ app-user-page {
   font-weight: bold;
   text-align: center;
   margin: 0 5px;
-  color: @headlineColour;
+  color: var(--headlineColour);
   padding: 0 5px 10px;
 }
 
 /* User Page Field Text */
 .pageData {
   .fontSize(14);
-  color: @textColour;
+  color: var(--textColour);
   padding-bottom: 0;
   margin-bottom: 0;
 }
@@ -139,7 +139,7 @@ app-user-page {
   width: 80%;
   border-radius: 10px;
   border: none;
-  background: @itemBackground;
+  background: var(--itemBackground);
   margin: 15px 7%;
   padding: 10px;
 }
@@ -236,7 +236,7 @@ app-messages {
 app-messages h3 {
   .fontSize(24);
   text-align: center;
-  color: @headlineColour;
+  color: var(--headlineColour);
   margin-bottom: 10px;
   padding-top: 0;
   margin-top: 5px;
@@ -250,7 +250,7 @@ app-messages h3 {
 /* Mailbox navigation button */
 .messNavOption {
   margin: 5px;
-  background: @buttonBackground;
+  background: var(--buttonBackground);
   color: #fff;
   border-radius: 10px;
   font-weight: bold;
@@ -274,7 +274,7 @@ app-messages h3 {
   &:extend(#frameSample);
   width: 90%;
   margin: 10px 5%;
-  background: @boxesBackground;
+  background: var(--boxesBackground);
   border-radius: 5px;
   border: none;
   box-shadow: 5px 5px 7px 0 rgba(46, 61, 73, 0.5);
@@ -326,7 +326,7 @@ app-messages h3 {
 .messageText {
   .fontSize(17);
   text-align: center;
-  color: @textColour;
+  color: var(--textColour);
   line-height: 1.5em;
   margin-top: 5px;
   /* Responsive styling for screens above 600px width */
@@ -339,7 +339,7 @@ app-messages h3 {
 app-messages .pageCategory {
   .fontSize(16);
   text-align: center;
-  color: @headlineColour;
+  color: var(--headlineColour);
 }
 
 /* Field text - inbox/outbox */
@@ -464,9 +464,9 @@ app-messages .pageCategory {
 
 .internalButton {
   .fontSize(16);
-  color: @linkColour;
+  color: var(--linkColour);
   background-color: transparent;
   border: transparent;
-  text-decoration: underline solid @linkColour 1px;
+  text-decoration: underline solid var(--linkColour) 1px;
   padding: 10px 0;
 }

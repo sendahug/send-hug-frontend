@@ -13,7 +13,7 @@
 /* Item List Title */
 .listTitle {
   .fontSize(24);
-  color: @headlineColour;
+  color: var(--headlineColour);
   text-align: center;
   padding-top: 5px;
   margin-top: 5px;
@@ -24,11 +24,11 @@
 .sugItem,
 .suggestedItem {
   &:extend(#itemSample);
-  border-color: @itemBackground;
+  border-color: var(--itemBackground);
   box-shadow: 3px 3px 7px 0 rgba(46, 61, 73, 0.5);
   margin: 10px auto;
   padding: 5px;
-  background: @itemBackground;
+  background: var(--itemBackground);
   display: flex;
   flex-wrap: wrap;
   max-width: 430px;
@@ -78,7 +78,7 @@
 
 /* Item User Profile Link */
 .profileLink {
-  color: @profileLinkColour;
+  color: var(--profileLinkColour);
   text-decoration: none;
   font-weight: bold;
 }

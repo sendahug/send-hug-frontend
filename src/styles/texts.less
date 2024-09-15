@@ -23,14 +23,14 @@
 
 .textViewTitle {
   text-align: center;
-  color: @headlineColour;
+  color: var(--headlineColour);
 }
 
 .textViewTextBlock {
   .fontSize(17);
   padding: 5px;
   margin: 5px 10px;
-  color: @textColour;
+  color: var(--textColour);
   line-height: 1.8em;
   /* Responsive styling for screens above 600px width */
   @media screen and (min-width: 600px) {
@@ -41,7 +41,7 @@
 .textViewLink {
   .fontSize(15);
   text-align: center;
-  color: @linkColour;
+  color: var(--linkColour);
   margin: 10px;
   padding-bottom: 0px;
   display: block;
@@ -89,7 +89,7 @@ app-about {
 .aboutInnerLink {
   .fontSize(15);
   text-align: center;
-  color: @linkColour;
+  color: var(--linkColour);
   margin: 10px;
 }
 
@@ -154,7 +154,7 @@ app-site-map {
 /* Route links */
 app-site-map a {
   .fontSize(15);
-  color: @linkColour;
+  color: var(--linkColour);
   /* Responsive styling for screens above 700px width */
   @media screen and (min-width: 700px) {
     .fontSize(16);
@@ -174,19 +174,19 @@ app-site-map a {
 /* Support Page Navigation title */
 .supportNavTitle {
   .fontSize(18);
-  color: @linkColour;
+  color: var(--linkColour);
 }
 
 /* Support Page Navigatio link */
 .supportNavLink {
   .fontSize(16);
-  color: @linkColour;
+  color: var(--linkColour);
 }
 
 /* Support Page title */
 app-support h3 {
   .fontSize(22);
-  color: @headlineColour;
+  color: var(--headlineColour);
   text-align: center;
   /* Responsive styling for screens above 800px width */
   @media screen and (min-width: 800px) {
@@ -201,7 +201,7 @@ app-support h3 {
 /* Frequently asked questions item */
 .faqItem {
   &:extend(#itemSample);
-  background: @boxesBackground;
+  background: var(--boxesBackground);
   padding: 10px;
   width: 90%;
   margin: 20px 5%;
@@ -220,7 +220,7 @@ app-support h3 {
 /* Any questions section text */
 .furtherQuestions {
   .fontSize(16);
-  color: @textColour;
+  color: var(--textColour);
   padding: 10px;
   width: 90%;
   margin: 0 5%;

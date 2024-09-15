@@ -35,7 +35,7 @@ a fa-icon {
 
 /* App button */
 .appButton {
-  background: @buttonBackground;
+  background: var(--buttonBackground);
   color: #fff;
   padding: 7px;
   border: none;
@@ -107,8 +107,25 @@ a.appButton {
 
 body {
   overflow-x: hidden;
-  background: @mainBackground;
-  font-family: @mainFont;
+  background: var(--mainBackground);
+  font-family: var(--mainFont);
+}
+
+/* Site Header */
+#siteHeader {
+  width: 94%;
+  max-width: 94%;
+  background-color: var(--mainBackground);
+  margin: 0 3%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  /* Responsive styling for screens up to 650px width */
+  @media screen and (max-width: 650px) {
+    padding-top: 2%;
+  }
 }
 
 #contentContainer {
@@ -129,12 +146,6 @@ body {
     bottom: 30px;
     top: 130px;
   }
-}
-
-#mainContent {
-  padding-bottom: 20px;
-  display: flex;
-  flex-direction: column;
 }
 
 /* Breadcrumb area */
@@ -159,7 +170,7 @@ body {
 /* Breadcrumb (current page) */
 .breadcrumb {
   .fontSize(15);
-  color: @textColour;
+  color: var(--textColour);
   text-transform: capitalize;
   margin: 2px;
   padding: 2px;
@@ -171,7 +182,7 @@ body {
 
 /* Breadcrumb link */
 .bLink {
-  color: @linkColour;
+  color: var(--linkColour);
 }
 
 /* Notification block */
@@ -188,8 +199,8 @@ body {
   right: -10px;
   padding: 3px 8px;
   border-radius: 50%;
-  background: @boxesBackground;
-  color: @headlineColour;
+  background: var(--boxesBackground);
+  color: var(--headlineColour);
 }
 
 /* =================== Footer Styling =================== */
@@ -217,7 +228,7 @@ body {
 #newItem h3 {
   .fontSize(24);
   text-align: center;
-  color: @headlineColour;
+  color: var(--headlineColour);
   padding: 10px;
   margin: 0;
 }
@@ -225,7 +236,7 @@ body {
 /* New Item form */
 #newMessage .newItem,
 #newPost .newItem {
-  background: @boxesBackground;
+  background: var(--boxesBackground);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -239,7 +250,7 @@ body {
 /* New Item field + title */
 .formElement {
   text-align: center;
-  color: @textColour;
+  color: var(--textColour);
   padding: 7px 2px;
   margin: 10px 5px;
   width: calc(100% - 14px);
@@ -282,7 +293,7 @@ body {
 #errorPage h3 {
   .fontSize(24);
   text-align: center;
-  color: @headlineColour;
+  color: var(--headlineColour);
   padding: 10px;
   margin: 0;
 }
@@ -291,7 +302,7 @@ body {
 .pageData {
   .fontSize(16);
   text-align: center;
-  color: @textColour;
+  color: var(--textColour);
   padding: 10px 2px;
 }
 
@@ -299,7 +310,7 @@ body {
 #errorCode {
   .fontSize(13);
   text-align: center;
-  color: @textColour;
+  color: var(--textColour);
   padding: 10px 2px;
 }
 
@@ -309,7 +320,7 @@ body {
   margin: 7px calc((100% - 20px) / 2);
   border: none;
   border-radius: 10px;
-  background: @mainBackground;
+  background: var(--mainBackground);
 }
 
 /* Arrow in Go Back Button */
@@ -321,7 +332,7 @@ body {
 /* Loader text */
 #loading #loadingMessage {
   .fontSize(18);
-  color: @headlineColour;
+  color: var(--headlineColour);
 }
 
 /* Loader spinner */
@@ -340,7 +351,7 @@ body {
 /* Search Results title */
 app-search-results h2 {
   .fontSize(24);
-  color: @headlineColour;
+  color: var(--headlineColour);
   text-align: center;
   padding: 0px 5px 10px;
   margin: 0 5px 10px;
@@ -351,13 +362,13 @@ app-search-results h2 {
 app-search-results h3 {
   .fontSize(22);
   text-align: center;
-  color: @headlineColour;
+  color: var(--headlineColour);
 }
 
 /* User result - link to profile page */
 .searchResultUser a {
   .fontSize(16);
-  color: @profileLinkColour;
+  color: var(--profileLinkColour);
   /* Responsivce styling for screen above 700px width */
   @media screen and (min-width: 700px) {
     .fontSize(17);
@@ -413,7 +424,7 @@ app-notifications {
 /* Notifications Title */
 app-notifications h4 {
   .fontSize(22);
-  color: @headlineColour;
+  color: var(--headlineColour);
   text-align: center;
   padding: 5px 5px 0;
   margin: 10px 5px 15px;
@@ -447,7 +458,7 @@ app-notifications h4 {
 .notificationItem {
   border: none;
   box-shadow: 5px 5px 7px 0 rgba(46, 61, 73, 0.5);
-  background: @itemBackground;
+  background: var(--itemBackground);
   border-radius: 10px;
   width: 80%;
   margin: 15px 5%;
@@ -458,7 +469,7 @@ app-notifications h4 {
 .notificationTitle {
   .fontSize(16);
   text-align: center;
-  color: @headlineColour;
+  color: var(--headlineColour);
   margin: 5px;
   font-weight: bold;
 }
@@ -467,13 +478,13 @@ app-notifications h4 {
 .notificationText {
   .fontSize(14);
   text-align: center;
-  color: @textColour;
+  color: var(--textColour);
   margin: 5px;
 }
 
 /* Notification link */
 .notificationText a {
-  color: @linkColour;
+  color: var(--linkColour);
 }
 
 #notificationsTab .NotificationButton {

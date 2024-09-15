@@ -1,20 +1,3 @@
-/* Site Header */
-#siteHeader {
-  width: 94%;
-  max-width: 94%;
-  background-color: var(--mainBackground);
-  margin: 0 3%;
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 10;
-  /* Responsive styling for screens up to 650px width */
-  @media screen and (max-width: 650px) {
-    padding-top: 2%;
-  }
-}
-
 /* Site logo */
 #siteLogo {
   margin: 0 10px 0 0;
@@ -253,6 +236,12 @@
   @media screen and (min-width: 400px) {
     margin: 1px 2px;
   }
+}
+
+#mainContent {
+  padding-bottom: 20px;
+  display: flex;
+  flex-direction: column;
 }
 
 /* =================== Footer Styling =================== */

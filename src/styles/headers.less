@@ -25,7 +25,7 @@
   left: -10px;
   top: 0;
   z-index: 10;
-  background: @boxesBackground;
+  background: var(--boxesBackground);
   align-items: center;
   justify-content: center;
 }
@@ -36,12 +36,12 @@
   /* Responsive styling for screens up to 650px width */
   @media screen and (max-width: 650px) {
     padding: 10px 15px;
-    background: @boxesBackground;
+    background: var(--boxesBackground);
   }
 
   /* Responsive styling for screens above 650px width */
   @media screen and (min-width: 650px) {
-    background: @mainBackground;
+    background: var(--mainBackground);
   }
 }
 
@@ -70,7 +70,7 @@
   &:extend(.headerAlerts);
   width: 90%;
   padding: 5px;
-  color: @headlineColour;
+  color: var(--headlineColour);
   padding: 0;
   /* Responsive styling for screens above 900px width */
   @media screen and (min-width: 900px) {
@@ -82,7 +82,7 @@
 /* Menu button */
 #menuBtn:not(.hidden) {
   display: block;
-  background: @mainBackground;
+  background: var(--mainBackground);
 }
 
 /* Navigation menu - inner */
@@ -96,7 +96,7 @@
   @media screen and (min-width: 650px) {
     flex-direction: row;
     width: 100%;
-    background: @mainBackground;
+    background: var(--mainBackground);
     align-items: center;
     justify-content: space-between;
     padding: 10px;
@@ -121,7 +121,7 @@
 /* Navigation Item */
 .navLink {
   .navLinkButtonSample();
-  color: @linkColour;
+  color: var(--linkColour);
   display: block;
   border: none;
   padding: 0 15px;
@@ -176,7 +176,7 @@
 .newNotification {
   &:extend(.notificationBlockSample);
   padding: 2px;
-  background-color: @boxesBackground;
+  background-color: var(--boxesBackground);
   /* Responsive styling for screens up to 650px width */
   @media screen and (max-width: 650px) {
     margin-top: 20px;
@@ -184,7 +184,7 @@
   /* Responsive styling for screens above 650px width */
   @media screen and (min-width: 650px) {
     margin-left: 10px;
-    background: @mainBackground;
+    background: var(--mainBackground);
   }
   /* Responsive styling for screens above 700px width */
   @media screen and (min-width: 700px) {
@@ -196,7 +196,7 @@
 #search #exitButton {
   &:extend(.textlessButton);
   margin: 5px;
-  background: @mainBackground;
+  background: var(--mainBackground);
   padding: 1px;
   /* Responsive design for screens above 400px width */
   @media screen and (min-width: 400px) {
@@ -217,7 +217,7 @@ app-header-message #headerMessage {
 /*  Header Message message */
 #headerMessage #loadingMessage {
   .fontSize(13);
-  color: @headlineColour;
+  color: var(--headlineColour);
   margin: 0;
   padding: 0;
   /* Responsive styling for screens above 390px width */

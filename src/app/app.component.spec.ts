@@ -582,8 +582,8 @@ describe("AppComponent", () => {
 
     const navMenu = componentHtml.querySelector("#navMenu");
     const navLinks = componentHtml.querySelector("#navLinks");
-    navLinks.style.width = "800px";
-    navMenu.style.maxWidth = "800px";
+    navLinks.style.width = "1000px";
+    navMenu.style.maxWidth = "1000px";
     navMenu.style.display = "flex";
     component.changeTextSize("largest");
     fixture.detectChanges();

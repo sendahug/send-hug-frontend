@@ -6,7 +6,7 @@
   "size-limit": [
     {
       "name": "Main Bundle",
-      "limit": "200 kB",
+      "limit": "120 kB",
       "path": [
         "dist/assets/index-*.js"
       ]
@@ -26,7 +26,13 @@
         "dist/assets/fonts/*",
         "dist/assets/icons/*",
         "dist/assets/img/*",
-        "dist/assets/*.svg",
+        "dist/assets/*.svg"
+      ]
+    },
+    {
+      "name": "Main Styles",
+      "limit": "15 kB",
+      "path": [
         "dist/styles.css"
       ]
     }

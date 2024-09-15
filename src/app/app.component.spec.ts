@@ -389,7 +389,7 @@ describe("AppComponent", () => {
     expect(siteHeader.querySelector("#textPanel")).toBeDefined();
   });
 
-  // // Check that the font size panel is hidden when the button is clicked again
+  // Check that the font size panel is hidden when the button is clicked again
   it("has a font size which is hidden when the icon is clicked again", () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
@@ -441,7 +441,7 @@ describe("AppComponent", () => {
       fixture.detectChanges();
 
       // check the font size was changed
-      expect(document.getElementsByTagName("html")[0]!.style.fontSize).toBe("75%");
+      expect(document.querySelector("html")!.style.fontSize).toBe("75%");
       expect(menuSpy).toHaveBeenCalled();
       expect(menuSpy).toHaveBeenCalledTimes(1);
       resolve(undefined);
@@ -453,7 +453,7 @@ describe("AppComponent", () => {
         fixture.detectChanges();
 
         // check the font size was changed
-        expect(document.getElementsByTagName("html")[0]!.style.fontSize).toBe("87.5%");
+        expect(document.querySelector("html")!.style.fontSize).toBe("87.5%");
         expect(menuSpy).toHaveBeenCalled();
         expect(menuSpy).toHaveBeenCalledTimes(2);
         // step 4: regular size
@@ -464,7 +464,7 @@ describe("AppComponent", () => {
         fixture.detectChanges();
 
         // check the font size was changed
-        expect(document.getElementsByTagName("html")[0]!.style.fontSize).toBe("100%");
+        expect(document.querySelector("html")!.style.fontSize).toBe("100%");
         expect(menuSpy).toHaveBeenCalled();
         expect(menuSpy).toHaveBeenCalledTimes(3);
         // step 5: larger size
@@ -475,7 +475,7 @@ describe("AppComponent", () => {
         fixture.detectChanges();
 
         // check the font size was changed
-        expect(document.getElementsByTagName("html")[0]!.style.fontSize).toBe("150%");
+        expect(document.querySelector("html")!.style.fontSize).toBe("150%");
         expect(menuSpy).toHaveBeenCalled();
         expect(menuSpy).toHaveBeenCalledTimes(4);
         // step 6: largest size
@@ -486,7 +486,7 @@ describe("AppComponent", () => {
         fixture.detectChanges();
 
         // check the font size was changed
-        expect(document.getElementsByTagName("html")[0]!.style.fontSize).toBe("200%");
+        expect(document.querySelector("html")!.style.fontSize).toBe("200%");
         expect(menuSpy).toHaveBeenCalled();
         expect(menuSpy).toHaveBeenCalledTimes(5);
         done();
@@ -507,16 +507,16 @@ describe("AppComponent", () => {
   });
 
   // check the menu is hidden if the screen isn't wide enough
-  // it("should hide the menu if the screen isn't wide enough", async () => {
-  //   const fixture = TestBed.createComponent(AppComponent);
-  //   const component = fixture.componentInstance;
-  //   const componentHtml = fixture.nativeElement;
-  //   await setViewport({ width: 600, height: 640 });
-  //   fixture.detectChanges();
+  it("should hide the menu if the screen isn't wide enough", async () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    const component = fixture.componentInstance;
+    const componentHtml = fixture.nativeElement;
+    await setViewport({ width: 600, height: 640 });
+    fixture.detectChanges();
 
-  //   expect(component.showMenu()).toBeFalse();
-  //   expect(componentHtml.querySelector("#navLinks")!.classList).toContain("hidden");
-  // });
+    expect(component.showMenu()).toBeFalse();
+    expect(componentHtml.querySelector("#navLinks")!.classList).toContain("hidden");
+  });
 
   // TODO: Figure out why this isn't working in CI.
   // check the menu is hidden when clicked again
@@ -582,8 +582,8 @@ describe("AppComponent", () => {
 
     const navMenu = componentHtml.querySelector("#navMenu");
     const navLinks = componentHtml.querySelector("#navLinks");
-    navLinks.style.width = "600px";
-    navMenu.style.maxWidth = "600px";
+    navLinks.style.width = "800px";
+    navMenu.style.maxWidth = "800px";
     navMenu.style.display = "flex";
     component.changeTextSize("largest");
     fixture.detectChanges();

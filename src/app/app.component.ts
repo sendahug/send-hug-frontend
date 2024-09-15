@@ -84,6 +84,31 @@ export class AppComponent implements OnInit, AfterViewInit {
     searchQuery: this.fb.control("", [Validators.required, Validators.minLength(1)]),
   });
   SiteLogoSrc = SiteLogoSrc;
+  currentTextSize = signal(1);
+  menuSize = computed(() => {
+    // text, search and notifications, each is ~65px
+    const smallerButtons = 3 * 65;
+    // the logo is at most 100px
+    const logo = 100;
+
+    // unauthenticated users have 3 buttons
+    let navLinksCount = 3;
+    if (this.authService.authenticated()) navLinksCount += 2;
+    if (this.authService.canUser("read:admin-board")) navLinksCount += 1;
+
+    // nav icons are padded at most by 30px in regular text size,
+    // and 50px in large text size
+    const iconPadding = this.currentTextSize() > 1 ? 50 : 30;
+
+    // 50 - the general padding
+    return (
+      50 +
+      smallerButtons +
+      logo +
+      navLinksCount * 30 * this.currentTextSize() +
+      navLinksCount * iconPadding
+    );
+  });
   // font awesome icons
   faBars = faBars;
   faComments = faComments;
@@ -377,25 +402,27 @@ export class AppComponent implements OnInit, AfterViewInit {
     switch (size) {
       case "smallest":
         document.getElementsByTagName("html")[0]!.style.fontSize = "75%";
-        this.checkMenuSize();
+        this.currentTextSize.set(0.75);
         break;
       case "smaller":
         document.getElementsByTagName("html")[0]!.style.fontSize = "87.5%";
-        this.checkMenuSize();
+        this.currentTextSize.set(0.875);
         break;
       case "regular":
         document.getElementsByTagName("html")[0]!.style.fontSize = "100%";
-        this.checkMenuSize();
+        this.currentTextSize.set(1);
         break;
       case "larger":
         document.getElementsByTagName("html")[0]!.style.fontSize = "150%";
-        this.checkMenuSize();
+        this.currentTextSize.set(1.5);
         break;
       case "largest":
         document.getElementsByTagName("html")[0]!.style.fontSize = "200%";
-        this.checkMenuSize();
+        this.currentTextSize.set(2);
         break;
     }
+
+    this.checkMenuSize();
   }
 
   /*
@@ -408,16 +435,10 @@ export class AppComponent implements OnInit, AfterViewInit {
   */
   checkMenuSize() {
     let navMenu = document.getElementById("navMenu") as HTMLDivElement;
-    let navLinks = document.getElementById("navLinks") as HTMLDivElement;
-
-    // remove the hidden label check the menu's width
-    if (!this.showMenu()) {
-      this.showMenu.set(true);
-    }
 
     // if the larger text makes the navigation menu too long, turn it back
     // to the small-viewport menu
-    if (navLinks.scrollWidth + 50 >= navMenu.offsetWidth) {
+    if (this.menuSize() >= navMenu.offsetWidth) {
       this.showMenu.set(false);
       this.showMenuButton.set(true);
     } else {

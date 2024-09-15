@@ -3,7 +3,7 @@
 	<div id="noInternet" *ngIf="alertsService.isOffline.value" role="banner">You are not currently connected to the internet. For updated data, reconnect to the internet and try again.</div>
 	<nav id="navMenu" role="navigation">
 		<a [routerLink]="['/']"><img [src]="SiteLogoSrc" alt="send a hug logo" id="siteLogo"></a>
-		<button [ngClass]="menuButtonClass()" id="menuBtn" (click)="toggleMenu()" aria-hidden="true" aria-label="open navigation menu"><fa-icon [icon]="faBars" class="fa-bars"></fa-icon></button>
+		<button [ngClass]="menuButtonClass()" id="menuBtn" (click)="toggleMenu()" [attr.aria-hidden]="!showMenuButton()" aria-label="open navigation menu"><fa-icon [icon]="faBars" class="fa-bars"></fa-icon></button>
 		<div id="navLinks" [ngClass]="navMenuClass()" [attr.aria-hidden]="showMenu()">
 			<a [routerLink]="['/']" [ngClass]="getClassForNavItem('/')">
 				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 42 29.9"  id="home" class="navPic navIcon" alt="">

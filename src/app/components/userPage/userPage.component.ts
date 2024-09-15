@@ -61,6 +61,7 @@ interface OtherUserResponse {
 @Component({
   selector: "app-user-page",
   templateUrl: "./userPage.component.html",
+  styleUrl: "./userPage.component.less",
   standalone: true,
   imports: [
     Loader,

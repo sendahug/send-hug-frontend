@@ -41,6 +41,7 @@ import { AuthService } from "@app/services/auth.service";
 @Component({
   selector: "app-site-map",
   templateUrl: "./siteMap.component.html",
+  styleUrl: "./siteMap.component.less",
   standalone: true,
   imports: [CommonModule, RouterLink],
 })

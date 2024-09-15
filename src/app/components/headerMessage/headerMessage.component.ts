@@ -36,6 +36,7 @@ import { Component, OnInit, Input, OnChanges } from "@angular/core";
 @Component({
   selector: "app-header-message",
   templateUrl: "./headerMessage.component.html",
+  styleUrl: "./headerMessage.component.less",
   standalone: true,
 })
 export class HeaderMessage implements OnInit, OnChanges {

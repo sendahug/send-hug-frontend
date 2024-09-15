@@ -65,6 +65,7 @@ interface ThreadResponse {
 @Component({
   selector: "app-messages",
   templateUrl: "./messages.component.html",
+  styleUrl: "./messages.component.less",
   standalone: true,
   imports: [CommonModule, RouterLink, Loader, UserIcon, HeaderMessage, ItemDeleteForm],
 })

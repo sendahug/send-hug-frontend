@@ -49,6 +49,7 @@ import { SWManager } from "@app/services/sWManager.service";
 @Component({
   selector: "app-new-item",
   templateUrl: "./newItem.component.html",
+  styleUrl: "./newItem.component.less",
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
 })

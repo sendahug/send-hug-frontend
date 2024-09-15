@@ -1,0 +1,69 @@
+/* =================== Main Page Styling =================== */
+/* Main Page Component */
+:host {
+  display: flex;
+  flex-direction: column;
+  padding: 5px;
+  left: 0;
+  right: 0;
+  align-content: space-between;
+  justify-content: space-between;
+  /* Responsive styling for screens above 600px width */
+  @media screen and (min-width: 600px) {
+    flex-direction: row;
+    justify-content: space-evenly;
+  }
+}
+
+/* Item list container */
+.listContainer {
+  width: 90%;
+  margin: 0 5%;
+  /* Responsive styling for screens above 400px width */
+  @media screen and (min-width: 400px) {
+    width: 80%;
+    margin: 0 10%;
+  }
+  /* Responsive styling for screens above 500px width */
+  @media screen and (min-width: 500px) {
+    width: 74%;
+    margin: 0 13%;
+  }
+  /* Responsive styling for screens above 600px width */
+  @media screen and (min-width: 600px) {
+    width: 45%;
+    height: 85%;
+    margin: 0 10px;
+  }
+}
+
+/* Suggested items list container */
+#suggestedItems {
+  /* Responsive styling for screens up to 600px width */
+  @media screen and (max-width: 600px) {
+    margin-top: 20px;
+  }
+}
+
+#sugItemsList,
+#newItemsList {
+  max-width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Main page error message */
+.errorMessage {
+  margin: 10px;
+}
+
+/* View full list buttons */
+.fullButton {
+  background: var(--mainBackground);
+  padding-bottom: 10px;
+  text-align: center;
+  width: 100%;
+  display: inline-block;
+}

@@ -52,6 +52,7 @@ import SiteLogoSrc from "@/assets/img/Logo.svg";
 @Component({
   selector: "app-root",
   templateUrl: "./app.component.html",
+  styleUrl: "./app.component.less",
   standalone: true,
   imports: [
     CommonModule,

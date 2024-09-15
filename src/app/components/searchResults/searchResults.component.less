@@ -1,0 +1,138 @@
+/* Search Results Component */
+:host {
+  width: 90%;
+  padding: 20px 5%;
+  left: 0;
+  right: 0;
+  /* Responsivce styling for screen above 750px width */
+  @media screen and (min-width: 750px) {
+    padding: 20px 2%;
+    width: 96%;
+  }
+  /* Responsivce styling for screen above 850px width */
+  @media screen and (min-width: 850px) {
+    padding: 20px;
+  }
+}
+
+#searchResultsMain {
+  display: flex;
+  flex-direction: column;
+  /* Responsivce styling for screen above 625px width */
+  @media screen and (min-width: 625px) {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+}
+
+/* Results summary title */
+#resultSummary {
+  text-align: center;
+  order: 0;
+  width: 100%;
+}
+
+/* Users title */
+#usersTitle {
+  order: 1;
+  /* Responsivce styling for screen above 625px width */
+  @media screen and (min-width: 625px) {
+    padding: 5px calc((100% - 140px) / 4);
+  }
+}
+
+/* Posts title */
+#postsTitle {
+  order: 3;
+  /* Responsivce styling for screen above 625px width */
+  @media screen and (min-width: 625px) {
+    order: 2;
+    padding: 5px calc((100% - 140px) / 4);
+  }
+}
+
+/* user Results list */
+#userSearchResults {
+  order: 2;
+  /* Responsivce styling for screen above 625px width */
+  @media screen and (min-width: 625px) {
+    order: 3;
+    width: 20%;
+    margin: 5px 0 5px 10%;
+  }
+}
+
+/* no user Results message */
+#uSearchResErr {
+  order: 2;
+  /* Responsivce styling for screen above 625px width */
+  @media screen and (min-width: 625px) {
+    order: 3;
+    width: 20%;
+    margin: 5px 5% 5px 15%;
+  }
+}
+
+/* Post Results list */
+#postSearchResults {
+  order: 4;
+  /* Responsivce styling for screen above 625px width */
+  @media screen and (min-width: 625px) {
+    order: 3;
+    width: 55%;
+    margin: 5px 0 5px 5%;
+  }
+}
+
+/* no post Results message */
+#pSearchResErr {
+  order: 4;
+  /* Responsivce styling for screen above 625px width */
+  @media screen and (min-width: 625px) {
+    order: 3;
+    width: 55%;
+    margin: 5px 0 5px 5%;
+  }
+}
+
+/* User result */
+.searchResultUser {
+  text-align: center;
+  padding: 5px;
+  margin: 5px;
+  /* Responsivce styling for screen above 700px width */
+  @media screen and (min-width: 700px) {
+    padding: 8px 5px;
+  }
+}
+
+/* User result - link to profile page when hovered on */
+.searchResultUser a:hover {
+  text-decoration: underline;
+  color: #7c1e1b;
+}
+
+/* Pagination in search */
+#searchResultsMain .pagination {
+  width: 100%;
+  margin: 10px 0;
+  left: 0;
+  right: 0;
+}
+
+/* Post/user Results list */
+.searchResults {
+  border-radius: 5px;
+  width: 80%;
+  padding: 15px 5%;
+  margin: 5px 5%;
+  background: var(--boxesBackground);
+  list-style: none;
+  border: none;
+  box-shadow: 5px 5px 7px 0 rgba(46, 61, 73, 0.5);
+  /* Responsivce styling for screen above 450px width */
+  @media screen and (min-width: 450px) {
+    width: 70%;
+    margin: 5px 10%;
+  }
+}

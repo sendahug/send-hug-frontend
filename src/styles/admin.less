@@ -3,51 +3,6 @@
 @import "./variables.less";
 
 /* =================== Admin Dashboard Component Styling =================== */
-/* Admin Dashboard Component */
-app-admin-dashboard {
-  width: 90%;
-  padding: 0 5%;
-  left: 0;
-  right: 0;
-}
-
-/* Admin Dashboard */
-#adminDashAll {
-  display: flex;
-  flex-direction: column;
-  /* Responsive styling for screens above 800px width */
-  @media screen and (min-width: 800px) {
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: space-between;
-  }
-}
-
-#adminDashAll #loaderDiv {
-  /* Responsive styling for screens above 800px width */
-  @media screen and (min-width: 800px) {
-    order: 2;
-  }
-}
-
-/* Admin Dashboard navigation menu */
-#adminNav {
-  width: 90%;
-  margin: 5px 5% 5px;
-  text-align: center;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-content: center;
-  /* Responsive styling for screens above 800px width */
-  @media screen and (min-width: 800px) {
-    order: 1;
-    flex-direction: column;
-    margin: 5px 10px 15px;
-    width: 15%;
-  }
-}
-
 /* Admin Dashboard navigation menu item */
 .adminNavItem {
   .fontSize(16);
@@ -109,36 +64,9 @@ app-admin-filters {
   }
 }
 
-/* Admin Dashboard main page intro text */
-.adminText {
-  text-align: center;
-  padding: 5px;
-}
-
-/* Admin Dashboard main page list */
-#adminCategories {
-  padding: 0;
-}
-
-/* Admin Dashboard main page list item */
-.adminCategory {
-  list-style: none;
-  margin: 10px 5px;
-  padding: 0;
-}
-
 /* Admin Dashboard main page list item title */
 .adminCategory .pageCategory {
   .fontSize(16);
-}
-
-/* Admin Dashboard main page list item text */
-.adminCategory .pageText {
-  line-height: 1.5em;
-  /* Responsive styling for screens above 600px width */
-  @media screen and (min-width: 600px) {
-    line-height: 1.8em;
-  }
 }
 
 /* Admin Dashboard sub-section title */

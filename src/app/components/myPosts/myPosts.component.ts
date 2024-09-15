@@ -58,6 +58,7 @@ interface MyPostsResponse {
 @Component({
   selector: "app-my-posts",
   templateUrl: "./myPosts.component.html",
+  styleUrl: "./myPosts.component.less",
   standalone: true,
   imports: [Loader, HeaderMessage, SinglePost, ItemDeleteForm, CommonModule, FontAwesomeModule],
 })

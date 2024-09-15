@@ -13,7 +13,7 @@
     },
     {
       "name": "Vendor scripts",
-      "limit": "250 kB",
+      "limit": "225 kB",
       "path": [
         "dist/assets/vendor-*.js",
         "dist/assets/polyfills-*.js"
@@ -21,7 +21,7 @@
     },
     {
       "name": "Static Assets",
-      "limit": "300 kB",
+      "limit": "285 kB",
       "path": [
         "dist/assets/fonts/*",
         "dist/assets/icons/*",
@@ -31,7 +31,7 @@
     },
     {
       "name": "Main Styles",
-      "limit": "15 kB",
+      "limit": "10 kB",
       "path": [
         "dist/styles.css"
       ]

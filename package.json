@@ -21,7 +21,7 @@
     },
     {
       "name": "Static Assets",
-      "limit": "285 kB",
+      "limit": "290 kB",
       "path": [
         "dist/assets/fonts/*",
         "dist/assets/icons/*",

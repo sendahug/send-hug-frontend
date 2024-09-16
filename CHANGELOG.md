@@ -2,6 +2,23 @@
 
 ## Unreleased
 
+### 2024-09-16
+
+#### Features
+
+- Added support for pagination in the notifications component. Users can now view multiple pages of their notifications (both read and unread). ([#1808](https://github.com/sendahug/send-hug-frontend/pull/1808))
+- Added support for filtering notifications based on their read status. Users can show or hide read or unread notifications using newly-added buttons in the notifications tab. ([#1808](https://github.com/sendahug/send-hug-frontend/pull/1808))
+- Unread notifications now have an indicator to let the user know they haven't been read yet. Previously, notifications didn't have an individual status, and the new notifications was simply a count of all notifications since the user's last non-silent refresh. Now, each notification has its own individual status, which is shown in the notifications' tab. The new notifications count is returned by the back-end and reflects the number of notifications that haven't been marked 'read'. ([#1808](https://github.com/sendahug/send-hug-frontend/pull/1808))
+- Added the ability to set a single notification's or all notifications' read status. Each notification now has a button that allows toggling its read status, and the notifications tab has a button that allows setting all the notifications' statuses at once. ([#1808](https://github.com/sendahug/send-hug-frontend/pull/1808))
+
+#### Changes
+
+- The silent refresh option was removed from the notifications' fetch. The option was removed from the back-end, and as such, was unnecessary. ([#1808](https://github.com/sendahug/send-hug-frontend/pull/1808))
+
+#### Chores
+
+- Moved most of the notifications tab's styling from the global scope to a component-scoped stylesheet, which ensures only the notifications tab is affected by those styles. ([#1808](https://github.com/sendahug/send-hug-frontend/pull/1808))
+
 ### 2024-08-26
 
 #### Changes

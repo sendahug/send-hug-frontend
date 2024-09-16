@@ -6,16 +6,45 @@
 			<button class="appButton NotificationButton" (click)="togglePushNotifications()">{{ authService.toggleBtn() }} Push Notifications</button>
 			<button class="appButton NotificationButton" (click)="toggleAutoRefresh()">{{ authService.refreshBtn() }} Auto-Refresh</button>
 		</div>
+		<div id="nFilters">
+			<!-- TODO: Ideally this should be a dropdown, but we'll need to build a custom component for it-->
+			<button class="appButton NotificationButton" (click)="toggleUnread()">{{ displayUnreadButtonLabel() }} unread</button>
+			<button class="appButton NotificationButton" (click)="toggleRead()">{{ displayReadButtonLabel() }} read</button>
+			<button class="appButton NotificationButton" (click)="markAll()">Mark all {{ markAllLabel() }}</button>
+		</div>
 
-		<ul id="notificationsList" *ngIf="notificationService.notifications.length">
-			<li *ngFor="let notification of notificationService.notifications" class="notificationItem">
-				<div class="notificationTitle">New {{ notification.type }}!</div>
-				<div *ngIf="notification.type == 'hug'" class="notificationText">You received a hug from {{ notification.from }}.</div>
-				<div *ngIf="notification.type == 'message'" class="notificationText">You have a new message from {{ notification.from }}. <a [routerLink]="['messages']" [attr.aria-label]="'view message from ' + notification.from">View Message</a></div>
+		<ul id="notificationsList" *ngIf="notifications().length">
+			<li *ngFor="let notification of notifications()" class="notificationItem">
+				<span>
+					<div class="notificationTitle">New {{ notification.type }}!</div>
+					<div *ngIf="notification.type == 'hug'" class="notificationText">You received a hug from {{ notification.from }}.</div>
+					<div *ngIf="notification.type == 'message'" class="notificationText">You have a new message from {{ notification.from }}. <a [routerLink]="['messages']" [attr.aria-label]="'view message from ' + notification.from">View Message</a></div>
+					<span class="notificationButtons">
+						<button class="appButton readToggle" (click)="mark(notification.id, !notification.read)">Mark {{ notification.read ? "Unread" : "Read" }}</button>
+					</span>
+				</span>
+				<span *ngIf="!notification.read" class="badge" aria-label="this notification is unread"></span>
 			</li>
 		</ul>
 
 		<!-- If there are no notifications -->
-		<div *ngIf="notificationService.notifications.length == 0" class="errorMessage" id="noNotifications">You have no new notifications!</div>
+		<div *ngIf="notifications().length == 0" class="errorMessage" id="noNotifications">You have no notifications! Try adjusting the filters above.</div>
+
+		<!-- Notification pagination -->
+		<div class="pagination" role="navigation">
+			<button
+				[ngClass]="previousPageButtonClass()" 
+				(click)="prevPage()" 
+				[attr.aria-label]="'previous page of notifications'"
+				[disabled]="currentPage() <= 1"
+			>Previous Page</button>
+			<div class="pageCount">Page {{ currentPage() }} of {{ totalPages() }}</div>
+			<button 
+				[ngClass]="nextPageButtonClass()" 
+				(click)="nextPage()" 
+				[attr.aria-label]="'next page of notifications'"
+				[disabled]="totalPages() <= currentPage()"
+			>Next Page</button>
+		</div>
 	</div>
 </div>

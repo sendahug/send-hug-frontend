@@ -82,7 +82,7 @@
 				<button id="notificationsBtn" class="navLink" (click)="toggleNotifications()" aria-label="open notifications tab">
 					<fa-icon [icon]="faBell" class="fa-bell navButton" id="navNotific"></fa-icon>
 				</button>
-				<span class="badge">{{ notificationService.newNotifications }}</span>
+				<span class="badge">{{ notificationService.newNotifications() }}</span>
 			</div>
 			<button class="navLink" (click)="toggleSearch()" id="searchBtn" aria-label="open search panel">
 				<fa-icon [icon]="faSearch" class="fa-search navButton"></fa-icon>

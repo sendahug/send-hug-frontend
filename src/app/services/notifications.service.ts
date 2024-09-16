@@ -31,18 +31,23 @@
 */
 
 // Angular imports
-import { Injectable } from "@angular/core";
+import { Injectable, signal } from "@angular/core";
 import { SwPush } from "@angular/service-worker";
-import { interval, Subscription, Observable } from "rxjs";
+import { interval, Subscription, Observable, tap } from "rxjs";
 
 // App-related imports
 import { AlertsService } from "./alerts.service";
 import { SWManager } from "./sWManager.service";
 import { ApiClientService } from "./apiClient.service";
+import { type Notification } from "@app/interfaces/notification.interface";
 
 interface GetNotificationsResponse {
   success: boolean;
   notifications: Notification[];
+  newCount: number;
+  current_page: number;
+  total_pages: number;
+  totalItems: number;
 }
 
 export type ToggleButtonOption = "Enable" | "Disable";
@@ -52,12 +57,10 @@ export type ToggleButtonOption = "Enable" | "Disable";
 })
 export class NotificationService {
   readonly publicKey = import.meta.env["VITE_PUBLIC_KEY"];
-  // notifications data
-  notifications: any[] = [];
   // push notifications variables
   notificationsSub: PushSubscription | undefined;
   subId = 0;
-  newNotifications = 0;
+  newNotifications = signal(0);
   resubscribeCalls = 0;
   subscriptionDate = 0;
   // notifications refresh variables
@@ -89,7 +92,7 @@ export class NotificationService {
     // every ten seconds, when the counter is done, silently refres
     // the user's notifications
     this.refreshSub = this.refreshCounter.subscribe((_value) => {
-      this.getNotifications(true);
+      this.getNotifications().subscribe();
     });
   }
 
@@ -103,22 +106,19 @@ export class NotificationService {
 
   /**
    * Gets all new user notifications.
-   * @param silentRefresh - whether to update the "last fetched" date in the backend.
+   * @param page - the current page to fetch.
+   * @param read - type of notifications to fetch (read/unread only).
    */
-  getNotifications(silentRefresh?: boolean) {
-    // gets Notifications
-    this.apiClient
-      .get<GetNotificationsResponse>("notifications", { silentRefresh: silentRefresh || false })
-      .subscribe({
-        next: (response) => {
-          this.notifications = response.notifications;
+  getNotifications(page: number = 1, read?: boolean) {
+    const params: { [key: string]: any } = { page };
+    if (read !== undefined) params["readStatus"] = read;
 
-          // if it's a silent refresh, check how many new notifications the user has
-          if (silentRefresh) {
-            this.newNotifications = this.notifications.length;
-          }
-        },
-      });
+    // gets Notifications
+    return this.apiClient.get<GetNotificationsResponse>("notifications", params).pipe(
+      tap((response) => {
+        this.newNotifications.set(response.newCount);
+      }),
+    );
   }
 
   // PUSH SUBSCRIPTION METHODS
@@ -211,7 +211,7 @@ export class NotificationService {
     return this.requestSubscription()
       .then((subscription) => {
         // send the info to the server
-        this.apiClient.post("notifications", JSON.stringify(subscription)).subscribe({
+        this.apiClient.post("push_subscriptions", JSON.stringify(subscription)).subscribe({
           next: (response: any) => {
             this.subId = response.subId;
             this.alertsService.createSuccessAlert("Subscribed to push notifications successfully!");
@@ -244,7 +244,7 @@ export class NotificationService {
       this.requestSubscription().then((subscription) => {
         // update the saved subscription in the database
         this.apiClient
-          .patch(`subscriptions/${this.subId}`, JSON.stringify(subscription))
+          .patch(`push_subscriptions/${this.subId}`, JSON.stringify(subscription))
           .subscribe({
             next: (response: any) => {
               this.subId = response.subId;

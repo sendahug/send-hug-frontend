@@ -134,6 +134,8 @@ export class AppComponent implements OnInit, AfterViewInit {
       next: (user) => {
         if (!user) return;
 
+        this.notificationService.getNotifications().subscribe({});
+
         // if push notifications are enabled, check the permission
         // state and get the cached subscription from localStorage
         this.notificationService

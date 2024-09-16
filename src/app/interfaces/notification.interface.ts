@@ -39,4 +39,5 @@ export interface Notification {
   type: string;
   text: string;
   date: Date;
+  read: boolean;
 }

@@ -12,6 +12,10 @@
     {
       "change": "Fixes",
       "description": "Fixed a bug where changing the base font size of the site to large sizes twice in a row resulted in the main navigation menu being shown even if there wasn't enough space for it in the viewport. This happened because of the way the menu size was checked when it was previously hidden."
+    },
+    {
+      "change": "Fixes",
+      "description": "Fixed the placement of the navigation menu when the viewport is too small to fit the horizonal menu. The menu now fits on screen properly, with both the home button and the text size button fitting within it and in a way that's easily accessible to users."
     }
   ]
 }

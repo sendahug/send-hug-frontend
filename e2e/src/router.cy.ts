@@ -1,6 +1,6 @@
 describe("Send A Hug Router", () => {
   // login
-  // TODO: drop this and do it in a better way
+  // TODO: figure out why this isn't persisting
   before(() => {
     cy.visit("http://localhost:3000/login");
     cy.wait(500);
@@ -15,18 +15,6 @@ describe("Send A Hug Router", () => {
     cy.visit("http://localhost:3000/");
     cy.get("app-main-page").should("be.visible").should("not.be.undefined");
 
-    // user page
-    cy.visit("http://localhost:3000/user");
-    cy.get("app-user-page").should("be.visible").should("not.be.undefined");
-
-    // mailbox
-    cy.visit("http://localhost:3000/messages/inbox");
-    cy.get("app-messages").should("be.visible").should("not.be.undefined");
-
-    // new item
-    cy.visit("http://localhost:3000/new/Post");
-    cy.get("app-new-item").should("be.visible").should("not.be.undefined");
-
     // full list
     cy.visit("http://localhost:3000/list/New");
     cy.get("app-full-list").should("be.visible").should("not.be.undefined");
@@ -38,14 +26,6 @@ describe("Send A Hug Router", () => {
     // search results
     cy.visit("http://localhost:3000/search?query=test");
     cy.get("app-search-results").should("be.visible").should("not.be.undefined");
-
-    // admin dashboard
-    cy.visit("http://localhost:3000/admin");
-    cy.get("app-admin-dashboard").should("be.visible").should("not.be.undefined");
-
-    // settings
-    cy.visit("http://localhost:3000/settings");
-    cy.get("app-settings").should("be.visible").should("not.be.undefined");
 
     // sitemap
     cy.visit("http://localhost:3000/sitemap");
@@ -59,7 +39,15 @@ describe("Send A Hug Router", () => {
   });
 
   // check the correct sub-route is shown for those paths that have sub-routes
+  // TODO: Figure out why this isn't registering auth
   it("should show the correct sub-route - messages", () => {
+    cy.visit("http://localhost:3000/login");
+    cy.wait(500);
+    cy.get("#username").type(Cypress.env("ADMIN_USERNAME"));
+    cy.get("#password").type(Cypress.env("ADMIN_PASSWORD"));
+    cy.get("#logIn").click();
+    cy.wait(500);
+
     // inbox
     cy.visit("http://localhost:3000/messages/inbox");
     cy.get("app-messages").should("be.visible").should("not.be.undefined");
@@ -99,6 +87,13 @@ describe("Send A Hug Router", () => {
 
   // check the correct sub-route is shown for those paths that have sub-routes
   it("should show the correct sub-route - new item", () => {
+    cy.visit("http://localhost:3000/login");
+    cy.wait(500);
+    cy.get("#username").type(Cypress.env("ADMIN_USERNAME"));
+    cy.get("#password").type(Cypress.env("ADMIN_PASSWORD"));
+    cy.get("#logIn").click();
+    cy.wait(500);
+
     // new post
     cy.visit("http://localhost:3000/new/Post");
     cy.get("app-new-item").should("be.visible").should("not.be.undefined");
@@ -121,6 +116,33 @@ describe("Send A Hug Router", () => {
     cy.visit("http://localhost:3000/list/Suggested");
     cy.get("app-full-list").should("be.visible").should("not.be.undefined");
     cy.get("#listTitle").should("have.text", "Suggested Items");
+  });
+
+  it("should prevent unauthed access to auth-based routes", () => {
+    // user page
+    cy.visit("http://localhost:3000/user");
+    cy.get("app-user-page").should("be.undefined");
+    cy.get("app-error-page").should("be.visible").should("not.be.undefined");
+
+    // mailbox
+    cy.visit("http://localhost:3000/messages/inbox");
+    cy.get("app-messages").should("be.undefined");
+    cy.get("app-error-page").should("be.visible").should("not.be.undefined");
+
+    // new item
+    cy.visit("http://localhost:3000/new/Post");
+    cy.get("app-new-item").should("be.undefined");
+    cy.get("app-error-page").should("be.visible").should("not.be.undefined");
+
+    // admin dashboard
+    cy.visit("http://localhost:3000/admin");
+    cy.get("app-admin-dashboard").should("not.be.undefined");
+    cy.get("app-error-page").should("be.visible").should("not.be.undefined");
+
+    // settings
+    cy.visit("http://localhost:3000/settings");
+    cy.get("app-settings").should("not.be.undefined");
+    cy.get("app-error-page").should("be.visible").should("not.be.undefined");
   });
 
   // TODO: Mailbox navigation (using buttons)

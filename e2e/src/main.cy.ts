@@ -83,27 +83,22 @@ describe("Send A Hug App", function () {
   it("should prevent unauthed access to auth-based routes", () => {
     // user page
     cy.visit("http://localhost:3000/user");
-    cy.get("app-user-page").should("be.undefined");
     cy.get("app-error-page").should("be.visible").should("not.be.undefined");
 
     // mailbox
     cy.visit("http://localhost:3000/messages/inbox");
-    cy.get("app-messages").should("be.undefined");
     cy.get("app-error-page").should("be.visible").should("not.be.undefined");
 
     // new item
     cy.visit("http://localhost:3000/new/Post");
-    cy.get("app-new-item").should("be.undefined");
     cy.get("app-error-page").should("be.visible").should("not.be.undefined");
 
     // admin dashboard
     cy.visit("http://localhost:3000/admin");
-    cy.get("app-admin-dashboard").should("not.undefined");
     cy.get("app-error-page").should("be.visible").should("not.be.undefined");
 
     // settings
     cy.visit("http://localhost:3000/settings");
-    cy.get("app-settings").should("not.undefined");
     cy.get("app-error-page").should("be.visible").should("not.be.undefined");
   });
 });

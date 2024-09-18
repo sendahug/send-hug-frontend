@@ -1,0 +1,9 @@
+{
+  "pr_number": 1813,
+  "changes": [
+    {
+      "change": "Features",
+      "description": "Added route guards to all routes that require the user to be authenticated or have a specific permission. This ensures users who aren't authenticated or have appropriate permissions cannot access these routes without the need to add handling for unauthorised users in the routes' components. Unauthorised users are instead redirected to the error page when trying to navigate to a route that requires authorisation."
+    }
+  ]
+}

@@ -459,7 +459,7 @@ export class AuthService {
     if (this.userData()) {
       // if it's within the user's permissions, return true;
       // otherwise return false
-      const canUserDo = this.userData()?.role["permissions"].includes(permission);
+      const canUserDo = this.userData()!.role["permissions"].includes(permission);
       return canUserDo;
     }
     // if there isn't, no user is logged in, so of course there's no permission

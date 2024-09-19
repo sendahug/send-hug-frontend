@@ -60,8 +60,7 @@ jobs:
           sudo npm install -g pa11y-ci --unsafe-perm=true --allow-root
           sudo apt-get update
           sudo apt-get install -y postgresql-client python3-pip xvfb
-      - run: |
-          psql -d $DATABASE_URL -c "CREATE ROLE circleci WITH SUPERUSER;"
+      - run: psql -d $DATABASE_URL -c "CREATE ROLE circleci WITH SUPERUSER;"
       - run: |
           cd ..
           git clone https://github.com/sendahug/send-hug-backend

@@ -92,7 +92,7 @@
     "@fortawesome/free-brands-svg-icons": "^6.6.0",
     "@fortawesome/free-regular-svg-icons": "^6.6.0",
     "@fortawesome/free-solid-svg-icons": "^6.6.0",
-    "firebase": "^10.13.1",
+    "firebase": "^10.13.2",
     "idb": "^8.0.0",
     "rxjs": "^7.8.1",
     "zone.js": "^0.14.10"

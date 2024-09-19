@@ -83,22 +83,27 @@ describe("Send A Hug App", function () {
   it("should prevent unauthed access to auth-based routes", () => {
     // user page
     cy.visit("http://localhost:3000/user");
-    cy.get("app-error-page").should("be.visible").should("not.be.undefined");
+    cy.get("app-main-page").should("be.visible").should("not.be.undefined");
+    cy.url().should("equal", "http://localhost:3000/?redirect=user");
 
     // mailbox
     cy.visit("http://localhost:3000/messages/inbox");
-    cy.get("app-error-page").should("be.visible").should("not.be.undefined");
+    cy.get("app-main-page").should("be.visible").should("not.be.undefined");
+    cy.url().should("equal", "http://localhost:3000/?redirect=messages%2Finbox");
 
     // new item
     cy.visit("http://localhost:3000/new/Post");
-    cy.get("app-error-page").should("be.visible").should("not.be.undefined");
+    cy.get("app-main-page").should("be.visible").should("not.be.undefined");
+    cy.url().should("equal", "http://localhost:3000/?redirect=new%2FPost");
 
     // admin dashboard
     cy.visit("http://localhost:3000/admin");
-    cy.get("app-error-page").should("be.visible").should("not.be.undefined");
+    cy.get("app-main-page").should("be.visible").should("not.be.undefined");
+    cy.url().should("equal", "http://localhost:3000/?redirect=admin");
 
     // settings
     cy.visit("http://localhost:3000/settings");
-    cy.get("app-error-page").should("be.visible").should("not.be.undefined");
+    cy.get("app-main-page").should("be.visible").should("not.be.undefined");
+    cy.url().should("equal", "http://localhost:3000/?redirect=settings");
   });
 });

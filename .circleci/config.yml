@@ -43,6 +43,7 @@ jobs:
       - image: cimg/python:3.11-node
         environment:
           DATABASE_URL: postgresql+asyncpg://postgres:password@localhost:5432/test_sah
+          BASE_DATABASE_URL: postgresql://postgres:password@localhost:5432/test_sah
           QUART_APP: send-hug-backend/app.py:app
           FLASK_ENV: development
           FRONTEND: http://localhost:3000
@@ -74,7 +75,7 @@ jobs:
       - run:
           name: Wait for db
           command: dockerize -wait tcp://localhost:5432 -timeout 1m
-      - run: psql -d $DATABASE_URL -c "CREATE ROLE circleci WITH SUPERUSER;"
+      - run: psql -d $BASE_DATABASE_URL -c "CREATE ROLE circleci WITH SUPERUSER;"
       - run:
           name: Restore database
           command: |

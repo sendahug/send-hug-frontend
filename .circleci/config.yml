@@ -75,7 +75,7 @@ jobs:
       - run:
           name: Wait for db
           command: dockerize -wait tcp://localhost:5432 -timeout 1m
-      - run: psql -d $BASE_DATABASE_URL -c "CREATE ROLE circleci WITH SUPERUSER, LOGIN;"
+      - run: psql -d $BASE_DATABASE_URL -c "CREATE ROLE circleci WITH SUPERUSER LOGIN;"
       - run:
           name: Restore database
           command: |

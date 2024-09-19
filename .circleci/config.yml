@@ -42,19 +42,16 @@ jobs:
     docker:
       - image: cimg/python:3.11-node
         environment:
-          DATABASE_URL: postgresql+asyncpg://postgres:password@localhost:5432/test_sah?sslmode=disable
+          DATABASE_URL: postgresql+asyncpg://postgres:password@localhost:5432/test_sah
           QUART_APP: send-hug-backend/app.py:app
           FLASK_ENV: development
           FRONTEND: http://localhost:3000
           FIREBASE_CREDENTIALS_FILE: send-hug-backend/test_creds.json
       - image: cimg/postgres:14.10
-        auth:
-          username: mydockerhub-user
-          password: $DOCKERHUB_PASSWORD # context / project UI env-var reference
         environment:
           POSTGRES_USER: postgres
           POSTGRES_DB: test_sah
-          POSTGRES_PASSWORD: "password"
+          POSTGRES_PASSWORD: password
     environment:
       CHROME_BIN: /usr/bin/google-chrome
     steps:
@@ -125,7 +122,7 @@ jobs:
         environment:
           POSTGRES_USER: postgres
           POSTGRES_DB: test_sah
-          POSTGRES_PASSWORD: "password"
+          POSTGRES_PASSWORD: password
     environment:
       CHROME_BIN: /usr/bin/google-chrome
     steps:

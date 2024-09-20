@@ -52,6 +52,7 @@ interface MainPageResponse {
 @Component({
   selector: "app-main-page",
   templateUrl: "./mainPage.component.html",
+  styleUrl: "./mainPage.component.less",
   standalone: true,
   imports: [CommonModule, Loader, SinglePost, RouterLink],
 })

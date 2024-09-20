@@ -46,6 +46,7 @@ import { UserIcon } from "@app/components/userIcon/userIcon.component";
 @Component({
   selector: "app-settings",
   templateUrl: "./settings.component.html",
+  styleUrl: "./settings.component.less",
   standalone: true,
   imports: [CommonModule, IconEditor, UserIcon, ReactiveFormsModule, RouterLink],
 })

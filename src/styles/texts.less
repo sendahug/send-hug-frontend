@@ -23,14 +23,14 @@
 
 .textViewTitle {
   text-align: center;
-  color: @headlineColour;
+  color: var(--headlineColour);
 }
 
 .textViewTextBlock {
   .fontSize(17);
   padding: 5px;
   margin: 5px 10px;
-  color: @textColour;
+  color: var(--textColour);
   line-height: 1.8em;
   /* Responsive styling for screens above 600px width */
   @media screen and (min-width: 600px) {
@@ -41,7 +41,7 @@
 .textViewLink {
   .fontSize(15);
   text-align: center;
-  color: @linkColour;
+  color: var(--linkColour);
   margin: 10px;
   padding-bottom: 0px;
   display: block;
@@ -89,7 +89,7 @@ app-about {
 .aboutInnerLink {
   .fontSize(15);
   text-align: center;
-  color: @linkColour;
+  color: var(--linkColour);
   margin: 10px;
 }
 
@@ -104,14 +104,6 @@ app-policies {
   .fontSize(26);
   &:extend(.textViewTitle);
   margin: 10px 20px;
-}
-
-/* Policies Component sub-titles */
-app-policies h3,
-app-policies h4 {
-  text-align: center;
-  padding-top: 10px;
-  margin: 0;
 }
 
 /* Policies Component sub-titles */
@@ -148,25 +140,6 @@ app-site-map {
   &:extend(.textBasedView);
 }
 
-/* Map title */
-#siteMap {
-  text-align: center;
-  margin-top: 5px;
-  padding-top: 5px;
-}
-
-/* Map list */
-app-site-map ul {
-  list-style: none;
-  text-align: center;
-  padding-inline-start: 0;
-}
-
-/* Route list item */
-.mainRoute {
-  margin: 20px 0;
-}
-
 /* Route name (parent route) */
 .mainRoute h4 {
   .fontSize(16);
@@ -178,15 +151,10 @@ app-site-map ul {
   }
 }
 
-/* Sub-route list item */
-.subRoute {
-  margin: 7px;
-}
-
 /* Route links */
 app-site-map a {
   .fontSize(15);
-  color: @linkColour;
+  color: var(--linkColour);
   /* Responsive styling for screens above 700px width */
   @media screen and (min-width: 700px) {
     .fontSize(16);
@@ -194,13 +162,6 @@ app-site-map a {
 }
 
 /* =================== Support Page Component Styling =================== */
-/* Support Page Component */
-app-support {
-  width: 90%;
-  padding: 10px 5%;
-  text-align: center;
-}
-
 /* Support Page Navigation */
 #supportNav {
   &:extend(#itemSample);
@@ -213,31 +174,19 @@ app-support {
 /* Support Page Navigation title */
 .supportNavTitle {
   .fontSize(18);
-  color: @linkColour;
-}
-
-/* Support Page Navigation - questions list */
-#supportNav ul {
-  list-style: none;
-  margin: 0 5px;
-  padding: 5px 10px;
-}
-
-/* Support Page Navigation - questions list - single question */
-#supportNav li {
-  padding: 2px;
+  color: var(--linkColour);
 }
 
 /* Support Page Navigatio link */
 .supportNavLink {
   .fontSize(16);
-  color: @linkColour;
+  color: var(--linkColour);
 }
 
 /* Support Page title */
 app-support h3 {
   .fontSize(22);
-  color: @headlineColour;
+  color: var(--headlineColour);
   text-align: center;
   /* Responsive styling for screens above 800px width */
   @media screen and (min-width: 800px) {
@@ -249,26 +198,13 @@ app-support h3 {
   }
 }
 
-/* Frequently asked questions list */
-#faq {
-  list-style: none;
-  margin: 10px 5px;
-  padding: 0 0 15px;
-}
-
 /* Frequently asked questions item */
 .faqItem {
   &:extend(#itemSample);
-  background: @boxesBackground;
+  background: var(--boxesBackground);
   padding: 10px;
   width: 90%;
   margin: 20px 5%;
-}
-
-/* Frequently asked questions item question & answer */
-.faqItem .pageCategory,
-.faqItem .pageData {
-  color: @textColour;
 }
 
 /* Frequently asked questions item question */
@@ -281,27 +217,11 @@ app-support h3 {
   .fontSize(16);
 }
 
-/* Frequently asked questions example icons */
-fa-icon.supportIcon .fa-gratipay,
-fa-icon.supportIcon .fa-comment,
-fa-icon.supportIcon .fa-flag,
-fa-icon.supportIcon .fa-edit,
-fa-icon.supportIcon .fa-times,
-fa-icon.supportIcon .fa-hand-holding-heart {
-  font-size: 16px;
-}
-
 /* Any questions section text */
 .furtherQuestions {
   .fontSize(16);
-  color: @textColour;
+  color: var(--textColour);
   padding: 10px;
   width: 90%;
   margin: 0 5%;
-}
-
-/* Any questions section links */
-.furtherQuestions a,
-.faqItem a {
-  color: @linkColour;
 }

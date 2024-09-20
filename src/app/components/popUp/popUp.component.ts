@@ -39,6 +39,7 @@ import { faTimes } from "@fortawesome/free-solid-svg-icons";
 @Component({
   selector: "app-pop-up",
   templateUrl: "./popUp.component.html",
+  styleUrl: "./popUp.component.less",
   standalone: true,
   imports: [CommonModule, FontAwesomeModule],
 })

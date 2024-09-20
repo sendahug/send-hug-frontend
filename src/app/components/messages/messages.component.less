@@ -1,0 +1,64 @@
+/* Headline + navigation */
+#mailboxNav {
+  /* Responsive styling for screens above 800px width */
+  @media screen and (min-width: 800px) {
+    width: 24%;
+    margin: 20px 2% 20px 4%;
+  }
+}
+
+/* Mailbox navigation */
+#messagesNav {
+  width: 90%;
+  margin: 5px 0;
+  padding: 5px 5% 10px 5%;
+  left: 0;
+  right: 0;
+  align-self: center;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* Responsive styling for screens above 800px width */
+  @media screen and (min-width: 800px) {
+    flex-direction: column;
+  }
+}
+
+/* A Message / message thread */
+.userMessage,
+.userThread {
+  width: 80%;
+  border-radius: 10px;
+  border: none;
+  background: var(--itemBackground);
+  margin: 15px 7%;
+  padding: 10px;
+  display: flex;
+  justify-content: center;
+}
+
+/* From field */
+.messageField {
+  text-align: center;
+  padding: 5px;
+  margin: 5px;
+}
+
+/* Field text */
+.pageData {
+  text-align: center;
+  color: var(--textColour);
+  line-height: 1.5em;
+  /* Responsive styling for screens above 600px width */
+  @media screen and (min-width: 600px) {
+    line-height: 1.8em;
+  }
+}
+
+.threadsContainer {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}

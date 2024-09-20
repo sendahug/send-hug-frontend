@@ -52,6 +52,7 @@ export const SitePolicyMapping: SitePolicy[] = [
 @Component({
   selector: "app-policies",
   templateUrl: "./sitePolicies.component.html",
+  styleUrl: "./sitePolicies.component.less",
   standalone: true,
   imports: [CommonModule, RouterLink],
 })

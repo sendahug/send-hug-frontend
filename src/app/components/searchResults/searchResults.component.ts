@@ -43,6 +43,7 @@ import { SinglePost } from "@app/components/post/post.component";
 @Component({
   selector: "app-search-results",
   templateUrl: "./searchResults.component.html",
+  styleUrl: "./searchResults.component.less",
   standalone: true,
   imports: [CommonModule, Loader, SinglePost, RouterLink],
 })

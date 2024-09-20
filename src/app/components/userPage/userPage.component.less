@@ -1,0 +1,104 @@
+/* User / Error Message Container */
+:host > div {
+  width: 90%;
+  max-width: 90%;
+  margin: 10px 5%;
+  /* Responsive styling for screens above 600px width */
+  @media screen and (min-width: 600px) {
+    width: 100%;
+    margin: 10px 0;
+  }
+}
+
+#profileContainer {
+  /* Responsive styling for screens above 600px width */
+  @media screen and (min-width: 600px) {
+    margin: 10px 0 10px 3%;
+    padding: 0;
+    left: 0;
+    right: 0;
+  }
+}
+
+/* User Page Title */
+h3 {
+  text-align: center;
+  margin-top: 5px;
+  padding-top: 5px;
+}
+
+/* User Page Profile pic container */
+#profilePic {
+  margin: 5px 0 5px 10px;
+}
+
+/* User Page username + role container */
+#userNameRole {
+  display: flex;
+  flex-direction: column;
+  align-content: space-around;
+  justify-content: space-evenly;
+  align-items: center;
+  margin: 0;
+}
+
+/* Role Field Container */
+#roleElement {
+  background: var(--boxesBackground);
+  padding: 4px;
+  text-align: center;
+  margin: 10px 0;
+  text-transform: uppercase;
+}
+
+/* Profile hug button */
+.displayName .hugButton {
+  background: var(--boxesBackground);
+}
+
+/* User Page Field Container */
+.profileElement {
+  border: none;
+  border-radius: 5px;
+  background: var(--itemBackground);
+  margin: 10px 5%;
+  width: 90%;
+  /* Responsive styling for screens above 525px width */
+  @media screen and (min-width: 525px) {
+    width: 80%;
+    margin: 10px 10%;
+  }
+}
+
+/* Hugs/posts Field Containers */
+#rHugsElement,
+#gHugsElement,
+#postsElement {
+  padding: 4px;
+}
+
+/* Posts Field title */
+#postsElement .pageCategory {
+  padding: 0 0 10px;
+}
+
+#profileData .buttons {
+  display: flex;
+  flex-direction: column;
+  align-content: space-between;
+  justify-content: space-between;
+  margin: 0 10px 10px;
+  /* Responsive styling for screens above 800px width */
+  @media screen and (min-width: 800px) {
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin: 0 0 10px;
+    width: 90%;
+  }
+}
+
+/* Settings link */
+#settingsLink {
+  text-align: center;
+  text-decoration: none;
+}

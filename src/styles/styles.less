@@ -35,7 +35,7 @@ a fa-icon {
 
 /* App button */
 .appButton {
-  background: @buttonBackground;
+  background: var(--buttonBackground);
   color: #fff;
   padding: 7px;
   border: none;
@@ -107,8 +107,25 @@ a.appButton {
 
 body {
   overflow-x: hidden;
-  background: @mainBackground;
-  font-family: @mainFont;
+  background: var(--mainBackground);
+  font-family: var(--mainFont);
+}
+
+/* Site Header */
+#siteHeader {
+  width: 94%;
+  max-width: 94%;
+  background-color: var(--mainBackground);
+  margin: 0 3%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  /* Responsive styling for screens up to 650px width */
+  @media screen and (max-width: 650px) {
+    padding-top: 2%;
+  }
 }
 
 #contentContainer {
@@ -131,12 +148,6 @@ body {
   }
 }
 
-#mainContent {
-  padding-bottom: 20px;
-  display: flex;
-  flex-direction: column;
-}
-
 /* Breadcrumb area */
 #breadcrumb {
   width: 40%;
@@ -156,14 +167,10 @@ body {
   }
 }
 
-app-admin-dashboard #breadcrumb {
-  margin: 0 0 0 1.5%;
-}
-
 /* Breadcrumb (current page) */
 .breadcrumb {
   .fontSize(15);
-  color: @textColour;
+  color: var(--textColour);
   text-transform: capitalize;
   margin: 2px;
   padding: 2px;
@@ -175,7 +182,7 @@ app-admin-dashboard #breadcrumb {
 
 /* Breadcrumb link */
 .bLink {
-  color: @linkColour;
+  color: var(--linkColour);
 }
 
 /* Notification block */
@@ -192,18 +199,11 @@ app-admin-dashboard #breadcrumb {
   right: -10px;
   padding: 3px 8px;
   border-radius: 50%;
-  background: @boxesBackground;
-  color: @headlineColour;
+  background: var(--boxesBackground);
+  color: var(--headlineColour);
 }
 
 /* =================== Footer Styling =================== */
-/* Site Footer */
-#siteFooter {
-  width: 94%;
-  max-width: 94%;
-  margin: 0 2%;
-}
-
 /* Footer text */
 .footerText,
 .footerText .textlessButton {
@@ -222,53 +222,21 @@ app-admin-dashboard #breadcrumb {
   }
 }
 
-.footerText a {
-  color: @linkColour;
-}
-
-.footerText .textlessButton {
-  color: @linkColour;
-  background-color: @mainBackground;
-  text-decoration: underline;
-  min-width: 0;
-  min-height: 0;
-}
-
 // TODO: Move the below elsewhere. Need to refactor quite a bit of code first though.
 /* =================== New Item Page Styling =================== */
-/* New Item Page Component */
-app-new-item {
-  width: 100%;
-  left: 0;
-  right: 0;
-}
-
-/* New Item frame */
-#newItem {
-  width: 90%;
-  margin: 10px 5%;
-}
-
 /* New Item title */
 #newItem h3 {
   .fontSize(24);
   text-align: center;
-  color: @headlineColour;
+  color: var(--headlineColour);
   padding: 10px;
   margin: 0;
-}
-
-#newMessage,
-#newPost {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
 }
 
 /* New Item form */
 #newMessage .newItem,
 #newPost .newItem {
-  background: @boxesBackground;
+  background: var(--boxesBackground);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -282,7 +250,7 @@ app-new-item {
 /* New Item field + title */
 .formElement {
   text-align: center;
-  color: @textColour;
+  color: var(--textColour);
   padding: 7px 2px;
   margin: 10px 5px;
   width: calc(100% - 14px);
@@ -298,10 +266,6 @@ app-new-item {
   @media screen and (min-width: 700px) {
     width: 80%;
   }
-}
-
-.newTextArea {
-  border: none;
 }
 
 /* New Item field button */
@@ -329,7 +293,7 @@ app-new-item {
 #errorPage h3 {
   .fontSize(24);
   text-align: center;
-  color: @headlineColour;
+  color: var(--headlineColour);
   padding: 10px;
   margin: 0;
 }
@@ -338,7 +302,7 @@ app-new-item {
 .pageData {
   .fontSize(16);
   text-align: center;
-  color: @textColour;
+  color: var(--textColour);
   padding: 10px 2px;
 }
 
@@ -346,7 +310,7 @@ app-new-item {
 #errorCode {
   .fontSize(13);
   text-align: center;
-  color: @textColour;
+  color: var(--textColour);
   padding: 10px 2px;
 }
 
@@ -356,7 +320,7 @@ app-new-item {
   margin: 7px calc((100% - 20px) / 2);
   border: none;
   border-radius: 10px;
-  background: @mainBackground;
+  background: var(--mainBackground);
 }
 
 /* Arrow in Go Back Button */
@@ -365,23 +329,10 @@ app-new-item {
 }
 
 /* =================== Loader Component Styling =================== */
-/* Via https://www.w3schools.com/howto/howto_css_loader.asp */
-/* Loader */
-#loading {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 80%;
-  width: 80%;
-  margin: 10%;
-}
-
 /* Loader text */
 #loading #loadingMessage {
   .fontSize(18);
-  color: @headlineColour;
+  color: var(--headlineColour);
 }
 
 /* Loader spinner */
@@ -397,175 +348,36 @@ app-new-item {
 }
 
 /* =================== Search Results Component Styling =================== */
-/* Search Results Component */
-app-search-results {
-  width: 90%;
-  padding: 20px 5%;
-  left: 0;
-  right: 0;
-  /* Responsivce styling for screen above 750px width */
-  @media screen and (min-width: 750px) {
-    padding: 20px 2%;
-    width: 96%;
-  }
-  /* Responsivce styling for screen above 850px width */
-  @media screen and (min-width: 850px) {
-    padding: 20px;
-  }
-}
-
 /* Search Results title */
 app-search-results h2 {
   .fontSize(24);
-  color: @headlineColour;
+  color: var(--headlineColour);
   text-align: center;
   padding: 0px 5px 10px;
   margin: 0 5px 10px;
   padding-top: 10px;
 }
 
-#searchResultsMain {
-  display: flex;
-  flex-direction: column;
-  /* Responsivce styling for screen above 625px width */
-  @media screen and (min-width: 625px) {
-    flex-direction: row;
-    flex-wrap: wrap;
-  }
-}
-
-/* Results summary title */
-#resultSummary {
-  text-align: center;
-  order: 0;
-  width: 100%;
-}
-
 /* Users / Posts title */
 app-search-results h3 {
   .fontSize(22);
   text-align: center;
-  color: @headlineColour;
-}
-
-/* Users title */
-#usersTitle {
-  order: 1;
-  /* Responsivce styling for screen above 625px width */
-  @media screen and (min-width: 625px) {
-    padding: 5px calc((100% - 140px) / 4);
-  }
-}
-
-/* Posts title */
-#postsTitle {
-  order: 3;
-  /* Responsivce styling for screen above 625px width */
-  @media screen and (min-width: 625px) {
-    order: 2;
-    padding: 5px calc((100% - 140px) / 4);
-  }
-}
-
-/* Post/user Results list */
-.searchResults {
-  border-radius: 5px;
-  width: 80%;
-  padding: 15px 5%;
-  margin: 5px 5%;
-  background: @boxesBackground;
-  list-style: none;
-  border: none;
-  box-shadow: 5px 5px 7px 0 rgba(46, 61, 73, 0.5);
-  /* Responsivce styling for screen above 450px width */
-  @media screen and (min-width: 450px) {
-    width: 70%;
-    margin: 5px 10%;
-  }
-}
-
-/* user Results list */
-#userSearchResults {
-  order: 2;
-  /* Responsivce styling for screen above 625px width */
-  @media screen and (min-width: 625px) {
-    order: 3;
-    width: 20%;
-    margin: 5px 0 5px 10%;
-  }
-}
-
-/* no user Results message */
-#uSearchResErr {
-  order: 2;
-  /* Responsivce styling for screen above 625px width */
-  @media screen and (min-width: 625px) {
-    order: 3;
-    width: 20%;
-    margin: 5px 5% 5px 15%;
-  }
-}
-
-/* Post Results list */
-#postSearchResults {
-  order: 4;
-  /* Responsivce styling for screen above 625px width */
-  @media screen and (min-width: 625px) {
-    order: 3;
-    width: 55%;
-    margin: 5px 0 5px 5%;
-  }
-}
-
-/* no post Results message */
-#pSearchResErr {
-  order: 4;
-  /* Responsivce styling for screen above 625px width */
-  @media screen and (min-width: 625px) {
-    order: 3;
-    width: 55%;
-    margin: 5px 0 5px 5%;
-  }
-}
-
-/* User result */
-.searchResultUser {
-  text-align: center;
-  padding: 5px;
-  margin: 5px;
-  /* Responsivce styling for screen above 700px width */
-  @media screen and (min-width: 700px) {
-    padding: 8px 5px;
-  }
+  color: var(--headlineColour);
 }
 
 /* User result - link to profile page */
 .searchResultUser a {
   .fontSize(16);
-  color: @profileLinkColour;
+  color: var(--profileLinkColour);
   /* Responsivce styling for screen above 700px width */
   @media screen and (min-width: 700px) {
     .fontSize(17);
   }
 }
 
-/* User result - link to profile page when hovered on */
-.searchResultsUser a:hover {
-  text-decoration: underline;
-  color: #7c1e1b;
-}
-
 /* Post Result */
 .searchResult {
   &:extend(.newItem);
-}
-
-/* Pagination in search */
-#searchResultsMain .pagination {
-  width: 100%;
-  margin: 10px 0;
-  left: 0;
-  right: 0;
 }
 
 /* =================== Notifications Tab Component Styling =================== */
@@ -577,7 +389,7 @@ app-notifications {
 /* Notifications Title */
 app-notifications h4 {
   .fontSize(22);
-  color: @headlineColour;
+  color: var(--headlineColour);
   text-align: center;
   padding: 5px 5px 0;
   margin: 10px 5px 15px;
@@ -592,7 +404,7 @@ app-notifications h4 {
   &:extend(.notificationBlockSample);
   border: none;
   box-shadow: 5px 5px 7px 0 rgba(46, 61, 73, 0.5);
-  background: @itemBackground;
+  background: var(--itemBackground);
   border-radius: 10px;
   width: 80%;
   margin: 15px 5%;
@@ -603,7 +415,7 @@ app-notifications h4 {
 .notificationTitle {
   .fontSize(17);
   text-align: center;
-  color: @headlineColour;
+  color: var(--headlineColour);
   margin: 5px;
   font-weight: bold;
 }
@@ -612,11 +424,6 @@ app-notifications h4 {
 .notificationText {
   .fontSize(16);
   text-align: center;
-  color: @textColour;
+  color: var(--textColour);
   margin: 5px;
-}
-
-/* Notification link */
-.notificationText a {
-  color: @linkColour;
 }

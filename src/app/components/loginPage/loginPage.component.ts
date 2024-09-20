@@ -49,6 +49,7 @@ import { PasswordResetForm } from "@app/components/passwordResetForm/passwordRes
 @Component({
   selector: "app-login-page",
   templateUrl: "./loginPage.component.html",
+  styleUrl: "./loginPage.component.less",
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, FontAwesomeModule, Loader, PasswordResetForm],
 })

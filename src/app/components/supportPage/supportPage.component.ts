@@ -41,6 +41,7 @@ import { RouterLink } from "@angular/router";
 @Component({
   selector: "app-support",
   templateUrl: "./supportPage.component.html",
+  styleUrl: "./supportPage.component.less",
   standalone: true,
   imports: [CommonModule, FontAwesomeModule, RouterLink],
 })

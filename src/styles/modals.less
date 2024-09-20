@@ -3,38 +3,10 @@
 @import "./variables.less";
 
 /* =================== Alert Styling =================== */
-/* Base Alert */
-.alertMessage {
-  width: 70%;
-  box-shadow: 12px 15px 20px 0 rgba(46, 61, 73, 0.5);
-  border-radius: 5px;
-  text-align: center;
-  padding: 10px;
-  position: fixed;
-  bottom: 50px;
-  left: 0;
-  right: 0;
-  margin-right: 15%;
-  margin-left: 15%;
-  z-index: 30;
-  background: @boxesBackground;
-  /* Responsive design for screens above 500px width */
-  @media screen and (min-width: 700px) {
-    width: 500px;
-    margin: 10px calc((100% - 500px) / 2);
-  }
-}
-
 /* Alert icon */
 .alertIcon {
   .fontSize(24);
   padding-top: 10px;
-}
-
-/* Alert Title */
-.alertType {
-  margin: 0;
-  padding: 5px;
 }
 
 /* Alert Text */
@@ -66,37 +38,6 @@
   left: 0;
   top: 0;
   z-index: 20;
-}
-
-/* Edit popup */
-#editPopup {
-  background-color: @itemBackground;
-  box-shadow: 12px 15px 20px 0 rgba(46, 61, 73, 0.5);
-  border-radius: 5px;
-  width: 80%;
-  text-align: center;
-  margin-left: auto;
-  margin-right: auto;
-  padding: 10px;
-  position: fixed;
-  top: 100px;
-  left: 8%;
-  /* Responsive styling for screens above 700px width */
-  @media screen and (min-width: 700px) {
-    width: 70%;
-    left: 15%;
-  }
-}
-
-/* Edit post textarea */
-#editPopup textarea {
-  margin: 10px;
-  border-radius: 10px;
-  width: 75%;
-  /* Responsive styling for screens above 700px width */
-  @media screen and (min-width: 700px) {
-    width: 80%;
-  }
 }
 
 /* Exit button */

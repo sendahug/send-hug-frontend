@@ -32,6 +32,7 @@
 
 import { Routes } from "@angular/router";
 
+// Routes
 import { MainPage } from "./components/mainPage/mainPage.component";
 import { UserPage } from "./components/userPage/userPage.component";
 import { AppMessaging } from "./components/messages/messages.component";
@@ -47,11 +48,15 @@ import { SupportPage } from "./components/supportPage/supportPage.component";
 import { SitePolicies } from "./components/sitePolicies/sitePolicies.component";
 import { LoginPage } from "./components/loginPage/loginPage.component";
 import { SignUpPage } from "./components/signUpPage/signUpPage.component";
+// Guards
+import { isAuthedGuard } from "./guards/isAuthed.guard";
+import { hasPermissionGuard } from "./guards/hasPermission.guard";
 
 export const routes: Routes = [
   { path: "", component: MainPage, data: { name: "Home Page" } },
   {
     path: "user",
+    canMatch: [isAuthedGuard],
     children: [
       { path: "", pathMatch: "prefix", component: UserPage, data: { name: "Your Page" } },
       {
@@ -65,6 +70,7 @@ export const routes: Routes = [
   },
   {
     path: "messages",
+    canMatch: [isAuthedGuard],
     children: [
       { path: "", pathMatch: "prefix", redirectTo: "inbox", data: { name: "Inbox" } },
       { path: "inbox", pathMatch: "prefix", component: AppMessaging, data: { name: "Inbox" } },
@@ -88,6 +94,7 @@ export const routes: Routes = [
   },
   {
     path: "new",
+    canMatch: [isAuthedGuard],
     children: [
       { path: "Post", pathMatch: "prefix", component: NewItem, data: { name: "New post" } },
       { path: "Message", pathMatch: "prefix", component: NewItem, data: { name: "New message" } },
@@ -123,6 +130,7 @@ export const routes: Routes = [
   { path: "search", component: SearchResults, data: { name: "Search Results" } },
   {
     path: "admin",
+    canMatch: [hasPermissionGuard],
     children: [
       { path: "", pathMatch: "prefix", component: AdminDashboard, data: { name: "Main Page" } },
       {
@@ -146,6 +154,7 @@ export const routes: Routes = [
     ],
     data: {
       name: "Admin Dashboard",
+      permission: "read:admin-board",
       mapRoutes: [
         { path: "", name: "Main Page" },
         { path: "reports", name: "Reports Page" },
@@ -154,7 +163,12 @@ export const routes: Routes = [
       ],
     },
   },
-  { path: "settings", component: SettingsPage, data: { name: "Settings Page" } },
+  {
+    path: "settings",
+    canMatch: [isAuthedGuard],
+    component: SettingsPage,
+    data: { name: "Settings Page" },
+  },
   { path: "sitemap", component: SiteMap, data: { name: "Site Map" } },
   { path: "support", component: SupportPage, data: { name: "Support" } },
   {

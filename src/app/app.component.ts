@@ -32,7 +32,7 @@
 
 // Angular imports
 import { Component, OnInit, HostListener, AfterViewInit, signal, computed } from "@angular/core";
-import { Router, NavigationStart, RouterOutlet, RouterLink } from "@angular/router";
+import { Router, NavigationStart, RouterOutlet, RouterLink, ActivatedRoute } from "@angular/router";
 import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { faComments, faUserCircle, faCompass, faBell } from "@fortawesome/free-regular-svg-icons";
 import { faBars, faSearch, faTimes, faTextHeight } from "@fortawesome/free-solid-svg-icons";
@@ -127,6 +127,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     private serviceWorkerM: SWManager,
     protected notificationService: NotificationService,
     private fb: FormBuilder,
+    private route: ActivatedRoute,
   ) {
     // Update the user state based on the logged in firebase user
     // (if there is one)
@@ -147,6 +148,16 @@ export class AppComponent implements OnInit, AfterViewInit {
           });
         // if auto-refresh is enabled, start auto-refresh
         if (user.autoRefresh) this.notificationService.startAutoRefresh(user.refreshRate);
+
+        const redirectPath = this.route.snapshot.queryParamMap.get("redirect");
+
+        // If the user has been redirected here from one of the guarded
+        // routes, navigate to said route. This happens when the page is
+        // refreshed while viewing a restricted page or when navigating using
+        // the address bar.
+        if (redirectPath) {
+          this.router.navigate([`/${redirectPath}`]);
+        }
       },
       error: (err: Error) => {
         if (err.message == "User doesn't exist yet") {

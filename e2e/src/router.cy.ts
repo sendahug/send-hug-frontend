@@ -45,7 +45,7 @@ describe("Send A Hug Router", () => {
     // inbox
     cy.visit("http://localhost:3000/messages/inbox");
     cy.wait(1000);
-    console.log(cy.url());
+    cy.url().then((url) => cy.log(url));
     cy.get("app-messages").should("be.visible").should("not.be.undefined");
     cy.get("h3").eq(0).should("have.text", "inbox");
     // check messages route is marked active
@@ -89,6 +89,7 @@ describe("Send A Hug Router", () => {
     // new post
     cy.visit("http://localhost:3000/new/Post");
     cy.wait(1000);
+    cy.url().then((url) => cy.log(url));
     cy.get("app-new-item").should("be.visible").should("not.be.undefined");
     cy.get("#newTitle").should("have.text", "New Post");
 
@@ -120,6 +121,7 @@ describe("Send A Hug Router", () => {
   after(() => {
     cy.visit("http://localhost:3000/user");
     cy.wait(1000);
+    cy.url().then((url) => cy.log(url));
     cy.get("button").contains("Log Out").scrollIntoView().click();
   });
 });

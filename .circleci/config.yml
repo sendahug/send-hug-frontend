@@ -106,7 +106,10 @@ jobs:
           background: true
       - run:
           name: Run e2e tests
-          command: npm run cypress:chrome
+          command: npm run cypress
+      - store_artifacts:
+          path: /home/circleci/project/cypress
+          destination: cypress-screenshots
   accessibility:
     docker:
       - image: cimg/python:3.11-node

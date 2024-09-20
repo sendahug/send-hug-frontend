@@ -7,7 +7,6 @@ describe("Send A Hug Router", () => {
     cy.get("#username").type(Cypress.env("ADMIN_USERNAME"));
     cy.get("#password").type(Cypress.env("ADMIN_PASSWORD"));
     cy.get("#logIn").click();
-    cy.wait(1000);
   });
 
   // check the user is sent to the right page upon navigation
@@ -44,58 +43,50 @@ describe("Send A Hug Router", () => {
   it("should show the correct sub-route - messages", () => {
     // inbox
     cy.visit("http://localhost:3000/messages/inbox");
-    cy.wait(1000);
+    cy.wait(500);
     cy.url().then((url) => cy.log(url));
     cy.get("app-messages").should("be.visible").should("not.be.undefined");
     cy.get("h3").eq(0).should("have.text", "inbox");
     // check messages route is marked active
-    // TODO: Re-enable these when we move to Firebase, for some reason
-    // the login from above doesn't persist, which breaks this test
-    // cy.get(".navLink").eq(2).should("have.class", "active");
+    cy.get(".navLink").eq(2).should("have.class", "active");
 
     // outbox
     cy.visit("http://localhost:3000/messages/outbox");
-    cy.wait(1000);
+    cy.wait(500);
     cy.get("app-messages").should("be.visible").should("not.be.undefined");
     cy.get("h3").eq(0).should("have.text", "outbox");
     // check messages route is marked active
-    // TODO: Re-enable these when we move to Firebase, for some reason
-    // the login from above doesn't persist, which breaks this test
-    // cy.get(".navLink").eq(2).should("have.class", "active");
+    cy.get(".navLink").eq(2).should("have.class", "active");
 
     // threads
     cy.visit("http://localhost:3000/messages/threads");
-    cy.wait(1000);
+    cy.wait(500);
     cy.get("app-messages").should("be.visible").should("not.be.undefined");
     cy.get("h3").eq(0).should("have.text", "threads");
     // check messages route is marked active
-    // TODO: Re-enable these when we move to Firebase, for some reason
-    // the login from above doesn't persist, which breaks this test
-    // cy.get(".navLink").eq(2).should("have.class", "active");
+    cy.get(".navLink").eq(2).should("have.class", "active");
 
     // thread
     cy.visit("http://localhost:3000/messages/thread/1");
-    cy.wait(1000);
+    cy.wait(500);
     cy.get("app-messages").should("be.visible").should("not.be.undefined");
     cy.get("h3").eq(0).should("have.text", "thread");
     // check messages route is marked active
-    // TODO: Re-enable these when we move to Firebase, for some reason
-    // the login from above doesn't persist, which breaks this test
-    // cy.get(".navLink").eq(2).should("have.class", "active");
+    cy.get(".navLink").eq(2).should("have.class", "active");
   });
 
   // check the correct sub-route is shown for those paths that have sub-routes
   it("should show the correct sub-route - new item", () => {
     // new post
     cy.visit("http://localhost:3000/new/Post");
-    cy.wait(1000);
+    cy.wait(500);
     cy.url().then((url) => cy.log(url));
     cy.get("app-new-item").should("be.visible").should("not.be.undefined");
     cy.get("#newTitle").should("have.text", "New Post");
 
     // new message
     cy.visit("http://localhost:3000/new/Message");
-    cy.wait(1000);
+    cy.wait(500);
     cy.get("app-new-item").should("be.visible").should("not.be.undefined");
     cy.get("#newTitle").should("have.text", "New Message");
   });

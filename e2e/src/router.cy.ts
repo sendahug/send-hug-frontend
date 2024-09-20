@@ -7,6 +7,7 @@ describe("Send A Hug Router", () => {
     cy.get("#username").type(Cypress.env("ADMIN_USERNAME"));
     cy.get("#password").type(Cypress.env("ADMIN_PASSWORD"));
     cy.get("#logIn").click();
+    cy.wait(1000);
   });
 
   // check the user is sent to the right page upon navigation
@@ -43,8 +44,7 @@ describe("Send A Hug Router", () => {
   it("should show the correct sub-route - messages", () => {
     // inbox
     cy.visit("http://localhost:3000/messages/inbox");
-    cy.wait(500);
-    cy.url().then((url) => cy.log(url));
+    cy.wait(1000);
     cy.get("app-messages").should("be.visible").should("not.be.undefined");
     cy.get("h3").eq(0).should("have.text", "inbox");
     // check messages route is marked active
@@ -52,7 +52,7 @@ describe("Send A Hug Router", () => {
 
     // outbox
     cy.visit("http://localhost:3000/messages/outbox");
-    cy.wait(500);
+    cy.wait(1000);
     cy.get("app-messages").should("be.visible").should("not.be.undefined");
     cy.get("h3").eq(0).should("have.text", "outbox");
     // check messages route is marked active
@@ -60,7 +60,7 @@ describe("Send A Hug Router", () => {
 
     // threads
     cy.visit("http://localhost:3000/messages/threads");
-    cy.wait(500);
+    cy.wait(1000);
     cy.get("app-messages").should("be.visible").should("not.be.undefined");
     cy.get("h3").eq(0).should("have.text", "threads");
     // check messages route is marked active
@@ -68,7 +68,7 @@ describe("Send A Hug Router", () => {
 
     // thread
     cy.visit("http://localhost:3000/messages/thread/1");
-    cy.wait(500);
+    cy.wait(1000);
     cy.get("app-messages").should("be.visible").should("not.be.undefined");
     cy.get("h3").eq(0).should("have.text", "thread");
     // check messages route is marked active
@@ -79,14 +79,13 @@ describe("Send A Hug Router", () => {
   it("should show the correct sub-route - new item", () => {
     // new post
     cy.visit("http://localhost:3000/new/Post");
-    cy.wait(500);
-    cy.url().then((url) => cy.log(url));
+    cy.wait(1000);
     cy.get("app-new-item").should("be.visible").should("not.be.undefined");
     cy.get("#newTitle").should("have.text", "New Post");
 
     // new message
     cy.visit("http://localhost:3000/new/Message");
-    cy.wait(500);
+    cy.wait(1000);
     cy.get("app-new-item").should("be.visible").should("not.be.undefined");
     cy.get("#newTitle").should("have.text", "New Message");
   });
@@ -112,7 +111,6 @@ describe("Send A Hug Router", () => {
   after(() => {
     cy.visit("http://localhost:3000/user");
     cy.wait(1000);
-    cy.url().then((url) => cy.log(url));
     cy.get("button").contains("Log Out").scrollIntoView().click();
   });
 });

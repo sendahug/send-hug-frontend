@@ -31,7 +31,9 @@
 */
 import { fakeAsync, TestBed, tick } from "@angular/core/testing";
 import {
+  ActivatedRoute,
   provideRouter,
+  Router,
   RouterLink,
   RouterOutlet,
   withComponentInputBinding,
@@ -229,6 +231,34 @@ describe("AppComponent", () => {
   //   expect(checkStateSpy).toHaveBeenCalled();
   //   expect(getSubscriptionSpy).not.toHaveBeenCalled();
   // }));
+
+  it("should navigate to another page if the user is logged in and there's a redirect", fakeAsync(() => {
+    const authService = TestBed.inject(AuthService);
+    const authSpy = spyOn(authService, "checkForLoggedInUser").and.returnValue(
+      of({ ...mockAuthedUser, pushEnabled: true, autoRefresh: false }),
+    );
+
+    const notificationService = TestBed.inject(NotificationService);
+    spyOn(notificationService, "checkInitialPermissionState").and.returnValue(
+      new Promise((resolve) => resolve("granted")),
+    );
+    spyOn(notificationService, "getCachedSubscription");
+    spyOn(notificationService, "getNotifications").and.returnValue(of());
+
+    const router = TestBed.inject(Router);
+    const navigateSpy = spyOn(router, "navigate");
+
+    const route = TestBed.inject(ActivatedRoute);
+    const paramMapSpy = spyOn(route.snapshot.queryParamMap, "get").and.returnValue("test");
+
+    TestBed.createComponent(AppComponent);
+
+    tick();
+
+    expect(authSpy).toHaveBeenCalled();
+    expect(navigateSpy).toHaveBeenCalledWith(["/test"]);
+    expect(paramMapSpy).toHaveBeenCalledWith("redirect");
+  }));
 
   // Check that there are valid navigation links
   it("should contain valid navigation links", () => {

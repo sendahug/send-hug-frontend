@@ -45,6 +45,7 @@ describe("Send A Hug Router", () => {
     // inbox
     cy.visit("http://localhost:3000/messages/inbox");
     cy.wait(1000);
+    console.log(cy.url());
     cy.get("app-messages").should("be.visible").should("not.be.undefined");
     cy.get("h3").eq(0).should("have.text", "inbox");
     // check messages route is marked active

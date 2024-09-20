@@ -37,7 +37,6 @@
     "preview": "vite preview",
     "format": "prettier .  --write",
     "cypress": "cypress run",
-    "cypress:chrome": "cypress run --browser chrome",
     "cypress:open": "cypress open",
     "size": "npm run build && size-limit",
     "cleanBuild": "node cleanDist.js",

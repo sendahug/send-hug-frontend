@@ -20,7 +20,7 @@ class SAHConfig:
 
 async def setup_e2e():
     """Sets up the database ahead of e2e tests"""
-    test_db_path = "postgresql+asyncpg://postgres:password@localhost:5432/test_sah"
+    test_db_path = "postgresql+asyncpg://postgres:password@localhost:5432/sendahug"
     test_config = SAHConfig(database_url=test_db_path)
     app = create_app(config=test_config)
 

@@ -2,6 +2,21 @@
 
 ## Unreleased
 
+### 2024-09-20
+
+#### Changes
+
+- Changed the way the AppComponent checks whether the main navigation menu is too large to fit onscreen. Previously, the menu's scroll size was compared to the rendered size in order to check whether there was enough space for the menu. This ensured the menu was hidden in most cases where it outgrew its container, except when the menu was already hidden (i.e., if the menu was too large, it was hidden, but the next check resulted in the menu's scroll width being 0, which meant that it was shown again, even if it was still too wide). The new method ensures the menu is properly hidden regardless of its previous state. ([#1809](https://github.com/sendahug/send-hug-frontend/pull/1809))
+
+#### Fixes
+
+- Fixed a bug where changing the base font size of the site to large sizes twice in a row resulted in the main navigation menu being shown even if there wasn't enough space for it in the viewport. This happened because of the way the menu size was checked when it was previously hidden. ([#1809](https://github.com/sendahug/send-hug-frontend/pull/1809))
+- Fixed the placement of the navigation menu when the viewport is too small to fit the horizonal menu. The menu now fits on screen properly, with both the home button and the text size button fitting within it and in a way that's easily accessible to users. ([#1809](https://github.com/sendahug/send-hug-frontend/pull/1809))
+
+#### Chores
+
+- Moved portions of the component-specific styling to component-scoped stylesheets. Previously, all style definitions were in the global scope, which caused style conflicts and unexpected styling behaviours when the same selectors were used across different components (e.g., styles meant for one component were shown in other components). This change ensures each component's styling is tailored to the component and unaffected by other components. This change includes all component-specific styling that doesn't rely on subclasses (using LESS's `&:extend`) or the font-size mixin (`.fontSize`). ([#1809](https://github.com/sendahug/send-hug-frontend/pull/1809))
+
 ### 2024-09-16
 
 #### Features

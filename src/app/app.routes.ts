@@ -155,28 +155,7 @@ export const routes: Routes = [
   {
     path: "admin",
     canMatch: [hasPermissionGuard],
-    children: [
-      {
-        path: "",
-        pathMatch: "prefix",
-        loadChildren: () => import("./admin/admin.module").then((m) => m.AppAdminModule),
-      },
-      {
-        path: "reports",
-        pathMatch: "prefix",
-        loadChildren: () => import("./admin/admin.module").then((m) => m.AppAdminModule),
-      },
-      {
-        path: "blocks",
-        pathMatch: "prefix",
-        loadChildren: () => import("./admin/admin.module").then((m) => m.AppAdminModule),
-      },
-      {
-        path: "filters",
-        pathMatch: "prefix",
-        loadChildren: () => import("./admin/admin.module").then((m) => m.AppAdminModule),
-      },
-    ],
+    loadChildren: () => import("./admin/admin.module").then((m) => m.AppAdminModule),
     data: {
       name: "Admin Dashboard",
       permission: "read:admin-board",

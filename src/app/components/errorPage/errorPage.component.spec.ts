@@ -39,10 +39,10 @@ import {
 } from "@angular/platform-browser-dynamic/testing";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { provideZoneChangeDetection } from "@angular/core";
+import { provideRouter } from "@angular/router";
 
 // App imports
 import { ErrorPage } from "./errorPage.component";
-import { provideRouter } from "@angular/router";
 
 describe("ErrorPage", () => {
   // Before each test, configure testing environment

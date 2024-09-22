@@ -41,7 +41,7 @@ import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { NO_ERRORS_SCHEMA, signal } from "@angular/core";
 import { ActivatedRoute, provideRouter, UrlSegment } from "@angular/router";
 import { BehaviorSubject, of } from "rxjs";
-import { MockProvider } from "ng-mocks";
+import { MockComponent, MockProvider } from "ng-mocks";
 
 import { AdminDashboard } from "./adminDashboard.component";
 import { AuthService } from "@app/services/auth.service";
@@ -60,6 +60,9 @@ describe("AdminDashboard", () => {
       authenticated: signal(true),
       canUser: () => true,
     });
+    const MockAdminReports = MockComponent(AdminReports);
+    const MockAdminBlocks = MockComponent(AdminBlocks);
+    const MockAdminFilter = MockComponent(AdminFilters);
 
     TestBed.resetTestEnvironment();
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
@@ -67,7 +70,7 @@ describe("AdminDashboard", () => {
     TestBed.configureTestingModule({
       schemas: [NO_ERRORS_SCHEMA],
       imports: [FontAwesomeModule],
-      declarations: [AdminDashboard, AdminReports, AdminBlocks, AdminFilters],
+      declarations: [AdminDashboard, MockAdminReports, MockAdminBlocks, MockAdminFilter],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
         provideRouter([
@@ -78,25 +81,21 @@ describe("AdminDashboard", () => {
                 path: "",
                 pathMatch: "prefix",
                 component: AdminDashboard,
-                data: { name: "Main Page" },
               },
               {
                 path: "reports",
                 pathMatch: "prefix",
                 component: AdminDashboard,
-                data: { name: "Reports Page" },
               },
               {
                 path: "blocks",
                 pathMatch: "prefix",
                 component: AdminDashboard,
-                data: { name: "Blocks Page" },
               },
               {
                 path: "filters",
                 pathMatch: "prefix",
                 component: AdminDashboard,
-                data: { name: "Filters Page" },
               },
             ],
           },

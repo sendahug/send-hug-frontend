@@ -47,7 +47,7 @@ import {
 import { BehaviorSubject, of } from "rxjs";
 import { By } from "@angular/platform-browser";
 import { NO_ERRORS_SCHEMA, provideZoneChangeDetection, signal } from "@angular/core";
-import { MockProvider } from "ng-mocks";
+import { MockComponent, MockProvider } from "ng-mocks";
 
 import { AppMessaging } from "./messages.component";
 import { AuthService } from "@app/services/auth.service";
@@ -72,6 +72,10 @@ describe("AppMessaging", () => {
       isUserDataResolved: new BehaviorSubject(true),
     });
     const MockAPIClient = MockProvider(ApiClientService);
+    const MockItemDeleteForm = MockComponent(ItemDeleteForm);
+    const MockHeaderMessage = MockComponent(HeaderMessage);
+    const MockLoader = MockComponent(Loader);
+    const MockUserIcon = MockComponent(UserIcon);
 
     TestBed.resetTestEnvironment();
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
@@ -79,10 +83,10 @@ describe("AppMessaging", () => {
     TestBed.configureTestingModule({
       schemas: [NO_ERRORS_SCHEMA],
       imports: [
-        ItemDeleteForm,
-        HeaderMessage,
-        Loader,
-        UserIcon,
+        MockItemDeleteForm,
+        MockHeaderMessage,
+        MockLoader,
+        MockUserIcon,
         RouterLink,
         CommonModule,
         AppMessaging,
@@ -453,7 +457,7 @@ describe("AppMessaging", () => {
     expect(appMessaging.deleteMode).toBeTrue();
     expect(appMessaging.toDelete).toBe("Message");
     expect(appMessaging.itemToDelete).toBe(1);
-    expect(appMessagingDOM.querySelector("app-pop-up")).toBeTruthy();
+    expect(appMessagingDOM.querySelector("item-delete-form")).toBeTruthy();
     done();
   });
 
@@ -617,7 +621,7 @@ describe("AppMessaging", () => {
     expect(appMessaging.deleteMode).toBeTrue();
     expect(appMessaging.toDelete).toBe("Thread");
     expect(appMessaging.itemToDelete).toBe(3);
-    expect(appMessagingDOM.querySelector("app-pop-up")).toBeTruthy();
+    expect(appMessagingDOM.querySelector("item-delete-form")).toBeTruthy();
     done();
   });
 
@@ -642,7 +646,7 @@ describe("AppMessaging", () => {
     expect(appMessaging.deleteMode).toBeTrue();
     expect(appMessaging.toDelete).toBe("All inbox");
     expect(appMessaging.itemToDelete).toBe(4);
-    expect(appMessagingDOM.querySelector("app-pop-up")).toBeTruthy();
+    expect(appMessagingDOM.querySelector("item-delete-form")).toBeTruthy();
     done();
   });
 

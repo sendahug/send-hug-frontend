@@ -39,7 +39,7 @@ import {
   platformBrowserDynamicTesting,
 } from "@angular/platform-browser-dynamic/testing";
 import { ReactiveFormsModule } from "@angular/forms";
-import { MockProvider } from "ng-mocks";
+import { MockComponent, MockProvider } from "ng-mocks";
 import { NO_ERRORS_SCHEMA, provideZoneChangeDetection, signal } from "@angular/core";
 
 import { IconEditor } from "./iconEditor.component";
@@ -54,13 +54,14 @@ describe("IconEditor", () => {
       authenticated: signal(true),
       userData: signal({ ...mockAuthedUser }),
     });
+    const MockUserIcon = MockComponent(UserIcon);
 
     TestBed.resetTestEnvironment();
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
       schemas: [NO_ERRORS_SCHEMA],
-      imports: [ReactiveFormsModule, UserIcon, IconEditor],
+      imports: [ReactiveFormsModule, MockUserIcon, IconEditor],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
         provideZoneChangeDetection({ eventCoalescing: true }),

@@ -41,10 +41,9 @@ import {
 import { NO_ERRORS_SCHEMA, signal } from "@angular/core";
 import { ReactiveFormsModule } from "@angular/forms";
 import { BehaviorSubject, of, throwError } from "rxjs";
-import { MockProvider } from "ng-mocks";
+import { MockComponent, MockProvider } from "ng-mocks";
 
 import { AdminFilters } from "./adminFilters.component";
-import { PopUp } from "@app/components/popUp/popUp.component";
 import { AuthService } from "@app/services/auth.service";
 import { Loader } from "@app/components/loader/loader.component";
 import { mockAuthedUser } from "@tests/mockData";
@@ -76,13 +75,14 @@ describe("Filters Page", () => {
     const MockAPIClient = MockProvider(ApiClientService, {
       get: () => of(),
     });
+    const MockLoader = MockComponent(Loader);
 
     TestBed.resetTestEnvironment();
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
       schemas: [NO_ERRORS_SCHEMA],
-      imports: [ReactiveFormsModule, PopUp, Loader],
+      imports: [ReactiveFormsModule, MockLoader],
       declarations: [AdminFilters],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },

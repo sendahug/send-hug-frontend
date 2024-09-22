@@ -34,15 +34,10 @@ import { Routes } from "@angular/router";
 
 // Routes
 import { MainPage } from "./components/mainPage/mainPage.component";
-import { UserPage } from "./components/userPage/userPage.component";
-import { AppMessaging } from "./components/messages/messages.component";
 import { ErrorPage } from "./components/errorPage/errorPage.component";
-import { NewItem } from "./components/newItem/newItem.component";
 import { FullList } from "./components/fullList/fullList.component";
 import { AboutApp } from "./components/aboutApp/aboutApp.component";
 import { SearchResults } from "./components/searchResults/searchResults.component";
-import { AdminDashboard } from "./admin/components/adminDashboard/adminDashboard.component";
-import { SettingsPage } from "./components/settings/settings.component";
 import { SiteMap } from "./components/siteMap/siteMap.component";
 import { SupportPage } from "./components/supportPage/supportPage.component";
 import { SitePolicies } from "./components/sitePolicies/sitePolicies.component";
@@ -58,11 +53,18 @@ export const routes: Routes = [
     path: "user",
     canMatch: [isAuthedGuard],
     children: [
-      { path: "", pathMatch: "prefix", component: UserPage, data: { name: "Your Page" } },
+      {
+        path: "",
+        pathMatch: "prefix",
+        loadComponent: () =>
+          import("./components/userPage/userPage.component").then((c) => c.UserPage),
+        data: { name: "Your Page" },
+      },
       {
         path: ":id",
         pathMatch: "prefix",
-        component: UserPage,
+        loadComponent: () =>
+          import("./components/userPage/userPage.component").then((c) => c.UserPage),
         data: { name: "Other User's Page" },
       },
     ],
@@ -73,13 +75,32 @@ export const routes: Routes = [
     canMatch: [isAuthedGuard],
     children: [
       { path: "", pathMatch: "prefix", redirectTo: "inbox", data: { name: "Inbox" } },
-      { path: "inbox", pathMatch: "prefix", component: AppMessaging, data: { name: "Inbox" } },
-      { path: "outbox", pathMatch: "prefix", component: AppMessaging, data: { name: "Outbox" } },
-      { path: "threads", pathMatch: "prefix", component: AppMessaging, data: { name: "Threads" } },
+      {
+        path: "inbox",
+        pathMatch: "prefix",
+        loadComponent: () =>
+          import("./components/messages/messages.component").then((c) => c.AppMessaging),
+        data: { name: "Inbox" },
+      },
+      {
+        path: "outbox",
+        pathMatch: "prefix",
+        loadComponent: () =>
+          import("./components/messages/messages.component").then((c) => c.AppMessaging),
+        data: { name: "Outbox" },
+      },
+      {
+        path: "threads",
+        pathMatch: "prefix",
+        loadComponent: () =>
+          import("./components/messages/messages.component").then((c) => c.AppMessaging),
+        data: { name: "Threads" },
+      },
       {
         path: "thread/:id",
         pathMatch: "prefix",
-        component: AppMessaging,
+        loadComponent: () =>
+          import("./components/messages/messages.component").then((c) => c.AppMessaging),
         data: { name: "Thread" },
       },
     ],
@@ -96,8 +117,20 @@ export const routes: Routes = [
     path: "new",
     canMatch: [isAuthedGuard],
     children: [
-      { path: "Post", pathMatch: "prefix", component: NewItem, data: { name: "New post" } },
-      { path: "Message", pathMatch: "prefix", component: NewItem, data: { name: "New message" } },
+      {
+        path: "Post",
+        pathMatch: "prefix",
+        loadComponent: () =>
+          import("./components/newItem/newItem.component").then((c) => c.NewItem),
+        data: { name: "New post" },
+      },
+      {
+        path: "Message",
+        pathMatch: "prefix",
+        loadComponent: () =>
+          import("./components/newItem/newItem.component").then((c) => c.NewItem),
+        data: { name: "New message" },
+      },
     ],
     data: {
       name: "New Item",
@@ -132,23 +165,28 @@ export const routes: Routes = [
     path: "admin",
     canMatch: [hasPermissionGuard],
     children: [
-      { path: "", pathMatch: "prefix", component: AdminDashboard, data: { name: "Main Page" } },
+      {
+        path: "",
+        pathMatch: "prefix",
+        loadChildren: () => import("./admin/admin.module").then((m) => m.AppAdminModule),
+        data: { name: "Main Page" },
+      },
       {
         path: "reports",
         pathMatch: "prefix",
-        component: AdminDashboard,
+        loadChildren: () => import("./admin/admin.module").then((m) => m.AppAdminModule),
         data: { name: "Reports Page" },
       },
       {
         path: "blocks",
         pathMatch: "prefix",
-        component: AdminDashboard,
+        loadChildren: () => import("./admin/admin.module").then((m) => m.AppAdminModule),
         data: { name: "Blocks Page" },
       },
       {
         path: "filters",
         pathMatch: "prefix",
-        component: AdminDashboard,
+        loadChildren: () => import("./admin/admin.module").then((m) => m.AppAdminModule),
         data: { name: "Filters Page" },
       },
     ],
@@ -166,7 +204,8 @@ export const routes: Routes = [
   {
     path: "settings",
     canMatch: [isAuthedGuard],
-    component: SettingsPage,
+    loadComponent: () =>
+      import("./components/settings/settings.component").then((c) => c.SettingsPage),
     data: { name: "Settings Page" },
   },
   { path: "sitemap", component: SiteMap, data: { name: "Site Map" } },

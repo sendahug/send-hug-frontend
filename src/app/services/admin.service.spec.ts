@@ -149,7 +149,25 @@ describe("AdminService", () => {
     };
     const alertSpy = spyOn(adminService["alertsService"], "createSuccessAlert");
     const dismissSpy = spyOn(adminService, "closeReport");
-    const messageSpy = spyOn(adminService["itemsService"], "sendMessage");
+    const messageSpy = spyOn(adminService["itemsService"], "sendMessage").and.returnValue(
+      of({
+        message: {
+          date: new Date("Mon, 08 Jun 2020 14:43:15 GMT"),
+          from: {
+            displayName: "user",
+          },
+          fromId: 4,
+          for: {
+            displayName: "user2",
+          },
+          forId: 1,
+          id: 9,
+          messageText: "hang in there",
+          threadID: 1,
+        },
+        success: true,
+      }),
+    );
     const deleteSWSpy = spyOn(adminService["serviceWorkerM"], "deleteItem");
     const deleteAPISpy = spyOn(adminService["apiClient"], "delete").and.returnValue(
       of(mockResponse),

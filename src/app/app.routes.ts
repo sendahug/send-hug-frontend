@@ -33,6 +33,8 @@
 import { Routes } from "@angular/router";
 
 // Routes
+// MainPage is the initial thing users see so I left it as a static import
+// ErrorPage and SearchResults seem useful to keep static for app functionality
 import { MainPage } from "./components/mainPage/mainPage.component";
 import { ErrorPage } from "./components/errorPage/errorPage.component";
 import { SearchResults } from "./components/searchResults/searchResults.component";

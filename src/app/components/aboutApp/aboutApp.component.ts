@@ -35,7 +35,7 @@ import { NgFor } from "@angular/common";
 import { Component } from "@angular/core";
 import { RouterLink } from "@angular/router";
 
-import { SitePolicyMapping } from "@app/components/sitePolicies/sitePolicies.component";
+import { SitePolicyMapping } from "@app/interfaces/policies.interface";
 
 interface AboutLink {
   path: string;

@@ -1,6 +1,6 @@
 /*
-	Site Policies
-	Send a Hug Component
+  Policy interface
+  Based on the Post Model
   ---------------------------------------------------
   MIT License
 
@@ -30,32 +30,17 @@
   SOFTWARE.
 */
 
-// Angular imports
-import { CommonModule } from "@angular/common";
-import { Component } from "@angular/core";
-import { ActivatedRoute, RouterLink } from "@angular/router";
+export type PolicyType = "TermsConditions" | "PrivacyPolicy" | "CookiePolicy";
 
-import { PolicyType, SitePolicyMapping } from "@app/interfaces/policies.interface";
-
-@Component({
-  selector: "app-policies",
-  templateUrl: "./sitePolicies.component.html",
-  styleUrl: "./sitePolicies.component.less",
-  standalone: true,
-  imports: [CommonModule, RouterLink],
-})
-export class SitePolicies {
-  currentPolicy!: PolicyType;
-  pageTitle: string = "";
-
-  // CTOR
-  constructor(private route: ActivatedRoute) {
-    // Get the URL param to determine which policy to show
-    this.route.url.subscribe((params) => {
-      const currentPath = params[0].path;
-      const currentPolicy = SitePolicyMapping.find((policy) => policy.path == currentPath);
-      this.pageTitle = currentPolicy?.title || "Terms and Conditions";
-      this.currentPolicy = currentPolicy?.policy || "TermsConditions";
-    });
-  }
+export interface SitePolicy {
+  path: string;
+  title: string;
+  policy: PolicyType;
 }
+
+// TODO: This probably shouldn't be here but I'm not sure where else it can be...
+export const SitePolicyMapping: SitePolicy[] = [
+  { path: "terms", title: "Terms and Conditions", policy: "TermsConditions" },
+  { path: "privacy", title: "Privacy Policy", policy: "PrivacyPolicy" },
+  { path: "cookies", title: "Cookies Policy", policy: "CookiePolicy" },
+];

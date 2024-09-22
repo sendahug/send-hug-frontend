@@ -86,7 +86,7 @@ describe("ItemsService", () => {
   });
 
   // Check the service correctly sends a message
-  it("sendMessage() - should send a message", () => {
+  it("sendMessage() - should send a message", (done: DoneFn) => {
     // mock response
     const mockResponse = {
       message: {
@@ -121,17 +121,16 @@ describe("ItemsService", () => {
     const apiClientSpy = spyOn(itemsService["apiClient"], "post").and.returnValue(of(mockResponse));
     const alertSpy = spyOn(itemsService["alertsService"], "createSuccessAlert");
     const addSpy = spyOn(itemsService["serviceWorkerM"], "addItem");
-    itemsService.sendMessage(message);
-
-    expect(apiClientSpy).toHaveBeenCalledWith("messages", message);
-    expect(alertSpy).toHaveBeenCalledWith("Your message was sent!", {
-      navigate: true,
-      navTarget: "/",
-      navText: "Home Page",
-    });
-    expect(addSpy).toHaveBeenCalledWith("messages", {
-      ...mockResponse.message,
-      isoDate: new Date(message.date).toISOString(),
+    itemsService.sendMessage(message).subscribe({
+      next: (_response) => {
+        expect(apiClientSpy).toHaveBeenCalledWith("messages", message);
+        expect(alertSpy).toHaveBeenCalledWith("Your message was sent!");
+        expect(addSpy).toHaveBeenCalledWith("messages", {
+          ...mockResponse.message,
+          isoDate: new Date(message.date).toISOString(),
+        });
+        done();
+      },
     });
   });
 

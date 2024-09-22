@@ -58,14 +58,12 @@ export const routes: Routes = [
         pathMatch: "prefix",
         loadComponent: () =>
           import("./components/userPage/userPage.component").then((c) => c.UserPage),
-        data: { name: "Your Page" },
       },
       {
         path: ":id",
         pathMatch: "prefix",
         loadComponent: () =>
           import("./components/userPage/userPage.component").then((c) => c.UserPage),
-        data: { name: "Other User's Page" },
       },
     ],
     data: { name: "User Page", mapRoutes: [{ path: "", name: "Your Page" }] },
@@ -74,34 +72,30 @@ export const routes: Routes = [
     path: "messages",
     canMatch: [isAuthedGuard],
     children: [
-      { path: "", pathMatch: "prefix", redirectTo: "inbox", data: { name: "Inbox" } },
+      { path: "", pathMatch: "prefix", redirectTo: "inbox" },
       {
         path: "inbox",
         pathMatch: "prefix",
         loadComponent: () =>
           import("./components/messages/messages.component").then((c) => c.AppMessaging),
-        data: { name: "Inbox" },
       },
       {
         path: "outbox",
         pathMatch: "prefix",
         loadComponent: () =>
           import("./components/messages/messages.component").then((c) => c.AppMessaging),
-        data: { name: "Outbox" },
       },
       {
         path: "threads",
         pathMatch: "prefix",
         loadComponent: () =>
           import("./components/messages/messages.component").then((c) => c.AppMessaging),
-        data: { name: "Threads" },
       },
       {
         path: "thread/:id",
         pathMatch: "prefix",
         loadComponent: () =>
           import("./components/messages/messages.component").then((c) => c.AppMessaging),
-        data: { name: "Thread" },
       },
     ],
     data: {
@@ -122,14 +116,12 @@ export const routes: Routes = [
         pathMatch: "prefix",
         loadComponent: () =>
           import("./components/newItem/newItem.component").then((c) => c.NewItem),
-        data: { name: "New post" },
       },
       {
         path: "Message",
         pathMatch: "prefix",
         loadComponent: () =>
           import("./components/newItem/newItem.component").then((c) => c.NewItem),
-        data: { name: "New message" },
       },
     ],
     data: {
@@ -143,12 +135,11 @@ export const routes: Routes = [
   {
     path: "list",
     children: [
-      { path: "New", pathMatch: "prefix", component: FullList, data: { name: "Full new list" } },
+      { path: "New", pathMatch: "prefix", component: FullList },
       {
         path: "Suggested",
         pathMatch: "prefix",
         component: FullList,
-        data: { name: "Full suggested list" },
       },
     ],
     data: {
@@ -169,25 +160,21 @@ export const routes: Routes = [
         path: "",
         pathMatch: "prefix",
         loadChildren: () => import("./admin/admin.module").then((m) => m.AppAdminModule),
-        data: { name: "Main Page" },
       },
       {
         path: "reports",
         pathMatch: "prefix",
         loadChildren: () => import("./admin/admin.module").then((m) => m.AppAdminModule),
-        data: { name: "Reports Page" },
       },
       {
         path: "blocks",
         pathMatch: "prefix",
         loadChildren: () => import("./admin/admin.module").then((m) => m.AppAdminModule),
-        data: { name: "Blocks Page" },
       },
       {
         path: "filters",
         pathMatch: "prefix",
         loadChildren: () => import("./admin/admin.module").then((m) => m.AppAdminModule),
-        data: { name: "Filters Page" },
       },
     ],
     data: {
@@ -217,19 +204,16 @@ export const routes: Routes = [
         path: "terms",
         pathMatch: "prefix",
         component: SitePolicies,
-        data: { name: "Terms and Conditions" },
       },
       {
         path: "privacy",
         pathMatch: "prefix",
         component: SitePolicies,
-        data: { name: "Privacy Policy" },
       },
       {
         path: "cookies",
         pathMatch: "prefix",
         component: SitePolicies,
-        data: { name: "Cookie Policy" },
       },
     ],
     data: {

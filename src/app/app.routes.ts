@@ -35,14 +35,7 @@ import { Routes } from "@angular/router";
 // Routes
 import { MainPage } from "./components/mainPage/mainPage.component";
 import { ErrorPage } from "./components/errorPage/errorPage.component";
-import { FullList } from "./components/fullList/fullList.component";
-import { AboutApp } from "./components/aboutApp/aboutApp.component";
 import { SearchResults } from "./components/searchResults/searchResults.component";
-import { SiteMap } from "./components/siteMap/siteMap.component";
-import { SupportPage } from "./components/supportPage/supportPage.component";
-import { SitePolicies } from "./components/sitePolicies/sitePolicies.component";
-import { LoginPage } from "./components/loginPage/loginPage.component";
-import { SignUpPage } from "./components/signUpPage/signUpPage.component";
 // Guards
 import { isAuthedGuard } from "./guards/isAuthed.guard";
 import { hasPermissionGuard } from "./guards/hasPermission.guard";
@@ -135,11 +128,17 @@ export const routes: Routes = [
   {
     path: "list",
     children: [
-      { path: "New", pathMatch: "prefix", component: FullList },
+      {
+        path: "New",
+        pathMatch: "prefix",
+        loadComponent: () =>
+          import("./components/fullList/fullList.component").then((c) => c.FullList),
+      },
       {
         path: "Suggested",
         pathMatch: "prefix",
-        component: FullList,
+        loadComponent: () =>
+          import("./components/fullList/fullList.component").then((c) => c.FullList),
       },
     ],
     data: {
@@ -150,7 +149,11 @@ export const routes: Routes = [
       ],
     },
   },
-  { path: "about", component: AboutApp, data: { name: "About Page" } },
+  {
+    path: "about",
+    loadComponent: () => import("./components/aboutApp/aboutApp.component").then((c) => c.AboutApp),
+    data: { name: "About Page" },
+  },
   { path: "search", component: SearchResults, data: { name: "Search Results" } },
   {
     path: "admin",
@@ -174,25 +177,37 @@ export const routes: Routes = [
       import("./components/settings/settings.component").then((c) => c.SettingsPage),
     data: { name: "Settings Page" },
   },
-  { path: "sitemap", component: SiteMap, data: { name: "Site Map" } },
-  { path: "support", component: SupportPage, data: { name: "Support" } },
+  {
+    path: "sitemap",
+    loadComponent: () => import("./components/siteMap/siteMap.component").then((c) => c.SiteMap),
+    data: { name: "Site Map" },
+  },
+  {
+    path: "support",
+    loadComponent: () =>
+      import("./components/supportPage/supportPage.component").then((c) => c.SupportPage),
+    data: { name: "Support" },
+  },
   {
     path: "policies",
     children: [
       {
         path: "terms",
         pathMatch: "prefix",
-        component: SitePolicies,
+        loadComponent: () =>
+          import("./components/sitePolicies/sitePolicies.component").then((c) => c.SitePolicies),
       },
       {
         path: "privacy",
         pathMatch: "prefix",
-        component: SitePolicies,
+        loadComponent: () =>
+          import("./components/sitePolicies/sitePolicies.component").then((c) => c.SitePolicies),
       },
       {
         path: "cookies",
         pathMatch: "prefix",
-        component: SitePolicies,
+        loadComponent: () =>
+          import("./components/sitePolicies/sitePolicies.component").then((c) => c.SitePolicies),
       },
     ],
     data: {
@@ -204,7 +219,17 @@ export const routes: Routes = [
       ],
     },
   },
-  { path: "login", component: LoginPage, data: { name: "Login Page" } },
-  { path: "signup", component: SignUpPage, data: {} },
+  {
+    path: "login",
+    loadComponent: () =>
+      import("./components/loginPage/loginPage.component").then((c) => c.LoginPage),
+    data: { name: "Login Page" },
+  },
+  {
+    path: "signup",
+    loadComponent: () =>
+      import("./components/signUpPage/signUpPage.component").then((c) => c.SignUpPage),
+    data: {},
+  },
   { path: "**", component: ErrorPage, data: { name: "Error Page" } },
 ];

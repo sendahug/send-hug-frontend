@@ -3,13 +3,21 @@ import type { SizeLimitConfig } from "size-limit";
 module.exports = [
   {
     name: "Main Bundle",
-    limit: "65 kB",
+    limit: "40 kB",
     path: ["dist/assets/index-*.js"],
   },
   {
-    name: "Common Components",
-    limit: "1 kB",
-    path: ["dist/assets/headerMessage.component-*.js"],
+    name: "Public Components",
+    limit: "34 kB",
+    path: [
+      "dist/assets/headerMessage.component-*.js",
+      "dist/assets/fullList.component-*.js",
+      "dist/assets/sitePolicies.component-*.js",
+      "dist/assets/supportPage.component-*.js",
+      "dist/assets/aboutApp.component-*.js",
+      "dist/assets/siteMap.component-*.js",
+      "dist/assets/policies.interface-*.js",
+    ],
   },
   {
     name: "Forms",
@@ -31,6 +39,11 @@ module.exports = [
     name: "Admin Components",
     limit: "10 kB",
     path: ["dist/assets/admin.module-*.js"],
+  },
+  {
+    name: "Sign up and Login",
+    limit: "6 kB",
+    path: ["dist/assets/signUpPage.component-*.js", "dist/assets/loginPage.component-*.js"],
   },
   {
     name: "Vendor scripts",

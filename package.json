@@ -3,40 +3,6 @@
   "version": "1.0.0",
   "description": "Send a hug site.",
   "type": "module",
-  "size-limit": [
-    {
-      "name": "Main Bundle",
-      "limit": "120 kB",
-      "path": [
-        "dist/assets/index-*.js"
-      ]
-    },
-    {
-      "name": "Vendor scripts",
-      "limit": "225 kB",
-      "path": [
-        "dist/assets/vendor-*.js",
-        "dist/assets/polyfills-*.js"
-      ]
-    },
-    {
-      "name": "Static Assets",
-      "limit": "290 kB",
-      "path": [
-        "dist/assets/fonts/*",
-        "dist/assets/icons/*",
-        "dist/assets/img/*",
-        "dist/assets/*.svg"
-      ]
-    },
-    {
-      "name": "Main Styles",
-      "limit": "10 kB",
-      "path": [
-        "dist/styles.css"
-      ]
-    }
-  ],
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",

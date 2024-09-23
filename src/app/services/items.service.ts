@@ -33,15 +33,20 @@
 // Angular imports
 import { Injectable, computed, signal } from "@angular/core";
 import { HttpErrorResponse } from "@angular/common/http";
-import { BehaviorSubject } from "rxjs";
+import { BehaviorSubject, tap } from "rxjs";
 
 // App-related imports
 import { type PostGet } from "@app/interfaces/post.interface";
-import { type MessageCreate } from "@app/interfaces/message.interface";
+import { type MessageCreate, type MessageGet } from "@app/interfaces/message.interface";
 import { type OtherUser } from "@app/interfaces/otherUser.interface";
 import { AlertsService } from "@app/services/alerts.service";
 import { SWManager } from "@app/services/sWManager.service";
 import { ApiClientService } from "@app/services/apiClient.service";
+
+interface SendMessageResponse {
+  success: boolean;
+  message: MessageGet;
+}
 
 @Injectable({
   providedIn: "root",
@@ -103,22 +108,17 @@ export class ItemsService {
   Programmer: Shir Bar Lev.
   */
   sendMessage(message: MessageCreate) {
-    this.apiClient.post("messages", message).subscribe({
-      next: (response: any) => {
-        this.alertsService.createSuccessAlert("Your message was sent!", {
-          navigate: true,
-          navTarget: "/",
-          navText: "Home Page",
-        });
-
+    return this.apiClient.post<SendMessageResponse>("messages", message).pipe(
+      tap((response) => {
+        this.alertsService.createSuccessAlert("Your message was sent!");
         let isoDate = new Date(response.message.date).toISOString();
         let message = {
           ...response.message,
           isoDate: isoDate,
         };
         this.serviceWorkerM.addItem("messages", message);
-      },
-    });
+      }),
+    );
   }
 
   // SEARCH-RELATED METHODS

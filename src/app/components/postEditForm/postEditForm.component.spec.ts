@@ -40,12 +40,12 @@ import {
 import { ReactiveFormsModule } from "@angular/forms";
 import { Observable, of } from "rxjs";
 import { provideZoneChangeDetection, signal } from "@angular/core";
+import { MockProvider } from "ng-mocks";
 
 import { PostEditForm } from "./postEditForm.component";
 import { type PostGet } from "@app/interfaces/post.interface";
 import { PopUp } from "@app/components/popUp/popUp.component";
 import { ValidationService } from "@app/services/validation.service";
-import { MockProvider } from "ng-mocks";
 import { AdminService } from "@app/services/admin.service";
 import { AuthService } from "@app/services/auth.service";
 import { ApiClientService } from "@app/services/apiClient.service";

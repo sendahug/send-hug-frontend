@@ -40,13 +40,13 @@ import {
 import { ReactiveFormsModule } from "@angular/forms";
 import { provideZoneChangeDetection, signal } from "@angular/core";
 import { MockProvider } from "ng-mocks";
+import { Subscription } from "rxjs";
 
 import { DisplayNameEditForm } from "./displayNameEditForm.component";
 import { AuthService } from "@app/services/auth.service";
 import { mockAuthedUser } from "@tests/mockData";
 import { PopUp } from "@app/components/popUp/popUp.component";
 import { ValidationService } from "@app/services/validation.service";
-import { Subscription } from "rxjs";
 import { AdminService } from "@app/services/admin.service";
 
 // DISPLAY NAME EDIT

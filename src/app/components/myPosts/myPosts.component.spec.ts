@@ -43,7 +43,7 @@ import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { of } from "rxjs";
 import { By } from "@angular/platform-browser";
 import { NO_ERRORS_SCHEMA } from "@angular/core";
-import { MockProvider } from "ng-mocks";
+import { MockComponent, MockProvider } from "ng-mocks";
 
 import { MyPosts } from "./myPosts.component";
 import { AuthService } from "@app/services/auth.service";
@@ -52,7 +52,6 @@ import { type PostGet } from "@app/interfaces/post.interface";
 import { SinglePost } from "@app/components/post/post.component";
 import { ItemDeleteForm } from "@app/components/itemDeleteForm/itemDeleteForm.component";
 import { ApiClientService } from "@app/services/apiClient.service";
-import { PopUp } from "@app/components/popUp/popUp.component";
 import { SWManager } from "@app/services/sWManager.service";
 
 // Mock User Page for testing the sub-component
@@ -92,13 +91,14 @@ describe("MyPosts", () => {
     const MockSWManager = MockProvider(SWManager, {
       fetchPosts: () => new Promise(() => {}),
     });
+    const MockItemDeleteForm = MockComponent(ItemDeleteForm);
 
     TestBed.resetTestEnvironment();
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
       schemas: [NO_ERRORS_SCHEMA],
-      imports: [FontAwesomeModule, PopUp, ItemDeleteForm, SinglePost, MyPosts, MockUserPage],
+      imports: [FontAwesomeModule, MockItemDeleteForm, SinglePost, MyPosts, MockUserPage],
       declarations: [],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
@@ -302,7 +302,7 @@ describe("MyPosts", () => {
     expect(myPosts.deleteMode).toBeTrue();
     expect(myPosts.toDelete).toBe("All posts");
     expect(myPosts.itemToDelete).toBe(4);
-    expect(myPostsDOM.querySelector("app-pop-up")).toBeTruthy();
+    expect(myPostsDOM.querySelector("item-delete-form")).toBeTruthy();
     done();
   });
 

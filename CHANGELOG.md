@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+### 2024-09-23
+
+#### Features
+
+- The NewItem page now redirects users back to the Home Screen once a successful response was received from the server. This should reduce confusion and ensure the users that the message/post was sent correctly. ([#1816](https://github.com/sendahug/send-hug-frontend/pull/1816))
+
+#### Chores
+
+- Deleted imported components from unit tests to ensure each component's unit test is focused on that component. The required imports are now mocked instead. ([#1818](https://github.com/sendahug/send-hug-frontend/pull/1818))
+
 ### 2024-09-20
 
 #### Features

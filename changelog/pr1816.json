@@ -1,0 +1,9 @@
+{
+  "pr_number": 1816,
+  "changes": [
+    {
+      "change": "Features",
+      "description": "The NewItem page now redirects users back to the Home Screen once a successful response was received from the server. This should reduce confusion and ensure the users that the message/post was sent correctly."
+    }
+  ]
+}

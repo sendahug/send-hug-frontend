@@ -125,7 +125,7 @@ export class AdminService {
           this.serviceWorkerM.deleteItem("posts", postID);
 
           // send the message about the deleted post
-          this.itemsService.sendMessage(message);
+          this.itemsService.sendMessage(message).subscribe({});
         },
       });
   }

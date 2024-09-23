@@ -7,10 +7,12 @@
 #### Features
 
 - The NewItem page now redirects users back to the Home Screen once a successful response was received from the server. This should reduce confusion and ensure the users that the message/post was sent correctly. ([#1816](https://github.com/sendahug/send-hug-frontend/pull/1816))
+- Most routes in the app are now lazy-loaded. That means that the initial page load should be considerably quicker for users (both on mobile and on desktop), and that code a user doesn't have access to (e.g., the admin dashboard code) isn't fetched to and executed by the browser unnecessarily. ([#1817](https://github.com/sendahug/send-hug-frontend/pull/1817))
 
 #### Chores
 
 - Deleted imported components from unit tests to ensure each component's unit test is focused on that component. The required imports are now mocked instead. ([#1818](https://github.com/sendahug/send-hug-frontend/pull/1818))
+- Moved the size-limit configuration to an external file. This should make it easier to work on the package.json file, regardless of how many files we include in the size-limit configuration. ([#1817](https://github.com/sendahug/send-hug-frontend/pull/1817))
 
 ### 2024-09-20
 

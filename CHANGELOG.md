@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+### 2024-09-23
+
+#### Features
+
+- The NewItem page now redirects users back to the Home Screen once a successful response was received from the server. This should reduce confusion and ensure the users that the message/post was sent correctly. ([#1816](https://github.com/sendahug/send-hug-frontend/pull/1816))
+
 ### 2024-09-20
 
 #### Features

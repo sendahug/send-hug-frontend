@@ -41,7 +41,7 @@ import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { NO_ERRORS_SCHEMA, signal } from "@angular/core";
 import { ActivatedRoute, provideRouter, UrlSegment } from "@angular/router";
 import { BehaviorSubject, of } from "rxjs";
-import { MockProvider } from "ng-mocks";
+import { MockComponent, MockProvider } from "ng-mocks";
 
 import { AdminDashboard } from "./adminDashboard.component";
 import { AuthService } from "@app/services/auth.service";
@@ -49,7 +49,6 @@ import { mockAuthedUser } from "@tests/mockData";
 import { AdminReports } from "@admin/components/adminReports/adminReports.component";
 import { AdminBlocks } from "@admin/components/adminBlocks/adminBlocks.component";
 import { AdminFilters } from "@admin/components/adminFilters/adminFilters.component";
-import { routes } from "@app/app.routes";
 
 describe("AdminDashboard", () => {
   // Before each test, configure testing environment
@@ -61,6 +60,9 @@ describe("AdminDashboard", () => {
       authenticated: signal(true),
       canUser: () => true,
     });
+    const MockAdminReports = MockComponent(AdminReports);
+    const MockAdminBlocks = MockComponent(AdminBlocks);
+    const MockAdminFilter = MockComponent(AdminFilters);
 
     TestBed.resetTestEnvironment();
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
@@ -68,10 +70,36 @@ describe("AdminDashboard", () => {
     TestBed.configureTestingModule({
       schemas: [NO_ERRORS_SCHEMA],
       imports: [FontAwesomeModule],
-      declarations: [AdminDashboard, AdminReports, AdminBlocks, AdminFilters],
+      declarations: [AdminDashboard, MockAdminReports, MockAdminBlocks, MockAdminFilter],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
-        provideRouter(routes),
+        provideRouter([
+          {
+            path: "admin",
+            children: [
+              {
+                path: "",
+                pathMatch: "prefix",
+                component: AdminDashboard,
+              },
+              {
+                path: "reports",
+                pathMatch: "prefix",
+                component: AdminDashboard,
+              },
+              {
+                path: "blocks",
+                pathMatch: "prefix",
+                component: AdminDashboard,
+              },
+              {
+                path: "filters",
+                pathMatch: "prefix",
+                component: AdminDashboard,
+              },
+            ],
+          },
+        ]),
         MockAuthService,
       ],
     }).compileComponents();

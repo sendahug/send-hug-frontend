@@ -32,10 +32,12 @@
 
 // Angular imports
 import { Component, OnInit, OnDestroy, signal, computed } from "@angular/core";
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, RouterLink } from "@angular/router";
 import { Subscription, from, switchMap, tap } from "rxjs";
 import { faGratipay } from "@fortawesome/free-brands-svg-icons";
 import { HttpErrorResponse } from "@angular/common/http";
+import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
+import { CommonModule } from "@angular/common";
 
 // App-related imports
 import { PartialUser, User } from "@app/interfaces/user.interface";
@@ -44,6 +46,12 @@ import { OtherUser } from "@app/interfaces/otherUser.interface";
 import { SWManager } from "@app/services/sWManager.service";
 import { ApiClientService } from "@app/services/apiClient.service";
 import { AlertsService } from "@app/services/alerts.service";
+import { Loader } from "@app/components/loader/loader.component";
+import { HeaderMessage } from "@app/components/headerMessage/headerMessage.component";
+import { UserIcon } from "@app/components/userIcon/userIcon.component";
+import { ReportForm } from "@app/components/reportForm/reportForm.component";
+import { DisplayNameEditForm } from "@app/components/displayNameEditForm/displayNameEditForm.component";
+import { MyPosts } from "@app/components/myPosts/myPosts.component";
 
 interface OtherUserResponse {
   user: OtherUser;
@@ -53,6 +61,19 @@ interface OtherUserResponse {
 @Component({
   selector: "app-user-page",
   templateUrl: "./userPage.component.html",
+  styleUrl: "./userPage.component.less",
+  standalone: true,
+  imports: [
+    Loader,
+    HeaderMessage,
+    UserIcon,
+    RouterLink,
+    FontAwesomeModule,
+    CommonModule,
+    ReportForm,
+    DisplayNameEditForm,
+    MyPosts,
+  ],
 })
 export class UserPage implements OnInit, OnDestroy {
   isIdbFetchResolved = signal(false);

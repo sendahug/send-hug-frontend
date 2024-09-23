@@ -52,7 +52,6 @@ import { ItemDeleteForm } from "@app/components/itemDeleteForm/itemDeleteForm.co
 import { ReportForm } from "@app/components/reportForm/reportForm.component";
 import { PostEditForm } from "@app/components/postEditForm/postEditForm.component";
 import { SendHugForm } from "@app/components/sendHugForm/sendHugForm.component";
-import { routes } from "@app/app.routes";
 import { ItemsService } from "@app/services/items.service";
 import { AuthService } from "@app/services/auth.service";
 
@@ -120,7 +119,7 @@ describe("Post", () => {
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
         provideZoneChangeDetection({ eventCoalescing: true }),
-        provideRouter(routes),
+        provideRouter([]),
         MockItemsService,
         MockAuthService,
       ],

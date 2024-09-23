@@ -32,7 +32,7 @@
 
 // Angular imports
 import { Component, OnInit, signal } from "@angular/core";
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { CommonModule } from "@angular/common";
 
@@ -49,6 +49,7 @@ import { SWManager } from "@app/services/sWManager.service";
 @Component({
   selector: "app-new-item",
   templateUrl: "./newItem.component.html",
+  styleUrl: "./newItem.component.less",
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
 })
@@ -76,6 +77,7 @@ export class NewItem implements OnInit {
     private apiClient: ApiClientService,
     private swManager: SWManager,
     private fb: FormBuilder,
+    private router: Router,
   ) {
     // Gets the URL parameters
     this.route.url.subscribe((params) => {
@@ -152,15 +154,9 @@ export class NewItem implements OnInit {
 
     this.apiClient.post("posts", newPost).subscribe({
       next: (response: any) => {
-        this.alertService.createSuccessAlert(
-          "Your post was published! Return to home page to view the post.",
-          {
-            navigate: true,
-            navTarget: "/",
-            navText: "Home Page",
-          },
-        );
+        this.alertService.createSuccessAlert("Your post was published!");
         this.swManager.addFetchedItems("posts", [response.posts], "date");
+        this.router.navigate(["/"]);
       },
     });
   }
@@ -213,6 +209,10 @@ export class NewItem implements OnInit {
       date: new Date(),
     };
 
-    this.itemsService.sendMessage(newMessage);
+    this.itemsService.sendMessage(newMessage).subscribe({
+      next: (_response) => {
+        this.router.navigate(["/"]);
+      },
+    });
   }
 }

@@ -64,6 +64,7 @@ import { SendHugForm } from "@app/components/sendHugForm/sendHugForm.component";
 @Component({
   selector: "app-single-post",
   templateUrl: "./post.component.html",
+  styleUrl: "./post.component.less",
   standalone: true,
   imports: [
     CommonModule,

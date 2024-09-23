@@ -32,16 +32,23 @@
 
 // Angular imports
 import { Component } from "@angular/core";
-import { FormBuilder, Validators } from "@angular/forms";
+import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
+import { CommonModule } from "@angular/common";
+import { RouterLink } from "@angular/router";
 
 // App-related imports
 import { NotificationService } from "@app/services/notifications.service";
 import { AuthService } from "@app/services/auth.service";
 import { AlertsService } from "@app/services/alerts.service";
+import { IconEditor } from "@app/components/iconEditor/iconEditor.component";
+import { UserIcon } from "@app/components/userIcon/userIcon.component";
 
 @Component({
   selector: "app-settings",
   templateUrl: "./settings.component.html",
+  styleUrl: "./settings.component.less",
+  standalone: true,
+  imports: [CommonModule, IconEditor, UserIcon, ReactiveFormsModule, RouterLink],
 })
 export class SettingsPage {
   editIcon = false;
@@ -62,9 +69,9 @@ export class SettingsPage {
     this.authService.isUserDataResolved.subscribe((value) => {
       if (value) {
         this.editSettingsForm.setValue({
-          enableNotifications: this.notificationService.pushStatus || false,
-          enableAutoRefresh: this.notificationService.refreshStatus || false,
-          notificationRate: this.notificationService.refreshRateSecs,
+          enableNotifications: this.authService.pushEnabled(),
+          enableAutoRefresh: this.authService.autoRefresh(),
+          notificationRate: this.authService.refreshRate(),
         });
       }
     });
@@ -101,6 +108,7 @@ export class SettingsPage {
   updateSettings() {
     const newRate = this.editSettingsForm.controls.notificationRate.value;
     const refreshStatus = this.editSettingsForm.controls.enableAutoRefresh.value || false;
+    const pushStatus = this.editSettingsForm.controls.enableNotifications.value || false;
 
     // if there's no rate or it's zero, alert the user it can't be
     if ((!newRate || newRate <= 0) && refreshStatus) {
@@ -111,17 +119,21 @@ export class SettingsPage {
     }
 
     if (this.editSettingsForm.valid) {
-      this.notificationService.pushStatus =
-        this.editSettingsForm.controls.enableNotifications.value || false;
-      this.notificationService.refreshStatus = refreshStatus;
-      this.notificationService.refreshRateSecs = Number(newRate);
-      this.notificationService.updateUserSettings();
+      this.authService
+        .updateUserData({
+          pushEnabled: pushStatus,
+          autoRefresh: refreshStatus,
+          refreshRate: Number(newRate),
+        })
+        .add(() => {
+          this.alertsService.createSuccessAlert("Your settings have been updated!");
 
-      if (this.notificationService.refreshStatus) this.notificationService.startAutoRefresh();
-      else this.notificationService.stopAutoRefresh();
+          if (refreshStatus) this.notificationService.startAutoRefresh(Number(newRate));
+          else this.notificationService.stopAutoRefresh();
 
-      if (this.notificationService.pushStatus) this.notificationService.subscribeToStream();
-      else this.notificationService.unsubscribeFromStream();
+          if (pushStatus) this.notificationService.subscribeToStream();
+          else this.notificationService.unsubscribeFromStream();
+        });
     }
   }
 

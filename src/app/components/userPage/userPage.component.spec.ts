@@ -42,7 +42,7 @@ import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { By } from "@angular/platform-browser";
 import { NO_ERRORS_SCHEMA, signal } from "@angular/core";
 import { BehaviorSubject, of } from "rxjs";
-import { MockProvider } from "ng-mocks";
+import { MockComponent, MockProvider } from "ng-mocks";
 
 import { UserPage } from "./userPage.component";
 import { AuthService } from "@app/services/auth.service";
@@ -51,9 +51,7 @@ import { OtherUser } from "@app/interfaces/otherUser.interface";
 import { iconCharacters } from "@app/interfaces/types";
 import { DisplayNameEditForm } from "@app/components/displayNameEditForm/displayNameEditForm.component";
 import { ReportForm } from "@app/components/reportForm/reportForm.component";
-import { routes } from "@app/app.routes";
 import { ApiClientService } from "@app/services/apiClient.service";
-import { PopUp } from "@app/components/popUp/popUp.component";
 import { Loader } from "@app/components/loader/loader.component";
 import { UserIcon } from "@app/components/userIcon/userIcon.component";
 import { HeaderMessage } from "@app/components/headerMessage/headerMessage.component";
@@ -67,6 +65,11 @@ describe("UserPage", () => {
       isUserDataResolved: new BehaviorSubject(false),
     });
     const MockAPIClient = MockProvider(ApiClientService);
+    const MockDisplayNameEditForm = MockComponent(DisplayNameEditForm);
+    const MockReportForm = MockComponent(ReportForm);
+    const MockHeaderMessage = MockComponent(HeaderMessage);
+    const MockLoader = MockComponent(Loader);
+    const MockUserIcon = MockComponent(UserIcon);
 
     TestBed.resetTestEnvironment();
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
@@ -75,19 +78,33 @@ describe("UserPage", () => {
       schemas: [NO_ERRORS_SCHEMA],
       imports: [
         FontAwesomeModule,
-        PopUp,
-        DisplayNameEditForm,
-        ReportForm,
+        MockDisplayNameEditForm,
+        MockReportForm,
         CommonModule,
-        HeaderMessage,
-        Loader,
+        MockHeaderMessage,
+        MockLoader,
         RouterLink,
-        UserIcon,
+        MockUserIcon,
+        UserPage,
       ],
-      declarations: [UserPage],
+      declarations: [],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
-        provideRouter(routes),
+        provideRouter([
+          {
+            path: "user",
+            children: [
+              { path: "", pathMatch: "prefix", component: UserPage, data: { name: "Your Page" } },
+              {
+                path: ":id",
+                pathMatch: "prefix",
+                component: UserPage,
+                data: { name: "Other User's Page" },
+              },
+            ],
+            data: { name: "User Page", mapRoutes: [{ path: "", name: "Your Page" }] },
+          },
+        ]),
         MockAuthService,
         MockAPIClient,
       ],
@@ -416,7 +433,7 @@ describe("UserPage", () => {
       displayName: userPage.authService.userData()!.displayName,
       id: userPage.authService.userData()!.id as number,
     });
-    expect(userPageDOM.querySelector("app-pop-up")).toBeTruthy();
+    expect(userPageDOM.querySelector("display-name-edit-form")).toBeTruthy();
     done();
   });
 
@@ -465,7 +482,7 @@ describe("UserPage", () => {
     expect(userPage.reportMode).toBeTrue();
     expect(userPage.reportType).toEqual("User");
     expect(userPage.reportedItem as OtherUser).toEqual(userPage.otherUser() as OtherUser);
-    expect(userPageDOM.querySelector("app-pop-up")).toBeTruthy();
+    expect(userPageDOM.querySelector("report-form")).toBeTruthy();
     done();
   });
 

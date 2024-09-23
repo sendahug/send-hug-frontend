@@ -32,7 +32,7 @@
 
 // Angular imports
 import { Component, OnInit, HostListener, AfterViewInit, signal, computed } from "@angular/core";
-import { Router, NavigationStart, RouterOutlet, RouterLink } from "@angular/router";
+import { Router, NavigationStart, RouterOutlet, RouterLink, ActivatedRoute } from "@angular/router";
 import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { faComments, faUserCircle, faCompass, faBell } from "@fortawesome/free-regular-svg-icons";
 import { faBars, faSearch, faTimes, faTextHeight } from "@fortawesome/free-solid-svg-icons";
@@ -52,6 +52,7 @@ import SiteLogoSrc from "@/assets/img/Logo.svg";
 @Component({
   selector: "app-root",
   templateUrl: "./app.component.html",
+  styleUrl: "./app.component.less",
   standalone: true,
   imports: [
     CommonModule,
@@ -64,9 +65,9 @@ import SiteLogoSrc from "@/assets/img/Logo.svg";
   ],
 })
 export class AppComponent implements OnInit, AfterViewInit {
-  showNotifications = false;
-  showSearch = false;
-  showTextPanel = false;
+  showNotifications = signal(false);
+  showSearch = signal(false);
+  showTextPanel = signal(false);
   showMenu = signal(false);
   navMenuClass = computed(() => ({
     navLinks: true,
@@ -83,6 +84,31 @@ export class AppComponent implements OnInit, AfterViewInit {
     searchQuery: this.fb.control("", [Validators.required, Validators.minLength(1)]),
   });
   SiteLogoSrc = SiteLogoSrc;
+  currentTextSize = signal(1);
+  menuSize = computed(() => {
+    // text, search and notifications, each is ~65px
+    const smallerButtons = 3 * 65;
+    // the logo is at most 100px
+    const logo = 100;
+
+    // unauthenticated users have 3 buttons
+    let navLinksCount = 3;
+    if (this.authService.authenticated()) navLinksCount += 2;
+    if (this.authService.canUser("read:admin-board")) navLinksCount += 1;
+
+    // nav icons are padded at most by 30px in regular text size,
+    // and 50px in large text size
+    const iconPadding = this.currentTextSize() > 1 ? 50 : 30;
+
+    // 50 - the general padding
+    return (
+      50 +
+      smallerButtons +
+      logo +
+      navLinksCount * 30 * this.currentTextSize() +
+      navLinksCount * iconPadding
+    );
+  });
   // font awesome icons
   faBars = faBars;
   faComments = faComments;
@@ -101,25 +127,38 @@ export class AppComponent implements OnInit, AfterViewInit {
     private serviceWorkerM: SWManager,
     protected notificationService: NotificationService,
     private fb: FormBuilder,
+    private route: ActivatedRoute,
   ) {
-    // if the user is logged in, and their data is fetched, start auto-refresh
-    this.authService.isUserDataResolved.subscribe((value) => {
-      if (value) {
-        // if push notifications are enabled, get subscription and auto-refresh data from localStorage
-        if (this.authService.userData()!.pushEnabled) {
-          this.notificationService.getSubscription();
-        }
-
-        // if auto-refresh is enabled, start auto-refresh
-        if (this.authService.userData()!.autoRefresh) {
-          this.notificationService.startAutoRefresh();
-        }
-      }
-    });
-
     // Update the user state based on the logged in firebase user
     // (if there is one)
     this.authService.checkForLoggedInUser().subscribe({
+      next: (user) => {
+        if (!user) return;
+
+        this.notificationService.getNotifications().subscribe({});
+
+        // if push notifications are enabled, check the permission
+        // state and get the cached subscription from localStorage
+        this.notificationService
+          .checkInitialPermissionState(user.pushEnabled)
+          .then((permission) => {
+            if (permission == "granted" && user.pushEnabled) {
+              this.notificationService.getCachedSubscription();
+            }
+          });
+        // if auto-refresh is enabled, start auto-refresh
+        if (user.autoRefresh) this.notificationService.startAutoRefresh(user.refreshRate);
+
+        const redirectPath = this.route.snapshot.queryParamMap.get("redirect");
+
+        // If the user has been redirected here from one of the guarded
+        // routes, navigate to said route. This happens when the page is
+        // refreshed while viewing a restricted page or when navigating using
+        // the address bar.
+        if (redirectPath) {
+          this.router.navigate([`/${redirectPath}`]);
+        }
+      },
       error: (err: Error) => {
         if (err.message == "User doesn't exist yet") {
           this.alertsService.createAlert(
@@ -244,7 +283,7 @@ export class AppComponent implements OnInit, AfterViewInit {
 
     // if there's something in the search query text field, search for it
     if (searchQuery) {
-      this.showSearch = false;
+      this.showSearch.set(false);
       this.itemsService.sendSearch(searchQuery);
       // clears the search box
       this.searchForm.reset();
@@ -273,7 +312,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   */
   toggleNotifications() {
     let width = document.documentElement.clientWidth;
-    this.showNotifications = true;
+    this.showNotifications.set(true);
 
     // if the viewport is smaller than 650px, the user opened the panel through the
     // menu, which needs to be closed
@@ -293,8 +332,8 @@ export class AppComponent implements OnInit, AfterViewInit {
     let width = document.documentElement.clientWidth;
 
     // if the search is displayed, close it
-    if (this.showSearch) {
-      this.showSearch = false;
+    if (this.showSearch()) {
+      this.showSearch.set(false);
 
       // if the viewport is smaller than 650px, the user opened the panel through the
       // menu, which needs to be closed
@@ -310,7 +349,7 @@ export class AppComponent implements OnInit, AfterViewInit {
         this.showMenu.set(false);
       }
 
-      this.showSearch = true;
+      this.showSearch.set(true);
     }
   }
 
@@ -362,11 +401,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   Programmer: Shir Bar Lev.
   */
   toggleSizePanel() {
-    if (this.showTextPanel) {
-      this.showTextPanel = false;
-    } else {
-      this.showTextPanel = true;
-    }
+    this.showTextPanel.set(!this.showTextPanel());
   }
 
   /*
@@ -380,25 +415,27 @@ export class AppComponent implements OnInit, AfterViewInit {
     switch (size) {
       case "smallest":
         document.getElementsByTagName("html")[0]!.style.fontSize = "75%";
-        this.checkMenuSize();
+        this.currentTextSize.set(0.75);
         break;
       case "smaller":
         document.getElementsByTagName("html")[0]!.style.fontSize = "87.5%";
-        this.checkMenuSize();
+        this.currentTextSize.set(0.875);
         break;
       case "regular":
         document.getElementsByTagName("html")[0]!.style.fontSize = "100%";
-        this.checkMenuSize();
+        this.currentTextSize.set(1);
         break;
       case "larger":
         document.getElementsByTagName("html")[0]!.style.fontSize = "150%";
-        this.checkMenuSize();
+        this.currentTextSize.set(1.5);
         break;
       case "largest":
         document.getElementsByTagName("html")[0]!.style.fontSize = "200%";
-        this.checkMenuSize();
+        this.currentTextSize.set(2);
         break;
     }
+
+    this.checkMenuSize();
   }
 
   /*
@@ -411,16 +448,10 @@ export class AppComponent implements OnInit, AfterViewInit {
   */
   checkMenuSize() {
     let navMenu = document.getElementById("navMenu") as HTMLDivElement;
-    let navLinks = document.getElementById("navLinks") as HTMLDivElement;
-
-    // remove the hidden label check the menu's width
-    if (!this.showMenu()) {
-      this.showMenu.set(true);
-    }
 
     // if the larger text makes the navigation menu too long, turn it back
     // to the small-viewport menu
-    if (navLinks.scrollWidth + 50 >= navMenu.offsetWidth) {
+    if (this.menuSize() >= navMenu.offsetWidth) {
       this.showMenu.set(false);
       this.showMenuButton.set(true);
     } else {
@@ -443,7 +474,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   Programmer: Shir Bar Lev.
   */
   changeMode(notificationsOn: any) {
-    this.showNotifications = notificationsOn as boolean;
+    this.showNotifications.set(notificationsOn as boolean);
   }
 
   /*
@@ -457,7 +488,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     navigator
       .share({
         title: "Send A Hug",
-        url: "https://send-hug.herokuapp.com/",
+        url: "https://app.send-hug.com/",
       })
       .catch((_err) => {
         this.alertsService.createAlert({

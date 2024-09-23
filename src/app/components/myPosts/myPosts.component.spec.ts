@@ -43,7 +43,7 @@ import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { of } from "rxjs";
 import { By } from "@angular/platform-browser";
 import { NO_ERRORS_SCHEMA } from "@angular/core";
-import { MockProvider } from "ng-mocks";
+import { MockComponent, MockProvider } from "ng-mocks";
 
 import { MyPosts } from "./myPosts.component";
 import { AuthService } from "@app/services/auth.service";
@@ -51,9 +51,7 @@ import { mockAuthedUser } from "@tests/mockData";
 import { type PostGet } from "@app/interfaces/post.interface";
 import { SinglePost } from "@app/components/post/post.component";
 import { ItemDeleteForm } from "@app/components/itemDeleteForm/itemDeleteForm.component";
-import { routes } from "@app/app.routes";
 import { ApiClientService } from "@app/services/apiClient.service";
-import { PopUp } from "@app/components/popUp/popUp.component";
 import { SWManager } from "@app/services/sWManager.service";
 
 // Mock User Page for testing the sub-component
@@ -66,10 +64,12 @@ import { SWManager } from "@app/services/sWManager.service";
       <app-my-posts [userID]="userId"></app-my-posts>
     </div>
   `,
+  standalone: true,
+  imports: [MyPosts],
 })
 class MockUserPage {
   waitFor = "user";
-  userId: number | undefined;
+  userId: number;
 
   constructor() {
     this.userId = 1;
@@ -91,17 +91,18 @@ describe("MyPosts", () => {
     const MockSWManager = MockProvider(SWManager, {
       fetchPosts: () => new Promise(() => {}),
     });
+    const MockItemDeleteForm = MockComponent(ItemDeleteForm);
 
     TestBed.resetTestEnvironment();
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
       schemas: [NO_ERRORS_SCHEMA],
-      imports: [FontAwesomeModule, PopUp, ItemDeleteForm, SinglePost],
-      declarations: [MyPosts, MockUserPage],
+      imports: [FontAwesomeModule, MockItemDeleteForm, SinglePost, MyPosts, MockUserPage],
+      declarations: [],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
-        provideRouter(routes),
+        provideRouter([]),
         MockAuthService,
         MockAPIClient,
         MockSWManager,
@@ -176,11 +177,9 @@ describe("MyPosts", () => {
   });
 
   it("should set the user ID to the logged in user's ID if no ID is provided", () => {
-    const upFixture = TestBed.createComponent(MockUserPage);
-    const userPage = upFixture.componentInstance;
-    userPage.userId = undefined;
-    upFixture.detectChanges();
-    const myPosts: MyPosts = upFixture.debugElement.children[0].children[0].componentInstance;
+    const fixture = TestBed.createComponent(MyPosts);
+    const myPosts = fixture.componentInstance;
+    fixture.detectChanges();
     const authService = TestBed.inject(AuthService);
 
     expect(myPosts.userID).toBe(authService.userData()!.id as number);
@@ -303,7 +302,7 @@ describe("MyPosts", () => {
     expect(myPosts.deleteMode).toBeTrue();
     expect(myPosts.toDelete).toBe("All posts");
     expect(myPosts.itemToDelete).toBe(4);
-    expect(myPostsDOM.querySelector("app-pop-up")).toBeTruthy();
+    expect(myPostsDOM.querySelector("item-delete-form")).toBeTruthy();
     done();
   });
 

@@ -41,6 +41,7 @@ import { AlertsService } from "@app/services/alerts.service";
 @Component({
   selector: "app-alert",
   templateUrl: "./appAlert.component.html",
+  styleUrl: "./appAlert.component.less",
   standalone: true,
   imports: [CommonModule, RouterLink],
 })

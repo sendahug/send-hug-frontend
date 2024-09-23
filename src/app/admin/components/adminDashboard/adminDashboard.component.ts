@@ -41,6 +41,7 @@ import { AuthService } from "@app/services/auth.service";
 @Component({
   selector: "app-admin-dashboard",
   templateUrl: "./adminDashboard.component.html",
+  styleUrl: "./adminDashboard.component.less",
 })
 export class AdminDashboard implements OnInit {
   screen: string = "";

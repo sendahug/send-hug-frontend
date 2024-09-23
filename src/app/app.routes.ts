@@ -32,49 +32,65 @@
 
 import { Routes } from "@angular/router";
 
+// Routes
+// MainPage is the initial thing users see so I left it as a static import
+// ErrorPage and SearchResults seem useful to keep static for app functionality
 import { MainPage } from "./components/mainPage/mainPage.component";
-import { UserPage } from "./user/components/userPage/userPage.component";
-import { AppMessaging } from "./user/components/messages/messages.component";
 import { ErrorPage } from "./components/errorPage/errorPage.component";
-import { NewItem } from "./components/newItem/newItem.component";
-import { FullList } from "./components/fullList/fullList.component";
-import { AboutApp } from "./components/aboutApp/aboutApp.component";
 import { SearchResults } from "./components/searchResults/searchResults.component";
-import { AdminDashboard } from "./admin/components/adminDashboard/adminDashboard.component";
-import { SettingsPage } from "./user/components/settings/settings.component";
-import { SiteMap } from "./components/siteMap/siteMap.component";
-import { SupportPage } from "./components/supportPage/supportPage.component";
-import { SitePolicies } from "./components/sitePolicies/sitePolicies.component";
-import { LoginPage } from "./components/loginPage/loginPage.component";
-import { SignUpPage } from "./components/signUpPage/signUpPage.component";
+// Guards
+import { isAuthedGuard } from "./guards/isAuthed.guard";
+import { hasPermissionGuard } from "./guards/hasPermission.guard";
 
 export const routes: Routes = [
   { path: "", component: MainPage, data: { name: "Home Page" } },
   {
     path: "user",
+    canMatch: [isAuthedGuard],
     children: [
-      { path: "", pathMatch: "prefix", component: UserPage, data: { name: "Your Page" } },
+      {
+        path: "",
+        pathMatch: "prefix",
+        loadComponent: () =>
+          import("./components/userPage/userPage.component").then((c) => c.UserPage),
+      },
       {
         path: ":id",
         pathMatch: "prefix",
-        component: UserPage,
-        data: { name: "Other User's Page" },
+        loadComponent: () =>
+          import("./components/userPage/userPage.component").then((c) => c.UserPage),
       },
     ],
     data: { name: "User Page", mapRoutes: [{ path: "", name: "Your Page" }] },
   },
   {
     path: "messages",
+    canMatch: [isAuthedGuard],
     children: [
-      { path: "", pathMatch: "prefix", redirectTo: "inbox", data: { name: "Inbox" } },
-      { path: "inbox", pathMatch: "prefix", component: AppMessaging, data: { name: "Inbox" } },
-      { path: "outbox", pathMatch: "prefix", component: AppMessaging, data: { name: "Outbox" } },
-      { path: "threads", pathMatch: "prefix", component: AppMessaging, data: { name: "Threads" } },
+      { path: "", pathMatch: "prefix", redirectTo: "inbox" },
+      {
+        path: "inbox",
+        pathMatch: "prefix",
+        loadComponent: () =>
+          import("./components/messages/messages.component").then((c) => c.AppMessaging),
+      },
+      {
+        path: "outbox",
+        pathMatch: "prefix",
+        loadComponent: () =>
+          import("./components/messages/messages.component").then((c) => c.AppMessaging),
+      },
+      {
+        path: "threads",
+        pathMatch: "prefix",
+        loadComponent: () =>
+          import("./components/messages/messages.component").then((c) => c.AppMessaging),
+      },
       {
         path: "thread/:id",
         pathMatch: "prefix",
-        component: AppMessaging,
-        data: { name: "Thread" },
+        loadComponent: () =>
+          import("./components/messages/messages.component").then((c) => c.AppMessaging),
       },
     ],
     data: {
@@ -88,9 +104,20 @@ export const routes: Routes = [
   },
   {
     path: "new",
+    canMatch: [isAuthedGuard],
     children: [
-      { path: "Post", pathMatch: "prefix", component: NewItem, data: { name: "New post" } },
-      { path: "Message", pathMatch: "prefix", component: NewItem, data: { name: "New message" } },
+      {
+        path: "Post",
+        pathMatch: "prefix",
+        loadComponent: () =>
+          import("./components/newItem/newItem.component").then((c) => c.NewItem),
+      },
+      {
+        path: "Message",
+        pathMatch: "prefix",
+        loadComponent: () =>
+          import("./components/newItem/newItem.component").then((c) => c.NewItem),
+      },
     ],
     data: {
       name: "New Item",
@@ -103,12 +130,17 @@ export const routes: Routes = [
   {
     path: "list",
     children: [
-      { path: "New", pathMatch: "prefix", component: FullList, data: { name: "Full new list" } },
+      {
+        path: "New",
+        pathMatch: "prefix",
+        loadComponent: () =>
+          import("./components/fullList/fullList.component").then((c) => c.FullList),
+      },
       {
         path: "Suggested",
         pathMatch: "prefix",
-        component: FullList,
-        data: { name: "Full suggested list" },
+        loadComponent: () =>
+          import("./components/fullList/fullList.component").then((c) => c.FullList),
       },
     ],
     data: {
@@ -119,33 +151,19 @@ export const routes: Routes = [
       ],
     },
   },
-  { path: "about", component: AboutApp, data: { name: "About Page" } },
+  {
+    path: "about",
+    loadComponent: () => import("./components/aboutApp/aboutApp.component").then((c) => c.AboutApp),
+    data: { name: "About Page" },
+  },
   { path: "search", component: SearchResults, data: { name: "Search Results" } },
   {
     path: "admin",
-    children: [
-      { path: "", pathMatch: "prefix", component: AdminDashboard, data: { name: "Main Page" } },
-      {
-        path: "reports",
-        pathMatch: "prefix",
-        component: AdminDashboard,
-        data: { name: "Reports Page" },
-      },
-      {
-        path: "blocks",
-        pathMatch: "prefix",
-        component: AdminDashboard,
-        data: { name: "Blocks Page" },
-      },
-      {
-        path: "filters",
-        pathMatch: "prefix",
-        component: AdminDashboard,
-        data: { name: "Filters Page" },
-      },
-    ],
+    canMatch: [hasPermissionGuard],
+    loadChildren: () => import("./admin/admin.module").then((m) => m.AppAdminModule),
     data: {
       name: "Admin Dashboard",
+      permission: "read:admin-board",
       mapRoutes: [
         { path: "", name: "Main Page" },
         { path: "reports", name: "Reports Page" },
@@ -154,29 +172,44 @@ export const routes: Routes = [
       ],
     },
   },
-  { path: "settings", component: SettingsPage, data: { name: "Settings Page" } },
-  { path: "sitemap", component: SiteMap, data: { name: "Site Map" } },
-  { path: "support", component: SupportPage, data: { name: "Support" } },
+  {
+    path: "settings",
+    canMatch: [isAuthedGuard],
+    loadComponent: () =>
+      import("./components/settings/settings.component").then((c) => c.SettingsPage),
+    data: { name: "Settings Page" },
+  },
+  {
+    path: "sitemap",
+    loadComponent: () => import("./components/siteMap/siteMap.component").then((c) => c.SiteMap),
+    data: { name: "Site Map" },
+  },
+  {
+    path: "support",
+    loadComponent: () =>
+      import("./components/supportPage/supportPage.component").then((c) => c.SupportPage),
+    data: { name: "Support" },
+  },
   {
     path: "policies",
     children: [
       {
         path: "terms",
         pathMatch: "prefix",
-        component: SitePolicies,
-        data: { name: "Terms and Conditions" },
+        loadComponent: () =>
+          import("./components/sitePolicies/sitePolicies.component").then((c) => c.SitePolicies),
       },
       {
         path: "privacy",
         pathMatch: "prefix",
-        component: SitePolicies,
-        data: { name: "Privacy Policy" },
+        loadComponent: () =>
+          import("./components/sitePolicies/sitePolicies.component").then((c) => c.SitePolicies),
       },
       {
         path: "cookies",
         pathMatch: "prefix",
-        component: SitePolicies,
-        data: { name: "Cookie Policy" },
+        loadComponent: () =>
+          import("./components/sitePolicies/sitePolicies.component").then((c) => c.SitePolicies),
       },
     ],
     data: {
@@ -188,7 +221,17 @@ export const routes: Routes = [
       ],
     },
   },
-  { path: "login", component: LoginPage, data: { name: "Login Page" } },
-  { path: "signup", component: SignUpPage, data: {} },
+  {
+    path: "login",
+    loadComponent: () =>
+      import("./components/loginPage/loginPage.component").then((c) => c.LoginPage),
+    data: { name: "Login Page" },
+  },
+  {
+    path: "signup",
+    loadComponent: () =>
+      import("./components/signUpPage/signUpPage.component").then((c) => c.SignUpPage),
+    data: {},
+  },
   { path: "**", component: ErrorPage, data: { name: "Error Page" } },
 ];

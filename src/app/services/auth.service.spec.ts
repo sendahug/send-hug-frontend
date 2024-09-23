@@ -60,6 +60,7 @@ describe("AuthService", () => {
   let mockFirebaseUser: FirebaseUser;
   let mockUser: User;
   let createAlertSpy: jasmine.Spy;
+  let createErrorAlertSpy: jasmine.Spy;
 
   // Before each test, configure testing environment
   beforeEach(() => {
@@ -93,7 +94,7 @@ describe("AuthService", () => {
     httpController = TestBed.inject(HttpTestingController);
 
     const alertsService = TestBed.inject(AlertsService);
-    spyOn(alertsService, "createErrorAlert");
+    createErrorAlertSpy = spyOn(alertsService, "createErrorAlert");
     spyOn(alertsService, "toggleOfflineAlert");
     createAlertSpy = spyOn(alertsService, "createAlert");
     createAlertSpy;
@@ -105,6 +106,33 @@ describe("AuthService", () => {
   // Check the service is created
   it("should be created", () => {
     expect(authService).toBeTruthy();
+  });
+
+  it("should return the user's settings and show the right button names", () => {
+    authService.userData.set({ ...mockAuthedUser });
+
+    expect(authService.pushEnabled()).toBe(mockAuthedUser.pushEnabled);
+    expect(authService.toggleBtn()).toBe("Enable");
+    expect(authService.autoRefresh()).toBe(mockAuthedUser.autoRefresh);
+    expect(authService.refreshBtn()).toBe("Enable");
+    expect(authService.refreshRate()).toBe(mockAuthedUser.refreshRate);
+  });
+
+  it("should return the default settings and show the right button names if the user isn't logged in", () => {
+    authService.userData.set(undefined);
+
+    expect(authService.pushEnabled()).toBe(false);
+    expect(authService.toggleBtn()).toBe("Enable");
+    expect(authService.autoRefresh()).toBe(false);
+    expect(authService.refreshBtn()).toBe("Enable");
+    expect(authService.refreshRate()).toBe(20);
+  });
+
+  it("should set the button names based on the settings", () => {
+    authService.userData.set({ ...mockAuthedUser, pushEnabled: true, autoRefresh: true });
+
+    expect(authService.toggleBtn()).toBe("Disable");
+    expect(authService.refreshBtn()).toBe("Disable");
   });
 
   it("getUserToken() - returns an empty observable if there's no logged in user", (done: DoneFn) => {
@@ -247,6 +275,50 @@ describe("AuthService", () => {
     req.flush(mockError, mockResponse);
   });
 
+  // Check the service triggers user creating if the user doesn't exist
+  it("fetchUser() - handles an error", (done: DoneFn) => {
+    // mock response
+    const mockError = {
+      message: {
+        description: "ERROR",
+        statusCode: 404,
+      },
+    };
+    const mockResponse: HttpErrorResponse = {
+      message: "error",
+      error: mockError,
+      headers: new HttpHeaders(),
+      ok: false,
+      status: 404,
+      statusText: "",
+      url: "",
+      type: HttpEventType.Response,
+      name: "HttpErrorResponse",
+    };
+    spyOn(authService, "getUserToken").and.returnValue(
+      of({
+        ...mockFirebaseUser,
+        jwt: "token",
+      }),
+    );
+    const isResolvedSpy = spyOn(authService.isUserDataResolved, "next").and.callThrough();
+
+    authService.fetchUser().subscribe({
+      error: (err) => {
+        expect(isResolvedSpy).toHaveBeenCalled();
+        expect(createErrorAlertSpy).toHaveBeenCalled();
+        expect(authService.isUserDataResolved.value).toBeTrue();
+        expect(err.status).toBe(404);
+        done();
+      },
+    });
+
+    // flush mock response
+    const req = httpController.expectOne(`${authService.serverUrl}/users/all/fb`);
+    expect(req.request.method).toEqual("GET");
+    req.flush(mockError, mockResponse);
+  });
+
   // Check a new user is created
   it("createUser() - creates a new user - name provided", (done: DoneFn) => {
     // mock response
@@ -314,6 +386,121 @@ describe("AuthService", () => {
       displayName: "test",
     });
     req.flush(mockResponse);
+  });
+
+  it("createUser() - creates a new user - name not provided", (done: DoneFn) => {
+    // mock response
+    const mockResponse = {
+      success: true,
+      user: {
+        id: 4,
+        displayName: "name",
+        receivedH: 2,
+        givenH: 2,
+        posts: 2,
+        loginCount: 3,
+        role: {
+          id: 1,
+          name: "admin",
+          permissions: [],
+        },
+        jwt: "",
+        blocked: false,
+        releaseDate: undefined,
+        autoRefresh: false,
+        refreshRate: 20,
+        pushEnabled: false,
+        selectedIcon: "kitty",
+        iconColours: {
+          character: "#BA9F93",
+          lbg: "#e2a275",
+          rbg: "#f8eee4",
+          item: "#f4b56a",
+        },
+        firebaseId: "fb",
+      },
+    };
+    const getTokenSpy = spyOn(authService, "getUserToken").and.returnValue(
+      of({
+        ...mockFirebaseUser,
+        jwt: "token",
+      }),
+    );
+    const isResolvedSpy = spyOn(authService.isUserDataResolved, "next").and.callThrough();
+    const setUserSpy = spyOn(authService, "setCurrentUser");
+
+    // check the user is logged out at first
+    expect(authService.userData()).toBeUndefined();
+    expect(authService.authenticated()).toBeFalse();
+
+    authService.createUser(null).subscribe({
+      next: (userData) => {
+        expect(getTokenSpy).toHaveBeenCalled();
+        expect(isResolvedSpy).toHaveBeenCalledWith(false);
+        expect(setUserSpy).toHaveBeenCalled();
+        expect(userData).toEqual({
+          ...mockUser,
+          jwt: "token",
+        });
+        done();
+      },
+    });
+
+    // flush mock response
+    const req = httpController.expectOne(`${authService.serverUrl}/users`);
+    expect(req.request.method).toEqual("POST");
+    expect(req.request.body["firebaseId"]).toEqual("fb");
+    expect(req.request.body["displayName"]).toContain("user");
+    req.flush(mockResponse);
+  });
+
+  it("createUser() - handles an error", (done: DoneFn) => {
+    // mock response
+    const mockError = {
+      message: {
+        description: "User not found",
+        statusCode: 404,
+      },
+    };
+    const mockResponse: HttpErrorResponse = {
+      message: "error",
+      error: mockError,
+      headers: new HttpHeaders(),
+      ok: false,
+      status: 404,
+      statusText: "",
+      url: "",
+      type: HttpEventType.Response,
+      name: "HttpErrorResponse",
+    };
+    spyOn(authService, "getUserToken").and.returnValue(
+      of({
+        ...mockFirebaseUser,
+        jwt: "token",
+      }),
+    );
+    const isResolvedSpy = spyOn(authService.isUserDataResolved, "next").and.callThrough();
+    spyOn(authService, "setCurrentUser");
+
+    // check the user is logged out at first
+    expect(authService.userData()).toBeUndefined();
+    expect(authService.authenticated()).toBeFalse();
+
+    authService.createUser(null).subscribe({
+      error: (error: HttpErrorResponse) => {
+        expect(isResolvedSpy).toHaveBeenCalledWith(true);
+        expect(createErrorAlertSpy).toHaveBeenCalled();
+        expect(error.status).toEqual(mockResponse.status);
+        done();
+      },
+    });
+
+    // flush mock response
+    const req = httpController.expectOne(`${authService.serverUrl}/users`);
+    expect(req.request.method).toEqual("POST");
+    expect(req.request.body["firebaseId"]).toEqual("fb");
+    expect(req.request.body["displayName"]).toContain("user");
+    req.flush(mockError, mockResponse);
   });
 
   it("setCurrentUser() - sets the user's data locally", () => {
@@ -535,6 +722,62 @@ describe("AuthService", () => {
     const req = httpController.expectOne(`${authService.serverUrl}/users/all/4`);
     expect(req.request.method).toEqual("PATCH");
     req.flush(mockResponse);
+  });
+
+  it("updateUserData() - handles an error", (done: DoneFn) => {
+    // mock response
+    const mockError = {
+      status: 404,
+      statusText: "Not Found",
+    };
+
+    authService.userData.set({
+      id: 4,
+      displayName: "beep",
+      receivedH: 2,
+      givenH: 2,
+      posts: 2,
+      loginCount: 2,
+      role: {
+        id: 1,
+        name: "admin",
+        permissions: [],
+      },
+      jwt: "",
+      blocked: false,
+      releaseDate: undefined,
+      autoRefresh: false,
+      refreshRate: 20,
+      pushEnabled: false,
+      selectedIcon: "kitty",
+      iconColours: {
+        character: "#BA9F93",
+        lbg: "#e2a275",
+        rbg: "#f8eee4",
+        item: "#f4b56a",
+      },
+      firebaseId: "fb",
+    });
+    const getTokenSpy = spyOn(authService, "getUserToken").and.returnValue(
+      of({
+        ...mockFirebaseUser,
+        jwt: "token",
+      }),
+    );
+    const swSpy = spyOn(authService["serviceWorkerM"], "addItem");
+
+    authService.updateUserData({ displayName: "name" }).add(() => {
+      expect(authService.userData()!.displayName).toBe("name");
+      expect(getTokenSpy).toHaveBeenCalled();
+      expect(swSpy).not.toHaveBeenCalled();
+      expect(createErrorAlertSpy).toHaveBeenCalled();
+      done();
+    });
+
+    // flush mock response
+    const req = httpController.expectOne(`${authService.serverUrl}/users/all/4`);
+    expect(req.request.method).toEqual("PATCH");
+    req.flush(null, mockError);
   });
 
   // Check the service checks user permissions correctly

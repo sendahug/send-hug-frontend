@@ -39,9 +39,9 @@ import {
 } from "@angular/platform-browser-dynamic/testing";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { provideZoneChangeDetection } from "@angular/core";
+import { Component } from "@angular/core";
 
 import { PopUp } from "./popUp.component";
-import { Component } from "@angular/core";
 
 // Mock page
 @Component({
@@ -80,6 +80,7 @@ describe("Popup", () => {
   });
 
   // check tab and tab+shift let the user navigate
+  // TODO: Figure out why this test isn't working
   it("should navigate using tab and shift+tab", (done: DoneFn) => {
     const mockPage = TestBed.createComponent(MockPage);
     const mockPageDOM = mockPage.nativeElement;

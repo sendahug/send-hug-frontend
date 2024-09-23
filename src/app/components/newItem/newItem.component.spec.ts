@@ -51,7 +51,6 @@ import { MockProvider } from "ng-mocks";
 import { NewItem } from "./newItem.component";
 import { AuthService } from "@app/services/auth.service";
 import { mockAuthedUser } from "@tests/mockData";
-import { routes } from "@app/app.routes";
 import { ItemsService } from "@app/services/items.service";
 import { ApiClientService } from "@app/services/apiClient.service";
 
@@ -74,7 +73,35 @@ describe("NewItem", () => {
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
         provideZoneChangeDetection({ eventCoalescing: true }),
-        provideRouter(routes, withComponentInputBinding()),
+        provideRouter(
+          [
+            {
+              path: "new",
+              children: [
+                {
+                  path: "Post",
+                  pathMatch: "prefix",
+                  component: NewItem,
+                  data: { name: "New post" },
+                },
+                {
+                  path: "Message",
+                  pathMatch: "prefix",
+                  component: NewItem,
+                  data: { name: "New message" },
+                },
+              ],
+              data: {
+                name: "New Item",
+                mapRoutes: [
+                  { path: "Post", name: "New post" },
+                  { path: "Message", name: "New message" },
+                ],
+              },
+            },
+          ],
+          withComponentInputBinding(),
+        ),
         MockAuthService,
         MockItemsService,
         MockAPIClient,
@@ -124,6 +151,7 @@ describe("NewItem", () => {
     );
     const successAlertSpy = spyOn(newItem["alertService"], "createSuccessAlert");
     const addItemSpy = spyOn(newItem["swManager"], "addFetchedItems");
+    const navigateSpy = spyOn(newItem["router"], "navigate");
     fixture.detectChanges();
 
     // fill in post's text and trigger a click
@@ -134,11 +162,9 @@ describe("NewItem", () => {
     fixture.detectChanges();
 
     expect(apiClientSpy).toHaveBeenCalledWith("posts", jasmine.objectContaining(mockNewPost));
-    expect(successAlertSpy).toHaveBeenCalledWith(
-      "Your post was published! Return to home page to view the post.",
-      { navigate: true, navTarget: "/", navText: "Home Page" },
-    );
+    expect(successAlertSpy).toHaveBeenCalledWith("Your post was published!");
     expect(addItemSpy).toHaveBeenCalledWith("posts", [mockNewPost], "date");
+    expect(navigateSpy).toHaveBeenCalledWith(["/"]);
   });
 
   // Check that an empty post triggers an alert
@@ -302,7 +328,26 @@ describe("NewItem", () => {
     const newItem = fixture.componentInstance;
     const newItemDOM = fixture.nativeElement;
     const newMessageSpy = spyOn(newItem, "sendMessage").and.callThrough();
-    const newMessServiceSpy = spyOn(newItem["itemsService"], "sendMessage");
+    const newMessServiceSpy = spyOn(newItem["itemsService"], "sendMessage").and.returnValue(
+      of({
+        message: {
+          date: new Date("Mon, 08 Jun 2020 14:43:15 GMT"),
+          from: {
+            displayName: "user",
+          },
+          fromId: 4,
+          for: {
+            displayName: "user2",
+          },
+          forId: 2,
+          id: 9,
+          messageText: "hang in there",
+          threadID: 1,
+        },
+        success: true,
+      }),
+    );
+    const navigateSpy = spyOn(newItem["router"], "navigate");
 
     fixture.detectChanges();
 
@@ -323,6 +368,7 @@ describe("NewItem", () => {
     expect(newMessageSpy).toHaveBeenCalled();
     expect(newMessServiceSpy).toHaveBeenCalled();
     expect(newMessServiceSpy).toHaveBeenCalledWith(jasmine.objectContaining(newMessage));
+    expect(navigateSpy).toHaveBeenCalledWith(["/"]);
     done();
   });
 

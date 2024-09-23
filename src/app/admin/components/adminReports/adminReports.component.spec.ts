@@ -39,7 +39,7 @@ import {
   platformBrowserDynamicTesting,
 } from "@angular/platform-browser-dynamic/testing";
 import { NO_ERRORS_SCHEMA, signal } from "@angular/core";
-import { BehaviorSubject, of } from "rxjs";
+import { BehaviorSubject, of, throwError } from "rxjs";
 import { By } from "@angular/platform-browser";
 import { MockComponent, MockProvider } from "ng-mocks";
 
@@ -52,7 +52,6 @@ import { ApiClientService } from "@app/services/apiClient.service";
 import { PostEditForm } from "@app/components/postEditForm/postEditForm.component";
 import { DisplayNameEditForm } from "@app/components/displayNameEditForm/displayNameEditForm.component";
 import { ItemDeleteForm } from "@app/components/itemDeleteForm/itemDeleteForm.component";
-import { routes } from "@app/app.routes";
 import { AdminService } from "@app/services/admin.service";
 
 // REPORTS PAGE
@@ -77,17 +76,18 @@ describe("AdminReports", () => {
     const MockEditForm = MockComponent(DisplayNameEditForm);
     const MockDeleteForm = MockComponent(ItemDeleteForm);
     const MockPostEditForm = MockComponent(PostEditForm);
+    const MockLoader = MockComponent(Loader);
 
     TestBed.resetTestEnvironment();
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
       schemas: [NO_ERRORS_SCHEMA],
-      imports: [Loader, MockPostEditForm, MockDeleteForm, MockEditForm, CommonModule],
+      imports: [MockLoader, MockPostEditForm, MockDeleteForm, MockEditForm, CommonModule],
       declarations: [AdminReports],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
-        provideRouter(routes),
+        provideRouter([]),
         MockAuthService,
         MockAdminService,
         MockAPIClient,
@@ -165,6 +165,33 @@ describe("AdminReports", () => {
     done();
   });
 
+  it("should remove the loading screen if there was an error", (done: DoneFn) => {
+    const apiClientSpy = spyOn(TestBed.inject(ApiClientService), "get").and.returnValue(
+      throwError(() => new Error("ERROR")),
+    );
+    const fixture = TestBed.createComponent(AdminReports);
+    const adminReports = fixture.componentInstance;
+    const adminReportsDOM = fixture.nativeElement;
+
+    fixture.detectChanges();
+
+    expect(apiClientSpy).toHaveBeenCalledWith("reports", {
+      userPage: "1",
+      postPage: "1",
+    });
+    expect(adminReports.userReports.length).toBe(0);
+    expect(adminReportsDOM.querySelectorAll(".tableContainer").length).toBe(0);
+    expect(adminReports.postReports.length).toBe(0);
+    expect(adminReports.isLoading).toBeFalse();
+    expect(adminReportsDOM.querySelectorAll(".errorMessage")[0].textContent).toBe(
+      "There are no user reports waiting for review.",
+    );
+    expect(adminReportsDOM.querySelectorAll(".errorMessage")[1].textContent).toBe(
+      "There are no post reports waiting for review.",
+    );
+    done();
+  });
+
   it("should block a user", (done: DoneFn) => {
     // set up the spy and the component
     const fixture = TestBed.createComponent(AdminReports);
@@ -205,6 +232,49 @@ describe("AdminReports", () => {
     expect(blockSpy).toHaveBeenCalledWith(10, 1);
     expect(blockServiceSpy).toHaveBeenCalledWith(10, "oneDay", 1);
     expect(adminReports.userReports.length).toBe(0);
+    done();
+  });
+
+  it("should block a user but not remove the report if there's no report ID", (done: DoneFn) => {
+    // set up the spy and the component
+    const fixture = TestBed.createComponent(AdminReports);
+    const adminReports = fixture.componentInstance;
+    const adminReportsDOM = fixture.nativeElement;
+    const blockSpy = spyOn(adminReports, "blockUser").and.callThrough();
+    const adminService = adminReports["adminService"];
+    const blockServiceSpy = spyOn(adminService, "blockUser").and.returnValue(
+      of({
+        success: true,
+        updated: {
+          id: 1,
+          type: "User",
+          userID: 10,
+          displayName: "name",
+          reporter: 3,
+          reportReason: "reason",
+          date: new Date(),
+          dismissed: true,
+          closed: true,
+        },
+        reportID: undefined,
+      }),
+    );
+
+    adminReports.postReports = [...mockPostReports];
+    adminReports.userReports = [...mockUserReports];
+    adminReports.isLoading = false;
+
+    fixture.detectChanges();
+
+    // trigger a click
+    const userTable = adminReportsDOM.querySelectorAll(".tableContainer")[0];
+    userTable.querySelectorAll(".adminButton")[0].click();
+    fixture.detectChanges();
+
+    // check expectations
+    expect(blockSpy).toHaveBeenCalledWith(10, 1);
+    expect(blockServiceSpy).toHaveBeenCalledWith(10, "oneDay", 1);
+    expect(adminReports.userReports.length).toBe(1);
     done();
   });
 
@@ -301,7 +371,7 @@ describe("AdminReports", () => {
   });
 
   // Check that you can dismiss reports
-  it("should dismiss report", (done: DoneFn) => {
+  it("should dismiss post report", (done: DoneFn) => {
     // set up the spy and the component
     const fixture = TestBed.createComponent(AdminReports);
     const adminReports = fixture.componentInstance;
@@ -343,6 +413,51 @@ describe("AdminReports", () => {
     expect(dismissServiceSpy).toHaveBeenCalledWith(2, true, 5, undefined);
     expect(alertsSpy).toHaveBeenCalledWith(`Report 2 was dismissed!`);
     expect(adminReports.postReports.length).toEqual(0);
+    done();
+  });
+
+  it("should dismiss user report", (done: DoneFn) => {
+    // set up the spy and the component
+    const fixture = TestBed.createComponent(AdminReports);
+    const adminReports = fixture.componentInstance;
+    const adminReportsDOM = fixture.nativeElement;
+    const dismissSpy = spyOn(adminReports, "dismissReport").and.callThrough();
+    const adminService = adminReports["adminService"];
+    const dismissServiceSpy = spyOn(adminService, "closeReport").and.returnValue(
+      of({
+        success: true,
+        updated: {
+          id: 1,
+          type: "User" as "User" | "Post",
+          userID: 10,
+          postID: undefined,
+          reporter: 4,
+          reportReason: "reason",
+          date: new Date("2020-06-29 19:17:31.072"),
+          dismissed: true,
+          closed: true,
+        },
+      }),
+    );
+    const alertsSpy = spyOn(adminReports["alertsService"], "createSuccessAlert");
+    spyOn(adminReports, "fetchReports");
+    adminReports.postReports = [...mockPostReports];
+    adminReports.userReports = [...mockUserReports];
+    adminReports.isLoading = false;
+
+    fixture.detectChanges();
+
+    // trigger click
+    const userTable = adminReportsDOM.querySelectorAll(".tableContainer")[0];
+    userTable.querySelectorAll(".adminButton")[2].click();
+    fixture.detectChanges();
+
+    // check expectations
+    expect(dismissSpy).toHaveBeenCalled();
+    expect(dismissServiceSpy).toHaveBeenCalled();
+    expect(dismissServiceSpy).toHaveBeenCalledWith(1, true, undefined, 10);
+    expect(alertsSpy).toHaveBeenCalledWith(`Report 1 was dismissed!`);
+    expect(adminReports.userReports.length).toEqual(0);
     done();
   });
 
@@ -580,6 +695,44 @@ describe("AdminReports", () => {
     done();
   });
 
+  it("shouldn't update the UI if the report ID doesn't exist - user report", (done: DoneFn) => {
+    const fixture = TestBed.createComponent(AdminReports);
+    const adminReports = fixture.componentInstance;
+    const updateSpy = spyOn(adminReports, "updateUserReport").and.callThrough();
+    adminReports.userReports = [...mockUserReports];
+    fixture.detectChanges();
+
+    // start the popup
+    adminReports.lastFocusedElement = document.querySelectorAll("a")[0];
+    adminReports.toEdit = {
+      displayName: "displayName",
+      id: 2,
+    };
+    adminReports.nameEditMode = true;
+    adminReports.reportData.reportID = 1;
+    adminReports.reportData.userID = 10;
+    fixture.detectChanges();
+
+    // exit the popup
+    const popup = fixture.debugElement.query(By.css("display-name-edit-form"))
+      .componentInstance as DisplayNameEditForm;
+    popup.updatedDetails.emit({
+      closed: false,
+      reportID: 100000,
+      displayName: "beep",
+    });
+    fixture.detectChanges();
+
+    // check the popup is exited
+    expect(updateSpy).toHaveBeenCalledWith({
+      closed: false,
+      reportID: 100000,
+      displayName: "beep",
+    });
+    expect(adminReports.userReports.length).toBe(1);
+    done();
+  });
+
   it("should update the UI when the edit is done - display name edit + don't close report", (done: DoneFn) => {
     const fixture = TestBed.createComponent(AdminReports);
     const adminReports = fixture.componentInstance;
@@ -619,7 +772,7 @@ describe("AdminReports", () => {
     done();
   });
 
-  it("should change update the UI when a report is closed - post edit", (done: DoneFn) => {
+  it("should update the UI when a report is closed - post edit", (done: DoneFn) => {
     const fixture = TestBed.createComponent(AdminReports);
     const adminReports = fixture.componentInstance;
     const updateSpy = spyOn(adminReports, "updatePostReport").and.callThrough();
@@ -657,6 +810,47 @@ describe("AdminReports", () => {
     // check the popup is exited
     expect(updateSpy).toHaveBeenCalled();
     expect(adminReports.postReports.length).toBe(0);
+    done();
+  });
+
+  it("shouldn't update the UI when a report doesn't exist - post edit", (done: DoneFn) => {
+    const fixture = TestBed.createComponent(AdminReports);
+    const adminReports = fixture.componentInstance;
+    const updateSpy = spyOn(adminReports, "updatePostReport").and.callThrough();
+    adminReports.postReports = [...mockPostReports];
+    const reportPostResponse = {
+      success: true,
+      updatedPost: {
+        id: 500,
+        userId: 4,
+        user: "me",
+        text: "test",
+        date: new Date(),
+        givenHugs: 0,
+      },
+      reportId: undefined,
+    };
+
+    fixture.detectChanges();
+
+    // start the popup
+    adminReports.lastFocusedElement = document.querySelectorAll("a")[0];
+    adminReports.toEdit = "post";
+    adminReports.postEditMode = true;
+    adminReports.reportData.reportID = 5;
+    adminReports.reportData.postID = 2;
+    fixture.detectChanges();
+
+    // exit the popup
+    const popup = fixture.debugElement.query(By.css("post-edit-form"))
+      .componentInstance as PostEditForm;
+    popup.editMode.emit(false);
+    popup.updateResult.emit(reportPostResponse);
+    fixture.detectChanges();
+
+    // check the popup is exited
+    expect(updateSpy).toHaveBeenCalled();
+    expect(adminReports.postReports.length).toBe(1);
     done();
   });
 

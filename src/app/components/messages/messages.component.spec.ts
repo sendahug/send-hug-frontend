@@ -47,7 +47,7 @@ import {
 import { BehaviorSubject, of } from "rxjs";
 import { By } from "@angular/platform-browser";
 import { NO_ERRORS_SCHEMA, provideZoneChangeDetection, signal } from "@angular/core";
-import { MockProvider } from "ng-mocks";
+import { MockComponent, MockProvider } from "ng-mocks";
 
 import { AppMessaging } from "./messages.component";
 import { AuthService } from "@app/services/auth.service";
@@ -55,7 +55,6 @@ import { mockAuthedUser } from "@tests/mockData";
 import { FullThread } from "@app/interfaces/thread.interface";
 import { type MessageGet } from "@app/interfaces/message.interface";
 import { ItemDeleteForm } from "@app/components/itemDeleteForm/itemDeleteForm.component";
-import { routes } from "@app/app.routes";
 import { ApiClientService } from "@app/services/apiClient.service";
 import { HeaderMessage } from "@app/components/headerMessage/headerMessage.component";
 import { Loader } from "@app/components/loader/loader.component";
@@ -73,18 +72,71 @@ describe("AppMessaging", () => {
       isUserDataResolved: new BehaviorSubject(true),
     });
     const MockAPIClient = MockProvider(ApiClientService);
+    const MockItemDeleteForm = MockComponent(ItemDeleteForm);
+    const MockHeaderMessage = MockComponent(HeaderMessage);
+    const MockLoader = MockComponent(Loader);
+    const MockUserIcon = MockComponent(UserIcon);
 
     TestBed.resetTestEnvironment();
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
       schemas: [NO_ERRORS_SCHEMA],
-      imports: [ItemDeleteForm, HeaderMessage, Loader, UserIcon, RouterLink, CommonModule],
-      declarations: [AppMessaging],
+      imports: [
+        MockItemDeleteForm,
+        MockHeaderMessage,
+        MockLoader,
+        MockUserIcon,
+        RouterLink,
+        CommonModule,
+        AppMessaging,
+      ],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
         provideZoneChangeDetection({ eventCoalescing: true }),
-        provideRouter(routes, withComponentInputBinding()),
+        provideRouter(
+          [
+            {
+              path: "messages",
+              children: [
+                { path: "", pathMatch: "prefix", redirectTo: "inbox", data: { name: "Inbox" } },
+                {
+                  path: "inbox",
+                  pathMatch: "prefix",
+                  component: AppMessaging,
+                  data: { name: "Inbox" },
+                },
+                {
+                  path: "outbox",
+                  pathMatch: "prefix",
+                  component: AppMessaging,
+                  data: { name: "Outbox" },
+                },
+                {
+                  path: "threads",
+                  pathMatch: "prefix",
+                  component: AppMessaging,
+                  data: { name: "Threads" },
+                },
+                {
+                  path: "thread/:id",
+                  pathMatch: "prefix",
+                  component: AppMessaging,
+                  data: { name: "Thread" },
+                },
+              ],
+              data: {
+                name: "Mailbox",
+                mapRoutes: [
+                  { path: "inbox", name: "Inbox" },
+                  { path: "outbox", name: "Outbox" },
+                  { path: "threads", name: "Threads" },
+                ],
+              },
+            },
+          ],
+          withComponentInputBinding(),
+        ),
         MockAuthService,
         MockAPIClient,
       ],
@@ -405,7 +457,7 @@ describe("AppMessaging", () => {
     expect(appMessaging.deleteMode).toBeTrue();
     expect(appMessaging.toDelete).toBe("Message");
     expect(appMessaging.itemToDelete).toBe(1);
-    expect(appMessagingDOM.querySelector("app-pop-up")).toBeTruthy();
+    expect(appMessagingDOM.querySelector("item-delete-form")).toBeTruthy();
     done();
   });
 
@@ -569,7 +621,7 @@ describe("AppMessaging", () => {
     expect(appMessaging.deleteMode).toBeTrue();
     expect(appMessaging.toDelete).toBe("Thread");
     expect(appMessaging.itemToDelete).toBe(3);
-    expect(appMessagingDOM.querySelector("app-pop-up")).toBeTruthy();
+    expect(appMessagingDOM.querySelector("item-delete-form")).toBeTruthy();
     done();
   });
 
@@ -594,7 +646,7 @@ describe("AppMessaging", () => {
     expect(appMessaging.deleteMode).toBeTrue();
     expect(appMessaging.toDelete).toBe("All inbox");
     expect(appMessaging.itemToDelete).toBe(4);
-    expect(appMessagingDOM.querySelector("app-pop-up")).toBeTruthy();
+    expect(appMessagingDOM.querySelector("item-delete-form")).toBeTruthy();
     done();
   });
 

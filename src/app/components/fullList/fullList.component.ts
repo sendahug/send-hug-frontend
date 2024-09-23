@@ -53,6 +53,7 @@ interface PostsListResponse {
 @Component({
   selector: "app-full-list",
   templateUrl: "./fullList.component.html",
+  styleUrl: "./fullList.component.less",
   standalone: true,
   imports: [CommonModule, SinglePost, RouterLink, Loader],
 })

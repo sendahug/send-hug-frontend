@@ -2,6 +2,97 @@
 
 ## Unreleased
 
+### 2024-09-23
+
+#### Features
+
+- The NewItem page now redirects users back to the Home Screen once a successful response was received from the server. This should reduce confusion and ensure the users that the message/post was sent correctly. ([#1816](https://github.com/sendahug/send-hug-frontend/pull/1816))
+- Most routes in the app are now lazy-loaded. That means that the initial page load should be considerably quicker for users (both on mobile and on desktop), and that code a user doesn't have access to (e.g., the admin dashboard code) isn't fetched to and executed by the browser unnecessarily. ([#1817](https://github.com/sendahug/send-hug-frontend/pull/1817))
+
+#### Chores
+
+- Deleted imported components from unit tests to ensure each component's unit test is focused on that component. The required imports are now mocked instead. ([#1818](https://github.com/sendahug/send-hug-frontend/pull/1818))
+- Moved the size-limit configuration to an external file. This should make it easier to work on the package.json file, regardless of how many files we include in the size-limit configuration. ([#1817](https://github.com/sendahug/send-hug-frontend/pull/1817))
+
+### 2024-09-20
+
+#### Features
+
+- Added route guards to all routes that require the user to be authenticated or have a specific permission. This ensures users who aren't authenticated or have appropriate permissions cannot access these routes without the need to add handling for unauthorised users in the routes' components. Unauthorised users are instead redirected to the error page when trying to navigate to a route that requires authorisation. ([#1813](https://github.com/sendahug/send-hug-frontend/pull/1813))
+
+#### Changes
+
+- Changed the way the AppComponent checks whether the main navigation menu is too large to fit onscreen. Previously, the menu's scroll size was compared to the rendered size in order to check whether there was enough space for the menu. This ensured the menu was hidden in most cases where it outgrew its container, except when the menu was already hidden (i.e., if the menu was too large, it was hidden, but the next check resulted in the menu's scroll width being 0, which meant that it was shown again, even if it was still too wide). The new method ensures the menu is properly hidden regardless of its previous state. ([#1809](https://github.com/sendahug/send-hug-frontend/pull/1809))
+
+#### Fixes
+
+- Fixed the placement of the navigation menu when the viewport is too small to fit the horizonal menu. The menu now fits on screen properly, with both the home button and the text size button fitting within it and in a way that's easily accessible to users. ([#1809](https://github.com/sendahug/send-hug-frontend/pull/1809))
+- Fixed a bug where changing the base font size of the site to large sizes twice in a row resulted in the main navigation menu being shown even if there wasn't enough space for it in the viewport. This happened because of the way the menu size was checked when it was previously hidden. ([#1809](https://github.com/sendahug/send-hug-frontend/pull/1809))
+
+#### Chores
+
+- Moved portions of the component-specific styling to component-scoped stylesheets. Previously, all style definitions were in the global scope, which caused style conflicts and unexpected styling behaviours when the same selectors were used across different components (e.g., styles meant for one component were shown in other components). This change ensures each component's styling is tailored to the component and unaffected by other components. This change includes all component-specific styling that doesn't rely on subclasses (using LESS's `&:extend`) or the font-size mixin (`.fontSize`). ([#1809](https://github.com/sendahug/send-hug-frontend/pull/1809))
+- Fixed the database setup and population process in CI's e2e tests. ([#1813](https://github.com/sendahug/send-hug-frontend/pull/1813))
+
+### 2024-09-16
+
+#### Features
+
+- Added support for pagination in the notifications component. Users can now view multiple pages of their notifications (both read and unread). ([#1808](https://github.com/sendahug/send-hug-frontend/pull/1808))
+- Added support for filtering notifications based on their read status. Users can show or hide read or unread notifications using newly-added buttons in the notifications tab. ([#1808](https://github.com/sendahug/send-hug-frontend/pull/1808))
+- Unread notifications now have an indicator to let the user know they haven't been read yet. Previously, notifications didn't have an individual status, and the new notifications was simply a count of all notifications since the user's last non-silent refresh. Now, each notification has its own individual status, which is shown in the notifications' tab. The new notifications count is returned by the back-end and reflects the number of notifications that haven't been marked 'read'. ([#1808](https://github.com/sendahug/send-hug-frontend/pull/1808))
+- Added the ability to set a single notification's or all notifications' read status. Each notification now has a button that allows toggling its read status, and the notifications tab has a button that allows setting all the notifications' statuses at once. ([#1808](https://github.com/sendahug/send-hug-frontend/pull/1808))
+
+#### Changes
+
+- The silent refresh option was removed from the notifications' fetch. The option was removed from the back-end, and as such, was unnecessary. ([#1808](https://github.com/sendahug/send-hug-frontend/pull/1808))
+
+#### Chores
+
+- Moved most of the notifications tab's styling from the global scope to a component-scoped stylesheet, which ensures only the notifications tab is affected by those styles. ([#1808](https://github.com/sendahug/send-hug-frontend/pull/1808))
+
+### 2024-08-26
+
+#### Changes
+
+- Subscribing/unsubscribing users to/from auto updates and push notifications is now done after the network request for changing the settings in the backend. Previously, the two processes ran independently, which meant the request to the back-end could fail, but the front-end still acted on the new settings (e.g., subscribed users to push notifications) instead of the ones saved in the back-end. Now, we only subscribe/unsubscribe users once we get a successful response, which ensures a consistent experience across browsers/devices. ([#1787](https://github.com/sendahug/send-hug-frontend/pull/1787))
+
+#### Chores
+
+- Simplified the structure of the NotificationService. This includes:
+- Removed the user-settings-related properties. These were unneeded duplicates of the AuthService properties, and so they were removed.
+- Removed the AuthService dependency from the NotificationService. The NotificationService now handles only the process of auto-refresh and the process of subscribing ot push notifications. This makes it easier to update the user-related logic and the push-related logic.
+- Moved the logic for the initial push permission check into a separate method (instead of running it in the service's constructor).
+- Moved duplicate code for requesting push subscriptions to its own helper method.
+- Added user-settings-related computed properties to the AuthService, as well as computed properties for setting the title of the buttons in the NotificationsTab. ([#1787](https://github.com/sendahug/send-hug-frontend/pull/1787))
+- Simplified the logic for handling logged-in users in the AppComponent. Previously, we waited for user data to be resolved before enabling push notifications and auto refresh (if necessary), and in another part of the code, we waited for the Firebase logged-in-user state to be resolved. Since both checks essentially wait for the same thing, they were unified. ([#1787](https://github.com/sendahug/send-hug-frontend/pull/1787))
+
+### 2024-08-21
+
+#### Fixes
+
+- Fixed a bug where the button for dismissing user reports (in AdminReports) didn't correctly handle user reports. This happened due to a missing parameter, which caused the app to attempt to close a post report instead of a user report. The parameter was added to ensure the correct type of report is used. ([#1777](https://github.com/sendahug/send-hug-frontend/pull/1777))
+
+#### Chores
+
+- The tests' build process now utilises the Angular compiler in order to compile the app AOT, instead of using the TypeScript compiler to compile the app JIT. ([#1777](https://github.com/sendahug/send-hug-frontend/pull/1777))
+- V8 was replaced with Istanbul as the app's coverage provider. The V8 reports, while nice, turned out to be a little unreliable and not particularly useful; switching back to Istanbul provides us with meaningful coverage reports we can use to improve our code. ([#1777](https://github.com/sendahug/send-hug-frontend/pull/1777))
+- Deleted the user module and switched all components within it to standalone components. This cleans up some unnecessary extra code for setting up the module (without doing anything meaningful with it). ([#1777](https://github.com/sendahug/send-hug-frontend/pull/1777))
+- Cleaned up duplicate code in the AboutApp and SitePolicies components. Previously we set up the list of site policies in both components separately, which required updating in multiple places when a change was made. Now, the AboutApp component simply imports the data from the SitePolicies component. ([#1777](https://github.com/sendahug/send-hug-frontend/pull/1777))
+- Added further unit tests and cleaned up unnecessary imports (such as the app's full route list) from various tests. ([#1777](https://github.com/sendahug/send-hug-frontend/pull/1777))
+- Deleted unneeded code from the messages component. The deleted code was responsible for setting the colours in the users' icons; since this is now handled by the user icon component, the code was no longer needed (and should've been removed in [#1755](https://github.com/sendahug/send-hug-frontend/pull/1755)). ([#1777](https://github.com/sendahug/send-hug-frontend/pull/1777))
+
+### 2024-08-11
+
+#### Fixes
+
+- Updated the URL of the site when shared using the share button to the current URL. It was accidentally still set to the Heroku URL, which is no longer where we deploy the site. ([#1768](https://github.com/sendahug/send-hug-frontend/pull/1768))
+- Fixed a bug where clicking the exit button in the search form triggered the search functionality of the app (which threw an error if the form was empty). This happened due to a misconfigured button in the form. The button's type is now set correctly, which fixes that issue. ([#1768](https://github.com/sendahug/send-hug-frontend/pull/1768))
+
+#### Chores
+
+- Updated the e2e tests' setup script to match the new structure of the models in the back-end. ([#1769](https://github.com/sendahug/send-hug-frontend/pull/1769))
+
 ### 2024-08-06
 
 #### Changes

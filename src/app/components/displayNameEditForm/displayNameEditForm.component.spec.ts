@@ -40,13 +40,13 @@ import {
 import { ReactiveFormsModule } from "@angular/forms";
 import { provideZoneChangeDetection, signal } from "@angular/core";
 import { MockProvider } from "ng-mocks";
+import { Subscription } from "rxjs";
 
 import { DisplayNameEditForm } from "./displayNameEditForm.component";
 import { AuthService } from "@app/services/auth.service";
 import { mockAuthedUser } from "@tests/mockData";
 import { PopUp } from "@app/components/popUp/popUp.component";
 import { ValidationService } from "@app/services/validation.service";
-import { Subscription } from "rxjs";
 import { AdminService } from "@app/services/admin.service";
 
 // DISPLAY NAME EDIT
@@ -177,6 +177,43 @@ describe("DisplayNameEditForm", () => {
       displayName: newName,
       closed: true,
       reportID: 1,
+    });
+  });
+
+  it("should raise an error if trying to update another user's name without a report", () => {
+    const validationService = TestBed.inject(ValidationService);
+    const validateSpy = spyOn(validationService, "validateItemAgainst").and.returnValue(
+      (_control) => null,
+    );
+
+    const fixture = TestBed.createComponent(DisplayNameEditForm);
+    const popUp = fixture.componentInstance;
+    const popUpDOM = fixture.nativeElement;
+    popUp.editedItem = {
+      id: 2,
+      displayName: "name",
+    };
+    popUp.reportData = undefined;
+    const newName = "new name";
+    fixture.detectChanges();
+
+    const updateSpy = spyOn(popUp["adminService"], "editUser");
+    const emitSpy = spyOn(popUp.editMode, "emit");
+    const updatedDetailsSpy = spyOn(popUp.updatedDetails, "emit");
+    const alertsSpy = spyOn(popUp["alertService"], "createAlert");
+
+    popUpDOM.querySelector("#displayName").value = newName;
+    popUpDOM.querySelector("#displayName").dispatchEvent(new Event("input"));
+    popUp.updateDisplayName(new Event(""), true);
+    fixture.detectChanges();
+
+    expect(validateSpy).toHaveBeenCalledWith("displayName");
+    expect(updateSpy).not.toHaveBeenCalled();
+    expect(emitSpy).not.toHaveBeenCalled();
+    expect(updatedDetailsSpy).not.toHaveBeenCalled();
+    expect(alertsSpy).toHaveBeenCalledWith({
+      type: "Error",
+      message: "Editing someone else's username can only be done via the admin page.",
     });
   });
 

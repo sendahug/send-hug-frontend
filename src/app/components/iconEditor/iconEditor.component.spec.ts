@@ -33,20 +33,18 @@
 import { TestBed } from "@angular/core/testing";
 import { provideRouter } from "@angular/router";
 import {} from "jasmine";
-import { APP_BASE_HREF, CommonModule } from "@angular/common";
+import { APP_BASE_HREF } from "@angular/common";
 import {
   BrowserDynamicTestingModule,
   platformBrowserDynamicTesting,
 } from "@angular/platform-browser-dynamic/testing";
-import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { ReactiveFormsModule } from "@angular/forms";
-import { MockProvider } from "ng-mocks";
+import { MockComponent, MockProvider } from "ng-mocks";
 import { NO_ERRORS_SCHEMA, provideZoneChangeDetection, signal } from "@angular/core";
 
 import { IconEditor } from "./iconEditor.component";
 import { AuthService } from "@app/services/auth.service";
 import { mockAuthedUser } from "@tests/mockData";
-import { routes } from "@app/app.routes";
 import { UserIcon } from "@app/components/userIcon/userIcon.component";
 
 describe("IconEditor", () => {
@@ -56,18 +54,18 @@ describe("IconEditor", () => {
       authenticated: signal(true),
       userData: signal({ ...mockAuthedUser }),
     });
+    const MockUserIcon = MockComponent(UserIcon);
 
     TestBed.resetTestEnvironment();
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
       schemas: [NO_ERRORS_SCHEMA],
-      imports: [FontAwesomeModule, ReactiveFormsModule, UserIcon, CommonModule],
-      declarations: [IconEditor],
+      imports: [ReactiveFormsModule, MockUserIcon, IconEditor],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
         provideZoneChangeDetection({ eventCoalescing: true }),
-        provideRouter(routes),
+        provideRouter([]),
         MockAuthService,
       ],
     }).compileComponents();
@@ -195,15 +193,74 @@ describe("IconEditor", () => {
     done();
   });
 
+  it("should make the request to change the icon with default values if there are nonoe", (done: DoneFn) => {
+    const fixture = TestBed.createComponent(IconEditor);
+    const iconEditor = fixture.componentInstance;
+    const iconEditorDOM = fixture.nativeElement;
+    const updateSpy = spyOn(iconEditor.authService, "updateUserData");
+    const dismissSpy = spyOn(iconEditor.editMode, "emit");
+    iconEditor["authService"].userData.set({ ...mockAuthedUser });
+
+    // update the icon and colours
+    iconEditor.iconEditForm.controls.characterColour.setValue(null);
+    iconEditor.iconEditForm.controls.lbgColour.setValue(null);
+    iconEditor.iconEditForm.controls.rbgColour.setValue(null);
+    iconEditor.iconEditForm.controls.itemColour.setValue(null);
+    fixture.detectChanges();
+
+    // after the update
+    iconEditorDOM.querySelectorAll(".iconButton")[1].click();
+    expect(updateSpy).toHaveBeenCalledWith({
+      selectedIcon: "kitty",
+      iconColours: {
+        character: "#ba9f93",
+        lbg: "#e2a275",
+        rbg: "#f8eee4",
+        item: "#f4b56a",
+      },
+    });
+    expect(dismissSpy).toHaveBeenCalledWith(false);
+    done();
+  });
+
   it("should dismiss the editor when the cancel button is clicked", (done: DoneFn) => {
     const fixture = TestBed.createComponent(IconEditor);
     const iconEditor = fixture.componentInstance;
     const iconEditorDOM = fixture.nativeElement;
-    const dismissSpy = spyOn(iconEditor.editMode, "emit");
+    const emitSpy = spyOn(iconEditor.editMode, "emit");
+    const dismissSpy = spyOn(iconEditor, "dismiss").and.callThrough();
     fixture.detectChanges();
 
-    iconEditorDOM.querySelectorAll(".iconButton")[1].click();
-    expect(dismissSpy).toHaveBeenCalledWith(false);
+    iconEditorDOM.querySelectorAll(".iconButton")[0].click();
+    fixture.detectChanges();
+
+    expect(dismissSpy).toHaveBeenCalled();
+    expect(emitSpy).toHaveBeenCalledWith(false);
     done();
+  });
+
+  it("should set the default values if no value is set", () => {
+    const authService = TestBed.inject(AuthService);
+    authService.userData.set({
+      ...mockAuthedUser,
+      // This shouldn't even be possible but just in case
+      // @ts-ignore
+      selectedIcon: "",
+      iconColours: {
+        character: "",
+        lbg: "",
+        rbg: "",
+        item: "",
+      },
+    });
+
+    const fixture = TestBed.createComponent(IconEditor);
+    const iconEditor = fixture.componentInstance;
+
+    expect(iconEditor.iconEditForm.controls.selectedIcon.value).toBe("kitty");
+    expect(iconEditor.iconEditForm.controls.characterColour.value).toBe("#ba9f93");
+    expect(iconEditor.iconEditForm.controls.lbgColour.value).toBe("#e2a275");
+    expect(iconEditor.iconEditForm.controls.rbgColour.value).toBe("#f8eee4");
+    expect(iconEditor.iconEditForm.controls.itemColour.value).toBe("#f4b56a");
   });
 });

@@ -31,7 +31,7 @@
 */
 
 // Angular imports
-import { Component, OnInit, EventEmitter, Output } from "@angular/core";
+import { Component, OnInit, EventEmitter, Output, signal, computed } from "@angular/core";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import { CommonModule } from "@angular/common";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
@@ -40,10 +40,19 @@ import { RouterLink } from "@angular/router";
 // App-relateed imports
 import { AuthService } from "@app/services/auth.service";
 import { NotificationService } from "@app/services/notifications.service";
+import { ApiClientService } from "@app/services/apiClient.service";
+import { Notification } from "@app/interfaces/notification.interface";
+
+interface UpdateNotificationsResponse {
+  success: boolean;
+  updated: Array<number> | "all";
+  read: boolean;
+}
 
 @Component({
   selector: "app-notifications",
   templateUrl: "./notifications.component.html",
+  styleUrl: "./notifications.component.less",
   standalone: true,
   imports: [CommonModule, FontAwesomeModule, RouterLink],
 })
@@ -52,19 +61,40 @@ export class NotificationsTab implements OnInit {
   @Output() NotificationsMode = new EventEmitter<boolean>();
   focusableElements: any;
   checkFocusBinded = this.checkFocus.bind(this);
+  currentPage = signal(1);
+  totalPages = signal(1);
+  totalItems = signal(0);
+  previousPageButtonClass = computed(() => ({
+    "appButton prevButton": true,
+    disabled: this.currentPage() <= 1,
+  }));
+  nextPageButtonClass = computed(() => ({
+    "appButton nextButton": true,
+    disabled: this.totalPages() <= this.currentPage(),
+  }));
+  markAllLabel = computed(() =>
+    this.notificationService.newNotifications() == 0 ? "unread" : "read",
+  );
+  displayRead = signal(true);
+  displayReadButtonLabel = computed(() => (this.displayRead() ? "Hide" : "Show"));
+  displayUnread = signal(true);
+  displayUnreadButtonLabel = computed(() => (this.displayUnread() ? "Hide" : "Show"));
+  notifications = signal<Notification[]>([]);
   // icons
   faTimes = faTimes;
 
   // CTOR
   constructor(
-    private authService: AuthService,
-    public notificationService: NotificationService,
+    protected authService: AuthService,
+    protected notificationService: NotificationService,
+    private apiClient: ApiClientService,
   ) {
     // if the user is authenticated, get all notifications from
     // the last time the user checked them
     this.authService.isUserDataResolved.subscribe((value) => {
       if (value) {
-        this.notificationService.getNotifications(false);
+        this.currentPage.set(1);
+        this.getNotifications();
       }
     });
   }
@@ -109,15 +139,13 @@ export class NotificationsTab implements OnInit {
   */
   togglePushNotifications() {
     // if notifications are enabled, disable them
-    if (this.notificationService.pushStatus) {
-      this.notificationService.pushStatus = false;
-      this.notificationService.updateUserSettings();
+    if (this.authService.pushEnabled()) {
+      this.authService.updateUserData({ pushEnabled: false });
       this.notificationService.unsubscribeFromStream();
     }
     // otherwise enable them
     else {
-      this.notificationService.pushStatus = true;
-      this.notificationService.updateUserSettings();
+      this.authService.updateUserData({ pushEnabled: true });
       this.notificationService.subscribeToStream();
     }
   }
@@ -132,19 +160,38 @@ export class NotificationsTab implements OnInit {
   */
   toggleAutoRefresh() {
     // if auto-refresh is enabled, disable it
-    if (this.notificationService.refreshStatus) {
-      this.notificationService.refreshStatus = false;
-      this.notificationService.refreshRateSecs = 0;
-      this.notificationService.updateUserSettings();
+    if (this.authService.autoRefresh()) {
+      this.authService.updateUserData({ autoRefresh: false });
       this.notificationService.stopAutoRefresh();
     }
     // otherwise enable it
     else {
-      this.notificationService.refreshStatus = true;
-      this.notificationService.refreshRateSecs = 20;
-      this.notificationService.updateUserSettings();
-      this.notificationService.startAutoRefresh();
+      this.authService.updateUserData({ refreshRate: 20, autoRefresh: true });
+      this.notificationService.startAutoRefresh(20);
     }
+  }
+
+  /**
+   * Fetches the notifications using the notifications service
+   * and updates the current page and total page properties.
+   */
+  getNotifications() {
+    let readStatus: boolean | undefined;
+
+    if (this.displayRead() && this.displayUnread()) readStatus = undefined;
+    else if (this.displayRead() && !this.displayUnread()) readStatus = true;
+    else if (!this.displayRead() && this.displayUnread()) readStatus = false;
+    // TODO: We should raise an error here
+    else return;
+
+    return this.notificationService.getNotifications(this.currentPage(), readStatus).subscribe({
+      next: (response) => {
+        this.currentPage.set(response.current_page);
+        this.totalPages.set(response.total_pages);
+        this.notifications.set(response.notifications);
+        this.totalItems.set(response.totalItems);
+      },
+    });
   }
 
   /*
@@ -179,6 +226,80 @@ export class NotificationsTab implements OnInit {
     }
   }
 
+  /**
+   * Go to the next page of posts. Sends a request to the
+   * API client to get the data for the next page.
+   */
+  nextPage() {
+    this.currentPage.set(this.currentPage() + 1);
+    this.getNotifications();
+  }
+
+  /**
+   * Go to the previous page of posts. Sends a request to the
+   * API client to get the data for the next page.
+   */
+  prevPage() {
+    this.currentPage.set(this.currentPage() - 1);
+    this.getNotifications();
+  }
+
+  /**
+   * Shows/hides the unread notifications.
+   */
+  toggleUnread() {
+    this.displayUnread.set(!this.displayUnread());
+    this.getNotifications();
+  }
+
+  /**
+   * Shows/hides the read notifications.
+   */
+  toggleRead() {
+    this.displayRead.set(!this.displayRead());
+    this.getNotifications();
+  }
+
+  /**
+   * Mark all the notifications read/unread.
+   */
+  markAll() {
+    this.apiClient
+      .patch<UpdateNotificationsResponse>("notifications", {
+        notification_ids: "all",
+        read: this.notificationService.newNotifications() == 0 ? false : true,
+      })
+      .subscribe({
+        next: (response) => {
+          const newNotifications = response.read ? 0 : this.totalItems();
+          this.notificationService.newNotifications.set(newNotifications);
+          this.notifications().forEach((n) => (n.read = response.read));
+        },
+      });
+  }
+
+  /**
+   * Mark the given notification as read/unread.
+   * @param id - the ID of the notification to mark.
+   * @param read - the new status to give it.
+   */
+  mark(id: number, read: boolean) {
+    this.apiClient
+      .patch<UpdateNotificationsResponse>("notifications", {
+        notification_ids: [id],
+        read,
+      })
+      .subscribe({
+        next: (response) => {
+          const newNotifications = response.read
+            ? this.notificationService.newNotifications() - 1
+            : this.notificationService.newNotifications() + 1;
+          this.notificationService.newNotifications.set(newNotifications);
+          this.notifications().find((n) => n.id == id)!.read = read;
+        },
+      });
+  }
+
   /*
   Function Name: exitNotifications()
   Function Description: Emits an event to disable notifications window. Exiting notifications window is
@@ -191,9 +312,7 @@ export class NotificationsTab implements OnInit {
   exitNotifications() {
     let modal = document.getElementById("modalBox");
     modal!.removeEventListener("keydown", this.checkFocusBinded);
-    if (document.getElementById("skipLink")) {
-      document.getElementById("skipLink")!.focus();
-    }
+    document.getElementById("skipLink")?.focus();
     this.NotificationsMode.emit(false);
   }
 }

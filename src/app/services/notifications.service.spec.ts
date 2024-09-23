@@ -30,53 +30,25 @@
   SOFTWARE.
 */
 
-import { TestBed } from "@angular/core/testing";
+import { discardPeriodicTasks, fakeAsync, TestBed, tick } from "@angular/core/testing";
 import {
   BrowserDynamicTestingModule,
   platformBrowserDynamicTesting,
 } from "@angular/platform-browser-dynamic/testing";
 import { ServiceWorkerModule } from "@angular/service-worker";
-import { BehaviorSubject, Subscription, of } from "rxjs";
+import { Subscription, of } from "rxjs";
 import {} from "jasmine";
 import { MockProvider } from "ng-mocks";
-import { signal } from "@angular/core";
 
 import { NotificationService } from "./notifications.service";
-import { AuthService } from "@app/services/auth.service";
-import { mockAuthedUser } from "@tests/mockData";
 import { ApiClientService } from "./apiClient.service";
-
-const pushSub: PushSubscription = {
-  endpoint: "endpoint",
-  options: {
-    applicationServerKey: null,
-    userVisibleOnly: true,
-  },
-  expirationTime: 100000,
-  getKey(_name): ArrayBuffer | null {
-    return null;
-  },
-  toJSON(): PushSubscriptionJSON {
-    return {
-      endpoint: "endpoint",
-      expirationTime: 100000,
-    };
-  },
-  unsubscribe() {
-    return new Promise(Boolean);
-  },
-};
 
 describe("NotificationService", () => {
   let notificationService: NotificationService;
+  let pushSub: PushSubscription;
 
   // Before each test, configure testing environment
   beforeEach(() => {
-    const MockAuthService = MockProvider(AuthService, {
-      authenticated: signal(true),
-      userData: signal({ ...mockAuthedUser }),
-      isUserDataResolved: new BehaviorSubject(true),
-    });
     const MockAPIClient = MockProvider(ApiClientService);
 
     TestBed.resetTestEnvironment();
@@ -84,10 +56,31 @@ describe("NotificationService", () => {
 
     TestBed.configureTestingModule({
       imports: [ServiceWorkerModule.register("/sw.js", { enabled: false })],
-      providers: [NotificationService, MockAuthService, MockAPIClient],
+      providers: [NotificationService, MockAPIClient],
     }).compileComponents();
 
     notificationService = TestBed.inject(NotificationService);
+
+    pushSub = {
+      endpoint: "endpoint",
+      options: {
+        applicationServerKey: null,
+        userVisibleOnly: true,
+      },
+      expirationTime: 100000,
+      getKey(_name): ArrayBuffer | null {
+        return null;
+      },
+      toJSON(): PushSubscriptionJSON {
+        return {
+          endpoint: "endpoint",
+          expirationTime: 100000,
+        };
+      },
+      unsubscribe() {
+        return new Promise(Boolean);
+      },
+    };
   });
 
   // Check the service is created
@@ -95,56 +88,44 @@ describe("NotificationService", () => {
     expect(notificationService).toBeTruthy();
   });
 
-  // Check the service triggers auto-refresh
-  it("startAutoRefresh() - should trigger auto-refresh", () => {
-    const refreshSpy = spyOn(notificationService, "autoRefresh");
+  // Check the service auto-refreshes
+  it("autoRefresh() - should run auto-refresh with interval", fakeAsync(() => {
+    const notifSpy = spyOn(notificationService, "getNotifications").and.returnValue(
+      of({
+        success: true,
+        notifications: [],
+        newCount: 0,
+        current_page: 1,
+        total_pages: 1,
+        totalItems: 1,
+      }),
+    );
 
     // before triggering the method
-    expect(notificationService.refreshBtn).toBe("Enable");
+    expect(notificationService.refreshCounter).toBeUndefined();
+    expect(notificationService.refreshSub).toBeUndefined();
 
-    notificationService.refreshStatus = true;
-    notificationService.startAutoRefresh();
+    notificationService.startAutoRefresh(20);
 
     // after triggering the method
-    expect(notificationService.refreshBtn).toBe("Disable");
-    expect(refreshSpy).toHaveBeenCalled();
-  });
+    expect(notificationService.refreshCounter).toBeDefined();
+    expect(notificationService.refreshSub).toBeDefined();
 
-  // // Check the service auto-refreshes
-  // it('autoRefresh() - should run auto-refresh with interval', fakeAsync(() => {
-  //   const notifSpy = spyOn(notificationService, 'getNotifications');
-  //   notificationService['authService'].login();
-  //   TestBed.inject(AuthService).login();
-  //
-  //   // before triggering the method
-  //   expect(notificationService.refreshCounter).toBeUndefined();
-  //   expect(notificationService.refreshSub).toBeUndefined();
-  //
-  //   notificationService.autoRefresh();
-  //
-  //   // after triggering the method
-  //   expect(notificationService.refreshCounter).toBeDefined();
-  //   expect(notificationService.refreshSub).toBeDefined();
-  //
-  //   // wait for the first round of the interval to pass
-  //   tick(notificationService.refreshRateSecs * 1000);
-  //
-  //   expect(notifSpy).toHaveBeenCalled();
-  //   notificationService.refreshCounter!.subscribe((value) => {
-  //     expect(value).toBeTruthy();
-  //   });
-  //
-  //   discardPeriodicTasks();
-  // }));
+    // wait for the first round of the interval to pass
+    tick(20 * 1000);
+
+    expect(notifSpy).toHaveBeenCalled();
+    notificationService.refreshCounter!.subscribe((value) => {
+      expect(value).toBeTruthy();
+    });
+
+    discardPeriodicTasks();
+  }));
 
   // Check the service also stops auto-refresh
   it("stopAutoRefresh() - should stop auto-refresh", () => {
-    notificationService.refreshStatus = true;
-    notificationService.startAutoRefresh();
-
-    // check auto-refresh is running
-    expect(notificationService.refreshCounter).toBeTruthy();
-    expect(notificationService.refreshSub).toBeTruthy();
+    // start auto-refresh
+    notificationService.startAutoRefresh(20);
 
     const subSpy = spyOn(
       notificationService.refreshSub as Subscription,
@@ -154,12 +135,20 @@ describe("NotificationService", () => {
 
     // check auto-refresh was stopped
     expect(notificationService.refreshCounter).toBeUndefined();
-    expect(notificationService.refreshBtn).toBe("Enable");
     expect(subSpy).toHaveBeenCalled();
   });
 
+  it("stopAutoRefresh() - should do nothing if auto-refresh isn't on", () => {
+    expect(notificationService.refreshSub).toBeUndefined();
+
+    notificationService.stopAutoRefresh();
+
+    expect(notificationService.refreshCounter).toBeUndefined();
+    expect(notificationService.refreshSub).toBeUndefined();
+  });
+
   // Check the service gets user notifications
-  it("getNotifications() - should get user notifications", () => {
+  it("getNotifications() - should get user notifications", (done: DoneFn) => {
     // mock response
     const mockResponse = {
       success: true,
@@ -175,22 +164,24 @@ describe("NotificationService", () => {
           date: new Date(),
         },
       ],
+      newCount: 0,
     };
 
     const apiClientSpy = spyOn(notificationService["apiClient"], "get").and.returnValue(
       of(mockResponse),
     );
 
-    notificationService.getNotifications(false);
-
-    expect(apiClientSpy).toHaveBeenCalledWith("notifications", { silentRefresh: false });
-    expect(notificationService.notifications.length).toBe(1);
-    expect(notificationService.notifications[0].id).toBe(2);
-    expect(notificationService.newNotifications).toBe(0);
+    notificationService.getNotifications().subscribe({
+      next(_value) {
+        expect(apiClientSpy).toHaveBeenCalledWith("notifications", { page: 1 });
+        expect(notificationService.newNotifications()).toBe(0);
+        done();
+      },
+    });
   });
 
   // Check that the service gets the user's notifications silently
-  it("getNotifications() - should get user notifications with silent refresh", () => {
+  it("getNotifications() - should get user notifications without read status", (done: DoneFn) => {
     // mock response
     const mockResponse = {
       success: true,
@@ -206,18 +197,108 @@ describe("NotificationService", () => {
           date: new Date(),
         },
       ],
+      newCount: 1,
     };
 
     const apiClientSpy = spyOn(notificationService["apiClient"], "get").and.returnValue(
       of(mockResponse),
     );
 
-    notificationService.getNotifications(true);
+    notificationService.getNotifications(2).subscribe({
+      next(_value) {
+        expect(apiClientSpy).toHaveBeenCalledWith("notifications", { page: 2 });
+        expect(notificationService.newNotifications()).toBe(1);
+        done();
+      },
+    });
+  });
 
-    expect(apiClientSpy).toHaveBeenCalledWith("notifications", { silentRefresh: true });
-    expect(notificationService.notifications.length).toBe(1);
-    expect(notificationService.notifications[0].id).toBe(2);
-    expect(notificationService.newNotifications).toBe(1);
+  // Check that the service gets the user's notifications silently
+  it("getNotifications() - should get user notifications with read status", (done: DoneFn) => {
+    // mock response
+    const mockResponse = {
+      success: true,
+      notifications: [
+        {
+          id: 2,
+          fromId: 2,
+          from: "test",
+          forId: 4,
+          for: "testing",
+          type: "hug",
+          text: "test sent you a hug",
+          date: new Date(),
+        },
+      ],
+      newCount: 1,
+    };
+
+    const apiClientSpy = spyOn(notificationService["apiClient"], "get").and.returnValue(
+      of(mockResponse),
+    );
+
+    notificationService.getNotifications(2, true).subscribe({
+      next(_value) {
+        expect(apiClientSpy).toHaveBeenCalledWith("notifications", { page: 2, readStatus: true });
+        expect(notificationService.newNotifications()).toBe(1);
+        done();
+      },
+    });
+  });
+
+  it("checkInitialPermissionState() - returns a promise that resolves to undefined if pushEnabled is false", (done: DoneFn) => {
+    notificationService.checkInitialPermissionState(false).then((value) => {
+      expect(value).toBeUndefined();
+      done();
+    });
+  });
+
+  it("checkInitialPermissionState() - returns the permission state", (done: DoneFn) => {
+    const stateSpy = spyOn(notificationService, "getPushPermissionState").and.returnValue(
+      new Promise((resolve) => resolve("granted")),
+    );
+    const alertsSpy = spyOn(notificationService["alertsService"], "createAlert");
+    const subscribeSpy = spyOn(notificationService, "subscribeToStream");
+
+    notificationService.checkInitialPermissionState(true).then((value) => {
+      expect(stateSpy).toHaveBeenCalled();
+      expect(alertsSpy).not.toHaveBeenCalled();
+      expect(subscribeSpy).not.toHaveBeenCalled();
+      expect(value).toBe("granted");
+      done();
+    });
+  });
+
+  it("checkInitialPermissionState() - handles denied permission", (done: DoneFn) => {
+    const stateSpy = spyOn(notificationService, "getPushPermissionState").and.returnValue(
+      new Promise((resolve) => resolve("denied")),
+    );
+    const alertsSpy = spyOn(notificationService["alertsService"], "createAlert");
+
+    notificationService.checkInitialPermissionState(true).then((value) => {
+      expect(stateSpy).toHaveBeenCalled();
+      expect(alertsSpy).toHaveBeenCalledWith({
+        type: "Error",
+        message:
+          "Push notifications permission has been denied. Go to your browser settings, remove Send A Hug from the denied list, and then activate push notifications again.",
+      });
+      expect(value).toBe("denied");
+      done();
+    });
+  });
+
+  it("checkInitialPermissionState() - handles 'prompt' permission", (done: DoneFn) => {
+    const stateSpy = spyOn(notificationService, "getPushPermissionState").and.returnValue(
+      new Promise((resolve) => resolve("prompt")),
+    );
+    const subscribeSpy = spyOn(notificationService, "subscribeToStream");
+
+    notificationService.checkInitialPermissionState(true).then((value) => {
+      expect(stateSpy).toHaveBeenCalled();
+      expect(subscribeSpy).toHaveBeenCalled();
+      expect(value).toBe("prompt");
+      done();
+    });
   });
 
   // Check the service subscribes to push notifications stream
@@ -249,42 +330,153 @@ describe("NotificationService", () => {
     expect(alertSpy).toHaveBeenCalled();
   });*/
 
-  // Check the service unsubscribes from push notifications stream
-  it("unsubscribeFromStream() - should unsubscribe from PushSubscription", () => {
-    notificationService.notificationsSub = pushSub;
-    notificationService.pushStatus = true;
-    notificationService.toggleBtn = "Disable";
-    const spy = spyOn(notificationService.notificationsSub as PushSubscription, "unsubscribe");
-
-    notificationService.unsubscribeFromStream();
-
-    expect(spy).toHaveBeenCalled();
-    expect(notificationService.toggleBtn).toBe("Enable");
-    expect(notificationService.pushStatus).toBeFalse();
-  });
-
-  // Check the service sets the subscription in local storage
-  it("setSubscription() - should set push subscription in local storage", () => {
-    notificationService.notificationsSub = pushSub;
-    const spy = spyOn(localStorage, "setItem");
-
-    notificationService.setSubscription();
-
-    expect(spy).toHaveBeenCalled();
-    expect(spy).toHaveBeenCalledWith(
-      "PUSH_SUBSCRIPTION",
-      JSON.stringify(notificationService.notificationsSub),
+  it("subscribeToStream() - should update the back-end with the subscription", (done: DoneFn) => {
+    const requestSpy = spyOn(notificationService, "requestSubscription").and.returnValue(
+      new Promise((resolve) =>
+        resolve({
+          ...pushSub,
+        }),
+      ),
     );
+    const apiClientSpy = spyOn(notificationService["apiClient"], "post").and.returnValue(
+      of({ subId: 2 }),
+    );
+    const alertsSpy = spyOn(notificationService["alertsService"], "createSuccessAlert");
+
+    notificationService.subscribeToStream().then(() => {
+      expect(requestSpy).toHaveBeenCalled();
+      expect(apiClientSpy).toHaveBeenCalled();
+      expect(alertsSpy).toHaveBeenCalledWith("Subscribed to push notifications successfully!");
+      expect(notificationService.subId).toEqual(2);
+      done();
+    });
   });
 
-  // Check the service gets the subscription from local storage
-  it("getSubscription() - should get push subscription from localStorage", () => {
-    notificationService.pushStatus = true;
+  it("subscribeToStream() - should handle an error", (done: DoneFn) => {
+    const requestSpy = spyOn(notificationService, "requestSubscription").and.rejectWith(
+      new Error("ERROR"),
+    );
+    const apiClientSpy = spyOn(notificationService["apiClient"], "post");
+    const successAlertsSpy = spyOn(notificationService["alertsService"], "createSuccessAlert");
+    const alertsSpy = spyOn(notificationService["alertsService"], "createAlert");
+
+    notificationService.subscribeToStream().then(() => {
+      expect(requestSpy).toHaveBeenCalled();
+      expect(apiClientSpy).not.toHaveBeenCalled();
+      expect(successAlertsSpy).not.toHaveBeenCalled();
+      expect(alertsSpy).toHaveBeenCalled();
+      done();
+    });
+  });
+
+  // Check the service unsubscribes from push notifications stream
+  it("unsubscribeFromStream() - should unsubscribe from PushSubscription", (done: DoneFn) => {
     notificationService.notificationsSub = pushSub;
-    const storageSpy = spyOn(localStorage, "getItem").and.returnValue(JSON.stringify(pushSub));
+    const spy = spyOn(
+      notificationService.notificationsSub as PushSubscription,
+      "unsubscribe",
+    ).and.returnValue(new Promise((resolve) => resolve(false)));
+
+    notificationService.unsubscribeFromStream().then((val) => {
+      expect(spy).toHaveBeenCalled();
+      expect(val).toBeFalse();
+      done();
+    });
+  });
+
+  it("requestSubscription() - should request a subscription", (done: DoneFn) => {
+    const requestSpy = spyOn(notificationService["swPush"], "requestSubscription").and.returnValue(
+      new Promise((resolve) => resolve(pushSub)),
+    );
+    // setSubscription is protected, but we need to spy on it
+    // @ts-ignore
     const setSpy = spyOn(notificationService, "setSubscription");
 
-    notificationService.getSubscription();
+    notificationService.requestSubscription().then((sub) => {
+      expect(requestSpy).toHaveBeenCalled();
+      expect(notificationService.notificationsSub).toBe(sub as PushSubscription);
+      expect(setSpy).toHaveBeenCalled();
+      done();
+    });
+  });
+
+  it("requestSubscription() - handles an error", (done: DoneFn) => {
+    const requestSpy = spyOn(notificationService["swPush"], "requestSubscription").and.rejectWith(
+      new Error("ERROR!"),
+    );
+    // setSubscription is protected, but we need to spy on it
+    // @ts-ignore
+    const setSpy = spyOn(notificationService, "setSubscription");
+    const alertSpy = spyOn(notificationService["alertsService"], "createAlert");
+
+    notificationService.requestSubscription().then((_sub) => {
+      expect(requestSpy).toHaveBeenCalled();
+      expect(setSpy).not.toHaveBeenCalled();
+      expect(alertSpy).toHaveBeenCalled();
+      done();
+    });
+  });
+
+  it("renewPushSubscription() - should renew the push subscription", fakeAsync(() => {
+    notificationService.subscriptionDate = Date.now();
+    notificationService.resubscribeCalls = 0;
+    notificationService.subId = 1;
+    const requestSpy = spyOn(notificationService, "requestSubscription").and.returnValue(
+      new Promise((resolve) => resolve(pushSub)),
+    );
+    const apiClientSpy = spyOn(notificationService["apiClient"], "patch").and.returnValue(
+      of({ subId: 1 }),
+    );
+
+    const mockEvent = new MessageEvent("event", { data: { action: "resubscribe" } });
+    notificationService.renewPushSubscription(mockEvent);
+
+    tick(100);
+
+    expect(requestSpy).toHaveBeenCalled();
+    expect(apiClientSpy).toHaveBeenCalled();
+    expect(notificationService.resubscribeCalls).toEqual(1);
+  }));
+
+  it("renewPushSubscription() - should make resubscribeCalls 0 if it's been more than 24 hours", fakeAsync(() => {
+    notificationService.subscriptionDate = Date.now() - 864e5 * 2;
+    notificationService.resubscribeCalls = 1;
+    notificationService.subId = 1;
+    const requestSpy = spyOn(notificationService, "requestSubscription").and.returnValue(
+      new Promise((resolve) => resolve(pushSub)),
+    );
+    const apiClientSpy = spyOn(notificationService["apiClient"], "patch").and.returnValue(
+      of({ subId: 1 }),
+    );
+
+    const mockEvent = new MessageEvent("event", { data: { action: "resubscribe" } });
+    notificationService.renewPushSubscription(mockEvent);
+
+    tick(100);
+
+    expect(requestSpy).toHaveBeenCalled();
+    expect(apiClientSpy).toHaveBeenCalled();
+    expect(notificationService.resubscribeCalls).toEqual(1);
+  }));
+
+  it("unsubscribeFromStream() - should do nothing ", (done: DoneFn) => {
+    notificationService.notificationsSub = undefined;
+
+    notificationService.unsubscribeFromStream().then((val) => {
+      expect(val).toBeTrue();
+      done();
+    });
+  });
+
+  // // Check the service gets the subscription from local storage
+  it("getSubscription() - should get push subscription from localStorage", () => {
+    notificationService.notificationsSub = pushSub;
+    const storageSpy = spyOn(localStorage, "getItem").and.returnValue(JSON.stringify(pushSub));
+    // setSubscription is protected, but we need to spy on it
+    // @ts-ignore
+    const setSpy = spyOn(notificationService, "setSubscription");
+
+    notificationService.getCachedSubscription();
 
     expect(storageSpy).toHaveBeenCalled();
     expect(storageSpy).toHaveBeenCalledWith("PUSH_SUBSCRIPTION");
@@ -315,42 +507,35 @@ describe("NotificationService", () => {
         return new Promise(Boolean);
       },
     };
-    notificationService.pushStatus = true;
     notificationService.notificationsSub = pushSub;
     const storageSpy = spyOn(localStorage, "getItem").and.returnValue(JSON.stringify(sub));
+    // setSubscription is protected, but we need to spy on it
+    // @ts-ignore
     const setSpy = spyOn(notificationService, "setSubscription");
 
-    notificationService.getSubscription();
+    notificationService.getCachedSubscription();
 
     expect(storageSpy).toHaveBeenCalled();
     expect(storageSpy).toHaveBeenCalledWith("PUSH_SUBSCRIPTION");
     expect(setSpy).toHaveBeenCalled();
   });
 
-  // Check the service updates the user's settings
-  it("updateUserSettings() - should update user settings", (done: DoneFn) => {
-    const subscription = new Subscription();
-    subscription.unsubscribe();
-    notificationService.refreshStatus = true;
-    notificationService.refreshRateSecs = 20;
-    const alertsSpy = spyOn(notificationService["alertsService"], "createSuccessAlert");
-    const updateUserSpy = spyOn(
-      notificationService["authService"],
-      "updateUserData",
-    ).and.returnValue(subscription);
+  it("setSubscription() - sets the sub in localStorage", () => {
+    const localStorageSpy = spyOn(localStorage, "setItem").and.callThrough();
+    notificationService.notificationsSub = pushSub;
 
-    notificationService.updateUserSettings();
+    notificationService["setSubscription"]();
 
-    expect(updateUserSpy).toHaveBeenCalledWith({
-      autoRefresh: true,
-      pushEnabled: false,
-      refreshRate: 20,
-    });
-    subscription.add(() => {
-      expect(alertsSpy).toHaveBeenCalled();
-      expect(alertsSpy).toHaveBeenCalledWith("Settings updated successfully!");
-      done();
-    });
+    expect(localStorageSpy).toHaveBeenCalledWith("PUSH_SUBSCRIPTION", JSON.stringify(pushSub));
+  });
+
+  it("setSubscription() - does nothing if there's no sub", () => {
+    const localStorageSpy = spyOn(localStorage, "setItem").and.callThrough();
+    notificationService.notificationsSub = undefined;
+
+    notificationService["setSubscription"]();
+
+    expect(localStorageSpy).not.toHaveBeenCalled();
   });
 
   it("updateUserSettings() - updates an existing error message if there is one", (done: DoneFn) => {

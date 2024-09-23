@@ -104,7 +104,25 @@ describe("AdminService", () => {
         },
       }),
     );
-    const messageSpy = spyOn(adminService["itemsService"], "sendMessage");
+    const messageSpy = spyOn(adminService["itemsService"], "sendMessage").and.returnValue(
+      of({
+        message: {
+          date: new Date("Mon, 08 Jun 2020 14:43:15 GMT"),
+          from: {
+            displayName: "user",
+          },
+          fromId: 4,
+          for: {
+            displayName: "user2",
+          },
+          forId: 1,
+          id: 9,
+          messageText: "hang in there",
+          threadID: 1,
+        },
+        success: true,
+      }),
+    );
     const deleteSWSpy = spyOn(adminService["serviceWorkerM"], "deleteItem");
     const deleteAPISpy = spyOn(adminService["apiClient"], "delete").and.returnValue(
       of(mockResponse),
@@ -113,6 +131,51 @@ describe("AdminService", () => {
 
     expect(alertSpy).toHaveBeenCalledWith("Post 10 was successfully deleted.");
     expect(dismissSpy).toHaveBeenCalledWith(5, false, 10);
+    expect(messageSpy).toHaveBeenCalled();
+    expect(deleteSWSpy).toHaveBeenCalledWith("posts", 10);
+    expect(deleteAPISpy).toHaveBeenCalledWith("posts/10");
+  });
+
+  it("deletePost() - should delete a post without closing the report", () => {
+    // mock response
+    const mockResponse = {
+      success: true,
+      deleted: 10,
+    };
+
+    const reportData = {
+      reportID: 5,
+      userID: 2,
+    };
+    const alertSpy = spyOn(adminService["alertsService"], "createSuccessAlert");
+    const dismissSpy = spyOn(adminService, "closeReport");
+    const messageSpy = spyOn(adminService["itemsService"], "sendMessage").and.returnValue(
+      of({
+        message: {
+          date: new Date("Mon, 08 Jun 2020 14:43:15 GMT"),
+          from: {
+            displayName: "user",
+          },
+          fromId: 4,
+          for: {
+            displayName: "user2",
+          },
+          forId: 1,
+          id: 9,
+          messageText: "hang in there",
+          threadID: 1,
+        },
+        success: true,
+      }),
+    );
+    const deleteSWSpy = spyOn(adminService["serviceWorkerM"], "deleteItem");
+    const deleteAPISpy = spyOn(adminService["apiClient"], "delete").and.returnValue(
+      of(mockResponse),
+    );
+    adminService.deletePost(10, reportData, false);
+
+    expect(alertSpy).toHaveBeenCalledWith("Post 10 was successfully deleted.");
+    expect(dismissSpy).not.toHaveBeenCalled();
     expect(messageSpy).toHaveBeenCalled();
     expect(deleteSWSpy).toHaveBeenCalledWith("posts", 10);
     expect(deleteAPISpy).toHaveBeenCalledWith("posts/10");
@@ -160,6 +223,36 @@ describe("AdminService", () => {
       expect(alertSpy).toHaveBeenCalledWith("User user updated.");
       expect(patchSpy).toHaveBeenCalledWith("users/all/2", userData);
       expect(closeSpy).toHaveBeenCalledWith(6, false, undefined, 2);
+      done();
+    });
+  });
+
+  it("editUser() - should edit a user's display name without closing report", (done: DoneFn) => {
+    // mock response
+    const mockResponse = {
+      success: true,
+      updated: {
+        id: 2,
+        displayName: "user",
+        receivedH: 2,
+        givenH: 4,
+        role: "user",
+      },
+    };
+
+    const userData = {
+      id: 2,
+      displayName: "user",
+    };
+    const alertSpy = spyOn(adminService["alertsService"], "createSuccessAlert");
+    const patchSpy = spyOn(adminService["apiClient"], "patch").and.returnValue(of(mockResponse));
+    const closeSpy = spyOn(adminService, "closeReport");
+
+    adminService.editUser(userData, false, 6).add(() => {
+      expect(alertSpy).toHaveBeenCalled();
+      expect(alertSpy).toHaveBeenCalledWith("User user updated.");
+      expect(patchSpy).toHaveBeenCalledWith("users/all/2", userData);
+      expect(closeSpy).not.toHaveBeenCalled();
       done();
     });
   });

@@ -44,7 +44,7 @@ import { User as FirebaseUser, UserCredential } from "firebase/auth";
 import { ReactiveFormsModule } from "@angular/forms";
 import { By } from "@angular/platform-browser";
 import { provideZoneChangeDetection } from "@angular/core";
-import { MockProvider } from "ng-mocks";
+import { MockComponent, MockProvider } from "ng-mocks";
 import { provideRouter } from "@angular/router";
 
 import { LoginPage } from "./loginPage.component";
@@ -53,7 +53,6 @@ import { getMockFirebaseUser, mockAuthedUser } from "@tests/mockData";
 import { User } from "@app/interfaces/user.interface";
 import { PasswordResetForm } from "@app/components/passwordResetForm/passwordResetForm.component";
 import { Loader } from "@app/components/loader/loader.component";
-import { routes } from "@app/app.routes";
 
 describe("LoginPage", () => {
   let mockFirbeaseUser: FirebaseUser;
@@ -66,6 +65,8 @@ describe("LoginPage", () => {
       authenticated: signal(false),
       userData: signal(undefined),
     });
+    const MockLoader = MockComponent(Loader);
+    const MockPasswordResetForm = MockComponent(PasswordResetForm);
 
     TestBed.resetTestEnvironment();
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
@@ -76,14 +77,14 @@ describe("LoginPage", () => {
         CommonModule,
         ReactiveFormsModule,
         FontAwesomeModule,
-        Loader,
-        PasswordResetForm,
+        MockLoader,
+        MockPasswordResetForm,
         LoginPage,
       ],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
         provideZoneChangeDetection({ eventCoalescing: true }),
-        provideRouter(routes),
+        provideRouter([]),
         MockAuthService,
       ],
     }).compileComponents();

@@ -35,7 +35,7 @@ import { provideHttpClient } from "@angular/common/http";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { ReactiveFormsModule } from "@angular/forms";
 import { CommonModule } from "@angular/common";
-import { RouterLink } from "@angular/router";
+import { provideRouter, RouterLink, withComponentInputBinding } from "@angular/router";
 
 import { AdminBlocks } from "./components/adminBlocks/adminBlocks.component";
 import { AdminDashboard } from "./components/adminDashboard/adminDashboard.component";
@@ -58,7 +58,30 @@ import { Loader } from "@app/components/loader/loader.component";
     RouterLink,
   ],
   declarations: [AdminBlocks, AdminDashboard, AdminFilters, AdminReports],
-  providers: [provideHttpClient()],
+  providers: [
+    provideHttpClient(),
+    provideRouter(
+      [
+        { path: "", pathMatch: "prefix", component: AdminDashboard },
+        {
+          path: "reports",
+          pathMatch: "prefix",
+          component: AdminDashboard,
+        },
+        {
+          path: "blocks",
+          pathMatch: "prefix",
+          component: AdminDashboard,
+        },
+        {
+          path: "filters",
+          pathMatch: "prefix",
+          component: AdminDashboard,
+        },
+      ],
+      withComponentInputBinding(),
+    ),
+  ],
   bootstrap: [AdminDashboard],
   exports: [AdminDashboard],
 })

@@ -4,7 +4,7 @@ from firebase_admin import initialize_app  # type: ignore
 
 from create_app import create_app
 from tests.data_models import create_data
-from models.models import BaseModel
+from models.common import BaseModel
 from models.db import SendADatabase
 
 class SAHConfig:
@@ -20,7 +20,7 @@ class SAHConfig:
 
 async def setup_e2e():
     """Sets up the database ahead of e2e tests"""
-    test_db_path = "postgresql+asyncpg://postgres:password@localhost:5432/test_sah"
+    test_db_path = "postgresql+asyncpg://postgres:password@localhost:5432/sendahug"
     test_config = SAHConfig(database_url=test_db_path)
     app = create_app(config=test_config)
 

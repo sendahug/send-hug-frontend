@@ -1,0 +1,60 @@
+/* =================== Full List Styling =================== */
+/* List container*/
+#items {
+  width: 90%;
+  margin: 0;
+  padding: 10px 5%;
+  left: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+#items .listTitle {
+  margin-bottom: 0;
+}
+
+/* Full items list */
+#fullItems {
+  width: 100%;
+  border: none;
+  border-radius: 5px;
+  padding: 5px;
+  /* Responsive styling for screens above 400px width */
+  @media screen and (min-width: 400px) {
+    width: 90%;
+    margin: 0 5%;
+  }
+  /* Responsive styling for screens above 600px width */
+  @media screen and (min-width: 600px) {
+    width: 80%;
+    margin: 0 10%;
+  }
+}
+
+#fullItems app-single-post {
+  margin: 1px;
+
+  li {
+    margin: 0 auto;
+  }
+}
+
+/* Full items list pagination */
+#items .pagination {
+  margin-bottom: 10px;
+  /* Responsive styling for screens above 400px width */
+  @media screen and (min-width: 400px) {
+    width: 90%;
+  }
+  /* Responsive styling for screens above 500px width */
+  @media screen and (min-width: 500px) {
+    width: 80%;
+  }
+  /* Responsive styling for screens above 550px width */
+  @media screen and (min-width: 550px) {
+    width: 400px;
+  }
+}

@@ -38,20 +38,18 @@ import {
   BrowserDynamicTestingModule,
   platformBrowserDynamicTesting,
 } from "@angular/platform-browser-dynamic/testing";
-import { MockProvider } from "ng-mocks";
+import { MockComponent, MockProvider } from "ng-mocks";
 import { ReactiveFormsModule } from "@angular/forms";
-import { BehaviorSubject, of } from "rxjs";
+import { BehaviorSubject, of, throwError } from "rxjs";
 import { NO_ERRORS_SCHEMA, signal } from "@angular/core";
+import { BrowserModule } from "@angular/platform-browser";
 
 import { AdminBlocks } from "./adminBlocks.component";
-import { PopUp } from "@app/components/popUp/popUp.component";
 import { AuthService } from "@app/services/auth.service";
 import { Loader } from "@app/components/loader/loader.component";
 import { mockAuthedUser } from "@tests/mockData";
 import { ApiClientService } from "@app/services/apiClient.service";
-import { routes } from "@app/app.routes";
 import { AdminService } from "@app/services/admin.service";
-import { BrowserModule } from "@angular/platform-browser";
 
 const mockBlockedUsers = [
   {
@@ -81,17 +79,18 @@ describe("Blocks Page", () => {
     const MockAPIClient = MockProvider(ApiClientService, {
       get: () => of(),
     });
+    const MockLoader = MockComponent(Loader);
 
     TestBed.resetTestEnvironment();
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
       schemas: [NO_ERRORS_SCHEMA],
-      imports: [ReactiveFormsModule, BrowserModule, Loader, PopUp],
+      imports: [ReactiveFormsModule, BrowserModule, MockLoader],
       declarations: [AdminBlocks],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
-        provideRouter(routes),
+        provideRouter([]),
         MockAdminService,
         MockAuthService,
         MockAPIClient,
@@ -128,6 +127,29 @@ describe("Blocks Page", () => {
     expect(
       adminBlocksDOM.querySelectorAll(".tableContainer")[0].querySelectorAll("tbody tr").length,
     ).toBe(1);
+    done();
+  });
+
+  it("should remove the loading screen if there was an error", (done: DoneFn) => {
+    // set up the spy and the component
+    const apiClientSpy = spyOn(TestBed.inject(ApiClientService), "get").and.returnValue(
+      throwError(() => new Error("ERROR")),
+    );
+    const fixture = TestBed.createComponent(AdminBlocks);
+    const adminBlocks = fixture.componentInstance;
+    const adminBlocksDOM = fixture.nativeElement;
+    fixture.detectChanges();
+
+    adminBlocks.fetchBlocks();
+
+    expect(apiClientSpy).toHaveBeenCalledWith("users/blocked", { page: "1" });
+    expect(adminBlocks.blockedUsers.length).toBe(0);
+    expect(adminBlocks.isLoading).toBeFalse();
+    expect(adminBlocksDOM.querySelectorAll(".tableContainer").length).toBe(0);
+    expect(adminBlocksDOM.querySelector("app-loader")).toBeNull();
+    expect(adminBlocksDOM.querySelectorAll(".errorMessage")[0].textContent).toBe(
+      "There are no blocked users.",
+    );
     done();
   });
 

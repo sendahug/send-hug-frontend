@@ -60,6 +60,7 @@ export const DefaultColours = {
 @Component({
   selector: "app-user-icon",
   templateUrl: "./userIcon.component.html",
+  styleUrl: "./userIcon.component.less",
   standalone: true,
   imports: [CommonModule],
 })

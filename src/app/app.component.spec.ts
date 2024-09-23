@@ -29,9 +29,11 @@
   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
   SOFTWARE.
 */
-import { TestBed } from "@angular/core/testing";
+import { fakeAsync, TestBed, tick } from "@angular/core/testing";
 import {
+  ActivatedRoute,
   provideRouter,
+  Router,
   RouterLink,
   RouterOutlet,
   withComponentInputBinding,
@@ -47,7 +49,7 @@ import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { BehaviorSubject, of, throwError } from "rxjs";
 import { provideZoneChangeDetection, signal } from "@angular/core";
 import { MockComponent, MockProvider } from "ng-mocks";
-// import { setViewport } from "@web/test-runner-commands";
+import { setViewport } from "@web/test-runner-commands";
 
 import { AppComponent } from "./app.component";
 import { NotificationsTab } from "./components/notifications/notifications.component";
@@ -57,7 +59,6 @@ import { NotificationService } from "./services/notifications.service";
 import { mockAuthedUser } from "@tests/mockData";
 import { AppAlert } from "./components/appAlert/appAlert.component";
 import { AlertsService } from "@app/services/alerts.service";
-import { routes } from "./app.routes";
 import { ItemsService } from "./services/items.service";
 
 describe("AppComponent", () => {
@@ -75,11 +76,14 @@ describe("AppComponent", () => {
       sendSearch: (_search) => undefined,
     });
     const MockNotificationsService = MockProvider(NotificationService, {
-      getSubscription: () => undefined,
-      startAutoRefresh: () => undefined,
+      checkInitialPermissionState: (_enabled) => new Promise(() => true),
+      getCachedSubscription: () => undefined,
+      startAutoRefresh: (_rate) => undefined,
+      newNotifications: signal(0),
     });
     const MockSWManager = MockProvider(SWManager, {
       registerSW: () => undefined,
+      updateSW: () => undefined,
     });
 
     TestBed.resetTestEnvironment();
@@ -99,7 +103,7 @@ describe("AppComponent", () => {
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
         provideZoneChangeDetection({ eventCoalescing: true }),
-        provideRouter(routes, withComponentInputBinding()),
+        provideRouter([], withComponentInputBinding()),
         MockAuthService,
         MockItemsService,
         MockNotificationsService,
@@ -157,6 +161,105 @@ describe("AppComponent", () => {
     });
   });
 
+  it("should check for a logged in user - enable push and auto-refresh", fakeAsync(() => {
+    const authService = TestBed.inject(AuthService);
+    const authSpy = spyOn(authService, "checkForLoggedInUser").and.returnValue(
+      of({ ...mockAuthedUser, pushEnabled: true, autoRefresh: true }),
+    );
+
+    const notificationService = TestBed.inject(NotificationService);
+    const checkStateSpy = spyOn(notificationService, "checkInitialPermissionState").and.returnValue(
+      new Promise((resolve) => resolve("granted")),
+    );
+    const getSubscriptionSpy = spyOn(notificationService, "getCachedSubscription");
+    const startRefreshSpy = spyOn(notificationService, "startAutoRefresh");
+    const getNotificationsSpy = spyOn(notificationService, "getNotifications").and.returnValue(
+      of(),
+    );
+
+    TestBed.createComponent(AppComponent);
+
+    tick();
+
+    expect(authSpy).toHaveBeenCalled();
+    expect(checkStateSpy).toHaveBeenCalled();
+    expect(getSubscriptionSpy).toHaveBeenCalled();
+    expect(startRefreshSpy).toHaveBeenCalled();
+    expect(getNotificationsSpy).toHaveBeenCalled();
+  }));
+
+  // it("should check for a logged in user - don't enable push and auto-refresh", fakeAsync(() => {
+  //   const authService = TestBed.inject(AuthService);
+  //   const authSpy = spyOn(authService, "checkForLoggedInUser").and.returnValue(
+  //     of({ ...mockAuthedUser }),
+  //   );
+
+  //   const notificationService = TestBed.inject(NotificationService);
+  //   const checkStateSpy = spyOn(notificationService, "checkInitialPermissionState").and.returnValue(
+  //     new Promise((resolve) => resolve("granted")),
+  //   );
+  //   const getSubscriptionSpy = spyOn(notificationService, "getCachedSubscription");
+  //   const startRefreshSpy = spyOn(notificationService, "startAutoRefresh");
+
+  //   TestBed.createComponent(AppComponent);
+
+  //   tick();
+
+  //   expect(authSpy).toHaveBeenCalled();
+  //   expect(checkStateSpy).toHaveBeenCalled();
+  //   expect(getSubscriptionSpy).not.toHaveBeenCalled();
+  //   expect(startRefreshSpy).not.toHaveBeenCalled();
+  // }));
+
+  // it("should check for a logged in user - push permission not granted", fakeAsync(() => {
+  //   const authService = TestBed.inject(AuthService);
+  //   const authSpy = spyOn(authService, "checkForLoggedInUser").and.returnValue(
+  //     of({ ...mockAuthedUser, pushEnabled: true }),
+  //   );
+
+  //   const notificationService = TestBed.inject(NotificationService);
+  //   const checkStateSpy = spyOn(notificationService, "checkInitialPermissionState").and.returnValue(
+  //     new Promise((resolve) => resolve("denied")),
+  //   );
+  //   const getSubscriptionSpy = spyOn(notificationService, "getCachedSubscription");
+
+  //   TestBed.createComponent(AppComponent);
+
+  //   tick(100);
+
+  //   expect(authSpy).toHaveBeenCalled();
+  //   expect(checkStateSpy).toHaveBeenCalled();
+  //   expect(getSubscriptionSpy).not.toHaveBeenCalled();
+  // }));
+
+  it("should navigate to another page if the user is logged in and there's a redirect", fakeAsync(() => {
+    const authService = TestBed.inject(AuthService);
+    const authSpy = spyOn(authService, "checkForLoggedInUser").and.returnValue(
+      of({ ...mockAuthedUser, pushEnabled: true, autoRefresh: false }),
+    );
+
+    const notificationService = TestBed.inject(NotificationService);
+    spyOn(notificationService, "checkInitialPermissionState").and.returnValue(
+      new Promise((resolve) => resolve("granted")),
+    );
+    spyOn(notificationService, "getCachedSubscription");
+    spyOn(notificationService, "getNotifications").and.returnValue(of());
+
+    const router = TestBed.inject(Router);
+    const navigateSpy = spyOn(router, "navigate");
+
+    const route = TestBed.inject(ActivatedRoute);
+    const paramMapSpy = spyOn(route.snapshot.queryParamMap, "get").and.returnValue("test");
+
+    TestBed.createComponent(AppComponent);
+
+    tick();
+
+    expect(authSpy).toHaveBeenCalled();
+    expect(navigateSpy).toHaveBeenCalledWith(["/test"]);
+    expect(paramMapSpy).toHaveBeenCalledWith("redirect");
+  }));
+
   // Check that there are valid navigation links
   it("should contain valid navigation links", () => {
     const fixture = TestBed.createComponent(AppComponent);
@@ -182,7 +285,7 @@ describe("AppComponent", () => {
     const componentHtml = fixture.debugElement.nativeElement;
     fixture.detectChanges();
 
-    expect(component.showNotifications).toBe(false);
+    expect(component.showNotifications()).toBe(false);
     expect(componentHtml.querySelector("#mainContent").children.length).toEqual(2);
   });
 
@@ -195,7 +298,7 @@ describe("AppComponent", () => {
     const mainContent = componentHtml.querySelector("#mainContent");
 
     // Check the tab is initially hidden
-    expect(component.showNotifications).toBe(false);
+    expect(component.showNotifications()).toBe(false);
     expect(mainContent.querySelector("app-notifications")).toBeNull();
 
     // Simulate a click on the button
@@ -203,7 +306,7 @@ describe("AppComponent", () => {
     fixture.detectChanges();
 
     // Check the tab is now visible
-    expect(component.showNotifications).toBe(true);
+    expect(component.showNotifications()).toBe(true);
     expect(mainContent.querySelector("app-notifications")).toBeDefined();
   });
 
@@ -213,7 +316,7 @@ describe("AppComponent", () => {
     const component = fixture.componentInstance;
     const componentHtml = fixture.debugElement.nativeElement;
 
-    expect(component.showSearch).toBe(false);
+    expect(component.showSearch()).toBe(false);
     expect(componentHtml.querySelector("#siteHeader").children.length).toEqual(2);
   });
 
@@ -226,7 +329,7 @@ describe("AppComponent", () => {
     const siteHeader = componentHtml.querySelector("#siteHeader");
 
     // Check the panel is initially hidden
-    expect(component.showSearch).toBe(false);
+    expect(component.showSearch()).toBe(false);
     expect(siteHeader.querySelector("#search")).toBeNull();
 
     // Simulate a click on the button
@@ -234,7 +337,7 @@ describe("AppComponent", () => {
     fixture.detectChanges();
 
     // Check the panel is now visible
-    expect(component.showSearch).toBe(true);
+    expect(component.showSearch()).toBe(true);
     expect(siteHeader.querySelector("#search")).toBeDefined();
   });
 
@@ -296,7 +399,7 @@ describe("AppComponent", () => {
     const component = fixture.componentInstance;
     const componentHtml = fixture.debugElement.nativeElement;
 
-    expect(component.showTextPanel).toBe(false);
+    expect(component.showTextPanel()).toBe(false);
     expect(componentHtml.querySelector("#siteHeader").children.length).toEqual(2);
   });
 
@@ -309,7 +412,7 @@ describe("AppComponent", () => {
     const siteHeader = componentHtml.querySelector("#siteHeader");
 
     // Check the panel is initially hidden
-    expect(component.showTextPanel).toBe(false);
+    expect(component.showTextPanel()).toBe(false);
     expect(siteHeader.querySelector("#textPanel")).toBeNull();
 
     // Simulate a click on the button
@@ -317,7 +420,7 @@ describe("AppComponent", () => {
     fixture.detectChanges();
 
     // Check the panel is now visible
-    expect(component.showTextPanel).toBe(true);
+    expect(component.showTextPanel()).toBe(true);
     expect(siteHeader.querySelector("#textPanel")).toBeDefined();
   });
 
@@ -330,21 +433,21 @@ describe("AppComponent", () => {
     const siteHeader = componentHtml.querySelector("#siteHeader");
 
     // Check the panel is initially hidden
-    expect(component.showTextPanel).toBe(false);
+    expect(component.showTextPanel()).toBe(false);
     expect(siteHeader.querySelector("#textPanel")).toBeNull();
 
     // Simulate a click on the button
     componentHtml.querySelector("#textSize").click();
 
     // Check the panel is now visible
-    expect(component.showTextPanel).toBe(true);
+    expect(component.showTextPanel()).toBe(true);
     expect(siteHeader.querySelector("#textPanel")).toBeDefined();
 
     // Simulate another click on the button
     componentHtml.querySelector("#textSize").click();
 
     // check the panel is hidden again
-    expect(component.showTextPanel).toBe(false);
+    expect(component.showTextPanel()).toBe(false);
     expect(siteHeader.querySelector("#textPanel")).toBeNull();
   });
 
@@ -367,15 +470,16 @@ describe("AppComponent", () => {
 
     // wrap tests in a promise to make sure they run fully and by the order
     // step 1: regular size
-    new Promise(() => {
+    new Promise((resolve) => {
       // change the font size to the smallest
       fontPanelButtons[0]!.click();
       fixture.detectChanges();
 
       // check the font size was changed
-      expect(document.getElementsByTagName("html")[0]!.style.fontSize).toBe("75%");
+      expect(document.querySelector("html")!.style.fontSize).toBe("75%");
       expect(menuSpy).toHaveBeenCalled();
       expect(menuSpy).toHaveBeenCalledTimes(1);
+      resolve(undefined);
       // step 3: smaller size
     })
       .then(() => {
@@ -384,7 +488,7 @@ describe("AppComponent", () => {
         fixture.detectChanges();
 
         // check the font size was changed
-        expect(document.getElementsByTagName("html")[0]!.style.fontSize).toBe("87.5%");
+        expect(document.querySelector("html")!.style.fontSize).toBe("87.5%");
         expect(menuSpy).toHaveBeenCalled();
         expect(menuSpy).toHaveBeenCalledTimes(2);
         // step 4: regular size
@@ -395,7 +499,7 @@ describe("AppComponent", () => {
         fixture.detectChanges();
 
         // check the font size was changed
-        expect(document.getElementsByTagName("html")[0]!.style.fontSize).toBe("100%");
+        expect(document.querySelector("html")!.style.fontSize).toBe("100%");
         expect(menuSpy).toHaveBeenCalled();
         expect(menuSpy).toHaveBeenCalledTimes(3);
         // step 5: larger size
@@ -406,7 +510,7 @@ describe("AppComponent", () => {
         fixture.detectChanges();
 
         // check the font size was changed
-        expect(document.getElementsByTagName("html")[0]!.style.fontSize).toBe("150%");
+        expect(document.querySelector("html")!.style.fontSize).toBe("150%");
         expect(menuSpy).toHaveBeenCalled();
         expect(menuSpy).toHaveBeenCalledTimes(4);
         // step 6: largest size
@@ -417,35 +521,32 @@ describe("AppComponent", () => {
         fixture.detectChanges();
 
         // check the font size was changed
-        expect(document.getElementsByTagName("html")[0]!.style.fontSize).toBe("200%");
+        expect(document.querySelector("html")!.style.fontSize).toBe("200%");
         expect(menuSpy).toHaveBeenCalled();
         expect(menuSpy).toHaveBeenCalledTimes(5);
+        done();
       });
-    done();
   });
 
-  // TODO: Figure out why this is broken in CI.
   // check the menu is shown if the screen is wide enough
-  // it("should show the menu if the screen is wide enough", async () => {
-  //   const fixture = TestBed.createComponent(AppComponent);
-  //   const component = fixture.componentInstance;
-  //   const componentHtml = fixture.nativeElement;
-  //   await setViewport({ width: 700, height: 640 });
-  //   fixture.detectChanges();
+  it("should show the menu if the screen is wide enough", async () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    const component = fixture.componentInstance;
+    const componentHtml = fixture.nativeElement;
+    await setViewport({ width: 700, height: 640 });
+    fixture.detectChanges();
 
-  //   expect(component.showMenu()).toBeTrue();
-  //   expect(componentHtml.querySelector("#navLinks")!.classList).not.toContain("hidden");
-  //   expect(componentHtml.querySelector("#menuBtn")!.classList).toContain("hidden");
-  // });
+    expect(component.showMenu()).toBeTrue();
+    expect(componentHtml.querySelector("#navLinks")!.classList).not.toContain("hidden");
+    expect(componentHtml.querySelector("#menuBtn")!.classList).toContain("hidden");
+  });
 
+  // TODO: Figure out why this isn't working in CI.
   // check the menu is hidden if the screen isn't wide enough
   // it("should hide the menu if the screen isn't wide enough", async () => {
   //   const fixture = TestBed.createComponent(AppComponent);
   //   const component = fixture.componentInstance;
   //   const componentHtml = fixture.nativeElement;
-  //   await setViewport({ width: 700, height: 640 });
-  //   fixture.detectChanges();
-
   //   await setViewport({ width: 600, height: 640 });
   //   fixture.detectChanges();
 
@@ -458,9 +559,6 @@ describe("AppComponent", () => {
   //   const fixture = TestBed.createComponent(AppComponent);
   //   const component = fixture.componentInstance;
   //   const componentHtml = fixture.nativeElement;
-  //   await setViewport({ width: 700, height: 640 });
-  //   fixture.detectChanges();
-
   //   await setViewport({ width: 600, height: 640 });
   //   fixture.detectChanges();
 
@@ -519,8 +617,8 @@ describe("AppComponent", () => {
 
     const navMenu = componentHtml.querySelector("#navMenu");
     const navLinks = componentHtml.querySelector("#navLinks");
-    navLinks.style.width = "600px";
-    navMenu.style.maxWidth = "600px";
+    navLinks.style.width = "1000px";
+    navMenu.style.maxWidth = "1000px";
     navMenu.style.display = "flex";
     component.changeTextSize("largest");
     fixture.detectChanges();

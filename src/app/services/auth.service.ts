@@ -31,7 +31,7 @@
 */
 
 // Angular imports
-import { Injectable, signal } from "@angular/core";
+import { computed, Injectable, signal } from "@angular/core";
 import { HttpClient, HttpErrorResponse, HttpHeaders } from "@angular/common/http";
 
 // Other essential imports
@@ -41,6 +41,7 @@ import {
   EMPTY,
   from,
   map,
+  Observable,
   of,
   switchMap,
   tap,
@@ -75,6 +76,8 @@ interface GetUserResponse {
   user: User;
 }
 
+export type ToggleButtonOption = "Enable" | "Disable";
+
 @Injectable({
   providedIn: "root",
 })
@@ -84,6 +87,12 @@ export class AuthService {
   authenticated = signal<boolean>(false);
   // user data
   userData = signal<User | undefined>(undefined);
+  // shortcuts
+  pushEnabled = computed<boolean>(() => this.userData()?.pushEnabled || false);
+  toggleBtn = computed<ToggleButtonOption>(() => (this.pushEnabled() ? "Disable" : "Enable"));
+  autoRefresh = computed<boolean>(() => this.userData()?.autoRefresh || false);
+  refreshBtn = computed<ToggleButtonOption>(() => (this.autoRefresh() ? "Disable" : "Enable"));
+  refreshRate = computed(() => this.userData()?.refreshRate || 20);
   // documents whether the user just logged in or they're still logged in following
   // their previous login
   loggedIn = false;
@@ -99,11 +108,16 @@ export class AuthService {
   ) {}
 
   /**
+   * Firebase Methods
+   * =====================================
+   */
+
+  /**
    * Checks whether there's a user currently logged in. If there is,
    * fetches the user's details. Otherwise, logs the previous user out.
    * @returns an observable that resolves to an internal user.
    */
-  checkForLoggedInUser() {
+  checkForLoggedInUser(): Observable<User | undefined> {
     return authState(this.auth)
       .pipe(
         tap((currentUser) => {
@@ -185,6 +199,19 @@ export class AuthService {
   }
 
   /**
+   * Signs the user out in Firebase.
+   * @returns an empty observable.
+   */
+  signOut() {
+    return from(signOut(this.auth));
+  }
+
+  /**
+   * Internal Auth Methods
+   * =====================================
+   */
+
+  /**
    * Gets a JWT and adds it to the user credential object.
    * @returns an observable of a user credentials + jwt.
    */
@@ -206,7 +233,7 @@ export class AuthService {
    * @param loggedIn - whether the user just logged in.
    * @returns an observable with the user's details from the back-end.
    */
-  fetchUser(loggedIn: boolean = false) {
+  fetchUser(loggedIn: boolean = false): Observable<User> {
     return this.getUserToken()
       .pipe(
         tap((firebaseUser: any) => {
@@ -355,14 +382,6 @@ export class AuthService {
   }
 
   /**
-   * Signs the user out in Firebase.
-   * @returns an empty observable.
-   */
-  signOut() {
-    return from(signOut(this.auth));
-  }
-
-  /**
    * Signs the user out and then deletes the user's data locally.
    */
   logout() {
@@ -394,14 +413,12 @@ export class AuthService {
     });
   }
 
-  /*
-  Function Name: updateUserData()
-  Function Description: Sends a request to the server to update the login count
-                        and display name in the database.
-  Parameters: user (partial User) - the updated details to set the userData to.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
+  /**
+   * Updates the user's data locally and sends a request to the server
+   * to update the user's data with the provided details.
+   * @param user - the details to update.
+   * @returns a subscription that runs after the update is done.
+   */
   updateUserData(user: Partial<User>) {
     this.userData.set({
       ...this.userData()!,
@@ -432,19 +449,17 @@ export class AuthService {
       });
   }
 
-  /*
-  Function Name: canUser()
-  Function Description: Check whether the user has permission to perform an action.
-  Parameters: permission (string) - The required permission.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
+  /**
+   * Sheck whether the user has permission to perform an action.
+   * @param permission - The required permission.
+   * @returns true/false depending on whether the user has permission.
+   */
   canUser(permission: string) {
     // if there's an active token, check the logged in user's permissions
     if (this.userData()) {
       // if it's within the user's permissions, return true;
       // otherwise return false
-      const canUserDo = this.userData()?.role["permissions"].includes(permission);
+      const canUserDo = this.userData()!.role["permissions"].includes(permission);
       return canUserDo;
     }
     // if there isn't, no user is logged in, so of course there's no permission

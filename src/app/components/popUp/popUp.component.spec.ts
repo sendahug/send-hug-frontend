@@ -39,9 +39,9 @@ import {
 } from "@angular/platform-browser-dynamic/testing";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { provideZoneChangeDetection } from "@angular/core";
+import { Component } from "@angular/core";
 
 import { PopUp } from "./popUp.component";
-import { Component } from "@angular/core";
 
 // Mock page
 @Component({

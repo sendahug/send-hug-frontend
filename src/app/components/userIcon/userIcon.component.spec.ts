@@ -41,8 +41,7 @@ import { CommonModule } from "@angular/common";
 import { Component, NO_ERRORS_SCHEMA, provideZoneChangeDetection, signal } from "@angular/core";
 import { By } from "@angular/platform-browser";
 
-import { UserIcon } from "./userIcon.component";
-import { DefaultColours } from "./userIcon.component";
+import { UserIcon, DefaultColours } from "./userIcon.component";
 import { iconCharacters } from "@app/interfaces/types";
 
 @Component({

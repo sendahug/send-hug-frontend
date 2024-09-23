@@ -1,0 +1,9 @@
+{
+  "pr_number": 1818,
+  "changes": [
+    {
+      "change": "Chores",
+      "description": "Deleted imported components from unit tests to ensure each component's unit test is focused on that component. The required imports are now mocked instead."
+    }
+  ]
+}

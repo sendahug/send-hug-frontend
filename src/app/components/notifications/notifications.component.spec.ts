@@ -40,7 +40,7 @@ import {
 } from "@angular/platform-browser-dynamic/testing";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { computed, provideZoneChangeDetection, signal } from "@angular/core";
-import { MockProvider } from "ng-mocks";
+import { MockComponent, MockProvider } from "ng-mocks";
 import { BehaviorSubject, of, Subscription } from "rxjs";
 
 import { NotificationsTab } from "./notifications.component";
@@ -79,12 +79,13 @@ describe("Notifications Tab", () => {
         }),
     });
     const MockAPIClient = MockProvider(ApiClientService);
+    const MockAlert = MockComponent(AppAlert);
 
     TestBed.resetTestEnvironment();
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
-      imports: [CommonModule, FontAwesomeModule, RouterLink, NotificationsTab, AppAlert],
+      imports: [CommonModule, FontAwesomeModule, RouterLink, NotificationsTab, MockAlert],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
         provideZoneChangeDetection({ eventCoalescing: true }),

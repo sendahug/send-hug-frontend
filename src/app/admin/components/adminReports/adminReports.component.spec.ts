@@ -76,13 +76,14 @@ describe("AdminReports", () => {
     const MockEditForm = MockComponent(DisplayNameEditForm);
     const MockDeleteForm = MockComponent(ItemDeleteForm);
     const MockPostEditForm = MockComponent(PostEditForm);
+    const MockLoader = MockComponent(Loader);
 
     TestBed.resetTestEnvironment();
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
       schemas: [NO_ERRORS_SCHEMA],
-      imports: [Loader, MockPostEditForm, MockDeleteForm, MockEditForm, CommonModule],
+      imports: [MockLoader, MockPostEditForm, MockDeleteForm, MockEditForm, CommonModule],
       declarations: [AdminReports],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },

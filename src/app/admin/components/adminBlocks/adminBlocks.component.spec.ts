@@ -38,19 +38,18 @@ import {
   BrowserDynamicTestingModule,
   platformBrowserDynamicTesting,
 } from "@angular/platform-browser-dynamic/testing";
-import { MockProvider } from "ng-mocks";
+import { MockComponent, MockProvider } from "ng-mocks";
 import { ReactiveFormsModule } from "@angular/forms";
 import { BehaviorSubject, of, throwError } from "rxjs";
 import { NO_ERRORS_SCHEMA, signal } from "@angular/core";
+import { BrowserModule } from "@angular/platform-browser";
 
 import { AdminBlocks } from "./adminBlocks.component";
-import { PopUp } from "@app/components/popUp/popUp.component";
 import { AuthService } from "@app/services/auth.service";
 import { Loader } from "@app/components/loader/loader.component";
 import { mockAuthedUser } from "@tests/mockData";
 import { ApiClientService } from "@app/services/apiClient.service";
 import { AdminService } from "@app/services/admin.service";
-import { BrowserModule } from "@angular/platform-browser";
 
 const mockBlockedUsers = [
   {
@@ -80,13 +79,14 @@ describe("Blocks Page", () => {
     const MockAPIClient = MockProvider(ApiClientService, {
       get: () => of(),
     });
+    const MockLoader = MockComponent(Loader);
 
     TestBed.resetTestEnvironment();
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
       schemas: [NO_ERRORS_SCHEMA],
-      imports: [ReactiveFormsModule, BrowserModule, Loader, PopUp],
+      imports: [ReactiveFormsModule, BrowserModule, MockLoader],
       declarations: [AdminBlocks],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },

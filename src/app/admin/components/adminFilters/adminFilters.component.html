@@ -1,6 +1,5 @@
 <div *ngIf="isLoading" id="loaderDiv">
-  <app-loader
-  [waitingFor]="'admin filters'"></app-loader>
+  <app-loader [loadingMessage]="'Getting filtered phrases...'"></app-loader>
 </div>
 
 <div class="adminScreen" id="adminFilters" *ngIf="!isLoading" role="main">

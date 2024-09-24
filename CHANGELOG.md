@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+### 2024-09-24
+
+#### Chores
+
+- Merged the Loader and the HeaderMessage components. Both components had the exact same code but used different styling. Having both components was unnecessary. Instead, the Loader component is now displayed as either a loader or a header message (depending on the loader's class). ([#1822](https://github.com/sendahug/send-hug-frontend/pull/1822))
+- Deleted the logic for setting the loading message based on a target passed in by the parent component. This required maintaining the targets in parent components and in the loader to ensure all targets get a loading message. Instead, the message to display is now passed into the component using an input, and the target input was removed. ([#1822](https://github.com/sendahug/send-hug-frontend/pull/1822))
+
 ### 2024-09-23
 
 #### Features

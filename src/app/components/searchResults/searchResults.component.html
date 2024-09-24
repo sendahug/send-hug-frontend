@@ -2,7 +2,7 @@
 
 <app-loader
 	*ngIf="!itemsService.isSearchResolved.value"
-	[waitingFor]="waitFor"></app-loader>
+	[loadingMessage]="'Searching...'"></app-loader>
 
 <div *ngIf="itemsService.isSearchResolved.value" id="searchResultsMain">
 	<div id="resultSummary">{{ itemsService.numUserResults }} users and {{ itemsService.numPostResults }} posts match your search query: "{{ searchQuery }}"</div>

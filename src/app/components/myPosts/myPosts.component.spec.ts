@@ -235,7 +235,8 @@ describe("MyPosts", () => {
       expect(swSpy).toHaveBeenCalledWith("user", 5, 1, 1, false);
       expect(myPosts.totalPages()).toEqual(2);
       expect(myPosts.posts()).toEqual(mockPosts);
-      expect(myPosts.isLoading()).toBeFalse();
+      expect(myPosts.isLoading()).toBeTrue();
+      expect(myPosts.isIdbFetchLoading()).toBeFalse();
       expect(data.page).toEqual(1);
       expect(data.posts).toEqual(mockPosts);
       expect(data.total_pages).toEqual(2);
@@ -254,7 +255,7 @@ describe("MyPosts", () => {
     const myPosts: MyPosts = fixture.debugElement.children[0].children[0].componentInstance;
     const changeSpy = spyOn(myPosts, "changeMode").and.callThrough();
     myPosts.posts.set(mockPosts);
-    myPosts.isLoading.set(false);
+    myPosts.isIdbFetchLoading.set(false);
     fixture.detectChanges();
 
     // start the popup
@@ -287,7 +288,7 @@ describe("MyPosts", () => {
     const myPostsDOM = fixture.debugElement.children[0].children[0].nativeElement;
     const deleteSpy = spyOn(myPosts, "deleteAllPosts").and.callThrough();
     myPosts.posts.set(mockPosts);
-    myPosts.isLoading.set(false);
+    myPosts.isIdbFetchLoading.set(false);
     fixture.detectChanges();
 
     // before the click
@@ -316,7 +317,7 @@ describe("MyPosts", () => {
     const nextPageSpy = spyOn(myPosts, "nextPage").and.callThrough();
     const fetchSpy = spyOn(myPosts, "fetchPosts");
     myPosts.posts.set(mockPosts);
-    myPosts.isLoading.set(false);
+    myPosts.isIdbFetchLoading.set(false);
     myPosts.totalPages.set(2);
     fixture.detectChanges();
 
@@ -339,7 +340,7 @@ describe("MyPosts", () => {
     const prevPageSpy = spyOn(myPosts, "prevPage").and.callThrough();
     const fetchSpy = spyOn(myPosts, "fetchPosts");
     myPosts.posts.set(mockPosts);
-    myPosts.isLoading.set(false);
+    myPosts.isIdbFetchLoading.set(false);
     myPosts.totalPages.set(2);
     myPosts.currentPage.set(2);
     fixture.detectChanges();
@@ -362,7 +363,7 @@ describe("MyPosts", () => {
     const myPosts: MyPosts = fixture.debugElement.children[0].children[0].componentInstance;
     spyOn(myPosts, "fetchPosts");
     myPosts.posts.set(mockPosts);
-    myPosts.isLoading.set(false);
+    myPosts.isIdbFetchLoading.set(false);
     const removeSpy = spyOn(myPosts, "removeDeletedPost").and.callThrough();
     fixture.detectChanges();
 
@@ -385,6 +386,7 @@ describe("MyPosts", () => {
     const myPosts: MyPosts = fixture.debugElement.children[0].children[0].componentInstance;
     spyOn(myPosts, "fetchPosts");
     myPosts.posts.set(mockPosts);
+    myPosts.isIdbFetchLoading.set(false);
     const updateListSpy = spyOn(myPosts, "updatePostsList").and.callThrough();
     fixture.detectChanges();
 

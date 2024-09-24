@@ -2,19 +2,6 @@
 /* Responsive adjustments by Send a Hug team */
 @import "./variables.less";
 
-.headerAlerts {
-  left: 0;
-  right: 0;
-  box-shadow: 5px 5px 5px 0 rgba(46, 61, 73, 0.5);
-  border-radius: 5px;
-  text-align: center;
-  display: flex;
-  align-content: center;
-  justify-content: center;
-  background-color: #eaeaea;
-  margin: 0 5%;
-}
-
 .limitedSpaceNavLink() {
   flex-direction: column;
   height: 100%;
@@ -203,43 +190,5 @@
   /* Responsive design for screens above 400px width */
   @media screen and (min-width: 400px) {
     padding: 1px 2px;
-  }
-}
-
-/* =================== Header Message Component Styling =================== */
-/* Via https://www.w3schools.com/howto/howto_css_loader.asp */
-/*  Header Message div */
-app-header-message #headerMessage {
-  &:extend(.headerAlerts);
-  height: 20px;
-  max-height: 20px;
-  padding: 10px;
-}
-
-/*  Header Message message */
-#headerMessage #loadingMessage {
-  .fontSize(13);
-  color: var(--headlineColour);
-  margin: 0;
-  padding: 0;
-  /* Responsive styling for screens above 390px width */
-  @media screen and (min-width: 390px) {
-    .fontSize(14);
-  }
-  /* Responsive styling for screens above 500px width */
-  @media screen and (min-width: 500px) {
-    .fontSize(16);
-  }
-}
-
-/*  Header Message spinner */
-#headerMessage .spinner {
-  &:extend(.spinnerSample);
-  width: 15px;
-  height: 15px;
-  margin: 0 10px;
-  /* Responsive styling for screens above 500px width */
-  @media screen and (min-width: 500px) {
-    margin: 0 20px;
   }
 }

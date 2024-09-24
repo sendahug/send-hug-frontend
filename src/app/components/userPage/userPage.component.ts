@@ -47,7 +47,6 @@ import { SWManager } from "@app/services/sWManager.service";
 import { ApiClientService } from "@app/services/apiClient.service";
 import { AlertsService } from "@app/services/alerts.service";
 import { Loader } from "@app/components/loader/loader.component";
-import { HeaderMessage } from "@app/components/headerMessage/headerMessage.component";
 import { UserIcon } from "@app/components/userIcon/userIcon.component";
 import { ReportForm } from "@app/components/reportForm/reportForm.component";
 import { DisplayNameEditForm } from "@app/components/displayNameEditForm/displayNameEditForm.component";
@@ -65,7 +64,6 @@ interface OtherUserResponse {
   standalone: true,
   imports: [
     Loader,
-    HeaderMessage,
     UserIcon,
     RouterLink,
     FontAwesomeModule,
@@ -76,8 +74,8 @@ interface OtherUserResponse {
   ],
 })
 export class UserPage implements OnInit, OnDestroy {
-  isIdbFetchResolved = signal(false);
-  isServerFetchResolved = signal(false);
+  isLoading = signal(false);
+  isIdbFetchLoading = signal(false);
   otherUser = signal<OtherUser | undefined>(undefined);
   displayUser = computed(() => {
     if (this.otherUser()) {
@@ -96,7 +94,7 @@ export class UserPage implements OnInit, OnDestroy {
   lastFocusedElement: any;
   userDataCalls = 0;
   // loader sub-component variable
-  waitFor = "user";
+  loaderClass = computed(() => (!this.isIdbFetchLoading() && this.isLoading() ? "header" : ""));
   userId: number | undefined;
   userDataSubscription: Subscription | undefined;
   // icons
@@ -161,16 +159,14 @@ export class UserPage implements OnInit, OnDestroy {
     // to resolved so it can display the AuthService data in the template.
     if (this.userId === undefined || this.userId == this.authService.userData()?.id) {
       this.otherUser.set(undefined);
-      this.waitFor = "user";
-      this.isIdbFetchResolved.set(true);
-      this.isServerFetchResolved.set(true);
+      this.isLoading.set(false);
+      this.isIdbFetchLoading.set(false);
       return;
     }
 
     // Otherwise, fetch the user
-    this.isIdbFetchResolved.set(false);
-    this.isServerFetchResolved.set(false);
-    this.waitFor = "other user";
+    this.isLoading.set(true);
+    this.isIdbFetchLoading.set(true);
     this.fetchOtherUsersData();
   }
 
@@ -185,13 +181,13 @@ export class UserPage implements OnInit, OnDestroy {
         next: (response) => {
           const user = response.user;
           this.otherUser.set(user);
-          this.isServerFetchResolved.set(true);
+          this.isLoading.set(false);
 
           // adds the user's data to the users store
           this.swManager.addItem("users", user);
         },
         error: (_err: HttpErrorResponse) => {
-          this.isServerFetchResolved.set(true);
+          this.isLoading.set(false);
         },
       });
   }
@@ -204,7 +200,7 @@ export class UserPage implements OnInit, OnDestroy {
     return from(this.swManager.queryUsers(this.userId!)).pipe(
       tap((user) => {
         if (user) this.otherUser.set(user);
-        this.isIdbFetchResolved.set(true);
+        this.isIdbFetchLoading.set(false);
       }),
     );
   }

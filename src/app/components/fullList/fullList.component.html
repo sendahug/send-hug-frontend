@@ -3,7 +3,7 @@
 	
 	<app-loader
 		*ngIf="isLoading()"
-		[waitingFor]="waitFor"></app-loader>
+		[loadingMessage]="'Fetching posts...'"></app-loader>
 
 	<!-- If there are items in the list -->
 	<ul id="fullItems" *ngIf="posts().length > 0 && !isLoading()" role="region" aria-describedby="listTitle">

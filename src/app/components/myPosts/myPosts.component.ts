@@ -44,7 +44,6 @@ import { AuthService } from "@app/services/auth.service";
 import { SWManager } from "@app/services/sWManager.service";
 import { ApiClientService } from "@app/services/apiClient.service";
 import { Loader } from "@app/components/loader/loader.component";
-import { HeaderMessage } from "@app/components/headerMessage/headerMessage.component";
 import { SinglePost } from "@app/components/post/post.component";
 import { ItemDeleteForm } from "@app/components/itemDeleteForm/itemDeleteForm.component";
 
@@ -60,11 +59,11 @@ interface MyPostsResponse {
   templateUrl: "./myPosts.component.html",
   styleUrl: "./myPosts.component.less",
   standalone: true,
-  imports: [Loader, HeaderMessage, SinglePost, ItemDeleteForm, CommonModule, FontAwesomeModule],
+  imports: [Loader, SinglePost, ItemDeleteForm, CommonModule, FontAwesomeModule],
 })
 export class MyPosts implements OnInit {
   isLoading = signal(false);
-  isServerFetchResolved = signal(false);
+  isIdbFetchLoading = signal(false);
   posts = signal<PostGet[]>([]);
   currentPage = signal(1);
   totalPages = signal(1);
@@ -88,6 +87,7 @@ export class MyPosts implements OnInit {
   user = computed(() =>
     this.userID && this.userID != this.authService.userData()!.id! ? "other" : "self",
   );
+  loaderClass = computed(() => (!this.isIdbFetchLoading() && this.isLoading() ? "header" : ""));
   // icons
   faFlag = faFlag;
   faHandHoldingHeart = faHandHoldingHeart;
@@ -130,7 +130,7 @@ export class MyPosts implements OnInit {
   fetchPosts() {
     const fetchFromIdb$ = this.fetchPostsFromIdb();
     this.isLoading.set(true);
-    this.isServerFetchResolved.set(false);
+    this.isIdbFetchLoading.set(true);
 
     fetchFromIdb$
       .pipe(
@@ -144,7 +144,6 @@ export class MyPosts implements OnInit {
         this.totalPages.set(data.total_pages);
         this.posts.set(data.posts);
         this.isLoading.set(false);
-        this.isServerFetchResolved.set(true);
         this.swManager.addFetchedItems("posts", data.posts, "date");
       });
   }
@@ -158,7 +157,7 @@ export class MyPosts implements OnInit {
     return from(this.swManager.fetchPosts("user", 5, this.userID, this.currentPage(), false)).pipe(
       tap((data) => {
         this.posts.set(data.posts);
-        this.isLoading.set(false);
+        this.isIdbFetchLoading.set(false);
         this.totalPages.set(data.pages);
       }),
       map((data) => {

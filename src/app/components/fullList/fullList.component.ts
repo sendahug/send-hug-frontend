@@ -72,8 +72,6 @@ export class FullList {
     "appButton nextButton": true,
     disabled: this.totalPages() <= this.currentPage(),
   }));
-  // loader sub-component variables
-  waitFor = "";
 
   // CTOR
   constructor(
@@ -99,7 +97,6 @@ export class FullList {
       this.currentPage.set(requestedPage);
     }
 
-    this.waitFor = `${this.type.toLowerCase()} posts`;
     this.fetchPosts();
   }
 

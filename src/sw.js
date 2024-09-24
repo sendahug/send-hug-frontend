@@ -12,7 +12,6 @@ self.addEventListener("install", function (event) {
         const toCache = [
           "/assets/polyfills.js",
           "/assets/index.js",
-          "/assets/headerMessage.component.js",
           "/assets/fullList.component.js",
           "/assets/sitePolicies.component.js",
           "/assets/supportPage.component.js",

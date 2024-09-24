@@ -51,8 +51,6 @@ export class SearchResults {
   searchQuery: string | null;
   page = 1;
   showMenuNum: string | null = null;
-  //loader component variable
-  waitFor = "search";
 
   // CTOR
   constructor(

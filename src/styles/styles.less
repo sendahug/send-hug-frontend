@@ -329,22 +329,35 @@ body {
 }
 
 /* =================== Loader Component Styling =================== */
+/* Via https://www.w3schools.com/howto/howto_css_loader.asp */
 /* Loader text */
-#loading #loadingMessage {
+app-loader:not(.header) #loading #loadingMessage {
   .fontSize(18);
   color: var(--headlineColour);
 }
 
-/* Loader spinner */
-#loading .spinner {
-  &:extend(.spinnerSample);
-  height: 100px;
-  width: 100px;
-  transform-origin: center center;
-  position: relative;
-  margin: 20%;
-  border-width: 6px;
-  border-top-width: 6px;
+/*  Header Message div */
+app-loader.header #loading {
+  &:extend(.headerAlerts);
+  height: 20px;
+  max-height: 20px;
+  padding: 10px;
+}
+
+/*  Header Message message */
+app-loader.header #loadingMessage {
+  .fontSize(13);
+  color: var(--headlineColour);
+  margin: 0;
+  padding: 0;
+  /* Responsive styling for screens above 390px width */
+  @media screen and (min-width: 390px) {
+    .fontSize(14);
+  }
+  /* Responsive styling for screens above 500px width */
+  @media screen and (min-width: 500px) {
+    .fontSize(16);
+  }
 }
 
 /* =================== Search Results Component Styling =================== */

@@ -45,7 +45,6 @@ import { SWManager } from "@app/services/sWManager.service";
 import { ApiClientService } from "@app/services/apiClient.service";
 import { Loader } from "@app/components/loader/loader.component";
 import { UserIcon } from "@app/components/userIcon/userIcon.component";
-import { HeaderMessage } from "@app/components/headerMessage/headerMessage.component";
 import { ItemDeleteForm } from "@app/components/itemDeleteForm/itemDeleteForm.component";
 
 interface MessagesResponse {
@@ -67,7 +66,7 @@ interface ThreadResponse {
   templateUrl: "./messages.component.html",
   styleUrl: "./messages.component.less",
   standalone: true,
-  imports: [CommonModule, RouterLink, Loader, UserIcon, HeaderMessage, ItemDeleteForm],
+  imports: [CommonModule, RouterLink, Loader, UserIcon, ItemDeleteForm],
 })
 export class AppMessaging {
   messType: MessageType = "inbox";
@@ -108,6 +107,10 @@ export class AppMessaging {
   }));
   // loader sub-component variable
   waitFor = `${this.messType} messages`;
+  loadingMessage = computed(() =>
+    this.messType == "threads" ? "Fetching threads..." : "Fetching messages...",
+  );
+  loaderClass = computed(() => (!this.isIdbFetchLoading() && this.isLoading() ? "header" : ""));
   // edit popup sub-component variables
   deleteMode: boolean;
   toDelete: string | undefined;

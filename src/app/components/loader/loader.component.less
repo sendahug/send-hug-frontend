@@ -1,6 +1,25 @@
 /* Via https://www.w3schools.com/howto/howto_css_loader.asp */
-/* Loader */
-#loading {
+
+/* Common */
+.spinner {
+  border-radius: 50%;
+  animation: spin 2s linear infinite;
+  border: 3px solid #f3f3f3; /* Light grey */
+  border-top: 3px solid #e01f6f; /* Pink-ish */
+}
+
+/*  Header Message spinner rotate animation */
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Regular Loader view */
+:host:not(.header) #loading {
   position: relative;
   display: flex;
   flex-direction: column;
@@ -9,4 +28,37 @@
   height: 80%;
   width: 80%;
   margin: 10%;
+}
+
+:host:not(.header) .spinner {
+  height: 100px;
+  width: 100px;
+  transform-origin: center center;
+  position: relative;
+  margin: 20%;
+  border-width: 6px;
+  border-top-width: 6px;
+}
+
+/*  Header Message view */
+:host.header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 90%;
+  margin: 0 5%;
+  text-align: center;
+  z-index: 20;
+  height: 20px;
+}
+
+:host.header .spinner {
+  width: 15px;
+  height: 15px;
+  margin: 0 10px;
+  /* Responsive styling for screens above 500px width */
+  @media screen and (min-width: 500px) {
+    margin: 0 20px;
+  }
 }

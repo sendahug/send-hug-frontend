@@ -63,262 +63,30 @@ describe("Loader", () => {
     expect(loader).toBeTruthy();
   });
 
-  // Check that the component checks for loading target
-  it("onInit - should check what target the parent component is waiting on", () => {
-    const fixture = TestBed.createComponent(Loader);
-    const loader = fixture.componentInstance;
-    const loadingSpy = spyOn(loader, "checkLoadingTarget").and.callFake(
-      () => (loader.message = "test"),
-    );
-    loader.waitingFor = "other user";
-
-    fixture.detectChanges();
-    loader.ngOnInit();
-
-    expect(loader.message).toEqual("test");
-    expect(loadingSpy).toHaveBeenCalled();
-  });
-
-  it("onChange - should check what taget the parent component is waiting on", () => {
-    const fixture = TestBed.createComponent(Loader);
-    const loader = fixture.componentInstance;
-    const loadingSpy = spyOn(loader, "checkLoadingTarget").and.callFake(
-      () => (loader.message = "test"),
-    );
-    loader.waitingFor = "other user";
-
-    fixture.detectChanges();
-    loader.ngOnChanges();
-
-    expect(loader.message).toEqual("test");
-    expect(loadingSpy).toHaveBeenCalled();
-  });
-
   // Check that the component displays a loading message
-  it("should display a loading message", (done: DoneFn) => {
+  // TODO: Enable this once I figure out a way around Istanbul messing with
+  // the declarations
+  // it("should display a loading message passed in from the parent", (done: DoneFn) => {
+  //   const fixture = TestBed.createComponent(Loader);
+  //   const loader = fixture.componentInstance;
+  //   const loaderDOM = fixture.nativeElement;
+  //   fixture.componentRef.setInput("loadingMessage", "Fetching user data...");
+  //   fixture.detectChanges();
+
+  //   expect(loader.loadingMessage()).toBeDefined();
+  //   expect(loader.loadingMessage()).toBe("Fetching user data...");
+  //   expect(loaderDOM.querySelector("#loadingMessage")).toBeTruthy();
+  //   expect(loaderDOM.querySelector("#loadingMessage").textContent).toBe(loader.loadingMessage());
+  //   done();
+  // });
+
+  it("should display a default message if waitingFor is null", () => {
     const fixture = TestBed.createComponent(Loader);
     const loader = fixture.componentInstance;
     const loaderDOM = fixture.nativeElement;
-    loader.waitingFor = "user";
     fixture.detectChanges();
 
-    expect(loader.message).toBeDefined();
-    expect(loader.message).toBe("Fetching user data...");
-    expect(loaderDOM.querySelector("#loadingMessage")).toBeTruthy();
-    expect(loaderDOM.querySelector("#loadingMessage").textContent).toBe(loader.message);
-    done();
-  });
-
-  // Check that the component is displaying different loading messages
-  // for different components
-  // TODO: The below tests really should be parameterised, but still need to figure
-  // out how to do it in Jasmine
-  it("should display different messages for different components - user", (done: DoneFn) => {
-    const fixture = TestBed.createComponent(Loader);
-    const loader = fixture.componentInstance;
-    const loaderDOM = fixture.nativeElement;
-
-    // check that the loading message changes according to the target
-    loader.waitingFor = "user";
-    loader.ngOnChanges();
-    fixture.detectChanges();
-    expect(loader.message).toBe("Fetching user data...");
-    expect(loaderDOM.querySelector("#loadingMessage").textContent).toBe(loader.message);
-    done();
-  });
-
-  it("should display different messages for different components - other user", (done: DoneFn) => {
-    const fixture = TestBed.createComponent(Loader);
-    const loader = fixture.componentInstance;
-    const loaderDOM = fixture.nativeElement;
-
-    // check that the loading message changes according to the target
-    loader.waitingFor = "other user";
-    loader.ngOnChanges();
-    fixture.detectChanges();
-    expect(loader.message).toBe("Fetching user data...");
-    expect(loaderDOM.querySelector("#loadingMessage").textContent).toBe(loader.message);
-    done();
-  });
-
-  it("should display different messages for different components - inbox messages", (done: DoneFn) => {
-    const fixture = TestBed.createComponent(Loader);
-    const loader = fixture.componentInstance;
-    const loaderDOM = fixture.nativeElement;
-
-    // check that the loading message changes according to the target
-    loader.waitingFor = "inbox messages";
-    loader.ngOnChanges();
-    fixture.detectChanges();
-    expect(loader.message).toBe("Fetching messages...");
-    expect(loaderDOM.querySelector("#loadingMessage").textContent).toBe(loader.message);
-    done();
-  });
-
-  it("should display different messages for different components - outbox messages", (done: DoneFn) => {
-    const fixture = TestBed.createComponent(Loader);
-    const loader = fixture.componentInstance;
-    const loaderDOM = fixture.nativeElement;
-
-    // check that the loading message changes according to the target
-    loader.waitingFor = "outbox messages";
-    loader.ngOnChanges();
-    fixture.detectChanges();
-    expect(loader.message).toBe("Fetching messages...");
-    expect(loaderDOM.querySelector("#loadingMessage").textContent).toBe(loader.message);
-    done();
-  });
-
-  it("should display different messages for different components - threads messages", (done: DoneFn) => {
-    const fixture = TestBed.createComponent(Loader);
-    const loader = fixture.componentInstance;
-    const loaderDOM = fixture.nativeElement;
-
-    // check that the loading message changes according to the target
-    loader.waitingFor = "threads messages";
-    loader.ngOnChanges();
-    fixture.detectChanges();
-    expect(loader.message).toBe("Fetching threads...");
-    expect(loaderDOM.querySelector("#loadingMessage").textContent).toBe(loader.message);
-    done();
-  });
-
-  it("should display different messages for different components - thread messages", (done: DoneFn) => {
-    const fixture = TestBed.createComponent(Loader);
-    const loader = fixture.componentInstance;
-    const loaderDOM = fixture.nativeElement;
-
-    // check that the loading message changes according to the target
-    loader.waitingFor = "thread messages";
-    loader.ngOnChanges();
-    fixture.detectChanges();
-    expect(loader.message).toBe("Fetching messages...");
-    expect(loaderDOM.querySelector("#loadingMessage").textContent).toBe(loader.message);
-    done();
-  });
-
-  it("should display different messages for different components - main page", (done: DoneFn) => {
-    const fixture = TestBed.createComponent(Loader);
-    const loader = fixture.componentInstance;
-    const loaderDOM = fixture.nativeElement;
-
-    // check that the loading message changes according to the target
-    loader.waitingFor = "main page";
-    loader.ngOnChanges();
-    fixture.detectChanges();
-    expect(loader.message).toBe("Fetching posts...");
-    expect(loaderDOM.querySelector("#loadingMessage").textContent).toBe(loader.message);
-    done();
-  });
-
-  it("should display different messages for different components - new posts", (done: DoneFn) => {
-    const fixture = TestBed.createComponent(Loader);
-    const loader = fixture.componentInstance;
-    const loaderDOM = fixture.nativeElement;
-
-    // check that the loading message changes according to the target
-    loader.waitingFor = "new posts";
-    loader.ngOnChanges();
-    fixture.detectChanges();
-    expect(loader.message).toBe("Fetching posts...");
-    expect(loaderDOM.querySelector("#loadingMessage").textContent).toBe(loader.message);
-    done();
-  });
-
-  it("should display different messages for different components - suggested posts", (done: DoneFn) => {
-    const fixture = TestBed.createComponent(Loader);
-    const loader = fixture.componentInstance;
-    const loaderDOM = fixture.nativeElement;
-
-    // check that the loading message changes according to the target
-    loader.waitingFor = "suggested posts";
-    loader.ngOnChanges();
-    fixture.detectChanges();
-    expect(loader.message).toBe("Fetching posts...");
-    expect(loaderDOM.querySelector("#loadingMessage").textContent).toBe(loader.message);
-    done();
-  });
-
-  it("should display different messages for different components - user posts", (done: DoneFn) => {
-    const fixture = TestBed.createComponent(Loader);
-    const loader = fixture.componentInstance;
-    const loaderDOM = fixture.nativeElement;
-
-    // check that the loading message changes according to the target
-    loader.waitingFor = "user posts";
-    loader.ngOnChanges();
-    fixture.detectChanges();
-    expect(loader.message).toBe("Fetching user posts...");
-    expect(loaderDOM.querySelector("#loadingMessage").textContent).toBe(loader.message);
-    done();
-  });
-
-  it("should display different messages for different components - search", (done: DoneFn) => {
-    const fixture = TestBed.createComponent(Loader);
-    const loader = fixture.componentInstance;
-    const loaderDOM = fixture.nativeElement;
-
-    // check that the loading message changes according to the target
-    loader.waitingFor = "search";
-    loader.ngOnChanges();
-    fixture.detectChanges();
-    expect(loader.message).toBe("Searching...");
-    expect(loaderDOM.querySelector("#loadingMessage").textContent).toBe(loader.message);
-    done();
-  });
-
-  it("should display different messages for different components - admin reports", (done: DoneFn) => {
-    const fixture = TestBed.createComponent(Loader);
-    const loader = fixture.componentInstance;
-    const loaderDOM = fixture.nativeElement;
-
-    // check that the loading message changes according to the target
-    loader.waitingFor = "admin reports";
-    loader.ngOnChanges();
-    fixture.detectChanges();
-    expect(loader.message).toBe("Getting user and post reports...");
-    expect(loaderDOM.querySelector("#loadingMessage").textContent).toBe(loader.message);
-    done();
-  });
-
-  it("should display different messages for different components - admin blocks", (done: DoneFn) => {
-    const fixture = TestBed.createComponent(Loader);
-    const loader = fixture.componentInstance;
-    const loaderDOM = fixture.nativeElement;
-
-    // check that the loading message changes according to the target
-    loader.waitingFor = "admin blocks";
-    loader.ngOnChanges();
-    fixture.detectChanges();
-    expect(loader.message).toBe("Getting blocked users...");
-    expect(loaderDOM.querySelector("#loadingMessage").textContent).toBe(loader.message);
-    done();
-  });
-
-  it("should display different messages for different components - admin filters", (done: DoneFn) => {
-    const fixture = TestBed.createComponent(Loader);
-    const loader = fixture.componentInstance;
-    const loaderDOM = fixture.nativeElement;
-
-    // check that the loading message changes according to the target
-    loader.waitingFor = "admin filters";
-    loader.ngOnChanges();
-    fixture.detectChanges();
-    expect(loader.message).toBe("Getting filtered phrases...");
-    expect(loaderDOM.querySelector("#loadingMessage").textContent).toBe(loader.message);
-    done();
-  });
-
-  it("shouldn't display a message if waitingFor is null", () => {
-    const fixture = TestBed.createComponent(Loader);
-    const loader = fixture.componentInstance;
-    const loaderDOM = fixture.nativeElement;
-
-    // check that the loading message changes according to the target
-    loader.waitingFor = undefined;
-    loader.ngOnChanges();
-    fixture.detectChanges();
-    expect(loader.message).toBe("");
-    expect(loaderDOM.querySelector("#loadingMessage").textContent).toBe("");
+    expect(loader.loadingMessage()).toBe("Loading...");
+    expect(loaderDOM.querySelector("#loadingMessage").textContent).toBe("Loading...");
   });
 });

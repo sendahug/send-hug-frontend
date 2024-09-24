@@ -15,12 +15,9 @@
 <!-- If the user is logged in, displays the user's inbox. -->
 <div id="userInbox" *ngIf="authService.authenticated()">
 	<app-loader
-		*ngIf="isIdbFetchLoading()"
-		[waitingFor]="waitFor"></app-loader>
-	
-	<app-header-message
 		*ngIf="isLoading()"
-		[waitingFor]="waitFor"></app-header-message>
+		[ngClass]="loaderClass()"
+		[loadingMessage]="loadingMessage()"></app-loader>
 	
 	<!-- If there are messages in the user's inbox -->
 	<ul *ngIf="(messType == 'inbox' || messType == 'outbox') && messages().length" class="mailboxMessages" aria-describedby="messType">

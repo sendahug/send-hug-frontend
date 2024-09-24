@@ -54,7 +54,6 @@ import { ReportForm } from "@app/components/reportForm/reportForm.component";
 import { ApiClientService } from "@app/services/apiClient.service";
 import { Loader } from "@app/components/loader/loader.component";
 import { UserIcon } from "@app/components/userIcon/userIcon.component";
-import { HeaderMessage } from "@app/components/headerMessage/headerMessage.component";
 
 describe("UserPage", () => {
   // Before each test, configure testing environment
@@ -67,7 +66,6 @@ describe("UserPage", () => {
     const MockAPIClient = MockProvider(ApiClientService);
     const MockDisplayNameEditForm = MockComponent(DisplayNameEditForm);
     const MockReportForm = MockComponent(ReportForm);
-    const MockHeaderMessage = MockComponent(HeaderMessage);
     const MockLoader = MockComponent(Loader);
     const MockUserIcon = MockComponent(UserIcon);
 
@@ -81,7 +79,6 @@ describe("UserPage", () => {
         MockDisplayNameEditForm,
         MockReportForm,
         CommonModule,
-        MockHeaderMessage,
         MockLoader,
         RouterLink,
         MockUserIcon,
@@ -226,8 +223,8 @@ describe("UserPage", () => {
         item: "#f4b56a",
       },
     });
-    userPage.isIdbFetchResolved.set(true);
-    userPage.isServerFetchResolved.set(true);
+    userPage.isIdbFetchLoading.set(false);
+    userPage.isLoading.set(false);
 
     fixture.detectChanges();
 
@@ -363,7 +360,7 @@ describe("UserPage", () => {
     expect(apiClientSpy).toHaveBeenCalledWith("users/all/1");
     expect(addItemSpy).toHaveBeenCalledWith("users", mockUser);
     expect(userPage.otherUser() as OtherUser).toEqual(mockUser);
-    expect(userPage.isServerFetchResolved()).toBeTrue();
+    expect(userPage.isLoading()).toBeFalse();
   });
 
   it("should fetch user data from Idb", (done: DoneFn) => {
@@ -400,7 +397,7 @@ describe("UserPage", () => {
 
     userPage.fetchOtherUserFromIdb().subscribe((userData) => {
       expect(swSpy).toHaveBeenCalledWith(1);
-      expect(userPage.isIdbFetchResolved()).toBeTrue();
+      expect(userPage.isIdbFetchLoading()).toBeFalse();
       expect(userPage.otherUser()).toEqual(mockUser);
       expect(userData).toEqual(mockUser);
       done();
@@ -466,8 +463,8 @@ describe("UserPage", () => {
         item: "#f4b56a",
       },
     });
-    userPage.isIdbFetchResolved.set(true);
-    userPage.isServerFetchResolved.set(true);
+    userPage.isLoading.set(false);
+    userPage.isIdbFetchLoading.set(false);
 
     fixture.detectChanges();
 
@@ -519,8 +516,8 @@ describe("UserPage", () => {
         item: "#f4b56a",
       },
     });
-    userPage.isIdbFetchResolved.set(true);
-    userPage.isServerFetchResolved.set(true);
+    userPage.isLoading.set(false);
+    userPage.isIdbFetchLoading.set(false);
 
     fixture.detectChanges();
 
@@ -559,7 +556,7 @@ describe("UserPage", () => {
     authService.userData.set({ ...mockAuthedUser });
     const fixture = TestBed.createComponent(UserPage);
     const userPage = fixture.componentInstance;
-    userPage.isIdbFetchResolved.set(true);
+    userPage.isIdbFetchLoading.set(false);
     const changeSpy = spyOn(userPage, "changeMode").and.callThrough();
 
     fixture.detectChanges();
@@ -613,7 +610,7 @@ describe("UserPage", () => {
         item: "#f4b56a",
       },
     });
-    userPage.isIdbFetchResolved.set(true);
+    userPage.isIdbFetchLoading.set(false);
     const changeSpy = spyOn(userPage, "changeMode").and.callThrough();
 
     fixture.detectChanges();

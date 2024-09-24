@@ -7,6 +7,7 @@ jobs:
   format:
     docker:
       - image: cimg/node:lts
+    resource_class: medium
     steps:
       - checkout
       - restore_cache:
@@ -20,6 +21,7 @@ jobs:
   test:
     docker:
       - image: cimg/node:lts-browsers
+    resource_class: medium
     environment:
       CHROME_BIN: /usr/bin/google-chrome
     steps:
@@ -52,6 +54,7 @@ jobs:
           POSTGRES_USER: postgres
           POSTGRES_DB: sendahug
           POSTGRES_PASSWORD: password
+    resource_class: medium
     environment:
       CHROME_BIN: /usr/bin/google-chrome
     steps:
@@ -127,6 +130,7 @@ jobs:
           POSTGRES_USER: postgres
           POSTGRES_DB: sendahug
           POSTGRES_PASSWORD: password
+    resource_class: medium
     environment:
       CHROME_BIN: /usr/bin/google-chrome
     steps:

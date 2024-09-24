@@ -21,7 +21,7 @@ jobs:
   test:
     docker:
       - image: cimg/node:lts-browsers
-    resource_class: medium
+    resource_class: large
     environment:
       CHROME_BIN: /usr/bin/google-chrome
     steps:

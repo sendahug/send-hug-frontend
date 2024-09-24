@@ -2,15 +2,12 @@
 
 <app-loader
 	*ngIf="isLoading()"
+	[ngClass]="loaderClass()"
 	[loadingMessage]="'Fetching user posts...'"></app-loader>
-	
-<app-header-message
-	*ngIf="!isServerFetchResolved()"
-	[waitingFor]="waitFor"></app-header-message>
 
 <div id="myPosts">
 	<!-- If the user has posts, displays them -->
-	<div *ngIf="posts().length && !isLoading()" role="region">
+	<div *ngIf="posts().length && !isIdbFetchLoading()" role="region">
 		<ul class="itemList" aria-describedby="postsTitle">
 			<app-single-post  *ngFor="let post of posts()"
 				[post]="post"

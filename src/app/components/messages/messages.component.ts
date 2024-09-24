@@ -111,6 +111,7 @@ export class AppMessaging {
   loadingMessage = computed(() =>
     this.messType == "threads" ? "Fetching threads..." : "Fetching messages...",
   );
+  loaderClass = computed(() => (!this.isIdbFetchLoading() && this.isLoading() ? "header" : ""));
   // edit popup sub-component variables
   deleteMode: boolean;
   toDelete: string | undefined;

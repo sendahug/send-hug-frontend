@@ -1,14 +1,11 @@
 <!-- If the user is logged in, displays a user page. -->
 <div *ngIf="authService.authenticated()" id="profileContainer">
 	<app-loader
-		*ngIf="!isIdbFetchResolved()"
+		*ngIf="isLoading()"
+		[ngClass]="loaderClass()"
 		[loadingMessage]="'Fetching user data...'"></app-loader>
-	
-	<app-header-message
-		*ngIf="!isServerFetchResolved()"
-		[waitingFor]="waitFor"></app-header-message>
 
-	<div id="userPage" *ngIf="isIdbFetchResolved()" role="region">
+	<div id="userPage" *ngIf="!isIdbFetchLoading()" role="region">
 		<div id="profileData">
 			<div id="profilePic">
 				<app-user-icon

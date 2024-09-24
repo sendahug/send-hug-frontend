@@ -64,7 +64,7 @@ interface MyPostsResponse {
 })
 export class MyPosts implements OnInit {
   isLoading = signal(false);
-  isServerFetchResolved = signal(false);
+  isIdbFetchLoading = signal(false);
   posts = signal<PostGet[]>([]);
   currentPage = signal(1);
   totalPages = signal(1);
@@ -88,6 +88,7 @@ export class MyPosts implements OnInit {
   user = computed(() =>
     this.userID && this.userID != this.authService.userData()!.id! ? "other" : "self",
   );
+  loaderClass = computed(() => (!this.isIdbFetchLoading() && this.isLoading() ? "header" : ""));
   // icons
   faFlag = faFlag;
   faHandHoldingHeart = faHandHoldingHeart;
@@ -130,7 +131,7 @@ export class MyPosts implements OnInit {
   fetchPosts() {
     const fetchFromIdb$ = this.fetchPostsFromIdb();
     this.isLoading.set(true);
-    this.isServerFetchResolved.set(false);
+    this.isIdbFetchLoading.set(true);
 
     fetchFromIdb$
       .pipe(
@@ -144,7 +145,6 @@ export class MyPosts implements OnInit {
         this.totalPages.set(data.total_pages);
         this.posts.set(data.posts);
         this.isLoading.set(false);
-        this.isServerFetchResolved.set(true);
         this.swManager.addFetchedItems("posts", data.posts, "date");
       });
   }
@@ -158,7 +158,7 @@ export class MyPosts implements OnInit {
     return from(this.swManager.fetchPosts("user", 5, this.userID, this.currentPage(), false)).pipe(
       tap((data) => {
         this.posts.set(data.posts);
-        this.isLoading.set(false);
+        this.isIdbFetchLoading.set(false);
         this.totalPages.set(data.pages);
       }),
       map((data) => {

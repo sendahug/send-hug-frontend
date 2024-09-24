@@ -2,7 +2,7 @@
 <div *ngIf="authService.authenticated()" id="profileContainer">
 	<app-loader
 		*ngIf="!isIdbFetchResolved()"
-		[waitingFor]="waitFor"></app-loader>
+		[loadingMessage]="'Fetching user data...'"></app-loader>
 	
 	<app-header-message
 		*ngIf="!isServerFetchResolved()"

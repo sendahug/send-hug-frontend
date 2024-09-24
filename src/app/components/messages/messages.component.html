@@ -16,7 +16,7 @@
 <div id="userInbox" *ngIf="authService.authenticated()">
 	<app-loader
 		*ngIf="isIdbFetchLoading()"
-		[waitingFor]="waitFor"></app-loader>
+		[loadingMessage]="loadingMessage()"></app-loader>
 	
 	<app-header-message
 		*ngIf="isLoading()"

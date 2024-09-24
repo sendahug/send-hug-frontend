@@ -1,6 +1,5 @@
 <div *ngIf="isLoading" id="loaderDiv">
-  <app-loader
-  [waitingFor]="'admin blocks'"></app-loader>
+  <app-loader [loadingMessage]="'Getting blocked users...'"></app-loader>
 </div>
 
 <div class="adminScreen" id="adminBlocks" *ngIf="!isLoading" role="main">

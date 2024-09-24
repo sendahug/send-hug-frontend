@@ -108,6 +108,9 @@ export class AppMessaging {
   }));
   // loader sub-component variable
   waitFor = `${this.messType} messages`;
+  loadingMessage = computed(() =>
+    this.messType == "threads" ? "Fetching threads..." : "Fetching messages...",
+  );
   // edit popup sub-component variables
   deleteMode: boolean;
   toDelete: string | undefined;

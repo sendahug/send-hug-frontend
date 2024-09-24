@@ -1,8 +1,8 @@
 <h3 id="newTitle">My Posts</h3>
 
 <app-loader
-		*ngIf="isLoading()"
-		[waitingFor]="waitFor"></app-loader>
+	*ngIf="isLoading()"
+	[loadingMessage]="'Fetching user posts...'"></app-loader>
 	
 <app-header-message
 	*ngIf="!isServerFetchResolved()"

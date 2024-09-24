@@ -1,0 +1,9 @@
+{
+  "pr_number": 1823,
+  "changes": [
+    {
+      "change": "Chores",
+      "description": "Updated the setup in the test step in CI. This includes an added step for installing some dependencies and the removal of the browser-tools steps (which aren't necessary as we're using playwright to install browsers)."
+    }
+  ]
+}

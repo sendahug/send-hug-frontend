@@ -21,7 +21,6 @@ jobs:
   test:
     docker:
       - image: cimg/node:lts-browsers
-    # TODO: Figure out why this doesn't work well with medium
     resource_class: medium
     environment:
       CHROME_BIN: /usr/bin/google-chrome

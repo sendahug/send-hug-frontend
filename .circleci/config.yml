@@ -39,7 +39,6 @@ jobs:
               xvfb x11vnc x11-xkb-utils xfonts-100dpi xfonts-75dpi xfonts-scalable xfonts-cyrillic x11-apps
       - browser-tools/install-browser-tools
       - run: google-chrome --version
-      - run: npm install -g npm
       - restore_cache:
           key: send-hug-v1-
       - run: npm install

@@ -47,7 +47,6 @@ import { SWManager } from "@app/services/sWManager.service";
 import { ApiClientService } from "@app/services/apiClient.service";
 import { AlertsService } from "@app/services/alerts.service";
 import { Loader } from "@app/components/loader/loader.component";
-import { HeaderMessage } from "@app/components/headerMessage/headerMessage.component";
 import { UserIcon } from "@app/components/userIcon/userIcon.component";
 import { ReportForm } from "@app/components/reportForm/reportForm.component";
 import { DisplayNameEditForm } from "@app/components/displayNameEditForm/displayNameEditForm.component";
@@ -65,7 +64,6 @@ interface OtherUserResponse {
   standalone: true,
   imports: [
     Loader,
-    HeaderMessage,
     UserIcon,
     RouterLink,
     FontAwesomeModule,

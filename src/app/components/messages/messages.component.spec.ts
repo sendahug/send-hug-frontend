@@ -56,7 +56,6 @@ import { FullThread } from "@app/interfaces/thread.interface";
 import { type MessageGet } from "@app/interfaces/message.interface";
 import { ItemDeleteForm } from "@app/components/itemDeleteForm/itemDeleteForm.component";
 import { ApiClientService } from "@app/services/apiClient.service";
-import { HeaderMessage } from "@app/components/headerMessage/headerMessage.component";
 import { Loader } from "@app/components/loader/loader.component";
 import { UserIcon } from "@app/components/userIcon/userIcon.component";
 
@@ -73,7 +72,6 @@ describe("AppMessaging", () => {
     });
     const MockAPIClient = MockProvider(ApiClientService);
     const MockItemDeleteForm = MockComponent(ItemDeleteForm);
-    const MockHeaderMessage = MockComponent(HeaderMessage);
     const MockLoader = MockComponent(Loader);
     const MockUserIcon = MockComponent(UserIcon);
 
@@ -84,7 +82,6 @@ describe("AppMessaging", () => {
       schemas: [NO_ERRORS_SCHEMA],
       imports: [
         MockItemDeleteForm,
-        MockHeaderMessage,
         MockLoader,
         MockUserIcon,
         RouterLink,

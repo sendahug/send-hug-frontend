@@ -44,7 +44,6 @@ import { AuthService } from "@app/services/auth.service";
 import { SWManager } from "@app/services/sWManager.service";
 import { ApiClientService } from "@app/services/apiClient.service";
 import { Loader } from "@app/components/loader/loader.component";
-import { HeaderMessage } from "@app/components/headerMessage/headerMessage.component";
 import { SinglePost } from "@app/components/post/post.component";
 import { ItemDeleteForm } from "@app/components/itemDeleteForm/itemDeleteForm.component";
 
@@ -60,7 +59,7 @@ interface MyPostsResponse {
   templateUrl: "./myPosts.component.html",
   styleUrl: "./myPosts.component.less",
   standalone: true,
-  imports: [Loader, HeaderMessage, SinglePost, ItemDeleteForm, CommonModule, FontAwesomeModule],
+  imports: [Loader, SinglePost, ItemDeleteForm, CommonModule, FontAwesomeModule],
 })
 export class MyPosts implements OnInit {
   isLoading = signal(false);

@@ -54,7 +54,6 @@ import { ReportForm } from "@app/components/reportForm/reportForm.component";
 import { ApiClientService } from "@app/services/apiClient.service";
 import { Loader } from "@app/components/loader/loader.component";
 import { UserIcon } from "@app/components/userIcon/userIcon.component";
-import { HeaderMessage } from "@app/components/headerMessage/headerMessage.component";
 
 describe("UserPage", () => {
   // Before each test, configure testing environment
@@ -67,7 +66,6 @@ describe("UserPage", () => {
     const MockAPIClient = MockProvider(ApiClientService);
     const MockDisplayNameEditForm = MockComponent(DisplayNameEditForm);
     const MockReportForm = MockComponent(ReportForm);
-    const MockHeaderMessage = MockComponent(HeaderMessage);
     const MockLoader = MockComponent(Loader);
     const MockUserIcon = MockComponent(UserIcon);
 
@@ -81,7 +79,6 @@ describe("UserPage", () => {
         MockDisplayNameEditForm,
         MockReportForm,
         CommonModule,
-        MockHeaderMessage,
         MockLoader,
         RouterLink,
         MockUserIcon,

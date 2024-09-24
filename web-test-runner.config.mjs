@@ -103,5 +103,5 @@ export default {
     }),
   ],
   // TODO: Figure out why this is required for Circle CI.
-  concurrency: 2,
+  concurrency: 1,
 };

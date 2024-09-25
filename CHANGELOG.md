@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+### 2024-09-25
+
+#### Fixes
+
+- Angular was incorrectly run in development mode when deployed to the staging environment. This happened due to a check against the `VITE_MODE` environment variable, which assumed only `production` is a deployment mode. The check now looks for anything that isn't `development` to account for a variety of deployment environments. ([#1824](https://github.com/sendahug/send-hug-frontend/pull/1824))
+
 ### 2024-09-24
 
 #### Chores

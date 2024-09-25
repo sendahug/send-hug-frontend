@@ -1,9 +1,0 @@
-{
-  "pr_number": 1824,
-  "changes": [
-    {
-      "change": "Fixes",
-      "description": "Angular was incorrectly run in development mode when deployed to the staging environment. This happened due to a check against the `VITE_MODE` environment variable, which assumed only `production` is a deployment mode. The check now looks for anything that isn't `development` to account for a variety of deployment environments."
-    }
-  ]
-}

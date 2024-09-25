@@ -24,6 +24,7 @@ jobs:
     resource_class: medium
     environment:
       CHROME_BIN: /usr/bin/google-chrome
+      CHROME_PATH: /usr/bin/google-chrome
     steps:
       - checkout
       - run:

@@ -46,28 +46,28 @@ export default {
   coverage: true,
   files: ["src/**/*.spec.ts", "!plugins/tests.ts"],
   browsers: [
-    // playwrightLauncher({
-    //   product: "chromium",
-    //   launchOptions: {
-    //     args: [
-    //       "--disable-gpu",
-    //       "--no-sandbox",
-    //       "--disable-setuid-sandbox",
-    //       "--disable-extensions",
-    //       "--disable-dev-shm-usage",
-    //     ],
-    //     chromiumSandbox: false,
-    //     headless: true,
-    //   },
-    // }),
-    // playwrightLauncher({ product: 'webkit' }),
-    // playwrightLauncher({ product: 'firefox' }),
-    chromeLauncher({
+    playwrightLauncher({
+      product: "chromium",
       launchOptions: {
+        args: [
+          "--disable-gpu",
+          "--no-sandbox",
+          "--disable-setuid-sandbox",
+          "--disable-extensions",
+          "--disable-dev-shm-usage",
+        ],
+        chromiumSandbox: false,
         headless: true,
-        devtools: false,
       },
     }),
+    // playwrightLauncher({ product: 'webkit' }),
+    // playwrightLauncher({ product: 'firefox' }),
+    // chromeLauncher({
+    //   launchOptions: {
+    //     headless: true,
+    //     devtools: false,
+    //   },
+    // }),
   ],
   nodeResolve: true,
   coverageConfig: {

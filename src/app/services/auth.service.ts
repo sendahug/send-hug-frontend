@@ -103,7 +103,7 @@ export class AuthService {
   // firebase stuff
   actionCodeSettings = signal<ActionCodeSettings>({
     // TODO: Hardcode the base URL once we deploy to live
-    url: `${import.meta.env["BASE_URL"]}/verify`,
+    url: `${import.meta.env["VITE_BASE_URL"]}/verify`,
   });
 
   // CTOR

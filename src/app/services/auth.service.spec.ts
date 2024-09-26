@@ -200,6 +200,7 @@ describe("AuthService", () => {
           item: "#f4b56a",
         },
         firebaseId: "fb",
+        emailVerified: true,
       },
     };
     const getTokenSpy = spyOn(authService, "getUserToken").and.returnValue(
@@ -350,6 +351,7 @@ describe("AuthService", () => {
           item: "#f4b56a",
         },
         firebaseId: "fb",
+        emailVerified: true,
       },
     };
     const getTokenSpy = spyOn(authService, "getUserToken").and.returnValue(
@@ -418,6 +420,7 @@ describe("AuthService", () => {
           item: "#f4b56a",
         },
         firebaseId: "fb",
+        emailVerified: true,
       },
     };
     const getTokenSpy = spyOn(authService, "getUserToken").and.returnValue(
@@ -584,6 +587,7 @@ describe("AuthService", () => {
         item: "#f4b56a",
       },
       firebaseId: "",
+      emailVerified: true,
     });
     authService.authenticated.set(true);
     authService.tokenExpired = false;
@@ -627,6 +631,7 @@ describe("AuthService", () => {
         item: "#f4b56a",
       },
       firebaseId: "",
+      emailVerified: true,
     });
     authService.authenticated.set(true);
     authService.tokenExpired = true;
@@ -702,6 +707,7 @@ describe("AuthService", () => {
         item: "#f4b56a",
       },
       firebaseId: "fb",
+      emailVerified: true,
     });
     const getTokenSpy = spyOn(authService, "getUserToken").and.returnValue(
       of({
@@ -757,6 +763,7 @@ describe("AuthService", () => {
         item: "#f4b56a",
       },
       firebaseId: "fb",
+      emailVerified: true,
     });
     const getTokenSpy = spyOn(authService, "getUserToken").and.returnValue(
       of({
@@ -820,6 +827,7 @@ describe("AuthService", () => {
         item: "#f4b56a",
       },
       firebaseId: "",
+      emailVerified: true,
     });
 
     const res = authService.canUser("block:user");
@@ -855,6 +863,7 @@ describe("AuthService", () => {
         item: "#f4b56a",
       },
       firebaseId: "",
+      emailVerified: true,
     });
 
     const res = authService.canUser("block:user");

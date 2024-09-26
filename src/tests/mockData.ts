@@ -59,6 +59,7 @@ export const mockAuthedUser: User = {
     item: "#f4b56a",
   },
   firebaseId: "fb",
+  emailVerified: true,
 };
 
 export function getMockFirebaseUser(): FirebaseUser {

@@ -102,6 +102,7 @@ export class AuthService {
   isUserDataResolved = new BehaviorSubject(false);
   // firebase stuff
   actionCodeSettings = signal<ActionCodeSettings>({
+    // TODO: Hardcode the base URL once we deploy to live
     url: `${import.meta.env["BASE_URL"]}/verify`,
   });
 

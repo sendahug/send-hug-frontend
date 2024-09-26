@@ -666,4 +666,21 @@ describe("AppComponent", () => {
     expect(shareSpy).toHaveBeenCalled();
     done();
   });
+
+  it("should send an email verification request", () => {
+    const MockAuthService = TestBed.inject(AuthService);
+    MockAuthService.userData.set({ ...mockAuthedUser, emailVerified: false });
+    const verifySpy = spyOn(MockAuthService, "sendVerificationEmail");
+
+    const fixture = TestBed.createComponent(AppComponent);
+    const componentHtml = fixture.debugElement.nativeElement;
+    fixture.detectChanges();
+
+    expect(componentHtml.querySelector("#notVerified")).toBeDefined();
+
+    componentHtml.querySelector("#notVerified").querySelector(".link").click();
+    fixture.detectChanges();
+
+    expect(verifySpy).toHaveBeenCalled();
+  });
 });

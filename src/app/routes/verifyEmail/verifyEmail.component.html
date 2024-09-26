@@ -1,0 +1,7 @@
+<app-loader *ngIf="loadingAuth()" [loadingMessage]="'Fetching user data...'"></app-loader>
+
+<div id="logoutBox" *ngIf="!loadingAuth()">
+  <div *ngIf="authService.userData()?.emailVerified" class="errorMessage">Your email is already verified. You will now be redirected to the home screen.</div>
+
+  <div *ngIf="!authService.userData()?.emailVerified" class="errorMessage">Your email is now verified. You will now be redirected to the home screen.</div>
+</div>

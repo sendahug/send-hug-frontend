@@ -49,7 +49,7 @@ import { MockComponent, MockProvider } from "ng-mocks";
 import { setViewport } from "@web/test-runner-commands";
 
 import { AppNavMenu } from "./navigationMenu.component";
-import { NotificationsTab } from "@app/components/notifications/notifications.component";
+import { NotificationsTab } from "@app/components/layout/notifications/notifications.component";
 import { AuthService } from "@app/services/auth.service";
 import { SWManager } from "@app/services/sWManager.service";
 import { mockAuthedUser } from "@tests/mockData";

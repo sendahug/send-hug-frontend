@@ -45,7 +45,7 @@ import { ItemsService } from "@app/services/items.service";
 import { AlertsService } from "@app/services/alerts.service";
 import { SWManager } from "@app/services/sWManager.service";
 import { NotificationService } from "@app/services/notifications.service";
-import { NotificationsTab } from "@app/components/notifications/notifications.component";
+import { NotificationsTab } from "@app/components/layout/notifications/notifications.component";
 import { SearchForm } from "@app/components/layout/searchForm/searchForm.component";
 import SiteLogoSrc from "@/assets/img/Logo.svg";
 

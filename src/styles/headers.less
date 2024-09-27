@@ -75,9 +75,13 @@
   color: var(--headlineColour);
   min-height: 25px;
   align-items: center;
+  @media screen and (max-width: 600px) {
+    flex-direction: column;
+  }
   /* Responsive styling for screens above 900px width */
   @media screen and (min-width: 900px) {
     min-height: 30px;
+    flex-direction: row;
   }
 }
 

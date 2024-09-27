@@ -55,7 +55,6 @@ import { NotificationService } from "./services/notifications.service";
 import { mockAuthedUser } from "@tests/mockData";
 import { AppAlert } from "./components/appAlert/appAlert.component";
 import { AlertsService } from "@app/services/alerts.service";
-import { ItemsService } from "./services/items.service";
 import { AppNavMenu } from "./components/layout/navigationMenu/navigationMenu.component";
 
 describe("AppComponent", () => {
@@ -68,9 +67,6 @@ describe("AppComponent", () => {
       isUserDataResolved: new BehaviorSubject(false),
       checkForLoggedInUser: () => of(),
       canUser: (_permission) => true,
-    });
-    const MockItemsService = MockProvider(ItemsService, {
-      sendSearch: (_search) => undefined,
     });
     const MockNotificationsService = MockProvider(NotificationService, {
       checkInitialPermissionState: (_enabled) => new Promise(() => true),
@@ -93,7 +89,6 @@ describe("AppComponent", () => {
         provideZoneChangeDetection({ eventCoalescing: true }),
         provideRouter([], withComponentInputBinding()),
         MockAuthService,
-        MockItemsService,
         MockNotificationsService,
         MockSWManager,
       ],
@@ -176,49 +171,51 @@ describe("AppComponent", () => {
     expect(getNotificationsSpy).toHaveBeenCalled();
   }));
 
-  // it("should check for a logged in user - don't enable push and auto-refresh", fakeAsync(() => {
-  //   const authService = TestBed.inject(AuthService);
-  //   const authSpy = spyOn(authService, "checkForLoggedInUser").and.returnValue(
-  //     of({ ...mockAuthedUser }),
-  //   );
+  it("should check for a logged in user - don't enable push and auto-refresh", fakeAsync(() => {
+    const authService = TestBed.inject(AuthService);
+    const authSpy = spyOn(authService, "checkForLoggedInUser").and.returnValue(
+      of({ ...mockAuthedUser, pushEnabled: false, autoRefresh: false }),
+    );
 
-  //   const notificationService = TestBed.inject(NotificationService);
-  //   const checkStateSpy = spyOn(notificationService, "checkInitialPermissionState").and.returnValue(
-  //     new Promise((resolve) => resolve("granted")),
-  //   );
-  //   const getSubscriptionSpy = spyOn(notificationService, "getCachedSubscription");
-  //   const startRefreshSpy = spyOn(notificationService, "startAutoRefresh");
+    const notificationService = TestBed.inject(NotificationService);
+    const checkStateSpy = spyOn(notificationService, "checkInitialPermissionState").and.returnValue(
+      new Promise((resolve) => resolve("granted")),
+    );
+    const getSubscriptionSpy = spyOn(notificationService, "getCachedSubscription");
+    const startRefreshSpy = spyOn(notificationService, "startAutoRefresh");
+    spyOn(notificationService, "getNotifications").and.returnValue(of());
 
-  //   TestBed.createComponent(AppComponent);
+    TestBed.createComponent(AppComponent);
 
-  //   tick();
+    tick();
 
-  //   expect(authSpy).toHaveBeenCalled();
-  //   expect(checkStateSpy).toHaveBeenCalled();
-  //   expect(getSubscriptionSpy).not.toHaveBeenCalled();
-  //   expect(startRefreshSpy).not.toHaveBeenCalled();
-  // }));
+    expect(authSpy).toHaveBeenCalled();
+    expect(checkStateSpy).toHaveBeenCalled();
+    expect(getSubscriptionSpy).not.toHaveBeenCalled();
+    expect(startRefreshSpy).not.toHaveBeenCalled();
+  }));
 
-  // it("should check for a logged in user - push permission not granted", fakeAsync(() => {
-  //   const authService = TestBed.inject(AuthService);
-  //   const authSpy = spyOn(authService, "checkForLoggedInUser").and.returnValue(
-  //     of({ ...mockAuthedUser, pushEnabled: true }),
-  //   );
+  it("should check for a logged in user - push permission not granted", fakeAsync(() => {
+    const authService = TestBed.inject(AuthService);
+    const authSpy = spyOn(authService, "checkForLoggedInUser").and.returnValue(
+      of({ ...mockAuthedUser, pushEnabled: true }),
+    );
 
-  //   const notificationService = TestBed.inject(NotificationService);
-  //   const checkStateSpy = spyOn(notificationService, "checkInitialPermissionState").and.returnValue(
-  //     new Promise((resolve) => resolve("denied")),
-  //   );
-  //   const getSubscriptionSpy = spyOn(notificationService, "getCachedSubscription");
+    const notificationService = TestBed.inject(NotificationService);
+    const checkStateSpy = spyOn(notificationService, "checkInitialPermissionState").and.returnValue(
+      new Promise((resolve) => resolve("denied")),
+    );
+    const getSubscriptionSpy = spyOn(notificationService, "getCachedSubscription");
+    spyOn(notificationService, "getNotifications").and.returnValue(of());
 
-  //   TestBed.createComponent(AppComponent);
+    TestBed.createComponent(AppComponent);
 
-  //   tick(100);
+    tick(100);
 
-  //   expect(authSpy).toHaveBeenCalled();
-  //   expect(checkStateSpy).toHaveBeenCalled();
-  //   expect(getSubscriptionSpy).not.toHaveBeenCalled();
-  // }));
+    expect(authSpy).toHaveBeenCalled();
+    expect(checkStateSpy).toHaveBeenCalled();
+    expect(getSubscriptionSpy).not.toHaveBeenCalled();
+  }));
 
   it("should navigate to another page if the user is logged in and there's a redirect", fakeAsync(() => {
     const authService = TestBed.inject(AuthService);

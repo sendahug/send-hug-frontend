@@ -42,7 +42,6 @@ import {
 } from "@angular/platform-browser-dynamic/testing";
 import {} from "jasmine";
 import { APP_BASE_HREF, CommonModule } from "@angular/common";
-import { ReactiveFormsModule } from "@angular/forms";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { BehaviorSubject, of } from "rxjs";
 import { provideZoneChangeDetection, signal } from "@angular/core";
@@ -56,10 +55,12 @@ import { SWManager } from "@app/services/sWManager.service";
 import { mockAuthedUser } from "@tests/mockData";
 import { ItemsService } from "@app/services/items.service";
 import { NotificationService } from "@app/services/notifications.service";
+import { SearchForm } from "@app/components/layout/searchForm/searchForm.component";
 
 describe("AppNavMenu", () => {
   beforeEach(() => {
     const MockNotificationsTab = MockComponent(NotificationsTab);
+    const MockSearchForm = MockComponent(SearchForm);
     const MockAuthService = MockProvider(AuthService, {
       authenticated: signal(true),
       userData: signal({ ...mockAuthedUser }),
@@ -89,10 +90,10 @@ describe("AppNavMenu", () => {
         CommonModule,
         RouterOutlet,
         RouterLink,
-        ReactiveFormsModule,
         FontAwesomeModule,
         MockNotificationsTab,
         AppNavMenu,
+        MockSearchForm,
       ],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
@@ -182,7 +183,7 @@ describe("AppNavMenu", () => {
 
     // Check the panel is initially hidden
     expect(navMenu.showSearch()).toBe(false);
-    expect(siteHeader.querySelector("#search")).toBeNull();
+    expect(siteHeader.querySelector("app-search-form")).toBeNull();
 
     // Simulate a click on the button
     navMenuHtml.querySelector("#searchBtn").click();
@@ -190,59 +191,7 @@ describe("AppNavMenu", () => {
 
     // Check the panel is now visible
     expect(navMenu.showSearch()).toBe(true);
-    expect(siteHeader.querySelector("#search")).toBeDefined();
-  });
-
-  // Check that clicking 'search' triggers the ItemsService
-  it("should pass search query to the ItemsService when clicking search", (done: DoneFn) => {
-    const fixture = TestBed.createComponent(AppNavMenu);
-    fixture.detectChanges();
-    const navMenu = fixture.componentInstance;
-    const navMenuHtml = fixture.nativeElement;
-    const searchSpy = spyOn(navMenu, "searchApp").and.callThrough();
-    const searchServiceSpy = spyOn(navMenu["itemsService"], "sendSearch");
-    spyOn(navMenu["router"], "navigate");
-
-    // open search panel and run search
-    navMenuHtml.querySelector("#searchBtn").click();
-    fixture.detectChanges();
-    // tick();
-    navMenuHtml.querySelector("#searchQuery").value = "search";
-    navMenuHtml.querySelector("#searchQuery").dispatchEvent(new Event("input"));
-    navMenuHtml.querySelectorAll(".sendData")[0].click();
-
-    // check the spies were triggered
-    expect(searchSpy).toHaveBeenCalled();
-    expect(searchServiceSpy).toHaveBeenCalled();
-    expect(searchServiceSpy).toHaveBeenCalledWith("search");
-    done();
-  });
-
-  // Check that an empty search query isn't allowed
-  it("should prevent empty searches", (done: DoneFn) => {
-    const fixture = TestBed.createComponent(AppNavMenu);
-    fixture.detectChanges();
-    const navMenu = fixture.componentInstance;
-    const navMenuHtml = fixture.nativeElement;
-    const searchSpy = spyOn(navMenu, "searchApp").and.callThrough();
-    const searchServiceSpy = spyOn(navMenu["itemsService"], "sendSearch");
-    const alertsSpy = spyOn(navMenu["alertsService"], "createAlert");
-
-    // open search panel and run search
-    navMenuHtml.querySelector("#searchBtn").click();
-    fixture.detectChanges();
-
-    navMenuHtml.querySelector("#searchQuery").value = "";
-    navMenuHtml.querySelectorAll(".sendData")[0].click();
-
-    // check one spy was triggered and one wasn't
-    expect(searchSpy).toHaveBeenCalled();
-    expect(searchServiceSpy).not.toHaveBeenCalled();
-    expect(alertsSpy).toHaveBeenCalledWith({
-      message: "Search query is empty! Please write a term to search for.",
-      type: "Error",
-    });
-    done();
+    expect(siteHeader.querySelector("app-search-form")).toBeDefined();
   });
 
   // Check that the font size panel is hidden

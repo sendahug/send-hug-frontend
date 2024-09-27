@@ -33,7 +33,6 @@
 // Angular imports
 import { Component, OnInit, HostListener, AfterViewInit, signal, computed } from "@angular/core";
 import { Router, RouterLink, NavigationEnd } from "@angular/router";
-import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { faComments, faUserCircle, faCompass, faBell } from "@fortawesome/free-regular-svg-icons";
 import { faBars, faSearch, faTimes, faTextHeight } from "@fortawesome/free-solid-svg-icons";
 import { CommonModule } from "@angular/common";
@@ -47,6 +46,7 @@ import { AlertsService } from "@app/services/alerts.service";
 import { SWManager } from "@app/services/sWManager.service";
 import { NotificationService } from "@app/services/notifications.service";
 import { NotificationsTab } from "@app/components/notifications/notifications.component";
+import { SearchForm } from "@app/components/layout/searchForm/searchForm.component";
 import SiteLogoSrc from "@/assets/img/Logo.svg";
 
 @Component({
@@ -54,7 +54,7 @@ import SiteLogoSrc from "@/assets/img/Logo.svg";
   templateUrl: "./navigationMenu.component.html",
   styleUrl: "./navigationMenu.component.less",
   standalone: true,
-  imports: [CommonModule, RouterLink, ReactiveFormsModule, FontAwesomeModule, NotificationsTab],
+  imports: [CommonModule, RouterLink, FontAwesomeModule, NotificationsTab, SearchForm],
 })
 export class AppNavMenu implements OnInit, AfterViewInit {
   showNotifications = signal(false);
@@ -71,9 +71,6 @@ export class AppNavMenu implements OnInit, AfterViewInit {
     hidden: !this.showMenuButton(),
   }));
   currentlyActiveRoute = signal("/");
-  searchForm = this.fb.group({
-    searchQuery: this.fb.control("", [Validators.required, Validators.minLength(1)]),
-  });
   SiteLogoSrc = SiteLogoSrc;
   currentTextSize = signal(1);
   menuSize = computed(() => {
@@ -117,7 +114,6 @@ export class AppNavMenu implements OnInit, AfterViewInit {
     private router: Router,
     private serviceWorkerM: SWManager,
     protected notificationService: NotificationService,
-    private fb: FormBuilder,
   ) {}
 
   /*
@@ -195,39 +191,6 @@ export class AppNavMenu implements OnInit, AfterViewInit {
       navLink: true,
       active: this.currentlyActiveRoute() == path,
     };
-  }
-
-  /*
-  Function Name: searchApp()
-  Function Description: Initiates a search for the given query.
-  Parameters: e (Event) - Click event (on the search button).
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  searchApp(e: Event) {
-    e.preventDefault();
-    const searchQuery = this.searchForm.controls.searchQuery.value;
-
-    // if there's something in the search query text field, search for it
-    if (searchQuery) {
-      this.showSearch.set(false);
-      this.itemsService.sendSearch(searchQuery);
-      // clears the search box
-      this.searchForm.reset();
-      //navigate to search results
-      this.router.navigate(["search"], {
-        queryParams: {
-          query: searchQuery,
-        },
-      });
-    }
-    // otherwise alert the user there are no empty searches
-    else {
-      this.alertsService.createAlert({
-        message: "Search query is empty! Please write a term to search for.",
-        type: "Error",
-      });
-    }
   }
 
   /*

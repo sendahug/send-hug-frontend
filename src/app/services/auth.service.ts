@@ -211,7 +211,20 @@ export class AuthService {
   sendVerificationEmail(): Promise<void> {
     if (!this.auth.currentUser) return new Promise((resolve) => resolve(undefined));
 
-    return sendEmailVerification(this.auth.currentUser, this.actionCodeSettings());
+    return sendEmailVerification(this.auth.currentUser, this.actionCodeSettings())
+      .then(() => {
+        this.alertsService.createAlert({
+          type: "Success",
+          message:
+            "Email sent successfully. Check your email and follow the instructions to verify your email.",
+        });
+      })
+      .catch((error) => {
+        this.alertsService.createAlert({
+          type: "Error",
+          message: `An error occurred. ${error}`,
+        });
+      });
   }
 
   /**

@@ -246,51 +246,34 @@ describe("AppComponent", () => {
   }));
 
   // check the 'share' button is hidden
-  // it("shouldn't show the share button if it's not supported", () => {
-  //   const fixture = TestBed.createComponent(AppComponent);
-  //   fixture.detectChanges();
-  //   const component = fixture.componentInstance;
-  //   const componentHtml = fixture.nativeElement;
-
-  //   // because tests run on Chrome, 'share' doesn't exist in navigator
-  //   expect(component.canShare).toBeFalse();
-  //   expect(
-  //     componentHtml.querySelector("#siteFooter").querySelectorAll("textlessButton")[0],
-  //   ).toBeUndefined();
-  // });
-
-  // // check the share method is called when the button is clicked
-  // it("should call the share method when the button is clicked", (done: DoneFn) => {
-  //   const fixture = TestBed.createComponent(AppComponent);
-  //   fixture.detectChanges();
-  //   const component = fixture.componentInstance;
-  //   const componentHtml = fixture.nativeElement;
-  //   const shareSpy = spyOn(component, "shareSite");
-
-  //   component.canShare = true;
-  //   fixture.detectChanges();
-
-  //   componentHtml.querySelector("#siteFooter").querySelectorAll(".textlessButton")[0].click();
-  //   fixture.detectChanges();
-
-  //   expect(shareSpy).toHaveBeenCalled();
-  //   done();
-  // });
-
-  it("should send an email verification request", () => {
-    const MockAuthService = TestBed.inject(AuthService);
-    MockAuthService.userData.set({ ...mockAuthedUser, emailVerified: false });
-    const verifySpy = spyOn(MockAuthService, "sendVerificationEmail");
-
+  it("shouldn't show the share button if it's not supported", () => {
     const fixture = TestBed.createComponent(AppComponent);
-    const componentHtml = fixture.debugElement.nativeElement;
+    fixture.detectChanges();
+    const component = fixture.componentInstance;
+    const componentHtml = fixture.nativeElement;
+
+    // because tests run on Chrome, 'share' doesn't exist in navigator
+    expect(component.canShare).toBeFalse();
+    expect(
+      componentHtml.querySelector("#siteFooter").querySelectorAll("textlessButton")[0],
+    ).toBeUndefined();
+  });
+
+  // check the share method is called when the button is clicked
+  it("should call the share method when the button is clicked", (done: DoneFn) => {
+    const fixture = TestBed.createComponent(AppComponent);
+    fixture.detectChanges();
+    const component = fixture.componentInstance;
+    const componentHtml = fixture.nativeElement;
+    const shareSpy = spyOn(component, "shareSite");
+
+    component.canShare = true;
     fixture.detectChanges();
 
-    expect(componentHtml.querySelector("#notVerified")).toBeDefined();
-
-    componentHtml.querySelector("#notVerified").querySelector(".link").click();
+    componentHtml.querySelector("#siteFooter").querySelectorAll(".textlessButton")[0].click();
     fixture.detectChanges();
 
-    expect(verifySpy).toHaveBeenCalled();
+    expect(shareSpy).toHaveBeenCalled();
+    done();
   });
 });

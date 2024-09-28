@@ -1,0 +1,9 @@
+{
+  "pr_number": 1832,
+  "changes": [
+    {
+      "change": "Chores",
+      "description": "Split the search form and the navigation menu to their own components to make it easier to maintain the navigation menu and the app component."
+    }
+  ]
+}

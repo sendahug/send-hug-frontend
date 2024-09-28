@@ -35,7 +35,7 @@ import { bootstrapApplication } from "@angular/platform-browser";
 import { AppComponent } from "./app/app.component";
 import { appConfig } from "./app/app.config";
 
-if (import.meta.env["VITE_MODE"] == "production") {
+if (import.meta.env["VITE_MODE"] != "development") {
   enableProdMode();
 }
 

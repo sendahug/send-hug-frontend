@@ -63,7 +63,6 @@ export class LoginPage {
   isLoading = signal(false);
   resetMode = false;
   lastFocusedElement: any;
-  waitFor = "user";
   faGoogle = faGoogle;
   faApple = faApple;
 

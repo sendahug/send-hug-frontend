@@ -2,6 +2,25 @@
 
 ## Unreleased
 
+### 2024-09-28
+
+#### Chores
+
+- Split the search form and the navigation menu to their own components to make it easier to maintain the navigation menu and the app component. ([#1832](https://github.com/sendahug/send-hug-frontend/pull/1832))
+
+### 2024-09-25
+
+#### Fixes
+
+- Angular was incorrectly run in development mode when deployed to the staging environment. This happened due to a check against the `VITE_MODE` environment variable, which assumed only `production` is a deployment mode. The check now looks for anything that isn't `development` to account for a variety of deployment environments. ([#1824](https://github.com/sendahug/send-hug-frontend/pull/1824))
+
+### 2024-09-24
+
+#### Chores
+
+- Merged the Loader and the HeaderMessage components. Both components had the exact same code but used different styling. Having both components was unnecessary. Instead, the Loader component is now displayed as either a loader or a header message (depending on the loader's class). ([#1822](https://github.com/sendahug/send-hug-frontend/pull/1822))
+- Deleted the logic for setting the loading message based on a target passed in by the parent component. This required maintaining the targets in parent components and in the loader to ensure all targets get a loading message. Instead, the message to display is now passed into the component using an input, and the target input was removed. ([#1822](https://github.com/sendahug/send-hug-frontend/pull/1822))
+
 ### 2024-09-23
 
 #### Features

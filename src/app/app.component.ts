@@ -31,102 +31,34 @@
 */
 
 // Angular imports
-import { Component, OnInit, HostListener, AfterViewInit, signal, computed } from "@angular/core";
-import { Router, NavigationStart, RouterOutlet, RouterLink, ActivatedRoute } from "@angular/router";
-import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
-import { faComments, faUserCircle, faCompass, faBell } from "@fortawesome/free-regular-svg-icons";
-import { faBars, faSearch, faTimes, faTextHeight } from "@fortawesome/free-solid-svg-icons";
+import { Component, OnInit } from "@angular/core";
+import { Router, RouterOutlet, RouterLink, ActivatedRoute } from "@angular/router";
 import { CommonModule } from "@angular/common";
-import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 
 // App-related imports
 import { AuthService } from "./services/auth.service";
-import { ItemsService } from "./services/items.service";
 import { AlertsService } from "./services/alerts.service";
 import { SWManager } from "./services/sWManager.service";
 import { NotificationService } from "./services/notifications.service";
-import { NotificationsTab } from "./components/notifications/notifications.component";
 import { AppAlert } from "./components/appAlert/appAlert.component";
-import SiteLogoSrc from "@/assets/img/Logo.svg";
+import { AppNavMenu } from "./components/layout/navigationMenu/navigationMenu.component";
 
 @Component({
   selector: "app-root",
   templateUrl: "./app.component.html",
   styleUrl: "./app.component.less",
   standalone: true,
-  imports: [
-    CommonModule,
-    RouterOutlet,
-    RouterLink,
-    ReactiveFormsModule,
-    FontAwesomeModule,
-    NotificationsTab,
-    AppAlert,
-  ],
+  imports: [CommonModule, RouterOutlet, RouterLink, AppAlert, AppNavMenu],
 })
-export class AppComponent implements OnInit, AfterViewInit {
-  showNotifications = signal(false);
-  showSearch = signal(false);
-  showTextPanel = signal(false);
-  showMenu = signal(false);
-  navMenuClass = computed(() => ({
-    navLinks: true,
-    hidden: !this.showMenu(),
-  }));
-  showMenuButton = signal(false);
-  menuButtonClass = computed(() => ({
-    navLink: true,
-    hidden: !this.showMenuButton(),
-  }));
+export class AppComponent implements OnInit {
   canShare = false;
-  currentlyActiveRoute = signal("/");
-  searchForm = this.fb.group({
-    searchQuery: this.fb.control("", [Validators.required, Validators.minLength(1)]),
-  });
-  SiteLogoSrc = SiteLogoSrc;
-  currentTextSize = signal(1);
-  menuSize = computed(() => {
-    // text, search and notifications, each is ~65px
-    const smallerButtons = 3 * 65;
-    // the logo is at most 100px
-    const logo = 100;
-
-    // unauthenticated users have 3 buttons
-    let navLinksCount = 3;
-    if (this.authService.authenticated()) navLinksCount += 2;
-    if (this.authService.canUser("read:admin-board")) navLinksCount += 1;
-
-    // nav icons are padded at most by 30px in regular text size,
-    // and 50px in large text size
-    const iconPadding = this.currentTextSize() > 1 ? 50 : 30;
-
-    // 50 - the general padding
-    return (
-      50 +
-      smallerButtons +
-      logo +
-      navLinksCount * 30 * this.currentTextSize() +
-      navLinksCount * iconPadding
-    );
-  });
-  // font awesome icons
-  faBars = faBars;
-  faComments = faComments;
-  faUserCircle = faUserCircle;
-  faCompass = faCompass;
-  faBell = faBell;
-  faSearch = faSearch;
-  faTimes = faTimes;
-  faTextHeight = faTextHeight;
 
   constructor(
     protected authService: AuthService,
-    protected itemsService: ItemsService,
     protected alertsService: AlertsService,
     private router: Router,
     private serviceWorkerM: SWManager,
     protected notificationService: NotificationService,
-    private fb: FormBuilder,
     private route: ActivatedRoute,
   ) {
     // Update the user state based on the logged in firebase user
@@ -195,286 +127,11 @@ export class AppComponent implements OnInit, AfterViewInit {
   ngOnInit() {
     this.serviceWorkerM.registerSW();
 
-    if (document.documentElement.clientWidth > 650) {
-      this.showMenu.set(true);
-      this.showMenuButton.set(false);
-    } else {
-      this.showMenu.set(false);
-      this.showMenuButton.set(true);
-    }
-
-    // when navigating to another page, check for updates to the ServiceWorker
-    this.router.events.subscribe((event) => {
-      if (event instanceof NavigationStart) {
-        this.serviceWorkerM.updateSW();
-
-        // if the menu was open and the user navigated to another page, close it
-        if (this.showMenu() && document.documentElement.clientWidth < 650) this.showMenu.set(false);
-      }
-    });
-
     if ("share" in navigator) {
       this.canShare = true;
     } else {
       this.canShare = false;
     }
-  }
-
-  /*
-  Function Name: ngAfterViewInit()
-  Function Description: This method is automatically triggered by Angular once the component's
-                        view is intialised. It checks for the currently active navigation menu link.
-  Parameters: None.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  ngAfterViewInit() {
-    this.router.events.subscribe((event) => {
-      if (event instanceof NavigationStart) {
-        // if the current URL is the main page
-        // or the about page
-        if (["/", "/about", "/login"].includes(event.url)) {
-          this.currentlyActiveRoute.set(event.url);
-          // if it's any of the messages/admin/new pages
-        } else if (
-          event.url.startsWith("/messages") ||
-          event.url.startsWith("/admin") ||
-          event.url.startsWith("/new")
-        ) {
-          this.currentlyActiveRoute.set(`/${event.url.split("/")[1]}`);
-        } else if (event.url.startsWith("/user")) {
-          // if the user is logged in and viewing their own page, or
-          // if they're viewing the /user page
-          if (
-            event.url == `/user` ||
-            (this.authService.authenticated() &&
-              event.url == `/user/${this.authService.userData()!.id}`)
-          ) {
-            this.currentlyActiveRoute.set("/user");
-          }
-        }
-      }
-    });
-  }
-
-  /**
-   * Gets the class for the given navigation item, with the
-   * 'active' class if the given path is currently active.
-   * @param path - The path to check for.
-   * @returns The class object.
-   */
-  getClassForNavItem(path: string) {
-    return {
-      navLink: true,
-      active: this.currentlyActiveRoute() == path,
-    };
-  }
-
-  /*
-  Function Name: searchApp()
-  Function Description: Initiates a search for the given query.
-  Parameters: e (Event) - Click event (on the search button).
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  searchApp(e: Event) {
-    e.preventDefault();
-    const searchQuery = this.searchForm.controls.searchQuery.value;
-
-    // if there's something in the search query text field, search for it
-    if (searchQuery) {
-      this.showSearch.set(false);
-      this.itemsService.sendSearch(searchQuery);
-      // clears the search box
-      this.searchForm.reset();
-      //navigate to search results
-      this.router.navigate(["search"], {
-        queryParams: {
-          query: searchQuery,
-        },
-      });
-    }
-    // otherwise alert the user there are no empty searches
-    else {
-      this.alertsService.createAlert({
-        message: "Search query is empty! Please write a term to search for.",
-        type: "Error",
-      });
-    }
-  }
-
-  /*
-  Function Name: toggleNotifications()
-  Function Description: Opens the notifications tab.
-  Parameters: None.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  toggleNotifications() {
-    let width = document.documentElement.clientWidth;
-    this.showNotifications.set(true);
-
-    // if the viewport is smaller than 650px, the user opened the panel through the
-    // menu, which needs to be closed
-    if (width < 650) {
-      this.showMenu.set(false);
-    }
-  }
-
-  /*
-  Function Name: toggleSearch()
-  Function Description: Toggles the search.
-  Parameters: None.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  toggleSearch() {
-    let width = document.documentElement.clientWidth;
-
-    // if the search is displayed, close it
-    if (this.showSearch()) {
-      this.showSearch.set(false);
-
-      // if the viewport is smaller than 650px, the user opened the panel through the
-      // menu, which needs to be closed
-      if (width < 650) {
-        this.showMenu.set(true);
-      }
-    }
-    // otherwise show it
-    else {
-      // if the viewport is smaller than 650px, the user opened the panel through the
-      // menu, which needs to be closed
-      if (width < 650) {
-        this.showMenu.set(false);
-      }
-
-      this.showSearch.set(true);
-    }
-  }
-
-  /*
-  Function Name: toggleMenu()
-  Function Description: Toggles the menu (for smaller screens, where the full menu
-                        isn't automatically displayed).
-  Parameters: None.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  toggleMenu() {
-    this.showMenu.set(!this.showMenu());
-  }
-
-  /*
-  Function Name: onResize()
-  Function Description: Checks the viewport size on resize. If it's higher than
-                      650px, displays the menu in desktop mode.
-  Parameters: None.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  @HostListener("window:resize", ["$event"])
-  onResize(_event: Event) {
-    let width = document.documentElement.clientWidth;
-    let navMenu = document.getElementById("navMenu") as HTMLDivElement;
-    let navLinks = document.getElementById("navLinks") as HTMLDivElement;
-
-    if (width > 650 && navLinks.scrollWidth < navMenu.offsetWidth) {
-      if (!this.showMenu()) {
-        this.showMenu.set(true);
-      }
-      this.showMenuButton.set(false);
-    } else {
-      if (this.showMenu()) {
-        this.showMenuButton.set(true);
-        this.showMenu.set(false);
-      }
-    }
-  }
-
-  /*
-  Function Name: toggleSizePanel()
-  Function Description: Toggles the panel through which users can resize all of the
-                        app's text.
-  Parameters: None.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  toggleSizePanel() {
-    this.showTextPanel.set(!this.showTextPanel());
-  }
-
-  /*
-  Function Name: changeTextSize()
-  Function Description: Changes the app's font size.
-  Parameters: size - a string to indicate the new size.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  changeTextSize(size: string) {
-    switch (size) {
-      case "smallest":
-        document.getElementsByTagName("html")[0]!.style.fontSize = "75%";
-        this.currentTextSize.set(0.75);
-        break;
-      case "smaller":
-        document.getElementsByTagName("html")[0]!.style.fontSize = "87.5%";
-        this.currentTextSize.set(0.875);
-        break;
-      case "regular":
-        document.getElementsByTagName("html")[0]!.style.fontSize = "100%";
-        this.currentTextSize.set(1);
-        break;
-      case "larger":
-        document.getElementsByTagName("html")[0]!.style.fontSize = "150%";
-        this.currentTextSize.set(1.5);
-        break;
-      case "largest":
-        document.getElementsByTagName("html")[0]!.style.fontSize = "200%";
-        this.currentTextSize.set(2);
-        break;
-    }
-
-    this.checkMenuSize();
-  }
-
-  /*
-  Function Name: checkMenuSize()
-  Function Description: Checks whether the menu is too wide for the screen. If it
-                        is, it's hidden; otherwise it remains.
-  Parameters: None.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  checkMenuSize() {
-    let navMenu = document.getElementById("navMenu") as HTMLDivElement;
-
-    // if the larger text makes the navigation menu too long, turn it back
-    // to the small-viewport menu
-    if (this.menuSize() >= navMenu.offsetWidth) {
-      this.showMenu.set(false);
-      this.showMenuButton.set(true);
-    } else {
-      this.showMenu.set(true);
-
-      if (document.documentElement.clientWidth > 650) {
-        this.showMenuButton.set(false);
-      }
-    }
-  }
-
-  /*
-  Function Name: changeMode()
-  Function Description: Remove the notifications panel.
-  Parameters: edit (boolean) - indicating whether the notifications panel should be active.
-                               When the user is done with the panel, the event emitter
-                               in the popup component sends 'false' to this function
-                               to remove the popup.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  changeMode(notificationsOn: any) {
-    this.showNotifications.set(notificationsOn as boolean);
   }
 
   /*

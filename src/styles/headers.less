@@ -2,19 +2,6 @@
 /* Responsive adjustments by Send a Hug team */
 @import "./variables.less";
 
-.headerAlerts {
-  left: 0;
-  right: 0;
-  box-shadow: 5px 5px 5px 0 rgba(46, 61, 73, 0.5);
-  border-radius: 5px;
-  text-align: center;
-  display: flex;
-  align-content: center;
-  justify-content: center;
-  background-color: #eaeaea;
-  margin: 0 5%;
-}
-
 .limitedSpaceNavLink() {
   flex-direction: column;
   height: 100%;
@@ -206,40 +193,63 @@
   }
 }
 
-/* =================== Header Message Component Styling =================== */
-/* Via https://www.w3schools.com/howto/howto_css_loader.asp */
-/*  Header Message div */
-app-header-message #headerMessage {
-  &:extend(.headerAlerts);
-  height: 20px;
-  max-height: 20px;
-  padding: 10px;
-}
-
-/*  Header Message message */
-#headerMessage #loadingMessage {
-  .fontSize(13);
-  color: var(--headlineColour);
-  margin: 0;
-  padding: 0;
-  /* Responsive styling for screens above 390px width */
-  @media screen and (min-width: 390px) {
-    .fontSize(14);
+/* Search form / font size adjustment */
+#search,
+#textPanel {
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  width: 100%;
+  max-width: 100%;
+  margin: 10px 0 5px;
+  left: 0;
+  right: 0;
+  border-radius: 5px;
+  box-shadow: 3px 3px 7px 0 rgba(46, 61, 73, 0.5);
+  position: relative;
+  /* Responsive design for screens above 400px width */
+  @media screen and (min-width: 400px) {
+    width: 90%;
+    max-width: 90%;
+    margin: 10px 5% 5px;
   }
-  /* Responsive styling for screens above 500px width */
-  @media screen and (min-width: 500px) {
-    .fontSize(16);
+  /* Responsive design for screens above 450px width */
+  @media screen and (min-width: 450px) {
+    justify-content: space-evenly;
+    padding: 0 20px;
+    width: calc(90% - 20px);
+    max-width: calc(90% - 20px);
+    margin: 10px calc(5% - 10px) 5px;
   }
-}
-
-/*  Header Message spinner */
-#headerMessage .spinner {
-  &:extend(.spinnerSample);
-  width: 15px;
-  height: 15px;
-  margin: 0 10px;
-  /* Responsive styling for screens above 500px width */
-  @media screen and (min-width: 500px) {
-    margin: 0 20px;
+  /* Responsive design for screens above 525px width */
+  @media screen and (min-width: 525px) {
+    width: calc(84% - 20px);
+    max-width: calc(84% - 20px);
+    margin: 10px calc(8% - 10px) 5px;
+  }
+  /* Responsive design for screens above 575px width */
+  @media screen and (min-width: 575px) {
+    width: calc(80% - 20px);
+    max-width: calc(80% - 20px);
+    margin: 10px calc(10% - 10px) 5px;
+  }
+  /* Responsive design for screens above 625px width */
+  @media screen and (min-width: 625px) {
+    width: calc(76% - 20px);
+    max-width: calc(76% - 20px);
+    margin: 10px calc(12% - 10px) 5px;
+  }
+  /* Responsive design for screens above 650px width */
+  @media screen and (min-width: 650px) {
+    justify-content: center;
+    width: calc(70% - 20px);
+    max-width: calc(70% - 20px);
+    margin: 10px calc(15% - 10px) 5px;
+  }
+  /* Responsive design for screens above 700px width */
+  @media screen and (min-width: 700px) {
+    width: calc(60% - 20px);
+    max-width: calc(60% - 20px);
+    margin: 10px calc(20% - 10px) 5px;
   }
 }

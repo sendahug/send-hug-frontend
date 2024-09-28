@@ -90,7 +90,7 @@ export default {
   // https://github.com/blueprintui/web-test-runner-jasmine/blob/main/src/index.ts
   testRunnerHtml: (_path, _config) => fs.readFileSync("./plugins/tests.html", { encoding: "utf8" }),
   testsStartTimeout: 5000,
-  testsFinishTimeout: 7000,
+  testsFinishTimeout: 5000,
   debug: false,
   plugins: [
     configPaths({}),

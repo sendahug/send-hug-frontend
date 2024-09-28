@@ -1,0 +1,6 @@
+<form [formGroup]="searchForm" id="search" role="search" (ngSubmit)="searchApp($event)">
+  <button id="exitButton" (click)="toggleSearch()" aria-label="close search panel" type="button"><fa-icon [icon]="faTimes" class="fa-times"></fa-icon></button>
+  <label class="pageCategory" for="searchQuery" id="searchLabel">Search: </label>
+  <input type="text" id="searchQuery" placeholder="Search" minlength="1" formControlName="searchQuery">
+  <button type="submit" class="appButton sendData">Search</button>
+</form>

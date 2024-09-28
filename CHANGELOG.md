@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+### 2024-09-28
+
+#### Chores
+
+- Split the search form and the navigation menu to their own components to make it easier to maintain the navigation menu and the app component. ([#1832](https://github.com/sendahug/send-hug-frontend/pull/1832))
+
 ### 2024-09-25
 
 #### Fixes

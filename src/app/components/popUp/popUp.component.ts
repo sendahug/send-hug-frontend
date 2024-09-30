@@ -65,9 +65,6 @@ export class PopUp implements OnInit, AfterViewChecked {
   */
   ngOnInit() {
     document.getElementById("exitButton")!.focus();
-    if (document.getElementById("siteHeader")) {
-      document.getElementById("siteHeader")!.className = "modal";
-    }
   }
 
   /*
@@ -131,12 +128,7 @@ export class PopUp implements OnInit, AfterViewChecked {
   exitEdit() {
     let modal = document.getElementById("modalBox");
     modal!.removeEventListener("keydown", this.checkFocusBinded);
-    if (document.getElementById("skipLink")) {
-      document.getElementById("skipLink")!.focus();
-    }
-    if (document.getElementById("siteHeader")) {
-      document.getElementById("siteHeader")!.className = "";
-    }
+    document.getElementById("skipLink")?.focus();
     this.editMode.emit(false);
   }
 }

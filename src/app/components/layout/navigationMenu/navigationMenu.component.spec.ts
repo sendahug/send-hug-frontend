@@ -433,4 +433,21 @@ describe("AppNavMenu", () => {
     expect(navLinks.classList).not.toContain("hidden");
     expect(navMenu.showMenu()).toBeTrue();
   });
+
+  it("should send an email verification request", () => {
+    const MockAuthService = TestBed.inject(AuthService);
+    MockAuthService.userData.set({ ...mockAuthedUser, emailVerified: false });
+    const verifySpy = spyOn(MockAuthService, "sendVerificationEmail");
+
+    const fixture = TestBed.createComponent(AppNavMenu);
+    const componentHtml = fixture.debugElement.nativeElement;
+    fixture.detectChanges();
+
+    expect(componentHtml.querySelector("#notVerified")).toBeDefined();
+
+    componentHtml.querySelector("#notVerified").querySelector(".link").click();
+    fixture.detectChanges();
+
+    expect(verifySpy).toHaveBeenCalled();
+  });
 });

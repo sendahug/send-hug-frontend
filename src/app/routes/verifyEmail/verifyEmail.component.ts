@@ -1,5 +1,6 @@
 /*
-	Mock Data for tests
+	Email Verification Page
+	Send a Hug Component
   ---------------------------------------------------
   MIT License
 
@@ -29,57 +30,50 @@
   SOFTWARE.
 */
 
-import { type User as FirebaseUser } from "firebase/auth";
+import { CommonModule } from "@angular/common";
+import { Component, OnInit, signal } from "@angular/core";
+import { Router, RouterLink } from "@angular/router";
 
-import { type User } from "../app/interfaces/user.interface";
+import { AuthService } from "@app/services/auth.service";
+import { Loader } from "@app/components/loader/loader.component";
 
-export const mockAuthedUser: User = {
-  id: 4,
-  displayName: "name",
-  receivedH: 2,
-  givenH: 2,
-  posts: 2,
-  loginCount: 3,
-  role: {
-    id: 1,
-    name: "admin",
-    permissions: [],
-  },
-  jwt: "",
-  blocked: false,
-  releaseDate: undefined,
-  autoRefresh: false,
-  refreshRate: 20,
-  pushEnabled: false,
-  selectedIcon: "kitty",
-  iconColours: {
-    character: "#BA9F93",
-    lbg: "#e2a275",
-    rbg: "#f8eee4",
-    item: "#f4b56a",
-  },
-  firebaseId: "fb",
-  emailVerified: true,
-};
+@Component({
+  selector: "app-verify-email-page",
+  templateUrl: "./verifyEmail.component.html",
+  standalone: true,
+  imports: [CommonModule, RouterLink, Loader],
+})
+export class VerifyEmailPage implements OnInit {
+  loadingAuth = signal(true);
 
-export function getMockFirebaseUser(): FirebaseUser {
-  return {
-    emailVerified: false,
-    isAnonymous: false,
-    email: "",
-    providerData: [],
-    refreshToken: "",
-    tenantId: "",
-    delete: () => new Promise(() => undefined),
-    getIdToken: (_forceRefresh?: boolean) => new Promise(() => ""),
-    getIdTokenResult: (_forceRefresh?: boolean) => new Promise(() => ({})),
-    reload: () => new Promise(() => undefined),
-    toJSON: () => ({}),
-    metadata: {},
-    displayName: "",
-    phoneNumber: "",
-    photoURL: "",
-    providerId: "",
-    uid: "fb",
-  };
+  constructor(
+    protected authService: AuthService,
+    private router: Router,
+  ) {}
+
+  /**
+   * Angular's OnInit hook. Serves to wait until the
+   * user's auth state is resolved before verifying their email.
+   */
+  ngOnInit(): void {
+    this.authService.isUserDataResolved.subscribe((isResolved) => {
+      if (isResolved) {
+        this.loadingAuth.set(false);
+        this.verifyEmail();
+      }
+    });
+  }
+
+  /**
+   * Makes the request to the back-end to update the
+   * verification status of the user, and then navigates
+   * to the home route.
+   */
+  verifyEmail() {
+    if (!this.authService.userData()) return;
+
+    if (!this.authService.userData()!.emailVerified)
+      this.authService.updateUserData({ emailVerified: true });
+    this.router.navigate(["/"]);
+  }
 }

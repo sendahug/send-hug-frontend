@@ -233,5 +233,11 @@ export const routes: Routes = [
       import("./components/signUpPage/signUpPage.component").then((c) => c.SignUpPage),
     data: {},
   },
+  {
+    path: "verify",
+    loadComponent: () =>
+      import("./routes/verifyEmail/verifyEmail.component").then((c) => c.VerifyEmailPage),
+    data: {},
+  },
   { path: "**", component: ErrorPage, data: { name: "Error Page" } },
 ];

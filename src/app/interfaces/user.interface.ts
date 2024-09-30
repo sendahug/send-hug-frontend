@@ -63,6 +63,7 @@ export interface User {
   selectedIcon: iconCharacters;
   iconColours: UserIconColours;
   firebaseId: string;
+  emailVerified: boolean;
 }
 
 export interface PartialUser {

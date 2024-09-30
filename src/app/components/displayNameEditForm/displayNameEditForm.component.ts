@@ -34,6 +34,7 @@
 import { Component, Input, Output, EventEmitter, OnInit } from "@angular/core";
 import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { CommonModule } from "@angular/common";
+import { TeleportDirective } from "@ngneat/overview";
 
 // App-related import
 import { AuthService } from "@app/services/auth.service";
@@ -49,7 +50,7 @@ import { PopUp } from "@app/components/popUp/popUp.component";
   selector: "display-name-edit-form",
   templateUrl: "./displayNameEditForm.component.html",
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, PopUp],
+  imports: [CommonModule, ReactiveFormsModule, PopUp, TeleportDirective],
 })
 export class DisplayNameEditForm implements OnInit {
   // item to edit

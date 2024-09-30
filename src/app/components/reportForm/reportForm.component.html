@@ -1,4 +1,4 @@
-<app-pop-up (editMode)="reportMode.emit(false)">
+<app-pop-up *teleportTo="'modalContainer'" (editMode)="reportMode.emit(false)">
   <div id="reportItem">
     <h3 class="popupTitle">{{ "Report " + reportType }}</h3>
     <div *ngIf="reportType == 'Post'" class="userPost">

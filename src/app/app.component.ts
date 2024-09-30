@@ -34,6 +34,7 @@
 import { Component, OnInit } from "@angular/core";
 import { Router, RouterOutlet, RouterLink, ActivatedRoute } from "@angular/router";
 import { CommonModule } from "@angular/common";
+import { TeleportOutletDirective } from "@ngneat/overview";
 
 // App-related imports
 import { AuthService } from "./services/auth.service";
@@ -48,7 +49,7 @@ import { AppNavMenu } from "./components/layout/navigationMenu/navigationMenu.co
   templateUrl: "./app.component.html",
   styleUrl: "./app.component.less",
   standalone: true,
-  imports: [CommonModule, RouterOutlet, RouterLink, AppAlert, AppNavMenu],
+  imports: [CommonModule, RouterOutlet, RouterLink, AppAlert, AppNavMenu, TeleportOutletDirective],
 })
 export class AppComponent implements OnInit {
   canShare = false;

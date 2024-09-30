@@ -45,6 +45,7 @@ import { ApiClientService } from "@app/services/apiClient.service";
 import { SWManager } from "@app/services/sWManager.service";
 import { type PostAndReportResponse } from "@app/interfaces/responses";
 import { PopUp } from "@app/components/popUp/popUp.component";
+import { TeleportDirective } from "@ngneat/overview";
 
 interface PostEditResponse {
   success: boolean;
@@ -55,7 +56,7 @@ interface PostEditResponse {
   selector: "post-edit-form",
   templateUrl: "./postEditForm.component.html",
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule, PopUp],
+  imports: [ReactiveFormsModule, CommonModule, PopUp, TeleportDirective],
 })
 export class PostEditForm implements OnInit {
   // item to edit

@@ -33,6 +33,7 @@
 // Angular imports
 import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
+import { TeleportDirective } from "@ngneat/overview";
 
 // App-related imports
 import { AuthService } from "@app/services/auth.service";
@@ -52,7 +53,7 @@ interface SendHugResponse {
   selector: "app-send-hug-form",
   templateUrl: "./sendHugForm.component.html",
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, PopUp],
+  imports: [CommonModule, ReactiveFormsModule, PopUp, TeleportDirective],
 })
 export class SendHugForm implements OnInit {
   @Output() sendMode = new EventEmitter<boolean>();

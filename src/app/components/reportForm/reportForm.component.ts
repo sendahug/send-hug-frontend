@@ -34,6 +34,7 @@
 import { Component, Input, Output, EventEmitter, OnInit } from "@angular/core";
 import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { CommonModule } from "@angular/common";
+import { TeleportDirective } from "@ngneat/overview";
 
 // App-related import
 import { type PostGet } from "@app/interfaces/post.interface";
@@ -79,7 +80,7 @@ const reportReasonsText = {
   selector: "report-form",
   templateUrl: "./reportForm.component.html",
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, PopUp, RouterLink],
+  imports: [CommonModule, ReactiveFormsModule, PopUp, RouterLink, TeleportDirective],
 })
 export class ReportForm implements OnInit {
   // indicates whether edit/delete mode is still required

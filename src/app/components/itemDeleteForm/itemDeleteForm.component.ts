@@ -33,6 +33,7 @@
 // Angular imports
 import { Component, Input, Output, EventEmitter } from "@angular/core";
 import { tap } from "rxjs";
+import { TeleportDirective } from "@ngneat/overview";
 
 // App-related import
 import { AdminService } from "@app/services/admin.service";
@@ -46,7 +47,7 @@ import { PopUp } from "@app/components/popUp/popUp.component";
   selector: "item-delete-form",
   templateUrl: "./itemDeleteForm.component.html",
   standalone: true,
-  imports: [CommonModule, PopUp],
+  imports: [CommonModule, PopUp, TeleportDirective],
 })
 export class ItemDeleteForm {
   // indicates whether edit/delete mode is still required

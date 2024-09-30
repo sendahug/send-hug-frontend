@@ -34,13 +34,13 @@
 import { Component, Input, Output, EventEmitter } from "@angular/core";
 import { tap } from "rxjs";
 import { TeleportDirective } from "@ngneat/overview";
+import { CommonModule } from "@angular/common";
 
 // App-related import
 import { AdminService } from "@app/services/admin.service";
 import { ApiClientService } from "@app/services/apiClient.service";
 import { SWManager } from "@app/services/sWManager.service";
 import { AlertsService } from "@app/services/alerts.service";
-import { CommonModule } from "@angular/common";
 import { PopUp } from "@app/components/popUp/popUp.component";
 
 @Component({

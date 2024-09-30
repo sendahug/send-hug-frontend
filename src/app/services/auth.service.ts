@@ -211,8 +211,6 @@ export class AuthService {
   sendVerificationEmail(): Promise<void> {
     if (!this.auth.currentUser) return new Promise((resolve) => resolve(undefined));
 
-    console.log(this.actionCodeSettings());
-
     return sendEmailVerification(this.auth.currentUser, this.actionCodeSettings())
       .then(() => {
         this.alertsService.createAlert({

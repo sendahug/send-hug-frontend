@@ -115,7 +115,6 @@ export class AppMessaging {
   deleteMode: boolean;
   toDelete: string | undefined;
   itemToDelete: number | undefined;
-  lastFocusedElement: any;
 
   // CTOR
   constructor(
@@ -285,7 +284,6 @@ export class AppMessaging {
   Programmer: Shir Bar Lev.
   */
   deleteMessage(messageID: number) {
-    this.lastFocusedElement = document.activeElement;
     this.deleteMode = true;
     this.toDelete = "Message";
     this.itemToDelete = messageID;
@@ -372,7 +370,6 @@ export class AppMessaging {
   Programmer: Shir Bar Lev.
   */
   deleteThread(threadId: number) {
-    this.lastFocusedElement = document.activeElement;
     this.deleteMode = true;
     this.toDelete = "Thread";
     this.itemToDelete = threadId;
@@ -386,7 +383,6 @@ export class AppMessaging {
   Programmer: Shir Bar Lev.
   */
   deleteAllMessages(type: string) {
-    this.lastFocusedElement = document.activeElement;
     this.deleteMode = true;
     this.toDelete = `All ${type}`;
     this.itemToDelete = this.authService.userData()!.id;
@@ -426,6 +422,5 @@ export class AppMessaging {
   */
   changeMode(edit: boolean) {
     this.deleteMode = edit;
-    this.lastFocusedElement.focus();
   }
 }

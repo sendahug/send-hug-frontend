@@ -444,7 +444,6 @@ describe("LoginPage", () => {
     const loginPageDOM = fixture.nativeElement;
     loginPage.authService.authenticated.set(false);
     loginPage.resetMode = true;
-    loginPage.lastFocusedElement = document.querySelectorAll("a")[0];
     fixture.detectChanges();
 
     expect(loginPage.resetMode).toBeTrue();

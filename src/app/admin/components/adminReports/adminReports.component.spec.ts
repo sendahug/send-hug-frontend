@@ -574,7 +574,6 @@ describe("AdminReports", () => {
     fixture.detectChanges();
 
     // start the popup
-    adminReports.lastFocusedElement = document.querySelectorAll("button")[0];
     adminReports.toEdit = {
       displayName: "displayName",
       id: 2,
@@ -607,7 +606,6 @@ describe("AdminReports", () => {
     fixture.detectChanges();
 
     // start the popup
-    adminReports.lastFocusedElement = document.querySelectorAll("button")[0];
     adminReports.toEdit = "post";
     adminReports.postEditMode = true;
     adminReports.reportData.reportID = 5;
@@ -638,7 +636,6 @@ describe("AdminReports", () => {
     fixture.detectChanges();
 
     // start the popup
-    adminReports.lastFocusedElement = adminReportsDOM.querySelectorAll("button")[0];
     adminReports.deleteMode = true;
     adminReports.toDelete = "post";
     adminReports.itemToDelete = 2;
@@ -665,7 +662,6 @@ describe("AdminReports", () => {
     fixture.detectChanges();
 
     // start the popup
-    adminReports.lastFocusedElement = document.querySelectorAll("a")[0];
     adminReports.toEdit = {
       displayName: "displayName",
       id: 2,
@@ -703,7 +699,6 @@ describe("AdminReports", () => {
     fixture.detectChanges();
 
     // start the popup
-    adminReports.lastFocusedElement = document.querySelectorAll("a")[0];
     adminReports.toEdit = {
       displayName: "displayName",
       id: 2,
@@ -741,7 +736,6 @@ describe("AdminReports", () => {
     fixture.detectChanges();
 
     // start the popup
-    adminReports.lastFocusedElement = document.querySelectorAll("a")[0];
     adminReports.toEdit = {
       displayName: "displayName",
       id: 2,
@@ -793,7 +787,6 @@ describe("AdminReports", () => {
     fixture.detectChanges();
 
     // start the popup
-    adminReports.lastFocusedElement = document.querySelectorAll("a")[0];
     adminReports.toEdit = "post";
     adminReports.postEditMode = true;
     adminReports.reportData.reportID = 5;
@@ -834,7 +827,6 @@ describe("AdminReports", () => {
     fixture.detectChanges();
 
     // start the popup
-    adminReports.lastFocusedElement = document.querySelectorAll("a")[0];
     adminReports.toEdit = "post";
     adminReports.postEditMode = true;
     adminReports.reportData.reportID = 5;
@@ -875,7 +867,6 @@ describe("AdminReports", () => {
     fixture.detectChanges();
 
     // start the popup
-    adminReports.lastFocusedElement = document.querySelectorAll("a")[0];
     adminReports.toEdit = "post";
     adminReports.postEditMode = true;
     adminReports.reportData.reportID = 5;
@@ -905,7 +896,6 @@ describe("AdminReports", () => {
     fixture.detectChanges();
 
     // start the popup
-    adminReports.lastFocusedElement = document.querySelectorAll("a")[0];
     adminReports.deleteMode = true;
     adminReports.toDelete = "post";
     adminReports.itemToDelete = 5;

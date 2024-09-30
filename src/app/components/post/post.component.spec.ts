@@ -256,7 +256,6 @@ describe("Post", () => {
     upFixture.detectChanges();
 
     // start the popup
-    singlePost.lastFocusedElement = document.querySelectorAll("a")[0];
     singlePost.editMode = true;
     upFixture.detectChanges();
 
@@ -281,7 +280,6 @@ describe("Post", () => {
     upFixture.detectChanges();
 
     // start the popup
-    singlePost.lastFocusedElement = document.querySelectorAll("a")[0];
     singlePost.deleteMode = true;
     upFixture.detectChanges();
 
@@ -306,7 +304,6 @@ describe("Post", () => {
     upFixture.detectChanges();
 
     // start the popup
-    singlePost.lastFocusedElement = document.querySelectorAll("a")[0];
     singlePost.reportMode = true;
     upFixture.detectChanges();
 
@@ -497,7 +494,6 @@ describe("Post", () => {
     };
 
     // start the popup
-    singlePost.lastFocusedElement = document.querySelectorAll("a")[0];
     singlePost.editMode = true;
     upFixture.detectChanges();
 
@@ -522,7 +518,6 @@ describe("Post", () => {
     upFixture.detectChanges();
 
     // start the popup
-    singlePost.lastFocusedElement = document.querySelectorAll("a")[0];
     singlePost.deleteMode = true;
     upFixture.detectChanges();
 

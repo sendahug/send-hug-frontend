@@ -562,7 +562,6 @@ describe("UserPage", () => {
     fixture.detectChanges();
 
     // start the popup
-    userPage.lastFocusedElement = document.querySelectorAll("button")[0];
     userPage.userToEdit = {
       displayName: userPage.authService.userData()!.displayName,
       id: userPage.authService.userData()!.id as number,
@@ -616,7 +615,6 @@ describe("UserPage", () => {
     fixture.detectChanges();
 
     // start the popup
-    userPage.lastFocusedElement = document.querySelectorAll("button")[0];
     userPage.reportedItem = userPage.otherUser() as OtherUser;
     userPage.reportMode = true;
     userPage.reportType = "User";

@@ -100,7 +100,6 @@ export class SinglePost implements AfterViewChecked, OnInit, OnDestroy {
   reportedItem: PostGet | undefined;
   reportType: "Post" = "Post";
   sendMessageMode: boolean = false;
-  lastFocusedElement: any;
   waitFor = "main page";
   subscriptions: Subscription[] = [];
   shouldShowSubmenu = signal(true);
@@ -245,7 +244,6 @@ export class SinglePost implements AfterViewChecked, OnInit, OnDestroy {
   sendHug() {
     if (!this._post()) return;
 
-    this.lastFocusedElement = document.activeElement;
     this.sendMessageMode = true;
   }
 
@@ -257,7 +255,6 @@ export class SinglePost implements AfterViewChecked, OnInit, OnDestroy {
   Programmer: Shir Bar Lev.
   */
   editPost() {
-    this.lastFocusedElement = document.activeElement;
     this.editType = "post";
     this.postToEdit = this._post();
     this.editMode = true;
@@ -288,8 +285,6 @@ export class SinglePost implements AfterViewChecked, OnInit, OnDestroy {
         this.sendMessageMode = edit;
         break;
     }
-
-    this.lastFocusedElement.focus();
   }
 
   /*
@@ -300,7 +295,6 @@ export class SinglePost implements AfterViewChecked, OnInit, OnDestroy {
   Programmer: Shir Bar Lev.
   */
   deletePost() {
-    this.lastFocusedElement = document.activeElement;
     this.deleteMode = true;
     this.toDelete = "Post";
     this.itemToDelete = this._post()?.id;
@@ -314,7 +308,6 @@ export class SinglePost implements AfterViewChecked, OnInit, OnDestroy {
   Programmer: Shir Bar Lev.
   */
   reportPost() {
-    this.lastFocusedElement = document.activeElement;
     this.reportMode = true;
     this.reportedItem = this._post();
   }

@@ -71,7 +71,6 @@ export class MyPosts implements OnInit {
   deleteMode: boolean;
   toDelete: string | undefined;
   itemToDelete: number | undefined;
-  lastFocusedElement: any;
   previousPageButtonClass = computed(() => ({
     "appButton prevButton": true,
     disabled: this.currentPage() <= 1,
@@ -183,7 +182,6 @@ export class MyPosts implements OnInit {
   */
   changeMode(edit: boolean) {
     this.deleteMode = edit;
-    this.lastFocusedElement.focus();
   }
 
   /*
@@ -195,7 +193,6 @@ export class MyPosts implements OnInit {
   Programmer: Shir Bar Lev.
   */
   deleteAllPosts() {
-    this.lastFocusedElement = document.activeElement;
     this.deleteMode = true;
     this.toDelete = "All posts";
     this.itemToDelete = this.userID;

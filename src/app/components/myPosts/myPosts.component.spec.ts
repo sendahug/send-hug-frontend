@@ -259,7 +259,6 @@ describe("MyPosts", () => {
     fixture.detectChanges();
 
     // start the popup
-    myPosts.lastFocusedElement = document.querySelectorAll("a")[0];
     myPosts.deleteMode = true;
     myPosts.toDelete = "Post";
     myPosts.itemToDelete = 2;
@@ -391,7 +390,6 @@ describe("MyPosts", () => {
     fixture.detectChanges();
 
     // start the popup
-    myPosts.lastFocusedElement = document.querySelectorAll("a")[0];
     myPosts.deleteMode = true;
     myPosts.toDelete = "Post";
     myPosts.itemToDelete = 2;

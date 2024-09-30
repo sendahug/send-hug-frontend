@@ -68,7 +68,6 @@ export class AdminReports {
   deleteMode: boolean = false;
   toDelete: string | undefined;
   itemToDelete: number | undefined;
-  lastFocusedElement: any;
   usersPrevButtonClass = computed(() => ({
     "appButton prevButton": true,
     disabled: this.currentUserReportsPage() <= 1,
@@ -147,7 +146,6 @@ export class AdminReports {
   Programmer: Shir Bar Lev.
   */
   editUser(reportID: number, userID: number, displayName: string) {
-    this.lastFocusedElement = document.activeElement;
     this.toEdit = {
       displayName,
       id: userID,
@@ -167,7 +165,6 @@ export class AdminReports {
   Programmer: Shir Bar Lev.
   */
   editPost(postID: number, postText: string, reportID: number) {
-    this.lastFocusedElement = document.activeElement;
     this.toEdit = { text: postText, id: postID };
     this.postEditMode = true;
     this.reportData.reportID = reportID;
@@ -184,7 +181,6 @@ export class AdminReports {
   Programmer: Shir Bar Lev.
   */
   deletePost(postID: number, userID: number, reportID: number) {
-    this.lastFocusedElement = document.activeElement;
     this.deleteMode = true;
     this.toDelete = "ad post";
     this.itemToDelete = postID;
@@ -250,7 +246,6 @@ export class AdminReports {
     if (type === "EditName") this.nameEditMode = edit;
     else if (type === "EditPost") this.postEditMode = edit;
     else this.deleteMode = edit;
-    this.lastFocusedElement?.focus();
   }
 
   /**

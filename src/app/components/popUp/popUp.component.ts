@@ -48,6 +48,7 @@ export class PopUp implements OnInit, AfterViewChecked {
   @Output() editMode = new EventEmitter<boolean>();
   focusableElements: any;
   checkFocusBinded = this.checkFocus.bind(this);
+  lastFocusedElement: HTMLElement | null = null;
   // icons
   faTimes = faTimes;
 
@@ -64,6 +65,7 @@ export class PopUp implements OnInit, AfterViewChecked {
   Programmer: Shir Bar Lev.
   */
   ngOnInit() {
+    this.lastFocusedElement = document.activeElement as HTMLElement | null;
     document.getElementById("exitButton")!.focus();
   }
 
@@ -128,7 +130,7 @@ export class PopUp implements OnInit, AfterViewChecked {
   exitEdit() {
     let modal = document.getElementById("modalBox");
     modal!.removeEventListener("keydown", this.checkFocusBinded);
-    document.getElementById("skipLink")?.focus();
+    this.lastFocusedElement?.focus();
     this.editMode.emit(false);
   }
 }

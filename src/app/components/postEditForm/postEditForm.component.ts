@@ -35,6 +35,7 @@ import { Component, Input, Output, EventEmitter, OnInit } from "@angular/core";
 import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { map, mergeMap, of } from "rxjs";
 import { CommonModule } from "@angular/common";
+import { TeleportDirective } from "@ngneat/overview";
 
 // App-related import
 import { type PostGet } from "@app/interfaces/post.interface";
@@ -45,7 +46,6 @@ import { ApiClientService } from "@app/services/apiClient.service";
 import { SWManager } from "@app/services/sWManager.service";
 import { type PostAndReportResponse } from "@app/interfaces/responses";
 import { PopUp } from "@app/components/popUp/popUp.component";
-import { TeleportDirective } from "@ngneat/overview";
 
 interface PostEditResponse {
   success: boolean;

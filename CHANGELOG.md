@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+### 2024-09-30
+
+#### Features
+
+- Added support for email verification. When registering to the system, users are now sent an email verification email to ensure real addresses are used for registration. Once the user is registered, the Auth Service sends an email via Firebase automatically. If users missed the original email, they're prompted to verify their email using an alert displayed at the top of the page. The alert is shown until the email is verified. ([#1830](https://github.com/sendahug/send-hug-frontend/pull/1830))
+- Added a new route for handling email verification. Users are emailed a link, which leads to a Firebase-provided page with a button for verifying their email. Once they click that, they're sent to the new verification route, which alerts the back-end that the user has verified their email. ([#1830](https://github.com/sendahug/send-hug-frontend/pull/1830))
+
 ### 2024-09-28
 
 #### Chores

@@ -1,0 +1,9 @@
+{
+  "pr_number": 1767,
+  "changes": [
+    {
+      "change": "Fixes",
+      "description": "The error message being shown to users when subscribing to push subscription failed due to the user declining to provide push permission previously consisted of an unclear string returned by the browser. This message was replaced with a proper error message alerting the user of the issue and how to fix it."
+    }
+  ]
+}

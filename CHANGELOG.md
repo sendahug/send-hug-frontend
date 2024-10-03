@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+### 2024-10-03
+
+#### Fixes
+
+- The error message being shown to users when subscribing to push subscription failed due to the user declining to provide push permission previously consisted of an unclear string returned by the browser. This message was replaced with a proper error message alerting the user of the issue and how to fix it. ([#1767](https://github.com/sendahug/send-hug-frontend/pull/1767))
+
 ### 2024-09-30
 
 #### Features

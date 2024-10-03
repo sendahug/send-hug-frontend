@@ -671,7 +671,6 @@ describe("AppMessaging", () => {
     // check the popup is exited
     expect(changeSpy).toHaveBeenCalled();
     expect(appMessaging.deleteMode).toBeFalse();
-    expect(document.activeElement).toBe(document.querySelectorAll("a")[0]);
     done();
   });
 

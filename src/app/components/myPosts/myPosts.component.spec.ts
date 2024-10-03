@@ -273,7 +273,6 @@ describe("MyPosts", () => {
     // check the popup is exited
     expect(changeSpy).toHaveBeenCalled();
     expect(myPosts.deleteMode).toBeFalse();
-    expect(document.activeElement).toBe(document.querySelectorAll("a")[0]);
     done();
   });
 

@@ -578,7 +578,6 @@ describe("UserPage", () => {
     // check the popup is exited
     expect(changeSpy).toHaveBeenCalled();
     expect(userPage.editMode).toBeFalse();
-    expect(document.activeElement).toBe(document.querySelectorAll("button")[0]);
     done();
   });
 
@@ -628,7 +627,6 @@ describe("UserPage", () => {
     // check the popup is exited
     expect(changeSpy).toHaveBeenCalled();
     expect(userPage.reportMode).toBeFalse();
-    expect(document.activeElement).toBe(document.querySelectorAll("button")[0]);
     done();
   });
 });

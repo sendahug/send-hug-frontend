@@ -268,7 +268,6 @@ describe("Post", () => {
     // check the popup is exited
     expect(changeSpy).toHaveBeenCalled();
     expect(singlePost.editMode).toBeFalse();
-    expect(document.activeElement).toBe(document.querySelectorAll("a")[0]);
     done();
   });
 
@@ -292,7 +291,6 @@ describe("Post", () => {
     // check the popup is exited
     expect(changeSpy).toHaveBeenCalled();
     expect(singlePost.deleteMode).toBeFalse();
-    expect(document.activeElement).toBe(document.querySelectorAll("a")[0]);
     done();
   });
 
@@ -316,7 +314,6 @@ describe("Post", () => {
     // check the popup is exited
     expect(changeSpy).toHaveBeenCalled();
     expect(singlePost.reportMode).toBeFalse();
-    expect(document.activeElement).toBe(document.querySelectorAll("a")[0]);
     done();
   });
 

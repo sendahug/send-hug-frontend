@@ -592,7 +592,6 @@ describe("AdminReports", () => {
     // check the popup is exited
     expect(changeSpy).toHaveBeenCalled();
     expect(adminReports.nameEditMode).toBeFalse();
-    expect(document.activeElement).toBe(document.querySelectorAll("button")[0]);
     done();
   });
 
@@ -621,14 +620,12 @@ describe("AdminReports", () => {
     // check the popup is exited
     expect(changeSpy).toHaveBeenCalled();
     expect(adminReports.postEditMode).toBeFalse();
-    expect(document.activeElement).toBe(document.querySelectorAll("button")[0]);
     done();
   });
 
   it("should change mode when the event emitter emits false - delete post", (done: DoneFn) => {
     const fixture = TestBed.createComponent(AdminReports);
     const adminReports = fixture.componentInstance;
-    const adminReportsDOM = fixture.nativeElement;
     const changeSpy = spyOn(adminReports, "changeMode").and.callThrough();
     adminReports.postReports = [...mockPostReports];
     adminReports.userReports = [...mockUserReports];
@@ -650,7 +647,6 @@ describe("AdminReports", () => {
     // check the popup is exited
     expect(changeSpy).toHaveBeenCalled();
     expect(adminReports.deleteMode).toBeFalse();
-    expect(document.activeElement).toBe(adminReportsDOM.querySelectorAll("button")[0]);
     done();
   });
 

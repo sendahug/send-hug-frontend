@@ -175,16 +175,13 @@ jobs:
           paths:
             - "node_modules"
       - run:
-          name: Generate the sitemap
-          command: npm run sitemap:gen
-      - run:
           name: Start frontend server
           command: npm run dev
           background: true
       - run: sleep 15
       - run:
           name: Run accessibility tests
-          command: pa11y-ci --sitemap http://localhost:3000/sitemap.xml --config .pa11yci
+          command: npm run pa11y
 
 workflows:
   run-testing:

@@ -34,6 +34,7 @@
 import { Component, Input, Output, EventEmitter, OnInit } from "@angular/core";
 import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { CommonModule } from "@angular/common";
+import { RouterLink } from "@angular/router";
 
 // App-related import
 import { type PostGet } from "@app/interfaces/post.interface";
@@ -43,8 +44,7 @@ import { AuthService } from "@app/services/auth.service";
 import { AlertsService } from "@app/services/alerts.service";
 import { ValidationService } from "@app/services/validation.service";
 import { ApiClientService } from "@app/services/apiClient.service";
-import { PopUp } from "../popUp/popUp.component";
-import { RouterLink } from "@angular/router";
+import { PopUp } from "@app/components/popUp/popUp.component";
 
 // Reasons for submitting a report
 enum postReportReasons {

@@ -33,6 +33,7 @@
 // Angular imports
 import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
+import { CommonModule } from "@angular/common";
 
 // App-related imports
 import { AuthService } from "@app/services/auth.service";
@@ -40,8 +41,7 @@ import { AlertsService } from "@app/services/alerts.service";
 import { ApiClientService } from "@app/services/apiClient.service";
 import { ValidationService } from "@app/services/validation.service";
 import { ItemsService } from "@app/services/items.service";
-import { CommonModule } from "@angular/common";
-import { PopUp } from "../popUp/popUp.component";
+import { PopUp } from "@app/components/popUp/popUp.component";
 
 interface SendHugResponse {
   success: boolean;

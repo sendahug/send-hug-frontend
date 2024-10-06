@@ -48,8 +48,8 @@ import { ApiClientService } from "@app/services/apiClient.service";
 import { AlertsService } from "@app/services/alerts.service";
 import { Loader } from "@app/components/loader/loader.component";
 import { UserIcon } from "@app/components/userIcon/userIcon.component";
-import { ReportForm } from "@app/components/reportForm/reportForm.component";
-import { DisplayNameEditForm } from "@app/components/displayNameEditForm/displayNameEditForm.component";
+import { ReportForm } from "@app/components/forms/reportForm/reportForm.component";
+import { DisplayNameEditForm } from "@app/components/forms/displayNameEditForm/displayNameEditForm.component";
 import { MyPosts } from "@app/components/myPosts/myPosts.component";
 
 interface OtherUserResponse {

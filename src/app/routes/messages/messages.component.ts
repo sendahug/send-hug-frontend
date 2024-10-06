@@ -45,7 +45,7 @@ import { SWManager } from "@app/services/sWManager.service";
 import { ApiClientService } from "@app/services/apiClient.service";
 import { Loader } from "@app/components/loader/loader.component";
 import { UserIcon } from "@app/components/userIcon/userIcon.component";
-import { ItemDeleteForm } from "@app/components/itemDeleteForm/itemDeleteForm.component";
+import { ItemDeleteForm } from "@app/components/forms/itemDeleteForm/itemDeleteForm.component";
 
 interface MessagesResponse {
   success: boolean;

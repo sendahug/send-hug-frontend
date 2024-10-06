@@ -93,8 +93,8 @@ export class LoginPage {
             this.router.navigate(["/user"]);
           }
         },
-        error: (_error) => {
-          if (provider == "username") {
+        error: (error) => {
+          if (provider == "username" && !error.message.includes("User doesn't exist yet")) {
             this.alertsService.createAlert({
               type: "Error",
               message: "Cannot find user with these details. Did you mean to register?",

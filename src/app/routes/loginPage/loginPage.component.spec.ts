@@ -166,7 +166,7 @@ describe("LoginPage", () => {
     const fetchUserSpy = spyOn(loginPage.authService, "fetchUser").and.returnValue(of(mockUser));
     const routerSpy = spyOn(loginPage["router"], "navigate");
     const alertsSpy = spyOn(loginPage["alertsService"], "createAlert");
-    const mockObservable = throwError(() => Error("User doesn't exist yet"));
+    const mockObservable = throwError(() => Error("No user!"));
 
     loginPage.signIn(mockObservable, "username").add(() => {
       expect(loadingSpy).not.toHaveBeenCalled();
@@ -176,6 +176,24 @@ describe("LoginPage", () => {
         type: "Error",
         message: "Cannot find user with these details. Did you mean to register?",
       });
+      done();
+    });
+  });
+
+  it("signIn() - should redirect to signup", (done: DoneFn) => {
+    const fixture = TestBed.createComponent(LoginPage);
+    const loginPage = fixture.componentInstance;
+    const loadingSpy = spyOn(loginPage.isLoading, "set").and.callThrough();
+    const fetchUserSpy = spyOn(loginPage.authService, "fetchUser").and.returnValue(of(mockUser));
+    const routerSpy = spyOn(loginPage["router"], "navigate");
+    const alertsSpy = spyOn(loginPage["alertsService"], "createAlert");
+    const mockObservable = throwError(() => Error("User doesn't exist yet"));
+
+    loginPage.signIn(mockObservable, "username").add(() => {
+      expect(loadingSpy).not.toHaveBeenCalled();
+      expect(fetchUserSpy).not.toHaveBeenCalled();
+      expect(routerSpy).toHaveBeenCalledWith(["/signup"]);
+      expect(alertsSpy).not.toHaveBeenCalled();
       done();
     });
   });

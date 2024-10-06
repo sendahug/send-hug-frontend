@@ -14,7 +14,8 @@
     "cleanBuild": "node cleanDist.js",
     "test": "web-test-runner",
     "test:open": "web-test-runner --open --manual",
-    "sitemap:gen": "npx tsx plugins/SitemapGen.ts"
+    "sitemap:gen": "npx tsx plugins/SitemapGen.ts",
+    "pa11y": "npm run sitemap:gen && pa11y-ci --sitemap http://localhost:3000/sitemap.xml --config .pa11yci"
   },
   "devDependencies": {
     "@babel/core": "^7.25.7",
@@ -39,6 +40,7 @@
     "less": "^4.2.0",
     "magic-string": "^0.30.11",
     "ng-mocks": "^14.13.1",
+    "pa11y-ci": "^3.1.0",
     "prettier": "^3.3.3",
     "rollup-plugin-tsconfig-paths": "^1.5.2",
     "size-limit": "^11.1.4",

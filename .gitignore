@@ -21,3 +21,5 @@ cypress/*
 dist/*
 !dist/README.md
 .env
+
+public/sitemap.xml

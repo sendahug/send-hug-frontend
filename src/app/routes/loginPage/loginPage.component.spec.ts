@@ -51,7 +51,7 @@ import { LoginPage } from "./loginPage.component";
 import { AuthService } from "@app/services/auth.service";
 import { getMockFirebaseUser, mockAuthedUser } from "@tests/mockData";
 import { User } from "@app/interfaces/user.interface";
-import { PasswordResetForm } from "@app/components/forms/passwordResetForm/passwordResetForm.component";
+import { PasswordResetForm } from "@forms/passwordResetForm/passwordResetForm.component";
 import { Loader } from "@app/components/loader/loader.component";
 
 describe("LoginPage", () => {

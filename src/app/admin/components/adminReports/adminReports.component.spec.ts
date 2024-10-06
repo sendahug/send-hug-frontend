@@ -49,9 +49,9 @@ import { Loader } from "@app/components/loader/loader.component";
 import { mockAuthedUser } from "@tests/mockData";
 import { type ReportGet } from "@app/interfaces/report.interface";
 import { ApiClientService } from "@app/services/apiClient.service";
-import { PostEditForm } from "@app/components/forms/postEditForm/postEditForm.component";
-import { DisplayNameEditForm } from "@app/components/forms/displayNameEditForm/displayNameEditForm.component";
-import { ItemDeleteForm } from "@app/components/forms/itemDeleteForm/itemDeleteForm.component";
+import { PostEditForm } from "@forms/postEditForm/postEditForm.component";
+import { DisplayNameEditForm } from "@forms/displayNameEditForm/displayNameEditForm.component";
+import { ItemDeleteForm } from "@forms/itemDeleteForm/itemDeleteForm.component";
 import { AdminService } from "@app/services/admin.service";
 
 // REPORTS PAGE

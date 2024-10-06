@@ -51,16 +51,24 @@ The project is open source, so feel free to use parts of the code. However, the 
 
 ## Contents
 
-The app (located in [src/app](./src/app)) contains two modules:
+The app (located in [src/app](./src/app)) contains one module:
 
 - An Admin module, defined in **admin/admin.module.ts**. Contains the components that handle admin actions.
-- A User module, defined in **user/user.module.ts**. Contians the components that handle authenticated users' actions.
 
 On top of these, the app contains various components and services. Any component that isn't part of the above modules is defined as a standalone component, and so can be used in any module.
 
 Each component folder contains both the HTML template and the component TypeScript file.
 
-The components (both view-defining components and smaller components) are located in eac module's `components` folder (for example: [src/app/components](./src/app/components)). The interfaces, used to define the types of objects in the app, are located in [src/app/interfaces](./src/app/interfaces). The injectable services, which perform a various array of tasks, are located in each module's `services` folder (for example: [src/app/services](./src/app/services)).
+The app folder is structured as thus:
+
+- [`admin`](./src/app/admin) - The Admin module.
+- [`components`](./src/app/components) - The app's components. These are also divided by type.
+  - [`common`](./src/app/components/common) - Common components, used across multiple other components/views.
+  - [`forms`](./src/app/components/forms) - Popup-based forms (e.g., Password Reset Form).
+- [`guards`](./src/app/guards) - Various Angular route guards used by the app.
+- [`interfaces`](./src/app/interfaces) - The interfaces, used to define the types of objects in the app.
+- [`routes`](./src/app/routes) - View-defining components. These are components used directly by the router to present the various pages in the app.
+- [`services`](./src/app/services) - The injectable services, which perform a various array of tasks.
 
 ## Dependencies
 

@@ -1,0 +1,9 @@
+{
+  "pr_number": 1841,
+  "changes": [
+    {
+      "change": "Chores",
+      "description": "Re-organised the components folder. With more than 30 components, it was getting too big to work with easily. To make things simpler, the components were split to `routes` (components that are served as routes by the router), `common` (components used across multiple components) and `forms` (form components), depending on their purpose."
+    }
+  ]
+}

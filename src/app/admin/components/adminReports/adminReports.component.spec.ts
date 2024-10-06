@@ -45,13 +45,13 @@ import { MockComponent, MockProvider } from "ng-mocks";
 
 import { AdminReports } from "./adminReports.component";
 import { AuthService } from "@app/services/auth.service";
-import { Loader } from "@app/components/loader/loader.component";
+import { Loader } from "@common/loader/loader.component";
 import { mockAuthedUser } from "@tests/mockData";
 import { type ReportGet } from "@app/interfaces/report.interface";
 import { ApiClientService } from "@app/services/apiClient.service";
-import { PostEditForm } from "@app/components/postEditForm/postEditForm.component";
-import { DisplayNameEditForm } from "@app/components/displayNameEditForm/displayNameEditForm.component";
-import { ItemDeleteForm } from "@app/components/itemDeleteForm/itemDeleteForm.component";
+import { PostEditForm } from "@forms/postEditForm/postEditForm.component";
+import { DisplayNameEditForm } from "@forms/displayNameEditForm/displayNameEditForm.component";
+import { ItemDeleteForm } from "@forms/itemDeleteForm/itemDeleteForm.component";
 import { AdminService } from "@app/services/admin.service";
 
 // REPORTS PAGE

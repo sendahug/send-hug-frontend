@@ -274,13 +274,17 @@ describe("SignUpPage", () => {
     const signUpPageDOM = fixture.nativeElement;
     signUpPage["authService"].authenticated.set(false);
     spyOn(signUpPage["authService"], "getCurrentFirebaseUser").and.returnValue(mockFirebaseUser);
+    const signOutRedirectSpy = spyOn(signUpPage, "signOutAndRedirect").and.callThrough();
     const logOutSpy = spyOn(signUpPage["authService"], "logout");
+    const routerSpy = spyOn(signUpPage["router"], "navigate");
     fixture.detectChanges();
 
     signUpPageDOM.querySelector("#logOut").click();
     fixture.detectChanges();
 
+    expect(signOutRedirectSpy).toHaveBeenCalled();
     expect(logOutSpy).toHaveBeenCalled();
+    expect(routerSpy).toHaveBeenCalledWith(["/login"]);
     done();
   });
 

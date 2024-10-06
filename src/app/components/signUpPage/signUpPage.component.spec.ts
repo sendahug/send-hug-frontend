@@ -268,6 +268,22 @@ describe("SignUpPage", () => {
     done();
   });
 
+  it("should log out", (done: DoneFn) => {
+    const fixture = TestBed.createComponent(SignUpPage);
+    const signUpPage = fixture.componentInstance;
+    const signUpPageDOM = fixture.nativeElement;
+    signUpPage["authService"].authenticated.set(false);
+    spyOn(signUpPage["authService"], "getCurrentFirebaseUser").and.returnValue(mockFirebaseUser);
+    const logOutSpy = spyOn(signUpPage["authService"], "logout");
+    fixture.detectChanges();
+
+    signUpPageDOM.querySelector("#logOut").click();
+    fixture.detectChanges();
+
+    expect(logOutSpy).toHaveBeenCalled();
+    done();
+  });
+
   it("should show an error message if the user is logged in", () => {
     const fixture = TestBed.createComponent(SignUpPage);
     const signUpPage = fixture.componentInstance;

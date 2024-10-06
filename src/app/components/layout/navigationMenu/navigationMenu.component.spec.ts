@@ -52,7 +52,7 @@ import { AppNavMenu } from "./navigationMenu.component";
 import { NotificationsTab } from "@app/components/layout/notifications/notifications.component";
 import { AuthService } from "@app/services/auth.service";
 import { SWManager } from "@app/services/sWManager.service";
-import { mockAuthedUser } from "@tests/mockData";
+import { mockAuthedUser, getMockFirebaseUser } from "@tests/mockData";
 import { ItemsService } from "@app/services/items.service";
 import { NotificationService } from "@app/services/notifications.service";
 import { SearchForm } from "@app/components/layout/searchForm/searchForm.component";
@@ -449,5 +449,31 @@ describe("AppNavMenu", () => {
     fixture.detectChanges();
 
     expect(verifySpy).toHaveBeenCalled();
+  });
+
+  it("should sign out", () => {
+    const MockAuthService = TestBed.inject(AuthService);
+    MockAuthService.authenticated.set(false);
+    const firebaseUserSpy = spyOn(MockAuthService, "getCurrentFirebaseUser").and.returnValue(
+      getMockFirebaseUser(),
+    );
+
+    const fixture = TestBed.createComponent(AppNavMenu);
+    const component = fixture.componentInstance;
+    const componentHtml = fixture.debugElement.nativeElement;
+    const signOutRedirectSpy = spyOn(component, "signOutAndRedirect").and.callThrough();
+    const signOutSpy = spyOn(MockAuthService, "logout");
+    const routerSpy = spyOn(component["router"], "navigate");
+    fixture.detectChanges();
+
+    expect(componentHtml.querySelector("#signOutNavItem")).toBeDefined();
+    expect(firebaseUserSpy).toHaveBeenCalled();
+
+    componentHtml.querySelector("#signOutNavItem").click();
+    fixture.detectChanges();
+
+    expect(signOutRedirectSpy).toHaveBeenCalled();
+    expect(signOutSpy).toHaveBeenCalled();
+    expect(routerSpy).toHaveBeenCalledWith(["/"]);
   });
 });

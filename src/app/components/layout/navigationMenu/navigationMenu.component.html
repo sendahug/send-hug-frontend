@@ -1,5 +1,5 @@
 <header id="siteHeader">
-	<a href="#mainContent" class="skip-link" role="navigation" id="skipLink" aria-label="skip to main content">Skip navigation</a>
+	<a href="#mainContent" class="skip-link" id="skipLink" aria-label="skip to main content">Skip to main content</a>
 	<div id="noInternet" *ngIf="alertsService.isOffline.value" role="banner">You are not currently connected to the internet. For updated data, reconnect to the internet and try again.</div>
 	<div id="notVerified" *ngIf="authService.userData() && !authService.userData()!.emailVerified" role="banner">
 		You haven't verified your email address yet. <span>
@@ -83,6 +83,10 @@
 				</svg>				
 				<div class="navLinkText">Admin Panel</div>
 			</a>
+			<button *ngIf="authService.getCurrentFirebaseUser() && !authService.authenticated()" class="navLink" (click)="signOutAndRedirect()" id="signOutNavItem">
+				<fa-icon [icon]="faArrowRightFromBracket" class="navIcon" aria-hidden="true"></fa-icon>
+				<div class="navLinkText">Log Out</div>
+			</button>
 			<div class="newNotification">
 				<button id="notificationsBtn" class="navLink" (click)="toggleNotifications()" aria-label="open notifications tab">
 					<fa-icon [icon]="faBell" class="fa-bell navButton" id="navNotific"></fa-icon>

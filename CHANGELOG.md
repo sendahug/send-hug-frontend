@@ -8,10 +8,14 @@
 
 - Removed the `sitemap.xml` file from the app's public folder. That XML file was only used for accessibility testing, so it doesn't need to be part of the deployed app. ([#1842](https://github.com/sendahug/send-hug-frontend/pull/1842))
 
+#### Fixes
+
+- Previously, when a user registered, they were redirected to the Sign Up page, while being shown an error telling them their user wasn't found and asking whether they meant to sign up. This was unnecessary as the users were obviously in the process of signing up and happened due to the workflow the app executes when a user logs in (via Firebase), which included a step for fetching the user from the app's back-end. Now, when users sign up, the app doesn't attempt to fetch the user from the back-end (as it doesn't exist yet), and instead redirects the user to the Sign Up page without an alert telling them to finish the sign up process. ([#1840](https://github.com/sendahug/send-hug-frontend/pull/1840))
+
 #### Chores
 
-- Re-organised the components folder. With more than 30 components, it was getting too big to work with easily. To make things simpler, the components were split to `routes` (components that are served as routes by the router), `common` (components used across multiple components) and `forms` (form components), depending on their purpose. ([#1841](https://github.com/sendahug/send-hug-frontend/pull/1841))
 - Accessibility testing in CI now includes auto-generating the sitemap pa11y-ci requires to run. Previously, the sitemap had to be generated manually after every update to the app's routes. Now, CI runs a new npm script for generating the sitemap and running pa11y-ci immediately. ([#1842](https://github.com/sendahug/send-hug-frontend/pull/1842))
+- Re-organised the components folder. With more than 30 components, it was getting too big to work with easily. To make things simpler, the components were split to `routes` (components that are served as routes by the router), `common` (components used across multiple components) and `forms` (form components), depending on their purpose. ([#1841](https://github.com/sendahug/send-hug-frontend/pull/1841))
 
 ### 2024-10-03
 

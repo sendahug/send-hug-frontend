@@ -99,6 +99,8 @@ export class AuthService {
   // their previous login
   loggedIn = false;
   tokenExpired = false;
+  // Whether the user is in the process of registering
+  isRegistering = signal(false);
   isUserDataResolved = new BehaviorSubject(false);
   // firebase stuff
   actionCodeSettings = signal<ActionCodeSettings>({
@@ -134,7 +136,7 @@ export class AuthService {
       )
       .pipe(
         switchMap((currentUser) => {
-          if (!currentUser) return EMPTY;
+          if (!currentUser || this.isRegistering()) return EMPTY;
           return this.fetchUser();
         }),
       );

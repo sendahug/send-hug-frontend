@@ -11,7 +11,7 @@
 		<button [ngClass]="menuButtonClass()" id="menuBtn" (click)="toggleMenu()" [attr.aria-hidden]="!showMenuButton()" aria-label="open navigation menu"><fa-icon [icon]="faBars" class="fa-bars"></fa-icon></button>
 		<div id="navLinks" [ngClass]="navMenuClass()" [attr.aria-hidden]="showMenu()">
 			<a [routerLink]="['/']" [ngClass]="getClassForNavItem('/')">
-				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 42 29.9"  id="home" class="navPic navIcon" alt="">
+				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 42 29.9"  id="home" class="navPic navIcon" alt="" aria-hidden="true">
 					<path d="M19.64,19.55q-1.47.28-2.94.6h0C17.7,19.93,18.67,19.73,19.64,19.55Z" transform="translate(0 -0.1)" fill="none"/>
 					<path d="M16.08,27.82c4.62,2.52,10.23,1.64,14.35-1.4C26.29,29.47,21.61,28.63,16.08,27.82Z" transform="translate(0 -0.1)" fill="none"/>
 					<path d="M9.69,16.49a16.59,16.59,0,0,0,1.28,5c-.58-3-1.56-6.43-1.11-9.5A16.47,16.47,0,0,0,9.69,16.49Z" transform="translate(0 -0.1)" fill="none"/>
@@ -29,7 +29,7 @@
 				<div class="navLinkText">Home</div>
 			</a>
 			<a *ngIf="authService.authenticated()" [routerLink]="['/messages']" [ngClass]="getClassForNavItem('/messages')">
-				<fa-icon [icon]="faComments" class="navIcon fa-comments" aria-label="Messages"></fa-icon>
+				<fa-icon [icon]="faComments" class="navIcon fa-comments" aria-hidden="true"></fa-icon>
 				<div class="navLinkText">Messages</div>
 			</a>
 			<a *ngIf="authService.authenticated() && !authService.userData()?.blocked" [routerLink]="['/new', 'Post']" [ngClass]="getClassForNavItem('/new')">
@@ -44,19 +44,19 @@
 				<div class="navLinkText">New Post</div>
 			</a>
 			<a *ngIf="authService.authenticated()" [routerLink]="['/user']" [ngClass]="getClassForNavItem('/user')">
-				<fa-icon [icon]="faUserCircle" class="navIcon fa-user-circle" aria-label="Profile"></fa-icon>
+				<fa-icon [icon]="faUserCircle" class="navIcon fa-user-circle" aria-hidden="true"></fa-icon>
 				<div class="navLinkText">Profile</div>
 			</a>
 			<a *ngIf="!authService.authenticated()" [routerLink]="['/login']" [ngClass]="getClassForNavItem('/login')">
-				<fa-icon [icon]="faUserCircle" class="navIcon fa-user-circle" aria-label="Profile"></fa-icon>
+				<fa-icon [icon]="faUserCircle" class="navIcon fa-user-circle" aria-hidden="true"></fa-icon>
 				<div class="navLinkText">Login</div>
 			</a>
 			<a [routerLink]="['/about']" [ngClass]="getClassForNavItem('/about')">
-				<fa-icon [icon]="faCompass" class="fa-compass navIcon" aria-label="About"></fa-icon>
+				<fa-icon [icon]="faCompass" class="fa-compass navIcon" aria-hidden="true"></fa-icon>
 				<div class="navLinkText">About</div>
 			</a>
 			<a *ngIf="authService.canUser('read:admin-board')" [routerLink]="['/admin']" [ngClass]="getClassForNavItem('/admin')">
-				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 38 44" id="admin" class="navPic navIcon" alt="">
+				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 38 44" id="admin" class="navPic navIcon" alt="" aria-hidden="true">
 					<path d="M17.9,30.18c.08.25.15.5.23.74.79,0,1.57-.05,2.36-.09,0-.23.05-.46.08-.69l-1.48,0Z" fill="none"/>
 					<path d="M20.67,27.76c0,.48,0,1,0,1.53.06-.51.12-1,.17-1.53h-.16Z" fill="none"/>
 					<path d="M26,11.56A5.41,5.41,0,0,0,27.3,9.69l-1.14,1.59A1.31,1.31,0,0,1,26,11.56Z" fill="none"/>

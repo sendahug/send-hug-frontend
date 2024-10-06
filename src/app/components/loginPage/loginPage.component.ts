@@ -100,6 +100,7 @@ export class LoginPage {
               message: "Cannot find user with these details. Did you mean to register?",
             });
           } else {
+            this.authService.isRegistering.set(true);
             this.router.navigate(["/signup"]);
           }
         },
@@ -113,6 +114,7 @@ export class LoginPage {
   signUp(userCreds$: Observable<UserCredential>) {
     return userCreds$.subscribe({
       next: (_firebaseUser) => {
+        this.authService.isRegistering.set(true);
         this.router.navigate(["/signup"]);
       },
       error: (err) => {

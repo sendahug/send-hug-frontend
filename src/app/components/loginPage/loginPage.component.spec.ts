@@ -64,6 +64,7 @@ describe("LoginPage", () => {
     const MockAuthService = MockProvider(AuthService, {
       authenticated: signal(false),
       userData: signal(undefined),
+      isRegistering: signal(false),
     });
     const MockLoader = MockComponent(Loader);
     const MockPasswordResetForm = MockComponent(PasswordResetForm);
@@ -155,6 +156,7 @@ describe("LoginPage", () => {
       expect(fetchUserSpy).toHaveBeenCalledWith(true);
       expect(routerSpy).toHaveBeenCalledWith(["/signup"]);
       expect(alertsSpy).not.toHaveBeenCalled();
+      expect(loginPage["authService"].isRegistering()).toBeTrue();
       done();
     });
   });
@@ -189,6 +191,7 @@ describe("LoginPage", () => {
 
     loginPage.signUp(mockObservable).add(() => {
       expect(routerSpy).toHaveBeenCalledWith(["/signup"]);
+      expect(loginPage["authService"].isRegistering()).toBeTrue();
       expect(alertsSpy).not.toHaveBeenCalled();
       done();
     });

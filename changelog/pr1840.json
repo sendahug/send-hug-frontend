@@ -1,9 +1,0 @@
-{
-  "pr_number": 1840,
-  "changes": [
-    {
-      "change": "Fixes",
-      "description": "Previously, when a user registered, they were redirected to the Sign Up page, while being shown an error telling them their user wasn't found and asking whether they meant to sign up. This was unnecessary as the users were obviously in the process of signing up and happened due to the workflow the app executes when a user logs in (via Firebase), which included a step for fetching the user from the app's back-end. Now, when users sign up, the app doesn't attempt to fetch the user from the back-end (as it doesn't exist yet), and instead redirects the user to the Sign Up page without an alert telling them to finish the sign up process."
-    }
-  ]
-}

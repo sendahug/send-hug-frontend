@@ -175,6 +175,9 @@ jobs:
           paths:
             - "node_modules"
       - run:
+          name: Generate the sitemap
+          command: npm run sitemap:gen
+      - run:
           name: Start frontend server
           command: npm run dev
           background: true

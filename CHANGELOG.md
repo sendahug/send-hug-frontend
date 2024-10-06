@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+### 2024-10-06
+
+#### Chores
+
+- Re-organised the components folder. With more than 30 components, it was getting too big to work with easily. To make things simpler, the components were split to `routes` (components that are served as routes by the router), `common` (components used across multiple components) and `forms` (form components), depending on their purpose. ([#1841](https://github.com/sendahug/send-hug-frontend/pull/1841))
+
 ### 2024-10-03
 
 #### Fixes

@@ -36,7 +36,7 @@ import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { AuthService } from "@app/services/auth.service";
 import { iconCharacters } from "@app/interfaces/types";
 import { User } from "@app/interfaces/user.interface";
-import { DefaultColours, UserIcon } from "@app/components/userIcon/userIcon.component";
+import { DefaultColours, UserIcon } from "@common/userIcon/userIcon.component";
 import BearIconSrc from "@/assets/img/bear.svg";
 import KittyIconSrc from "@/assets/img/kitty.svg";
 import DogIconSrc from "@/assets/img/dog.svg";

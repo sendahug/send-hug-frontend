@@ -35,7 +35,7 @@ import { Component, OnInit, signal } from "@angular/core";
 import { Router, RouterLink } from "@angular/router";
 
 import { AuthService } from "@app/services/auth.service";
-import { Loader } from "@app/components/loader/loader.component";
+import { Loader } from "@common/loader/loader.component";
 
 @Component({
   selector: "app-verify-email-page",

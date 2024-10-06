@@ -43,9 +43,9 @@ import { type PostGet } from "@app/interfaces/post.interface";
 import { AuthService } from "@app/services/auth.service";
 import { SWManager } from "@app/services/sWManager.service";
 import { ApiClientService } from "@app/services/apiClient.service";
-import { Loader } from "@app/components/loader/loader.component";
-import { SinglePost } from "@app/components/post/post.component";
-import { ItemDeleteForm } from "@app/components/itemDeleteForm/itemDeleteForm.component";
+import { Loader } from "@common/loader/loader.component";
+import { SinglePost } from "@common/post/post.component";
+import { ItemDeleteForm } from "@forms/itemDeleteForm/itemDeleteForm.component";
 
 interface MyPostsResponse {
   page: number;

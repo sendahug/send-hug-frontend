@@ -49,7 +49,7 @@ import { NotificationService } from "@app/services/notifications.service";
 import { AuthService } from "@app/services/auth.service";
 import { AlertsService } from "@app/services/alerts.service";
 import { mockAuthedUser } from "@tests/mockData";
-import { UserIcon } from "@app/components/userIcon/userIcon.component";
+import { UserIcon } from "@common/userIcon/userIcon.component";
 
 describe("SettingsPage", () => {
   // Before each test, configure testing environment

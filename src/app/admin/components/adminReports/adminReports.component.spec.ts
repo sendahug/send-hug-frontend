@@ -45,7 +45,7 @@ import { MockComponent, MockProvider } from "ng-mocks";
 
 import { AdminReports } from "./adminReports.component";
 import { AuthService } from "@app/services/auth.service";
-import { Loader } from "@app/components/loader/loader.component";
+import { Loader } from "@common/loader/loader.component";
 import { mockAuthedUser } from "@tests/mockData";
 import { type ReportGet } from "@app/interfaces/report.interface";
 import { ApiClientService } from "@app/services/apiClient.service";

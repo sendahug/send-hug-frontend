@@ -40,7 +40,7 @@ import { provideRouter } from "@angular/router";
 import { SendHugForm } from "./sendHugForm.component";
 import { AuthService } from "@app/services/auth.service";
 import { mockAuthedUser } from "@tests/mockData";
-import { PopUp } from "@app/components/popUp/popUp.component";
+import { PopUp } from "@common/popUp/popUp.component";
 import { ValidationService } from "@app/services/validation.service";
 import { ApiClientService } from "@app/services/apiClient.service";
 import { ItemsService } from "@app/services/items.service";

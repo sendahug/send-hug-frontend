@@ -55,8 +55,8 @@ import { FullList } from "./fullList.component";
 import { ApiClientService } from "@app/services/apiClient.service";
 import { SWManager } from "@app/services/sWManager.service";
 import { type PostGet } from "@app/interfaces/post.interface";
-import { SinglePost } from "@app/components/post/post.component";
-import { Loader } from "@app/components/loader/loader.component";
+import { SinglePost } from "@common/post/post.component";
+import { Loader } from "@common/loader/loader.component";
 
 describe("FullList", () => {
   let pageOnePosts: PostGet[];

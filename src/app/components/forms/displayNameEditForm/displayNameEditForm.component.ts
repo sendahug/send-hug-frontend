@@ -43,7 +43,7 @@ import { AlertsService } from "@app/services/alerts.service";
 import { type ReportData } from "@app/interfaces/report.interface";
 import { type PartialUser } from "@app/interfaces/user.interface";
 import { UpdatedUserReportResponse } from "@app/interfaces/responses";
-import { PopUp } from "@app/components/popUp/popUp.component";
+import { PopUp } from "@common/popUp/popUp.component";
 
 @Component({
   selector: "display-name-edit-form",

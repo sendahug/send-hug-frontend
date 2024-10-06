@@ -43,7 +43,7 @@ import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 // App-related imports
 import { AuthService } from "@app/services/auth.service";
 import { AlertsService } from "@app/services/alerts.service";
-import { Loader } from "@app/components/loader/loader.component";
+import { Loader } from "@common/loader/loader.component";
 import { PasswordResetForm } from "@forms/passwordResetForm/passwordResetForm.component";
 
 @Component({

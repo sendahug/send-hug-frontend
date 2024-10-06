@@ -46,7 +46,7 @@ import { BrowserModule } from "@angular/platform-browser";
 
 import { AdminBlocks } from "./adminBlocks.component";
 import { AuthService } from "@app/services/auth.service";
-import { Loader } from "@app/components/loader/loader.component";
+import { Loader } from "@common/loader/loader.component";
 import { mockAuthedUser } from "@tests/mockData";
 import { ApiClientService } from "@app/services/apiClient.service";
 import { AdminService } from "@app/services/admin.service";

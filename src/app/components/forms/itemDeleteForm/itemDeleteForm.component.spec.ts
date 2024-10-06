@@ -42,7 +42,7 @@ import { provideZoneChangeDetection } from "@angular/core";
 import { MockProvider } from "ng-mocks";
 
 import { ItemDeleteForm } from "./itemDeleteForm.component";
-import { PopUp } from "@app/components/popUp/popUp.component";
+import { PopUp } from "@common/popUp/popUp.component";
 import { AdminService } from "@app/services/admin.service";
 import { ApiClientService } from "@app/services/apiClient.service";
 

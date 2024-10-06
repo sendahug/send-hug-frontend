@@ -40,7 +40,7 @@ import { AdminService } from "@app/services/admin.service";
 import { ApiClientService } from "@app/services/apiClient.service";
 import { SWManager } from "@app/services/sWManager.service";
 import { AlertsService } from "@app/services/alerts.service";
-import { PopUp } from "@app/components/popUp/popUp.component";
+import { PopUp } from "@common/popUp/popUp.component";
 
 @Component({
   selector: "item-delete-form",

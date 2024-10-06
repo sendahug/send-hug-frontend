@@ -52,7 +52,7 @@ import { AuthService } from "@app/services/auth.service";
 import { getMockFirebaseUser, mockAuthedUser } from "@tests/mockData";
 import { User } from "@app/interfaces/user.interface";
 import { PasswordResetForm } from "@forms/passwordResetForm/passwordResetForm.component";
-import { Loader } from "@app/components/loader/loader.component";
+import { Loader } from "@common/loader/loader.component";
 
 describe("LoginPage", () => {
   let mockFirbeaseUser: FirebaseUser;

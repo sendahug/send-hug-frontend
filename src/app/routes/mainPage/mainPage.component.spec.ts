@@ -47,8 +47,8 @@ import { MockComponent, MockProvider } from "ng-mocks";
 import { MainPage } from "./mainPage.component";
 import { ApiClientService } from "@app/services/apiClient.service";
 import { SWManager } from "@app/services/sWManager.service";
-import { SinglePost } from "@app/components/post/post.component";
-import { Loader } from "@app/components/loader/loader.component";
+import { SinglePost } from "@common/post/post.component";
+import { Loader } from "@common/loader/loader.component";
 import { AuthService } from "@app/services/auth.service";
 
 const newItems = [

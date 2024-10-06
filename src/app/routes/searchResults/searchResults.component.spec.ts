@@ -52,8 +52,8 @@ import { of } from "rxjs";
 import { SearchResults } from "./searchResults.component";
 import { ItemsService } from "@app/services/items.service";
 import { iconCharacters } from "@app/interfaces/types";
-import { SinglePost } from "@app/components/post/post.component";
-import { Loader } from "@app/components/loader/loader.component";
+import { SinglePost } from "@common/post/post.component";
+import { Loader } from "@common/loader/loader.component";
 import { ApiClientService } from "@app/services/apiClient.service";
 
 const mockUserSearchResults = [

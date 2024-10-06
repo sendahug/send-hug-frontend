@@ -49,7 +49,7 @@ import { MyPosts } from "./myPosts.component";
 import { AuthService } from "@app/services/auth.service";
 import { mockAuthedUser } from "@tests/mockData";
 import { type PostGet } from "@app/interfaces/post.interface";
-import { SinglePost } from "@app/components/post/post.component";
+import { SinglePost } from "@common/post/post.component";
 import { ItemDeleteForm } from "@forms/itemDeleteForm/itemDeleteForm.component";
 import { ApiClientService } from "@app/services/apiClient.service";
 import { SWManager } from "@app/services/sWManager.service";

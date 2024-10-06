@@ -56,8 +56,8 @@ import { FullThread } from "@app/interfaces/thread.interface";
 import { type MessageGet } from "@app/interfaces/message.interface";
 import { ItemDeleteForm } from "@forms/itemDeleteForm/itemDeleteForm.component";
 import { ApiClientService } from "@app/services/apiClient.service";
-import { Loader } from "@app/components/loader/loader.component";
-import { UserIcon } from "@app/components/userIcon/userIcon.component";
+import { Loader } from "@common/loader/loader.component";
+import { UserIcon } from "@common/userIcon/userIcon.component";
 
 describe("AppMessaging", () => {
   let mockMessages: MessageGet[];

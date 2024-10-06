@@ -44,7 +44,7 @@ import { MockProvider } from "ng-mocks";
 
 import { PostEditForm } from "./postEditForm.component";
 import { type PostGet } from "@app/interfaces/post.interface";
-import { PopUp } from "@app/components/popUp/popUp.component";
+import { PopUp } from "@common/popUp/popUp.component";
 import { ValidationService } from "@app/services/validation.service";
 import { AdminService } from "@app/services/admin.service";
 import { AuthService } from "@app/services/auth.service";

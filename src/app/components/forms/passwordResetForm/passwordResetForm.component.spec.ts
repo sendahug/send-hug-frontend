@@ -43,7 +43,7 @@ import { MockProvider } from "ng-mocks";
 import { PasswordResetForm } from "./passwordResetForm.component";
 import { AuthService } from "@app/services/auth.service";
 import { mockAuthedUser } from "@tests/mockData";
-import { PopUp } from "@app/components/popUp/popUp.component";
+import { PopUp } from "@common/popUp/popUp.component";
 
 // DISPLAY NAME EDIT
 // ==================================================================

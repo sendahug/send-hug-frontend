@@ -52,8 +52,8 @@ import { iconCharacters } from "@app/interfaces/types";
 import { DisplayNameEditForm } from "@forms/displayNameEditForm/displayNameEditForm.component";
 import { ReportForm } from "@forms/reportForm/reportForm.component";
 import { ApiClientService } from "@app/services/apiClient.service";
-import { Loader } from "@app/components/loader/loader.component";
-import { UserIcon } from "@app/components/userIcon/userIcon.component";
+import { Loader } from "@common/loader/loader.component";
+import { UserIcon } from "@common/userIcon/userIcon.component";
 
 describe("UserPage", () => {
   // Before each test, configure testing environment

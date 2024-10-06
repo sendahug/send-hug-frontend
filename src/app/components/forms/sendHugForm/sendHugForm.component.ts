@@ -41,7 +41,7 @@ import { AlertsService } from "@app/services/alerts.service";
 import { ApiClientService } from "@app/services/apiClient.service";
 import { ValidationService } from "@app/services/validation.service";
 import { ItemsService } from "@app/services/items.service";
-import { PopUp } from "@app/components/popUp/popUp.component";
+import { PopUp } from "@common/popUp/popUp.component";
 
 interface SendHugResponse {
   success: boolean;

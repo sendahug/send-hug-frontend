@@ -44,7 +44,7 @@ import { AdminReports } from "./components/adminReports/adminReports.component";
 import { PostEditForm } from "@forms/postEditForm/postEditForm.component";
 import { ItemDeleteForm } from "@forms/itemDeleteForm/itemDeleteForm.component";
 import { DisplayNameEditForm } from "@forms/displayNameEditForm/displayNameEditForm.component";
-import { Loader } from "@app/components/loader/loader.component";
+import { Loader } from "@common/loader/loader.component";
 
 @NgModule({
   imports: [

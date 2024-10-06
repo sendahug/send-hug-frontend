@@ -43,8 +43,8 @@ import { FullThread, ParsedThread } from "@app/interfaces/thread.interface";
 import { type MessageGet } from "@app/interfaces/message.interface";
 import { SWManager } from "@app/services/sWManager.service";
 import { ApiClientService } from "@app/services/apiClient.service";
-import { Loader } from "@app/components/loader/loader.component";
-import { UserIcon } from "@app/components/userIcon/userIcon.component";
+import { Loader } from "@common/loader/loader.component";
+import { UserIcon } from "@common/userIcon/userIcon.component";
 import { ItemDeleteForm } from "@forms/itemDeleteForm/itemDeleteForm.component";
 
 interface MessagesResponse {

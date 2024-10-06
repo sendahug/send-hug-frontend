@@ -63,6 +63,7 @@ export default defineConfig(({ mode }) => ({
       "@app": path.resolve(__dirname, "./src/app"),
       "@admin": path.resolve(__dirname, "./src/app/admin"),
       "@forms": path.resolve(__dirname, "./src/app/components/forms"),
+      "@common": path.resolve(__dirname, "./src/app/components/common"),
       "@routes": path.resolve(__dirname, "./src/app/routes"),
       "@tests": path.resolve(__dirname, "./src/tests"),
     },

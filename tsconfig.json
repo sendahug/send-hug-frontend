@@ -27,6 +27,7 @@
       "@app/*": ["./src/app/*"],
       "@admin/*": ["./src/app/admin/*"],
       "@forms/*": ["./src/app/components/forms/*"],
+      "@common/*": ["./src/app/components/common/*"],
       "@routes/*": ["./src/app/routes/*"],
       "@tests/*": ["./src/tests/*"],
       "@/*": ["./src/*"]

@@ -37,7 +37,7 @@ import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 // App-related imports
 import { AuthService } from "@app/services/auth.service";
 import { AlertsService } from "@app/services/alerts.service";
-import { PopUp } from "@app/components/popUp/popUp.component";
+import { PopUp } from "@common/popUp/popUp.component";
 
 @Component({
   selector: "app-reset-pw-form",

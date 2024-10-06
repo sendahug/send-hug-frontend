@@ -41,7 +41,7 @@ import { NotificationService } from "@app/services/notifications.service";
 import { AuthService } from "@app/services/auth.service";
 import { AlertsService } from "@app/services/alerts.service";
 import { IconEditor } from "@app/components/iconEditor/iconEditor.component";
-import { UserIcon } from "@app/components/userIcon/userIcon.component";
+import { UserIcon } from "@common/userIcon/userIcon.component";
 
 @Component({
   selector: "app-settings",

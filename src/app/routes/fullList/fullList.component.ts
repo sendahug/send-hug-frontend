@@ -41,8 +41,8 @@ import { FullListType } from "@app/interfaces/types";
 import { type PostGet } from "@app/interfaces/post.interface";
 import { SWManager } from "@app/services/sWManager.service";
 import { ApiClientService } from "@app/services/apiClient.service";
-import { SinglePost } from "@app/components/post/post.component";
-import { Loader } from "@app/components/loader/loader.component";
+import { SinglePost } from "@common/post/post.component";
+import { Loader } from "@common/loader/loader.component";
 
 interface PostsListResponse {
   success: boolean;

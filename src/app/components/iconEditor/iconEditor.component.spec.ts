@@ -45,7 +45,7 @@ import { NO_ERRORS_SCHEMA, provideZoneChangeDetection, signal } from "@angular/c
 import { IconEditor } from "./iconEditor.component";
 import { AuthService } from "@app/services/auth.service";
 import { mockAuthedUser } from "@tests/mockData";
-import { UserIcon } from "@app/components/userIcon/userIcon.component";
+import { UserIcon } from "@common/userIcon/userIcon.component";
 
 describe("IconEditor", () => {
   // Before each test, configure testing environment

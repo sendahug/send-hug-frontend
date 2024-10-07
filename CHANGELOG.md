@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+### 2024-10-07
+
+#### Features
+
+- Added the ability to log out after signing up with Firebase but before signing up in our system. Previously, users who signed up with a different account than they meant to (for example, with an email they thought existed in the system but didn't) had to clear the site's cache and saved data in order to log out of Firebase. This happened because the `log out` option was reserved for logged in users - defined as users logged into their account in the app, rather than in Firebase. Now, users are presented with the option to log out (also marked as `use another account` in the signup page) before completing signup in the app. ([#1843](https://github.com/sendahug/send-hug-frontend/pull/1843))
+
+#### Fixes
+
+- Removed the unnecessary ARIA roles the navigation menu's icons had and set them to be hidden from assistive technology instead. The icons are decorational only, and as per WCAG guidelines, should've been hidden in the first place. ([#1843](https://github.com/sendahug/send-hug-frontend/pull/1843))
+
 ### 2024-10-06
 
 #### Changes

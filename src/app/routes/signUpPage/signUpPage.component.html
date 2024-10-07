@@ -12,7 +12,10 @@
         <a [routerLink]="['/policies/privacy']" class="profileLink" target="_blank">privacy policy</a>.
       </label>
     </div>
-    <button type="submit" class="appButton sendData" (click)="signUp()" id="logIn">Sign Up</button>
+    <span class="formButtons">
+      <button type="submit" class="appButton sendData" (click)="signUp()" id="logIn">Sign Up</button>
+      <button type="button" class="appButton sendData" (click)="signOutAndRedirect()" id="logOut">Use Another Account</button>
+    </span>
   </form>
 </div>
 

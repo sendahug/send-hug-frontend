@@ -41,6 +41,7 @@ import { AuthService } from "@app/services/auth.service";
 @Component({
   selector: "app-signup-page",
   templateUrl: "./signUpPage.component.html",
+  styleUrl: "./signUpPage.component.less",
   standalone: true,
   imports: [ReactiveFormsModule, CommonModule, RouterLink],
 })
@@ -93,5 +94,13 @@ export class SignUpPage {
         this.router.navigate(["/user"]);
       },
     });
+  }
+
+  /**
+   * Sign out and redirect back to the home page.
+   */
+  signOutAndRedirect() {
+    this.authService.logout();
+    this.router.navigate(["/login"]);
   }
 }

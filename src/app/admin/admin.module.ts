@@ -32,7 +32,6 @@
 
 import { NgModule } from "@angular/core";
 import { provideHttpClient } from "@angular/common/http";
-import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { ReactiveFormsModule } from "@angular/forms";
 import { CommonModule } from "@angular/common";
 import { provideRouter, RouterLink, withComponentInputBinding } from "@angular/router";
@@ -49,7 +48,6 @@ import { Loader } from "@common/loader/loader.component";
 @NgModule({
   imports: [
     ReactiveFormsModule,
-    FontAwesomeModule,
     CommonModule,
     PostEditForm,
     ItemDeleteForm,

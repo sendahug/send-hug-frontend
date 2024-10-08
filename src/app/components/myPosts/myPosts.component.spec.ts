@@ -39,7 +39,6 @@ import {
   platformBrowserDynamicTesting,
 } from "@angular/platform-browser-dynamic/testing";
 import { Component, signal } from "@angular/core";
-import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { of } from "rxjs";
 import { By } from "@angular/platform-browser";
 import { NO_ERRORS_SCHEMA } from "@angular/core";
@@ -98,7 +97,7 @@ describe("MyPosts", () => {
 
     TestBed.configureTestingModule({
       schemas: [NO_ERRORS_SCHEMA],
-      imports: [FontAwesomeModule, MockItemDeleteForm, SinglePost, MyPosts, MockUserPage],
+      imports: [MockItemDeleteForm, SinglePost, MyPosts, MockUserPage],
       declarations: [],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },

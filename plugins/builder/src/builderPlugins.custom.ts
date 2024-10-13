@@ -28,11 +28,18 @@
 */
 import MagicString from "magic-string";
 import { BuilderPlugin } from "./builder.base";
+import { createFilter } from "@rollup/pluginutils";
 
 interface IconReplacement {
   originalIcon: string;
   replacementSet: string;
   replacementIcon: string;
+}
+
+interface SvgIconReplacement {
+  svgId: string;
+  replacementIcon: string;
+  addImportInFile: string;
 }
 
 /**
@@ -44,6 +51,8 @@ interface IconReplacement {
  *                            - replacementSet - which set (sub-package) of Font Awesome
  *                                               icons the new icon is from.
  *                            - replacementIcon - which icon to use as replacement.
+ * @param extension - An extension to add to the import of the new icons. The extension
+ *                    is added to the end of each import's alias (e.g., "faIcon as faIconPro").
  */
 export function ProvideFontAwesomeProPlugin(
   iconReplacements: IconReplacement[],
@@ -56,8 +65,8 @@ export function ProvideFontAwesomeProPlugin(
     /**
      * Used to replace the free icons in the code with the Pro icons (if they're available).
      */
-    read(_id, code) {
-      if (!code) return;
+    read(id, code) {
+      if (!code || !id.includes("src/") || !id.endsWith(".ts")) return;
 
       // Try to load the Send A Hug Font Awesome kit.
       // If it's available, we're good to use Pro icons.
@@ -91,6 +100,81 @@ export function ProvideFontAwesomeProPlugin(
         // out how to parse and separate them
 
         return magicString.toString();
+        // Otherwise, leave it as is
+      } catch (error) {
+        console.log(error);
+        return code;
+      }
+    },
+  };
+}
+
+/**
+ * A plugin for replacing the custom SVG icons we use with
+ * Font Awesome Pro custom icons (if they're available).
+ * @param svgIconReplacements - A list of SVGs to replace with custom icons. Each
+ *                              item consists of:
+ *                                - svgId - The ID of the HTML SVG element.
+ *                                - replacementIcon - The name of the custom icon to import and use.
+ *                                - addImportInFile - The file to replace the SVG in.
+ */
+export function ProvideCustomIcons(svgIconReplacements: SvgIconReplacement[]): BuilderPlugin {
+  let filter: (id: string | undefined) => boolean;
+
+  return {
+    name: "svg-icon-replacer",
+    apply: ["dev", "production"],
+
+    setup(_env) {
+      const filesToCheck = svgIconReplacements.flatMap((svgIcon) => [
+        `src/**/${svgIcon.addImportInFile}.ts`,
+        `src/**/${svgIcon.addImportInFile}.html`,
+      ]);
+      filter = createFilter(filesToCheck);
+    },
+
+    read(fileId, code) {
+      if (!filter(fileId) || !code) return code;
+
+      // Try to load the Send A Hug Font Awesome kit.
+      // If it's available, we're good to use Pro icons.
+      try {
+        import("@awesome.me/kit-5fefbbc637");
+
+        const magicString = new MagicString(code);
+
+        const iconsForFile = svgIconReplacements.filter((icon) =>
+          fileId.includes(icon.addImportInFile),
+        );
+
+        // For TypeScript files, add the imports for the custom icons
+        if (fileId.endsWith(".ts")) {
+          const iconImports = iconsForFile.map((icon) => icon.replacementIcon).join(",");
+          const importString = `import { ${iconImports} } from "@awesome.me/kit-5fefbbc637/icons/kit/custom";`;
+          magicString.replace(`@Component({`, `${importString}\n\n@Component({`);
+
+          const iconAssignment = iconsForFile.map(
+            (icon) => `${icon.replacementIcon} = ${icon.replacementIcon};\n`,
+          );
+          magicString.replace(`constructor(`, `${iconAssignment.join("")}\n\nconstructor(`);
+
+          return magicString.toString();
+          // For HTML files, replace the SVG with the fa-icon
+        } else if (fileId.endsWith(".html")) {
+          magicString.replaceAll(/<svg (.|\n)+?(<\/svg>)/g, (svg) => {
+            // Find the ID of the SVG and the details of the icon to replace it with
+            const svgIdMatch = svg.match(/id="(.*?)"/);
+            if (!svgIdMatch) return svg;
+            const faIcon = iconsForFile.find((icon) => icon.svgId == svgIdMatch[1]);
+            if (!faIcon) return svg;
+
+            return `<fa-icon [icon]="${faIcon.replacementIcon}" class="navIcon customIcon" aria-hidden="true"></fa-icon>`;
+          });
+
+          return magicString.toString();
+        } else {
+          return code;
+        }
         // Otherwise, leave it as is
       } catch (error) {
         console.log(error);

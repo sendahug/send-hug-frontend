@@ -38,7 +38,10 @@ import {
   addCompilerPlugin,
   addPolyfillsPlugin,
 } from "./plugins/builder/src/builderPlugins";
-import { ProvideFontAwesomeProPlugin } from "./plugins/builder/src/builderPlugins.custom";
+import {
+  ProvideFontAwesomeProPlugin,
+  ProvideCustomIcons,
+} from "./plugins/builder/src/builderPlugins.custom";
 import path from "node:path";
 import MagicString from "magic-string";
 
@@ -72,6 +75,12 @@ const iconReplacements = [
   },
 ];
 
+const svgIconReplacements = [
+  { svgId: "post", replacementIcon: "faSolidSahPost", addImportInFile: "navigationMenu.component" },
+  { svgId: "home", replacementIcon: "faSahHome", addImportInFile: "navigationMenu.component" },
+  { svgId: "admin", replacementIcon: "faSahAdmin", addImportInFile: "navigationMenu.component" },
+];
+
 /**
  * A plugin that runs the Angular compiler in order to build the app.
  * @returns A Vite plugin for building the app.
@@ -98,6 +107,7 @@ export function BuildAngularPlugin(): Plugin {
         [
           hmrPlugin(),
           ProvideFontAwesomeProPlugin(iconReplacements, "Pro"),
+          ProvideCustomIcons(svgIconReplacements),
           addCompilerPlugin(),
           addPolyfillsPlugin(),
         ],

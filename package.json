@@ -12,10 +12,11 @@
     "cypress:open": "cypress open",
     "size": "npm run build && size-limit",
     "cleanBuild": "node cleanDist.js",
-    "test": "web-test-runner",
-    "test:open": "web-test-runner --open --manual",
+    "test": "npm run build:builder && web-test-runner",
+    "test:open": "npm run build:builder && web-test-runner --open --manual",
     "sitemap:gen": "npx tsx plugins/SitemapGen.ts",
-    "pa11y": "npm run sitemap:gen && pa11y-ci --sitemap http://localhost:3000/sitemap.xml --config .pa11yci"
+    "pa11y": "npm run sitemap:gen && pa11y-ci --sitemap http://localhost:3000/sitemap.xml --config .pa11yci",
+    "build:builder": "cd plugins/builder && tsc && cd ../.."
   },
   "devDependencies": {
     "@babel/core": "^7.25.7",
@@ -27,7 +28,7 @@
     "@types/babel__core": "^7.20.5",
     "@types/jasmine": "^5.1.4",
     "@types/less": "^3.0.6",
-    "@types/node": "^22.7.4",
+    "@types/node": "^22.7.5",
     "@web/dev-server-esbuild": "^1.0.2",
     "@web/dev-server-rollup": "^0.6.4",
     "@web/test-runner": "^0.19.0",

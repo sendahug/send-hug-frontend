@@ -81,7 +81,7 @@ if (import.meta.hot) {
 export function hmrPlugin(): BuilderPlugin {
   return {
     name: "hmr-plugin",
-    apply: "dev",
+    apply: ["dev"],
 
     /**
      * Read hook. Adds an HMR handler to the main.ts file.
@@ -132,7 +132,7 @@ export function instrumentFilesPlugin(config: CoverageConfig): BuilderPlugin {
 
   return {
     name: "instrument-files",
-    apply: "test",
+    apply: ["test"],
     setup(_env) {
       filter = createFilter(config.include, config.exclude);
     },
@@ -163,7 +163,7 @@ export function instrumentFilesPlugin(config: CoverageConfig): BuilderPlugin {
 export function processSVGUrlsPlugin(): BuilderPlugin {
   return {
     name: "process-svg-urls",
-    apply: "test",
+    apply: ["test"],
     read(_fileId, code) {
       if (!code) return;
 
@@ -191,7 +191,7 @@ export function processSVGUrlsPlugin(): BuilderPlugin {
 export function addCompilerPlugin(): BuilderPlugin {
   return {
     name: "add-compiler",
-    apply: "dev",
+    apply: ["dev"],
     transform(fileId, code) {
       if (!fileId.includes("main.ts") || !code) return code;
 
@@ -207,7 +207,7 @@ export function addCompilerPlugin(): BuilderPlugin {
 export function addPolyfillsPlugin(): BuilderPlugin {
   return {
     name: "add-polyfills",
-    apply: "production",
+    apply: ["production"],
     transform(fileId, code) {
       if (!fileId.includes("main.ts") || !code) return code;
 

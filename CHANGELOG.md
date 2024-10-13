@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+### 2024-10-13
+
+#### Chores
+
+- Split the Angular Builder class into a basic builder - which only handles the compilation process itself - and plugins - which add extra functionality (e.g., HMR, instrumentation). This creates cleaner, more specific code, and allows us to add functionality to the builder with ease (using the plugin system), without having to update the builder itself. ([#1849](https://github.com/sendahug/send-hug-frontend/pull/1849))
+- The TypeScript Angular Builder and its plugins are now transpiled to JavaScript before tests run. Instead of having to maintain two builders (one in TypeScript and one in JavaScript, as web-test-runner doesn't support TypeScript), we now use the same builder for both processes. A command for transpiling the Builder and plugins to JavaScript was also added to the project's npm scripts. ([#1849](https://github.com/sendahug/send-hug-frontend/pull/1849))
+
 ### 2024-10-07
 
 #### Features

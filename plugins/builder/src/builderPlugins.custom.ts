@@ -29,6 +29,7 @@
 import MagicString from "magic-string";
 import { BuilderPlugin } from "./builder.base";
 import { createFilter } from "@rollup/pluginutils";
+import { execSync } from "node:child_process";
 
 interface IconReplacement {
   originalIcon: string;
@@ -58,9 +59,21 @@ export function ProvideFontAwesomeProPlugin(
   iconReplacements: IconReplacement[],
   extension: string,
 ): BuilderPlugin {
+  let fontAwesomeExists = false;
+
   return {
     name: "font-awesome-pro-provider",
     apply: ["dev", "production"],
+
+    setup(_env) {
+      // Check if the Send A Hug Font Awesome kit is installed.
+      try {
+        execSync("npm ls @awesome.me/kit-5fefbbc637");
+        fontAwesomeExists = true;
+      } catch {
+        fontAwesomeExists = false;
+      }
+    },
 
     /**
      * Used to replace the free icons in the code with the Pro icons (if they're available).
@@ -68,43 +81,40 @@ export function ProvideFontAwesomeProPlugin(
     read(id, code) {
       if (!code || !id.includes("src/") || !id.endsWith(".ts")) return;
 
-      // Try to load the Send A Hug Font Awesome kit.
+      // Check if the Send A Hug Font Awesome kit is installed.
       // If it's available, we're good to use Pro icons.
-      try {
-        import("@awesome.me/kit-5fefbbc637");
-
-        const magicString = new MagicString(code);
-        const setsToImport: { [key: string]: string[] } = {};
-
-        // Find the icons that exist in this bit of the code and update them
-        iconReplacements
-          .filter((i) => code.includes(i.originalIcon))
-          .forEach((icon) => {
-            magicString.replace(
-              `${icon.originalIcon} = ${icon.originalIcon};`,
-              `${icon.originalIcon} = ${icon.replacementIcon}${extension};`,
-            );
-            if (!setsToImport[icon.replacementSet]) setsToImport[icon.replacementSet] = [];
-            setsToImport[icon.replacementSet].push(icon.replacementIcon);
-          });
-
-        let importString = "";
-
-        Object.keys(setsToImport).forEach((set) => {
-          importString += `import { ${setsToImport[set].map((icon) => `${icon} as ${icon}${extension}`).join(",")} } from "@awesome.me/kit-5fefbbc637/icons/${set}";\n`;
-        });
-
-        magicString.replace(`@Component({`, `${importString}\n\n@Component({`);
-
-        // TODO: We should definitely clean out the unused imports, but that requires figuring
-        // out how to parse and separate them
-
-        return magicString.toString();
-        // Otherwise, leave it as is
-      } catch (error) {
-        console.log(error);
+      if (!fontAwesomeExists) {
+        // console.debug("Font Awesome Pro not installed. Proceeding with default icons.");
         return code;
       }
+
+      const magicString = new MagicString(code);
+      const setsToImport: { [key: string]: string[] } = {};
+
+      // Find the icons that exist in this bit of the code and update them
+      iconReplacements
+        .filter((i) => code.includes(i.originalIcon))
+        .forEach((icon) => {
+          magicString.replace(
+            `${icon.originalIcon} = ${icon.originalIcon};`,
+            `${icon.originalIcon} = ${icon.replacementIcon}${extension};`,
+          );
+          if (!setsToImport[icon.replacementSet]) setsToImport[icon.replacementSet] = [];
+          setsToImport[icon.replacementSet].push(icon.replacementIcon);
+        });
+
+      let importString = "";
+
+      Object.keys(setsToImport).forEach((set) => {
+        importString += `import { ${setsToImport[set].map((icon) => `${icon} as ${icon}${extension}`).join(",")} } from "@awesome.me/kit-5fefbbc637/icons/${set}";\n`;
+      });
+
+      magicString.replace(`@Component({`, `${importString}\n\n@Component({`);
+
+      // TODO: We should definitely clean out the unused imports, but that requires figuring
+      // out how to parse and separate them
+
+      return magicString.toString();
     },
   };
 }
@@ -120,6 +130,7 @@ export function ProvideFontAwesomeProPlugin(
  */
 export function ProvideCustomIcons(svgIconReplacements: SvgIconReplacement[]): BuilderPlugin {
   let filter: (id: string | undefined) => boolean;
+  let fontAwesomeExists = false;
 
   return {
     name: "svg-icon-replacer",
@@ -131,53 +142,58 @@ export function ProvideCustomIcons(svgIconReplacements: SvgIconReplacement[]): B
         `src/**/${svgIcon.addImportInFile}.html`,
       ]);
       filter = createFilter(filesToCheck);
+
+      // Check if the Send A Hug Font Awesome kit is installed.
+      try {
+        execSync("npm ls @awesome.me/kit-5fefbbc637");
+        fontAwesomeExists = true;
+      } catch {
+        fontAwesomeExists = false;
+      }
     },
 
     read(fileId, code) {
       if (!filter(fileId) || !code) return code;
 
-      // Try to load the Send A Hug Font Awesome kit.
+      // Check if the Send A Hug Font Awesome kit is installed.
       // If it's available, we're good to use Pro icons.
-      try {
-        import("@awesome.me/kit-5fefbbc637");
+      if (!fontAwesomeExists) {
+        // console.debug("Font Awesome Pro not installed. Proceeding with default icons.");
+        return code;
+      }
 
-        const magicString = new MagicString(code);
+      const magicString = new MagicString(code);
 
-        const iconsForFile = svgIconReplacements.filter((icon) =>
-          fileId.includes(icon.addImportInFile),
+      const iconsForFile = svgIconReplacements.filter((icon) =>
+        fileId.includes(icon.addImportInFile),
+      );
+
+      // For TypeScript files, add the imports for the custom icons
+      if (fileId.endsWith(".ts")) {
+        const iconImports = iconsForFile.map((icon) => icon.replacementIcon).join(",");
+        const importString = `import { ${iconImports} } from "@awesome.me/kit-5fefbbc637/icons/kit/custom";`;
+        magicString.replace(`@Component({`, `${importString}\n\n@Component({`);
+
+        const iconAssignment = iconsForFile.map(
+          (icon) => `${icon.replacementIcon} = ${icon.replacementIcon};\n`,
         );
+        magicString.replace(`constructor(`, `${iconAssignment.join("")}\n\nconstructor(`);
 
-        // For TypeScript files, add the imports for the custom icons
-        if (fileId.endsWith(".ts")) {
-          const iconImports = iconsForFile.map((icon) => icon.replacementIcon).join(",");
-          const importString = `import { ${iconImports} } from "@awesome.me/kit-5fefbbc637/icons/kit/custom";`;
-          magicString.replace(`@Component({`, `${importString}\n\n@Component({`);
+        return magicString.toString();
+        // For HTML files, replace the SVG with the fa-icon
+      } else if (fileId.endsWith(".html")) {
+        magicString.replaceAll(/<svg (.|\n)+?(<\/svg>)/g, (svg) => {
+          // Find the ID of the SVG and the details of the icon to replace it with
+          const svgIdMatch = svg.match(/id="(.*?)"/);
+          if (!svgIdMatch) return svg;
+          const faIcon = iconsForFile.find((icon) => icon.svgId == svgIdMatch[1]);
+          if (!faIcon) return svg;
 
-          const iconAssignment = iconsForFile.map(
-            (icon) => `${icon.replacementIcon} = ${icon.replacementIcon};\n`,
-          );
-          magicString.replace(`constructor(`, `${iconAssignment.join("")}\n\nconstructor(`);
+          return `<fa-icon [icon]="${faIcon.replacementIcon}" class="navIcon customIcon" aria-hidden="true"></fa-icon>`;
+        });
 
-          return magicString.toString();
-          // For HTML files, replace the SVG with the fa-icon
-        } else if (fileId.endsWith(".html")) {
-          magicString.replaceAll(/<svg (.|\n)+?(<\/svg>)/g, (svg) => {
-            // Find the ID of the SVG and the details of the icon to replace it with
-            const svgIdMatch = svg.match(/id="(.*?)"/);
-            if (!svgIdMatch) return svg;
-            const faIcon = iconsForFile.find((icon) => icon.svgId == svgIdMatch[1]);
-            if (!faIcon) return svg;
-
-            return `<fa-icon [icon]="${faIcon.replacementIcon}" class="navIcon customIcon" aria-hidden="true"></fa-icon>`;
-          });
-
-          return magicString.toString();
-        } else {
-          return code;
-        }
-        // Otherwise, leave it as is
-      } catch (error) {
-        console.log(error);
+        return magicString.toString();
+      } else {
         return code;
       }
     },

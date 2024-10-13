@@ -2,6 +2,7 @@
   MIT License
 
   Copyright (c) 2020-2024 Shir Bar Lev
+  Source: https://github.com/shirblc/vite-angular/blob/main/plugins/ubilder/builderPlugins.ts
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -25,6 +26,7 @@
 import { createFilter } from "@rollup/pluginutils";
 import { transformSync } from "@babel/core";
 import { BuilderPlugin } from "./builder.base";
+import { resolve } from "node:path";
 
 export interface CoverageConfig {
   include: string[];
@@ -79,7 +81,6 @@ if (import.meta.hot) {
 export function hmrPlugin(): BuilderPlugin {
   return {
     name: "hmr-plugin",
-    stage: "post-transform",
     apply: "dev",
 
     /**
@@ -131,7 +132,6 @@ export function instrumentFilesPlugin(config: CoverageConfig): BuilderPlugin {
 
   return {
     name: "instrument-files",
-    stage: "read",
     apply: "test",
     setup(_env) {
       filter = createFilter(config.include, config.exclude);
@@ -156,13 +156,41 @@ export function instrumentFilesPlugin(config: CoverageConfig): BuilderPlugin {
 }
 
 /**
+ * A plugin for replacing the SVG URL imports with the raw URLs in tests. The
+ * URL import is handled by Vite, and since we don't use Vite in tests, it
+ * confuses Babel during intrumentation.
+ */
+export function processSVGUrlsPlugin(): BuilderPlugin {
+  return {
+    name: "process-svg-urls",
+    apply: "test",
+    read(_fileId, code) {
+      if (!code) return;
+
+      // Replace any asset imports with the relevant paths.
+      const matches = code.matchAll(/import ([a-zA-Z]+) from "(.*)\.svg";/g);
+      let result = code;
+
+      [...matches].forEach((element) => {
+        result = result.replace(element[0], "");
+        result = result.replace(
+          `= ${element[1]};`,
+          `= "${resolve(element[2].replace("@/", "./src/"))}.svg";`,
+        );
+      });
+
+      return result;
+    },
+  };
+}
+
+/**
  * Imports the compiler to the code in development. This replaces the
  * angular linker vite plugin in development as it's considerably faster.
  */
 export function addCompilerPlugin(): BuilderPlugin {
   return {
     name: "add-compiler",
-    stage: "post-transform",
     apply: "dev",
     transform(fileId, code) {
       if (!fileId.includes("main.ts") || !code) return code;
@@ -179,7 +207,6 @@ export function addCompilerPlugin(): BuilderPlugin {
 export function addPolyfillsPlugin(): BuilderPlugin {
   return {
     name: "add-polyfills",
-    stage: "post-transform",
     apply: "production",
     transform(fileId, code) {
       if (!fileId.includes("main.ts") || !code) return code;

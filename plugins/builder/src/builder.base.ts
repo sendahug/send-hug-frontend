@@ -2,7 +2,7 @@
   MIT License
 
   Copyright (c) 2020-2024 Shir Bar Lev
-  Source: https://github.com/shirblc/vite-angular/blob/main/plugins/builder.js
+  Source: https://github.com/shirblc/vite-angular/blob/main/plugins/ubilder/builder.base.ts
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -40,7 +40,6 @@ export type Environment = "dev" | "production" | "test";
 
 export interface BuilderPlugin {
   name: string;
-  stage: ApplyAt;
   apply: Environment;
   setup?: (env: Environment) => undefined;
   read?: (fileId: string, code: string | undefined) => string | undefined;

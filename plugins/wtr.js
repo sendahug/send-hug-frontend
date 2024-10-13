@@ -27,7 +27,11 @@ import { resolve } from "node:path";
 import { readFileSync } from "node:fs";
 import { loadEnv } from "vite";
 import AngularBuilder from "./builder/dist/builder.base.js";
-import { instrumentFilesPlugin, addCompilerPlugin } from "./builder/dist/builderPlugins.js";
+import {
+  instrumentFilesPlugin,
+  addCompilerPlugin,
+  processSVGUrlsPlugin,
+} from "./builder/dist/builderPlugins.js";
 
 export const AngularTestsPlugin = () => {
   let ngBuilder;
@@ -36,6 +40,7 @@ export const AngularTestsPlugin = () => {
     name: "angular-tests-plugin",
     async buildStart(options) {
       ngBuilder = new AngularBuilder("test", "dev", resolve("./tsconfig.json"), [
+        processSVGUrlsPlugin(),
         instrumentFilesPlugin({
           include: ["src/**/*.ts"],
           exclude: [

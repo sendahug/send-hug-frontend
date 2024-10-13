@@ -31,8 +31,8 @@
 */
 
 import { Component, OnInit } from "@angular/core";
-import { faComment, faFlag } from "@fortawesome/free-regular-svg-icons";
-import { faHandHoldingHeart, faTimes } from "@fortawesome/free-solid-svg-icons";
+import { faComment, faFlag, faTrashCan } from "@fortawesome/free-regular-svg-icons";
+import { faHandHoldingHeart } from "@fortawesome/free-solid-svg-icons";
 import { faGratipay } from "@fortawesome/free-brands-svg-icons";
 import { CommonModule } from "@angular/common";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
@@ -51,7 +51,7 @@ export class SupportPage implements OnInit {
   faComment = faComment;
   faFlag = faFlag;
   faHandHoldingHeart = faHandHoldingHeart;
-  faTimes = faTimes;
+  faTrashCan = faTrashCan;
   faGratipay = faGratipay;
 
   // CTOR

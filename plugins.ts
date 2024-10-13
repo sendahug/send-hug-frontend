@@ -32,7 +32,12 @@ import { transformAsync } from "@babel/core";
 import defaultLinkerPlugin from "@angular/compiler-cli/linker/babel";
 import less from "less";
 import fs from "node:fs";
-import AngularBuilder from "./plugins/builder";
+import AngularBuilder from "./plugins/builder/src/builder.base";
+import {
+  hmrPlugin,
+  addCompilerPlugin,
+  addPolyfillsPlugin,
+} from "./plugins/builder/src/builderPlugins";
 import path from "node:path";
 import MagicString from "magic-string";
 
@@ -61,7 +66,12 @@ export function BuildAngularPlugin(): Plugin {
      */
     config(_config, env) {
       isDev = env.command == "serve";
-      ngBuilder = new AngularBuilder(isDev, path.resolve("./tsconfig.dev.json"));
+      ngBuilder = new AngularBuilder(
+        isDev ? "dev" : "production",
+        "dev",
+        path.resolve("./tsconfig.dev.json"),
+        [hmrPlugin(), addCompilerPlugin(), addPolyfillsPlugin()],
+      );
     },
 
     /**
@@ -69,7 +79,6 @@ export function BuildAngularPlugin(): Plugin {
      * host and builder, as well as the Angular compiler.
      */
     async buildStart(_options) {
-      await ngBuilder.setupCompilerHost();
       ngBuilder.setupAngularProgram();
 
       // Credit to @nitedani for the next two lines

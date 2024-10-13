@@ -2,7 +2,7 @@
   MIT License
 
   Copyright (c) 2020-2024 Shir Bar Lev
-  Source: https://github.com/shirblc/vite-angular/blob/main/plugins/builder.js
+  Source: https://github.com/shirblc/vite-angular/blob/main/plugins/ubilder/builder.base.ts
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -24,77 +24,103 @@
 */
 
 import MagicString from "magic-string";
-import { createCompilerHost, createProgram, readConfiguration } from "@angular/compiler-cli";
+import {
+  CompilerHost as ngCompilerHost,
+  CompilerOptions as ngCompilerOptions,
+  createCompilerHost,
+  createProgram,
+  NgtscProgram,
+  readConfiguration,
+} from "@angular/compiler-cli";
 import ts from "typescript";
 import { readFileSync } from "node:fs";
-import { transformSync } from "@babel/core";
-import { createFilter } from "vite";
-import { resolve } from "node:path";
+
+export type ApplyAt = "read" | "post-transform";
+export type Environment = "dev" | "production" | "test";
+
+export interface BuilderPlugin {
+  name: string;
+  apply: Environment;
+  setup?: (env: Environment) => undefined;
+  read?: (fileId: string, code: string | undefined) => string | undefined;
+  transform?: (fileId: string, code: string | undefined) => string | undefined;
+}
 
 export default class AngularBuilder {
-  compilerHost;
-  compilerOptions;
-  currentAngularProgram = undefined;
-  tsHost;
-  builder;
-  rootFiles;
-  tsConfigPath;
-  filter;
+  env: Environment = "dev";
+  testEnv: "dev" | "production";
+  compilerHost: ngCompilerHost | undefined;
+  compilerOptions: ngCompilerOptions;
+  currentAngularProgram: NgtscProgram | undefined = undefined;
+  tsHost: ts.CompilerHost | undefined;
+  builder: ts.BuilderProgram | undefined;
+  rootFiles: string[];
+  tsConfigPath: string;
+  pluginMapping: {
+    dev: BuilderPlugin[];
+    production: BuilderPlugin[];
+    test: BuilderPlugin[];
+  };
 
   /**
    * Creates a new AngularBuilder.
-   * @param { string } tsConfigPath - the path to the tsconfig.json file.
-   * @param { {include: string[], exclude: string[]} } coverageConf - coverage config.
+   * @param env - The current environment.
+   * @param testEnv - Which environment to use as a base for tests. The selected environment's plugins will be copied to the test plugins and run as part of the test build.
+   * @param tsConfigPath - the path to the tsconfig.json file.
+   * @param plugins - a list of plugins to apply during the build.
    */
-  constructor(tsConfigPath, coverageConf) {
+  constructor(
+    env: Environment,
+    testEnv: "dev" | "production",
+    tsConfigPath: string,
+    plugins: BuilderPlugin[] = [],
+  ) {
     const { options, rootNames: parsedFiles } = readConfiguration(tsConfigPath, {
       noEmit: false,
     });
     this.compilerOptions = options;
     this.rootFiles = parsedFiles;
+    this.env = env;
+    this.testEnv = testEnv;
     this.tsConfigPath = tsConfigPath;
-    this.filter = createFilter(coverageConf.include, coverageConf.exclude);
+    this.pluginMapping = {
+      dev: [],
+      production: [],
+      test: [],
+    };
+
+    plugins.forEach((plugin) => {
+      if (plugin.apply == this.env || (this.env == "test" && plugin.apply == this.testEnv)) {
+        this.pluginMapping[plugin.apply].push(plugin);
+        if (plugin.apply == this.testEnv) this.pluginMapping["test"].push(plugin);
+        if (plugin.setup) plugin.setup(env);
+      }
+    });
+
+    this.setupCompilerHost();
   }
 
   /**
    * Sets up the TypeScript compiler host and the Angular compiler host.
    */
-  async setupCompilerHost() {
+  setupCompilerHost() {
     const tsConfig = readFileSync(this.tsConfigPath, { encoding: "utf-8" });
     const tsConfigJson = JSON.parse(tsConfig);
-    this.tsHost = ts.createCompilerHost(tsConfigJson["compilerOptions"]);
+    this.tsHost = ts.createCompilerHost(tsConfigJson["compilerOptions"] as any);
     const originalReadFile = this.tsHost.readFile;
-    // Override the host's readFile function to add an coverage if necessary.
+    // Override the host's readFile function to edit the file before it goes through
+    // the TypeScript compiler.
     this.tsHost.readFile = (name) => {
-      const res = originalReadFile.call(this.tsHost, name);
-      if (!res) return;
+      let res: string | undefined = originalReadFile.call(this.tsHost, name);
 
-      // Replace any asset imports with the relevant paths.
-      const matches = res.matchAll(/import ([a-zA-Z]+) from "(.*)\.svg";/g);
-      let finalRes = res;
+      this.pluginMapping[this.env].forEach((plugin) => {
+        let pluginOutput;
 
-      [...matches].forEach((element) => {
-        finalRes = finalRes.replace(element[0], "");
-        finalRes = finalRes.replace(
-          `= ${element[1]};`,
-          `= "${resolve(element[2].replace("@/", "./src/"))}.svg";`,
-        );
+        if (plugin.read) pluginOutput = plugin.read(name, res);
+        if (pluginOutput) res = pluginOutput;
       });
 
-      // Filter out files that don't need to be instrumented
-      if (!this.filter(name)) return finalRes;
-
-      const instrumentedRes = transformSync(finalRes, {
-        filename: name,
-        plugins: [
-          ["istanbul"],
-          ["@babel/plugin-syntax-decorators", { decoratorsBeforeExport: true }],
-          ["@babel/plugin-syntax-typescript"],
-        ],
-        sourceMaps: "inline",
-      })?.code;
-
-      return instrumentedRes;
+      return res;
     };
     this.compilerHost = createCompilerHost({
       options: { ...this.compilerOptions },
@@ -106,12 +132,24 @@ export default class AngularBuilder {
    * Creates the Angular program and the TypeScript builder.
    */
   setupAngularProgram() {
+    if (!this.compilerHost) {
+      throw new Error(
+        "The compiler host must be initialised before the Angular program is set up. Did you forget to call `builder.setupCompilerHost`?",
+      );
+    }
+
+    if (!this.tsHost) {
+      throw new Error(
+        "The TypeScript host must be initialised before the Angular program is set up. Did you forget to call `builder.setupCompilerHost`?",
+      );
+    }
+
     this.currentAngularProgram = createProgram({
       rootNames: this.rootFiles,
       options: this.compilerOptions,
       host: this.compilerHost,
       oldProgram: this.currentAngularProgram,
-    });
+    }) as NgtscProgram;
 
     // Credit to @nitedani for the next two lines
     // https://github.com/nitedani/vite-plugin-angular
@@ -129,6 +167,12 @@ export default class AngularBuilder {
   async validateFiles() {
     if (!this.currentAngularProgram) return;
 
+    if (!this.tsHost) {
+      throw new Error(
+        "The TypeScript host must be initialised before the Angular program is set up. Did you forget to call `builder.setupCompilerHost`?",
+      );
+    }
+
     await this.currentAngularProgram.compiler.analyzeAsync();
     const diagnostics = this.currentAngularProgram.compiler.getDiagnostics();
     const res = ts.formatDiagnosticsWithColorAndContext(diagnostics, this.tsHost);
@@ -140,18 +184,18 @@ export default class AngularBuilder {
 
   /**
    * Compiles the given file using the Angular compiler.
-   * @param { string } fileId the ID of the file to compile.
+   * @param fileId the ID of the file to compile.
    * @returns a MagicString with the transform result and a source map.
    */
-  buildFile(fileId) {
+  buildFile(fileId: string) {
     // Credit to @nitedani for the next four lines
     // https://github.com/nitedani/vite-plugin-angular
-    const transformers = this.currentAngularProgram.compiler.prepareEmit();
-    let output = "";
+    const transformers = this.currentAngularProgram!.compiler.prepareEmit();
+    let output: string = "";
 
     if (!/\.[cm]?tsx?$/.test(fileId)) return;
 
-    const sourceFile = this.builder.getSourceFile(fileId);
+    let sourceFile = this.builder?.getSourceFile(fileId);
 
     if (!sourceFile) return;
 
@@ -159,7 +203,7 @@ export default class AngularBuilder {
 
     // Credit to @nitedani for this
     // https://github.com/nitedani/vite-plugin-angular
-    this.builder.emit(
+    this.builder?.emit(
       sourceFile,
       (_filename, data) => {
         if (data) output = data;
@@ -168,6 +212,13 @@ export default class AngularBuilder {
       undefined,
       transformers.transformers,
     );
+
+    this.pluginMapping[this.env].forEach((plugin) => {
+      if (plugin.transform) {
+        const result = plugin.transform(fileId, output);
+        if (result) output = result;
+      }
+    });
 
     magicString.overwrite(0, magicString.length(), output);
 

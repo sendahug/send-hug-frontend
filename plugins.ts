@@ -32,7 +32,16 @@ import { transformAsync } from "@babel/core";
 import defaultLinkerPlugin from "@angular/compiler-cli/linker/babel";
 import less from "less";
 import fs from "node:fs";
-import AngularBuilder from "./plugins/builder";
+import AngularBuilder from "./plugins/builder/src/builder.base";
+import {
+  hmrPlugin,
+  addCompilerPlugin,
+  addPolyfillsPlugin,
+} from "./plugins/builder/src/builderPlugins";
+import {
+  ProvideFontAwesomeProPlugin,
+  ProvideCustomIcons,
+} from "./plugins/builder/src/builderPlugins.custom";
 import path from "node:path";
 import MagicString from "magic-string";
 
@@ -41,6 +50,36 @@ interface FileRouteMapping {
   route: string;
   fileType: string;
 }
+
+const iconReplacements = [
+  { originalIcon: "faTrashCan", replacementSet: "classic/regular", replacementIcon: "faTrash" },
+  { originalIcon: "faBars", replacementSet: "classic/light", replacementIcon: "faBars" },
+  { originalIcon: "faComments", replacementSet: "classic/light", replacementIcon: "faComments" },
+  {
+    originalIcon: "faUserCircle",
+    replacementSet: "classic/light",
+    replacementIcon: "faUserCircle",
+  },
+  { originalIcon: "faCompass", replacementSet: "classic/light", replacementIcon: "faCompass" },
+  { originalIcon: "faBell", replacementSet: "classic/light", replacementIcon: "faBell" },
+  { originalIcon: "faSearch", replacementSet: "classic/regular", replacementIcon: "faSearch" },
+  {
+    originalIcon: "faTextHeight",
+    replacementSet: "classic/regular",
+    replacementIcon: "faTextHeight",
+  },
+  {
+    originalIcon: "faArrowRightFromBracket",
+    replacementSet: "classic/light",
+    replacementIcon: "faArrowRightFromBracket",
+  },
+];
+
+const svgIconReplacements = [
+  { svgId: "post", replacementIcon: "faSolidSahPost", addImportInFile: "navigationMenu.component" },
+  { svgId: "home", replacementIcon: "faSahHome", addImportInFile: "navigationMenu.component" },
+  { svgId: "admin", replacementIcon: "faSahAdmin", addImportInFile: "navigationMenu.component" },
+];
 
 /**
  * A plugin that runs the Angular compiler in order to build the app.
@@ -61,7 +100,18 @@ export function BuildAngularPlugin(): Plugin {
      */
     config(_config, env) {
       isDev = env.command == "serve";
-      ngBuilder = new AngularBuilder(isDev, path.resolve("./tsconfig.dev.json"));
+      ngBuilder = new AngularBuilder(
+        isDev ? "dev" : "production",
+        "dev",
+        path.resolve("./tsconfig.dev.json"),
+        [
+          hmrPlugin(),
+          ProvideFontAwesomeProPlugin(iconReplacements, "Pro"),
+          ProvideCustomIcons(svgIconReplacements),
+          addCompilerPlugin(),
+          addPolyfillsPlugin(),
+        ],
+      );
     },
 
     /**
@@ -69,7 +119,6 @@ export function BuildAngularPlugin(): Plugin {
      * host and builder, as well as the Angular compiler.
      */
     async buildStart(_options) {
-      await ngBuilder.setupCompilerHost();
       ngBuilder.setupAngularProgram();
 
       // Credit to @nitedani for the next two lines

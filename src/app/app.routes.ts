@@ -35,9 +35,9 @@ import { Routes } from "@angular/router";
 // Routes
 // MainPage is the initial thing users see so I left it as a static import
 // ErrorPage and SearchResults seem useful to keep static for app functionality
-import { MainPage } from "./components/mainPage/mainPage.component";
-import { ErrorPage } from "./components/errorPage/errorPage.component";
-import { SearchResults } from "./components/searchResults/searchResults.component";
+import { MainPage } from "./routes/mainPage/mainPage.component";
+import { ErrorPage } from "./routes/errorPage/errorPage.component";
+import { SearchResults } from "./routes/searchResults/searchResults.component";
 // Guards
 import { isAuthedGuard } from "./guards/isAuthed.guard";
 import { hasPermissionGuard } from "./guards/hasPermission.guard";
@@ -51,14 +51,12 @@ export const routes: Routes = [
       {
         path: "",
         pathMatch: "prefix",
-        loadComponent: () =>
-          import("./components/userPage/userPage.component").then((c) => c.UserPage),
+        loadComponent: () => import("./routes/userPage/userPage.component").then((c) => c.UserPage),
       },
       {
         path: ":id",
         pathMatch: "prefix",
-        loadComponent: () =>
-          import("./components/userPage/userPage.component").then((c) => c.UserPage),
+        loadComponent: () => import("./routes/userPage/userPage.component").then((c) => c.UserPage),
       },
     ],
     data: { name: "User Page", mapRoutes: [{ path: "", name: "Your Page" }] },
@@ -72,25 +70,25 @@ export const routes: Routes = [
         path: "inbox",
         pathMatch: "prefix",
         loadComponent: () =>
-          import("./components/messages/messages.component").then((c) => c.AppMessaging),
+          import("./routes/messages/messages.component").then((c) => c.AppMessaging),
       },
       {
         path: "outbox",
         pathMatch: "prefix",
         loadComponent: () =>
-          import("./components/messages/messages.component").then((c) => c.AppMessaging),
+          import("./routes/messages/messages.component").then((c) => c.AppMessaging),
       },
       {
         path: "threads",
         pathMatch: "prefix",
         loadComponent: () =>
-          import("./components/messages/messages.component").then((c) => c.AppMessaging),
+          import("./routes/messages/messages.component").then((c) => c.AppMessaging),
       },
       {
         path: "thread/:id",
         pathMatch: "prefix",
         loadComponent: () =>
-          import("./components/messages/messages.component").then((c) => c.AppMessaging),
+          import("./routes/messages/messages.component").then((c) => c.AppMessaging),
       },
     ],
     data: {
@@ -109,14 +107,12 @@ export const routes: Routes = [
       {
         path: "Post",
         pathMatch: "prefix",
-        loadComponent: () =>
-          import("./components/newItem/newItem.component").then((c) => c.NewItem),
+        loadComponent: () => import("./routes/newItem/newItem.component").then((c) => c.NewItem),
       },
       {
         path: "Message",
         pathMatch: "prefix",
-        loadComponent: () =>
-          import("./components/newItem/newItem.component").then((c) => c.NewItem),
+        loadComponent: () => import("./routes/newItem/newItem.component").then((c) => c.NewItem),
       },
     ],
     data: {
@@ -133,14 +129,12 @@ export const routes: Routes = [
       {
         path: "New",
         pathMatch: "prefix",
-        loadComponent: () =>
-          import("./components/fullList/fullList.component").then((c) => c.FullList),
+        loadComponent: () => import("./routes/fullList/fullList.component").then((c) => c.FullList),
       },
       {
         path: "Suggested",
         pathMatch: "prefix",
-        loadComponent: () =>
-          import("./components/fullList/fullList.component").then((c) => c.FullList),
+        loadComponent: () => import("./routes/fullList/fullList.component").then((c) => c.FullList),
       },
     ],
     data: {
@@ -153,7 +147,7 @@ export const routes: Routes = [
   },
   {
     path: "about",
-    loadComponent: () => import("./components/aboutApp/aboutApp.component").then((c) => c.AboutApp),
+    loadComponent: () => import("./routes/aboutApp/aboutApp.component").then((c) => c.AboutApp),
     data: { name: "About Page" },
   },
   { path: "search", component: SearchResults, data: { name: "Search Results" } },
@@ -175,19 +169,18 @@ export const routes: Routes = [
   {
     path: "settings",
     canMatch: [isAuthedGuard],
-    loadComponent: () =>
-      import("./components/settings/settings.component").then((c) => c.SettingsPage),
+    loadComponent: () => import("./routes/settings/settings.component").then((c) => c.SettingsPage),
     data: { name: "Settings Page" },
   },
   {
     path: "sitemap",
-    loadComponent: () => import("./components/siteMap/siteMap.component").then((c) => c.SiteMap),
+    loadComponent: () => import("./routes/siteMap/siteMap.component").then((c) => c.SiteMap),
     data: { name: "Site Map" },
   },
   {
     path: "support",
     loadComponent: () =>
-      import("./components/supportPage/supportPage.component").then((c) => c.SupportPage),
+      import("./routes/supportPage/supportPage.component").then((c) => c.SupportPage),
     data: { name: "Support" },
   },
   {
@@ -197,19 +190,19 @@ export const routes: Routes = [
         path: "terms",
         pathMatch: "prefix",
         loadComponent: () =>
-          import("./components/sitePolicies/sitePolicies.component").then((c) => c.SitePolicies),
+          import("./routes/sitePolicies/sitePolicies.component").then((c) => c.SitePolicies),
       },
       {
         path: "privacy",
         pathMatch: "prefix",
         loadComponent: () =>
-          import("./components/sitePolicies/sitePolicies.component").then((c) => c.SitePolicies),
+          import("./routes/sitePolicies/sitePolicies.component").then((c) => c.SitePolicies),
       },
       {
         path: "cookies",
         pathMatch: "prefix",
         loadComponent: () =>
-          import("./components/sitePolicies/sitePolicies.component").then((c) => c.SitePolicies),
+          import("./routes/sitePolicies/sitePolicies.component").then((c) => c.SitePolicies),
       },
     ],
     data: {
@@ -223,14 +216,19 @@ export const routes: Routes = [
   },
   {
     path: "login",
-    loadComponent: () =>
-      import("./components/loginPage/loginPage.component").then((c) => c.LoginPage),
+    loadComponent: () => import("./routes/loginPage/loginPage.component").then((c) => c.LoginPage),
     data: { name: "Login Page" },
   },
   {
     path: "signup",
     loadComponent: () =>
-      import("./components/signUpPage/signUpPage.component").then((c) => c.SignUpPage),
+      import("./routes/signUpPage/signUpPage.component").then((c) => c.SignUpPage),
+    data: {},
+  },
+  {
+    path: "verify",
+    loadComponent: () =>
+      import("./routes/verifyEmail/verifyEmail.component").then((c) => c.VerifyEmailPage),
     data: {},
   },
   { path: "**", component: ErrorPage, data: { name: "Error Page" } },

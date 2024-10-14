@@ -50,6 +50,8 @@ interface GetNotificationsResponse {
   totalItems: number;
 }
 
+const pushPermissionDeniedErr =
+  "Push notifications permission has been denied. Go to your browser settings, remove Send A Hug from the denied list, and then activate push notifications again.";
 export type ToggleButtonOption = "Enable" | "Disable";
 
 @Injectable({
@@ -164,8 +166,7 @@ export class NotificationService {
       if (permission == "denied") {
         this.alertsService.createAlert({
           type: "Error",
-          message:
-            "Push notifications permission has been denied. Go to your browser settings, remove Send A Hug from the denied list, and then activate push notifications again.",
+          message: pushPermissionDeniedErr,
         });
       }
       // If the client wasn't even asked on this browser and the user's push status
@@ -219,7 +220,14 @@ export class NotificationService {
         });
       })
       .catch((err) => {
-        this.alertsService.createAlert({ type: "Error", message: err });
+        if (typeof err == "string" && err.includes("permission denied")) {
+          this.alertsService.createAlert({
+            type: "Error",
+            message: pushPermissionDeniedErr,
+          });
+        } else {
+          this.alertsService.createAlert({ type: "Error", message: err });
+        }
       });
   }
 

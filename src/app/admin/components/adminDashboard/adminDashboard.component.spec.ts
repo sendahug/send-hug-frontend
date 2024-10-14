@@ -37,7 +37,6 @@ import {
   BrowserDynamicTestingModule,
   platformBrowserDynamicTesting,
 } from "@angular/platform-browser-dynamic/testing";
-import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { NO_ERRORS_SCHEMA, signal } from "@angular/core";
 import { ActivatedRoute, provideRouter, UrlSegment } from "@angular/router";
 import { BehaviorSubject, of } from "rxjs";
@@ -69,7 +68,7 @@ describe("AdminDashboard", () => {
 
     TestBed.configureTestingModule({
       schemas: [NO_ERRORS_SCHEMA],
-      imports: [FontAwesomeModule],
+      imports: [],
       declarations: [AdminDashboard, MockAdminReports, MockAdminBlocks, MockAdminFilter],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },

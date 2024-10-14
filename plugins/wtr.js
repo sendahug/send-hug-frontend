@@ -26,7 +26,12 @@
 import { resolve } from "node:path";
 import { readFileSync } from "node:fs";
 import { loadEnv } from "vite";
-import AngularBuilder from "./builder.js";
+import AngularBuilder from "./builder/dist/builder.base.js";
+import {
+  instrumentFilesPlugin,
+  addCompilerPlugin,
+  processSVGUrlsPlugin,
+} from "./builder/dist/builderPlugins.js";
 
 export const AngularTestsPlugin = () => {
   let ngBuilder;
@@ -34,18 +39,22 @@ export const AngularTestsPlugin = () => {
   return {
     name: "angular-tests-plugin",
     async buildStart(options) {
-      ngBuilder = new AngularBuilder(resolve("./tsconfig.json"), {
-        include: ["src/**/*.ts"],
-        exclude: [
-          "src/**/*.spec.ts",
-          "src/main.ts",
-          "src/app/app.config.ts",
-          "src/app/app.routes.ts",
-          "src/polyfills.ts",
-          "src/assets/*",
-          "src/tests/**/*.ts",
-        ],
-      });
+      ngBuilder = new AngularBuilder("test", "dev", resolve("./tsconfig.json"), [
+        processSVGUrlsPlugin(),
+        instrumentFilesPlugin({
+          include: ["src/**/*.ts"],
+          exclude: [
+            "src/**/*.spec.ts",
+            "src/main.ts",
+            "src/app/app.config.ts",
+            "src/app/app.routes.ts",
+            "src/polyfills.ts",
+            "src/assets/*",
+            "src/tests/**/*.ts",
+          ],
+        }),
+        addCompilerPlugin(),
+      ]);
       await ngBuilder.setupCompilerHost();
       ngBuilder.setupAngularProgram();
       await ngBuilder.validateFiles();

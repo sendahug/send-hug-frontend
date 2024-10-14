@@ -32,7 +32,6 @@
 
 import { NgModule } from "@angular/core";
 import { provideHttpClient } from "@angular/common/http";
-import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { ReactiveFormsModule } from "@angular/forms";
 import { CommonModule } from "@angular/common";
 import { provideRouter, RouterLink, withComponentInputBinding } from "@angular/router";
@@ -41,15 +40,14 @@ import { AdminBlocks } from "./components/adminBlocks/adminBlocks.component";
 import { AdminDashboard } from "./components/adminDashboard/adminDashboard.component";
 import { AdminFilters } from "./components/adminFilters/adminFilters.component";
 import { AdminReports } from "./components/adminReports/adminReports.component";
-import { PostEditForm } from "@app/components/postEditForm/postEditForm.component";
-import { ItemDeleteForm } from "@app/components/itemDeleteForm/itemDeleteForm.component";
-import { DisplayNameEditForm } from "@app/components/displayNameEditForm/displayNameEditForm.component";
-import { Loader } from "@app/components/loader/loader.component";
+import { PostEditForm } from "@forms/postEditForm/postEditForm.component";
+import { ItemDeleteForm } from "@forms/itemDeleteForm/itemDeleteForm.component";
+import { DisplayNameEditForm } from "@forms/displayNameEditForm/displayNameEditForm.component";
+import { Loader } from "@common/loader/loader.component";
 
 @NgModule({
   imports: [
     ReactiveFormsModule,
-    FontAwesomeModule,
     CommonModule,
     PostEditForm,
     ItemDeleteForm,

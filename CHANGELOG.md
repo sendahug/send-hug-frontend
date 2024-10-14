@@ -2,6 +2,77 @@
 
 ## Unreleased
 
+### 2024-10-14
+
+#### Features
+
+- Added our new Font Awesome Pro kit to the site as another source of icons. This allows us to take advantage of Font Awesome Pro features. ([#1850](https://github.com/sendahug/send-hug-frontend/pull/1850))
+
+#### Changes
+
+- Replaced the main navigation menu's icons with thinner (Pro) variants. ([#1850](https://github.com/sendahug/send-hug-frontend/pull/1850))
+- Replaced the SVGs used in the main navigation menu with custom Font Awesome icons. ([#1850](https://github.com/sendahug/send-hug-frontend/pull/1850))
+- Replaced the post component's delete button's icon. The previous icon (times) was used for exit buttons, which made it confusing when it was used differently in the post component. The new icon clarifies the button is for deleting posts, rather than for closing the post component's menu. ([#1850](https://github.com/sendahug/send-hug-frontend/pull/1850))
+
+#### Fixes
+
+- Fixed the size of the exit button's icon in the Notifications Tab. The icon was too small, which made it hard to see. The icon is now large enough to see without zooming in. ([#1850](https://github.com/sendahug/send-hug-frontend/pull/1850))
+
+#### Chores
+
+- Added Angular Builder plugins for substituting the free icons and relevant SVGs with the Font Awesome Pro icons (custom or Pro variants). The plugins replace the icons at build time if the Font Awesome kit is installed; if not, the default icons and SVGs are provided. This allows users without a license to still work on the app (which is still open source), regardless of its design. ([#1850](https://github.com/sendahug/send-hug-frontend/pull/1850))
+
+### 2024-10-13
+
+#### Chores
+
+- Split the Angular Builder class into a basic builder - which only handles the compilation process itself - and plugins - which add extra functionality (e.g., HMR, instrumentation). This creates cleaner, more specific code, and allows us to add functionality to the builder with ease (using the plugin system), without having to update the builder itself. ([#1849](https://github.com/sendahug/send-hug-frontend/pull/1849))
+- The TypeScript Angular Builder and its plugins are now transpiled to JavaScript before tests run. Instead of having to maintain two builders (one in TypeScript and one in JavaScript, as web-test-runner doesn't support TypeScript), we now use the same builder for both processes. A command for transpiling the Builder and plugins to JavaScript was also added to the project's npm scripts. ([#1849](https://github.com/sendahug/send-hug-frontend/pull/1849))
+
+### 2024-10-07
+
+#### Features
+
+- Added the ability to log out after signing up with Firebase but before signing up in our system. Previously, users who signed up with a different account than they meant to (for example, with an email they thought existed in the system but didn't) had to clear the site's cache and saved data in order to log out of Firebase. This happened because the `log out` option was reserved for logged in users - defined as users logged into their account in the app, rather than in Firebase. Now, users are presented with the option to log out (also marked as `use another account` in the signup page) before completing signup in the app. ([#1843](https://github.com/sendahug/send-hug-frontend/pull/1843))
+
+#### Fixes
+
+- Removed the unnecessary ARIA roles the navigation menu's icons had and set them to be hidden from assistive technology instead. The icons are decorational only, and as per WCAG guidelines, should've been hidden in the first place. ([#1843](https://github.com/sendahug/send-hug-frontend/pull/1843))
+
+### 2024-10-06
+
+#### Changes
+
+- Removed the `sitemap.xml` file from the app's public folder. That XML file was only used for accessibility testing, so it doesn't need to be part of the deployed app. ([#1842](https://github.com/sendahug/send-hug-frontend/pull/1842))
+
+#### Fixes
+
+- Previously, when a user registered, they were redirected to the Sign Up page, while being shown an error telling them their user wasn't found and asking whether they meant to sign up. This was unnecessary as the users were obviously in the process of signing up and happened due to the workflow the app executes when a user logs in (via Firebase), which included a step for fetching the user from the app's back-end. Now, when users sign up, the app doesn't attempt to fetch the user from the back-end (as it doesn't exist yet), and instead redirects the user to the Sign Up page without an alert telling them to finish the sign up process. ([#1840](https://github.com/sendahug/send-hug-frontend/pull/1840))
+
+#### Chores
+
+- Accessibility testing in CI now includes auto-generating the sitemap pa11y-ci requires to run. Previously, the sitemap had to be generated manually after every update to the app's routes. Now, CI runs a new npm script for generating the sitemap and running pa11y-ci immediately. ([#1842](https://github.com/sendahug/send-hug-frontend/pull/1842))
+- Re-organised the components folder. With more than 30 components, it was getting too big to work with easily. To make things simpler, the components were split to `routes` (components that are served as routes by the router), `common` (components used across multiple components) and `forms` (form components), depending on their purpose. ([#1841](https://github.com/sendahug/send-hug-frontend/pull/1841))
+
+### 2024-10-03
+
+#### Fixes
+
+- The error message being shown to users when subscribing to push subscription failed due to the user declining to provide push permission previously consisted of an unclear string returned by the browser. This message was replaced with a proper error message alerting the user of the issue and how to fix it. ([#1767](https://github.com/sendahug/send-hug-frontend/pull/1767))
+
+### 2024-09-30
+
+#### Features
+
+- Added support for email verification. When registering to the system, users are now sent an email verification email to ensure real addresses are used for registration. Once the user is registered, the Auth Service sends an email via Firebase automatically. If users missed the original email, they're prompted to verify their email using an alert displayed at the top of the page. The alert is shown until the email is verified. ([#1830](https://github.com/sendahug/send-hug-frontend/pull/1830))
+- Added a new route for handling email verification. Users are emailed a link, which leads to a Firebase-provided page with a button for verifying their email. Once they click that, they're sent to the new verification route, which alerts the back-end that the user has verified their email. ([#1830](https://github.com/sendahug/send-hug-frontend/pull/1830))
+
+### 2024-09-28
+
+#### Chores
+
+- Split the search form and the navigation menu to their own components to make it easier to maintain the navigation menu and the app component. ([#1832](https://github.com/sendahug/send-hug-frontend/pull/1832))
+
 ### 2024-09-25
 
 #### Fixes

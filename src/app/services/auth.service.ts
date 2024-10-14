@@ -59,6 +59,8 @@ import {
   Auth,
   authState,
   sendPasswordResetEmail,
+  sendEmailVerification,
+  ActionCodeSettings,
 } from "@angular/fire/auth";
 
 // App-related imports
@@ -97,7 +99,14 @@ export class AuthService {
   // their previous login
   loggedIn = false;
   tokenExpired = false;
+  // Whether the user is in the process of registering
+  isRegistering = signal(false);
   isUserDataResolved = new BehaviorSubject(false);
+  // firebase stuff
+  actionCodeSettings = signal<ActionCodeSettings>({
+    // TODO: Hardcode the base URL once we deploy to live
+    url: `${import.meta.env["VITE_BASE_URL"]}/verify`,
+  });
 
   // CTOR
   constructor(
@@ -111,7 +120,6 @@ export class AuthService {
    * Firebase Methods
    * =====================================
    */
-
   /**
    * Checks whether there's a user currently logged in. If there is,
    * fetches the user's details. Otherwise, logs the previous user out.
@@ -128,7 +136,7 @@ export class AuthService {
       )
       .pipe(
         switchMap((currentUser) => {
-          if (!currentUser) return EMPTY;
+          if (!currentUser || this.isRegistering()) return EMPTY;
           return this.fetchUser();
         }),
       );
@@ -196,6 +204,29 @@ export class AuthService {
     if (!this.auth.currentUser) return of("");
 
     return from(getIdToken(this.auth.currentUser));
+  }
+
+  /**
+   * Sends a verification email via Firebase.
+   * @returns a promise that resolves to undefined.
+   */
+  sendVerificationEmail(): Promise<void> {
+    if (!this.auth.currentUser) return new Promise((resolve) => resolve(undefined));
+
+    return sendEmailVerification(this.auth.currentUser, this.actionCodeSettings())
+      .then(() => {
+        this.alertsService.createAlert({
+          type: "Success",
+          message:
+            "Email sent successfully. Check your email and follow the instructions to verify your email.",
+        });
+      })
+      .catch((error) => {
+        this.alertsService.createAlert({
+          type: "Error",
+          message: `An error occurred. ${error}`,
+        });
+      });
   }
 
   /**

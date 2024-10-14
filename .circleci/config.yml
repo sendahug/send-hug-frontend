@@ -104,6 +104,7 @@ jobs:
           name: Start frontend server
           command: npm run dev
           background: true
+      - run: sleep 30
       - run:
           name: Run e2e tests
           command: npm run cypress
@@ -178,10 +179,10 @@ jobs:
           name: Start frontend server
           command: npm run dev
           background: true
-      - run: sleep 15
+      - run: sleep 30
       - run:
           name: Run accessibility tests
-          command: pa11y-ci --sitemap http://localhost:3000/sitemap.xml --config .pa11yci
+          command: npm run pa11y
 
 workflows:
   run-testing:

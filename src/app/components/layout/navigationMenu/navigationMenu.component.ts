@@ -34,7 +34,13 @@
 import { Component, OnInit, HostListener, AfterViewInit, signal, computed } from "@angular/core";
 import { Router, RouterLink, NavigationEnd } from "@angular/router";
 import { faComments, faUserCircle, faCompass, faBell } from "@fortawesome/free-regular-svg-icons";
-import { faBars, faSearch, faTimes, faTextHeight } from "@fortawesome/free-solid-svg-icons";
+import {
+  faBars,
+  faSearch,
+  faTimes,
+  faTextHeight,
+  faArrowRightFromBracket,
+} from "@fortawesome/free-solid-svg-icons";
 import { CommonModule } from "@angular/common";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { filter } from "rxjs";
@@ -106,6 +112,7 @@ export class AppNavMenu implements OnInit, AfterViewInit {
   faSearch = faSearch;
   faTimes = faTimes;
   faTextHeight = faTextHeight;
+  faArrowRightFromBracket = faArrowRightFromBracket;
 
   constructor(
     protected authService: AuthService,
@@ -363,5 +370,13 @@ export class AppNavMenu implements OnInit, AfterViewInit {
   */
   changeMode(notificationsOn: any) {
     this.showNotifications.set(notificationsOn as boolean);
+  }
+
+  /**
+   * Sign out and redirect back to the home page.
+   */
+  signOutAndRedirect() {
+    this.authService.logout();
+    this.router.navigate(["/"]);
   }
 }

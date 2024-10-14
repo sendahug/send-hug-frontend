@@ -26,7 +26,9 @@
     "paths": {
       "@app/*": ["./src/app/*"],
       "@admin/*": ["./src/app/admin/*"],
-      "@user/*": ["./src/app/user/*"],
+      "@forms/*": ["./src/app/components/forms/*"],
+      "@common/*": ["./src/app/components/common/*"],
+      "@routes/*": ["./src/app/routes/*"],
       "@tests/*": ["./src/tests/*"],
       "@/*": ["./src/*"]
     },

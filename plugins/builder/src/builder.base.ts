@@ -40,7 +40,7 @@ export type Environment = "dev" | "production" | "test";
 
 export interface BuilderPlugin {
   name: string;
-  apply: Environment;
+  apply: Array<Environment>;
   setup?: (env: Environment) => undefined;
   read?: (fileId: string, code: string | undefined) => string | undefined;
   transform?: (fileId: string, code: string | undefined) => string | undefined;
@@ -90,10 +90,15 @@ export default class AngularBuilder {
     };
 
     plugins.forEach((plugin) => {
-      if (plugin.apply == this.env || (this.env == "test" && plugin.apply == this.testEnv)) {
-        this.pluginMapping[plugin.apply].push(plugin);
-        if (plugin.apply == this.testEnv) this.pluginMapping["test"].push(plugin);
-        if (plugin.setup) plugin.setup(env);
+      if (
+        plugin.apply.includes(this.env) ||
+        (this.env == "test" && plugin.apply.includes(this.testEnv))
+      ) {
+        plugin.apply.forEach((env) => {
+          this.pluginMapping[env].push(plugin);
+          if (env == this.testEnv) this.pluginMapping["test"].push(plugin);
+          if (plugin.setup) plugin.setup(env);
+        });
       }
     });
 

@@ -38,6 +38,10 @@ import {
   addCompilerPlugin,
   addPolyfillsPlugin,
 } from "./plugins/builder/src/builderPlugins";
+import {
+  ProvideFontAwesomeProPlugin,
+  ProvideCustomIcons,
+} from "./plugins/builder/src/builderPlugins.custom";
 import path from "node:path";
 import MagicString from "magic-string";
 
@@ -46,6 +50,36 @@ interface FileRouteMapping {
   route: string;
   fileType: string;
 }
+
+const iconReplacements = [
+  { originalIcon: "faTrashCan", replacementSet: "classic/regular", replacementIcon: "faTrash" },
+  { originalIcon: "faBars", replacementSet: "classic/light", replacementIcon: "faBars" },
+  { originalIcon: "faComments", replacementSet: "classic/light", replacementIcon: "faComments" },
+  {
+    originalIcon: "faUserCircle",
+    replacementSet: "classic/light",
+    replacementIcon: "faUserCircle",
+  },
+  { originalIcon: "faCompass", replacementSet: "classic/light", replacementIcon: "faCompass" },
+  { originalIcon: "faBell", replacementSet: "classic/light", replacementIcon: "faBell" },
+  { originalIcon: "faSearch", replacementSet: "classic/regular", replacementIcon: "faSearch" },
+  {
+    originalIcon: "faTextHeight",
+    replacementSet: "classic/regular",
+    replacementIcon: "faTextHeight",
+  },
+  {
+    originalIcon: "faArrowRightFromBracket",
+    replacementSet: "classic/light",
+    replacementIcon: "faArrowRightFromBracket",
+  },
+];
+
+const svgIconReplacements = [
+  { svgId: "post", replacementIcon: "faSolidSahPost", addImportInFile: "navigationMenu.component" },
+  { svgId: "home", replacementIcon: "faSahHome", addImportInFile: "navigationMenu.component" },
+  { svgId: "admin", replacementIcon: "faSahAdmin", addImportInFile: "navigationMenu.component" },
+];
 
 /**
  * A plugin that runs the Angular compiler in order to build the app.
@@ -70,7 +104,13 @@ export function BuildAngularPlugin(): Plugin {
         isDev ? "dev" : "production",
         "dev",
         path.resolve("./tsconfig.dev.json"),
-        [hmrPlugin(), addCompilerPlugin(), addPolyfillsPlugin()],
+        [
+          hmrPlugin(),
+          ProvideFontAwesomeProPlugin(iconReplacements, "Pro"),
+          ProvideCustomIcons(svgIconReplacements),
+          addCompilerPlugin(),
+          addPolyfillsPlugin(),
+        ],
       );
     },
 

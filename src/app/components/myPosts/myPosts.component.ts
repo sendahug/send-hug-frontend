@@ -32,11 +32,8 @@
 
 // Angular imports
 import { Component, OnInit, Input, signal, computed } from "@angular/core";
-import { faFlag } from "@fortawesome/free-regular-svg-icons";
-import { faHandHoldingHeart } from "@fortawesome/free-solid-svg-icons";
 import { from, map, switchMap, tap } from "rxjs";
 import { CommonModule } from "@angular/common";
-import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 
 // App-related imports
 import { type PostGet } from "@app/interfaces/post.interface";
@@ -59,7 +56,7 @@ interface MyPostsResponse {
   templateUrl: "./myPosts.component.html",
   styleUrl: "./myPosts.component.less",
   standalone: true,
-  imports: [Loader, SinglePost, ItemDeleteForm, CommonModule, FontAwesomeModule],
+  imports: [Loader, SinglePost, ItemDeleteForm, CommonModule],
 })
 export class MyPosts implements OnInit {
   isLoading = signal(false);
@@ -88,9 +85,6 @@ export class MyPosts implements OnInit {
     this.userID && this.userID != this.authService.userData()!.id! ? "other" : "self",
   );
   loaderClass = computed(() => (!this.isIdbFetchLoading() && this.isLoading() ? "header" : ""));
-  // icons
-  faFlag = faFlag;
-  faHandHoldingHeart = faHandHoldingHeart;
 
   // CTOR
   constructor(

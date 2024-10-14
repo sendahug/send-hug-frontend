@@ -44,7 +44,8 @@ import {
   EventEmitter,
 } from "@angular/core";
 import { faComment, faEdit, faFlag } from "@fortawesome/free-regular-svg-icons";
-import { faHandHoldingHeart, faTimes, faEllipsisV } from "@fortawesome/free-solid-svg-icons";
+import { faHandHoldingHeart, faEllipsisV } from "@fortawesome/free-solid-svg-icons";
+import { faTrashCan } from "@fortawesome/free-regular-svg-icons";
 import { Subscription } from "rxjs";
 import { CommonModule } from "@angular/common";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
@@ -161,7 +162,7 @@ export class SinglePost implements AfterViewChecked, OnInit, OnDestroy {
   faEdit = faEdit;
   faFlag = faFlag;
   faHandHoldingHeart = faHandHoldingHeart;
-  faTimes = faTimes;
+  faTrashCan = faTrashCan;
   faEllipsisV = faEllipsisV;
 
   // CTOR

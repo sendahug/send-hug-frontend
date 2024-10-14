@@ -2,6 +2,26 @@
 
 ## Unreleased
 
+### 2024-10-14
+
+#### Features
+
+- Added our new Font Awesome Pro kit to the site as another source of icons. This allows us to take advantage of Font Awesome Pro features. ([#1850](https://github.com/sendahug/send-hug-frontend/pull/1850))
+
+#### Changes
+
+- Replaced the main navigation menu's icons with thinner (Pro) variants. ([#1850](https://github.com/sendahug/send-hug-frontend/pull/1850))
+- Replaced the SVGs used in the main navigation menu with custom Font Awesome icons. ([#1850](https://github.com/sendahug/send-hug-frontend/pull/1850))
+- Replaced the post component's delete button's icon. The previous icon (times) was used for exit buttons, which made it confusing when it was used differently in the post component. The new icon clarifies the button is for deleting posts, rather than for closing the post component's menu. ([#1850](https://github.com/sendahug/send-hug-frontend/pull/1850))
+
+#### Fixes
+
+- Fixed the size of the exit button's icon in the Notifications Tab. The icon was too small, which made it hard to see. The icon is now large enough to see without zooming in. ([#1850](https://github.com/sendahug/send-hug-frontend/pull/1850))
+
+#### Chores
+
+- Added Angular Builder plugins for substituting the free icons and relevant SVGs with the Font Awesome Pro icons (custom or Pro variants). The plugins replace the icons at build time if the Font Awesome kit is installed; if not, the default icons and SVGs are provided. This allows users without a license to still work on the app (which is still open source), regardless of its design. ([#1850](https://github.com/sendahug/send-hug-frontend/pull/1850))
+
 ### 2024-10-13
 
 #### Chores

@@ -67,7 +67,6 @@
     "@fortawesome/free-brands-svg-icons": "^6.6.0",
     "@fortawesome/free-regular-svg-icons": "^6.6.0",
     "@fortawesome/free-solid-svg-icons": "^6.6.0",
-    "@ngneat/overview": "^6.1.1",
     "firebase": "^10.14.1",
     "idb": "^8.0.0",
     "rxjs": "^7.8.1",

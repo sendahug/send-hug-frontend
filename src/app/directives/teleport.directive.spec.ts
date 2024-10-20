@@ -77,7 +77,6 @@ class MockChild {
 
 describe("TeleportDirective", () => {
   let fixture: ComponentFixture<MockPage>;
-  let mockPage: MockPage;
   let mockPageDOM: any; // according to Angular's own typing
 
   // Before each test, configure testing environment
@@ -91,7 +90,6 @@ describe("TeleportDirective", () => {
     }).compileComponents();
 
     fixture = TestBed.createComponent(MockPage);
-    mockPage = fixture.componentInstance;
     mockPageDOM = fixture.nativeElement;
     fixture.autoDetectChanges();
   });

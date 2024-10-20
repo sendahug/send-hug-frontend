@@ -125,8 +125,6 @@ export class ReportForm implements OnInit {
    * @param selectedRadioButton - the selected element.
    */
   checkSelectedForOther(selectedRadioButton: any) {
-    if (!selectedRadioButton) return;
-
     const selectedItem = Number(selectedRadioButton.value);
 
     // If the selected reason is one of the set reasons, simply send it as is

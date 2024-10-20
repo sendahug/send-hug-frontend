@@ -34,7 +34,6 @@
 import { Component, Input, Output, EventEmitter, OnInit } from "@angular/core";
 import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { CommonModule } from "@angular/common";
-import { TeleportDirective } from "@ngneat/overview";
 
 // App-related import
 import { AuthService } from "@app/services/auth.service";
@@ -45,6 +44,7 @@ import { type ReportData } from "@app/interfaces/report.interface";
 import { type PartialUser } from "@app/interfaces/user.interface";
 import { UpdatedUserReportResponse } from "@app/interfaces/responses";
 import { PopUp } from "@common/popUp/popUp.component";
+import { TeleportDirective } from "@app/directives/teleport.directive";
 
 @Component({
   selector: "display-name-edit-form",

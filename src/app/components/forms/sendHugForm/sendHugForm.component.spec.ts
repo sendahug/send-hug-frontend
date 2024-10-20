@@ -44,6 +44,7 @@ import { PopUp } from "@common/popUp/popUp.component";
 import { ValidationService } from "@app/services/validation.service";
 import { ApiClientService } from "@app/services/apiClient.service";
 import { ItemsService } from "@app/services/items.service";
+import { TeleportDirective } from "@app/directives/teleport.directive";
 
 describe("Send Hug Form", () => {
   // Before each test, configure testing environment
@@ -63,7 +64,7 @@ describe("Send Hug Form", () => {
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
-      imports: [CommonModule, ReactiveFormsModule, PopUp, SendHugForm],
+      imports: [CommonModule, ReactiveFormsModule, PopUp, SendHugForm, TeleportDirective],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
         provideZoneChangeDetection({ eventCoalescing: true }),

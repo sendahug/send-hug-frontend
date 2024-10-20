@@ -49,6 +49,7 @@ import { ValidationService } from "@app/services/validation.service";
 import { AdminService } from "@app/services/admin.service";
 import { AuthService } from "@app/services/auth.service";
 import { ApiClientService } from "@app/services/apiClient.service";
+import { TeleportDirective } from "@app/directives/teleport.directive";
 
 interface UpdatePostResult {
   success: boolean;
@@ -72,7 +73,7 @@ describe("PostEditForm", () => {
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
-      imports: [ReactiveFormsModule, CommonModule, PopUp, PostEditForm],
+      imports: [ReactiveFormsModule, CommonModule, PopUp, PostEditForm, TeleportDirective],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
         provideZoneChangeDetection({ eventCoalescing: true }),

@@ -85,7 +85,6 @@ describe("Report", () => {
       text: "hi",
       date: new Date(),
     };
-
     fixture.detectChanges();
 
     expect(popUpDOM.querySelector("#reportItem")).toBeTruthy();
@@ -205,6 +204,7 @@ describe("Report", () => {
         item: "#f4b56a",
       },
     };
+    fixture.detectChanges();
     const otherTextField = document.getElementById("rOption3Text") as HTMLInputElement;
 
     popUp.checkSelectedForOther(popUpDOM.querySelector("#pRadioOption0"));
@@ -238,6 +238,7 @@ describe("Report", () => {
       text: "hi",
       date: new Date(),
     };
+    fixture.detectChanges();
     const otherTextField = document.getElementById("rOption3Text") as HTMLInputElement;
 
     popUpDOM.querySelector("#pRadioOption0").click();
@@ -426,12 +427,12 @@ describe("Report", () => {
       text: "hi",
       date: new Date(),
     };
+    fixture.detectChanges();
     const apiClientSpy = spyOn(popUp["apiClient"], "post").and.returnValue(of(mockResponse));
     const alertsSpy = spyOn(popUp["alertsService"], "createSuccessAlert");
     const emitSpy = spyOn(popUp.reportMode, "emit");
     const reportReason = "because";
     const otherText = popUpDOM.querySelector("#rOption3Text");
-    fixture.detectChanges();
 
     // select option 4
     popUpDOM.querySelector("#pRadioOption3").click();

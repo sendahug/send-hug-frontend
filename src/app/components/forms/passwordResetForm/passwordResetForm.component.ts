@@ -33,12 +33,12 @@
 // Angular imports
 import { Component, EventEmitter, Output } from "@angular/core";
 import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
-import { TeleportDirective } from "@ngneat/overview";
 
 // App-related imports
 import { AuthService } from "@app/services/auth.service";
 import { AlertsService } from "@app/services/alerts.service";
 import { PopUp } from "@common/popUp/popUp.component";
+import { TeleportDirective } from "@app/directives/teleport.directive";
 
 @Component({
   selector: "app-reset-pw-form",

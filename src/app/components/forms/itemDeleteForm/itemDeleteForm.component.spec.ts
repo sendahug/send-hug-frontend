@@ -45,6 +45,7 @@ import { ItemDeleteForm } from "./itemDeleteForm.component";
 import { PopUp } from "@common/popUp/popUp.component";
 import { AdminService } from "@app/services/admin.service";
 import { ApiClientService } from "@app/services/apiClient.service";
+import { TeleportDirective } from "@app/directives/teleport.directive";
 
 describe("ItemDeleteForm", () => {
   // Before each test, configure testing environment
@@ -56,7 +57,7 @@ describe("ItemDeleteForm", () => {
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
-      imports: [CommonModule, PopUp, ItemDeleteForm],
+      imports: [CommonModule, PopUp, ItemDeleteForm, TeleportDirective],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
         provideZoneChangeDetection({ eventCoalescing: true }),

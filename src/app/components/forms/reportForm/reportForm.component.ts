@@ -34,7 +34,6 @@
 import { Component, Input, Output, EventEmitter, OnInit } from "@angular/core";
 import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { CommonModule } from "@angular/common";
-import { TeleportDirective } from "@ngneat/overview";
 import { RouterLink } from "@angular/router";
 
 // App-related import
@@ -46,6 +45,7 @@ import { AlertsService } from "@app/services/alerts.service";
 import { ValidationService } from "@app/services/validation.service";
 import { ApiClientService } from "@app/services/apiClient.service";
 import { PopUp } from "@common/popUp/popUp.component";
+import { TeleportDirective } from "@app/directives/teleport.directive";
 
 // Reasons for submitting a report
 enum postReportReasons {
@@ -119,15 +119,14 @@ export class ReportForm implements OnInit {
     }
   }
 
-  /*
-  Function Name: checkSelectedForOther()
-  Function Description: Checks whether to enable or disable the 'other'
-                        text input, based on the selected reason.
-  Parameters: selectedItem (number) - the ID of the slected option.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
+  /**
+   * Checks whether to enable or disable the 'other' text input,
+   * based on the selected reason.
+   * @param selectedRadioButton - the selected element.
+   */
   checkSelectedForOther(selectedRadioButton: any) {
+    if (!selectedRadioButton) return;
+
     const selectedItem = Number(selectedRadioButton.value);
 
     // If the selected reason is one of the set reasons, simply send it as is
@@ -177,15 +176,10 @@ export class ReportForm implements OnInit {
     }
   }
 
-  /*
-  Function Name: reportPost()
-  Function Description: Creates a report and passes it on to the items service.
-                        The method is triggered by pressing the 'report' button
-                        in the report popup.
-  Parameters: None.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
+  /**
+   * Creates a report and passes it on to the items service. The method
+   * is triggered by pressing the 'report' button in the report form.
+   */
   createReport() {
     let item =
       this.reportType == "User" ? (this.reportedItem as OtherUser) : (this.reportedItem as PostGet);

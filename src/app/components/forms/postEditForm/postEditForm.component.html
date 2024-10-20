@@ -1,4 +1,4 @@
-<app-pop-up *teleportTo="'modalContainer'" (editMode)="editMode.emit(false)">
+<app-pop-up *teleport="'modalContainer'" (editMode)="editMode.emit(false)">
   <form [formGroup]="postEditForm" id="postEdit" class="postEdit">
     <div class="formElement">
       <span class="pageCategory">By:</span> <span class="pageData" aria-describedby="pUser">{{ editedItem.user }}</span>

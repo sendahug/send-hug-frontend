@@ -1,4 +1,4 @@
-<app-pop-up *teleportTo="'modalContainer'" (editMode)="editMode.emit(false)">
+<app-pop-up *teleport="'modalContainer'" (editMode)="editMode.emit(false)">
   <form [formGroup]="editNameForm" id="userEdit" class="userEdit">
     <div class="formElement">
       <label class="pageCategory required" for="displayName">Display Name:</label>

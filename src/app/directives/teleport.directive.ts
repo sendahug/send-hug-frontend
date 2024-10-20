@@ -56,7 +56,11 @@ export class TeleportDirective {
 
     // If the target wasn't found, just render it where it is.
     if (!target) {
-      console.error("Target not found. Check the used name.");
+      console.warn(
+        `Target not found. Check the used name.
+        Hint: The name of the target should be the key it's
+        registered to, not the name/ID of the element.`,
+      );
       this.viewContainerRef.createEmbeddedView(this.templateRef);
       return;
     }

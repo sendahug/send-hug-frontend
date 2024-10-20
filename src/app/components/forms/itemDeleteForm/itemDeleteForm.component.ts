@@ -33,7 +33,6 @@
 // Angular imports
 import { Component, Input, Output, EventEmitter } from "@angular/core";
 import { tap } from "rxjs";
-import { TeleportDirective } from "@ngneat/overview";
 import { CommonModule } from "@angular/common";
 
 // App-related import
@@ -42,6 +41,7 @@ import { ApiClientService } from "@app/services/apiClient.service";
 import { SWManager } from "@app/services/sWManager.service";
 import { AlertsService } from "@app/services/alerts.service";
 import { PopUp } from "@common/popUp/popUp.component";
+import { TeleportDirective } from "@app/directives/teleport.directive";
 
 @Component({
   selector: "item-delete-form",

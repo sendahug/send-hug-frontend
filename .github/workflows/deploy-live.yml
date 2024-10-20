@@ -29,7 +29,7 @@ jobs:
         run: npm install
 
       - name: Install the Font Awesome Pro kit
-        run: npm install @awesome.me/kit-5fefbbc637@latest
+        run: npm install @awesome.me/kit-5fefbbc637
         env:
           FONTAWESOME_PACKAGE_TOKEN: ${{ secrets.FONTAWESOME_PACKAGE_TOKEN }}
 

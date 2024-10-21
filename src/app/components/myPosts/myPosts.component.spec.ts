@@ -258,7 +258,6 @@ describe("MyPosts", () => {
     fixture.detectChanges();
 
     // start the popup
-    myPosts.lastFocusedElement = document.querySelectorAll("a")[0];
     myPosts.deleteMode = true;
     myPosts.toDelete = "Post";
     myPosts.itemToDelete = 2;
@@ -273,7 +272,6 @@ describe("MyPosts", () => {
     // check the popup is exited
     expect(changeSpy).toHaveBeenCalled();
     expect(myPosts.deleteMode).toBeFalse();
-    expect(document.activeElement).toBe(document.querySelectorAll("a")[0]);
     done();
   });
 
@@ -390,7 +388,6 @@ describe("MyPosts", () => {
     fixture.detectChanges();
 
     // start the popup
-    myPosts.lastFocusedElement = document.querySelectorAll("a")[0];
     myPosts.deleteMode = true;
     myPosts.toDelete = "Post";
     myPosts.itemToDelete = 2;

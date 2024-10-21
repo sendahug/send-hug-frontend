@@ -91,7 +91,6 @@ export class UserPage implements OnInit, OnDestroy {
   reportMode: boolean = false;
   reportedItem: OtherUser | undefined;
   reportType: "User" = "User";
-  lastFocusedElement: any;
   userDataCalls = 0;
   // loader sub-component variable
   loaderClass = computed(() => (!this.isIdbFetchLoading() && this.isLoading() ? "header" : ""));
@@ -213,7 +212,6 @@ export class UserPage implements OnInit, OnDestroy {
   Programmer: Shir Bar Lev.
   */
   editName() {
-    this.lastFocusedElement = document.activeElement;
     this.userToEdit = {
       displayName: this.displayUser().displayName,
       id: this.displayUser().id as number,
@@ -234,8 +232,6 @@ export class UserPage implements OnInit, OnDestroy {
   changeMode(edit: boolean, type: "Edit" | "Report") {
     if (type === "Edit") this.editMode = edit;
     else this.reportMode = edit;
-
-    this.lastFocusedElement.focus();
   }
 
   /*
@@ -266,7 +262,6 @@ export class UserPage implements OnInit, OnDestroy {
   Programmer: Shir Bar Lev.
   */
   reportUser(user: OtherUser) {
-    this.lastFocusedElement = document.activeElement;
     this.reportMode = true;
     this.reportedItem = user;
   }

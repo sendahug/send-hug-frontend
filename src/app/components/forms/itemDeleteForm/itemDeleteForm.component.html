@@ -1,4 +1,4 @@
-<app-pop-up (editMode)="editMode.emit(false)">
+<app-pop-up *teleport="'modalContainer'" (editMode)="editMode.emit(false)">
   <div id="deleteItem" class="deleteItem">
     <div class="popupText">Are you sure you want to delete this item?</div>
     <div class="popupText warning">This action is irreversible!</div>

@@ -562,7 +562,6 @@ describe("UserPage", () => {
     fixture.detectChanges();
 
     // start the popup
-    userPage.lastFocusedElement = document.querySelectorAll("button")[0];
     userPage.userToEdit = {
       displayName: userPage.authService.userData()!.displayName,
       id: userPage.authService.userData()!.id as number,
@@ -579,7 +578,6 @@ describe("UserPage", () => {
     // check the popup is exited
     expect(changeSpy).toHaveBeenCalled();
     expect(userPage.editMode).toBeFalse();
-    expect(document.activeElement).toBe(document.querySelectorAll("button")[0]);
     done();
   });
 
@@ -616,7 +614,6 @@ describe("UserPage", () => {
     fixture.detectChanges();
 
     // start the popup
-    userPage.lastFocusedElement = document.querySelectorAll("button")[0];
     userPage.reportedItem = userPage.otherUser() as OtherUser;
     userPage.reportMode = true;
     userPage.reportType = "User";
@@ -630,7 +627,6 @@ describe("UserPage", () => {
     // check the popup is exited
     expect(changeSpy).toHaveBeenCalled();
     expect(userPage.reportMode).toBeFalse();
-    expect(document.activeElement).toBe(document.querySelectorAll("button")[0]);
     done();
   });
 });

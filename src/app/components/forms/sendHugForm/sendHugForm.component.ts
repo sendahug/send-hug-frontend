@@ -42,6 +42,7 @@ import { ApiClientService } from "@app/services/apiClient.service";
 import { ValidationService } from "@app/services/validation.service";
 import { ItemsService } from "@app/services/items.service";
 import { PopUp } from "@common/popUp/popUp.component";
+import { TeleportDirective } from "@app/directives/teleport.directive";
 
 interface SendHugResponse {
   success: boolean;
@@ -52,7 +53,7 @@ interface SendHugResponse {
   selector: "app-send-hug-form",
   templateUrl: "./sendHugForm.component.html",
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, PopUp],
+  imports: [CommonModule, ReactiveFormsModule, PopUp, TeleportDirective],
 })
 export class SendHugForm implements OnInit {
   @Output() sendMode = new EventEmitter<boolean>();

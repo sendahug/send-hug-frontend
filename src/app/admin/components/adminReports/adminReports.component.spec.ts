@@ -574,7 +574,6 @@ describe("AdminReports", () => {
     fixture.detectChanges();
 
     // start the popup
-    adminReports.lastFocusedElement = document.querySelectorAll("button")[0];
     adminReports.toEdit = {
       displayName: "displayName",
       id: 2,
@@ -593,7 +592,6 @@ describe("AdminReports", () => {
     // check the popup is exited
     expect(changeSpy).toHaveBeenCalled();
     expect(adminReports.nameEditMode).toBeFalse();
-    expect(document.activeElement).toBe(document.querySelectorAll("button")[0]);
     done();
   });
 
@@ -607,7 +605,6 @@ describe("AdminReports", () => {
     fixture.detectChanges();
 
     // start the popup
-    adminReports.lastFocusedElement = document.querySelectorAll("button")[0];
     adminReports.toEdit = "post";
     adminReports.postEditMode = true;
     adminReports.reportData.reportID = 5;
@@ -623,14 +620,12 @@ describe("AdminReports", () => {
     // check the popup is exited
     expect(changeSpy).toHaveBeenCalled();
     expect(adminReports.postEditMode).toBeFalse();
-    expect(document.activeElement).toBe(document.querySelectorAll("button")[0]);
     done();
   });
 
   it("should change mode when the event emitter emits false - delete post", (done: DoneFn) => {
     const fixture = TestBed.createComponent(AdminReports);
     const adminReports = fixture.componentInstance;
-    const adminReportsDOM = fixture.nativeElement;
     const changeSpy = spyOn(adminReports, "changeMode").and.callThrough();
     adminReports.postReports = [...mockPostReports];
     adminReports.userReports = [...mockUserReports];
@@ -638,7 +633,6 @@ describe("AdminReports", () => {
     fixture.detectChanges();
 
     // start the popup
-    adminReports.lastFocusedElement = adminReportsDOM.querySelectorAll("button")[0];
     adminReports.deleteMode = true;
     adminReports.toDelete = "post";
     adminReports.itemToDelete = 2;
@@ -653,7 +647,6 @@ describe("AdminReports", () => {
     // check the popup is exited
     expect(changeSpy).toHaveBeenCalled();
     expect(adminReports.deleteMode).toBeFalse();
-    expect(document.activeElement).toBe(adminReportsDOM.querySelectorAll("button")[0]);
     done();
   });
 
@@ -665,7 +658,6 @@ describe("AdminReports", () => {
     fixture.detectChanges();
 
     // start the popup
-    adminReports.lastFocusedElement = document.querySelectorAll("a")[0];
     adminReports.toEdit = {
       displayName: "displayName",
       id: 2,
@@ -703,7 +695,6 @@ describe("AdminReports", () => {
     fixture.detectChanges();
 
     // start the popup
-    adminReports.lastFocusedElement = document.querySelectorAll("a")[0];
     adminReports.toEdit = {
       displayName: "displayName",
       id: 2,
@@ -741,7 +732,6 @@ describe("AdminReports", () => {
     fixture.detectChanges();
 
     // start the popup
-    adminReports.lastFocusedElement = document.querySelectorAll("a")[0];
     adminReports.toEdit = {
       displayName: "displayName",
       id: 2,
@@ -793,7 +783,6 @@ describe("AdminReports", () => {
     fixture.detectChanges();
 
     // start the popup
-    adminReports.lastFocusedElement = document.querySelectorAll("a")[0];
     adminReports.toEdit = "post";
     adminReports.postEditMode = true;
     adminReports.reportData.reportID = 5;
@@ -834,7 +823,6 @@ describe("AdminReports", () => {
     fixture.detectChanges();
 
     // start the popup
-    adminReports.lastFocusedElement = document.querySelectorAll("a")[0];
     adminReports.toEdit = "post";
     adminReports.postEditMode = true;
     adminReports.reportData.reportID = 5;
@@ -875,7 +863,6 @@ describe("AdminReports", () => {
     fixture.detectChanges();
 
     // start the popup
-    adminReports.lastFocusedElement = document.querySelectorAll("a")[0];
     adminReports.toEdit = "post";
     adminReports.postEditMode = true;
     adminReports.reportData.reportID = 5;
@@ -905,7 +892,6 @@ describe("AdminReports", () => {
     fixture.detectChanges();
 
     // start the popup
-    adminReports.lastFocusedElement = document.querySelectorAll("a")[0];
     adminReports.deleteMode = true;
     adminReports.toDelete = "post";
     adminReports.itemToDelete = 5;

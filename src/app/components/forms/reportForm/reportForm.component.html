@@ -1,4 +1,4 @@
-<app-pop-up (editMode)="reportMode.emit(false)">
+<app-pop-up *teleport="'modalContainer'" (editMode)="reportMode.emit(false)">
   <div id="reportItem">
     <h3 class="popupTitle">{{ "Report " + reportType }}</h3>
     <div *ngIf="reportType == 'Post'" class="userPost">
@@ -8,7 +8,7 @@
     <a *ngIf="reportType == 'User'" [routerLink]="['/user', reportedItem!.id]" id="uReportText">{{ reportedUser!.displayName }}</a>
 
     <div id="reportQ" class="popupText required">{{ "What is the problem with this " + reportType.toLowerCase() + "?" }}</div>
-    <form [formGroup]="reportForm" id="reportPost" role="radiogroup">
+    <form [formGroup]="reportForm" id="reportPost">
       <div class="formElement">
         <input type="radio" class="radioButton" id="pRadioOption0" value="0" (click)="checkSelectedForOther($event.target)" aria-describedby="reportQ" formControlName="selectedReason">
         <label class="radioButtonLabel" for="pRadioOption0">{{ reportReasonsText[reportType][0] }}</label>

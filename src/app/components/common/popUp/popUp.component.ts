@@ -32,7 +32,16 @@
 
 // Angular imports
 import { CommonModule } from "@angular/common";
-import { Component, Output, EventEmitter, OnInit, AfterViewChecked } from "@angular/core";
+import {
+  Component,
+  Output,
+  EventEmitter,
+  OnInit,
+  AfterViewChecked,
+  AfterViewInit,
+  ViewChild,
+  ElementRef,
+} from "@angular/core";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 
@@ -43,42 +52,39 @@ import { faTimes } from "@fortawesome/free-solid-svg-icons";
   standalone: true,
   imports: [CommonModule, FontAwesomeModule],
 })
-export class PopUp implements OnInit, AfterViewChecked {
+export class PopUp implements OnInit, AfterViewInit, AfterViewChecked {
   // indicates whether edit/delete mode is still required
   @Output() editMode = new EventEmitter<boolean>();
   focusableElements: any;
   checkFocusBinded = this.checkFocus.bind(this);
+  lastFocusedElement: HTMLElement | null = null;
+  @ViewChild("exitButton") exitButton!: ElementRef;
   // icons
   faTimes = faTimes;
 
   // CTOR
   constructor() {}
 
-  /*
-  Function Name: ngOnInit()
-  Function Description: This method is automatically triggered by Angular upon
-                        page initiation. It checks for the mode the user is in (edit
-                        or delete) and sets the component's variables accordingly.
-  Parameters: None.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
+  /**
+   * Angular's OnInit lifecycle hook. It sets the current active element as the
+   * last focused element (to be restored when the popup is closed).
+   */
   ngOnInit() {
-    document.getElementById("exitButton")!.focus();
-    if (document.getElementById("siteHeader")) {
-      document.getElementById("siteHeader")!.className = "modal";
-    }
+    this.lastFocusedElement = document.activeElement as HTMLElement | null;
   }
 
-  /*
-  Function Name: ngAfterViewChecked()
-  Function Description: This method is automatically triggered by Angular once the Component
-                        has been added to the DOM. It gets all focusable elements within the
-                        popup and sets the focus on the first element.
-  Parameters: None.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
+  /**
+   * Angular's AfterViewInit hook. It sets the popup's exit button as the
+   * active element.
+   */
+  ngAfterViewInit(): void {
+    this.exitButton.nativeElement.focus();
+  }
+
+  /**
+   * Angular's AfterViewChecked lifecycle hook. It gets all focusable elements within the
+   * popup and adds a listener for keyboard navigation to trap the focus within the popup.
+   */
   ngAfterViewChecked() {
     let modal = document.getElementById("modalBox");
     this.focusableElements = modal!.querySelectorAll(`a, button:not([disabled]),
@@ -87,14 +93,11 @@ export class PopUp implements OnInit, AfterViewChecked {
     modal!.addEventListener("keydown", this.checkFocusBinded);
   }
 
-  /*
-  Function Name: checkFocus()
-  Function Description: Checks the currently focused element to ensure that the
-                        user's focus remains within the popup.
-  Parameters: None.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
+  /**
+   * Checks the currently focused element to ensure that the user's focus
+   * remains within the popup. Runs every time the user enters a key.
+   * @param e - the keyboard input event.
+   */
   checkFocus(e: KeyboardEvent) {
     // if the pressed key is TAB
     if (e.key.toLowerCase() === "tab") {
@@ -119,24 +122,16 @@ export class PopUp implements OnInit, AfterViewChecked {
     }
   }
 
-  /*
-  Function Name: exitEdit()
-  Function Description: Emits an event to disable edit mode. Exiting edit mode is
-                        done by the parent component upon getting the 'false' value.
-                        The user's focus is also moved back to the skip link.
-  Parameters: None.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
+  /**
+   * Emits an event to disable edit mode. Exiting edit mode is
+   * done by the parent component upon getting the 'false' value.
+   * The user's focus is also moved back to the last focused element
+   * before opening the popup.
+   */
   exitEdit() {
     let modal = document.getElementById("modalBox");
     modal!.removeEventListener("keydown", this.checkFocusBinded);
-    if (document.getElementById("skipLink")) {
-      document.getElementById("skipLink")!.focus();
-    }
-    if (document.getElementById("siteHeader")) {
-      document.getElementById("siteHeader")!.className = "";
-    }
+    this.lastFocusedElement?.focus();
     this.editMode.emit(false);
   }
 }

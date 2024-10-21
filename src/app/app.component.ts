@@ -31,7 +31,7 @@
 */
 
 // Angular imports
-import { Component, OnInit } from "@angular/core";
+import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from "@angular/core";
 import { Router, RouterOutlet, RouterLink, ActivatedRoute } from "@angular/router";
 import { CommonModule } from "@angular/common";
 
@@ -42,6 +42,7 @@ import { SWManager } from "./services/sWManager.service";
 import { NotificationService } from "./services/notifications.service";
 import { AppAlert } from "./components/appAlert/appAlert.component";
 import { AppNavMenu } from "./components/layout/navigationMenu/navigationMenu.component";
+import { TeleportService } from "./services/teleport.service";
 
 @Component({
   selector: "app-root",
@@ -50,8 +51,9 @@ import { AppNavMenu } from "./components/layout/navigationMenu/navigationMenu.co
   standalone: true,
   imports: [CommonModule, RouterOutlet, RouterLink, AppAlert, AppNavMenu],
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, AfterViewInit {
   canShare = false;
+  @ViewChild("modalContainer") modalContainer!: ElementRef;
 
   constructor(
     protected authService: AuthService,
@@ -60,6 +62,7 @@ export class AppComponent implements OnInit {
     private serviceWorkerM: SWManager,
     protected notificationService: NotificationService,
     private route: ActivatedRoute,
+    private teleportService: TeleportService,
   ) {
     // Update the user state based on the logged in firebase user
     // (if there is one)
@@ -114,16 +117,11 @@ export class AppComponent implements OnInit {
     });
   }
 
-  /*
-  Function Name: ngOnInit()
-  Function Description: This method is automatically triggered by Angular upon
-                        page initiation. It triggers the registration of the ServiceWorker,
-                        as well keeping alert for any ServiceWorker that has been
-                        installed and is ready to be activated.
-  Parameters: None.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
+  /**
+   * Angular's OnInit hook. It triggers the registration of the ServiceWorker,
+   * as well keeping alert for any ServiceWorker that has been installed
+   * and is ready to be activated.
+   */
   ngOnInit() {
     this.serviceWorkerM.registerSW();
 
@@ -134,13 +132,16 @@ export class AppComponent implements OnInit {
     }
   }
 
-  /*
-  Function Name: shareSite()
-  Function Description: Triggers the Share API to let the user share the website.
-  Parameters: None.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
+  /**
+   * Angular's AfterViewInit hook. Creates the modal teleport target.
+   */
+  ngAfterViewInit(): void {
+    this.teleportService.createTeleportTarget("modalContainer", this.modalContainer);
+  }
+
+  /**
+   * Triggers the Share API to let the user share the website.
+   */
   shareSite() {
     navigator
       .share({

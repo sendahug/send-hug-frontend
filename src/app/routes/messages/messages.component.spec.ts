@@ -657,7 +657,6 @@ describe("AppMessaging", () => {
     appMessaging.isIdbFetchLoading.set(false);
 
     // start the popup
-    appMessaging.lastFocusedElement = document.querySelectorAll("a")[0];
     appMessaging.deleteMode = true;
     appMessaging.toDelete = "Thread";
     appMessaging.itemToDelete = 1;
@@ -672,7 +671,6 @@ describe("AppMessaging", () => {
     // check the popup is exited
     expect(changeSpy).toHaveBeenCalled();
     expect(appMessaging.deleteMode).toBeFalse();
-    expect(document.activeElement).toBe(document.querySelectorAll("a")[0]);
     done();
   });
 
@@ -710,7 +708,6 @@ describe("AppMessaging", () => {
     appMessaging.isIdbFetchLoading.set(false);
 
     // start the popup
-    appMessaging.lastFocusedElement = document.querySelectorAll("a")[0];
     appMessaging.deleteMode = true;
     appMessaging.toDelete = "Message";
     appMessaging.itemToDelete = 1;
@@ -740,7 +737,6 @@ describe("AppMessaging", () => {
     appMessaging.isIdbFetchLoading.set(false);
 
     // start the popup
-    appMessaging.lastFocusedElement = document.querySelectorAll("a")[0];
     appMessaging.deleteMode = true;
     appMessaging.toDelete = "Thread";
     appMessaging.itemToDelete = 3;
@@ -769,7 +765,6 @@ describe("AppMessaging", () => {
     appMessaging.isIdbFetchLoading.set(false);
 
     // start the popup
-    appMessaging.lastFocusedElement = document.querySelectorAll("a")[0];
     appMessaging.deleteMode = true;
     appMessaging.toDelete = "All inbox";
     appMessaging.itemToDelete = 1;
@@ -798,7 +793,6 @@ describe("AppMessaging", () => {
     appMessaging.isIdbFetchLoading.set(false);
 
     // start the popup
-    appMessaging.lastFocusedElement = document.querySelectorAll("a")[0];
     appMessaging.deleteMode = true;
     appMessaging.toDelete = "All threads";
     appMessaging.itemToDelete = 3;

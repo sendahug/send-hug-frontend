@@ -44,6 +44,7 @@ import { PasswordResetForm } from "./passwordResetForm.component";
 import { AuthService } from "@app/services/auth.service";
 import { mockAuthedUser } from "@tests/mockData";
 import { PopUp } from "@common/popUp/popUp.component";
+import { TeleportDirective } from "@app/directives/teleport.directive";
 
 // DISPLAY NAME EDIT
 // ==================================================================
@@ -59,7 +60,7 @@ describe("PasswordResetForm", () => {
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
-      imports: [ReactiveFormsModule, PopUp, PasswordResetForm],
+      imports: [ReactiveFormsModule, PopUp, PasswordResetForm, TeleportDirective],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
         provideZoneChangeDetection({ eventCoalescing: true }),

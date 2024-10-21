@@ -256,7 +256,6 @@ describe("Post", () => {
     upFixture.detectChanges();
 
     // start the popup
-    singlePost.lastFocusedElement = document.querySelectorAll("a")[0];
     singlePost.editMode = true;
     upFixture.detectChanges();
 
@@ -269,7 +268,6 @@ describe("Post", () => {
     // check the popup is exited
     expect(changeSpy).toHaveBeenCalled();
     expect(singlePost.editMode).toBeFalse();
-    expect(document.activeElement).toBe(document.querySelectorAll("a")[0]);
     done();
   });
 
@@ -281,7 +279,6 @@ describe("Post", () => {
     upFixture.detectChanges();
 
     // start the popup
-    singlePost.lastFocusedElement = document.querySelectorAll("a")[0];
     singlePost.deleteMode = true;
     upFixture.detectChanges();
 
@@ -294,7 +291,6 @@ describe("Post", () => {
     // check the popup is exited
     expect(changeSpy).toHaveBeenCalled();
     expect(singlePost.deleteMode).toBeFalse();
-    expect(document.activeElement).toBe(document.querySelectorAll("a")[0]);
     done();
   });
 
@@ -306,7 +302,6 @@ describe("Post", () => {
     upFixture.detectChanges();
 
     // start the popup
-    singlePost.lastFocusedElement = document.querySelectorAll("a")[0];
     singlePost.reportMode = true;
     upFixture.detectChanges();
 
@@ -319,7 +314,6 @@ describe("Post", () => {
     // check the popup is exited
     expect(changeSpy).toHaveBeenCalled();
     expect(singlePost.reportMode).toBeFalse();
-    expect(document.activeElement).toBe(document.querySelectorAll("a")[0]);
     done();
   });
 
@@ -497,7 +491,6 @@ describe("Post", () => {
     };
 
     // start the popup
-    singlePost.lastFocusedElement = document.querySelectorAll("a")[0];
     singlePost.editMode = true;
     upFixture.detectChanges();
 
@@ -522,7 +515,6 @@ describe("Post", () => {
     upFixture.detectChanges();
 
     // start the popup
-    singlePost.lastFocusedElement = document.querySelectorAll("a")[0];
     singlePost.deleteMode = true;
     upFixture.detectChanges();
 

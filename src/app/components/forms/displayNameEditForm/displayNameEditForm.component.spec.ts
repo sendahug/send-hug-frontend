@@ -48,6 +48,7 @@ import { mockAuthedUser } from "@tests/mockData";
 import { PopUp } from "@common/popUp/popUp.component";
 import { ValidationService } from "@app/services/validation.service";
 import { AdminService } from "@app/services/admin.service";
+import { TeleportDirective } from "@app/directives/teleport.directive";
 
 // DISPLAY NAME EDIT
 // ==================================================================
@@ -64,7 +65,7 @@ describe("DisplayNameEditForm", () => {
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
-      imports: [CommonModule, ReactiveFormsModule, PopUp, DisplayNameEditForm],
+      imports: [CommonModule, ReactiveFormsModule, PopUp, DisplayNameEditForm, TeleportDirective],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
         provideZoneChangeDetection({ eventCoalescing: true }),

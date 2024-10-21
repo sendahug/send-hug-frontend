@@ -38,12 +38,13 @@ import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { AuthService } from "@app/services/auth.service";
 import { AlertsService } from "@app/services/alerts.service";
 import { PopUp } from "@common/popUp/popUp.component";
+import { TeleportDirective } from "@app/directives/teleport.directive";
 
 @Component({
   selector: "app-reset-pw-form",
   templateUrl: "./passwordResetForm.component.html",
   standalone: true,
-  imports: [ReactiveFormsModule, PopUp],
+  imports: [ReactiveFormsModule, PopUp, TeleportDirective],
 })
 export class PasswordResetForm {
   @Output() editMode = new EventEmitter<boolean>();

@@ -41,12 +41,13 @@ import { ApiClientService } from "@app/services/apiClient.service";
 import { SWManager } from "@app/services/sWManager.service";
 import { AlertsService } from "@app/services/alerts.service";
 import { PopUp } from "@common/popUp/popUp.component";
+import { TeleportDirective } from "@app/directives/teleport.directive";
 
 @Component({
   selector: "item-delete-form",
   templateUrl: "./itemDeleteForm.component.html",
   standalone: true,
-  imports: [CommonModule, PopUp],
+  imports: [CommonModule, PopUp, TeleportDirective],
 })
 export class ItemDeleteForm {
   // indicates whether edit/delete mode is still required

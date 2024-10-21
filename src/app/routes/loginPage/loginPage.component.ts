@@ -62,7 +62,6 @@ export class LoginPage {
   });
   isLoading = signal(false);
   resetMode = false;
-  lastFocusedElement: any;
   faGoogle = faGoogle;
   faApple = faApple;
 
@@ -188,7 +187,6 @@ export class LoginPage {
    */
   resetPassword() {
     this.resetMode = true;
-    this.lastFocusedElement = document.activeElement;
   }
 
   /**
@@ -197,7 +195,6 @@ export class LoginPage {
    */
   changeMode(edit: boolean) {
     this.resetMode = edit;
-    this.lastFocusedElement?.focus();
   }
 
   /*

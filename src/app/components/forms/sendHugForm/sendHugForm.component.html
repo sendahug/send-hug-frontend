@@ -1,4 +1,4 @@
-<app-pop-up (editMode)="sendMode.emit(false)">
+<app-pop-up *teleport="'modalContainer'" (editMode)="sendMode.emit(false)">
   <h3>Send A Hug</h3>
 
   <form [formGroup]="sendHugForm" class="postEdit" *ngIf="forUsername && forID">

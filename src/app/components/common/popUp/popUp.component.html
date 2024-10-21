@@ -1,6 +1,8 @@
 <div id="modalBox">
 	<div id="editPopup" role="dialog" aria-label="edit popup">
-		<button id="exitButton" (click)="exitEdit()" aria-label="close popup"><fa-icon [icon]="faTimes" class="fa-times"></fa-icon></button>
+		<button #exitButton id="exitButton" (click)="exitEdit()" aria-label="close popup">
+			<fa-icon [icon]="faTimes" class="fa-times"></fa-icon>
+		</button>
 		<ng-content></ng-content>
 	</div>
 </div>

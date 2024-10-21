@@ -56,6 +56,7 @@ import { mockAuthedUser } from "@tests/mockData";
 import { AppAlert } from "./components/appAlert/appAlert.component";
 import { AlertsService } from "@app/services/alerts.service";
 import { AppNavMenu } from "./components/layout/navigationMenu/navigationMenu.component";
+import { TeleportService } from "./services/teleport.service";
 
 describe("AppComponent", () => {
   beforeEach(() => {
@@ -78,6 +79,7 @@ describe("AppComponent", () => {
       registerSW: () => undefined,
       updateSW: () => undefined,
     });
+    const MockTeleportService = MockProvider(TeleportService);
 
     TestBed.resetTestEnvironment();
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
@@ -91,6 +93,7 @@ describe("AppComponent", () => {
         MockAuthService,
         MockNotificationsService,
         MockSWManager,
+        MockTeleportService,
       ],
     }).compileComponents();
   });
@@ -244,6 +247,16 @@ describe("AppComponent", () => {
     expect(navigateSpy).toHaveBeenCalledWith(["/test"]);
     expect(paramMapSpy).toHaveBeenCalledWith("redirect");
   }));
+
+  it("should register the teleport target", () => {
+    const teleportService = TestBed.inject(TeleportService);
+    const createSpy = spyOn(teleportService, "createTeleportTarget");
+
+    const fixture = TestBed.createComponent(AppComponent);
+    fixture.detectChanges();
+
+    expect(createSpy).toHaveBeenCalled();
+  });
 
   // check the 'share' button is hidden
   it("shouldn't show the share button if it's not supported", () => {

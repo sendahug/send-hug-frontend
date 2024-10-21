@@ -104,7 +104,7 @@ describe("Popup", () => {
     // happen by the correct order
     // step 1: check the first element is focused
     new Promise(() => {
-      popUp.ngOnInit();
+      popUp.ngAfterViewInit();
 
       // check the first element has focus
       spies.forEach((spy, index: number) => {

@@ -2,6 +2,22 @@
 
 ## Unreleased
 
+### 2024-10-21
+
+#### Features
+
+- Added a Teleport Service and a Teleport Directive to allow teleporting HTML elements to other locations across the DOM. The Service keeps a mapping of teleport targets, which is then used by the Directive to move the DOM elements marked by the directive to the requested target. ([#1856](https://github.com/sendahug/send-hug-frontend/pull/1856))
+
+#### Changes
+
+- Moved the 'last focused element' from the various components that include a form to the popup. Previously, some of the components that had form included a 'last focused element' property, to allow returning the focus to where the user was once the popup is closed. However, that created an inconsistent experience (as not all components had it) and required replicating code across components. Instead, the 'last focused element' handling was moved to the popup, to ensure the focus is returned to the previously focused element once the popup is closed across all components. ([#1856](https://github.com/sendahug/send-hug-frontend/pull/1856))
+- All forms' DOM elements are now teleported to the root of the AppComponent once they open. Previously, we had to include code for manually adjusting the DOM, to ensure all elements appear behind the modal box and the popup. Now, ensuring the correct order of elements (on the z-axis) is handled by the DOM itself, as all elements with a higher z-index are based in the same component. ([#1856](https://github.com/sendahug/send-hug-frontend/pull/1856))
+
+#### Fixes
+
+- Removed unnecessary `aria-describedby` attributes from elements in the Support page. These were left in as the result of a copy and paste, and pointed to elements that didn't exist in the page, which was confusing for users using assistive technology. ([#1856](https://github.com/sendahug/send-hug-frontend/pull/1856))
+- Fixed a bug where hitting the submit button on a popup-based form in the mobile version of the web caused the navigation menu to appear behind other elements in the page, instead of above them. This was the result of the code that was responsible for ensuring all elements appear behind the popup; now that popup's z-index is handled natively, all elements are shown in the correct z-axis position. ([#1856](https://github.com/sendahug/send-hug-frontend/pull/1856))
+
 ### 2024-10-14
 
 #### Features

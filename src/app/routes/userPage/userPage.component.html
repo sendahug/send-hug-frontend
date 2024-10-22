@@ -51,7 +51,7 @@
 			</div>
 		</div>
 
-		<app-my-posts [userID]="userId!"></app-my-posts>
+		<app-my-posts [userID]="userId()!"></app-my-posts>
 	</div>
 </div>
 
@@ -72,14 +72,14 @@
 </div>
 		
 <report-form
-	*ngIf="reportMode"
+	*ngIf="reportMode()"
 	(reportMode)="changeMode($event, 'Report')"
-	[reportedItem]="reportedItem!"
+	[reportedItem]="reportedItem()!"
 	[reportType]="reportType"
 ></report-form>
 
 <display-name-edit-form
-	*ngIf="editMode"
+	*ngIf="editMode()"
 	[editedItem]="userToEdit!"
 	(editMode)="changeMode($event, 'Edit')"
 ></display-name-edit-form>

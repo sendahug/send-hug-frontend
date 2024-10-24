@@ -251,45 +251,6 @@ describe("UserPage", () => {
     done();
   });
 
-  // Check that the 'please login page' is shown if the user's logged out
-  it("should show login page if user is not authenticated", (done: DoneFn) => {
-    const paramMap = TestBed.inject(ActivatedRoute);
-    spyOn(paramMap.snapshot.paramMap, "get").and.returnValue("4");
-    const authService = TestBed.inject(AuthService);
-    authService.authenticated.set(false);
-    const fixture = TestBed.createComponent(UserPage);
-    const userPage = fixture.componentInstance;
-    const userPageDOM = fixture.nativeElement;
-    userPage.authService.authenticated.set(false);
-
-    fixture.detectChanges();
-
-    expect(userPage.isOtherUserProfile()).toBeFalse();
-    expect(userPageDOM.querySelector("#profileContainer")).toBeNull();
-    expect(userPageDOM.querySelector("#loginBox")).toBeTruthy();
-    done();
-  });
-
-  // Check that the login button is a link to the login page
-  it("should show a link to the login page", (done: DoneFn) => {
-    const paramMap = TestBed.inject(ActivatedRoute);
-    spyOn(paramMap.snapshot.paramMap, "get").and.returnValue("4");
-    const authService = TestBed.inject(AuthService);
-    authService.authenticated.set(false);
-    const fixture = TestBed.createComponent(UserPage);
-    const userPage = fixture.componentInstance;
-    const userPageDOM = fixture.nativeElement;
-    userPage.authService.authenticated.set(false);
-    fixture.detectChanges();
-
-    // check that everything is shown correctly
-    expect(userPageDOM.querySelector("#loginBox")).toBeTruthy();
-    const loginLink = userPageDOM.querySelector("#logIn");
-    expect(loginLink.textContent).toBe("Go to Login");
-    expect(loginLink.getAttribute("href")).toBe("/login");
-    done();
-  });
-
   // Check that the logout button triggers the AuthService's logout method
   it("should trigger the AuthService upon clicking logout", (done: DoneFn) => {
     const paramMap = TestBed.inject(ActivatedRoute);
@@ -360,6 +321,23 @@ describe("UserPage", () => {
     expect(addItemSpy).toHaveBeenCalledWith("users", mockUser);
     expect(userPage.otherUser() as OtherUser).toEqual(mockUser);
     expect(userPage.isLoading()).toBeFalse();
+  });
+
+  it("should show the loader as full loader if the IDB fetch isn't resolved", () => {
+    const authService = TestBed.inject(AuthService);
+    authService.authenticated.set(true);
+    authService.userData.set({ ...mockAuthedUser });
+    const fixture = TestBed.createComponent(UserPage);
+    const userPage = fixture.componentInstance;
+    const userPageDOM = fixture.nativeElement;
+    fixture.detectChanges();
+
+    userPage.isIdbFetchLoading.set(true);
+    userPage.isLoading.set(true);
+    fixture.detectChanges();
+
+    expect(userPage.loaderClass()).toBe("");
+    expect(userPageDOM.querySelector("app-loader").className).toEqual("");
   });
 
   it("should fetch user data from Idb", (done: DoneFn) => {

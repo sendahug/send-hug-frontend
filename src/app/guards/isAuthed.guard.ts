@@ -48,7 +48,7 @@ export const isAuthedGuard: CanMatchFn = (_route, segments) => {
   } else {
     const currentPath = segments.map((segment) => segment.toString()).join("/");
 
-    return router.navigate(["/"], {
+    return router.navigate(["/login"], {
       queryParams: { redirect: currentPath },
     });
   }

@@ -34,6 +34,7 @@
 import { Component, OnInit, Input, signal, computed } from "@angular/core";
 import { from, map, switchMap, tap } from "rxjs";
 import { CommonModule } from "@angular/common";
+import { ActivatedRoute, Router } from "@angular/router";
 
 // App-related imports
 import { type PostGet } from "@app/interfaces/post.interface";
@@ -65,9 +66,9 @@ export class MyPosts implements OnInit {
   currentPage = signal(1);
   totalPages = signal(1);
   // edit popup sub-component variables
-  deleteMode: boolean;
-  toDelete: string | undefined;
-  itemToDelete: number | undefined;
+  deleteMode = signal(false);
+  toDelete = signal<string>("");
+  itemToDelete = signal<number | undefined>(undefined);
   previousPageButtonClass = computed(() => ({
     "appButton prevButton": true,
     disabled: this.currentPage() <= 1,
@@ -76,27 +77,31 @@ export class MyPosts implements OnInit {
     "appButton nextButton": true,
     disabled: this.totalPages() <= this.currentPage(),
   }));
-  // loader sub-component variable
-  waitFor = "user posts";
   // The user whose posts to fetch
-  @Input() userID!: number;
+  @Input()
+  get userID() {
+    return this._userId();
+  }
+  set userID(newId: number | undefined) {
+    this._userId.set(newId || this.authService.userData()!.id);
+  }
+  protected _userId = signal<number | undefined>(undefined);
   user = computed(() =>
-    this.userID && this.userID != this.authService.userData()!.id! ? "other" : "self",
+    this._userId() && this._userId() != this.authService.userData()!.id! ? "other" : "self",
   );
-  loaderClass = computed(() => (!this.isIdbFetchLoading() && this.isLoading() ? "header" : ""));
+  loaderClass = signal("header");
 
   // CTOR
   constructor(
     public authService: AuthService,
     private swManager: SWManager,
     private apiClient: ApiClientService,
+    private router: Router,
+    private route: ActivatedRoute,
   ) {
-    if (!this.userID) {
-      this.userID = this.authService.userData()!.id!;
+    if (!this._userId()) {
+      this._userId.set(this.authService.userData()!.id!);
     }
-
-    this.deleteMode = false;
-    this.currentPage.set(1);
   }
 
   /*
@@ -109,10 +114,6 @@ export class MyPosts implements OnInit {
   Programmer: Shir Bar Lev.
   */
   ngOnInit() {
-    if (!this.userID) {
-      this.userID = this.authService.userData()!.id!;
-    }
-
     this.fetchPosts();
   }
 
@@ -128,7 +129,7 @@ export class MyPosts implements OnInit {
     fetchFromIdb$
       .pipe(
         switchMap(() =>
-          this.apiClient.get<MyPostsResponse>(`users/all/${this.userID}/posts`, {
+          this.apiClient.get<MyPostsResponse>(`users/all/${this._userId()}/posts`, {
             page: this.currentPage(),
           }),
         ),
@@ -147,7 +148,9 @@ export class MyPosts implements OnInit {
    *          posts from IndexedDB and transforming them.
    */
   fetchPostsFromIdb() {
-    return from(this.swManager.fetchPosts("user", 5, this.userID, this.currentPage(), false)).pipe(
+    return from(
+      this.swManager.fetchPosts("user", 5, this._userId(), this.currentPage(), false),
+    ).pipe(
       tap((data) => {
         this.posts.set(data.posts);
         this.isIdbFetchLoading.set(false);
@@ -175,7 +178,7 @@ export class MyPosts implements OnInit {
   Programmer: Shir Bar Lev.
   */
   changeMode(edit: boolean) {
-    this.deleteMode = edit;
+    this.deleteMode.set(edit);
   }
 
   /*
@@ -187,9 +190,9 @@ export class MyPosts implements OnInit {
   Programmer: Shir Bar Lev.
   */
   deleteAllPosts() {
-    this.deleteMode = true;
-    this.toDelete = "All posts";
-    this.itemToDelete = this.userID;
+    this.deleteMode.set(true);
+    this.toDelete.set("All posts");
+    this.itemToDelete.set(this._userId());
   }
 
   /**
@@ -211,6 +214,7 @@ export class MyPosts implements OnInit {
   nextPage() {
     this.currentPage.set(this.currentPage() + 1);
     this.fetchPosts();
+    this.updatePageUrlParam();
   }
 
   /*
@@ -224,6 +228,20 @@ export class MyPosts implements OnInit {
   prevPage() {
     this.currentPage.set(this.currentPage() - 1);
     this.fetchPosts();
+    this.updatePageUrlParam();
+  }
+
+  /**
+   * Updates the URL query parameter (page) according to the new page.
+   */
+  updatePageUrlParam() {
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: {
+        postsPage: this.currentPage(),
+      },
+      replaceUrl: true,
+    });
   }
 
   /**

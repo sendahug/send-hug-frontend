@@ -31,9 +31,9 @@
 */
 
 // Angular imports
-import { Component, OnInit, OnDestroy, signal, computed } from "@angular/core";
+import { Component, OnDestroy, signal, computed } from "@angular/core";
 import { ActivatedRoute, RouterLink } from "@angular/router";
-import { Subscription, from, switchMap, tap } from "rxjs";
+import { from, switchMap, tap } from "rxjs";
 import { faGratipay } from "@fortawesome/free-brands-svg-icons";
 import { HttpErrorResponse } from "@angular/common/http";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
@@ -73,7 +73,7 @@ interface OtherUserResponse {
     MyPosts,
   ],
 })
-export class UserPage implements OnInit, OnDestroy {
+export class UserPage implements OnDestroy {
   isLoading = signal(false);
   isIdbFetchLoading = signal(false);
   otherUser = signal<OtherUser | undefined>(undefined);
@@ -87,15 +87,13 @@ export class UserPage implements OnInit, OnDestroy {
   isOtherUserProfile = computed(() => this.otherUser() != undefined);
   // edit popup sub-component variables
   userToEdit?: PartialUser;
-  editMode: boolean = false;
-  reportMode: boolean = false;
-  reportedItem: OtherUser | undefined;
+  editMode = signal(false);
+  reportMode = signal(false);
+  reportedItem = signal<OtherUser | undefined>(undefined);
   reportType: "User" = "User";
-  userDataCalls = 0;
   // loader sub-component variable
   loaderClass = computed(() => (!this.isIdbFetchLoading() && this.isLoading() ? "header" : ""));
-  userId: number | undefined;
-  userDataSubscription: Subscription | undefined;
+  userId = signal<number | undefined>(undefined);
   // icons
   faGratipay = faGratipay;
 
@@ -109,41 +107,19 @@ export class UserPage implements OnInit, OnDestroy {
   ) {
     // if there's a user ID, set the user ID to it
     if (this.route.snapshot.paramMap.get("id")) {
-      this.userId = Number(this.route.snapshot.paramMap.get("id"));
+      this.userId.set(Number(this.route.snapshot.paramMap.get("id")));
     } else {
-      this.userId = undefined;
+      this.userId.set(undefined);
     }
 
-    // If the user's logged in, fetch the user immediately;
-    // otherwise, wait for the user to login
-    if (this.authService.authenticated()) {
-      this.getUser();
-    } else {
-      // set the userDataSubscription to the subscription to isUserDataResolved
-      this.userDataSubscription = this.authService.isUserDataResolved.subscribe((value) => {
-        // if the user is logged in, fetch the profile of the user whose ID
-        // is used in the URL param
-        if (value == true && this.userDataCalls < 2) {
-          this.getUser();
-          // also unsubscribe from this to avoid sending the same request
-          // multiple times
-          if (this.userDataSubscription) {
-            this.userDataSubscription.unsubscribe();
-          }
-        }
-      });
-    }
+    // Since navigation to the page is only allowed when a user is authenticated
+    // we can fetch the user immediately.
+    this.getUser();
   }
 
-  ngOnInit() {}
-
-  /*
-  Function Name: logout()
-  Function Description: Activates Firebase logout via the authentication service.
-  Parameters: None.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
+  /**
+   * Activates Firebase logout via the authentication service.
+   */
   logout() {
     this.authService.logout();
   }
@@ -156,7 +132,7 @@ export class UserPage implements OnInit, OnDestroy {
     // If there's no user ID or the user ID is the same as the
     // logged in user's ID, don't fetch the user but set everything
     // to resolved so it can display the AuthService data in the template.
-    if (this.userId === undefined || this.userId == this.authService.userData()?.id) {
+    if (this.userId() === undefined || this.userId() == this.authService.userData()?.id) {
       this.otherUser.set(undefined);
       this.isLoading.set(false);
       this.isIdbFetchLoading.set(false);
@@ -175,7 +151,7 @@ export class UserPage implements OnInit, OnDestroy {
    */
   fetchOtherUsersData() {
     this.fetchOtherUserFromIdb()
-      .pipe(switchMap(() => this.apiClient.get<OtherUserResponse>(`users/all/${this.userId!}`)))
+      .pipe(switchMap(() => this.apiClient.get<OtherUserResponse>(`users/all/${this.userId()!}`)))
       .subscribe({
         next: (response) => {
           const user = response.user;
@@ -196,7 +172,7 @@ export class UserPage implements OnInit, OnDestroy {
    * @returns an observable that fetches the user from IDB
    */
   fetchOtherUserFromIdb() {
-    return from(this.swManager.queryUsers(this.userId!)).pipe(
+    return from(this.swManager.queryUsers(this.userId()!)).pipe(
       tap((user) => {
         if (user) this.otherUser.set(user);
         this.isIdbFetchLoading.set(false);
@@ -204,43 +180,31 @@ export class UserPage implements OnInit, OnDestroy {
     );
   }
 
-  /*
-  Function Name: editName()
-  Function Description: Activate the edit popup to edit a user's display name.
-  Parameters: None.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
+  /**
+   * Activate the edit popup to edit a user's display name.
+   */
   editName() {
     this.userToEdit = {
       displayName: this.displayUser().displayName,
       id: this.displayUser().id as number,
     };
-    this.editMode = true;
+    this.editMode.set(true);
   }
 
-  /*
-  Function Name: changeMode()
-  Function Description: Remove the edit popup.
-  Parameters: edit (boolean) - indicating whether edit mode should be active.
-                               When the user finishes editing, the event emitter
-                               in the popup component sends 'false' to this function
-                               to remove the popup.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
+  /**
+   * Remove the edit popup.
+   * @param edit indicating whether edit mode should be active.
+   * @param type the type of popup to hide (edit or report).
+   */
   changeMode(edit: boolean, type: "Edit" | "Report") {
-    if (type === "Edit") this.editMode = edit;
-    else this.reportMode = edit;
+    if (type === "Edit") this.editMode.set(edit);
+    else this.reportMode.set(edit);
   }
 
-  /*
-  Function Name: sendHug()
-  Function Description: Send a hug to a user.
-  Parameters: userID (number) - the ID of the user.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
+  /**
+   * Send a hug to a user.
+   * @param userID the ID of the user.
+   */
   sendHug(userID: number) {
     this.apiClient.post(`users/all/${userID}/hugs`, {}).subscribe({
       next: (_response) => {
@@ -254,21 +218,20 @@ export class UserPage implements OnInit, OnDestroy {
     });
   }
 
-  /*
-  Function Name: reportUser()
-  Function Description: Opens the popup to report a user.
-  Parameters: user (User) - the user to report.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
+  /**
+   * Opens the popup to report a user.
+   * @param user the user to report.
+   */
   reportUser(user: OtherUser) {
-    this.reportMode = true;
-    this.reportedItem = user;
+    this.reportMode.set(true);
+    this.reportedItem.set(user);
   }
 
-  // When leaving the page, return "other user" to false
+  /**
+   * Angular's OnDestroy hook. When leaving the page, returns
+   * "other user" to false
+   */
   ngOnDestroy() {
     this.otherUser.set(undefined);
-    this.userDataCalls = 0;
   }
 }

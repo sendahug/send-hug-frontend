@@ -67,7 +67,6 @@ import { SWManager } from "@app/services/sWManager.service";
   imports: [MyPosts],
 })
 class MockUserPage {
-  waitFor = "user";
   userId: number;
 
   constructor() {
@@ -146,7 +145,7 @@ describe("MyPosts", () => {
     upFixture.detectChanges();
     const myPosts: MyPosts = upFixture.debugElement.children[0].children[0].componentInstance;
 
-    expect(myPosts.deleteMode).toBeFalse();
+    expect(myPosts.deleteMode()).toBeFalse();
   });
 
   // Check that the component gets the user ID correctly
@@ -258,9 +257,9 @@ describe("MyPosts", () => {
     fixture.detectChanges();
 
     // start the popup
-    myPosts.deleteMode = true;
-    myPosts.toDelete = "Post";
-    myPosts.itemToDelete = 2;
+    myPosts.deleteMode.set(true);
+    myPosts.toDelete.set("Post");
+    myPosts.itemToDelete.set(2);
     fixture.detectChanges();
 
     // exit the popup
@@ -271,7 +270,7 @@ describe("MyPosts", () => {
 
     // check the popup is exited
     expect(changeSpy).toHaveBeenCalled();
-    expect(myPosts.deleteMode).toBeFalse();
+    expect(myPosts.deleteMode()).toBeFalse();
     done();
   });
 
@@ -289,7 +288,7 @@ describe("MyPosts", () => {
     fixture.detectChanges();
 
     // before the click
-    expect(myPosts.deleteMode).toBeFalse();
+    expect(myPosts.deleteMode()).toBeFalse();
     expect(deleteSpy).not.toHaveBeenCalled();
 
     // trigger click
@@ -297,9 +296,9 @@ describe("MyPosts", () => {
     fixture.detectChanges();
 
     // after the click
-    expect(myPosts.deleteMode).toBeTrue();
-    expect(myPosts.toDelete).toBe("All posts");
-    expect(myPosts.itemToDelete).toBe(4);
+    expect(myPosts.deleteMode()).toBeTrue();
+    expect(myPosts.toDelete()).toBe("All posts");
+    expect(myPosts.itemToDelete()).toBe(4);
     expect(myPostsDOM.querySelector("item-delete-form")).toBeTruthy();
     done();
   });
@@ -388,9 +387,9 @@ describe("MyPosts", () => {
     fixture.detectChanges();
 
     // start the popup
-    myPosts.deleteMode = true;
-    myPosts.toDelete = "Post";
-    myPosts.itemToDelete = 2;
+    myPosts.deleteMode.set(true);
+    myPosts.toDelete.set("Post");
+    myPosts.itemToDelete.set(2);
     fixture.detectChanges();
 
     const singlePost = fixture.debugElement.query(By.css("item-delete-form"))

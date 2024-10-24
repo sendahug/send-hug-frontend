@@ -41,7 +41,7 @@ import { ActivatedRoute, provideRouter, RouterLink } from "@angular/router";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { By } from "@angular/platform-browser";
 import { NO_ERRORS_SCHEMA, signal } from "@angular/core";
-import { BehaviorSubject, of } from "rxjs";
+import { of } from "rxjs";
 import { MockComponent, MockProvider } from "ng-mocks";
 
 import { UserPage } from "./userPage.component";
@@ -61,7 +61,6 @@ describe("UserPage", () => {
     const MockAuthService = MockProvider(AuthService, {
       authenticated: signal(false),
       userData: signal(undefined),
-      isUserDataResolved: new BehaviorSubject(false),
     });
     const MockAPIClient = MockProvider(ApiClientService);
     const MockDisplayNameEditForm = MockComponent(DisplayNameEditForm);
@@ -120,8 +119,8 @@ describe("UserPage", () => {
     const fixture = TestBed.createComponent(UserPage);
     const userPage = fixture.componentInstance;
 
-    expect(userPage.editMode).toBeFalse();
-    expect(userPage.reportMode).toBeFalse();
+    expect(userPage.editMode()).toBeFalse();
+    expect(userPage.reportMode()).toBeFalse();
   });
 
   // Check that when there's no ID the component defaults to the logged in user
@@ -136,7 +135,7 @@ describe("UserPage", () => {
     fixture.detectChanges();
 
     const userData = userPage.authService.userData();
-    expect(userPage.userId).toBeUndefined();
+    expect(userPage.userId()).toBeUndefined();
     expect(userPage.isOtherUserProfile()).toBeFalse();
     expect(userPageDOM.querySelectorAll(".displayName")[0].firstElementChild.textContent).toBe(
       userData?.displayName,
@@ -172,7 +171,7 @@ describe("UserPage", () => {
 
     const userData = userPage.authService.userData();
     expect(routeSpy).toHaveBeenCalled();
-    expect(userPage.userId).toBe(4);
+    expect(userPage.userId()).toBe(4);
     expect(userPage.isOtherUserProfile()).toBeFalse();
     expect(userPageDOM.querySelectorAll(".displayName")[0].firstElementChild.textContent).toBe(
       userData?.displayName,
@@ -230,7 +229,7 @@ describe("UserPage", () => {
 
     const userData = userPage.otherUser() as OtherUser;
     expect(routeSpy).toHaveBeenCalled();
-    expect(userPage.userId).toBe(1);
+    expect(userPage.userId()).toBe(1);
     expect(userPage.isOtherUserProfile()).toBeTrue();
     expect(userPageDOM.querySelectorAll(".displayName")[0].firstElementChild.textContent).toContain(
       userData.displayName,
@@ -249,45 +248,6 @@ describe("UserPage", () => {
     ).toBe(String(userData.posts));
     expect(userPageDOM.querySelector("#logout")).toBeNull();
     expect(userPageDOM.querySelectorAll(".reportButton")[0]).toBeTruthy();
-    done();
-  });
-
-  // Check that the 'please login page' is shown if the user's logged out
-  it("should show login page if user is not authenticated", (done: DoneFn) => {
-    const paramMap = TestBed.inject(ActivatedRoute);
-    spyOn(paramMap.snapshot.paramMap, "get").and.returnValue("4");
-    const authService = TestBed.inject(AuthService);
-    authService.authenticated.set(false);
-    const fixture = TestBed.createComponent(UserPage);
-    const userPage = fixture.componentInstance;
-    const userPageDOM = fixture.nativeElement;
-    userPage.authService.authenticated.set(false);
-
-    fixture.detectChanges();
-
-    expect(userPage.isOtherUserProfile()).toBeFalse();
-    expect(userPageDOM.querySelector("#profileContainer")).toBeNull();
-    expect(userPageDOM.querySelector("#loginBox")).toBeTruthy();
-    done();
-  });
-
-  // Check that the login button is a link to the login page
-  it("should show a link to the login page", (done: DoneFn) => {
-    const paramMap = TestBed.inject(ActivatedRoute);
-    spyOn(paramMap.snapshot.paramMap, "get").and.returnValue("4");
-    const authService = TestBed.inject(AuthService);
-    authService.authenticated.set(false);
-    const fixture = TestBed.createComponent(UserPage);
-    const userPage = fixture.componentInstance;
-    const userPageDOM = fixture.nativeElement;
-    userPage.authService.authenticated.set(false);
-    fixture.detectChanges();
-
-    // check that everything is shown correctly
-    expect(userPageDOM.querySelector("#loginBox")).toBeTruthy();
-    const loginLink = userPageDOM.querySelector("#logIn");
-    expect(loginLink.textContent).toBe("Go to Login");
-    expect(loginLink.getAttribute("href")).toBe("/login");
     done();
   });
 
@@ -363,6 +323,23 @@ describe("UserPage", () => {
     expect(userPage.isLoading()).toBeFalse();
   });
 
+  it("should show the loader as full loader if the IDB fetch isn't resolved", () => {
+    const authService = TestBed.inject(AuthService);
+    authService.authenticated.set(true);
+    authService.userData.set({ ...mockAuthedUser });
+    const fixture = TestBed.createComponent(UserPage);
+    const userPage = fixture.componentInstance;
+    const userPageDOM = fixture.nativeElement;
+    fixture.detectChanges();
+
+    userPage.isIdbFetchLoading.set(true);
+    userPage.isLoading.set(true);
+    fixture.detectChanges();
+
+    expect(userPage.loaderClass()).toBe("");
+    expect(userPageDOM.querySelector("app-loader").className).toEqual("");
+  });
+
   it("should fetch user data from Idb", (done: DoneFn) => {
     const paramMap = TestBed.inject(ActivatedRoute);
     spyOn(paramMap.snapshot.paramMap, "get").and.returnValue("1");
@@ -418,14 +395,14 @@ describe("UserPage", () => {
     fixture.detectChanges();
 
     // before the click
-    expect(userPage.editMode).toBeFalse();
+    expect(userPage.editMode()).toBeFalse();
 
     // trigger click
     userPageDOM.querySelector("#editName").click();
     fixture.detectChanges();
 
     // after the click
-    expect(userPage.editMode).toBeTrue();
+    expect(userPage.editMode()).toBeTrue();
     expect(userPage.userToEdit).toEqual({
       displayName: userPage.authService.userData()!.displayName,
       id: userPage.authService.userData()!.id as number,
@@ -469,16 +446,16 @@ describe("UserPage", () => {
     fixture.detectChanges();
 
     // before the click
-    expect(userPage.reportMode).toBeFalse();
+    expect(userPage.reportMode()).toBeFalse();
 
     // trigger click
     userPageDOM.querySelectorAll(".reportButton")[0].click();
     fixture.detectChanges();
 
     // after the click
-    expect(userPage.reportMode).toBeTrue();
+    expect(userPage.reportMode()).toBeTrue();
     expect(userPage.reportType).toEqual("User");
-    expect(userPage.reportedItem as OtherUser).toEqual(userPage.otherUser() as OtherUser);
+    expect(userPage.reportedItem() as OtherUser).toEqual(userPage.otherUser() as OtherUser);
     expect(userPageDOM.querySelector("report-form")).toBeTruthy();
     done();
   });
@@ -566,7 +543,7 @@ describe("UserPage", () => {
       displayName: userPage.authService.userData()!.displayName,
       id: userPage.authService.userData()!.id as number,
     };
-    userPage.editMode = true;
+    userPage.editMode.set(true);
     fixture.detectChanges();
 
     // exit the popup
@@ -577,7 +554,7 @@ describe("UserPage", () => {
 
     // check the popup is exited
     expect(changeSpy).toHaveBeenCalled();
-    expect(userPage.editMode).toBeFalse();
+    expect(userPage.editMode()).toBeFalse();
     done();
   });
 
@@ -614,8 +591,8 @@ describe("UserPage", () => {
     fixture.detectChanges();
 
     // start the popup
-    userPage.reportedItem = userPage.otherUser() as OtherUser;
-    userPage.reportMode = true;
+    userPage.reportedItem.set(userPage.otherUser() as OtherUser);
+    userPage.reportMode.set(true);
     userPage.reportType = "User";
     fixture.detectChanges();
 
@@ -626,7 +603,7 @@ describe("UserPage", () => {
 
     // check the popup is exited
     expect(changeSpy).toHaveBeenCalled();
-    expect(userPage.reportMode).toBeFalse();
+    expect(userPage.reportMode()).toBeFalse();
     done();
   });
 });

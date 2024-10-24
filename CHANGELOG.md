@@ -2,6 +2,25 @@
 
 ## Unreleased
 
+### 2024-10-24
+
+#### Features
+
+- Added a query parameter for the current page to the MyPosts component. This allows users to navigate to specific pages via the URL, rather than having to manually navigate to the requested page (using the pagination buttons) once the user page opens. ([#1868](https://github.com/sendahug/send-hug-frontend/pull/1868))
+
+#### Changes
+
+- The MyPosts component no longer shows the full-component loader when fetching posts from IndexedDB. Instead, it shows the 'header message' style loader when fetching from IndexedDB, the way it does when fetching posts from the back-end. ([#1868](https://github.com/sendahug/send-hug-frontend/pull/1868))
+- The route guards now redirect users to the login page if they selected a page they have no permission to view. This makes the process considerably clearer to users - instead of just being redirected to the home page without an indication of what they need to do, they're now redirected to a page letting them know they need to log in before they can proceed. ([#1868](https://github.com/sendahug/send-hug-frontend/pull/1868))
+
+#### Fixes
+
+- Fixed a bug where the user page flickered whenever users switched to a different page in the MyPosts component. This happened due to the way the posts list was only shown once the IndexedDB fetch was resolved. Since the IDB fetch was resolved almost immediately regardless of network conditions, this created a flicker whenever users interacted with the posts. Now, the list shows regardless of the fetch status, and we indicate posts are being fetched using the 'header message' style instead. ([#1868](https://github.com/sendahug/send-hug-frontend/pull/1868))
+
+#### Chores
+
+- Cleaned up old authentication-related code from the UserPage. This includes the code for checking whether a user is logged in and the code for waiting until the user is authenticated before fetching the user's data. Since the route's guards now ensure users are authenticated before they can even navigate to the `user` route, these aren't necessary anymore. ([#1868](https://github.com/sendahug/send-hug-frontend/pull/1868))
+
 ### 2024-10-21
 
 #### Features

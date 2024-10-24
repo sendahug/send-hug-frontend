@@ -20,7 +20,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.25.9",
-    "@babel/plugin-syntax-decorators": "^7.25.7",
+    "@babel/plugin-syntax-decorators": "^7.25.9",
     "@babel/plugin-syntax-typescript": "^7.25.7",
     "@size-limit/file": "^11.1.6",
     "@size-limit/preset-app": "^11.1.6",

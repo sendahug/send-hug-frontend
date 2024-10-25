@@ -331,21 +331,9 @@ export class AppMessaging {
   Programmer: Shir Bar Lev.
   */
   changeMailbox(newType: string) {
-    // if the user was looking at a specific thread, to get the mailbox type
-    // we need to go two levels up
-    if (this.messType == "thread") {
-      this.router.navigate(["../../" + newType], {
-        relativeTo: this.route,
-        replaceUrl: true,
-      });
-    }
-    // otherwise we need to go one level up to change mailbox
-    else {
-      this.router.navigate(["../" + newType], {
-        relativeTo: this.route,
-        replaceUrl: true,
-      });
-    }
+    this.router.navigate(["/messages/" + newType], {
+      replaceUrl: true,
+    });
   }
 
   /*
@@ -356,8 +344,7 @@ export class AppMessaging {
   Programmer: Shir Bar Lev.
   */
   loadThread(threadId: number) {
-    this.router.navigate(["../thread/" + threadId], {
-      relativeTo: this.route,
+    this.router.navigate(["/messages/thread/" + threadId], {
       replaceUrl: true,
     });
   }

@@ -64,7 +64,8 @@ jobs:
           cd ..
           git clone https://github.com/sendahug/send-hug-backend
       - run: |
-          cd send-hug-backend
+          echo "$PWD"
+          ls
           echo "$FIREBASE_TEST_ACCT_KEY" > test_creds.json
       - run: echo "$PWD"
       - run:

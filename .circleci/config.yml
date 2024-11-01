@@ -46,7 +46,7 @@ jobs:
           QUART_APP: send-hug-backend/app.py:app
           FLASK_ENV: development
           FRONTEND: http://localhost:3000
-          FIREBASE_CREDENTIALS_FILE: test_creds.json
+          FIREBASE_CREDENTIALS_FILE: /home/circleci/project/send-hug-backend/test_creds.json
       - image: cimg/postgres:14.10
         environment:
           POSTGRES_USER: postgres

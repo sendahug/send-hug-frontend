@@ -63,7 +63,7 @@ jobs:
       - run: |
           cd ..
           git clone https://github.com/sendahug/send-hug-backend
-      - run: echo "$FIREBASE_TEST_ACCT_KEY" > ../send-hug-backend/test_creds.json
+      - run: echo "$FIREBASE_TEST_ACCT_KEY" > send-hug-backend/test_creds.json
       - run: echo "$PWD"
       - run:
           name: Install Python deps

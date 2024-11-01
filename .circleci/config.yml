@@ -90,7 +90,9 @@ jobs:
             cd ..
             quart run
           background: true
-      - browser-tools/install-browser-tools
+      # Until we add e2e testing in firefox
+      - browser-tools/install-chrome
+      - browser-tools/install-chromedriver
       - run: google-chrome --version
       - cypress/install
       - restore_cache:
@@ -168,7 +170,8 @@ jobs:
             cd ..
             quart run
           background: true
-      - browser-tools/install-browser-tools
+      - browser-tools/install-chrome
+      - browser-tools/install-chromedriver
       - run: google-chrome --version
       - restore_cache:
           key: send-hug-v1-

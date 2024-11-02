@@ -1,0 +1,9 @@
+{
+  "pr_number": 1878,
+  "changes": [
+    {
+      "change": "Chores",
+      "description": "Updated the e2e tests' setup script and the configuration in CI to the new back-end structure (post [PR#661](https://github.com/sendahug/send-hug-backend/pull/661))."
+    }
+  ]
+}

@@ -1,5 +1,5 @@
 /*
-	Messages Page
+	Thread Component
 	Send a Hug Component Tests
   ---------------------------------------------------
   MIT License

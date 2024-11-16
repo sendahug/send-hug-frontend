@@ -5,7 +5,7 @@
 	
 	<h3>{{ messType }}</h3>
 <!-- Messages area navigation. -->
-	<div id="messagesNav" role="navigation" *ngIf="authService.authenticated()">
+	<div id="messagesNav" role="navigation">
 		<button class="messNavOption appButton" (click)="changeMailbox('inbox')">Inbox</button>
 		<button class="messNavOption appButton" (click)="changeMailbox('outbox')">Outbox</button>
 		<button class="messNavOption appButton" (click)="changeMailbox('threads')">Threads</button>
@@ -37,11 +37,11 @@
 			<li class="userThread" *ngFor="let thread of userThreadsFormatted()" aria-describedby="messType" id="{{messType + thread.id}}">
 				<div class="messageProfilePic">
 					<app-user-icon
-						[selectedIcon]="getMessageUser(thread).selectedIcon ?? 'kitty'"
-						[characterColour]="getMessageUser(thread).iconColours?.character"
-						[lbgColour]="getMessageUser(thread).iconColours?.lbg"
-						[rbgColour]="getMessageUser(thread).iconColours?.rbg"
-						[itemColour]="getMessageUser(thread).iconColours?.item"
+						[selectedIcon]="thread.user.selectedIcon"
+						[characterColour]="thread.user.iconColours.character"
+						[lbgColour]="thread.user.iconColours.lbg"
+						[rbgColour]="thread.user.iconColours.rbg"
+						[itemColour]="thread.user.iconColours.item"
 						[svgClass]="'userIcon'"
 					/>
 				</div>

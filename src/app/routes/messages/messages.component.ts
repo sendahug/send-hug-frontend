@@ -262,19 +262,6 @@ export class AppMessaging {
     );
   }
 
-  getMessageUser(message: MessageGet | ParsedThread) {
-    switch (this.messType) {
-      case "inbox":
-        return (message as MessageGet).for;
-      case "outbox":
-        return (message as MessageGet).from;
-      case "threads":
-        return (message as ParsedThread).user;
-      case "thread":
-        return (message as MessageGet).from;
-    }
-  }
-
   /*
   Function Name: nextPage()
   Function Description: Go to the next page of messages. Sends a request to the

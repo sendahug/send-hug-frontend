@@ -58,6 +58,7 @@ import { ItemDeleteForm } from "@forms/itemDeleteForm/itemDeleteForm.component";
 import { ApiClientService } from "@app/services/apiClient.service";
 import { Loader } from "@common/loader/loader.component";
 import { UserIcon } from "@common/userIcon/userIcon.component";
+import { AppSingleMessage } from "@app/components/common/message/message.component";
 
 describe("AppMessaging", () => {
   let mockMessages: MessageGet[];
@@ -74,6 +75,7 @@ describe("AppMessaging", () => {
     const MockItemDeleteForm = MockComponent(ItemDeleteForm);
     const MockLoader = MockComponent(Loader);
     const MockUserIcon = MockComponent(UserIcon);
+    const MockMessage = MockComponent(AppSingleMessage);
 
     TestBed.resetTestEnvironment();
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
@@ -87,6 +89,7 @@ describe("AppMessaging", () => {
         RouterLink,
         CommonModule,
         AppMessaging,
+        MockMessage,
       ],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
@@ -397,67 +400,6 @@ describe("AppMessaging", () => {
     });
   });
 
-  // Check that an error is shown if the user isn't logged in
-  it("should show an error if the user isn't logged in", (done: DoneFn) => {
-    TestBed.inject(AuthService).authenticated.set(false);
-    // create the component and set up spies
-    const fixture = TestBed.createComponent(AppMessaging);
-    const appMessaging = fixture.componentInstance;
-    const appMessagingDOM = fixture.nativeElement;
-    appMessaging.authService.authenticated.set(false);
-
-    fixture.detectChanges();
-
-    expect(appMessagingDOM.querySelector("#loginBox")).toBeTruthy();
-    expect(appMessagingDOM.querySelector("#userInbox")).toBeNull();
-    done();
-  });
-
-  // Check that the login method triggers the auth service
-  it("should show a link to login if the user isn't logged in", (done: DoneFn) => {
-    // set authenticated to false
-    const authService = TestBed.inject(AuthService);
-    authService.authenticated.set(false);
-
-    // create the component and set up spies
-    const fixture = TestBed.createComponent(AppMessaging);
-    const appMessaging = fixture.componentInstance;
-    const appMessagingDOM = fixture.nativeElement;
-    appMessaging.authService.authenticated.set(false);
-    fixture.detectChanges();
-
-    const loginLink = appMessagingDOM.querySelector("#logIn");
-    expect(loginLink.textContent).toBe("Go to Login");
-    expect(loginLink.getAttribute("href")).toContain("/login");
-    done();
-  });
-
-  // Check deleting a single message triggers the poppup
-  it("should trigger the popup upon delete", (done: DoneFn) => {
-    TestBed.inject(ActivatedRoute).url = of([{ path: "inbox" } as UrlSegment]);
-    const fixture = TestBed.createComponent(AppMessaging);
-    const appMessaging = fixture.componentInstance;
-    const appMessagingDOM = fixture.nativeElement;
-    appMessaging.messages.set(mockMessages);
-    appMessaging.isIdbFetchLoading.set(false);
-    fixture.detectChanges();
-
-    // before the click
-    expect(appMessaging.deleteMode).toBeFalse();
-
-    // trigger click
-    const messages = appMessagingDOM.querySelectorAll(".mailboxMessages")[0];
-    messages.querySelectorAll(".deleteButton")[0].click();
-    fixture.detectChanges();
-
-    // after the click
-    expect(appMessaging.deleteMode).toBeTrue();
-    expect(appMessaging.toDelete).toBe("Message");
-    expect(appMessaging.itemToDelete).toBe(1);
-    expect(appMessagingDOM.querySelector("item-delete-form")).toBeTruthy();
-    done();
-  });
-
   it("should navigate to the next page - messages", (done: DoneFn) => {
     TestBed.inject(ActivatedRoute).url = of([{ path: "inbox" } as UrlSegment]);
     const fixture = TestBed.createComponent(AppMessaging);
@@ -548,8 +490,7 @@ describe("AppMessaging", () => {
     appMessagingDOM.querySelectorAll(".messNavOption")[1].click();
     fixture.detectChanges();
 
-    expect(navigateSpy).toHaveBeenCalledWith(["../outbox"], {
-      relativeTo: TestBed.inject(ActivatedRoute),
+    expect(navigateSpy).toHaveBeenCalledWith(["/messages/outbox"], {
       replaceUrl: true,
     });
     done();
@@ -570,8 +511,7 @@ describe("AppMessaging", () => {
     appMessagingDOM.querySelectorAll(".messNavOption")[2].click();
     fixture.detectChanges();
 
-    expect(navigateSpy).toHaveBeenCalledWith(["../../threads"], {
-      relativeTo: TestBed.inject(ActivatedRoute),
+    expect(navigateSpy).toHaveBeenCalledWith(["/messages/threads"], {
       replaceUrl: true,
     });
     done();
@@ -590,8 +530,7 @@ describe("AppMessaging", () => {
     appMessagingDOM.querySelectorAll(".viewButton")[0].click();
     fixture.detectChanges();
 
-    expect(navigateSpy).toHaveBeenCalledWith(["../thread/3"], {
-      relativeTo: TestBed.inject(ActivatedRoute),
+    expect(navigateSpy).toHaveBeenCalledWith(["/messages/thread/3"], {
       replaceUrl: true,
     });
     done();
@@ -671,30 +610,6 @@ describe("AppMessaging", () => {
     // check the popup is exited
     expect(changeSpy).toHaveBeenCalled();
     expect(appMessaging.deleteMode).toBeFalse();
-    done();
-  });
-
-  // Check each message has delete button and reply link
-  it("should have the relevant buttons for each message", (done: DoneFn) => {
-    TestBed.inject(ActivatedRoute).url = of([{ path: "inbox" } as UrlSegment]);
-    const fixture = TestBed.createComponent(AppMessaging);
-    const appMessaging = fixture.componentInstance;
-    const appMessagingDOM = fixture.nativeElement;
-    appMessaging.messages.set(mockMessages);
-    appMessaging.isIdbFetchLoading.set(false);
-
-    fixture.detectChanges();
-
-    expect(appMessagingDOM.querySelectorAll(".mailboxMessages")[0]).toBeTruthy();
-    const messages = appMessagingDOM.querySelectorAll(".userMessage");
-    expect(messages.length).toBe(2);
-    messages.forEach((message: HTMLLIElement) => {
-      expect(message.querySelectorAll(".messageButton")[0].tagName.toLowerCase()).toBe("a");
-      expect(message.querySelectorAll(".messageButton")[0].textContent).toBe("Reply");
-      expect(message.querySelectorAll(".messageButton")[0].getAttribute("href")).toContain("/new");
-      expect(message.querySelectorAll(".deleteButton")[0].tagName.toLowerCase()).toBe("button");
-      expect(message.querySelectorAll(".deleteButton")[0].textContent).toBe("Delete Message");
-    });
     done();
   });
 

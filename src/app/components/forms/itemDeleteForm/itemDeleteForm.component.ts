@@ -84,6 +84,7 @@ export class ItemDeleteForm {
       if (this.toDelete == "Post") {
         url = `posts/${this.itemToDelete}`;
         store = "posts";
+        // TODO: remove this once we've split the endpoints
       } else {
         url = `messages/${this.messType}/${this.itemToDelete}`;
         store = this.toDelete == "Message" ? "messages" : "threads";

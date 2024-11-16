@@ -46,6 +46,7 @@ import { ApiClientService } from "@app/services/apiClient.service";
 import { Loader } from "@common/loader/loader.component";
 import { UserIcon } from "@common/userIcon/userIcon.component";
 import { ItemDeleteForm } from "@forms/itemDeleteForm/itemDeleteForm.component";
+import { AppSingleMessage } from "@app/components/common/message/message.component";
 
 interface MessagesResponse {
   success: boolean;
@@ -66,7 +67,7 @@ interface ThreadResponse {
   templateUrl: "./messages.component.html",
   styleUrl: "./messages.component.less",
   standalone: true,
-  imports: [CommonModule, RouterLink, Loader, UserIcon, ItemDeleteForm],
+  imports: [CommonModule, RouterLink, Loader, UserIcon, ItemDeleteForm, AppSingleMessage],
 })
 export class AppMessaging {
   messType: MessageType = "inbox";
@@ -112,7 +113,7 @@ export class AppMessaging {
   );
   loaderClass = computed(() => (!this.isIdbFetchLoading() && this.isLoading() ? "header" : ""));
   // edit popup sub-component variables
-  deleteMode: boolean;
+  deleteMode: boolean = false;
   toDelete: string | undefined;
   itemToDelete: number | undefined;
 
@@ -126,7 +127,6 @@ export class AppMessaging {
   ) {
     let messageType;
     this.threadId = Number(this.route.snapshot.paramMap.get("id"));
-    this.deleteMode = false;
     this.currentPage.set(1);
 
     this.route.url.subscribe((params) => {
@@ -273,20 +273,6 @@ export class AppMessaging {
       case "thread":
         return (message as MessageGet).from;
     }
-  }
-
-  /*
-  Function Name: deleteMessage()
-  Function Description: Delete a specific message from the user's messages, via
-                        the items service.
-  Parameters: messageID (number) - the ID of the message to delete.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  deleteMessage(messageID: number) {
-    this.deleteMode = true;
-    this.toDelete = "Message";
-    this.itemToDelete = messageID;
   }
 
   /*

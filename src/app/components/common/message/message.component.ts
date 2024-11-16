@@ -61,11 +61,17 @@ export class AppSingleMessage {
   _message = signal<MessageGet>({} as MessageGet);
   @Input() messType!: MessageType;
   messageDeleted = output<number>();
-  userIconToShow = computed(() =>
-    this._message().forId == this.currentUser ? this._message().from : this._message().for,
+  userIconToShow = computed(() => {
+    if (this.messType == "thread") return this._message().from;
+
+    return this._message().forId == this.currentUser ? this._message().from : this._message().for;
+  });
+  displayFor = computed(
+    () => this._message().fromId == this.currentUser || this.messType == "thread",
   );
-  displayFor = computed(() => this._message().fromId == this.currentUser);
-  displayFrom = computed(() => this._message().forId == this.currentUser);
+  displayFrom = computed(
+    () => this._message().forId == this.currentUser || this.messType == "thread",
+  );
   deleteMode = signal(false);
   // Both the fields below are currently kept in for consistency but can be removed
   toDelete = signal("Message");

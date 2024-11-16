@@ -72,12 +72,26 @@ describe("AppSingleMessage", () => {
       date: new Date("Mon, 22 Jun 2020 14:32:38 GMT"),
       for: {
         displayName: "user14",
+        selectedIcon: "kitty",
+        iconColours: {
+          character: "#BA9F93",
+          lbg: "#e2a275",
+          rbg: "#f8eee4",
+          item: "#f4b56a",
+        },
       },
       forId: 4,
       from: {
-        displayName: "user14",
+        displayName: "meow",
+        selectedIcon: "dog",
+        iconColours: {
+          character: "#BA9F93",
+          lbg: "#e2a275",
+          rbg: "#f8eee4",
+          item: "#f4b56a",
+        },
       },
-      fromId: 4,
+      fromId: 1,
       id: 1,
       messageText: "Your post (ID 19) was deleted due to violating our community rules.",
       threadID: 4,
@@ -101,8 +115,31 @@ describe("AppSingleMessage", () => {
     const appMessageDOM = fixture.nativeElement;
     fixture.detectChanges();
 
+    expect(appMessage.displayFor()).toBeFalse();
+    expect(appMessage.displayFrom()).toBeTrue();
+    expect(appMessage.userIconToShow()).toEqual(mockMessage.from);
+    expect(appMessageDOM.querySelector(".messageText").textContent.trim()).toBe(
+      mockMessage.messageText,
+    );
+  });
+
+  // Check that the component loads the inbox if no mailbox is specified
+  it("should show message details - thread", () => {
+    const fixture = TestBed.createComponent(AppSingleMessage);
+    fixture.componentRef.setInput("currentUser", 4);
+    fixture.componentRef.setInput("message", {
+      ...mockMessage,
+      fromId: 4,
+      forId: 1,
+    });
+    fixture.componentRef.setInput("messType", "thread");
+    const appMessage = fixture.componentInstance;
+    const appMessageDOM = fixture.nativeElement;
+    fixture.detectChanges();
+
     expect(appMessage.displayFor()).toBeTrue();
     expect(appMessage.displayFrom()).toBeTrue();
+    expect(appMessage.userIconToShow()).toEqual(mockMessage.from);
     expect(appMessageDOM.querySelector(".messageText").textContent.trim()).toBe(
       mockMessage.messageText,
     );

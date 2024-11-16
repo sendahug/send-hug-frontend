@@ -50,9 +50,6 @@ import { ParsedThread } from "@app/interfaces/thread.interface";
 export class AppSingleThread {
   // TODO: Replace this with `input()` once we figure out coverage
   @Input()
-  get thread() {
-    return this._thread();
-  }
   set thread(newMessage: ParsedThread) {
     this._thread.set(newMessage);
   }

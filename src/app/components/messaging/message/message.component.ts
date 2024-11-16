@@ -52,9 +52,6 @@ export class AppSingleMessage {
   // TODO: Replace these with `input()` once we figure out coverage
   @Input() currentUser!: number;
   @Input()
-  get message() {
-    return this._message();
-  }
   set message(newMessage: MessageGet) {
     this._message.set(newMessage);
   }

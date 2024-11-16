@@ -92,7 +92,7 @@ describe("AppSingleMessage", () => {
   });
 
   // Check that the component loads the inbox if no mailbox is specified
-  it("should load the inbox by default", () => {
+  it("should show message details", () => {
     const fixture = TestBed.createComponent(AppSingleMessage);
     fixture.componentRef.setInput("currentUser", 4);
     fixture.componentRef.setInput("message", mockMessage);
@@ -190,31 +190,4 @@ describe("AppSingleMessage", () => {
     expect(appMessageDOM.querySelectorAll(".deleteButton")[0].textContent).toBe("Delete Message");
     done();
   });
-
-  // it("should update the message list post delete - single message", (done: DoneFn) => {
-  //   const fixture = TestBed.createComponent(AppSingleMessage);
-  //   const appMessage = fixture.componentInstance;
-  //   const updateSpy = spyOn(appMessage, "updateMessageList").and.callThrough();
-  //   spyOn(appMessage, "fetchMessages");
-  //   fixture.componentRef.setInput("currentUser", 4);
-  //   fixture.componentRef.setInput("message", mockMessage);
-  //   fixture.componentRef.setInput("messType", "inbox");
-
-  //   // start the popup
-  //   appMessage.deleteMode.set(true);
-  //   fixture.detectChanges();
-
-  //   // exit the popup
-  //   const popup = fixture.debugElement.query(By.css("item-delete-form"))
-  //     .componentInstance as ItemDeleteForm;
-  //   popup.deleted.emit(1);
-  //   popup.editMode.emit(false);
-  //   fixture.detectChanges();
-
-  //   // check the popup is exited
-  //   expect(updateSpy).toHaveBeenCalled();
-  //   expect(appMessage.messages().length).toBe(1);
-  //   expect(appMessage.messages()[0].id).not.toBe(1);
-  //   done();
-  // });
 });

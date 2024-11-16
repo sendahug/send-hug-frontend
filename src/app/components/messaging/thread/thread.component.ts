@@ -31,7 +31,7 @@
 */
 
 // Angular imports
-import { Component, signal, computed, output, Input } from "@angular/core";
+import { Component, signal, computed, Output, Input, EventEmitter } from "@angular/core";
 import { RouterLink } from "@angular/router";
 import { CommonModule } from "@angular/common";
 
@@ -48,13 +48,13 @@ import { ParsedThread } from "@app/interfaces/thread.interface";
   imports: [CommonModule, RouterLink, UserIcon, ItemDeleteForm],
 })
 export class AppSingleThread {
-  // TODO: Replace this with `input()` once we figure out coverage
+  // TODO: Replace this with `input()`/`output()` once we figure out coverage
   @Input()
   set thread(newMessage: ParsedThread) {
     this._thread.set(newMessage);
   }
   _thread = signal<ParsedThread>({} as ParsedThread);
-  messageDeleted = output<number>();
+  @Output() messageDeleted = new EventEmitter<number>();
   deleteMode = signal(false);
   // Both the fields below are currently kept in for consistency but can be removed
   toDelete = signal("Thread");

@@ -31,7 +31,7 @@
 */
 
 // Angular imports
-import { Component, signal, computed, output, Input } from "@angular/core";
+import { Component, signal, computed, Output, Input, EventEmitter } from "@angular/core";
 import { RouterLink } from "@angular/router";
 import { CommonModule } from "@angular/common";
 
@@ -49,7 +49,7 @@ import { MessageType } from "@app/interfaces/types";
   imports: [CommonModule, RouterLink, UserIcon, ItemDeleteForm],
 })
 export class AppSingleMessage {
-  // TODO: Replace these with `input()` once we figure out coverage
+  // TODO: Replace these with `input()`/`output()` once we figure out coverage
   @Input() currentUser!: number;
   @Input()
   set message(newMessage: MessageGet) {
@@ -57,7 +57,7 @@ export class AppSingleMessage {
   }
   _message = signal<MessageGet>({} as MessageGet);
   @Input() messType!: MessageType;
-  messageDeleted = output<number>();
+  @Output() messageDeleted = new EventEmitter<number>();
   userIconToShow = computed(() => {
     if (this.messType == "thread") return this._message().from;
 

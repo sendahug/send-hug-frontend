@@ -74,8 +74,6 @@ describe("AppMessaging", () => {
     const MockAPIClient = MockProvider(ApiClientService);
     const MockItemDeleteForm = MockComponent(ItemDeleteForm);
     const MockLoader = MockComponent(Loader);
-    const MockMessage = MockComponent(AppSingleMessage);
-    const MockThread = MockComponent(AppSingleThread);
 
     TestBed.resetTestEnvironment();
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
@@ -85,11 +83,11 @@ describe("AppMessaging", () => {
       imports: [
         MockItemDeleteForm,
         MockLoader,
-        MockThread,
+        AppSingleThread,
         RouterLink,
         CommonModule,
         AppMessaging,
-        MockMessage,
+        AppSingleMessage,
       ],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
@@ -548,6 +546,7 @@ describe("AppMessaging", () => {
     const appMessaging = fixture.componentInstance;
     const updateSpy = spyOn(appMessaging, "updateMessageList").and.callThrough();
     spyOn(appMessaging, "fetchMessages");
+    appMessaging.messType = "threads";
     appMessaging.userThreads.set(mockThreads);
     appMessaging.isIdbFetchLoading.set(false);
     fixture.detectChanges();

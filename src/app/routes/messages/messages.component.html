@@ -35,31 +35,10 @@
 	<div class="threadsContainer" *ngIf="messType == 'threads'">
 		<ul class="userThreads" *ngIf="userThreadsFormatted().length" aria-describedby="messType">
 			<li class="userThread" *ngFor="let thread of userThreadsFormatted()" aria-describedby="messType" id="{{messType + thread.id}}">
-				<div class="messageProfilePic">
-					<app-user-icon
-						[selectedIcon]="thread.user.selectedIcon"
-						[characterColour]="thread.user.iconColours.character"
-						[lbgColour]="thread.user.iconColours.lbg"
-						[rbgColour]="thread.user.iconColours.rbg"
-						[itemColour]="thread.user.iconColours.item"
-						[svgClass]="'userIcon'"
-					/>
-				</div>
-				<div class="messageContainer">
-					<div class="messageField">
-						<span class="pageCategory">User:</span> <span class="pageData" aria-describedby="tUser" id="{{ 'user' + thread.id }}">{{ thread.user.displayName }}</span>
-					</div>
-					<div class="messageField">
-						<span class="pageCategory">Messages:</span> <span class="pageData" [attr.aria-describedby]="'tNumMess ' + 'user' + thread.id">{{ thread.numMessages }}</span>
-					</div>
-					<div class="messageField">
-						<span class="pageCategory">Last Active:</span> <span class="pageData" [attr.aria-describedby]="'tLatestMess ' + 'user' + thread.id">{{ thread.latestMessage }}</span>
-					</div>
-					<div class="threadBtns">
-						<button class="appButton viewButton" (click)="loadThread(thread.id)" [attr.aria-describedby]="'tView ' + 'user' + thread.id">View Thread Messages</button>
-						<button class="appButton deleteButton" (click)="deleteThread(thread.id)" [attr.aria-describedby]="'tDelete ' + 'user' + thread.id">Delete Thread</button>
-					</div>
-				</div>
+				<app-single-thread
+					[thread]="thread"
+					(messageDeleted)="updateMessageList($event)"
+				></app-single-thread>
 			</li>
 		</ul>
 	</div>

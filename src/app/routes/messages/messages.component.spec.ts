@@ -57,8 +57,8 @@ import { type MessageGet } from "@app/interfaces/message.interface";
 import { ItemDeleteForm } from "@forms/itemDeleteForm/itemDeleteForm.component";
 import { ApiClientService } from "@app/services/apiClient.service";
 import { Loader } from "@common/loader/loader.component";
-import { UserIcon } from "@common/userIcon/userIcon.component";
 import { AppSingleMessage } from "@app/components/common/message/message.component";
+import { AppSingleThread } from "@app/components/common/thread/thread.component";
 
 describe("AppMessaging", () => {
   let mockMessages: MessageGet[];
@@ -74,8 +74,8 @@ describe("AppMessaging", () => {
     const MockAPIClient = MockProvider(ApiClientService);
     const MockItemDeleteForm = MockComponent(ItemDeleteForm);
     const MockLoader = MockComponent(Loader);
-    const MockUserIcon = MockComponent(UserIcon);
     const MockMessage = MockComponent(AppSingleMessage);
+    const MockThread = MockComponent(AppSingleThread);
 
     TestBed.resetTestEnvironment();
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
@@ -85,7 +85,7 @@ describe("AppMessaging", () => {
       imports: [
         MockItemDeleteForm,
         MockLoader,
-        MockUserIcon,
+        MockThread,
         RouterLink,
         CommonModule,
         AppMessaging,
@@ -217,16 +217,6 @@ describe("AppMessaging", () => {
     const appMessaging = fixture.componentInstance;
 
     expect(appMessaging.messType).toBe("inbox");
-  });
-
-  // Check that the component checks whether the user is logged in
-  it("should check if the user is logged in", () => {
-    const authSpy = spyOn(TestBed.inject(AuthService).isUserDataResolved, "subscribe");
-    const fixture = TestBed.createComponent(AppMessaging);
-    const appMessaging = fixture.componentInstance;
-
-    expect(appMessaging).toBeTruthy();
-    expect(authSpy).toHaveBeenCalled();
   });
 
   // Check that the popup variables are set to false
@@ -514,50 +504,6 @@ describe("AppMessaging", () => {
     expect(navigateSpy).toHaveBeenCalledWith(["/messages/threads"], {
       replaceUrl: true,
     });
-    done();
-  });
-
-  it("should load a thread", (done: DoneFn) => {
-    TestBed.inject(ActivatedRoute).url = of([{ path: "threads" } as UrlSegment]);
-    const fixture = TestBed.createComponent(AppMessaging);
-    const appMessaging = fixture.componentInstance;
-    const appMessagingDOM = fixture.nativeElement;
-    const navigateSpy = spyOn(appMessaging["router"], "navigate");
-    appMessaging.userThreads.set(mockThreads);
-    appMessaging.isIdbFetchLoading.set(false);
-    fixture.detectChanges();
-
-    appMessagingDOM.querySelectorAll(".viewButton")[0].click();
-    fixture.detectChanges();
-
-    expect(navigateSpy).toHaveBeenCalledWith(["/messages/thread/3"], {
-      replaceUrl: true,
-    });
-    done();
-  });
-
-  it("should trigger the popup upon delete - delete thread", (done: DoneFn) => {
-    TestBed.inject(ActivatedRoute).url = of([{ path: "threads" } as UrlSegment]);
-    const fixture = TestBed.createComponent(AppMessaging);
-    const appMessaging = fixture.componentInstance;
-    const appMessagingDOM = fixture.nativeElement;
-    appMessaging.userThreads.set(mockThreads);
-    appMessaging.isIdbFetchLoading.set(false);
-    fixture.detectChanges();
-
-    // before the click
-    expect(appMessaging.deleteMode).toBeFalse();
-
-    // trigger click
-    const messages = appMessagingDOM.querySelectorAll(".userThread")[0];
-    messages.querySelectorAll(".deleteButton")[0].click();
-    fixture.detectChanges();
-
-    // after the click
-    expect(appMessaging.deleteMode).toBeTrue();
-    expect(appMessaging.toDelete).toBe("Thread");
-    expect(appMessaging.itemToDelete).toBe(3);
-    expect(appMessagingDOM.querySelector("item-delete-form")).toBeTruthy();
     done();
   });
 

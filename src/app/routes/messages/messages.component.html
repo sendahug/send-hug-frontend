@@ -6,9 +6,9 @@
 	<h3>{{ messType }}</h3>
 <!-- Messages area navigation. -->
 	<div id="messagesNav" role="navigation">
-		<button class="messNavOption appButton" (click)="changeMailbox('inbox')">Inbox</button>
-		<button class="messNavOption appButton" (click)="changeMailbox('outbox')">Outbox</button>
-		<button class="messNavOption appButton" (click)="changeMailbox('threads')">Threads</button>
+		<a [routerLink]="['/messages', 'inbox']" class="messNavOption appButton">Inbox</a>
+		<a [routerLink]="['/messages', 'outbox']" class="messNavOption appButton">Outbox</a>
+		<a [routerLink]="['/messages', 'threads']" class="messNavOption appButton">Threads</a>
 	</div>
 </div>
 

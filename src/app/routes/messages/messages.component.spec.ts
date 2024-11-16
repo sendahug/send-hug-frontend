@@ -468,45 +468,6 @@ describe("AppMessaging", () => {
     done();
   });
 
-  it("should change mailbox when clicking the icons - not thread", (done: DoneFn) => {
-    TestBed.inject(ActivatedRoute).url = of([{ path: "inbox" } as UrlSegment]);
-    const fixture = TestBed.createComponent(AppMessaging);
-    const appMessaging = fixture.componentInstance;
-    const appMessagingDOM = fixture.nativeElement;
-    const navigateSpy = spyOn(appMessaging["router"], "navigate");
-    appMessaging.isIdbFetchLoading.set(false);
-    fixture.detectChanges();
-
-    appMessagingDOM.querySelectorAll(".messNavOption")[1].click();
-    fixture.detectChanges();
-
-    expect(navigateSpy).toHaveBeenCalledWith(["/messages/outbox"], {
-      replaceUrl: true,
-    });
-    done();
-  });
-
-  it("should change mailbox when clicking the icons - thread", (done: DoneFn) => {
-    TestBed.inject(ActivatedRoute).url = of([
-      { path: "thread" } as UrlSegment,
-      { path: "3" } as UrlSegment,
-    ]);
-    const fixture = TestBed.createComponent(AppMessaging);
-    const appMessaging = fixture.componentInstance;
-    const appMessagingDOM = fixture.nativeElement;
-    const navigateSpy = spyOn(appMessaging["router"], "navigate");
-    appMessaging.isIdbFetchLoading.set(false);
-    fixture.detectChanges();
-
-    appMessagingDOM.querySelectorAll(".messNavOption")[2].click();
-    fixture.detectChanges();
-
-    expect(navigateSpy).toHaveBeenCalledWith(["/messages/threads"], {
-      replaceUrl: true,
-    });
-    done();
-  });
-
   // // Check that deleting all messages triggers the popup
   it("should trigger the popup upon deleting all", (done: DoneFn) => {
     TestBed.inject(ActivatedRoute).url = of([{ path: "inbox" } as UrlSegment]);
@@ -567,18 +528,11 @@ describe("AppMessaging", () => {
     spyOn(appMessaging, "fetchMessages");
     appMessaging.messages.set(mockMessages);
     appMessaging.isIdbFetchLoading.set(false);
-
-    // start the popup
-    appMessaging.deleteMode = true;
-    appMessaging.toDelete = "Message";
-    appMessaging.itemToDelete = 1;
     fixture.detectChanges();
 
-    // exit the popup
-    const popup = fixture.debugElement.query(By.css("item-delete-form"))
-      .componentInstance as ItemDeleteForm;
-    popup.deleted.emit(1);
-    popup.editMode.emit(false);
+    const message = fixture.debugElement.query(By.css("app-single-message"))
+      .componentInstance as AppSingleMessage;
+    message.messageDeleted.emit(1);
     fixture.detectChanges();
 
     // check the popup is exited
@@ -596,18 +550,11 @@ describe("AppMessaging", () => {
     spyOn(appMessaging, "fetchMessages");
     appMessaging.userThreads.set(mockThreads);
     appMessaging.isIdbFetchLoading.set(false);
-
-    // start the popup
-    appMessaging.deleteMode = true;
-    appMessaging.toDelete = "Thread";
-    appMessaging.itemToDelete = 3;
     fixture.detectChanges();
 
-    // exit the popup
-    const popup = fixture.debugElement.query(By.css("item-delete-form"))
-      .componentInstance as ItemDeleteForm;
-    popup.deleted.emit(3);
-    popup.editMode.emit(false);
+    const thread = fixture.debugElement.query(By.css("app-single-thread"))
+      .componentInstance as AppSingleThread;
+    thread.messageDeleted.emit(3);
     fixture.detectChanges();
 
     // check the popup is exited

@@ -290,19 +290,6 @@ export class AppMessaging {
   }
 
   /*
-  Function Name: changeMailbox()
-  Function Description: Changes the currently active mailbox (inbox or outbox).
-  Parameters: newType (string) - The mailbox to change to.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  changeMailbox(newType: string) {
-    this.router.navigate(["/messages/" + newType], {
-      replaceUrl: true,
-    });
-  }
-
-  /*
   Function Name: deleteAllMessages()
   Function Description: Deletes all of the user's messages in a specific mailbox.
   Parameters: type (string) - The type of messages to delete.

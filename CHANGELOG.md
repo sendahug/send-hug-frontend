@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+### 2024-11-02
+
+#### Chores
+
+- Updated the e2e tests' setup script and the configuration in CI to the new back-end structure (post [PR#661](https://github.com/sendahug/send-hug-backend/pull/661)). ([#1878](https://github.com/sendahug/send-hug-frontend/pull/1878))
+
 ### 2024-10-24
 
 #### Features

@@ -57,8 +57,8 @@ import { type MessageGet } from "@app/interfaces/message.interface";
 import { ItemDeleteForm } from "@forms/itemDeleteForm/itemDeleteForm.component";
 import { ApiClientService } from "@app/services/apiClient.service";
 import { Loader } from "@common/loader/loader.component";
-import { AppSingleMessage } from "@app/components/common/message/message.component";
-import { AppSingleThread } from "@app/components/common/thread/thread.component";
+import { AppSingleMessage } from "@app/components/messaging/message/message.component";
+import { AppSingleThread } from "@app/components/messaging/thread/thread.component";
 
 describe("AppMessaging", () => {
   let mockMessages: MessageGet[];

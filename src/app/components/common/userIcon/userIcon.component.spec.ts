@@ -128,19 +128,15 @@ describe("UserIcon", () => {
 
     // Check the initial
     // Angular converts hex codes to rgb for some reason, so...
-    // expect(userIconInstance.characterStyle).toBe({ fill: DefaultColours.kitty["character"] });
     userIconDOM.querySelectorAll(".character").forEach((path: SVGPathElement) => {
       expect(path.getAttribute("style")).toBe(`fill: rgb(186, 159, 147);`);
     });
-    // expect(userIconInstance.lbgStyle).toBe({ fill: DefaultColours.kitty["lbg"] });
     userIconDOM.querySelectorAll(".lbg").forEach((path: SVGPathElement) => {
       expect(path.getAttribute("style")).toBe(`fill: rgb(226, 162, 117);`);
     });
-    // expect(userIconInstance.rbgStyle).toBe({ fill: DefaultColours.kitty["rbg"] });
     userIconDOM.querySelectorAll(".rbg").forEach((path: SVGPathElement) => {
       expect(path.getAttribute("style")).toBe(`fill: rgb(248, 238, 228);`);
     });
-    // expect(userIconInstance.itemStyle).toBe({ fill: DefaultColours.kitty["item"] });
     userIconDOM.querySelectorAll(".item").forEach((path: SVGPathElement) => {
       expect(path.getAttribute("style")).toBe(`fill: rgb(244, 181, 106);`);
     });
@@ -166,6 +162,29 @@ describe("UserIcon", () => {
       expect(path.getAttribute("style")).toBe(`fill: rgb(51, 51, 51);`);
     });
 
+    done();
+  });
+
+  it("should set the character based on the incoming value", (done: DoneFn) => {
+    const fixture = TestBed.createComponent(MockIconContainer);
+    const iconContainer = fixture.componentInstance;
+    const userIcon = fixture.debugElement.query(By.css("app-user-icon"));
+    const userIconInstance = userIcon.componentInstance as UserIcon;
+    fixture.detectChanges();
+
+    // Check the initial
+    // Angular converts hex codes to rgb for some reason, so...
+    expect(userIconInstance.selectedIcon()).toBe("kitty");
+    expect(userIconInstance.selectedIconDefaultColours()).toEqual(DefaultColours.kitty);
+
+    // Update the icon colours
+    iconContainer.selectedIcon.set("dog");
+    fixture.detectChanges();
+
+    // Check it's been updated
+    expect(userIconInstance.selectedIcon()).toBe("dog");
+    expect(userIconInstance.selectedIconDefaultColours()).toEqual(DefaultColours.dog);
+    expect();
     done();
   });
 });

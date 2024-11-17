@@ -42,6 +42,7 @@ import { SWManager } from "@app/services/sWManager.service";
 import { AlertsService } from "@app/services/alerts.service";
 import { PopUp } from "@common/popUp/popUp.component";
 import { TeleportDirective } from "@app/directives/teleport.directive";
+import { type MessageType } from "@app/interfaces/types";
 
 @Component({
   selector: "item-delete-form",
@@ -57,7 +58,7 @@ export class ItemDeleteForm {
   @Input() toDelete: string | undefined;
   // the item to delete itself
   @Input() itemToDelete: number | undefined;
-  @Input() messType: string | undefined;
+  @Input() messType: MessageType | undefined;
   @Input() reportData: any;
 
   // CTOR
@@ -84,6 +85,7 @@ export class ItemDeleteForm {
       if (this.toDelete == "Post") {
         url = `posts/${this.itemToDelete}`;
         store = "posts";
+        // TODO: remove this once we've split the endpoints
       } else {
         url = `messages/${this.messType}/${this.itemToDelete}`;
         store = this.toDelete == "Message" ? "messages" : "threads";

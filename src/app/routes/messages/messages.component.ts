@@ -44,8 +44,9 @@ import { type MessageGet } from "@app/interfaces/message.interface";
 import { SWManager } from "@app/services/sWManager.service";
 import { ApiClientService } from "@app/services/apiClient.service";
 import { Loader } from "@common/loader/loader.component";
-import { UserIcon } from "@common/userIcon/userIcon.component";
 import { ItemDeleteForm } from "@forms/itemDeleteForm/itemDeleteForm.component";
+import { AppSingleMessage } from "@app/components/messaging/message/message.component";
+import { AppSingleThread } from "@app/components/messaging/thread/thread.component";
 
 interface MessagesResponse {
   success: boolean;
@@ -66,7 +67,7 @@ interface ThreadResponse {
   templateUrl: "./messages.component.html",
   styleUrl: "./messages.component.less",
   standalone: true,
-  imports: [CommonModule, RouterLink, Loader, UserIcon, ItemDeleteForm],
+  imports: [CommonModule, RouterLink, Loader, ItemDeleteForm, AppSingleMessage, AppSingleThread],
 })
 export class AppMessaging {
   messType: MessageType = "inbox";
@@ -112,7 +113,7 @@ export class AppMessaging {
   );
   loaderClass = computed(() => (!this.isIdbFetchLoading() && this.isLoading() ? "header" : ""));
   // edit popup sub-component variables
-  deleteMode: boolean;
+  deleteMode: boolean = false;
   toDelete: string | undefined;
   itemToDelete: number | undefined;
 
@@ -126,7 +127,6 @@ export class AppMessaging {
   ) {
     let messageType;
     this.threadId = Number(this.route.snapshot.paramMap.get("id"));
-    this.deleteMode = false;
     this.currentPage.set(1);
 
     this.route.url.subscribe((params) => {
@@ -140,18 +140,11 @@ export class AppMessaging {
       this.messType = "inbox";
     }
 
-    // subscribe to the subject following user data
-    this.authService.isUserDataResolved.subscribe((value) => {
-      // if the value is true, user data has been fetched, so the app can
-      // now fetch the user's messages
-      if (value == true) {
-        if (this.messType == "threads") {
-          this.fetchThreads();
-        } else {
-          this.fetchMessages();
-        }
-      }
-    });
+    if ((this.messType as MessageType) == "threads") {
+      this.fetchThreads();
+    } else {
+      this.fetchMessages();
+    }
   }
 
   /**
@@ -262,33 +255,6 @@ export class AppMessaging {
     );
   }
 
-  getMessageUser(message: MessageGet | ParsedThread) {
-    switch (this.messType) {
-      case "inbox":
-        return (message as MessageGet).for;
-      case "outbox":
-        return (message as MessageGet).from;
-      case "threads":
-        return (message as ParsedThread).user;
-      case "thread":
-        return (message as MessageGet).from;
-    }
-  }
-
-  /*
-  Function Name: deleteMessage()
-  Function Description: Delete a specific message from the user's messages, via
-                        the items service.
-  Parameters: messageID (number) - the ID of the message to delete.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  deleteMessage(messageID: number) {
-    this.deleteMode = true;
-    this.toDelete = "Message";
-    this.itemToDelete = messageID;
-  }
-
   /*
   Function Name: nextPage()
   Function Description: Go to the next page of messages. Sends a request to the
@@ -321,58 +287,6 @@ export class AppMessaging {
     } else {
       this.fetchMessages();
     }
-  }
-
-  /*
-  Function Name: changeMailbox()
-  Function Description: Changes the currently active mailbox (inbox or outbox).
-  Parameters: newType (string) - The mailbox to change to.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  changeMailbox(newType: string) {
-    // if the user was looking at a specific thread, to get the mailbox type
-    // we need to go two levels up
-    if (this.messType == "thread") {
-      this.router.navigate(["../../" + newType], {
-        relativeTo: this.route,
-        replaceUrl: true,
-      });
-    }
-    // otherwise we need to go one level up to change mailbox
-    else {
-      this.router.navigate(["../" + newType], {
-        relativeTo: this.route,
-        replaceUrl: true,
-      });
-    }
-  }
-
-  /*
-  Function Name: loadThread()
-  Function Description: Shows the messages for the specific thread.
-  Parameters: threadId (number) - The thread to fetch.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  loadThread(threadId: number) {
-    this.router.navigate(["../thread/" + threadId], {
-      relativeTo: this.route,
-      replaceUrl: true,
-    });
-  }
-
-  /*
-  Function Name: deleteThread()
-  Function Description: Deletes a thread and all of its messages
-  Parameters: threadId (number) - The thread to delete.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  deleteThread(threadId: number) {
-    this.deleteMode = true;
-    this.toDelete = "Thread";
-    this.itemToDelete = threadId;
   }
 
   /*

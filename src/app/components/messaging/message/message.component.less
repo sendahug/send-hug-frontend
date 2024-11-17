@@ -1,0 +1,28 @@
+:host {
+  width: 80%;
+  border-radius: 10px;
+  border: none;
+  background: var(--itemBackground);
+  margin: 15px 7%;
+  padding: 10px;
+  display: flex;
+  justify-content: center;
+}
+
+/* From field */
+.messageField {
+  text-align: center;
+  padding: 5px;
+  margin: 5px;
+}
+
+/* Field text */
+.pageData {
+  text-align: center;
+  color: var(--textColour);
+  line-height: 1.5em;
+  /* Responsive styling for screens above 600px width */
+  @media screen and (min-width: 600px) {
+    line-height: 1.8em;
+  }
+}

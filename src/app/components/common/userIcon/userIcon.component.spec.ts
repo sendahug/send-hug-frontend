@@ -118,4 +118,54 @@ describe("UserIcon", () => {
     });
     done();
   });
+
+  it("should set the colours based on the incoming colours", (done: DoneFn) => {
+    const fixture = TestBed.createComponent(MockIconContainer);
+    const iconContainer = fixture.componentInstance;
+    const userIcon = fixture.debugElement.query(By.css("app-user-icon"));
+    const userIconDOM = userIcon.nativeElement;
+    fixture.detectChanges();
+
+    // Check the initial
+    // Angular converts hex codes to rgb for some reason, so...
+    // expect(userIconInstance.characterStyle).toBe({ fill: DefaultColours.kitty["character"] });
+    userIconDOM.querySelectorAll(".character").forEach((path: SVGPathElement) => {
+      expect(path.getAttribute("style")).toBe(`fill: rgb(186, 159, 147);`);
+    });
+    // expect(userIconInstance.lbgStyle).toBe({ fill: DefaultColours.kitty["lbg"] });
+    userIconDOM.querySelectorAll(".lbg").forEach((path: SVGPathElement) => {
+      expect(path.getAttribute("style")).toBe(`fill: rgb(226, 162, 117);`);
+    });
+    // expect(userIconInstance.rbgStyle).toBe({ fill: DefaultColours.kitty["rbg"] });
+    userIconDOM.querySelectorAll(".rbg").forEach((path: SVGPathElement) => {
+      expect(path.getAttribute("style")).toBe(`fill: rgb(248, 238, 228);`);
+    });
+    // expect(userIconInstance.itemStyle).toBe({ fill: DefaultColours.kitty["item"] });
+    userIconDOM.querySelectorAll(".item").forEach((path: SVGPathElement) => {
+      expect(path.getAttribute("style")).toBe(`fill: rgb(244, 181, 106);`);
+    });
+
+    // Update the icon colours
+    iconContainer.characterColour.set("#000000");
+    iconContainer.lbgColour.set("#111111");
+    iconContainer.rbgColour.set("#222222");
+    iconContainer.itemColour.set("#333333");
+    fixture.detectChanges();
+
+    // Check it's been updated
+    userIconDOM.querySelectorAll(".character").forEach((path: SVGPathElement) => {
+      expect(path.getAttribute("style")).toBe(`fill: rgb(0, 0, 0);`);
+    });
+    userIconDOM.querySelectorAll(".lbg").forEach((path: SVGPathElement) => {
+      expect(path.getAttribute("style")).toBe(`fill: rgb(17, 17, 17);`);
+    });
+    userIconDOM.querySelectorAll(".rbg").forEach((path: SVGPathElement) => {
+      expect(path.getAttribute("style")).toBe(`fill: rgb(34, 34, 34);`);
+    });
+    userIconDOM.querySelectorAll(".item").forEach((path: SVGPathElement) => {
+      expect(path.getAttribute("style")).toBe(`fill: rgb(51, 51, 51);`);
+    });
+
+    done();
+  });
 });

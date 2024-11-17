@@ -10,8 +10,10 @@
 
 #### Chores
 
-- Split the message and thread code from the AppMessaging component to their own components (Message and Thread, respectively). ([#1888](https://github.com/sendahug/send-hug-frontend/pull/1888))
 - Cleaned up old authentication-related code from the AppMessaging component. Now that route guards ensure unauthenticated users cannot navigate to the messaging page, there's no need for manually verifying users are logged in. ([#1888](https://github.com/sendahug/send-hug-frontend/pull/1888))
+- Split the message and thread code from the AppMessaging component to their own components (Message and Thread, respectively). ([#1888](https://github.com/sendahug/send-hug-frontend/pull/1888))
+- Fixed the way Angular's signal inputs and outputs are handled when instrumenting files (for test coverage). Previously, there was an issue due to the fact Angular's `input()` and `output()` functions cannot be used outside the initialiser of a class, but in order to add coverage to class attributes, Istanbul's coverage function call must be called before the value assigned to the attribute. So while input and output signals can only be used as `property = input()`, Istanbul's instrumentation converted the code to `property = (cov_func, input()). This broke inputs and outputs as Angular's compiler no longer recognised them as component inputs and outputs, but rather as regular properties. The instrumentation is now handled slightly differently for inputs and outputs - rather than being instrumented before the Angular Compiler compiles the code, their instrumentation is handled after the code has been compiled, which ensures both Angular's and Istanbul's functionality operates correctly. ([#1889](https://github.com/sendahug/send-hug-frontend/pull/1889))
+- Added a test for checking the UserIcon component updates the shown colours when the values of the colour inputs (e.g., `rbgColour`) change. ([#1889](https://github.com/sendahug/send-hug-frontend/pull/1889))
 
 ### 2024-11-02
 

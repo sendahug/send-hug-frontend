@@ -1,9 +1,0 @@
-{
-  "pr_number": 1891,
-  "changes": [
-    {
-      "change": "Chores",
-      "description": "Bumped the version of Node in the CD GitHub Actions workflows to Node v22 (which is the new LTS version as of the beginning of November)."
-    }
-  ]
-}

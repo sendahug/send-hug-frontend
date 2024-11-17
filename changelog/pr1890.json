@@ -1,9 +1,0 @@
-{
-  "pr_number": 1890,
-  "changes": [
-    {
-      "change": "Chores",
-      "description": "Enabled prettier formatting for all HTML files. Previously it was disabled because of the build plugin that replaced the various SVGs at build time, but now that all icons are inlined, there's no reason not to have the HTML files formatted the same way we format our TypeScript files. The only lines where we explicitly skip formatting are now the lines where a font-awesome icon appears (as those are still replaced at build time if font awesome pro is available)."
-    }
-  ]
-}

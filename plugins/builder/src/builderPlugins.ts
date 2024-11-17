@@ -179,7 +179,7 @@ export function instrumentFilesPlugin(config: CoverageConfig): BuilderPlugin {
 
       // loop over the replacements and re-add the coverage markers to imputs/outputs.
       Object.keys(coverageMapping[fileId]).forEach((propertyName) => {
-        const propertyRegex = new RegExp(`this\.${propertyName} ?= ?(input|output)(.*);`);
+        const propertyRegex = new RegExp(`this\\.${propertyName} ?= ?(input|output)(.*);`);
         const assignment = code.match(propertyRegex)?.[0].split("=")[1].trim();
         transformedCode = transformedCode.replace(
           propertyRegex,

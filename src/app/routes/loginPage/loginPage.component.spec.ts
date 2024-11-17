@@ -303,7 +303,7 @@ describe("LoginPage", () => {
     expect(loginPageDOM.querySelectorAll(".internalButton")[1].textContent.trim()).toBe(
       "Create one now.",
     );
-    expect(loginPageDOM.querySelector("#logIn").textContent).toBe("Sign in");
+    expect(loginPageDOM.querySelector("#logIn").textContent.trim()).toBe("Sign in");
 
     loginPageDOM.querySelectorAll(".internalButton")[1].click();
     fixture.detectChanges();
@@ -312,7 +312,7 @@ describe("LoginPage", () => {
     expect(loginPageDOM.querySelectorAll(".internalButton")[0].textContent.trim()).toBe(
       "Log in now.",
     );
-    expect(loginPageDOM.querySelector("#logIn").textContent).toBe("Sign up");
+    expect(loginPageDOM.querySelector("#logIn").textContent.trim()).toBe("Sign up");
     done();
   });
 

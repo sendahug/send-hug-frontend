@@ -555,7 +555,9 @@ describe("Notifications Tab", () => {
 
     // before
     expect(notificationsTab.displayUnread()).toBeTrue();
-    expect(notifTabDOM.querySelectorAll(".NotificationButton")[2].textContent).toBe("Hide unread");
+    expect(notifTabDOM.querySelectorAll(".NotificationButton")[2].textContent.trim()).toBe(
+      "Hide unread",
+    );
 
     notifTabDOM.querySelectorAll(".NotificationButton")[2].click();
     fixture.detectChanges();
@@ -563,7 +565,9 @@ describe("Notifications Tab", () => {
     // after
     expect(notificationsTab.displayUnread()).toBeFalse();
     expect(getNotificationsSpy).toHaveBeenCalled();
-    expect(notifTabDOM.querySelectorAll(".NotificationButton")[2].textContent).toBe("Show unread");
+    expect(notifTabDOM.querySelectorAll(".NotificationButton")[2].textContent.trim()).toBe(
+      "Show unread",
+    );
   });
 
   it("toggleRead() - should toggle the visibility of read messages", () => {
@@ -575,7 +579,9 @@ describe("Notifications Tab", () => {
 
     // before
     expect(notificationsTab.displayRead()).toBeTrue();
-    expect(notifTabDOM.querySelectorAll(".NotificationButton")[3].textContent).toBe("Hide read");
+    expect(notifTabDOM.querySelectorAll(".NotificationButton")[3].textContent.trim()).toBe(
+      "Hide read",
+    );
 
     notifTabDOM.querySelectorAll(".NotificationButton")[3].click();
     fixture.detectChanges();
@@ -583,7 +589,9 @@ describe("Notifications Tab", () => {
     // after
     expect(notificationsTab.displayRead()).toBeFalse();
     expect(getNotificationsSpy).toHaveBeenCalled();
-    expect(notifTabDOM.querySelectorAll(".NotificationButton")[3].textContent).toBe("Show read");
+    expect(notifTabDOM.querySelectorAll(".NotificationButton")[3].textContent.trim()).toBe(
+      "Show read",
+    );
   });
 
   it("markAll() - should mark all notifications read", () => {
@@ -640,7 +648,7 @@ describe("Notifications Tab", () => {
     // before
     let notificationBadges = notifTabDOM.querySelectorAll(".badge");
     expect(notificationBadges.length).toBe(3);
-    expect(notifTabDOM.querySelectorAll(".NotificationButton")[4].textContent).toBe(
+    expect(notifTabDOM.querySelectorAll(".NotificationButton")[4].textContent.trim()).toBe(
       "Mark all read",
     );
 
@@ -650,7 +658,7 @@ describe("Notifications Tab", () => {
     // after
     notificationBadges = notifTabDOM.querySelectorAll(".badge");
     expect(notificationBadges.length).toBe(0);
-    expect(notifTabDOM.querySelectorAll(".NotificationButton")[4].textContent).toBe(
+    expect(notifTabDOM.querySelectorAll(".NotificationButton")[4].textContent.trim()).toBe(
       "Mark all unread",
     );
     expect(notificationsTab["notificationService"].newNotifications()).toBe(0);
@@ -718,7 +726,7 @@ describe("Notifications Tab", () => {
     // before
     let notificationBadges = notifTabDOM.querySelectorAll(".badge");
     expect(notificationBadges.length).toBe(0);
-    expect(notifTabDOM.querySelectorAll(".NotificationButton")[4].textContent).toBe(
+    expect(notifTabDOM.querySelectorAll(".NotificationButton")[4].textContent.trim()).toBe(
       "Mark all unread",
     );
 
@@ -728,7 +736,7 @@ describe("Notifications Tab", () => {
     // after
     notificationBadges = notifTabDOM.querySelectorAll(".badge");
     expect(notificationBadges.length).toBe(3);
-    expect(notifTabDOM.querySelectorAll(".NotificationButton")[4].textContent).toBe(
+    expect(notifTabDOM.querySelectorAll(".NotificationButton")[4].textContent.trim()).toBe(
       "Mark all read",
     );
     expect(notificationsTab["notificationService"].newNotifications()).toBe(3);
@@ -785,7 +793,7 @@ describe("Notifications Tab", () => {
     // before
     let notificationBadges = notifTabDOM.querySelectorAll(".badge");
     expect(notificationBadges.length).toBe(2);
-    expect(notifTabDOM.querySelectorAll(".readToggle")[0].textContent).toBe("Mark Read");
+    expect(notifTabDOM.querySelectorAll(".readToggle")[0].textContent.trim()).toBe("Mark Read");
 
     notifTabDOM.querySelectorAll(".readToggle")[0].click();
     fixture.detectChanges();
@@ -793,7 +801,7 @@ describe("Notifications Tab", () => {
     // after
     notificationBadges = notifTabDOM.querySelectorAll(".badge");
     expect(notificationBadges.length).toBe(1);
-    expect(notifTabDOM.querySelectorAll(".readToggle")[0].textContent).toBe("Mark Unread");
+    expect(notifTabDOM.querySelectorAll(".readToggle")[0].textContent.trim()).toBe("Mark Unread");
     expect(notificationsTab["notificationService"].newNotifications()).toBe(1);
     expect(apiClientSpy).toHaveBeenCalledWith("notifications", {
       notification_ids: [2],
@@ -846,7 +854,7 @@ describe("Notifications Tab", () => {
     // before
     let notificationBadges = notifTabDOM.querySelectorAll(".badge");
     expect(notificationBadges.length).toBe(1);
-    expect(notifTabDOM.querySelectorAll(".readToggle")[0].textContent).toBe("Mark Unread");
+    expect(notifTabDOM.querySelectorAll(".readToggle")[0].textContent.trim()).toBe("Mark Unread");
 
     notifTabDOM.querySelectorAll(".readToggle")[0].click();
     fixture.detectChanges();
@@ -854,7 +862,7 @@ describe("Notifications Tab", () => {
     // after
     notificationBadges = notifTabDOM.querySelectorAll(".badge");
     expect(notificationBadges.length).toBe(2);
-    expect(notifTabDOM.querySelectorAll(".readToggle")[0].textContent).toBe("Mark Read");
+    expect(notifTabDOM.querySelectorAll(".readToggle")[0].textContent.trim()).toBe("Mark Read");
     expect(notificationsTab["notificationService"].newNotifications()).toBe(2);
     expect(apiClientSpy).toHaveBeenCalledWith("notifications", {
       notification_ids: [2],

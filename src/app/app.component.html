@@ -4,18 +4,34 @@
 
 <!-- Container for the main element and the footer (to ensure they follow one another, rather than have fixed styling) -->
 <div id="contentContainer">
-	<main id="mainContent" role="main">
-		<router-outlet></router-outlet>
-		<div id="alertContainer">
-			<app-alert></app-alert>
-		</div>
-	</main>
+  <main id="mainContent" role="main">
+    <router-outlet></router-outlet>
+    <div id="alertContainer">
+      <app-alert></app-alert>
+    </div>
+  </main>
 
-	<footer>
-		<div id="siteFooter" role="contentinfo">
-			<p class="footerText" id="text">Open source project designed and built by <a href="https://github.com/sendahug/sendahug" target="_blank" rel="noreferrer">Send a Hug</a> group members. Designed by <a href="https://instagram.com/thealphaloft" target="_blank" rel="noreferrer">Macy Tyler.</a></p>
-			<p class="footerText" id="contact"><a [routerLink]="['/sitemap']">Site Map</a> | <a href="mailto:sendahugcom@gmail.com">Email Us</a> | <a [routerLink]="['/support']">Support</a> <span *ngIf="canShare"> | <button class="textlessButton footerText" (click)="shareSite()">Share</button></span></p>
-			<p class="footerText" id="rights">&copy; Send A Hug 2020-2024.</p>
-		</div>
-	</footer>
+  <footer>
+    <div id="siteFooter" role="contentinfo">
+      <p class="footerText" id="text">
+        Open source project designed and built by
+        <a href="https://github.com/sendahug/sendahug" target="_blank" rel="noreferrer"
+          >Send a Hug</a
+        >
+        group members. Designed by
+        <a href="https://instagram.com/thealphaloft" target="_blank" rel="noreferrer"
+          >Macy Tyler.</a
+        >
+      </p>
+      <p class="footerText" id="contact">
+        <a [routerLink]="['/sitemap']">Site Map</a> |
+        <a href="mailto:sendahugcom@gmail.com">Email Us</a> |
+        <a [routerLink]="['/support']">Support</a>
+        <span *ngIf="canShare">
+          | <button class="textlessButton footerText" (click)="shareSite()">Share</button></span
+        >
+      </p>
+      <p class="footerText" id="rights">&copy; Send A Hug 2020-2024.</p>
+    </div>
+  </footer>
 </div>

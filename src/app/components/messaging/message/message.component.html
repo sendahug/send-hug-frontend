@@ -9,21 +9,24 @@
   />
 </div>
 <div class="messageContainer">
-  <div class="messageText" aria-describedby="mText" id="{{'text' + _message().id}}">
+  <div class="messageText" aria-describedby="mText" id="{{ 'text' + _message().id }}">
     {{ _message().messageText }}
   </div>
   <div class="messageField" *ngIf="displayFrom()">
-    <span class="pageCategory">From:</span><span class="pageData" aria-describedby="mUserFrom">
+    <span class="pageCategory">From:</span
+    ><span class="pageData" aria-describedby="mUserFrom">
       {{ _message().from.displayName }}
     </span>
   </div>
   <div class="messageField" *ngIf="displayFor()">
-    <span class="pageCategory">For:</span><span class="pageData" aria-describedby="mUserFor">
+    <span class="pageCategory">For:</span
+    ><span class="pageData" aria-describedby="mUserFor">
       {{ _message().for.displayName }}
     </span>
   </div>
   <div class="messageField">
-    <span class="pageCategory">Date:</span> <span class="pageData" aria-describedby="mDate">
+    <span class="pageCategory">Date:</span>
+    <span class="pageData" aria-describedby="mDate">
       {{ _message().date }}
     </span>
   </div>
@@ -31,15 +34,18 @@
     <a
       *ngIf="displayFrom()"
       [routerLink]="['/new', 'Message']"
-      [queryParams]="{user: _message().from.displayName, userID: _message().fromId}"
-      class="appButton messageButton" 
-      [attr.aria-describedby]="'mReply ' +  'text' + _message().id"
-    >Reply</a>
+      [queryParams]="{ user: _message().from.displayName, userID: _message().fromId }"
+      class="appButton messageButton"
+      [attr.aria-describedby]="'mReply ' + 'text' + _message().id"
+      >Reply</a
+    >
     <button
       class="appButton deleteButton"
       (click)="deleteMessage()"
       [attr.aria-describedby]="'mDelete ' + 'mText' + _message().id"
-    >Delete Message</button>
+    >
+      Delete Message
+    </button>
   </div>
 </div>
 

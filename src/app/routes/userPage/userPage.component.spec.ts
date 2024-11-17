@@ -137,20 +137,29 @@ describe("UserPage", () => {
     const userData = userPage.authService.userData();
     expect(userPage.userId()).toBeUndefined();
     expect(userPage.isOtherUserProfile()).toBeFalse();
-    expect(userPageDOM.querySelectorAll(".displayName")[0].firstElementChild.textContent).toBe(
-      userData?.displayName,
-    );
     expect(
-      userPageDOM.querySelector("#roleElement").querySelectorAll(".pageData")[0].textContent,
+      userPageDOM.querySelectorAll(".displayName")[0].firstElementChild.textContent.trim(),
+    ).toBe(userData?.displayName);
+    expect(
+      userPageDOM.querySelector("#roleElement").querySelectorAll(".pageData")[0].textContent.trim(),
     ).toBe(userData?.role.name);
     expect(
-      userPageDOM.querySelector("#rHugsElement").querySelectorAll(".pageData")[0].textContent,
+      userPageDOM
+        .querySelector("#rHugsElement")
+        .querySelectorAll(".pageData")[0]
+        .textContent.trim(),
     ).toBe(String(userData?.receivedH));
     expect(
-      userPageDOM.querySelector("#gHugsElement").querySelectorAll(".pageData")[0].textContent,
+      userPageDOM
+        .querySelector("#gHugsElement")
+        .querySelectorAll(".pageData")[0]
+        .textContent.trim(),
     ).toBe(String(userData?.givenH));
     expect(
-      userPageDOM.querySelector("#postsElement").querySelectorAll(".pageData")[0].textContent,
+      userPageDOM
+        .querySelector("#postsElement")
+        .querySelectorAll(".pageData")[0]
+        .textContent.trim(),
     ).toBe(String(userData?.posts));
     expect(userPageDOM.querySelector("#logout")).toBeTruthy();
     done();
@@ -173,20 +182,29 @@ describe("UserPage", () => {
     expect(routeSpy).toHaveBeenCalled();
     expect(userPage.userId()).toBe(4);
     expect(userPage.isOtherUserProfile()).toBeFalse();
-    expect(userPageDOM.querySelectorAll(".displayName")[0].firstElementChild.textContent).toBe(
-      userData?.displayName,
-    );
     expect(
-      userPageDOM.querySelector("#roleElement").querySelectorAll(".pageData")[0].textContent,
+      userPageDOM.querySelectorAll(".displayName")[0].firstElementChild.textContent.trim(),
+    ).toBe(userData?.displayName);
+    expect(
+      userPageDOM.querySelector("#roleElement").querySelectorAll(".pageData")[0].textContent.trim(),
     ).toBe(userData?.role.name);
     expect(
-      userPageDOM.querySelector("#rHugsElement").querySelectorAll(".pageData")[0].textContent,
+      userPageDOM
+        .querySelector("#rHugsElement")
+        .querySelectorAll(".pageData")[0]
+        .textContent.trim(),
     ).toBe(String(userData?.receivedH));
     expect(
-      userPageDOM.querySelector("#gHugsElement").querySelectorAll(".pageData")[0].textContent,
+      userPageDOM
+        .querySelector("#gHugsElement")
+        .querySelectorAll(".pageData")[0]
+        .textContent.trim(),
     ).toBe(String(userData?.givenH));
     expect(
-      userPageDOM.querySelector("#postsElement").querySelectorAll(".pageData")[0].textContent,
+      userPageDOM
+        .querySelector("#postsElement")
+        .querySelectorAll(".pageData")[0]
+        .textContent.trim(),
     ).toBe(String(userData?.posts));
     expect(userPageDOM.querySelector("#logout")).toBeTruthy();
     expect(userPageDOM.querySelectorAll(".reportButton")[0]).toBeUndefined();
@@ -231,20 +249,29 @@ describe("UserPage", () => {
     expect(routeSpy).toHaveBeenCalled();
     expect(userPage.userId()).toBe(1);
     expect(userPage.isOtherUserProfile()).toBeTrue();
-    expect(userPageDOM.querySelectorAll(".displayName")[0].firstElementChild.textContent).toContain(
-      userData.displayName,
-    );
     expect(
-      userPageDOM.querySelector("#roleElement").querySelectorAll(".pageData")[0].textContent,
+      userPageDOM.querySelectorAll(".displayName")[0].firstElementChild.textContent.trim(),
+    ).toContain(userData.displayName);
+    expect(
+      userPageDOM.querySelector("#roleElement").querySelectorAll(".pageData")[0].textContent.trim(),
     ).toBe(userData.role.name);
     expect(
-      userPageDOM.querySelector("#rHugsElement").querySelectorAll(".pageData")[0].textContent,
+      userPageDOM
+        .querySelector("#rHugsElement")
+        .querySelectorAll(".pageData")[0]
+        .textContent.trim(),
     ).toBe(String(userData.receivedH));
     expect(
-      userPageDOM.querySelector("#gHugsElement").querySelectorAll(".pageData")[0].textContent,
+      userPageDOM
+        .querySelector("#gHugsElement")
+        .querySelectorAll(".pageData")[0]
+        .textContent.trim(),
     ).toBe(String(userData.givenH));
     expect(
-      userPageDOM.querySelector("#postsElement").querySelectorAll(".pageData")[0].textContent,
+      userPageDOM
+        .querySelector("#postsElement")
+        .querySelectorAll(".pageData")[0]
+        .textContent.trim(),
     ).toBe(String(userData.posts));
     expect(userPageDOM.querySelector("#logout")).toBeNull();
     expect(userPageDOM.querySelectorAll(".reportButton")[0]).toBeTruthy();
@@ -505,7 +532,10 @@ describe("UserPage", () => {
     expect(userPage["authService"].userData()?.givenH).toBe(2);
     expect(userPage.otherUser()!.receivedH).toBe(3);
     expect(
-      userPageDOM.querySelector("#rHugsElement").querySelectorAll(".pageData")[0].textContent,
+      userPageDOM
+        .querySelector("#rHugsElement")
+        .querySelectorAll(".pageData")[0]
+        .textContent.trim(),
     ).toBe("3");
 
     // simulate click
@@ -518,7 +548,10 @@ describe("UserPage", () => {
     expect(updateSpy).toHaveBeenCalledWith({ givenH: 3 });
     expect(userPage.otherUser()!.receivedH).toBe(4);
     expect(
-      userPageDOM.querySelector("#rHugsElement").querySelectorAll(".pageData")[0].textContent,
+      userPageDOM
+        .querySelector("#rHugsElement")
+        .querySelectorAll(".pageData")[0]
+        .textContent.trim(),
     ).toBe("4");
     expect(alertsSpy).toHaveBeenCalledWith("Your hug was sent!");
     done();

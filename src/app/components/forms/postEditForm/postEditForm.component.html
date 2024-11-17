@@ -1,12 +1,13 @@
 <app-pop-up *teleport="'modalContainer'" (editMode)="editMode.emit(false)">
   <form [formGroup]="postEditForm" id="postEdit" class="postEdit">
     <div class="formElement">
-      <span class="pageCategory">By:</span> <span class="pageData" aria-describedby="pUser">{{ editedItem.user }}</span>
+      <span class="pageCategory">By:</span>
+      <span class="pageData" aria-describedby="pUser">{{ editedItem.user }}</span>
     </div>
     <div class="formElement" aria-describedby="pDate">{{ editedItem.date }}</div>
     <div class="formElement">
       <label class="pageCategory required" for="postText">Post Text:</label>
-      <br>
+      <br />
       <textarea
         formControlName="postText"
         id="postText"
@@ -26,8 +27,9 @@
       type="submit"
       class="appButton sendData"
       (click)="editPost($event, null)"
-      [attr.aria-label]="'update post ' + editedItem.text">
-        Update Post
+      [attr.aria-label]="'update post ' + editedItem.text"
+    >
+      Update Post
     </button>
     <!-- If the user is editing a post from the report's page -->
     <button
@@ -35,16 +37,18 @@
       type="submit"
       class="appButton sendData"
       id="updateAndClose"
-      (click)="editPost($event, true)">
-        Update Post and Close Report
+      (click)="editPost($event, true)"
+    >
+      Update Post and Close Report
     </button>
     <button
       *ngIf="isAdmin"
       type="submit"
       class="appButton sendData"
       id="updateDontClose"
-      (click)="editPost($event, false)">
-        Update Post without Closing Report
+      (click)="editPost($event, false)"
+    >
+      Update Post without Closing Report
     </button>
   </form>
 </app-pop-up>

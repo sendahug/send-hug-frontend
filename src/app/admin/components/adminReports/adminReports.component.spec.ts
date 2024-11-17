@@ -183,10 +183,10 @@ describe("AdminReports", () => {
     expect(adminReportsDOM.querySelectorAll(".tableContainer").length).toBe(0);
     expect(adminReports.postReports.length).toBe(0);
     expect(adminReports.isLoading).toBeFalse();
-    expect(adminReportsDOM.querySelectorAll(".errorMessage")[0].textContent).toBe(
+    expect(adminReportsDOM.querySelectorAll(".errorMessage")[0].textContent.trim()).toBe(
       "There are no user reports waiting for review.",
     );
-    expect(adminReportsDOM.querySelectorAll(".errorMessage")[1].textContent).toBe(
+    expect(adminReportsDOM.querySelectorAll(".errorMessage")[1].textContent.trim()).toBe(
       "There are no post reports waiting for review.",
     );
     done();

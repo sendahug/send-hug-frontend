@@ -1,6 +1,6 @@
-<div 
-  [ngClass]="alertClass()" 
-  [attr.role]="alertRole()" 
+<div
+  [ngClass]="alertClass()"
+  [attr.role]="alertRole()"
   [attr.aria-label]="alertAriaLabel()"
   [attr.aria-hidden]="!alertsService.shouldDisplayAlert()"
   [attr.aria-live]="alertAriaLive()"
@@ -9,22 +9,21 @@
   <h3 class="alertType">{{ alertsService.alertType() }}</h3>
   <div class="alertText">{{ alertsService.alertMessage() }}</div>
 
-  <button
-    class="appButton"
-    id="alertButton"
-    (click)="closeAlert()"
-  >Close</button>
+  <button class="appButton" id="alertButton" (click)="closeAlert()">Close</button>
   <button
     *ngIf="alertsService.shouldDisplayReloadBtn()"
     class="appButton"
     id="reloadBtn"
     (click)="reloadPage()"
-  >Reload Page</button>
+  >
+    Reload Page
+  </button>
   <a
     *ngIf="alertsService.shouldDisplayNavBtn()"
     [routerLink]="alertsService.navBtnTarget()"
     class="appButton"
     id="navButton"
     (click)="closeAlert()"
-  >{{ alertsService.navBtnText() }}</a>
+    >{{ alertsService.navBtnText() }}</a
+  >
 </div>

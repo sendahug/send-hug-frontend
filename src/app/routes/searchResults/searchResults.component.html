@@ -1,53 +1,69 @@
 <h2>Search Results</h2>
 
 <app-loader
-	*ngIf="!itemsService.isSearchResolved.value"
-	[loadingMessage]="'Searching...'"></app-loader>
+  *ngIf="!itemsService.isSearchResolved.value"
+  [loadingMessage]="'Searching...'"
+></app-loader>
 
 <div *ngIf="itemsService.isSearchResolved.value" id="searchResultsMain">
-	<div id="resultSummary">{{ itemsService.numUserResults }} users and {{ itemsService.numPostResults }} posts match your search query: "{{ searchQuery }}"</div>
-	
-	<h3 id="usersTitle">Users</h3>
-	<ul *ngIf="itemsService.userSearchResults.length > 0" class="searchResults" aria-describedby="uSearchRes" id="userSearchResults">
-		<li *ngFor="let user of itemsService.userSearchResults" class="searchResultUser">
-			<a [routerLink]="['/user', user.id]">{{ user.displayName }}</a>
-		</li>
-	</ul>
+  <div id="resultSummary">
+    {{ itemsService.numUserResults }} users and {{ itemsService.numPostResults }} posts match your
+    search query: "{{ searchQuery }}"
+  </div>
 
-	<div *ngIf="itemsService.userSearchResults.length == 0" class="errorMessage" id="uSearchResErr">
-		There are no users that match your search!
-	</div>
+  <h3 id="usersTitle">Users</h3>
+  <ul
+    *ngIf="itemsService.userSearchResults.length > 0"
+    class="searchResults"
+    aria-describedby="uSearchRes"
+    id="userSearchResults"
+  >
+    <li *ngFor="let user of itemsService.userSearchResults" class="searchResultUser">
+      <a [routerLink]="['/user', user.id]">{{ user.displayName }}</a>
+    </li>
+  </ul>
 
-	<h3 id="postsTitle">Posts</h3>
-	<div *ngIf="itemsService.postSearchResults.length > 0" id="postSearchResults">
-		<ul class="searchResults" aria-describedby="pSearchRes">
-			<app-single-post  *ngFor="let item of itemsService.postSearchResults"
-						 [post]="item"
-						 [type]="'n'"
-						 [containerClass]="'searchResult'"
-						 (deletedId)="removeDeletedPost($event)"></app-single-post>
-		</ul>
+  <div *ngIf="itemsService.userSearchResults.length == 0" class="errorMessage" id="uSearchResErr">
+    There are no users that match your search!
+  </div>
 
-	<!-- Post pagination -->
-		<div class="pagination" role="navigation">
-			<button 
-				[ngClass]="itemsService.previousPageButtonClass()" 
-				(click)="prevPage()" 
-				aria-label="previous page of post search results"
-				[disabled]="itemsService.postSearchPage() <= 1"
-			>Previous Page</button>
-			<div class="pageCount">Page {{ itemsService.postSearchPage() }} of {{ itemsService.totalPostSearchPages() }}</div>
-			<button 
-				[ngClass]="itemsService.nextPageButtonClass()" 
-				(click)="nextPage()" 
-				aria-label="next page of post search results"
-				[disabled]="itemsService.totalPostSearchPages() <= itemsService.postSearchPage()"
-			>Next Page</button>
-		</div>
-	</div>
+  <h3 id="postsTitle">Posts</h3>
+  <div *ngIf="itemsService.postSearchResults.length > 0" id="postSearchResults">
+    <ul class="searchResults" aria-describedby="pSearchRes">
+      <app-single-post
+        *ngFor="let item of itemsService.postSearchResults"
+        [post]="item"
+        [type]="'n'"
+        [containerClass]="'searchResult'"
+        (deletedId)="removeDeletedPost($event)"
+      ></app-single-post>
+    </ul>
 
+    <!-- Post pagination -->
+    <div class="pagination" role="navigation">
+      <button
+        [ngClass]="itemsService.previousPageButtonClass()"
+        (click)="prevPage()"
+        aria-label="previous page of post search results"
+        [disabled]="itemsService.postSearchPage() <= 1"
+      >
+        Previous Page
+      </button>
+      <div class="pageCount">
+        Page {{ itemsService.postSearchPage() }} of {{ itemsService.totalPostSearchPages() }}
+      </div>
+      <button
+        [ngClass]="itemsService.nextPageButtonClass()"
+        (click)="nextPage()"
+        aria-label="next page of post search results"
+        [disabled]="itemsService.totalPostSearchPages() <= itemsService.postSearchPage()"
+      >
+        Next Page
+      </button>
+    </div>
+  </div>
 
-	<div *ngIf="itemsService.postSearchResults.length == 0" class="errorMessage" id="pSearchResErr">
-		There are no posts that match your search!
-	</div>
+  <div *ngIf="itemsService.postSearchResults.length == 0" class="errorMessage" id="pSearchResErr">
+    There are no posts that match your search!
+  </div>
 </div>

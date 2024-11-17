@@ -2,6 +2,17 @@
 
 ## Unreleased
 
+### 2024-11-17
+
+#### Changes
+
+- Replaced the AppMessaging's navigation buttons and the threads' 'View Thread' button with links. Since the only thing these buttons do is to navigate to another page, it's better to use the correct semantic element (particularly for users using assistive technology). ([#1888](https://github.com/sendahug/send-hug-frontend/pull/1888))
+
+#### Chores
+
+- Split the message and thread code from the AppMessaging component to their own components (Message and Thread, respectively). ([#1888](https://github.com/sendahug/send-hug-frontend/pull/1888))
+- Cleaned up old authentication-related code from the AppMessaging component. Now that route guards ensure unauthenticated users cannot navigate to the messaging page, there's no need for manually verifying users are logged in. ([#1888](https://github.com/sendahug/send-hug-frontend/pull/1888))
+
 ### 2024-11-02
 
 #### Chores

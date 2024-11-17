@@ -27,6 +27,7 @@ import { createFilter } from "@rollup/pluginutils";
 import { transformSync } from "@babel/core";
 import { BuilderPlugin } from "./builder.base";
 import { resolve } from "node:path";
+import MagicString from "magic-string";
 
 export interface CoverageConfig {
   include: string[];
@@ -129,6 +130,7 @@ export function hmrPlugin(): BuilderPlugin {
  */
 export function instrumentFilesPlugin(config: CoverageConfig): BuilderPlugin {
   let filter: (id: string | undefined) => boolean;
+  let coverageMapping: { [key: string]: { [key: string]: string } } = {};
 
   return {
     name: "instrument-files",
@@ -150,7 +152,42 @@ export function instrumentFilesPlugin(config: CoverageConfig): BuilderPlugin {
         sourceMaps: "inline",
       })?.code;
 
-      return instrumentedRes || undefined;
+      if (!instrumentedRes) return;
+
+      // Remove coverage markers from all the inputs() and outputs();
+      // we'll add it right back after the transformation to ensure it doesn't
+      // break ngtsc.
+      const magicString = new MagicString(instrumentedRes);
+      magicString.replaceAll(/([a-zA-Z])+ ?= ?\(cov_(.*), (input|output)(.*);/g, (result) => {
+        const resultParts = result.split("=");
+        const propertyName = resultParts[0].trim();
+        const assignment = resultParts[1]
+          .trim()
+          .substring(1, resultParts[1].length - 3)
+          .split(",");
+        if (!coverageMapping[fileId]) coverageMapping[fileId] = {};
+        coverageMapping[fileId][propertyName] = assignment[0].trim();
+
+        return `${propertyName} = ${assignment[1].trim()};`;
+      });
+
+      return magicString.toString();
+    },
+    transform(fileId, code) {
+      if (!coverageMapping[fileId] || !code) return code;
+      let transformedCode = code;
+
+      // loop over the replacements and re-add the coverage markers to imputs/outputs.
+      Object.keys(coverageMapping[fileId]).forEach((propertyName) => {
+        const propertyRegex = new RegExp(`this\\.${propertyName} ?= ?(input|output)(.*);`);
+        const assignment = code.match(propertyRegex)?.[0].split("=")[1].trim();
+        transformedCode = transformedCode.replace(
+          propertyRegex,
+          `this.${propertyName} = (${coverageMapping[fileId][propertyName]}, ${assignment?.substring(0, assignment.length - 1)});`,
+        );
+      });
+
+      return transformedCode;
     },
   };
 }

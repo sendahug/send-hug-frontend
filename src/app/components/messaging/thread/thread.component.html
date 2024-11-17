@@ -10,17 +10,37 @@
 </div>
 <div class="messageContainer">
   <div class="messageField">
-    <span class="pageCategory">User:</span> <span class="pageData" aria-describedby="tUser" id="{{ 'user' + _thread().id }}">{{ _thread().user.displayName }}</span>
+    <span class="pageCategory">User:</span>
+    <span class="pageData" aria-describedby="tUser" id="{{ 'user' + _thread().id }}">{{
+      _thread().user.displayName
+    }}</span>
   </div>
   <div class="messageField">
-    <span class="pageCategory">Messages:</span> <span class="pageData" [attr.aria-describedby]="'tNumMess ' + 'user' + _thread().id">{{ _thread().numMessages }}</span>
+    <span class="pageCategory">Messages:</span>
+    <span class="pageData" [attr.aria-describedby]="'tNumMess ' + 'user' + _thread().id">{{
+      _thread().numMessages
+    }}</span>
   </div>
   <div class="messageField">
-    <span class="pageCategory">Last Active:</span> <span class="pageData" [attr.aria-describedby]="'tLatestMess ' + 'user' + _thread().id">{{ _thread().latestMessage }}</span>
+    <span class="pageCategory">Last Active:</span>
+    <span class="pageData" [attr.aria-describedby]="'tLatestMess ' + 'user' + _thread().id">{{
+      _thread().latestMessage
+    }}</span>
   </div>
   <div class="threadBtns">
-    <a class="appButton viewButton" [routerLink]="['/messages', 'thread', _thread().id]" [attr.aria-describedby]="'tView ' + 'user' + _thread().id">View Thread Messages</a>
-    <button class="appButton deleteButton" (click)="deleteThread()" [attr.aria-describedby]="'tDelete ' + 'user' + _thread().id">Delete Thread</button>
+    <a
+      class="appButton viewButton"
+      [routerLink]="['/messages', 'thread', _thread().id]"
+      [attr.aria-describedby]="'tView ' + 'user' + _thread().id"
+      >View Thread Messages</a
+    >
+    <button
+      class="appButton deleteButton"
+      (click)="deleteThread()"
+      [attr.aria-describedby]="'tDelete ' + 'user' + _thread().id"
+    >
+      Delete Thread
+    </button>
   </div>
 </div>
 

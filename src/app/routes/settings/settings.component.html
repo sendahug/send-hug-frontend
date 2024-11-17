@@ -1,62 +1,69 @@
 <div *ngIf="authService.authenticated()">
-	<h3>Settings</h3>
-	
-	<div id="iconSettings">
-		<h4>User Icon</h4>
-		<div *ngIf="editIcon == false">
-			<app-user-icon
-					[selectedIcon]="authService.userData()?.selectedIcon ?? 'kitty'"
-					[characterColour]="authService.userData()?.iconColours?.character"
-					[lbgColour]="authService.userData()?.iconColours?.lbg"
-					[rbgColour]="authService.userData()?.iconColours?.rbg"
-					[itemColour]="authService.userData()?.iconColours?.item"
-					[svgClass]="'userIcon'"
-				/>
-		</div>
-		<button *ngIf="editIcon == false" (click)="toggleIconEditor(true)" class="appButton" id="editIcon">Edit User Icon</button>
-		
-		<app-icon-editor *ngIf="editIcon== true"
-						 (editMode)="toggleIconEditor($event)"></app-icon-editor>
-	</div>
-	
-	<div id="notificationSettings">
-		<h4>Notifications</h4>
-		<form [formGroup]="editSettingsForm" id="refreshRateForm">
-			<div class="formElement">
-				<label for="enableNotifications" class="required">Push Notifications Enabled?:</label>
-				<input
-					formControlName="enableNotifications"
-					type="checkbox"
-					id="enableNotifications"
-				>
-			</div>
-			<div class="formElement">
-				<label for="enableAutoRefresh" class="required">Auto-Refresh Enabled?:</label>
-				<input
-					formControlName="enableAutoRefresh"
-					type="checkbox"
-					id="enableAutoRefresh"
-				>
-			</div>
-			<div class="formElement">
-				<label for="notificationRate" class="required">Notifications auto-refresh rate:</label>
-				<input
-					formControlName="notificationRate"
-					type="number"
-					min="20"
-					max="3600"
-					id="notificationRate"
-					[required]="this.editSettingsForm.controls.enableAutoRefresh.value == true"
-					[attr.aria-required]="this.editSettingsForm.controls.enableAutoRefresh.value == true"
-				>
-			</div>
-			<button type="submit" (click)="updateSettings()" class="appButton sendData" aria-label="save auto-refresh settings">Save</button>
-		</form>
-		
-	</div>
+  <h3>Settings</h3>
+
+  <div id="iconSettings">
+    <h4>User Icon</h4>
+    <div *ngIf="editIcon == false">
+      <app-user-icon
+        [selectedIcon]="authService.userData()?.selectedIcon ?? 'kitty'"
+        [characterColour]="authService.userData()?.iconColours?.character"
+        [lbgColour]="authService.userData()?.iconColours?.lbg"
+        [rbgColour]="authService.userData()?.iconColours?.rbg"
+        [itemColour]="authService.userData()?.iconColours?.item"
+        [svgClass]="'userIcon'"
+      />
+    </div>
+    <button
+      *ngIf="editIcon == false"
+      (click)="toggleIconEditor(true)"
+      class="appButton"
+      id="editIcon"
+    >
+      Edit User Icon
+    </button>
+
+    <app-icon-editor
+      *ngIf="editIcon == true"
+      (editMode)="toggleIconEditor($event)"
+    ></app-icon-editor>
+  </div>
+
+  <div id="notificationSettings">
+    <h4>Notifications</h4>
+    <form [formGroup]="editSettingsForm" id="refreshRateForm">
+      <div class="formElement">
+        <label for="enableNotifications" class="required">Push Notifications Enabled?:</label>
+        <input formControlName="enableNotifications" type="checkbox" id="enableNotifications" />
+      </div>
+      <div class="formElement">
+        <label for="enableAutoRefresh" class="required">Auto-Refresh Enabled?:</label>
+        <input formControlName="enableAutoRefresh" type="checkbox" id="enableAutoRefresh" />
+      </div>
+      <div class="formElement">
+        <label for="notificationRate" class="required">Notifications auto-refresh rate:</label>
+        <input
+          formControlName="notificationRate"
+          type="number"
+          min="20"
+          max="3600"
+          id="notificationRate"
+          [required]="this.editSettingsForm.controls.enableAutoRefresh.value == true"
+          [attr.aria-required]="this.editSettingsForm.controls.enableAutoRefresh.value == true"
+        />
+      </div>
+      <button
+        type="submit"
+        (click)="updateSettings()"
+        class="appButton sendData"
+        aria-label="save auto-refresh settings"
+      >
+        Save
+      </button>
+    </form>
+  </div>
 </div>
 
 <div *ngIf="!authService.authenticated()" id="errorBox">
-	<div class="errorMessage">You do not have permission to view thie page!</div>
-	<a [routerLink]="['/']" class="appButton">Back to homepage</a>
+  <div class="errorMessage">You do not have permission to view thie page!</div>
+  <a [routerLink]="['/']" class="appButton">Back to homepage</a>
 </div>

@@ -1,60 +1,83 @@
 <div *ngIf="authService.canUser('read:admin-board')" id="adminDashAll">
-	<nav id="breadcrumb" aria-label="Breadcrumb">
-		<a [routerLink]="['/admin']" class="breadcrumb bLink">Admin Panel</a> <span *ngIf="screen != 'main'" class="breadcrumb">/ <a [routerLink]="['/admin/' + screen]" class="breadcrumb bLink">{{ screen }}</a></span>
-	</nav>
-	
-	<!-- Admin dashboard navigation menu -->
-	<nav id="adminNav" role="navigation">
-		<a [routerLink]="['/admin']" class="appButton adminNavItem" aria-label="navigate to admin dashboard main page">Main</a>
-		<a [routerLink]="['/admin', 'reports']" class="appButton adminNavItem" aria-label="navigate to admin dashboard reports page">Reports</a>
-		<a [routerLink]="['/admin', 'blocks']" class="appButton adminNavItem" aria-label="navigate to admin dashboard blocks page">Blocks</a>
-		<a [routerLink]="['/admin', 'filters']" class="appButton adminNavItem" aria-label="navigate to admin dashboard filters page">Filters</a>
-	</nav>
+  <nav id="breadcrumb" aria-label="Breadcrumb">
+    <a [routerLink]="['/admin']" class="breadcrumb bLink">Admin Panel</a>
+    <span *ngIf="screen != 'main'" class="breadcrumb"
+      >/ <a [routerLink]="['/admin/' + screen]" class="breadcrumb bLink">{{ screen }}</a></span
+    >
+  </nav>
 
-	<!-- Admin dashboard main page -->
-	<h3 class="adminTitle" *ngIf="screen == 'main'">Admin Dashboard</h3>
-	<div class="adminScreen" id="adminMain" *ngIf="screen == 'main'" role="document">
-		
-		<div class="adminText">Welcome to the admin dashboard!</div>
-		<div class="adminText">The admin dashboard is comprised of three parts:</div>
-		<ul id="adminCategories">
-			<li class="adminCategory" *ngFor="let category of adminCategories">
-				<span class="pageCategory">{{ category.title }}:</span> <span class="pageText">{{ category.explanation }}</span>
-			</li>
-		</ul>
-	</div>
+  <!-- Admin dashboard navigation menu -->
+  <nav id="adminNav" role="navigation">
+    <a
+      [routerLink]="['/admin']"
+      class="appButton adminNavItem"
+      aria-label="navigate to admin dashboard main page"
+      >Main</a
+    >
+    <a
+      [routerLink]="['/admin', 'reports']"
+      class="appButton adminNavItem"
+      aria-label="navigate to admin dashboard reports page"
+      >Reports</a
+    >
+    <a
+      [routerLink]="['/admin', 'blocks']"
+      class="appButton adminNavItem"
+      aria-label="navigate to admin dashboard blocks page"
+      >Blocks</a
+    >
+    <a
+      [routerLink]="['/admin', 'filters']"
+      class="appButton adminNavItem"
+      aria-label="navigate to admin dashboard filters page"
+      >Filters</a
+    >
+  </nav>
 
-	<!-- Admin dashboard reports -->
-	<h3 class="adminTitle" *ngIf="screen == 'reports'">Reports</h3>
-	<app-admin-reports *ngIf="screen == 'reports'"></app-admin-reports>
+  <!-- Admin dashboard main page -->
+  <h3 class="adminTitle" *ngIf="screen == 'main'">Admin Dashboard</h3>
+  <div class="adminScreen" id="adminMain" *ngIf="screen == 'main'" role="document">
+    <div class="adminText">Welcome to the admin dashboard!</div>
+    <div class="adminText">The admin dashboard is comprised of three parts:</div>
+    <ul id="adminCategories">
+      <li class="adminCategory" *ngFor="let category of adminCategories">
+        <span class="pageCategory">{{ category.title }}:</span>
+        <span class="pageText">{{ category.explanation }}</span>
+      </li>
+    </ul>
+  </div>
 
-	<!-- Admin dashboard blocks -->
-	<h3 class="adminTitle" *ngIf="screen == 'blocks'">Blocks</h3>
-	<app-admin-blocks *ngIf="screen == 'blocks'"></app-admin-blocks>
+  <!-- Admin dashboard reports -->
+  <h3 class="adminTitle" *ngIf="screen == 'reports'">Reports</h3>
+  <app-admin-reports *ngIf="screen == 'reports'"></app-admin-reports>
 
-	<!-- Admin dashboard filters -->
-	<h3 class="adminTitle" *ngIf="screen == 'filters'">Filters</h3>
-	<app-admin-filters *ngIf="screen == 'filters'"></app-admin-filters>
-	
-	<!-- Labels for screen readers -->
-		<div id="labels" class="labels" aria-hidden="true">
-			<p id="rUserID">Reported user's I.D</p>
-			<p id="rUserDisplay">Reported user's display name</p>
-			<p id="rUserBy">Reported by</p>
-			<p id="rUserFor">Reported for</p>
-			<p id="pPostID">Reported post's I.D</p>
-			<p id="pUserID">Reported post's user I.D</p>
-			<p id="pText">Reported post's text</p>
-			<p id="pUserBy">Reported by</p>
-			<p id="pUserFor">Reported for</p>
-			<p id="bUserID">Blocked user's I.D</p>
-			<p id="bUserDisplay">Blocked user's display name</p>
-			<p id="bUntil">Blocked until</p>
-			<p id="filteredP">Filtered phrase</p>
-		</div>
+  <!-- Admin dashboard blocks -->
+  <h3 class="adminTitle" *ngIf="screen == 'blocks'">Blocks</h3>
+  <app-admin-blocks *ngIf="screen == 'blocks'"></app-admin-blocks>
+
+  <!-- Admin dashboard filters -->
+  <h3 class="adminTitle" *ngIf="screen == 'filters'">Filters</h3>
+  <app-admin-filters *ngIf="screen == 'filters'"></app-admin-filters>
+
+  <!-- Labels for screen readers -->
+  <div id="labels" class="labels" aria-hidden="true">
+    <p id="rUserID">Reported user's I.D</p>
+    <p id="rUserDisplay">Reported user's display name</p>
+    <p id="rUserBy">Reported by</p>
+    <p id="rUserFor">Reported for</p>
+    <p id="pPostID">Reported post's I.D</p>
+    <p id="pUserID">Reported post's user I.D</p>
+    <p id="pText">Reported post's text</p>
+    <p id="pUserBy">Reported by</p>
+    <p id="pUserFor">Reported for</p>
+    <p id="bUserID">Blocked user's I.D</p>
+    <p id="bUserDisplay">Blocked user's display name</p>
+    <p id="bUntil">Blocked until</p>
+    <p id="filteredP">Filtered phrase</p>
+  </div>
 </div>
 
 <div *ngIf="!authService.canUser('read:admin-board')">
-	<div class="errorMessage">You do not have permission to view thie page!</div>
-	<a [routerLink]="" class="appButton">Back to homepage</a>
+  <div class="errorMessage">You do not have permission to view thie page!</div>
+  <a [routerLink]="" class="appButton">Back to homepage</a>
 </div>

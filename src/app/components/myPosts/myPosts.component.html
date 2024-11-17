@@ -1,62 +1,76 @@
 <h3 id="newTitle">My Posts</h3>
 
 <app-loader
-	*ngIf="isLoading()"
-	[ngClass]="loaderClass()"
-	[loadingMessage]="'Fetching user posts...'"></app-loader>
+  *ngIf="isLoading()"
+  [ngClass]="loaderClass()"
+  [loadingMessage]="'Fetching user posts...'"
+></app-loader>
 
 <div id="myPosts">
-	<!-- If the user has posts, displays them -->
-	<div *ngIf="posts().length" role="region">
-		<ul class="itemList" aria-describedby="postsTitle">
-			<app-single-post  *ngFor="let post of posts()"
-				[post]="post"
-				[type]="'n'"
-				[containerClass]="'userPost'"
-				(deletedId)="removeDeletedPost($event)"></app-single-post>
-		</ul>
-		
-		<!-- Post pagination -->
-		<div class="pagination" role="navigation">
-			<button 
-				[ngClass]="previousPageButtonClass()" 
-				(click)="prevPage()" 
-				aria-label="previous page of user posts"
-				[disabled]="currentPage() <= 1"
-			>Previous Page</button>
-			<div class="pageCount">Page {{ currentPage() }} of {{ totalPages() }}</div>
-			<button 
-				[ngClass]="nextPageButtonClass()" 
-				(click)="nextPage()" 
-				aria-label="next page of user posts"
-				[disabled]="totalPages() <= currentPage()"
-			>Next Page</button>
-		</div>
-		<button *ngIf="(user() == 'self') || (authService.canUser('delete:any-post'))" class="appButton deleteButton" (click)="deleteAllPosts()" id="deleteAll">Delete All Posts</button>
-	</div>
-	
-	<!-- If the user doesn't have posts, displays an error message -->
-	<div *ngIf="!posts().length" class="errorMessage">
-		<div *ngIf="user() == 'self'">You have no published posts. Write your first post now!</div>
-		<div *ngIf="user() == 'other'">The user hasn't published any posts yet.</div>
-	</div>
+  <!-- If the user has posts, displays them -->
+  <div *ngIf="posts().length" role="region">
+    <ul class="itemList" aria-describedby="postsTitle">
+      <app-single-post
+        *ngFor="let post of posts()"
+        [post]="post"
+        [type]="'n'"
+        [containerClass]="'userPost'"
+        (deletedId)="removeDeletedPost($event)"
+      ></app-single-post>
+    </ul>
+
+    <!-- Post pagination -->
+    <div class="pagination" role="navigation">
+      <button
+        [ngClass]="previousPageButtonClass()"
+        (click)="prevPage()"
+        aria-label="previous page of user posts"
+        [disabled]="currentPage() <= 1"
+      >
+        Previous Page
+      </button>
+      <div class="pageCount">Page {{ currentPage() }} of {{ totalPages() }}</div>
+      <button
+        [ngClass]="nextPageButtonClass()"
+        (click)="nextPage()"
+        aria-label="next page of user posts"
+        [disabled]="totalPages() <= currentPage()"
+      >
+        Next Page
+      </button>
+    </div>
+    <button
+      *ngIf="user() == 'self' || authService.canUser('delete:any-post')"
+      class="appButton deleteButton"
+      (click)="deleteAllPosts()"
+      id="deleteAll"
+    >
+      Delete All Posts
+    </button>
+  </div>
+
+  <!-- If the user doesn't have posts, displays an error message -->
+  <div *ngIf="!posts().length" class="errorMessage">
+    <div *ngIf="user() == 'self'">You have no published posts. Write your first post now!</div>
+    <div *ngIf="user() == 'other'">The user hasn't published any posts yet.</div>
+  </div>
 </div>
 
 <div id="labels" class="labels" aria-hidden="true">
-	<p id="pText">Post Text</p>
-	<p id="pDate">Posted at</p>
-	<p id="pHug">Send a hug to user</p>
-	<p id="pGivenH">Hugs given to this post</p>
-	<p id="pOptions">show options for post</p>
-	<p id="pReport">Report post</p>
-	<p id="pEdit">Edit post</p>
-	<p id="pDelete">Delete post</p>
+  <p id="pText">Post Text</p>
+  <p id="pDate">Posted at</p>
+  <p id="pHug">Send a hug to user</p>
+  <p id="pGivenH">Hugs given to this post</p>
+  <p id="pOptions">show options for post</p>
+  <p id="pReport">Report post</p>
+  <p id="pEdit">Edit post</p>
+  <p id="pDelete">Delete post</p>
 </div>
 
 <item-delete-form
-	*ngIf="deleteMode()"
-	(editMode)="changeMode($event)"
-	[toDelete]="toDelete()"
-	[itemToDelete]="itemToDelete()"
-	(deleted)="updatePostsList()"
+  *ngIf="deleteMode()"
+  (editMode)="changeMode($event)"
+  [toDelete]="toDelete()"
+  [itemToDelete]="itemToDelete()"
+  (deleted)="updatePostsList()"
 ></item-delete-form>

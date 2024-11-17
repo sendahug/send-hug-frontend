@@ -1,54 +1,105 @@
 <form [formGroup]="iconEditForm">
-	<label for="characterSelect">Select Icon:</label>
-	<div id="characterSelect" role="radiogroup">
-		<div class="formElement">
-			<input type="radio" class="radioButton" id="cRadioOption1" value="bear" aria-describedby="" formControlName="selectedIcon">
-			<label class="radioButtonLabel" for="cRadioOption1"><img [src]="BearIconSrc" alt="" class="editIconOption"></label>
-		</div>
-		<div class="formElement">
-			<input type="radio" class="radioButton" id="cRadioOption2" value="kitty" aria-describedby="" formControlName="selectedIcon">
-			<label class="radioButtonLabel" for="cRadioOption2"><img [src]="KittyIconSrc" alt="" class="editIconOption"></label>
-		</div>
-		<div class="formElement">
-			<input type="radio" class="radioButton" id="cRadioOption3" value="dog" aria-describedby="" formControlName="selectedIcon">
-			<label class="radioButtonLabel" for="cRadioOption3"><img [src]="DogIconSrc" alt="" class="editIconOption"></label>
-		</div>
-	</div>
+  <label for="characterSelect">Select Icon:</label>
+  <div id="characterSelect" role="radiogroup">
+    <div class="formElement">
+      <input
+        type="radio"
+        class="radioButton"
+        id="cRadioOption1"
+        value="bear"
+        aria-describedby=""
+        formControlName="selectedIcon"
+      />
+      <label class="radioButtonLabel" for="cRadioOption1"
+        ><img [src]="BearIconSrc" alt="" class="editIconOption"
+      /></label>
+    </div>
+    <div class="formElement">
+      <input
+        type="radio"
+        class="radioButton"
+        id="cRadioOption2"
+        value="kitty"
+        aria-describedby=""
+        formControlName="selectedIcon"
+      />
+      <label class="radioButtonLabel" for="cRadioOption2"
+        ><img [src]="KittyIconSrc" alt="" class="editIconOption"
+      /></label>
+    </div>
+    <div class="formElement">
+      <input
+        type="radio"
+        class="radioButton"
+        id="cRadioOption3"
+        value="dog"
+        aria-describedby=""
+        formControlName="selectedIcon"
+      />
+      <label class="radioButtonLabel" for="cRadioOption3"
+        ><img [src]="DogIconSrc" alt="" class="editIconOption"
+      /></label>
+    </div>
+  </div>
 
-	<div class="hint"><strong>Note: </strong>Changing your icon resets any unsaved colour changes!</div>
-	
-	<!-- This is done that way to ensure we inline all three icons -->
-	<app-user-icon
-		[selectedIcon]="iconEditForm.controls.selectedIcon.value || 'kitty'"
-		[characterColour]="iconEditForm.controls.characterColour.value || undefined"
-		[lbgColour]="iconEditForm.controls.lbgColour.value || undefined"
-		[rbgColour]="iconEditForm.controls.rbgColour.value || undefined"
-		[itemColour]="iconEditForm.controls.itemColour.value || undefined"
-		[svgClass]="'selectedCharacter'"
-	/>
-		
-	<div class="formElement">
-		<label for="characterC">Select Character Colour: </label>
-		<input type="color" id="characterC" value="{{ iconEditForm.controls.characterColour.value }}" formControlName="characterColour">
-	</div>
-	
-	<div class="formElement">
-		<label for="lbgColour">Select Left Background Colour: </label>
-		<input type="color" id="lbgColour" value="{{ iconEditForm.controls.lbgColour.value }}" formControlName="lbgColour">
-	</div>
-	
-	<div class="formElement">
-		<label for="rbgColour">Select Right Background Colour: </label>
-		<input type="color" id="rbgColour" value="{{ iconEditForm.controls.rbgColour.value }}" formControlName="rbgColour">
-	</div>
-	
-	<div class="formElement">
-		<label for="itemColour">Select Hand-Held Item Colour: </label>
-		<input type="color" id="itemColour" value="{{ iconEditForm.controls.itemColour.value }}" formControlName="itemColour">
-	</div>
-	
-	<div class="buttonsContainer">
-		<button type="submit" (click)="dismiss()" class="appButton iconButton">Never Mind</button>
-		<button type="submit" (click)="updateIcon($event)" class="appButton iconButton">Update Icon</button>
-	</div>
+  <div class="hint">
+    <strong>Note: </strong>Changing your icon resets any unsaved colour changes!
+  </div>
+
+  <!-- This is done that way to ensure we inline all three icons -->
+  <app-user-icon
+    [selectedIcon]="iconEditForm.controls.selectedIcon.value || 'kitty'"
+    [characterColour]="iconEditForm.controls.characterColour.value || undefined"
+    [lbgColour]="iconEditForm.controls.lbgColour.value || undefined"
+    [rbgColour]="iconEditForm.controls.rbgColour.value || undefined"
+    [itemColour]="iconEditForm.controls.itemColour.value || undefined"
+    [svgClass]="'selectedCharacter'"
+  />
+
+  <div class="formElement">
+    <label for="characterC">Select Character Colour: </label>
+    <input
+      type="color"
+      id="characterC"
+      value="{{ iconEditForm.controls.characterColour.value }}"
+      formControlName="characterColour"
+    />
+  </div>
+
+  <div class="formElement">
+    <label for="lbgColour">Select Left Background Colour: </label>
+    <input
+      type="color"
+      id="lbgColour"
+      value="{{ iconEditForm.controls.lbgColour.value }}"
+      formControlName="lbgColour"
+    />
+  </div>
+
+  <div class="formElement">
+    <label for="rbgColour">Select Right Background Colour: </label>
+    <input
+      type="color"
+      id="rbgColour"
+      value="{{ iconEditForm.controls.rbgColour.value }}"
+      formControlName="rbgColour"
+    />
+  </div>
+
+  <div class="formElement">
+    <label for="itemColour">Select Hand-Held Item Colour: </label>
+    <input
+      type="color"
+      id="itemColour"
+      value="{{ iconEditForm.controls.itemColour.value }}"
+      formControlName="itemColour"
+    />
+  </div>
+
+  <div class="buttonsContainer">
+    <button type="submit" (click)="dismiss()" class="appButton iconButton">Never Mind</button>
+    <button type="submit" (click)="updateIcon($event)" class="appButton iconButton">
+      Update Icon
+    </button>
+  </div>
 </form>

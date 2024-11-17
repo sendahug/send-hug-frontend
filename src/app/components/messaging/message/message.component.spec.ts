@@ -219,12 +219,14 @@ describe("AppSingleMessage", () => {
     fixture.detectChanges();
 
     expect(appMessageDOM.querySelectorAll(".messageButton")[0].tagName.toLowerCase()).toBe("a");
-    expect(appMessageDOM.querySelectorAll(".messageButton")[0].textContent).toBe("Reply");
+    expect(appMessageDOM.querySelectorAll(".messageButton")[0].textContent.trim()).toBe("Reply");
     expect(appMessageDOM.querySelectorAll(".messageButton")[0].getAttribute("href")).toContain(
       "/new",
     );
     expect(appMessageDOM.querySelectorAll(".deleteButton")[0].tagName.toLowerCase()).toBe("button");
-    expect(appMessageDOM.querySelectorAll(".deleteButton")[0].textContent).toBe("Delete Message");
+    expect(appMessageDOM.querySelectorAll(".deleteButton")[0].textContent.trim()).toBe(
+      "Delete Message",
+    );
     done();
   });
 });

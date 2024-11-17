@@ -2,7 +2,7 @@
   <form [formGroup]="editNameForm" id="userEdit" class="userEdit">
     <div class="formElement">
       <label class="pageCategory required" for="displayName">Display Name:</label>
-      <input 
+      <input
         formControlName="newDisplayName"
         type="text"
         id="displayName"
@@ -10,33 +10,37 @@
         maxlength="60"
         required
         [attr.aria-invalid]="!this.editNameForm.controls.newDisplayName.valid"
-        aria-required="true">
+        aria-required="true"
+      />
     </div>
-  
+
     <!-- If the user is editing their own display name -->
     <button
       *ngIf="!reportData"
       type="submit"
       class="appButton updateItem"
       (click)="updateDisplayName($event, null)"
-      [attr.aria-label]="'update display name for user ' + authService.userData()!.displayName">
-        Update User
+      [attr.aria-label]="'update display name for user ' + authService.userData()!.displayName"
+    >
+      Update User
     </button>
-  
+
     <!-- If the user is editing another user -->
     <button
       *ngIf="reportData"
       (click)="updateDisplayName($event, true)"
       type="submit"
-      class="appButton updateItem">
-        Update User and Close Report
+      class="appButton updateItem"
+    >
+      Update User and Close Report
     </button>
     <button
       *ngIf="reportData"
       (click)="updateDisplayName($event, false)"
       type="submit"
-      class="appButton updateItem">
-        Update User without Closing Report
+      class="appButton updateItem"
+    >
+      Update User without Closing Report
     </button>
   </form>
 </app-pop-up>

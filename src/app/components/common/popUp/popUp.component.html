@@ -1,14 +1,15 @@
 <div id="modalBox">
-	<div id="editPopup" role="dialog" aria-label="edit popup">
-		<button #exitButton id="exitButton" (click)="exitEdit()" aria-label="close popup">
-			<fa-icon [icon]="faTimes" class="fa-times"></fa-icon>
-		</button>
-		<ng-content></ng-content>
-	</div>
+  <div id="editPopup" role="dialog" aria-label="edit popup">
+    <button #exitButton id="exitButton" (click)="exitEdit()" aria-label="close popup">
+      <!-- prettier-ignore -->
+      <fa-icon [icon]="faTimes" class="fa-times"></fa-icon>
+    </button>
+    <ng-content></ng-content>
+  </div>
 </div>
 
 <div id="labels" class="labels" aria-hidden="true">
-	<p id="pText">Post Text</p>
-	<p id="pDate">Published at</p>
-	<p id="pUser">Post Writer</p>
+  <p id="pText">Post Text</p>
+  <p id="pDate">Published at</p>
+  <p id="pUser">Post Writer</p>
 </div>

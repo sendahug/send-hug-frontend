@@ -27,7 +27,7 @@
     "@size-limit/time": "^11.1.6",
     "@types/babel__core": "^7.20.5",
     "@types/jasmine": "^5.1.4",
-    "@types/less": "^3.0.6",
+    "@types/less": "^3.0.7",
     "@types/node": "^22.9.1",
     "@web/dev-server-esbuild": "^1.0.3",
     "@web/dev-server-rollup": "^0.6.4",

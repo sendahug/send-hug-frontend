@@ -31,7 +31,17 @@
 */
 
 // Angular imports
-import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from "@angular/core";
+import {
+  AfterViewChecked,
+  AfterViewInit,
+  Component,
+  computed,
+  ElementRef,
+  OnInit,
+  signal,
+  viewChild,
+  ViewChild,
+} from "@angular/core";
 import { Router, RouterOutlet, RouterLink, ActivatedRoute } from "@angular/router";
 import { CommonModule } from "@angular/common";
 
@@ -51,9 +61,12 @@ import { TeleportService } from "./services/teleport.service";
   standalone: true,
   imports: [CommonModule, RouterOutlet, RouterLink, AppAlert, AppNavMenu],
 })
-export class AppComponent implements OnInit, AfterViewInit {
+export class AppComponent implements OnInit, AfterViewInit, AfterViewChecked {
   canShare = false;
   @ViewChild("modalContainer") modalContainer!: ElementRef;
+  navMenu = viewChild(AppNavMenu, { read: ElementRef });
+  navMenuHeight = signal(0);
+  mainContentStyle = computed(() => ({ top: `${Number(this.navMenuHeight())}px` }));
 
   constructor(
     protected authService: AuthService,
@@ -137,6 +150,14 @@ export class AppComponent implements OnInit, AfterViewInit {
    */
   ngAfterViewInit(): void {
     this.teleportService.createTeleportTarget("modalContainer", this.modalContainer);
+  }
+
+  /**
+   * Angular's AfterViewChecked hook. Checks the current height of the navigation
+   * menu in order to adjust the location of the main content container.
+   */
+  ngAfterViewChecked(): void {
+    this.navMenuHeight.set(this.navMenu()?.nativeElement.clientHeight);
   }
 
   /**

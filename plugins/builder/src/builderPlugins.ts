@@ -158,18 +158,21 @@ export function instrumentFilesPlugin(config: CoverageConfig): BuilderPlugin {
       // we'll add it right back after the transformation to ensure it doesn't
       // break ngtsc.
       const magicString = new MagicString(instrumentedRes);
-      magicString.replaceAll(/([a-zA-Z])+ ?= ?\(cov_(.*), (input|output)(.*);/g, (result) => {
-        const resultParts = result.split("=");
-        const propertyName = resultParts[0].trim();
-        const assignment = resultParts[1]
-          .trim()
-          .substring(1, resultParts[1].length - 3)
-          .split(",");
-        if (!coverageMapping[fileId]) coverageMapping[fileId] = {};
-        coverageMapping[fileId][propertyName] = assignment[0].trim();
+      magicString.replaceAll(
+        /([a-zA-Z])+ ?= ?\(cov_(.*), (input|output|viewChild)((.|\n)*?);/g,
+        (result) => {
+          const resultParts = result.split("=");
+          const propertyName = resultParts[0].trim();
+          const assignment = resultParts[1]
+            .trim()
+            .substring(1, resultParts[1].length - 3)
+            .split(",");
+          if (!coverageMapping[fileId]) coverageMapping[fileId] = {};
+          coverageMapping[fileId][propertyName] = assignment[0].trim();
 
-        return `${propertyName} = ${assignment[1].trim()};`;
-      });
+          return `${propertyName} = ${assignment[1].trim()};`;
+        },
+      );
 
       return magicString.toString();
     },
@@ -179,7 +182,9 @@ export function instrumentFilesPlugin(config: CoverageConfig): BuilderPlugin {
 
       // loop over the replacements and re-add the coverage markers to imputs/outputs.
       Object.keys(coverageMapping[fileId]).forEach((propertyName) => {
-        const propertyRegex = new RegExp(`this\\.${propertyName} ?= ?(input|output)(.*);`);
+        const propertyRegex = new RegExp(
+          `this\\.${propertyName} ?= ?(input|output|viewChild)((.|\n)*?);`,
+        );
         const assignment = code.match(propertyRegex)?.[0].split("=")[1].trim();
         transformedCode = transformedCode.replace(
           propertyRegex,

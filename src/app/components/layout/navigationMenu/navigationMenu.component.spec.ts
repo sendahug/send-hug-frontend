@@ -170,7 +170,7 @@ describe("AppNavMenu", () => {
     const navMenuHtml = fixture.debugElement.nativeElement;
 
     expect(navMenu.showSearch()).toBe(false);
-    expect(navMenuHtml.querySelector("#siteHeader").children.length).toEqual(2);
+    expect(navMenuHtml.querySelector("#siteHeader").children.length).toEqual(3);
   });
 
   // Check that the search panel appears when the button is clicked
@@ -201,7 +201,7 @@ describe("AppNavMenu", () => {
     const navMenuHtml = fixture.debugElement.nativeElement;
 
     expect(navMenu.showTextPanel()).toBe(false);
-    expect(navMenuHtml.querySelector("#siteHeader").children.length).toEqual(2);
+    expect(navMenuHtml.querySelector("#siteHeader").children.length).toEqual(3);
   });
 
   // Check that the font size panel appears when the button is clicked

@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+### 2024-11-23
+
+#### Fixes
+
+- Fixed the design of the header alert when two alerts are shown. Previously they were shown as two separate alert blocks (with different widths), which didn't work well. Now, both are shown as part of the same alert block. ([#1898](https://github.com/sendahug/send-hug-frontend/pull/1898))
+- The main content's container now correctly adjusts its position depending on the header's height. Previously, the position was only adjusted for one alert, which meant that when two alerts were shown, the top of the main content container was hidden by the header. Now,the main content is positioned depending on the header's height, which ensures everything is visible to users. ([#1898](https://github.com/sendahug/send-hug-frontend/pull/1898))
+
 ### 2024-11-17
 
 #### Changes

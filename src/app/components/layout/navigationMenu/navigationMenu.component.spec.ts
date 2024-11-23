@@ -56,6 +56,7 @@ import { mockAuthedUser, getMockFirebaseUser } from "@tests/mockData";
 import { ItemsService } from "@app/services/items.service";
 import { NotificationService } from "@app/services/notifications.service";
 import { SearchForm } from "@app/components/layout/searchForm/searchForm.component";
+import { AlertsService } from "@app/services/alerts.service";
 
 describe("AppNavMenu", () => {
   beforeEach(() => {
@@ -170,7 +171,7 @@ describe("AppNavMenu", () => {
     const navMenuHtml = fixture.debugElement.nativeElement;
 
     expect(navMenu.showSearch()).toBe(false);
-    expect(navMenuHtml.querySelector("#siteHeader").children.length).toEqual(2);
+    expect(navMenuHtml.querySelector("#siteHeader").children.length).toEqual(3);
   });
 
   // Check that the search panel appears when the button is clicked
@@ -201,7 +202,7 @@ describe("AppNavMenu", () => {
     const navMenuHtml = fixture.debugElement.nativeElement;
 
     expect(navMenu.showTextPanel()).toBe(false);
-    expect(navMenuHtml.querySelector("#siteHeader").children.length).toEqual(2);
+    expect(navMenuHtml.querySelector("#siteHeader").children.length).toEqual(3);
   });
 
   // Check that the font size panel appears when the button is clicked
@@ -475,5 +476,29 @@ describe("AppNavMenu", () => {
     expect(signOutRedirectSpy).toHaveBeenCalled();
     expect(signOutSpy).toHaveBeenCalled();
     expect(routerSpy).toHaveBeenCalledWith(["/"]);
+  });
+
+  it("shows the 'no internet' alert", () => {
+    const alertsService = TestBed.inject(AlertsService);
+    alertsService.isOffline.next(true);
+
+    const fixture = TestBed.createComponent(AppNavMenu);
+    const componentHtml = fixture.debugElement.nativeElement;
+    fixture.detectChanges();
+
+    expect(componentHtml.querySelector("#noInternet")).toBeDefined();
+    expect(componentHtml.querySelector("#headerBanner").children.length).toBe(1);
+  });
+
+  it("shows the 'email not verified' alert", () => {
+    const alertsService = TestBed.inject(AuthService);
+    alertsService.userData.set({ ...mockAuthedUser, emailVerified: false });
+
+    const fixture = TestBed.createComponent(AppNavMenu);
+    const componentHtml = fixture.debugElement.nativeElement;
+    fixture.detectChanges();
+
+    expect(componentHtml.querySelector("#notVerified")).toBeDefined();
+    expect(componentHtml.querySelector("#headerBanner").children.length).toBe(1);
   });
 });

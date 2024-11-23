@@ -48,18 +48,17 @@
   top: 0;
 }
 
-/* Site Header when the popup is on */
-#siteHeader.modal {
-  z-index: 0;
-}
-
 /* No internet connection message */
-#noInternet {
+#headerBanner {
   .fontSize(14);
   &:extend(.headerAlerts);
   width: 90%;
   padding: 0;
   color: var(--headlineColour);
+  flex-direction: column;
+}
+
+#noInternet {
   /* Responsive styling for screens above 900px width */
   @media screen and (min-width: 900px) {
     height: 22px;
@@ -69,12 +68,14 @@
 
 #notVerified {
   .fontSize(14);
-  &:extend(.headerAlerts);
-  width: 90%;
+  width: 100%;
   padding: 5px;
   color: var(--headlineColour);
   min-height: 25px;
   align-items: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   @media screen and (max-width: 600px) {
     flex-direction: column;
   }
@@ -85,7 +86,7 @@
   }
 }
 
-#notVerified .link {
+#headerBanner .link {
   color: var(--linkColour);
   min-width: 44px;
   border: none;

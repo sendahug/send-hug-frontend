@@ -2,19 +2,17 @@
   <a href="#mainContent" class="skip-link" id="skipLink" aria-label="skip to main content"
     >Skip to main content</a
   >
-  <div id="noInternet" *ngIf="alertsService.isOffline.value" role="banner">
-    You are not currently connected to the internet. For updated data, reconnect to the internet and
-    try again.
-  </div>
-  <div
-    id="notVerified"
-    *ngIf="authService.userData() && !authService.userData()!.emailVerified"
-    role="banner"
-  >
-    You haven't verified your email address yet.
-    <span>
-      <button class="link" (click)="authService.sendVerificationEmail()">Click here</button> to send
-      a verification email.
+  <div id="headerBanner" role="banner">
+    <span id="noInternet" *ngIf="alertsService.isOffline.value">
+      You are not currently connected to the internet. For updated data, reconnect to the internet
+      and try again.
+    </span>
+    <span *ngIf="authService.userData() && !authService.userData()!.emailVerified" id="notVerified">
+      You haven't verified your email address yet.
+      <span>
+        <button class="link" (click)="authService.sendVerificationEmail()">Click here</button> to
+        send a verification email.
+      </span>
     </span>
   </div>
   <nav id="navMenu" role="navigation">

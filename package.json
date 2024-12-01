@@ -42,7 +42,7 @@
     "magic-string": "^0.30.14",
     "ng-mocks": "^14.13.1",
     "pa11y-ci": "^3.1.0",
-    "prettier": "^3.3.3",
+    "prettier": "^3.4.1",
     "rollup-plugin-tsconfig-paths": "^1.5.2",
     "size-limit": "^11.1.4",
     "tslib": "^2.8.1",

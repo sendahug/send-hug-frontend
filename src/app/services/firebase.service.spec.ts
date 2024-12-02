@@ -46,7 +46,6 @@ import { getMockFirebaseUser } from "@tests/mockData";
 describe("FirebaseService", () => {
   let firebaseService: FirebaseService;
   let mockFirebaseUser: FbAuth.User;
-  let mockUserCredential: FbAuth.UserCredential;
 
   // Before each test, configure testing environment
   beforeEach(() => {
@@ -60,11 +59,6 @@ describe("FirebaseService", () => {
 
     firebaseService = TestBed.inject(FirebaseService);
     mockFirebaseUser = getMockFirebaseUser();
-    mockUserCredential = {
-      user: mockFirebaseUser,
-      providerId: "",
-      operationType: "signIn",
-    };
   });
 
   // Check the service is created

@@ -37,15 +37,12 @@ import {
   platformBrowserDynamicTesting,
 } from "@angular/platform-browser-dynamic/testing";
 import {} from "jasmine";
-import * as FbAuth from "firebase/auth";
 import { provideHttpClient } from "@angular/common/http";
 
 import { FirebaseService } from "./firebase.service";
-import { getMockFirebaseUser } from "@tests/mockData";
 
 describe("FirebaseService", () => {
   let firebaseService: FirebaseService;
-  let mockFirebaseUser: FbAuth.User;
 
   // Before each test, configure testing environment
   beforeEach(() => {
@@ -58,7 +55,6 @@ describe("FirebaseService", () => {
     }).compileComponents();
 
     firebaseService = TestBed.inject(FirebaseService);
-    mockFirebaseUser = getMockFirebaseUser();
   });
 
   // Check the service is created

@@ -45,9 +45,6 @@ import {
   provideHttpClient,
 } from "@angular/common/http";
 import { isEmpty, of } from "rxjs";
-import { provideFirebaseApp, initializeApp } from "@angular/fire/app";
-import { provideAuth, getAuth } from "@angular/fire/auth";
-import { getAnalytics, provideAnalytics } from "@angular/fire/analytics";
 
 import { AuthService } from "./auth.service";
 import { AlertsService } from "./alerts.service";
@@ -69,25 +66,7 @@ describe("AuthService", () => {
 
     TestBed.configureTestingModule({
       imports: [],
-      providers: [
-        AuthService,
-        AlertsService,
-        provideHttpClient(),
-        provideHttpClientTesting(),
-        provideFirebaseApp(() =>
-          initializeApp({
-            apiKey: import.meta.env["VITE_FIREBASE_API_KEY"],
-            authDomain: import.meta.env["VITE_FIREBASE_AUTH_DOMAIN"],
-            projectId: import.meta.env["VITE_FIREBASE_PROJECT_ID"],
-            storageBucket: import.meta.env["VITE_FIREBASE_STORAGE_BUCKET"],
-            messagingSenderId: import.meta.env["VITE_FIREBASE_MESSAGING_SENDER_ID"],
-            appId: import.meta.env["VITE_FIREBASE_APP_ID"],
-            measurementId: import.meta.env["VITE_FIREBASE_MEASUREMENT_ID"],
-          }),
-        ),
-        provideAuth(() => getAuth()),
-        provideAnalytics(() => getAnalytics()),
-      ],
+      providers: [AuthService, AlertsService, provideHttpClient(), provideHttpClientTesting()],
     }).compileComponents();
 
     authService = TestBed.inject(AuthService);

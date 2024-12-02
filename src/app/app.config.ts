@@ -34,9 +34,6 @@ import { ApplicationConfig, importProvidersFrom, provideZoneChangeDetection } fr
 import { provideRouter, withComponentInputBinding } from "@angular/router";
 import { provideHttpClient } from "@angular/common/http";
 import { ServiceWorkerModule } from "@angular/service-worker";
-import { initializeApp, provideFirebaseApp } from "@angular/fire/app";
-import { getAuth, provideAuth } from "@angular/fire/auth";
-import { provideAnalytics, getAnalytics } from "@angular/fire/analytics";
 
 import { routes } from "./app.routes";
 
@@ -46,18 +43,5 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes, withComponentInputBinding()),
     importProvidersFrom(ServiceWorkerModule.register("sw.js")),
     provideHttpClient(),
-    provideFirebaseApp(() =>
-      initializeApp({
-        apiKey: import.meta.env["VITE_FIREBASE_API_KEY"],
-        authDomain: import.meta.env["VITE_FIREBASE_AUTH_DOMAIN"],
-        projectId: import.meta.env["VITE_FIREBASE_PROJECT_ID"],
-        storageBucket: import.meta.env["VITE_FIREBASE_STORAGE_BUCKET"],
-        messagingSenderId: import.meta.env["VITE_FIREBASE_MESSAGING_SENDER_ID"],
-        appId: import.meta.env["VITE_FIREBASE_APP_ID"],
-        measurementId: import.meta.env["VITE_FIREBASE_MEASUREMENT_ID"],
-      }),
-    ),
-    provideAuth(() => getAuth()),
-    provideAnalytics(() => getAnalytics()),
   ],
 };

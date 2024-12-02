@@ -47,7 +47,10 @@ import {
   tap,
   throwError,
 } from "rxjs";
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
 import {
+  getAuth,
   signInWithEmailAndPassword,
   signInWithPopup,
   GoogleAuthProvider,
@@ -56,12 +59,12 @@ import {
   AuthProvider,
   getIdToken,
   createUserWithEmailAndPassword,
-  Auth,
-  authState,
   sendPasswordResetEmail,
   sendEmailVerification,
   ActionCodeSettings,
-} from "@angular/fire/auth";
+  onAuthStateChanged,
+  User as FirebaseUser,
+} from "firebase/auth";
 
 // App-related imports
 import { User } from "@app/interfaces/user.interface";
@@ -85,6 +88,18 @@ export type ToggleButtonOption = "Enable" | "Disable";
 })
 export class AuthService {
   readonly serverUrl = import.meta.env["VITE_BACKEND_URL"];
+  firebase = initializeApp({
+    apiKey: import.meta.env["VITE_FIREBASE_API_KEY"],
+    authDomain: import.meta.env["VITE_FIREBASE_AUTH_DOMAIN"],
+    projectId: import.meta.env["VITE_FIREBASE_PROJECT_ID"],
+    storageBucket: import.meta.env["VITE_FIREBASE_STORAGE_BUCKET"],
+    messagingSenderId: import.meta.env["VITE_FIREBASE_MESSAGING_SENDER_ID"],
+    appId: import.meta.env["VITE_FIREBASE_APP_ID"],
+    measurementId: import.meta.env["VITE_FIREBASE_MEASUREMENT_ID"],
+  });
+  analytics = getAnalytics(this.firebase);
+  auth = getAuth(this.firebase);
+  authState: Observable<FirebaseUser | null>;
   // authentication information
   authenticated = signal<boolean>(false);
   // user data
@@ -113,20 +128,38 @@ export class AuthService {
     private Http: HttpClient,
     private alertsService: AlertsService,
     private serviceWorkerM: SWManager,
-    private auth: Auth,
-  ) {}
+  ) {
+    this.authState = this.getAuthStateObservable();
+  }
 
   /**
    * Firebase Methods
    * =====================================
    */
   /**
+   * Creates an observable of the onAuthStateChanged's
+   * result. Copied from the rxfire code.
+   * https://github.com/FirebaseExtended/rxfire/blob/main/auth/index.ts
+   */
+  private getAuthStateObservable(): Observable<FirebaseUser | null> {
+    return new Observable((subscriber) => {
+      const unsubscribe = onAuthStateChanged(
+        this.auth,
+        subscriber.next.bind(subscriber),
+        subscriber.error.bind(subscriber),
+        subscriber.complete.bind(subscriber),
+      );
+      return { unsubscribe };
+    });
+  }
+
+  /**
    * Checks whether there's a user currently logged in. If there is,
    * fetches the user's details. Otherwise, logs the previous user out.
    * @returns an observable that resolves to an internal user.
    */
   checkForLoggedInUser(): Observable<User | undefined> {
-    return authState(this.auth)
+    return this.authState
       .pipe(
         tap((currentUser) => {
           if (!currentUser) {

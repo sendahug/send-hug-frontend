@@ -50,6 +50,8 @@ import { AuthService } from "./auth.service";
 import { AlertsService } from "./alerts.service";
 import { getMockFirebaseUser, mockAuthedUser } from "@tests/mockData";
 import { User } from "@app/interfaces/user.interface";
+import { MockProvider } from "ng-mocks";
+import { FirebaseService } from "./firebase.service";
 
 describe("AuthService", () => {
   let httpController: HttpTestingController;
@@ -61,12 +63,20 @@ describe("AuthService", () => {
 
   // Before each test, configure testing environment
   beforeEach(() => {
+    const mockFirebaseService = MockProvider(FirebaseService);
+
     TestBed.resetTestEnvironment();
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
       imports: [],
-      providers: [AuthService, AlertsService, provideHttpClient(), provideHttpClientTesting()],
+      providers: [
+        AuthService,
+        AlertsService,
+        mockFirebaseService,
+        provideHttpClient(),
+        provideHttpClientTesting(),
+      ],
     }).compileComponents();
 
     authService = TestBed.inject(AuthService);
@@ -76,7 +86,6 @@ describe("AuthService", () => {
     createErrorAlertSpy = spyOn(alertsService, "createErrorAlert");
     spyOn(alertsService, "toggleOfflineAlert");
     createAlertSpy = spyOn(alertsService, "createAlert");
-    createAlertSpy;
 
     mockFirebaseUser = getMockFirebaseUser();
     mockUser = { ...mockAuthedUser };

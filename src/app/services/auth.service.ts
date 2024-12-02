@@ -39,7 +39,6 @@ import {
   BehaviorSubject,
   catchError,
   EMPTY,
-  from,
   map,
   Observable,
   of,
@@ -47,29 +46,12 @@ import {
   tap,
   throwError,
 } from "rxjs";
-import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
-import {
-  getAuth,
-  signInWithEmailAndPassword,
-  signInWithPopup,
-  GoogleAuthProvider,
-  OAuthProvider,
-  signOut,
-  AuthProvider,
-  getIdToken,
-  createUserWithEmailAndPassword,
-  sendPasswordResetEmail,
-  sendEmailVerification,
-  ActionCodeSettings,
-  onAuthStateChanged,
-  User as FirebaseUser,
-} from "firebase/auth";
 
 // App-related imports
 import { User } from "@app/interfaces/user.interface";
 import { AlertsService } from "@app/services/alerts.service";
 import { SWManager } from "@app/services/sWManager.service";
+import { FirebaseService } from "./firebase.service";
 
 interface UserUpdateResponse {
   success: boolean;
@@ -88,18 +70,6 @@ export type ToggleButtonOption = "Enable" | "Disable";
 })
 export class AuthService {
   readonly serverUrl = import.meta.env["VITE_BACKEND_URL"];
-  firebase = initializeApp({
-    apiKey: import.meta.env["VITE_FIREBASE_API_KEY"],
-    authDomain: import.meta.env["VITE_FIREBASE_AUTH_DOMAIN"],
-    projectId: import.meta.env["VITE_FIREBASE_PROJECT_ID"],
-    storageBucket: import.meta.env["VITE_FIREBASE_STORAGE_BUCKET"],
-    messagingSenderId: import.meta.env["VITE_FIREBASE_MESSAGING_SENDER_ID"],
-    appId: import.meta.env["VITE_FIREBASE_APP_ID"],
-    measurementId: import.meta.env["VITE_FIREBASE_MEASUREMENT_ID"],
-  });
-  analytics = getAnalytics(this.firebase);
-  auth = getAuth(this.firebase);
-  authState: Observable<FirebaseUser | null>;
   // authentication information
   authenticated = signal<boolean>(false);
   // user data
@@ -117,49 +87,26 @@ export class AuthService {
   // Whether the user is in the process of registering
   isRegistering = signal(false);
   isUserDataResolved = new BehaviorSubject(false);
-  // firebase stuff
-  actionCodeSettings = signal<ActionCodeSettings>({
-    // TODO: Hardcode the base URL once we deploy to live
-    url: `${import.meta.env["VITE_BASE_URL"]}/verify`,
-  });
 
   // CTOR
   constructor(
     private Http: HttpClient,
     private alertsService: AlertsService,
     private serviceWorkerM: SWManager,
-  ) {
-    this.authState = this.getAuthStateObservable();
-  }
+    private firebase: FirebaseService,
+  ) {}
 
   /**
    * Firebase Methods
    * =====================================
    */
   /**
-   * Creates an observable of the onAuthStateChanged's
-   * result. Copied from the rxfire code.
-   * https://github.com/FirebaseExtended/rxfire/blob/main/auth/index.ts
-   */
-  private getAuthStateObservable(): Observable<FirebaseUser | null> {
-    return new Observable((subscriber) => {
-      const unsubscribe = onAuthStateChanged(
-        this.auth,
-        subscriber.next.bind(subscriber),
-        subscriber.error.bind(subscriber),
-        subscriber.complete.bind(subscriber),
-      );
-      return { unsubscribe };
-    });
-  }
-
-  /**
    * Checks whether there's a user currently logged in. If there is,
    * fetches the user's details. Otherwise, logs the previous user out.
    * @returns an observable that resolves to an internal user.
    */
   checkForLoggedInUser(): Observable<User | undefined> {
-    return this.authState
+    return this.firebase.authState
       .pipe(
         tap((currentUser) => {
           if (!currentUser) {
@@ -180,7 +127,7 @@ export class AuthService {
    * @returns the currently-logged in user from firebase if there is one.
    */
   getCurrentFirebaseUser() {
-    return this.auth.currentUser;
+    return this.firebase.getCurrentFirebaseUser();
   }
 
   /**
@@ -190,7 +137,7 @@ export class AuthService {
    * @returns a observable of a user credentials.
    */
   signUpWithEmail(email: string, password: string) {
-    return from(createUserWithEmailAndPassword(this.auth, email, password));
+    return this.firebase.signUpWithEmail(email, password);
   }
 
   /**
@@ -200,7 +147,7 @@ export class AuthService {
    * @returns a observable of a user credentials.
    */
   loginWithEmail(email: string, password: string) {
-    return from(signInWithEmailAndPassword(this.auth, email, password));
+    return this.firebase.loginWithEmail(email, password);
   }
 
   /**
@@ -208,25 +155,14 @@ export class AuthService {
    * @param provider whether to use apple or google for oauth.
    */
   loginWithPopup(provider: "google" | "apple") {
-    let authProvider: AuthProvider;
-
-    switch (provider) {
-      case "google":
-        authProvider = new GoogleAuthProvider();
-        break;
-      case "apple":
-        authProvider = new OAuthProvider("apple.com");
-        break;
-    }
-
-    return from(signInWithPopup(this.auth, authProvider));
+    return this.firebase.loginWithPopup(provider);
   }
 
   /**
    * Makes the request to Firebase to send a password reset link.
    */
   resetPassword(email: string) {
-    return sendPasswordResetEmail(this.auth, email);
+    return this.firebase.resetPassword(email);
   }
 
   /**
@@ -234,32 +170,35 @@ export class AuthService {
    * @returns an observable of a user's JWT.
    */
   getIdTokenForCurrentUser() {
-    if (!this.auth.currentUser) return of("");
-
-    return from(getIdToken(this.auth.currentUser));
+    return this.firebase.getIdTokenForCurrentUser();
   }
 
   /**
    * Sends a verification email via Firebase.
    * @returns a promise that resolves to undefined.
    */
-  sendVerificationEmail(): Promise<void> {
-    if (!this.auth.currentUser) return new Promise((resolve) => resolve(undefined));
+  sendVerificationEmail() {
+    return this.firebase
+      .sendVerificationEmail()
+      .pipe(
+        tap(() => {
+          this.alertsService.createAlert({
+            type: "Success",
+            message:
+              "Email sent successfully. Check your email and follow the instructions to verify your email.",
+          });
+        }),
+      )
+      .pipe(
+        catchError((error, caught) => {
+          this.alertsService.createAlert({
+            type: "Error",
+            message: `An error occurred. ${error}`,
+          });
 
-    return sendEmailVerification(this.auth.currentUser, this.actionCodeSettings())
-      .then(() => {
-        this.alertsService.createAlert({
-          type: "Success",
-          message:
-            "Email sent successfully. Check your email and follow the instructions to verify your email.",
-        });
-      })
-      .catch((error) => {
-        this.alertsService.createAlert({
-          type: "Error",
-          message: `An error occurred. ${error}`,
-        });
-      });
+          return caught;
+        }),
+      );
   }
 
   /**
@@ -267,7 +206,7 @@ export class AuthService {
    * @returns an empty observable.
    */
   signOut() {
-    return from(signOut(this.auth));
+    return this.firebase.signOut();
   }
 
   /**

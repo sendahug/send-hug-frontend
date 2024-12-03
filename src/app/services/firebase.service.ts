@@ -72,24 +72,11 @@ export class FirebaseService {
   });
   analytics = getAnalytics(this.firebase);
   auth = getAuth(this.firebase);
-  authState: Observable<FirebaseUser | null>;
-  // firebase stuff
-  actionCodeSettings = signal<ActionCodeSettings>({
-    // TODO: Hardcode the base URL once we deploy to live
-    url: `${import.meta.env["VITE_BASE_URL"]}/verify`,
-  });
-
-  // CTOR
-  constructor() {
-    this.authState = this.getAuthStateObservable();
-  }
-
   /**
-   * Creates an observable of the onAuthStateChanged's
-   * result. Copied from the rxfire code.
+   * An observable of the onAuthStateChanged's result. Copied from the rxfire code.
    * https://github.com/FirebaseExtended/rxfire/blob/main/auth/index.ts
    */
-  private getAuthStateObservable(): Observable<FirebaseUser | null> {
+  get authState(): Observable<FirebaseUser | null> {
     return new Observable((subscriber) => {
       const unsubscribe = onAuthStateChanged(
         this.auth,
@@ -100,6 +87,14 @@ export class FirebaseService {
       return { unsubscribe };
     });
   }
+  // firebase stuff
+  actionCodeSettings = signal<ActionCodeSettings>({
+    // TODO: Hardcode the base URL once we deploy to live
+    url: `${import.meta.env["VITE_BASE_URL"]}/verify`,
+  });
+
+  // CTOR
+  constructor() {}
 
   /**
    * Gets the currently-logged in user from firebase.
@@ -167,7 +162,7 @@ export class FirebaseService {
 
   /**
    * Sends a verification email via Firebase.
-   * @returns a promise that resolves to undefined.
+   * @returns an empty observable.
    */
   sendVerificationEmail(): Observable<void> {
     if (!this.auth.currentUser) return EMPTY;

@@ -44,7 +44,7 @@ import {
   HttpEventType,
   provideHttpClient,
 } from "@angular/common/http";
-import { isEmpty, of } from "rxjs";
+import { isEmpty, of, throwError } from "rxjs";
 
 import { AuthService } from "./auth.service";
 import { AlertsService } from "./alerts.service";
@@ -63,7 +63,9 @@ describe("AuthService", () => {
 
   // Before each test, configure testing environment
   beforeEach(() => {
-    const mockFirebaseService = MockProvider(FirebaseService);
+    const mockFirebaseService = MockProvider(FirebaseService, {
+      authState: of(mockFirebaseUser),
+    });
 
     TestBed.resetTestEnvironment();
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
@@ -121,6 +123,128 @@ describe("AuthService", () => {
 
     expect(authService.toggleBtn()).toBe("Disable");
     expect(authService.refreshBtn()).toBe("Disable");
+  });
+
+  it("checkForLoggedInUser() - checks whether a user is logged in and returns the user data", (done: DoneFn) => {
+    const logoutSpy = spyOn(authService, "logout");
+    const fetchSpy = spyOn(authService, "fetchUser").and.returnValue(of(mockAuthedUser));
+
+    authService.checkForLoggedInUser().subscribe({
+      next(value) {
+        expect(value).toBe(mockAuthedUser);
+        expect(logoutSpy).not.toHaveBeenCalled();
+        expect(fetchSpy).toHaveBeenCalled();
+        done();
+      },
+    });
+  });
+
+  // TODO: Add a failure test. Need to figure out what firebase returns and
+  // how it's being called though, because it doesn't seem to work with an empty
+  // observable.
+
+  it("getCurrentFirebaseUser() - fetches the current user", () => {
+    const firebase = TestBed.inject(FirebaseService);
+    const getSpy = spyOn(firebase, "getCurrentFirebaseUser");
+
+    authService.getCurrentFirebaseUser();
+
+    expect(getSpy).toHaveBeenCalled();
+  });
+
+  it("signUpWithEmail() - triggers signup with email", () => {
+    const firebase = TestBed.inject(FirebaseService);
+    const signUpSpy = spyOn(firebase, "signUpWithEmail");
+    const email = "email";
+    const password = "password";
+
+    authService.signUpWithEmail(email, password);
+
+    expect(signUpSpy).toHaveBeenCalledWith(email, password);
+  });
+
+  it("loginWithEmail() - triggers login with email", () => {
+    const firebase = TestBed.inject(FirebaseService);
+    const loginSpy = spyOn(firebase, "loginWithEmail");
+    const email = "email";
+    const password = "password";
+
+    authService.loginWithEmail(email, password);
+
+    expect(loginSpy).toHaveBeenCalledWith(email, password);
+  });
+
+  it("loginWithPopup() - triggers login with popup for oauth", () => {
+    const firebase = TestBed.inject(FirebaseService);
+    const loginSpy = spyOn(firebase, "loginWithPopup");
+    const provider = "apple";
+
+    authService.loginWithPopup(provider);
+
+    expect(loginSpy).toHaveBeenCalledWith(provider);
+  });
+
+  it("resetPassword() - makes a request to reset password", () => {
+    const firebase = TestBed.inject(FirebaseService);
+    const resetSpy = spyOn(firebase, "resetPassword");
+    const email = "email";
+
+    authService.resetPassword(email);
+
+    expect(resetSpy).toHaveBeenCalledWith(email);
+  });
+
+  it("getIdTokenForCurrentUser() - gets the ID token for the current user", () => {
+    const firebase = TestBed.inject(FirebaseService);
+    const getSpy = spyOn(firebase, "getIdTokenForCurrentUser");
+
+    authService.getIdTokenForCurrentUser();
+
+    expect(getSpy).toHaveBeenCalledWith();
+  });
+
+  it("sendVerificationEmail() - sends a verification email", (done: DoneFn) => {
+    const firebase = TestBed.inject(FirebaseService);
+    const sendSpy = spyOn(firebase, "sendVerificationEmail").and.returnValue(of(undefined));
+
+    authService.sendVerificationEmail().subscribe({
+      next: () => {
+        expect(sendSpy).toHaveBeenCalled();
+        expect(createAlertSpy).toHaveBeenCalledWith({
+          type: "Success",
+          message:
+            "Email sent successfully. Check your email and follow the instructions to verify your email.",
+        });
+        done();
+      },
+    });
+  });
+
+  it("sendVerificationEmail() - alerts if there was an error", (done: DoneFn) => {
+    const firebase = TestBed.inject(FirebaseService);
+    const sendSpy = spyOn(firebase, "sendVerificationEmail").and.returnValue(
+      throwError(() => new Error("ERROR!")),
+    );
+
+    authService.sendVerificationEmail().subscribe({
+      next: () => {
+        expect(sendSpy).toHaveBeenCalled();
+        expect(createAlertSpy).toHaveBeenCalledWith({
+          type: "Error",
+          message: "An error occurred. Error: ERROR!",
+        });
+        done();
+      },
+    });
+  });
+
+  it("signOut() - triggers sign out", () => {
+    const firebase = TestBed.inject(FirebaseService);
+    const signOutSpy = spyOn(firebase, "signOut");
+
+    authService.signOut();
+
+    expect(signOutSpy).toHaveBeenCalledWith();
   });
 
   it("getUserToken() - returns an empty observable if there's no logged in user", (done: DoneFn) => {

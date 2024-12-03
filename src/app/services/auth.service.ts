@@ -98,6 +98,8 @@ export class AuthService {
 
   /**
    * Firebase Methods
+   * Mostly kept for backwards compatibility and for masking
+   * firebase functionality.
    * =====================================
    */
   /**
@@ -178,27 +180,25 @@ export class AuthService {
    * @returns a promise that resolves to undefined.
    */
   sendVerificationEmail() {
-    return this.firebase
-      .sendVerificationEmail()
-      .pipe(
-        tap(() => {
+    return this.firebase.sendVerificationEmail().pipe(
+      catchError((error, _caught) => {
+        this.alertsService.createAlert({
+          type: "Error",
+          message: `An error occurred. ${error}`,
+        });
+
+        return of(false);
+      }),
+      tap((result) => {
+        if (result === undefined) {
           this.alertsService.createAlert({
             type: "Success",
             message:
               "Email sent successfully. Check your email and follow the instructions to verify your email.",
           });
-        }),
-      )
-      .pipe(
-        catchError((error, caught) => {
-          this.alertsService.createAlert({
-            type: "Error",
-            message: `An error occurred. ${error}`,
-          });
-
-          return caught;
-        }),
-      );
+        }
+      }),
+    );
   }
 
   /**

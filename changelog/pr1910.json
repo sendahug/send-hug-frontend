@@ -6,6 +6,10 @@
       "description": "Replaced angular/fire with plain firebase, as the angular/fire library doesn't seem to be well maintained, and the library it relies on (rxfire) doesn't seem maintained at all."
     },
     {
+      "change": "Chores",
+      "description": "Moved all the methods using firebase functions to a new Firebase service. All direct contact with Firebase itself is now handled through the service."
+    },
+    {
       "change": "Fixes",
       "description": "Fixed a bug where logging out from the user page caused the page to break. This happened due to the user page attempting to access the user's data - which was already deleted post logout. Now, once logout is complete, the user page redirects the users back to the home page instead."
     }

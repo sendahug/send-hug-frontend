@@ -566,7 +566,7 @@ describe("SWManagerService", () => {
     });
 
     // try to get thread - page 1
-    it("should get thread correctly", () => {
+    it("should get thread correctly - page 1", () => {
       const messPromise = sWManagerService.fetchMessages("threadID", 3, 5, 1);
 
       return messPromise!.then((messages) => {
@@ -578,7 +578,7 @@ describe("SWManagerService", () => {
     });
 
     // try to get thread - page 2
-    it("should get thread correctly", () => {
+    it("should get thread correctly - page 2", () => {
       const messPromise = sWManagerService.fetchMessages("threadID", 3, 5, 2);
 
       return messPromise!.then((messages) => {

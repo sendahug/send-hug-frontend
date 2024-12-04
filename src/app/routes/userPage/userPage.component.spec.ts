@@ -41,7 +41,7 @@ import { ActivatedRoute, provideRouter, RouterLink } from "@angular/router";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { By } from "@angular/platform-browser";
 import { NO_ERRORS_SCHEMA, signal } from "@angular/core";
-import { of } from "rxjs";
+import { of, Subscription } from "rxjs";
 import { MockComponent, MockProvider } from "ng-mocks";
 
 import { UserPage } from "./userPage.component";
@@ -289,7 +289,12 @@ describe("UserPage", () => {
     const userPage = fixture.componentInstance;
     const userPageDOM = fixture.nativeElement;
     const logoutSpy = spyOn(userPage, "logout").and.callThrough();
-    const serviceLogoutSpy = spyOn(userPage.authService, "logout");
+    const mockSubscription = new Subscription();
+    mockSubscription.unsubscribe();
+    const serviceLogoutSpy = spyOn(userPage.authService, "logout").and.returnValue(
+      mockSubscription,
+    );
+    const navigateSpy = spyOn(userPage["router"], "navigate");
 
     fixture.detectChanges();
 
@@ -304,6 +309,7 @@ describe("UserPage", () => {
     // check the logout methods were called
     expect(logoutSpy).toHaveBeenCalled();
     expect(serviceLogoutSpy).toHaveBeenCalled();
+    expect(navigateSpy).toHaveBeenCalledWith(["/"]);
     done();
   });
 

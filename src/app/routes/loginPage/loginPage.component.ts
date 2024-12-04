@@ -36,7 +36,7 @@ import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { faGoogle, faApple } from "@fortawesome/free-brands-svg-icons";
 import { Observable, switchMap, tap } from "rxjs";
 import { Router } from "@angular/router";
-import { UserCredential } from "@angular/fire/auth";
+import { UserCredential } from "firebase/auth";
 import { CommonModule } from "@angular/common";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 

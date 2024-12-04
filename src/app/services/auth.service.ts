@@ -39,7 +39,6 @@ import {
   BehaviorSubject,
   catchError,
   EMPTY,
-  from,
   map,
   Observable,
   of,
@@ -47,26 +46,12 @@ import {
   tap,
   throwError,
 } from "rxjs";
-import {
-  signInWithEmailAndPassword,
-  signInWithPopup,
-  GoogleAuthProvider,
-  OAuthProvider,
-  signOut,
-  AuthProvider,
-  getIdToken,
-  createUserWithEmailAndPassword,
-  Auth,
-  authState,
-  sendPasswordResetEmail,
-  sendEmailVerification,
-  ActionCodeSettings,
-} from "@angular/fire/auth";
 
 // App-related imports
 import { User } from "@app/interfaces/user.interface";
 import { AlertsService } from "@app/services/alerts.service";
 import { SWManager } from "@app/services/sWManager.service";
+import { FirebaseService } from "./firebase.service";
 
 interface UserUpdateResponse {
   success: boolean;
@@ -102,22 +87,19 @@ export class AuthService {
   // Whether the user is in the process of registering
   isRegistering = signal(false);
   isUserDataResolved = new BehaviorSubject(false);
-  // firebase stuff
-  actionCodeSettings = signal<ActionCodeSettings>({
-    // TODO: Hardcode the base URL once we deploy to live
-    url: `${import.meta.env["VITE_BASE_URL"]}/verify`,
-  });
 
   // CTOR
   constructor(
     private Http: HttpClient,
     private alertsService: AlertsService,
     private serviceWorkerM: SWManager,
-    private auth: Auth,
+    private firebase: FirebaseService,
   ) {}
 
   /**
    * Firebase Methods
+   * Mostly kept for backwards compatibility and for masking
+   * firebase functionality.
    * =====================================
    */
   /**
@@ -126,7 +108,7 @@ export class AuthService {
    * @returns an observable that resolves to an internal user.
    */
   checkForLoggedInUser(): Observable<User | undefined> {
-    return authState(this.auth)
+    return this.firebase.authState
       .pipe(
         tap((currentUser) => {
           if (!currentUser) {
@@ -147,7 +129,7 @@ export class AuthService {
    * @returns the currently-logged in user from firebase if there is one.
    */
   getCurrentFirebaseUser() {
-    return this.auth.currentUser;
+    return this.firebase.getCurrentFirebaseUser();
   }
 
   /**
@@ -157,7 +139,7 @@ export class AuthService {
    * @returns a observable of a user credentials.
    */
   signUpWithEmail(email: string, password: string) {
-    return from(createUserWithEmailAndPassword(this.auth, email, password));
+    return this.firebase.signUpWithEmail(email, password);
   }
 
   /**
@@ -167,7 +149,7 @@ export class AuthService {
    * @returns a observable of a user credentials.
    */
   loginWithEmail(email: string, password: string) {
-    return from(signInWithEmailAndPassword(this.auth, email, password));
+    return this.firebase.loginWithEmail(email, password);
   }
 
   /**
@@ -175,25 +157,14 @@ export class AuthService {
    * @param provider whether to use apple or google for oauth.
    */
   loginWithPopup(provider: "google" | "apple") {
-    let authProvider: AuthProvider;
-
-    switch (provider) {
-      case "google":
-        authProvider = new GoogleAuthProvider();
-        break;
-      case "apple":
-        authProvider = new OAuthProvider("apple.com");
-        break;
-    }
-
-    return from(signInWithPopup(this.auth, authProvider));
+    return this.firebase.loginWithPopup(provider);
   }
 
   /**
    * Makes the request to Firebase to send a password reset link.
    */
   resetPassword(email: string) {
-    return sendPasswordResetEmail(this.auth, email);
+    return this.firebase.resetPassword(email);
   }
 
   /**
@@ -201,32 +172,33 @@ export class AuthService {
    * @returns an observable of a user's JWT.
    */
   getIdTokenForCurrentUser() {
-    if (!this.auth.currentUser) return of("");
-
-    return from(getIdToken(this.auth.currentUser));
+    return this.firebase.getIdTokenForCurrentUser();
   }
 
   /**
    * Sends a verification email via Firebase.
    * @returns a promise that resolves to undefined.
    */
-  sendVerificationEmail(): Promise<void> {
-    if (!this.auth.currentUser) return new Promise((resolve) => resolve(undefined));
-
-    return sendEmailVerification(this.auth.currentUser, this.actionCodeSettings())
-      .then(() => {
-        this.alertsService.createAlert({
-          type: "Success",
-          message:
-            "Email sent successfully. Check your email and follow the instructions to verify your email.",
-        });
-      })
-      .catch((error) => {
+  sendVerificationEmail() {
+    return this.firebase.sendVerificationEmail().pipe(
+      catchError((error, _caught) => {
         this.alertsService.createAlert({
           type: "Error",
           message: `An error occurred. ${error}`,
         });
-      });
+
+        return of(false);
+      }),
+      tap((result) => {
+        if (result === undefined) {
+          this.alertsService.createAlert({
+            type: "Success",
+            message:
+              "Email sent successfully. Check your email and follow the instructions to verify your email.",
+          });
+        }
+      }),
+    );
   }
 
   /**
@@ -234,7 +206,7 @@ export class AuthService {
    * @returns an empty observable.
    */
   signOut() {
-    return from(signOut(this.auth));
+    return this.firebase.signOut();
   }
 
   /**

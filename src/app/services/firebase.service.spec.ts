@@ -1,6 +1,6 @@
 /*
-  App Config
-  Send a Hug app config
+  Firebase Service
+  Send a Hug Service Tests
   ---------------------------------------------------
   MIT License
 
@@ -30,18 +30,35 @@
   SOFTWARE.
 */
 
-import { ApplicationConfig, importProvidersFrom, provideZoneChangeDetection } from "@angular/core";
-import { provideRouter, withComponentInputBinding } from "@angular/router";
+import { TestBed } from "@angular/core/testing";
+import { provideHttpClientTesting } from "@angular/common/http/testing";
+import {
+  BrowserDynamicTestingModule,
+  platformBrowserDynamicTesting,
+} from "@angular/platform-browser-dynamic/testing";
+import {} from "jasmine";
 import { provideHttpClient } from "@angular/common/http";
-import { ServiceWorkerModule } from "@angular/service-worker";
 
-import { routes } from "./app.routes";
+import { FirebaseService } from "./firebase.service";
 
-export const appConfig: ApplicationConfig = {
-  providers: [
-    provideZoneChangeDetection({ eventCoalescing: true }),
-    provideRouter(routes, withComponentInputBinding()),
-    importProvidersFrom(ServiceWorkerModule.register("sw.js")),
-    provideHttpClient(),
-  ],
-};
+describe("FirebaseService", () => {
+  let firebaseService: FirebaseService;
+
+  // Before each test, configure testing environment
+  beforeEach(() => {
+    TestBed.resetTestEnvironment();
+    TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
+
+    TestBed.configureTestingModule({
+      imports: [],
+      providers: [FirebaseService, provideHttpClient(), provideHttpClientTesting()],
+    }).compileComponents();
+
+    firebaseService = TestBed.inject(FirebaseService);
+  });
+
+  // Check the service is created
+  it("should be created", () => {
+    expect(firebaseService).toBeTruthy();
+  });
+});

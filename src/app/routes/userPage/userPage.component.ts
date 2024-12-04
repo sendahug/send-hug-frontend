@@ -32,7 +32,7 @@
 
 // Angular imports
 import { Component, OnDestroy, signal, computed } from "@angular/core";
-import { ActivatedRoute, RouterLink } from "@angular/router";
+import { ActivatedRoute, Router, RouterLink } from "@angular/router";
 import { from, switchMap, tap } from "rxjs";
 import { faGratipay } from "@fortawesome/free-brands-svg-icons";
 import { HttpErrorResponse } from "@angular/common/http";
@@ -104,6 +104,7 @@ export class UserPage implements OnDestroy {
     private swManager: SWManager,
     private apiClient: ApiClientService,
     private alertsService: AlertsService,
+    private router: Router,
   ) {
     // if there's a user ID, set the user ID to it
     if (this.route.snapshot.paramMap.get("id")) {
@@ -121,7 +122,9 @@ export class UserPage implements OnDestroy {
    * Activates Firebase logout via the authentication service.
    */
   logout() {
-    this.authService.logout();
+    this.authService.logout().add(() => {
+      this.router.navigate(["/"]);
+    });
   }
 
   /**

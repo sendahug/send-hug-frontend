@@ -2,6 +2,17 @@
 
 ## Unreleased
 
+### 2024-12-04
+
+#### Fixes
+
+- Fixed a bug where logging out from the user page caused the page to break. This happened due to the user page attempting to access the user's data - which was already deleted post logout. Now, once logout is complete, the user page redirects the users back to the home page instead. ([#1910](https://github.com/sendahug/send-hug-frontend/pull/1910))
+
+#### Chores
+
+- Replaced angular/fire with plain firebase, as the angular/fire library doesn't seem to be well maintained, and the library it relies on (rxfire) doesn't seem maintained at all. ([#1910](https://github.com/sendahug/send-hug-frontend/pull/1910))
+- Moved all the methods using firebase functions to a new Firebase service. All direct contact with Firebase itself is now handled through the service. ([#1910](https://github.com/sendahug/send-hug-frontend/pull/1910))
+
 ### 2024-11-23
 
 #### Fixes

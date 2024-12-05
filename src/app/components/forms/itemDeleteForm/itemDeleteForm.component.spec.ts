@@ -94,7 +94,7 @@ describe("ItemDeleteForm", () => {
     done();
   });
 
-  it("deleteItem - single item - sets the right url and store for the delete call", (done: DoneFn) => {
+  it("deleteItem - single post - sets the right url and store for the delete call", (done: DoneFn) => {
     const fixture = TestBed.createComponent(ItemDeleteForm);
     const itemDeleteForm = fixture.componentInstance;
     const itemDeleteFormDOM = fixture.nativeElement;
@@ -119,7 +119,7 @@ describe("ItemDeleteForm", () => {
     done();
   });
 
-  it("deleteItem - single item - sets the right url and store for the delete call", (done: DoneFn) => {
+  it("deleteItem - single message - sets the right url and store for the delete call", (done: DoneFn) => {
     const fixture = TestBed.createComponent(ItemDeleteForm);
     const itemDeleteForm = fixture.componentInstance;
     const itemDeleteFormDOM = fixture.nativeElement;
@@ -143,7 +143,7 @@ describe("ItemDeleteForm", () => {
     done();
   });
 
-  it("deleteItem - single item - sets the right url and store for the delete call", (done: DoneFn) => {
+  it("deleteItem - single thread - sets the right url and store for the delete call", (done: DoneFn) => {
     const fixture = TestBed.createComponent(ItemDeleteForm);
     const itemDeleteForm = fixture.componentInstance;
     const itemDeleteFormDOM = fixture.nativeElement;

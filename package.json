@@ -37,7 +37,7 @@
     "axe-core": "^4.10.2",
     "babel-plugin-istanbul": "^7.0.0",
     "cypress": "^13.16.0",
-    "jasmine-core": "^5.4.0",
+    "jasmine-core": "^5.5.0",
     "less": "^4.2.1",
     "magic-string": "^0.30.14",
     "ng-mocks": "^14.13.1",

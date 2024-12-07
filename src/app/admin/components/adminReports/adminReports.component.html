@@ -1,12 +1,12 @@
-<div *ngIf="isLoading" id="loaderDiv">
+<div *ngIf="isLoading()" id="loaderDiv">
   <app-loader [loadingMessage]="'Getting user and post reports...'"></app-loader>
 </div>
 
 <!-- Admin dashboard reports -->
-<div class="adminScreen" id="adminReports" *ngIf="!isLoading" role="main">
+<div class="adminScreen" id="adminReports" *ngIf="!isLoading()" role="main">
   <h4 class="subTitle">Reported Users</h4>
   <!-- Reported users table -->
-  <div class="tableContainer" *ngIf="userReports.length">
+  <div class="tableContainer" *ngIf="userReports().length">
     <table>
       <thead>
         <tr>
@@ -18,7 +18,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let report of userReports">
+        <tr *ngFor="let report of userReports()">
           <td aria-describedby="rUserID">{{ report.userID }}</td>
           <td aria-describedby="rUserDisplay" id="{{ 'user' + report.id }}">
             {{ report.displayName }}
@@ -61,7 +61,7 @@
   </div>
 
   <!-- User reports pagination -->
-  <div class="pagination" *ngIf="userReports.length" role="navigation">
+  <div class="pagination" *ngIf="userReports().length" role="navigation">
     <button
       [ngClass]="usersPrevButtonClass()"
       [disabled]="currentUserReportsPage() <= 1"
@@ -84,13 +84,13 @@
   </div>
 
   <!-- If there are no open user reports -->
-  <div *ngIf="!userReports.length" class="errorMessage">
+  <div *ngIf="!userReports().length" class="errorMessage">
     There are no user reports waiting for review.
   </div>
 
   <h4 class="subTitle">Reported Posts</h4>
   <!-- Reported posts table -->
-  <div class="tableContainer" *ngIf="postReports.length">
+  <div class="tableContainer" *ngIf="postReports().length">
     <table>
       <thead>
         <tr>
@@ -103,7 +103,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let report of postReports">
+        <tr *ngFor="let report of postReports()">
           <td aria-describedby="pPostID">{{ report.postID }}</td>
           <td aria-describedby="pUserID">{{ report.userID }}</td>
           <td aria-describedby="pText" id="{{ 'post' + report.id }}">{{ report.text }}</td>
@@ -145,7 +145,7 @@
   </div>
 
   <!-- Post reports pagination -->
-  <div class="pagination" *ngIf="postReports.length" role="navigation">
+  <div class="pagination" *ngIf="postReports().length" role="navigation">
     <button
       [ngClass]="postsPrevButtonClass()"
       [disabled]="currentPostReportsPage() <= 1"
@@ -168,15 +168,15 @@
   </div>
 
   <!-- If there are no open post reports -->
-  <div *ngIf="!postReports.length" class="errorMessage">
+  <div *ngIf="!postReports().length" class="errorMessage">
     There are no post reports waiting for review.
   </div>
 </div>
 
 <display-name-edit-form
   *ngIf="nameEditMode"
-  [editedItem]="toEdit"
-  [reportData]="reportData"
+  [editedItem]="toEdit()"
+  [reportData]="reportData()"
   (editMode)="changeMode($event, 'EditName')"
   (updatedDetails)="updateUserReport($event)"
 ></display-name-edit-form>
@@ -184,15 +184,15 @@
 <item-delete-form
   *ngIf="deleteMode"
   (editMode)="changeMode($event, 'Delete')"
-  [toDelete]="toDelete"
+  [toDelete]="toDelete()"
   [reportData]="reportData"
-  [itemToDelete]="itemToDelete"
+  [itemToDelete]="itemToDelete()"
   (deleted)="removeReport($event)"
 ></item-delete-form>
 
 <post-edit-form
   *ngIf="postEditMode"
-  [editedItem]="toEdit"
+  [editedItem]="toEdit()"
   [reportData]="reportData"
   [isAdmin]="true"
   (editMode)="changeMode($event, 'EditPost')"

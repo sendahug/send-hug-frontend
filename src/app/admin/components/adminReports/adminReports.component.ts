@@ -41,33 +41,35 @@ import { type ReportGet } from "@app/interfaces/report.interface";
 import { AlertsService } from "@app/services/alerts.service";
 import { PostAndReportResponse, UpdatedUserReportResponse } from "@app/interfaces/responses";
 
+interface ReportData {
+  userID: number;
+  reportID: number;
+  postID?: number;
+}
+
 @Component({
   selector: "app-admin-reports",
   templateUrl: "./adminReports.component.html",
 })
 export class AdminReports {
-  postReports: ReportGet[] = [];
-  userReports: ReportGet[] = [];
+  postReports = signal<ReportGet[]>([]);
+  userReports = signal<ReportGet[]>([]);
   totalPostReportsPages = signal(1);
   totalUserReportsPages = signal(1);
   currentPostReportsPage = signal(1);
   currentUserReportsPage = signal(1);
-  isLoading = false;
+  isLoading = signal(false);
   // edit popup sub-component variables
-  toEdit: any;
-  nameEditMode: boolean = false;
-  postEditMode: boolean = false;
-  reportData: {
-    userID: number;
-    reportID: number;
-    postID?: number;
-  } = {
+  toEdit = signal<any>(undefined); // TODO: Fix the typing here
+  nameEditMode = signal(false);
+  postEditMode = signal(false);
+  reportData = signal<ReportData>({
     reportID: 0,
     userID: 0,
-  };
-  deleteMode: boolean = false;
-  toDelete: string | undefined;
-  itemToDelete: number | undefined;
+  });
+  deleteMode = signal(false);
+  toDelete = signal<string | undefined>(undefined);
+  itemToDelete = signal<number | undefined>(undefined);
   usersPrevButtonClass = computed(() => ({
     "appButton prevButton": true,
     disabled: this.currentUserReportsPage() <= 1,
@@ -97,7 +99,7 @@ export class AdminReports {
    * Fetches the reports from the server.
    */
   fetchReports() {
-    this.isLoading = true;
+    this.isLoading.set(true);
 
     // Get reports
     this.apiClient
@@ -107,14 +109,14 @@ export class AdminReports {
       })
       .subscribe({
         next: (response: any) => {
-          this.userReports = response.userReports;
+          this.userReports.set(response.userReports);
           this.totalUserReportsPages.set(response.totalUserPages);
-          this.postReports = response.postReports;
+          this.postReports.set(response.postReports);
           this.totalPostReportsPages.set(response.totalPostPages);
-          this.isLoading = false;
+          this.isLoading.set(false);
         },
         error: (_err: HttpErrorResponse) => {
-          this.isLoading = false;
+          this.isLoading.set(false);
         },
       });
   }
@@ -131,7 +133,7 @@ export class AdminReports {
     const length = "oneDay";
     this.adminService.blockUser(userID, length, reportID).subscribe((response) => {
       if (response.reportID) {
-        this.userReports = this.userReports.filter((report) => report.id != response.reportID);
+        this.userReports.set(this.userReports().filter((report) => report.id != response.reportID));
       }
     });
   }
@@ -146,13 +148,15 @@ export class AdminReports {
   Programmer: Shir Bar Lev.
   */
   editUser(reportID: number, userID: number, displayName: string) {
-    this.toEdit = {
+    this.toEdit.set({
       displayName,
       id: userID,
-    };
-    this.nameEditMode = true;
-    this.reportData.reportID = reportID;
-    this.reportData.userID = userID;
+    });
+    this.nameEditMode.set(true);
+    this.reportData.set({
+      reportID,
+      userID,
+    });
   }
 
   /*
@@ -165,10 +169,13 @@ export class AdminReports {
   Programmer: Shir Bar Lev.
   */
   editPost(postID: number, postText: string, reportID: number) {
-    this.toEdit = { text: postText, id: postID };
-    this.postEditMode = true;
-    this.reportData.reportID = reportID;
-    this.reportData.postID = postID;
+    this.toEdit.set({ text: postText, id: postID });
+    this.postEditMode.set(true);
+    this.reportData.set({
+      reportID,
+      postID,
+      userID: 0,
+    });
   }
 
   /*
@@ -181,11 +188,13 @@ export class AdminReports {
   Programmer: Shir Bar Lev.
   */
   deletePost(postID: number, userID: number, reportID: number) {
-    this.deleteMode = true;
-    this.toDelete = "ad post";
-    this.itemToDelete = postID;
-    this.reportData.reportID = reportID;
-    this.reportData.userID = userID;
+    this.deleteMode.set(true);
+    this.toDelete.set("ad post");
+    this.itemToDelete.set(postID);
+    this.reportData.set({
+      reportID,
+      userID,
+    });
   }
 
   /*
@@ -200,8 +209,10 @@ export class AdminReports {
       next: (response: any) => {
         // if the report was dismissed, alert the user
         this.alertsService.createSuccessAlert(`Report ${response.updated.id} was dismissed!`);
-        if (userID) this.userReports = this.userReports.filter((report) => report.id != reportID);
-        if (postID) this.postReports = this.postReports.filter((report) => report.id != reportID);
+        if (userID)
+          this.userReports.set(this.userReports().filter((report) => report.id != reportID));
+        if (postID)
+          this.postReports.set(this.postReports().filter((report) => report.id != reportID));
       },
     });
   }
@@ -243,9 +254,9 @@ export class AdminReports {
   Programmer: Shir Bar Lev.
   */
   changeMode(edit: boolean, type: "EditName" | "Delete" | "EditPost") {
-    if (type === "EditName") this.nameEditMode = edit;
-    else if (type === "EditPost") this.postEditMode = edit;
-    else this.deleteMode = edit;
+    if (type === "EditName") this.nameEditMode.set(edit);
+    else if (type === "EditPost") this.postEditMode.set(edit);
+    else this.deleteMode.set(edit);
   }
 
   /**
@@ -255,10 +266,10 @@ export class AdminReports {
   updatePostReport(response: PostAndReportResponse) {
     // If the report was closed, remove it
     if (response.reportId) {
-      this.postReports = this.postReports.filter((report) => report.id != response.reportId);
+      this.postReports.set(this.postReports().filter((report) => report.id != response.reportId));
     } else {
       // otherwise at least update the post's test
-      const updatedReport = this.postReports.find(
+      const updatedReport = this.postReports().find(
         (report) => report.postID == response.updatedPost?.id,
       );
       if (!(updatedReport && updatedReport.text)) return;
@@ -273,9 +284,9 @@ export class AdminReports {
    */
   updateUserReport(response: UpdatedUserReportResponse) {
     if (response.closed) {
-      this.userReports = this.userReports.filter((report) => report.id != response.reportID);
+      this.userReports.set(this.userReports().filter((report) => report.id != response.reportID));
     } else {
-      const updatedReport = this.userReports.find((report) => report.id == response.reportID);
+      const updatedReport = this.userReports().find((report) => report.id == response.reportID);
 
       if (!(updatedReport && updatedReport.displayName)) return;
 
@@ -288,6 +299,6 @@ export class AdminReports {
    * @param deletedId the ID of the deleted post.
    */
   removeReport(deletedId: number) {
-    this.postReports = this.postReports.filter((report) => report.postID != deletedId);
+    this.postReports.set(this.postReports().filter((report) => report.postID != deletedId));
   }
 }

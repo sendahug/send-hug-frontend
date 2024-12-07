@@ -122,8 +122,8 @@ describe("Blocks Page", () => {
     adminBlocks.fetchBlocks();
 
     expect(apiClientSpy).toHaveBeenCalledWith("users/blocked", { page: "1" });
-    expect(adminBlocks.blockedUsers.length).toBe(1);
-    expect(adminBlocks.isLoading).toBeFalse();
+    expect(adminBlocks.blockedUsers().length).toBe(1);
+    expect(adminBlocks.isLoading()).toBeFalse();
     expect(
       adminBlocksDOM.querySelectorAll(".tableContainer")[0].querySelectorAll("tbody tr").length,
     ).toBe(1);
@@ -143,8 +143,8 @@ describe("Blocks Page", () => {
     adminBlocks.fetchBlocks();
 
     expect(apiClientSpy).toHaveBeenCalledWith("users/blocked", { page: "1" });
-    expect(adminBlocks.blockedUsers.length).toBe(0);
-    expect(adminBlocks.isLoading).toBeFalse();
+    expect(adminBlocks.blockedUsers().length).toBe(0);
+    expect(adminBlocks.isLoading()).toBeFalse();
     expect(adminBlocksDOM.querySelectorAll(".tableContainer").length).toBe(0);
     expect(adminBlocksDOM.querySelector("app-loader")).toBeNull();
     expect(adminBlocksDOM.querySelectorAll(".errorMessage")[0].textContent).toBe(
@@ -178,8 +178,8 @@ describe("Blocks Page", () => {
       }),
     );
     spyOn(adminBlocks, "fetchBlocks");
-    adminBlocks.blockedUsers = [...mockBlockedUsers];
-    adminBlocks.isLoading = false;
+    adminBlocks.blockedUsers.set([...mockBlockedUsers]);
+    adminBlocks.isLoading.set(false);
     adminBlocks.totalPages.set(1);
     fixture.detectChanges();
 
@@ -193,7 +193,7 @@ describe("Blocks Page", () => {
     // check expectations
     expect(blockSpy).toHaveBeenCalled();
     expect(blockServiceSpy).toHaveBeenCalledWith(5, "oneDay");
-    expect(adminBlocks.blockedUsers.length).toBe(2);
+    expect(adminBlocks.blockedUsers().length).toBe(2);
     done();
   });
 
@@ -222,8 +222,8 @@ describe("Blocks Page", () => {
       }),
     );
     spyOn(adminBlocks, "fetchBlocks");
-    adminBlocks.blockedUsers = [...mockBlockedUsers];
-    adminBlocks.isLoading = false;
+    adminBlocks.blockedUsers.set([...mockBlockedUsers]);
+    adminBlocks.isLoading.set(false);
     adminBlocks.totalPages.set(1);
     fixture.detectChanges();
 
@@ -237,7 +237,7 @@ describe("Blocks Page", () => {
     // check expectations
     expect(blockSpy).toHaveBeenCalled();
     expect(blockServiceSpy).toHaveBeenCalledWith(15, "oneDay");
-    expect(adminBlocks.blockedUsers.length).toBe(1);
+    expect(adminBlocks.blockedUsers().length).toBe(1);
     done();
   });
 
@@ -250,8 +250,8 @@ describe("Blocks Page", () => {
     const blockServiceSpy = spyOn(adminBlocks.adminService, "blockUser");
     const alertSpy = spyOn(adminBlocks["alertsService"], "createAlert");
     spyOn(adminBlocks, "fetchBlocks");
-    adminBlocks.blockedUsers = [...mockBlockedUsers];
-    adminBlocks.isLoading = false;
+    adminBlocks.blockedUsers.set([...mockBlockedUsers]);
+    adminBlocks.isLoading.set(false);
     adminBlocks.totalPages.set(1);
     fixture.detectChanges();
 
@@ -281,8 +281,8 @@ describe("Blocks Page", () => {
     const blockServiceSpy = spyOn(adminBlocks.adminService, "blockUser");
     const alertSpy = spyOn(adminBlocks["alertsService"], "createAlert");
     spyOn(adminBlocks, "fetchBlocks");
-    adminBlocks.blockedUsers = [...mockBlockedUsers];
-    adminBlocks.isLoading = false;
+    adminBlocks.blockedUsers.set([...mockBlockedUsers]);
+    adminBlocks.isLoading.set(false);
     adminBlocks.totalPages.set(1);
     fixture.detectChanges();
 
@@ -311,8 +311,8 @@ describe("Blocks Page", () => {
     const blockServiceSpy = spyOn(adminBlocks.adminService, "blockUser");
     const alertSpy = spyOn(adminBlocks["alertsService"], "createAlert");
     spyOn(adminBlocks, "fetchBlocks");
-    adminBlocks.blockedUsers = [...mockBlockedUsers];
-    adminBlocks.isLoading = false;
+    adminBlocks.blockedUsers.set([...mockBlockedUsers]);
+    adminBlocks.isLoading.set(false);
     adminBlocks.totalPages.set(1);
     fixture.detectChanges();
 
@@ -358,8 +358,8 @@ describe("Blocks Page", () => {
     const patchSpy = spyOn(adminBlocks["apiClient"], "patch").and.returnValue(of(mockResponse));
     const alertSpy = spyOn(adminBlocks["alertsService"], "createSuccessAlert");
     spyOn(adminBlocks, "fetchBlocks");
-    adminBlocks.blockedUsers = [...mockBlockedUsers];
-    adminBlocks.isLoading = false;
+    adminBlocks.blockedUsers.set([...mockBlockedUsers]);
+    adminBlocks.isLoading.set(false);
     adminBlocks.totalPages.set(1);
     fixture.detectChanges();
 
@@ -378,7 +378,7 @@ describe("Blocks Page", () => {
     expect(alertSpy).toHaveBeenCalledWith(
       `User ${mockResponse.updated.displayName} has been unblocked.`,
     );
-    expect(adminBlocks.blockedUsers.length).toEqual(0);
+    expect(adminBlocks.blockedUsers().length).toEqual(0);
     done();
   });
 
@@ -389,8 +389,8 @@ describe("Blocks Page", () => {
     const adminBlocksDOM = fixture.nativeElement;
     const nextPageSpy = spyOn(adminBlocks, "nextPage").and.callThrough();
     const fetchSpy = spyOn(adminBlocks, "fetchBlocks");
-    adminBlocks.blockedUsers = [...mockBlockedUsers];
-    adminBlocks.isLoading = false;
+    adminBlocks.blockedUsers.set([...mockBlockedUsers]);
+    adminBlocks.isLoading.set(false);
     adminBlocks.totalPages.set(2);
     adminBlocks.currentPage.set(1);
     fixture.detectChanges();
@@ -413,8 +413,8 @@ describe("Blocks Page", () => {
     const adminBlocksDOM = fixture.nativeElement;
     const prevPageSpy = spyOn(adminBlocks, "prevPage").and.callThrough();
     const fetchSpy = spyOn(adminBlocks, "fetchBlocks");
-    adminBlocks.blockedUsers = [...mockBlockedUsers];
-    adminBlocks.isLoading = false;
+    adminBlocks.blockedUsers.set([...mockBlockedUsers]);
+    adminBlocks.isLoading.set(false);
     adminBlocks.totalPages.set(2);
     adminBlocks.currentPage.set(2);
     fixture.detectChanges();

@@ -1,8 +1,8 @@
 <div *ngIf="authService.canUser('read:admin-board')" id="adminDashAll">
   <nav id="breadcrumb" aria-label="Breadcrumb">
     <a [routerLink]="['/admin']" class="breadcrumb bLink">Admin Panel</a>
-    <span *ngIf="screen != 'main'" class="breadcrumb"
-      >/ <a [routerLink]="['/admin/' + screen]" class="breadcrumb bLink">{{ screen }}</a></span
+    <span *ngIf="screen() != 'main'" class="breadcrumb"
+      >/ <a [routerLink]="['/admin/' + screen]" class="breadcrumb bLink">{{ screen() }}</a></span
     >
   </nav>
 
@@ -35,8 +35,8 @@
   </nav>
 
   <!-- Admin dashboard main page -->
-  <h3 class="adminTitle" *ngIf="screen == 'main'">Admin Dashboard</h3>
-  <div class="adminScreen" id="adminMain" *ngIf="screen == 'main'" role="document">
+  <h3 class="adminTitle" *ngIf="screen() == 'main'">Admin Dashboard</h3>
+  <div class="adminScreen" id="adminMain" *ngIf="screen() == 'main'" role="document">
     <div class="adminText">Welcome to the admin dashboard!</div>
     <div class="adminText">The admin dashboard is comprised of three parts:</div>
     <ul id="adminCategories">
@@ -48,16 +48,16 @@
   </div>
 
   <!-- Admin dashboard reports -->
-  <h3 class="adminTitle" *ngIf="screen == 'reports'">Reports</h3>
-  <app-admin-reports *ngIf="screen == 'reports'"></app-admin-reports>
+  <h3 class="adminTitle" *ngIf="screen() == 'reports'">Reports</h3>
+  <app-admin-reports *ngIf="screen() == 'reports'"></app-admin-reports>
 
   <!-- Admin dashboard blocks -->
-  <h3 class="adminTitle" *ngIf="screen == 'blocks'">Blocks</h3>
-  <app-admin-blocks *ngIf="screen == 'blocks'"></app-admin-blocks>
+  <h3 class="adminTitle" *ngIf="screen() == 'blocks'">Blocks</h3>
+  <app-admin-blocks *ngIf="screen() == 'blocks'"></app-admin-blocks>
 
   <!-- Admin dashboard filters -->
-  <h3 class="adminTitle" *ngIf="screen == 'filters'">Filters</h3>
-  <app-admin-filters *ngIf="screen == 'filters'"></app-admin-filters>
+  <h3 class="adminTitle" *ngIf="screen() == 'filters'">Filters</h3>
+  <app-admin-filters *ngIf="screen() == 'filters'"></app-admin-filters>
 
   <!-- Labels for screen readers -->
   <div id="labels" class="labels" aria-hidden="true">

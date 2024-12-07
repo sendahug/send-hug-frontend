@@ -152,12 +152,12 @@ describe("AdminReports", () => {
       userPage: "1",
       postPage: "1",
     });
-    expect(adminReports.userReports.length).toBe(1);
+    expect(adminReports.userReports().length).toBe(1);
     expect(
       adminReportsDOM.querySelectorAll(".tableContainer")[0].querySelectorAll("tbody tr").length,
     ).toBe(1);
     expect(adminReports.totalPostReportsPages()).toBe(2);
-    expect(adminReports.postReports.length).toBe(1);
+    expect(adminReports.postReports().length).toBe(1);
     expect(
       adminReportsDOM.querySelectorAll(".tableContainer")[1].querySelectorAll("tbody tr").length,
     ).toBe(1);
@@ -179,10 +179,10 @@ describe("AdminReports", () => {
       userPage: "1",
       postPage: "1",
     });
-    expect(adminReports.userReports.length).toBe(0);
+    expect(adminReports.userReports().length).toBe(0);
     expect(adminReportsDOM.querySelectorAll(".tableContainer").length).toBe(0);
-    expect(adminReports.postReports.length).toBe(0);
-    expect(adminReports.isLoading).toBeFalse();
+    expect(adminReports.postReports().length).toBe(0);
+    expect(adminReports.isLoading()).toBeFalse();
     expect(adminReportsDOM.querySelectorAll(".errorMessage")[0].textContent.trim()).toBe(
       "There are no user reports waiting for review.",
     );
@@ -217,9 +217,9 @@ describe("AdminReports", () => {
       }),
     );
 
-    adminReports.postReports = [...mockPostReports];
-    adminReports.userReports = [...mockUserReports];
-    adminReports.isLoading = false;
+    adminReports.postReports.set([...mockPostReports]);
+    adminReports.userReports.set([...mockUserReports]);
+    adminReports.isLoading.set(false);
 
     fixture.detectChanges();
 
@@ -231,7 +231,7 @@ describe("AdminReports", () => {
     // check expectations
     expect(blockSpy).toHaveBeenCalledWith(10, 1);
     expect(blockServiceSpy).toHaveBeenCalledWith(10, "oneDay", 1);
-    expect(adminReports.userReports.length).toBe(0);
+    expect(adminReports.userReports().length).toBe(0);
     done();
   });
 
@@ -260,9 +260,9 @@ describe("AdminReports", () => {
       }),
     );
 
-    adminReports.postReports = [...mockPostReports];
-    adminReports.userReports = [...mockUserReports];
-    adminReports.isLoading = false;
+    adminReports.postReports.set([...mockPostReports]);
+    adminReports.userReports.set([...mockUserReports]);
+    adminReports.isLoading.set(false);
 
     fixture.detectChanges();
 
@@ -274,7 +274,7 @@ describe("AdminReports", () => {
     // check expectations
     expect(blockSpy).toHaveBeenCalledWith(10, 1);
     expect(blockServiceSpy).toHaveBeenCalledWith(10, "oneDay", 1);
-    expect(adminReports.userReports.length).toBe(1);
+    expect(adminReports.userReports().length).toBe(1);
     done();
   });
 
@@ -286,14 +286,14 @@ describe("AdminReports", () => {
     const adminReportsDOM = fixture.nativeElement;
     const editSpy = spyOn(adminReports, "editUser").and.callThrough();
     spyOn(adminReports, "fetchReports");
-    adminReports.postReports = [...mockPostReports];
-    adminReports.userReports = [...mockUserReports];
-    adminReports.isLoading = false;
+    adminReports.postReports.set([...mockPostReports]);
+    adminReports.userReports.set([...mockUserReports]);
+    adminReports.isLoading.set(false);
 
     fixture.detectChanges();
 
     // before the click
-    expect(adminReports.nameEditMode).toBeFalse();
+    expect(adminReports.nameEditMode()).toBeFalse();
 
     // trigger click
     const userTable = adminReportsDOM.querySelectorAll(".tableContainer")[0];
@@ -302,8 +302,8 @@ describe("AdminReports", () => {
 
     // check expectations
     expect(editSpy).toHaveBeenCalledWith(1, 10, "user");
-    expect(adminReports.nameEditMode).toBeTrue();
-    expect(adminReports.toEdit).toEqual({
+    expect(adminReports.nameEditMode()).toBeTrue();
+    expect(adminReports.toEdit()).toEqual({
       displayName: "user",
       id: 10,
     });
@@ -319,14 +319,14 @@ describe("AdminReports", () => {
     const adminReportsDOM = fixture.nativeElement;
     const editSpy = spyOn(adminReports, "editPost").and.callThrough();
     spyOn(adminReports, "fetchReports");
-    adminReports.postReports = [...mockPostReports];
-    adminReports.userReports = [...mockUserReports];
-    adminReports.isLoading = false;
+    adminReports.postReports.set([...mockPostReports]);
+    adminReports.userReports.set([...mockUserReports]);
+    adminReports.isLoading.set(false);
 
     fixture.detectChanges();
 
     // before the click
-    expect(adminReports.postEditMode).toBeFalse();
+    expect(adminReports.postEditMode()).toBeFalse();
 
     // trigger click
     const postTable = adminReportsDOM.querySelectorAll(".tableContainer")[1];
@@ -335,7 +335,7 @@ describe("AdminReports", () => {
 
     // check expectations
     expect(editSpy).toHaveBeenCalled();
-    expect(adminReports.postEditMode).toBeTrue();
+    expect(adminReports.postEditMode()).toBeTrue();
     expect(adminReportsDOM.querySelector("post-edit-form")).toBeTruthy();
     done();
   });
@@ -348,14 +348,14 @@ describe("AdminReports", () => {
     const adminReportsDOM = fixture.nativeElement;
     const deleteSpy = spyOn(adminReports, "deletePost").and.callThrough();
     spyOn(adminReports, "fetchReports");
-    adminReports.postReports = [...mockPostReports];
-    adminReports.userReports = [...mockUserReports];
-    adminReports.isLoading = false;
+    adminReports.postReports.set([...mockPostReports]);
+    adminReports.userReports.set([...mockUserReports]);
+    adminReports.isLoading.set(false);
 
     fixture.detectChanges();
 
     // before the click
-    expect(adminReports.deleteMode).toBeFalse();
+    expect(adminReports.deleteMode()).toBeFalse();
 
     // trigger click
     const postTable = adminReportsDOM.querySelectorAll(".tableContainer")[1];
@@ -364,8 +364,8 @@ describe("AdminReports", () => {
 
     // check expectations
     expect(deleteSpy).toHaveBeenCalled();
-    expect(adminReports.deleteMode).toBeTrue();
-    expect(adminReports.toDelete).toBe("ad post");
+    expect(adminReports.deleteMode()).toBeTrue();
+    expect(adminReports.toDelete()).toBe("ad post");
     expect(adminReportsDOM.querySelector("item-delete-form")).toBeTruthy();
     done();
   });
@@ -396,9 +396,9 @@ describe("AdminReports", () => {
     );
     const alertsSpy = spyOn(adminReports["alertsService"], "createSuccessAlert");
     spyOn(adminReports, "fetchReports");
-    adminReports.postReports = [...mockPostReports];
-    adminReports.userReports = [...mockUserReports];
-    adminReports.isLoading = false;
+    adminReports.postReports.set([...mockPostReports]);
+    adminReports.userReports.set([...mockUserReports]);
+    adminReports.isLoading.set(false);
 
     fixture.detectChanges();
 
@@ -412,7 +412,7 @@ describe("AdminReports", () => {
     expect(dismissServiceSpy).toHaveBeenCalled();
     expect(dismissServiceSpy).toHaveBeenCalledWith(2, true, 5, undefined);
     expect(alertsSpy).toHaveBeenCalledWith(`Report 2 was dismissed!`);
-    expect(adminReports.postReports.length).toEqual(0);
+    expect(adminReports.postReports().length).toEqual(0);
     done();
   });
 
@@ -441,9 +441,9 @@ describe("AdminReports", () => {
     );
     const alertsSpy = spyOn(adminReports["alertsService"], "createSuccessAlert");
     spyOn(adminReports, "fetchReports");
-    adminReports.postReports = [...mockPostReports];
-    adminReports.userReports = [...mockUserReports];
-    adminReports.isLoading = false;
+    adminReports.postReports.set([...mockPostReports]);
+    adminReports.userReports.set([...mockUserReports]);
+    adminReports.isLoading.set(false);
 
     fixture.detectChanges();
 
@@ -457,7 +457,7 @@ describe("AdminReports", () => {
     expect(dismissServiceSpy).toHaveBeenCalled();
     expect(dismissServiceSpy).toHaveBeenCalledWith(1, true, undefined, 10);
     expect(alertsSpy).toHaveBeenCalledWith(`Report 1 was dismissed!`);
-    expect(adminReports.userReports.length).toEqual(0);
+    expect(adminReports.userReports().length).toEqual(0);
     done();
   });
 
@@ -468,8 +468,8 @@ describe("AdminReports", () => {
     const adminReportsDOM = fixture.nativeElement;
     const fetchSpy = spyOn(adminReports, "fetchReports");
     const nextPageSpy = spyOn(adminReports, "nextPage").and.callThrough();
-    adminReports.userReports = [...mockUserReports];
-    adminReports.isLoading = false;
+    adminReports.userReports.set([...mockUserReports]);
+    adminReports.isLoading.set(false);
     adminReports.totalUserReportsPages.set(2);
     adminReports.currentUserReportsPage.set(1);
     fixture.detectChanges();
@@ -494,8 +494,8 @@ describe("AdminReports", () => {
     const adminReportsDOM = fixture.nativeElement;
     const fetchSpy = spyOn(adminReports, "fetchReports");
     const nextPageSpy = spyOn(adminReports, "nextPage").and.callThrough();
-    adminReports.postReports = [...mockPostReports];
-    adminReports.isLoading = false;
+    adminReports.postReports.set([...mockPostReports]);
+    adminReports.isLoading.set(false);
     adminReports.totalPostReportsPages.set(2);
     adminReports.currentPostReportsPage.set(1);
     fixture.detectChanges();
@@ -518,8 +518,8 @@ describe("AdminReports", () => {
     const adminReportsDOM = fixture.nativeElement;
     const fetchSpy = spyOn(adminReports, "fetchReports");
     const prevPageSpy = spyOn(adminReports, "prevPage").and.callThrough();
-    adminReports.userReports = [...mockUserReports];
-    adminReports.isLoading = false;
+    adminReports.userReports.set([...mockUserReports]);
+    adminReports.isLoading.set(false);
     adminReports.totalUserReportsPages.set(2);
     adminReports.currentUserReportsPage.set(2);
     fixture.detectChanges();
@@ -544,8 +544,8 @@ describe("AdminReports", () => {
     const adminReportsDOM = fixture.nativeElement;
     const fetchSpy = spyOn(adminReports, "fetchReports");
     const prevPageSpy = spyOn(adminReports, "prevPage").and.callThrough();
-    adminReports.postReports = [...mockPostReports];
-    adminReports.isLoading = false;
+    adminReports.postReports.set([...mockPostReports]);
+    adminReports.isLoading.set(false);
     adminReports.totalPostReportsPages.set(2);
     adminReports.currentPostReportsPage.set(2);
     fixture.detectChanges();
@@ -568,19 +568,21 @@ describe("AdminReports", () => {
     const fixture = TestBed.createComponent(AdminReports);
     const adminReports = fixture.componentInstance;
     const changeSpy = spyOn(adminReports, "changeMode").and.callThrough();
-    adminReports.postReports = [...mockPostReports];
-    adminReports.userReports = [...mockUserReports];
-    adminReports.isLoading = false;
+    adminReports.postReports.set([...mockPostReports]);
+    adminReports.userReports.set([...mockUserReports]);
+    adminReports.isLoading.set(false);
     fixture.detectChanges();
 
     // start the popup
-    adminReports.toEdit = {
+    adminReports.toEdit.set({
       displayName: "displayName",
       id: 2,
-    };
-    adminReports.nameEditMode = true;
-    adminReports.reportData.reportID = 5;
-    adminReports.reportData.userID = 2;
+    });
+    adminReports.nameEditMode.set(true);
+    adminReports.reportData.set({
+      reportID: 5,
+      userID: 2,
+    });
     fixture.detectChanges();
 
     // exit the popup
@@ -591,7 +593,7 @@ describe("AdminReports", () => {
 
     // check the popup is exited
     expect(changeSpy).toHaveBeenCalled();
-    expect(adminReports.nameEditMode).toBeFalse();
+    expect(adminReports.nameEditMode()).toBeFalse();
     done();
   });
 
@@ -599,16 +601,19 @@ describe("AdminReports", () => {
     const fixture = TestBed.createComponent(AdminReports);
     const adminReports = fixture.componentInstance;
     const changeSpy = spyOn(adminReports, "changeMode").and.callThrough();
-    adminReports.postReports = [...mockPostReports];
-    adminReports.userReports = [...mockUserReports];
-    adminReports.isLoading = false;
+    adminReports.postReports.set([...mockPostReports]);
+    adminReports.userReports.set([...mockUserReports]);
+    adminReports.isLoading.set(false);
     fixture.detectChanges();
 
     // start the popup
-    adminReports.toEdit = "post";
-    adminReports.postEditMode = true;
-    adminReports.reportData.reportID = 5;
-    adminReports.reportData.postID = 2;
+    adminReports.toEdit.set("post");
+    adminReports.postEditMode.set(true);
+    adminReports.reportData.set({
+      reportID: 5,
+      postID: 2,
+      userID: 0,
+    });
     fixture.detectChanges();
 
     // exit the popup
@@ -619,7 +624,7 @@ describe("AdminReports", () => {
 
     // check the popup is exited
     expect(changeSpy).toHaveBeenCalled();
-    expect(adminReports.postEditMode).toBeFalse();
+    expect(adminReports.postEditMode()).toBeFalse();
     done();
   });
 
@@ -627,15 +632,15 @@ describe("AdminReports", () => {
     const fixture = TestBed.createComponent(AdminReports);
     const adminReports = fixture.componentInstance;
     const changeSpy = spyOn(adminReports, "changeMode").and.callThrough();
-    adminReports.postReports = [...mockPostReports];
-    adminReports.userReports = [...mockUserReports];
-    adminReports.isLoading = false;
+    adminReports.postReports.set([...mockPostReports]);
+    adminReports.userReports.set([...mockUserReports]);
+    adminReports.isLoading.set(false);
     fixture.detectChanges();
 
     // start the popup
-    adminReports.deleteMode = true;
-    adminReports.toDelete = "post";
-    adminReports.itemToDelete = 2;
+    adminReports.deleteMode.set(true);
+    adminReports.toDelete.set("post");
+    adminReports.itemToDelete.set(2);
     fixture.detectChanges();
 
     // exit the popup
@@ -646,7 +651,7 @@ describe("AdminReports", () => {
 
     // check the popup is exited
     expect(changeSpy).toHaveBeenCalled();
-    expect(adminReports.deleteMode).toBeFalse();
+    expect(adminReports.deleteMode()).toBeFalse();
     done();
   });
 
@@ -654,17 +659,20 @@ describe("AdminReports", () => {
     const fixture = TestBed.createComponent(AdminReports);
     const adminReports = fixture.componentInstance;
     const updateSpy = spyOn(adminReports, "updateUserReport").and.callThrough();
-    adminReports.userReports = [...mockUserReports];
+    adminReports.userReports.set([...mockUserReports]);
+    adminReports.isLoading.set(false);
     fixture.detectChanges();
 
     // start the popup
-    adminReports.toEdit = {
+    adminReports.toEdit.set({
       displayName: "displayName",
       id: 2,
-    };
-    adminReports.nameEditMode = true;
-    adminReports.reportData.reportID = 1;
-    adminReports.reportData.userID = 10;
+    });
+    adminReports.nameEditMode.set(true);
+    adminReports.reportData.set({
+      reportID: 1,
+      userID: 10,
+    });
     fixture.detectChanges();
 
     // exit the popup
@@ -683,7 +691,7 @@ describe("AdminReports", () => {
       reportID: 1,
       displayName: "beep",
     });
-    expect(adminReports.userReports.length).toBe(0);
+    expect(adminReports.userReports().length).toBe(0);
     done();
   });
 
@@ -691,17 +699,20 @@ describe("AdminReports", () => {
     const fixture = TestBed.createComponent(AdminReports);
     const adminReports = fixture.componentInstance;
     const updateSpy = spyOn(adminReports, "updateUserReport").and.callThrough();
-    adminReports.userReports = [...mockUserReports];
+    adminReports.userReports.set([...mockUserReports]);
+    adminReports.isLoading.set(false);
     fixture.detectChanges();
 
     // start the popup
-    adminReports.toEdit = {
+    adminReports.toEdit.set({
       displayName: "displayName",
       id: 2,
-    };
-    adminReports.nameEditMode = true;
-    adminReports.reportData.reportID = 1;
-    adminReports.reportData.userID = 10;
+    });
+    adminReports.nameEditMode.set(true);
+    adminReports.reportData.set({
+      reportID: 1,
+      userID: 10,
+    });
     fixture.detectChanges();
 
     // exit the popup
@@ -720,7 +731,7 @@ describe("AdminReports", () => {
       reportID: 100000,
       displayName: "beep",
     });
-    expect(adminReports.userReports.length).toBe(1);
+    expect(adminReports.userReports().length).toBe(1);
     done();
   });
 
@@ -728,17 +739,20 @@ describe("AdminReports", () => {
     const fixture = TestBed.createComponent(AdminReports);
     const adminReports = fixture.componentInstance;
     const updateSpy = spyOn(adminReports, "updateUserReport").and.callThrough();
-    adminReports.userReports = [...mockUserReports];
+    adminReports.userReports.set([...mockUserReports]);
+    adminReports.isLoading.set(false);
     fixture.detectChanges();
 
     // start the popup
-    adminReports.toEdit = {
+    adminReports.toEdit.set({
       displayName: "displayName",
       id: 2,
-    };
-    adminReports.nameEditMode = true;
-    adminReports.reportData.reportID = 1;
-    adminReports.reportData.userID = 10;
+    });
+    adminReports.nameEditMode.set(true);
+    adminReports.reportData.set({
+      reportID: 1,
+      userID: 10,
+    });
     fixture.detectChanges();
 
     // exit the popup
@@ -757,8 +771,8 @@ describe("AdminReports", () => {
       reportID: 1,
       displayName: "beep",
     });
-    expect(adminReports.userReports.length).toBe(1);
-    expect(adminReports.userReports[0].displayName).toBe("beep");
+    expect(adminReports.userReports().length).toBe(1);
+    expect(adminReports.userReports()[0].displayName).toBe("beep");
     done();
   });
 
@@ -766,7 +780,8 @@ describe("AdminReports", () => {
     const fixture = TestBed.createComponent(AdminReports);
     const adminReports = fixture.componentInstance;
     const updateSpy = spyOn(adminReports, "updatePostReport").and.callThrough();
-    adminReports.postReports = [...mockPostReports];
+    adminReports.postReports.set([...mockPostReports]);
+    adminReports.isLoading.set(false);
     const reportPostResponse = {
       success: true,
       updatedPost: {
@@ -783,10 +798,13 @@ describe("AdminReports", () => {
     fixture.detectChanges();
 
     // start the popup
-    adminReports.toEdit = "post";
-    adminReports.postEditMode = true;
-    adminReports.reportData.reportID = 5;
-    adminReports.reportData.postID = 2;
+    adminReports.toEdit.set("post");
+    adminReports.postEditMode.set(true);
+    adminReports.reportData.set({
+      reportID: 5,
+      postID: 2,
+      userID: 0,
+    });
     fixture.detectChanges();
 
     // exit the popup
@@ -798,7 +816,7 @@ describe("AdminReports", () => {
 
     // check the popup is exited
     expect(updateSpy).toHaveBeenCalled();
-    expect(adminReports.postReports.length).toBe(0);
+    expect(adminReports.postReports().length).toBe(0);
     done();
   });
 
@@ -806,7 +824,8 @@ describe("AdminReports", () => {
     const fixture = TestBed.createComponent(AdminReports);
     const adminReports = fixture.componentInstance;
     const updateSpy = spyOn(adminReports, "updatePostReport").and.callThrough();
-    adminReports.postReports = [...mockPostReports];
+    adminReports.postReports.set([...mockPostReports]);
+    adminReports.isLoading.set(false);
     const reportPostResponse = {
       success: true,
       updatedPost: {
@@ -823,10 +842,13 @@ describe("AdminReports", () => {
     fixture.detectChanges();
 
     // start the popup
-    adminReports.toEdit = "post";
-    adminReports.postEditMode = true;
-    adminReports.reportData.reportID = 5;
-    adminReports.reportData.postID = 2;
+    adminReports.toEdit.set("post");
+    adminReports.postEditMode.set(true);
+    adminReports.reportData.set({
+      reportID: 5,
+      postID: 2,
+      userID: 0,
+    });
     fixture.detectChanges();
 
     // exit the popup
@@ -838,7 +860,7 @@ describe("AdminReports", () => {
 
     // check the popup is exited
     expect(updateSpy).toHaveBeenCalled();
-    expect(adminReports.postReports.length).toBe(1);
+    expect(adminReports.postReports().length).toBe(1);
     done();
   });
 
@@ -846,7 +868,8 @@ describe("AdminReports", () => {
     const fixture = TestBed.createComponent(AdminReports);
     const adminReports = fixture.componentInstance;
     const updateSpy = spyOn(adminReports, "updatePostReport").and.callThrough();
-    adminReports.postReports = [...mockPostReports];
+    adminReports.postReports.set([...mockPostReports]);
+    adminReports.isLoading.set(false);
     const reportPostResponse = {
       success: true,
       updatedPost: {
@@ -863,10 +886,13 @@ describe("AdminReports", () => {
     fixture.detectChanges();
 
     // start the popup
-    adminReports.toEdit = "post";
-    adminReports.postEditMode = true;
-    adminReports.reportData.reportID = 5;
-    adminReports.reportData.postID = 2;
+    adminReports.toEdit.set("post");
+    adminReports.postEditMode.set(true);
+    adminReports.reportData.set({
+      reportID: 5,
+      postID: 2,
+      userID: 0,
+    });
     fixture.detectChanges();
 
     // exit the popup
@@ -878,8 +904,8 @@ describe("AdminReports", () => {
 
     // check the popup is exited
     expect(updateSpy).toHaveBeenCalled();
-    expect(adminReports.postReports.length).toBe(1);
-    expect(adminReports.postReports[0].text).toBe(reportPostResponse.updatedPost.text);
+    expect(adminReports.postReports().length).toBe(1);
+    expect(adminReports.postReports()[0].text).toBe(reportPostResponse.updatedPost.text);
     done();
   });
 
@@ -887,14 +913,15 @@ describe("AdminReports", () => {
     const fixture = TestBed.createComponent(AdminReports);
     const adminReports = fixture.componentInstance;
     const removeSpy = spyOn(adminReports, "removeReport").and.callThrough();
-    adminReports.postReports = [...mockPostReports];
+    adminReports.postReports.set([...mockPostReports]);
+    adminReports.isLoading.set(false);
 
     fixture.detectChanges();
 
     // start the popup
-    adminReports.deleteMode = true;
-    adminReports.toDelete = "post";
-    adminReports.itemToDelete = 5;
+    adminReports.deleteMode.set(true);
+    adminReports.toDelete.set("post");
+    adminReports.itemToDelete.set(5);
     fixture.detectChanges();
 
     // exit the popup
@@ -905,7 +932,7 @@ describe("AdminReports", () => {
 
     // check the popup is exited
     expect(removeSpy).toHaveBeenCalled();
-    expect(adminReports.postReports.length).toBe(0);
+    expect(adminReports.postReports().length).toBe(0);
     done();
   });
 });

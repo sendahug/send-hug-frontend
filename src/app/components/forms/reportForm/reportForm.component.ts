@@ -31,7 +31,7 @@
 */
 
 // Angular imports
-import { Component, Input, Output, EventEmitter, OnInit } from "@angular/core";
+import { Component, Input, Output, EventEmitter, OnInit, signal } from "@angular/core";
 import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { CommonModule } from "@angular/common";
 import { RouterLink } from "@angular/router";
@@ -89,8 +89,8 @@ export class ReportForm implements OnInit {
   @Input() reportedItem: PostGet | OtherUser | undefined;
   // type of item to report
   @Input() reportType: "User" | "Post" = "Post";
-  protected reportedPost: PostGet | undefined;
-  protected reportedUser: OtherUser | undefined;
+  protected reportedPost = signal<PostGet | undefined>(undefined);
+  protected reportedUser = signal<OtherUser | undefined>(undefined);
   reportReasonsText = reportReasonsText;
   reportForm = this.fb.group({
     selectedReason: this.fb.control(undefined as string | undefined, [Validators.required]),
@@ -111,11 +111,11 @@ export class ReportForm implements OnInit {
    */
   ngOnInit(): void {
     if (this.reportType == "Post") {
-      this.reportedPost = this.reportedItem as PostGet;
-      this.reportedUser = undefined;
+      this.reportedPost.set(this.reportedItem as PostGet);
+      this.reportedUser.set(undefined);
     } else {
-      this.reportedUser = this.reportedItem as OtherUser;
-      this.reportedPost = undefined;
+      this.reportedUser.set(this.reportedItem as OtherUser);
+      this.reportedPost.set(undefined);
     }
   }
 

@@ -265,8 +265,8 @@ describe("AppComponent", () => {
     const component = fixture.componentInstance;
     const componentHtml = fixture.nativeElement;
 
-    // because tests run on Chrome, 'share' doesn't exist in navigator
-    expect(component.canShare).toBeFalse();
+    // because tests run on Chrome on linux, 'share' doesn't exist in navigator
+    expect(component.canShare()).toBeFalse();
     expect(
       componentHtml.querySelector("#siteFooter").querySelectorAll("textlessButton")[0],
     ).toBeUndefined();
@@ -280,7 +280,7 @@ describe("AppComponent", () => {
     const componentHtml = fixture.nativeElement;
     const shareSpy = spyOn(component, "shareSite");
 
-    component.canShare = true;
+    component.canShare.set(true);
     fixture.detectChanges();
 
     componentHtml.querySelector("#siteFooter").querySelectorAll(".textlessButton")[0].click();

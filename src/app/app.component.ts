@@ -62,7 +62,7 @@ import { TeleportService } from "./services/teleport.service";
   imports: [CommonModule, RouterOutlet, RouterLink, AppAlert, AppNavMenu],
 })
 export class AppComponent implements OnInit, AfterViewInit, AfterViewChecked {
-  canShare = false;
+  canShare = signal(false);
   @ViewChild("modalContainer") modalContainer!: ElementRef;
   navMenu = viewChild(AppNavMenu, { read: ElementRef });
   navMenuHeight = signal(0);
@@ -137,12 +137,7 @@ export class AppComponent implements OnInit, AfterViewInit, AfterViewChecked {
    */
   ngOnInit() {
     this.serviceWorkerM.registerSW();
-
-    if ("share" in navigator) {
-      this.canShare = true;
-    } else {
-      this.canShare = false;
-    }
+    this.canShare.set("share" in navigator);
   }
 
   /**

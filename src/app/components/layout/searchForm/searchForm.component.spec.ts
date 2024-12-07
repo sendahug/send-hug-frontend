@@ -41,6 +41,7 @@ import { ReactiveFormsModule } from "@angular/forms";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { provideZoneChangeDetection } from "@angular/core";
 import { MockProvider } from "ng-mocks";
+import { Subscription } from "rxjs";
 
 import { SearchForm } from "./searchForm.component";
 import { ItemsService } from "@app/services/items.service";
@@ -48,7 +49,7 @@ import { ItemsService } from "@app/services/items.service";
 describe("SearchForm", () => {
   beforeEach(() => {
     const MockItemsService = MockProvider(ItemsService, {
-      sendSearch: (_search) => undefined,
+      sendSearch: (_search) => new Subscription(),
     });
 
     TestBed.resetTestEnvironment();

@@ -32,8 +32,8 @@
 
 // Angular imports
 import { CommonModule } from "@angular/common";
-import { Component } from "@angular/core";
-import { ActivatedRoute, RouterLink } from "@angular/router";
+import { Component, signal } from "@angular/core";
+import { ActivatedRoute } from "@angular/router";
 
 import { PolicyType, SitePolicyMapping } from "@app/interfaces/policies.interface";
 
@@ -42,11 +42,11 @@ import { PolicyType, SitePolicyMapping } from "@app/interfaces/policies.interfac
   templateUrl: "./sitePolicies.component.html",
   styleUrl: "./sitePolicies.component.less",
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule],
 })
 export class SitePolicies {
-  currentPolicy!: PolicyType;
-  pageTitle: string = "";
+  currentPolicy = signal<PolicyType>("TermsConditions");
+  pageTitle = signal<string>("");
 
   // CTOR
   constructor(private route: ActivatedRoute) {
@@ -54,8 +54,8 @@ export class SitePolicies {
     this.route.url.subscribe((params) => {
       const currentPath = params[0].path;
       const currentPolicy = SitePolicyMapping.find((policy) => policy.path == currentPath);
-      this.pageTitle = currentPolicy?.title || "Terms and Conditions";
-      this.currentPolicy = currentPolicy?.policy || "TermsConditions";
+      this.pageTitle.set(currentPolicy?.title || "Terms and Conditions");
+      this.currentPolicy.set(currentPolicy?.policy || "TermsConditions");
     });
   }
 }

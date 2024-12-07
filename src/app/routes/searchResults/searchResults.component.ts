@@ -32,7 +32,7 @@
 
 // Angular imports
 import { CommonModule } from "@angular/common";
-import { Component } from "@angular/core";
+import { Component, signal } from "@angular/core";
 import { ActivatedRoute, Router, RouterLink } from "@angular/router";
 
 // App-related imports
@@ -48,9 +48,7 @@ import { SinglePost } from "@common/post/post.component";
   imports: [CommonModule, Loader, SinglePost, RouterLink],
 })
 export class SearchResults {
-  searchQuery: string | null;
-  page = 1;
-  showMenuNum: string | null = null;
+  searchQuery = signal<string | null>(null);
 
   // CTOR
   constructor(
@@ -58,13 +56,13 @@ export class SearchResults {
     private route: ActivatedRoute,
     private router: Router,
   ) {
-    this.searchQuery = this.route.snapshot.queryParamMap.get("query");
+    this.searchQuery.set(this.route.snapshot.queryParamMap.get("query"));
 
     // if there's a search query but there's no ongoing search, it might be
     // the result of the user manually navigating here or refreshing the page.
     // in that case, trigger a search manually
-    if (this.searchQuery && !this.itemsService.isSearching) {
-      this.itemsService.sendSearch(this.searchQuery);
+    if (this.searchQuery() && !this.itemsService.isSearching()) {
+      this.itemsService.sendSearch(this.searchQuery()!);
     }
   }
 
@@ -78,15 +76,14 @@ export class SearchResults {
   */
   nextPage() {
     this.itemsService.postSearchPage.set(this.itemsService.postSearchPage() + 1);
-    this.page += 1;
-    this.itemsService.sendSearch(this.searchQuery!);
+    this.itemsService.sendSearch(this.searchQuery()!);
 
     // changes the URL query parameter (page) according to the new page
     this.router.navigate([], {
       relativeTo: this.route,
       queryParams: {
-        query: this.searchQuery,
-        page: this.page,
+        query: this.searchQuery(),
+        page: this.itemsService.postSearchPage(),
       },
       replaceUrl: true,
     });
@@ -102,15 +99,14 @@ export class SearchResults {
   */
   prevPage() {
     this.itemsService.postSearchPage.set(this.itemsService.postSearchPage() - 1);
-    this.page -= 1;
-    this.itemsService.sendSearch(this.searchQuery!);
+    this.itemsService.sendSearch(this.searchQuery()!);
 
     // changes the URL query parameter (page) according to the new page
     this.router.navigate([], {
       relativeTo: this.route,
       queryParams: {
-        query: this.searchQuery,
-        page: this.page,
+        query: this.searchQuery(),
+        page: this.itemsService.postSearchPage(),
       },
       replaceUrl: true,
     });
@@ -121,8 +117,8 @@ export class SearchResults {
    * @param postId the ID of the post that was deleted.
    */
   removeDeletedPost(postId: number) {
-    this.itemsService.postSearchResults = this.itemsService.postSearchResults.filter(
-      (post) => post.id != postId,
+    this.itemsService.postSearchResults.set(
+      this.itemsService.postSearchResults().filter((post) => post.id != postId),
     );
   }
 }

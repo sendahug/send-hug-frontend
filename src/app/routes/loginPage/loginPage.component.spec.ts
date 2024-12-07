@@ -449,13 +449,13 @@ describe("LoginPage", () => {
     loginPage.isNewUser.set(false);
     fixture.detectChanges();
 
-    expect(loginPage.resetMode).toBeFalse();
+    expect(loginPage.resetMode()).toBeFalse();
     expect(loginPageDOM.querySelector("app-reset-pw-form")).toBeNull();
 
     loginPageDOM.querySelectorAll(".internalButton")[0].click();
     fixture.detectChanges();
 
-    expect(loginPage.resetMode).toBeTrue();
+    expect(loginPage.resetMode()).toBeTrue();
     expect(loginPageDOM.querySelector("app-reset-pw-form")).toBeTruthy();
   });
 
@@ -464,10 +464,10 @@ describe("LoginPage", () => {
     const loginPage = fixture.componentInstance;
     const loginPageDOM = fixture.nativeElement;
     loginPage.authService.authenticated.set(false);
-    loginPage.resetMode = true;
+    loginPage.resetMode.set(true);
     fixture.detectChanges();
 
-    expect(loginPage.resetMode).toBeTrue();
+    expect(loginPage.resetMode()).toBeTrue();
     expect(loginPageDOM.querySelector("app-reset-pw-form")).toBeTruthy();
 
     // exit the popup
@@ -476,7 +476,7 @@ describe("LoginPage", () => {
     popup.editMode.emit(false);
     fixture.detectChanges();
 
-    expect(loginPage.resetMode).toBeFalse();
+    expect(loginPage.resetMode()).toBeFalse();
     expect(loginPageDOM.querySelector("app-reset-pw-form")).toBeNull();
   });
 

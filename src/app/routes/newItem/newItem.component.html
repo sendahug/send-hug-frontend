@@ -7,7 +7,7 @@
         [formGroup]="newMessageForm"
         class="newItem"
         aria-describedby="newTitle"
-        *ngIf="this.newMessageForm.controls.messageFor.value && forID"
+        *ngIf="this.newMessageForm.controls.messageFor.value && forID()"
       >
         <div class="formElement">
           <label class="pageCategory" for="messageFor">For:</label>
@@ -43,7 +43,7 @@
 
       <div
         class="errorMessage"
-        *ngIf="!this.newMessageForm.controls.messageFor.value || !forID"
+        *ngIf="!this.newMessageForm.controls.messageFor.value || !forID()"
         role="alert"
       >
         User ID and display name are required for sending a message. Please add numerical user ID

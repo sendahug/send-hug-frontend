@@ -86,7 +86,10 @@ export class UserPage implements OnDestroy {
   });
   isOtherUserProfile = computed(() => this.otherUser() != undefined);
   // edit popup sub-component variables
-  userToEdit?: PartialUser;
+  userToEdit = computed<PartialUser>(() => ({
+    displayName: this.displayUser().displayName,
+    id: this.displayUser().id as number,
+  }));
   editMode = signal(false);
   reportMode = signal(false);
   reportedItem = signal<OtherUser | undefined>(undefined);
@@ -187,10 +190,6 @@ export class UserPage implements OnDestroy {
    * Activate the edit popup to edit a user's display name.
    */
   editName() {
-    this.userToEdit = {
-      displayName: this.displayUser().displayName,
-      id: this.displayUser().id as number,
-    };
     this.editMode.set(true);
   }
 

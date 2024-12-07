@@ -31,7 +31,7 @@
 */
 
 // Angular imports
-import { Component } from "@angular/core";
+import { Component, signal } from "@angular/core";
 import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { CommonModule } from "@angular/common";
 import { RouterLink } from "@angular/router";
@@ -51,7 +51,7 @@ import { UserIcon } from "@common/userIcon/userIcon.component";
   imports: [CommonModule, IconEditor, UserIcon, ReactiveFormsModule, RouterLink],
 })
 export class SettingsPage {
-  editIcon = false;
+  editIcon = signal(false);
   editSettingsForm = this.fb.group({
     enableNotifications: [false],
     enableAutoRefresh: [false],
@@ -95,9 +95,9 @@ export class SettingsPage {
   */
   toggleIconEditor(edit?: boolean) {
     if (edit) {
-      this.editIcon = edit;
+      this.editIcon.set(edit);
     } else {
-      this.editIcon = edit || false;
+      this.editIcon.set(edit || false);
       document.getElementById("editIcon")?.focus();
     }
   }

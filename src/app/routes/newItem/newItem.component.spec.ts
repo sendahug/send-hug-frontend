@@ -304,7 +304,7 @@ describe("NewItem", () => {
     expect(queryParamsSpy).toHaveBeenCalled();
     expect(newItem.itemType()).toBe("Message");
     expect(newItem.newMessageForm.controls.messageFor.value).toBe("hello");
-    expect(newItem.forID).toBe(2);
+    expect(newItem.forID()).toBe(2);
     expect(newItemDOM.querySelector("#newPost")).toBeNull();
     expect(newItemDOM.querySelector("#newMessage")).toBeTruthy();
     expect(newItemDOM.querySelector("#messageFor").value).toBe("hello");

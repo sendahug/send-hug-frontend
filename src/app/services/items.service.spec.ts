@@ -135,7 +135,7 @@ describe("ItemsService", () => {
   });
 
   // Check that the service runs the search and handles results correctly
-  it("sendSearch() - should run a search", () => {
+  it("sendSearch() - should run a search", (done: DoneFn) => {
     // mock response
     const mockResponse = {
       current_page: 1,
@@ -206,37 +206,31 @@ describe("ItemsService", () => {
     };
     const apiClientSpy = spyOn(itemsService["apiClient"], "post").and.returnValue(of(mockResponse));
 
-    itemsService.sendSearch("test");
-    // wait until the search is resolved
-    itemsService.isSearchResolved.subscribe((value) => {
-      if (value) {
-        expect(itemsService.userSearchResults.length).toBe(2);
-        expect(itemsService.postSearchResults.length).toBe(5);
-        expect(itemsService.numUserResults).toBe(2);
-        expect(itemsService.numPostResults).toBe(7);
-        expect(itemsService.postSearchPage()).toBe(1);
-        expect(itemsService.totalPostSearchPages()).toBe(2);
-        expect(itemsService.isSearching).toBeFalse();
-        expect(apiClientSpy).toHaveBeenCalledWith("", { search: "test" }, { page: "1" });
-      }
+    itemsService.sendSearch("test").add(() => {
+      expect(itemsService.userSearchResults().length).toBe(2);
+      expect(itemsService.postSearchResults().length).toBe(5);
+      expect(itemsService.numUserResults()).toBe(2);
+      expect(itemsService.numPostResults()).toBe(7);
+      expect(itemsService.postSearchPage()).toBe(1);
+      expect(itemsService.totalPostSearchPages()).toBe(2);
+      expect(itemsService.isSearching()).toBeFalse();
+      expect(apiClientSpy).toHaveBeenCalledWith("", { search: "test" }, { page: "1" });
+      done();
     });
   });
 
-  it("sendSearch() - should run a search - should handle an error", () => {
+  it("sendSearch() - should run a search - should handle an error", (done: DoneFn) => {
     // mock response
     const apiClientSpy = spyOn(itemsService["apiClient"], "post").and.returnValue(
       throwError(() => new Error("ERROR")),
     );
 
-    itemsService.sendSearch("test");
-    // wait until the search is resolved
-    itemsService.isSearchResolved.subscribe((value) => {
-      if (value) {
-        expect(itemsService.userSearchResults.length).toBe(0);
-        expect(itemsService.postSearchResults.length).toBe(0);
-        expect(itemsService.isSearching).toBeFalse();
-        expect(apiClientSpy).toHaveBeenCalledWith("", { search: "test" }, { page: "1" });
-      }
+    itemsService.sendSearch("test").add(() => {
+      expect(itemsService.userSearchResults().length).toBe(0);
+      expect(itemsService.postSearchResults().length).toBe(0);
+      expect(itemsService.isSearching()).toBeFalse();
+      expect(apiClientSpy).toHaveBeenCalledWith("", { search: "test" }, { page: "1" });
+      done();
     });
   });
 });

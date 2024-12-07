@@ -214,7 +214,7 @@ describe("AppMessaging", () => {
     const fixture = TestBed.createComponent(AppMessaging);
     const appMessaging = fixture.componentInstance;
 
-    expect(appMessaging.messType).toBe("inbox");
+    expect(appMessaging.messType()).toBe("inbox");
   });
 
   // Check that the popup variables are set to false
@@ -222,7 +222,7 @@ describe("AppMessaging", () => {
     const fixture = TestBed.createComponent(AppMessaging);
     const appMessaging = fixture.componentInstance;
 
-    expect(appMessaging.deleteMode).toBeFalse();
+    expect(appMessaging.deleteMode()).toBeFalse();
   });
 
   it("should fetch messages from the server", () => {
@@ -260,8 +260,8 @@ describe("AppMessaging", () => {
   it("should add the thread ID param to the fetch if the message type is thread", () => {
     const fixture = TestBed.createComponent(AppMessaging);
     const appMessaging = fixture.componentInstance;
-    appMessaging.messType = "thread";
-    appMessaging.threadId = 4;
+    appMessaging.messType.set("thread");
+    appMessaging.threadId.set(4);
     const idbFetchSpy = spyOn(appMessaging, "fetchMessagesFromIdb").and.returnValue(
       of({ messages: [], total_pages: 1, current_page: 1, success: true }),
     );
@@ -311,8 +311,8 @@ describe("AppMessaging", () => {
     ]);
     const fixture = TestBed.createComponent(AppMessaging);
     const appMessaging = fixture.componentInstance;
-    appMessaging.messType = "thread";
-    appMessaging.threadId = 2;
+    appMessaging.messType.set("thread");
+    appMessaging.threadId.set(2);
     const idbSpy = spyOn(appMessaging["swManager"], "fetchMessages").and.returnValue(
       new Promise((resolve) => resolve({ messages: mockMessages, pages: 2 })),
     );
@@ -336,7 +336,7 @@ describe("AppMessaging", () => {
   it("should fetch threads from the server", () => {
     const fixture = TestBed.createComponent(AppMessaging);
     const appMessaging = fixture.componentInstance;
-    appMessaging.messType = "threads";
+    appMessaging.messType.set("threads");
     const idbFetchSpy = spyOn(appMessaging, "fetchThreadsFromIdb").and.returnValue(
       of({ messages: [], total_pages: 1, current_page: 1, success: true }),
     );
@@ -477,16 +477,16 @@ describe("AppMessaging", () => {
     fixture.detectChanges();
 
     // before the click
-    expect(appMessaging.deleteMode).toBeFalse();
+    expect(appMessaging.deleteMode()).toBeFalse();
 
     // trigger click
     appMessagingDOM.querySelectorAll(".deleteAll")[0].click();
     fixture.detectChanges();
 
     // after the click
-    expect(appMessaging.deleteMode).toBeTrue();
-    expect(appMessaging.toDelete).toBe("All inbox");
-    expect(appMessaging.itemToDelete).toBe(4);
+    expect(appMessaging.deleteMode()).toBeTrue();
+    expect(appMessaging.toDelete()).toBe("All inbox");
+    expect(appMessaging.itemToDelete()).toBe(4);
     expect(appMessagingDOM.querySelector("item-delete-form")).toBeTruthy();
     done();
   });
@@ -501,9 +501,9 @@ describe("AppMessaging", () => {
     appMessaging.isIdbFetchLoading.set(false);
 
     // start the popup
-    appMessaging.deleteMode = true;
-    appMessaging.toDelete = "Thread";
-    appMessaging.itemToDelete = 1;
+    appMessaging.deleteMode.set(true);
+    appMessaging.toDelete.set("Thread");
+    appMessaging.itemToDelete.set(1);
     fixture.detectChanges();
 
     // exit the popup
@@ -514,7 +514,7 @@ describe("AppMessaging", () => {
 
     // check the popup is exited
     expect(changeSpy).toHaveBeenCalled();
-    expect(appMessaging.deleteMode).toBeFalse();
+    expect(appMessaging.deleteMode()).toBeFalse();
     done();
   });
 
@@ -546,7 +546,7 @@ describe("AppMessaging", () => {
     const appMessaging = fixture.componentInstance;
     const updateSpy = spyOn(appMessaging, "updateMessageList").and.callThrough();
     spyOn(appMessaging, "fetchMessages");
-    appMessaging.messType = "threads";
+    appMessaging.messType.set("threads");
     appMessaging.userThreads.set(mockThreads);
     appMessaging.isIdbFetchLoading.set(false);
     fixture.detectChanges();
@@ -572,9 +572,9 @@ describe("AppMessaging", () => {
     appMessaging.isIdbFetchLoading.set(false);
 
     // start the popup
-    appMessaging.deleteMode = true;
-    appMessaging.toDelete = "All inbox";
-    appMessaging.itemToDelete = 1;
+    appMessaging.deleteMode.set(true);
+    appMessaging.toDelete.set("All inbox");
+    appMessaging.itemToDelete.set(1);
     fixture.detectChanges();
 
     // exit the popup
@@ -600,9 +600,9 @@ describe("AppMessaging", () => {
     appMessaging.isIdbFetchLoading.set(false);
 
     // start the popup
-    appMessaging.deleteMode = true;
-    appMessaging.toDelete = "All threads";
-    appMessaging.itemToDelete = 3;
+    appMessaging.deleteMode.set(true);
+    appMessaging.toDelete.set("All threads");
+    appMessaging.itemToDelete.set(3);
     fixture.detectChanges();
 
     // exit the popup

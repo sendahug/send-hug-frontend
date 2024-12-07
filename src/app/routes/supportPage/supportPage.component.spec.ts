@@ -77,9 +77,9 @@ describe("Support Page", () => {
     const supportPageDOM = fixture.nativeElement;
     fixture.detectChanges();
 
-    expect(supportPage.faqItems.length).toBeGreaterThan(0);
+    expect(supportPage.faqItems().length).toBeGreaterThan(0);
     expect(supportPageDOM.querySelectorAll(".supportNavLink").length).toEqual(
-      supportPage.faqItems.length,
+      supportPage.faqItems().length,
     );
     done();
   });

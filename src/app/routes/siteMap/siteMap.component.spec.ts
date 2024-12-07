@@ -189,7 +189,7 @@ describe("SiteMap", () => {
     let routeList = siteMapDOM.querySelector("#routeList");
     expect(routeList).toBeTruthy();
     expect(routeList!.children.length).not.toBe(0);
-    expect(siteMap.routes).toBeDefined();
+    expect(siteMap.routes()).toBeDefined();
 
     // check each navigation item to ensure it contains a link
     let navLinks = routeList!.querySelectorAll(".routerLink");
@@ -243,7 +243,7 @@ describe("SiteMap", () => {
 
     // check the admin pages' linkes appear
     expect(authSpy).toHaveBeenCalled();
-    expect(siteMap.routes).toContain(adminPath);
+    expect(siteMap.routes()).toContain(adminPath);
     expect(navLinks[4].textContent).toBe("Main Page");
     expect(navLinks[4].parentElement.parentElement.children.length).toBe(4);
     expect(
@@ -286,7 +286,7 @@ describe("SiteMap", () => {
 
     // check the admin pages' links don't appear
     expect(authSpy).toHaveBeenCalled();
-    expect(siteMap.routes).not.toContain(adminPath);
+    expect(siteMap.routes()).not.toContain(adminPath);
     expect(navLinks.length).toBeLessThan(routes.length);
     for (var i = 0; i < navLinks.length; i++) {
       expect(navLinks[i].textContent).not.toBe("Main Page");
@@ -308,7 +308,7 @@ describe("SiteMap", () => {
     let navLinks = routeList!.querySelectorAll(".routerLink");
     let loginPath: Route = { path: "login", component: MockComp, data: { name: "Login Page" } };
 
-    expect(siteMap.routes).not.toContain(loginPath);
+    expect(siteMap.routes()).not.toContain(loginPath);
     for (var i = 0; i < navLinks.length; i++) {
       expect(navLinks[i].textContent).not.toBe("Login Page");
     }
@@ -326,7 +326,7 @@ describe("SiteMap", () => {
     let navLinks = routeList!.querySelectorAll(".routerLink");
     let loginPath: Route = { path: "login", component: MockComp, data: { name: "Login Page" } };
 
-    expect(siteMap.routes).toContain(loginPath);
+    expect(siteMap.routes()).toContain(loginPath);
     expect(navLinks[navLinks.length - 1].textContent).toBe("Login Page");
   });
 
@@ -355,8 +355,8 @@ describe("SiteMap", () => {
       data: { name: "User Page", mapRoutes: [{ path: "", name: "Your Page" }] },
     };
 
-    expect(siteMap.routes).toContain(loginPath);
-    expect(siteMap.routes).not.toContain(userPath);
+    expect(siteMap.routes()).toContain(loginPath);
+    expect(siteMap.routes()).not.toContain(userPath);
     expect(navLinks[navLinks.length - 1].textContent).toBe("Login Page");
     for (var i = 0; i < navLinks.length; i++) {
       expect(navLinks[i].textContent).not.toBe(userPath.children![0].data!["name"]);
@@ -368,8 +368,8 @@ describe("SiteMap", () => {
     fixture.detectChanges();
 
     navLinks = routeList!.querySelectorAll(".routerLink");
-    expect(siteMap.routes).not.toContain(loginPath);
-    expect(siteMap.routes).toContain(userPath);
+    expect(siteMap.routes()).not.toContain(loginPath);
+    expect(siteMap.routes()).toContain(userPath);
     expect(navLinks[1].textContent).toBe(userPath.children![0].data!["name"]);
     for (var i = 0; i < navLinks.length; i++) {
       expect(navLinks[i].textContent).not.toBe(loginPath.data!["name"]);

@@ -32,7 +32,7 @@
 
 // Angular imports
 import { Component, WritableSignal, computed, signal } from "@angular/core";
-import { ActivatedRoute, Router, RouterLink } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { from, map, switchMap, tap } from "rxjs";
 import { CommonModule } from "@angular/common";
 
@@ -55,11 +55,11 @@ interface PostsListResponse {
   templateUrl: "./fullList.component.html",
   styleUrl: "./fullList.component.less",
   standalone: true,
-  imports: [CommonModule, SinglePost, RouterLink, Loader],
+  imports: [CommonModule, SinglePost, Loader],
 })
 export class FullList {
   // current page and type of list
-  type: FullListType = "New";
+  type = signal<FullListType>("New");
   currentPage = signal(1);
   totalPages = signal(1);
   isLoading = signal(false);
@@ -85,7 +85,7 @@ export class FullList {
     // set the type from the url only if a valid type is
     // passed in
     if (urlPath.toLowerCase() === "new" || urlPath.toLowerCase() === "suggested") {
-      this.type = urlPath as FullListType;
+      this.type.set(urlPath as FullListType);
     }
 
     const requestedPage = Number(this.route.snapshot.queryParamMap.get("page"));
@@ -111,7 +111,7 @@ export class FullList {
     fetchFromIdb$
       .pipe(
         switchMap(() =>
-          this.apiClient.get<PostsListResponse>(`posts/${this.type.toLowerCase()}`, {
+          this.apiClient.get<PostsListResponse>(`posts/${this.type().toLowerCase()}`, {
             page: this.currentPage(),
           }),
         ),
@@ -128,7 +128,7 @@ export class FullList {
    *          posts from IndexedDB and transforming them.
    */
   fetchPostsFromIdb() {
-    const index = this.type.toLowerCase() === "new" ? "date" : "hugs";
+    const index = this.type().toLowerCase() === "new" ? "date" : "hugs";
 
     return from(
       this.swManager.fetchPosts(
@@ -136,7 +136,7 @@ export class FullList {
         5,
         undefined,
         this.currentPage(),
-        this.type.toLowerCase() === "new",
+        this.type().toLowerCase() === "new",
       ),
     ).pipe(
       map((data) => {

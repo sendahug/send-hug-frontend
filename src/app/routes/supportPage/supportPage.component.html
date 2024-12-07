@@ -3,7 +3,7 @@
     >Frequently Asked Questions</a
   >
   <ul>
-    <li *ngFor="let item of faqItems">
+    <li *ngFor="let item of faqItems()">
       <a
         href="{{ 'support#' + item.href }}"
         class="supportNavLink"

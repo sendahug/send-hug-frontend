@@ -70,11 +70,11 @@ interface ThreadResponse {
   imports: [CommonModule, RouterLink, Loader, ItemDeleteForm, AppSingleMessage, AppSingleThread],
 })
 export class AppMessaging {
-  messType: MessageType = "inbox";
+  messType = signal<MessageType>("inbox");
   idbFilterAttribute = computed(() => {
-    if (this.messType == "thread") {
+    if (this.messType() == "thread") {
       return "threadID";
-    } else if (this.messType == "outbox") {
+    } else if (this.messType() == "outbox") {
       return "fromId";
     } else {
       return "forId";
@@ -84,7 +84,7 @@ export class AppMessaging {
   totalPages = signal(1);
   isLoading = signal(false);
   isIdbFetchLoading = signal(false);
-  threadId?: number;
+  threadId = signal<number | undefined>(undefined);
   messages = signal<MessageGet[]>([]);
   userThreads = signal<FullThread[]>([]);
   userThreadsFormatted = computed<ParsedThread[]>(() => {
@@ -107,15 +107,14 @@ export class AppMessaging {
     disabled: this.totalPages() <= this.currentPage(),
   }));
   // loader sub-component variable
-  waitFor = `${this.messType} messages`;
   loadingMessage = computed(() =>
-    this.messType == "threads" ? "Fetching threads..." : "Fetching messages...",
+    this.messType() == "threads" ? "Fetching threads..." : "Fetching messages...",
   );
   loaderClass = computed(() => (!this.isIdbFetchLoading() && this.isLoading() ? "header" : ""));
   // edit popup sub-component variables
-  deleteMode: boolean = false;
-  toDelete: string | undefined;
-  itemToDelete: number | undefined;
+  deleteMode = signal(false);
+  toDelete = signal<string | undefined>(undefined);
+  itemToDelete = signal<number | undefined>(undefined);
 
   // CTOR
   constructor(
@@ -126,21 +125,16 @@ export class AppMessaging {
     private apiClient: ApiClientService,
   ) {
     let messageType;
-    this.threadId = Number(this.route.snapshot.paramMap.get("id"));
+    this.threadId.set(Number(this.route.snapshot.paramMap.get("id")));
     this.currentPage.set(1);
 
     this.route.url.subscribe((params) => {
       messageType = params[0].path;
     });
 
-    if (messageType) {
-      this.messType = messageType;
-      this.waitFor = `${this.messType} messages`;
-    } else {
-      this.messType = "inbox";
-    }
+    this.messType.set(messageType || "inbox");
 
-    if ((this.messType as MessageType) == "threads") {
+    if ((this.messType() as MessageType) == "threads") {
       this.fetchThreads();
     } else {
       this.fetchMessages();
@@ -158,10 +152,10 @@ export class AppMessaging {
     const fetchFromIdb$ = this.fetchMessagesFromIdb();
     const fetchParams: { [key: string]: any } = {
       page: this.currentPage(),
-      type: this.messType,
+      type: this.messType(),
     };
 
-    if (this.messType == "thread") fetchParams["threadID"] = this.threadId!;
+    if (this.messType() == "thread") fetchParams["threadID"] = this.threadId()!;
 
     fetchFromIdb$
       .pipe(switchMap(() => this.apiClient.get<MessagesResponse>("messages", fetchParams)))
@@ -182,7 +176,7 @@ export class AppMessaging {
    */
   fetchMessagesFromIdb() {
     const filterValue =
-      this.messType == "thread" ? this.threadId! : this.authService.userData()!.id!;
+      this.messType() == "thread" ? this.threadId()! : this.authService.userData()!.id!;
 
     return from(
       this.swManager.fetchMessages(this.idbFilterAttribute(), filterValue, 5, this.currentPage()),
@@ -218,7 +212,7 @@ export class AppMessaging {
         switchMap(() =>
           this.apiClient.get<ThreadResponse>("messages", {
             page: this.currentPage(),
-            type: this.messType,
+            type: this.messType(),
           }),
         ),
       )
@@ -265,7 +259,7 @@ export class AppMessaging {
   */
   nextPage() {
     this.currentPage.set(this.currentPage() + 1);
-    if (this.messType == "threads") {
+    if (this.messType() == "threads") {
       this.fetchThreads();
     } else {
       this.fetchMessages();
@@ -282,7 +276,7 @@ export class AppMessaging {
   */
   prevPage() {
     this.currentPage.set(this.currentPage() - 1);
-    if (this.messType == "threads") {
+    if (this.messType() == "threads") {
       this.fetchThreads();
     } else {
       this.fetchMessages();
@@ -297,9 +291,9 @@ export class AppMessaging {
   Programmer: Shir Bar Lev.
   */
   deleteAllMessages(type: string) {
-    this.deleteMode = true;
-    this.toDelete = `All ${type}`;
-    this.itemToDelete = this.authService.userData()!.id;
+    this.deleteMode.set(true);
+    this.toDelete.set(`All ${type}`);
+    this.itemToDelete.set(this.authService.userData()!.id);
   }
 
   /**
@@ -309,14 +303,14 @@ export class AppMessaging {
    *                  of the user ID (if it's a 'clear mailbox' situation).
    */
   updateMessageList(deletedId: number) {
-    if (this.toDelete?.includes("All")) {
-      if (this.messType.toLowerCase() == "threads") {
+    if (this.toDelete()?.includes("All")) {
+      if (this.messType().toLowerCase() == "threads") {
         this.userThreads.set([]);
       } else {
         this.messages.set([]);
       }
     } else {
-      if (this.messType.toLowerCase() == "threads") {
+      if (this.messType().toLowerCase() == "threads") {
         this.userThreads.set(this.userThreads().filter((thread) => thread.id != deletedId));
       } else {
         this.messages.set(this.messages().filter((message) => message.id != deletedId));
@@ -335,6 +329,6 @@ export class AppMessaging {
   Programmer: Shir Bar Lev.
   */
   changeMode(edit: boolean) {
-    this.deleteMode = edit;
+    this.deleteMode.set(edit);
   }
 }

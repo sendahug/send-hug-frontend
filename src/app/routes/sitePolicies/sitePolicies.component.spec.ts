@@ -97,8 +97,8 @@ describe("SitePolicies", () => {
     const fixture = TestBed.createComponent(SitePolicies);
     const sitePolicies = fixture.componentInstance;
 
-    expect(sitePolicies.pageTitle).toEqual("Terms and Conditions");
-    expect(sitePolicies.currentPolicy).toEqual("TermsConditions");
+    expect(sitePolicies.pageTitle()).toEqual("Terms and Conditions");
+    expect(sitePolicies.currentPolicy()).toEqual("TermsConditions");
   });
 
   it("should show the correct policy and title - privacy", () => {
@@ -107,8 +107,8 @@ describe("SitePolicies", () => {
     const fixture = TestBed.createComponent(SitePolicies);
     const sitePolicies = fixture.componentInstance;
 
-    expect(sitePolicies.pageTitle).toEqual("Privacy Policy");
-    expect(sitePolicies.currentPolicy).toEqual("PrivacyPolicy");
+    expect(sitePolicies.pageTitle()).toEqual("Privacy Policy");
+    expect(sitePolicies.currentPolicy()).toEqual("PrivacyPolicy");
   });
 
   it("should show the correct policy and title - cookies", () => {
@@ -117,7 +117,7 @@ describe("SitePolicies", () => {
     const fixture = TestBed.createComponent(SitePolicies);
     const sitePolicies = fixture.componentInstance;
 
-    expect(sitePolicies.pageTitle).toEqual("Cookies Policy");
-    expect(sitePolicies.currentPolicy).toEqual("CookiePolicy");
+    expect(sitePolicies.pageTitle()).toEqual("Cookies Policy");
+    expect(sitePolicies.currentPolicy()).toEqual("CookiePolicy");
   });
 });

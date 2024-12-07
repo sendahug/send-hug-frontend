@@ -59,4 +59,4 @@
   <button id="logout" class="appButton" (click)="logout()">Log Out</button>
 </div>
 
-<app-reset-pw-form *ngIf="resetMode" (editMode)="changeMode($event)"></app-reset-pw-form>
+<app-reset-pw-form *ngIf="resetMode()" (editMode)="changeMode($event)"></app-reset-pw-form>

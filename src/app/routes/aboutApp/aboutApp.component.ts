@@ -32,7 +32,7 @@
 
 // Angular imports
 import { NgFor } from "@angular/common";
-import { Component } from "@angular/core";
+import { Component, signal } from "@angular/core";
 import { RouterLink } from "@angular/router";
 
 import { SitePolicyMapping } from "@app/interfaces/policies.interface";
@@ -49,13 +49,15 @@ interface AboutLink {
   imports: [RouterLink, NgFor],
 })
 export class AboutApp {
-  aboutLinks: AboutLink[];
+  aboutLinks = signal<AboutLink[]>([]);
 
   // CTOR
   constructor() {
-    this.aboutLinks = SitePolicyMapping.map((link) => ({
-      path: `/policies/${link.path}`,
-      title: link.title,
-    }));
+    this.aboutLinks.set(
+      SitePolicyMapping.map((link) => ({
+        path: `/policies/${link.path}`,
+        title: link.title,
+      })),
+    );
   }
 }

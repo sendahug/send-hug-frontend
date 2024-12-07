@@ -80,7 +80,7 @@ describe("ErrorPage", () => {
 
     fixture.detectChanges();
 
-    expect(errorPage.error).toEqual(error);
+    expect(errorPage.error()).toEqual(error);
     expect(errorPageDOM.querySelectorAll("h3")[0].textContent).toBe(error.title);
     expect(errorPageDOM.querySelector("#errorCode").textContent).toContain(error.code);
     done();

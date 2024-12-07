@@ -130,7 +130,7 @@ describe("SearchResults", () => {
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
-      imports: [CommonModule, MockLoader, MockPost, RouterLink, SearchResults],
+      imports: [CommonModule, MockLoader, MockPost, RouterLink, SearchResults, Loader],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
         provideZoneChangeDetection({ eventCoalescing: true }),
@@ -165,12 +165,12 @@ describe("SearchResults", () => {
     const fixture = TestBed.createComponent(SearchResults);
     const searchResults = fixture.componentInstance;
     const searchResultsDOM = fixture.nativeElement;
-    searchResults.itemsService.isSearchResolved.next(true);
+    searchResults.itemsService.isSearching.set(false);
     fixture.detectChanges();
 
     expect(routeSpy).toHaveBeenCalled();
     expect(itemsServiceSpy).toHaveBeenCalledWith("search");
-    expect(searchResults.searchQuery).toBe("search");
+    expect(searchResults.searchQuery()).toBe("search");
     expect(searchResultsDOM.querySelector("#resultSummary").textContent).toContain('"search"');
   });
 
@@ -185,11 +185,11 @@ describe("SearchResults", () => {
       }
     });
     const searchSpy = spyOn(TestBed.inject(ItemsService), "sendSearch");
-    TestBed.inject(ItemsService).isSearching = false;
+    TestBed.inject(ItemsService).isSearching.set(false);
     const fixture = TestBed.createComponent(SearchResults);
     const searchResults = fixture.componentInstance;
 
-    expect(searchResults.searchQuery).toBe("search");
+    expect(searchResults.searchQuery()).toBe("search");
     expect(searchSpy).toHaveBeenCalled();
     expect(searchSpy).toHaveBeenCalledWith("search");
   });
@@ -205,11 +205,11 @@ describe("SearchResults", () => {
       }
     });
     const searchSpy = spyOn(TestBed.inject(ItemsService), "sendSearch");
-    TestBed.inject(ItemsService).isSearching = true;
+    TestBed.inject(ItemsService).isSearching.set(true);
     const fixture = TestBed.createComponent(SearchResults);
     const searchResults = fixture.componentInstance;
 
-    expect(searchResults.searchQuery).toBe("search");
+    expect(searchResults.searchQuery()).toBe("search");
     expect(searchSpy).not.toHaveBeenCalled();
   });
 
@@ -228,9 +228,9 @@ describe("SearchResults", () => {
     const fixture = TestBed.createComponent(SearchResults);
     const searchResults = fixture.componentInstance;
     const searchResultsDOM = fixture.debugElement.nativeElement;
-    searchResults.itemsService.isSearchResolved.next(true);
-    searchResults.itemsService.userSearchResults = [];
-    searchResults.itemsService.numUserResults = 0;
+    searchResults.itemsService.isSearching.set(false);
+    searchResults.itemsService.userSearchResults.set([]);
+    searchResults.itemsService.numUserResults.set(0);
 
     fixture.detectChanges();
 
@@ -252,14 +252,14 @@ describe("SearchResults", () => {
     const fixture = TestBed.createComponent(SearchResults);
     const searchResults = fixture.componentInstance;
     const searchResultsDOM = fixture.debugElement.nativeElement;
-    searchResults.itemsService.isSearchResolved.next(true);
-    searchResults.itemsService.userSearchResults = mockUserSearchResults;
-    searchResults.itemsService.numUserResults = 2;
+    searchResults.itemsService.isSearching.set(false);
+    searchResults.itemsService.userSearchResults.set(mockUserSearchResults);
+    searchResults.itemsService.numUserResults.set(2);
 
     fixture.detectChanges();
 
-    expect(searchResults.itemsService.userSearchResults).toBeTruthy();
-    expect(searchResults.itemsService.userSearchResults.length).toBe(2);
+    expect(searchResults.itemsService.userSearchResults()).toBeTruthy();
+    expect(searchResults.itemsService.userSearchResults().length).toBe(2);
     expect(searchResultsDOM.querySelector("#userSearchResults")).toBeTruthy();
     expect(searchResultsDOM.querySelectorAll(".searchResultUser").length).toBe(2);
     searchResultsDOM.querySelectorAll(".searchResultUser").forEach((item: HTMLElement) => {
@@ -286,9 +286,9 @@ describe("SearchResults", () => {
     const fixture = TestBed.createComponent(SearchResults);
     const searchResults = fixture.componentInstance;
     const searchResultsDOM = fixture.debugElement.nativeElement;
-    searchResults.itemsService.isSearchResolved.next(true);
-    searchResults.itemsService.postSearchResults = [];
-    searchResults.itemsService.numPostResults = 0;
+    searchResults.itemsService.isSearching.set(false);
+    searchResults.itemsService.postSearchResults.set([]);
+    searchResults.itemsService.numPostResults.set(0);
 
     fixture.detectChanges();
 
@@ -310,15 +310,15 @@ describe("SearchResults", () => {
     const fixture = TestBed.createComponent(SearchResults);
     const searchResults = fixture.componentInstance;
     const searchResultsDOM = fixture.debugElement.nativeElement;
-    searchResults.itemsService.isSearchResolved.next(true);
-    searchResults.itemsService.postSearchResults = [mockPostSearchResults[0]];
-    searchResults.itemsService.numPostResults = 1;
+    searchResults.itemsService.isSearching.set(false);
+    searchResults.itemsService.postSearchResults.set([mockPostSearchResults[0]]);
+    searchResults.itemsService.numPostResults.set(1);
     searchResults.itemsService.totalPostSearchPages.set(2);
 
     fixture.detectChanges();
 
-    expect(searchResults.itemsService.postSearchResults).toBeTruthy();
-    expect(searchResults.itemsService.postSearchResults.length).toBe(1);
+    expect(searchResults.itemsService.postSearchResults()).toBeTruthy();
+    expect(searchResults.itemsService.postSearchResults().length).toBe(1);
     expect(searchResultsDOM.querySelector("#postSearchResults")).toBeTruthy();
     expect(searchResultsDOM.querySelectorAll("app-single-post").length).toBe(1);
     expect(searchResultsDOM.querySelector("#pSearchResErr")).toBeNull();
@@ -338,18 +338,20 @@ describe("SearchResults", () => {
     });
     const router = TestBed.inject(Router);
     const routeSpy = spyOn(router, "navigate");
+    spyOn(TestBed.inject(ItemsService), "sendSearch");
 
     // create the component
     const fixture = TestBed.createComponent(SearchResults);
     const searchResults = fixture.componentInstance;
     const searchResultsDOM = fixture.debugElement.nativeElement;
-    searchResults.itemsService.isSearchResolved.next(true);
-    searchResults.itemsService.postSearchResults = [mockPostSearchResults[0]];
-    searchResults.itemsService.numPostResults = 1;
+    searchResults.itemsService.isSearching.set(false);
+    searchResults.itemsService.postSearchResults.set([mockPostSearchResults[0]]);
+    searchResults.itemsService.numPostResults.set(1);
     searchResults.itemsService.totalPostSearchPages.set(2);
     fixture.detectChanges();
 
     // expectations for page 1
+    console.log(searchResultsDOM);
     expect(searchResults.itemsService.postSearchPage()).toBe(1);
     expect(
       searchResultsDOM.querySelector("#postSearchResults").firstElementChild.children.length,
@@ -357,8 +359,8 @@ describe("SearchResults", () => {
 
     // change the page
     searchResultsDOM.querySelectorAll(".nextButton")[0].click();
-    searchResults.itemsService.postSearchResults = [...mockPostSearchResults];
-    searchResults.itemsService.numPostResults = 2;
+    searchResults.itemsService.postSearchResults.set([...mockPostSearchResults]);
+    searchResults.itemsService.numPostResults.set(2);
     fixture.detectChanges();
 
     // expectations for page 2
@@ -370,8 +372,8 @@ describe("SearchResults", () => {
 
     // change the page
     searchResultsDOM.querySelectorAll(".prevButton")[0].click();
-    searchResults.itemsService.postSearchResults = [mockPostSearchResults[0]];
-    searchResults.itemsService.numPostResults = 1;
+    searchResults.itemsService.postSearchResults.set([mockPostSearchResults[0]]);
+    searchResults.itemsService.numPostResults.set(1);
     fixture.detectChanges();
 
     // expectations for page 1
@@ -394,9 +396,9 @@ describe("SearchResults", () => {
     });
     const fixture = TestBed.createComponent(SearchResults);
     const searchResults = fixture.componentInstance;
-    searchResults.itemsService.isSearchResolved.next(true);
-    searchResults.itemsService.postSearchResults = [...mockPostSearchResults];
-    searchResults.itemsService.numPostResults = 1;
+    searchResults.itemsService.isSearching.set(false);
+    searchResults.itemsService.postSearchResults.set([...mockPostSearchResults]);
+    searchResults.itemsService.numPostResults.set(1);
     const removeSpy = spyOn(searchResults, "removeDeletedPost").and.callThrough();
     fixture.detectChanges();
 
@@ -406,7 +408,7 @@ describe("SearchResults", () => {
     fixture.detectChanges();
 
     expect(removeSpy).toHaveBeenCalledWith(5);
-    expect(searchResults.itemsService.postSearchResults.length).toBe(1);
-    expect(searchResults.itemsService.postSearchResults[0].id).not.toBe(5);
+    expect(searchResults.itemsService.postSearchResults().length).toBe(1);
+    expect(searchResults.itemsService.postSearchResults()[0].id).not.toBe(5);
   });
 });

@@ -32,7 +32,7 @@
 
 // Angular imports
 import { CommonModule } from "@angular/common";
-import { Component } from "@angular/core";
+import { Component, signal } from "@angular/core";
 import { Router, Route, RouterLink } from "@angular/router";
 
 // App-related imports
@@ -46,7 +46,7 @@ import { AuthService } from "@app/services/auth.service";
   imports: [CommonModule, RouterLink],
 })
 export class SiteMap {
-  routes: Route[] = [];
+  routes = signal<Route[]>([]);
 
   // CTOR
   constructor(
@@ -70,7 +70,8 @@ export class SiteMap {
    * logged in.
    */
   updateSiteMap() {
-    this.routes.splice(0, this.routes.length);
+    this.routes.set([]);
+    const routes: Route[] = [];
 
     this.router.config.forEach((route) => {
       // make sure the path isn't the error page or the search results
@@ -78,26 +79,28 @@ export class SiteMap {
         // if it's the admin board, make sure the user has permission to see it
         if (route.path!.includes("admin")) {
           if (this.authService.canUser("read:admin-board")) {
-            this.routes.push(route);
+            routes.push(route);
           }
           // if it's the mailbox component, check the user is authenticated
         } else if (route.path!.includes("messages")) {
-          if (this.authService.authenticated()) this.routes.push(route);
+          if (this.authService.authenticated()) routes.push(route);
           // if it's the user page, check the user is authenticated
         } else if (route.path!.includes("user")) {
-          if (this.authService.authenticated()) this.routes.push(route);
+          if (this.authService.authenticated()) routes.push(route);
           // if it's the login component, check the user isn't authenticated
         } else if (route.path == "login") {
-          if (!this.authService.authenticated()) this.routes.push(route);
+          if (!this.authService.authenticated()) routes.push(route);
           // if it's the settings, check the user is authenticated
         } else if (route.path == "settings") {
-          if (this.authService.authenticated()) this.routes.push(route);
+          if (this.authService.authenticated()) routes.push(route);
         }
         // otherwise just add the route as-is
         else if (route.path != "signup") {
-          this.routes.push(route);
+          routes.push(route);
         }
       }
     });
+
+    this.routes.set(routes);
   }
 }

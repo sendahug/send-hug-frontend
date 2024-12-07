@@ -56,7 +56,7 @@ import { SWManager } from "@app/services/sWManager.service";
 export class NewItem implements OnInit {
   // variable declaration
   itemType = signal<string>("");
-  forID: any;
+  forID = signal<number | undefined>(undefined);
   // TODO: These two should be united, they're practically
   // the same apart from some configuration changes
   newMessageForm = this.fb.group({
@@ -104,7 +104,7 @@ export class NewItem implements OnInit {
     if (user && userID) {
       // this.user = user;
       this.newMessageForm.controls.messageFor.setValue(user);
-      this.forID = Number(userID);
+      this.forID.set(Number(userID));
     }
   }
 
@@ -189,7 +189,7 @@ export class NewItem implements OnInit {
     }
 
     // if the user is attempting to send a message to themselves
-    if (this.authService.userData()!.id == Number(this.forID)) {
+    if (this.authService.userData()!.id == Number(this.forID())) {
       this.alertService.createAlert({
         type: "Error",
         message: "You can't send a message to yourself!",
@@ -204,7 +204,7 @@ export class NewItem implements OnInit {
       from: {
         displayName: this.authService.userData()!.displayName!,
       },
-      forId: this.forID,
+      forId: this.forID(),
       messageText: messageText,
       date: new Date(),
     };

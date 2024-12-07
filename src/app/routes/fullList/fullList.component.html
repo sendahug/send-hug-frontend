@@ -1,20 +1,15 @@
 <div id="items">
-  <h2 class="listTitle" id="listTitle">{{ type }} Items</h2>
+  <h2 class="listTitle" id="listTitle">{{ type() }} Items</h2>
 
   <app-loader *ngIf="isLoading()" [loadingMessage]="'Fetching posts...'"></app-loader>
 
   <!-- If there are items in the list -->
-  <ul
-    id="fullItems"
-    *ngIf="posts().length > 0 && !isLoading()"
-    role="region"
-    aria-describedby="listTitle"
-  >
+  <ul id="fullItems" *ngIf="posts().length > 0 && !isLoading()" aria-describedby="listTitle">
     <app-single-post
       *ngFor="let item of posts()"
       [post]="item"
       [type]="'n'"
-      [containerClass]="type == 'New' ? 'newItem' : 'sugItem'"
+      [containerClass]="type() == 'New' ? 'newItem' : 'sugItem'"
       (deletedId)="removeDeletedPost($event)"
     ></app-single-post>
   </ul>

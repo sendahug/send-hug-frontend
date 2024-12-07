@@ -328,7 +328,7 @@ describe("AuthService", () => {
     authService.fetchUser().subscribe({
       next: (user) => {
         expect(getTokenSpy).toHaveBeenCalled();
-        expect(authService.loggedIn).toBeFalse();
+        expect(authService.loggedIn()).toBeFalse();
         expect(isResolvedSpy).toHaveBeenCalledWith(false);
         expect(userDataSpy).toHaveBeenCalledWith(undefined);
         expect(setUserSpy).toHaveBeenCalled();
@@ -647,7 +647,7 @@ describe("AuthService", () => {
   it("setCurrentUser() - calls updateUserData() if the user just logged in", () => {
     const updateSpy = spyOn(authService, "updateUserData");
     const addSpy = spyOn(authService["serviceWorkerM"], "addItem");
-    authService.loggedIn = true;
+    authService.loggedIn.set(true);
 
     // before
     expect(authService.userData()).toBeUndefined();
@@ -702,7 +702,7 @@ describe("AuthService", () => {
       emailVerified: true,
     });
     authService.authenticated.set(true);
-    authService.tokenExpired = false;
+    authService.tokenExpired.set(false);
     const signOutSpy = spyOn(authService, "signOut").and.returnValue(of(undefined));
     const clearSpy = spyOn(authService["serviceWorkerM"], "clearStore");
 
@@ -746,7 +746,7 @@ describe("AuthService", () => {
       emailVerified: true,
     });
     authService.authenticated.set(true);
-    authService.tokenExpired = true;
+    authService.tokenExpired.set(true);
     const signOutSpy = spyOn(authService, "signOut").and.returnValue(of(undefined));
     const clearSpy = spyOn(authService["serviceWorkerM"], "clearStore");
 

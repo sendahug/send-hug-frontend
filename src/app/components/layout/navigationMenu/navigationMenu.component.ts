@@ -77,7 +77,6 @@ export class AppNavMenu implements OnInit, AfterViewInit {
     hidden: !this.showMenuButton(),
   }));
   currentlyActiveRoute = signal("/");
-  SiteLogoSrc = SiteLogoSrc;
   currentTextSize = signal(1);
   menuSize = computed(() => {
     // text, search and notifications, each is ~65px
@@ -103,6 +102,7 @@ export class AppNavMenu implements OnInit, AfterViewInit {
       navLinksCount * iconPadding
     );
   });
+  SiteLogoSrc = SiteLogoSrc;
   // font awesome icons
   faBars = faBars;
   faComments = faComments;

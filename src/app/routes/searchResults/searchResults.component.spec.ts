@@ -351,7 +351,6 @@ describe("SearchResults", () => {
     fixture.detectChanges();
 
     // expectations for page 1
-    console.log(searchResultsDOM);
     expect(searchResults.itemsService.postSearchPage()).toBe(1);
     expect(
       searchResultsDOM.querySelector("#postSearchResults").firstElementChild.children.length,

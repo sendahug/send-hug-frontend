@@ -68,7 +68,6 @@ jobs:
           # You can pass in multiple channels to post to by providing a comma-delimited list of channel IDs.
           # For posting a rich message using Block Kit
           payload: |
-            channel_id: "C06S2D98HPV"
             {
               "text": "GitHub Action build result: ${{ job.status }}\n${{ github.event.head_commit.url }}",
               "blocks": [

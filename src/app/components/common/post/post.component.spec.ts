@@ -317,6 +317,29 @@ describe("Post", () => {
     done();
   });
 
+  it("should change mode when the event emitter emits false - message mode", (done: DoneFn) => {
+    const upFixture = TestBed.createComponent(MockPage);
+    upFixture.detectChanges();
+    const singlePost: SinglePost = upFixture.debugElement.children[0].componentInstance;
+    const changeSpy = spyOn(singlePost, "changeMode").and.callThrough();
+    upFixture.detectChanges();
+
+    // start the popup
+    singlePost.sendMessageMode.set(true);
+    upFixture.detectChanges();
+
+    // exit the popup
+    const popup = upFixture.debugElement.query(By.css("app-send-hug-form"))
+      .componentInstance as SendHugForm;
+    popup.sendMode.emit(false);
+    upFixture.detectChanges();
+
+    // check the popup is exited
+    expect(changeSpy).toHaveBeenCalled();
+    expect(singlePost.sendMessageMode()).toBeFalse();
+    done();
+  });
+
   it("toggleMenu() - should set the currently open menu to the given post's id", () => {
     const upFixture = TestBed.createComponent(MockPage);
     upFixture.detectChanges();

@@ -281,7 +281,7 @@ describe("AppMessaging", () => {
     });
   });
 
-  it("should fetch messages from IDB", (done: DoneFn) => {
+  it("should fetch messages from IDB - inbox", (done: DoneFn) => {
     const fixture = TestBed.createComponent(AppMessaging);
     const appMessaging = fixture.componentInstance;
     const idbSpy = spyOn(appMessaging["swManager"], "fetchMessages").and.returnValue(
@@ -292,6 +292,31 @@ describe("AppMessaging", () => {
 
     appMessaging.fetchMessagesFromIdb().subscribe((response) => {
       expect(idbSpy).toHaveBeenCalledWith("forId", 4, 5, 1);
+      expect(appMessaging.messages()).toEqual(mockMessages);
+      expect(appMessaging.totalPages()).toBe(2);
+      expect(response).toEqual({
+        messages: mockMessages,
+        total_pages: 2,
+        current_page: 1,
+        success: true,
+      });
+      done();
+    });
+  });
+
+  it("should fetch messages from IDB - outbox", (done: DoneFn) => {
+    TestBed.inject(ActivatedRoute).url = of([{ path: "outbox" } as UrlSegment]);
+
+    const fixture = TestBed.createComponent(AppMessaging);
+    const appMessaging = fixture.componentInstance;
+    const idbSpy = spyOn(appMessaging["swManager"], "fetchMessages").and.returnValue(
+      new Promise((resolve) => resolve({ messages: mockMessages, pages: 2 })),
+    );
+
+    fixture.detectChanges();
+
+    appMessaging.fetchMessagesFromIdb().subscribe((response) => {
+      expect(idbSpy).toHaveBeenCalledWith("fromId", 4, 5, 1);
       expect(appMessaging.messages()).toEqual(mockMessages);
       expect(appMessaging.totalPages()).toBe(2);
       expect(response).toEqual({

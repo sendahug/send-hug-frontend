@@ -96,7 +96,7 @@ describe("UserIcon", () => {
     expect(userIcon).toBeTruthy();
   });
 
-  it("should set the colours based on the incoming colours", (done: DoneFn) => {
+  it("should set the colours based on the incoming colours at creation", (done: DoneFn) => {
     const fixture = TestBed.createComponent(MockIconContainer);
     const userIcon = fixture.debugElement.query(By.css("app-user-icon"));
     const userIconDOM = userIcon.nativeElement;

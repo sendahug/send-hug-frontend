@@ -74,11 +74,11 @@
         const config = {
           defaultTimeoutInterval: 5000,
           random: true,
+          forbidDuplicateNames: true,
           ...(testFrameworkConfig ?? {}),
         };
 
-        jasmine.DEFAULT_TIMEOUT_INTERVAL = config.defaultTimeoutInterval;
-        jasmine.random = true;
+        jasmine.getEnv().configure(config);
 
         await import(new URL(testFile, document.baseURI).href).catch((error) => {
           failedImports.push({

@@ -56,3 +56,29 @@ jobs:
           firebaseServiceAccount: "${{ secrets.FIREBASE_STAGING_SERVICE_ACCOUNT }}"
           expires: 10d
           projectId: ${{ secrets.FIREBASE_PROJECT_ID }}
+
+      - name: Post to a Slack channel
+        id: slack
+        uses: slackapi/slack-github-action@v2.0.0
+        with:
+          # Slack channel id, channel name, or user id to post message.
+          # See also: https://api.slack.com/methods/chat.postMessage#channels
+          # You can pass in multiple channels to post to by providing a comma-delimited list of channel IDs.
+          # For posting a rich message using Block Kit
+          payload: |
+            channel_id: "C06S2D98HPV"
+            {
+              "text": "GitHub Action build result: ${{ job.status }}\n${{ github.event.head_commit.url }}",
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "GitHub Action build result: ${{ job.status }}\n${{  github.event.head_commit.url }}"
+                  }
+                }
+              ]
+            }
+        env:
+          webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
+          webhook-type: incoming-webhook

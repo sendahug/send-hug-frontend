@@ -91,17 +91,14 @@ export class SinglePost implements AfterViewChecked, OnInit, OnDestroy {
   protected _post: WritableSignal<PostGet | undefined> = signal(undefined);
   postId = computed(() => `${this.type}Post${this._post()?.id || ""}`);
   // edit popup sub-component variables
-  postToEdit: PostGet | undefined;
-  editType: string | undefined;
-  editMode: boolean = false;
-  deleteMode: boolean = false;
-  toDelete: string | undefined;
-  itemToDelete: number | undefined;
-  reportMode: boolean = false;
-  reportedItem: PostGet | undefined;
+  editType: "post" = "post";
+  editMode = signal(false);
+  deleteMode = signal(false);
+  toDelete: "Post" = "Post";
+  itemToDelete = computed(() => this._post()?.id);
+  reportMode = signal(false);
   reportType: "Post" = "Post";
-  sendMessageMode: boolean = false;
-  waitFor = "main page";
+  sendMessageMode = signal(false);
   subscriptions: Subscription[] = [];
   shouldShowSubmenu = signal(true);
   shouldMenuFloat = signal(false);
@@ -245,7 +242,7 @@ export class SinglePost implements AfterViewChecked, OnInit, OnDestroy {
   sendHug() {
     if (!this._post()) return;
 
-    this.sendMessageMode = true;
+    this.sendMessageMode.set(true);
   }
 
   /*
@@ -256,9 +253,7 @@ export class SinglePost implements AfterViewChecked, OnInit, OnDestroy {
   Programmer: Shir Bar Lev.
   */
   editPost() {
-    this.editType = "post";
-    this.postToEdit = this._post();
-    this.editMode = true;
+    this.editMode.set(true);
   }
 
   /*
@@ -274,16 +269,16 @@ export class SinglePost implements AfterViewChecked, OnInit, OnDestroy {
   changeMode(edit: boolean, type: "Edit" | "Delete" | "Report" | "Message") {
     switch (type) {
       case "Edit":
-        this.editMode = edit;
+        this.editMode.set(edit);
         break;
       case "Delete":
-        this.deleteMode = edit;
+        this.deleteMode.set(edit);
         break;
       case "Report":
-        this.reportMode = edit;
+        this.reportMode.set(edit);
         break;
       case "Message":
-        this.sendMessageMode = edit;
+        this.sendMessageMode.set(edit);
         break;
     }
   }
@@ -296,9 +291,7 @@ export class SinglePost implements AfterViewChecked, OnInit, OnDestroy {
   Programmer: Shir Bar Lev.
   */
   deletePost() {
-    this.deleteMode = true;
-    this.toDelete = "Post";
-    this.itemToDelete = this._post()?.id;
+    this.deleteMode.set(true);
   }
 
   /*
@@ -309,8 +302,7 @@ export class SinglePost implements AfterViewChecked, OnInit, OnDestroy {
   Programmer: Shir Bar Lev.
   */
   reportPost() {
-    this.reportMode = true;
-    this.reportedItem = this._post();
+    this.reportMode.set(true);
   }
 
   /*

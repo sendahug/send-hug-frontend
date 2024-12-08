@@ -98,29 +98,29 @@
 </li>
 
 <item-delete-form
-  *ngIf="deleteMode"
+  *ngIf="deleteMode()"
   (editMode)="changeMode($event, 'Delete')"
   [toDelete]="toDelete"
-  [itemToDelete]="itemToDelete"
+  [itemToDelete]="itemToDelete()"
   (deleted)="deletedId.emit(_post()!.id)"
 ></item-delete-form>
 
 <post-edit-form
-  *ngIf="editMode"
-  [editedItem]="postToEdit!"
+  *ngIf="editMode()"
+  [editedItem]="_post()!"
   (editMode)="changeMode($event, 'Edit')"
   (updateResult)="updatePostText($event)"
 ></post-edit-form>
 
 <report-form
-  *ngIf="reportMode"
+  *ngIf="reportMode()"
   (reportMode)="changeMode($event, 'Report')"
-  [reportedItem]="reportedItem"
+  [reportedItem]="_post()!"
   [reportType]="reportType"
 ></report-form>
 
 <app-send-hug-form
-  *ngIf="sendMessageMode"
+  *ngIf="sendMessageMode()"
   (sendMode)="changeMode($event, 'Message')"
   [forUsername]="_post()!.user"
   [forID]="_post()!.userId"

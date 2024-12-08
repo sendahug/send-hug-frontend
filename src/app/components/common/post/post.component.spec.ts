@@ -132,9 +132,9 @@ describe("Post", () => {
     upFixture.detectChanges();
     const singlePost: SinglePost = upFixture.debugElement.children[0].children[0].componentInstance;
 
-    expect(singlePost.editMode).toBeFalse();
-    expect(singlePost.deleteMode).toBeFalse();
-    expect(singlePost.reportMode).toBeFalse();
+    expect(singlePost.editMode()).toBeFalse();
+    expect(singlePost.deleteMode()).toBeFalse();
+    expect(singlePost.reportMode()).toBeFalse();
   });
 
   // Check that sending a hug triggers the items service
@@ -159,7 +159,7 @@ describe("Post", () => {
     upFixture.detectChanges();
 
     // after the click
-    expect(singlePost.sendMessageMode).toBeTrue();
+    expect(singlePost.sendMessageMode()).toBeTrue();
     expect(hugSpy).toHaveBeenCalled();
     done();
   });
@@ -176,7 +176,7 @@ describe("Post", () => {
     upFixture.detectChanges();
 
     // before the click
-    expect(singlePost.editMode).toBeFalse();
+    expect(singlePost.editMode()).toBeFalse();
     expect(authSpy).toHaveBeenCalled();
 
     // trigger click
@@ -184,7 +184,7 @@ describe("Post", () => {
     upFixture.detectChanges();
 
     // after the click
-    expect(singlePost.editMode).toBeTrue();
+    expect(singlePost.editMode()).toBeTrue();
     expect(singlePost.editType).toBe("post");
     expect(singlePostDOM.querySelector("post-edit-form")).toBeTruthy();
     done();
@@ -202,7 +202,7 @@ describe("Post", () => {
     upFixture.detectChanges();
 
     // before the click
-    expect(singlePost.deleteMode).toBeFalse();
+    expect(singlePost.deleteMode()).toBeFalse();
     expect(authSpy).toHaveBeenCalled();
 
     // trigger click
@@ -210,9 +210,9 @@ describe("Post", () => {
     upFixture.detectChanges();
 
     // after the click
-    expect(singlePost.deleteMode).toBeTrue();
+    expect(singlePost.deleteMode()).toBeTrue();
     expect(singlePost.toDelete).toBe("Post");
-    expect(singlePost.itemToDelete).toBe(1);
+    expect(singlePost.itemToDelete()).toBe(1);
     expect(singlePostDOM.querySelector("item-delete-form")).toBeTruthy();
     done();
   });
@@ -231,7 +231,7 @@ describe("Post", () => {
     upFixture.detectChanges();
 
     // before the click
-    expect(singlePost.reportMode).toBeFalse();
+    expect(singlePost.reportMode()).toBeFalse();
     expect(authSpy).toHaveBeenCalled();
     expect(reportSpy).not.toHaveBeenCalled();
 
@@ -240,7 +240,7 @@ describe("Post", () => {
     upFixture.detectChanges();
 
     // after the click
-    expect(singlePost.reportMode).toBeTrue();
+    expect(singlePost.reportMode()).toBeTrue();
     expect(singlePost.reportType).toBe("Post");
     expect(reportSpy).toHaveBeenCalled();
     expect(singlePostDOM.querySelector("report-form")).toBeTruthy();
@@ -256,7 +256,7 @@ describe("Post", () => {
     upFixture.detectChanges();
 
     // start the popup
-    singlePost.editMode = true;
+    singlePost.editMode.set(true);
     upFixture.detectChanges();
 
     // exit the popup
@@ -267,7 +267,7 @@ describe("Post", () => {
 
     // check the popup is exited
     expect(changeSpy).toHaveBeenCalled();
-    expect(singlePost.editMode).toBeFalse();
+    expect(singlePost.editMode()).toBeFalse();
     done();
   });
 
@@ -279,7 +279,7 @@ describe("Post", () => {
     upFixture.detectChanges();
 
     // start the popup
-    singlePost.deleteMode = true;
+    singlePost.deleteMode.set(true);
     upFixture.detectChanges();
 
     // exit the popup
@@ -290,7 +290,7 @@ describe("Post", () => {
 
     // check the popup is exited
     expect(changeSpy).toHaveBeenCalled();
-    expect(singlePost.deleteMode).toBeFalse();
+    expect(singlePost.deleteMode()).toBeFalse();
     done();
   });
 
@@ -302,7 +302,7 @@ describe("Post", () => {
     upFixture.detectChanges();
 
     // start the popup
-    singlePost.reportMode = true;
+    singlePost.reportMode.set(true);
     upFixture.detectChanges();
 
     // exit the popup
@@ -313,7 +313,7 @@ describe("Post", () => {
 
     // check the popup is exited
     expect(changeSpy).toHaveBeenCalled();
-    expect(singlePost.reportMode).toBeFalse();
+    expect(singlePost.reportMode()).toBeFalse();
     done();
   });
 
@@ -491,7 +491,7 @@ describe("Post", () => {
     };
 
     // start the popup
-    singlePost.editMode = true;
+    singlePost.editMode.set(true);
     upFixture.detectChanges();
 
     // exit the popup
@@ -515,7 +515,7 @@ describe("Post", () => {
     upFixture.detectChanges();
 
     // start the popup
-    singlePost.deleteMode = true;
+    singlePost.deleteMode.set(true);
     upFixture.detectChanges();
 
     // exit the popup

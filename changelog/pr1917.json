@@ -1,0 +1,17 @@
+{
+  "pr_number": 1917,
+  "changes": [
+    {
+      "change": "Chores",
+      "description": "Converted all non-input/output/signal properties to signals across all components and most services."
+    },
+    {
+      "change": "Chores",
+      "description": "Removed old code responsible for waiting for the user's data to be resolved in various authenticated-only components. Now that we use route guards to ensure users are authenticated before vising these routes, we don't need to manually wait for the auth checks."
+    },
+    {
+      "change": "Chores",
+      "description": "Deleted unnecessary unused imports and properties from various components (including the full list, search results, the single post and the main page) and from the Items Service."
+    }
+  ]
+}

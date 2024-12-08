@@ -30,7 +30,7 @@
   SOFTWARE.
 */
 
-import { Directive, Input, TemplateRef, ViewContainerRef } from "@angular/core";
+import { Directive, input, TemplateRef, ViewContainerRef } from "@angular/core";
 
 import { TeleportService } from "@app/services/teleport.service";
 
@@ -40,7 +40,7 @@ import { TeleportService } from "@app/services/teleport.service";
   standalone: true,
 })
 export class TeleportDirective {
-  @Input({ required: true }) teleport!: string;
+  teleport = input.required<string>();
 
   constructor(
     private templateRef: TemplateRef<any>,
@@ -52,7 +52,7 @@ export class TeleportDirective {
    * Angular's OnInit hook.
    */
   ngOnInit() {
-    const target = this.teleportService.getTeleportTarget(this.teleport);
+    const target = this.teleportService.getTeleportTarget(this.teleport());
 
     // If the target wasn't found, just render it where it is.
     if (!target) {

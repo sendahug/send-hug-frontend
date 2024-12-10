@@ -39,7 +39,7 @@
     "cypress": "^13.16.1",
     "jasmine-core": "^5.5.0",
     "less": "^4.2.1",
-    "magic-string": "^0.30.14",
+    "magic-string": "^0.30.15",
     "ng-mocks": "^14.13.1",
     "pa11y-ci": "^3.1.0",
     "prettier": "^3.4.2",

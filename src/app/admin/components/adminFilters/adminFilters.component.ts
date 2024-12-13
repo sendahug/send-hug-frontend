@@ -45,10 +45,10 @@ import { ApiClientService } from "@app/services/apiClient.service";
   templateUrl: "./adminFilters.component.html",
 })
 export class AdminFilters {
-  filteredPhrases: { id: number; filter: string }[] = [];
+  filteredPhrases = signal<{ id: number; filter: string }[]>([]);
   currentPage = signal(1);
   totalPages = signal(1);
-  isLoading = false;
+  isLoading = signal(false);
   previousButtonClass = computed(() => ({
     "appButton nextButton": true,
     disabled: this.currentPage() >= this.totalPages(),
@@ -75,18 +75,18 @@ export class AdminFilters {
    * Fetches the filters from the server.
    */
   fetchFilters() {
-    this.isLoading = true;
+    this.isLoading.set(true);
 
     // try to fetch the list of words
     this.apiClient.get("filters", { page: `${this.currentPage()}` }).subscribe({
       next: (response: any) => {
-        this.filteredPhrases = response.words;
+        this.filteredPhrases.set(response.words);
         this.totalPages.set(response.total_pages);
-        this.isLoading = false;
+        this.isLoading.set(false);
         // if there was an error, alert the user.
       },
       error: (_err: HttpErrorResponse) => {
-        this.isLoading = false;
+        this.isLoading.set(false);
       },
     });
   }
@@ -116,7 +116,7 @@ export class AdminFilters {
         this.alertsService.createSuccessAlert(
           `The phrase ${response.added.filter} was added to the list of filtered words!`,
         );
-        this.filteredPhrases.push(response.added);
+        this.filteredPhrases.set([...this.filteredPhrases(), response.added]);
       },
     });
   }
@@ -135,7 +135,9 @@ export class AdminFilters {
         this.alertsService.createSuccessAlert(
           `The phrase ${response.deleted.filter} was removed from the list of filtered words.`,
         );
-        this.filteredPhrases = this.filteredPhrases.filter((existingF) => existingF.id != filter);
+        this.filteredPhrases.set(
+          this.filteredPhrases().filter((existingF) => existingF.id != filter),
+        );
       },
     });
   }

@@ -32,7 +32,7 @@
 
 import { CommonModule } from "@angular/common";
 import { Component, OnInit, signal } from "@angular/core";
-import { Router, RouterLink } from "@angular/router";
+import { Router } from "@angular/router";
 
 import { AuthService } from "@app/services/auth.service";
 import { Loader } from "@common/loader/loader.component";
@@ -41,7 +41,7 @@ import { Loader } from "@common/loader/loader.component";
   selector: "app-verify-email-page",
   templateUrl: "./verifyEmail.component.html",
   standalone: true,
-  imports: [CommonModule, RouterLink, Loader],
+  imports: [CommonModule, Loader],
 })
 export class VerifyEmailPage implements OnInit {
   loadingAuth = signal(true);

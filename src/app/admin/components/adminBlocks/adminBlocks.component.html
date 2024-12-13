@@ -1,8 +1,8 @@
-<div *ngIf="isLoading" id="loaderDiv">
+<div *ngIf="isLoading()" id="loaderDiv">
   <app-loader [loadingMessage]="'Getting blocked users...'"></app-loader>
 </div>
 
-<div class="adminScreen" id="adminBlocks" *ngIf="!isLoading" role="main">
+<div class="adminScreen" id="adminBlocks" *ngIf="!isLoading()" role="main">
   <h4 class="subTitle">Block User</h4>
   <!-- Block a user by ID -->
   <form [formGroup]="blockForm">
@@ -33,7 +33,7 @@
 
   <h4 class="subTitle">Blocked Users</h4>
   <!-- Blocked users table -->
-  <div class="tableContainer" *ngIf="blockedUsers.length">
+  <div class="tableContainer" *ngIf="blockedUsers().length">
     <table>
       <thead>
         <tr>
@@ -44,7 +44,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let user of blockedUsers">
+        <tr *ngFor="let user of blockedUsers()">
           <td aria-describedby="bUserID">{{ user.id }}</td>
           <td aria-describedby="bUserDisplay" id="{{ 'user' + user.id }}">
             {{ user.displayName }}
@@ -68,7 +68,7 @@
   </div>
 
   <!-- Blocked users pagination -->
-  <div class="pagination" *ngIf="blockedUsers.length" role="navigation">
+  <div class="pagination" *ngIf="blockedUsers().length" role="navigation">
     <button
       [ngClass]="previousButtonClass()"
       [disabled]="currentPage() <= 1"
@@ -89,5 +89,5 @@
   </div>
 
   <!-- If there are no blocked users -->
-  <div *ngIf="!blockedUsers.length" class="errorMessage">There are no blocked users.</div>
+  <div *ngIf="!blockedUsers().length" class="errorMessage">There are no blocked users.</div>
 </div>

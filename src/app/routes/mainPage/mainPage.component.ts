@@ -60,8 +60,6 @@ export class MainPage {
   isLoading = signal(false);
   newPosts: WritableSignal<PostGet[]> = signal([]);
   suggestedPosts: WritableSignal<PostGet[]> = signal([]);
-  // loader sub-component variables
-  waitFor = "main page";
 
   // CTOR
   constructor(

@@ -82,8 +82,8 @@ export class AuthService {
   refreshRate = computed(() => this.userData()?.refreshRate || 20);
   // documents whether the user just logged in or they're still logged in following
   // their previous login
-  loggedIn = false;
-  tokenExpired = false;
+  loggedIn = signal(false);
+  tokenExpired = signal(false);
   // Whether the user is in the process of registering
   isRegistering = signal(false);
   isUserDataResolved = new BehaviorSubject(false);
@@ -240,7 +240,7 @@ export class AuthService {
     return this.getUserToken()
       .pipe(
         tap((firebaseUser: any) => {
-          this.loggedIn = loggedIn;
+          this.loggedIn.set(loggedIn);
 
           // turn the BehaviorSubject dealing with whether user data was resolved to
           // false only if there's no user data or if the JWTs don't match (shouldn't happen, but just in case), change the BehaviorSubject
@@ -357,12 +357,12 @@ export class AuthService {
     // set the authentication-variables accordingly
     this.authenticated.set(true);
     this.isUserDataResolved.next(true);
-    this.tokenExpired = false;
+    this.tokenExpired.set(false);
 
     // if the user just logged in, update the login count
-    if (this.loggedIn) {
+    if (this.loggedIn()) {
       this.updateUserData({ loginCount: userData.loginCount + 1 });
-      this.loggedIn = false;
+      this.loggedIn.set(false);
     }
 
     // adds the user's data to the users store
@@ -399,7 +399,7 @@ export class AuthService {
         this.serviceWorkerM.clearStore("threads");
 
         // if the user has been logged out through their token expiring
-        if (this.tokenExpired) {
+        if (this.tokenExpired()) {
           this.alertsService.createAlert(
             {
               type: "Notification",

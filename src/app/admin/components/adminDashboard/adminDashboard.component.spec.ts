@@ -116,7 +116,7 @@ describe("AdminDashboard", () => {
     const fixture = TestBed.createComponent(AdminDashboard);
     const adminDashboard = fixture.componentInstance;
 
-    expect(adminDashboard.screen).toEqual("reports");
+    expect(adminDashboard.screen()).toEqual("reports");
   });
 
   it("should set the page correctly - blocks", () => {
@@ -124,7 +124,7 @@ describe("AdminDashboard", () => {
     const fixture = TestBed.createComponent(AdminDashboard);
     const adminDashboard = fixture.componentInstance;
 
-    expect(adminDashboard.screen).toEqual("blocks");
+    expect(adminDashboard.screen()).toEqual("blocks");
   });
 
   it("should set the page correctly - filters", () => {
@@ -132,23 +132,6 @@ describe("AdminDashboard", () => {
     const fixture = TestBed.createComponent(AdminDashboard);
     const adminDashboard = fixture.componentInstance;
 
-    expect(adminDashboard.screen).toEqual("filters");
-  });
-
-  it("should wait for user data to be resolved", () => {
-    const authService = TestBed.inject(AuthService);
-    authService.isUserDataResolved.next(false);
-    const authServiceSpy = spyOn(authService.isUserDataResolved, "subscribe").and.callThrough();
-    const fixture = TestBed.createComponent(AdminDashboard);
-    const adminDashboard = fixture.componentInstance;
-
-    adminDashboard.ngOnInit();
-
-    expect(authServiceSpy).toHaveBeenCalled();
-    expect(adminDashboard.waitFor).toEqual("admin ");
-
-    authService.isUserDataResolved.next(true);
-
-    expect(adminDashboard.waitFor).toEqual("admin main");
+    expect(adminDashboard.screen()).toEqual("filters");
   });
 });

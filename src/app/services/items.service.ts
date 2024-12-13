@@ -53,14 +53,13 @@ interface SendMessageResponse {
 })
 export class ItemsService {
   // search variables
-  isSearching = false;
-  userSearchResults: OtherUser[] = [];
-  numUserResults = 0;
-  numPostResults = 0;
-  postSearchResults: PostGet[] = [];
+  isSearching = signal(false);
+  userSearchResults = signal<OtherUser[]>([]);
+  numUserResults = signal(0);
+  numPostResults = signal(0);
+  postSearchResults = signal<PostGet[]>([]);
   postSearchPage = signal(1);
   totalPostSearchPages = signal(1);
-  isSearchResolved = new BehaviorSubject(false);
   previousPageButtonClass = computed(() => ({
     "appButton prevButton": true,
     disabled: this.postSearchPage() <= 1,
@@ -131,24 +130,22 @@ export class ItemsService {
   Programmer: Shir Bar Lev.
   */
   sendSearch(searchQuery: string) {
-    this.isSearching = true;
+    this.isSearching.set(true);
 
-    this.apiClient
+    return this.apiClient
       .post("", { search: searchQuery }, { page: `${this.postSearchPage()}` })
       .subscribe({
         next: (response: any) => {
-          this.userSearchResults = response.users;
-          this.postSearchResults = response.posts;
+          this.userSearchResults.set(response.users);
+          this.postSearchResults.set(response.posts);
           this.postSearchPage.set(response.current_page);
           this.totalPostSearchPages.set(response.total_pages);
-          this.numUserResults = response.user_results;
-          this.numPostResults = response.post_results;
-          this.isSearching = false;
-          this.isSearchResolved.next(true);
+          this.numUserResults.set(response.user_results);
+          this.numPostResults.set(response.post_results);
+          this.isSearching.set(false);
         },
         error: (_err: HttpErrorResponse) => {
-          this.isSearchResolved.next(true);
-          this.isSearching = false;
+          this.isSearching.set(false);
         },
       });
   }

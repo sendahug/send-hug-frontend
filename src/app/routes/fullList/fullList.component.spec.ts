@@ -155,7 +155,7 @@ describe("FullList", () => {
     const fullList = fixture.componentInstance;
     fixture.detectChanges();
 
-    expect(fullList.type).toBe("New");
+    expect(fullList.type()).toBe("New");
   });
 
   it("should set the type according to the URL param - suggested", () => {
@@ -168,7 +168,7 @@ describe("FullList", () => {
     const fullList = fixture.componentInstance;
     fixture.detectChanges();
 
-    expect(fullList.type).toBe("Suggested");
+    expect(fullList.type()).toBe("Suggested");
   });
 
   it("should set the page according to the URL param", () => {

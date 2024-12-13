@@ -27,7 +27,7 @@
         <a [routerLink]="['/sitemap']">Site Map</a> |
         <a href="mailto:sendahugcom@gmail.com">Email Us</a> |
         <a [routerLink]="['/support']">Support</a>
-        <span *ngIf="canShare">
+        <span *ngIf="canShare()">
           | <button class="textlessButton footerText" (click)="shareSite()">Share</button></span
         >
       </p>

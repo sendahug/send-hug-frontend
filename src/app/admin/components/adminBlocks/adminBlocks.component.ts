@@ -56,10 +56,10 @@ interface BlockedUser {
   templateUrl: "./adminBlocks.component.html",
 })
 export class AdminBlocks {
-  blockedUsers: BlockedUser[] = [];
+  blockedUsers = signal<BlockedUser[]>([]);
   currentPage = signal(1);
   totalPages = signal(1);
-  isLoading = false;
+  isLoading = signal(false);
   previousButtonClass = computed(() => ({
     "appButton prevButton": true,
     disabled: this.currentPage() <= 1,
@@ -88,7 +88,7 @@ export class AdminBlocks {
    * Fetches the list of blocked users.
    */
   fetchBlocks() {
-    this.isLoading = true;
+    this.isLoading.set(true);
 
     this.apiClient
       .get<{ success: boolean; users: BlockedUser[]; total_pages: number }>("users/blocked", {
@@ -96,12 +96,12 @@ export class AdminBlocks {
       })
       .subscribe({
         next: (data) => {
-          this.blockedUsers = data.users;
+          this.blockedUsers.set(data.users);
           this.totalPages.set(data.total_pages);
-          this.isLoading = false;
+          this.isLoading.set(false);
         },
         error: () => {
-          this.isLoading = false;
+          this.isLoading.set(false);
         },
       });
   }
@@ -139,12 +139,12 @@ export class AdminBlocks {
       // it's not actually possible to submit the form without a value there
       .blockUser(Number(userId), this.blockForm.controls.blockLength.value!)
       .subscribe((response) => {
-        const blockedUser = this.blockedUsers.find((user) => user.id == response.updated.id);
+        const blockedUser = this.blockedUsers().find((user) => user.id == response.updated.id);
 
         if (blockedUser) {
           blockedUser.releaseDate = response.updated.releaseDate;
         } else {
-          this.blockedUsers.push(response.updated);
+          this.blockedUsers.set([...this.blockedUsers(), response.updated]);
         }
       });
   }
@@ -168,7 +168,7 @@ export class AdminBlocks {
           this.alertsService.createSuccessAlert(
             `User ${response.updated.displayName} has been unblocked.`,
           );
-          this.blockedUsers = this.blockedUsers.filter((user) => user.id != userID);
+          this.blockedUsers.set(this.blockedUsers().filter((user) => user.id != userID));
         },
       });
   }

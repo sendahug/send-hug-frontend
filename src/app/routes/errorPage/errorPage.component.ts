@@ -31,7 +31,7 @@
 */
 
 // Angular imports
-import { Component } from "@angular/core";
+import { Component, signal } from "@angular/core";
 import { CommonModule, Location } from "@angular/common";
 import { faArrowAltCircleLeft } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
@@ -51,11 +51,11 @@ interface ErrorMessage {
 })
 export class ErrorPage {
   // Error message to display onscreen
-  error: ErrorMessage = {
+  error = signal<ErrorMessage>({
     title: "Sorry!",
     message: `The page you were looking for doesn\'t exist.`,
     code: 404,
-  };
+  });
   // icons
   faArrowAltCircleLeft = faArrowAltCircleLeft;
 

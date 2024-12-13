@@ -8,7 +8,6 @@
   <ul
     class="itemList"
     *ngIf="newPosts().length > 0 && !isLoading()"
-    role="region"
     aria-describedby="newTitle"
     id="newItemsList"
   >
@@ -46,7 +45,6 @@
   <ul
     class="itemList"
     *ngIf="suggestedPosts().length > 0 && !isLoading()"
-    role="region"
     aria-describedby="sugTitle"
     id="sugItemsList"
   >

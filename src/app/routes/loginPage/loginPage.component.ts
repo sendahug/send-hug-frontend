@@ -61,7 +61,7 @@ export class LoginPage {
     password: ["", [Validators.required]],
   });
   isLoading = signal(false);
-  resetMode = false;
+  resetMode = signal(false);
   faGoogle = faGoogle;
   faApple = faApple;
 
@@ -186,7 +186,7 @@ export class LoginPage {
    * Opens the password reset popup.
    */
   resetPassword() {
-    this.resetMode = true;
+    this.resetMode.set(true);
   }
 
   /**
@@ -194,7 +194,7 @@ export class LoginPage {
    * @param edit whether edit mode should be active.
    */
   changeMode(edit: boolean) {
-    this.resetMode = edit;
+    this.resetMode.set(edit);
   }
 
   /*

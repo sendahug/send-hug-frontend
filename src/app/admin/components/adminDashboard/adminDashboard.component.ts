@@ -31,9 +31,8 @@
 */
 
 // Angular imports
-import { Component, OnInit } from "@angular/core";
+import { Component, signal } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
-import { Subscription } from "rxjs";
 
 // App imports
 import { AuthService } from "@app/services/auth.service";
@@ -43,8 +42,8 @@ import { AuthService } from "@app/services/auth.service";
   templateUrl: "./adminDashboard.component.html",
   styleUrl: "./adminDashboard.component.less",
 })
-export class AdminDashboard implements OnInit {
-  screen: string = "";
+export class AdminDashboard {
+  screen = signal("");
   adminCategories = [
     {
       title: "Reports",
@@ -60,9 +59,6 @@ export class AdminDashboard implements OnInit {
       explanation: `Here you can view currently filtered words. You can also add or remote filtered words to the list.`,
     },
   ];
-  userDataSubscription: Subscription | undefined;
-  // loader sub-component variable
-  waitFor = `admin ${this.screen}`;
 
   // CTOR
   constructor(
@@ -71,34 +67,9 @@ export class AdminDashboard implements OnInit {
   ) {
     this.route.url.subscribe((params) => {
       if (params[0] && params[0].path) {
-        this.screen = params[0].path;
+        this.screen.set(params[0].path);
       } else {
-        this.screen = "main";
-      }
-    });
-  }
-
-  /*
-  Function Name: ngOnInit()
-  Function Description: This method is automatically triggered by Angular upon
-                        page initiation. Checks for the current screen and calls
-                        the appropriate getter method.
-  Parameters: None.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  ngOnInit() {
-    // set the userDataSubscription to the subscription to isUserDataResolved
-    this.userDataSubscription = this.authService.isUserDataResolved.subscribe((value) => {
-      // if the user is logged in, fetch requested data for the current page
-      if (value == true) {
-        this.waitFor = `admin ${this.screen}`;
-
-        // also unsubscribe from this to avoid sending the same request
-        // multiple times
-        if (this.userDataSubscription) {
-          this.userDataSubscription.unsubscribe();
-        }
+        this.screen.set("main");
       }
     });
   }

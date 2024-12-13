@@ -110,7 +110,7 @@ describe("Filters Page", () => {
     fixture.detectChanges();
 
     expect(apiClientSpy).toHaveBeenCalledWith("filters", { page: "1" });
-    expect(adminFilters.filteredPhrases.length).toBe(2);
+    expect(adminFilters.filteredPhrases().length).toBe(2);
     expect(adminFilters.totalPages()).toBe(1);
     expect(
       adminFiltersDOM.querySelectorAll(".tableContainer")[0].querySelectorAll("tbody tr").length,
@@ -129,10 +129,10 @@ describe("Filters Page", () => {
     fixture.detectChanges();
 
     expect(apiClientSpy).toHaveBeenCalledWith("filters", { page: "1" });
-    expect(adminFilters.filteredPhrases.length).toBe(0);
+    expect(adminFilters.filteredPhrases().length).toBe(0);
     expect(adminFilters.totalPages()).toBe(1);
     expect(adminFiltersDOM.querySelectorAll(".tableContainer").length).toBe(0);
-    expect(adminFilters.isLoading).toBeFalse();
+    expect(adminFilters.isLoading()).toBeFalse();
     expect(adminFiltersDOM.querySelectorAll(".errorMessage")[0].textContent).toBe(
       "There are no filtered phrases.",
     );
@@ -151,9 +151,9 @@ describe("Filters Page", () => {
     );
     const alertsSpy = spyOn(adminFilters["alertsService"], "createSuccessAlert");
     spyOn(adminFilters, "fetchFilters");
-    adminFilters.filteredPhrases = [...mockFilteredPhrases];
+    adminFilters.filteredPhrases.set([...mockFilteredPhrases]);
     adminFilters.totalPages.set(1);
-    adminFilters.isLoading = false;
+    adminFilters.isLoading.set(false);
     fixture.detectChanges();
 
     // add filter to the text-field and click the button
@@ -168,7 +168,7 @@ describe("Filters Page", () => {
     expect(alertsSpy).toHaveBeenCalledWith(
       `The phrase text was added to the list of filtered words!`,
     );
-    expect(adminFilters.filteredPhrases[2]).toEqual({ id: 3, filter: "text" });
+    expect(adminFilters.filteredPhrases()[2]).toEqual({ id: 3, filter: "text" });
     done();
   });
 
@@ -181,9 +181,9 @@ describe("Filters Page", () => {
     const apiClientSpy = spyOn(adminFilters["apiClient"], "post");
     const alertSpy = spyOn(adminFilters["alertsService"], "createAlert");
     spyOn(adminFilters, "fetchFilters");
-    adminFilters.filteredPhrases = [...mockFilteredPhrases];
+    adminFilters.filteredPhrases.set([...mockFilteredPhrases]);
     adminFilters.totalPages.set(1);
-    adminFilters.isLoading = false;
+    adminFilters.isLoading.set(false);
     fixture.detectChanges();
 
     // click the button
@@ -219,9 +219,9 @@ describe("Filters Page", () => {
     const alertSpy = spyOn(adminFilters["alertsService"], "createSuccessAlert");
     const deleteSpy = spyOn(adminFilters["apiClient"], "delete").and.returnValue(of(mockResponse));
     spyOn(adminFilters, "fetchFilters");
-    adminFilters.filteredPhrases = [...mockFilteredPhrases];
+    adminFilters.filteredPhrases.set([...mockFilteredPhrases]);
     adminFilters.totalPages.set(1);
-    adminFilters.isLoading = false;
+    adminFilters.isLoading.set(false);
 
     fixture.detectChanges();
 
@@ -235,8 +235,8 @@ describe("Filters Page", () => {
     expect(alertSpy).toHaveBeenCalledWith(
       `The phrase ${mockResponse.deleted.filter} was removed from the list of filtered words.`,
     );
-    expect(adminFilters.filteredPhrases.length).toEqual(1);
-    expect(adminFilters.filteredPhrases[0].id).not.toBe(1);
+    expect(adminFilters.filteredPhrases().length).toEqual(1);
+    expect(adminFilters.filteredPhrases()[0].id).not.toBe(1);
     done();
   });
 
@@ -247,9 +247,9 @@ describe("Filters Page", () => {
     const adminFiltersDOM = fixture.nativeElement;
     const nextPageSpy = spyOn(adminFilters, "nextPage").and.callThrough();
     const fetchSpy = spyOn(adminFilters, "fetchFilters");
-    adminFilters.filteredPhrases = [...mockFilteredPhrases];
+    adminFilters.filteredPhrases.set([...mockFilteredPhrases]);
     adminFilters.totalPages.set(2);
-    adminFilters.isLoading = false;
+    adminFilters.isLoading.set(false);
 
     fixture.detectChanges();
 
@@ -270,9 +270,9 @@ describe("Filters Page", () => {
     const adminFiltersDOM = fixture.nativeElement;
     const prevPageSpy = spyOn(adminFilters, "prevPage").and.callThrough();
     const fetchSpy = spyOn(adminFilters, "fetchFilters");
-    adminFilters.filteredPhrases = [...mockFilteredPhrases];
+    adminFilters.filteredPhrases.set([...mockFilteredPhrases]);
     adminFilters.totalPages.set(2);
-    adminFilters.isLoading = false;
+    adminFilters.isLoading.set(false);
     adminFilters.currentPage.set(2);
 
     fixture.detectChanges();

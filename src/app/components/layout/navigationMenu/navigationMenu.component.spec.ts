@@ -43,7 +43,7 @@ import {
 import {} from "jasmine";
 import { APP_BASE_HREF, CommonModule } from "@angular/common";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
-import { BehaviorSubject, of } from "rxjs";
+import { BehaviorSubject, of, Subscription } from "rxjs";
 import { provideZoneChangeDetection, signal } from "@angular/core";
 import { MockComponent, MockProvider } from "ng-mocks";
 import { setViewport } from "@web/test-runner-commands";
@@ -70,7 +70,7 @@ describe("AppNavMenu", () => {
       canUser: (_permission) => true,
     });
     const MockItemsService = MockProvider(ItemsService, {
-      sendSearch: (_search) => undefined,
+      sendSearch: (_search) => new Subscription(),
     });
     const MockNotificationsService = MockProvider(NotificationService, {
       checkInitialPermissionState: (_enabled) => new Promise(() => true),

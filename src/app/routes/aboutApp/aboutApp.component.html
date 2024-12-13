@@ -32,7 +32,7 @@
   >
 
   <div id="policies">
-    <span *ngFor="let link of aboutLinks">
+    <span *ngFor="let link of aboutLinks()">
       <a [routerLink]="[link.path]" class="aboutInnerLink">{{ link.title }}</a> |
     </span>
     <a [routerLink]="['/sitemap']" class="aboutInnerLink">Site Map</a>

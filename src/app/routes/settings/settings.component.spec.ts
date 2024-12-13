@@ -129,7 +129,7 @@ describe("SettingsPage", () => {
 
     settingsPage.toggleIconEditor(true);
 
-    expect(settingsPage.editIcon).toBeTrue();
+    expect(settingsPage.editIcon()).toBeTrue();
     done();
   });
 
@@ -142,7 +142,7 @@ describe("SettingsPage", () => {
 
     settingsPage.toggleIconEditor(false);
 
-    expect(settingsPage.editIcon).toBeFalse();
+    expect(settingsPage.editIcon()).toBeFalse();
     done();
   });
 

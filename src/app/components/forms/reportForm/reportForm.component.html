@@ -2,11 +2,11 @@
   <div id="reportItem">
     <h3 class="popupTitle">{{ "Report " + reportType }}</h3>
     <div *ngIf="reportType == 'Post'" class="userPost">
-      <div class="itemText" id="reportText">{{ reportedPost!.text }}</div>
-      <div class="itemUser">By {{ reportedPost!.user }}</div>
+      <div class="itemText" id="reportText">{{ reportedPost()!.text }}</div>
+      <div class="itemUser">By {{ reportedPost()!.user }}</div>
     </div>
     <a *ngIf="reportType == 'User'" [routerLink]="['/user', reportedItem!.id]" id="uReportText">{{
-      reportedUser!.displayName
+      reportedUser()!.displayName
     }}</a>
 
     <div id="reportQ" class="popupText required">
@@ -87,7 +87,7 @@
       </div>
 
       <div *ngIf="reportType == 'Post'" id="reportPText" class="labels">
-        {{ "report post " + reportedPost!.text }}
+        {{ "report post " + reportedPost()!.text }}
       </div>
       <button
         *ngIf="reportType == 'Post'"
@@ -100,7 +100,7 @@
       </button>
 
       <div *ngIf="reportType == 'User'" id="reportUText" class="labels">
-        {{ "Report user " + reportedUser!.displayName }}
+        {{ "Report user " + reportedUser()!.displayName }}
       </div>
       <button
         *ngIf="reportType == 'User'"

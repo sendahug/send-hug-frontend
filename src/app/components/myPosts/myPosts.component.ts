@@ -78,6 +78,8 @@ export class MyPosts implements OnInit {
     disabled: this.totalPages() <= this.currentPage(),
   }));
   // The user whose posts to fetch
+  // Leaving this as an old input with a getter/setter for now as we have logic
+  // in case the value is undefined
   @Input()
   get userID() {
     return this._userId();

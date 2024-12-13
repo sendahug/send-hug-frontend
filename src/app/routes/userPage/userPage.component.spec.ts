@@ -436,7 +436,7 @@ describe("UserPage", () => {
 
     // after the click
     expect(userPage.editMode()).toBeTrue();
-    expect(userPage.userToEdit).toEqual({
+    expect(userPage.userToEdit()).toEqual({
       displayName: userPage.authService.userData()!.displayName,
       id: userPage.authService.userData()!.id as number,
     });
@@ -578,10 +578,6 @@ describe("UserPage", () => {
     fixture.detectChanges();
 
     // start the popup
-    userPage.userToEdit = {
-      displayName: userPage.authService.userData()!.displayName,
-      id: userPage.authService.userData()!.id as number,
-    };
     userPage.editMode.set(true);
     fixture.detectChanges();
 

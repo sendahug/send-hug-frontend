@@ -2,6 +2,18 @@
 
 ## Unreleased
 
+### 2024-12-13
+
+#### Fixes
+
+- Removed incorrect ARIA roles from the main page's post lists, which might've caused confusion for anyone using assistive technology. ([#1917](https://github.com/sendahug/send-hug-frontend/pull/1917))
+
+#### Chores
+
+- Converted all non-input/output/signal properties to signals across all components and most services. ([#1917](https://github.com/sendahug/send-hug-frontend/pull/1917))
+- Removed old code responsible for waiting for the user's data to be resolved in various authenticated-only components. Now that we use route guards to ensure users are authenticated before vising these routes, we don't need to manually wait for the auth checks. ([#1917](https://github.com/sendahug/send-hug-frontend/pull/1917))
+- Deleted unnecessary unused imports and properties from various components (including the full list, search results, the single post and the main page) and from the Items Service. ([#1917](https://github.com/sendahug/send-hug-frontend/pull/1917))
+
 ### 2024-12-04
 
 #### Fixes

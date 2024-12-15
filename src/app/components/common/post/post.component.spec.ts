@@ -42,7 +42,7 @@ import { Component, signal } from "@angular/core";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { By } from "@angular/platform-browser";
 import { NO_ERRORS_SCHEMA } from "@angular/core";
-import { provideZoneChangeDetection } from "@angular/core";
+import { provideExperimentalZonelessChangeDetection } from "@angular/core";
 import { MockComponent, MockProvider } from "ng-mocks";
 import { BehaviorSubject } from "rxjs";
 
@@ -118,7 +118,7 @@ describe("Post", () => {
       ],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
-        provideZoneChangeDetection({ eventCoalescing: true }),
+        provideExperimentalZonelessChangeDetection(),
         provideRouter([]),
         MockItemsService,
         MockAuthService,

@@ -38,7 +38,7 @@ import {
   platformBrowserDynamicTesting,
 } from "@angular/platform-browser-dynamic/testing";
 import { ReactiveFormsModule } from "@angular/forms";
-import { provideZoneChangeDetection, signal } from "@angular/core";
+import { provideExperimentalZonelessChangeDetection, signal } from "@angular/core";
 import { MockProvider } from "ng-mocks";
 import { Subscription } from "rxjs";
 
@@ -68,7 +68,7 @@ describe("DisplayNameEditForm", () => {
       imports: [CommonModule, ReactiveFormsModule, PopUp, DisplayNameEditForm, TeleportDirective],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
-        provideZoneChangeDetection({ eventCoalescing: true }),
+        provideExperimentalZonelessChangeDetection(),
         AuthServiceMock,
         AdminServiceMock,
       ],

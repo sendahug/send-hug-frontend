@@ -46,7 +46,11 @@ import {
 } from "@angular/router";
 import { BehaviorSubject, of } from "rxjs";
 import { By } from "@angular/platform-browser";
-import { NO_ERRORS_SCHEMA, provideZoneChangeDetection, signal } from "@angular/core";
+import {
+  NO_ERRORS_SCHEMA,
+  provideExperimentalZonelessChangeDetection,
+  signal,
+} from "@angular/core";
 import { MockComponent, MockProvider } from "ng-mocks";
 
 import { AppMessaging } from "./messages.component";
@@ -91,7 +95,7 @@ describe("AppMessaging", () => {
       ],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
-        provideZoneChangeDetection({ eventCoalescing: true }),
+        provideExperimentalZonelessChangeDetection(),
         provideRouter(
           [
             {

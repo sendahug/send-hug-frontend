@@ -38,7 +38,7 @@ import {
   platformBrowserDynamicTesting,
 } from "@angular/platform-browser-dynamic/testing";
 import { of, Subscription } from "rxjs";
-import { provideZoneChangeDetection } from "@angular/core";
+import { provideExperimentalZonelessChangeDetection } from "@angular/core";
 import { MockProvider } from "ng-mocks";
 
 import { ItemDeleteForm } from "./itemDeleteForm.component";
@@ -60,7 +60,7 @@ describe("ItemDeleteForm", () => {
       imports: [CommonModule, PopUp, ItemDeleteForm, TeleportDirective],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
-        provideZoneChangeDetection({ eventCoalescing: true }),
+        provideExperimentalZonelessChangeDetection(),
         MockAPIClient,
         MockAdminService,
       ],

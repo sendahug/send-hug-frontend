@@ -42,7 +42,7 @@ import { NO_ERRORS_SCHEMA, signal } from "@angular/core";
 import { ReactiveFormsModule } from "@angular/forms";
 import { User as FirebaseUser } from "firebase/auth";
 import { of } from "rxjs";
-import { provideZoneChangeDetection } from "@angular/core";
+import { provideExperimentalZonelessChangeDetection } from "@angular/core";
 import { MockProvider } from "ng-mocks";
 
 import { SignUpPage } from "./signUpPage.component";
@@ -67,7 +67,7 @@ describe("SignUpPage", () => {
       imports: [ReactiveFormsModule, CommonModule, RouterLink, SignUpPage],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
-        provideZoneChangeDetection({ eventCoalescing: true }),
+        provideExperimentalZonelessChangeDetection(),
         provideRouter([]),
         MockAuthService,
       ],

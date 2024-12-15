@@ -38,7 +38,12 @@ import {
   platformBrowserDynamicTesting,
 } from "@angular/platform-browser-dynamic/testing";
 import { CommonModule } from "@angular/common";
-import { Component, NO_ERRORS_SCHEMA, provideZoneChangeDetection, signal } from "@angular/core";
+import {
+  Component,
+  NO_ERRORS_SCHEMA,
+  provideExperimentalZonelessChangeDetection,
+  signal,
+} from "@angular/core";
 import { By } from "@angular/platform-browser";
 
 import { UserIcon, DefaultColours } from "./userIcon.component";
@@ -84,7 +89,7 @@ describe("UserIcon", () => {
       imports: [CommonModule, MockIconContainer, UserIcon],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
-        provideZoneChangeDetection({ eventCoalescing: true }),
+        provideExperimentalZonelessChangeDetection(),
       ],
     }).compileComponents();
   });

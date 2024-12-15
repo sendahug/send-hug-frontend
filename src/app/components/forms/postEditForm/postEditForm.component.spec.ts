@@ -39,7 +39,7 @@ import {
 } from "@angular/platform-browser-dynamic/testing";
 import { ReactiveFormsModule } from "@angular/forms";
 import { Observable, of } from "rxjs";
-import { provideZoneChangeDetection, signal } from "@angular/core";
+import { provideExperimentalZonelessChangeDetection, signal } from "@angular/core";
 import { MockProvider } from "ng-mocks";
 
 import { PostEditForm } from "./postEditForm.component";
@@ -76,7 +76,7 @@ describe("PostEditForm", () => {
       imports: [ReactiveFormsModule, CommonModule, PopUp, PostEditForm, TeleportDirective],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
-        provideZoneChangeDetection({ eventCoalescing: true }),
+        provideExperimentalZonelessChangeDetection(),
         MockAdminService,
         MockAuthService,
         MockAPIClient,

@@ -37,7 +37,7 @@ import {
   BrowserDynamicTestingModule,
   platformBrowserDynamicTesting,
 } from "@angular/platform-browser-dynamic/testing";
-import { provideZoneChangeDetection } from "@angular/core";
+import { provideExperimentalZonelessChangeDetection } from "@angular/core";
 
 import { Loader } from "./loader.component";
 
@@ -51,7 +51,7 @@ describe("Loader", () => {
       imports: [Loader],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
-        provideZoneChangeDetection({ eventCoalescing: true }),
+        provideExperimentalZonelessChangeDetection(),
       ],
     }).compileComponents();
   });

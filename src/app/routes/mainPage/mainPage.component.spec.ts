@@ -40,7 +40,7 @@ import {
 } from "@angular/platform-browser-dynamic/testing";
 import { of } from "rxjs";
 import { By } from "@angular/platform-browser";
-import { provideZoneChangeDetection, signal } from "@angular/core";
+import { provideExperimentalZonelessChangeDetection, signal } from "@angular/core";
 import { MockComponent, MockProvider } from "ng-mocks";
 
 // App imports
@@ -109,7 +109,7 @@ describe("MainPage", () => {
       imports: [CommonModule, MockLoader, SinglePost, RouterLink, MainPage],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
-        provideZoneChangeDetection({ eventCoalescing: true }),
+        provideExperimentalZonelessChangeDetection(),
         provideRouter([]),
         MockAPIClient,
         mockAuthService,

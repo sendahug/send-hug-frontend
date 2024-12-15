@@ -39,7 +39,7 @@ import {
   platformBrowserDynamicTesting,
 } from "@angular/platform-browser-dynamic/testing";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
-import { computed, provideZoneChangeDetection, signal } from "@angular/core";
+import { computed, provideExperimentalZonelessChangeDetection, signal } from "@angular/core";
 import { MockComponent, MockProvider } from "ng-mocks";
 import { BehaviorSubject, of, Subscription } from "rxjs";
 
@@ -88,7 +88,7 @@ describe("Notifications Tab", () => {
       imports: [CommonModule, FontAwesomeModule, RouterLink, NotificationsTab, MockAlert],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
-        provideZoneChangeDetection({ eventCoalescing: true }),
+        provideExperimentalZonelessChangeDetection(),
         provideRouter([]),
         MockAuthService,
         MockNotificationService,

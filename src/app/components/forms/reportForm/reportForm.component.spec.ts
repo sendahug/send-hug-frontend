@@ -34,7 +34,7 @@ import {
 } from "@angular/platform-browser-dynamic/testing";
 import { ReactiveFormsModule } from "@angular/forms";
 import { of } from "rxjs";
-import { provideZoneChangeDetection, signal } from "@angular/core";
+import { provideExperimentalZonelessChangeDetection, signal } from "@angular/core";
 import { MockProvider } from "ng-mocks";
 
 import { ReportForm } from "./reportForm.component";
@@ -62,7 +62,7 @@ describe("Report", () => {
       imports: [CommonModule, ReactiveFormsModule, PopUp, RouterLink, ReportForm],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
-        provideZoneChangeDetection({ eventCoalescing: true }),
+        provideExperimentalZonelessChangeDetection(),
         provideRouter([]),
         MockAuthService,
         MockAPIClient,

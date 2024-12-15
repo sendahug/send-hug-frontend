@@ -45,7 +45,7 @@ import {
   withComponentInputBinding,
 } from "@angular/router";
 import { By } from "@angular/platform-browser";
-import { provideZoneChangeDetection } from "@angular/core";
+import { provideExperimentalZonelessChangeDetection } from "@angular/core";
 import { MockComponent, MockProvider } from "ng-mocks";
 import { of } from "rxjs";
 
@@ -133,7 +133,7 @@ describe("SearchResults", () => {
       imports: [CommonModule, MockLoader, MockPost, RouterLink, SearchResults, Loader],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
-        provideZoneChangeDetection({ eventCoalescing: true }),
+        provideExperimentalZonelessChangeDetection(),
         provideRouter(
           [{ path: "search", component: SearchResults, data: { name: "Search Results" } }],
           withComponentInputBinding(),

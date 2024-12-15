@@ -45,7 +45,7 @@ import {
 import {} from "jasmine";
 import { APP_BASE_HREF, CommonModule } from "@angular/common";
 import { BehaviorSubject, of, throwError } from "rxjs";
-import { provideZoneChangeDetection, signal } from "@angular/core";
+import { provideExperimentalZonelessChangeDetection, signal } from "@angular/core";
 import { MockComponent, MockProvider } from "ng-mocks";
 
 import { AppComponent } from "./app.component";
@@ -88,7 +88,7 @@ describe("AppComponent", () => {
       imports: [CommonModule, RouterOutlet, RouterLink, MockAppAlert, MockNavBar, AppComponent],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
-        provideZoneChangeDetection({ eventCoalescing: true }),
+        provideExperimentalZonelessChangeDetection(),
         provideRouter([], withComponentInputBinding()),
         MockAuthService,
         MockNotificationsService,

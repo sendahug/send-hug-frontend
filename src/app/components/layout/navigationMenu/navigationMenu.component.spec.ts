@@ -44,7 +44,7 @@ import {} from "jasmine";
 import { APP_BASE_HREF, CommonModule } from "@angular/common";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { BehaviorSubject, of, Subscription } from "rxjs";
-import { provideZoneChangeDetection, signal } from "@angular/core";
+import { provideExperimentalZonelessChangeDetection, signal } from "@angular/core";
 import { MockComponent, MockProvider } from "ng-mocks";
 import { setViewport } from "@web/test-runner-commands";
 
@@ -98,7 +98,7 @@ describe("AppNavMenu", () => {
       ],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
-        provideZoneChangeDetection({ eventCoalescing: true }),
+        provideExperimentalZonelessChangeDetection(),
         provideRouter([], withComponentInputBinding()),
         MockAuthService,
         MockItemsService,

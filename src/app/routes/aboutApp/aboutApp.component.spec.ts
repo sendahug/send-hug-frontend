@@ -38,7 +38,7 @@ import {
   platformBrowserDynamicTesting,
 } from "@angular/platform-browser-dynamic/testing";
 import { provideRouter, RouterLink } from "@angular/router";
-import { provideZoneChangeDetection } from "@angular/core";
+import { provideExperimentalZonelessChangeDetection } from "@angular/core";
 
 import { AboutApp } from "./aboutApp.component";
 
@@ -52,7 +52,7 @@ describe("AboutApp", () => {
       imports: [RouterLink, AboutApp],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
-        provideZoneChangeDetection({ eventCoalescing: true }),
+        provideExperimentalZonelessChangeDetection(),
         provideRouter([]),
       ],
     }).compileComponents();

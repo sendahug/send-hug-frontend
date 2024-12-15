@@ -38,7 +38,7 @@ import {
   platformBrowserDynamicTesting,
 } from "@angular/platform-browser-dynamic/testing";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
-import { provideZoneChangeDetection } from "@angular/core";
+import { provideExperimentalZonelessChangeDetection } from "@angular/core";
 import { Component } from "@angular/core";
 
 import { PopUp } from "./popUp.component";
@@ -67,7 +67,7 @@ describe("Popup", () => {
       imports: [CommonModule, FontAwesomeModule, MockPage, PopUp],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
-        provideZoneChangeDetection({ eventCoalescing: true }),
+        provideExperimentalZonelessChangeDetection(),
       ],
     }).compileComponents();
   });

@@ -39,7 +39,7 @@ import {
 } from "@angular/platform-browser-dynamic/testing";
 import { provideRouter, RouterLink, withComponentInputBinding } from "@angular/router";
 import { By } from "@angular/platform-browser";
-import { NO_ERRORS_SCHEMA, provideZoneChangeDetection } from "@angular/core";
+import { NO_ERRORS_SCHEMA, provideExperimentalZonelessChangeDetection } from "@angular/core";
 import { MockComponent } from "ng-mocks";
 
 import { AppSingleThread } from "./thread.component";
@@ -63,7 +63,7 @@ describe("AppSingleThread", () => {
       imports: [MockItemDeleteForm, MockUserIcon, RouterLink, CommonModule, AppSingleThread],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
-        provideZoneChangeDetection({ eventCoalescing: true }),
+        provideExperimentalZonelessChangeDetection(),
         provideRouter([], withComponentInputBinding()),
       ],
     }).compileComponents();

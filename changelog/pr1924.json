@@ -1,0 +1,9 @@
+{
+  "pr_number": 1924,
+  "changes": [
+    {
+      "change": "Fixes",
+      "description": "Fixed a bug in the Admin Reports view that caused all forms to show as soon as the view was loaded (due to incorrect handling of the signal values for whether or not to show the forms)."
+    }
+  ]
+}

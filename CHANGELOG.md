@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+### 2024-12-15
+
+#### Fixes
+
+- Fixed a bug in the Admin Reports view that caused all forms to show as soon as the view was loaded (due to incorrect handling of the signal values for whether or not to show the forms). ([#1924](https://github.com/sendahug/send-hug-frontend/pull/1924))
+
 ### 2024-12-13
 
 #### Fixes

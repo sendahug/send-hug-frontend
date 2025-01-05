@@ -166,13 +166,14 @@ describe("Post", () => {
 
   // Check that the popup is opened when clicking 'edit'
   it("should open the popup upon editing", (done: DoneFn) => {
+    const authService = TestBed.inject(AuthService);
+    const authSpy = spyOn(authService, "canUser").and.returnValue(true);
+
     const upFixture = TestBed.createComponent(MockPage);
     const pageDOM = upFixture.nativeElement;
     upFixture.detectChanges();
     const singlePost: SinglePost = upFixture.debugElement.children[0].componentInstance;
     const singlePostDOM = upFixture.debugElement.children[0].nativeElement;
-    const authService = singlePost.authService;
-    const authSpy = spyOn(authService, "canUser").and.returnValue(true);
     upFixture.detectChanges();
 
     // before the click
@@ -192,13 +193,14 @@ describe("Post", () => {
 
   // Check that the popup is opened when clicking 'delete'
   it("should open the popup upon deleting", (done: DoneFn) => {
+    const authService = TestBed.inject(AuthService);
+    const authSpy = spyOn(authService, "canUser").and.returnValue(true);
+
     const upFixture = TestBed.createComponent(MockPage);
     const pageDOM = upFixture.nativeElement;
     upFixture.detectChanges();
     const singlePost: SinglePost = upFixture.debugElement.children[0].componentInstance;
     const singlePostDOM = upFixture.debugElement.children[0].nativeElement;
-    const authService = singlePost.authService;
-    const authSpy = spyOn(authService, "canUser").and.returnValue(true);
     upFixture.detectChanges();
 
     // before the click
@@ -219,13 +221,14 @@ describe("Post", () => {
 
   // Check that the popup is opened when clicking 'report'
   it("should open the popup upon reporting", (done: DoneFn) => {
+    const authService = TestBed.inject(AuthService);
+    const authSpy = spyOn(authService, "canUser").and.returnValue(true);
+
     const upFixture = TestBed.createComponent(MockPage);
     const pageDOM = upFixture.nativeElement;
     upFixture.detectChanges();
     const singlePost: SinglePost = upFixture.debugElement.children[0].componentInstance;
     const singlePostDOM = upFixture.debugElement.children[0].nativeElement;
-    const authService = singlePost.authService;
-    const authSpy = spyOn(authService, "canUser").and.returnValue(true);
     const reportSpy = spyOn(singlePost, "reportPost").and.callThrough();
     authService.userData.set({ ...mockAuthedUser });
     upFixture.detectChanges();
@@ -382,12 +385,12 @@ describe("Post", () => {
 
   // check the posts' menu isn't shown if there isn't enough room for it
   it("checkMenuSize() - shouldn't show the posts's menu if not wide enough", (done: DoneFn) => {
+    const authService = TestBed.inject(AuthService);
+    spyOn(authService, "canUser").and.returnValue(true);
+
     const upFixture = TestBed.createComponent(MockPage);
     upFixture.detectChanges();
-    const singlePost: SinglePost = upFixture.debugElement.children[0].componentInstance;
     const singlePostDOM = upFixture.debugElement.children[0].nativeElement;
-    const authService = singlePost.authService;
-    spyOn(authService, "canUser").and.returnValue(true);
 
     // change the elements' width to make sure there isn't enough room for the menu
     const post = singlePostDOM.querySelector(".newItem");
@@ -405,12 +408,12 @@ describe("Post", () => {
 
   // check the posts' menu is shown if there is enough room for it
   it("checkMenuSize() - should show the menu if it's wide enough for it", (done: DoneFn) => {
+    const authService = TestBed.inject(AuthService);
+    spyOn(authService, "canUser").and.returnValue(true);
+
     const upFixture = TestBed.createComponent(MockPage);
     upFixture.detectChanges();
-    const singlePost: SinglePost = upFixture.debugElement.children[0].componentInstance;
     const singlePostDOM = upFixture.debugElement.children[0].nativeElement;
-    const authService = singlePost.authService;
-    spyOn(authService, "canUser").and.returnValue(true);
 
     // change the elements' width to make sure there isn't enough room for the menu
     const post = singlePostDOM.querySelector(".newItem");
@@ -428,12 +431,12 @@ describe("Post", () => {
 
   // check the posts' menu is floating if there isn't enough room for it
   it("checkMenuSize() - should float the menu if it's wide enough for it", (done: DoneFn) => {
+    const authService = TestBed.inject(AuthService);
+    spyOn(authService, "canUser").and.returnValue(true);
+
     const upFixture = TestBed.createComponent(MockPage);
     upFixture.detectChanges();
-    const singlePost: SinglePost = upFixture.debugElement.children[0].componentInstance;
     const singlePostDOM = upFixture.debugElement.children[0].nativeElement;
-    const authService = singlePost.authService;
-    spyOn(authService, "canUser").and.returnValue(true);
 
     // change the elements' width to make sure there isn't enough room for the menu
     const post = singlePostDOM.querySelector(".newItem");

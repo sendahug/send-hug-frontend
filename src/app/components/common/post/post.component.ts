@@ -42,6 +42,11 @@ import {
   WritableSignal,
   Output,
   EventEmitter,
+  ViewChild,
+  ElementRef,
+  effect,
+  OnChanges,
+  SimpleChanges,
 } from "@angular/core";
 import { faComment, faEdit, faFlag } from "@fortawesome/free-regular-svg-icons";
 import { faHandHoldingHeart, faEllipsisV } from "@fortawesome/free-solid-svg-icons";
@@ -77,7 +82,7 @@ import { SendHugForm } from "@forms/sendHugForm/sendHugForm.component";
     RouterLink,
   ],
 })
-export class SinglePost implements AfterViewChecked, OnInit, OnDestroy {
+export class SinglePost implements AfterViewChecked, OnInit, OnChanges, OnDestroy {
   @Input()
   get post(): PostGet | undefined {
     return this._post();
@@ -90,6 +95,7 @@ export class SinglePost implements AfterViewChecked, OnInit, OnDestroy {
   @Output() deletedId = new EventEmitter<number>();
   protected _post: WritableSignal<PostGet | undefined> = signal(undefined);
   postId = computed(() => `${this.type}Post${this._post()?.id || ""}`);
+  @ViewChild("buttonsContainer") buttonsContainer!: ElementRef;
   // edit popup sub-component variables
   editType: "post" = "post";
   editMode = signal(false);
@@ -122,26 +128,46 @@ export class SinglePost implements AfterViewChecked, OnInit, OnDestroy {
     float: this.shouldMenuFloat(),
     hidden: !this.shouldShowSubmenu(),
   }));
+  authenticatedButtonsCount = computed<number>(() => {
+    if (!this.authService.userData()) return 0;
+
+    let currentCount = 0;
+
+    if (
+      this.authService.canUser("patch:any-post") ||
+      this.authService.userData()?.id == this._post()?.id
+    )
+      currentCount += 1;
+    if (
+      this.authService.canUser("delete:any-post") ||
+      this.authService.userData()?.id != this._post()?.id
+    )
+      currentCount += 1;
+
+    return currentCount;
+  });
   displayedButtons = computed(() => {
-    let initialButtonsCount = 2;
+    const initialButtonsCount = 2;
 
-    if (
-      this.authService.userData() &&
-      (this.authService.canUser("patch:any-post") ||
-        this.authService.userData()?.id == this._post()?.id)
-    ) {
-      initialButtonsCount += 1;
-    }
+    // if (
+    //   this.authService.userData() &&
+    //   (this.authService.canUser("patch:any-post") ||
+    //     this.authService.userData()?.id == this._post()?.id)
+    // ) {
+    //   initialButtonsCount += 1;
+    // }
 
-    if (
-      this.authService.userData() &&
-      (this.authService.canUser("delete:any-post") ||
-        this.authService.userData()?.id != this._post()?.id)
-    ) {
-      initialButtonsCount += 1;
-    }
+    // if (
+    //   this.authService.userData() &&
+    //   (this.authService.canUser("delete:any-post") ||
+    //     this.authService.userData()?.id != this._post()?.id)
+    // ) {
+    //   initialButtonsCount += 1;
+    // }
 
-    return initialButtonsCount;
+    console.log("Current display", initialButtonsCount);
+
+    return initialButtonsCount + this.authenticatedButtonsCount();
   });
   sendHugButtonClass = computed(() => ({
     "textlessButton hugButton": true,
@@ -166,7 +192,12 @@ export class SinglePost implements AfterViewChecked, OnInit, OnDestroy {
     public itemsService: ItemsService,
     public authService: AuthService,
     private swManager: SWManager,
-  ) {}
+  ) {
+    effect(() => {
+      console.log("display count", this.displayedButtons());
+      console.log("effect class", this.buttonsContainerClass());
+    });
+  }
 
   ngOnInit(): void {
     this.subscriptions.push(
@@ -194,7 +225,13 @@ export class SinglePost implements AfterViewChecked, OnInit, OnDestroy {
     );
   }
 
+  ngOnChanges(changes: SimpleChanges): void {
+    console.log("CHANGES", changes);
+    console.log("CHANGES COUNT", this.displayedButtons());
+  }
+
   ngAfterViewChecked(): void {
+    console.log("ngAfterViewChecked");
     this.checkMenuSize();
   }
 
@@ -216,6 +253,10 @@ export class SinglePost implements AfterViewChecked, OnInit, OnDestroy {
     // TODO: There's got to be a way to do this that doesn't require copying
     // and pasting the same measurement from the LESS file.
     const buttonsWidth = this.displayedButtons() * 55 + 75;
+
+    console.log("dislpaying", this.displayedButtons());
+    console.log("width", buttonsWidth);
+    console.log("container", buttonsContainer.offsetWidth);
 
     if (buttonsContainer.offsetWidth < buttonsWidth) {
       this.shouldMenuFloat.set(true);

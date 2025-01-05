@@ -13,7 +13,7 @@
     >
   </div>
   <div class="itemDate" [attr.aria-describedby]="'pDate' + postId()">{{ _post()?.date }}</div>
-  <div [ngClass]="buttonsContainerClass()">
+  <div #buttonsContainer [ngClass]="buttonsContainerClass()">
     <div class="notification" [attr.aria-describedby]="'pHug' + postId()">
       <button
         [ngClass]="sendHugButtonClass()"

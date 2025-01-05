@@ -33,14 +33,14 @@ import { resolve } from "node:path";
 import { writeFileSync } from "node:fs";
 
 const routesFiles = ["./src/app/app.routes.ts"];
-const baseUrl = "http://localhost:3000";
+export const baseUrl = "http://localhost:3000";
 const outputFileName = "public/sitemap.xml";
 
 /**
  * Reads the list of links from the provided routes files
  * and formats them into absolute URLs using the baseUrl defined above.
  */
-async function readLinks() {
+export async function readLinks() {
   console.log("Looking for routes in Angular routes paths.");
 
   const urls: string[] = [];
@@ -51,17 +51,30 @@ async function readLinks() {
 
   for (let i in routesFiles) {
     const { routes } = await import(resolve(routesFiles[i]));
-    routes.forEach((route) => {
+    routes.forEach(async (route) => {
       if (route.children) {
         const basePath = route.path;
         route.children.forEach((child) => {
           if (child.path == "") {
             urls.push(`/${basePath}`);
+            // for new messages, pass a user ID and a user name too
+          } else if (child.path.includes("Message")) {
+            urls.push(`/${basePath}/${child.path}?user=test&userID=100`);
             // Include only the paths that don't include a parameter
           } else if (!child.path.includes(":")) {
             urls.push(`/${basePath}/${child.path}`);
           }
         });
+      } else if (route.loadChildren) {
+        // TODO: Figure out how to read the routes from the module file
+        urls.push(
+          ...[
+            `/${route.path}`,
+            `/${route.path}/reports`,
+            `/${route.path}/blocks`,
+            `/${route.path}/filters`,
+          ],
+        );
       } else {
         // Don't include wildcard routes
         if (!route.path.includes("*")) {

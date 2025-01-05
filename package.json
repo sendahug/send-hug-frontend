@@ -15,7 +15,7 @@
     "test": "npm run build:builder && web-test-runner",
     "test:open": "npm run build:builder && web-test-runner --open --manual",
     "sitemap:gen": "npx tsx plugins/SitemapGen.ts",
-    "pa11y": "npm run sitemap:gen && pa11y-ci --sitemap http://localhost:3000/sitemap.xml --config .pa11yci",
+    "pa11y": "npx tsx ./plugins/pa11y.ts",
     "build:builder": "cd plugins/builder && tsc && cd ../.."
   },
   "devDependencies": {

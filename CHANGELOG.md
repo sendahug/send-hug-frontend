@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+### 2025-01-10
+
+#### Fixes
+
+- The URL of the main stylesheet was incorrectly set to a relative URL, which caused it to break when navigating directly to deeply-nested URLs (e.g., `/messages/inbox`). The URL was updated to be an absolute URL, which ensures the stylesheet will always be loaded correctly. ([#1948](https://github.com/sendahug/send-hug-frontend/pull/1948))
+
 ### 2024-12-15
 
 #### Fixes

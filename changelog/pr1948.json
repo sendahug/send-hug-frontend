@@ -1,0 +1,9 @@
+{
+  "pr_number": 1948,
+  "changes": [
+    {
+      "change": "Fixes",
+      "description": "The URL of the main stylesheet was incorrectly set to a relative URL, which caused it to break when navigating directly to deeply-nested URLs (e.g., `/messages/inbox`). The URL was updated to be an absolute URL, which ensures the stylesheet will always be loaded correctly."
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "pr_number": 1949,
+  "changes": [
+    {
+      "change": "Chores",
+      "description": "Removed the font awesome group from dependabot's grouped updates, as it seems the group is the reason dependabot stopped opening pull requests to update these dependencies. This is likely due to an issue in updating all font awesome packages together, which doesn't seem to have been solved yet."
+    }
+  ]
+}

@@ -8,6 +8,10 @@
 
 - The URL of the main stylesheet was incorrectly set to a relative URL, which caused it to break when navigating directly to deeply-nested URLs (e.g., `/messages/inbox`). The URL was updated to be an absolute URL, which ensures the stylesheet will always be loaded correctly. ([#1948](https://github.com/sendahug/send-hug-frontend/pull/1948))
 
+#### Chores
+
+- Removed the font awesome group from dependabot's grouped updates, as it seems the group is the reason dependabot stopped opening pull requests to update these dependencies. This is likely due to an issue in updating all font awesome packages together, which doesn't seem to have been solved yet. ([#1949](https://github.com/sendahug/send-hug-frontend/pull/1949))
+
 ### 2024-12-15
 
 #### Fixes

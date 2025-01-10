@@ -11,10 +11,6 @@ updates:
           - "@angular/*"
         exclude-patterns:
           - "@angular/fire"
-      font-awesome:
-        patterns:
-          - "@fortawesome/fontawesome-*"
-          - "@fortawesome/free-*"
       size-limit:
         patterns:
           - "size-limit"

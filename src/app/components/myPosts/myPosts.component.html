@@ -9,7 +9,7 @@
 <div id="myPosts">
   <!-- If the user has posts, displays them -->
   <div *ngIf="posts().length" role="region">
-    <ul class="itemList" aria-describedby="postsTitle">
+    <ul class="itemList" aria-describedby="newTitle">
       <li *ngFor="let post of posts()" class="userPost" aria-describedby="newTitle">
         <app-single-post
           [post]="post"

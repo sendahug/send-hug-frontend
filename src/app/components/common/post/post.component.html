@@ -52,8 +52,6 @@
     <span
       *ngIf="!(authService.userData() && authService.userData()!.id != _post()?.userId)"
       class="textlessButton messageButton disabled"
-      [attr.aria-labelledby]="'pMessage' + postId()"
-      name="send a message"
     >
       <!-- prettier-ignore -->
       <fa-icon [icon]="faComment" class="fa-comment"></fa-icon>

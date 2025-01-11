@@ -11,7 +11,7 @@
     <span *ngIf="messType() == 'thread'" class="breadcrumb">Thread {{ threadId() }}</span>
   </nav>
 
-  <h3>{{ messType() }}</h3>
+  <h1>{{ messType() }}</h1>
   <!-- Messages area navigation. -->
   <div id="messagesNav" role="navigation">
     <a [routerLink]="['/messages', 'inbox']" class="messNavOption appButton">Inbox</a>

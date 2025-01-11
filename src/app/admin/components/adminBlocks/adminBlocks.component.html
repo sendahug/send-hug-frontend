@@ -3,7 +3,7 @@
 </div>
 
 <div class="adminScreen" id="adminBlocks" *ngIf="!isLoading()" role="main">
-  <h4 class="subTitle">Block User</h4>
+  <h2 class="subTitle">Block User</h2>
   <!-- Block a user by ID -->
   <form [formGroup]="blockForm">
     <div class="formElement">
@@ -31,7 +31,7 @@
     <button type="submit" class="appButton sendData" (click)="block()">Block User</button>
   </form>
 
-  <h4 class="subTitle">Blocked Users</h4>
+  <h2 class="subTitle">Blocked Users</h2>
   <!-- Blocked users table -->
   <div class="tableContainer" *ngIf="blockedUsers().length">
     <table>

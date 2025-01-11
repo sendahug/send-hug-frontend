@@ -4,7 +4,7 @@
 
 <!-- Admin dashboard reports -->
 <div class="adminScreen" id="adminReports" *ngIf="!isLoading()" role="main">
-  <h4 class="subTitle">Reported Users</h4>
+  <h2 class="subTitle">Reported Users</h2>
   <!-- Reported users table -->
   <div class="tableContainer" *ngIf="userReports().length">
     <table>
@@ -88,7 +88,7 @@
     There are no user reports waiting for review.
   </div>
 
-  <h4 class="subTitle">Reported Posts</h4>
+  <h2 class="subTitle">Reported Posts</h2>
   <!-- Reported posts table -->
   <div class="tableContainer" *ngIf="postReports().length">
     <table>

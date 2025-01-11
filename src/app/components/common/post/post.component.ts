@@ -86,7 +86,6 @@ export class SinglePost implements AfterViewChecked, OnInit, OnDestroy {
     this._post.set(value);
   }
   @Input() type!: "n" | "s";
-  @Input() containerClass!: string;
   @Output() deletedId = new EventEmitter<number>();
   protected _post: WritableSignal<PostGet | undefined> = signal(undefined);
   postId = computed(() => `${this.type}Post${this._post()?.id || ""}`);

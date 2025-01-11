@@ -27,13 +27,17 @@
   <h3 id="postsTitle">Posts</h3>
   <div *ngIf="itemsService.postSearchResults().length > 0" id="postSearchResults">
     <ul class="searchResults" aria-describedby="pSearchRes">
-      <app-single-post
+      <li
         *ngFor="let item of itemsService.postSearchResults()"
-        [post]="item"
-        [type]="'n'"
-        [containerClass]="'searchResult'"
-        (deletedId)="removeDeletedPost($event)"
-      ></app-single-post>
+        class="searchResult"
+        aria-describedby="newTitle"
+      >
+        <app-single-post
+          [post]="item"
+          [type]="'n'"
+          (deletedId)="removeDeletedPost($event)"
+        ></app-single-post>
+      </li>
     </ul>
 
     <!-- Post pagination -->

@@ -59,9 +59,7 @@ import { AuthService } from "@app/services/auth.service";
 // ==================================================
 @Component({
   selector: "app-page-mock",
-  template: `
-    <app-single-post [post]="mockPost" [type]="'n'" [containerClass]="'newItem'"></app-single-post>
-  `,
+  template: ` <app-single-post [post]="mockPost" [type]="'n'"></app-single-post> `,
   standalone: true,
   imports: [SinglePost],
 })
@@ -390,16 +388,15 @@ describe("Post", () => {
     spyOn(authService, "canUser").and.returnValue(true);
 
     // change the elements' width to make sure there isn't enough room for the menu
-    const post = singlePostDOM.querySelector(".newItem");
-    const container = post.querySelector(".buttonsContainer") as HTMLDivElement;
+    const container = singlePostDOM.querySelector(".buttonsContainer") as HTMLDivElement;
     container.style.width = "40px";
     upFixture.detectChanges();
 
     // check all menus aren't shown
-    expect(post.querySelectorAll(".buttonsContainer")[0].classList).toContain("float");
-    expect(post.querySelectorAll(".subMenu")[0].classList).toContain("hidden");
-    expect(post.querySelectorAll(".subMenu")[0].classList).toContain("float");
-    expect(post.querySelectorAll(".menuButton")[0].classList).not.toContain("hidden");
+    expect(singlePostDOM.querySelectorAll(".buttonsContainer")[0].classList).toContain("float");
+    expect(singlePostDOM.querySelectorAll(".subMenu")[0].classList).toContain("hidden");
+    expect(singlePostDOM.querySelectorAll(".subMenu")[0].classList).toContain("float");
+    expect(singlePostDOM.querySelectorAll(".menuButton")[0].classList).not.toContain("hidden");
     done();
   });
 
@@ -413,16 +410,15 @@ describe("Post", () => {
     spyOn(authService, "canUser").and.returnValue(true);
 
     // change the elements' width to make sure there isn't enough room for the menu
-    const post = singlePostDOM.querySelector(".newItem");
-    const container = post.querySelector(".buttonsContainer") as HTMLDivElement;
+    const container = singlePostDOM.querySelector(".buttonsContainer") as HTMLDivElement;
     container.style.width = "400px";
     upFixture.detectChanges();
 
     // check all menus aren't shown
-    expect(post.querySelectorAll(".buttonsContainer")[0].classList).not.toContain("float");
-    expect(post.querySelectorAll(".subMenu")[0].classList).not.toContain("hidden");
-    expect(post.querySelectorAll(".subMenu")[0].classList).not.toContain("float");
-    expect(post.querySelectorAll(".menuButton")[0].classList).toContain("hidden");
+    expect(singlePostDOM.querySelectorAll(".buttonsContainer")[0].classList).not.toContain("float");
+    expect(singlePostDOM.querySelectorAll(".subMenu")[0].classList).not.toContain("hidden");
+    expect(singlePostDOM.querySelectorAll(".subMenu")[0].classList).not.toContain("float");
+    expect(singlePostDOM.querySelectorAll(".menuButton")[0].classList).toContain("hidden");
     done();
   });
 
@@ -436,26 +432,25 @@ describe("Post", () => {
     spyOn(authService, "canUser").and.returnValue(true);
 
     // change the elements' width to make sure there isn't enough room for the menu
-    const post = singlePostDOM.querySelector(".newItem");
-    const container = post.querySelector(".buttonsContainer") as HTMLDivElement;
+    const container = singlePostDOM.querySelector(".buttonsContainer") as HTMLDivElement;
     container.style.width = "40px";
     upFixture.detectChanges();
 
     // check all menus aren't shown
-    expect(post.querySelectorAll(".buttonsContainer")[0].classList).toContain("float");
-    expect(post.querySelectorAll(".subMenu")[0].classList).toContain("hidden");
-    expect(post.querySelectorAll(".subMenu")[0].classList).toContain("float");
-    expect(post.querySelectorAll(".menuButton")[0].classList).not.toContain("hidden");
+    expect(singlePostDOM.querySelectorAll(".buttonsContainer")[0].classList).toContain("float");
+    expect(singlePostDOM.querySelectorAll(".subMenu")[0].classList).toContain("hidden");
+    expect(singlePostDOM.querySelectorAll(".subMenu")[0].classList).toContain("float");
+    expect(singlePostDOM.querySelectorAll(".menuButton")[0].classList).not.toContain("hidden");
 
     // click the options buton for the post
-    post.querySelectorAll(".menuButton")[0].click();
+    singlePostDOM.querySelectorAll(".menuButton")[0].click();
     upFixture.detectChanges();
 
     // check the menu is floating
-    expect(post.querySelectorAll(".buttonsContainer")[0].classList).toContain("float");
-    expect(post.querySelectorAll(".subMenu")[0].classList).not.toContain("hidden");
-    expect(post.querySelectorAll(".subMenu")[0].classList).toContain("float");
-    expect(post.querySelectorAll(".menuButton")[0].classList).not.toContain("hidden");
+    expect(singlePostDOM.querySelectorAll(".buttonsContainer")[0].classList).toContain("float");
+    expect(singlePostDOM.querySelectorAll(".subMenu")[0].classList).not.toContain("hidden");
+    expect(singlePostDOM.querySelectorAll(".subMenu")[0].classList).toContain("float");
+    expect(singlePostDOM.querySelectorAll(".menuButton")[0].classList).not.toContain("hidden");
     done();
   });
 

@@ -1,4 +1,4 @@
-<h2>Search Results</h2>
+<h1>Search Results</h1>
 
 <app-loader *ngIf="itemsService.isSearching()" [loadingMessage]="'Searching...'"></app-loader>
 
@@ -8,7 +8,7 @@
     your search query: "{{ searchQuery() }}"
   </div>
 
-  <h3 id="usersTitle">Users</h3>
+  <h2 id="usersTitle">Users</h2>
   <ul
     *ngIf="itemsService.userSearchResults().length > 0"
     class="searchResults"
@@ -24,13 +24,13 @@
     There are no users that match your search!
   </div>
 
-  <h3 id="postsTitle">Posts</h3>
+  <h2 id="postsTitle">Posts</h2>
   <div *ngIf="itemsService.postSearchResults().length > 0" id="postSearchResults">
-    <ul class="searchResults" aria-describedby="pSearchRes">
+    <ul class="searchResults" aria-describedby="pSearchResults">
       <li
         *ngFor="let item of itemsService.postSearchResults()"
         class="searchResult"
-        aria-describedby="newTitle"
+        aria-describedby="pResult"
       >
         <app-single-post
           [post]="item"
@@ -67,4 +67,9 @@
   <div *ngIf="itemsService.postSearchResults().length == 0" class="errorMessage" id="pSearchResErr">
     There are no posts that match your search!
   </div>
+</div>
+
+<div id="labels" class="labels">
+  <p id="pSearchResults">List of posts matching the {{ searchQuery() }} search query</p>
+  <p id="pResult">Post matching the {{ searchQuery() }} search query</p>
 </div>

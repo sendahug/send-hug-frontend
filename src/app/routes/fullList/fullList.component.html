@@ -1,5 +1,5 @@
 <div id="items">
-  <h2 class="listTitle" id="listTitle">{{ type() }} Items</h2>
+  <h1 class="listTitle" id="listTitle">{{ type() }} Items</h1>
 
   <app-loader *ngIf="isLoading()" [loadingMessage]="'Fetching posts...'"></app-loader>
 
@@ -8,7 +8,7 @@
     <li
       *ngFor="let item of posts()"
       [class]="type() == 'New' ? 'newItem' : 'sugItem'"
-      aria-describedby="newTitle"
+      aria-describedby="listTitle"
     >
       <app-single-post
         [post]="item"

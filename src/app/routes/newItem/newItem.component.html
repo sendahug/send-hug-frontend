@@ -1,5 +1,5 @@
 <div id="newItem">
-  <h3 id="newTitle">New {{ itemType() }}</h3>
+  <h1 id="newTitle">New {{ itemType() }}</h1>
 
   <span *ngIf="authService.userData() !== undefined">
     <div id="newMessage" *ngIf="itemType() == 'Message'">

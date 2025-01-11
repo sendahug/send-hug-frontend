@@ -244,7 +244,7 @@ describe("AppComponent", () => {
     tick();
 
     expect(authSpy).toHaveBeenCalled();
-    expect(navigateSpy).toHaveBeenCalledWith(["/test"]);
+    expect(navigateSpy).toHaveBeenCalledWith(["/test"], { queryParams: {} });
     expect(paramMapSpy).toHaveBeenCalledWith("redirect");
   }));
 

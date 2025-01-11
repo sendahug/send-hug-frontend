@@ -31,6 +31,7 @@
 
 import pa11y from "pa11y";
 import puppeteer, { Browser } from "puppeteer";
+import { exit } from "node:process";
 
 import { readLinks, baseUrl } from "./SitemapGen";
 
@@ -40,11 +41,10 @@ const defaultOptions = {
   timeout: 15000,
   threshold: 2,
   log: {
-    debug: console.log,
+    debug: () => undefined,
     error: console.error,
     info: console.log,
   },
-  useIncognitoBrowserContext: false,
   ignore: [],
   runners: ["axe", "htmlcs"],
 };
@@ -52,6 +52,8 @@ const createScreenshots = process.env["CREATE_SCREENSHOTS"] || false;
 const adminUsername = process.env["ADMIN_USERNAME"];
 const adminPassword = process.env["ADMIN_PASSWORD"];
 let browser: Browser;
+
+const results: any[] = [];
 
 /**
  * Sets up the puppeeter-controlled browser for testing.
@@ -61,9 +63,8 @@ let browser: Browser;
  */
 async function setUpBrowser() {
   browser = await puppeteer.launch({
-    // executablePath: process.env.CHROME_BIN,
-    executablePath: "/Applications/Google Chrome Canary.app/Contents/MacOS/Google Chrome Canary",
-    ignoreHTTPSErrors: true,
+    executablePath: process.env.CHROME_BIN,
+    ignoreHTTPSErrors: false,
     args: ["--disable-dev-shm-usage", "--no-sandbox"],
   });
 }
@@ -74,6 +75,14 @@ async function setUpBrowser() {
  */
 async function runLogin() {
   console.log("Logging in as admin");
+
+  // Run the check on the login page
+  // @ts-ignore - the AccessibilityStandard type needs to be exported from the types package
+  const result = await pa11y("http://localhost:3000/login", {
+    ...defaultOptions,
+    browser,
+  });
+  results.push(result);
 
   // @ts-ignore - the AccessibilityStandard type needs to be exported from the types package
   await pa11y("http://localhost:3000/login", {
@@ -103,16 +112,20 @@ async function runTests() {
   console.log("Fetching the list of links to check");
 
   const linksToCheck = await readLinks();
-  const pa11yRuns: Promise<any>[] = [];
-  linksToCheck.forEach((url) => {
-    const pathParts = url.substring(1).split("/");
+
+  console.log(`Running pa11y checks on ${linksToCheck.length} URLs`);
+
+  for (const link of linksToCheck) {
+    if (link.includes("login")) continue;
+
+    const pathParts = link.substring(1).split("/");
     const actions = [
-      `navigate to ${baseUrl}${url}`,
-      `wait for path to not be /login?redirect=${url}`,
+      `navigate to ${baseUrl}${link}`,
+      `wait for element app-login-page to be removed`,
     ];
 
     // The search needs to be run manually at the moment
-    if (url.includes("search")) {
+    if (link.includes("search")) {
       const searchActions = [
         `navigate to ${baseUrl}`,
         "click element #searchBtn",
@@ -127,17 +140,47 @@ async function runTests() {
     if (createScreenshots)
       actions.push(`screen capture pa11y/${pathParts[pathParts.length - 1]}.png`);
 
-    // @ts-ignore - the AccessibilityStandard type needs to be exported from the types package
-    pa11yRuns.push(pa11y(`${baseUrl}${url}`, { ...defaultOptions, browser, actions }));
-  });
+    try {
+      const page = await browser.newPage();
+      // @ts-ignore - the AccessibilityStandard type needs to be exported from the types package
+      const result = await pa11y(`${baseUrl}${link}`, { ...defaultOptions, browser, actions });
+      await page.close();
+      results.push(result);
+    } catch (error) {
+      console.error(error.message);
+    }
+  }
 
-  console.log(`Running pa11y checks on ${pa11yRuns.length} URLs`);
+  // console.log(JSON.stringify(results));
 
-  const results = await Promise.all(pa11yRuns);
-
-  console.log("Successfully completed checks");
+  console.log("Completed checks. Parsing the results.");
 
   return results;
+}
+
+/**
+ * Parses the pa11y errors and displays information about each of the pages
+ * and each of the errors encountered there.
+ */
+function displayErrors() {
+  let errorCount = 0;
+
+  results.forEach((result) => {
+    if (result.issues.length == 0)
+      console.log(`${result.pageUrl} - ${result.issues.length} errors`);
+    else console.error(`${result.pageUrl} - ${result.issues.length} errors`);
+
+    result.issues.forEach((error) => {
+      console.error(`${error.code} ${error.type}:`);
+      console.log(`Message: ${error.message}`);
+      console.log(`Context: ${error.context}`);
+      errorCount += 1;
+    });
+
+    console.log("");
+  });
+
+  if (errorCount > 0) exit(1);
 }
 
 /**
@@ -149,6 +192,7 @@ async function run() {
   await runTests();
 
   await browser.close();
+  displayErrors();
 }
 
 run();

@@ -46,7 +46,7 @@ describe("Send A Hug Router", () => {
     cy.visit("http://localhost:3000/messages/inbox");
     cy.wait(1000);
     cy.get("app-messages").should("be.visible").should("not.be.undefined");
-    cy.get("h3").eq(0).should("have.text", "inbox");
+    cy.get("h1").eq(0).should("have.text", "inbox");
     // check messages route is marked active
     cy.get(".navLink").eq(2).should("have.class", "active");
 
@@ -54,7 +54,7 @@ describe("Send A Hug Router", () => {
     cy.visit("http://localhost:3000/messages/outbox");
     cy.wait(1000);
     cy.get("app-messages").should("be.visible").should("not.be.undefined");
-    cy.get("h3").eq(0).should("have.text", "outbox");
+    cy.get("h1").eq(0).should("have.text", "outbox");
     // check messages route is marked active
     cy.get(".navLink").eq(2).should("have.class", "active");
 
@@ -62,7 +62,7 @@ describe("Send A Hug Router", () => {
     cy.visit("http://localhost:3000/messages/threads");
     cy.wait(1000);
     cy.get("app-messages").should("be.visible").should("not.be.undefined");
-    cy.get("h3").eq(0).should("have.text", "threads");
+    cy.get("h1").eq(0).should("have.text", "threads");
     // check messages route is marked active
     cy.get(".navLink").eq(2).should("have.class", "active");
 
@@ -70,7 +70,7 @@ describe("Send A Hug Router", () => {
     cy.visit("http://localhost:3000/messages/thread/1");
     cy.wait(1000);
     cy.get("app-messages").should("be.visible").should("not.be.undefined");
-    cy.get("h3").eq(0).should("have.text", "thread");
+    cy.get("h1").eq(0).should("have.text", "thread");
     // check messages route is marked active
     cy.get(".navLink").eq(2).should("have.class", "active");
   });

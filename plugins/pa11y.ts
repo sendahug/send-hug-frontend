@@ -32,23 +32,17 @@
 import pa11y from "pa11y";
 import puppeteer, { Browser } from "puppeteer";
 import { exit } from "node:process";
+import commandLineArgs, { OptionDefinition } from "command-line-args";
 
 import { readLinks, baseUrl } from "./SitemapGen";
 
-const defaultOptions = {
-  standard: "WCAG2AAA",
-  level: "error",
-  timeout: 15000,
-  threshold: 2,
-  log: {
-    debug: () => undefined,
-    error: console.error,
-    info: console.log,
-  },
-  ignore: [],
-  runners: ["axe", "htmlcs"],
-};
-const createScreenshots = process.env["CREATE_SCREENSHOTS"] || false;
+// Configure the CLI options.
+const cliOptions: OptionDefinition[] = [
+  { name: "log_level", type: String, defaultValue: "log" },
+  { name: "screenshot", type: Boolean, defaultValue: false },
+];
+const options = commandLineArgs(cliOptions);
+
 const adminUsername = process.env["ADMIN_USERNAME"];
 const adminPassword = process.env["ADMIN_PASSWORD"];
 let browser: Browser;
@@ -72,21 +66,21 @@ async function setUpBrowser() {
 /**
  * Runs the initial login process, setting up the credentials for all
  * following tests.
+ * @param pa11yConfig - pa11y config object. Temporarily set to any until the types
+ *                      are properly exported from the types package.
  */
-async function runLogin() {
-  console.log("Logging in as admin");
+async function runLogin(pa11yConfig: any) {
+  pa11yConfig.log.info("Logging in as admin");
 
   // Run the check on the login page
-  // @ts-ignore - the AccessibilityStandard type needs to be exported from the types package
   const result = await pa11y("http://localhost:3000/login", {
-    ...defaultOptions,
+    ...pa11yConfig,
     browser,
   });
   results.push(result);
 
-  // @ts-ignore - the AccessibilityStandard type needs to be exported from the types package
   await pa11y("http://localhost:3000/login", {
-    ...defaultOptions,
+    ...pa11yConfig,
     browser,
     actions: [
       "navigate to http://localhost:3000/login",
@@ -100,20 +94,23 @@ async function runLogin() {
     ],
   });
 
-  console.log("Successfully logged in as admin");
+  pa11yConfig.log.info("Successfully logged in as admin");
 }
 
 /**
  * Gets the list of URLs from the routes.ts file and runs pa11y on
  * every page in the list.
+ * @param pa11yConfig - pa11y config object. Temporarily set to any until the types
+ *                      are properly exported from the types package.
+ * @param createScreenshots - whether to generate screenshots before each test.
  * @returns an array of the results of all tests.
  */
-async function runTests() {
-  console.log("Fetching the list of links to check");
+async function runTests(pa11yConfig: any, createScreenshots: boolean = false) {
+  pa11yConfig.log.info("Fetching the list of links to check");
 
   const linksToCheck = await readLinks();
 
-  console.log(`Running pa11y checks on ${linksToCheck.length} URLs`);
+  pa11yConfig.log.info(`Running pa11y checks on ${linksToCheck.length} URLs`);
 
   for (const link of linksToCheck) {
     if (link.includes("login")) continue;
@@ -142,8 +139,7 @@ async function runTests() {
 
     try {
       const page = await browser.newPage();
-      // @ts-ignore - the AccessibilityStandard type needs to be exported from the types package
-      const result = await pa11y(`${baseUrl}${link}`, { ...defaultOptions, browser, actions });
+      const result = await pa11y(`${baseUrl}${link}`, { ...pa11yConfig, browser, actions });
       await page.close();
       results.push(result);
     } catch (error) {
@@ -151,9 +147,9 @@ async function runTests() {
     }
   }
 
-  // console.log(JSON.stringify(results));
+  pa11yConfig.log.debug(JSON.stringify(results));
 
-  console.log("Completed checks. Parsing the results.");
+  pa11yConfig.log.info("Completed checks. Parsing the results.");
 
   return results;
 }
@@ -162,37 +158,78 @@ async function runTests() {
  * Parses the pa11y errors and displays information about each of the pages
  * and each of the errors encountered there.
  */
-function displayErrors() {
-  let errorCount = 0;
+function displayErrors(pa11yConfig: any) {
+  let didFailTest = false;
 
   results.forEach((result) => {
     if (result.issues.length == 0)
       console.log(`${result.pageUrl} - ${result.issues.length} errors`);
     else console.error(`${result.pageUrl} - ${result.issues.length} errors`);
 
+    if (result.issues.length > pa11yConfig.threshold) didFailTest = true;
+
     result.issues.forEach((error) => {
       console.error(`${error.code} ${error.type}:`);
       console.log(`Message: ${error.message}`);
       console.log(`Context: ${error.context}`);
-      errorCount += 1;
     });
 
     console.log("");
   });
 
-  if (errorCount > 0) exit(1);
+  if (didFailTest) exit(2);
+}
+
+/**
+ * Generates the pa11y config based on the
+ * @returns pa11y config.
+ */
+function getConfig() {
+  let logLevel = 1;
+
+  switch (options["log_level"].toLowerCase()) {
+    case "debug":
+      logLevel = 0;
+      break;
+    case "log":
+      logLevel = 1;
+      break;
+    case "error":
+      logLevel = 2;
+      break;
+    default:
+      logLevel = 1;
+      break;
+  }
+
+  const pa11yConfig = {
+    standard: "WCAG2AAA",
+    level: "error",
+    timeout: 15000,
+    threshold: 2,
+    log: {
+      debug: logLevel == 0 ? console.debug : () => undefined,
+      error: logLevel <= 2 ? console.error : () => undefined,
+      info: logLevel <= 1 ? console.log : () => undefined,
+    },
+    ignore: [],
+    runners: ["axe", "htmlcs"],
+  };
+
+  return pa11yConfig;
 }
 
 /**
  * Runs the full a11y testing workflow.
  */
 async function run() {
+  const pa11yConfig = getConfig();
   await setUpBrowser();
-  await runLogin();
-  await runTests();
+  await runLogin(pa11yConfig);
+  await runTests(pa11yConfig, options["screenshot"]);
 
   await browser.close();
-  displayErrors();
+  displayErrors(pa11yConfig);
 }
 
 run();

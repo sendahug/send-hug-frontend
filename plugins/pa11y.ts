@@ -43,8 +43,8 @@ const cliOptions: OptionDefinition[] = [
 ];
 const options = commandLineArgs(cliOptions);
 
-const adminUsername = process.env["ADMIN_USERNAME"];
-const adminPassword = process.env["ADMIN_PASSWORD"];
+const adminUsername = process.env["CYPRESS_ADMIN_USERNAME"];
+const adminPassword = process.env["CYPRESS_ADMIN_PASSWORD"];
 let browser: Browser;
 
 const results: any[] = [];

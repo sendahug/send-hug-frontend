@@ -175,6 +175,7 @@ jobs:
       - run: google-chrome --version
       - restore_cache:
           key: send-hug-v1-
+      - run: mkdir pa11y
       - run:
           name: Install dependencies
           command: npm install

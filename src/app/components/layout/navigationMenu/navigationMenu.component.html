@@ -27,7 +27,7 @@
       <!-- prettier-ignore -->
       <fa-icon [icon]="faBars" class="fa-bars"></fa-icon>
     </button>
-    <div id="navLinks" [ngClass]="navMenuClass()" [attr.aria-hidden]="showMenu()">
+    <div *ngIf="showMenu()" id="navLinks" [ngClass]="navMenuClass()">
       <a [routerLink]="['/']" [ngClass]="getClassForNavItem('/')">
         <svg
           xmlns="http://www.w3.org/2000/svg"

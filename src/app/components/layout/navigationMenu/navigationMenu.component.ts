@@ -185,6 +185,8 @@ export class AppNavMenu implements OnInit, AfterViewInit {
           }
         }
       });
+
+    this.checkMenuSize();
   }
 
   /**
@@ -274,9 +276,8 @@ export class AppNavMenu implements OnInit, AfterViewInit {
   onResize(_event: Event) {
     let width = document.documentElement.clientWidth;
     let navMenu = document.getElementById("navMenu") as HTMLDivElement;
-    let navLinks = document.getElementById("navLinks") as HTMLDivElement;
 
-    if (width > 650 && navLinks.scrollWidth < navMenu.offsetWidth) {
+    if (width > 650 && this.menuSize() < navMenu.offsetWidth) {
       this.showMenu.set(true);
       this.showMenuButton.set(false);
     } else {

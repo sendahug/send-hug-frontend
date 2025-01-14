@@ -191,6 +191,9 @@ jobs:
       - run:
           name: Run accessibility tests
           command: npm run pa11y
+      - store_artifacts:
+          path: pa11y
+          destination: pa11y-screenshots
 
 workflows:
   run-testing:

@@ -35,6 +35,8 @@ jobs:
 
       - run: rm .npmrc
 
+      - run: mkdir pa11y
+
       - name: Install npm packages
         run: npm install
 

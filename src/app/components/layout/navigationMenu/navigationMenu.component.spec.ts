@@ -116,9 +116,11 @@ describe("AppNavMenu", () => {
   });
 
   // Check that there are valid navigation links
-  it("should contain valid navigation links", () => {
+  it("should contain valid navigation links", async () => {
     const fixture = TestBed.createComponent(AppNavMenu);
     const navMenuHtml = fixture.debugElement.nativeElement;
+    await setViewport({ width: 780, height: 640 });
+    fixture.detectChanges();
 
     let navMenu = navMenuHtml.querySelector("#navLinks");
     expect(navMenu).toBeDefined();
@@ -333,7 +335,7 @@ describe("AppNavMenu", () => {
     const fixture = TestBed.createComponent(AppNavMenu);
     const navMenu = fixture.componentInstance;
     const navMenuHtml = fixture.nativeElement;
-    await setViewport({ width: 700, height: 640 });
+    await setViewport({ width: 780, height: 640 });
     fixture.detectChanges();
 
     expect(navMenu.showMenu()).toBeTrue();
@@ -403,7 +405,7 @@ describe("AppNavMenu", () => {
     fixture.detectChanges();
 
     expect(checkSpy).toHaveBeenCalled();
-    expect(navLinks.classList).toContain("hidden");
+    expect(navMenuHtml.querySelector("#navLinks")).toBeNull();
     expect(navMenuHtml.querySelector("#menuBtn").classList).not.toContain("hidden");
   });
 

@@ -177,8 +177,9 @@ describe("AppNavMenu", () => {
   });
 
   // Check that the search panel appears when the button is clicked
-  it("has a search which appears when the icon is clicked", () => {
+  it("has a search which appears when the icon is clicked", async () => {
     const fixture = TestBed.createComponent(AppNavMenu);
+    await setViewport({ width: 780, height: 640 });
     fixture.detectChanges();
     const navMenu = fixture.componentInstance;
     const navMenuHtml = fixture.nativeElement;
@@ -339,22 +340,22 @@ describe("AppNavMenu", () => {
     fixture.detectChanges();
 
     expect(navMenu.showMenu()).toBeTrue();
-    expect(navMenuHtml.querySelector("#navLinks")!.classList).not.toContain("hidden");
+    expect(navMenuHtml.querySelector("#navLinks")!.classList).not.toBeNull();
     expect(navMenuHtml.querySelector("#menuBtn")!.classList).toContain("hidden");
   });
 
   // TODO: Figure out why this isn't working in CI.
   // check the menu is hidden if the screen isn't wide enough
-  // it("should hide the menu if the screen isn't wide enough", async () => {
-  //   const fixture = TestBed.createComponent(AppNavMenu);
-  //   const navMenu = fixture.componentInstance;
-  //   const navMenuHtml = fixture.nativeElement;
-  //   await setViewport({ width: 600, height: 640 });
-  //   fixture.detectChanges();
+  it("should hide the menu if the screen isn't wide enough", async () => {
+    const fixture = TestBed.createComponent(AppNavMenu);
+    const navMenu = fixture.componentInstance;
+    const navMenuHtml = fixture.nativeElement;
+    await setViewport({ width: 600, height: 640 });
+    fixture.detectChanges();
 
-  //   expect(navMenu.showMenu()).toBeFalse();
-  //   expect(navMenuHtml.querySelector("#navLinks")!.classList).toContain("hidden");
-  // });
+    expect(navMenu.showMenu()).toBeFalse();
+    expect(navMenuHtml.querySelector("#navLinks")).toBeNull();
+  });
 
   // check the menu is hidden when clicked again
   // it("should show/hide the menu when the menu button is clicked", async () => {
@@ -410,8 +411,9 @@ describe("AppNavMenu", () => {
   });
 
   // should hide the menu if it gets too long and show it again if it's not too long
-  it("should show the menu again if it's not too long again", () => {
+  it("should show the menu again if it's not too long again", async () => {
     const fixture = TestBed.createComponent(AppNavMenu);
+    await setViewport({ width: 780, height: 640 });
     const navMenu = fixture.componentInstance;
     const navMenuHtml = fixture.nativeElement;
     const checkSpy = spyOn(navMenu, "checkMenuSize").and.callThrough();

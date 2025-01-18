@@ -115,9 +115,10 @@ describe("NotificationService", () => {
     tick(20 * 1000);
 
     expect(notifSpy).toHaveBeenCalled();
-    notificationService.refreshCounter!.subscribe((value) => {
-      expect(value).toBeTruthy();
-    });
+
+    tick(20 * 1000);
+
+    expect(notifSpy).toHaveBeenCalledTimes(2);
 
     discardPeriodicTasks();
   }));

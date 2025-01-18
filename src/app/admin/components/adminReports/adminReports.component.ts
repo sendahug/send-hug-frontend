@@ -50,6 +50,7 @@ interface ReportData {
 @Component({
   selector: "app-admin-reports",
   templateUrl: "./adminReports.component.html",
+  standalone: false,
 })
 export class AdminReports {
   postReports = signal<ReportGet[]>([]);

@@ -41,6 +41,7 @@ import { AuthService } from "@app/services/auth.service";
   selector: "app-admin-dashboard",
   templateUrl: "./adminDashboard.component.html",
   styleUrl: "./adminDashboard.component.less",
+  standalone: false,
 })
 export class AdminDashboard {
   screen = signal("");

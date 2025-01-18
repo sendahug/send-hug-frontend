@@ -43,6 +43,7 @@ import { ApiClientService } from "@app/services/apiClient.service";
 @Component({
   selector: "app-admin-filters",
   templateUrl: "./adminFilters.component.html",
+  standalone: false,
 })
 export class AdminFilters {
   filteredPhrases = signal<{ id: number; filter: string }[]>([]);

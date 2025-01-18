@@ -54,6 +54,7 @@ interface BlockedUser {
 @Component({
   selector: "app-admin-blocks",
   templateUrl: "./adminBlocks.component.html",
+  standalone: false,
 })
 export class AdminBlocks {
   blockedUsers = signal<BlockedUser[]>([]);

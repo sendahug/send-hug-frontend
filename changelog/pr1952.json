@@ -56,6 +56,14 @@
     {
       "change": "Fixes",
       "description": "Fixed a bug where all query params were discarded after a page was refreshed (which broke the New Item page for messages). This happened due to the way the Angular Router handles query params and route guards using 'canMatch'; these guards are checked before the query params are processed, which means we had no access to them when alerting the site which page to redirect back to. Now, these params are fetched separately within the guards, and users are redirected directly to the URL they asked for, including the query params they used."
+    },
+    {
+      "change": "Chores",
+      "description": "Added unit tests for the route guards."
+    },
+    {
+      "change": "Changes",
+      "description": "The permission checking route guard now redirects users without permission back to the home page, rather than the login page. This ensures that users who are already logged in don't have to go through unnecessary redirects."
     }
   ]
 }

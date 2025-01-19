@@ -55,7 +55,7 @@ export const hasPermissionGuard: CanMatchFn = (route, segments) => {
   let currentPath = segments.map((segment) => segment.toString()).join("/");
   if (queryParamsString) currentPath += `?${queryParamsString}`;
 
-  return router.navigate(["/login"], {
+  return router.navigate(["/"], {
     queryParams: { redirect: currentPath },
   });
 };

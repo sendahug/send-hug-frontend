@@ -1,5 +1,5 @@
 <div
-  id="loading"
+  [id]="'loading' + idSuffix()"
   role="progressbar"
   aria-describedby="loadingMessage"
   aria-busy="true"
@@ -7,5 +7,5 @@
 >
   <div class="logo"></div>
   <div class="spinner" media="(prefers-reduced-motion: no-preference)"></div>
-  <div id="loadingMessage">{{ loadingMessage() }}</div>
+  <div [id]="'loadingMessage' + idSuffix()">{{ loadingMessage() }}</div>
 </div>

@@ -2,7 +2,11 @@
 <div id="newItems" class="listContainer">
   <h1 class="listTitle" id="newTitle">New Items</h1>
 
-  <app-loader *ngIf="isLoading()" [loadingMessage]="'Fetching posts...'"></app-loader>
+  <app-loader
+    *ngIf="isLoading()"
+    [loadingMessage]="'Fetching posts...'"
+    [idSuffix]="'new'"
+  ></app-loader>
 
   <!-- If there are items in the list -->
   <ul
@@ -39,7 +43,11 @@
 <div id="suggestedItems" class="listContainer">
   <h1 class="listTitle" id="sugTitle">Suggested Items</h1>
 
-  <app-loader *ngIf="isLoading()" [loadingMessage]="'Fetching posts...'"></app-loader>
+  <app-loader
+    *ngIf="isLoading()"
+    [loadingMessage]="'Fetching posts...'"
+    [idSuffix]="'sug'"
+  ></app-loader>
 
   <!-- If there are items in the list -->
   <ul

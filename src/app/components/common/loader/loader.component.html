@@ -4,8 +4,9 @@
   aria-describedby="loadingMessage"
   aria-busy="true"
   [title]="loadingMessage()"
+  class="loading"
 >
   <div class="logo"></div>
   <div class="spinner" media="(prefers-reduced-motion: no-preference)"></div>
-  <div [id]="'loadingMessage' + idSuffix()">{{ loadingMessage() }}</div>
+  <div [id]="'loadingMessage' + idSuffix()" class="loadingMessage">{{ loadingMessage() }}</div>
 </div>

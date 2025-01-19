@@ -120,5 +120,3 @@ export default async function generateMap() {
   const urls = await readLinks();
   writeSitemap(urls);
 }
-
-generateMap();

@@ -108,6 +108,13 @@ describe("AppNavMenu", () => {
     }).compileComponents();
   });
 
+  afterEach(async () => {
+    // Reset the viewport to full size after each test
+    // This ensures the viewport is in the right size for the tests
+    // that require the full navigation menu
+    await setViewport({ width: 780, height: 640 });
+  });
+
   // Check that the app is created
   it("should create the menu", () => {
     const fixture = TestBed.createComponent(AppNavMenu);
@@ -116,10 +123,9 @@ describe("AppNavMenu", () => {
   });
 
   // Check that there are valid navigation links
-  it("should contain valid navigation links", async () => {
+  it("should contain valid navigation links", () => {
     const fixture = TestBed.createComponent(AppNavMenu);
     const navMenuHtml = fixture.debugElement.nativeElement;
-    await setViewport({ width: 780, height: 640 });
     fixture.detectChanges();
 
     let navMenu = navMenuHtml.querySelector("#navLinks");
@@ -177,9 +183,8 @@ describe("AppNavMenu", () => {
   });
 
   // Check that the search panel appears when the button is clicked
-  it("has a search which appears when the icon is clicked", async () => {
+  it("has a search which appears when the icon is clicked", () => {
     const fixture = TestBed.createComponent(AppNavMenu);
-    await setViewport({ width: 780, height: 640 });
     fixture.detectChanges();
     const navMenu = fixture.componentInstance;
     const navMenuHtml = fixture.nativeElement;
@@ -411,9 +416,8 @@ describe("AppNavMenu", () => {
   });
 
   // should hide the menu if it gets too long and show it again if it's not too long
-  it("should show the menu again if it's not too long again", async () => {
+  it("should show the menu again if it's not too long again", () => {
     const fixture = TestBed.createComponent(AppNavMenu);
-    await setViewport({ width: 780, height: 640 });
     const navMenu = fixture.componentInstance;
     const navMenuHtml = fixture.nativeElement;
     const checkSpy = spyOn(navMenu, "checkMenuSize").and.callThrough();

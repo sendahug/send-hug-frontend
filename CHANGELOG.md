@@ -2,6 +2,33 @@
 
 ## Unreleased
 
+### 2025-01-20
+
+#### Changes
+
+- Removed the verification route from the site map, as it's not needed there. ([#1952](https://github.com/sendahug/send-hug-frontend/pull/1952))
+- Temporarily changed the background colour for all buttons across the site. ([#1952](https://github.com/sendahug/send-hug-frontend/pull/1952))
+- The permission checking route guard now redirects users without permission back to the home page, rather than the login page. This ensures that users who are already logged in don't have to go through unnecessary redirects. ([#1952](https://github.com/sendahug/send-hug-frontend/pull/1952))
+
+#### Fixes
+
+- Fixed the heading structure across multiple pages to ensure they're ordered logically (as per WCAG guidelines). ([#1952](https://github.com/sendahug/send-hug-frontend/pull/1952))
+- Properly disabled hidden buttons (e.g., the AppAlert's button when the alert is hidden) to ensure keyboard users don't accidentally navigate to them when they should be hidden. ([#1952](https://github.com/sendahug/send-hug-frontend/pull/1952))
+- Added a missing title to the Loader, as per WCAG guidelines (all loaders must have an accessible name). ([#1952](https://github.com/sendahug/send-hug-frontend/pull/1952))
+- Moved the list item (`li`) element out of the Single Post component and into each component that generates a list of posts. The approach of having it within the component creates a confusing page structure in Angular, as components are generated within real HTML selectors (so instead of items being directly nested beneath a list element, there was an added Single Post element in between). This directly contradicts the purpose of using lists and list items to present a list in an accessible way. The new structure ensures the list items are nested under the list, and the post element is placed within each of the list items. ([#1952](https://github.com/sendahug/send-hug-frontend/pull/1952))
+- Removed unnecessary ARIA descriptions that could've caused confusion for users. ([#1952](https://github.com/sendahug/send-hug-frontend/pull/1952))
+- Added missing labels and descriptions to elements that pointed to elements that didn't exist (using `aria-describedby` or `aria-labelledby`). ([#1952](https://github.com/sendahug/send-hug-frontend/pull/1952))
+- Removed the IDs from all elements within the UserIcon component. Since multiple icons can be displayed at once, the use of IDs caused a clash between different elements. ([#1952](https://github.com/sendahug/send-hug-frontend/pull/1952))
+- Properly removed the top navigation menu when it's supposed to be hidden (i.e., when the screen isn't wide enough for it to fit). While the navigation menu was previously hidden using CSS, it wasn't hidden from users of assistive technology, as it was still on the page. This ensures assistive technology users can't access that menu when it's supposed to be inaccessible. ([#1952](https://github.com/sendahug/send-hug-frontend/pull/1952))
+- Fixed a bug where all query params were discarded after a page was refreshed (which broke the New Item page for messages). This happened due to the way the Angular Router handles query params and route guards using 'canMatch'; these guards are checked before the query params are processed, which means we had no access to them when alerting the site which page to redirect back to. Now, these params are fetched separately within the guards, and users are redirected directly to the URL they asked for, including the query params they used. ([#1952](https://github.com/sendahug/send-hug-frontend/pull/1952))
+
+#### Chores
+
+- Replaced pa11y-ci with pa11y for accessibility testing. While pa11y-ci has some useful utilities for running over multiple pages, it doesn't seem to get any updates, which leaves us stuck with old versions of both pa11y and axe-core. ([#1952](https://github.com/sendahug/send-hug-frontend/pull/1952))
+- Enabled pa11y to check routes accessible only to authenticated users and only to admin users. ([#1952](https://github.com/sendahug/send-hug-frontend/pull/1952))
+- Re-enabled the commented-out unit tests in the Navigation Menu component. ([#1952](https://github.com/sendahug/send-hug-frontend/pull/1952))
+- Added unit tests for the route guards. ([#1952](https://github.com/sendahug/send-hug-frontend/pull/1952))
+
 ### 2025-01-10
 
 #### Fixes

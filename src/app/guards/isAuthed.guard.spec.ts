@@ -1,6 +1,6 @@
 /*
-	Loader
-	Send a Hug Component Tests
+  isAuthed Guard
+  Send a Hug Component Tests
   ---------------------------------------------------
   MIT License
 
@@ -31,60 +31,57 @@
 */
 
 import { TestBed } from "@angular/core/testing";
+import { provideRouter, Router, UrlSegment } from "@angular/router";
 import {} from "jasmine";
-import { APP_BASE_HREF } from "@angular/common";
 import {
   BrowserDynamicTestingModule,
   platformBrowserDynamicTesting,
 } from "@angular/platform-browser-dynamic/testing";
-import { provideZoneChangeDetection } from "@angular/core";
+import { NO_ERRORS_SCHEMA, signal } from "@angular/core";
+import { MockProvider } from "ng-mocks";
 
-import { Loader } from "./loader.component";
+import { isAuthedGuard } from "./isAuthed.guard";
+import { AuthService } from "@app/services/auth.service";
 
-describe("Loader", () => {
+describe("isAuthedGuard", () => {
   // Before each test, configure testing environment
   beforeEach(() => {
     TestBed.resetTestEnvironment();
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
+    const MockAuthService = MockProvider(AuthService, {
+      authenticated: signal(true),
+    });
+
     TestBed.configureTestingModule({
-      imports: [Loader],
-      providers: [
-        { provide: APP_BASE_HREF, useValue: "/" },
-        provideZoneChangeDetection({ eventCoalescing: true }),
-      ],
+      schemas: [NO_ERRORS_SCHEMA],
+      imports: [],
+      declarations: [],
+      providers: [provideRouter([]), MockAuthService],
     }).compileComponents();
   });
 
-  // Check that the component is created
-  it("should create the component", () => {
-    const fixture = TestBed.createComponent(Loader);
-    const loader = fixture.componentInstance;
-    expect(loader).toBeTruthy();
+  it("should return true if the user is authenticated", (done: DoneFn) => {
+    TestBed.runInInjectionContext(() => {
+      const isAuthedResult = isAuthedGuard({}, []);
+      expect(isAuthedResult).toBeTrue();
+      done();
+    });
   });
 
-  // Check that the component displays a loading message
-  it("should display a loading message passed in from the parent", (done: DoneFn) => {
-    const fixture = TestBed.createComponent(Loader);
-    const loader = fixture.componentInstance;
-    const loaderDOM = fixture.nativeElement;
-    fixture.componentRef.setInput("loadingMessage", "Fetching user data...");
-    fixture.detectChanges();
+  it("should redirect to login if the user isn't authenticated", (done: DoneFn) => {
+    TestBed.runInInjectionContext(() => {
+      const authService = TestBed.inject(AuthService);
+      spyOn(authService, "authenticated").and.returnValue(false);
 
-    expect(loader.loadingMessage()).toBeDefined();
-    expect(loader.loadingMessage()).toBe("Fetching user data...");
-    expect(loaderDOM.querySelector("#loadingMessage")).toBeTruthy();
-    expect(loaderDOM.querySelector("#loadingMessage").textContent).toBe(loader.loadingMessage());
-    done();
-  });
+      const router = TestBed.inject(Router);
+      const navigateSpy = spyOn(router, "navigate");
 
-  it("should display a default message if waitingFor is null", () => {
-    const fixture = TestBed.createComponent(Loader);
-    const loader = fixture.componentInstance;
-    const loaderDOM = fixture.nativeElement;
-    fixture.detectChanges();
-
-    expect(loader.loadingMessage()).toBe("Loading...");
-    expect(loaderDOM.querySelector("#loadingMessage").textContent).toBe("Loading...");
+      isAuthedGuard({}, [new UrlSegment("/test", {})]);
+      expect(navigateSpy).toHaveBeenCalledWith(["/login"], {
+        queryParams: { redirect: encodeURIComponent("/test") },
+      });
+      done();
+    });
   });
 });

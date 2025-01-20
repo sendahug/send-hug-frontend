@@ -35,7 +35,7 @@
   </nav>
 
   <!-- Admin dashboard main page -->
-  <h3 class="adminTitle" *ngIf="screen() == 'main'">Admin Dashboard</h3>
+  <h1 class="adminTitle" *ngIf="screen() == 'main'">Admin Dashboard</h1>
   <div class="adminScreen" id="adminMain" *ngIf="screen() == 'main'" role="document">
     <div class="adminText">Welcome to the admin dashboard!</div>
     <div class="adminText">The admin dashboard is comprised of three parts:</div>
@@ -48,15 +48,15 @@
   </div>
 
   <!-- Admin dashboard reports -->
-  <h3 class="adminTitle" *ngIf="screen() == 'reports'">Reports</h3>
+  <h1 class="adminTitle" *ngIf="screen() == 'reports'">Reports</h1>
   <app-admin-reports *ngIf="screen() == 'reports'"></app-admin-reports>
 
   <!-- Admin dashboard blocks -->
-  <h3 class="adminTitle" *ngIf="screen() == 'blocks'">Blocks</h3>
+  <h1 class="adminTitle" *ngIf="screen() == 'blocks'">Blocks</h1>
   <app-admin-blocks *ngIf="screen() == 'blocks'"></app-admin-blocks>
 
   <!-- Admin dashboard filters -->
-  <h3 class="adminTitle" *ngIf="screen() == 'filters'">Filters</h3>
+  <h1 class="adminTitle" *ngIf="screen() == 'filters'">Filters</h1>
   <app-admin-filters *ngIf="screen() == 'filters'"></app-admin-filters>
 
   <!-- Labels for screen readers -->

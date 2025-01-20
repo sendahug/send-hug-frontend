@@ -153,7 +153,7 @@ export const routes: Routes = [
   { path: "search", component: SearchResults, data: { name: "Search Results" } },
   {
     path: "admin",
-    canMatch: [hasPermissionGuard],
+    canMatch: [isAuthedGuard, hasPermissionGuard],
     loadChildren: () => import("./admin/admin.module").then((m) => m.AppAdminModule),
     data: {
       name: "Admin Dashboard",

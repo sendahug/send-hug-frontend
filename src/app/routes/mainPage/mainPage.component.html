@@ -1,8 +1,12 @@
 <!-- New items -->
 <div id="newItems" class="listContainer">
-  <h2 class="listTitle" id="newTitle">New Items</h2>
+  <h1 class="listTitle" id="newTitle">New Items</h1>
 
-  <app-loader *ngIf="isLoading()" [loadingMessage]="'Fetching posts...'"></app-loader>
+  <app-loader
+    *ngIf="isLoading()"
+    [loadingMessage]="'Fetching posts...'"
+    [idSuffix]="'new'"
+  ></app-loader>
 
   <!-- If there are items in the list -->
   <ul
@@ -11,13 +15,13 @@
     aria-describedby="newTitle"
     id="newItemsList"
   >
-    <app-single-post
-      *ngFor="let item of newPosts()"
-      [post]="item"
-      [type]="'n'"
-      [containerClass]="'newItem'"
-      (deletedId)="removeDeletedPost($event)"
-    ></app-single-post>
+    <li *ngFor="let item of newPosts()" class="newItem" aria-describedby="newTitle">
+      <app-single-post
+        [post]="item"
+        [type]="'n'"
+        (deletedId)="removeDeletedPost($event)"
+      ></app-single-post>
+    </li>
   </ul>
 
   <!-- If there are no items in the list -->
@@ -37,9 +41,13 @@
 
 <!-- Suggested items -->
 <div id="suggestedItems" class="listContainer">
-  <h2 class="listTitle" id="sugTitle">Suggested Items</h2>
+  <h1 class="listTitle" id="sugTitle">Suggested Items</h1>
 
-  <app-loader *ngIf="isLoading()" [loadingMessage]="'Fetching posts...'"></app-loader>
+  <app-loader
+    *ngIf="isLoading()"
+    [loadingMessage]="'Fetching posts...'"
+    [idSuffix]="'sug'"
+  ></app-loader>
 
   <!-- If there are items in the list -->
   <ul
@@ -48,13 +56,13 @@
     aria-describedby="sugTitle"
     id="sugItemsList"
   >
-    <app-single-post
-      *ngFor="let item of suggestedPosts()"
-      [post]="item"
-      [type]="'s'"
-      [containerClass]="'sugItem'"
-      (deletedId)="removeDeletedPost($event)"
-    ></app-single-post>
+    <li *ngFor="let item of suggestedPosts()" class="sugItem" aria-describedby="sugTitle">
+      <app-single-post
+        [post]="item"
+        [type]="'s'"
+        (deletedId)="removeDeletedPost($event)"
+      ></app-single-post>
+    </li>
   </ul>
 
   <!-- If there are no items in the list -->

@@ -1,101 +1,97 @@
-<li class="{{ containerClass }}" aria-describedby="newTitle" role="article">
-  <div class="itemText" [attr.aria-describedby]="'pText' + postId()" id="{{ postId() }}">
-    {{ _post()?.text }}
-  </div>
-  <div class="itemUser">
-    By
-    <a
-      [routerLink]="['/user', _post()?.userId]"
-      class="profileLink"
-      [attr.aria-describedby]="'pUser' + postId()"
-      id="{{ type + 'User' + _post()?.id }}"
-      >{{ _post()?.user }}</a
-    >
-  </div>
-  <div class="itemDate" [attr.aria-describedby]="'pDate' + postId()">{{ _post()?.date }}</div>
-  <div [ngClass]="buttonsContainerClass()">
-    <div class="notification" [attr.aria-describedby]="'pHug' + postId()">
-      <button
-        [ngClass]="sendHugButtonClass()"
-        (click)="sendHug()"
-        [attr.aria-labelledby]="'pHug' + postId()"
-        name="send a hug"
-        [disabled]="shouldDisableHugBtn()"
-      >
-        <!-- prettier-ignore -->
-        <fa-icon [icon]="faHandHoldingHeart" class="fa-hand-holding-heart"></fa-icon>
-      </button>
-      <span class="badge" [attr.aria-describedby]="'pGivenH' + postId()">{{
-        _post()?.givenHugs
-      }}</span>
-    </div>
+<div class="itemText" [attr.aria-describedby]="'pText' + postId()" id="{{ postId() }}">
+  {{ _post()?.text }}
+</div>
+<div class="itemUser">
+  By
+  <a
+    [routerLink]="['/user', _post()?.userId]"
+    class="profileLink"
+    [attr.aria-describedby]="'pUser' + postId()"
+    id="{{ type + 'User' + _post()?.id }}"
+    >{{ _post()?.user }}</a
+  >
+</div>
+<div class="itemDate" [attr.aria-describedby]="'pDate' + postId()">{{ _post()?.date }}</div>
+<div [ngClass]="buttonsContainerClass()">
+  <div class="notification" [attr.aria-describedby]="'pHug' + postId()">
     <button
-      [ngClass]="menuButtonClass()"
-      [attr.aria-labelledby]="'pOptions' + postId()"
-      name="post options"
-      (click)="toggleOptions()"
+      [ngClass]="sendHugButtonClass()"
+      (click)="sendHug()"
+      [attr.aria-labelledby]="'pHug' + postId()"
+      name="send a hug"
+      [disabled]="shouldDisableHugBtn()"
     >
       <!-- prettier-ignore -->
-      <fa-icon [icon]="faEllipsisV" class="fa-comment"></fa-icon>
+      <fa-icon [icon]="faHandHoldingHeart" class="fa-hand-holding-heart"></fa-icon>
     </button>
-    <div [ngClass]="subMenuClass()">
-      <a
-        [routerLink]="['/new', 'Message']"
-        *ngIf="authService.userData() && authService.userData()!.id != _post()?.userId"
-        [queryParams]="{ user: _post()?.user, userID: _post()?.userId }"
-        class="textlessButton messageButton"
-        [attr.aria-labelledby]="'pMessage' + postId()"
-        name="send a message"
-      >
-        <!-- prettier-ignore -->
-        <fa-icon [icon]="faComment" class="fa-comment"></fa-icon>
-      </a>
-      <span
-        *ngIf="!(authService.userData() && authService.userData()!.id != _post()?.userId)"
-        class="textlessButton messageButton disabled"
-        [attr.aria-labelledby]="'pMessage' + postId()"
-        name="send a message"
-      >
-        <!-- prettier-ignore -->
-        <fa-icon [icon]="faComment" class="fa-comment"></fa-icon>
-      </span>
-      <button
-        [ngClass]="reportButtonClass()"
-        (click)="reportPost()"
-        [attr.aria-labelledby]="'pReport' + postId()"
-        name="report"
-        [disabled]="!(authService.userData() && authService.userData()!.id != _post()?.userId)"
-      >
-        <!-- prettier-ignore -->
-        <fa-icon [icon]="faFlag" class="fa-flag"></fa-icon>
-      </button>
-      <button
-        *ngIf="
-          authService.canUser('patch:any-post') ||
-          (authService.userData() && authService.userData()!.id == _post()?.userId)
-        "
-        class="textlessButton editButton"
-        (click)="editPost()"
-        [attr.aria-labelledby]="'pEdit' + postId()"
-      >
-        <!-- prettier-ignore -->
-        <fa-icon [icon]="faEdit" class="fa-edit"></fa-icon>
-      </button>
-      <button
-        *ngIf="
-          authService.canUser('delete:any-post') ||
-          (authService.userData() && authService.userData()!.id == _post()?.userId)
-        "
-        class="textlessButton deleteButton"
-        (click)="deletePost()"
-        [attr.aria-labelledby]="'pDelete' + postId()"
-      >
-        <!-- prettier-ignore -->
-        <fa-icon [icon]="faTrashCan" class="fa-times"></fa-icon>
-      </button>
-    </div>
+    <span class="badge" [attr.aria-describedby]="'pGivenH' + postId()">{{
+      _post()?.givenHugs
+    }}</span>
   </div>
-</li>
+  <button
+    [ngClass]="menuButtonClass()"
+    [attr.aria-labelledby]="'pOptions' + postId()"
+    name="post options"
+    (click)="toggleOptions()"
+  >
+    <!-- prettier-ignore -->
+    <fa-icon [icon]="faEllipsisV" class="fa-comment"></fa-icon>
+  </button>
+  <div [ngClass]="subMenuClass()">
+    <a
+      [routerLink]="['/new', 'Message']"
+      *ngIf="authService.userData() && authService.userData()!.id != _post()?.userId"
+      [queryParams]="{ user: _post()?.user, userID: _post()?.userId }"
+      class="textlessButton messageButton"
+      [attr.aria-labelledby]="'pMessage' + postId()"
+      name="send a message"
+    >
+      <!-- prettier-ignore -->
+      <fa-icon [icon]="faComment" class="fa-comment"></fa-icon>
+    </a>
+    <span
+      *ngIf="!(authService.userData() && authService.userData()!.id != _post()?.userId)"
+      class="textlessButton messageButton disabled"
+    >
+      <!-- prettier-ignore -->
+      <fa-icon [icon]="faComment" class="fa-comment"></fa-icon>
+    </span>
+    <button
+      [ngClass]="reportButtonClass()"
+      (click)="reportPost()"
+      [attr.aria-labelledby]="'pReport' + postId()"
+      name="report"
+      [disabled]="!(authService.userData() && authService.userData()!.id != _post()?.userId)"
+    >
+      <!-- prettier-ignore -->
+      <fa-icon [icon]="faFlag" class="fa-flag"></fa-icon>
+    </button>
+    <button
+      *ngIf="
+        authService.canUser('patch:any-post') ||
+        (authService.userData() && authService.userData()!.id == _post()?.userId)
+      "
+      class="textlessButton editButton"
+      (click)="editPost()"
+      [attr.aria-labelledby]="'pEdit' + postId()"
+    >
+      <!-- prettier-ignore -->
+      <fa-icon [icon]="faEdit" class="fa-edit"></fa-icon>
+    </button>
+    <button
+      *ngIf="
+        authService.canUser('delete:any-post') ||
+        (authService.userData() && authService.userData()!.id == _post()?.userId)
+      "
+      class="textlessButton deleteButton"
+      (click)="deletePost()"
+      [attr.aria-labelledby]="'pDelete' + postId()"
+    >
+      <!-- prettier-ignore -->
+      <fa-icon [icon]="faTrashCan" class="fa-times"></fa-icon>
+    </button>
+  </div>
+</div>
 
 <item-delete-form
   *ngIf="deleteMode()"

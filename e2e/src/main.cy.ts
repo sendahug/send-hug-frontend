@@ -98,8 +98,8 @@ describe("Send A Hug App", function () {
 
     // admin dashboard
     cy.visit("http://localhost:3000/admin");
-    cy.get("app-login-page").should("be.visible").should("not.be.undefined");
-    cy.url().should("equal", "http://localhost:3000/login?redirect=admin");
+    cy.get("app-main-page").should("be.visible").should("not.be.undefined");
+    cy.url().should("equal", "http://localhost:3000/?redirect=admin");
 
     // settings
     cy.visit("http://localhost:3000/settings");

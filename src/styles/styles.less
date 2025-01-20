@@ -226,7 +226,7 @@ app-nav-menu {
 // TODO: Move the below elsewhere. Need to refactor quite a bit of code first though.
 /* =================== New Item Page Styling =================== */
 /* New Item title */
-#newItem h3 {
+#newItem h1 {
   .fontSize(24);
   text-align: center;
   color: var(--headlineColour);
@@ -332,13 +332,13 @@ app-nav-menu {
 /* =================== Loader Component Styling =================== */
 /* Via https://www.w3schools.com/howto/howto_css_loader.asp */
 /* Loader text */
-app-loader:not(.header) #loading #loadingMessage {
+app-loader:not(.header) .loading .loadingMessage {
   .fontSize(18);
   color: var(--headlineColour);
 }
 
 /*  Header Message div */
-app-loader.header #loading {
+app-loader.header .loading {
   &:extend(.headerAlerts);
   height: 20px;
   max-height: 20px;
@@ -346,7 +346,7 @@ app-loader.header #loading {
 }
 
 /*  Header Message message */
-app-loader.header #loadingMessage {
+app-loader.header .loadingMessage {
   .fontSize(13);
   color: var(--headlineColour);
   margin: 0;
@@ -363,7 +363,7 @@ app-loader.header #loadingMessage {
 
 /* =================== Search Results Component Styling =================== */
 /* Search Results title */
-app-search-results h2 {
+app-search-results h1 {
   .fontSize(24);
   color: var(--headlineColour);
   text-align: center;
@@ -373,7 +373,7 @@ app-search-results h2 {
 }
 
 /* Users / Posts title */
-app-search-results h3 {
+app-search-results h2 {
   .fontSize(22);
   text-align: center;
   color: var(--headlineColour);

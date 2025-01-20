@@ -1,5 +1,5 @@
 /*
-  isAuthed route guard
+  Common utilities for the route guards
   Send a Hug app routing
   ---------------------------------------------------
   MIT License
@@ -30,29 +30,48 @@
   SOFTWARE.
 */
 
-import { CanMatchFn, Router } from "@angular/router";
-import { inject } from "@angular/core";
+import { Params, Router } from "@angular/router";
 
-import { AuthService } from "@app/services/auth.service";
-import { getQueryStringFromRouter } from "./common";
+const AllowedQueryParams = ["page", "id", "user", "userID", "query"];
 
 /**
- * A guard that checks whether the user is authenticated
- * before allowing/disallowing navigation to the given route.
+ * Gets the original request's query parameters from the Angular router
+ * and returns a formatted query string.
+ * @param router - the Angular router.
+ * @returns a string with all the query parameters, ready for the URL.
  */
-export const isAuthedGuard: CanMatchFn = (_route, segments) => {
-  const authService = inject(AuthService);
-  const router = inject(Router);
-  const queryParamsString = getQueryStringFromRouter(router);
+export function getQueryStringFromRouter(router: Router): string {
+  const originalQueryParams = router.getCurrentNavigation()?.initialUrl.queryParamMap;
+  return originalQueryParams
+    ? originalQueryParams.keys
+        .map((key) =>
+          AllowedQueryParams.includes(key) ? `${key}=${originalQueryParams.get(key)}` : ``,
+        )
+        .filter((value) => !!value)
+        .join("&")
+    : "";
+}
 
-  if (authService.authenticated()) {
-    return true;
-  } else {
-    let currentPath = segments.map((segment) => segment.toString()).join("/");
-    if (queryParamsString) currentPath += `?${queryParamsString}`;
+/**
+ * Gets the query parameters from the given URL and returns an object
+ * of the allowed query parameters.
+ * @param url - the url to fetch the query parameters from.
+ * @returns an object matching the Angular router params structure.
+ */
+export function getQueryParamsFromPath(url: string): Params {
+  const params: Params = {};
+  const urlParts = decodeURIComponent(url).split("?");
 
-    return router.navigate(["/login"], {
-      queryParams: { redirect: currentPath },
-    });
-  }
-};
+  if (urlParts.length == 1) return params;
+
+  const paramsArray = urlParts[1].split("&");
+
+  paramsArray.forEach((queryParam) => {
+    const queryParamParts = queryParam.split("=");
+    if (AllowedQueryParams.includes(queryParamParts[0])) {
+      params[queryParamParts[0]] = queryParamParts[1];
+    }
+  });
+
+  return params;
+}

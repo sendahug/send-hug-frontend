@@ -1,8 +1,8 @@
 <div *ngIf="authService.authenticated()">
-  <h3>Settings</h3>
+  <h1>Settings</h1>
 
   <div id="iconSettings">
-    <h4>User Icon</h4>
+    <h2>User Icon</h2>
     <div *ngIf="editIcon() == false">
       <app-user-icon
         [selectedIcon]="authService.userData()?.selectedIcon ?? 'kitty'"
@@ -29,7 +29,7 @@
   </div>
 
   <div id="notificationSettings">
-    <h4>Notifications</h4>
+    <h2>Notifications</h2>
     <form [formGroup]="editSettingsForm" id="refreshRateForm">
       <div class="formElement">
         <label for="enableNotifications" class="required">Push Notifications Enabled?:</label>

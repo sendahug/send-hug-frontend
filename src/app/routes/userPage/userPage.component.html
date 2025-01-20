@@ -6,6 +6,8 @@
     [loadingMessage]="'Fetching user data...'"
   ></app-loader>
 
+  <h1 class="labels">User Page</h1>
+
   <div id="userPage" *ngIf="!isIdbFetchLoading()" role="region">
     <div id="profileData">
       <div id="profilePic">
@@ -20,12 +22,13 @@
       </div>
       <div id="userNameRole">
         <div class="displayName">
-          <span class="pageData" aria-describedby="userName">{{ displayUser().displayName }}</span>
-          <span class="pageData" *ngIf="isOtherUserProfile()" aria-describedby="userName">
+          <span class="pageData">{{ displayUser().displayName }}</span>
+          <span class="pageData" *ngIf="isOtherUserProfile()">
             <button
               class="textlessButton hugButton"
               (click)="sendHug(otherUser()!.id)"
-              aria-describedby="uHug userName"
+              aria-labelledby="uHug"
+              aria-describedby="uHug"
             >
               <!-- prettier-ignore -->
               <fa-icon [icon]="faGratipay" class="fa-gratipay"></fa-icon>
@@ -34,23 +37,21 @@
         </div>
         <div id="roleElement">
           <span class="pageCategory" id="userRole">Role:</span
-          ><span class="pageData" aria-describedby="userName userRole">{{
-            displayUser().role.name
-          }}</span>
+          ><span class="pageData">{{ displayUser().role.name }}</span>
         </div>
       </div>
       <div class="profileElement" id="rHugsElement">
-        <div class="pageData" aria-describedby="userName uReceived">
+        <div class="pageData">
           {{ displayUser().receivedH }}
         </div>
         <div class="pageCategory">Hugs Received</div>
       </div>
       <div class="profileElement" id="gHugsElement">
-        <div class="pageData" aria-describedby="userName uGivenH">{{ displayUser().givenH }}</div>
+        <div class="pageData">{{ displayUser().givenH }}</div>
         <div class="pageCategory">Hugs Given</div>
       </div>
       <div class="profileElement" id="postsElement">
-        <div class="pageData" aria-describedby="uNumP userName">{{ displayUser().posts }}</div>
+        <div class="pageData">{{ displayUser().posts }}</div>
         <div class="pageCategory">Posts Written</div>
       </div>
 
@@ -90,8 +91,8 @@
   </div>
 </div>
 
-<div id="labels" class="labels" aria-hidden="true">
-  <p id="uHug">Send a hug to user</p>
+<div id="labels" class="labels">
+  <p id="uHug">Send a hug to user {{ displayUser().displayName }}</p>
   <p id="uGivenH">Hugs given by user</p>
   <p id="uReceived">Hugs received by user</p>
   <p id="uNumP">Number of posts written by user</p>

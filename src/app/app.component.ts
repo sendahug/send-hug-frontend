@@ -53,6 +53,7 @@ import { NotificationService } from "./services/notifications.service";
 import { AppAlert } from "./components/appAlert/appAlert.component";
 import { AppNavMenu } from "./components/layout/navigationMenu/navigationMenu.component";
 import { TeleportService } from "./services/teleport.service";
+import { getQueryParamsFromPath } from "./guards/common";
 
 @Component({
   selector: "app-root",
@@ -104,7 +105,11 @@ export class AppComponent implements OnInit, AfterViewInit, AfterViewChecked {
         // refreshed while viewing a restricted page or when navigating using
         // the address bar.
         if (redirectPath) {
-          this.router.navigate([`/${redirectPath}`]);
+          const queryParams = getQueryParamsFromPath(redirectPath);
+          const originalPath = decodeURIComponent(redirectPath).split("?")[0];
+          this.router.navigate([`/${originalPath}`], {
+            queryParams,
+          });
         }
       },
       error: (err: Error) => {

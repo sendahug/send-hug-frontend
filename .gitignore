@@ -41,3 +41,4 @@ dist/*
 .env
 
 public/sitemap.xml
+pa11y/*

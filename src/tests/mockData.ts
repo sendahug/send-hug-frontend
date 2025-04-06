@@ -65,8 +65,8 @@ export const mockAuthedUser: User = {
     messageNotifications: false,
     hugsDigestNotifications: false,
     youOkayNotifications: false,
-    previousInteractionNotifications: false
-  }
+    previousInteractionNotifications: false,
+  },
 };
 
 export function getMockFirebaseUser(): FirebaseUser {

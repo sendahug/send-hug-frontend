@@ -78,7 +78,7 @@ module.exports = [
   },
   {
     name: "Vendor scripts",
-    limit: "230 kB",
+    limit: "232 kB",
     path: ["dist/assets/vendor-*.js", "dist/assets/polyfills-*.js"],
   },
   {

@@ -435,6 +435,18 @@ describe("SettingsPage", () => {
   });
 
   it("changes the email message notification setting", () => {
+    const authService = TestBed.inject(AuthService);
+    authService.userData.set({
+      ...mockAuthedUser,
+      preferences: {
+        emailNotificationsEnabled: true,
+        messageNotifications: false,
+        hugsDigestNotifications: false,
+        youOkayNotifications: false,
+        previousInteractionNotifications: false,
+      },
+    });
+
     // set up the component
     const fixture = TestBed.createComponent(SettingsPage);
     const settingsPage = fixture.componentInstance;
@@ -462,7 +474,7 @@ describe("SettingsPage", () => {
       pushEnabled: false,
       refreshRate: 20,
       preferences: {
-        emailNotificationsEnabled: false,
+        emailNotificationsEnabled: true,
         messageNotifications: true,
         hugsDigestNotifications: false,
         youOkayNotifications: false,
@@ -472,6 +484,18 @@ describe("SettingsPage", () => {
   });
 
   it("changes the hugs digest notification setting", () => {
+    const authService = TestBed.inject(AuthService);
+    authService.userData.set({
+      ...mockAuthedUser,
+      preferences: {
+        emailNotificationsEnabled: true,
+        messageNotifications: false,
+        hugsDigestNotifications: false,
+        youOkayNotifications: false,
+        previousInteractionNotifications: false,
+      },
+    });
+
     // set up the component
     const fixture = TestBed.createComponent(SettingsPage);
     const settingsPage = fixture.componentInstance;
@@ -499,7 +523,7 @@ describe("SettingsPage", () => {
       pushEnabled: false,
       refreshRate: 20,
       preferences: {
-        emailNotificationsEnabled: false,
+        emailNotificationsEnabled: true,
         messageNotifications: false,
         hugsDigestNotifications: true,
         youOkayNotifications: false,
@@ -509,6 +533,18 @@ describe("SettingsPage", () => {
   });
 
   it("changes the are you okay notification setting", () => {
+    const authService = TestBed.inject(AuthService);
+    authService.userData.set({
+      ...mockAuthedUser,
+      preferences: {
+        emailNotificationsEnabled: true,
+        messageNotifications: false,
+        hugsDigestNotifications: false,
+        youOkayNotifications: false,
+        previousInteractionNotifications: false,
+      },
+    });
+
     // set up the component
     const fixture = TestBed.createComponent(SettingsPage);
     const settingsPage = fixture.componentInstance;
@@ -536,7 +572,7 @@ describe("SettingsPage", () => {
       pushEnabled: false,
       refreshRate: 20,
       preferences: {
-        emailNotificationsEnabled: false,
+        emailNotificationsEnabled: true,
         messageNotifications: false,
         hugsDigestNotifications: false,
         youOkayNotifications: true,
@@ -546,6 +582,18 @@ describe("SettingsPage", () => {
   });
 
   it("changes the previous interaction notification setting", () => {
+    const authService = TestBed.inject(AuthService);
+    authService.userData.set({
+      ...mockAuthedUser,
+      preferences: {
+        emailNotificationsEnabled: true,
+        messageNotifications: false,
+        hugsDigestNotifications: false,
+        youOkayNotifications: false,
+        previousInteractionNotifications: false,
+      },
+    });
+
     // set up the component
     const fixture = TestBed.createComponent(SettingsPage);
     const settingsPage = fixture.componentInstance;
@@ -577,12 +625,66 @@ describe("SettingsPage", () => {
       pushEnabled: false,
       refreshRate: 20,
       preferences: {
-        emailNotificationsEnabled: false,
+        emailNotificationsEnabled: true,
         messageNotifications: false,
         hugsDigestNotifications: false,
         youOkayNotifications: false,
         previousInteractionNotifications: true,
       },
     });
+  });
+
+  it("enables/disables the email notifications settings based on the primary setting", () => {
+    const authService = TestBed.inject(AuthService);
+    authService.userData.set({
+      ...mockAuthedUser,
+      preferences: {
+        emailNotificationsEnabled: true,
+        messageNotifications: false,
+        hugsDigestNotifications: false,
+        youOkayNotifications: false,
+        previousInteractionNotifications: false,
+      },
+    });
+
+    // set up the component
+    const fixture = TestBed.createComponent(SettingsPage);
+    const settingsPage = fixture.componentInstance;
+    const settingsDOM = fixture.nativeElement;
+    const toggleSpy = spyOn(settingsPage, "toggleEmailNotificationsSettings").and.callThrough();
+    fixture.detectChanges();
+
+    const messageNotificationsInput = settingsDOM.querySelector("#messageNotifications");
+    const hugsDigestInput = settingsDOM.querySelector("#hugsDigestNotifications");
+    const areYouOkayInput = settingsDOM.querySelector("#youOkayNotifications");
+    const previousInteractionInput = settingsDOM.querySelector("#previousInteractionNotifications");
+
+    // emailNotificationsEnabled is true so they should all be enabled
+    expect(messageNotificationsInput.disabled).toBeFalse();
+    expect(hugsDigestInput.disabled).toBeFalse();
+    expect(areYouOkayInput.disabled).toBeFalse();
+    expect(previousInteractionInput.disabled).toBeFalse();
+
+    // disable email notifications
+    settingsDOM.querySelector("#emailNotificationsEnabled").click();
+    settingsDOM.querySelector("#emailNotificationsEnabled").dispatchEvent(new Event("input"));
+    fixture.detectChanges();
+
+    expect(toggleSpy).toHaveBeenCalled();
+    expect(messageNotificationsInput.disabled).toBeTrue();
+    expect(hugsDigestInput.disabled).toBeTrue();
+    expect(areYouOkayInput.disabled).toBeTrue();
+    expect(previousInteractionInput.disabled).toBeTrue();
+
+    // re-enable email notifications
+    settingsDOM.querySelector("#emailNotificationsEnabled").click();
+    settingsDOM.querySelector("#emailNotificationsEnabled").dispatchEvent(new Event("input"));
+    fixture.detectChanges();
+
+    expect(toggleSpy).toHaveBeenCalledTimes(2);
+    expect(messageNotificationsInput.disabled).toBeFalse();
+    expect(hugsDigestInput.disabled).toBeFalse();
+    expect(areYouOkayInput.disabled).toBeFalse();
+    expect(previousInteractionInput.disabled).toBeFalse();
   });
 });

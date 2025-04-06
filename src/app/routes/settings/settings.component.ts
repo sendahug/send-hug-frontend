@@ -98,6 +98,10 @@ export class SettingsPage {
     this.editSettingsForm.controls.notificationRate.valueChanges.subscribe(() => {
       this.setRateInvalidStatus();
     });
+
+    this.editSettingsForm.controls.emailNotificationsEnabled.valueChanges.subscribe(() => {
+      this.toggleEmailNotificationsSettings();
+    });
   }
 
   /*
@@ -202,6 +206,28 @@ export class SettingsPage {
       }
     } else {
       document.querySelector("#notificationRate")?.setAttribute("aria-invalid", "false");
+    }
+  }
+
+  /**
+   * Disables/enables the specific email notifications-related inputs depending on
+   * whether email notifications are enabled or not. If not, there's no point in allowing
+   * users to update the rest of the settings, considering they would do nothing.
+   */
+  toggleEmailNotificationsSettings() {
+    const emailNotificationsEnabled =
+      this.editSettingsForm.controls.emailNotificationsEnabled.value || false;
+
+    if (emailNotificationsEnabled) {
+      this.editSettingsForm.controls.messageNotifications.enable();
+      this.editSettingsForm.controls.hugsDigestNotifications.enable();
+      this.editSettingsForm.controls.youOkayNotifications.enable();
+      this.editSettingsForm.controls.previousInteractionNotifications.enable();
+    } else {
+      this.editSettingsForm.controls.messageNotifications.disable();
+      this.editSettingsForm.controls.hugsDigestNotifications.disable();
+      this.editSettingsForm.controls.youOkayNotifications.disable();
+      this.editSettingsForm.controls.previousInteractionNotifications.disable();
     }
   }
 }

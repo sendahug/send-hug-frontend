@@ -56,6 +56,11 @@ export class SettingsPage {
     enableNotifications: [false],
     enableAutoRefresh: [false],
     notificationRate: [20],
+    emailNotificationsEnabled: [false],
+    messageNotifications: [false],
+    hugsDigestNotifications: [false],
+    youOkayNotifications: [false],
+    previousInteractionNotifications: [false],
   });
 
   // CTOR
@@ -72,6 +77,16 @@ export class SettingsPage {
           enableNotifications: this.authService.pushEnabled(),
           enableAutoRefresh: this.authService.autoRefresh(),
           notificationRate: this.authService.refreshRate(),
+          emailNotificationsEnabled:
+            this.authService.userData()?.preferences.emailNotificationsEnabled || false,
+          messageNotifications:
+            this.authService.userData()?.preferences.messageNotifications || false,
+          hugsDigestNotifications:
+            this.authService.userData()?.preferences.hugsDigestNotifications || false,
+          youOkayNotifications:
+            this.authService.userData()?.preferences.youOkayNotifications || false,
+          previousInteractionNotifications:
+            this.authService.userData()?.preferences.previousInteractionNotifications || false,
         });
       }
     });
@@ -109,6 +124,14 @@ export class SettingsPage {
     const newRate = this.editSettingsForm.controls.notificationRate.value;
     const refreshStatus = this.editSettingsForm.controls.enableAutoRefresh.value || false;
     const pushStatus = this.editSettingsForm.controls.enableNotifications.value || false;
+    const emailNotificationsEnabled =
+      this.editSettingsForm.controls.emailNotificationsEnabled.value || false;
+    const messageNotifications = this.editSettingsForm.controls.messageNotifications.value || false;
+    const hugsDigestNotifications =
+      this.editSettingsForm.controls.hugsDigestNotifications.value || false;
+    const youOkayNotifications = this.editSettingsForm.controls.youOkayNotifications.value || false;
+    const previousInteractionNotifications =
+      this.editSettingsForm.controls.previousInteractionNotifications.value || false;
 
     // if there's no rate or it's zero, alert the user it can't be
     if ((!newRate || newRate <= 0) && refreshStatus) {
@@ -124,6 +147,13 @@ export class SettingsPage {
           pushEnabled: pushStatus,
           autoRefresh: refreshStatus,
           refreshRate: Number(newRate),
+          preferences: {
+            emailNotificationsEnabled,
+            messageNotifications,
+            hugsDigestNotifications,
+            youOkayNotifications,
+            previousInteractionNotifications,
+          },
         })
         .add(() => {
           this.alertsService.createSuccessAlert("Your settings have been updated!");

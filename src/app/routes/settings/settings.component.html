@@ -51,6 +51,42 @@
           [attr.aria-required]="this.editSettingsForm.controls.enableAutoRefresh.value == true"
         />
       </div>
+      <hr class="form-divider" />
+      <h2>Email Notifications</h2>
+      <div class="formElement">
+        <label for="emailNotificationsEnabled">Enable Email Notifications?</label>
+        <input
+          formControlName="emailNotificationsEnabled"
+          type="checkbox"
+          id="emailNotificationsEnabled"
+        />
+      </div>
+      <div class="formElement">
+        <label for="messageNotifications">Enable Email Notifications for New Messages?</label>
+        <input formControlName="messageNotifications" type="checkbox" id="messageNotifications" />
+      </div>
+      <div class="formElement">
+        <label for="hugsDigestNotifications">Enable Email Notifications for Hugs?</label>
+        <input
+          formControlName="hugsDigestNotifications"
+          type="checkbox"
+          id="hugsDigestNotifications"
+        />
+      </div>
+      <div class="formElement">
+        <label for="youOkayNotifications">Enable Email Notifications for After-Post Checkup?</label>
+        <input formControlName="youOkayNotifications" type="checkbox" id="youOkayNotifications" />
+      </div>
+      <div class="formElement">
+        <label for="previousInteractionNotifications"
+          >Enable Email Notifications for People Previously Interacted With?</label
+        >
+        <input
+          formControlName="previousInteractionNotifications"
+          type="checkbox"
+          id="previousInteractionNotifications"
+        />
+      </div>
       <button
         type="submit"
         (click)="updateSettings()"

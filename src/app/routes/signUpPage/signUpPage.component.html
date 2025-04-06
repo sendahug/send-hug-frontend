@@ -1,8 +1,21 @@
 <div id="loginBox" *ngIf="!authService.authenticated()">
+  <h1 class="signupTitle">Sign Up</h1>
   <form [formGroup]="signUpForm" id="loginForm">
     <div class="formElement">
       <label class="pageCategory" for="displayName">Display Name:</label>
       <input formControlName="displayName" type="text" id="displayName" />
+    </div>
+    <div class="formElement">
+      <input
+        formControlName="emailNotificationsEnabled"
+        type="checkbox"
+        id="emailNotificationsEnabled"
+      />
+      <label class="pageCategory" for="emailNotificationsEnabled">Enable Email Notifications</label>
+    </div>
+    <div class="formNote">
+      You'll be able to choose which types of email notifications you want to receive in the
+      settings page once you complete registration.
     </div>
     <div class="formElement">
       <input formControlName="acceptedTerms" type="checkbox" id="acceptedTerms" />

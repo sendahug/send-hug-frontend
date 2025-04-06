@@ -302,7 +302,7 @@ export class AuthService {
    * Creates the new user in the Send A Hug backend.
    * @returns an observable with the user's details from the back-end.
    */
-  createUser(displayName: string | null) {
+  createUser(displayName: string | null, emailNotificationsEnabled: boolean | null = false) {
     return this.getUserToken()
       .pipe(tap((_firebaseUser) => this.isUserDataResolved.next(false)))
       .pipe(
@@ -313,6 +313,7 @@ export class AuthService {
             {
               firebaseId: firebaseUser.uid,
               displayName: displayName || "user" + Math.round(Math.random() * 100),
+              emailNotificationsEnabled,
             },
             {
               headers: new HttpHeaders({ Authorization: `Bearer ${firebaseUser.jwt}` }),

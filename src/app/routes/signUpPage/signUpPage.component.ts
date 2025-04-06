@@ -49,6 +49,7 @@ export class SignUpPage {
   signUpForm = this.fb.group({
     displayName: ["", [Validators.required, Validators.maxLength(50)]],
     acceptedTerms: [false, [Validators.requiredTrue]],
+    emailNotificationsEnabled: [false],
   });
 
   constructor(
@@ -89,11 +90,16 @@ export class SignUpPage {
       return;
     }
 
-    this.authService.createUser(this.signUpForm.controls.displayName.value).subscribe({
-      next: (_currentUser) => {
-        this.router.navigate(["/user"]);
-      },
-    });
+    this.authService
+      .createUser(
+        this.signUpForm.controls.displayName.value,
+        this.signUpForm.controls.emailNotificationsEnabled.value,
+      )
+      .subscribe({
+        next: (_currentUser) => {
+          this.router.navigate(["/user"]);
+        },
+      });
   }
 
   /**

@@ -56,6 +56,11 @@ export class SettingsPage {
     enableNotifications: [false],
     enableAutoRefresh: [false],
     notificationRate: [20],
+    emailNotificationsEnabled: [false],
+    messageNotifications: [false],
+    hugsDigestNotifications: [false],
+    youOkayNotifications: [false],
+    previousInteractionNotifications: [false],
   });
 
   // CTOR
@@ -72,6 +77,16 @@ export class SettingsPage {
           enableNotifications: this.authService.pushEnabled(),
           enableAutoRefresh: this.authService.autoRefresh(),
           notificationRate: this.authService.refreshRate(),
+          emailNotificationsEnabled:
+            this.authService.userData()?.preferences.emailNotificationsEnabled || false,
+          messageNotifications:
+            this.authService.userData()?.preferences.messageNotifications || false,
+          hugsDigestNotifications:
+            this.authService.userData()?.preferences.hugsDigestNotifications || false,
+          youOkayNotifications:
+            this.authService.userData()?.preferences.youOkayNotifications || false,
+          previousInteractionNotifications:
+            this.authService.userData()?.preferences.previousInteractionNotifications || false,
         });
       }
     });
@@ -82,6 +97,10 @@ export class SettingsPage {
 
     this.editSettingsForm.controls.notificationRate.valueChanges.subscribe(() => {
       this.setRateInvalidStatus();
+    });
+
+    this.editSettingsForm.controls.emailNotificationsEnabled.valueChanges.subscribe(() => {
+      this.toggleEmailNotificationsSettings();
     });
   }
 
@@ -109,6 +128,14 @@ export class SettingsPage {
     const newRate = this.editSettingsForm.controls.notificationRate.value;
     const refreshStatus = this.editSettingsForm.controls.enableAutoRefresh.value || false;
     const pushStatus = this.editSettingsForm.controls.enableNotifications.value || false;
+    const emailNotificationsEnabled =
+      this.editSettingsForm.controls.emailNotificationsEnabled.value || false;
+    const messageNotifications = this.editSettingsForm.controls.messageNotifications.value || false;
+    const hugsDigestNotifications =
+      this.editSettingsForm.controls.hugsDigestNotifications.value || false;
+    const youOkayNotifications = this.editSettingsForm.controls.youOkayNotifications.value || false;
+    const previousInteractionNotifications =
+      this.editSettingsForm.controls.previousInteractionNotifications.value || false;
 
     // if there's no rate or it's zero, alert the user it can't be
     if ((!newRate || newRate <= 0) && refreshStatus) {
@@ -124,6 +151,13 @@ export class SettingsPage {
           pushEnabled: pushStatus,
           autoRefresh: refreshStatus,
           refreshRate: Number(newRate),
+          preferences: {
+            emailNotificationsEnabled,
+            messageNotifications,
+            hugsDigestNotifications,
+            youOkayNotifications,
+            previousInteractionNotifications,
+          },
         })
         .add(() => {
           this.alertsService.createSuccessAlert("Your settings have been updated!");
@@ -172,6 +206,28 @@ export class SettingsPage {
       }
     } else {
       document.querySelector("#notificationRate")?.setAttribute("aria-invalid", "false");
+    }
+  }
+
+  /**
+   * Disables/enables the specific email notifications-related inputs depending on
+   * whether email notifications are enabled or not. If not, there's no point in allowing
+   * users to update the rest of the settings, considering they would do nothing.
+   */
+  toggleEmailNotificationsSettings() {
+    const emailNotificationsEnabled =
+      this.editSettingsForm.controls.emailNotificationsEnabled.value || false;
+
+    if (emailNotificationsEnabled) {
+      this.editSettingsForm.controls.messageNotifications.enable();
+      this.editSettingsForm.controls.hugsDigestNotifications.enable();
+      this.editSettingsForm.controls.youOkayNotifications.enable();
+      this.editSettingsForm.controls.previousInteractionNotifications.enable();
+    } else {
+      this.editSettingsForm.controls.messageNotifications.disable();
+      this.editSettingsForm.controls.hugsDigestNotifications.disable();
+      this.editSettingsForm.controls.youOkayNotifications.disable();
+      this.editSettingsForm.controls.previousInteractionNotifications.disable();
     }
   }
 }

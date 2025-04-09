@@ -46,6 +46,14 @@ export interface Role {
   permissions: string[];
 }
 
+export interface UserPreferences {
+  emailNotificationsEnabled: boolean;
+  messageNotifications: boolean;
+  hugsDigestNotifications: boolean;
+  youOkayNotifications: boolean;
+  previousInteractionNotifications: boolean;
+}
+
 export interface User {
   id?: number;
   displayName: string;
@@ -64,6 +72,7 @@ export interface User {
   iconColours: UserIconColours;
   firebaseId: string;
   emailVerified: boolean;
+  preferences: UserPreferences;
 }
 
 export interface PartialUser {

@@ -1,0 +1,13 @@
+{
+  "pr_number": 2032,
+  "changes": [
+    {
+      "change": "Features",
+      "description": "Added the ability to set email notifications-related settings via the settings page."
+    },
+    {
+      "change": "Features",
+      "description": "Added the ability to enable/disable email notifications during signup. This only includes the general email notifications setting; granular settings for the various types of emails can only be changed via settings."
+    }
+  ]
+}

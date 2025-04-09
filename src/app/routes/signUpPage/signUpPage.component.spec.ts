@@ -263,7 +263,7 @@ describe("SignUpPage", () => {
     fixture.detectChanges();
 
     expect(signUpSpy).toHaveBeenCalled();
-    expect(createUserSpy).toHaveBeenCalledWith("name");
+    expect(createUserSpy).toHaveBeenCalledWith("name", false);
     expect(routerSpy).toHaveBeenCalledWith(["/user"]);
     done();
   });

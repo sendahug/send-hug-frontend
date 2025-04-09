@@ -157,6 +157,13 @@ describe("SettingsPage", () => {
 
     expect(settingsPage.editSettingsForm.controls.enableAutoRefresh.value).toBeFalse();
     expect(settingsPage.editSettingsForm.controls.notificationRate.value).toBe(20);
+    expect(settingsPage.editSettingsForm.controls.emailNotificationsEnabled.value).toBeFalse();
+    expect(settingsPage.editSettingsForm.controls.messageNotifications.value).toBeFalse();
+    expect(settingsPage.editSettingsForm.controls.youOkayNotifications.value).toBeFalse();
+    expect(settingsPage.editSettingsForm.controls.hugsDigestNotifications.value).toBeFalse();
+    expect(
+      settingsPage.editSettingsForm.controls.previousInteractionNotifications.value,
+    ).toBeFalse();
 
     spyOn(authService, "autoRefresh").and.returnValue(true);
     spyOn(authService, "refreshRate").and.returnValue(60);
@@ -203,6 +210,13 @@ describe("SettingsPage", () => {
       pushEnabled: true,
       autoRefresh: false,
       refreshRate: 20,
+      preferences: {
+        emailNotificationsEnabled: false,
+        messageNotifications: false,
+        hugsDigestNotifications: false,
+        youOkayNotifications: false,
+        previousInteractionNotifications: false,
+      },
     });
     expect(subscribeSpy).toHaveBeenCalled();
     expect(unsubscribeSpy).not.toHaveBeenCalled();
@@ -220,6 +234,13 @@ describe("SettingsPage", () => {
       pushEnabled: false,
       autoRefresh: false,
       refreshRate: 20,
+      preferences: {
+        emailNotificationsEnabled: false,
+        messageNotifications: false,
+        hugsDigestNotifications: false,
+        youOkayNotifications: false,
+        previousInteractionNotifications: false,
+      },
     });
     expect(settingsSpy.calls.count()).toBe(2);
     expect(subscribeSpy.calls.count()).toBe(1);
@@ -265,6 +286,13 @@ describe("SettingsPage", () => {
       autoRefresh: true,
       refreshRate: 30,
       pushEnabled: false,
+      preferences: {
+        emailNotificationsEnabled: false,
+        messageNotifications: false,
+        hugsDigestNotifications: false,
+        youOkayNotifications: false,
+        previousInteractionNotifications: false,
+      },
     });
     expect(startRefreshSpy).toHaveBeenCalled();
     expect(stopRefreshSpy).not.toHaveBeenCalled();
@@ -282,6 +310,13 @@ describe("SettingsPage", () => {
       autoRefresh: false,
       refreshRate: 30,
       pushEnabled: false,
+      preferences: {
+        emailNotificationsEnabled: false,
+        messageNotifications: false,
+        hugsDigestNotifications: false,
+        youOkayNotifications: false,
+        previousInteractionNotifications: false,
+      },
     });
     expect(startRefreshSpy.calls.count()).toBe(1);
     expect(stopRefreshSpy).toHaveBeenCalled();
@@ -317,6 +352,13 @@ describe("SettingsPage", () => {
       autoRefresh: false,
       pushEnabled: false,
       refreshRate: 30,
+      preferences: {
+        emailNotificationsEnabled: false,
+        messageNotifications: false,
+        hugsDigestNotifications: false,
+        youOkayNotifications: false,
+        previousInteractionNotifications: false,
+      },
     });
     done();
   });
@@ -353,5 +395,296 @@ describe("SettingsPage", () => {
       "true",
     );
     done();
+  });
+
+  it("changes the email setting", () => {
+    // set up the component
+    const fixture = TestBed.createComponent(SettingsPage);
+    const settingsPage = fixture.componentInstance;
+    const settingsDOM = fixture.nativeElement;
+    const updateSpy = spyOn(settingsPage, "updateSettings").and.callThrough();
+    const settingsSpy = spyOn(settingsPage["authService"], "updateUserData").and.callThrough();
+
+    fixture.detectChanges();
+
+    // check the original email settings
+    expect(settingsPage.editSettingsForm.controls.emailNotificationsEnabled.value).toBeFalse();
+    expect(updateSpy).not.toHaveBeenCalled();
+
+    // change the email setting
+    settingsDOM.querySelector("#emailNotificationsEnabled").click();
+    settingsDOM.querySelector("#emailNotificationsEnabled").dispatchEvent(new Event("input"));
+    settingsDOM.querySelectorAll(".sendData")[0].click();
+    fixture.detectChanges();
+
+    // check the setting changed
+    expect(updateSpy).toHaveBeenCalled();
+    expect(settingsSpy).toHaveBeenCalled();
+    expect(settingsSpy).toHaveBeenCalledWith({
+      autoRefresh: false,
+      pushEnabled: false,
+      refreshRate: 20,
+      preferences: {
+        emailNotificationsEnabled: true,
+        messageNotifications: false,
+        hugsDigestNotifications: false,
+        youOkayNotifications: false,
+        previousInteractionNotifications: false,
+      },
+    });
+  });
+
+  it("changes the email message notification setting", () => {
+    const authService = TestBed.inject(AuthService);
+    authService.userData.set({
+      ...mockAuthedUser,
+      preferences: {
+        emailNotificationsEnabled: true,
+        messageNotifications: false,
+        hugsDigestNotifications: false,
+        youOkayNotifications: false,
+        previousInteractionNotifications: false,
+      },
+    });
+
+    // set up the component
+    const fixture = TestBed.createComponent(SettingsPage);
+    const settingsPage = fixture.componentInstance;
+    const settingsDOM = fixture.nativeElement;
+    const updateSpy = spyOn(settingsPage, "updateSettings").and.callThrough();
+    const settingsSpy = spyOn(settingsPage["authService"], "updateUserData").and.callThrough();
+
+    fixture.detectChanges();
+
+    // check the original message settings
+    expect(settingsPage.editSettingsForm.controls.messageNotifications.value).toBeFalse();
+    expect(updateSpy).not.toHaveBeenCalled();
+
+    // change the message setting
+    settingsDOM.querySelector("#messageNotifications").click();
+    settingsDOM.querySelector("#messageNotifications").dispatchEvent(new Event("input"));
+    settingsDOM.querySelectorAll(".sendData")[0].click();
+    fixture.detectChanges();
+
+    // check the setting changed
+    expect(updateSpy).toHaveBeenCalled();
+    expect(settingsSpy).toHaveBeenCalled();
+    expect(settingsSpy).toHaveBeenCalledWith({
+      autoRefresh: false,
+      pushEnabled: false,
+      refreshRate: 20,
+      preferences: {
+        emailNotificationsEnabled: true,
+        messageNotifications: true,
+        hugsDigestNotifications: false,
+        youOkayNotifications: false,
+        previousInteractionNotifications: false,
+      },
+    });
+  });
+
+  it("changes the hugs digest notification setting", () => {
+    const authService = TestBed.inject(AuthService);
+    authService.userData.set({
+      ...mockAuthedUser,
+      preferences: {
+        emailNotificationsEnabled: true,
+        messageNotifications: false,
+        hugsDigestNotifications: false,
+        youOkayNotifications: false,
+        previousInteractionNotifications: false,
+      },
+    });
+
+    // set up the component
+    const fixture = TestBed.createComponent(SettingsPage);
+    const settingsPage = fixture.componentInstance;
+    const settingsDOM = fixture.nativeElement;
+    const updateSpy = spyOn(settingsPage, "updateSettings").and.callThrough();
+    const settingsSpy = spyOn(settingsPage["authService"], "updateUserData").and.callThrough();
+
+    fixture.detectChanges();
+
+    // check the original message settings
+    expect(settingsPage.editSettingsForm.controls.hugsDigestNotifications.value).toBeFalse();
+    expect(updateSpy).not.toHaveBeenCalled();
+
+    // change the message setting
+    settingsDOM.querySelector("#hugsDigestNotifications").click();
+    settingsDOM.querySelector("#hugsDigestNotifications").dispatchEvent(new Event("input"));
+    settingsDOM.querySelectorAll(".sendData")[0].click();
+    fixture.detectChanges();
+
+    // check the setting changed
+    expect(updateSpy).toHaveBeenCalled();
+    expect(settingsSpy).toHaveBeenCalled();
+    expect(settingsSpy).toHaveBeenCalledWith({
+      autoRefresh: false,
+      pushEnabled: false,
+      refreshRate: 20,
+      preferences: {
+        emailNotificationsEnabled: true,
+        messageNotifications: false,
+        hugsDigestNotifications: true,
+        youOkayNotifications: false,
+        previousInteractionNotifications: false,
+      },
+    });
+  });
+
+  it("changes the are you okay notification setting", () => {
+    const authService = TestBed.inject(AuthService);
+    authService.userData.set({
+      ...mockAuthedUser,
+      preferences: {
+        emailNotificationsEnabled: true,
+        messageNotifications: false,
+        hugsDigestNotifications: false,
+        youOkayNotifications: false,
+        previousInteractionNotifications: false,
+      },
+    });
+
+    // set up the component
+    const fixture = TestBed.createComponent(SettingsPage);
+    const settingsPage = fixture.componentInstance;
+    const settingsDOM = fixture.nativeElement;
+    const updateSpy = spyOn(settingsPage, "updateSettings").and.callThrough();
+    const settingsSpy = spyOn(settingsPage["authService"], "updateUserData").and.callThrough();
+
+    fixture.detectChanges();
+
+    // check the original message settings
+    expect(settingsPage.editSettingsForm.controls.youOkayNotifications.value).toBeFalse();
+    expect(updateSpy).not.toHaveBeenCalled();
+
+    // change the message setting
+    settingsDOM.querySelector("#youOkayNotifications").click();
+    settingsDOM.querySelector("#youOkayNotifications").dispatchEvent(new Event("input"));
+    settingsDOM.querySelectorAll(".sendData")[0].click();
+    fixture.detectChanges();
+
+    // check the setting changed
+    expect(updateSpy).toHaveBeenCalled();
+    expect(settingsSpy).toHaveBeenCalled();
+    expect(settingsSpy).toHaveBeenCalledWith({
+      autoRefresh: false,
+      pushEnabled: false,
+      refreshRate: 20,
+      preferences: {
+        emailNotificationsEnabled: true,
+        messageNotifications: false,
+        hugsDigestNotifications: false,
+        youOkayNotifications: true,
+        previousInteractionNotifications: false,
+      },
+    });
+  });
+
+  it("changes the previous interaction notification setting", () => {
+    const authService = TestBed.inject(AuthService);
+    authService.userData.set({
+      ...mockAuthedUser,
+      preferences: {
+        emailNotificationsEnabled: true,
+        messageNotifications: false,
+        hugsDigestNotifications: false,
+        youOkayNotifications: false,
+        previousInteractionNotifications: false,
+      },
+    });
+
+    // set up the component
+    const fixture = TestBed.createComponent(SettingsPage);
+    const settingsPage = fixture.componentInstance;
+    const settingsDOM = fixture.nativeElement;
+    const updateSpy = spyOn(settingsPage, "updateSettings").and.callThrough();
+    const settingsSpy = spyOn(settingsPage["authService"], "updateUserData").and.callThrough();
+
+    fixture.detectChanges();
+
+    // check the original message settings
+    expect(
+      settingsPage.editSettingsForm.controls.previousInteractionNotifications.value,
+    ).toBeFalse();
+    expect(updateSpy).not.toHaveBeenCalled();
+
+    // change the message setting
+    settingsDOM.querySelector("#previousInteractionNotifications").click();
+    settingsDOM
+      .querySelector("#previousInteractionNotifications")
+      .dispatchEvent(new Event("input"));
+    settingsDOM.querySelectorAll(".sendData")[0].click();
+    fixture.detectChanges();
+
+    // check the setting changed
+    expect(updateSpy).toHaveBeenCalled();
+    expect(settingsSpy).toHaveBeenCalled();
+    expect(settingsSpy).toHaveBeenCalledWith({
+      autoRefresh: false,
+      pushEnabled: false,
+      refreshRate: 20,
+      preferences: {
+        emailNotificationsEnabled: true,
+        messageNotifications: false,
+        hugsDigestNotifications: false,
+        youOkayNotifications: false,
+        previousInteractionNotifications: true,
+      },
+    });
+  });
+
+  it("enables/disables the email notifications settings based on the primary setting", () => {
+    const authService = TestBed.inject(AuthService);
+    authService.userData.set({
+      ...mockAuthedUser,
+      preferences: {
+        emailNotificationsEnabled: true,
+        messageNotifications: false,
+        hugsDigestNotifications: false,
+        youOkayNotifications: false,
+        previousInteractionNotifications: false,
+      },
+    });
+
+    // set up the component
+    const fixture = TestBed.createComponent(SettingsPage);
+    const settingsPage = fixture.componentInstance;
+    const settingsDOM = fixture.nativeElement;
+    const toggleSpy = spyOn(settingsPage, "toggleEmailNotificationsSettings").and.callThrough();
+    fixture.detectChanges();
+
+    const messageNotificationsInput = settingsDOM.querySelector("#messageNotifications");
+    const hugsDigestInput = settingsDOM.querySelector("#hugsDigestNotifications");
+    const areYouOkayInput = settingsDOM.querySelector("#youOkayNotifications");
+    const previousInteractionInput = settingsDOM.querySelector("#previousInteractionNotifications");
+
+    // emailNotificationsEnabled is true so they should all be enabled
+    expect(messageNotificationsInput.disabled).toBeFalse();
+    expect(hugsDigestInput.disabled).toBeFalse();
+    expect(areYouOkayInput.disabled).toBeFalse();
+    expect(previousInteractionInput.disabled).toBeFalse();
+
+    // disable email notifications
+    settingsDOM.querySelector("#emailNotificationsEnabled").click();
+    settingsDOM.querySelector("#emailNotificationsEnabled").dispatchEvent(new Event("input"));
+    fixture.detectChanges();
+
+    expect(toggleSpy).toHaveBeenCalled();
+    expect(messageNotificationsInput.disabled).toBeTrue();
+    expect(hugsDigestInput.disabled).toBeTrue();
+    expect(areYouOkayInput.disabled).toBeTrue();
+    expect(previousInteractionInput.disabled).toBeTrue();
+
+    // re-enable email notifications
+    settingsDOM.querySelector("#emailNotificationsEnabled").click();
+    settingsDOM.querySelector("#emailNotificationsEnabled").dispatchEvent(new Event("input"));
+    fixture.detectChanges();
+
+    expect(toggleSpy).toHaveBeenCalledTimes(2);
+    expect(messageNotificationsInput.disabled).toBeFalse();
+    expect(hugsDigestInput.disabled).toBeFalse();
+    expect(areYouOkayInput.disabled).toBeFalse();
+    expect(previousInteractionInput.disabled).toBeFalse();
   });
 });

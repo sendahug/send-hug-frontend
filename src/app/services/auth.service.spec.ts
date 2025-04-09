@@ -313,6 +313,13 @@ describe("AuthService", () => {
         },
         firebaseId: "fb",
         emailVerified: true,
+        preferences: {
+          emailNotificationsEnabled: false,
+          messageNotifications: false,
+          hugsDigestNotifications: false,
+          youOkayNotifications: false,
+          previousInteractionNotifications: false,
+        },
       },
     };
     const getTokenSpy = spyOn(authService, "getUserToken").and.returnValue(
@@ -464,6 +471,13 @@ describe("AuthService", () => {
         },
         firebaseId: "fb",
         emailVerified: true,
+        preferences: {
+          emailNotificationsEnabled: false,
+          messageNotifications: false,
+          hugsDigestNotifications: false,
+          youOkayNotifications: false,
+          previousInteractionNotifications: false,
+        },
       },
     };
     const getTokenSpy = spyOn(authService, "getUserToken").and.returnValue(
@@ -498,6 +512,7 @@ describe("AuthService", () => {
     expect(req.request.body).toEqual({
       firebaseId: "fb",
       displayName: "test",
+      emailNotificationsEnabled: false,
     });
     req.flush(mockResponse);
   });
@@ -533,6 +548,13 @@ describe("AuthService", () => {
         },
         firebaseId: "fb",
         emailVerified: true,
+        preferences: {
+          emailNotificationsEnabled: false,
+          messageNotifications: false,
+          hugsDigestNotifications: false,
+          youOkayNotifications: false,
+          previousInteractionNotifications: false,
+        },
       },
     };
     const getTokenSpy = spyOn(authService, "getUserToken").and.returnValue(
@@ -700,6 +722,13 @@ describe("AuthService", () => {
       },
       firebaseId: "",
       emailVerified: true,
+      preferences: {
+        emailNotificationsEnabled: false,
+        messageNotifications: false,
+        hugsDigestNotifications: false,
+        youOkayNotifications: false,
+        previousInteractionNotifications: false,
+      },
     });
     authService.authenticated.set(true);
     authService.tokenExpired.set(false);
@@ -744,6 +773,13 @@ describe("AuthService", () => {
       },
       firebaseId: "",
       emailVerified: true,
+      preferences: {
+        emailNotificationsEnabled: false,
+        messageNotifications: false,
+        hugsDigestNotifications: false,
+        youOkayNotifications: false,
+        previousInteractionNotifications: false,
+      },
     });
     authService.authenticated.set(true);
     authService.tokenExpired.set(true);
@@ -820,6 +856,13 @@ describe("AuthService", () => {
       },
       firebaseId: "fb",
       emailVerified: true,
+      preferences: {
+        emailNotificationsEnabled: false,
+        messageNotifications: false,
+        hugsDigestNotifications: false,
+        youOkayNotifications: false,
+        previousInteractionNotifications: false,
+      },
     });
     const getTokenSpy = spyOn(authService, "getUserToken").and.returnValue(
       of({
@@ -876,6 +919,13 @@ describe("AuthService", () => {
       },
       firebaseId: "fb",
       emailVerified: true,
+      preferences: {
+        emailNotificationsEnabled: false,
+        messageNotifications: false,
+        hugsDigestNotifications: false,
+        youOkayNotifications: false,
+        previousInteractionNotifications: false,
+      },
     });
     const getTokenSpy = spyOn(authService, "getUserToken").and.returnValue(
       of({
@@ -940,6 +990,13 @@ describe("AuthService", () => {
       },
       firebaseId: "",
       emailVerified: true,
+      preferences: {
+        emailNotificationsEnabled: false,
+        messageNotifications: false,
+        hugsDigestNotifications: false,
+        youOkayNotifications: false,
+        previousInteractionNotifications: false,
+      },
     });
 
     const res = authService.canUser("block:user");
@@ -976,6 +1033,13 @@ describe("AuthService", () => {
       },
       firebaseId: "",
       emailVerified: true,
+      preferences: {
+        emailNotificationsEnabled: false,
+        messageNotifications: false,
+        hugsDigestNotifications: false,
+        youOkayNotifications: false,
+        previousInteractionNotifications: false,
+      },
     });
 
     const res = authService.canUser("block:user");

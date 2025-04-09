@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+### 2025-04-09
+
+#### Features
+
+- Added the ability to set email notifications-related settings via the settings page. ([#2032](https://github.com/sendahug/send-hug-frontend/pull/2032))
+- Added the ability to enable/disable email notifications during signup. This only includes the general email notifications setting; granular settings for the various types of emails can only be changed via settings. ([#2032](https://github.com/sendahug/send-hug-frontend/pull/2032))
+
 ### 2025-01-20
 
 #### Changes

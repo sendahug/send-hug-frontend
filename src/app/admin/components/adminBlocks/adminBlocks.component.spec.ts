@@ -121,7 +121,7 @@ describe("Blocks Page", () => {
 
     adminBlocks.fetchBlocks();
 
-    expect(apiClientSpy).toHaveBeenCalledWith("users/blocked", { page: "1" });
+    expect(apiClientSpy).toHaveBeenCalledWith("users", { page: "1", type: "blocked" });
     expect(adminBlocks.blockedUsers().length).toBe(1);
     expect(adminBlocks.isLoading()).toBeFalse();
     expect(
@@ -142,7 +142,7 @@ describe("Blocks Page", () => {
 
     adminBlocks.fetchBlocks();
 
-    expect(apiClientSpy).toHaveBeenCalledWith("users/blocked", { page: "1" });
+    expect(apiClientSpy).toHaveBeenCalledWith("users", { page: "1", type: "blocked" });
     expect(adminBlocks.blockedUsers().length).toBe(0);
     expect(adminBlocks.isLoading()).toBeFalse();
     expect(adminBlocksDOM.querySelectorAll(".tableContainer").length).toBe(0);
@@ -369,7 +369,7 @@ describe("Blocks Page", () => {
 
     // check expectations
     expect(unblockSpy).toHaveBeenCalledWith(15);
-    expect(patchSpy).toHaveBeenCalledWith("users/all/15", {
+    expect(patchSpy).toHaveBeenCalledWith("users/15", {
       id: 15,
       releaseDate: null,
       blocked: false,

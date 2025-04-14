@@ -348,7 +348,7 @@ describe("AuthService", () => {
     });
 
     // flush mock response
-    const req = httpController.expectOne(`${authService.serverUrl}/users/all/fb`);
+    const req = httpController.expectOne(`${authService.serverUrl}/users/fb`);
     expect(req.request.method).toEqual("GET");
     req.flush(mockResponse);
   });
@@ -390,7 +390,7 @@ describe("AuthService", () => {
     });
 
     // flush mock response
-    const req = httpController.expectOne(`${authService.serverUrl}/users/all/fb`);
+    const req = httpController.expectOne(`${authService.serverUrl}/users/fb`);
     expect(req.request.method).toEqual("GET");
     req.flush(mockError, mockResponse);
   });
@@ -434,7 +434,7 @@ describe("AuthService", () => {
     });
 
     // flush mock response
-    const req = httpController.expectOne(`${authService.serverUrl}/users/all/fb`);
+    const req = httpController.expectOne(`${authService.serverUrl}/users/fb`);
     expect(req.request.method).toEqual("GET");
     req.flush(mockError, mockResponse);
   });
@@ -880,7 +880,7 @@ describe("AuthService", () => {
     });
 
     // flush mock response
-    const req = httpController.expectOne(`${authService.serverUrl}/users/all/4`);
+    const req = httpController.expectOne(`${authService.serverUrl}/users/4`);
     expect(req.request.method).toEqual("PATCH");
     req.flush(mockResponse);
   });
@@ -944,7 +944,7 @@ describe("AuthService", () => {
     });
 
     // flush mock response
-    const req = httpController.expectOne(`${authService.serverUrl}/users/all/4`);
+    const req = httpController.expectOne(`${authService.serverUrl}/users/4`);
     expect(req.request.method).toEqual("PATCH");
     req.flush(null, mockError);
   });

@@ -257,7 +257,7 @@ export class AuthService {
       )
       .pipe(
         switchMap((firebaseUser) => {
-          return this.Http.get<GetUserResponse>(`${this.serverUrl}/users/all/${firebaseUser.uid}`, {
+          return this.Http.get<GetUserResponse>(`${this.serverUrl}/users/${firebaseUser.uid}`, {
             headers: new HttpHeaders({ Authorization: `Bearer ${firebaseUser.jwt}` }),
           }).pipe(
             map((response) => {
@@ -435,7 +435,7 @@ export class AuthService {
       .pipe(
         switchMap((user) =>
           this.Http.patch<UserUpdateResponse>(
-            `${this.serverUrl}/users/all/${this.userData()?.id}`,
+            `${this.serverUrl}/users/${this.userData()?.id}`,
             updatedUser,
             {
               headers: new HttpHeaders({ Authorization: `Bearer ${user.jwt}` }),

@@ -92,8 +92,9 @@ export class AdminBlocks {
     this.isLoading.set(true);
 
     this.apiClient
-      .get<{ success: boolean; users: BlockedUser[]; total_pages: number }>("users/blocked", {
+      .get<{ success: boolean; users: BlockedUser[]; total_pages: number }>("users", {
         page: `${this.currentPage()}`,
+        type: "blocked",
       })
       .subscribe({
         next: (data) => {
@@ -159,7 +160,7 @@ export class AdminBlocks {
   */
   unblock(userID: number) {
     this.apiClient
-      .patch(`users/all/${userID}`, {
+      .patch(`users/${userID}`, {
         id: userID,
         releaseDate: null,
         blocked: false,

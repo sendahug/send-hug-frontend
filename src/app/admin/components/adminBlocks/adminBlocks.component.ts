@@ -94,7 +94,7 @@ export class AdminBlocks {
     this.apiClient
       .get<{ success: boolean; users: BlockedUser[]; total_pages: number }>("users", {
         page: `${this.currentPage()}`,
-        type: "blocked",
+        blocked: true,
       })
       .subscribe({
         next: (data) => {

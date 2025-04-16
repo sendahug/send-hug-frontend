@@ -121,7 +121,7 @@ describe("Blocks Page", () => {
 
     adminBlocks.fetchBlocks();
 
-    expect(apiClientSpy).toHaveBeenCalledWith("users", { page: "1", type: "blocked" });
+    expect(apiClientSpy).toHaveBeenCalledWith("users", { page: "1", blocked: true });
     expect(adminBlocks.blockedUsers().length).toBe(1);
     expect(adminBlocks.isLoading()).toBeFalse();
     expect(
@@ -142,7 +142,7 @@ describe("Blocks Page", () => {
 
     adminBlocks.fetchBlocks();
 
-    expect(apiClientSpy).toHaveBeenCalledWith("users", { page: "1", type: "blocked" });
+    expect(apiClientSpy).toHaveBeenCalledWith("users", { page: "1", blocked: true });
     expect(adminBlocks.blockedUsers().length).toBe(0);
     expect(adminBlocks.isLoading()).toBeFalse();
     expect(adminBlocksDOM.querySelectorAll(".tableContainer").length).toBe(0);

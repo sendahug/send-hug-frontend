@@ -29,7 +29,9 @@
   SOFTWARE.
 */
 
+import { OtherUser } from "@app/interfaces/otherUser.interface";
 import { ReportGet } from "@app/interfaces/report.interface";
+import { PostGet } from "@app/interfaces/post.interface";
 
 export interface CreateReportResponse {
   success: boolean;
@@ -39,4 +41,14 @@ export interface CreateReportResponse {
 export interface SendHugResponse {
   success: boolean;
   updated: string;
+}
+
+export interface SearchResultsResponse {
+  success: boolean;
+  users: OtherUser[];
+  posts: PostGet[];
+  user_results: number;
+  post_results: number;
+  current_page: number;
+  total_pages: number;
 }

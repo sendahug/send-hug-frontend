@@ -35,7 +35,7 @@ import { Injectable } from "@angular/core";
 import { Observable, map, mergeMap, of, switchMap, tap } from "rxjs";
 
 // App-related imports
-import { type ReportGet } from "@app/interfaces/report.interface";
+import { ReportData, type ReportGet } from "@app/interfaces/report.interface";
 import { type MessageCreate } from "@app/interfaces/message.interface";
 import { AuthService } from "@app/services/auth.service";
 import { AlertsService } from "@app/services/alerts.service";
@@ -70,7 +70,7 @@ export class AdminService {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  deletePost(postID: number, reportData: any, closeReport: boolean) {
+  deletePost(postID: number, reportData: ReportData, closeReport: boolean) {
     // delete the post from the database
     return this.apiClient
       .delete<{ success: boolean; deleted: number }>(`posts/${postID}`)
@@ -92,7 +92,7 @@ export class AdminService {
         }),
       )
       .subscribe({
-        next: (response: any) => {
+        next: (response) => {
           this.alertsService.createSuccessAlert(
             `Post ${response.deleted} was successfully deleted.`,
           );
@@ -148,7 +148,7 @@ export class AdminService {
         }),
       )
       .subscribe({
-        next: (response: any) => {
+        next: (response) => {
           this.alertsService.createSuccessAlert(`User ${response.user.displayName} updated.`);
         },
       });
@@ -297,7 +297,7 @@ export class AdminService {
           }),
         )
         .pipe(
-          tap((response: any) =>
+          tap((response) =>
             this.alertsService.createSuccessAlert(
               `User ${response.updated.displayName} has been blocked until ${response.updated.releaseDate}`,
             ),

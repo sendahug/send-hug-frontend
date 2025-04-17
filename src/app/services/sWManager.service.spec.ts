@@ -408,7 +408,7 @@ describe("SWManagerService", () => {
     it("should get new posts correctly", () => {
       const postsPromise = sWManagerService.fetchPosts("date", 10, undefined, 1, true);
 
-      return postsPromise!.then((posts: any) => {
+      return postsPromise!.then((posts) => {
         // check all the posts are there and they're ordered in reverse date order
         expect(posts.posts).toBeDefined();
         expect(posts.posts!.length).toBe(3);
@@ -421,7 +421,7 @@ describe("SWManagerService", () => {
     it("should get suggested posts correctly", () => {
       const postsPromise = sWManagerService.fetchPosts("hugs", 10, undefined, 1, false);
 
-      return postsPromise!.then((posts: any) => {
+      return postsPromise!.then((posts) => {
         // check all the posts are there and they're ordered in reverse date order
         expect(posts.posts).toBeDefined();
         expect(posts.posts!.length).toBe(3);
@@ -434,7 +434,7 @@ describe("SWManagerService", () => {
     it("should get new posts correctly - page 1", () => {
       const postsPromise = sWManagerService.fetchPosts("date", 5, undefined, 1, true);
 
-      return postsPromise!.then((posts: any) => {
+      return postsPromise!.then((posts) => {
         // check all the posts are there and they're ordered in reverse date order
         expect(posts).toBeDefined();
         expect(posts!.posts.length).toBe(3);
@@ -447,7 +447,7 @@ describe("SWManagerService", () => {
     it("should get new posts correctly - page 2", () => {
       const postsPromise = sWManagerService.fetchPosts("date", 5, undefined, 2, true);
 
-      return postsPromise!.then((posts: any) => {
+      return postsPromise!.then((posts) => {
         // check all the posts are there and they're ordered in reverse date order
         expect(posts).toBeDefined();
         expect(posts!.posts.length).toBe(0);
@@ -458,7 +458,7 @@ describe("SWManagerService", () => {
     it("should get suggested posts correctly - page 1", () => {
       const postsPromise = sWManagerService.fetchPosts("hugs", 5, undefined, 1, false);
 
-      return postsPromise!.then((posts: any) => {
+      return postsPromise!.then((posts) => {
         // check all the posts are there and they're ordered in reverse date order
         expect(posts).toBeDefined();
         expect(posts!.posts.length).toBe(3);
@@ -471,7 +471,7 @@ describe("SWManagerService", () => {
     it("should get suggested posts correctly - page 2", () => {
       const postsPromise = sWManagerService.fetchPosts("hugs", 5, undefined, 2, false);
 
-      return postsPromise!.then((posts: any) => {
+      return postsPromise!.then((posts) => {
         // check all the posts are there and they're ordered in reverse date order
         expect(posts).toBeDefined();
         expect(posts!.posts.length).toBe(0);
@@ -482,7 +482,7 @@ describe("SWManagerService", () => {
     it("should get a user's posts correctly", () => {
       const postsPromise = sWManagerService.fetchPosts("user", 5, 1, 1, false);
 
-      return postsPromise!.then((posts: any) => {
+      return postsPromise!.then((posts) => {
         expect(posts).toBeDefined();
         expect(posts!.posts.length).toBe(2);
         expect(posts!.posts[0].id).toBe(1);
@@ -494,7 +494,7 @@ describe("SWManagerService", () => {
     it("should get other users' posts", () => {
       const postsPromise = sWManagerService.fetchPosts("user", 5, 3, 1, false);
 
-      return postsPromise!.then((posts: any) => {
+      return postsPromise!.then((posts) => {
         expect(posts).toBeDefined();
         expect(posts!.posts.length).toBe(1);
         expect(posts!.posts[0].id).toBe(3);

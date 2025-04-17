@@ -109,7 +109,11 @@ export class ApiClientService {
    * @param params - any query parameters.
    * @returns an observable of the response / an error if one occurred.
    */
-  post<T extends object>(endpoint: string, body: any, params?: APIParams): Observable<T> {
+  post<T extends object>(
+    endpoint: string,
+    body: object | string,
+    params?: APIParams,
+  ): Observable<T> {
     return this.updateAuthToken()
       .pipe(
         switchMap((_token) =>
@@ -133,7 +137,11 @@ export class ApiClientService {
    * @param params - any query parameters.
    * @returns an observable of the response / an error if one occurred.
    */
-  patch<T extends object>(endpoint: string, body: any, params?: APIParams): Observable<T> {
+  patch<T extends object>(
+    endpoint: string,
+    body: object | string,
+    params?: APIParams,
+  ): Observable<T> {
     return this.updateAuthToken()
       .pipe(
         switchMap((_token) =>

@@ -42,7 +42,11 @@ import { type OtherUser } from "@app/interfaces/otherUser.interface";
 import { AlertsService } from "@app/services/alerts.service";
 import { SWManager } from "@app/services/sWManager.service";
 import { ApiClientService } from "@app/services/apiClient.service";
-import { SendHugResponse, type SendMessageResponse } from "@app/interfaces/api";
+import {
+  type SearchResultsResponse,
+  type SendHugResponse,
+  type SendMessageResponse,
+} from "@app/interfaces/api";
 
 @Injectable({
   providedIn: "root",
@@ -85,7 +89,7 @@ export class ItemsService {
   */
   sendHug(postId: number) {
     this.apiClient.post<SendHugResponse>(`posts/${postId}/hugs`, {}).subscribe({
-      next: (_response: any) => {
+      next: (_response) => {
         this.alertsService.createSuccessAlert("Your hug was sent!");
         // Alert the posts that this item received a hug
         this.receivedAHug.next(postId);
@@ -129,9 +133,13 @@ export class ItemsService {
     this.isSearching.set(true);
 
     return this.apiClient
-      .post("", { search: searchQuery }, { page: `${this.postSearchPage()}` })
+      .post<SearchResultsResponse>(
+        "",
+        { search: searchQuery },
+        { page: `${this.postSearchPage()}` },
+      )
       .subscribe({
-        next: (response: any) => {
+        next: (response) => {
           this.userSearchResults.set(response.users);
           this.postSearchResults.set(response.posts);
           this.postSearchPage.set(response.current_page);

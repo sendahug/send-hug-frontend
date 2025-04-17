@@ -43,7 +43,7 @@ The project is open source, so feel free to use parts of the code. However, the 
    - FIREBASE_APP_ID - your Firebase App ID.
    - FIREBASE_MEASUREMENT_ID - the Firebase measurement ID (for analytics).
 6. Run `npm run dev` to compile the whole project for local development.
-7. Open localhost:3000.
+7. Open http://localhost:3000.
 
 ### Users
 

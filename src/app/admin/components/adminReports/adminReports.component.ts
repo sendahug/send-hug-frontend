@@ -43,7 +43,7 @@ import {
   PostAndReportResponse,
   UpdatedUserReportResponse,
   GetReportsResponse,
-} from "@app/interfaces/responses";
+} from "@app/interfaces/api/admin";
 import { type PostGet } from "@app/interfaces/post.interface";
 import { type User } from "@app/interfaces/user.interface";
 

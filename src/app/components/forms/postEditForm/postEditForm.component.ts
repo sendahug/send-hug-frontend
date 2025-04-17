@@ -43,7 +43,7 @@ import { ValidationService } from "@app/services/validation.service";
 import { AlertsService } from "@app/services/alerts.service";
 import { ApiClientService } from "@app/services/apiClient.service";
 import { SWManager } from "@app/services/sWManager.service";
-import { type PostAndReportResponse } from "@app/interfaces/responses";
+import { type PostAndReportResponse } from "@app/interfaces/api/admin";
 import { PopUp } from "@common/popUp/popUp.component";
 import { TeleportDirective } from "@app/directives/teleport.directive";
 

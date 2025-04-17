@@ -29,10 +29,10 @@
   SOFTWARE.
 */
 
-import { type PostGet } from "./post.interface";
-import { type ReportGet } from "./report.interface";
-import { type Filter } from "./filter.interface";
-import { type BlockedUser } from "./user.interface";
+import { type PostGet } from "../post.interface";
+import { type ReportGet } from "../report.interface";
+import { type Filter } from "../filter.interface";
+import { type BlockedUser } from "../user.interface";
 
 /** Report Interfaces */
 export interface PostAndReportResponse {

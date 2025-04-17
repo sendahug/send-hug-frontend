@@ -43,7 +43,7 @@ import {
   GetFiltersResponse,
   AddFiltersResponse,
   DeleteFiltersResponse,
-} from "@app/interfaces/responses";
+} from "@app/interfaces/api/admin";
 
 @Component({
   selector: "app-admin-filters",

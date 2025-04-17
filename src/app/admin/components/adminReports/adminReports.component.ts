@@ -44,9 +44,7 @@ import {
   UpdatedUserReportResponse,
   GetReportsResponse,
 } from "@app/interfaces/api";
-import { type PostGet } from "@app/interfaces/post.interface";
-import { type User } from "@app/interfaces/user.interface";
-import { type ReportData } from "@app/interfaces/report.interface";
+import { type ReportData, type EditReportData } from "@app/interfaces/report.interface";
 
 @Component({
   selector: "app-admin-reports",
@@ -62,7 +60,7 @@ export class AdminReports {
   currentUserReportsPage = signal(1);
   isLoading = signal(false);
   // edit popup sub-component variables
-  toEdit = signal<Partial<PostGet> | Partial<User>>({});
+  toEdit = signal<EditReportData>({ id: 0 });
   nameEditMode = signal(false);
   postEditMode = signal(false);
   reportData = signal<ReportData>({

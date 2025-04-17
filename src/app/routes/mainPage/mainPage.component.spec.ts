@@ -167,8 +167,7 @@ describe("MainPage", () => {
 
     const fixture = TestBed.createComponent(MainPage);
     const mainPage = fixture.componentInstance;
-    // This shouldn't be possible but just to be on the safe side
-    // @ts-ignore
+    // @ts-expect-error - testing an edge case that shouldn't even be possible
     mainPage.updatePostsInterface(mockNetworkResponse);
 
     expect(mainPage.newPosts()).toEqual([]);

@@ -260,7 +260,7 @@ export class SWManager {
       upgrade(db, oldVersion, _newVersion, transaction) {
         switch (oldVersion) {
           // if there was no previous version
-          // @ts-ignore - ignored because we need it to run through the whole flow
+          // @ts-expect-error - ignored because we need it to run through the whole flow
           case 0:
             // create store for posts
             const postStore = db.createObjectStore("posts", {
@@ -288,7 +288,7 @@ export class SWManager {
             });
             threadStore.createIndex("latest", "latestMessage");
           // if the previous version the user had is 1
-          // @ts-ignore - ignored because we need it to run through the whole flow
+          // @ts-expect-error - ignored because we need it to run through the whole flow
           case 1:
             // change posts store's date index to order by ISO date string
             const postsStore = transaction.objectStore("posts");
@@ -305,7 +305,7 @@ export class SWManager {
             threadsStore.deleteIndex("latest");
             threadsStore.createIndex("latest", "isoDate");
           // If the previous version is 3
-          // @ts-ignore - ignored because we need it to run through the whole flow
+          // @ts-expect-error - ignored because we need it to run through the whole flow
           case 3:
             // Recreate the users store as the object type changed.
             db.deleteObjectStore("users");
@@ -313,7 +313,6 @@ export class SWManager {
               keyPath: "id",
             });
           // If the previous version is 4
-          // @ts-ignore - ignored because we need it to run through the whole flow
           case 4:
             // Recreate the users store as the object type changed.
             db.deleteObjectStore("users");

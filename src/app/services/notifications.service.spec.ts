@@ -389,8 +389,7 @@ describe("NotificationService", () => {
     const requestSpy = spyOn(notificationService["swPush"], "requestSubscription").and.returnValue(
       new Promise((resolve) => resolve(pushSub)),
     );
-    // setSubscription is protected, but we need to spy on it
-    // @ts-ignore
+    // @ts-expect-error - setSubscription is protected, but we need to spy on it
     const setSpy = spyOn(notificationService, "setSubscription");
 
     notificationService.requestSubscription().then((sub) => {
@@ -405,8 +404,7 @@ describe("NotificationService", () => {
     const requestSpy = spyOn(notificationService["swPush"], "requestSubscription").and.rejectWith(
       new Error("ERROR!"),
     );
-    // setSubscription is protected, but we need to spy on it
-    // @ts-ignore
+    // @ts-expect-error - setSubscription is protected, but we need to spy on it
     const setSpy = spyOn(notificationService, "setSubscription");
     const alertSpy = spyOn(notificationService["alertsService"], "createAlert");
 
@@ -473,8 +471,7 @@ describe("NotificationService", () => {
   it("getSubscription() - should get push subscription from localStorage", () => {
     notificationService.notificationsSub = pushSub;
     const storageSpy = spyOn(localStorage, "getItem").and.returnValue(JSON.stringify(pushSub));
-    // setSubscription is protected, but we need to spy on it
-    // @ts-ignore
+    // @ts-expect-error - setSubscription is protected, but we need to spy on it
     const setSpy = spyOn(notificationService, "setSubscription");
 
     notificationService.getCachedSubscription();
@@ -510,8 +507,7 @@ describe("NotificationService", () => {
     };
     notificationService.notificationsSub = pushSub;
     const storageSpy = spyOn(localStorage, "getItem").and.returnValue(JSON.stringify(sub));
-    // setSubscription is protected, but we need to spy on it
-    // @ts-ignore
+    // @ts-expect-error - setSubscription is protected, but we need to spy on it
     const setSpy = spyOn(notificationService, "setSubscription");
 
     notificationService.getCachedSubscription();

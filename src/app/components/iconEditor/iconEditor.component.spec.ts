@@ -243,8 +243,7 @@ describe("IconEditor", () => {
     const authService = TestBed.inject(AuthService);
     authService.userData.set({
       ...mockAuthedUser,
-      // This shouldn't even be possible but just in case
-      // @ts-ignore
+      // @ts-expect-error - testing an edge case that shouldn't even be possible
       selectedIcon: "",
       iconColours: {
         character: "",

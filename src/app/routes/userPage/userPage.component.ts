@@ -52,6 +52,7 @@ import { ReportForm } from "@forms/reportForm/reportForm.component";
 import { DisplayNameEditForm } from "@forms/displayNameEditForm/displayNameEditForm.component";
 import { MyPosts } from "@app/components/myPosts/myPosts.component";
 import { OtherUserResponse } from "@app/interfaces/api";
+import { type ReportType } from "@app/interfaces/report.interface";
 
 @Component({
   selector: "app-user-page",
@@ -89,7 +90,7 @@ export class UserPage implements OnDestroy {
   editMode = signal(false);
   reportMode = signal(false);
   reportedItem = signal<OtherUser | undefined>(undefined);
-  reportType: "User" = "User";
+  reportType: ReportType = "User";
   // loader sub-component variable
   loaderClass = computed(() => (!this.isIdbFetchLoading() && this.isLoading() ? "header" : ""));
   userId = signal<number | undefined>(undefined);

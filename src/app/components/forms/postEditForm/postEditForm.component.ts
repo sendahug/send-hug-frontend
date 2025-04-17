@@ -37,7 +37,7 @@ import { map, mergeMap, of } from "rxjs";
 import { CommonModule } from "@angular/common";
 
 // App-related import
-import { type PostGet } from "@app/interfaces/post.interface";
+import { type PostEditFormData } from "@app/interfaces/post.interface";
 import { AdminService } from "@app/services/admin.service";
 import { ValidationService } from "@app/services/validation.service";
 import { AlertsService } from "@app/services/alerts.service";
@@ -55,7 +55,7 @@ import { TeleportDirective } from "@app/directives/teleport.directive";
 })
 export class PostEditForm implements OnInit {
   // item to edit
-  @Input() editedItem!: PostGet;
+  @Input() editedItem!: PostEditFormData;
   // indicates whether edit/delete mode is still required
   @Output() editMode = new EventEmitter<boolean>();
   @Output() updateResult = new EventEmitter<PostAndReportResponse>();

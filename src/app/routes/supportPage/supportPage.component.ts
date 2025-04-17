@@ -77,7 +77,7 @@ export class SupportPage implements OnInit {
     document.querySelectorAll(".faqItem").forEach((faqItem) => {
       if (!faqItem.firstElementChild!.textContent) return;
 
-      let item = {
+      const item = {
         href: faqItem.firstElementChild!.id,
         question: faqItem.firstElementChild!.textContent,
       };

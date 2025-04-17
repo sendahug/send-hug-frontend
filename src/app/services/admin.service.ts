@@ -97,7 +97,7 @@ export class AdminService {
             `Post ${response.deleted} was successfully deleted.`,
           );
           // create a message from the admin to the user whose post was deleted
-          let message: MessageCreate = {
+          const message: MessageCreate = {
             from: {
               displayName: this.authService.userData()!.displayName,
             },
@@ -162,7 +162,7 @@ export class AdminService {
    * @param userID (number) - the ID of the user associated with the report (for user reports).
    */
   closeReport(reportID: number, dismiss: boolean, postID?: number, userID?: number) {
-    let report: Partial<ReportGet> = {
+    const report: Partial<ReportGet> = {
       id: reportID,
       closed: true,
       dismissed: dismiss,

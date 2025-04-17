@@ -32,5 +32,6 @@
 export * from "./admin";
 export * from "./messages";
 export * from "./notifications";
+export * from "./other";
 export * from "./posts";
 export * from "./users";

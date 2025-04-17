@@ -52,3 +52,8 @@ export interface PostGet extends Post {
   givenHugs: number;
   sentHugs?: number[];
 }
+
+export interface PostEditFormData {
+  text: string;
+  id: number;
+}

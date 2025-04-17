@@ -51,6 +51,7 @@ import { AuthService } from "@app/services/auth.service";
 import { ApiClientService } from "@app/services/apiClient.service";
 import { TeleportDirective } from "@app/directives/teleport.directive";
 import { type PostAndReportResponse } from "@app/interfaces/api";
+import { type ReportType } from "@app/interfaces/report.interface";
 
 // POST EDIT
 // ==================================================================
@@ -303,7 +304,7 @@ describe("PostEditForm", () => {
         closed: true,
         reportReason: "reason",
         date: new Date(),
-        type: "Post" as "Post",
+        type: "Post" as ReportType,
         userID: 4,
         reporter: 1,
       },

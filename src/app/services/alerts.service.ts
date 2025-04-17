@@ -120,7 +120,7 @@ export class AlertsService {
    */
   createSuccessAlert(message: string, config: AlertConfig = {}) {
     // an alert message
-    let alert: AlertMessage = {
+    const alert: AlertMessage = {
       type: "Success",
       message: message,
     };
@@ -138,7 +138,7 @@ export class AlertsService {
   */
   createErrorAlert(err: HttpErrorResponse) {
     // an alert message
-    let alert: AlertMessage = {
+    const alert: AlertMessage = {
       type: "Error",
       message: err.error.message,
     };
@@ -177,7 +177,7 @@ export class AlertsService {
   */
   createSWAlert(worker: ServiceWorker) {
     // set SW-related variables and creates a notification alert
-    let alert: AlertMessage = {
+    const alert: AlertMessage = {
       type: "Notification",
       message: `A new version of the site is available. Click the reload button to update!`,
     };

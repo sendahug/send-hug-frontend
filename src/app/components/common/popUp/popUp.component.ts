@@ -55,7 +55,7 @@ import { faTimes } from "@fortawesome/free-solid-svg-icons";
 export class PopUp implements OnInit, AfterViewInit, AfterViewChecked {
   // indicates whether edit/delete mode is still required
   @Output() editMode = new EventEmitter<boolean>();
-  focusableElements: any;
+  focusableElements!: NodeListOf<HTMLElement>;
   checkFocusBinded = this.checkFocus.bind(this);
   lastFocusedElement: HTMLElement | null = null;
   @ViewChild("exitButton") exitButton!: ElementRef;
@@ -86,7 +86,7 @@ export class PopUp implements OnInit, AfterViewInit, AfterViewChecked {
    * popup and adds a listener for keyboard navigation to trap the focus within the popup.
    */
   ngAfterViewChecked() {
-    let modal = document.getElementById("modalBox");
+    const modal = document.getElementById("modalBox");
     this.focusableElements = modal!.querySelectorAll(`a, button:not([disabled]),
           input:not([disabled]), textarea:not([disabled]), select:not([disabled]),
           details, iframe, object, embed, [tabindex]:not([tabindex="-1"]`);
@@ -129,7 +129,7 @@ export class PopUp implements OnInit, AfterViewInit, AfterViewChecked {
    * before opening the popup.
    */
   exitEdit() {
-    let modal = document.getElementById("modalBox");
+    const modal = document.getElementById("modalBox");
     modal!.removeEventListener("keydown", this.checkFocusBinded);
     this.lastFocusedElement?.focus();
     this.editMode.emit(false);

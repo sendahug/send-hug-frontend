@@ -169,14 +169,14 @@ export class SWManager {
         }
         // if there's a service worker installing
         else if (reg.installing) {
-          let installingSW = reg.installing;
+          const installingSW = reg.installing;
           this.checkSWChange(installingSW);
         }
         // otherwise wait for an 'updatefound' event
         else {
           reg.addEventListener("updatefound", () => {
             // gets the SW that was found and is now being installed
-            let installingSW = reg.installing!;
+            const installingSW = reg.installing!;
             this.checkSWChange(installingSW);
           });
         }
@@ -232,14 +232,14 @@ export class SWManager {
         }
         // if there's a service worker installing
         else if (this.activeServiceWorkerReg!.installing) {
-          let installingSW = this.activeServiceWorkerReg!.installing;
+          const installingSW = this.activeServiceWorkerReg!.installing;
           this.checkSWChange(installingSW);
         }
         // otherwise wait for an 'updatefound' event
         else {
           this.activeServiceWorkerReg!.addEventListener("updatefound", () => {
             // gets the SW that was found and is now being installed
-            let installingSW = this.activeServiceWorkerReg!.installing!;
+            const installingSW = this.activeServiceWorkerReg!.installing!;
             this.checkSWChange(installingSW);
           });
         }
@@ -263,7 +263,7 @@ export class SWManager {
           // @ts-ignore - ignored because we need it to run through the whole flow
           case 0:
             // create store for posts
-            let postStore = db.createObjectStore("posts", {
+            const postStore = db.createObjectStore("posts", {
               keyPath: "id",
             });
             postStore.createIndex("date", "date");
@@ -276,14 +276,14 @@ export class SWManager {
             });
 
             // create store for messages
-            let messageStore = db.createObjectStore("messages", {
+            const messageStore = db.createObjectStore("messages", {
               keyPath: "id",
             });
             messageStore.createIndex("date", "date");
             messageStore.createIndex("thread", "threadID");
 
             // create store for threads
-            let threadStore = db.createObjectStore("threads", {
+            const threadStore = db.createObjectStore("threads", {
               keyPath: "id",
             });
             threadStore.createIndex("latest", "latestMessage");
@@ -291,17 +291,17 @@ export class SWManager {
           // @ts-ignore - ignored because we need it to run through the whole flow
           case 1:
             // change posts store's date index to order by ISO date string
-            let postsStore = transaction.objectStore("posts");
+            const postsStore = transaction.objectStore("posts");
             postsStore.deleteIndex("date");
             postsStore.createIndex("date", "isoDate");
 
             // change messages store's date index to order by ISO date string
-            let messagesStore = transaction.objectStore("messages");
+            const messagesStore = transaction.objectStore("messages");
             messagesStore.deleteIndex("date");
             messagesStore.createIndex("date", "isoDate");
 
             // change threads store's date index to order by ISO date string
-            let threadsStore = transaction.objectStore("threads");
+            const threadsStore = transaction.objectStore("threads");
             threadsStore.deleteIndex("latest");
             threadsStore.createIndex("latest", "isoDate");
           // If the previous version is 3
@@ -354,7 +354,7 @@ export class SWManager {
     if (this.currentDB) {
       return this.currentDB
         .then((db) => {
-          let postsStore = db.transaction("posts").store.index(sortBy);
+          const postsStore = db.transaction("posts").store.index(sortBy);
 
           if (userID) {
             return postsStore.getAll(userID);
@@ -412,8 +412,8 @@ export class SWManager {
   Programmer: Shir Bar Lev.
   */
   sortSuggestedPosts(posts: IDBPost[]) {
-    let postHugs: { [hugs: number]: IDBPost[] } = {};
-    let orderedPosts: IDBPost[] = [];
+    const postHugs: { [hugs: number]: IDBPost[] } = {};
+    const orderedPosts: IDBPost[] = [];
 
     // split to arrays by number of hugs
     posts.forEach((post) => {
@@ -478,7 +478,7 @@ export class SWManager {
     if (this.currentDB) {
       return this.currentDB
         .then(function (db) {
-          let messagesStore = db.transaction("messages").store.index("date");
+          const messagesStore = db.transaction("messages").store.index("date");
           return messagesStore.getAll();
         })
         .then((messages) => {
@@ -511,13 +511,13 @@ export class SWManager {
     if (this.currentDB) {
       return this.currentDB
         .then(function (db) {
-          let threadsStore = db.transaction("threads").store.index("latest");
+          const threadsStore = db.transaction("threads").store.index("latest");
           return threadsStore.getAll();
         })
         .then(function (threads) {
-          let startIndex = (currentPage - 1) * 5;
-          let orderedThreads = threads.reverse();
-          let pages = Math.ceil(orderedThreads!.length / 5);
+          const startIndex = (currentPage - 1) * 5;
+          const orderedThreads = threads.reverse();
+          const pages = Math.ceil(orderedThreads!.length / 5);
 
           return {
             messages: orderedThreads.slice(startIndex, startIndex + 5),
@@ -542,7 +542,7 @@ export class SWManager {
     if (this.currentDB) {
       return this.currentDB
         .then(function (db) {
-          let userStore = db.transaction("users").store;
+          const userStore = db.transaction("users").store;
           return userStore.get(userID);
         })
         .then(function (data) {
@@ -569,7 +569,7 @@ export class SWManager {
     return this.currentDB
       ?.then((db) => {
         // start a new transaction
-        let dbStore = db.transaction(store, "readwrite").objectStore(store);
+        const dbStore = db.transaction(store, "readwrite").objectStore(store);
         data.forEach((item) => {
           item["isoDate"] = new Date(item[dateParam]).toISOString();
           dbStore.put(item);
@@ -593,7 +593,7 @@ export class SWManager {
   addItem(store: IdbStoreType, item: any) {
     return this.currentDB?.then((db) => {
       // start a new transaction
-      let dbStore = db.transaction(store, "readwrite").objectStore(store);
+      const dbStore = db.transaction(store, "readwrite").objectStore(store);
       dbStore.put(item);
     });
   }
@@ -609,8 +609,8 @@ export class SWManager {
   deleteItem(store: IdbStoreType, itemID: number) {
     return this.currentDB?.then((db) => {
       // start a new transaction
-      let tx = db.transaction(store, "readwrite");
-      let dbStore = tx.objectStore(store);
+      const tx = db.transaction(store, "readwrite");
+      const dbStore = tx.objectStore(store);
       // delete the relevant item
       dbStore.delete(itemID);
     });
@@ -629,8 +629,8 @@ export class SWManager {
   deleteItems(store: IdbStoreType, parentType: string, parentID: number) {
     return this.currentDB?.then((db) => {
       // start a new transaction
-      let tx = db.transaction(store, "readwrite");
-      let dbStore = tx.objectStore(store);
+      const tx = db.transaction(store, "readwrite");
+      const dbStore = tx.objectStore(store);
       // open a cursor and delete any items with the matching parent's ID
       // open a cursor and delete any messages with the deleted thread's ID
       dbStore.openCursor().then(function checkItem(cursor): any {
@@ -657,7 +657,7 @@ export class SWManager {
       // gets the current database, and then gets the given store and clears it
       this.currentDB
         .then(function (db) {
-          let store = db.transaction(storeID, "readwrite").objectStore(storeID);
+          const store = db.transaction(storeID, "readwrite").objectStore(storeID);
           return store.clear();
           // if there's an error, log it
         })

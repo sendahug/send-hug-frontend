@@ -106,8 +106,8 @@ export class ItemsService {
     return this.apiClient.post<SendMessageResponse>("messages", message).pipe(
       tap((response) => {
         this.alertsService.createSuccessAlert("Your message was sent!");
-        let isoDate = new Date(response.message.date).toISOString();
-        let message = {
+        const isoDate = new Date(response.message.date).toISOString();
+        const message = {
           ...response.message,
           isoDate: isoDate,
         };

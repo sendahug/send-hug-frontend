@@ -54,7 +54,7 @@ import { type UpdateNotificationsResponse } from "@app/interfaces/api";
 export class NotificationsTab implements OnInit {
   // indicates whether notifications panel is still required
   @Output() NotificationsMode = new EventEmitter<boolean>();
-  focusableElements: any;
+  focusableElements!: NodeListOf<HTMLElement>;
   checkFocusBinded = this.checkFocus.bind(this);
   currentPage = signal(1);
   totalPages = signal(1);
@@ -118,7 +118,7 @@ export class NotificationsTab implements OnInit {
   Programmer: Shir Bar Lev.
   */
   ngAfterViewChecked() {
-    let modal = document.getElementById("modalBox");
+    const modal = document.getElementById("modalBox");
     this.focusableElements = modal!.querySelectorAll(`a, button:not([disabled]),
           input:not([disabled]), textarea:not([disabled]), select:not([disabled]),
           details, iframe, object, embed, [tabindex]:not([tabindex="-1"]`);
@@ -305,7 +305,7 @@ export class NotificationsTab implements OnInit {
   Programmer: Shir Bar Lev.
   */
   exitNotifications() {
-    let modal = document.getElementById("modalBox");
+    const modal = document.getElementById("modalBox");
     modal!.removeEventListener("keydown", this.checkFocusBinded);
     document.getElementById("skipLink")?.focus();
     this.NotificationsMode.emit(false);

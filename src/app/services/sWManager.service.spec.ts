@@ -40,6 +40,7 @@ import { IDBPDatabase } from "idb";
 
 import { MyDB, SWManager } from "./sWManager.service";
 import { AlertsService } from "./alerts.service";
+import { type iconCharacters } from "@app/interfaces/types";
 
 function populateDB(
   dbPromise: Promise<IDBPDatabase<MyDB>>,
@@ -83,7 +84,7 @@ function populateDB(
         date: new Date("Mon, 22 Jun 2020 14:32:38 GMT"),
         for: {
           displayName: "user14",
-          selectedIcon: "kitty" as "kitty",
+          selectedIcon: "kitty" as iconCharacters,
           iconColours: {
             character: "#BA9F93",
             lbg: "#e2a275",
@@ -94,7 +95,7 @@ function populateDB(
         forId: 1,
         from: {
           displayName: "user14",
-          selectedIcon: "kitty" as "kitty",
+          selectedIcon: "kitty" as iconCharacters,
           iconColours: {
             character: "#BA9F93",
             lbg: "#e2a275",
@@ -112,7 +113,7 @@ function populateDB(
         date: new Date("Mon, 22 Jun 2020 14:32:38 GMT"),
         for: {
           displayName: "user14",
-          selectedIcon: "kitty" as "kitty",
+          selectedIcon: "kitty" as iconCharacters,
           iconColours: {
             character: "#BA9F93",
             lbg: "#e2a275",
@@ -123,7 +124,7 @@ function populateDB(
         forId: 4,
         from: {
           displayName: "user14",
-          selectedIcon: "kitty" as "kitty",
+          selectedIcon: "kitty" as iconCharacters,
           iconColours: {
             character: "#BA9F93",
             lbg: "#e2a275",
@@ -141,7 +142,7 @@ function populateDB(
         date: new Date("Mon, 08 Jun 2020 14:43:15 GMT"),
         for: {
           displayName: "shirb",
-          selectedIcon: "kitty" as "kitty",
+          selectedIcon: "kitty" as iconCharacters,
           iconColours: {
             character: "#BA9F93",
             lbg: "#e2a275",
@@ -152,7 +153,7 @@ function populateDB(
         forId: 1,
         from: {
           displayName: "user14",
-          selectedIcon: "kitty" as "kitty",
+          selectedIcon: "kitty" as iconCharacters,
           iconColours: {
             character: "#BA9F93",
             lbg: "#e2a275",
@@ -179,7 +180,7 @@ function populateDB(
           permissions: [],
         },
         posts: 10,
-        selectedIcon: "kitty" as "kitty",
+        selectedIcon: "kitty" as iconCharacters,
         iconColours: {
           character: "#BA9F93",
           lbg: "#e2a275",
@@ -198,7 +199,7 @@ function populateDB(
           permissions: [],
         },
         posts: 10,
-        selectedIcon: "kitty" as "kitty",
+        selectedIcon: "kitty" as iconCharacters,
         iconColours: {
           character: "#BA9F93",
           lbg: "#e2a275",
@@ -212,7 +213,7 @@ function populateDB(
         id: 3,
         user1: {
           displayName: "shirb",
-          selectedIcon: "kitty" as "kitty",
+          selectedIcon: "kitty" as iconCharacters,
           iconColours: {
             character: "#BA9F93",
             lbg: "#e2a275",
@@ -223,7 +224,7 @@ function populateDB(
         user1Id: 1,
         user2: {
           displayName: "user14",
-          selectedIcon: "kitty" as "kitty",
+          selectedIcon: "kitty" as iconCharacters,
           iconColours: {
             character: "#BA9F93",
             lbg: "#e2a275",
@@ -240,7 +241,7 @@ function populateDB(
         id: 5,
         user1: {
           displayName: "lalala",
-          selectedIcon: "kitty" as "kitty",
+          selectedIcon: "kitty" as iconCharacters,
           iconColours: {
             character: "#BA9F93",
             lbg: "#e2a275",
@@ -251,7 +252,7 @@ function populateDB(
         user1Id: 2,
         user2: {
           displayName: "user14",
-          selectedIcon: "kitty" as "kitty",
+          selectedIcon: "kitty" as iconCharacters,
           iconColours: {
             character: "#BA9F93",
             lbg: "#e2a275",

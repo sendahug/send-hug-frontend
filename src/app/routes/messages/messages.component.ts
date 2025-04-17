@@ -38,7 +38,7 @@ import { CommonModule } from "@angular/common";
 
 // App-related imports
 import { AuthService } from "@app/services/auth.service";
-import { type MessageType } from "@app/interfaces/types";
+import { APIParams, type MessageType } from "@app/interfaces/types";
 import { FullThread, ParsedThread } from "@app/interfaces/thread.interface";
 import { type MessageGet } from "@app/interfaces/message.interface";
 import { SWManager } from "@app/services/sWManager.service";
@@ -137,7 +137,7 @@ export class AppMessaging {
     this.isIdbFetchLoading.set(true);
 
     const fetchFromIdb$ = this.fetchMessagesFromIdb();
-    const fetchParams: { [key: string]: any } = {
+    const fetchParams: APIParams = {
       page: this.currentPage(),
       type: this.messType(),
     };

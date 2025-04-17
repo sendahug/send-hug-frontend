@@ -40,6 +40,7 @@ import { AlertsService } from "./alerts.service";
 import { SWManager } from "./sWManager.service";
 import { ApiClientService } from "./apiClient.service";
 import { type GetNotificationsResponse } from "@app/interfaces/api";
+import { type APIParams } from "@app/interfaces/types";
 
 const pushPermissionDeniedErr =
   "Push notifications permission has been denied. Go to your browser settings, remove Send A Hug from the denied list, and then activate push notifications again.";
@@ -103,7 +104,7 @@ export class NotificationService {
    * @param read - type of notifications to fetch (read/unread only).
    */
   getNotifications(page: number = 1, read?: boolean) {
-    const params: { [key: string]: any } = { page };
+    const params: APIParams = { page };
     if (read !== undefined) params["readStatus"] = read;
 
     // gets Notifications

@@ -128,13 +128,13 @@ describe("AppNavMenu", () => {
     const navMenuHtml = fixture.debugElement.nativeElement;
     fixture.detectChanges();
 
-    let navMenu = navMenuHtml.querySelector("#navLinks");
+    const navMenu = navMenuHtml.querySelector("#navLinks");
     expect(navMenu).toBeDefined();
     expect(navMenu!.children.length).not.toBe(0);
 
     // check each navingation item to ensure it contains a link
-    let navMenuItems = navMenu!.children;
-    for (var i = 0; i < navMenuItems.length; i++) {
+    const navMenuItems = navMenu!.children;
+    for (let i = 0; i < navMenuItems.length; i++) {
       expect(navMenuItems.item(i)).toBeDefined();
       expect(navMenuItems!.item(i)!.children.item(0)!.getAttribute("href")).toBeDefined();
       expect(navMenuItems!.item(i)!.children.item(0)!.getAttribute("href")).not.toBe("");

@@ -193,7 +193,7 @@ describe("SiteMap", () => {
 
     // check each navigation item to ensure it contains a link
     const navLinks = routeList!.querySelectorAll(".routerLink");
-    for (var i = 0; i < navLinks.length; i++) {
+    for (let i = 0; i < navLinks.length; i++) {
       expect(navLinks[i]).toBeDefined();
       expect(navLinks[i]!.getAttribute("href")).toBeDefined();
       expect(navLinks[i]!.getAttribute("href")).not.toBe("");
@@ -288,7 +288,7 @@ describe("SiteMap", () => {
     expect(authSpy).toHaveBeenCalled();
     expect(siteMap.routes()).not.toContain(adminPath);
     expect(navLinks.length).toBeLessThan(routes.length);
-    for (var i = 0; i < navLinks.length; i++) {
+    for (let i = 0; i < navLinks.length; i++) {
       expect(navLinks[i].textContent).not.toBe("Main Page");
       expect(navLinks[i].textContent).not.toBe("Reports Page");
       expect(navLinks[i].textContent).not.toBe("Blocks Page");
@@ -309,7 +309,7 @@ describe("SiteMap", () => {
     const loginPath: Route = { path: "login", component: MockComp, data: { name: "Login Page" } };
 
     expect(siteMap.routes()).not.toContain(loginPath);
-    for (var i = 0; i < navLinks.length; i++) {
+    for (let i = 0; i < navLinks.length; i++) {
       expect(navLinks[i].textContent).not.toBe("Login Page");
     }
   });
@@ -358,7 +358,7 @@ describe("SiteMap", () => {
     expect(siteMap.routes()).toContain(loginPath);
     expect(siteMap.routes()).not.toContain(userPath);
     expect(navLinks[navLinks.length - 1].textContent).toBe("Login Page");
-    for (var i = 0; i < navLinks.length; i++) {
+    for (let i = 0; i < navLinks.length; i++) {
       expect(navLinks[i].textContent).not.toBe(userPath.children![0].data!["name"]);
     }
 
@@ -371,7 +371,7 @@ describe("SiteMap", () => {
     expect(siteMap.routes()).not.toContain(loginPath);
     expect(siteMap.routes()).toContain(userPath);
     expect(navLinks[1].textContent).toBe(userPath.children![0].data!["name"]);
-    for (var i = 0; i < navLinks.length; i++) {
+    for (let i = 0; i < navLinks.length; i++) {
       expect(navLinks[i].textContent).not.toBe(loginPath.data!["name"]);
     }
   });

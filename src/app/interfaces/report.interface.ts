@@ -32,7 +32,7 @@
 
 export type ReportType = "User" | "Post";
 
-interface Report {
+export interface ReportCreate {
   id?: number;
   type: ReportType;
   userID: number;
@@ -46,9 +46,7 @@ interface Report {
   text?: string;
 }
 
-export interface ReportCreate extends Report {}
-
-export interface ReportGet extends Report {
+export interface ReportGet extends ReportCreate {
   id: number;
   reporter: number;
   dismissed: boolean;

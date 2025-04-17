@@ -60,7 +60,7 @@ export class AdminReports {
   currentUserReportsPage = signal(1);
   isLoading = signal(false);
   // edit popup sub-component variables
-  toEdit = signal<EditReportData>({ id: 0, displayName: "", text: "" });
+  toEdit = signal<any>({ id: 0, displayName: "", text: "" });
   nameEditMode = signal(false);
   postEditMode = signal(false);
   reportData = signal<ReportData>({
@@ -151,7 +151,6 @@ export class AdminReports {
     this.toEdit.set({
       displayName,
       id: userID,
-      text: "",
     });
     this.nameEditMode.set(true);
     this.reportData.set({
@@ -170,7 +169,7 @@ export class AdminReports {
   Programmer: Shir Bar Lev.
   */
   editPost(postID: number, postText: string, reportID: number) {
-    this.toEdit.set({ text: postText, id: postID, displayName: "" });
+    this.toEdit.set({ text: postText, id: postID });
     this.postEditMode.set(true);
     this.reportData.set({
       reportID,

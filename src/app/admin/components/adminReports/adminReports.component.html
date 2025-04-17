@@ -193,7 +193,7 @@
 <post-edit-form
   *ngIf="postEditMode()"
   [editedItem]="toEdit()"
-  [reportData]="reportData"
+  [reportData]="reportData()"
   [isAdmin]="true"
   (editMode)="changeMode($event, 'EditPost')"
   (updateResult)="updatePostReport($event)"

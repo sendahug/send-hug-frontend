@@ -37,7 +37,7 @@ import { map, mergeMap, of } from "rxjs";
 import { CommonModule } from "@angular/common";
 
 // App-related import
-import { type PostEditFormData } from "@app/interfaces/post.interface";
+import { type PostGet } from "@app/interfaces/post.interface";
 import { AdminService } from "@app/services/admin.service";
 import { ValidationService } from "@app/services/validation.service";
 import { AlertsService } from "@app/services/alerts.service";
@@ -46,6 +46,7 @@ import { SWManager } from "@app/services/sWManager.service";
 import { type PostAndReportResponse, type PostEditResponse } from "@app/interfaces/api";
 import { PopUp } from "@common/popUp/popUp.component";
 import { TeleportDirective } from "@app/directives/teleport.directive";
+import { ReportData } from "@app/interfaces/report.interface";
 
 @Component({
   selector: "post-edit-form",
@@ -55,11 +56,11 @@ import { TeleportDirective } from "@app/directives/teleport.directive";
 })
 export class PostEditForm implements OnInit {
   // item to edit
-  @Input() editedItem!: PostEditFormData;
+  @Input() editedItem!: PostGet;
   // indicates whether edit/delete mode is still required
   @Output() editMode = new EventEmitter<boolean>();
   @Output() updateResult = new EventEmitter<PostAndReportResponse>();
-  @Input() reportData: any;
+  @Input() reportData: ReportData | null = null;
   @Input() isAdmin = false;
   postEditForm = this.fb.group({
     postText: ["", [Validators.required, this.validationService.validateItemAgainst("post")]],
@@ -135,6 +136,8 @@ export class PostEditForm implements OnInit {
     // If there's a Close Report value and the admin selected
     // to close it, also close the report.
     if (closeReport === true) {
+      if (!this.reportData) return of();
+
       return this.adminService
         .closeReport(this.reportData.reportID, false, postResponse.updated.id)
         .pipe(

@@ -131,7 +131,7 @@ export class MyPosts implements OnInit {
     fetchFromIdb$
       .pipe(
         switchMap(() =>
-          this.apiClient.get<MyPostsResponse>(`users/all/${this._userId()}/posts`, {
+          this.apiClient.get<MyPostsResponse>(`users/${this._userId()}/posts`, {
             page: this.currentPage(),
           }),
         ),

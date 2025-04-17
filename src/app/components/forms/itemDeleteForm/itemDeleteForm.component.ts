@@ -98,7 +98,7 @@ export class ItemDeleteForm {
     }
     // if the user is attempting to delete all of the user's posts
     else if (this.toDelete == "All posts") {
-      this.deleteMultipleItems(`users/all/${this.itemToDelete}/posts`, "posts").subscribe(
+      this.deleteMultipleItems(`users/${this.itemToDelete}/posts`, "posts").subscribe(
         (response) => {
           // delete the posts from idb
           this.swManager.deleteItems("posts", "userId", response.userID);

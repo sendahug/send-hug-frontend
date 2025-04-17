@@ -111,8 +111,9 @@ export class FullList {
     fetchFromIdb$
       .pipe(
         switchMap(() =>
-          this.apiClient.get<PostsListResponse>(`posts/${this.type().toLowerCase()}`, {
+          this.apiClient.get<PostsListResponse>("posts", {
             page: this.currentPage(),
+            type: this.type().toLowerCase(),
           }),
         ),
       )

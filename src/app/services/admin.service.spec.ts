@@ -221,7 +221,7 @@ describe("AdminService", () => {
     adminService.editUser(userData, true, 6).add(() => {
       expect(alertSpy).toHaveBeenCalled();
       expect(alertSpy).toHaveBeenCalledWith("User user updated.");
-      expect(patchSpy).toHaveBeenCalledWith("users/all/2", userData);
+      expect(patchSpy).toHaveBeenCalledWith("users/2", userData);
       expect(closeSpy).toHaveBeenCalledWith(6, false, undefined, 2);
       done();
     });
@@ -251,7 +251,7 @@ describe("AdminService", () => {
     adminService.editUser(userData, false, 6).add(() => {
       expect(alertSpy).toHaveBeenCalled();
       expect(alertSpy).toHaveBeenCalledWith("User user updated.");
-      expect(patchSpy).toHaveBeenCalledWith("users/all/2", userData);
+      expect(patchSpy).toHaveBeenCalledWith("users/2", userData);
       expect(closeSpy).not.toHaveBeenCalled();
       done();
     });
@@ -322,7 +322,7 @@ describe("AdminService", () => {
     adminService.blockUser(15, "oneDay").subscribe((res) => {
       expect(fetchUserDataSpy).toHaveBeenCalledWith(15);
       expect(calculateSpy).toHaveBeenCalledWith("oneDay", undefined);
-      expect(patchSpy).toHaveBeenCalledWith("users/all/15", {
+      expect(patchSpy).toHaveBeenCalledWith("users/15", {
         id: 15,
         releaseDate: blockDate,
         blocked: true,
@@ -388,7 +388,7 @@ describe("AdminService", () => {
     adminService.blockUser(15, "oneDay", 3).subscribe((res) => {
       expect(fetchUserDataSpy).toHaveBeenCalledWith(15);
       expect(calculateSpy).toHaveBeenCalledWith("oneDay", undefined);
-      expect(patchSpy).toHaveBeenCalledWith("users/all/15", {
+      expect(patchSpy).toHaveBeenCalledWith("users/15", {
         id: 15,
         releaseDate: blockDate,
         blocked: true,
@@ -421,7 +421,7 @@ describe("AdminService", () => {
 
     adminService.fetchUserBlockData(10).subscribe({
       next: (data) => {
-        expect(apiClientSpy).toHaveBeenCalledWith("users/all/10");
+        expect(apiClientSpy).toHaveBeenCalledWith("users/10");
         expect(data).toEqual({
           userID: 10,
           isBlocked: false,
@@ -446,7 +446,7 @@ describe("AdminService", () => {
 
     adminService.fetchUserBlockData(10).subscribe({
       next: (data) => {
-        expect(apiClientSpy).toHaveBeenCalledWith("users/all/10");
+        expect(apiClientSpy).toHaveBeenCalledWith("users/10");
         expect(data).toEqual({
           userID: 10,
           isBlocked: true,

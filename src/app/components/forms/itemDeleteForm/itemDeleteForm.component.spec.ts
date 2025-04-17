@@ -185,7 +185,7 @@ describe("ItemDeleteForm", () => {
     // click 'delete'
     itemDeleteFormDOM.querySelectorAll(".popupDeleteBtn")[0].click();
 
-    expect(deleteMultipleSpy).toHaveBeenCalledWith("users/all/2/posts", "posts");
+    expect(deleteMultipleSpy).toHaveBeenCalledWith("users/2/posts", "posts");
     expect(deleteIdbSpy).toHaveBeenCalledWith("posts", "userId", 2);
     expect(editModeSpy).toHaveBeenCalledWith(false);
     expect(deletedEmitSpy).toHaveBeenCalledWith(2);
@@ -364,9 +364,9 @@ describe("ItemDeleteForm", () => {
 
     fixture.detectChanges();
 
-    itemDeleteForm.deleteMultipleItems("users/all/4/posts", "posts", {}).subscribe(() => {});
+    itemDeleteForm.deleteMultipleItems("users/4/posts", "posts", {}).subscribe(() => {});
 
-    expect(deleteSpy).toHaveBeenCalledWith("users/all/4/posts", {});
+    expect(deleteSpy).toHaveBeenCalledWith("users/4/posts", {});
     expect(alertsSpy).toHaveBeenCalledWith("4 posts were deleted.");
   });
 

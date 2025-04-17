@@ -39,8 +39,6 @@ import { ElementRef, Injectable } from "@angular/core";
 export class TeleportService {
   private teleportTargets: { [key: string]: ElementRef } = {};
 
-  constructor() {}
-
   /**
    * Adds a new teleport target to the mapping.
    * @param name - the name to map the outlet to.

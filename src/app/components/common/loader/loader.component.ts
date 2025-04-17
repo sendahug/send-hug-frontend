@@ -43,7 +43,4 @@ export class Loader {
   // the message to display to the user while waiting
   loadingMessage = input<string>("Loading...");
   idSuffix = input<string>("");
-
-  // CTOR
-  constructor() {}
 }

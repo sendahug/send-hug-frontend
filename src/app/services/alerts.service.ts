@@ -56,9 +56,6 @@ export class AlertsService {
   // offline-related variables
   isOffline = new BehaviorSubject(false);
 
-  // CTOR
-  constructor() {}
-
   /**
    * Create a new alert and display it to the user, including required
    * buttons/links.

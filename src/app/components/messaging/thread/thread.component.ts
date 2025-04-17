@@ -60,8 +60,6 @@ export class AppSingleThread {
   toDelete = signal("Thread");
   itemToDelete = computed<number>(() => this._thread().id);
 
-  constructor() {}
-
   /**
    * Opens the delete popup to delete the current thread.
    */

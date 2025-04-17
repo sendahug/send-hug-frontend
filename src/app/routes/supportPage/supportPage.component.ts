@@ -59,9 +59,6 @@ export class SupportPage implements OnInit {
   faTrashCan = faTrashCan;
   faGratipay = faGratipay;
 
-  // CTOR
-  constructor() {}
-
   /*
   Function Name: ngOnInit()
   Function Description: This method is automatically triggered by Angular once the component

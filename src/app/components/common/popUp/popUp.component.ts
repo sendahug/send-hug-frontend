@@ -62,9 +62,6 @@ export class PopUp implements OnInit, AfterViewInit, AfterViewChecked {
   // icons
   faTimes = faTimes;
 
-  // CTOR
-  constructor() {}
-
   /**
    * Angular's OnInit lifecycle hook. It sets the current active element as the
    * last focused element (to be restored when the popup is closed).

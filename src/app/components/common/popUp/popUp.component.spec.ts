@@ -55,7 +55,9 @@ import { PopUp } from "./popUp.component";
   standalone: true,
   imports: [PopUp],
 })
-class MockPage {}
+class MockPage {
+  text = "text";
+}
 
 describe("Popup", () => {
   // Before each test, configure testing environment

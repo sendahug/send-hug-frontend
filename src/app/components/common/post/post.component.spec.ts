@@ -76,8 +76,6 @@ class MockPage {
     user: "test",
     sentHugs: [],
   };
-
-  constructor() {}
 }
 
 // Sub-component testing

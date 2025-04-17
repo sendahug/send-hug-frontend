@@ -206,7 +206,7 @@ describe("MyPosts", () => {
 
     // after
     expect(idbSpy).toHaveBeenCalled();
-    expect(apiClientSpy).toHaveBeenCalledWith("users/all/1/posts", { page: 1 });
+    expect(apiClientSpy).toHaveBeenCalledWith("users/1/posts", { page: 1 });
     expect(swSpy).toHaveBeenCalledWith("posts", mockPosts, "date");
     expect(myPosts.totalPages()).toEqual(2);
     expect(myPosts.posts()).toEqual(mockPosts);

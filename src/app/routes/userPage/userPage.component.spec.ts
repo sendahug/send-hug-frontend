@@ -350,7 +350,7 @@ describe("UserPage", () => {
     userPage.fetchOtherUsersData();
 
     expect(idbSpy).toHaveBeenCalled();
-    expect(apiClientSpy).toHaveBeenCalledWith("users/all/1");
+    expect(apiClientSpy).toHaveBeenCalledWith("users/1");
     expect(addItemSpy).toHaveBeenCalledWith("users", mockUser);
     expect(userPage.otherUser() as OtherUser).toEqual(mockUser);
     expect(userPage.isLoading()).toBeFalse();

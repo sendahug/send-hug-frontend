@@ -154,7 +154,7 @@ export class UserPage implements OnDestroy {
    */
   fetchOtherUsersData() {
     this.fetchOtherUserFromIdb()
-      .pipe(switchMap(() => this.apiClient.get<OtherUserResponse>(`users/all/${this.userId()!}`)))
+      .pipe(switchMap(() => this.apiClient.get<OtherUserResponse>(`users/${this.userId()!}`)))
       .subscribe({
         next: (response) => {
           const user = response.user;
@@ -205,7 +205,7 @@ export class UserPage implements OnDestroy {
    * @param userID the ID of the user.
    */
   sendHug(userID: number) {
-    this.apiClient.post(`users/all/${userID}/hugs`, {}).subscribe({
+    this.apiClient.post(`users/${userID}/hugs`, {}).subscribe({
       next: (_response) => {
         this.otherUser.set({
           ...this.otherUser()!,

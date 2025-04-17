@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+### 2025-04-17
+
+#### Changes
+
+- Updated the users' and posts' endpoints to match the new structure in the backend. ([#2041](https://github.com/sendahug/send-hug-frontend/pull/2041))
+
+#### Chores
+
+- Replaced the static wait steps in the e2e and accessibility testing in CI with dynamic waiting using the `wait-on` module. This ensures Cypress and Pa11y wait until the Vite server is ready before starting the tests, instead of waiting 30 seconds each time. ([#2044](https://github.com/sendahug/send-hug-frontend/pull/2044))
+
 ### 2025-04-09
 
 #### Features

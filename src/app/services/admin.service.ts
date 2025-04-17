@@ -128,7 +128,7 @@ export class AdminService {
   editUser(user: PartialUser, closeReport: boolean, reportID: number) {
     // update the user's display name
     return this.apiClient
-      .patch<{ success: boolean; updated: OtherUser }>(`users/all/${user.id}`, user)
+      .patch<{ success: boolean; updated: OtherUser }>(`users/${user.id}`, user)
       .pipe(
         switchMap((userResponse) => {
           // if the report should be closed
@@ -183,7 +183,7 @@ export class AdminService {
    */
   fetchUserBlockData(userID: number): Observable<UserBlockData> {
     // send the request to get the block data
-    return this.apiClient.get<OtherUserResponse>(`users/all/${userID}`).pipe(
+    return this.apiClient.get<OtherUserResponse>(`users/${userID}`).pipe(
       map((res) => {
         return {
           userID: res.user.id,
@@ -271,7 +271,7 @@ export class AdminService {
         .pipe(
           switchMap((blockData) =>
             this.apiClient.patch<{ success: boolean; updated: OtherUser }>(
-              `users/all/${userID}`,
+              `users/${userID}`,
               blockData,
             ),
           ),

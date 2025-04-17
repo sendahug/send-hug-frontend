@@ -237,7 +237,7 @@ describe("FullList", () => {
     TestBed.createComponent(FullList);
 
     expect(idbSpy).toHaveBeenCalled();
-    expect(apiClientSpy).toHaveBeenCalledWith("posts/new", { page: 1 });
+    expect(apiClientSpy).toHaveBeenCalledWith("posts", { page: 1, type: "new" });
     expect(updateInterfaceSpy).toHaveBeenCalledWith(mockPageOneResponse);
     expect(addItemsSpy).toHaveBeenCalledWith("posts", pageOnePosts, "date");
     done();

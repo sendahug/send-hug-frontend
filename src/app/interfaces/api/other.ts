@@ -35,3 +35,8 @@ export interface CreateReportResponse {
   success: boolean;
   report: ReportGet;
 }
+
+export interface SendHugResponse {
+  success: boolean;
+  updated: string;
+}

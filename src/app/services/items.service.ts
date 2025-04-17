@@ -42,7 +42,7 @@ import { type OtherUser } from "@app/interfaces/otherUser.interface";
 import { AlertsService } from "@app/services/alerts.service";
 import { SWManager } from "@app/services/sWManager.service";
 import { ApiClientService } from "@app/services/apiClient.service";
-import { type SendMessageResponse } from "@app/interfaces/api";
+import { SendHugResponse, type SendMessageResponse } from "@app/interfaces/api";
 
 @Injectable({
   providedIn: "root",
@@ -84,7 +84,7 @@ export class ItemsService {
   Programmer: Shir Bar Lev.
   */
   sendHug(postId: number) {
-    this.apiClient.post(`posts/${postId}/hugs`, {}).subscribe({
+    this.apiClient.post<SendHugResponse>(`posts/${postId}/hugs`, {}).subscribe({
       next: (_response: any) => {
         this.alertsService.createSuccessAlert("Your hug was sent!");
         // Alert the posts that this item received a hug

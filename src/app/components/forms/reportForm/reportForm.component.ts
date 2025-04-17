@@ -38,11 +38,7 @@ import { RouterLink } from "@angular/router";
 
 // App-related import
 import { type PostGet } from "@app/interfaces/post.interface";
-import {
-  type ReportGet,
-  type ReportType,
-  type ReportCreate,
-} from "@app/interfaces/report.interface";
+import { type ReportType, type ReportCreate } from "@app/interfaces/report.interface";
 import { type OtherUser } from "@app/interfaces/otherUser.interface";
 import { AuthService } from "@app/services/auth.service";
 import { AlertsService } from "@app/services/alerts.service";
@@ -226,9 +222,9 @@ export class ReportForm implements OnInit {
     // pass it on to the items service to send
     // sends the report
     this.apiClient.post<CreateReportResponse>("reports", report).subscribe({
-      next: (response: any) => {
+      next: (response) => {
         // if successful, alert the user
-        const sent_report: ReportGet = response.report;
+        const sent_report = response.report;
         const successMessage =
           sent_report.type == "Post"
             ? `Post number ${sent_report.postID} was successfully reported.`

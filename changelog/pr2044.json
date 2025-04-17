@@ -1,9 +1,0 @@
-{
-  "pr_number": 2044,
-  "changes": [
-    {
-      "change": "Chores",
-      "description": "Replaced the static wait steps in the e2e and accessibility testing in CI with dynamic waiting using the `wait-on` module. This ensures Cypress and Pa11y wait until the Vite server is ready before starting the tests, instead of waiting 30 seconds each time."
-    }
-  ]
-}

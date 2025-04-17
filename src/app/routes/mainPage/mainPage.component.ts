@@ -117,8 +117,8 @@ export class MainPage {
    * Removes the deleted post from the list of posts.
    * @param postId the ID of the post that was deleted.
    */
-  removeDeletedPost(postId: any) {
-    this.newPosts.set(this.newPosts().filter((post) => post.id != (postId as number)));
-    this.suggestedPosts.set(this.suggestedPosts().filter((post) => post.id != (postId as number)));
+  removeDeletedPost(postId: number) {
+    this.newPosts.set(this.newPosts().filter((post) => post.id != postId));
+    this.suggestedPosts.set(this.suggestedPosts().filter((post) => post.id != postId));
   }
 }

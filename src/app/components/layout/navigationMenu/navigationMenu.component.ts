@@ -369,8 +369,8 @@ export class AppNavMenu implements OnInit, AfterViewInit {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  changeMode(notificationsOn: any) {
-    this.showNotifications.set(notificationsOn as boolean);
+  changeMode(notificationsOn: boolean) {
+    this.showNotifications.set(notificationsOn);
   }
 
   /**

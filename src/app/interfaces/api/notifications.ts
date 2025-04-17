@@ -45,3 +45,9 @@ export interface UpdateNotificationsResponse {
   updated: Array<number> | "all";
   read: boolean;
 }
+
+export interface CreateUpdatePushSubscriptionResponse {
+  success: boolean;
+  subscribed: string;
+  subId: number;
+}

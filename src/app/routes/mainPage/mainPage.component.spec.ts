@@ -262,6 +262,7 @@ describe("MainPage", () => {
     const newPostsSetSpy = spyOn(mainPage.newPosts, "set").and.callThrough();
 
     // set up mock data
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const mockData = { recent: undefined as any, suggested: suggestedItems, success: true };
     fixture.detectChanges();
 

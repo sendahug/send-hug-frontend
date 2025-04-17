@@ -46,6 +46,7 @@ import {
   tap,
   throwError,
 } from "rxjs";
+import { User as FirebaseUser } from "firebase/auth";
 
 // App-related imports
 import { User } from "@app/interfaces/user.interface";
@@ -55,6 +56,10 @@ import { FirebaseService } from "./firebase.service";
 import { type GetUserResponse, type UserUpdateResponse } from "@app/interfaces/api";
 
 export type ToggleButtonOption = "Enable" | "Disable";
+
+interface ExtendedFirebaseUser extends FirebaseUser {
+  jwt: string;
+}
 
 @Injectable({
   providedIn: "root",
@@ -230,7 +235,7 @@ export class AuthService {
   fetchUser(loggedIn: boolean = false): Observable<User> {
     return this.getUserToken()
       .pipe(
-        tap((firebaseUser: any) => {
+        tap((firebaseUser: ExtendedFirebaseUser) => {
           this.loggedIn.set(loggedIn);
 
           // turn the BehaviorSubject dealing with whether user data was resolved to
@@ -358,7 +363,7 @@ export class AuthService {
     }
 
     // adds the user's data to the users store
-    let user = {
+    const user = {
       id: userData.id,
       displayName: userData.displayName,
       receivedH: userData.receivedH,

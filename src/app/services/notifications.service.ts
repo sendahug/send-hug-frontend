@@ -39,7 +39,10 @@ import { interval, Subscription, Observable, tap } from "rxjs";
 import { AlertsService } from "./alerts.service";
 import { SWManager } from "./sWManager.service";
 import { ApiClientService } from "./apiClient.service";
-import { type GetNotificationsResponse } from "@app/interfaces/api";
+import {
+  type CreateUpdatePushSubscriptionResponse,
+  type GetNotificationsResponse,
+} from "@app/interfaces/api";
 import { type APIParams } from "@app/interfaces/types";
 
 const pushPermissionDeniedErr =
@@ -204,12 +207,19 @@ export class NotificationService {
     return this.requestSubscription()
       .then((subscription) => {
         // send the info to the server
-        this.apiClient.post("push_subscriptions", JSON.stringify(subscription)).subscribe({
-          next: (response: any) => {
-            this.subId = response.subId;
-            this.alertsService.createSuccessAlert("Subscribed to push notifications successfully!");
-          },
-        });
+        this.apiClient
+          .post<CreateUpdatePushSubscriptionResponse>(
+            "push_subscriptions",
+            JSON.stringify(subscription),
+          )
+          .subscribe({
+            next: (response) => {
+              this.subId = response.subId;
+              this.alertsService.createSuccessAlert(
+                "Subscribed to push notifications successfully!",
+              );
+            },
+          });
       })
       .catch((err) => {
         if (typeof err == "string" && err.includes("permission denied")) {
@@ -244,9 +254,12 @@ export class NotificationService {
       this.requestSubscription().then((subscription) => {
         // update the saved subscription in the database
         this.apiClient
-          .patch(`push_subscriptions/${this.subId}`, JSON.stringify(subscription))
+          .patch<CreateUpdatePushSubscriptionResponse>(
+            `push_subscriptions/${this.subId}`,
+            JSON.stringify(subscription),
+          )
           .subscribe({
-            next: (response: any) => {
+            next: (response) => {
               this.subId = response.subId;
             },
           });

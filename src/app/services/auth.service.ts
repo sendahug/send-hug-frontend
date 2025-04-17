@@ -52,16 +52,7 @@ import { User } from "@app/interfaces/user.interface";
 import { AlertsService } from "@app/services/alerts.service";
 import { SWManager } from "@app/services/sWManager.service";
 import { FirebaseService } from "./firebase.service";
-
-interface UserUpdateResponse {
-  success: boolean;
-  updated: User;
-}
-
-interface GetUserResponse {
-  success: boolean;
-  user: User;
-}
+import { type GetUserResponse, type UserUpdateResponse } from "@app/interfaces/api";
 
 export type ToggleButtonOption = "Enable" | "Disable";
 

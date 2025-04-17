@@ -42,12 +42,7 @@ import { type PostGet } from "@app/interfaces/post.interface";
 import { CommonModule } from "@angular/common";
 import { Loader } from "@common/loader/loader.component";
 import { SinglePost } from "@common/post/post.component";
-
-interface MainPageResponse {
-  recent: PostGet[];
-  suggested: PostGet[];
-  success?: boolean;
-}
+import { type MainPageResponse } from "@app/interfaces/api";
 
 @Component({
   selector: "app-main-page",
@@ -109,7 +104,7 @@ export class MainPage {
   }
 
   /**
-   * Updates the main page's interface with the newly fetched data.
+   * Updates the main page's UI with the newly fetched data.
    * @param data - the posts to set as new and suggested posts.
    */
   updatePostsInterface(data: MainPageResponse) {

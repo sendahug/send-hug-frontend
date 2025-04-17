@@ -39,11 +39,7 @@ import { FormBuilder, Validators } from "@angular/forms";
 import { AdminService } from "@app/services/admin.service";
 import { AlertsService } from "@app/services/alerts.service";
 import { ApiClientService } from "@app/services/apiClient.service";
-import {
-  GetFiltersResponse,
-  AddFiltersResponse,
-  DeleteFiltersResponse,
-} from "@app/interfaces/api/admin";
+import { GetFiltersResponse, AddFiltersResponse, DeleteFiltersResponse } from "@app/interfaces/api";
 
 @Component({
   selector: "app-admin-filters",

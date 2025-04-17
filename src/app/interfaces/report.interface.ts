@@ -56,4 +56,5 @@ export interface ReportGet extends Report {
 export interface ReportData {
   userID: number;
   reportID: number;
+  postID?: number;
 }

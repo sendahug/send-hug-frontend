@@ -1,5 +1,5 @@
 /*
-  Various response interfaces used by the app (admin routes).
+  Various response interfaces used by the app (messages routes).
   ---------------------------------------------------
   MIT License
 
@@ -29,56 +29,24 @@
   SOFTWARE.
 */
 
-import { type PostGet } from "@app/interfaces/post.interface";
-import { type ReportGet } from "@app/interfaces/report.interface";
-import { type Filter } from "@app/interfaces/filter.interface";
-import { type BlockedUser } from "@app/interfaces/user.interface";
+import { MessageGet } from "@app/interfaces/message.interface";
+import { FullThread } from "@app/interfaces/thread.interface";
 
-/** Report Interfaces */
-export interface PostAndReportResponse {
+export interface MessagesResponse {
   success: boolean;
-  updatedPost?: PostGet;
-  reportId?: number;
-}
-
-export interface UpdatedUserReportResponse {
-  reportID: number;
-  closed: boolean;
-  displayName: string;
-}
-
-export interface GetReportsResponse {
-  success: boolean;
-  userReports: ReportGet[];
-  totalUserPages: number;
-  postReports: ReportGet[];
-  totalPostPages: number;
-}
-
-export interface UpdateReportResponse {
-  success: boolean;
-  updated: ReportGet;
-}
-
-/** Filter Interfaces */
-export interface GetFiltersResponse {
-  success: boolean;
-  words: Array<Filter>;
+  messages: MessageGet[];
   total_pages: number;
+  current_page: number;
 }
 
-export interface AddFiltersResponse {
+export interface ThreadResponse {
   success: boolean;
-  added: Filter;
+  messages: FullThread[];
+  total_pages: number;
+  current_page: number;
 }
 
-export interface DeleteFiltersResponse {
+export interface SendMessageResponse {
   success: boolean;
-  deleted: Filter;
-}
-
-/** Block Interfaces */
-export interface BlockUserResponse {
-  success: boolean;
-  updated: BlockedUser;
+  message: MessageGet;
 }

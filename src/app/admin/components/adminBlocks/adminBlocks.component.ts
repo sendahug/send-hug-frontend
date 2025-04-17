@@ -40,7 +40,7 @@ import { AdminService } from "@app/services/admin.service";
 import { AlertsService } from "@app/services/alerts.service";
 import { ApiClientService } from "@app/services/apiClient.service";
 import { type BlockedUser } from "@app/interfaces/user.interface";
-import { type BlockUserResponse } from "@app/interfaces/api/admin";
+import { type BlockUserResponse } from "@app/interfaces/api";
 
 @Component({
   selector: "app-admin-blocks",

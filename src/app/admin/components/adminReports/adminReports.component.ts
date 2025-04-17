@@ -43,15 +43,10 @@ import {
   PostAndReportResponse,
   UpdatedUserReportResponse,
   GetReportsResponse,
-} from "@app/interfaces/api/admin";
+} from "@app/interfaces/api";
 import { type PostGet } from "@app/interfaces/post.interface";
 import { type User } from "@app/interfaces/user.interface";
-
-interface ReportData {
-  userID: number;
-  reportID: number;
-  postID?: number;
-}
+import { type ReportData } from "@app/interfaces/report.interface";
 
 @Component({
   selector: "app-admin-reports",

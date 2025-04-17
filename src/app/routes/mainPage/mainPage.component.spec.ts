@@ -216,7 +216,7 @@ describe("MainPage", () => {
     });
   });
 
-  it("should update the interface with the fetched posts", (done: DoneFn) => {
+  it("should update the UI with the fetched posts", (done: DoneFn) => {
     // Just to make sure it doesn't get called during the test
     spyOn(MainPage.prototype, "fetchPosts");
     const fixture = TestBed.createComponent(MainPage);

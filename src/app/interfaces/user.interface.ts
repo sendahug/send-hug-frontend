@@ -90,3 +90,9 @@ export interface BlockedUser {
   blocked?: boolean;
   releaseDate?: Date;
 }
+
+export interface UserBlockData {
+  userID: number;
+  isBlocked: boolean;
+  releaseDate?: Date;
+}

@@ -56,7 +56,7 @@ import { AuthService } from "@app/services/auth.service";
 import { ItemsService } from "@app/services/items.service";
 import { type PostGet } from "@app/interfaces/post.interface";
 import { SWManager } from "@app/services/sWManager.service";
-import { PostAndReportResponse } from "@app/interfaces/api/admin";
+import { PostAndReportResponse } from "@app/interfaces/api";
 import { ItemDeleteForm } from "@forms/itemDeleteForm/itemDeleteForm.component";
 import { ReportForm } from "@forms/reportForm/reportForm.component";
 import { PostEditForm } from "@forms/postEditForm/postEditForm.component";

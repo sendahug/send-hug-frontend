@@ -43,14 +43,9 @@ import { ValidationService } from "@app/services/validation.service";
 import { AlertsService } from "@app/services/alerts.service";
 import { ApiClientService } from "@app/services/apiClient.service";
 import { SWManager } from "@app/services/sWManager.service";
-import { type PostAndReportResponse } from "@app/interfaces/api/admin";
+import { type PostAndReportResponse, type PostEditResponse } from "@app/interfaces/api";
 import { PopUp } from "@common/popUp/popUp.component";
 import { TeleportDirective } from "@app/directives/teleport.directive";
-
-interface PostEditResponse {
-  success: boolean;
-  updated: PostGet;
-}
 
 @Component({
   selector: "post-edit-form",

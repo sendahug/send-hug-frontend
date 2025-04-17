@@ -51,11 +51,7 @@ import { UserIcon } from "@common/userIcon/userIcon.component";
 import { ReportForm } from "@forms/reportForm/reportForm.component";
 import { DisplayNameEditForm } from "@forms/displayNameEditForm/displayNameEditForm.component";
 import { MyPosts } from "@app/components/myPosts/myPosts.component";
-
-interface OtherUserResponse {
-  user: OtherUser;
-  success: boolean;
-}
+import { OtherUserResponse } from "@app/interfaces/api";
 
 @Component({
   selector: "app-user-page",

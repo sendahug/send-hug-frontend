@@ -39,16 +39,7 @@ import { interval, Subscription, Observable, tap } from "rxjs";
 import { AlertsService } from "./alerts.service";
 import { SWManager } from "./sWManager.service";
 import { ApiClientService } from "./apiClient.service";
-import { type Notification } from "@app/interfaces/notification.interface";
-
-interface GetNotificationsResponse {
-  success: boolean;
-  notifications: Notification[];
-  newCount: number;
-  current_page: number;
-  total_pages: number;
-  totalItems: number;
-}
+import { type GetNotificationsResponse } from "@app/interfaces/api";
 
 const pushPermissionDeniedErr =
   "Push notifications permission has been denied. Go to your browser settings, remove Send A Hug from the denied list, and then activate push notifications again.";

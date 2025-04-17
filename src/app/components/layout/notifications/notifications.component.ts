@@ -41,13 +41,8 @@ import { RouterLink } from "@angular/router";
 import { AuthService } from "@app/services/auth.service";
 import { NotificationService } from "@app/services/notifications.service";
 import { ApiClientService } from "@app/services/apiClient.service";
-import { Notification } from "@app/interfaces/notification.interface";
-
-interface UpdateNotificationsResponse {
-  success: boolean;
-  updated: Array<number> | "all";
-  read: boolean;
-}
+import { type Notification } from "@app/interfaces/notification.interface";
+import { type UpdateNotificationsResponse } from "@app/interfaces/api";
 
 @Component({
   selector: "app-notifications",

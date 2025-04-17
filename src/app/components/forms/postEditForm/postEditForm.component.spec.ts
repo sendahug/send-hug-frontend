@@ -50,12 +50,7 @@ import { AdminService } from "@app/services/admin.service";
 import { AuthService } from "@app/services/auth.service";
 import { ApiClientService } from "@app/services/apiClient.service";
 import { TeleportDirective } from "@app/directives/teleport.directive";
-
-interface UpdatePostResult {
-  success: boolean;
-  updatedPost: PostGet;
-  reportId?: number;
-}
+import { type PostAndReportResponse } from "@app/interfaces/api";
 
 // POST EDIT
 // ==================================================================
@@ -317,21 +312,21 @@ describe("PostEditForm", () => {
       of(closeReportResponse),
     );
 
-    (popUp.updateReportIfNecessary(true, serverResponse) as Observable<UpdatePostResult>).subscribe(
-      {
-        next: (response) => {
-          expect(response).toEqual({
-            success: true,
-            updatedPost: {
-              ...serverResponse.updated,
-            },
-            reportId: 2,
-          });
-          expect(adminServiceSpy).toHaveBeenCalledWith(2, false, 1);
-          done();
-        },
+    (
+      popUp.updateReportIfNecessary(true, serverResponse) as Observable<PostAndReportResponse>
+    ).subscribe({
+      next: (response) => {
+        expect(response).toEqual({
+          success: true,
+          updatedPost: {
+            ...serverResponse.updated,
+          },
+          reportId: 2,
+        });
+        expect(adminServiceSpy).toHaveBeenCalledWith(2, false, 1);
+        done();
       },
-    );
+    });
   });
 
   it("should not close the report if the user chooses not to", (done: DoneFn) => {
@@ -359,7 +354,7 @@ describe("PostEditForm", () => {
     const adminServiceSpy = spyOn(popUp["adminService"], "closeReport");
 
     (
-      popUp.updateReportIfNecessary(false, serverResponse) as Observable<UpdatePostResult>
+      popUp.updateReportIfNecessary(false, serverResponse) as Observable<PostAndReportResponse>
     ).subscribe({
       next: (response) => {
         expect(response).toEqual({
@@ -398,7 +393,7 @@ describe("PostEditForm", () => {
     const adminServiceSpy = spyOn(popUp["adminService"], "closeReport");
 
     (
-      popUp.updateReportIfNecessary(false, serverResponse) as Observable<UpdatePostResult>
+      popUp.updateReportIfNecessary(false, serverResponse) as Observable<PostAndReportResponse>
     ).subscribe({
       next: (response) => {
         expect(response).toEqual({

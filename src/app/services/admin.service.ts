@@ -42,24 +42,9 @@ import { AlertsService } from "@app/services/alerts.service";
 import { ItemsService } from "@app/services/items.service";
 import { SWManager } from "@app/services/sWManager.service";
 import { ApiClientService } from "@app/services/apiClient.service";
-import { OtherUser } from "@app/interfaces/otherUser.interface";
-import { PartialUser } from "@app/interfaces/user.interface";
-
-interface UserBlockData {
-  userID: number;
-  isBlocked: boolean;
-  releaseDate?: Date;
-}
-
-interface OtherUserResponse {
-  user: OtherUser;
-  success: boolean;
-}
-
-interface ReportResponse {
-  success: boolean;
-  updated: ReportGet;
-}
+import { type OtherUser } from "@app/interfaces/otherUser.interface";
+import { type PartialUser, type UserBlockData } from "@app/interfaces/user.interface";
+import { type UpdateReportResponse, type OtherUserResponse } from "@app/interfaces/api";
 
 @Injectable({
   providedIn: "root",
@@ -186,7 +171,7 @@ export class AdminService {
     };
 
     // send a request to update the report
-    return this.apiClient.patch<ReportResponse>(`reports/${reportID}`, report);
+    return this.apiClient.patch<UpdateReportResponse>(`reports/${reportID}`, report);
   }
 
   // BLOCKS-RELATED METHODS

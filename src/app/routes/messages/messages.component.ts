@@ -47,20 +47,7 @@ import { Loader } from "@common/loader/loader.component";
 import { ItemDeleteForm } from "@forms/itemDeleteForm/itemDeleteForm.component";
 import { AppSingleMessage } from "@app/components/messaging/message/message.component";
 import { AppSingleThread } from "@app/components/messaging/thread/thread.component";
-
-interface MessagesResponse {
-  success: boolean;
-  messages: MessageGet[];
-  total_pages: number;
-  current_page: number;
-}
-
-interface ThreadResponse {
-  success: boolean;
-  messages: FullThread[];
-  total_pages: number;
-  current_page: number;
-}
+import { MessagesResponse, ThreadResponse } from "@app/interfaces/api";
 
 @Component({
   selector: "app-messages",

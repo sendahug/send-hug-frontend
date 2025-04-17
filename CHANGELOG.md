@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+### 2025-04-17
+
+#### Changes
+
+- Updated the users' and posts' endpoints to match the new structure in the backend. ([#2041](https://github.com/sendahug/send-hug-frontend/pull/2041))
+
 ### 2025-04-09
 
 #### Features

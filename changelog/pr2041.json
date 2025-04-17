@@ -1,9 +1,0 @@
-{
-  "pr_number": 2041,
-  "changes": [
-    {
-      "change": "Changes",
-      "description": "Updated the users' and posts' endpoints to match the new structure in the backend."
-    }
-  ]
-}

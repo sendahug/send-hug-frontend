@@ -107,8 +107,9 @@ jobs:
       - run: npm i -g wait-on
       - run:
           name: Start frontend server
-          command: npm run dev && wait-on http://localhost:3000
+          command: npm run dev
           background: true
+      - run: wait-on http://localhost:3000
       - run:
           name: Run e2e tests
           command: npm run cypress
@@ -186,8 +187,9 @@ jobs:
       - run: npm i -g wait-on
       - run:
           name: Start frontend server
-          command: npm run dev && wait-on http://localhost:3000
+          command: npm run dev
           background: true
+      - run: wait-on http://localhost:3000
       - run:
           name: Run accessibility tests
           command: npm run pa11y

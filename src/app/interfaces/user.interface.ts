@@ -79,3 +79,14 @@ export interface PartialUser {
   id: number;
   displayName: string;
 }
+
+export interface BlockedUser {
+  id: number;
+  displayName: string;
+  receivedH: number;
+  givenH: number;
+  posts: number;
+  role: string;
+  blocked?: boolean;
+  releaseDate?: Date;
+}

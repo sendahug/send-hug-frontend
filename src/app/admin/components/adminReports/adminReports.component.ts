@@ -39,7 +39,13 @@ import { ApiClientService } from "@app/services/apiClient.service";
 import { HttpErrorResponse } from "@angular/common/http";
 import { type ReportGet } from "@app/interfaces/report.interface";
 import { AlertsService } from "@app/services/alerts.service";
-import { PostAndReportResponse, UpdatedUserReportResponse } from "@app/interfaces/responses";
+import {
+  PostAndReportResponse,
+  UpdatedUserReportResponse,
+  GetReportsResponse,
+} from "@app/interfaces/responses";
+import { type PostGet } from "@app/interfaces/post.interface";
+import { type User } from "@app/interfaces/user.interface";
 
 interface ReportData {
   userID: number;
@@ -61,7 +67,7 @@ export class AdminReports {
   currentUserReportsPage = signal(1);
   isLoading = signal(false);
   // edit popup sub-component variables
-  toEdit = signal<any>(undefined); // TODO: Fix the typing here
+  toEdit = signal<Partial<PostGet> | Partial<User>>({});
   nameEditMode = signal(false);
   postEditMode = signal(false);
   reportData = signal<ReportData>({
@@ -104,12 +110,12 @@ export class AdminReports {
 
     // Get reports
     this.apiClient
-      .get("reports", {
+      .get<GetReportsResponse>("reports", {
         userPage: `${this.currentUserReportsPage()}`,
         postPage: `${this.currentPostReportsPage()}`,
       })
       .subscribe({
-        next: (response: any) => {
+        next: (response: GetReportsResponse) => {
           this.userReports.set(response.userReports);
           this.totalUserReportsPages.set(response.totalUserPages);
           this.postReports.set(response.postReports);
@@ -207,7 +213,7 @@ export class AdminReports {
   */
   dismissReport(reportID: number, dismiss: boolean, postID?: number, userID?: number) {
     this.adminService.closeReport(reportID, dismiss, postID, userID).subscribe({
-      next: (response: any) => {
+      next: (response) => {
         // if the report was dismissed, alert the user
         this.alertsService.createSuccessAlert(`Report ${response.updated.id} was dismissed!`);
         if (userID)

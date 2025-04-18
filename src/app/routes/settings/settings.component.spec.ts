@@ -110,14 +110,18 @@ describe("SettingsPage", () => {
 
     fixture.detectChanges();
 
-    fixture.whenStable().then(() => {
-      expect(settingsPage.authService.authenticated()).toBeFalse();
-      expect(settingsDOM.querySelectorAll(".errorMessage")[0]).toBeTruthy();
-      expect(settingsDOM.querySelectorAll(".errorMessage")[0].textContent).toBe(
-        "You do not have permission to view thie page!",
-      );
-      expect(settingsDOM.querySelector("#notificationSettings")).toBeNull();
-    });
+    fixture
+      .whenStable()
+      .then(() => {
+        expect(settingsPage.authService.authenticated()).toBeFalse();
+        expect(settingsDOM.querySelectorAll(".errorMessage")[0]).toBeTruthy();
+        expect(settingsDOM.querySelectorAll(".errorMessage")[0].textContent).toBe(
+          "You do not have permission to view thie page!",
+        );
+
+        expect(settingsDOM.querySelector("#notificationSettings")).toBeNull();
+      })
+      .catch(done.fail);
     done();
   });
 

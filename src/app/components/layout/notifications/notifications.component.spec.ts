@@ -423,7 +423,8 @@ describe("Notifications Tab", () => {
             expect(spy).not.toHaveBeenCalled();
           }
         });
-      });
+      })
+      .catch(done.fail);
     done();
   });
 

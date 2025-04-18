@@ -168,7 +168,8 @@ describe("Popup", () => {
             expect(spy).not.toHaveBeenCalled();
           }
         });
-      });
+      })
+      .catch(done.fail);
     done();
   });
 

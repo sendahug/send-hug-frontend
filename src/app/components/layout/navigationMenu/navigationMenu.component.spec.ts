@@ -335,7 +335,8 @@ describe("AppNavMenu", () => {
         expect(menuSpy).toHaveBeenCalled();
         expect(menuSpy).toHaveBeenCalledTimes(5);
         done();
-      });
+      })
+      .catch(done.fail);
   });
 
   // check the menu is shown if the screen is wide enough

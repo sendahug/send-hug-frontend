@@ -32,6 +32,10 @@
     {
       "change": "Chores",
       "description": "Changed the typing of the generic methods in the SWManager service to properly use TypeScript generics."
+    },
+    {
+      "change": "Changes",
+      "description": "If the post edit form is launched from the admin menu without an associated report, the user will now be alerted that that's the case when they try to close edit the post and close the report. This is done to prevent an attempt to close a report that wouldn't be reflected in the back-end due to having no report to update."
     }
   ]
 }

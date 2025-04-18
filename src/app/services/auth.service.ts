@@ -54,6 +54,7 @@ import { AlertsService } from "@app/services/alerts.service";
 import { SWManager } from "@app/services/sWManager.service";
 import { FirebaseService } from "./firebase.service";
 import { type GetUserResponse, type UserUpdateResponse } from "@app/interfaces/api";
+import { IDBUser } from "@app/interfaces/mydb.interface";
 
 export type ToggleButtonOption = "Enable" | "Disable";
 
@@ -378,7 +379,7 @@ export class AuthService {
         item: userData.iconColours?.item,
       },
     };
-    this.serviceWorkerM.addItem("users", user);
+    this.serviceWorkerM.addItem("users", user as IDBUser);
   }
 
   /**
@@ -441,7 +442,7 @@ export class AuthService {
       )
       .subscribe({
         next: (response) => {
-          this.serviceWorkerM.addItem("users", response.updated);
+          this.serviceWorkerM.addItem("users", response.updated as IDBUser);
         },
         error: (err: HttpErrorResponse) => {
           this.alertsService.createErrorAlert(err);

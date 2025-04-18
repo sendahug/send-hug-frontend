@@ -201,7 +201,7 @@ jobs:
 workflows:
   run-testing:
     jobs:
-      - format
+      - lint
       - test
       - e2e
       - accessibility

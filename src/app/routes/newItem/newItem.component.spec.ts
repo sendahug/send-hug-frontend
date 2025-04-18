@@ -113,6 +113,7 @@ describe("NewItem", () => {
   it("should create the component", () => {
     const fixture = TestBed.createComponent(NewItem);
     const newItem = fixture.componentInstance;
+
     expect(newItem).toBeTruthy();
   });
 
@@ -225,6 +226,7 @@ describe("NewItem", () => {
       type: "Error",
       message: "You're currently logged out. Log back in to post a new post.",
     });
+
     expect(apiClientSpy).not.toHaveBeenCalled();
     expect(addItemSpy).not.toHaveBeenCalled();
     done();
@@ -244,6 +246,7 @@ describe("NewItem", () => {
 
     expect(newItemDOM.querySelector("#postText")).toBeNull();
     const errorMessage = newItemDOM.querySelectorAll(".errorMessage")[0];
+
     expect(errorMessage.textContent).toContain(
       `You are currently blocked until ${newItem["authService"].userData()?.releaseDate}. You cannot post new posts.`,
     );
@@ -369,6 +372,7 @@ describe("NewItem", () => {
       forId: 2,
       messageText: messageText,
     };
+
     expect(newMessageSpy).toHaveBeenCalled();
     expect(newMessServiceSpy).toHaveBeenCalled();
     expect(newMessServiceSpy).toHaveBeenCalledWith(jasmine.objectContaining(newMessage));
@@ -446,6 +450,7 @@ describe("NewItem", () => {
       type: "Error",
       message: "You're currently logged out. Log back in to send a message.",
     });
+
     expect(newMessServiceSpy).not.toHaveBeenCalled();
     done();
   });

@@ -111,6 +111,7 @@ describe("UserPage", () => {
   it("should create the component", () => {
     const fixture = TestBed.createComponent(UserPage);
     const userPage = fixture.componentInstance;
+
     expect(userPage).toBeTruthy();
   });
 
@@ -135,32 +136,38 @@ describe("UserPage", () => {
     fixture.detectChanges();
 
     const userData = userPage.authService.userData();
+
     expect(userPage.userId()).toBeUndefined();
     expect(userPage.isOtherUserProfile()).toBeFalse();
     expect(
       userPageDOM.querySelectorAll(".displayName")[0].firstElementChild.textContent.trim(),
     ).toBe(userData?.displayName);
+
     expect(
       userPageDOM.querySelector("#roleElement").querySelectorAll(".pageData")[0].textContent.trim(),
     ).toBe(userData?.role.name);
+
     expect(
       userPageDOM
         .querySelector("#rHugsElement")
         .querySelectorAll(".pageData")[0]
         .textContent.trim(),
     ).toBe(String(userData?.receivedH));
+
     expect(
       userPageDOM
         .querySelector("#gHugsElement")
         .querySelectorAll(".pageData")[0]
         .textContent.trim(),
     ).toBe(String(userData?.givenH));
+
     expect(
       userPageDOM
         .querySelector("#postsElement")
         .querySelectorAll(".pageData")[0]
         .textContent.trim(),
     ).toBe(String(userData?.posts));
+
     expect(userPageDOM.querySelector("#logout")).toBeTruthy();
     done();
   });
@@ -179,33 +186,39 @@ describe("UserPage", () => {
     fixture.detectChanges();
 
     const userData = userPage.authService.userData();
+
     expect(routeSpy).toHaveBeenCalled();
     expect(userPage.userId()).toBe(4);
     expect(userPage.isOtherUserProfile()).toBeFalse();
     expect(
       userPageDOM.querySelectorAll(".displayName")[0].firstElementChild.textContent.trim(),
     ).toBe(userData?.displayName);
+
     expect(
       userPageDOM.querySelector("#roleElement").querySelectorAll(".pageData")[0].textContent.trim(),
     ).toBe(userData?.role.name);
+
     expect(
       userPageDOM
         .querySelector("#rHugsElement")
         .querySelectorAll(".pageData")[0]
         .textContent.trim(),
     ).toBe(String(userData?.receivedH));
+
     expect(
       userPageDOM
         .querySelector("#gHugsElement")
         .querySelectorAll(".pageData")[0]
         .textContent.trim(),
     ).toBe(String(userData?.givenH));
+
     expect(
       userPageDOM
         .querySelector("#postsElement")
         .querySelectorAll(".pageData")[0]
         .textContent.trim(),
     ).toBe(String(userData?.posts));
+
     expect(userPageDOM.querySelector("#logout")).toBeTruthy();
     expect(userPageDOM.querySelectorAll(".reportButton")[0]).toBeUndefined();
     done();
@@ -246,33 +259,39 @@ describe("UserPage", () => {
     fixture.detectChanges();
 
     const userData = userPage.otherUser() as OtherUser;
+
     expect(routeSpy).toHaveBeenCalled();
     expect(userPage.userId()).toBe(1);
     expect(userPage.isOtherUserProfile()).toBeTrue();
     expect(
       userPageDOM.querySelectorAll(".displayName")[0].firstElementChild.textContent.trim(),
     ).toContain(userData.displayName);
+
     expect(
       userPageDOM.querySelector("#roleElement").querySelectorAll(".pageData")[0].textContent.trim(),
     ).toBe(userData.role.name);
+
     expect(
       userPageDOM
         .querySelector("#rHugsElement")
         .querySelectorAll(".pageData")[0]
         .textContent.trim(),
     ).toBe(String(userData.receivedH));
+
     expect(
       userPageDOM
         .querySelector("#gHugsElement")
         .querySelectorAll(".pageData")[0]
         .textContent.trim(),
     ).toBe(String(userData.givenH));
+
     expect(
       userPageDOM
         .querySelector("#postsElement")
         .querySelectorAll(".pageData")[0]
         .textContent.trim(),
     ).toBe(String(userData.posts));
+
     expect(userPageDOM.querySelector("#logout")).toBeNull();
     expect(userPageDOM.querySelectorAll(".reportButton")[0]).toBeTruthy();
     done();
@@ -440,6 +459,7 @@ describe("UserPage", () => {
       displayName: userPage.authService.userData()!.displayName,
       id: userPage.authService.userData()!.id as number,
     });
+
     expect(userPageDOM.querySelector("display-name-edit-form")).toBeTruthy();
     done();
   });
@@ -559,6 +579,7 @@ describe("UserPage", () => {
         .querySelectorAll(".pageData")[0]
         .textContent.trim(),
     ).toBe("4");
+
     expect(alertsSpy).toHaveBeenCalledWith("Your hug was sent!");
     done();
   });

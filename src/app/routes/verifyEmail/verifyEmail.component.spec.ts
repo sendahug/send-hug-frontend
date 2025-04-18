@@ -75,6 +75,7 @@ describe("VerifyEmailPage", () => {
   it("should create the component", () => {
     const fixture = TestBed.createComponent(VerifyEmailPage);
     const verifyEmailPage = fixture.componentInstance;
+
     expect(verifyEmailPage).toBeTruthy();
   });
 

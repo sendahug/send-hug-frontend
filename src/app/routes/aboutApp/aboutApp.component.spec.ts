@@ -62,6 +62,7 @@ describe("AboutApp", () => {
   it("should create the component", () => {
     const fixture = TestBed.createComponent(AboutApp);
     const aboutApp = fixture.componentInstance;
+
     expect(aboutApp).toBeTruthy();
   });
 });

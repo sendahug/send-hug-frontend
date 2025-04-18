@@ -131,6 +131,7 @@ describe("APIClient Service", () => {
     });
 
     const req = httpController.expectOne(`${apiClientService["serverUrl"]}/test`);
+
     expect(req.request.method).toEqual("GET");
     req.flush(mockResponse);
   });
@@ -149,6 +150,7 @@ describe("APIClient Service", () => {
     });
 
     const req = httpController.expectOne(`${apiClientService["serverUrl"]}/test`);
+
     expect(req.request.method).toEqual("GET");
     req.flush(null, mockError);
   });
@@ -167,6 +169,7 @@ describe("APIClient Service", () => {
     });
 
     const req = httpController.expectOne(`${apiClientService["serverUrl"]}/test`);
+
     expect(req.request.method).toEqual("POST");
     req.flush(mockResponse);
   });
@@ -185,6 +188,7 @@ describe("APIClient Service", () => {
     });
 
     const req = httpController.expectOne(`${apiClientService["serverUrl"]}/test`);
+
     expect(req.request.method).toEqual("POST");
     req.flush(null, mockError);
   });
@@ -203,6 +207,7 @@ describe("APIClient Service", () => {
     });
 
     const req = httpController.expectOne(`${apiClientService["serverUrl"]}/test`);
+
     expect(req.request.method).toEqual("PATCH");
     req.flush(mockResponse);
   });
@@ -221,6 +226,7 @@ describe("APIClient Service", () => {
     });
 
     const req = httpController.expectOne(`${apiClientService["serverUrl"]}/test`);
+
     expect(req.request.method).toEqual("PATCH");
     req.flush(null, mockError);
   });
@@ -239,6 +245,7 @@ describe("APIClient Service", () => {
     });
 
     const req = httpController.expectOne(`${apiClientService["serverUrl"]}/test`);
+
     expect(req.request.method).toEqual("DELETE");
     req.flush(mockResponse);
   });
@@ -257,6 +264,7 @@ describe("APIClient Service", () => {
     });
 
     const req = httpController.expectOne(`${apiClientService["serverUrl"]}/test`);
+
     expect(req.request.method).toEqual("DELETE");
     req.flush(null, mockError);
   });

@@ -121,6 +121,7 @@ describe("MainPage", () => {
   it("should create the component", () => {
     const fixture = TestBed.createComponent(MainPage);
     const mainPage = fixture.componentInstance;
+
     expect(mainPage).toBeTruthy();
   });
 
@@ -243,10 +244,12 @@ describe("MainPage", () => {
     expect(isLoadingSpy).toHaveBeenCalledWith(false);
 
     const newPosts = mainPageDOM.querySelectorAll(".newItem");
+
     expect(newPosts.length).toBe(2);
     expect(newPosts[0].querySelector(".itemText").textContent).toContain("test");
 
     const suggestedPosts = mainPageDOM.querySelectorAll(".sugItem");
+
     expect(suggestedPosts.length).toBe(2);
     expect(suggestedPosts[0].querySelector(".itemText").textContent).toContain("test2");
 
@@ -280,6 +283,7 @@ describe("MainPage", () => {
     expect(newPostsSetSpy).not.toHaveBeenCalled();
 
     const errorMessage = mainPageDOM.querySelectorAll(".errorMessage");
+
     expect(errorMessage.length).toBe(1);
     expect(errorMessage[0].textContent).toContain("There are no recent items");
 

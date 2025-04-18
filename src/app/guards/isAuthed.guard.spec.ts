@@ -64,6 +64,7 @@ describe("isAuthedGuard", () => {
   it("should return true if the user is authenticated", (done: DoneFn) => {
     TestBed.runInInjectionContext(() => {
       const isAuthedResult = isAuthedGuard({}, []);
+
       expect(isAuthedResult).toBeTrue();
       done();
     });
@@ -78,6 +79,7 @@ describe("isAuthedGuard", () => {
       const navigateSpy = spyOn(router, "navigate");
 
       isAuthedGuard({}, [new UrlSegment("/test", {})]);
+
       expect(navigateSpy).toHaveBeenCalledWith(["/login"], {
         queryParams: { redirect: encodeURIComponent("/test") },
       });

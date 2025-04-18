@@ -97,6 +97,7 @@ describe("SettingsPage", () => {
   it("should create the app", () => {
     const fixture = TestBed.createComponent(SettingsPage);
     const settingsPage = fixture.componentInstance;
+
     expect(settingsPage).toBeTruthy();
   });
 
@@ -218,6 +219,7 @@ describe("SettingsPage", () => {
         previousInteractionNotifications: false,
       },
     });
+
     expect(subscribeSpy).toHaveBeenCalled();
     expect(unsubscribeSpy).not.toHaveBeenCalled();
     expect(alertSpy).toHaveBeenCalledWith("Your settings have been updated!");
@@ -242,6 +244,7 @@ describe("SettingsPage", () => {
         previousInteractionNotifications: false,
       },
     });
+
     expect(settingsSpy.calls.count()).toBe(2);
     expect(subscribeSpy.calls.count()).toBe(1);
     expect(unsubscribeSpy).toHaveBeenCalled();
@@ -294,6 +297,7 @@ describe("SettingsPage", () => {
         previousInteractionNotifications: false,
       },
     });
+
     expect(startRefreshSpy).toHaveBeenCalled();
     expect(stopRefreshSpy).not.toHaveBeenCalled();
 
@@ -318,6 +322,7 @@ describe("SettingsPage", () => {
         previousInteractionNotifications: false,
       },
     });
+
     expect(startRefreshSpy.calls.count()).toBe(1);
     expect(stopRefreshSpy).toHaveBeenCalled();
     expect(stopRefreshSpy.calls.count()).toBe(1);
@@ -390,6 +395,7 @@ describe("SettingsPage", () => {
       type: "Error",
       message: "Refresh rate cannot be empty or zero. Please fill the field and try again.",
     });
+
     expect(document.getElementById("notificationRate")!.className).toContain("ng-invalid");
     expect(document.getElementById("notificationRate")!.getAttribute("aria-invalid")).toEqual(
       "true",
@@ -607,6 +613,7 @@ describe("SettingsPage", () => {
     expect(
       settingsPage.editSettingsForm.controls.previousInteractionNotifications.value,
     ).toBeFalse();
+
     expect(updateSpy).not.toHaveBeenCalled();
 
     // change the message setting

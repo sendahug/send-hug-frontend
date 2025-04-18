@@ -80,6 +80,7 @@ describe("SignUpPage", () => {
   it("should create the component", () => {
     const fixture = TestBed.createComponent(SignUpPage);
     const signUpPage = fixture.componentInstance;
+
     expect(signUpPage).toBeTruthy();
   });
 

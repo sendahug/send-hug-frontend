@@ -60,6 +60,7 @@ describe("Loader", () => {
   it("should create the component", () => {
     const fixture = TestBed.createComponent(Loader);
     const loader = fixture.componentInstance;
+
     expect(loader).toBeTruthy();
   });
 

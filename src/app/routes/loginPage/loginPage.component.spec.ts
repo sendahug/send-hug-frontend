@@ -103,6 +103,7 @@ describe("LoginPage", () => {
   it("should create the component", () => {
     const fixture = TestBed.createComponent(LoginPage);
     const loginPage = fixture.componentInstance;
+
     expect(loginPage).toBeTruthy();
   });
 
@@ -303,6 +304,7 @@ describe("LoginPage", () => {
     expect(loginPageDOM.querySelectorAll(".internalButton")[1].textContent.trim()).toBe(
       "Create one now.",
     );
+
     expect(loginPageDOM.querySelector("#logIn").textContent.trim()).toBe("Sign in");
 
     loginPageDOM.querySelectorAll(".internalButton")[1].click();
@@ -312,6 +314,7 @@ describe("LoginPage", () => {
     expect(loginPageDOM.querySelectorAll(".internalButton")[0].textContent.trim()).toBe(
       "Log in now.",
     );
+
     expect(loginPageDOM.querySelector("#logIn").textContent.trim()).toBe("Sign up");
     done();
   });
@@ -494,6 +497,7 @@ describe("LoginPage", () => {
     expect(loginPageDOM.querySelectorAll(".errorMessage")[0].textContent).toContain(
       "You are already logged in",
     );
+
     expect(loginPageDOM.querySelectorAll(".errorMessage")[1].textContent).toContain(
       `You are currently logged in as ${mockUser.displayName}`,
     );

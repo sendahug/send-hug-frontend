@@ -176,6 +176,7 @@ describe("SiteMap", () => {
   it("should create the component", () => {
     const fixture = TestBed.createComponent(SiteMap);
     const siteMap = fixture.componentInstance;
+
     expect(siteMap).toBeTruthy();
   });
 
@@ -187,6 +188,7 @@ describe("SiteMap", () => {
     fixture.detectChanges();
 
     const routeList = siteMapDOM.querySelector("#routeList");
+
     expect(routeList).toBeTruthy();
     expect(routeList!.children.length).not.toBe(0);
     expect(siteMap.routes()).toBeDefined();
@@ -368,6 +370,7 @@ describe("SiteMap", () => {
     fixture.detectChanges();
 
     navLinks = routeList!.querySelectorAll(".routerLink");
+
     expect(siteMap.routes()).not.toContain(loginPath);
     expect(siteMap.routes()).toContain(userPath);
     expect(navLinks[1].textContent).toBe(userPath.children![0].data!["name"]);

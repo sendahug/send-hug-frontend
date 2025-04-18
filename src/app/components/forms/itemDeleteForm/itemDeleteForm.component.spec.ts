@@ -71,6 +71,7 @@ describe("ItemDeleteForm", () => {
   it("should create the component", () => {
     const fixture = TestBed.createComponent(ItemDeleteForm);
     const itemDeleteForm = fixture.componentInstance;
+
     expect(itemDeleteForm).toBeTruthy();
   });
 
@@ -88,6 +89,7 @@ describe("ItemDeleteForm", () => {
     expect(
       itemDeleteFormDOM.querySelector("#deleteItem").querySelectorAll(".warning")[0],
     ).toBeTruthy();
+
     expect(
       itemDeleteFormDOM.querySelector("#deleteItem").querySelectorAll(".warning")[0].textContent,
     ).toContain("This action is irreversible!");
@@ -338,6 +340,7 @@ describe("ItemDeleteForm", () => {
       postID: 4,
       userID: 0,
     };
+
     expect(deleteSpy).toHaveBeenCalledWith(true);
     expect(deleteServiceSpy).toHaveBeenCalledWith(2, report, true);
     expect(emitSpy).toHaveBeenCalledWith(false);
@@ -392,6 +395,7 @@ describe("ItemDeleteForm", () => {
     itemDeleteForm.editMode.subscribe((event: boolean) => {
       expect(event).toBeFalse();
     });
+
     expect(deleteSpy).not.toHaveBeenCalled();
     expect(emitSpy).toHaveBeenCalledWith(false);
     done();

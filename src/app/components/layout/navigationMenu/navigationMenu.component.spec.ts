@@ -119,6 +119,7 @@ describe("AppNavMenu", () => {
   it("should create the menu", () => {
     const fixture = TestBed.createComponent(AppNavMenu);
     const navMenu = fixture.componentInstance;
+
     expect(navMenu).toBeTruthy();
   });
 
@@ -129,6 +130,7 @@ describe("AppNavMenu", () => {
     fixture.detectChanges();
 
     const navMenu = navMenuHtml.querySelector("#navLinks");
+
     expect(navMenu).toBeDefined();
     expect(navMenu!.children.length).not.toBe(0);
 

@@ -209,18 +209,22 @@ describe("Report", () => {
 
     popUp.checkSelectedForOther(popUpDOM.querySelector("#pRadioOption0"));
     fixture.detectChanges();
+
     expect(otherTextField.disabled).toBe(true);
 
     popUp.checkSelectedForOther(popUpDOM.querySelector("#pRadioOption1"));
     fixture.detectChanges();
+
     expect(otherTextField.disabled).toBe(true);
 
     popUp.checkSelectedForOther(popUpDOM.querySelector("#pRadioOption2"));
     fixture.detectChanges();
+
     expect(otherTextField.disabled).toBe(true);
 
     popUp.checkSelectedForOther(popUpDOM.querySelector("#pRadioOption3"));
     fixture.detectChanges();
+
     expect(otherTextField.disabled).toBe(false);
   });
 
@@ -243,21 +247,25 @@ describe("Report", () => {
 
     popUpDOM.querySelector("#pRadioOption0").click();
     fixture.detectChanges();
+
     expect(otherTextField.required).toBe(false);
     expect(otherTextField.getAttribute("aria-required")).toEqual("false");
 
     popUpDOM.querySelector("#pRadioOption1").click();
     fixture.detectChanges();
+
     expect(otherTextField.required).toBe(false);
     expect(otherTextField.getAttribute("aria-required")).toEqual("false");
 
     popUpDOM.querySelector("#pRadioOption3").click();
     fixture.detectChanges();
+
     expect(otherTextField.required).toBe(true);
     expect(otherTextField.getAttribute("aria-required")).toEqual("true");
 
     popUpDOM.querySelector("#pRadioOption2").click();
     fixture.detectChanges();
+
     expect(otherTextField.required).toBe(false);
     expect(otherTextField.getAttribute("aria-required")).toEqual("false");
 
@@ -280,22 +288,27 @@ describe("Report", () => {
     };
 
     fixture.detectChanges();
+
     expect(popUp.getSelectedReasonText()).toBe(undefined);
 
     popUpDOM.querySelector("#pRadioOption0").click();
     fixture.detectChanges();
+
     expect(popUp.getSelectedReasonText()).toEqual("The post is Inappropriate");
 
     popUpDOM.querySelector("#pRadioOption1").click();
     fixture.detectChanges();
+
     expect(popUp.getSelectedReasonText()).toEqual("The post is Spam");
 
     popUpDOM.querySelector("#pRadioOption2").click();
     fixture.detectChanges();
+
     expect(popUp.getSelectedReasonText()).toEqual("The post is Offensive");
 
     popUpDOM.querySelector("#pRadioOption3").click();
     fixture.detectChanges();
+
     expect(popUp.getSelectedReasonText()).toEqual("other");
 
     done();
@@ -327,24 +340,29 @@ describe("Report", () => {
     };
 
     fixture.detectChanges();
+
     expect(popUp.getSelectedReasonText()).toBe(undefined);
 
     popUpDOM.querySelector("#pRadioOption0").click();
     fixture.detectChanges();
+
     expect(popUp.getSelectedReasonText()).toEqual("The user is posting Spam");
 
     popUpDOM.querySelector("#pRadioOption1").click();
     fixture.detectChanges();
+
     expect(popUp.getSelectedReasonText()).toEqual(
       "The user is posting harmful / dangerous content",
     );
 
     popUpDOM.querySelector("#pRadioOption2").click();
     fixture.detectChanges();
+
     expect(popUp.getSelectedReasonText()).toEqual("The user is behaving in an abusive manner");
 
     popUpDOM.querySelector("#pRadioOption3").click();
     fixture.detectChanges();
+
     expect(popUp.getSelectedReasonText()).toEqual("other");
 
     done();
@@ -454,6 +472,7 @@ describe("Report", () => {
       dismissed: false,
       closed: false,
     };
+
     expect(validateSpy).toHaveBeenCalledWith("reportOther");
     expect(apiClientSpy).toHaveBeenCalledWith("reports", jasmine.objectContaining(report));
     expect(alertsSpy).toHaveBeenCalledWith(`Post number 1 was successfully reported.`, {
@@ -461,6 +480,7 @@ describe("Report", () => {
       navTarget: "/",
       navText: "Home Page",
     });
+
     expect(emitSpy).toHaveBeenCalledWith(false);
     done();
   });
@@ -516,12 +536,14 @@ describe("Report", () => {
       dismissed: false,
       closed: false,
     };
+
     expect(apiClientSpy).toHaveBeenCalledWith("reports", jasmine.objectContaining(report));
     expect(alertsSpy).toHaveBeenCalledWith(`Post number 1 was successfully reported.`, {
       navigate: true,
       navTarget: "/",
       navText: "Home Page",
     });
+
     expect(emitSpy).toHaveBeenCalledWith(false);
     done();
   });
@@ -587,12 +609,14 @@ describe("Report", () => {
       dismissed: false,
       closed: false,
     };
+
     expect(apiClientSpy).toHaveBeenCalledWith("reports", jasmine.objectContaining(report));
     expect(alertsSpy).toHaveBeenCalledWith(`User 3 was successfully reported.`, {
       navigate: true,
       navTarget: "/",
       navText: "Home Page",
     });
+
     expect(emitSpy).toHaveBeenCalledWith(false);
     done();
   });

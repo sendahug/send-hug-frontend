@@ -206,6 +206,7 @@ describe("AppMessaging", () => {
   it("should create the component", () => {
     const fixture = TestBed.createComponent(AppMessaging);
     const appMessaging = fixture.componentInstance;
+
     expect(appMessaging).toBeTruthy();
   });
 
@@ -251,6 +252,7 @@ describe("AppMessaging", () => {
       page: 1,
       type: "inbox",
     });
+
     expect(appMessaging.messages()).toEqual(mockMessages);
     expect(appMessaging.totalPages()).toBe(2);
     expect(appMessaging.currentPage()).toBe(1);
@@ -385,6 +387,7 @@ describe("AppMessaging", () => {
       page: 1,
       type: "threads",
     });
+
     expect(appMessaging.userThreads()).toEqual(mockThreads);
     expect(appMessaging.totalPages()).toBe(2);
     expect(appMessaging.currentPage()).toBe(1);

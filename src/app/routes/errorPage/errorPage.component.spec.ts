@@ -64,6 +64,7 @@ describe("ErrorPage", () => {
   it("should create the component", () => {
     const fixture = TestBed.createComponent(ErrorPage);
     const errorPage = fixture.componentInstance;
+
     expect(errorPage).toBeTruthy();
   });
 

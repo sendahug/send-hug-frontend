@@ -70,6 +70,7 @@ describe("SearchForm", () => {
   it("should create the search form", () => {
     const fixture = TestBed.createComponent(SearchForm);
     const searchForm = fixture.componentInstance;
+
     expect(searchForm).toBeTruthy();
   });
 
@@ -97,6 +98,7 @@ describe("SearchForm", () => {
         query: "search",
       },
     });
+
     expect(toggleSpy).toHaveBeenCalled();
     done();
   });
@@ -124,6 +126,7 @@ describe("SearchForm", () => {
       message: "Search query is empty! Please write a term to search for.",
       type: "Error",
     });
+
     expect(navigateSpy).not.toHaveBeenCalled();
     expect(toggleSpy).not.toHaveBeenCalled();
     done();

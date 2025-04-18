@@ -135,6 +135,7 @@ describe("MyPosts", () => {
     const userPage = upFixture.componentInstance;
     upFixture.detectChanges();
     const myPosts: MyPosts = upFixture.debugElement.children[0].children[0].componentInstance;
+
     expect(userPage).toBeTruthy();
     expect(myPosts).toBeTruthy();
   });

@@ -78,6 +78,7 @@ describe("Popup", () => {
   it("should create the component", () => {
     const fixture = TestBed.createComponent(PopUp);
     const popUp = fixture.componentInstance;
+
     expect(popUp).toBeTruthy();
   });
 
@@ -255,6 +256,7 @@ describe("Popup", () => {
     popUp.editMode.subscribe((event: boolean) => {
       expect(event).toBeFalse();
     });
+
     expect(exitSpy).toHaveBeenCalled();
     done();
   });

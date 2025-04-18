@@ -84,6 +84,7 @@ describe("PostEditForm", () => {
   it("should create the component", () => {
     const fixture = TestBed.createComponent(PostEditForm);
     const popUp = fixture.componentInstance;
+
     expect(popUp).toBeTruthy();
   });
 
@@ -144,6 +145,7 @@ describe("PostEditForm", () => {
     expect(validateSpy).toHaveBeenCalledWith("post");
     const updatedItem = { ...originalItem };
     updatedItem["text"] = newText;
+
     expect(apiClientSpy).toHaveBeenCalledWith(`posts/${originalItem.id}`, updatedItem);
     expect(updateReportSpy).toHaveBeenCalledWith(null, serverResponse);
     expect(emitSpy).toHaveBeenCalledWith(false);
@@ -205,12 +207,14 @@ describe("PostEditForm", () => {
     expect(validateSpy).toHaveBeenCalledWith("post");
     const updatedItem = { ...originalItem };
     updatedItem["text"] = newText;
+
     expect(apiClientSpy).toHaveBeenCalledWith(`posts/${originalItem.id}`, updatedItem);
     expect(updateReportSpy).toHaveBeenCalledWith(true, serverResponse);
     expect(emitSpy).toHaveBeenCalledWith(false);
     expect(alertSpy).toHaveBeenCalledWith(
       "Report 1 was closed, and the associated post was edited!",
     );
+
     expect(resultSpy).toHaveBeenCalledWith(reportPostResponse);
   });
 
@@ -268,6 +272,7 @@ describe("PostEditForm", () => {
     expect(validateSpy).toHaveBeenCalledWith("post");
     const updatedItem = { ...originalItem };
     updatedItem["text"] = newText;
+
     expect(apiClientSpy).toHaveBeenCalledWith(`posts/${originalItem.id}`, updatedItem);
     expect(updateReportSpy).toHaveBeenCalledWith(false, serverResponse);
     expect(emitSpy).toHaveBeenCalledWith(false);
@@ -327,6 +332,7 @@ describe("PostEditForm", () => {
           },
           reportId: 2,
         });
+
         expect(adminServiceSpy).toHaveBeenCalledWith(2, false, 1);
         done();
       },
@@ -369,6 +375,7 @@ describe("PostEditForm", () => {
           },
           reportId: undefined,
         });
+
         expect(adminServiceSpy).not.toHaveBeenCalled();
         done();
       },
@@ -408,6 +415,7 @@ describe("PostEditForm", () => {
           },
           reportId: undefined,
         });
+
         expect(adminServiceSpy).not.toHaveBeenCalled();
         done();
       },

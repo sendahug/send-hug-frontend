@@ -148,6 +148,7 @@ describe("SearchResults", () => {
   it("should create the component", () => {
     const fixture = TestBed.createComponent(SearchResults);
     const searchResults = fixture.componentInstance;
+
     expect(searchResults).toBeTruthy();
   });
 
@@ -267,6 +268,7 @@ describe("SearchResults", () => {
       expect(item.firstElementChild!.getAttribute("href")).toContain("/user");
       expect(item.firstElementChild!.textContent).toContain("test");
     });
+
     expect(searchResultsDOM.querySelector("#uSearchResErr")).toBeNull();
     done();
   });

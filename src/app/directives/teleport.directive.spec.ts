@@ -100,6 +100,7 @@ describe("TeleportDirective", () => {
     childFixture.autoDetectChanges();
 
     const container = mockPageDOM.querySelector("#profileContainer");
+
     expect(container.children.length).toBe(1);
     expect(container.querySelectorAll("div")[0].textContent).toBe("MEEP!");
     expect(childFixture.nativeElement.querySelector("div")).toBeNull();
@@ -122,6 +123,7 @@ describe("TeleportDirective", () => {
     expect(
       mockPageDOM.querySelector("#profileContainer").querySelectorAll("div")[0].textContent,
     ).toBe("MEEP!");
+
     expect(childFixture.nativeElement.querySelector("div")).toBeNull();
 
     childFixture.destroy();

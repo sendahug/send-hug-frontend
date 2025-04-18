@@ -178,9 +178,11 @@ describe("AppSingleThread", () => {
     expect(appThreadDOM.querySelectorAll(".appButton")[0].textContent.trim()).toBe(
       "View Thread Messages",
     );
+
     expect(appThreadDOM.querySelectorAll(".appButton")[0].getAttribute("href")).toContain(
       "/messages/thread/3",
     );
+
     expect(appThreadDOM.querySelectorAll(".appButton")[1].tagName.toLowerCase()).toBe("button");
     expect(appThreadDOM.querySelectorAll(".appButton")[1].textContent.trim()).toBe("Delete Thread");
     done();

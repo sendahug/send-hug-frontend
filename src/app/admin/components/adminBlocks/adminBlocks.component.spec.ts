@@ -410,10 +410,12 @@ describe("Blocks Page", () => {
       releaseDate: null,
       blocked: false,
     });
+
     expect(alertSpy).toHaveBeenCalled();
     expect(alertSpy).toHaveBeenCalledWith(
       `User ${mockResponse.updated.displayName} has been unblocked.`,
     );
+
     expect(adminBlocks.blockedUsers().length).toEqual(0);
     done();
   });

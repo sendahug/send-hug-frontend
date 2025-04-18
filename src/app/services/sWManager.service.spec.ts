@@ -325,20 +325,24 @@ describe("SWManagerService", () => {
       expect(db.objectStoreNames).toContain("threads");
       // posts store
       const postStore = db.transaction("posts").objectStore("posts");
+
       expect(postStore.keyPath).toBe("id");
       expect(postStore.indexNames).toContain("date");
       expect(postStore.indexNames).toContain("user");
       expect(postStore.indexNames).toContain("hugs");
       // users store
       const userStore = db.transaction("users").objectStore("users");
+
       expect(userStore.keyPath).toBe("id");
       // messages store
       const messStore = db.transaction("messages").objectStore("messages");
+
       expect(messStore.keyPath).toBe("id");
       expect(messStore.indexNames).toContain("date");
       expect(messStore.indexNames).toContain("thread");
       // threads store
       const threadStore = db.transaction("threads").objectStore("threads");
+
       expect(threadStore.keyPath).toBe("id");
       expect(threadStore.indexNames).toContain("latest");
     });

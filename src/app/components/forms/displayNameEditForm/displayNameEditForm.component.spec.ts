@@ -79,6 +79,7 @@ describe("DisplayNameEditForm", () => {
   it("should create the component", () => {
     const fixture = TestBed.createComponent(DisplayNameEditForm);
     const popUp = fixture.componentInstance;
+
     expect(popUp).toBeTruthy();
   });
 
@@ -173,6 +174,7 @@ describe("DisplayNameEditForm", () => {
       true,
       1,
     );
+
     expect(emitSpy).toHaveBeenCalledWith(false);
     expect(updatedDetailsSpy).toHaveBeenCalledWith({
       displayName: newName,
@@ -258,6 +260,7 @@ describe("DisplayNameEditForm", () => {
       false,
       1,
     );
+
     expect(emitSpy).toHaveBeenCalledWith(false);
     expect(updatedDetailsSpy).toHaveBeenCalledWith({
       displayName: newName,

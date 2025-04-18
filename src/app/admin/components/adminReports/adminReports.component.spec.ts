@@ -154,15 +154,18 @@ describe("AdminReports", () => {
       userPage: "1",
       postPage: "1",
     });
+
     expect(adminReports.userReports().length).toBe(1);
     expect(
       adminReportsDOM.querySelectorAll(".tableContainer")[0].querySelectorAll("tbody tr").length,
     ).toBe(1);
+
     expect(adminReports.totalPostReportsPages()).toBe(2);
     expect(adminReports.postReports().length).toBe(1);
     expect(
       adminReportsDOM.querySelectorAll(".tableContainer")[1].querySelectorAll("tbody tr").length,
     ).toBe(1);
+
     expect(adminReports.totalUserReportsPages()).toBe(2);
     done();
   });
@@ -181,6 +184,7 @@ describe("AdminReports", () => {
       userPage: "1",
       postPage: "1",
     });
+
     expect(adminReports.userReports().length).toBe(0);
     expect(adminReportsDOM.querySelectorAll(".tableContainer").length).toBe(0);
     expect(adminReports.postReports().length).toBe(0);
@@ -188,6 +192,7 @@ describe("AdminReports", () => {
     expect(adminReportsDOM.querySelectorAll(".errorMessage")[0].textContent.trim()).toBe(
       "There are no user reports waiting for review.",
     );
+
     expect(adminReportsDOM.querySelectorAll(".errorMessage")[1].textContent.trim()).toBe(
       "There are no post reports waiting for review.",
     );
@@ -339,6 +344,7 @@ describe("AdminReports", () => {
       displayName: "user",
       id: 10,
     });
+
     expect(adminReportsDOM.querySelector("display-name-edit-form")).toBeTruthy();
     done();
   });
@@ -723,6 +729,7 @@ describe("AdminReports", () => {
       reportID: 1,
       displayName: "beep",
     });
+
     expect(adminReports.userReports().length).toBe(0);
     done();
   });
@@ -763,6 +770,7 @@ describe("AdminReports", () => {
       reportID: 100000,
       displayName: "beep",
     });
+
     expect(adminReports.userReports().length).toBe(1);
     done();
   });
@@ -803,6 +811,7 @@ describe("AdminReports", () => {
       reportID: 1,
       displayName: "beep",
     });
+
     expect(adminReports.userReports().length).toBe(1);
     expect(adminReports.userReports()[0].displayName).toBe("beep");
     done();

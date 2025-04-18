@@ -100,6 +100,7 @@ describe("Send Hug Form", () => {
     fixture.detectChanges();
 
     const messageTextField = document.getElementById("messageText") as HTMLInputElement;
+
     expect(messageTextField.disabled).toBe(false);
 
     shformDOM.querySelector("#sendMessage").click();
@@ -126,11 +127,13 @@ describe("Send Hug Form", () => {
 
     shformDOM.querySelector("#sendMessage").click();
     fixture.detectChanges();
+
     expect(messageTextField.required).toBe(false);
     expect(messageTextField.getAttribute("aria-required")).toEqual("false");
 
     shformDOM.querySelector("#sendMessage").click();
     fixture.detectChanges();
+
     expect(messageTextField.required).toBe(true);
     expect(messageTextField.getAttribute("aria-required")).toEqual("true");
 

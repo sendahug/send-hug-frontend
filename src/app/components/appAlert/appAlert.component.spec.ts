@@ -63,6 +63,7 @@ describe("AppAlert", () => {
   it("should create the component", () => {
     const fixture = TestBed.createComponent(AppAlert);
     const appAlert = fixture.componentInstance;
+
     expect(appAlert).toBeTruthy();
   });
 

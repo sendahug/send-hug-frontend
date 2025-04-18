@@ -102,6 +102,7 @@ describe("AppSingleMessage", () => {
   it("should create the component", () => {
     const fixture = TestBed.createComponent(AppSingleMessage);
     const appMessage = fixture.componentInstance;
+
     expect(appMessage).toBeTruthy();
   });
 
@@ -223,6 +224,7 @@ describe("AppSingleMessage", () => {
     expect(appMessageDOM.querySelectorAll(".messageButton")[0].getAttribute("href")).toContain(
       "/new",
     );
+
     expect(appMessageDOM.querySelectorAll(".deleteButton")[0].tagName.toLowerCase()).toBe("button");
     expect(appMessageDOM.querySelectorAll(".deleteButton")[0].textContent.trim()).toBe(
       "Delete Message",

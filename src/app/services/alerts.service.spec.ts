@@ -164,6 +164,7 @@ describe("AlertsService", () => {
       },
       { reload: false, navigate: false },
     );
+
     expect(alertsService.isSWRelated).toBeFalse();
   });
 
@@ -194,6 +195,7 @@ describe("AlertsService", () => {
       },
       { reload: false, navigate: false },
     );
+
     expect(alertsService.isSWRelated).toBeFalse();
   });
 
@@ -224,6 +226,7 @@ describe("AlertsService", () => {
       },
       { reload: false, navigate: false },
     );
+
     expect(alertsService.isSWRelated).toBeFalse();
   });
 
@@ -252,6 +255,7 @@ describe("AlertsService", () => {
       },
       { reload: false, navigate: false },
     );
+
     expect(alertsService.isSWRelated).toBeFalse();
   });
 

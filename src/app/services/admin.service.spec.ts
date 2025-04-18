@@ -342,10 +342,12 @@ describe("AdminService", () => {
         releaseDate: blockDate,
         blocked: true,
       });
+
       expect(alertSpy).toHaveBeenCalled();
       expect(alertSpy).toHaveBeenCalledWith(
         `User ${mockResponse.updated.displayName} has been blocked until ${mockResponse.updated.releaseDate}`,
       );
+
       expect(res).toEqual({
         success: true,
         updated: mockResponse.updated,
@@ -422,10 +424,12 @@ describe("AdminService", () => {
         releaseDate: blockDate,
         blocked: true,
       });
+
       expect(alertSpy).toHaveBeenCalled();
       expect(alertSpy).toHaveBeenCalledWith(
         `User ${mockResponse.updated.displayName} has been blocked until ${mockResponse.updated.releaseDate}`,
       );
+
       expect(dismissSpy).toHaveBeenCalled();
       expect(dismissSpy).toHaveBeenCalledWith(3, false, undefined, 15);
       expect(res).toEqual({

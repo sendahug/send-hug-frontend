@@ -168,6 +168,7 @@ describe("Filters Page", () => {
     expect(alertsSpy).toHaveBeenCalledWith(
       `The phrase text was added to the list of filtered words!`,
     );
+
     expect(adminFilters.filteredPhrases()[2]).toEqual({ id: 3, filter: "text" });
     done();
   });
@@ -235,6 +236,7 @@ describe("Filters Page", () => {
     expect(alertSpy).toHaveBeenCalledWith(
       `The phrase ${mockResponse.deleted.filter} was removed from the list of filtered words.`,
     );
+
     expect(adminFilters.filteredPhrases().length).toEqual(1);
     expect(adminFilters.filteredPhrases()[0].id).not.toBe(1);
     done();

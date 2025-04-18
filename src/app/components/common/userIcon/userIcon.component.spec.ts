@@ -93,6 +93,7 @@ describe("UserIcon", () => {
   it("should create the component", () => {
     const fixture = TestBed.createComponent(UserIcon);
     const userIcon = fixture.componentInstance;
+
     expect(userIcon).toBeTruthy();
   });
 

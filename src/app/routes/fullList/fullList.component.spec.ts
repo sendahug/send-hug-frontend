@@ -142,6 +142,7 @@ describe("FullList", () => {
     paramMap.snapshot.url = [{ path: "New" }] as UrlSegment[];
     const fixture = TestBed.createComponent(FullList);
     const fullList = fixture.componentInstance;
+
     expect(fullList).toBeTruthy();
   });
 
@@ -319,10 +320,12 @@ describe("FullList", () => {
     expect(isLoadingSpy).toHaveBeenCalledWith(false);
 
     const suggestedPosts = fullListDOM.querySelectorAll("app-single-post");
+
     expect(suggestedPosts.length).toBe(2);
 
     const firstPost = fixture.debugElement.query(By.css("app-single-post"))
       .componentInstance as SinglePost;
+
     expect(firstPost.post?.text).toEqual("test");
 
     done();

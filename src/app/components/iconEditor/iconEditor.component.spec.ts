@@ -75,6 +75,7 @@ describe("IconEditor", () => {
   it("should create the component", () => {
     const fixture = TestBed.createComponent(IconEditor);
     const iconEditor = fixture.componentInstance;
+
     expect(iconEditor).toBeTruthy();
   });
 
@@ -180,6 +181,7 @@ describe("IconEditor", () => {
 
     // after the update
     iconEditorDOM.querySelectorAll(".iconButton")[1].click();
+
     expect(updateSpy).toHaveBeenCalledWith({
       selectedIcon: "bear",
       iconColours: {
@@ -189,6 +191,7 @@ describe("IconEditor", () => {
         item: "#000000",
       },
     });
+
     expect(dismissSpy).toHaveBeenCalledWith(false);
     done();
   });
@@ -210,6 +213,7 @@ describe("IconEditor", () => {
 
     // after the update
     iconEditorDOM.querySelectorAll(".iconButton")[1].click();
+
     expect(updateSpy).toHaveBeenCalledWith({
       selectedIcon: "kitty",
       iconColours: {
@@ -219,6 +223,7 @@ describe("IconEditor", () => {
         item: "#f4b56a",
       },
     });
+
     expect(dismissSpy).toHaveBeenCalledWith(false);
     done();
   });

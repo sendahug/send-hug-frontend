@@ -188,7 +188,7 @@ export class SinglePost implements AfterViewChecked, OnInit, OnDestroy {
             givenHugs: this._post()!.givenHugs + 1,
             sentHugs: sent_hugs,
           });
-          this.swManager.addFetchedItems("posts", [this._post()], "date");
+          this.swManager.addFetchedItems<PostGet>("posts", [this._post() as PostGet], "date");
         }
       }),
     );
@@ -332,6 +332,6 @@ export class SinglePost implements AfterViewChecked, OnInit, OnDestroy {
       ...this._post()!,
       ...updatedPost.updatedPost,
     });
-    this.swManager.addFetchedItems("posts", [this._post()], "date");
+    this.swManager.addFetchedItems<PostGet>("posts", [this._post() as PostGet], "date");
   }
 }

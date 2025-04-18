@@ -119,7 +119,7 @@ export class PostEditForm implements OnInit {
           this.alertService.createSuccessAlert(editMessage);
 
           if (response.updatedPost)
-            this.swManager.addFetchedItems("posts", [response.updatedPost], "date");
+            this.swManager.addFetchedItems<PostGet>("posts", [response.updatedPost], "date");
           this.updateResult.emit(response);
           this.editMode.emit(false);
         },

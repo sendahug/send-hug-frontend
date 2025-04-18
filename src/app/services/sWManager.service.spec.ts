@@ -38,9 +38,10 @@ import {
 import {} from "jasmine";
 import { IDBPDatabase } from "idb";
 
-import { MyDB, SWManager } from "./sWManager.service";
+import { SWManager } from "./sWManager.service";
 import { AlertsService } from "./alerts.service";
 import { type iconCharacters } from "@app/interfaces/types";
+import { IDBObjectType, MyDB } from "@app/interfaces/mydb.interface";
 
 function populateDB(
   dbPromise: Promise<IDBPDatabase<MyDB>>,
@@ -271,7 +272,7 @@ function populateDB(
   return dbPromise.then((db) => {
     // if there's a specific store to populate, populate it
     if (store != "all") {
-      items[store].forEach((item: any) => {
+      items[store].forEach((item: IDBObjectType) => {
         db.put(store, item);
       });
     }

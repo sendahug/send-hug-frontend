@@ -134,7 +134,7 @@ export class MyPosts implements OnInit {
         this.totalPages.set(data.total_pages);
         this.posts.set(data.posts);
         this.isLoading.set(false);
-        this.swManager.addFetchedItems("posts", data.posts, "date");
+        this.swManager.addFetchedItems<PostGet>("posts", data.posts, "date");
       });
   }
 

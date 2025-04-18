@@ -37,7 +37,7 @@ import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { CommonModule } from "@angular/common";
 
 // App-related imports
-import { type PostCreate } from "@app/interfaces/post.interface";
+import { PostGet, type PostCreate } from "@app/interfaces/post.interface";
 import { type MessageCreate } from "@app/interfaces/message.interface";
 import { ItemsService } from "@app/services/items.service";
 import { AuthService } from "@app/services/auth.service";
@@ -156,7 +156,7 @@ export class NewItem implements OnInit {
     this.apiClient.post<PostCreateResponse>("posts", newPost).subscribe({
       next: (response: PostCreateResponse) => {
         this.alertService.createSuccessAlert("Your post was published!");
-        this.swManager.addFetchedItems("posts", [response.posts], "date");
+        this.swManager.addFetchedItems<PostGet>("posts", [response.posts], "date");
         this.router.navigate(["/"]);
       },
     });

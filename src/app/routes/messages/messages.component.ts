@@ -151,7 +151,7 @@ export class AppMessaging {
           this.messages.set(data.messages);
           this.totalPages.set(data.total_pages);
           this.isLoading.set(false);
-          this.swManager.addFetchedItems("messages", [...data.messages], "date");
+          this.swManager.addFetchedItems<MessageGet>("messages", [...data.messages], "date");
         },
       });
   }
@@ -208,7 +208,11 @@ export class AppMessaging {
           this.userThreads.set(data.messages);
           this.totalPages.set(data.total_pages);
           this.isLoading.set(false);
-          this.swManager.addFetchedItems("threads", [...data.messages], "latestMessage");
+          this.swManager.addFetchedItems<FullThread>(
+            "threads",
+            [...data.messages],
+            "latestMessage",
+          );
         },
       });
   }

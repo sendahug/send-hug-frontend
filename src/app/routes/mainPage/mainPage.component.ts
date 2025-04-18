@@ -76,7 +76,11 @@ export class MainPage {
       .pipe(switchMap(() => this.apiClient.get<MainPageResponse>("")))
       .subscribe((data) => {
         this.updatePostsInterface(data);
-        this.swManager.addFetchedItems("posts", [...data.recent, ...data.suggested], "date");
+        this.swManager.addFetchedItems<PostGet>(
+          "posts",
+          [...data.recent, ...data.suggested],
+          "date",
+        );
       });
   }
 

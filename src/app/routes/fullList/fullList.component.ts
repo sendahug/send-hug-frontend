@@ -114,7 +114,7 @@ export class FullList {
       )
       .subscribe((data) => {
         this.updateInterface(data);
-        this.swManager.addFetchedItems("posts", data.posts, "date");
+        this.swManager.addFetchedItems<PostGet>("posts", data.posts, "date");
       });
   }
 

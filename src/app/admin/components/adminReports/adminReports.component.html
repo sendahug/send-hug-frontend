@@ -175,7 +175,7 @@
 
 <display-name-edit-form
   *ngIf="nameEditMode()"
-  [editedItem]="toEdit()"
+  [editedItem]="userToEdit()"
   [reportData]="reportData()"
   (editMode)="changeMode($event, 'EditName')"
   (updatedDetails)="updateUserReport($event)"
@@ -192,7 +192,7 @@
 
 <post-edit-form
   *ngIf="postEditMode()"
-  [editedItem]="toEdit()"
+  [editedItem]="postToEdit()"
   [reportData]="reportData()"
   [isAdmin]="true"
   (editMode)="changeMode($event, 'EditPost')"

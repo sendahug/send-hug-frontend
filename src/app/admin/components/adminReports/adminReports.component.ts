@@ -44,7 +44,8 @@ import {
   UpdatedUserReportResponse,
   GetReportsResponse,
 } from "@app/interfaces/api";
-import { type ReportData, type EditReportData } from "@app/interfaces/report.interface";
+import { type ReportData, type EditReportUserData } from "@app/interfaces/report.interface";
+import { PostGet } from "@app/interfaces/post.interface";
 
 @Component({
   selector: "app-admin-reports",
@@ -60,7 +61,8 @@ export class AdminReports {
   currentUserReportsPage = signal(1);
   isLoading = signal(false);
   // edit popup sub-component variables
-  toEdit = signal<any>({ id: 0, displayName: "", text: "" });
+  userToEdit = signal<EditReportUserData>({ id: 0, displayName: "" });
+  postToEdit = signal<PostGet>({} as PostGet);
   nameEditMode = signal(false);
   postEditMode = signal(false);
   reportData = signal<ReportData>({
@@ -148,7 +150,7 @@ export class AdminReports {
   Programmer: Shir Bar Lev.
   */
   editUser(reportID: number, userID: number, displayName: string) {
-    this.toEdit.set({
+    this.userToEdit.set({
       displayName,
       id: userID,
     });
@@ -169,7 +171,7 @@ export class AdminReports {
   Programmer: Shir Bar Lev.
   */
   editPost(postID: number, postText: string, reportID: number) {
-    this.toEdit.set({ text: postText, id: postID });
+    this.postToEdit.set({ text: postText, id: postID } as PostGet);
     this.postEditMode.set(true);
     this.reportData.set({
       reportID,

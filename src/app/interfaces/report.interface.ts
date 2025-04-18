@@ -59,8 +59,7 @@ export interface ReportData {
   postID?: number;
 }
 
-export interface EditReportData {
+export interface EditReportUserData {
   id: number;
   displayName: string;
-  text: string;
 }

@@ -185,7 +185,7 @@
   *ngIf="deleteMode()"
   (editMode)="changeMode($event, 'Delete')"
   [toDelete]="toDelete()"
-  [reportData]="reportData"
+  [reportData]="reportData()"
   [itemToDelete]="itemToDelete()"
   (deleted)="removeReport($event)"
 ></item-delete-form>

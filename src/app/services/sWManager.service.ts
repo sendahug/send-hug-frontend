@@ -189,10 +189,12 @@ export class SWManager {
   openDatabase() {
     return openDB<MyDB>("send-hug", this.databaseVersion, {
       upgrade(db, oldVersion, _newVersion, transaction) {
+        /* eslint-disable no-fallthrough */
+        /* we need it to run through the whole flow */
         switch (oldVersion) {
           // if there was no previous version
           // @ts-expect-error - ignored because we need it to run through the whole flow
-          case 0:
+          case 0: {
             // create store for posts
             const postStore = db.createObjectStore("posts", {
               keyPath: "id",
@@ -218,9 +220,10 @@ export class SWManager {
               keyPath: "id",
             });
             threadStore.createIndex("latest", "latestMessage");
+          }
           // if the previous version the user had is 1
           // @ts-expect-error - ignored because we need it to run through the whole flow
-          case 1:
+          case 1: {
             // change posts store's date index to order by ISO date string
             const postsStore = transaction.objectStore("posts");
             postsStore.deleteIndex("date");
@@ -235,6 +238,7 @@ export class SWManager {
             const threadsStore = transaction.objectStore("threads");
             threadsStore.deleteIndex("latest");
             threadsStore.createIndex("latest", "isoDate");
+          }
           // If the previous version is 3
           // @ts-expect-error - ignored because we need it to run through the whole flow
           case 3:
@@ -251,6 +255,7 @@ export class SWManager {
               keyPath: "id",
             });
         }
+        /* eslint-enable no-fallthrough */
       },
     });
   }

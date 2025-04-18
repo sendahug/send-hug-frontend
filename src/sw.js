@@ -171,6 +171,7 @@ self.addEventListener("fetch", function (event) {
         // if the URL to fetch is not one of the static assets, return fetch request
         if (urlToFetch.endsWith(".js") || fetchTarget.includes(serverUrl)) {
           return fetch(urlToFetch, { headers: event.request.headers }).catch(function (err) {
+            console.log(err);
             return response;
           });
         }
@@ -225,7 +226,7 @@ self.addEventListener("message", function (event) {
 
 // push event listener
 self.addEventListener("push", function (event) {
-  pushData = event.data.json();
+  const pushData = event.data.json();
 
   event.waitUntil(
     // show the user the notification
@@ -237,7 +238,7 @@ self.addEventListener("push", function (event) {
 });
 
 // push subscription change
-self.addEventListener("pushsubscriptionchange", (event) => {
+self.addEventListener("pushsubscriptionchange", (_event) => {
   // get the clients using the service worker
   self.clients.matchAll().then((clients) => {
     clients.forEach((client) => {

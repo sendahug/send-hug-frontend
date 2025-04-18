@@ -74,7 +74,7 @@ describe("ErrorPage", () => {
     const errorPageDOM = fixture.nativeElement;
     const error = {
       title: "Sorry!",
-      message: `The page you were looking for doesn\'t exist.`,
+      message: `The page you were looking for doesn't exist.`,
       code: 404,
     };
 

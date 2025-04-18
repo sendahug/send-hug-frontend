@@ -53,7 +53,7 @@ export class ErrorPage {
   // Error message to display onscreen
   error = signal<ErrorMessage>({
     title: "Sorry!",
-    message: `The page you were looking for doesn\'t exist.`,
+    message: `The page you were looking for doesn't exist.`,
     code: 404,
   });
   // icons

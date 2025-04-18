@@ -4,7 +4,7 @@ orbs:
   cypress: cypress-io/cypress@3.3.1
   codecov: codecov/codecov@4.1.0
 jobs:
-  format:
+  lint:
     docker:
       - image: cimg/node:lts
     steps:

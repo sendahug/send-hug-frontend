@@ -74,7 +74,11 @@ module.exports = [
   {
     name: "Sign up and Login",
     limit: "6 kB",
-    path: ["dist/assets/signUpPage.component-*.js", "dist/assets/loginPage.component-*.js"],
+    path: [
+      "dist/assets/signUpPage.component-*.js",
+      "dist/assets/loginPage.component-*.js",
+      "dist/asserts/verifyEmail.component-*.js",
+    ],
   },
   {
     name: "Vendor scripts",

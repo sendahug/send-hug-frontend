@@ -42,8 +42,7 @@ import { AlertsService } from "@app/services/alerts.service";
 import { ItemsService } from "@app/services/items.service";
 import { SWManager } from "@app/services/sWManager.service";
 import { ApiClientService } from "@app/services/apiClient.service";
-import { type OtherUser } from "@app/interfaces/otherUser.interface";
-import { type PartialUser, type UserBlockData } from "@app/interfaces/user.interface";
+import { type PartialUser, type UserBlockData, OtherUser } from "@app/interfaces/user.interface";
 import { type UpdateReportResponse, type OtherUserResponse } from "@app/interfaces/api";
 
 @Injectable({

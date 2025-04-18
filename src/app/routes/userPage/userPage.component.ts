@@ -40,9 +40,8 @@ import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { CommonModule } from "@angular/common";
 
 // App-related imports
-import { PartialUser, User } from "@app/interfaces/user.interface";
+import { PartialUser, User, OtherUser } from "@app/interfaces/user.interface";
 import { AuthService } from "@app/services/auth.service";
-import { OtherUser } from "@app/interfaces/otherUser.interface";
 import { SWManager } from "@app/services/sWManager.service";
 import { ApiClientService } from "@app/services/apiClient.service";
 import { AlertsService } from "@app/services/alerts.service";

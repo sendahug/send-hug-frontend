@@ -42,7 +42,7 @@ import { type IdbStoreType } from "@app/interfaces/types";
 import { type MessageGet } from "@app/interfaces/message.interface";
 import { type PostGet } from "@app/interfaces/post.interface";
 import { type FullThread } from "@app/interfaces/thread.interface";
-import { type OtherUser } from "@app/interfaces/otherUser.interface";
+import { type OtherUser } from "@app/interfaces/user.interface";
 import {
   MyDB,
   IDBPost,

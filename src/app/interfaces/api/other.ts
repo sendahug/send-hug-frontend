@@ -29,7 +29,7 @@
   SOFTWARE.
 */
 
-import { OtherUser } from "@app/interfaces/otherUser.interface";
+import { OtherUser } from "@app/interfaces/user.interface";
 import { ReportGet } from "@app/interfaces/report.interface";
 import { PostGet } from "@app/interfaces/post.interface";
 

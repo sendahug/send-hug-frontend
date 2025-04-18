@@ -39,7 +39,7 @@ import { RouterLink } from "@angular/router";
 // App-related import
 import { type PostGet } from "@app/interfaces/post.interface";
 import { type ReportType, type ReportCreate } from "@app/interfaces/report.interface";
-import { type OtherUser } from "@app/interfaces/otherUser.interface";
+import { type OtherUser } from "@app/interfaces/user.interface";
 import { AuthService } from "@app/services/auth.service";
 import { AlertsService } from "@app/services/alerts.service";
 import { ValidationService } from "@app/services/validation.service";

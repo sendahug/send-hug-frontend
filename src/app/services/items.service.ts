@@ -38,7 +38,7 @@ import { BehaviorSubject, tap } from "rxjs";
 // App-related imports
 import { type PostGet } from "@app/interfaces/post.interface";
 import { type MessageCreate } from "@app/interfaces/message.interface";
-import { type OtherUser } from "@app/interfaces/otherUser.interface";
+import { type OtherUser } from "@app/interfaces/user.interface";
 import { AlertsService } from "@app/services/alerts.service";
 import { SWManager } from "@app/services/sWManager.service";
 import { ApiClientService } from "@app/services/apiClient.service";

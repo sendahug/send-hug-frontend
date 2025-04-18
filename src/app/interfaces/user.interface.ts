@@ -54,22 +54,27 @@ export interface UserPreferences {
   previousInteractionNotifications: boolean;
 }
 
-export interface User {
-  id?: number;
+export interface OtherUser {
+  id: number;
   displayName: string;
   receivedH: number;
   givenH: number;
   posts: number;
-  loginCount: number;
   role: Role;
+  blocked?: boolean;
+  releaseDate?: Date;
+  selectedIcon: iconCharacters;
+  iconColours: UserIconColours;
+}
+
+export interface User extends OtherUser {
+  loginCount: number;
   jwt: string;
   blocked: boolean;
   releaseDate: Date | undefined;
   autoRefresh: boolean;
   pushEnabled: boolean;
   refreshRate: number;
-  selectedIcon: iconCharacters;
-  iconColours: UserIconColours;
   firebaseId: string;
   emailVerified: boolean;
   preferences: UserPreferences;
@@ -86,7 +91,7 @@ export interface BlockedUser {
   receivedH: number;
   givenH: number;
   posts: number;
-  role: string;
+  role: Role;
   blocked?: boolean;
   releaseDate?: Date;
 }

@@ -29,8 +29,7 @@
   SOFTWARE.
 */
 
-import { OtherUser } from "@app/interfaces/otherUser.interface";
-import { User } from "@app/interfaces/user.interface";
+import { User, OtherUser } from "@app/interfaces/user.interface";
 
 export interface OtherUserResponse {
   user: OtherUser;

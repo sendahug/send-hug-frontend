@@ -140,9 +140,12 @@ describe("NewItem", () => {
   // Check that it triggers the items service when creating a new post
   it("sendPost() - should send a post", () => {
     const mockNewPost = {
-      id: 1,
       text: "new post",
       givenHugs: 0,
+    };
+    const mockAddedPost = {
+      ...mockNewPost,
+      id: 1,
       user: "",
       userId: 0,
       date: new Date("2020-01-01"),
@@ -152,7 +155,7 @@ describe("NewItem", () => {
     const newItem = fixture.componentInstance;
     const newItemDOM = fixture.nativeElement;
     const apiClientSpy = spyOn(newItem["apiClient"], "post").and.returnValue(
-      of({ success: true, posts: mockNewPost }),
+      of({ success: true, posts: mockAddedPost }),
     );
     const successAlertSpy = spyOn(newItem["alertService"], "createSuccessAlert");
     const addItemSpy = spyOn(newItem["swManager"], "addFetchedItems");
@@ -168,7 +171,7 @@ describe("NewItem", () => {
 
     expect(apiClientSpy).toHaveBeenCalledWith("posts", jasmine.objectContaining(mockNewPost));
     expect(successAlertSpy).toHaveBeenCalledWith("Your post was published!");
-    expect(addItemSpy).toHaveBeenCalledWith("posts", [mockNewPost], "date");
+    expect(addItemSpy).toHaveBeenCalledWith("posts", [mockAddedPost], "date");
     expect(navigateSpy).toHaveBeenCalledWith(["/"]);
   });
 

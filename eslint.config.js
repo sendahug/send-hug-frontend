@@ -2,20 +2,16 @@ import { defineConfig } from "eslint/config";
 import eslint from "@eslint/js";
 import tseslint from "typescript-eslint";
 import globals from "globals";
-import eslintPluginPrettierRecommended from "eslint-plugin-prettier/recommended";
+import eslintConfigPrettier from "eslint-config-prettier/flat";
 import jasmine from "eslint-plugin-jasmine";
 import pluginCypress from "eslint-plugin-cypress/flat";
 
 export default defineConfig([
   eslint.configs.recommended,
-  eslintPluginPrettierRecommended,
+  eslintConfigPrettier,
   {
     files: ["src/**/*.spec.ts"],
-    extends: [
-      tseslint.configs.strict,
-      eslintPluginPrettierRecommended,
-      jasmine.configs.recommended,
-    ],
+    extends: [tseslint.configs.strict, eslintConfigPrettier, jasmine.configs.recommended],
     languageOptions: {
       globals: {
         ...globals.node,
@@ -29,7 +25,7 @@ export default defineConfig([
   },
   {
     files: ["src/**/*.ts"],
-    extends: [tseslint.configs.strict, eslintPluginPrettierRecommended],
+    extends: [tseslint.configs.strict, eslintConfigPrettier],
     plugins: {
       "@typescript-eslint": tseslint.plugin,
     },
@@ -40,11 +36,7 @@ export default defineConfig([
   },
   {
     files: ["e2e/**/*.ts"],
-    extends: [
-      tseslint.configs.strict,
-      eslintPluginPrettierRecommended,
-      pluginCypress.configs.recommended,
-    ],
+    extends: [tseslint.configs.strict, eslintConfigPrettier, pluginCypress.configs.recommended],
     languageOptions: {
       globals: {
         ...globals.node,
@@ -52,6 +44,7 @@ export default defineConfig([
       },
     },
     plugins: {
+      "@typescript-eslint": tseslint.plugin,
       cypress: pluginCypress,
     },
   },

@@ -153,6 +153,67 @@ describe("PostEditForm", () => {
     expect(resultSpy).toHaveBeenCalledWith(reportPostResponse);
   });
 
+  it("should handle errors when editing the post", () => {
+    const validationService = TestBed.inject(ValidationService);
+    const validateSpy = spyOn(validationService, "validateItemAgainst").and.returnValue(
+      (_control) => null,
+    );
+
+    const fixture = TestBed.createComponent(PostEditForm);
+    const popUp = fixture.componentInstance;
+    const popUpDOM = fixture.nativeElement;
+    const originalItem = {
+      id: 1,
+      userId: 4,
+      user: "me",
+      text: "hi",
+      date: new Date(),
+      givenHugs: 0,
+      sentHugs: [],
+    };
+    popUp.isAdmin = false;
+    popUp.editedItem = originalItem;
+    const newText = "new text";
+    const serverResponse = {
+      success: true,
+      updated: {
+        id: 1,
+        userId: 4,
+        user: "me",
+        text: newText,
+        date: new Date(),
+        givenHugs: 0,
+      },
+    };
+    fixture.detectChanges();
+
+    const apiClientSpy = spyOn(popUp["apiClient"], "patch").and.returnValue(of(serverResponse));
+    const updateReportSpy = spyOn(popUp, "updateReportIfNecessary").and.throwError("Error");
+    const emitSpy = spyOn(popUp.editMode, "emit");
+    const resultSpy = spyOn(popUp.updateResult, "emit");
+    const alertSpy = spyOn(popUp["alertService"], "createSuccessAlert");
+    const errorAlertSpy = spyOn(popUp["alertService"], "createAlert");
+
+    popUpDOM.querySelector("#postText").value = newText;
+    popUpDOM.querySelector("#postText").dispatchEvent(new Event("input"));
+    popUpDOM.querySelectorAll(".sendData")[0].click();
+    fixture.detectChanges();
+
+    expect(validateSpy).toHaveBeenCalledWith("post");
+    const updatedItem = { ...originalItem };
+    updatedItem["text"] = newText;
+
+    expect(apiClientSpy).toHaveBeenCalledWith(`posts/${originalItem.id}`, updatedItem);
+    expect(updateReportSpy).toHaveBeenCalledWith(null, serverResponse);
+    expect(emitSpy).not.toHaveBeenCalled();
+    expect(alertSpy).not.toHaveBeenCalled();
+    expect(resultSpy).not.toHaveBeenCalled();
+    expect(errorAlertSpy).toHaveBeenCalledWith({
+      type: "Error",
+      message: "An error occurred: Error: Error",
+    });
+  });
+
   it("should send a different message if the report was closed", () => {
     const validationService = TestBed.inject(ValidationService);
     const validateSpy = spyOn(validationService, "validateItemAgainst").and.returnValue(
@@ -416,6 +477,39 @@ describe("PostEditForm", () => {
           reportId: undefined,
         });
 
+        expect(adminServiceSpy).not.toHaveBeenCalled();
+        done();
+      },
+    });
+  });
+
+  it("should not close the report if there's no report data", (done: DoneFn) => {
+    const fixture = TestBed.createComponent(PostEditForm);
+    const popUp = fixture.componentInstance;
+    const originalItem = { text: "hi", id: 2 } as PostGet;
+    popUp.reportData = null;
+    popUp.isAdmin = true;
+    popUp.editedItem = originalItem;
+    const newText = "new text";
+    const serverResponse = {
+      success: true,
+      updated: {
+        id: 1,
+        userId: 4,
+        user: "me",
+        text: newText,
+        date: new Date(),
+        givenHugs: 0,
+      },
+    };
+    fixture.detectChanges();
+    const adminServiceSpy = spyOn(popUp["adminService"], "closeReport");
+
+    (
+      popUp.updateReportIfNecessary(true, serverResponse) as Observable<PostAndReportResponse>
+    ).subscribe({
+      error: (error) => {
+        expect(error).toEqual("No report data provided. Cannot close the report.");
         expect(adminServiceSpy).not.toHaveBeenCalled();
         done();
       },

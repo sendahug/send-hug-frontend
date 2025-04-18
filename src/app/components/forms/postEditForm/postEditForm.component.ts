@@ -33,7 +33,7 @@
 // Angular imports
 import { Component, Input, Output, EventEmitter, OnInit } from "@angular/core";
 import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
-import { map, mergeMap, of } from "rxjs";
+import { map, mergeMap, of, throwError } from "rxjs";
 import { CommonModule } from "@angular/common";
 
 // App-related import
@@ -123,6 +123,12 @@ export class PostEditForm implements OnInit {
           this.updateResult.emit(response);
           this.editMode.emit(false);
         },
+        error: (error: Error) => {
+          this.alertService.createAlert({
+            type: "Error",
+            message: `An error occurred: ${error}`,
+          });
+        },
       });
   }
 
@@ -136,7 +142,8 @@ export class PostEditForm implements OnInit {
     // If there's a Close Report value and the admin selected
     // to close it, also close the report.
     if (closeReport === true) {
-      if (!this.reportData) return of();
+      if (!this.reportData)
+        return throwError(() => "No report data provided. Cannot close the report.");
 
       return this.adminService
         .closeReport(this.reportData.reportID, false, postResponse.updated.id)

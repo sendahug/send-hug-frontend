@@ -90,7 +90,7 @@ describe("ItemsService", () => {
     // mock response
     const mockResponse = {
       message: {
-        date: "Mon, 08 Jun 2020 14:43:15 GMT",
+        date: new Date("Mon, 08 Jun 2020 14:43:15 GMT"),
         from: {
           displayName: "user",
         },

@@ -123,7 +123,7 @@ export class PostEditForm implements OnInit {
           this.updateResult.emit(response);
           this.editMode.emit(false);
         },
-        error: (error: any) => {
+        error: (error: Error) => {
           this.alertService.createAlert({
             type: "Error",
             message: `An error occurred: ${error}`,

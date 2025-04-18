@@ -315,6 +315,7 @@ describe("ItemDeleteForm", () => {
     itemDeleteForm.reportData = {
       reportID: 2,
       postID: 4,
+      userID: 0,
     };
     const mockSubscription = new Subscription();
     mockSubscription.unsubscribe();
@@ -335,6 +336,7 @@ describe("ItemDeleteForm", () => {
     const report = {
       reportID: 2,
       postID: 4,
+      userID: 0,
     };
     expect(deleteSpy).toHaveBeenCalledWith(true);
     expect(deleteServiceSpy).toHaveBeenCalledWith(2, report, true);
@@ -404,6 +406,7 @@ describe("ItemDeleteForm", () => {
     itemDeleteForm.reportData = {
       reportID: 2,
       postID: 4,
+      userID: 0,
     };
     const deleteSpy = spyOn(itemDeleteForm, "deletePost").and.callThrough();
     const emitSpy = spyOn(itemDeleteForm.editMode, "emit");

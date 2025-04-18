@@ -164,6 +164,7 @@ describe("PostEditForm", () => {
     popUp.reportData = {
       reportID: 1,
       postID: 2,
+      userID: 0,
     };
     popUp.isAdmin = true;
     popUp.editedItem = originalItem;
@@ -226,6 +227,7 @@ describe("PostEditForm", () => {
     popUp.reportData = {
       reportID: 1,
       postID: 2,
+      userID: 0,
     };
     popUp.isAdmin = true;
     popUp.editedItem = originalItem;
@@ -292,6 +294,7 @@ describe("PostEditForm", () => {
     popUp.reportData = {
       reportID: 2,
       postID: 1,
+      userID: 0,
     };
     popUp.isAdmin = true;
     popUp.editedItem = originalItem;
@@ -349,6 +352,7 @@ describe("PostEditForm", () => {
     popUp.reportData = {
       reportID: 1,
       postID: 2,
+      userID: 0,
     };
     popUp.isAdmin = true;
     popUp.editedItem = originalItem;
@@ -375,7 +379,7 @@ describe("PostEditForm", () => {
     const fixture = TestBed.createComponent(PostEditForm);
     const popUp = fixture.componentInstance;
     const originalItem = { text: "hi", id: 2 } as PostGet;
-    popUp.reportData = undefined;
+    popUp.reportData = null;
     popUp.isAdmin = false;
     popUp.editedItem = originalItem;
     const newText = "new text";
@@ -423,6 +427,7 @@ describe("PostEditForm", () => {
     popUp.reportData = {
       reportID: 1,
       postID: 2,
+      userID: 0,
     };
     popUp.isAdmin = true;
     popUp.editedItem = originalItem;

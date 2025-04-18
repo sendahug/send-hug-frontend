@@ -127,6 +127,7 @@ describe("ItemsService", () => {
         expect(alertSpy).toHaveBeenCalledWith("Your message was sent!");
         expect(addSpy).toHaveBeenCalledWith("messages", {
           ...mockResponse.message,
+          date: new Date(mockResponse.message.date),
           isoDate: new Date(message.date).toISOString(),
         });
         done();

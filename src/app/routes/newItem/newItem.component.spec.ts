@@ -139,8 +139,12 @@ describe("NewItem", () => {
   // Check that it triggers the items service when creating a new post
   it("sendPost() - should send a post", () => {
     const mockNewPost = {
+      id: 1,
       text: "new post",
       givenHugs: 0,
+      user: "",
+      userId: 0,
+      date: new Date("2020-01-01"),
     };
     TestBed.inject(ActivatedRoute).url = of([{ path: "Post" } as UrlSegment]);
     const fixture = TestBed.createComponent(NewItem);

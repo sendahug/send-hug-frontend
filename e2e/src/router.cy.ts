@@ -51,7 +51,7 @@ describe("Send A Hug Router", () => {
 
     // outbox
     cy.visit("http://localhost:3000/messages/outbox");
-    cy.wait(1000);
+    cy.url().should("equal", "http://localhost:3000/messages/outbox");
     cy.get("app-messages").should("be.visible").should("not.be.undefined");
     cy.get("h1").eq(0).should("have.text", "outbox");
     // check messages route is marked active
@@ -59,7 +59,7 @@ describe("Send A Hug Router", () => {
 
     // threads
     cy.visit("http://localhost:3000/messages/threads");
-    cy.wait(1000);
+    cy.url().should("equal", "http://localhost:3000/messages/threads");
     cy.get("app-messages").should("be.visible").should("not.be.undefined");
     cy.get("h1").eq(0).should("have.text", "threads");
     // check messages route is marked active
@@ -67,7 +67,7 @@ describe("Send A Hug Router", () => {
 
     // thread
     cy.visit("http://localhost:3000/messages/thread/1");
-    cy.wait(1000);
+    cy.url().should("equal", "http://localhost:3000/messages/thread/1");
     cy.get("app-messages").should("be.visible").should("not.be.undefined");
     cy.get("h1").eq(0).should("have.text", "thread");
     // check messages route is marked active
@@ -78,13 +78,13 @@ describe("Send A Hug Router", () => {
   it("should show the correct sub-route - new item", () => {
     // new post
     cy.visit("http://localhost:3000/new/Post");
-    cy.wait(1000);
+    cy.url().should("equal", "http://localhost:3000/new/Post");
     cy.get("app-new-item").should("be.visible").should("not.be.undefined");
     cy.get("#newTitle").should("have.text", "New Post");
 
     // new message
     cy.visit("http://localhost:3000/new/Message");
-    cy.wait(1000);
+    cy.url().should("equal", "http://localhost:3000/new/Message");
     cy.get("app-new-item").should("be.visible").should("not.be.undefined");
     cy.get("#newTitle").should("have.text", "New Message");
   });
@@ -109,7 +109,7 @@ describe("Send A Hug Router", () => {
   // TODO: Figure out why that doesn't work
   after(() => {
     cy.visit("http://localhost:3000/user");
-    cy.wait(1000);
+    cy.url().should("equal", "http://localhost:3000/user");
     cy.get("button").contains("Log Out").scrollIntoView().click();
   });
 });

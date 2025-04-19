@@ -3,11 +3,10 @@ describe("Send A Hug Router", () => {
   // TODO: figure out why this isn't persisting
   before(() => {
     cy.visit("http://localhost:3000/login");
-    cy.wait(500);
     cy.get("#username").type(Cypress.env("ADMIN_USERNAME"));
     cy.get("#password").type(Cypress.env("ADMIN_PASSWORD"));
     cy.get("#logIn").click();
-    cy.wait(1000);
+    cy.url().should("equal", "http://localhost:3000/");
   });
 
   // check the user is sent to the right page upon navigation
@@ -44,7 +43,7 @@ describe("Send A Hug Router", () => {
   it("should show the correct sub-route - messages", () => {
     // inbox
     cy.visit("http://localhost:3000/messages/inbox");
-    cy.wait(1000);
+    cy.url().should("equal", "http://localhost:3000/messages/inbox");
     cy.get("app-messages").should("be.visible").should("not.be.undefined");
     cy.get("h1").eq(0).should("have.text", "inbox");
     // check messages route is marked active

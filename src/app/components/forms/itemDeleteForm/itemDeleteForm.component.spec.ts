@@ -315,6 +315,7 @@ describe("ItemDeleteForm", () => {
     itemDeleteForm.reportData = {
       reportID: 2,
       postID: 4,
+      userID: 0,
     };
     const mockSubscription = new Subscription();
     mockSubscription.unsubscribe();
@@ -335,6 +336,7 @@ describe("ItemDeleteForm", () => {
     const report = {
       reportID: 2,
       postID: 4,
+      userID: 0,
     };
     expect(deleteSpy).toHaveBeenCalledWith(true);
     expect(deleteServiceSpy).toHaveBeenCalledWith(2, report, true);
@@ -404,6 +406,7 @@ describe("ItemDeleteForm", () => {
     itemDeleteForm.reportData = {
       reportID: 2,
       postID: 4,
+      userID: 0,
     };
     const deleteSpy = spyOn(itemDeleteForm, "deletePost").and.callThrough();
     const emitSpy = spyOn(itemDeleteForm.editMode, "emit");
@@ -418,5 +421,22 @@ describe("ItemDeleteForm", () => {
     expect(deleteSpy).not.toHaveBeenCalled();
     expect(emitSpy).toHaveBeenCalledWith(false);
     done();
+  });
+
+  it("shouldn't delete in admin mode if there's no report data", () => {
+    const fixture = TestBed.createComponent(ItemDeleteForm);
+    const itemDeleteForm = fixture.componentInstance;
+    itemDeleteForm.toDelete = "ad post";
+    itemDeleteForm.itemToDelete = 2;
+    itemDeleteForm.reportData = undefined;
+    const serviceDeleteSpy = spyOn(itemDeleteForm["adminService"], "deletePost");
+    fixture.detectChanges();
+
+    // click the 'delete and close report button'
+    itemDeleteForm.deletePost(true);
+    fixture.detectChanges();
+
+    // check the exit method was called
+    expect(serviceDeleteSpy).not.toHaveBeenCalled();
   });
 });

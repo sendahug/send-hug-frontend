@@ -125,6 +125,6 @@ describe("guards/common", () => {
     const result = getQueryParamsFromPath(path);
 
     expect(Object.keys(result)).toEqual(["user", "page"]);
-    expect(result["beep"]).toBeUndefined;
+    expect(result["beep"]).toBeUndefined();
   });
 });

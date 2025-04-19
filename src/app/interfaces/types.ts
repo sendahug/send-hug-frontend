@@ -35,3 +35,5 @@ export type FullListType = "New" | "Suggested";
 export type LowercaseFullListType = "new" | "suggested";
 export type MessageType = "inbox" | "outbox" | "threads" | "thread";
 export type IdbStoreType = "posts" | "messages" | "users" | "threads";
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type APIParams = { [key: string]: any };

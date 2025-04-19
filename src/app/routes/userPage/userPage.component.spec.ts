@@ -47,7 +47,7 @@ import { MockComponent, MockProvider } from "ng-mocks";
 import { UserPage } from "./userPage.component";
 import { AuthService } from "@app/services/auth.service";
 import { mockAuthedUser } from "@tests/mockData";
-import { OtherUser } from "@app/interfaces/otherUser.interface";
+import { OtherUser } from "@app/interfaces/user.interface";
 import { iconCharacters } from "@app/interfaces/types";
 import { DisplayNameEditForm } from "@forms/displayNameEditForm/displayNameEditForm.component";
 import { ReportForm } from "@forms/reportForm/reportForm.component";

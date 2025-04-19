@@ -77,6 +77,7 @@ class MockChild {
 
 describe("TeleportDirective", () => {
   let fixture: ComponentFixture<MockPage>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let mockPageDOM: any; // according to Angular's own typing
 
   // Before each test, configure testing environment

@@ -53,6 +53,8 @@ import { PostEditForm } from "@forms/postEditForm/postEditForm.component";
 import { DisplayNameEditForm } from "@forms/displayNameEditForm/displayNameEditForm.component";
 import { ItemDeleteForm } from "@forms/itemDeleteForm/itemDeleteForm.component";
 import { AdminService } from "@app/services/admin.service";
+import { iconCharacters } from "@app/interfaces/types";
+import { PostGet } from "@app/interfaces/post.interface";
 
 // REPORTS PAGE
 // ==================================================================
@@ -212,6 +214,21 @@ describe("AdminReports", () => {
           date: new Date(),
           dismissed: true,
           closed: true,
+          receivedH: 0,
+          givenH: 0,
+          posts: 0,
+          role: {
+            id: 1,
+            name: "user",
+            permissions: [],
+          },
+          selectedIcon: "kitty" as iconCharacters,
+          iconColours: {
+            character: "#000000",
+            rbg: "#FFFFFF",
+            lbg: "",
+            item: "",
+          },
         },
         reportID: 1,
       }),
@@ -255,6 +272,21 @@ describe("AdminReports", () => {
           date: new Date(),
           dismissed: true,
           closed: true,
+          receivedH: 0,
+          givenH: 0,
+          posts: 0,
+          role: {
+            id: 1,
+            name: "user",
+            permissions: [],
+          },
+          selectedIcon: "kitty" as iconCharacters,
+          iconColours: {
+            character: "#000000",
+            rbg: "#FFFFFF",
+            lbg: "",
+            item: "",
+          },
         },
         reportID: undefined,
       }),
@@ -303,7 +335,7 @@ describe("AdminReports", () => {
     // check expectations
     expect(editSpy).toHaveBeenCalledWith(1, 10, "user");
     expect(adminReports.nameEditMode()).toBeTrue();
-    expect(adminReports.toEdit()).toEqual({
+    expect(adminReports.userToEdit()).toEqual({
       displayName: "user",
       id: 10,
     });
@@ -574,7 +606,7 @@ describe("AdminReports", () => {
     fixture.detectChanges();
 
     // start the popup
-    adminReports.toEdit.set({
+    adminReports.userToEdit.set({
       displayName: "displayName",
       id: 2,
     });
@@ -607,7 +639,7 @@ describe("AdminReports", () => {
     fixture.detectChanges();
 
     // start the popup
-    adminReports.toEdit.set("post");
+    adminReports.postToEdit.set({ text: "", id: 1 } as PostGet);
     adminReports.postEditMode.set(true);
     adminReports.reportData.set({
       reportID: 5,
@@ -664,7 +696,7 @@ describe("AdminReports", () => {
     fixture.detectChanges();
 
     // start the popup
-    adminReports.toEdit.set({
+    adminReports.userToEdit.set({
       displayName: "displayName",
       id: 2,
     });
@@ -704,7 +736,7 @@ describe("AdminReports", () => {
     fixture.detectChanges();
 
     // start the popup
-    adminReports.toEdit.set({
+    adminReports.userToEdit.set({
       displayName: "displayName",
       id: 2,
     });
@@ -744,7 +776,7 @@ describe("AdminReports", () => {
     fixture.detectChanges();
 
     // start the popup
-    adminReports.toEdit.set({
+    adminReports.userToEdit.set({
       displayName: "displayName",
       id: 2,
     });
@@ -798,7 +830,7 @@ describe("AdminReports", () => {
     fixture.detectChanges();
 
     // start the popup
-    adminReports.toEdit.set("post");
+    adminReports.postToEdit.set({ text: "", id: 1 } as PostGet);
     adminReports.postEditMode.set(true);
     adminReports.reportData.set({
       reportID: 5,
@@ -842,7 +874,7 @@ describe("AdminReports", () => {
     fixture.detectChanges();
 
     // start the popup
-    adminReports.toEdit.set("post");
+    adminReports.postToEdit.set({ text: "", id: 1 } as PostGet);
     adminReports.postEditMode.set(true);
     adminReports.reportData.set({
       reportID: 5,
@@ -886,7 +918,7 @@ describe("AdminReports", () => {
     fixture.detectChanges();
 
     // start the popup
-    adminReports.toEdit.set("post");
+    adminReports.postToEdit.set({ text: "", id: 1 } as PostGet);
     adminReports.postEditMode.set(true);
     adminReports.reportData.set({
       reportID: 5,

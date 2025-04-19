@@ -52,8 +52,6 @@ import { TeleportService } from "./teleport.service";
 })
 class MockPage {
   @ViewChild("profileContainer") profileContainer!: ElementRef;
-
-  constructor() {}
 }
 
 describe("TeleportService", () => {

@@ -1,6 +1,5 @@
 /*
-  Report interface
-  Based on the Report Model
+  Various response interfaces used by the app.
   ---------------------------------------------------
   MIT License
 
@@ -30,36 +29,9 @@
   SOFTWARE.
 */
 
-export type ReportType = "User" | "Post";
-
-export interface ReportCreate {
-  id?: number;
-  type: ReportType;
-  userID: number;
-  postID?: number;
-  reporter?: number;
-  reportReason: string;
-  date: Date;
-  dismissed?: boolean;
-  closed?: boolean;
-  displayName?: string;
-  text?: string;
-}
-
-export interface ReportGet extends ReportCreate {
-  id: number;
-  reporter: number;
-  dismissed: boolean;
-  closed: boolean;
-}
-
-export interface ReportData {
-  userID: number;
-  reportID: number;
-  postID?: number;
-}
-
-export interface EditReportUserData {
-  id: number;
-  displayName: string;
-}
+export * from "./admin";
+export * from "./messages";
+export * from "./notifications";
+export * from "./other";
+export * from "./posts";
+export * from "./users";

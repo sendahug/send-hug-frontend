@@ -39,17 +39,8 @@ import { AuthService } from "@app/services/auth.service";
 import { AdminService } from "@app/services/admin.service";
 import { AlertsService } from "@app/services/alerts.service";
 import { ApiClientService } from "@app/services/apiClient.service";
-
-interface BlockedUser {
-  id: number;
-  displayName: string;
-  receivedH: number;
-  givenH: number;
-  posts: number;
-  role: string;
-  blocked?: boolean;
-  releaseDate?: Date;
-}
+import { type BlockedUser } from "@app/interfaces/user.interface";
+import { type BlockUserResponse } from "@app/interfaces/api";
 
 @Component({
   selector: "app-admin-blocks",
@@ -160,13 +151,13 @@ export class AdminBlocks {
   */
   unblock(userID: number) {
     this.apiClient
-      .patch(`users/${userID}`, {
+      .patch<BlockUserResponse>(`users/${userID}`, {
         id: userID,
         releaseDate: null,
         blocked: false,
       })
       .subscribe({
-        next: (response: any) => {
+        next: (response: BlockUserResponse) => {
           this.alertsService.createSuccessAlert(
             `User ${response.updated.displayName} has been unblocked.`,
           );

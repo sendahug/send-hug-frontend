@@ -45,6 +45,7 @@ import { AuthService } from "./auth.service";
 import { mockAuthedUser } from "@tests/mockData";
 import { ApiClientService } from "./apiClient.service";
 import { ItemsService } from "./items.service";
+import { iconCharacters } from "@app/interfaces/types";
 
 describe("AdminService", () => {
   let adminService: AdminService;
@@ -300,10 +301,24 @@ describe("AdminService", () => {
         displayName: "name",
         receivedHugs: 2,
         givenHugs: 2,
-        role: "user",
+        role: {
+          id: 1,
+          name: "user",
+          permissions: [],
+        },
         blocked: true,
         releaseDate: new Date("2020-09-29 19:17:31.072"),
         postsNum: 1,
+        receivedH: 0,
+        givenH: 0,
+        posts: 0,
+        selectedIcon: "kitty" as iconCharacters,
+        iconColours: {
+          character: "#000000",
+          rbg: "#FFFFFF",
+          lbg: "",
+          item: "",
+        },
       },
       total_pages: 1,
     };
@@ -350,10 +365,24 @@ describe("AdminService", () => {
         displayName: "name",
         receivedHugs: 2,
         givenHugs: 2,
-        role: "user",
         blocked: true,
         releaseDate: new Date("2020-09-29 19:17:31.072"),
         postsNum: 1,
+        receivedH: 0,
+        givenH: 0,
+        posts: 0,
+        role: {
+          id: 1,
+          name: "user",
+          permissions: [],
+        },
+        selectedIcon: "kitty" as iconCharacters,
+        iconColours: {
+          character: "#000000",
+          rbg: "#FFFFFF",
+          lbg: "",
+          item: "",
+        },
       },
       total_pages: 1,
     };

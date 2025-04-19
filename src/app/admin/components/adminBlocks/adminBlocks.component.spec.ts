@@ -50,14 +50,20 @@ import { Loader } from "@common/loader/loader.component";
 import { mockAuthedUser } from "@tests/mockData";
 import { ApiClientService } from "@app/services/apiClient.service";
 import { AdminService } from "@app/services/admin.service";
+import { iconCharacters } from "@app/interfaces/types";
+import { BlockedUser } from "@app/interfaces/user.interface";
 
-const mockBlockedUsers = [
+const mockBlockedUsers: BlockedUser[] = [
   {
     id: 15,
     displayName: "name",
     receivedH: 2,
     givenH: 2,
-    role: "user",
+    role: {
+      id: 1,
+      name: "user",
+      permissions: [],
+    },
     blocked: true,
     releaseDate: new Date("2120-09-29 19:17:31.072"),
     posts: 1,
@@ -173,6 +179,21 @@ describe("Blocks Page", () => {
           date: new Date(),
           dismissed: true,
           closed: true,
+          receivedH: 0,
+          givenH: 0,
+          posts: 0,
+          role: {
+            id: 1,
+            name: "user",
+            permissions: [],
+          },
+          selectedIcon: "kitty" as iconCharacters,
+          iconColours: {
+            character: "#000000",
+            rbg: "#FFFFFF",
+            lbg: "",
+            item: "",
+          },
         },
         reportID: undefined,
       }),
@@ -217,6 +238,21 @@ describe("Blocks Page", () => {
           date: new Date(),
           dismissed: true,
           closed: true,
+          receivedH: 0,
+          givenH: 0,
+          posts: 0,
+          role: {
+            id: 1,
+            name: "user",
+            permissions: [],
+          },
+          selectedIcon: "kitty" as iconCharacters,
+          iconColours: {
+            character: "#000000",
+            rbg: "#FFFFFF",
+            lbg: "",
+            item: "",
+          },
         },
         reportID: undefined,
       }),

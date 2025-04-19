@@ -38,7 +38,7 @@ import { CommonModule } from "@angular/common";
 
 // App-related imports
 import { AuthService } from "@app/services/auth.service";
-import { type MessageType } from "@app/interfaces/types";
+import { APIParams, type MessageType } from "@app/interfaces/types";
 import { FullThread, ParsedThread } from "@app/interfaces/thread.interface";
 import { type MessageGet } from "@app/interfaces/message.interface";
 import { SWManager } from "@app/services/sWManager.service";
@@ -47,20 +47,7 @@ import { Loader } from "@common/loader/loader.component";
 import { ItemDeleteForm } from "@forms/itemDeleteForm/itemDeleteForm.component";
 import { AppSingleMessage } from "@app/components/messaging/message/message.component";
 import { AppSingleThread } from "@app/components/messaging/thread/thread.component";
-
-interface MessagesResponse {
-  success: boolean;
-  messages: MessageGet[];
-  total_pages: number;
-  current_page: number;
-}
-
-interface ThreadResponse {
-  success: boolean;
-  messages: FullThread[];
-  total_pages: number;
-  current_page: number;
-}
+import { MessagesResponse, ThreadResponse } from "@app/interfaces/api";
 
 @Component({
   selector: "app-messages",
@@ -150,7 +137,7 @@ export class AppMessaging {
     this.isIdbFetchLoading.set(true);
 
     const fetchFromIdb$ = this.fetchMessagesFromIdb();
-    const fetchParams: { [key: string]: any } = {
+    const fetchParams: APIParams = {
       page: this.currentPage(),
       type: this.messType(),
     };
@@ -164,7 +151,7 @@ export class AppMessaging {
           this.messages.set(data.messages);
           this.totalPages.set(data.total_pages);
           this.isLoading.set(false);
-          this.swManager.addFetchedItems("messages", [...data.messages], "date");
+          this.swManager.addFetchedItems<MessageGet>("messages", [...data.messages], "date");
         },
       });
   }
@@ -221,7 +208,11 @@ export class AppMessaging {
           this.userThreads.set(data.messages);
           this.totalPages.set(data.total_pages);
           this.isLoading.set(false);
-          this.swManager.addFetchedItems("threads", [...data.messages], "latestMessage");
+          this.swManager.addFetchedItems<FullThread>(
+            "threads",
+            [...data.messages],
+            "latestMessage",
+          );
         },
       });
   }

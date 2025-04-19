@@ -1,6 +1,5 @@
 /*
-  Report interface
-  Based on the Report Model
+  Various response interfaces used by the app (messages routes).
   ---------------------------------------------------
   MIT License
 
@@ -30,36 +29,24 @@
   SOFTWARE.
 */
 
-export type ReportType = "User" | "Post";
+import { MessageGet } from "@app/interfaces/message.interface";
+import { FullThread } from "@app/interfaces/thread.interface";
 
-export interface ReportCreate {
-  id?: number;
-  type: ReportType;
-  userID: number;
-  postID?: number;
-  reporter?: number;
-  reportReason: string;
-  date: Date;
-  dismissed?: boolean;
-  closed?: boolean;
-  displayName?: string;
-  text?: string;
+export interface MessagesResponse {
+  success: boolean;
+  messages: MessageGet[];
+  total_pages: number;
+  current_page: number;
 }
 
-export interface ReportGet extends ReportCreate {
-  id: number;
-  reporter: number;
-  dismissed: boolean;
-  closed: boolean;
+export interface ThreadResponse {
+  success: boolean;
+  messages: FullThread[];
+  total_pages: number;
+  current_page: number;
 }
 
-export interface ReportData {
-  userID: number;
-  reportID: number;
-  postID?: number;
-}
-
-export interface EditReportUserData {
-  id: number;
-  displayName: string;
+export interface SendMessageResponse {
+  success: boolean;
+  message: MessageGet;
 }

@@ -47,6 +47,7 @@ import { BehaviorSubject, of, Subscription } from "rxjs";
 import { provideZoneChangeDetection, signal } from "@angular/core";
 import { MockComponent, MockProvider } from "ng-mocks";
 import { setViewport } from "@web/test-runner-commands";
+import { By } from "@angular/platform-browser";
 
 import { AppNavMenu } from "./navigationMenu.component";
 import { NotificationsTab } from "@app/components/layout/notifications/notifications.component";
@@ -128,13 +129,13 @@ describe("AppNavMenu", () => {
     const navMenuHtml = fixture.debugElement.nativeElement;
     fixture.detectChanges();
 
-    let navMenu = navMenuHtml.querySelector("#navLinks");
+    const navMenu = navMenuHtml.querySelector("#navLinks");
     expect(navMenu).toBeDefined();
     expect(navMenu!.children.length).not.toBe(0);
 
     // check each navingation item to ensure it contains a link
-    let navMenuItems = navMenu!.children;
-    for (var i = 0; i < navMenuItems.length; i++) {
+    const navMenuItems = navMenu!.children;
+    for (let i = 0; i < navMenuItems.length; i++) {
       expect(navMenuItems.item(i)).toBeDefined();
       expect(navMenuItems!.item(i)!.children.item(0)!.getAttribute("href")).toBeDefined();
       expect(navMenuItems!.item(i)!.children.item(0)!.getAttribute("href")).not.toBe("");
@@ -507,5 +508,30 @@ describe("AppNavMenu", () => {
 
     expect(componentHtml.querySelector("#notVerified")).toBeDefined();
     expect(componentHtml.querySelector("#headerBanner").children.length).toBe(1);
+  });
+
+  it("closes the navigation menu", () => {
+    const fixture = TestBed.createComponent(AppNavMenu);
+    const navMenu = fixture.componentInstance;
+    const navMenuHtml = fixture.debugElement.nativeElement;
+    fixture.detectChanges();
+
+    navMenu.showNotifications.set(true);
+    const changeSpy = spyOn(navMenu, "changeMode").and.callThrough();
+    fixture.detectChanges();
+
+    // check the menu shows
+    expect(navMenuHtml.querySelector("app-notifications")).toBeDefined();
+
+    // emit the close event
+    const popup = fixture.debugElement.query(By.css("app-notifications"))
+      .componentInstance as NotificationsTab;
+    popup.NotificationsMode.emit(false);
+    fixture.detectChanges();
+
+    // check it was closed
+    expect(changeSpy).toHaveBeenCalledWith(false);
+    expect(navMenu.showNotifications()).toBeFalse();
+    expect(navMenuHtml.querySelector("app-notifications")).toBeNull();
   });
 });

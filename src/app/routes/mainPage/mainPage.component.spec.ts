@@ -167,8 +167,7 @@ describe("MainPage", () => {
 
     const fixture = TestBed.createComponent(MainPage);
     const mainPage = fixture.componentInstance;
-    // This shouldn't be possible but just to be on the safe side
-    // @ts-ignore
+    // @ts-expect-error - testing an edge case that shouldn't even be possible
     mainPage.updatePostsInterface(mockNetworkResponse);
 
     expect(mainPage.newPosts()).toEqual([]);
@@ -216,7 +215,7 @@ describe("MainPage", () => {
     });
   });
 
-  it("should update the interface with the fetched posts", (done: DoneFn) => {
+  it("should update the UI with the fetched posts", (done: DoneFn) => {
     // Just to make sure it doesn't get called during the test
     spyOn(MainPage.prototype, "fetchPosts");
     const fixture = TestBed.createComponent(MainPage);
@@ -263,6 +262,7 @@ describe("MainPage", () => {
     const newPostsSetSpy = spyOn(mainPage.newPosts, "set").and.callThrough();
 
     // set up mock data
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const mockData = { recent: undefined as any, suggested: suggestedItems, success: true };
     fixture.detectChanges();
 

@@ -43,11 +43,7 @@ import { ValidationService } from "@app/services/validation.service";
 import { ItemsService } from "@app/services/items.service";
 import { PopUp } from "@common/popUp/popUp.component";
 import { TeleportDirective } from "@app/directives/teleport.directive";
-
-interface SendHugResponse {
-  success: boolean;
-  updated: string;
-}
+import { type SendHugResponse } from "@app/interfaces/api";
 
 @Component({
   selector: "app-send-hug-form",

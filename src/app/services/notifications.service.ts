@@ -39,16 +39,11 @@ import { interval, Subscription, Observable, tap } from "rxjs";
 import { AlertsService } from "./alerts.service";
 import { SWManager } from "./sWManager.service";
 import { ApiClientService } from "./apiClient.service";
-import { type Notification } from "@app/interfaces/notification.interface";
-
-interface GetNotificationsResponse {
-  success: boolean;
-  notifications: Notification[];
-  newCount: number;
-  current_page: number;
-  total_pages: number;
-  totalItems: number;
-}
+import {
+  type CreateUpdatePushSubscriptionResponse,
+  type GetNotificationsResponse,
+} from "@app/interfaces/api";
+import { type APIParams } from "@app/interfaces/types";
 
 const pushPermissionDeniedErr =
   "Push notifications permission has been denied. Go to your browser settings, remove Send A Hug from the denied list, and then activate push notifications again.";
@@ -112,7 +107,7 @@ export class NotificationService {
    * @param read - type of notifications to fetch (read/unread only).
    */
   getNotifications(page: number = 1, read?: boolean) {
-    const params: { [key: string]: any } = { page };
+    const params: APIParams = { page };
     if (read !== undefined) params["readStatus"] = read;
 
     // gets Notifications
@@ -212,12 +207,19 @@ export class NotificationService {
     return this.requestSubscription()
       .then((subscription) => {
         // send the info to the server
-        this.apiClient.post("push_subscriptions", JSON.stringify(subscription)).subscribe({
-          next: (response: any) => {
-            this.subId = response.subId;
-            this.alertsService.createSuccessAlert("Subscribed to push notifications successfully!");
-          },
-        });
+        this.apiClient
+          .post<CreateUpdatePushSubscriptionResponse>(
+            "push_subscriptions",
+            JSON.stringify(subscription),
+          )
+          .subscribe({
+            next: (response) => {
+              this.subId = response.subId;
+              this.alertsService.createSuccessAlert(
+                "Subscribed to push notifications successfully!",
+              );
+            },
+          });
       })
       .catch((err) => {
         if (typeof err == "string" && err.includes("permission denied")) {
@@ -252,9 +254,12 @@ export class NotificationService {
       this.requestSubscription().then((subscription) => {
         // update the saved subscription in the database
         this.apiClient
-          .patch(`push_subscriptions/${this.subId}`, JSON.stringify(subscription))
+          .patch<CreateUpdatePushSubscriptionResponse>(
+            `push_subscriptions/${this.subId}`,
+            JSON.stringify(subscription),
+          )
           .subscribe({
-            next: (response: any) => {
+            next: (response) => {
               this.subId = response.subId;
             },
           });

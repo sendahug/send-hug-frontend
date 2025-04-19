@@ -43,6 +43,7 @@ export class TeleportDirective {
   teleport = input.required<string>();
 
   constructor(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     private templateRef: TemplateRef<any>,
     private viewContainerRef: ViewContainerRef,
     private teleportService: TeleportService,

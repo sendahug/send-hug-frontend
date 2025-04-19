@@ -45,6 +45,8 @@ import { ItemDeleteForm } from "@forms/itemDeleteForm/itemDeleteForm.component";
 import { DisplayNameEditForm } from "@forms/displayNameEditForm/displayNameEditForm.component";
 import { Loader } from "@common/loader/loader.component";
 
+/* eslint-disable @typescript-eslint/no-extraneous-class */
+/* The module notation requires it */
 @NgModule({
   imports: [
     ReactiveFormsModule,

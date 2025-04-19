@@ -37,16 +37,16 @@ import { BehaviorSubject, tap } from "rxjs";
 
 // App-related imports
 import { type PostGet } from "@app/interfaces/post.interface";
-import { type MessageCreate, type MessageGet } from "@app/interfaces/message.interface";
-import { type OtherUser } from "@app/interfaces/otherUser.interface";
+import { type MessageCreate } from "@app/interfaces/message.interface";
+import { type OtherUser } from "@app/interfaces/user.interface";
 import { AlertsService } from "@app/services/alerts.service";
 import { SWManager } from "@app/services/sWManager.service";
 import { ApiClientService } from "@app/services/apiClient.service";
-
-interface SendMessageResponse {
-  success: boolean;
-  message: MessageGet;
-}
+import {
+  type SearchResultsResponse,
+  type SendHugResponse,
+  type SendMessageResponse,
+} from "@app/interfaces/api";
 
 @Injectable({
   providedIn: "root",
@@ -88,8 +88,8 @@ export class ItemsService {
   Programmer: Shir Bar Lev.
   */
   sendHug(postId: number) {
-    this.apiClient.post(`posts/${postId}/hugs`, {}).subscribe({
-      next: (_response: any) => {
+    this.apiClient.post<SendHugResponse>(`posts/${postId}/hugs`, {}).subscribe({
+      next: (_response) => {
         this.alertsService.createSuccessAlert("Your hug was sent!");
         // Alert the posts that this item received a hug
         this.receivedAHug.next(postId);
@@ -110,8 +110,8 @@ export class ItemsService {
     return this.apiClient.post<SendMessageResponse>("messages", message).pipe(
       tap((response) => {
         this.alertsService.createSuccessAlert("Your message was sent!");
-        let isoDate = new Date(response.message.date).toISOString();
-        let message = {
+        const isoDate = new Date(response.message.date).toISOString();
+        const message = {
           ...response.message,
           isoDate: isoDate,
         };
@@ -133,9 +133,13 @@ export class ItemsService {
     this.isSearching.set(true);
 
     return this.apiClient
-      .post("", { search: searchQuery }, { page: `${this.postSearchPage()}` })
+      .post<SearchResultsResponse>(
+        "",
+        { search: searchQuery },
+        { page: `${this.postSearchPage()}` },
+      )
       .subscribe({
-        next: (response: any) => {
+        next: (response) => {
           this.userSearchResults.set(response.users);
           this.postSearchResults.set(response.posts);
           this.postSearchPage.set(response.current_page);

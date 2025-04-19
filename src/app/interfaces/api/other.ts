@@ -1,6 +1,5 @@
 /*
-  Report interface
-  Based on the Report Model
+  Various response interfaces used by the app (other endpoints).
   ---------------------------------------------------
   MIT License
 
@@ -30,36 +29,26 @@
   SOFTWARE.
 */
 
-export type ReportType = "User" | "Post";
+import { OtherUser } from "@app/interfaces/user.interface";
+import { ReportGet } from "@app/interfaces/report.interface";
+import { PostGet } from "@app/interfaces/post.interface";
 
-export interface ReportCreate {
-  id?: number;
-  type: ReportType;
-  userID: number;
-  postID?: number;
-  reporter?: number;
-  reportReason: string;
-  date: Date;
-  dismissed?: boolean;
-  closed?: boolean;
-  displayName?: string;
-  text?: string;
+export interface CreateReportResponse {
+  success: boolean;
+  report: ReportGet;
 }
 
-export interface ReportGet extends ReportCreate {
-  id: number;
-  reporter: number;
-  dismissed: boolean;
-  closed: boolean;
+export interface SendHugResponse {
+  success: boolean;
+  updated: string;
 }
 
-export interface ReportData {
-  userID: number;
-  reportID: number;
-  postID?: number;
-}
-
-export interface EditReportUserData {
-  id: number;
-  displayName: string;
+export interface SearchResultsResponse {
+  success: boolean;
+  users: OtherUser[];
+  posts: PostGet[];
+  user_results: number;
+  post_results: number;
+  current_page: number;
+  total_pages: number;
 }

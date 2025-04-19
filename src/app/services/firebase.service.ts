@@ -93,9 +93,6 @@ export class FirebaseService {
     url: `${import.meta.env["VITE_BASE_URL"]}/verify`,
   });
 
-  // CTOR
-  constructor() {}
-
   /**
    * Gets the currently-logged in user from firebase.
    * @returns the currently-logged in user from firebase if there is one.

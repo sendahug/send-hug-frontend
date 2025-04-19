@@ -65,9 +65,6 @@ export class ValidationService {
     },
   };
 
-  // CTOR
-  constructor() {}
-
   /*
   Function Name: validateItemAgainst()
   Function Description: Validates the given item to ensure it fits the rules.

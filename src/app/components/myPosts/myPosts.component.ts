@@ -44,13 +44,7 @@ import { ApiClientService } from "@app/services/apiClient.service";
 import { Loader } from "@common/loader/loader.component";
 import { SinglePost } from "@common/post/post.component";
 import { ItemDeleteForm } from "@forms/itemDeleteForm/itemDeleteForm.component";
-
-interface MyPostsResponse {
-  page: number;
-  posts: PostGet[];
-  total_pages: number;
-  success: boolean;
-}
+import { type MyPostsResponse } from "@app/interfaces/api";
 
 @Component({
   selector: "app-my-posts",
@@ -140,7 +134,7 @@ export class MyPosts implements OnInit {
         this.totalPages.set(data.total_pages);
         this.posts.set(data.posts);
         this.isLoading.set(false);
-        this.swManager.addFetchedItems("posts", data.posts, "date");
+        this.swManager.addFetchedItems<PostGet>("posts", data.posts, "date");
       });
   }
 

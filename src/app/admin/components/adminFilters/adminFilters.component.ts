@@ -39,6 +39,7 @@ import { FormBuilder, Validators } from "@angular/forms";
 import { AdminService } from "@app/services/admin.service";
 import { AlertsService } from "@app/services/alerts.service";
 import { ApiClientService } from "@app/services/apiClient.service";
+import { GetFiltersResponse, AddFiltersResponse, DeleteFiltersResponse } from "@app/interfaces/api";
 
 @Component({
   selector: "app-admin-filters",
@@ -79,8 +80,8 @@ export class AdminFilters {
     this.isLoading.set(true);
 
     // try to fetch the list of words
-    this.apiClient.get("filters", { page: `${this.currentPage()}` }).subscribe({
-      next: (response: any) => {
+    this.apiClient.get<GetFiltersResponse>("filters", { page: `${this.currentPage()}` }).subscribe({
+      next: (response: GetFiltersResponse) => {
         this.filteredPhrases.set(response.words);
         this.totalPages.set(response.total_pages);
         this.isLoading.set(false);
@@ -112,8 +113,8 @@ export class AdminFilters {
     }
 
     // try to add the filter
-    this.apiClient.post("filters", { word: filter }).subscribe({
-      next: (response: any) => {
+    this.apiClient.post<AddFiltersResponse>("filters", { word: filter }).subscribe({
+      next: (response: AddFiltersResponse) => {
         this.alertsService.createSuccessAlert(
           `The phrase ${response.added.filter} was added to the list of filtered words!`,
         );
@@ -131,8 +132,8 @@ export class AdminFilters {
   */
   removeFilter(filter: number) {
     // try to delete the filter
-    this.apiClient.delete(`filters/${filter}`).subscribe({
-      next: (response: any) => {
+    this.apiClient.delete<DeleteFiltersResponse>(`filters/${filter}`).subscribe({
+      next: (response: DeleteFiltersResponse) => {
         this.alertsService.createSuccessAlert(
           `The phrase ${response.deleted.filter} was removed from the list of filtered words.`,
         );

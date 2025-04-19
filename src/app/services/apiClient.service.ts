@@ -38,6 +38,7 @@ import { Observable, catchError, of, switchMap, tap, throwError } from "rxjs";
 // App-related imports
 import { AlertsService } from "@app/services/alerts.service";
 import { AuthService } from "./auth.service";
+import { APIParams } from "@app/interfaces/types";
 
 @Injectable({
   providedIn: "root",
@@ -72,7 +73,7 @@ export class ApiClientService {
    * @param params - a key-value mapping of parameters to set.
    * @returns theh HttpParams object.
    */
-  getHttpParams(params: { [key: string]: any }): HttpParams {
+  getHttpParams(params: APIParams): HttpParams {
     return new HttpParams({
       fromObject: params,
     });
@@ -84,7 +85,7 @@ export class ApiClientService {
    * @param params - any query parameters.
    * @returns an observable of the response / an error if one occurred.
    */
-  get<T extends Object>(endpoint: string, params?: { [key: string]: any }): Observable<T> {
+  get<T extends object>(endpoint: string, params?: APIParams): Observable<T> {
     return this.updateAuthToken()
       .pipe(
         switchMap((_token) =>
@@ -108,10 +109,10 @@ export class ApiClientService {
    * @param params - any query parameters.
    * @returns an observable of the response / an error if one occurred.
    */
-  post<T extends Object>(
+  post<T extends object>(
     endpoint: string,
-    body: any,
-    params?: { [key: string]: any },
+    body: object | string,
+    params?: APIParams,
   ): Observable<T> {
     return this.updateAuthToken()
       .pipe(
@@ -136,10 +137,10 @@ export class ApiClientService {
    * @param params - any query parameters.
    * @returns an observable of the response / an error if one occurred.
    */
-  patch<T extends Object>(
+  patch<T extends object>(
     endpoint: string,
-    body: any,
-    params?: { [key: string]: any },
+    body: object | string,
+    params?: APIParams,
   ): Observable<T> {
     return this.updateAuthToken()
       .pipe(
@@ -163,7 +164,7 @@ export class ApiClientService {
    * @param params - any query parameters.
    * @returns an observable of the response / an error if one occurred.
    */
-  delete<T extends Object>(endpoint: string, params?: { [key: string]: any }): Observable<T> {
+  delete<T extends object>(endpoint: string, params?: APIParams): Observable<T> {
     return this.updateAuthToken()
       .pipe(
         switchMap((_token) =>

@@ -37,7 +37,7 @@ import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { CommonModule } from "@angular/common";
 
 // App-related imports
-import { type PostCreate } from "@app/interfaces/post.interface";
+import { PostGet, type PostCreate } from "@app/interfaces/post.interface";
 import { type MessageCreate } from "@app/interfaces/message.interface";
 import { ItemsService } from "@app/services/items.service";
 import { AuthService } from "@app/services/auth.service";
@@ -45,6 +45,7 @@ import { AlertsService } from "@app/services/alerts.service";
 import { ValidationService } from "@app/services/validation.service";
 import { ApiClientService } from "@app/services/apiClient.service";
 import { SWManager } from "@app/services/sWManager.service";
+import { type PostCreateResponse } from "@app/interfaces/api";
 
 @Component({
   selector: "app-new-item",
@@ -146,16 +147,16 @@ export class NewItem implements OnInit {
 
     // otherwise create the post
     // create a new post object to send
-    let newPost: PostCreate = {
+    const newPost: PostCreate = {
       text: postText,
       date: new Date(),
       givenHugs: 0,
     };
 
-    this.apiClient.post("posts", newPost).subscribe({
-      next: (response: any) => {
+    this.apiClient.post<PostCreateResponse>("posts", newPost).subscribe({
+      next: (response: PostCreateResponse) => {
         this.alertService.createSuccessAlert("Your post was published!");
-        this.swManager.addFetchedItems("posts", [response.posts], "date");
+        this.swManager.addFetchedItems<PostGet>("posts", [response.posts], "date");
         this.router.navigate(["/"]);
       },
     });
@@ -200,7 +201,7 @@ export class NewItem implements OnInit {
     // if the user is sending a message to someone else and there's text
     // in the text field, make the request
     // create a new message object to send
-    let newMessage: MessageCreate = {
+    const newMessage: MessageCreate = {
       from: {
         displayName: this.authService.userData()!.displayName!,
       },

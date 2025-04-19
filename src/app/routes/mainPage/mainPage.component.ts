@@ -42,12 +42,7 @@ import { type PostGet } from "@app/interfaces/post.interface";
 import { CommonModule } from "@angular/common";
 import { Loader } from "@common/loader/loader.component";
 import { SinglePost } from "@common/post/post.component";
-
-interface MainPageResponse {
-  recent: PostGet[];
-  suggested: PostGet[];
-  success?: boolean;
-}
+import { type MainPageResponse } from "@app/interfaces/api";
 
 @Component({
   selector: "app-main-page",
@@ -81,7 +76,11 @@ export class MainPage {
       .pipe(switchMap(() => this.apiClient.get<MainPageResponse>("")))
       .subscribe((data) => {
         this.updatePostsInterface(data);
-        this.swManager.addFetchedItems("posts", [...data.recent, ...data.suggested], "date");
+        this.swManager.addFetchedItems<PostGet>(
+          "posts",
+          [...data.recent, ...data.suggested],
+          "date",
+        );
       });
   }
 
@@ -109,7 +108,7 @@ export class MainPage {
   }
 
   /**
-   * Updates the main page's interface with the newly fetched data.
+   * Updates the main page's UI with the newly fetched data.
    * @param data - the posts to set as new and suggested posts.
    */
   updatePostsInterface(data: MainPageResponse) {
@@ -122,8 +121,8 @@ export class MainPage {
    * Removes the deleted post from the list of posts.
    * @param postId the ID of the post that was deleted.
    */
-  removeDeletedPost(postId: any) {
-    this.newPosts.set(this.newPosts().filter((post) => post.id != (postId as number)));
-    this.suggestedPosts.set(this.suggestedPosts().filter((post) => post.id != (postId as number)));
+  removeDeletedPost(postId: number) {
+    this.newPosts.set(this.newPosts().filter((post) => post.id != postId));
+    this.suggestedPosts.set(this.suggestedPosts().filter((post) => post.id != postId));
   }
 }

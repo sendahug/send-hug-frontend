@@ -42,7 +42,8 @@ import { SWManager } from "@app/services/sWManager.service";
 import { AlertsService } from "@app/services/alerts.service";
 import { PopUp } from "@common/popUp/popUp.component";
 import { TeleportDirective } from "@app/directives/teleport.directive";
-import { type MessageType } from "@app/interfaces/types";
+import { APIParams, type MessageType } from "@app/interfaces/types";
+import { ReportData } from "@app/interfaces/report.interface";
 
 @Component({
   selector: "item-delete-form",
@@ -59,7 +60,7 @@ export class ItemDeleteForm {
   // the item to delete itself
   @Input() itemToDelete: number | undefined;
   @Input() messType: MessageType | undefined;
-  @Input() reportData: any;
+  @Input() reportData?: ReportData;
 
   // CTOR
   constructor(
@@ -162,6 +163,8 @@ export class ItemDeleteForm {
   Programmer: Shir Bar Lev.
   */
   deletePost(closeReport: boolean) {
+    if (!this.reportData) return;
+
     this.adminService.deletePost(this.itemToDelete!, this.reportData, closeReport).add(() => {
       this.deleted.emit(this.itemToDelete);
       this.editMode.emit(false);
@@ -175,7 +178,7 @@ export class ItemDeleteForm {
    * @param params - any query parameters to send with the request.
    * @returns an observable of the response.
    */
-  deleteMultipleItems(url: string, itemType: string, params?: { [key: string]: any }) {
+  deleteMultipleItems(url: string, itemType: string, params?: APIParams) {
     return this.apiClient
       .delete<{ success: boolean; userID: number; deleted: number }>(url, params)
       .pipe(

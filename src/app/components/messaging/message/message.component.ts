@@ -74,8 +74,6 @@ export class AppSingleMessage {
   toDelete = signal("Message");
   itemToDelete = computed<number>(() => this._message().id);
 
-  constructor() {}
-
   /**
    * Opens the delete popup to delete the current message.
    */

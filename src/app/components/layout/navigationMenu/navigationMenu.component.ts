@@ -210,7 +210,7 @@ export class AppNavMenu implements OnInit, AfterViewInit {
   Programmer: Shir Bar Lev.
   */
   toggleNotifications() {
-    let width = document.documentElement.clientWidth;
+    const width = document.documentElement.clientWidth;
     this.showNotifications.set(true);
 
     // if the viewport is smaller than 650px, the user opened the panel through the
@@ -228,7 +228,7 @@ export class AppNavMenu implements OnInit, AfterViewInit {
   Programmer: Shir Bar Lev.
   */
   toggleSearch() {
-    let width = document.documentElement.clientWidth;
+    const width = document.documentElement.clientWidth;
 
     // if the search is displayed, close it
     if (this.showSearch()) {
@@ -274,8 +274,8 @@ export class AppNavMenu implements OnInit, AfterViewInit {
   */
   @HostListener("window:resize", ["$event"])
   onResize(_event: Event) {
-    let width = document.documentElement.clientWidth;
-    let navMenu = document.getElementById("navMenu") as HTMLDivElement;
+    const width = document.documentElement.clientWidth;
+    const navMenu = document.getElementById("navMenu") as HTMLDivElement;
 
     if (width > 650 && this.menuSize() < navMenu.offsetWidth) {
       this.showMenu.set(true);
@@ -343,7 +343,7 @@ export class AppNavMenu implements OnInit, AfterViewInit {
   Programmer: Shir Bar Lev.
   */
   checkMenuSize() {
-    let navMenu = document.getElementById("navMenu") as HTMLDivElement;
+    const navMenu = document.getElementById("navMenu") as HTMLDivElement;
 
     // if the larger text makes the navigation menu too long, turn it back
     // to the small-viewport menu
@@ -369,8 +369,8 @@ export class AppNavMenu implements OnInit, AfterViewInit {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  changeMode(notificationsOn: any) {
-    this.showNotifications.set(notificationsOn as boolean);
+  changeMode(notificationsOn: boolean) {
+    this.showNotifications.set(notificationsOn);
   }
 
   /**

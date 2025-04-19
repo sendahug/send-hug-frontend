@@ -59,9 +59,6 @@ export class SupportPage implements OnInit {
   faTrashCan = faTrashCan;
   faGratipay = faGratipay;
 
-  // CTOR
-  constructor() {}
-
   /*
   Function Name: ngOnInit()
   Function Description: This method is automatically triggered by Angular once the component
@@ -77,7 +74,7 @@ export class SupportPage implements OnInit {
     document.querySelectorAll(".faqItem").forEach((faqItem) => {
       if (!faqItem.firstElementChild!.textContent) return;
 
-      let item = {
+      const item = {
         href: faqItem.firstElementChild!.id,
         question: faqItem.firstElementChild!.textContent,
       };

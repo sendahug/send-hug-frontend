@@ -40,9 +40,8 @@ import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { CommonModule } from "@angular/common";
 
 // App-related imports
-import { PartialUser, User } from "@app/interfaces/user.interface";
+import { PartialUser, User, OtherUser } from "@app/interfaces/user.interface";
 import { AuthService } from "@app/services/auth.service";
-import { OtherUser } from "@app/interfaces/otherUser.interface";
 import { SWManager } from "@app/services/sWManager.service";
 import { ApiClientService } from "@app/services/apiClient.service";
 import { AlertsService } from "@app/services/alerts.service";
@@ -51,11 +50,8 @@ import { UserIcon } from "@common/userIcon/userIcon.component";
 import { ReportForm } from "@forms/reportForm/reportForm.component";
 import { DisplayNameEditForm } from "@forms/displayNameEditForm/displayNameEditForm.component";
 import { MyPosts } from "@app/components/myPosts/myPosts.component";
-
-interface OtherUserResponse {
-  user: OtherUser;
-  success: boolean;
-}
+import { OtherUserResponse } from "@app/interfaces/api";
+import { type ReportType } from "@app/interfaces/report.interface";
 
 @Component({
   selector: "app-user-page",
@@ -93,7 +89,7 @@ export class UserPage implements OnDestroy {
   editMode = signal(false);
   reportMode = signal(false);
   reportedItem = signal<OtherUser | undefined>(undefined);
-  reportType: "User" = "User";
+  reportType: ReportType = "User";
   // loader sub-component variable
   loaderClass = computed(() => (!this.isIdbFetchLoading() && this.isLoading() ? "header" : ""));
   userId = signal<number | undefined>(undefined);

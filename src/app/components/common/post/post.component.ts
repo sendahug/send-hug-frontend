@@ -56,11 +56,12 @@ import { AuthService } from "@app/services/auth.service";
 import { ItemsService } from "@app/services/items.service";
 import { type PostGet } from "@app/interfaces/post.interface";
 import { SWManager } from "@app/services/sWManager.service";
-import { PostAndReportResponse } from "@app/interfaces/responses";
+import { type PostAndReportResponse } from "@app/interfaces/api";
 import { ItemDeleteForm } from "@forms/itemDeleteForm/itemDeleteForm.component";
 import { ReportForm } from "@forms/reportForm/reportForm.component";
 import { PostEditForm } from "@forms/postEditForm/postEditForm.component";
 import { SendHugForm } from "@forms/sendHugForm/sendHugForm.component";
+import { type ReportType } from "@app/interfaces/report.interface";
 
 @Component({
   selector: "app-single-post",
@@ -90,13 +91,13 @@ export class SinglePost implements AfterViewChecked, OnInit, OnDestroy {
   protected _post: WritableSignal<PostGet | undefined> = signal(undefined);
   postId = computed(() => `${this.type}Post${this._post()?.id || ""}`);
   // edit popup sub-component variables
-  editType: "post" = "post";
+  editType = "post";
   editMode = signal(false);
   deleteMode = signal(false);
-  toDelete: "Post" = "Post";
+  toDelete: ReportType = "Post";
   itemToDelete = computed(() => this._post()?.id);
   reportMode = signal(false);
-  reportType: "Post" = "Post";
+  reportType: ReportType = "Post";
   sendMessageMode = signal(false);
   subscriptions: Subscription[] = [];
   shouldShowSubmenu = signal(true);
@@ -187,7 +188,7 @@ export class SinglePost implements AfterViewChecked, OnInit, OnDestroy {
             givenHugs: this._post()!.givenHugs + 1,
             sentHugs: sent_hugs,
           });
-          this.swManager.addFetchedItems("posts", [this._post()], "date");
+          this.swManager.addFetchedItems<PostGet>("posts", [this._post() as PostGet], "date");
         }
       }),
     );
@@ -331,6 +332,6 @@ export class SinglePost implements AfterViewChecked, OnInit, OnDestroy {
       ...this._post()!,
       ...updatedPost.updatedPost,
     });
-    this.swManager.addFetchedItems("posts", [this._post()], "date");
+    this.swManager.addFetchedItems<PostGet>("posts", [this._post() as PostGet], "date");
   }
 }

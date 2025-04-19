@@ -186,14 +186,14 @@ describe("SiteMap", () => {
     const siteMapDOM = fixture.nativeElement;
     fixture.detectChanges();
 
-    let routeList = siteMapDOM.querySelector("#routeList");
+    const routeList = siteMapDOM.querySelector("#routeList");
     expect(routeList).toBeTruthy();
     expect(routeList!.children.length).not.toBe(0);
     expect(siteMap.routes()).toBeDefined();
 
     // check each navigation item to ensure it contains a link
-    let navLinks = routeList!.querySelectorAll(".routerLink");
-    for (var i = 0; i < navLinks.length; i++) {
+    const navLinks = routeList!.querySelectorAll(".routerLink");
+    for (let i = 0; i < navLinks.length; i++) {
       expect(navLinks[i]).toBeDefined();
       expect(navLinks[i]!.getAttribute("href")).toBeDefined();
       expect(navLinks[i]!.getAttribute("href")).not.toBe("");
@@ -210,9 +210,9 @@ describe("SiteMap", () => {
     const siteMapDOM = fixture.nativeElement;
     fixture.detectChanges();
 
-    let routeList = siteMapDOM.querySelector("#routeList");
-    let navLinks = routeList!.querySelectorAll(".routerLink");
-    let adminPath: Route = {
+    const routeList = siteMapDOM.querySelector("#routeList");
+    const navLinks = routeList!.querySelectorAll(".routerLink");
+    const adminPath: Route = {
       path: "admin",
       children: [
         { path: "", pathMatch: "prefix", component: MockComp, data: { name: "Main Page" } },
@@ -261,9 +261,9 @@ describe("SiteMap", () => {
     const siteMapDOM = fixture.nativeElement;
     fixture.detectChanges();
 
-    let routeList = siteMapDOM.querySelector("#routeList");
-    let navLinks = routeList!.querySelectorAll(".routerLink");
-    let adminPath: Route = {
+    const routeList = siteMapDOM.querySelector("#routeList");
+    const navLinks = routeList!.querySelectorAll(".routerLink");
+    const adminPath: Route = {
       path: "admin",
       children: [
         { path: "", pathMatch: "prefix", component: MockComp, data: { name: "Main Page" } },
@@ -288,7 +288,7 @@ describe("SiteMap", () => {
     expect(authSpy).toHaveBeenCalled();
     expect(siteMap.routes()).not.toContain(adminPath);
     expect(navLinks.length).toBeLessThan(routes.length);
-    for (var i = 0; i < navLinks.length; i++) {
+    for (let i = 0; i < navLinks.length; i++) {
       expect(navLinks[i].textContent).not.toBe("Main Page");
       expect(navLinks[i].textContent).not.toBe("Reports Page");
       expect(navLinks[i].textContent).not.toBe("Blocks Page");
@@ -304,12 +304,12 @@ describe("SiteMap", () => {
     const siteMapDOM = fixture.nativeElement;
     fixture.detectChanges();
 
-    let routeList = siteMapDOM.querySelector("#routeList");
-    let navLinks = routeList!.querySelectorAll(".routerLink");
-    let loginPath: Route = { path: "login", component: MockComp, data: { name: "Login Page" } };
+    const routeList = siteMapDOM.querySelector("#routeList");
+    const navLinks = routeList!.querySelectorAll(".routerLink");
+    const loginPath: Route = { path: "login", component: MockComp, data: { name: "Login Page" } };
 
     expect(siteMap.routes()).not.toContain(loginPath);
-    for (var i = 0; i < navLinks.length; i++) {
+    for (let i = 0; i < navLinks.length; i++) {
       expect(navLinks[i].textContent).not.toBe("Login Page");
     }
   });
@@ -322,9 +322,9 @@ describe("SiteMap", () => {
     const siteMapDOM = fixture.nativeElement;
     fixture.detectChanges();
 
-    let routeList = siteMapDOM.querySelector("#routeList");
-    let navLinks = routeList!.querySelectorAll(".routerLink");
-    let loginPath: Route = { path: "login", component: MockComp, data: { name: "Login Page" } };
+    const routeList = siteMapDOM.querySelector("#routeList");
+    const navLinks = routeList!.querySelectorAll(".routerLink");
+    const loginPath: Route = { path: "login", component: MockComp, data: { name: "Login Page" } };
 
     expect(siteMap.routes()).toContain(loginPath);
     expect(navLinks[navLinks.length - 1].textContent).toBe("Login Page");
@@ -338,10 +338,10 @@ describe("SiteMap", () => {
     const siteMapDOM = fixture.nativeElement;
     fixture.detectChanges();
 
-    let routeList = siteMapDOM.querySelector("#routeList");
+    const routeList = siteMapDOM.querySelector("#routeList");
     let navLinks = routeList!.querySelectorAll(".routerLink");
-    let loginPath: Route = { path: "login", component: MockComp, data: { name: "Login Page" } };
-    let userPath: Route = {
+    const loginPath: Route = { path: "login", component: MockComp, data: { name: "Login Page" } };
+    const userPath: Route = {
       path: "user",
       children: [
         { path: "", pathMatch: "prefix", component: MockComp, data: { name: "Your Page" } },
@@ -358,7 +358,7 @@ describe("SiteMap", () => {
     expect(siteMap.routes()).toContain(loginPath);
     expect(siteMap.routes()).not.toContain(userPath);
     expect(navLinks[navLinks.length - 1].textContent).toBe("Login Page");
-    for (var i = 0; i < navLinks.length; i++) {
+    for (let i = 0; i < navLinks.length; i++) {
       expect(navLinks[i].textContent).not.toBe(userPath.children![0].data!["name"]);
     }
 
@@ -371,7 +371,7 @@ describe("SiteMap", () => {
     expect(siteMap.routes()).not.toContain(loginPath);
     expect(siteMap.routes()).toContain(userPath);
     expect(navLinks[1].textContent).toBe(userPath.children![0].data!["name"]);
-    for (var i = 0; i < navLinks.length; i++) {
+    for (let i = 0; i < navLinks.length; i++) {
       expect(navLinks[i].textContent).not.toBe(loginPath.data!["name"]);
     }
   });

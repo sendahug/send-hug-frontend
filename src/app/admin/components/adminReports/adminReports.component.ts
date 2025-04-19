@@ -39,13 +39,13 @@ import { ApiClientService } from "@app/services/apiClient.service";
 import { HttpErrorResponse } from "@angular/common/http";
 import { type ReportGet } from "@app/interfaces/report.interface";
 import { AlertsService } from "@app/services/alerts.service";
-import { PostAndReportResponse, UpdatedUserReportResponse } from "@app/interfaces/responses";
-
-interface ReportData {
-  userID: number;
-  reportID: number;
-  postID?: number;
-}
+import {
+  PostAndReportResponse,
+  UpdatedUserReportResponse,
+  GetReportsResponse,
+} from "@app/interfaces/api";
+import { type ReportData, type EditReportUserData } from "@app/interfaces/report.interface";
+import { PostGet } from "@app/interfaces/post.interface";
 
 @Component({
   selector: "app-admin-reports",
@@ -61,7 +61,8 @@ export class AdminReports {
   currentUserReportsPage = signal(1);
   isLoading = signal(false);
   // edit popup sub-component variables
-  toEdit = signal<any>(undefined); // TODO: Fix the typing here
+  userToEdit = signal<EditReportUserData>({ id: 0, displayName: "" });
+  postToEdit = signal<PostGet>({} as PostGet);
   nameEditMode = signal(false);
   postEditMode = signal(false);
   reportData = signal<ReportData>({
@@ -104,12 +105,12 @@ export class AdminReports {
 
     // Get reports
     this.apiClient
-      .get("reports", {
+      .get<GetReportsResponse>("reports", {
         userPage: `${this.currentUserReportsPage()}`,
         postPage: `${this.currentPostReportsPage()}`,
       })
       .subscribe({
-        next: (response: any) => {
+        next: (response: GetReportsResponse) => {
           this.userReports.set(response.userReports);
           this.totalUserReportsPages.set(response.totalUserPages);
           this.postReports.set(response.postReports);
@@ -149,7 +150,7 @@ export class AdminReports {
   Programmer: Shir Bar Lev.
   */
   editUser(reportID: number, userID: number, displayName: string) {
-    this.toEdit.set({
+    this.userToEdit.set({
       displayName,
       id: userID,
     });
@@ -170,7 +171,7 @@ export class AdminReports {
   Programmer: Shir Bar Lev.
   */
   editPost(postID: number, postText: string, reportID: number) {
-    this.toEdit.set({ text: postText, id: postID });
+    this.postToEdit.set({ text: postText, id: postID } as PostGet);
     this.postEditMode.set(true);
     this.reportData.set({
       reportID,
@@ -207,7 +208,7 @@ export class AdminReports {
   */
   dismissReport(reportID: number, dismiss: boolean, postID?: number, userID?: number) {
     this.adminService.closeReport(reportID, dismiss, postID, userID).subscribe({
-      next: (response: any) => {
+      next: (response) => {
         // if the report was dismissed, alert the user
         this.alertsService.createSuccessAlert(`Report ${response.updated.id} was dismissed!`);
         if (userID)

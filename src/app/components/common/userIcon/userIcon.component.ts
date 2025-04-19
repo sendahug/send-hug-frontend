@@ -81,7 +81,4 @@ export class UserIcon {
   }));
   svgClass = input<string>("");
   BgPatternSrc = BgPatternSrc;
-
-  // CTOR
-  constructor() {}
 }

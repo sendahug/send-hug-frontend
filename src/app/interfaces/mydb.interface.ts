@@ -1,7 +1,6 @@
 /*
-  User interface
-  Based on the User Model
-  For the user's own profile
+  MyDB interface
+  IndexedDB interface for the Send A Hug application.
   ---------------------------------------------------
   MIT License
 
@@ -31,73 +30,92 @@
   SOFTWARE.
 */
 
+import { DBSchema } from "idb";
 import { iconCharacters } from "./types";
+import { Role, UserIconColours } from "./user.interface";
 
-export interface UserIconColours {
-  character: string;
-  lbg: string;
-  rbg: string;
-  item: string;
-}
+export type IDBObjectType = IDBPost | IDBUser | IDBMessage | IDBThread;
 
-export interface Role {
+export interface IDBPost {
+  date: Date;
+  givenHugs: number;
   id: number;
-  name: string;
-  permissions: string[];
+  isoDate: string;
+  text: string;
+  userId: number;
+  user: string;
+  sentHugs: number[];
 }
 
-export interface UserPreferences {
-  emailNotificationsEnabled: boolean;
-  messageNotifications: boolean;
-  hugsDigestNotifications: boolean;
-  youOkayNotifications: boolean;
-  previousInteractionNotifications: boolean;
-}
-
-export interface OtherUser {
+export interface IDBUser {
   id: number;
   displayName: string;
-  receivedH: number;
   givenH: number;
   posts: number;
+  receivedH: number;
   role: Role;
-  blocked?: boolean;
-  releaseDate?: Date;
   selectedIcon: iconCharacters;
   iconColours: UserIconColours;
 }
 
-export interface User extends OtherUser {
-  loginCount: number;
-  jwt: string;
-  blocked: boolean;
-  releaseDate: Date | undefined;
-  autoRefresh: boolean;
-  pushEnabled: boolean;
-  refreshRate: number;
-  firebaseId: string;
-  emailVerified: boolean;
-  preferences: UserPreferences;
-}
-
-export interface PartialUser {
+export interface IDBMessage {
+  date: Date;
+  for: {
+    displayName: string;
+    selectedIcon?: iconCharacters;
+    iconColours?: UserIconColours;
+  };
+  forId: number;
+  from: {
+    displayName: string;
+    selectedIcon?: iconCharacters;
+    iconColours?: UserIconColours;
+  };
+  fromId: number;
   id: number;
-  displayName: string;
+  isoDate: string;
+  messageText: string;
+  threadID: number;
 }
 
-export interface BlockedUser {
+export interface IDBThread {
+  latestMessage: Date;
+  user1: {
+    displayName: string;
+    selectedIcon: iconCharacters;
+    iconColours: UserIconColours;
+  };
+  user1Id: number;
+  user2: {
+    displayName: string;
+    selectedIcon: iconCharacters;
+    iconColours: UserIconColours;
+  };
+  user2Id: number;
+  numMessages: number;
+  isoDate: string;
   id: number;
-  displayName: string;
-  receivedH: number;
-  givenH: number;
-  posts: number;
-  role: Role;
-  blocked?: boolean;
-  releaseDate?: Date;
 }
 
-export interface UserBlockData {
-  userID: number;
-  isBlocked: boolean;
-  releaseDate?: Date;
+// IndexedDB Database schema
+export interface MyDB extends DBSchema {
+  posts: {
+    key: number;
+    value: IDBPost;
+    indexes: { date: string; user: number; hugs: number };
+  };
+  users: {
+    key: number;
+    value: IDBUser;
+  };
+  messages: {
+    key: number;
+    value: IDBMessage;
+    indexes: { date: string; thread: number };
+  };
+  threads: {
+    key: number;
+    value: IDBThread;
+    indexes: { latest: string };
+  };
 }

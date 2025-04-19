@@ -38,14 +38,15 @@ import { RouterLink } from "@angular/router";
 
 // App-related import
 import { type PostGet } from "@app/interfaces/post.interface";
-import { ReportGet, type ReportCreate } from "@app/interfaces/report.interface";
-import { type OtherUser } from "@app/interfaces/otherUser.interface";
+import { type ReportType, type ReportCreate } from "@app/interfaces/report.interface";
+import { type OtherUser } from "@app/interfaces/user.interface";
 import { AuthService } from "@app/services/auth.service";
 import { AlertsService } from "@app/services/alerts.service";
 import { ValidationService } from "@app/services/validation.service";
 import { ApiClientService } from "@app/services/apiClient.service";
 import { PopUp } from "@common/popUp/popUp.component";
 import { TeleportDirective } from "@app/directives/teleport.directive";
+import { type CreateReportResponse } from "@app/interfaces/api";
 
 // Reasons for submitting a report
 enum postReportReasons {
@@ -88,7 +89,7 @@ export class ReportForm implements OnInit {
   // reported post
   @Input() reportedItem: PostGet | OtherUser | undefined;
   // type of item to report
-  @Input() reportType: "User" | "Post" = "Post";
+  @Input() reportType: ReportType = "Post";
   protected reportedPost = signal<PostGet | undefined>(undefined);
   protected reportedUser = signal<OtherUser | undefined>(undefined);
   reportReasonsText = reportReasonsText;
@@ -124,8 +125,8 @@ export class ReportForm implements OnInit {
    * based on the selected reason.
    * @param selectedRadioButton - the selected element.
    */
-  checkSelectedForOther(selectedRadioButton: any) {
-    const selectedItem = Number(selectedRadioButton.value);
+  checkSelectedForOther(selectedRadioButton: EventTarget | null) {
+    const selectedItem = Number((selectedRadioButton as HTMLInputElement).value);
 
     // If the selected reason is one of the set reasons, simply send it as is
     if (selectedItem <= 2) {
@@ -179,7 +180,7 @@ export class ReportForm implements OnInit {
    * is triggered by pressing the 'report' button in the report form.
    */
   createReport() {
-    let item =
+    const item =
       this.reportType == "User" ? (this.reportedItem as OtherUser) : (this.reportedItem as PostGet);
     let reportReason = this.getSelectedReasonText();
 
@@ -201,8 +202,8 @@ export class ReportForm implements OnInit {
     }
 
     // create a new report
-    let report: ReportCreate = {
-      type: this.reportType as "Post" | "User",
+    const report: ReportCreate = {
+      type: this.reportType as ReportType,
       userID: 0,
       postID: undefined,
       reportReason: reportReason!,
@@ -220,11 +221,11 @@ export class ReportForm implements OnInit {
 
     // pass it on to the items service to send
     // sends the report
-    this.apiClient.post("reports", report).subscribe({
-      next: (response: any) => {
+    this.apiClient.post<CreateReportResponse>("reports", report).subscribe({
+      next: (response) => {
         // if successful, alert the user
-        const sent_report: ReportGet = response.report;
-        let successMessage =
+        const sent_report = response.report;
+        const successMessage =
           sent_report.type == "Post"
             ? `Post number ${sent_report.postID} was successfully reported.`
             : `User ${sent_report.userID} was successfully reported.`;

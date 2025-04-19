@@ -43,12 +43,7 @@ import { SWManager } from "@app/services/sWManager.service";
 import { ApiClientService } from "@app/services/apiClient.service";
 import { SinglePost } from "@common/post/post.component";
 import { Loader } from "@common/loader/loader.component";
-
-interface PostsListResponse {
-  success: boolean;
-  posts: PostGet[];
-  total_pages: number;
-}
+import { type PostsListResponse } from "@app/interfaces/api";
 
 @Component({
   selector: "app-full-list",
@@ -119,7 +114,7 @@ export class FullList {
       )
       .subscribe((data) => {
         this.updateInterface(data);
-        this.swManager.addFetchedItems("posts", data.posts, "date");
+        this.swManager.addFetchedItems<PostGet>("posts", data.posts, "date");
       });
   }
 

@@ -46,24 +46,21 @@ import {
   tap,
   throwError,
 } from "rxjs";
+import { User as FirebaseUser } from "firebase/auth";
 
 // App-related imports
 import { User } from "@app/interfaces/user.interface";
 import { AlertsService } from "@app/services/alerts.service";
 import { SWManager } from "@app/services/sWManager.service";
 import { FirebaseService } from "./firebase.service";
-
-interface UserUpdateResponse {
-  success: boolean;
-  updated: User;
-}
-
-interface GetUserResponse {
-  success: boolean;
-  user: User;
-}
+import { type GetUserResponse, type UserUpdateResponse } from "@app/interfaces/api";
+import { IDBUser } from "@app/interfaces/mydb.interface";
 
 export type ToggleButtonOption = "Enable" | "Disable";
+
+interface ExtendedFirebaseUser extends FirebaseUser {
+  jwt: string;
+}
 
 @Injectable({
   providedIn: "root",
@@ -239,7 +236,7 @@ export class AuthService {
   fetchUser(loggedIn: boolean = false): Observable<User> {
     return this.getUserToken()
       .pipe(
-        tap((firebaseUser: any) => {
+        tap((firebaseUser: ExtendedFirebaseUser) => {
           this.loggedIn.set(loggedIn);
 
           // turn the BehaviorSubject dealing with whether user data was resolved to
@@ -367,7 +364,7 @@ export class AuthService {
     }
 
     // adds the user's data to the users store
-    let user = {
+    const user = {
       id: userData.id,
       displayName: userData.displayName,
       receivedH: userData.receivedH,
@@ -382,7 +379,7 @@ export class AuthService {
         item: userData.iconColours?.item,
       },
     };
-    this.serviceWorkerM.addItem("users", user);
+    this.serviceWorkerM.addItem("users", user as IDBUser);
   }
 
   /**
@@ -445,7 +442,7 @@ export class AuthService {
       )
       .subscribe({
         next: (response) => {
-          this.serviceWorkerM.addItem("users", response.updated);
+          this.serviceWorkerM.addItem("users", response.updated as IDBUser);
         },
         error: (err: HttpErrorResponse) => {
           this.alertsService.createErrorAlert(err);

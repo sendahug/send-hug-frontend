@@ -30,7 +30,7 @@
   SOFTWARE.
 */
 
-interface Post {
+export interface PostCreate {
   id?: number;
   userId?: number;
   user?: string;
@@ -41,9 +41,7 @@ interface Post {
   sentHugs?: number[];
 }
 
-export interface PostCreate extends Post {}
-
-export interface PostGet extends Post {
+export interface PostGet extends PostCreate {
   id: number;
   userId: number;
   user: string;
@@ -51,4 +49,9 @@ export interface PostGet extends Post {
   date: Date;
   givenHugs: number;
   sentHugs?: number[];
+}
+
+export interface PostEditFormData {
+  text: string;
+  id: number;
 }

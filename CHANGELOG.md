@@ -2,6 +2,26 @@
 
 ## Unreleased
 
+### 2025-04-19
+
+#### Changes
+
+- Split the `toEdit` property in the Admin Reports page to two - one for a user to edit and one for a post to edit. While only one can be used at a time, splitting the property allows us to be explicit about the expected type of each property and ensure that the correct type is used in each case. ([#2047](https://github.com/sendahug/send-hug-frontend/pull/2047))
+- If the post edit form is launched from the admin menu without an associated report, the user will now be alerted that that's the case when they try to close edit the post and close the report. This is done to prevent an attempt to close a report that wouldn't be reflected in the back-end due to having no report to update. ([#2047](https://github.com/sendahug/send-hug-frontend/pull/2047))
+
+#### Fixes
+
+- The Admin Reports page incorrectly passed a signal to two of the sub-components, instead of the raw value from the signal. This caused the sub-component to not render correctly as it didn't have the data it needed. The page now passes the right value to the sub-components. ([#2047](https://github.com/sendahug/send-hug-frontend/pull/2047))
+
+#### Chores
+
+- Added eslint for linting the project, as well as a linting step in CI (to run eslint). ([#2047](https://github.com/sendahug/send-hug-frontend/pull/2047))
+- Replaced various 'any' typings with explicit types. Using 'any' is bad practice and should be used as little as possible; the explicit typing makes it easier to ensure the code is correct and easy to understand. ([#2047](https://github.com/sendahug/send-hug-frontend/pull/2047))
+- Fixed various linting errors. This includes: deleted unnecessary empty constructors; replaced variables with constants when they're not modified; replaced unnecessary empty interfaces; deleted unneeded text escapes; and replaced `@ts-ignore` with `@ts-expect-error`. ([#2047](https://github.com/sendahug/send-hug-frontend/pull/2047))
+- Moved all the interfaces to the 'interfaces' folder. This allows us to reuse interfaces and to group them by functionality. ([#2047](https://github.com/sendahug/send-hug-frontend/pull/2047))
+- Fixed an error in the `common` tests where the matcher wasn't called (and instead was just mentioned). The matcher is now called correctly. ([#2047](https://github.com/sendahug/send-hug-frontend/pull/2047))
+- Changed the typing of the generic methods in the SWManager service to properly use TypeScript generics. ([#2047](https://github.com/sendahug/send-hug-frontend/pull/2047))
+
 ### 2025-04-17
 
 #### Changes

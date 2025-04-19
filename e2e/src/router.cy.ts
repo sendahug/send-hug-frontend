@@ -110,6 +110,7 @@ describe("Send A Hug Router", () => {
   after(() => {
     cy.visit("http://localhost:3000/user");
     cy.url().should("equal", "http://localhost:3000/user");
-    cy.get("button").contains("Log Out").scrollIntoView().click();
+    cy.get("button").contains("Log Out").scrollIntoView();
+    cy.get("button").contains("Log Out").click();
   });
 });

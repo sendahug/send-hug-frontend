@@ -182,6 +182,5 @@ describe("UserIcon", () => {
     // Check it's been updated
     expect(userIconInstance.selectedIcon()).toBe("dog");
     expect(userIconInstance.selectedIconDefaultColours()).toEqual(DefaultColours.dog);
-    expect();
   });
 });

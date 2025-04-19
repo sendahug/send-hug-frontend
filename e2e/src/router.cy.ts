@@ -6,7 +6,7 @@ describe("Send A Hug Router", () => {
     cy.get("#username").type(Cypress.env("ADMIN_USERNAME"));
     cy.get("#password").type(Cypress.env("ADMIN_PASSWORD"));
     cy.get("#logIn").click();
-    cy.url().should("equal", "http://localhost:3000/");
+    cy.url().should("equal", "http://localhost:3000/user");
   });
 
   // check the user is sent to the right page upon navigation

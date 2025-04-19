@@ -372,6 +372,7 @@ describe("AdminReports", () => {
       mockPostReports[0].text!,
       mockPostReports[0].id!,
     );
+
     expect(adminReports.postEditMode()).toBeTrue();
     expect(adminReportsDOM.querySelector("post-edit-form")).toBeTruthy();
   });
@@ -404,6 +405,7 @@ describe("AdminReports", () => {
       mockPostReports[0].userID!,
       mockPostReports[0].id!,
     );
+
     expect(adminReports.deleteMode()).toBeTrue();
     expect(adminReports.toDelete()).toBe("ad post");
     expect(adminReportsDOM.querySelector("item-delete-form")).toBeTruthy();

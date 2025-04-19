@@ -188,6 +188,7 @@ describe("SiteMap", () => {
     fixture.detectChanges();
 
     const routeList = siteMapDOM.querySelector("#routeList");
+
     expect(routeList).toBeTruthy();
     expect(routeList!.children.length).not.toBe(0);
     expect(siteMap.routes()).toBeDefined();

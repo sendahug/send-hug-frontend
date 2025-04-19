@@ -114,7 +114,7 @@ describe("Send Hug Form", () => {
     expect(messageTextField.disabled).toBe(false);
   });
 
-  it("Correctly sets the required and aria-required attributes", (done: DoneFn) => {
+  it("Correctly sets the required and aria-required attributes", () => {
     const fixture = TestBed.createComponent(SendHugForm);
     const shForm = fixture.componentInstance;
     const shformDOM = fixture.nativeElement;
@@ -136,11 +136,9 @@ describe("Send Hug Form", () => {
 
     expect(messageTextField.required).toBe(true);
     expect(messageTextField.getAttribute("aria-required")).toEqual("true");
-
-    done();
   });
 
-  it("requires text if the user is sending a message", (done: DoneFn) => {
+  it("requires text if the user is sending a message", () => {
     const validationService = TestBed.inject(ValidationService);
     const validateSpy = spyOn(validationService, "validateItemAgainst").and.returnValue(
       (_control) => ({ error: "ERROR!" }),
@@ -160,17 +158,16 @@ describe("Send Hug Form", () => {
     shformDOM.querySelectorAll(".sendData")[0].click();
     fixture.detectChanges();
 
-    // check the report wasn't sent and the user was alerted
+    // check the message wasn't sent and the user was alerted
     expect(validateSpy).toHaveBeenCalledWith("message");
     expect(apiClientSpy).not.toHaveBeenCalled();
     expect(alertServiceSpy).toHaveBeenCalledWith({
       type: "Error",
       message: "ERROR!",
     });
-    done();
   });
 
-  it("doesn't allow unauthenticated users to send a hug", (done: DoneFn) => {
+  it("doesn't allow unauthenticated users to send a hug", () => {
     const validationService = TestBed.inject(ValidationService);
     const validateSpy = spyOn(validationService, "validateItemAgainst").and.returnValue(
       (_control) => null,
@@ -196,17 +193,16 @@ describe("Send Hug Form", () => {
     shformDOM.querySelectorAll(".sendData")[0].click();
     fixture.detectChanges();
 
-    // check the report wasn't sent and the user was alerted
+    // check the message wasn't sent and the user was alerted
     expect(validateSpy).toHaveBeenCalledWith("message");
     expect(apiClientSpy).not.toHaveBeenCalled();
     expect(alertServiceSpy).toHaveBeenCalledWith({
       type: "Error",
       message: "You're currently logged out. Log back in to send a message.",
     });
-    done();
   });
 
-  it("doesn't allow sending hugs to self", (done: DoneFn) => {
+  it("doesn't allow sending hugs to self", () => {
     const validationService = TestBed.inject(ValidationService);
     const validateSpy = spyOn(validationService, "validateItemAgainst").and.returnValue(
       (_control) => null,
@@ -229,17 +225,16 @@ describe("Send Hug Form", () => {
     shformDOM.querySelectorAll(".sendData")[0].click();
     fixture.detectChanges();
 
-    // check the report wasn't sent and the user was alerted
+    // check the message wasn't sent and the user was alerted
     expect(validateSpy).toHaveBeenCalledWith("message");
     expect(apiClientSpy).not.toHaveBeenCalled();
     expect(alertServiceSpy).toHaveBeenCalledWith({
       type: "Error",
       message: "You can't send a message to yourself!",
     });
-    done();
   });
 
-  it("doesn't allow sending hugs without postID", (done: DoneFn) => {
+  it("doesn't allow sending hugs without postID", () => {
     const validationService = TestBed.inject(ValidationService);
     const validateSpy = spyOn(validationService, "validateItemAgainst").and.returnValue(
       (_control) => null,
@@ -260,17 +255,16 @@ describe("Send Hug Form", () => {
     shForm.sendHugForm.controls.messageText.setValue("m");
     shForm.sendHugAndMessage();
 
-    // check the report wasn't sent and the user was alerted
+    // check the hug wasn't sent and the user was alerted
     expect(validateSpy).toHaveBeenCalledWith("message");
     expect(apiClientSpy).not.toHaveBeenCalled();
     expect(alertServiceSpy).toHaveBeenCalledWith({
       type: "Error",
       message: "A post ID is required to send a hug for a post.",
     });
-    done();
   });
 
-  it("sends the hug via the itemsService", (done: DoneFn) => {
+  it("sends the hug via the itemsService", () => {
     // mock response
     const mockResponse = {
       updated: "Sent hug!",
@@ -305,11 +299,10 @@ describe("Send Hug Form", () => {
     shformDOM.querySelectorAll(".sendData")[0].click();
     fixture.detectChanges();
 
-    // check the report was sent
+    // check the hug was sent
     expect(validateSpy).toHaveBeenCalledWith("message");
     expect(apiClientSpy).toHaveBeenCalledWith("posts/1/hugs", { messageText: newMessage });
     expect(alertsSpy).toHaveBeenCalledWith(mockResponse.updated);
     expect(emitSpy).toHaveBeenCalledWith(false);
-    done();
   });
 });

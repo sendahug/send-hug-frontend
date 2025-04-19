@@ -217,7 +217,7 @@ describe("SearchResults", () => {
   // USER SEARCH RESULTS
   // ==================================================================
   // Check that an error message is shown if there are no results
-  it("User Results - should show error message if there are no user results", (done: DoneFn) => {
+  it("User Results - should show error message if there are no user results", () => {
     const route = TestBed.inject(ActivatedRoute);
     spyOn(route.snapshot.queryParamMap, "get").and.callFake((param: string) => {
       if (param == "query") {
@@ -237,11 +237,10 @@ describe("SearchResults", () => {
 
     expect(searchResultsDOM.querySelector("#userSearchResults")).toBeNull();
     expect(searchResultsDOM.querySelector("#uSearchResErr")).toBeTruthy();
-    done();
   });
 
   // Check that the result list is shown when there are results
-  it("User Results - should show a list of users with links to their pages", (done: DoneFn) => {
+  it("User Results - should show a list of users with links to their pages", () => {
     const route = TestBed.inject(ActivatedRoute);
     spyOn(route.snapshot.queryParamMap, "get").and.callFake((param: string) => {
       if (param == "query") {
@@ -270,13 +269,12 @@ describe("SearchResults", () => {
     });
 
     expect(searchResultsDOM.querySelector("#uSearchResErr")).toBeNull();
-    done();
   });
 
   // POST SEARCH RESULTS
   // ==================================================================
   // Check that an error message is shown if there are no results
-  it("Post Results - should show error message if there are no post results", (done: DoneFn) => {
+  it("Post Results - should show error message if there are no post results", () => {
     const route = TestBed.inject(ActivatedRoute);
     spyOn(route.snapshot.queryParamMap, "get").and.callFake((param: string) => {
       if (param == "query") {
@@ -296,11 +294,10 @@ describe("SearchResults", () => {
 
     expect(searchResultsDOM.querySelector("#postSearchResults")).toBeNull();
     expect(searchResultsDOM.querySelector("#pSearchResErr")).toBeTruthy();
-    done();
   });
 
   // Check that the result list is shown when there are results
-  it("Post Results - should show a list of posts", (done: DoneFn) => {
+  it("Post Results - should show a list of posts", () => {
     const route = TestBed.inject(ActivatedRoute);
     spyOn(route.snapshot.queryParamMap, "get").and.callFake((param: string) => {
       if (param == "query") {
@@ -324,11 +321,10 @@ describe("SearchResults", () => {
     expect(searchResultsDOM.querySelector("#postSearchResults")).toBeTruthy();
     expect(searchResultsDOM.querySelectorAll("app-single-post").length).toBe(1);
     expect(searchResultsDOM.querySelector("#pSearchResErr")).toBeNull();
-    done();
   });
 
   // Check that a different page gets different results
-  it("Post Results - changes page when clicked", (done: DoneFn) => {
+  it("Post Results - changes page when clicked", () => {
     // set up spies
     const route = TestBed.inject(ActivatedRoute);
     spyOn(route.snapshot.queryParamMap, "get").and.callFake((param: string) => {
@@ -383,7 +379,6 @@ describe("SearchResults", () => {
     expect(
       searchResultsDOM.querySelector("#postSearchResults").firstElementChild.children.length,
     ).toBe(1);
-    done();
   });
 
   it("Post Results - should remove a deleted post", () => {

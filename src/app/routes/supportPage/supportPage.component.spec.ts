@@ -71,7 +71,7 @@ describe("Support Page", () => {
     expect(supportPageDOM).toBeTruthy();
   });
 
-  it("should add the FAQ items to the navigation list", (done: DoneFn) => {
+  it("should add the FAQ items to the navigation list", () => {
     const fixture = TestBed.createComponent(SupportPage);
     const supportPage = fixture.componentInstance;
     const supportPageDOM = fixture.nativeElement;
@@ -81,6 +81,5 @@ describe("Support Page", () => {
     expect(supportPageDOM.querySelectorAll(".supportNavLink").length).toEqual(
       supportPage.faqItems().length,
     );
-    done();
   });
 });

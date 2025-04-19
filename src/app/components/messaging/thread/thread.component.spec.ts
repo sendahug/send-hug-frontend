@@ -120,7 +120,7 @@ describe("AppSingleThread", () => {
   });
 
   // Check deleting a single message triggers the poppup
-  it("should trigger the popup upon delete", (done: DoneFn) => {
+  it("should trigger the popup upon delete", () => {
     const fixture = TestBed.createComponent(AppSingleThread);
     const appThread = fixture.componentInstance;
     const appThreadDOM = fixture.nativeElement;
@@ -138,11 +138,10 @@ describe("AppSingleThread", () => {
     expect(appThread.deleteMode()).toBeTrue();
     expect(appThread.itemToDelete()).toBe(3);
     expect(appThreadDOM.querySelector("item-delete-form")).toBeTruthy();
-    done();
   });
 
   // Check the popup exits when 'false' is emitted
-  it("should change mode when the event emitter emits false", (done: DoneFn) => {
+  it("should change mode when the event emitter emits false", () => {
     const fixture = TestBed.createComponent(AppSingleThread);
     fixture.componentRef.setInput("thread", mockThread);
     const appThread = fixture.componentInstance;
@@ -164,11 +163,10 @@ describe("AppSingleThread", () => {
     expect(changeSpy).toHaveBeenCalled();
     expect(appThread.deleteMode()).toBeFalse();
     expect(outputSpy).toHaveBeenCalledWith(3);
-    done();
   });
 
   // Check each message has delete button and reply link
-  it("should have the relevant buttons for each message", (done: DoneFn) => {
+  it("should have the relevant buttons for each message", () => {
     const fixture = TestBed.createComponent(AppSingleThread);
     const appThreadDOM = fixture.nativeElement;
     fixture.componentRef.setInput("thread", mockThread);
@@ -185,6 +183,5 @@ describe("AppSingleThread", () => {
 
     expect(appThreadDOM.querySelectorAll(".appButton")[1].tagName.toLowerCase()).toBe("button");
     expect(appThreadDOM.querySelectorAll(".appButton")[1].textContent.trim()).toBe("Delete Thread");
-    done();
   });
 });

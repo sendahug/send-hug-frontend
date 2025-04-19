@@ -134,7 +134,7 @@ describe("AdminReports", () => {
   });
 
   // Check that a call is made to get open reports
-  it("should get open reports", (done: DoneFn) => {
+  it("should get open reports", () => {
     const apiClientSpy = spyOn(TestBed.inject(ApiClientService), "get").and.returnValue(
       of({
         postReports: [...mockPostReports],
@@ -167,10 +167,9 @@ describe("AdminReports", () => {
     ).toBe(1);
 
     expect(adminReports.totalUserReportsPages()).toBe(2);
-    done();
   });
 
-  it("should remove the loading screen if there was an error", (done: DoneFn) => {
+  it("should remove the loading screen if there was an error", () => {
     const apiClientSpy = spyOn(TestBed.inject(ApiClientService), "get").and.returnValue(
       throwError(() => new Error("ERROR")),
     );
@@ -196,10 +195,9 @@ describe("AdminReports", () => {
     expect(adminReportsDOM.querySelectorAll(".errorMessage")[1].textContent.trim()).toBe(
       "There are no post reports waiting for review.",
     );
-    done();
   });
 
-  it("should block a user", (done: DoneFn) => {
+  it("should block a user", () => {
     // set up the spy and the component
     const fixture = TestBed.createComponent(AdminReports);
     const adminReports = fixture.componentInstance;
@@ -254,10 +252,9 @@ describe("AdminReports", () => {
     expect(blockSpy).toHaveBeenCalledWith(10, 1);
     expect(blockServiceSpy).toHaveBeenCalledWith(10, "oneDay", 1);
     expect(adminReports.userReports().length).toBe(0);
-    done();
   });
 
-  it("should block a user but not remove the report if there's no report ID", (done: DoneFn) => {
+  it("should block a user but not remove the report if there's no report ID", () => {
     // set up the spy and the component
     const fixture = TestBed.createComponent(AdminReports);
     const adminReports = fixture.componentInstance;
@@ -312,11 +309,10 @@ describe("AdminReports", () => {
     expect(blockSpy).toHaveBeenCalledWith(10, 1);
     expect(blockServiceSpy).toHaveBeenCalledWith(10, "oneDay", 1);
     expect(adminReports.userReports().length).toBe(1);
-    done();
   });
 
   // Check that user editing triggers the popup
-  it("should edit a user's display name", (done: DoneFn) => {
+  it("should edit a user's display name", () => {
     // set up the spy and the component
     const fixture = TestBed.createComponent(AdminReports);
     const adminReports = fixture.componentInstance;
@@ -346,11 +342,10 @@ describe("AdminReports", () => {
     });
 
     expect(adminReportsDOM.querySelector("display-name-edit-form")).toBeTruthy();
-    done();
   });
 
   // Check that post editing triggers the popup
-  it("should edit a post's text", (done: DoneFn) => {
+  it("should edit a post's text", () => {
     // set up the spy and the component
     const fixture = TestBed.createComponent(AdminReports);
     const adminReports = fixture.componentInstance;
@@ -375,11 +370,10 @@ describe("AdminReports", () => {
     expect(editSpy).toHaveBeenCalled();
     expect(adminReports.postEditMode()).toBeTrue();
     expect(adminReportsDOM.querySelector("post-edit-form")).toBeTruthy();
-    done();
   });
 
   // Check that deleting a post triggers the popup
-  it("should delete a post", (done: DoneFn) => {
+  it("should delete a post", () => {
     // set up the spy and the component
     const fixture = TestBed.createComponent(AdminReports);
     const adminReports = fixture.componentInstance;
@@ -405,11 +399,10 @@ describe("AdminReports", () => {
     expect(adminReports.deleteMode()).toBeTrue();
     expect(adminReports.toDelete()).toBe("ad post");
     expect(adminReportsDOM.querySelector("item-delete-form")).toBeTruthy();
-    done();
   });
 
   // Check that you can dismiss reports
-  it("should dismiss post report", (done: DoneFn) => {
+  it("should dismiss post report", () => {
     // set up the spy and the component
     const fixture = TestBed.createComponent(AdminReports);
     const adminReports = fixture.componentInstance;
@@ -451,10 +444,9 @@ describe("AdminReports", () => {
     expect(dismissServiceSpy).toHaveBeenCalledWith(2, true, 5, undefined);
     expect(alertsSpy).toHaveBeenCalledWith(`Report 2 was dismissed!`);
     expect(adminReports.postReports().length).toEqual(0);
-    done();
   });
 
-  it("should dismiss user report", (done: DoneFn) => {
+  it("should dismiss user report", () => {
     // set up the spy and the component
     const fixture = TestBed.createComponent(AdminReports);
     const adminReports = fixture.componentInstance;
@@ -496,10 +488,9 @@ describe("AdminReports", () => {
     expect(dismissServiceSpy).toHaveBeenCalledWith(1, true, undefined, 10);
     expect(alertsSpy).toHaveBeenCalledWith(`Report 1 was dismissed!`);
     expect(adminReports.userReports().length).toEqual(0);
-    done();
   });
 
-  it("should go to the next page - user reports", (done: DoneFn) => {
+  it("should go to the next page - user reports", () => {
     // set up the spy and the component
     const fixture = TestBed.createComponent(AdminReports);
     const adminReports = fixture.componentInstance;
@@ -522,10 +513,9 @@ describe("AdminReports", () => {
     expect(nextPageSpy).toHaveBeenCalled();
     expect(adminReports.currentUserReportsPage()).toBe(2);
     expect(fetchSpy).toHaveBeenCalled();
-    done();
   });
 
-  it("should go to the next page - posts reports", (done: DoneFn) => {
+  it("should go to the next page - posts reports", () => {
     // set up the spy and the component
     const fixture = TestBed.createComponent(AdminReports);
     const adminReports = fixture.componentInstance;
@@ -546,10 +536,9 @@ describe("AdminReports", () => {
     expect(nextPageSpy).toHaveBeenCalled();
     expect(adminReports.currentPostReportsPage()).toBe(2);
     expect(fetchSpy).toHaveBeenCalled();
-    done();
   });
 
-  it("should go to the previous page - user reports", (done: DoneFn) => {
+  it("should go to the previous page - user reports", () => {
     // set up the spy and the component
     const fixture = TestBed.createComponent(AdminReports);
     const adminReports = fixture.componentInstance;
@@ -572,10 +561,9 @@ describe("AdminReports", () => {
     expect(prevPageSpy).toHaveBeenCalled();
     expect(adminReports.currentUserReportsPage()).toBe(1);
     expect(fetchSpy).toHaveBeenCalled();
-    done();
   });
 
-  it("should go to the previous page - posts reports", (done: DoneFn) => {
+  it("should go to the previous page - posts reports", () => {
     // set up the spy and the component
     const fixture = TestBed.createComponent(AdminReports);
     const adminReports = fixture.componentInstance;
@@ -598,11 +586,10 @@ describe("AdminReports", () => {
     expect(prevPageSpy).toHaveBeenCalled();
     expect(adminReports.currentPostReportsPage()).toBe(1);
     expect(fetchSpy).toHaveBeenCalled();
-    done();
   });
 
   // Check the popup exits when 'false' is emitted
-  it("should change mode when the event emitter emits false - display name edit", (done: DoneFn) => {
+  it("should change mode when the event emitter emits false - display name edit", () => {
     const fixture = TestBed.createComponent(AdminReports);
     const adminReports = fixture.componentInstance;
     const changeSpy = spyOn(adminReports, "changeMode").and.callThrough();
@@ -632,10 +619,9 @@ describe("AdminReports", () => {
     // check the popup is exited
     expect(changeSpy).toHaveBeenCalled();
     expect(adminReports.nameEditMode()).toBeFalse();
-    done();
   });
 
-  it("should change mode when the event emitter emits false - post edit", (done: DoneFn) => {
+  it("should change mode when the event emitter emits false - post edit", () => {
     const fixture = TestBed.createComponent(AdminReports);
     const adminReports = fixture.componentInstance;
     const changeSpy = spyOn(adminReports, "changeMode").and.callThrough();
@@ -663,10 +649,9 @@ describe("AdminReports", () => {
     // check the popup is exited
     expect(changeSpy).toHaveBeenCalled();
     expect(adminReports.postEditMode()).toBeFalse();
-    done();
   });
 
-  it("should change mode when the event emitter emits false - delete post", (done: DoneFn) => {
+  it("should change mode when the event emitter emits false - delete post", () => {
     const fixture = TestBed.createComponent(AdminReports);
     const adminReports = fixture.componentInstance;
     const changeSpy = spyOn(adminReports, "changeMode").and.callThrough();
@@ -690,10 +675,9 @@ describe("AdminReports", () => {
     // check the popup is exited
     expect(changeSpy).toHaveBeenCalled();
     expect(adminReports.deleteMode()).toBeFalse();
-    done();
   });
 
-  it("should update the UI when the edit is done - display name edit + close report", (done: DoneFn) => {
+  it("should update the UI when the edit is done - display name edit + close report", () => {
     const fixture = TestBed.createComponent(AdminReports);
     const adminReports = fixture.componentInstance;
     const updateSpy = spyOn(adminReports, "updateUserReport").and.callThrough();
@@ -731,10 +715,9 @@ describe("AdminReports", () => {
     });
 
     expect(adminReports.userReports().length).toBe(0);
-    done();
   });
 
-  it("shouldn't update the UI if the report ID doesn't exist - user report", (done: DoneFn) => {
+  it("shouldn't update the UI if the report ID doesn't exist - user report", () => {
     const fixture = TestBed.createComponent(AdminReports);
     const adminReports = fixture.componentInstance;
     const updateSpy = spyOn(adminReports, "updateUserReport").and.callThrough();
@@ -772,10 +755,9 @@ describe("AdminReports", () => {
     });
 
     expect(adminReports.userReports().length).toBe(1);
-    done();
   });
 
-  it("should update the UI when the edit is done - display name edit + don't close report", (done: DoneFn) => {
+  it("should update the UI when the edit is done - display name edit + don't close report", () => {
     const fixture = TestBed.createComponent(AdminReports);
     const adminReports = fixture.componentInstance;
     const updateSpy = spyOn(adminReports, "updateUserReport").and.callThrough();
@@ -814,10 +796,9 @@ describe("AdminReports", () => {
 
     expect(adminReports.userReports().length).toBe(1);
     expect(adminReports.userReports()[0].displayName).toBe("beep");
-    done();
   });
 
-  it("should update the UI when a report is closed - post edit", (done: DoneFn) => {
+  it("should update the UI when a report is closed - post edit", () => {
     const fixture = TestBed.createComponent(AdminReports);
     const adminReports = fixture.componentInstance;
     const updateSpy = spyOn(adminReports, "updatePostReport").and.callThrough();
@@ -858,10 +839,9 @@ describe("AdminReports", () => {
     // check the popup is exited
     expect(updateSpy).toHaveBeenCalled();
     expect(adminReports.postReports().length).toBe(0);
-    done();
   });
 
-  it("shouldn't update the UI when a report doesn't exist - post edit", (done: DoneFn) => {
+  it("shouldn't update the UI when a report doesn't exist - post edit", () => {
     const fixture = TestBed.createComponent(AdminReports);
     const adminReports = fixture.componentInstance;
     const updateSpy = spyOn(adminReports, "updatePostReport").and.callThrough();
@@ -902,10 +882,9 @@ describe("AdminReports", () => {
     // check the popup is exited
     expect(updateSpy).toHaveBeenCalled();
     expect(adminReports.postReports().length).toBe(1);
-    done();
   });
 
-  it("should change update the UI when a report isn't closed - post edit", (done: DoneFn) => {
+  it("should change update the UI when a report isn't closed - post edit", () => {
     const fixture = TestBed.createComponent(AdminReports);
     const adminReports = fixture.componentInstance;
     const updateSpy = spyOn(adminReports, "updatePostReport").and.callThrough();
@@ -947,10 +926,9 @@ describe("AdminReports", () => {
     expect(updateSpy).toHaveBeenCalled();
     expect(adminReports.postReports().length).toBe(1);
     expect(adminReports.postReports()[0].text).toBe(reportPostResponse.updatedPost.text);
-    done();
   });
 
-  it("should update the UI when the post is deleted - delete post", (done: DoneFn) => {
+  it("should update the UI when the post is deleted - delete post", () => {
     const fixture = TestBed.createComponent(AdminReports);
     const adminReports = fixture.componentInstance;
     const removeSpy = spyOn(adminReports, "removeReport").and.callThrough();
@@ -974,6 +952,5 @@ describe("AdminReports", () => {
     // check the popup is exited
     expect(removeSpy).toHaveBeenCalled();
     expect(adminReports.postReports().length).toBe(0);
-    done();
   });
 });

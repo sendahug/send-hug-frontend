@@ -150,7 +150,7 @@ describe("MyPosts", () => {
   });
 
   // Check that the component gets the user ID correctly
-  it("should get the correct user ID", (done: DoneFn) => {
+  it("should get the correct user ID", () => {
     const upFixture = TestBed.createComponent(MockUserPage);
     const userPage = upFixture.componentInstance;
     userPage.userId = 1;
@@ -159,7 +159,6 @@ describe("MyPosts", () => {
 
     expect(myPosts.userID).toBe(1);
     expect(myPosts.user()).toBe("other");
-    done();
   });
 
   it("should fetch posts on init", () => {
@@ -245,7 +244,7 @@ describe("MyPosts", () => {
   });
 
   // Check the popup exits when 'false' is emitted
-  it("should change mode when the event emitter emits false - post delete", (done: DoneFn) => {
+  it("should change mode when the event emitter emits false - post delete", () => {
     // create the component
     const fixture = TestBed.createComponent(MockUserPage);
     const userPage = fixture.componentInstance;
@@ -272,11 +271,10 @@ describe("MyPosts", () => {
     // check the popup is exited
     expect(changeSpy).toHaveBeenCalled();
     expect(myPosts.deleteMode()).toBeFalse();
-    done();
   });
 
   // Check that the popup is opened when clicking 'delete all'
-  it("should open the popup upon deleting all", (done: DoneFn) => {
+  it("should open the popup upon deleting all", () => {
     const fixture = TestBed.createComponent(MockUserPage);
     const userPage = fixture.componentInstance;
     userPage.userId = 4;
@@ -301,10 +299,9 @@ describe("MyPosts", () => {
     expect(myPosts.toDelete()).toBe("All posts");
     expect(myPosts.itemToDelete()).toBe(4);
     expect(myPostsDOM.querySelector("item-delete-form")).toBeTruthy();
-    done();
   });
 
-  it("continues to the next page", (done: DoneFn) => {
+  it("continues to the next page", () => {
     const fixture = TestBed.createComponent(MockUserPage);
     const userPage = fixture.componentInstance;
     userPage.userId = 1;
@@ -324,10 +321,9 @@ describe("MyPosts", () => {
     expect(nextPageSpy).toHaveBeenCalled();
     expect(fetchSpy).toHaveBeenCalled();
     expect(myPosts.currentPage()).toEqual(2);
-    done();
   });
 
-  it("goes back to the previous page", (done: DoneFn) => {
+  it("goes back to the previous page", () => {
     const fixture = TestBed.createComponent(MockUserPage);
     const userPage = fixture.componentInstance;
     userPage.userId = 1;
@@ -348,7 +344,6 @@ describe("MyPosts", () => {
     expect(prevPageSpy).toHaveBeenCalled();
     expect(fetchSpy).toHaveBeenCalled();
     expect(myPosts.currentPage()).toEqual(1);
-    done();
   });
 
   it("should remove a deleted post", () => {

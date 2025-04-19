@@ -243,7 +243,7 @@ describe("Popup", () => {
   });
 
   // Check that the event emitter emits false if the user clicks 'exit'
-  it("exits the popup if the user decides not to edit", (done: DoneFn) => {
+  it("exits the popup if the user decides not to edit", () => {
     const fixture = TestBed.createComponent(PopUp);
     const popUp = fixture.componentInstance;
     const popUpDOM = fixture.nativeElement;
@@ -259,6 +259,5 @@ describe("Popup", () => {
     });
 
     expect(exitSpy).toHaveBeenCalled();
-    done();
   });
 });

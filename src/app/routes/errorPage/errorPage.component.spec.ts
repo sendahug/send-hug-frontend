@@ -69,7 +69,7 @@ describe("ErrorPage", () => {
   });
 
   // Check that the error page has the right error message
-  it("should have an error message", (done: DoneFn) => {
+  it("should have an error message", () => {
     const fixture = TestBed.createComponent(ErrorPage);
     const errorPage = fixture.componentInstance;
     const errorPageDOM = fixture.nativeElement;
@@ -84,11 +84,10 @@ describe("ErrorPage", () => {
     expect(errorPage.error()).toEqual(error);
     expect(errorPageDOM.querySelectorAll("h3")[0].textContent).toBe(error.title);
     expect(errorPageDOM.querySelector("#errorCode").textContent).toContain(error.code);
-    done();
   });
 
   // Check that the 'back' method is called when clicking the back button
-  it("should call back method when clicking the back button", (done: DoneFn) => {
+  it("should call back method when clicking the back button", () => {
     const fixture = TestBed.createComponent(ErrorPage);
     const errorPage = fixture.componentInstance;
     const errorPageDOM = fixture.nativeElement;
@@ -103,6 +102,5 @@ describe("ErrorPage", () => {
 
     expect(backSpy).toHaveBeenCalled();
     expect(mockLocationSpy).toHaveBeenCalled();
-    done();
   });
 });

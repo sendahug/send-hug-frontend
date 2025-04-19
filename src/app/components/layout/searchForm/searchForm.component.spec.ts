@@ -75,7 +75,7 @@ describe("SearchForm", () => {
   });
 
   // Check that clicking 'search' triggers the ItemsService
-  it("should pass search query to the ItemsService when clicking search", (done: DoneFn) => {
+  it("should pass search query to the ItemsService when clicking search", () => {
     const fixture = TestBed.createComponent(SearchForm);
     fixture.autoDetectChanges();
     const searchForm = fixture.componentInstance;
@@ -100,11 +100,10 @@ describe("SearchForm", () => {
     });
 
     expect(toggleSpy).toHaveBeenCalled();
-    done();
   });
 
   // Check that an empty search query isn't allowed
-  it("should prevent empty searches", (done: DoneFn) => {
+  it("should prevent empty searches", () => {
     const fixture = TestBed.createComponent(SearchForm);
     fixture.autoDetectChanges();
     const searchForm = fixture.componentInstance;
@@ -129,10 +128,9 @@ describe("SearchForm", () => {
 
     expect(navigateSpy).not.toHaveBeenCalled();
     expect(toggleSpy).not.toHaveBeenCalled();
-    done();
   });
 
-  it("toggleSearch() - emits false to close the search", (done: DoneFn) => {
+  it("toggleSearch() - emits false to close the search", () => {
     const fixture = TestBed.createComponent(SearchForm);
     fixture.detectChanges();
     const searchForm = fixture.componentInstance;
@@ -145,6 +143,5 @@ describe("SearchForm", () => {
 
     expect(toggleSpy).toHaveBeenCalled();
     expect(emitSpy).toHaveBeenCalledWith(false);
-    done();
   });
 });

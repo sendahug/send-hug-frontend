@@ -244,7 +244,7 @@ describe("SignUpPage", () => {
     });
   });
 
-  it("should create a new user via the AuthService", (done: DoneFn) => {
+  it("should create a new user via the AuthService", () => {
     const fixture = TestBed.createComponent(SignUpPage);
     const signUpPage = fixture.componentInstance;
     const signUpPageDOM = fixture.nativeElement;
@@ -266,10 +266,9 @@ describe("SignUpPage", () => {
     expect(signUpSpy).toHaveBeenCalled();
     expect(createUserSpy).toHaveBeenCalledWith("name", false);
     expect(routerSpy).toHaveBeenCalledWith(["/user"]);
-    done();
   });
 
-  it("should log out", (done: DoneFn) => {
+  it("should log out", () => {
     const fixture = TestBed.createComponent(SignUpPage);
     const signUpPage = fixture.componentInstance;
     const signUpPageDOM = fixture.nativeElement;
@@ -286,7 +285,6 @@ describe("SignUpPage", () => {
     expect(signOutRedirectSpy).toHaveBeenCalled();
     expect(logOutSpy).toHaveBeenCalled();
     expect(routerSpy).toHaveBeenCalledWith(["/login"]);
-    done();
   });
 
   it("should show an error message if the user is logged in", () => {

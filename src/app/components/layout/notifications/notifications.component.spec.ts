@@ -123,7 +123,7 @@ describe("Notifications Tab", () => {
   });
 
   // Check that the button toggles push notifications
-  it("has a button that toggles push notifications", (done: DoneFn) => {
+  it("has a button that toggles push notifications", () => {
     // set up the component and its spies
     const fixture = TestBed.createComponent(NotificationsTab);
     const notificationsTab = fixture.componentInstance;
@@ -160,11 +160,10 @@ describe("Notifications Tab", () => {
     expect(subscribeSpy.calls.count()).toBe(1);
     expect(unsubscribeSpy).toHaveBeenCalled();
     expect(unsubscribeSpy.calls.count()).toBe(1);
-    done();
   });
 
   // Check that the button toggles auto refresh
-  it("has a button that toggles auto-refresh", (done: DoneFn) => {
+  it("has a button that toggles auto-refresh", () => {
     // set up spies
     const notificationsService = TestBed.inject(NotificationService);
     const settingsSpy = spyOn(TestBed.inject(AuthService), "updateUserData");
@@ -204,7 +203,6 @@ describe("Notifications Tab", () => {
     expect(startRefreshSpy.calls.count()).toBe(1);
     expect(stopRefreshSpy).toHaveBeenCalled();
     expect(stopRefreshSpy.calls.count()).toBe(1);
-    done();
   });
 
   it("getNotifications() - gets the notifications and updates the variables", (done: DoneFn) => {
@@ -429,7 +427,7 @@ describe("Notifications Tab", () => {
   });
 
   // check the focus is trapped
-  it("should trap focus in the modal", (done: DoneFn) => {
+  it("should trap focus in the modal", () => {
     const fixture = TestBed.createComponent(NotificationsTab);
     const notificationsTab = fixture.componentInstance;
     const notifTabDOM = fixture.nativeElement;
@@ -499,11 +497,9 @@ describe("Notifications Tab", () => {
     expect(spies[3]).not.toHaveBeenCalled();
     expect(spies[4]).not.toHaveBeenCalled();
     expect(spies[5]).toHaveBeenCalledTimes(2);
-
-    done();
   });
 
-  it("nextPage() - should continue to the next page", (done: DoneFn) => {
+  it("nextPage() - should continue to the next page", () => {
     const fixture = TestBed.createComponent(NotificationsTab);
     const notificationsTab = fixture.componentInstance;
     const notifTabDOM = fixture.nativeElement;
@@ -522,10 +518,9 @@ describe("Notifications Tab", () => {
     // after
     expect(notificationsTab.currentPage()).toBe(2);
     expect(getNotificationsSpy).toHaveBeenCalledTimes(1);
-    done();
   });
 
-  it("prevPage() - should go to the previous page", (done: DoneFn) => {
+  it("prevPage() - should go to the previous page", () => {
     const fixture = TestBed.createComponent(NotificationsTab);
     const notificationsTab = fixture.componentInstance;
     const notifTabDOM = fixture.nativeElement;
@@ -544,7 +539,6 @@ describe("Notifications Tab", () => {
     // after
     expect(notificationsTab.currentPage()).toBe(1);
     expect(getNotificationsSpy).toHaveBeenCalledTimes(1);
-    done();
   });
 
   it("toggleUnread() - should toggle the visibility of unread messages", () => {
@@ -885,7 +879,7 @@ describe("Notifications Tab", () => {
   });
 
   // Check that the exit button emits the correct boolean
-  it("emits false upon clicking the exit button", (done: DoneFn) => {
+  it("emits false upon clicking the exit button", () => {
     // set up the component
     const fixture = TestBed.createComponent(NotificationsTab);
     const notificationsTab = fixture.componentInstance;
@@ -899,6 +893,5 @@ describe("Notifications Tab", () => {
     fixture.detectChanges();
 
     expect(emitterSpy).toHaveBeenCalledWith(false);
-    done();
   });
 });

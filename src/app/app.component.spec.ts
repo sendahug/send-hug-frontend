@@ -117,7 +117,7 @@ describe("AppComponent", () => {
     const alertSpy = spyOn(alertsService, "createAlert");
     TestBed.createComponent(AppComponent);
 
-    expect(authSpy).toHaveBeenCalled();
+    expect(authSpy).toHaveBeenCalledWith();
     expect(alertSpy).toHaveBeenCalledWith(
       {
         type: "Error",
@@ -274,7 +274,7 @@ describe("AppComponent", () => {
   });
 
   // check the share method is called when the button is clicked
-  it("should call the share method when the button is clicked", (done: DoneFn) => {
+  it("should call the share method when the button is clicked", () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     const component = fixture.componentInstance;
@@ -288,6 +288,5 @@ describe("AppComponent", () => {
     fixture.detectChanges();
 
     expect(shareSpy).toHaveBeenCalled();
-    done();
   });
 });

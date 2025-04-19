@@ -125,7 +125,7 @@ describe("Report", () => {
   });
 
   // Check that the correct radio button is set as selected
-  it("correctly identifies the chosen radio button", (done: DoneFn) => {
+  it("correctly identifies the chosen radio button", () => {
     const fixture = TestBed.createComponent(ReportForm);
     const popUp = fixture.componentInstance;
     const popUpDOM = fixture.nativeElement;
@@ -177,7 +177,6 @@ describe("Report", () => {
     expect(selectSpy).toHaveBeenCalled();
     expect(selectSpy).toHaveBeenCalledWith(popUpDOM.querySelector("#pRadioOption3"));
     expect(popUp.reportForm.controls.selectedReason.value).toEqual("3");
-    done();
   });
 
   it("checkSelectedForOther() - correctly enables/disables the 'other' text field", () => {
@@ -228,7 +227,7 @@ describe("Report", () => {
     expect(otherTextField.disabled).toBe(false);
   });
 
-  it("Correctly sets the required and aria-required attributes", (done: DoneFn) => {
+  it("Correctly sets the required and aria-required attributes", () => {
     const fixture = TestBed.createComponent(ReportForm);
     const popUp = fixture.componentInstance;
     const popUpDOM = fixture.nativeElement;
@@ -268,11 +267,9 @@ describe("Report", () => {
 
     expect(otherTextField.required).toBe(false);
     expect(otherTextField.getAttribute("aria-required")).toEqual("false");
-
-    done();
   });
 
-  it("getSelectedReasonText() - correctly sets the selected reason - posts", (done: DoneFn) => {
+  it("getSelectedReasonText() - correctly sets the selected reason - posts", () => {
     const fixture = TestBed.createComponent(ReportForm);
     const popUp = fixture.componentInstance;
     const popUpDOM = fixture.nativeElement;
@@ -310,11 +307,9 @@ describe("Report", () => {
     fixture.detectChanges();
 
     expect(popUp.getSelectedReasonText()).toEqual("other");
-
-    done();
   });
 
-  it("getSelectedReasonText() - correctly sets the selected reason - users", (done: DoneFn) => {
+  it("getSelectedReasonText() - correctly sets the selected reason - users", () => {
     const fixture = TestBed.createComponent(ReportForm);
     const popUp = fixture.componentInstance;
     const popUpDOM = fixture.nativeElement;
@@ -364,13 +359,11 @@ describe("Report", () => {
     fixture.detectChanges();
 
     expect(popUp.getSelectedReasonText()).toEqual("other");
-
-    done();
   });
 
   // Check that if the user chooses 'other' as reason they can't submit an
   // empty reason
-  it("requires text if the chosen reason is other - invalid", (done: DoneFn) => {
+  it("requires text if the chosen reason is other - invalid", () => {
     const validationService = TestBed.inject(ValidationService);
     const validateSpy = spyOn(validationService, "validateItemAgainst").and.returnValue(
       (_control) => null,
@@ -408,10 +401,9 @@ describe("Report", () => {
       type: "Error",
       message: "If you choose 'other', you must specify a reason.",
     });
-    done();
   });
 
-  it("requires text if the chosen reason is other - valid", (done: DoneFn) => {
+  it("requires text if the chosen reason is other - valid", () => {
     // mock response
     const mockResponse = {
       report: {
@@ -482,10 +474,9 @@ describe("Report", () => {
     });
 
     expect(emitSpy).toHaveBeenCalledWith(false);
-    done();
   });
 
-  it("creates the report and sends it to the itemsService - post", (done: DoneFn) => {
+  it("creates the report and sends it to the itemsService - post", () => {
     // mock response
     const mockResponse = {
       report: {
@@ -545,10 +536,9 @@ describe("Report", () => {
     });
 
     expect(emitSpy).toHaveBeenCalledWith(false);
-    done();
   });
 
-  it("creates the report and sends it to the itemsService - user", (done: DoneFn) => {
+  it("creates the report and sends it to the itemsService - user", () => {
     // mock response
     const mockResponse = {
       report: {
@@ -618,6 +608,5 @@ describe("Report", () => {
     });
 
     expect(emitSpy).toHaveBeenCalledWith(false);
-    done();
   });
 });

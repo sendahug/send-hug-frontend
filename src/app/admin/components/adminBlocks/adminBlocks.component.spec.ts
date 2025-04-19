@@ -111,7 +111,7 @@ describe("Blocks Page", () => {
   });
 
   // Check that a call is made to get blocked users
-  it("should get blocked users", (done: DoneFn) => {
+  it("should get blocked users", () => {
     // set up the spy and the component
     const apiClientSpy = spyOn(TestBed.inject(ApiClientService), "get").and.returnValue(
       of({
@@ -133,10 +133,9 @@ describe("Blocks Page", () => {
     expect(
       adminBlocksDOM.querySelectorAll(".tableContainer")[0].querySelectorAll("tbody tr").length,
     ).toBe(1);
-    done();
   });
 
-  it("should remove the loading screen if there was an error", (done: DoneFn) => {
+  it("should remove the loading screen if there was an error", () => {
     // set up the spy and the component
     const apiClientSpy = spyOn(TestBed.inject(ApiClientService), "get").and.returnValue(
       throwError(() => new Error("ERROR")),
@@ -156,11 +155,10 @@ describe("Blocks Page", () => {
     expect(adminBlocksDOM.querySelectorAll(".errorMessage")[0].textContent).toBe(
       "There are no blocked users.",
     );
-    done();
   });
 
   // Check that you can block a user
-  it("should block a user - new block", (done: DoneFn) => {
+  it("should block a user - new block", () => {
     // set up the spy and the component
     const fixture = TestBed.createComponent(AdminBlocks);
     const adminBlocks = fixture.componentInstance;
@@ -215,11 +213,10 @@ describe("Blocks Page", () => {
     expect(blockSpy).toHaveBeenCalled();
     expect(blockServiceSpy).toHaveBeenCalledWith(5, "oneDay");
     expect(adminBlocks.blockedUsers().length).toBe(2);
-    done();
   });
 
   // Check that you can block a user
-  it("should block a user - extended block", (done: DoneFn) => {
+  it("should block a user - extended block", () => {
     // set up the spy and the component
     const fixture = TestBed.createComponent(AdminBlocks);
     const adminBlocks = fixture.componentInstance;
@@ -274,10 +271,9 @@ describe("Blocks Page", () => {
     expect(blockSpy).toHaveBeenCalled();
     expect(blockServiceSpy).toHaveBeenCalledWith(15, "oneDay");
     expect(adminBlocks.blockedUsers().length).toBe(1);
-    done();
   });
 
-  it("should check a user ID is provided", (done: DoneFn) => {
+  it("should check a user ID is provided", () => {
     // set up the spy and the component
     const fixture = TestBed.createComponent(AdminBlocks);
     const adminBlocks = fixture.componentInstance;
@@ -305,10 +301,9 @@ describe("Blocks Page", () => {
       message:
         "A user ID is needed to block a user. Please add user ID to the textfield and try again.",
     });
-    done();
   });
 
-  it("should check the user ID isn't the logged in user's ID", (done: DoneFn) => {
+  it("should check the user ID isn't the logged in user's ID", () => {
     // set up the spy and the component
     const fixture = TestBed.createComponent(AdminBlocks);
     const adminBlocks = fixture.componentInstance;
@@ -335,10 +330,9 @@ describe("Blocks Page", () => {
       type: "Error",
       message: "You cannot block yourself.",
     });
-    done();
   });
 
-  it("should check the user ID is a number", (done: DoneFn) => {
+  it("should check the user ID is a number", () => {
     // set up the spy and the component
     const fixture = TestBed.createComponent(AdminBlocks);
     const adminBlocks = fixture.componentInstance;
@@ -365,11 +359,10 @@ describe("Blocks Page", () => {
       type: "Error",
       message: "User ID must be a number. Please correct the User ID and try again.",
     });
-    done();
   });
 
   // Check that you can unblock a user
-  it("should unblock a user", (done: DoneFn) => {
+  it("should unblock a user", () => {
     // mock response
     const mockResponse = {
       success: true,
@@ -417,10 +410,9 @@ describe("Blocks Page", () => {
     );
 
     expect(adminBlocks.blockedUsers().length).toEqual(0);
-    done();
   });
 
-  it("should go to the next page", (done: DoneFn) => {
+  it("should go to the next page", () => {
     // set up the spy and the component
     const fixture = TestBed.createComponent(AdminBlocks);
     const adminBlocks = fixture.componentInstance;
@@ -441,10 +433,9 @@ describe("Blocks Page", () => {
     expect(nextPageSpy).toHaveBeenCalled();
     expect(adminBlocks.currentPage()).toBe(2);
     expect(fetchSpy).toHaveBeenCalled();
-    done();
   });
 
-  it("should return to the previous page", (done: DoneFn) => {
+  it("should return to the previous page", () => {
     // set up the spy and the component
     const fixture = TestBed.createComponent(AdminBlocks);
     const adminBlocks = fixture.componentInstance;
@@ -465,6 +456,5 @@ describe("Blocks Page", () => {
     expect(prevPageSpy).toHaveBeenCalled();
     expect(adminBlocks.currentPage()).toBe(1);
     expect(fetchSpy).toHaveBeenCalled();
-    done();
   });
 });

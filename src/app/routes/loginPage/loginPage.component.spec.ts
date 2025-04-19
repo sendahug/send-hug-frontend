@@ -108,7 +108,7 @@ describe("LoginPage", () => {
   });
 
   // Check that the 'please login page' is shown if the user's logged out
-  it("should show login page if user is not authenticated", (done: DoneFn) => {
+  it("should show login page if user is not authenticated", () => {
     const authService = TestBed.inject(AuthService);
     authService.authenticated.set(false);
     const fixture = TestBed.createComponent(LoginPage);
@@ -120,7 +120,6 @@ describe("LoginPage", () => {
 
     expect(loginPageDOM.querySelector("#logoutBox")).toBeNull();
     expect(loginPageDOM.querySelector("#loginBox")).toBeTruthy();
-    done();
   });
 
   it("signIn() - should run the login process - success", (done: DoneFn) => {
@@ -233,7 +232,7 @@ describe("LoginPage", () => {
     });
   });
 
-  it("signInWithPopup() - should allow logging in with popup - apple", (done: DoneFn) => {
+  it("signInWithPopup() - should allow logging in with popup - apple", () => {
     const fixture = TestBed.createComponent(LoginPage);
     const loginPage = fixture.componentInstance;
     const loginPageDOM = fixture.nativeElement;
@@ -260,10 +259,9 @@ describe("LoginPage", () => {
     expect(loginSpy).toHaveBeenCalledWith("apple");
     expect(serviceLoginSpy).toHaveBeenCalledWith("apple");
     expect(signInSpy).toHaveBeenCalledWith(mockObservable, "apple");
-    done();
   });
 
-  it("signInWithPopup() - should allow logging in with popup - google", (done: DoneFn) => {
+  it("signInWithPopup() - should allow logging in with popup - google", () => {
     const fixture = TestBed.createComponent(LoginPage);
     const loginPage = fixture.componentInstance;
     const loginPageDOM = fixture.nativeElement;
@@ -290,10 +288,9 @@ describe("LoginPage", () => {
     expect(loginSpy).toHaveBeenCalledWith("google");
     expect(serviceLoginSpy).toHaveBeenCalledWith("google");
     expect(signInSpy).toHaveBeenCalledWith(mockObservable, "google");
-    done();
   });
 
-  it("should switch to the signup page if the user clicks sign up", (done: DoneFn) => {
+  it("should switch to the signup page if the user clicks sign up", () => {
     const fixture = TestBed.createComponent(LoginPage);
     const loginPage = fixture.componentInstance;
     const loginPageDOM = fixture.nativeElement;
@@ -316,10 +313,9 @@ describe("LoginPage", () => {
     );
 
     expect(loginPageDOM.querySelector("#logIn").textContent.trim()).toBe("Sign up");
-    done();
   });
 
-  it("signInWithPopup() - should let users register with OAuth", (done: DoneFn) => {
+  it("signInWithPopup() - should let users register with OAuth", () => {
     const fixture = TestBed.createComponent(LoginPage);
     const loginPage = fixture.componentInstance;
     const loginPageDOM = fixture.nativeElement;
@@ -340,10 +336,9 @@ describe("LoginPage", () => {
     expect(loginSpy).toHaveBeenCalled();
     expect(serviceLoginSpy).toHaveBeenCalled();
     expect(signUpSpy).toHaveBeenCalledWith(mockObservable);
-    done();
   });
 
-  it("sendUsernameAndPassword() - should prevent submitting invalid email and password", (done: DoneFn) => {
+  it("sendUsernameAndPassword() - should prevent submitting invalid email and password", () => {
     const fixture = TestBed.createComponent(LoginPage);
     const loginPage = fixture.componentInstance;
     const loginPageDOM = fixture.nativeElement;
@@ -366,7 +361,6 @@ describe("LoginPage", () => {
       type: "Error",
       message: "Invalid login details. Invalid email. A password is required to log in or sign up.",
     });
-    done();
   });
 
   it("sendUsernameAndPassword() - should prevent submitting empty email and password", () => {
@@ -393,7 +387,7 @@ describe("LoginPage", () => {
     });
   });
 
-  it("sendUsernameAndPassword() - should log users in with username and password - existing users", (done: DoneFn) => {
+  it("sendUsernameAndPassword() - should log users in with username and password - existing users", () => {
     const fixture = TestBed.createComponent(LoginPage);
     const loginPage = fixture.componentInstance;
     const loginPageDOM = fixture.nativeElement;
@@ -414,10 +408,9 @@ describe("LoginPage", () => {
     expect(sendSpy).toHaveBeenCalledWith();
     expect(loginSpy).toHaveBeenCalledWith("ab@c.com", "123456");
     expect(signInSpy).toHaveBeenCalledWith(mockObservable, "username");
-    done();
   });
 
-  it("sendUsernameAndPassword() - should sign users up with username and password", (done: DoneFn) => {
+  it("sendUsernameAndPassword() - should sign users up with username and password", () => {
     const fixture = TestBed.createComponent(LoginPage);
     const loginPage = fixture.componentInstance;
     const loginPageDOM = fixture.nativeElement;
@@ -441,7 +434,6 @@ describe("LoginPage", () => {
     expect(sendSpy).toHaveBeenCalledWith();
     expect(signUpServiceSpy).toHaveBeenCalledWith("ab@c.com", "123456");
     expect(signUpSpy).toHaveBeenCalledWith(mockObservable);
-    done();
   });
 
   it("should show the reset form if the user chooses to", () => {
@@ -483,7 +475,7 @@ describe("LoginPage", () => {
     expect(loginPageDOM.querySelector("app-reset-pw-form")).toBeNull();
   });
 
-  it("should show logout page if user is authenticated", (done: DoneFn) => {
+  it("should show logout page if user is authenticated", () => {
     const fixture = TestBed.createComponent(LoginPage);
     const loginPage = fixture.componentInstance;
     const loginPageDOM = fixture.nativeElement;
@@ -501,11 +493,10 @@ describe("LoginPage", () => {
     expect(loginPageDOM.querySelectorAll(".errorMessage")[1].textContent).toContain(
       `You are currently logged in as ${mockUser.displayName}`,
     );
-    done();
   });
 
   // Check that the logout button triggers the AuthService's logout method
-  it("should trigger the AuthService upon clicking logout", (done: DoneFn) => {
+  it("should trigger the AuthService upon clicking logout", () => {
     const authService = TestBed.inject(AuthService);
     authService.authenticated.set(true);
     authService.userData.set({ ...mockAuthedUser });
@@ -528,6 +519,5 @@ describe("LoginPage", () => {
     // check the logout methods were called
     expect(logoutSpy).toHaveBeenCalled();
     expect(serviceLogoutSpy).toHaveBeenCalled();
-    done();
   });
 });

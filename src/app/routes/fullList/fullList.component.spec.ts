@@ -214,7 +214,7 @@ describe("FullList", () => {
     expect(fullList.currentPage()).toBe(1);
   });
 
-  it("should fetch posts from the server", (done: DoneFn) => {
+  it("should fetch posts from the server", () => {
     // Inject services
     const apiClient = TestBed.inject(ApiClientService);
     const swManager = TestBed.inject(SWManager);
@@ -241,7 +241,6 @@ describe("FullList", () => {
     expect(apiClientSpy).toHaveBeenCalledWith("posts", { page: 1, type: "new" });
     expect(updateInterfaceSpy).toHaveBeenCalledWith(mockPageOneResponse);
     expect(addItemsSpy).toHaveBeenCalledWith("posts", pageOnePosts, "date");
-    done();
   });
 
   it("should fetch posts from IDB - new", (done: DoneFn) => {
@@ -298,7 +297,7 @@ describe("FullList", () => {
     });
   });
 
-  it("should update the user interface", (done: DoneFn) => {
+  it("should update the user interface", () => {
     spyOn(FullList.prototype, "fetchPosts");
     const paramMap = TestBed.inject(ActivatedRoute);
     paramMap.snapshot.url = [{ path: "Suggested" }] as UrlSegment[];
@@ -327,11 +326,9 @@ describe("FullList", () => {
       .componentInstance as SinglePost;
 
     expect(firstPost.post?.text).toEqual("test");
-
-    done();
   });
 
-  it("should continue to the next page", (done: DoneFn) => {
+  it("should continue to the next page", () => {
     const fetchSpy = spyOn(FullList.prototype, "fetchPosts");
     const paramMap = TestBed.inject(ActivatedRoute);
     paramMap.snapshot.url = [{ path: "Suggested" }] as UrlSegment[];
@@ -355,10 +352,9 @@ describe("FullList", () => {
     expect(fullList.currentPage()).toBe(2);
     expect(fetchSpy).toHaveBeenCalledTimes(2);
     expect(updateURLSpy).toHaveBeenCalled();
-    done();
   });
 
-  it("should go to the previous page", (done: DoneFn) => {
+  it("should go to the previous page", () => {
     const fetchSpy = spyOn(FullList.prototype, "fetchPosts");
     const paramMap = TestBed.inject(ActivatedRoute);
     paramMap.snapshot.url = [{ path: "Suggested" }] as UrlSegment[];
@@ -382,7 +378,6 @@ describe("FullList", () => {
     expect(fullList.currentPage()).toBe(1);
     expect(fetchSpy).toHaveBeenCalledTimes(2);
     expect(updateURLSpy).toHaveBeenCalled();
-    done();
   });
 
   it("should trigger navigation when the page changes", () => {

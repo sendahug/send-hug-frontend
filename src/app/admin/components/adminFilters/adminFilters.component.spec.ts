@@ -95,7 +95,7 @@ describe("Filters Page", () => {
   });
 
   // Check that a call is made to get filtered phrases
-  it("should get filtered phrases", (done: DoneFn) => {
+  it("should get filtered phrases", () => {
     const apiClientSpy = spyOn(TestBed.inject(ApiClientService), "get").and.returnValue(
       of({
         words: [...mockFilteredPhrases],
@@ -115,10 +115,9 @@ describe("Filters Page", () => {
     expect(
       adminFiltersDOM.querySelectorAll(".tableContainer")[0].querySelectorAll("tbody tr").length,
     ).toBe(2);
-    done();
   });
 
-  it("should remove the loading screen if there was an error", (done: DoneFn) => {
+  it("should remove the loading screen if there was an error", () => {
     const apiClientSpy = spyOn(TestBed.inject(ApiClientService), "get").and.returnValue(
       throwError(() => new Error("ERROR")),
     );
@@ -136,11 +135,10 @@ describe("Filters Page", () => {
     expect(adminFiltersDOM.querySelectorAll(".errorMessage")[0].textContent).toBe(
       "There are no filtered phrases.",
     );
-    done();
   });
 
   // Check that you can add a filter
-  it("should add a new filter", (done: DoneFn) => {
+  it("should add a new filter", () => {
     // set up the spy and the component
     const fixture = TestBed.createComponent(AdminFilters);
     const adminFilters = fixture.componentInstance;
@@ -170,10 +168,9 @@ describe("Filters Page", () => {
     );
 
     expect(adminFilters.filteredPhrases()[2]).toEqual({ id: 3, filter: "text" });
-    done();
   });
 
-  it("should not try to add a new filter if there's no filter in the text field", (done: DoneFn) => {
+  it("should not try to add a new filter if there's no filter in the text field", () => {
     // set up the spy and the component
     const fixture = TestBed.createComponent(AdminFilters);
     const adminFilters = fixture.componentInstance;
@@ -198,11 +195,10 @@ describe("Filters Page", () => {
       type: "Error",
       message: "A filtered phrase is required in order to add to the filters list.",
     });
-    done();
   });
 
   // Check that you can remove a filter
-  it("should remove a filter", (done: DoneFn) => {
+  it("should remove a filter", () => {
     // mock response
     const mockResponse = {
       success: true,
@@ -239,10 +235,9 @@ describe("Filters Page", () => {
 
     expect(adminFilters.filteredPhrases().length).toEqual(1);
     expect(adminFilters.filteredPhrases()[0].id).not.toBe(1);
-    done();
   });
 
-  it("should go to the next page", (done: DoneFn) => {
+  it("should go to the next page", () => {
     // set up the spy and the component
     const fixture = TestBed.createComponent(AdminFilters);
     const adminFilters = fixture.componentInstance;
@@ -262,10 +257,9 @@ describe("Filters Page", () => {
     // check expectations
     expect(nextPageSpy).toHaveBeenCalled();
     expect(fetchSpy).toHaveBeenCalled();
-    done();
   });
 
-  it("should go to the previous page", (done: DoneFn) => {
+  it("should go to the previous page", () => {
     // set up the spy and the component
     const fixture = TestBed.createComponent(AdminFilters);
     const adminFilters = fixture.componentInstance;
@@ -286,6 +280,5 @@ describe("Filters Page", () => {
     // check expectations
     expect(prevPageSpy).toHaveBeenCalled();
     expect(fetchSpy).toHaveBeenCalled();
-    done();
   });
 });

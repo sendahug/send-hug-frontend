@@ -141,7 +141,7 @@ describe("AppComponent", () => {
     const alertSpy = spyOn(alertsService, "createAlert");
     TestBed.createComponent(AppComponent);
 
-    expect(authSpy).toHaveBeenCalled();
+    expect(authSpy).toHaveBeenCalledWith();
     expect(alertSpy).toHaveBeenCalledWith({
       type: "Error",
       message: `An error occurred. ERROR!!!`,
@@ -168,11 +168,11 @@ describe("AppComponent", () => {
 
     tick();
 
-    expect(authSpy).toHaveBeenCalled();
-    expect(checkStateSpy).toHaveBeenCalled();
-    expect(getSubscriptionSpy).toHaveBeenCalled();
-    expect(startRefreshSpy).toHaveBeenCalled();
-    expect(getNotificationsSpy).toHaveBeenCalled();
+    expect(authSpy).toHaveBeenCalledWith();
+    expect(checkStateSpy).toHaveBeenCalledWith(true);
+    expect(getSubscriptionSpy).toHaveBeenCalledWith();
+    expect(startRefreshSpy).toHaveBeenCalledWith(mockAuthedUser.refreshRate);
+    expect(getNotificationsSpy).toHaveBeenCalledWith();
   }));
 
   it("should check for a logged in user - don't enable push and auto-refresh", fakeAsync(() => {
@@ -193,8 +193,8 @@ describe("AppComponent", () => {
 
     tick();
 
-    expect(authSpy).toHaveBeenCalled();
-    expect(checkStateSpy).toHaveBeenCalled();
+    expect(authSpy).toHaveBeenCalledWith();
+    expect(checkStateSpy).toHaveBeenCalledWith(false);
     expect(getSubscriptionSpy).not.toHaveBeenCalled();
     expect(startRefreshSpy).not.toHaveBeenCalled();
   }));
@@ -216,8 +216,8 @@ describe("AppComponent", () => {
 
     tick(100);
 
-    expect(authSpy).toHaveBeenCalled();
-    expect(checkStateSpy).toHaveBeenCalled();
+    expect(authSpy).toHaveBeenCalledWith();
+    expect(checkStateSpy).toHaveBeenCalledWith(true);
     expect(getSubscriptionSpy).not.toHaveBeenCalled();
   }));
 
@@ -244,7 +244,7 @@ describe("AppComponent", () => {
 
     tick();
 
-    expect(authSpy).toHaveBeenCalled();
+    expect(authSpy).toHaveBeenCalledWith();
     expect(navigateSpy).toHaveBeenCalledWith(["/test"], { queryParams: {} });
     expect(paramMapSpy).toHaveBeenCalledWith("redirect");
   }));
@@ -254,9 +254,10 @@ describe("AppComponent", () => {
     const createSpy = spyOn(teleportService, "createTeleportTarget");
 
     const fixture = TestBed.createComponent(AppComponent);
+    const component = fixture.componentInstance;
     fixture.detectChanges();
 
-    expect(createSpy).toHaveBeenCalled();
+    expect(createSpy).toHaveBeenCalledWith("modalContainer", component.modalContainer);
   });
 
   // check the 'share' button is hidden
@@ -287,6 +288,6 @@ describe("AppComponent", () => {
     componentHtml.querySelector("#siteFooter").querySelectorAll(".textlessButton")[0].click();
     fixture.detectChanges();
 
-    expect(shareSpy).toHaveBeenCalled();
+    expect(shareSpy).toHaveBeenCalledWith();
   });
 });

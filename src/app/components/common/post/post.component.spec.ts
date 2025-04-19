@@ -156,7 +156,7 @@ describe("Post", () => {
 
     // after the click
     expect(singlePost.sendMessageMode()).toBeTrue();
-    expect(hugSpy).toHaveBeenCalled();
+    expect(hugSpy).toHaveBeenCalledWith();
   });
 
   // Check that the popup is opened when clicking 'edit'
@@ -235,7 +235,7 @@ describe("Post", () => {
     // after the click
     expect(singlePost.reportMode()).toBeTrue();
     expect(singlePost.reportType).toBe("Post");
-    expect(reportSpy).toHaveBeenCalled();
+    expect(reportSpy).toHaveBeenCalledWith();
     expect(singlePostDOM.querySelector("report-form")).toBeTruthy();
   });
 
@@ -258,7 +258,7 @@ describe("Post", () => {
     upFixture.detectChanges();
 
     // check the popup is exited
-    expect(changeSpy).toHaveBeenCalled();
+    expect(changeSpy).toHaveBeenCalledWith(false, "Edit");
     expect(singlePost.editMode()).toBeFalse();
   });
 
@@ -280,7 +280,7 @@ describe("Post", () => {
     upFixture.detectChanges();
 
     // check the popup is exited
-    expect(changeSpy).toHaveBeenCalled();
+    expect(changeSpy).toHaveBeenCalledWith(false, "Delete");
     expect(singlePost.deleteMode()).toBeFalse();
   });
 
@@ -302,7 +302,7 @@ describe("Post", () => {
     upFixture.detectChanges();
 
     // check the popup is exited
-    expect(changeSpy).toHaveBeenCalled();
+    expect(changeSpy).toHaveBeenCalledWith(false, "Report");
     expect(singlePost.reportMode()).toBeFalse();
   });
 
@@ -324,7 +324,7 @@ describe("Post", () => {
     upFixture.detectChanges();
 
     // check the popup is exited
-    expect(changeSpy).toHaveBeenCalled();
+    expect(changeSpy).toHaveBeenCalledWith(false, "Message");
     expect(singlePost.sendMessageMode()).toBeFalse();
   });
 

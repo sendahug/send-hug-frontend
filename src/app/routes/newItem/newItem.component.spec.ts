@@ -308,7 +308,9 @@ describe("NewItem", () => {
 
     fixture.detectChanges();
 
-    expect(queryParamsSpy).toHaveBeenCalled();
+    expect(queryParamsSpy).toHaveBeenCalledTimes(2);
+    expect(queryParamsSpy.calls.argsFor(0)[0]).toBe("user");
+    expect(queryParamsSpy.calls.argsFor(1)[0]).toBe("userID");
     expect(newItem.itemType()).toBe("Message");
     expect(newItem.newMessageForm.controls.messageFor.value).toBe("hello");
     expect(newItem.forID()).toBe(2);
@@ -372,8 +374,7 @@ describe("NewItem", () => {
       messageText: messageText,
     };
 
-    expect(newMessageSpy).toHaveBeenCalled();
-    expect(newMessServiceSpy).toHaveBeenCalled();
+    expect(newMessageSpy).toHaveBeenCalledWith();
     expect(newMessServiceSpy).toHaveBeenCalledWith(jasmine.objectContaining(newMessage));
     expect(navigateSpy).toHaveBeenCalledWith(["/"]);
   });
@@ -407,7 +408,7 @@ describe("NewItem", () => {
     newItemDOM.querySelectorAll(".sendData")[0].click();
     fixture.detectChanges();
 
-    expect(newMessageSpy).toHaveBeenCalled();
+    expect(newMessageSpy).toHaveBeenCalledWith();
     expect(alertSpy).toHaveBeenCalled();
     expect(newMessServiceSpy).not.toHaveBeenCalled();
   });
@@ -442,7 +443,7 @@ describe("NewItem", () => {
     newItemDOM.querySelectorAll(".sendData")[0].click();
     fixture.detectChanges();
 
-    expect(newMessageSpy).toHaveBeenCalled();
+    expect(newMessageSpy).toHaveBeenCalledWith();
     expect(alertSpy).toHaveBeenCalledWith({
       type: "Error",
       message: "You're currently logged out. Log back in to send a message.",
@@ -499,8 +500,7 @@ describe("NewItem", () => {
     newItemDOM.querySelectorAll(".sendData")[0].click();
     fixture.detectChanges();
 
-    expect(newMessageSpy).toHaveBeenCalled();
-    expect(alertSpy).toHaveBeenCalled();
+    expect(newMessageSpy).toHaveBeenCalledWith();
     expect(newMessServiceSpy).not.toHaveBeenCalled();
     expect(alertSpy).toHaveBeenCalledWith({
       type: "Error",

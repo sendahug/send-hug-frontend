@@ -91,7 +91,6 @@ describe("SearchForm", () => {
 
     // check the spies were triggered
     expect(searchSpy).toHaveBeenCalled();
-    expect(searchServiceSpy).toHaveBeenCalled();
     expect(searchServiceSpy).toHaveBeenCalledWith("search");
     expect(navigateSpy).toHaveBeenCalledWith(["search"], {
       queryParams: {
@@ -99,7 +98,7 @@ describe("SearchForm", () => {
       },
     });
 
-    expect(toggleSpy).toHaveBeenCalled();
+    expect(toggleSpy).toHaveBeenCalledWith();
   });
 
   // Check that an empty search query isn't allowed
@@ -141,7 +140,7 @@ describe("SearchForm", () => {
     searchFormHtml.querySelector("#exitButton").click();
     fixture.detectChanges();
 
-    expect(toggleSpy).toHaveBeenCalled();
+    expect(toggleSpy).toHaveBeenCalledWith();
     expect(emitSpy).toHaveBeenCalledWith(false);
   });
 });

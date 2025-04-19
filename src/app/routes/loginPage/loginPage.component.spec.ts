@@ -333,8 +333,8 @@ describe("LoginPage", () => {
     loginPageDOM.querySelectorAll(".loginButton")[0].click();
     fixture.detectChanges();
 
-    expect(loginSpy).toHaveBeenCalled();
-    expect(serviceLoginSpy).toHaveBeenCalled();
+    expect(loginSpy).toHaveBeenCalledWith("apple");
+    expect(serviceLoginSpy).toHaveBeenCalledWith("apple");
     expect(signUpSpy).toHaveBeenCalledWith(mockObservable);
   });
 
@@ -354,7 +354,7 @@ describe("LoginPage", () => {
     loginPageDOM.querySelector("#logIn").click();
     fixture.detectChanges();
 
-    expect(sendSpy).toHaveBeenCalled();
+    expect(sendSpy).toHaveBeenCalledWith();
     expect(signUpSpy).not.toHaveBeenCalled();
     expect(signInSpy).not.toHaveBeenCalled();
     expect(alertsSpy).toHaveBeenCalledWith({
@@ -377,7 +377,7 @@ describe("LoginPage", () => {
     loginPageDOM.querySelector("#logIn").click();
     fixture.detectChanges();
 
-    expect(sendSpy).toHaveBeenCalled();
+    expect(sendSpy).toHaveBeenCalledWith();
     expect(signUpSpy).not.toHaveBeenCalled();
     expect(signInSpy).not.toHaveBeenCalled();
     expect(alertsSpy).toHaveBeenCalledWith({
@@ -517,7 +517,7 @@ describe("LoginPage", () => {
     fixture.detectChanges();
 
     // check the logout methods were called
-    expect(logoutSpy).toHaveBeenCalled();
-    expect(serviceLogoutSpy).toHaveBeenCalled();
+    expect(logoutSpy).toHaveBeenCalledWith();
+    expect(serviceLogoutSpy).toHaveBeenCalledWith();
   });
 });

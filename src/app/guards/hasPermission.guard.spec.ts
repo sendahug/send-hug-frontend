@@ -81,7 +81,7 @@ describe("hasPermissionGuard", () => {
       );
 
       expect(hasPermissionResult).toBeTrue();
-      expect(canUserSpy).toHaveBeenCalled();
+      expect(canUserSpy).toHaveBeenCalledWith("myPerm");
       done();
     });
   });
@@ -102,7 +102,7 @@ describe("hasPermissionGuard", () => {
         queryParams: { redirect: encodeURIComponent("/test") },
       });
 
-      expect(canUserSpy).toHaveBeenCalled();
+      expect(canUserSpy).toHaveBeenCalledWith("myPerm");
       done();
     });
   });

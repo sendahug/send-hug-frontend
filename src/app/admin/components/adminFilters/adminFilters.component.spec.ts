@@ -161,7 +161,7 @@ describe("Filters Page", () => {
     fixture.detectChanges();
 
     // check expectations
-    expect(addSpy).toHaveBeenCalled();
+    expect(addSpy).toHaveBeenCalledWith();
     expect(apiClientSpy).toHaveBeenCalledWith("filters", { word: "text" });
     expect(alertsSpy).toHaveBeenCalledWith(
       `The phrase text was added to the list of filtered words!`,
@@ -189,7 +189,7 @@ describe("Filters Page", () => {
     fixture.detectChanges();
 
     // check expectations
-    expect(addSpy).toHaveBeenCalled();
+    expect(addSpy).toHaveBeenCalledWith();
     expect(apiClientSpy).not.toHaveBeenCalled();
     expect(alertSpy).toHaveBeenCalledWith({
       type: "Error",
@@ -227,7 +227,7 @@ describe("Filters Page", () => {
     fixture.detectChanges();
 
     // check expectations
-    expect(removeSpy).toHaveBeenCalled();
+    expect(removeSpy).toHaveBeenCalledWith(1);
     expect(deleteSpy).toHaveBeenCalledWith("filters/1");
     expect(alertSpy).toHaveBeenCalledWith(
       `The phrase ${mockResponse.deleted.filter} was removed from the list of filtered words.`,
@@ -255,8 +255,8 @@ describe("Filters Page", () => {
     fixture.detectChanges();
 
     // check expectations
-    expect(nextPageSpy).toHaveBeenCalled();
-    expect(fetchSpy).toHaveBeenCalled();
+    expect(nextPageSpy).toHaveBeenCalledWith();
+    expect(fetchSpy).toHaveBeenCalledWith();
   });
 
   it("should go to the previous page", () => {
@@ -278,7 +278,7 @@ describe("Filters Page", () => {
     fixture.detectChanges();
 
     // check expectations
-    expect(prevPageSpy).toHaveBeenCalled();
-    expect(fetchSpy).toHaveBeenCalled();
+    expect(prevPageSpy).toHaveBeenCalledWith();
+    expect(fetchSpy).toHaveBeenCalledWith();
   });
 });

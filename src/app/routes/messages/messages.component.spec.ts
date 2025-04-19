@@ -247,7 +247,7 @@ describe("AppMessaging", () => {
     appMessaging.fetchMessages();
 
     // after
-    expect(idbFetchSpy).toHaveBeenCalled();
+    expect(idbFetchSpy).toHaveBeenCalledWith();
     expect(apiClientSpy).toHaveBeenCalledWith("messages", {
       page: 1,
       type: "inbox",
@@ -275,7 +275,7 @@ describe("AppMessaging", () => {
 
     appMessaging.fetchMessages();
 
-    expect(idbFetchSpy).toHaveBeenCalled();
+    expect(idbFetchSpy).toHaveBeenCalledWith();
     expect(apiClientSpy).toHaveBeenCalledWith("messages", {
       page: 1,
       type: "thread",
@@ -382,7 +382,7 @@ describe("AppMessaging", () => {
     appMessaging.fetchThreads();
 
     // after
-    expect(idbFetchSpy).toHaveBeenCalled();
+    expect(idbFetchSpy).toHaveBeenCalledWith();
     expect(apiClientSpy).toHaveBeenCalledWith("messages", {
       page: 1,
       type: "threads",
@@ -431,7 +431,7 @@ describe("AppMessaging", () => {
     fixture.detectChanges();
 
     expect(appMessaging.currentPage()).toBe(2);
-    expect(fetchSpy).toHaveBeenCalled();
+    expect(fetchSpy).toHaveBeenCalledWith();
   });
 
   it("should navigate to the next page - threads", () => {
@@ -449,7 +449,7 @@ describe("AppMessaging", () => {
     fixture.detectChanges();
 
     expect(appMessaging.currentPage()).toBe(2);
-    expect(fetchSpy).toHaveBeenCalled();
+    expect(fetchSpy).toHaveBeenCalledWith();
   });
 
   it("should navigate to the previous page", () => {
@@ -468,7 +468,7 @@ describe("AppMessaging", () => {
     fixture.detectChanges();
 
     expect(appMessaging.currentPage()).toBe(1);
-    expect(fetchSpy).toHaveBeenCalled();
+    expect(fetchSpy).toHaveBeenCalledWith();
   });
 
   it("should navigate to the previous page - threads", () => {
@@ -487,7 +487,7 @@ describe("AppMessaging", () => {
     fixture.detectChanges();
 
     expect(appMessaging.currentPage()).toBe(1);
-    expect(fetchSpy).toHaveBeenCalled();
+    expect(fetchSpy).toHaveBeenCalledWith();
   });
 
   // // Check that deleting all messages triggers the popup
@@ -536,7 +536,7 @@ describe("AppMessaging", () => {
     fixture.detectChanges();
 
     // check the popup is exited
-    expect(changeSpy).toHaveBeenCalled();
+    expect(changeSpy).toHaveBeenCalledWith(false);
     expect(appMessaging.deleteMode()).toBeFalse();
   });
 

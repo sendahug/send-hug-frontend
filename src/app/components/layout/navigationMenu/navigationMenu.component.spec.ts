@@ -288,7 +288,7 @@ describe("AppNavMenu", () => {
 
       // check the font size was changed
       expect(document.querySelector("html")!.style.fontSize).toBe("75%");
-      expect(menuSpy).toHaveBeenCalled();
+      expect(menuSpy).toHaveBeenCalledWith();
       expect(menuSpy).toHaveBeenCalledTimes(1);
       resolve(undefined);
       // step 3: smaller size
@@ -300,7 +300,6 @@ describe("AppNavMenu", () => {
 
         // check the font size was changed
         expect(document.querySelector("html")!.style.fontSize).toBe("87.5%");
-        expect(menuSpy).toHaveBeenCalled();
         expect(menuSpy).toHaveBeenCalledTimes(2);
         // step 4: regular size
       })
@@ -311,7 +310,6 @@ describe("AppNavMenu", () => {
 
         // check the font size was changed
         expect(document.querySelector("html")!.style.fontSize).toBe("100%");
-        expect(menuSpy).toHaveBeenCalled();
         expect(menuSpy).toHaveBeenCalledTimes(3);
         // step 5: larger size
       })
@@ -322,7 +320,6 @@ describe("AppNavMenu", () => {
 
         // check the font size was changed
         expect(document.querySelector("html")!.style.fontSize).toBe("150%");
-        expect(menuSpy).toHaveBeenCalled();
         expect(menuSpy).toHaveBeenCalledTimes(4);
         // step 6: largest size
       })
@@ -333,7 +330,6 @@ describe("AppNavMenu", () => {
 
         // check the font size was changed
         expect(document.querySelector("html")!.style.fontSize).toBe("200%");
-        expect(menuSpy).toHaveBeenCalled();
         expect(menuSpy).toHaveBeenCalledTimes(5);
         done();
       })
@@ -413,7 +409,7 @@ describe("AppNavMenu", () => {
     navMenu.changeTextSize("largest");
     fixture.detectChanges();
 
-    expect(checkSpy).toHaveBeenCalled();
+    expect(checkSpy).toHaveBeenCalledWith();
     expect(navMenuHtml.querySelector("#navLinks")).toBeNull();
     expect(navMenuHtml.querySelector("#menuBtn").classList).not.toContain("hidden");
   });
@@ -441,7 +437,7 @@ describe("AppNavMenu", () => {
     navMenu.changeTextSize("smaller");
     fixture.detectChanges();
 
-    expect(checkSpy).toHaveBeenCalled();
+    expect(checkSpy).toHaveBeenCalledWith();
     expect(navLinks.classList).not.toContain("hidden");
     expect(navMenu.showMenu()).toBeTrue();
   });
@@ -460,7 +456,7 @@ describe("AppNavMenu", () => {
     componentHtml.querySelector("#notVerified").querySelector(".link").click();
     fixture.detectChanges();
 
-    expect(verifySpy).toHaveBeenCalled();
+    expect(verifySpy).toHaveBeenCalledWith();
   });
 
   it("should sign out", () => {
@@ -479,13 +475,13 @@ describe("AppNavMenu", () => {
     fixture.detectChanges();
 
     expect(componentHtml.querySelector("#signOutNavItem")).toBeDefined();
-    expect(firebaseUserSpy).toHaveBeenCalled();
+    expect(firebaseUserSpy).toHaveBeenCalledWith();
 
     componentHtml.querySelector("#signOutNavItem").click();
     fixture.detectChanges();
 
-    expect(signOutRedirectSpy).toHaveBeenCalled();
-    expect(signOutSpy).toHaveBeenCalled();
+    expect(signOutRedirectSpy).toHaveBeenCalledWith();
+    expect(signOutSpy).toHaveBeenCalledWith();
     expect(routerSpy).toHaveBeenCalledWith(["/"]);
   });
 

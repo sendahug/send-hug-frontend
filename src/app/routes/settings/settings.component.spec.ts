@@ -206,8 +206,7 @@ describe("SettingsPage", () => {
     fixture.detectChanges();
 
     // after the first click, check 'subscribe' was called
-    expect(toggleSpy).toHaveBeenCalled();
-    expect(settingsSpy).toHaveBeenCalled();
+    expect(toggleSpy).toHaveBeenCalledWith();
     expect(settingsSpy).toHaveBeenCalledWith({
       pushEnabled: true,
       autoRefresh: false,
@@ -221,7 +220,7 @@ describe("SettingsPage", () => {
       },
     });
 
-    expect(subscribeSpy).toHaveBeenCalled();
+    expect(subscribeSpy).toHaveBeenCalledWith();
     expect(unsubscribeSpy).not.toHaveBeenCalled();
     expect(alertSpy).toHaveBeenCalledWith("Your settings have been updated!");
 
@@ -248,7 +247,7 @@ describe("SettingsPage", () => {
 
     expect(settingsSpy.calls.count()).toBe(2);
     expect(subscribeSpy.calls.count()).toBe(1);
-    expect(unsubscribeSpy).toHaveBeenCalled();
+    expect(unsubscribeSpy).toHaveBeenCalledWith();
     expect(unsubscribeSpy.calls.count()).toBe(1);
     expect(alertSpy).toHaveBeenCalledTimes(2);
   });
@@ -284,7 +283,7 @@ describe("SettingsPage", () => {
     fixture.detectChanges();
 
     // after the first click, check 'subscribe' was called
-    expect(toggleSpy).toHaveBeenCalled();
+    expect(toggleSpy).toHaveBeenCalledWith();
     expect(settingsSpy).toHaveBeenCalledWith({
       autoRefresh: true,
       refreshRate: 30,
@@ -298,7 +297,7 @@ describe("SettingsPage", () => {
       },
     });
 
-    expect(startRefreshSpy).toHaveBeenCalled();
+    expect(startRefreshSpy).toHaveBeenCalledWith(30);
     expect(stopRefreshSpy).not.toHaveBeenCalled();
 
     // simulate another click
@@ -323,9 +322,9 @@ describe("SettingsPage", () => {
       },
     });
 
-    expect(startRefreshSpy.calls.count()).toBe(1);
-    expect(stopRefreshSpy).toHaveBeenCalled();
-    expect(stopRefreshSpy.calls.count()).toBe(1);
+    expect(startRefreshSpy).toHaveBeenCalledTimes(1);
+    expect(stopRefreshSpy).toHaveBeenCalledWith();
+    expect(stopRefreshSpy).toHaveBeenCalledTimes(1);
   });
 
   // Check that changing the refresh rate changes the set rate
@@ -350,8 +349,7 @@ describe("SettingsPage", () => {
     fixture.detectChanges();
 
     // check the rate changed
-    expect(updateSpy).toHaveBeenCalled();
-    expect(settingsSpy).toHaveBeenCalled();
+    expect(updateSpy).toHaveBeenCalledWith();
     expect(settingsSpy).toHaveBeenCalledWith({
       autoRefresh: false,
       pushEnabled: false,
@@ -421,8 +419,7 @@ describe("SettingsPage", () => {
     fixture.detectChanges();
 
     // check the setting changed
-    expect(updateSpy).toHaveBeenCalled();
-    expect(settingsSpy).toHaveBeenCalled();
+    expect(updateSpy).toHaveBeenCalledWith();
     expect(settingsSpy).toHaveBeenCalledWith({
       autoRefresh: false,
       pushEnabled: false,
@@ -470,8 +467,7 @@ describe("SettingsPage", () => {
     fixture.detectChanges();
 
     // check the setting changed
-    expect(updateSpy).toHaveBeenCalled();
-    expect(settingsSpy).toHaveBeenCalled();
+    expect(updateSpy).toHaveBeenCalledWith();
     expect(settingsSpy).toHaveBeenCalledWith({
       autoRefresh: false,
       pushEnabled: false,
@@ -519,8 +515,7 @@ describe("SettingsPage", () => {
     fixture.detectChanges();
 
     // check the setting changed
-    expect(updateSpy).toHaveBeenCalled();
-    expect(settingsSpy).toHaveBeenCalled();
+    expect(updateSpy).toHaveBeenCalledWith();
     expect(settingsSpy).toHaveBeenCalledWith({
       autoRefresh: false,
       pushEnabled: false,
@@ -568,8 +563,7 @@ describe("SettingsPage", () => {
     fixture.detectChanges();
 
     // check the setting changed
-    expect(updateSpy).toHaveBeenCalled();
-    expect(settingsSpy).toHaveBeenCalled();
+    expect(updateSpy).toHaveBeenCalledWith();
     expect(settingsSpy).toHaveBeenCalledWith({
       autoRefresh: false,
       pushEnabled: false,
@@ -622,8 +616,7 @@ describe("SettingsPage", () => {
     fixture.detectChanges();
 
     // check the setting changed
-    expect(updateSpy).toHaveBeenCalled();
-    expect(settingsSpy).toHaveBeenCalled();
+    expect(updateSpy).toHaveBeenCalledWith();
     expect(settingsSpy).toHaveBeenCalledWith({
       autoRefresh: false,
       pushEnabled: false,
@@ -674,7 +667,7 @@ describe("SettingsPage", () => {
     settingsDOM.querySelector("#emailNotificationsEnabled").dispatchEvent(new Event("input"));
     fixture.detectChanges();
 
-    expect(toggleSpy).toHaveBeenCalled();
+    expect(toggleSpy).toHaveBeenCalledWith();
     expect(messageNotificationsInput.disabled).toBeTrue();
     expect(hugsDigestInput.disabled).toBeTrue();
     expect(areYouOkayInput.disabled).toBeTrue();

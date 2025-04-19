@@ -171,7 +171,7 @@ describe("MyPosts", () => {
 
     myPosts.ngOnInit();
 
-    expect(fetchSpy).toHaveBeenCalled();
+    expect(fetchSpy).toHaveBeenCalledWith();
   });
 
   it("should set the user ID to the logged in user's ID if no ID is provided", () => {
@@ -205,7 +205,7 @@ describe("MyPosts", () => {
     myPosts.fetchPosts();
 
     // after
-    expect(idbSpy).toHaveBeenCalled();
+    expect(idbSpy).toHaveBeenCalledWith();
     expect(apiClientSpy).toHaveBeenCalledWith("users/1/posts", { page: 1 });
     expect(swSpy).toHaveBeenCalledWith("posts", mockPosts, "date");
     expect(myPosts.totalPages()).toEqual(2);
@@ -269,7 +269,7 @@ describe("MyPosts", () => {
     fixture.detectChanges();
 
     // check the popup is exited
-    expect(changeSpy).toHaveBeenCalled();
+    expect(changeSpy).toHaveBeenCalledWith(false);
     expect(myPosts.deleteMode()).toBeFalse();
   });
 
@@ -318,8 +318,8 @@ describe("MyPosts", () => {
     // change the page
     myPostsDOM.querySelectorAll(".nextButton")[0].click();
 
-    expect(nextPageSpy).toHaveBeenCalled();
-    expect(fetchSpy).toHaveBeenCalled();
+    expect(nextPageSpy).toHaveBeenCalledWith();
+    expect(fetchSpy).toHaveBeenCalledWith();
     expect(myPosts.currentPage()).toEqual(2);
   });
 
@@ -341,8 +341,8 @@ describe("MyPosts", () => {
     // change the page
     myPostsDOM.querySelectorAll(".prevButton")[0].click();
 
-    expect(prevPageSpy).toHaveBeenCalled();
-    expect(fetchSpy).toHaveBeenCalled();
+    expect(prevPageSpy).toHaveBeenCalledWith();
+    expect(fetchSpy).toHaveBeenCalledWith();
     expect(myPosts.currentPage()).toEqual(1);
   });
 
@@ -393,7 +393,7 @@ describe("MyPosts", () => {
     singlePost.deleted.emit(4);
     fixture.detectChanges();
 
-    expect(updateListSpy).toHaveBeenCalled();
+    expect(updateListSpy).toHaveBeenCalledWith();
     expect(myPosts.posts().length).toBe(0);
   });
 });

@@ -369,6 +369,7 @@ describe("SearchResults", () => {
         },
       }),
     );
+
     expect(searchResults.itemsService.postSearchPage()).toBe(2);
     expect(
       searchResultsDOM.querySelector("#postSearchResults").firstElementChild.children.length,

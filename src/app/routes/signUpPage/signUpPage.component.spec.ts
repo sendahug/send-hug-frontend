@@ -115,8 +115,8 @@ describe("SignUpPage", () => {
     signUpPageDOM.querySelector("#logIn").click();
     fixture.detectChanges();
 
-    expect(signUpSpy).toHaveBeenCalled();
-    expect(currentUserSpy).toHaveBeenCalled();
+    expect(signUpSpy).toHaveBeenCalledWith();
+    expect(currentUserSpy).toHaveBeenCalledWith();
     expect(createUserSpy).not.toHaveBeenCalled();
     expect(alertsSpy).toHaveBeenCalledWith({
       type: "Error",
@@ -142,7 +142,7 @@ describe("SignUpPage", () => {
 
     signUpPage.signUp();
 
-    expect(currentUserSpy).toHaveBeenCalled();
+    expect(currentUserSpy).toHaveBeenCalledWith();
     expect(createUserSpy).not.toHaveBeenCalled();
     expect(alertsSpy).toHaveBeenCalledWith({
       type: "Error",
@@ -176,8 +176,8 @@ describe("SignUpPage", () => {
     signUpPageDOM.querySelector("#logIn").click();
     fixture.detectChanges();
 
-    expect(signUpSpy).toHaveBeenCalled();
-    expect(currentUserSpy).toHaveBeenCalled();
+    expect(signUpSpy).toHaveBeenCalledWith();
+    expect(currentUserSpy).toHaveBeenCalledWith();
     expect(createUserSpy).not.toHaveBeenCalled();
     expect(alertsSpy).toHaveBeenCalledWith({
       type: "Error",
@@ -204,8 +204,8 @@ describe("SignUpPage", () => {
     signUpPageDOM.querySelector("#logIn").click();
     fixture.detectChanges();
 
-    expect(signUpSpy).toHaveBeenCalled();
-    expect(currentUserSpy).toHaveBeenCalled();
+    expect(signUpSpy).toHaveBeenCalledWith();
+    expect(currentUserSpy).toHaveBeenCalledWith();
     expect(createUserSpy).not.toHaveBeenCalled();
     expect(alertsSpy).toHaveBeenCalledWith({
       type: "Error",
@@ -234,8 +234,8 @@ describe("SignUpPage", () => {
     signUpPageDOM.querySelector("#logIn").click();
     fixture.detectChanges();
 
-    expect(signUpSpy).toHaveBeenCalled();
-    expect(currentUserSpy).toHaveBeenCalled();
+    expect(signUpSpy).toHaveBeenCalledWith();
+    expect(currentUserSpy).toHaveBeenCalledWith();
     expect(createUserSpy).not.toHaveBeenCalled();
     expect(alertsSpy).toHaveBeenCalledWith({
       type: "Error",
@@ -263,7 +263,7 @@ describe("SignUpPage", () => {
     signUpPageDOM.querySelector("#logIn").click();
     fixture.detectChanges();
 
-    expect(signUpSpy).toHaveBeenCalled();
+    expect(signUpSpy).toHaveBeenCalledWith();
     expect(createUserSpy).toHaveBeenCalledWith("name", false);
     expect(routerSpy).toHaveBeenCalledWith(["/user"]);
   });
@@ -282,8 +282,8 @@ describe("SignUpPage", () => {
     signUpPageDOM.querySelector("#logOut").click();
     fixture.detectChanges();
 
-    expect(signOutRedirectSpy).toHaveBeenCalled();
-    expect(logOutSpy).toHaveBeenCalled();
+    expect(signOutRedirectSpy).toHaveBeenCalledWith();
+    expect(logOutSpy).toHaveBeenCalledWith();
     expect(routerSpy).toHaveBeenCalledWith(["/login"]);
   });
 

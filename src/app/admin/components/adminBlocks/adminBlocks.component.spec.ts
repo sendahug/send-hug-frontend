@@ -210,7 +210,7 @@ describe("Blocks Page", () => {
     fixture.detectChanges();
 
     // check expectations
-    expect(blockSpy).toHaveBeenCalled();
+    expect(blockSpy).toHaveBeenCalledWith();
     expect(blockServiceSpy).toHaveBeenCalledWith(5, "oneDay");
     expect(adminBlocks.blockedUsers().length).toBe(2);
   });
@@ -268,7 +268,7 @@ describe("Blocks Page", () => {
     fixture.detectChanges();
 
     // check expectations
-    expect(blockSpy).toHaveBeenCalled();
+    expect(blockSpy).toHaveBeenCalledWith();
     expect(blockServiceSpy).toHaveBeenCalledWith(15, "oneDay");
     expect(adminBlocks.blockedUsers().length).toBe(1);
   });
@@ -294,7 +294,7 @@ describe("Blocks Page", () => {
     adminBlocksDOM.querySelectorAll(".sendData")[0].click();
     fixture.detectChanges();
 
-    expect(blockSpy).toHaveBeenCalled();
+    expect(blockSpy).toHaveBeenCalledWith();
     expect(blockServiceSpy).not.toHaveBeenCalled();
     expect(alertSpy).toHaveBeenCalledWith({
       type: "Error",
@@ -324,7 +324,7 @@ describe("Blocks Page", () => {
     adminBlocksDOM.querySelectorAll(".sendData")[0].click();
     fixture.detectChanges();
 
-    expect(blockSpy).toHaveBeenCalled();
+    expect(blockSpy).toHaveBeenCalledWith();
     expect(blockServiceSpy).not.toHaveBeenCalled();
     expect(alertSpy).toHaveBeenCalledWith({
       type: "Error",
@@ -353,7 +353,7 @@ describe("Blocks Page", () => {
     adminBlocksDOM.querySelectorAll(".sendData")[0].click();
     fixture.detectChanges();
 
-    expect(blockSpy).toHaveBeenCalled();
+    expect(blockSpy).toHaveBeenCalledWith();
     expect(blockServiceSpy).not.toHaveBeenCalled();
     expect(alertSpy).toHaveBeenCalledWith({
       type: "Error",
@@ -404,7 +404,6 @@ describe("Blocks Page", () => {
       blocked: false,
     });
 
-    expect(alertSpy).toHaveBeenCalled();
     expect(alertSpy).toHaveBeenCalledWith(
       `User ${mockResponse.updated.displayName} has been unblocked.`,
     );
@@ -430,9 +429,9 @@ describe("Blocks Page", () => {
     fixture.detectChanges();
 
     // check expectations
-    expect(nextPageSpy).toHaveBeenCalled();
+    expect(nextPageSpy).toHaveBeenCalledWith();
     expect(adminBlocks.currentPage()).toBe(2);
-    expect(fetchSpy).toHaveBeenCalled();
+    expect(fetchSpy).toHaveBeenCalledWith();
   });
 
   it("should return to the previous page", () => {
@@ -453,8 +452,8 @@ describe("Blocks Page", () => {
     fixture.detectChanges();
 
     // check expectations
-    expect(prevPageSpy).toHaveBeenCalled();
+    expect(prevPageSpy).toHaveBeenCalledWith();
     expect(adminBlocks.currentPage()).toBe(1);
-    expect(fetchSpy).toHaveBeenCalled();
+    expect(fetchSpy).toHaveBeenCalledWith();
   });
 });

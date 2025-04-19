@@ -195,7 +195,7 @@ export class NotificationService {
         // if there was an error, alert the user
       })
       .catch((err) => {
-        this.alertsService.createAlert({ type: "Error", message: err });
+        this.alertsService.createAlert({ type: "Error", message: `Error: ${err}` });
       });
   }
 
@@ -228,7 +228,7 @@ export class NotificationService {
             message: pushPermissionDeniedErr,
           });
         } else {
-          this.alertsService.createAlert({ type: "Error", message: err });
+          this.alertsService.createAlert({ type: "Error", message: `Error: ${err}` });
         }
       });
   }

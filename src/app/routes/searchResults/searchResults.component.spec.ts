@@ -169,7 +169,7 @@ describe("SearchResults", () => {
     searchResults.itemsService.isSearching.set(false);
     fixture.detectChanges();
 
-    expect(routeSpy).toHaveBeenCalled();
+    expect(routeSpy).toHaveBeenCalledWith("query");
     expect(itemsServiceSpy).toHaveBeenCalledWith("search");
     expect(searchResults.searchQuery()).toBe("search");
     expect(searchResultsDOM.querySelector("#resultSummary").textContent).toContain('"search"');
@@ -191,7 +191,6 @@ describe("SearchResults", () => {
     const searchResults = fixture.componentInstance;
 
     expect(searchResults.searchQuery()).toBe("search");
-    expect(searchSpy).toHaveBeenCalled();
     expect(searchSpy).toHaveBeenCalledWith("search");
   });
 
@@ -361,7 +360,15 @@ describe("SearchResults", () => {
     fixture.detectChanges();
 
     // expectations for page 2
-    expect(routeSpy).toHaveBeenCalled();
+    expect(routeSpy).toHaveBeenCalledWith(
+      [],
+      jasmine.objectContaining({
+        queryParams: {
+          query: "search",
+          page: 2,
+        },
+      }),
+    );
     expect(searchResults.itemsService.postSearchPage()).toBe(2);
     expect(
       searchResultsDOM.querySelector("#postSearchResults").firstElementChild.children.length,

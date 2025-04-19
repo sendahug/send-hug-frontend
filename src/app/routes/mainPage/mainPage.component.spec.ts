@@ -129,7 +129,7 @@ describe("MainPage", () => {
     const fetchSpy = spyOn(MainPage.prototype, "fetchPosts");
     TestBed.createComponent(MainPage);
 
-    expect(fetchSpy).toHaveBeenCalled();
+    expect(fetchSpy).toHaveBeenCalledWith();
   });
 
   it("should fetch posts from the server", () => {
@@ -150,7 +150,7 @@ describe("MainPage", () => {
 
     TestBed.createComponent(MainPage);
 
-    expect(idbSpy).toHaveBeenCalled();
+    expect(idbSpy).toHaveBeenCalledWith();
     expect(apiClientSpy).toHaveBeenCalledWith("");
     expect(updateInterfaceSpy).toHaveBeenCalledWith(mockNetworkResponse);
     expect(addItemsSpy).toHaveBeenCalledWith(

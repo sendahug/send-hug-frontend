@@ -186,7 +186,7 @@ describe("UserPage", () => {
 
     const userData = userPage.authService.userData();
 
-    expect(routeSpy).toHaveBeenCalled();
+    expect(routeSpy).toHaveBeenCalledWith("id");
     expect(userPage.userId()).toBe(4);
     expect(userPage.isOtherUserProfile()).toBeFalse();
     expect(
@@ -258,7 +258,7 @@ describe("UserPage", () => {
 
     const userData = userPage.otherUser() as OtherUser;
 
-    expect(routeSpy).toHaveBeenCalled();
+    expect(routeSpy).toHaveBeenCalledWith("id");
     expect(userPage.userId()).toBe(1);
     expect(userPage.isOtherUserProfile()).toBeTrue();
     expect(
@@ -323,8 +323,8 @@ describe("UserPage", () => {
     fixture.detectChanges();
 
     // check the logout methods were called
-    expect(logoutSpy).toHaveBeenCalled();
-    expect(serviceLogoutSpy).toHaveBeenCalled();
+    expect(logoutSpy).toHaveBeenCalledWith();
+    expect(serviceLogoutSpy).toHaveBeenCalledWith();
     expect(navigateSpy).toHaveBeenCalledWith(["/"]);
   });
 
@@ -364,7 +364,7 @@ describe("UserPage", () => {
 
     userPage.fetchOtherUsersData();
 
-    expect(idbSpy).toHaveBeenCalled();
+    expect(idbSpy).toHaveBeenCalledWith();
     expect(apiClientSpy).toHaveBeenCalledWith("users/1");
     expect(addItemSpy).toHaveBeenCalledWith("users", mockUser);
     expect(userPage.otherUser() as OtherUser).toEqual(mockUser);
@@ -563,8 +563,8 @@ describe("UserPage", () => {
     fixture.detectChanges();
 
     // after the click
-    expect(hugSpy).toHaveBeenCalled();
-    expect(apiClientSpy).toHaveBeenCalled();
+    expect(hugSpy).toHaveBeenCalledWith(1);
+    expect(apiClientSpy).toHaveBeenCalledWith(`users/1/hugs`, {});
     expect(updateSpy).toHaveBeenCalledWith({ givenH: 3 });
     expect(userPage.otherUser()!.receivedH).toBe(4);
     expect(
@@ -602,7 +602,7 @@ describe("UserPage", () => {
     fixture.detectChanges();
 
     // check the popup is exited
-    expect(changeSpy).toHaveBeenCalled();
+    expect(changeSpy).toHaveBeenCalledWith(false, "Edit");
     expect(userPage.editMode()).toBeFalse();
   });
 
@@ -650,7 +650,7 @@ describe("UserPage", () => {
     fixture.detectChanges();
 
     // check the popup is exited
-    expect(changeSpy).toHaveBeenCalled();
+    expect(changeSpy).toHaveBeenCalledWith(false, "Report");
     expect(userPage.reportMode()).toBeFalse();
   });
 });

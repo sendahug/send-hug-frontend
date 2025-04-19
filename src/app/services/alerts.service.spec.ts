@@ -128,7 +128,6 @@ describe("AlertsService", () => {
 
     alertsService.createSuccessAlert("string", { reload: false });
 
-    expect(alertSpy).toHaveBeenCalled();
     expect(alertSpy).toHaveBeenCalledWith(
       {
         type: "Success",
@@ -156,7 +155,6 @@ describe("AlertsService", () => {
       headers: new HttpHeaders(),
     });
 
-    expect(alertSpy).toHaveBeenCalled();
     expect(alertSpy).toHaveBeenCalledWith(
       {
         type: "Error",
@@ -187,7 +185,6 @@ describe("AlertsService", () => {
       headers: new HttpHeaders(),
     });
 
-    expect(alertSpy).toHaveBeenCalled();
     expect(alertSpy).toHaveBeenCalledWith(
       {
         type: "Error",
@@ -218,7 +215,6 @@ describe("AlertsService", () => {
       headers: new HttpHeaders(),
     });
 
-    expect(alertSpy).toHaveBeenCalled();
     expect(alertSpy).toHaveBeenCalledWith(
       {
         type: "Error",
@@ -247,7 +243,6 @@ describe("AlertsService", () => {
       headers: new HttpHeaders(),
     });
 
-    expect(alertSpy).toHaveBeenCalled();
     expect(alertSpy).toHaveBeenCalledWith(
       {
         type: "Error",

@@ -195,7 +195,7 @@ describe("NewItem", () => {
     newItemDOM.querySelectorAll(".sendData")[0].click();
     fixture.detectChanges();
 
-    expect(newPostSpy).toHaveBeenCalled();
+    expect(newPostSpy).toHaveBeenCalledWith();
     expect(alertSpy).toHaveBeenCalled();
     expect(apiClientSpy).not.toHaveBeenCalled();
   });
@@ -222,7 +222,7 @@ describe("NewItem", () => {
     newItemDOM.querySelectorAll(".sendData")[0].click();
     fixture.detectChanges();
 
-    expect(newPostSpy).toHaveBeenCalled();
+    expect(newPostSpy).toHaveBeenCalledWith();
     expect(alertSpy).toHaveBeenCalledWith({
       type: "Error",
       message: "You're currently logged out. Log back in to post a new post.",

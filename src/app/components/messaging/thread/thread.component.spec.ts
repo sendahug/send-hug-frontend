@@ -160,7 +160,7 @@ describe("AppSingleThread", () => {
     fixture.detectChanges();
 
     // check the popup is exited
-    expect(changeSpy).toHaveBeenCalled();
+    expect(changeSpy).toHaveBeenCalledWith(false);
     expect(appThread.deleteMode()).toBeFalse();
     expect(outputSpy).toHaveBeenCalledWith(3);
   });

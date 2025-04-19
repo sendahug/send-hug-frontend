@@ -237,7 +237,7 @@ describe("FullList", () => {
 
     TestBed.createComponent(FullList);
 
-    expect(idbSpy).toHaveBeenCalled();
+    expect(idbSpy).toHaveBeenCalledWith();
     expect(apiClientSpy).toHaveBeenCalledWith("posts", { page: 1, type: "new" });
     expect(updateInterfaceSpy).toHaveBeenCalledWith(mockPageOneResponse);
     expect(addItemsSpy).toHaveBeenCalledWith("posts", pageOnePosts, "date");
@@ -351,7 +351,7 @@ describe("FullList", () => {
     // after
     expect(fullList.currentPage()).toBe(2);
     expect(fetchSpy).toHaveBeenCalledTimes(2);
-    expect(updateURLSpy).toHaveBeenCalled();
+    expect(updateURLSpy).toHaveBeenCalledWith();
   });
 
   it("should go to the previous page", () => {
@@ -377,7 +377,7 @@ describe("FullList", () => {
     // after
     expect(fullList.currentPage()).toBe(1);
     expect(fetchSpy).toHaveBeenCalledTimes(2);
-    expect(updateURLSpy).toHaveBeenCalled();
+    expect(updateURLSpy).toHaveBeenCalledWith();
   });
 
   it("should trigger navigation when the page changes", () => {

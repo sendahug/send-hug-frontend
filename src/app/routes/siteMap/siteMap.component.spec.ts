@@ -244,7 +244,7 @@ describe("SiteMap", () => {
     };
 
     // check the admin pages' linkes appear
-    expect(authSpy).toHaveBeenCalled();
+    expect(authSpy).toHaveBeenCalledWith("read:admin-board");
     expect(siteMap.routes()).toContain(adminPath);
     expect(navLinks[4].textContent).toBe("Main Page");
     expect(navLinks[4].parentElement.parentElement.children.length).toBe(4);
@@ -287,7 +287,7 @@ describe("SiteMap", () => {
     };
 
     // check the admin pages' links don't appear
-    expect(authSpy).toHaveBeenCalled();
+    expect(authSpy).toHaveBeenCalledWith("read:admin-board");
     expect(siteMap.routes()).not.toContain(adminPath);
     expect(navLinks.length).toBeLessThan(routes.length);
     for (let i = 0; i < navLinks.length; i++) {

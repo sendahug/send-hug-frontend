@@ -235,7 +235,7 @@ describe("IconEditor", () => {
     iconEditorDOM.querySelectorAll(".iconButton")[0].click();
     fixture.detectChanges();
 
-    expect(dismissSpy).toHaveBeenCalled();
+    expect(dismissSpy).toHaveBeenCalledWith();
     expect(emitSpy).toHaveBeenCalledWith(false);
   });
 

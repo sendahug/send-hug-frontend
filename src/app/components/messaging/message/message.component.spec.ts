@@ -203,7 +203,7 @@ describe("AppSingleMessage", () => {
     fixture.detectChanges();
 
     // check the popup is exited
-    expect(changeSpy).toHaveBeenCalled();
+    expect(changeSpy).toHaveBeenCalledWith(false);
     expect(appMessage.deleteMode()).toBeFalse();
     expect(outputSpy).toHaveBeenCalledWith(1);
   });

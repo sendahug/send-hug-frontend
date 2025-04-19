@@ -145,7 +145,7 @@ describe("AppAlert", () => {
 
     alertDOM.querySelector("#alertButton").click();
 
-    expect(closeSpy).toHaveBeenCalled();
+    expect(closeSpy).toHaveBeenCalledWith();
     expect(alertsService.shouldDisplayAlert()).toBe(false);
   });
 
@@ -185,6 +185,6 @@ describe("AppAlert", () => {
 
     alertDOM.querySelector("#reloadBtn").click();
 
-    expect(reloadSpy).toHaveBeenCalled();
+    expect(reloadSpy).toHaveBeenCalledWith();
   });
 });

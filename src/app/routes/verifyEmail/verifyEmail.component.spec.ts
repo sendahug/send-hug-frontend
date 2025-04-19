@@ -95,7 +95,7 @@ describe("VerifyEmailPage", () => {
     fixture.detectChanges();
 
     expect(verifyEmailPage.loadingAuth()).toBeFalse();
-    expect(verifySpy).toHaveBeenCalled();
+    expect(verifySpy).toHaveBeenCalledWith();
     expect(verifyEmailPageDOM.querySelector("app-loader")).toBeNull();
     expect(verifyEmailPageDOM.querySelector("#logoutBox")).toBeDefined();
   });

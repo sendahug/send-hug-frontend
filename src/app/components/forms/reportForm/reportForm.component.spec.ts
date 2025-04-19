@@ -147,7 +147,6 @@ describe("Report", () => {
     fixture.detectChanges();
 
     // check the first option was selected
-    expect(selectSpy).toHaveBeenCalled();
     expect(selectSpy).toHaveBeenCalledWith(popUpDOM.querySelector("#pRadioOption0"));
     expect(popUp.reportForm.controls.selectedReason.value).toEqual("0");
 
@@ -156,7 +155,6 @@ describe("Report", () => {
     fixture.detectChanges();
 
     // check the second option was selected
-    expect(selectSpy).toHaveBeenCalled();
     expect(selectSpy).toHaveBeenCalledWith(popUpDOM.querySelector("#pRadioOption1"));
     expect(popUp.reportForm.controls.selectedReason.value).toEqual("1");
 
@@ -165,7 +163,6 @@ describe("Report", () => {
     fixture.detectChanges();
 
     // check the third option was selected
-    expect(selectSpy).toHaveBeenCalled();
     expect(selectSpy).toHaveBeenCalledWith(popUpDOM.querySelector("#pRadioOption2"));
     expect(popUp.reportForm.controls.selectedReason.value).toEqual("2");
 
@@ -174,7 +171,6 @@ describe("Report", () => {
     fixture.detectChanges();
 
     // check the fourth option was selected
-    expect(selectSpy).toHaveBeenCalled();
     expect(selectSpy).toHaveBeenCalledWith(popUpDOM.querySelector("#pRadioOption3"));
     expect(popUp.reportForm.controls.selectedReason.value).toEqual("3");
   });

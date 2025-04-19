@@ -100,7 +100,7 @@ describe("ErrorPage", () => {
     errorPageDOM.querySelector("#backBtn").click();
     fixture.detectChanges();
 
-    expect(backSpy).toHaveBeenCalled();
-    expect(mockLocationSpy).toHaveBeenCalled();
+    expect(backSpy).toHaveBeenCalledWith();
+    expect(mockLocationSpy).toHaveBeenCalledWith();
   });
 });

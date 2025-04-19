@@ -202,7 +202,6 @@ describe("PostEditForm", () => {
     expect(validateSpy).toHaveBeenCalledWith("post");
     const updatedItem = { ...originalItem };
     updatedItem["text"] = newText;
-
     expect(apiClientSpy).toHaveBeenCalledWith(`posts/${originalItem.id}`, updatedItem);
     expect(updateReportSpy).toHaveBeenCalledWith(null, serverResponse);
     expect(emitSpy).not.toHaveBeenCalled();
@@ -393,7 +392,6 @@ describe("PostEditForm", () => {
           },
           reportId: 2,
         });
-
         expect(adminServiceSpy).toHaveBeenCalledWith(2, false, 1);
         done();
       },
@@ -477,6 +475,39 @@ describe("PostEditForm", () => {
           reportId: undefined,
         });
 
+        expect(adminServiceSpy).not.toHaveBeenCalled();
+        done();
+      },
+    });
+  });
+
+  it("should not close the report if there's no report data", (done: DoneFn) => {
+    const fixture = TestBed.createComponent(PostEditForm);
+    const popUp = fixture.componentInstance;
+    const originalItem = { text: "hi", id: 2 } as PostGet;
+    popUp.reportData = null;
+    popUp.isAdmin = true;
+    popUp.editedItem = originalItem;
+    const newText = "new text";
+    const serverResponse = {
+      success: true,
+      updated: {
+        id: 1,
+        userId: 4,
+        user: "me",
+        text: newText,
+        date: new Date(),
+        givenHugs: 0,
+      },
+    };
+    fixture.detectChanges();
+    const adminServiceSpy = spyOn(popUp["adminService"], "closeReport");
+
+    (
+      popUp.updateReportIfNecessary(true, serverResponse) as Observable<PostAndReportResponse>
+    ).subscribe({
+      error: (error) => {
+        expect(error).toEqual("No report data provided. Cannot close the report.");
         expect(adminServiceSpy).not.toHaveBeenCalled();
         done();
       },

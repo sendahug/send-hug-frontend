@@ -131,7 +131,6 @@ describe("AppNavMenu", () => {
     fixture.detectChanges();
 
     const navMenu = navMenuHtml.querySelector("#navLinks");
-
     expect(navMenu).toBeDefined();
     expect(navMenu!.children.length).not.toBe(0);
 

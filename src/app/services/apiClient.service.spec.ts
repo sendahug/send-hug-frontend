@@ -99,7 +99,7 @@ describe("APIClient Service", () => {
     ).and.returnValue(of("token"));
 
     apiClientService.updateAuthToken().subscribe((token) => {
-      expect(authSpy).toHaveBeenCalled();
+      expect(authSpy).toHaveBeenCalledWith();
       expect(token).toBe("token");
       expect(apiClientService["authHeader"].keys()).toContain("Authorization");
       done();
@@ -126,8 +126,8 @@ describe("APIClient Service", () => {
 
     apiClientService.get("test").subscribe((res) => {
       expect(res).toEqual(mockResponse);
-      expect(toggleSpy).toHaveBeenCalled();
-      expect(updateTokenSpy).toHaveBeenCalled();
+      expect(toggleSpy).toHaveBeenCalledWith();
+      expect(updateTokenSpy).toHaveBeenCalledWith();
     });
 
     const req = httpController.expectOne(`${apiClientService["serverUrl"]}/test`);
@@ -145,8 +145,8 @@ describe("APIClient Service", () => {
     const updateTokenSpy = spyOn(apiClientService, "updateAuthToken").and.returnValue(of(""));
 
     apiClientService.get("test").subscribe(() => {
-      expect(handleErrorSpy).toHaveBeenCalled();
-      expect(updateTokenSpy).toHaveBeenCalled();
+      expect(handleErrorSpy).toHaveBeenCalledTimes(1);
+      expect(updateTokenSpy).toHaveBeenCalledWith();
     });
 
     const req = httpController.expectOne(`${apiClientService["serverUrl"]}/test`);
@@ -164,8 +164,8 @@ describe("APIClient Service", () => {
 
     apiClientService.post("test", {}).subscribe((res) => {
       expect(res).toEqual(mockResponse);
-      expect(toggleSpy).toHaveBeenCalled();
-      expect(updateTokenSpy).toHaveBeenCalled();
+      expect(toggleSpy).toHaveBeenCalledWith();
+      expect(updateTokenSpy).toHaveBeenCalledWith();
     });
 
     const req = httpController.expectOne(`${apiClientService["serverUrl"]}/test`);
@@ -183,8 +183,8 @@ describe("APIClient Service", () => {
     const updateTokenSpy = spyOn(apiClientService, "updateAuthToken").and.returnValue(of(""));
 
     apiClientService.post("test", {}).subscribe(() => {
-      expect(handleErrorSpy).toHaveBeenCalled();
-      expect(updateTokenSpy).toHaveBeenCalled();
+      expect(handleErrorSpy).toHaveBeenCalledTimes(1);
+      expect(updateTokenSpy).toHaveBeenCalledWith();
     });
 
     const req = httpController.expectOne(`${apiClientService["serverUrl"]}/test`);
@@ -202,8 +202,8 @@ describe("APIClient Service", () => {
 
     apiClientService.patch("test", {}).subscribe((res) => {
       expect(res).toEqual(mockResponse);
-      expect(toggleSpy).toHaveBeenCalled();
-      expect(updateTokenSpy).toHaveBeenCalled();
+      expect(toggleSpy).toHaveBeenCalledWith();
+      expect(updateTokenSpy).toHaveBeenCalledWith();
     });
 
     const req = httpController.expectOne(`${apiClientService["serverUrl"]}/test`);
@@ -221,8 +221,8 @@ describe("APIClient Service", () => {
     const updateTokenSpy = spyOn(apiClientService, "updateAuthToken").and.returnValue(of(""));
 
     apiClientService.patch("test", {}).subscribe(() => {
-      expect(handleErrorSpy).toHaveBeenCalled();
-      expect(updateTokenSpy).toHaveBeenCalled();
+      expect(handleErrorSpy).toHaveBeenCalledTimes(1);
+      expect(updateTokenSpy).toHaveBeenCalledWith();
     });
 
     const req = httpController.expectOne(`${apiClientService["serverUrl"]}/test`);
@@ -240,8 +240,8 @@ describe("APIClient Service", () => {
 
     apiClientService.delete("test").subscribe((res) => {
       expect(res).toEqual(mockResponse);
-      expect(toggleSpy).toHaveBeenCalled();
-      expect(updateTokenSpy).toHaveBeenCalled();
+      expect(toggleSpy).toHaveBeenCalledWith();
+      expect(updateTokenSpy).toHaveBeenCalledWith();
     });
 
     const req = httpController.expectOne(`${apiClientService["serverUrl"]}/test`);
@@ -259,8 +259,8 @@ describe("APIClient Service", () => {
     const updateTokenSpy = spyOn(apiClientService, "updateAuthToken").and.returnValue(of(""));
 
     apiClientService.delete("test").subscribe(() => {
-      expect(handleErrorSpy).toHaveBeenCalled();
-      expect(updateTokenSpy).toHaveBeenCalled();
+      expect(handleErrorSpy).toHaveBeenCalledTimes(1);
+      expect(updateTokenSpy).toHaveBeenCalledWith();
     });
 
     const req = httpController.expectOne(`${apiClientService["serverUrl"]}/test`);
@@ -281,7 +281,7 @@ describe("APIClient Service", () => {
 
     apiClientService.handleRequestError(sampleError, of(null)).subscribe({
       error: (error: HttpErrorResponse) => {
-        expect(alertSpy).toHaveBeenCalled();
+        expect(alertSpy).toHaveBeenCalledWith(sampleError);
         expect(error.error).toEqual(sampleErrorData.error);
         expect(error.status).toEqual(sampleErrorData.status);
         done();
@@ -303,7 +303,7 @@ describe("APIClient Service", () => {
     apiClientService.handleRequestError(sampleError, of(null)).subscribe({
       error: (_error: HttpErrorResponse) => {
         expect(alertSpy).not.toHaveBeenCalled();
-        expect(toggleSpy).toHaveBeenCalled();
+        expect(toggleSpy).toHaveBeenCalledWith();
         done();
       },
     });

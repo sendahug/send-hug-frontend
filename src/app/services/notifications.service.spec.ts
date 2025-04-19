@@ -336,12 +336,12 @@ describe("NotificationService", () => {
   //  expect(req.request.method).toEqual('POST');
   //  req.flush(mockResponse);
 
-    expect(pushSpy).toHaveBeenCalled();
+    expect(pushSpy).toHaveBeenCalledWith();
 
     expect(notificationService.notificationsSub).toEqual(pushSub);
     expect(notificationService.toggleBtn).toBe('Disable');
-    expect(setSpy).toHaveBeenCalled();
-    expect(alertSpy).toHaveBeenCalled();
+    expect(setSpy).toHaveBeenCalledWith();
+    expect(alertSpy).toHaveBeenCalledWith();
   });*/
 
   it("subscribeToStream() - should update the back-end with the subscription", (done: DoneFn) => {

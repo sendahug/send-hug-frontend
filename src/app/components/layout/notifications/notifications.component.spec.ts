@@ -118,8 +118,8 @@ describe("Notifications Tab", () => {
     authService.isUserDataResolved.next(true);
 
     expect(notificationsTab["authService"].isUserDataResolved).toBeTruthy();
-    expect(notificationSpy).toHaveBeenCalled();
-    expect(authSpy).toHaveBeenCalled();
+    expect(notificationSpy).toHaveBeenCalledWith();
+    expect(authSpy).toHaveBeenCalledTimes(1);
   });
 
   // Check that the button toggles push notifications
@@ -143,9 +143,9 @@ describe("Notifications Tab", () => {
     fixture.detectChanges();
 
     // after the first click, check 'subscribe' was called
-    expect(toggleSpy).toHaveBeenCalled();
+    expect(toggleSpy).toHaveBeenCalledWith();
     expect(settingsSpy).toHaveBeenCalledWith({ pushEnabled: true });
-    expect(subscribeSpy).toHaveBeenCalled();
+    expect(subscribeSpy).toHaveBeenCalledWith();
     expect(unsubscribeSpy).not.toHaveBeenCalled();
 
     // simulate another click
@@ -158,7 +158,7 @@ describe("Notifications Tab", () => {
     expect(settingsSpy.calls.count()).toBe(2);
     expect(settingsSpy).toHaveBeenCalledWith({ pushEnabled: false });
     expect(subscribeSpy.calls.count()).toBe(1);
-    expect(unsubscribeSpy).toHaveBeenCalled();
+    expect(unsubscribeSpy).toHaveBeenCalledWith();
     expect(unsubscribeSpy.calls.count()).toBe(1);
   });
 
@@ -185,10 +185,9 @@ describe("Notifications Tab", () => {
     fixture.detectChanges();
 
     // after the first click, check 'subscribe' was called
-    expect(toggleSpy).toHaveBeenCalled();
-    expect(settingsSpy).toHaveBeenCalled();
+    expect(toggleSpy).toHaveBeenCalledWith();
     expect(settingsSpy).toHaveBeenCalledWith({ refreshRate: 20, autoRefresh: true });
-    expect(startRefreshSpy).toHaveBeenCalled();
+    expect(startRefreshSpy).toHaveBeenCalledWith(20);
     expect(stopRefreshSpy).not.toHaveBeenCalled();
 
     // simulate another click
@@ -201,7 +200,7 @@ describe("Notifications Tab", () => {
     expect(settingsSpy).toHaveBeenCalledWith({ autoRefresh: false });
     expect(settingsSpy.calls.count()).toBe(2);
     expect(startRefreshSpy.calls.count()).toBe(1);
-    expect(stopRefreshSpy).toHaveBeenCalled();
+    expect(stopRefreshSpy).toHaveBeenCalledWith();
     expect(stopRefreshSpy.calls.count()).toBe(1);
   });
 
@@ -365,7 +364,7 @@ describe("Notifications Tab", () => {
       // check the first element has focus
       spies.forEach((spy, index: number) => {
         if (index == 0) {
-          expect(spy).toHaveBeenCalled();
+          expect(spy).toHaveBeenCalledWith();
         } else {
           expect(spy).not.toHaveBeenCalled();
         }
@@ -383,13 +382,13 @@ describe("Notifications Tab", () => {
         fixture.detectChanges();
 
         // check the focus shifted to the next element
-        expect(focusBindedSpy).toHaveBeenCalled();
+        expect(focusBindedSpy).toHaveBeenCalledTimes(1);
         spies.forEach((spy, index: number) => {
           if (index == 0) {
-            expect(spy).toHaveBeenCalled();
+            expect(spy).toHaveBeenCalledWith();
             expect(spy).toHaveBeenCalledTimes(1);
           } else if (index == 1) {
-            expect(spy).toHaveBeenCalled();
+            expect(spy).toHaveBeenCalledWith();
             expect(spy).toHaveBeenCalledTimes(1);
           } else {
             expect(spy).not.toHaveBeenCalled();
@@ -408,14 +407,11 @@ describe("Notifications Tab", () => {
         fixture.detectChanges();
 
         // check the focus shifted to the previous element
-        expect(focusBindedSpy).toHaveBeenCalled();
         expect(focusBindedSpy).toHaveBeenCalledTimes(2);
         spies.forEach((spy, index: number) => {
           if (index == 0) {
-            expect(spy).toHaveBeenCalled();
             expect(spy).toHaveBeenCalledTimes(2);
           } else if (index == 1) {
-            expect(spy).toHaveBeenCalled();
             expect(spy).toHaveBeenCalledTimes(1);
           } else {
             expect(spy).not.toHaveBeenCalled();
@@ -457,7 +453,7 @@ describe("Notifications Tab", () => {
     expect(spies[2]).not.toHaveBeenCalled();
     expect(spies[3]).not.toHaveBeenCalled();
     expect(spies[4]).not.toHaveBeenCalled();
-    expect(spies[5]).toHaveBeenCalled();
+    expect(spies[5]).toHaveBeenCalledWith();
 
     // step 2: check what happens when clicking tab
     // trigger tab event
@@ -470,13 +466,13 @@ describe("Notifications Tab", () => {
     fixture.detectChanges();
 
     // check the focus shifted to the first element
-    expect(focusBindedSpy).toHaveBeenCalled();
-    expect(spies[0]).toHaveBeenCalled();
+    expect(focusBindedSpy).toHaveBeenCalledTimes(1);
+    expect(spies[0]).toHaveBeenCalledWith();
     expect(spies[1]).not.toHaveBeenCalled();
     expect(spies[2]).not.toHaveBeenCalled();
     expect(spies[3]).not.toHaveBeenCalled();
     expect(spies[4]).not.toHaveBeenCalled();
-    expect(spies[5]).toHaveBeenCalled();
+    expect(spies[5]).toHaveBeenCalledWith();
 
     // check what happens when clicking shift + tab
     // trigger shift + tab event
@@ -489,7 +485,6 @@ describe("Notifications Tab", () => {
     fixture.detectChanges();
 
     // check the focus shifted to the last element
-    expect(focusBindedSpy).toHaveBeenCalled();
     expect(focusBindedSpy).toHaveBeenCalledTimes(2);
     expect(spies[0]).toHaveBeenCalledTimes(1);
     expect(spies[1]).not.toHaveBeenCalled();
@@ -559,7 +554,7 @@ describe("Notifications Tab", () => {
 
     // after
     expect(notificationsTab.displayUnread()).toBeFalse();
-    expect(getNotificationsSpy).toHaveBeenCalled();
+    expect(getNotificationsSpy).toHaveBeenCalledWith();
     expect(notifTabDOM.querySelectorAll(".NotificationButton")[2].textContent.trim()).toBe(
       "Show unread",
     );
@@ -583,7 +578,7 @@ describe("Notifications Tab", () => {
 
     // after
     expect(notificationsTab.displayRead()).toBeFalse();
-    expect(getNotificationsSpy).toHaveBeenCalled();
+    expect(getNotificationsSpy).toHaveBeenCalledWith();
     expect(notifTabDOM.querySelectorAll(".NotificationButton")[3].textContent.trim()).toBe(
       "Show read",
     );

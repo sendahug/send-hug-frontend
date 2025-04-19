@@ -367,7 +367,11 @@ describe("AdminReports", () => {
     fixture.detectChanges();
 
     // check expectations
-    expect(editSpy).toHaveBeenCalled();
+    expect(editSpy).toHaveBeenCalledWith(
+      mockPostReports[0].postID!,
+      mockPostReports[0].text!,
+      mockPostReports[0].id!,
+    );
     expect(adminReports.postEditMode()).toBeTrue();
     expect(adminReportsDOM.querySelector("post-edit-form")).toBeTruthy();
   });
@@ -395,7 +399,11 @@ describe("AdminReports", () => {
     fixture.detectChanges();
 
     // check expectations
-    expect(deleteSpy).toHaveBeenCalled();
+    expect(deleteSpy).toHaveBeenCalledWith(
+      mockPostReports[0].postID!,
+      mockPostReports[0].userID!,
+      mockPostReports[0].id!,
+    );
     expect(adminReports.deleteMode()).toBeTrue();
     expect(adminReports.toDelete()).toBe("ad post");
     expect(adminReportsDOM.querySelector("item-delete-form")).toBeTruthy();
@@ -439,8 +447,7 @@ describe("AdminReports", () => {
     fixture.detectChanges();
 
     // check expectations
-    expect(dismissSpy).toHaveBeenCalled();
-    expect(dismissServiceSpy).toHaveBeenCalled();
+    expect(dismissSpy).toHaveBeenCalledWith(2, true, 5);
     expect(dismissServiceSpy).toHaveBeenCalledWith(2, true, 5, undefined);
     expect(alertsSpy).toHaveBeenCalledWith(`Report 2 was dismissed!`);
     expect(adminReports.postReports().length).toEqual(0);
@@ -483,8 +490,7 @@ describe("AdminReports", () => {
     fixture.detectChanges();
 
     // check expectations
-    expect(dismissSpy).toHaveBeenCalled();
-    expect(dismissServiceSpy).toHaveBeenCalled();
+    expect(dismissSpy).toHaveBeenCalledWith(1, true, undefined, 10);
     expect(dismissServiceSpy).toHaveBeenCalledWith(1, true, undefined, 10);
     expect(alertsSpy).toHaveBeenCalledWith(`Report 1 was dismissed!`);
     expect(adminReports.userReports().length).toEqual(0);
@@ -510,9 +516,9 @@ describe("AdminReports", () => {
     fixture.detectChanges();
 
     // check expectations
-    expect(nextPageSpy).toHaveBeenCalled();
+    expect(nextPageSpy).toHaveBeenCalledWith("users");
     expect(adminReports.currentUserReportsPage()).toBe(2);
-    expect(fetchSpy).toHaveBeenCalled();
+    expect(fetchSpy).toHaveBeenCalledWith();
   });
 
   it("should go to the next page - posts reports", () => {
@@ -533,9 +539,9 @@ describe("AdminReports", () => {
     fixture.detectChanges();
 
     // check expectations
-    expect(nextPageSpy).toHaveBeenCalled();
+    expect(nextPageSpy).toHaveBeenCalledWith("posts");
     expect(adminReports.currentPostReportsPage()).toBe(2);
-    expect(fetchSpy).toHaveBeenCalled();
+    expect(fetchSpy).toHaveBeenCalledWith();
   });
 
   it("should go to the previous page - user reports", () => {
@@ -558,9 +564,9 @@ describe("AdminReports", () => {
     fixture.detectChanges();
 
     // check expectations
-    expect(prevPageSpy).toHaveBeenCalled();
+    expect(prevPageSpy).toHaveBeenCalledWith("users");
     expect(adminReports.currentUserReportsPage()).toBe(1);
-    expect(fetchSpy).toHaveBeenCalled();
+    expect(fetchSpy).toHaveBeenCalledWith();
   });
 
   it("should go to the previous page - posts reports", () => {
@@ -583,9 +589,9 @@ describe("AdminReports", () => {
     fixture.detectChanges();
 
     // check expectations
-    expect(prevPageSpy).toHaveBeenCalled();
+    expect(prevPageSpy).toHaveBeenCalledWith("posts");
     expect(adminReports.currentPostReportsPage()).toBe(1);
-    expect(fetchSpy).toHaveBeenCalled();
+    expect(fetchSpy).toHaveBeenCalledWith();
   });
 
   // Check the popup exits when 'false' is emitted
@@ -617,7 +623,7 @@ describe("AdminReports", () => {
     fixture.detectChanges();
 
     // check the popup is exited
-    expect(changeSpy).toHaveBeenCalled();
+    expect(changeSpy).toHaveBeenCalledWith(false, "EditName");
     expect(adminReports.nameEditMode()).toBeFalse();
   });
 
@@ -647,7 +653,7 @@ describe("AdminReports", () => {
     fixture.detectChanges();
 
     // check the popup is exited
-    expect(changeSpy).toHaveBeenCalled();
+    expect(changeSpy).toHaveBeenCalledWith(false, "EditPost");
     expect(adminReports.postEditMode()).toBeFalse();
   });
 
@@ -673,7 +679,7 @@ describe("AdminReports", () => {
     fixture.detectChanges();
 
     // check the popup is exited
-    expect(changeSpy).toHaveBeenCalled();
+    expect(changeSpy).toHaveBeenCalledWith(false, "Delete");
     expect(adminReports.deleteMode()).toBeFalse();
   });
 
@@ -837,7 +843,7 @@ describe("AdminReports", () => {
     fixture.detectChanges();
 
     // check the popup is exited
-    expect(updateSpy).toHaveBeenCalled();
+    expect(updateSpy).toHaveBeenCalledWith(reportPostResponse);
     expect(adminReports.postReports().length).toBe(0);
   });
 
@@ -880,7 +886,7 @@ describe("AdminReports", () => {
     fixture.detectChanges();
 
     // check the popup is exited
-    expect(updateSpy).toHaveBeenCalled();
+    expect(updateSpy).toHaveBeenCalledWith(reportPostResponse);
     expect(adminReports.postReports().length).toBe(1);
   });
 
@@ -923,7 +929,7 @@ describe("AdminReports", () => {
     fixture.detectChanges();
 
     // check the popup is exited
-    expect(updateSpy).toHaveBeenCalled();
+    expect(updateSpy).toHaveBeenCalledWith(reportPostResponse);
     expect(adminReports.postReports().length).toBe(1);
     expect(adminReports.postReports()[0].text).toBe(reportPostResponse.updatedPost.text);
   });
@@ -950,7 +956,7 @@ describe("AdminReports", () => {
     fixture.detectChanges();
 
     // check the popup is exited
-    expect(removeSpy).toHaveBeenCalled();
+    expect(removeSpy).toHaveBeenCalledWith(5);
     expect(adminReports.postReports().length).toBe(0);
   });
 });

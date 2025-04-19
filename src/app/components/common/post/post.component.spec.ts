@@ -172,7 +172,7 @@ describe("Post", () => {
 
     // before the click
     expect(singlePost.editMode()).toBeFalse();
-    expect(authSpy).toHaveBeenCalled();
+    expect(authSpy).toHaveBeenCalledWith("patch:any-post");
 
     // trigger click
     pageDOM.querySelectorAll(".editButton")[0].click();
@@ -197,7 +197,7 @@ describe("Post", () => {
 
     // before the click
     expect(singlePost.deleteMode()).toBeFalse();
-    expect(authSpy).toHaveBeenCalled();
+    expect(authSpy).toHaveBeenCalledWith("delete:any-post");
 
     // trigger click
     pageDOM.querySelectorAll(".deleteButton")[0].click();
@@ -218,14 +218,12 @@ describe("Post", () => {
     const singlePost: SinglePost = upFixture.debugElement.children[0].componentInstance;
     const singlePostDOM = upFixture.debugElement.children[0].nativeElement;
     const authService = singlePost.authService;
-    const authSpy = spyOn(authService, "canUser").and.returnValue(true);
     const reportSpy = spyOn(singlePost, "reportPost").and.callThrough();
     authService.userData.set({ ...mockAuthedUser });
     upFixture.detectChanges();
 
     // before the click
     expect(singlePost.reportMode()).toBeFalse();
-    expect(authSpy).toHaveBeenCalled();
     expect(reportSpy).not.toHaveBeenCalled();
 
     // trigger click
@@ -506,7 +504,7 @@ describe("Post", () => {
     upFixture.detectChanges();
 
     // check the popup is exited
-    expect(updateSpy).toHaveBeenCalled();
+    expect(updateSpy).toHaveBeenCalledWith(reportPostResponse);
     expect(singlePost.post?.text).toBe(reportPostResponse.updatedPost.text);
   });
 

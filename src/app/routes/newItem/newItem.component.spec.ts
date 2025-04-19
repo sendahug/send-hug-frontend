@@ -196,7 +196,11 @@ describe("NewItem", () => {
     fixture.detectChanges();
 
     expect(newPostSpy).toHaveBeenCalledWith();
-    expect(alertSpy).toHaveBeenCalled();
+    expect(alertSpy).toHaveBeenCalledWith({
+      type: "Error",
+      message: "Post text cannot be empty. Please fill the field and try again.",
+    });
+
     expect(apiClientSpy).not.toHaveBeenCalled();
   });
 
@@ -409,7 +413,11 @@ describe("NewItem", () => {
     fixture.detectChanges();
 
     expect(newMessageSpy).toHaveBeenCalledWith();
-    expect(alertSpy).toHaveBeenCalled();
+    expect(alertSpy).toHaveBeenCalledWith({
+      type: "Error",
+      message: "A message cannot be empty. Please fill the field and try again.",
+    });
+
     expect(newMessServiceSpy).not.toHaveBeenCalled();
   });
 

@@ -90,7 +90,7 @@ describe("SearchForm", () => {
     searchFormHtml.querySelectorAll(".sendData")[0].click();
 
     // check the spies were triggered
-    expect(searchSpy).toHaveBeenCalled();
+    expect(searchSpy).toHaveBeenCalledTimes(1);
     expect(searchServiceSpy).toHaveBeenCalledWith("search");
     expect(navigateSpy).toHaveBeenCalledWith(["search"], {
       queryParams: {
@@ -118,7 +118,7 @@ describe("SearchForm", () => {
     searchFormHtml.querySelectorAll(".sendData")[0].click();
 
     // check one spy was triggered and one wasn't
-    expect(searchSpy).toHaveBeenCalled();
+    expect(searchSpy).toHaveBeenCalledTimes(1);
     expect(searchServiceSpy).not.toHaveBeenCalled();
     expect(alertsSpy).toHaveBeenCalledWith({
       message: "Search query is empty! Please write a term to search for.",

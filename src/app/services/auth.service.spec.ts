@@ -433,7 +433,7 @@ describe("AuthService", () => {
     authService.fetchUser().subscribe({
       error: (err) => {
         expect(isResolvedSpy).toHaveBeenCalledWith(true);
-        expect(createErrorAlertSpy).toHaveBeenCalled();
+        expect(createErrorAlertSpy).toHaveBeenCalledTimes(1);
         expect(authService.isUserDataResolved.value).toBeTrue();
         expect(err.status).toBe(404);
         done();
@@ -636,7 +636,7 @@ describe("AuthService", () => {
     authService.createUser(null).subscribe({
       error: (error: HttpErrorResponse) => {
         expect(isResolvedSpy).toHaveBeenCalledWith(true);
-        expect(createErrorAlertSpy).toHaveBeenCalled();
+        expect(createErrorAlertSpy).toHaveBeenCalledTimes(1);
         expect(error.status).toEqual(mockResponse.status);
         done();
       },
@@ -1002,7 +1002,7 @@ describe("AuthService", () => {
       expect(authService.userData()!.displayName).toBe("name");
       expect(getTokenSpy).toHaveBeenCalledWith();
       expect(swSpy).not.toHaveBeenCalled();
-      expect(createErrorAlertSpy).toHaveBeenCalled();
+      expect(createErrorAlertSpy).toHaveBeenCalledTimes(1);
       done();
     });
 

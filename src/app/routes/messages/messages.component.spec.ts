@@ -556,7 +556,7 @@ describe("AppMessaging", () => {
     fixture.detectChanges();
 
     // check the popup is exited
-    expect(updateSpy).toHaveBeenCalled();
+    expect(updateSpy).toHaveBeenCalledWith(1);
     expect(appMessaging.messages().length).toBe(1);
     expect(appMessaging.messages()[0].id).not.toBe(1);
   });
@@ -578,7 +578,7 @@ describe("AppMessaging", () => {
     fixture.detectChanges();
 
     // check the popup is exited
-    expect(updateSpy).toHaveBeenCalled();
+    expect(updateSpy).toHaveBeenCalledWith(3);
     expect(appMessaging.userThreads().length).toBe(0);
   });
 
@@ -605,7 +605,7 @@ describe("AppMessaging", () => {
     fixture.detectChanges();
 
     // check the popup is exited
-    expect(updateSpy).toHaveBeenCalled();
+    expect(updateSpy).toHaveBeenCalledWith(1);
     expect(appMessaging.messages().length).toBe(0);
   });
 
@@ -632,7 +632,7 @@ describe("AppMessaging", () => {
     fixture.detectChanges();
 
     // check the popup is exited
-    expect(updateSpy).toHaveBeenCalled();
+    expect(updateSpy).toHaveBeenCalledWith(3);
     expect(appMessaging.userThreads().length).toBe(0);
   });
 });

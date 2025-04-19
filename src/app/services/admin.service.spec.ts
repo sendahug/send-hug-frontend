@@ -87,6 +87,7 @@ describe("AdminService", () => {
     const reportData = {
       reportID: 5,
       userID: 2,
+      postID: 10,
     };
     const alertSpy = spyOn(adminService["alertsService"], "createSuccessAlert");
     const dismissSpy = spyOn(adminService, "closeReport").and.returnValue(
@@ -102,6 +103,7 @@ describe("AdminService", () => {
           date: new Date(),
           dismissed: true,
           closed: true,
+          postID: 10,
         },
       }),
     );
@@ -132,7 +134,16 @@ describe("AdminService", () => {
 
     expect(alertSpy).toHaveBeenCalledWith("Post 10 was successfully deleted.");
     expect(dismissSpy).toHaveBeenCalledWith(5, false, 10);
-    expect(messageSpy).toHaveBeenCalled();
+    expect(messageSpy).toHaveBeenCalledWith(
+      jasmine.objectContaining({
+        from: {
+          displayName: mockAuthedUser.displayName,
+        },
+        forId: reportData.userID,
+        messageText: `Your post (ID 10) was deleted due to violating our community rules.`,
+      }),
+    );
+
     expect(deleteSWSpy).toHaveBeenCalledWith("posts", 10);
     expect(deleteAPISpy).toHaveBeenCalledWith("posts/10");
   });
@@ -147,6 +158,7 @@ describe("AdminService", () => {
     const reportData = {
       reportID: 5,
       userID: 2,
+      postID: 10,
     };
     const alertSpy = spyOn(adminService["alertsService"], "createSuccessAlert");
     const dismissSpy = spyOn(adminService, "closeReport");
@@ -177,7 +189,16 @@ describe("AdminService", () => {
 
     expect(alertSpy).toHaveBeenCalledWith("Post 10 was successfully deleted.");
     expect(dismissSpy).not.toHaveBeenCalled();
-    expect(messageSpy).toHaveBeenCalled();
+    expect(messageSpy).toHaveBeenCalledWith(
+      jasmine.objectContaining({
+        from: {
+          displayName: mockAuthedUser.displayName,
+        },
+        forId: reportData.userID,
+        messageText: `Your post (ID 10) was deleted due to violating our community rules.`,
+      }),
+    );
+
     expect(deleteSWSpy).toHaveBeenCalledWith("posts", 10);
     expect(deleteAPISpy).toHaveBeenCalledWith("posts/10");
   });
@@ -220,7 +241,6 @@ describe("AdminService", () => {
     );
 
     adminService.editUser(userData, true, 6).add(() => {
-      expect(alertSpy).toHaveBeenCalled();
       expect(alertSpy).toHaveBeenCalledWith("User user updated.");
       expect(patchSpy).toHaveBeenCalledWith("users/2", userData);
       expect(closeSpy).toHaveBeenCalledWith(6, false, undefined, 2);
@@ -250,7 +270,6 @@ describe("AdminService", () => {
     const closeSpy = spyOn(adminService, "closeReport");
 
     adminService.editUser(userData, false, 6).add(() => {
-      expect(alertSpy).toHaveBeenCalled();
       expect(alertSpy).toHaveBeenCalledWith("User user updated.");
       expect(patchSpy).toHaveBeenCalledWith("users/2", userData);
       expect(closeSpy).not.toHaveBeenCalled();
@@ -343,7 +362,6 @@ describe("AdminService", () => {
         blocked: true,
       });
 
-      expect(alertSpy).toHaveBeenCalled();
       expect(alertSpy).toHaveBeenCalledWith(
         `User ${mockResponse.updated.displayName} has been blocked until ${mockResponse.updated.releaseDate}`,
       );
@@ -425,12 +443,10 @@ describe("AdminService", () => {
         blocked: true,
       });
 
-      expect(alertSpy).toHaveBeenCalled();
       expect(alertSpy).toHaveBeenCalledWith(
         `User ${mockResponse.updated.displayName} has been blocked until ${mockResponse.updated.releaseDate}`,
       );
 
-      expect(dismissSpy).toHaveBeenCalled();
       expect(dismissSpy).toHaveBeenCalledWith(3, false, undefined, 15);
       expect(res).toEqual({
         success: true,

@@ -31,7 +31,7 @@
 */
 
 // Angular imports
-import { Component, Input, Output, EventEmitter } from "@angular/core";
+import { Component, Output, EventEmitter, input } from "@angular/core";
 import { tap } from "rxjs";
 import { CommonModule } from "@angular/common";
 
@@ -56,11 +56,11 @@ export class ItemDeleteFormComponent {
   @Output() editMode = new EventEmitter<boolean>();
   @Output() deleted = new EventEmitter<number>();
   // type of item to delete
-  @Input() toDelete: string | undefined;
+  readonly toDelete = input<string | undefined>();
   // the item to delete itself
-  @Input() itemToDelete: number | undefined;
-  @Input() messType: MessageType | undefined;
-  @Input() reportData?: ReportData;
+  readonly itemToDelete = input<number | undefined>();
+  readonly messType = input<MessageType | undefined>();
+  readonly reportData = input<ReportData | undefined>();
 
   // CTOR
   constructor(
@@ -79,27 +79,27 @@ export class ItemDeleteFormComponent {
   */
   deleteItem() {
     // if it's a single item, make the request to delete it
-    if (this.toDelete == "Post" || this.toDelete == "Message" || this.toDelete == "Thread") {
+    if (this.toDelete() == "Post" || this.toDelete() == "Message" || this.toDelete() == "Thread") {
       let url: string;
       let store: "posts" | "messages" | "threads";
 
-      if (this.toDelete == "Post") {
-        url = `posts/${this.itemToDelete}`;
+      if (this.toDelete() == "Post") {
+        url = `posts/${this.itemToDelete()}`;
         store = "posts";
         // TODO: remove this once we've split the endpoints
       } else {
-        url = `messages/${this.messType}/${this.itemToDelete}`;
-        store = this.toDelete == "Message" ? "messages" : "threads";
+        url = `messages/${this.messType()}/${this.itemToDelete()}`;
+        store = this.toDelete() == "Message" ? "messages" : "threads";
       }
 
       this.deleteSingleItem(url, store).add(() => {
-        this.deleted.emit(this.itemToDelete);
+        this.deleted.emit(this.itemToDelete());
         this.editMode.emit(false);
       });
     }
     // if the user is attempting to delete all of the user's posts
-    else if (this.toDelete == "All posts") {
-      this.deleteMultipleItems(`users/${this.itemToDelete}/posts`, "posts").subscribe(
+    else if (this.toDelete() == "All posts") {
+      this.deleteMultipleItems(`users/${this.itemToDelete()}/posts`, "posts").subscribe(
         (response) => {
           // delete the posts from idb
           this.swManager.deleteItems("posts", "userId", response.userID);
@@ -110,11 +110,11 @@ export class ItemDeleteFormComponent {
     }
     // if the user is attempting to delete all of their messages of a specific type
     else if (
-      this.toDelete == "All inbox" ||
-      this.toDelete == "All outbox" ||
-      this.toDelete == "All threads"
+      this.toDelete() == "All inbox" ||
+      this.toDelete() == "All outbox" ||
+      this.toDelete() == "All threads"
     ) {
-      const mailbox_type = this.toDelete!.split(" ")[1];
+      const mailbox_type = this.toDelete()!.split(" ")[1];
 
       this.deleteMultipleItems(`messages/${mailbox_type}`, "messages").subscribe((response) => {
         // delete all messages from idb
@@ -128,7 +128,7 @@ export class ItemDeleteFormComponent {
           this.swManager.deleteItems("messages", "fromId", response.userID);
         }
 
-        this.deleted.emit(this.itemToDelete);
+        this.deleted.emit(this.itemToDelete());
         this.editMode.emit(false);
       });
     }
@@ -143,12 +143,14 @@ export class ItemDeleteFormComponent {
     return this.apiClient
       .delete<{ success: boolean; deleted: number }>(url)
       .subscribe((response) => {
-        this.alertsService.createSuccessAlert(`${this.toDelete} ${response.deleted} was deleted.`);
+        this.alertsService.createSuccessAlert(
+          `${this.toDelete()} ${response.deleted} was deleted.`,
+        );
 
         // delete the item from idb
         this.swManager.deleteItem(idbStore, response.deleted);
 
-        if (this.toDelete == "Thread") {
+        if (this.toDelete() == "Thread") {
           this.swManager.deleteItems("messages", "threadID", response.deleted);
         }
       });
@@ -163,10 +165,10 @@ export class ItemDeleteFormComponent {
   Programmer: Shir Bar Lev.
   */
   deletePost(closeReport: boolean) {
-    if (!this.reportData) return;
+    if (!this.reportData()) return;
 
-    this.adminService.deletePost(this.itemToDelete!, this.reportData, closeReport).add(() => {
-      this.deleted.emit(this.itemToDelete);
+    this.adminService.deletePost(this.itemToDelete()!, this.reportData()!, closeReport).add(() => {
+      this.deleted.emit(this.itemToDelete());
       this.editMode.emit(false);
     });
   }

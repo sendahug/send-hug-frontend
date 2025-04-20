@@ -92,23 +92,23 @@ describe("DisplayNameEditFormComponent", () => {
   it("should set editedItem depending on toEdit", () => {
     const fixture = TestBed.createComponent(DisplayNameEditFormComponent);
     const popUp = fixture.componentInstance;
-    popUp.editedItem = {
+    fixture.componentRef.setInput("editedItem", {
       id: 4,
       displayName: "name",
-    };
+    });
     popUp.ngOnInit();
 
     expect(popUp.editNameForm.controls.newDisplayName.value).toEqual(
       popUp.authService.userData()!.displayName,
     );
 
-    popUp.editedItem = {
+    fixture.componentRef.setInput("editedItem", {
       displayName: "test",
       id: 1,
-    };
+    });
     popUp.ngOnInit();
 
-    expect(popUp.editedItem.displayName).not.toEqual(popUp.authService.userData()!.displayName);
+    expect(popUp.editedItem()!.displayName).not.toEqual(popUp.authService.userData()!.displayName);
   });
 
   it("should make the request to authService to change the name", () => {
@@ -120,10 +120,10 @@ describe("DisplayNameEditFormComponent", () => {
     const fixture = TestBed.createComponent(DisplayNameEditFormComponent);
     const popUp = fixture.componentInstance;
     const popUpDOM = fixture.nativeElement;
-    popUp.editedItem = {
+    fixture.componentRef.setInput("editedItem", {
       id: 4,
       displayName: "name",
-    };
+    });
     const newName = "new name";
     fixture.detectChanges();
 
@@ -149,14 +149,14 @@ describe("DisplayNameEditFormComponent", () => {
     const fixture = TestBed.createComponent(DisplayNameEditFormComponent);
     const popUp = fixture.componentInstance;
     const popUpDOM = fixture.nativeElement;
-    popUp.editedItem = {
+    fixture.componentRef.setInput("editedItem", {
       id: 2,
       displayName: "name",
-    };
-    popUp.reportData = {
+    });
+    fixture.componentRef.setInput("reportData", {
       reportID: 1,
       userID: 2,
-    };
+    });
     const newName = "new name";
     const mockSubscription = new Subscription();
     mockSubscription.unsubscribe();
@@ -198,11 +198,11 @@ describe("DisplayNameEditFormComponent", () => {
     const fixture = TestBed.createComponent(DisplayNameEditFormComponent);
     const popUp = fixture.componentInstance;
     const popUpDOM = fixture.nativeElement;
-    popUp.editedItem = {
+    fixture.componentRef.setInput("editedItem", {
       id: 2,
       displayName: "name",
-    };
-    popUp.reportData = undefined;
+    });
+    fixture.componentRef.setInput("reportData", undefined);
     const newName = "new name";
     fixture.detectChanges();
 
@@ -235,14 +235,14 @@ describe("DisplayNameEditFormComponent", () => {
     const fixture = TestBed.createComponent(DisplayNameEditFormComponent);
     const popUp = fixture.componentInstance;
     const popUpDOM = fixture.nativeElement;
-    popUp.editedItem = {
+    fixture.componentRef.setInput("editedItem", {
       id: 2,
       displayName: "name",
-    };
-    popUp.reportData = {
+    });
+    fixture.componentRef.setInput("reportData", {
       reportID: 1,
       userID: 2,
-    };
+    });
     const newName = "new name";
     const mockSubscription = new Subscription();
     mockSubscription.unsubscribe();
@@ -286,10 +286,10 @@ describe("DisplayNameEditFormComponent", () => {
     const fixture = TestBed.createComponent(DisplayNameEditFormComponent);
     const popUp = fixture.componentInstance;
     const popUpDOM = fixture.nativeElement;
-    popUp.editedItem = {
+    fixture.componentRef.setInput("editedItem", {
       id: 4,
       displayName: "name",
-    };
+    });
     const newName = "new name";
     fixture.detectChanges();
 

@@ -78,10 +78,9 @@ describe("ItemDeleteFormComponent", () => {
   // Check that a warning is shown before deleting an item
   it("shows a warning when deleting something", () => {
     const fixture = TestBed.createComponent(ItemDeleteFormComponent);
-    const itemDeleteForm = fixture.componentInstance;
     const itemDeleteFormDOM = fixture.nativeElement;
-    itemDeleteForm.toDelete = "Post";
-    itemDeleteForm.itemToDelete = 2;
+    fixture.componentRef.setInput("toDelete", "Post");
+    fixture.componentRef.setInput("itemToDelete", 2);
 
     fixture.detectChanges();
 
@@ -106,8 +105,8 @@ describe("ItemDeleteFormComponent", () => {
     );
     const editModeSpy = spyOn(itemDeleteForm.editMode, "emit");
     const deletedEmitSpy = spyOn(itemDeleteForm.deleted, "emit");
-    itemDeleteForm.toDelete = "Post";
-    itemDeleteForm.itemToDelete = 2;
+    fixture.componentRef.setInput("toDelete", "Post");
+    fixture.componentRef.setInput("itemToDelete", 2);
 
     fixture.detectChanges();
 
@@ -129,9 +128,9 @@ describe("ItemDeleteFormComponent", () => {
       mockSubscription,
     );
     const editModeSpy = spyOn(itemDeleteForm.editMode, "emit");
-    itemDeleteForm.toDelete = "Message";
-    itemDeleteForm.itemToDelete = 2;
-    itemDeleteForm.messType = "inbox";
+    fixture.componentRef.setInput("toDelete", "Message");
+    fixture.componentRef.setInput("itemToDelete", 2);
+    fixture.componentRef.setInput("messType", "inbox");
 
     fixture.detectChanges();
 
@@ -152,9 +151,9 @@ describe("ItemDeleteFormComponent", () => {
       mockSubscription,
     );
     const editModeSpy = spyOn(itemDeleteForm.editMode, "emit");
-    itemDeleteForm.toDelete = "Thread";
-    itemDeleteForm.itemToDelete = 2;
-    itemDeleteForm.messType = "threads";
+    fixture.componentRef.setInput("toDelete", "Thread");
+    fixture.componentRef.setInput("itemToDelete", 2);
+    fixture.componentRef.setInput("messType", "threads");
 
     fixture.detectChanges();
 
@@ -172,8 +171,8 @@ describe("ItemDeleteFormComponent", () => {
     const deleteMultipleSpy = spyOn(itemDeleteForm, "deleteMultipleItems").and.returnValue(
       of({ success: true, userID: 2, deleted: 4 }),
     );
-    itemDeleteForm.toDelete = "All posts";
-    itemDeleteForm.itemToDelete = 2;
+    fixture.componentRef.setInput("toDelete", "All posts");
+    fixture.componentRef.setInput("itemToDelete", 2);
     const deleteIdbSpy = spyOn(itemDeleteForm["swManager"], "deleteItems");
     const editModeSpy = spyOn(itemDeleteForm.editMode, "emit");
     const deletedEmitSpy = spyOn(itemDeleteForm.deleted, "emit");
@@ -196,8 +195,8 @@ describe("ItemDeleteFormComponent", () => {
     const deleteMultipleSpy = spyOn(itemDeleteForm, "deleteMultipleItems").and.returnValue(
       of({ success: true, userID: 2, deleted: 4 }),
     );
-    itemDeleteForm.toDelete = "All inbox";
-    itemDeleteForm.itemToDelete = 2;
+    fixture.componentRef.setInput("toDelete", "All inbox");
+    fixture.componentRef.setInput("itemToDelete", 2);
     const deleteIdbSpy = spyOn(itemDeleteForm["swManager"], "deleteItems");
     const editModeSpy = spyOn(itemDeleteForm.editMode, "emit");
     const deletedEmitSpy = spyOn(itemDeleteForm.deleted, "emit");
@@ -220,8 +219,8 @@ describe("ItemDeleteFormComponent", () => {
     const deleteMultipleSpy = spyOn(itemDeleteForm, "deleteMultipleItems").and.returnValue(
       of({ success: true, userID: 2, deleted: 4 }),
     );
-    itemDeleteForm.toDelete = "All outbox";
-    itemDeleteForm.itemToDelete = 2;
+    fixture.componentRef.setInput("toDelete", "All outbox");
+    fixture.componentRef.setInput("itemToDelete", 2);
     const deleteIdbSpy = spyOn(itemDeleteForm["swManager"], "deleteItems");
     const editModeSpy = spyOn(itemDeleteForm.editMode, "emit");
 
@@ -242,8 +241,8 @@ describe("ItemDeleteFormComponent", () => {
     const deleteMultipleSpy = spyOn(itemDeleteForm, "deleteMultipleItems").and.returnValue(
       of({ success: true, userID: 2, deleted: 4 }),
     );
-    itemDeleteForm.toDelete = "All threads";
-    itemDeleteForm.itemToDelete = 2;
+    fixture.componentRef.setInput("toDelete", "All threads");
+    fixture.componentRef.setInput("itemToDelete", 2);
     const deleteIdbSpy = spyOn(itemDeleteForm["swManager"], "clearStore");
     const editModeSpy = spyOn(itemDeleteForm.editMode, "emit");
 
@@ -266,8 +265,8 @@ describe("ItemDeleteFormComponent", () => {
     );
     const alertsSpy = spyOn(itemDeleteForm["alertsService"], "createSuccessAlert");
     const swManagerSpy = spyOn(itemDeleteForm["swManager"], "deleteItem");
-    itemDeleteForm.toDelete = "Post";
-    itemDeleteForm.itemToDelete = 4;
+    fixture.componentRef.setInput("toDelete", "Post");
+    fixture.componentRef.setInput("itemToDelete", 4);
 
     fixture.detectChanges();
 
@@ -286,8 +285,8 @@ describe("ItemDeleteFormComponent", () => {
     );
     const alertsSpy = spyOn(itemDeleteForm["alertsService"], "createSuccessAlert");
     const swManagerSpy = spyOn(itemDeleteForm["swManager"], "deleteItems");
-    itemDeleteForm.toDelete = "Thread";
-    itemDeleteForm.itemToDelete = 4;
+    fixture.componentRef.setInput("toDelete", "Thread");
+    fixture.componentRef.setInput("itemToDelete", 4);
 
     fixture.detectChanges();
 
@@ -304,13 +303,13 @@ describe("ItemDeleteFormComponent", () => {
     const fixture = TestBed.createComponent(ItemDeleteFormComponent);
     const itemDeleteForm = fixture.componentInstance;
     const itemDeleteFormDOM = fixture.nativeElement;
-    itemDeleteForm.toDelete = "ad post";
-    itemDeleteForm.itemToDelete = 2;
-    itemDeleteForm.reportData = {
+    fixture.componentRef.setInput("toDelete", "ad post");
+    fixture.componentRef.setInput("itemToDelete", 2);
+    fixture.componentRef.setInput("reportData", {
       reportID: 2,
       postID: 4,
       userID: 0,
-    };
+    });
     const mockSubscription = new Subscription();
     mockSubscription.unsubscribe();
     const deleteSpy = spyOn(itemDeleteForm, "deletePost").and.callThrough();
@@ -355,8 +354,8 @@ describe("ItemDeleteFormComponent", () => {
       of({ success: true, userID: 2, deleted: 4 }),
     );
     const alertsSpy = spyOn(itemDeleteForm["alertsService"], "createSuccessAlert");
-    itemDeleteForm.toDelete = "All posts";
-    itemDeleteForm.itemToDelete = 2;
+    fixture.componentRef.setInput("toDelete", "All posts");
+    fixture.componentRef.setInput("itemToDelete", 2);
 
     fixture.detectChanges();
 
@@ -371,8 +370,8 @@ describe("ItemDeleteFormComponent", () => {
     const fixture = TestBed.createComponent(ItemDeleteFormComponent);
     const itemDeleteForm = fixture.componentInstance;
     const itemDeleteFormDOM = fixture.nativeElement;
-    itemDeleteForm.toDelete = "Post";
-    itemDeleteForm.itemToDelete = 2;
+    fixture.componentRef.setInput("toDelete", "Post");
+    fixture.componentRef.setInput("itemToDelete", 2);
     const deleteSpy = spyOn(itemDeleteForm, "deleteItem");
     const emitSpy = spyOn(itemDeleteForm.editMode, "emit");
 
@@ -395,13 +394,14 @@ describe("ItemDeleteFormComponent", () => {
     const fixture = TestBed.createComponent(ItemDeleteFormComponent);
     const itemDeleteForm = fixture.componentInstance;
     const itemDeleteFormDOM = fixture.nativeElement;
-    itemDeleteForm.toDelete = "ad post";
-    itemDeleteForm.itemToDelete = 2;
-    itemDeleteForm.reportData = {
+    fixture.componentRef.setInput("toDelete", "ad post");
+    fixture.componentRef.setInput("itemToDelete", 2);
+    fixture.componentRef.setInput("reportData", {
       reportID: 2,
       postID: 4,
       userID: 0,
-    };
+    });
+
     const deleteSpy = spyOn(itemDeleteForm, "deletePost").and.callThrough();
     const emitSpy = spyOn(itemDeleteForm.editMode, "emit");
 
@@ -419,9 +419,9 @@ describe("ItemDeleteFormComponent", () => {
   it("shouldn't delete in admin mode if there's no report data", () => {
     const fixture = TestBed.createComponent(ItemDeleteFormComponent);
     const itemDeleteForm = fixture.componentInstance;
-    itemDeleteForm.toDelete = "ad post";
-    itemDeleteForm.itemToDelete = 2;
-    itemDeleteForm.reportData = undefined;
+    fixture.componentRef.setInput("toDelete", "ad post");
+    fixture.componentRef.setInput("itemToDelete", 2);
+    fixture.componentRef.setInput("reportData", undefined);
     const serviceDeleteSpy = spyOn(itemDeleteForm["adminService"], "deletePost");
     fixture.detectChanges();
 

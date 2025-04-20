@@ -4,7 +4,7 @@
     <div class="popupText warning">This action is irreversible!</div>
 
     <!-- If the user is deleting something -->
-    <div *ngIf="toDelete !== 'ad post'" class="buttons">
+    <div *ngIf="toDelete() !== 'ad post'" class="buttons">
       <button class="appButton popupDeleteBtn" (click)="deleteItem()">Yes, Delete</button>
       <button class="appButton popupDeleteBtn" (click)="editMode.emit(false)" id="cancel">
         Never Mind
@@ -12,7 +12,7 @@
     </div>
 
     <!-- If the user is deleting something from admin menu -->
-    <div *ngIf="toDelete === 'ad post'" class="buttons">
+    <div *ngIf="toDelete() === 'ad post'" class="buttons">
       <button class="appButton deleteButton popupDeleteBtn" (click)="deletePost(true)">
         Delete and Close Report
       </button>

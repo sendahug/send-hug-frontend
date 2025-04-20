@@ -63,7 +63,7 @@ import { AuthService } from "@app/services/auth.service";
   standalone: true,
   imports: [PostComponent],
 })
-class MockPage {
+class MockPageComponent {
   showMenuNum: string | null = null;
   // loader sub-component variables
   waitFor = "main page";
@@ -109,7 +109,7 @@ describe("Post", () => {
         MockPostEditFormComponent,
         MockSendHugFormComponent,
         RouterLink,
-        MockPage,
+        MockPageComponent,
         PostComponent,
       ],
       providers: [
@@ -124,7 +124,7 @@ describe("Post", () => {
 
   // Check that all the popup-related variables are set to false at first
   it("should have all popup variables set to false", () => {
-    const upFixture = TestBed.createComponent(MockPage);
+    const upFixture = TestBed.createComponent(MockPageComponent);
     upFixture.detectChanges();
     const singlePost: PostComponent =
       upFixture.debugElement.children[0].children[0].componentInstance;
@@ -136,7 +136,7 @@ describe("Post", () => {
 
   // Check that sending a hug triggers the items service
   it("should trigger items service on hug", () => {
-    const upFixture = TestBed.createComponent(MockPage);
+    const upFixture = TestBed.createComponent(MockPageComponent);
     upFixture.detectChanges();
     const singlePost: PostComponent = upFixture.debugElement.children[0].componentInstance;
     const singlePostDOM = upFixture.debugElement.children[0].nativeElement;
@@ -162,7 +162,7 @@ describe("Post", () => {
 
   // Check that the popup is opened when clicking 'edit'
   it("should open the popup upon editing", () => {
-    const upFixture = TestBed.createComponent(MockPage);
+    const upFixture = TestBed.createComponent(MockPageComponent);
     const pageDOM = upFixture.nativeElement;
     upFixture.detectChanges();
     const singlePost: PostComponent = upFixture.debugElement.children[0].componentInstance;
@@ -187,7 +187,7 @@ describe("Post", () => {
 
   // Check that the popup is opened when clicking 'delete'
   it("should open the popup upon deleting", () => {
-    const upFixture = TestBed.createComponent(MockPage);
+    const upFixture = TestBed.createComponent(MockPageComponent);
     const pageDOM = upFixture.nativeElement;
     upFixture.detectChanges();
     const singlePost: PostComponent = upFixture.debugElement.children[0].componentInstance;
@@ -213,7 +213,7 @@ describe("Post", () => {
 
   // Check that the popup is opened when clicking 'report'
   it("should open the popup upon reporting", () => {
-    const upFixture = TestBed.createComponent(MockPage);
+    const upFixture = TestBed.createComponent(MockPageComponent);
     const pageDOM = upFixture.nativeElement;
     upFixture.detectChanges();
     const singlePost: PostComponent = upFixture.debugElement.children[0].componentInstance;
@@ -240,7 +240,7 @@ describe("Post", () => {
 
   // Check the popup exits when 'false' is emitted
   it("should change mode when the event emitter emits false - edit mode", () => {
-    const upFixture = TestBed.createComponent(MockPage);
+    const upFixture = TestBed.createComponent(MockPageComponent);
     upFixture.detectChanges();
     const singlePost: PostComponent = upFixture.debugElement.children[0].componentInstance;
     const changeSpy = spyOn(singlePost, "changeMode").and.callThrough();
@@ -262,7 +262,7 @@ describe("Post", () => {
   });
 
   it("should change mode when the event emitter emits false - delete mode", () => {
-    const upFixture = TestBed.createComponent(MockPage);
+    const upFixture = TestBed.createComponent(MockPageComponent);
     upFixture.detectChanges();
     const singlePost: PostComponent = upFixture.debugElement.children[0].componentInstance;
     const changeSpy = spyOn(singlePost, "changeMode").and.callThrough();
@@ -284,7 +284,7 @@ describe("Post", () => {
   });
 
   it("should change mode when the event emitter emits false - report mode", () => {
-    const upFixture = TestBed.createComponent(MockPage);
+    const upFixture = TestBed.createComponent(MockPageComponent);
     upFixture.detectChanges();
     const singlePost: PostComponent = upFixture.debugElement.children[0].componentInstance;
     const changeSpy = spyOn(singlePost, "changeMode").and.callThrough();
@@ -306,7 +306,7 @@ describe("Post", () => {
   });
 
   it("should change mode when the event emitter emits false - message mode", () => {
-    const upFixture = TestBed.createComponent(MockPage);
+    const upFixture = TestBed.createComponent(MockPageComponent);
     upFixture.detectChanges();
     const singlePost: PostComponent = upFixture.debugElement.children[0].componentInstance;
     const changeSpy = spyOn(singlePost, "changeMode").and.callThrough();
@@ -328,7 +328,7 @@ describe("Post", () => {
   });
 
   it("toggleMenu() - should set the currently open menu to the given post's id", () => {
-    const upFixture = TestBed.createComponent(MockPage);
+    const upFixture = TestBed.createComponent(MockPageComponent);
     upFixture.detectChanges();
     const singlePost: PostComponent = upFixture.debugElement.children[0].componentInstance;
     singlePost.itemsService.currentlyOpenMenu.next("nPost3");
@@ -348,7 +348,7 @@ describe("Post", () => {
   });
 
   it("toggleMenu() - should set the currently open menu to an emptpy string if the given post's id is already open", () => {
-    const upFixture = TestBed.createComponent(MockPage);
+    const upFixture = TestBed.createComponent(MockPageComponent);
     upFixture.detectChanges();
     const singlePost: PostComponent = upFixture.debugElement.children[0].componentInstance;
     singlePost.itemsService.currentlyOpenMenu.next("nPost1");
@@ -369,7 +369,7 @@ describe("Post", () => {
 
   // check the posts' menu isn't shown if there isn't enough room for it
   it("checkMenuSize() - shouldn't show the posts's menu if not wide enough", () => {
-    const upFixture = TestBed.createComponent(MockPage);
+    const upFixture = TestBed.createComponent(MockPageComponent);
     upFixture.detectChanges();
     const singlePost: PostComponent = upFixture.debugElement.children[0].componentInstance;
     const singlePostDOM = upFixture.debugElement.children[0].nativeElement;
@@ -390,7 +390,7 @@ describe("Post", () => {
 
   // check the posts' menu is shown if there is enough room for it
   it("checkMenuSize() - should show the menu if it's wide enough for it", () => {
-    const upFixture = TestBed.createComponent(MockPage);
+    const upFixture = TestBed.createComponent(MockPageComponent);
     upFixture.detectChanges();
     const singlePost: PostComponent = upFixture.debugElement.children[0].componentInstance;
     const singlePostDOM = upFixture.debugElement.children[0].nativeElement;
@@ -411,7 +411,7 @@ describe("Post", () => {
 
   // check the posts' menu is floating if there isn't enough room for it
   it("checkMenuSize() - should float the menu if it's wide enough for it", () => {
-    const upFixture = TestBed.createComponent(MockPage);
+    const upFixture = TestBed.createComponent(MockPageComponent);
     upFixture.detectChanges();
     const singlePost: PostComponent = upFixture.debugElement.children[0].componentInstance;
     const singlePostDOM = upFixture.debugElement.children[0].nativeElement;
@@ -441,7 +441,7 @@ describe("Post", () => {
   });
 
   it("should update the post's givenHugs and sentHugs when a hug is sent", () => {
-    const upFixture = TestBed.createComponent(MockPage);
+    const upFixture = TestBed.createComponent(MockPageComponent);
     upFixture.detectChanges();
     const singlePost = upFixture.debugElement.children[0].componentInstance;
     const singlePostDOM = upFixture.debugElement.children[0].nativeElement;
@@ -475,7 +475,7 @@ describe("Post", () => {
   });
 
   it("should change update the UI when a report isn't closed - post edit", () => {
-    const upFixture = TestBed.createComponent(MockPage);
+    const upFixture = TestBed.createComponent(MockPageComponent);
     upFixture.detectChanges();
     const singlePost: PostComponent = upFixture.debugElement.children[0].componentInstance;
     const updateSpy = spyOn(singlePost, "updatePostText").and.callThrough();
@@ -510,7 +510,7 @@ describe("Post", () => {
   });
 
   it("should update the parent about the deleted post - delete mode", () => {
-    const upFixture = TestBed.createComponent(MockPage);
+    const upFixture = TestBed.createComponent(MockPageComponent);
     upFixture.detectChanges();
     const singlePost: PostComponent = upFixture.debugElement.children[0].componentInstance;
     const emitSpy = spyOn(singlePost.deletedId, "emit");

@@ -66,7 +66,7 @@ import { SWManager } from "@app/services/sWManager.service";
   standalone: true,
   imports: [MyPostsComponent],
 })
-class MockUserPage {
+class MockUserPageComponent {
   userId: number;
 
   constructor() {
@@ -96,7 +96,12 @@ describe("MyPostsComponent", () => {
 
     TestBed.configureTestingModule({
       schemas: [NO_ERRORS_SCHEMA],
-      imports: [MockItemDeleteFormComponent, PostComponent, MyPostsComponent, MockUserPage],
+      imports: [
+        MockItemDeleteFormComponent,
+        PostComponent,
+        MyPostsComponent,
+        MockUserPageComponent,
+      ],
       declarations: [],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
@@ -131,7 +136,7 @@ describe("MyPostsComponent", () => {
 
   // Check that the component is created
   it("should create the component", () => {
-    const upFixture = TestBed.createComponent(MockUserPage);
+    const upFixture = TestBed.createComponent(MockUserPageComponent);
     const userPage = upFixture.componentInstance;
     upFixture.detectChanges();
     const myPosts: MyPostsComponent =
@@ -143,7 +148,7 @@ describe("MyPostsComponent", () => {
 
   // Check that all the popup-related variables are set to false at first
   it("should have all popup variables set to false", () => {
-    const upFixture = TestBed.createComponent(MockUserPage);
+    const upFixture = TestBed.createComponent(MockUserPageComponent);
     upFixture.detectChanges();
     const myPosts: MyPostsComponent =
       upFixture.debugElement.children[0].children[0].componentInstance;
@@ -153,7 +158,7 @@ describe("MyPostsComponent", () => {
 
   // Check that the component gets the user ID correctly
   it("should get the correct user ID", () => {
-    const upFixture = TestBed.createComponent(MockUserPage);
+    const upFixture = TestBed.createComponent(MockUserPageComponent);
     const userPage = upFixture.componentInstance;
     userPage.userId = 1;
     upFixture.detectChanges();
@@ -165,7 +170,7 @@ describe("MyPostsComponent", () => {
   });
 
   it("should fetch posts on init", () => {
-    const upFixture = TestBed.createComponent(MockUserPage);
+    const upFixture = TestBed.createComponent(MockUserPageComponent);
     const userPage = upFixture.componentInstance;
     userPage.userId = 1;
     upFixture.detectChanges();
@@ -189,7 +194,7 @@ describe("MyPostsComponent", () => {
   });
 
   it("should fetch posts from the server", () => {
-    const upFixture = TestBed.createComponent(MockUserPage);
+    const upFixture = TestBed.createComponent(MockUserPageComponent);
     const userPage = upFixture.componentInstance;
     userPage.userId = 1;
     upFixture.detectChanges();
@@ -218,7 +223,7 @@ describe("MyPostsComponent", () => {
   });
 
   it("should fetch posts from IDB", (done: DoneFn) => {
-    const upFixture = TestBed.createComponent(MockUserPage);
+    const upFixture = TestBed.createComponent(MockUserPageComponent);
     const userPage = upFixture.componentInstance;
     userPage.userId = 1;
     upFixture.detectChanges();
@@ -252,7 +257,7 @@ describe("MyPostsComponent", () => {
   // Check the popup exits when 'false' is emitted
   it("should change mode when the event emitter emits false - post delete", () => {
     // create the component
-    const fixture = TestBed.createComponent(MockUserPage);
+    const fixture = TestBed.createComponent(MockUserPageComponent);
     const userPage = fixture.componentInstance;
     userPage.userId = 4;
     fixture.detectChanges();
@@ -282,7 +287,7 @@ describe("MyPostsComponent", () => {
 
   // Check that the popup is opened when clicking 'delete all'
   it("should open the popup upon deleting all", () => {
-    const fixture = TestBed.createComponent(MockUserPage);
+    const fixture = TestBed.createComponent(MockUserPageComponent);
     const userPage = fixture.componentInstance;
     userPage.userId = 4;
     fixture.detectChanges();
@@ -310,7 +315,7 @@ describe("MyPostsComponent", () => {
   });
 
   it("continues to the next page", () => {
-    const fixture = TestBed.createComponent(MockUserPage);
+    const fixture = TestBed.createComponent(MockUserPageComponent);
     const userPage = fixture.componentInstance;
     userPage.userId = 1;
     fixture.detectChanges();
@@ -333,7 +338,7 @@ describe("MyPostsComponent", () => {
   });
 
   it("goes back to the previous page", () => {
-    const fixture = TestBed.createComponent(MockUserPage);
+    const fixture = TestBed.createComponent(MockUserPageComponent);
     const userPage = fixture.componentInstance;
     userPage.userId = 1;
     fixture.detectChanges();
@@ -358,7 +363,7 @@ describe("MyPostsComponent", () => {
 
   it("should remove a deleted post", () => {
     // create the component
-    const fixture = TestBed.createComponent(MockUserPage);
+    const fixture = TestBed.createComponent(MockUserPageComponent);
     const userPage = fixture.componentInstance;
     userPage.userId = 4;
     fixture.detectChanges();
@@ -382,7 +387,7 @@ describe("MyPostsComponent", () => {
 
   it("should delete all posts", () => {
     // create the component
-    const fixture = TestBed.createComponent(MockUserPage);
+    const fixture = TestBed.createComponent(MockUserPageComponent);
     const userPage = fixture.componentInstance;
     userPage.userId = 4;
     fixture.detectChanges();

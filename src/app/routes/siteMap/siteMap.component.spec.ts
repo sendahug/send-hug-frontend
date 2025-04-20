@@ -57,7 +57,7 @@ import { mockAuthedUser } from "@tests/mockData";
   `,
   standalone: true,
 })
-class MockComp {
+class MockComponent {
   waitFor = "user";
   userId: number | undefined;
 
@@ -82,43 +82,43 @@ describe("SiteMapComponent", () => {
 
     // Routes
     routes = [
-      { path: "", component: MockComp, data: { name: "Home Page" } },
+      { path: "", component: MockComponent, data: { name: "Home Page" } },
       {
         path: "user",
         children: [
-          { path: "", pathMatch: "prefix", component: MockComp, data: { name: "Your Page" } },
+          { path: "", pathMatch: "prefix", component: MockComponent, data: { name: "Your Page" } },
           {
             path: ":id",
             pathMatch: "prefix",
-            component: MockComp,
+            component: MockComponent,
             data: { name: "Other User's Page" },
           },
         ],
         data: { name: "User Page", mapRoutes: [{ path: "", name: "Your Page" }] },
       },
-      { path: "settings", component: MockComp, data: { name: "Settings Page" } },
+      { path: "settings", component: MockComponent, data: { name: "Settings Page" } },
       { path: "sitemap", component: SiteMapComponent, data: { name: "Site Map" } },
-      { path: "**", component: MockComp, data: { name: "Error Page" } },
+      { path: "**", component: MockComponent, data: { name: "Error Page" } },
       {
         path: "admin",
         children: [
-          { path: "", pathMatch: "prefix", component: MockComp, data: { name: "Main Page" } },
+          { path: "", pathMatch: "prefix", component: MockComponent, data: { name: "Main Page" } },
           {
             path: "reports",
             pathMatch: "prefix",
-            component: MockComp,
+            component: MockComponent,
             data: { name: "Reports Page" },
           },
           {
             path: "blocks",
             pathMatch: "prefix",
-            component: MockComp,
+            component: MockComponent,
             data: { name: "Blocks Page" },
           },
           {
             path: "filters",
             pathMatch: "prefix",
-            component: MockComp,
+            component: MockComponent,
             data: { name: "Filters Page" },
           },
         ],
@@ -136,13 +136,23 @@ describe("SiteMapComponent", () => {
         path: "messages",
         children: [
           { path: "", pathMatch: "prefix", redirectTo: "inbox", data: { name: "Inbox" } },
-          { path: "inbox", pathMatch: "prefix", component: MockComp, data: { name: "Inbox" } },
-          { path: "outbox", pathMatch: "prefix", component: MockComp, data: { name: "Outbox" } },
-          { path: "threads", pathMatch: "prefix", component: MockComp, data: { name: "Threads" } },
+          { path: "inbox", pathMatch: "prefix", component: MockComponent, data: { name: "Inbox" } },
+          {
+            path: "outbox",
+            pathMatch: "prefix",
+            component: MockComponent,
+            data: { name: "Outbox" },
+          },
+          {
+            path: "threads",
+            pathMatch: "prefix",
+            component: MockComponent,
+            data: { name: "Threads" },
+          },
           {
             path: "thread/:id",
             pathMatch: "prefix",
-            component: MockComp,
+            component: MockComponent,
             data: { name: "Thread" },
           },
         ],
@@ -155,11 +165,11 @@ describe("SiteMapComponent", () => {
           ],
         },
       },
-      { path: "login", component: MockComp, data: { name: "Login Page" } },
+      { path: "login", component: MockComponent, data: { name: "Login Page" } },
     ];
 
     TestBed.configureTestingModule({
-      imports: [CommonModule, RouterLink, MockComp, SiteMapComponent],
+      imports: [CommonModule, RouterLink, MockComponent, SiteMapComponent],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
         provideZoneChangeDetection({ eventCoalescing: true }),
@@ -217,18 +227,23 @@ describe("SiteMapComponent", () => {
     const adminPath: Route = {
       path: "admin",
       children: [
-        { path: "", pathMatch: "prefix", component: MockComp, data: { name: "Main Page" } },
+        { path: "", pathMatch: "prefix", component: MockComponent, data: { name: "Main Page" } },
         {
           path: "reports",
           pathMatch: "prefix",
-          component: MockComp,
+          component: MockComponent,
           data: { name: "Reports Page" },
         },
-        { path: "blocks", pathMatch: "prefix", component: MockComp, data: { name: "Blocks Page" } },
+        {
+          path: "blocks",
+          pathMatch: "prefix",
+          component: MockComponent,
+          data: { name: "Blocks Page" },
+        },
         {
           path: "filters",
           pathMatch: "prefix",
-          component: MockComp,
+          component: MockComponent,
           data: { name: "Filters Page" },
         },
       ],
@@ -268,18 +283,23 @@ describe("SiteMapComponent", () => {
     const adminPath: Route = {
       path: "admin",
       children: [
-        { path: "", pathMatch: "prefix", component: MockComp, data: { name: "Main Page" } },
+        { path: "", pathMatch: "prefix", component: MockComponent, data: { name: "Main Page" } },
         {
           path: "reports",
           pathMatch: "prefix",
-          component: MockComp,
+          component: MockComponent,
           data: { name: "Reports Page" },
         },
-        { path: "blocks", pathMatch: "prefix", component: MockComp, data: { name: "Blocks Page" } },
+        {
+          path: "blocks",
+          pathMatch: "prefix",
+          component: MockComponent,
+          data: { name: "Blocks Page" },
+        },
         {
           path: "filters",
           pathMatch: "prefix",
-          component: MockComp,
+          component: MockComponent,
           data: { name: "Filters Page" },
         },
       ],
@@ -308,7 +328,11 @@ describe("SiteMapComponent", () => {
 
     const routeList = siteMapDOM.querySelector("#routeList");
     const navLinks = routeList!.querySelectorAll(".routerLink");
-    const loginPath: Route = { path: "login", component: MockComp, data: { name: "Login Page" } };
+    const loginPath: Route = {
+      path: "login",
+      component: MockComponent,
+      data: { name: "Login Page" },
+    };
 
     expect(siteMap.routes()).not.toContain(loginPath);
     for (let i = 0; i < navLinks.length; i++) {
@@ -326,7 +350,11 @@ describe("SiteMapComponent", () => {
 
     const routeList = siteMapDOM.querySelector("#routeList");
     const navLinks = routeList!.querySelectorAll(".routerLink");
-    const loginPath: Route = { path: "login", component: MockComp, data: { name: "Login Page" } };
+    const loginPath: Route = {
+      path: "login",
+      component: MockComponent,
+      data: { name: "Login Page" },
+    };
 
     expect(siteMap.routes()).toContain(loginPath);
     expect(navLinks[navLinks.length - 1].textContent).toBe("Login Page");
@@ -342,15 +370,19 @@ describe("SiteMapComponent", () => {
 
     const routeList = siteMapDOM.querySelector("#routeList");
     let navLinks = routeList!.querySelectorAll(".routerLink");
-    const loginPath: Route = { path: "login", component: MockComp, data: { name: "Login Page" } };
+    const loginPath: Route = {
+      path: "login",
+      component: MockComponent,
+      data: { name: "Login Page" },
+    };
     const userPath: Route = {
       path: "user",
       children: [
-        { path: "", pathMatch: "prefix", component: MockComp, data: { name: "Your Page" } },
+        { path: "", pathMatch: "prefix", component: MockComponent, data: { name: "Your Page" } },
         {
           path: ":id",
           pathMatch: "prefix",
-          component: MockComp,
+          component: MockComponent,
           data: { name: "Other User's Page" },
         },
       ],

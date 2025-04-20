@@ -62,7 +62,7 @@ import { iconCharacters } from "@app/interfaces/types";
   imports: [UserIconComponent],
   schemas: [NO_ERRORS_SCHEMA],
 })
-class MockIconContainer {
+class MockIconContainerComponent {
   selectedIcon = signal("kitty" as iconCharacters);
   characterColour = signal(DefaultColours.kitty["character"]);
   lbgColour = signal(DefaultColours.kitty["lbg"]);
@@ -81,7 +81,7 @@ describe("UserIconComponent", () => {
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
-      imports: [CommonModule, MockIconContainer, UserIconComponent],
+      imports: [CommonModule, MockIconContainerComponent, UserIconComponent],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
         provideZoneChangeDetection({ eventCoalescing: true }),
@@ -98,7 +98,7 @@ describe("UserIconComponent", () => {
   });
 
   it("should set the colours based on the incoming colours at creation", () => {
-    const fixture = TestBed.createComponent(MockIconContainer);
+    const fixture = TestBed.createComponent(MockIconContainerComponent);
     const userIcon = fixture.debugElement.query(By.css("app-user-icon"));
     const userIconDOM = userIcon.nativeElement;
     fixture.detectChanges();
@@ -120,7 +120,7 @@ describe("UserIconComponent", () => {
   });
 
   it("should set the colours based on the incoming colours", () => {
-    const fixture = TestBed.createComponent(MockIconContainer);
+    const fixture = TestBed.createComponent(MockIconContainerComponent);
     const iconContainer = fixture.componentInstance;
     const userIcon = fixture.debugElement.query(By.css("app-user-icon"));
     const userIconDOM = userIcon.nativeElement;
@@ -164,7 +164,7 @@ describe("UserIconComponent", () => {
   });
 
   it("should set the character based on the incoming value", () => {
-    const fixture = TestBed.createComponent(MockIconContainer);
+    const fixture = TestBed.createComponent(MockIconContainerComponent);
     const iconContainer = fixture.componentInstance;
     const userIcon = fixture.debugElement.query(By.css("app-user-icon"));
     const userIconInstance = userIcon.componentInstance as UserIconComponent;

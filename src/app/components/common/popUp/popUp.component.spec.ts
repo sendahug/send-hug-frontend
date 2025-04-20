@@ -55,7 +55,7 @@ import { PopUpComponent } from "./popUp.component";
   standalone: true,
   imports: [PopUpComponent],
 })
-class MockPage {
+class MockPageComponent {
   text = "text";
 }
 
@@ -66,7 +66,7 @@ describe("Popup", () => {
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
-      imports: [CommonModule, FontAwesomeModule, MockPage, PopUpComponent],
+      imports: [CommonModule, FontAwesomeModule, MockPageComponent, PopUpComponent],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
         provideZoneChangeDetection({ eventCoalescing: true }),
@@ -85,7 +85,7 @@ describe("Popup", () => {
   // check tab and tab+shift let the user navigate
   // TODO: Figure out why this test isn't working
   it("should navigate using tab and shift+tab", (done: DoneFn) => {
-    const mockPage = TestBed.createComponent(MockPage);
+    const mockPage = TestBed.createComponent(MockPageComponent);
     const mockPageDOM = mockPage.nativeElement;
     const popUp: PopUpComponent = mockPage.debugElement.children[0].children[0].componentInstance;
     const popUpDOM = mockPage.debugElement.children[0].children[0].nativeElement;
@@ -172,7 +172,7 @@ describe("Popup", () => {
 
   // check the focus is trapped
   it("should trap focus in the modal", (done: DoneFn) => {
-    const mockPage = TestBed.createComponent(MockPage);
+    const mockPage = TestBed.createComponent(MockPageComponent);
     const mockPageDOM = mockPage.nativeElement;
     const popUp: PopUpComponent = mockPage.debugElement.children[0].children[0].componentInstance;
     const popUpDOM = mockPage.debugElement.children[0].children[0].nativeElement;

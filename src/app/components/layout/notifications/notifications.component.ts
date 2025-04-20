@@ -31,7 +31,15 @@
 */
 
 // Angular imports
-import { Component, OnInit, EventEmitter, Output, signal, computed } from "@angular/core";
+import {
+  Component,
+  OnInit,
+  EventEmitter,
+  Output,
+  signal,
+  computed,
+  AfterViewChecked,
+} from "@angular/core";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import { CommonModule } from "@angular/common";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
@@ -51,7 +59,7 @@ import { type UpdateNotificationsResponse } from "@app/interfaces/api";
   standalone: true,
   imports: [CommonModule, FontAwesomeModule, RouterLink],
 })
-export class NotificationsTabComponent implements OnInit {
+export class NotificationsTabComponent implements OnInit, AfterViewChecked {
   // indicates whether notifications panel is still required
   @Output() NotificationsMode = new EventEmitter<boolean>();
   focusableElements!: NodeListOf<HTMLElement>;

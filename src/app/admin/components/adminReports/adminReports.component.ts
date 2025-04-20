@@ -47,6 +47,9 @@ import {
 import { type ReportData, type EditReportUserData } from "@app/interfaces/report.interface";
 import { PostGet } from "@app/interfaces/post.interface";
 
+/* eslint-disable @angular-eslint/prefer-standalone */
+/* Since the Admin section is self-contained, it's better off as a module */
+
 @Component({
   selector: "app-admin-reports",
   templateUrl: "./adminReports.component.html",

@@ -42,6 +42,9 @@ import { ApiClientService } from "@app/services/apiClient.service";
 import { type BlockedUser } from "@app/interfaces/user.interface";
 import { type BlockUserResponse } from "@app/interfaces/api";
 
+/* eslint-disable @angular-eslint/prefer-standalone */
+/* Since the Admin section is self-contained, it's better off as a module */
+
 @Component({
   selector: "app-admin-blocks",
   templateUrl: "./adminBlocks.component.html",

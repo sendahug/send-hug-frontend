@@ -37,6 +37,9 @@ import { ActivatedRoute } from "@angular/router";
 // App imports
 import { AuthService } from "@app/services/auth.service";
 
+/* eslint-disable @angular-eslint/prefer-standalone */
+/* Since the Admin section is self-contained, it's better off as a module */
+
 @Component({
   selector: "app-admin-dashboard",
   templateUrl: "./adminDashboard.component.html",

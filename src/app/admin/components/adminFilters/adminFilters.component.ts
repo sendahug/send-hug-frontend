@@ -41,6 +41,9 @@ import { AlertsService } from "@app/services/alerts.service";
 import { ApiClientService } from "@app/services/apiClient.service";
 import { GetFiltersResponse, AddFiltersResponse, DeleteFiltersResponse } from "@app/interfaces/api";
 
+/* eslint-disable @angular-eslint/prefer-standalone */
+/* Since the Admin section is self-contained, it's better off as a module */
+
 @Component({
   selector: "app-admin-filters",
   templateUrl: "./adminFilters.component.html",

@@ -37,7 +37,10 @@ export default defineConfig([
   },
   {
     files: ["src/**/*.html"],
-    extends: [angularEslint.configs.templateAccessibility],
+    extends: [
+      angularEslint.configs.templateAccessibility,
+      angularEslint.configs.templateRecommended,
+    ],
   },
   {
     files: ["e2e/**/*.ts"],

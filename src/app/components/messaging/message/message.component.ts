@@ -38,7 +38,7 @@ import { CommonModule } from "@angular/common";
 // App-related imports
 import { type MessageGet } from "@app/interfaces/message.interface";
 import { UserIconComponent } from "@common/userIcon/userIcon.component";
-import { ItemDeleteForm } from "@forms/itemDeleteForm/itemDeleteForm.component";
+import { ItemDeleteFormComponent } from "@forms/itemDeleteForm/itemDeleteForm.component";
 import { MessageType } from "@app/interfaces/types";
 
 @Component({
@@ -46,7 +46,7 @@ import { MessageType } from "@app/interfaces/types";
   templateUrl: "./message.component.html",
   styleUrl: "./message.component.less",
   standalone: true,
-  imports: [CommonModule, RouterLink, UserIconComponent, ItemDeleteForm],
+  imports: [CommonModule, RouterLink, UserIconComponent, ItemDeleteFormComponent],
 })
 export class AppSingleMessage {
   // TODO: Replace these with `input()`/`output()` once we figure out coverage

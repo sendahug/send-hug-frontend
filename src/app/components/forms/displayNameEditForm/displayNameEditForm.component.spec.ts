@@ -42,7 +42,7 @@ import { provideZoneChangeDetection, signal } from "@angular/core";
 import { MockProvider } from "ng-mocks";
 import { Subscription } from "rxjs";
 
-import { DisplayNameEditForm } from "./displayNameEditForm.component";
+import { DisplayNameEditFormComponent } from "./displayNameEditForm.component";
 import { AuthService } from "@app/services/auth.service";
 import { mockAuthedUser } from "@tests/mockData";
 import { PopUpComponent } from "@common/popUp/popUp.component";
@@ -52,7 +52,7 @@ import { TeleportDirective } from "@app/directives/teleport.directive";
 
 // DISPLAY NAME EDIT
 // ==================================================================
-describe("DisplayNameEditForm", () => {
+describe("DisplayNameEditFormComponent", () => {
   // Before each test, configure testing environment
   beforeEach(() => {
     const AuthServiceMock = MockProvider(AuthService, {
@@ -69,7 +69,7 @@ describe("DisplayNameEditForm", () => {
         CommonModule,
         ReactiveFormsModule,
         PopUpComponent,
-        DisplayNameEditForm,
+        DisplayNameEditFormComponent,
         TeleportDirective,
       ],
       providers: [
@@ -83,14 +83,14 @@ describe("DisplayNameEditForm", () => {
 
   // Check that the component is created
   it("should create the component", () => {
-    const fixture = TestBed.createComponent(DisplayNameEditForm);
+    const fixture = TestBed.createComponent(DisplayNameEditFormComponent);
     const popUp = fixture.componentInstance;
 
     expect(popUp).toBeTruthy();
   });
 
   it("should set editedItem depending on toEdit", () => {
-    const fixture = TestBed.createComponent(DisplayNameEditForm);
+    const fixture = TestBed.createComponent(DisplayNameEditFormComponent);
     const popUp = fixture.componentInstance;
     popUp.editedItem = {
       id: 4,
@@ -117,7 +117,7 @@ describe("DisplayNameEditForm", () => {
       (_control) => null,
     );
 
-    const fixture = TestBed.createComponent(DisplayNameEditForm);
+    const fixture = TestBed.createComponent(DisplayNameEditFormComponent);
     const popUp = fixture.componentInstance;
     const popUpDOM = fixture.nativeElement;
     popUp.editedItem = {
@@ -146,7 +146,7 @@ describe("DisplayNameEditForm", () => {
       (_control) => null,
     );
 
-    const fixture = TestBed.createComponent(DisplayNameEditForm);
+    const fixture = TestBed.createComponent(DisplayNameEditFormComponent);
     const popUp = fixture.componentInstance;
     const popUpDOM = fixture.nativeElement;
     popUp.editedItem = {
@@ -195,7 +195,7 @@ describe("DisplayNameEditForm", () => {
       (_control) => null,
     );
 
-    const fixture = TestBed.createComponent(DisplayNameEditForm);
+    const fixture = TestBed.createComponent(DisplayNameEditFormComponent);
     const popUp = fixture.componentInstance;
     const popUpDOM = fixture.nativeElement;
     popUp.editedItem = {
@@ -232,7 +232,7 @@ describe("DisplayNameEditForm", () => {
       (_control) => null,
     );
 
-    const fixture = TestBed.createComponent(DisplayNameEditForm);
+    const fixture = TestBed.createComponent(DisplayNameEditFormComponent);
     const popUp = fixture.componentInstance;
     const popUpDOM = fixture.nativeElement;
     popUp.editedItem = {
@@ -283,7 +283,7 @@ describe("DisplayNameEditForm", () => {
       },
     );
 
-    const fixture = TestBed.createComponent(DisplayNameEditForm);
+    const fixture = TestBed.createComponent(DisplayNameEditFormComponent);
     const popUp = fixture.componentInstance;
     const popUpDOM = fixture.nativeElement;
     popUp.editedItem = {

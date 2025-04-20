@@ -83,7 +83,7 @@ const reportReasonsText = {
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, PopUpComponent, RouterLink, TeleportDirective],
 })
-export class ReportForm implements OnInit {
+export class ReportFormComponent implements OnInit {
   // indicates whether edit/delete mode is still required
   @Output() reportMode = new EventEmitter<boolean>();
   // reported post

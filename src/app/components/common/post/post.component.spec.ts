@@ -48,10 +48,10 @@ import { BehaviorSubject } from "rxjs";
 
 import { PostComponent } from "./post.component";
 import { mockAuthedUser } from "@tests/mockData";
-import { ItemDeleteForm } from "@forms/itemDeleteForm/itemDeleteForm.component";
-import { ReportForm } from "@forms/reportForm/reportForm.component";
-import { PostEditForm } from "@forms/postEditForm/postEditForm.component";
-import { SendHugForm } from "@forms/sendHugForm/sendHugForm.component";
+import { ItemDeleteFormComponent } from "@forms/itemDeleteForm/itemDeleteForm.component";
+import { ReportFormComponent } from "@forms/reportForm/reportForm.component";
+import { PostEditFormComponent } from "@forms/postEditForm/postEditForm.component";
+import { SendHugFormComponent } from "@forms/sendHugForm/sendHugForm.component";
 import { ItemsService } from "@app/services/items.service";
 import { AuthService } from "@app/services/auth.service";
 
@@ -83,10 +83,10 @@ class MockPage {
 describe("Post", () => {
   // Before each test, configure testing environment
   beforeEach(() => {
-    const MockItemDeleteForm = MockComponent(ItemDeleteForm);
-    const MockReportForm = MockComponent(ReportForm);
-    const MockPostEditForm = MockComponent(PostEditForm);
-    const MockSendHugForm = MockComponent(SendHugForm);
+    const MockItemDeleteFormComponent = MockComponent(ItemDeleteFormComponent);
+    const MockReportFormComponent = MockComponent(ReportFormComponent);
+    const MockPostEditFormComponent = MockComponent(PostEditFormComponent);
+    const MockSendHugFormComponent = MockComponent(SendHugFormComponent);
     const MockItemsService = MockProvider(ItemsService, {
       currentlyOpenMenu: new BehaviorSubject("n1"),
       receivedAHug: new BehaviorSubject(0),
@@ -104,10 +104,10 @@ describe("Post", () => {
       imports: [
         CommonModule,
         FontAwesomeModule,
-        MockItemDeleteForm,
-        MockReportForm,
-        MockPostEditForm,
-        MockSendHugForm,
+        MockItemDeleteFormComponent,
+        MockReportFormComponent,
+        MockPostEditFormComponent,
+        MockSendHugFormComponent,
         RouterLink,
         MockPage,
         PostComponent,
@@ -252,7 +252,7 @@ describe("Post", () => {
 
     // exit the popup
     const popup = upFixture.debugElement.query(By.css("post-edit-form"))
-      .componentInstance as PostEditForm;
+      .componentInstance as PostEditFormComponent;
     popup.editMode.emit(false);
     upFixture.detectChanges();
 
@@ -274,7 +274,7 @@ describe("Post", () => {
 
     // exit the popup
     const popup = upFixture.debugElement.query(By.css("item-delete-form"))
-      .componentInstance as ItemDeleteForm;
+      .componentInstance as ItemDeleteFormComponent;
     popup.editMode.emit(false);
     upFixture.detectChanges();
 
@@ -296,7 +296,7 @@ describe("Post", () => {
 
     // exit the popup
     const popup = upFixture.debugElement.query(By.css("report-form"))
-      .componentInstance as ReportForm;
+      .componentInstance as ReportFormComponent;
     popup.reportMode.emit(false);
     upFixture.detectChanges();
 
@@ -318,7 +318,7 @@ describe("Post", () => {
 
     // exit the popup
     const popup = upFixture.debugElement.query(By.css("app-send-hug-form"))
-      .componentInstance as SendHugForm;
+      .componentInstance as SendHugFormComponent;
     popup.sendMode.emit(false);
     upFixture.detectChanges();
 
@@ -499,7 +499,7 @@ describe("Post", () => {
 
     // exit the popup
     const popup = upFixture.debugElement.query(By.css("post-edit-form"))
-      .componentInstance as PostEditForm;
+      .componentInstance as PostEditFormComponent;
     popup.editMode.emit(false);
     popup.updateResult.emit(reportPostResponse);
     upFixture.detectChanges();
@@ -522,7 +522,7 @@ describe("Post", () => {
 
     // exit the popup
     const popup = upFixture.debugElement.query(By.css("item-delete-form"))
-      .componentInstance as ItemDeleteForm;
+      .componentInstance as ItemDeleteFormComponent;
     popup.deleted.emit(1);
     popup.editMode.emit(false);
     upFixture.detectChanges();

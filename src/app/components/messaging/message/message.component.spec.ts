@@ -44,7 +44,7 @@ import { MockComponent } from "ng-mocks";
 
 import { AppSingleMessage } from "./message.component";
 import { type MessageGet } from "@app/interfaces/message.interface";
-import { ItemDeleteForm } from "@forms/itemDeleteForm/itemDeleteForm.component";
+import { ItemDeleteFormComponent } from "@forms/itemDeleteForm/itemDeleteForm.component";
 import { UserIconComponent } from "@common/userIcon/userIcon.component";
 
 describe("AppSingleMessage", () => {
@@ -52,7 +52,7 @@ describe("AppSingleMessage", () => {
 
   // Before each test, configure testing environment
   beforeEach(() => {
-    const MockItemDeleteForm = MockComponent(ItemDeleteForm);
+    const MockItemDeleteFormComponent = MockComponent(ItemDeleteFormComponent);
     const MockUserIconComponent = MockComponent(UserIconComponent);
 
     TestBed.resetTestEnvironment();
@@ -61,7 +61,7 @@ describe("AppSingleMessage", () => {
     TestBed.configureTestingModule({
       schemas: [NO_ERRORS_SCHEMA],
       imports: [
-        MockItemDeleteForm,
+        MockItemDeleteFormComponent,
         MockUserIconComponent,
         RouterLink,
         CommonModule,
@@ -203,7 +203,7 @@ describe("AppSingleMessage", () => {
 
     // exit the popup
     const popup = fixture.debugElement.query(By.css("item-delete-form"))
-      .componentInstance as ItemDeleteForm;
+      .componentInstance as ItemDeleteFormComponent;
     popup.deleted.emit(1);
     popup.editMode.emit(false);
     fixture.detectChanges();

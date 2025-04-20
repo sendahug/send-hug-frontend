@@ -57,10 +57,10 @@ import { ItemsService } from "@app/services/items.service";
 import { type PostGet } from "@app/interfaces/post.interface";
 import { SWManager } from "@app/services/sWManager.service";
 import { type PostAndReportResponse } from "@app/interfaces/api";
-import { ItemDeleteForm } from "@forms/itemDeleteForm/itemDeleteForm.component";
-import { ReportForm } from "@forms/reportForm/reportForm.component";
-import { PostEditForm } from "@forms/postEditForm/postEditForm.component";
-import { SendHugForm } from "@forms/sendHugForm/sendHugForm.component";
+import { ItemDeleteFormComponent } from "@forms/itemDeleteForm/itemDeleteForm.component";
+import { ReportFormComponent } from "@forms/reportForm/reportForm.component";
+import { PostEditFormComponent } from "@forms/postEditForm/postEditForm.component";
+import { SendHugFormComponent } from "@forms/sendHugForm/sendHugForm.component";
 import { type ReportType } from "@app/interfaces/report.interface";
 
 @Component({
@@ -71,10 +71,10 @@ import { type ReportType } from "@app/interfaces/report.interface";
   imports: [
     CommonModule,
     FontAwesomeModule,
-    ItemDeleteForm,
-    ReportForm,
-    PostEditForm,
-    SendHugForm,
+    ItemDeleteFormComponent,
+    ReportFormComponent,
+    PostEditFormComponent,
+    SendHugFormComponent,
     RouterLink,
   ],
 })
@@ -323,7 +323,7 @@ export class PostComponent implements AfterViewChecked, OnInit, OnDestroy {
 
   /**
    * Updates the post's text with the new text.
-   * @param updatedPost The post/report response returned by the PostEditForm.
+   * @param updatedPost The post/report response returned by the PostEditFormComponent.
    */
   updatePostText(updatedPost: PostAndReportResponse) {
     if (!updatedPost.updatedPost) return;

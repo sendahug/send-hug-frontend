@@ -37,7 +37,7 @@ import { provideZoneChangeDetection, signal } from "@angular/core";
 import { MockProvider } from "ng-mocks";
 import { provideRouter } from "@angular/router";
 
-import { SendHugForm } from "./sendHugForm.component";
+import { SendHugFormComponent } from "./sendHugForm.component";
 import { AuthService } from "@app/services/auth.service";
 import { mockAuthedUser } from "@tests/mockData";
 import { PopUpComponent } from "@common/popUp/popUp.component";
@@ -64,7 +64,13 @@ describe("Send Hug Form", () => {
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
-      imports: [CommonModule, ReactiveFormsModule, PopUpComponent, SendHugForm, TeleportDirective],
+      imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        PopUpComponent,
+        SendHugFormComponent,
+        TeleportDirective,
+      ],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
         provideZoneChangeDetection({ eventCoalescing: true }),
@@ -77,7 +83,7 @@ describe("Send Hug Form", () => {
   });
 
   it("shows the name of the user who sent the post", () => {
-    const fixture = TestBed.createComponent(SendHugForm);
+    const fixture = TestBed.createComponent(SendHugFormComponent);
     const shForm = fixture.componentInstance;
     const shformDOM = fixture.nativeElement;
     shForm.forUsername = "meow";
@@ -91,7 +97,7 @@ describe("Send Hug Form", () => {
   });
 
   it("updateTextValidators() - correctly enables/disables the 'message' text field", () => {
-    const fixture = TestBed.createComponent(SendHugForm);
+    const fixture = TestBed.createComponent(SendHugFormComponent);
     const shForm = fixture.componentInstance;
     const shformDOM = fixture.nativeElement;
     shForm.forUsername = "meow";
@@ -115,7 +121,7 @@ describe("Send Hug Form", () => {
   });
 
   it("Correctly sets the required and aria-required attributes", () => {
-    const fixture = TestBed.createComponent(SendHugForm);
+    const fixture = TestBed.createComponent(SendHugFormComponent);
     const shForm = fixture.componentInstance;
     const shformDOM = fixture.nativeElement;
     shForm.forUsername = "meow";
@@ -144,7 +150,7 @@ describe("Send Hug Form", () => {
       (_control) => ({ error: "ERROR!" }),
     );
 
-    const fixture = TestBed.createComponent(SendHugForm);
+    const fixture = TestBed.createComponent(SendHugFormComponent);
     const shForm = fixture.componentInstance;
     const shformDOM = fixture.nativeElement;
     shForm.forUsername = "meow";
@@ -176,7 +182,7 @@ describe("Send Hug Form", () => {
     const authSerivce = TestBed.inject(AuthService);
     authSerivce.authenticated.set(false);
 
-    const fixture = TestBed.createComponent(SendHugForm);
+    const fixture = TestBed.createComponent(SendHugFormComponent);
     const shForm = fixture.componentInstance;
     const shformDOM = fixture.nativeElement;
     shForm.forUsername = "meow";
@@ -208,7 +214,7 @@ describe("Send Hug Form", () => {
       (_control) => null,
     );
 
-    const fixture = TestBed.createComponent(SendHugForm);
+    const fixture = TestBed.createComponent(SendHugFormComponent);
     const shForm = fixture.componentInstance;
     const shformDOM = fixture.nativeElement;
     shForm.forUsername = "meow";
@@ -240,7 +246,7 @@ describe("Send Hug Form", () => {
       (_control) => null,
     );
 
-    const fixture = TestBed.createComponent(SendHugForm);
+    const fixture = TestBed.createComponent(SendHugFormComponent);
     const shForm = fixture.componentInstance;
     shForm.forUsername = "meow";
     shForm.forID = 1;
@@ -276,7 +282,7 @@ describe("Send Hug Form", () => {
       (_control) => null,
     );
 
-    const fixture = TestBed.createComponent(SendHugForm);
+    const fixture = TestBed.createComponent(SendHugFormComponent);
     const shForm = fixture.componentInstance;
     const shformDOM = fixture.nativeElement;
     shForm.forUsername = "meow";

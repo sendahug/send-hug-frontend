@@ -54,7 +54,7 @@ import { AuthService } from "@app/services/auth.service";
 import { mockAuthedUser } from "@tests/mockData";
 import { FullThread } from "@app/interfaces/thread.interface";
 import { type MessageGet } from "@app/interfaces/message.interface";
-import { ItemDeleteForm } from "@forms/itemDeleteForm/itemDeleteForm.component";
+import { ItemDeleteFormComponent } from "@forms/itemDeleteForm/itemDeleteForm.component";
 import { ApiClientService } from "@app/services/apiClient.service";
 import { LoaderComponent } from "@common/loader/loader.component";
 import { AppSingleMessage } from "@app/components/messaging/message/message.component";
@@ -72,7 +72,7 @@ describe("AppMessaging", () => {
       isUserDataResolved: new BehaviorSubject(true),
     });
     const MockAPIClient = MockProvider(ApiClientService);
-    const MockItemDeleteForm = MockComponent(ItemDeleteForm);
+    const MockItemDeleteFormComponent = MockComponent(ItemDeleteFormComponent);
     const MockLoaderComponent = MockComponent(LoaderComponent);
 
     TestBed.resetTestEnvironment();
@@ -81,7 +81,7 @@ describe("AppMessaging", () => {
     TestBed.configureTestingModule({
       schemas: [NO_ERRORS_SCHEMA],
       imports: [
-        MockItemDeleteForm,
+        MockItemDeleteFormComponent,
         MockLoaderComponent,
         AppSingleThread,
         RouterLink,
@@ -531,7 +531,7 @@ describe("AppMessaging", () => {
 
     // exit the popup
     const popup = fixture.debugElement.query(By.css("item-delete-form"))
-      .componentInstance as ItemDeleteForm;
+      .componentInstance as ItemDeleteFormComponent;
     popup.editMode.emit(false);
     fixture.detectChanges();
 
@@ -599,7 +599,7 @@ describe("AppMessaging", () => {
 
     // exit the popup
     const popup = fixture.debugElement.query(By.css("item-delete-form"))
-      .componentInstance as ItemDeleteForm;
+      .componentInstance as ItemDeleteFormComponent;
     popup.deleted.emit(1);
     popup.editMode.emit(false);
     fixture.detectChanges();
@@ -626,7 +626,7 @@ describe("AppMessaging", () => {
 
     // exit the popup
     const popup = fixture.debugElement.query(By.css("item-delete-form"))
-      .componentInstance as ItemDeleteForm;
+      .componentInstance as ItemDeleteFormComponent;
     popup.deleted.emit(3);
     popup.editMode.emit(false);
     fixture.detectChanges();

@@ -263,7 +263,7 @@ export class AdminReportsComponent {
 
   /**
    * Updates the UI with the updated details of the post and report.
-   * @param response The post/report response returned by the PostEditForm.
+   * @param response The post/report response returned by the PostEditFormComponent.
    */
   updatePostReport(response: PostAndReportResponse) {
     // If the report was closed, remove it

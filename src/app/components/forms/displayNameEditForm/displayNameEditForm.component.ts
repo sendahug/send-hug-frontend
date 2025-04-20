@@ -52,7 +52,7 @@ import { TeleportDirective } from "@app/directives/teleport.directive";
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, PopUpComponent, TeleportDirective],
 })
-export class DisplayNameEditForm implements OnInit {
+export class DisplayNameEditFormComponent implements OnInit {
   // item to edit
   @Input() editedItem!: PartialUser;
   @Output() updatedDetails = new EventEmitter<UpdatedUserReportResponse>();

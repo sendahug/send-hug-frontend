@@ -44,7 +44,7 @@ import { type MessageGet } from "@app/interfaces/message.interface";
 import { SWManager } from "@app/services/sWManager.service";
 import { ApiClientService } from "@app/services/apiClient.service";
 import { LoaderComponent } from "@common/loader/loader.component";
-import { ItemDeleteForm } from "@forms/itemDeleteForm/itemDeleteForm.component";
+import { ItemDeleteFormComponent } from "@forms/itemDeleteForm/itemDeleteForm.component";
 import { AppSingleMessage } from "@app/components/messaging/message/message.component";
 import { AppSingleThread } from "@app/components/messaging/thread/thread.component";
 import { MessagesResponse, ThreadResponse } from "@app/interfaces/api";
@@ -58,7 +58,7 @@ import { MessagesResponse, ThreadResponse } from "@app/interfaces/api";
     CommonModule,
     RouterLink,
     LoaderComponent,
-    ItemDeleteForm,
+    ItemDeleteFormComponent,
     AppSingleMessage,
     AppSingleThread,
   ],

@@ -40,7 +40,7 @@ import { ReactiveFormsModule } from "@angular/forms";
 import { provideZoneChangeDetection, signal } from "@angular/core";
 import { MockProvider } from "ng-mocks";
 
-import { PasswordResetForm } from "./passwordResetForm.component";
+import { PasswordResetFormComponent } from "./passwordResetForm.component";
 import { AuthService } from "@app/services/auth.service";
 import { mockAuthedUser } from "@tests/mockData";
 import { PopUpComponent } from "@common/popUp/popUp.component";
@@ -48,7 +48,7 @@ import { TeleportDirective } from "@app/directives/teleport.directive";
 
 // DISPLAY NAME EDIT
 // ==================================================================
-describe("PasswordResetForm", () => {
+describe("PasswordResetFormComponent", () => {
   // Before each test, configure testing environment
   beforeEach(() => {
     const MockAuthService = MockProvider(AuthService, {
@@ -60,7 +60,7 @@ describe("PasswordResetForm", () => {
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
-      imports: [ReactiveFormsModule, PopUpComponent, PasswordResetForm, TeleportDirective],
+      imports: [ReactiveFormsModule, PopUpComponent, PasswordResetFormComponent, TeleportDirective],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
         provideZoneChangeDetection({ eventCoalescing: true }),
@@ -71,14 +71,14 @@ describe("PasswordResetForm", () => {
 
   // Check that the component is created
   it("should create the component", () => {
-    const fixture = TestBed.createComponent(PasswordResetForm);
+    const fixture = TestBed.createComponent(PasswordResetFormComponent);
     const popUp = fixture.componentInstance;
 
     expect(popUp).toBeTruthy();
   });
 
   it("should make the request to authService to reset the password", () => {
-    const fixture = TestBed.createComponent(PasswordResetForm);
+    const fixture = TestBed.createComponent(PasswordResetFormComponent);
     const popUp = fixture.componentInstance;
     const popUpDOM = fixture.nativeElement;
     const email = "ab@c.com";
@@ -97,7 +97,7 @@ describe("PasswordResetForm", () => {
   });
 
   it("should prevent invalid emails - invalid email", () => {
-    const fixture = TestBed.createComponent(PasswordResetForm);
+    const fixture = TestBed.createComponent(PasswordResetFormComponent);
     const popUp = fixture.componentInstance;
     const popUpDOM = fixture.nativeElement;
     fixture.detectChanges();
@@ -122,7 +122,7 @@ describe("PasswordResetForm", () => {
   });
 
   it("should prevent invalid emails - empty email", () => {
-    const fixture = TestBed.createComponent(PasswordResetForm);
+    const fixture = TestBed.createComponent(PasswordResetFormComponent);
     const popUp = fixture.componentInstance;
     const popUpDOM = fixture.nativeElement;
     fixture.detectChanges();

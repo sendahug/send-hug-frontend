@@ -49,8 +49,8 @@ import { AuthService } from "@app/services/auth.service";
 import { mockAuthedUser } from "@tests/mockData";
 import { OtherUser } from "@app/interfaces/user.interface";
 import { iconCharacters } from "@app/interfaces/types";
-import { DisplayNameEditForm } from "@forms/displayNameEditForm/displayNameEditForm.component";
-import { ReportForm } from "@forms/reportForm/reportForm.component";
+import { DisplayNameEditFormComponent } from "@forms/displayNameEditForm/displayNameEditForm.component";
+import { ReportFormComponent } from "@forms/reportForm/reportForm.component";
 import { ApiClientService } from "@app/services/apiClient.service";
 import { LoaderComponent } from "@common/loader/loader.component";
 import { UserIconComponent } from "@common/userIcon/userIcon.component";
@@ -63,8 +63,8 @@ describe("UserPage", () => {
       userData: signal(undefined),
     });
     const MockAPIClient = MockProvider(ApiClientService);
-    const MockDisplayNameEditForm = MockComponent(DisplayNameEditForm);
-    const MockReportForm = MockComponent(ReportForm);
+    const MockDisplayNameEditFormComponent = MockComponent(DisplayNameEditFormComponent);
+    const MockReportFormComponent = MockComponent(ReportFormComponent);
     const MockLoaderComponent = MockComponent(LoaderComponent);
     const MockUserIconComponent = MockComponent(UserIconComponent);
 
@@ -75,8 +75,8 @@ describe("UserPage", () => {
       schemas: [NO_ERRORS_SCHEMA],
       imports: [
         FontAwesomeModule,
-        MockDisplayNameEditForm,
-        MockReportForm,
+        MockDisplayNameEditFormComponent,
+        MockReportFormComponent,
         CommonModule,
         MockLoaderComponent,
         RouterLink,
@@ -597,7 +597,7 @@ describe("UserPage", () => {
 
     // exit the popup
     const popup = fixture.debugElement.query(By.css("display-name-edit-form"))
-      .componentInstance as DisplayNameEditForm;
+      .componentInstance as DisplayNameEditFormComponent;
     popup.editMode.emit(false);
     fixture.detectChanges();
 
@@ -645,7 +645,8 @@ describe("UserPage", () => {
     fixture.detectChanges();
 
     // exit the popup
-    const popup = fixture.debugElement.query(By.css("report-form")).componentInstance as ReportForm;
+    const popup = fixture.debugElement.query(By.css("report-form"))
+      .componentInstance as ReportFormComponent;
     popup.reportMode.emit(false);
     fixture.detectChanges();
 

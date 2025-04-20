@@ -51,7 +51,7 @@ import { type SendHugResponse } from "@app/interfaces/api";
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, PopUpComponent, TeleportDirective],
 })
-export class SendHugForm implements OnInit {
+export class SendHugFormComponent implements OnInit {
   @Output() sendMode = new EventEmitter<boolean>();
   @Input() forUsername: string = "";
   @Input() forID?: number;

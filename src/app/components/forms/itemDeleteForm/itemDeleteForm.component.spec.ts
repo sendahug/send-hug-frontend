@@ -41,13 +41,13 @@ import { of, Subscription } from "rxjs";
 import { provideZoneChangeDetection } from "@angular/core";
 import { MockProvider } from "ng-mocks";
 
-import { ItemDeleteForm } from "./itemDeleteForm.component";
+import { ItemDeleteFormComponent } from "./itemDeleteForm.component";
 import { PopUpComponent } from "@common/popUp/popUp.component";
 import { AdminService } from "@app/services/admin.service";
 import { ApiClientService } from "@app/services/apiClient.service";
 import { TeleportDirective } from "@app/directives/teleport.directive";
 
-describe("ItemDeleteForm", () => {
+describe("ItemDeleteFormComponent", () => {
   // Before each test, configure testing environment
   beforeEach(() => {
     const MockAPIClient = MockProvider(ApiClientService);
@@ -57,7 +57,7 @@ describe("ItemDeleteForm", () => {
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
-      imports: [CommonModule, PopUpComponent, ItemDeleteForm, TeleportDirective],
+      imports: [CommonModule, PopUpComponent, ItemDeleteFormComponent, TeleportDirective],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
         provideZoneChangeDetection({ eventCoalescing: true }),
@@ -69,7 +69,7 @@ describe("ItemDeleteForm", () => {
 
   // Check that the component is created
   it("should create the component", () => {
-    const fixture = TestBed.createComponent(ItemDeleteForm);
+    const fixture = TestBed.createComponent(ItemDeleteFormComponent);
     const itemDeleteForm = fixture.componentInstance;
 
     expect(itemDeleteForm).toBeTruthy();
@@ -77,7 +77,7 @@ describe("ItemDeleteForm", () => {
 
   // Check that a warning is shown before deleting an item
   it("shows a warning when deleting something", () => {
-    const fixture = TestBed.createComponent(ItemDeleteForm);
+    const fixture = TestBed.createComponent(ItemDeleteFormComponent);
     const itemDeleteForm = fixture.componentInstance;
     const itemDeleteFormDOM = fixture.nativeElement;
     itemDeleteForm.toDelete = "Post";
@@ -96,7 +96,7 @@ describe("ItemDeleteForm", () => {
   });
 
   it("deleteItem - single post - sets the right url and store for the delete call", () => {
-    const fixture = TestBed.createComponent(ItemDeleteForm);
+    const fixture = TestBed.createComponent(ItemDeleteFormComponent);
     const itemDeleteForm = fixture.componentInstance;
     const itemDeleteFormDOM = fixture.nativeElement;
     const mockSubscription = new Subscription();
@@ -120,7 +120,7 @@ describe("ItemDeleteForm", () => {
   });
 
   it("deleteItem - single message - sets the right url and store for the delete call", () => {
-    const fixture = TestBed.createComponent(ItemDeleteForm);
+    const fixture = TestBed.createComponent(ItemDeleteFormComponent);
     const itemDeleteForm = fixture.componentInstance;
     const itemDeleteFormDOM = fixture.nativeElement;
     const mockSubscription = new Subscription();
@@ -143,7 +143,7 @@ describe("ItemDeleteForm", () => {
   });
 
   it("deleteItem - single thread - sets the right url and store for the delete call", () => {
-    const fixture = TestBed.createComponent(ItemDeleteForm);
+    const fixture = TestBed.createComponent(ItemDeleteFormComponent);
     const itemDeleteForm = fixture.componentInstance;
     const itemDeleteFormDOM = fixture.nativeElement;
     const mockSubscription = new Subscription();
@@ -166,7 +166,7 @@ describe("ItemDeleteForm", () => {
   });
 
   it("deleteItem - all posts - should make the reuqest to delete all posts and delete from Idb", () => {
-    const fixture = TestBed.createComponent(ItemDeleteForm);
+    const fixture = TestBed.createComponent(ItemDeleteFormComponent);
     const itemDeleteForm = fixture.componentInstance;
     const itemDeleteFormDOM = fixture.nativeElement;
     const deleteMultipleSpy = spyOn(itemDeleteForm, "deleteMultipleItems").and.returnValue(
@@ -190,7 +190,7 @@ describe("ItemDeleteForm", () => {
   });
 
   it("deleteItems - all inbox - should make the reuqest to delete all inbox messages and delete from Idb", () => {
-    const fixture = TestBed.createComponent(ItemDeleteForm);
+    const fixture = TestBed.createComponent(ItemDeleteFormComponent);
     const itemDeleteForm = fixture.componentInstance;
     const itemDeleteFormDOM = fixture.nativeElement;
     const deleteMultipleSpy = spyOn(itemDeleteForm, "deleteMultipleItems").and.returnValue(
@@ -214,7 +214,7 @@ describe("ItemDeleteForm", () => {
   });
 
   it("deleteItems - all outbox - should make the reuqest to delete all outbox messages and delete from Idb", () => {
-    const fixture = TestBed.createComponent(ItemDeleteForm);
+    const fixture = TestBed.createComponent(ItemDeleteFormComponent);
     const itemDeleteForm = fixture.componentInstance;
     const itemDeleteFormDOM = fixture.nativeElement;
     const deleteMultipleSpy = spyOn(itemDeleteForm, "deleteMultipleItems").and.returnValue(
@@ -236,7 +236,7 @@ describe("ItemDeleteForm", () => {
   });
 
   it("deleteItems - all threads - should make the reuqest to delete all threads and delete from Idb", () => {
-    const fixture = TestBed.createComponent(ItemDeleteForm);
+    const fixture = TestBed.createComponent(ItemDeleteFormComponent);
     const itemDeleteForm = fixture.componentInstance;
     const itemDeleteFormDOM = fixture.nativeElement;
     const deleteMultipleSpy = spyOn(itemDeleteForm, "deleteMultipleItems").and.returnValue(
@@ -259,7 +259,7 @@ describe("ItemDeleteForm", () => {
   });
 
   it("deleteSingleItem - makes the request to delete a single item", () => {
-    const fixture = TestBed.createComponent(ItemDeleteForm);
+    const fixture = TestBed.createComponent(ItemDeleteFormComponent);
     const itemDeleteForm = fixture.componentInstance;
     const deleteSpy = spyOn(itemDeleteForm["apiClient"], "delete").and.returnValue(
       of({ success: true, deleted: 4 }),
@@ -279,7 +279,7 @@ describe("ItemDeleteForm", () => {
   });
 
   it("deleteSingleItem - makes the request to delete the thread and deletes the messages from Idb", () => {
-    const fixture = TestBed.createComponent(ItemDeleteForm);
+    const fixture = TestBed.createComponent(ItemDeleteFormComponent);
     const itemDeleteForm = fixture.componentInstance;
     const deleteSpy = spyOn(itemDeleteForm["apiClient"], "delete").and.returnValue(
       of({ success: true, deleted: 4 }),
@@ -301,7 +301,7 @@ describe("ItemDeleteForm", () => {
   // Check that a request to close the report is made if the item is deleted from
   // the admin dashboard
   it("makes a request to close the report if that's what the user chose - Admin delete", () => {
-    const fixture = TestBed.createComponent(ItemDeleteForm);
+    const fixture = TestBed.createComponent(ItemDeleteFormComponent);
     const itemDeleteForm = fixture.componentInstance;
     const itemDeleteFormDOM = fixture.nativeElement;
     itemDeleteForm.toDelete = "ad post";
@@ -349,7 +349,7 @@ describe("ItemDeleteForm", () => {
   });
 
   it("deleteMultipleItems - makes the request to delete multiple items", () => {
-    const fixture = TestBed.createComponent(ItemDeleteForm);
+    const fixture = TestBed.createComponent(ItemDeleteFormComponent);
     const itemDeleteForm = fixture.componentInstance;
     const deleteSpy = spyOn(itemDeleteForm["apiClient"], "delete").and.returnValue(
       of({ success: true, userID: 2, deleted: 4 }),
@@ -368,7 +368,7 @@ describe("ItemDeleteForm", () => {
 
   // Check that the popup is exited and the item isn't deleted if the user picks 'never mind'
   it("should emit false and keep the item if the user chooses not to delete", () => {
-    const fixture = TestBed.createComponent(ItemDeleteForm);
+    const fixture = TestBed.createComponent(ItemDeleteFormComponent);
     const itemDeleteForm = fixture.componentInstance;
     const itemDeleteFormDOM = fixture.nativeElement;
     itemDeleteForm.toDelete = "Post";
@@ -392,7 +392,7 @@ describe("ItemDeleteForm", () => {
   });
 
   it("should emit false and keep the item if the user chooses not to delete - admin", () => {
-    const fixture = TestBed.createComponent(ItemDeleteForm);
+    const fixture = TestBed.createComponent(ItemDeleteFormComponent);
     const itemDeleteForm = fixture.componentInstance;
     const itemDeleteFormDOM = fixture.nativeElement;
     itemDeleteForm.toDelete = "ad post";
@@ -417,7 +417,7 @@ describe("ItemDeleteForm", () => {
   });
 
   it("shouldn't delete in admin mode if there's no report data", () => {
-    const fixture = TestBed.createComponent(ItemDeleteForm);
+    const fixture = TestBed.createComponent(ItemDeleteFormComponent);
     const itemDeleteForm = fixture.componentInstance;
     itemDeleteForm.toDelete = "ad post";
     itemDeleteForm.itemToDelete = 2;

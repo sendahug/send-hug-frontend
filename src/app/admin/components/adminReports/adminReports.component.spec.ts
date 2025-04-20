@@ -49,9 +49,9 @@ import { LoaderComponent } from "@common/loader/loader.component";
 import { mockAuthedUser } from "@tests/mockData";
 import { type ReportGet } from "@app/interfaces/report.interface";
 import { ApiClientService } from "@app/services/apiClient.service";
-import { PostEditForm } from "@forms/postEditForm/postEditForm.component";
-import { DisplayNameEditForm } from "@forms/displayNameEditForm/displayNameEditForm.component";
-import { ItemDeleteForm } from "@forms/itemDeleteForm/itemDeleteForm.component";
+import { PostEditFormComponent } from "@forms/postEditForm/postEditForm.component";
+import { DisplayNameEditFormComponent } from "@forms/displayNameEditForm/displayNameEditForm.component";
+import { ItemDeleteFormComponent } from "@forms/itemDeleteForm/itemDeleteForm.component";
 import { AdminService } from "@app/services/admin.service";
 import { iconCharacters } from "@app/interfaces/types";
 import { PostGet } from "@app/interfaces/post.interface";
@@ -75,9 +75,9 @@ describe("AdminReportsComponent", () => {
     const MockAPIClient = MockProvider(ApiClientService, {
       get: () => of(),
     });
-    const MockEditForm = MockComponent(DisplayNameEditForm);
-    const MockDeleteForm = MockComponent(ItemDeleteForm);
-    const MockPostEditForm = MockComponent(PostEditForm);
+    const MockEditForm = MockComponent(DisplayNameEditFormComponent);
+    const MockDeleteForm = MockComponent(ItemDeleteFormComponent);
+    const MockPostEditFormComponent = MockComponent(PostEditFormComponent);
     const MockLoaderComponent = MockComponent(LoaderComponent);
 
     TestBed.resetTestEnvironment();
@@ -85,7 +85,13 @@ describe("AdminReportsComponent", () => {
 
     TestBed.configureTestingModule({
       schemas: [NO_ERRORS_SCHEMA],
-      imports: [MockLoaderComponent, MockPostEditForm, MockDeleteForm, MockEditForm, CommonModule],
+      imports: [
+        MockLoaderComponent,
+        MockPostEditFormComponent,
+        MockDeleteForm,
+        MockEditForm,
+        CommonModule,
+      ],
       declarations: [AdminReportsComponent],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
@@ -620,7 +626,7 @@ describe("AdminReportsComponent", () => {
 
     // exit the popup
     const popup = fixture.debugElement.query(By.css("display-name-edit-form"))
-      .componentInstance as DisplayNameEditForm;
+      .componentInstance as DisplayNameEditFormComponent;
     popup.editMode.emit(false);
     fixture.detectChanges();
 
@@ -650,7 +656,7 @@ describe("AdminReportsComponent", () => {
 
     // exit the popup
     const popup = fixture.debugElement.query(By.css("post-edit-form"))
-      .componentInstance as PostEditForm;
+      .componentInstance as PostEditFormComponent;
     popup.editMode.emit(false);
     fixture.detectChanges();
 
@@ -676,7 +682,7 @@ describe("AdminReportsComponent", () => {
 
     // exit the popup
     const popup = fixture.debugElement.query(By.css("item-delete-form"))
-      .componentInstance as ItemDeleteForm;
+      .componentInstance as ItemDeleteFormComponent;
     popup.editMode.emit(false);
     fixture.detectChanges();
 
@@ -707,7 +713,7 @@ describe("AdminReportsComponent", () => {
 
     // exit the popup
     const popup = fixture.debugElement.query(By.css("display-name-edit-form"))
-      .componentInstance as DisplayNameEditForm;
+      .componentInstance as DisplayNameEditFormComponent;
     popup.updatedDetails.emit({
       closed: true,
       reportID: 1,
@@ -747,7 +753,7 @@ describe("AdminReportsComponent", () => {
 
     // exit the popup
     const popup = fixture.debugElement.query(By.css("display-name-edit-form"))
-      .componentInstance as DisplayNameEditForm;
+      .componentInstance as DisplayNameEditFormComponent;
     popup.updatedDetails.emit({
       closed: false,
       reportID: 100000,
@@ -787,7 +793,7 @@ describe("AdminReportsComponent", () => {
 
     // exit the popup
     const popup = fixture.debugElement.query(By.css("display-name-edit-form"))
-      .componentInstance as DisplayNameEditForm;
+      .componentInstance as DisplayNameEditFormComponent;
     popup.updatedDetails.emit({
       closed: false,
       reportID: 1,
@@ -839,7 +845,7 @@ describe("AdminReportsComponent", () => {
 
     // exit the popup
     const popup = fixture.debugElement.query(By.css("post-edit-form"))
-      .componentInstance as PostEditForm;
+      .componentInstance as PostEditFormComponent;
     popup.editMode.emit(false);
     popup.updateResult.emit(reportPostResponse);
     fixture.detectChanges();
@@ -882,7 +888,7 @@ describe("AdminReportsComponent", () => {
 
     // exit the popup
     const popup = fixture.debugElement.query(By.css("post-edit-form"))
-      .componentInstance as PostEditForm;
+      .componentInstance as PostEditFormComponent;
     popup.editMode.emit(false);
     popup.updateResult.emit(reportPostResponse);
     fixture.detectChanges();
@@ -925,7 +931,7 @@ describe("AdminReportsComponent", () => {
 
     // exit the popup
     const popup = fixture.debugElement.query(By.css("post-edit-form"))
-      .componentInstance as PostEditForm;
+      .componentInstance as PostEditFormComponent;
     popup.editMode.emit(false);
     popup.updateResult.emit(reportPostResponse);
     fixture.detectChanges();
@@ -953,7 +959,7 @@ describe("AdminReportsComponent", () => {
 
     // exit the popup
     const popup = fixture.debugElement.query(By.css("item-delete-form"))
-      .componentInstance as ItemDeleteForm;
+      .componentInstance as ItemDeleteFormComponent;
     popup.deleted.emit(5);
     fixture.detectChanges();
 

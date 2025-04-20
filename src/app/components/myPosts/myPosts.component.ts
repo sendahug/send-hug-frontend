@@ -43,7 +43,7 @@ import { SWManager } from "@app/services/sWManager.service";
 import { ApiClientService } from "@app/services/apiClient.service";
 import { LoaderComponent } from "@common/loader/loader.component";
 import { PostComponent } from "@common/post/post.component";
-import { ItemDeleteForm } from "@forms/itemDeleteForm/itemDeleteForm.component";
+import { ItemDeleteFormComponent } from "@forms/itemDeleteForm/itemDeleteForm.component";
 import { type MyPostsResponse } from "@app/interfaces/api";
 
 @Component({
@@ -51,7 +51,7 @@ import { type MyPostsResponse } from "@app/interfaces/api";
   templateUrl: "./myPosts.component.html",
   styleUrl: "./myPosts.component.less",
   standalone: true,
-  imports: [LoaderComponent, PostComponent, ItemDeleteForm, CommonModule],
+  imports: [LoaderComponent, PostComponent, ItemDeleteFormComponent, CommonModule],
 })
 export class MyPosts implements OnInit {
   isLoading = signal(false);

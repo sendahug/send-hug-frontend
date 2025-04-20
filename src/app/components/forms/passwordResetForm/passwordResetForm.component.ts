@@ -46,7 +46,7 @@ import { TeleportDirective } from "@app/directives/teleport.directive";
   standalone: true,
   imports: [ReactiveFormsModule, PopUpComponent, TeleportDirective],
 })
-export class PasswordResetForm {
+export class PasswordResetFormComponent {
   @Output() editMode = new EventEmitter<boolean>();
   resetForm = this.fb.group({
     username: ["", [Validators.required, Validators.email]],

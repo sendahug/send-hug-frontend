@@ -42,7 +42,7 @@ import { Observable, of } from "rxjs";
 import { provideZoneChangeDetection, signal } from "@angular/core";
 import { MockProvider } from "ng-mocks";
 
-import { PostEditForm } from "./postEditForm.component";
+import { PostEditFormComponent } from "./postEditForm.component";
 import { type PostGet } from "@app/interfaces/post.interface";
 import { PopUpComponent } from "@common/popUp/popUp.component";
 import { ValidationService } from "@app/services/validation.service";
@@ -55,7 +55,7 @@ import { type ReportType } from "@app/interfaces/report.interface";
 
 // POST EDIT
 // ==================================================================
-describe("PostEditForm", () => {
+describe("PostEditFormComponent", () => {
   // Before each test, configure testing environment
   beforeEach(() => {
     const MockAdminService = MockProvider(AdminService);
@@ -69,7 +69,13 @@ describe("PostEditForm", () => {
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
-      imports: [ReactiveFormsModule, CommonModule, PopUpComponent, PostEditForm, TeleportDirective],
+      imports: [
+        ReactiveFormsModule,
+        CommonModule,
+        PopUpComponent,
+        PostEditFormComponent,
+        TeleportDirective,
+      ],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
         provideZoneChangeDetection({ eventCoalescing: true }),
@@ -82,7 +88,7 @@ describe("PostEditForm", () => {
 
   // Check that the component is created
   it("should create the component", () => {
-    const fixture = TestBed.createComponent(PostEditForm);
+    const fixture = TestBed.createComponent(PostEditFormComponent);
     const popUp = fixture.componentInstance;
 
     expect(popUp).toBeTruthy();
@@ -94,7 +100,7 @@ describe("PostEditForm", () => {
       (_control) => null,
     );
 
-    const fixture = TestBed.createComponent(PostEditForm);
+    const fixture = TestBed.createComponent(PostEditFormComponent);
     const popUp = fixture.componentInstance;
     const popUpDOM = fixture.nativeElement;
     const originalItem = {
@@ -159,7 +165,7 @@ describe("PostEditForm", () => {
       (_control) => null,
     );
 
-    const fixture = TestBed.createComponent(PostEditForm);
+    const fixture = TestBed.createComponent(PostEditFormComponent);
     const popUp = fixture.componentInstance;
     const popUpDOM = fixture.nativeElement;
     const originalItem = {
@@ -220,7 +226,7 @@ describe("PostEditForm", () => {
       (_control) => null,
     );
 
-    const fixture = TestBed.createComponent(PostEditForm);
+    const fixture = TestBed.createComponent(PostEditFormComponent);
     const popUp = fixture.componentInstance;
     const popUpDOM = fixture.nativeElement;
     const originalItem = { text: "hi", id: 2 } as PostGet;
@@ -285,7 +291,7 @@ describe("PostEditForm", () => {
       (_control) => null,
     );
 
-    const fixture = TestBed.createComponent(PostEditForm);
+    const fixture = TestBed.createComponent(PostEditFormComponent);
     const popUp = fixture.componentInstance;
     const popUpDOM = fixture.nativeElement;
     const originalItem = { text: "hi", id: 2 } as PostGet;
@@ -354,7 +360,7 @@ describe("PostEditForm", () => {
       },
     };
 
-    const fixture = TestBed.createComponent(PostEditForm);
+    const fixture = TestBed.createComponent(PostEditFormComponent);
     const popUp = fixture.componentInstance;
     const originalItem = { text: "hi", id: 2 } as PostGet;
     popUp.reportData = {
@@ -413,7 +419,7 @@ describe("PostEditForm", () => {
       },
     };
 
-    const fixture = TestBed.createComponent(PostEditForm);
+    const fixture = TestBed.createComponent(PostEditFormComponent);
     const popUp = fixture.componentInstance;
     const originalItem = { text: "hi", id: 2 } as PostGet;
     popUp.reportData = {
@@ -444,7 +450,7 @@ describe("PostEditForm", () => {
   });
 
   it("should not close the report if it's not the admin menu", (done: DoneFn) => {
-    const fixture = TestBed.createComponent(PostEditForm);
+    const fixture = TestBed.createComponent(PostEditFormComponent);
     const popUp = fixture.componentInstance;
     const originalItem = { text: "hi", id: 2 } as PostGet;
     popUp.reportData = null;
@@ -484,7 +490,7 @@ describe("PostEditForm", () => {
   });
 
   it("should not close the report if there's no report data", (done: DoneFn) => {
-    const fixture = TestBed.createComponent(PostEditForm);
+    const fixture = TestBed.createComponent(PostEditFormComponent);
     const popUp = fixture.componentInstance;
     const originalItem = { text: "hi", id: 2 } as PostGet;
     popUp.reportData = null;
@@ -522,7 +528,7 @@ describe("PostEditForm", () => {
       (_control) => ({ error: "error" }),
     );
 
-    const fixture = TestBed.createComponent(PostEditForm);
+    const fixture = TestBed.createComponent(PostEditFormComponent);
     const popUp = fixture.componentInstance;
     const popUpDOM = fixture.nativeElement;
     const originalItem = { text: "hi", id: 2 } as PostGet;

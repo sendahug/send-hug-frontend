@@ -44,7 +44,7 @@ import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { AuthService } from "@app/services/auth.service";
 import { AlertsService } from "@app/services/alerts.service";
 import { LoaderComponent } from "@common/loader/loader.component";
-import { PasswordResetForm } from "@forms/passwordResetForm/passwordResetForm.component";
+import { PasswordResetFormComponent } from "@forms/passwordResetForm/passwordResetForm.component";
 
 @Component({
   selector: "app-login-page",
@@ -56,7 +56,7 @@ import { PasswordResetForm } from "@forms/passwordResetForm/passwordResetForm.co
     ReactiveFormsModule,
     FontAwesomeModule,
     LoaderComponent,
-    PasswordResetForm,
+    PasswordResetFormComponent,
   ],
 })
 export class LoginPage {

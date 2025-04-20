@@ -43,7 +43,7 @@ import { NO_ERRORS_SCHEMA, provideZoneChangeDetection } from "@angular/core";
 import { MockComponent } from "ng-mocks";
 
 import { AppSingleThread } from "./thread.component";
-import { ItemDeleteForm } from "@forms/itemDeleteForm/itemDeleteForm.component";
+import { ItemDeleteFormComponent } from "@forms/itemDeleteForm/itemDeleteForm.component";
 import { UserIconComponent } from "@common/userIcon/userIcon.component";
 import { type ParsedThread } from "@app/interfaces/thread.interface";
 
@@ -52,7 +52,7 @@ describe("AppSingleThread", () => {
 
   // Before each test, configure testing environment
   beforeEach(() => {
-    const MockItemDeleteForm = MockComponent(ItemDeleteForm);
+    const MockItemDeleteFormComponent = MockComponent(ItemDeleteFormComponent);
     const MockUserIconComponent = MockComponent(UserIconComponent);
 
     TestBed.resetTestEnvironment();
@@ -61,7 +61,7 @@ describe("AppSingleThread", () => {
     TestBed.configureTestingModule({
       schemas: [NO_ERRORS_SCHEMA],
       imports: [
-        MockItemDeleteForm,
+        MockItemDeleteFormComponent,
         MockUserIconComponent,
         RouterLink,
         CommonModule,
@@ -160,7 +160,7 @@ describe("AppSingleThread", () => {
 
     // exit the popup
     const popup = fixture.debugElement.query(By.css("item-delete-form"))
-      .componentInstance as ItemDeleteForm;
+      .componentInstance as ItemDeleteFormComponent;
     popup.deleted.emit(3);
     popup.editMode.emit(false);
     fixture.detectChanges();

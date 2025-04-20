@@ -51,7 +51,7 @@ import { ReportData } from "@app/interfaces/report.interface";
   standalone: true,
   imports: [CommonModule, PopUpComponent, TeleportDirective],
 })
-export class ItemDeleteForm {
+export class ItemDeleteFormComponent {
   // indicates whether edit/delete mode is still required
   @Output() editMode = new EventEmitter<boolean>();
   @Output() deleted = new EventEmitter<number>();

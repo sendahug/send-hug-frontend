@@ -49,7 +49,7 @@ import { AuthService } from "@app/services/auth.service";
 import { mockAuthedUser } from "@tests/mockData";
 import { type PostGet } from "@app/interfaces/post.interface";
 import { PostComponent } from "@common/post/post.component";
-import { ItemDeleteForm } from "@forms/itemDeleteForm/itemDeleteForm.component";
+import { ItemDeleteFormComponent } from "@forms/itemDeleteForm/itemDeleteForm.component";
 import { ApiClientService } from "@app/services/apiClient.service";
 import { SWManager } from "@app/services/sWManager.service";
 
@@ -89,14 +89,14 @@ describe("MyPosts", () => {
     const MockSWManager = MockProvider(SWManager, {
       fetchPosts: () => new Promise(() => {}),
     });
-    const MockItemDeleteForm = MockComponent(ItemDeleteForm);
+    const MockItemDeleteFormComponent = MockComponent(ItemDeleteFormComponent);
 
     TestBed.resetTestEnvironment();
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
       schemas: [NO_ERRORS_SCHEMA],
-      imports: [MockItemDeleteForm, PostComponent, MyPosts, MockUserPage],
+      imports: [MockItemDeleteFormComponent, PostComponent, MyPosts, MockUserPage],
       declarations: [],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
@@ -264,7 +264,7 @@ describe("MyPosts", () => {
 
     // exit the popup
     const popup = fixture.debugElement.children[0].children[0].query(By.css("item-delete-form"))
-      .componentInstance as ItemDeleteForm;
+      .componentInstance as ItemDeleteFormComponent;
     popup.editMode.emit(false);
     fixture.detectChanges();
 
@@ -389,7 +389,7 @@ describe("MyPosts", () => {
     fixture.detectChanges();
 
     const singlePost = fixture.debugElement.query(By.css("item-delete-form"))
-      .componentInstance as ItemDeleteForm;
+      .componentInstance as ItemDeleteFormComponent;
     singlePost.deleted.emit(4);
     fixture.detectChanges();
 

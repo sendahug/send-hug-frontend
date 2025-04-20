@@ -37,7 +37,7 @@ import { of } from "rxjs";
 import { provideZoneChangeDetection, signal } from "@angular/core";
 import { MockProvider } from "ng-mocks";
 
-import { ReportForm } from "./reportForm.component";
+import { ReportFormComponent } from "./reportForm.component";
 import { AuthService } from "@app/services/auth.service";
 import { mockAuthedUser } from "@tests/mockData";
 import { PopUpComponent } from "@common/popUp/popUp.component";
@@ -59,7 +59,7 @@ describe("Report", () => {
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
-      imports: [CommonModule, ReactiveFormsModule, PopUpComponent, RouterLink, ReportForm],
+      imports: [CommonModule, ReactiveFormsModule, PopUpComponent, RouterLink, ReportFormComponent],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
         provideZoneChangeDetection({ eventCoalescing: true }),
@@ -72,7 +72,7 @@ describe("Report", () => {
 
   // Check that the reported post is shown
   it("shows the reported post", () => {
-    const fixture = TestBed.createComponent(ReportForm);
+    const fixture = TestBed.createComponent(ReportFormComponent);
     const popUp = fixture.componentInstance;
     const popUpDOM = fixture.nativeElement;
     popUp.reportType = "Post";
@@ -94,7 +94,7 @@ describe("Report", () => {
 
   // Check that the reported user's display name is shown
   it("shows the reported user's name", () => {
-    const fixture = TestBed.createComponent(ReportForm);
+    const fixture = TestBed.createComponent(ReportFormComponent);
     const popUp = fixture.componentInstance;
     const popUpDOM = fixture.nativeElement;
     popUp.reportType = "User";
@@ -126,7 +126,7 @@ describe("Report", () => {
 
   // Check that the correct radio button is set as selected
   it("correctly identifies the chosen radio button", () => {
-    const fixture = TestBed.createComponent(ReportForm);
+    const fixture = TestBed.createComponent(ReportFormComponent);
     const popUp = fixture.componentInstance;
     const popUpDOM = fixture.nativeElement;
     popUp.reportType = "Post";
@@ -176,7 +176,7 @@ describe("Report", () => {
   });
 
   it("checkSelectedForOther() - correctly enables/disables the 'other' text field", () => {
-    const fixture = TestBed.createComponent(ReportForm);
+    const fixture = TestBed.createComponent(ReportFormComponent);
     const popUp = fixture.componentInstance;
     const popUpDOM = fixture.nativeElement;
     popUp.reportType = "User";
@@ -224,7 +224,7 @@ describe("Report", () => {
   });
 
   it("Correctly sets the required and aria-required attributes", () => {
-    const fixture = TestBed.createComponent(ReportForm);
+    const fixture = TestBed.createComponent(ReportFormComponent);
     const popUp = fixture.componentInstance;
     const popUpDOM = fixture.nativeElement;
     popUp.reportType = "Post";
@@ -266,7 +266,7 @@ describe("Report", () => {
   });
 
   it("getSelectedReasonText() - correctly sets the selected reason - posts", () => {
-    const fixture = TestBed.createComponent(ReportForm);
+    const fixture = TestBed.createComponent(ReportFormComponent);
     const popUp = fixture.componentInstance;
     const popUpDOM = fixture.nativeElement;
     popUp.reportType = "Post";
@@ -306,7 +306,7 @@ describe("Report", () => {
   });
 
   it("getSelectedReasonText() - correctly sets the selected reason - users", () => {
-    const fixture = TestBed.createComponent(ReportForm);
+    const fixture = TestBed.createComponent(ReportFormComponent);
     const popUp = fixture.componentInstance;
     const popUpDOM = fixture.nativeElement;
     popUp.reportType = "User";
@@ -365,7 +365,7 @@ describe("Report", () => {
       (_control) => null,
     );
 
-    const fixture = TestBed.createComponent(ReportForm);
+    const fixture = TestBed.createComponent(ReportFormComponent);
     const popUp = fixture.componentInstance;
     const popUpDOM = fixture.nativeElement;
     popUp.reportType = "Post";
@@ -420,7 +420,7 @@ describe("Report", () => {
       (_control) => null,
     );
 
-    const fixture = TestBed.createComponent(ReportForm);
+    const fixture = TestBed.createComponent(ReportFormComponent);
     const popUp = fixture.componentInstance;
     const popUpDOM = fixture.nativeElement;
     popUp.reportType = "Post";
@@ -488,7 +488,7 @@ describe("Report", () => {
       success: true,
     };
 
-    const fixture = TestBed.createComponent(ReportForm);
+    const fixture = TestBed.createComponent(ReportFormComponent);
     const popUp = fixture.componentInstance;
     const popUpDOM = fixture.nativeElement;
     popUp.reportType = "Post";
@@ -550,7 +550,7 @@ describe("Report", () => {
       success: true,
     };
 
-    const fixture = TestBed.createComponent(ReportForm);
+    const fixture = TestBed.createComponent(ReportFormComponent);
     const popUp = fixture.componentInstance;
     const popUpDOM = fixture.nativeElement;
     popUp.reportType = "User";

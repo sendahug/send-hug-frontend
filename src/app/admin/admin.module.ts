@@ -40,9 +40,9 @@ import { AdminBlocksComponent } from "./components/adminBlocks/adminBlocks.compo
 import { AdminDashboardComponent } from "./components/adminDashboard/adminDashboard.component";
 import { AdminFiltersComponent } from "./components/adminFilters/adminFilters.component";
 import { AdminReportsComponent } from "./components/adminReports/adminReports.component";
-import { PostEditForm } from "@forms/postEditForm/postEditForm.component";
-import { ItemDeleteForm } from "@forms/itemDeleteForm/itemDeleteForm.component";
-import { DisplayNameEditForm } from "@forms/displayNameEditForm/displayNameEditForm.component";
+import { PostEditFormComponent } from "@forms/postEditForm/postEditForm.component";
+import { ItemDeleteFormComponent } from "@forms/itemDeleteForm/itemDeleteForm.component";
+import { DisplayNameEditFormComponent } from "@forms/displayNameEditForm/displayNameEditForm.component";
 import { LoaderComponent } from "@common/loader/loader.component";
 
 /* eslint-disable @typescript-eslint/no-extraneous-class */
@@ -51,9 +51,9 @@ import { LoaderComponent } from "@common/loader/loader.component";
   imports: [
     ReactiveFormsModule,
     CommonModule,
-    PostEditForm,
-    ItemDeleteForm,
-    DisplayNameEditForm,
+    PostEditFormComponent,
+    ItemDeleteFormComponent,
+    DisplayNameEditFormComponent,
     LoaderComponent,
     RouterLink,
   ],

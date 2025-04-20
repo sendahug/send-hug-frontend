@@ -51,7 +51,7 @@ import { LoginPage } from "./loginPage.component";
 import { AuthService } from "@app/services/auth.service";
 import { getMockFirebaseUser, mockAuthedUser } from "@tests/mockData";
 import { User } from "@app/interfaces/user.interface";
-import { PasswordResetForm } from "@forms/passwordResetForm/passwordResetForm.component";
+import { PasswordResetFormComponent } from "@forms/passwordResetForm/passwordResetForm.component";
 import { LoaderComponent } from "@common/loader/loader.component";
 
 describe("LoginPage", () => {
@@ -67,7 +67,7 @@ describe("LoginPage", () => {
       isRegistering: signal(false),
     });
     const MockLoaderComponent = MockComponent(LoaderComponent);
-    const MockPasswordResetForm = MockComponent(PasswordResetForm);
+    const MockPasswordResetFormComponent = MockComponent(PasswordResetFormComponent);
 
     TestBed.resetTestEnvironment();
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
@@ -79,7 +79,7 @@ describe("LoginPage", () => {
         ReactiveFormsModule,
         FontAwesomeModule,
         MockLoaderComponent,
-        MockPasswordResetForm,
+        MockPasswordResetFormComponent,
         LoginPage,
       ],
       providers: [
@@ -467,7 +467,7 @@ describe("LoginPage", () => {
 
     // exit the popup
     const popup = fixture.debugElement.query(By.css("app-reset-pw-form"))
-      .componentInstance as PasswordResetForm;
+      .componentInstance as PasswordResetFormComponent;
     popup.editMode.emit(false);
     fixture.detectChanges();
 

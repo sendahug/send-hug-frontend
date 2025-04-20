@@ -54,7 +54,7 @@ import { ReportData } from "@app/interfaces/report.interface";
   standalone: true,
   imports: [ReactiveFormsModule, CommonModule, PopUpComponent, TeleportDirective],
 })
-export class PostEditForm implements OnInit {
+export class PostEditFormComponent implements OnInit {
   // item to edit
   @Input() editedItem!: PostGet;
   // indicates whether edit/delete mode is still required

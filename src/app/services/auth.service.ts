@@ -68,21 +68,25 @@ interface ExtendedFirebaseUser extends FirebaseUser {
 export class AuthService {
   readonly serverUrl = import.meta.env["VITE_BACKEND_URL"];
   // authentication information
-  authenticated = signal<boolean>(false);
+  readonly authenticated = signal<boolean>(false);
   // user data
-  userData = signal<User | undefined>(undefined);
+  readonly userData = signal<User | undefined>(undefined);
   // shortcuts
-  pushEnabled = computed<boolean>(() => this.userData()?.pushEnabled || false);
-  toggleBtn = computed<ToggleButtonOption>(() => (this.pushEnabled() ? "Disable" : "Enable"));
-  autoRefresh = computed<boolean>(() => this.userData()?.autoRefresh || false);
-  refreshBtn = computed<ToggleButtonOption>(() => (this.autoRefresh() ? "Disable" : "Enable"));
-  refreshRate = computed(() => this.userData()?.refreshRate || 20);
+  readonly pushEnabled = computed<boolean>(() => this.userData()?.pushEnabled || false);
+  readonly toggleBtn = computed<ToggleButtonOption>(() =>
+    this.pushEnabled() ? "Disable" : "Enable",
+  );
+  readonly autoRefresh = computed<boolean>(() => this.userData()?.autoRefresh || false);
+  readonly refreshBtn = computed<ToggleButtonOption>(() =>
+    this.autoRefresh() ? "Disable" : "Enable",
+  );
+  readonly refreshRate = computed(() => this.userData()?.refreshRate || 20);
   // documents whether the user just logged in or they're still logged in following
   // their previous login
-  loggedIn = signal(false);
-  tokenExpired = signal(false);
+  readonly loggedIn = signal(false);
+  readonly tokenExpired = signal(false);
   // Whether the user is in the process of registering
-  isRegistering = signal(false);
+  readonly isRegistering = signal(false);
   isUserDataResolved = new BehaviorSubject(false);
 
   // CTOR

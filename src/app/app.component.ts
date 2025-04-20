@@ -63,11 +63,11 @@ import { getQueryParamsFromPath } from "./guards/common";
   imports: [CommonModule, RouterOutlet, RouterLink, AppAlertComponent, NavigationMenuComponent],
 })
 export class AppComponent implements OnInit, AfterViewInit, AfterViewChecked {
-  canShare = signal(false);
+  readonly canShare = signal(false);
   @ViewChild("modalContainer") modalContainer!: ElementRef;
-  navMenu = viewChild(NavigationMenuComponent, { read: ElementRef });
-  navMenuHeight = signal(0);
-  mainContentStyle = computed(() => ({ top: `${Number(this.navMenuHeight())}px` }));
+  readonly navMenu = viewChild(NavigationMenuComponent, { read: ElementRef });
+  readonly navMenuHeight = signal(0);
+  readonly mainContentStyle = computed(() => ({ top: `${Number(this.navMenuHeight())}px` }));
 
   constructor(
     protected authService: AuthService,

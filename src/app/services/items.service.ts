@@ -53,18 +53,18 @@ import {
 })
 export class ItemsService {
   // search variables
-  isSearching = signal(false);
-  userSearchResults = signal<OtherUser[]>([]);
-  numUserResults = signal(0);
-  numPostResults = signal(0);
-  postSearchResults = signal<PostGet[]>([]);
-  postSearchPage = signal(1);
-  totalPostSearchPages = signal(1);
-  previousPageButtonClass = computed(() => ({
+  readonly isSearching = signal(false);
+  readonly userSearchResults = signal<OtherUser[]>([]);
+  readonly numUserResults = signal(0);
+  readonly numPostResults = signal(0);
+  readonly postSearchResults = signal<PostGet[]>([]);
+  readonly postSearchPage = signal(1);
+  readonly totalPostSearchPages = signal(1);
+  readonly previousPageButtonClass = computed(() => ({
     "appButton prevButton": true,
     disabled: this.postSearchPage() <= 1,
   }));
-  nextPageButtonClass = computed(() => ({
+  readonly nextPageButtonClass = computed(() => ({
     "appButton nextButton": true,
     disabled: this.totalPostSearchPages() <= this.postSearchPage(),
   }));

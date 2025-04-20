@@ -33,6 +33,8 @@ export default defineConfig([
     rules: {
       "@typescript-eslint/no-unused-vars": ["error", { argsIgnorePattern: "^_" }],
       "@typescript-eslint/no-non-null-assertion": "off",
+      "@angular-eslint/prefer-signals": "error",
+      "@angular-eslint/no-conflicting-lifecycle": "error",
     },
   },
   {

@@ -54,20 +54,20 @@ import { type MyPostsResponse } from "@app/interfaces/api";
   imports: [LoaderComponent, PostComponent, ItemDeleteFormComponent, CommonModule],
 })
 export class MyPostsComponent implements OnInit {
-  isLoading = signal(false);
-  isIdbFetchLoading = signal(false);
-  posts = signal<PostGet[]>([]);
-  currentPage = signal(1);
-  totalPages = signal(1);
+  readonly isLoading = signal(false);
+  readonly isIdbFetchLoading = signal(false);
+  readonly posts = signal<PostGet[]>([]);
+  readonly currentPage = signal(1);
+  readonly totalPages = signal(1);
   // edit popup sub-component variables
-  deleteMode = signal(false);
-  toDelete = signal<string>("");
-  itemToDelete = signal<number | undefined>(undefined);
-  previousPageButtonClass = computed(() => ({
+  readonly deleteMode = signal(false);
+  readonly toDelete = signal<string>("");
+  readonly itemToDelete = signal<number | undefined>(undefined);
+  readonly previousPageButtonClass = computed(() => ({
     "appButton prevButton": true,
     disabled: this.currentPage() <= 1,
   }));
-  nextPageButtonClass = computed(() => ({
+  readonly nextPageButtonClass = computed(() => ({
     "appButton nextButton": true,
     disabled: this.totalPages() <= this.currentPage(),
   }));
@@ -81,11 +81,11 @@ export class MyPostsComponent implements OnInit {
   set userID(newId: number | undefined) {
     this._userId.set(newId || this.authService.userData()!.id);
   }
-  protected _userId = signal<number | undefined>(undefined);
-  user = computed(() =>
+  protected readonly _userId = signal<number | undefined>(undefined);
+  readonly user = computed(() =>
     this._userId() && this._userId() != this.authService.userData()!.id! ? "other" : "self",
   );
-  loaderClass = signal("header");
+  readonly loaderClass = signal("header");
 
   // CTOR
   constructor(

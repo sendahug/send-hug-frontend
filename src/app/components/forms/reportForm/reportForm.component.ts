@@ -90,8 +90,8 @@ export class ReportFormComponent implements OnInit {
   @Input() reportedItem: PostGet | OtherUser | undefined;
   // type of item to report
   @Input() reportType: ReportType = "Post";
-  protected reportedPost = signal<PostGet | undefined>(undefined);
-  protected reportedUser = signal<OtherUser | undefined>(undefined);
+  protected readonly reportedPost = signal<PostGet | undefined>(undefined);
+  protected readonly reportedUser = signal<OtherUser | undefined>(undefined);
   reportReasonsText = reportReasonsText;
   reportForm = this.fb.group({
     selectedReason: this.fb.control(undefined as string | undefined, [Validators.required]),

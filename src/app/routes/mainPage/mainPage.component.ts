@@ -52,9 +52,9 @@ import { type MainPageResponse } from "@app/interfaces/api";
   imports: [CommonModule, LoaderComponent, PostComponent, RouterLink],
 })
 export class MainPageComponent {
-  isLoading = signal(false);
-  newPosts: WritableSignal<PostGet[]> = signal([]);
-  suggestedPosts: WritableSignal<PostGet[]> = signal([]);
+  readonly isLoading = signal(false);
+  readonly newPosts: WritableSignal<PostGet[]> = signal([]);
+  readonly suggestedPosts: WritableSignal<PostGet[]> = signal([]);
 
   // CTOR
   constructor(

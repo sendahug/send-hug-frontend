@@ -56,38 +56,38 @@ import { PostGet } from "@app/interfaces/post.interface";
   standalone: false,
 })
 export class AdminReportsComponent {
-  postReports = signal<ReportGet[]>([]);
-  userReports = signal<ReportGet[]>([]);
-  totalPostReportsPages = signal(1);
-  totalUserReportsPages = signal(1);
-  currentPostReportsPage = signal(1);
-  currentUserReportsPage = signal(1);
-  isLoading = signal(false);
+  readonly postReports = signal<ReportGet[]>([]);
+  readonly userReports = signal<ReportGet[]>([]);
+  readonly totalPostReportsPages = signal(1);
+  readonly totalUserReportsPages = signal(1);
+  readonly currentPostReportsPage = signal(1);
+  readonly currentUserReportsPage = signal(1);
+  readonly isLoading = signal(false);
   // edit popup sub-component variables
-  userToEdit = signal<EditReportUserData>({ id: 0, displayName: "" });
-  postToEdit = signal<PostGet>({} as PostGet);
-  nameEditMode = signal(false);
-  postEditMode = signal(false);
-  reportData = signal<ReportData>({
+  readonly userToEdit = signal<EditReportUserData>({ id: 0, displayName: "" });
+  readonly postToEdit = signal<PostGet>({} as PostGet);
+  readonly nameEditMode = signal(false);
+  readonly postEditMode = signal(false);
+  readonly reportData = signal<ReportData>({
     reportID: 0,
     userID: 0,
   });
-  deleteMode = signal(false);
-  toDelete = signal<string | undefined>(undefined);
-  itemToDelete = signal<number | undefined>(undefined);
-  usersPrevButtonClass = computed(() => ({
+  readonly deleteMode = signal(false);
+  readonly toDelete = signal<string | undefined>(undefined);
+  readonly itemToDelete = signal<number | undefined>(undefined);
+  readonly usersPrevButtonClass = computed(() => ({
     "appButton prevButton": true,
     disabled: this.currentUserReportsPage() <= 1,
   }));
-  usersNextButtonClass = computed(() => ({
+  readonly usersNextButtonClass = computed(() => ({
     "appButton nextButton": true,
     disabled: this.currentUserReportsPage() >= this.totalUserReportsPages(),
   }));
-  postsPrevButtonClass = computed(() => ({
+  readonly postsPrevButtonClass = computed(() => ({
     "appButton prevButton": true,
     disabled: this.currentPostReportsPage() <= 1,
   }));
-  postsNextButtonClass = computed(() => ({
+  readonly postsNextButtonClass = computed(() => ({
     "appButton nextButton": true,
     disabled: this.currentPostReportsPage() >= this.totalPostReportsPages(),
   }));

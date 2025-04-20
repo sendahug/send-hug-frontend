@@ -46,18 +46,20 @@ import { AlertsService } from "@app/services/alerts.service";
   imports: [CommonModule, RouterLink],
 })
 export class AppAlertComponent {
-  alertClass = computed(() => ({
+  readonly alertClass = computed(() => ({
     [`alertMessage ${this.alertsService.alertType()}`]: true,
     hidden: !this.alertsService.shouldDisplayAlert(),
   }));
-  alertRole = computed(() =>
+  readonly alertRole = computed(() =>
     this.alertsService.alertType() === "Error" ? "alertdialog" : "alert",
   );
-  alertAriaLabel = computed(() =>
+  readonly alertAriaLabel = computed(() =>
     this.alertsService.alertType() === "Error" ? "An error has occurred" : "",
   );
-  alertAriaLive = computed(() => (this.alertsService.shouldDisplayAlert() ? "assertive" : "off"));
-  alertIconClass = computed(() => {
+  readonly alertAriaLive = computed(() =>
+    this.alertsService.shouldDisplayAlert() ? "assertive" : "off",
+  );
+  readonly alertIconClass = computed(() => {
     const iconBaseClass = "alertIcon";
 
     switch (this.alertsService.alertType()) {

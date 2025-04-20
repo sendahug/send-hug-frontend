@@ -40,7 +40,7 @@ import { TeleportService } from "@app/services/teleport.service";
   standalone: true,
 })
 export class TeleportDirective implements OnInit, OnDestroy {
-  teleport = input.required<string>();
+  readonly teleport = input.required<string>();
 
   constructor(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

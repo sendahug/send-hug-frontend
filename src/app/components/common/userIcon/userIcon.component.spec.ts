@@ -63,11 +63,11 @@ import { iconCharacters } from "@app/interfaces/types";
   schemas: [NO_ERRORS_SCHEMA],
 })
 class MockIconContainerComponent {
-  selectedIcon = signal("kitty" as iconCharacters);
-  characterColour = signal(DefaultColours.kitty["character"]);
-  lbgColour = signal(DefaultColours.kitty["lbg"]);
-  rbgColour = signal(DefaultColours.kitty["rbg"]);
-  itemColour = signal(DefaultColours.kitty["item"]);
+  readonly selectedIcon = signal("kitty" as iconCharacters);
+  readonly characterColour = signal(DefaultColours.kitty["character"]);
+  readonly lbgColour = signal(DefaultColours.kitty["lbg"]);
+  readonly rbgColour = signal(DefaultColours.kitty["rbg"]);
+  readonly itemColour = signal(DefaultColours.kitty["item"]);
 
   constructor() {
     this.selectedIcon.set("kitty");

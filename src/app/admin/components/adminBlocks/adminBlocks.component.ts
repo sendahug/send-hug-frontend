@@ -51,15 +51,15 @@ import { type BlockUserResponse } from "@app/interfaces/api";
   standalone: false,
 })
 export class AdminBlocksComponent {
-  blockedUsers = signal<BlockedUser[]>([]);
-  currentPage = signal(1);
-  totalPages = signal(1);
-  isLoading = signal(false);
-  previousButtonClass = computed(() => ({
+  readonly blockedUsers = signal<BlockedUser[]>([]);
+  readonly currentPage = signal(1);
+  readonly totalPages = signal(1);
+  readonly isLoading = signal(false);
+  readonly previousButtonClass = computed(() => ({
     "appButton prevButton": true,
     disabled: this.currentPage() <= 1,
   }));
-  nextButtonClass = computed(() => ({
+  readonly nextButtonClass = computed(() => ({
     "appButton nextButton": true,
     disabled: this.currentPage() >= this.totalPages(),
   }));

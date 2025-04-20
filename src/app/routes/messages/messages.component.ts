@@ -64,8 +64,8 @@ import { MessagesResponse, ThreadResponse } from "@app/interfaces/api";
   ],
 })
 export class AppMessagesComponent {
-  messType = signal<MessageType>("inbox");
-  idbFilterAttribute = computed(() => {
+  readonly messType = signal<MessageType>("inbox");
+  readonly idbFilterAttribute = computed(() => {
     if (this.messType() == "thread") {
       return "threadID";
     } else if (this.messType() == "outbox") {
@@ -74,14 +74,14 @@ export class AppMessagesComponent {
       return "forId";
     }
   });
-  currentPage = signal(1);
-  totalPages = signal(1);
-  isLoading = signal(false);
-  isIdbFetchLoading = signal(false);
-  threadId = signal<number | undefined>(undefined);
-  messages = signal<MessageGet[]>([]);
-  userThreads = signal<FullThread[]>([]);
-  userThreadsFormatted = computed<ParsedThread[]>(() => {
+  readonly currentPage = signal(1);
+  readonly totalPages = signal(1);
+  readonly isLoading = signal(false);
+  readonly isIdbFetchLoading = signal(false);
+  readonly threadId = signal<number | undefined>(undefined);
+  readonly messages = signal<MessageGet[]>([]);
+  readonly userThreads = signal<FullThread[]>([]);
+  readonly userThreadsFormatted = computed<ParsedThread[]>(() => {
     return this.userThreads().map((thread: FullThread) => {
       return {
         id: thread.id,
@@ -92,23 +92,25 @@ export class AppMessagesComponent {
       };
     });
   });
-  previousPageButtonClass = computed(() => ({
+  readonly previousPageButtonClass = computed(() => ({
     "appButton prevButton": true,
     disabled: this.currentPage() <= 1,
   }));
-  nextPageButtonClass = computed(() => ({
+  readonly nextPageButtonClass = computed(() => ({
     "appButton nextButton": true,
     disabled: this.totalPages() <= this.currentPage(),
   }));
   // loader sub-component variable
-  loadingMessage = computed(() =>
+  readonly loadingMessage = computed(() =>
     this.messType() == "threads" ? "Fetching threads..." : "Fetching messages...",
   );
-  loaderClass = computed(() => (!this.isIdbFetchLoading() && this.isLoading() ? "header" : ""));
+  readonly loaderClass = computed(() =>
+    !this.isIdbFetchLoading() && this.isLoading() ? "header" : "",
+  );
   // edit popup sub-component variables
-  deleteMode = signal(false);
-  toDelete = signal<string | undefined>(undefined);
-  itemToDelete = signal<number | undefined>(undefined);
+  readonly deleteMode = signal(false);
+  readonly toDelete = signal<string | undefined>(undefined);
+  readonly itemToDelete = signal<number | undefined>(undefined);
 
   // CTOR
   constructor(

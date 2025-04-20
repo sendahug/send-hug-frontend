@@ -64,25 +64,25 @@ export class NotificationsTabComponent implements OnInit, AfterViewChecked {
   @Output() NotificationsMode = new EventEmitter<boolean>();
   focusableElements!: NodeListOf<HTMLElement>;
   checkFocusBinded = this.checkFocus.bind(this);
-  currentPage = signal(1);
-  totalPages = signal(1);
-  totalItems = signal(0);
-  previousPageButtonClass = computed(() => ({
+  readonly currentPage = signal(1);
+  readonly totalPages = signal(1);
+  readonly totalItems = signal(0);
+  readonly previousPageButtonClass = computed(() => ({
     "appButton prevButton": true,
     disabled: this.currentPage() <= 1,
   }));
-  nextPageButtonClass = computed(() => ({
+  readonly nextPageButtonClass = computed(() => ({
     "appButton nextButton": true,
     disabled: this.totalPages() <= this.currentPage(),
   }));
-  markAllLabel = computed(() =>
+  readonly markAllLabel = computed(() =>
     this.notificationService.newNotifications() == 0 ? "unread" : "read",
   );
-  displayRead = signal(true);
-  displayReadButtonLabel = computed(() => (this.displayRead() ? "Hide" : "Show"));
-  displayUnread = signal(true);
-  displayUnreadButtonLabel = computed(() => (this.displayUnread() ? "Hide" : "Show"));
-  notifications = signal<Notification[]>([]);
+  readonly displayRead = signal(true);
+  readonly displayReadButtonLabel = computed(() => (this.displayRead() ? "Hide" : "Show"));
+  readonly displayUnread = signal(true);
+  readonly displayUnreadButtonLabel = computed(() => (this.displayUnread() ? "Hide" : "Show"));
+  readonly notifications = signal<Notification[]>([]);
   // icons
   faTimes = faTimes;
 

@@ -44,7 +44,7 @@ import { LoaderComponent } from "@common/loader/loader.component";
   imports: [CommonModule, LoaderComponent],
 })
 export class VerifyEmailPageComponent implements OnInit {
-  loadingAuth = signal(true);
+  readonly loadingAuth = signal(true);
 
   constructor(
     protected authService: AuthService,

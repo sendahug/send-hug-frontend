@@ -54,16 +54,16 @@ import { type PostsListResponse } from "@app/interfaces/api";
 })
 export class FullListComponent {
   // current page and type of list
-  type = signal<FullListType>("New");
-  currentPage = signal(1);
-  totalPages = signal(1);
-  isLoading = signal(false);
-  posts: WritableSignal<PostGet[]> = signal([]);
-  previousPageButtonClass = computed(() => ({
+  readonly type = signal<FullListType>("New");
+  readonly currentPage = signal(1);
+  readonly totalPages = signal(1);
+  readonly isLoading = signal(false);
+  readonly posts: WritableSignal<PostGet[]> = signal([]);
+  readonly previousPageButtonClass = computed(() => ({
     "appButton prevButton": true,
     disabled: this.currentPage() <= 1,
   }));
-  nextPageButtonClass = computed(() => ({
+  readonly nextPageButtonClass = computed(() => ({
     "appButton nextButton": true,
     disabled: this.totalPages() <= this.currentPage(),
   }));

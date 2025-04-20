@@ -88,41 +88,41 @@ export class PostComponent implements AfterViewChecked, OnInit, OnDestroy {
   }
   @Input() type!: "n" | "s";
   @Output() deletedId = new EventEmitter<number>();
-  protected _post: WritableSignal<PostGet | undefined> = signal(undefined);
-  postId = computed(() => `${this.type}Post${this._post()?.id || ""}`);
+  protected readonly _post: WritableSignal<PostGet | undefined> = signal(undefined);
+  readonly postId = computed(() => `${this.type}Post${this._post()?.id || ""}`);
   // edit popup sub-component variables
   editType = "post";
-  editMode = signal(false);
-  deleteMode = signal(false);
+  readonly editMode = signal(false);
+  readonly deleteMode = signal(false);
   toDelete: ReportType = "Post";
-  itemToDelete = computed(() => this._post()?.id);
-  reportMode = signal(false);
+  readonly itemToDelete = computed(() => this._post()?.id);
+  readonly reportMode = signal(false);
   reportType: ReportType = "Post";
-  sendMessageMode = signal(false);
+  readonly sendMessageMode = signal(false);
   subscriptions: Subscription[] = [];
-  shouldShowSubmenu = signal(true);
-  shouldMenuFloat = signal(false);
-  shouldDisableHugBtn = computed(
+  readonly shouldShowSubmenu = signal(true);
+  readonly shouldMenuFloat = signal(false);
+  readonly shouldDisableHugBtn = computed(
     () =>
       !this.authService.authenticated() ||
       this._post()?.sentHugs?.includes(this.authService.userData()!.id!) ||
       this._post()?.userId == this.authService.userData()?.id,
   );
   // Classes
-  menuButtonClass = computed(() => ({
+  readonly menuButtonClass = computed(() => ({
     "textlessButton menuButton": true,
     hidden: !this.shouldMenuFloat(),
   }));
-  buttonsContainerClass = computed(() => ({
+  readonly buttonsContainerClass = computed(() => ({
     buttonsContainer: true,
     float: this.shouldMenuFloat(),
   }));
-  subMenuClass = computed(() => ({
+  readonly subMenuClass = computed(() => ({
     subMenu: true,
     float: this.shouldMenuFloat(),
     hidden: !this.shouldShowSubmenu(),
   }));
-  displayedButtons = computed(() => {
+  readonly displayedButtons = computed(() => {
     let initialButtonsCount = 2;
 
     if (
@@ -143,11 +143,11 @@ export class PostComponent implements AfterViewChecked, OnInit, OnDestroy {
 
     return initialButtonsCount;
   });
-  sendHugButtonClass = computed(() => ({
+  readonly sendHugButtonClass = computed(() => ({
     "textlessButton hugButton": true,
     active: this.shouldDisableHugBtn(),
   }));
-  reportButtonClass = computed(() => ({
+  readonly reportButtonClass = computed(() => ({
     "textlessButton reportButton": true,
     disabled: !(
       this.authService.userData() && this.authService.userData()?.id != this._post()?.userId

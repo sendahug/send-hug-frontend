@@ -47,7 +47,7 @@ import { AuthService } from "@app/services/auth.service";
   standalone: false,
 })
 export class AdminDashboardComponent {
-  screen = signal("");
+  readonly screen = signal("");
   adminCategories = [
     {
       title: "Reports",

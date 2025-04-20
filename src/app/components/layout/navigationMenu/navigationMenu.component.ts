@@ -69,22 +69,22 @@ import SiteLogoSrc from "@/assets/img/Logo.svg";
   ],
 })
 export class NavigationMenuComponent implements OnInit, AfterViewInit {
-  showNotifications = signal(false);
-  showSearch = signal(false);
-  showTextPanel = signal(false);
-  showMenu = signal(false);
-  navMenuClass = computed(() => ({
+  readonly showNotifications = signal(false);
+  readonly showSearch = signal(false);
+  readonly showTextPanel = signal(false);
+  readonly showMenu = signal(false);
+  readonly navMenuClass = computed(() => ({
     navLinks: true,
     hidden: !this.showMenu(),
   }));
-  showMenuButton = signal(false);
-  menuButtonClass = computed(() => ({
+  readonly showMenuButton = signal(false);
+  readonly menuButtonClass = computed(() => ({
     navLink: true,
     hidden: !this.showMenuButton(),
   }));
-  currentlyActiveRoute = signal("/");
-  currentTextSize = signal(1);
-  menuSize = computed(() => {
+  readonly currentlyActiveRoute = signal("/");
+  readonly currentTextSize = signal(1);
+  readonly menuSize = computed(() => {
     // text, search and notifications, each is ~65px
     const smallerButtons = 3 * 65;
     // the logo is at most 100px

@@ -70,29 +70,31 @@ import { type ReportType } from "@app/interfaces/report.interface";
   ],
 })
 export class UserPageComponent implements OnDestroy {
-  isLoading = signal(false);
-  isIdbFetchLoading = signal(false);
-  otherUser = signal<OtherUser | undefined>(undefined);
-  displayUser = computed(() => {
+  readonly isLoading = signal(false);
+  readonly isIdbFetchLoading = signal(false);
+  readonly otherUser = signal<OtherUser | undefined>(undefined);
+  readonly displayUser = computed(() => {
     if (this.otherUser()) {
       return this.otherUser() as OtherUser;
     } else {
       return this.authService.userData() as User;
     }
   });
-  isOtherUserProfile = computed(() => this.otherUser() != undefined);
+  readonly isOtherUserProfile = computed(() => this.otherUser() != undefined);
   // edit popup sub-component variables
-  userToEdit = computed<PartialUser>(() => ({
+  readonly userToEdit = computed<PartialUser>(() => ({
     displayName: this.displayUser().displayName,
     id: this.displayUser().id as number,
   }));
-  editMode = signal(false);
-  reportMode = signal(false);
-  reportedItem = signal<OtherUser | undefined>(undefined);
+  readonly editMode = signal(false);
+  readonly reportMode = signal(false);
+  readonly reportedItem = signal<OtherUser | undefined>(undefined);
   reportType: ReportType = "User";
   // loader sub-component variable
-  loaderClass = computed(() => (!this.isIdbFetchLoading() && this.isLoading() ? "header" : ""));
-  userId = signal<number | undefined>(undefined);
+  readonly loaderClass = computed(() =>
+    !this.isIdbFetchLoading() && this.isLoading() ? "header" : "",
+  );
+  readonly userId = signal<number | undefined>(undefined);
   // icons
   faGratipay = faGratipay;
 

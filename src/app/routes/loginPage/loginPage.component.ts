@@ -60,14 +60,14 @@ import { PasswordResetFormComponent } from "@forms/passwordResetForm/passwordRes
   ],
 })
 export class LoginPageComponent {
-  isNewUser = signal<boolean>(false);
-  signInUpTitle = computed(() => (this.isNewUser() ? "Sign up" : "Sign in"));
+  readonly isNewUser = signal<boolean>(false);
+  readonly signInUpTitle = computed(() => (this.isNewUser() ? "Sign up" : "Sign in"));
   loginForm = this.fb.group({
     username: ["", [Validators.email, Validators.required]],
     password: ["", [Validators.required]],
   });
-  isLoading = signal(false);
-  resetMode = signal(false);
+  readonly isLoading = signal(false);
+  readonly resetMode = signal(false);
   faGoogle = faGoogle;
   faApple = faApple;
 

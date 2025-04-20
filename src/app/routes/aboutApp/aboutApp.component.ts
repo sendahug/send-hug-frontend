@@ -49,7 +49,7 @@ interface AboutLink {
   imports: [RouterLink, NgFor],
 })
 export class AboutAppComponent {
-  aboutLinks = signal<AboutLink[]>([]);
+  readonly aboutLinks = signal<AboutLink[]>([]);
 
   // CTOR
   constructor() {

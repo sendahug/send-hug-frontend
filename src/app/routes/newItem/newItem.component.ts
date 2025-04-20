@@ -56,8 +56,8 @@ import { type PostCreateResponse } from "@app/interfaces/api";
 })
 export class NewItemComponent implements OnInit {
   // variable declaration
-  itemType = signal<string>("");
-  forID = signal<number | undefined>(undefined);
+  readonly itemType = signal<string>("");
+  readonly forID = signal<number | undefined>(undefined);
   // TODO: These two should be united, they're practically
   // the same apart from some configuration changes
   newMessageForm = this.fb.group({

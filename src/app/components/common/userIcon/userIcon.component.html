@@ -1,6 +1,6 @@
 <div>
   <svg
-    *ngIf="selectedIcon() == 'bear'"
+    *ngIf="selectedIcon() === 'bear'"
     [ngClass]="svgClass()"
     data-name="Layer 1"
     xmlns="http://www.w3.org/2000/svg"
@@ -454,7 +454,7 @@
   </svg>
 
   <svg
-    *ngIf="selectedIcon() == 'kitty'"
+    *ngIf="selectedIcon() === 'kitty'"
     [ngClass]="svgClass()"
     data-name="Layer 1"
     xmlns="http://www.w3.org/2000/svg"
@@ -820,7 +820,7 @@
   </svg>
 
   <svg
-    *ngIf="selectedIcon() == 'dog'"
+    *ngIf="selectedIcon() === 'dog'"
     [ngClass]="svgClass()"
     data-name="Layer 1"
     xmlns="http://www.w3.org/2000/svg"

@@ -20,7 +20,11 @@
     </li>
   </ul>
 
-  <div *ngIf="itemsService.userSearchResults().length == 0" class="errorMessage" id="uSearchResErr">
+  <div
+    *ngIf="itemsService.userSearchResults().length === 0"
+    class="errorMessage"
+    id="uSearchResErr"
+  >
     There are no users that match your search!
   </div>
 
@@ -64,7 +68,11 @@
     </div>
   </div>
 
-  <div *ngIf="itemsService.postSearchResults().length == 0" class="errorMessage" id="pSearchResErr">
+  <div
+    *ngIf="itemsService.postSearchResults().length === 0"
+    class="errorMessage"
+    id="pSearchResErr"
+  >
     There are no posts that match your search!
   </div>
 </div>

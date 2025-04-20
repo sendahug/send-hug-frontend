@@ -1,11 +1,11 @@
 <app-pop-up *teleport="'modalContainer'" (editMode)="reportMode.emit(false)">
   <div id="reportItem">
     <h3 class="popupTitle">{{ "Report " + reportType }}</h3>
-    <div *ngIf="reportType == 'Post'" class="userPost">
+    <div *ngIf="reportType === 'Post'" class="userPost">
       <div class="itemText" id="reportText">{{ reportedPost()!.text }}</div>
       <div class="itemUser">By {{ reportedPost()!.user }}</div>
     </div>
-    <a *ngIf="reportType == 'User'" [routerLink]="['/user', reportedItem!.id]" id="uReportText">{{
+    <a *ngIf="reportType === 'User'" [routerLink]="['/user', reportedItem!.id]" id="uReportText">{{
       reportedUser()!.displayName
     }}</a>
 
@@ -77,20 +77,20 @@
             placeholder="Enter the response"
             id="rOption3Text"
             aria-labelledby="rPostLegend"
-            [required]="reportForm.controls.selectedReason.value == '3'"
+            [required]="reportForm.controls.selectedReason.value === '3'"
             minlength="0"
             maxlength="120"
-            [attr.aria-required]="reportForm.controls.selectedReason.value == '3'"
+            [attr.aria-required]="reportForm.controls.selectedReason.value === '3'"
             formControlName="otherReason"
           />
         </fieldset>
       </div>
 
-      <div *ngIf="reportType == 'Post'" id="reportPText" class="labels">
+      <div *ngIf="reportType === 'Post'" id="reportPText" class="labels">
         {{ "report post " + reportedPost()!.text }}
       </div>
       <button
-        *ngIf="reportType == 'Post'"
+        *ngIf="reportType === 'Post'"
         type="submit"
         class="appButton reportButton"
         (click)="createReport()"
@@ -99,11 +99,11 @@
         Report Post
       </button>
 
-      <div *ngIf="reportType == 'User'" id="reportUText" class="labels">
+      <div *ngIf="reportType === 'User'" id="reportUText" class="labels">
         {{ "Report user " + reportedUser()!.displayName }}
       </div>
       <button
-        *ngIf="reportType == 'User'"
+        *ngIf="reportType === 'User'"
         type="submit"
         class="appButton reportButton"
         (click)="createReport()"

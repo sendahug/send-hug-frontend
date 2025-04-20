@@ -5,10 +5,10 @@
       [routerLink]="['/messages' + messType()]"
       class="breadcrumb bLink"
       span
-      *ngIf="messType() != 'thread'"
+      *ngIf="messType() !== 'thread'"
       >{{ messType() }}</a
     >
-    <span *ngIf="messType() == 'thread'" class="breadcrumb">Thread {{ threadId() }}</span>
+    <span *ngIf="messType() === 'thread'" class="breadcrumb">Thread {{ threadId() }}</span>
   </nav>
 
   <h1>{{ messType() }}</h1>
@@ -30,7 +30,7 @@
 
   <!-- If there are messages in the user's inbox -->
   <ul
-    *ngIf="messType() != 'threads' && messages().length"
+    *ngIf="messType() !== 'threads' && messages().length"
     class="mailboxMessages"
     aria-describedby="messType"
   >
@@ -50,7 +50,7 @@
   </ul>
 
   <!-- If the user is looking at threads -->
-  <div class="threadsContainer" *ngIf="messType() == 'threads'">
+  <div class="threadsContainer" *ngIf="messType() === 'threads'">
     <ul class="userThreads" *ngIf="userThreadsFormatted().length" aria-describedby="messType">
       <li
         class="userThread"
@@ -70,8 +70,8 @@
   <div
     class="pagination"
     *ngIf="
-      ((messages().length && messType() != 'threads') ||
-        (userThreadsFormatted().length && messType() == 'threads')) &&
+      ((messages().length && messType() !== 'threads') ||
+        (userThreadsFormatted().length && messType() === 'threads')) &&
       !isIdbFetchLoading()
     "
     role="navigation"
@@ -97,13 +97,13 @@
   <button
     class="appButton deleteButton deleteAll"
     (click)="deleteAllMessages(messType())"
-    *ngIf="messages().length && messType() != 'threads'"
+    *ngIf="messages().length && messType() !== 'threads'"
     [attr.aria-label]="'delete all ' + messType() + ' messages'"
   >
     Delete All Messages
   </button>
   <button
-    *ngIf="messType() == 'threads' && userThreadsFormatted().length"
+    *ngIf="messType() === 'threads' && userThreadsFormatted().length"
     class="appButton deleteButton deleteAll"
     (click)="deleteAllMessages('threads')"
   >
@@ -113,8 +113,8 @@
   <!-- If there are no messages in the user's outbox -->
   <div
     *ngIf="
-      ((!messages().length && messType() != 'threads') ||
-        (!userThreadsFormatted().length && messType() == 'threads')) &&
+      ((!messages().length && messType() !== 'threads') ||
+        (!userThreadsFormatted().length && messType() === 'threads')) &&
       !isIdbFetchLoading()
     "
   >

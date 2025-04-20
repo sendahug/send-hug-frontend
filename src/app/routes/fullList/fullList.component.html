@@ -7,7 +7,7 @@
   <ul id="fullItems" *ngIf="posts().length > 0 && !isLoading()" aria-describedby="listTitle">
     <li
       *ngFor="let item of posts()"
-      [class]="type() == 'New' ? 'newItem' : 'sugItem'"
+      [class]="type() === 'New' ? 'newItem' : 'sugItem'"
       aria-describedby="listTitle"
     >
       <app-single-post
@@ -19,7 +19,7 @@
   </ul>
 
   <!-- If there are no items in the list -->
-  <div class="errorMessage" *ngIf="posts().length == 0 && !isLoading()">There are no posts.</div>
+  <div class="errorMessage" *ngIf="posts().length === 0 && !isLoading()">There are no posts.</div>
 
   <!-- Post pagination -->
   <div class="pagination" role="navigation">

@@ -2,7 +2,7 @@
   <h1 id="newTitle">New {{ itemType() }}</h1>
 
   <span *ngIf="authService.userData() !== undefined">
-    <div id="newMessage" *ngIf="itemType() == 'Message'">
+    <div id="newMessage" *ngIf="itemType() === 'Message'">
       <form
         [formGroup]="newMessageForm"
         class="newItem"
@@ -51,7 +51,7 @@
       </div>
     </div>
 
-    <div id="newPost" *ngIf="itemType() == 'Post'">
+    <div id="newPost" *ngIf="itemType() === 'Post'">
       <form
         [formGroup]="newPostForm"
         class="newItem"
@@ -91,7 +91,7 @@
     </div>
   </span>
 
-  <div class="errorMessage" *ngIf="authService.userData() == undefined" role="alert">
+  <div class="errorMessage" *ngIf="authService.userData() === undefined" role="alert">
     You're not currently logged in. Please log in and then try again.
   </div>
 

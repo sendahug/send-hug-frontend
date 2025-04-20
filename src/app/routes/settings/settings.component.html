@@ -3,7 +3,7 @@
 
   <div id="iconSettings">
     <h2>User Icon</h2>
-    <div *ngIf="editIcon() == false">
+    <div *ngIf="editIcon() === false">
       <app-user-icon
         [selectedIcon]="authService.userData()?.selectedIcon ?? 'kitty'"
         [characterColour]="authService.userData()?.iconColours?.character"
@@ -14,7 +14,7 @@
       />
     </div>
     <button
-      *ngIf="editIcon() == false"
+      *ngIf="editIcon() === false"
       (click)="toggleIconEditor(true)"
       class="appButton"
       id="editIcon"
@@ -23,7 +23,7 @@
     </button>
 
     <app-icon-editor
-      *ngIf="editIcon() == true"
+      *ngIf="editIcon() === true"
       (editMode)="toggleIconEditor($event)"
     ></app-icon-editor>
   </div>
@@ -47,8 +47,8 @@
           min="20"
           max="3600"
           id="notificationRate"
-          [required]="this.editSettingsForm.controls.enableAutoRefresh.value == true"
-          [attr.aria-required]="this.editSettingsForm.controls.enableAutoRefresh.value == true"
+          [required]="this.editSettingsForm.controls.enableAutoRefresh.value === true"
+          [attr.aria-required]="this.editSettingsForm.controls.enableAutoRefresh.value === true"
         />
       </div>
       <hr class="form-divider" />

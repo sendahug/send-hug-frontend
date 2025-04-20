@@ -7,7 +7,7 @@
     },
     {
       "change": "Chores",
-      "description": "Replaced unnecessarily async specs with sync specs. There were multiple tests using the `done` callback which didn't need to be async and were only async due to UI interactions that took long. This made it harder to debugand understand the tests, and thus, these specs were updated to be synchronous."
+      "description": "Replaced unnecessarily async specs with sync specs. There were multiple tests using the `done` callback which didn't need to be async and were only async due to UI interactions that took too long. This made it harder to debug and understand the tests, and thus, these specs were updated to be synchronous."
     },
     {
       "change": "Chores",

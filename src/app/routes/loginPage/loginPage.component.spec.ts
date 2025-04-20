@@ -52,7 +52,7 @@ import { AuthService } from "@app/services/auth.service";
 import { getMockFirebaseUser, mockAuthedUser } from "@tests/mockData";
 import { User } from "@app/interfaces/user.interface";
 import { PasswordResetForm } from "@forms/passwordResetForm/passwordResetForm.component";
-import { Loader } from "@common/loader/loader.component";
+import { LoaderComponent } from "@common/loader/loader.component";
 
 describe("LoginPage", () => {
   let mockFirbeaseUser: FirebaseUser;
@@ -66,7 +66,7 @@ describe("LoginPage", () => {
       userData: signal(undefined),
       isRegistering: signal(false),
     });
-    const MockLoader = MockComponent(Loader);
+    const MockLoaderComponent = MockComponent(LoaderComponent);
     const MockPasswordResetForm = MockComponent(PasswordResetForm);
 
     TestBed.resetTestEnvironment();
@@ -78,7 +78,7 @@ describe("LoginPage", () => {
         CommonModule,
         ReactiveFormsModule,
         FontAwesomeModule,
-        MockLoader,
+        MockLoaderComponent,
         MockPasswordResetForm,
         LoginPage,
       ],

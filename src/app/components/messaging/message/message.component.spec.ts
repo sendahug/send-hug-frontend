@@ -45,7 +45,7 @@ import { MockComponent } from "ng-mocks";
 import { AppSingleMessage } from "./message.component";
 import { type MessageGet } from "@app/interfaces/message.interface";
 import { ItemDeleteForm } from "@forms/itemDeleteForm/itemDeleteForm.component";
-import { UserIcon } from "@common/userIcon/userIcon.component";
+import { UserIconComponent } from "@common/userIcon/userIcon.component";
 
 describe("AppSingleMessage", () => {
   let mockMessage: MessageGet;
@@ -53,14 +53,20 @@ describe("AppSingleMessage", () => {
   // Before each test, configure testing environment
   beforeEach(() => {
     const MockItemDeleteForm = MockComponent(ItemDeleteForm);
-    const MockUserIcon = MockComponent(UserIcon);
+    const MockUserIconComponent = MockComponent(UserIconComponent);
 
     TestBed.resetTestEnvironment();
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
       schemas: [NO_ERRORS_SCHEMA],
-      imports: [MockItemDeleteForm, MockUserIcon, RouterLink, CommonModule, AppSingleMessage],
+      imports: [
+        MockItemDeleteForm,
+        MockUserIconComponent,
+        RouterLink,
+        CommonModule,
+        AppSingleMessage,
+      ],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
         provideZoneChangeDetection({ eventCoalescing: true }),

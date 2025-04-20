@@ -44,7 +44,7 @@ import { AuthService } from "@app/services/auth.service";
 import { AlertsService } from "@app/services/alerts.service";
 import { ValidationService } from "@app/services/validation.service";
 import { ApiClientService } from "@app/services/apiClient.service";
-import { PopUp } from "@common/popUp/popUp.component";
+import { PopUpComponent } from "@common/popUp/popUp.component";
 import { TeleportDirective } from "@app/directives/teleport.directive";
 import { type CreateReportResponse } from "@app/interfaces/api";
 
@@ -81,7 +81,7 @@ const reportReasonsText = {
   selector: "report-form",
   templateUrl: "./reportForm.component.html",
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, PopUp, RouterLink, TeleportDirective],
+  imports: [CommonModule, ReactiveFormsModule, PopUpComponent, RouterLink, TeleportDirective],
 })
 export class ReportForm implements OnInit {
   // indicates whether edit/delete mode is still required

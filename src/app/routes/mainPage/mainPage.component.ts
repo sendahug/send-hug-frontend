@@ -40,8 +40,8 @@ import { ApiClientService } from "@app/services/apiClient.service";
 import { SWManager } from "@app/services/sWManager.service";
 import { type PostGet } from "@app/interfaces/post.interface";
 import { CommonModule } from "@angular/common";
-import { Loader } from "@common/loader/loader.component";
-import { SinglePost } from "@common/post/post.component";
+import { LoaderComponent } from "@common/loader/loader.component";
+import { PostComponent } from "@common/post/post.component";
 import { type MainPageResponse } from "@app/interfaces/api";
 
 @Component({
@@ -49,7 +49,7 @@ import { type MainPageResponse } from "@app/interfaces/api";
   templateUrl: "./mainPage.component.html",
   styleUrl: "./mainPage.component.less",
   standalone: true,
-  imports: [CommonModule, Loader, SinglePost, RouterLink],
+  imports: [CommonModule, LoaderComponent, PostComponent, RouterLink],
 })
 export class MainPage {
   isLoading = signal(false);

@@ -43,7 +43,7 @@ import { AdminReportsComponent } from "./components/adminReports/adminReports.co
 import { PostEditForm } from "@forms/postEditForm/postEditForm.component";
 import { ItemDeleteForm } from "@forms/itemDeleteForm/itemDeleteForm.component";
 import { DisplayNameEditForm } from "@forms/displayNameEditForm/displayNameEditForm.component";
-import { Loader } from "@common/loader/loader.component";
+import { LoaderComponent } from "@common/loader/loader.component";
 
 /* eslint-disable @typescript-eslint/no-extraneous-class */
 /* The module notation requires it */
@@ -54,7 +54,7 @@ import { Loader } from "@common/loader/loader.component";
     PostEditForm,
     ItemDeleteForm,
     DisplayNameEditForm,
-    Loader,
+    LoaderComponent,
     RouterLink,
   ],
   declarations: [

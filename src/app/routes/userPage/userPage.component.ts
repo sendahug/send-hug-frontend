@@ -45,8 +45,8 @@ import { AuthService } from "@app/services/auth.service";
 import { SWManager } from "@app/services/sWManager.service";
 import { ApiClientService } from "@app/services/apiClient.service";
 import { AlertsService } from "@app/services/alerts.service";
-import { Loader } from "@common/loader/loader.component";
-import { UserIcon } from "@common/userIcon/userIcon.component";
+import { LoaderComponent } from "@common/loader/loader.component";
+import { UserIconComponent } from "@common/userIcon/userIcon.component";
 import { ReportForm } from "@forms/reportForm/reportForm.component";
 import { DisplayNameEditForm } from "@forms/displayNameEditForm/displayNameEditForm.component";
 import { MyPosts } from "@app/components/myPosts/myPosts.component";
@@ -59,8 +59,8 @@ import { type ReportType } from "@app/interfaces/report.interface";
   styleUrl: "./userPage.component.less",
   standalone: true,
   imports: [
-    Loader,
-    UserIcon,
+    LoaderComponent,
+    UserIconComponent,
     RouterLink,
     FontAwesomeModule,
     CommonModule,

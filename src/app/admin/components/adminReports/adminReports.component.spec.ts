@@ -45,7 +45,7 @@ import { MockComponent, MockProvider } from "ng-mocks";
 
 import { AdminReportsComponent } from "./adminReports.component";
 import { AuthService } from "@app/services/auth.service";
-import { Loader } from "@common/loader/loader.component";
+import { LoaderComponent } from "@common/loader/loader.component";
 import { mockAuthedUser } from "@tests/mockData";
 import { type ReportGet } from "@app/interfaces/report.interface";
 import { ApiClientService } from "@app/services/apiClient.service";
@@ -78,14 +78,14 @@ describe("AdminReportsComponent", () => {
     const MockEditForm = MockComponent(DisplayNameEditForm);
     const MockDeleteForm = MockComponent(ItemDeleteForm);
     const MockPostEditForm = MockComponent(PostEditForm);
-    const MockLoader = MockComponent(Loader);
+    const MockLoaderComponent = MockComponent(LoaderComponent);
 
     TestBed.resetTestEnvironment();
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
       schemas: [NO_ERRORS_SCHEMA],
-      imports: [MockLoader, MockPostEditForm, MockDeleteForm, MockEditForm, CommonModule],
+      imports: [MockLoaderComponent, MockPostEditForm, MockDeleteForm, MockEditForm, CommonModule],
       declarations: [AdminReportsComponent],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },

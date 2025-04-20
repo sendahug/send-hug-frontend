@@ -41,8 +41,8 @@ import { FullListType } from "@app/interfaces/types";
 import { type PostGet } from "@app/interfaces/post.interface";
 import { SWManager } from "@app/services/sWManager.service";
 import { ApiClientService } from "@app/services/apiClient.service";
-import { SinglePost } from "@common/post/post.component";
-import { Loader } from "@common/loader/loader.component";
+import { PostComponent } from "@common/post/post.component";
+import { LoaderComponent } from "@common/loader/loader.component";
 import { type PostsListResponse } from "@app/interfaces/api";
 
 @Component({
@@ -50,7 +50,7 @@ import { type PostsListResponse } from "@app/interfaces/api";
   templateUrl: "./fullList.component.html",
   styleUrl: "./fullList.component.less",
   standalone: true,
-  imports: [CommonModule, SinglePost, Loader],
+  imports: [CommonModule, PostComponent, LoaderComponent],
 })
 export class FullList {
   // current page and type of list

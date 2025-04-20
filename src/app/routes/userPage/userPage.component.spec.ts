@@ -52,8 +52,8 @@ import { iconCharacters } from "@app/interfaces/types";
 import { DisplayNameEditForm } from "@forms/displayNameEditForm/displayNameEditForm.component";
 import { ReportForm } from "@forms/reportForm/reportForm.component";
 import { ApiClientService } from "@app/services/apiClient.service";
-import { Loader } from "@common/loader/loader.component";
-import { UserIcon } from "@common/userIcon/userIcon.component";
+import { LoaderComponent } from "@common/loader/loader.component";
+import { UserIconComponent } from "@common/userIcon/userIcon.component";
 
 describe("UserPage", () => {
   // Before each test, configure testing environment
@@ -65,8 +65,8 @@ describe("UserPage", () => {
     const MockAPIClient = MockProvider(ApiClientService);
     const MockDisplayNameEditForm = MockComponent(DisplayNameEditForm);
     const MockReportForm = MockComponent(ReportForm);
-    const MockLoader = MockComponent(Loader);
-    const MockUserIcon = MockComponent(UserIcon);
+    const MockLoaderComponent = MockComponent(LoaderComponent);
+    const MockUserIconComponent = MockComponent(UserIconComponent);
 
     TestBed.resetTestEnvironment();
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
@@ -78,9 +78,9 @@ describe("UserPage", () => {
         MockDisplayNameEditForm,
         MockReportForm,
         CommonModule,
-        MockLoader,
+        MockLoaderComponent,
         RouterLink,
-        MockUserIcon,
+        MockUserIconComponent,
         UserPage,
       ],
       declarations: [],

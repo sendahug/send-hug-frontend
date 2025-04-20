@@ -55,13 +55,13 @@ import { FullList } from "./fullList.component";
 import { ApiClientService } from "@app/services/apiClient.service";
 import { SWManager } from "@app/services/sWManager.service";
 import { type PostGet } from "@app/interfaces/post.interface";
-import { SinglePost } from "@common/post/post.component";
-import { Loader } from "@common/loader/loader.component";
+import { PostComponent } from "@common/post/post.component";
+import { LoaderComponent } from "@common/loader/loader.component";
 
 describe("FullList", () => {
   let pageOnePosts: PostGet[];
-  const MockSinglePost = MockComponent(SinglePost);
-  const MockLoader = MockComponent(Loader);
+  const MockPostComponent = MockComponent(PostComponent);
+  const MockLoaderComponent = MockComponent(LoaderComponent);
   const MockAPIClient = MockProvider(ApiClientService);
 
   // Before each test, configure testing environment
@@ -73,9 +73,9 @@ describe("FullList", () => {
       imports: [
         RouterModule.forRoot([]),
         CommonModule,
-        MockSinglePost,
+        MockPostComponent,
         RouterLink,
-        MockLoader,
+        MockLoaderComponent,
         FullList,
       ],
       providers: [
@@ -323,7 +323,7 @@ describe("FullList", () => {
     expect(suggestedPosts.length).toBe(2);
 
     const firstPost = fixture.debugElement.query(By.css("app-single-post"))
-      .componentInstance as SinglePost;
+      .componentInstance as PostComponent;
 
     expect(firstPost.post?.text).toEqual("test");
   });
@@ -412,7 +412,7 @@ describe("FullList", () => {
     fixture.detectChanges();
 
     const singlePost = fixture.debugElement.query(By.css("app-single-post"))
-      .componentInstance as SinglePost;
+      .componentInstance as PostComponent;
     singlePost.deletedId.emit(2);
     fixture.detectChanges();
 

@@ -43,14 +43,14 @@ import { AlertsService } from "@app/services/alerts.service";
 import { type ReportData } from "@app/interfaces/report.interface";
 import { type PartialUser } from "@app/interfaces/user.interface";
 import { UpdatedUserReportResponse } from "@app/interfaces/api";
-import { PopUp } from "@common/popUp/popUp.component";
+import { PopUpComponent } from "@common/popUp/popUp.component";
 import { TeleportDirective } from "@app/directives/teleport.directive";
 
 @Component({
   selector: "display-name-edit-form",
   templateUrl: "./displayNameEditForm.component.html",
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, PopUp, TeleportDirective],
+  imports: [CommonModule, ReactiveFormsModule, PopUpComponent, TeleportDirective],
 })
 export class DisplayNameEditForm implements OnInit {
   // item to edit

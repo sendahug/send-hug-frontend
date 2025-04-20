@@ -78,7 +78,7 @@ import { type ReportType } from "@app/interfaces/report.interface";
     RouterLink,
   ],
 })
-export class SinglePost implements AfterViewChecked, OnInit, OnDestroy {
+export class PostComponent implements AfterViewChecked, OnInit, OnDestroy {
   @Input()
   get post(): PostGet | undefined {
     return this._post();

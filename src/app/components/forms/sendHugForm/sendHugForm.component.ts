@@ -41,7 +41,7 @@ import { AlertsService } from "@app/services/alerts.service";
 import { ApiClientService } from "@app/services/apiClient.service";
 import { ValidationService } from "@app/services/validation.service";
 import { ItemsService } from "@app/services/items.service";
-import { PopUp } from "@common/popUp/popUp.component";
+import { PopUpComponent } from "@common/popUp/popUp.component";
 import { TeleportDirective } from "@app/directives/teleport.directive";
 import { type SendHugResponse } from "@app/interfaces/api";
 
@@ -49,7 +49,7 @@ import { type SendHugResponse } from "@app/interfaces/api";
   selector: "app-send-hug-form",
   templateUrl: "./sendHugForm.component.html",
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, PopUp, TeleportDirective],
+  imports: [CommonModule, ReactiveFormsModule, PopUpComponent, TeleportDirective],
 })
 export class SendHugForm implements OnInit {
   @Output() sendMode = new EventEmitter<boolean>();

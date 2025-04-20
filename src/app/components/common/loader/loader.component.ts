@@ -39,7 +39,7 @@ import { Component, input } from "@angular/core";
   styleUrl: "./loader.component.less",
   standalone: true,
 })
-export class Loader {
+export class LoaderComponent {
   // the message to display to the user while waiting
   loadingMessage = input<string>("Loading...");
   idSuffix = input<string>("");

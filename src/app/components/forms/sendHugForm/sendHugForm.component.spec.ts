@@ -40,7 +40,7 @@ import { provideRouter } from "@angular/router";
 import { SendHugForm } from "./sendHugForm.component";
 import { AuthService } from "@app/services/auth.service";
 import { mockAuthedUser } from "@tests/mockData";
-import { PopUp } from "@common/popUp/popUp.component";
+import { PopUpComponent } from "@common/popUp/popUp.component";
 import { ValidationService } from "@app/services/validation.service";
 import { ApiClientService } from "@app/services/apiClient.service";
 import { ItemsService } from "@app/services/items.service";
@@ -64,7 +64,7 @@ describe("Send Hug Form", () => {
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
-      imports: [CommonModule, ReactiveFormsModule, PopUp, SendHugForm, TeleportDirective],
+      imports: [CommonModule, ReactiveFormsModule, PopUpComponent, SendHugForm, TeleportDirective],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
         provideZoneChangeDetection({ eventCoalescing: true }),

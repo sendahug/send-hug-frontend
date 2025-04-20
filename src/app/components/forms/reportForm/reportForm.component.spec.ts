@@ -40,7 +40,7 @@ import { MockProvider } from "ng-mocks";
 import { ReportForm } from "./reportForm.component";
 import { AuthService } from "@app/services/auth.service";
 import { mockAuthedUser } from "@tests/mockData";
-import { PopUp } from "@common/popUp/popUp.component";
+import { PopUpComponent } from "@common/popUp/popUp.component";
 import { ValidationService } from "@app/services/validation.service";
 import { ApiClientService } from "@app/services/apiClient.service";
 
@@ -59,7 +59,7 @@ describe("Report", () => {
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
-      imports: [CommonModule, ReactiveFormsModule, PopUp, RouterLink, ReportForm],
+      imports: [CommonModule, ReactiveFormsModule, PopUpComponent, RouterLink, ReportForm],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
         provideZoneChangeDetection({ eventCoalescing: true }),

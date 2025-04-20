@@ -56,7 +56,7 @@ import { FullThread } from "@app/interfaces/thread.interface";
 import { type MessageGet } from "@app/interfaces/message.interface";
 import { ItemDeleteForm } from "@forms/itemDeleteForm/itemDeleteForm.component";
 import { ApiClientService } from "@app/services/apiClient.service";
-import { Loader } from "@common/loader/loader.component";
+import { LoaderComponent } from "@common/loader/loader.component";
 import { AppSingleMessage } from "@app/components/messaging/message/message.component";
 import { AppSingleThread } from "@app/components/messaging/thread/thread.component";
 
@@ -73,7 +73,7 @@ describe("AppMessaging", () => {
     });
     const MockAPIClient = MockProvider(ApiClientService);
     const MockItemDeleteForm = MockComponent(ItemDeleteForm);
-    const MockLoader = MockComponent(Loader);
+    const MockLoaderComponent = MockComponent(LoaderComponent);
 
     TestBed.resetTestEnvironment();
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
@@ -82,7 +82,7 @@ describe("AppMessaging", () => {
       schemas: [NO_ERRORS_SCHEMA],
       imports: [
         MockItemDeleteForm,
-        MockLoader,
+        MockLoaderComponent,
         AppSingleThread,
         RouterLink,
         CommonModule,

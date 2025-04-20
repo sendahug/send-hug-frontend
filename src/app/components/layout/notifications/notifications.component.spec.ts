@@ -47,7 +47,7 @@ import { NotificationsTab } from "./notifications.component";
 import { NotificationService } from "@app/services/notifications.service";
 import { AuthService, ToggleButtonOption } from "@app/services/auth.service";
 import { mockAuthedUser } from "@tests/mockData";
-import { AppAlert } from "@app/components/appAlert/appAlert.component";
+import { AppAlertComponent } from "@app/components/appAlert/appAlert.component";
 import { ApiClientService } from "@app/services/apiClient.service";
 
 describe("Notifications Tab", () => {
@@ -79,7 +79,7 @@ describe("Notifications Tab", () => {
         }),
     });
     const MockAPIClient = MockProvider(ApiClientService);
-    const MockAlert = MockComponent(AppAlert);
+    const MockAlert = MockComponent(AppAlertComponent);
 
     TestBed.resetTestEnvironment();
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());

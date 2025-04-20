@@ -1,5 +1,5 @@
 /*
-	Loader
+	LoaderComponent
 	Send a Hug Component Tests
   ---------------------------------------------------
   MIT License
@@ -39,16 +39,16 @@ import {
 } from "@angular/platform-browser-dynamic/testing";
 import { provideZoneChangeDetection } from "@angular/core";
 
-import { Loader } from "./loader.component";
+import { LoaderComponent } from "./loader.component";
 
-describe("Loader", () => {
+describe("LoaderComponent", () => {
   // Before each test, configure testing environment
   beforeEach(() => {
     TestBed.resetTestEnvironment();
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
-      imports: [Loader],
+      imports: [LoaderComponent],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
         provideZoneChangeDetection({ eventCoalescing: true }),
@@ -58,7 +58,7 @@ describe("Loader", () => {
 
   // Check that the component is created
   it("should create the component", () => {
-    const fixture = TestBed.createComponent(Loader);
+    const fixture = TestBed.createComponent(LoaderComponent);
     const loader = fixture.componentInstance;
 
     expect(loader).toBeTruthy();
@@ -66,7 +66,7 @@ describe("Loader", () => {
 
   // Check that the component displays a loading message
   it("should display a loading message passed in from the parent", () => {
-    const fixture = TestBed.createComponent(Loader);
+    const fixture = TestBed.createComponent(LoaderComponent);
     const loader = fixture.componentInstance;
     const loaderDOM = fixture.nativeElement;
     fixture.componentRef.setInput("loadingMessage", "Fetching user data...");
@@ -79,7 +79,7 @@ describe("Loader", () => {
   });
 
   it("should display a default message if waitingFor is null", () => {
-    const fixture = TestBed.createComponent(Loader);
+    const fixture = TestBed.createComponent(LoaderComponent);
     const loader = fixture.componentInstance;
     const loaderDOM = fixture.nativeElement;
     fixture.detectChanges();

@@ -45,7 +45,7 @@ import { NO_ERRORS_SCHEMA, provideZoneChangeDetection, signal } from "@angular/c
 import { IconEditor } from "./iconEditor.component";
 import { AuthService } from "@app/services/auth.service";
 import { mockAuthedUser } from "@tests/mockData";
-import { UserIcon } from "@common/userIcon/userIcon.component";
+import { UserIconComponent } from "@common/userIcon/userIcon.component";
 
 describe("IconEditor", () => {
   // Before each test, configure testing environment
@@ -54,14 +54,14 @@ describe("IconEditor", () => {
       authenticated: signal(true),
       userData: signal({ ...mockAuthedUser }),
     });
-    const MockUserIcon = MockComponent(UserIcon);
+    const MockUserIconComponent = MockComponent(UserIconComponent);
 
     TestBed.resetTestEnvironment();
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
       schemas: [NO_ERRORS_SCHEMA],
-      imports: [ReactiveFormsModule, MockUserIcon, IconEditor],
+      imports: [ReactiveFormsModule, MockUserIconComponent, IconEditor],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
         provideZoneChangeDetection({ eventCoalescing: true }),

@@ -45,7 +45,7 @@ import { Subscription } from "rxjs";
 import { DisplayNameEditForm } from "./displayNameEditForm.component";
 import { AuthService } from "@app/services/auth.service";
 import { mockAuthedUser } from "@tests/mockData";
-import { PopUp } from "@common/popUp/popUp.component";
+import { PopUpComponent } from "@common/popUp/popUp.component";
 import { ValidationService } from "@app/services/validation.service";
 import { AdminService } from "@app/services/admin.service";
 import { TeleportDirective } from "@app/directives/teleport.directive";
@@ -65,7 +65,13 @@ describe("DisplayNameEditForm", () => {
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
-      imports: [CommonModule, ReactiveFormsModule, PopUp, DisplayNameEditForm, TeleportDirective],
+      imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        PopUpComponent,
+        DisplayNameEditForm,
+        TeleportDirective,
+      ],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
         provideZoneChangeDetection({ eventCoalescing: true }),

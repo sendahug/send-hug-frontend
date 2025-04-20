@@ -49,7 +49,7 @@ import { NotificationService } from "@app/services/notifications.service";
 import { AuthService } from "@app/services/auth.service";
 import { AlertsService } from "@app/services/alerts.service";
 import { mockAuthedUser } from "@tests/mockData";
-import { UserIcon } from "@common/userIcon/userIcon.component";
+import { UserIconComponent } from "@common/userIcon/userIcon.component";
 
 describe("SettingsPage", () => {
   // Before each test, configure testing environment
@@ -68,7 +68,7 @@ describe("SettingsPage", () => {
       unsubscribeFromStream: () => new Promise(() => true),
     });
     const MockIconEditor = MockComponent(IconEditor);
-    const MockIcon = MockComponent(UserIcon);
+    const MockIcon = MockComponent(UserIconComponent);
 
     TestBed.resetTestEnvironment();
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());

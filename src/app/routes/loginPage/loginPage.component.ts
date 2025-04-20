@@ -43,7 +43,7 @@ import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 // App-related imports
 import { AuthService } from "@app/services/auth.service";
 import { AlertsService } from "@app/services/alerts.service";
-import { Loader } from "@common/loader/loader.component";
+import { LoaderComponent } from "@common/loader/loader.component";
 import { PasswordResetForm } from "@forms/passwordResetForm/passwordResetForm.component";
 
 @Component({
@@ -51,7 +51,13 @@ import { PasswordResetForm } from "@forms/passwordResetForm/passwordResetForm.co
   templateUrl: "./loginPage.component.html",
   styleUrl: "./loginPage.component.less",
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FontAwesomeModule, Loader, PasswordResetForm],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    FontAwesomeModule,
+    LoaderComponent,
+    PasswordResetForm,
+  ],
 })
 export class LoginPage {
   isNewUser = signal<boolean>(false);

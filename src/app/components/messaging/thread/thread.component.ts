@@ -36,7 +36,7 @@ import { RouterLink } from "@angular/router";
 import { CommonModule } from "@angular/common";
 
 // App-related imports
-import { UserIcon } from "@common/userIcon/userIcon.component";
+import { UserIconComponent } from "@common/userIcon/userIcon.component";
 import { ItemDeleteForm } from "@forms/itemDeleteForm/itemDeleteForm.component";
 import { ParsedThread } from "@app/interfaces/thread.interface";
 
@@ -45,7 +45,7 @@ import { ParsedThread } from "@app/interfaces/thread.interface";
   templateUrl: "./thread.component.html",
   styleUrl: "./thread.component.less",
   standalone: true,
-  imports: [CommonModule, RouterLink, UserIcon, ItemDeleteForm],
+  imports: [CommonModule, RouterLink, UserIconComponent, ItemDeleteForm],
 })
 export class AppSingleThread {
   // TODO: Replace this with `input()`/`output()` once we figure out coverage

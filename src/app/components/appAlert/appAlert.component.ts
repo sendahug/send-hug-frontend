@@ -45,7 +45,7 @@ import { AlertsService } from "@app/services/alerts.service";
   standalone: true,
   imports: [CommonModule, RouterLink],
 })
-export class AppAlert {
+export class AppAlertComponent {
   alertClass = computed(() => ({
     [`alertMessage ${this.alertsService.alertType()}`]: true,
     hidden: !this.alertsService.shouldDisplayAlert(),

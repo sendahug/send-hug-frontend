@@ -47,8 +47,8 @@ import { MockComponent, MockProvider } from "ng-mocks";
 import { MainPage } from "./mainPage.component";
 import { ApiClientService } from "@app/services/apiClient.service";
 import { SWManager } from "@app/services/sWManager.service";
-import { SinglePost } from "@common/post/post.component";
-import { Loader } from "@common/loader/loader.component";
+import { PostComponent } from "@common/post/post.component";
+import { LoaderComponent } from "@common/loader/loader.component";
 import { AuthService } from "@app/services/auth.service";
 
 const newItems = [
@@ -100,13 +100,13 @@ describe("MainPage", () => {
       authenticated: signal(false),
       userData: signal(undefined),
     });
-    const MockLoader = MockComponent(Loader);
+    const MockLoaderComponent = MockComponent(LoaderComponent);
 
     TestBed.resetTestEnvironment();
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
-      imports: [CommonModule, MockLoader, SinglePost, RouterLink, MainPage],
+      imports: [CommonModule, MockLoaderComponent, PostComponent, RouterLink, MainPage],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
         provideZoneChangeDetection({ eventCoalescing: true }),
@@ -294,7 +294,7 @@ describe("MainPage", () => {
     fixture.detectChanges();
 
     const singlePost = fixture.debugElement.query(By.css("app-single-post"))
-      .componentInstance as SinglePost;
+      .componentInstance as PostComponent;
     singlePost.deletedId.emit(2);
     fixture.detectChanges();
 

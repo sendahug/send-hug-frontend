@@ -45,7 +45,7 @@ import { MockComponent, MockProvider } from "ng-mocks";
 
 import { AdminFiltersComponent } from "./adminFilters.component";
 import { AuthService } from "@app/services/auth.service";
-import { Loader } from "@common/loader/loader.component";
+import { LoaderComponent } from "@common/loader/loader.component";
 import { mockAuthedUser } from "@tests/mockData";
 import { ApiClientService } from "@app/services/apiClient.service";
 import { AdminService } from "@app/services/admin.service";
@@ -75,14 +75,14 @@ describe("Filters Page", () => {
     const MockAPIClient = MockProvider(ApiClientService, {
       get: () => of(),
     });
-    const MockLoader = MockComponent(Loader);
+    const MockLoaderComponent = MockComponent(LoaderComponent);
 
     TestBed.resetTestEnvironment();
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
       schemas: [NO_ERRORS_SCHEMA],
-      imports: [ReactiveFormsModule, MockLoader],
+      imports: [ReactiveFormsModule, MockLoaderComponent],
       declarations: [AdminFiltersComponent],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },

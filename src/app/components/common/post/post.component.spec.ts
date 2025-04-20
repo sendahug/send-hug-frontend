@@ -46,7 +46,7 @@ import { provideZoneChangeDetection } from "@angular/core";
 import { MockComponent, MockProvider } from "ng-mocks";
 import { BehaviorSubject } from "rxjs";
 
-import { SinglePost } from "./post.component";
+import { PostComponent } from "./post.component";
 import { mockAuthedUser } from "@tests/mockData";
 import { ItemDeleteForm } from "@forms/itemDeleteForm/itemDeleteForm.component";
 import { ReportForm } from "@forms/reportForm/reportForm.component";
@@ -61,7 +61,7 @@ import { AuthService } from "@app/services/auth.service";
   selector: "app-page-mock",
   template: ` <app-single-post [post]="mockPost" [type]="'n'"></app-single-post> `,
   standalone: true,
-  imports: [SinglePost],
+  imports: [PostComponent],
 })
 class MockPage {
   showMenuNum: string | null = null;
@@ -110,7 +110,7 @@ describe("Post", () => {
         MockSendHugForm,
         RouterLink,
         MockPage,
-        SinglePost,
+        PostComponent,
       ],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
@@ -126,7 +126,8 @@ describe("Post", () => {
   it("should have all popup variables set to false", () => {
     const upFixture = TestBed.createComponent(MockPage);
     upFixture.detectChanges();
-    const singlePost: SinglePost = upFixture.debugElement.children[0].children[0].componentInstance;
+    const singlePost: PostComponent =
+      upFixture.debugElement.children[0].children[0].componentInstance;
 
     expect(singlePost.editMode()).toBeFalse();
     expect(singlePost.deleteMode()).toBeFalse();
@@ -137,7 +138,7 @@ describe("Post", () => {
   it("should trigger items service on hug", () => {
     const upFixture = TestBed.createComponent(MockPage);
     upFixture.detectChanges();
-    const singlePost: SinglePost = upFixture.debugElement.children[0].componentInstance;
+    const singlePost: PostComponent = upFixture.debugElement.children[0].componentInstance;
     const singlePostDOM = upFixture.debugElement.children[0].nativeElement;
     const hugSpy = spyOn(singlePost, "sendHug").and.callThrough();
     const authService = singlePost.authService;
@@ -164,7 +165,7 @@ describe("Post", () => {
     const upFixture = TestBed.createComponent(MockPage);
     const pageDOM = upFixture.nativeElement;
     upFixture.detectChanges();
-    const singlePost: SinglePost = upFixture.debugElement.children[0].componentInstance;
+    const singlePost: PostComponent = upFixture.debugElement.children[0].componentInstance;
     const singlePostDOM = upFixture.debugElement.children[0].nativeElement;
     const authService = singlePost.authService;
     const authSpy = spyOn(authService, "canUser").and.returnValue(true);
@@ -189,7 +190,7 @@ describe("Post", () => {
     const upFixture = TestBed.createComponent(MockPage);
     const pageDOM = upFixture.nativeElement;
     upFixture.detectChanges();
-    const singlePost: SinglePost = upFixture.debugElement.children[0].componentInstance;
+    const singlePost: PostComponent = upFixture.debugElement.children[0].componentInstance;
     const singlePostDOM = upFixture.debugElement.children[0].nativeElement;
     const authService = singlePost.authService;
     const authSpy = spyOn(authService, "canUser").and.returnValue(true);
@@ -215,7 +216,7 @@ describe("Post", () => {
     const upFixture = TestBed.createComponent(MockPage);
     const pageDOM = upFixture.nativeElement;
     upFixture.detectChanges();
-    const singlePost: SinglePost = upFixture.debugElement.children[0].componentInstance;
+    const singlePost: PostComponent = upFixture.debugElement.children[0].componentInstance;
     const singlePostDOM = upFixture.debugElement.children[0].nativeElement;
     const authService = singlePost.authService;
     const reportSpy = spyOn(singlePost, "reportPost").and.callThrough();
@@ -241,7 +242,7 @@ describe("Post", () => {
   it("should change mode when the event emitter emits false - edit mode", () => {
     const upFixture = TestBed.createComponent(MockPage);
     upFixture.detectChanges();
-    const singlePost: SinglePost = upFixture.debugElement.children[0].componentInstance;
+    const singlePost: PostComponent = upFixture.debugElement.children[0].componentInstance;
     const changeSpy = spyOn(singlePost, "changeMode").and.callThrough();
     upFixture.detectChanges();
 
@@ -263,7 +264,7 @@ describe("Post", () => {
   it("should change mode when the event emitter emits false - delete mode", () => {
     const upFixture = TestBed.createComponent(MockPage);
     upFixture.detectChanges();
-    const singlePost: SinglePost = upFixture.debugElement.children[0].componentInstance;
+    const singlePost: PostComponent = upFixture.debugElement.children[0].componentInstance;
     const changeSpy = spyOn(singlePost, "changeMode").and.callThrough();
     upFixture.detectChanges();
 
@@ -285,7 +286,7 @@ describe("Post", () => {
   it("should change mode when the event emitter emits false - report mode", () => {
     const upFixture = TestBed.createComponent(MockPage);
     upFixture.detectChanges();
-    const singlePost: SinglePost = upFixture.debugElement.children[0].componentInstance;
+    const singlePost: PostComponent = upFixture.debugElement.children[0].componentInstance;
     const changeSpy = spyOn(singlePost, "changeMode").and.callThrough();
     upFixture.detectChanges();
 
@@ -307,7 +308,7 @@ describe("Post", () => {
   it("should change mode when the event emitter emits false - message mode", () => {
     const upFixture = TestBed.createComponent(MockPage);
     upFixture.detectChanges();
-    const singlePost: SinglePost = upFixture.debugElement.children[0].componentInstance;
+    const singlePost: PostComponent = upFixture.debugElement.children[0].componentInstance;
     const changeSpy = spyOn(singlePost, "changeMode").and.callThrough();
     upFixture.detectChanges();
 
@@ -329,7 +330,7 @@ describe("Post", () => {
   it("toggleMenu() - should set the currently open menu to the given post's id", () => {
     const upFixture = TestBed.createComponent(MockPage);
     upFixture.detectChanges();
-    const singlePost: SinglePost = upFixture.debugElement.children[0].componentInstance;
+    const singlePost: PostComponent = upFixture.debugElement.children[0].componentInstance;
     singlePost.itemsService.currentlyOpenMenu.next("nPost3");
     const openMenuSpy = spyOn(singlePost.itemsService.currentlyOpenMenu, "next").and.callThrough();
 
@@ -349,7 +350,7 @@ describe("Post", () => {
   it("toggleMenu() - should set the currently open menu to an emptpy string if the given post's id is already open", () => {
     const upFixture = TestBed.createComponent(MockPage);
     upFixture.detectChanges();
-    const singlePost: SinglePost = upFixture.debugElement.children[0].componentInstance;
+    const singlePost: PostComponent = upFixture.debugElement.children[0].componentInstance;
     singlePost.itemsService.currentlyOpenMenu.next("nPost1");
     const openMenuSpy = spyOn(singlePost.itemsService.currentlyOpenMenu, "next").and.callThrough();
 
@@ -370,7 +371,7 @@ describe("Post", () => {
   it("checkMenuSize() - shouldn't show the posts's menu if not wide enough", () => {
     const upFixture = TestBed.createComponent(MockPage);
     upFixture.detectChanges();
-    const singlePost: SinglePost = upFixture.debugElement.children[0].componentInstance;
+    const singlePost: PostComponent = upFixture.debugElement.children[0].componentInstance;
     const singlePostDOM = upFixture.debugElement.children[0].nativeElement;
     const authService = singlePost.authService;
     spyOn(authService, "canUser").and.returnValue(true);
@@ -391,7 +392,7 @@ describe("Post", () => {
   it("checkMenuSize() - should show the menu if it's wide enough for it", () => {
     const upFixture = TestBed.createComponent(MockPage);
     upFixture.detectChanges();
-    const singlePost: SinglePost = upFixture.debugElement.children[0].componentInstance;
+    const singlePost: PostComponent = upFixture.debugElement.children[0].componentInstance;
     const singlePostDOM = upFixture.debugElement.children[0].nativeElement;
     const authService = singlePost.authService;
     spyOn(authService, "canUser").and.returnValue(true);
@@ -412,7 +413,7 @@ describe("Post", () => {
   it("checkMenuSize() - should float the menu if it's wide enough for it", () => {
     const upFixture = TestBed.createComponent(MockPage);
     upFixture.detectChanges();
-    const singlePost: SinglePost = upFixture.debugElement.children[0].componentInstance;
+    const singlePost: PostComponent = upFixture.debugElement.children[0].componentInstance;
     const singlePostDOM = upFixture.debugElement.children[0].nativeElement;
     const authService = singlePost.authService;
     spyOn(authService, "canUser").and.returnValue(true);
@@ -476,7 +477,7 @@ describe("Post", () => {
   it("should change update the UI when a report isn't closed - post edit", () => {
     const upFixture = TestBed.createComponent(MockPage);
     upFixture.detectChanges();
-    const singlePost: SinglePost = upFixture.debugElement.children[0].componentInstance;
+    const singlePost: PostComponent = upFixture.debugElement.children[0].componentInstance;
     const updateSpy = spyOn(singlePost, "updatePostText").and.callThrough();
     const reportPostResponse = {
       success: true,
@@ -511,7 +512,7 @@ describe("Post", () => {
   it("should update the parent about the deleted post - delete mode", () => {
     const upFixture = TestBed.createComponent(MockPage);
     upFixture.detectChanges();
-    const singlePost: SinglePost = upFixture.debugElement.children[0].componentInstance;
+    const singlePost: PostComponent = upFixture.debugElement.children[0].componentInstance;
     const emitSpy = spyOn(singlePost.deletedId, "emit");
     upFixture.detectChanges();
 

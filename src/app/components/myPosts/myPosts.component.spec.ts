@@ -48,7 +48,7 @@ import { MyPosts } from "./myPosts.component";
 import { AuthService } from "@app/services/auth.service";
 import { mockAuthedUser } from "@tests/mockData";
 import { type PostGet } from "@app/interfaces/post.interface";
-import { SinglePost } from "@common/post/post.component";
+import { PostComponent } from "@common/post/post.component";
 import { ItemDeleteForm } from "@forms/itemDeleteForm/itemDeleteForm.component";
 import { ApiClientService } from "@app/services/apiClient.service";
 import { SWManager } from "@app/services/sWManager.service";
@@ -96,7 +96,7 @@ describe("MyPosts", () => {
 
     TestBed.configureTestingModule({
       schemas: [NO_ERRORS_SCHEMA],
-      imports: [MockItemDeleteForm, SinglePost, MyPosts, MockUserPage],
+      imports: [MockItemDeleteForm, PostComponent, MyPosts, MockUserPage],
       declarations: [],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
@@ -360,7 +360,7 @@ describe("MyPosts", () => {
     fixture.detectChanges();
 
     const singlePost = fixture.debugElement.query(By.css("app-single-post"))
-      .componentInstance as SinglePost;
+      .componentInstance as PostComponent;
     singlePost.deletedId.emit(2);
     fixture.detectChanges();
 

@@ -50,7 +50,7 @@ import { AuthService } from "./services/auth.service";
 import { AlertsService } from "./services/alerts.service";
 import { SWManager } from "./services/sWManager.service";
 import { NotificationService } from "./services/notifications.service";
-import { AppAlert } from "./components/appAlert/appAlert.component";
+import { AppAlertComponent } from "./components/appAlert/appAlert.component";
 import { AppNavMenu } from "./components/layout/navigationMenu/navigationMenu.component";
 import { TeleportService } from "./services/teleport.service";
 import { getQueryParamsFromPath } from "./guards/common";
@@ -60,7 +60,7 @@ import { getQueryParamsFromPath } from "./guards/common";
   templateUrl: "./app.component.html",
   styleUrl: "./app.component.less",
   standalone: true,
-  imports: [CommonModule, RouterOutlet, RouterLink, AppAlert, AppNavMenu],
+  imports: [CommonModule, RouterOutlet, RouterLink, AppAlertComponent, AppNavMenu],
 })
 export class AppComponent implements OnInit, AfterViewInit, AfterViewChecked {
   canShare = signal(false);

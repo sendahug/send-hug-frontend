@@ -46,7 +46,7 @@ import { BrowserModule } from "@angular/platform-browser";
 
 import { AdminBlocksComponent } from "./adminBlocks.component";
 import { AuthService } from "@app/services/auth.service";
-import { Loader } from "@common/loader/loader.component";
+import { LoaderComponent } from "@common/loader/loader.component";
 import { mockAuthedUser } from "@tests/mockData";
 import { ApiClientService } from "@app/services/apiClient.service";
 import { AdminService } from "@app/services/admin.service";
@@ -85,14 +85,14 @@ describe("Blocks Page", () => {
     const MockAPIClient = MockProvider(ApiClientService, {
       get: () => of(),
     });
-    const MockLoader = MockComponent(Loader);
+    const MockLoaderComponent = MockComponent(LoaderComponent);
 
     TestBed.resetTestEnvironment();
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
       schemas: [NO_ERRORS_SCHEMA],
-      imports: [ReactiveFormsModule, BrowserModule, MockLoader],
+      imports: [ReactiveFormsModule, BrowserModule, MockLoaderComponent],
       declarations: [AdminBlocksComponent],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },

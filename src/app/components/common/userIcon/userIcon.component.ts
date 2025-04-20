@@ -64,7 +64,7 @@ export const DefaultColours = {
   standalone: true,
   imports: [CommonModule],
 })
-export class UserIcon {
+export class UserIconComponent {
   selectedIcon = input<iconCharacters>("kitty");
   selectedIconDefaultColours = computed(() => DefaultColours[this.selectedIcon()]);
   characterColour = input<string | undefined>(undefined);

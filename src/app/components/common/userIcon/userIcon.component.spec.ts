@@ -41,7 +41,7 @@ import { CommonModule } from "@angular/common";
 import { Component, NO_ERRORS_SCHEMA, provideZoneChangeDetection, signal } from "@angular/core";
 import { By } from "@angular/platform-browser";
 
-import { UserIcon, DefaultColours } from "./userIcon.component";
+import { UserIconComponent, DefaultColours } from "./userIcon.component";
 import { iconCharacters } from "@app/interfaces/types";
 
 @Component({
@@ -59,7 +59,7 @@ import { iconCharacters } from "@app/interfaces/types";
     </div>
   `,
   standalone: true,
-  imports: [UserIcon],
+  imports: [UserIconComponent],
   schemas: [NO_ERRORS_SCHEMA],
 })
 class MockIconContainer {
@@ -74,14 +74,14 @@ class MockIconContainer {
   }
 }
 
-describe("UserIcon", () => {
+describe("UserIconComponent", () => {
   // Before each test, configure testing environment
   beforeEach(() => {
     TestBed.resetTestEnvironment();
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
-      imports: [CommonModule, MockIconContainer, UserIcon],
+      imports: [CommonModule, MockIconContainer, UserIconComponent],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
         provideZoneChangeDetection({ eventCoalescing: true }),
@@ -91,7 +91,7 @@ describe("UserIcon", () => {
 
   // Check the page is created
   it("should create the component", () => {
-    const fixture = TestBed.createComponent(UserIcon);
+    const fixture = TestBed.createComponent(UserIconComponent);
     const userIcon = fixture.componentInstance;
 
     expect(userIcon).toBeTruthy();
@@ -167,7 +167,7 @@ describe("UserIcon", () => {
     const fixture = TestBed.createComponent(MockIconContainer);
     const iconContainer = fixture.componentInstance;
     const userIcon = fixture.debugElement.query(By.css("app-user-icon"));
-    const userIconInstance = userIcon.componentInstance as UserIcon;
+    const userIconInstance = userIcon.componentInstance as UserIconComponent;
     fixture.detectChanges();
 
     // Check the initial

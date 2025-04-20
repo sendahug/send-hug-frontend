@@ -44,7 +44,7 @@ import { AlertsService } from "@app/services/alerts.service";
 import { ApiClientService } from "@app/services/apiClient.service";
 import { SWManager } from "@app/services/sWManager.service";
 import { type PostAndReportResponse, type PostEditResponse } from "@app/interfaces/api";
-import { PopUp } from "@common/popUp/popUp.component";
+import { PopUpComponent } from "@common/popUp/popUp.component";
 import { TeleportDirective } from "@app/directives/teleport.directive";
 import { ReportData } from "@app/interfaces/report.interface";
 
@@ -52,7 +52,7 @@ import { ReportData } from "@app/interfaces/report.interface";
   selector: "post-edit-form",
   templateUrl: "./postEditForm.component.html",
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule, PopUp, TeleportDirective],
+  imports: [ReactiveFormsModule, CommonModule, PopUpComponent, TeleportDirective],
 })
 export class PostEditForm implements OnInit {
   // item to edit

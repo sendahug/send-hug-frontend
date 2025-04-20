@@ -52,8 +52,8 @@ import { of } from "rxjs";
 import { SearchResults } from "./searchResults.component";
 import { ItemsService } from "@app/services/items.service";
 import { iconCharacters } from "@app/interfaces/types";
-import { SinglePost } from "@common/post/post.component";
-import { Loader } from "@common/loader/loader.component";
+import { PostComponent } from "@common/post/post.component";
+import { LoaderComponent } from "@common/loader/loader.component";
 import { ApiClientService } from "@app/services/apiClient.service";
 
 const mockUserSearchResults = [
@@ -120,8 +120,8 @@ const mockPostSearchResults = [
 describe("SearchResults", () => {
   // Before each test, configure testing environment
   beforeEach(() => {
-    const MockPost = MockComponent(SinglePost);
-    const MockLoader = MockComponent(Loader);
+    const MockPost = MockComponent(PostComponent);
+    const MockLoaderComponent = MockComponent(LoaderComponent);
     const MockAPIClient = MockProvider(ApiClientService, {
       post: () => of(),
     });
@@ -130,7 +130,14 @@ describe("SearchResults", () => {
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
-      imports: [CommonModule, MockLoader, MockPost, RouterLink, SearchResults, Loader],
+      imports: [
+        CommonModule,
+        MockLoaderComponent,
+        MockPost,
+        RouterLink,
+        SearchResults,
+        LoaderComponent,
+      ],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
         provideZoneChangeDetection({ eventCoalescing: true }),
@@ -407,7 +414,7 @@ describe("SearchResults", () => {
     fixture.detectChanges();
 
     const singlePost = fixture.debugElement.query(By.css("app-single-post"))
-      .componentInstance as SinglePost;
+      .componentInstance as PostComponent;
     singlePost.deletedId.emit(5);
     fixture.detectChanges();
 

@@ -40,7 +40,7 @@ import { AdminService } from "@app/services/admin.service";
 import { ApiClientService } from "@app/services/apiClient.service";
 import { SWManager } from "@app/services/sWManager.service";
 import { AlertsService } from "@app/services/alerts.service";
-import { PopUp } from "@common/popUp/popUp.component";
+import { PopUpComponent } from "@common/popUp/popUp.component";
 import { TeleportDirective } from "@app/directives/teleport.directive";
 import { APIParams, type MessageType } from "@app/interfaces/types";
 import { ReportData } from "@app/interfaces/report.interface";
@@ -49,7 +49,7 @@ import { ReportData } from "@app/interfaces/report.interface";
   selector: "item-delete-form",
   templateUrl: "./itemDeleteForm.component.html",
   standalone: true,
-  imports: [CommonModule, PopUp, TeleportDirective],
+  imports: [CommonModule, PopUpComponent, TeleportDirective],
 })
 export class ItemDeleteForm {
   // indicates whether edit/delete mode is still required

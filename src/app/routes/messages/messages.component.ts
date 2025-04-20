@@ -43,7 +43,7 @@ import { FullThread, ParsedThread } from "@app/interfaces/thread.interface";
 import { type MessageGet } from "@app/interfaces/message.interface";
 import { SWManager } from "@app/services/sWManager.service";
 import { ApiClientService } from "@app/services/apiClient.service";
-import { Loader } from "@common/loader/loader.component";
+import { LoaderComponent } from "@common/loader/loader.component";
 import { ItemDeleteForm } from "@forms/itemDeleteForm/itemDeleteForm.component";
 import { AppSingleMessage } from "@app/components/messaging/message/message.component";
 import { AppSingleThread } from "@app/components/messaging/thread/thread.component";
@@ -54,7 +54,14 @@ import { MessagesResponse, ThreadResponse } from "@app/interfaces/api";
   templateUrl: "./messages.component.html",
   styleUrl: "./messages.component.less",
   standalone: true,
-  imports: [CommonModule, RouterLink, Loader, ItemDeleteForm, AppSingleMessage, AppSingleThread],
+  imports: [
+    CommonModule,
+    RouterLink,
+    LoaderComponent,
+    ItemDeleteForm,
+    AppSingleMessage,
+    AppSingleThread,
+  ],
 })
 export class AppMessaging {
   messType = signal<MessageType>("inbox");

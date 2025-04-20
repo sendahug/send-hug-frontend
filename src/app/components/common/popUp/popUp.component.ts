@@ -52,7 +52,7 @@ import { faTimes } from "@fortawesome/free-solid-svg-icons";
   standalone: true,
   imports: [CommonModule, FontAwesomeModule],
 })
-export class PopUp implements OnInit, AfterViewInit, AfterViewChecked {
+export class PopUpComponent implements OnInit, AfterViewInit, AfterViewChecked {
   // indicates whether edit/delete mode is still required
   @Output() editMode = new EventEmitter<boolean>();
   focusableElements!: NodeListOf<HTMLElement>;

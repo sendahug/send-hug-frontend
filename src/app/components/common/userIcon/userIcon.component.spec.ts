@@ -93,10 +93,11 @@ describe("UserIcon", () => {
   it("should create the component", () => {
     const fixture = TestBed.createComponent(UserIcon);
     const userIcon = fixture.componentInstance;
+
     expect(userIcon).toBeTruthy();
   });
 
-  it("should set the colours based on the incoming colours at creation", (done: DoneFn) => {
+  it("should set the colours based on the incoming colours at creation", () => {
     const fixture = TestBed.createComponent(MockIconContainer);
     const userIcon = fixture.debugElement.query(By.css("app-user-icon"));
     const userIconDOM = userIcon.nativeElement;
@@ -116,10 +117,9 @@ describe("UserIcon", () => {
     userIconDOM.querySelectorAll(".item").forEach((path: SVGPathElement) => {
       expect(path.getAttribute("style")).toBe(`fill: rgb(244, 181, 106);`);
     });
-    done();
   });
 
-  it("should set the colours based on the incoming colours", (done: DoneFn) => {
+  it("should set the colours based on the incoming colours", () => {
     const fixture = TestBed.createComponent(MockIconContainer);
     const iconContainer = fixture.componentInstance;
     const userIcon = fixture.debugElement.query(By.css("app-user-icon"));
@@ -161,11 +161,9 @@ describe("UserIcon", () => {
     userIconDOM.querySelectorAll(".item").forEach((path: SVGPathElement) => {
       expect(path.getAttribute("style")).toBe(`fill: rgb(51, 51, 51);`);
     });
-
-    done();
   });
 
-  it("should set the character based on the incoming value", (done: DoneFn) => {
+  it("should set the character based on the incoming value", () => {
     const fixture = TestBed.createComponent(MockIconContainer);
     const iconContainer = fixture.componentInstance;
     const userIcon = fixture.debugElement.query(By.css("app-user-icon"));
@@ -184,7 +182,5 @@ describe("UserIcon", () => {
     // Check it's been updated
     expect(userIconInstance.selectedIcon()).toBe("dog");
     expect(userIconInstance.selectedIconDefaultColours()).toEqual(DefaultColours.dog);
-    expect();
-    done();
   });
 });

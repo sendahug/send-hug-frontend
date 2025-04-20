@@ -70,11 +70,12 @@ describe("SearchForm", () => {
   it("should create the search form", () => {
     const fixture = TestBed.createComponent(SearchForm);
     const searchForm = fixture.componentInstance;
+
     expect(searchForm).toBeTruthy();
   });
 
   // Check that clicking 'search' triggers the ItemsService
-  it("should pass search query to the ItemsService when clicking search", (done: DoneFn) => {
+  it("should pass search query to the ItemsService when clicking search", () => {
     const fixture = TestBed.createComponent(SearchForm);
     fixture.autoDetectChanges();
     const searchForm = fixture.componentInstance;
@@ -89,20 +90,19 @@ describe("SearchForm", () => {
     searchFormHtml.querySelectorAll(".sendData")[0].click();
 
     // check the spies were triggered
-    expect(searchSpy).toHaveBeenCalled();
-    expect(searchServiceSpy).toHaveBeenCalled();
+    expect(searchSpy).toHaveBeenCalledTimes(1);
     expect(searchServiceSpy).toHaveBeenCalledWith("search");
     expect(navigateSpy).toHaveBeenCalledWith(["search"], {
       queryParams: {
         query: "search",
       },
     });
-    expect(toggleSpy).toHaveBeenCalled();
-    done();
+
+    expect(toggleSpy).toHaveBeenCalledWith();
   });
 
   // Check that an empty search query isn't allowed
-  it("should prevent empty searches", (done: DoneFn) => {
+  it("should prevent empty searches", () => {
     const fixture = TestBed.createComponent(SearchForm);
     fixture.autoDetectChanges();
     const searchForm = fixture.componentInstance;
@@ -118,18 +118,18 @@ describe("SearchForm", () => {
     searchFormHtml.querySelectorAll(".sendData")[0].click();
 
     // check one spy was triggered and one wasn't
-    expect(searchSpy).toHaveBeenCalled();
+    expect(searchSpy).toHaveBeenCalledTimes(1);
     expect(searchServiceSpy).not.toHaveBeenCalled();
     expect(alertsSpy).toHaveBeenCalledWith({
       message: "Search query is empty! Please write a term to search for.",
       type: "Error",
     });
+
     expect(navigateSpy).not.toHaveBeenCalled();
     expect(toggleSpy).not.toHaveBeenCalled();
-    done();
   });
 
-  it("toggleSearch() - emits false to close the search", (done: DoneFn) => {
+  it("toggleSearch() - emits false to close the search", () => {
     const fixture = TestBed.createComponent(SearchForm);
     fixture.detectChanges();
     const searchForm = fixture.componentInstance;
@@ -140,8 +140,7 @@ describe("SearchForm", () => {
     searchFormHtml.querySelector("#exitButton").click();
     fixture.detectChanges();
 
-    expect(toggleSpy).toHaveBeenCalled();
+    expect(toggleSpy).toHaveBeenCalledWith();
     expect(emitSpy).toHaveBeenCalledWith(false);
-    done();
   });
 });

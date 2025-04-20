@@ -142,6 +142,7 @@ describe("FullList", () => {
     paramMap.snapshot.url = [{ path: "New" }] as UrlSegment[];
     const fixture = TestBed.createComponent(FullList);
     const fullList = fixture.componentInstance;
+
     expect(fullList).toBeTruthy();
   });
 
@@ -213,7 +214,7 @@ describe("FullList", () => {
     expect(fullList.currentPage()).toBe(1);
   });
 
-  it("should fetch posts from the server", (done: DoneFn) => {
+  it("should fetch posts from the server", () => {
     // Inject services
     const apiClient = TestBed.inject(ApiClientService);
     const swManager = TestBed.inject(SWManager);
@@ -236,11 +237,10 @@ describe("FullList", () => {
 
     TestBed.createComponent(FullList);
 
-    expect(idbSpy).toHaveBeenCalled();
+    expect(idbSpy).toHaveBeenCalledWith();
     expect(apiClientSpy).toHaveBeenCalledWith("posts", { page: 1, type: "new" });
     expect(updateInterfaceSpy).toHaveBeenCalledWith(mockPageOneResponse);
     expect(addItemsSpy).toHaveBeenCalledWith("posts", pageOnePosts, "date");
-    done();
   });
 
   it("should fetch posts from IDB - new", (done: DoneFn) => {
@@ -297,7 +297,7 @@ describe("FullList", () => {
     });
   });
 
-  it("should update the user interface", (done: DoneFn) => {
+  it("should update the user interface", () => {
     spyOn(FullList.prototype, "fetchPosts");
     const paramMap = TestBed.inject(ActivatedRoute);
     paramMap.snapshot.url = [{ path: "Suggested" }] as UrlSegment[];
@@ -319,16 +319,16 @@ describe("FullList", () => {
     expect(isLoadingSpy).toHaveBeenCalledWith(false);
 
     const suggestedPosts = fullListDOM.querySelectorAll("app-single-post");
+
     expect(suggestedPosts.length).toBe(2);
 
     const firstPost = fixture.debugElement.query(By.css("app-single-post"))
       .componentInstance as SinglePost;
-    expect(firstPost.post?.text).toEqual("test");
 
-    done();
+    expect(firstPost.post?.text).toEqual("test");
   });
 
-  it("should continue to the next page", (done: DoneFn) => {
+  it("should continue to the next page", () => {
     const fetchSpy = spyOn(FullList.prototype, "fetchPosts");
     const paramMap = TestBed.inject(ActivatedRoute);
     paramMap.snapshot.url = [{ path: "Suggested" }] as UrlSegment[];
@@ -351,11 +351,10 @@ describe("FullList", () => {
     // after
     expect(fullList.currentPage()).toBe(2);
     expect(fetchSpy).toHaveBeenCalledTimes(2);
-    expect(updateURLSpy).toHaveBeenCalled();
-    done();
+    expect(updateURLSpy).toHaveBeenCalledWith();
   });
 
-  it("should go to the previous page", (done: DoneFn) => {
+  it("should go to the previous page", () => {
     const fetchSpy = spyOn(FullList.prototype, "fetchPosts");
     const paramMap = TestBed.inject(ActivatedRoute);
     paramMap.snapshot.url = [{ path: "Suggested" }] as UrlSegment[];
@@ -378,8 +377,7 @@ describe("FullList", () => {
     // after
     expect(fullList.currentPage()).toBe(1);
     expect(fetchSpy).toHaveBeenCalledTimes(2);
-    expect(updateURLSpy).toHaveBeenCalled();
-    done();
+    expect(updateURLSpy).toHaveBeenCalledWith();
   });
 
   it("should trigger navigation when the page changes", () => {

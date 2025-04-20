@@ -121,6 +121,7 @@ describe("MainPage", () => {
   it("should create the component", () => {
     const fixture = TestBed.createComponent(MainPage);
     const mainPage = fixture.componentInstance;
+
     expect(mainPage).toBeTruthy();
   });
 
@@ -128,10 +129,10 @@ describe("MainPage", () => {
     const fetchSpy = spyOn(MainPage.prototype, "fetchPosts");
     TestBed.createComponent(MainPage);
 
-    expect(fetchSpy).toHaveBeenCalled();
+    expect(fetchSpy).toHaveBeenCalledWith();
   });
 
-  it("should fetch posts from the server", (done: DoneFn) => {
+  it("should fetch posts from the server", () => {
     // Inject services
     const apiClient = TestBed.inject(ApiClientService);
     const swManager = TestBed.inject(SWManager);
@@ -149,7 +150,7 @@ describe("MainPage", () => {
 
     TestBed.createComponent(MainPage);
 
-    expect(idbSpy).toHaveBeenCalled();
+    expect(idbSpy).toHaveBeenCalledWith();
     expect(apiClientSpy).toHaveBeenCalledWith("");
     expect(updateInterfaceSpy).toHaveBeenCalledWith(mockNetworkResponse);
     expect(addItemsSpy).toHaveBeenCalledWith(
@@ -157,8 +158,6 @@ describe("MainPage", () => {
       [...mockNetworkResponse.recent, ...mockNetworkResponse.suggested],
       "date",
     );
-
-    done();
   });
 
   it("should fetch posts from the server and not change the value if the returned value is undefined", () => {
@@ -215,7 +214,7 @@ describe("MainPage", () => {
     });
   });
 
-  it("should update the UI with the fetched posts", (done: DoneFn) => {
+  it("should update the UI with the fetched posts", () => {
     // Just to make sure it doesn't get called during the test
     spyOn(MainPage.prototype, "fetchPosts");
     const fixture = TestBed.createComponent(MainPage);
@@ -243,17 +242,17 @@ describe("MainPage", () => {
     expect(isLoadingSpy).toHaveBeenCalledWith(false);
 
     const newPosts = mainPageDOM.querySelectorAll(".newItem");
+
     expect(newPosts.length).toBe(2);
     expect(newPosts[0].querySelector(".itemText").textContent).toContain("test");
 
     const suggestedPosts = mainPageDOM.querySelectorAll(".sugItem");
+
     expect(suggestedPosts.length).toBe(2);
     expect(suggestedPosts[0].querySelector(".itemText").textContent).toContain("test2");
-
-    done();
   });
 
-  it("should show an error if posts are undefined", (done: DoneFn) => {
+  it("should show an error if posts are undefined", () => {
     // Just to make sure it doesn't get called during the test
     spyOn(MainPage.prototype, "fetchPosts");
     const fixture = TestBed.createComponent(MainPage);
@@ -280,10 +279,9 @@ describe("MainPage", () => {
     expect(newPostsSetSpy).not.toHaveBeenCalled();
 
     const errorMessage = mainPageDOM.querySelectorAll(".errorMessage");
+
     expect(errorMessage.length).toBe(1);
     expect(errorMessage[0].textContent).toContain("There are no recent items");
-
-    done();
   });
 
   it("should remove a deleted post", () => {

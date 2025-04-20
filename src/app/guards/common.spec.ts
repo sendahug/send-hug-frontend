@@ -69,7 +69,7 @@ describe("guards/common", () => {
 
     const result = getQueryStringFromRouter(router);
 
-    expect(getNavigationSpy).toHaveBeenCalled();
+    expect(getNavigationSpy).toHaveBeenCalledWith();
     expect(result).toEqual("userID=1&query=param");
   });
 
@@ -87,7 +87,7 @@ describe("guards/common", () => {
 
     const result = getQueryStringFromRouter(router);
 
-    expect(getNavigationSpy).toHaveBeenCalled();
+    expect(getNavigationSpy).toHaveBeenCalledWith();
     expect(result).toEqual("userID=1&query=param");
     expect(result).not.toContain("meep=meep");
   });
@@ -105,7 +105,7 @@ describe("guards/common", () => {
 
     const result = getQueryStringFromRouter(router);
 
-    expect(getNavigationSpy).toHaveBeenCalled();
+    expect(getNavigationSpy).toHaveBeenCalledWith();
     expect(result).toEqual("");
   });
 

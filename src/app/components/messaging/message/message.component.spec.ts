@@ -102,6 +102,7 @@ describe("AppSingleMessage", () => {
   it("should create the component", () => {
     const fixture = TestBed.createComponent(AppSingleMessage);
     const appMessage = fixture.componentInstance;
+
     expect(appMessage).toBeTruthy();
   });
 
@@ -158,7 +159,7 @@ describe("AppSingleMessage", () => {
   });
 
   // Check deleting a single message triggers the poppup
-  it("should trigger the popup upon delete", (done: DoneFn) => {
+  it("should trigger the popup upon delete", () => {
     const fixture = TestBed.createComponent(AppSingleMessage);
     const appMessage = fixture.componentInstance;
     const appMessageDOM = fixture.nativeElement;
@@ -178,11 +179,10 @@ describe("AppSingleMessage", () => {
     expect(appMessage.deleteMode()).toBeTrue();
     expect(appMessage.itemToDelete()).toBe(1);
     expect(appMessageDOM.querySelector("item-delete-form")).toBeTruthy();
-    done();
   });
 
   // Check the popup exits when 'false' is emitted
-  it("should change mode when the event emitter emits false", (done: DoneFn) => {
+  it("should change mode when the event emitter emits false", () => {
     const fixture = TestBed.createComponent(AppSingleMessage);
     fixture.componentRef.setInput("currentUser", 4);
     fixture.componentRef.setInput("message", mockMessage);
@@ -203,14 +203,13 @@ describe("AppSingleMessage", () => {
     fixture.detectChanges();
 
     // check the popup is exited
-    expect(changeSpy).toHaveBeenCalled();
+    expect(changeSpy).toHaveBeenCalledWith(false);
     expect(appMessage.deleteMode()).toBeFalse();
     expect(outputSpy).toHaveBeenCalledWith(1);
-    done();
   });
 
   // Check each message has delete button and reply link
-  it("should have the relevant buttons for each message", (done: DoneFn) => {
+  it("should have the relevant buttons for each message", () => {
     const fixture = TestBed.createComponent(AppSingleMessage);
     const appMessageDOM = fixture.nativeElement;
     fixture.componentRef.setInput("currentUser", 4);
@@ -223,10 +222,10 @@ describe("AppSingleMessage", () => {
     expect(appMessageDOM.querySelectorAll(".messageButton")[0].getAttribute("href")).toContain(
       "/new",
     );
+
     expect(appMessageDOM.querySelectorAll(".deleteButton")[0].tagName.toLowerCase()).toBe("button");
     expect(appMessageDOM.querySelectorAll(".deleteButton")[0].textContent.trim()).toBe(
       "Delete Message",
     );
-    done();
   });
 });

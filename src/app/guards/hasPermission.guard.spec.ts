@@ -64,6 +64,7 @@ describe("hasPermissionGuard", () => {
   it("should return true if the route has no required permission", (done: DoneFn) => {
     TestBed.runInInjectionContext(() => {
       const hasPermissionResult = hasPermissionGuard({ path: "test", data: {} }, []);
+
       expect(hasPermissionResult).toBeTrue();
       done();
     });
@@ -78,8 +79,9 @@ describe("hasPermissionGuard", () => {
         { path: "test", data: { permission: "myPerm" } },
         [],
       );
+
       expect(hasPermissionResult).toBeTrue();
-      expect(canUserSpy).toHaveBeenCalled();
+      expect(canUserSpy).toHaveBeenCalledWith("myPerm");
       done();
     });
   });
@@ -95,10 +97,12 @@ describe("hasPermissionGuard", () => {
       hasPermissionGuard({ path: "test", data: { permission: "myPerm" } }, [
         new UrlSegment("/test", {}),
       ]);
+
       expect(navigateSpy).toHaveBeenCalledWith(["/"], {
         queryParams: { redirect: encodeURIComponent("/test") },
       });
-      expect(canUserSpy).toHaveBeenCalled();
+
+      expect(canUserSpy).toHaveBeenCalledWith("myPerm");
       done();
     });
   });

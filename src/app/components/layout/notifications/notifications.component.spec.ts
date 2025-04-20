@@ -118,12 +118,12 @@ describe("Notifications Tab", () => {
     authService.isUserDataResolved.next(true);
 
     expect(notificationsTab["authService"].isUserDataResolved).toBeTruthy();
-    expect(notificationSpy).toHaveBeenCalled();
-    expect(authSpy).toHaveBeenCalled();
+    expect(notificationSpy).toHaveBeenCalledWith();
+    expect(authSpy).toHaveBeenCalledTimes(1);
   });
 
   // Check that the button toggles push notifications
-  it("has a button that toggles push notifications", (done: DoneFn) => {
+  it("has a button that toggles push notifications", () => {
     // set up the component and its spies
     const fixture = TestBed.createComponent(NotificationsTab);
     const notificationsTab = fixture.componentInstance;
@@ -143,9 +143,9 @@ describe("Notifications Tab", () => {
     fixture.detectChanges();
 
     // after the first click, check 'subscribe' was called
-    expect(toggleSpy).toHaveBeenCalled();
+    expect(toggleSpy).toHaveBeenCalledWith();
     expect(settingsSpy).toHaveBeenCalledWith({ pushEnabled: true });
-    expect(subscribeSpy).toHaveBeenCalled();
+    expect(subscribeSpy).toHaveBeenCalledWith();
     expect(unsubscribeSpy).not.toHaveBeenCalled();
 
     // simulate another click
@@ -158,13 +158,12 @@ describe("Notifications Tab", () => {
     expect(settingsSpy.calls.count()).toBe(2);
     expect(settingsSpy).toHaveBeenCalledWith({ pushEnabled: false });
     expect(subscribeSpy.calls.count()).toBe(1);
-    expect(unsubscribeSpy).toHaveBeenCalled();
+    expect(unsubscribeSpy).toHaveBeenCalledWith();
     expect(unsubscribeSpy.calls.count()).toBe(1);
-    done();
   });
 
   // Check that the button toggles auto refresh
-  it("has a button that toggles auto-refresh", (done: DoneFn) => {
+  it("has a button that toggles auto-refresh", () => {
     // set up spies
     const notificationsService = TestBed.inject(NotificationService);
     const settingsSpy = spyOn(TestBed.inject(AuthService), "updateUserData");
@@ -186,10 +185,9 @@ describe("Notifications Tab", () => {
     fixture.detectChanges();
 
     // after the first click, check 'subscribe' was called
-    expect(toggleSpy).toHaveBeenCalled();
-    expect(settingsSpy).toHaveBeenCalled();
+    expect(toggleSpy).toHaveBeenCalledWith();
     expect(settingsSpy).toHaveBeenCalledWith({ refreshRate: 20, autoRefresh: true });
-    expect(startRefreshSpy).toHaveBeenCalled();
+    expect(startRefreshSpy).toHaveBeenCalledWith(20);
     expect(stopRefreshSpy).not.toHaveBeenCalled();
 
     // simulate another click
@@ -202,9 +200,8 @@ describe("Notifications Tab", () => {
     expect(settingsSpy).toHaveBeenCalledWith({ autoRefresh: false });
     expect(settingsSpy.calls.count()).toBe(2);
     expect(startRefreshSpy.calls.count()).toBe(1);
-    expect(stopRefreshSpy).toHaveBeenCalled();
+    expect(stopRefreshSpy).toHaveBeenCalledWith();
     expect(stopRefreshSpy.calls.count()).toBe(1);
-    done();
   });
 
   it("getNotifications() - gets the notifications and updates the variables", (done: DoneFn) => {
@@ -367,7 +364,7 @@ describe("Notifications Tab", () => {
       // check the first element has focus
       spies.forEach((spy, index: number) => {
         if (index == 0) {
-          expect(spy).toHaveBeenCalled();
+          expect(spy).toHaveBeenCalledWith();
         } else {
           expect(spy).not.toHaveBeenCalled();
         }
@@ -385,13 +382,13 @@ describe("Notifications Tab", () => {
         fixture.detectChanges();
 
         // check the focus shifted to the next element
-        expect(focusBindedSpy).toHaveBeenCalled();
+        expect(focusBindedSpy).toHaveBeenCalledTimes(1);
         spies.forEach((spy, index: number) => {
           if (index == 0) {
-            expect(spy).toHaveBeenCalled();
+            expect(spy).toHaveBeenCalledWith();
             expect(spy).toHaveBeenCalledTimes(1);
           } else if (index == 1) {
-            expect(spy).toHaveBeenCalled();
+            expect(spy).toHaveBeenCalledWith();
             expect(spy).toHaveBeenCalledTimes(1);
           } else {
             expect(spy).not.toHaveBeenCalled();
@@ -410,25 +407,23 @@ describe("Notifications Tab", () => {
         fixture.detectChanges();
 
         // check the focus shifted to the previous element
-        expect(focusBindedSpy).toHaveBeenCalled();
         expect(focusBindedSpy).toHaveBeenCalledTimes(2);
         spies.forEach((spy, index: number) => {
           if (index == 0) {
-            expect(spy).toHaveBeenCalled();
             expect(spy).toHaveBeenCalledTimes(2);
           } else if (index == 1) {
-            expect(spy).toHaveBeenCalled();
             expect(spy).toHaveBeenCalledTimes(1);
           } else {
             expect(spy).not.toHaveBeenCalled();
           }
         });
-      });
+      })
+      .catch(done.fail);
     done();
   });
 
   // check the focus is trapped
-  it("should trap focus in the modal", (done: DoneFn) => {
+  it("should trap focus in the modal", () => {
     const fixture = TestBed.createComponent(NotificationsTab);
     const notificationsTab = fixture.componentInstance;
     const notifTabDOM = fixture.nativeElement;
@@ -458,7 +453,7 @@ describe("Notifications Tab", () => {
     expect(spies[2]).not.toHaveBeenCalled();
     expect(spies[3]).not.toHaveBeenCalled();
     expect(spies[4]).not.toHaveBeenCalled();
-    expect(spies[5]).toHaveBeenCalled();
+    expect(spies[5]).toHaveBeenCalledWith();
 
     // step 2: check what happens when clicking tab
     // trigger tab event
@@ -471,13 +466,13 @@ describe("Notifications Tab", () => {
     fixture.detectChanges();
 
     // check the focus shifted to the first element
-    expect(focusBindedSpy).toHaveBeenCalled();
-    expect(spies[0]).toHaveBeenCalled();
+    expect(focusBindedSpy).toHaveBeenCalledTimes(1);
+    expect(spies[0]).toHaveBeenCalledWith();
     expect(spies[1]).not.toHaveBeenCalled();
     expect(spies[2]).not.toHaveBeenCalled();
     expect(spies[3]).not.toHaveBeenCalled();
     expect(spies[4]).not.toHaveBeenCalled();
-    expect(spies[5]).toHaveBeenCalled();
+    expect(spies[5]).toHaveBeenCalledWith();
 
     // check what happens when clicking shift + tab
     // trigger shift + tab event
@@ -490,7 +485,6 @@ describe("Notifications Tab", () => {
     fixture.detectChanges();
 
     // check the focus shifted to the last element
-    expect(focusBindedSpy).toHaveBeenCalled();
     expect(focusBindedSpy).toHaveBeenCalledTimes(2);
     expect(spies[0]).toHaveBeenCalledTimes(1);
     expect(spies[1]).not.toHaveBeenCalled();
@@ -498,11 +492,9 @@ describe("Notifications Tab", () => {
     expect(spies[3]).not.toHaveBeenCalled();
     expect(spies[4]).not.toHaveBeenCalled();
     expect(spies[5]).toHaveBeenCalledTimes(2);
-
-    done();
   });
 
-  it("nextPage() - should continue to the next page", (done: DoneFn) => {
+  it("nextPage() - should continue to the next page", () => {
     const fixture = TestBed.createComponent(NotificationsTab);
     const notificationsTab = fixture.componentInstance;
     const notifTabDOM = fixture.nativeElement;
@@ -521,10 +513,9 @@ describe("Notifications Tab", () => {
     // after
     expect(notificationsTab.currentPage()).toBe(2);
     expect(getNotificationsSpy).toHaveBeenCalledTimes(1);
-    done();
   });
 
-  it("prevPage() - should go to the previous page", (done: DoneFn) => {
+  it("prevPage() - should go to the previous page", () => {
     const fixture = TestBed.createComponent(NotificationsTab);
     const notificationsTab = fixture.componentInstance;
     const notifTabDOM = fixture.nativeElement;
@@ -543,7 +534,6 @@ describe("Notifications Tab", () => {
     // after
     expect(notificationsTab.currentPage()).toBe(1);
     expect(getNotificationsSpy).toHaveBeenCalledTimes(1);
-    done();
   });
 
   it("toggleUnread() - should toggle the visibility of unread messages", () => {
@@ -564,7 +554,7 @@ describe("Notifications Tab", () => {
 
     // after
     expect(notificationsTab.displayUnread()).toBeFalse();
-    expect(getNotificationsSpy).toHaveBeenCalled();
+    expect(getNotificationsSpy).toHaveBeenCalledWith();
     expect(notifTabDOM.querySelectorAll(".NotificationButton")[2].textContent.trim()).toBe(
       "Show unread",
     );
@@ -588,7 +578,7 @@ describe("Notifications Tab", () => {
 
     // after
     expect(notificationsTab.displayRead()).toBeFalse();
-    expect(getNotificationsSpy).toHaveBeenCalled();
+    expect(getNotificationsSpy).toHaveBeenCalledWith();
     expect(notifTabDOM.querySelectorAll(".NotificationButton")[3].textContent.trim()).toBe(
       "Show read",
     );
@@ -647,6 +637,7 @@ describe("Notifications Tab", () => {
 
     // before
     let notificationBadges = notifTabDOM.querySelectorAll(".badge");
+
     expect(notificationBadges.length).toBe(3);
     expect(notifTabDOM.querySelectorAll(".NotificationButton")[4].textContent.trim()).toBe(
       "Mark all read",
@@ -657,10 +648,12 @@ describe("Notifications Tab", () => {
 
     // after
     notificationBadges = notifTabDOM.querySelectorAll(".badge");
+
     expect(notificationBadges.length).toBe(0);
     expect(notifTabDOM.querySelectorAll(".NotificationButton")[4].textContent.trim()).toBe(
       "Mark all unread",
     );
+
     expect(notificationsTab["notificationService"].newNotifications()).toBe(0);
     expect(apiClientSpy).toHaveBeenCalledWith("notifications", {
       notification_ids: "all",
@@ -725,6 +718,7 @@ describe("Notifications Tab", () => {
 
     // before
     let notificationBadges = notifTabDOM.querySelectorAll(".badge");
+
     expect(notificationBadges.length).toBe(0);
     expect(notifTabDOM.querySelectorAll(".NotificationButton")[4].textContent.trim()).toBe(
       "Mark all unread",
@@ -735,10 +729,12 @@ describe("Notifications Tab", () => {
 
     // after
     notificationBadges = notifTabDOM.querySelectorAll(".badge");
+
     expect(notificationBadges.length).toBe(3);
     expect(notifTabDOM.querySelectorAll(".NotificationButton")[4].textContent.trim()).toBe(
       "Mark all read",
     );
+
     expect(notificationsTab["notificationService"].newNotifications()).toBe(3);
     expect(apiClientSpy).toHaveBeenCalledWith("notifications", {
       notification_ids: "all",
@@ -792,6 +788,7 @@ describe("Notifications Tab", () => {
 
     // before
     let notificationBadges = notifTabDOM.querySelectorAll(".badge");
+
     expect(notificationBadges.length).toBe(2);
     expect(notifTabDOM.querySelectorAll(".readToggle")[0].textContent.trim()).toBe("Mark Read");
 
@@ -800,6 +797,7 @@ describe("Notifications Tab", () => {
 
     // after
     notificationBadges = notifTabDOM.querySelectorAll(".badge");
+
     expect(notificationBadges.length).toBe(1);
     expect(notifTabDOM.querySelectorAll(".readToggle")[0].textContent.trim()).toBe("Mark Unread");
     expect(notificationsTab["notificationService"].newNotifications()).toBe(1);
@@ -807,6 +805,7 @@ describe("Notifications Tab", () => {
       notification_ids: [2],
       read: true,
     });
+
     expect(notificationsTab.notifications()[0].read).toBeTrue();
   });
 
@@ -853,6 +852,7 @@ describe("Notifications Tab", () => {
 
     // before
     let notificationBadges = notifTabDOM.querySelectorAll(".badge");
+
     expect(notificationBadges.length).toBe(1);
     expect(notifTabDOM.querySelectorAll(".readToggle")[0].textContent.trim()).toBe("Mark Unread");
 
@@ -861,6 +861,7 @@ describe("Notifications Tab", () => {
 
     // after
     notificationBadges = notifTabDOM.querySelectorAll(".badge");
+
     expect(notificationBadges.length).toBe(2);
     expect(notifTabDOM.querySelectorAll(".readToggle")[0].textContent.trim()).toBe("Mark Read");
     expect(notificationsTab["notificationService"].newNotifications()).toBe(2);
@@ -868,11 +869,12 @@ describe("Notifications Tab", () => {
       notification_ids: [2],
       read: false,
     });
+
     expect(notificationsTab.notifications()[0].read).toBeFalse();
   });
 
   // Check that the exit button emits the correct boolean
-  it("emits false upon clicking the exit button", (done: DoneFn) => {
+  it("emits false upon clicking the exit button", () => {
     // set up the component
     const fixture = TestBed.createComponent(NotificationsTab);
     const notificationsTab = fixture.componentInstance;
@@ -886,6 +888,5 @@ describe("Notifications Tab", () => {
     fixture.detectChanges();
 
     expect(emitterSpy).toHaveBeenCalledWith(false);
-    done();
   });
 });

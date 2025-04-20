@@ -63,6 +63,7 @@ describe("AppAlert", () => {
   it("should create the component", () => {
     const fixture = TestBed.createComponent(AppAlert);
     const appAlert = fixture.componentInstance;
+
     expect(appAlert).toBeTruthy();
   });
 
@@ -144,7 +145,7 @@ describe("AppAlert", () => {
 
     alertDOM.querySelector("#alertButton").click();
 
-    expect(closeSpy).toHaveBeenCalled();
+    expect(closeSpy).toHaveBeenCalledWith();
     expect(alertsService.shouldDisplayAlert()).toBe(false);
   });
 
@@ -184,6 +185,6 @@ describe("AppAlert", () => {
 
     alertDOM.querySelector("#reloadBtn").click();
 
-    expect(reloadSpy).toHaveBeenCalled();
+    expect(reloadSpy).toHaveBeenCalledWith();
   });
 });

@@ -135,6 +135,7 @@ describe("MyPosts", () => {
     const userPage = upFixture.componentInstance;
     upFixture.detectChanges();
     const myPosts: MyPosts = upFixture.debugElement.children[0].children[0].componentInstance;
+
     expect(userPage).toBeTruthy();
     expect(myPosts).toBeTruthy();
   });
@@ -149,7 +150,7 @@ describe("MyPosts", () => {
   });
 
   // Check that the component gets the user ID correctly
-  it("should get the correct user ID", (done: DoneFn) => {
+  it("should get the correct user ID", () => {
     const upFixture = TestBed.createComponent(MockUserPage);
     const userPage = upFixture.componentInstance;
     userPage.userId = 1;
@@ -158,7 +159,6 @@ describe("MyPosts", () => {
 
     expect(myPosts.userID).toBe(1);
     expect(myPosts.user()).toBe("other");
-    done();
   });
 
   it("should fetch posts on init", () => {
@@ -171,7 +171,7 @@ describe("MyPosts", () => {
 
     myPosts.ngOnInit();
 
-    expect(fetchSpy).toHaveBeenCalled();
+    expect(fetchSpy).toHaveBeenCalledWith();
   });
 
   it("should set the user ID to the logged in user's ID if no ID is provided", () => {
@@ -205,7 +205,7 @@ describe("MyPosts", () => {
     myPosts.fetchPosts();
 
     // after
-    expect(idbSpy).toHaveBeenCalled();
+    expect(idbSpy).toHaveBeenCalledWith();
     expect(apiClientSpy).toHaveBeenCalledWith("users/1/posts", { page: 1 });
     expect(swSpy).toHaveBeenCalledWith("posts", mockPosts, "date");
     expect(myPosts.totalPages()).toEqual(2);
@@ -244,7 +244,7 @@ describe("MyPosts", () => {
   });
 
   // Check the popup exits when 'false' is emitted
-  it("should change mode when the event emitter emits false - post delete", (done: DoneFn) => {
+  it("should change mode when the event emitter emits false - post delete", () => {
     // create the component
     const fixture = TestBed.createComponent(MockUserPage);
     const userPage = fixture.componentInstance;
@@ -269,13 +269,12 @@ describe("MyPosts", () => {
     fixture.detectChanges();
 
     // check the popup is exited
-    expect(changeSpy).toHaveBeenCalled();
+    expect(changeSpy).toHaveBeenCalledWith(false);
     expect(myPosts.deleteMode()).toBeFalse();
-    done();
   });
 
   // Check that the popup is opened when clicking 'delete all'
-  it("should open the popup upon deleting all", (done: DoneFn) => {
+  it("should open the popup upon deleting all", () => {
     const fixture = TestBed.createComponent(MockUserPage);
     const userPage = fixture.componentInstance;
     userPage.userId = 4;
@@ -300,10 +299,9 @@ describe("MyPosts", () => {
     expect(myPosts.toDelete()).toBe("All posts");
     expect(myPosts.itemToDelete()).toBe(4);
     expect(myPostsDOM.querySelector("item-delete-form")).toBeTruthy();
-    done();
   });
 
-  it("continues to the next page", (done: DoneFn) => {
+  it("continues to the next page", () => {
     const fixture = TestBed.createComponent(MockUserPage);
     const userPage = fixture.componentInstance;
     userPage.userId = 1;
@@ -320,13 +318,12 @@ describe("MyPosts", () => {
     // change the page
     myPostsDOM.querySelectorAll(".nextButton")[0].click();
 
-    expect(nextPageSpy).toHaveBeenCalled();
-    expect(fetchSpy).toHaveBeenCalled();
+    expect(nextPageSpy).toHaveBeenCalledWith();
+    expect(fetchSpy).toHaveBeenCalledWith();
     expect(myPosts.currentPage()).toEqual(2);
-    done();
   });
 
-  it("goes back to the previous page", (done: DoneFn) => {
+  it("goes back to the previous page", () => {
     const fixture = TestBed.createComponent(MockUserPage);
     const userPage = fixture.componentInstance;
     userPage.userId = 1;
@@ -344,10 +341,9 @@ describe("MyPosts", () => {
     // change the page
     myPostsDOM.querySelectorAll(".prevButton")[0].click();
 
-    expect(prevPageSpy).toHaveBeenCalled();
-    expect(fetchSpy).toHaveBeenCalled();
+    expect(prevPageSpy).toHaveBeenCalledWith();
+    expect(fetchSpy).toHaveBeenCalledWith();
     expect(myPosts.currentPage()).toEqual(1);
-    done();
   });
 
   it("should remove a deleted post", () => {
@@ -397,7 +393,7 @@ describe("MyPosts", () => {
     singlePost.deleted.emit(4);
     fixture.detectChanges();
 
-    expect(updateListSpy).toHaveBeenCalled();
+    expect(updateListSpy).toHaveBeenCalledWith();
     expect(myPosts.posts().length).toBe(0);
   });
 });

@@ -71,11 +71,12 @@ describe("ItemDeleteForm", () => {
   it("should create the component", () => {
     const fixture = TestBed.createComponent(ItemDeleteForm);
     const itemDeleteForm = fixture.componentInstance;
+
     expect(itemDeleteForm).toBeTruthy();
   });
 
   // Check that a warning is shown before deleting an item
-  it("shows a warning when deleting something", (done: DoneFn) => {
+  it("shows a warning when deleting something", () => {
     const fixture = TestBed.createComponent(ItemDeleteForm);
     const itemDeleteForm = fixture.componentInstance;
     const itemDeleteFormDOM = fixture.nativeElement;
@@ -88,13 +89,13 @@ describe("ItemDeleteForm", () => {
     expect(
       itemDeleteFormDOM.querySelector("#deleteItem").querySelectorAll(".warning")[0],
     ).toBeTruthy();
+
     expect(
       itemDeleteFormDOM.querySelector("#deleteItem").querySelectorAll(".warning")[0].textContent,
     ).toContain("This action is irreversible!");
-    done();
   });
 
-  it("deleteItem - single post - sets the right url and store for the delete call", (done: DoneFn) => {
+  it("deleteItem - single post - sets the right url and store for the delete call", () => {
     const fixture = TestBed.createComponent(ItemDeleteForm);
     const itemDeleteForm = fixture.componentInstance;
     const itemDeleteFormDOM = fixture.nativeElement;
@@ -116,10 +117,9 @@ describe("ItemDeleteForm", () => {
     expect(deleteSingleItemSpy).toHaveBeenCalledWith("posts/2", "posts");
     expect(editModeSpy).toHaveBeenCalledWith(false);
     expect(deletedEmitSpy).toHaveBeenCalledWith(2);
-    done();
   });
 
-  it("deleteItem - single message - sets the right url and store for the delete call", (done: DoneFn) => {
+  it("deleteItem - single message - sets the right url and store for the delete call", () => {
     const fixture = TestBed.createComponent(ItemDeleteForm);
     const itemDeleteForm = fixture.componentInstance;
     const itemDeleteFormDOM = fixture.nativeElement;
@@ -140,10 +140,9 @@ describe("ItemDeleteForm", () => {
 
     expect(deleteSingleItemSpy).toHaveBeenCalledWith("messages/inbox/2", "messages");
     expect(editModeSpy).toHaveBeenCalledWith(false);
-    done();
   });
 
-  it("deleteItem - single thread - sets the right url and store for the delete call", (done: DoneFn) => {
+  it("deleteItem - single thread - sets the right url and store for the delete call", () => {
     const fixture = TestBed.createComponent(ItemDeleteForm);
     const itemDeleteForm = fixture.componentInstance;
     const itemDeleteFormDOM = fixture.nativeElement;
@@ -164,10 +163,9 @@ describe("ItemDeleteForm", () => {
 
     expect(deleteSingleItemSpy).toHaveBeenCalledWith("messages/threads/2", "threads");
     expect(editModeSpy).toHaveBeenCalledWith(false);
-    done();
   });
 
-  it("deleteItem - all posts - should make the reuqest to delete all posts and delete from Idb", (done: DoneFn) => {
+  it("deleteItem - all posts - should make the reuqest to delete all posts and delete from Idb", () => {
     const fixture = TestBed.createComponent(ItemDeleteForm);
     const itemDeleteForm = fixture.componentInstance;
     const itemDeleteFormDOM = fixture.nativeElement;
@@ -189,10 +187,9 @@ describe("ItemDeleteForm", () => {
     expect(deleteIdbSpy).toHaveBeenCalledWith("posts", "userId", 2);
     expect(editModeSpy).toHaveBeenCalledWith(false);
     expect(deletedEmitSpy).toHaveBeenCalledWith(2);
-    done();
   });
 
-  it("deleteItems - all inbox - should make the reuqest to delete all inbox messages and delete from Idb", (done: DoneFn) => {
+  it("deleteItems - all inbox - should make the reuqest to delete all inbox messages and delete from Idb", () => {
     const fixture = TestBed.createComponent(ItemDeleteForm);
     const itemDeleteForm = fixture.componentInstance;
     const itemDeleteFormDOM = fixture.nativeElement;
@@ -214,10 +211,9 @@ describe("ItemDeleteForm", () => {
     expect(deleteIdbSpy).toHaveBeenCalledWith("messages", "forId", 2);
     expect(editModeSpy).toHaveBeenCalledWith(false);
     expect(deletedEmitSpy).toHaveBeenCalledWith(2);
-    done();
   });
 
-  it("deleteItems - all outbox - should make the reuqest to delete all outbox messages and delete from Idb", (done: DoneFn) => {
+  it("deleteItems - all outbox - should make the reuqest to delete all outbox messages and delete from Idb", () => {
     const fixture = TestBed.createComponent(ItemDeleteForm);
     const itemDeleteForm = fixture.componentInstance;
     const itemDeleteFormDOM = fixture.nativeElement;
@@ -237,10 +233,9 @@ describe("ItemDeleteForm", () => {
     expect(deleteMultipleSpy).toHaveBeenCalledWith("messages/outbox", "messages");
     expect(deleteIdbSpy).toHaveBeenCalledWith("messages", "fromId", 2);
     expect(editModeSpy).toHaveBeenCalledWith(false);
-    done();
   });
 
-  it("deleteItems - all threads - should make the reuqest to delete all threads and delete from Idb", (done: DoneFn) => {
+  it("deleteItems - all threads - should make the reuqest to delete all threads and delete from Idb", () => {
     const fixture = TestBed.createComponent(ItemDeleteForm);
     const itemDeleteForm = fixture.componentInstance;
     const itemDeleteFormDOM = fixture.nativeElement;
@@ -261,7 +256,6 @@ describe("ItemDeleteForm", () => {
     expect(deleteIdbSpy).toHaveBeenCalledWith("messages");
     expect(deleteIdbSpy).toHaveBeenCalledWith("threads");
     expect(editModeSpy).toHaveBeenCalledWith(false);
-    done();
   });
 
   it("deleteSingleItem - makes the request to delete a single item", () => {
@@ -306,7 +300,7 @@ describe("ItemDeleteForm", () => {
 
   // Check that a request to close the report is made if the item is deleted from
   // the admin dashboard
-  it("makes a request to close the report if that's what the user chose - Admin delete", (done: DoneFn) => {
+  it("makes a request to close the report if that's what the user chose - Admin delete", () => {
     const fixture = TestBed.createComponent(ItemDeleteForm);
     const itemDeleteForm = fixture.componentInstance;
     const itemDeleteFormDOM = fixture.nativeElement;
@@ -338,6 +332,7 @@ describe("ItemDeleteForm", () => {
       postID: 4,
       userID: 0,
     };
+
     expect(deleteSpy).toHaveBeenCalledWith(true);
     expect(deleteServiceSpy).toHaveBeenCalledWith(2, report, true);
     expect(emitSpy).toHaveBeenCalledWith(false);
@@ -351,7 +346,6 @@ describe("ItemDeleteForm", () => {
     expect(deleteServiceSpy).toHaveBeenCalledWith(2, report, false);
     expect(emitSpy).toHaveBeenCalledTimes(2);
     expect(deletedEmitSpy).toHaveBeenCalledWith(2);
-    done();
   });
 
   it("deleteMultipleItems - makes the request to delete multiple items", () => {
@@ -373,7 +367,7 @@ describe("ItemDeleteForm", () => {
   });
 
   // Check that the popup is exited and the item isn't deleted if the user picks 'never mind'
-  it("should emit false and keep the item if the user chooses not to delete", (done: DoneFn) => {
+  it("should emit false and keep the item if the user chooses not to delete", () => {
     const fixture = TestBed.createComponent(ItemDeleteForm);
     const itemDeleteForm = fixture.componentInstance;
     const itemDeleteFormDOM = fixture.nativeElement;
@@ -392,12 +386,12 @@ describe("ItemDeleteForm", () => {
     itemDeleteForm.editMode.subscribe((event: boolean) => {
       expect(event).toBeFalse();
     });
+
     expect(deleteSpy).not.toHaveBeenCalled();
     expect(emitSpy).toHaveBeenCalledWith(false);
-    done();
   });
 
-  it("should emit false and keep the item if the user chooses not to delete - admin", (done: DoneFn) => {
+  it("should emit false and keep the item if the user chooses not to delete - admin", () => {
     const fixture = TestBed.createComponent(ItemDeleteForm);
     const itemDeleteForm = fixture.componentInstance;
     const itemDeleteFormDOM = fixture.nativeElement;
@@ -420,7 +414,6 @@ describe("ItemDeleteForm", () => {
     // check the exit method was called
     expect(deleteSpy).not.toHaveBeenCalled();
     expect(emitSpy).toHaveBeenCalledWith(false);
-    done();
   });
 
   it("shouldn't delete in admin mode if there's no report data", () => {

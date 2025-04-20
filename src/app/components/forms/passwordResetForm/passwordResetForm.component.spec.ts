@@ -73,6 +73,7 @@ describe("PasswordResetForm", () => {
   it("should create the component", () => {
     const fixture = TestBed.createComponent(PasswordResetForm);
     const popUp = fixture.componentInstance;
+
     expect(popUp).toBeTruthy();
   });
 

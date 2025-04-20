@@ -176,6 +176,7 @@ describe("SiteMap", () => {
   it("should create the component", () => {
     const fixture = TestBed.createComponent(SiteMap);
     const siteMap = fixture.componentInstance;
+
     expect(siteMap).toBeTruthy();
   });
 
@@ -187,6 +188,7 @@ describe("SiteMap", () => {
     fixture.detectChanges();
 
     const routeList = siteMapDOM.querySelector("#routeList");
+
     expect(routeList).toBeTruthy();
     expect(routeList!.children.length).not.toBe(0);
     expect(siteMap.routes()).toBeDefined();
@@ -242,7 +244,7 @@ describe("SiteMap", () => {
     };
 
     // check the admin pages' linkes appear
-    expect(authSpy).toHaveBeenCalled();
+    expect(authSpy).toHaveBeenCalledWith("read:admin-board");
     expect(siteMap.routes()).toContain(adminPath);
     expect(navLinks[4].textContent).toBe("Main Page");
     expect(navLinks[4].parentElement.parentElement.children.length).toBe(4);
@@ -285,7 +287,7 @@ describe("SiteMap", () => {
     };
 
     // check the admin pages' links don't appear
-    expect(authSpy).toHaveBeenCalled();
+    expect(authSpy).toHaveBeenCalledWith("read:admin-board");
     expect(siteMap.routes()).not.toContain(adminPath);
     expect(navLinks.length).toBeLessThan(routes.length);
     for (let i = 0; i < navLinks.length; i++) {
@@ -368,6 +370,7 @@ describe("SiteMap", () => {
     fixture.detectChanges();
 
     navLinks = routeList!.querySelectorAll(".routerLink");
+
     expect(siteMap.routes()).not.toContain(loginPath);
     expect(siteMap.routes()).toContain(userPath);
     expect(navLinks[1].textContent).toBe(userPath.children![0].data!["name"]);

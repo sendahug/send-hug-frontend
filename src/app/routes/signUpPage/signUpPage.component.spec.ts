@@ -80,6 +80,7 @@ describe("SignUpPage", () => {
   it("should create the component", () => {
     const fixture = TestBed.createComponent(SignUpPage);
     const signUpPage = fixture.componentInstance;
+
     expect(signUpPage).toBeTruthy();
   });
 
@@ -114,8 +115,8 @@ describe("SignUpPage", () => {
     signUpPageDOM.querySelector("#logIn").click();
     fixture.detectChanges();
 
-    expect(signUpSpy).toHaveBeenCalled();
-    expect(currentUserSpy).toHaveBeenCalled();
+    expect(signUpSpy).toHaveBeenCalledWith();
+    expect(currentUserSpy).toHaveBeenCalledWith();
     expect(createUserSpy).not.toHaveBeenCalled();
     expect(alertsSpy).toHaveBeenCalledWith({
       type: "Error",
@@ -141,7 +142,7 @@ describe("SignUpPage", () => {
 
     signUpPage.signUp();
 
-    expect(currentUserSpy).toHaveBeenCalled();
+    expect(currentUserSpy).toHaveBeenCalledWith();
     expect(createUserSpy).not.toHaveBeenCalled();
     expect(alertsSpy).toHaveBeenCalledWith({
       type: "Error",
@@ -175,8 +176,8 @@ describe("SignUpPage", () => {
     signUpPageDOM.querySelector("#logIn").click();
     fixture.detectChanges();
 
-    expect(signUpSpy).toHaveBeenCalled();
-    expect(currentUserSpy).toHaveBeenCalled();
+    expect(signUpSpy).toHaveBeenCalledWith();
+    expect(currentUserSpy).toHaveBeenCalledWith();
     expect(createUserSpy).not.toHaveBeenCalled();
     expect(alertsSpy).toHaveBeenCalledWith({
       type: "Error",
@@ -203,8 +204,8 @@ describe("SignUpPage", () => {
     signUpPageDOM.querySelector("#logIn").click();
     fixture.detectChanges();
 
-    expect(signUpSpy).toHaveBeenCalled();
-    expect(currentUserSpy).toHaveBeenCalled();
+    expect(signUpSpy).toHaveBeenCalledWith();
+    expect(currentUserSpy).toHaveBeenCalledWith();
     expect(createUserSpy).not.toHaveBeenCalled();
     expect(alertsSpy).toHaveBeenCalledWith({
       type: "Error",
@@ -233,8 +234,8 @@ describe("SignUpPage", () => {
     signUpPageDOM.querySelector("#logIn").click();
     fixture.detectChanges();
 
-    expect(signUpSpy).toHaveBeenCalled();
-    expect(currentUserSpy).toHaveBeenCalled();
+    expect(signUpSpy).toHaveBeenCalledWith();
+    expect(currentUserSpy).toHaveBeenCalledWith();
     expect(createUserSpy).not.toHaveBeenCalled();
     expect(alertsSpy).toHaveBeenCalledWith({
       type: "Error",
@@ -243,7 +244,7 @@ describe("SignUpPage", () => {
     });
   });
 
-  it("should create a new user via the AuthService", (done: DoneFn) => {
+  it("should create a new user via the AuthService", () => {
     const fixture = TestBed.createComponent(SignUpPage);
     const signUpPage = fixture.componentInstance;
     const signUpPageDOM = fixture.nativeElement;
@@ -262,13 +263,12 @@ describe("SignUpPage", () => {
     signUpPageDOM.querySelector("#logIn").click();
     fixture.detectChanges();
 
-    expect(signUpSpy).toHaveBeenCalled();
+    expect(signUpSpy).toHaveBeenCalledWith();
     expect(createUserSpy).toHaveBeenCalledWith("name", false);
     expect(routerSpy).toHaveBeenCalledWith(["/user"]);
-    done();
   });
 
-  it("should log out", (done: DoneFn) => {
+  it("should log out", () => {
     const fixture = TestBed.createComponent(SignUpPage);
     const signUpPage = fixture.componentInstance;
     const signUpPageDOM = fixture.nativeElement;
@@ -282,10 +282,9 @@ describe("SignUpPage", () => {
     signUpPageDOM.querySelector("#logOut").click();
     fixture.detectChanges();
 
-    expect(signOutRedirectSpy).toHaveBeenCalled();
-    expect(logOutSpy).toHaveBeenCalled();
+    expect(signOutRedirectSpy).toHaveBeenCalledWith();
+    expect(logOutSpy).toHaveBeenCalledWith();
     expect(routerSpy).toHaveBeenCalledWith(["/login"]);
-    done();
   });
 
   it("should show an error message if the user is logged in", () => {

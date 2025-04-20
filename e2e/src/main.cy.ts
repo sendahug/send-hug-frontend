@@ -72,7 +72,8 @@ describe("Send A Hug App", function () {
     cy.visit("http://localhost:3000/");
 
     // run search
-    cy.get("#searchBtn").click().get("#searchQuery").type("test");
+    cy.get("#searchBtn").click();
+    cy.get("#searchQuery").type("test");
     cy.get(".sendData").eq(0).click();
 
     // check the user was redirected

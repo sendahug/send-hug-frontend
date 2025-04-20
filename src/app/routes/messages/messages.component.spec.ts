@@ -206,6 +206,7 @@ describe("AppMessaging", () => {
   it("should create the component", () => {
     const fixture = TestBed.createComponent(AppMessaging);
     const appMessaging = fixture.componentInstance;
+
     expect(appMessaging).toBeTruthy();
   });
 
@@ -246,11 +247,12 @@ describe("AppMessaging", () => {
     appMessaging.fetchMessages();
 
     // after
-    expect(idbFetchSpy).toHaveBeenCalled();
+    expect(idbFetchSpy).toHaveBeenCalledWith();
     expect(apiClientSpy).toHaveBeenCalledWith("messages", {
       page: 1,
       type: "inbox",
     });
+
     expect(appMessaging.messages()).toEqual(mockMessages);
     expect(appMessaging.totalPages()).toBe(2);
     expect(appMessaging.currentPage()).toBe(1);
@@ -273,7 +275,7 @@ describe("AppMessaging", () => {
 
     appMessaging.fetchMessages();
 
-    expect(idbFetchSpy).toHaveBeenCalled();
+    expect(idbFetchSpy).toHaveBeenCalledWith();
     expect(apiClientSpy).toHaveBeenCalledWith("messages", {
       page: 1,
       type: "thread",
@@ -380,11 +382,12 @@ describe("AppMessaging", () => {
     appMessaging.fetchThreads();
 
     // after
-    expect(idbFetchSpy).toHaveBeenCalled();
+    expect(idbFetchSpy).toHaveBeenCalledWith();
     expect(apiClientSpy).toHaveBeenCalledWith("messages", {
       page: 1,
       type: "threads",
     });
+
     expect(appMessaging.userThreads()).toEqual(mockThreads);
     expect(appMessaging.totalPages()).toBe(2);
     expect(appMessaging.currentPage()).toBe(1);
@@ -413,7 +416,7 @@ describe("AppMessaging", () => {
     });
   });
 
-  it("should navigate to the next page - messages", (done: DoneFn) => {
+  it("should navigate to the next page - messages", () => {
     TestBed.inject(ActivatedRoute).url = of([{ path: "inbox" } as UrlSegment]);
     const fixture = TestBed.createComponent(AppMessaging);
     const appMessaging = fixture.componentInstance;
@@ -428,11 +431,10 @@ describe("AppMessaging", () => {
     fixture.detectChanges();
 
     expect(appMessaging.currentPage()).toBe(2);
-    expect(fetchSpy).toHaveBeenCalled();
-    done();
+    expect(fetchSpy).toHaveBeenCalledWith();
   });
 
-  it("should navigate to the next page - threads", (done: DoneFn) => {
+  it("should navigate to the next page - threads", () => {
     TestBed.inject(ActivatedRoute).url = of([{ path: "threads" } as UrlSegment]);
     const fixture = TestBed.createComponent(AppMessaging);
     const appMessaging = fixture.componentInstance;
@@ -447,11 +449,10 @@ describe("AppMessaging", () => {
     fixture.detectChanges();
 
     expect(appMessaging.currentPage()).toBe(2);
-    expect(fetchSpy).toHaveBeenCalled();
-    done();
+    expect(fetchSpy).toHaveBeenCalledWith();
   });
 
-  it("should navigate to the previous page", (done: DoneFn) => {
+  it("should navigate to the previous page", () => {
     TestBed.inject(ActivatedRoute).url = of([{ path: "inbox" } as UrlSegment]);
     const fixture = TestBed.createComponent(AppMessaging);
     const appMessaging = fixture.componentInstance;
@@ -467,11 +468,10 @@ describe("AppMessaging", () => {
     fixture.detectChanges();
 
     expect(appMessaging.currentPage()).toBe(1);
-    expect(fetchSpy).toHaveBeenCalled();
-    done();
+    expect(fetchSpy).toHaveBeenCalledWith();
   });
 
-  it("should navigate to the previous page - threads", (done: DoneFn) => {
+  it("should navigate to the previous page - threads", () => {
     TestBed.inject(ActivatedRoute).url = of([{ path: "threads" } as UrlSegment]);
     const fixture = TestBed.createComponent(AppMessaging);
     const appMessaging = fixture.componentInstance;
@@ -487,12 +487,11 @@ describe("AppMessaging", () => {
     fixture.detectChanges();
 
     expect(appMessaging.currentPage()).toBe(1);
-    expect(fetchSpy).toHaveBeenCalled();
-    done();
+    expect(fetchSpy).toHaveBeenCalledWith();
   });
 
   // // Check that deleting all messages triggers the popup
-  it("should trigger the popup upon deleting all", (done: DoneFn) => {
+  it("should trigger the popup upon deleting all", () => {
     TestBed.inject(ActivatedRoute).url = of([{ path: "inbox" } as UrlSegment]);
     const fixture = TestBed.createComponent(AppMessaging);
     const appMessaging = fixture.componentInstance;
@@ -513,11 +512,10 @@ describe("AppMessaging", () => {
     expect(appMessaging.toDelete()).toBe("All inbox");
     expect(appMessaging.itemToDelete()).toBe(4);
     expect(appMessagingDOM.querySelector("item-delete-form")).toBeTruthy();
-    done();
   });
 
   // Check the popup exits when 'false' is emitted
-  it("should change mode when the event emitter emits false", (done: DoneFn) => {
+  it("should change mode when the event emitter emits false", () => {
     TestBed.inject(ActivatedRoute).url = of([{ path: "inbox" } as UrlSegment]);
     const fixture = TestBed.createComponent(AppMessaging);
     const appMessaging = fixture.componentInstance;
@@ -538,12 +536,11 @@ describe("AppMessaging", () => {
     fixture.detectChanges();
 
     // check the popup is exited
-    expect(changeSpy).toHaveBeenCalled();
+    expect(changeSpy).toHaveBeenCalledWith(false);
     expect(appMessaging.deleteMode()).toBeFalse();
-    done();
   });
 
-  it("should update the message list post delete - single message", (done: DoneFn) => {
+  it("should update the message list post delete - single message", () => {
     TestBed.inject(ActivatedRoute).url = of([{ path: "inbox" } as UrlSegment]);
     const fixture = TestBed.createComponent(AppMessaging);
     const appMessaging = fixture.componentInstance;
@@ -559,13 +556,12 @@ describe("AppMessaging", () => {
     fixture.detectChanges();
 
     // check the popup is exited
-    expect(updateSpy).toHaveBeenCalled();
+    expect(updateSpy).toHaveBeenCalledWith(1);
     expect(appMessaging.messages().length).toBe(1);
     expect(appMessaging.messages()[0].id).not.toBe(1);
-    done();
   });
 
-  it("should update the message list post delete - single thread", (done: DoneFn) => {
+  it("should update the message list post delete - single thread", () => {
     TestBed.inject(ActivatedRoute).url = of([{ path: "Threads" } as UrlSegment]);
     const fixture = TestBed.createComponent(AppMessaging);
     const appMessaging = fixture.componentInstance;
@@ -582,12 +578,11 @@ describe("AppMessaging", () => {
     fixture.detectChanges();
 
     // check the popup is exited
-    expect(updateSpy).toHaveBeenCalled();
+    expect(updateSpy).toHaveBeenCalledWith(3);
     expect(appMessaging.userThreads().length).toBe(0);
-    done();
   });
 
-  it("should update the message list post delete - all messages", (done: DoneFn) => {
+  it("should update the message list post delete - all messages", () => {
     TestBed.inject(ActivatedRoute).url = of([{ path: "inbox" } as UrlSegment]);
     const fixture = TestBed.createComponent(AppMessaging);
     const appMessaging = fixture.componentInstance;
@@ -610,12 +605,11 @@ describe("AppMessaging", () => {
     fixture.detectChanges();
 
     // check the popup is exited
-    expect(updateSpy).toHaveBeenCalled();
+    expect(updateSpy).toHaveBeenCalledWith(1);
     expect(appMessaging.messages().length).toBe(0);
-    done();
   });
 
-  it("should update the message list post delete - all threads", (done: DoneFn) => {
+  it("should update the message list post delete - all threads", () => {
     TestBed.inject(ActivatedRoute).url = of([{ path: "Threads" } as UrlSegment]);
     const fixture = TestBed.createComponent(AppMessaging);
     const appMessaging = fixture.componentInstance;
@@ -638,8 +632,7 @@ describe("AppMessaging", () => {
     fixture.detectChanges();
 
     // check the popup is exited
-    expect(updateSpy).toHaveBeenCalled();
+    expect(updateSpy).toHaveBeenCalledWith(3);
     expect(appMessaging.userThreads().length).toBe(0);
-    done();
   });
 });

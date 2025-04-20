@@ -75,6 +75,7 @@ describe("IconEditor", () => {
   it("should create the component", () => {
     const fixture = TestBed.createComponent(IconEditor);
     const iconEditor = fixture.componentInstance;
+
     expect(iconEditor).toBeTruthy();
   });
 
@@ -91,7 +92,7 @@ describe("IconEditor", () => {
   });
 
   // Check the icon changes when the radio button is clicked
-  it("should change icon when radio buttons are clicked", (done: DoneFn) => {
+  it("should change icon when radio buttons are clicked", () => {
     const fixture = TestBed.createComponent(IconEditor);
     const iconEditor = fixture.componentInstance;
     const iconEditorDOM = fixture.nativeElement;
@@ -111,10 +112,9 @@ describe("IconEditor", () => {
 
     // before changing icon
     expect(iconEditor.iconEditForm.controls.selectedIcon.value).toBe("dog");
-    done();
   });
 
-  it("should update the colours when clicked", (done: DoneFn) => {
+  it("should update the colours when clicked", () => {
     const fixture = TestBed.createComponent(IconEditor);
     const iconEditor = fixture.componentInstance;
     const iconEditorDOM = fixture.nativeElement;
@@ -153,10 +153,9 @@ describe("IconEditor", () => {
     fixture.detectChanges();
 
     expect(iconEditor.iconEditForm.controls.itemColour.value).toBe("#e1e1e1");
-    done();
   });
 
-  it("should make the request to change the icon", (done: DoneFn) => {
+  it("should make the request to change the icon", () => {
     const fixture = TestBed.createComponent(IconEditor);
     const iconEditor = fixture.componentInstance;
     const iconEditorDOM = fixture.nativeElement;
@@ -180,6 +179,7 @@ describe("IconEditor", () => {
 
     // after the update
     iconEditorDOM.querySelectorAll(".iconButton")[1].click();
+
     expect(updateSpy).toHaveBeenCalledWith({
       selectedIcon: "bear",
       iconColours: {
@@ -189,11 +189,11 @@ describe("IconEditor", () => {
         item: "#000000",
       },
     });
+
     expect(dismissSpy).toHaveBeenCalledWith(false);
-    done();
   });
 
-  it("should make the request to change the icon with default values if there are nonoe", (done: DoneFn) => {
+  it("should make the request to change the icon with default values if there are nonoe", () => {
     const fixture = TestBed.createComponent(IconEditor);
     const iconEditor = fixture.componentInstance;
     const iconEditorDOM = fixture.nativeElement;
@@ -210,6 +210,7 @@ describe("IconEditor", () => {
 
     // after the update
     iconEditorDOM.querySelectorAll(".iconButton")[1].click();
+
     expect(updateSpy).toHaveBeenCalledWith({
       selectedIcon: "kitty",
       iconColours: {
@@ -219,11 +220,11 @@ describe("IconEditor", () => {
         item: "#f4b56a",
       },
     });
+
     expect(dismissSpy).toHaveBeenCalledWith(false);
-    done();
   });
 
-  it("should dismiss the editor when the cancel button is clicked", (done: DoneFn) => {
+  it("should dismiss the editor when the cancel button is clicked", () => {
     const fixture = TestBed.createComponent(IconEditor);
     const iconEditor = fixture.componentInstance;
     const iconEditorDOM = fixture.nativeElement;
@@ -234,9 +235,8 @@ describe("IconEditor", () => {
     iconEditorDOM.querySelectorAll(".iconButton")[0].click();
     fixture.detectChanges();
 
-    expect(dismissSpy).toHaveBeenCalled();
+    expect(dismissSpy).toHaveBeenCalledWith();
     expect(emitSpy).toHaveBeenCalledWith(false);
-    done();
   });
 
   it("should set the default values if no value is set", () => {

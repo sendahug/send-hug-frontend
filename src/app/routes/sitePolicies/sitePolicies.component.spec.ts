@@ -87,6 +87,7 @@ describe("SitePolicies", () => {
   it("should create the component", () => {
     const fixture = TestBed.createComponent(SitePolicies);
     const sitePolicies = fixture.componentInstance;
+
     expect(sitePolicies).toBeTruthy();
   });
 

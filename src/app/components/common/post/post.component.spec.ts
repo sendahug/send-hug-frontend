@@ -134,7 +134,7 @@ describe("Post", () => {
   });
 
   // Check that sending a hug triggers the items service
-  it("should trigger items service on hug", (done: DoneFn) => {
+  it("should trigger items service on hug", () => {
     const upFixture = TestBed.createComponent(MockPage);
     upFixture.detectChanges();
     const singlePost: SinglePost = upFixture.debugElement.children[0].componentInstance;
@@ -156,12 +156,11 @@ describe("Post", () => {
 
     // after the click
     expect(singlePost.sendMessageMode()).toBeTrue();
-    expect(hugSpy).toHaveBeenCalled();
-    done();
+    expect(hugSpy).toHaveBeenCalledWith();
   });
 
   // Check that the popup is opened when clicking 'edit'
-  it("should open the popup upon editing", (done: DoneFn) => {
+  it("should open the popup upon editing", () => {
     const upFixture = TestBed.createComponent(MockPage);
     const pageDOM = upFixture.nativeElement;
     upFixture.detectChanges();
@@ -173,7 +172,7 @@ describe("Post", () => {
 
     // before the click
     expect(singlePost.editMode()).toBeFalse();
-    expect(authSpy).toHaveBeenCalled();
+    expect(authSpy).toHaveBeenCalledWith("patch:any-post");
 
     // trigger click
     pageDOM.querySelectorAll(".editButton")[0].click();
@@ -183,11 +182,10 @@ describe("Post", () => {
     expect(singlePost.editMode()).toBeTrue();
     expect(singlePost.editType).toBe("post");
     expect(singlePostDOM.querySelector("post-edit-form")).toBeTruthy();
-    done();
   });
 
   // Check that the popup is opened when clicking 'delete'
-  it("should open the popup upon deleting", (done: DoneFn) => {
+  it("should open the popup upon deleting", () => {
     const upFixture = TestBed.createComponent(MockPage);
     const pageDOM = upFixture.nativeElement;
     upFixture.detectChanges();
@@ -199,7 +197,7 @@ describe("Post", () => {
 
     // before the click
     expect(singlePost.deleteMode()).toBeFalse();
-    expect(authSpy).toHaveBeenCalled();
+    expect(authSpy).toHaveBeenCalledWith("delete:any-post");
 
     // trigger click
     pageDOM.querySelectorAll(".deleteButton")[0].click();
@@ -210,25 +208,22 @@ describe("Post", () => {
     expect(singlePost.toDelete).toBe("Post");
     expect(singlePost.itemToDelete()).toBe(1);
     expect(singlePostDOM.querySelector("item-delete-form")).toBeTruthy();
-    done();
   });
 
   // Check that the popup is opened when clicking 'report'
-  it("should open the popup upon reporting", (done: DoneFn) => {
+  it("should open the popup upon reporting", () => {
     const upFixture = TestBed.createComponent(MockPage);
     const pageDOM = upFixture.nativeElement;
     upFixture.detectChanges();
     const singlePost: SinglePost = upFixture.debugElement.children[0].componentInstance;
     const singlePostDOM = upFixture.debugElement.children[0].nativeElement;
     const authService = singlePost.authService;
-    const authSpy = spyOn(authService, "canUser").and.returnValue(true);
     const reportSpy = spyOn(singlePost, "reportPost").and.callThrough();
     authService.userData.set({ ...mockAuthedUser });
     upFixture.detectChanges();
 
     // before the click
     expect(singlePost.reportMode()).toBeFalse();
-    expect(authSpy).toHaveBeenCalled();
     expect(reportSpy).not.toHaveBeenCalled();
 
     // trigger click
@@ -238,13 +233,12 @@ describe("Post", () => {
     // after the click
     expect(singlePost.reportMode()).toBeTrue();
     expect(singlePost.reportType).toBe("Post");
-    expect(reportSpy).toHaveBeenCalled();
+    expect(reportSpy).toHaveBeenCalledWith();
     expect(singlePostDOM.querySelector("report-form")).toBeTruthy();
-    done();
   });
 
   // Check the popup exits when 'false' is emitted
-  it("should change mode when the event emitter emits false - edit mode", (done: DoneFn) => {
+  it("should change mode when the event emitter emits false - edit mode", () => {
     const upFixture = TestBed.createComponent(MockPage);
     upFixture.detectChanges();
     const singlePost: SinglePost = upFixture.debugElement.children[0].componentInstance;
@@ -262,12 +256,11 @@ describe("Post", () => {
     upFixture.detectChanges();
 
     // check the popup is exited
-    expect(changeSpy).toHaveBeenCalled();
+    expect(changeSpy).toHaveBeenCalledWith(false, "Edit");
     expect(singlePost.editMode()).toBeFalse();
-    done();
   });
 
-  it("should change mode when the event emitter emits false - delete mode", (done: DoneFn) => {
+  it("should change mode when the event emitter emits false - delete mode", () => {
     const upFixture = TestBed.createComponent(MockPage);
     upFixture.detectChanges();
     const singlePost: SinglePost = upFixture.debugElement.children[0].componentInstance;
@@ -285,12 +278,11 @@ describe("Post", () => {
     upFixture.detectChanges();
 
     // check the popup is exited
-    expect(changeSpy).toHaveBeenCalled();
+    expect(changeSpy).toHaveBeenCalledWith(false, "Delete");
     expect(singlePost.deleteMode()).toBeFalse();
-    done();
   });
 
-  it("should change mode when the event emitter emits false - report mode", (done: DoneFn) => {
+  it("should change mode when the event emitter emits false - report mode", () => {
     const upFixture = TestBed.createComponent(MockPage);
     upFixture.detectChanges();
     const singlePost: SinglePost = upFixture.debugElement.children[0].componentInstance;
@@ -308,12 +300,11 @@ describe("Post", () => {
     upFixture.detectChanges();
 
     // check the popup is exited
-    expect(changeSpy).toHaveBeenCalled();
+    expect(changeSpy).toHaveBeenCalledWith(false, "Report");
     expect(singlePost.reportMode()).toBeFalse();
-    done();
   });
 
-  it("should change mode when the event emitter emits false - message mode", (done: DoneFn) => {
+  it("should change mode when the event emitter emits false - message mode", () => {
     const upFixture = TestBed.createComponent(MockPage);
     upFixture.detectChanges();
     const singlePost: SinglePost = upFixture.debugElement.children[0].componentInstance;
@@ -331,9 +322,8 @@ describe("Post", () => {
     upFixture.detectChanges();
 
     // check the popup is exited
-    expect(changeSpy).toHaveBeenCalled();
+    expect(changeSpy).toHaveBeenCalledWith(false, "Message");
     expect(singlePost.sendMessageMode()).toBeFalse();
-    done();
   });
 
   it("toggleMenu() - should set the currently open menu to the given post's id", () => {
@@ -377,7 +367,7 @@ describe("Post", () => {
   });
 
   // check the posts' menu isn't shown if there isn't enough room for it
-  it("checkMenuSize() - shouldn't show the posts's menu if not wide enough", (done: DoneFn) => {
+  it("checkMenuSize() - shouldn't show the posts's menu if not wide enough", () => {
     const upFixture = TestBed.createComponent(MockPage);
     upFixture.detectChanges();
     const singlePost: SinglePost = upFixture.debugElement.children[0].componentInstance;
@@ -395,11 +385,10 @@ describe("Post", () => {
     expect(singlePostDOM.querySelectorAll(".subMenu")[0].classList).toContain("hidden");
     expect(singlePostDOM.querySelectorAll(".subMenu")[0].classList).toContain("float");
     expect(singlePostDOM.querySelectorAll(".menuButton")[0].classList).not.toContain("hidden");
-    done();
   });
 
   // check the posts' menu is shown if there is enough room for it
-  it("checkMenuSize() - should show the menu if it's wide enough for it", (done: DoneFn) => {
+  it("checkMenuSize() - should show the menu if it's wide enough for it", () => {
     const upFixture = TestBed.createComponent(MockPage);
     upFixture.detectChanges();
     const singlePost: SinglePost = upFixture.debugElement.children[0].componentInstance;
@@ -417,11 +406,10 @@ describe("Post", () => {
     expect(singlePostDOM.querySelectorAll(".subMenu")[0].classList).not.toContain("hidden");
     expect(singlePostDOM.querySelectorAll(".subMenu")[0].classList).not.toContain("float");
     expect(singlePostDOM.querySelectorAll(".menuButton")[0].classList).toContain("hidden");
-    done();
   });
 
   // check the posts' menu is floating if there isn't enough room for it
-  it("checkMenuSize() - should float the menu if it's wide enough for it", (done: DoneFn) => {
+  it("checkMenuSize() - should float the menu if it's wide enough for it", () => {
     const upFixture = TestBed.createComponent(MockPage);
     upFixture.detectChanges();
     const singlePost: SinglePost = upFixture.debugElement.children[0].componentInstance;
@@ -449,10 +437,9 @@ describe("Post", () => {
     expect(singlePostDOM.querySelectorAll(".subMenu")[0].classList).not.toContain("hidden");
     expect(singlePostDOM.querySelectorAll(".subMenu")[0].classList).toContain("float");
     expect(singlePostDOM.querySelectorAll(".menuButton")[0].classList).not.toContain("hidden");
-    done();
   });
 
-  it("should update the post's givenHugs and sentHugs when a hug is sent", (done: DoneFn) => {
+  it("should update the post's givenHugs and sentHugs when a hug is sent", () => {
     const upFixture = TestBed.createComponent(MockPage);
     upFixture.detectChanges();
     const singlePost = upFixture.debugElement.children[0].componentInstance;
@@ -484,10 +471,9 @@ describe("Post", () => {
       "textlessButton hugButton": true,
       active: true,
     });
-    done();
   });
 
-  it("should change update the UI when a report isn't closed - post edit", (done: DoneFn) => {
+  it("should change update the UI when a report isn't closed - post edit", () => {
     const upFixture = TestBed.createComponent(MockPage);
     upFixture.detectChanges();
     const singlePost: SinglePost = upFixture.debugElement.children[0].componentInstance;
@@ -518,12 +504,11 @@ describe("Post", () => {
     upFixture.detectChanges();
 
     // check the popup is exited
-    expect(updateSpy).toHaveBeenCalled();
+    expect(updateSpy).toHaveBeenCalledWith(reportPostResponse);
     expect(singlePost.post?.text).toBe(reportPostResponse.updatedPost.text);
-    done();
   });
 
-  it("should update the parent about the deleted post - delete mode", (done: DoneFn) => {
+  it("should update the parent about the deleted post - delete mode", () => {
     const upFixture = TestBed.createComponent(MockPage);
     upFixture.detectChanges();
     const singlePost: SinglePost = upFixture.debugElement.children[0].componentInstance;
@@ -543,6 +528,5 @@ describe("Post", () => {
 
     // check the popup is exited
     expect(emitSpy).toHaveBeenCalledWith(1);
-    done();
   });
 });

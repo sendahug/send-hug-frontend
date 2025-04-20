@@ -125,7 +125,7 @@ describe("Report", () => {
   });
 
   // Check that the correct radio button is set as selected
-  it("correctly identifies the chosen radio button", (done: DoneFn) => {
+  it("correctly identifies the chosen radio button", () => {
     const fixture = TestBed.createComponent(ReportForm);
     const popUp = fixture.componentInstance;
     const popUpDOM = fixture.nativeElement;
@@ -147,7 +147,6 @@ describe("Report", () => {
     fixture.detectChanges();
 
     // check the first option was selected
-    expect(selectSpy).toHaveBeenCalled();
     expect(selectSpy).toHaveBeenCalledWith(popUpDOM.querySelector("#pRadioOption0"));
     expect(popUp.reportForm.controls.selectedReason.value).toEqual("0");
 
@@ -156,7 +155,6 @@ describe("Report", () => {
     fixture.detectChanges();
 
     // check the second option was selected
-    expect(selectSpy).toHaveBeenCalled();
     expect(selectSpy).toHaveBeenCalledWith(popUpDOM.querySelector("#pRadioOption1"));
     expect(popUp.reportForm.controls.selectedReason.value).toEqual("1");
 
@@ -165,7 +163,6 @@ describe("Report", () => {
     fixture.detectChanges();
 
     // check the third option was selected
-    expect(selectSpy).toHaveBeenCalled();
     expect(selectSpy).toHaveBeenCalledWith(popUpDOM.querySelector("#pRadioOption2"));
     expect(popUp.reportForm.controls.selectedReason.value).toEqual("2");
 
@@ -174,10 +171,8 @@ describe("Report", () => {
     fixture.detectChanges();
 
     // check the fourth option was selected
-    expect(selectSpy).toHaveBeenCalled();
     expect(selectSpy).toHaveBeenCalledWith(popUpDOM.querySelector("#pRadioOption3"));
     expect(popUp.reportForm.controls.selectedReason.value).toEqual("3");
-    done();
   });
 
   it("checkSelectedForOther() - correctly enables/disables the 'other' text field", () => {
@@ -209,22 +204,26 @@ describe("Report", () => {
 
     popUp.checkSelectedForOther(popUpDOM.querySelector("#pRadioOption0"));
     fixture.detectChanges();
+
     expect(otherTextField.disabled).toBe(true);
 
     popUp.checkSelectedForOther(popUpDOM.querySelector("#pRadioOption1"));
     fixture.detectChanges();
+
     expect(otherTextField.disabled).toBe(true);
 
     popUp.checkSelectedForOther(popUpDOM.querySelector("#pRadioOption2"));
     fixture.detectChanges();
+
     expect(otherTextField.disabled).toBe(true);
 
     popUp.checkSelectedForOther(popUpDOM.querySelector("#pRadioOption3"));
     fixture.detectChanges();
+
     expect(otherTextField.disabled).toBe(false);
   });
 
-  it("Correctly sets the required and aria-required attributes", (done: DoneFn) => {
+  it("Correctly sets the required and aria-required attributes", () => {
     const fixture = TestBed.createComponent(ReportForm);
     const popUp = fixture.componentInstance;
     const popUpDOM = fixture.nativeElement;
@@ -243,28 +242,30 @@ describe("Report", () => {
 
     popUpDOM.querySelector("#pRadioOption0").click();
     fixture.detectChanges();
+
     expect(otherTextField.required).toBe(false);
     expect(otherTextField.getAttribute("aria-required")).toEqual("false");
 
     popUpDOM.querySelector("#pRadioOption1").click();
     fixture.detectChanges();
+
     expect(otherTextField.required).toBe(false);
     expect(otherTextField.getAttribute("aria-required")).toEqual("false");
 
     popUpDOM.querySelector("#pRadioOption3").click();
     fixture.detectChanges();
+
     expect(otherTextField.required).toBe(true);
     expect(otherTextField.getAttribute("aria-required")).toEqual("true");
 
     popUpDOM.querySelector("#pRadioOption2").click();
     fixture.detectChanges();
+
     expect(otherTextField.required).toBe(false);
     expect(otherTextField.getAttribute("aria-required")).toEqual("false");
-
-    done();
   });
 
-  it("getSelectedReasonText() - correctly sets the selected reason - posts", (done: DoneFn) => {
+  it("getSelectedReasonText() - correctly sets the selected reason - posts", () => {
     const fixture = TestBed.createComponent(ReportForm);
     const popUp = fixture.componentInstance;
     const popUpDOM = fixture.nativeElement;
@@ -280,28 +281,31 @@ describe("Report", () => {
     };
 
     fixture.detectChanges();
+
     expect(popUp.getSelectedReasonText()).toBe(undefined);
 
     popUpDOM.querySelector("#pRadioOption0").click();
     fixture.detectChanges();
+
     expect(popUp.getSelectedReasonText()).toEqual("The post is Inappropriate");
 
     popUpDOM.querySelector("#pRadioOption1").click();
     fixture.detectChanges();
+
     expect(popUp.getSelectedReasonText()).toEqual("The post is Spam");
 
     popUpDOM.querySelector("#pRadioOption2").click();
     fixture.detectChanges();
+
     expect(popUp.getSelectedReasonText()).toEqual("The post is Offensive");
 
     popUpDOM.querySelector("#pRadioOption3").click();
     fixture.detectChanges();
-    expect(popUp.getSelectedReasonText()).toEqual("other");
 
-    done();
+    expect(popUp.getSelectedReasonText()).toEqual("other");
   });
 
-  it("getSelectedReasonText() - correctly sets the selected reason - users", (done: DoneFn) => {
+  it("getSelectedReasonText() - correctly sets the selected reason - users", () => {
     const fixture = TestBed.createComponent(ReportForm);
     const popUp = fixture.componentInstance;
     const popUpDOM = fixture.nativeElement;
@@ -327,32 +331,35 @@ describe("Report", () => {
     };
 
     fixture.detectChanges();
+
     expect(popUp.getSelectedReasonText()).toBe(undefined);
 
     popUpDOM.querySelector("#pRadioOption0").click();
     fixture.detectChanges();
+
     expect(popUp.getSelectedReasonText()).toEqual("The user is posting Spam");
 
     popUpDOM.querySelector("#pRadioOption1").click();
     fixture.detectChanges();
+
     expect(popUp.getSelectedReasonText()).toEqual(
       "The user is posting harmful / dangerous content",
     );
 
     popUpDOM.querySelector("#pRadioOption2").click();
     fixture.detectChanges();
+
     expect(popUp.getSelectedReasonText()).toEqual("The user is behaving in an abusive manner");
 
     popUpDOM.querySelector("#pRadioOption3").click();
     fixture.detectChanges();
-    expect(popUp.getSelectedReasonText()).toEqual("other");
 
-    done();
+    expect(popUp.getSelectedReasonText()).toEqual("other");
   });
 
   // Check that if the user chooses 'other' as reason they can't submit an
   // empty reason
-  it("requires text if the chosen reason is other - invalid", (done: DoneFn) => {
+  it("requires text if the chosen reason is other - invalid", () => {
     const validationService = TestBed.inject(ValidationService);
     const validateSpy = spyOn(validationService, "validateItemAgainst").and.returnValue(
       (_control) => null,
@@ -390,10 +397,9 @@ describe("Report", () => {
       type: "Error",
       message: "If you choose 'other', you must specify a reason.",
     });
-    done();
   });
 
-  it("requires text if the chosen reason is other - valid", (done: DoneFn) => {
+  it("requires text if the chosen reason is other - valid", () => {
     // mock response
     const mockResponse = {
       report: {
@@ -454,6 +460,7 @@ describe("Report", () => {
       dismissed: false,
       closed: false,
     };
+
     expect(validateSpy).toHaveBeenCalledWith("reportOther");
     expect(apiClientSpy).toHaveBeenCalledWith("reports", jasmine.objectContaining(report));
     expect(alertsSpy).toHaveBeenCalledWith(`Post number 1 was successfully reported.`, {
@@ -461,11 +468,11 @@ describe("Report", () => {
       navTarget: "/",
       navText: "Home Page",
     });
+
     expect(emitSpy).toHaveBeenCalledWith(false);
-    done();
   });
 
-  it("creates the report and sends it to the itemsService - post", (done: DoneFn) => {
+  it("creates the report and sends it to the itemsService - post", () => {
     // mock response
     const mockResponse = {
       report: {
@@ -516,17 +523,18 @@ describe("Report", () => {
       dismissed: false,
       closed: false,
     };
+
     expect(apiClientSpy).toHaveBeenCalledWith("reports", jasmine.objectContaining(report));
     expect(alertsSpy).toHaveBeenCalledWith(`Post number 1 was successfully reported.`, {
       navigate: true,
       navTarget: "/",
       navText: "Home Page",
     });
+
     expect(emitSpy).toHaveBeenCalledWith(false);
-    done();
   });
 
-  it("creates the report and sends it to the itemsService - user", (done: DoneFn) => {
+  it("creates the report and sends it to the itemsService - user", () => {
     // mock response
     const mockResponse = {
       report: {
@@ -587,13 +595,14 @@ describe("Report", () => {
       dismissed: false,
       closed: false,
     };
+
     expect(apiClientSpy).toHaveBeenCalledWith("reports", jasmine.objectContaining(report));
     expect(alertsSpy).toHaveBeenCalledWith(`User 3 was successfully reported.`, {
       navigate: true,
       navTarget: "/",
       navText: "Home Page",
     });
+
     expect(emitSpy).toHaveBeenCalledWith(false);
-    done();
   });
 });

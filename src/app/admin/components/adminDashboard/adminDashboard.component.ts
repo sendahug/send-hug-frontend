@@ -43,7 +43,7 @@ import { AuthService } from "@app/services/auth.service";
   styleUrl: "./adminDashboard.component.less",
   standalone: false,
 })
-export class AdminDashboard {
+export class AdminDashboardComponent {
   screen = signal("");
   adminCategories = [
     {

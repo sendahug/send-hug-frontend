@@ -43,7 +43,7 @@ import { BehaviorSubject, of, throwError } from "rxjs";
 import { By } from "@angular/platform-browser";
 import { MockComponent, MockProvider } from "ng-mocks";
 
-import { AdminReports } from "./adminReports.component";
+import { AdminReportsComponent } from "./adminReports.component";
 import { AuthService } from "@app/services/auth.service";
 import { Loader } from "@common/loader/loader.component";
 import { mockAuthedUser } from "@tests/mockData";
@@ -58,7 +58,7 @@ import { PostGet } from "@app/interfaces/post.interface";
 
 // REPORTS PAGE
 // ==================================================================
-describe("AdminReports", () => {
+describe("AdminReportsComponent", () => {
   let mockUserReports: ReportGet[];
   let mockPostReports: ReportGet[];
 
@@ -86,7 +86,7 @@ describe("AdminReports", () => {
     TestBed.configureTestingModule({
       schemas: [NO_ERRORS_SCHEMA],
       imports: [MockLoader, MockPostEditForm, MockDeleteForm, MockEditForm, CommonModule],
-      declarations: [AdminReports],
+      declarations: [AdminReportsComponent],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
         provideRouter([]),
@@ -144,7 +144,7 @@ describe("AdminReports", () => {
         success: true,
       }),
     );
-    const fixture = TestBed.createComponent(AdminReports);
+    const fixture = TestBed.createComponent(AdminReportsComponent);
     const adminReports = fixture.componentInstance;
     const adminReportsDOM = fixture.nativeElement;
 
@@ -173,7 +173,7 @@ describe("AdminReports", () => {
     const apiClientSpy = spyOn(TestBed.inject(ApiClientService), "get").and.returnValue(
       throwError(() => new Error("ERROR")),
     );
-    const fixture = TestBed.createComponent(AdminReports);
+    const fixture = TestBed.createComponent(AdminReportsComponent);
     const adminReports = fixture.componentInstance;
     const adminReportsDOM = fixture.nativeElement;
 
@@ -199,7 +199,7 @@ describe("AdminReports", () => {
 
   it("should block a user", () => {
     // set up the spy and the component
-    const fixture = TestBed.createComponent(AdminReports);
+    const fixture = TestBed.createComponent(AdminReportsComponent);
     const adminReports = fixture.componentInstance;
     const adminReportsDOM = fixture.nativeElement;
     const blockSpy = spyOn(adminReports, "blockUser").and.callThrough();
@@ -256,7 +256,7 @@ describe("AdminReports", () => {
 
   it("should block a user but not remove the report if there's no report ID", () => {
     // set up the spy and the component
-    const fixture = TestBed.createComponent(AdminReports);
+    const fixture = TestBed.createComponent(AdminReportsComponent);
     const adminReports = fixture.componentInstance;
     const adminReportsDOM = fixture.nativeElement;
     const blockSpy = spyOn(adminReports, "blockUser").and.callThrough();
@@ -314,7 +314,7 @@ describe("AdminReports", () => {
   // Check that user editing triggers the popup
   it("should edit a user's display name", () => {
     // set up the spy and the component
-    const fixture = TestBed.createComponent(AdminReports);
+    const fixture = TestBed.createComponent(AdminReportsComponent);
     const adminReports = fixture.componentInstance;
     const adminReportsDOM = fixture.nativeElement;
     const editSpy = spyOn(adminReports, "editUser").and.callThrough();
@@ -347,7 +347,7 @@ describe("AdminReports", () => {
   // Check that post editing triggers the popup
   it("should edit a post's text", () => {
     // set up the spy and the component
-    const fixture = TestBed.createComponent(AdminReports);
+    const fixture = TestBed.createComponent(AdminReportsComponent);
     const adminReports = fixture.componentInstance;
     const adminReportsDOM = fixture.nativeElement;
     const editSpy = spyOn(adminReports, "editPost").and.callThrough();
@@ -380,7 +380,7 @@ describe("AdminReports", () => {
   // Check that deleting a post triggers the popup
   it("should delete a post", () => {
     // set up the spy and the component
-    const fixture = TestBed.createComponent(AdminReports);
+    const fixture = TestBed.createComponent(AdminReportsComponent);
     const adminReports = fixture.componentInstance;
     const adminReportsDOM = fixture.nativeElement;
     const deleteSpy = spyOn(adminReports, "deletePost").and.callThrough();
@@ -414,7 +414,7 @@ describe("AdminReports", () => {
   // Check that you can dismiss reports
   it("should dismiss post report", () => {
     // set up the spy and the component
-    const fixture = TestBed.createComponent(AdminReports);
+    const fixture = TestBed.createComponent(AdminReportsComponent);
     const adminReports = fixture.componentInstance;
     const adminReportsDOM = fixture.nativeElement;
     const dismissSpy = spyOn(adminReports, "dismissReport").and.callThrough();
@@ -457,7 +457,7 @@ describe("AdminReports", () => {
 
   it("should dismiss user report", () => {
     // set up the spy and the component
-    const fixture = TestBed.createComponent(AdminReports);
+    const fixture = TestBed.createComponent(AdminReportsComponent);
     const adminReports = fixture.componentInstance;
     const adminReportsDOM = fixture.nativeElement;
     const dismissSpy = spyOn(adminReports, "dismissReport").and.callThrough();
@@ -500,7 +500,7 @@ describe("AdminReports", () => {
 
   it("should go to the next page - user reports", () => {
     // set up the spy and the component
-    const fixture = TestBed.createComponent(AdminReports);
+    const fixture = TestBed.createComponent(AdminReportsComponent);
     const adminReports = fixture.componentInstance;
     const adminReportsDOM = fixture.nativeElement;
     const fetchSpy = spyOn(adminReports, "fetchReports");
@@ -525,7 +525,7 @@ describe("AdminReports", () => {
 
   it("should go to the next page - posts reports", () => {
     // set up the spy and the component
-    const fixture = TestBed.createComponent(AdminReports);
+    const fixture = TestBed.createComponent(AdminReportsComponent);
     const adminReports = fixture.componentInstance;
     const adminReportsDOM = fixture.nativeElement;
     const fetchSpy = spyOn(adminReports, "fetchReports");
@@ -548,7 +548,7 @@ describe("AdminReports", () => {
 
   it("should go to the previous page - user reports", () => {
     // set up the spy and the component
-    const fixture = TestBed.createComponent(AdminReports);
+    const fixture = TestBed.createComponent(AdminReportsComponent);
     const adminReports = fixture.componentInstance;
     const adminReportsDOM = fixture.nativeElement;
     const fetchSpy = spyOn(adminReports, "fetchReports");
@@ -573,7 +573,7 @@ describe("AdminReports", () => {
 
   it("should go to the previous page - posts reports", () => {
     // set up the spy and the component
-    const fixture = TestBed.createComponent(AdminReports);
+    const fixture = TestBed.createComponent(AdminReportsComponent);
     const adminReports = fixture.componentInstance;
     const adminReportsDOM = fixture.nativeElement;
     const fetchSpy = spyOn(adminReports, "fetchReports");
@@ -598,7 +598,7 @@ describe("AdminReports", () => {
 
   // Check the popup exits when 'false' is emitted
   it("should change mode when the event emitter emits false - display name edit", () => {
-    const fixture = TestBed.createComponent(AdminReports);
+    const fixture = TestBed.createComponent(AdminReportsComponent);
     const adminReports = fixture.componentInstance;
     const changeSpy = spyOn(adminReports, "changeMode").and.callThrough();
     adminReports.postReports.set([...mockPostReports]);
@@ -630,7 +630,7 @@ describe("AdminReports", () => {
   });
 
   it("should change mode when the event emitter emits false - post edit", () => {
-    const fixture = TestBed.createComponent(AdminReports);
+    const fixture = TestBed.createComponent(AdminReportsComponent);
     const adminReports = fixture.componentInstance;
     const changeSpy = spyOn(adminReports, "changeMode").and.callThrough();
     adminReports.postReports.set([...mockPostReports]);
@@ -660,7 +660,7 @@ describe("AdminReports", () => {
   });
 
   it("should change mode when the event emitter emits false - delete post", () => {
-    const fixture = TestBed.createComponent(AdminReports);
+    const fixture = TestBed.createComponent(AdminReportsComponent);
     const adminReports = fixture.componentInstance;
     const changeSpy = spyOn(adminReports, "changeMode").and.callThrough();
     adminReports.postReports.set([...mockPostReports]);
@@ -686,7 +686,7 @@ describe("AdminReports", () => {
   });
 
   it("should update the UI when the edit is done - display name edit + close report", () => {
-    const fixture = TestBed.createComponent(AdminReports);
+    const fixture = TestBed.createComponent(AdminReportsComponent);
     const adminReports = fixture.componentInstance;
     const updateSpy = spyOn(adminReports, "updateUserReport").and.callThrough();
     adminReports.userReports.set([...mockUserReports]);
@@ -726,7 +726,7 @@ describe("AdminReports", () => {
   });
 
   it("shouldn't update the UI if the report ID doesn't exist - user report", () => {
-    const fixture = TestBed.createComponent(AdminReports);
+    const fixture = TestBed.createComponent(AdminReportsComponent);
     const adminReports = fixture.componentInstance;
     const updateSpy = spyOn(adminReports, "updateUserReport").and.callThrough();
     adminReports.userReports.set([...mockUserReports]);
@@ -766,7 +766,7 @@ describe("AdminReports", () => {
   });
 
   it("should update the UI when the edit is done - display name edit + don't close report", () => {
-    const fixture = TestBed.createComponent(AdminReports);
+    const fixture = TestBed.createComponent(AdminReportsComponent);
     const adminReports = fixture.componentInstance;
     const updateSpy = spyOn(adminReports, "updateUserReport").and.callThrough();
     adminReports.userReports.set([...mockUserReports]);
@@ -807,7 +807,7 @@ describe("AdminReports", () => {
   });
 
   it("should update the UI when a report is closed - post edit", () => {
-    const fixture = TestBed.createComponent(AdminReports);
+    const fixture = TestBed.createComponent(AdminReportsComponent);
     const adminReports = fixture.componentInstance;
     const updateSpy = spyOn(adminReports, "updatePostReport").and.callThrough();
     adminReports.postReports.set([...mockPostReports]);
@@ -850,7 +850,7 @@ describe("AdminReports", () => {
   });
 
   it("shouldn't update the UI when a report doesn't exist - post edit", () => {
-    const fixture = TestBed.createComponent(AdminReports);
+    const fixture = TestBed.createComponent(AdminReportsComponent);
     const adminReports = fixture.componentInstance;
     const updateSpy = spyOn(adminReports, "updatePostReport").and.callThrough();
     adminReports.postReports.set([...mockPostReports]);
@@ -893,7 +893,7 @@ describe("AdminReports", () => {
   });
 
   it("should change update the UI when a report isn't closed - post edit", () => {
-    const fixture = TestBed.createComponent(AdminReports);
+    const fixture = TestBed.createComponent(AdminReportsComponent);
     const adminReports = fixture.componentInstance;
     const updateSpy = spyOn(adminReports, "updatePostReport").and.callThrough();
     adminReports.postReports.set([...mockPostReports]);
@@ -937,7 +937,7 @@ describe("AdminReports", () => {
   });
 
   it("should update the UI when the post is deleted - delete post", () => {
-    const fixture = TestBed.createComponent(AdminReports);
+    const fixture = TestBed.createComponent(AdminReportsComponent);
     const adminReports = fixture.componentInstance;
     const removeSpy = spyOn(adminReports, "removeReport").and.callThrough();
     adminReports.postReports.set([...mockPostReports]);

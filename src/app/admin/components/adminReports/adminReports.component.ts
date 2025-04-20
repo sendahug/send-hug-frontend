@@ -52,7 +52,7 @@ import { PostGet } from "@app/interfaces/post.interface";
   templateUrl: "./adminReports.component.html",
   standalone: false,
 })
-export class AdminReports {
+export class AdminReportsComponent {
   postReports = signal<ReportGet[]>([]);
   userReports = signal<ReportGet[]>([]);
   totalPostReportsPages = signal(1);

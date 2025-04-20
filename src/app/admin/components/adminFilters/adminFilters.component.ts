@@ -46,7 +46,7 @@ import { GetFiltersResponse, AddFiltersResponse, DeleteFiltersResponse } from "@
   templateUrl: "./adminFilters.component.html",
   standalone: false,
 })
-export class AdminFilters {
+export class AdminFiltersComponent {
   filteredPhrases = signal<{ id: number; filter: string }[]>([]);
   currentPage = signal(1);
   totalPages = signal(1);

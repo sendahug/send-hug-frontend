@@ -47,7 +47,7 @@ import { type BlockUserResponse } from "@app/interfaces/api";
   templateUrl: "./adminBlocks.component.html",
   standalone: false,
 })
-export class AdminBlocks {
+export class AdminBlocksComponent {
   blockedUsers = signal<BlockedUser[]>([]);
   currentPage = signal(1);
   totalPages = signal(1);

@@ -49,7 +49,7 @@ interface ErrorMessage {
   standalone: true,
   imports: [CommonModule, FontAwesomeModule],
 })
-export class ErrorPage {
+export class ErrorPageComponent {
   // Error message to display onscreen
   error = signal<ErrorMessage>({
     title: "Sorry!",

@@ -59,7 +59,7 @@ import { PasswordResetFormComponent } from "@forms/passwordResetForm/passwordRes
     PasswordResetFormComponent,
   ],
 })
-export class LoginPage {
+export class LoginPageComponent {
   isNewUser = signal<boolean>(false);
   signInUpTitle = computed(() => (this.isNewUser() ? "Sign up" : "Sign in"));
   loginForm = this.fb.group({

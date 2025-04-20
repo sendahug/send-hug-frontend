@@ -52,7 +52,7 @@ import { type PostsListResponse } from "@app/interfaces/api";
   standalone: true,
   imports: [CommonModule, PostComponent, LoaderComponent],
 })
-export class FullList {
+export class FullListComponent {
   // current page and type of list
   type = signal<FullListType>("New");
   currentPage = signal(1);

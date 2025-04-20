@@ -63,7 +63,7 @@ import { MessagesResponse, ThreadResponse } from "@app/interfaces/api";
     ThreadComponent,
   ],
 })
-export class AppMessaging {
+export class AppMessagesComponent {
   messType = signal<MessageType>("inbox");
   idbFilterAttribute = computed(() => {
     if (this.messType() == "thread") {

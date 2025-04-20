@@ -54,7 +54,7 @@ import { type PostCreateResponse } from "@app/interfaces/api";
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
 })
-export class NewItem implements OnInit {
+export class NewItemComponent implements OnInit {
   // variable declaration
   itemType = signal<string>("");
   forID = signal<number | undefined>(undefined);

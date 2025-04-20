@@ -48,7 +48,7 @@ interface AboutLink {
   standalone: true,
   imports: [RouterLink, NgFor],
 })
-export class AboutApp {
+export class AboutAppComponent {
   aboutLinks = signal<AboutLink[]>([]);
 
   // CTOR

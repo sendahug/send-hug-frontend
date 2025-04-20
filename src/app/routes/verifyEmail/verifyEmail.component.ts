@@ -43,7 +43,7 @@ import { LoaderComponent } from "@common/loader/loader.component";
   standalone: true,
   imports: [CommonModule, LoaderComponent],
 })
-export class VerifyEmailPage implements OnInit {
+export class VerifyEmailPageComponent implements OnInit {
   loadingAuth = signal(true);
 
   constructor(

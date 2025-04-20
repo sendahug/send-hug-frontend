@@ -69,7 +69,7 @@ import { type ReportType } from "@app/interfaces/report.interface";
     MyPostsComponent,
   ],
 })
-export class UserPage implements OnDestroy {
+export class UserPageComponent implements OnDestroy {
   isLoading = signal(false);
   isIdbFetchLoading = signal(false);
   otherUser = signal<OtherUser | undefined>(undefined);

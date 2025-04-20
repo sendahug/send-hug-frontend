@@ -44,7 +44,7 @@ import { PolicyType, SitePolicyMapping } from "@app/interfaces/policies.interfac
   standalone: true,
   imports: [CommonModule],
 })
-export class SitePolicies {
+export class SitePoliciesComponent {
   currentPolicy = signal<PolicyType>("TermsConditions");
   pageTitle = signal<string>("");
 

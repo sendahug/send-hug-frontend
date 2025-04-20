@@ -49,7 +49,7 @@ import { By } from "@angular/platform-browser";
 import { NO_ERRORS_SCHEMA, provideZoneChangeDetection, signal } from "@angular/core";
 import { MockComponent, MockProvider } from "ng-mocks";
 
-import { AppMessaging } from "./messages.component";
+import { AppMessagesComponent } from "./messages.component";
 import { AuthService } from "@app/services/auth.service";
 import { mockAuthedUser } from "@tests/mockData";
 import { FullThread } from "@app/interfaces/thread.interface";
@@ -60,7 +60,7 @@ import { LoaderComponent } from "@common/loader/loader.component";
 import { MessageComponent } from "@app/components/messaging/message/message.component";
 import { ThreadComponent } from "@app/components/messaging/thread/thread.component";
 
-describe("AppMessaging", () => {
+describe("AppMessagesComponent", () => {
   let mockMessages: MessageGet[];
   let mockThreads: FullThread[];
 
@@ -86,7 +86,7 @@ describe("AppMessaging", () => {
         ThreadComponent,
         RouterLink,
         CommonModule,
-        AppMessaging,
+        AppMessagesComponent,
         MessageComponent,
       ],
       providers: [
@@ -101,25 +101,25 @@ describe("AppMessaging", () => {
                 {
                   path: "inbox",
                   pathMatch: "prefix",
-                  component: AppMessaging,
+                  component: AppMessagesComponent,
                   data: { name: "Inbox" },
                 },
                 {
                   path: "outbox",
                   pathMatch: "prefix",
-                  component: AppMessaging,
+                  component: AppMessagesComponent,
                   data: { name: "Outbox" },
                 },
                 {
                   path: "threads",
                   pathMatch: "prefix",
-                  component: AppMessaging,
+                  component: AppMessagesComponent,
                   data: { name: "Threads" },
                 },
                 {
                   path: "thread/:id",
                   pathMatch: "prefix",
-                  component: AppMessaging,
+                  component: AppMessagesComponent,
                   data: { name: "Thread" },
                 },
               ],
@@ -204,7 +204,7 @@ describe("AppMessaging", () => {
 
   // Check that the component is created
   it("should create the component", () => {
-    const fixture = TestBed.createComponent(AppMessaging);
+    const fixture = TestBed.createComponent(AppMessagesComponent);
     const appMessaging = fixture.componentInstance;
 
     expect(appMessaging).toBeTruthy();
@@ -212,7 +212,7 @@ describe("AppMessaging", () => {
 
   // Check that the component loads the inbox if no mailbox is specified
   it("should load the inbox by default", () => {
-    const fixture = TestBed.createComponent(AppMessaging);
+    const fixture = TestBed.createComponent(AppMessagesComponent);
     const appMessaging = fixture.componentInstance;
 
     expect(appMessaging.messType()).toBe("inbox");
@@ -220,14 +220,14 @@ describe("AppMessaging", () => {
 
   // Check that the popup variables are set to false
   it("should have all popup variables set to false", () => {
-    const fixture = TestBed.createComponent(AppMessaging);
+    const fixture = TestBed.createComponent(AppMessagesComponent);
     const appMessaging = fixture.componentInstance;
 
     expect(appMessaging.deleteMode()).toBeFalse();
   });
 
   it("should fetch messages from the server", () => {
-    const fixture = TestBed.createComponent(AppMessaging);
+    const fixture = TestBed.createComponent(AppMessagesComponent);
     const appMessaging = fixture.componentInstance;
     const idbFetchSpy = spyOn(appMessaging, "fetchMessagesFromIdb").and.returnValue(
       of({ messages: [], total_pages: 1, current_page: 1, success: true }),
@@ -260,7 +260,7 @@ describe("AppMessaging", () => {
   });
 
   it("should add the thread ID param to the fetch if the message type is thread", () => {
-    const fixture = TestBed.createComponent(AppMessaging);
+    const fixture = TestBed.createComponent(AppMessagesComponent);
     const appMessaging = fixture.componentInstance;
     appMessaging.messType.set("thread");
     appMessaging.threadId.set(4);
@@ -284,7 +284,7 @@ describe("AppMessaging", () => {
   });
 
   it("should fetch messages from IDB - inbox", (done: DoneFn) => {
-    const fixture = TestBed.createComponent(AppMessaging);
+    const fixture = TestBed.createComponent(AppMessagesComponent);
     const appMessaging = fixture.componentInstance;
     const idbSpy = spyOn(appMessaging["swManager"], "fetchMessages").and.returnValue(
       new Promise((resolve) => resolve({ messages: mockMessages, pages: 2 })),
@@ -309,7 +309,7 @@ describe("AppMessaging", () => {
   it("should fetch messages from IDB - outbox", (done: DoneFn) => {
     TestBed.inject(ActivatedRoute).url = of([{ path: "outbox" } as UrlSegment]);
 
-    const fixture = TestBed.createComponent(AppMessaging);
+    const fixture = TestBed.createComponent(AppMessagesComponent);
     const appMessaging = fixture.componentInstance;
     const idbSpy = spyOn(appMessaging["swManager"], "fetchMessages").and.returnValue(
       new Promise((resolve) => resolve({ messages: mockMessages, pages: 2 })),
@@ -336,7 +336,7 @@ describe("AppMessaging", () => {
       { path: "thread" } as UrlSegment,
       { path: "2" } as UrlSegment,
     ]);
-    const fixture = TestBed.createComponent(AppMessaging);
+    const fixture = TestBed.createComponent(AppMessagesComponent);
     const appMessaging = fixture.componentInstance;
     appMessaging.messType.set("thread");
     appMessaging.threadId.set(2);
@@ -361,7 +361,7 @@ describe("AppMessaging", () => {
   });
 
   it("should fetch threads from the server", () => {
-    const fixture = TestBed.createComponent(AppMessaging);
+    const fixture = TestBed.createComponent(AppMessagesComponent);
     const appMessaging = fixture.componentInstance;
     appMessaging.messType.set("threads");
     const idbFetchSpy = spyOn(appMessaging, "fetchThreadsFromIdb").and.returnValue(
@@ -395,7 +395,7 @@ describe("AppMessaging", () => {
   });
 
   it("should fetch threads from IDB", (done: DoneFn) => {
-    const fixture = TestBed.createComponent(AppMessaging);
+    const fixture = TestBed.createComponent(AppMessagesComponent);
     const appMessaging = fixture.componentInstance;
     const idbSpy = spyOn(appMessaging["swManager"], "queryThreads").and.returnValue(
       new Promise((resolve) => resolve({ messages: mockThreads, pages: 2 })),
@@ -418,7 +418,7 @@ describe("AppMessaging", () => {
 
   it("should navigate to the next page - messages", () => {
     TestBed.inject(ActivatedRoute).url = of([{ path: "inbox" } as UrlSegment]);
-    const fixture = TestBed.createComponent(AppMessaging);
+    const fixture = TestBed.createComponent(AppMessagesComponent);
     const appMessaging = fixture.componentInstance;
     const appMessagingDOM = fixture.nativeElement;
     const fetchSpy = spyOn(appMessaging, "fetchMessages");
@@ -436,7 +436,7 @@ describe("AppMessaging", () => {
 
   it("should navigate to the next page - threads", () => {
     TestBed.inject(ActivatedRoute).url = of([{ path: "threads" } as UrlSegment]);
-    const fixture = TestBed.createComponent(AppMessaging);
+    const fixture = TestBed.createComponent(AppMessagesComponent);
     const appMessaging = fixture.componentInstance;
     const appMessagingDOM = fixture.nativeElement;
     const fetchSpy = spyOn(appMessaging, "fetchThreads");
@@ -454,7 +454,7 @@ describe("AppMessaging", () => {
 
   it("should navigate to the previous page", () => {
     TestBed.inject(ActivatedRoute).url = of([{ path: "inbox" } as UrlSegment]);
-    const fixture = TestBed.createComponent(AppMessaging);
+    const fixture = TestBed.createComponent(AppMessagesComponent);
     const appMessaging = fixture.componentInstance;
     const appMessagingDOM = fixture.nativeElement;
     const fetchSpy = spyOn(appMessaging, "fetchMessages");
@@ -473,7 +473,7 @@ describe("AppMessaging", () => {
 
   it("should navigate to the previous page - threads", () => {
     TestBed.inject(ActivatedRoute).url = of([{ path: "threads" } as UrlSegment]);
-    const fixture = TestBed.createComponent(AppMessaging);
+    const fixture = TestBed.createComponent(AppMessagesComponent);
     const appMessaging = fixture.componentInstance;
     const appMessagingDOM = fixture.nativeElement;
     const fetchSpy = spyOn(appMessaging, "fetchThreads");
@@ -493,7 +493,7 @@ describe("AppMessaging", () => {
   // // Check that deleting all messages triggers the popup
   it("should trigger the popup upon deleting all", () => {
     TestBed.inject(ActivatedRoute).url = of([{ path: "inbox" } as UrlSegment]);
-    const fixture = TestBed.createComponent(AppMessaging);
+    const fixture = TestBed.createComponent(AppMessagesComponent);
     const appMessaging = fixture.componentInstance;
     const appMessagingDOM = fixture.nativeElement;
     appMessaging.messages.set(mockMessages);
@@ -517,7 +517,7 @@ describe("AppMessaging", () => {
   // Check the popup exits when 'false' is emitted
   it("should change mode when the event emitter emits false", () => {
     TestBed.inject(ActivatedRoute).url = of([{ path: "inbox" } as UrlSegment]);
-    const fixture = TestBed.createComponent(AppMessaging);
+    const fixture = TestBed.createComponent(AppMessagesComponent);
     const appMessaging = fixture.componentInstance;
     const changeSpy = spyOn(appMessaging, "changeMode").and.callThrough();
     appMessaging.messages.set(mockMessages);
@@ -542,7 +542,7 @@ describe("AppMessaging", () => {
 
   it("should update the message list post delete - single message", () => {
     TestBed.inject(ActivatedRoute).url = of([{ path: "inbox" } as UrlSegment]);
-    const fixture = TestBed.createComponent(AppMessaging);
+    const fixture = TestBed.createComponent(AppMessagesComponent);
     const appMessaging = fixture.componentInstance;
     const updateSpy = spyOn(appMessaging, "updateMessageList").and.callThrough();
     spyOn(appMessaging, "fetchMessages");
@@ -563,7 +563,7 @@ describe("AppMessaging", () => {
 
   it("should update the message list post delete - single thread", () => {
     TestBed.inject(ActivatedRoute).url = of([{ path: "Threads" } as UrlSegment]);
-    const fixture = TestBed.createComponent(AppMessaging);
+    const fixture = TestBed.createComponent(AppMessagesComponent);
     const appMessaging = fixture.componentInstance;
     const updateSpy = spyOn(appMessaging, "updateMessageList").and.callThrough();
     spyOn(appMessaging, "fetchMessages");
@@ -584,7 +584,7 @@ describe("AppMessaging", () => {
 
   it("should update the message list post delete - all messages", () => {
     TestBed.inject(ActivatedRoute).url = of([{ path: "inbox" } as UrlSegment]);
-    const fixture = TestBed.createComponent(AppMessaging);
+    const fixture = TestBed.createComponent(AppMessagesComponent);
     const appMessaging = fixture.componentInstance;
     const updateSpy = spyOn(appMessaging, "updateMessageList").and.callThrough();
     spyOn(appMessaging, "fetchMessages");
@@ -611,7 +611,7 @@ describe("AppMessaging", () => {
 
   it("should update the message list post delete - all threads", () => {
     TestBed.inject(ActivatedRoute).url = of([{ path: "Threads" } as UrlSegment]);
-    const fixture = TestBed.createComponent(AppMessaging);
+    const fixture = TestBed.createComponent(AppMessagesComponent);
     const appMessaging = fixture.componentInstance;
     const updateSpy = spyOn(appMessaging, "updateMessageList").and.callThrough();
     spyOn(appMessaging, "fetchMessages");

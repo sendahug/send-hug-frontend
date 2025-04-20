@@ -45,7 +45,7 @@ import { AuthService } from "@app/services/auth.service";
   standalone: true,
   imports: [ReactiveFormsModule, CommonModule, RouterLink],
 })
-export class SignUpPage {
+export class SignUpPageComponent {
   signUpForm = this.fb.group({
     displayName: ["", [Validators.required, Validators.maxLength(50)]],
     acceptedTerms: [false, [Validators.requiredTrue]],

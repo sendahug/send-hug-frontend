@@ -50,7 +50,7 @@ import { UserIconComponent } from "@common/userIcon/userIcon.component";
   standalone: true,
   imports: [CommonModule, IconEditorComponent, UserIconComponent, ReactiveFormsModule, RouterLink],
 })
-export class SettingsPage {
+export class SettingsPageComponent {
   editIcon = signal(false);
   editSettingsForm = this.fb.group({
     enableNotifications: [false],

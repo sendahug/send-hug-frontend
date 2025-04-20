@@ -43,7 +43,7 @@ import { provideZoneChangeDetection } from "@angular/core";
 import { MockProvider } from "ng-mocks";
 import { BehaviorSubject } from "rxjs";
 
-import { SiteMap } from "./siteMap.component";
+import { SiteMapComponent } from "./siteMap.component";
 import { AuthService } from "@app/services/auth.service";
 import { mockAuthedUser } from "@tests/mockData";
 
@@ -66,7 +66,7 @@ class MockComp {
   }
 }
 
-describe("SiteMap", () => {
+describe("SiteMapComponent", () => {
   let routes: Routes = [];
 
   // Before each test, configure testing environment
@@ -97,7 +97,7 @@ describe("SiteMap", () => {
         data: { name: "User Page", mapRoutes: [{ path: "", name: "Your Page" }] },
       },
       { path: "settings", component: MockComp, data: { name: "Settings Page" } },
-      { path: "sitemap", component: SiteMap, data: { name: "Site Map" } },
+      { path: "sitemap", component: SiteMapComponent, data: { name: "Site Map" } },
       { path: "**", component: MockComp, data: { name: "Error Page" } },
       {
         path: "admin",
@@ -159,7 +159,7 @@ describe("SiteMap", () => {
     ];
 
     TestBed.configureTestingModule({
-      imports: [CommonModule, RouterLink, MockComp, SiteMap],
+      imports: [CommonModule, RouterLink, MockComp, SiteMapComponent],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
         provideZoneChangeDetection({ eventCoalescing: true }),
@@ -174,7 +174,7 @@ describe("SiteMap", () => {
 
   // Check the page is created
   it("should create the component", () => {
-    const fixture = TestBed.createComponent(SiteMap);
+    const fixture = TestBed.createComponent(SiteMapComponent);
     const siteMap = fixture.componentInstance;
 
     expect(siteMap).toBeTruthy();
@@ -182,7 +182,7 @@ describe("SiteMap", () => {
 
   // Check that there are valid navigation links
   it("should contain valid navigation links", () => {
-    const fixture = TestBed.createComponent(SiteMap);
+    const fixture = TestBed.createComponent(SiteMapComponent);
     const siteMap = fixture.componentInstance;
     const siteMapDOM = fixture.nativeElement;
     fixture.detectChanges();
@@ -207,7 +207,7 @@ describe("SiteMap", () => {
     const authService = TestBed.inject(AuthService);
     const authSpy = spyOn(authService, "canUser").and.returnValue(true);
     authService.authenticated.set(true);
-    const fixture = TestBed.createComponent(SiteMap);
+    const fixture = TestBed.createComponent(SiteMapComponent);
     const siteMap = fixture.componentInstance;
     const siteMapDOM = fixture.nativeElement;
     fixture.detectChanges();
@@ -258,7 +258,7 @@ describe("SiteMap", () => {
     const authService = TestBed.inject(AuthService);
     const authSpy = spyOn(authService, "canUser").and.returnValue(false);
     authService.authenticated.set(true);
-    const fixture = TestBed.createComponent(SiteMap);
+    const fixture = TestBed.createComponent(SiteMapComponent);
     const siteMap = fixture.componentInstance;
     const siteMapDOM = fixture.nativeElement;
     fixture.detectChanges();
@@ -301,7 +301,7 @@ describe("SiteMap", () => {
   it("should remove the login route if the user is authenticated", () => {
     const authService = TestBed.inject(AuthService);
     spyOn(authService, "authenticated").and.returnValue(true);
-    const fixture = TestBed.createComponent(SiteMap);
+    const fixture = TestBed.createComponent(SiteMapComponent);
     const siteMap = fixture.componentInstance;
     const siteMapDOM = fixture.nativeElement;
     fixture.detectChanges();
@@ -319,7 +319,7 @@ describe("SiteMap", () => {
   it("should keep the login route if the user is not authenticated", () => {
     const authService = TestBed.inject(AuthService);
     spyOn(authService, "authenticated").and.returnValue(false);
-    const fixture = TestBed.createComponent(SiteMap);
+    const fixture = TestBed.createComponent(SiteMapComponent);
     const siteMap = fixture.componentInstance;
     const siteMapDOM = fixture.nativeElement;
     fixture.detectChanges();
@@ -335,7 +335,7 @@ describe("SiteMap", () => {
   it("should update the site map if the user authenticates after the component is created", () => {
     const authService = TestBed.inject(AuthService);
     authService.authenticated.set(false);
-    const fixture = TestBed.createComponent(SiteMap);
+    const fixture = TestBed.createComponent(SiteMapComponent);
     const siteMap = fixture.componentInstance;
     const siteMapDOM = fixture.nativeElement;
     fixture.detectChanges();

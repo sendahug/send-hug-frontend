@@ -51,7 +51,7 @@ import { type MainPageResponse } from "@app/interfaces/api";
   standalone: true,
   imports: [CommonModule, LoaderComponent, PostComponent, RouterLink],
 })
-export class MainPage {
+export class MainPageComponent {
   isLoading = signal(false);
   newPosts: WritableSignal<PostGet[]> = signal([]);
   suggestedPosts: WritableSignal<PostGet[]> = signal([]);

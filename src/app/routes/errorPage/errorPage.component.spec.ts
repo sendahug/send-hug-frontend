@@ -42,16 +42,16 @@ import { provideZoneChangeDetection } from "@angular/core";
 import { provideRouter } from "@angular/router";
 
 // App imports
-import { ErrorPage } from "./errorPage.component";
+import { ErrorPageComponent } from "./errorPage.component";
 
-describe("ErrorPage", () => {
+describe("ErrorPageComponent", () => {
   // Before each test, configure testing environment
   beforeEach(() => {
     TestBed.resetTestEnvironment();
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
-      imports: [FontAwesomeModule, CommonModule, ErrorPage],
+      imports: [FontAwesomeModule, CommonModule, ErrorPageComponent],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
         provideZoneChangeDetection({ eventCoalescing: true }),
@@ -62,7 +62,7 @@ describe("ErrorPage", () => {
 
   // Check that the component is created
   it("should create the component", () => {
-    const fixture = TestBed.createComponent(ErrorPage);
+    const fixture = TestBed.createComponent(ErrorPageComponent);
     const errorPage = fixture.componentInstance;
 
     expect(errorPage).toBeTruthy();
@@ -70,7 +70,7 @@ describe("ErrorPage", () => {
 
   // Check that the error page has the right error message
   it("should have an error message", () => {
-    const fixture = TestBed.createComponent(ErrorPage);
+    const fixture = TestBed.createComponent(ErrorPageComponent);
     const errorPage = fixture.componentInstance;
     const errorPageDOM = fixture.nativeElement;
     const error = {
@@ -88,7 +88,7 @@ describe("ErrorPage", () => {
 
   // Check that the 'back' method is called when clicking the back button
   it("should call back method when clicking the back button", () => {
-    const fixture = TestBed.createComponent(ErrorPage);
+    const fixture = TestBed.createComponent(ErrorPageComponent);
     const errorPage = fixture.componentInstance;
     const errorPageDOM = fixture.nativeElement;
     const backSpy = spyOn(errorPage, "goBack").and.callThrough();

@@ -47,7 +47,7 @@ import { PostComponent } from "@common/post/post.component";
   standalone: true,
   imports: [CommonModule, LoaderComponent, PostComponent, RouterLink],
 })
-export class SearchResults {
+export class SearchResultsComponent {
   searchQuery = signal<string | null>(null);
 
   // CTOR

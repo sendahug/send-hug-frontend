@@ -43,10 +43,10 @@ import { provideZoneChangeDetection } from "@angular/core";
 import { MockProvider } from "ng-mocks";
 import { Subscription } from "rxjs";
 
-import { SearchForm } from "./searchForm.component";
+import { SearchFormComponent } from "./searchForm.component";
 import { ItemsService } from "@app/services/items.service";
 
-describe("SearchForm", () => {
+describe("SearchFormComponent", () => {
   beforeEach(() => {
     const MockItemsService = MockProvider(ItemsService, {
       sendSearch: (_search) => new Subscription(),
@@ -56,7 +56,7 @@ describe("SearchForm", () => {
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
-      imports: [CommonModule, ReactiveFormsModule, FontAwesomeModule, SearchForm],
+      imports: [CommonModule, ReactiveFormsModule, FontAwesomeModule, SearchFormComponent],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
         provideZoneChangeDetection({ eventCoalescing: true }),
@@ -68,7 +68,7 @@ describe("SearchForm", () => {
 
   // Check that the app is created
   it("should create the search form", () => {
-    const fixture = TestBed.createComponent(SearchForm);
+    const fixture = TestBed.createComponent(SearchFormComponent);
     const searchForm = fixture.componentInstance;
 
     expect(searchForm).toBeTruthy();
@@ -76,7 +76,7 @@ describe("SearchForm", () => {
 
   // Check that clicking 'search' triggers the ItemsService
   it("should pass search query to the ItemsService when clicking search", () => {
-    const fixture = TestBed.createComponent(SearchForm);
+    const fixture = TestBed.createComponent(SearchFormComponent);
     fixture.autoDetectChanges();
     const searchForm = fixture.componentInstance;
     const searchFormHtml = fixture.nativeElement;
@@ -103,7 +103,7 @@ describe("SearchForm", () => {
 
   // Check that an empty search query isn't allowed
   it("should prevent empty searches", () => {
-    const fixture = TestBed.createComponent(SearchForm);
+    const fixture = TestBed.createComponent(SearchFormComponent);
     fixture.autoDetectChanges();
     const searchForm = fixture.componentInstance;
     const searchFormHtml = fixture.nativeElement;
@@ -130,7 +130,7 @@ describe("SearchForm", () => {
   });
 
   it("toggleSearch() - emits false to close the search", () => {
-    const fixture = TestBed.createComponent(SearchForm);
+    const fixture = TestBed.createComponent(SearchFormComponent);
     fixture.detectChanges();
     const searchForm = fixture.componentInstance;
     const searchFormHtml = fixture.nativeElement;

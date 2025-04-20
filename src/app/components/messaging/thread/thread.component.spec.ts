@@ -42,12 +42,12 @@ import { By } from "@angular/platform-browser";
 import { NO_ERRORS_SCHEMA, provideZoneChangeDetection } from "@angular/core";
 import { MockComponent } from "ng-mocks";
 
-import { AppSingleThread } from "./thread.component";
+import { ThreadComponent } from "./thread.component";
 import { ItemDeleteFormComponent } from "@forms/itemDeleteForm/itemDeleteForm.component";
 import { UserIconComponent } from "@common/userIcon/userIcon.component";
 import { type ParsedThread } from "@app/interfaces/thread.interface";
 
-describe("AppSingleThread", () => {
+describe("ThreadComponent", () => {
   let mockThread: ParsedThread;
 
   // Before each test, configure testing environment
@@ -65,7 +65,7 @@ describe("AppSingleThread", () => {
         MockUserIconComponent,
         RouterLink,
         CommonModule,
-        AppSingleThread,
+        ThreadComponent,
       ],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
@@ -94,7 +94,7 @@ describe("AppSingleThread", () => {
 
   // Check that the component is created
   it("should create the component", () => {
-    const fixture = TestBed.createComponent(AppSingleThread);
+    const fixture = TestBed.createComponent(ThreadComponent);
     fixture.componentRef.setInput("thread", mockThread);
     const appThread = fixture.componentInstance;
 
@@ -103,7 +103,7 @@ describe("AppSingleThread", () => {
 
   // Check that the component loads the inbox if no mailbox is specified
   it("should show the thread details", () => {
-    const fixture = TestBed.createComponent(AppSingleThread);
+    const fixture = TestBed.createComponent(ThreadComponent);
     fixture.componentRef.setInput("thread", mockThread);
     const appThreadDOM = fixture.nativeElement;
     fixture.detectChanges();
@@ -117,7 +117,7 @@ describe("AppSingleThread", () => {
 
   // Check that the popup variables are set to false
   it("should have all popup variables set to false", () => {
-    const fixture = TestBed.createComponent(AppSingleThread);
+    const fixture = TestBed.createComponent(ThreadComponent);
     fixture.componentRef.setInput("thread", mockThread);
     const appThread = fixture.componentInstance;
     fixture.detectChanges();
@@ -127,7 +127,7 @@ describe("AppSingleThread", () => {
 
   // Check deleting a single message triggers the poppup
   it("should trigger the popup upon delete", () => {
-    const fixture = TestBed.createComponent(AppSingleThread);
+    const fixture = TestBed.createComponent(ThreadComponent);
     const appThread = fixture.componentInstance;
     const appThreadDOM = fixture.nativeElement;
     fixture.componentRef.setInput("thread", mockThread);
@@ -148,7 +148,7 @@ describe("AppSingleThread", () => {
 
   // Check the popup exits when 'false' is emitted
   it("should change mode when the event emitter emits false", () => {
-    const fixture = TestBed.createComponent(AppSingleThread);
+    const fixture = TestBed.createComponent(ThreadComponent);
     fixture.componentRef.setInput("thread", mockThread);
     const appThread = fixture.componentInstance;
     const changeSpy = spyOn(appThread, "changeMode").and.callThrough();
@@ -173,7 +173,7 @@ describe("AppSingleThread", () => {
 
   // Check each message has delete button and reply link
   it("should have the relevant buttons for each message", () => {
-    const fixture = TestBed.createComponent(AppSingleThread);
+    const fixture = TestBed.createComponent(ThreadComponent);
     const appThreadDOM = fixture.nativeElement;
     fixture.componentRef.setInput("thread", mockThread);
     fixture.detectChanges();

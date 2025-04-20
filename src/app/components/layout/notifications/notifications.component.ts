@@ -51,7 +51,7 @@ import { type UpdateNotificationsResponse } from "@app/interfaces/api";
   standalone: true,
   imports: [CommonModule, FontAwesomeModule, RouterLink],
 })
-export class NotificationsTab implements OnInit {
+export class NotificationsTabComponent implements OnInit {
   // indicates whether notifications panel is still required
   @Output() NotificationsMode = new EventEmitter<boolean>();
   focusableElements!: NodeListOf<HTMLElement>;

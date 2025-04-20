@@ -44,7 +44,7 @@ import { By } from "@angular/platform-browser";
 import { NO_ERRORS_SCHEMA } from "@angular/core";
 import { MockComponent, MockProvider } from "ng-mocks";
 
-import { MyPosts } from "./myPosts.component";
+import { MyPostsComponent } from "./myPosts.component";
 import { AuthService } from "@app/services/auth.service";
 import { mockAuthedUser } from "@tests/mockData";
 import { type PostGet } from "@app/interfaces/post.interface";
@@ -64,7 +64,7 @@ import { SWManager } from "@app/services/sWManager.service";
     </div>
   `,
   standalone: true,
-  imports: [MyPosts],
+  imports: [MyPostsComponent],
 })
 class MockUserPage {
   userId: number;
@@ -76,7 +76,7 @@ class MockUserPage {
 
 // Sub-component testing
 // ==================================================
-describe("MyPosts", () => {
+describe("MyPostsComponent", () => {
   let mockPosts: PostGet[];
 
   // Before each test, configure testing environment
@@ -96,7 +96,7 @@ describe("MyPosts", () => {
 
     TestBed.configureTestingModule({
       schemas: [NO_ERRORS_SCHEMA],
-      imports: [MockItemDeleteFormComponent, PostComponent, MyPosts, MockUserPage],
+      imports: [MockItemDeleteFormComponent, PostComponent, MyPostsComponent, MockUserPage],
       declarations: [],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
@@ -134,7 +134,8 @@ describe("MyPosts", () => {
     const upFixture = TestBed.createComponent(MockUserPage);
     const userPage = upFixture.componentInstance;
     upFixture.detectChanges();
-    const myPosts: MyPosts = upFixture.debugElement.children[0].children[0].componentInstance;
+    const myPosts: MyPostsComponent =
+      upFixture.debugElement.children[0].children[0].componentInstance;
 
     expect(userPage).toBeTruthy();
     expect(myPosts).toBeTruthy();
@@ -144,7 +145,8 @@ describe("MyPosts", () => {
   it("should have all popup variables set to false", () => {
     const upFixture = TestBed.createComponent(MockUserPage);
     upFixture.detectChanges();
-    const myPosts: MyPosts = upFixture.debugElement.children[0].children[0].componentInstance;
+    const myPosts: MyPostsComponent =
+      upFixture.debugElement.children[0].children[0].componentInstance;
 
     expect(myPosts.deleteMode()).toBeFalse();
   });
@@ -155,7 +157,8 @@ describe("MyPosts", () => {
     const userPage = upFixture.componentInstance;
     userPage.userId = 1;
     upFixture.detectChanges();
-    const myPosts: MyPosts = upFixture.debugElement.children[0].children[0].componentInstance;
+    const myPosts: MyPostsComponent =
+      upFixture.debugElement.children[0].children[0].componentInstance;
 
     expect(myPosts.userID).toBe(1);
     expect(myPosts.user()).toBe("other");
@@ -166,7 +169,8 @@ describe("MyPosts", () => {
     const userPage = upFixture.componentInstance;
     userPage.userId = 1;
     upFixture.detectChanges();
-    const myPosts: MyPosts = upFixture.debugElement.children[0].children[0].componentInstance;
+    const myPosts: MyPostsComponent =
+      upFixture.debugElement.children[0].children[0].componentInstance;
     const fetchSpy = spyOn(myPosts, "fetchPosts");
 
     myPosts.ngOnInit();
@@ -175,7 +179,7 @@ describe("MyPosts", () => {
   });
 
   it("should set the user ID to the logged in user's ID if no ID is provided", () => {
-    const fixture = TestBed.createComponent(MyPosts);
+    const fixture = TestBed.createComponent(MyPostsComponent);
     const myPosts = fixture.componentInstance;
     fixture.detectChanges();
     const authService = TestBed.inject(AuthService);
@@ -189,7 +193,8 @@ describe("MyPosts", () => {
     const userPage = upFixture.componentInstance;
     userPage.userId = 1;
     upFixture.detectChanges();
-    const myPosts: MyPosts = upFixture.debugElement.children[0].children[0].componentInstance;
+    const myPosts: MyPostsComponent =
+      upFixture.debugElement.children[0].children[0].componentInstance;
     const idbSpy = spyOn(myPosts, "fetchPostsFromIdb").and.returnValue(
       of({ page: 1, posts: [], total_pages: 1, success: true }),
     );
@@ -217,7 +222,8 @@ describe("MyPosts", () => {
     const userPage = upFixture.componentInstance;
     userPage.userId = 1;
     upFixture.detectChanges();
-    const myPosts: MyPosts = upFixture.debugElement.children[0].children[0].componentInstance;
+    const myPosts: MyPostsComponent =
+      upFixture.debugElement.children[0].children[0].componentInstance;
     const swSpy = spyOn(myPosts["swManager"], "fetchPosts").and.returnValue(
       new Promise((resolve) => {
         resolve({ posts: mockPosts, pages: 2 });
@@ -250,7 +256,8 @@ describe("MyPosts", () => {
     const userPage = fixture.componentInstance;
     userPage.userId = 4;
     fixture.detectChanges();
-    const myPosts: MyPosts = fixture.debugElement.children[0].children[0].componentInstance;
+    const myPosts: MyPostsComponent =
+      fixture.debugElement.children[0].children[0].componentInstance;
     const changeSpy = spyOn(myPosts, "changeMode").and.callThrough();
     myPosts.posts.set(mockPosts);
     myPosts.isIdbFetchLoading.set(false);
@@ -279,7 +286,8 @@ describe("MyPosts", () => {
     const userPage = fixture.componentInstance;
     userPage.userId = 4;
     fixture.detectChanges();
-    const myPosts: MyPosts = fixture.debugElement.children[0].children[0].componentInstance;
+    const myPosts: MyPostsComponent =
+      fixture.debugElement.children[0].children[0].componentInstance;
     const myPostsDOM = fixture.debugElement.children[0].children[0].nativeElement;
     const deleteSpy = spyOn(myPosts, "deleteAllPosts").and.callThrough();
     myPosts.posts.set(mockPosts);
@@ -306,7 +314,8 @@ describe("MyPosts", () => {
     const userPage = fixture.componentInstance;
     userPage.userId = 1;
     fixture.detectChanges();
-    const myPosts: MyPosts = fixture.debugElement.children[0].children[0].componentInstance;
+    const myPosts: MyPostsComponent =
+      fixture.debugElement.children[0].children[0].componentInstance;
     const myPostsDOM = fixture.debugElement.children[0].children[0].nativeElement;
     const nextPageSpy = spyOn(myPosts, "nextPage").and.callThrough();
     const fetchSpy = spyOn(myPosts, "fetchPosts");
@@ -328,7 +337,8 @@ describe("MyPosts", () => {
     const userPage = fixture.componentInstance;
     userPage.userId = 1;
     fixture.detectChanges();
-    const myPosts: MyPosts = fixture.debugElement.children[0].children[0].componentInstance;
+    const myPosts: MyPostsComponent =
+      fixture.debugElement.children[0].children[0].componentInstance;
     const myPostsDOM = fixture.debugElement.children[0].children[0].nativeElement;
     const prevPageSpy = spyOn(myPosts, "prevPage").and.callThrough();
     const fetchSpy = spyOn(myPosts, "fetchPosts");
@@ -352,7 +362,8 @@ describe("MyPosts", () => {
     const userPage = fixture.componentInstance;
     userPage.userId = 4;
     fixture.detectChanges();
-    const myPosts: MyPosts = fixture.debugElement.children[0].children[0].componentInstance;
+    const myPosts: MyPostsComponent =
+      fixture.debugElement.children[0].children[0].componentInstance;
     spyOn(myPosts, "fetchPosts");
     myPosts.posts.set(mockPosts);
     myPosts.isIdbFetchLoading.set(false);
@@ -375,7 +386,8 @@ describe("MyPosts", () => {
     const userPage = fixture.componentInstance;
     userPage.userId = 4;
     fixture.detectChanges();
-    const myPosts: MyPosts = fixture.debugElement.children[0].children[0].componentInstance;
+    const myPosts: MyPostsComponent =
+      fixture.debugElement.children[0].children[0].componentInstance;
     spyOn(myPosts, "fetchPosts");
     myPosts.posts.set(mockPosts);
     myPosts.isIdbFetchLoading.set(false);

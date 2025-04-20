@@ -49,7 +49,7 @@ import { LoaderComponent } from "@common/loader/loader.component";
 import { UserIconComponent } from "@common/userIcon/userIcon.component";
 import { ReportFormComponent } from "@forms/reportForm/reportForm.component";
 import { DisplayNameEditFormComponent } from "@forms/displayNameEditForm/displayNameEditForm.component";
-import { MyPosts } from "@app/components/myPosts/myPosts.component";
+import { MyPostsComponent } from "@app/components/myPosts/myPosts.component";
 import { OtherUserResponse } from "@app/interfaces/api";
 import { type ReportType } from "@app/interfaces/report.interface";
 
@@ -66,7 +66,7 @@ import { type ReportType } from "@app/interfaces/report.interface";
     CommonModule,
     ReportFormComponent,
     DisplayNameEditFormComponent,
-    MyPosts,
+    MyPostsComponent,
   ],
 })
 export class UserPage implements OnDestroy {

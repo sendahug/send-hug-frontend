@@ -44,7 +44,7 @@ import { computed, NO_ERRORS_SCHEMA, signal } from "@angular/core";
 import { BehaviorSubject, Subscription } from "rxjs";
 
 import { SettingsPage } from "./settings.component";
-import { IconEditor } from "@app/components/iconEditor/iconEditor.component";
+import { IconEditorComponent } from "@app/components/iconEditor/iconEditor.component";
 import { NotificationService } from "@app/services/notifications.service";
 import { AuthService } from "@app/services/auth.service";
 import { AlertsService } from "@app/services/alerts.service";
@@ -67,7 +67,7 @@ describe("SettingsPage", () => {
       subscribeToStream: () => new Promise(() => undefined),
       unsubscribeFromStream: () => new Promise(() => true),
     });
-    const MockIconEditor = MockComponent(IconEditor);
+    const MockIconEditorComponent = MockComponent(IconEditorComponent);
     const MockIcon = MockComponent(UserIconComponent);
 
     TestBed.resetTestEnvironment();
@@ -81,7 +81,7 @@ describe("SettingsPage", () => {
         MockIcon,
         CommonModule,
         SettingsPage,
-        MockIconEditor,
+        MockIconEditorComponent,
       ],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },

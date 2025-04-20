@@ -48,7 +48,7 @@ import DogIconSrc from "@/assets/img/dog.svg";
   standalone: true,
   imports: [ReactiveFormsModule, UserIconComponent],
 })
-export class IconEditor {
+export class IconEditorComponent {
   BearIconSrc = BearIconSrc;
   KittyIconSrc = KittyIconSrc;
   DogIconSrc = DogIconSrc;

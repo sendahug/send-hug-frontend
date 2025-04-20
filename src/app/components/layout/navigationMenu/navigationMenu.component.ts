@@ -51,8 +51,8 @@ import { ItemsService } from "@app/services/items.service";
 import { AlertsService } from "@app/services/alerts.service";
 import { SWManager } from "@app/services/sWManager.service";
 import { NotificationService } from "@app/services/notifications.service";
-import { NotificationsTab } from "@app/components/layout/notifications/notifications.component";
-import { SearchForm } from "@app/components/layout/searchForm/searchForm.component";
+import { NotificationsTabComponent } from "@app/components/layout/notifications/notifications.component";
+import { SearchFormComponent } from "@app/components/layout/searchForm/searchForm.component";
 import SiteLogoSrc from "@/assets/img/Logo.svg";
 
 @Component({
@@ -60,9 +60,15 @@ import SiteLogoSrc from "@/assets/img/Logo.svg";
   templateUrl: "./navigationMenu.component.html",
   styleUrl: "./navigationMenu.component.less",
   standalone: true,
-  imports: [CommonModule, RouterLink, FontAwesomeModule, NotificationsTab, SearchForm],
+  imports: [
+    CommonModule,
+    RouterLink,
+    FontAwesomeModule,
+    NotificationsTabComponent,
+    SearchFormComponent,
+  ],
 })
-export class AppNavMenu implements OnInit, AfterViewInit {
+export class NavigationMenuComponent implements OnInit, AfterViewInit {
   showNotifications = signal(false);
   showSearch = signal(false);
   showTextPanel = signal(false);

@@ -48,7 +48,7 @@ import { MessageType } from "@app/interfaces/types";
   standalone: true,
   imports: [CommonModule, RouterLink, UserIconComponent, ItemDeleteFormComponent],
 })
-export class AppSingleMessage {
+export class MessageComponent {
   // TODO: Replace these with `input()`/`output()` once we figure out coverage
   @Input() currentUser!: number;
   @Input()

@@ -45,8 +45,8 @@ import { SWManager } from "@app/services/sWManager.service";
 import { ApiClientService } from "@app/services/apiClient.service";
 import { LoaderComponent } from "@common/loader/loader.component";
 import { ItemDeleteFormComponent } from "@forms/itemDeleteForm/itemDeleteForm.component";
-import { AppSingleMessage } from "@app/components/messaging/message/message.component";
-import { AppSingleThread } from "@app/components/messaging/thread/thread.component";
+import { MessageComponent } from "@app/components/messaging/message/message.component";
+import { ThreadComponent } from "@app/components/messaging/thread/thread.component";
 import { MessagesResponse, ThreadResponse } from "@app/interfaces/api";
 
 @Component({
@@ -59,8 +59,8 @@ import { MessagesResponse, ThreadResponse } from "@app/interfaces/api";
     RouterLink,
     LoaderComponent,
     ItemDeleteFormComponent,
-    AppSingleMessage,
-    AppSingleThread,
+    MessageComponent,
+    ThreadComponent,
   ],
 })
 export class AppMessaging {

@@ -49,7 +49,7 @@ import { AlertsService } from "@app/services/alerts.service";
   standalone: true,
   imports: [CommonModule, FontAwesomeModule, ReactiveFormsModule],
 })
-export class SearchForm {
+export class SearchFormComponent {
   searchForm = this.fb.group({
     searchQuery: this.fb.control("", [Validators.required, Validators.minLength(1)]),
   });

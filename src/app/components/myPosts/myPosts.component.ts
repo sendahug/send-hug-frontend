@@ -53,7 +53,7 @@ import { type MyPostsResponse } from "@app/interfaces/api";
   standalone: true,
   imports: [LoaderComponent, PostComponent, ItemDeleteFormComponent, CommonModule],
 })
-export class MyPosts implements OnInit {
+export class MyPostsComponent implements OnInit {
   isLoading = signal(false);
   isIdbFetchLoading = signal(false);
   posts = signal<PostGet[]>([]);

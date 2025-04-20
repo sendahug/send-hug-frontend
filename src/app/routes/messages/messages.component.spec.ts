@@ -57,8 +57,8 @@ import { type MessageGet } from "@app/interfaces/message.interface";
 import { ItemDeleteFormComponent } from "@forms/itemDeleteForm/itemDeleteForm.component";
 import { ApiClientService } from "@app/services/apiClient.service";
 import { LoaderComponent } from "@common/loader/loader.component";
-import { AppSingleMessage } from "@app/components/messaging/message/message.component";
-import { AppSingleThread } from "@app/components/messaging/thread/thread.component";
+import { MessageComponent } from "@app/components/messaging/message/message.component";
+import { ThreadComponent } from "@app/components/messaging/thread/thread.component";
 
 describe("AppMessaging", () => {
   let mockMessages: MessageGet[];
@@ -83,11 +83,11 @@ describe("AppMessaging", () => {
       imports: [
         MockItemDeleteFormComponent,
         MockLoaderComponent,
-        AppSingleThread,
+        ThreadComponent,
         RouterLink,
         CommonModule,
         AppMessaging,
-        AppSingleMessage,
+        MessageComponent,
       ],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
@@ -551,7 +551,7 @@ describe("AppMessaging", () => {
     fixture.detectChanges();
 
     const message = fixture.debugElement.query(By.css("app-single-message"))
-      .componentInstance as AppSingleMessage;
+      .componentInstance as MessageComponent;
     message.messageDeleted.emit(1);
     fixture.detectChanges();
 
@@ -573,7 +573,7 @@ describe("AppMessaging", () => {
     fixture.detectChanges();
 
     const thread = fixture.debugElement.query(By.css("app-single-thread"))
-      .componentInstance as AppSingleThread;
+      .componentInstance as ThreadComponent;
     thread.messageDeleted.emit(3);
     fixture.detectChanges();
 

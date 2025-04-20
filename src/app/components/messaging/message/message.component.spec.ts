@@ -42,12 +42,12 @@ import { By } from "@angular/platform-browser";
 import { NO_ERRORS_SCHEMA, provideZoneChangeDetection } from "@angular/core";
 import { MockComponent } from "ng-mocks";
 
-import { AppSingleMessage } from "./message.component";
+import { MessageComponent } from "./message.component";
 import { type MessageGet } from "@app/interfaces/message.interface";
 import { ItemDeleteFormComponent } from "@forms/itemDeleteForm/itemDeleteForm.component";
 import { UserIconComponent } from "@common/userIcon/userIcon.component";
 
-describe("AppSingleMessage", () => {
+describe("MessageComponent", () => {
   let mockMessage: MessageGet;
 
   // Before each test, configure testing environment
@@ -65,7 +65,7 @@ describe("AppSingleMessage", () => {
         MockUserIconComponent,
         RouterLink,
         CommonModule,
-        AppSingleMessage,
+        MessageComponent,
       ],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
@@ -106,7 +106,7 @@ describe("AppSingleMessage", () => {
 
   // Check that the component is created
   it("should create the component", () => {
-    const fixture = TestBed.createComponent(AppSingleMessage);
+    const fixture = TestBed.createComponent(MessageComponent);
     const appMessage = fixture.componentInstance;
 
     expect(appMessage).toBeTruthy();
@@ -114,7 +114,7 @@ describe("AppSingleMessage", () => {
 
   // Check that the component loads the inbox if no mailbox is specified
   it("should show message details", () => {
-    const fixture = TestBed.createComponent(AppSingleMessage);
+    const fixture = TestBed.createComponent(MessageComponent);
     fixture.componentRef.setInput("currentUser", 4);
     fixture.componentRef.setInput("message", mockMessage);
     fixture.componentRef.setInput("messType", "inbox");
@@ -132,7 +132,7 @@ describe("AppSingleMessage", () => {
 
   // Check that the component loads the inbox if no mailbox is specified
   it("should show message details - thread", () => {
-    const fixture = TestBed.createComponent(AppSingleMessage);
+    const fixture = TestBed.createComponent(MessageComponent);
     fixture.componentRef.setInput("currentUser", 4);
     fixture.componentRef.setInput("message", {
       ...mockMessage,
@@ -154,7 +154,7 @@ describe("AppSingleMessage", () => {
 
   // Check that the popup variables are set to false
   it("should have all popup variables set to false", () => {
-    const fixture = TestBed.createComponent(AppSingleMessage);
+    const fixture = TestBed.createComponent(MessageComponent);
     fixture.componentRef.setInput("currentUser", 4);
     fixture.componentRef.setInput("message", mockMessage);
     fixture.componentRef.setInput("messType", "inbox");
@@ -166,7 +166,7 @@ describe("AppSingleMessage", () => {
 
   // Check deleting a single message triggers the poppup
   it("should trigger the popup upon delete", () => {
-    const fixture = TestBed.createComponent(AppSingleMessage);
+    const fixture = TestBed.createComponent(MessageComponent);
     const appMessage = fixture.componentInstance;
     const appMessageDOM = fixture.nativeElement;
     fixture.componentRef.setInput("currentUser", 4);
@@ -189,7 +189,7 @@ describe("AppSingleMessage", () => {
 
   // Check the popup exits when 'false' is emitted
   it("should change mode when the event emitter emits false", () => {
-    const fixture = TestBed.createComponent(AppSingleMessage);
+    const fixture = TestBed.createComponent(MessageComponent);
     fixture.componentRef.setInput("currentUser", 4);
     fixture.componentRef.setInput("message", mockMessage);
     fixture.componentRef.setInput("messType", "inbox");
@@ -216,7 +216,7 @@ describe("AppSingleMessage", () => {
 
   // Check each message has delete button and reply link
   it("should have the relevant buttons for each message", () => {
-    const fixture = TestBed.createComponent(AppSingleMessage);
+    const fixture = TestBed.createComponent(MessageComponent);
     const appMessageDOM = fixture.nativeElement;
     fixture.componentRef.setInput("currentUser", 4);
     fixture.componentRef.setInput("message", mockMessage);

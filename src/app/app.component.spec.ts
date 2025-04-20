@@ -55,12 +55,12 @@ import { NotificationService } from "./services/notifications.service";
 import { mockAuthedUser } from "@tests/mockData";
 import { AppAlertComponent } from "./components/appAlert/appAlert.component";
 import { AlertsService } from "@app/services/alerts.service";
-import { AppNavMenu } from "./components/layout/navigationMenu/navigationMenu.component";
+import { NavigationMenuComponent } from "./components/layout/navigationMenu/navigationMenu.component";
 import { TeleportService } from "./services/teleport.service";
 
 describe("AppComponent", () => {
   beforeEach(() => {
-    const MockNavBar = MockComponent(AppNavMenu);
+    const MockNavBar = MockComponent(NavigationMenuComponent);
     const MockAppAlertComponent = MockComponent(AppAlertComponent);
     const MockAuthService = MockProvider(AuthService, {
       authenticated: signal(true),

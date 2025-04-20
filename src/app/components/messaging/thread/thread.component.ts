@@ -47,7 +47,7 @@ import { ParsedThread } from "@app/interfaces/thread.interface";
   standalone: true,
   imports: [CommonModule, RouterLink, UserIconComponent, ItemDeleteFormComponent],
 })
-export class AppSingleThread {
+export class ThreadComponent {
   // TODO: Replace this with `input()`/`output()` once we figure out coverage
   @Input()
   set thread(newMessage: ParsedThread) {

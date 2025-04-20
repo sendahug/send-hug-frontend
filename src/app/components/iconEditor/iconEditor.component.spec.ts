@@ -42,12 +42,12 @@ import { ReactiveFormsModule } from "@angular/forms";
 import { MockComponent, MockProvider } from "ng-mocks";
 import { NO_ERRORS_SCHEMA, provideZoneChangeDetection, signal } from "@angular/core";
 
-import { IconEditor } from "./iconEditor.component";
+import { IconEditorComponent } from "./iconEditor.component";
 import { AuthService } from "@app/services/auth.service";
 import { mockAuthedUser } from "@tests/mockData";
 import { UserIconComponent } from "@common/userIcon/userIcon.component";
 
-describe("IconEditor", () => {
+describe("IconEditorComponent", () => {
   // Before each test, configure testing environment
   beforeEach(() => {
     const MockAuthService = MockProvider(AuthService, {
@@ -61,7 +61,7 @@ describe("IconEditor", () => {
 
     TestBed.configureTestingModule({
       schemas: [NO_ERRORS_SCHEMA],
-      imports: [ReactiveFormsModule, MockUserIconComponent, IconEditor],
+      imports: [ReactiveFormsModule, MockUserIconComponent, IconEditorComponent],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
         provideZoneChangeDetection({ eventCoalescing: true }),
@@ -73,7 +73,7 @@ describe("IconEditor", () => {
 
   // Check the page is created
   it("should create the component", () => {
-    const fixture = TestBed.createComponent(IconEditor);
+    const fixture = TestBed.createComponent(IconEditorComponent);
     const iconEditor = fixture.componentInstance;
 
     expect(iconEditor).toBeTruthy();
@@ -81,7 +81,7 @@ describe("IconEditor", () => {
 
   // Check the variables are set correctly
   it("should get the icon data from the AuthService", () => {
-    const fixture = TestBed.createComponent(IconEditor);
+    const fixture = TestBed.createComponent(IconEditorComponent);
     const iconEditor = fixture.componentInstance;
 
     expect(iconEditor.iconEditForm.controls.selectedIcon.value).toBe("kitty");
@@ -93,7 +93,7 @@ describe("IconEditor", () => {
 
   // Check the icon changes when the radio button is clicked
   it("should change icon when radio buttons are clicked", () => {
-    const fixture = TestBed.createComponent(IconEditor);
+    const fixture = TestBed.createComponent(IconEditorComponent);
     const iconEditor = fixture.componentInstance;
     const iconEditorDOM = fixture.nativeElement;
     fixture.detectChanges();
@@ -115,7 +115,7 @@ describe("IconEditor", () => {
   });
 
   it("should update the colours when clicked", () => {
-    const fixture = TestBed.createComponent(IconEditor);
+    const fixture = TestBed.createComponent(IconEditorComponent);
     const iconEditor = fixture.componentInstance;
     const iconEditorDOM = fixture.nativeElement;
     fixture.detectChanges();
@@ -156,7 +156,7 @@ describe("IconEditor", () => {
   });
 
   it("should make the request to change the icon", () => {
-    const fixture = TestBed.createComponent(IconEditor);
+    const fixture = TestBed.createComponent(IconEditorComponent);
     const iconEditor = fixture.componentInstance;
     const iconEditorDOM = fixture.nativeElement;
     const updateSpy = spyOn(iconEditor.authService, "updateUserData");
@@ -194,7 +194,7 @@ describe("IconEditor", () => {
   });
 
   it("should make the request to change the icon with default values if there are nonoe", () => {
-    const fixture = TestBed.createComponent(IconEditor);
+    const fixture = TestBed.createComponent(IconEditorComponent);
     const iconEditor = fixture.componentInstance;
     const iconEditorDOM = fixture.nativeElement;
     const updateSpy = spyOn(iconEditor.authService, "updateUserData");
@@ -225,7 +225,7 @@ describe("IconEditor", () => {
   });
 
   it("should dismiss the editor when the cancel button is clicked", () => {
-    const fixture = TestBed.createComponent(IconEditor);
+    const fixture = TestBed.createComponent(IconEditorComponent);
     const iconEditor = fixture.componentInstance;
     const iconEditorDOM = fixture.nativeElement;
     const emitSpy = spyOn(iconEditor.editMode, "emit");
@@ -253,7 +253,7 @@ describe("IconEditor", () => {
       },
     });
 
-    const fixture = TestBed.createComponent(IconEditor);
+    const fixture = TestBed.createComponent(IconEditorComponent);
     const iconEditor = fixture.componentInstance;
 
     expect(iconEditor.iconEditForm.controls.selectedIcon.value).toBe("kitty");

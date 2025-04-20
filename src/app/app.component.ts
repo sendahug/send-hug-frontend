@@ -51,7 +51,7 @@ import { AlertsService } from "./services/alerts.service";
 import { SWManager } from "./services/sWManager.service";
 import { NotificationService } from "./services/notifications.service";
 import { AppAlertComponent } from "./components/appAlert/appAlert.component";
-import { AppNavMenu } from "./components/layout/navigationMenu/navigationMenu.component";
+import { NavigationMenuComponent } from "./components/layout/navigationMenu/navigationMenu.component";
 import { TeleportService } from "./services/teleport.service";
 import { getQueryParamsFromPath } from "./guards/common";
 
@@ -60,12 +60,12 @@ import { getQueryParamsFromPath } from "./guards/common";
   templateUrl: "./app.component.html",
   styleUrl: "./app.component.less",
   standalone: true,
-  imports: [CommonModule, RouterOutlet, RouterLink, AppAlertComponent, AppNavMenu],
+  imports: [CommonModule, RouterOutlet, RouterLink, AppAlertComponent, NavigationMenuComponent],
 })
 export class AppComponent implements OnInit, AfterViewInit, AfterViewChecked {
   canShare = signal(false);
   @ViewChild("modalContainer") modalContainer!: ElementRef;
-  navMenu = viewChild(AppNavMenu, { read: ElementRef });
+  navMenu = viewChild(NavigationMenuComponent, { read: ElementRef });
   navMenuHeight = signal(0);
   mainContentStyle = computed(() => ({ top: `${Number(this.navMenuHeight())}px` }));
 

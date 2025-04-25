@@ -2,6 +2,20 @@
 
 ## Unreleased
 
+### 2025-04-20
+
+#### Changes
+
+- Error messages that simply showed the Error object to the user now parse the message into a string which is then showed to the user. This should create a more consistent and clear experience for users. ([#2048](https://github.com/sendahug/send-hug-frontend/pull/2048))
+
+#### Chores
+
+- Added Cypress and Jasmine ESLint plugins to enable linting tests. ([#2048](https://github.com/sendahug/send-hug-frontend/pull/2048))
+- Replaced unnecessarily async specs with sync specs. There were multiple tests using the `done` callback which didn't need to be async and were only async due to UI interactions that took too long. This made it harder to debug and understand the tests, and thus, these specs were updated to be synchronous. ([#2048](https://github.com/sendahug/send-hug-frontend/pull/2048))
+- Fixed three linting errors in Jasmine specs: usage of the `toHaveBeenCalled` matcher (`toHaveBeenCalledWith` is preferred); missing empty lines before expectations; and added missing failure catchers for async specs. ([#2048](https://github.com/sendahug/send-hug-frontend/pull/2048))
+- Added missing NotificationsService unit test. ([#2048](https://github.com/sendahug/send-hug-frontend/pull/2048))
+- Fixed two linting errors in Cypress specs: unsafe chaining of commands (which were broken down) and arbitrary waits (which were modified to wait for specific URLs or HTML elements, rather than using the `wait` command).. ([#2048](https://github.com/sendahug/send-hug-frontend/pull/2048))
+
 ### 2025-04-19
 
 #### Changes

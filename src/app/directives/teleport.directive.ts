@@ -30,7 +30,7 @@
   SOFTWARE.
 */
 
-import { Directive, input, TemplateRef, ViewContainerRef } from "@angular/core";
+import { Directive, input, OnDestroy, OnInit, TemplateRef, ViewContainerRef } from "@angular/core";
 
 import { TeleportService } from "@app/services/teleport.service";
 
@@ -39,8 +39,8 @@ import { TeleportService } from "@app/services/teleport.service";
   selector: "[teleport]",
   standalone: true,
 })
-export class TeleportDirective {
-  teleport = input.required<string>();
+export class TeleportDirective implements OnInit, OnDestroy {
+  readonly teleport = input.required<string>();
 
   constructor(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

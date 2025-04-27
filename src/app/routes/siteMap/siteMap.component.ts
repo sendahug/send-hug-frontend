@@ -45,8 +45,8 @@ import { AuthService } from "@app/services/auth.service";
   standalone: true,
   imports: [CommonModule, RouterLink],
 })
-export class SiteMap {
-  routes = signal<Route[]>([]);
+export class SiteMapComponent {
+  readonly routes = signal<Route[]>([]);
 
   // CTOR
   constructor(

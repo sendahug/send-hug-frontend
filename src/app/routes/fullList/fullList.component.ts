@@ -41,8 +41,8 @@ import { FullListType } from "@app/interfaces/types";
 import { type PostGet } from "@app/interfaces/post.interface";
 import { SWManager } from "@app/services/sWManager.service";
 import { ApiClientService } from "@app/services/apiClient.service";
-import { SinglePost } from "@common/post/post.component";
-import { Loader } from "@common/loader/loader.component";
+import { PostComponent } from "@common/post/post.component";
+import { LoaderComponent } from "@common/loader/loader.component";
 import { type PostsListResponse } from "@app/interfaces/api";
 
 @Component({
@@ -50,20 +50,20 @@ import { type PostsListResponse } from "@app/interfaces/api";
   templateUrl: "./fullList.component.html",
   styleUrl: "./fullList.component.less",
   standalone: true,
-  imports: [CommonModule, SinglePost, Loader],
+  imports: [CommonModule, PostComponent, LoaderComponent],
 })
-export class FullList {
+export class FullListComponent {
   // current page and type of list
-  type = signal<FullListType>("New");
-  currentPage = signal(1);
-  totalPages = signal(1);
-  isLoading = signal(false);
-  posts: WritableSignal<PostGet[]> = signal([]);
-  previousPageButtonClass = computed(() => ({
+  readonly type = signal<FullListType>("New");
+  readonly currentPage = signal(1);
+  readonly totalPages = signal(1);
+  readonly isLoading = signal(false);
+  readonly posts: WritableSignal<PostGet[]> = signal([]);
+  readonly previousPageButtonClass = computed(() => ({
     "appButton prevButton": true,
     disabled: this.currentPage() <= 1,
   }));
-  nextPageButtonClass = computed(() => ({
+  readonly nextPageButtonClass = computed(() => ({
     "appButton nextButton": true,
     disabled: this.totalPages() <= this.currentPage(),
   }));

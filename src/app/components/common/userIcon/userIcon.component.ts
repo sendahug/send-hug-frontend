@@ -64,21 +64,25 @@ export const DefaultColours = {
   standalone: true,
   imports: [CommonModule],
 })
-export class UserIcon {
-  selectedIcon = input<iconCharacters>("kitty");
-  selectedIconDefaultColours = computed(() => DefaultColours[this.selectedIcon()]);
-  characterColour = input<string | undefined>(undefined);
-  characterStyle = computed(() => ({
+export class UserIconComponent {
+  readonly selectedIcon = input<iconCharacters>("kitty");
+  readonly selectedIconDefaultColours = computed(() => DefaultColours[this.selectedIcon()]);
+  readonly characterColour = input<string | undefined>(undefined);
+  readonly characterStyle = computed(() => ({
     fill: this.characterColour() ?? this.selectedIconDefaultColours().character,
   }));
-  lbgColour = input<string | undefined>(undefined);
-  lbgStyle = computed(() => ({ fill: this.lbgColour() ?? this.selectedIconDefaultColours().lbg }));
-  rbgColour = input<string | undefined>(undefined);
-  rbgStyle = computed(() => ({ fill: this.rbgColour() ?? this.selectedIconDefaultColours().rbg }));
-  itemColour = input<string | undefined>(undefined);
-  itemStyle = computed(() => ({
+  readonly lbgColour = input<string | undefined>(undefined);
+  readonly lbgStyle = computed(() => ({
+    fill: this.lbgColour() ?? this.selectedIconDefaultColours().lbg,
+  }));
+  readonly rbgColour = input<string | undefined>(undefined);
+  readonly rbgStyle = computed(() => ({
+    fill: this.rbgColour() ?? this.selectedIconDefaultColours().rbg,
+  }));
+  readonly itemColour = input<string | undefined>(undefined);
+  readonly itemStyle = computed(() => ({
     fill: this.itemColour() ?? this.selectedIconDefaultColours().item,
   }));
-  svgClass = input<string>("");
+  readonly svgClass = input<string>("");
   BgPatternSrc = BgPatternSrc;
 }

@@ -42,17 +42,17 @@ import { provideZoneChangeDetection, signal } from "@angular/core";
 import { MockProvider } from "ng-mocks";
 import { Subscription } from "rxjs";
 
-import { DisplayNameEditForm } from "./displayNameEditForm.component";
+import { DisplayNameEditFormComponent } from "./displayNameEditForm.component";
 import { AuthService } from "@app/services/auth.service";
 import { mockAuthedUser } from "@tests/mockData";
-import { PopUp } from "@common/popUp/popUp.component";
+import { PopUpComponent } from "@common/popUp/popUp.component";
 import { ValidationService } from "@app/services/validation.service";
 import { AdminService } from "@app/services/admin.service";
 import { TeleportDirective } from "@app/directives/teleport.directive";
 
 // DISPLAY NAME EDIT
 // ==================================================================
-describe("DisplayNameEditForm", () => {
+describe("DisplayNameEditFormComponent", () => {
   // Before each test, configure testing environment
   beforeEach(() => {
     const AuthServiceMock = MockProvider(AuthService, {
@@ -65,7 +65,13 @@ describe("DisplayNameEditForm", () => {
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
-      imports: [CommonModule, ReactiveFormsModule, PopUp, DisplayNameEditForm, TeleportDirective],
+      imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        PopUpComponent,
+        DisplayNameEditFormComponent,
+        TeleportDirective,
+      ],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
         provideZoneChangeDetection({ eventCoalescing: true }),
@@ -77,32 +83,32 @@ describe("DisplayNameEditForm", () => {
 
   // Check that the component is created
   it("should create the component", () => {
-    const fixture = TestBed.createComponent(DisplayNameEditForm);
+    const fixture = TestBed.createComponent(DisplayNameEditFormComponent);
     const popUp = fixture.componentInstance;
 
     expect(popUp).toBeTruthy();
   });
 
   it("should set editedItem depending on toEdit", () => {
-    const fixture = TestBed.createComponent(DisplayNameEditForm);
+    const fixture = TestBed.createComponent(DisplayNameEditFormComponent);
     const popUp = fixture.componentInstance;
-    popUp.editedItem = {
+    fixture.componentRef.setInput("editedItem", {
       id: 4,
       displayName: "name",
-    };
+    });
     popUp.ngOnInit();
 
     expect(popUp.editNameForm.controls.newDisplayName.value).toEqual(
       popUp.authService.userData()!.displayName,
     );
 
-    popUp.editedItem = {
+    fixture.componentRef.setInput("editedItem", {
       displayName: "test",
       id: 1,
-    };
+    });
     popUp.ngOnInit();
 
-    expect(popUp.editedItem.displayName).not.toEqual(popUp.authService.userData()!.displayName);
+    expect(popUp.editedItem()!.displayName).not.toEqual(popUp.authService.userData()!.displayName);
   });
 
   it("should make the request to authService to change the name", () => {
@@ -111,13 +117,13 @@ describe("DisplayNameEditForm", () => {
       (_control) => null,
     );
 
-    const fixture = TestBed.createComponent(DisplayNameEditForm);
+    const fixture = TestBed.createComponent(DisplayNameEditFormComponent);
     const popUp = fixture.componentInstance;
     const popUpDOM = fixture.nativeElement;
-    popUp.editedItem = {
+    fixture.componentRef.setInput("editedItem", {
       id: 4,
       displayName: "name",
-    };
+    });
     const newName = "new name";
     fixture.detectChanges();
 
@@ -140,17 +146,17 @@ describe("DisplayNameEditForm", () => {
       (_control) => null,
     );
 
-    const fixture = TestBed.createComponent(DisplayNameEditForm);
+    const fixture = TestBed.createComponent(DisplayNameEditFormComponent);
     const popUp = fixture.componentInstance;
     const popUpDOM = fixture.nativeElement;
-    popUp.editedItem = {
+    fixture.componentRef.setInput("editedItem", {
       id: 2,
       displayName: "name",
-    };
-    popUp.reportData = {
+    });
+    fixture.componentRef.setInput("reportData", {
       reportID: 1,
       userID: 2,
-    };
+    });
     const newName = "new name";
     const mockSubscription = new Subscription();
     mockSubscription.unsubscribe();
@@ -189,14 +195,14 @@ describe("DisplayNameEditForm", () => {
       (_control) => null,
     );
 
-    const fixture = TestBed.createComponent(DisplayNameEditForm);
+    const fixture = TestBed.createComponent(DisplayNameEditFormComponent);
     const popUp = fixture.componentInstance;
     const popUpDOM = fixture.nativeElement;
-    popUp.editedItem = {
+    fixture.componentRef.setInput("editedItem", {
       id: 2,
       displayName: "name",
-    };
-    popUp.reportData = undefined;
+    });
+    fixture.componentRef.setInput("reportData", undefined);
     const newName = "new name";
     fixture.detectChanges();
 
@@ -226,17 +232,17 @@ describe("DisplayNameEditForm", () => {
       (_control) => null,
     );
 
-    const fixture = TestBed.createComponent(DisplayNameEditForm);
+    const fixture = TestBed.createComponent(DisplayNameEditFormComponent);
     const popUp = fixture.componentInstance;
     const popUpDOM = fixture.nativeElement;
-    popUp.editedItem = {
+    fixture.componentRef.setInput("editedItem", {
       id: 2,
       displayName: "name",
-    };
-    popUp.reportData = {
+    });
+    fixture.componentRef.setInput("reportData", {
       reportID: 1,
       userID: 2,
-    };
+    });
     const newName = "new name";
     const mockSubscription = new Subscription();
     mockSubscription.unsubscribe();
@@ -277,13 +283,13 @@ describe("DisplayNameEditForm", () => {
       },
     );
 
-    const fixture = TestBed.createComponent(DisplayNameEditForm);
+    const fixture = TestBed.createComponent(DisplayNameEditFormComponent);
     const popUp = fixture.componentInstance;
     const popUpDOM = fixture.nativeElement;
-    popUp.editedItem = {
+    fixture.componentRef.setInput("editedItem", {
       id: 4,
       displayName: "name",
-    };
+    });
     const newName = "new name";
     fixture.detectChanges();
 

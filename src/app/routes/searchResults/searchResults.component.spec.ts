@@ -49,11 +49,11 @@ import { provideZoneChangeDetection } from "@angular/core";
 import { MockComponent, MockProvider } from "ng-mocks";
 import { of } from "rxjs";
 
-import { SearchResults } from "./searchResults.component";
+import { SearchResultsComponent } from "./searchResults.component";
 import { ItemsService } from "@app/services/items.service";
 import { iconCharacters } from "@app/interfaces/types";
-import { SinglePost } from "@common/post/post.component";
-import { Loader } from "@common/loader/loader.component";
+import { PostComponent } from "@common/post/post.component";
+import { LoaderComponent } from "@common/loader/loader.component";
 import { ApiClientService } from "@app/services/apiClient.service";
 
 const mockUserSearchResults = [
@@ -117,11 +117,11 @@ const mockPostSearchResults = [
   },
 ];
 
-describe("SearchResults", () => {
+describe("SearchResultsComponent", () => {
   // Before each test, configure testing environment
   beforeEach(() => {
-    const MockPost = MockComponent(SinglePost);
-    const MockLoader = MockComponent(Loader);
+    const MockPost = MockComponent(PostComponent);
+    const MockLoaderComponent = MockComponent(LoaderComponent);
     const MockAPIClient = MockProvider(ApiClientService, {
       post: () => of(),
     });
@@ -130,12 +130,19 @@ describe("SearchResults", () => {
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
-      imports: [CommonModule, MockLoader, MockPost, RouterLink, SearchResults, Loader],
+      imports: [
+        CommonModule,
+        MockLoaderComponent,
+        MockPost,
+        RouterLink,
+        SearchResultsComponent,
+        LoaderComponent,
+      ],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
         provideZoneChangeDetection({ eventCoalescing: true }),
         provideRouter(
-          [{ path: "search", component: SearchResults, data: { name: "Search Results" } }],
+          [{ path: "search", component: SearchResultsComponent, data: { name: "Search Results" } }],
           withComponentInputBinding(),
         ),
         ItemsService,
@@ -146,7 +153,7 @@ describe("SearchResults", () => {
 
   // Check that the component is created
   it("should create the component", () => {
-    const fixture = TestBed.createComponent(SearchResults);
+    const fixture = TestBed.createComponent(SearchResultsComponent);
     const searchResults = fixture.componentInstance;
 
     expect(searchResults).toBeTruthy();
@@ -163,7 +170,7 @@ describe("SearchResults", () => {
       }
     });
     const itemsServiceSpy = spyOn(TestBed.inject(ItemsService), "sendSearch");
-    const fixture = TestBed.createComponent(SearchResults);
+    const fixture = TestBed.createComponent(SearchResultsComponent);
     const searchResults = fixture.componentInstance;
     const searchResultsDOM = fixture.nativeElement;
     searchResults.itemsService.isSearching.set(false);
@@ -187,7 +194,7 @@ describe("SearchResults", () => {
     });
     const searchSpy = spyOn(TestBed.inject(ItemsService), "sendSearch");
     TestBed.inject(ItemsService).isSearching.set(false);
-    const fixture = TestBed.createComponent(SearchResults);
+    const fixture = TestBed.createComponent(SearchResultsComponent);
     const searchResults = fixture.componentInstance;
 
     expect(searchResults.searchQuery()).toBe("search");
@@ -206,7 +213,7 @@ describe("SearchResults", () => {
     });
     const searchSpy = spyOn(TestBed.inject(ItemsService), "sendSearch");
     TestBed.inject(ItemsService).isSearching.set(true);
-    const fixture = TestBed.createComponent(SearchResults);
+    const fixture = TestBed.createComponent(SearchResultsComponent);
     const searchResults = fixture.componentInstance;
 
     expect(searchResults.searchQuery()).toBe("search");
@@ -225,7 +232,7 @@ describe("SearchResults", () => {
         return null;
       }
     });
-    const fixture = TestBed.createComponent(SearchResults);
+    const fixture = TestBed.createComponent(SearchResultsComponent);
     const searchResults = fixture.componentInstance;
     const searchResultsDOM = fixture.debugElement.nativeElement;
     searchResults.itemsService.isSearching.set(false);
@@ -248,7 +255,7 @@ describe("SearchResults", () => {
         return null;
       }
     });
-    const fixture = TestBed.createComponent(SearchResults);
+    const fixture = TestBed.createComponent(SearchResultsComponent);
     const searchResults = fixture.componentInstance;
     const searchResultsDOM = fixture.debugElement.nativeElement;
     searchResults.itemsService.isSearching.set(false);
@@ -282,7 +289,7 @@ describe("SearchResults", () => {
         return null;
       }
     });
-    const fixture = TestBed.createComponent(SearchResults);
+    const fixture = TestBed.createComponent(SearchResultsComponent);
     const searchResults = fixture.componentInstance;
     const searchResultsDOM = fixture.debugElement.nativeElement;
     searchResults.itemsService.isSearching.set(false);
@@ -305,7 +312,7 @@ describe("SearchResults", () => {
         return null;
       }
     });
-    const fixture = TestBed.createComponent(SearchResults);
+    const fixture = TestBed.createComponent(SearchResultsComponent);
     const searchResults = fixture.componentInstance;
     const searchResultsDOM = fixture.debugElement.nativeElement;
     searchResults.itemsService.isSearching.set(false);
@@ -338,7 +345,7 @@ describe("SearchResults", () => {
     spyOn(TestBed.inject(ItemsService), "sendSearch");
 
     // create the component
-    const fixture = TestBed.createComponent(SearchResults);
+    const fixture = TestBed.createComponent(SearchResultsComponent);
     const searchResults = fixture.componentInstance;
     const searchResultsDOM = fixture.debugElement.nativeElement;
     searchResults.itemsService.isSearching.set(false);
@@ -398,7 +405,7 @@ describe("SearchResults", () => {
         return null;
       }
     });
-    const fixture = TestBed.createComponent(SearchResults);
+    const fixture = TestBed.createComponent(SearchResultsComponent);
     const searchResults = fixture.componentInstance;
     searchResults.itemsService.isSearching.set(false);
     searchResults.itemsService.postSearchResults.set([...mockPostSearchResults]);
@@ -407,7 +414,7 @@ describe("SearchResults", () => {
     fixture.detectChanges();
 
     const singlePost = fixture.debugElement.query(By.css("app-single-post"))
-      .componentInstance as SinglePost;
+      .componentInstance as PostComponent;
     singlePost.deletedId.emit(5);
     fixture.detectChanges();
 

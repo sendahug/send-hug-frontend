@@ -31,7 +31,7 @@
 */
 
 // Angular imports
-import { Component, Input, Output, EventEmitter, OnInit } from "@angular/core";
+import { Component, Output, EventEmitter, OnInit, input } from "@angular/core";
 import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { CommonModule } from "@angular/common";
 
@@ -43,22 +43,22 @@ import { AlertsService } from "@app/services/alerts.service";
 import { type ReportData } from "@app/interfaces/report.interface";
 import { type PartialUser } from "@app/interfaces/user.interface";
 import { UpdatedUserReportResponse } from "@app/interfaces/api";
-import { PopUp } from "@common/popUp/popUp.component";
+import { PopUpComponent } from "@common/popUp/popUp.component";
 import { TeleportDirective } from "@app/directives/teleport.directive";
 
 @Component({
   selector: "display-name-edit-form",
   templateUrl: "./displayNameEditForm.component.html",
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, PopUp, TeleportDirective],
+  imports: [CommonModule, ReactiveFormsModule, PopUpComponent, TeleportDirective],
 })
-export class DisplayNameEditForm implements OnInit {
+export class DisplayNameEditFormComponent implements OnInit {
   // item to edit
-  @Input() editedItem!: PartialUser;
+  readonly editedItem = input<PartialUser>();
   @Output() updatedDetails = new EventEmitter<UpdatedUserReportResponse>();
   // indicates whether edit/delete mode is still required
   @Output() editMode = new EventEmitter<boolean>();
-  @Input() reportData?: ReportData;
+  readonly reportData = input<ReportData | null>();
   editNameForm = this.fb.group({
     newDisplayName: [
       "",
@@ -85,7 +85,7 @@ export class DisplayNameEditForm implements OnInit {
   Programmer: Shir Bar Lev.
   */
   ngOnInit() {
-    this.editNameForm.controls.newDisplayName.setValue(this.editedItem.displayName);
+    this.editNameForm.controls.newDisplayName.setValue(this.editedItem()!.displayName);
   }
 
   /*
@@ -113,11 +113,11 @@ export class DisplayNameEditForm implements OnInit {
     const newDisplayName = String(this.editNameForm.controls.newDisplayName.value);
 
     // if the user is editing their own name
-    if (this.editedItem.id == this.authService.userData()?.id) {
+    if (this.editedItem()!.id == this.authService.userData()?.id) {
       this.authService.updateUserData({ displayName: newDisplayName });
     } else {
       // if they're editing someone else's name from the reports page
-      if (!this.reportData || closeReport === null) {
+      if (!this.reportData() || closeReport === null) {
         this.alertService.createAlert({
           type: "Error",
           message: "Editing someone else's username can only be done via the admin page.",
@@ -125,14 +125,16 @@ export class DisplayNameEditForm implements OnInit {
         return;
       }
 
-      this.editedItem.displayName = newDisplayName;
-      this.adminService.editUser(this.editedItem, closeReport, this.reportData.reportID).add(() => {
-        this.updatedDetails.emit({
-          displayName: newDisplayName,
-          closed: closeReport,
-          reportID: this.reportData!.reportID,
+      this.editedItem()!.displayName = newDisplayName;
+      this.adminService
+        .editUser(this.editedItem()!, closeReport, this.reportData()!.reportID)
+        .add(() => {
+          this.updatedDetails.emit({
+            displayName: newDisplayName,
+            closed: closeReport,
+            reportID: this.reportData()!.reportID,
+          });
         });
-      });
     }
 
     // TODO: We want to only run this after a successful response!

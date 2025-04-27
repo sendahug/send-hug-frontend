@@ -44,9 +44,9 @@ import { BehaviorSubject, of, throwError } from "rxjs";
 import { NO_ERRORS_SCHEMA, signal } from "@angular/core";
 import { BrowserModule } from "@angular/platform-browser";
 
-import { AdminBlocks } from "./adminBlocks.component";
+import { AdminBlocksComponent } from "./adminBlocks.component";
 import { AuthService } from "@app/services/auth.service";
-import { Loader } from "@common/loader/loader.component";
+import { LoaderComponent } from "@common/loader/loader.component";
 import { mockAuthedUser } from "@tests/mockData";
 import { ApiClientService } from "@app/services/apiClient.service";
 import { AdminService } from "@app/services/admin.service";
@@ -85,15 +85,15 @@ describe("Blocks Page", () => {
     const MockAPIClient = MockProvider(ApiClientService, {
       get: () => of(),
     });
-    const MockLoader = MockComponent(Loader);
+    const MockLoaderComponent = MockComponent(LoaderComponent);
 
     TestBed.resetTestEnvironment();
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
       schemas: [NO_ERRORS_SCHEMA],
-      imports: [ReactiveFormsModule, BrowserModule, MockLoader],
-      declarations: [AdminBlocks],
+      imports: [ReactiveFormsModule, BrowserModule, MockLoaderComponent],
+      declarations: [AdminBlocksComponent],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
         provideRouter([]),
@@ -120,7 +120,7 @@ describe("Blocks Page", () => {
         success: true,
       }),
     );
-    const fixture = TestBed.createComponent(AdminBlocks);
+    const fixture = TestBed.createComponent(AdminBlocksComponent);
     const adminBlocks = fixture.componentInstance;
     const adminBlocksDOM = fixture.nativeElement;
     fixture.detectChanges();
@@ -140,7 +140,7 @@ describe("Blocks Page", () => {
     const apiClientSpy = spyOn(TestBed.inject(ApiClientService), "get").and.returnValue(
       throwError(() => new Error("ERROR")),
     );
-    const fixture = TestBed.createComponent(AdminBlocks);
+    const fixture = TestBed.createComponent(AdminBlocksComponent);
     const adminBlocks = fixture.componentInstance;
     const adminBlocksDOM = fixture.nativeElement;
     fixture.detectChanges();
@@ -160,7 +160,7 @@ describe("Blocks Page", () => {
   // Check that you can block a user
   it("should block a user - new block", () => {
     // set up the spy and the component
-    const fixture = TestBed.createComponent(AdminBlocks);
+    const fixture = TestBed.createComponent(AdminBlocksComponent);
     const adminBlocks = fixture.componentInstance;
     const adminBlocksDOM = fixture.nativeElement;
     const blockSpy = spyOn(adminBlocks, "block").and.callThrough();
@@ -218,7 +218,7 @@ describe("Blocks Page", () => {
   // Check that you can block a user
   it("should block a user - extended block", () => {
     // set up the spy and the component
-    const fixture = TestBed.createComponent(AdminBlocks);
+    const fixture = TestBed.createComponent(AdminBlocksComponent);
     const adminBlocks = fixture.componentInstance;
     const adminBlocksDOM = fixture.nativeElement;
     const blockSpy = spyOn(adminBlocks, "block").and.callThrough();
@@ -275,7 +275,7 @@ describe("Blocks Page", () => {
 
   it("should check a user ID is provided", () => {
     // set up the spy and the component
-    const fixture = TestBed.createComponent(AdminBlocks);
+    const fixture = TestBed.createComponent(AdminBlocksComponent);
     const adminBlocks = fixture.componentInstance;
     const adminBlocksDOM = fixture.nativeElement;
     const blockSpy = spyOn(adminBlocks, "block").and.callThrough();
@@ -305,7 +305,7 @@ describe("Blocks Page", () => {
 
   it("should check the user ID isn't the logged in user's ID", () => {
     // set up the spy and the component
-    const fixture = TestBed.createComponent(AdminBlocks);
+    const fixture = TestBed.createComponent(AdminBlocksComponent);
     const adminBlocks = fixture.componentInstance;
     const adminBlocksDOM = fixture.nativeElement;
     const blockSpy = spyOn(adminBlocks, "block").and.callThrough();
@@ -334,7 +334,7 @@ describe("Blocks Page", () => {
 
   it("should check the user ID is a number", () => {
     // set up the spy and the component
-    const fixture = TestBed.createComponent(AdminBlocks);
+    const fixture = TestBed.createComponent(AdminBlocksComponent);
     const adminBlocks = fixture.componentInstance;
     const adminBlocksDOM = fixture.nativeElement;
     const blockSpy = spyOn(adminBlocks, "block").and.callThrough();
@@ -380,7 +380,7 @@ describe("Blocks Page", () => {
     };
 
     // set up the spy and the component
-    const fixture = TestBed.createComponent(AdminBlocks);
+    const fixture = TestBed.createComponent(AdminBlocksComponent);
     const adminBlocks = fixture.componentInstance;
     const adminBlocksDOM = fixture.nativeElement;
     const unblockSpy = spyOn(adminBlocks, "unblock").and.callThrough();
@@ -413,7 +413,7 @@ describe("Blocks Page", () => {
 
   it("should go to the next page", () => {
     // set up the spy and the component
-    const fixture = TestBed.createComponent(AdminBlocks);
+    const fixture = TestBed.createComponent(AdminBlocksComponent);
     const adminBlocks = fixture.componentInstance;
     const adminBlocksDOM = fixture.nativeElement;
     const nextPageSpy = spyOn(adminBlocks, "nextPage").and.callThrough();
@@ -436,7 +436,7 @@ describe("Blocks Page", () => {
 
   it("should return to the previous page", () => {
     // set up the spy and the component
-    const fixture = TestBed.createComponent(AdminBlocks);
+    const fixture = TestBed.createComponent(AdminBlocksComponent);
     const adminBlocks = fixture.componentInstance;
     const adminBlocksDOM = fixture.nativeElement;
     const prevPageSpy = spyOn(adminBlocks, "prevPage").and.callThrough();

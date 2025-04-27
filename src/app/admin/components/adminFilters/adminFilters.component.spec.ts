@@ -43,9 +43,9 @@ import { ReactiveFormsModule } from "@angular/forms";
 import { BehaviorSubject, of, throwError } from "rxjs";
 import { MockComponent, MockProvider } from "ng-mocks";
 
-import { AdminFilters } from "./adminFilters.component";
+import { AdminFiltersComponent } from "./adminFilters.component";
 import { AuthService } from "@app/services/auth.service";
-import { Loader } from "@common/loader/loader.component";
+import { LoaderComponent } from "@common/loader/loader.component";
 import { mockAuthedUser } from "@tests/mockData";
 import { ApiClientService } from "@app/services/apiClient.service";
 import { AdminService } from "@app/services/admin.service";
@@ -75,15 +75,15 @@ describe("Filters Page", () => {
     const MockAPIClient = MockProvider(ApiClientService, {
       get: () => of(),
     });
-    const MockLoader = MockComponent(Loader);
+    const MockLoaderComponent = MockComponent(LoaderComponent);
 
     TestBed.resetTestEnvironment();
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
       schemas: [NO_ERRORS_SCHEMA],
-      imports: [ReactiveFormsModule, MockLoader],
-      declarations: [AdminFilters],
+      imports: [ReactiveFormsModule, MockLoaderComponent],
+      declarations: [AdminFiltersComponent],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
         provideRouter([]),
@@ -103,7 +103,7 @@ describe("Filters Page", () => {
         success: true,
       }),
     );
-    const fixture = TestBed.createComponent(AdminFilters);
+    const fixture = TestBed.createComponent(AdminFiltersComponent);
     const adminFilters = fixture.componentInstance;
     const adminFiltersDOM = fixture.nativeElement;
 
@@ -121,7 +121,7 @@ describe("Filters Page", () => {
     const apiClientSpy = spyOn(TestBed.inject(ApiClientService), "get").and.returnValue(
       throwError(() => new Error("ERROR")),
     );
-    const fixture = TestBed.createComponent(AdminFilters);
+    const fixture = TestBed.createComponent(AdminFiltersComponent);
     const adminFilters = fixture.componentInstance;
     const adminFiltersDOM = fixture.nativeElement;
 
@@ -140,7 +140,7 @@ describe("Filters Page", () => {
   // Check that you can add a filter
   it("should add a new filter", () => {
     // set up the spy and the component
-    const fixture = TestBed.createComponent(AdminFilters);
+    const fixture = TestBed.createComponent(AdminFiltersComponent);
     const adminFilters = fixture.componentInstance;
     const adminFiltersDOM = fixture.nativeElement;
     const addSpy = spyOn(adminFilters, "addFilter").and.callThrough();
@@ -172,7 +172,7 @@ describe("Filters Page", () => {
 
   it("should not try to add a new filter if there's no filter in the text field", () => {
     // set up the spy and the component
-    const fixture = TestBed.createComponent(AdminFilters);
+    const fixture = TestBed.createComponent(AdminFiltersComponent);
     const adminFilters = fixture.componentInstance;
     const adminFiltersDOM = fixture.nativeElement;
     const addSpy = spyOn(adminFilters, "addFilter").and.callThrough();
@@ -209,7 +209,7 @@ describe("Filters Page", () => {
     };
 
     // set up the spy and the component
-    const fixture = TestBed.createComponent(AdminFilters);
+    const fixture = TestBed.createComponent(AdminFiltersComponent);
     const adminFilters = fixture.componentInstance;
     const adminFiltersDOM = fixture.nativeElement;
     const removeSpy = spyOn(adminFilters, "removeFilter").and.callThrough();
@@ -239,7 +239,7 @@ describe("Filters Page", () => {
 
   it("should go to the next page", () => {
     // set up the spy and the component
-    const fixture = TestBed.createComponent(AdminFilters);
+    const fixture = TestBed.createComponent(AdminFiltersComponent);
     const adminFilters = fixture.componentInstance;
     const adminFiltersDOM = fixture.nativeElement;
     const nextPageSpy = spyOn(adminFilters, "nextPage").and.callThrough();
@@ -261,7 +261,7 @@ describe("Filters Page", () => {
 
   it("should go to the previous page", () => {
     // set up the spy and the component
-    const fixture = TestBed.createComponent(AdminFilters);
+    const fixture = TestBed.createComponent(AdminFiltersComponent);
     const adminFilters = fixture.componentInstance;
     const adminFiltersDOM = fixture.nativeElement;
     const prevPageSpy = spyOn(adminFilters, "prevPage").and.callThrough();

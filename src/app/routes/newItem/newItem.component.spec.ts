@@ -48,13 +48,13 @@ import { ReactiveFormsModule } from "@angular/forms";
 import { NO_ERRORS_SCHEMA, provideZoneChangeDetection, signal } from "@angular/core";
 import { MockProvider } from "ng-mocks";
 
-import { NewItem } from "./newItem.component";
+import { NewItemComponent } from "./newItem.component";
 import { AuthService } from "@app/services/auth.service";
 import { mockAuthedUser } from "@tests/mockData";
 import { ItemsService } from "@app/services/items.service";
 import { ApiClientService } from "@app/services/apiClient.service";
 
-describe("NewItem", () => {
+describe("NewItemComponent", () => {
   // Before each test, configure testing environment
   beforeEach(async () => {
     const MockAuthService = MockProvider(AuthService, {
@@ -69,7 +69,7 @@ describe("NewItem", () => {
 
     TestBed.configureTestingModule({
       schemas: [NO_ERRORS_SCHEMA],
-      imports: [CommonModule, ReactiveFormsModule, NewItem],
+      imports: [CommonModule, ReactiveFormsModule, NewItemComponent],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
         provideZoneChangeDetection({ eventCoalescing: true }),
@@ -81,13 +81,13 @@ describe("NewItem", () => {
                 {
                   path: "Post",
                   pathMatch: "prefix",
-                  component: NewItem,
+                  component: NewItemComponent,
                   data: { name: "New post" },
                 },
                 {
                   path: "Message",
                   pathMatch: "prefix",
-                  component: NewItem,
+                  component: NewItemComponent,
                   data: { name: "New message" },
                 },
               ],
@@ -111,7 +111,7 @@ describe("NewItem", () => {
 
   // Check that the component is created
   it("should create the component", () => {
-    const fixture = TestBed.createComponent(NewItem);
+    const fixture = TestBed.createComponent(NewItemComponent);
     const newItem = fixture.componentInstance;
 
     expect(newItem).toBeTruthy();
@@ -122,7 +122,7 @@ describe("NewItem", () => {
   // Check that the type of new item is determined by the parameter type
   it("New Post - has a type determined by the type parameter - post", () => {
     TestBed.inject(ActivatedRoute).url = of([{ path: "Post" } as UrlSegment]);
-    const fixture = TestBed.createComponent(NewItem);
+    const fixture = TestBed.createComponent(NewItemComponent);
     const newItem = fixture.componentInstance;
     const newItemDOM = fixture.nativeElement;
 
@@ -150,7 +150,7 @@ describe("NewItem", () => {
       date: new Date("2020-01-01"),
     };
     TestBed.inject(ActivatedRoute).url = of([{ path: "Post" } as UrlSegment]);
-    const fixture = TestBed.createComponent(NewItem);
+    const fixture = TestBed.createComponent(NewItemComponent);
     const newItem = fixture.componentInstance;
     const newItemDOM = fixture.nativeElement;
     const apiClientSpy = spyOn(newItem["apiClient"], "post").and.returnValue(
@@ -178,7 +178,7 @@ describe("NewItem", () => {
   it("New Post - should prevent empty posts", () => {
     const paramMap = TestBed.inject(ActivatedRoute);
     paramMap.url = of([{ path: "Post" } as UrlSegment]);
-    const fixture = TestBed.createComponent(NewItem);
+    const fixture = TestBed.createComponent(NewItemComponent);
     const newItem = fixture.componentInstance;
     const newItemDOM = fixture.nativeElement;
     const newPostSpy = spyOn(newItem, "sendPost").and.callThrough();
@@ -208,7 +208,7 @@ describe("NewItem", () => {
   it("New Post - should prevent logged out users from posting", () => {
     const paramMap = TestBed.inject(ActivatedRoute);
     paramMap.url = of([{ path: "Post" } as UrlSegment]);
-    const fixture = TestBed.createComponent(NewItem);
+    const fixture = TestBed.createComponent(NewItemComponent);
     const newItem = fixture.componentInstance;
     const newItemDOM = fixture.nativeElement;
     const newPostSpy = spyOn(newItem, "sendPost").and.callThrough();
@@ -239,7 +239,7 @@ describe("NewItem", () => {
   it("shouldn't show the post form if the user is blocked", () => {
     const paramMap = TestBed.inject(ActivatedRoute);
     paramMap.url = of([{ path: "Post" } as UrlSegment]);
-    const fixture = TestBed.createComponent(NewItem);
+    const fixture = TestBed.createComponent(NewItemComponent);
     const newItem = fixture.componentInstance;
     const newItemDOM = fixture.nativeElement;
     newItem["authService"].userData()!.blocked = true;
@@ -259,7 +259,7 @@ describe("NewItem", () => {
   it("sendPost() - should prevent sending a post if the user is blocked", () => {
     const paramMap = TestBed.inject(ActivatedRoute);
     paramMap.url = of([{ path: "Post" } as UrlSegment]);
-    const fixture = TestBed.createComponent(NewItem);
+    const fixture = TestBed.createComponent(NewItemComponent);
     const newItem = fixture.componentInstance;
     const newItemDOM = fixture.nativeElement;
     const apiClientSpy = spyOn(newItem["apiClient"], "post");
@@ -306,7 +306,7 @@ describe("NewItem", () => {
         }
       },
     );
-    const fixture = TestBed.createComponent(NewItem);
+    const fixture = TestBed.createComponent(NewItemComponent);
     const newItem = fixture.componentInstance;
     const newItemDOM = fixture.nativeElement;
 
@@ -336,7 +336,7 @@ describe("NewItem", () => {
         return null;
       }
     });
-    const fixture = TestBed.createComponent(NewItem);
+    const fixture = TestBed.createComponent(NewItemComponent);
     const newItem = fixture.componentInstance;
     const newItemDOM = fixture.nativeElement;
     const newMessageSpy = spyOn(newItem, "sendMessage").and.callThrough();
@@ -396,7 +396,7 @@ describe("NewItem", () => {
         return null;
       }
     });
-    const fixture = TestBed.createComponent(NewItem);
+    const fixture = TestBed.createComponent(NewItemComponent);
     const newItem = fixture.componentInstance;
     const newItemDOM = fixture.nativeElement;
     const newMessageSpy = spyOn(newItem, "sendMessage").and.callThrough();
@@ -434,7 +434,7 @@ describe("NewItem", () => {
         return null;
       }
     });
-    const fixture = TestBed.createComponent(NewItem);
+    const fixture = TestBed.createComponent(NewItemComponent);
     const newItem = fixture.componentInstance;
     const newItemDOM = fixture.nativeElement;
     const newMessageSpy = spyOn(newItem, "sendMessage").and.callThrough();
@@ -467,7 +467,7 @@ describe("NewItem", () => {
     spyOn(paramMap.snapshot.queryParamMap, "get").and.callFake((_param: string) => {
       return "";
     });
-    const fixture = TestBed.createComponent(NewItem);
+    const fixture = TestBed.createComponent(NewItemComponent);
     const newItemDOM = fixture.nativeElement;
 
     fixture.detectChanges();
@@ -492,7 +492,7 @@ describe("NewItem", () => {
         return null;
       }
     });
-    const fixture = TestBed.createComponent(NewItem);
+    const fixture = TestBed.createComponent(NewItemComponent);
     const newItem = fixture.componentInstance;
     const newItemDOM = fixture.nativeElement;
     const newMessageSpy = spyOn(newItem, "sendMessage").and.callThrough();

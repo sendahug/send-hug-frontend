@@ -36,8 +36,8 @@ import { RouterLink } from "@angular/router";
 import { CommonModule } from "@angular/common";
 
 // App-related imports
-import { UserIcon } from "@common/userIcon/userIcon.component";
-import { ItemDeleteForm } from "@forms/itemDeleteForm/itemDeleteForm.component";
+import { UserIconComponent } from "@common/userIcon/userIcon.component";
+import { ItemDeleteFormComponent } from "@forms/itemDeleteForm/itemDeleteForm.component";
 import { ParsedThread } from "@app/interfaces/thread.interface";
 
 @Component({
@@ -45,20 +45,20 @@ import { ParsedThread } from "@app/interfaces/thread.interface";
   templateUrl: "./thread.component.html",
   styleUrl: "./thread.component.less",
   standalone: true,
-  imports: [CommonModule, RouterLink, UserIcon, ItemDeleteForm],
+  imports: [CommonModule, RouterLink, UserIconComponent, ItemDeleteFormComponent],
 })
-export class AppSingleThread {
+export class ThreadComponent {
   // TODO: Replace this with `input()`/`output()` once we figure out coverage
   @Input()
   set thread(newMessage: ParsedThread) {
     this._thread.set(newMessage);
   }
-  _thread = signal<ParsedThread>({} as ParsedThread);
+  readonly _thread = signal<ParsedThread>({} as ParsedThread);
   @Output() messageDeleted = new EventEmitter<number>();
-  deleteMode = signal(false);
+  readonly deleteMode = signal(false);
   // Both the fields below are currently kept in for consistency but can be removed
-  toDelete = signal("Thread");
-  itemToDelete = computed<number>(() => this._thread().id);
+  readonly toDelete = signal("Thread");
+  readonly itemToDelete = computed<number>(() => this._thread().id);
 
   /**
    * Opens the delete popup to delete the current thread.

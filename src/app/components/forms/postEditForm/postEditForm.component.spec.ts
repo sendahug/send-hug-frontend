@@ -42,9 +42,9 @@ import { Observable, of } from "rxjs";
 import { provideZoneChangeDetection, signal } from "@angular/core";
 import { MockProvider } from "ng-mocks";
 
-import { PostEditForm } from "./postEditForm.component";
+import { PostEditFormComponent } from "./postEditForm.component";
 import { type PostGet } from "@app/interfaces/post.interface";
-import { PopUp } from "@common/popUp/popUp.component";
+import { PopUpComponent } from "@common/popUp/popUp.component";
 import { ValidationService } from "@app/services/validation.service";
 import { AdminService } from "@app/services/admin.service";
 import { AuthService } from "@app/services/auth.service";
@@ -55,7 +55,7 @@ import { type ReportType } from "@app/interfaces/report.interface";
 
 // POST EDIT
 // ==================================================================
-describe("PostEditForm", () => {
+describe("PostEditFormComponent", () => {
   // Before each test, configure testing environment
   beforeEach(() => {
     const MockAdminService = MockProvider(AdminService);
@@ -69,7 +69,13 @@ describe("PostEditForm", () => {
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
-      imports: [ReactiveFormsModule, CommonModule, PopUp, PostEditForm, TeleportDirective],
+      imports: [
+        ReactiveFormsModule,
+        CommonModule,
+        PopUpComponent,
+        PostEditFormComponent,
+        TeleportDirective,
+      ],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
         provideZoneChangeDetection({ eventCoalescing: true }),
@@ -82,7 +88,7 @@ describe("PostEditForm", () => {
 
   // Check that the component is created
   it("should create the component", () => {
-    const fixture = TestBed.createComponent(PostEditForm);
+    const fixture = TestBed.createComponent(PostEditFormComponent);
     const popUp = fixture.componentInstance;
 
     expect(popUp).toBeTruthy();
@@ -94,7 +100,7 @@ describe("PostEditForm", () => {
       (_control) => null,
     );
 
-    const fixture = TestBed.createComponent(PostEditForm);
+    const fixture = TestBed.createComponent(PostEditFormComponent);
     const popUp = fixture.componentInstance;
     const popUpDOM = fixture.nativeElement;
     const originalItem = {
@@ -106,8 +112,8 @@ describe("PostEditForm", () => {
       givenHugs: 0,
       sentHugs: [],
     };
-    popUp.isAdmin = false;
-    popUp.editedItem = originalItem;
+    fixture.componentRef.setInput("editedItem", originalItem);
+    fixture.componentRef.setInput("isAdmin", false);
     const newText = "new text";
     const serverResponse = {
       success: true,
@@ -159,7 +165,7 @@ describe("PostEditForm", () => {
       (_control) => null,
     );
 
-    const fixture = TestBed.createComponent(PostEditForm);
+    const fixture = TestBed.createComponent(PostEditFormComponent);
     const popUp = fixture.componentInstance;
     const popUpDOM = fixture.nativeElement;
     const originalItem = {
@@ -171,8 +177,8 @@ describe("PostEditForm", () => {
       givenHugs: 0,
       sentHugs: [],
     };
-    popUp.isAdmin = false;
-    popUp.editedItem = originalItem;
+    fixture.componentRef.setInput("editedItem", originalItem);
+    fixture.componentRef.setInput("isAdmin", false);
     const newText = "new text";
     const serverResponse = {
       success: true,
@@ -220,17 +226,17 @@ describe("PostEditForm", () => {
       (_control) => null,
     );
 
-    const fixture = TestBed.createComponent(PostEditForm);
+    const fixture = TestBed.createComponent(PostEditFormComponent);
     const popUp = fixture.componentInstance;
     const popUpDOM = fixture.nativeElement;
     const originalItem = { text: "hi", id: 2 } as PostGet;
-    popUp.reportData = {
+    fixture.componentRef.setInput("reportData", {
       reportID: 1,
       postID: 2,
       userID: 0,
-    };
-    popUp.isAdmin = true;
-    popUp.editedItem = originalItem;
+    });
+    fixture.componentRef.setInput("isAdmin", true);
+    fixture.componentRef.setInput("editedItem", originalItem);
     const newText = "new text";
     const serverResponse = {
       success: true,
@@ -285,17 +291,17 @@ describe("PostEditForm", () => {
       (_control) => null,
     );
 
-    const fixture = TestBed.createComponent(PostEditForm);
+    const fixture = TestBed.createComponent(PostEditFormComponent);
     const popUp = fixture.componentInstance;
     const popUpDOM = fixture.nativeElement;
     const originalItem = { text: "hi", id: 2 } as PostGet;
-    popUp.reportData = {
+    fixture.componentRef.setInput("reportData", {
       reportID: 1,
       postID: 2,
       userID: 0,
-    };
-    popUp.isAdmin = true;
-    popUp.editedItem = originalItem;
+    });
+    fixture.componentRef.setInput("editedItem", originalItem);
+    fixture.componentRef.setInput("isAdmin", true);
     const newText = "new text";
     const serverResponse = {
       success: true,
@@ -354,16 +360,16 @@ describe("PostEditForm", () => {
       },
     };
 
-    const fixture = TestBed.createComponent(PostEditForm);
+    const fixture = TestBed.createComponent(PostEditFormComponent);
     const popUp = fixture.componentInstance;
     const originalItem = { text: "hi", id: 2 } as PostGet;
-    popUp.reportData = {
+    fixture.componentRef.setInput("reportData", {
       reportID: 2,
       postID: 1,
       userID: 0,
-    };
-    popUp.isAdmin = true;
-    popUp.editedItem = originalItem;
+    });
+    fixture.componentRef.setInput("editedItem", originalItem);
+    fixture.componentRef.setInput("isAdmin", true);
     const closeReportResponse = {
       success: true,
       updated: {
@@ -413,16 +419,16 @@ describe("PostEditForm", () => {
       },
     };
 
-    const fixture = TestBed.createComponent(PostEditForm);
+    const fixture = TestBed.createComponent(PostEditFormComponent);
     const popUp = fixture.componentInstance;
     const originalItem = { text: "hi", id: 2 } as PostGet;
-    popUp.reportData = {
+    fixture.componentRef.setInput("editedItem", originalItem);
+    fixture.componentRef.setInput("reportData", {
       reportID: 1,
       postID: 2,
       userID: 0,
-    };
-    popUp.isAdmin = true;
-    popUp.editedItem = originalItem;
+    });
+    fixture.componentRef.setInput("isAdmin", true);
     const adminServiceSpy = spyOn(popUp["adminService"], "closeReport");
 
     (
@@ -444,12 +450,12 @@ describe("PostEditForm", () => {
   });
 
   it("should not close the report if it's not the admin menu", (done: DoneFn) => {
-    const fixture = TestBed.createComponent(PostEditForm);
+    const fixture = TestBed.createComponent(PostEditFormComponent);
     const popUp = fixture.componentInstance;
     const originalItem = { text: "hi", id: 2 } as PostGet;
-    popUp.reportData = null;
-    popUp.isAdmin = false;
-    popUp.editedItem = originalItem;
+    fixture.componentRef.setInput("editedItem", originalItem);
+    fixture.componentRef.setInput("reportData", null);
+    fixture.componentRef.setInput("isAdmin", false);
     const newText = "new text";
     const serverResponse = {
       success: true,
@@ -484,12 +490,12 @@ describe("PostEditForm", () => {
   });
 
   it("should not close the report if there's no report data", (done: DoneFn) => {
-    const fixture = TestBed.createComponent(PostEditForm);
+    const fixture = TestBed.createComponent(PostEditFormComponent);
     const popUp = fixture.componentInstance;
     const originalItem = { text: "hi", id: 2 } as PostGet;
-    popUp.reportData = null;
-    popUp.isAdmin = true;
-    popUp.editedItem = originalItem;
+    fixture.componentRef.setInput("editedItem", originalItem);
+    fixture.componentRef.setInput("reportData", null);
+    fixture.componentRef.setInput("isAdmin", true);
     const newText = "new text";
     const serverResponse = {
       success: true,
@@ -522,17 +528,17 @@ describe("PostEditForm", () => {
       (_control) => ({ error: "error" }),
     );
 
-    const fixture = TestBed.createComponent(PostEditForm);
+    const fixture = TestBed.createComponent(PostEditFormComponent);
     const popUp = fixture.componentInstance;
     const popUpDOM = fixture.nativeElement;
     const originalItem = { text: "hi", id: 2 } as PostGet;
-    popUp.reportData = {
+    fixture.componentRef.setInput("editedItem", originalItem);
+    fixture.componentRef.setInput("reportData", {
       reportID: 1,
       postID: 2,
       userID: 0,
-    };
-    popUp.isAdmin = true;
-    popUp.editedItem = originalItem;
+    });
+    fixture.componentRef.setInput("isAdmin", true);
     const newText = "new text";
     fixture.detectChanges();
 

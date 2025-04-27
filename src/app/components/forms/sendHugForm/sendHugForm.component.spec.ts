@@ -37,10 +37,10 @@ import { provideZoneChangeDetection, signal } from "@angular/core";
 import { MockProvider } from "ng-mocks";
 import { provideRouter } from "@angular/router";
 
-import { SendHugForm } from "./sendHugForm.component";
+import { SendHugFormComponent } from "./sendHugForm.component";
 import { AuthService } from "@app/services/auth.service";
 import { mockAuthedUser } from "@tests/mockData";
-import { PopUp } from "@common/popUp/popUp.component";
+import { PopUpComponent } from "@common/popUp/popUp.component";
 import { ValidationService } from "@app/services/validation.service";
 import { ApiClientService } from "@app/services/apiClient.service";
 import { ItemsService } from "@app/services/items.service";
@@ -64,7 +64,13 @@ describe("Send Hug Form", () => {
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
-      imports: [CommonModule, ReactiveFormsModule, PopUp, SendHugForm, TeleportDirective],
+      imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        PopUpComponent,
+        SendHugFormComponent,
+        TeleportDirective,
+      ],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
         provideZoneChangeDetection({ eventCoalescing: true }),
@@ -77,12 +83,11 @@ describe("Send Hug Form", () => {
   });
 
   it("shows the name of the user who sent the post", () => {
-    const fixture = TestBed.createComponent(SendHugForm);
-    const shForm = fixture.componentInstance;
+    const fixture = TestBed.createComponent(SendHugFormComponent);
     const shformDOM = fixture.nativeElement;
-    shForm.forUsername = "meow";
-    shForm.forID = 1;
-    shForm.postID = 1;
+    fixture.componentRef.setInput("forUsername", "meow");
+    fixture.componentRef.setInput("forID", 1);
+    fixture.componentRef.setInput("postID", 1);
 
     fixture.detectChanges();
 
@@ -91,12 +96,11 @@ describe("Send Hug Form", () => {
   });
 
   it("updateTextValidators() - correctly enables/disables the 'message' text field", () => {
-    const fixture = TestBed.createComponent(SendHugForm);
-    const shForm = fixture.componentInstance;
+    const fixture = TestBed.createComponent(SendHugFormComponent);
     const shformDOM = fixture.nativeElement;
-    shForm.forUsername = "meow";
-    shForm.forID = 1;
-    shForm.postID = 1;
+    fixture.componentRef.setInput("forUsername", "meow");
+    fixture.componentRef.setInput("forID", 1);
+    fixture.componentRef.setInput("postID", 1);
     fixture.detectChanges();
 
     const messageTextField = document.getElementById("messageText") as HTMLInputElement;
@@ -115,12 +119,11 @@ describe("Send Hug Form", () => {
   });
 
   it("Correctly sets the required and aria-required attributes", () => {
-    const fixture = TestBed.createComponent(SendHugForm);
-    const shForm = fixture.componentInstance;
+    const fixture = TestBed.createComponent(SendHugFormComponent);
     const shformDOM = fixture.nativeElement;
-    shForm.forUsername = "meow";
-    shForm.forID = 1;
-    shForm.postID = 1;
+    fixture.componentRef.setInput("forUsername", "meow");
+    fixture.componentRef.setInput("forID", 1);
+    fixture.componentRef.setInput("postID", 1);
     fixture.detectChanges();
 
     const messageTextField = document.getElementById("messageText") as HTMLInputElement;
@@ -144,12 +147,12 @@ describe("Send Hug Form", () => {
       (_control) => ({ error: "ERROR!" }),
     );
 
-    const fixture = TestBed.createComponent(SendHugForm);
+    const fixture = TestBed.createComponent(SendHugFormComponent);
     const shForm = fixture.componentInstance;
     const shformDOM = fixture.nativeElement;
-    shForm.forUsername = "meow";
-    shForm.forID = 1;
-    shForm.postID = 1;
+    fixture.componentRef.setInput("forUsername", "meow");
+    fixture.componentRef.setInput("forID", 1);
+    fixture.componentRef.setInput("postID", 1);
     const apiClientSpy = spyOn(shForm["apiClient"], "post");
     const alertServiceSpy = spyOn(shForm["alertsService"], "createAlert");
     fixture.detectChanges();
@@ -176,12 +179,12 @@ describe("Send Hug Form", () => {
     const authSerivce = TestBed.inject(AuthService);
     authSerivce.authenticated.set(false);
 
-    const fixture = TestBed.createComponent(SendHugForm);
+    const fixture = TestBed.createComponent(SendHugFormComponent);
     const shForm = fixture.componentInstance;
     const shformDOM = fixture.nativeElement;
-    shForm.forUsername = "meow";
-    shForm.forID = 1;
-    shForm.postID = 1;
+    fixture.componentRef.setInput("forUsername", "meow");
+    fixture.componentRef.setInput("forID", 1);
+    fixture.componentRef.setInput("postID", 1);
     const apiClientSpy = spyOn(shForm["apiClient"], "post");
     const alertServiceSpy = spyOn(shForm["alertsService"], "createAlert");
     fixture.detectChanges();
@@ -208,12 +211,12 @@ describe("Send Hug Form", () => {
       (_control) => null,
     );
 
-    const fixture = TestBed.createComponent(SendHugForm);
+    const fixture = TestBed.createComponent(SendHugFormComponent);
     const shForm = fixture.componentInstance;
     const shformDOM = fixture.nativeElement;
-    shForm.forUsername = "meow";
-    shForm.forID = 4;
-    shForm.postID = 1;
+    fixture.componentRef.setInput("forUsername", "meow");
+    fixture.componentRef.setInput("forID", 4);
+    fixture.componentRef.setInput("postID", 1);
     const apiClientSpy = spyOn(shForm["apiClient"], "post");
     const alertServiceSpy = spyOn(shForm["alertsService"], "createAlert");
     fixture.detectChanges();
@@ -240,11 +243,11 @@ describe("Send Hug Form", () => {
       (_control) => null,
     );
 
-    const fixture = TestBed.createComponent(SendHugForm);
+    const fixture = TestBed.createComponent(SendHugFormComponent);
     const shForm = fixture.componentInstance;
-    shForm.forUsername = "meow";
-    shForm.forID = 1;
-    shForm.postID = undefined;
+    fixture.componentRef.setInput("forUsername", "meow");
+    fixture.componentRef.setInput("forID", 1);
+    fixture.componentRef.setInput("postID", undefined);
     const apiClientSpy = spyOn(shForm["apiClient"], "post");
     const alertServiceSpy = spyOn(shForm["alertsService"], "createAlert");
     fixture.detectChanges();
@@ -276,12 +279,12 @@ describe("Send Hug Form", () => {
       (_control) => null,
     );
 
-    const fixture = TestBed.createComponent(SendHugForm);
+    const fixture = TestBed.createComponent(SendHugFormComponent);
     const shForm = fixture.componentInstance;
     const shformDOM = fixture.nativeElement;
-    shForm.forUsername = "meow";
-    shForm.forID = 1;
-    shForm.postID = 1;
+    fixture.componentRef.setInput("forUsername", "meow");
+    fixture.componentRef.setInput("forID", 1);
+    fixture.componentRef.setInput("postID", 1);
     const apiClientSpy = spyOn(shForm["apiClient"], "post").and.returnValue(of(mockResponse));
     const alertsSpy = spyOn(shForm["alertsService"], "createSuccessAlert");
     const emitSpy = spyOn(shForm.sendMode, "emit");

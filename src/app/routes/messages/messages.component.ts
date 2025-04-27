@@ -43,10 +43,10 @@ import { FullThread, ParsedThread } from "@app/interfaces/thread.interface";
 import { type MessageGet } from "@app/interfaces/message.interface";
 import { SWManager } from "@app/services/sWManager.service";
 import { ApiClientService } from "@app/services/apiClient.service";
-import { Loader } from "@common/loader/loader.component";
-import { ItemDeleteForm } from "@forms/itemDeleteForm/itemDeleteForm.component";
-import { AppSingleMessage } from "@app/components/messaging/message/message.component";
-import { AppSingleThread } from "@app/components/messaging/thread/thread.component";
+import { LoaderComponent } from "@common/loader/loader.component";
+import { ItemDeleteFormComponent } from "@forms/itemDeleteForm/itemDeleteForm.component";
+import { MessageComponent } from "@app/components/messaging/message/message.component";
+import { ThreadComponent } from "@app/components/messaging/thread/thread.component";
 import { MessagesResponse, ThreadResponse } from "@app/interfaces/api";
 
 @Component({
@@ -54,11 +54,18 @@ import { MessagesResponse, ThreadResponse } from "@app/interfaces/api";
   templateUrl: "./messages.component.html",
   styleUrl: "./messages.component.less",
   standalone: true,
-  imports: [CommonModule, RouterLink, Loader, ItemDeleteForm, AppSingleMessage, AppSingleThread],
+  imports: [
+    CommonModule,
+    RouterLink,
+    LoaderComponent,
+    ItemDeleteFormComponent,
+    MessageComponent,
+    ThreadComponent,
+  ],
 })
-export class AppMessaging {
-  messType = signal<MessageType>("inbox");
-  idbFilterAttribute = computed(() => {
+export class AppMessagesComponent {
+  readonly messType = signal<MessageType>("inbox");
+  readonly idbFilterAttribute = computed(() => {
     if (this.messType() == "thread") {
       return "threadID";
     } else if (this.messType() == "outbox") {
@@ -67,14 +74,14 @@ export class AppMessaging {
       return "forId";
     }
   });
-  currentPage = signal(1);
-  totalPages = signal(1);
-  isLoading = signal(false);
-  isIdbFetchLoading = signal(false);
-  threadId = signal<number | undefined>(undefined);
-  messages = signal<MessageGet[]>([]);
-  userThreads = signal<FullThread[]>([]);
-  userThreadsFormatted = computed<ParsedThread[]>(() => {
+  readonly currentPage = signal(1);
+  readonly totalPages = signal(1);
+  readonly isLoading = signal(false);
+  readonly isIdbFetchLoading = signal(false);
+  readonly threadId = signal<number | undefined>(undefined);
+  readonly messages = signal<MessageGet[]>([]);
+  readonly userThreads = signal<FullThread[]>([]);
+  readonly userThreadsFormatted = computed<ParsedThread[]>(() => {
     return this.userThreads().map((thread: FullThread) => {
       return {
         id: thread.id,
@@ -85,23 +92,25 @@ export class AppMessaging {
       };
     });
   });
-  previousPageButtonClass = computed(() => ({
+  readonly previousPageButtonClass = computed(() => ({
     "appButton prevButton": true,
     disabled: this.currentPage() <= 1,
   }));
-  nextPageButtonClass = computed(() => ({
+  readonly nextPageButtonClass = computed(() => ({
     "appButton nextButton": true,
     disabled: this.totalPages() <= this.currentPage(),
   }));
   // loader sub-component variable
-  loadingMessage = computed(() =>
+  readonly loadingMessage = computed(() =>
     this.messType() == "threads" ? "Fetching threads..." : "Fetching messages...",
   );
-  loaderClass = computed(() => (!this.isIdbFetchLoading() && this.isLoading() ? "header" : ""));
+  readonly loaderClass = computed(() =>
+    !this.isIdbFetchLoading() && this.isLoading() ? "header" : "",
+  );
   // edit popup sub-component variables
-  deleteMode = signal(false);
-  toDelete = signal<string | undefined>(undefined);
-  itemToDelete = signal<number | undefined>(undefined);
+  readonly deleteMode = signal(false);
+  readonly toDelete = signal<string | undefined>(undefined);
+  readonly itemToDelete = signal<number | undefined>(undefined);
 
   // CTOR
   constructor(

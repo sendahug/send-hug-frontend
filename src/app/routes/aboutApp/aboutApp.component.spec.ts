@@ -40,16 +40,16 @@ import {
 import { provideRouter, RouterLink } from "@angular/router";
 import { provideZoneChangeDetection } from "@angular/core";
 
-import { AboutApp } from "./aboutApp.component";
+import { AboutAppComponent } from "./aboutApp.component";
 
-describe("AboutApp", () => {
+describe("AboutAppComponent", () => {
   // Before each test, configure testing environment
   beforeEach(() => {
     TestBed.resetTestEnvironment();
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
-      imports: [RouterLink, AboutApp],
+      imports: [RouterLink, AboutAppComponent],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
         provideZoneChangeDetection({ eventCoalescing: true }),
@@ -60,7 +60,7 @@ describe("AboutApp", () => {
 
   // Check the page is created
   it("should create the component", () => {
-    const fixture = TestBed.createComponent(AboutApp);
+    const fixture = TestBed.createComponent(AboutAppComponent);
     const aboutApp = fixture.componentInstance;
 
     expect(aboutApp).toBeTruthy();

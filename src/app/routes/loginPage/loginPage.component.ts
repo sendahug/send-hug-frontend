@@ -43,25 +43,31 @@ import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 // App-related imports
 import { AuthService } from "@app/services/auth.service";
 import { AlertsService } from "@app/services/alerts.service";
-import { Loader } from "@common/loader/loader.component";
-import { PasswordResetForm } from "@forms/passwordResetForm/passwordResetForm.component";
+import { LoaderComponent } from "@common/loader/loader.component";
+import { PasswordResetFormComponent } from "@forms/passwordResetForm/passwordResetForm.component";
 
 @Component({
   selector: "app-login-page",
   templateUrl: "./loginPage.component.html",
   styleUrl: "./loginPage.component.less",
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FontAwesomeModule, Loader, PasswordResetForm],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    FontAwesomeModule,
+    LoaderComponent,
+    PasswordResetFormComponent,
+  ],
 })
-export class LoginPage {
-  isNewUser = signal<boolean>(false);
-  signInUpTitle = computed(() => (this.isNewUser() ? "Sign up" : "Sign in"));
+export class LoginPageComponent {
+  readonly isNewUser = signal<boolean>(false);
+  readonly signInUpTitle = computed(() => (this.isNewUser() ? "Sign up" : "Sign in"));
   loginForm = this.fb.group({
     username: ["", [Validators.email, Validators.required]],
     password: ["", [Validators.required]],
   });
-  isLoading = signal(false);
-  resetMode = signal(false);
+  readonly isLoading = signal(false);
+  readonly resetMode = signal(false);
   faGoogle = faGoogle;
   faApple = faApple;
 

@@ -31,7 +31,7 @@
 */
 
 // Angular imports
-import { Component, Input, Output, EventEmitter, OnInit, signal } from "@angular/core";
+import { Component, Output, EventEmitter, OnInit, signal, input } from "@angular/core";
 import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { CommonModule } from "@angular/common";
 import { RouterLink } from "@angular/router";
@@ -44,7 +44,7 @@ import { AuthService } from "@app/services/auth.service";
 import { AlertsService } from "@app/services/alerts.service";
 import { ValidationService } from "@app/services/validation.service";
 import { ApiClientService } from "@app/services/apiClient.service";
-import { PopUp } from "@common/popUp/popUp.component";
+import { PopUpComponent } from "@common/popUp/popUp.component";
 import { TeleportDirective } from "@app/directives/teleport.directive";
 import { type CreateReportResponse } from "@app/interfaces/api";
 
@@ -81,17 +81,17 @@ const reportReasonsText = {
   selector: "report-form",
   templateUrl: "./reportForm.component.html",
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, PopUp, RouterLink, TeleportDirective],
+  imports: [CommonModule, ReactiveFormsModule, PopUpComponent, RouterLink, TeleportDirective],
 })
-export class ReportForm implements OnInit {
+export class ReportFormComponent implements OnInit {
   // indicates whether edit/delete mode is still required
   @Output() reportMode = new EventEmitter<boolean>();
   // reported post
-  @Input() reportedItem: PostGet | OtherUser | undefined;
+  readonly reportedItem = input<PostGet | OtherUser | undefined>();
   // type of item to report
-  @Input() reportType: ReportType = "Post";
-  protected reportedPost = signal<PostGet | undefined>(undefined);
-  protected reportedUser = signal<OtherUser | undefined>(undefined);
+  readonly reportType = input<ReportType>("Post");
+  protected readonly reportedPost = signal<PostGet | undefined>(undefined);
+  protected readonly reportedUser = signal<OtherUser | undefined>(undefined);
   reportReasonsText = reportReasonsText;
   reportForm = this.fb.group({
     selectedReason: this.fb.control(undefined as string | undefined, [Validators.required]),
@@ -111,11 +111,11 @@ export class ReportForm implements OnInit {
    * OnInit hook for Angular.
    */
   ngOnInit(): void {
-    if (this.reportType == "Post") {
-      this.reportedPost.set(this.reportedItem as PostGet);
+    if (this.reportType() == "Post") {
+      this.reportedPost.set(this.reportedItem() as PostGet);
       this.reportedUser.set(undefined);
     } else {
-      this.reportedUser.set(this.reportedItem as OtherUser);
+      this.reportedUser.set(this.reportedItem() as OtherUser);
       this.reportedPost.set(undefined);
     }
   }
@@ -158,7 +158,7 @@ export class ReportForm implements OnInit {
 
       if (selectedItemNumber < 3) {
         // if the item being reported is a post
-        if (this.reportType == "Post") {
+        if (this.reportType() == "Post") {
           return `The post is ${postReportReasons[selectedItemNumber]}`;
         }
         // if the item being reported is a user
@@ -181,7 +181,9 @@ export class ReportForm implements OnInit {
    */
   createReport() {
     const item =
-      this.reportType == "User" ? (this.reportedItem as OtherUser) : (this.reportedItem as PostGet);
+      this.reportType() == "User"
+        ? (this.reportedItem() as OtherUser)
+        : (this.reportedItem() as PostGet);
     let reportReason = this.getSelectedReasonText();
 
     if (!this.reportForm.valid) {
@@ -203,7 +205,7 @@ export class ReportForm implements OnInit {
 
     // create a new report
     const report: ReportCreate = {
-      type: this.reportType as ReportType,
+      type: this.reportType() as ReportType,
       userID: 0,
       postID: undefined,
       reportReason: reportReason!,
@@ -212,7 +214,7 @@ export class ReportForm implements OnInit {
       closed: false,
     };
 
-    if (this.reportType == "Post") {
+    if (this.reportType() == "Post") {
       report["userID"] = (item as PostGet).userId;
       report["postID"] = (item as PostGet).id;
     } else {

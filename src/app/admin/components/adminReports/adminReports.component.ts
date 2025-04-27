@@ -47,44 +47,47 @@ import {
 import { type ReportData, type EditReportUserData } from "@app/interfaces/report.interface";
 import { PostGet } from "@app/interfaces/post.interface";
 
+/* eslint-disable @angular-eslint/prefer-standalone */
+/* Since the Admin section is self-contained, it's better off as a module */
+
 @Component({
   selector: "app-admin-reports",
   templateUrl: "./adminReports.component.html",
   standalone: false,
 })
-export class AdminReports {
-  postReports = signal<ReportGet[]>([]);
-  userReports = signal<ReportGet[]>([]);
-  totalPostReportsPages = signal(1);
-  totalUserReportsPages = signal(1);
-  currentPostReportsPage = signal(1);
-  currentUserReportsPage = signal(1);
-  isLoading = signal(false);
+export class AdminReportsComponent {
+  readonly postReports = signal<ReportGet[]>([]);
+  readonly userReports = signal<ReportGet[]>([]);
+  readonly totalPostReportsPages = signal(1);
+  readonly totalUserReportsPages = signal(1);
+  readonly currentPostReportsPage = signal(1);
+  readonly currentUserReportsPage = signal(1);
+  readonly isLoading = signal(false);
   // edit popup sub-component variables
-  userToEdit = signal<EditReportUserData>({ id: 0, displayName: "" });
-  postToEdit = signal<PostGet>({} as PostGet);
-  nameEditMode = signal(false);
-  postEditMode = signal(false);
-  reportData = signal<ReportData>({
+  readonly userToEdit = signal<EditReportUserData>({ id: 0, displayName: "" });
+  readonly postToEdit = signal<PostGet>({} as PostGet);
+  readonly nameEditMode = signal(false);
+  readonly postEditMode = signal(false);
+  readonly reportData = signal<ReportData>({
     reportID: 0,
     userID: 0,
   });
-  deleteMode = signal(false);
-  toDelete = signal<string | undefined>(undefined);
-  itemToDelete = signal<number | undefined>(undefined);
-  usersPrevButtonClass = computed(() => ({
+  readonly deleteMode = signal(false);
+  readonly toDelete = signal<string | undefined>(undefined);
+  readonly itemToDelete = signal<number | undefined>(undefined);
+  readonly usersPrevButtonClass = computed(() => ({
     "appButton prevButton": true,
     disabled: this.currentUserReportsPage() <= 1,
   }));
-  usersNextButtonClass = computed(() => ({
+  readonly usersNextButtonClass = computed(() => ({
     "appButton nextButton": true,
     disabled: this.currentUserReportsPage() >= this.totalUserReportsPages(),
   }));
-  postsPrevButtonClass = computed(() => ({
+  readonly postsPrevButtonClass = computed(() => ({
     "appButton prevButton": true,
     disabled: this.currentPostReportsPage() <= 1,
   }));
-  postsNextButtonClass = computed(() => ({
+  readonly postsNextButtonClass = computed(() => ({
     "appButton nextButton": true,
     disabled: this.currentPostReportsPage() >= this.totalPostReportsPages(),
   }));
@@ -263,7 +266,7 @@ export class AdminReports {
 
   /**
    * Updates the UI with the updated details of the post and report.
-   * @param response The post/report response returned by the PostEditForm.
+   * @param response The post/report response returned by the PostEditFormComponent.
    */
   updatePostReport(response: PostAndReportResponse) {
     // If the report was closed, remove it

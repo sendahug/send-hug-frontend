@@ -37,16 +37,16 @@ import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 // App-related imports
 import { AuthService } from "@app/services/auth.service";
 import { AlertsService } from "@app/services/alerts.service";
-import { PopUp } from "@common/popUp/popUp.component";
+import { PopUpComponent } from "@common/popUp/popUp.component";
 import { TeleportDirective } from "@app/directives/teleport.directive";
 
 @Component({
   selector: "app-reset-pw-form",
   templateUrl: "./passwordResetForm.component.html",
   standalone: true,
-  imports: [ReactiveFormsModule, PopUp, TeleportDirective],
+  imports: [ReactiveFormsModule, PopUpComponent, TeleportDirective],
 })
-export class PasswordResetForm {
+export class PasswordResetFormComponent {
   @Output() editMode = new EventEmitter<boolean>();
   resetForm = this.fb.group({
     username: ["", [Validators.required, Validators.email]],

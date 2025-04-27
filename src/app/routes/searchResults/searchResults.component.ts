@@ -37,18 +37,18 @@ import { ActivatedRoute, Router, RouterLink } from "@angular/router";
 
 // App-related imports
 import { ItemsService } from "@app/services/items.service";
-import { Loader } from "@common/loader/loader.component";
-import { SinglePost } from "@common/post/post.component";
+import { LoaderComponent } from "@common/loader/loader.component";
+import { PostComponent } from "@common/post/post.component";
 
 @Component({
   selector: "app-search-results",
   templateUrl: "./searchResults.component.html",
   styleUrl: "./searchResults.component.less",
   standalone: true,
-  imports: [CommonModule, Loader, SinglePost, RouterLink],
+  imports: [CommonModule, LoaderComponent, PostComponent, RouterLink],
 })
-export class SearchResults {
-  searchQuery = signal<string | null>(null);
+export class SearchResultsComponent {
+  readonly searchQuery = signal<string | null>(null);
 
   // CTOR
   constructor(

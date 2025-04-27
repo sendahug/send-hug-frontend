@@ -31,7 +31,7 @@
 */
 
 // Angular imports
-import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
+import { Component, EventEmitter, input, OnInit, Output } from "@angular/core";
 import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { CommonModule } from "@angular/common";
 
@@ -41,7 +41,7 @@ import { AlertsService } from "@app/services/alerts.service";
 import { ApiClientService } from "@app/services/apiClient.service";
 import { ValidationService } from "@app/services/validation.service";
 import { ItemsService } from "@app/services/items.service";
-import { PopUp } from "@common/popUp/popUp.component";
+import { PopUpComponent } from "@common/popUp/popUp.component";
 import { TeleportDirective } from "@app/directives/teleport.directive";
 import { type SendHugResponse } from "@app/interfaces/api";
 
@@ -49,13 +49,13 @@ import { type SendHugResponse } from "@app/interfaces/api";
   selector: "app-send-hug-form",
   templateUrl: "./sendHugForm.component.html",
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, PopUp, TeleportDirective],
+  imports: [CommonModule, ReactiveFormsModule, PopUpComponent, TeleportDirective],
 })
-export class SendHugForm implements OnInit {
+export class SendHugFormComponent implements OnInit {
   @Output() sendMode = new EventEmitter<boolean>();
-  @Input() forUsername: string = "";
-  @Input() forID?: number;
-  @Input() postID?: number;
+  readonly forUsername = input<string>("");
+  readonly forID = input.required<number>();
+  readonly postID = input<number | undefined>();
   sendHugForm = this.fb.group({
     messageFor: ["", Validators.required],
     sendMessage: [true],
@@ -75,7 +75,7 @@ export class SendHugForm implements OnInit {
    * Angular's OnInit hook.
    */
   ngOnInit() {
-    this.sendHugForm.controls.messageFor.setValue(this.forUsername);
+    this.sendHugForm.controls.messageFor.setValue(this.forUsername());
 
     this.sendHugForm.controls.sendMessage.valueChanges.subscribe((newValue) =>
       this.updateTextValidators(newValue),
@@ -122,7 +122,7 @@ export class SendHugForm implements OnInit {
     }
 
     // if the user is attempting to send a message to themselves
-    if (this.authService.userData()!.id == Number(this.forID)) {
+    if (this.authService.userData()!.id == Number(this.forID())) {
       this.alertsService.createAlert({
         type: "Error",
         message: "You can't send a message to yourself!",
@@ -130,7 +130,7 @@ export class SendHugForm implements OnInit {
       return;
     }
 
-    if (!this.postID) {
+    if (!this.postID()) {
       this.alertsService.createAlert({
         type: "Error",
         message: "A post ID is required to send a hug for a post.",
@@ -139,12 +139,12 @@ export class SendHugForm implements OnInit {
     }
 
     this.apiClient
-      .post<SendHugResponse>(`posts/${this.postID}/hugs`, { messageText: messageText })
+      .post<SendHugResponse>(`posts/${this.postID()}/hugs`, { messageText: messageText })
       .subscribe({
         next: (response) => {
           this.alertsService.createSuccessAlert(response.updated);
           // Alert the posts that this item received a hug
-          this.itemsService.receivedAHug.next(this.postID!);
+          this.itemsService.receivedAHug.next(this.postID()!);
           this.sendMode.emit(false);
         },
       });

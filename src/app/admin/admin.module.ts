@@ -36,14 +36,14 @@ import { ReactiveFormsModule } from "@angular/forms";
 import { CommonModule } from "@angular/common";
 import { provideRouter, RouterLink, withComponentInputBinding } from "@angular/router";
 
-import { AdminBlocks } from "./components/adminBlocks/adminBlocks.component";
-import { AdminDashboard } from "./components/adminDashboard/adminDashboard.component";
-import { AdminFilters } from "./components/adminFilters/adminFilters.component";
-import { AdminReports } from "./components/adminReports/adminReports.component";
-import { PostEditForm } from "@forms/postEditForm/postEditForm.component";
-import { ItemDeleteForm } from "@forms/itemDeleteForm/itemDeleteForm.component";
-import { DisplayNameEditForm } from "@forms/displayNameEditForm/displayNameEditForm.component";
-import { Loader } from "@common/loader/loader.component";
+import { AdminBlocksComponent } from "./components/adminBlocks/adminBlocks.component";
+import { AdminDashboardComponent } from "./components/adminDashboard/adminDashboard.component";
+import { AdminFiltersComponent } from "./components/adminFilters/adminFilters.component";
+import { AdminReportsComponent } from "./components/adminReports/adminReports.component";
+import { PostEditFormComponent } from "@forms/postEditForm/postEditForm.component";
+import { ItemDeleteFormComponent } from "@forms/itemDeleteForm/itemDeleteForm.component";
+import { DisplayNameEditFormComponent } from "@forms/displayNameEditForm/displayNameEditForm.component";
+import { LoaderComponent } from "@common/loader/loader.component";
 
 /* eslint-disable @typescript-eslint/no-extraneous-class */
 /* The module notation requires it */
@@ -51,38 +51,43 @@ import { Loader } from "@common/loader/loader.component";
   imports: [
     ReactiveFormsModule,
     CommonModule,
-    PostEditForm,
-    ItemDeleteForm,
-    DisplayNameEditForm,
-    Loader,
+    PostEditFormComponent,
+    ItemDeleteFormComponent,
+    DisplayNameEditFormComponent,
+    LoaderComponent,
     RouterLink,
   ],
-  declarations: [AdminBlocks, AdminDashboard, AdminFilters, AdminReports],
+  declarations: [
+    AdminBlocksComponent,
+    AdminDashboardComponent,
+    AdminFiltersComponent,
+    AdminReportsComponent,
+  ],
   providers: [
     provideHttpClient(),
     provideRouter(
       [
-        { path: "", pathMatch: "prefix", component: AdminDashboard },
+        { path: "", pathMatch: "prefix", component: AdminDashboardComponent },
         {
           path: "reports",
           pathMatch: "prefix",
-          component: AdminDashboard,
+          component: AdminDashboardComponent,
         },
         {
           path: "blocks",
           pathMatch: "prefix",
-          component: AdminDashboard,
+          component: AdminDashboardComponent,
         },
         {
           path: "filters",
           pathMatch: "prefix",
-          component: AdminDashboard,
+          component: AdminDashboardComponent,
         },
       ],
       withComponentInputBinding(),
     ),
   ],
-  bootstrap: [AdminDashboard],
-  exports: [AdminDashboard],
+  bootstrap: [AdminDashboardComponent],
+  exports: [AdminDashboardComponent],
 })
 export class AppAdminModule {}

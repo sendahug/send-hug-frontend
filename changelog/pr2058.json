@@ -1,0 +1,33 @@
+{
+  "pr_number": 2058,
+  "changes": [
+    {
+      "change": "Chores",
+      "description": "Added Angular ESLint plugins to enable linting Angular components (templates and TypeScript code), services, guards and directives.."
+    },
+    {
+      "change": "Chores",
+      "description": "Renamed all the Angular components to include the `Component` suffix. This is a best practice in Angular which makes it clearer what classes are components."
+    },
+    {
+      "change": "Chores",
+      "description": "Switched all signal properties to be read-only. This ensures signals aren't being set directly, but through signals' `set` method, which is meant for updating the value of a signal."
+    },
+    {
+      "change": "Changes",
+      "description": "Replaced all equality checks with strict equality checks. This is a best practice in JavaScript which ensures that the types of the values being compared are also checked, not just their values."
+    },
+    {
+      "change": "Fixes",
+      "description": "Added missing lifecycle protocols to the Teleport directive and the Notifications tab component. This ensures the lifecycle hooks are properly implemented and remain properly implemented in the future."
+    },
+    {
+      "change": "Changes",
+      "description": "Converted the inputs of various components (report form, send hug form, post edit form to use signal-based inputs rather than the old decorator-based inputs. This ensures that inputs are reactive and that sub-components are properly updated when the inputs change."
+    },
+    {
+      "change": "Fixes",
+      "description": "Changed the headers of all the app's tables to use the HTML header element (`th`) rather than the table cell (`td`) element. This improves the accessibility of tables and allows screen readers to properly associate the headers with the table cells."
+    }
+  ]
+}

@@ -51,8 +51,8 @@ import { ItemsService } from "@app/services/items.service";
 import { AlertsService } from "@app/services/alerts.service";
 import { SWManager } from "@app/services/sWManager.service";
 import { NotificationService } from "@app/services/notifications.service";
-import { NotificationsTab } from "@app/components/layout/notifications/notifications.component";
-import { SearchForm } from "@app/components/layout/searchForm/searchForm.component";
+import { NotificationsTabComponent } from "@app/components/layout/notifications/notifications.component";
+import { SearchFormComponent } from "@app/components/layout/searchForm/searchForm.component";
 import SiteLogoSrc from "@/assets/img/Logo.svg";
 
 @Component({
@@ -60,25 +60,31 @@ import SiteLogoSrc from "@/assets/img/Logo.svg";
   templateUrl: "./navigationMenu.component.html",
   styleUrl: "./navigationMenu.component.less",
   standalone: true,
-  imports: [CommonModule, RouterLink, FontAwesomeModule, NotificationsTab, SearchForm],
+  imports: [
+    CommonModule,
+    RouterLink,
+    FontAwesomeModule,
+    NotificationsTabComponent,
+    SearchFormComponent,
+  ],
 })
-export class AppNavMenu implements OnInit, AfterViewInit {
-  showNotifications = signal(false);
-  showSearch = signal(false);
-  showTextPanel = signal(false);
-  showMenu = signal(false);
-  navMenuClass = computed(() => ({
+export class NavigationMenuComponent implements OnInit, AfterViewInit {
+  readonly showNotifications = signal(false);
+  readonly showSearch = signal(false);
+  readonly showTextPanel = signal(false);
+  readonly showMenu = signal(false);
+  readonly navMenuClass = computed(() => ({
     navLinks: true,
     hidden: !this.showMenu(),
   }));
-  showMenuButton = signal(false);
-  menuButtonClass = computed(() => ({
+  readonly showMenuButton = signal(false);
+  readonly menuButtonClass = computed(() => ({
     navLink: true,
     hidden: !this.showMenuButton(),
   }));
-  currentlyActiveRoute = signal("/");
-  currentTextSize = signal(1);
-  menuSize = computed(() => {
+  readonly currentlyActiveRoute = signal("/");
+  readonly currentTextSize = signal(1);
+  readonly menuSize = computed(() => {
     // text, search and notifications, each is ~65px
     const smallerButtons = 3 * 65;
     // the logo is at most 100px

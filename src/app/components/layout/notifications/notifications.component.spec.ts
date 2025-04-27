@@ -43,11 +43,11 @@ import { computed, provideZoneChangeDetection, signal } from "@angular/core";
 import { MockComponent, MockProvider } from "ng-mocks";
 import { BehaviorSubject, of, Subscription } from "rxjs";
 
-import { NotificationsTab } from "./notifications.component";
+import { NotificationsTabComponent } from "./notifications.component";
 import { NotificationService } from "@app/services/notifications.service";
 import { AuthService, ToggleButtonOption } from "@app/services/auth.service";
 import { mockAuthedUser } from "@tests/mockData";
-import { AppAlert } from "@app/components/appAlert/appAlert.component";
+import { AppAlertComponent } from "@app/components/appAlert/appAlert.component";
 import { ApiClientService } from "@app/services/apiClient.service";
 
 describe("Notifications Tab", () => {
@@ -79,13 +79,13 @@ describe("Notifications Tab", () => {
         }),
     });
     const MockAPIClient = MockProvider(ApiClientService);
-    const MockAlert = MockComponent(AppAlert);
+    const MockAlert = MockComponent(AppAlertComponent);
 
     TestBed.resetTestEnvironment();
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
-      imports: [CommonModule, FontAwesomeModule, RouterLink, NotificationsTab, MockAlert],
+      imports: [CommonModule, FontAwesomeModule, RouterLink, NotificationsTabComponent, MockAlert],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
         provideZoneChangeDetection({ eventCoalescing: true }),
@@ -99,7 +99,7 @@ describe("Notifications Tab", () => {
 
   // Check that the component is created
   it("should create the component", () => {
-    const fixture = TestBed.createComponent(NotificationsTab);
+    const fixture = TestBed.createComponent(NotificationsTabComponent);
     const notificationsTab = fixture.componentInstance;
 
     expect(notificationsTab).toBeTruthy();
@@ -112,7 +112,7 @@ describe("Notifications Tab", () => {
     const authSpy = spyOn(authService.isUserDataResolved, "subscribe").and.callThrough();
 
     // set up the component
-    const fixture = TestBed.createComponent(NotificationsTab);
+    const fixture = TestBed.createComponent(NotificationsTabComponent);
     const notificationsTab = fixture.componentInstance;
     const notificationSpy = spyOn(notificationsTab, "getNotifications");
     authService.isUserDataResolved.next(true);
@@ -125,7 +125,7 @@ describe("Notifications Tab", () => {
   // Check that the button toggles push notifications
   it("has a button that toggles push notifications", () => {
     // set up the component and its spies
-    const fixture = TestBed.createComponent(NotificationsTab);
+    const fixture = TestBed.createComponent(NotificationsTabComponent);
     const notificationsTab = fixture.componentInstance;
     const notifTabDOM = fixture.nativeElement;
     const toggleSpy = spyOn(notificationsTab, "togglePushNotifications").and.callThrough();
@@ -171,7 +171,7 @@ describe("Notifications Tab", () => {
     const stopRefreshSpy = spyOn(notificationsService, "stopAutoRefresh");
 
     // set up the component
-    const fixture = TestBed.createComponent(NotificationsTab);
+    const fixture = TestBed.createComponent(NotificationsTabComponent);
     const notificationsTab = fixture.componentInstance;
     const notifTabDOM = fixture.nativeElement;
     const toggleSpy = spyOn(notificationsTab, "toggleAutoRefresh").and.callThrough();
@@ -231,7 +231,7 @@ describe("Notifications Tab", () => {
     const getSpy = spyOn(notificationService, "getNotifications").and.returnValue(of(mockResponse));
 
     // set up the component
-    const fixture = TestBed.createComponent(NotificationsTab);
+    const fixture = TestBed.createComponent(NotificationsTabComponent);
     const notificationsTab = fixture.componentInstance;
     const notifTabDOM = fixture.nativeElement;
     fixture.detectChanges();
@@ -264,7 +264,7 @@ describe("Notifications Tab", () => {
     };
 
     // set up the component
-    const fixture = TestBed.createComponent(NotificationsTab);
+    const fixture = TestBed.createComponent(NotificationsTabComponent);
     const notificationsTab = fixture.componentInstance;
     notificationsTab.displayUnread.set(false);
     const getSpy = spyOn(
@@ -291,7 +291,7 @@ describe("Notifications Tab", () => {
     };
 
     // set up the component
-    const fixture = TestBed.createComponent(NotificationsTab);
+    const fixture = TestBed.createComponent(NotificationsTabComponent);
     const notificationsTab = fixture.componentInstance;
     notificationsTab.displayRead.set(false);
     const getSpy = spyOn(
@@ -318,7 +318,7 @@ describe("Notifications Tab", () => {
     };
 
     // set up the component
-    const fixture = TestBed.createComponent(NotificationsTab);
+    const fixture = TestBed.createComponent(NotificationsTabComponent);
     const notificationsTab = fixture.componentInstance;
     notificationsTab.displayUnread.set(false);
     notificationsTab.displayRead.set(false);
@@ -338,7 +338,7 @@ describe("Notifications Tab", () => {
   // check tab and tab+shift let the user navigate
   // TODO: Figure out why this test isn't working
   it("should navigate using tab and shift+tab", (done: DoneFn) => {
-    const fixture = TestBed.createComponent(NotificationsTab);
+    const fixture = TestBed.createComponent(NotificationsTabComponent);
     const notificationsTab = fixture.componentInstance;
     const notifTabDOM = fixture.nativeElement;
     const focusBindedSpy = spyOn(notificationsTab, "checkFocusBinded").and.callThrough();
@@ -424,7 +424,7 @@ describe("Notifications Tab", () => {
 
   // check the focus is trapped
   it("should trap focus in the modal", () => {
-    const fixture = TestBed.createComponent(NotificationsTab);
+    const fixture = TestBed.createComponent(NotificationsTabComponent);
     const notificationsTab = fixture.componentInstance;
     const notifTabDOM = fixture.nativeElement;
     const focusBindedSpy = spyOn(notificationsTab, "checkFocusBinded").and.callThrough();
@@ -495,7 +495,7 @@ describe("Notifications Tab", () => {
   });
 
   it("nextPage() - should continue to the next page", () => {
-    const fixture = TestBed.createComponent(NotificationsTab);
+    const fixture = TestBed.createComponent(NotificationsTabComponent);
     const notificationsTab = fixture.componentInstance;
     const notifTabDOM = fixture.nativeElement;
     const getNotificationsSpy = spyOn(notificationsTab, "getNotifications");
@@ -516,7 +516,7 @@ describe("Notifications Tab", () => {
   });
 
   it("prevPage() - should go to the previous page", () => {
-    const fixture = TestBed.createComponent(NotificationsTab);
+    const fixture = TestBed.createComponent(NotificationsTabComponent);
     const notificationsTab = fixture.componentInstance;
     const notifTabDOM = fixture.nativeElement;
     const getNotificationsSpy = spyOn(notificationsTab, "getNotifications");
@@ -537,7 +537,7 @@ describe("Notifications Tab", () => {
   });
 
   it("toggleUnread() - should toggle the visibility of unread messages", () => {
-    const fixture = TestBed.createComponent(NotificationsTab);
+    const fixture = TestBed.createComponent(NotificationsTabComponent);
     const notificationsTab = fixture.componentInstance;
     const notifTabDOM = fixture.nativeElement;
     const getNotificationsSpy = spyOn(notificationsTab, "getNotifications");
@@ -561,7 +561,7 @@ describe("Notifications Tab", () => {
   });
 
   it("toggleRead() - should toggle the visibility of read messages", () => {
-    const fixture = TestBed.createComponent(NotificationsTab);
+    const fixture = TestBed.createComponent(NotificationsTabComponent);
     const notificationsTab = fixture.componentInstance;
     const notifTabDOM = fixture.nativeElement;
     const getNotificationsSpy = spyOn(notificationsTab, "getNotifications");
@@ -594,7 +594,7 @@ describe("Notifications Tab", () => {
       }),
     );
 
-    const fixture = TestBed.createComponent(NotificationsTab);
+    const fixture = TestBed.createComponent(NotificationsTabComponent);
     const notificationsTab = fixture.componentInstance;
     const notifTabDOM = fixture.nativeElement;
     notificationsTab["notificationService"].newNotifications.set(10);
@@ -674,7 +674,7 @@ describe("Notifications Tab", () => {
       }),
     );
 
-    const fixture = TestBed.createComponent(NotificationsTab);
+    const fixture = TestBed.createComponent(NotificationsTabComponent);
     const notificationsTab = fixture.componentInstance;
     const notifTabDOM = fixture.nativeElement;
     notificationsTab["notificationService"].newNotifications.set(0);
@@ -755,7 +755,7 @@ describe("Notifications Tab", () => {
       }),
     );
 
-    const fixture = TestBed.createComponent(NotificationsTab);
+    const fixture = TestBed.createComponent(NotificationsTabComponent);
     const notificationsTab = fixture.componentInstance;
     const notifTabDOM = fixture.nativeElement;
     notificationsTab["notificationService"].newNotifications.set(2);
@@ -819,7 +819,7 @@ describe("Notifications Tab", () => {
       }),
     );
 
-    const fixture = TestBed.createComponent(NotificationsTab);
+    const fixture = TestBed.createComponent(NotificationsTabComponent);
     const notificationsTab = fixture.componentInstance;
     const notifTabDOM = fixture.nativeElement;
     notificationsTab["notificationService"].newNotifications.set(1);
@@ -876,7 +876,7 @@ describe("Notifications Tab", () => {
   // Check that the exit button emits the correct boolean
   it("emits false upon clicking the exit button", () => {
     // set up the component
-    const fixture = TestBed.createComponent(NotificationsTab);
+    const fixture = TestBed.createComponent(NotificationsTabComponent);
     const notificationsTab = fixture.componentInstance;
     const notifTabDOM = fixture.nativeElement;
     spyOn(notificationsTab, "getNotifications");

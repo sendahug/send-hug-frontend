@@ -43,13 +43,13 @@ import { AlertConfig, AlertMessage, MessageType } from "@app/interfaces/alert.in
 })
 export class AlertsService {
   // Alert-component variables
-  alertMessage = signal("");
-  shouldDisplayAlert = signal(false);
-  alertType = signal<MessageType>("Success");
-  shouldDisplayReloadBtn = signal(false);
-  shouldDisplayNavBtn = signal(false);
-  navBtnTarget = signal("/");
-  navBtnText = signal("Home Page");
+  readonly alertMessage = signal("");
+  readonly shouldDisplayAlert = signal(false);
+  readonly alertType = signal<MessageType>("Success");
+  readonly shouldDisplayReloadBtn = signal(false);
+  readonly shouldDisplayNavBtn = signal(false);
+  readonly navBtnTarget = signal("/");
+  readonly navBtnText = signal("Home Page");
   // ServiceWorker variables
   waitingServiceWorker: ServiceWorker | undefined;
   isSWRelated = false;

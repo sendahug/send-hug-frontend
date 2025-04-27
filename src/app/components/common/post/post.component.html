@@ -40,7 +40,7 @@
   <div [ngClass]="subMenuClass()">
     <a
       [routerLink]="['/new', 'Message']"
-      *ngIf="authService.userData() && authService.userData()!.id != _post()?.userId"
+      *ngIf="authService.userData() && authService.userData()!.id !== _post()?.userId"
       [queryParams]="{ user: _post()?.user, userID: _post()?.userId }"
       class="textlessButton messageButton"
       [attr.aria-labelledby]="'pMessage' + postId()"
@@ -50,7 +50,7 @@
       <fa-icon [icon]="faComment" class="fa-comment"></fa-icon>
     </a>
     <span
-      *ngIf="!(authService.userData() && authService.userData()!.id != _post()?.userId)"
+      *ngIf="!(authService.userData() && authService.userData()!.id !== _post()?.userId)"
       class="textlessButton messageButton disabled"
     >
       <!-- prettier-ignore -->
@@ -61,7 +61,7 @@
       (click)="reportPost()"
       [attr.aria-labelledby]="'pReport' + postId()"
       name="report"
-      [disabled]="!(authService.userData() && authService.userData()!.id != _post()?.userId)"
+      [disabled]="!(authService.userData() && authService.userData()!.id !== _post()?.userId)"
     >
       <!-- prettier-ignore -->
       <fa-icon [icon]="faFlag" class="fa-flag"></fa-icon>
@@ -69,7 +69,7 @@
     <button
       *ngIf="
         authService.canUser('patch:any-post') ||
-        (authService.userData() && authService.userData()!.id == _post()?.userId)
+        (authService.userData() && authService.userData()!.id === _post()?.userId)
       "
       class="textlessButton editButton"
       (click)="editPost()"
@@ -81,7 +81,7 @@
     <button
       *ngIf="
         authService.canUser('delete:any-post') ||
-        (authService.userData() && authService.userData()!.id == _post()?.userId)
+        (authService.userData() && authService.userData()!.id === _post()?.userId)
       "
       class="textlessButton deleteButton"
       (click)="deletePost()"

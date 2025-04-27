@@ -37,10 +37,10 @@ import { of } from "rxjs";
 import { provideZoneChangeDetection, signal } from "@angular/core";
 import { MockProvider } from "ng-mocks";
 
-import { ReportForm } from "./reportForm.component";
+import { ReportFormComponent } from "./reportForm.component";
 import { AuthService } from "@app/services/auth.service";
 import { mockAuthedUser } from "@tests/mockData";
-import { PopUp } from "@common/popUp/popUp.component";
+import { PopUpComponent } from "@common/popUp/popUp.component";
 import { ValidationService } from "@app/services/validation.service";
 import { ApiClientService } from "@app/services/apiClient.service";
 
@@ -59,7 +59,7 @@ describe("Report", () => {
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
-      imports: [CommonModule, ReactiveFormsModule, PopUp, RouterLink, ReportForm],
+      imports: [CommonModule, ReactiveFormsModule, PopUpComponent, RouterLink, ReportFormComponent],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
         provideZoneChangeDetection({ eventCoalescing: true }),
@@ -72,11 +72,10 @@ describe("Report", () => {
 
   // Check that the reported post is shown
   it("shows the reported post", () => {
-    const fixture = TestBed.createComponent(ReportForm);
-    const popUp = fixture.componentInstance;
-    const popUpDOM = fixture.nativeElement;
-    popUp.reportType = "Post";
-    popUp.reportedItem = {
+    const fixture = TestBed.createComponent(ReportFormComponent);
+    const reportFormDOM = fixture.nativeElement;
+    fixture.componentRef.setInput("reportType", "Post");
+    fixture.componentRef.setInput("reportedItem", {
       id: 1,
       givenHugs: 0,
       sentHugs: [],
@@ -84,21 +83,20 @@ describe("Report", () => {
       userId: 2,
       text: "hi",
       date: new Date(),
-    };
+    });
     fixture.detectChanges();
 
-    expect(popUpDOM.querySelector("#reportItem")).toBeTruthy();
-    expect(popUpDOM.querySelectorAll(".userPost")).toBeTruthy();
-    expect(popUpDOM.querySelector("#reportText").textContent).toBe("hi");
+    expect(reportFormDOM.querySelector("#reportItem")).toBeTruthy();
+    expect(reportFormDOM.querySelectorAll(".userPost")).toBeTruthy();
+    expect(reportFormDOM.querySelector("#reportText").textContent).toBe("hi");
   });
 
   // Check that the reported user's display name is shown
   it("shows the reported user's name", () => {
-    const fixture = TestBed.createComponent(ReportForm);
-    const popUp = fixture.componentInstance;
-    const popUpDOM = fixture.nativeElement;
-    popUp.reportType = "User";
-    popUp.reportedItem = {
+    const fixture = TestBed.createComponent(ReportFormComponent);
+    const reportFormDOM = fixture.nativeElement;
+    fixture.componentRef.setInput("reportType", "User");
+    fixture.componentRef.setInput("reportedItem", {
       id: 3,
       displayName: "string",
       receivedH: 3,
@@ -116,21 +114,21 @@ describe("Report", () => {
         rbg: "#f8eee4",
         item: "#f4b56a",
       },
-    };
+    });
 
     fixture.detectChanges();
 
-    expect(popUpDOM.querySelector("#uReportText")).toBeTruthy();
-    expect(popUpDOM.querySelector("#uReportText").textContent).toBe("string");
+    expect(reportFormDOM.querySelector("#uReportText")).toBeTruthy();
+    expect(reportFormDOM.querySelector("#uReportText").textContent).toBe("string");
   });
 
   // Check that the correct radio button is set as selected
   it("correctly identifies the chosen radio button", () => {
-    const fixture = TestBed.createComponent(ReportForm);
-    const popUp = fixture.componentInstance;
-    const popUpDOM = fixture.nativeElement;
-    popUp.reportType = "Post";
-    popUp.reportedItem = {
+    const fixture = TestBed.createComponent(ReportFormComponent);
+    const reportForm = fixture.componentInstance;
+    const reportFormDOM = fixture.nativeElement;
+    fixture.componentRef.setInput("reportType", "Post");
+    fixture.componentRef.setInput("reportedItem", {
       id: 1,
       givenHugs: 0,
       sentHugs: [],
@@ -138,49 +136,49 @@ describe("Report", () => {
       userId: 2,
       text: "hi",
       date: new Date(),
-    };
-    const selectSpy = spyOn(popUp, "checkSelectedForOther").and.callThrough();
+    });
+    const selectSpy = spyOn(reportForm, "checkSelectedForOther").and.callThrough();
     fixture.detectChanges();
 
     // select option 1
-    popUpDOM.querySelector("#pRadioOption0").click();
+    reportFormDOM.querySelector("#pRadioOption0").click();
     fixture.detectChanges();
 
     // check the first option was selected
-    expect(selectSpy).toHaveBeenCalledWith(popUpDOM.querySelector("#pRadioOption0"));
-    expect(popUp.reportForm.controls.selectedReason.value).toEqual("0");
+    expect(selectSpy).toHaveBeenCalledWith(reportFormDOM.querySelector("#pRadioOption0"));
+    expect(reportForm.reportForm.controls.selectedReason.value).toEqual("0");
 
     // select option 2
-    popUpDOM.querySelector("#pRadioOption1").click();
+    reportFormDOM.querySelector("#pRadioOption1").click();
     fixture.detectChanges();
 
     // check the second option was selected
-    expect(selectSpy).toHaveBeenCalledWith(popUpDOM.querySelector("#pRadioOption1"));
-    expect(popUp.reportForm.controls.selectedReason.value).toEqual("1");
+    expect(selectSpy).toHaveBeenCalledWith(reportFormDOM.querySelector("#pRadioOption1"));
+    expect(reportForm.reportForm.controls.selectedReason.value).toEqual("1");
 
     // select option 3
-    popUpDOM.querySelector("#pRadioOption2").click();
+    reportFormDOM.querySelector("#pRadioOption2").click();
     fixture.detectChanges();
 
     // check the third option was selected
-    expect(selectSpy).toHaveBeenCalledWith(popUpDOM.querySelector("#pRadioOption2"));
-    expect(popUp.reportForm.controls.selectedReason.value).toEqual("2");
+    expect(selectSpy).toHaveBeenCalledWith(reportFormDOM.querySelector("#pRadioOption2"));
+    expect(reportForm.reportForm.controls.selectedReason.value).toEqual("2");
 
     // select option 4
-    popUpDOM.querySelector("#pRadioOption3").click();
+    reportFormDOM.querySelector("#pRadioOption3").click();
     fixture.detectChanges();
 
     // check the fourth option was selected
-    expect(selectSpy).toHaveBeenCalledWith(popUpDOM.querySelector("#pRadioOption3"));
-    expect(popUp.reportForm.controls.selectedReason.value).toEqual("3");
+    expect(selectSpy).toHaveBeenCalledWith(reportFormDOM.querySelector("#pRadioOption3"));
+    expect(reportForm.reportForm.controls.selectedReason.value).toEqual("3");
   });
 
   it("checkSelectedForOther() - correctly enables/disables the 'other' text field", () => {
-    const fixture = TestBed.createComponent(ReportForm);
-    const popUp = fixture.componentInstance;
-    const popUpDOM = fixture.nativeElement;
-    popUp.reportType = "User";
-    popUp.reportedItem = {
+    const fixture = TestBed.createComponent(ReportFormComponent);
+    const reportForm = fixture.componentInstance;
+    const reportFormDOM = fixture.nativeElement;
+    fixture.componentRef.setInput("reportType", "User");
+    fixture.componentRef.setInput("reportedItem", {
       id: 3,
       displayName: "string",
       receivedH: 3,
@@ -198,37 +196,36 @@ describe("Report", () => {
         rbg: "#f8eee4",
         item: "#f4b56a",
       },
-    };
+    });
     fixture.detectChanges();
     const otherTextField = document.getElementById("rOption3Text") as HTMLInputElement;
 
-    popUp.checkSelectedForOther(popUpDOM.querySelector("#pRadioOption0"));
+    reportForm.checkSelectedForOther(reportFormDOM.querySelector("#pRadioOption0"));
     fixture.detectChanges();
 
     expect(otherTextField.disabled).toBe(true);
 
-    popUp.checkSelectedForOther(popUpDOM.querySelector("#pRadioOption1"));
+    reportForm.checkSelectedForOther(reportFormDOM.querySelector("#pRadioOption1"));
     fixture.detectChanges();
 
     expect(otherTextField.disabled).toBe(true);
 
-    popUp.checkSelectedForOther(popUpDOM.querySelector("#pRadioOption2"));
+    reportForm.checkSelectedForOther(reportFormDOM.querySelector("#pRadioOption2"));
     fixture.detectChanges();
 
     expect(otherTextField.disabled).toBe(true);
 
-    popUp.checkSelectedForOther(popUpDOM.querySelector("#pRadioOption3"));
+    reportForm.checkSelectedForOther(reportFormDOM.querySelector("#pRadioOption3"));
     fixture.detectChanges();
 
     expect(otherTextField.disabled).toBe(false);
   });
 
   it("Correctly sets the required and aria-required attributes", () => {
-    const fixture = TestBed.createComponent(ReportForm);
-    const popUp = fixture.componentInstance;
-    const popUpDOM = fixture.nativeElement;
-    popUp.reportType = "Post";
-    popUp.reportedItem = {
+    const fixture = TestBed.createComponent(ReportFormComponent);
+    const reportFormDOM = fixture.nativeElement;
+    fixture.componentRef.setInput("reportType", "Post");
+    fixture.componentRef.setInput("reportedItem", {
       id: 1,
       givenHugs: 0,
       sentHugs: [],
@@ -236,29 +233,29 @@ describe("Report", () => {
       userId: 2,
       text: "hi",
       date: new Date(),
-    };
+    });
     fixture.detectChanges();
     const otherTextField = document.getElementById("rOption3Text") as HTMLInputElement;
 
-    popUpDOM.querySelector("#pRadioOption0").click();
+    reportFormDOM.querySelector("#pRadioOption0").click();
     fixture.detectChanges();
 
     expect(otherTextField.required).toBe(false);
     expect(otherTextField.getAttribute("aria-required")).toEqual("false");
 
-    popUpDOM.querySelector("#pRadioOption1").click();
+    reportFormDOM.querySelector("#pRadioOption1").click();
     fixture.detectChanges();
 
     expect(otherTextField.required).toBe(false);
     expect(otherTextField.getAttribute("aria-required")).toEqual("false");
 
-    popUpDOM.querySelector("#pRadioOption3").click();
+    reportFormDOM.querySelector("#pRadioOption3").click();
     fixture.detectChanges();
 
     expect(otherTextField.required).toBe(true);
     expect(otherTextField.getAttribute("aria-required")).toEqual("true");
 
-    popUpDOM.querySelector("#pRadioOption2").click();
+    reportFormDOM.querySelector("#pRadioOption2").click();
     fixture.detectChanges();
 
     expect(otherTextField.required).toBe(false);
@@ -266,11 +263,11 @@ describe("Report", () => {
   });
 
   it("getSelectedReasonText() - correctly sets the selected reason - posts", () => {
-    const fixture = TestBed.createComponent(ReportForm);
-    const popUp = fixture.componentInstance;
-    const popUpDOM = fixture.nativeElement;
-    popUp.reportType = "Post";
-    popUp.reportedItem = {
+    const fixture = TestBed.createComponent(ReportFormComponent);
+    const reportForm = fixture.componentInstance;
+    const reportFormDOM = fixture.nativeElement;
+    fixture.componentRef.setInput("reportType", "Post");
+    fixture.componentRef.setInput("reportedItem", {
       id: 1,
       givenHugs: 0,
       sentHugs: [],
@@ -278,39 +275,39 @@ describe("Report", () => {
       userId: 2,
       text: "hi",
       date: new Date(),
-    };
+    });
 
     fixture.detectChanges();
 
-    expect(popUp.getSelectedReasonText()).toBe(undefined);
+    expect(reportForm.getSelectedReasonText()).toBe(undefined);
 
-    popUpDOM.querySelector("#pRadioOption0").click();
+    reportFormDOM.querySelector("#pRadioOption0").click();
     fixture.detectChanges();
 
-    expect(popUp.getSelectedReasonText()).toEqual("The post is Inappropriate");
+    expect(reportForm.getSelectedReasonText()).toEqual("The post is Inappropriate");
 
-    popUpDOM.querySelector("#pRadioOption1").click();
+    reportFormDOM.querySelector("#pRadioOption1").click();
     fixture.detectChanges();
 
-    expect(popUp.getSelectedReasonText()).toEqual("The post is Spam");
+    expect(reportForm.getSelectedReasonText()).toEqual("The post is Spam");
 
-    popUpDOM.querySelector("#pRadioOption2").click();
+    reportFormDOM.querySelector("#pRadioOption2").click();
     fixture.detectChanges();
 
-    expect(popUp.getSelectedReasonText()).toEqual("The post is Offensive");
+    expect(reportForm.getSelectedReasonText()).toEqual("The post is Offensive");
 
-    popUpDOM.querySelector("#pRadioOption3").click();
+    reportFormDOM.querySelector("#pRadioOption3").click();
     fixture.detectChanges();
 
-    expect(popUp.getSelectedReasonText()).toEqual("other");
+    expect(reportForm.getSelectedReasonText()).toEqual("other");
   });
 
   it("getSelectedReasonText() - correctly sets the selected reason - users", () => {
-    const fixture = TestBed.createComponent(ReportForm);
-    const popUp = fixture.componentInstance;
-    const popUpDOM = fixture.nativeElement;
-    popUp.reportType = "User";
-    popUp.reportedItem = {
+    const fixture = TestBed.createComponent(ReportFormComponent);
+    const reportForm = fixture.componentInstance;
+    const reportFormDOM = fixture.nativeElement;
+    fixture.componentRef.setInput("reportType", "User");
+    fixture.componentRef.setInput("reportedItem", {
       id: 3,
       displayName: "string",
       receivedH: 3,
@@ -328,33 +325,33 @@ describe("Report", () => {
         rbg: "#f8eee4",
         item: "#f4b56a",
       },
-    };
+    });
 
     fixture.detectChanges();
 
-    expect(popUp.getSelectedReasonText()).toBe(undefined);
+    expect(reportForm.getSelectedReasonText()).toBe(undefined);
 
-    popUpDOM.querySelector("#pRadioOption0").click();
+    reportFormDOM.querySelector("#pRadioOption0").click();
     fixture.detectChanges();
 
-    expect(popUp.getSelectedReasonText()).toEqual("The user is posting Spam");
+    expect(reportForm.getSelectedReasonText()).toEqual("The user is posting Spam");
 
-    popUpDOM.querySelector("#pRadioOption1").click();
+    reportFormDOM.querySelector("#pRadioOption1").click();
     fixture.detectChanges();
 
-    expect(popUp.getSelectedReasonText()).toEqual(
+    expect(reportForm.getSelectedReasonText()).toEqual(
       "The user is posting harmful / dangerous content",
     );
 
-    popUpDOM.querySelector("#pRadioOption2").click();
+    reportFormDOM.querySelector("#pRadioOption2").click();
     fixture.detectChanges();
 
-    expect(popUp.getSelectedReasonText()).toEqual("The user is behaving in an abusive manner");
+    expect(reportForm.getSelectedReasonText()).toEqual("The user is behaving in an abusive manner");
 
-    popUpDOM.querySelector("#pRadioOption3").click();
+    reportFormDOM.querySelector("#pRadioOption3").click();
     fixture.detectChanges();
 
-    expect(popUp.getSelectedReasonText()).toEqual("other");
+    expect(reportForm.getSelectedReasonText()).toEqual("other");
   });
 
   // Check that if the user chooses 'other' as reason they can't submit an
@@ -365,11 +362,11 @@ describe("Report", () => {
       (_control) => null,
     );
 
-    const fixture = TestBed.createComponent(ReportForm);
-    const popUp = fixture.componentInstance;
-    const popUpDOM = fixture.nativeElement;
-    popUp.reportType = "Post";
-    popUp.reportedItem = {
+    const fixture = TestBed.createComponent(ReportFormComponent);
+    const reportForm = fixture.componentInstance;
+    const reportFormDOM = fixture.nativeElement;
+    fixture.componentRef.setInput("reportType", "Post");
+    fixture.componentRef.setInput("reportedItem", {
       id: 1,
       givenHugs: 0,
       sentHugs: [],
@@ -377,17 +374,17 @@ describe("Report", () => {
       userId: 2,
       text: "hi",
       date: new Date(),
-    };
-    const apiClientSpy = spyOn(popUp["apiClient"], "post");
-    const alertServiceSpy = spyOn(popUp["alertsService"], "createAlert");
+    });
+    const apiClientSpy = spyOn(reportForm["apiClient"], "post");
+    const alertServiceSpy = spyOn(reportForm["alertsService"], "createAlert");
     fixture.detectChanges();
 
     // select option 4
-    popUpDOM.querySelector("#pRadioOption3").click();
+    reportFormDOM.querySelector("#pRadioOption3").click();
     fixture.detectChanges();
 
     // try to submit it without text in the textfield
-    popUpDOM.querySelectorAll(".reportButton")[0].click();
+    reportFormDOM.querySelectorAll(".reportButton")[0].click();
     fixture.detectChanges();
 
     // check the report wasn't sent and the user was alerted
@@ -420,11 +417,11 @@ describe("Report", () => {
       (_control) => null,
     );
 
-    const fixture = TestBed.createComponent(ReportForm);
-    const popUp = fixture.componentInstance;
-    const popUpDOM = fixture.nativeElement;
-    popUp.reportType = "Post";
-    popUp.reportedItem = {
+    const fixture = TestBed.createComponent(ReportFormComponent);
+    const reportForm = fixture.componentInstance;
+    const reportFormDOM = fixture.nativeElement;
+    fixture.componentRef.setInput("reportType", "Post");
+    fixture.componentRef.setInput("reportedItem", {
       id: 1,
       givenHugs: 0,
       sentHugs: [],
@@ -432,24 +429,24 @@ describe("Report", () => {
       userId: 2,
       text: "hi",
       date: new Date(),
-    };
+    });
     fixture.detectChanges();
-    const apiClientSpy = spyOn(popUp["apiClient"], "post").and.returnValue(of(mockResponse));
-    const alertsSpy = spyOn(popUp["alertsService"], "createSuccessAlert");
-    const emitSpy = spyOn(popUp.reportMode, "emit");
+    const apiClientSpy = spyOn(reportForm["apiClient"], "post").and.returnValue(of(mockResponse));
+    const alertsSpy = spyOn(reportForm["alertsService"], "createSuccessAlert");
+    const emitSpy = spyOn(reportForm.reportMode, "emit");
     const reportReason = "because";
-    const otherText = popUpDOM.querySelector("#rOption3Text");
+    const otherText = reportFormDOM.querySelector("#rOption3Text");
 
     // select option 4
-    popUpDOM.querySelector("#pRadioOption3").click();
+    reportFormDOM.querySelector("#pRadioOption3").click();
     otherText.value = reportReason;
     otherText.dispatchEvent(new Event("input"));
     fixture.detectChanges();
 
-    expect(popUp.reportForm.controls.otherReason.value).toEqual(reportReason);
+    expect(reportForm.reportForm.controls.otherReason.value).toEqual(reportReason);
 
     // try to submit it
-    popUpDOM.querySelectorAll(".reportButton")[0].click();
+    reportFormDOM.querySelectorAll(".reportButton")[0].click();
     fixture.detectChanges();
 
     // check the report was sent
@@ -488,11 +485,11 @@ describe("Report", () => {
       success: true,
     };
 
-    const fixture = TestBed.createComponent(ReportForm);
-    const popUp = fixture.componentInstance;
-    const popUpDOM = fixture.nativeElement;
-    popUp.reportType = "Post";
-    popUp.reportedItem = {
+    const fixture = TestBed.createComponent(ReportFormComponent);
+    const reportForm = fixture.componentInstance;
+    const reportFormDOM = fixture.nativeElement;
+    fixture.componentRef.setInput("reportType", "Post");
+    fixture.componentRef.setInput("reportedItem", {
       id: 1,
       givenHugs: 0,
       sentHugs: [],
@@ -500,18 +497,18 @@ describe("Report", () => {
       userId: 2,
       text: "hi",
       date: new Date(),
-    };
-    const apiClientSpy = spyOn(popUp["apiClient"], "post").and.returnValue(of(mockResponse));
-    const alertsSpy = spyOn(popUp["alertsService"], "createSuccessAlert");
-    const emitSpy = spyOn(popUp.reportMode, "emit");
+    });
+    const apiClientSpy = spyOn(reportForm["apiClient"], "post").and.returnValue(of(mockResponse));
+    const alertsSpy = spyOn(reportForm["alertsService"], "createSuccessAlert");
+    const emitSpy = spyOn(reportForm.reportMode, "emit");
     fixture.detectChanges();
 
     // select option 1
-    popUpDOM.querySelector("#pRadioOption0").click();
+    reportFormDOM.querySelector("#pRadioOption0").click();
     fixture.detectChanges();
 
     // try to submit it without text in the textfield
-    popUpDOM.querySelectorAll(".reportButton")[0].click();
+    reportFormDOM.querySelectorAll(".reportButton")[0].click();
     fixture.detectChanges();
 
     // check the report wasn't sent and the user was alerted
@@ -550,11 +547,11 @@ describe("Report", () => {
       success: true,
     };
 
-    const fixture = TestBed.createComponent(ReportForm);
-    const popUp = fixture.componentInstance;
-    const popUpDOM = fixture.nativeElement;
-    popUp.reportType = "User";
-    popUp.reportedItem = {
+    const fixture = TestBed.createComponent(ReportFormComponent);
+    const reportForm = fixture.componentInstance;
+    const reportFormDOM = fixture.nativeElement;
+    fixture.componentRef.setInput("reportType", "User");
+    fixture.componentRef.setInput("reportedItem", {
       id: 3,
       displayName: "string",
       receivedH: 3,
@@ -572,18 +569,18 @@ describe("Report", () => {
         rbg: "#f8eee4",
         item: "#f4b56a",
       },
-    };
-    const apiClientSpy = spyOn(popUp["apiClient"], "post").and.returnValue(of(mockResponse));
-    const alertsSpy = spyOn(popUp["alertsService"], "createSuccessAlert");
-    const emitSpy = spyOn(popUp.reportMode, "emit");
+    });
+    const apiClientSpy = spyOn(reportForm["apiClient"], "post").and.returnValue(of(mockResponse));
+    const alertsSpy = spyOn(reportForm["alertsService"], "createSuccessAlert");
+    const emitSpy = spyOn(reportForm.reportMode, "emit");
     fixture.detectChanges();
 
     // select option 1
-    popUpDOM.querySelector("#pRadioOption0").click();
+    reportFormDOM.querySelector("#pRadioOption0").click();
     fixture.detectChanges();
 
     // try to submit it without text in the textfield
-    popUpDOM.querySelectorAll(".reportButton")[0].click();
+    reportFormDOM.querySelectorAll(".reportButton")[0].click();
     fixture.detectChanges();
 
     // check the report wasn't sent and the user was alerted

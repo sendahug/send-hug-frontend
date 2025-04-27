@@ -40,18 +40,18 @@ import { RouterLink } from "@angular/router";
 import { NotificationService } from "@app/services/notifications.service";
 import { AuthService } from "@app/services/auth.service";
 import { AlertsService } from "@app/services/alerts.service";
-import { IconEditor } from "@app/components/iconEditor/iconEditor.component";
-import { UserIcon } from "@common/userIcon/userIcon.component";
+import { IconEditorComponent } from "@app/components/iconEditor/iconEditor.component";
+import { UserIconComponent } from "@common/userIcon/userIcon.component";
 
 @Component({
   selector: "app-settings",
   templateUrl: "./settings.component.html",
   styleUrl: "./settings.component.less",
   standalone: true,
-  imports: [CommonModule, IconEditor, UserIcon, ReactiveFormsModule, RouterLink],
+  imports: [CommonModule, IconEditorComponent, UserIconComponent, ReactiveFormsModule, RouterLink],
 })
-export class SettingsPage {
-  editIcon = signal(false);
+export class SettingsPageComponent {
+  readonly editIcon = signal(false);
   editSettingsForm = this.fb.group({
     enableNotifications: [false],
     enableAutoRefresh: [false],

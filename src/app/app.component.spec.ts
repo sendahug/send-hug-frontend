@@ -53,15 +53,15 @@ import { AuthService } from "@app/services/auth.service";
 import { SWManager } from "@app/services/sWManager.service";
 import { NotificationService } from "./services/notifications.service";
 import { mockAuthedUser } from "@tests/mockData";
-import { AppAlert } from "./components/appAlert/appAlert.component";
+import { AppAlertComponent } from "./components/appAlert/appAlert.component";
 import { AlertsService } from "@app/services/alerts.service";
-import { AppNavMenu } from "./components/layout/navigationMenu/navigationMenu.component";
+import { NavigationMenuComponent } from "./components/layout/navigationMenu/navigationMenu.component";
 import { TeleportService } from "./services/teleport.service";
 
 describe("AppComponent", () => {
   beforeEach(() => {
-    const MockNavBar = MockComponent(AppNavMenu);
-    const MockAppAlert = MockComponent(AppAlert);
+    const MockNavBar = MockComponent(NavigationMenuComponent);
+    const MockAppAlertComponent = MockComponent(AppAlertComponent);
     const MockAuthService = MockProvider(AuthService, {
       authenticated: signal(true),
       userData: signal({ ...mockAuthedUser }),
@@ -85,7 +85,14 @@ describe("AppComponent", () => {
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
-      imports: [CommonModule, RouterOutlet, RouterLink, MockAppAlert, MockNavBar, AppComponent],
+      imports: [
+        CommonModule,
+        RouterOutlet,
+        RouterLink,
+        MockAppAlertComponent,
+        MockNavBar,
+        AppComponent,
+      ],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
         provideZoneChangeDetection({ eventCoalescing: true }),

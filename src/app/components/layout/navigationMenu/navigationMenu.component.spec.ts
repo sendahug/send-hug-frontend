@@ -49,20 +49,20 @@ import { MockComponent, MockProvider } from "ng-mocks";
 import { setViewport } from "@web/test-runner-commands";
 import { By } from "@angular/platform-browser";
 
-import { AppNavMenu } from "./navigationMenu.component";
-import { NotificationsTab } from "@app/components/layout/notifications/notifications.component";
+import { NavigationMenuComponent } from "./navigationMenu.component";
+import { NotificationsTabComponent } from "@app/components/layout/notifications/notifications.component";
 import { AuthService } from "@app/services/auth.service";
 import { SWManager } from "@app/services/sWManager.service";
 import { mockAuthedUser, getMockFirebaseUser } from "@tests/mockData";
 import { ItemsService } from "@app/services/items.service";
 import { NotificationService } from "@app/services/notifications.service";
-import { SearchForm } from "@app/components/layout/searchForm/searchForm.component";
+import { SearchFormComponent } from "@app/components/layout/searchForm/searchForm.component";
 import { AlertsService } from "@app/services/alerts.service";
 
-describe("AppNavMenu", () => {
+describe("NavigationMenuComponent", () => {
   beforeEach(() => {
-    const MockNotificationsTab = MockComponent(NotificationsTab);
-    const MockSearchForm = MockComponent(SearchForm);
+    const MockNotificationsTabComponent = MockComponent(NotificationsTabComponent);
+    const MockSearchFormComponent = MockComponent(SearchFormComponent);
     const MockAuthService = MockProvider(AuthService, {
       authenticated: signal(true),
       userData: signal({ ...mockAuthedUser }),
@@ -93,9 +93,9 @@ describe("AppNavMenu", () => {
         RouterOutlet,
         RouterLink,
         FontAwesomeModule,
-        MockNotificationsTab,
-        AppNavMenu,
-        MockSearchForm,
+        MockNotificationsTabComponent,
+        NavigationMenuComponent,
+        MockSearchFormComponent,
       ],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
@@ -118,7 +118,7 @@ describe("AppNavMenu", () => {
 
   // Check that the app is created
   it("should create the menu", () => {
-    const fixture = TestBed.createComponent(AppNavMenu);
+    const fixture = TestBed.createComponent(NavigationMenuComponent);
     const navMenu = fixture.componentInstance;
 
     expect(navMenu).toBeTruthy();
@@ -126,7 +126,7 @@ describe("AppNavMenu", () => {
 
   // Check that there are valid navigation links
   it("should contain valid navigation links", () => {
-    const fixture = TestBed.createComponent(AppNavMenu);
+    const fixture = TestBed.createComponent(NavigationMenuComponent);
     const navMenuHtml = fixture.debugElement.nativeElement;
     fixture.detectChanges();
 
@@ -146,7 +146,7 @@ describe("AppNavMenu", () => {
 
   // Check that the notifications tab is hidden
   it("has hidden notifications tab", () => {
-    const fixture = TestBed.createComponent(AppNavMenu);
+    const fixture = TestBed.createComponent(NavigationMenuComponent);
     const navMenu = fixture.componentInstance;
     const navMenuHtml = fixture.debugElement.nativeElement;
     fixture.detectChanges();
@@ -157,7 +157,7 @@ describe("AppNavMenu", () => {
 
   // Check that the notifications tab appears when the button is clicked
   it("has a notifications tab that appears when its icon is clicked", () => {
-    const fixture = TestBed.createComponent(AppNavMenu);
+    const fixture = TestBed.createComponent(NavigationMenuComponent);
     fixture.detectChanges();
     const navMenu = fixture.componentInstance;
     const navMenuHtml = fixture.nativeElement;
@@ -177,7 +177,7 @@ describe("AppNavMenu", () => {
 
   // Check that the search panel is hidden
   it("has hidden search", () => {
-    const fixture = TestBed.createComponent(AppNavMenu);
+    const fixture = TestBed.createComponent(NavigationMenuComponent);
     const navMenu = fixture.componentInstance;
     const navMenuHtml = fixture.debugElement.nativeElement;
 
@@ -187,7 +187,7 @@ describe("AppNavMenu", () => {
 
   // Check that the search panel appears when the button is clicked
   it("has a search which appears when the icon is clicked", () => {
-    const fixture = TestBed.createComponent(AppNavMenu);
+    const fixture = TestBed.createComponent(NavigationMenuComponent);
     fixture.detectChanges();
     const navMenu = fixture.componentInstance;
     const navMenuHtml = fixture.nativeElement;
@@ -208,7 +208,7 @@ describe("AppNavMenu", () => {
 
   // Check that the font size panel is hidden
   it("should have a hidden font size panel", () => {
-    const fixture = TestBed.createComponent(AppNavMenu);
+    const fixture = TestBed.createComponent(NavigationMenuComponent);
     const navMenu = fixture.componentInstance;
     const navMenuHtml = fixture.debugElement.nativeElement;
 
@@ -218,7 +218,7 @@ describe("AppNavMenu", () => {
 
   // Check that the font size panel appears when the button is clicked
   it("has a font size which appears when the icon is clicked", () => {
-    const fixture = TestBed.createComponent(AppNavMenu);
+    const fixture = TestBed.createComponent(NavigationMenuComponent);
     fixture.detectChanges();
     const navMenu = fixture.componentInstance;
     const navMenuHtml = fixture.nativeElement;
@@ -239,7 +239,7 @@ describe("AppNavMenu", () => {
 
   // Check that the font size panel is hidden when the button is clicked again
   it("has a font size which is hidden when the icon is clicked again", () => {
-    const fixture = TestBed.createComponent(AppNavMenu);
+    const fixture = TestBed.createComponent(NavigationMenuComponent);
     fixture.detectChanges();
     const navMenu = fixture.componentInstance;
     const navMenuHtml = fixture.nativeElement;
@@ -266,7 +266,7 @@ describe("AppNavMenu", () => {
 
   // Check that the font size panel changes the site's font size
   it("has a font size that changes according to user choice", (done: DoneFn) => {
-    const fixture = TestBed.createComponent(AppNavMenu);
+    const fixture = TestBed.createComponent(NavigationMenuComponent);
     fixture.detectChanges();
     const navMenu = fixture.componentInstance;
     const navMenuHtml = fixture.nativeElement;
@@ -338,7 +338,7 @@ describe("AppNavMenu", () => {
 
   // check the menu is shown if the screen is wide enough
   it("should show the menu if the screen is wide enough", async () => {
-    const fixture = TestBed.createComponent(AppNavMenu);
+    const fixture = TestBed.createComponent(NavigationMenuComponent);
     const navMenu = fixture.componentInstance;
     const navMenuHtml = fixture.nativeElement;
     await setViewport({ width: 780, height: 640 });
@@ -351,7 +351,7 @@ describe("AppNavMenu", () => {
 
   // check the menu is hidden if the screen isn't wide enough
   it("should hide the menu if the screen isn't wide enough", async () => {
-    const fixture = TestBed.createComponent(AppNavMenu);
+    const fixture = TestBed.createComponent(NavigationMenuComponent);
     const navMenu = fixture.componentInstance;
     const navMenuHtml = fixture.nativeElement;
     await setViewport({ width: 600, height: 640 });
@@ -363,7 +363,7 @@ describe("AppNavMenu", () => {
 
   // check the menu is hidden when clicked again
   it("should show/hide the menu when the menu button is clicked", async () => {
-    const fixture = TestBed.createComponent(AppNavMenu);
+    const fixture = TestBed.createComponent(NavigationMenuComponent);
     const navMenu = fixture.componentInstance;
     const navMenuHtml = fixture.nativeElement;
     await setViewport({ width: 600, height: 640 });
@@ -395,7 +395,7 @@ describe("AppNavMenu", () => {
 
   // should hide the nav menu if it gets too long
   it("changeTextSize - should hide nav menu if it gets too long", () => {
-    const fixture = TestBed.createComponent(AppNavMenu);
+    const fixture = TestBed.createComponent(NavigationMenuComponent);
     const navMenu = fixture.componentInstance;
     const navMenuHtml = fixture.nativeElement;
     const checkSpy = spyOn(navMenu, "checkMenuSize").and.callThrough();
@@ -416,7 +416,7 @@ describe("AppNavMenu", () => {
 
   // should hide the menu if it gets too long and show it again if it's not too long
   it("should show the menu again if it's not too long again", () => {
-    const fixture = TestBed.createComponent(AppNavMenu);
+    const fixture = TestBed.createComponent(NavigationMenuComponent);
     const navMenu = fixture.componentInstance;
     const navMenuHtml = fixture.nativeElement;
     const checkSpy = spyOn(navMenu, "checkMenuSize").and.callThrough();
@@ -447,7 +447,7 @@ describe("AppNavMenu", () => {
     MockAuthService.userData.set({ ...mockAuthedUser, emailVerified: false });
     const verifySpy = spyOn(MockAuthService, "sendVerificationEmail");
 
-    const fixture = TestBed.createComponent(AppNavMenu);
+    const fixture = TestBed.createComponent(NavigationMenuComponent);
     const componentHtml = fixture.debugElement.nativeElement;
     fixture.detectChanges();
 
@@ -466,7 +466,7 @@ describe("AppNavMenu", () => {
       getMockFirebaseUser(),
     );
 
-    const fixture = TestBed.createComponent(AppNavMenu);
+    const fixture = TestBed.createComponent(NavigationMenuComponent);
     const component = fixture.componentInstance;
     const componentHtml = fixture.debugElement.nativeElement;
     const signOutRedirectSpy = spyOn(component, "signOutAndRedirect").and.callThrough();
@@ -489,7 +489,7 @@ describe("AppNavMenu", () => {
     const alertsService = TestBed.inject(AlertsService);
     alertsService.isOffline.next(true);
 
-    const fixture = TestBed.createComponent(AppNavMenu);
+    const fixture = TestBed.createComponent(NavigationMenuComponent);
     const componentHtml = fixture.debugElement.nativeElement;
     fixture.detectChanges();
 
@@ -501,7 +501,7 @@ describe("AppNavMenu", () => {
     const alertsService = TestBed.inject(AuthService);
     alertsService.userData.set({ ...mockAuthedUser, emailVerified: false });
 
-    const fixture = TestBed.createComponent(AppNavMenu);
+    const fixture = TestBed.createComponent(NavigationMenuComponent);
     const componentHtml = fixture.debugElement.nativeElement;
     fixture.detectChanges();
 
@@ -510,7 +510,7 @@ describe("AppNavMenu", () => {
   });
 
   it("closes the navigation menu", () => {
-    const fixture = TestBed.createComponent(AppNavMenu);
+    const fixture = TestBed.createComponent(NavigationMenuComponent);
     const navMenu = fixture.componentInstance;
     const navMenuHtml = fixture.debugElement.nativeElement;
     fixture.detectChanges();
@@ -524,7 +524,7 @@ describe("AppNavMenu", () => {
 
     // emit the close event
     const popup = fixture.debugElement.query(By.css("app-notifications"))
-      .componentInstance as NotificationsTab;
+      .componentInstance as NotificationsTabComponent;
     popup.NotificationsMode.emit(false);
     fixture.detectChanges();
 

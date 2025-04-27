@@ -25,7 +25,7 @@
   </ul>
 
   <!-- If there are no items in the list -->
-  <div class="errorMessage" *ngIf="newPosts().length == 0 && !isLoading()">
+  <div class="errorMessage" *ngIf="newPosts().length === 0 && !isLoading()">
     There are no recent items.
   </div>
 
@@ -66,7 +66,7 @@
   </ul>
 
   <!-- If there are no items in the list -->
-  <div class="errorMessage" *ngIf="suggestedPosts().length == 0 && !isLoading()">
+  <div class="errorMessage" *ngIf="suggestedPosts().length === 0 && !isLoading()">
     There are no suggested items.
   </div>
 

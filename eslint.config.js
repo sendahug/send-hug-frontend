@@ -5,6 +5,7 @@ import globals from "globals";
 import eslintConfigPrettier from "eslint-config-prettier/flat";
 import jasmine from "eslint-plugin-jasmine";
 import pluginCypress from "eslint-plugin-cypress/flat";
+import angularEslint from "angular-eslint";
 
 export default defineConfig([
   eslint.configs.recommended,
@@ -25,14 +26,24 @@ export default defineConfig([
   },
   {
     files: ["src/**/*.ts"],
-    extends: [tseslint.configs.strict, eslintConfigPrettier],
+    extends: [tseslint.configs.strict, eslintConfigPrettier, angularEslint.configs.tsRecommended],
     plugins: {
       "@typescript-eslint": tseslint.plugin,
     },
     rules: {
       "@typescript-eslint/no-unused-vars": ["error", { argsIgnorePattern: "^_" }],
       "@typescript-eslint/no-non-null-assertion": "off",
+      // TODO: Switch this to "error" once we finish converting to signals
+      "@angular-eslint/prefer-signals": "warn",
+      "@angular-eslint/no-conflicting-lifecycle": "error",
     },
+  },
+  {
+    files: ["src/**/*.html"],
+    extends: [
+      angularEslint.configs.templateAccessibility,
+      angularEslint.configs.templateRecommended,
+    ],
   },
   {
     files: ["e2e/**/*.ts"],

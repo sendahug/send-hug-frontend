@@ -42,21 +42,24 @@ import { ApiClientService } from "@app/services/apiClient.service";
 import { type BlockedUser } from "@app/interfaces/user.interface";
 import { type BlockUserResponse } from "@app/interfaces/api";
 
+/* eslint-disable @angular-eslint/prefer-standalone */
+/* Since the Admin section is self-contained, it's better off as a module */
+
 @Component({
   selector: "app-admin-blocks",
   templateUrl: "./adminBlocks.component.html",
   standalone: false,
 })
-export class AdminBlocks {
-  blockedUsers = signal<BlockedUser[]>([]);
-  currentPage = signal(1);
-  totalPages = signal(1);
-  isLoading = signal(false);
-  previousButtonClass = computed(() => ({
+export class AdminBlocksComponent {
+  readonly blockedUsers = signal<BlockedUser[]>([]);
+  readonly currentPage = signal(1);
+  readonly totalPages = signal(1);
+  readonly isLoading = signal(false);
+  readonly previousButtonClass = computed(() => ({
     "appButton prevButton": true,
     disabled: this.currentPage() <= 1,
   }));
-  nextButtonClass = computed(() => ({
+  readonly nextButtonClass = computed(() => ({
     "appButton nextButton": true,
     disabled: this.currentPage() >= this.totalPages(),
   }));

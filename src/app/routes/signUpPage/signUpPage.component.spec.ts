@@ -45,11 +45,11 @@ import { of } from "rxjs";
 import { provideZoneChangeDetection } from "@angular/core";
 import { MockProvider } from "ng-mocks";
 
-import { SignUpPage } from "./signUpPage.component";
+import { SignUpPageComponent } from "./signUpPage.component";
 import { getMockFirebaseUser, mockAuthedUser } from "@tests/mockData";
 import { AuthService } from "@app/services/auth.service";
 
-describe("SignUpPage", () => {
+describe("SignUpPageComponent", () => {
   let mockFirebaseUser: FirebaseUser;
 
   // Before each test, configure testing environment
@@ -64,7 +64,7 @@ describe("SignUpPage", () => {
 
     TestBed.configureTestingModule({
       schemas: [NO_ERRORS_SCHEMA],
-      imports: [ReactiveFormsModule, CommonModule, RouterLink, SignUpPage],
+      imports: [ReactiveFormsModule, CommonModule, RouterLink, SignUpPageComponent],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
         provideZoneChangeDetection({ eventCoalescing: true }),
@@ -78,14 +78,14 @@ describe("SignUpPage", () => {
 
   // Check that the component is created
   it("should create the component", () => {
-    const fixture = TestBed.createComponent(SignUpPage);
+    const fixture = TestBed.createComponent(SignUpPageComponent);
     const signUpPage = fixture.componentInstance;
 
     expect(signUpPage).toBeTruthy();
   });
 
   it("should show the signup form if the user isn't logged in", () => {
-    const fixture = TestBed.createComponent(SignUpPage);
+    const fixture = TestBed.createComponent(SignUpPageComponent);
     const signUpPage = fixture.componentInstance;
     const signUpPageDOM = fixture.nativeElement;
     signUpPage["authService"].authenticated.set(false);
@@ -96,7 +96,7 @@ describe("SignUpPage", () => {
   });
 
   it("should prevent users not logged in with firebase from signing up", () => {
-    const fixture = TestBed.createComponent(SignUpPage);
+    const fixture = TestBed.createComponent(SignUpPageComponent);
     const signUpPage = fixture.componentInstance;
     const signUpPageDOM = fixture.nativeElement;
     signUpPage["authService"].authenticated.set(false);
@@ -126,7 +126,7 @@ describe("SignUpPage", () => {
   });
 
   it("should prevent signed in users from registering again", () => {
-    const fixture = TestBed.createComponent(SignUpPage);
+    const fixture = TestBed.createComponent(SignUpPageComponent);
     const signUpPage = fixture.componentInstance;
     signUpPage["authService"].authenticated.set(true);
     signUpPage["authService"].userData.set({ ...mockAuthedUser });
@@ -152,7 +152,7 @@ describe("SignUpPage", () => {
   });
 
   it("should prevent invalid sign up forms from being submitted - display name too long", () => {
-    const fixture = TestBed.createComponent(SignUpPage);
+    const fixture = TestBed.createComponent(SignUpPageComponent);
     const signUpPage = fixture.componentInstance;
     const signUpPageDOM = fixture.nativeElement;
     signUpPage["authService"].authenticated.set(false);
@@ -187,7 +187,7 @@ describe("SignUpPage", () => {
   });
 
   it("should prevent invalid sign up forms from being submitted - no display name", () => {
-    const fixture = TestBed.createComponent(SignUpPage);
+    const fixture = TestBed.createComponent(SignUpPageComponent);
     const signUpPage = fixture.componentInstance;
     const signUpPageDOM = fixture.nativeElement;
     signUpPage["authService"].authenticated.set(false);
@@ -214,7 +214,7 @@ describe("SignUpPage", () => {
   });
 
   it("should prevent invalid sign up forms from being submitted - terms not accepted", () => {
-    const fixture = TestBed.createComponent(SignUpPage);
+    const fixture = TestBed.createComponent(SignUpPageComponent);
     const signUpPage = fixture.componentInstance;
     const signUpPageDOM = fixture.nativeElement;
     signUpPage["authService"].authenticated.set(false);
@@ -245,7 +245,7 @@ describe("SignUpPage", () => {
   });
 
   it("should create a new user via the AuthService", () => {
-    const fixture = TestBed.createComponent(SignUpPage);
+    const fixture = TestBed.createComponent(SignUpPageComponent);
     const signUpPage = fixture.componentInstance;
     const signUpPageDOM = fixture.nativeElement;
     signUpPage["authService"].authenticated.set(false);
@@ -269,7 +269,7 @@ describe("SignUpPage", () => {
   });
 
   it("should log out", () => {
-    const fixture = TestBed.createComponent(SignUpPage);
+    const fixture = TestBed.createComponent(SignUpPageComponent);
     const signUpPage = fixture.componentInstance;
     const signUpPageDOM = fixture.nativeElement;
     signUpPage["authService"].authenticated.set(false);
@@ -288,7 +288,7 @@ describe("SignUpPage", () => {
   });
 
   it("should show an error message if the user is logged in", () => {
-    const fixture = TestBed.createComponent(SignUpPage);
+    const fixture = TestBed.createComponent(SignUpPageComponent);
     const signUpPage = fixture.componentInstance;
     const signUpPageDOM = fixture.nativeElement;
     signUpPage["authService"].authenticated.set(true);

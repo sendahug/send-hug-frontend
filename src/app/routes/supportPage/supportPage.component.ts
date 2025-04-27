@@ -50,8 +50,8 @@ interface FAQItem {
   standalone: true,
   imports: [CommonModule, FontAwesomeModule, RouterLink],
 })
-export class SupportPage implements OnInit {
-  faqItems = signal<FAQItem[]>([]);
+export class SupportPageComponent implements OnInit {
+  readonly faqItems = signal<FAQItem[]>([]);
   // icons
   faComment = faComment;
   faFlag = faFlag;

@@ -42,7 +42,7 @@ import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { provideZoneChangeDetection } from "@angular/core";
 
 // App imports
-import { SupportPage } from "./supportPage.component";
+import { SupportPageComponent } from "./supportPage.component";
 
 describe("Support Page", () => {
   // Before each test, configure testing environment
@@ -51,7 +51,7 @@ describe("Support Page", () => {
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
-      imports: [CommonModule, FontAwesomeModule, RouterLink, SupportPage],
+      imports: [CommonModule, FontAwesomeModule, RouterLink, SupportPageComponent],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
         provideZoneChangeDetection({ eventCoalescing: true }),
@@ -62,7 +62,7 @@ describe("Support Page", () => {
 
   // Check the component is create
   it("should create the component", () => {
-    const fixture = TestBed.createComponent(SupportPage);
+    const fixture = TestBed.createComponent(SupportPageComponent);
     const supportPage = fixture.componentInstance;
     const supportPageDOM = fixture.nativeElement;
     fixture.detectChanges();
@@ -72,7 +72,7 @@ describe("Support Page", () => {
   });
 
   it("should add the FAQ items to the navigation list", () => {
-    const fixture = TestBed.createComponent(SupportPage);
+    const fixture = TestBed.createComponent(SupportPageComponent);
     const supportPage = fixture.componentInstance;
     const supportPageDOM = fixture.nativeElement;
     fixture.detectChanges();

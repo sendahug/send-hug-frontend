@@ -41,16 +41,16 @@ import { ActivatedRoute, provideRouter, RouterLink, UrlSegment } from "@angular/
 import { of } from "rxjs";
 import { provideZoneChangeDetection } from "@angular/core";
 
-import { SitePolicies } from "./sitePolicies.component";
+import { SitePoliciesComponent } from "./sitePolicies.component";
 
-describe("SitePolicies", () => {
+describe("SitePoliciesComponent", () => {
   // Before each test, configure testing environment
   beforeEach(() => {
     TestBed.resetTestEnvironment();
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
-      imports: [CommonModule, RouterLink, SitePolicies],
+      imports: [CommonModule, RouterLink, SitePoliciesComponent],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
         provideZoneChangeDetection({ eventCoalescing: true }),
@@ -61,19 +61,19 @@ describe("SitePolicies", () => {
               {
                 path: "terms",
                 pathMatch: "prefix",
-                component: SitePolicies,
+                component: SitePoliciesComponent,
                 data: { name: "Terms and Conditions" },
               },
               {
                 path: "privacy",
                 pathMatch: "prefix",
-                component: SitePolicies,
+                component: SitePoliciesComponent,
                 data: { name: "Privacy Policy" },
               },
               {
                 path: "cookies",
                 pathMatch: "prefix",
-                component: SitePolicies,
+                component: SitePoliciesComponent,
                 data: { name: "Cookie Policy" },
               },
             ],
@@ -85,7 +85,7 @@ describe("SitePolicies", () => {
 
   // Check the page is created
   it("should create the component", () => {
-    const fixture = TestBed.createComponent(SitePolicies);
+    const fixture = TestBed.createComponent(SitePoliciesComponent);
     const sitePolicies = fixture.componentInstance;
 
     expect(sitePolicies).toBeTruthy();
@@ -95,7 +95,7 @@ describe("SitePolicies", () => {
   it("should show the correct policy and title - terms", () => {
     const paramMap = TestBed.inject(ActivatedRoute);
     paramMap.url = of([{ path: "terms" } as UrlSegment]);
-    const fixture = TestBed.createComponent(SitePolicies);
+    const fixture = TestBed.createComponent(SitePoliciesComponent);
     const sitePolicies = fixture.componentInstance;
 
     expect(sitePolicies.pageTitle()).toEqual("Terms and Conditions");
@@ -105,7 +105,7 @@ describe("SitePolicies", () => {
   it("should show the correct policy and title - privacy", () => {
     const paramMap = TestBed.inject(ActivatedRoute);
     paramMap.url = of([{ path: "privacy" } as UrlSegment]);
-    const fixture = TestBed.createComponent(SitePolicies);
+    const fixture = TestBed.createComponent(SitePoliciesComponent);
     const sitePolicies = fixture.componentInstance;
 
     expect(sitePolicies.pageTitle()).toEqual("Privacy Policy");
@@ -115,7 +115,7 @@ describe("SitePolicies", () => {
   it("should show the correct policy and title - cookies", () => {
     const paramMap = TestBed.inject(ActivatedRoute);
     paramMap.url = of([{ path: "cookies" } as UrlSegment]);
-    const fixture = TestBed.createComponent(SitePolicies);
+    const fixture = TestBed.createComponent(SitePoliciesComponent);
     const sitePolicies = fixture.componentInstance;
 
     expect(sitePolicies.pageTitle()).toEqual("Cookies Policy");

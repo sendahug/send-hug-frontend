@@ -43,15 +43,15 @@ import { MockComponent, MockProvider } from "ng-mocks";
 import { computed, NO_ERRORS_SCHEMA, signal } from "@angular/core";
 import { BehaviorSubject, Subscription } from "rxjs";
 
-import { SettingsPage } from "./settings.component";
-import { IconEditor } from "@app/components/iconEditor/iconEditor.component";
+import { SettingsPageComponent } from "./settings.component";
+import { IconEditorComponent } from "@app/components/iconEditor/iconEditor.component";
 import { NotificationService } from "@app/services/notifications.service";
 import { AuthService } from "@app/services/auth.service";
 import { AlertsService } from "@app/services/alerts.service";
 import { mockAuthedUser } from "@tests/mockData";
-import { UserIcon } from "@common/userIcon/userIcon.component";
+import { UserIconComponent } from "@common/userIcon/userIcon.component";
 
-describe("SettingsPage", () => {
+describe("SettingsPageComponent", () => {
   // Before each test, configure testing environment
   beforeEach(() => {
     const MockAuthService = MockProvider(AuthService, {
@@ -67,8 +67,8 @@ describe("SettingsPage", () => {
       subscribeToStream: () => new Promise(() => undefined),
       unsubscribeFromStream: () => new Promise(() => true),
     });
-    const MockIconEditor = MockComponent(IconEditor);
-    const MockIcon = MockComponent(UserIcon);
+    const MockIconEditorComponent = MockComponent(IconEditorComponent);
+    const MockIcon = MockComponent(UserIconComponent);
 
     TestBed.resetTestEnvironment();
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
@@ -80,8 +80,8 @@ describe("SettingsPage", () => {
         RouterLink,
         MockIcon,
         CommonModule,
-        SettingsPage,
-        MockIconEditor,
+        SettingsPageComponent,
+        MockIconEditorComponent,
       ],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
@@ -95,7 +95,7 @@ describe("SettingsPage", () => {
 
   // Check that the app is created
   it("should create the app", () => {
-    const fixture = TestBed.createComponent(SettingsPage);
+    const fixture = TestBed.createComponent(SettingsPageComponent);
     const settingsPage = fixture.componentInstance;
 
     expect(settingsPage).toBeTruthy();
@@ -103,7 +103,7 @@ describe("SettingsPage", () => {
 
   // Check that the user has to be logged in to interact with the component
   it("displays an error when not authenticated", (done: DoneFn) => {
-    const fixture = TestBed.createComponent(SettingsPage);
+    const fixture = TestBed.createComponent(SettingsPageComponent);
     const settingsPage = fixture.componentInstance;
     const settingsDOM = fixture.nativeElement;
     settingsPage.authService.authenticated.set(false);
@@ -126,7 +126,7 @@ describe("SettingsPage", () => {
   });
 
   it("should show the icon editor", () => {
-    const fixture = TestBed.createComponent(SettingsPage);
+    const fixture = TestBed.createComponent(SettingsPageComponent);
     const settingsPage = fixture.componentInstance;
     settingsPage.authService.authenticated.set(false);
 
@@ -138,7 +138,7 @@ describe("SettingsPage", () => {
   });
 
   it("should hide the icon editor", () => {
-    const fixture = TestBed.createComponent(SettingsPage);
+    const fixture = TestBed.createComponent(SettingsPageComponent);
     const settingsPage = fixture.componentInstance;
     settingsPage.authService.authenticated.set(false);
 
@@ -154,7 +154,7 @@ describe("SettingsPage", () => {
     authService.isUserDataResolved.next(false);
 
     // set up the component and its spies
-    const fixture = TestBed.createComponent(SettingsPage);
+    const fixture = TestBed.createComponent(SettingsPageComponent);
     const settingsPage = fixture.componentInstance;
     fixture.detectChanges();
 
@@ -183,7 +183,7 @@ describe("SettingsPage", () => {
     const authService = TestBed.inject(AuthService);
 
     // set up the component and its spies
-    const fixture = TestBed.createComponent(SettingsPage);
+    const fixture = TestBed.createComponent(SettingsPageComponent);
     const settingsPage = fixture.componentInstance;
     const settingsDOM = fixture.nativeElement;
     const toggleSpy = spyOn(settingsPage, "updateSettings").and.callThrough();
@@ -260,7 +260,7 @@ describe("SettingsPage", () => {
     const stopRefreshSpy = spyOn(notificationsService, "stopAutoRefresh");
 
     // set up the component
-    const fixture = TestBed.createComponent(SettingsPage);
+    const fixture = TestBed.createComponent(SettingsPageComponent);
     const settingsPage = fixture.componentInstance;
     const settingsDOM = fixture.nativeElement;
     const toggleSpy = spyOn(settingsPage, "updateSettings").and.callThrough();
@@ -330,7 +330,7 @@ describe("SettingsPage", () => {
   // Check that changing the refresh rate changes the set rate
   it("changes the refresh rate", () => {
     // set up the component
-    const fixture = TestBed.createComponent(SettingsPage);
+    const fixture = TestBed.createComponent(SettingsPageComponent);
     const settingsPage = fixture.componentInstance;
     const settingsDOM = fixture.nativeElement;
     const updateSpy = spyOn(settingsPage, "updateSettings").and.callThrough();
@@ -366,7 +366,7 @@ describe("SettingsPage", () => {
 
   it("shows an error if there's no rate", () => {
     // set up the component
-    const fixture = TestBed.createComponent(SettingsPage);
+    const fixture = TestBed.createComponent(SettingsPageComponent);
     const settingsPage = fixture.componentInstance;
     const settingsDOM = fixture.nativeElement;
     const alertsSpy = spyOn(TestBed.inject(AlertsService), "createAlert");
@@ -400,7 +400,7 @@ describe("SettingsPage", () => {
 
   it("changes the email setting", () => {
     // set up the component
-    const fixture = TestBed.createComponent(SettingsPage);
+    const fixture = TestBed.createComponent(SettingsPageComponent);
     const settingsPage = fixture.componentInstance;
     const settingsDOM = fixture.nativeElement;
     const updateSpy = spyOn(settingsPage, "updateSettings").and.callThrough();
@@ -448,7 +448,7 @@ describe("SettingsPage", () => {
     });
 
     // set up the component
-    const fixture = TestBed.createComponent(SettingsPage);
+    const fixture = TestBed.createComponent(SettingsPageComponent);
     const settingsPage = fixture.componentInstance;
     const settingsDOM = fixture.nativeElement;
     const updateSpy = spyOn(settingsPage, "updateSettings").and.callThrough();
@@ -496,7 +496,7 @@ describe("SettingsPage", () => {
     });
 
     // set up the component
-    const fixture = TestBed.createComponent(SettingsPage);
+    const fixture = TestBed.createComponent(SettingsPageComponent);
     const settingsPage = fixture.componentInstance;
     const settingsDOM = fixture.nativeElement;
     const updateSpy = spyOn(settingsPage, "updateSettings").and.callThrough();
@@ -544,7 +544,7 @@ describe("SettingsPage", () => {
     });
 
     // set up the component
-    const fixture = TestBed.createComponent(SettingsPage);
+    const fixture = TestBed.createComponent(SettingsPageComponent);
     const settingsPage = fixture.componentInstance;
     const settingsDOM = fixture.nativeElement;
     const updateSpy = spyOn(settingsPage, "updateSettings").and.callThrough();
@@ -592,7 +592,7 @@ describe("SettingsPage", () => {
     });
 
     // set up the component
-    const fixture = TestBed.createComponent(SettingsPage);
+    const fixture = TestBed.createComponent(SettingsPageComponent);
     const settingsPage = fixture.componentInstance;
     const settingsDOM = fixture.nativeElement;
     const updateSpy = spyOn(settingsPage, "updateSettings").and.callThrough();
@@ -645,7 +645,7 @@ describe("SettingsPage", () => {
     });
 
     // set up the component
-    const fixture = TestBed.createComponent(SettingsPage);
+    const fixture = TestBed.createComponent(SettingsPageComponent);
     const settingsPage = fixture.componentInstance;
     const settingsDOM = fixture.nativeElement;
     const toggleSpy = spyOn(settingsPage, "toggleEmailNotificationsSettings").and.callThrough();

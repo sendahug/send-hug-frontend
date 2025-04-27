@@ -35,16 +35,16 @@ import { Component, OnInit, signal } from "@angular/core";
 import { Router } from "@angular/router";
 
 import { AuthService } from "@app/services/auth.service";
-import { Loader } from "@common/loader/loader.component";
+import { LoaderComponent } from "@common/loader/loader.component";
 
 @Component({
   selector: "app-verify-email-page",
   templateUrl: "./verifyEmail.component.html",
   standalone: true,
-  imports: [CommonModule, Loader],
+  imports: [CommonModule, LoaderComponent],
 })
-export class VerifyEmailPage implements OnInit {
-  loadingAuth = signal(true);
+export class VerifyEmailPageComponent implements OnInit {
+  readonly loadingAuth = signal(true);
 
   constructor(
     protected authService: AuthService,

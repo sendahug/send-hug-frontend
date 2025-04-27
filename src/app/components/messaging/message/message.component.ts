@@ -37,8 +37,8 @@ import { CommonModule } from "@angular/common";
 
 // App-related imports
 import { type MessageGet } from "@app/interfaces/message.interface";
-import { UserIcon } from "@common/userIcon/userIcon.component";
-import { ItemDeleteForm } from "@forms/itemDeleteForm/itemDeleteForm.component";
+import { UserIconComponent } from "@common/userIcon/userIcon.component";
+import { ItemDeleteFormComponent } from "@forms/itemDeleteForm/itemDeleteForm.component";
 import { MessageType } from "@app/interfaces/types";
 
 @Component({
@@ -46,33 +46,33 @@ import { MessageType } from "@app/interfaces/types";
   templateUrl: "./message.component.html",
   styleUrl: "./message.component.less",
   standalone: true,
-  imports: [CommonModule, RouterLink, UserIcon, ItemDeleteForm],
+  imports: [CommonModule, RouterLink, UserIconComponent, ItemDeleteFormComponent],
 })
-export class AppSingleMessage {
+export class MessageComponent {
   // TODO: Replace these with `input()`/`output()` once we figure out coverage
   @Input() currentUser!: number;
   @Input()
   set message(newMessage: MessageGet) {
     this._message.set(newMessage);
   }
-  _message = signal<MessageGet>({} as MessageGet);
+  readonly _message = signal<MessageGet>({} as MessageGet);
   @Input() messType!: MessageType;
   @Output() messageDeleted = new EventEmitter<number>();
-  userIconToShow = computed(() => {
+  readonly userIconToShow = computed(() => {
     if (this.messType == "thread") return this._message().from;
 
     return this._message().forId == this.currentUser ? this._message().from : this._message().for;
   });
-  displayFor = computed(
+  readonly displayFor = computed(
     () => this._message().fromId == this.currentUser || this.messType == "thread",
   );
-  displayFrom = computed(
+  readonly displayFrom = computed(
     () => this._message().forId == this.currentUser || this.messType == "thread",
   );
-  deleteMode = signal(false);
+  readonly deleteMode = signal(false);
   // Both the fields below are currently kept in for consistency but can be removed
-  toDelete = signal("Message");
-  itemToDelete = computed<number>(() => this._message().id);
+  readonly toDelete = signal("Message");
+  readonly itemToDelete = computed<number>(() => this._message().id);
 
   /**
    * Opens the delete popup to delete the current message.

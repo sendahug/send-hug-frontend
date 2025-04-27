@@ -57,7 +57,7 @@ export class NotificationService {
   // push notifications variables
   notificationsSub: PushSubscription | undefined;
   subId = 0;
-  newNotifications = signal(0);
+  readonly newNotifications = signal(0);
   resubscribeCalls = 0;
   subscriptionDate = 0;
   // notifications refresh variables

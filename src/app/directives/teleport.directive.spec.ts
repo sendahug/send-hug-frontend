@@ -51,7 +51,7 @@ import { TeleportService } from "@app/services/teleport.service";
   `,
   standalone: true,
 })
-class MockPage implements AfterViewInit {
+class MockPageComponent implements AfterViewInit {
   @ViewChild("profileContainer") profileContainer!: ElementRef;
 
   constructor(private teleporterService: TeleportService) {}
@@ -71,12 +71,12 @@ class MockPage implements AfterViewInit {
   standalone: true,
   imports: [TeleportDirective],
 })
-class MockChild {
+class MockChildComponent {
   teleportTarget = "test";
 }
 
 describe("TeleportDirective", () => {
-  let fixture: ComponentFixture<MockPage>;
+  let fixture: ComponentFixture<MockPageComponent>;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let mockPageDOM: any; // according to Angular's own typing
 
@@ -86,17 +86,17 @@ describe("TeleportDirective", () => {
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
-      imports: [MockPage, TeleportDirective, MockChild],
+      imports: [MockPageComponent, TeleportDirective, MockChildComponent],
       providers: [TeleportService],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(MockPage);
+    fixture = TestBed.createComponent(MockPageComponent);
     mockPageDOM = fixture.nativeElement;
     fixture.autoDetectChanges();
   });
 
   it("should teleport the chosen element", () => {
-    const childFixture = TestBed.createComponent(MockChild);
+    const childFixture = TestBed.createComponent(MockChildComponent);
     childFixture.autoDetectChanges();
 
     const container = mockPageDOM.querySelector("#profileContainer");
@@ -107,7 +107,7 @@ describe("TeleportDirective", () => {
   });
 
   it("should do nothing if the target doesn't exist", () => {
-    const childFixture = TestBed.createComponent(MockChild);
+    const childFixture = TestBed.createComponent(MockChildComponent);
     childFixture.componentInstance.teleportTarget = "meow";
     childFixture.autoDetectChanges();
 
@@ -117,7 +117,7 @@ describe("TeleportDirective", () => {
   });
 
   it("should remove the content once the element is destroyed", () => {
-    const childFixture = TestBed.createComponent(MockChild);
+    const childFixture = TestBed.createComponent(MockChildComponent);
     childFixture.detectChanges();
 
     expect(

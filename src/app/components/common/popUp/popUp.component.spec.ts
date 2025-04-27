@@ -41,7 +41,7 @@ import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { provideZoneChangeDetection } from "@angular/core";
 import { Component } from "@angular/core";
 
-import { PopUp } from "./popUp.component";
+import { PopUpComponent } from "./popUp.component";
 
 // Mock page
 @Component({
@@ -53,9 +53,9 @@ import { PopUp } from "./popUp.component";
     </app-pop-up>
   `,
   standalone: true,
-  imports: [PopUp],
+  imports: [PopUpComponent],
 })
-class MockPage {
+class MockPageComponent {
   text = "text";
 }
 
@@ -66,7 +66,7 @@ describe("Popup", () => {
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
-      imports: [CommonModule, FontAwesomeModule, MockPage, PopUp],
+      imports: [CommonModule, FontAwesomeModule, MockPageComponent, PopUpComponent],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
         provideZoneChangeDetection({ eventCoalescing: true }),
@@ -76,7 +76,7 @@ describe("Popup", () => {
 
   // Check that the component is created
   it("should create the component", () => {
-    const fixture = TestBed.createComponent(PopUp);
+    const fixture = TestBed.createComponent(PopUpComponent);
     const popUp = fixture.componentInstance;
 
     expect(popUp).toBeTruthy();
@@ -85,9 +85,9 @@ describe("Popup", () => {
   // check tab and tab+shift let the user navigate
   // TODO: Figure out why this test isn't working
   it("should navigate using tab and shift+tab", (done: DoneFn) => {
-    const mockPage = TestBed.createComponent(MockPage);
+    const mockPage = TestBed.createComponent(MockPageComponent);
     const mockPageDOM = mockPage.nativeElement;
-    const popUp: PopUp = mockPage.debugElement.children[0].children[0].componentInstance;
+    const popUp: PopUpComponent = mockPage.debugElement.children[0].children[0].componentInstance;
     const popUpDOM = mockPage.debugElement.children[0].children[0].nativeElement;
     const focusBindedSpy = spyOn(popUp, "checkFocusBinded").and.callThrough();
     mockPage.detectChanges();
@@ -172,9 +172,9 @@ describe("Popup", () => {
 
   // check the focus is trapped
   it("should trap focus in the modal", (done: DoneFn) => {
-    const mockPage = TestBed.createComponent(MockPage);
+    const mockPage = TestBed.createComponent(MockPageComponent);
     const mockPageDOM = mockPage.nativeElement;
-    const popUp: PopUp = mockPage.debugElement.children[0].children[0].componentInstance;
+    const popUp: PopUpComponent = mockPage.debugElement.children[0].children[0].componentInstance;
     const popUpDOM = mockPage.debugElement.children[0].children[0].nativeElement;
     const focusBindedSpy = spyOn(popUp, "checkFocusBinded").and.callThrough();
     mockPage.detectChanges();
@@ -240,7 +240,7 @@ describe("Popup", () => {
 
   // Check that the event emitter emits false if the user clicks 'exit'
   it("exits the popup if the user decides not to edit", () => {
-    const fixture = TestBed.createComponent(PopUp);
+    const fixture = TestBed.createComponent(PopUpComponent);
     const popUp = fixture.componentInstance;
     const popUpDOM = fixture.nativeElement;
     const exitSpy = spyOn(popUp, "exitEdit").and.callThrough();

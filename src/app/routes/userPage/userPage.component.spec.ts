@@ -44,18 +44,18 @@ import { NO_ERRORS_SCHEMA, signal } from "@angular/core";
 import { of, Subscription } from "rxjs";
 import { MockComponent, MockProvider } from "ng-mocks";
 
-import { UserPage } from "./userPage.component";
+import { UserPageComponent } from "./userPage.component";
 import { AuthService } from "@app/services/auth.service";
 import { mockAuthedUser } from "@tests/mockData";
 import { OtherUser } from "@app/interfaces/user.interface";
 import { iconCharacters } from "@app/interfaces/types";
-import { DisplayNameEditForm } from "@forms/displayNameEditForm/displayNameEditForm.component";
-import { ReportForm } from "@forms/reportForm/reportForm.component";
+import { DisplayNameEditFormComponent } from "@forms/displayNameEditForm/displayNameEditForm.component";
+import { ReportFormComponent } from "@forms/reportForm/reportForm.component";
 import { ApiClientService } from "@app/services/apiClient.service";
-import { Loader } from "@common/loader/loader.component";
-import { UserIcon } from "@common/userIcon/userIcon.component";
+import { LoaderComponent } from "@common/loader/loader.component";
+import { UserIconComponent } from "@common/userIcon/userIcon.component";
 
-describe("UserPage", () => {
+describe("UserPageComponent", () => {
   // Before each test, configure testing environment
   beforeEach(() => {
     const MockAuthService = MockProvider(AuthService, {
@@ -63,10 +63,10 @@ describe("UserPage", () => {
       userData: signal(undefined),
     });
     const MockAPIClient = MockProvider(ApiClientService);
-    const MockDisplayNameEditForm = MockComponent(DisplayNameEditForm);
-    const MockReportForm = MockComponent(ReportForm);
-    const MockLoader = MockComponent(Loader);
-    const MockUserIcon = MockComponent(UserIcon);
+    const MockDisplayNameEditFormComponent = MockComponent(DisplayNameEditFormComponent);
+    const MockReportFormComponent = MockComponent(ReportFormComponent);
+    const MockLoaderComponent = MockComponent(LoaderComponent);
+    const MockUserIconComponent = MockComponent(UserIconComponent);
 
     TestBed.resetTestEnvironment();
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
@@ -75,13 +75,13 @@ describe("UserPage", () => {
       schemas: [NO_ERRORS_SCHEMA],
       imports: [
         FontAwesomeModule,
-        MockDisplayNameEditForm,
-        MockReportForm,
+        MockDisplayNameEditFormComponent,
+        MockReportFormComponent,
         CommonModule,
-        MockLoader,
+        MockLoaderComponent,
         RouterLink,
-        MockUserIcon,
-        UserPage,
+        MockUserIconComponent,
+        UserPageComponent,
       ],
       declarations: [],
       providers: [
@@ -90,11 +90,16 @@ describe("UserPage", () => {
           {
             path: "user",
             children: [
-              { path: "", pathMatch: "prefix", component: UserPage, data: { name: "Your Page" } },
+              {
+                path: "",
+                pathMatch: "prefix",
+                component: UserPageComponent,
+                data: { name: "Your Page" },
+              },
               {
                 path: ":id",
                 pathMatch: "prefix",
-                component: UserPage,
+                component: UserPageComponent,
                 data: { name: "Other User's Page" },
               },
             ],
@@ -109,7 +114,7 @@ describe("UserPage", () => {
 
   // Check that the component is created
   it("should create the component", () => {
-    const fixture = TestBed.createComponent(UserPage);
+    const fixture = TestBed.createComponent(UserPageComponent);
     const userPage = fixture.componentInstance;
 
     expect(userPage).toBeTruthy();
@@ -117,7 +122,7 @@ describe("UserPage", () => {
 
   // Check that the popup variables are set to false
   it("should have the popup variables set to false", () => {
-    const fixture = TestBed.createComponent(UserPage);
+    const fixture = TestBed.createComponent(UserPageComponent);
     const userPage = fixture.componentInstance;
 
     expect(userPage.editMode()).toBeFalse();
@@ -129,7 +134,7 @@ describe("UserPage", () => {
     const authService = TestBed.inject(AuthService);
     authService.authenticated.set(true);
     authService.userData.set({ ...mockAuthedUser });
-    const fixture = TestBed.createComponent(UserPage);
+    const fixture = TestBed.createComponent(UserPageComponent);
     const userPage = fixture.componentInstance;
     const userPageDOM = fixture.nativeElement;
 
@@ -178,7 +183,7 @@ describe("UserPage", () => {
     const authService = TestBed.inject(AuthService);
     authService.authenticated.set(true);
     authService.userData.set({ ...mockAuthedUser });
-    const fixture = TestBed.createComponent(UserPage);
+    const fixture = TestBed.createComponent(UserPageComponent);
     const userPage = fixture.componentInstance;
     const userPageDOM = fixture.nativeElement;
 
@@ -229,7 +234,7 @@ describe("UserPage", () => {
     const authService = TestBed.inject(AuthService);
     authService.authenticated.set(true);
     authService.userData.set({ ...mockAuthedUser });
-    const fixture = TestBed.createComponent(UserPage);
+    const fixture = TestBed.createComponent(UserPageComponent);
     const userPage = fixture.componentInstance;
     const userPageDOM = fixture.nativeElement;
     userPage.otherUser.set({
@@ -301,7 +306,7 @@ describe("UserPage", () => {
     const authService = TestBed.inject(AuthService);
     authService.authenticated.set(true);
     authService.userData.set({ ...mockAuthedUser });
-    const fixture = TestBed.createComponent(UserPage);
+    const fixture = TestBed.createComponent(UserPageComponent);
     const userPage = fixture.componentInstance;
     const userPageDOM = fixture.nativeElement;
     const logoutSpy = spyOn(userPage, "logout").and.callThrough();
@@ -334,7 +339,7 @@ describe("UserPage", () => {
     const authService = TestBed.inject(AuthService);
     authService.authenticated.set(true);
     authService.userData.set({ ...mockAuthedUser });
-    const fixture = TestBed.createComponent(UserPage);
+    const fixture = TestBed.createComponent(UserPageComponent);
     const userPage = fixture.componentInstance;
     const mockUser = {
       id: 1,
@@ -375,7 +380,7 @@ describe("UserPage", () => {
     const authService = TestBed.inject(AuthService);
     authService.authenticated.set(true);
     authService.userData.set({ ...mockAuthedUser });
-    const fixture = TestBed.createComponent(UserPage);
+    const fixture = TestBed.createComponent(UserPageComponent);
     const userPage = fixture.componentInstance;
     const userPageDOM = fixture.nativeElement;
     fixture.detectChanges();
@@ -394,7 +399,7 @@ describe("UserPage", () => {
     const authService = TestBed.inject(AuthService);
     authService.authenticated.set(true);
     authService.userData.set({ ...mockAuthedUser });
-    const fixture = TestBed.createComponent(UserPage);
+    const fixture = TestBed.createComponent(UserPageComponent);
     const userPage = fixture.componentInstance;
     const mockUser = {
       id: 1,
@@ -436,7 +441,7 @@ describe("UserPage", () => {
     const authService = TestBed.inject(AuthService);
     authService.authenticated.set(true);
     authService.userData.set({ ...mockAuthedUser });
-    const fixture = TestBed.createComponent(UserPage);
+    const fixture = TestBed.createComponent(UserPageComponent);
     const userPage = fixture.componentInstance;
     const userPageDOM = fixture.nativeElement;
 
@@ -466,7 +471,7 @@ describe("UserPage", () => {
     const authService = TestBed.inject(AuthService);
     authService.authenticated.set(true);
     authService.userData.set({ ...mockAuthedUser });
-    const fixture = TestBed.createComponent(UserPage);
+    const fixture = TestBed.createComponent(UserPageComponent);
     const userPage = fixture.componentInstance;
     const userPageDOM = fixture.nativeElement;
     userPage.otherUser.set({
@@ -514,7 +519,7 @@ describe("UserPage", () => {
     const authService = TestBed.inject(AuthService);
     authService.authenticated.set(true);
     authService.userData.set({ ...mockAuthedUser });
-    const fixture = TestBed.createComponent(UserPage);
+    const fixture = TestBed.createComponent(UserPageComponent);
     const userPage = fixture.componentInstance;
     const userPageDOM = fixture.nativeElement;
     const hugSpy = spyOn(userPage, "sendHug").and.callThrough();
@@ -584,7 +589,7 @@ describe("UserPage", () => {
     const authService = TestBed.inject(AuthService);
     authService.authenticated.set(true);
     authService.userData.set({ ...mockAuthedUser });
-    const fixture = TestBed.createComponent(UserPage);
+    const fixture = TestBed.createComponent(UserPageComponent);
     const userPage = fixture.componentInstance;
     userPage.isIdbFetchLoading.set(false);
     const changeSpy = spyOn(userPage, "changeMode").and.callThrough();
@@ -597,7 +602,7 @@ describe("UserPage", () => {
 
     // exit the popup
     const popup = fixture.debugElement.query(By.css("display-name-edit-form"))
-      .componentInstance as DisplayNameEditForm;
+      .componentInstance as DisplayNameEditFormComponent;
     popup.editMode.emit(false);
     fixture.detectChanges();
 
@@ -612,7 +617,7 @@ describe("UserPage", () => {
     const authService = TestBed.inject(AuthService);
     authService.authenticated.set(true);
     authService.userData.set({ ...mockAuthedUser });
-    const fixture = TestBed.createComponent(UserPage);
+    const fixture = TestBed.createComponent(UserPageComponent);
     const userPage = fixture.componentInstance;
     userPage.otherUser.set({
       id: 1,
@@ -645,7 +650,8 @@ describe("UserPage", () => {
     fixture.detectChanges();
 
     // exit the popup
-    const popup = fixture.debugElement.query(By.css("report-form")).componentInstance as ReportForm;
+    const popup = fixture.debugElement.query(By.css("report-form"))
+      .componentInstance as ReportFormComponent;
     popup.reportMode.emit(false);
     fixture.detectChanges();
 

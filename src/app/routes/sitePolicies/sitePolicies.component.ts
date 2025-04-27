@@ -44,9 +44,9 @@ import { PolicyType, SitePolicyMapping } from "@app/interfaces/policies.interfac
   standalone: true,
   imports: [CommonModule],
 })
-export class SitePolicies {
-  currentPolicy = signal<PolicyType>("TermsConditions");
-  pageTitle = signal<string>("");
+export class SitePoliciesComponent {
+  readonly currentPolicy = signal<PolicyType>("TermsConditions");
+  readonly pageTitle = signal<string>("");
 
   // CTOR
   constructor(private route: ActivatedRoute) {

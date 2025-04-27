@@ -1,7 +1,7 @@
 <app-pop-up *teleport="'modalContainer'" (editMode)="sendMode.emit(false)">
   <h3>Send A Hug</h3>
 
-  <form [formGroup]="sendHugForm" class="postEdit" *ngIf="forUsername && forID">
+  <form [formGroup]="sendHugForm" class="postEdit" *ngIf="forUsername() && forID()">
     <div class="formElement">
       <label class="pageCategory" for="messageFor">To:</label>
       <input
@@ -35,7 +35,7 @@
     <button type="submit" class="appButton sendData" (click)="sendHugAndMessage()">Send Hug</button>
   </form>
 
-  <div class="errorMessage" *ngIf="!forUsername || !forID" role="alert">
+  <div class="errorMessage" *ngIf="!forUsername() || !forID()" role="alert">
     User ID and display name and post ID are required for sending a hug. Please return to the post
     and try sending the hug again.
   </div>

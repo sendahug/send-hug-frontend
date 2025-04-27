@@ -88,7 +88,7 @@ export class FirebaseService {
     });
   }
   // firebase stuff
-  actionCodeSettings = signal<ActionCodeSettings>({
+  readonly actionCodeSettings = signal<ActionCodeSettings>({
     // TODO: Hardcode the base URL once we deploy to live
     url: `${import.meta.env["VITE_BASE_URL"]}/verify`,
   });

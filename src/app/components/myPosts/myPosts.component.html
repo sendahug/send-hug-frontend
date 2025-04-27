@@ -40,7 +40,7 @@
       </button>
     </div>
     <button
-      *ngIf="user() == 'self' || authService.canUser('delete:any-post')"
+      *ngIf="user() === 'self' || authService.canUser('delete:any-post')"
       class="appButton deleteButton"
       (click)="deleteAllPosts()"
       id="deleteAll"
@@ -51,8 +51,8 @@
 
   <!-- If the user doesn't have posts, displays an error message -->
   <div *ngIf="!posts().length" class="errorMessage">
-    <div *ngIf="user() == 'self'">You have no published posts. Write your first post now!</div>
-    <div *ngIf="user() == 'other'">The user hasn't published any posts yet.</div>
+    <div *ngIf="user() === 'self'">You have no published posts. Write your first post now!</div>
+    <div *ngIf="user() === 'other'">The user hasn't published any posts yet.</div>
   </div>
 </div>
 

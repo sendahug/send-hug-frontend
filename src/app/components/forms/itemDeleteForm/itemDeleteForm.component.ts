@@ -61,6 +61,10 @@ export class ItemDeleteFormComponent {
   readonly itemToDelete = input<number | undefined>();
   readonly messType = input<MessageType | undefined>();
   readonly reportData = input<ReportData | undefined>();
+  // New inputs
+  readonly deleteEndpoint = input<string | undefined>();
+  readonly itemType = input<"Post" | "Message" | "Thread" | undefined>();
+  readonly itemId = input<number | undefined>();
 
   // CTOR
   constructor(

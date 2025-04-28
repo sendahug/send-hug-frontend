@@ -50,5 +50,5 @@
   [deleteEndpoint]="'messages/threads'"
   [itemType]="'Thread'"
   [itemId]="_thread().id"
-  (deleted)="messageDeleted.emit(_thread().id)"
+  (deleted)="deleteMessagesFromIdb()"
 ></item-delete-form>

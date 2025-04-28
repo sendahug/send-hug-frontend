@@ -112,14 +112,6 @@ export class ItemDeleteFormComponent {
             response.deleted,
           );
 
-          /**
-           * @todo: This isn't the responsibility of this component,
-           * this should be handled in the thread component.
-           */
-          if (this.itemType() == "Thread") {
-            this.swManager.deleteItems("messages", "threadID", response.deleted);
-          }
-
           this.deleted.emit(response.deleted);
           this.editMode.emit(false);
         },

@@ -42,7 +42,7 @@ import { SWManager } from "@app/services/sWManager.service";
 import { AlertsService } from "@app/services/alerts.service";
 import { PopUpComponent } from "@common/popUp/popUp.component";
 import { TeleportDirective } from "@app/directives/teleport.directive";
-import { APIParams, IdbStoreType, type MessageType } from "@app/interfaces/types";
+import { IdbStoreType, type MessageType } from "@app/interfaces/types";
 import { ReportData } from "@app/interfaces/report.interface";
 
 @Component({
@@ -65,6 +65,7 @@ export class ItemDeleteFormComponent {
   readonly deleteEndpoint = input<string | undefined>();
   readonly itemType = input<"Post" | "Message" | "Thread" | undefined>();
   readonly itemId = input<number | undefined>();
+  readonly bulkDelete = input<boolean>(false);
 
   // CTOR
   constructor(
@@ -83,43 +84,12 @@ export class ItemDeleteFormComponent {
   */
   deleteItem() {
     // if it's a single item, make the request to delete it
-    if (this.itemType() == "Post" || this.itemType() == "Message" || this.itemType() == "Thread") {
+    if (this.bulkDelete() === false) {
       this.deleteSingleItem();
     }
-    // if the user is attempting to delete all of the user's posts
-    else if (this.toDelete() == "All posts") {
-      this.deleteMultipleItems(`users/${this.itemToDelete()}/posts`, "posts").subscribe(
-        (response) => {
-          // delete the posts from idb
-          this.swManager.deleteItems("posts", "userId", response.userID);
-          this.deleted.emit(response.userID);
-          this.editMode.emit(false);
-        },
-      );
-    }
-    // if the user is attempting to delete all of their messages of a specific type
-    else if (
-      this.toDelete() == "All inbox" ||
-      this.toDelete() == "All outbox" ||
-      this.toDelete() == "All threads"
-    ) {
-      const mailbox_type = this.toDelete()!.split(" ")[1];
-
-      this.deleteMultipleItems(`messages/${mailbox_type}`, "messages").subscribe((response) => {
-        // delete all messages from idb
-        // if the mailbox to be cleared is the threads mailbox, delete everything
-        if (mailbox_type == "threads") {
-          this.swManager.clearStore("messages");
-          this.swManager.clearStore("threads");
-        } else if (mailbox_type == "inbox") {
-          this.swManager.deleteItems("messages", "forId", response.userID);
-        } else if (mailbox_type == "outbox") {
-          this.swManager.deleteItems("messages", "fromId", response.userID);
-        }
-
-        this.deleted.emit(this.itemToDelete());
-        this.editMode.emit(false);
-      });
+    // if the user is attempting to delete all of the user's posts/messages
+    else if (this.bulkDelete() === true) {
+      this.deleteMultipleItems();
     }
   }
 
@@ -180,18 +150,25 @@ export class ItemDeleteFormComponent {
 
   /**
    * Deletes multiple items.
-   * @param url - the url to send the request to.
-   * @param itemType - the type of items to delete (for the success message).
-   * @param params - any query parameters to send with the request.
    * @returns an observable of the response.
    */
-  deleteMultipleItems(url: string, itemType: string, params?: APIParams) {
+  deleteMultipleItems() {
+    if (!this.deleteEndpoint() || !this.itemId()) return;
+
     return this.apiClient
-      .delete<{ success: boolean; userID: number; deleted: number }>(url, params)
+      .delete<{ success: boolean; userID: number; deleted: number }>(this.deleteEndpoint()!)
       .pipe(
         tap((response) =>
-          this.alertsService.createSuccessAlert(`${response.deleted} ${itemType} were deleted.`),
+          this.alertsService.createSuccessAlert(
+            `${response.deleted} ${this.itemType()?.toLowerCase()}s were deleted.`,
+          ),
         ),
-      );
+      )
+      .subscribe({
+        next: (response) => {
+          this.deleted.emit(response.userID);
+          this.editMode.emit(false);
+        },
+      });
   }
 }

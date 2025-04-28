@@ -143,5 +143,9 @@
   [toDelete]="toDelete()"
   [itemToDelete]="itemToDelete()"
   [messType]="messType()"
-  (deleted)="updateMessageList($event)"
+  [deleteEndpoint]="'messages/' + messType()"
+  [itemType]="messType() === 'threads' ? 'Thread' : 'Message'"
+  [itemId]="authService.userData()!.id!"
+  [bulkDelete]="true"
+  (deleted)="clearMailbox()"
 ></item-delete-form>

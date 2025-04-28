@@ -197,6 +197,7 @@ export class MyPostsComponent implements OnInit {
    */
   updatePostsList() {
     this.posts.set([]);
+    this.swManager.deleteItems("posts", "userId", this._userId()!);
   }
 
   /*

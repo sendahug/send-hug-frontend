@@ -55,5 +55,8 @@
   [toDelete]="toDelete()"
   [itemToDelete]="itemToDelete()"
   [messType]="messType"
+  [deleteEndpoint]="'messages/' + messType"
+  [itemType]="'Message'"
+  [itemId]="_message().id"
   (deleted)="messageDeleted.emit(_message().id)"
 ></item-delete-form>

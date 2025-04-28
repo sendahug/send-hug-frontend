@@ -50,5 +50,8 @@
   [toDelete]="toDelete()"
   [itemToDelete]="itemToDelete()"
   [messType]="'threads'"
+  [deleteEndpoint]="'messages/threads'"
+  [itemType]="'Thread'"
+  [itemId]="_thread().id"
   (deleted)="messageDeleted.emit(_thread().id)"
 ></item-delete-form>

@@ -109,8 +109,8 @@ export class AppMessagesComponent {
   );
   // edit popup sub-component variables
   readonly deleteMode = signal(false);
-  readonly toDelete = signal<string | undefined>(undefined);
-  readonly itemToDelete = signal<number | undefined>(undefined);
+  readonly deleteEndpoint = computed(() => `messages/${this.messType()}`);
+  readonly itemType = computed(() => (this.messType() === "threads" ? "Thread" : "Message"));
 
   // CTOR
   constructor(
@@ -286,14 +286,11 @@ export class AppMessagesComponent {
   /*
   Function Name: deleteAllMessages()
   Function Description: Deletes all of the user's messages in a specific mailbox.
-  Parameters: type (string) - The type of messages to delete.
   ----------------
   Programmer: Shir Bar Lev.
   */
-  deleteAllMessages(type: string) {
+  deleteAllMessages() {
     this.deleteMode.set(true);
-    this.toDelete.set(`All ${type}`);
-    this.itemToDelete.set(this.authService.userData()!.id);
   }
 
   /**
@@ -314,16 +311,16 @@ export class AppMessagesComponent {
    * Clears the current mailbox (and IndexedDB) once they've been deleted in the back-end.
    */
   clearMailbox() {
-    if (this.messType().toLowerCase() == "threads") {
+    if (this.messType().toLowerCase() === "threads") {
       this.userThreads.set([]);
       this.swManager.clearStore("messages");
       this.swManager.clearStore("threads");
     } else {
       this.messages.set([]);
 
-      if (this.messType() == "inbox") {
+      if (this.messType().toLowerCase() === "inbox") {
         this.swManager.deleteItems("messages", "forId", this.authService.userData()!.id);
-      } else if (this.messType() == "outbox") {
+      } else if (this.messType().toLowerCase() === "outbox") {
         this.swManager.deleteItems("messages", "fromId", this.authService.userData()!.id);
       }
     }

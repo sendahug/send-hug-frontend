@@ -270,8 +270,6 @@ describe("MyPostsComponent", () => {
 
     // start the popup
     myPosts.deleteMode.set(true);
-    myPosts.toDelete.set("Post");
-    myPosts.itemToDelete.set(2);
     fixture.detectChanges();
 
     // exit the popup
@@ -309,8 +307,8 @@ describe("MyPostsComponent", () => {
 
     // after the click
     expect(myPosts.deleteMode()).toBeTrue();
-    expect(myPosts.toDelete()).toBe("All posts");
-    expect(myPosts.itemToDelete()).toBe(4);
+    expect(myPosts.deleteEndpoint()).toEqual(`users/${userPage.userId}/posts`);
+    expect(myPosts.itemType).toEqual("Post");
     expect(myPostsDOM.querySelector("item-delete-form")).toBeTruthy();
   });
 
@@ -401,8 +399,6 @@ describe("MyPostsComponent", () => {
 
     // start the popup
     myPosts.deleteMode.set(true);
-    myPosts.toDelete.set("Post");
-    myPosts.itemToDelete.set(2);
     fixture.detectChanges();
 
     const singlePost = fixture.debugElement.query(By.css("item-delete-form"))

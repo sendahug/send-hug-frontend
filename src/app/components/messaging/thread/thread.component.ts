@@ -57,6 +57,9 @@ export class ThreadComponent {
   readonly _thread = signal<ParsedThread>({} as ParsedThread);
   @Output() messageDeleted = new EventEmitter<number>();
   readonly deleteMode = signal(false);
+  // Delete Popup Constants
+  readonly deleteEndpoint = "messages/threads";
+  readonly itemType = "Thread";
 
   constructor(private swManager: SWManager) {}
 

@@ -490,7 +490,7 @@ describe("AppMessagesComponent", () => {
     expect(fetchSpy).toHaveBeenCalledWith();
   });
 
-  // // Check that deleting all messages triggers the popup
+  // Check that deleting all messages triggers the popup
   it("should trigger the popup upon deleting all", () => {
     TestBed.inject(ActivatedRoute).url = of([{ path: "inbox" } as UrlSegment]);
     const fixture = TestBed.createComponent(AppMessagesComponent);
@@ -509,8 +509,8 @@ describe("AppMessagesComponent", () => {
 
     // after the click
     expect(appMessaging.deleteMode()).toBeTrue();
-    expect(appMessaging.toDelete()).toBe("All inbox");
-    expect(appMessaging.itemToDelete()).toBe(4);
+    expect(appMessaging.deleteEndpoint()).toBe("messages/inbox");
+    expect(appMessaging.itemType()).toBe("Message");
     expect(appMessagingDOM.querySelector("item-delete-form")).toBeTruthy();
   });
 
@@ -525,8 +525,6 @@ describe("AppMessagesComponent", () => {
 
     // start the popup
     appMessaging.deleteMode.set(true);
-    appMessaging.toDelete.set("Thread");
-    appMessaging.itemToDelete.set(1);
     fixture.detectChanges();
 
     // exit the popup
@@ -582,19 +580,18 @@ describe("AppMessagesComponent", () => {
     expect(appMessaging.userThreads().length).toBe(0);
   });
 
-  it("should update the message list post delete - all messages", () => {
+  it("should update the message list post delete - all messages - inbox", () => {
     TestBed.inject(ActivatedRoute).url = of([{ path: "inbox" } as UrlSegment]);
     const fixture = TestBed.createComponent(AppMessagesComponent);
     const appMessaging = fixture.componentInstance;
-    const updateSpy = spyOn(appMessaging, "updateMessageList").and.callThrough();
+    const updateSpy = spyOn(appMessaging, "clearMailbox").and.callThrough();
+    const deleteSpy = spyOn(appMessaging["swManager"], "deleteItems");
     spyOn(appMessaging, "fetchMessages");
     appMessaging.messages.set(mockMessages);
     appMessaging.isIdbFetchLoading.set(false);
 
     // start the popup
     appMessaging.deleteMode.set(true);
-    appMessaging.toDelete.set("All inbox");
-    appMessaging.itemToDelete.set(1);
     fixture.detectChanges();
 
     // exit the popup
@@ -605,23 +602,50 @@ describe("AppMessagesComponent", () => {
     fixture.detectChanges();
 
     // check the popup is exited
-    expect(updateSpy).toHaveBeenCalledWith(1);
+    expect(updateSpy).toHaveBeenCalledWith();
     expect(appMessaging.messages().length).toBe(0);
+    expect(deleteSpy).toHaveBeenCalledWith("messages", "forId", 4);
+  });
+
+  it("should update the message list post delete - all messages - outbox", () => {
+    TestBed.inject(ActivatedRoute).url = of([{ path: "outbox" } as UrlSegment]);
+    const fixture = TestBed.createComponent(AppMessagesComponent);
+    const appMessaging = fixture.componentInstance;
+    const updateSpy = spyOn(appMessaging, "clearMailbox").and.callThrough();
+    const deleteSpy = spyOn(appMessaging["swManager"], "deleteItems");
+    spyOn(appMessaging, "fetchMessages");
+    appMessaging.messages.set(mockMessages);
+    appMessaging.isIdbFetchLoading.set(false);
+
+    // start the popup
+    appMessaging.deleteMode.set(true);
+    fixture.detectChanges();
+
+    // exit the popup
+    const popup = fixture.debugElement.query(By.css("item-delete-form"))
+      .componentInstance as ItemDeleteFormComponent;
+    popup.deleted.emit(1);
+    popup.editMode.emit(false);
+    fixture.detectChanges();
+
+    // check the popup is exited
+    expect(updateSpy).toHaveBeenCalledWith();
+    expect(appMessaging.messages().length).toBe(0);
+    expect(deleteSpy).toHaveBeenCalledWith("messages", "fromId", 4);
   });
 
   it("should update the message list post delete - all threads", () => {
     TestBed.inject(ActivatedRoute).url = of([{ path: "Threads" } as UrlSegment]);
     const fixture = TestBed.createComponent(AppMessagesComponent);
     const appMessaging = fixture.componentInstance;
-    const updateSpy = spyOn(appMessaging, "updateMessageList").and.callThrough();
+    const updateSpy = spyOn(appMessaging, "clearMailbox").and.callThrough();
+    const deleteSpy = spyOn(appMessaging["swManager"], "clearStore");
     spyOn(appMessaging, "fetchMessages");
     appMessaging.userThreads.set(mockThreads);
     appMessaging.isIdbFetchLoading.set(false);
 
     // start the popup
     appMessaging.deleteMode.set(true);
-    appMessaging.toDelete.set("All threads");
-    appMessaging.itemToDelete.set(3);
     fixture.detectChanges();
 
     // exit the popup
@@ -632,7 +656,9 @@ describe("AppMessagesComponent", () => {
     fixture.detectChanges();
 
     // check the popup is exited
-    expect(updateSpy).toHaveBeenCalledWith(3);
+    expect(updateSpy).toHaveBeenCalledWith();
+    expect(deleteSpy.calls.first().args).toEqual(["messages"]);
+    expect(deleteSpy.calls.mostRecent().args).toEqual(["threads"]);
     expect(appMessaging.userThreads().length).toBe(0);
   });
 });

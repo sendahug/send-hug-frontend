@@ -70,6 +70,9 @@ export class MessageComponent {
     () => this._message().forId == this.currentUser || this.messType == "thread",
   );
   readonly deleteMode = signal(false);
+  // Delete Popup Constants
+  readonly deleteEndpoint = computed(() => `messages/${this.messType}`);
+  readonly itemType = "Message";
 
   /**
    * Opens the delete popup to delete the current message.

@@ -413,7 +413,12 @@ describe("AdminReportsComponent", () => {
     );
 
     expect(adminReports.deleteMode()).toBeTrue();
-    expect(adminReports.toDelete()).toBe("ad post");
+    expect(adminReports.itemToDelete()).toEqual(mockPostReports[0].postID!);
+    expect(adminReports.reportData()).toEqual({
+      userID: mockPostReports[0].userID!,
+      reportID: mockPostReports[0].id!,
+    });
+
     expect(adminReportsDOM.querySelector("item-delete-form")).toBeTruthy();
   });
 
@@ -676,7 +681,11 @@ describe("AdminReportsComponent", () => {
 
     // start the popup
     adminReports.deleteMode.set(true);
-    adminReports.toDelete.set("post");
+    adminReports.itemToDelete.set(mockPostReports[0].postID!);
+    adminReports.reportData.set({
+      userID: mockPostReports[0].userID!,
+      reportID: mockPostReports[0].id!,
+    });
     adminReports.itemToDelete.set(2);
     fixture.detectChanges();
 
@@ -953,7 +962,11 @@ describe("AdminReportsComponent", () => {
 
     // start the popup
     adminReports.deleteMode.set(true);
-    adminReports.toDelete.set("post");
+    adminReports.itemToDelete.set(mockPostReports[0].postID!);
+    adminReports.reportData.set({
+      userID: mockPostReports[0].userID!,
+      reportID: mockPostReports[0].id!,
+    });
     adminReports.itemToDelete.set(5);
     fixture.detectChanges();
 

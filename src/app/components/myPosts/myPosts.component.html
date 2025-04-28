@@ -70,8 +70,6 @@
 <item-delete-form
   *ngIf="deleteMode()"
   (editMode)="changeMode($event)"
-  [toDelete]="toDelete()"
-  [itemToDelete]="itemToDelete()"
   [deleteEndpoint]="`users/${this.authService.userData()!.id}/posts`"
   [itemType]="'Post'"
   [itemId]="authService.userData()!.id!"

@@ -73,7 +73,6 @@ export class AdminReportsComponent {
     userID: 0,
   });
   readonly deleteMode = signal(false);
-  readonly toDelete = signal<string | undefined>(undefined);
   readonly itemToDelete = signal<number | undefined>(undefined);
   readonly usersPrevButtonClass = computed(() => ({
     "appButton prevButton": true,
@@ -194,7 +193,6 @@ export class AdminReportsComponent {
   */
   deletePost(postID: number, userID: number, reportID: number) {
     this.deleteMode.set(true);
-    this.toDelete.set("ad post");
     this.itemToDelete.set(postID);
     this.reportData.set({
       reportID,

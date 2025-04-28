@@ -56,9 +56,6 @@ export class ThreadComponent {
   readonly _thread = signal<ParsedThread>({} as ParsedThread);
   @Output() messageDeleted = new EventEmitter<number>();
   readonly deleteMode = signal(false);
-  // Both the fields below are currently kept in for consistency but can be removed
-  readonly toDelete = signal("Thread");
-  readonly itemToDelete = computed<number>(() => this._thread().id);
 
   /**
    * Opens the delete popup to delete the current thread.

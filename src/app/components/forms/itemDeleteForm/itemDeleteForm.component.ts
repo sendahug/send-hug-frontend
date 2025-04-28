@@ -42,7 +42,7 @@ import { SWManager } from "@app/services/sWManager.service";
 import { AlertsService } from "@app/services/alerts.service";
 import { PopUpComponent } from "@common/popUp/popUp.component";
 import { TeleportDirective } from "@app/directives/teleport.directive";
-import { IdbStoreType, type MessageType } from "@app/interfaces/types";
+import { IdbStoreType } from "@app/interfaces/types";
 import { ReportData } from "@app/interfaces/report.interface";
 
 @Component({
@@ -55,11 +55,6 @@ export class ItemDeleteFormComponent {
   // indicates whether edit/delete mode is still required
   @Output() editMode = new EventEmitter<boolean>();
   @Output() deleted = new EventEmitter<number>();
-  // type of item to delete
-  readonly toDelete = input<string | undefined>();
-  // the item to delete itself
-  readonly itemToDelete = input<number | undefined>();
-  readonly messType = input<MessageType | undefined>();
   readonly reportData = input<ReportData | undefined>();
   // New inputs
   readonly deleteEndpoint = input<string | undefined>();
@@ -142,8 +137,8 @@ export class ItemDeleteFormComponent {
   deletePost(closeReport: boolean) {
     if (!this.reportData()) return;
 
-    this.adminService.deletePost(this.itemToDelete()!, this.reportData()!, closeReport).add(() => {
-      this.deleted.emit(this.itemToDelete());
+    this.adminService.deletePost(this.itemId()!, this.reportData()!, closeReport).add(() => {
+      this.deleted.emit(this.itemId());
       this.editMode.emit(false);
     });
   }

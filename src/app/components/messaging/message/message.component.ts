@@ -70,9 +70,6 @@ export class MessageComponent {
     () => this._message().forId == this.currentUser || this.messType == "thread",
   );
   readonly deleteMode = signal(false);
-  // Both the fields below are currently kept in for consistency but can be removed
-  readonly toDelete = signal("Message");
-  readonly itemToDelete = computed<number>(() => this._message().id);
 
   /**
    * Opens the delete popup to delete the current message.

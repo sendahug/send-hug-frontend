@@ -514,6 +514,29 @@ describe("AppMessagesComponent", () => {
     expect(appMessagingDOM.querySelector("item-delete-form")).toBeTruthy();
   });
 
+  it("should trigger the popup upon deleting all - threads", () => {
+    TestBed.inject(ActivatedRoute).url = of([{ path: "Threads" } as UrlSegment]);
+    const fixture = TestBed.createComponent(AppMessagesComponent);
+    const appMessaging = fixture.componentInstance;
+    const appMessagingDOM = fixture.nativeElement;
+    appMessaging.userThreads.set(mockThreads);
+    appMessaging.isIdbFetchLoading.set(false);
+    fixture.detectChanges();
+
+    // before the click
+    expect(appMessaging.deleteMode()).toBeFalse();
+
+    // trigger click
+    appMessagingDOM.querySelectorAll(".deleteAll")[0].click();
+    fixture.detectChanges();
+
+    // after the click
+    expect(appMessaging.deleteMode()).toBeTrue();
+    expect(appMessaging.deleteEndpoint()).toBe("messages/threads");
+    expect(appMessaging.itemType()).toBe("Thread");
+    expect(appMessagingDOM.querySelector("item-delete-form")).toBeTruthy();
+  });
+
   // Check the popup exits when 'false' is emitted
   it("should change mode when the event emitter emits false", () => {
     TestBed.inject(ActivatedRoute).url = of([{ path: "inbox" } as UrlSegment]);

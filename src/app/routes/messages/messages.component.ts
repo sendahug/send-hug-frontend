@@ -125,7 +125,7 @@ export class AppMessagesComponent {
     this.currentPage.set(1);
 
     this.route.url.subscribe((params) => {
-      messageType = params[0].path;
+      messageType = params[0].path.toLowerCase();
     });
 
     this.messType.set(messageType || "inbox");

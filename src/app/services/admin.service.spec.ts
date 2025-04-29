@@ -76,14 +76,8 @@ describe("AdminService", () => {
     expect(adminService).toBeTruthy();
   });
 
-  // Check that the service deletes the post
-  it("deletePost() - should delete a post", () => {
-    // mock response
-    const mockResponse = {
-      success: true,
-      deleted: 10,
-    };
-
+  // Check that the service closes a report and alerts a user their post was deleted
+  it("closeReportAndAlertUserAfterDelete() - should close a report and alert the user", () => {
     const reportData = {
       reportID: 5,
       userID: 2,
@@ -126,13 +120,11 @@ describe("AdminService", () => {
         success: true,
       }),
     );
-    const deleteSWSpy = spyOn(adminService["serviceWorkerM"], "deleteItem");
-    const deleteAPISpy = spyOn(adminService["apiClient"], "delete").and.returnValue(
-      of(mockResponse),
-    );
-    adminService.deletePost(10, reportData, true);
+    adminService.closeReportAndAlertUserAfterDelete(10, reportData);
 
-    expect(alertSpy).toHaveBeenCalledWith("Post 10 was successfully deleted.");
+    expect(alertSpy).toHaveBeenCalledWith(
+      "Post 10 was successfully deleted and the report was closed.",
+    );
     expect(dismissSpy).toHaveBeenCalledWith(5, false, 10);
     expect(messageSpy).toHaveBeenCalledWith(
       jasmine.objectContaining({
@@ -143,64 +135,6 @@ describe("AdminService", () => {
         messageText: `Your post (ID 10) was deleted due to violating our community rules.`,
       }),
     );
-
-    expect(deleteSWSpy).toHaveBeenCalledWith("posts", 10);
-    expect(deleteAPISpy).toHaveBeenCalledWith("posts/10");
-  });
-
-  it("deletePost() - should delete a post without closing the report", () => {
-    // mock response
-    const mockResponse = {
-      success: true,
-      deleted: 10,
-    };
-
-    const reportData = {
-      reportID: 5,
-      userID: 2,
-      postID: 10,
-    };
-    const alertSpy = spyOn(adminService["alertsService"], "createSuccessAlert");
-    const dismissSpy = spyOn(adminService, "closeReport");
-    const messageSpy = spyOn(adminService["itemsService"], "sendMessage").and.returnValue(
-      of({
-        message: {
-          date: new Date("Mon, 08 Jun 2020 14:43:15 GMT"),
-          from: {
-            displayName: "user",
-          },
-          fromId: 4,
-          for: {
-            displayName: "user2",
-          },
-          forId: 1,
-          id: 9,
-          messageText: "hang in there",
-          threadID: 1,
-        },
-        success: true,
-      }),
-    );
-    const deleteSWSpy = spyOn(adminService["serviceWorkerM"], "deleteItem");
-    const deleteAPISpy = spyOn(adminService["apiClient"], "delete").and.returnValue(
-      of(mockResponse),
-    );
-    adminService.deletePost(10, reportData, false);
-
-    expect(alertSpy).toHaveBeenCalledWith("Post 10 was successfully deleted.");
-    expect(dismissSpy).not.toHaveBeenCalled();
-    expect(messageSpy).toHaveBeenCalledWith(
-      jasmine.objectContaining({
-        from: {
-          displayName: mockAuthedUser.displayName,
-        },
-        forId: reportData.userID,
-        messageText: `Your post (ID 10) was deleted due to violating our community rules.`,
-      }),
-    );
-
-    expect(deleteSWSpy).toHaveBeenCalledWith("posts", 10);
-    expect(deleteAPISpy).toHaveBeenCalledWith("posts/10");
   });
 
   // Check that the service edits a user's display name

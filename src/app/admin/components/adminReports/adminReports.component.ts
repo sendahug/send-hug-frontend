@@ -302,6 +302,13 @@ export class AdminReportsComponent {
    * @param deletedId the ID of the deleted post.
    */
   removeReport(deletedId: number) {
-    this.postReports.set(this.postReports().filter((report) => report.postID != deletedId));
+    this.adminService
+      .closeReportAndAlertUserAfterDelete(deletedId, {
+        userID: this.reportData().userID,
+        reportID: this.reportData().reportID,
+      })
+      .add(() => {
+        this.postReports.set(this.postReports().filter((report) => report.postID != deletedId));
+      });
   }
 }

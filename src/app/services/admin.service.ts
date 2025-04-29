@@ -40,7 +40,6 @@ import { type MessageCreate } from "@app/interfaces/message.interface";
 import { AuthService } from "@app/services/auth.service";
 import { AlertsService } from "@app/services/alerts.service";
 import { ItemsService } from "@app/services/items.service";
-import { SWManager } from "@app/services/sWManager.service";
 import { ApiClientService } from "@app/services/apiClient.service";
 import { type PartialUser, type UserBlockData, OtherUser } from "@app/interfaces/user.interface";
 import { type UpdateReportResponse, type OtherUserResponse } from "@app/interfaces/api";
@@ -53,48 +52,35 @@ export class AdminService {
     private authService: AuthService,
     private alertsService: AlertsService,
     private itemsService: ItemsService,
-    private serviceWorkerM: SWManager,
     private apiClient: ApiClientService,
   ) {}
 
   // REPORTS-RELATED METHODS
   // ==============================================================
-  /*
-  Function Name: deletePost()
-  Function Description: Sends a request to delete the post. If successful, alerts
-                        the user (via the ItemsService) that their post was deleted.
-  Parameters: postID (number) - ID of the post to delete.
-              reportData (any) - User ID and report ID.
-              closeReport (boolean) - whether to also close the report.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  deletePost(postID: number, reportData: ReportData, closeReport: boolean) {
-    // delete the post from the database
-    return this.apiClient
-      .delete<{ success: boolean; deleted: number }>(`posts/${postID}`)
+  /**
+   * Closes the given report and alerts the user whose post was deleted
+   * that their post was deleted.
+   * @param postID  ID of the post that was deleted.
+   * @param reportData User ID and report ID.
+   * @returns a subscription that's completed.
+   */
+  closeReportAndAlertUserAfterDelete(postID: number, reportData: ReportData) {
+    return this.closeReport(reportData.reportID, false, postID)
       .pipe(
-        switchMap((response) => {
-          if (closeReport) {
-            return this.closeReport(reportData.reportID, false, postID).pipe(
-              map((updateResponse) => ({
-                deleted: response.deleted,
-                reportID: updateResponse.updated.id,
-              })),
-            );
-          } else {
-            return of({
-              deleted: response.deleted,
-              reportID: undefined,
-            });
-          }
-        }),
+        map((updateResponse) => ({
+          deleted: postID,
+          reportID: updateResponse.updated.id,
+        })),
+      )
+      .pipe(
+        tap((response) =>
+          this.alertsService.createSuccessAlert(
+            `Post ${response.deleted} was successfully deleted and the report was closed.`,
+          ),
+        ),
       )
       .subscribe({
         next: (response) => {
-          this.alertsService.createSuccessAlert(
-            `Post ${response.deleted} was successfully deleted.`,
-          );
           // create a message from the admin to the user whose post was deleted
           const message: MessageCreate = {
             from: {
@@ -104,9 +90,6 @@ export class AdminService {
             messageText: `Your post (ID ${response.deleted}) was deleted due to violating our community rules.`,
             date: new Date(),
           };
-
-          // delete the post from idb
-          this.serviceWorkerM.deleteItem("posts", postID);
 
           // send the message about the deleted post
           this.itemsService.sendMessage(message).subscribe({});

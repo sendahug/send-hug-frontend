@@ -36,7 +36,6 @@ import { tap } from "rxjs";
 import { CommonModule } from "@angular/common";
 
 // App-related import
-import { AdminService } from "@app/services/admin.service";
 import { ApiClientService } from "@app/services/apiClient.service";
 import { SWManager } from "@app/services/sWManager.service";
 import { AlertsService } from "@app/services/alerts.service";
@@ -60,13 +59,13 @@ export class ItemDeleteFormComponent {
   readonly itemType = input<"Post" | "Message" | "Thread" | undefined>();
   readonly itemId = input<number | undefined>();
   readonly bulkDelete = input<boolean>(false);
+  readonly isAdmin = input<boolean>(false);
   readonly fullDeleteUrl = computed(() =>
     this.bulkDelete() ? this.deleteEndpoint() : `${this.deleteEndpoint()}/${this.itemId()}`,
   );
 
   // CTOR
   constructor(
-    private adminService: AdminService,
     private apiClient: ApiClientService,
     private swManager: SWManager,
     private alertsService: AlertsService,
@@ -83,6 +82,8 @@ export class ItemDeleteFormComponent {
       .delete<{ success: boolean; userID?: number; deleted: number }>(this.fullDeleteUrl()!)
       .pipe(
         tap((response) => {
+          if (this.isAdmin()) return;
+
           const successAlertMessage = this.bulkDelete()
             ? `${response.deleted} ${this.itemType()?.toLowerCase()}s were deleted.`
             : `${this.itemType()} ${response.deleted} was deleted.`;
@@ -103,22 +104,5 @@ export class ItemDeleteFormComponent {
           this.editMode.emit(false);
         },
       });
-  }
-
-  /*
-  Function Name: deletePost()
-  Function Description: Sends a request to the admin service to delete a post and
-                        dismiss the report (if selected by the user).
-  Parameters: closeReport (boolean) - whether or not to close the report.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  deletePost(closeReport: boolean) {
-    if (!this.reportData()) return;
-
-    this.adminService.deletePost(this.itemId()!, this.reportData()!, closeReport).add(() => {
-      this.deleted.emit(this.itemId());
-      this.editMode.emit(false);
-    });
   }
 }

@@ -184,8 +184,10 @@
 <item-delete-form
   *ngIf="deleteMode()"
   (editMode)="changeMode($event, 'Delete')"
-  [reportData]="reportData()"
+  [deleteEndpoint]="'posts'"
+  [itemType]="'Post'"
   [itemId]="itemToDelete()"
+  [isAdmin]="true"
   (deleted)="removeReport($event)"
 ></item-delete-form>
 

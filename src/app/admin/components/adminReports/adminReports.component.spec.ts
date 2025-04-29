@@ -39,7 +39,7 @@ import {
   platformBrowserDynamicTesting,
 } from "@angular/platform-browser-dynamic/testing";
 import { NO_ERRORS_SCHEMA, signal } from "@angular/core";
-import { BehaviorSubject, of, throwError } from "rxjs";
+import { BehaviorSubject, of, Subscription, throwError } from "rxjs";
 import { By } from "@angular/platform-browser";
 import { MockComponent, MockProvider } from "ng-mocks";
 
@@ -955,6 +955,12 @@ describe("AdminReportsComponent", () => {
     const fixture = TestBed.createComponent(AdminReportsComponent);
     const adminReports = fixture.componentInstance;
     const removeSpy = spyOn(adminReports, "removeReport").and.callThrough();
+    const subscription = new Subscription();
+    subscription.unsubscribe();
+    const closeReportSpy = spyOn(
+      adminReports["adminService"],
+      "closeReportAndAlertUserAfterDelete",
+    ).and.returnValue(subscription);
     adminReports.postReports.set([...mockPostReports]);
     adminReports.isLoading.set(false);
 
@@ -967,7 +973,6 @@ describe("AdminReportsComponent", () => {
       userID: mockPostReports[0].userID!,
       reportID: mockPostReports[0].id!,
     });
-    adminReports.itemToDelete.set(5);
     fixture.detectChanges();
 
     // exit the popup
@@ -978,6 +983,11 @@ describe("AdminReportsComponent", () => {
 
     // check the popup is exited
     expect(removeSpy).toHaveBeenCalledWith(5);
+    expect(closeReportSpy).toHaveBeenCalledWith(5, {
+      userID: mockPostReports[0].userID!,
+      reportID: mockPostReports[0].id!,
+    });
+
     expect(adminReports.postReports().length).toBe(0);
   });
 });

@@ -97,7 +97,7 @@
   <button
     class="appButton deleteButton deleteAll"
     (click)="deleteAllMessages()"
-    *ngIf="messages().length && messType() !== 'threads'"
+    *ngIf="messages().length && messType() !== 'threads' && messType() !== 'thread'"
     [attr.aria-label]="'delete all ' + messType() + ' messages'"
   >
     Delete All Messages

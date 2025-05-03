@@ -6,12 +6,12 @@
       <h2>{{ route.data!["name"] }}</h2>
       <ul *ngIf="route.data && route.data['mapRoutes']">
         <li *ngFor="let child of route.data['mapRoutes']" class="subRoute">
-          <a [routerLink]="['/' + route.path + '/' + child.path]" class="routerLink">{{
+          <a class="routerLink" [routerLink]="['/' + route.path + '/' + child.path]">{{
             child["name"]
           }}</a>
         </li>
       </ul>
-      <a [routerLink]="['/' + route.path]" *ngIf="!route.children" class="routerLink">{{
+      <a *ngIf="!route.children" class="routerLink" [routerLink]="['/' + route.path]">{{
         route.data!["name"]
       }}</a>
     </li>

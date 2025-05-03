@@ -12,8 +12,8 @@
   <button
     class="appButton"
     id="alertButton"
-    (click)="closeAlert()"
     [disabled]="!alertsService.shouldDisplayAlert()"
+    (click)="closeAlert()"
   >
     Close
   </button>
@@ -21,16 +21,16 @@
     *ngIf="alertsService.shouldDisplayReloadBtn()"
     class="appButton"
     id="reloadBtn"
-    (click)="reloadPage()"
     [disabled]="!alertsService.shouldDisplayAlert()"
+    (click)="reloadPage()"
   >
     Reload Page
   </button>
   <a
     *ngIf="alertsService.shouldDisplayNavBtn()"
-    [routerLink]="alertsService.navBtnTarget()"
     class="appButton"
     id="navButton"
+    [routerLink]="alertsService.navBtnTarget()"
     (click)="closeAlert()"
   >
     {{ alertsService.navBtnText() }}

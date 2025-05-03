@@ -1,8 +1,8 @@
 <div id="modalBox">
   <div id="notificationsTab">
-    <button id="exitButton" (click)="exitNotifications()" aria-label="close popup">
+    <button id="exitButton" aria-label="close popup" (click)="exitNotifications()">
       <!-- prettier-ignore -->
-      <fa-icon [icon]="faTimes" class="fa-times"></fa-icon>
+      <fa-icon class="fa-times" [icon]="faTimes"></fa-icon>
     </button>
     <h4>Notifications</h4>
     <div id="nButtons">
@@ -26,7 +26,7 @@
       </button>
     </div>
 
-    <ul id="notificationsList" *ngIf="notifications().length">
+    <ul *ngIf="notifications().length" id="notificationsList">
       <li *ngFor="let notification of notifications()" class="notificationItem">
         <span>
           <div class="notificationTitle">New {{ notification.type }}!</div>
@@ -67,18 +67,18 @@
     <div class="pagination" role="navigation">
       <button
         [ngClass]="previousPageButtonClass()"
-        (click)="prevPage()"
         [attr.aria-label]="'previous page of notifications'"
         [disabled]="currentPage() <= 1"
+        (click)="prevPage()"
       >
         Previous Page
       </button>
       <div class="pageCount">Page {{ currentPage() }} of {{ totalPages() }}</div>
       <button
         [ngClass]="nextPageButtonClass()"
-        (click)="nextPage()"
         [attr.aria-label]="'next page of notifications'"
         [disabled]="totalPages() <= currentPage()"
+        (click)="nextPage()"
       >
         Next Page
       </button>

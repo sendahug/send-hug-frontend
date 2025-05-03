@@ -1,5 +1,5 @@
 <app-pop-up *teleport="'modalContainer'" (editMode)="editMode.emit(false)">
-  <form [formGroup]="editNameForm" id="userEdit" class="userEdit">
+  <form id="userEdit" class="userEdit" [formGroup]="editNameForm">
     <div class="formElement">
       <label class="pageCategory required" for="displayName">Display Name:</label>
       <input
@@ -9,8 +9,8 @@
         minlength="0"
         maxlength="60"
         required
-        [attr.aria-invalid]="!this.editNameForm.controls.newDisplayName.valid"
         aria-required="true"
+        [attr.aria-invalid]="!this.editNameForm.controls.newDisplayName.valid"
       />
     </div>
 
@@ -19,8 +19,8 @@
       *ngIf="!reportData()"
       type="submit"
       class="appButton updateItem"
-      (click)="updateDisplayName($event, null)"
       [attr.aria-label]="'update display name for user ' + authService.userData()!.displayName"
+      (click)="updateDisplayName($event, null)"
     >
       Update User
     </button>
@@ -28,17 +28,17 @@
     <!-- If the user is editing another user -->
     <button
       *ngIf="reportData()"
-      (click)="updateDisplayName($event, true)"
       type="submit"
       class="appButton updateItem"
+      (click)="updateDisplayName($event, true)"
     >
       Update User and Close Report
     </button>
     <button
       *ngIf="reportData()"
-      (click)="updateDisplayName($event, false)"
       type="submit"
       class="appButton updateItem"
+      (click)="updateDisplayName($event, false)"
     >
       Update User without Closing Report
     </button>

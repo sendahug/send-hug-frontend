@@ -8,7 +8,7 @@
 
   <h1 class="labels">User Page</h1>
 
-  <div id="userPage" *ngIf="!isIdbFetchLoading()" role="region">
+  <div *ngIf="!isIdbFetchLoading()" id="userPage" role="region">
     <div id="profileData">
       <div id="profilePic">
         <app-user-icon
@@ -23,15 +23,15 @@
       <div id="userNameRole">
         <div class="displayName">
           <span class="pageData">{{ displayUser().displayName }}</span>
-          <span class="pageData" *ngIf="isOtherUserProfile()">
+          <span *ngIf="isOtherUserProfile()" class="pageData">
             <button
               class="textlessButton hugButton"
-              (click)="sendHug(otherUser()!.id)"
               aria-labelledby="uHug"
               aria-describedby="uHug"
+              (click)="sendHug(otherUser()!.id)"
             >
               <!-- prettier-ignore -->
-              <fa-icon [icon]="faGratipay" class="fa-gratipay"></fa-icon>
+              <fa-icon class="fa-gratipay" [icon]="faGratipay"></fa-icon>
             </button>
           </span>
         </div>
@@ -57,31 +57,31 @@
 
       <div class="buttons">
         <button
+          *ngIf="!isOtherUserProfile()"
           id="editName"
           class="appButton"
-          (click)="editName()"
-          *ngIf="!isOtherUserProfile()"
           [attr.aria-label]="'edit display name for user ' + displayUser().displayName"
+          (click)="editName()"
         >
           Edit Display Name
         </button>
         <a
-          [routerLink]="['/settings']"
+          *ngIf="!isOtherUserProfile()"
           id="settingsLink"
           class="appButton"
-          *ngIf="!isOtherUserProfile()"
+          [routerLink]="['/settings']"
           [attr.aria-label]="'go to user settings page for user ' + displayUser().displayName"
           >User Settings</a
         >
         <button
-          class="appButton reportButton"
-          (click)="reportUser(otherUser()!)"
           *ngIf="isOtherUserProfile()"
+          class="appButton reportButton"
           [attr.aria-label]="'report user ' + displayUser().displayName"
+          (click)="reportUser(otherUser()!)"
         >
           Report User
         </button>
-        <button id="logout" class="appButton" (click)="logout()" *ngIf="!isOtherUserProfile()">
+        <button *ngIf="!isOtherUserProfile()" id="logout" class="appButton" (click)="logout()">
           Log Out
         </button>
       </div>
@@ -102,9 +102,9 @@
 
 <report-form
   *ngIf="reportMode()"
-  (reportMode)="changeMode($event, 'Report')"
   [reportedItem]="reportedItem()!"
   [reportType]="reportType"
+  (reportMode)="changeMode($event, 'Report')"
 ></report-form>
 
 <display-name-edit-form

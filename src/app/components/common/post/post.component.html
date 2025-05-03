@@ -1,13 +1,13 @@
-<div class="itemText" [attr.aria-describedby]="'pText' + postId()" id="{{ postId() }}">
+<div id="{{ postId() }}" class="itemText" [attr.aria-describedby]="'pText' + postId()">
   {{ _post()?.text }}
 </div>
 <div class="itemUser">
   By
   <a
-    [routerLink]="['/user', _post()?.userId]"
-    class="profileLink"
-    [attr.aria-describedby]="'pUser' + postId()"
     id="{{ type + 'User' + _post()?.id }}"
+    class="profileLink"
+    [routerLink]="['/user', _post()?.userId]"
+    [attr.aria-describedby]="'pUser' + postId()"
     >{{ _post()?.user }}</a
   >
 </div>
@@ -15,56 +15,56 @@
 <div [ngClass]="buttonsContainerClass()">
   <div class="notification" [attr.aria-describedby]="'pHug' + postId()">
     <button
-      [ngClass]="sendHugButtonClass()"
-      (click)="sendHug()"
-      [attr.aria-labelledby]="'pHug' + postId()"
       name="send a hug"
+      [ngClass]="sendHugButtonClass()"
+      [attr.aria-labelledby]="'pHug' + postId()"
       [disabled]="shouldDisableHugBtn()"
+      (click)="sendHug()"
     >
       <!-- prettier-ignore -->
-      <fa-icon [icon]="faHandHoldingHeart" class="fa-hand-holding-heart"></fa-icon>
+      <fa-icon class="fa-hand-holding-heart" [icon]="faHandHoldingHeart"></fa-icon>
     </button>
     <span class="badge" [attr.aria-describedby]="'pGivenH' + postId()">{{
       _post()?.givenHugs
     }}</span>
   </div>
   <button
+    name="post options"
     [ngClass]="menuButtonClass()"
     [attr.aria-labelledby]="'pOptions' + postId()"
-    name="post options"
     (click)="toggleOptions()"
   >
     <!-- prettier-ignore -->
-    <fa-icon [icon]="faEllipsisV" class="fa-comment"></fa-icon>
+    <fa-icon class="fa-comment" [icon]="faEllipsisV"></fa-icon>
   </button>
   <div [ngClass]="subMenuClass()">
     <a
-      [routerLink]="['/new', 'Message']"
       *ngIf="authService.userData() && authService.userData()!.id !== _post()?.userId"
-      [queryParams]="{ user: _post()?.user, userID: _post()?.userId }"
       class="textlessButton messageButton"
-      [attr.aria-labelledby]="'pMessage' + postId()"
       name="send a message"
+      [routerLink]="['/new', 'Message']"
+      [queryParams]="{ user: _post()?.user, userID: _post()?.userId }"
+      [attr.aria-labelledby]="'pMessage' + postId()"
     >
       <!-- prettier-ignore -->
-      <fa-icon [icon]="faComment" class="fa-comment"></fa-icon>
+      <fa-icon class="fa-comment" [icon]="faComment"></fa-icon>
     </a>
     <span
       *ngIf="!(authService.userData() && authService.userData()!.id !== _post()?.userId)"
       class="textlessButton messageButton disabled"
     >
       <!-- prettier-ignore -->
-      <fa-icon [icon]="faComment" class="fa-comment"></fa-icon>
+      <fa-icon class="fa-comment" [icon]="faComment"></fa-icon>
     </span>
     <button
-      [ngClass]="reportButtonClass()"
-      (click)="reportPost()"
-      [attr.aria-labelledby]="'pReport' + postId()"
       name="report"
+      [ngClass]="reportButtonClass()"
+      [attr.aria-labelledby]="'pReport' + postId()"
       [disabled]="!(authService.userData() && authService.userData()!.id !== _post()?.userId)"
+      (click)="reportPost()"
     >
       <!-- prettier-ignore -->
-      <fa-icon [icon]="faFlag" class="fa-flag"></fa-icon>
+      <fa-icon class="fa-flag" [icon]="faFlag"></fa-icon>
     </button>
     <button
       *ngIf="
@@ -72,11 +72,11 @@
         (authService.userData() && authService.userData()!.id === _post()?.userId)
       "
       class="textlessButton editButton"
-      (click)="editPost()"
       [attr.aria-labelledby]="'pEdit' + postId()"
+      (click)="editPost()"
     >
       <!-- prettier-ignore -->
-      <fa-icon [icon]="faEdit" class="fa-edit"></fa-icon>
+      <fa-icon class="fa-edit" [icon]="faEdit"></fa-icon>
     </button>
     <button
       *ngIf="
@@ -84,21 +84,21 @@
         (authService.userData() && authService.userData()!.id === _post()?.userId)
       "
       class="textlessButton deleteButton"
-      (click)="deletePost()"
       [attr.aria-labelledby]="'pDelete' + postId()"
+      (click)="deletePost()"
     >
       <!-- prettier-ignore -->
-      <fa-icon [icon]="faTrashCan" class="fa-times"></fa-icon>
+      <fa-icon class="fa-times" [icon]="faTrashCan"></fa-icon>
     </button>
   </div>
 </div>
 
 <item-delete-form
   *ngIf="deleteMode()"
-  (editMode)="changeMode($event, 'Delete')"
   [deleteEndpoint]="deleteEndpoint"
   [itemType]="itemType"
   [itemId]="_post()!.id"
+  (editMode)="changeMode($event, 'Delete')"
   (deleted)="deletedId.emit(_post()!.id)"
 ></item-delete-form>
 
@@ -111,17 +111,17 @@
 
 <report-form
   *ngIf="reportMode()"
-  (reportMode)="changeMode($event, 'Report')"
   [reportedItem]="_post()!"
   [reportType]="reportType"
+  (reportMode)="changeMode($event, 'Report')"
 ></report-form>
 
 <app-send-hug-form
   *ngIf="sendMessageMode()"
-  (sendMode)="changeMode($event, 'Message')"
   [forUsername]="_post()!.user"
   [forID]="_post()!.userId"
   [postID]="_post()!.id"
+  (sendMode)="changeMode($event, 'Message')"
 ></app-send-hug-form>
 
 <div id="labels" class="labels" aria-hidden="true">

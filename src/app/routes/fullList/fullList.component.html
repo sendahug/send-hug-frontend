@@ -4,11 +4,11 @@
   <app-loader *ngIf="isLoading()" [loadingMessage]="'Fetching posts...'"></app-loader>
 
   <!-- If there are items in the list -->
-  <ul id="fullItems" *ngIf="posts().length > 0 && !isLoading()" aria-describedby="listTitle">
+  <ul *ngIf="posts().length > 0 && !isLoading()" id="fullItems" aria-describedby="listTitle">
     <li
       *ngFor="let item of posts()"
-      [class]="type() === 'New' ? 'newItem' : 'sugItem'"
       aria-describedby="listTitle"
+      [class]="type() === 'New' ? 'newItem' : 'sugItem'"
     >
       <app-single-post
         [post]="item"
@@ -19,24 +19,24 @@
   </ul>
 
   <!-- If there are no items in the list -->
-  <div class="errorMessage" *ngIf="posts().length === 0 && !isLoading()">There are no posts.</div>
+  <div *ngIf="posts().length === 0 && !isLoading()" class="errorMessage">There are no posts.</div>
 
   <!-- Post pagination -->
   <div class="pagination" role="navigation">
     <button
       [ngClass]="previousPageButtonClass()"
-      (click)="prevPage()"
       [attr.aria-label]="'previous page of ' + type + ' posts'"
       [disabled]="currentPage() <= 1"
+      (click)="prevPage()"
     >
       Previous Page
     </button>
     <div class="pageCount">Page {{ currentPage() }} of {{ totalPages() }}</div>
     <button
       [ngClass]="nextPageButtonClass()"
-      (click)="nextPage()"
       [attr.aria-label]="'next page of ' + type + ' posts'"
       [disabled]="totalPages() <= currentPage()"
+      (click)="nextPage()"
     >
       Next Page
     </button>

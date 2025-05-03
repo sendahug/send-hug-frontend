@@ -1,11 +1,11 @@
 <div id="mailboxNav">
   <nav id="breadcrumb" aria-label="Breadcrumb">
-    <a [routerLink]="['/messages']" class="breadcrumb bLink">Messages</a> /
+    <a class="breadcrumb bLink" [routerLink]="['/messages']">Messages</a> /
     <a
-      [routerLink]="['/messages' + messType()]"
+      *ngIf="messType() !== 'thread'"
       class="breadcrumb bLink"
       span
-      *ngIf="messType() !== 'thread'"
+      [routerLink]="['/messages' + messType()]"
       >{{ messType() }}</a
     >
     <span *ngIf="messType() === 'thread'" class="breadcrumb">Thread {{ threadId() }}</span>
@@ -14,9 +14,9 @@
   <h1>{{ messType() }}</h1>
   <!-- Messages area navigation. -->
   <div id="messagesNav" role="navigation">
-    <a [routerLink]="['/messages', 'inbox']" class="messNavOption appButton">Inbox</a>
-    <a [routerLink]="['/messages', 'outbox']" class="messNavOption appButton">Outbox</a>
-    <a [routerLink]="['/messages', 'threads']" class="messNavOption appButton">Threads</a>
+    <a class="messNavOption appButton" [routerLink]="['/messages', 'inbox']">Inbox</a>
+    <a class="messNavOption appButton" [routerLink]="['/messages', 'outbox']">Outbox</a>
+    <a class="messNavOption appButton" [routerLink]="['/messages', 'threads']">Threads</a>
   </div>
 </div>
 
@@ -36,9 +36,9 @@
   >
     <li
       *ngFor="let message of messages()"
+      id="{{ messType() + message.id }}"
       class="userMessage"
       aria-describedby="messType"
-      id="{{ messType() + message.id }}"
     >
       <app-single-message
         [currentUser]="authService.userData()!.id!"
@@ -50,13 +50,13 @@
   </ul>
 
   <!-- If the user is looking at threads -->
-  <div class="threadsContainer" *ngIf="messType() === 'threads'">
-    <ul class="userThreads" *ngIf="userThreadsFormatted().length" aria-describedby="messType">
+  <div *ngIf="messType() === 'threads'" class="threadsContainer">
+    <ul *ngIf="userThreadsFormatted().length" class="userThreads" aria-describedby="messType">
       <li
-        class="userThread"
         *ngFor="let thread of userThreadsFormatted()"
-        aria-describedby="messType"
         id="{{ messType() + thread.id }}"
+        class="userThread"
+        aria-describedby="messType"
       >
         <app-single-thread
           [thread]="thread"
@@ -68,37 +68,37 @@
 
   <!-- Message pagination -->
   <div
-    class="pagination"
     *ngIf="
       ((messages().length && messType() !== 'threads') ||
         (userThreadsFormatted().length && messType() === 'threads')) &&
       !isIdbFetchLoading()
     "
+    class="pagination"
     role="navigation"
   >
     <button
       [ngClass]="previousPageButtonClass()"
-      (click)="prevPage()"
       [attr.aria-label]="'previous page of the ' + messType() + ' mailbox'"
       [disabled]="currentPage() <= 1"
+      (click)="prevPage()"
     >
       Previous Page
     </button>
     <div class="pageCount">Page {{ currentPage() }} of {{ totalPages() }}</div>
     <button
       [ngClass]="nextPageButtonClass()"
-      (click)="nextPage()"
       [attr.aria-label]="'next page of the ' + messType() + ' mailbox'"
       [disabled]="totalPages() <= currentPage()"
+      (click)="nextPage()"
     >
       Next Page
     </button>
   </div>
   <button
-    class="appButton deleteButton deleteAll"
-    (click)="deleteAllMessages()"
     *ngIf="messages().length && messType() !== 'threads' && messType() !== 'thread'"
+    class="appButton deleteButton deleteAll"
     [attr.aria-label]="'delete all ' + messType() + ' messages'"
+    (click)="deleteAllMessages()"
   >
     Delete All Messages
   </button>
@@ -139,10 +139,10 @@
 
 <item-delete-form
   *ngIf="deleteMode()"
-  (editMode)="changeMode($event)"
   [deleteEndpoint]="deleteEndpoint()"
   [itemType]="itemType()"
   [itemId]="authService.userData()!.id!"
   [bulkDelete]="true"
+  (editMode)="changeMode($event)"
   (deleted)="clearMailbox()"
 ></item-delete-form>

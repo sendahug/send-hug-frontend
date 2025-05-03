@@ -11,7 +11,7 @@
         formControlName="selectedIcon"
       />
       <label class="radioButtonLabel" for="cRadioOption1"
-        ><img [src]="BearIconSrc" alt="" class="editIconOption"
+        ><img alt="" class="editIconOption" [src]="BearIconSrc"
       /></label>
     </div>
     <div class="formElement">
@@ -24,7 +24,7 @@
         formControlName="selectedIcon"
       />
       <label class="radioButtonLabel" for="cRadioOption2"
-        ><img [src]="KittyIconSrc" alt="" class="editIconOption"
+        ><img alt="" class="editIconOption" [src]="KittyIconSrc"
       /></label>
     </div>
     <div class="formElement">
@@ -37,7 +37,7 @@
         formControlName="selectedIcon"
       />
       <label class="radioButtonLabel" for="cRadioOption3"
-        ><img [src]="DogIconSrc" alt="" class="editIconOption"
+        ><img alt="" class="editIconOption" [src]="DogIconSrc"
       /></label>
     </div>
   </div>
@@ -59,9 +59,9 @@
   <div class="formElement">
     <label for="characterC">Select Character Colour: </label>
     <input
+      value="{{ iconEditForm.controls.characterColour.value }}"
       type="color"
       id="characterC"
-      value="{{ iconEditForm.controls.characterColour.value }}"
       formControlName="characterColour"
     />
   </div>
@@ -69,9 +69,9 @@
   <div class="formElement">
     <label for="lbgColour">Select Left Background Colour: </label>
     <input
+      value="{{ iconEditForm.controls.lbgColour.value }}"
       type="color"
       id="lbgColour"
-      value="{{ iconEditForm.controls.lbgColour.value }}"
       formControlName="lbgColour"
     />
   </div>
@@ -79,9 +79,9 @@
   <div class="formElement">
     <label for="rbgColour">Select Right Background Colour: </label>
     <input
+      value="{{ iconEditForm.controls.rbgColour.value }}"
       type="color"
       id="rbgColour"
-      value="{{ iconEditForm.controls.rbgColour.value }}"
       formControlName="rbgColour"
     />
   </div>
@@ -89,16 +89,16 @@
   <div class="formElement">
     <label for="itemColour">Select Hand-Held Item Colour: </label>
     <input
+      value="{{ iconEditForm.controls.itemColour.value }}"
       type="color"
       id="itemColour"
-      value="{{ iconEditForm.controls.itemColour.value }}"
       formControlName="itemColour"
     />
   </div>
 
   <div class="buttonsContainer">
-    <button type="submit" (click)="dismiss()" class="appButton iconButton">Never Mind</button>
-    <button type="submit" (click)="updateIcon($event)" class="appButton iconButton">
+    <button type="submit" class="appButton iconButton" (click)="dismiss()">Never Mind</button>
+    <button type="submit" class="appButton iconButton" (click)="updateIcon($event)">
       Update Icon
     </button>
   </div>

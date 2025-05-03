@@ -6,7 +6,7 @@
     <!-- If the user is deleting something -->
     <div *ngIf="isAdmin() === false" class="buttons">
       <button class="appButton popupDeleteBtn" (click)="deleteItem()">Yes, Delete</button>
-      <button class="appButton popupDeleteBtn" (click)="editMode.emit(false)" id="cancel">
+      <button class="appButton popupDeleteBtn" id="cancel" (click)="editMode.emit(false)">
         Never Mind
       </button>
     </div>
@@ -16,7 +16,7 @@
       <button class="appButton deleteButton popupDeleteBtn" (click)="deleteItem()">
         Delete and Close Report
       </button>
-      <button class="appButton popupDeleteBtn" (click)="editMode.emit(false)" id="adminCancel">
+      <button class="appButton popupDeleteBtn" id="adminCancel" (click)="editMode.emit(false)">
         Never Mind
       </button>
     </div>

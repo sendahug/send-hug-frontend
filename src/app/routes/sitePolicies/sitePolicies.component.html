@@ -1,6 +1,6 @@
 <h1 id="policyTitle">{{ pageTitle() }}</h1>
 
-<div role="document" *ngIf="currentPolicy() === 'TermsConditions'" class="policyContent">
+<div *ngIf="currentPolicy() === 'TermsConditions'" role="document" class="policyContent">
   <p class="updateDate">Last updated: December 13, 2020</p>
   <p>Please read these terms and conditions carefully before using Our Service.</p>
 
@@ -457,7 +457,7 @@
   </p>
 </div>
 
-<div role="document" *ngIf="currentPolicy() === 'PrivacyPolicy'" class="policyContent">
+<div *ngIf="currentPolicy() === 'PrivacyPolicy'" role="document" class="policyContent">
   <p class="updateDate">Last updated: December 13, 2020</p>
   <p>
     This Privacy Policy describes Our policies and procedures on the collection, use and disclosure
@@ -1555,7 +1555,7 @@
   </p>
 </div>
 
-<div role="document" *ngIf="currentPolicy() === 'CookiePolicy'" class="policyContent">
+<div *ngIf="currentPolicy() === 'CookiePolicy'" role="document" class="policyContent">
   <p class="updateDate">Last updated: December 13, 2020</p>
   <p>
     This Cookies Policy explains what Cookies are and how We use them. You should read this policy

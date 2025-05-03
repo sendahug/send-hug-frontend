@@ -12,9 +12,9 @@
 #### Chores
 
 - Simplified the code of the ItemDeleteForm and the component's inputs. This includes:
-	- Removed the logic for determining where to send the delete request and what store to delete the item/items from. This information is specific to the parent components, and thus should come from them, rather than being handled by the item delete form.
-	- Removed the item-specific logic (e.g., what items to delete from IndexedDB when deleting in bulk and closing reports when deleting in admin mode) from the item delete form and moved it to the parent components.
-	- Renamed the item delete form's inputs to better indicate what's expected to be provided and what purpose each input serves. ([#2062](https://github.com/sendahug/send-hug-frontend/pull/2062))
+  - Removed the logic for determining where to send the delete request and what store to delete the item/items from. This information is specific to the parent components, and thus should come from them, rather than being handled by the item delete form.
+  - Removed the item-specific logic (e.g., what items to delete from IndexedDB when deleting in bulk and closing reports when deleting in admin mode) from the item delete form and moved it to the parent components.
+  - Renamed the item delete form's inputs to better indicate what's expected to be provided and what purpose each input serves. ([#2062](https://github.com/sendahug/send-hug-frontend/pull/2062))
 - Split the handling of clearing a mailbox and deleting a single message in the AppMessaging component to make it easier to understand which code is triggered when either action is performed. ([#2062](https://github.com/sendahug/send-hug-frontend/pull/2062))
 
 ### 2025-04-27

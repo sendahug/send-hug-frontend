@@ -31,7 +31,7 @@
 */
 
 // Angular imports
-import { Component, signal, computed, Output, Input, EventEmitter } from "@angular/core";
+import { Component, signal, Output, Input, EventEmitter } from "@angular/core";
 import { RouterLink } from "@angular/router";
 import { CommonModule } from "@angular/common";
 
@@ -39,6 +39,7 @@ import { CommonModule } from "@angular/common";
 import { UserIconComponent } from "@common/userIcon/userIcon.component";
 import { ItemDeleteFormComponent } from "@forms/itemDeleteForm/itemDeleteForm.component";
 import { ParsedThread } from "@app/interfaces/thread.interface";
+import { SWManager } from "@app/services/sWManager.service";
 
 @Component({
   selector: "app-single-thread",
@@ -56,9 +57,11 @@ export class ThreadComponent {
   readonly _thread = signal<ParsedThread>({} as ParsedThread);
   @Output() messageDeleted = new EventEmitter<number>();
   readonly deleteMode = signal(false);
-  // Both the fields below are currently kept in for consistency but can be removed
-  readonly toDelete = signal("Thread");
-  readonly itemToDelete = computed<number>(() => this._thread().id);
+  // Delete Popup Constants
+  readonly deleteEndpoint = "messages/threads";
+  readonly itemType = "Thread";
+
+  constructor(private swManager: SWManager) {}
 
   /**
    * Opens the delete popup to delete the current thread.
@@ -76,5 +79,14 @@ export class ThreadComponent {
    */
   changeMode(edit: boolean) {
     this.deleteMode.set(edit);
+  }
+
+  /**
+   * Deletes the thread's messages from the IndexedDB and
+   * emits the thread ID to the parent component.
+   */
+  deleteMessagesFromIdb() {
+    this.swManager.deleteItems("messages", "threadID", this._thread().id);
+    this.messageDeleted.emit(this._thread().id);
   }
 }

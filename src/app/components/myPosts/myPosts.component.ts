@@ -61,8 +61,6 @@ export class MyPostsComponent implements OnInit {
   readonly totalPages = signal(1);
   // edit popup sub-component variables
   readonly deleteMode = signal(false);
-  readonly toDelete = signal<string>("");
-  readonly itemToDelete = signal<number | undefined>(undefined);
   readonly previousPageButtonClass = computed(() => ({
     "appButton prevButton": true,
     disabled: this.currentPage() <= 1,
@@ -86,6 +84,9 @@ export class MyPostsComponent implements OnInit {
     this._userId() && this._userId() != this.authService.userData()!.id! ? "other" : "self",
   );
   readonly loaderClass = signal("header");
+  // Delete Popup Constants
+  readonly deleteEndpoint = computed(() => `users/${this._userId()}/posts`);
+  readonly itemType = "Post";
 
   // CTOR
   constructor(
@@ -187,8 +188,6 @@ export class MyPostsComponent implements OnInit {
   */
   deleteAllPosts() {
     this.deleteMode.set(true);
-    this.toDelete.set("All posts");
-    this.itemToDelete.set(this._userId());
   }
 
   /**
@@ -197,6 +196,7 @@ export class MyPostsComponent implements OnInit {
    */
   updatePostsList() {
     this.posts.set([]);
+    this.swManager.deleteItems("posts", "userId", this._userId()!);
   }
 
   /*

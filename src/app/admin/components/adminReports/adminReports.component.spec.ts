@@ -39,7 +39,7 @@ import {
   platformBrowserDynamicTesting,
 } from "@angular/platform-browser-dynamic/testing";
 import { NO_ERRORS_SCHEMA, signal } from "@angular/core";
-import { BehaviorSubject, of, throwError } from "rxjs";
+import { BehaviorSubject, of, Subscription, throwError } from "rxjs";
 import { By } from "@angular/platform-browser";
 import { MockComponent, MockProvider } from "ng-mocks";
 
@@ -413,7 +413,12 @@ describe("AdminReportsComponent", () => {
     );
 
     expect(adminReports.deleteMode()).toBeTrue();
-    expect(adminReports.toDelete()).toBe("ad post");
+    expect(adminReports.itemToDelete()).toEqual(mockPostReports[0].postID!);
+    expect(adminReports.reportData()).toEqual({
+      userID: mockPostReports[0].userID!,
+      reportID: mockPostReports[0].id!,
+    });
+
     expect(adminReportsDOM.querySelector("item-delete-form")).toBeTruthy();
   });
 
@@ -676,7 +681,11 @@ describe("AdminReportsComponent", () => {
 
     // start the popup
     adminReports.deleteMode.set(true);
-    adminReports.toDelete.set("post");
+    adminReports.itemToDelete.set(mockPostReports[0].postID!);
+    adminReports.reportData.set({
+      userID: mockPostReports[0].userID!,
+      reportID: mockPostReports[0].id!,
+    });
     adminReports.itemToDelete.set(2);
     fixture.detectChanges();
 
@@ -946,6 +955,12 @@ describe("AdminReportsComponent", () => {
     const fixture = TestBed.createComponent(AdminReportsComponent);
     const adminReports = fixture.componentInstance;
     const removeSpy = spyOn(adminReports, "removeReport").and.callThrough();
+    const subscription = new Subscription();
+    subscription.unsubscribe();
+    const closeReportSpy = spyOn(
+      adminReports["adminService"],
+      "closeReportAndAlertUserAfterDelete",
+    ).and.returnValue(subscription);
     adminReports.postReports.set([...mockPostReports]);
     adminReports.isLoading.set(false);
 
@@ -953,8 +968,11 @@ describe("AdminReportsComponent", () => {
 
     // start the popup
     adminReports.deleteMode.set(true);
-    adminReports.toDelete.set("post");
-    adminReports.itemToDelete.set(5);
+    adminReports.itemToDelete.set(mockPostReports[0].postID!);
+    adminReports.reportData.set({
+      userID: mockPostReports[0].userID!,
+      reportID: mockPostReports[0].id!,
+    });
     fixture.detectChanges();
 
     // exit the popup
@@ -965,6 +983,11 @@ describe("AdminReportsComponent", () => {
 
     // check the popup is exited
     expect(removeSpy).toHaveBeenCalledWith(5);
+    expect(closeReportSpy).toHaveBeenCalledWith(5, {
+      userID: mockPostReports[0].userID!,
+      reportID: mockPostReports[0].id!,
+    });
+
     expect(adminReports.postReports().length).toBe(0);
   });
 });

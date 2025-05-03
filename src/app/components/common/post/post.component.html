@@ -96,8 +96,9 @@
 <item-delete-form
   *ngIf="deleteMode()"
   (editMode)="changeMode($event, 'Delete')"
-  [toDelete]="toDelete"
-  [itemToDelete]="itemToDelete()"
+  [deleteEndpoint]="deleteEndpoint"
+  [itemType]="itemType"
+  [itemId]="_post()!.id"
   (deleted)="deletedId.emit(_post()!.id)"
 ></item-delete-form>
 

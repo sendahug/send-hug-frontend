@@ -109,8 +109,8 @@ export class AppMessagesComponent {
   );
   // edit popup sub-component variables
   readonly deleteMode = signal(false);
-  readonly toDelete = signal<string | undefined>(undefined);
-  readonly itemToDelete = signal<number | undefined>(undefined);
+  readonly deleteEndpoint = computed(() => `messages/${this.messType()}`);
+  readonly itemType = computed(() => (this.messType() === "threads" ? "Thread" : "Message"));
 
   // CTOR
   constructor(
@@ -125,7 +125,7 @@ export class AppMessagesComponent {
     this.currentPage.set(1);
 
     this.route.url.subscribe((params) => {
-      messageType = params[0].path;
+      messageType = params[0].path.toLowerCase();
     });
 
     this.messType.set(messageType || "inbox");
@@ -286,34 +286,42 @@ export class AppMessagesComponent {
   /*
   Function Name: deleteAllMessages()
   Function Description: Deletes all of the user's messages in a specific mailbox.
-  Parameters: type (string) - The type of messages to delete.
   ----------------
   Programmer: Shir Bar Lev.
   */
-  deleteAllMessages(type: string) {
+  deleteAllMessages() {
     this.deleteMode.set(true);
-    this.toDelete.set(`All ${type}`);
-    this.itemToDelete.set(this.authService.userData()!.id);
   }
 
   /**
-   * Deletes the deleted item/items once they've been deleted
+   * Deletes the deleted item once they've been deleted
    * in the backend.
    * @param deletedId the ID of the message deleted (if it's a single message)
    *                  of the user ID (if it's a 'clear mailbox' situation).
    */
   updateMessageList(deletedId: number) {
-    if (this.toDelete()?.includes("All")) {
-      if (this.messType().toLowerCase() == "threads") {
-        this.userThreads.set([]);
-      } else {
-        this.messages.set([]);
-      }
+    if (this.messType().toLowerCase() == "threads") {
+      this.userThreads.set(this.userThreads().filter((thread) => thread.id != deletedId));
     } else {
-      if (this.messType().toLowerCase() == "threads") {
-        this.userThreads.set(this.userThreads().filter((thread) => thread.id != deletedId));
-      } else {
-        this.messages.set(this.messages().filter((message) => message.id != deletedId));
+      this.messages.set(this.messages().filter((message) => message.id != deletedId));
+    }
+  }
+
+  /**
+   * Clears the current mailbox (and IndexedDB) once they've been deleted in the back-end.
+   */
+  clearMailbox() {
+    if (this.messType().toLowerCase() === "threads") {
+      this.userThreads.set([]);
+      this.swManager.clearStore("messages");
+      this.swManager.clearStore("threads");
+    } else {
+      this.messages.set([]);
+
+      if (this.messType().toLowerCase() === "inbox") {
+        this.swManager.deleteItems("messages", "forId", this.authService.userData()!.id);
+      } else if (this.messType().toLowerCase() === "outbox") {
+        this.swManager.deleteItems("messages", "fromId", this.authService.userData()!.id);
       }
     }
   }

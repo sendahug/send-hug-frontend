@@ -183,7 +183,8 @@ describe("MessageComponent", () => {
 
     // after the click
     expect(appMessage.deleteMode()).toBeTrue();
-    expect(appMessage.itemToDelete()).toBe(1);
+    expect(appMessage.deleteEndpoint()).toBe("messages/inbox");
+    expect(appMessage.itemType).toBe("Message");
     expect(appMessageDOM.querySelector("item-delete-form")).toBeTruthy();
   });
 

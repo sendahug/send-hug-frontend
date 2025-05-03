@@ -206,7 +206,8 @@ describe("Post", () => {
 
     // after the click
     expect(singlePost.deleteMode()).toBeTrue();
-    expect(singlePost.toDelete).toBe("Post");
+    expect(singlePost.deleteEndpoint).toBe("posts");
+    expect(singlePost.itemType).toBe("Post");
     expect(singlePost.itemToDelete()).toBe(1);
     expect(singlePostDOM.querySelector("item-delete-form")).toBeTruthy();
   });

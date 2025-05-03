@@ -70,7 +70,9 @@
 <item-delete-form
   *ngIf="deleteMode()"
   (editMode)="changeMode($event)"
-  [toDelete]="toDelete()"
-  [itemToDelete]="itemToDelete()"
+  [deleteEndpoint]="deleteEndpoint()"
+  [itemType]="itemType"
+  [itemId]="_userId()"
+  [bulkDelete]="true"
   (deleted)="updatePostsList()"
 ></item-delete-form>

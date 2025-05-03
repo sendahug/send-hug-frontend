@@ -94,7 +94,6 @@ export class PostComponent implements AfterViewChecked, OnInit, OnDestroy {
   editType = "post";
   readonly editMode = signal(false);
   readonly deleteMode = signal(false);
-  toDelete: ReportType = "Post";
   readonly itemToDelete = computed(() => this._post()?.id);
   readonly reportMode = signal(false);
   reportType: ReportType = "Post";
@@ -160,6 +159,9 @@ export class PostComponent implements AfterViewChecked, OnInit, OnDestroy {
   faHandHoldingHeart = faHandHoldingHeart;
   faTrashCan = faTrashCan;
   faEllipsisV = faEllipsisV;
+  // Delete Popup Constants
+  readonly deleteEndpoint = "posts";
+  readonly itemType = "Post";
 
   // CTOR
   constructor(

@@ -47,8 +47,8 @@
 <item-delete-form
   *ngIf="deleteMode()"
   (editMode)="changeMode($event)"
-  [toDelete]="toDelete()"
-  [itemToDelete]="itemToDelete()"
-  [messType]="'threads'"
-  (deleted)="messageDeleted.emit(_thread().id)"
+  [deleteEndpoint]="deleteEndpoint"
+  [itemType]="itemType"
+  [itemId]="_thread().id"
+  (deleted)="deleteMessagesFromIdb()"
 ></item-delete-form>

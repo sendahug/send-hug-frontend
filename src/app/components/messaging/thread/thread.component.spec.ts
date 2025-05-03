@@ -142,7 +142,8 @@ describe("ThreadComponent", () => {
 
     // after the click
     expect(appThread.deleteMode()).toBeTrue();
-    expect(appThread.itemToDelete()).toBe(3);
+    expect(appThread.deleteEndpoint).toEqual("messages/threads");
+    expect(appThread.itemType).toEqual("Thread");
     expect(appThreadDOM.querySelector("item-delete-form")).toBeTruthy();
   });
 
@@ -152,6 +153,8 @@ describe("ThreadComponent", () => {
     fixture.componentRef.setInput("thread", mockThread);
     const appThread = fixture.componentInstance;
     const changeSpy = spyOn(appThread, "changeMode").and.callThrough();
+    const deleteSpy = spyOn(appThread, "deleteMessagesFromIdb").and.callThrough();
+    const swManagerSpy = spyOn(appThread["swManager"], "deleteItems");
     const outputSpy = spyOn(appThread.messageDeleted, "emit");
 
     // start the popup
@@ -167,6 +170,8 @@ describe("ThreadComponent", () => {
 
     // check the popup is exited
     expect(changeSpy).toHaveBeenCalledWith(false);
+    expect(deleteSpy).toHaveBeenCalledWith();
+    expect(swManagerSpy).toHaveBeenCalledWith("messages", "threadID", mockThread.id);
     expect(appThread.deleteMode()).toBeFalse();
     expect(outputSpy).toHaveBeenCalledWith(3);
   });

@@ -96,8 +96,8 @@
   </div>
   <button
     class="appButton deleteButton deleteAll"
-    (click)="deleteAllMessages(messType())"
-    *ngIf="messages().length && messType() !== 'threads'"
+    (click)="deleteAllMessages()"
+    *ngIf="messages().length && messType() !== 'threads' && messType() !== 'thread'"
     [attr.aria-label]="'delete all ' + messType() + ' messages'"
   >
     Delete All Messages
@@ -105,7 +105,7 @@
   <button
     *ngIf="messType() === 'threads' && userThreadsFormatted().length"
     class="appButton deleteButton deleteAll"
-    (click)="deleteAllMessages('threads')"
+    (click)="deleteAllMessages()"
   >
     Delete All Threads
   </button>
@@ -140,8 +140,9 @@
 <item-delete-form
   *ngIf="deleteMode()"
   (editMode)="changeMode($event)"
-  [toDelete]="toDelete()"
-  [itemToDelete]="itemToDelete()"
-  [messType]="messType()"
-  (deleted)="updateMessageList($event)"
+  [deleteEndpoint]="deleteEndpoint()"
+  [itemType]="itemType()"
+  [itemId]="authService.userData()!.id!"
+  [bulkDelete]="true"
+  (deleted)="clearMailbox()"
 ></item-delete-form>

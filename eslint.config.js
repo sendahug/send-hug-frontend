@@ -44,6 +44,14 @@ export default defineConfig([
       angularEslint.configs.templateAccessibility,
       angularEslint.configs.templateRecommended,
     ],
+    rules: {
+      "@angular-eslint/template/alt-text": "error",
+      "@angular-eslint/template/attributes-order": "error",
+      "@angular-eslint/template/click-events-have-key-events": "error",
+      "@angular-eslint/template/no-any": "error",
+      "@angular-eslint/template/no-duplicate-attributes": "error",
+      "@angular-eslint/template/valid-aria": "error",
+    },
   },
   {
     files: ["e2e/**/*.ts"],

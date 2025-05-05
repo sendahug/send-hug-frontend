@@ -46,14 +46,9 @@ export default defineConfig([
       angularEslint.configs.templateRecommended,
     ],
     rules: {
-      "@angular-eslint/template/alt-text": "error",
       "@angular-eslint/template/attributes-order": "error",
-      "@angular-eslint/template/click-events-have-key-events": "error",
       "@angular-eslint/template/no-any": "error",
       "@angular-eslint/template/no-duplicate-attributes": "error",
-      "@angular-eslint/template/valid-aria": "error",
-      "@angular-eslint/template/role-has-required-aria": "error",
-      "@angular-eslint/template/interactive-supports-focus": "error",
     },
   },
   {

@@ -1,0 +1,9 @@
+{
+  "pr_number": 2069,
+  "changes": [
+    {
+      "change": "Chores",
+      "description": "Added a few more Angular-specific ESLint rules to the primary ESLint configuration."
+    }
+  ]
+}

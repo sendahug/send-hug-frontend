@@ -1,4 +1,6 @@
 name: Deploy to Live
+permissions:
+  contents: read
 
 on:
   push:

@@ -2,7 +2,7 @@ name: Deploy to Preview
 # See https://github.com/FirebaseExtended/action-hosting-deploy/issues/236
 permissions:
   checks: write
-  pull-requests: read
+  pull-requests: write
   contents: read
 
 on:

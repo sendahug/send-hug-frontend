@@ -43,7 +43,7 @@
     "command-line-args": "^6.0.1",
     "cypress": "^14.3.2",
     "eslint": "^9.26.0",
-    "eslint-config-prettier": "^10.1.2",
+    "eslint-config-prettier": "^10.1.3",
     "eslint-plugin-cypress": "^4.3.0",
     "eslint-plugin-jasmine": "^4.2.2",
     "jasmine-core": "^5.7.1",

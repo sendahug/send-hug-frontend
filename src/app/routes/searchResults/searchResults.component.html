@@ -47,10 +47,10 @@
     <!-- Post pagination -->
     <div class="pagination" role="navigation">
       <button
-        [ngClass]="itemsService.previousPageButtonClass()"
-        (click)="prevPage()"
         aria-label="previous page of post search results"
+        [ngClass]="itemsService.previousPageButtonClass()"
         [disabled]="itemsService.postSearchPage() <= 1"
+        (click)="prevPage()"
       >
         Previous Page
       </button>
@@ -58,10 +58,10 @@
         Page {{ itemsService.postSearchPage() }} of {{ itemsService.totalPostSearchPages() }}
       </div>
       <button
-        [ngClass]="itemsService.nextPageButtonClass()"
-        (click)="nextPage()"
         aria-label="next page of post search results"
+        [ngClass]="itemsService.nextPageButtonClass()"
         [disabled]="itemsService.totalPostSearchPages() <= itemsService.postSearchPage()"
+        (click)="nextPage()"
       >
         Next Page
       </button>

@@ -1,7 +1,7 @@
-<form [formGroup]="searchForm" id="search" role="search" (ngSubmit)="searchApp($event)">
-  <button id="exitButton" (click)="toggleSearch()" aria-label="close search panel" type="button">
+<form id="search" role="search" [formGroup]="searchForm" (ngSubmit)="searchApp($event)">
+  <button id="exitButton" aria-label="close search panel" type="button" (click)="toggleSearch()">
     <!-- prettier-ignore -->
-    <fa-icon [icon]="faTimes" class="fa-times"></fa-icon>
+    <fa-icon class="fa-times" [icon]="faTimes"></fa-icon>
   </button>
   <label class="pageCategory" for="searchQuery" id="searchLabel">Search: </label>
   <input

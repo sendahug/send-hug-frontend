@@ -1,46 +1,46 @@
 <div *ngIf="authService.canUser('read:admin-board')" id="adminDashAll">
   <nav id="breadcrumb" aria-label="Breadcrumb">
-    <a [routerLink]="['/admin']" class="breadcrumb bLink">Admin Panel</a>
+    <a class="breadcrumb bLink" [routerLink]="['/admin']">Admin Panel</a>
     <span *ngIf="screen() !== 'main'" class="breadcrumb"
-      >/ <a [routerLink]="['/admin/' + screen]" class="breadcrumb bLink">{{ screen() }}</a></span
+      >/ <a class="breadcrumb bLink" [routerLink]="['/admin/' + screen]">{{ screen() }}</a></span
     >
   </nav>
 
   <!-- Admin dashboard navigation menu -->
   <nav id="adminNav" role="navigation">
     <a
-      [routerLink]="['/admin']"
       class="appButton adminNavItem"
       aria-label="navigate to admin dashboard main page"
+      [routerLink]="['/admin']"
       >Main</a
     >
     <a
-      [routerLink]="['/admin', 'reports']"
       class="appButton adminNavItem"
       aria-label="navigate to admin dashboard reports page"
+      [routerLink]="['/admin', 'reports']"
       >Reports</a
     >
     <a
-      [routerLink]="['/admin', 'blocks']"
       class="appButton adminNavItem"
       aria-label="navigate to admin dashboard blocks page"
+      [routerLink]="['/admin', 'blocks']"
       >Blocks</a
     >
     <a
-      [routerLink]="['/admin', 'filters']"
       class="appButton adminNavItem"
       aria-label="navigate to admin dashboard filters page"
+      [routerLink]="['/admin', 'filters']"
       >Filters</a
     >
   </nav>
 
   <!-- Admin dashboard main page -->
-  <h1 class="adminTitle" *ngIf="screen() === 'main'">Admin Dashboard</h1>
-  <div class="adminScreen" id="adminMain" *ngIf="screen() === 'main'" role="document">
+  <h1 *ngIf="screen() === 'main'" class="adminTitle">Admin Dashboard</h1>
+  <div *ngIf="screen() === 'main'" class="adminScreen" id="adminMain" role="document">
     <div class="adminText">Welcome to the admin dashboard!</div>
     <div class="adminText">The admin dashboard is comprised of three parts:</div>
     <ul id="adminCategories">
-      <li class="adminCategory" *ngFor="let category of adminCategories">
+      <li *ngFor="let category of adminCategories" class="adminCategory">
         <span class="pageCategory">{{ category.title }}:</span>
         <span class="pageText">{{ category.explanation }}</span>
       </li>
@@ -48,15 +48,15 @@
   </div>
 
   <!-- Admin dashboard reports -->
-  <h1 class="adminTitle" *ngIf="screen() === 'reports'">Reports</h1>
+  <h1 *ngIf="screen() === 'reports'" class="adminTitle">Reports</h1>
   <app-admin-reports *ngIf="screen() === 'reports'"></app-admin-reports>
 
   <!-- Admin dashboard blocks -->
-  <h1 class="adminTitle" *ngIf="screen() === 'blocks'">Blocks</h1>
+  <h1 *ngIf="screen() === 'blocks'" class="adminTitle">Blocks</h1>
   <app-admin-blocks *ngIf="screen() === 'blocks'"></app-admin-blocks>
 
   <!-- Admin dashboard filters -->
-  <h1 class="adminTitle" *ngIf="screen() === 'filters'">Filters</h1>
+  <h1 *ngIf="screen() === 'filters'" class="adminTitle">Filters</h1>
   <app-admin-filters *ngIf="screen() === 'filters'"></app-admin-filters>
 
   <!-- Labels for screen readers -->
@@ -79,5 +79,5 @@
 
 <div *ngIf="!authService.canUser('read:admin-board')">
   <div class="errorMessage">You do not have permission to view thie page!</div>
-  <a [routerLink]="" class="appButton">Back to homepage</a>
+  <a class="appButton" [routerLink]="">Back to homepage</a>
 </div>

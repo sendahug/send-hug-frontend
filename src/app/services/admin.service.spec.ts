@@ -125,6 +125,7 @@ describe("AdminService", () => {
     expect(alertSpy).toHaveBeenCalledWith(
       "Post 10 was successfully deleted and the report was closed.",
     );
+
     expect(dismissSpy).toHaveBeenCalledWith(5, false, 10);
     expect(messageSpy).toHaveBeenCalledWith(
       jasmine.objectContaining({

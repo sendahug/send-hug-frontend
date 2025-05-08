@@ -11,7 +11,7 @@
 <div class="messageContainer">
   <div class="messageField">
     <span class="pageCategory">User:</span>
-    <span class="pageData" aria-describedby="tUser" id="{{ 'user' + _thread().id }}">{{
+    <span id="{{ 'user' + _thread().id }}" class="pageData" aria-describedby="tUser">{{
       _thread().user.displayName
     }}</span>
   </div>
@@ -36,8 +36,8 @@
     >
     <button
       class="appButton deleteButton"
-      (click)="deleteThread()"
       [attr.aria-describedby]="'tDelete ' + 'user' + _thread().id"
+      (click)="deleteThread()"
     >
       Delete Thread
     </button>
@@ -46,9 +46,9 @@
 
 <item-delete-form
   *ngIf="deleteMode()"
-  (editMode)="changeMode($event)"
   [deleteEndpoint]="deleteEndpoint"
   [itemType]="itemType"
   [itemId]="_thread().id"
+  (editMode)="changeMode($event)"
   (deleted)="deleteMessagesFromIdb()"
 ></item-delete-form>

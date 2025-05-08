@@ -36,6 +36,7 @@ export default defineConfig([
       // TODO: Switch this to "error" once we finish converting to signals
       "@angular-eslint/prefer-signals": "warn",
       "@angular-eslint/no-conflicting-lifecycle": "error",
+      "@angular-eslint/use-component-selector": "error",
     },
   },
   {
@@ -44,6 +45,11 @@ export default defineConfig([
       angularEslint.configs.templateAccessibility,
       angularEslint.configs.templateRecommended,
     ],
+    rules: {
+      "@angular-eslint/template/attributes-order": "error",
+      "@angular-eslint/template/no-any": "error",
+      "@angular-eslint/template/no-duplicate-attributes": "error",
+    },
   },
   {
     files: ["e2e/**/*.ts"],

@@ -15,9 +15,9 @@
     </div>
     <button
       *ngIf="editIcon() === false"
-      (click)="toggleIconEditor(true)"
       class="appButton"
       id="editIcon"
+      (click)="toggleIconEditor(true)"
     >
       Edit User Icon
     </button>
@@ -30,7 +30,7 @@
 
   <div id="notificationSettings">
     <h2>Notifications</h2>
-    <form [formGroup]="editSettingsForm" id="refreshRateForm">
+    <form id="refreshRateForm" [formGroup]="editSettingsForm">
       <div class="formElement">
         <label for="enableNotifications" class="required">Push Notifications Enabled?:</label>
         <input formControlName="enableNotifications" type="checkbox" id="enableNotifications" />
@@ -89,9 +89,9 @@
       </div>
       <button
         type="submit"
-        (click)="updateSettings()"
         class="appButton sendData"
         aria-label="save auto-refresh settings"
+        (click)="updateSettings()"
       >
         Save
       </button>
@@ -101,5 +101,5 @@
 
 <div *ngIf="!authService.authenticated()" id="errorBox">
   <div class="errorMessage">You do not have permission to view thie page!</div>
-  <a [routerLink]="['/']" class="appButton">Back to homepage</a>
+  <a class="appButton" [routerLink]="['/']">Back to homepage</a>
 </div>

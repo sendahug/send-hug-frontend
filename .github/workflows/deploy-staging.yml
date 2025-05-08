@@ -1,4 +1,9 @@
 name: Deploy to Staging
+# See https://github.com/FirebaseExtended/action-hosting-deploy/issues/236
+permissions:
+  checks: write
+  pull-requests: write
+  contents: read
 
 on:
   push:

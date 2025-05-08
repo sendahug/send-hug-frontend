@@ -7,6 +7,7 @@
 #### Chores
 
 - Added a few more Angular-specific ESLint rules to the primary ESLint configuration. ([#2069](https://github.com/sendahug/send-hug-frontend/pull/2069))
+- Added the missing `permissions` key to all GitHub Actions workflows to limit the permissions used by the GitHub token. ([#2075](https://github.com/sendahug/send-hug-frontend/pull/2075))
 
 ### 2025-05-03
 

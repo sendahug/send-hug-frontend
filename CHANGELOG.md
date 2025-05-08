@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+### 2025-05-08
+
+#### Chores
+
+- Added a few more Angular-specific ESLint rules to the primary ESLint configuration. ([#2069](https://github.com/sendahug/send-hug-frontend/pull/2069))
+
 ### 2025-05-03
 
 #### Changes

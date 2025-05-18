@@ -93,7 +93,7 @@ module.exports = [
   },
   {
     name: "Angular scripts",
-    limit: "180 kB",
+    limit: "175 kB",
     path: ["dist/assets/angular-*.js"],
   },
   {

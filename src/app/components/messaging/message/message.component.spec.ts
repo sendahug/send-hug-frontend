@@ -112,25 +112,7 @@ describe("MessageComponent", () => {
     expect(appMessage).toBeTruthy();
   });
 
-  // Check that the component loads the inbox if no mailbox is specified
-  it("should show message details", () => {
-    const fixture = TestBed.createComponent(MessageComponent);
-    fixture.componentRef.setInput("currentUser", 4);
-    fixture.componentRef.setInput("message", mockMessage);
-    fixture.componentRef.setInput("messType", "inbox");
-    const appMessage = fixture.componentInstance;
-    const appMessageDOM = fixture.nativeElement;
-    fixture.detectChanges();
-
-    expect(appMessage.displayFor()).toBeFalse();
-    expect(appMessage.displayFrom()).toBeTrue();
-    expect(appMessage.userIconToShow()).toEqual(mockMessage.from);
-    expect(appMessageDOM.querySelector(".messageText").textContent.trim()).toBe(
-      mockMessage.messageText,
-    );
-  });
-
-  // Check that the component loads the inbox if no mailbox is specified
+  // Check that the component shows the message details
   it("should show message details - thread", () => {
     const fixture = TestBed.createComponent(MessageComponent);
     fixture.componentRef.setInput("currentUser", 4);
@@ -157,7 +139,7 @@ describe("MessageComponent", () => {
     const fixture = TestBed.createComponent(MessageComponent);
     fixture.componentRef.setInput("currentUser", 4);
     fixture.componentRef.setInput("message", mockMessage);
-    fixture.componentRef.setInput("messType", "inbox");
+    fixture.componentRef.setInput("messType", "thread");
     const appMessage = fixture.componentInstance;
     fixture.detectChanges();
 
@@ -171,7 +153,7 @@ describe("MessageComponent", () => {
     const appMessageDOM = fixture.nativeElement;
     fixture.componentRef.setInput("currentUser", 4);
     fixture.componentRef.setInput("message", mockMessage);
-    fixture.componentRef.setInput("messType", "inbox");
+    fixture.componentRef.setInput("messType", "thread");
     fixture.detectChanges();
 
     // before the click
@@ -183,7 +165,7 @@ describe("MessageComponent", () => {
 
     // after the click
     expect(appMessage.deleteMode()).toBeTrue();
-    expect(appMessage.deleteEndpoint()).toBe("messages/inbox");
+    expect(appMessage.deleteEndpoint()).toBe("messages/thread");
     expect(appMessage.itemType).toBe("Message");
     expect(appMessageDOM.querySelector("item-delete-form")).toBeTruthy();
   });
@@ -193,7 +175,7 @@ describe("MessageComponent", () => {
     const fixture = TestBed.createComponent(MessageComponent);
     fixture.componentRef.setInput("currentUser", 4);
     fixture.componentRef.setInput("message", mockMessage);
-    fixture.componentRef.setInput("messType", "inbox");
+    fixture.componentRef.setInput("messType", "thread");
     const appMessage = fixture.componentInstance;
     const changeSpy = spyOn(appMessage, "changeMode").and.callThrough();
     const outputSpy = spyOn(appMessage.messageDeleted, "emit");
@@ -221,7 +203,7 @@ describe("MessageComponent", () => {
     const appMessageDOM = fixture.nativeElement;
     fixture.componentRef.setInput("currentUser", 4);
     fixture.componentRef.setInput("message", mockMessage);
-    fixture.componentRef.setInput("messType", "inbox");
+    fixture.componentRef.setInput("messType", "thread");
     fixture.detectChanges();
 
     expect(appMessageDOM.querySelectorAll(".messageButton")[0].tagName.toLowerCase()).toBe("a");

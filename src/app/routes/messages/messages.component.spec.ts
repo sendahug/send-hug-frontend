@@ -97,7 +97,7 @@ describe("AppMessagesComponent", () => {
             {
               path: "messages",
               children: [
-                { path: "", pathMatch: "prefix", redirectTo: "inbox", data: { name: "threads" } },
+                { path: "", pathMatch: "prefix", redirectTo: "threads", data: { name: "threads" } },
                 {
                   path: "threads",
                   pathMatch: "prefix",

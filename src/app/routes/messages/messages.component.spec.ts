@@ -97,19 +97,7 @@ describe("AppMessagesComponent", () => {
             {
               path: "messages",
               children: [
-                { path: "", pathMatch: "prefix", redirectTo: "inbox", data: { name: "Inbox" } },
-                {
-                  path: "inbox",
-                  pathMatch: "prefix",
-                  component: AppMessagesComponent,
-                  data: { name: "Inbox" },
-                },
-                {
-                  path: "outbox",
-                  pathMatch: "prefix",
-                  component: AppMessagesComponent,
-                  data: { name: "Outbox" },
-                },
+                { path: "", pathMatch: "prefix", redirectTo: "inbox", data: { name: "threads" } },
                 {
                   path: "threads",
                   pathMatch: "prefix",
@@ -125,11 +113,7 @@ describe("AppMessagesComponent", () => {
               ],
               data: {
                 name: "Mailbox",
-                mapRoutes: [
-                  { path: "inbox", name: "Inbox" },
-                  { path: "outbox", name: "Outbox" },
-                  { path: "threads", name: "Threads" },
-                ],
+                mapRoutes: [{ path: "threads", name: "Threads" }],
               },
             },
           ],
@@ -210,12 +194,12 @@ describe("AppMessagesComponent", () => {
     expect(appMessaging).toBeTruthy();
   });
 
-  // Check that the component loads the inbox if no mailbox is specified
-  it("should load the inbox by default", () => {
+  // Check that the component loads the threads if no mailbox is specified
+  it("should load the threads by default", () => {
     const fixture = TestBed.createComponent(AppMessagesComponent);
     const appMessaging = fixture.componentInstance;
 
-    expect(appMessaging.messType()).toBe("inbox");
+    expect(appMessaging.messType()).toBe("threads");
   });
 
   // Check that the popup variables are set to false
@@ -226,43 +210,9 @@ describe("AppMessagesComponent", () => {
     expect(appMessaging.deleteMode()).toBeFalse();
   });
 
-  it("should fetch messages from the server", () => {
-    const fixture = TestBed.createComponent(AppMessagesComponent);
-    const appMessaging = fixture.componentInstance;
-    const idbFetchSpy = spyOn(appMessaging, "fetchMessagesFromIdb").and.returnValue(
-      of({ messages: [], total_pages: 1, current_page: 1, success: true }),
-    );
-    const apiClientSpy = spyOn(appMessaging["apiClient"], "get").and.returnValue(
-      of({ messages: mockMessages, total_pages: 2, current_page: 1, success: true }),
-    );
-    const swManagerSpy = spyOn(appMessaging["swManager"], "addFetchedItems");
-
-    // before
-    expect(appMessaging.messages()).toEqual([]);
-    expect(appMessaging.totalPages()).toBe(1);
-    expect(appMessaging.currentPage()).toBe(1);
-
-    fixture.detectChanges();
-
-    appMessaging.fetchMessages();
-
-    // after
-    expect(idbFetchSpy).toHaveBeenCalledWith();
-    expect(apiClientSpy).toHaveBeenCalledWith("messages", {
-      page: 1,
-      type: "inbox",
-    });
-
-    expect(appMessaging.messages()).toEqual(mockMessages);
-    expect(appMessaging.totalPages()).toBe(2);
-    expect(appMessaging.currentPage()).toBe(1);
-    expect(swManagerSpy).toHaveBeenCalledWith("messages", mockMessages, "date");
-  });
-
   it("should add the thread ID param to the fetch if the message type is thread", () => {
     const fixture = TestBed.createComponent(AppMessagesComponent);
     const appMessaging = fixture.componentInstance;
-    appMessaging.messType.set("thread");
     appMessaging.threadId.set(4);
     const idbFetchSpy = spyOn(appMessaging, "fetchMessagesFromIdb").and.returnValue(
       of({ messages: [], total_pages: 1, current_page: 1, success: true }),
@@ -282,64 +232,12 @@ describe("AppMessagesComponent", () => {
       threadID: 4,
     });
   });
-
-  it("should fetch messages from IDB - inbox", (done: DoneFn) => {
-    const fixture = TestBed.createComponent(AppMessagesComponent);
-    const appMessaging = fixture.componentInstance;
-    const idbSpy = spyOn(appMessaging["swManager"], "fetchMessages").and.returnValue(
-      new Promise((resolve) => resolve({ messages: mockMessages, pages: 2 })),
-    );
-
-    fixture.detectChanges();
-
-    appMessaging.fetchMessagesFromIdb().subscribe((response) => {
-      expect(idbSpy).toHaveBeenCalledWith("forId", 4, 5, 1);
-      expect(appMessaging.messages()).toEqual(mockMessages);
-      expect(appMessaging.totalPages()).toBe(2);
-      expect(response).toEqual({
-        messages: mockMessages,
-        total_pages: 2,
-        current_page: 1,
-        success: true,
-      });
-      done();
-    });
-  });
-
-  it("should fetch messages from IDB - outbox", (done: DoneFn) => {
-    TestBed.inject(ActivatedRoute).url = of([{ path: "outbox" } as UrlSegment]);
-
-    const fixture = TestBed.createComponent(AppMessagesComponent);
-    const appMessaging = fixture.componentInstance;
-    const idbSpy = spyOn(appMessaging["swManager"], "fetchMessages").and.returnValue(
-      new Promise((resolve) => resolve({ messages: mockMessages, pages: 2 })),
-    );
-
-    fixture.detectChanges();
-
-    appMessaging.fetchMessagesFromIdb().subscribe((response) => {
-      expect(idbSpy).toHaveBeenCalledWith("fromId", 4, 5, 1);
-      expect(appMessaging.messages()).toEqual(mockMessages);
-      expect(appMessaging.totalPages()).toBe(2);
-      expect(response).toEqual({
-        messages: mockMessages,
-        total_pages: 2,
-        current_page: 1,
-        success: true,
-      });
-      done();
-    });
-  });
-
   it("should set the filter value to the thread ID if the message type is thread", (done: DoneFn) => {
-    TestBed.inject(ActivatedRoute).url = of([
-      { path: "thread" } as UrlSegment,
-      { path: "2" } as UrlSegment,
-    ]);
+    const paramMap = TestBed.inject(ActivatedRoute);
+    paramMap.url = of([{ path: "thread" } as UrlSegment]);
+    spyOn(paramMap.snapshot.paramMap, "get").and.returnValue("2");
     const fixture = TestBed.createComponent(AppMessagesComponent);
     const appMessaging = fixture.componentInstance;
-    appMessaging.messType.set("thread");
-    appMessaging.threadId.set(2);
     const idbSpy = spyOn(appMessaging["swManager"], "fetchMessages").and.returnValue(
       new Promise((resolve) => resolve({ messages: mockMessages, pages: 2 })),
     );
@@ -363,7 +261,6 @@ describe("AppMessagesComponent", () => {
   it("should fetch threads from the server", () => {
     const fixture = TestBed.createComponent(AppMessagesComponent);
     const appMessaging = fixture.componentInstance;
-    appMessaging.messType.set("threads");
     const idbFetchSpy = spyOn(appMessaging, "fetchThreadsFromIdb").and.returnValue(
       of({ messages: [], total_pages: 1, current_page: 1, success: true }),
     );
@@ -417,7 +314,9 @@ describe("AppMessagesComponent", () => {
   });
 
   it("should navigate to the next page - messages", () => {
-    TestBed.inject(ActivatedRoute).url = of([{ path: "inbox" } as UrlSegment]);
+    const paramMap = TestBed.inject(ActivatedRoute);
+    paramMap.url = of([{ path: "thread" } as UrlSegment]);
+    spyOn(paramMap.snapshot.paramMap, "get").and.returnValue("2");
     const fixture = TestBed.createComponent(AppMessagesComponent);
     const appMessaging = fixture.componentInstance;
     const appMessagingDOM = fixture.nativeElement;
@@ -453,7 +352,9 @@ describe("AppMessagesComponent", () => {
   });
 
   it("should navigate to the previous page", () => {
-    TestBed.inject(ActivatedRoute).url = of([{ path: "inbox" } as UrlSegment]);
+    const paramMap = TestBed.inject(ActivatedRoute);
+    paramMap.url = of([{ path: "thread" } as UrlSegment]);
+    spyOn(paramMap.snapshot.paramMap, "get").and.returnValue("2");
     const fixture = TestBed.createComponent(AppMessagesComponent);
     const appMessaging = fixture.componentInstance;
     const appMessagingDOM = fixture.nativeElement;
@@ -490,30 +391,6 @@ describe("AppMessagesComponent", () => {
     expect(fetchSpy).toHaveBeenCalledWith();
   });
 
-  // Check that deleting all messages triggers the popup
-  it("should trigger the popup upon deleting all", () => {
-    TestBed.inject(ActivatedRoute).url = of([{ path: "inbox" } as UrlSegment]);
-    const fixture = TestBed.createComponent(AppMessagesComponent);
-    const appMessaging = fixture.componentInstance;
-    const appMessagingDOM = fixture.nativeElement;
-    appMessaging.messages.set(mockMessages);
-    appMessaging.isIdbFetchLoading.set(false);
-    fixture.detectChanges();
-
-    // before the click
-    expect(appMessaging.deleteMode()).toBeFalse();
-
-    // trigger click
-    appMessagingDOM.querySelectorAll(".deleteAll")[0].click();
-    fixture.detectChanges();
-
-    // after the click
-    expect(appMessaging.deleteMode()).toBeTrue();
-    expect(appMessaging.deleteEndpoint()).toBe("messages/inbox");
-    expect(appMessaging.itemType()).toBe("Message");
-    expect(appMessagingDOM.querySelector("item-delete-form")).toBeTruthy();
-  });
-
   it("should trigger the popup upon deleting all - threads", () => {
     TestBed.inject(ActivatedRoute).url = of([{ path: "Threads" } as UrlSegment]);
     const fixture = TestBed.createComponent(AppMessagesComponent);
@@ -539,7 +416,9 @@ describe("AppMessagesComponent", () => {
 
   // Check the popup exits when 'false' is emitted
   it("should change mode when the event emitter emits false", () => {
-    TestBed.inject(ActivatedRoute).url = of([{ path: "inbox" } as UrlSegment]);
+    const paramMap = TestBed.inject(ActivatedRoute);
+    paramMap.url = of([{ path: "thread" } as UrlSegment]);
+    spyOn(paramMap.snapshot.paramMap, "get").and.returnValue("2");
     const fixture = TestBed.createComponent(AppMessagesComponent);
     const appMessaging = fixture.componentInstance;
     const changeSpy = spyOn(appMessaging, "changeMode").and.callThrough();
@@ -562,7 +441,9 @@ describe("AppMessagesComponent", () => {
   });
 
   it("should update the message list post delete - single message", () => {
-    TestBed.inject(ActivatedRoute).url = of([{ path: "inbox" } as UrlSegment]);
+    const paramMap = TestBed.inject(ActivatedRoute);
+    paramMap.url = of([{ path: "thread" } as UrlSegment]);
+    spyOn(paramMap.snapshot.paramMap, "get").and.returnValue("2");
     const fixture = TestBed.createComponent(AppMessagesComponent);
     const appMessaging = fixture.componentInstance;
     const updateSpy = spyOn(appMessaging, "updateMessageList").and.callThrough();
@@ -588,7 +469,6 @@ describe("AppMessagesComponent", () => {
     const appMessaging = fixture.componentInstance;
     const updateSpy = spyOn(appMessaging, "updateMessageList").and.callThrough();
     spyOn(appMessaging, "fetchMessages");
-    appMessaging.messType.set("threads");
     appMessaging.userThreads.set(mockThreads);
     appMessaging.isIdbFetchLoading.set(false);
     fixture.detectChanges();
@@ -601,60 +481,6 @@ describe("AppMessagesComponent", () => {
     // check the popup is exited
     expect(updateSpy).toHaveBeenCalledWith(3);
     expect(appMessaging.userThreads().length).toBe(0);
-  });
-
-  it("should update the message list post delete - all messages - inbox", () => {
-    TestBed.inject(ActivatedRoute).url = of([{ path: "inbox" } as UrlSegment]);
-    const fixture = TestBed.createComponent(AppMessagesComponent);
-    const appMessaging = fixture.componentInstance;
-    const updateSpy = spyOn(appMessaging, "clearMailbox").and.callThrough();
-    const deleteSpy = spyOn(appMessaging["swManager"], "deleteItems");
-    spyOn(appMessaging, "fetchMessages");
-    appMessaging.messages.set(mockMessages);
-    appMessaging.isIdbFetchLoading.set(false);
-
-    // start the popup
-    appMessaging.deleteMode.set(true);
-    fixture.detectChanges();
-
-    // exit the popup
-    const popup = fixture.debugElement.query(By.css("item-delete-form"))
-      .componentInstance as ItemDeleteFormComponent;
-    popup.deleted.emit(1);
-    popup.editMode.emit(false);
-    fixture.detectChanges();
-
-    // check the popup is exited
-    expect(updateSpy).toHaveBeenCalledWith();
-    expect(appMessaging.messages().length).toBe(0);
-    expect(deleteSpy).toHaveBeenCalledWith("messages", "forId", 4);
-  });
-
-  it("should update the message list post delete - all messages - outbox", () => {
-    TestBed.inject(ActivatedRoute).url = of([{ path: "outbox" } as UrlSegment]);
-    const fixture = TestBed.createComponent(AppMessagesComponent);
-    const appMessaging = fixture.componentInstance;
-    const updateSpy = spyOn(appMessaging, "clearMailbox").and.callThrough();
-    const deleteSpy = spyOn(appMessaging["swManager"], "deleteItems");
-    spyOn(appMessaging, "fetchMessages");
-    appMessaging.messages.set(mockMessages);
-    appMessaging.isIdbFetchLoading.set(false);
-
-    // start the popup
-    appMessaging.deleteMode.set(true);
-    fixture.detectChanges();
-
-    // exit the popup
-    const popup = fixture.debugElement.query(By.css("item-delete-form"))
-      .componentInstance as ItemDeleteFormComponent;
-    popup.deleted.emit(1);
-    popup.editMode.emit(false);
-    fixture.detectChanges();
-
-    // check the popup is exited
-    expect(updateSpy).toHaveBeenCalledWith();
-    expect(appMessaging.messages().length).toBe(0);
-    expect(deleteSpy).toHaveBeenCalledWith("messages", "fromId", 4);
   });
 
   it("should update the message list post delete - all threads", () => {

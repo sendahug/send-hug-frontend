@@ -189,7 +189,7 @@ describe("ThreadComponent", () => {
     );
 
     expect(appThreadDOM.querySelectorAll(".appButton")[0].getAttribute("href")).toContain(
-      "/messages/thread/3",
+      "/messages/threads/3",
     );
 
     expect(appThreadDOM.querySelectorAll(".appButton")[1].tagName.toLowerCase()).toBe("button");

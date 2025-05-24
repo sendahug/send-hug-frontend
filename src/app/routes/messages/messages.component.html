@@ -1,26 +1,13 @@
 <div id="mailboxNav">
-  <nav id="breadcrumb" aria-label="Breadcrumb">
+  <nav *ngIf="messType() === 'thread'" id="breadcrumb" aria-label="Breadcrumb">
     <a class="breadcrumb bLink" [routerLink]="['/messages']">Messages</a> /
-    <a
-      *ngIf="messType() !== 'thread'"
-      class="breadcrumb bLink"
-      span
-      [routerLink]="['/messages' + messType()]"
-      >{{ messType() }}</a
-    >
-    <span *ngIf="messType() === 'thread'" class="breadcrumb">Thread {{ threadId() }}</span>
+    <span class="breadcrumb">Thread {{ threadId() }}</span>
   </nav>
 
-  <h1>{{ messType() }}</h1>
-  <!-- Messages area navigation. -->
-  <div id="messagesNav" role="navigation">
-    <a class="messNavOption appButton" [routerLink]="['/messages', 'inbox']">Inbox</a>
-    <a class="messNavOption appButton" [routerLink]="['/messages', 'outbox']">Outbox</a>
-    <a class="messNavOption appButton" [routerLink]="['/messages', 'threads']">Threads</a>
-  </div>
+  <h1>Messages</h1>
 </div>
 
-<!-- If the user is logged in, displays the user's inbox. -->
+<!-- If the user is logged in, displays the user's mailbox. -->
 <div id="userInbox">
   <app-loader
     *ngIf="isLoading()"
@@ -28,7 +15,7 @@
     [loadingMessage]="loadingMessage()"
   ></app-loader>
 
-  <!-- If there are messages in the user's inbox -->
+  <!-- If there are messages in the user's mailbox -->
   <ul
     *ngIf="messType() !== 'threads' && messages().length"
     class="mailboxMessages"
@@ -95,14 +82,6 @@
     </button>
   </div>
   <button
-    *ngIf="messages().length && messType() !== 'threads' && messType() !== 'thread'"
-    class="appButton deleteButton deleteAll"
-    [attr.aria-label]="'delete all ' + messType() + ' messages'"
-    (click)="deleteAllMessages()"
-  >
-    Delete All Messages
-  </button>
-  <button
     *ngIf="messType() === 'threads' && userThreadsFormatted().length"
     class="appButton deleteButton deleteAll"
     (click)="deleteAllMessages()"
@@ -110,7 +89,7 @@
     Delete All Threads
   </button>
 
-  <!-- If there are no messages in the user's outbox -->
+  <!-- If there are no messages in the user's mailbox -->
   <div
     *ngIf="
       ((!messages().length && messType() !== 'threads') ||

@@ -38,7 +38,7 @@ import { CommonModule } from "@angular/common";
 
 // App-related imports
 import { AuthService } from "@app/services/auth.service";
-import { APIParams, type MessageType } from "@app/interfaces/types";
+import { APIParams } from "@app/interfaces/types";
 import { FullThread, ParsedThread } from "@app/interfaces/thread.interface";
 import { type MessageGet } from "@app/interfaces/message.interface";
 import { SWManager } from "@app/services/sWManager.service";
@@ -64,16 +64,7 @@ import { MessagesResponse, ThreadResponse } from "@app/interfaces/api";
   ],
 })
 export class AppMessagesComponent {
-  readonly messType = signal<MessageType>("inbox");
-  readonly idbFilterAttribute = computed(() => {
-    if (this.messType() == "thread") {
-      return "threadID";
-    } else if (this.messType() == "outbox") {
-      return "fromId";
-    } else {
-      return "forId";
-    }
-  });
+  readonly idbFilterAttribute = signal<"threadID">("threadID");
   readonly currentPage = signal(1);
   readonly totalPages = signal(1);
   readonly isLoading = signal(false);
@@ -102,15 +93,18 @@ export class AppMessagesComponent {
   }));
   // loader sub-component variable
   readonly loadingMessage = computed(() =>
-    this.messType() == "threads" ? "Fetching threads..." : "Fetching messages...",
+    this.threadId() ? "Fetching messages..." : "Fetching threads...",
   );
   readonly loaderClass = computed(() =>
     !this.isIdbFetchLoading() && this.isLoading() ? "header" : "",
   );
+  readonly messType = computed(() => (this.threadId() ? "thread" : "threads"));
   // edit popup sub-component variables
   readonly deleteMode = signal(false);
-  readonly deleteEndpoint = computed(() => `messages/${this.messType()}`);
-  readonly itemType = computed(() => (this.messType() === "threads" ? "Thread" : "Message"));
+  readonly deleteEndpoint = computed(() =>
+    this.threadId() ? `messages/thread` : `messages/threads`,
+  );
+  readonly itemType = computed(() => (this.threadId() ? "Message" : "Thread"));
 
   // CTOR
   constructor(
@@ -120,20 +114,13 @@ export class AppMessagesComponent {
     private swManager: SWManager,
     private apiClient: ApiClientService,
   ) {
-    let messageType;
     this.threadId.set(Number(this.route.snapshot.paramMap.get("id")));
     this.currentPage.set(1);
 
-    this.route.url.subscribe((params) => {
-      messageType = params[0].path.toLowerCase();
-    });
-
-    this.messType.set(messageType || "inbox");
-
-    if ((this.messType() as MessageType) == "threads") {
-      this.fetchThreads();
-    } else {
+    if (this.threadId()) {
       this.fetchMessages();
+    } else {
+      this.fetchThreads();
     }
   }
 
@@ -148,10 +135,9 @@ export class AppMessagesComponent {
     const fetchFromIdb$ = this.fetchMessagesFromIdb();
     const fetchParams: APIParams = {
       page: this.currentPage(),
-      type: this.messType(),
+      type: "thread",
+      threadID: this.threadId()!,
     };
-
-    if (this.messType() == "thread") fetchParams["threadID"] = this.threadId()!;
 
     fetchFromIdb$
       .pipe(switchMap(() => this.apiClient.get<MessagesResponse>("messages", fetchParams)))
@@ -171,11 +157,13 @@ export class AppMessagesComponent {
    *          messages from IndexedDB and transforming them.
    */
   fetchMessagesFromIdb() {
-    const filterValue =
-      this.messType() == "thread" ? this.threadId()! : this.authService.userData()!.id!;
-
     return from(
-      this.swManager.fetchMessages(this.idbFilterAttribute(), filterValue, 5, this.currentPage()),
+      this.swManager.fetchMessages(
+        this.idbFilterAttribute(),
+        this.threadId()!,
+        5,
+        this.currentPage(),
+      ),
     ).pipe(
       tap((data) => {
         this.messages.set(data.messages);
@@ -208,7 +196,7 @@ export class AppMessagesComponent {
         switchMap(() =>
           this.apiClient.get<ThreadResponse>("messages", {
             page: this.currentPage(),
-            type: this.messType(),
+            type: "threads",
           }),
         ),
       )
@@ -259,10 +247,10 @@ export class AppMessagesComponent {
   */
   nextPage() {
     this.currentPage.set(this.currentPage() + 1);
-    if (this.messType() == "threads") {
-      this.fetchThreads();
-    } else {
+    if (this.threadId()) {
       this.fetchMessages();
+    } else {
+      this.fetchThreads();
     }
   }
 
@@ -276,10 +264,10 @@ export class AppMessagesComponent {
   */
   prevPage() {
     this.currentPage.set(this.currentPage() - 1);
-    if (this.messType() == "threads") {
-      this.fetchThreads();
-    } else {
+    if (this.threadId()) {
       this.fetchMessages();
+    } else {
+      this.fetchThreads();
     }
   }
 
@@ -300,7 +288,7 @@ export class AppMessagesComponent {
    *                  of the user ID (if it's a 'clear mailbox' situation).
    */
   updateMessageList(deletedId: number) {
-    if (this.messType().toLowerCase() == "threads") {
+    if (!this.threadId()) {
       this.userThreads.set(this.userThreads().filter((thread) => thread.id != deletedId));
     } else {
       this.messages.set(this.messages().filter((message) => message.id != deletedId));
@@ -311,19 +299,9 @@ export class AppMessagesComponent {
    * Clears the current mailbox (and IndexedDB) once they've been deleted in the back-end.
    */
   clearMailbox() {
-    if (this.messType().toLowerCase() === "threads") {
-      this.userThreads.set([]);
-      this.swManager.clearStore("messages");
-      this.swManager.clearStore("threads");
-    } else {
-      this.messages.set([]);
-
-      if (this.messType().toLowerCase() === "inbox") {
-        this.swManager.deleteItems("messages", "forId", this.authService.userData()!.id);
-      } else if (this.messType().toLowerCase() === "outbox") {
-        this.swManager.deleteItems("messages", "fromId", this.authService.userData()!.id);
-      }
-    }
+    this.userThreads.set([]);
+    this.swManager.clearStore("messages");
+    this.swManager.clearStore("threads");
   }
 
   /*

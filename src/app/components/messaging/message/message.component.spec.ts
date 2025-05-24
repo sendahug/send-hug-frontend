@@ -126,8 +126,6 @@ describe("MessageComponent", () => {
     const appMessageDOM = fixture.nativeElement;
     fixture.detectChanges();
 
-    expect(appMessage.displayFor()).toBeTrue();
-    expect(appMessage.displayFrom()).toBeTrue();
     expect(appMessage.userIconToShow()).toEqual(mockMessage.from);
     expect(appMessageDOM.querySelector(".messageText").textContent.trim()).toBe(
       mockMessage.messageText,

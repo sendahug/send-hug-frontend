@@ -12,13 +12,13 @@
   <div id="{{ 'text' + _message().id }}" class="messageText" aria-describedby="mText">
     {{ _message().messageText }}
   </div>
-  <div *ngIf="displayFrom()" class="messageField">
+  <div class="messageField">
     <span class="pageCategory">From:</span
     ><span class="pageData" aria-describedby="mUserFrom">
       {{ _message().from.displayName }}
     </span>
   </div>
-  <div *ngIf="displayFor()" class="messageField">
+  <div class="messageField">
     <span class="pageCategory">For:</span
     ><span class="pageData" aria-describedby="mUserFor">
       {{ _message().for.displayName }}
@@ -32,7 +32,6 @@
   </div>
   <div class="buttons">
     <a
-      *ngIf="displayFrom()"
       class="appButton messageButton"
       [routerLink]="['/new', 'Message']"
       [queryParams]="{ user: _message().from.displayName, userID: _message().fromId }"

@@ -58,17 +58,7 @@ export class MessageComponent {
   readonly _message = signal<MessageGet>({} as MessageGet);
   @Input() messType!: MessageType;
   @Output() messageDeleted = new EventEmitter<number>();
-  readonly userIconToShow = computed(() => {
-    if (this.messType == "thread") return this._message().from;
-
-    return this._message().forId == this.currentUser ? this._message().from : this._message().for;
-  });
-  readonly displayFor = computed(
-    () => this._message().fromId == this.currentUser || this.messType == "thread",
-  );
-  readonly displayFrom = computed(
-    () => this._message().forId == this.currentUser || this.messType == "thread",
-  );
+  readonly userIconToShow = computed(() => this._message().from);
   readonly deleteMode = signal(false);
   // Delete Popup Constants
   readonly deleteEndpoint = computed(() => `messages/${this.messType}`);

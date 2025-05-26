@@ -88,6 +88,11 @@ describe("PaginatedListComponent", () => {
     TestBed.resetTestEnvironment();
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
+    /**
+     * @todo we should be mocking the Loader here, but for some reason it seems
+     * to break tests. Since it's a tiny component, we've decided it's fine for the time being.
+     * That said, we should figure it out and mock it like we do with other child components.
+     */
     TestBed.configureTestingModule({
       imports: [CommonModule, LoaderComponent, PaginatedListComponent, MockParentComponent],
       providers: [
@@ -204,5 +209,35 @@ describe("PaginatedListComponent", () => {
 
     expect(nextPageSpy).toHaveBeenCalledWith();
     expect(emitSpy).toHaveBeenCalledWith(1);
+  });
+
+  it("should show the loader in header mode if the IDB fetch is complete", () => {
+    const fixture = TestBed.createComponent(PaginatedListComponent);
+    const paginatedList = fixture.componentInstance;
+    const paginatedListDOM = fixture.nativeElement;
+    fixture.componentRef.setInput("itemCount", 6);
+    fixture.componentRef.setInput("itemType", "posts");
+    fixture.componentRef.setInput("totalPages", 2);
+    fixture.componentRef.setInput("isLoading", true);
+    fixture.componentRef.setInput("isIdbFetchLoading", false);
+    fixture.detectChanges();
+
+    expect(paginatedList.loaderClass()).toBe("header");
+    expect(paginatedListDOM.querySelector("app-loader").classList).toContain("header");
+  });
+
+  it("should show the loader in full mode if the IDB fetch isn't complete", () => {
+    const fixture = TestBed.createComponent(PaginatedListComponent);
+    const paginatedList = fixture.componentInstance;
+    const paginatedListDOM = fixture.nativeElement;
+    fixture.componentRef.setInput("itemCount", 6);
+    fixture.componentRef.setInput("itemType", "posts");
+    fixture.componentRef.setInput("totalPages", 2);
+    fixture.componentRef.setInput("isLoading", true);
+    fixture.componentRef.setInput("isIdbFetchLoading", true);
+    fixture.detectChanges();
+
+    expect(paginatedList.loaderClass()).toBe("");
+    expect(paginatedListDOM.querySelector("app-loader").classList).not.toContain("header");
   });
 });

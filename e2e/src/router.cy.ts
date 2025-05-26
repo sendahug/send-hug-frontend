@@ -46,7 +46,7 @@ describe("Send A Hug Router", () => {
     cy.url().should("equal", "http://localhost:3000/messages");
     cy.get("app-messages").should("be.visible").should("not.be.undefined");
     cy.get("h1").eq(0).should("have.text", "Messages");
-    cy.get("#breadcrumb").should("have.text", "Messages");
+    cy.get("#breadcrumb").should("be.undefined");
     // check messages route is marked active
     cy.get(".navLink").eq(2).should("have.class", "active");
 

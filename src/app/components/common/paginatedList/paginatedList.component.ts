@@ -40,6 +40,7 @@ import { LoaderComponent } from "@common/loader/loader.component";
 @Component({
   selector: "app-paginated-list",
   templateUrl: "./paginatedList.component.html",
+  styleUrl: "./paginatedList.component.less",
   standalone: true,
   imports: [CommonModule, LoaderComponent],
 })

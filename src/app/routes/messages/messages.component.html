@@ -64,7 +64,7 @@
     >
       <ul itemList aria-describedby="messType" [ngClass]="messagesContainerClass()">
         <li
-          *ngFor="let message of messages()"
+          *ngFor="let message of messages().reverse()"
           id="{{ messType() + message.id }}"
           class="userMessage"
           aria-describedby="messType"

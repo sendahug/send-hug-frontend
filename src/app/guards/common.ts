@@ -32,7 +32,16 @@
 
 import { Params, Router } from "@angular/router";
 
-const AllowedQueryParams = ["page", "id", "user", "userID", "query"];
+const AllowedQueryParams = [
+  "page",
+  "id",
+  "user",
+  "userID",
+  "query",
+  "threadId",
+  "threadsPage",
+  "messagesPage",
+];
 
 /**
  * Gets the original request's query parameters from the Angular router

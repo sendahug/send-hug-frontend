@@ -37,7 +37,12 @@ import {
   BrowserDynamicTestingModule,
   platformBrowserDynamicTesting,
 } from "@angular/platform-browser-dynamic/testing";
-import { provideRouter, RouterLink, withComponentInputBinding } from "@angular/router";
+import {
+  ActivatedRoute,
+  provideRouter,
+  RouterLink,
+  withComponentInputBinding,
+} from "@angular/router";
 import { BehaviorSubject, of } from "rxjs";
 import { By } from "@angular/platform-browser";
 import { NO_ERRORS_SCHEMA, provideZoneChangeDetection, signal } from "@angular/core";
@@ -202,6 +207,48 @@ describe("AppMessagesComponent", () => {
     expect(threadsFetchSpy).toHaveBeenCalledWith();
   });
 
+  it("should set default pages and thread ID if the query parameters aren't provided", () => {
+    const route = TestBed.inject(ActivatedRoute);
+    spyOn(route.snapshot.queryParamMap, "get").and.callFake((name) => {
+      if (name === "threadsPage") {
+        return null;
+      } else if (name == "messagesPage") {
+        return null;
+      } else {
+        return null;
+      }
+    });
+    spyOn(AppMessagesComponent.prototype, "fetchThreads");
+    const fixture = TestBed.createComponent(AppMessagesComponent);
+    const appMessaging = fixture.componentInstance;
+    fixture.detectChanges();
+
+    expect(appMessaging.currentMessagesPage()).toBe(1);
+    expect(appMessaging.currentThreadsPage()).toBe(1);
+    expect(appMessaging.threadId()).toBe(undefined);
+  });
+
+  it("should set pages and thread ID based on the query parameters", () => {
+    const route = TestBed.inject(ActivatedRoute);
+    spyOn(route.snapshot.queryParamMap, "get").and.callFake((name) => {
+      if (name === "threadsPage") {
+        return "2";
+      } else if (name == "messagesPage") {
+        return "2";
+      } else {
+        return "4";
+      }
+    });
+    spyOn(AppMessagesComponent.prototype, "fetchThreads");
+    const fixture = TestBed.createComponent(AppMessagesComponent);
+    const appMessaging = fixture.componentInstance;
+    fixture.detectChanges();
+
+    expect(appMessaging.currentMessagesPage()).toBe(2);
+    expect(appMessaging.currentThreadsPage()).toBe(2);
+    expect(appMessaging.threadId()).toBe(4);
+  });
+
   it("should fetch threads from the server", () => {
     const fixture = TestBed.createComponent(AppMessagesComponent);
     const appMessaging = fixture.componentInstance;
@@ -320,6 +367,7 @@ describe("AppMessagesComponent", () => {
     spyOn(appMessaging, "fetchThreads");
     const fetchSpy = spyOn(appMessaging, "fetchMessages");
     const updateSpy = spyOn(appMessaging, "updateCurrentPage").and.callThrough();
+    const navigateSpy = spyOn(appMessaging["router"], "navigate");
     appMessaging.threadId.set(2);
     appMessaging.messages.set(mockMessages);
     appMessaging.totalMessagesPages.set(2);
@@ -334,6 +382,15 @@ describe("AppMessagesComponent", () => {
     expect(updateSpy).toHaveBeenCalledWith(2, "thread");
     expect(appMessaging.currentMessagesPage()).toBe(2);
     expect(fetchSpy).toHaveBeenCalledWith();
+    expect(navigateSpy).toHaveBeenCalledWith(
+      [],
+      jasmine.objectContaining({
+        queryParams: {
+          threadId: 2,
+          messagesPage: 2,
+        },
+      }),
+    );
   });
 
   it("should update the current page and re-fetch messages - threads", () => {
@@ -341,6 +398,7 @@ describe("AppMessagesComponent", () => {
     const appMessaging = fixture.componentInstance;
     const updateSpy = spyOn(appMessaging, "updateCurrentPage").and.callThrough();
     const fetchSpy = spyOn(appMessaging, "fetchThreads");
+    const navigateSpy = spyOn(appMessaging["router"], "navigate");
     appMessaging.userThreads.set(mockThreads);
     appMessaging.totalThreadsPages.set(2);
     appMessaging.isThreadsIdbFetchLoading.set(false);
@@ -354,6 +412,14 @@ describe("AppMessagesComponent", () => {
     expect(updateSpy).toHaveBeenCalledWith(2, "threads");
     expect(appMessaging.currentThreadsPage()).toBe(2);
     expect(fetchSpy).toHaveBeenCalledWith();
+    expect(navigateSpy).toHaveBeenCalledWith(
+      [],
+      jasmine.objectContaining({
+        queryParams: {
+          threadsPage: 2,
+        },
+      }),
+    );
   });
 
   it("should trigger the popup upon deleting all - threads", () => {
@@ -479,6 +545,7 @@ describe("AppMessagesComponent", () => {
     spyOn(appMessaging, "fetchThreads");
     const messagesFetchSpy = spyOn(appMessaging, "fetchMessages");
     const showThreadSpy = spyOn(appMessaging, "showThread").and.callThrough();
+    const navigateSpy = spyOn(appMessaging["router"], "navigate");
     appMessaging.userThreads.set(mockThreads);
     appMessaging.isThreadsIdbFetchLoading.set(false);
     fixture.detectChanges();
@@ -489,5 +556,44 @@ describe("AppMessagesComponent", () => {
     expect(showThreadSpy).toHaveBeenCalledWith(3);
     expect(appMessaging.threadId()).toBe(3);
     expect(messagesFetchSpy).toHaveBeenCalledWith();
+    expect(navigateSpy).toHaveBeenCalledWith(
+      [],
+      jasmine.objectContaining({
+        queryParams: {
+          threadId: 3,
+        },
+      }),
+    );
+  });
+
+  it("should preserve threads page query param if it's not 1", () => {
+    const fixture = TestBed.createComponent(AppMessagesComponent);
+    const appMessaging = fixture.componentInstance;
+    const appMessagingDOM = fixture.nativeElement;
+    spyOn(appMessaging, "fetchThreads");
+    const messagesFetchSpy = spyOn(appMessaging, "fetchMessages");
+    const showThreadSpy = spyOn(appMessaging, "showThread").and.callThrough();
+    const navigateSpy = spyOn(appMessaging["router"], "navigate");
+    appMessaging.userThreads.set(mockThreads);
+    appMessaging.isThreadsIdbFetchLoading.set(false);
+    appMessaging.totalThreadsPages.set(2);
+    appMessaging.currentThreadsPage.set(2);
+    fixture.detectChanges();
+
+    appMessagingDOM.querySelectorAll(".viewButton")[0].click();
+    fixture.detectChanges();
+
+    expect(showThreadSpy).toHaveBeenCalledWith(3);
+    expect(appMessaging.threadId()).toBe(3);
+    expect(messagesFetchSpy).toHaveBeenCalledWith();
+    expect(navigateSpy).toHaveBeenCalledWith(
+      [],
+      jasmine.objectContaining({
+        queryParams: {
+          threadId: 3,
+          threadsPage: 2,
+        },
+      }),
+    );
   });
 });

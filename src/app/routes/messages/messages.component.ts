@@ -105,14 +105,27 @@ export class AppMessagesComponent {
   // CTOR
   constructor(
     public authService: AuthService,
-    public route: ActivatedRoute,
-    public router: Router,
+    private route: ActivatedRoute,
+    private router: Router,
     private swManager: SWManager,
     private apiClient: ApiClientService,
   ) {
     this.currentThreadsPage.set(1);
     this.currentMessagesPage.set(1);
     this.fetchThreads();
+
+    const threadsPage = this.route.snapshot.queryParamMap.get("threadsPage");
+    this.currentThreadsPage.set(Number(threadsPage) || 1);
+    const messagesPage = this.route.snapshot.queryParamMap.get("messagesPage");
+    this.currentMessagesPage.set(Number(messagesPage) || 1);
+
+    // Check if a thread ID is set in the parameters; if so, fetch the thread
+    const threadId = this.route.snapshot.queryParamMap.get("threadId");
+
+    if (threadId && Number(threadId)) {
+      this.threadId.set(Number(threadId));
+      this.fetchMessages();
+    }
   }
 
   /**
@@ -235,13 +248,28 @@ export class AppMessagesComponent {
    * @param type the type of items to update the page for (threads/thread)
    */
   updateCurrentPage(page: number, type: "thread" | "threads") {
+    const queryParams: {
+      threadsPage?: number;
+      messagesPage?: number;
+      threadId?: number;
+    } = {};
+
     if (type == "thread") {
       this.currentMessagesPage.set(page);
+      queryParams["messagesPage"] = page;
+      queryParams["threadId"] = this.threadId();
       this.fetchMessages();
     } else {
       this.currentThreadsPage.set(page);
+      queryParams["threadsPage"] = page;
       this.fetchThreads();
     }
+
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: queryParams,
+      replaceUrl: true,
+    });
   }
 
   /**
@@ -290,7 +318,21 @@ export class AppMessagesComponent {
    * @param threadId the ID of the thread fo fetch.
    */
   showThread(threadId: number) {
+    const queryParams: {
+      threadsPage?: number;
+      threadId: number;
+    } = {
+      threadId,
+    };
+
+    if (this.currentThreadsPage() != 1) queryParams["threadsPage"] = this.currentThreadsPage();
+
     this.threadId.set(threadId);
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams,
+      replaceUrl: true,
+    });
     this.fetchMessages();
   }
 }

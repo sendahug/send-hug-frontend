@@ -28,12 +28,13 @@
     }}</span>
   </div>
   <div class="threadBtns">
-    <a
+    <button
       class="appButton viewButton"
-      [routerLink]="['/messages', 'threads', _thread().id]"
       [attr.aria-describedby]="'tView ' + 'user' + _thread().id"
-      >View Thread Messages</a
+      (click)="threadSelected.emit(_thread().id)"
     >
+      View Thread Messages
+    </button>
     <button
       class="appButton deleteButton"
       [attr.aria-describedby]="'tDelete ' + 'user' + _thread().id"

@@ -66,21 +66,8 @@ export const routes: Routes = [
   {
     path: "messages",
     canMatch: [isAuthedGuard],
-    children: [
-      { path: "", pathMatch: "prefix", redirectTo: "threads" },
-      {
-        path: "threads",
-        pathMatch: "prefix",
-        loadComponent: () =>
-          import("./routes/messages/messages.component").then((c) => c.AppMessagesComponent),
-      },
-      {
-        path: "threads/:id",
-        pathMatch: "prefix",
-        loadComponent: () =>
-          import("./routes/messages/messages.component").then((c) => c.AppMessagesComponent),
-      },
-    ],
+    loadComponent: () =>
+      import("./routes/messages/messages.component").then((c) => c.AppMessagesComponent),
     data: {
       name: "Mailbox",
     },

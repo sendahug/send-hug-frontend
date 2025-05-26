@@ -43,11 +43,11 @@ import { FullThread, ParsedThread } from "@app/interfaces/thread.interface";
 import { type MessageGet } from "@app/interfaces/message.interface";
 import { SWManager } from "@app/services/sWManager.service";
 import { ApiClientService } from "@app/services/apiClient.service";
-import { LoaderComponent } from "@common/loader/loader.component";
 import { ItemDeleteFormComponent } from "@forms/itemDeleteForm/itemDeleteForm.component";
 import { MessageComponent } from "@app/components/messaging/message/message.component";
 import { ThreadComponent } from "@app/components/messaging/thread/thread.component";
 import { MessagesResponse, ThreadResponse } from "@app/interfaces/api";
+import { PaginatedListComponent } from "@app/components/common/paginatedList/paginatedList.component";
 
 @Component({
   selector: "app-messages",
@@ -57,20 +57,22 @@ import { MessagesResponse, ThreadResponse } from "@app/interfaces/api";
   imports: [
     CommonModule,
     RouterLink,
-    LoaderComponent,
     ItemDeleteFormComponent,
     MessageComponent,
     ThreadComponent,
+    PaginatedListComponent,
   ],
 })
 export class AppMessagesComponent {
   readonly idbFilterAttribute = signal<"threadID">("threadID");
-  readonly currentPage = signal(1);
-  readonly totalPages = signal(1);
-  readonly isLoading = signal(false);
-  readonly isIdbFetchLoading = signal(false);
   readonly threadId = signal<number | undefined>(undefined);
+  // Messages
   readonly messages = signal<MessageGet[]>([]);
+  readonly currentMessagesPage = signal(1);
+  readonly totalMessagesPages = signal(1);
+  readonly isMessagesLoading = signal(false);
+  readonly isMessagesIdbFetchLoading = signal(false);
+  // Threads
   readonly userThreads = signal<FullThread[]>([]);
   readonly userThreadsFormatted = computed<ParsedThread[]>(() => {
     return this.userThreads().map((thread: FullThread) => {
@@ -83,28 +85,22 @@ export class AppMessagesComponent {
       };
     });
   });
-  readonly previousPageButtonClass = computed(() => ({
-    "appButton prevButton": true,
-    disabled: this.currentPage() <= 1,
+  readonly currentThreadsPage = signal(1);
+  readonly totalThreadsPages = signal(1);
+  readonly isThreadsLoading = signal(false);
+  readonly isThreadsIdbFetchLoading = signal(false);
+  readonly threadsContainerClass = computed(() => ({
+    userThreads: true,
   }));
-  readonly nextPageButtonClass = computed(() => ({
-    "appButton nextButton": true,
-    disabled: this.totalPages() <= this.currentPage(),
+  readonly messagesContainerClass = computed(() => ({
+    mailboxMessages: true,
+    hidden: !this.threadId(),
   }));
-  // loader sub-component variable
-  readonly loadingMessage = computed(() =>
-    this.threadId() ? "Fetching messages..." : "Fetching threads...",
-  );
-  readonly loaderClass = computed(() =>
-    !this.isIdbFetchLoading() && this.isLoading() ? "header" : "",
-  );
   readonly messType = computed(() => (this.threadId() ? "thread" : "threads"));
-  // edit popup sub-component variables
+  // delete all sub-component variables
   readonly deleteMode = signal(false);
-  readonly deleteEndpoint = computed(() =>
-    this.threadId() ? `messages/thread` : `messages/threads`,
-  );
-  readonly itemType = computed(() => (this.threadId() ? "Message" : "Thread"));
+  readonly deleteEndpoint = signal(`messages/threads`);
+  readonly itemType = signal<"Thread">("Thread");
 
   // CTOR
   constructor(
@@ -114,14 +110,9 @@ export class AppMessagesComponent {
     private swManager: SWManager,
     private apiClient: ApiClientService,
   ) {
-    this.threadId.set(Number(this.route.snapshot.paramMap.get("id")));
-    this.currentPage.set(1);
-
-    if (this.threadId()) {
-      this.fetchMessages();
-    } else {
-      this.fetchThreads();
-    }
+    this.currentThreadsPage.set(1);
+    this.currentMessagesPage.set(1);
+    this.fetchThreads();
   }
 
   /**
@@ -129,12 +120,12 @@ export class AppMessagesComponent {
    * from the server.
    */
   fetchMessages() {
-    this.isLoading.set(true);
-    this.isIdbFetchLoading.set(true);
+    this.isMessagesLoading.set(true);
+    this.isMessagesIdbFetchLoading.set(true);
 
     const fetchFromIdb$ = this.fetchMessagesFromIdb();
     const fetchParams: APIParams = {
-      page: this.currentPage(),
+      page: this.currentMessagesPage(),
       type: "thread",
       threadID: this.threadId()!,
     };
@@ -144,8 +135,8 @@ export class AppMessagesComponent {
       .subscribe({
         next: (data) => {
           this.messages.set(data.messages);
-          this.totalPages.set(data.total_pages);
-          this.isLoading.set(false);
+          this.totalMessagesPages.set(data.total_pages);
+          this.isMessagesLoading.set(false);
           this.swManager.addFetchedItems<MessageGet>("messages", [...data.messages], "date");
         },
       });
@@ -162,19 +153,19 @@ export class AppMessagesComponent {
         this.idbFilterAttribute(),
         this.threadId()!,
         5,
-        this.currentPage(),
+        this.currentMessagesPage(),
       ),
     ).pipe(
       tap((data) => {
         this.messages.set(data.messages);
-        this.totalPages.set(data.pages);
-        this.isIdbFetchLoading.set(false);
+        this.totalMessagesPages.set(data.pages);
+        this.isMessagesIdbFetchLoading.set(false);
       }),
       map((data) => {
         return {
           messages: data.messages,
           total_pages: data.pages,
-          current_page: this.currentPage(),
+          current_page: this.currentMessagesPage(),
           success: true,
         } as MessagesResponse;
       }),
@@ -186,8 +177,8 @@ export class AppMessagesComponent {
    * from the server.
    */
   fetchThreads() {
-    this.isLoading.set(true);
-    this.isIdbFetchLoading.set(true);
+    this.isThreadsLoading.set(true);
+    this.isThreadsIdbFetchLoading.set(true);
 
     const fetchFromIdb$ = this.fetchThreadsFromIdb();
 
@@ -195,7 +186,7 @@ export class AppMessagesComponent {
       .pipe(
         switchMap(() =>
           this.apiClient.get<ThreadResponse>("messages", {
-            page: this.currentPage(),
+            page: this.currentThreadsPage(),
             type: "threads",
           }),
         ),
@@ -203,8 +194,8 @@ export class AppMessagesComponent {
       .subscribe({
         next: (data) => {
           this.userThreads.set(data.messages);
-          this.totalPages.set(data.total_pages);
-          this.isLoading.set(false);
+          this.totalThreadsPages.set(data.total_pages);
+          this.isThreadsLoading.set(false);
           this.swManager.addFetchedItems<FullThread>(
             "threads",
             [...data.messages],
@@ -220,63 +211,42 @@ export class AppMessagesComponent {
    *          threads from IndexedDB and transforming them.
    */
   fetchThreadsFromIdb() {
-    return from(this.swManager.queryThreads(this.currentPage())).pipe(
+    return from(this.swManager.queryThreads(this.currentThreadsPage())).pipe(
       tap((data) => {
         this.userThreads.set(data.messages);
-        this.totalPages.set(data.pages);
-        this.isIdbFetchLoading.set(false);
+        this.totalThreadsPages.set(data.pages);
+        this.isThreadsIdbFetchLoading.set(false);
       }),
       map((data) => {
         return {
           messages: data.messages,
           total_pages: data.pages,
-          current_page: this.currentPage(),
+          current_page: this.currentThreadsPage(),
           success: true,
         } as ThreadResponse;
       }),
     );
   }
 
-  /*
-  Function Name: nextPage()
-  Function Description: Go to the next page of messages. Sends a request to the
-                        items service to get the data for the next page.
-  Parameters: None.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  nextPage() {
-    this.currentPage.set(this.currentPage() + 1);
-    if (this.threadId()) {
+  /**
+   * Updates the current page of messages or threads to the
+   * value given by the paginated list component.
+   * @param page the page to set as current page
+   * @param type the type of items to update the page for (threads/thread)
+   */
+  updateCurrentPage(page: number, type: "thread" | "threads") {
+    if (type == "thread") {
+      this.currentMessagesPage.set(page);
       this.fetchMessages();
     } else {
+      this.currentThreadsPage.set(page);
       this.fetchThreads();
     }
   }
 
-  /*
-  Function Name: prevPage()
-  Function Description: Go to the previous page of messages. Sends a request to the
-                        items service to get the data for the previous page.
-  Parameters: None.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  prevPage() {
-    this.currentPage.set(this.currentPage() - 1);
-    if (this.threadId()) {
-      this.fetchMessages();
-    } else {
-      this.fetchThreads();
-    }
-  }
-
-  /*
-  Function Name: deleteAllMessages()
-  Function Description: Deletes all of the user's messages in a specific mailbox.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
+  /**
+   * Deletes all of the user's messages in a specific mailbox.
+   */
   deleteAllMessages() {
     this.deleteMode.set(true);
   }
@@ -287,8 +257,8 @@ export class AppMessagesComponent {
    * @param deletedId the ID of the message deleted (if it's a single message)
    *                  of the user ID (if it's a 'clear mailbox' situation).
    */
-  updateMessageList(deletedId: number) {
-    if (!this.threadId()) {
+  updateMessageList(deletedId: number, type: "thread" | "threads") {
+    if (type === "threads") {
       this.userThreads.set(this.userThreads().filter((thread) => thread.id != deletedId));
     } else {
       this.messages.set(this.messages().filter((message) => message.id != deletedId));
@@ -304,17 +274,23 @@ export class AppMessagesComponent {
     this.swManager.clearStore("threads");
   }
 
-  /*
-  Function Name: changeMode()
-  Function Description: Remove the edit popup.
-  Parameters: edit (boolean) - indicating whether edit mode should be active.
-                               When the user finishes editing, the event emitter
-                               in the popup component sends 'false' to this function
-                               to remove the popup.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
+  /**
+   * Remove the edit popup.
+   * @param edit indicating whether edit mode should be active.
+   *             When the user finishes editing, the event emitter
+   *             in the popup component sends 'false' to this function
+   *             to remove the popup.
+   */
   changeMode(edit: boolean) {
     this.deleteMode.set(edit);
+  }
+
+  /**
+   * Fetch the messages in the given thread.
+   * @param threadId the ID of the thread fo fetch.
+   */
+  showThread(threadId: number) {
+    this.threadId.set(threadId);
+    this.fetchMessages();
   }
 }

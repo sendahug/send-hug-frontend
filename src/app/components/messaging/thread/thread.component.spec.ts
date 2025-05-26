@@ -183,16 +183,26 @@ describe("ThreadComponent", () => {
     fixture.componentRef.setInput("thread", mockThread);
     fixture.detectChanges();
 
-    expect(appThreadDOM.querySelectorAll(".appButton")[0].tagName.toLowerCase()).toBe("a");
+    expect(appThreadDOM.querySelectorAll(".appButton")[0].tagName.toLowerCase()).toBe("button");
     expect(appThreadDOM.querySelectorAll(".appButton")[0].textContent.trim()).toBe(
       "View Thread Messages",
     );
 
-    expect(appThreadDOM.querySelectorAll(".appButton")[0].getAttribute("href")).toContain(
-      "/messages/threads/3",
-    );
-
     expect(appThreadDOM.querySelectorAll(".appButton")[1].tagName.toLowerCase()).toBe("button");
     expect(appThreadDOM.querySelectorAll(".appButton")[1].textContent.trim()).toBe("Delete Thread");
+  });
+
+  it("should emit the selected thread's ID when a user clicks 'view thread messages'", () => {
+    const fixture = TestBed.createComponent(ThreadComponent);
+    const appThread = fixture.componentInstance;
+    const appThreadDOM = fixture.nativeElement;
+    fixture.componentRef.setInput("thread", mockThread);
+    const emitSpy = spyOn(appThread.threadSelected, "emit");
+    fixture.detectChanges();
+
+    appThreadDOM.querySelectorAll(".appButton")[0].click();
+    fixture.detectChanges();
+
+    expect(emitSpy).toHaveBeenCalledWith(mockThread.id);
   });
 });

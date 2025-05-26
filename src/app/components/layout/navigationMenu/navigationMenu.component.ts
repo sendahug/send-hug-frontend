@@ -172,12 +172,10 @@ export class NavigationMenuComponent implements OnInit, AfterViewInit {
         // or the about page
         if (["/", "/about", "/login"].includes(currentUrl)) {
           this.currentlyActiveRoute.set(currentUrl);
+        } else if (currentUrl.startsWith("/messages")) {
+          this.currentlyActiveRoute.set("/messages");
           // if it's any of the messages/admin/new pages
-        } else if (
-          currentUrl.startsWith("/messages") ||
-          currentUrl.startsWith("/admin") ||
-          currentUrl.startsWith("/new")
-        ) {
+        } else if (currentUrl.startsWith("/admin") || currentUrl.startsWith("/new")) {
           this.currentlyActiveRoute.set(`/${currentUrl.split("/")[1]}`);
         } else if (currentUrl.startsWith("/user")) {
           // if the user is logged in and viewing their own page, or

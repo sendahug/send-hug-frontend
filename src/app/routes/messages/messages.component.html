@@ -2,7 +2,7 @@
   <h1>Messages</h1>
 
   <nav *ngIf="messType() === 'thread'" id="breadcrumb" aria-label="Breadcrumb">
-    <a class="breadcrumb bLink" [routerLink]="['/messages']">Messages</a> /
+    <button class="breadcrumb messagesLink bLink" (click)="closeThread()">Messages</button> /
     <span class="breadcrumb">Thread {{ threadId() }}</span>
   </nav>
 </div>

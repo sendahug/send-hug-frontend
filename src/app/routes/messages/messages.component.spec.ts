@@ -596,4 +596,62 @@ describe("AppMessagesComponent", () => {
       }),
     );
   });
+
+  it("should close the thread and reset the thread ID", () => {
+    const fixture = TestBed.createComponent(AppMessagesComponent);
+    const appMessaging = fixture.componentInstance;
+    const appMessagingDOM = fixture.nativeElement;
+    spyOn(appMessaging, "fetchThreads");
+    spyOn(appMessaging, "fetchMessages");
+    const closeThreadSpy = spyOn(appMessaging, "closeThread").and.callThrough();
+    const navigateSpy = spyOn(appMessaging["router"], "navigate");
+    appMessaging.userThreads.set(mockThreads);
+    appMessaging.isThreadsIdbFetchLoading.set(false);
+    appMessaging.threadId.set(3);
+    appMessaging.currentThreadsPage.set(2);
+    appMessaging.totalThreadsPages.set(2);
+    fixture.detectChanges();
+
+    appMessagingDOM.querySelector(".messagesLink").click();
+    fixture.detectChanges();
+
+    expect(closeThreadSpy).toHaveBeenCalledWith();
+    expect(appMessaging.threadId()).toBe(undefined);
+    expect(navigateSpy).toHaveBeenCalledWith(
+      [],
+      jasmine.objectContaining({
+        queryParams: {
+          threadsPage: 2,
+        },
+      }),
+    );
+  });
+
+  it("should close the thread and reset the query parameters if the page is 1", () => {
+    const fixture = TestBed.createComponent(AppMessagesComponent);
+    const appMessaging = fixture.componentInstance;
+    const appMessagingDOM = fixture.nativeElement;
+    spyOn(appMessaging, "fetchThreads");
+    spyOn(appMessaging, "fetchMessages");
+    const closeThreadSpy = spyOn(appMessaging, "closeThread").and.callThrough();
+    const navigateSpy = spyOn(appMessaging["router"], "navigate");
+    appMessaging.userThreads.set(mockThreads);
+    appMessaging.isThreadsIdbFetchLoading.set(false);
+    appMessaging.threadId.set(3);
+    appMessaging.currentThreadsPage.set(1);
+    appMessaging.totalThreadsPages.set(2);
+    fixture.detectChanges();
+
+    appMessagingDOM.querySelector(".messagesLink").click();
+    fixture.detectChanges();
+
+    expect(closeThreadSpy).toHaveBeenCalledWith();
+    expect(appMessaging.threadId()).toBe(undefined);
+    expect(navigateSpy).toHaveBeenCalledWith(
+      [],
+      jasmine.objectContaining({
+        queryParams: {},
+      }),
+    );
+  });
 });

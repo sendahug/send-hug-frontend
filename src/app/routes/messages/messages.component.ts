@@ -32,7 +32,7 @@
 
 // Angular imports
 import { Component, signal, computed } from "@angular/core";
-import { ActivatedRoute, Router, RouterLink } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { from, map, switchMap, tap } from "rxjs";
 import { CommonModule } from "@angular/common";
 
@@ -56,7 +56,6 @@ import { PaginatedListComponent } from "@app/components/common/paginatedList/pag
   standalone: true,
   imports: [
     CommonModule,
-    RouterLink,
     ItemDeleteFormComponent,
     MessageComponent,
     ThreadComponent,
@@ -110,14 +109,11 @@ export class AppMessagesComponent {
     private swManager: SWManager,
     private apiClient: ApiClientService,
   ) {
-    this.currentThreadsPage.set(1);
-    this.currentMessagesPage.set(1);
-    this.fetchThreads();
-
     const threadsPage = this.route.snapshot.queryParamMap.get("threadsPage");
     this.currentThreadsPage.set(Number(threadsPage) || 1);
     const messagesPage = this.route.snapshot.queryParamMap.get("messagesPage");
     this.currentMessagesPage.set(Number(messagesPage) || 1);
+    this.fetchThreads();
 
     // Check if a thread ID is set in the parameters; if so, fetch the thread
     const threadId = this.route.snapshot.queryParamMap.get("threadId");
@@ -125,6 +121,8 @@ export class AppMessagesComponent {
     if (threadId && Number(threadId)) {
       this.threadId.set(Number(threadId));
       this.fetchMessages();
+    } else {
+      this.threadId.set(undefined);
     }
   }
 
@@ -334,5 +332,23 @@ export class AppMessagesComponent {
       replaceUrl: true,
     });
     this.fetchMessages();
+  }
+
+  /**
+   * Closes the currently open thread and returns to the threads list.
+   */
+  closeThread() {
+    const queryParams: {
+      threadsPage?: number;
+    } = {};
+
+    if (this.currentThreadsPage() != 1) queryParams["threadsPage"] = this.currentThreadsPage();
+
+    this.threadId.set(undefined);
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams,
+      replaceUrl: true,
+    });
   }
 }

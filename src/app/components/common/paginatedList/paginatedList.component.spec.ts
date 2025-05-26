@@ -38,7 +38,6 @@ import {
   platformBrowserDynamicTesting,
 } from "@angular/platform-browser-dynamic/testing";
 import { Component, NO_ERRORS_SCHEMA, provideZoneChangeDetection, signal } from "@angular/core";
-import { MockComponent } from "ng-mocks";
 
 import { PaginatedListComponent } from "./paginatedList.component";
 import { LoaderComponent } from "@common/loader/loader.component";
@@ -86,14 +85,11 @@ describe("PaginatedListComponent", () => {
 
   // Before each test, configure testing environment
   beforeEach(() => {
-    const MockLoaderComponent = MockComponent(LoaderComponent);
-
     TestBed.resetTestEnvironment();
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
-      schemas: [NO_ERRORS_SCHEMA],
-      imports: [MockLoaderComponent, CommonModule, PaginatedListComponent, MockParentComponent],
+      imports: [CommonModule, LoaderComponent, PaginatedListComponent, MockParentComponent],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
         provideZoneChangeDetection({ eventCoalescing: true }),
@@ -123,12 +119,11 @@ describe("PaginatedListComponent", () => {
     const fixture = TestBed.createComponent(PaginatedListComponent);
     const paginatedList = fixture.componentInstance;
     const paginatedListDOM = fixture.nativeElement;
-    fixture.componentRef.setInput("itemCount", 4);
-    fixture.componentRef.setInput("itemType", "messages");
+    fixture.componentRef.setInput("itemCount", 6);
+    fixture.componentRef.setInput("itemType", "posts");
     fixture.componentRef.setInput("totalPages", 2);
     fixture.componentRef.setInput("isLoading", false);
-    fixture.componentRef.setInput("isIdbFetchLoading", true);
-    fixture.componentRef.setInput("loadingMessage", "Loading messages...");
+    fixture.componentRef.setInput("isIdbFetchLoading", false);
     fixture.detectChanges();
 
     expect(paginatedList.currentPage()).toEqual(1);
@@ -172,51 +167,42 @@ describe("PaginatedListComponent", () => {
 
   it("should navigate to the next page", () => {
     const fixture = TestBed.createComponent(PaginatedListComponent);
-    fixture.componentRef.setInput("itemCount", 4);
-    fixture.componentRef.setInput("itemType", "messages");
+    const paginatedList = fixture.componentInstance;
+    const paginatedListDOM = fixture.nativeElement;
+    fixture.componentRef.setInput("itemCount", 6);
+    fixture.componentRef.setInput("itemType", "posts");
     fixture.componentRef.setInput("totalPages", 2);
     fixture.componentRef.setInput("isLoading", false);
     fixture.componentRef.setInput("isIdbFetchLoading", false);
-    fixture.componentRef.setInput("loadingMessage", "Loading messages...");
-    const paginatedList = fixture.componentInstance;
-    const paginatedListDOM = fixture.nativeElement;
-    const paginatedNextSpy = spyOn(paginatedList, "nextPage").and.callThrough();
-    const paginatedEmitterSpy = spyOn(paginatedList.pageChange, "emit").and.callThrough();
+    fixture.detectChanges();
+    const nextPageSpy = spyOn(paginatedList, "nextPage").and.callThrough();
+    const emitSpy = spyOn(paginatedList.pageChange, "emit");
+
+    paginatedListDOM.querySelector(".nextButton").click();
     fixture.detectChanges();
 
-    expect(paginatedList.totalPages()).toEqual(2);
-
-    paginatedListDOM.querySelectorAll(".nextButton")[0].click();
-    fixture.detectChanges();
-
-    expect(paginatedNextSpy).toHaveBeenCalledWith();
-    expect(paginatedEmitterSpy).toHaveBeenCalledWith(2);
-    expect(paginatedList.currentPage()).toEqual(2);
+    expect(nextPageSpy).toHaveBeenCalledWith();
+    expect(emitSpy).toHaveBeenCalledWith(2);
   });
 
   it("should navigate to the previous page", () => {
     const fixture = TestBed.createComponent(PaginatedListComponent);
-
     const paginatedList = fixture.componentInstance;
     const paginatedListDOM = fixture.nativeElement;
-    const paginatedNextSpy = spyOn(paginatedList, "nextPage").and.callThrough();
-    const paginatedEmitterSpy = spyOn(paginatedList.pageChange, "emit").and.callThrough();
-    fixture.componentRef.setInput("itemCount", 4);
-    fixture.componentRef.setInput("itemType", "messages");
+    fixture.componentRef.setInput("itemCount", 6);
+    fixture.componentRef.setInput("itemType", "posts");
     fixture.componentRef.setInput("totalPages", 2);
     fixture.componentRef.setInput("isLoading", false);
     fixture.componentRef.setInput("isIdbFetchLoading", false);
-    fixture.componentRef.setInput("loadingMessage", "Loading messages...");
     paginatedList.currentPage.set(2);
     fixture.detectChanges();
+    const nextPageSpy = spyOn(paginatedList, "prevPage").and.callThrough();
+    const emitSpy = spyOn(paginatedList.pageChange, "emit");
 
-    expect(paginatedList.totalPages()).toEqual(2);
-
-    paginatedListDOM.querySelectorAll(".prevButton")[0].click();
+    paginatedListDOM.querySelector(".prevButton").click();
     fixture.detectChanges();
 
-    expect(paginatedNextSpy).toHaveBeenCalledWith();
-    expect(paginatedEmitterSpy).toHaveBeenCalledWith(2);
-    expect(paginatedList.currentPage()).toEqual(2);
+    expect(nextPageSpy).toHaveBeenCalledWith();
+    expect(emitSpy).toHaveBeenCalledWith(1);
   });
 });

@@ -134,6 +134,44 @@ describe("MessageComponent", () => {
     );
   });
 
+  it("should show the user1 icon on the left side", () => {
+    const fixture = TestBed.createComponent(MessageComponent);
+    const appMessageDOM = fixture.nativeElement;
+    fixture.componentRef.setInput("message", mockMessage);
+    fixture.componentRef.setInput("user1Id", user1Id);
+    fixture.componentRef.setInput("user2Id", user2Id);
+    fixture.detectChanges();
+
+    const userIconPics = appMessageDOM.querySelectorAll(".messageProfilePic");
+
+    expect(userIconPics.length).toBe(2);
+    expect(userIconPics[0].querySelector("app-user-icon")).toBeTruthy();
+    expect(userIconPics[0].querySelector(".placeholderIcon")).toBeNull();
+    expect(userIconPics[1].querySelector("app-user-icon")).toBeNull();
+    expect(userIconPics[1].querySelector(".placeholderIcon")).toBeTruthy();
+  });
+
+  it("should show the user2 icon on the right side", () => {
+    const fixture = TestBed.createComponent(MessageComponent);
+    const appMessageDOM = fixture.nativeElement;
+    fixture.componentRef.setInput("message", {
+      ...mockMessage,
+      fromId: 4,
+      forId: 1,
+    });
+    fixture.componentRef.setInput("user1Id", user1Id);
+    fixture.componentRef.setInput("user2Id", user2Id);
+    fixture.detectChanges();
+
+    const userIconPics = appMessageDOM.querySelectorAll(".messageProfilePic");
+
+    expect(userIconPics.length).toBe(2);
+    expect(userIconPics[0].querySelector("app-user-icon")).toBeNull();
+    expect(userIconPics[0].querySelector(".placeholderIcon")).toBeTruthy();
+    expect(userIconPics[1].querySelector("app-user-icon")).toBeTruthy();
+    expect(userIconPics[1].querySelector(".placeholderIcon")).toBeNull();
+  });
+
   // Check that the popup variables are set to false
   it("should have all popup variables set to false", () => {
     const fixture = TestBed.createComponent(MessageComponent);

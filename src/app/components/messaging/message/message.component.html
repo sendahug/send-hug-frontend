@@ -1,6 +1,6 @@
 <div class="messageProfilePic">
   <app-user-icon
-    *ngIf="_message().fromId === user1Id()"
+    *ngIf="_message().fromId === user1Id"
     [selectedIcon]="_message().from.selectedIcon ?? 'kitty'"
     [characterColour]="_message().from.iconColours?.character"
     [lbgColour]="_message().from.iconColours?.lbg"
@@ -8,7 +8,7 @@
     [itemColour]="_message().from.iconColours?.item"
     [svgClass]="'userIcon messageIcon'"
   />
-  <span *ngIf="_message().fromId !== user1Id()" class="placeholderIcon"></span>
+  <span *ngIf="_message().fromId !== user1Id" class="placeholderIcon"></span>
 </div>
 <div class="messageContainer">
   <div aria-describedby="mUserFrom" class="messageFrom pageCategory">
@@ -41,7 +41,7 @@
 </div>
 <div class="messageProfilePic">
   <app-user-icon
-    *ngIf="_message().fromId === user2Id()"
+    *ngIf="_message().fromId === user2Id"
     [selectedIcon]="_message().from.selectedIcon ?? 'kitty'"
     [characterColour]="_message().from.iconColours?.character"
     [lbgColour]="_message().from.iconColours?.lbg"
@@ -49,7 +49,7 @@
     [itemColour]="_message().from.iconColours?.item"
     [svgClass]="'userIcon messageIcon'"
   />
-  <span *ngIf="_message().fromId !== user2Id()" class="placeholderIcon"></span>
+  <span *ngIf="_message().fromId !== user2Id" class="placeholderIcon"></span>
 </div>
 
 <item-delete-form

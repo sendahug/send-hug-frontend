@@ -70,8 +70,8 @@
         >
           <app-single-message
             [message]="message"
-            [user1Id]="selectedThread()?.user1Id"
-            [user2Id]="selectedThread()?.user2Id"
+            [user1Id]="selectedThread()?.user1Id!"
+            [user2Id]="selectedThread()?.user2Id!"
             (messageDeleted)="updateMessageList($event, 'thread')"
           ></app-single-message>
         </li>

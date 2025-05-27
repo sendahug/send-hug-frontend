@@ -31,7 +31,7 @@
 */
 
 // Angular imports
-import { Component, signal, computed, Output, Input, EventEmitter, input } from "@angular/core";
+import { Component, signal, computed, Output, Input, EventEmitter } from "@angular/core";
 import { RouterLink } from "@angular/router";
 import { CommonModule } from "@angular/common";
 
@@ -48,14 +48,17 @@ import { ItemDeleteFormComponent } from "@forms/itemDeleteForm/itemDeleteForm.co
   imports: [CommonModule, RouterLink, UserIconComponent, ItemDeleteFormComponent],
 })
 export class MessageComponent {
-  /** @todo Replace this with `input()` once we figure out why it seems to break the component */
+  /**
+   * @todo Replace these with `input()` after removing component mocks. ng-mock's
+   * MockComponent doesn't support signal inputs and outputs apparently.
+   */
   @Input()
   set message(newMessage: MessageGet) {
     this._message.set(newMessage);
   }
   readonly _message = signal<MessageGet>({} as MessageGet);
-  readonly user1Id = input<number>();
-  readonly user2Id = input<number>();
+  @Input() user1Id: number = 0;
+  @Input() user2Id: number = 0;
   @Output() messageDeleted = new EventEmitter<number>();
   readonly userIconToShow = computed(() => this._message().from);
   readonly deleteMode = signal(false);

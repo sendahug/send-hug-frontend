@@ -11,11 +11,13 @@
   <span *ngIf="_message().fromId !== user1Id" class="placeholderIcon"></span>
 </div>
 <div class="messageContainer">
-  <div aria-describedby="mUserFrom" class="messageFrom pageCategory">
-    {{ _message().from.displayName }}:
-  </div>
-  <div id="{{ 'text' + _message().id }}" class="messageText" aria-describedby="mText">
-    {{ _message().messageText }}
+  <div>
+    <span aria-describedby="mUserFrom" class="messageFrom pageCategory">
+      {{ _message().from.displayName }}:
+    </span>
+    <span id="{{ 'text' + _message().id }}" class="messageText" aria-describedby="mText">
+      {{ _message().messageText }}
+    </span>
   </div>
   <div class="messageField">
     <span class="pageData" aria-describedby="mDate">

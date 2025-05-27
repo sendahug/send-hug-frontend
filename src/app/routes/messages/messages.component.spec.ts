@@ -47,6 +47,7 @@ import { BehaviorSubject, of } from "rxjs";
 import { By } from "@angular/platform-browser";
 import { NO_ERRORS_SCHEMA, provideZoneChangeDetection, signal } from "@angular/core";
 import { MockComponent, MockProvider } from "ng-mocks";
+import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 
 import { AppMessagesComponent } from "./messages.component";
 import { AuthService } from "@app/services/auth.service";
@@ -89,6 +90,7 @@ describe("AppMessagesComponent", () => {
         AppMessagesComponent,
         MessageComponent,
         PaginatedListComponent,
+        FontAwesomeModule,
       ],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
@@ -651,6 +653,36 @@ describe("AppMessagesComponent", () => {
       [],
       jasmine.objectContaining({
         queryParams: {},
+      }),
+    );
+  });
+
+  it("should close the thread and reset the thread ID when clicking the back button", () => {
+    const fixture = TestBed.createComponent(AppMessagesComponent);
+    const appMessaging = fixture.componentInstance;
+    const appMessagingDOM = fixture.nativeElement;
+    spyOn(appMessaging, "fetchThreads");
+    spyOn(appMessaging, "fetchMessages");
+    const closeThreadSpy = spyOn(appMessaging, "closeThread").and.callThrough();
+    const navigateSpy = spyOn(appMessaging["router"], "navigate");
+    appMessaging.userThreads.set(mockThreads);
+    appMessaging.isThreadsIdbFetchLoading.set(false);
+    appMessaging.threadId.set(3);
+    appMessaging.currentThreadsPage.set(2);
+    appMessaging.totalThreadsPages.set(2);
+    fixture.detectChanges();
+
+    appMessagingDOM.querySelector(".textlessButton").click();
+    fixture.detectChanges();
+
+    expect(closeThreadSpy).toHaveBeenCalledWith();
+    expect(appMessaging.threadId()).toBe(undefined);
+    expect(navigateSpy).toHaveBeenCalledWith(
+      [],
+      jasmine.objectContaining({
+        queryParams: {
+          threadsPage: 2,
+        },
       }),
     );
   });

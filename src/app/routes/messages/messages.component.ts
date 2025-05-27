@@ -35,6 +35,8 @@ import { Component, signal, computed } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { from, map, switchMap, tap } from "rxjs";
 import { CommonModule } from "@angular/common";
+import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 
 // App-related imports
 import { AuthService } from "@app/services/auth.service";
@@ -60,6 +62,7 @@ import { PaginatedListComponent } from "@app/components/common/paginatedList/pag
     MessageComponent,
     ThreadComponent,
     PaginatedListComponent,
+    FontAwesomeModule,
   ],
 })
 export class AppMessagesComponent {
@@ -107,6 +110,7 @@ export class AppMessagesComponent {
   readonly deleteMode = signal(false);
   readonly deleteEndpoint = signal(`messages/threads`);
   readonly itemType = signal<"Thread">("Thread");
+  readonly faChevronLeft = faChevronLeft;
 
   // CTOR
   constructor(

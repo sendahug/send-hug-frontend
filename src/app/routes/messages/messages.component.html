@@ -50,7 +50,14 @@
 
   <!-- Messages area -->
   <div *ngIf="threadId()" id="messageList">
-    <h2>{{ threadTitle() }}</h2>
+    <div class="threadHeader">
+      <button class="textlessButton" (click)="closeThread()">
+        <fa-icon aria-label="Back to threads" [icon]="faChevronLeft"></fa-icon>
+      </button>
+      <h2>{{ threadTitle() }}</h2>
+      <div class="buttonPlaceholder"></div>
+    </div>
+
     <app-paginated-list
       id="messagesList"
       [isLoading]="isMessagesLoading()"

@@ -146,9 +146,8 @@ app-nav-menu {
   z-index: 1;
   position: absolute;
   overflow-y: scroll;
-  width: 96%;
-  max-width: 96%;
-  margin-right: 4%;
+  width: 99%;
+  max-width: 99%;
   margin-left: 0;
   margin-top: 10px;
   bottom: 10px;
@@ -164,20 +163,20 @@ app-nav-menu {
 
 /* Breadcrumb area */
 #breadcrumb {
-  width: 40%;
   margin: 0 0 0 6%;
   padding: 5px;
   left: 0;
   right: 0;
-  text-align: left;
+  text-align: center;
   display: flex;
   align-items: center;
-  justify-content: left;
+  justify-content: center;
   white-space: nowrap;
   /* Responsive styling for screens above 800px width */
   @media screen and (min-width: 800px) {
-    width: 90%;
+    width: 70%;
     align-self: center;
+    margin: 0 calc(15% - 5px);
   }
 }
 
@@ -191,6 +190,13 @@ app-nav-menu {
   /* Responsive styling for screens above 800px width */
   @media screen and (min-width: 800px) {
     .fontSize(14);
+  }
+}
+
+#mailboxNav .breadcrumb {
+  /* Responsive styling for screens above 800px width */
+  @media screen and (min-width: 800px) {
+    .fontSize(16);
   }
 }
 

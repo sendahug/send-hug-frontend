@@ -5,21 +5,19 @@
     [lbgColour]="_thread().user.iconColours.lbg"
     [rbgColour]="_thread().user.iconColours.rbg"
     [itemColour]="_thread().user.iconColours.item"
-    [svgClass]="'userIcon'"
+    [svgClass]="'userIcon messageIcon'"
   />
 </div>
 <div class="messageContainer">
   <div class="messageField">
-    <span class="pageCategory">User:</span>
-    <span id="{{ 'user' + _thread().id }}" class="pageData" aria-describedby="tUser">{{
+    <span id="{{ 'user' + _thread().id }}" class="pageData userName" aria-describedby="tUser">{{
       _thread().user.displayName
     }}</span>
   </div>
   <div class="messageField">
-    <span class="pageCategory">Messages:</span>
-    <span class="pageData" [attr.aria-describedby]="'tNumMess ' + 'user' + _thread().id">{{
-      _thread().numMessages
-    }}</span>
+    <span class="pageData" [attr.aria-describedby]="'tNumMess ' + 'user' + _thread().id">
+      {{ _thread().numMessages }} Message(s)
+    </span>
   </div>
   <div class="messageField">
     <span class="pageCategory">Last Active:</span>
@@ -33,14 +31,14 @@
       [attr.aria-describedby]="'tView ' + 'user' + _thread().id"
       (click)="threadSelected.emit(_thread().id)"
     >
-      View Thread Messages
+      View
     </button>
     <button
       class="appButton deleteButton"
       [attr.aria-describedby]="'tDelete ' + 'user' + _thread().id"
       (click)="deleteThread()"
     >
-      Delete Thread
+      Delete
     </button>
   </div>
 </div>

@@ -65,6 +65,13 @@ import { PaginatedListComponent } from "@app/components/common/paginatedList/pag
 export class AppMessagesComponent {
   readonly idbFilterAttribute = signal<"threadID">("threadID");
   readonly threadId = signal<number | undefined>(undefined);
+  readonly selectedThread = computed<FullThread | undefined>(
+    () => this.userThreads().find((thread) => thread.id === this.threadId()) || undefined,
+  );
+  readonly threadTitle = computed(
+    () =>
+      this.userThreadsFormatted().find((thread) => thread.id === this.threadId())?.user.displayName,
+  );
   // Messages
   readonly messages = signal<MessageGet[]>([]);
   readonly currentMessagesPage = signal(1);
@@ -88,8 +95,8 @@ export class AppMessagesComponent {
   readonly totalThreadsPages = signal(1);
   readonly isThreadsLoading = signal(false);
   readonly isThreadsIdbFetchLoading = signal(false);
-  readonly threadsContainerClass = computed(() => ({
-    userThreads: true,
+  readonly threadsListClass = computed(() => ({
+    threadOpen: this.threadId(),
   }));
   readonly messagesContainerClass = computed(() => ({
     mailboxMessages: true,

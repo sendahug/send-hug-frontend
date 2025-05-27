@@ -115,13 +115,11 @@ describe("MessageComponent", () => {
   // Check that the component shows the message details
   it("should show message details - thread", () => {
     const fixture = TestBed.createComponent(MessageComponent);
-    fixture.componentRef.setInput("currentUser", 4);
     fixture.componentRef.setInput("message", {
       ...mockMessage,
       fromId: 4,
       forId: 1,
     });
-    fixture.componentRef.setInput("messType", "thread");
     const appMessage = fixture.componentInstance;
     const appMessageDOM = fixture.nativeElement;
     fixture.detectChanges();
@@ -135,9 +133,7 @@ describe("MessageComponent", () => {
   // Check that the popup variables are set to false
   it("should have all popup variables set to false", () => {
     const fixture = TestBed.createComponent(MessageComponent);
-    fixture.componentRef.setInput("currentUser", 4);
     fixture.componentRef.setInput("message", mockMessage);
-    fixture.componentRef.setInput("messType", "thread");
     const appMessage = fixture.componentInstance;
     fixture.detectChanges();
 
@@ -149,9 +145,7 @@ describe("MessageComponent", () => {
     const fixture = TestBed.createComponent(MessageComponent);
     const appMessage = fixture.componentInstance;
     const appMessageDOM = fixture.nativeElement;
-    fixture.componentRef.setInput("currentUser", 4);
     fixture.componentRef.setInput("message", mockMessage);
-    fixture.componentRef.setInput("messType", "thread");
     fixture.detectChanges();
 
     // before the click
@@ -163,7 +157,7 @@ describe("MessageComponent", () => {
 
     // after the click
     expect(appMessage.deleteMode()).toBeTrue();
-    expect(appMessage.deleteEndpoint()).toBe("messages/thread");
+    expect(appMessage.deleteEndpoint).toBe("messages/thread");
     expect(appMessage.itemType).toBe("Message");
     expect(appMessageDOM.querySelector("item-delete-form")).toBeTruthy();
   });
@@ -171,9 +165,7 @@ describe("MessageComponent", () => {
   // Check the popup exits when 'false' is emitted
   it("should change mode when the event emitter emits false", () => {
     const fixture = TestBed.createComponent(MessageComponent);
-    fixture.componentRef.setInput("currentUser", 4);
     fixture.componentRef.setInput("message", mockMessage);
-    fixture.componentRef.setInput("messType", "thread");
     const appMessage = fixture.componentInstance;
     const changeSpy = spyOn(appMessage, "changeMode").and.callThrough();
     const outputSpy = spyOn(appMessage.messageDeleted, "emit");
@@ -199,9 +191,7 @@ describe("MessageComponent", () => {
   it("should have the relevant buttons for each message", () => {
     const fixture = TestBed.createComponent(MessageComponent);
     const appMessageDOM = fixture.nativeElement;
-    fixture.componentRef.setInput("currentUser", 4);
     fixture.componentRef.setInput("message", mockMessage);
-    fixture.componentRef.setInput("messType", "thread");
     fixture.detectChanges();
 
     expect(appMessageDOM.querySelectorAll(".messageButton")[0].tagName.toLowerCase()).toBe("a");

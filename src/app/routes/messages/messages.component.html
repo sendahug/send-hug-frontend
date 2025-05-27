@@ -70,9 +70,7 @@
           aria-describedby="messType"
         >
           <app-single-message
-            [currentUser]="authService.userData()!.id!"
             [message]="message"
-            [messType]="messType()"
             (messageDeleted)="updateMessageList($event, 'thread')"
           ></app-single-message>
         </li>

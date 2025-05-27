@@ -183,14 +183,6 @@ describe("AppMessagesComponent", () => {
     expect(appMessaging).toBeTruthy();
   });
 
-  // Check that the component loads the threads if no mailbox is specified
-  it("should load the threads by default", () => {
-    const fixture = TestBed.createComponent(AppMessagesComponent);
-    const appMessaging = fixture.componentInstance;
-
-    expect(appMessaging.messType()).toBe("threads");
-  });
-
   // Check that the popup variables are set to false
   it("should have all popup variables set to false", () => {
     const fixture = TestBed.createComponent(AppMessagesComponent);

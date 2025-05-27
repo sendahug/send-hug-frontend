@@ -105,7 +105,6 @@ export class AppMessagesComponent {
     mailboxMessages: true,
     hidden: !this.threadId(),
   }));
-  readonly messType = computed(() => (this.threadId() ? "thread" : "threads"));
   // delete all sub-component variables
   readonly deleteMode = signal(false);
   readonly deleteEndpoint = signal(`messages/threads`);

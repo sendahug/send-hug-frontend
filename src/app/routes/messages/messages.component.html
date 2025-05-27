@@ -1,7 +1,7 @@
 <div id="mailboxNav">
   <h1>Messages</h1>
 
-  <nav *ngIf="messType() === 'thread'" id="breadcrumb" aria-label="Breadcrumb">
+  <nav *ngIf="threadId()" id="breadcrumb" aria-label="Breadcrumb">
     <button class="breadcrumb messagesLink bLink" (click)="closeThread()">Messages</button> /
     <span class="breadcrumb">Thread {{ threadId() }}</span>
   </nav>
@@ -22,12 +22,12 @@
       [loadingMessage]="'Loading threads...'"
       (pageChange)="updateCurrentPage($event, 'threads')"
     >
-      <ul itemList class="userThreads" aria-describedby="messType">
+      <ul itemList class="userThreads" aria-describedby="threadsDescription">
         <li
           *ngFor="let thread of userThreadsFormatted()"
-          id="{{ messType() + thread.id }}"
+          id="{{ 'threads' + thread.id }}"
           class="userThread"
-          aria-describedby="messType"
+          aria-describedby="threadsDescription"
         >
           <app-single-thread
             [thread]="thread"
@@ -68,12 +68,12 @@
       [loadingMessage]="'Loading messages...'"
       (pageChange)="updateCurrentPage($event, 'thread')"
     >
-      <ul itemList aria-describedby="messType" [ngClass]="messagesContainerClass()">
+      <ul itemList aria-describedby="threadDescription" [ngClass]="messagesContainerClass()">
         <li
           *ngFor="let message of messages().reverse()"
-          id="{{ messType() + message.id }}"
+          id="{{ 'thread' + message.id }}"
           class="userMessage"
-          aria-describedby="messType"
+          aria-describedby="threadDescription"
         >
           <app-single-message
             [message]="message"
@@ -99,7 +99,8 @@
   <p id="tLatestMess">Latest message in thread with</p>
   <p id="tView">View thread with</p>
   <p id="tDelete">Delete thread with</p>
-  <p id="messType">Messages in the {{ messType() }} mailbox</p>
+  <p id="threadsDescription">Messages in the threads mailbox</p>
+  <p id="threadDescription">Messages in the thread with {{ threadTitle() }}</p>
 </div>
 
 <item-delete-form

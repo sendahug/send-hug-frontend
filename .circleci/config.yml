@@ -91,6 +91,7 @@ jobs:
             cd ..
             quart run
           background: true
+      - run: sudo apt-get update
       - browser-tools/install_browser_tools
       - run: google-chrome --version
       - cypress/install
@@ -170,6 +171,7 @@ jobs:
             cd ..
             quart run
           background: true
+      - run: sudo apt-get update
       - browser-tools/install_browser_tools
       - run: google-chrome --version
       - restore_cache:

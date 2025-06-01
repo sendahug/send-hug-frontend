@@ -70,7 +70,7 @@
     >
       <ul itemList aria-describedby="threadDescription" [ngClass]="messagesContainerClass()">
         <li
-          *ngFor="let message of messages().reverse()"
+          *ngFor="let message of messages()"
           id="{{ 'thread' + message.id }}"
           class="userMessage"
           aria-describedby="threadDescription"

@@ -155,7 +155,7 @@ export class AppMessagesComponent {
       .pipe(switchMap(() => this.apiClient.get<MessagesResponse>("messages", fetchParams)))
       .subscribe({
         next: (data) => {
-          this.messages.set(data.messages);
+          this.messages.set(data.messages.reverse());
           this.totalMessagesPages.set(data.total_pages);
           this.isMessagesLoading.set(false);
           this.swManager.addFetchedItems<MessageGet>("messages", [...data.messages], "date");
@@ -178,7 +178,7 @@ export class AppMessagesComponent {
       ),
     ).pipe(
       tap((data) => {
-        this.messages.set(data.messages);
+        this.messages.set(data.messages.reverse());
         this.totalMessagesPages.set(data.pages);
         this.isMessagesIdbFetchLoading.set(false);
       }),

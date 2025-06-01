@@ -206,7 +206,7 @@ function getConfig() {
     standard: "WCAG2AAA",
     level: "error",
     timeout: 15000,
-    threshold: 2,
+    threshold: 0,
     log: {
       debug: logLevel == 0 ? console.debug : () => undefined,
       error: logLevel <= 2 ? console.error : () => undefined,

@@ -48,7 +48,7 @@ jobs:
           FLASK_ENV: development
           FRONTEND: http://localhost:3000
           FIREBASE_CREDENTIALS_FILE: /home/circleci/send-hug-backend/test_creds.json
-      - image: cimg/postgres:14.10
+      - image: cimg/postgres:16.8
         environment:
           POSTGRES_USER: postgres
           POSTGRES_DB: sendahug
@@ -126,7 +126,7 @@ jobs:
           FLASK_ENV: development
           FRONTEND: http://localhost:3000
           FIREBASE_CREDENTIALS_FILE: /home/circleci/send-hug-backend/test_creds.json
-      - image: cimg/postgres:14.10
+      - image: cimg/postgres:16.8
         auth:
           username: mydockerhub-user
           password: $DOCKERHUB_PASSWORD # context / project UI env-var reference

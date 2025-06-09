@@ -1,0 +1,9 @@
+{
+  "pr_number": 2124,
+  "changes": [
+    {
+      "change": "Chores",
+      "description": "Updated the version of postgres in CI to match the version currently used in production."
+    }
+  ]
+}

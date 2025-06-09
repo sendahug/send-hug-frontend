@@ -46,7 +46,7 @@
     "eslint-config-prettier": "^10.1.5",
     "eslint-plugin-cypress": "^5.1.0",
     "eslint-plugin-jasmine": "^4.2.2",
-    "jasmine-core": "^5.7.1",
+    "jasmine-core": "^5.8.0",
     "less": "^4.3.0",
     "magic-string": "^0.30.17",
     "ng-mocks": "^14.13.5",

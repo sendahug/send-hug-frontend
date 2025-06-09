@@ -89,9 +89,10 @@ describe("PaginatedListComponent", () => {
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     /**
-     * @todo we should be mocking the Loader here, but for some reason it seems
-     * to break tests. Since it's a tiny component, we've decided it's fine for the time being.
+     * @todo we should be mocking the Loader here, but for it breaks tests.
+     * Since it's a tiny component, we've decided it's fine for the time being.
      * That said, we should figure it out and mock it like we do with other child components.
+     * This is the same problem as in the messages component - mockComponent breaks signals.
      */
     TestBed.configureTestingModule({
       imports: [CommonModule, LoaderComponent, PaginatedListComponent, MockParentComponent],

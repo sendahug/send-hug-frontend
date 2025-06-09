@@ -134,24 +134,9 @@ describe("SiteMapComponent", () => {
       },
       {
         path: "messages",
-        children: [
-          { path: "", pathMatch: "prefix", redirectTo: "threads", data: { name: "Threads" } },
-          {
-            path: "threads",
-            pathMatch: "prefix",
-            component: MockComponent,
-            data: { name: "Threads" },
-          },
-          {
-            path: "thread/:id",
-            pathMatch: "prefix",
-            component: MockComponent,
-            data: { name: "Thread" },
-          },
-        ],
+        component: MockComponent,
         data: {
           name: "Mailbox",
-          mapRoutes: [{ path: "threads", name: "Threads" }],
         },
       },
       { path: "login", component: MockComponent, data: { name: "Login Page" } },

@@ -1,38 +1,31 @@
 <div class="messageProfilePic">
   <app-user-icon
-    [selectedIcon]="userIconToShow().selectedIcon ?? 'kitty'"
-    [characterColour]="userIconToShow().iconColours?.character"
-    [lbgColour]="userIconToShow().iconColours?.lbg"
-    [rbgColour]="userIconToShow().iconColours?.rbg"
-    [itemColour]="userIconToShow().iconColours?.item"
-    [svgClass]="'userIcon'"
+    *ngIf="_message().fromId === user1Id"
+    [selectedIcon]="_message().from.selectedIcon ?? 'kitty'"
+    [characterColour]="_message().from.iconColours?.character"
+    [lbgColour]="_message().from.iconColours?.lbg"
+    [rbgColour]="_message().from.iconColours?.rbg"
+    [itemColour]="_message().from.iconColours?.item"
+    [svgClass]="'userIcon messageIcon'"
   />
+  <span *ngIf="_message().fromId !== user1Id" class="placeholderIcon"></span>
 </div>
 <div class="messageContainer">
-  <div id="{{ 'text' + _message().id }}" class="messageText" aria-describedby="mText">
-    {{ _message().messageText }}
-  </div>
-  <div *ngIf="displayFrom()" class="messageField">
-    <span class="pageCategory">From:</span
-    ><span class="pageData" aria-describedby="mUserFrom">
-      {{ _message().from.displayName }}
+  <div>
+    <span aria-describedby="mUserFrom" class="messageFrom pageCategory">
+      {{ _message().from.displayName }}:
     </span>
-  </div>
-  <div *ngIf="displayFor()" class="messageField">
-    <span class="pageCategory">For:</span
-    ><span class="pageData" aria-describedby="mUserFor">
-      {{ _message().for.displayName }}
+    <span id="{{ 'text' + _message().id }}" class="messageText" aria-describedby="mText">
+      {{ _message().messageText }}
     </span>
   </div>
   <div class="messageField">
-    <span class="pageCategory">Date:</span>
     <span class="pageData" aria-describedby="mDate">
       {{ _message().date }}
     </span>
   </div>
   <div class="buttons">
     <a
-      *ngIf="displayFrom()"
       class="appButton messageButton"
       [routerLink]="['/new', 'Message']"
       [queryParams]="{ user: _message().from.displayName, userID: _message().fromId }"
@@ -44,14 +37,26 @@
       [attr.aria-describedby]="'mDelete ' + 'mText' + _message().id"
       (click)="deleteMessage()"
     >
-      Delete Message
+      Delete
     </button>
   </div>
+</div>
+<div class="messageProfilePic">
+  <app-user-icon
+    *ngIf="_message().fromId === user2Id"
+    [selectedIcon]="_message().from.selectedIcon ?? 'kitty'"
+    [characterColour]="_message().from.iconColours?.character"
+    [lbgColour]="_message().from.iconColours?.lbg"
+    [rbgColour]="_message().from.iconColours?.rbg"
+    [itemColour]="_message().from.iconColours?.item"
+    [svgClass]="'userIcon messageIcon'"
+  />
+  <span *ngIf="_message().fromId !== user2Id" class="placeholderIcon"></span>
 </div>
 
 <item-delete-form
   *ngIf="deleteMode()"
-  [deleteEndpoint]="deleteEndpoint()"
+  [deleteEndpoint]="deleteEndpoint"
   [itemType]="itemType"
   [itemId]="_message().id"
   (editMode)="changeMode($event)"

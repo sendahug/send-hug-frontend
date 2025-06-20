@@ -134,35 +134,9 @@ describe("SiteMapComponent", () => {
       },
       {
         path: "messages",
-        children: [
-          { path: "", pathMatch: "prefix", redirectTo: "inbox", data: { name: "Inbox" } },
-          { path: "inbox", pathMatch: "prefix", component: MockComponent, data: { name: "Inbox" } },
-          {
-            path: "outbox",
-            pathMatch: "prefix",
-            component: MockComponent,
-            data: { name: "Outbox" },
-          },
-          {
-            path: "threads",
-            pathMatch: "prefix",
-            component: MockComponent,
-            data: { name: "Threads" },
-          },
-          {
-            path: "thread/:id",
-            pathMatch: "prefix",
-            component: MockComponent,
-            data: { name: "Thread" },
-          },
-        ],
+        component: MockComponent,
         data: {
           name: "Mailbox",
-          mapRoutes: [
-            { path: "inbox", name: "Inbox" },
-            { path: "outbox", name: "Outbox" },
-            { path: "threads", name: "Threads" },
-          ],
         },
       },
       { path: "login", component: MockComponent, data: { name: "Login Page" } },

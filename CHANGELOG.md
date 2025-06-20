@@ -11,10 +11,10 @@
 #### Changes
 
 - The mailbox view was rebuilt to improve the user experience when using messaging. This includes:
-	- The different mailbox views (inbox, outbox, threads) were replaced with a single threads view. When users select a thread, they can view the thread's messages in the same view; otherwise, only the threads list is shown.
-	- The thread component was redesigned. The new thread component emphasizes the other user's name and user icon and makes it easier to understand the rest of the thread's details (last message and message count).
-	- The message component was redesigned. The new message component condenses the message's sender and text into a single line, which allows us to display messages in a more familiar layout and emphasises the message's sender and text. It also displays the user's icon in the left or in the right side of the message, depending on whether the message's sender is the first or the second user in the thread.
-	- The text of the buttons in the thread and message components was simplified. ([#2103](https://github.com/sendahug/send-hug-frontend/pull/2103))
+  - The different mailbox views (inbox, outbox, threads) were replaced with a single threads view. When users select a thread, they can view the thread's messages in the same view; otherwise, only the threads list is shown.
+  - The thread component was redesigned. The new thread component emphasizes the other user's name and user icon and makes it easier to understand the rest of the thread's details (last message and message count).
+  - The message component was redesigned. The new message component condenses the message's sender and text into a single line, which allows us to display messages in a more familiar layout and emphasises the message's sender and text. It also displays the user's icon in the left or in the right side of the message, depending on whether the message's sender is the first or the second user in the thread.
+  - The text of the buttons in the thread and message components was simplified. ([#2103](https://github.com/sendahug/send-hug-frontend/pull/2103))
 
 #### Breaking Changes
 

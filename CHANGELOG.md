@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+### 2025-06-22
+
+#### Chores
+
+- Added a ref to the checkout step in the 'deploy to preview' workflow in order to ensure the deployed preview is using the updated repo when dealing with dependabot's pull requests. ([#2136](https://github.com/sendahug/send-hug-frontend/pull/2136))
+
 ### 2025-06-20
 
 #### Features

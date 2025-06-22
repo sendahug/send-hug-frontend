@@ -1,0 +1,9 @@
+{
+  "pr_number": 2136,
+  "changes": [
+    {
+      "change": "Chores",
+      "description": "Added a ref to the checkout step in the 'deploy to preview' workflow in order to ensure the deployed preview is using the updated repo when dealing with dependabot's pull requests."
+    }
+  ]
+}

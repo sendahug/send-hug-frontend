@@ -30,7 +30,7 @@
     "@types/babel__core": "^7.20.5",
     "@types/jasmine": "^5.1.8",
     "@types/less": "^3.0.8",
-    "@types/node": "^24.0.3",
+    "@types/node": "^24.0.4",
     "@types/pa11y": "^5.3.7",
     "@web/dev-server-esbuild": "^1.0.4",
     "@web/dev-server-rollup": "^0.6.4",

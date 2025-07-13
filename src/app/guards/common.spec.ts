@@ -65,6 +65,7 @@ describe("guards/common", () => {
       trigger: "imperative",
       extras: {},
       previousNavigation: null,
+      abort: () => {},
     });
 
     const result = getQueryStringFromRouter(router);
@@ -83,6 +84,7 @@ describe("guards/common", () => {
       trigger: "imperative",
       extras: {},
       previousNavigation: null,
+      abort: () => {},
     });
 
     const result = getQueryStringFromRouter(router);
@@ -101,6 +103,7 @@ describe("guards/common", () => {
       trigger: "imperative",
       extras: {},
       previousNavigation: null,
+      abort: () => {},
     });
 
     const result = getQueryStringFromRouter(router);

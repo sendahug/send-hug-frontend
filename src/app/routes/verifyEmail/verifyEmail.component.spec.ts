@@ -39,7 +39,7 @@ import {
 } from "@angular/platform-browser-dynamic/testing";
 import { provideRouter } from "@angular/router";
 import { NO_ERRORS_SCHEMA, signal } from "@angular/core";
-import { provideExperimentalZonelessChangeDetection } from "@angular/core";
+import { provideZonelessChangeDetection } from "@angular/core";
 import { MockProvider } from "ng-mocks";
 import { BehaviorSubject } from "rxjs";
 
@@ -64,7 +64,7 @@ describe("VerifyEmailPageComponent", () => {
       imports: [CommonModule, VerifyEmailPageComponent],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
-        provideExperimentalZonelessChangeDetection(),
+        provideZonelessChangeDetection(),
         provideRouter([]),
         MockAuthService,
       ],

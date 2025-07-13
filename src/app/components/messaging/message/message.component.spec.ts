@@ -39,7 +39,7 @@ import {
 } from "@angular/platform-browser-dynamic/testing";
 import { provideRouter, RouterLink, withComponentInputBinding } from "@angular/router";
 import { By } from "@angular/platform-browser";
-import { NO_ERRORS_SCHEMA, provideExperimentalZonelessChangeDetection } from "@angular/core";
+import { NO_ERRORS_SCHEMA, provideZonelessChangeDetection } from "@angular/core";
 import { MockComponent } from "ng-mocks";
 
 import { MessageComponent } from "./message.component";
@@ -71,7 +71,7 @@ describe("MessageComponent", () => {
       ],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
-        provideExperimentalZonelessChangeDetection(),
+        provideZonelessChangeDetection(),
         provideRouter([], withComponentInputBinding()),
       ],
     }).compileComponents();

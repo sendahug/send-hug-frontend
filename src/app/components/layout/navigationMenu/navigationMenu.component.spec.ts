@@ -44,7 +44,7 @@ import {} from "jasmine";
 import { APP_BASE_HREF, CommonModule } from "@angular/common";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { BehaviorSubject, of, Subscription } from "rxjs";
-import { provideExperimentalZonelessChangeDetection, signal } from "@angular/core";
+import { provideZonelessChangeDetection, signal } from "@angular/core";
 import { MockComponent, MockProvider } from "ng-mocks";
 import { setViewport } from "@web/test-runner-commands";
 import { By } from "@angular/platform-browser";
@@ -99,7 +99,7 @@ describe("NavigationMenuComponent", () => {
       ],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
-        provideExperimentalZonelessChangeDetection(),
+        provideZonelessChangeDetection(),
         provideRouter([], withComponentInputBinding()),
         MockAuthService,
         MockItemsService,

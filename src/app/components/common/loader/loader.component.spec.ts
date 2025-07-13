@@ -37,7 +37,7 @@ import {
   BrowserDynamicTestingModule,
   platformBrowserDynamicTesting,
 } from "@angular/platform-browser-dynamic/testing";
-import { provideExperimentalZonelessChangeDetection } from "@angular/core";
+import { provideZonelessChangeDetection } from "@angular/core";
 
 import { LoaderComponent } from "./loader.component";
 
@@ -49,10 +49,7 @@ describe("LoaderComponent", () => {
 
     TestBed.configureTestingModule({
       imports: [LoaderComponent],
-      providers: [
-        { provide: APP_BASE_HREF, useValue: "/" },
-        provideExperimentalZonelessChangeDetection(),
-      ],
+      providers: [{ provide: APP_BASE_HREF, useValue: "/" }, provideZonelessChangeDetection()],
     }).compileComponents();
   });
 

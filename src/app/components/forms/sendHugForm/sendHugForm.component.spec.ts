@@ -33,7 +33,7 @@ import {
 } from "@angular/platform-browser-dynamic/testing";
 import { ReactiveFormsModule } from "@angular/forms";
 import { BehaviorSubject, of } from "rxjs";
-import { provideExperimentalZonelessChangeDetection, signal } from "@angular/core";
+import { provideZonelessChangeDetection, signal } from "@angular/core";
 import { MockProvider } from "ng-mocks";
 import { provideRouter } from "@angular/router";
 
@@ -73,7 +73,7 @@ describe("Send Hug Form", () => {
       ],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
-        provideExperimentalZonelessChangeDetection(),
+        provideZonelessChangeDetection(),
         provideRouter([]),
         MockAuthService,
         MockAPIClient,

@@ -39,7 +39,7 @@ import {
 } from "@angular/platform-browser-dynamic/testing";
 import { ActivatedRoute, provideRouter, RouterLink, UrlSegment } from "@angular/router";
 import { of } from "rxjs";
-import { provideExperimentalZonelessChangeDetection } from "@angular/core";
+import { provideZonelessChangeDetection } from "@angular/core";
 
 import { SitePoliciesComponent } from "./sitePolicies.component";
 
@@ -53,7 +53,7 @@ describe("SitePoliciesComponent", () => {
       imports: [CommonModule, RouterLink, SitePoliciesComponent],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
-        provideExperimentalZonelessChangeDetection(),
+        provideZonelessChangeDetection(),
         provideRouter([
           {
             path: "policies",

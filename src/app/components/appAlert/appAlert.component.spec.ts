@@ -38,7 +38,7 @@ import {
   platformBrowserDynamicTesting,
 } from "@angular/platform-browser-dynamic/testing";
 import { provideRouter, RouterLink } from "@angular/router";
-import { provideExperimentalZonelessChangeDetection } from "@angular/core";
+import { provideZonelessChangeDetection } from "@angular/core";
 
 import { AppAlertComponent } from "./appAlert.component";
 import { AlertsService } from "@app/services/alerts.service";
@@ -53,7 +53,7 @@ describe("AppAlertComponent", () => {
       imports: [CommonModule, AppAlertComponent, RouterLink],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
-        provideExperimentalZonelessChangeDetection(),
+        provideZonelessChangeDetection(),
         provideRouter([]),
       ],
     }).compileComponents();

@@ -39,7 +39,7 @@ import {
 } from "@angular/platform-browser-dynamic/testing";
 import { Component, signal } from "@angular/core";
 import { provideRouter, Route, Router, RouterLink, Routes } from "@angular/router";
-import { provideExperimentalZonelessChangeDetection } from "@angular/core";
+import { provideZonelessChangeDetection } from "@angular/core";
 import { MockProvider } from "ng-mocks";
 import { BehaviorSubject } from "rxjs";
 
@@ -146,7 +146,7 @@ describe("SiteMapComponent", () => {
       imports: [CommonModule, RouterLink, MockComponent, SiteMapComponent],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
-        provideExperimentalZonelessChangeDetection(),
+        provideZonelessChangeDetection(),
         provideRouter(routes),
         MockAuthService,
       ],

@@ -39,7 +39,7 @@ import {
   platformBrowserDynamicTesting,
 } from "@angular/platform-browser-dynamic/testing";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
-import { provideExperimentalZonelessChangeDetection } from "@angular/core";
+import { provideZonelessChangeDetection } from "@angular/core";
 
 // App imports
 import { SupportPageComponent } from "./supportPage.component";
@@ -54,7 +54,7 @@ describe("Support Page", () => {
       imports: [CommonModule, FontAwesomeModule, RouterLink, SupportPageComponent],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
-        provideExperimentalZonelessChangeDetection(),
+        provideZonelessChangeDetection(),
         provideRouter([]),
       ],
     }).compileComponents();

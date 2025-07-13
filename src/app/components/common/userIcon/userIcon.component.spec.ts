@@ -38,12 +38,7 @@ import {
   platformBrowserDynamicTesting,
 } from "@angular/platform-browser-dynamic/testing";
 import { CommonModule } from "@angular/common";
-import {
-  Component,
-  NO_ERRORS_SCHEMA,
-  provideExperimentalZonelessChangeDetection,
-  signal,
-} from "@angular/core";
+import { Component, NO_ERRORS_SCHEMA, provideZonelessChangeDetection, signal } from "@angular/core";
 import { By } from "@angular/platform-browser";
 
 import { UserIconComponent, DefaultColours } from "./userIcon.component";
@@ -87,10 +82,7 @@ describe("UserIconComponent", () => {
 
     TestBed.configureTestingModule({
       imports: [CommonModule, MockIconContainerComponent, UserIconComponent],
-      providers: [
-        { provide: APP_BASE_HREF, useValue: "/" },
-        provideExperimentalZonelessChangeDetection(),
-      ],
+      providers: [{ provide: APP_BASE_HREF, useValue: "/" }, provideZonelessChangeDetection()],
     }).compileComponents();
   });
 

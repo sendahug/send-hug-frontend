@@ -39,7 +39,7 @@ import {} from "jasmine";
 import { APP_BASE_HREF, CommonModule } from "@angular/common";
 import { ReactiveFormsModule } from "@angular/forms";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
-import { provideExperimentalZonelessChangeDetection } from "@angular/core";
+import { provideZonelessChangeDetection } from "@angular/core";
 import { MockProvider } from "ng-mocks";
 import { Subscription } from "rxjs";
 
@@ -59,7 +59,7 @@ describe("SearchFormComponent", () => {
       imports: [CommonModule, ReactiveFormsModule, FontAwesomeModule, SearchFormComponent],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
-        provideExperimentalZonelessChangeDetection(),
+        provideZonelessChangeDetection(),
         provideRouter([], withComponentInputBinding()),
         MockItemsService,
       ],

@@ -38,7 +38,7 @@ import {
   platformBrowserDynamicTesting,
 } from "@angular/platform-browser-dynamic/testing";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
-import { provideExperimentalZonelessChangeDetection } from "@angular/core";
+import { provideZonelessChangeDetection } from "@angular/core";
 import { Component } from "@angular/core";
 
 import { PopUpComponent } from "./popUp.component";
@@ -67,10 +67,7 @@ describe("Popup", () => {
 
     TestBed.configureTestingModule({
       imports: [CommonModule, FontAwesomeModule, MockPageComponent, PopUpComponent],
-      providers: [
-        { provide: APP_BASE_HREF, useValue: "/" },
-        provideExperimentalZonelessChangeDetection(),
-      ],
+      providers: [{ provide: APP_BASE_HREF, useValue: "/" }, provideZonelessChangeDetection()],
     }).compileComponents();
   });
 

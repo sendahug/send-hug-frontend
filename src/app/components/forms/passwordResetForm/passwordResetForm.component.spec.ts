@@ -37,7 +37,7 @@ import {
   platformBrowserDynamicTesting,
 } from "@angular/platform-browser-dynamic/testing";
 import { ReactiveFormsModule } from "@angular/forms";
-import { provideExperimentalZonelessChangeDetection, signal } from "@angular/core";
+import { provideZonelessChangeDetection, signal } from "@angular/core";
 import { MockProvider } from "ng-mocks";
 
 import { PasswordResetFormComponent } from "./passwordResetForm.component";
@@ -63,7 +63,7 @@ describe("PasswordResetFormComponent", () => {
       imports: [ReactiveFormsModule, PopUpComponent, PasswordResetFormComponent, TeleportDirective],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
-        provideExperimentalZonelessChangeDetection(),
+        provideZonelessChangeDetection(),
         MockAuthService,
       ],
     }).compileComponents();

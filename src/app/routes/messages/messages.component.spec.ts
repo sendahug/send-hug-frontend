@@ -45,11 +45,7 @@ import {
 } from "@angular/router";
 import { BehaviorSubject, of } from "rxjs";
 import { By } from "@angular/platform-browser";
-import {
-  NO_ERRORS_SCHEMA,
-  provideExperimentalZonelessChangeDetection,
-  signal,
-} from "@angular/core";
+import { NO_ERRORS_SCHEMA, provideZonelessChangeDetection, signal } from "@angular/core";
 import { MockComponent, MockProvider } from "ng-mocks";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 
@@ -98,7 +94,7 @@ describe("AppMessagesComponent", () => {
       ],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
-        provideExperimentalZonelessChangeDetection(),
+        provideZonelessChangeDetection(),
         provideRouter(
           [
             {

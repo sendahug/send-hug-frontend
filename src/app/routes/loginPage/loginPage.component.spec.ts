@@ -43,7 +43,7 @@ import { of, throwError } from "rxjs";
 import { User as FirebaseUser, UserCredential } from "firebase/auth";
 import { ReactiveFormsModule } from "@angular/forms";
 import { By } from "@angular/platform-browser";
-import { provideExperimentalZonelessChangeDetection } from "@angular/core";
+import { provideZonelessChangeDetection } from "@angular/core";
 import { MockComponent, MockProvider } from "ng-mocks";
 import { provideRouter } from "@angular/router";
 
@@ -84,7 +84,7 @@ describe("LoginPageComponent", () => {
       ],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
-        provideExperimentalZonelessChangeDetection(),
+        provideZonelessChangeDetection(),
         provideRouter([]),
         MockAuthService,
       ],

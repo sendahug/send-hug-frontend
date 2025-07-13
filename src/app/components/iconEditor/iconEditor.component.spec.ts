@@ -40,11 +40,7 @@ import {
 } from "@angular/platform-browser-dynamic/testing";
 import { ReactiveFormsModule } from "@angular/forms";
 import { MockComponent, MockProvider } from "ng-mocks";
-import {
-  NO_ERRORS_SCHEMA,
-  provideExperimentalZonelessChangeDetection,
-  signal,
-} from "@angular/core";
+import { NO_ERRORS_SCHEMA, provideZonelessChangeDetection, signal } from "@angular/core";
 
 import { IconEditorComponent } from "./iconEditor.component";
 import { AuthService } from "@app/services/auth.service";
@@ -68,7 +64,7 @@ describe("IconEditorComponent", () => {
       imports: [ReactiveFormsModule, MockUserIconComponent, IconEditorComponent],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
-        provideExperimentalZonelessChangeDetection(),
+        provideZonelessChangeDetection(),
         provideRouter([]),
         MockAuthService,
       ],

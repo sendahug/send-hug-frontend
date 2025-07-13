@@ -45,11 +45,7 @@ import {
   withComponentInputBinding,
 } from "@angular/router";
 import { ReactiveFormsModule } from "@angular/forms";
-import {
-  NO_ERRORS_SCHEMA,
-  provideExperimentalZonelessChangeDetection,
-  signal,
-} from "@angular/core";
+import { NO_ERRORS_SCHEMA, provideZonelessChangeDetection, signal } from "@angular/core";
 import { MockProvider } from "ng-mocks";
 
 import { NewItemComponent } from "./newItem.component";
@@ -76,7 +72,7 @@ describe("NewItemComponent", () => {
       imports: [CommonModule, ReactiveFormsModule, NewItemComponent],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
-        provideExperimentalZonelessChangeDetection(),
+        provideZonelessChangeDetection(),
         provideRouter(
           [
             {

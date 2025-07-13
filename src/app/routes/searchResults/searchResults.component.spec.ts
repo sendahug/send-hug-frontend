@@ -45,7 +45,7 @@ import {
   withComponentInputBinding,
 } from "@angular/router";
 import { By } from "@angular/platform-browser";
-import { provideExperimentalZonelessChangeDetection } from "@angular/core";
+import { provideZonelessChangeDetection } from "@angular/core";
 import { MockComponent, MockProvider } from "ng-mocks";
 import { of } from "rxjs";
 
@@ -140,7 +140,7 @@ describe("SearchResultsComponent", () => {
       ],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
-        provideExperimentalZonelessChangeDetection(),
+        provideZonelessChangeDetection(),
         provideRouter(
           [{ path: "search", component: SearchResultsComponent, data: { name: "Search Results" } }],
           withComponentInputBinding(),

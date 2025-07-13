@@ -48,7 +48,7 @@ import {
   withComponentInputBinding,
 } from "@angular/router";
 import { By } from "@angular/platform-browser";
-import { provideExperimentalZonelessChangeDetection } from "@angular/core";
+import { provideZonelessChangeDetection } from "@angular/core";
 import { MockComponent, MockProvider } from "ng-mocks";
 
 import { FullListComponent } from "./fullList.component";
@@ -80,7 +80,7 @@ describe("FullListComponent", () => {
       ],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
-        provideExperimentalZonelessChangeDetection(),
+        provideZonelessChangeDetection(),
         provideRouter(
           [
             {

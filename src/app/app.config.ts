@@ -33,7 +33,7 @@
 import {
   ApplicationConfig,
   importProvidersFrom,
-  provideExperimentalZonelessChangeDetection,
+  provideZonelessChangeDetection,
 } from "@angular/core";
 import { provideRouter, withComponentInputBinding } from "@angular/router";
 import { provideHttpClient } from "@angular/common/http";
@@ -43,7 +43,7 @@ import { routes } from "./app.routes";
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideExperimentalZonelessChangeDetection(),
+    provideZonelessChangeDetection(),
     provideRouter(routes, withComponentInputBinding()),
     importProvidersFrom(ServiceWorkerModule.register("sw.js")),
     provideHttpClient(),

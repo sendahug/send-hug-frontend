@@ -142,7 +142,7 @@ describe("ThreadComponent", () => {
 
     // after the click
     expect(appThread.deleteMode()).toBeTrue();
-    expect(appThread.deleteEndpoint).toEqual("messages/threads");
+    expect(appThread.deleteEndpoint).toEqual("threads");
     expect(appThread.itemType).toEqual("Thread");
     expect(appThreadDOM.querySelector("item-delete-form")).toBeTruthy();
   });

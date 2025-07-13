@@ -31,7 +31,15 @@
 */
 
 // Angular imports
-import { Component, OnInit, HostListener, AfterViewInit, signal, computed } from "@angular/core";
+import {
+  Component,
+  OnInit,
+  HostListener,
+  AfterViewInit,
+  signal,
+  computed,
+  inject,
+} from "@angular/core";
 import { Router, RouterLink, NavigationEnd } from "@angular/router";
 import { faComments, faUserCircle, faCompass, faBell } from "@fortawesome/free-regular-svg-icons";
 import {
@@ -69,6 +77,12 @@ import SiteLogoSrc from "@/assets/img/Logo.svg";
   ],
 })
 export class NavigationMenuComponent implements OnInit, AfterViewInit {
+  protected authService = inject(AuthService);
+  protected itemsService = inject(ItemsService);
+  protected alertsService = inject(AlertsService);
+  private router = inject(Router);
+  private serviceWorkerM = inject(SWManager);
+  protected notificationService = inject(NotificationService);
   readonly showNotifications = signal(false);
   readonly showSearch = signal(false);
   readonly showTextPanel = signal(false);
@@ -119,15 +133,6 @@ export class NavigationMenuComponent implements OnInit, AfterViewInit {
   faTimes = faTimes;
   faTextHeight = faTextHeight;
   faArrowRightFromBracket = faArrowRightFromBracket;
-
-  constructor(
-    protected authService: AuthService,
-    protected itemsService: ItemsService,
-    protected alertsService: AlertsService,
-    private router: Router,
-    private serviceWorkerM: SWManager,
-    protected notificationService: NotificationService,
-  ) {}
 
   /*
   Function Name: ngOnInit()

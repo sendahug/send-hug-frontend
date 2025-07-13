@@ -31,7 +31,7 @@
 */
 
 // Angular imports
-import { Component, signal } from "@angular/core";
+import { Component, inject, signal } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 
 // App imports
@@ -47,6 +47,8 @@ import { AuthService } from "@app/services/auth.service";
   standalone: false,
 })
 export class AdminDashboardComponent {
+  private route = inject(ActivatedRoute);
+  public authService = inject(AuthService);
   readonly screen = signal("");
   adminCategories = [
     {
@@ -65,10 +67,7 @@ export class AdminDashboardComponent {
   ];
 
   // CTOR
-  constructor(
-    private route: ActivatedRoute,
-    public authService: AuthService,
-  ) {
+  constructor() {
     this.route.url.subscribe((params) => {
       if (params[0] && params[0].path) {
         this.screen.set(params[0].path);

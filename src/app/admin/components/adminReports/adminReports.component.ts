@@ -31,7 +31,7 @@
 */
 
 // Angular imports
-import { Component, computed, signal } from "@angular/core";
+import { Component, computed, inject, signal } from "@angular/core";
 
 // App imports
 import { AdminService } from "@app/services/admin.service";
@@ -56,6 +56,9 @@ import { PostGet } from "@app/interfaces/post.interface";
   standalone: false,
 })
 export class AdminReportsComponent {
+  private apiClient = inject(ApiClientService);
+  private adminService = inject(AdminService);
+  private alertsService = inject(AlertsService);
   readonly postReports = signal<ReportGet[]>([]);
   readonly userReports = signal<ReportGet[]>([]);
   readonly totalPostReportsPages = signal(1);
@@ -91,11 +94,7 @@ export class AdminReportsComponent {
     disabled: this.currentPostReportsPage() >= this.totalPostReportsPages(),
   }));
 
-  constructor(
-    private apiClient: ApiClientService,
-    private adminService: AdminService,
-    private alertsService: AlertsService,
-  ) {
+  constructor() {
     this.fetchReports();
   }
 

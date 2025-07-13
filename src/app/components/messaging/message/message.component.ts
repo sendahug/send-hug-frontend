@@ -63,7 +63,7 @@ export class MessageComponent {
   readonly userIconToShow = computed(() => this._message().from);
   readonly deleteMode = signal(false);
   // Delete Popup Constants
-  readonly deleteEndpoint = "messages/thread";
+  readonly deleteEndpoint = "messages";
   readonly itemType = "Message";
 
   /**

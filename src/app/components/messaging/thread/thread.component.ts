@@ -58,7 +58,7 @@ export class ThreadComponent {
   @Output() threadSelected = new EventEmitter<number>();
   readonly deleteMode = signal(false);
   // Delete Popup Constants
-  readonly deleteEndpoint = "messages/threads";
+  readonly deleteEndpoint = "threads";
   readonly itemType = "Thread";
 
   constructor(private swManager: SWManager) {}

@@ -42,6 +42,7 @@ import {
   WritableSignal,
   Output,
   EventEmitter,
+  SimpleChanges,
   inject,
 } from "@angular/core";
 import { faComment, faEdit, faFlag } from "@fortawesome/free-regular-svg-icons";
@@ -125,25 +126,25 @@ export class PostComponent implements AfterViewChecked, OnInit, OnDestroy {
   readonly displayedButtons = computed(() => {
     let initialButtonsCount = 2;
 
-    // if (
-    //   this.authService.userData() &&
-    //   (this.authService.canUser("patch:any-post") ||
-    //     this.authService.userData()?.id == this._post()?.id)
-    // ) {
-    //   initialButtonsCount += 1;
-    // }
+    if (
+      this.authService.userData() &&
+      (this.authService.canUser("patch:any-post") ||
+        this.authService.userData()?.id == this._post()?.id)
+    ) {
+      initialButtonsCount += 1;
+    }
 
-    // if (
-    //   this.authService.userData() &&
-    //   (this.authService.canUser("delete:any-post") ||
-    //     this.authService.userData()?.id != this._post()?.id)
-    // ) {
-    //   initialButtonsCount += 1;
-    // }
+    if (
+      this.authService.userData() &&
+      (this.authService.canUser("delete:any-post") ||
+        this.authService.userData()?.id != this._post()?.id)
+    ) {
+      initialButtonsCount += 1;
+    }
 
     console.log("Current display", initialButtonsCount);
 
-    return initialButtonsCount + this.authenticatedButtonsCount();
+    return initialButtonsCount;
   });
   readonly sendHugButtonClass = computed(() => ({
     "textlessButton hugButton": true,

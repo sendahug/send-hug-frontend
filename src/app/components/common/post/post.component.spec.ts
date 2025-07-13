@@ -167,10 +167,13 @@ describe("Post", () => {
     upFixture.detectChanges();
     const singlePost: PostComponent = upFixture.debugElement.children[0].componentInstance;
     const singlePostDOM = upFixture.debugElement.children[0].nativeElement;
+    const authService = singlePost.authService;
+    const authSpy = spyOn(authService, "canUser").and.returnValue(true);
     upFixture.detectChanges();
 
     // before the click
     expect(singlePost.editMode()).toBeFalse();
+    expect(authSpy).toHaveBeenCalledWith("patch:any-post");
 
     // trigger click
     pageDOM.querySelectorAll(".editButton")[0].click();
@@ -189,10 +192,13 @@ describe("Post", () => {
     upFixture.detectChanges();
     const singlePost: PostComponent = upFixture.debugElement.children[0].componentInstance;
     const singlePostDOM = upFixture.debugElement.children[0].nativeElement;
+    const authService = singlePost.authService;
+    const authSpy = spyOn(authService, "canUser").and.returnValue(true);
     upFixture.detectChanges();
 
     // before the click
     expect(singlePost.deleteMode()).toBeFalse();
+    expect(authSpy).toHaveBeenCalledWith("delete:any-post");
 
     // trigger click
     pageDOM.querySelectorAll(".deleteButton")[0].click();
@@ -366,7 +372,10 @@ describe("Post", () => {
   it("checkMenuSize() - shouldn't show the posts's menu if not wide enough", () => {
     const upFixture = TestBed.createComponent(MockPageComponent);
     upFixture.detectChanges();
+    const singlePost: PostComponent = upFixture.debugElement.children[0].componentInstance;
     const singlePostDOM = upFixture.debugElement.children[0].nativeElement;
+    const authService = singlePost.authService;
+    spyOn(authService, "canUser").and.returnValue(true);
 
     // change the elements' width to make sure there isn't enough room for the menu
     const container = singlePostDOM.querySelector(".buttonsContainer") as HTMLDivElement;
@@ -384,7 +393,10 @@ describe("Post", () => {
   it("checkMenuSize() - should show the menu if it's wide enough for it", () => {
     const upFixture = TestBed.createComponent(MockPageComponent);
     upFixture.detectChanges();
+    const singlePost: PostComponent = upFixture.debugElement.children[0].componentInstance;
     const singlePostDOM = upFixture.debugElement.children[0].nativeElement;
+    const authService = singlePost.authService;
+    spyOn(authService, "canUser").and.returnValue(true);
 
     // change the elements' width to make sure there isn't enough room for the menu
     const container = singlePostDOM.querySelector(".buttonsContainer") as HTMLDivElement;
@@ -402,7 +414,10 @@ describe("Post", () => {
   it("checkMenuSize() - should float the menu if it's wide enough for it", () => {
     const upFixture = TestBed.createComponent(MockPageComponent);
     upFixture.detectChanges();
+    const singlePost: PostComponent = upFixture.debugElement.children[0].componentInstance;
     const singlePostDOM = upFixture.debugElement.children[0].nativeElement;
+    const authService = singlePost.authService;
+    spyOn(authService, "canUser").and.returnValue(true);
 
     // change the elements' width to make sure there isn't enough room for the menu
     const container = singlePostDOM.querySelector(".buttonsContainer") as HTMLDivElement;

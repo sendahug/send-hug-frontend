@@ -7,27 +7,45 @@
   }
 }
 
-/* Mailbox navigation */
-#messagesNav {
+#threadsList {
   width: 90%;
-  margin: 5px 0;
-  padding: 5px 5% 10px 5%;
-  left: 0;
-  right: 0;
-  align-self: center;
-  text-align: center;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  /* Responsive styling for screens above 800px width */
-  @media screen and (min-width: 800px) {
-    flex-direction: column;
-  }
 }
 
-.threadsContainer {
-  width: 100%;
+.messagesLink {
+  border: none;
+  background: none;
+  text-decoration: underline;
+}
+
+.form-divider {
+  width: 90%;
+  min-width: 90%;
+}
+
+.form-divider.top-divider {
+  margin-bottom: 0;
+}
+
+.threadHeader {
   display: flex;
-  flex-direction: column;
+  justify-content: space-between;
   align-items: center;
+  width: 60%;
+}
+
+.textlessButton {
+  background-color: inherit;
+  border: none;
+  font-size: inherit;
+  padding-bottom: 2px;
+  display: flex;
+  justify-content: center;
+}
+
+.threadHeader fa-icon {
+  align-self: flex-end;
+}
+
+.buttonPlaceholder {
+  width: 44px;
 }

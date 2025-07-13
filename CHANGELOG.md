@@ -2,6 +2,36 @@
 
 ## Unreleased
 
+### 2025-06-22
+
+#### Chores
+
+- Added a ref to the checkout step in the 'deploy to preview' workflow in order to ensure the deployed preview is using the updated repo when dealing with dependabot's pull requests. ([#2136](https://github.com/sendahug/send-hug-frontend/pull/2136))
+
+### 2025-06-20
+
+#### Features
+
+- Added a new paginated list component to display lists that require pagination functionality. ([#2103](https://github.com/sendahug/send-hug-frontend/pull/2103))
+
+#### Changes
+
+- The mailbox view was rebuilt to improve the user experience when using messaging. This includes:
+  - The different mailbox views (inbox, outbox, threads) were replaced with a single threads view. When users select a thread, they can view the thread's messages in the same view; otherwise, only the threads list is shown.
+  - The thread component was redesigned. The new thread component emphasizes the other user's name and user icon and makes it easier to understand the rest of the thread's details (last message and message count).
+  - The message component was redesigned. The new message component condenses the message's sender and text into a single line, which allows us to display messages in a more familiar layout and emphasises the message's sender and text. It also displays the user's icon in the left or in the right side of the message, depending on whether the message's sender is the first or the second user in the thread.
+  - The text of the buttons in the thread and message components was simplified. ([#2103](https://github.com/sendahug/send-hug-frontend/pull/2103))
+
+#### Breaking Changes
+
+- Removed the inbox and outbox from the mailbox. While this was useful for debugging, realistically it wasn't likely to be useful for most users. The mailbox now displays threads, which allow seeing both send and received messages in one mailbox. The old messaging routes (except `/messages`) no longer lead anywhere and will return an error (not found) page. ([#2103](https://github.com/sendahug/send-hug-frontend/pull/2103))
+
+### 2025-06-09
+
+#### Chores
+
+- Updated the version of postgres in CI to match the version currently used in production. ([#2124](https://github.com/sendahug/send-hug-frontend/pull/2124))
+
 ### 2025-05-08
 
 #### Chores

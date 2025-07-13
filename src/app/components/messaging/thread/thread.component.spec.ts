@@ -111,7 +111,7 @@ describe("ThreadComponent", () => {
     const threadDetailsDOM = appThreadDOM.querySelectorAll(".pageData");
 
     expect(threadDetailsDOM[0].textContent.trim()).toBe(mockThread.user.displayName);
-    expect(threadDetailsDOM[1].textContent.trim()).toBe(String(mockThread.numMessages));
+    expect(threadDetailsDOM[1].textContent.trim()).toBe(`${mockThread.numMessages} Message(s)`);
     expect(threadDetailsDOM[2].textContent.trim()).toBe(mockThread.latestMessage.toString());
   });
 
@@ -183,16 +183,24 @@ describe("ThreadComponent", () => {
     fixture.componentRef.setInput("thread", mockThread);
     fixture.detectChanges();
 
-    expect(appThreadDOM.querySelectorAll(".appButton")[0].tagName.toLowerCase()).toBe("a");
-    expect(appThreadDOM.querySelectorAll(".appButton")[0].textContent.trim()).toBe(
-      "View Thread Messages",
-    );
-
-    expect(appThreadDOM.querySelectorAll(".appButton")[0].getAttribute("href")).toContain(
-      "/messages/thread/3",
-    );
+    expect(appThreadDOM.querySelectorAll(".appButton")[0].tagName.toLowerCase()).toBe("button");
+    expect(appThreadDOM.querySelectorAll(".appButton")[0].textContent.trim()).toBe("View");
 
     expect(appThreadDOM.querySelectorAll(".appButton")[1].tagName.toLowerCase()).toBe("button");
-    expect(appThreadDOM.querySelectorAll(".appButton")[1].textContent.trim()).toBe("Delete Thread");
+    expect(appThreadDOM.querySelectorAll(".appButton")[1].textContent.trim()).toBe("Delete");
+  });
+
+  it("should emit the selected thread's ID when a user clicks 'view'", () => {
+    const fixture = TestBed.createComponent(ThreadComponent);
+    const appThread = fixture.componentInstance;
+    const appThreadDOM = fixture.nativeElement;
+    fixture.componentRef.setInput("thread", mockThread);
+    const emitSpy = spyOn(appThread.threadSelected, "emit");
+    fixture.detectChanges();
+
+    appThreadDOM.querySelectorAll(".appButton")[0].click();
+    fixture.detectChanges();
+
+    expect(emitSpy).toHaveBeenCalledWith(mockThread.id);
   });
 });

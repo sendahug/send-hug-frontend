@@ -31,7 +31,7 @@
 */
 
 // Angular imports
-import { Component, Output, EventEmitter, OnInit, signal, input } from "@angular/core";
+import { Component, Output, EventEmitter, OnInit, signal, input, inject } from "@angular/core";
 import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { CommonModule } from "@angular/common";
 import { RouterLink } from "@angular/router";
@@ -84,6 +84,11 @@ const reportReasonsText = {
   imports: [CommonModule, ReactiveFormsModule, PopUpComponent, RouterLink, TeleportDirective],
 })
 export class ReportFormComponent implements OnInit {
+  public authService = inject(AuthService);
+  private alertsService = inject(AlertsService);
+  private validationService = inject(ValidationService);
+  private apiClient = inject(ApiClientService);
+  private fb = inject(FormBuilder);
   // indicates whether edit/delete mode is still required
   @Output() reportMode = new EventEmitter<boolean>();
   // reported post
@@ -97,15 +102,6 @@ export class ReportFormComponent implements OnInit {
     selectedReason: this.fb.control(undefined as string | undefined, [Validators.required]),
     otherReason: this.fb.control({ value: undefined as string | undefined, disabled: true }, []),
   });
-
-  // CTOR
-  constructor(
-    public authService: AuthService,
-    private alertsService: AlertsService,
-    private validationService: ValidationService,
-    private apiClient: ApiClientService,
-    private fb: FormBuilder,
-  ) {}
 
   /**
    * OnInit hook for Angular.

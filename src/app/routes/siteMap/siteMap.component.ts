@@ -32,7 +32,7 @@
 
 // Angular imports
 import { CommonModule } from "@angular/common";
-import { Component, signal } from "@angular/core";
+import { Component, inject, signal } from "@angular/core";
 import { Router, Route, RouterLink } from "@angular/router";
 
 // App-related imports
@@ -46,13 +46,12 @@ import { AuthService } from "@app/services/auth.service";
   imports: [CommonModule, RouterLink],
 })
 export class SiteMapComponent {
+  private router = inject(Router);
+  private authService = inject(AuthService);
   readonly routes = signal<Route[]>([]);
 
   // CTOR
-  constructor(
-    private router: Router,
-    private authService: AuthService,
-  ) {
+  constructor() {
     this.updateSiteMap();
 
     if (!this.authService.authenticated()) {

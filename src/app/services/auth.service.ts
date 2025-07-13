@@ -31,7 +31,7 @@
 */
 
 // Angular imports
-import { computed, Injectable, signal } from "@angular/core";
+import { computed, inject, Injectable, signal } from "@angular/core";
 import { HttpClient, HttpErrorResponse, HttpHeaders } from "@angular/common/http";
 
 // Other essential imports
@@ -66,6 +66,10 @@ interface ExtendedFirebaseUser extends FirebaseUser {
   providedIn: "root",
 })
 export class AuthService {
+  private Http = inject(HttpClient);
+  private alertsService = inject(AlertsService);
+  private serviceWorkerM = inject(SWManager);
+  private firebase = inject(FirebaseService);
   readonly serverUrl = import.meta.env["VITE_BACKEND_URL"];
   // authentication information
   readonly authenticated = signal<boolean>(false);
@@ -88,14 +92,6 @@ export class AuthService {
   // Whether the user is in the process of registering
   readonly isRegistering = signal(false);
   isUserDataResolved = new BehaviorSubject(false);
-
-  // CTOR
-  constructor(
-    private Http: HttpClient,
-    private alertsService: AlertsService,
-    private serviceWorkerM: SWManager,
-    private firebase: FirebaseService,
-  ) {}
 
   /**
    * Firebase Methods

@@ -32,7 +32,7 @@
 
 // Angular imports
 import { HttpErrorResponse } from "@angular/common/http";
-import { Component, computed, signal } from "@angular/core";
+import { Component, computed, inject, signal } from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
 
 // App imports
@@ -50,6 +50,10 @@ import { GetFiltersResponse, AddFiltersResponse, DeleteFiltersResponse } from "@
   standalone: false,
 })
 export class AdminFiltersComponent {
+  public adminService = inject(AdminService);
+  private alertsService = inject(AlertsService);
+  private apiClient = inject(ApiClientService);
+  private fb = inject(FormBuilder);
   readonly filteredPhrases = signal<{ id: number; filter: string }[]>([]);
   readonly currentPage = signal(1);
   readonly totalPages = signal(1);
@@ -67,12 +71,7 @@ export class AdminFiltersComponent {
   });
 
   // CTOR
-  constructor(
-    public adminService: AdminService,
-    private alertsService: AlertsService,
-    private apiClient: ApiClientService,
-    private fb: FormBuilder,
-  ) {
+  constructor() {
     this.fetchFilters();
   }
 

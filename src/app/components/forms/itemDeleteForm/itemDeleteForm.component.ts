@@ -31,7 +31,7 @@
 */
 
 // Angular imports
-import { Component, Output, EventEmitter, input, computed } from "@angular/core";
+import { Component, Output, EventEmitter, input, computed, inject } from "@angular/core";
 import { tap } from "rxjs";
 import { CommonModule } from "@angular/common";
 
@@ -51,6 +51,9 @@ import { ReportData } from "@app/interfaces/report.interface";
   imports: [CommonModule, PopUpComponent, TeleportDirective],
 })
 export class ItemDeleteFormComponent {
+  private apiClient = inject(ApiClientService);
+  private swManager = inject(SWManager);
+  private alertsService = inject(AlertsService);
   // indicates whether edit/delete mode is still required
   @Output() editMode = new EventEmitter<boolean>();
   @Output() deleted = new EventEmitter<number>();
@@ -63,13 +66,6 @@ export class ItemDeleteFormComponent {
   readonly fullDeleteUrl = computed(() =>
     this.bulkDelete() ? this.deleteEndpoint() : `${this.deleteEndpoint()}/${this.itemId()}`,
   );
-
-  // CTOR
-  constructor(
-    private apiClient: ApiClientService,
-    private swManager: SWManager,
-    private alertsService: AlertsService,
-  ) {}
 
   /**
    * Deletes a single item or multiple items.

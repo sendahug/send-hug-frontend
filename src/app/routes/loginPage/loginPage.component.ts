@@ -31,7 +31,7 @@
 */
 
 // Angular imports
-import { Component, computed, signal } from "@angular/core";
+import { Component, computed, inject, signal } from "@angular/core";
 import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { faGoogle, faApple } from "@fortawesome/free-brands-svg-icons";
 import { Observable, switchMap, tap } from "rxjs";
@@ -60,6 +60,10 @@ import { PasswordResetFormComponent } from "@forms/passwordResetForm/passwordRes
   ],
 })
 export class LoginPageComponent {
+  public authService = inject(AuthService);
+  private fb = inject(FormBuilder);
+  private router = inject(Router);
+  private alertsService = inject(AlertsService);
   readonly isNewUser = signal<boolean>(false);
   readonly signInUpTitle = computed(() => (this.isNewUser() ? "Sign up" : "Sign in"));
   loginForm = this.fb.group({
@@ -70,14 +74,6 @@ export class LoginPageComponent {
   readonly resetMode = signal(false);
   faGoogle = faGoogle;
   faApple = faApple;
-
-  // CTOR
-  constructor(
-    public authService: AuthService,
-    private fb: FormBuilder,
-    private router: Router,
-    private alertsService: AlertsService,
-  ) {}
 
   /**
    * Runs the sign in process from the given observable.

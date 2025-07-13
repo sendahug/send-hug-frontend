@@ -39,6 +39,7 @@ import {
   signal,
   computed,
   AfterViewChecked,
+  inject,
 } from "@angular/core";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import { CommonModule } from "@angular/common";
@@ -60,6 +61,9 @@ import { type UpdateNotificationsResponse } from "@app/interfaces/api";
   imports: [CommonModule, FontAwesomeModule, RouterLink],
 })
 export class NotificationsTabComponent implements OnInit, AfterViewChecked {
+  protected authService = inject(AuthService);
+  protected notificationService = inject(NotificationService);
+  private apiClient = inject(ApiClientService);
   // indicates whether notifications panel is still required
   @Output() NotificationsMode = new EventEmitter<boolean>();
   focusableElements!: NodeListOf<HTMLElement>;
@@ -87,11 +91,7 @@ export class NotificationsTabComponent implements OnInit, AfterViewChecked {
   faTimes = faTimes;
 
   // CTOR
-  constructor(
-    protected authService: AuthService,
-    protected notificationService: NotificationService,
-    private apiClient: ApiClientService,
-  ) {
+  constructor() {
     // if the user is authenticated, get all notifications from
     // the last time the user checked them
     this.authService.isUserDataResolved.subscribe((value) => {

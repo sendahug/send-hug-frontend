@@ -30,7 +30,15 @@
   SOFTWARE.
 */
 
-import { Directive, input, OnDestroy, OnInit, TemplateRef, ViewContainerRef } from "@angular/core";
+import {
+  Directive,
+  inject,
+  input,
+  OnDestroy,
+  OnInit,
+  TemplateRef,
+  ViewContainerRef,
+} from "@angular/core";
 
 import { TeleportService } from "@app/services/teleport.service";
 
@@ -41,13 +49,10 @@ import { TeleportService } from "@app/services/teleport.service";
 })
 export class TeleportDirective implements OnInit, OnDestroy {
   readonly teleport = input.required<string>();
-
-  constructor(
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    private templateRef: TemplateRef<any>,
-    private viewContainerRef: ViewContainerRef,
-    private teleportService: TeleportService,
-  ) {}
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private templateRef = inject(TemplateRef<any>);
+  private viewContainerRef = inject(ViewContainerRef);
+  private teleportService = inject(TeleportService);
 
   /**
    * Angular's OnInit hook.

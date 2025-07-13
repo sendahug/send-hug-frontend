@@ -31,7 +31,7 @@
 */
 
 // Angular imports
-import { Component, Output, EventEmitter, OnInit, input } from "@angular/core";
+import { Component, Output, EventEmitter, OnInit, input, inject } from "@angular/core";
 import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { map, mergeMap, of, throwError } from "rxjs";
 import { CommonModule } from "@angular/common";
@@ -55,6 +55,12 @@ import { ReportData } from "@app/interfaces/report.interface";
   imports: [ReactiveFormsModule, CommonModule, PopUpComponent, TeleportDirective],
 })
 export class PostEditFormComponent implements OnInit {
+  private adminService = inject(AdminService);
+  private validationService = inject(ValidationService);
+  private alertService = inject(AlertsService);
+  private apiClient = inject(ApiClientService);
+  private swManager = inject(SWManager);
+  private fb = inject(FormBuilder);
   // item to edit
   readonly editedItem = input.required<PostGet>();
   // indicates whether edit/delete mode is still required
@@ -65,16 +71,6 @@ export class PostEditFormComponent implements OnInit {
   postEditForm = this.fb.group({
     postText: ["", [Validators.required, this.validationService.validateItemAgainst("post")]],
   });
-
-  // CTOR
-  constructor(
-    private adminService: AdminService,
-    private validationService: ValidationService,
-    private alertService: AlertsService,
-    private apiClient: ApiClientService,
-    private swManager: SWManager,
-    private fb: FormBuilder,
-  ) {}
 
   ngOnInit(): void {
     this.postEditForm.controls.postText.setValue(this.editedItem().text);

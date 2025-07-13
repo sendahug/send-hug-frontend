@@ -32,7 +32,7 @@
 
 // Angular imports
 import { CommonModule } from "@angular/common";
-import { Component, signal } from "@angular/core";
+import { Component, inject, signal } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 
 import { PolicyType, SitePolicyMapping } from "@app/interfaces/policies.interface";
@@ -45,11 +45,12 @@ import { PolicyType, SitePolicyMapping } from "@app/interfaces/policies.interfac
   imports: [CommonModule],
 })
 export class SitePoliciesComponent {
+  private route = inject(ActivatedRoute);
   readonly currentPolicy = signal<PolicyType>("TermsConditions");
   readonly pageTitle = signal<string>("");
 
   // CTOR
-  constructor(private route: ActivatedRoute) {
+  constructor() {
     // Get the URL param to determine which policy to show
     this.route.url.subscribe((params) => {
       const currentPath = params[0].path;

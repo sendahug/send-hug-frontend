@@ -31,7 +31,7 @@
 */
 
 // Angular imports
-import { Component, signal } from "@angular/core";
+import { Component, inject, signal } from "@angular/core";
 import { CommonModule, Location } from "@angular/common";
 import { faArrowAltCircleLeft } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
@@ -50,6 +50,7 @@ interface ErrorMessage {
   imports: [CommonModule, FontAwesomeModule],
 })
 export class ErrorPageComponent {
+  private location = inject(Location);
   // Error message to display onscreen
   readonly error = signal<ErrorMessage>({
     title: "Sorry!",
@@ -58,9 +59,6 @@ export class ErrorPageComponent {
   });
   // icons
   faArrowAltCircleLeft = faArrowAltCircleLeft;
-
-  // CTOR
-  constructor(private location: Location) {}
 
   /*
   Function Name: goBack()

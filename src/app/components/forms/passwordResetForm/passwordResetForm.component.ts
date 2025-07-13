@@ -31,7 +31,7 @@
 */
 
 // Angular imports
-import { Component, EventEmitter, Output } from "@angular/core";
+import { Component, EventEmitter, inject, Output } from "@angular/core";
 import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 
 // App-related imports
@@ -47,16 +47,13 @@ import { TeleportDirective } from "@app/directives/teleport.directive";
   imports: [ReactiveFormsModule, PopUpComponent, TeleportDirective],
 })
 export class PasswordResetFormComponent {
+  private fb = inject(FormBuilder);
+  private authService = inject(AuthService);
+  private alertsService = inject(AlertsService);
   @Output() editMode = new EventEmitter<boolean>();
   resetForm = this.fb.group({
     username: ["", [Validators.required, Validators.email]],
   });
-
-  constructor(
-    private fb: FormBuilder,
-    private authService: AuthService,
-    private alertsService: AlertsService,
-  ) {}
 
   /**
    * Validates the password reset form and makes the request to reset the password.

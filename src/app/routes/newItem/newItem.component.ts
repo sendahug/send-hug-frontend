@@ -31,7 +31,7 @@
 */
 
 // Angular imports
-import { Component, OnInit, signal } from "@angular/core";
+import { Component, inject, OnInit, signal } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { CommonModule } from "@angular/common";
@@ -55,6 +55,15 @@ import { type PostCreateResponse } from "@app/interfaces/api";
   imports: [CommonModule, ReactiveFormsModule],
 })
 export class NewItemComponent implements OnInit {
+  private itemsService = inject(ItemsService);
+  protected authService = inject(AuthService);
+  private route = inject(ActivatedRoute);
+  private alertService = inject(AlertsService);
+  private validationService = inject(ValidationService);
+  private apiClient = inject(ApiClientService);
+  private swManager = inject(SWManager);
+  private fb = inject(FormBuilder);
+  private router = inject(Router);
   // variable declaration
   readonly itemType = signal<string>("");
   readonly forID = signal<number | undefined>(undefined);
@@ -69,17 +78,7 @@ export class NewItemComponent implements OnInit {
   });
 
   // CTOR
-  constructor(
-    private itemsService: ItemsService,
-    protected authService: AuthService,
-    private route: ActivatedRoute,
-    private alertService: AlertsService,
-    private validationService: ValidationService,
-    private apiClient: ApiClientService,
-    private swManager: SWManager,
-    private fb: FormBuilder,
-    private router: Router,
-  ) {
+  constructor() {
     // Gets the URL parameters
     this.route.url.subscribe((params) => {
       // If there's a type parameter, sets the type property

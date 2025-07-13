@@ -32,7 +32,7 @@
 
 // Angular imports
 import { CommonModule } from "@angular/common";
-import { Component, computed } from "@angular/core";
+import { Component, computed, inject } from "@angular/core";
 import { RouterLink } from "@angular/router";
 
 // App-related imports
@@ -71,8 +71,7 @@ export class AppAlertComponent {
         return `${iconBaseClass} far fa-bel`;
     }
   });
-
-  constructor(protected alertsService: AlertsService) {}
+  protected alertsService = inject(AlertsService);
 
   /**
    * Closes the alert message.

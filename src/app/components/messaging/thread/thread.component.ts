@@ -31,7 +31,7 @@
 */
 
 // Angular imports
-import { Component, signal, Output, Input, EventEmitter } from "@angular/core";
+import { Component, signal, Output, Input, EventEmitter, inject } from "@angular/core";
 import { RouterLink } from "@angular/router";
 import { CommonModule } from "@angular/common";
 
@@ -60,8 +60,7 @@ export class ThreadComponent {
   // Delete Popup Constants
   readonly deleteEndpoint = "messages/threads";
   readonly itemType = "Thread";
-
-  constructor(private swManager: SWManager) {}
+  private swManager = inject(SWManager);
 
   /**
    * Opens the delete popup to delete the current thread.

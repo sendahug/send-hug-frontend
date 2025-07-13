@@ -31,7 +31,7 @@
 */
 
 // Angular imports
-import { Component, signal, computed } from "@angular/core";
+import { Component, signal, computed, inject } from "@angular/core";
 import { ActivatedRoute, Router, RouterLink } from "@angular/router";
 import { from, map, switchMap, tap } from "rxjs";
 import { CommonModule } from "@angular/common";
@@ -64,6 +64,11 @@ import { MessagesResponse, ThreadResponse } from "@app/interfaces/api";
   ],
 })
 export class AppMessagesComponent {
+  public authService = inject(AuthService);
+  public route = inject(ActivatedRoute);
+  public router = inject(Router);
+  private swManager = inject(SWManager);
+  private apiClient = inject(ApiClientService);
   readonly messType = signal<MessageType>("inbox");
   readonly idbFilterAttribute = computed(() => {
     if (this.messType() == "thread") {
@@ -113,13 +118,7 @@ export class AppMessagesComponent {
   readonly itemType = computed(() => (this.messType() === "threads" ? "Thread" : "Message"));
 
   // CTOR
-  constructor(
-    public authService: AuthService,
-    public route: ActivatedRoute,
-    public router: Router,
-    private swManager: SWManager,
-    private apiClient: ApiClientService,
-  ) {
+  constructor() {
     let messageType;
     this.threadId.set(Number(this.route.snapshot.paramMap.get("id")));
     this.currentPage.set(1);

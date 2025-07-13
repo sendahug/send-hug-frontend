@@ -31,7 +31,7 @@
 */
 
 // Angular imports
-import { Component, signal } from "@angular/core";
+import { Component, inject, signal } from "@angular/core";
 import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { CommonModule } from "@angular/common";
 import { RouterLink } from "@angular/router";
@@ -51,6 +51,10 @@ import { UserIconComponent } from "@common/userIcon/userIcon.component";
   imports: [CommonModule, IconEditorComponent, UserIconComponent, ReactiveFormsModule, RouterLink],
 })
 export class SettingsPageComponent {
+  public notificationService = inject(NotificationService);
+  public authService = inject(AuthService);
+  private alertsService = inject(AlertsService);
+  private fb = inject(FormBuilder);
   readonly editIcon = signal(false);
   editSettingsForm = this.fb.group({
     enableNotifications: [false],
@@ -64,12 +68,7 @@ export class SettingsPageComponent {
   });
 
   // CTOR
-  constructor(
-    public notificationService: NotificationService,
-    public authService: AuthService,
-    private alertsService: AlertsService,
-    private fb: FormBuilder,
-  ) {
+  constructor() {
     // TODO: There's got to be a better way to do this for refreshes...
     this.authService.isUserDataResolved.subscribe((value) => {
       if (value) {

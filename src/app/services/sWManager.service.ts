@@ -31,7 +31,7 @@
 */
 
 // Angular imports
-import { Injectable } from "@angular/core";
+import { inject, Injectable } from "@angular/core";
 
 // Other imports
 import { openDB, IDBPDatabase, IDBPCursorWithValue } from "idb";
@@ -68,12 +68,10 @@ type DBCursor =
   providedIn: "root",
 })
 export class SWManager {
+  private alertsService = inject(AlertsService);
   activeServiceWorkerReg: ServiceWorkerRegistration | undefined;
   currentDB: Promise<IDBPDatabase<MyDB>> | undefined;
   databaseVersion = 5;
-
-  // CTOR
-  constructor(private alertsService: AlertsService) {}
 
   /*
   Function Name: registerSW()

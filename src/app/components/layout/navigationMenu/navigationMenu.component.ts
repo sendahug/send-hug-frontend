@@ -31,7 +31,15 @@
 */
 
 // Angular imports
-import { Component, OnInit, HostListener, AfterViewInit, signal, computed } from "@angular/core";
+import {
+  Component,
+  OnInit,
+  HostListener,
+  AfterViewInit,
+  signal,
+  computed,
+  inject,
+} from "@angular/core";
 import { Router, RouterLink, NavigationEnd } from "@angular/router";
 import { faComments, faUserCircle, faCompass, faBell } from "@fortawesome/free-regular-svg-icons";
 import {
@@ -51,8 +59,8 @@ import { ItemsService } from "@app/services/items.service";
 import { AlertsService } from "@app/services/alerts.service";
 import { SWManager } from "@app/services/sWManager.service";
 import { NotificationService } from "@app/services/notifications.service";
-import { NotificationsTab } from "@app/components/layout/notifications/notifications.component";
-import { SearchForm } from "@app/components/layout/searchForm/searchForm.component";
+import { NotificationsTabComponent } from "@app/components/layout/notifications/notifications.component";
+import { SearchFormComponent } from "@app/components/layout/searchForm/searchForm.component";
 import SiteLogoSrc from "@/assets/img/Logo.svg";
 
 @Component({
@@ -60,25 +68,37 @@ import SiteLogoSrc from "@/assets/img/Logo.svg";
   templateUrl: "./navigationMenu.component.html",
   styleUrl: "./navigationMenu.component.less",
   standalone: true,
-  imports: [CommonModule, RouterLink, FontAwesomeModule, NotificationsTab, SearchForm],
+  imports: [
+    CommonModule,
+    RouterLink,
+    FontAwesomeModule,
+    NotificationsTabComponent,
+    SearchFormComponent,
+  ],
 })
-export class AppNavMenu implements OnInit, AfterViewInit {
-  showNotifications = signal(false);
-  showSearch = signal(false);
-  showTextPanel = signal(false);
-  showMenu = signal(false);
-  navMenuClass = computed(() => ({
+export class NavigationMenuComponent implements OnInit, AfterViewInit {
+  protected authService = inject(AuthService);
+  protected itemsService = inject(ItemsService);
+  protected alertsService = inject(AlertsService);
+  private router = inject(Router);
+  private serviceWorkerM = inject(SWManager);
+  protected notificationService = inject(NotificationService);
+  readonly showNotifications = signal(false);
+  readonly showSearch = signal(false);
+  readonly showTextPanel = signal(false);
+  readonly showMenu = signal(false);
+  readonly navMenuClass = computed(() => ({
     navLinks: true,
     hidden: !this.showMenu(),
   }));
-  showMenuButton = signal(false);
-  menuButtonClass = computed(() => ({
+  readonly showMenuButton = signal(false);
+  readonly menuButtonClass = computed(() => ({
     navLink: true,
     hidden: !this.showMenuButton(),
   }));
-  currentlyActiveRoute = signal("/");
-  currentTextSize = signal(1);
-  menuSize = computed(() => {
+  readonly currentlyActiveRoute = signal("/");
+  readonly currentTextSize = signal(1);
+  readonly menuSize = computed(() => {
     // text, search and notifications, each is ~65px
     const smallerButtons = 3 * 65;
     // the logo is at most 100px
@@ -113,15 +133,6 @@ export class AppNavMenu implements OnInit, AfterViewInit {
   faTimes = faTimes;
   faTextHeight = faTextHeight;
   faArrowRightFromBracket = faArrowRightFromBracket;
-
-  constructor(
-    protected authService: AuthService,
-    protected itemsService: ItemsService,
-    protected alertsService: AlertsService,
-    private router: Router,
-    private serviceWorkerM: SWManager,
-    protected notificationService: NotificationService,
-  ) {}
 
   /*
   Function Name: ngOnInit()
@@ -166,12 +177,10 @@ export class AppNavMenu implements OnInit, AfterViewInit {
         // or the about page
         if (["/", "/about", "/login"].includes(currentUrl)) {
           this.currentlyActiveRoute.set(currentUrl);
+        } else if (currentUrl.startsWith("/messages")) {
+          this.currentlyActiveRoute.set("/messages");
           // if it's any of the messages/admin/new pages
-        } else if (
-          currentUrl.startsWith("/messages") ||
-          currentUrl.startsWith("/admin") ||
-          currentUrl.startsWith("/new")
-        ) {
+        } else if (currentUrl.startsWith("/admin") || currentUrl.startsWith("/new")) {
           this.currentlyActiveRoute.set(`/${currentUrl.split("/")[1]}`);
         } else if (currentUrl.startsWith("/user")) {
           // if the user is logged in and viewing their own page, or
@@ -185,6 +194,8 @@ export class AppNavMenu implements OnInit, AfterViewInit {
           }
         }
       });
+
+    this.checkMenuSize();
   }
 
   /**
@@ -208,7 +219,7 @@ export class AppNavMenu implements OnInit, AfterViewInit {
   Programmer: Shir Bar Lev.
   */
   toggleNotifications() {
-    let width = document.documentElement.clientWidth;
+    const width = document.documentElement.clientWidth;
     this.showNotifications.set(true);
 
     // if the viewport is smaller than 650px, the user opened the panel through the
@@ -226,7 +237,7 @@ export class AppNavMenu implements OnInit, AfterViewInit {
   Programmer: Shir Bar Lev.
   */
   toggleSearch() {
-    let width = document.documentElement.clientWidth;
+    const width = document.documentElement.clientWidth;
 
     // if the search is displayed, close it
     if (this.showSearch()) {
@@ -272,11 +283,10 @@ export class AppNavMenu implements OnInit, AfterViewInit {
   */
   @HostListener("window:resize", ["$event"])
   onResize(_event: Event) {
-    let width = document.documentElement.clientWidth;
-    let navMenu = document.getElementById("navMenu") as HTMLDivElement;
-    let navLinks = document.getElementById("navLinks") as HTMLDivElement;
+    const width = document.documentElement.clientWidth;
+    const navMenu = document.getElementById("navMenu") as HTMLDivElement;
 
-    if (width > 650 && navLinks.scrollWidth < navMenu.offsetWidth) {
+    if (width > 650 && this.menuSize() < navMenu.offsetWidth) {
       this.showMenu.set(true);
       this.showMenuButton.set(false);
     } else {
@@ -342,7 +352,7 @@ export class AppNavMenu implements OnInit, AfterViewInit {
   Programmer: Shir Bar Lev.
   */
   checkMenuSize() {
-    let navMenu = document.getElementById("navMenu") as HTMLDivElement;
+    const navMenu = document.getElementById("navMenu") as HTMLDivElement;
 
     // if the larger text makes the navigation menu too long, turn it back
     // to the small-viewport menu
@@ -368,8 +378,8 @@ export class AppNavMenu implements OnInit, AfterViewInit {
   ----------------
   Programmer: Shir Bar Lev.
   */
-  changeMode(notificationsOn: any) {
-    this.showNotifications.set(notificationsOn as boolean);
+  changeMode(notificationsOn: boolean) {
+    this.showNotifications.set(notificationsOn);
   }
 
   /**

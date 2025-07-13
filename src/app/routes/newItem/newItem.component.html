@@ -1,13 +1,13 @@
 <div id="newItem">
-  <h3 id="newTitle">New {{ itemType() }}</h3>
+  <h1 id="newTitle">New {{ itemType() }}</h1>
 
   <span *ngIf="authService.userData() !== undefined">
-    <div id="newMessage" *ngIf="itemType() == 'Message'">
+    <div *ngIf="itemType() === 'Message'" id="newMessage">
       <form
-        [formGroup]="newMessageForm"
+        *ngIf="this.newMessageForm.controls.messageFor.value && forID()"
         class="newItem"
         aria-describedby="newTitle"
-        *ngIf="this.newMessageForm.controls.messageFor.value && forID()"
+        [formGroup]="newMessageForm"
       >
         <div class="formElement">
           <label class="pageCategory" for="messageFor">For:</label>
@@ -31,9 +31,9 @@
             class="newTextArea"
             minlength="0"
             maxlength="480"
-            [attr.aria-invalid]="!this.newMessageForm.controls.messageText.valid"
             required
             aria-required="true"
+            [attr.aria-invalid]="!this.newMessageForm.controls.messageText.valid"
           ></textarea>
         </div>
         <button type="submit" class="appButton sendData" (click)="sendMessage()">
@@ -42,8 +42,8 @@
       </form>
 
       <div
-        class="errorMessage"
         *ngIf="!this.newMessageForm.controls.messageFor.value || !forID()"
+        class="errorMessage"
         role="alert"
       >
         User ID and display name are required for sending a message. Please add numerical user ID
@@ -51,12 +51,12 @@
       </div>
     </div>
 
-    <div id="newPost" *ngIf="itemType() == 'Post'">
+    <div *ngIf="itemType() === 'Post'" id="newPost">
       <form
-        [formGroup]="newPostForm"
-        class="newItem"
         *ngIf="!authService.userData()!.blocked"
+        class="newItem"
         aria-describedby="newTitle"
+        [formGroup]="newPostForm"
       >
         <div class="formElement">
           <span class="pageCategory">By:</span>
@@ -76,22 +76,22 @@
             class="newTextArea"
             minlength="0"
             maxlength="480"
-            [attr.aria-invalid]="!this.newPostForm.controls.postText.valid"
             required
             aria-required="true"
+            [attr.aria-invalid]="!this.newPostForm.controls.postText.valid"
           ></textarea>
         </div>
         <button type="submit" class="appButton sendData" (click)="sendPost()">Publish Post</button>
       </form>
 
-      <div class="errorMessage" *ngIf="authService.userData()!.blocked" role="alert">
+      <div *ngIf="authService.userData()!.blocked" class="errorMessage" role="alert">
         You are currently blocked until {{ authService.userData()!.releaseDate }}. You cannot post
         new posts.
       </div>
     </div>
   </span>
 
-  <div class="errorMessage" *ngIf="authService.userData() == undefined" role="alert">
+  <div *ngIf="authService.userData() === undefined" class="errorMessage" role="alert">
     You're not currently logged in. Please log in and then try again.
   </div>
 

@@ -32,7 +32,7 @@
 
 // Angular imports
 import { CommonModule } from "@angular/common";
-import { Component, signal } from "@angular/core";
+import { Component, inject, signal } from "@angular/core";
 import { Router, Route, RouterLink } from "@angular/router";
 
 // App-related imports
@@ -45,14 +45,13 @@ import { AuthService } from "@app/services/auth.service";
   standalone: true,
   imports: [CommonModule, RouterLink],
 })
-export class SiteMap {
-  routes = signal<Route[]>([]);
+export class SiteMapComponent {
+  private router = inject(Router);
+  private authService = inject(AuthService);
+  readonly routes = signal<Route[]>([]);
 
   // CTOR
-  constructor(
-    private router: Router,
-    private authService: AuthService,
-  ) {
+  constructor() {
     this.updateSiteMap();
 
     if (!this.authService.authenticated()) {
@@ -95,7 +94,7 @@ export class SiteMap {
           if (this.authService.authenticated()) routes.push(route);
         }
         // otherwise just add the route as-is
-        else if (route.path != "signup") {
+        else if (route.path != "signup" && route.path != "verify") {
           routes.push(route);
         }
       }

@@ -37,10 +37,10 @@ import { provideExperimentalZonelessChangeDetection, signal } from "@angular/cor
 import { MockProvider } from "ng-mocks";
 import { provideRouter } from "@angular/router";
 
-import { SendHugForm } from "./sendHugForm.component";
+import { SendHugFormComponent } from "./sendHugForm.component";
 import { AuthService } from "@app/services/auth.service";
 import { mockAuthedUser } from "@tests/mockData";
-import { PopUp } from "@common/popUp/popUp.component";
+import { PopUpComponent } from "@common/popUp/popUp.component";
 import { ValidationService } from "@app/services/validation.service";
 import { ApiClientService } from "@app/services/apiClient.service";
 import { ItemsService } from "@app/services/items.service";
@@ -64,7 +64,13 @@ describe("Send Hug Form", () => {
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
-      imports: [CommonModule, ReactiveFormsModule, PopUp, SendHugForm, TeleportDirective],
+      imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        PopUpComponent,
+        SendHugFormComponent,
+        TeleportDirective,
+      ],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
         provideExperimentalZonelessChangeDetection(),
@@ -77,12 +83,11 @@ describe("Send Hug Form", () => {
   });
 
   it("shows the name of the user who sent the post", () => {
-    const fixture = TestBed.createComponent(SendHugForm);
-    const shForm = fixture.componentInstance;
+    const fixture = TestBed.createComponent(SendHugFormComponent);
     const shformDOM = fixture.nativeElement;
-    shForm.forUsername = "meow";
-    shForm.forID = 1;
-    shForm.postID = 1;
+    fixture.componentRef.setInput("forUsername", "meow");
+    fixture.componentRef.setInput("forID", 1);
+    fixture.componentRef.setInput("postID", 1);
 
     fixture.detectChanges();
 
@@ -91,15 +96,15 @@ describe("Send Hug Form", () => {
   });
 
   it("updateTextValidators() - correctly enables/disables the 'message' text field", () => {
-    const fixture = TestBed.createComponent(SendHugForm);
-    const shForm = fixture.componentInstance;
+    const fixture = TestBed.createComponent(SendHugFormComponent);
     const shformDOM = fixture.nativeElement;
-    shForm.forUsername = "meow";
-    shForm.forID = 1;
-    shForm.postID = 1;
+    fixture.componentRef.setInput("forUsername", "meow");
+    fixture.componentRef.setInput("forID", 1);
+    fixture.componentRef.setInput("postID", 1);
     fixture.detectChanges();
 
     const messageTextField = document.getElementById("messageText") as HTMLInputElement;
+
     expect(messageTextField.disabled).toBe(false);
 
     shformDOM.querySelector("#sendMessage").click();
@@ -113,42 +118,41 @@ describe("Send Hug Form", () => {
     expect(messageTextField.disabled).toBe(false);
   });
 
-  it("Correctly sets the required and aria-required attributes", (done: DoneFn) => {
-    const fixture = TestBed.createComponent(SendHugForm);
-    const shForm = fixture.componentInstance;
+  it("Correctly sets the required and aria-required attributes", () => {
+    const fixture = TestBed.createComponent(SendHugFormComponent);
     const shformDOM = fixture.nativeElement;
-    shForm.forUsername = "meow";
-    shForm.forID = 1;
-    shForm.postID = 1;
+    fixture.componentRef.setInput("forUsername", "meow");
+    fixture.componentRef.setInput("forID", 1);
+    fixture.componentRef.setInput("postID", 1);
     fixture.detectChanges();
 
     const messageTextField = document.getElementById("messageText") as HTMLInputElement;
 
     shformDOM.querySelector("#sendMessage").click();
     fixture.detectChanges();
+
     expect(messageTextField.required).toBe(false);
     expect(messageTextField.getAttribute("aria-required")).toEqual("false");
 
     shformDOM.querySelector("#sendMessage").click();
     fixture.detectChanges();
+
     expect(messageTextField.required).toBe(true);
     expect(messageTextField.getAttribute("aria-required")).toEqual("true");
-
-    done();
   });
 
-  it("requires text if the user is sending a message", (done: DoneFn) => {
+  it("requires text if the user is sending a message", () => {
     const validationService = TestBed.inject(ValidationService);
     const validateSpy = spyOn(validationService, "validateItemAgainst").and.returnValue(
       (_control) => ({ error: "ERROR!" }),
     );
 
-    const fixture = TestBed.createComponent(SendHugForm);
+    const fixture = TestBed.createComponent(SendHugFormComponent);
     const shForm = fixture.componentInstance;
     const shformDOM = fixture.nativeElement;
-    shForm.forUsername = "meow";
-    shForm.forID = 1;
-    shForm.postID = 1;
+    fixture.componentRef.setInput("forUsername", "meow");
+    fixture.componentRef.setInput("forID", 1);
+    fixture.componentRef.setInput("postID", 1);
     const apiClientSpy = spyOn(shForm["apiClient"], "post");
     const alertServiceSpy = spyOn(shForm["alertsService"], "createAlert");
     fixture.detectChanges();
@@ -157,17 +161,16 @@ describe("Send Hug Form", () => {
     shformDOM.querySelectorAll(".sendData")[0].click();
     fixture.detectChanges();
 
-    // check the report wasn't sent and the user was alerted
+    // check the message wasn't sent and the user was alerted
     expect(validateSpy).toHaveBeenCalledWith("message");
     expect(apiClientSpy).not.toHaveBeenCalled();
     expect(alertServiceSpy).toHaveBeenCalledWith({
       type: "Error",
       message: "ERROR!",
     });
-    done();
   });
 
-  it("doesn't allow unauthenticated users to send a hug", (done: DoneFn) => {
+  it("doesn't allow unauthenticated users to send a hug", () => {
     const validationService = TestBed.inject(ValidationService);
     const validateSpy = spyOn(validationService, "validateItemAgainst").and.returnValue(
       (_control) => null,
@@ -176,12 +179,12 @@ describe("Send Hug Form", () => {
     const authSerivce = TestBed.inject(AuthService);
     authSerivce.authenticated.set(false);
 
-    const fixture = TestBed.createComponent(SendHugForm);
+    const fixture = TestBed.createComponent(SendHugFormComponent);
     const shForm = fixture.componentInstance;
     const shformDOM = fixture.nativeElement;
-    shForm.forUsername = "meow";
-    shForm.forID = 1;
-    shForm.postID = 1;
+    fixture.componentRef.setInput("forUsername", "meow");
+    fixture.componentRef.setInput("forID", 1);
+    fixture.componentRef.setInput("postID", 1);
     const apiClientSpy = spyOn(shForm["apiClient"], "post");
     const alertServiceSpy = spyOn(shForm["alertsService"], "createAlert");
     fixture.detectChanges();
@@ -193,28 +196,27 @@ describe("Send Hug Form", () => {
     shformDOM.querySelectorAll(".sendData")[0].click();
     fixture.detectChanges();
 
-    // check the report wasn't sent and the user was alerted
+    // check the message wasn't sent and the user was alerted
     expect(validateSpy).toHaveBeenCalledWith("message");
     expect(apiClientSpy).not.toHaveBeenCalled();
     expect(alertServiceSpy).toHaveBeenCalledWith({
       type: "Error",
       message: "You're currently logged out. Log back in to send a message.",
     });
-    done();
   });
 
-  it("doesn't allow sending hugs to self", (done: DoneFn) => {
+  it("doesn't allow sending hugs to self", () => {
     const validationService = TestBed.inject(ValidationService);
     const validateSpy = spyOn(validationService, "validateItemAgainst").and.returnValue(
       (_control) => null,
     );
 
-    const fixture = TestBed.createComponent(SendHugForm);
+    const fixture = TestBed.createComponent(SendHugFormComponent);
     const shForm = fixture.componentInstance;
     const shformDOM = fixture.nativeElement;
-    shForm.forUsername = "meow";
-    shForm.forID = 4;
-    shForm.postID = 1;
+    fixture.componentRef.setInput("forUsername", "meow");
+    fixture.componentRef.setInput("forID", 4);
+    fixture.componentRef.setInput("postID", 1);
     const apiClientSpy = spyOn(shForm["apiClient"], "post");
     const alertServiceSpy = spyOn(shForm["alertsService"], "createAlert");
     fixture.detectChanges();
@@ -226,27 +228,26 @@ describe("Send Hug Form", () => {
     shformDOM.querySelectorAll(".sendData")[0].click();
     fixture.detectChanges();
 
-    // check the report wasn't sent and the user was alerted
+    // check the message wasn't sent and the user was alerted
     expect(validateSpy).toHaveBeenCalledWith("message");
     expect(apiClientSpy).not.toHaveBeenCalled();
     expect(alertServiceSpy).toHaveBeenCalledWith({
       type: "Error",
       message: "You can't send a message to yourself!",
     });
-    done();
   });
 
-  it("doesn't allow sending hugs without postID", (done: DoneFn) => {
+  it("doesn't allow sending hugs without postID", () => {
     const validationService = TestBed.inject(ValidationService);
     const validateSpy = spyOn(validationService, "validateItemAgainst").and.returnValue(
       (_control) => null,
     );
 
-    const fixture = TestBed.createComponent(SendHugForm);
+    const fixture = TestBed.createComponent(SendHugFormComponent);
     const shForm = fixture.componentInstance;
-    shForm.forUsername = "meow";
-    shForm.forID = 1;
-    shForm.postID = undefined;
+    fixture.componentRef.setInput("forUsername", "meow");
+    fixture.componentRef.setInput("forID", 1);
+    fixture.componentRef.setInput("postID", undefined);
     const apiClientSpy = spyOn(shForm["apiClient"], "post");
     const alertServiceSpy = spyOn(shForm["alertsService"], "createAlert");
     fixture.detectChanges();
@@ -257,17 +258,16 @@ describe("Send Hug Form", () => {
     shForm.sendHugForm.controls.messageText.setValue("m");
     shForm.sendHugAndMessage();
 
-    // check the report wasn't sent and the user was alerted
+    // check the hug wasn't sent and the user was alerted
     expect(validateSpy).toHaveBeenCalledWith("message");
     expect(apiClientSpy).not.toHaveBeenCalled();
     expect(alertServiceSpy).toHaveBeenCalledWith({
       type: "Error",
       message: "A post ID is required to send a hug for a post.",
     });
-    done();
   });
 
-  it("sends the hug via the itemsService", (done: DoneFn) => {
+  it("sends the hug via the itemsService", () => {
     // mock response
     const mockResponse = {
       updated: "Sent hug!",
@@ -279,12 +279,12 @@ describe("Send Hug Form", () => {
       (_control) => null,
     );
 
-    const fixture = TestBed.createComponent(SendHugForm);
+    const fixture = TestBed.createComponent(SendHugFormComponent);
     const shForm = fixture.componentInstance;
     const shformDOM = fixture.nativeElement;
-    shForm.forUsername = "meow";
-    shForm.forID = 1;
-    shForm.postID = 1;
+    fixture.componentRef.setInput("forUsername", "meow");
+    fixture.componentRef.setInput("forID", 1);
+    fixture.componentRef.setInput("postID", 1);
     const apiClientSpy = spyOn(shForm["apiClient"], "post").and.returnValue(of(mockResponse));
     const alertsSpy = spyOn(shForm["alertsService"], "createSuccessAlert");
     const emitSpy = spyOn(shForm.sendMode, "emit");
@@ -302,11 +302,10 @@ describe("Send Hug Form", () => {
     shformDOM.querySelectorAll(".sendData")[0].click();
     fixture.detectChanges();
 
-    // check the report was sent
+    // check the hug was sent
     expect(validateSpy).toHaveBeenCalledWith("message");
     expect(apiClientSpy).toHaveBeenCalledWith("posts/1/hugs", { messageText: newMessage });
     expect(alertsSpy).toHaveBeenCalledWith(mockResponse.updated);
     expect(emitSpy).toHaveBeenCalledWith(false);
-    done();
   });
 });

@@ -6,7 +6,9 @@
     [loadingMessage]="'Fetching user data...'"
   ></app-loader>
 
-  <div id="userPage" *ngIf="!isIdbFetchLoading()" role="region">
+  <h1 class="labels">User Page</h1>
+
+  <div *ngIf="!isIdbFetchLoading()" id="userPage" role="region">
     <div id="profileData">
       <div id="profilePic">
         <app-user-icon
@@ -15,72 +17,71 @@
           [lbgColour]="displayUser().iconColours.lbg"
           [rbgColour]="displayUser().iconColours.rbg"
           [itemColour]="displayUser().iconColours.item"
-          [svgClass]="'userIcon'"
+          [svgClass]="'userIcon profileIcon'"
         />
       </div>
       <div id="userNameRole">
         <div class="displayName">
-          <span class="pageData" aria-describedby="userName">{{ displayUser().displayName }}</span>
-          <span class="pageData" *ngIf="isOtherUserProfile()" aria-describedby="userName">
+          <span class="pageData">{{ displayUser().displayName }}</span>
+          <span *ngIf="isOtherUserProfile()" class="pageData">
             <button
               class="textlessButton hugButton"
+              aria-labelledby="uHug"
+              aria-describedby="uHug"
               (click)="sendHug(otherUser()!.id)"
-              aria-describedby="uHug userName"
             >
               <!-- prettier-ignore -->
-              <fa-icon [icon]="faGratipay" class="fa-gratipay"></fa-icon>
+              <fa-icon class="fa-gratipay" [icon]="faGratipay"></fa-icon>
             </button>
           </span>
         </div>
         <div id="roleElement">
           <span class="pageCategory" id="userRole">Role:</span
-          ><span class="pageData" aria-describedby="userName userRole">{{
-            displayUser().role.name
-          }}</span>
+          ><span class="pageData">{{ displayUser().role.name }}</span>
         </div>
       </div>
       <div class="profileElement" id="rHugsElement">
-        <div class="pageData" aria-describedby="userName uReceived">
+        <div class="pageData">
           {{ displayUser().receivedH }}
         </div>
         <div class="pageCategory">Hugs Received</div>
       </div>
       <div class="profileElement" id="gHugsElement">
-        <div class="pageData" aria-describedby="userName uGivenH">{{ displayUser().givenH }}</div>
+        <div class="pageData">{{ displayUser().givenH }}</div>
         <div class="pageCategory">Hugs Given</div>
       </div>
       <div class="profileElement" id="postsElement">
-        <div class="pageData" aria-describedby="uNumP userName">{{ displayUser().posts }}</div>
+        <div class="pageData">{{ displayUser().posts }}</div>
         <div class="pageCategory">Posts Written</div>
       </div>
 
       <div class="buttons">
         <button
+          *ngIf="!isOtherUserProfile()"
           id="editName"
           class="appButton"
-          (click)="editName()"
-          *ngIf="!isOtherUserProfile()"
           [attr.aria-label]="'edit display name for user ' + displayUser().displayName"
+          (click)="editName()"
         >
           Edit Display Name
         </button>
         <a
-          [routerLink]="['/settings']"
+          *ngIf="!isOtherUserProfile()"
           id="settingsLink"
           class="appButton"
-          *ngIf="!isOtherUserProfile()"
+          [routerLink]="['/settings']"
           [attr.aria-label]="'go to user settings page for user ' + displayUser().displayName"
           >User Settings</a
         >
         <button
-          class="appButton reportButton"
-          (click)="reportUser(otherUser()!)"
           *ngIf="isOtherUserProfile()"
+          class="appButton reportButton"
           [attr.aria-label]="'report user ' + displayUser().displayName"
+          (click)="reportUser(otherUser()!)"
         >
           Report User
         </button>
-        <button id="logout" class="appButton" (click)="logout()" *ngIf="!isOtherUserProfile()">
+        <button *ngIf="!isOtherUserProfile()" id="logout" class="appButton" (click)="logout()">
           Log Out
         </button>
       </div>
@@ -90,8 +91,8 @@
   </div>
 </div>
 
-<div id="labels" class="labels" aria-hidden="true">
-  <p id="uHug">Send a hug to user</p>
+<div id="labels" class="labels">
+  <p id="uHug">Send a hug to user {{ displayUser().displayName }}</p>
   <p id="uGivenH">Hugs given by user</p>
   <p id="uReceived">Hugs received by user</p>
   <p id="uNumP">Number of posts written by user</p>
@@ -101,9 +102,9 @@
 
 <report-form
   *ngIf="reportMode()"
-  (reportMode)="changeMode($event, 'Report')"
   [reportedItem]="reportedItem()!"
   [reportType]="reportType"
+  (reportMode)="changeMode($event, 'Report')"
 ></report-form>
 
 <display-name-edit-form

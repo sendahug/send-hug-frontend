@@ -31,7 +31,7 @@
 */
 
 // Angular imports
-import { Component, signal } from "@angular/core";
+import { Component, inject, signal } from "@angular/core";
 import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { CommonModule } from "@angular/common";
 import { RouterLink } from "@angular/router";
@@ -40,31 +40,35 @@ import { RouterLink } from "@angular/router";
 import { NotificationService } from "@app/services/notifications.service";
 import { AuthService } from "@app/services/auth.service";
 import { AlertsService } from "@app/services/alerts.service";
-import { IconEditor } from "@app/components/iconEditor/iconEditor.component";
-import { UserIcon } from "@common/userIcon/userIcon.component";
+import { IconEditorComponent } from "@app/components/iconEditor/iconEditor.component";
+import { UserIconComponent } from "@common/userIcon/userIcon.component";
 
 @Component({
   selector: "app-settings",
   templateUrl: "./settings.component.html",
   styleUrl: "./settings.component.less",
   standalone: true,
-  imports: [CommonModule, IconEditor, UserIcon, ReactiveFormsModule, RouterLink],
+  imports: [CommonModule, IconEditorComponent, UserIconComponent, ReactiveFormsModule, RouterLink],
 })
-export class SettingsPage {
-  editIcon = signal(false);
+export class SettingsPageComponent {
+  public notificationService = inject(NotificationService);
+  public authService = inject(AuthService);
+  private alertsService = inject(AlertsService);
+  private fb = inject(FormBuilder);
+  readonly editIcon = signal(false);
   editSettingsForm = this.fb.group({
     enableNotifications: [false],
     enableAutoRefresh: [false],
     notificationRate: [20],
+    emailNotificationsEnabled: [false],
+    messageNotifications: [false],
+    hugsDigestNotifications: [false],
+    youOkayNotifications: [false],
+    previousInteractionNotifications: [false],
   });
 
   // CTOR
-  constructor(
-    public notificationService: NotificationService,
-    public authService: AuthService,
-    private alertsService: AlertsService,
-    private fb: FormBuilder,
-  ) {
+  constructor() {
     // TODO: There's got to be a better way to do this for refreshes...
     this.authService.isUserDataResolved.subscribe((value) => {
       if (value) {
@@ -72,6 +76,16 @@ export class SettingsPage {
           enableNotifications: this.authService.pushEnabled(),
           enableAutoRefresh: this.authService.autoRefresh(),
           notificationRate: this.authService.refreshRate(),
+          emailNotificationsEnabled:
+            this.authService.userData()?.preferences.emailNotificationsEnabled || false,
+          messageNotifications:
+            this.authService.userData()?.preferences.messageNotifications || false,
+          hugsDigestNotifications:
+            this.authService.userData()?.preferences.hugsDigestNotifications || false,
+          youOkayNotifications:
+            this.authService.userData()?.preferences.youOkayNotifications || false,
+          previousInteractionNotifications:
+            this.authService.userData()?.preferences.previousInteractionNotifications || false,
         });
       }
     });
@@ -82,6 +96,10 @@ export class SettingsPage {
 
     this.editSettingsForm.controls.notificationRate.valueChanges.subscribe(() => {
       this.setRateInvalidStatus();
+    });
+
+    this.editSettingsForm.controls.emailNotificationsEnabled.valueChanges.subscribe(() => {
+      this.toggleEmailNotificationsSettings();
     });
   }
 
@@ -109,6 +127,14 @@ export class SettingsPage {
     const newRate = this.editSettingsForm.controls.notificationRate.value;
     const refreshStatus = this.editSettingsForm.controls.enableAutoRefresh.value || false;
     const pushStatus = this.editSettingsForm.controls.enableNotifications.value || false;
+    const emailNotificationsEnabled =
+      this.editSettingsForm.controls.emailNotificationsEnabled.value || false;
+    const messageNotifications = this.editSettingsForm.controls.messageNotifications.value || false;
+    const hugsDigestNotifications =
+      this.editSettingsForm.controls.hugsDigestNotifications.value || false;
+    const youOkayNotifications = this.editSettingsForm.controls.youOkayNotifications.value || false;
+    const previousInteractionNotifications =
+      this.editSettingsForm.controls.previousInteractionNotifications.value || false;
 
     // if there's no rate or it's zero, alert the user it can't be
     if ((!newRate || newRate <= 0) && refreshStatus) {
@@ -124,6 +150,13 @@ export class SettingsPage {
           pushEnabled: pushStatus,
           autoRefresh: refreshStatus,
           refreshRate: Number(newRate),
+          preferences: {
+            emailNotificationsEnabled,
+            messageNotifications,
+            hugsDigestNotifications,
+            youOkayNotifications,
+            previousInteractionNotifications,
+          },
         })
         .add(() => {
           this.alertsService.createSuccessAlert("Your settings have been updated!");
@@ -172,6 +205,28 @@ export class SettingsPage {
       }
     } else {
       document.querySelector("#notificationRate")?.setAttribute("aria-invalid", "false");
+    }
+  }
+
+  /**
+   * Disables/enables the specific email notifications-related inputs depending on
+   * whether email notifications are enabled or not. If not, there's no point in allowing
+   * users to update the rest of the settings, considering they would do nothing.
+   */
+  toggleEmailNotificationsSettings() {
+    const emailNotificationsEnabled =
+      this.editSettingsForm.controls.emailNotificationsEnabled.value || false;
+
+    if (emailNotificationsEnabled) {
+      this.editSettingsForm.controls.messageNotifications.enable();
+      this.editSettingsForm.controls.hugsDigestNotifications.enable();
+      this.editSettingsForm.controls.youOkayNotifications.enable();
+      this.editSettingsForm.controls.previousInteractionNotifications.enable();
+    } else {
+      this.editSettingsForm.controls.messageNotifications.disable();
+      this.editSettingsForm.controls.hugsDigestNotifications.disable();
+      this.editSettingsForm.controls.youOkayNotifications.disable();
+      this.editSettingsForm.controls.previousInteractionNotifications.disable();
     }
   }
 }

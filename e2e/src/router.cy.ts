@@ -3,11 +3,10 @@ describe("Send A Hug Router", () => {
   // TODO: figure out why this isn't persisting
   before(() => {
     cy.visit("http://localhost:3000/login");
-    cy.wait(500);
     cy.get("#username").type(Cypress.env("ADMIN_USERNAME"));
     cy.get("#password").type(Cypress.env("ADMIN_PASSWORD"));
     cy.get("#logIn").click();
-    cy.wait(1000);
+    cy.url().should("equal", "http://localhost:3000/user");
   });
 
   // check the user is sent to the right page upon navigation
@@ -42,35 +41,21 @@ describe("Send A Hug Router", () => {
   // check the correct sub-route is shown for those paths that have sub-routes
   // TODO: Figure out why this isn't registering auth
   it("should show the correct sub-route - messages", () => {
-    // inbox
-    cy.visit("http://localhost:3000/messages/inbox");
-    cy.wait(1000);
-    cy.get("app-messages").should("be.visible").should("not.be.undefined");
-    cy.get("h3").eq(0).should("have.text", "inbox");
-    // check messages route is marked active
-    cy.get(".navLink").eq(2).should("have.class", "active");
-
-    // outbox
-    cy.visit("http://localhost:3000/messages/outbox");
-    cy.wait(1000);
-    cy.get("app-messages").should("be.visible").should("not.be.undefined");
-    cy.get("h3").eq(0).should("have.text", "outbox");
-    // check messages route is marked active
-    cy.get(".navLink").eq(2).should("have.class", "active");
-
     // threads
-    cy.visit("http://localhost:3000/messages/threads");
-    cy.wait(1000);
+    cy.visit("http://localhost:3000/messages");
+    cy.url().should("equal", "http://localhost:3000/messages");
     cy.get("app-messages").should("be.visible").should("not.be.undefined");
-    cy.get("h3").eq(0).should("have.text", "threads");
+    cy.get("h1").eq(0).should("have.text", "Messages");
+    cy.get("#breadcrumb").should("not.exist");
     // check messages route is marked active
     cy.get(".navLink").eq(2).should("have.class", "active");
 
     // thread
-    cy.visit("http://localhost:3000/messages/thread/1");
-    cy.wait(1000);
+    cy.visit("http://localhost:3000/messages?threadId=1");
+    cy.url().should("equal", "http://localhost:3000/messages?threadId=1");
     cy.get("app-messages").should("be.visible").should("not.be.undefined");
-    cy.get("h3").eq(0).should("have.text", "thread");
+    cy.get("h1").eq(0).should("have.text", "Messages");
+    cy.get("#breadcrumb").should("have.text", "Messages / Thread 1");
     // check messages route is marked active
     cy.get(".navLink").eq(2).should("have.class", "active");
   });
@@ -79,13 +64,13 @@ describe("Send A Hug Router", () => {
   it("should show the correct sub-route - new item", () => {
     // new post
     cy.visit("http://localhost:3000/new/Post");
-    cy.wait(1000);
+    cy.url().should("equal", "http://localhost:3000/new/Post");
     cy.get("app-new-item").should("be.visible").should("not.be.undefined");
     cy.get("#newTitle").should("have.text", "New Post");
 
     // new message
     cy.visit("http://localhost:3000/new/Message");
-    cy.wait(1000);
+    cy.url().should("equal", "http://localhost:3000/new/Message");
     cy.get("app-new-item").should("be.visible").should("not.be.undefined");
     cy.get("#newTitle").should("have.text", "New Message");
   });
@@ -110,7 +95,8 @@ describe("Send A Hug Router", () => {
   // TODO: Figure out why that doesn't work
   after(() => {
     cy.visit("http://localhost:3000/user");
-    cy.wait(1000);
-    cy.get("button").contains("Log Out").scrollIntoView().click();
+    cy.url().should("equal", "http://localhost:3000/user");
+    cy.get("button").contains("Log Out").scrollIntoView();
+    cy.get("button").contains("Log Out").click();
   });
 });

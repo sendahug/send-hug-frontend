@@ -31,7 +31,7 @@
 */
 
 // Angular imports
-import { Component, OnInit, Input, signal, computed } from "@angular/core";
+import { Component, OnInit, Input, signal, computed, inject } from "@angular/core";
 import { from, map, switchMap, tap } from "rxjs";
 import { CommonModule } from "@angular/common";
 import { ActivatedRoute, Router } from "@angular/router";
@@ -41,39 +41,36 @@ import { type PostGet } from "@app/interfaces/post.interface";
 import { AuthService } from "@app/services/auth.service";
 import { SWManager } from "@app/services/sWManager.service";
 import { ApiClientService } from "@app/services/apiClient.service";
-import { Loader } from "@common/loader/loader.component";
-import { SinglePost } from "@common/post/post.component";
-import { ItemDeleteForm } from "@forms/itemDeleteForm/itemDeleteForm.component";
-
-interface MyPostsResponse {
-  page: number;
-  posts: PostGet[];
-  total_pages: number;
-  success: boolean;
-}
+import { LoaderComponent } from "@common/loader/loader.component";
+import { PostComponent } from "@common/post/post.component";
+import { ItemDeleteFormComponent } from "@forms/itemDeleteForm/itemDeleteForm.component";
+import { type MyPostsResponse } from "@app/interfaces/api";
 
 @Component({
   selector: "app-my-posts",
   templateUrl: "./myPosts.component.html",
   styleUrl: "./myPosts.component.less",
   standalone: true,
-  imports: [Loader, SinglePost, ItemDeleteForm, CommonModule],
+  imports: [LoaderComponent, PostComponent, ItemDeleteFormComponent, CommonModule],
 })
-export class MyPosts implements OnInit {
-  isLoading = signal(false);
-  isIdbFetchLoading = signal(false);
-  posts = signal<PostGet[]>([]);
-  currentPage = signal(1);
-  totalPages = signal(1);
+export class MyPostsComponent implements OnInit {
+  public authService = inject(AuthService);
+  private swManager = inject(SWManager);
+  private apiClient = inject(ApiClientService);
+  private router = inject(Router);
+  private route = inject(ActivatedRoute);
+  readonly isLoading = signal(false);
+  readonly isIdbFetchLoading = signal(false);
+  readonly posts = signal<PostGet[]>([]);
+  readonly currentPage = signal(1);
+  readonly totalPages = signal(1);
   // edit popup sub-component variables
-  deleteMode = signal(false);
-  toDelete = signal<string>("");
-  itemToDelete = signal<number | undefined>(undefined);
-  previousPageButtonClass = computed(() => ({
+  readonly deleteMode = signal(false);
+  readonly previousPageButtonClass = computed(() => ({
     "appButton prevButton": true,
     disabled: this.currentPage() <= 1,
   }));
-  nextPageButtonClass = computed(() => ({
+  readonly nextPageButtonClass = computed(() => ({
     "appButton nextButton": true,
     disabled: this.totalPages() <= this.currentPage(),
   }));
@@ -87,20 +84,17 @@ export class MyPosts implements OnInit {
   set userID(newId: number | undefined) {
     this._userId.set(newId || this.authService.userData()!.id);
   }
-  protected _userId = signal<number | undefined>(undefined);
-  user = computed(() =>
+  protected readonly _userId = signal<number | undefined>(undefined);
+  readonly user = computed(() =>
     this._userId() && this._userId() != this.authService.userData()!.id! ? "other" : "self",
   );
-  loaderClass = signal("header");
+  readonly loaderClass = signal("header");
+  // Delete Popup Constants
+  readonly deleteEndpoint = computed(() => `users/${this._userId()}/posts`);
+  readonly itemType = "Post";
 
   // CTOR
-  constructor(
-    public authService: AuthService,
-    private swManager: SWManager,
-    private apiClient: ApiClientService,
-    private router: Router,
-    private route: ActivatedRoute,
-  ) {
+  constructor() {
     if (!this._userId()) {
       this._userId.set(this.authService.userData()!.id!);
     }
@@ -131,7 +125,7 @@ export class MyPosts implements OnInit {
     fetchFromIdb$
       .pipe(
         switchMap(() =>
-          this.apiClient.get<MyPostsResponse>(`users/all/${this._userId()}/posts`, {
+          this.apiClient.get<MyPostsResponse>(`users/${this._userId()}/posts`, {
             page: this.currentPage(),
           }),
         ),
@@ -140,7 +134,7 @@ export class MyPosts implements OnInit {
         this.totalPages.set(data.total_pages);
         this.posts.set(data.posts);
         this.isLoading.set(false);
-        this.swManager.addFetchedItems("posts", data.posts, "date");
+        this.swManager.addFetchedItems<PostGet>("posts", data.posts, "date");
       });
   }
 
@@ -193,8 +187,6 @@ export class MyPosts implements OnInit {
   */
   deleteAllPosts() {
     this.deleteMode.set(true);
-    this.toDelete.set("All posts");
-    this.itemToDelete.set(this._userId());
   }
 
   /**
@@ -203,6 +195,7 @@ export class MyPosts implements OnInit {
    */
   updatePostsList() {
     this.posts.set([]);
+    this.swManager.deleteItems("posts", "userId", this._userId()!);
   }
 
   /*

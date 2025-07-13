@@ -37,50 +37,48 @@ import {
   BrowserDynamicTestingModule,
   platformBrowserDynamicTesting,
 } from "@angular/platform-browser-dynamic/testing";
-import { of, Subscription } from "rxjs";
+import { of } from "rxjs";
 import { provideExperimentalZonelessChangeDetection } from "@angular/core";
 import { MockProvider } from "ng-mocks";
 
-import { ItemDeleteForm } from "./itemDeleteForm.component";
-import { PopUp } from "@common/popUp/popUp.component";
-import { AdminService } from "@app/services/admin.service";
+import { ItemDeleteFormComponent } from "./itemDeleteForm.component";
+import { PopUpComponent } from "@common/popUp/popUp.component";
 import { ApiClientService } from "@app/services/apiClient.service";
 import { TeleportDirective } from "@app/directives/teleport.directive";
 
-describe("ItemDeleteForm", () => {
+describe("ItemDeleteFormComponent", () => {
   // Before each test, configure testing environment
   beforeEach(() => {
     const MockAPIClient = MockProvider(ApiClientService);
-    const MockAdminService = MockProvider(AdminService);
 
     TestBed.resetTestEnvironment();
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
-      imports: [CommonModule, PopUp, ItemDeleteForm, TeleportDirective],
+      imports: [CommonModule, PopUpComponent, ItemDeleteFormComponent, TeleportDirective],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
         provideExperimentalZonelessChangeDetection(),
         MockAPIClient,
-        MockAdminService,
       ],
     }).compileComponents();
   });
 
   // Check that the component is created
   it("should create the component", () => {
-    const fixture = TestBed.createComponent(ItemDeleteForm);
+    const fixture = TestBed.createComponent(ItemDeleteFormComponent);
     const itemDeleteForm = fixture.componentInstance;
+
     expect(itemDeleteForm).toBeTruthy();
   });
 
   // Check that a warning is shown before deleting an item
-  it("shows a warning when deleting something", (done: DoneFn) => {
-    const fixture = TestBed.createComponent(ItemDeleteForm);
-    const itemDeleteForm = fixture.componentInstance;
+  it("shows a warning when deleting something", () => {
+    const fixture = TestBed.createComponent(ItemDeleteFormComponent);
     const itemDeleteFormDOM = fixture.nativeElement;
-    itemDeleteForm.toDelete = "Post";
-    itemDeleteForm.itemToDelete = 2;
+    fixture.componentRef.setInput("deleteEndpoint", "delete");
+    fixture.componentRef.setInput("itemType", "Post");
+    fixture.componentRef.setInput("itemId", 2);
 
     fixture.detectChanges();
 
@@ -88,295 +86,134 @@ describe("ItemDeleteForm", () => {
     expect(
       itemDeleteFormDOM.querySelector("#deleteItem").querySelectorAll(".warning")[0],
     ).toBeTruthy();
+
     expect(
       itemDeleteFormDOM.querySelector("#deleteItem").querySelectorAll(".warning")[0].textContent,
     ).toContain("This action is irreversible!");
-    done();
   });
 
-  it("deleteItem - single post - sets the right url and store for the delete call", (done: DoneFn) => {
-    const fixture = TestBed.createComponent(ItemDeleteForm);
+  it("deleteItem - single item - makes the request and updates the user and IndexedDB store", () => {
+    const fixture = TestBed.createComponent(ItemDeleteFormComponent);
     const itemDeleteForm = fixture.componentInstance;
     const itemDeleteFormDOM = fixture.nativeElement;
-    const mockSubscription = new Subscription();
-    mockSubscription.unsubscribe();
-    const deleteSingleItemSpy = spyOn(itemDeleteForm, "deleteSingleItem").and.returnValue(
-      mockSubscription,
-    );
-    const editModeSpy = spyOn(itemDeleteForm.editMode, "emit");
-    const deletedEmitSpy = spyOn(itemDeleteForm.deleted, "emit");
-    itemDeleteForm.toDelete = "Post";
-    itemDeleteForm.itemToDelete = 2;
-
-    fixture.detectChanges();
-
-    // click 'delete'
-    itemDeleteFormDOM.querySelectorAll(".popupDeleteBtn")[0].click();
-
-    expect(deleteSingleItemSpy).toHaveBeenCalledWith("posts/2", "posts");
-    expect(editModeSpy).toHaveBeenCalledWith(false);
-    expect(deletedEmitSpy).toHaveBeenCalledWith(2);
-    done();
-  });
-
-  it("deleteItem - single message - sets the right url and store for the delete call", (done: DoneFn) => {
-    const fixture = TestBed.createComponent(ItemDeleteForm);
-    const itemDeleteForm = fixture.componentInstance;
-    const itemDeleteFormDOM = fixture.nativeElement;
-    const mockSubscription = new Subscription();
-    mockSubscription.unsubscribe();
-    const deleteSingleItemSpy = spyOn(itemDeleteForm, "deleteSingleItem").and.returnValue(
-      mockSubscription,
-    );
-    const editModeSpy = spyOn(itemDeleteForm.editMode, "emit");
-    itemDeleteForm.toDelete = "Message";
-    itemDeleteForm.itemToDelete = 2;
-    itemDeleteForm.messType = "inbox";
-
-    fixture.detectChanges();
-
-    // click 'delete'
-    itemDeleteFormDOM.querySelectorAll(".popupDeleteBtn")[0].click();
-
-    expect(deleteSingleItemSpy).toHaveBeenCalledWith("messages/inbox/2", "messages");
-    expect(editModeSpy).toHaveBeenCalledWith(false);
-    done();
-  });
-
-  it("deleteItem - single thread - sets the right url and store for the delete call", (done: DoneFn) => {
-    const fixture = TestBed.createComponent(ItemDeleteForm);
-    const itemDeleteForm = fixture.componentInstance;
-    const itemDeleteFormDOM = fixture.nativeElement;
-    const mockSubscription = new Subscription();
-    mockSubscription.unsubscribe();
-    const deleteSingleItemSpy = spyOn(itemDeleteForm, "deleteSingleItem").and.returnValue(
-      mockSubscription,
-    );
-    const editModeSpy = spyOn(itemDeleteForm.editMode, "emit");
-    itemDeleteForm.toDelete = "Thread";
-    itemDeleteForm.itemToDelete = 2;
-    itemDeleteForm.messType = "threads";
-
-    fixture.detectChanges();
-
-    // click 'delete'
-    itemDeleteFormDOM.querySelectorAll(".popupDeleteBtn")[0].click();
-
-    expect(deleteSingleItemSpy).toHaveBeenCalledWith("messages/threads/2", "threads");
-    expect(editModeSpy).toHaveBeenCalledWith(false);
-    done();
-  });
-
-  it("deleteItem - all posts - should make the reuqest to delete all posts and delete from Idb", (done: DoneFn) => {
-    const fixture = TestBed.createComponent(ItemDeleteForm);
-    const itemDeleteForm = fixture.componentInstance;
-    const itemDeleteFormDOM = fixture.nativeElement;
-    const deleteMultipleSpy = spyOn(itemDeleteForm, "deleteMultipleItems").and.returnValue(
-      of({ success: true, userID: 2, deleted: 4 }),
-    );
-    itemDeleteForm.toDelete = "All posts";
-    itemDeleteForm.itemToDelete = 2;
-    const deleteIdbSpy = spyOn(itemDeleteForm["swManager"], "deleteItems");
-    const editModeSpy = spyOn(itemDeleteForm.editMode, "emit");
-    const deletedEmitSpy = spyOn(itemDeleteForm.deleted, "emit");
-
-    fixture.detectChanges();
-
-    // click 'delete'
-    itemDeleteFormDOM.querySelectorAll(".popupDeleteBtn")[0].click();
-
-    expect(deleteMultipleSpy).toHaveBeenCalledWith("users/all/2/posts", "posts");
-    expect(deleteIdbSpy).toHaveBeenCalledWith("posts", "userId", 2);
-    expect(editModeSpy).toHaveBeenCalledWith(false);
-    expect(deletedEmitSpy).toHaveBeenCalledWith(2);
-    done();
-  });
-
-  it("deleteItems - all inbox - should make the reuqest to delete all inbox messages and delete from Idb", (done: DoneFn) => {
-    const fixture = TestBed.createComponent(ItemDeleteForm);
-    const itemDeleteForm = fixture.componentInstance;
-    const itemDeleteFormDOM = fixture.nativeElement;
-    const deleteMultipleSpy = spyOn(itemDeleteForm, "deleteMultipleItems").and.returnValue(
-      of({ success: true, userID: 2, deleted: 4 }),
-    );
-    itemDeleteForm.toDelete = "All inbox";
-    itemDeleteForm.itemToDelete = 2;
-    const deleteIdbSpy = spyOn(itemDeleteForm["swManager"], "deleteItems");
-    const editModeSpy = spyOn(itemDeleteForm.editMode, "emit");
-    const deletedEmitSpy = spyOn(itemDeleteForm.deleted, "emit");
-
-    fixture.detectChanges();
-
-    // click 'delete'
-    itemDeleteFormDOM.querySelectorAll(".popupDeleteBtn")[0].click();
-
-    expect(deleteMultipleSpy).toHaveBeenCalledWith("messages/inbox", "messages");
-    expect(deleteIdbSpy).toHaveBeenCalledWith("messages", "forId", 2);
-    expect(editModeSpy).toHaveBeenCalledWith(false);
-    expect(deletedEmitSpy).toHaveBeenCalledWith(2);
-    done();
-  });
-
-  it("deleteItems - all outbox - should make the reuqest to delete all outbox messages and delete from Idb", (done: DoneFn) => {
-    const fixture = TestBed.createComponent(ItemDeleteForm);
-    const itemDeleteForm = fixture.componentInstance;
-    const itemDeleteFormDOM = fixture.nativeElement;
-    const deleteMultipleSpy = spyOn(itemDeleteForm, "deleteMultipleItems").and.returnValue(
-      of({ success: true, userID: 2, deleted: 4 }),
-    );
-    itemDeleteForm.toDelete = "All outbox";
-    itemDeleteForm.itemToDelete = 2;
-    const deleteIdbSpy = spyOn(itemDeleteForm["swManager"], "deleteItems");
-    const editModeSpy = spyOn(itemDeleteForm.editMode, "emit");
-
-    fixture.detectChanges();
-
-    // click 'delete'
-    itemDeleteFormDOM.querySelectorAll(".popupDeleteBtn")[0].click();
-
-    expect(deleteMultipleSpy).toHaveBeenCalledWith("messages/outbox", "messages");
-    expect(deleteIdbSpy).toHaveBeenCalledWith("messages", "fromId", 2);
-    expect(editModeSpy).toHaveBeenCalledWith(false);
-    done();
-  });
-
-  it("deleteItems - all threads - should make the reuqest to delete all threads and delete from Idb", (done: DoneFn) => {
-    const fixture = TestBed.createComponent(ItemDeleteForm);
-    const itemDeleteForm = fixture.componentInstance;
-    const itemDeleteFormDOM = fixture.nativeElement;
-    const deleteMultipleSpy = spyOn(itemDeleteForm, "deleteMultipleItems").and.returnValue(
-      of({ success: true, userID: 2, deleted: 4 }),
-    );
-    itemDeleteForm.toDelete = "All threads";
-    itemDeleteForm.itemToDelete = 2;
-    const deleteIdbSpy = spyOn(itemDeleteForm["swManager"], "clearStore");
-    const editModeSpy = spyOn(itemDeleteForm.editMode, "emit");
-
-    fixture.detectChanges();
-
-    // click 'delete'
-    itemDeleteFormDOM.querySelectorAll(".popupDeleteBtn")[0].click();
-
-    expect(deleteMultipleSpy).toHaveBeenCalledWith("messages/threads", "messages");
-    expect(deleteIdbSpy).toHaveBeenCalledWith("messages");
-    expect(deleteIdbSpy).toHaveBeenCalledWith("threads");
-    expect(editModeSpy).toHaveBeenCalledWith(false);
-    done();
-  });
-
-  it("deleteSingleItem - makes the request to delete a single item", () => {
-    const fixture = TestBed.createComponent(ItemDeleteForm);
-    const itemDeleteForm = fixture.componentInstance;
     const deleteSpy = spyOn(itemDeleteForm["apiClient"], "delete").and.returnValue(
       of({ success: true, deleted: 4 }),
     );
     const alertsSpy = spyOn(itemDeleteForm["alertsService"], "createSuccessAlert");
     const swManagerSpy = spyOn(itemDeleteForm["swManager"], "deleteItem");
-    itemDeleteForm.toDelete = "Post";
-    itemDeleteForm.itemToDelete = 4;
+    const editModeSpy = spyOn(itemDeleteForm.editMode, "emit");
+    const deletedEmitSpy = spyOn(itemDeleteForm.deleted, "emit");
+    fixture.componentRef.setInput("deleteEndpoint", "delete");
+    fixture.componentRef.setInput("itemType", "Post");
+    fixture.componentRef.setInput("itemId", 4);
 
     fixture.detectChanges();
 
-    itemDeleteForm.deleteSingleItem("posts/4", "posts");
+    // click 'delete'
+    itemDeleteFormDOM.querySelectorAll(".popupDeleteBtn")[0].click();
 
-    expect(deleteSpy).toHaveBeenCalledWith("posts/4");
+    expect(deleteSpy).toHaveBeenCalledWith("delete/4");
     expect(alertsSpy).toHaveBeenCalledWith("Post 4 was deleted.");
     expect(swManagerSpy).toHaveBeenCalledWith("posts", 4);
+    expect(editModeSpy).toHaveBeenCalledWith(false);
+    expect(deletedEmitSpy).toHaveBeenCalledWith(4);
   });
 
-  it("deleteSingleItem - makes the request to delete the thread and deletes the messages from Idb", () => {
-    const fixture = TestBed.createComponent(ItemDeleteForm);
-    const itemDeleteForm = fixture.componentInstance;
-    const deleteSpy = spyOn(itemDeleteForm["apiClient"], "delete").and.returnValue(
-      of({ success: true, deleted: 4 }),
-    );
-    const alertsSpy = spyOn(itemDeleteForm["alertsService"], "createSuccessAlert");
-    const swManagerSpy = spyOn(itemDeleteForm["swManager"], "deleteItems");
-    itemDeleteForm.toDelete = "Thread";
-    itemDeleteForm.itemToDelete = 4;
-
-    fixture.detectChanges();
-
-    itemDeleteForm.deleteSingleItem("messages/threads/4", "threads");
-
-    expect(deleteSpy).toHaveBeenCalledWith("messages/threads/4");
-    expect(alertsSpy).toHaveBeenCalledWith("Thread 4 was deleted.");
-    expect(swManagerSpy).toHaveBeenCalledWith("messages", "threadID", 4);
-  });
-
-  // Check that a request to close the report is made if the item is deleted from
-  // the admin dashboard
-  it("makes a request to close the report if that's what the user chose - Admin delete", (done: DoneFn) => {
-    const fixture = TestBed.createComponent(ItemDeleteForm);
+  it("deleteItem - multiple items - makes the request and updates the user", () => {
+    const fixture = TestBed.createComponent(ItemDeleteFormComponent);
     const itemDeleteForm = fixture.componentInstance;
     const itemDeleteFormDOM = fixture.nativeElement;
-    itemDeleteForm.toDelete = "ad post";
-    itemDeleteForm.itemToDelete = 2;
-    itemDeleteForm.reportData = {
-      reportID: 2,
-      postID: 4,
-    };
-    const mockSubscription = new Subscription();
-    mockSubscription.unsubscribe();
-    const deleteSpy = spyOn(itemDeleteForm, "deletePost").and.callThrough();
-    const deleteServiceSpy = spyOn(itemDeleteForm["adminService"], "deletePost").and.returnValue(
-      mockSubscription,
-    );
-    const emitSpy = spyOn(itemDeleteForm.editMode, "emit");
-    const deletedEmitSpy = spyOn(itemDeleteForm.deleted, "emit");
-
-    fixture.detectChanges();
-
-    // click 'delete and close report'
-    itemDeleteFormDOM.querySelectorAll(".popupDeleteBtn")[0].click();
-    fixture.detectChanges();
-
-    // check that the closeReport boolean is true
-    const report = {
-      reportID: 2,
-      postID: 4,
-    };
-    expect(deleteSpy).toHaveBeenCalledWith(true);
-    expect(deleteServiceSpy).toHaveBeenCalledWith(2, report, true);
-    expect(emitSpy).toHaveBeenCalledWith(false);
-
-    // click 'delete and close report'
-    itemDeleteFormDOM.querySelectorAll(".popupDeleteBtn")[1].click();
-    fixture.detectChanges();
-
-    // check that the closeReport boolean is false
-    expect(deleteSpy).toHaveBeenCalledWith(false);
-    expect(deleteServiceSpy).toHaveBeenCalledWith(2, report, false);
-    expect(emitSpy).toHaveBeenCalledTimes(2);
-    expect(deletedEmitSpy).toHaveBeenCalledWith(2);
-    done();
-  });
-
-  it("deleteMultipleItems - makes the request to delete multiple items", () => {
-    const fixture = TestBed.createComponent(ItemDeleteForm);
-    const itemDeleteForm = fixture.componentInstance;
     const deleteSpy = spyOn(itemDeleteForm["apiClient"], "delete").and.returnValue(
       of({ success: true, userID: 2, deleted: 4 }),
     );
     const alertsSpy = spyOn(itemDeleteForm["alertsService"], "createSuccessAlert");
-    itemDeleteForm.toDelete = "All posts";
-    itemDeleteForm.itemToDelete = 2;
+    const swManagerSpy = spyOn(itemDeleteForm["swManager"], "deleteItem");
+    const editModeSpy = spyOn(itemDeleteForm.editMode, "emit");
+    const deletedEmitSpy = spyOn(itemDeleteForm.deleted, "emit");
+    fixture.componentRef.setInput("deleteEndpoint", "users/2/posts");
+    fixture.componentRef.setInput("itemType", "Post");
+    fixture.componentRef.setInput("itemId", 2);
+    fixture.componentRef.setInput("bulkDelete", true);
 
     fixture.detectChanges();
 
-    itemDeleteForm.deleteMultipleItems("users/all/4/posts", "posts", {}).subscribe(() => {});
+    // click 'delete'
+    itemDeleteFormDOM.querySelectorAll(".popupDeleteBtn")[0].click();
 
-    expect(deleteSpy).toHaveBeenCalledWith("users/all/4/posts", {});
+    expect(deleteSpy).toHaveBeenCalledWith("users/2/posts");
     expect(alertsSpy).toHaveBeenCalledWith("4 posts were deleted.");
+    expect(swManagerSpy).not.toHaveBeenCalled();
+    expect(editModeSpy).toHaveBeenCalledWith(false);
+    expect(deletedEmitSpy).toHaveBeenCalledWith(4);
+  });
+
+  it("deleteItem - shouldn't delete if deleteEndpoint is undefined", () => {
+    const fixture = TestBed.createComponent(ItemDeleteFormComponent);
+    const itemDeleteForm = fixture.componentInstance;
+    const itemDeleteFormDOM = fixture.nativeElement;
+    const deleteSpy = spyOn(itemDeleteForm["apiClient"], "delete").and.returnValue(
+      of({ success: true, deleted: 4 }),
+    );
+    const alertsSpy = spyOn(itemDeleteForm["alertsService"], "createSuccessAlert");
+    const swManagerSpy = spyOn(itemDeleteForm["swManager"], "deleteItem");
+    const editModeSpy = spyOn(itemDeleteForm.editMode, "emit");
+    const deletedEmitSpy = spyOn(itemDeleteForm.deleted, "emit");
+    fixture.componentRef.setInput("itemType", "Post");
+    fixture.componentRef.setInput("itemId", 4);
+
+    fixture.detectChanges();
+
+    // click 'delete'
+    itemDeleteFormDOM.querySelectorAll(".popupDeleteBtn")[0].click();
+
+    expect(deleteSpy).not.toHaveBeenCalled();
+    expect(alertsSpy).not.toHaveBeenCalled();
+    expect(swManagerSpy).not.toHaveBeenCalled();
+    expect(editModeSpy).not.toHaveBeenCalled();
+    expect(deletedEmitSpy).not.toHaveBeenCalled();
+  });
+
+  // Check that a request to close the report is made if the item is deleted from
+  // the admin dashboard
+  it("makes a request to close the report if that's what the user chose - Admin delete", () => {
+    const fixture = TestBed.createComponent(ItemDeleteFormComponent);
+    const itemDeleteForm = fixture.componentInstance;
+    const itemDeleteFormDOM = fixture.nativeElement;
+    fixture.componentRef.setInput("deleteEndpoint", "whatever");
+    fixture.componentRef.setInput("itemType", "Post");
+    fixture.componentRef.setInput("itemId", 4);
+    fixture.componentRef.setInput("isAdmin", true);
+    const deleteSpy = spyOn(itemDeleteForm, "deleteItem").and.callThrough();
+    const deleteServiceSpy = spyOn(itemDeleteForm["apiClient"], "delete").and.returnValue(
+      of({ success: true, deleted: 4 }),
+    );
+    const emitSpy = spyOn(itemDeleteForm.editMode, "emit");
+    const deletedEmitSpy = spyOn(itemDeleteForm.deleted, "emit");
+    const alertsSpy = spyOn(itemDeleteForm["alertsService"], "createSuccessAlert");
+    const swManagerSpy = spyOn(itemDeleteForm["swManager"], "deleteItem");
+
+    fixture.detectChanges();
+
+    // click 'delete and close report'
+    itemDeleteFormDOM.querySelectorAll(".deleteButton")[0].click();
+    fixture.detectChanges();
+
+    expect(deleteSpy).toHaveBeenCalledWith();
+    expect(deleteServiceSpy).toHaveBeenCalledWith("whatever/4");
+    expect(alertsSpy).not.toHaveBeenCalled();
+    expect(swManagerSpy).toHaveBeenCalledWith("posts", 4);
+    expect(emitSpy).toHaveBeenCalledWith(false);
+    expect(deletedEmitSpy).toHaveBeenCalledWith(4);
   });
 
   // Check that the popup is exited and the item isn't deleted if the user picks 'never mind'
-  it("should emit false and keep the item if the user chooses not to delete", (done: DoneFn) => {
-    const fixture = TestBed.createComponent(ItemDeleteForm);
+  it("should emit false and keep the item if the user chooses not to delete", () => {
+    const fixture = TestBed.createComponent(ItemDeleteFormComponent);
     const itemDeleteForm = fixture.componentInstance;
     const itemDeleteFormDOM = fixture.nativeElement;
-    itemDeleteForm.toDelete = "Post";
-    itemDeleteForm.itemToDelete = 2;
+    fixture.componentRef.setInput("deleteEndpoint", "users/4/posts");
+    fixture.componentRef.setInput("itemType", "Post");
+    fixture.componentRef.setInput("itemId", 2);
     const deleteSpy = spyOn(itemDeleteForm, "deleteItem");
     const emitSpy = spyOn(itemDeleteForm.editMode, "emit");
 
@@ -390,22 +227,21 @@ describe("ItemDeleteForm", () => {
     itemDeleteForm.editMode.subscribe((event: boolean) => {
       expect(event).toBeFalse();
     });
+
     expect(deleteSpy).not.toHaveBeenCalled();
     expect(emitSpy).toHaveBeenCalledWith(false);
-    done();
   });
 
-  it("should emit false and keep the item if the user chooses not to delete - admin", (done: DoneFn) => {
-    const fixture = TestBed.createComponent(ItemDeleteForm);
+  it("should emit false and keep the item if the user chooses not to delete - admin", () => {
+    const fixture = TestBed.createComponent(ItemDeleteFormComponent);
     const itemDeleteForm = fixture.componentInstance;
     const itemDeleteFormDOM = fixture.nativeElement;
-    itemDeleteForm.toDelete = "ad post";
-    itemDeleteForm.itemToDelete = 2;
-    itemDeleteForm.reportData = {
-      reportID: 2,
-      postID: 4,
-    };
-    const deleteSpy = spyOn(itemDeleteForm, "deletePost").and.callThrough();
+    fixture.componentRef.setInput("deleteEndpoint", "users/4/posts");
+    fixture.componentRef.setInput("itemType", "Post");
+    fixture.componentRef.setInput("itemId", 2);
+    fixture.componentRef.setInput("isAdmin", true);
+
+    const deleteSpy = spyOn(itemDeleteForm, "deleteItem").and.callThrough();
     const emitSpy = spyOn(itemDeleteForm.editMode, "emit");
 
     fixture.detectChanges();
@@ -417,6 +253,5 @@ describe("ItemDeleteForm", () => {
     // check the exit method was called
     expect(deleteSpy).not.toHaveBeenCalled();
     expect(emitSpy).toHaveBeenCalledWith(false);
-    done();
   });
 });

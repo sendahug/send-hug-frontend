@@ -52,13 +52,13 @@ import {
 } from "@angular/core";
 import { MockProvider } from "ng-mocks";
 
-import { NewItem } from "./newItem.component";
+import { NewItemComponent } from "./newItem.component";
 import { AuthService } from "@app/services/auth.service";
 import { mockAuthedUser } from "@tests/mockData";
 import { ItemsService } from "@app/services/items.service";
 import { ApiClientService } from "@app/services/apiClient.service";
 
-describe("NewItem", () => {
+describe("NewItemComponent", () => {
   // Before each test, configure testing environment
   beforeEach(async () => {
     const MockAuthService = MockProvider(AuthService, {
@@ -73,7 +73,7 @@ describe("NewItem", () => {
 
     TestBed.configureTestingModule({
       schemas: [NO_ERRORS_SCHEMA],
-      imports: [CommonModule, ReactiveFormsModule, NewItem],
+      imports: [CommonModule, ReactiveFormsModule, NewItemComponent],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
         provideExperimentalZonelessChangeDetection(),
@@ -85,13 +85,13 @@ describe("NewItem", () => {
                 {
                   path: "Post",
                   pathMatch: "prefix",
-                  component: NewItem,
+                  component: NewItemComponent,
                   data: { name: "New post" },
                 },
                 {
                   path: "Message",
                   pathMatch: "prefix",
-                  component: NewItem,
+                  component: NewItemComponent,
                   data: { name: "New message" },
                 },
               ],
@@ -115,17 +115,18 @@ describe("NewItem", () => {
 
   // Check that the component is created
   it("should create the component", () => {
-    const fixture = TestBed.createComponent(NewItem);
+    const fixture = TestBed.createComponent(NewItemComponent);
     const newItem = fixture.componentInstance;
+
     expect(newItem).toBeTruthy();
   });
 
   // NEW POST
   // ==================================================================
   // Check that the type of new item is determined by the parameter type
-  it("New Post - has a type determined by the type parameter - post", (done: DoneFn) => {
+  it("New Post - has a type determined by the type parameter - post", () => {
     TestBed.inject(ActivatedRoute).url = of([{ path: "Post" } as UrlSegment]);
-    const fixture = TestBed.createComponent(NewItem);
+    const fixture = TestBed.createComponent(NewItemComponent);
     const newItem = fixture.componentInstance;
     const newItemDOM = fixture.nativeElement;
 
@@ -137,7 +138,6 @@ describe("NewItem", () => {
     expect(
       newItemDOM.querySelectorAll(".formElement")[0].querySelectorAll(".pageData")[0].textContent,
     ).toBe("name");
-    done();
   });
 
   // Check that it triggers the items service when creating a new post
@@ -146,12 +146,19 @@ describe("NewItem", () => {
       text: "new post",
       givenHugs: 0,
     };
+    const mockAddedPost = {
+      ...mockNewPost,
+      id: 1,
+      user: "",
+      userId: 0,
+      date: new Date("2020-01-01"),
+    };
     TestBed.inject(ActivatedRoute).url = of([{ path: "Post" } as UrlSegment]);
-    const fixture = TestBed.createComponent(NewItem);
+    const fixture = TestBed.createComponent(NewItemComponent);
     const newItem = fixture.componentInstance;
     const newItemDOM = fixture.nativeElement;
     const apiClientSpy = spyOn(newItem["apiClient"], "post").and.returnValue(
-      of({ success: true, posts: mockNewPost }),
+      of({ success: true, posts: mockAddedPost }),
     );
     const successAlertSpy = spyOn(newItem["alertService"], "createSuccessAlert");
     const addItemSpy = spyOn(newItem["swManager"], "addFetchedItems");
@@ -167,15 +174,15 @@ describe("NewItem", () => {
 
     expect(apiClientSpy).toHaveBeenCalledWith("posts", jasmine.objectContaining(mockNewPost));
     expect(successAlertSpy).toHaveBeenCalledWith("Your post was published!");
-    expect(addItemSpy).toHaveBeenCalledWith("posts", [mockNewPost], "date");
+    expect(addItemSpy).toHaveBeenCalledWith("posts", [mockAddedPost], "date");
     expect(navigateSpy).toHaveBeenCalledWith(["/"]);
   });
 
   // Check that an empty post triggers an alert
-  it("New Post - should prevent empty posts", (done: DoneFn) => {
+  it("New Post - should prevent empty posts", () => {
     const paramMap = TestBed.inject(ActivatedRoute);
     paramMap.url = of([{ path: "Post" } as UrlSegment]);
-    const fixture = TestBed.createComponent(NewItem);
+    const fixture = TestBed.createComponent(NewItemComponent);
     const newItem = fixture.componentInstance;
     const newItemDOM = fixture.nativeElement;
     const newPostSpy = spyOn(newItem, "sendPost").and.callThrough();
@@ -192,17 +199,20 @@ describe("NewItem", () => {
     newItemDOM.querySelectorAll(".sendData")[0].click();
     fixture.detectChanges();
 
-    expect(newPostSpy).toHaveBeenCalled();
-    expect(alertSpy).toHaveBeenCalled();
+    expect(newPostSpy).toHaveBeenCalledWith();
+    expect(alertSpy).toHaveBeenCalledWith({
+      type: "Error",
+      message: "Post text cannot be empty. Please fill the field and try again.",
+    });
+
     expect(apiClientSpy).not.toHaveBeenCalled();
-    done();
   });
 
   // Check that a user can't post if they're logged out
-  it("New Post - should prevent logged out users from posting", (done: DoneFn) => {
+  it("New Post - should prevent logged out users from posting", () => {
     const paramMap = TestBed.inject(ActivatedRoute);
     paramMap.url = of([{ path: "Post" } as UrlSegment]);
-    const fixture = TestBed.createComponent(NewItem);
+    const fixture = TestBed.createComponent(NewItemComponent);
     const newItem = fixture.componentInstance;
     const newItemDOM = fixture.nativeElement;
     const newPostSpy = spyOn(newItem, "sendPost").and.callThrough();
@@ -220,20 +230,20 @@ describe("NewItem", () => {
     newItemDOM.querySelectorAll(".sendData")[0].click();
     fixture.detectChanges();
 
-    expect(newPostSpy).toHaveBeenCalled();
+    expect(newPostSpy).toHaveBeenCalledWith();
     expect(alertSpy).toHaveBeenCalledWith({
       type: "Error",
       message: "You're currently logged out. Log back in to post a new post.",
     });
+
     expect(apiClientSpy).not.toHaveBeenCalled();
     expect(addItemSpy).not.toHaveBeenCalled();
-    done();
   });
 
   it("shouldn't show the post form if the user is blocked", () => {
     const paramMap = TestBed.inject(ActivatedRoute);
     paramMap.url = of([{ path: "Post" } as UrlSegment]);
-    const fixture = TestBed.createComponent(NewItem);
+    const fixture = TestBed.createComponent(NewItemComponent);
     const newItem = fixture.componentInstance;
     const newItemDOM = fixture.nativeElement;
     newItem["authService"].userData()!.blocked = true;
@@ -244,6 +254,7 @@ describe("NewItem", () => {
 
     expect(newItemDOM.querySelector("#postText")).toBeNull();
     const errorMessage = newItemDOM.querySelectorAll(".errorMessage")[0];
+
     expect(errorMessage.textContent).toContain(
       `You are currently blocked until ${newItem["authService"].userData()?.releaseDate}. You cannot post new posts.`,
     );
@@ -252,7 +263,7 @@ describe("NewItem", () => {
   it("sendPost() - should prevent sending a post if the user is blocked", () => {
     const paramMap = TestBed.inject(ActivatedRoute);
     paramMap.url = of([{ path: "Post" } as UrlSegment]);
-    const fixture = TestBed.createComponent(NewItem);
+    const fixture = TestBed.createComponent(NewItemComponent);
     const newItem = fixture.componentInstance;
     const newItemDOM = fixture.nativeElement;
     const apiClientSpy = spyOn(newItem["apiClient"], "post");
@@ -285,7 +296,7 @@ describe("NewItem", () => {
   // NEW MESSAGE
   // ==================================================================
   // Check that the type of new item is determined by the parameter type
-  it("New Message - has a type determined by the type parameter - message", (done: DoneFn) => {
+  it("New Message - has a type determined by the type parameter - message", () => {
     const paramMap = TestBed.inject(ActivatedRoute);
     paramMap.url = of([{ path: "Message" } as UrlSegment]);
     const queryParamsSpy = spyOn(paramMap.snapshot.queryParamMap, "get").and.callFake(
@@ -299,24 +310,25 @@ describe("NewItem", () => {
         }
       },
     );
-    const fixture = TestBed.createComponent(NewItem);
+    const fixture = TestBed.createComponent(NewItemComponent);
     const newItem = fixture.componentInstance;
     const newItemDOM = fixture.nativeElement;
 
     fixture.detectChanges();
 
-    expect(queryParamsSpy).toHaveBeenCalled();
+    expect(queryParamsSpy).toHaveBeenCalledTimes(2);
+    expect(queryParamsSpy.calls.argsFor(0)[0]).toBe("user");
+    expect(queryParamsSpy.calls.argsFor(1)[0]).toBe("userID");
     expect(newItem.itemType()).toBe("Message");
     expect(newItem.newMessageForm.controls.messageFor.value).toBe("hello");
     expect(newItem.forID()).toBe(2);
     expect(newItemDOM.querySelector("#newPost")).toBeNull();
     expect(newItemDOM.querySelector("#newMessage")).toBeTruthy();
     expect(newItemDOM.querySelector("#messageFor").value).toBe("hello");
-    done();
   });
 
   // Check that it triggers the items service when creating a new message
-  it("New Message - triggers the items service when creating a new message", (done: DoneFn) => {
+  it("New Message - triggers the items service when creating a new message", () => {
     const paramMap = TestBed.inject(ActivatedRoute);
     paramMap.url = of([{ path: "Message" } as UrlSegment]);
     spyOn(paramMap.snapshot.queryParamMap, "get").and.callFake((param: string) => {
@@ -328,7 +340,7 @@ describe("NewItem", () => {
         return null;
       }
     });
-    const fixture = TestBed.createComponent(NewItem);
+    const fixture = TestBed.createComponent(NewItemComponent);
     const newItem = fixture.componentInstance;
     const newItemDOM = fixture.nativeElement;
     const newMessageSpy = spyOn(newItem, "sendMessage").and.callThrough();
@@ -369,15 +381,14 @@ describe("NewItem", () => {
       forId: 2,
       messageText: messageText,
     };
-    expect(newMessageSpy).toHaveBeenCalled();
-    expect(newMessServiceSpy).toHaveBeenCalled();
+
+    expect(newMessageSpy).toHaveBeenCalledWith();
     expect(newMessServiceSpy).toHaveBeenCalledWith(jasmine.objectContaining(newMessage));
     expect(navigateSpy).toHaveBeenCalledWith(["/"]);
-    done();
   });
 
   // Check that an empty message triggers an alert
-  it("New Message - should prevent empty messages", (done: DoneFn) => {
+  it("New Message - should prevent empty messages", () => {
     const paramMap = TestBed.inject(ActivatedRoute);
     paramMap.url = of([{ path: "Message" } as UrlSegment]);
     spyOn(paramMap.snapshot.queryParamMap, "get").and.callFake((param: string) => {
@@ -389,7 +400,7 @@ describe("NewItem", () => {
         return null;
       }
     });
-    const fixture = TestBed.createComponent(NewItem);
+    const fixture = TestBed.createComponent(NewItemComponent);
     const newItem = fixture.componentInstance;
     const newItemDOM = fixture.nativeElement;
     const newMessageSpy = spyOn(newItem, "sendMessage").and.callThrough();
@@ -405,14 +416,17 @@ describe("NewItem", () => {
     newItemDOM.querySelectorAll(".sendData")[0].click();
     fixture.detectChanges();
 
-    expect(newMessageSpy).toHaveBeenCalled();
-    expect(alertSpy).toHaveBeenCalled();
+    expect(newMessageSpy).toHaveBeenCalledWith();
+    expect(alertSpy).toHaveBeenCalledWith({
+      type: "Error",
+      message: "A message cannot be empty. Please fill the field and try again.",
+    });
+
     expect(newMessServiceSpy).not.toHaveBeenCalled();
-    done();
   });
 
   // Check that a user can't send a message if they're logged out
-  it("New Message - should prevent logged out users from messaging", (done: DoneFn) => {
+  it("New Message - should prevent logged out users from messaging", () => {
     const paramMap = TestBed.inject(ActivatedRoute);
     paramMap.url = of([{ path: "Message" } as UrlSegment]);
     spyOn(paramMap.snapshot.queryParamMap, "get").and.callFake((param: string) => {
@@ -424,7 +438,7 @@ describe("NewItem", () => {
         return null;
       }
     });
-    const fixture = TestBed.createComponent(NewItem);
+    const fixture = TestBed.createComponent(NewItemComponent);
     const newItem = fixture.componentInstance;
     const newItemDOM = fixture.nativeElement;
     const newMessageSpy = spyOn(newItem, "sendMessage").and.callThrough();
@@ -441,23 +455,23 @@ describe("NewItem", () => {
     newItemDOM.querySelectorAll(".sendData")[0].click();
     fixture.detectChanges();
 
-    expect(newMessageSpy).toHaveBeenCalled();
+    expect(newMessageSpy).toHaveBeenCalledWith();
     expect(alertSpy).toHaveBeenCalledWith({
       type: "Error",
       message: "You're currently logged out. Log back in to send a message.",
     });
+
     expect(newMessServiceSpy).not.toHaveBeenCalled();
-    done();
   });
 
   // Check that an error is thrown if there's no user ID and user data
-  it("New Message - should throw an error if there's no user ID and user", (done: DoneFn) => {
+  it("New Message - should throw an error if there's no user ID and user", () => {
     const paramMap = TestBed.inject(ActivatedRoute);
     paramMap.url = of([{ path: "Message" } as UrlSegment]);
     spyOn(paramMap.snapshot.queryParamMap, "get").and.callFake((_param: string) => {
       return "";
     });
-    const fixture = TestBed.createComponent(NewItem);
+    const fixture = TestBed.createComponent(NewItemComponent);
     const newItemDOM = fixture.nativeElement;
 
     fixture.detectChanges();
@@ -467,11 +481,10 @@ describe("NewItem", () => {
     expect(newItemDOM.querySelectorAll(".errorMessage")[0].textContent).toContain(
       "User ID and display name are required for sending a message",
     );
-    done();
   });
 
   // Check that a user can't message themselves
-  it("New Message - should prevent users messaging themselves", (done: DoneFn) => {
+  it("New Message - should prevent users messaging themselves", () => {
     const paramMap = TestBed.inject(ActivatedRoute);
     paramMap.url = of([{ path: "Message" } as UrlSegment]);
     spyOn(paramMap.snapshot.queryParamMap, "get").and.callFake((param: string) => {
@@ -483,7 +496,7 @@ describe("NewItem", () => {
         return null;
       }
     });
-    const fixture = TestBed.createComponent(NewItem);
+    const fixture = TestBed.createComponent(NewItemComponent);
     const newItem = fixture.componentInstance;
     const newItemDOM = fixture.nativeElement;
     const newMessageSpy = spyOn(newItem, "sendMessage").and.callThrough();
@@ -499,13 +512,11 @@ describe("NewItem", () => {
     newItemDOM.querySelectorAll(".sendData")[0].click();
     fixture.detectChanges();
 
-    expect(newMessageSpy).toHaveBeenCalled();
-    expect(alertSpy).toHaveBeenCalled();
+    expect(newMessageSpy).toHaveBeenCalledWith();
     expect(newMessServiceSpy).not.toHaveBeenCalled();
     expect(alertSpy).toHaveBeenCalledWith({
       type: "Error",
       message: "You can't send a message to yourself!",
     });
-    done();
   });
 });

@@ -31,7 +31,7 @@
 */
 
 // Angular imports
-import { Component, signal, computed } from "@angular/core";
+import { Component, signal, computed, inject } from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
 
 // App imports
@@ -39,32 +39,32 @@ import { AuthService } from "@app/services/auth.service";
 import { AdminService } from "@app/services/admin.service";
 import { AlertsService } from "@app/services/alerts.service";
 import { ApiClientService } from "@app/services/apiClient.service";
+import { type BlockedUser } from "@app/interfaces/user.interface";
+import { type BlockUserResponse } from "@app/interfaces/api";
 
-interface BlockedUser {
-  id: number;
-  displayName: string;
-  receivedH: number;
-  givenH: number;
-  posts: number;
-  role: string;
-  blocked?: boolean;
-  releaseDate?: Date;
-}
+/* eslint-disable @angular-eslint/prefer-standalone */
+/* Since the Admin section is self-contained, it's better off as a module */
 
 @Component({
   selector: "app-admin-blocks",
   templateUrl: "./adminBlocks.component.html",
+  standalone: false,
 })
-export class AdminBlocks {
-  blockedUsers = signal<BlockedUser[]>([]);
-  currentPage = signal(1);
-  totalPages = signal(1);
-  isLoading = signal(false);
-  previousButtonClass = computed(() => ({
+export class AdminBlocksComponent {
+  public authService = inject(AuthService);
+  public adminService = inject(AdminService);
+  private alertsService = inject(AlertsService);
+  private apiClient = inject(ApiClientService);
+  private fb = inject(FormBuilder);
+  readonly blockedUsers = signal<BlockedUser[]>([]);
+  readonly currentPage = signal(1);
+  readonly totalPages = signal(1);
+  readonly isLoading = signal(false);
+  readonly previousButtonClass = computed(() => ({
     "appButton prevButton": true,
     disabled: this.currentPage() <= 1,
   }));
-  nextButtonClass = computed(() => ({
+  readonly nextButtonClass = computed(() => ({
     "appButton nextButton": true,
     disabled: this.currentPage() >= this.totalPages(),
   }));
@@ -74,13 +74,7 @@ export class AdminBlocks {
   });
 
   // CTOR
-  constructor(
-    public authService: AuthService,
-    public adminService: AdminService,
-    private alertsService: AlertsService,
-    private apiClient: ApiClientService,
-    private fb: FormBuilder,
-  ) {
+  constructor() {
     this.fetchBlocks();
   }
 
@@ -91,8 +85,9 @@ export class AdminBlocks {
     this.isLoading.set(true);
 
     this.apiClient
-      .get<{ success: boolean; users: BlockedUser[]; total_pages: number }>("users/blocked", {
+      .get<{ success: boolean; users: BlockedUser[]; total_pages: number }>("users", {
         page: `${this.currentPage()}`,
+        blocked: true,
       })
       .subscribe({
         next: (data) => {
@@ -158,13 +153,13 @@ export class AdminBlocks {
   */
   unblock(userID: number) {
     this.apiClient
-      .patch(`users/all/${userID}`, {
+      .patch<BlockUserResponse>(`users/${userID}`, {
         id: userID,
         releaseDate: null,
         blocked: false,
       })
       .subscribe({
-        next: (response: any) => {
+        next: (response: BlockUserResponse) => {
           this.alertsService.createSuccessAlert(
             `User ${response.updated.displayName} has been unblocked.`,
           );

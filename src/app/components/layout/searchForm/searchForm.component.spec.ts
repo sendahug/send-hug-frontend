@@ -43,10 +43,10 @@ import { provideExperimentalZonelessChangeDetection } from "@angular/core";
 import { MockProvider } from "ng-mocks";
 import { Subscription } from "rxjs";
 
-import { SearchForm } from "./searchForm.component";
+import { SearchFormComponent } from "./searchForm.component";
 import { ItemsService } from "@app/services/items.service";
 
-describe("SearchForm", () => {
+describe("SearchFormComponent", () => {
   beforeEach(() => {
     const MockItemsService = MockProvider(ItemsService, {
       sendSearch: (_search) => new Subscription(),
@@ -56,7 +56,7 @@ describe("SearchForm", () => {
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
-      imports: [CommonModule, ReactiveFormsModule, FontAwesomeModule, SearchForm],
+      imports: [CommonModule, ReactiveFormsModule, FontAwesomeModule, SearchFormComponent],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
         provideExperimentalZonelessChangeDetection(),
@@ -68,14 +68,15 @@ describe("SearchForm", () => {
 
   // Check that the app is created
   it("should create the search form", () => {
-    const fixture = TestBed.createComponent(SearchForm);
+    const fixture = TestBed.createComponent(SearchFormComponent);
     const searchForm = fixture.componentInstance;
+
     expect(searchForm).toBeTruthy();
   });
 
   // Check that clicking 'search' triggers the ItemsService
-  it("should pass search query to the ItemsService when clicking search", (done: DoneFn) => {
-    const fixture = TestBed.createComponent(SearchForm);
+  it("should pass search query to the ItemsService when clicking search", () => {
+    const fixture = TestBed.createComponent(SearchFormComponent);
     fixture.autoDetectChanges();
     const searchForm = fixture.componentInstance;
     const searchFormHtml = fixture.nativeElement;
@@ -89,21 +90,20 @@ describe("SearchForm", () => {
     searchFormHtml.querySelectorAll(".sendData")[0].click();
 
     // check the spies were triggered
-    expect(searchSpy).toHaveBeenCalled();
-    expect(searchServiceSpy).toHaveBeenCalled();
+    expect(searchSpy).toHaveBeenCalledTimes(1);
     expect(searchServiceSpy).toHaveBeenCalledWith("search");
     expect(navigateSpy).toHaveBeenCalledWith(["search"], {
       queryParams: {
         query: "search",
       },
     });
-    expect(toggleSpy).toHaveBeenCalled();
-    done();
+
+    expect(toggleSpy).toHaveBeenCalledWith();
   });
 
   // Check that an empty search query isn't allowed
-  it("should prevent empty searches", (done: DoneFn) => {
-    const fixture = TestBed.createComponent(SearchForm);
+  it("should prevent empty searches", () => {
+    const fixture = TestBed.createComponent(SearchFormComponent);
     fixture.autoDetectChanges();
     const searchForm = fixture.componentInstance;
     const searchFormHtml = fixture.nativeElement;
@@ -118,19 +118,19 @@ describe("SearchForm", () => {
     searchFormHtml.querySelectorAll(".sendData")[0].click();
 
     // check one spy was triggered and one wasn't
-    expect(searchSpy).toHaveBeenCalled();
+    expect(searchSpy).toHaveBeenCalledTimes(1);
     expect(searchServiceSpy).not.toHaveBeenCalled();
     expect(alertsSpy).toHaveBeenCalledWith({
       message: "Search query is empty! Please write a term to search for.",
       type: "Error",
     });
+
     expect(navigateSpy).not.toHaveBeenCalled();
     expect(toggleSpy).not.toHaveBeenCalled();
-    done();
   });
 
-  it("toggleSearch() - emits false to close the search", (done: DoneFn) => {
-    const fixture = TestBed.createComponent(SearchForm);
+  it("toggleSearch() - emits false to close the search", () => {
+    const fixture = TestBed.createComponent(SearchFormComponent);
     fixture.detectChanges();
     const searchForm = fixture.componentInstance;
     const searchFormHtml = fixture.nativeElement;
@@ -140,8 +140,7 @@ describe("SearchForm", () => {
     searchFormHtml.querySelector("#exitButton").click();
     fixture.detectChanges();
 
-    expect(toggleSpy).toHaveBeenCalled();
+    expect(toggleSpy).toHaveBeenCalledWith();
     expect(emitSpy).toHaveBeenCalledWith(false);
-    done();
   });
 });

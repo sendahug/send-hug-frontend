@@ -42,25 +42,31 @@ import { By } from "@angular/platform-browser";
 import { NO_ERRORS_SCHEMA, provideExperimentalZonelessChangeDetection } from "@angular/core";
 import { MockComponent } from "ng-mocks";
 
-import { AppSingleThread } from "./thread.component";
-import { ItemDeleteForm } from "@forms/itemDeleteForm/itemDeleteForm.component";
-import { UserIcon } from "@common/userIcon/userIcon.component";
+import { ThreadComponent } from "./thread.component";
+import { ItemDeleteFormComponent } from "@forms/itemDeleteForm/itemDeleteForm.component";
+import { UserIconComponent } from "@common/userIcon/userIcon.component";
 import { type ParsedThread } from "@app/interfaces/thread.interface";
 
-describe("AppSingleThread", () => {
+describe("ThreadComponent", () => {
   let mockThread: ParsedThread;
 
   // Before each test, configure testing environment
   beforeEach(() => {
-    const MockItemDeleteForm = MockComponent(ItemDeleteForm);
-    const MockUserIcon = MockComponent(UserIcon);
+    const MockItemDeleteFormComponent = MockComponent(ItemDeleteFormComponent);
+    const MockUserIconComponent = MockComponent(UserIconComponent);
 
     TestBed.resetTestEnvironment();
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
       schemas: [NO_ERRORS_SCHEMA],
-      imports: [MockItemDeleteForm, MockUserIcon, RouterLink, CommonModule, AppSingleThread],
+      imports: [
+        MockItemDeleteFormComponent,
+        MockUserIconComponent,
+        RouterLink,
+        CommonModule,
+        ThreadComponent,
+      ],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
         provideExperimentalZonelessChangeDetection(),
@@ -88,7 +94,7 @@ describe("AppSingleThread", () => {
 
   // Check that the component is created
   it("should create the component", () => {
-    const fixture = TestBed.createComponent(AppSingleThread);
+    const fixture = TestBed.createComponent(ThreadComponent);
     fixture.componentRef.setInput("thread", mockThread);
     const appThread = fixture.componentInstance;
 
@@ -97,7 +103,7 @@ describe("AppSingleThread", () => {
 
   // Check that the component loads the inbox if no mailbox is specified
   it("should show the thread details", () => {
-    const fixture = TestBed.createComponent(AppSingleThread);
+    const fixture = TestBed.createComponent(ThreadComponent);
     fixture.componentRef.setInput("thread", mockThread);
     const appThreadDOM = fixture.nativeElement;
     fixture.detectChanges();
@@ -105,13 +111,13 @@ describe("AppSingleThread", () => {
     const threadDetailsDOM = appThreadDOM.querySelectorAll(".pageData");
 
     expect(threadDetailsDOM[0].textContent.trim()).toBe(mockThread.user.displayName);
-    expect(threadDetailsDOM[1].textContent.trim()).toBe(String(mockThread.numMessages));
+    expect(threadDetailsDOM[1].textContent.trim()).toBe(`${mockThread.numMessages} Message(s)`);
     expect(threadDetailsDOM[2].textContent.trim()).toBe(mockThread.latestMessage.toString());
   });
 
   // Check that the popup variables are set to false
   it("should have all popup variables set to false", () => {
-    const fixture = TestBed.createComponent(AppSingleThread);
+    const fixture = TestBed.createComponent(ThreadComponent);
     fixture.componentRef.setInput("thread", mockThread);
     const appThread = fixture.componentInstance;
     fixture.detectChanges();
@@ -120,8 +126,8 @@ describe("AppSingleThread", () => {
   });
 
   // Check deleting a single message triggers the poppup
-  it("should trigger the popup upon delete", (done: DoneFn) => {
-    const fixture = TestBed.createComponent(AppSingleThread);
+  it("should trigger the popup upon delete", () => {
+    const fixture = TestBed.createComponent(ThreadComponent);
     const appThread = fixture.componentInstance;
     const appThreadDOM = fixture.nativeElement;
     fixture.componentRef.setInput("thread", mockThread);
@@ -136,17 +142,19 @@ describe("AppSingleThread", () => {
 
     // after the click
     expect(appThread.deleteMode()).toBeTrue();
-    expect(appThread.itemToDelete()).toBe(3);
+    expect(appThread.deleteEndpoint).toEqual("messages/threads");
+    expect(appThread.itemType).toEqual("Thread");
     expect(appThreadDOM.querySelector("item-delete-form")).toBeTruthy();
-    done();
   });
 
   // Check the popup exits when 'false' is emitted
-  it("should change mode when the event emitter emits false", (done: DoneFn) => {
-    const fixture = TestBed.createComponent(AppSingleThread);
+  it("should change mode when the event emitter emits false", () => {
+    const fixture = TestBed.createComponent(ThreadComponent);
     fixture.componentRef.setInput("thread", mockThread);
     const appThread = fixture.componentInstance;
     const changeSpy = spyOn(appThread, "changeMode").and.callThrough();
+    const deleteSpy = spyOn(appThread, "deleteMessagesFromIdb").and.callThrough();
+    const swManagerSpy = spyOn(appThread["swManager"], "deleteItems");
     const outputSpy = spyOn(appThread.messageDeleted, "emit");
 
     // start the popup
@@ -155,34 +163,44 @@ describe("AppSingleThread", () => {
 
     // exit the popup
     const popup = fixture.debugElement.query(By.css("item-delete-form"))
-      .componentInstance as ItemDeleteForm;
+      .componentInstance as ItemDeleteFormComponent;
     popup.deleted.emit(3);
     popup.editMode.emit(false);
     fixture.detectChanges();
 
     // check the popup is exited
-    expect(changeSpy).toHaveBeenCalled();
+    expect(changeSpy).toHaveBeenCalledWith(false);
+    expect(deleteSpy).toHaveBeenCalledWith();
+    expect(swManagerSpy).toHaveBeenCalledWith("messages", "threadID", mockThread.id);
     expect(appThread.deleteMode()).toBeFalse();
     expect(outputSpy).toHaveBeenCalledWith(3);
-    done();
   });
 
   // Check each message has delete button and reply link
-  it("should have the relevant buttons for each message", (done: DoneFn) => {
-    const fixture = TestBed.createComponent(AppSingleThread);
+  it("should have the relevant buttons for each message", () => {
+    const fixture = TestBed.createComponent(ThreadComponent);
     const appThreadDOM = fixture.nativeElement;
     fixture.componentRef.setInput("thread", mockThread);
     fixture.detectChanges();
 
-    expect(appThreadDOM.querySelectorAll(".appButton")[0].tagName.toLowerCase()).toBe("a");
-    expect(appThreadDOM.querySelectorAll(".appButton")[0].textContent.trim()).toBe(
-      "View Thread Messages",
-    );
-    expect(appThreadDOM.querySelectorAll(".appButton")[0].getAttribute("href")).toContain(
-      "/messages/thread/3",
-    );
+    expect(appThreadDOM.querySelectorAll(".appButton")[0].tagName.toLowerCase()).toBe("button");
+    expect(appThreadDOM.querySelectorAll(".appButton")[0].textContent.trim()).toBe("View");
+
     expect(appThreadDOM.querySelectorAll(".appButton")[1].tagName.toLowerCase()).toBe("button");
-    expect(appThreadDOM.querySelectorAll(".appButton")[1].textContent.trim()).toBe("Delete Thread");
-    done();
+    expect(appThreadDOM.querySelectorAll(".appButton")[1].textContent.trim()).toBe("Delete");
+  });
+
+  it("should emit the selected thread's ID when a user clicks 'view'", () => {
+    const fixture = TestBed.createComponent(ThreadComponent);
+    const appThread = fixture.componentInstance;
+    const appThreadDOM = fixture.nativeElement;
+    fixture.componentRef.setInput("thread", mockThread);
+    const emitSpy = spyOn(appThread.threadSelected, "emit");
+    fixture.detectChanges();
+
+    appThreadDOM.querySelectorAll(".appButton")[0].click();
+    fixture.detectChanges();
+
+    expect(emitSpy).toHaveBeenCalledWith(mockThread.id);
   });
 });

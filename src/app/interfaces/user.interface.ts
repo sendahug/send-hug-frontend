@@ -46,27 +46,58 @@ export interface Role {
   permissions: string[];
 }
 
-export interface User {
-  id?: number;
+export interface UserPreferences {
+  emailNotificationsEnabled: boolean;
+  messageNotifications: boolean;
+  hugsDigestNotifications: boolean;
+  youOkayNotifications: boolean;
+  previousInteractionNotifications: boolean;
+}
+
+export interface OtherUser {
+  id: number;
   displayName: string;
   receivedH: number;
   givenH: number;
   posts: number;
-  loginCount: number;
   role: Role;
+  blocked?: boolean;
+  releaseDate?: Date;
+  selectedIcon: iconCharacters;
+  iconColours: UserIconColours;
+}
+
+export interface User extends OtherUser {
+  loginCount: number;
   jwt: string;
   blocked: boolean;
   releaseDate: Date | undefined;
   autoRefresh: boolean;
   pushEnabled: boolean;
   refreshRate: number;
-  selectedIcon: iconCharacters;
-  iconColours: UserIconColours;
   firebaseId: string;
   emailVerified: boolean;
+  preferences: UserPreferences;
 }
 
 export interface PartialUser {
   id: number;
   displayName: string;
+}
+
+export interface BlockedUser {
+  id: number;
+  displayName: string;
+  receivedH: number;
+  givenH: number;
+  posts: number;
+  role: Role;
+  blocked?: boolean;
+  releaseDate?: Date;
+}
+
+export interface UserBlockData {
+  userID: number;
+  isBlocked: boolean;
+  releaseDate?: Date;
 }

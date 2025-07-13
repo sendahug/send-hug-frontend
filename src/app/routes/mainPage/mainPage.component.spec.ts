@@ -44,11 +44,11 @@ import { provideExperimentalZonelessChangeDetection, signal } from "@angular/cor
 import { MockComponent, MockProvider } from "ng-mocks";
 
 // App imports
-import { MainPage } from "./mainPage.component";
+import { MainPageComponent } from "./mainPage.component";
 import { ApiClientService } from "@app/services/apiClient.service";
 import { SWManager } from "@app/services/sWManager.service";
-import { SinglePost } from "@common/post/post.component";
-import { Loader } from "@common/loader/loader.component";
+import { PostComponent } from "@common/post/post.component";
+import { LoaderComponent } from "@common/loader/loader.component";
 import { AuthService } from "@app/services/auth.service";
 
 const newItems = [
@@ -92,7 +92,7 @@ const suggestedItems = [
   },
 ];
 
-describe("MainPage", () => {
+describe("MainPageComponent", () => {
   // Before each test, configure testing environment
   beforeEach(() => {
     const MockAPIClient = MockProvider(ApiClientService);
@@ -100,13 +100,13 @@ describe("MainPage", () => {
       authenticated: signal(false),
       userData: signal(undefined),
     });
-    const MockLoader = MockComponent(Loader);
+    const MockLoaderComponent = MockComponent(LoaderComponent);
 
     TestBed.resetTestEnvironment();
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
-      imports: [CommonModule, MockLoader, SinglePost, RouterLink, MainPage],
+      imports: [CommonModule, MockLoaderComponent, PostComponent, RouterLink, MainPageComponent],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
         provideExperimentalZonelessChangeDetection(),
@@ -119,19 +119,20 @@ describe("MainPage", () => {
 
   // Check that the component is created
   it("should create the component", () => {
-    const fixture = TestBed.createComponent(MainPage);
+    const fixture = TestBed.createComponent(MainPageComponent);
     const mainPage = fixture.componentInstance;
+
     expect(mainPage).toBeTruthy();
   });
 
   it("should requests posts upon creation", () => {
-    const fetchSpy = spyOn(MainPage.prototype, "fetchPosts");
-    TestBed.createComponent(MainPage);
+    const fetchSpy = spyOn(MainPageComponent.prototype, "fetchPosts");
+    TestBed.createComponent(MainPageComponent);
 
-    expect(fetchSpy).toHaveBeenCalled();
+    expect(fetchSpy).toHaveBeenCalledWith();
   });
 
-  it("should fetch posts from the server", (done: DoneFn) => {
+  it("should fetch posts from the server", () => {
     // Inject services
     const apiClient = TestBed.inject(ApiClientService);
     const swManager = TestBed.inject(SWManager);
@@ -140,16 +141,16 @@ describe("MainPage", () => {
     const mockNetworkResponse = { recent: newItems, suggested: suggestedItems, success: true };
 
     // set up spies
-    const idbSpy = spyOn(MainPage.prototype, "fetchFromIdb").and.returnValue(
+    const idbSpy = spyOn(MainPageComponent.prototype, "fetchFromIdb").and.returnValue(
       of({ recent: [], suggested: [], success: true }),
     );
     const apiClientSpy = spyOn(apiClient, "get").and.returnValue(of(mockNetworkResponse));
-    const updateInterfaceSpy = spyOn(MainPage.prototype, "updatePostsInterface");
+    const updateInterfaceSpy = spyOn(MainPageComponent.prototype, "updatePostsInterface");
     const addItemsSpy = spyOn(swManager, "addFetchedItems");
 
-    TestBed.createComponent(MainPage);
+    TestBed.createComponent(MainPageComponent);
 
-    expect(idbSpy).toHaveBeenCalled();
+    expect(idbSpy).toHaveBeenCalledWith();
     expect(apiClientSpy).toHaveBeenCalledWith("");
     expect(updateInterfaceSpy).toHaveBeenCalledWith(mockNetworkResponse);
     expect(addItemsSpy).toHaveBeenCalledWith(
@@ -157,18 +158,15 @@ describe("MainPage", () => {
       [...mockNetworkResponse.recent, ...mockNetworkResponse.suggested],
       "date",
     );
-
-    done();
   });
 
   it("should fetch posts from the server and not change the value if the returned value is undefined", () => {
     // set up mock data
     const mockNetworkResponse = { recent: undefined, suggested: undefined, success: true };
 
-    const fixture = TestBed.createComponent(MainPage);
+    const fixture = TestBed.createComponent(MainPageComponent);
     const mainPage = fixture.componentInstance;
-    // This shouldn't be possible but just to be on the safe side
-    // @ts-ignore
+    // @ts-expect-error - testing an edge case that shouldn't even be possible
     mainPage.updatePostsInterface(mockNetworkResponse);
 
     expect(mainPage.newPosts()).toEqual([]);
@@ -178,7 +176,7 @@ describe("MainPage", () => {
 
   it("should fetch posts from Idb", (done: DoneFn) => {
     // Just to make sure it doesn't get called during the test
-    spyOn(MainPage.prototype, "fetchPosts");
+    spyOn(MainPageComponent.prototype, "fetchPosts");
 
     // Inject services
     const swManager = TestBed.inject(SWManager);
@@ -199,9 +197,9 @@ describe("MainPage", () => {
         });
       },
     );
-    const updateInterfaceSpy = spyOn(MainPage.prototype, "updatePostsInterface");
+    const updateInterfaceSpy = spyOn(MainPageComponent.prototype, "updatePostsInterface");
 
-    const mainPage = TestBed.createComponent(MainPage);
+    const mainPage = TestBed.createComponent(MainPageComponent);
 
     mainPage.componentInstance.fetchFromIdb().subscribe((_data) => {
       expect(idbSpy).toHaveBeenCalledWith("date", 10, undefined, 1, true);
@@ -216,10 +214,10 @@ describe("MainPage", () => {
     });
   });
 
-  it("should update the interface with the fetched posts", (done: DoneFn) => {
+  it("should update the UI with the fetched posts", () => {
     // Just to make sure it doesn't get called during the test
-    spyOn(MainPage.prototype, "fetchPosts");
-    const fixture = TestBed.createComponent(MainPage);
+    spyOn(MainPageComponent.prototype, "fetchPosts");
+    const fixture = TestBed.createComponent(MainPageComponent);
     const mainPage = fixture.componentInstance;
     const mainPageDOM = fixture.debugElement.nativeElement;
     const isLoadingSpy = spyOn(mainPage.isLoading, "set").and.callThrough();
@@ -244,25 +242,26 @@ describe("MainPage", () => {
     expect(isLoadingSpy).toHaveBeenCalledWith(false);
 
     const newPosts = mainPageDOM.querySelectorAll(".newItem");
+
     expect(newPosts.length).toBe(2);
     expect(newPosts[0].querySelector(".itemText").textContent).toContain("test");
 
     const suggestedPosts = mainPageDOM.querySelectorAll(".sugItem");
+
     expect(suggestedPosts.length).toBe(2);
     expect(suggestedPosts[0].querySelector(".itemText").textContent).toContain("test2");
-
-    done();
   });
 
-  it("should show an error if posts are undefined", (done: DoneFn) => {
+  it("should show an error if posts are undefined", () => {
     // Just to make sure it doesn't get called during the test
-    spyOn(MainPage.prototype, "fetchPosts");
-    const fixture = TestBed.createComponent(MainPage);
+    spyOn(MainPageComponent.prototype, "fetchPosts");
+    const fixture = TestBed.createComponent(MainPageComponent);
     const mainPage = fixture.componentInstance;
     const mainPageDOM = fixture.debugElement.nativeElement;
     const newPostsSetSpy = spyOn(mainPage.newPosts, "set").and.callThrough();
 
     // set up mock data
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const mockData = { recent: undefined as any, suggested: suggestedItems, success: true };
     fixture.detectChanges();
 
@@ -280,15 +279,14 @@ describe("MainPage", () => {
     expect(newPostsSetSpy).not.toHaveBeenCalled();
 
     const errorMessage = mainPageDOM.querySelectorAll(".errorMessage");
+
     expect(errorMessage.length).toBe(1);
     expect(errorMessage[0].textContent).toContain("There are no recent items");
-
-    done();
   });
 
   it("should remove a deleted post", () => {
-    spyOn(MainPage.prototype, "fetchPosts");
-    const fixture = TestBed.createComponent(MainPage);
+    spyOn(MainPageComponent.prototype, "fetchPosts");
+    const fixture = TestBed.createComponent(MainPageComponent);
     const mainPage = fixture.componentInstance;
     mainPage.newPosts.set([...newItems]);
     mainPage.suggestedPosts.set([...suggestedItems]);
@@ -296,7 +294,7 @@ describe("MainPage", () => {
     fixture.detectChanges();
 
     const singlePost = fixture.debugElement.query(By.css("app-single-post"))
-      .componentInstance as SinglePost;
+      .componentInstance as PostComponent;
     singlePost.deletedId.emit(2);
     fixture.detectChanges();
 

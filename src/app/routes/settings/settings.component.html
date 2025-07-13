@@ -1,36 +1,36 @@
 <div *ngIf="authService.authenticated()">
-  <h3>Settings</h3>
+  <h1>Settings</h1>
 
   <div id="iconSettings">
-    <h4>User Icon</h4>
-    <div *ngIf="editIcon() == false">
+    <h2>User Icon</h2>
+    <div *ngIf="editIcon() === false">
       <app-user-icon
         [selectedIcon]="authService.userData()?.selectedIcon ?? 'kitty'"
         [characterColour]="authService.userData()?.iconColours?.character"
         [lbgColour]="authService.userData()?.iconColours?.lbg"
         [rbgColour]="authService.userData()?.iconColours?.rbg"
         [itemColour]="authService.userData()?.iconColours?.item"
-        [svgClass]="'userIcon'"
+        [svgClass]="'userIcon profileIcon'"
       />
     </div>
     <button
-      *ngIf="editIcon() == false"
-      (click)="toggleIconEditor(true)"
+      *ngIf="editIcon() === false"
       class="appButton"
       id="editIcon"
+      (click)="toggleIconEditor(true)"
     >
       Edit User Icon
     </button>
 
     <app-icon-editor
-      *ngIf="editIcon() == true"
+      *ngIf="editIcon() === true"
       (editMode)="toggleIconEditor($event)"
     ></app-icon-editor>
   </div>
 
   <div id="notificationSettings">
-    <h4>Notifications</h4>
-    <form [formGroup]="editSettingsForm" id="refreshRateForm">
+    <h2>Notifications</h2>
+    <form id="refreshRateForm" [formGroup]="editSettingsForm">
       <div class="formElement">
         <label for="enableNotifications" class="required">Push Notifications Enabled?:</label>
         <input formControlName="enableNotifications" type="checkbox" id="enableNotifications" />
@@ -47,15 +47,51 @@
           min="20"
           max="3600"
           id="notificationRate"
-          [required]="this.editSettingsForm.controls.enableAutoRefresh.value == true"
-          [attr.aria-required]="this.editSettingsForm.controls.enableAutoRefresh.value == true"
+          [required]="this.editSettingsForm.controls.enableAutoRefresh.value === true"
+          [attr.aria-required]="this.editSettingsForm.controls.enableAutoRefresh.value === true"
+        />
+      </div>
+      <hr class="form-divider" />
+      <h2>Email Notifications</h2>
+      <div class="formElement">
+        <label for="emailNotificationsEnabled">Enable Email Notifications?</label>
+        <input
+          formControlName="emailNotificationsEnabled"
+          type="checkbox"
+          id="emailNotificationsEnabled"
+        />
+      </div>
+      <div class="formElement">
+        <label for="messageNotifications">Enable Email Notifications for New Messages?</label>
+        <input formControlName="messageNotifications" type="checkbox" id="messageNotifications" />
+      </div>
+      <div class="formElement">
+        <label for="hugsDigestNotifications">Enable Email Notifications for Hugs?</label>
+        <input
+          formControlName="hugsDigestNotifications"
+          type="checkbox"
+          id="hugsDigestNotifications"
+        />
+      </div>
+      <div class="formElement">
+        <label for="youOkayNotifications">Enable Email Notifications for After-Post Checkup?</label>
+        <input formControlName="youOkayNotifications" type="checkbox" id="youOkayNotifications" />
+      </div>
+      <div class="formElement">
+        <label for="previousInteractionNotifications"
+          >Enable Email Notifications for People Previously Interacted With?</label
+        >
+        <input
+          formControlName="previousInteractionNotifications"
+          type="checkbox"
+          id="previousInteractionNotifications"
         />
       </div>
       <button
         type="submit"
-        (click)="updateSettings()"
         class="appButton sendData"
         aria-label="save auto-refresh settings"
+        (click)="updateSettings()"
       >
         Save
       </button>
@@ -65,5 +101,5 @@
 
 <div *ngIf="!authService.authenticated()" id="errorBox">
   <div class="errorMessage">You do not have permission to view thie page!</div>
-  <a [routerLink]="['/']" class="appButton">Back to homepage</a>
+  <a class="appButton" [routerLink]="['/']">Back to homepage</a>
 </div>

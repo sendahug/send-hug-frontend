@@ -2,6 +2,164 @@
 
 ## Unreleased
 
+### 2025-06-22
+
+#### Chores
+
+- Added a ref to the checkout step in the 'deploy to preview' workflow in order to ensure the deployed preview is using the updated repo when dealing with dependabot's pull requests. ([#2136](https://github.com/sendahug/send-hug-frontend/pull/2136))
+
+### 2025-06-20
+
+#### Features
+
+- Added a new paginated list component to display lists that require pagination functionality. ([#2103](https://github.com/sendahug/send-hug-frontend/pull/2103))
+
+#### Changes
+
+- The mailbox view was rebuilt to improve the user experience when using messaging. This includes:
+  - The different mailbox views (inbox, outbox, threads) were replaced with a single threads view. When users select a thread, they can view the thread's messages in the same view; otherwise, only the threads list is shown.
+  - The thread component was redesigned. The new thread component emphasizes the other user's name and user icon and makes it easier to understand the rest of the thread's details (last message and message count).
+  - The message component was redesigned. The new message component condenses the message's sender and text into a single line, which allows us to display messages in a more familiar layout and emphasises the message's sender and text. It also displays the user's icon in the left or in the right side of the message, depending on whether the message's sender is the first or the second user in the thread.
+  - The text of the buttons in the thread and message components was simplified. ([#2103](https://github.com/sendahug/send-hug-frontend/pull/2103))
+
+#### Breaking Changes
+
+- Removed the inbox and outbox from the mailbox. While this was useful for debugging, realistically it wasn't likely to be useful for most users. The mailbox now displays threads, which allow seeing both send and received messages in one mailbox. The old messaging routes (except `/messages`) no longer lead anywhere and will return an error (not found) page. ([#2103](https://github.com/sendahug/send-hug-frontend/pull/2103))
+
+### 2025-06-09
+
+#### Chores
+
+- Updated the version of postgres in CI to match the version currently used in production. ([#2124](https://github.com/sendahug/send-hug-frontend/pull/2124))
+
+### 2025-05-08
+
+#### Chores
+
+- Added a few more Angular-specific ESLint rules to the primary ESLint configuration. ([#2069](https://github.com/sendahug/send-hug-frontend/pull/2069))
+- Added the missing `permissions` key to all GitHub Actions workflows to limit the permissions used by the GitHub token. ([#2075](https://github.com/sendahug/send-hug-frontend/pull/2075))
+
+### 2025-05-03
+
+#### Changes
+
+- Removed the option to delete a post without closing the associated report. Removing a post, by definition, actions the given report, and thus there's no point in keeping the report open. ([#2062](https://github.com/sendahug/send-hug-frontend/pull/2062))
+- Removed the 'delete all' button from the single thread view. Since we don't have any handling for it in the messages' view and deleting a thread is easier via the threads' view (as each thread has a 'delete thread' button), it was decided it was unnecessary to show for single threads. ([#2062](https://github.com/sendahug/send-hug-frontend/pull/2062))
+
+#### Chores
+
+- Simplified the code of the ItemDeleteForm and the component's inputs. This includes:
+  - Removed the logic for determining where to send the delete request and what store to delete the item/items from. This information is specific to the parent components, and thus should come from them, rather than being handled by the item delete form.
+  - Removed the item-specific logic (e.g., what items to delete from IndexedDB when deleting in bulk and closing reports when deleting in admin mode) from the item delete form and moved it to the parent components.
+  - Renamed the item delete form's inputs to better indicate what's expected to be provided and what purpose each input serves. ([#2062](https://github.com/sendahug/send-hug-frontend/pull/2062))
+- Split the handling of clearing a mailbox and deleting a single message in the AppMessaging component to make it easier to understand which code is triggered when either action is performed. ([#2062](https://github.com/sendahug/send-hug-frontend/pull/2062))
+
+### 2025-04-27
+
+#### Changes
+
+- Replaced all equality checks with strict equality checks. This is a best practice in JavaScript which ensures that the types of the values being compared are also checked, not just their values. ([#2058](https://github.com/sendahug/send-hug-frontend/pull/2058))
+- Converted the inputs of various components (report form, send hug form, post edit form to use signal-based inputs rather than the old decorator-based inputs. This ensures that inputs are reactive and that sub-components are properly updated when the inputs change. ([#2058](https://github.com/sendahug/send-hug-frontend/pull/2058))
+
+#### Fixes
+
+- Added missing lifecycle protocols to the Teleport directive and the Notifications tab component. This ensures the lifecycle hooks are properly implemented and remain properly implemented in the future. ([#2058](https://github.com/sendahug/send-hug-frontend/pull/2058))
+- Changed the headers of all the app's tables to use the HTML header element (`th`) rather than the table cell (`td`) element. This improves the accessibility of tables and allows screen readers to properly associate the headers with the table cells. ([#2058](https://github.com/sendahug/send-hug-frontend/pull/2058))
+
+#### Chores
+
+- Added Angular ESLint plugins to enable linting Angular components (templates and TypeScript code), services, guards and directives.. ([#2058](https://github.com/sendahug/send-hug-frontend/pull/2058))
+- Renamed all the Angular components to include the `Component` suffix. This is a best practice in Angular which makes it clearer what classes are components. ([#2058](https://github.com/sendahug/send-hug-frontend/pull/2058))
+- Switched all signal properties to be read-only. This ensures signals aren't being set directly, but through signals' `set` method, which is meant for updating the value of a signal. ([#2058](https://github.com/sendahug/send-hug-frontend/pull/2058))
+
+### 2025-04-20
+
+#### Changes
+
+- Error messages that simply showed the Error object to the user now parse the message into a string which is then showed to the user. This should create a more consistent and clear experience for users. ([#2048](https://github.com/sendahug/send-hug-frontend/pull/2048))
+
+#### Chores
+
+- Added Cypress and Jasmine ESLint plugins to enable linting tests. ([#2048](https://github.com/sendahug/send-hug-frontend/pull/2048))
+- Replaced unnecessarily async specs with sync specs. There were multiple tests using the `done` callback which didn't need to be async and were only async due to UI interactions that took too long. This made it harder to debug and understand the tests, and thus, these specs were updated to be synchronous. ([#2048](https://github.com/sendahug/send-hug-frontend/pull/2048))
+- Fixed three linting errors in Jasmine specs: usage of the `toHaveBeenCalled` matcher (`toHaveBeenCalledWith` is preferred); missing empty lines before expectations; and added missing failure catchers for async specs. ([#2048](https://github.com/sendahug/send-hug-frontend/pull/2048))
+- Added missing NotificationsService unit test. ([#2048](https://github.com/sendahug/send-hug-frontend/pull/2048))
+- Fixed two linting errors in Cypress specs: unsafe chaining of commands (which were broken down) and arbitrary waits (which were modified to wait for specific URLs or HTML elements, rather than using the `wait` command).. ([#2048](https://github.com/sendahug/send-hug-frontend/pull/2048))
+
+### 2025-04-19
+
+#### Changes
+
+- Split the `toEdit` property in the Admin Reports page to two - one for a user to edit and one for a post to edit. While only one can be used at a time, splitting the property allows us to be explicit about the expected type of each property and ensure that the correct type is used in each case. ([#2047](https://github.com/sendahug/send-hug-frontend/pull/2047))
+- If the post edit form is launched from the admin menu without an associated report, the user will now be alerted that that's the case when they try to close edit the post and close the report. This is done to prevent an attempt to close a report that wouldn't be reflected in the back-end due to having no report to update. ([#2047](https://github.com/sendahug/send-hug-frontend/pull/2047))
+
+#### Fixes
+
+- The Admin Reports page incorrectly passed a signal to two of the sub-components, instead of the raw value from the signal. This caused the sub-component to not render correctly as it didn't have the data it needed. The page now passes the right value to the sub-components. ([#2047](https://github.com/sendahug/send-hug-frontend/pull/2047))
+
+#### Chores
+
+- Added eslint for linting the project, as well as a linting step in CI (to run eslint). ([#2047](https://github.com/sendahug/send-hug-frontend/pull/2047))
+- Replaced various 'any' typings with explicit types. Using 'any' is bad practice and should be used as little as possible; the explicit typing makes it easier to ensure the code is correct and easy to understand. ([#2047](https://github.com/sendahug/send-hug-frontend/pull/2047))
+- Fixed various linting errors. This includes: deleted unnecessary empty constructors; replaced variables with constants when they're not modified; replaced unnecessary empty interfaces; deleted unneeded text escapes; and replaced `@ts-ignore` with `@ts-expect-error`. ([#2047](https://github.com/sendahug/send-hug-frontend/pull/2047))
+- Moved all the interfaces to the 'interfaces' folder. This allows us to reuse interfaces and to group them by functionality. ([#2047](https://github.com/sendahug/send-hug-frontend/pull/2047))
+- Fixed an error in the `common` tests where the matcher wasn't called (and instead was just mentioned). The matcher is now called correctly. ([#2047](https://github.com/sendahug/send-hug-frontend/pull/2047))
+- Changed the typing of the generic methods in the SWManager service to properly use TypeScript generics. ([#2047](https://github.com/sendahug/send-hug-frontend/pull/2047))
+
+### 2025-04-17
+
+#### Changes
+
+- Updated the users' and posts' endpoints to match the new structure in the backend. ([#2041](https://github.com/sendahug/send-hug-frontend/pull/2041))
+
+#### Chores
+
+- Replaced the static wait steps in the e2e and accessibility testing in CI with dynamic waiting using the `wait-on` module. This ensures Cypress and Pa11y wait until the Vite server is ready before starting the tests, instead of waiting 30 seconds each time. ([#2044](https://github.com/sendahug/send-hug-frontend/pull/2044))
+
+### 2025-04-09
+
+#### Features
+
+- Added the ability to set email notifications-related settings via the settings page. ([#2032](https://github.com/sendahug/send-hug-frontend/pull/2032))
+- Added the ability to enable/disable email notifications during signup. This only includes the general email notifications setting; granular settings for the various types of emails can only be changed via settings. ([#2032](https://github.com/sendahug/send-hug-frontend/pull/2032))
+
+### 2025-01-20
+
+#### Changes
+
+- Removed the verification route from the site map, as it's not needed there. ([#1952](https://github.com/sendahug/send-hug-frontend/pull/1952))
+- Temporarily changed the background colour for all buttons across the site. ([#1952](https://github.com/sendahug/send-hug-frontend/pull/1952))
+- The permission checking route guard now redirects users without permission back to the home page, rather than the login page. This ensures that users who are already logged in don't have to go through unnecessary redirects. ([#1952](https://github.com/sendahug/send-hug-frontend/pull/1952))
+
+#### Fixes
+
+- Fixed the heading structure across multiple pages to ensure they're ordered logically (as per WCAG guidelines). ([#1952](https://github.com/sendahug/send-hug-frontend/pull/1952))
+- Properly disabled hidden buttons (e.g., the AppAlert's button when the alert is hidden) to ensure keyboard users don't accidentally navigate to them when they should be hidden. ([#1952](https://github.com/sendahug/send-hug-frontend/pull/1952))
+- Added a missing title to the Loader, as per WCAG guidelines (all loaders must have an accessible name). ([#1952](https://github.com/sendahug/send-hug-frontend/pull/1952))
+- Moved the list item (`li`) element out of the Single Post component and into each component that generates a list of posts. The approach of having it within the component creates a confusing page structure in Angular, as components are generated within real HTML selectors (so instead of items being directly nested beneath a list element, there was an added Single Post element in between). This directly contradicts the purpose of using lists and list items to present a list in an accessible way. The new structure ensures the list items are nested under the list, and the post element is placed within each of the list items. ([#1952](https://github.com/sendahug/send-hug-frontend/pull/1952))
+- Removed unnecessary ARIA descriptions that could've caused confusion for users. ([#1952](https://github.com/sendahug/send-hug-frontend/pull/1952))
+- Added missing labels and descriptions to elements that pointed to elements that didn't exist (using `aria-describedby` or `aria-labelledby`). ([#1952](https://github.com/sendahug/send-hug-frontend/pull/1952))
+- Removed the IDs from all elements within the UserIcon component. Since multiple icons can be displayed at once, the use of IDs caused a clash between different elements. ([#1952](https://github.com/sendahug/send-hug-frontend/pull/1952))
+- Properly removed the top navigation menu when it's supposed to be hidden (i.e., when the screen isn't wide enough for it to fit). While the navigation menu was previously hidden using CSS, it wasn't hidden from users of assistive technology, as it was still on the page. This ensures assistive technology users can't access that menu when it's supposed to be inaccessible. ([#1952](https://github.com/sendahug/send-hug-frontend/pull/1952))
+- Fixed a bug where all query params were discarded after a page was refreshed (which broke the New Item page for messages). This happened due to the way the Angular Router handles query params and route guards using 'canMatch'; these guards are checked before the query params are processed, which means we had no access to them when alerting the site which page to redirect back to. Now, these params are fetched separately within the guards, and users are redirected directly to the URL they asked for, including the query params they used. ([#1952](https://github.com/sendahug/send-hug-frontend/pull/1952))
+
+#### Chores
+
+- Replaced pa11y-ci with pa11y for accessibility testing. While pa11y-ci has some useful utilities for running over multiple pages, it doesn't seem to get any updates, which leaves us stuck with old versions of both pa11y and axe-core. ([#1952](https://github.com/sendahug/send-hug-frontend/pull/1952))
+- Enabled pa11y to check routes accessible only to authenticated users and only to admin users. ([#1952](https://github.com/sendahug/send-hug-frontend/pull/1952))
+- Re-enabled the commented-out unit tests in the Navigation Menu component. ([#1952](https://github.com/sendahug/send-hug-frontend/pull/1952))
+- Added unit tests for the route guards. ([#1952](https://github.com/sendahug/send-hug-frontend/pull/1952))
+
+### 2025-01-10
+
+#### Fixes
+
+- The URL of the main stylesheet was incorrectly set to a relative URL, which caused it to break when navigating directly to deeply-nested URLs (e.g., `/messages/inbox`). The URL was updated to be an absolute URL, which ensures the stylesheet will always be loaded correctly. ([#1948](https://github.com/sendahug/send-hug-frontend/pull/1948))
+
+#### Chores
+
+- Removed the font awesome group from dependabot's grouped updates, as it seems the group is the reason dependabot stopped opening pull requests to update these dependencies. This is likely due to an issue in updating all font awesome packages together, which doesn't seem to have been solved yet. ([#1949](https://github.com/sendahug/send-hug-frontend/pull/1949))
+
 ### 2024-12-15
 
 #### Fixes

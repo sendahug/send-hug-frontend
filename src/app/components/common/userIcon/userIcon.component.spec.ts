@@ -46,7 +46,7 @@ import {
 } from "@angular/core";
 import { By } from "@angular/platform-browser";
 
-import { UserIcon, DefaultColours } from "./userIcon.component";
+import { UserIconComponent, DefaultColours } from "./userIcon.component";
 import { iconCharacters } from "@app/interfaces/types";
 
 @Component({
@@ -64,29 +64,29 @@ import { iconCharacters } from "@app/interfaces/types";
     </div>
   `,
   standalone: true,
-  imports: [UserIcon],
+  imports: [UserIconComponent],
   schemas: [NO_ERRORS_SCHEMA],
 })
-class MockIconContainer {
-  selectedIcon = signal("kitty" as iconCharacters);
-  characterColour = signal(DefaultColours.kitty["character"]);
-  lbgColour = signal(DefaultColours.kitty["lbg"]);
-  rbgColour = signal(DefaultColours.kitty["rbg"]);
-  itemColour = signal(DefaultColours.kitty["item"]);
+class MockIconContainerComponent {
+  readonly selectedIcon = signal("kitty" as iconCharacters);
+  readonly characterColour = signal(DefaultColours.kitty["character"]);
+  readonly lbgColour = signal(DefaultColours.kitty["lbg"]);
+  readonly rbgColour = signal(DefaultColours.kitty["rbg"]);
+  readonly itemColour = signal(DefaultColours.kitty["item"]);
 
   constructor() {
     this.selectedIcon.set("kitty");
   }
 }
 
-describe("UserIcon", () => {
+describe("UserIconComponent", () => {
   // Before each test, configure testing environment
   beforeEach(() => {
     TestBed.resetTestEnvironment();
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
-      imports: [CommonModule, MockIconContainer, UserIcon],
+      imports: [CommonModule, MockIconContainerComponent, UserIconComponent],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
         provideExperimentalZonelessChangeDetection(),
@@ -96,13 +96,14 @@ describe("UserIcon", () => {
 
   // Check the page is created
   it("should create the component", () => {
-    const fixture = TestBed.createComponent(UserIcon);
+    const fixture = TestBed.createComponent(UserIconComponent);
     const userIcon = fixture.componentInstance;
+
     expect(userIcon).toBeTruthy();
   });
 
-  it("should set the colours based on the incoming colours at creation", (done: DoneFn) => {
-    const fixture = TestBed.createComponent(MockIconContainer);
+  it("should set the colours based on the incoming colours at creation", () => {
+    const fixture = TestBed.createComponent(MockIconContainerComponent);
     const userIcon = fixture.debugElement.query(By.css("app-user-icon"));
     const userIconDOM = userIcon.nativeElement;
     fixture.detectChanges();
@@ -121,11 +122,10 @@ describe("UserIcon", () => {
     userIconDOM.querySelectorAll(".item").forEach((path: SVGPathElement) => {
       expect(path.getAttribute("style")).toBe(`fill: rgb(244, 181, 106);`);
     });
-    done();
   });
 
-  it("should set the colours based on the incoming colours", (done: DoneFn) => {
-    const fixture = TestBed.createComponent(MockIconContainer);
+  it("should set the colours based on the incoming colours", () => {
+    const fixture = TestBed.createComponent(MockIconContainerComponent);
     const iconContainer = fixture.componentInstance;
     const userIcon = fixture.debugElement.query(By.css("app-user-icon"));
     const userIconDOM = userIcon.nativeElement;
@@ -166,15 +166,13 @@ describe("UserIcon", () => {
     userIconDOM.querySelectorAll(".item").forEach((path: SVGPathElement) => {
       expect(path.getAttribute("style")).toBe(`fill: rgb(51, 51, 51);`);
     });
-
-    done();
   });
 
-  it("should set the character based on the incoming value", (done: DoneFn) => {
-    const fixture = TestBed.createComponent(MockIconContainer);
+  it("should set the character based on the incoming value", () => {
+    const fixture = TestBed.createComponent(MockIconContainerComponent);
     const iconContainer = fixture.componentInstance;
     const userIcon = fixture.debugElement.query(By.css("app-user-icon"));
-    const userIconInstance = userIcon.componentInstance as UserIcon;
+    const userIconInstance = userIcon.componentInstance as UserIconComponent;
     fixture.detectChanges();
 
     // Check the initial
@@ -189,7 +187,5 @@ describe("UserIcon", () => {
     // Check it's been updated
     expect(userIconInstance.selectedIcon()).toBe("dog");
     expect(userIconInstance.selectedIconDefaultColours()).toEqual(DefaultColours.dog);
-    expect();
-    done();
   });
 });

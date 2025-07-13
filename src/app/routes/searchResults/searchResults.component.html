@@ -1,4 +1,4 @@
-<h2>Search Results</h2>
+<h1>Search Results</h1>
 
 <app-loader *ngIf="itemsService.isSearching()" [loadingMessage]="'Searching...'"></app-loader>
 
@@ -8,7 +8,7 @@
     your search query: "{{ searchQuery() }}"
   </div>
 
-  <h3 id="usersTitle">Users</h3>
+  <h2 id="usersTitle">Users</h2>
   <ul
     *ngIf="itemsService.userSearchResults().length > 0"
     class="searchResults"
@@ -20,29 +20,37 @@
     </li>
   </ul>
 
-  <div *ngIf="itemsService.userSearchResults().length == 0" class="errorMessage" id="uSearchResErr">
+  <div
+    *ngIf="itemsService.userSearchResults().length === 0"
+    class="errorMessage"
+    id="uSearchResErr"
+  >
     There are no users that match your search!
   </div>
 
-  <h3 id="postsTitle">Posts</h3>
+  <h2 id="postsTitle">Posts</h2>
   <div *ngIf="itemsService.postSearchResults().length > 0" id="postSearchResults">
-    <ul class="searchResults" aria-describedby="pSearchRes">
-      <app-single-post
+    <ul class="searchResults" aria-describedby="pSearchResults">
+      <li
         *ngFor="let item of itemsService.postSearchResults()"
-        [post]="item"
-        [type]="'n'"
-        [containerClass]="'searchResult'"
-        (deletedId)="removeDeletedPost($event)"
-      ></app-single-post>
+        class="searchResult"
+        aria-describedby="pResult"
+      >
+        <app-single-post
+          [post]="item"
+          [type]="'n'"
+          (deletedId)="removeDeletedPost($event)"
+        ></app-single-post>
+      </li>
     </ul>
 
     <!-- Post pagination -->
     <div class="pagination" role="navigation">
       <button
-        [ngClass]="itemsService.previousPageButtonClass()"
-        (click)="prevPage()"
         aria-label="previous page of post search results"
+        [ngClass]="itemsService.previousPageButtonClass()"
         [disabled]="itemsService.postSearchPage() <= 1"
+        (click)="prevPage()"
       >
         Previous Page
       </button>
@@ -50,17 +58,26 @@
         Page {{ itemsService.postSearchPage() }} of {{ itemsService.totalPostSearchPages() }}
       </div>
       <button
-        [ngClass]="itemsService.nextPageButtonClass()"
-        (click)="nextPage()"
         aria-label="next page of post search results"
+        [ngClass]="itemsService.nextPageButtonClass()"
         [disabled]="itemsService.totalPostSearchPages() <= itemsService.postSearchPage()"
+        (click)="nextPage()"
       >
         Next Page
       </button>
     </div>
   </div>
 
-  <div *ngIf="itemsService.postSearchResults().length == 0" class="errorMessage" id="pSearchResErr">
+  <div
+    *ngIf="itemsService.postSearchResults().length === 0"
+    class="errorMessage"
+    id="pSearchResErr"
+  >
     There are no posts that match your search!
   </div>
+</div>
+
+<div id="labels" class="labels">
+  <p id="pSearchResults">List of posts matching the {{ searchQuery() }} search query</p>
+  <p id="pResult">Post matching the {{ searchQuery() }} search query</p>
 </div>

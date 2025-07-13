@@ -42,14 +42,14 @@ import { ActivatedRoute, provideRouter, UrlSegment } from "@angular/router";
 import { BehaviorSubject, of } from "rxjs";
 import { MockComponent, MockProvider } from "ng-mocks";
 
-import { AdminDashboard } from "./adminDashboard.component";
+import { AdminDashboardComponent } from "./adminDashboard.component";
 import { AuthService } from "@app/services/auth.service";
 import { mockAuthedUser } from "@tests/mockData";
-import { AdminReports } from "@admin/components/adminReports/adminReports.component";
-import { AdminBlocks } from "@admin/components/adminBlocks/adminBlocks.component";
-import { AdminFilters } from "@admin/components/adminFilters/adminFilters.component";
+import { AdminReportsComponent } from "@admin/components/adminReports/adminReports.component";
+import { AdminBlocksComponent } from "@admin/components/adminBlocks/adminBlocks.component";
+import { AdminFiltersComponent } from "@admin/components/adminFilters/adminFilters.component";
 
-describe("AdminDashboard", () => {
+describe("AdminDashboardComponent", () => {
   // Before each test, configure testing environment
   beforeEach(() => {
     // make sure the test goes through with admin permission
@@ -59,9 +59,9 @@ describe("AdminDashboard", () => {
       authenticated: signal(true),
       canUser: () => true,
     });
-    const MockAdminReports = MockComponent(AdminReports);
-    const MockAdminBlocks = MockComponent(AdminBlocks);
-    const MockAdminFilter = MockComponent(AdminFilters);
+    const MockAdminReportsComponent = MockComponent(AdminReportsComponent);
+    const MockAdminBlocks = MockComponent(AdminBlocksComponent);
+    const MockAdminFilter = MockComponent(AdminFiltersComponent);
 
     TestBed.resetTestEnvironment();
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
@@ -69,7 +69,12 @@ describe("AdminDashboard", () => {
     TestBed.configureTestingModule({
       schemas: [NO_ERRORS_SCHEMA],
       imports: [],
-      declarations: [AdminDashboard, MockAdminReports, MockAdminBlocks, MockAdminFilter],
+      declarations: [
+        AdminDashboardComponent,
+        MockAdminReportsComponent,
+        MockAdminBlocks,
+        MockAdminFilter,
+      ],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
         provideRouter([
@@ -79,22 +84,22 @@ describe("AdminDashboard", () => {
               {
                 path: "",
                 pathMatch: "prefix",
-                component: AdminDashboard,
+                component: AdminDashboardComponent,
               },
               {
                 path: "reports",
                 pathMatch: "prefix",
-                component: AdminDashboard,
+                component: AdminDashboardComponent,
               },
               {
                 path: "blocks",
                 pathMatch: "prefix",
-                component: AdminDashboard,
+                component: AdminDashboardComponent,
               },
               {
                 path: "filters",
                 pathMatch: "prefix",
-                component: AdminDashboard,
+                component: AdminDashboardComponent,
               },
             ],
           },
@@ -106,14 +111,15 @@ describe("AdminDashboard", () => {
 
   // Check that the component is created
   it("should create the component", () => {
-    const fixture = TestBed.createComponent(AdminDashboard);
+    const fixture = TestBed.createComponent(AdminDashboardComponent);
     const adminDashboard = fixture.componentInstance;
+
     expect(adminDashboard).toBeTruthy();
   });
 
   it("should set the page correctly - reports", () => {
     TestBed.inject(ActivatedRoute).url = of([{ path: "reports" } as UrlSegment]);
-    const fixture = TestBed.createComponent(AdminDashboard);
+    const fixture = TestBed.createComponent(AdminDashboardComponent);
     const adminDashboard = fixture.componentInstance;
 
     expect(adminDashboard.screen()).toEqual("reports");
@@ -121,7 +127,7 @@ describe("AdminDashboard", () => {
 
   it("should set the page correctly - blocks", () => {
     TestBed.inject(ActivatedRoute).url = of([{ path: "blocks" } as UrlSegment]);
-    const fixture = TestBed.createComponent(AdminDashboard);
+    const fixture = TestBed.createComponent(AdminDashboardComponent);
     const adminDashboard = fixture.componentInstance;
 
     expect(adminDashboard.screen()).toEqual("blocks");
@@ -129,7 +135,7 @@ describe("AdminDashboard", () => {
 
   it("should set the page correctly - filters", () => {
     TestBed.inject(ActivatedRoute).url = of([{ path: "filters" } as UrlSegment]);
-    const fixture = TestBed.createComponent(AdminDashboard);
+    const fixture = TestBed.createComponent(AdminDashboardComponent);
     const adminDashboard = fixture.componentInstance;
 
     expect(adminDashboard.screen()).toEqual("filters");

@@ -1,124 +1,89 @@
 <div id="mailboxNav">
-  <nav id="breadcrumb" aria-label="Breadcrumb">
-    <a [routerLink]="['/messages']" class="breadcrumb bLink">Messages</a> /
-    <a
-      [routerLink]="['/messages' + messType()]"
-      class="breadcrumb bLink"
-      span
-      *ngIf="messType() != 'thread'"
-      >{{ messType() }}</a
-    >
-    <span *ngIf="messType() == 'thread'" class="breadcrumb">Thread {{ threadId() }}</span>
-  </nav>
+  <h1>Messages</h1>
 
-  <h3>{{ messType() }}</h3>
-  <!-- Messages area navigation. -->
-  <div id="messagesNav" role="navigation">
-    <a [routerLink]="['/messages', 'inbox']" class="messNavOption appButton">Inbox</a>
-    <a [routerLink]="['/messages', 'outbox']" class="messNavOption appButton">Outbox</a>
-    <a [routerLink]="['/messages', 'threads']" class="messNavOption appButton">Threads</a>
-  </div>
+  <nav *ngIf="threadId()" id="breadcrumb" aria-label="Breadcrumb">
+    <button class="breadcrumb messagesLink bLink" (click)="closeThread()">Messages</button> /
+    <span class="breadcrumb">Thread {{ threadId() }}</span>
+  </nav>
 </div>
 
-<!-- If the user is logged in, displays the user's inbox. -->
-<div id="userInbox">
-  <app-loader
-    *ngIf="isLoading()"
-    [ngClass]="loaderClass()"
-    [loadingMessage]="loadingMessage()"
-  ></app-loader>
-
-  <!-- If there are messages in the user's inbox -->
-  <ul
-    *ngIf="messType() != 'threads' && messages().length"
-    class="mailboxMessages"
-    aria-describedby="messType"
-  >
-    <li
-      *ngFor="let message of messages()"
-      class="userMessage"
-      aria-describedby="messType"
-      id="{{ messType() + message.id }}"
+<div id="mailboxContainer">
+  <!-- Threads area -->
+  <div id="threadList" [ngClass]="threadsListClass()">
+    <h2>Threads</h2>
+    <hr class="form-divider top-divider" />
+    <app-paginated-list
+      id="threadsList"
+      [isLoading]="isThreadsLoading()"
+      [isIdbFetchLoading]="isThreadsIdbFetchLoading()"
+      [itemType]="'threads'"
+      [itemCount]="userThreadsFormatted().length"
+      [totalPages]="totalThreadsPages()"
+      [loadingMessage]="'Loading threads...'"
+      (pageChange)="updateCurrentPage($event, 'threads')"
     >
-      <app-single-message
-        [currentUser]="authService.userData()!.id!"
-        [message]="message"
-        [messType]="messType()"
-        (messageDeleted)="updateMessageList($event)"
-      ></app-single-message>
-    </li>
-  </ul>
+      <ul itemList class="userThreads" aria-describedby="threadsDescription">
+        <li
+          *ngFor="let thread of userThreadsFormatted()"
+          id="{{ 'threads' + thread.id }}"
+          class="userThread"
+          aria-describedby="threadsDescription"
+        >
+          <app-single-thread
+            [thread]="thread"
+            (messageDeleted)="updateMessageList($event, 'threads')"
+            (threadSelected)="showThread($event)"
+          ></app-single-thread>
+          <hr class="form-divider" />
+        </li>
+      </ul>
 
-  <!-- If the user is looking at threads -->
-  <div class="threadsContainer" *ngIf="messType() == 'threads'">
-    <ul class="userThreads" *ngIf="userThreadsFormatted().length" aria-describedby="messType">
-      <li
-        class="userThread"
-        *ngFor="let thread of userThreadsFormatted()"
-        aria-describedby="messType"
-        id="{{ messType() + thread.id }}"
+      <button
+        deleteAllButton
+        class="appButton deleteButton deleteAll"
+        (click)="deleteAllMessages()"
       >
-        <app-single-thread
-          [thread]="thread"
-          (messageDeleted)="updateMessageList($event)"
-        ></app-single-thread>
-      </li>
-    </ul>
+        Delete All Threads
+      </button>
+    </app-paginated-list>
   </div>
 
-  <!-- Message pagination -->
-  <div
-    class="pagination"
-    *ngIf="
-      ((messages().length && messType() != 'threads') ||
-        (userThreadsFormatted().length && messType() == 'threads')) &&
-      !isIdbFetchLoading()
-    "
-    role="navigation"
-  >
-    <button
-      [ngClass]="previousPageButtonClass()"
-      (click)="prevPage()"
-      [attr.aria-label]="'previous page of the ' + messType() + ' mailbox'"
-      [disabled]="currentPage() <= 1"
-    >
-      Previous Page
-    </button>
-    <div class="pageCount">Page {{ currentPage() }} of {{ totalPages() }}</div>
-    <button
-      [ngClass]="nextPageButtonClass()"
-      (click)="nextPage()"
-      [attr.aria-label]="'next page of the ' + messType() + ' mailbox'"
-      [disabled]="totalPages() <= currentPage()"
-    >
-      Next Page
-    </button>
-  </div>
-  <button
-    class="appButton deleteButton deleteAll"
-    (click)="deleteAllMessages(messType())"
-    *ngIf="messages().length && messType() != 'threads'"
-    [attr.aria-label]="'delete all ' + messType() + ' messages'"
-  >
-    Delete All Messages
-  </button>
-  <button
-    *ngIf="messType() == 'threads' && userThreadsFormatted().length"
-    class="appButton deleteButton deleteAll"
-    (click)="deleteAllMessages('threads')"
-  >
-    Delete All Threads
-  </button>
+  <!-- Messages area -->
+  <div *ngIf="threadId()" id="messageList">
+    <div class="threadHeader">
+      <button class="textlessButton" (click)="closeThread()">
+        <fa-icon aria-label="Back to threads" [icon]="faChevronLeft"></fa-icon>
+      </button>
+      <h2>{{ threadTitle() }}</h2>
+      <div class="buttonPlaceholder"></div>
+    </div>
 
-  <!-- If there are no messages in the user's outbox -->
-  <div
-    *ngIf="
-      ((!messages().length && messType() != 'threads') ||
-        (!userThreadsFormatted().length && messType() == 'threads')) &&
-      !isIdbFetchLoading()
-    "
-  >
-    <div class="errorMessage">You have no messages in this mailbox.</div>
+    <app-paginated-list
+      id="messagesList"
+      [isLoading]="isMessagesLoading()"
+      [isIdbFetchLoading]="isMessagesIdbFetchLoading()"
+      [itemType]="'messages'"
+      [itemCount]="messages().length"
+      [totalPages]="totalMessagesPages()"
+      [loadingMessage]="'Loading messages...'"
+      (pageChange)="updateCurrentPage($event, 'thread')"
+    >
+      <ul itemList aria-describedby="threadDescription" [ngClass]="messagesContainerClass()">
+        <li
+          *ngFor="let message of messages()"
+          id="{{ 'thread' + message.id }}"
+          class="userMessage"
+          aria-describedby="threadDescription"
+        >
+          <app-single-message
+            [message]="message"
+            [user1Id]="selectedThread()?.user1Id!"
+            [user2Id]="selectedThread()?.user2Id!"
+            (messageDeleted)="updateMessageList($event, 'thread')"
+          ></app-single-message>
+        </li>
+      </ul>
+    </app-paginated-list>
   </div>
 </div>
 
@@ -134,13 +99,16 @@
   <p id="tLatestMess">Latest message in thread with</p>
   <p id="tView">View thread with</p>
   <p id="tDelete">Delete thread with</p>
+  <p id="threadsDescription">Messages in the threads mailbox</p>
+  <p id="threadDescription">Messages in the thread with {{ threadTitle() }}</p>
 </div>
 
 <item-delete-form
   *ngIf="deleteMode()"
+  [deleteEndpoint]="deleteEndpoint()"
+  [itemType]="itemType()"
+  [itemId]="authService.userData()!.id!"
+  [bulkDelete]="true"
   (editMode)="changeMode($event)"
-  [toDelete]="toDelete()"
-  [itemToDelete]="itemToDelete()"
-  [messType]="messType()"
-  (deleted)="updateMessageList($event)"
+  (deleted)="clearMailbox()"
 ></item-delete-form>

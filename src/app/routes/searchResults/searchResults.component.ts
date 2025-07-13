@@ -32,30 +32,29 @@
 
 // Angular imports
 import { CommonModule } from "@angular/common";
-import { Component, signal } from "@angular/core";
+import { Component, inject, signal } from "@angular/core";
 import { ActivatedRoute, Router, RouterLink } from "@angular/router";
 
 // App-related imports
 import { ItemsService } from "@app/services/items.service";
-import { Loader } from "@common/loader/loader.component";
-import { SinglePost } from "@common/post/post.component";
+import { LoaderComponent } from "@common/loader/loader.component";
+import { PostComponent } from "@common/post/post.component";
 
 @Component({
   selector: "app-search-results",
   templateUrl: "./searchResults.component.html",
   styleUrl: "./searchResults.component.less",
   standalone: true,
-  imports: [CommonModule, Loader, SinglePost, RouterLink],
+  imports: [CommonModule, LoaderComponent, PostComponent, RouterLink],
 })
-export class SearchResults {
-  searchQuery = signal<string | null>(null);
+export class SearchResultsComponent {
+  public itemsService = inject(ItemsService);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  readonly searchQuery = signal<string | null>(null);
 
   // CTOR
-  constructor(
-    public itemsService: ItemsService,
-    private route: ActivatedRoute,
-    private router: Router,
-  ) {
+  constructor() {
     this.searchQuery.set(this.route.snapshot.queryParamMap.get("query"));
 
     // if there's a search query but there's no ongoing search, it might be

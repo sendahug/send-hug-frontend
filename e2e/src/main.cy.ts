@@ -72,7 +72,8 @@ describe("Send A Hug App", function () {
     cy.visit("http://localhost:3000/");
 
     // run search
-    cy.get("#searchBtn").click().get("#searchQuery").type("test");
+    cy.get("#searchBtn").click();
+    cy.get("#searchQuery").type("test");
     cy.get(".sendData").eq(0).click();
 
     // check the user was redirected
@@ -87,9 +88,9 @@ describe("Send A Hug App", function () {
     cy.url().should("equal", "http://localhost:3000/login?redirect=user");
 
     // mailbox
-    cy.visit("http://localhost:3000/messages/inbox");
+    cy.visit("http://localhost:3000/messages");
     cy.get("app-login-page").should("be.visible").should("not.be.undefined");
-    cy.url().should("equal", "http://localhost:3000/login?redirect=messages%2Finbox");
+    cy.url().should("equal", "http://localhost:3000/login?redirect=messages");
 
     // new item
     cy.visit("http://localhost:3000/new/Post");
@@ -98,8 +99,8 @@ describe("Send A Hug App", function () {
 
     // admin dashboard
     cy.visit("http://localhost:3000/admin");
-    cy.get("app-login-page").should("be.visible").should("not.be.undefined");
-    cy.url().should("equal", "http://localhost:3000/login?redirect=admin");
+    cy.get("app-main-page").should("be.visible").should("not.be.undefined");
+    cy.url().should("equal", "http://localhost:3000/?redirect=admin");
 
     // settings
     cy.visit("http://localhost:3000/settings");

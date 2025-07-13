@@ -6,24 +6,33 @@
   [attr.aria-live]="alertAriaLive()"
 >
   <i [ngClass]="alertIconClass()"></i>
-  <h3 class="alertType">{{ alertsService.alertType() }}</h3>
+  <h1 class="alertType">{{ alertsService.alertType() }}</h1>
   <div class="alertText">{{ alertsService.alertMessage() }}</div>
 
-  <button class="appButton" id="alertButton" (click)="closeAlert()">Close</button>
+  <button
+    class="appButton"
+    id="alertButton"
+    [disabled]="!alertsService.shouldDisplayAlert()"
+    (click)="closeAlert()"
+  >
+    Close
+  </button>
   <button
     *ngIf="alertsService.shouldDisplayReloadBtn()"
     class="appButton"
     id="reloadBtn"
+    [disabled]="!alertsService.shouldDisplayAlert()"
     (click)="reloadPage()"
   >
     Reload Page
   </button>
   <a
     *ngIf="alertsService.shouldDisplayNavBtn()"
-    [routerLink]="alertsService.navBtnTarget()"
     class="appButton"
     id="navButton"
+    [routerLink]="alertsService.navBtnTarget()"
     (click)="closeAlert()"
-    >{{ alertsService.navBtnText() }}</a
   >
+    {{ alertsService.navBtnText() }}
+  </a>
 </div>

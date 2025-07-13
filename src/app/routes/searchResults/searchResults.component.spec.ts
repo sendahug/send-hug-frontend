@@ -49,11 +49,11 @@ import { provideExperimentalZonelessChangeDetection } from "@angular/core";
 import { MockComponent, MockProvider } from "ng-mocks";
 import { of } from "rxjs";
 
-import { SearchResults } from "./searchResults.component";
+import { SearchResultsComponent } from "./searchResults.component";
 import { ItemsService } from "@app/services/items.service";
 import { iconCharacters } from "@app/interfaces/types";
-import { SinglePost } from "@common/post/post.component";
-import { Loader } from "@common/loader/loader.component";
+import { PostComponent } from "@common/post/post.component";
+import { LoaderComponent } from "@common/loader/loader.component";
 import { ApiClientService } from "@app/services/apiClient.service";
 
 const mockUserSearchResults = [
@@ -117,11 +117,11 @@ const mockPostSearchResults = [
   },
 ];
 
-describe("SearchResults", () => {
+describe("SearchResultsComponent", () => {
   // Before each test, configure testing environment
   beforeEach(() => {
-    const MockPost = MockComponent(SinglePost);
-    const MockLoader = MockComponent(Loader);
+    const MockPost = MockComponent(PostComponent);
+    const MockLoaderComponent = MockComponent(LoaderComponent);
     const MockAPIClient = MockProvider(ApiClientService, {
       post: () => of(),
     });
@@ -130,12 +130,19 @@ describe("SearchResults", () => {
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
-      imports: [CommonModule, MockLoader, MockPost, RouterLink, SearchResults, Loader],
+      imports: [
+        CommonModule,
+        MockLoaderComponent,
+        MockPost,
+        RouterLink,
+        SearchResultsComponent,
+        LoaderComponent,
+      ],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
         provideExperimentalZonelessChangeDetection(),
         provideRouter(
-          [{ path: "search", component: SearchResults, data: { name: "Search Results" } }],
+          [{ path: "search", component: SearchResultsComponent, data: { name: "Search Results" } }],
           withComponentInputBinding(),
         ),
         ItemsService,
@@ -146,8 +153,9 @@ describe("SearchResults", () => {
 
   // Check that the component is created
   it("should create the component", () => {
-    const fixture = TestBed.createComponent(SearchResults);
+    const fixture = TestBed.createComponent(SearchResultsComponent);
     const searchResults = fixture.componentInstance;
+
     expect(searchResults).toBeTruthy();
   });
 
@@ -162,13 +170,13 @@ describe("SearchResults", () => {
       }
     });
     const itemsServiceSpy = spyOn(TestBed.inject(ItemsService), "sendSearch");
-    const fixture = TestBed.createComponent(SearchResults);
+    const fixture = TestBed.createComponent(SearchResultsComponent);
     const searchResults = fixture.componentInstance;
     const searchResultsDOM = fixture.nativeElement;
     searchResults.itemsService.isSearching.set(false);
     fixture.detectChanges();
 
-    expect(routeSpy).toHaveBeenCalled();
+    expect(routeSpy).toHaveBeenCalledWith("query");
     expect(itemsServiceSpy).toHaveBeenCalledWith("search");
     expect(searchResults.searchQuery()).toBe("search");
     expect(searchResultsDOM.querySelector("#resultSummary").textContent).toContain('"search"');
@@ -186,11 +194,10 @@ describe("SearchResults", () => {
     });
     const searchSpy = spyOn(TestBed.inject(ItemsService), "sendSearch");
     TestBed.inject(ItemsService).isSearching.set(false);
-    const fixture = TestBed.createComponent(SearchResults);
+    const fixture = TestBed.createComponent(SearchResultsComponent);
     const searchResults = fixture.componentInstance;
 
     expect(searchResults.searchQuery()).toBe("search");
-    expect(searchSpy).toHaveBeenCalled();
     expect(searchSpy).toHaveBeenCalledWith("search");
   });
 
@@ -206,7 +213,7 @@ describe("SearchResults", () => {
     });
     const searchSpy = spyOn(TestBed.inject(ItemsService), "sendSearch");
     TestBed.inject(ItemsService).isSearching.set(true);
-    const fixture = TestBed.createComponent(SearchResults);
+    const fixture = TestBed.createComponent(SearchResultsComponent);
     const searchResults = fixture.componentInstance;
 
     expect(searchResults.searchQuery()).toBe("search");
@@ -216,7 +223,7 @@ describe("SearchResults", () => {
   // USER SEARCH RESULTS
   // ==================================================================
   // Check that an error message is shown if there are no results
-  it("User Results - should show error message if there are no user results", (done: DoneFn) => {
+  it("User Results - should show error message if there are no user results", () => {
     const route = TestBed.inject(ActivatedRoute);
     spyOn(route.snapshot.queryParamMap, "get").and.callFake((param: string) => {
       if (param == "query") {
@@ -225,7 +232,7 @@ describe("SearchResults", () => {
         return null;
       }
     });
-    const fixture = TestBed.createComponent(SearchResults);
+    const fixture = TestBed.createComponent(SearchResultsComponent);
     const searchResults = fixture.componentInstance;
     const searchResultsDOM = fixture.debugElement.nativeElement;
     searchResults.itemsService.isSearching.set(false);
@@ -236,11 +243,10 @@ describe("SearchResults", () => {
 
     expect(searchResultsDOM.querySelector("#userSearchResults")).toBeNull();
     expect(searchResultsDOM.querySelector("#uSearchResErr")).toBeTruthy();
-    done();
   });
 
   // Check that the result list is shown when there are results
-  it("User Results - should show a list of users with links to their pages", (done: DoneFn) => {
+  it("User Results - should show a list of users with links to their pages", () => {
     const route = TestBed.inject(ActivatedRoute);
     spyOn(route.snapshot.queryParamMap, "get").and.callFake((param: string) => {
       if (param == "query") {
@@ -249,7 +255,7 @@ describe("SearchResults", () => {
         return null;
       }
     });
-    const fixture = TestBed.createComponent(SearchResults);
+    const fixture = TestBed.createComponent(SearchResultsComponent);
     const searchResults = fixture.componentInstance;
     const searchResultsDOM = fixture.debugElement.nativeElement;
     searchResults.itemsService.isSearching.set(false);
@@ -267,14 +273,14 @@ describe("SearchResults", () => {
       expect(item.firstElementChild!.getAttribute("href")).toContain("/user");
       expect(item.firstElementChild!.textContent).toContain("test");
     });
+
     expect(searchResultsDOM.querySelector("#uSearchResErr")).toBeNull();
-    done();
   });
 
   // POST SEARCH RESULTS
   // ==================================================================
   // Check that an error message is shown if there are no results
-  it("Post Results - should show error message if there are no post results", (done: DoneFn) => {
+  it("Post Results - should show error message if there are no post results", () => {
     const route = TestBed.inject(ActivatedRoute);
     spyOn(route.snapshot.queryParamMap, "get").and.callFake((param: string) => {
       if (param == "query") {
@@ -283,7 +289,7 @@ describe("SearchResults", () => {
         return null;
       }
     });
-    const fixture = TestBed.createComponent(SearchResults);
+    const fixture = TestBed.createComponent(SearchResultsComponent);
     const searchResults = fixture.componentInstance;
     const searchResultsDOM = fixture.debugElement.nativeElement;
     searchResults.itemsService.isSearching.set(false);
@@ -294,11 +300,10 @@ describe("SearchResults", () => {
 
     expect(searchResultsDOM.querySelector("#postSearchResults")).toBeNull();
     expect(searchResultsDOM.querySelector("#pSearchResErr")).toBeTruthy();
-    done();
   });
 
   // Check that the result list is shown when there are results
-  it("Post Results - should show a list of posts", (done: DoneFn) => {
+  it("Post Results - should show a list of posts", () => {
     const route = TestBed.inject(ActivatedRoute);
     spyOn(route.snapshot.queryParamMap, "get").and.callFake((param: string) => {
       if (param == "query") {
@@ -307,7 +312,7 @@ describe("SearchResults", () => {
         return null;
       }
     });
-    const fixture = TestBed.createComponent(SearchResults);
+    const fixture = TestBed.createComponent(SearchResultsComponent);
     const searchResults = fixture.componentInstance;
     const searchResultsDOM = fixture.debugElement.nativeElement;
     searchResults.itemsService.isSearching.set(false);
@@ -322,11 +327,10 @@ describe("SearchResults", () => {
     expect(searchResultsDOM.querySelector("#postSearchResults")).toBeTruthy();
     expect(searchResultsDOM.querySelectorAll("app-single-post").length).toBe(1);
     expect(searchResultsDOM.querySelector("#pSearchResErr")).toBeNull();
-    done();
   });
 
   // Check that a different page gets different results
-  it("Post Results - changes page when clicked", (done: DoneFn) => {
+  it("Post Results - changes page when clicked", () => {
     // set up spies
     const route = TestBed.inject(ActivatedRoute);
     spyOn(route.snapshot.queryParamMap, "get").and.callFake((param: string) => {
@@ -341,7 +345,7 @@ describe("SearchResults", () => {
     spyOn(TestBed.inject(ItemsService), "sendSearch");
 
     // create the component
-    const fixture = TestBed.createComponent(SearchResults);
+    const fixture = TestBed.createComponent(SearchResultsComponent);
     const searchResults = fixture.componentInstance;
     const searchResultsDOM = fixture.debugElement.nativeElement;
     searchResults.itemsService.isSearching.set(false);
@@ -363,7 +367,16 @@ describe("SearchResults", () => {
     fixture.detectChanges();
 
     // expectations for page 2
-    expect(routeSpy).toHaveBeenCalled();
+    expect(routeSpy).toHaveBeenCalledWith(
+      [],
+      jasmine.objectContaining({
+        queryParams: {
+          query: "search",
+          page: 2,
+        },
+      }),
+    );
+
     expect(searchResults.itemsService.postSearchPage()).toBe(2);
     expect(
       searchResultsDOM.querySelector("#postSearchResults").firstElementChild.children.length,
@@ -381,7 +394,6 @@ describe("SearchResults", () => {
     expect(
       searchResultsDOM.querySelector("#postSearchResults").firstElementChild.children.length,
     ).toBe(1);
-    done();
   });
 
   it("Post Results - should remove a deleted post", () => {
@@ -393,7 +405,7 @@ describe("SearchResults", () => {
         return null;
       }
     });
-    const fixture = TestBed.createComponent(SearchResults);
+    const fixture = TestBed.createComponent(SearchResultsComponent);
     const searchResults = fixture.componentInstance;
     searchResults.itemsService.isSearching.set(false);
     searchResults.itemsService.postSearchResults.set([...mockPostSearchResults]);
@@ -402,7 +414,7 @@ describe("SearchResults", () => {
     fixture.detectChanges();
 
     const singlePost = fixture.debugElement.query(By.css("app-single-post"))
-      .componentInstance as SinglePost;
+      .componentInstance as PostComponent;
     singlePost.deletedId.emit(5);
     fixture.detectChanges();
 

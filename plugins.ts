@@ -351,7 +351,7 @@ export function GlobalStylesPlugin(globalStylesDir: string, entryStylesheet: str
      * to the global stylesheet to the index.html.
      */
     transformIndexHtml(html) {
-      return html.replace("<head>", `<head><link rel='stylesheet' href='./${entryCSSFile}'>`);
+      return html.replace("<head>", `<head>\n<link rel='stylesheet' href='/${entryCSSFile}'>`);
     },
 
     /**

@@ -32,28 +32,37 @@
 
 // Angular imports
 import { HttpErrorResponse } from "@angular/common/http";
-import { Component, computed, signal } from "@angular/core";
+import { Component, computed, inject, signal } from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
 
 // App imports
 import { AdminService } from "@app/services/admin.service";
 import { AlertsService } from "@app/services/alerts.service";
 import { ApiClientService } from "@app/services/apiClient.service";
+import { GetFiltersResponse, AddFiltersResponse, DeleteFiltersResponse } from "@app/interfaces/api";
+
+/* eslint-disable @angular-eslint/prefer-standalone */
+/* Since the Admin section is self-contained, it's better off as a module */
 
 @Component({
   selector: "app-admin-filters",
   templateUrl: "./adminFilters.component.html",
+  standalone: false,
 })
-export class AdminFilters {
-  filteredPhrases = signal<{ id: number; filter: string }[]>([]);
-  currentPage = signal(1);
-  totalPages = signal(1);
-  isLoading = signal(false);
-  previousButtonClass = computed(() => ({
+export class AdminFiltersComponent {
+  public adminService = inject(AdminService);
+  private alertsService = inject(AlertsService);
+  private apiClient = inject(ApiClientService);
+  private fb = inject(FormBuilder);
+  readonly filteredPhrases = signal<{ id: number; filter: string }[]>([]);
+  readonly currentPage = signal(1);
+  readonly totalPages = signal(1);
+  readonly isLoading = signal(false);
+  readonly previousButtonClass = computed(() => ({
     "appButton nextButton": true,
     disabled: this.currentPage() >= this.totalPages(),
   }));
-  nextButtonClass = computed(() => ({
+  readonly nextButtonClass = computed(() => ({
     "appButton prevButton": true,
     disabled: this.currentPage() <= 1,
   }));
@@ -62,12 +71,7 @@ export class AdminFilters {
   });
 
   // CTOR
-  constructor(
-    public adminService: AdminService,
-    private alertsService: AlertsService,
-    private apiClient: ApiClientService,
-    private fb: FormBuilder,
-  ) {
+  constructor() {
     this.fetchFilters();
   }
 
@@ -78,8 +82,8 @@ export class AdminFilters {
     this.isLoading.set(true);
 
     // try to fetch the list of words
-    this.apiClient.get("filters", { page: `${this.currentPage()}` }).subscribe({
-      next: (response: any) => {
+    this.apiClient.get<GetFiltersResponse>("filters", { page: `${this.currentPage()}` }).subscribe({
+      next: (response: GetFiltersResponse) => {
         this.filteredPhrases.set(response.words);
         this.totalPages.set(response.total_pages);
         this.isLoading.set(false);
@@ -111,8 +115,8 @@ export class AdminFilters {
     }
 
     // try to add the filter
-    this.apiClient.post("filters", { word: filter }).subscribe({
-      next: (response: any) => {
+    this.apiClient.post<AddFiltersResponse>("filters", { word: filter }).subscribe({
+      next: (response: AddFiltersResponse) => {
         this.alertsService.createSuccessAlert(
           `The phrase ${response.added.filter} was added to the list of filtered words!`,
         );
@@ -130,8 +134,8 @@ export class AdminFilters {
   */
   removeFilter(filter: number) {
     // try to delete the filter
-    this.apiClient.delete(`filters/${filter}`).subscribe({
-      next: (response: any) => {
+    this.apiClient.delete<DeleteFiltersResponse>(`filters/${filter}`).subscribe({
+      next: (response: DeleteFiltersResponse) => {
         this.alertsService.createSuccessAlert(
           `The phrase ${response.deleted.filter} was removed from the list of filtered words.`,
         );

@@ -52,6 +52,7 @@ import { getMockFirebaseUser, mockAuthedUser } from "@tests/mockData";
 import { User } from "@app/interfaces/user.interface";
 import { MockProvider } from "ng-mocks";
 import { FirebaseService } from "./firebase.service";
+import { iconCharacters } from "@app/interfaces/types";
 
 describe("AuthService", () => {
   let httpController: HttpTestingController;
@@ -133,7 +134,7 @@ describe("AuthService", () => {
       next(value) {
         expect(value).toBe(mockAuthedUser);
         expect(logoutSpy).not.toHaveBeenCalled();
-        expect(fetchSpy).toHaveBeenCalled();
+        expect(fetchSpy).toHaveBeenCalledWith();
         done();
       },
     });
@@ -149,7 +150,7 @@ describe("AuthService", () => {
 
     authService.getCurrentFirebaseUser();
 
-    expect(getSpy).toHaveBeenCalled();
+    expect(getSpy).toHaveBeenCalledWith();
   });
 
   it("signUpWithEmail() - triggers signup with email", () => {
@@ -209,7 +210,7 @@ describe("AuthService", () => {
 
     authService.sendVerificationEmail().subscribe({
       next: () => {
-        expect(sendSpy).toHaveBeenCalled();
+        expect(sendSpy).toHaveBeenCalledWith();
         expect(createAlertSpy).toHaveBeenCalledWith({
           type: "Success",
           message:
@@ -228,7 +229,7 @@ describe("AuthService", () => {
 
     authService.sendVerificationEmail().subscribe({
       next: () => {
-        expect(sendSpy).toHaveBeenCalled();
+        expect(sendSpy).toHaveBeenCalledWith();
         expect(createAlertSpy).toHaveBeenCalledWith({
           type: "Error",
           message: "An error occurred. Error: ERROR!",
@@ -256,8 +257,8 @@ describe("AuthService", () => {
       .pipe(isEmpty())
       .subscribe({
         next: (isEmptyObs) => {
-          expect(currentUserSpy).toHaveBeenCalled();
-          expect(idTokenSpy).not.toHaveBeenCalled();
+          expect(currentUserSpy).toHaveBeenCalledWith();
+          expect(idTokenSpy).not.toHaveBeenCalledWith();
           expect(isEmptyObs).toEqual(true);
           done();
         },
@@ -271,8 +272,8 @@ describe("AuthService", () => {
     const idTokenSpy = spyOn(authService, "getIdTokenForCurrentUser").and.returnValue(of("token"));
 
     authService.getUserToken().subscribe((user) => {
-      expect(currentUserSpy).toHaveBeenCalled();
-      expect(idTokenSpy).toHaveBeenCalled();
+      expect(currentUserSpy).toHaveBeenCalledWith();
+      expect(idTokenSpy).toHaveBeenCalledWith();
       expect(user).toEqual({
         ...mockFirebaseUser,
         jwt: "token",
@@ -304,7 +305,7 @@ describe("AuthService", () => {
         autoRefresh: false,
         refreshRate: 20,
         pushEnabled: false,
-        selectedIcon: "kitty",
+        selectedIcon: "kitty" as iconCharacters,
         iconColours: {
           character: "#BA9F93",
           lbg: "#e2a275",
@@ -313,6 +314,13 @@ describe("AuthService", () => {
         },
         firebaseId: "fb",
         emailVerified: true,
+        preferences: {
+          emailNotificationsEnabled: false,
+          messageNotifications: false,
+          hugsDigestNotifications: false,
+          youOkayNotifications: false,
+          previousInteractionNotifications: false,
+        },
       },
     };
     const getTokenSpy = spyOn(authService, "getUserToken").and.returnValue(
@@ -327,11 +335,15 @@ describe("AuthService", () => {
 
     authService.fetchUser().subscribe({
       next: (user) => {
-        expect(getTokenSpy).toHaveBeenCalled();
+        expect(getTokenSpy).toHaveBeenCalledWith();
         expect(authService.loggedIn()).toBeFalse();
         expect(isResolvedSpy).toHaveBeenCalledWith(false);
         expect(userDataSpy).toHaveBeenCalledWith(undefined);
-        expect(setUserSpy).toHaveBeenCalled();
+        expect(setUserSpy).toHaveBeenCalledWith({
+          ...mockResponse.user,
+          jwt: "token",
+        });
+
         expect(user).toEqual({
           ...mockUser,
           jwt: "token",
@@ -341,7 +353,8 @@ describe("AuthService", () => {
     });
 
     // flush mock response
-    const req = httpController.expectOne(`${authService.serverUrl}/users/all/fb`);
+    const req = httpController.expectOne(`${authService.serverUrl}/users/fb`);
+
     expect(req.request.method).toEqual("GET");
     req.flush(mockResponse);
   });
@@ -375,7 +388,7 @@ describe("AuthService", () => {
 
     authService.fetchUser().subscribe({
       error: (err) => {
-        expect(getTokenSpy).toHaveBeenCalled();
+        expect(getTokenSpy).toHaveBeenCalledWith();
         expect(authService.isUserDataResolved.value).toBeFalse();
         expect(err.message).toBe("User doesn't exist yet");
         done();
@@ -383,7 +396,8 @@ describe("AuthService", () => {
     });
 
     // flush mock response
-    const req = httpController.expectOne(`${authService.serverUrl}/users/all/fb`);
+    const req = httpController.expectOne(`${authService.serverUrl}/users/fb`);
+
     expect(req.request.method).toEqual("GET");
     req.flush(mockError, mockResponse);
   });
@@ -418,8 +432,8 @@ describe("AuthService", () => {
 
     authService.fetchUser().subscribe({
       error: (err) => {
-        expect(isResolvedSpy).toHaveBeenCalled();
-        expect(createErrorAlertSpy).toHaveBeenCalled();
+        expect(isResolvedSpy).toHaveBeenCalledWith(true);
+        expect(createErrorAlertSpy).toHaveBeenCalledTimes(1);
         expect(authService.isUserDataResolved.value).toBeTrue();
         expect(err.status).toBe(404);
         done();
@@ -427,7 +441,8 @@ describe("AuthService", () => {
     });
 
     // flush mock response
-    const req = httpController.expectOne(`${authService.serverUrl}/users/all/fb`);
+    const req = httpController.expectOne(`${authService.serverUrl}/users/fb`);
+
     expect(req.request.method).toEqual("GET");
     req.flush(mockError, mockResponse);
   });
@@ -464,6 +479,13 @@ describe("AuthService", () => {
         },
         firebaseId: "fb",
         emailVerified: true,
+        preferences: {
+          emailNotificationsEnabled: false,
+          messageNotifications: false,
+          hugsDigestNotifications: false,
+          youOkayNotifications: false,
+          previousInteractionNotifications: false,
+        },
       },
     };
     const getTokenSpy = spyOn(authService, "getUserToken").and.returnValue(
@@ -481,9 +503,9 @@ describe("AuthService", () => {
 
     authService.createUser("test").subscribe({
       next: (userData) => {
-        expect(getTokenSpy).toHaveBeenCalled();
+        expect(getTokenSpy).toHaveBeenCalledWith();
         expect(isResolvedSpy).toHaveBeenCalledWith(false);
-        expect(setUserSpy).toHaveBeenCalled();
+        expect(setUserSpy).toHaveBeenCalledWith({ ...mockUser, jwt: "token" });
         expect(userData).toEqual({
           ...mockUser,
           jwt: "token",
@@ -494,10 +516,12 @@ describe("AuthService", () => {
 
     // flush mock response
     const req = httpController.expectOne(`${authService.serverUrl}/users`);
+
     expect(req.request.method).toEqual("POST");
     expect(req.request.body).toEqual({
       firebaseId: "fb",
       displayName: "test",
+      emailNotificationsEnabled: false,
     });
     req.flush(mockResponse);
   });
@@ -533,6 +557,13 @@ describe("AuthService", () => {
         },
         firebaseId: "fb",
         emailVerified: true,
+        preferences: {
+          emailNotificationsEnabled: false,
+          messageNotifications: false,
+          hugsDigestNotifications: false,
+          youOkayNotifications: false,
+          previousInteractionNotifications: false,
+        },
       },
     };
     const getTokenSpy = spyOn(authService, "getUserToken").and.returnValue(
@@ -550,9 +581,9 @@ describe("AuthService", () => {
 
     authService.createUser(null).subscribe({
       next: (userData) => {
-        expect(getTokenSpy).toHaveBeenCalled();
+        expect(getTokenSpy).toHaveBeenCalledWith();
         expect(isResolvedSpy).toHaveBeenCalledWith(false);
-        expect(setUserSpy).toHaveBeenCalled();
+        expect(setUserSpy).toHaveBeenCalledWith({ ...mockUser, jwt: "token" });
         expect(userData).toEqual({
           ...mockUser,
           jwt: "token",
@@ -563,6 +594,7 @@ describe("AuthService", () => {
 
     // flush mock response
     const req = httpController.expectOne(`${authService.serverUrl}/users`);
+
     expect(req.request.method).toEqual("POST");
     expect(req.request.body["firebaseId"]).toEqual("fb");
     expect(req.request.body["displayName"]).toContain("user");
@@ -604,7 +636,7 @@ describe("AuthService", () => {
     authService.createUser(null).subscribe({
       error: (error: HttpErrorResponse) => {
         expect(isResolvedSpy).toHaveBeenCalledWith(true);
-        expect(createErrorAlertSpy).toHaveBeenCalled();
+        expect(createErrorAlertSpy).toHaveBeenCalledTimes(1);
         expect(error.status).toEqual(mockResponse.status);
         done();
       },
@@ -612,6 +644,7 @@ describe("AuthService", () => {
 
     // flush mock response
     const req = httpController.expectOne(`${authService.serverUrl}/users`);
+
     expect(req.request.method).toEqual("POST");
     expect(req.request.body["firebaseId"]).toEqual("fb");
     expect(req.request.body["displayName"]).toContain("user");
@@ -637,9 +670,25 @@ describe("AuthService", () => {
       ...mockUser,
       jwt: "token",
     });
+
     expect(authService.authenticated()).toBeTrue();
     expect(authService.isUserDataResolved.value).toBeTrue();
-    expect(addSpy).toHaveBeenCalled();
+    expect(addSpy).toHaveBeenCalledWith("users", {
+      id: mockUser.id,
+      displayName: mockUser.displayName,
+      receivedH: mockUser.receivedH,
+      givenH: mockUser.givenH,
+      posts: mockUser.posts,
+      role: mockUser.role,
+      selectedIcon: mockUser.selectedIcon,
+      iconColours: {
+        character: mockUser.iconColours?.character,
+        lbg: mockUser.iconColours?.lbg,
+        rbg: mockUser.iconColours?.rbg,
+        item: mockUser.iconColours?.item,
+      },
+    });
+
     expect(updateSpy).not.toHaveBeenCalled();
   });
 
@@ -664,9 +713,25 @@ describe("AuthService", () => {
       ...mockUser,
       jwt: "token",
     });
+
     expect(authService.authenticated()).toBeTrue();
     expect(authService.isUserDataResolved.value).toBeTrue();
-    expect(addSpy).toHaveBeenCalled();
+    expect(addSpy).toHaveBeenCalledWith("users", {
+      id: mockUser.id,
+      displayName: mockUser.displayName,
+      receivedH: mockUser.receivedH,
+      givenH: mockUser.givenH,
+      posts: mockUser.posts,
+      role: mockUser.role,
+      selectedIcon: mockUser.selectedIcon,
+      iconColours: {
+        character: mockUser.iconColours?.character,
+        lbg: mockUser.iconColours?.lbg,
+        rbg: mockUser.iconColours?.rbg,
+        item: mockUser.iconColours?.item,
+      },
+    });
+
     expect(updateSpy).toHaveBeenCalledWith({ loginCount: 4 });
   });
 
@@ -700,6 +765,13 @@ describe("AuthService", () => {
       },
       firebaseId: "",
       emailVerified: true,
+      preferences: {
+        emailNotificationsEnabled: false,
+        messageNotifications: false,
+        hugsDigestNotifications: false,
+        youOkayNotifications: false,
+        previousInteractionNotifications: false,
+      },
     });
     authService.authenticated.set(true);
     authService.tokenExpired.set(false);
@@ -707,7 +779,7 @@ describe("AuthService", () => {
     const clearSpy = spyOn(authService["serviceWorkerM"], "clearStore");
 
     authService.logout().add(() => {
-      expect(signOutSpy).toHaveBeenCalled();
+      expect(signOutSpy).toHaveBeenCalledWith();
       expect(authService.authenticated()).toBeFalse();
       expect(authService.userData()).toBeUndefined();
       expect(clearSpy).toHaveBeenCalledTimes(2);
@@ -744,6 +816,13 @@ describe("AuthService", () => {
       },
       firebaseId: "",
       emailVerified: true,
+      preferences: {
+        emailNotificationsEnabled: false,
+        messageNotifications: false,
+        hugsDigestNotifications: false,
+        youOkayNotifications: false,
+        previousInteractionNotifications: false,
+      },
     });
     authService.authenticated.set(true);
     authService.tokenExpired.set(true);
@@ -751,7 +830,7 @@ describe("AuthService", () => {
     const clearSpy = spyOn(authService["serviceWorkerM"], "clearStore");
 
     authService.logout().add(() => {
-      expect(signOutSpy).toHaveBeenCalled();
+      expect(signOutSpy).toHaveBeenCalledWith();
       expect(authService.authenticated()).toBeFalse();
       expect(authService.userData()).toBeUndefined();
       expect(clearSpy).toHaveBeenCalledTimes(2);
@@ -782,7 +861,11 @@ describe("AuthService", () => {
         givenH: 2,
         posts: 2,
         loginCount: 3,
-        role: "admin",
+        role: {
+          id: 1,
+          name: "admin",
+          permissions: [],
+        },
         jwt: "",
         blocked: false,
         releaseDate: undefined,
@@ -790,6 +873,21 @@ describe("AuthService", () => {
         refreshRate: 20,
         pushEnabled: false,
         firebaseId: "fb",
+        selectedIcon: "kitty",
+        iconColours: {
+          character: "#BA9F93",
+          lbg: "#e2a275",
+          rbg: "#f8eee4",
+          item: "#f4b56a",
+        },
+        emailVerified: true,
+        preferences: {
+          emailNotificationsEnabled: false,
+          messageNotifications: false,
+          hugsDigestNotifications: false,
+          youOkayNotifications: false,
+          previousInteractionNotifications: false,
+        },
       },
     };
 
@@ -820,6 +918,13 @@ describe("AuthService", () => {
       },
       firebaseId: "fb",
       emailVerified: true,
+      preferences: {
+        emailNotificationsEnabled: false,
+        messageNotifications: false,
+        hugsDigestNotifications: false,
+        youOkayNotifications: false,
+        previousInteractionNotifications: false,
+      },
     });
     const getTokenSpy = spyOn(authService, "getUserToken").and.returnValue(
       of({
@@ -831,13 +936,14 @@ describe("AuthService", () => {
 
     authService.updateUserData({ displayName: "name" }).add(() => {
       expect(authService.userData()!.displayName).toBe("name");
-      expect(getTokenSpy).toHaveBeenCalled();
-      expect(swSpy).toHaveBeenCalled();
+      expect(getTokenSpy).toHaveBeenCalledWith();
+      expect(swSpy).toHaveBeenCalledWith("users", mockResponse.updated as User);
       done();
     });
 
     // flush mock response
-    const req = httpController.expectOne(`${authService.serverUrl}/users/all/4`);
+    const req = httpController.expectOne(`${authService.serverUrl}/users/4`);
+
     expect(req.request.method).toEqual("PATCH");
     req.flush(mockResponse);
   });
@@ -876,6 +982,13 @@ describe("AuthService", () => {
       },
       firebaseId: "fb",
       emailVerified: true,
+      preferences: {
+        emailNotificationsEnabled: false,
+        messageNotifications: false,
+        hugsDigestNotifications: false,
+        youOkayNotifications: false,
+        previousInteractionNotifications: false,
+      },
     });
     const getTokenSpy = spyOn(authService, "getUserToken").and.returnValue(
       of({
@@ -887,14 +1000,15 @@ describe("AuthService", () => {
 
     authService.updateUserData({ displayName: "name" }).add(() => {
       expect(authService.userData()!.displayName).toBe("name");
-      expect(getTokenSpy).toHaveBeenCalled();
+      expect(getTokenSpy).toHaveBeenCalledWith();
       expect(swSpy).not.toHaveBeenCalled();
-      expect(createErrorAlertSpy).toHaveBeenCalled();
+      expect(createErrorAlertSpy).toHaveBeenCalledTimes(1);
       done();
     });
 
     // flush mock response
-    const req = httpController.expectOne(`${authService.serverUrl}/users/all/4`);
+    const req = httpController.expectOne(`${authService.serverUrl}/users/4`);
+
     expect(req.request.method).toEqual("PATCH");
     req.flush(null, mockError);
   });
@@ -940,6 +1054,13 @@ describe("AuthService", () => {
       },
       firebaseId: "",
       emailVerified: true,
+      preferences: {
+        emailNotificationsEnabled: false,
+        messageNotifications: false,
+        hugsDigestNotifications: false,
+        youOkayNotifications: false,
+        previousInteractionNotifications: false,
+      },
     });
 
     const res = authService.canUser("block:user");
@@ -976,6 +1097,13 @@ describe("AuthService", () => {
       },
       firebaseId: "",
       emailVerified: true,
+      preferences: {
+        emailNotificationsEnabled: false,
+        messageNotifications: false,
+        hugsDigestNotifications: false,
+        youOkayNotifications: false,
+        previousInteractionNotifications: false,
+      },
     });
 
     const res = authService.canUser("block:user");

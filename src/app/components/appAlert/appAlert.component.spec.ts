@@ -40,17 +40,17 @@ import {
 import { provideRouter, RouterLink } from "@angular/router";
 import { provideExperimentalZonelessChangeDetection } from "@angular/core";
 
-import { AppAlert } from "./appAlert.component";
+import { AppAlertComponent } from "./appAlert.component";
 import { AlertsService } from "@app/services/alerts.service";
 
-describe("AppAlert", () => {
+describe("AppAlertComponent", () => {
   // Before each test, configure testing environment
   beforeEach(() => {
     TestBed.resetTestEnvironment();
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
-      imports: [CommonModule, AppAlert, RouterLink],
+      imports: [CommonModule, AppAlertComponent, RouterLink],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
         provideExperimentalZonelessChangeDetection(),
@@ -61,13 +61,14 @@ describe("AppAlert", () => {
 
   // Check the page is created
   it("should create the component", () => {
-    const fixture = TestBed.createComponent(AppAlert);
+    const fixture = TestBed.createComponent(AppAlertComponent);
     const appAlert = fixture.componentInstance;
+
     expect(appAlert).toBeTruthy();
   });
 
   it("should display the right title, icon and message (error)", () => {
-    const fixture = TestBed.createComponent(AppAlert);
+    const fixture = TestBed.createComponent(AppAlertComponent);
     const alertDOM = fixture.nativeElement;
     const alertsService = fixture.debugElement.injector.get(AlertsService);
     const alertMessage = "Test alert message";
@@ -90,7 +91,7 @@ describe("AppAlert", () => {
   });
 
   it("should display the right title, icon and message (success)", () => {
-    const fixture = TestBed.createComponent(AppAlert);
+    const fixture = TestBed.createComponent(AppAlertComponent);
     const alertDOM = fixture.nativeElement;
     const alertsService = fixture.debugElement.injector.get(AlertsService);
     const alertMessage = "Test alert message";
@@ -112,7 +113,7 @@ describe("AppAlert", () => {
   });
 
   it("should display the right title, icon and message (notification)", () => {
-    const fixture = TestBed.createComponent(AppAlert);
+    const fixture = TestBed.createComponent(AppAlertComponent);
     const alertDOM = fixture.nativeElement;
     const alertsService = fixture.debugElement.injector.get(AlertsService);
     const alertMessage = "Test alert message";
@@ -134,7 +135,7 @@ describe("AppAlert", () => {
   });
 
   it("should close the alert", () => {
-    const fixture = TestBed.createComponent(AppAlert);
+    const fixture = TestBed.createComponent(AppAlertComponent);
     const appAlert = fixture.componentInstance;
     const alertDOM = fixture.nativeElement;
     const alertsService = fixture.debugElement.injector.get(AlertsService);
@@ -144,12 +145,12 @@ describe("AppAlert", () => {
 
     alertDOM.querySelector("#alertButton").click();
 
-    expect(closeSpy).toHaveBeenCalled();
+    expect(closeSpy).toHaveBeenCalledWith();
     expect(alertsService.shouldDisplayAlert()).toBe(false);
   });
 
   it("should display reload button", () => {
-    const fixture = TestBed.createComponent(AppAlert);
+    const fixture = TestBed.createComponent(AppAlertComponent);
     const alertDOM = fixture.nativeElement;
     const alertsService = fixture.debugElement.injector.get(AlertsService);
     alertsService.shouldDisplayReloadBtn.set(true);
@@ -161,7 +162,7 @@ describe("AppAlert", () => {
   });
 
   it("should display navigation button", () => {
-    const fixture = TestBed.createComponent(AppAlert);
+    const fixture = TestBed.createComponent(AppAlertComponent);
     const alertDOM = fixture.nativeElement;
     const alertsService = fixture.debugElement.injector.get(AlertsService);
     alertsService.shouldDisplayNavBtn.set(true);
@@ -174,7 +175,7 @@ describe("AppAlert", () => {
   });
 
   it("should make the request to reload the page", () => {
-    const fixture = TestBed.createComponent(AppAlert);
+    const fixture = TestBed.createComponent(AppAlertComponent);
     const alertDOM = fixture.nativeElement;
     const alertsService = fixture.debugElement.injector.get(AlertsService);
     const reloadSpy = spyOn(alertsService, "reloadPage");
@@ -184,6 +185,6 @@ describe("AppAlert", () => {
 
     alertDOM.querySelector("#reloadBtn").click();
 
-    expect(reloadSpy).toHaveBeenCalled();
+    expect(reloadSpy).toHaveBeenCalledWith();
   });
 });

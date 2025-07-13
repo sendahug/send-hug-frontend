@@ -1,7 +1,5 @@
 /*
-  OtherUser interface
-  Based on the User Model
-  For viewing other users' profiles
+  Various response interfaces used by the app (notifications routes).
   ---------------------------------------------------
   MIT License
 
@@ -31,18 +29,25 @@
   SOFTWARE.
 */
 
-import { iconCharacters } from "./types";
-import { UserIconColours, Role } from "./user.interface";
+import { type Notification } from "@app/interfaces/notification.interface";
 
-export interface OtherUser {
-  id: number;
-  displayName: string;
-  receivedH: number;
-  givenH: number;
-  posts: number;
-  role: Role;
-  blocked?: boolean;
-  releaseDate?: Date;
-  selectedIcon: iconCharacters;
-  iconColours: UserIconColours;
+export interface GetNotificationsResponse {
+  success: boolean;
+  notifications: Notification[];
+  newCount: number;
+  current_page: number;
+  total_pages: number;
+  totalItems: number;
+}
+
+export interface UpdateNotificationsResponse {
+  success: boolean;
+  updated: Array<number> | "all";
+  read: boolean;
+}
+
+export interface CreateUpdatePushSubscriptionResponse {
+  success: boolean;
+  subscribed: string;
+  subId: number;
 }

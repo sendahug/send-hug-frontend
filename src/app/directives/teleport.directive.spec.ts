@@ -36,7 +36,7 @@ import {
   platformBrowserDynamicTesting,
 } from "@angular/platform-browser-dynamic/testing";
 import {} from "jasmine";
-import { AfterViewInit, Component, ElementRef, ViewChild } from "@angular/core";
+import { AfterViewInit, Component, ElementRef, inject, ViewChild } from "@angular/core";
 
 import { TeleportDirective } from "./teleport.directive";
 import { TeleportService } from "@app/services/teleport.service";
@@ -51,10 +51,9 @@ import { TeleportService } from "@app/services/teleport.service";
   `,
   standalone: true,
 })
-class MockPage implements AfterViewInit {
+class MockPageComponent implements AfterViewInit {
   @ViewChild("profileContainer") profileContainer!: ElementRef;
-
-  constructor(private teleporterService: TeleportService) {}
+  private teleporterService = inject(TeleportService);
 
   ngAfterViewInit(): void {
     this.teleporterService.createTeleportTarget("test", this.profileContainer);
@@ -71,12 +70,13 @@ class MockPage implements AfterViewInit {
   standalone: true,
   imports: [TeleportDirective],
 })
-class MockChild {
+class MockChildComponent {
   teleportTarget = "test";
 }
 
 describe("TeleportDirective", () => {
-  let fixture: ComponentFixture<MockPage>;
+  let fixture: ComponentFixture<MockPageComponent>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let mockPageDOM: any; // according to Angular's own typing
 
   // Before each test, configure testing environment
@@ -85,27 +85,28 @@ describe("TeleportDirective", () => {
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
-      imports: [MockPage, TeleportDirective, MockChild],
+      imports: [MockPageComponent, TeleportDirective, MockChildComponent],
       providers: [TeleportService],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(MockPage);
+    fixture = TestBed.createComponent(MockPageComponent);
     mockPageDOM = fixture.nativeElement;
     fixture.autoDetectChanges();
   });
 
   it("should teleport the chosen element", () => {
-    const childFixture = TestBed.createComponent(MockChild);
+    const childFixture = TestBed.createComponent(MockChildComponent);
     childFixture.autoDetectChanges();
 
     const container = mockPageDOM.querySelector("#profileContainer");
+
     expect(container.children.length).toBe(1);
     expect(container.querySelectorAll("div")[0].textContent).toBe("MEEP!");
     expect(childFixture.nativeElement.querySelector("div")).toBeNull();
   });
 
   it("should do nothing if the target doesn't exist", () => {
-    const childFixture = TestBed.createComponent(MockChild);
+    const childFixture = TestBed.createComponent(MockChildComponent);
     childFixture.componentInstance.teleportTarget = "meow";
     childFixture.autoDetectChanges();
 
@@ -115,12 +116,13 @@ describe("TeleportDirective", () => {
   });
 
   it("should remove the content once the element is destroyed", () => {
-    const childFixture = TestBed.createComponent(MockChild);
+    const childFixture = TestBed.createComponent(MockChildComponent);
     childFixture.detectChanges();
 
     expect(
       mockPageDOM.querySelector("#profileContainer").querySelectorAll("div")[0].textContent,
     ).toBe("MEEP!");
+
     expect(childFixture.nativeElement.querySelector("div")).toBeNull();
 
     childFixture.destroy();

@@ -31,19 +31,25 @@
 */
 
 // Angular imports
-import { Component, signal } from "@angular/core";
+import { Component, inject, signal } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 
 // App imports
 import { AuthService } from "@app/services/auth.service";
 
+/* eslint-disable @angular-eslint/prefer-standalone */
+/* Since the Admin section is self-contained, it's better off as a module */
+
 @Component({
   selector: "app-admin-dashboard",
   templateUrl: "./adminDashboard.component.html",
   styleUrl: "./adminDashboard.component.less",
+  standalone: false,
 })
-export class AdminDashboard {
-  screen = signal("");
+export class AdminDashboardComponent {
+  private route = inject(ActivatedRoute);
+  public authService = inject(AuthService);
+  readonly screen = signal("");
   adminCategories = [
     {
       title: "Reports",
@@ -61,10 +67,7 @@ export class AdminDashboard {
   ];
 
   // CTOR
-  constructor(
-    private route: ActivatedRoute,
-    public authService: AuthService,
-  ) {
+  constructor() {
     this.route.url.subscribe((params) => {
       if (params[0] && params[0].path) {
         this.screen.set(params[0].path);

@@ -31,88 +31,56 @@
 */
 
 // Angular imports
-import { Injectable } from "@angular/core";
+import { inject, Injectable } from "@angular/core";
 import { Observable, map, mergeMap, of, switchMap, tap } from "rxjs";
 
 // App-related imports
-import { type ReportGet } from "@app/interfaces/report.interface";
+import { ReportData, type ReportGet } from "@app/interfaces/report.interface";
 import { type MessageCreate } from "@app/interfaces/message.interface";
 import { AuthService } from "@app/services/auth.service";
 import { AlertsService } from "@app/services/alerts.service";
 import { ItemsService } from "@app/services/items.service";
-import { SWManager } from "@app/services/sWManager.service";
 import { ApiClientService } from "@app/services/apiClient.service";
-import { OtherUser } from "@app/interfaces/otherUser.interface";
-import { PartialUser } from "@app/interfaces/user.interface";
-
-interface UserBlockData {
-  userID: number;
-  isBlocked: boolean;
-  releaseDate?: Date;
-}
-
-interface OtherUserResponse {
-  user: OtherUser;
-  success: boolean;
-}
-
-interface ReportResponse {
-  success: boolean;
-  updated: ReportGet;
-}
+import { type PartialUser, type UserBlockData, OtherUser } from "@app/interfaces/user.interface";
+import { type UpdateReportResponse, type OtherUserResponse } from "@app/interfaces/api";
 
 @Injectable({
   providedIn: "root",
 })
 export class AdminService {
-  constructor(
-    private authService: AuthService,
-    private alertsService: AlertsService,
-    private itemsService: ItemsService,
-    private serviceWorkerM: SWManager,
-    private apiClient: ApiClientService,
-  ) {}
+  private authService = inject(AuthService);
+  private alertsService = inject(AlertsService);
+  private itemsService = inject(ItemsService);
+  private apiClient = inject(ApiClientService);
 
   // REPORTS-RELATED METHODS
   // ==============================================================
-  /*
-  Function Name: deletePost()
-  Function Description: Sends a request to delete the post. If successful, alerts
-                        the user (via the ItemsService) that their post was deleted.
-  Parameters: postID (number) - ID of the post to delete.
-              reportData (any) - User ID and report ID.
-              closeReport (boolean) - whether to also close the report.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  deletePost(postID: number, reportData: any, closeReport: boolean) {
-    // delete the post from the database
-    return this.apiClient
-      .delete<{ success: boolean; deleted: number }>(`posts/${postID}`)
+  /**
+   * Closes the given report and alerts the user whose post was deleted
+   * that their post was deleted.
+   * @param postID  ID of the post that was deleted.
+   * @param reportData User ID and report ID.
+   * @returns a subscription that's completed.
+   */
+  closeReportAndAlertUserAfterDelete(postID: number, reportData: ReportData) {
+    return this.closeReport(reportData.reportID, false, postID)
       .pipe(
-        switchMap((response) => {
-          if (closeReport) {
-            return this.closeReport(reportData.reportID, false, postID).pipe(
-              map((updateResponse) => ({
-                deleted: response.deleted,
-                reportID: updateResponse.updated.id,
-              })),
-            );
-          } else {
-            return of({
-              deleted: response.deleted,
-              reportID: undefined,
-            });
-          }
-        }),
+        map((updateResponse) => ({
+          deleted: postID,
+          reportID: updateResponse.updated.id,
+        })),
+      )
+      .pipe(
+        tap((response) =>
+          this.alertsService.createSuccessAlert(
+            `Post ${response.deleted} was successfully deleted and the report was closed.`,
+          ),
+        ),
       )
       .subscribe({
-        next: (response: any) => {
-          this.alertsService.createSuccessAlert(
-            `Post ${response.deleted} was successfully deleted.`,
-          );
+        next: (response) => {
           // create a message from the admin to the user whose post was deleted
-          let message: MessageCreate = {
+          const message: MessageCreate = {
             from: {
               displayName: this.authService.userData()!.displayName,
             },
@@ -120,9 +88,6 @@ export class AdminService {
             messageText: `Your post (ID ${response.deleted}) was deleted due to violating our community rules.`,
             date: new Date(),
           };
-
-          // delete the post from idb
-          this.serviceWorkerM.deleteItem("posts", postID);
 
           // send the message about the deleted post
           this.itemsService.sendMessage(message).subscribe({});
@@ -143,7 +108,7 @@ export class AdminService {
   editUser(user: PartialUser, closeReport: boolean, reportID: number) {
     // update the user's display name
     return this.apiClient
-      .patch<{ success: boolean; updated: OtherUser }>(`users/all/${user.id}`, user)
+      .patch<{ success: boolean; updated: OtherUser }>(`users/${user.id}`, user)
       .pipe(
         switchMap((userResponse) => {
           // if the report should be closed
@@ -163,7 +128,7 @@ export class AdminService {
         }),
       )
       .subscribe({
-        next: (response: any) => {
+        next: (response) => {
           this.alertsService.createSuccessAlert(`User ${response.user.displayName} updated.`);
         },
       });
@@ -177,7 +142,7 @@ export class AdminService {
    * @param userID (number) - the ID of the user associated with the report (for user reports).
    */
   closeReport(reportID: number, dismiss: boolean, postID?: number, userID?: number) {
-    let report: Partial<ReportGet> = {
+    const report: Partial<ReportGet> = {
       id: reportID,
       closed: true,
       dismissed: dismiss,
@@ -186,7 +151,7 @@ export class AdminService {
     };
 
     // send a request to update the report
-    return this.apiClient.patch<ReportResponse>(`reports/${reportID}`, report);
+    return this.apiClient.patch<UpdateReportResponse>(`reports/${reportID}`, report);
   }
 
   // BLOCKS-RELATED METHODS
@@ -198,7 +163,7 @@ export class AdminService {
    */
   fetchUserBlockData(userID: number): Observable<UserBlockData> {
     // send the request to get the block data
-    return this.apiClient.get<OtherUserResponse>(`users/all/${userID}`).pipe(
+    return this.apiClient.get<OtherUserResponse>(`users/${userID}`).pipe(
       map((res) => {
         return {
           userID: res.user.id,
@@ -286,7 +251,7 @@ export class AdminService {
         .pipe(
           switchMap((blockData) =>
             this.apiClient.patch<{ success: boolean; updated: OtherUser }>(
-              `users/all/${userID}`,
+              `users/${userID}`,
               blockData,
             ),
           ),
@@ -312,7 +277,7 @@ export class AdminService {
           }),
         )
         .pipe(
-          tap((response: any) =>
+          tap((response) =>
             this.alertsService.createSuccessAlert(
               `User ${response.updated.displayName} has been blocked until ${response.updated.releaseDate}`,
             ),

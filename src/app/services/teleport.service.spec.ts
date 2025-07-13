@@ -50,15 +50,13 @@ import { TeleportService } from "./teleport.service";
   `,
   standalone: true,
 })
-class MockPage {
+class MockPageComponent {
   @ViewChild("profileContainer") profileContainer!: ElementRef;
-
-  constructor() {}
 }
 
 describe("TeleportService", () => {
   let teleportService: TeleportService;
-  let mockPage: ComponentFixture<MockPage>;
+  let mockPage: ComponentFixture<MockPageComponent>;
 
   // Before each test, configure testing environment
   beforeEach(() => {
@@ -66,12 +64,12 @@ describe("TeleportService", () => {
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
-      imports: [MockPage],
+      imports: [MockPageComponent],
       providers: [TeleportService],
     }).compileComponents();
 
     teleportService = TestBed.inject(TeleportService);
-    mockPage = TestBed.createComponent(MockPage);
+    mockPage = TestBed.createComponent(MockPageComponent);
   });
 
   it("should create the service", () => {

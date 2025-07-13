@@ -43,9 +43,9 @@ import { ReactiveFormsModule } from "@angular/forms";
 import { BehaviorSubject, of, throwError } from "rxjs";
 import { MockComponent, MockProvider } from "ng-mocks";
 
-import { AdminFilters } from "./adminFilters.component";
+import { AdminFiltersComponent } from "./adminFilters.component";
 import { AuthService } from "@app/services/auth.service";
-import { Loader } from "@common/loader/loader.component";
+import { LoaderComponent } from "@common/loader/loader.component";
 import { mockAuthedUser } from "@tests/mockData";
 import { ApiClientService } from "@app/services/apiClient.service";
 import { AdminService } from "@app/services/admin.service";
@@ -75,15 +75,15 @@ describe("Filters Page", () => {
     const MockAPIClient = MockProvider(ApiClientService, {
       get: () => of(),
     });
-    const MockLoader = MockComponent(Loader);
+    const MockLoaderComponent = MockComponent(LoaderComponent);
 
     TestBed.resetTestEnvironment();
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
       schemas: [NO_ERRORS_SCHEMA],
-      imports: [ReactiveFormsModule, MockLoader],
-      declarations: [AdminFilters],
+      imports: [ReactiveFormsModule, MockLoaderComponent],
+      declarations: [AdminFiltersComponent],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
         provideRouter([]),
@@ -95,7 +95,7 @@ describe("Filters Page", () => {
   });
 
   // Check that a call is made to get filtered phrases
-  it("should get filtered phrases", (done: DoneFn) => {
+  it("should get filtered phrases", () => {
     const apiClientSpy = spyOn(TestBed.inject(ApiClientService), "get").and.returnValue(
       of({
         words: [...mockFilteredPhrases],
@@ -103,7 +103,7 @@ describe("Filters Page", () => {
         success: true,
       }),
     );
-    const fixture = TestBed.createComponent(AdminFilters);
+    const fixture = TestBed.createComponent(AdminFiltersComponent);
     const adminFilters = fixture.componentInstance;
     const adminFiltersDOM = fixture.nativeElement;
 
@@ -115,14 +115,13 @@ describe("Filters Page", () => {
     expect(
       adminFiltersDOM.querySelectorAll(".tableContainer")[0].querySelectorAll("tbody tr").length,
     ).toBe(2);
-    done();
   });
 
-  it("should remove the loading screen if there was an error", (done: DoneFn) => {
+  it("should remove the loading screen if there was an error", () => {
     const apiClientSpy = spyOn(TestBed.inject(ApiClientService), "get").and.returnValue(
       throwError(() => new Error("ERROR")),
     );
-    const fixture = TestBed.createComponent(AdminFilters);
+    const fixture = TestBed.createComponent(AdminFiltersComponent);
     const adminFilters = fixture.componentInstance;
     const adminFiltersDOM = fixture.nativeElement;
 
@@ -136,13 +135,12 @@ describe("Filters Page", () => {
     expect(adminFiltersDOM.querySelectorAll(".errorMessage")[0].textContent).toBe(
       "There are no filtered phrases.",
     );
-    done();
   });
 
   // Check that you can add a filter
-  it("should add a new filter", (done: DoneFn) => {
+  it("should add a new filter", () => {
     // set up the spy and the component
-    const fixture = TestBed.createComponent(AdminFilters);
+    const fixture = TestBed.createComponent(AdminFiltersComponent);
     const adminFilters = fixture.componentInstance;
     const adminFiltersDOM = fixture.nativeElement;
     const addSpy = spyOn(adminFilters, "addFilter").and.callThrough();
@@ -163,18 +161,18 @@ describe("Filters Page", () => {
     fixture.detectChanges();
 
     // check expectations
-    expect(addSpy).toHaveBeenCalled();
+    expect(addSpy).toHaveBeenCalledWith();
     expect(apiClientSpy).toHaveBeenCalledWith("filters", { word: "text" });
     expect(alertsSpy).toHaveBeenCalledWith(
       `The phrase text was added to the list of filtered words!`,
     );
+
     expect(adminFilters.filteredPhrases()[2]).toEqual({ id: 3, filter: "text" });
-    done();
   });
 
-  it("should not try to add a new filter if there's no filter in the text field", (done: DoneFn) => {
+  it("should not try to add a new filter if there's no filter in the text field", () => {
     // set up the spy and the component
-    const fixture = TestBed.createComponent(AdminFilters);
+    const fixture = TestBed.createComponent(AdminFiltersComponent);
     const adminFilters = fixture.componentInstance;
     const adminFiltersDOM = fixture.nativeElement;
     const addSpy = spyOn(adminFilters, "addFilter").and.callThrough();
@@ -191,17 +189,16 @@ describe("Filters Page", () => {
     fixture.detectChanges();
 
     // check expectations
-    expect(addSpy).toHaveBeenCalled();
+    expect(addSpy).toHaveBeenCalledWith();
     expect(apiClientSpy).not.toHaveBeenCalled();
     expect(alertSpy).toHaveBeenCalledWith({
       type: "Error",
       message: "A filtered phrase is required in order to add to the filters list.",
     });
-    done();
   });
 
   // Check that you can remove a filter
-  it("should remove a filter", (done: DoneFn) => {
+  it("should remove a filter", () => {
     // mock response
     const mockResponse = {
       success: true,
@@ -212,7 +209,7 @@ describe("Filters Page", () => {
     };
 
     // set up the spy and the component
-    const fixture = TestBed.createComponent(AdminFilters);
+    const fixture = TestBed.createComponent(AdminFiltersComponent);
     const adminFilters = fixture.componentInstance;
     const adminFiltersDOM = fixture.nativeElement;
     const removeSpy = spyOn(adminFilters, "removeFilter").and.callThrough();
@@ -230,19 +227,19 @@ describe("Filters Page", () => {
     fixture.detectChanges();
 
     // check expectations
-    expect(removeSpy).toHaveBeenCalled();
+    expect(removeSpy).toHaveBeenCalledWith(1);
     expect(deleteSpy).toHaveBeenCalledWith("filters/1");
     expect(alertSpy).toHaveBeenCalledWith(
       `The phrase ${mockResponse.deleted.filter} was removed from the list of filtered words.`,
     );
+
     expect(adminFilters.filteredPhrases().length).toEqual(1);
     expect(adminFilters.filteredPhrases()[0].id).not.toBe(1);
-    done();
   });
 
-  it("should go to the next page", (done: DoneFn) => {
+  it("should go to the next page", () => {
     // set up the spy and the component
-    const fixture = TestBed.createComponent(AdminFilters);
+    const fixture = TestBed.createComponent(AdminFiltersComponent);
     const adminFilters = fixture.componentInstance;
     const adminFiltersDOM = fixture.nativeElement;
     const nextPageSpy = spyOn(adminFilters, "nextPage").and.callThrough();
@@ -258,14 +255,13 @@ describe("Filters Page", () => {
     fixture.detectChanges();
 
     // check expectations
-    expect(nextPageSpy).toHaveBeenCalled();
-    expect(fetchSpy).toHaveBeenCalled();
-    done();
+    expect(nextPageSpy).toHaveBeenCalledWith();
+    expect(fetchSpy).toHaveBeenCalledWith();
   });
 
-  it("should go to the previous page", (done: DoneFn) => {
+  it("should go to the previous page", () => {
     // set up the spy and the component
-    const fixture = TestBed.createComponent(AdminFilters);
+    const fixture = TestBed.createComponent(AdminFiltersComponent);
     const adminFilters = fixture.componentInstance;
     const adminFiltersDOM = fixture.nativeElement;
     const prevPageSpy = spyOn(adminFilters, "prevPage").and.callThrough();
@@ -282,8 +278,7 @@ describe("Filters Page", () => {
     fixture.detectChanges();
 
     // check expectations
-    expect(prevPageSpy).toHaveBeenCalled();
-    expect(fetchSpy).toHaveBeenCalled();
-    done();
+    expect(prevPageSpy).toHaveBeenCalledWith();
+    expect(fetchSpy).toHaveBeenCalledWith();
   });
 });

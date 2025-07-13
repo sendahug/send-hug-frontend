@@ -46,26 +46,26 @@ import {
   signal,
 } from "@angular/core";
 
-import { IconEditor } from "./iconEditor.component";
+import { IconEditorComponent } from "./iconEditor.component";
 import { AuthService } from "@app/services/auth.service";
 import { mockAuthedUser } from "@tests/mockData";
-import { UserIcon } from "@common/userIcon/userIcon.component";
+import { UserIconComponent } from "@common/userIcon/userIcon.component";
 
-describe("IconEditor", () => {
+describe("IconEditorComponent", () => {
   // Before each test, configure testing environment
   beforeEach(() => {
     const MockAuthService = MockProvider(AuthService, {
       authenticated: signal(true),
       userData: signal({ ...mockAuthedUser }),
     });
-    const MockUserIcon = MockComponent(UserIcon);
+    const MockUserIconComponent = MockComponent(UserIconComponent);
 
     TestBed.resetTestEnvironment();
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
       schemas: [NO_ERRORS_SCHEMA],
-      imports: [ReactiveFormsModule, MockUserIcon, IconEditor],
+      imports: [ReactiveFormsModule, MockUserIconComponent, IconEditorComponent],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
         provideExperimentalZonelessChangeDetection(),
@@ -77,14 +77,15 @@ describe("IconEditor", () => {
 
   // Check the page is created
   it("should create the component", () => {
-    const fixture = TestBed.createComponent(IconEditor);
+    const fixture = TestBed.createComponent(IconEditorComponent);
     const iconEditor = fixture.componentInstance;
+
     expect(iconEditor).toBeTruthy();
   });
 
   // Check the variables are set correctly
   it("should get the icon data from the AuthService", () => {
-    const fixture = TestBed.createComponent(IconEditor);
+    const fixture = TestBed.createComponent(IconEditorComponent);
     const iconEditor = fixture.componentInstance;
 
     expect(iconEditor.iconEditForm.controls.selectedIcon.value).toBe("kitty");
@@ -95,8 +96,8 @@ describe("IconEditor", () => {
   });
 
   // Check the icon changes when the radio button is clicked
-  it("should change icon when radio buttons are clicked", (done: DoneFn) => {
-    const fixture = TestBed.createComponent(IconEditor);
+  it("should change icon when radio buttons are clicked", () => {
+    const fixture = TestBed.createComponent(IconEditorComponent);
     const iconEditor = fixture.componentInstance;
     const iconEditorDOM = fixture.nativeElement;
     fixture.detectChanges();
@@ -115,11 +116,10 @@ describe("IconEditor", () => {
 
     // before changing icon
     expect(iconEditor.iconEditForm.controls.selectedIcon.value).toBe("dog");
-    done();
   });
 
-  it("should update the colours when clicked", (done: DoneFn) => {
-    const fixture = TestBed.createComponent(IconEditor);
+  it("should update the colours when clicked", () => {
+    const fixture = TestBed.createComponent(IconEditorComponent);
     const iconEditor = fixture.componentInstance;
     const iconEditorDOM = fixture.nativeElement;
     fixture.detectChanges();
@@ -157,11 +157,10 @@ describe("IconEditor", () => {
     fixture.detectChanges();
 
     expect(iconEditor.iconEditForm.controls.itemColour.value).toBe("#e1e1e1");
-    done();
   });
 
-  it("should make the request to change the icon", (done: DoneFn) => {
-    const fixture = TestBed.createComponent(IconEditor);
+  it("should make the request to change the icon", () => {
+    const fixture = TestBed.createComponent(IconEditorComponent);
     const iconEditor = fixture.componentInstance;
     const iconEditorDOM = fixture.nativeElement;
     const updateSpy = spyOn(iconEditor.authService, "updateUserData");
@@ -184,6 +183,7 @@ describe("IconEditor", () => {
 
     // after the update
     iconEditorDOM.querySelectorAll(".iconButton")[1].click();
+
     expect(updateSpy).toHaveBeenCalledWith({
       selectedIcon: "bear",
       iconColours: {
@@ -193,12 +193,12 @@ describe("IconEditor", () => {
         item: "#000000",
       },
     });
+
     expect(dismissSpy).toHaveBeenCalledWith(false);
-    done();
   });
 
-  it("should make the request to change the icon with default values if there are nonoe", (done: DoneFn) => {
-    const fixture = TestBed.createComponent(IconEditor);
+  it("should make the request to change the icon with default values if there are nonoe", () => {
+    const fixture = TestBed.createComponent(IconEditorComponent);
     const iconEditor = fixture.componentInstance;
     const iconEditorDOM = fixture.nativeElement;
     const updateSpy = spyOn(iconEditor.authService, "updateUserData");
@@ -214,6 +214,7 @@ describe("IconEditor", () => {
 
     // after the update
     iconEditorDOM.querySelectorAll(".iconButton")[1].click();
+
     expect(updateSpy).toHaveBeenCalledWith({
       selectedIcon: "kitty",
       iconColours: {
@@ -223,12 +224,12 @@ describe("IconEditor", () => {
         item: "#f4b56a",
       },
     });
+
     expect(dismissSpy).toHaveBeenCalledWith(false);
-    done();
   });
 
-  it("should dismiss the editor when the cancel button is clicked", (done: DoneFn) => {
-    const fixture = TestBed.createComponent(IconEditor);
+  it("should dismiss the editor when the cancel button is clicked", () => {
+    const fixture = TestBed.createComponent(IconEditorComponent);
     const iconEditor = fixture.componentInstance;
     const iconEditorDOM = fixture.nativeElement;
     const emitSpy = spyOn(iconEditor.editMode, "emit");
@@ -238,17 +239,15 @@ describe("IconEditor", () => {
     iconEditorDOM.querySelectorAll(".iconButton")[0].click();
     fixture.detectChanges();
 
-    expect(dismissSpy).toHaveBeenCalled();
+    expect(dismissSpy).toHaveBeenCalledWith();
     expect(emitSpy).toHaveBeenCalledWith(false);
-    done();
   });
 
   it("should set the default values if no value is set", () => {
     const authService = TestBed.inject(AuthService);
     authService.userData.set({
       ...mockAuthedUser,
-      // This shouldn't even be possible but just in case
-      // @ts-ignore
+      // @ts-expect-error - testing an edge case that shouldn't even be possible
       selectedIcon: "",
       iconColours: {
         character: "",
@@ -258,7 +257,7 @@ describe("IconEditor", () => {
       },
     });
 
-    const fixture = TestBed.createComponent(IconEditor);
+    const fixture = TestBed.createComponent(IconEditorComponent);
     const iconEditor = fixture.componentInstance;
 
     expect(iconEditor.iconEditForm.controls.selectedIcon.value).toBe("kitty");

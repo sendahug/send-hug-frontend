@@ -31,7 +31,7 @@
 */
 
 // Angular imports
-import { Component, signal } from "@angular/core";
+import { Component, inject, signal } from "@angular/core";
 import { CommonModule, Location } from "@angular/common";
 import { faArrowAltCircleLeft } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
@@ -49,18 +49,16 @@ interface ErrorMessage {
   standalone: true,
   imports: [CommonModule, FontAwesomeModule],
 })
-export class ErrorPage {
+export class ErrorPageComponent {
+  private location = inject(Location);
   // Error message to display onscreen
-  error = signal<ErrorMessage>({
+  readonly error = signal<ErrorMessage>({
     title: "Sorry!",
-    message: `The page you were looking for doesn\'t exist.`,
+    message: `The page you were looking for doesn't exist.`,
     code: 404,
   });
   // icons
   faArrowAltCircleLeft = faArrowAltCircleLeft;
-
-  // CTOR
-  constructor(private location: Location) {}
 
   /*
   Function Name: goBack()

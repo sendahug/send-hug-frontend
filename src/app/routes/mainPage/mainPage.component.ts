@@ -31,7 +31,7 @@
 */
 
 // Angular imports
-import { Component, WritableSignal, signal } from "@angular/core";
+import { Component, WritableSignal, inject, signal } from "@angular/core";
 import { forkJoin, from, map, switchMap, tap } from "rxjs";
 import { RouterLink } from "@angular/router";
 
@@ -40,32 +40,26 @@ import { ApiClientService } from "@app/services/apiClient.service";
 import { SWManager } from "@app/services/sWManager.service";
 import { type PostGet } from "@app/interfaces/post.interface";
 import { CommonModule } from "@angular/common";
-import { Loader } from "@common/loader/loader.component";
-import { SinglePost } from "@common/post/post.component";
-
-interface MainPageResponse {
-  recent: PostGet[];
-  suggested: PostGet[];
-  success?: boolean;
-}
+import { LoaderComponent } from "@common/loader/loader.component";
+import { PostComponent } from "@common/post/post.component";
+import { type MainPageResponse } from "@app/interfaces/api";
 
 @Component({
   selector: "app-main-page",
   templateUrl: "./mainPage.component.html",
   styleUrl: "./mainPage.component.less",
   standalone: true,
-  imports: [CommonModule, Loader, SinglePost, RouterLink],
+  imports: [CommonModule, LoaderComponent, PostComponent, RouterLink],
 })
-export class MainPage {
-  isLoading = signal(false);
-  newPosts: WritableSignal<PostGet[]> = signal([]);
-  suggestedPosts: WritableSignal<PostGet[]> = signal([]);
+export class MainPageComponent {
+  private apiClient = inject(ApiClientService);
+  private swManager = inject(SWManager);
+  readonly isLoading = signal(false);
+  readonly newPosts: WritableSignal<PostGet[]> = signal([]);
+  readonly suggestedPosts: WritableSignal<PostGet[]> = signal([]);
 
   // CTOR
-  constructor(
-    private apiClient: ApiClientService,
-    private swManager: SWManager,
-  ) {
+  constructor() {
     this.fetchPosts();
   }
 
@@ -81,7 +75,11 @@ export class MainPage {
       .pipe(switchMap(() => this.apiClient.get<MainPageResponse>("")))
       .subscribe((data) => {
         this.updatePostsInterface(data);
-        this.swManager.addFetchedItems("posts", [...data.recent, ...data.suggested], "date");
+        this.swManager.addFetchedItems<PostGet>(
+          "posts",
+          [...data.recent, ...data.suggested],
+          "date",
+        );
       });
   }
 
@@ -109,7 +107,7 @@ export class MainPage {
   }
 
   /**
-   * Updates the main page's interface with the newly fetched data.
+   * Updates the main page's UI with the newly fetched data.
    * @param data - the posts to set as new and suggested posts.
    */
   updatePostsInterface(data: MainPageResponse) {
@@ -122,8 +120,8 @@ export class MainPage {
    * Removes the deleted post from the list of posts.
    * @param postId the ID of the post that was deleted.
    */
-  removeDeletedPost(postId: any) {
-    this.newPosts.set(this.newPosts().filter((post) => post.id != (postId as number)));
-    this.suggestedPosts.set(this.suggestedPosts().filter((post) => post.id != (postId as number)));
+  removeDeletedPost(postId: number) {
+    this.newPosts.set(this.newPosts().filter((post) => post.id != postId));
+    this.suggestedPosts.set(this.suggestedPosts().filter((post) => post.id != postId));
   }
 }

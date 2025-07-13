@@ -1,5 +1,5 @@
 /*
-  App routes
+  hasPermission route guard
   Send a Hug app routing
   ---------------------------------------------------
   MIT License
@@ -34,6 +34,7 @@ import { CanMatchFn, Router } from "@angular/router";
 import { inject } from "@angular/core";
 
 import { AuthService } from "@app/services/auth.service";
+import { getQueryStringFromRouter } from "./common";
 
 /**
  * A guard that checks whether the user has permission to visit a route
@@ -43,14 +44,18 @@ export const hasPermissionGuard: CanMatchFn = (route, segments) => {
   const authService = inject(AuthService);
   const router = inject(Router);
   const routePermission = route.data?.["permission"];
+  // TODO: Do we really need this here? I'm not convinced there'll ever
+  // be a scenario in which this happens here rather than in isAuthed.
+  const queryParamsString = getQueryStringFromRouter(router);
 
   if (!routePermission) return true;
 
   if (authService.canUser(routePermission)) return true;
 
-  const currentPath = segments.map((segment) => segment.toString()).join("/");
+  let currentPath = segments.map((segment) => segment.toString()).join("/");
+  if (queryParamsString) currentPath += `?${queryParamsString}`;
 
-  return router.navigate(["/login"], {
+  return router.navigate(["/"], {
     queryParams: { redirect: currentPath },
   });
 };

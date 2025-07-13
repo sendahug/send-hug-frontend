@@ -43,11 +43,11 @@ import { provideExperimentalZonelessChangeDetection } from "@angular/core";
 import { MockProvider } from "ng-mocks";
 import { BehaviorSubject } from "rxjs";
 
-import { VerifyEmailPage } from "./verifyEmail.component";
+import { VerifyEmailPageComponent } from "./verifyEmail.component";
 import { mockAuthedUser } from "@tests/mockData";
 import { AuthService } from "@app/services/auth.service";
 
-describe("VerifyEmailPage", () => {
+describe("VerifyEmailPageComponent", () => {
   // Before each test, configure testing environment
   beforeEach(() => {
     const MockAuthService = MockProvider(AuthService, {
@@ -61,7 +61,7 @@ describe("VerifyEmailPage", () => {
 
     TestBed.configureTestingModule({
       schemas: [NO_ERRORS_SCHEMA],
-      imports: [CommonModule, VerifyEmailPage],
+      imports: [CommonModule, VerifyEmailPageComponent],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
         provideExperimentalZonelessChangeDetection(),
@@ -73,13 +73,14 @@ describe("VerifyEmailPage", () => {
 
   // Check that the component is created
   it("should create the component", () => {
-    const fixture = TestBed.createComponent(VerifyEmailPage);
+    const fixture = TestBed.createComponent(VerifyEmailPageComponent);
     const verifyEmailPage = fixture.componentInstance;
+
     expect(verifyEmailPage).toBeTruthy();
   });
 
   it("should wait for the user's login to be resolved", () => {
-    const fixture = TestBed.createComponent(VerifyEmailPage);
+    const fixture = TestBed.createComponent(VerifyEmailPageComponent);
     const verifyEmailPage = fixture.componentInstance;
     const verifyEmailPageDOM = fixture.nativeElement;
     const verifySpy = spyOn(verifyEmailPage, "verifyEmail");
@@ -94,13 +95,13 @@ describe("VerifyEmailPage", () => {
     fixture.detectChanges();
 
     expect(verifyEmailPage.loadingAuth()).toBeFalse();
-    expect(verifySpy).toHaveBeenCalled();
+    expect(verifySpy).toHaveBeenCalledWith();
     expect(verifyEmailPageDOM.querySelector("app-loader")).toBeNull();
     expect(verifyEmailPageDOM.querySelector("#logoutBox")).toBeDefined();
   });
 
   it("should verify the email of unverified users", () => {
-    const fixture = TestBed.createComponent(VerifyEmailPage);
+    const fixture = TestBed.createComponent(VerifyEmailPageComponent);
     const verifyEmailPage = fixture.componentInstance;
     verifyEmailPage["authService"].authenticated.set(true);
     verifyEmailPage["authService"].userData.set({ ...mockAuthedUser, emailVerified: false });
@@ -116,7 +117,7 @@ describe("VerifyEmailPage", () => {
   });
 
   it("shouldn't verify the email of verified users", () => {
-    const fixture = TestBed.createComponent(VerifyEmailPage);
+    const fixture = TestBed.createComponent(VerifyEmailPageComponent);
     const verifyEmailPage = fixture.componentInstance;
     verifyEmailPage["authService"].authenticated.set(true);
     verifyEmailPage["authService"].userData.set(mockAuthedUser);
@@ -132,7 +133,7 @@ describe("VerifyEmailPage", () => {
   });
 
   it("should do nothing if the user isn't authenticated", () => {
-    const fixture = TestBed.createComponent(VerifyEmailPage);
+    const fixture = TestBed.createComponent(VerifyEmailPageComponent);
     const verifyEmailPage = fixture.componentInstance;
     verifyEmailPage["authService"].authenticated.set(true);
     verifyEmailPage["authService"].userData.set(undefined);

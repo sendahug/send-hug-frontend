@@ -31,7 +31,7 @@
 */
 
 // Angular imports
-import { Component, output } from "@angular/core";
+import { Component, inject, output } from "@angular/core";
 import { Router } from "@angular/router";
 import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
@@ -49,20 +49,17 @@ import { AlertsService } from "@app/services/alerts.service";
   standalone: true,
   imports: [CommonModule, FontAwesomeModule, ReactiveFormsModule],
 })
-export class SearchForm {
+export class SearchFormComponent {
+  protected itemsService = inject(ItemsService);
+  protected alertsService = inject(AlertsService);
+  private router = inject(Router);
+  private fb = inject(FormBuilder);
   searchForm = this.fb.group({
     searchQuery: this.fb.control("", [Validators.required, Validators.minLength(1)]),
   });
   showForm = output<boolean>();
   // font awesome icons
   faTimes = faTimes;
-
-  constructor(
-    protected itemsService: ItemsService,
-    protected alertsService: AlertsService,
-    private router: Router,
-    private fb: FormBuilder,
-  ) {}
 
   /*
   Function Name: searchApp()

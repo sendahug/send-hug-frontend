@@ -41,7 +41,7 @@ import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { provideExperimentalZonelessChangeDetection } from "@angular/core";
 import { Component } from "@angular/core";
 
-import { PopUp } from "./popUp.component";
+import { PopUpComponent } from "./popUp.component";
 
 // Mock page
 @Component({
@@ -53,9 +53,11 @@ import { PopUp } from "./popUp.component";
     </app-pop-up>
   `,
   standalone: true,
-  imports: [PopUp],
+  imports: [PopUpComponent],
 })
-class MockPage {}
+class MockPageComponent {
+  text = "text";
+}
 
 describe("Popup", () => {
   // Before each test, configure testing environment
@@ -64,7 +66,7 @@ describe("Popup", () => {
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
-      imports: [CommonModule, FontAwesomeModule, MockPage, PopUp],
+      imports: [CommonModule, FontAwesomeModule, MockPageComponent, PopUpComponent],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
         provideExperimentalZonelessChangeDetection(),
@@ -74,17 +76,18 @@ describe("Popup", () => {
 
   // Check that the component is created
   it("should create the component", () => {
-    const fixture = TestBed.createComponent(PopUp);
+    const fixture = TestBed.createComponent(PopUpComponent);
     const popUp = fixture.componentInstance;
+
     expect(popUp).toBeTruthy();
   });
 
   // check tab and tab+shift let the user navigate
   // TODO: Figure out why this test isn't working
   it("should navigate using tab and shift+tab", (done: DoneFn) => {
-    const mockPage = TestBed.createComponent(MockPage);
+    const mockPage = TestBed.createComponent(MockPageComponent);
     const mockPageDOM = mockPage.nativeElement;
-    const popUp: PopUp = mockPage.debugElement.children[0].children[0].componentInstance;
+    const popUp: PopUpComponent = mockPage.debugElement.children[0].children[0].componentInstance;
     const popUpDOM = mockPage.debugElement.children[0].children[0].nativeElement;
     const focusBindedSpy = spyOn(popUp, "checkFocusBinded").and.callThrough();
     mockPage.detectChanges();
@@ -109,7 +112,7 @@ describe("Popup", () => {
       // check the first element has focus
       spies.forEach((spy, index: number) => {
         if (index == 0) {
-          expect(spy).toHaveBeenCalled();
+          expect(spy).toHaveBeenCalledWith();
         } else {
           expect(spy).not.toHaveBeenCalled();
         }
@@ -127,13 +130,13 @@ describe("Popup", () => {
         mockPage.detectChanges();
 
         // check the focus shifted to the next element
-        expect(focusBindedSpy).toHaveBeenCalled();
+        expect(focusBindedSpy).toHaveBeenCalledTimes(1);
         spies.forEach((spy, index: number) => {
           if (index == 0) {
-            expect(spy).toHaveBeenCalled();
+            expect(spy).toHaveBeenCalledWith();
             expect(spy).toHaveBeenCalledTimes(1);
           } else if (index == 1) {
-            expect(spy).toHaveBeenCalled();
+            expect(spy).toHaveBeenCalledWith();
             expect(spy).toHaveBeenCalledTimes(1);
           } else {
             expect(spy).not.toHaveBeenCalled();
@@ -152,28 +155,26 @@ describe("Popup", () => {
         mockPage.detectChanges();
 
         // check the focus shifted to the previous element
-        expect(focusBindedSpy).toHaveBeenCalled();
         expect(focusBindedSpy).toHaveBeenCalledTimes(2);
         spies.forEach((spy, index: number) => {
           if (index == 0) {
-            expect(spy).toHaveBeenCalled();
             expect(spy).toHaveBeenCalledTimes(2);
           } else if (index == 1) {
-            expect(spy).toHaveBeenCalled();
             expect(spy).toHaveBeenCalledTimes(1);
           } else {
             expect(spy).not.toHaveBeenCalled();
           }
         });
-      });
+      })
+      .catch(done.fail);
     done();
   });
 
   // check the focus is trapped
   it("should trap focus in the modal", (done: DoneFn) => {
-    const mockPage = TestBed.createComponent(MockPage);
+    const mockPage = TestBed.createComponent(MockPageComponent);
     const mockPageDOM = mockPage.nativeElement;
-    const popUp: PopUp = mockPage.debugElement.children[0].children[0].componentInstance;
+    const popUp: PopUpComponent = mockPage.debugElement.children[0].children[0].componentInstance;
     const popUpDOM = mockPage.debugElement.children[0].children[0].nativeElement;
     const focusBindedSpy = spyOn(popUp, "checkFocusBinded").and.callThrough();
     mockPage.detectChanges();
@@ -197,7 +198,7 @@ describe("Popup", () => {
     // check the last element has focus
     expect(spies[0]).not.toHaveBeenCalled();
     expect(spies[1]).not.toHaveBeenCalled();
-    expect(spies[2]).toHaveBeenCalled();
+    expect(spies[2]).toHaveBeenCalledWith();
 
     // step 2: check what happens when clicking tab
     // trigger tab event
@@ -210,11 +211,11 @@ describe("Popup", () => {
     mockPage.detectChanges();
 
     // check the focus shifted to the first element
-    expect(focusBindedSpy).toHaveBeenCalled();
-    expect(spies[0]).toHaveBeenCalled();
+    expect(focusBindedSpy).toHaveBeenCalledTimes(1);
+    expect(spies[0]).toHaveBeenCalledWith();
     expect(spies[0]).toHaveBeenCalledTimes(1);
     expect(spies[1]).not.toHaveBeenCalled();
-    expect(spies[2]).toHaveBeenCalled();
+    expect(spies[2]).toHaveBeenCalledWith();
     expect(spies[2]).toHaveBeenCalledTimes(1);
 
     // step 3: check what happens when clicking shift + tab
@@ -228,19 +229,18 @@ describe("Popup", () => {
     mockPage.detectChanges();
 
     // check the focus shifted to the last element
-    expect(focusBindedSpy).toHaveBeenCalled();
     expect(focusBindedSpy).toHaveBeenCalledTimes(2);
-    expect(spies[0]).toHaveBeenCalled();
+    expect(spies[0]).toHaveBeenCalledWith();
     expect(spies[0]).toHaveBeenCalledTimes(1);
     expect(spies[1]).not.toHaveBeenCalled();
-    expect(spies[2]).toHaveBeenCalled();
+    expect(spies[2]).toHaveBeenCalledWith();
     expect(spies[2]).toHaveBeenCalledTimes(2);
     done();
   });
 
   // Check that the event emitter emits false if the user clicks 'exit'
-  it("exits the popup if the user decides not to edit", (done: DoneFn) => {
-    const fixture = TestBed.createComponent(PopUp);
+  it("exits the popup if the user decides not to edit", () => {
+    const fixture = TestBed.createComponent(PopUpComponent);
     const popUp = fixture.componentInstance;
     const popUpDOM = fixture.nativeElement;
     const exitSpy = spyOn(popUp, "exitEdit").and.callThrough();
@@ -253,7 +253,7 @@ describe("Popup", () => {
     popUp.editMode.subscribe((event: boolean) => {
       expect(event).toBeFalse();
     });
-    expect(exitSpy).toHaveBeenCalled();
-    done();
+
+    expect(exitSpy).toHaveBeenCalledWith();
   });
 });

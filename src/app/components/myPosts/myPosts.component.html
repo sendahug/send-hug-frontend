@@ -1,4 +1,4 @@
-<h3 id="newTitle">My Posts</h3>
+<h2 id="newTitle">My Posts</h2>
 
 <app-loader
   *ngIf="isLoading()"
@@ -9,41 +9,41 @@
 <div id="myPosts">
   <!-- If the user has posts, displays them -->
   <div *ngIf="posts().length" role="region">
-    <ul class="itemList" aria-describedby="postsTitle">
-      <app-single-post
-        *ngFor="let post of posts()"
-        [post]="post"
-        [type]="'n'"
-        [containerClass]="'userPost'"
-        (deletedId)="removeDeletedPost($event)"
-      ></app-single-post>
+    <ul class="itemList" aria-describedby="newTitle">
+      <li *ngFor="let post of posts()" class="userPost" aria-describedby="newTitle">
+        <app-single-post
+          [post]="post"
+          [type]="'n'"
+          (deletedId)="removeDeletedPost($event)"
+        ></app-single-post>
+      </li>
     </ul>
 
     <!-- Post pagination -->
     <div class="pagination" role="navigation">
       <button
-        [ngClass]="previousPageButtonClass()"
-        (click)="prevPage()"
         aria-label="previous page of user posts"
+        [ngClass]="previousPageButtonClass()"
         [disabled]="currentPage() <= 1"
+        (click)="prevPage()"
       >
         Previous Page
       </button>
       <div class="pageCount">Page {{ currentPage() }} of {{ totalPages() }}</div>
       <button
-        [ngClass]="nextPageButtonClass()"
-        (click)="nextPage()"
         aria-label="next page of user posts"
+        [ngClass]="nextPageButtonClass()"
         [disabled]="totalPages() <= currentPage()"
+        (click)="nextPage()"
       >
         Next Page
       </button>
     </div>
     <button
-      *ngIf="user() == 'self' || authService.canUser('delete:any-post')"
+      *ngIf="user() === 'self' || authService.canUser('delete:any-post')"
       class="appButton deleteButton"
-      (click)="deleteAllPosts()"
       id="deleteAll"
+      (click)="deleteAllPosts()"
     >
       Delete All Posts
     </button>
@@ -51,8 +51,8 @@
 
   <!-- If the user doesn't have posts, displays an error message -->
   <div *ngIf="!posts().length" class="errorMessage">
-    <div *ngIf="user() == 'self'">You have no published posts. Write your first post now!</div>
-    <div *ngIf="user() == 'other'">The user hasn't published any posts yet.</div>
+    <div *ngIf="user() === 'self'">You have no published posts. Write your first post now!</div>
+    <div *ngIf="user() === 'other'">The user hasn't published any posts yet.</div>
   </div>
 </div>
 
@@ -69,8 +69,10 @@
 
 <item-delete-form
   *ngIf="deleteMode()"
+  [deleteEndpoint]="deleteEndpoint()"
+  [itemType]="itemType"
+  [itemId]="_userId()"
+  [bulkDelete]="true"
   (editMode)="changeMode($event)"
-  [toDelete]="toDelete()"
-  [itemToDelete]="itemToDelete()"
   (deleted)="updatePostsList()"
 ></item-delete-form>

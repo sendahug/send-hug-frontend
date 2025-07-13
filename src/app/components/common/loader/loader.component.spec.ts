@@ -1,5 +1,5 @@
 /*
-	Loader
+	LoaderComponent
 	Send a Hug Component Tests
   ---------------------------------------------------
   MIT License
@@ -39,16 +39,16 @@ import {
 } from "@angular/platform-browser-dynamic/testing";
 import { provideExperimentalZonelessChangeDetection } from "@angular/core";
 
-import { Loader } from "./loader.component";
+import { LoaderComponent } from "./loader.component";
 
-describe("Loader", () => {
+describe("LoaderComponent", () => {
   // Before each test, configure testing environment
   beforeEach(() => {
     TestBed.resetTestEnvironment();
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
-      imports: [Loader],
+      imports: [LoaderComponent],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
         provideExperimentalZonelessChangeDetection(),
@@ -58,30 +58,28 @@ describe("Loader", () => {
 
   // Check that the component is created
   it("should create the component", () => {
-    const fixture = TestBed.createComponent(Loader);
+    const fixture = TestBed.createComponent(LoaderComponent);
     const loader = fixture.componentInstance;
+
     expect(loader).toBeTruthy();
   });
 
   // Check that the component displays a loading message
-  // TODO: Enable this once I figure out a way around Istanbul messing with
-  // the declarations
-  // it("should display a loading message passed in from the parent", (done: DoneFn) => {
-  //   const fixture = TestBed.createComponent(Loader);
-  //   const loader = fixture.componentInstance;
-  //   const loaderDOM = fixture.nativeElement;
-  //   fixture.componentRef.setInput("loadingMessage", "Fetching user data...");
-  //   fixture.detectChanges();
+  it("should display a loading message passed in from the parent", () => {
+    const fixture = TestBed.createComponent(LoaderComponent);
+    const loader = fixture.componentInstance;
+    const loaderDOM = fixture.nativeElement;
+    fixture.componentRef.setInput("loadingMessage", "Fetching user data...");
+    fixture.detectChanges();
 
-  //   expect(loader.loadingMessage()).toBeDefined();
-  //   expect(loader.loadingMessage()).toBe("Fetching user data...");
-  //   expect(loaderDOM.querySelector("#loadingMessage")).toBeTruthy();
-  //   expect(loaderDOM.querySelector("#loadingMessage").textContent).toBe(loader.loadingMessage());
-  //   done();
-  // });
+    expect(loader.loadingMessage()).toBeDefined();
+    expect(loader.loadingMessage()).toBe("Fetching user data...");
+    expect(loaderDOM.querySelector("#loadingMessage")).toBeTruthy();
+    expect(loaderDOM.querySelector("#loadingMessage").textContent).toBe(loader.loadingMessage());
+  });
 
   it("should display a default message if waitingFor is null", () => {
-    const fixture = TestBed.createComponent(Loader);
+    const fixture = TestBed.createComponent(LoaderComponent);
     const loader = fixture.componentInstance;
     const loaderDOM = fixture.nativeElement;
     fixture.detectChanges();

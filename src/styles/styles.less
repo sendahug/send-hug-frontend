@@ -63,6 +63,11 @@ a.appButton {
   color: #6b6b6b;
 }
 
+.nextButton,
+.prevButton {
+  width: 106px;
+}
+
 /* Required field */
 /* Via https://stackoverflow.com/a/11197803 */
 .required:after {
@@ -99,11 +104,25 @@ a.appButton {
   padding: 5px;
   margin: 0;
   font-weight: bold;
+  text-align: center;
 }
 
 /* Hidden items */
 .hidden {
   display: none;
+}
+
+.form-divider {
+  width: 100%;
+  display: block;
+  flex: 1 1 0px;
+  max-width: 100%;
+  height: 0;
+  border: solid;
+  border-width: thin 0 0 0;
+  transition: inherit;
+  opacity: 0.12;
+  min-width: 100%;
 }
 
 body {
@@ -133,9 +152,8 @@ app-nav-menu {
   z-index: 1;
   position: absolute;
   overflow-y: scroll;
-  width: 96%;
-  max-width: 96%;
-  margin-right: 4%;
+  width: 99%;
+  max-width: 99%;
   margin-left: 0;
   margin-top: 10px;
   bottom: 10px;
@@ -151,20 +169,20 @@ app-nav-menu {
 
 /* Breadcrumb area */
 #breadcrumb {
-  width: 40%;
   margin: 0 0 0 6%;
   padding: 5px;
   left: 0;
   right: 0;
-  text-align: left;
+  text-align: center;
   display: flex;
   align-items: center;
-  justify-content: left;
+  justify-content: center;
   white-space: nowrap;
   /* Responsive styling for screens above 800px width */
   @media screen and (min-width: 800px) {
-    width: 90%;
+    width: 70%;
     align-self: center;
+    margin: 0 calc(15% - 5px);
   }
 }
 
@@ -178,6 +196,13 @@ app-nav-menu {
   /* Responsive styling for screens above 800px width */
   @media screen and (min-width: 800px) {
     .fontSize(14);
+  }
+}
+
+#mailboxNav .breadcrumb {
+  /* Responsive styling for screens above 800px width */
+  @media screen and (min-width: 800px) {
+    .fontSize(16);
   }
 }
 
@@ -226,7 +251,7 @@ app-nav-menu {
 // TODO: Move the below elsewhere. Need to refactor quite a bit of code first though.
 /* =================== New Item Page Styling =================== */
 /* New Item title */
-#newItem h3 {
+#newItem h1 {
   .fontSize(24);
   text-align: center;
   color: var(--headlineColour);
@@ -332,13 +357,13 @@ app-nav-menu {
 /* =================== Loader Component Styling =================== */
 /* Via https://www.w3schools.com/howto/howto_css_loader.asp */
 /* Loader text */
-app-loader:not(.header) #loading #loadingMessage {
+app-loader:not(.header) .loading .loadingMessage {
   .fontSize(18);
   color: var(--headlineColour);
 }
 
 /*  Header Message div */
-app-loader.header #loading {
+app-loader.header .loading {
   &:extend(.headerAlerts);
   height: 20px;
   max-height: 20px;
@@ -346,7 +371,7 @@ app-loader.header #loading {
 }
 
 /*  Header Message message */
-app-loader.header #loadingMessage {
+app-loader.header .loadingMessage {
   .fontSize(13);
   color: var(--headlineColour);
   margin: 0;
@@ -363,7 +388,7 @@ app-loader.header #loadingMessage {
 
 /* =================== Search Results Component Styling =================== */
 /* Search Results title */
-app-search-results h2 {
+app-search-results h1 {
   .fontSize(24);
   color: var(--headlineColour);
   text-align: center;
@@ -373,7 +398,7 @@ app-search-results h2 {
 }
 
 /* Users / Posts title */
-app-search-results h3 {
+app-search-results h2 {
   .fontSize(22);
   text-align: center;
   color: var(--headlineColour);

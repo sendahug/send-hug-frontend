@@ -43,21 +43,18 @@ import { AlertConfig, AlertMessage, MessageType } from "@app/interfaces/alert.in
 })
 export class AlertsService {
   // Alert-component variables
-  alertMessage = signal("");
-  shouldDisplayAlert = signal(false);
-  alertType = signal<MessageType>("Success");
-  shouldDisplayReloadBtn = signal(false);
-  shouldDisplayNavBtn = signal(false);
-  navBtnTarget = signal("/");
-  navBtnText = signal("Home Page");
+  readonly alertMessage = signal("");
+  readonly shouldDisplayAlert = signal(false);
+  readonly alertType = signal<MessageType>("Success");
+  readonly shouldDisplayReloadBtn = signal(false);
+  readonly shouldDisplayNavBtn = signal(false);
+  readonly navBtnTarget = signal("/");
+  readonly navBtnText = signal("Home Page");
   // ServiceWorker variables
   waitingServiceWorker: ServiceWorker | undefined;
   isSWRelated = false;
   // offline-related variables
   isOffline = new BehaviorSubject(false);
-
-  // CTOR
-  constructor() {}
 
   /**
    * Create a new alert and display it to the user, including required
@@ -120,7 +117,7 @@ export class AlertsService {
    */
   createSuccessAlert(message: string, config: AlertConfig = {}) {
     // an alert message
-    let alert: AlertMessage = {
+    const alert: AlertMessage = {
       type: "Success",
       message: message,
     };
@@ -138,7 +135,7 @@ export class AlertsService {
   */
   createErrorAlert(err: HttpErrorResponse) {
     // an alert message
-    let alert: AlertMessage = {
+    const alert: AlertMessage = {
       type: "Error",
       message: err.error.message,
     };
@@ -177,7 +174,7 @@ export class AlertsService {
   */
   createSWAlert(worker: ServiceWorker) {
     // set SW-related variables and creates a notification alert
-    let alert: AlertMessage = {
+    const alert: AlertMessage = {
       type: "Notification",
       message: `A new version of the site is available. Click the reload button to update!`,
     };

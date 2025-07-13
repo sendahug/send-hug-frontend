@@ -31,7 +31,16 @@
 */
 
 // Angular imports
-import { Component, OnInit, EventEmitter, Output, signal, computed } from "@angular/core";
+import {
+  Component,
+  OnInit,
+  EventEmitter,
+  Output,
+  signal,
+  computed,
+  AfterViewChecked,
+  inject,
+} from "@angular/core";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import { CommonModule } from "@angular/common";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
@@ -41,13 +50,8 @@ import { RouterLink } from "@angular/router";
 import { AuthService } from "@app/services/auth.service";
 import { NotificationService } from "@app/services/notifications.service";
 import { ApiClientService } from "@app/services/apiClient.service";
-import { Notification } from "@app/interfaces/notification.interface";
-
-interface UpdateNotificationsResponse {
-  success: boolean;
-  updated: Array<number> | "all";
-  read: boolean;
-}
+import { type Notification } from "@app/interfaces/notification.interface";
+import { type UpdateNotificationsResponse } from "@app/interfaces/api";
 
 @Component({
   selector: "app-notifications",
@@ -56,39 +60,38 @@ interface UpdateNotificationsResponse {
   standalone: true,
   imports: [CommonModule, FontAwesomeModule, RouterLink],
 })
-export class NotificationsTab implements OnInit {
+export class NotificationsTabComponent implements OnInit, AfterViewChecked {
+  protected authService = inject(AuthService);
+  protected notificationService = inject(NotificationService);
+  private apiClient = inject(ApiClientService);
   // indicates whether notifications panel is still required
   @Output() NotificationsMode = new EventEmitter<boolean>();
-  focusableElements: any;
+  focusableElements!: NodeListOf<HTMLElement>;
   checkFocusBinded = this.checkFocus.bind(this);
-  currentPage = signal(1);
-  totalPages = signal(1);
-  totalItems = signal(0);
-  previousPageButtonClass = computed(() => ({
+  readonly currentPage = signal(1);
+  readonly totalPages = signal(1);
+  readonly totalItems = signal(0);
+  readonly previousPageButtonClass = computed(() => ({
     "appButton prevButton": true,
     disabled: this.currentPage() <= 1,
   }));
-  nextPageButtonClass = computed(() => ({
+  readonly nextPageButtonClass = computed(() => ({
     "appButton nextButton": true,
     disabled: this.totalPages() <= this.currentPage(),
   }));
-  markAllLabel = computed(() =>
+  readonly markAllLabel = computed(() =>
     this.notificationService.newNotifications() == 0 ? "unread" : "read",
   );
-  displayRead = signal(true);
-  displayReadButtonLabel = computed(() => (this.displayRead() ? "Hide" : "Show"));
-  displayUnread = signal(true);
-  displayUnreadButtonLabel = computed(() => (this.displayUnread() ? "Hide" : "Show"));
-  notifications = signal<Notification[]>([]);
+  readonly displayRead = signal(true);
+  readonly displayReadButtonLabel = computed(() => (this.displayRead() ? "Hide" : "Show"));
+  readonly displayUnread = signal(true);
+  readonly displayUnreadButtonLabel = computed(() => (this.displayUnread() ? "Hide" : "Show"));
+  readonly notifications = signal<Notification[]>([]);
   // icons
   faTimes = faTimes;
 
   // CTOR
-  constructor(
-    protected authService: AuthService,
-    protected notificationService: NotificationService,
-    private apiClient: ApiClientService,
-  ) {
+  constructor() {
     // if the user is authenticated, get all notifications from
     // the last time the user checked them
     this.authService.isUserDataResolved.subscribe((value) => {
@@ -123,7 +126,7 @@ export class NotificationsTab implements OnInit {
   Programmer: Shir Bar Lev.
   */
   ngAfterViewChecked() {
-    let modal = document.getElementById("modalBox");
+    const modal = document.getElementById("modalBox");
     this.focusableElements = modal!.querySelectorAll(`a, button:not([disabled]),
           input:not([disabled]), textarea:not([disabled]), select:not([disabled]),
           details, iframe, object, embed, [tabindex]:not([tabindex="-1"]`);
@@ -310,7 +313,7 @@ export class NotificationsTab implements OnInit {
   Programmer: Shir Bar Lev.
   */
   exitNotifications() {
-    let modal = document.getElementById("modalBox");
+    const modal = document.getElementById("modalBox");
     modal!.removeEventListener("keydown", this.checkFocusBinded);
     document.getElementById("skipLink")?.focus();
     this.NotificationsMode.emit(false);

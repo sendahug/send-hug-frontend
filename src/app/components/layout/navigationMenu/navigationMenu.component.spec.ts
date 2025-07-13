@@ -47,21 +47,22 @@ import { BehaviorSubject, of, Subscription } from "rxjs";
 import { provideExperimentalZonelessChangeDetection, signal } from "@angular/core";
 import { MockComponent, MockProvider } from "ng-mocks";
 import { setViewport } from "@web/test-runner-commands";
+import { By } from "@angular/platform-browser";
 
-import { AppNavMenu } from "./navigationMenu.component";
-import { NotificationsTab } from "@app/components/layout/notifications/notifications.component";
+import { NavigationMenuComponent } from "./navigationMenu.component";
+import { NotificationsTabComponent } from "@app/components/layout/notifications/notifications.component";
 import { AuthService } from "@app/services/auth.service";
 import { SWManager } from "@app/services/sWManager.service";
 import { mockAuthedUser, getMockFirebaseUser } from "@tests/mockData";
 import { ItemsService } from "@app/services/items.service";
 import { NotificationService } from "@app/services/notifications.service";
-import { SearchForm } from "@app/components/layout/searchForm/searchForm.component";
+import { SearchFormComponent } from "@app/components/layout/searchForm/searchForm.component";
 import { AlertsService } from "@app/services/alerts.service";
 
-describe("AppNavMenu", () => {
+describe("NavigationMenuComponent", () => {
   beforeEach(() => {
-    const MockNotificationsTab = MockComponent(NotificationsTab);
-    const MockSearchForm = MockComponent(SearchForm);
+    const MockNotificationsTabComponent = MockComponent(NotificationsTabComponent);
+    const MockSearchFormComponent = MockComponent(SearchFormComponent);
     const MockAuthService = MockProvider(AuthService, {
       authenticated: signal(true),
       userData: signal({ ...mockAuthedUser }),
@@ -92,9 +93,9 @@ describe("AppNavMenu", () => {
         RouterOutlet,
         RouterLink,
         FontAwesomeModule,
-        MockNotificationsTab,
-        AppNavMenu,
-        MockSearchForm,
+        MockNotificationsTabComponent,
+        NavigationMenuComponent,
+        MockSearchFormComponent,
       ],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
@@ -108,25 +109,35 @@ describe("AppNavMenu", () => {
     }).compileComponents();
   });
 
+  afterEach(async () => {
+    // Reset the viewport to full size after each test
+    // This ensures the viewport is in the right size for the tests
+    // that require the full navigation menu
+    await setViewport({ width: 780, height: 640 });
+  });
+
   // Check that the app is created
   it("should create the menu", () => {
-    const fixture = TestBed.createComponent(AppNavMenu);
+    const fixture = TestBed.createComponent(NavigationMenuComponent);
     const navMenu = fixture.componentInstance;
+
     expect(navMenu).toBeTruthy();
   });
 
   // Check that there are valid navigation links
   it("should contain valid navigation links", () => {
-    const fixture = TestBed.createComponent(AppNavMenu);
+    const fixture = TestBed.createComponent(NavigationMenuComponent);
     const navMenuHtml = fixture.debugElement.nativeElement;
+    fixture.detectChanges();
 
-    let navMenu = navMenuHtml.querySelector("#navLinks");
+    const navMenu = navMenuHtml.querySelector("#navLinks");
+
     expect(navMenu).toBeDefined();
     expect(navMenu!.children.length).not.toBe(0);
 
     // check each navingation item to ensure it contains a link
-    let navMenuItems = navMenu!.children;
-    for (var i = 0; i < navMenuItems.length; i++) {
+    const navMenuItems = navMenu!.children;
+    for (let i = 0; i < navMenuItems.length; i++) {
       expect(navMenuItems.item(i)).toBeDefined();
       expect(navMenuItems!.item(i)!.children.item(0)!.getAttribute("href")).toBeDefined();
       expect(navMenuItems!.item(i)!.children.item(0)!.getAttribute("href")).not.toBe("");
@@ -135,7 +146,7 @@ describe("AppNavMenu", () => {
 
   // Check that the notifications tab is hidden
   it("has hidden notifications tab", () => {
-    const fixture = TestBed.createComponent(AppNavMenu);
+    const fixture = TestBed.createComponent(NavigationMenuComponent);
     const navMenu = fixture.componentInstance;
     const navMenuHtml = fixture.debugElement.nativeElement;
     fixture.detectChanges();
@@ -146,7 +157,7 @@ describe("AppNavMenu", () => {
 
   // Check that the notifications tab appears when the button is clicked
   it("has a notifications tab that appears when its icon is clicked", () => {
-    const fixture = TestBed.createComponent(AppNavMenu);
+    const fixture = TestBed.createComponent(NavigationMenuComponent);
     fixture.detectChanges();
     const navMenu = fixture.componentInstance;
     const navMenuHtml = fixture.nativeElement;
@@ -166,7 +177,7 @@ describe("AppNavMenu", () => {
 
   // Check that the search panel is hidden
   it("has hidden search", () => {
-    const fixture = TestBed.createComponent(AppNavMenu);
+    const fixture = TestBed.createComponent(NavigationMenuComponent);
     const navMenu = fixture.componentInstance;
     const navMenuHtml = fixture.debugElement.nativeElement;
 
@@ -176,7 +187,7 @@ describe("AppNavMenu", () => {
 
   // Check that the search panel appears when the button is clicked
   it("has a search which appears when the icon is clicked", () => {
-    const fixture = TestBed.createComponent(AppNavMenu);
+    const fixture = TestBed.createComponent(NavigationMenuComponent);
     fixture.detectChanges();
     const navMenu = fixture.componentInstance;
     const navMenuHtml = fixture.nativeElement;
@@ -197,7 +208,7 @@ describe("AppNavMenu", () => {
 
   // Check that the font size panel is hidden
   it("should have a hidden font size panel", () => {
-    const fixture = TestBed.createComponent(AppNavMenu);
+    const fixture = TestBed.createComponent(NavigationMenuComponent);
     const navMenu = fixture.componentInstance;
     const navMenuHtml = fixture.debugElement.nativeElement;
 
@@ -207,7 +218,7 @@ describe("AppNavMenu", () => {
 
   // Check that the font size panel appears when the button is clicked
   it("has a font size which appears when the icon is clicked", () => {
-    const fixture = TestBed.createComponent(AppNavMenu);
+    const fixture = TestBed.createComponent(NavigationMenuComponent);
     fixture.detectChanges();
     const navMenu = fixture.componentInstance;
     const navMenuHtml = fixture.nativeElement;
@@ -228,7 +239,7 @@ describe("AppNavMenu", () => {
 
   // Check that the font size panel is hidden when the button is clicked again
   it("has a font size which is hidden when the icon is clicked again", () => {
-    const fixture = TestBed.createComponent(AppNavMenu);
+    const fixture = TestBed.createComponent(NavigationMenuComponent);
     fixture.detectChanges();
     const navMenu = fixture.componentInstance;
     const navMenuHtml = fixture.nativeElement;
@@ -255,7 +266,7 @@ describe("AppNavMenu", () => {
 
   // Check that the font size panel changes the site's font size
   it("has a font size that changes according to user choice", (done: DoneFn) => {
-    const fixture = TestBed.createComponent(AppNavMenu);
+    const fixture = TestBed.createComponent(NavigationMenuComponent);
     fixture.detectChanges();
     const navMenu = fixture.componentInstance;
     const navMenuHtml = fixture.nativeElement;
@@ -277,7 +288,7 @@ describe("AppNavMenu", () => {
 
       // check the font size was changed
       expect(document.querySelector("html")!.style.fontSize).toBe("75%");
-      expect(menuSpy).toHaveBeenCalled();
+      expect(menuSpy).toHaveBeenCalledWith();
       expect(menuSpy).toHaveBeenCalledTimes(1);
       resolve(undefined);
       // step 3: smaller size
@@ -289,7 +300,6 @@ describe("AppNavMenu", () => {
 
         // check the font size was changed
         expect(document.querySelector("html")!.style.fontSize).toBe("87.5%");
-        expect(menuSpy).toHaveBeenCalled();
         expect(menuSpy).toHaveBeenCalledTimes(2);
         // step 4: regular size
       })
@@ -300,7 +310,6 @@ describe("AppNavMenu", () => {
 
         // check the font size was changed
         expect(document.querySelector("html")!.style.fontSize).toBe("100%");
-        expect(menuSpy).toHaveBeenCalled();
         expect(menuSpy).toHaveBeenCalledTimes(3);
         // step 5: larger size
       })
@@ -311,7 +320,6 @@ describe("AppNavMenu", () => {
 
         // check the font size was changed
         expect(document.querySelector("html")!.style.fontSize).toBe("150%");
-        expect(menuSpy).toHaveBeenCalled();
         expect(menuSpy).toHaveBeenCalledTimes(4);
         // step 6: largest size
       })
@@ -322,73 +330,72 @@ describe("AppNavMenu", () => {
 
         // check the font size was changed
         expect(document.querySelector("html")!.style.fontSize).toBe("200%");
-        expect(menuSpy).toHaveBeenCalled();
         expect(menuSpy).toHaveBeenCalledTimes(5);
         done();
-      });
+      })
+      .catch(done.fail);
   });
 
   // check the menu is shown if the screen is wide enough
   it("should show the menu if the screen is wide enough", async () => {
-    const fixture = TestBed.createComponent(AppNavMenu);
+    const fixture = TestBed.createComponent(NavigationMenuComponent);
     const navMenu = fixture.componentInstance;
     const navMenuHtml = fixture.nativeElement;
-    await setViewport({ width: 700, height: 640 });
+    await setViewport({ width: 780, height: 640 });
     fixture.detectChanges();
 
     expect(navMenu.showMenu()).toBeTrue();
-    expect(navMenuHtml.querySelector("#navLinks")!.classList).not.toContain("hidden");
+    expect(navMenuHtml.querySelector("#navLinks")!.classList).not.toBeNull();
     expect(navMenuHtml.querySelector("#menuBtn")!.classList).toContain("hidden");
   });
 
-  // TODO: Figure out why this isn't working in CI.
   // check the menu is hidden if the screen isn't wide enough
-  // it("should hide the menu if the screen isn't wide enough", async () => {
-  //   const fixture = TestBed.createComponent(AppNavMenu);
-  //   const navMenu = fixture.componentInstance;
-  //   const navMenuHtml = fixture.nativeElement;
-  //   await setViewport({ width: 600, height: 640 });
-  //   fixture.detectChanges();
+  it("should hide the menu if the screen isn't wide enough", async () => {
+    const fixture = TestBed.createComponent(NavigationMenuComponent);
+    const navMenu = fixture.componentInstance;
+    const navMenuHtml = fixture.nativeElement;
+    await setViewport({ width: 600, height: 640 });
+    fixture.detectChanges();
 
-  //   expect(navMenu.showMenu()).toBeFalse();
-  //   expect(navMenuHtml.querySelector("#navLinks")!.classList).toContain("hidden");
-  // });
+    expect(navMenu.showMenu()).toBeFalse();
+    expect(navMenuHtml.querySelector("#navLinks")).toBeNull();
+  });
 
   // check the menu is hidden when clicked again
-  // it("should show/hide the menu when the menu button is clicked", async () => {
-  //   const fixture = TestBed.createComponent(AppNavMenu);
-  //   const navMenu = fixture.componentInstance;
-  //   const navMenuHtml = fixture.nativeElement;
-  //   await setViewport({ width: 600, height: 640 });
-  //   fixture.detectChanges();
+  it("should show/hide the menu when the menu button is clicked", async () => {
+    const fixture = TestBed.createComponent(NavigationMenuComponent);
+    const navMenu = fixture.componentInstance;
+    const navMenuHtml = fixture.nativeElement;
+    await setViewport({ width: 600, height: 640 });
+    fixture.detectChanges();
 
-  //   // pre-click check
-  //   expect(navMenu.showMenu()).toBeFalse();
-  //   expect(navMenuHtml.querySelector("#navLinks")!.classList).toContain("hidden");
-  //   expect(navMenuHtml.querySelector("#menuBtn")!.classList).not.toContain("hidden");
+    // pre-click check
+    expect(navMenu.showMenu()).toBeFalse();
+    expect(navMenuHtml.querySelector("#navLinks")).toBeNull();
+    expect(navMenuHtml.querySelector("#menuBtn")!.classList).not.toContain("hidden");
 
-  //   // trigger click
-  //   navMenuHtml.querySelector("#menuBtn").click();
-  //   fixture.detectChanges();
+    // trigger click
+    navMenuHtml.querySelector("#menuBtn").click();
+    fixture.detectChanges();
 
-  //   // post-click check
-  //   expect(navMenu.showMenu()).toBeTrue();
-  //   expect(navMenuHtml.querySelector("#navLinks")!.classList).not.toContain("hidden");
-  //   expect(navMenuHtml.querySelector("#menuBtn")!.classList).not.toContain("hidden");
+    // post-click check
+    expect(navMenu.showMenu()).toBeTrue();
+    expect(navMenuHtml.querySelector("#navLinks")).not.toBeNull();
+    expect(navMenuHtml.querySelector("#menuBtn")!.classList).not.toContain("hidden");
 
-  //   // trigger another click
-  //   navMenuHtml.querySelector("#menuBtn").click();
-  //   fixture.detectChanges();
+    // trigger another click
+    navMenuHtml.querySelector("#menuBtn").click();
+    fixture.detectChanges();
 
-  //   // post-click check
-  //   expect(navMenu.showMenu()).toBeFalse();
-  //   expect(navMenuHtml.querySelector("#navLinks")!.classList).toContain("hidden");
-  //   expect(navMenuHtml.querySelector("#menuBtn")!.classList).not.toContain("hidden");
-  // });
+    // post-click check
+    expect(navMenu.showMenu()).toBeFalse();
+    expect(navMenuHtml.querySelector("#navLinks")).toBeNull();
+    expect(navMenuHtml.querySelector("#menuBtn")!.classList).not.toContain("hidden");
+  });
 
   // should hide the nav menu if it gets too long
   it("changeTextSize - should hide nav menu if it gets too long", () => {
-    const fixture = TestBed.createComponent(AppNavMenu);
+    const fixture = TestBed.createComponent(NavigationMenuComponent);
     const navMenu = fixture.componentInstance;
     const navMenuHtml = fixture.nativeElement;
     const checkSpy = spyOn(navMenu, "checkMenuSize").and.callThrough();
@@ -402,14 +409,14 @@ describe("AppNavMenu", () => {
     navMenu.changeTextSize("largest");
     fixture.detectChanges();
 
-    expect(checkSpy).toHaveBeenCalled();
-    expect(navLinks.classList).toContain("hidden");
+    expect(checkSpy).toHaveBeenCalledWith();
+    expect(navMenuHtml.querySelector("#navLinks")).toBeNull();
     expect(navMenuHtml.querySelector("#menuBtn").classList).not.toContain("hidden");
   });
 
   // should hide the menu if it gets too long and show it again if it's not too long
   it("should show the menu again if it's not too long again", () => {
-    const fixture = TestBed.createComponent(AppNavMenu);
+    const fixture = TestBed.createComponent(NavigationMenuComponent);
     const navMenu = fixture.componentInstance;
     const navMenuHtml = fixture.nativeElement;
     const checkSpy = spyOn(navMenu, "checkMenuSize").and.callThrough();
@@ -430,7 +437,7 @@ describe("AppNavMenu", () => {
     navMenu.changeTextSize("smaller");
     fixture.detectChanges();
 
-    expect(checkSpy).toHaveBeenCalled();
+    expect(checkSpy).toHaveBeenCalledWith();
     expect(navLinks.classList).not.toContain("hidden");
     expect(navMenu.showMenu()).toBeTrue();
   });
@@ -440,7 +447,7 @@ describe("AppNavMenu", () => {
     MockAuthService.userData.set({ ...mockAuthedUser, emailVerified: false });
     const verifySpy = spyOn(MockAuthService, "sendVerificationEmail");
 
-    const fixture = TestBed.createComponent(AppNavMenu);
+    const fixture = TestBed.createComponent(NavigationMenuComponent);
     const componentHtml = fixture.debugElement.nativeElement;
     fixture.detectChanges();
 
@@ -449,7 +456,7 @@ describe("AppNavMenu", () => {
     componentHtml.querySelector("#notVerified").querySelector(".link").click();
     fixture.detectChanges();
 
-    expect(verifySpy).toHaveBeenCalled();
+    expect(verifySpy).toHaveBeenCalledWith();
   });
 
   it("should sign out", () => {
@@ -459,7 +466,7 @@ describe("AppNavMenu", () => {
       getMockFirebaseUser(),
     );
 
-    const fixture = TestBed.createComponent(AppNavMenu);
+    const fixture = TestBed.createComponent(NavigationMenuComponent);
     const component = fixture.componentInstance;
     const componentHtml = fixture.debugElement.nativeElement;
     const signOutRedirectSpy = spyOn(component, "signOutAndRedirect").and.callThrough();
@@ -468,13 +475,13 @@ describe("AppNavMenu", () => {
     fixture.detectChanges();
 
     expect(componentHtml.querySelector("#signOutNavItem")).toBeDefined();
-    expect(firebaseUserSpy).toHaveBeenCalled();
+    expect(firebaseUserSpy).toHaveBeenCalledWith();
 
     componentHtml.querySelector("#signOutNavItem").click();
     fixture.detectChanges();
 
-    expect(signOutRedirectSpy).toHaveBeenCalled();
-    expect(signOutSpy).toHaveBeenCalled();
+    expect(signOutRedirectSpy).toHaveBeenCalledWith();
+    expect(signOutSpy).toHaveBeenCalledWith();
     expect(routerSpy).toHaveBeenCalledWith(["/"]);
   });
 
@@ -482,7 +489,7 @@ describe("AppNavMenu", () => {
     const alertsService = TestBed.inject(AlertsService);
     alertsService.isOffline.next(true);
 
-    const fixture = TestBed.createComponent(AppNavMenu);
+    const fixture = TestBed.createComponent(NavigationMenuComponent);
     const componentHtml = fixture.debugElement.nativeElement;
     fixture.detectChanges();
 
@@ -494,11 +501,36 @@ describe("AppNavMenu", () => {
     const alertsService = TestBed.inject(AuthService);
     alertsService.userData.set({ ...mockAuthedUser, emailVerified: false });
 
-    const fixture = TestBed.createComponent(AppNavMenu);
+    const fixture = TestBed.createComponent(NavigationMenuComponent);
     const componentHtml = fixture.debugElement.nativeElement;
     fixture.detectChanges();
 
     expect(componentHtml.querySelector("#notVerified")).toBeDefined();
     expect(componentHtml.querySelector("#headerBanner").children.length).toBe(1);
+  });
+
+  it("closes the navigation menu", () => {
+    const fixture = TestBed.createComponent(NavigationMenuComponent);
+    const navMenu = fixture.componentInstance;
+    const navMenuHtml = fixture.debugElement.nativeElement;
+    fixture.detectChanges();
+
+    navMenu.showNotifications.set(true);
+    const changeSpy = spyOn(navMenu, "changeMode").and.callThrough();
+    fixture.detectChanges();
+
+    // check the menu shows
+    expect(navMenuHtml.querySelector("app-notifications")).toBeDefined();
+
+    // emit the close event
+    const popup = fixture.debugElement.query(By.css("app-notifications"))
+      .componentInstance as NotificationsTabComponent;
+    popup.NotificationsMode.emit(false);
+    fixture.detectChanges();
+
+    // check it was closed
+    expect(changeSpy).toHaveBeenCalledWith(false);
+    expect(navMenu.showNotifications()).toBeFalse();
+    expect(navMenuHtml.querySelector("app-notifications")).toBeNull();
   });
 });

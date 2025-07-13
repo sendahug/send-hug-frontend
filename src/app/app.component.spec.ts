@@ -53,15 +53,15 @@ import { AuthService } from "@app/services/auth.service";
 import { SWManager } from "@app/services/sWManager.service";
 import { NotificationService } from "./services/notifications.service";
 import { mockAuthedUser } from "@tests/mockData";
-import { AppAlert } from "./components/appAlert/appAlert.component";
+import { AppAlertComponent } from "./components/appAlert/appAlert.component";
 import { AlertsService } from "@app/services/alerts.service";
-import { AppNavMenu } from "./components/layout/navigationMenu/navigationMenu.component";
+import { NavigationMenuComponent } from "./components/layout/navigationMenu/navigationMenu.component";
 import { TeleportService } from "./services/teleport.service";
 
 describe("AppComponent", () => {
   beforeEach(() => {
-    const MockNavBar = MockComponent(AppNavMenu);
-    const MockAppAlert = MockComponent(AppAlert);
+    const MockNavBar = MockComponent(NavigationMenuComponent);
+    const MockAppAlertComponent = MockComponent(AppAlertComponent);
     const MockAuthService = MockProvider(AuthService, {
       authenticated: signal(true),
       userData: signal({ ...mockAuthedUser }),
@@ -85,7 +85,14 @@ describe("AppComponent", () => {
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
-      imports: [CommonModule, RouterOutlet, RouterLink, MockAppAlert, MockNavBar, AppComponent],
+      imports: [
+        CommonModule,
+        RouterOutlet,
+        RouterLink,
+        MockAppAlertComponent,
+        MockNavBar,
+        AppComponent,
+      ],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
         provideExperimentalZonelessChangeDetection(),
@@ -102,6 +109,7 @@ describe("AppComponent", () => {
   it("should create the app", () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
+
     expect(app).toBeTruthy();
   });
 
@@ -116,7 +124,7 @@ describe("AppComponent", () => {
     const alertSpy = spyOn(alertsService, "createAlert");
     TestBed.createComponent(AppComponent);
 
-    expect(authSpy).toHaveBeenCalled();
+    expect(authSpy).toHaveBeenCalledWith();
     expect(alertSpy).toHaveBeenCalledWith(
       {
         type: "Error",
@@ -140,7 +148,7 @@ describe("AppComponent", () => {
     const alertSpy = spyOn(alertsService, "createAlert");
     TestBed.createComponent(AppComponent);
 
-    expect(authSpy).toHaveBeenCalled();
+    expect(authSpy).toHaveBeenCalledWith();
     expect(alertSpy).toHaveBeenCalledWith({
       type: "Error",
       message: `An error occurred. ERROR!!!`,
@@ -167,11 +175,11 @@ describe("AppComponent", () => {
 
     tick();
 
-    expect(authSpy).toHaveBeenCalled();
-    expect(checkStateSpy).toHaveBeenCalled();
-    expect(getSubscriptionSpy).toHaveBeenCalled();
-    expect(startRefreshSpy).toHaveBeenCalled();
-    expect(getNotificationsSpy).toHaveBeenCalled();
+    expect(authSpy).toHaveBeenCalledWith();
+    expect(checkStateSpy).toHaveBeenCalledWith(true);
+    expect(getSubscriptionSpy).toHaveBeenCalledWith();
+    expect(startRefreshSpy).toHaveBeenCalledWith(mockAuthedUser.refreshRate);
+    expect(getNotificationsSpy).toHaveBeenCalledWith();
   }));
 
   it("should check for a logged in user - don't enable push and auto-refresh", fakeAsync(() => {
@@ -192,8 +200,8 @@ describe("AppComponent", () => {
 
     tick();
 
-    expect(authSpy).toHaveBeenCalled();
-    expect(checkStateSpy).toHaveBeenCalled();
+    expect(authSpy).toHaveBeenCalledWith();
+    expect(checkStateSpy).toHaveBeenCalledWith(false);
     expect(getSubscriptionSpy).not.toHaveBeenCalled();
     expect(startRefreshSpy).not.toHaveBeenCalled();
   }));
@@ -215,8 +223,8 @@ describe("AppComponent", () => {
 
     tick(100);
 
-    expect(authSpy).toHaveBeenCalled();
-    expect(checkStateSpy).toHaveBeenCalled();
+    expect(authSpy).toHaveBeenCalledWith();
+    expect(checkStateSpy).toHaveBeenCalledWith(true);
     expect(getSubscriptionSpy).not.toHaveBeenCalled();
   }));
 
@@ -243,8 +251,8 @@ describe("AppComponent", () => {
 
     tick();
 
-    expect(authSpy).toHaveBeenCalled();
-    expect(navigateSpy).toHaveBeenCalledWith(["/test"]);
+    expect(authSpy).toHaveBeenCalledWith();
+    expect(navigateSpy).toHaveBeenCalledWith(["/test"], { queryParams: {} });
     expect(paramMapSpy).toHaveBeenCalledWith("redirect");
   }));
 
@@ -253,9 +261,10 @@ describe("AppComponent", () => {
     const createSpy = spyOn(teleportService, "createTeleportTarget");
 
     const fixture = TestBed.createComponent(AppComponent);
+    const component = fixture.componentInstance;
     fixture.detectChanges();
 
-    expect(createSpy).toHaveBeenCalled();
+    expect(createSpy).toHaveBeenCalledWith("modalContainer", component.modalContainer);
   });
 
   // check the 'share' button is hidden
@@ -273,7 +282,7 @@ describe("AppComponent", () => {
   });
 
   // check the share method is called when the button is clicked
-  it("should call the share method when the button is clicked", (done: DoneFn) => {
+  it("should call the share method when the button is clicked", () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     const component = fixture.componentInstance;
@@ -286,7 +295,6 @@ describe("AppComponent", () => {
     componentHtml.querySelector("#siteFooter").querySelectorAll(".textlessButton")[0].click();
     fixture.detectChanges();
 
-    expect(shareSpy).toHaveBeenCalled();
-    done();
+    expect(shareSpy).toHaveBeenCalledWith();
   });
 });

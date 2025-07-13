@@ -33,17 +33,17 @@
 import { Routes } from "@angular/router";
 
 // Routes
-// MainPage is the initial thing users see so I left it as a static import
-// ErrorPage and SearchResults seem useful to keep static for app functionality
-import { MainPage } from "./routes/mainPage/mainPage.component";
-import { ErrorPage } from "./routes/errorPage/errorPage.component";
-import { SearchResults } from "./routes/searchResults/searchResults.component";
+// MainPageComponent is the initial thing users see so I left it as a static import
+// ErrorPageComponent and SearchResultsComponent seem useful to keep static for app functionality
+import { MainPageComponent } from "./routes/mainPage/mainPage.component";
+import { ErrorPageComponent } from "./routes/errorPage/errorPage.component";
+import { SearchResultsComponent } from "./routes/searchResults/searchResults.component";
 // Guards
 import { isAuthedGuard } from "./guards/isAuthed.guard";
 import { hasPermissionGuard } from "./guards/hasPermission.guard";
 
 export const routes: Routes = [
-  { path: "", component: MainPage, data: { name: "Home Page" } },
+  { path: "", component: MainPageComponent, data: { name: "Home Page" } },
   {
     path: "user",
     canMatch: [isAuthedGuard],
@@ -51,12 +51,14 @@ export const routes: Routes = [
       {
         path: "",
         pathMatch: "prefix",
-        loadComponent: () => import("./routes/userPage/userPage.component").then((c) => c.UserPage),
+        loadComponent: () =>
+          import("./routes/userPage/userPage.component").then((c) => c.UserPageComponent),
       },
       {
         path: ":id",
         pathMatch: "prefix",
-        loadComponent: () => import("./routes/userPage/userPage.component").then((c) => c.UserPage),
+        loadComponent: () =>
+          import("./routes/userPage/userPage.component").then((c) => c.UserPageComponent),
       },
     ],
     data: { name: "User Page", mapRoutes: [{ path: "", name: "Your Page" }] },
@@ -64,40 +66,10 @@ export const routes: Routes = [
   {
     path: "messages",
     canMatch: [isAuthedGuard],
-    children: [
-      { path: "", pathMatch: "prefix", redirectTo: "inbox" },
-      {
-        path: "inbox",
-        pathMatch: "prefix",
-        loadComponent: () =>
-          import("./routes/messages/messages.component").then((c) => c.AppMessaging),
-      },
-      {
-        path: "outbox",
-        pathMatch: "prefix",
-        loadComponent: () =>
-          import("./routes/messages/messages.component").then((c) => c.AppMessaging),
-      },
-      {
-        path: "threads",
-        pathMatch: "prefix",
-        loadComponent: () =>
-          import("./routes/messages/messages.component").then((c) => c.AppMessaging),
-      },
-      {
-        path: "thread/:id",
-        pathMatch: "prefix",
-        loadComponent: () =>
-          import("./routes/messages/messages.component").then((c) => c.AppMessaging),
-      },
-    ],
+    loadComponent: () =>
+      import("./routes/messages/messages.component").then((c) => c.AppMessagesComponent),
     data: {
       name: "Mailbox",
-      mapRoutes: [
-        { path: "inbox", name: "Inbox" },
-        { path: "outbox", name: "Outbox" },
-        { path: "threads", name: "Threads" },
-      ],
     },
   },
   {
@@ -107,12 +79,14 @@ export const routes: Routes = [
       {
         path: "Post",
         pathMatch: "prefix",
-        loadComponent: () => import("./routes/newItem/newItem.component").then((c) => c.NewItem),
+        loadComponent: () =>
+          import("./routes/newItem/newItem.component").then((c) => c.NewItemComponent),
       },
       {
         path: "Message",
         pathMatch: "prefix",
-        loadComponent: () => import("./routes/newItem/newItem.component").then((c) => c.NewItem),
+        loadComponent: () =>
+          import("./routes/newItem/newItem.component").then((c) => c.NewItemComponent),
       },
     ],
     data: {
@@ -129,12 +103,14 @@ export const routes: Routes = [
       {
         path: "New",
         pathMatch: "prefix",
-        loadComponent: () => import("./routes/fullList/fullList.component").then((c) => c.FullList),
+        loadComponent: () =>
+          import("./routes/fullList/fullList.component").then((c) => c.FullListComponent),
       },
       {
         path: "Suggested",
         pathMatch: "prefix",
-        loadComponent: () => import("./routes/fullList/fullList.component").then((c) => c.FullList),
+        loadComponent: () =>
+          import("./routes/fullList/fullList.component").then((c) => c.FullListComponent),
       },
     ],
     data: {
@@ -147,13 +123,14 @@ export const routes: Routes = [
   },
   {
     path: "about",
-    loadComponent: () => import("./routes/aboutApp/aboutApp.component").then((c) => c.AboutApp),
+    loadComponent: () =>
+      import("./routes/aboutApp/aboutApp.component").then((c) => c.AboutAppComponent),
     data: { name: "About Page" },
   },
-  { path: "search", component: SearchResults, data: { name: "Search Results" } },
+  { path: "search", component: SearchResultsComponent, data: { name: "Search Results" } },
   {
     path: "admin",
-    canMatch: [hasPermissionGuard],
+    canMatch: [isAuthedGuard, hasPermissionGuard],
     loadChildren: () => import("./admin/admin.module").then((m) => m.AppAdminModule),
     data: {
       name: "Admin Dashboard",
@@ -169,18 +146,20 @@ export const routes: Routes = [
   {
     path: "settings",
     canMatch: [isAuthedGuard],
-    loadComponent: () => import("./routes/settings/settings.component").then((c) => c.SettingsPage),
+    loadComponent: () =>
+      import("./routes/settings/settings.component").then((c) => c.SettingsPageComponent),
     data: { name: "Settings Page" },
   },
   {
     path: "sitemap",
-    loadComponent: () => import("./routes/siteMap/siteMap.component").then((c) => c.SiteMap),
+    loadComponent: () =>
+      import("./routes/siteMap/siteMap.component").then((c) => c.SiteMapComponent),
     data: { name: "Site Map" },
   },
   {
     path: "support",
     loadComponent: () =>
-      import("./routes/supportPage/supportPage.component").then((c) => c.SupportPage),
+      import("./routes/supportPage/supportPage.component").then((c) => c.SupportPageComponent),
     data: { name: "Support" },
   },
   {
@@ -190,19 +169,25 @@ export const routes: Routes = [
         path: "terms",
         pathMatch: "prefix",
         loadComponent: () =>
-          import("./routes/sitePolicies/sitePolicies.component").then((c) => c.SitePolicies),
+          import("./routes/sitePolicies/sitePolicies.component").then(
+            (c) => c.SitePoliciesComponent,
+          ),
       },
       {
         path: "privacy",
         pathMatch: "prefix",
         loadComponent: () =>
-          import("./routes/sitePolicies/sitePolicies.component").then((c) => c.SitePolicies),
+          import("./routes/sitePolicies/sitePolicies.component").then(
+            (c) => c.SitePoliciesComponent,
+          ),
       },
       {
         path: "cookies",
         pathMatch: "prefix",
         loadComponent: () =>
-          import("./routes/sitePolicies/sitePolicies.component").then((c) => c.SitePolicies),
+          import("./routes/sitePolicies/sitePolicies.component").then(
+            (c) => c.SitePoliciesComponent,
+          ),
       },
     ],
     data: {
@@ -216,20 +201,21 @@ export const routes: Routes = [
   },
   {
     path: "login",
-    loadComponent: () => import("./routes/loginPage/loginPage.component").then((c) => c.LoginPage),
+    loadComponent: () =>
+      import("./routes/loginPage/loginPage.component").then((c) => c.LoginPageComponent),
     data: { name: "Login Page" },
   },
   {
     path: "signup",
     loadComponent: () =>
-      import("./routes/signUpPage/signUpPage.component").then((c) => c.SignUpPage),
+      import("./routes/signUpPage/signUpPage.component").then((c) => c.SignUpPageComponent),
     data: {},
   },
   {
     path: "verify",
     loadComponent: () =>
-      import("./routes/verifyEmail/verifyEmail.component").then((c) => c.VerifyEmailPage),
+      import("./routes/verifyEmail/verifyEmail.component").then((c) => c.VerifyEmailPageComponent),
     data: {},
   },
-  { path: "**", component: ErrorPage, data: { name: "Error Page" } },
+  { path: "**", component: ErrorPageComponent, data: { name: "Error Page" } },
 ];

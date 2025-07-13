@@ -31,7 +31,7 @@
 */
 
 // Angular imports
-import { computed, Injectable, signal } from "@angular/core";
+import { computed, inject, Injectable, signal } from "@angular/core";
 import { HttpClient, HttpErrorResponse, HttpHeaders } from "@angular/common/http";
 
 // Other essential imports
@@ -46,55 +46,52 @@ import {
   tap,
   throwError,
 } from "rxjs";
+import { User as FirebaseUser } from "firebase/auth";
 
 // App-related imports
 import { User } from "@app/interfaces/user.interface";
 import { AlertsService } from "@app/services/alerts.service";
 import { SWManager } from "@app/services/sWManager.service";
 import { FirebaseService } from "./firebase.service";
-
-interface UserUpdateResponse {
-  success: boolean;
-  updated: User;
-}
-
-interface GetUserResponse {
-  success: boolean;
-  user: User;
-}
+import { type GetUserResponse, type UserUpdateResponse } from "@app/interfaces/api";
+import { IDBUser } from "@app/interfaces/mydb.interface";
 
 export type ToggleButtonOption = "Enable" | "Disable";
+
+interface ExtendedFirebaseUser extends FirebaseUser {
+  jwt: string;
+}
 
 @Injectable({
   providedIn: "root",
 })
 export class AuthService {
+  private Http = inject(HttpClient);
+  private alertsService = inject(AlertsService);
+  private serviceWorkerM = inject(SWManager);
+  private firebase = inject(FirebaseService);
   readonly serverUrl = import.meta.env["VITE_BACKEND_URL"];
   // authentication information
-  authenticated = signal<boolean>(false);
+  readonly authenticated = signal<boolean>(false);
   // user data
-  userData = signal<User | undefined>(undefined);
+  readonly userData = signal<User | undefined>(undefined);
   // shortcuts
-  pushEnabled = computed<boolean>(() => this.userData()?.pushEnabled || false);
-  toggleBtn = computed<ToggleButtonOption>(() => (this.pushEnabled() ? "Disable" : "Enable"));
-  autoRefresh = computed<boolean>(() => this.userData()?.autoRefresh || false);
-  refreshBtn = computed<ToggleButtonOption>(() => (this.autoRefresh() ? "Disable" : "Enable"));
-  refreshRate = computed(() => this.userData()?.refreshRate || 20);
+  readonly pushEnabled = computed<boolean>(() => this.userData()?.pushEnabled || false);
+  readonly toggleBtn = computed<ToggleButtonOption>(() =>
+    this.pushEnabled() ? "Disable" : "Enable",
+  );
+  readonly autoRefresh = computed<boolean>(() => this.userData()?.autoRefresh || false);
+  readonly refreshBtn = computed<ToggleButtonOption>(() =>
+    this.autoRefresh() ? "Disable" : "Enable",
+  );
+  readonly refreshRate = computed(() => this.userData()?.refreshRate || 20);
   // documents whether the user just logged in or they're still logged in following
   // their previous login
-  loggedIn = signal(false);
-  tokenExpired = signal(false);
+  readonly loggedIn = signal(false);
+  readonly tokenExpired = signal(false);
   // Whether the user is in the process of registering
-  isRegistering = signal(false);
+  readonly isRegistering = signal(false);
   isUserDataResolved = new BehaviorSubject(false);
-
-  // CTOR
-  constructor(
-    private Http: HttpClient,
-    private alertsService: AlertsService,
-    private serviceWorkerM: SWManager,
-    private firebase: FirebaseService,
-  ) {}
 
   /**
    * Firebase Methods
@@ -239,7 +236,7 @@ export class AuthService {
   fetchUser(loggedIn: boolean = false): Observable<User> {
     return this.getUserToken()
       .pipe(
-        tap((firebaseUser: any) => {
+        tap((firebaseUser: ExtendedFirebaseUser) => {
           this.loggedIn.set(loggedIn);
 
           // turn the BehaviorSubject dealing with whether user data was resolved to
@@ -257,7 +254,7 @@ export class AuthService {
       )
       .pipe(
         switchMap((firebaseUser) => {
-          return this.Http.get<GetUserResponse>(`${this.serverUrl}/users/all/${firebaseUser.uid}`, {
+          return this.Http.get<GetUserResponse>(`${this.serverUrl}/users/${firebaseUser.uid}`, {
             headers: new HttpHeaders({ Authorization: `Bearer ${firebaseUser.jwt}` }),
           }).pipe(
             map((response) => {
@@ -302,7 +299,7 @@ export class AuthService {
    * Creates the new user in the Send A Hug backend.
    * @returns an observable with the user's details from the back-end.
    */
-  createUser(displayName: string | null) {
+  createUser(displayName: string | null, emailNotificationsEnabled: boolean | null = false) {
     return this.getUserToken()
       .pipe(tap((_firebaseUser) => this.isUserDataResolved.next(false)))
       .pipe(
@@ -313,6 +310,7 @@ export class AuthService {
             {
               firebaseId: firebaseUser.uid,
               displayName: displayName || "user" + Math.round(Math.random() * 100),
+              emailNotificationsEnabled,
             },
             {
               headers: new HttpHeaders({ Authorization: `Bearer ${firebaseUser.jwt}` }),
@@ -366,7 +364,7 @@ export class AuthService {
     }
 
     // adds the user's data to the users store
-    let user = {
+    const user = {
       id: userData.id,
       displayName: userData.displayName,
       receivedH: userData.receivedH,
@@ -381,7 +379,7 @@ export class AuthService {
         item: userData.iconColours?.item,
       },
     };
-    this.serviceWorkerM.addItem("users", user);
+    this.serviceWorkerM.addItem("users", user as IDBUser);
   }
 
   /**
@@ -434,7 +432,7 @@ export class AuthService {
       .pipe(
         switchMap((user) =>
           this.Http.patch<UserUpdateResponse>(
-            `${this.serverUrl}/users/all/${this.userData()?.id}`,
+            `${this.serverUrl}/users/${this.userData()?.id}`,
             updatedUser,
             {
               headers: new HttpHeaders({ Authorization: `Bearer ${user.jwt}` }),
@@ -444,7 +442,7 @@ export class AuthService {
       )
       .subscribe({
         next: (response) => {
-          this.serviceWorkerM.addItem("users", response.updated);
+          this.serviceWorkerM.addItem("users", response.updated as IDBUser);
         },
         error: (err: HttpErrorResponse) => {
           this.alertsService.createErrorAlert(err);

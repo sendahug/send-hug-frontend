@@ -30,9 +30,11 @@
   SOFTWARE.
 */
 
-interface Report {
+export type ReportType = "User" | "Post";
+
+export interface ReportCreate {
   id?: number;
-  type: "User" | "Post";
+  type: ReportType;
   userID: number;
   postID?: number;
   reporter?: number;
@@ -44,9 +46,7 @@ interface Report {
   text?: string;
 }
 
-export interface ReportCreate extends Report {}
-
-export interface ReportGet extends Report {
+export interface ReportGet extends ReportCreate {
   id: number;
   reporter: number;
   dismissed: boolean;
@@ -56,4 +56,10 @@ export interface ReportGet extends Report {
 export interface ReportData {
   userID: number;
   reportID: number;
+  postID?: number;
+}
+
+export interface EditReportUserData {
+  id: number;
+  displayName: string;
 }

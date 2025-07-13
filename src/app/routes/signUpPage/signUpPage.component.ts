@@ -31,7 +31,7 @@
 */
 
 import { CommonModule } from "@angular/common";
-import { Component } from "@angular/core";
+import { Component, inject } from "@angular/core";
 import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { Router, RouterLink } from "@angular/router";
 
@@ -45,18 +45,16 @@ import { AuthService } from "@app/services/auth.service";
   standalone: true,
   imports: [ReactiveFormsModule, CommonModule, RouterLink],
 })
-export class SignUpPage {
+export class SignUpPageComponent {
+  private fb = inject(FormBuilder);
+  protected authService = inject(AuthService);
+  private router = inject(Router);
+  private alertsService = inject(AlertsService);
   signUpForm = this.fb.group({
     displayName: ["", [Validators.required, Validators.maxLength(50)]],
     acceptedTerms: [false, [Validators.requiredTrue]],
+    emailNotificationsEnabled: [false],
   });
-
-  constructor(
-    private fb: FormBuilder,
-    protected authService: AuthService,
-    private router: Router,
-    private alertsService: AlertsService,
-  ) {}
 
   /**
    * Creates the user in the Send a Hug back-end.
@@ -89,11 +87,16 @@ export class SignUpPage {
       return;
     }
 
-    this.authService.createUser(this.signUpForm.controls.displayName.value).subscribe({
-      next: (_currentUser) => {
-        this.router.navigate(["/user"]);
-      },
-    });
+    this.authService
+      .createUser(
+        this.signUpForm.controls.displayName.value,
+        this.signUpForm.controls.emailNotificationsEnabled.value,
+      )
+      .subscribe({
+        next: (_currentUser) => {
+          this.router.navigate(["/user"]);
+        },
+      });
   }
 
   /**

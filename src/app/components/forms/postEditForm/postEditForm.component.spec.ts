@@ -42,24 +42,20 @@ import { Observable, of } from "rxjs";
 import { provideExperimentalZonelessChangeDetection, signal } from "@angular/core";
 import { MockProvider } from "ng-mocks";
 
-import { PostEditForm } from "./postEditForm.component";
+import { PostEditFormComponent } from "./postEditForm.component";
 import { type PostGet } from "@app/interfaces/post.interface";
-import { PopUp } from "@common/popUp/popUp.component";
+import { PopUpComponent } from "@common/popUp/popUp.component";
 import { ValidationService } from "@app/services/validation.service";
 import { AdminService } from "@app/services/admin.service";
 import { AuthService } from "@app/services/auth.service";
 import { ApiClientService } from "@app/services/apiClient.service";
 import { TeleportDirective } from "@app/directives/teleport.directive";
-
-interface UpdatePostResult {
-  success: boolean;
-  updatedPost: PostGet;
-  reportId?: number;
-}
+import { type PostAndReportResponse } from "@app/interfaces/api";
+import { type ReportType } from "@app/interfaces/report.interface";
 
 // POST EDIT
 // ==================================================================
-describe("PostEditForm", () => {
+describe("PostEditFormComponent", () => {
   // Before each test, configure testing environment
   beforeEach(() => {
     const MockAdminService = MockProvider(AdminService);
@@ -73,7 +69,13 @@ describe("PostEditForm", () => {
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
-      imports: [ReactiveFormsModule, CommonModule, PopUp, PostEditForm, TeleportDirective],
+      imports: [
+        ReactiveFormsModule,
+        CommonModule,
+        PopUpComponent,
+        PostEditFormComponent,
+        TeleportDirective,
+      ],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
         provideExperimentalZonelessChangeDetection(),
@@ -86,8 +88,9 @@ describe("PostEditForm", () => {
 
   // Check that the component is created
   it("should create the component", () => {
-    const fixture = TestBed.createComponent(PostEditForm);
+    const fixture = TestBed.createComponent(PostEditFormComponent);
     const popUp = fixture.componentInstance;
+
     expect(popUp).toBeTruthy();
   });
 
@@ -97,7 +100,7 @@ describe("PostEditForm", () => {
       (_control) => null,
     );
 
-    const fixture = TestBed.createComponent(PostEditForm);
+    const fixture = TestBed.createComponent(PostEditFormComponent);
     const popUp = fixture.componentInstance;
     const popUpDOM = fixture.nativeElement;
     const originalItem = {
@@ -109,8 +112,8 @@ describe("PostEditForm", () => {
       givenHugs: 0,
       sentHugs: [],
     };
-    popUp.isAdmin = false;
-    popUp.editedItem = originalItem;
+    fixture.componentRef.setInput("editedItem", originalItem);
+    fixture.componentRef.setInput("isAdmin", false);
     const newText = "new text";
     const serverResponse = {
       success: true,
@@ -148,11 +151,73 @@ describe("PostEditForm", () => {
     expect(validateSpy).toHaveBeenCalledWith("post");
     const updatedItem = { ...originalItem };
     updatedItem["text"] = newText;
+
     expect(apiClientSpy).toHaveBeenCalledWith(`posts/${originalItem.id}`, updatedItem);
     expect(updateReportSpy).toHaveBeenCalledWith(null, serverResponse);
     expect(emitSpy).toHaveBeenCalledWith(false);
     expect(alertSpy).toHaveBeenCalledWith("Post 1 was edited.");
     expect(resultSpy).toHaveBeenCalledWith(reportPostResponse);
+  });
+
+  it("should handle errors when editing the post", () => {
+    const validationService = TestBed.inject(ValidationService);
+    const validateSpy = spyOn(validationService, "validateItemAgainst").and.returnValue(
+      (_control) => null,
+    );
+
+    const fixture = TestBed.createComponent(PostEditFormComponent);
+    const popUp = fixture.componentInstance;
+    const popUpDOM = fixture.nativeElement;
+    const originalItem = {
+      id: 1,
+      userId: 4,
+      user: "me",
+      text: "hi",
+      date: new Date(),
+      givenHugs: 0,
+      sentHugs: [],
+    };
+    fixture.componentRef.setInput("editedItem", originalItem);
+    fixture.componentRef.setInput("isAdmin", false);
+    const newText = "new text";
+    const serverResponse = {
+      success: true,
+      updated: {
+        id: 1,
+        userId: 4,
+        user: "me",
+        text: newText,
+        date: new Date(),
+        givenHugs: 0,
+      },
+    };
+    fixture.detectChanges();
+
+    const apiClientSpy = spyOn(popUp["apiClient"], "patch").and.returnValue(of(serverResponse));
+    const updateReportSpy = spyOn(popUp, "updateReportIfNecessary").and.throwError("Error");
+    const emitSpy = spyOn(popUp.editMode, "emit");
+    const resultSpy = spyOn(popUp.updateResult, "emit");
+    const alertSpy = spyOn(popUp["alertService"], "createSuccessAlert");
+    const errorAlertSpy = spyOn(popUp["alertService"], "createAlert");
+
+    popUpDOM.querySelector("#postText").value = newText;
+    popUpDOM.querySelector("#postText").dispatchEvent(new Event("input"));
+    popUpDOM.querySelectorAll(".sendData")[0].click();
+    fixture.detectChanges();
+
+    expect(validateSpy).toHaveBeenCalledWith("post");
+    const updatedItem = { ...originalItem };
+    updatedItem["text"] = newText;
+
+    expect(apiClientSpy).toHaveBeenCalledWith(`posts/${originalItem.id}`, updatedItem);
+    expect(updateReportSpy).toHaveBeenCalledWith(null, serverResponse);
+    expect(emitSpy).not.toHaveBeenCalled();
+    expect(alertSpy).not.toHaveBeenCalled();
+    expect(resultSpy).not.toHaveBeenCalled();
+    expect(errorAlertSpy).toHaveBeenCalledWith({
+      type: "Error",
+      message: "An error occurred: Error: Error",
+    });
   });
 
   it("should send a different message if the report was closed", () => {
@@ -161,16 +226,17 @@ describe("PostEditForm", () => {
       (_control) => null,
     );
 
-    const fixture = TestBed.createComponent(PostEditForm);
+    const fixture = TestBed.createComponent(PostEditFormComponent);
     const popUp = fixture.componentInstance;
     const popUpDOM = fixture.nativeElement;
     const originalItem = { text: "hi", id: 2 } as PostGet;
-    popUp.reportData = {
+    fixture.componentRef.setInput("reportData", {
       reportID: 1,
       postID: 2,
-    };
-    popUp.isAdmin = true;
-    popUp.editedItem = originalItem;
+      userID: 0,
+    });
+    fixture.componentRef.setInput("isAdmin", true);
+    fixture.componentRef.setInput("editedItem", originalItem);
     const newText = "new text";
     const serverResponse = {
       success: true,
@@ -208,12 +274,14 @@ describe("PostEditForm", () => {
     expect(validateSpy).toHaveBeenCalledWith("post");
     const updatedItem = { ...originalItem };
     updatedItem["text"] = newText;
+
     expect(apiClientSpy).toHaveBeenCalledWith(`posts/${originalItem.id}`, updatedItem);
     expect(updateReportSpy).toHaveBeenCalledWith(true, serverResponse);
     expect(emitSpy).toHaveBeenCalledWith(false);
     expect(alertSpy).toHaveBeenCalledWith(
       "Report 1 was closed, and the associated post was edited!",
     );
+
     expect(resultSpy).toHaveBeenCalledWith(reportPostResponse);
   });
 
@@ -223,16 +291,17 @@ describe("PostEditForm", () => {
       (_control) => null,
     );
 
-    const fixture = TestBed.createComponent(PostEditForm);
+    const fixture = TestBed.createComponent(PostEditFormComponent);
     const popUp = fixture.componentInstance;
     const popUpDOM = fixture.nativeElement;
     const originalItem = { text: "hi", id: 2 } as PostGet;
-    popUp.reportData = {
+    fixture.componentRef.setInput("reportData", {
       reportID: 1,
       postID: 2,
-    };
-    popUp.isAdmin = true;
-    popUp.editedItem = originalItem;
+      userID: 0,
+    });
+    fixture.componentRef.setInput("editedItem", originalItem);
+    fixture.componentRef.setInput("isAdmin", true);
     const newText = "new text";
     const serverResponse = {
       success: true,
@@ -270,6 +339,7 @@ describe("PostEditForm", () => {
     expect(validateSpy).toHaveBeenCalledWith("post");
     const updatedItem = { ...originalItem };
     updatedItem["text"] = newText;
+
     expect(apiClientSpy).toHaveBeenCalledWith(`posts/${originalItem.id}`, updatedItem);
     expect(updateReportSpy).toHaveBeenCalledWith(false, serverResponse);
     expect(emitSpy).toHaveBeenCalledWith(false);
@@ -290,15 +360,16 @@ describe("PostEditForm", () => {
       },
     };
 
-    const fixture = TestBed.createComponent(PostEditForm);
+    const fixture = TestBed.createComponent(PostEditFormComponent);
     const popUp = fixture.componentInstance;
     const originalItem = { text: "hi", id: 2 } as PostGet;
-    popUp.reportData = {
+    fixture.componentRef.setInput("reportData", {
       reportID: 2,
       postID: 1,
-    };
-    popUp.isAdmin = true;
-    popUp.editedItem = originalItem;
+      userID: 0,
+    });
+    fixture.componentRef.setInput("editedItem", originalItem);
+    fixture.componentRef.setInput("isAdmin", true);
     const closeReportResponse = {
       success: true,
       updated: {
@@ -308,7 +379,7 @@ describe("PostEditForm", () => {
         closed: true,
         reportReason: "reason",
         date: new Date(),
-        type: "Post" as "Post",
+        type: "Post" as ReportType,
         userID: 4,
         reporter: 1,
       },
@@ -317,21 +388,22 @@ describe("PostEditForm", () => {
       of(closeReportResponse),
     );
 
-    (popUp.updateReportIfNecessary(true, serverResponse) as Observable<UpdatePostResult>).subscribe(
-      {
-        next: (response) => {
-          expect(response).toEqual({
-            success: true,
-            updatedPost: {
-              ...serverResponse.updated,
-            },
-            reportId: 2,
-          });
-          expect(adminServiceSpy).toHaveBeenCalledWith(2, false, 1);
-          done();
-        },
+    (
+      popUp.updateReportIfNecessary(true, serverResponse) as Observable<PostAndReportResponse>
+    ).subscribe({
+      next: (response) => {
+        expect(response).toEqual({
+          success: true,
+          updatedPost: {
+            ...serverResponse.updated,
+          },
+          reportId: 2,
+        });
+
+        expect(adminServiceSpy).toHaveBeenCalledWith(2, false, 1);
+        done();
       },
-    );
+    });
   });
 
   it("should not close the report if the user chooses not to", (done: DoneFn) => {
@@ -347,19 +419,20 @@ describe("PostEditForm", () => {
       },
     };
 
-    const fixture = TestBed.createComponent(PostEditForm);
+    const fixture = TestBed.createComponent(PostEditFormComponent);
     const popUp = fixture.componentInstance;
     const originalItem = { text: "hi", id: 2 } as PostGet;
-    popUp.reportData = {
+    fixture.componentRef.setInput("editedItem", originalItem);
+    fixture.componentRef.setInput("reportData", {
       reportID: 1,
       postID: 2,
-    };
-    popUp.isAdmin = true;
-    popUp.editedItem = originalItem;
+      userID: 0,
+    });
+    fixture.componentRef.setInput("isAdmin", true);
     const adminServiceSpy = spyOn(popUp["adminService"], "closeReport");
 
     (
-      popUp.updateReportIfNecessary(false, serverResponse) as Observable<UpdatePostResult>
+      popUp.updateReportIfNecessary(false, serverResponse) as Observable<PostAndReportResponse>
     ).subscribe({
       next: (response) => {
         expect(response).toEqual({
@@ -369,6 +442,7 @@ describe("PostEditForm", () => {
           },
           reportId: undefined,
         });
+
         expect(adminServiceSpy).not.toHaveBeenCalled();
         done();
       },
@@ -376,12 +450,12 @@ describe("PostEditForm", () => {
   });
 
   it("should not close the report if it's not the admin menu", (done: DoneFn) => {
-    const fixture = TestBed.createComponent(PostEditForm);
+    const fixture = TestBed.createComponent(PostEditFormComponent);
     const popUp = fixture.componentInstance;
     const originalItem = { text: "hi", id: 2 } as PostGet;
-    popUp.reportData = undefined;
-    popUp.isAdmin = false;
-    popUp.editedItem = originalItem;
+    fixture.componentRef.setInput("editedItem", originalItem);
+    fixture.componentRef.setInput("reportData", null);
+    fixture.componentRef.setInput("isAdmin", false);
     const newText = "new text";
     const serverResponse = {
       success: true,
@@ -398,7 +472,7 @@ describe("PostEditForm", () => {
     const adminServiceSpy = spyOn(popUp["adminService"], "closeReport");
 
     (
-      popUp.updateReportIfNecessary(false, serverResponse) as Observable<UpdatePostResult>
+      popUp.updateReportIfNecessary(false, serverResponse) as Observable<PostAndReportResponse>
     ).subscribe({
       next: (response) => {
         expect(response).toEqual({
@@ -408,6 +482,40 @@ describe("PostEditForm", () => {
           },
           reportId: undefined,
         });
+
+        expect(adminServiceSpy).not.toHaveBeenCalled();
+        done();
+      },
+    });
+  });
+
+  it("should not close the report if there's no report data", (done: DoneFn) => {
+    const fixture = TestBed.createComponent(PostEditFormComponent);
+    const popUp = fixture.componentInstance;
+    const originalItem = { text: "hi", id: 2 } as PostGet;
+    fixture.componentRef.setInput("editedItem", originalItem);
+    fixture.componentRef.setInput("reportData", null);
+    fixture.componentRef.setInput("isAdmin", true);
+    const newText = "new text";
+    const serverResponse = {
+      success: true,
+      updated: {
+        id: 1,
+        userId: 4,
+        user: "me",
+        text: newText,
+        date: new Date(),
+        givenHugs: 0,
+      },
+    };
+    fixture.detectChanges();
+    const adminServiceSpy = spyOn(popUp["adminService"], "closeReport");
+
+    (
+      popUp.updateReportIfNecessary(true, serverResponse) as Observable<PostAndReportResponse>
+    ).subscribe({
+      error: (error) => {
+        expect(error).toEqual("No report data provided. Cannot close the report.");
         expect(adminServiceSpy).not.toHaveBeenCalled();
         done();
       },
@@ -420,16 +528,17 @@ describe("PostEditForm", () => {
       (_control) => ({ error: "error" }),
     );
 
-    const fixture = TestBed.createComponent(PostEditForm);
+    const fixture = TestBed.createComponent(PostEditFormComponent);
     const popUp = fixture.componentInstance;
     const popUpDOM = fixture.nativeElement;
     const originalItem = { text: "hi", id: 2 } as PostGet;
-    popUp.reportData = {
+    fixture.componentRef.setInput("editedItem", originalItem);
+    fixture.componentRef.setInput("reportData", {
       reportID: 1,
       postID: 2,
-    };
-    popUp.isAdmin = true;
-    popUp.editedItem = originalItem;
+      userID: 0,
+    });
+    fixture.componentRef.setInput("isAdmin", true);
     const newText = "new text";
     fixture.detectChanges();
 

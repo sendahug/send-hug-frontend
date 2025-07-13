@@ -31,7 +31,7 @@
 */
 
 // Angular imports
-import { Component, OnDestroy, signal, computed } from "@angular/core";
+import { Component, OnDestroy, signal, computed, inject } from "@angular/core";
 import { ActivatedRoute, Router, RouterLink } from "@angular/router";
 import { from, switchMap, tap } from "rxjs";
 import { faGratipay } from "@fortawesome/free-brands-svg-icons";
@@ -40,22 +40,18 @@ import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { CommonModule } from "@angular/common";
 
 // App-related imports
-import { PartialUser, User } from "@app/interfaces/user.interface";
+import { PartialUser, User, OtherUser } from "@app/interfaces/user.interface";
 import { AuthService } from "@app/services/auth.service";
-import { OtherUser } from "@app/interfaces/otherUser.interface";
 import { SWManager } from "@app/services/sWManager.service";
 import { ApiClientService } from "@app/services/apiClient.service";
 import { AlertsService } from "@app/services/alerts.service";
-import { Loader } from "@common/loader/loader.component";
-import { UserIcon } from "@common/userIcon/userIcon.component";
-import { ReportForm } from "@forms/reportForm/reportForm.component";
-import { DisplayNameEditForm } from "@forms/displayNameEditForm/displayNameEditForm.component";
-import { MyPosts } from "@app/components/myPosts/myPosts.component";
-
-interface OtherUserResponse {
-  user: OtherUser;
-  success: boolean;
-}
+import { LoaderComponent } from "@common/loader/loader.component";
+import { UserIconComponent } from "@common/userIcon/userIcon.component";
+import { ReportFormComponent } from "@forms/reportForm/reportForm.component";
+import { DisplayNameEditFormComponent } from "@forms/displayNameEditForm/displayNameEditForm.component";
+import { MyPostsComponent } from "@app/components/myPosts/myPosts.component";
+import { OtherUserResponse } from "@app/interfaces/api";
+import { type ReportType } from "@app/interfaces/report.interface";
 
 @Component({
   selector: "app-user-page",
@@ -63,52 +59,53 @@ interface OtherUserResponse {
   styleUrl: "./userPage.component.less",
   standalone: true,
   imports: [
-    Loader,
-    UserIcon,
+    LoaderComponent,
+    UserIconComponent,
     RouterLink,
     FontAwesomeModule,
     CommonModule,
-    ReportForm,
-    DisplayNameEditForm,
-    MyPosts,
+    ReportFormComponent,
+    DisplayNameEditFormComponent,
+    MyPostsComponent,
   ],
 })
-export class UserPage implements OnDestroy {
-  isLoading = signal(false);
-  isIdbFetchLoading = signal(false);
-  otherUser = signal<OtherUser | undefined>(undefined);
-  displayUser = computed(() => {
+export class UserPageComponent implements OnDestroy {
+  public authService = inject(AuthService);
+  private route = inject(ActivatedRoute);
+  private swManager = inject(SWManager);
+  private apiClient = inject(ApiClientService);
+  private alertsService = inject(AlertsService);
+  private router = inject(Router);
+  readonly isLoading = signal(false);
+  readonly isIdbFetchLoading = signal(false);
+  readonly otherUser = signal<OtherUser | undefined>(undefined);
+  readonly displayUser = computed(() => {
     if (this.otherUser()) {
       return this.otherUser() as OtherUser;
     } else {
       return this.authService.userData() as User;
     }
   });
-  isOtherUserProfile = computed(() => this.otherUser() != undefined);
+  readonly isOtherUserProfile = computed(() => this.otherUser() != undefined);
   // edit popup sub-component variables
-  userToEdit = computed<PartialUser>(() => ({
+  readonly userToEdit = computed<PartialUser>(() => ({
     displayName: this.displayUser().displayName,
     id: this.displayUser().id as number,
   }));
-  editMode = signal(false);
-  reportMode = signal(false);
-  reportedItem = signal<OtherUser | undefined>(undefined);
-  reportType: "User" = "User";
+  readonly editMode = signal(false);
+  readonly reportMode = signal(false);
+  readonly reportedItem = signal<OtherUser | undefined>(undefined);
+  reportType: ReportType = "User";
   // loader sub-component variable
-  loaderClass = computed(() => (!this.isIdbFetchLoading() && this.isLoading() ? "header" : ""));
-  userId = signal<number | undefined>(undefined);
+  readonly loaderClass = computed(() =>
+    !this.isIdbFetchLoading() && this.isLoading() ? "header" : "",
+  );
+  readonly userId = signal<number | undefined>(undefined);
   // icons
   faGratipay = faGratipay;
 
   // CTOR
-  constructor(
-    public authService: AuthService,
-    private route: ActivatedRoute,
-    private swManager: SWManager,
-    private apiClient: ApiClientService,
-    private alertsService: AlertsService,
-    private router: Router,
-  ) {
+  constructor() {
     // if there's a user ID, set the user ID to it
     if (this.route.snapshot.paramMap.get("id")) {
       this.userId.set(Number(this.route.snapshot.paramMap.get("id")));
@@ -157,7 +154,7 @@ export class UserPage implements OnDestroy {
    */
   fetchOtherUsersData() {
     this.fetchOtherUserFromIdb()
-      .pipe(switchMap(() => this.apiClient.get<OtherUserResponse>(`users/all/${this.userId()!}`)))
+      .pipe(switchMap(() => this.apiClient.get<OtherUserResponse>(`users/${this.userId()!}`)))
       .subscribe({
         next: (response) => {
           const user = response.user;
@@ -208,7 +205,7 @@ export class UserPage implements OnDestroy {
    * @param userID the ID of the user.
    */
   sendHug(userID: number) {
-    this.apiClient.post(`users/all/${userID}/hugs`, {}).subscribe({
+    this.apiClient.post(`users/${userID}/hugs`, {}).subscribe({
       next: (_response) => {
         this.otherUser.set({
           ...this.otherUser()!,

@@ -1,10 +1,10 @@
 <app-pop-up *teleport="'modalContainer'" (editMode)="editMode.emit(false)">
-  <form [formGroup]="postEditForm" id="postEdit" class="postEdit">
+  <form id="postEdit" class="postEdit" [formGroup]="postEditForm">
     <div class="formElement">
       <span class="pageCategory">By:</span>
-      <span class="pageData" aria-describedby="pUser">{{ editedItem.user }}</span>
+      <span class="pageData" aria-describedby="pUser">{{ editedItem().user }}</span>
     </div>
-    <div class="formElement" aria-describedby="pDate">{{ editedItem.date }}</div>
+    <div class="formElement" aria-describedby="pDate">{{ editedItem().date }}</div>
     <div class="formElement">
       <label class="pageCategory required" for="postText">Post Text:</label>
       <br />
@@ -17,23 +17,23 @@
         minlength="0"
         maxlength="480"
         required
-        [attr.aria-invalid]="!this.postEditForm.controls.postText.valid"
         aria-required="true"
+        [attr.aria-invalid]="!this.postEditForm.controls.postText.valid"
       ></textarea>
     </div>
     <!-- If the user is editing a post from anywhere else -->
     <button
-      *ngIf="!isAdmin"
+      *ngIf="!isAdmin()"
       type="submit"
       class="appButton sendData"
+      [attr.aria-label]="'update post ' + editedItem().text"
       (click)="editPost($event, null)"
-      [attr.aria-label]="'update post ' + editedItem.text"
     >
       Update Post
     </button>
     <!-- If the user is editing a post from the report's page -->
     <button
-      *ngIf="isAdmin"
+      *ngIf="isAdmin()"
       type="submit"
       class="appButton sendData"
       id="updateAndClose"
@@ -42,7 +42,7 @@
       Update Post and Close Report
     </button>
     <button
-      *ngIf="isAdmin"
+      *ngIf="isAdmin()"
       type="submit"
       class="appButton sendData"
       id="updateDontClose"

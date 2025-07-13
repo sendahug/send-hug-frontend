@@ -38,8 +38,10 @@ import {
 import {} from "jasmine";
 import { IDBPDatabase } from "idb";
 
-import { MyDB, SWManager } from "./sWManager.service";
+import { SWManager } from "./sWManager.service";
 import { AlertsService } from "./alerts.service";
+import { type iconCharacters } from "@app/interfaces/types";
+import { IDBObjectType, MyDB } from "@app/interfaces/mydb.interface";
 
 function populateDB(
   dbPromise: Promise<IDBPDatabase<MyDB>>,
@@ -83,7 +85,7 @@ function populateDB(
         date: new Date("Mon, 22 Jun 2020 14:32:38 GMT"),
         for: {
           displayName: "user14",
-          selectedIcon: "kitty" as "kitty",
+          selectedIcon: "kitty" as iconCharacters,
           iconColours: {
             character: "#BA9F93",
             lbg: "#e2a275",
@@ -94,7 +96,7 @@ function populateDB(
         forId: 1,
         from: {
           displayName: "user14",
-          selectedIcon: "kitty" as "kitty",
+          selectedIcon: "kitty" as iconCharacters,
           iconColours: {
             character: "#BA9F93",
             lbg: "#e2a275",
@@ -112,7 +114,7 @@ function populateDB(
         date: new Date("Mon, 22 Jun 2020 14:32:38 GMT"),
         for: {
           displayName: "user14",
-          selectedIcon: "kitty" as "kitty",
+          selectedIcon: "kitty" as iconCharacters,
           iconColours: {
             character: "#BA9F93",
             lbg: "#e2a275",
@@ -123,7 +125,7 @@ function populateDB(
         forId: 4,
         from: {
           displayName: "user14",
-          selectedIcon: "kitty" as "kitty",
+          selectedIcon: "kitty" as iconCharacters,
           iconColours: {
             character: "#BA9F93",
             lbg: "#e2a275",
@@ -141,7 +143,7 @@ function populateDB(
         date: new Date("Mon, 08 Jun 2020 14:43:15 GMT"),
         for: {
           displayName: "shirb",
-          selectedIcon: "kitty" as "kitty",
+          selectedIcon: "kitty" as iconCharacters,
           iconColours: {
             character: "#BA9F93",
             lbg: "#e2a275",
@@ -152,7 +154,7 @@ function populateDB(
         forId: 1,
         from: {
           displayName: "user14",
-          selectedIcon: "kitty" as "kitty",
+          selectedIcon: "kitty" as iconCharacters,
           iconColours: {
             character: "#BA9F93",
             lbg: "#e2a275",
@@ -179,7 +181,7 @@ function populateDB(
           permissions: [],
         },
         posts: 10,
-        selectedIcon: "kitty" as "kitty",
+        selectedIcon: "kitty" as iconCharacters,
         iconColours: {
           character: "#BA9F93",
           lbg: "#e2a275",
@@ -198,7 +200,7 @@ function populateDB(
           permissions: [],
         },
         posts: 10,
-        selectedIcon: "kitty" as "kitty",
+        selectedIcon: "kitty" as iconCharacters,
         iconColours: {
           character: "#BA9F93",
           lbg: "#e2a275",
@@ -212,7 +214,7 @@ function populateDB(
         id: 3,
         user1: {
           displayName: "shirb",
-          selectedIcon: "kitty" as "kitty",
+          selectedIcon: "kitty" as iconCharacters,
           iconColours: {
             character: "#BA9F93",
             lbg: "#e2a275",
@@ -223,7 +225,7 @@ function populateDB(
         user1Id: 1,
         user2: {
           displayName: "user14",
-          selectedIcon: "kitty" as "kitty",
+          selectedIcon: "kitty" as iconCharacters,
           iconColours: {
             character: "#BA9F93",
             lbg: "#e2a275",
@@ -240,7 +242,7 @@ function populateDB(
         id: 5,
         user1: {
           displayName: "lalala",
-          selectedIcon: "kitty" as "kitty",
+          selectedIcon: "kitty" as iconCharacters,
           iconColours: {
             character: "#BA9F93",
             lbg: "#e2a275",
@@ -251,7 +253,7 @@ function populateDB(
         user1Id: 2,
         user2: {
           displayName: "user14",
-          selectedIcon: "kitty" as "kitty",
+          selectedIcon: "kitty" as iconCharacters,
           iconColours: {
             character: "#BA9F93",
             lbg: "#e2a275",
@@ -270,7 +272,7 @@ function populateDB(
   return dbPromise.then((db) => {
     // if there's a specific store to populate, populate it
     if (store != "all") {
-      items[store].forEach((item: any) => {
+      items[store].forEach((item: IDBObjectType) => {
         db.put(store, item);
       });
     }
@@ -323,20 +325,24 @@ describe("SWManagerService", () => {
       expect(db.objectStoreNames).toContain("threads");
       // posts store
       const postStore = db.transaction("posts").objectStore("posts");
+
       expect(postStore.keyPath).toBe("id");
       expect(postStore.indexNames).toContain("date");
       expect(postStore.indexNames).toContain("user");
       expect(postStore.indexNames).toContain("hugs");
       // users store
       const userStore = db.transaction("users").objectStore("users");
+
       expect(userStore.keyPath).toBe("id");
       // messages store
       const messStore = db.transaction("messages").objectStore("messages");
+
       expect(messStore.keyPath).toBe("id");
       expect(messStore.indexNames).toContain("date");
       expect(messStore.indexNames).toContain("thread");
       // threads store
       const threadStore = db.transaction("threads").objectStore("threads");
+
       expect(threadStore.keyPath).toBe("id");
       expect(threadStore.indexNames).toContain("latest");
     });
@@ -407,7 +413,7 @@ describe("SWManagerService", () => {
     it("should get new posts correctly", () => {
       const postsPromise = sWManagerService.fetchPosts("date", 10, undefined, 1, true);
 
-      return postsPromise!.then((posts: any) => {
+      return postsPromise!.then((posts) => {
         // check all the posts are there and they're ordered in reverse date order
         expect(posts.posts).toBeDefined();
         expect(posts.posts!.length).toBe(3);
@@ -420,7 +426,7 @@ describe("SWManagerService", () => {
     it("should get suggested posts correctly", () => {
       const postsPromise = sWManagerService.fetchPosts("hugs", 10, undefined, 1, false);
 
-      return postsPromise!.then((posts: any) => {
+      return postsPromise!.then((posts) => {
         // check all the posts are there and they're ordered in reverse date order
         expect(posts.posts).toBeDefined();
         expect(posts.posts!.length).toBe(3);
@@ -433,7 +439,7 @@ describe("SWManagerService", () => {
     it("should get new posts correctly - page 1", () => {
       const postsPromise = sWManagerService.fetchPosts("date", 5, undefined, 1, true);
 
-      return postsPromise!.then((posts: any) => {
+      return postsPromise!.then((posts) => {
         // check all the posts are there and they're ordered in reverse date order
         expect(posts).toBeDefined();
         expect(posts!.posts.length).toBe(3);
@@ -446,7 +452,7 @@ describe("SWManagerService", () => {
     it("should get new posts correctly - page 2", () => {
       const postsPromise = sWManagerService.fetchPosts("date", 5, undefined, 2, true);
 
-      return postsPromise!.then((posts: any) => {
+      return postsPromise!.then((posts) => {
         // check all the posts are there and they're ordered in reverse date order
         expect(posts).toBeDefined();
         expect(posts!.posts.length).toBe(0);
@@ -457,7 +463,7 @@ describe("SWManagerService", () => {
     it("should get suggested posts correctly - page 1", () => {
       const postsPromise = sWManagerService.fetchPosts("hugs", 5, undefined, 1, false);
 
-      return postsPromise!.then((posts: any) => {
+      return postsPromise!.then((posts) => {
         // check all the posts are there and they're ordered in reverse date order
         expect(posts).toBeDefined();
         expect(posts!.posts.length).toBe(3);
@@ -470,7 +476,7 @@ describe("SWManagerService", () => {
     it("should get suggested posts correctly - page 2", () => {
       const postsPromise = sWManagerService.fetchPosts("hugs", 5, undefined, 2, false);
 
-      return postsPromise!.then((posts: any) => {
+      return postsPromise!.then((posts) => {
         // check all the posts are there and they're ordered in reverse date order
         expect(posts).toBeDefined();
         expect(posts!.posts.length).toBe(0);
@@ -481,7 +487,7 @@ describe("SWManagerService", () => {
     it("should get a user's posts correctly", () => {
       const postsPromise = sWManagerService.fetchPosts("user", 5, 1, 1, false);
 
-      return postsPromise!.then((posts: any) => {
+      return postsPromise!.then((posts) => {
         expect(posts).toBeDefined();
         expect(posts!.posts.length).toBe(2);
         expect(posts!.posts[0].id).toBe(1);
@@ -493,7 +499,7 @@ describe("SWManagerService", () => {
     it("should get other users' posts", () => {
       const postsPromise = sWManagerService.fetchPosts("user", 5, 3, 1, false);
 
-      return postsPromise!.then((posts: any) => {
+      return postsPromise!.then((posts) => {
         expect(posts).toBeDefined();
         expect(posts!.posts.length).toBe(1);
         expect(posts!.posts[0].id).toBe(3);

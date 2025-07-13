@@ -3,7 +3,7 @@
     >Skip to main content</a
   >
   <div id="headerBanner" role="banner">
-    <span id="noInternet" *ngIf="alertsService.isOffline.value">
+    <span *ngIf="alertsService.isOffline.value" id="noInternet">
       You are not currently connected to the internet. For updated data, reconnect to the internet
       and try again.
     </span>
@@ -16,18 +16,18 @@
     </span>
   </div>
   <nav id="navMenu" role="navigation">
-    <a [routerLink]="['/']"><img [src]="SiteLogoSrc" alt="send a hug logo" id="siteLogo" /></a>
+    <a [routerLink]="['/']"><img alt="send a hug logo" id="siteLogo" [src]="SiteLogoSrc" /></a>
     <button
-      [ngClass]="menuButtonClass()"
       id="menuBtn"
-      (click)="toggleMenu()"
-      [attr.aria-hidden]="!showMenuButton()"
       aria-label="open navigation menu"
+      [ngClass]="menuButtonClass()"
+      [attr.aria-hidden]="!showMenuButton()"
+      (click)="toggleMenu()"
     >
       <!-- prettier-ignore -->
-      <fa-icon [icon]="faBars" class="fa-bars"></fa-icon>
+      <fa-icon class="fa-bars" [icon]="faBars"></fa-icon>
     </button>
-    <div id="navLinks" [ngClass]="navMenuClass()" [attr.aria-hidden]="showMenu()">
+    <div *ngIf="showMenu()" id="navLinks" [ngClass]="navMenuClass()">
       <a [routerLink]="['/']" [ngClass]="getClassForNavItem('/')">
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -54,7 +54,7 @@
         [ngClass]="getClassForNavItem('/messages')"
       >
         <!-- prettier-ignore -->
-        <fa-icon [icon]="faComments" class="navIcon fa-comments" aria-hidden="true"></fa-icon>
+        <fa-icon class="navIcon fa-comments" aria-hidden="true" [icon]="faComments"></fa-icon>
         <div class="navLinkText">Messages</div>
       </a>
       <a
@@ -92,7 +92,7 @@
         [ngClass]="getClassForNavItem('/user')"
       >
         <!-- prettier-ignore -->
-        <fa-icon [icon]="faUserCircle" class="navIcon fa-user-circle" aria-hidden="true"></fa-icon>
+        <fa-icon class="navIcon fa-user-circle" aria-hidden="true" [icon]="faUserCircle"></fa-icon>
         <div class="navLinkText">Profile</div>
       </a>
       <a
@@ -101,12 +101,12 @@
         [ngClass]="getClassForNavItem('/login')"
       >
         <!-- prettier-ignore -->
-        <fa-icon [icon]="faUserCircle" class="navIcon fa-user-circle" aria-hidden="true"></fa-icon>
+        <fa-icon class="navIcon fa-user-circle" aria-hidden="true" [icon]="faUserCircle"></fa-icon>
         <div class="navLinkText">Login</div>
       </a>
       <a [routerLink]="['/about']" [ngClass]="getClassForNavItem('/about')">
         <!-- prettier-ignore -->
-        <fa-icon [icon]="faCompass" class="fa-compass navIcon" aria-hidden="true"></fa-icon>
+        <fa-icon class="fa-compass navIcon" aria-hidden="true" [icon]="faCompass"></fa-icon>
         <div class="navLinkText">About</div>
       </a>
       <a
@@ -141,79 +141,79 @@
       <button
         *ngIf="authService.getCurrentFirebaseUser() && !authService.authenticated()"
         class="navLink"
-        (click)="signOutAndRedirect()"
         id="signOutNavItem"
+        (click)="signOutAndRedirect()"
       >
         <!-- prettier-ignore -->
-        <fa-icon [icon]="faArrowRightFromBracket" class="navIcon" aria-hidden="true"></fa-icon>
+        <fa-icon class="navIcon" aria-hidden="true" [icon]="faArrowRightFromBracket"></fa-icon>
         <div class="navLinkText">Log Out</div>
       </button>
       <div class="newNotification">
         <button
           id="notificationsBtn"
           class="navLink"
-          (click)="toggleNotifications()"
           aria-label="open notifications tab"
+          (click)="toggleNotifications()"
         >
           <!-- prettier-ignore -->
-          <fa-icon [icon]="faBell" class="fa-bell navButton" id="navNotific"></fa-icon>
+          <fa-icon class="fa-bell navButton" id="navNotific" [icon]="faBell"></fa-icon>
         </button>
         <span class="badge">{{ notificationService.newNotifications() }}</span>
       </div>
       <button
         class="navLink"
-        (click)="toggleSearch()"
         id="searchBtn"
         aria-label="open search panel"
+        (click)="toggleSearch()"
       >
         <!-- prettier-ignore -->
-        <fa-icon [icon]="faSearch" class="fa-search navButton"></fa-icon>
+        <fa-icon class="fa-search navButton" [icon]="faSearch"></fa-icon>
       </button>
       <button
         class="navLink"
         id="textSize"
-        (click)="toggleSizePanel()"
         aria-label="change text size"
+        (click)="toggleSizePanel()"
       >
         <!-- prettier-ignore -->
-        <fa-icon [icon]="faTextHeight" class="fa-bell navButton"></fa-icon>
+        <fa-icon class="fa-bell navButton" [icon]="faTextHeight"></fa-icon>
       </button>
     </div>
   </nav>
   <app-search-form *ngIf="showSearch()" (showForm)="toggleSearch()"></app-search-form>
-  <div id="textPanel" *ngIf="showTextPanel()">
+  <div *ngIf="showTextPanel()" id="textPanel">
     <button
       class="appButton"
-      (click)="changeTextSize('smallest')"
       aria-label="change text size to smallest size"
+      (click)="changeTextSize('smallest')"
     >
       Smallest size
     </button>
     <button
       class="appButton"
-      (click)="changeTextSize('smaller')"
       aria-label="change text size to small size"
+      (click)="changeTextSize('smaller')"
     >
       Small size
     </button>
     <button
       class="appButton"
-      (click)="changeTextSize('regular')"
       aria-label="change text size to regular size"
+      (click)="changeTextSize('regular')"
     >
       Regular size
     </button>
     <button
       class="appButton"
-      (click)="changeTextSize('larger')"
       aria-label="change text size to large size"
+      (click)="changeTextSize('larger')"
     >
       Large size
     </button>
     <button
       class="appButton"
-      (click)="changeTextSize('largest')"
       aria-label="change text size to largest size"
+      (click)="changeTextSize('largest')"
     >
       Largest size
     </button>

@@ -31,53 +31,49 @@
 */
 
 // Angular imports
-import { Injectable, computed, signal } from "@angular/core";
+import { Injectable, computed, inject, signal } from "@angular/core";
 import { HttpErrorResponse } from "@angular/common/http";
 import { BehaviorSubject, tap } from "rxjs";
 
 // App-related imports
 import { type PostGet } from "@app/interfaces/post.interface";
-import { type MessageCreate, type MessageGet } from "@app/interfaces/message.interface";
-import { type OtherUser } from "@app/interfaces/otherUser.interface";
+import { type MessageCreate } from "@app/interfaces/message.interface";
+import { type OtherUser } from "@app/interfaces/user.interface";
 import { AlertsService } from "@app/services/alerts.service";
 import { SWManager } from "@app/services/sWManager.service";
 import { ApiClientService } from "@app/services/apiClient.service";
-
-interface SendMessageResponse {
-  success: boolean;
-  message: MessageGet;
-}
+import {
+  type SearchResultsResponse,
+  type SendHugResponse,
+  type SendMessageResponse,
+} from "@app/interfaces/api";
 
 @Injectable({
   providedIn: "root",
 })
 export class ItemsService {
+  private alertsService = inject(AlertsService);
+  private serviceWorkerM = inject(SWManager);
+  private apiClient = inject(ApiClientService);
   // search variables
-  isSearching = signal(false);
-  userSearchResults = signal<OtherUser[]>([]);
-  numUserResults = signal(0);
-  numPostResults = signal(0);
-  postSearchResults = signal<PostGet[]>([]);
-  postSearchPage = signal(1);
-  totalPostSearchPages = signal(1);
-  previousPageButtonClass = computed(() => ({
+  readonly isSearching = signal(false);
+  readonly userSearchResults = signal<OtherUser[]>([]);
+  readonly numUserResults = signal(0);
+  readonly numPostResults = signal(0);
+  readonly postSearchResults = signal<PostGet[]>([]);
+  readonly postSearchPage = signal(1);
+  readonly totalPostSearchPages = signal(1);
+  readonly previousPageButtonClass = computed(() => ({
     "appButton prevButton": true,
     disabled: this.postSearchPage() <= 1,
   }));
-  nextPageButtonClass = computed(() => ({
+  readonly nextPageButtonClass = computed(() => ({
     "appButton nextButton": true,
     disabled: this.totalPostSearchPages() <= this.postSearchPage(),
   }));
   // Posts variables
   currentlyOpenMenu = new BehaviorSubject("");
   receivedAHug = new BehaviorSubject(0);
-
-  // CTOR
-  constructor(
-    private alertsService: AlertsService,
-    private serviceWorkerM: SWManager,
-    private apiClient: ApiClientService,
-  ) {}
 
   // POST-RELATED METHODS
   /*
@@ -88,8 +84,8 @@ export class ItemsService {
   Programmer: Shir Bar Lev.
   */
   sendHug(postId: number) {
-    this.apiClient.post(`posts/${postId}/hugs`, {}).subscribe({
-      next: (_response: any) => {
+    this.apiClient.post<SendHugResponse>(`posts/${postId}/hugs`, {}).subscribe({
+      next: (_response) => {
         this.alertsService.createSuccessAlert("Your hug was sent!");
         // Alert the posts that this item received a hug
         this.receivedAHug.next(postId);
@@ -110,8 +106,8 @@ export class ItemsService {
     return this.apiClient.post<SendMessageResponse>("messages", message).pipe(
       tap((response) => {
         this.alertsService.createSuccessAlert("Your message was sent!");
-        let isoDate = new Date(response.message.date).toISOString();
-        let message = {
+        const isoDate = new Date(response.message.date).toISOString();
+        const message = {
           ...response.message,
           isoDate: isoDate,
         };
@@ -133,9 +129,13 @@ export class ItemsService {
     this.isSearching.set(true);
 
     return this.apiClient
-      .post("", { search: searchQuery }, { page: `${this.postSearchPage()}` })
+      .post<SearchResultsResponse>(
+        "",
+        { search: searchQuery },
+        { page: `${this.postSearchPage()}` },
+      )
       .subscribe({
-        next: (response: any) => {
+        next: (response) => {
           this.userSearchResults.set(response.users);
           this.postSearchResults.set(response.posts);
           this.postSearchPage.set(response.current_page);

@@ -44,18 +44,18 @@ import { NO_ERRORS_SCHEMA, signal } from "@angular/core";
 import { of, Subscription } from "rxjs";
 import { MockComponent, MockProvider } from "ng-mocks";
 
-import { UserPage } from "./userPage.component";
+import { UserPageComponent } from "./userPage.component";
 import { AuthService } from "@app/services/auth.service";
 import { mockAuthedUser } from "@tests/mockData";
-import { OtherUser } from "@app/interfaces/otherUser.interface";
+import { OtherUser } from "@app/interfaces/user.interface";
 import { iconCharacters } from "@app/interfaces/types";
-import { DisplayNameEditForm } from "@forms/displayNameEditForm/displayNameEditForm.component";
-import { ReportForm } from "@forms/reportForm/reportForm.component";
+import { DisplayNameEditFormComponent } from "@forms/displayNameEditForm/displayNameEditForm.component";
+import { ReportFormComponent } from "@forms/reportForm/reportForm.component";
 import { ApiClientService } from "@app/services/apiClient.service";
-import { Loader } from "@common/loader/loader.component";
-import { UserIcon } from "@common/userIcon/userIcon.component";
+import { LoaderComponent } from "@common/loader/loader.component";
+import { UserIconComponent } from "@common/userIcon/userIcon.component";
 
-describe("UserPage", () => {
+describe("UserPageComponent", () => {
   // Before each test, configure testing environment
   beforeEach(() => {
     const MockAuthService = MockProvider(AuthService, {
@@ -63,10 +63,10 @@ describe("UserPage", () => {
       userData: signal(undefined),
     });
     const MockAPIClient = MockProvider(ApiClientService);
-    const MockDisplayNameEditForm = MockComponent(DisplayNameEditForm);
-    const MockReportForm = MockComponent(ReportForm);
-    const MockLoader = MockComponent(Loader);
-    const MockUserIcon = MockComponent(UserIcon);
+    const MockDisplayNameEditFormComponent = MockComponent(DisplayNameEditFormComponent);
+    const MockReportFormComponent = MockComponent(ReportFormComponent);
+    const MockLoaderComponent = MockComponent(LoaderComponent);
+    const MockUserIconComponent = MockComponent(UserIconComponent);
 
     TestBed.resetTestEnvironment();
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
@@ -75,13 +75,13 @@ describe("UserPage", () => {
       schemas: [NO_ERRORS_SCHEMA],
       imports: [
         FontAwesomeModule,
-        MockDisplayNameEditForm,
-        MockReportForm,
+        MockDisplayNameEditFormComponent,
+        MockReportFormComponent,
         CommonModule,
-        MockLoader,
+        MockLoaderComponent,
         RouterLink,
-        MockUserIcon,
-        UserPage,
+        MockUserIconComponent,
+        UserPageComponent,
       ],
       declarations: [],
       providers: [
@@ -90,11 +90,16 @@ describe("UserPage", () => {
           {
             path: "user",
             children: [
-              { path: "", pathMatch: "prefix", component: UserPage, data: { name: "Your Page" } },
+              {
+                path: "",
+                pathMatch: "prefix",
+                component: UserPageComponent,
+                data: { name: "Your Page" },
+              },
               {
                 path: ":id",
                 pathMatch: "prefix",
-                component: UserPage,
+                component: UserPageComponent,
                 data: { name: "Other User's Page" },
               },
             ],
@@ -109,14 +114,15 @@ describe("UserPage", () => {
 
   // Check that the component is created
   it("should create the component", () => {
-    const fixture = TestBed.createComponent(UserPage);
+    const fixture = TestBed.createComponent(UserPageComponent);
     const userPage = fixture.componentInstance;
+
     expect(userPage).toBeTruthy();
   });
 
   // Check that the popup variables are set to false
   it("should have the popup variables set to false", () => {
-    const fixture = TestBed.createComponent(UserPage);
+    const fixture = TestBed.createComponent(UserPageComponent);
     const userPage = fixture.componentInstance;
 
     expect(userPage.editMode()).toBeFalse();
@@ -124,101 +130,111 @@ describe("UserPage", () => {
   });
 
   // Check that when there's no ID the component defaults to the logged in user
-  it("should show the logged in user if not provided with ID", (done: DoneFn) => {
+  it("should show the logged in user if not provided with ID", () => {
     const authService = TestBed.inject(AuthService);
     authService.authenticated.set(true);
     authService.userData.set({ ...mockAuthedUser });
-    const fixture = TestBed.createComponent(UserPage);
+    const fixture = TestBed.createComponent(UserPageComponent);
     const userPage = fixture.componentInstance;
     const userPageDOM = fixture.nativeElement;
 
     fixture.detectChanges();
 
     const userData = userPage.authService.userData();
+
     expect(userPage.userId()).toBeUndefined();
     expect(userPage.isOtherUserProfile()).toBeFalse();
     expect(
       userPageDOM.querySelectorAll(".displayName")[0].firstElementChild.textContent.trim(),
     ).toBe(userData?.displayName);
+
     expect(
       userPageDOM.querySelector("#roleElement").querySelectorAll(".pageData")[0].textContent.trim(),
     ).toBe(userData?.role.name);
+
     expect(
       userPageDOM
         .querySelector("#rHugsElement")
         .querySelectorAll(".pageData")[0]
         .textContent.trim(),
     ).toBe(String(userData?.receivedH));
+
     expect(
       userPageDOM
         .querySelector("#gHugsElement")
         .querySelectorAll(".pageData")[0]
         .textContent.trim(),
     ).toBe(String(userData?.givenH));
+
     expect(
       userPageDOM
         .querySelector("#postsElement")
         .querySelectorAll(".pageData")[0]
         .textContent.trim(),
     ).toBe(String(userData?.posts));
+
     expect(userPageDOM.querySelector("#logout")).toBeTruthy();
-    done();
   });
 
   // Check that when the ID is the user's ID, it shows the user's own page
-  it("should show the logged in user if it's the user's own ID", (done: DoneFn) => {
+  it("should show the logged in user if it's the user's own ID", () => {
     const paramMap = TestBed.inject(ActivatedRoute);
     const routeSpy = spyOn(paramMap.snapshot.paramMap, "get").and.returnValue("4");
     const authService = TestBed.inject(AuthService);
     authService.authenticated.set(true);
     authService.userData.set({ ...mockAuthedUser });
-    const fixture = TestBed.createComponent(UserPage);
+    const fixture = TestBed.createComponent(UserPageComponent);
     const userPage = fixture.componentInstance;
     const userPageDOM = fixture.nativeElement;
 
     fixture.detectChanges();
 
     const userData = userPage.authService.userData();
-    expect(routeSpy).toHaveBeenCalled();
+
+    expect(routeSpy).toHaveBeenCalledWith("id");
     expect(userPage.userId()).toBe(4);
     expect(userPage.isOtherUserProfile()).toBeFalse();
     expect(
       userPageDOM.querySelectorAll(".displayName")[0].firstElementChild.textContent.trim(),
     ).toBe(userData?.displayName);
+
     expect(
       userPageDOM.querySelector("#roleElement").querySelectorAll(".pageData")[0].textContent.trim(),
     ).toBe(userData?.role.name);
+
     expect(
       userPageDOM
         .querySelector("#rHugsElement")
         .querySelectorAll(".pageData")[0]
         .textContent.trim(),
     ).toBe(String(userData?.receivedH));
+
     expect(
       userPageDOM
         .querySelector("#gHugsElement")
         .querySelectorAll(".pageData")[0]
         .textContent.trim(),
     ).toBe(String(userData?.givenH));
+
     expect(
       userPageDOM
         .querySelector("#postsElement")
         .querySelectorAll(".pageData")[0]
         .textContent.trim(),
     ).toBe(String(userData?.posts));
+
     expect(userPageDOM.querySelector("#logout")).toBeTruthy();
     expect(userPageDOM.querySelectorAll(".reportButton")[0]).toBeUndefined();
-    done();
   });
 
   // Check that when the ID is another user's ID, it shows their page
-  it("should show another user's page if that was the provided ID", (done: DoneFn) => {
+  it("should show another user's page if that was the provided ID", () => {
     const paramMap = TestBed.inject(ActivatedRoute);
     const routeSpy = spyOn(paramMap.snapshot.paramMap, "get").and.returnValue("1");
     const authService = TestBed.inject(AuthService);
     authService.authenticated.set(true);
     authService.userData.set({ ...mockAuthedUser });
-    const fixture = TestBed.createComponent(UserPage);
+    const fixture = TestBed.createComponent(UserPageComponent);
     const userPage = fixture.componentInstance;
     const userPageDOM = fixture.nativeElement;
     userPage.otherUser.set({
@@ -246,46 +262,51 @@ describe("UserPage", () => {
     fixture.detectChanges();
 
     const userData = userPage.otherUser() as OtherUser;
-    expect(routeSpy).toHaveBeenCalled();
+
+    expect(routeSpy).toHaveBeenCalledWith("id");
     expect(userPage.userId()).toBe(1);
     expect(userPage.isOtherUserProfile()).toBeTrue();
     expect(
       userPageDOM.querySelectorAll(".displayName")[0].firstElementChild.textContent.trim(),
     ).toContain(userData.displayName);
+
     expect(
       userPageDOM.querySelector("#roleElement").querySelectorAll(".pageData")[0].textContent.trim(),
     ).toBe(userData.role.name);
+
     expect(
       userPageDOM
         .querySelector("#rHugsElement")
         .querySelectorAll(".pageData")[0]
         .textContent.trim(),
     ).toBe(String(userData.receivedH));
+
     expect(
       userPageDOM
         .querySelector("#gHugsElement")
         .querySelectorAll(".pageData")[0]
         .textContent.trim(),
     ).toBe(String(userData.givenH));
+
     expect(
       userPageDOM
         .querySelector("#postsElement")
         .querySelectorAll(".pageData")[0]
         .textContent.trim(),
     ).toBe(String(userData.posts));
+
     expect(userPageDOM.querySelector("#logout")).toBeNull();
     expect(userPageDOM.querySelectorAll(".reportButton")[0]).toBeTruthy();
-    done();
   });
 
   // Check that the logout button triggers the AuthService's logout method
-  it("should trigger the AuthService upon clicking logout", (done: DoneFn) => {
+  it("should trigger the AuthService upon clicking logout", () => {
     const paramMap = TestBed.inject(ActivatedRoute);
     spyOn(paramMap.snapshot.paramMap, "get").and.returnValue("4");
     const authService = TestBed.inject(AuthService);
     authService.authenticated.set(true);
     authService.userData.set({ ...mockAuthedUser });
-    const fixture = TestBed.createComponent(UserPage);
+    const fixture = TestBed.createComponent(UserPageComponent);
     const userPage = fixture.componentInstance;
     const userPageDOM = fixture.nativeElement;
     const logoutSpy = spyOn(userPage, "logout").and.callThrough();
@@ -307,10 +328,9 @@ describe("UserPage", () => {
     fixture.detectChanges();
 
     // check the logout methods were called
-    expect(logoutSpy).toHaveBeenCalled();
-    expect(serviceLogoutSpy).toHaveBeenCalled();
+    expect(logoutSpy).toHaveBeenCalledWith();
+    expect(serviceLogoutSpy).toHaveBeenCalledWith();
     expect(navigateSpy).toHaveBeenCalledWith(["/"]);
-    done();
   });
 
   it("should fetch user data from the server", () => {
@@ -319,7 +339,7 @@ describe("UserPage", () => {
     const authService = TestBed.inject(AuthService);
     authService.authenticated.set(true);
     authService.userData.set({ ...mockAuthedUser });
-    const fixture = TestBed.createComponent(UserPage);
+    const fixture = TestBed.createComponent(UserPageComponent);
     const userPage = fixture.componentInstance;
     const mockUser = {
       id: 1,
@@ -349,8 +369,8 @@ describe("UserPage", () => {
 
     userPage.fetchOtherUsersData();
 
-    expect(idbSpy).toHaveBeenCalled();
-    expect(apiClientSpy).toHaveBeenCalledWith("users/all/1");
+    expect(idbSpy).toHaveBeenCalledWith();
+    expect(apiClientSpy).toHaveBeenCalledWith("users/1");
     expect(addItemSpy).toHaveBeenCalledWith("users", mockUser);
     expect(userPage.otherUser() as OtherUser).toEqual(mockUser);
     expect(userPage.isLoading()).toBeFalse();
@@ -360,7 +380,7 @@ describe("UserPage", () => {
     const authService = TestBed.inject(AuthService);
     authService.authenticated.set(true);
     authService.userData.set({ ...mockAuthedUser });
-    const fixture = TestBed.createComponent(UserPage);
+    const fixture = TestBed.createComponent(UserPageComponent);
     const userPage = fixture.componentInstance;
     const userPageDOM = fixture.nativeElement;
     fixture.detectChanges();
@@ -379,7 +399,7 @@ describe("UserPage", () => {
     const authService = TestBed.inject(AuthService);
     authService.authenticated.set(true);
     authService.userData.set({ ...mockAuthedUser });
-    const fixture = TestBed.createComponent(UserPage);
+    const fixture = TestBed.createComponent(UserPageComponent);
     const userPage = fixture.componentInstance;
     const mockUser = {
       id: 1,
@@ -415,13 +435,13 @@ describe("UserPage", () => {
   });
 
   // Check that the popup is triggered on edit
-  it("should open the popup upon editing", (done: DoneFn) => {
+  it("should open the popup upon editing", () => {
     const paramMap = TestBed.inject(ActivatedRoute);
     spyOn(paramMap.snapshot.paramMap, "get").and.returnValue("4");
     const authService = TestBed.inject(AuthService);
     authService.authenticated.set(true);
     authService.userData.set({ ...mockAuthedUser });
-    const fixture = TestBed.createComponent(UserPage);
+    const fixture = TestBed.createComponent(UserPageComponent);
     const userPage = fixture.componentInstance;
     const userPageDOM = fixture.nativeElement;
 
@@ -440,18 +460,18 @@ describe("UserPage", () => {
       displayName: userPage.authService.userData()!.displayName,
       id: userPage.authService.userData()!.id as number,
     });
+
     expect(userPageDOM.querySelector("display-name-edit-form")).toBeTruthy();
-    done();
   });
 
   //Check that the popup is opened when clicking 'report'
-  it("should open the popup upon reporting", (done: DoneFn) => {
+  it("should open the popup upon reporting", () => {
     const paramMap = TestBed.inject(ActivatedRoute);
     spyOn(paramMap.snapshot.paramMap, "get").and.returnValue("1");
     const authService = TestBed.inject(AuthService);
     authService.authenticated.set(true);
     authService.userData.set({ ...mockAuthedUser });
-    const fixture = TestBed.createComponent(UserPage);
+    const fixture = TestBed.createComponent(UserPageComponent);
     const userPage = fixture.componentInstance;
     const userPageDOM = fixture.nativeElement;
     userPage.otherUser.set({
@@ -490,17 +510,16 @@ describe("UserPage", () => {
     expect(userPage.reportType).toEqual("User");
     expect(userPage.reportedItem() as OtherUser).toEqual(userPage.otherUser() as OtherUser);
     expect(userPageDOM.querySelector("report-form")).toBeTruthy();
-    done();
   });
 
   // Check that sending a hug triggers the items service
-  it("should trigger items service on hug", (done: DoneFn) => {
+  it("should trigger items service on hug", () => {
     const paramMap = TestBed.inject(ActivatedRoute);
     spyOn(paramMap.snapshot.paramMap, "get").and.returnValue("1");
     const authService = TestBed.inject(AuthService);
     authService.authenticated.set(true);
     authService.userData.set({ ...mockAuthedUser });
-    const fixture = TestBed.createComponent(UserPage);
+    const fixture = TestBed.createComponent(UserPageComponent);
     const userPage = fixture.componentInstance;
     const userPageDOM = fixture.nativeElement;
     const hugSpy = spyOn(userPage, "sendHug").and.callThrough();
@@ -549,8 +568,8 @@ describe("UserPage", () => {
     fixture.detectChanges();
 
     // after the click
-    expect(hugSpy).toHaveBeenCalled();
-    expect(apiClientSpy).toHaveBeenCalled();
+    expect(hugSpy).toHaveBeenCalledWith(1);
+    expect(apiClientSpy).toHaveBeenCalledWith(`users/1/hugs`, {});
     expect(updateSpy).toHaveBeenCalledWith({ givenH: 3 });
     expect(userPage.otherUser()!.receivedH).toBe(4);
     expect(
@@ -559,18 +578,18 @@ describe("UserPage", () => {
         .querySelectorAll(".pageData")[0]
         .textContent.trim(),
     ).toBe("4");
+
     expect(alertsSpy).toHaveBeenCalledWith("Your hug was sent!");
-    done();
   });
 
   // Check the popup exits when 'false' is emitted
-  it("should change mode when the event emitter emits false - display name edit", (done: DoneFn) => {
+  it("should change mode when the event emitter emits false - display name edit", () => {
     const paramMap = TestBed.inject(ActivatedRoute);
     spyOn(paramMap.snapshot.paramMap, "get").and.returnValue("4");
     const authService = TestBed.inject(AuthService);
     authService.authenticated.set(true);
     authService.userData.set({ ...mockAuthedUser });
-    const fixture = TestBed.createComponent(UserPage);
+    const fixture = TestBed.createComponent(UserPageComponent);
     const userPage = fixture.componentInstance;
     userPage.isIdbFetchLoading.set(false);
     const changeSpy = spyOn(userPage, "changeMode").and.callThrough();
@@ -583,23 +602,22 @@ describe("UserPage", () => {
 
     // exit the popup
     const popup = fixture.debugElement.query(By.css("display-name-edit-form"))
-      .componentInstance as DisplayNameEditForm;
+      .componentInstance as DisplayNameEditFormComponent;
     popup.editMode.emit(false);
     fixture.detectChanges();
 
     // check the popup is exited
-    expect(changeSpy).toHaveBeenCalled();
+    expect(changeSpy).toHaveBeenCalledWith(false, "Edit");
     expect(userPage.editMode()).toBeFalse();
-    done();
   });
 
-  it("should change mode when the event emitter emits false - report", (done: DoneFn) => {
+  it("should change mode when the event emitter emits false - report", () => {
     const paramMap = TestBed.inject(ActivatedRoute);
     spyOn(paramMap.snapshot.paramMap, "get").and.returnValue("1");
     const authService = TestBed.inject(AuthService);
     authService.authenticated.set(true);
     authService.userData.set({ ...mockAuthedUser });
-    const fixture = TestBed.createComponent(UserPage);
+    const fixture = TestBed.createComponent(UserPageComponent);
     const userPage = fixture.componentInstance;
     userPage.otherUser.set({
       id: 1,
@@ -632,13 +650,13 @@ describe("UserPage", () => {
     fixture.detectChanges();
 
     // exit the popup
-    const popup = fixture.debugElement.query(By.css("report-form")).componentInstance as ReportForm;
+    const popup = fixture.debugElement.query(By.css("report-form"))
+      .componentInstance as ReportFormComponent;
     popup.reportMode.emit(false);
     fixture.detectChanges();
 
     // check the popup is exited
-    expect(changeSpy).toHaveBeenCalled();
+    expect(changeSpy).toHaveBeenCalledWith(false, "Report");
     expect(userPage.reportMode()).toBeFalse();
-    done();
   });
 });

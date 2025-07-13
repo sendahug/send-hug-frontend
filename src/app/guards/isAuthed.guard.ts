@@ -1,5 +1,5 @@
 /*
-  App routes
+  isAuthed route guard
   Send a Hug app routing
   ---------------------------------------------------
   MIT License
@@ -34,6 +34,7 @@ import { CanMatchFn, Router } from "@angular/router";
 import { inject } from "@angular/core";
 
 import { AuthService } from "@app/services/auth.service";
+import { getQueryStringFromRouter } from "./common";
 
 /**
  * A guard that checks whether the user is authenticated
@@ -42,11 +43,13 @@ import { AuthService } from "@app/services/auth.service";
 export const isAuthedGuard: CanMatchFn = (_route, segments) => {
   const authService = inject(AuthService);
   const router = inject(Router);
+  const queryParamsString = getQueryStringFromRouter(router);
 
   if (authService.authenticated()) {
     return true;
   } else {
-    const currentPath = segments.map((segment) => segment.toString()).join("/");
+    let currentPath = segments.map((segment) => segment.toString()).join("/");
+    if (queryParamsString) currentPath += `?${queryParamsString}`;
 
     return router.navigate(["/login"], {
       queryParams: { redirect: currentPath },

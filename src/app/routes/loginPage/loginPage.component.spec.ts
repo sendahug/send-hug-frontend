@@ -47,14 +47,14 @@ import { provideExperimentalZonelessChangeDetection } from "@angular/core";
 import { MockComponent, MockProvider } from "ng-mocks";
 import { provideRouter } from "@angular/router";
 
-import { LoginPage } from "./loginPage.component";
+import { LoginPageComponent } from "./loginPage.component";
 import { AuthService } from "@app/services/auth.service";
 import { getMockFirebaseUser, mockAuthedUser } from "@tests/mockData";
 import { User } from "@app/interfaces/user.interface";
-import { PasswordResetForm } from "@forms/passwordResetForm/passwordResetForm.component";
-import { Loader } from "@common/loader/loader.component";
+import { PasswordResetFormComponent } from "@forms/passwordResetForm/passwordResetForm.component";
+import { LoaderComponent } from "@common/loader/loader.component";
 
-describe("LoginPage", () => {
+describe("LoginPageComponent", () => {
   let mockFirbeaseUser: FirebaseUser;
   let mockUserCredential: UserCredential;
   let mockUser: User;
@@ -66,8 +66,8 @@ describe("LoginPage", () => {
       userData: signal(undefined),
       isRegistering: signal(false),
     });
-    const MockLoader = MockComponent(Loader);
-    const MockPasswordResetForm = MockComponent(PasswordResetForm);
+    const MockLoaderComponent = MockComponent(LoaderComponent);
+    const MockPasswordResetFormComponent = MockComponent(PasswordResetFormComponent);
 
     TestBed.resetTestEnvironment();
     TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
@@ -78,9 +78,9 @@ describe("LoginPage", () => {
         CommonModule,
         ReactiveFormsModule,
         FontAwesomeModule,
-        MockLoader,
-        MockPasswordResetForm,
-        LoginPage,
+        MockLoaderComponent,
+        MockPasswordResetFormComponent,
+        LoginPageComponent,
       ],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
@@ -101,16 +101,17 @@ describe("LoginPage", () => {
 
   // Check that the component is created
   it("should create the component", () => {
-    const fixture = TestBed.createComponent(LoginPage);
+    const fixture = TestBed.createComponent(LoginPageComponent);
     const loginPage = fixture.componentInstance;
+
     expect(loginPage).toBeTruthy();
   });
 
   // Check that the 'please login page' is shown if the user's logged out
-  it("should show login page if user is not authenticated", (done: DoneFn) => {
+  it("should show login page if user is not authenticated", () => {
     const authService = TestBed.inject(AuthService);
     authService.authenticated.set(false);
-    const fixture = TestBed.createComponent(LoginPage);
+    const fixture = TestBed.createComponent(LoginPageComponent);
     const loginPage = fixture.componentInstance;
     const loginPageDOM = fixture.nativeElement;
     loginPage.authService.authenticated.set(false);
@@ -119,11 +120,10 @@ describe("LoginPage", () => {
 
     expect(loginPageDOM.querySelector("#logoutBox")).toBeNull();
     expect(loginPageDOM.querySelector("#loginBox")).toBeTruthy();
-    done();
   });
 
   it("signIn() - should run the login process - success", (done: DoneFn) => {
-    const fixture = TestBed.createComponent(LoginPage);
+    const fixture = TestBed.createComponent(LoginPageComponent);
     const loginPage = fixture.componentInstance;
     const loadingSpy = spyOn(loginPage.isLoading, "set").and.callThrough();
     const fetchUserSpy = spyOn(loginPage.authService, "fetchUser").and.returnValue(of(mockUser));
@@ -141,7 +141,7 @@ describe("LoginPage", () => {
   });
 
   it("signIn() - should run the login process - error - OAuth", (done: DoneFn) => {
-    const fixture = TestBed.createComponent(LoginPage);
+    const fixture = TestBed.createComponent(LoginPageComponent);
     const loginPage = fixture.componentInstance;
     const loadingSpy = spyOn(loginPage.isLoading, "set").and.callThrough();
     const fetchUserSpy = spyOn(loginPage.authService, "fetchUser").and.returnValue(
@@ -162,7 +162,7 @@ describe("LoginPage", () => {
   });
 
   it("signIn() - should run the login process - error - username and password", (done: DoneFn) => {
-    const fixture = TestBed.createComponent(LoginPage);
+    const fixture = TestBed.createComponent(LoginPageComponent);
     const loginPage = fixture.componentInstance;
     const loadingSpy = spyOn(loginPage.isLoading, "set").and.callThrough();
     const fetchUserSpy = spyOn(loginPage.authService, "fetchUser").and.returnValue(of(mockUser));
@@ -183,7 +183,7 @@ describe("LoginPage", () => {
   });
 
   it("signIn() - should redirect to signup", (done: DoneFn) => {
-    const fixture = TestBed.createComponent(LoginPage);
+    const fixture = TestBed.createComponent(LoginPageComponent);
     const loginPage = fixture.componentInstance;
     const loadingSpy = spyOn(loginPage.isLoading, "set").and.callThrough();
     const fetchUserSpy = spyOn(loginPage.authService, "fetchUser").and.returnValue(of(mockUser));
@@ -201,7 +201,7 @@ describe("LoginPage", () => {
   });
 
   it("signUp() - should run the signup process - success", (done: DoneFn) => {
-    const fixture = TestBed.createComponent(LoginPage);
+    const fixture = TestBed.createComponent(LoginPageComponent);
     const loginPage = fixture.componentInstance;
     const routerSpy = spyOn(loginPage["router"], "navigate");
     const alertsSpy = spyOn(loginPage["alertsService"], "createAlert");
@@ -216,7 +216,7 @@ describe("LoginPage", () => {
   });
 
   it("signUp() - should run the signup process - error", (done: DoneFn) => {
-    const fixture = TestBed.createComponent(LoginPage);
+    const fixture = TestBed.createComponent(LoginPageComponent);
     const loginPage = fixture.componentInstance;
     const routerSpy = spyOn(loginPage["router"], "navigate");
     const alertsSpy = spyOn(loginPage["alertsService"], "createAlert");
@@ -232,8 +232,8 @@ describe("LoginPage", () => {
     });
   });
 
-  it("signInWithPopup() - should allow logging in with popup - apple", (done: DoneFn) => {
-    const fixture = TestBed.createComponent(LoginPage);
+  it("signInWithPopup() - should allow logging in with popup - apple", () => {
+    const fixture = TestBed.createComponent(LoginPageComponent);
     const loginPage = fixture.componentInstance;
     const loginPageDOM = fixture.nativeElement;
     const loginSpy = spyOn(loginPage, "signInWithPopup").and.callThrough();
@@ -259,11 +259,10 @@ describe("LoginPage", () => {
     expect(loginSpy).toHaveBeenCalledWith("apple");
     expect(serviceLoginSpy).toHaveBeenCalledWith("apple");
     expect(signInSpy).toHaveBeenCalledWith(mockObservable, "apple");
-    done();
   });
 
-  it("signInWithPopup() - should allow logging in with popup - google", (done: DoneFn) => {
-    const fixture = TestBed.createComponent(LoginPage);
+  it("signInWithPopup() - should allow logging in with popup - google", () => {
+    const fixture = TestBed.createComponent(LoginPageComponent);
     const loginPage = fixture.componentInstance;
     const loginPageDOM = fixture.nativeElement;
     const loginSpy = spyOn(loginPage, "signInWithPopup").and.callThrough();
@@ -289,11 +288,10 @@ describe("LoginPage", () => {
     expect(loginSpy).toHaveBeenCalledWith("google");
     expect(serviceLoginSpy).toHaveBeenCalledWith("google");
     expect(signInSpy).toHaveBeenCalledWith(mockObservable, "google");
-    done();
   });
 
-  it("should switch to the signup page if the user clicks sign up", (done: DoneFn) => {
-    const fixture = TestBed.createComponent(LoginPage);
+  it("should switch to the signup page if the user clicks sign up", () => {
+    const fixture = TestBed.createComponent(LoginPageComponent);
     const loginPage = fixture.componentInstance;
     const loginPageDOM = fixture.nativeElement;
     loginPage.authService.authenticated.set(false);
@@ -303,6 +301,7 @@ describe("LoginPage", () => {
     expect(loginPageDOM.querySelectorAll(".internalButton")[1].textContent.trim()).toBe(
       "Create one now.",
     );
+
     expect(loginPageDOM.querySelector("#logIn").textContent.trim()).toBe("Sign in");
 
     loginPageDOM.querySelectorAll(".internalButton")[1].click();
@@ -312,12 +311,12 @@ describe("LoginPage", () => {
     expect(loginPageDOM.querySelectorAll(".internalButton")[0].textContent.trim()).toBe(
       "Log in now.",
     );
+
     expect(loginPageDOM.querySelector("#logIn").textContent.trim()).toBe("Sign up");
-    done();
   });
 
-  it("signInWithPopup() - should let users register with OAuth", (done: DoneFn) => {
-    const fixture = TestBed.createComponent(LoginPage);
+  it("signInWithPopup() - should let users register with OAuth", () => {
+    const fixture = TestBed.createComponent(LoginPageComponent);
     const loginPage = fixture.componentInstance;
     const loginPageDOM = fixture.nativeElement;
     loginPage.authService.authenticated.set(false);
@@ -334,14 +333,13 @@ describe("LoginPage", () => {
     loginPageDOM.querySelectorAll(".loginButton")[0].click();
     fixture.detectChanges();
 
-    expect(loginSpy).toHaveBeenCalled();
-    expect(serviceLoginSpy).toHaveBeenCalled();
+    expect(loginSpy).toHaveBeenCalledWith("apple");
+    expect(serviceLoginSpy).toHaveBeenCalledWith("apple");
     expect(signUpSpy).toHaveBeenCalledWith(mockObservable);
-    done();
   });
 
-  it("sendUsernameAndPassword() - should prevent submitting invalid email and password", (done: DoneFn) => {
-    const fixture = TestBed.createComponent(LoginPage);
+  it("sendUsernameAndPassword() - should prevent submitting invalid email and password", () => {
+    const fixture = TestBed.createComponent(LoginPageComponent);
     const loginPage = fixture.componentInstance;
     const loginPageDOM = fixture.nativeElement;
     const sendSpy = spyOn(loginPage, "sendUsernameAndPassword").and.callThrough();
@@ -356,18 +354,17 @@ describe("LoginPage", () => {
     loginPageDOM.querySelector("#logIn").click();
     fixture.detectChanges();
 
-    expect(sendSpy).toHaveBeenCalled();
+    expect(sendSpy).toHaveBeenCalledWith();
     expect(signUpSpy).not.toHaveBeenCalled();
     expect(signInSpy).not.toHaveBeenCalled();
     expect(alertsSpy).toHaveBeenCalledWith({
       type: "Error",
       message: "Invalid login details. Invalid email. A password is required to log in or sign up.",
     });
-    done();
   });
 
   it("sendUsernameAndPassword() - should prevent submitting empty email and password", () => {
-    const fixture = TestBed.createComponent(LoginPage);
+    const fixture = TestBed.createComponent(LoginPageComponent);
     const loginPage = fixture.componentInstance;
     const loginPageDOM = fixture.nativeElement;
     loginPage.authService.authenticated.set(false);
@@ -380,7 +377,7 @@ describe("LoginPage", () => {
     loginPageDOM.querySelector("#logIn").click();
     fixture.detectChanges();
 
-    expect(sendSpy).toHaveBeenCalled();
+    expect(sendSpy).toHaveBeenCalledWith();
     expect(signUpSpy).not.toHaveBeenCalled();
     expect(signInSpy).not.toHaveBeenCalled();
     expect(alertsSpy).toHaveBeenCalledWith({
@@ -390,8 +387,8 @@ describe("LoginPage", () => {
     });
   });
 
-  it("sendUsernameAndPassword() - should log users in with username and password - existing users", (done: DoneFn) => {
-    const fixture = TestBed.createComponent(LoginPage);
+  it("sendUsernameAndPassword() - should log users in with username and password - existing users", () => {
+    const fixture = TestBed.createComponent(LoginPageComponent);
     const loginPage = fixture.componentInstance;
     const loginPageDOM = fixture.nativeElement;
     loginPage.authService.authenticated.set(false);
@@ -411,11 +408,10 @@ describe("LoginPage", () => {
     expect(sendSpy).toHaveBeenCalledWith();
     expect(loginSpy).toHaveBeenCalledWith("ab@c.com", "123456");
     expect(signInSpy).toHaveBeenCalledWith(mockObservable, "username");
-    done();
   });
 
-  it("sendUsernameAndPassword() - should sign users up with username and password", (done: DoneFn) => {
-    const fixture = TestBed.createComponent(LoginPage);
+  it("sendUsernameAndPassword() - should sign users up with username and password", () => {
+    const fixture = TestBed.createComponent(LoginPageComponent);
     const loginPage = fixture.componentInstance;
     const loginPageDOM = fixture.nativeElement;
     loginPage.authService.authenticated.set(false);
@@ -438,11 +434,10 @@ describe("LoginPage", () => {
     expect(sendSpy).toHaveBeenCalledWith();
     expect(signUpServiceSpy).toHaveBeenCalledWith("ab@c.com", "123456");
     expect(signUpSpy).toHaveBeenCalledWith(mockObservable);
-    done();
   });
 
   it("should show the reset form if the user chooses to", () => {
-    const fixture = TestBed.createComponent(LoginPage);
+    const fixture = TestBed.createComponent(LoginPageComponent);
     const loginPage = fixture.componentInstance;
     const loginPageDOM = fixture.nativeElement;
     loginPage.authService.authenticated.set(false);
@@ -460,7 +455,7 @@ describe("LoginPage", () => {
   });
 
   it("should hide the reset form when it's exited", () => {
-    const fixture = TestBed.createComponent(LoginPage);
+    const fixture = TestBed.createComponent(LoginPageComponent);
     const loginPage = fixture.componentInstance;
     const loginPageDOM = fixture.nativeElement;
     loginPage.authService.authenticated.set(false);
@@ -472,7 +467,7 @@ describe("LoginPage", () => {
 
     // exit the popup
     const popup = fixture.debugElement.query(By.css("app-reset-pw-form"))
-      .componentInstance as PasswordResetForm;
+      .componentInstance as PasswordResetFormComponent;
     popup.editMode.emit(false);
     fixture.detectChanges();
 
@@ -480,8 +475,8 @@ describe("LoginPage", () => {
     expect(loginPageDOM.querySelector("app-reset-pw-form")).toBeNull();
   });
 
-  it("should show logout page if user is authenticated", (done: DoneFn) => {
-    const fixture = TestBed.createComponent(LoginPage);
+  it("should show logout page if user is authenticated", () => {
+    const fixture = TestBed.createComponent(LoginPageComponent);
     const loginPage = fixture.componentInstance;
     const loginPageDOM = fixture.nativeElement;
     loginPage.authService.authenticated.set(true);
@@ -494,18 +489,18 @@ describe("LoginPage", () => {
     expect(loginPageDOM.querySelectorAll(".errorMessage")[0].textContent).toContain(
       "You are already logged in",
     );
+
     expect(loginPageDOM.querySelectorAll(".errorMessage")[1].textContent).toContain(
       `You are currently logged in as ${mockUser.displayName}`,
     );
-    done();
   });
 
   // Check that the logout button triggers the AuthService's logout method
-  it("should trigger the AuthService upon clicking logout", (done: DoneFn) => {
+  it("should trigger the AuthService upon clicking logout", () => {
     const authService = TestBed.inject(AuthService);
     authService.authenticated.set(true);
     authService.userData.set({ ...mockAuthedUser });
-    const fixture = TestBed.createComponent(LoginPage);
+    const fixture = TestBed.createComponent(LoginPageComponent);
     const loginPage = fixture.componentInstance;
     const loginPageDOM = fixture.nativeElement;
     const logoutSpy = spyOn(loginPage, "logout").and.callThrough();
@@ -522,8 +517,7 @@ describe("LoginPage", () => {
     fixture.detectChanges();
 
     // check the logout methods were called
-    expect(logoutSpy).toHaveBeenCalled();
-    expect(serviceLogoutSpy).toHaveBeenCalled();
-    done();
+    expect(logoutSpy).toHaveBeenCalledWith();
+    expect(serviceLogoutSpy).toHaveBeenCalledWith();
   });
 });

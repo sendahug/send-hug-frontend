@@ -50,17 +50,14 @@ interface FAQItem {
   standalone: true,
   imports: [CommonModule, FontAwesomeModule, RouterLink],
 })
-export class SupportPage implements OnInit {
-  faqItems = signal<FAQItem[]>([]);
+export class SupportPageComponent implements OnInit {
+  readonly faqItems = signal<FAQItem[]>([]);
   // icons
   faComment = faComment;
   faFlag = faFlag;
   faHandHoldingHeart = faHandHoldingHeart;
   faTrashCan = faTrashCan;
   faGratipay = faGratipay;
-
-  // CTOR
-  constructor() {}
 
   /*
   Function Name: ngOnInit()
@@ -77,7 +74,7 @@ export class SupportPage implements OnInit {
     document.querySelectorAll(".faqItem").forEach((faqItem) => {
       if (!faqItem.firstElementChild!.textContent) return;
 
-      let item = {
+      const item = {
         href: faqItem.firstElementChild!.id,
         question: faqItem.firstElementChild!.textContent,
       };

@@ -42,11 +42,7 @@ import {
   WritableSignal,
   Output,
   EventEmitter,
-  ViewChild,
-  ElementRef,
-  effect,
-  OnChanges,
-  SimpleChanges,
+  inject,
 } from "@angular/core";
 import { faComment, faEdit, faFlag } from "@fortawesome/free-regular-svg-icons";
 import { faHandHoldingHeart, faEllipsisV } from "@fortawesome/free-solid-svg-icons";
@@ -61,11 +57,12 @@ import { AuthService } from "@app/services/auth.service";
 import { ItemsService } from "@app/services/items.service";
 import { type PostGet } from "@app/interfaces/post.interface";
 import { SWManager } from "@app/services/sWManager.service";
-import { PostAndReportResponse } from "@app/interfaces/responses";
-import { ItemDeleteForm } from "@forms/itemDeleteForm/itemDeleteForm.component";
-import { ReportForm } from "@forms/reportForm/reportForm.component";
-import { PostEditForm } from "@forms/postEditForm/postEditForm.component";
-import { SendHugForm } from "@forms/sendHugForm/sendHugForm.component";
+import { type PostAndReportResponse } from "@app/interfaces/api";
+import { ItemDeleteFormComponent } from "@forms/itemDeleteForm/itemDeleteForm.component";
+import { ReportFormComponent } from "@forms/reportForm/reportForm.component";
+import { PostEditFormComponent } from "@forms/postEditForm/postEditForm.component";
+import { SendHugFormComponent } from "@forms/sendHugForm/sendHugForm.component";
+import { type ReportType } from "@app/interfaces/report.interface";
 
 @Component({
   selector: "app-single-post",
@@ -75,14 +72,14 @@ import { SendHugForm } from "@forms/sendHugForm/sendHugForm.component";
   imports: [
     CommonModule,
     FontAwesomeModule,
-    ItemDeleteForm,
-    ReportForm,
-    PostEditForm,
-    SendHugForm,
+    ItemDeleteFormComponent,
+    ReportFormComponent,
+    PostEditFormComponent,
+    SendHugFormComponent,
     RouterLink,
   ],
 })
-export class SinglePost implements AfterViewChecked, OnInit, OnChanges, OnDestroy {
+export class PostComponent implements AfterViewChecked, OnInit, OnDestroy {
   @Input()
   get post(): PostGet | undefined {
     return this._post();
@@ -91,63 +88,42 @@ export class SinglePost implements AfterViewChecked, OnInit, OnChanges, OnDestro
     this._post.set(value);
   }
   @Input() type!: "n" | "s";
-  @Input() containerClass!: string;
   @Output() deletedId = new EventEmitter<number>();
-  protected _post: WritableSignal<PostGet | undefined> = signal(undefined);
-  postId = computed(() => `${this.type}Post${this._post()?.id || ""}`);
-  @ViewChild("buttonsContainer") buttonsContainer!: ElementRef;
+  protected readonly _post: WritableSignal<PostGet | undefined> = signal(undefined);
+  readonly postId = computed(() => `${this.type}Post${this._post()?.id || ""}`);
   // edit popup sub-component variables
-  editType: "post" = "post";
-  editMode = signal(false);
-  deleteMode = signal(false);
-  toDelete: "Post" = "Post";
-  itemToDelete = computed(() => this._post()?.id);
-  reportMode = signal(false);
-  reportType: "Post" = "Post";
-  sendMessageMode = signal(false);
+  editType = "post";
+  readonly editMode = signal(false);
+  readonly deleteMode = signal(false);
+  readonly itemToDelete = computed(() => this._post()?.id);
+  readonly reportMode = signal(false);
+  reportType: ReportType = "Post";
+  readonly sendMessageMode = signal(false);
   subscriptions: Subscription[] = [];
-  shouldShowSubmenu = signal(true);
-  shouldMenuFloat = signal(false);
-  shouldDisableHugBtn = computed(
+  readonly shouldShowSubmenu = signal(true);
+  readonly shouldMenuFloat = signal(false);
+  readonly shouldDisableHugBtn = computed(
     () =>
       !this.authService.authenticated() ||
       this._post()?.sentHugs?.includes(this.authService.userData()!.id!) ||
       this._post()?.userId == this.authService.userData()?.id,
   );
   // Classes
-  menuButtonClass = computed(() => ({
+  readonly menuButtonClass = computed(() => ({
     "textlessButton menuButton": true,
     hidden: !this.shouldMenuFloat(),
   }));
-  buttonsContainerClass = computed(() => ({
+  readonly buttonsContainerClass = computed(() => ({
     buttonsContainer: true,
     float: this.shouldMenuFloat(),
   }));
-  subMenuClass = computed(() => ({
+  readonly subMenuClass = computed(() => ({
     subMenu: true,
     float: this.shouldMenuFloat(),
     hidden: !this.shouldShowSubmenu(),
   }));
-  authenticatedButtonsCount = computed<number>(() => {
-    if (!this.authService.userData()) return 0;
-
-    let currentCount = 0;
-
-    if (
-      this.authService.canUser("patch:any-post") ||
-      this.authService.userData()?.id == this._post()?.id
-    )
-      currentCount += 1;
-    if (
-      this.authService.canUser("delete:any-post") ||
-      this.authService.userData()?.id != this._post()?.id
-    )
-      currentCount += 1;
-
-    return currentCount;
-  });
-  displayedButtons = computed(() => {
-    const initialButtonsCount = 2;
+  readonly displayedButtons = computed(() => {
+    let initialButtonsCount = 2;
 
     // if (
     //   this.authService.userData() &&
@@ -169,11 +145,11 @@ export class SinglePost implements AfterViewChecked, OnInit, OnChanges, OnDestro
 
     return initialButtonsCount + this.authenticatedButtonsCount();
   });
-  sendHugButtonClass = computed(() => ({
+  readonly sendHugButtonClass = computed(() => ({
     "textlessButton hugButton": true,
     active: this.shouldDisableHugBtn(),
   }));
-  reportButtonClass = computed(() => ({
+  readonly reportButtonClass = computed(() => ({
     "textlessButton reportButton": true,
     disabled: !(
       this.authService.userData() && this.authService.userData()?.id != this._post()?.userId
@@ -186,18 +162,12 @@ export class SinglePost implements AfterViewChecked, OnInit, OnChanges, OnDestro
   faHandHoldingHeart = faHandHoldingHeart;
   faTrashCan = faTrashCan;
   faEllipsisV = faEllipsisV;
-
-  // CTOR
-  constructor(
-    public itemsService: ItemsService,
-    public authService: AuthService,
-    private swManager: SWManager,
-  ) {
-    effect(() => {
-      console.log("display count", this.displayedButtons());
-      console.log("effect class", this.buttonsContainerClass());
-    });
-  }
+  // Delete Popup Constants
+  readonly deleteEndpoint = "posts";
+  readonly itemType = "Post";
+  public itemsService = inject(ItemsService);
+  public authService = inject(AuthService);
+  private swManager = inject(SWManager);
 
   ngOnInit(): void {
     this.subscriptions.push(
@@ -219,7 +189,7 @@ export class SinglePost implements AfterViewChecked, OnInit, OnChanges, OnDestro
             givenHugs: this._post()!.givenHugs + 1,
             sentHugs: sent_hugs,
           });
-          this.swManager.addFetchedItems("posts", [this._post()], "date");
+          this.swManager.addFetchedItems<PostGet>("posts", [this._post() as PostGet], "date");
         }
       }),
     );
@@ -364,7 +334,7 @@ export class SinglePost implements AfterViewChecked, OnInit, OnChanges, OnDestro
 
   /**
    * Updates the post's text with the new text.
-   * @param updatedPost The post/report response returned by the PostEditForm.
+   * @param updatedPost The post/report response returned by the PostEditFormComponent.
    */
   updatePostText(updatedPost: PostAndReportResponse) {
     if (!updatedPost.updatedPost) return;
@@ -373,6 +343,6 @@ export class SinglePost implements AfterViewChecked, OnInit, OnChanges, OnDestro
       ...this._post()!,
       ...updatedPost.updatedPost,
     });
-    this.swManager.addFetchedItems("posts", [this._post()], "date");
+    this.swManager.addFetchedItems<PostGet>("posts", [this._post() as PostGet], "date");
   }
 }

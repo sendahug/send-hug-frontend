@@ -90,7 +90,7 @@ describe("ItemsService", () => {
     // mock response
     const mockResponse = {
       message: {
-        date: "Mon, 08 Jun 2020 14:43:15 GMT",
+        date: new Date("Mon, 08 Jun 2020 14:43:15 GMT"),
         from: {
           displayName: "user",
         },
@@ -127,6 +127,7 @@ describe("ItemsService", () => {
         expect(alertSpy).toHaveBeenCalledWith("Your message was sent!");
         expect(addSpy).toHaveBeenCalledWith("messages", {
           ...mockResponse.message,
+          date: new Date(mockResponse.message.date),
           isoDate: new Date(message.date).toISOString(),
         });
         done();

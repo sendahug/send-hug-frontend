@@ -31,7 +31,7 @@
 */
 
 // Angular imports
-import { Injectable, signal } from "@angular/core";
+import { inject, Injectable, signal } from "@angular/core";
 import { SwPush } from "@angular/service-worker";
 import { interval, Subscription, Observable, tap } from "rxjs";
 
@@ -39,16 +39,11 @@ import { interval, Subscription, Observable, tap } from "rxjs";
 import { AlertsService } from "./alerts.service";
 import { SWManager } from "./sWManager.service";
 import { ApiClientService } from "./apiClient.service";
-import { type Notification } from "@app/interfaces/notification.interface";
-
-interface GetNotificationsResponse {
-  success: boolean;
-  notifications: Notification[];
-  newCount: number;
-  current_page: number;
-  total_pages: number;
-  totalItems: number;
-}
+import {
+  type CreateUpdatePushSubscriptionResponse,
+  type GetNotificationsResponse,
+} from "@app/interfaces/api";
+import { type APIParams } from "@app/interfaces/types";
 
 const pushPermissionDeniedErr =
   "Push notifications permission has been denied. Go to your browser settings, remove Send A Hug from the denied list, and then activate push notifications again.";
@@ -58,11 +53,15 @@ export type ToggleButtonOption = "Enable" | "Disable";
   providedIn: "root",
 })
 export class NotificationService {
+  private alertsService = inject(AlertsService);
+  private swPush = inject(SwPush);
+  private serviceWorkerM = inject(SWManager);
+  private apiClient = inject(ApiClientService);
   readonly publicKey = import.meta.env["VITE_PUBLIC_KEY"];
   // push notifications variables
   notificationsSub: PushSubscription | undefined;
   subId = 0;
-  newNotifications = signal(0);
+  readonly newNotifications = signal(0);
   resubscribeCalls = 0;
   subscriptionDate = 0;
   // notifications refresh variables
@@ -70,12 +69,7 @@ export class NotificationService {
   refreshSub: Subscription | undefined;
 
   // CTOR
-  constructor(
-    private alertsService: AlertsService,
-    private swPush: SwPush,
-    private serviceWorkerM: SWManager,
-    private apiClient: ApiClientService,
-  ) {
+  constructor() {
     navigator.serviceWorker.addEventListener("message", this.renewPushSubscription);
   }
 
@@ -112,7 +106,7 @@ export class NotificationService {
    * @param read - type of notifications to fetch (read/unread only).
    */
   getNotifications(page: number = 1, read?: boolean) {
-    const params: { [key: string]: any } = { page };
+    const params: APIParams = { page };
     if (read !== undefined) params["readStatus"] = read;
 
     // gets Notifications
@@ -200,7 +194,7 @@ export class NotificationService {
         // if there was an error, alert the user
       })
       .catch((err) => {
-        this.alertsService.createAlert({ type: "Error", message: err });
+        this.alertsService.createAlert({ type: "Error", message: `Error: ${err}` });
       });
   }
 
@@ -212,12 +206,19 @@ export class NotificationService {
     return this.requestSubscription()
       .then((subscription) => {
         // send the info to the server
-        this.apiClient.post("push_subscriptions", JSON.stringify(subscription)).subscribe({
-          next: (response: any) => {
-            this.subId = response.subId;
-            this.alertsService.createSuccessAlert("Subscribed to push notifications successfully!");
-          },
-        });
+        this.apiClient
+          .post<CreateUpdatePushSubscriptionResponse>(
+            "push_subscriptions",
+            JSON.stringify(subscription),
+          )
+          .subscribe({
+            next: (response) => {
+              this.subId = response.subId;
+              this.alertsService.createSuccessAlert(
+                "Subscribed to push notifications successfully!",
+              );
+            },
+          });
       })
       .catch((err) => {
         if (typeof err == "string" && err.includes("permission denied")) {
@@ -226,7 +227,7 @@ export class NotificationService {
             message: pushPermissionDeniedErr,
           });
         } else {
-          this.alertsService.createAlert({ type: "Error", message: err });
+          this.alertsService.createAlert({ type: "Error", message: `Error: ${err}` });
         }
       });
   }
@@ -252,9 +253,12 @@ export class NotificationService {
       this.requestSubscription().then((subscription) => {
         // update the saved subscription in the database
         this.apiClient
-          .patch(`push_subscriptions/${this.subId}`, JSON.stringify(subscription))
+          .patch<CreateUpdatePushSubscriptionResponse>(
+            `push_subscriptions/${this.subId}`,
+            JSON.stringify(subscription),
+          )
           .subscribe({
-            next: (response: any) => {
+            next: (response) => {
               this.subId = response.subId;
             },
           });

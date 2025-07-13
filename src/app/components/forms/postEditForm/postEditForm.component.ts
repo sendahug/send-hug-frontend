@@ -31,9 +31,9 @@
 */
 
 // Angular imports
-import { Component, Input, Output, EventEmitter, OnInit } from "@angular/core";
+import { Component, Output, EventEmitter, OnInit, input, inject } from "@angular/core";
 import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
-import { map, mergeMap, of } from "rxjs";
+import { map, mergeMap, of, throwError } from "rxjs";
 import { CommonModule } from "@angular/common";
 
 // App-related import
@@ -43,45 +43,37 @@ import { ValidationService } from "@app/services/validation.service";
 import { AlertsService } from "@app/services/alerts.service";
 import { ApiClientService } from "@app/services/apiClient.service";
 import { SWManager } from "@app/services/sWManager.service";
-import { type PostAndReportResponse } from "@app/interfaces/responses";
-import { PopUp } from "@common/popUp/popUp.component";
+import { type PostAndReportResponse, type PostEditResponse } from "@app/interfaces/api";
+import { PopUpComponent } from "@common/popUp/popUp.component";
 import { TeleportDirective } from "@app/directives/teleport.directive";
-
-interface PostEditResponse {
-  success: boolean;
-  updated: PostGet;
-}
+import { ReportData } from "@app/interfaces/report.interface";
 
 @Component({
   selector: "post-edit-form",
   templateUrl: "./postEditForm.component.html",
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule, PopUp, TeleportDirective],
+  imports: [ReactiveFormsModule, CommonModule, PopUpComponent, TeleportDirective],
 })
-export class PostEditForm implements OnInit {
+export class PostEditFormComponent implements OnInit {
+  private adminService = inject(AdminService);
+  private validationService = inject(ValidationService);
+  private alertService = inject(AlertsService);
+  private apiClient = inject(ApiClientService);
+  private swManager = inject(SWManager);
+  private fb = inject(FormBuilder);
   // item to edit
-  @Input() editedItem!: PostGet;
+  readonly editedItem = input.required<PostGet>();
   // indicates whether edit/delete mode is still required
   @Output() editMode = new EventEmitter<boolean>();
   @Output() updateResult = new EventEmitter<PostAndReportResponse>();
-  @Input() reportData: any;
-  @Input() isAdmin = false;
+  readonly reportData = input<ReportData | null>();
+  readonly isAdmin = input<boolean>(false);
   postEditForm = this.fb.group({
     postText: ["", [Validators.required, this.validationService.validateItemAgainst("post")]],
   });
 
-  // CTOR
-  constructor(
-    private adminService: AdminService,
-    private validationService: ValidationService,
-    private alertService: AlertsService,
-    private apiClient: ApiClientService,
-    private swManager: SWManager,
-    private fb: FormBuilder,
-  ) {}
-
   ngOnInit(): void {
-    this.postEditForm.controls.postText.setValue(this.editedItem.text);
+    this.postEditForm.controls.postText.setValue(this.editedItem().text);
   }
 
   /*
@@ -108,11 +100,14 @@ export class PostEditForm implements OnInit {
       return;
     }
 
-    this.editedItem.text = newText;
+    const updatedPost = {
+      ...this.editedItem(),
+      text: newText,
+    };
 
     // Edit the post
     this.apiClient
-      .patch<PostEditResponse>(`posts/${this.editedItem.id}`, this.editedItem)
+      .patch<PostEditResponse>(`posts/${this.editedItem().id}`, updatedPost)
       .pipe(mergeMap((postResponse) => this.updateReportIfNecessary(closeReport, postResponse)))
       .subscribe({
         next: (response: PostAndReportResponse) => {
@@ -123,9 +118,15 @@ export class PostEditForm implements OnInit {
           this.alertService.createSuccessAlert(editMessage);
 
           if (response.updatedPost)
-            this.swManager.addFetchedItems("posts", [response.updatedPost], "date");
+            this.swManager.addFetchedItems<PostGet>("posts", [response.updatedPost], "date");
           this.updateResult.emit(response);
           this.editMode.emit(false);
+        },
+        error: (error: Error) => {
+          this.alertService.createAlert({
+            type: "Error",
+            message: `An error occurred: ${error}`,
+          });
         },
       });
   }
@@ -140,8 +141,11 @@ export class PostEditForm implements OnInit {
     // If there's a Close Report value and the admin selected
     // to close it, also close the report.
     if (closeReport === true) {
+      if (!this.reportData())
+        return throwError(() => "No report data provided. Cannot close the report.");
+
       return this.adminService
-        .closeReport(this.reportData.reportID, false, postResponse.updated.id)
+        .closeReport(this.reportData()!.reportID, false, postResponse.updated.id)
         .pipe(
           map((reportResponse) => {
             return {

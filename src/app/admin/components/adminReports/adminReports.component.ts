@@ -31,7 +31,7 @@
 */
 
 // Angular imports
-import { Component, computed, signal } from "@angular/core";
+import { Component, computed, inject, signal } from "@angular/core";
 
 // App imports
 import { AdminService } from "@app/services/admin.service";
@@ -39,59 +39,62 @@ import { ApiClientService } from "@app/services/apiClient.service";
 import { HttpErrorResponse } from "@angular/common/http";
 import { type ReportGet } from "@app/interfaces/report.interface";
 import { AlertsService } from "@app/services/alerts.service";
-import { PostAndReportResponse, UpdatedUserReportResponse } from "@app/interfaces/responses";
+import {
+  PostAndReportResponse,
+  UpdatedUserReportResponse,
+  GetReportsResponse,
+} from "@app/interfaces/api";
+import { type ReportData, type EditReportUserData } from "@app/interfaces/report.interface";
+import { PostGet } from "@app/interfaces/post.interface";
 
-interface ReportData {
-  userID: number;
-  reportID: number;
-  postID?: number;
-}
+/* eslint-disable @angular-eslint/prefer-standalone */
+/* Since the Admin section is self-contained, it's better off as a module */
 
 @Component({
   selector: "app-admin-reports",
   templateUrl: "./adminReports.component.html",
+  standalone: false,
 })
-export class AdminReports {
-  postReports = signal<ReportGet[]>([]);
-  userReports = signal<ReportGet[]>([]);
-  totalPostReportsPages = signal(1);
-  totalUserReportsPages = signal(1);
-  currentPostReportsPage = signal(1);
-  currentUserReportsPage = signal(1);
-  isLoading = signal(false);
+export class AdminReportsComponent {
+  private apiClient = inject(ApiClientService);
+  private adminService = inject(AdminService);
+  private alertsService = inject(AlertsService);
+  readonly postReports = signal<ReportGet[]>([]);
+  readonly userReports = signal<ReportGet[]>([]);
+  readonly totalPostReportsPages = signal(1);
+  readonly totalUserReportsPages = signal(1);
+  readonly currentPostReportsPage = signal(1);
+  readonly currentUserReportsPage = signal(1);
+  readonly isLoading = signal(false);
   // edit popup sub-component variables
-  toEdit = signal<any>(undefined); // TODO: Fix the typing here
-  nameEditMode = signal(false);
-  postEditMode = signal(false);
-  reportData = signal<ReportData>({
+  readonly userToEdit = signal<EditReportUserData>({ id: 0, displayName: "" });
+  readonly postToEdit = signal<PostGet>({} as PostGet);
+  readonly nameEditMode = signal(false);
+  readonly postEditMode = signal(false);
+  readonly reportData = signal<ReportData>({
     reportID: 0,
     userID: 0,
   });
-  deleteMode = signal(false);
-  toDelete = signal<string | undefined>(undefined);
-  itemToDelete = signal<number | undefined>(undefined);
-  usersPrevButtonClass = computed(() => ({
+  readonly deleteMode = signal(false);
+  readonly itemToDelete = signal<number | undefined>(undefined);
+  readonly usersPrevButtonClass = computed(() => ({
     "appButton prevButton": true,
     disabled: this.currentUserReportsPage() <= 1,
   }));
-  usersNextButtonClass = computed(() => ({
+  readonly usersNextButtonClass = computed(() => ({
     "appButton nextButton": true,
     disabled: this.currentUserReportsPage() >= this.totalUserReportsPages(),
   }));
-  postsPrevButtonClass = computed(() => ({
+  readonly postsPrevButtonClass = computed(() => ({
     "appButton prevButton": true,
     disabled: this.currentPostReportsPage() <= 1,
   }));
-  postsNextButtonClass = computed(() => ({
+  readonly postsNextButtonClass = computed(() => ({
     "appButton nextButton": true,
     disabled: this.currentPostReportsPage() >= this.totalPostReportsPages(),
   }));
 
-  constructor(
-    private apiClient: ApiClientService,
-    private adminService: AdminService,
-    private alertsService: AlertsService,
-  ) {
+  constructor() {
     this.fetchReports();
   }
 
@@ -103,12 +106,12 @@ export class AdminReports {
 
     // Get reports
     this.apiClient
-      .get("reports", {
+      .get<GetReportsResponse>("reports", {
         userPage: `${this.currentUserReportsPage()}`,
         postPage: `${this.currentPostReportsPage()}`,
       })
       .subscribe({
-        next: (response: any) => {
+        next: (response: GetReportsResponse) => {
           this.userReports.set(response.userReports);
           this.totalUserReportsPages.set(response.totalUserPages);
           this.postReports.set(response.postReports);
@@ -148,7 +151,7 @@ export class AdminReports {
   Programmer: Shir Bar Lev.
   */
   editUser(reportID: number, userID: number, displayName: string) {
-    this.toEdit.set({
+    this.userToEdit.set({
       displayName,
       id: userID,
     });
@@ -169,7 +172,7 @@ export class AdminReports {
   Programmer: Shir Bar Lev.
   */
   editPost(postID: number, postText: string, reportID: number) {
-    this.toEdit.set({ text: postText, id: postID });
+    this.postToEdit.set({ text: postText, id: postID } as PostGet);
     this.postEditMode.set(true);
     this.reportData.set({
       reportID,
@@ -189,7 +192,6 @@ export class AdminReports {
   */
   deletePost(postID: number, userID: number, reportID: number) {
     this.deleteMode.set(true);
-    this.toDelete.set("ad post");
     this.itemToDelete.set(postID);
     this.reportData.set({
       reportID,
@@ -206,7 +208,7 @@ export class AdminReports {
   */
   dismissReport(reportID: number, dismiss: boolean, postID?: number, userID?: number) {
     this.adminService.closeReport(reportID, dismiss, postID, userID).subscribe({
-      next: (response: any) => {
+      next: (response) => {
         // if the report was dismissed, alert the user
         this.alertsService.createSuccessAlert(`Report ${response.updated.id} was dismissed!`);
         if (userID)
@@ -261,7 +263,7 @@ export class AdminReports {
 
   /**
    * Updates the UI with the updated details of the post and report.
-   * @param response The post/report response returned by the PostEditForm.
+   * @param response The post/report response returned by the PostEditFormComponent.
    */
   updatePostReport(response: PostAndReportResponse) {
     // If the report was closed, remove it
@@ -299,6 +301,13 @@ export class AdminReports {
    * @param deletedId the ID of the deleted post.
    */
   removeReport(deletedId: number) {
-    this.postReports.set(this.postReports().filter((report) => report.postID != deletedId));
+    this.adminService
+      .closeReportAndAlertUserAfterDelete(deletedId, {
+        userID: this.reportData().userID,
+        reportID: this.reportData().reportID,
+      })
+      .add(() => {
+        this.postReports.set(this.postReports().filter((report) => report.postID != deletedId));
+      });
   }
 }

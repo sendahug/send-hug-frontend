@@ -31,7 +31,7 @@
 */
 
 // Angular imports
-import { Component, WritableSignal, computed, signal } from "@angular/core";
+import { Component, WritableSignal, computed, inject, signal } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { from, map, switchMap, tap } from "rxjs";
 import { CommonModule } from "@angular/common";
@@ -41,45 +41,39 @@ import { FullListType } from "@app/interfaces/types";
 import { type PostGet } from "@app/interfaces/post.interface";
 import { SWManager } from "@app/services/sWManager.service";
 import { ApiClientService } from "@app/services/apiClient.service";
-import { SinglePost } from "@common/post/post.component";
-import { Loader } from "@common/loader/loader.component";
-
-interface PostsListResponse {
-  success: boolean;
-  posts: PostGet[];
-  total_pages: number;
-}
+import { PostComponent } from "@common/post/post.component";
+import { LoaderComponent } from "@common/loader/loader.component";
+import { type PostsListResponse } from "@app/interfaces/api";
 
 @Component({
   selector: "app-full-list",
   templateUrl: "./fullList.component.html",
   styleUrl: "./fullList.component.less",
   standalone: true,
-  imports: [CommonModule, SinglePost, Loader],
+  imports: [CommonModule, PostComponent, LoaderComponent],
 })
-export class FullList {
+export class FullListComponent {
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private swManager = inject(SWManager);
+  private apiClient = inject(ApiClientService);
   // current page and type of list
-  type = signal<FullListType>("New");
-  currentPage = signal(1);
-  totalPages = signal(1);
-  isLoading = signal(false);
-  posts: WritableSignal<PostGet[]> = signal([]);
-  previousPageButtonClass = computed(() => ({
+  readonly type = signal<FullListType>("New");
+  readonly currentPage = signal(1);
+  readonly totalPages = signal(1);
+  readonly isLoading = signal(false);
+  readonly posts: WritableSignal<PostGet[]> = signal([]);
+  readonly previousPageButtonClass = computed(() => ({
     "appButton prevButton": true,
     disabled: this.currentPage() <= 1,
   }));
-  nextPageButtonClass = computed(() => ({
+  readonly nextPageButtonClass = computed(() => ({
     "appButton nextButton": true,
     disabled: this.totalPages() <= this.currentPage(),
   }));
 
   // CTOR
-  constructor(
-    private route: ActivatedRoute,
-    private router: Router,
-    private swManager: SWManager,
-    private apiClient: ApiClientService,
-  ) {
+  constructor() {
     const urlPath = this.route.snapshot.url[0].path;
 
     // set the type from the url only if a valid type is
@@ -111,14 +105,15 @@ export class FullList {
     fetchFromIdb$
       .pipe(
         switchMap(() =>
-          this.apiClient.get<PostsListResponse>(`posts/${this.type().toLowerCase()}`, {
+          this.apiClient.get<PostsListResponse>("posts", {
             page: this.currentPage(),
+            type: this.type().toLowerCase(),
           }),
         ),
       )
       .subscribe((data) => {
         this.updateInterface(data);
-        this.swManager.addFetchedItems("posts", data.posts, "date");
+        this.swManager.addFetchedItems<PostGet>("posts", data.posts, "date");
       });
   }
 

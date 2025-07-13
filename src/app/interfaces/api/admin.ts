@@ -1,5 +1,5 @@
 /*
-  Various response interfaces used by the app.
+  Various response interfaces used by the app (admin routes).
   ---------------------------------------------------
   MIT License
 
@@ -29,8 +29,12 @@
   SOFTWARE.
 */
 
-import { type PostGet } from "./post.interface";
+import { type PostGet } from "@app/interfaces/post.interface";
+import { type ReportGet } from "@app/interfaces/report.interface";
+import { type Filter } from "@app/interfaces/filter.interface";
+import { type BlockedUser } from "@app/interfaces/user.interface";
 
+/** Report Interfaces */
 export interface PostAndReportResponse {
   success: boolean;
   updatedPost?: PostGet;
@@ -41,4 +45,40 @@ export interface UpdatedUserReportResponse {
   reportID: number;
   closed: boolean;
   displayName: string;
+}
+
+export interface GetReportsResponse {
+  success: boolean;
+  userReports: ReportGet[];
+  totalUserPages: number;
+  postReports: ReportGet[];
+  totalPostPages: number;
+}
+
+export interface UpdateReportResponse {
+  success: boolean;
+  updated: ReportGet;
+}
+
+/** Filter Interfaces */
+export interface GetFiltersResponse {
+  success: boolean;
+  words: Array<Filter>;
+  total_pages: number;
+}
+
+export interface AddFiltersResponse {
+  success: boolean;
+  added: Filter;
+}
+
+export interface DeleteFiltersResponse {
+  success: boolean;
+  deleted: Filter;
+}
+
+/** Block Interfaces */
+export interface BlockUserResponse {
+  success: boolean;
+  updated: BlockedUser;
 }

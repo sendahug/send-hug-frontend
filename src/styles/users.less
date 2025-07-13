@@ -135,13 +135,8 @@ app-user-page {
 /* =================== My Posts Styling =================== */
 /* User Post */
 .userPost {
-  &:extend(#frameSample);
-  width: 80%;
-  border-radius: 10px;
-  border: none;
-  background: var(--itemBackground);
-  margin: 15px 7%;
-  padding: 10px;
+  width: 90%;
+  margin: 15px 5%;
 }
 
 /* Post text */
@@ -226,14 +221,12 @@ app-messages {
   padding: 0;
   display: flex;
   flex-direction: column;
-  /* Responsive styling for screens above 800px width */
-  @media screen and (min-width: 800px) {
-    flex-direction: row;
-  }
+  width: 100%;
+  align-items: center;
 }
 
 /* Page Headline */
-app-messages h3 {
+app-messages h1 {
   .fontSize(24);
   text-align: center;
   color: var(--headlineColour);
@@ -247,44 +240,40 @@ app-messages h3 {
   }
 }
 
-/* Mailbox navigation button */
-.messNavOption {
-  margin: 5px;
-  background: var(--buttonBackground);
-  color: #fff;
-  border-radius: 10px;
-  font-weight: bold;
-  padding: 7px;
-  text-decoration: none;
-  /* Responsive styling for screens above 500px width */
-  @media screen and (min-width: 500px) {
-    margin: 10px 10px !important;
-  }
-  /* Responsive styling for screens above 550px width */
-  @media screen and (min-width: 550px) {
-    .fontSize(14);
-  }
-  /* Responsive styling for screens above 800px width */
-  @media screen and (min-width: 800px) {
-    width: 80px;
+#mailboxContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+
+  /* Responsive styling for screens above 700px width */
+  @media screen and (min-width: 700px) {
+    flex-direction: row;
+    align-items: flex-start;
   }
 }
 
 /* Inbox Container */
-#userInbox {
-  &:extend(#frameSample);
-  width: 90%;
-  margin: 10px 5%;
-  background: var(--boxesBackground);
-  border-radius: 5px;
-  border: none;
-  box-shadow: 5px 5px 7px 0 rgba(46, 61, 73, 0.5);
+#threadList,
+#messageList {
+  border-radius: 10px;
+  box-shadow: 5px 5px 5px 0 rgba(46, 61, 73, 0.5);
   min-height: 100px;
   overflow: auto;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+}
+
+#threadList {
+  &:extend(#frameSample);
+  width: 90%;
+  margin: 10px 5%;
+  background: var(--threadsBackground);
+  border: 3px solid var(--itemBackground);
+
   /* Responsive styling for screens above 450px width */
   @media screen and (min-width: 450px) {
     width: 84%;
@@ -298,13 +287,61 @@ app-messages h3 {
   /* Responsive styling for screens above 700px width */
   @media screen and (min-width: 700px) {
     width: 70%;
-    margin: 10px 15%;
+    margin: 10px 10px;
   }
   /* Responsive styling for screens above 800px width */
-  @media screen and (min-width: 800px) {
-    width: 65%;
-    margin: 2% 10px;
+  @media screen and (min-width: 850px) {
+    width: 70%;
+    margin: 1% 10px;
   }
+}
+
+#threadList.threadOpen {
+  @media screen and (max-width: 700px) {
+    display: none;
+  }
+  /* Responsive styling for screens above 700px width */
+  @media screen and (min-width: 700px) {
+    width: 45%;
+    margin: 10px 10px;
+  }
+  /* Responsive styling for screens above 800px width */
+  @media screen and (min-width: 850px) {
+    width: 40%;
+    margin: 1% 10px;
+  }
+}
+
+#threadList h2,
+#messageList h2 {
+  .fontSize(20);
+  margin-bottom: 0;
+}
+
+#messageList {
+  background: var(--boxesBackground);
+  border: none;
+  width: 90%;
+  margin: 10px 5%;
+  padding: 10px 0;
+
+  /* Responsive styling for screens above 700px width */
+  @media screen and (min-width: 700px) {
+    width: 50%;
+    margin: 10px 10px;
+  }
+
+  /* Responsive styling for screens above 800px width */
+  @media screen and (min-width: 850px) {
+    width: 55%;
+    margin: 1% 10px;
+  }
+}
+
+#messageList > app-paginated-list {
+  width: 100%;
+  margin: 0;
+  padding: 0;
 }
 
 /* Inbox / Outbox / Threads / single thread container */
@@ -313,7 +350,7 @@ app-messages h3 {
 .mailboxMessages {
   &:extend(.itemList);
   border: none;
-  width: 90%;
+  width: 100%;
   margin: 0;
 }
 
@@ -321,6 +358,15 @@ app-messages h3 {
 .messageProfilePic .userIcon {
   width: 60px;
   border-width: 2px;
+}
+
+#threadsList .userIcon {
+  width: 50px;
+  border-width: 1px;
+
+  @media screen and (min-width: 600px) {
+    width: 80px;
+  }
 }
 
 /* Message text */
@@ -343,9 +389,32 @@ app-messages .pageCategory {
   color: var(--headlineColour);
 }
 
-/* Field text - inbox/outbox */
-.mailboxMessages .pageData {
-  .fontSize(15);
+.userThread .pageData.userName {
+  .fontSize(16);
+  font-weight: bold;
+
+  @media screen and (min-width: 600px) {
+    .fontSize(18);
+  }
+}
+
+.userThread .pageData:not(.userName),
+.userThread .pageCategory {
+  .fontSize(14);
+}
+
+#threadList.threadOpen .pageData:not(.userName),
+#threadList.threadOpen .pageCategory {
+  @media screen and (min-width: 600px) {
+    .fontSize(15);
+  }
+}
+
+#threadList:not(.threadOpen) .pageData:not(.userName),
+#threadList:not(.threadOpen) .pageCategory {
+  @media screen and (min-width: 600px) {
+    .fontSize(16);
+  }
 }
 
 /* Message / message thread buttons */
@@ -372,6 +441,10 @@ app-messages .pageCategory {
   @media screen and (min-width: 550px) {
     .fontSize(16);
   }
+}
+
+#threadsList .pagination {
+  margin-top: 5px;
 }
 
 /* Delete all messages / threads button */
@@ -461,6 +534,11 @@ app-messages .pageCategory {
 
 #loginForm > button {
   margin-bottom: 10px;
+}
+
+.formNote {
+  .fontSize(13);
+  text-align: center;
 }
 
 .internalButton {

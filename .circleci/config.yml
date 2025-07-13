@@ -1,10 +1,10 @@
 version: 2.1
 orbs:
-  browser-tools: circleci/browser-tools@1.4.8
-  cypress: cypress-io/cypress@3.3.1
-  codecov: codecov/codecov@4.1.0
+  browser-tools: circleci/browser-tools@2.0.0
+  cypress: cypress-io/cypress@4.1.0
+  codecov: codecov/codecov@5.4.3
 jobs:
-  format:
+  lint:
     docker:
       - image: cimg/node:lts
     steps:
@@ -17,6 +17,7 @@ jobs:
           paths:
             - "node_modules"
       - run: npx prettier --check .
+      - run: npm run lint
   test:
     docker:
       - image: cimg/node:lts-browsers
@@ -25,7 +26,7 @@ jobs:
     steps:
       - checkout
       - run: sudo apt-get update
-      - browser-tools/install-browser-tools
+      - browser-tools/install_browser_tools
       - run: google-chrome --version
       - restore_cache:
           key: send-hug-v1-
@@ -47,7 +48,7 @@ jobs:
           FLASK_ENV: development
           FRONTEND: http://localhost:3000
           FIREBASE_CREDENTIALS_FILE: /home/circleci/send-hug-backend/test_creds.json
-      - image: cimg/postgres:14.10
+      - image: cimg/postgres:16.8
         environment:
           POSTGRES_USER: postgres
           POSTGRES_DB: sendahug
@@ -91,8 +92,8 @@ jobs:
             quart run
           background: true
       # Until we add e2e testing in firefox
-      - browser-tools/install-chrome
-      - browser-tools/install-chromedriver
+      - browser-tools/install_chrome
+      - browser-tools/install_chromedriver
       - run: google-chrome --version
       - cypress/install
       - restore_cache:
@@ -104,11 +105,12 @@ jobs:
           key: send-hug-v1-{{ checksum "package-lock.json" }}
           paths:
             - "node_modules"
+      - run: npm i -g wait-on
       - run:
           name: Start frontend server
           command: npm run dev
           background: true
-      - run: sleep 30
+      - run: wait-on http://localhost:3000
       - run:
           name: Run e2e tests
           command: npm run cypress
@@ -124,7 +126,7 @@ jobs:
           FLASK_ENV: development
           FRONTEND: http://localhost:3000
           FIREBASE_CREDENTIALS_FILE: /home/circleci/send-hug-backend/test_creds.json
-      - image: cimg/postgres:14.10
+      - image: cimg/postgres:16.8
         auth:
           username: mydockerhub-user
           password: $DOCKERHUB_PASSWORD # context / project UI env-var reference
@@ -170,11 +172,12 @@ jobs:
             cd ..
             quart run
           background: true
-      - browser-tools/install-chrome
-      - browser-tools/install-chromedriver
+      - browser-tools/install_chrome
+      - browser-tools/install_chromedriver
       - run: google-chrome --version
       - restore_cache:
           key: send-hug-v1-
+      - run: mkdir pa11y
       - run:
           name: Install dependencies
           command: npm install
@@ -182,19 +185,23 @@ jobs:
           key: send-hug-v1-{{ checksum "package-lock.json" }}
           paths:
             - "node_modules"
+      - run: npm i -g wait-on
       - run:
           name: Start frontend server
           command: npm run dev
           background: true
-      - run: sleep 30
+      - run: wait-on http://localhost:3000
       - run:
           name: Run accessibility tests
           command: npm run pa11y
+      - store_artifacts:
+          path: pa11y
+          destination: pa11y-screenshots
 
 workflows:
   run-testing:
     jobs:
-      - format
+      - lint
       - test
       - e2e
       - accessibility

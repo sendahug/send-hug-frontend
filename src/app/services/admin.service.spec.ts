@@ -45,6 +45,7 @@ import { AuthService } from "./auth.service";
 import { mockAuthedUser } from "@tests/mockData";
 import { ApiClientService } from "./apiClient.service";
 import { ItemsService } from "./items.service";
+import { iconCharacters } from "@app/interfaces/types";
 
 describe("AdminService", () => {
   let adminService: AdminService;
@@ -75,17 +76,12 @@ describe("AdminService", () => {
     expect(adminService).toBeTruthy();
   });
 
-  // Check that the service deletes the post
-  it("deletePost() - should delete a post", () => {
-    // mock response
-    const mockResponse = {
-      success: true,
-      deleted: 10,
-    };
-
+  // Check that the service closes a report and alerts a user their post was deleted
+  it("closeReportAndAlertUserAfterDelete() - should close a report and alert the user", () => {
     const reportData = {
       reportID: 5,
       userID: 2,
+      postID: 10,
     };
     const alertSpy = spyOn(adminService["alertsService"], "createSuccessAlert");
     const dismissSpy = spyOn(adminService, "closeReport").and.returnValue(
@@ -101,6 +97,7 @@ describe("AdminService", () => {
           date: new Date(),
           dismissed: true,
           closed: true,
+          postID: 10,
         },
       }),
     );
@@ -123,62 +120,22 @@ describe("AdminService", () => {
         success: true,
       }),
     );
-    const deleteSWSpy = spyOn(adminService["serviceWorkerM"], "deleteItem");
-    const deleteAPISpy = spyOn(adminService["apiClient"], "delete").and.returnValue(
-      of(mockResponse),
-    );
-    adminService.deletePost(10, reportData, true);
+    adminService.closeReportAndAlertUserAfterDelete(10, reportData);
 
-    expect(alertSpy).toHaveBeenCalledWith("Post 10 was successfully deleted.");
+    expect(alertSpy).toHaveBeenCalledWith(
+      "Post 10 was successfully deleted and the report was closed.",
+    );
+
     expect(dismissSpy).toHaveBeenCalledWith(5, false, 10);
-    expect(messageSpy).toHaveBeenCalled();
-    expect(deleteSWSpy).toHaveBeenCalledWith("posts", 10);
-    expect(deleteAPISpy).toHaveBeenCalledWith("posts/10");
-  });
-
-  it("deletePost() - should delete a post without closing the report", () => {
-    // mock response
-    const mockResponse = {
-      success: true,
-      deleted: 10,
-    };
-
-    const reportData = {
-      reportID: 5,
-      userID: 2,
-    };
-    const alertSpy = spyOn(adminService["alertsService"], "createSuccessAlert");
-    const dismissSpy = spyOn(adminService, "closeReport");
-    const messageSpy = spyOn(adminService["itemsService"], "sendMessage").and.returnValue(
-      of({
-        message: {
-          date: new Date("Mon, 08 Jun 2020 14:43:15 GMT"),
-          from: {
-            displayName: "user",
-          },
-          fromId: 4,
-          for: {
-            displayName: "user2",
-          },
-          forId: 1,
-          id: 9,
-          messageText: "hang in there",
-          threadID: 1,
+    expect(messageSpy).toHaveBeenCalledWith(
+      jasmine.objectContaining({
+        from: {
+          displayName: mockAuthedUser.displayName,
         },
-        success: true,
+        forId: reportData.userID,
+        messageText: `Your post (ID 10) was deleted due to violating our community rules.`,
       }),
     );
-    const deleteSWSpy = spyOn(adminService["serviceWorkerM"], "deleteItem");
-    const deleteAPISpy = spyOn(adminService["apiClient"], "delete").and.returnValue(
-      of(mockResponse),
-    );
-    adminService.deletePost(10, reportData, false);
-
-    expect(alertSpy).toHaveBeenCalledWith("Post 10 was successfully deleted.");
-    expect(dismissSpy).not.toHaveBeenCalled();
-    expect(messageSpy).toHaveBeenCalled();
-    expect(deleteSWSpy).toHaveBeenCalledWith("posts", 10);
-    expect(deleteAPISpy).toHaveBeenCalledWith("posts/10");
   });
 
   // Check that the service edits a user's display name
@@ -219,9 +176,8 @@ describe("AdminService", () => {
     );
 
     adminService.editUser(userData, true, 6).add(() => {
-      expect(alertSpy).toHaveBeenCalled();
       expect(alertSpy).toHaveBeenCalledWith("User user updated.");
-      expect(patchSpy).toHaveBeenCalledWith("users/all/2", userData);
+      expect(patchSpy).toHaveBeenCalledWith("users/2", userData);
       expect(closeSpy).toHaveBeenCalledWith(6, false, undefined, 2);
       done();
     });
@@ -249,9 +205,8 @@ describe("AdminService", () => {
     const closeSpy = spyOn(adminService, "closeReport");
 
     adminService.editUser(userData, false, 6).add(() => {
-      expect(alertSpy).toHaveBeenCalled();
       expect(alertSpy).toHaveBeenCalledWith("User user updated.");
-      expect(patchSpy).toHaveBeenCalledWith("users/all/2", userData);
+      expect(patchSpy).toHaveBeenCalledWith("users/2", userData);
       expect(closeSpy).not.toHaveBeenCalled();
       done();
     });
@@ -300,10 +255,24 @@ describe("AdminService", () => {
         displayName: "name",
         receivedHugs: 2,
         givenHugs: 2,
-        role: "user",
+        role: {
+          id: 1,
+          name: "user",
+          permissions: [],
+        },
         blocked: true,
         releaseDate: new Date("2020-09-29 19:17:31.072"),
         postsNum: 1,
+        receivedH: 0,
+        givenH: 0,
+        posts: 0,
+        selectedIcon: "kitty" as iconCharacters,
+        iconColours: {
+          character: "#000000",
+          rbg: "#FFFFFF",
+          lbg: "",
+          item: "",
+        },
       },
       total_pages: 1,
     };
@@ -322,15 +291,16 @@ describe("AdminService", () => {
     adminService.blockUser(15, "oneDay").subscribe((res) => {
       expect(fetchUserDataSpy).toHaveBeenCalledWith(15);
       expect(calculateSpy).toHaveBeenCalledWith("oneDay", undefined);
-      expect(patchSpy).toHaveBeenCalledWith("users/all/15", {
+      expect(patchSpy).toHaveBeenCalledWith("users/15", {
         id: 15,
         releaseDate: blockDate,
         blocked: true,
       });
-      expect(alertSpy).toHaveBeenCalled();
+
       expect(alertSpy).toHaveBeenCalledWith(
         `User ${mockResponse.updated.displayName} has been blocked until ${mockResponse.updated.releaseDate}`,
       );
+
       expect(res).toEqual({
         success: true,
         updated: mockResponse.updated,
@@ -350,10 +320,24 @@ describe("AdminService", () => {
         displayName: "name",
         receivedHugs: 2,
         givenHugs: 2,
-        role: "user",
         blocked: true,
         releaseDate: new Date("2020-09-29 19:17:31.072"),
         postsNum: 1,
+        receivedH: 0,
+        givenH: 0,
+        posts: 0,
+        role: {
+          id: 1,
+          name: "user",
+          permissions: [],
+        },
+        selectedIcon: "kitty" as iconCharacters,
+        iconColours: {
+          character: "#000000",
+          rbg: "#FFFFFF",
+          lbg: "",
+          item: "",
+        },
       },
       total_pages: 1,
     };
@@ -388,16 +372,16 @@ describe("AdminService", () => {
     adminService.blockUser(15, "oneDay", 3).subscribe((res) => {
       expect(fetchUserDataSpy).toHaveBeenCalledWith(15);
       expect(calculateSpy).toHaveBeenCalledWith("oneDay", undefined);
-      expect(patchSpy).toHaveBeenCalledWith("users/all/15", {
+      expect(patchSpy).toHaveBeenCalledWith("users/15", {
         id: 15,
         releaseDate: blockDate,
         blocked: true,
       });
-      expect(alertSpy).toHaveBeenCalled();
+
       expect(alertSpy).toHaveBeenCalledWith(
         `User ${mockResponse.updated.displayName} has been blocked until ${mockResponse.updated.releaseDate}`,
       );
-      expect(dismissSpy).toHaveBeenCalled();
+
       expect(dismissSpy).toHaveBeenCalledWith(3, false, undefined, 15);
       expect(res).toEqual({
         success: true,
@@ -421,7 +405,7 @@ describe("AdminService", () => {
 
     adminService.fetchUserBlockData(10).subscribe({
       next: (data) => {
-        expect(apiClientSpy).toHaveBeenCalledWith("users/all/10");
+        expect(apiClientSpy).toHaveBeenCalledWith("users/10");
         expect(data).toEqual({
           userID: 10,
           isBlocked: false,
@@ -446,7 +430,7 @@ describe("AdminService", () => {
 
     adminService.fetchUserBlockData(10).subscribe({
       next: (data) => {
-        expect(apiClientSpy).toHaveBeenCalledWith("users/all/10");
+        expect(apiClientSpy).toHaveBeenCalledWith("users/10");
         expect(data).toEqual({
           userID: 10,
           isBlocked: true,

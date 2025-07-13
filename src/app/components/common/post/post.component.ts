@@ -42,6 +42,7 @@ import {
   WritableSignal,
   Output,
   EventEmitter,
+  inject,
 } from "@angular/core";
 import { faComment, faEdit, faFlag } from "@fortawesome/free-regular-svg-icons";
 import { faHandHoldingHeart, faEllipsisV } from "@fortawesome/free-solid-svg-icons";
@@ -162,13 +163,9 @@ export class PostComponent implements AfterViewChecked, OnInit, OnDestroy {
   // Delete Popup Constants
   readonly deleteEndpoint = "posts";
   readonly itemType = "Post";
-
-  // CTOR
-  constructor(
-    public itemsService: ItemsService,
-    public authService: AuthService,
-    private swManager: SWManager,
-  ) {}
+  public itemsService = inject(ItemsService);
+  public authService = inject(AuthService);
+  private swManager = inject(SWManager);
 
   ngOnInit(): void {
     this.subscriptions.push(

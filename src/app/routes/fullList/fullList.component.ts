@@ -31,7 +31,7 @@
 */
 
 // Angular imports
-import { Component, WritableSignal, computed, signal } from "@angular/core";
+import { Component, WritableSignal, computed, inject, signal } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { from, map, switchMap, tap } from "rxjs";
 import { CommonModule } from "@angular/common";
@@ -53,6 +53,10 @@ import { type PostsListResponse } from "@app/interfaces/api";
   imports: [CommonModule, PostComponent, LoaderComponent],
 })
 export class FullListComponent {
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private swManager = inject(SWManager);
+  private apiClient = inject(ApiClientService);
   // current page and type of list
   readonly type = signal<FullListType>("New");
   readonly currentPage = signal(1);
@@ -69,12 +73,7 @@ export class FullListComponent {
   }));
 
   // CTOR
-  constructor(
-    private route: ActivatedRoute,
-    private router: Router,
-    private swManager: SWManager,
-    private apiClient: ApiClientService,
-  ) {
+  constructor() {
     const urlPath = this.route.snapshot.url[0].path;
 
     // set the type from the url only if a valid type is

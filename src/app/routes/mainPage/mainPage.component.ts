@@ -31,7 +31,7 @@
 */
 
 // Angular imports
-import { Component, WritableSignal, signal } from "@angular/core";
+import { Component, WritableSignal, inject, signal } from "@angular/core";
 import { forkJoin, from, map, switchMap, tap } from "rxjs";
 import { RouterLink } from "@angular/router";
 
@@ -52,15 +52,14 @@ import { type MainPageResponse } from "@app/interfaces/api";
   imports: [CommonModule, LoaderComponent, PostComponent, RouterLink],
 })
 export class MainPageComponent {
+  private apiClient = inject(ApiClientService);
+  private swManager = inject(SWManager);
   readonly isLoading = signal(false);
   readonly newPosts: WritableSignal<PostGet[]> = signal([]);
   readonly suggestedPosts: WritableSignal<PostGet[]> = signal([]);
 
   // CTOR
-  constructor(
-    private apiClient: ApiClientService,
-    private swManager: SWManager,
-  ) {
+  constructor() {
     this.fetchPosts();
   }
 

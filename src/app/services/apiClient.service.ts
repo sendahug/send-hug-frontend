@@ -31,7 +31,7 @@
 */
 
 // Angular imports
-import { Injectable } from "@angular/core";
+import { inject, Injectable } from "@angular/core";
 import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams } from "@angular/common/http";
 import { Observable, catchError, of, switchMap, tap, throwError } from "rxjs";
 
@@ -44,14 +44,11 @@ import { APIParams } from "@app/interfaces/types";
   providedIn: "root",
 })
 export class ApiClientService {
+  private http = inject(HttpClient);
+  private alertsService = inject(AlertsService);
+  private authService = inject(AuthService);
   readonly serverUrl = import.meta.env["VITE_BACKEND_URL"];
   private authHeader: HttpHeaders = new HttpHeaders().set("Content-Type", "application/json");
-
-  constructor(
-    private http: HttpClient,
-    private alertsService: AlertsService,
-    private authService: AuthService,
-  ) {}
 
   /**
    * Updates the auth header with the current user token.

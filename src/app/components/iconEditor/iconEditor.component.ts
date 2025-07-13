@@ -30,7 +30,7 @@
   SOFTWARE.
 */
 
-import { Component, EventEmitter, Output } from "@angular/core";
+import { Component, EventEmitter, inject, Output } from "@angular/core";
 import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 
 import { AuthService } from "@app/services/auth.service";
@@ -49,6 +49,8 @@ import DogIconSrc from "@/assets/img/dog.svg";
   imports: [ReactiveFormsModule, UserIconComponent],
 })
 export class IconEditorComponent {
+  public authService = inject(AuthService);
+  private fb = inject(FormBuilder);
   BearIconSrc = BearIconSrc;
   KittyIconSrc = KittyIconSrc;
   DogIconSrc = DogIconSrc;
@@ -76,10 +78,7 @@ export class IconEditorComponent {
   @Output() editMode = new EventEmitter<boolean>();
 
   // CTOR
-  constructor(
-    public authService: AuthService,
-    private fb: FormBuilder,
-  ) {
+  constructor() {
     this.iconEditForm.controls.selectedIcon.valueChanges.subscribe((newValue) => {
       this.iconEditForm.controls.characterColour.setValue(
         DefaultColours[newValue as iconCharacters].character,

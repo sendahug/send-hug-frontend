@@ -31,7 +31,7 @@
 */
 
 // Angular imports
-import { Injectable } from "@angular/core";
+import { inject, Injectable } from "@angular/core";
 import { Observable, map, mergeMap, of, switchMap, tap } from "rxjs";
 
 // App-related imports
@@ -48,12 +48,10 @@ import { type UpdateReportResponse, type OtherUserResponse } from "@app/interfac
   providedIn: "root",
 })
 export class AdminService {
-  constructor(
-    private authService: AuthService,
-    private alertsService: AlertsService,
-    private itemsService: ItemsService,
-    private apiClient: ApiClientService,
-  ) {}
+  private authService = inject(AuthService);
+  private alertsService = inject(AlertsService);
+  private itemsService = inject(ItemsService);
+  private apiClient = inject(ApiClientService);
 
   // REPORTS-RELATED METHODS
   // ==============================================================

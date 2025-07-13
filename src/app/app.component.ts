@@ -37,6 +37,7 @@ import {
   Component,
   computed,
   ElementRef,
+  inject,
   OnInit,
   signal,
   viewChild,
@@ -63,21 +64,20 @@ import { getQueryParamsFromPath } from "./guards/common";
   imports: [CommonModule, RouterOutlet, RouterLink, AppAlertComponent, NavigationMenuComponent],
 })
 export class AppComponent implements OnInit, AfterViewInit, AfterViewChecked {
+  protected authService = inject(AuthService);
+  protected alertsService = inject(AlertsService);
+  private router = inject(Router);
+  private serviceWorkerM = inject(SWManager);
+  protected notificationService = inject(NotificationService);
+  private route = inject(ActivatedRoute);
+  private teleportService = inject(TeleportService);
   readonly canShare = signal(false);
   @ViewChild("modalContainer") modalContainer!: ElementRef;
   readonly navMenu = viewChild(NavigationMenuComponent, { read: ElementRef });
   readonly navMenuHeight = signal(0);
   readonly mainContentStyle = computed(() => ({ top: `${Number(this.navMenuHeight())}px` }));
 
-  constructor(
-    protected authService: AuthService,
-    protected alertsService: AlertsService,
-    private router: Router,
-    private serviceWorkerM: SWManager,
-    protected notificationService: NotificationService,
-    private route: ActivatedRoute,
-    private teleportService: TeleportService,
-  ) {
+  constructor() {
     // Update the user state based on the logged in firebase user
     // (if there is one)
     this.authService.checkForLoggedInUser().subscribe({

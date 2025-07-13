@@ -31,7 +31,7 @@
 */
 
 // Angular imports
-import { Component, signal, computed } from "@angular/core";
+import { Component, signal, computed, inject } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { from, map, switchMap, tap } from "rxjs";
 import { CommonModule } from "@angular/common";
@@ -66,6 +66,11 @@ import { PaginatedListComponent } from "@app/components/common/paginatedList/pag
   ],
 })
 export class AppMessagesComponent {
+  public authService = inject(AuthService);
+  public route = inject(ActivatedRoute);
+  public router = inject(Router);
+  private swManager = inject(SWManager);
+  private apiClient = inject(ApiClientService);
   readonly idbFilterAttribute = signal<"threadID">("threadID");
   readonly threadId = signal<number | undefined>(undefined);
   readonly selectedThread = computed<FullThread | undefined>(
@@ -112,13 +117,7 @@ export class AppMessagesComponent {
   readonly faChevronLeft = faChevronLeft;
 
   // CTOR
-  constructor(
-    public authService: AuthService,
-    private route: ActivatedRoute,
-    private router: Router,
-    private swManager: SWManager,
-    private apiClient: ApiClientService,
-  ) {
+  constructor() {
     const threadsPage = this.route.snapshot.queryParamMap.get("threadsPage");
     this.currentThreadsPage.set(Number(threadsPage) || 1);
     const messagesPage = this.route.snapshot.queryParamMap.get("messagesPage");

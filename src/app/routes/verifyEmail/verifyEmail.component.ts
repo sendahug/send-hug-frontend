@@ -31,7 +31,7 @@
 */
 
 import { CommonModule } from "@angular/common";
-import { Component, OnInit, signal } from "@angular/core";
+import { Component, inject, OnInit, signal } from "@angular/core";
 import { Router } from "@angular/router";
 
 import { AuthService } from "@app/services/auth.service";
@@ -44,12 +44,9 @@ import { LoaderComponent } from "@common/loader/loader.component";
   imports: [CommonModule, LoaderComponent],
 })
 export class VerifyEmailPageComponent implements OnInit {
+  protected authService = inject(AuthService);
+  private router = inject(Router);
   readonly loadingAuth = signal(true);
-
-  constructor(
-    protected authService: AuthService,
-    private router: Router,
-  ) {}
 
   /**
    * Angular's OnInit hook. Serves to wait until the

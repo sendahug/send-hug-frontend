@@ -36,7 +36,7 @@ import {
   platformBrowserDynamicTesting,
 } from "@angular/platform-browser-dynamic/testing";
 import {} from "jasmine";
-import { AfterViewInit, Component, ElementRef, ViewChild } from "@angular/core";
+import { AfterViewInit, Component, ElementRef, inject, ViewChild } from "@angular/core";
 
 import { TeleportDirective } from "./teleport.directive";
 import { TeleportService } from "@app/services/teleport.service";
@@ -53,8 +53,7 @@ import { TeleportService } from "@app/services/teleport.service";
 })
 class MockPageComponent implements AfterViewInit {
   @ViewChild("profileContainer") profileContainer!: ElementRef;
-
-  constructor(private teleporterService: TeleportService) {}
+  private teleporterService = inject(TeleportService);
 
   ngAfterViewInit(): void {
     this.teleporterService.createTeleportTarget("test", this.profileContainer);

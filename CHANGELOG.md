@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+### 2025-07-14
+
+#### Changes
+
+- Updated the paths to the messages-related endpoints to match the new endpoints set in [sendahug/send-hug-backend#751](https://github.com/sendahug/send-hug-backend/pull/751). ([#2259](https://github.com/sendahug/send-hug-frontend/pull/2259))
+
 ### 2025-06-22
 
 #### Chores

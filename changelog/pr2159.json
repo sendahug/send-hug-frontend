@@ -1,9 +1,0 @@
-{
-  "pr_number": 2259,
-  "changes": [
-    {
-      "change": "Changes",
-      "description": "Updated the paths to the messages-related endpoints to match the new endpoints set in [sendahug/send-hug-backend#751](https://github.com/sendahug/send-hug-backend/pull/751)."
-    }
-  ]
-}

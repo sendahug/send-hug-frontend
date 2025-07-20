@@ -2,6 +2,18 @@
 
 ## Unreleased
 
+### 2025-07-20
+
+#### Chores
+
+- Removed an unneeded old global install step from the CircleCI config. That step broke CI due to the package no longer being supported. ([#2169](https://github.com/sendahug/send-hug-frontend/pull/2169))
+
+### 2025-07-14
+
+#### Changes
+
+- Updated the paths to the messages-related endpoints to match the new endpoints set in [sendahug/send-hug-backend#751](https://github.com/sendahug/send-hug-backend/pull/751). ([#2259](https://github.com/sendahug/send-hug-frontend/pull/2259))
+
 ### 2025-06-22
 
 #### Chores

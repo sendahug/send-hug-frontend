@@ -203,7 +203,7 @@ describe("MessageComponent", () => {
 
     // after the click
     expect(appMessage.deleteMode()).toBeTrue();
-    expect(appMessage.deleteEndpoint).toBe("messages/thread");
+    expect(appMessage.deleteEndpoint).toBe("messages");
     expect(appMessage.itemType).toBe("Message");
     expect(appMessageDOM.querySelector("item-delete-form")).toBeTruthy();
   });

@@ -112,7 +112,7 @@ export class AppMessagesComponent {
   }));
   // delete all sub-component variables
   readonly deleteMode = signal(false);
-  readonly deleteEndpoint = signal(`messages/threads`);
+  readonly deleteEndpoint = signal(`threads`);
   readonly itemType = signal<"Thread">("Thread");
   readonly faChevronLeft = faChevronLeft;
 
@@ -146,7 +146,6 @@ export class AppMessagesComponent {
     const fetchFromIdb$ = this.fetchMessagesFromIdb();
     const fetchParams: APIParams = {
       page: this.currentMessagesPage(),
-      type: "thread",
       threadID: this.threadId()!,
     };
 
@@ -205,9 +204,8 @@ export class AppMessagesComponent {
     fetchFromIdb$
       .pipe(
         switchMap(() =>
-          this.apiClient.get<ThreadResponse>("messages", {
+          this.apiClient.get<ThreadResponse>("threads", {
             page: this.currentThreadsPage(),
-            type: "threads",
           }),
         ),
       )

@@ -265,9 +265,8 @@ describe("AppMessagesComponent", () => {
 
     // after
     expect(idbFetchSpy).toHaveBeenCalledWith();
-    expect(apiClientSpy).toHaveBeenCalledWith("messages", {
+    expect(apiClientSpy).toHaveBeenCalledWith("threads", {
       page: 1,
-      type: "threads",
     });
 
     expect(appMessaging.userThreads()).toEqual(mockThreads);
@@ -322,7 +321,6 @@ describe("AppMessagesComponent", () => {
     expect(idbFetchSpy).toHaveBeenCalledWith();
     expect(apiClientSpy).toHaveBeenCalledWith("messages", {
       page: 1,
-      type: "thread",
       threadID: 4,
     });
 
@@ -434,7 +432,7 @@ describe("AppMessagesComponent", () => {
 
     // after the click
     expect(appMessaging.deleteMode()).toBeTrue();
-    expect(appMessaging.deleteEndpoint()).toBe("messages/threads");
+    expect(appMessaging.deleteEndpoint()).toBe("threads");
     expect(appMessaging.itemType()).toBe("Thread");
     expect(appMessagingDOM.querySelector("item-delete-form")).toBeTruthy();
   });

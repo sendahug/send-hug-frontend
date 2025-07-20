@@ -1,9 +1,0 @@
-{
-  "pr_number": 2169,
-  "changes": [
-    {
-      "change": "Chores",
-      "description": "Removed an unneeded old global install step from the CircleCI config. That step broke CI due to the package no longer being supported."
-    }
-  ]
-}

@@ -33,7 +33,7 @@
 import { TestBed } from "@angular/core/testing";
 import {} from "jasmine";
 import { APP_BASE_HREF, CommonModule } from "@angular/common";
-import { of } from "rxjs";
+import { BehaviorSubject, of } from "rxjs";
 import {
   ActivatedRoute,
   provideRouter,
@@ -44,7 +44,7 @@ import {
   withComponentInputBinding,
 } from "@angular/router";
 import { By } from "@angular/platform-browser";
-import { provideZonelessChangeDetection } from "@angular/core";
+import { provideZonelessChangeDetection, signal } from "@angular/core";
 import { MockProvider } from "ng-mocks";
 
 import { FullListComponent } from "./fullList.component";
@@ -55,13 +55,22 @@ import { PostComponent } from "@common/post/post.component";
 import { LoaderComponent } from "@common/loader/loader.component";
 import { AuthService } from "@app/services/auth.service";
 import { ItemsService } from "@app/services/items.service";
+import { mockAuthedUser } from "@tests/mockData";
 
 describe("FullListComponent", () => {
   let pageOnePosts: PostGet[];
   const MockAPIClient = MockProvider(ApiClientService);
-  const MockAuthService = MockProvider(AuthService);
-  const MockItemsService = MockProvider(ItemsService);
-  const MockSWManager = MockProvider(SWManager);
+  const MockAuthService = MockProvider(AuthService, {
+    userData: signal({ ...mockAuthedUser }),
+    authenticated: signal(true),
+  });
+  const MockItemsService = MockProvider(ItemsService, {
+    currentlyOpenMenu: new BehaviorSubject<string>(""),
+    receivedAHug: new BehaviorSubject<number>(0),
+  });
+  const MockSWManager = MockProvider(SWManager, {
+    fetchPosts: () => new Promise((resolve) => resolve({ posts: pageOnePosts, pages: 1 })),
+  });
 
   // Before each test, configure testing environment
   beforeEach(() => {

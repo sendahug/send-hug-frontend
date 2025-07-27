@@ -41,7 +41,7 @@ import {
   withComponentInputBinding,
 } from "@angular/router";
 import { By } from "@angular/platform-browser";
-import { provideZonelessChangeDetection } from "@angular/core";
+import { provideZonelessChangeDetection, signal } from "@angular/core";
 import { MockProvider } from "ng-mocks";
 import { of } from "rxjs";
 
@@ -53,6 +53,7 @@ import { LoaderComponent } from "@common/loader/loader.component";
 import { ApiClientService } from "@app/services/apiClient.service";
 import { AuthService } from "@app/services/auth.service";
 import { SWManager } from "@app/services/sWManager.service";
+import { mockAuthedUser } from "@tests/mockData";
 
 const mockUserSearchResults = [
   {
@@ -121,7 +122,10 @@ describe("SearchResultsComponent", () => {
     const MockAPIClient = MockProvider(ApiClientService, {
       post: () => of(),
     });
-    const MockAuthService = MockProvider(AuthService);
+    const MockAuthService = MockProvider(AuthService, {
+      userData: signal({ ...mockAuthedUser }),
+      authenticated: signal(true),
+    });
     const MockSWManager = MockProvider(SWManager);
 
     TestBed.configureTestingModule({

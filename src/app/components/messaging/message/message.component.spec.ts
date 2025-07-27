@@ -36,6 +36,8 @@ import { APP_BASE_HREF, CommonModule } from "@angular/common";
 import { provideRouter, RouterLink, withComponentInputBinding } from "@angular/router";
 import { By } from "@angular/platform-browser";
 import { NO_ERRORS_SCHEMA, provideZonelessChangeDetection } from "@angular/core";
+import { provideHttpClientTesting } from "@angular/common/http/testing";
+import { provideHttpClient } from "@angular/common/http";
 
 import { MessageComponent } from "./message.component";
 import { type MessageGet } from "@app/interfaces/message.interface";
@@ -63,6 +65,8 @@ describe("MessageComponent", () => {
         { provide: APP_BASE_HREF, useValue: "/" },
         provideZonelessChangeDetection(),
         provideRouter([], withComponentInputBinding()),
+        provideHttpClient(),
+        provideHttpClientTesting(),
       ],
     }).compileComponents();
 

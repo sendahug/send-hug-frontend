@@ -41,6 +41,8 @@ import { NO_ERRORS_SCHEMA } from "@angular/core";
 import { provideZonelessChangeDetection } from "@angular/core";
 import { MockProvider } from "ng-mocks";
 import { BehaviorSubject } from "rxjs";
+import { provideHttpClientTesting } from "@angular/common/http/testing";
+import { provideHttpClient } from "@angular/common/http";
 
 import { PostComponent } from "./post.component";
 import { mockAuthedUser } from "@tests/mockData";
@@ -111,6 +113,8 @@ describe("Post", () => {
         { provide: APP_BASE_HREF, useValue: "/" },
         provideZonelessChangeDetection(),
         provideRouter([]),
+        provideHttpClient(),
+        provideHttpClientTesting(),
         MockItemsService,
         MockAuthService,
       ],

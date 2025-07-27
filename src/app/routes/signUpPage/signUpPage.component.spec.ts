@@ -33,10 +33,7 @@
 import { TestBed } from "@angular/core/testing";
 import {} from "jasmine";
 import { APP_BASE_HREF, CommonModule } from "@angular/common";
-import {
-  BrowserDynamicTestingModule,
-  platformBrowserDynamicTesting,
-} from "@angular/platform-browser-dynamic/testing";
+import { BrowserTestingModule, platformBrowserTesting } from "@angular/platform-browser/testing";
 import { provideRouter, RouterLink } from "@angular/router";
 import { NO_ERRORS_SCHEMA, signal } from "@angular/core";
 import { ReactiveFormsModule } from "@angular/forms";
@@ -60,7 +57,7 @@ describe("SignUpPageComponent", () => {
     });
 
     TestBed.resetTestEnvironment();
-    TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
+    TestBed.initTestEnvironment(BrowserTestingModule, platformBrowserTesting());
 
     TestBed.configureTestingModule({
       schemas: [NO_ERRORS_SCHEMA],

@@ -33,10 +33,7 @@
 import { TestBed } from "@angular/core/testing";
 import {} from "jasmine";
 import { APP_BASE_HREF, CommonModule } from "@angular/common";
-import {
-  BrowserDynamicTestingModule,
-  platformBrowserDynamicTesting,
-} from "@angular/platform-browser-dynamic/testing";
+import { BrowserTestingModule, platformBrowserTesting } from "@angular/platform-browser/testing";
 import { Component, signal } from "@angular/core";
 import { provideRouter, Route, Router, RouterLink, Routes } from "@angular/router";
 import { provideZoneChangeDetection } from "@angular/core";
@@ -78,7 +75,7 @@ describe("SiteMapComponent", () => {
     });
 
     TestBed.resetTestEnvironment();
-    TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
+    TestBed.initTestEnvironment(BrowserTestingModule, platformBrowserTesting());
 
     // Routes
     routes = [

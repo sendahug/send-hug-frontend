@@ -34,10 +34,7 @@ import { fakeAsync, TestBed, tick } from "@angular/core/testing";
 import { provideRouter, RouterLink } from "@angular/router";
 import {} from "jasmine";
 import { APP_BASE_HREF, CommonModule } from "@angular/common";
-import {
-  BrowserDynamicTestingModule,
-  platformBrowserDynamicTesting,
-} from "@angular/platform-browser-dynamic/testing";
+import { BrowserTestingModule, platformBrowserTesting } from "@angular/platform-browser/testing";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { computed, provideZoneChangeDetection, signal } from "@angular/core";
 import { MockComponent, MockProvider } from "ng-mocks";
@@ -82,7 +79,7 @@ describe("Notifications Tab", () => {
     const MockAlert = MockComponent(AppAlertComponent);
 
     TestBed.resetTestEnvironment();
-    TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
+    TestBed.initTestEnvironment(BrowserTestingModule, platformBrowserTesting());
 
     TestBed.configureTestingModule({
       imports: [CommonModule, FontAwesomeModule, RouterLink, NotificationsTabComponent, MockAlert],

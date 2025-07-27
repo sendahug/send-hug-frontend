@@ -31,10 +31,7 @@
 */
 
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-import {
-  BrowserDynamicTestingModule,
-  platformBrowserDynamicTesting,
-} from "@angular/platform-browser-dynamic/testing";
+import { BrowserTestingModule, platformBrowserTesting } from "@angular/platform-browser/testing";
 import {} from "jasmine";
 import { Component, ElementRef, ViewChild } from "@angular/core";
 
@@ -61,7 +58,7 @@ describe("TeleportService", () => {
   // Before each test, configure testing environment
   beforeEach(() => {
     TestBed.resetTestEnvironment();
-    TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
+    TestBed.initTestEnvironment(BrowserTestingModule, platformBrowserTesting());
 
     TestBed.configureTestingModule({
       imports: [MockPageComponent],

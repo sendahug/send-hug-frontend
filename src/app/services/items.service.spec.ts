@@ -31,10 +31,7 @@
 */
 
 import { TestBed } from "@angular/core/testing";
-import {
-  BrowserDynamicTestingModule,
-  platformBrowserDynamicTesting,
-} from "@angular/platform-browser-dynamic/testing";
+import { BrowserTestingModule, platformBrowserTesting } from "@angular/platform-browser/testing";
 import {} from "jasmine";
 import { of, throwError } from "rxjs";
 import { MockProvider } from "ng-mocks";
@@ -50,7 +47,7 @@ describe("ItemsService", () => {
     const MockAPIClient = MockProvider(ApiClientService);
 
     TestBed.resetTestEnvironment();
-    TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
+    TestBed.initTestEnvironment(BrowserTestingModule, platformBrowserTesting());
 
     TestBed.configureTestingModule({
       imports: [],

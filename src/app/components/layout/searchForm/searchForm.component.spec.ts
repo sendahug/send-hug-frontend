@@ -31,10 +31,7 @@
 */
 import { TestBed } from "@angular/core/testing";
 import { provideRouter, withComponentInputBinding } from "@angular/router";
-import {
-  BrowserDynamicTestingModule,
-  platformBrowserDynamicTesting,
-} from "@angular/platform-browser-dynamic/testing";
+import { BrowserTestingModule, platformBrowserTesting } from "@angular/platform-browser/testing";
 import {} from "jasmine";
 import { APP_BASE_HREF, CommonModule } from "@angular/common";
 import { ReactiveFormsModule } from "@angular/forms";
@@ -53,7 +50,7 @@ describe("SearchFormComponent", () => {
     });
 
     TestBed.resetTestEnvironment();
-    TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
+    TestBed.initTestEnvironment(BrowserTestingModule, platformBrowserTesting());
 
     TestBed.configureTestingModule({
       imports: [CommonModule, ReactiveFormsModule, FontAwesomeModule, SearchFormComponent],

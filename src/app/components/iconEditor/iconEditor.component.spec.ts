@@ -34,10 +34,7 @@ import { TestBed } from "@angular/core/testing";
 import { provideRouter } from "@angular/router";
 import {} from "jasmine";
 import { APP_BASE_HREF } from "@angular/common";
-import {
-  BrowserDynamicTestingModule,
-  platformBrowserDynamicTesting,
-} from "@angular/platform-browser-dynamic/testing";
+import { BrowserTestingModule, platformBrowserTesting } from "@angular/platform-browser/testing";
 import { ReactiveFormsModule } from "@angular/forms";
 import { MockComponent, MockProvider } from "ng-mocks";
 import { NO_ERRORS_SCHEMA, provideZoneChangeDetection, signal } from "@angular/core";
@@ -57,7 +54,7 @@ describe("IconEditorComponent", () => {
     const MockUserIconComponent = MockComponent(UserIconComponent);
 
     TestBed.resetTestEnvironment();
-    TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
+    TestBed.initTestEnvironment(BrowserTestingModule, platformBrowserTesting());
 
     TestBed.configureTestingModule({
       schemas: [NO_ERRORS_SCHEMA],

@@ -33,10 +33,7 @@
 import { TestBed } from "@angular/core/testing";
 import {} from "jasmine";
 import { APP_BASE_HREF, CommonModule } from "@angular/common";
-import {
-  BrowserDynamicTestingModule,
-  platformBrowserDynamicTesting,
-} from "@angular/platform-browser-dynamic/testing";
+import { BrowserTestingModule, platformBrowserTesting } from "@angular/platform-browser/testing";
 import { Component, NO_ERRORS_SCHEMA, provideZoneChangeDetection, signal } from "@angular/core";
 
 import { PaginatedListComponent } from "./paginatedList.component";
@@ -86,7 +83,7 @@ describe("PaginatedListComponent", () => {
   // Before each test, configure testing environment
   beforeEach(() => {
     TestBed.resetTestEnvironment();
-    TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
+    TestBed.initTestEnvironment(BrowserTestingModule, platformBrowserTesting());
 
     /**
      * @todo we should be mocking the Loader here, but for it breaks tests.

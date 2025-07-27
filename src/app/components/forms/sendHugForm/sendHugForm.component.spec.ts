@@ -27,7 +27,6 @@
 import { TestBed } from "@angular/core/testing";
 import {} from "jasmine";
 import { APP_BASE_HREF, CommonModule } from "@angular/common";
-import { BrowserTestingModule, platformBrowserTesting } from "@angular/platform-browser/testing";
 import { ReactiveFormsModule } from "@angular/forms";
 import { BehaviorSubject, of } from "rxjs";
 import { provideZonelessChangeDetection, signal } from "@angular/core";
@@ -56,9 +55,6 @@ describe("Send Hug Form", () => {
     const MockItemsService = MockProvider(ItemsService, {
       receivedAHug: new BehaviorSubject(0),
     });
-
-    TestBed.resetTestEnvironment();
-    TestBed.initTestEnvironment(BrowserTestingModule, platformBrowserTesting());
 
     TestBed.configureTestingModule({
       imports: [

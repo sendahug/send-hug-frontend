@@ -33,7 +33,6 @@
 import { TestBed } from "@angular/core/testing";
 import {} from "jasmine";
 import { APP_BASE_HREF, CommonModule } from "@angular/common";
-import { BrowserTestingModule, platformBrowserTesting } from "@angular/platform-browser/testing";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { provideZonelessChangeDetection } from "@angular/core";
 import { Component } from "@angular/core";
@@ -59,9 +58,6 @@ class MockPageComponent {
 describe("Popup", () => {
   // Before each test, configure testing environment
   beforeEach(() => {
-    TestBed.resetTestEnvironment();
-    TestBed.initTestEnvironment(BrowserTestingModule, platformBrowserTesting());
-
     TestBed.configureTestingModule({
       imports: [CommonModule, FontAwesomeModule, MockPageComponent, PopUpComponent],
       providers: [{ provide: APP_BASE_HREF, useValue: "/" }, provideZonelessChangeDetection()],

@@ -34,9 +34,8 @@ import { TestBed } from "@angular/core/testing";
 import { provideRouter, RouterLink } from "@angular/router";
 import {} from "jasmine";
 import { APP_BASE_HREF, CommonModule } from "@angular/common";
-import { BrowserTestingModule, platformBrowserTesting } from "@angular/platform-browser/testing";
 import { ReactiveFormsModule } from "@angular/forms";
-import { MockComponent, MockProvider } from "ng-mocks";
+import { MockProvider } from "ng-mocks";
 import { computed, NO_ERRORS_SCHEMA, signal } from "@angular/core";
 import { BehaviorSubject, Subscription } from "rxjs";
 
@@ -64,21 +63,16 @@ describe("SettingsPageComponent", () => {
       subscribeToStream: () => new Promise(() => undefined),
       unsubscribeFromStream: () => new Promise(() => true),
     });
-    const MockIconEditorComponent = MockComponent(IconEditorComponent);
-    const MockIcon = MockComponent(UserIconComponent);
-
-    TestBed.resetTestEnvironment();
-    TestBed.initTestEnvironment(BrowserTestingModule, platformBrowserTesting());
 
     TestBed.configureTestingModule({
       schemas: [NO_ERRORS_SCHEMA],
       imports: [
         ReactiveFormsModule,
         RouterLink,
-        MockIcon,
+        UserIconComponent,
         CommonModule,
         SettingsPageComponent,
-        MockIconEditorComponent,
+        IconEditorComponent,
       ],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },

@@ -34,9 +34,8 @@ import { TestBed } from "@angular/core/testing";
 import { provideRouter } from "@angular/router";
 import {} from "jasmine";
 import { APP_BASE_HREF } from "@angular/common";
-import { BrowserTestingModule, platformBrowserTesting } from "@angular/platform-browser/testing";
 import { ReactiveFormsModule } from "@angular/forms";
-import { MockComponent, MockProvider } from "ng-mocks";
+import { MockProvider } from "ng-mocks";
 import { NO_ERRORS_SCHEMA, provideZonelessChangeDetection, signal } from "@angular/core";
 
 import { IconEditorComponent } from "./iconEditor.component";
@@ -51,14 +50,10 @@ describe("IconEditorComponent", () => {
       authenticated: signal(true),
       userData: signal({ ...mockAuthedUser }),
     });
-    const MockUserIconComponent = MockComponent(UserIconComponent);
-
-    TestBed.resetTestEnvironment();
-    TestBed.initTestEnvironment(BrowserTestingModule, platformBrowserTesting());
 
     TestBed.configureTestingModule({
       schemas: [NO_ERRORS_SCHEMA],
-      imports: [ReactiveFormsModule, MockUserIconComponent, IconEditorComponent],
+      imports: [ReactiveFormsModule, UserIconComponent, IconEditorComponent],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
         provideZonelessChangeDetection(),

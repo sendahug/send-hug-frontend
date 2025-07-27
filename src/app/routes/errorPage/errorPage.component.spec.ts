@@ -33,7 +33,6 @@
 import { TestBed } from "@angular/core/testing";
 import {} from "jasmine";
 import { APP_BASE_HREF, CommonModule } from "@angular/common";
-import { BrowserTestingModule, platformBrowserTesting } from "@angular/platform-browser/testing";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { provideZonelessChangeDetection } from "@angular/core";
 import { provideRouter } from "@angular/router";
@@ -44,9 +43,6 @@ import { ErrorPageComponent } from "./errorPage.component";
 describe("ErrorPageComponent", () => {
   // Before each test, configure testing environment
   beforeEach(() => {
-    TestBed.resetTestEnvironment();
-    TestBed.initTestEnvironment(BrowserTestingModule, platformBrowserTesting());
-
     TestBed.configureTestingModule({
       imports: [FontAwesomeModule, CommonModule, ErrorPageComponent],
       providers: [

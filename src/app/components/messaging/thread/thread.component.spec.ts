@@ -33,33 +33,26 @@
 import { TestBed } from "@angular/core/testing";
 import {} from "jasmine";
 import { APP_BASE_HREF, CommonModule } from "@angular/common";
-import { BrowserTestingModule, platformBrowserTesting } from "@angular/platform-browser/testing";
 import { provideRouter, RouterLink, withComponentInputBinding } from "@angular/router";
 import { By } from "@angular/platform-browser";
 import { NO_ERRORS_SCHEMA, provideZonelessChangeDetection } from "@angular/core";
-import { MockComponent } from "ng-mocks";
 
 import { ThreadComponent } from "./thread.component";
 import { ItemDeleteFormComponent } from "@forms/itemDeleteForm/itemDeleteForm.component";
 import { UserIconComponent } from "@common/userIcon/userIcon.component";
 import { type ParsedThread } from "@app/interfaces/thread.interface";
+import { MockItemDeleteFormComponent } from "@tests/mockForms";
 
 describe("ThreadComponent", () => {
   let mockThread: ParsedThread;
 
   // Before each test, configure testing environment
   beforeEach(() => {
-    const MockItemDeleteFormComponent = MockComponent(ItemDeleteFormComponent);
-    const MockUserIconComponent = MockComponent(UserIconComponent);
-
-    TestBed.resetTestEnvironment();
-    TestBed.initTestEnvironment(BrowserTestingModule, platformBrowserTesting());
-
     TestBed.configureTestingModule({
       schemas: [NO_ERRORS_SCHEMA],
       imports: [
         MockItemDeleteFormComponent,
-        MockUserIconComponent,
+        UserIconComponent,
         RouterLink,
         CommonModule,
         ThreadComponent,

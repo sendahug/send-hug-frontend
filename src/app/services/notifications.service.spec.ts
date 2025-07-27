@@ -31,7 +31,6 @@
 */
 
 import { discardPeriodicTasks, fakeAsync, TestBed, tick } from "@angular/core/testing";
-import { BrowserTestingModule, platformBrowserTesting } from "@angular/platform-browser/testing";
 import { ServiceWorkerModule } from "@angular/service-worker";
 import { Subscription, of } from "rxjs";
 import {} from "jasmine";
@@ -47,9 +46,6 @@ describe("NotificationService", () => {
   // Before each test, configure testing environment
   beforeEach(() => {
     const MockAPIClient = MockProvider(ApiClientService);
-
-    TestBed.resetTestEnvironment();
-    TestBed.initTestEnvironment(BrowserTestingModule, platformBrowserTesting());
 
     TestBed.configureTestingModule({
       imports: [ServiceWorkerModule.register("/sw.js", { enabled: false })],

@@ -38,12 +38,11 @@ import {
   RouterOutlet,
   withComponentInputBinding,
 } from "@angular/router";
-import { BrowserTestingModule, platformBrowserTesting } from "@angular/platform-browser/testing";
 import {} from "jasmine";
 import { APP_BASE_HREF, CommonModule } from "@angular/common";
 import { BehaviorSubject, of, throwError } from "rxjs";
 import { provideZonelessChangeDetection, signal } from "@angular/core";
-import { MockComponent, MockProvider } from "ng-mocks";
+import { MockProvider } from "ng-mocks";
 
 import { AppComponent } from "./app.component";
 import { AuthService } from "@app/services/auth.service";
@@ -54,11 +53,10 @@ import { AppAlertComponent } from "./components/appAlert/appAlert.component";
 import { AlertsService } from "@app/services/alerts.service";
 import { NavigationMenuComponent } from "./components/layout/navigationMenu/navigationMenu.component";
 import { TeleportService } from "./services/teleport.service";
+import { ItemsService } from "./services/items.service";
 
 describe("AppComponent", () => {
   beforeEach(() => {
-    const MockNavBar = MockComponent(NavigationMenuComponent);
-    const MockAppAlertComponent = MockComponent(AppAlertComponent);
     const MockAuthService = MockProvider(AuthService, {
       authenticated: signal(true),
       userData: signal({ ...mockAuthedUser }),
@@ -77,17 +75,16 @@ describe("AppComponent", () => {
       updateSW: () => undefined,
     });
     const MockTeleportService = MockProvider(TeleportService);
-
-    TestBed.resetTestEnvironment();
-    TestBed.initTestEnvironment(BrowserTestingModule, platformBrowserTesting());
+    const MockAlertsService = MockProvider(AlertsService);
+    const MockItemsService = MockProvider(ItemsService);
 
     TestBed.configureTestingModule({
       imports: [
         CommonModule,
         RouterOutlet,
         RouterLink,
-        MockAppAlertComponent,
-        MockNavBar,
+        AppAlertComponent,
+        NavigationMenuComponent,
         AppComponent,
       ],
       providers: [
@@ -98,6 +95,8 @@ describe("AppComponent", () => {
         MockNotificationsService,
         MockSWManager,
         MockTeleportService,
+        MockAlertsService,
+        MockItemsService,
       ],
     }).compileComponents();
   });

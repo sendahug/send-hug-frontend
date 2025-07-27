@@ -34,13 +34,12 @@ import { TestBed } from "@angular/core/testing";
 import { provideRouter, RouterLink } from "@angular/router";
 import {} from "jasmine";
 import { APP_BASE_HREF, CommonModule } from "@angular/common";
-import { BrowserTestingModule, platformBrowserTesting } from "@angular/platform-browser/testing";
 import { Component, signal } from "@angular/core";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { By } from "@angular/platform-browser";
 import { NO_ERRORS_SCHEMA } from "@angular/core";
 import { provideZonelessChangeDetection } from "@angular/core";
-import { MockComponent, MockProvider } from "ng-mocks";
+import { MockProvider } from "ng-mocks";
 import { BehaviorSubject } from "rxjs";
 
 import { PostComponent } from "./post.component";
@@ -51,6 +50,12 @@ import { PostEditFormComponent } from "@forms/postEditForm/postEditForm.componen
 import { SendHugFormComponent } from "@forms/sendHugForm/sendHugForm.component";
 import { ItemsService } from "@app/services/items.service";
 import { AuthService } from "@app/services/auth.service";
+import {
+  MockItemDeleteFormComponent,
+  MockPostEditFormComponent,
+  MockReportFormComponent,
+  MockSendHugFormComponent,
+} from "@tests/mockForms";
 
 // Mock User Page for testing the sub-component
 // ==================================================
@@ -80,10 +85,6 @@ class MockPageComponent {
 describe("Post", () => {
   // Before each test, configure testing environment
   beforeEach(() => {
-    const MockItemDeleteFormComponent = MockComponent(ItemDeleteFormComponent);
-    const MockReportFormComponent = MockComponent(ReportFormComponent);
-    const MockPostEditFormComponent = MockComponent(PostEditFormComponent);
-    const MockSendHugFormComponent = MockComponent(SendHugFormComponent);
     const MockItemsService = MockProvider(ItemsService, {
       currentlyOpenMenu: new BehaviorSubject("n1"),
       receivedAHug: new BehaviorSubject(0),
@@ -92,9 +93,6 @@ describe("Post", () => {
       authenticated: signal(false),
       userData: signal(undefined),
     });
-
-    TestBed.resetTestEnvironment();
-    TestBed.initTestEnvironment(BrowserTestingModule, platformBrowserTesting());
 
     TestBed.configureTestingModule({
       schemas: [NO_ERRORS_SCHEMA],

@@ -34,12 +34,11 @@ import { TestBed } from "@angular/core/testing";
 import { provideRouter } from "@angular/router";
 import {} from "jasmine";
 import { APP_BASE_HREF } from "@angular/common";
-import { BrowserTestingModule, platformBrowserTesting } from "@angular/platform-browser/testing";
 import { Component, signal } from "@angular/core";
 import { of } from "rxjs";
 import { By } from "@angular/platform-browser";
 import { NO_ERRORS_SCHEMA } from "@angular/core";
-import { MockComponent, MockProvider } from "ng-mocks";
+import { MockProvider } from "ng-mocks";
 
 import { MyPostsComponent } from "./myPosts.component";
 import { AuthService } from "@app/services/auth.service";
@@ -49,6 +48,7 @@ import { PostComponent } from "@common/post/post.component";
 import { ItemDeleteFormComponent } from "@forms/itemDeleteForm/itemDeleteForm.component";
 import { ApiClientService } from "@app/services/apiClient.service";
 import { SWManager } from "@app/services/sWManager.service";
+import { MockItemDeleteFormComponent } from "@tests/mockForms";
 
 // Mock User Page for testing the sub-component
 // ==================================================
@@ -86,10 +86,6 @@ describe("MyPostsComponent", () => {
     const MockSWManager = MockProvider(SWManager, {
       fetchPosts: () => new Promise(() => {}),
     });
-    const MockItemDeleteFormComponent = MockComponent(ItemDeleteFormComponent);
-
-    TestBed.resetTestEnvironment();
-    TestBed.initTestEnvironment(BrowserTestingModule, platformBrowserTesting());
 
     TestBed.configureTestingModule({
       schemas: [NO_ERRORS_SCHEMA],

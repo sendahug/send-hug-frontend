@@ -31,7 +31,6 @@
 */
 
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { BrowserTestingModule, platformBrowserTesting } from "@angular/platform-browser/testing";
 import {} from "jasmine";
 import { AfterViewInit, Component, ElementRef, inject, ViewChild } from "@angular/core";
 
@@ -78,9 +77,6 @@ describe("TeleportDirective", () => {
 
   // Before each test, configure testing environment
   beforeEach(() => {
-    TestBed.resetTestEnvironment();
-    TestBed.initTestEnvironment(BrowserTestingModule, platformBrowserTesting());
-
     TestBed.configureTestingModule({
       imports: [MockPageComponent, TeleportDirective, MockChildComponent],
       providers: [TeleportService],

@@ -33,7 +33,6 @@
 import { TestBed } from "@angular/core/testing";
 import {} from "jasmine";
 import { APP_BASE_HREF, CommonModule } from "@angular/common";
-import { BrowserTestingModule, platformBrowserTesting } from "@angular/platform-browser/testing";
 import { of } from "rxjs";
 import { provideZonelessChangeDetection } from "@angular/core";
 import { MockProvider } from "ng-mocks";
@@ -47,9 +46,6 @@ describe("ItemDeleteFormComponent", () => {
   // Before each test, configure testing environment
   beforeEach(() => {
     const MockAPIClient = MockProvider(ApiClientService);
-
-    TestBed.resetTestEnvironment();
-    TestBed.initTestEnvironment(BrowserTestingModule, platformBrowserTesting());
 
     TestBed.configureTestingModule({
       imports: [CommonModule, PopUpComponent, ItemDeleteFormComponent, TeleportDirective],

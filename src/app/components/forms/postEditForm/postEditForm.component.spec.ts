@@ -33,7 +33,6 @@
 import { TestBed } from "@angular/core/testing";
 import {} from "jasmine";
 import { APP_BASE_HREF, CommonModule } from "@angular/common";
-import { BrowserTestingModule, platformBrowserTesting } from "@angular/platform-browser/testing";
 import { ReactiveFormsModule } from "@angular/forms";
 import { Observable, of } from "rxjs";
 import { provideZonelessChangeDetection, signal } from "@angular/core";
@@ -61,9 +60,6 @@ describe("PostEditFormComponent", () => {
       userData: signal(undefined),
     });
     const MockAPIClient = MockProvider(ApiClientService);
-
-    TestBed.resetTestEnvironment();
-    TestBed.initTestEnvironment(BrowserTestingModule, platformBrowserTesting());
 
     TestBed.configureTestingModule({
       imports: [

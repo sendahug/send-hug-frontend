@@ -33,7 +33,6 @@
 import { TestBed } from "@angular/core/testing";
 import {} from "jasmine";
 import { APP_BASE_HREF, CommonModule } from "@angular/common";
-import { BrowserTestingModule, platformBrowserTesting } from "@angular/platform-browser/testing";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { NO_ERRORS_SCHEMA, signal } from "@angular/core";
 import { of, throwError } from "rxjs";
@@ -41,7 +40,7 @@ import { User as FirebaseUser, UserCredential } from "firebase/auth";
 import { ReactiveFormsModule } from "@angular/forms";
 import { By } from "@angular/platform-browser";
 import { provideZonelessChangeDetection } from "@angular/core";
-import { MockComponent, MockProvider } from "ng-mocks";
+import { MockProvider } from "ng-mocks";
 import { provideRouter } from "@angular/router";
 
 import { LoginPageComponent } from "./loginPage.component";
@@ -63,11 +62,6 @@ describe("LoginPageComponent", () => {
       userData: signal(undefined),
       isRegistering: signal(false),
     });
-    const MockLoaderComponent = MockComponent(LoaderComponent);
-    const MockPasswordResetFormComponent = MockComponent(PasswordResetFormComponent);
-
-    TestBed.resetTestEnvironment();
-    TestBed.initTestEnvironment(BrowserTestingModule, platformBrowserTesting());
 
     TestBed.configureTestingModule({
       schemas: [NO_ERRORS_SCHEMA],
@@ -75,8 +69,8 @@ describe("LoginPageComponent", () => {
         CommonModule,
         ReactiveFormsModule,
         FontAwesomeModule,
-        MockLoaderComponent,
-        MockPasswordResetFormComponent,
+        LoaderComponent,
+        PasswordResetFormComponent,
         LoginPageComponent,
       ],
       providers: [

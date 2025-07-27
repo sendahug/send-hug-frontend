@@ -33,7 +33,6 @@
 import { TestBed } from "@angular/core/testing";
 import {} from "jasmine";
 import { APP_BASE_HREF, CommonModule } from "@angular/common";
-import { BrowserTestingModule, platformBrowserTesting } from "@angular/platform-browser/testing";
 import { of } from "rxjs";
 import {
   ActivatedRoute,
@@ -46,7 +45,7 @@ import {
 } from "@angular/router";
 import { By } from "@angular/platform-browser";
 import { provideZonelessChangeDetection } from "@angular/core";
-import { MockComponent, MockProvider } from "ng-mocks";
+import { MockProvider } from "ng-mocks";
 
 import { FullListComponent } from "./fullList.component";
 import { ApiClientService } from "@app/services/apiClient.service";
@@ -54,25 +53,25 @@ import { SWManager } from "@app/services/sWManager.service";
 import { type PostGet } from "@app/interfaces/post.interface";
 import { PostComponent } from "@common/post/post.component";
 import { LoaderComponent } from "@common/loader/loader.component";
+import { AuthService } from "@app/services/auth.service";
+import { ItemsService } from "@app/services/items.service";
 
 describe("FullListComponent", () => {
   let pageOnePosts: PostGet[];
-  const MockPostComponent = MockComponent(PostComponent);
-  const MockLoaderComponent = MockComponent(LoaderComponent);
   const MockAPIClient = MockProvider(ApiClientService);
+  const MockAuthService = MockProvider(AuthService);
+  const MockItemsService = MockProvider(ItemsService);
+  const MockSWManager = MockProvider(SWManager);
 
   // Before each test, configure testing environment
   beforeEach(() => {
-    TestBed.resetTestEnvironment();
-    TestBed.initTestEnvironment(BrowserTestingModule, platformBrowserTesting());
-
     TestBed.configureTestingModule({
       imports: [
         RouterModule.forRoot([]),
         CommonModule,
-        MockPostComponent,
+        PostComponent,
         RouterLink,
-        MockLoaderComponent,
+        LoaderComponent,
         FullListComponent,
       ],
       providers: [
@@ -108,6 +107,9 @@ describe("FullListComponent", () => {
           withComponentInputBinding(),
         ),
         MockAPIClient,
+        MockAuthService,
+        MockItemsService,
+        MockSWManager,
       ],
     }).compileComponents();
 

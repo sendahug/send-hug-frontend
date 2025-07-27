@@ -36,13 +36,12 @@ import {
   RouterOutlet,
   withComponentInputBinding,
 } from "@angular/router";
-import { BrowserTestingModule, platformBrowserTesting } from "@angular/platform-browser/testing";
 import {} from "jasmine";
 import { APP_BASE_HREF, CommonModule } from "@angular/common";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { BehaviorSubject, of, Subscription } from "rxjs";
 import { provideZonelessChangeDetection, signal } from "@angular/core";
-import { MockComponent, MockProvider } from "ng-mocks";
+import { MockProvider } from "ng-mocks";
 import { setViewport } from "@web/test-runner-commands";
 import { By } from "@angular/platform-browser";
 
@@ -58,8 +57,6 @@ import { AlertsService } from "@app/services/alerts.service";
 
 describe("NavigationMenuComponent", () => {
   beforeEach(() => {
-    const MockNotificationsTabComponent = MockComponent(NotificationsTabComponent);
-    const MockSearchFormComponent = MockComponent(SearchFormComponent);
     const MockAuthService = MockProvider(AuthService, {
       authenticated: signal(true),
       userData: signal({ ...mockAuthedUser }),
@@ -81,18 +78,15 @@ describe("NavigationMenuComponent", () => {
       updateSW: () => undefined,
     });
 
-    TestBed.resetTestEnvironment();
-    TestBed.initTestEnvironment(BrowserTestingModule, platformBrowserTesting());
-
     TestBed.configureTestingModule({
       imports: [
         CommonModule,
         RouterOutlet,
         RouterLink,
         FontAwesomeModule,
-        MockNotificationsTabComponent,
+        NotificationsTabComponent,
         NavigationMenuComponent,
-        MockSearchFormComponent,
+        SearchFormComponent,
       ],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },

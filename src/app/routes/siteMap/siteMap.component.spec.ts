@@ -33,7 +33,6 @@
 import { TestBed } from "@angular/core/testing";
 import {} from "jasmine";
 import { APP_BASE_HREF, CommonModule } from "@angular/common";
-import { BrowserTestingModule, platformBrowserTesting } from "@angular/platform-browser/testing";
 import { Component, signal } from "@angular/core";
 import { provideRouter, Route, Router, RouterLink, Routes } from "@angular/router";
 import { provideZonelessChangeDetection } from "@angular/core";
@@ -73,9 +72,6 @@ describe("SiteMapComponent", () => {
       userData: signal({ ...mockAuthedUser }),
       isUserDataResolved: new BehaviorSubject(true),
     });
-
-    TestBed.resetTestEnvironment();
-    TestBed.initTestEnvironment(BrowserTestingModule, platformBrowserTesting());
 
     // Routes
     routes = [

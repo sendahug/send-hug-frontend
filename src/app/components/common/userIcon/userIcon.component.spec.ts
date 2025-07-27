@@ -33,7 +33,6 @@
 import { TestBed } from "@angular/core/testing";
 import {} from "jasmine";
 import { APP_BASE_HREF } from "@angular/common";
-import { BrowserTestingModule, platformBrowserTesting } from "@angular/platform-browser/testing";
 import { CommonModule } from "@angular/common";
 import { Component, NO_ERRORS_SCHEMA, provideZonelessChangeDetection, signal } from "@angular/core";
 import { By } from "@angular/platform-browser";
@@ -74,9 +73,6 @@ class MockIconContainerComponent {
 describe("UserIconComponent", () => {
   // Before each test, configure testing environment
   beforeEach(() => {
-    TestBed.resetTestEnvironment();
-    TestBed.initTestEnvironment(BrowserTestingModule, platformBrowserTesting());
-
     TestBed.configureTestingModule({
       imports: [CommonModule, MockIconContainerComponent, UserIconComponent],
       providers: [{ provide: APP_BASE_HREF, useValue: "/" }, provideZonelessChangeDetection()],

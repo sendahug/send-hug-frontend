@@ -33,7 +33,6 @@
 import { TestBed } from "@angular/core/testing";
 import {} from "jasmine";
 import { APP_BASE_HREF, CommonModule } from "@angular/common";
-import { BrowserTestingModule, platformBrowserTesting } from "@angular/platform-browser/testing";
 import {
   ActivatedRoute,
   provideRouter,
@@ -43,7 +42,7 @@ import {
 import { BehaviorSubject, of } from "rxjs";
 import { By } from "@angular/platform-browser";
 import { NO_ERRORS_SCHEMA, provideZonelessChangeDetection, signal } from "@angular/core";
-import { MockComponent, MockProvider } from "ng-mocks";
+import { MockProvider } from "ng-mocks";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 
 import { AppMessagesComponent } from "./messages.component";
@@ -57,6 +56,7 @@ import { LoaderComponent } from "@common/loader/loader.component";
 import { MessageComponent } from "@app/components/messaging/message/message.component";
 import { ThreadComponent } from "@app/components/messaging/thread/thread.component";
 import { PaginatedListComponent } from "@app/components/common/paginatedList/paginatedList.component";
+import { MockItemDeleteFormComponent } from "@tests/mockForms";
 
 describe("AppMessagesComponent", () => {
   let mockMessages: MessageGet[];
@@ -70,17 +70,12 @@ describe("AppMessagesComponent", () => {
       isUserDataResolved: new BehaviorSubject(true),
     });
     const MockAPIClient = MockProvider(ApiClientService);
-    const MockItemDeleteFormComponent = MockComponent(ItemDeleteFormComponent);
-    const MockLoaderComponent = MockComponent(LoaderComponent);
-
-    TestBed.resetTestEnvironment();
-    TestBed.initTestEnvironment(BrowserTestingModule, platformBrowserTesting());
 
     TestBed.configureTestingModule({
       schemas: [NO_ERRORS_SCHEMA],
       imports: [
         MockItemDeleteFormComponent,
-        MockLoaderComponent,
+        LoaderComponent,
         ThreadComponent,
         RouterLink,
         CommonModule,

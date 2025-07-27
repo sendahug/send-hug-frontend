@@ -31,7 +31,6 @@
 */
 
 import { TestBed } from "@angular/core/testing";
-import { BrowserTestingModule, platformBrowserTesting } from "@angular/platform-browser/testing";
 import {} from "jasmine";
 import { IDBPDatabase } from "idb";
 
@@ -296,9 +295,6 @@ describe("SWManagerService", () => {
 
   // Before each test, configure testing environment
   beforeEach(() => {
-    TestBed.resetTestEnvironment();
-    TestBed.initTestEnvironment(BrowserTestingModule, platformBrowserTesting());
-
     TestBed.configureTestingModule({
       imports: [],
       providers: [SWManager, AlertsService],
@@ -393,9 +389,6 @@ describe("SWManagerService", () => {
   describe("fetchPosts()", () => {
     // Before each test, configure testing environment
     beforeEach(() => {
-      TestBed.resetTestEnvironment();
-      TestBed.initTestEnvironment(BrowserTestingModule, platformBrowserTesting());
-
       TestBed.configureTestingModule({
         imports: [],
         providers: [SWManager],
@@ -508,9 +501,6 @@ describe("SWManagerService", () => {
   describe("fetchMessages()", () => {
     // Before each test, configure testing environment
     beforeEach(async () => {
-      TestBed.resetTestEnvironment();
-      TestBed.initTestEnvironment(BrowserTestingModule, platformBrowserTesting());
-
       TestBed.configureTestingModule({
         imports: [],
         providers: [SWManager],
@@ -596,9 +586,6 @@ describe("SWManagerService", () => {
   describe("queryThreads()", () => {
     // Before each test, configure testing environment
     beforeEach(() => {
-      TestBed.resetTestEnvironment();
-      TestBed.initTestEnvironment(BrowserTestingModule, platformBrowserTesting());
-
       TestBed.configureTestingModule({
         imports: [],
         providers: [SWManager],
@@ -638,9 +625,6 @@ describe("SWManagerService", () => {
   describe("queryUsers()", () => {
     // Before each test, configure testing environment
     beforeEach(() => {
-      TestBed.resetTestEnvironment();
-      TestBed.initTestEnvironment(BrowserTestingModule, platformBrowserTesting());
-
       TestBed.configureTestingModule({
         imports: [],
         providers: [SWManager],

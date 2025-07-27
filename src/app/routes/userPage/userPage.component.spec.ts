@@ -33,13 +33,12 @@
 import { TestBed } from "@angular/core/testing";
 import {} from "jasmine";
 import { APP_BASE_HREF, CommonModule } from "@angular/common";
-import { BrowserTestingModule, platformBrowserTesting } from "@angular/platform-browser/testing";
 import { ActivatedRoute, provideRouter, RouterLink } from "@angular/router";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { By } from "@angular/platform-browser";
 import { NO_ERRORS_SCHEMA, signal } from "@angular/core";
 import { of, Subscription } from "rxjs";
-import { MockComponent, MockProvider } from "ng-mocks";
+import { MockProvider } from "ng-mocks";
 
 import { UserPageComponent } from "./userPage.component";
 import { AuthService } from "@app/services/auth.service";
@@ -51,6 +50,7 @@ import { ReportFormComponent } from "@forms/reportForm/reportForm.component";
 import { ApiClientService } from "@app/services/apiClient.service";
 import { LoaderComponent } from "@common/loader/loader.component";
 import { UserIconComponent } from "@common/userIcon/userIcon.component";
+import { MockDisplayNameEditFormComponent, MockReportFormComponent } from "@tests/mockForms";
 
 describe("UserPageComponent", () => {
   // Before each test, configure testing environment
@@ -60,13 +60,6 @@ describe("UserPageComponent", () => {
       userData: signal(undefined),
     });
     const MockAPIClient = MockProvider(ApiClientService);
-    const MockDisplayNameEditFormComponent = MockComponent(DisplayNameEditFormComponent);
-    const MockReportFormComponent = MockComponent(ReportFormComponent);
-    const MockLoaderComponent = MockComponent(LoaderComponent);
-    const MockUserIconComponent = MockComponent(UserIconComponent);
-
-    TestBed.resetTestEnvironment();
-    TestBed.initTestEnvironment(BrowserTestingModule, platformBrowserTesting());
 
     TestBed.configureTestingModule({
       schemas: [NO_ERRORS_SCHEMA],
@@ -75,9 +68,9 @@ describe("UserPageComponent", () => {
         MockDisplayNameEditFormComponent,
         MockReportFormComponent,
         CommonModule,
-        MockLoaderComponent,
+        LoaderComponent,
         RouterLink,
-        MockUserIconComponent,
+        UserIconComponent,
         UserPageComponent,
       ],
       declarations: [],

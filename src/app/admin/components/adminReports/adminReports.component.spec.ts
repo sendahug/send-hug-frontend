@@ -34,11 +34,10 @@ import { TestBed } from "@angular/core/testing";
 import { provideRouter } from "@angular/router";
 import {} from "jasmine";
 import { APP_BASE_HREF, CommonModule } from "@angular/common";
-import { BrowserTestingModule, platformBrowserTesting } from "@angular/platform-browser/testing";
 import { NO_ERRORS_SCHEMA, signal } from "@angular/core";
 import { BehaviorSubject, of, Subscription, throwError } from "rxjs";
 import { By } from "@angular/platform-browser";
-import { MockComponent, MockProvider } from "ng-mocks";
+import { MockProvider } from "ng-mocks";
 
 import { AdminReportsComponent } from "./adminReports.component";
 import { AuthService } from "@app/services/auth.service";
@@ -72,21 +71,14 @@ describe("AdminReportsComponent", () => {
     const MockAPIClient = MockProvider(ApiClientService, {
       get: () => of(),
     });
-    const MockEditForm = MockComponent(DisplayNameEditFormComponent);
-    const MockDeleteForm = MockComponent(ItemDeleteFormComponent);
-    const MockPostEditFormComponent = MockComponent(PostEditFormComponent);
-    const MockLoaderComponent = MockComponent(LoaderComponent);
-
-    TestBed.resetTestEnvironment();
-    TestBed.initTestEnvironment(BrowserTestingModule, platformBrowserTesting());
 
     TestBed.configureTestingModule({
       schemas: [NO_ERRORS_SCHEMA],
       imports: [
-        MockLoaderComponent,
-        MockPostEditFormComponent,
-        MockDeleteForm,
-        MockEditForm,
+        LoaderComponent,
+        PostEditFormComponent,
+        ItemDeleteFormComponent,
+        DisplayNameEditFormComponent,
         CommonModule,
       ],
       declarations: [AdminReportsComponent],

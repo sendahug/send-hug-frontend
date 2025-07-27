@@ -34,11 +34,10 @@ import { TestBed } from "@angular/core/testing";
 import { provideRouter, RouterLink } from "@angular/router";
 import {} from "jasmine";
 import { APP_BASE_HREF, CommonModule } from "@angular/common";
-import { BrowserTestingModule, platformBrowserTesting } from "@angular/platform-browser/testing";
 import { of } from "rxjs";
 import { By } from "@angular/platform-browser";
 import { provideZonelessChangeDetection, signal } from "@angular/core";
-import { MockComponent, MockProvider } from "ng-mocks";
+import { MockProvider } from "ng-mocks";
 
 // App imports
 import { MainPageComponent } from "./mainPage.component";
@@ -97,13 +96,9 @@ describe("MainPageComponent", () => {
       authenticated: signal(false),
       userData: signal(undefined),
     });
-    const MockLoaderComponent = MockComponent(LoaderComponent);
-
-    TestBed.resetTestEnvironment();
-    TestBed.initTestEnvironment(BrowserTestingModule, platformBrowserTesting());
 
     TestBed.configureTestingModule({
-      imports: [CommonModule, MockLoaderComponent, PostComponent, RouterLink, MainPageComponent],
+      imports: [CommonModule, LoaderComponent, PostComponent, RouterLink, MainPageComponent],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
         provideZonelessChangeDetection(),

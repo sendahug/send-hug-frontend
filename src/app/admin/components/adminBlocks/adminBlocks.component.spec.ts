@@ -34,8 +34,7 @@ import { TestBed } from "@angular/core/testing";
 import { provideRouter } from "@angular/router";
 import {} from "jasmine";
 import { APP_BASE_HREF } from "@angular/common";
-import { BrowserTestingModule, platformBrowserTesting } from "@angular/platform-browser/testing";
-import { MockComponent, MockProvider } from "ng-mocks";
+import { MockProvider } from "ng-mocks";
 import { ReactiveFormsModule } from "@angular/forms";
 import { BehaviorSubject, of, throwError } from "rxjs";
 import { NO_ERRORS_SCHEMA, signal } from "@angular/core";
@@ -82,14 +81,10 @@ describe("Blocks Page", () => {
     const MockAPIClient = MockProvider(ApiClientService, {
       get: () => of(),
     });
-    const MockLoaderComponent = MockComponent(LoaderComponent);
-
-    TestBed.resetTestEnvironment();
-    TestBed.initTestEnvironment(BrowserTestingModule, platformBrowserTesting());
 
     TestBed.configureTestingModule({
       schemas: [NO_ERRORS_SCHEMA],
-      imports: [ReactiveFormsModule, BrowserModule, MockLoaderComponent],
+      imports: [ReactiveFormsModule, BrowserModule, LoaderComponent],
       declarations: [AdminBlocksComponent],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },

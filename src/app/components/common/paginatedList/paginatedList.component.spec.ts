@@ -33,7 +33,6 @@
 import { TestBed } from "@angular/core/testing";
 import {} from "jasmine";
 import { APP_BASE_HREF, CommonModule } from "@angular/common";
-import { BrowserTestingModule, platformBrowserTesting } from "@angular/platform-browser/testing";
 import { Component, NO_ERRORS_SCHEMA, provideZoneChangeDetection, signal } from "@angular/core";
 
 import { PaginatedListComponent } from "./paginatedList.component";
@@ -82,15 +81,6 @@ describe("PaginatedListComponent", () => {
 
   // Before each test, configure testing environment
   beforeEach(() => {
-    TestBed.resetTestEnvironment();
-    TestBed.initTestEnvironment(BrowserTestingModule, platformBrowserTesting());
-
-    /**
-     * @todo we should be mocking the Loader here, but for it breaks tests.
-     * Since it's a tiny component, we've decided it's fine for the time being.
-     * That said, we should figure it out and mock it like we do with other child components.
-     * This is the same problem as in the messages component - mockComponent breaks signals.
-     */
     TestBed.configureTestingModule({
       imports: [CommonModule, LoaderComponent, PaginatedListComponent, MockParentComponent],
       providers: [

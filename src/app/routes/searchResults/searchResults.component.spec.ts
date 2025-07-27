@@ -33,7 +33,6 @@
 import { TestBed } from "@angular/core/testing";
 import {} from "jasmine";
 import { APP_BASE_HREF, CommonModule } from "@angular/common";
-import { BrowserTestingModule, platformBrowserTesting } from "@angular/platform-browser/testing";
 import {
   ActivatedRoute,
   provideRouter,
@@ -43,7 +42,7 @@ import {
 } from "@angular/router";
 import { By } from "@angular/platform-browser";
 import { provideZonelessChangeDetection } from "@angular/core";
-import { MockComponent, MockProvider } from "ng-mocks";
+import { MockProvider } from "ng-mocks";
 import { of } from "rxjs";
 
 import { SearchResultsComponent } from "./searchResults.component";
@@ -52,6 +51,8 @@ import { iconCharacters } from "@app/interfaces/types";
 import { PostComponent } from "@common/post/post.component";
 import { LoaderComponent } from "@common/loader/loader.component";
 import { ApiClientService } from "@app/services/apiClient.service";
+import { AuthService } from "@app/services/auth.service";
+import { SWManager } from "@app/services/sWManager.service";
 
 const mockUserSearchResults = [
   {
@@ -117,20 +118,17 @@ const mockPostSearchResults = [
 describe("SearchResultsComponent", () => {
   // Before each test, configure testing environment
   beforeEach(() => {
-    const MockPost = MockComponent(PostComponent);
-    const MockLoaderComponent = MockComponent(LoaderComponent);
     const MockAPIClient = MockProvider(ApiClientService, {
       post: () => of(),
     });
-
-    TestBed.resetTestEnvironment();
-    TestBed.initTestEnvironment(BrowserTestingModule, platformBrowserTesting());
+    const MockAuthService = MockProvider(AuthService);
+    const MockSWManager = MockProvider(SWManager);
 
     TestBed.configureTestingModule({
       imports: [
         CommonModule,
-        MockLoaderComponent,
-        MockPost,
+        LoaderComponent,
+        PostComponent,
         RouterLink,
         SearchResultsComponent,
         LoaderComponent,
@@ -144,6 +142,8 @@ describe("SearchResultsComponent", () => {
         ),
         ItemsService,
         MockAPIClient,
+        MockAuthService,
+        MockSWManager,
       ],
     }).compileComponents();
   });

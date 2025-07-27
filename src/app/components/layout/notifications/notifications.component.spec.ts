@@ -34,10 +34,9 @@ import { fakeAsync, TestBed, tick } from "@angular/core/testing";
 import { provideRouter, RouterLink } from "@angular/router";
 import {} from "jasmine";
 import { APP_BASE_HREF, CommonModule } from "@angular/common";
-import { BrowserTestingModule, platformBrowserTesting } from "@angular/platform-browser/testing";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { computed, provideZonelessChangeDetection, signal } from "@angular/core";
-import { MockComponent, MockProvider } from "ng-mocks";
+import { MockProvider } from "ng-mocks";
 import { BehaviorSubject, of, Subscription } from "rxjs";
 
 import { NotificationsTabComponent } from "./notifications.component";
@@ -76,13 +75,15 @@ describe("Notifications Tab", () => {
         }),
     });
     const MockAPIClient = MockProvider(ApiClientService);
-    const MockAlert = MockComponent(AppAlertComponent);
-
-    TestBed.resetTestEnvironment();
-    TestBed.initTestEnvironment(BrowserTestingModule, platformBrowserTesting());
 
     TestBed.configureTestingModule({
-      imports: [CommonModule, FontAwesomeModule, RouterLink, NotificationsTabComponent, MockAlert],
+      imports: [
+        CommonModule,
+        FontAwesomeModule,
+        RouterLink,
+        NotificationsTabComponent,
+        AppAlertComponent,
+      ],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
         provideZonelessChangeDetection(),

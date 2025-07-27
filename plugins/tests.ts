@@ -24,7 +24,6 @@ SOFTWARE.
 
 import { getTestBed } from "@angular/core/testing";
 import { BrowserTestingModule, platformBrowserTesting } from "@angular/platform-browser/testing";
-import "@angular/compiler";
 import { NgModule, provideZonelessChangeDetection } from "@angular/core";
 
 @NgModule({

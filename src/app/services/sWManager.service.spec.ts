@@ -389,11 +389,6 @@ describe("SWManagerService", () => {
   describe("fetchPosts()", () => {
     // Before each test, configure testing environment
     beforeEach(() => {
-      TestBed.configureTestingModule({
-        imports: [],
-        providers: [SWManager],
-      }).compileComponents();
-
       sWManagerService = TestBed.inject(SWManager);
       sWManagerService.currentDB = sWManagerService.openDatabase();
       populateDB(sWManagerService.currentDB, "posts");
@@ -501,11 +496,6 @@ describe("SWManagerService", () => {
   describe("fetchMessages()", () => {
     // Before each test, configure testing environment
     beforeEach(async () => {
-      TestBed.configureTestingModule({
-        imports: [],
-        providers: [SWManager],
-      }).compileComponents();
-
       sWManagerService = TestBed.inject(SWManager);
       sWManagerService.currentDB = sWManagerService.openDatabase();
       await populateDB(sWManagerService.currentDB, "messages");
@@ -586,11 +576,6 @@ describe("SWManagerService", () => {
   describe("queryThreads()", () => {
     // Before each test, configure testing environment
     beforeEach(() => {
-      TestBed.configureTestingModule({
-        imports: [],
-        providers: [SWManager],
-      }).compileComponents();
-
       sWManagerService = TestBed.inject(SWManager);
       sWManagerService.currentDB = sWManagerService.openDatabase();
       populateDB(sWManagerService.currentDB, "threads");
@@ -625,11 +610,6 @@ describe("SWManagerService", () => {
   describe("queryUsers()", () => {
     // Before each test, configure testing environment
     beforeEach(() => {
-      TestBed.configureTestingModule({
-        imports: [],
-        providers: [SWManager],
-      }).compileComponents();
-
       sWManagerService = TestBed.inject(SWManager);
       sWManagerService.currentDB = sWManagerService.openDatabase();
       populateDB(sWManagerService.currentDB, "users");

@@ -33,7 +33,7 @@
 import { TestBed } from "@angular/core/testing";
 import {} from "jasmine";
 import { APP_BASE_HREF, CommonModule } from "@angular/common";
-import { Component, NO_ERRORS_SCHEMA, provideZoneChangeDetection, signal } from "@angular/core";
+import { Component, NO_ERRORS_SCHEMA, provideZonelessChangeDetection, signal } from "@angular/core";
 
 import { PaginatedListComponent } from "./paginatedList.component";
 import { LoaderComponent } from "@common/loader/loader.component";
@@ -83,10 +83,7 @@ describe("PaginatedListComponent", () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [CommonModule, LoaderComponent, PaginatedListComponent, MockParentComponent],
-      providers: [
-        { provide: APP_BASE_HREF, useValue: "/" },
-        provideZoneChangeDetection({ eventCoalescing: true }),
-      ],
+      providers: [{ provide: APP_BASE_HREF, useValue: "/" }, provideZonelessChangeDetection()],
     }).compileComponents();
 
     mockItems = [

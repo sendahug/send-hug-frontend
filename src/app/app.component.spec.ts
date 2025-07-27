@@ -38,10 +38,7 @@ import {
   RouterOutlet,
   withComponentInputBinding,
 } from "@angular/router";
-import {
-  BrowserDynamicTestingModule,
-  platformBrowserDynamicTesting,
-} from "@angular/platform-browser-dynamic/testing";
+import { BrowserTestingModule, platformBrowserTesting } from "@angular/platform-browser/testing";
 import {} from "jasmine";
 import { APP_BASE_HREF, CommonModule } from "@angular/common";
 import { BehaviorSubject, of, throwError } from "rxjs";
@@ -82,7 +79,7 @@ describe("AppComponent", () => {
     const MockTeleportService = MockProvider(TeleportService);
 
     TestBed.resetTestEnvironment();
-    TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
+    TestBed.initTestEnvironment(BrowserTestingModule, platformBrowserTesting());
 
     TestBed.configureTestingModule({
       imports: [

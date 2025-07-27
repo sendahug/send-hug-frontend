@@ -33,11 +33,8 @@
 import { TestBed } from "@angular/core/testing";
 import {} from "jasmine";
 import { APP_BASE_HREF } from "@angular/common";
-import {
-  BrowserDynamicTestingModule,
-  platformBrowserDynamicTesting,
-} from "@angular/platform-browser-dynamic/testing";
 import { provideZonelessChangeDetection } from "@angular/core";
+import { BrowserTestingModule, platformBrowserTesting } from "@angular/platform-browser/testing";
 
 import { LoaderComponent } from "./loader.component";
 
@@ -45,7 +42,7 @@ describe("LoaderComponent", () => {
   // Before each test, configure testing environment
   beforeEach(() => {
     TestBed.resetTestEnvironment();
-    TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
+    TestBed.initTestEnvironment(BrowserTestingModule, platformBrowserTesting());
 
     TestBed.configureTestingModule({
       imports: [LoaderComponent],

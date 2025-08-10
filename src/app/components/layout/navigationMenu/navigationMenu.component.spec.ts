@@ -40,7 +40,7 @@ import {} from "jasmine";
 import { APP_BASE_HREF, CommonModule } from "@angular/common";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { BehaviorSubject, of, Subscription } from "rxjs";
-import { provideZonelessChangeDetection, signal } from "@angular/core";
+import { computed, provideZonelessChangeDetection, signal } from "@angular/core";
 import { MockProvider } from "ng-mocks";
 import { setViewport } from "@web/test-runner-commands";
 import { By } from "@angular/platform-browser";
@@ -49,7 +49,7 @@ import { provideHttpClientTesting } from "@angular/common/http/testing";
 
 import { NavigationMenuComponent } from "./navigationMenu.component";
 import { NotificationsTabComponent } from "@app/components/layout/notifications/notifications.component";
-import { AuthService } from "@app/services/auth.service";
+import { AuthService, ToggleButtonOption } from "@app/services/auth.service";
 import { SWManager } from "@app/services/sWManager.service";
 import { mockAuthedUser, getMockFirebaseUser } from "@tests/mockData";
 import { ItemsService } from "@app/services/items.service";
@@ -63,9 +63,9 @@ describe("NavigationMenuComponent", () => {
       authenticated: signal(true),
       userData: signal({ ...mockAuthedUser }),
       isUserDataResolved: new BehaviorSubject(false),
-      toggleBtn: signal("Enable"),
-      refreshBtn: signal("Enable"),
-      refreshRate: signal(0),
+      toggleBtn: computed(() => "Enable" as ToggleButtonOption),
+      refreshBtn: computed(() => "Enable" as ToggleButtonOption),
+      refreshRate: computed(() => 0),
       checkForLoggedInUser: () => of(),
       canUser: (_permission) => true,
     });

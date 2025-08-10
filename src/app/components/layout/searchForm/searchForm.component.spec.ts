@@ -122,16 +122,15 @@ describe("SearchFormComponent", () => {
     expect(toggleSpy).not.toHaveBeenCalled();
   });
 
-  it("toggleSearch() - emits false to close the search", () => {
+  it("toggleSearch() - emits false to close the search", async () => {
     const fixture = TestBed.createComponent(SearchFormComponent);
-    fixture.detectChanges();
     const searchForm = fixture.componentInstance;
     const searchFormHtml = fixture.nativeElement;
     const toggleSpy = spyOn(searchForm, "toggleSearch").and.callThrough();
     const emitSpy = spyOn(searchForm.showForm, "emit");
+    await fixture.whenStable();
 
     searchFormHtml.querySelector("#exitButton").click();
-    fixture.detectChanges();
 
     expect(toggleSpy).toHaveBeenCalledWith();
     expect(emitSpy).toHaveBeenCalledWith(false);

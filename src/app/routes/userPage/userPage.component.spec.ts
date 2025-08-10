@@ -120,15 +120,14 @@ describe("UserPageComponent", () => {
   });
 
   // Check that when there's no ID the component defaults to the logged in user
-  it("should show the logged in user if not provided with ID", () => {
+  it("should show the logged in user if not provided with ID", async () => {
     const authService = TestBed.inject(AuthService);
     authService.authenticated.set(true);
     authService.userData.set({ ...mockAuthedUser });
     const fixture = TestBed.createComponent(UserPageComponent);
     const userPage = fixture.componentInstance;
     const userPageDOM = fixture.nativeElement;
-
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     const userData = userPage.authService.userData();
 
@@ -167,7 +166,7 @@ describe("UserPageComponent", () => {
   });
 
   // Check that when the ID is the user's ID, it shows the user's own page
-  it("should show the logged in user if it's the user's own ID", () => {
+  it("should show the logged in user if it's the user's own ID", async () => {
     const paramMap = TestBed.inject(ActivatedRoute);
     const routeSpy = spyOn(paramMap.snapshot.paramMap, "get").and.returnValue("4");
     const authService = TestBed.inject(AuthService);
@@ -176,8 +175,7 @@ describe("UserPageComponent", () => {
     const fixture = TestBed.createComponent(UserPageComponent);
     const userPage = fixture.componentInstance;
     const userPageDOM = fixture.nativeElement;
-
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     const userData = userPage.authService.userData();
 
@@ -290,7 +288,7 @@ describe("UserPageComponent", () => {
   });
 
   // Check that the logout button triggers the AuthService's logout method
-  it("should trigger the AuthService upon clicking logout", () => {
+  it("should trigger the AuthService upon clicking logout", async () => {
     const paramMap = TestBed.inject(ActivatedRoute);
     spyOn(paramMap.snapshot.paramMap, "get").and.returnValue("4");
     const authService = TestBed.inject(AuthService);
@@ -306,8 +304,7 @@ describe("UserPageComponent", () => {
       mockSubscription,
     );
     const navigateSpy = spyOn(userPage["router"], "navigate");
-
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     // check the user is logged in
     expect(userPage.authService.authenticated()).toBeTrue();
@@ -315,7 +312,6 @@ describe("UserPageComponent", () => {
 
     // trigger click on the logout button
     userPageDOM.querySelector("#logout").click();
-    fixture.detectChanges();
 
     // check the logout methods were called
     expect(logoutSpy).toHaveBeenCalledWith();

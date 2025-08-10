@@ -161,7 +161,7 @@ describe("SearchResultsComponent", () => {
   });
 
   // Check that the component is getting the search query correctly
-  it("should get the search query from the URL query param", () => {
+  it("should get the search query from the URL query param", async () => {
     const route = TestBed.inject(ActivatedRoute);
     const routeSpy = spyOn(route.snapshot.queryParamMap, "get").and.callFake((param: string) => {
       if (param == "query") {
@@ -175,7 +175,7 @@ describe("SearchResultsComponent", () => {
     const searchResults = fixture.componentInstance;
     const searchResultsDOM = fixture.nativeElement;
     searchResults.itemsService.isSearching.set(false);
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     expect(routeSpy).toHaveBeenCalledWith("query");
     expect(itemsServiceSpy).toHaveBeenCalledWith("search");
@@ -224,7 +224,7 @@ describe("SearchResultsComponent", () => {
   // USER SEARCH RESULTS
   // ==================================================================
   // Check that an error message is shown if there are no results
-  it("User Results - should show error message if there are no user results", () => {
+  it("User Results - should show error message if there are no user results", async () => {
     const route = TestBed.inject(ActivatedRoute);
     spyOn(route.snapshot.queryParamMap, "get").and.callFake((param: string) => {
       if (param == "query") {
@@ -239,15 +239,14 @@ describe("SearchResultsComponent", () => {
     searchResults.itemsService.isSearching.set(false);
     searchResults.itemsService.userSearchResults.set([]);
     searchResults.itemsService.numUserResults.set(0);
-
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     expect(searchResultsDOM.querySelector("#userSearchResults")).toBeNull();
     expect(searchResultsDOM.querySelector("#uSearchResErr")).toBeTruthy();
   });
 
   // Check that the result list is shown when there are results
-  it("User Results - should show a list of users with links to their pages", () => {
+  it("User Results - should show a list of users with links to their pages", async () => {
     const route = TestBed.inject(ActivatedRoute);
     spyOn(route.snapshot.queryParamMap, "get").and.callFake((param: string) => {
       if (param == "query") {
@@ -262,8 +261,7 @@ describe("SearchResultsComponent", () => {
     searchResults.itemsService.isSearching.set(false);
     searchResults.itemsService.userSearchResults.set(mockUserSearchResults);
     searchResults.itemsService.numUserResults.set(2);
-
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     expect(searchResults.itemsService.userSearchResults()).toBeTruthy();
     expect(searchResults.itemsService.userSearchResults().length).toBe(2);
@@ -281,7 +279,7 @@ describe("SearchResultsComponent", () => {
   // POST SEARCH RESULTS
   // ==================================================================
   // Check that an error message is shown if there are no results
-  it("Post Results - should show error message if there are no post results", () => {
+  it("Post Results - should show error message if there are no post results", async () => {
     const route = TestBed.inject(ActivatedRoute);
     spyOn(route.snapshot.queryParamMap, "get").and.callFake((param: string) => {
       if (param == "query") {
@@ -296,15 +294,14 @@ describe("SearchResultsComponent", () => {
     searchResults.itemsService.isSearching.set(false);
     searchResults.itemsService.postSearchResults.set([]);
     searchResults.itemsService.numPostResults.set(0);
-
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     expect(searchResultsDOM.querySelector("#postSearchResults")).toBeNull();
     expect(searchResultsDOM.querySelector("#pSearchResErr")).toBeTruthy();
   });
 
   // Check that the result list is shown when there are results
-  it("Post Results - should show a list of posts", () => {
+  it("Post Results - should show a list of posts", async () => {
     const route = TestBed.inject(ActivatedRoute);
     spyOn(route.snapshot.queryParamMap, "get").and.callFake((param: string) => {
       if (param == "query") {
@@ -320,8 +317,7 @@ describe("SearchResultsComponent", () => {
     searchResults.itemsService.postSearchResults.set([mockPostSearchResults[0]]);
     searchResults.itemsService.numPostResults.set(1);
     searchResults.itemsService.totalPostSearchPages.set(2);
-
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     expect(searchResults.itemsService.postSearchResults()).toBeTruthy();
     expect(searchResults.itemsService.postSearchResults().length).toBe(1);
@@ -331,7 +327,7 @@ describe("SearchResultsComponent", () => {
   });
 
   // Check that a different page gets different results
-  it("Post Results - changes page when clicked", () => {
+  it("Post Results - changes page when clicked", async () => {
     // set up spies
     const route = TestBed.inject(ActivatedRoute);
     spyOn(route.snapshot.queryParamMap, "get").and.callFake((param: string) => {
@@ -353,7 +349,7 @@ describe("SearchResultsComponent", () => {
     searchResults.itemsService.postSearchResults.set([mockPostSearchResults[0]]);
     searchResults.itemsService.numPostResults.set(1);
     searchResults.itemsService.totalPostSearchPages.set(2);
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     // expectations for page 1
     expect(searchResults.itemsService.postSearchPage()).toBe(1);
@@ -365,7 +361,7 @@ describe("SearchResultsComponent", () => {
     searchResultsDOM.querySelectorAll(".nextButton")[0].click();
     searchResults.itemsService.postSearchResults.set([...mockPostSearchResults]);
     searchResults.itemsService.numPostResults.set(2);
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     // expectations for page 2
     expect(routeSpy).toHaveBeenCalledWith(
@@ -387,7 +383,7 @@ describe("SearchResultsComponent", () => {
     searchResultsDOM.querySelectorAll(".prevButton")[0].click();
     searchResults.itemsService.postSearchResults.set([mockPostSearchResults[0]]);
     searchResults.itemsService.numPostResults.set(1);
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     // expectations for page 1
     expect(routeSpy).toHaveBeenCalledTimes(2);
@@ -397,7 +393,7 @@ describe("SearchResultsComponent", () => {
     ).toBe(1);
   });
 
-  it("Post Results - should remove a deleted post", () => {
+  it("Post Results - should remove a deleted post", async () => {
     const route = TestBed.inject(ActivatedRoute);
     spyOn(route.snapshot.queryParamMap, "get").and.callFake((param: string) => {
       if (param == "query") {
@@ -412,12 +408,12 @@ describe("SearchResultsComponent", () => {
     searchResults.itemsService.postSearchResults.set([...mockPostSearchResults]);
     searchResults.itemsService.numPostResults.set(1);
     const removeSpy = spyOn(searchResults, "removeDeletedPost").and.callThrough();
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     const singlePost = fixture.debugElement.query(By.css("app-single-post"))
       .componentInstance as PostComponent;
     singlePost.deletedId.emit(5);
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     expect(removeSpy).toHaveBeenCalledWith(5);
     expect(searchResults.itemsService.postSearchResults().length).toBe(1);

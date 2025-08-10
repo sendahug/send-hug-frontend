@@ -154,7 +154,7 @@ describe("FullListComponent", () => {
     expect(fullList).toBeTruthy();
   });
 
-  it("should set the type according to the URL param - new", () => {
+  it("should set the type according to the URL param - new", async () => {
     spyOn(FullListComponent.prototype, "fetchPosts");
     const paramMap = TestBed.inject(ActivatedRoute);
     paramMap.snapshot.url = [{ path: "New" }] as UrlSegment[];
@@ -162,12 +162,12 @@ describe("FullListComponent", () => {
     // create the component
     const fixture = TestBed.createComponent(FullListComponent);
     const fullList = fixture.componentInstance;
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     expect(fullList.type()).toBe("New");
   });
 
-  it("should set the type according to the URL param - suggested", () => {
+  it("should set the type according to the URL param - suggested", async () => {
     spyOn(FullListComponent.prototype, "fetchPosts");
     const paramMap = TestBed.inject(ActivatedRoute);
     paramMap.snapshot.url = [{ path: "Suggested" }] as UrlSegment[];
@@ -175,12 +175,12 @@ describe("FullListComponent", () => {
     // create the component
     const fixture = TestBed.createComponent(FullListComponent);
     const fullList = fixture.componentInstance;
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     expect(fullList.type()).toBe("Suggested");
   });
 
-  it("should set the page according to the URL param", () => {
+  it("should set the page according to the URL param", async () => {
     spyOn(FullListComponent.prototype, "fetchPosts");
     const paramMap = TestBed.inject(ActivatedRoute);
     paramMap.snapshot.url = [{ path: "New" }] as UrlSegment[];
@@ -189,12 +189,12 @@ describe("FullListComponent", () => {
     // create the component
     const fixture = TestBed.createComponent(FullListComponent);
     const fullList = fixture.componentInstance;
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     expect(fullList.currentPage()).toBe(2);
   });
 
-  it("should set the page to 1 if the URL param is invalid", () => {
+  it("should set the page to 1 if the URL param is invalid", async () => {
     spyOn(FullListComponent.prototype, "fetchPosts");
     const paramMap = TestBed.inject(ActivatedRoute);
     paramMap.snapshot.url = [{ path: "New" }] as UrlSegment[];
@@ -203,12 +203,12 @@ describe("FullListComponent", () => {
     // create the component
     const fixture = TestBed.createComponent(FullListComponent);
     const fullList = fixture.componentInstance;
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     expect(fullList.currentPage()).toBe(1);
   });
 
-  it("should set the page to 1 if the URL param is not set", () => {
+  it("should set the page to 1 if the URL param is not set", async () => {
     spyOn(FullListComponent.prototype, "fetchPosts");
     const paramMap = TestBed.inject(ActivatedRoute);
     paramMap.snapshot.url = [{ path: "New" }] as UrlSegment[];
@@ -217,7 +217,7 @@ describe("FullListComponent", () => {
     // create the component
     const fixture = TestBed.createComponent(FullListComponent);
     const fullList = fixture.componentInstance;
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     expect(fullList.currentPage()).toBe(1);
   });
@@ -305,7 +305,7 @@ describe("FullListComponent", () => {
     });
   });
 
-  it("should update the user interface", () => {
+  it("should update the user interface", async () => {
     spyOn(FullListComponent.prototype, "fetchPosts");
     const paramMap = TestBed.inject(ActivatedRoute);
     paramMap.snapshot.url = [{ path: "Suggested" }] as UrlSegment[];
@@ -313,14 +313,14 @@ describe("FullListComponent", () => {
     const fixture = TestBed.createComponent(FullListComponent);
     const fullList = fixture.componentInstance;
     const fullListDOM = fixture.nativeElement;
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     const totalPagesSpy = spyOn(fullList.totalPages, "set").and.callThrough();
     const postsSpy = spyOn(fullList.posts, "set").and.callThrough();
     const isLoadingSpy = spyOn(fullList.isLoading, "set").and.callThrough();
 
     fullList.updateInterface({ posts: pageOnePosts, total_pages: 4, success: true });
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     expect(totalPagesSpy).toHaveBeenCalledWith(4);
     expect(postsSpy).toHaveBeenCalledWith(pageOnePosts);
@@ -336,7 +336,7 @@ describe("FullListComponent", () => {
     expect(firstPost.post?.text).toEqual("test");
   });
 
-  it("should continue to the next page", () => {
+  it("should continue to the next page", async () => {
     const fetchSpy = spyOn(FullListComponent.prototype, "fetchPosts");
     const paramMap = TestBed.inject(ActivatedRoute);
     paramMap.snapshot.url = [{ path: "Suggested" }] as UrlSegment[];
@@ -345,7 +345,7 @@ describe("FullListComponent", () => {
     const fullList = fixture.componentInstance;
     const fullListDOM = fixture.nativeElement;
     fullList.totalPages.set(2);
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     const updateURLSpy = spyOn(fullList, "updatePageUrlParam");
 
@@ -362,7 +362,7 @@ describe("FullListComponent", () => {
     expect(updateURLSpy).toHaveBeenCalledWith();
   });
 
-  it("should go to the previous page", () => {
+  it("should go to the previous page", async () => {
     const fetchSpy = spyOn(FullListComponent.prototype, "fetchPosts");
     const paramMap = TestBed.inject(ActivatedRoute);
     paramMap.snapshot.url = [{ path: "Suggested" }] as UrlSegment[];
@@ -372,7 +372,7 @@ describe("FullListComponent", () => {
     const fullList = fixture.componentInstance;
     const fullListDOM = fixture.nativeElement;
     fullList.totalPages.set(2);
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     const updateURLSpy = spyOn(fullList, "updatePageUrlParam");
 
@@ -409,7 +409,7 @@ describe("FullListComponent", () => {
     });
   });
 
-  it("should remove a deleted post", () => {
+  it("should remove a deleted post", async () => {
     spyOn(FullListComponent.prototype, "fetchPosts");
     const paramMap = TestBed.inject(ActivatedRoute);
     paramMap.snapshot.url = [{ path: "Suggested" }] as UrlSegment[];
@@ -417,12 +417,12 @@ describe("FullListComponent", () => {
     const fullList = fixture.componentInstance;
     fullList.posts.set(pageOnePosts);
     const removeSpy = spyOn(fullList, "removeDeletedPost").and.callThrough();
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     const singlePost = fixture.debugElement.query(By.css("app-single-post"))
       .componentInstance as PostComponent;
     singlePost.deletedId.emit(2);
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     expect(removeSpy).toHaveBeenCalledWith(2);
     expect(fullList.posts().length).toBe(1);

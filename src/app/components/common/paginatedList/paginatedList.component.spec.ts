@@ -105,7 +105,7 @@ describe("PaginatedListComponent", () => {
   });
 
   // Check that the component sets the page to 1 initially
-  it("should set the page to 1 upon starting", () => {
+  it("should set the page to 1 upon starting", async () => {
     const fixture = TestBed.createComponent(PaginatedListComponent);
     const paginatedList = fixture.componentInstance;
     const paginatedListDOM = fixture.nativeElement;
@@ -114,7 +114,7 @@ describe("PaginatedListComponent", () => {
     fixture.componentRef.setInput("totalPages", 2);
     fixture.componentRef.setInput("isLoading", false);
     fixture.componentRef.setInput("isIdbFetchLoading", false);
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     expect(paginatedList.currentPage()).toEqual(1);
     expect(paginatedListDOM.querySelector(".pageCount").textContent.trim().toLowerCase()).toBe(
@@ -122,7 +122,7 @@ describe("PaginatedListComponent", () => {
     );
   });
 
-  it("should render an itemList slot and a deleteAllButton slot", () => {
+  it("should render an itemList slot and a deleteAllButton slot", async () => {
     const fixture = TestBed.createComponent(MockParentComponent);
     const parentComponent = fixture.componentInstance;
     const parentComponentDOM = fixture.nativeElement;
@@ -130,7 +130,7 @@ describe("PaginatedListComponent", () => {
     parentComponent.totalPages.set(3);
     parentComponent.isLoading.set(false);
     parentComponent.isIdbFetchLoading.set(false);
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     const itemList = parentComponentDOM.querySelector("app-paginated-list").querySelector("#list");
 
@@ -155,7 +155,7 @@ describe("PaginatedListComponent", () => {
     expect(deleteAllButton.classList.contains("appButton")).toBeTrue();
   });
 
-  it("should navigate to the next page", () => {
+  it("should navigate to the next page", async () => {
     const fixture = TestBed.createComponent(PaginatedListComponent);
     const paginatedList = fixture.componentInstance;
     const paginatedListDOM = fixture.nativeElement;
@@ -164,18 +164,17 @@ describe("PaginatedListComponent", () => {
     fixture.componentRef.setInput("totalPages", 2);
     fixture.componentRef.setInput("isLoading", false);
     fixture.componentRef.setInput("isIdbFetchLoading", false);
-    fixture.detectChanges();
+    await fixture.whenStable();
     const nextPageSpy = spyOn(paginatedList, "nextPage").and.callThrough();
     const emitSpy = spyOn(paginatedList.pageChange, "emit");
 
     paginatedListDOM.querySelector(".nextButton").click();
-    fixture.detectChanges();
 
     expect(nextPageSpy).toHaveBeenCalledWith();
     expect(emitSpy).toHaveBeenCalledWith(2);
   });
 
-  it("should navigate to the previous page", () => {
+  it("should navigate to the previous page", async () => {
     const fixture = TestBed.createComponent(PaginatedListComponent);
     const paginatedList = fixture.componentInstance;
     const paginatedListDOM = fixture.nativeElement;
@@ -185,18 +184,17 @@ describe("PaginatedListComponent", () => {
     fixture.componentRef.setInput("isLoading", false);
     fixture.componentRef.setInput("isIdbFetchLoading", false);
     paginatedList.currentPage.set(2);
-    fixture.detectChanges();
+    await fixture.whenStable();
     const nextPageSpy = spyOn(paginatedList, "prevPage").and.callThrough();
     const emitSpy = spyOn(paginatedList.pageChange, "emit");
 
     paginatedListDOM.querySelector(".prevButton").click();
-    fixture.detectChanges();
 
     expect(nextPageSpy).toHaveBeenCalledWith();
     expect(emitSpy).toHaveBeenCalledWith(1);
   });
 
-  it("should show the loader in header mode if the IDB fetch is complete", () => {
+  it("should show the loader in header mode if the IDB fetch is complete", async () => {
     const fixture = TestBed.createComponent(PaginatedListComponent);
     const paginatedList = fixture.componentInstance;
     const paginatedListDOM = fixture.nativeElement;
@@ -205,13 +203,13 @@ describe("PaginatedListComponent", () => {
     fixture.componentRef.setInput("totalPages", 2);
     fixture.componentRef.setInput("isLoading", true);
     fixture.componentRef.setInput("isIdbFetchLoading", false);
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     expect(paginatedList.loaderClass()).toBe("header");
     expect(paginatedListDOM.querySelector("app-loader").classList).toContain("header");
   });
 
-  it("should show the loader in full mode if the IDB fetch isn't complete", () => {
+  it("should show the loader in full mode if the IDB fetch isn't complete", async () => {
     const fixture = TestBed.createComponent(PaginatedListComponent);
     const paginatedList = fixture.componentInstance;
     const paginatedListDOM = fixture.nativeElement;
@@ -220,7 +218,7 @@ describe("PaginatedListComponent", () => {
     fixture.componentRef.setInput("totalPages", 2);
     fixture.componentRef.setInput("isLoading", true);
     fixture.componentRef.setInput("isIdbFetchLoading", true);
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     expect(paginatedList.loaderClass()).toBe("");
     expect(paginatedListDOM.querySelector("app-loader").classList).not.toContain("header");

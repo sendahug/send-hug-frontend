@@ -103,7 +103,7 @@ describe("Blocks Page", () => {
   });
 
   // Check that a call is made to get blocked users
-  it("should get blocked users", () => {
+  it("should get blocked users", async () => {
     // set up the spy and the component
     const apiClientSpy = spyOn(TestBed.inject(ApiClientService), "get").and.returnValue(
       of({
@@ -115,7 +115,7 @@ describe("Blocks Page", () => {
     const fixture = TestBed.createComponent(AdminBlocksComponent);
     const adminBlocks = fixture.componentInstance;
     const adminBlocksDOM = fixture.nativeElement;
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     adminBlocks.fetchBlocks();
 
@@ -127,7 +127,7 @@ describe("Blocks Page", () => {
     ).toBe(1);
   });
 
-  it("should remove the loading screen if there was an error", () => {
+  it("should remove the loading screen if there was an error", async () => {
     // set up the spy and the component
     const apiClientSpy = spyOn(TestBed.inject(ApiClientService), "get").and.returnValue(
       throwError(() => new Error("ERROR")),
@@ -135,7 +135,7 @@ describe("Blocks Page", () => {
     const fixture = TestBed.createComponent(AdminBlocksComponent);
     const adminBlocks = fixture.componentInstance;
     const adminBlocksDOM = fixture.nativeElement;
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     adminBlocks.fetchBlocks();
 
@@ -150,7 +150,7 @@ describe("Blocks Page", () => {
   });
 
   // Check that you can block a user
-  it("should block a user - new block", () => {
+  it("should block a user - new block", async () => {
     // set up the spy and the component
     const fixture = TestBed.createComponent(AdminBlocksComponent);
     const adminBlocks = fixture.componentInstance;
@@ -192,14 +192,13 @@ describe("Blocks Page", () => {
     adminBlocks.blockedUsers.set([...mockBlockedUsers]);
     adminBlocks.isLoading.set(false);
     adminBlocks.totalPages.set(1);
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     // trigger a click
     adminBlocksDOM.querySelector("#blockID").value = 5;
     adminBlocksDOM.querySelector("#blockID").dispatchEvent(new Event("input"));
     adminBlocksDOM.querySelector("#blockLength").value = "oneDay";
     adminBlocksDOM.querySelectorAll(".sendData")[0].click();
-    fixture.detectChanges();
 
     // check expectations
     expect(blockSpy).toHaveBeenCalledWith();
@@ -208,7 +207,7 @@ describe("Blocks Page", () => {
   });
 
   // Check that you can block a user
-  it("should block a user - extended block", () => {
+  it("should block a user - extended block", async () => {
     // set up the spy and the component
     const fixture = TestBed.createComponent(AdminBlocksComponent);
     const adminBlocks = fixture.componentInstance;
@@ -250,14 +249,13 @@ describe("Blocks Page", () => {
     adminBlocks.blockedUsers.set([...mockBlockedUsers]);
     adminBlocks.isLoading.set(false);
     adminBlocks.totalPages.set(1);
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     // trigger a click
     adminBlocksDOM.querySelector("#blockID").value = 15;
     adminBlocksDOM.querySelector("#blockID").dispatchEvent(new Event("input"));
     adminBlocksDOM.querySelector("#blockLength").value = "oneDay";
     adminBlocksDOM.querySelectorAll(".sendData")[0].click();
-    fixture.detectChanges();
 
     // check expectations
     expect(blockSpy).toHaveBeenCalledWith();
@@ -265,7 +263,7 @@ describe("Blocks Page", () => {
     expect(adminBlocks.blockedUsers().length).toBe(1);
   });
 
-  it("should check a user ID is provided", () => {
+  it("should check a user ID is provided", async () => {
     // set up the spy and the component
     const fixture = TestBed.createComponent(AdminBlocksComponent);
     const adminBlocks = fixture.componentInstance;
@@ -277,14 +275,13 @@ describe("Blocks Page", () => {
     adminBlocks.blockedUsers.set([...mockBlockedUsers]);
     adminBlocks.isLoading.set(false);
     adminBlocks.totalPages.set(1);
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     // trigger a click
     adminBlocksDOM.querySelector("#blockID").value = null;
     adminBlocksDOM.querySelector("#blockID").dispatchEvent(new Event("input"));
     adminBlocksDOM.querySelector("#blockLength").value = "oneDay";
     adminBlocksDOM.querySelectorAll(".sendData")[0].click();
-    fixture.detectChanges();
 
     expect(blockSpy).toHaveBeenCalledWith();
     expect(blockServiceSpy).not.toHaveBeenCalled();
@@ -295,7 +292,7 @@ describe("Blocks Page", () => {
     });
   });
 
-  it("should check the user ID isn't the logged in user's ID", () => {
+  it("should check the user ID isn't the logged in user's ID", async () => {
     // set up the spy and the component
     const fixture = TestBed.createComponent(AdminBlocksComponent);
     const adminBlocks = fixture.componentInstance;
@@ -307,14 +304,13 @@ describe("Blocks Page", () => {
     adminBlocks.blockedUsers.set([...mockBlockedUsers]);
     adminBlocks.isLoading.set(false);
     adminBlocks.totalPages.set(1);
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     // trigger a click
     adminBlocksDOM.querySelector("#blockID").value = 4;
     adminBlocksDOM.querySelector("#blockID").dispatchEvent(new Event("input"));
     adminBlocksDOM.querySelector("#blockLength").value = "oneDay";
     adminBlocksDOM.querySelectorAll(".sendData")[0].click();
-    fixture.detectChanges();
 
     expect(blockSpy).toHaveBeenCalledWith();
     expect(blockServiceSpy).not.toHaveBeenCalled();
@@ -324,7 +320,7 @@ describe("Blocks Page", () => {
     });
   });
 
-  it("should check the user ID is a number", () => {
+  it("should check the user ID is a number", async () => {
     // set up the spy and the component
     const fixture = TestBed.createComponent(AdminBlocksComponent);
     const adminBlocks = fixture.componentInstance;
@@ -336,14 +332,13 @@ describe("Blocks Page", () => {
     adminBlocks.blockedUsers.set([...mockBlockedUsers]);
     adminBlocks.isLoading.set(false);
     adminBlocks.totalPages.set(1);
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     // trigger a click
     adminBlocksDOM.querySelector("#blockID").value = "hello";
     adminBlocksDOM.querySelector("#blockID").dispatchEvent(new Event("input"));
     adminBlocksDOM.querySelector("#blockLength").value = "oneDay";
     adminBlocksDOM.querySelectorAll(".sendData")[0].click();
-    fixture.detectChanges();
 
     expect(blockSpy).toHaveBeenCalledWith();
     expect(blockServiceSpy).not.toHaveBeenCalled();
@@ -354,7 +349,7 @@ describe("Blocks Page", () => {
   });
 
   // Check that you can unblock a user
-  it("should unblock a user", () => {
+  it("should unblock a user", async () => {
     // mock response
     const mockResponse = {
       success: true,
@@ -382,11 +377,10 @@ describe("Blocks Page", () => {
     adminBlocks.blockedUsers.set([...mockBlockedUsers]);
     adminBlocks.isLoading.set(false);
     adminBlocks.totalPages.set(1);
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     // trigger a click
     adminBlocksDOM.querySelectorAll(".adminButton")[0].click();
-    fixture.detectChanges();
 
     // check expectations
     expect(unblockSpy).toHaveBeenCalledWith(15);
@@ -403,7 +397,7 @@ describe("Blocks Page", () => {
     expect(adminBlocks.blockedUsers().length).toEqual(0);
   });
 
-  it("should go to the next page", () => {
+  it("should go to the next page", async () => {
     // set up the spy and the component
     const fixture = TestBed.createComponent(AdminBlocksComponent);
     const adminBlocks = fixture.componentInstance;
@@ -414,11 +408,10 @@ describe("Blocks Page", () => {
     adminBlocks.isLoading.set(false);
     adminBlocks.totalPages.set(2);
     adminBlocks.currentPage.set(1);
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     // trigger a click
     adminBlocksDOM.querySelectorAll(".pagination > button")[1].click();
-    fixture.detectChanges();
 
     // check expectations
     expect(nextPageSpy).toHaveBeenCalledWith();
@@ -426,7 +419,7 @@ describe("Blocks Page", () => {
     expect(fetchSpy).toHaveBeenCalledWith();
   });
 
-  it("should return to the previous page", () => {
+  it("should return to the previous page", async () => {
     // set up the spy and the component
     const fixture = TestBed.createComponent(AdminBlocksComponent);
     const adminBlocks = fixture.componentInstance;
@@ -437,11 +430,10 @@ describe("Blocks Page", () => {
     adminBlocks.isLoading.set(false);
     adminBlocks.totalPages.set(2);
     adminBlocks.currentPage.set(2);
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     // trigger a click
     adminBlocksDOM.querySelectorAll(".pagination > button")[0].click();
-    fixture.detectChanges();
 
     // check expectations
     expect(prevPageSpy).toHaveBeenCalledWith();

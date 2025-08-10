@@ -87,11 +87,11 @@ describe("UserIconComponent", () => {
     expect(userIcon).toBeTruthy();
   });
 
-  it("should set the colours based on the incoming colours at creation", () => {
+  it("should set the colours based on the incoming colours at creation", async () => {
     const fixture = TestBed.createComponent(MockIconContainerComponent);
     const userIcon = fixture.debugElement.query(By.css("app-user-icon"));
     const userIconDOM = userIcon.nativeElement;
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     // Check the initial colours
     // Angular converts hex codes to rgb for some reason, so...
@@ -109,12 +109,12 @@ describe("UserIconComponent", () => {
     });
   });
 
-  it("should set the colours based on the incoming colours", () => {
+  it("should set the colours based on the incoming colours", async () => {
     const fixture = TestBed.createComponent(MockIconContainerComponent);
     const iconContainer = fixture.componentInstance;
     const userIcon = fixture.debugElement.query(By.css("app-user-icon"));
     const userIconDOM = userIcon.nativeElement;
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     // Check the initial
     // Angular converts hex codes to rgb for some reason, so...
@@ -136,7 +136,7 @@ describe("UserIconComponent", () => {
     iconContainer.lbgColour.set("#111111");
     iconContainer.rbgColour.set("#222222");
     iconContainer.itemColour.set("#333333");
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     // Check it's been updated
     userIconDOM.querySelectorAll(".character").forEach((path: SVGPathElement) => {
@@ -153,12 +153,12 @@ describe("UserIconComponent", () => {
     });
   });
 
-  it("should set the character based on the incoming value", () => {
+  it("should set the character based on the incoming value", async () => {
     const fixture = TestBed.createComponent(MockIconContainerComponent);
     const iconContainer = fixture.componentInstance;
     const userIcon = fixture.debugElement.query(By.css("app-user-icon"));
     const userIconInstance = userIcon.componentInstance as UserIconComponent;
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     // Check the initial
     // Angular converts hex codes to rgb for some reason, so...
@@ -167,7 +167,7 @@ describe("UserIconComponent", () => {
 
     // Update the icon colours
     iconContainer.selectedIcon.set("dog");
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     // Check it's been updated
     expect(userIconInstance.selectedIcon()).toBe("dog");

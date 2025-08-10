@@ -229,16 +229,15 @@ describe("Popup", () => {
   });
 
   // Check that the event emitter emits false if the user clicks 'exit'
-  it("exits the popup if the user decides not to edit", () => {
+  it("exits the popup if the user decides not to edit", async () => {
     const fixture = TestBed.createComponent(PopUpComponent);
     const popUp = fixture.componentInstance;
     const popUpDOM = fixture.nativeElement;
     const exitSpy = spyOn(popUp, "exitEdit").and.callThrough();
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     // click the exit button
     popUpDOM.querySelector("#exitButton").click();
-    fixture.detectChanges();
 
     popUp.editMode.subscribe((event: boolean) => {
       expect(event).toBeFalse();

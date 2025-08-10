@@ -158,11 +158,11 @@ describe("SiteMapComponent", () => {
   });
 
   // Check that there are valid navigation links
-  it("should contain valid navigation links", () => {
+  it("should contain valid navigation links", async () => {
     const fixture = TestBed.createComponent(SiteMapComponent);
     const siteMap = fixture.componentInstance;
     const siteMapDOM = fixture.nativeElement;
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     const routeList = siteMapDOM.querySelector("#routeList");
 
@@ -180,14 +180,14 @@ describe("SiteMapComponent", () => {
   });
 
   // Check that the admin board links are shown if the user has permission
-  it("should show admin board links if the user has permission", () => {
+  it("should show admin board links if the user has permission", async () => {
     const authService = TestBed.inject(AuthService);
     const authSpy = spyOn(authService, "canUser").and.returnValue(true);
     authService.authenticated.set(true);
     const fixture = TestBed.createComponent(SiteMapComponent);
     const siteMap = fixture.componentInstance;
     const siteMapDOM = fixture.nativeElement;
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     const routeList = siteMapDOM.querySelector("#routeList");
     const navLinks = routeList!.querySelectorAll(".routerLink");
@@ -236,14 +236,14 @@ describe("SiteMapComponent", () => {
   });
 
   // Check that the admin board links aren't shown if the user doesn't have permission
-  it("should hide admin board links if the user doesn't have permission", () => {
+  it("should hide admin board links if the user doesn't have permission", async () => {
     const authService = TestBed.inject(AuthService);
     const authSpy = spyOn(authService, "canUser").and.returnValue(false);
     authService.authenticated.set(true);
     const fixture = TestBed.createComponent(SiteMapComponent);
     const siteMap = fixture.componentInstance;
     const siteMapDOM = fixture.nativeElement;
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     const routeList = siteMapDOM.querySelector("#routeList");
     const navLinks = routeList!.querySelectorAll(".routerLink");
@@ -285,13 +285,13 @@ describe("SiteMapComponent", () => {
     }
   });
 
-  it("should remove the login route if the user is authenticated", () => {
+  it("should remove the login route if the user is authenticated", async () => {
     const authService = TestBed.inject(AuthService);
     spyOn(authService, "authenticated").and.returnValue(true);
     const fixture = TestBed.createComponent(SiteMapComponent);
     const siteMap = fixture.componentInstance;
     const siteMapDOM = fixture.nativeElement;
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     const routeList = siteMapDOM.querySelector("#routeList");
     const navLinks = routeList!.querySelectorAll(".routerLink");
@@ -307,13 +307,13 @@ describe("SiteMapComponent", () => {
     }
   });
 
-  it("should keep the login route if the user is not authenticated", () => {
+  it("should keep the login route if the user is not authenticated", async () => {
     const authService = TestBed.inject(AuthService);
     spyOn(authService, "authenticated").and.returnValue(false);
     const fixture = TestBed.createComponent(SiteMapComponent);
     const siteMap = fixture.componentInstance;
     const siteMapDOM = fixture.nativeElement;
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     const routeList = siteMapDOM.querySelector("#routeList");
     const navLinks = routeList!.querySelectorAll(".routerLink");

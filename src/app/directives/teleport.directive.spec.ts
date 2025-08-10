@@ -108,9 +108,9 @@ describe("TeleportDirective", () => {
     expect(childFixture.nativeElement.querySelector("div").textContent).toBe("MEEP!");
   });
 
-  it("should remove the content once the element is destroyed", () => {
+  it("should remove the content once the element is destroyed", async () => {
     const childFixture = TestBed.createComponent(MockChildComponent);
-    childFixture.detectChanges();
+    await fixture.whenStable();
 
     expect(
       mockPageDOM.querySelector("#profileContainer").querySelectorAll("div")[0].textContent,

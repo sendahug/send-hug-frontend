@@ -109,7 +109,7 @@ describe("MessageComponent", () => {
   });
 
   // Check that the component shows the message details
-  it("should show message details - thread", () => {
+  it("should show message details - thread", async () => {
     const fixture = TestBed.createComponent(MessageComponent);
     const appMessage = fixture.componentInstance;
     const appMessageDOM = fixture.nativeElement;
@@ -120,7 +120,7 @@ describe("MessageComponent", () => {
     });
     fixture.componentRef.setInput("user1Id", user1Id);
     fixture.componentRef.setInput("user2Id", user2Id);
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     expect(appMessage.userIconToShow()).toEqual(mockMessage.from);
     expect(appMessageDOM.querySelector(".messageText").textContent.trim()).toBe(
@@ -128,13 +128,13 @@ describe("MessageComponent", () => {
     );
   });
 
-  it("should show the user1 icon on the left side", () => {
+  it("should show the user1 icon on the left side", async () => {
     const fixture = TestBed.createComponent(MessageComponent);
     const appMessageDOM = fixture.nativeElement;
     fixture.componentRef.setInput("message", mockMessage);
     fixture.componentRef.setInput("user1Id", user1Id);
     fixture.componentRef.setInput("user2Id", user2Id);
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     const userIconPics = appMessageDOM.querySelectorAll(".messageProfilePic");
 
@@ -145,7 +145,7 @@ describe("MessageComponent", () => {
     expect(userIconPics[1].querySelector(".placeholderIcon")).toBeTruthy();
   });
 
-  it("should show the user2 icon on the right side", () => {
+  it("should show the user2 icon on the right side", async () => {
     const fixture = TestBed.createComponent(MessageComponent);
     const appMessageDOM = fixture.nativeElement;
     fixture.componentRef.setInput("message", {
@@ -155,7 +155,7 @@ describe("MessageComponent", () => {
     });
     fixture.componentRef.setInput("user1Id", user1Id);
     fixture.componentRef.setInput("user2Id", user2Id);
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     const userIconPics = appMessageDOM.querySelectorAll(".messageProfilePic");
 
@@ -167,33 +167,33 @@ describe("MessageComponent", () => {
   });
 
   // Check that the popup variables are set to false
-  it("should have all popup variables set to false", () => {
+  it("should have all popup variables set to false", async () => {
     const fixture = TestBed.createComponent(MessageComponent);
     const appMessage = fixture.componentInstance;
     fixture.componentRef.setInput("message", mockMessage);
     fixture.componentRef.setInput("user1Id", user1Id);
     fixture.componentRef.setInput("user2Id", user2Id);
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     expect(appMessage.deleteMode()).toBeFalse();
   });
 
   // Check deleting a single message triggers the poppup
-  it("should trigger the popup upon delete", () => {
+  it("should trigger the popup upon delete", async () => {
     const fixture = TestBed.createComponent(MessageComponent);
     const appMessage = fixture.componentInstance;
     const appMessageDOM = fixture.nativeElement;
     fixture.componentRef.setInput("message", mockMessage);
     fixture.componentRef.setInput("user1Id", user1Id);
     fixture.componentRef.setInput("user2Id", user2Id);
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     // before the click
     expect(appMessage.deleteMode()).toBeFalse();
 
     // trigger click
     appMessageDOM.querySelectorAll(".deleteButton")[0].click();
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     // after the click
     expect(appMessage.deleteMode()).toBeTrue();
@@ -203,7 +203,7 @@ describe("MessageComponent", () => {
   });
 
   // Check the popup exits when 'false' is emitted
-  it("should change mode when the event emitter emits false", () => {
+  it("should change mode when the event emitter emits false", async () => {
     const fixture = TestBed.createComponent(MessageComponent);
     const appMessage = fixture.componentInstance;
     fixture.componentRef.setInput("message", mockMessage);
@@ -214,14 +214,14 @@ describe("MessageComponent", () => {
 
     // start the popup
     appMessage.deleteMode.set(true);
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     // exit the popup
     const popup = fixture.debugElement.query(By.css("item-delete-form"))
       .componentInstance as ItemDeleteFormComponent;
     popup.deleted.emit(1);
     popup.editMode.emit(false);
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     // check the popup is exited
     expect(changeSpy).toHaveBeenCalledWith(false);
@@ -230,13 +230,13 @@ describe("MessageComponent", () => {
   });
 
   // Check each message has delete button and reply link
-  it("should have the relevant buttons for each message", () => {
+  it("should have the relevant buttons for each message", async () => {
     const fixture = TestBed.createComponent(MessageComponent);
     const appMessageDOM = fixture.nativeElement;
     fixture.componentRef.setInput("message", mockMessage);
     fixture.componentRef.setInput("user1Id", user1Id);
     fixture.componentRef.setInput("user2Id", user2Id);
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     expect(appMessageDOM.querySelectorAll(".messageButton")[0].tagName.toLowerCase()).toBe("a");
     expect(appMessageDOM.querySelectorAll(".messageButton")[0].textContent.trim()).toBe("Reply");

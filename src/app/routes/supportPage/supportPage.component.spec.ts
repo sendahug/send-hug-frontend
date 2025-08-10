@@ -54,21 +54,21 @@ describe("Support Page", () => {
   });
 
   // Check the component is create
-  it("should create the component", () => {
+  it("should create the component", async () => {
     const fixture = TestBed.createComponent(SupportPageComponent);
     const supportPage = fixture.componentInstance;
     const supportPageDOM = fixture.nativeElement;
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     expect(supportPage).toBeTruthy();
     expect(supportPageDOM).toBeTruthy();
   });
 
-  it("should add the FAQ items to the navigation list", () => {
+  it("should add the FAQ items to the navigation list", async () => {
     const fixture = TestBed.createComponent(SupportPageComponent);
     const supportPage = fixture.componentInstance;
     const supportPageDOM = fixture.nativeElement;
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     expect(supportPage.faqItems().length).toBeGreaterThan(0);
     expect(supportPageDOM.querySelectorAll(".supportNavLink").length).toEqual(

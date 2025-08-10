@@ -113,13 +113,12 @@ describe("NewItemComponent", () => {
   // NEW POST
   // ==================================================================
   // Check that the type of new item is determined by the parameter type
-  it("New Post - has a type determined by the type parameter - post", () => {
+  it("New Post - has a type determined by the type parameter - post", async () => {
     TestBed.inject(ActivatedRoute).url = of([{ path: "Post" } as UrlSegment]);
     const fixture = TestBed.createComponent(NewItemComponent);
     const newItem = fixture.componentInstance;
     const newItemDOM = fixture.nativeElement;
-
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     expect(newItem.itemType()).toBe("Post");
     expect(newItemDOM.querySelector("#newPost")).toBeTruthy();
@@ -130,7 +129,7 @@ describe("NewItemComponent", () => {
   });
 
   // Check that it triggers the items service when creating a new post
-  it("sendPost() - should send a post", () => {
+  it("sendPost() - should send a post", async () => {
     const mockNewPost = {
       text: "new post",
       givenHugs: 0,
@@ -152,14 +151,13 @@ describe("NewItemComponent", () => {
     const successAlertSpy = spyOn(newItem["alertService"], "createSuccessAlert");
     const addItemSpy = spyOn(newItem["swManager"], "addFetchedItems");
     const navigateSpy = spyOn(newItem["router"], "navigate");
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     // fill in post's text and trigger a click
     const postText = "new post";
     newItemDOM.querySelector("#postText").value = postText;
     newItemDOM.querySelector("#postText").dispatchEvent(new Event("input"));
     newItemDOM.querySelectorAll(".sendData")[0].click();
-    fixture.detectChanges();
 
     expect(apiClientSpy).toHaveBeenCalledWith("posts", jasmine.objectContaining(mockNewPost));
     expect(successAlertSpy).toHaveBeenCalledWith("Your post was published!");
@@ -168,7 +166,7 @@ describe("NewItemComponent", () => {
   });
 
   // Check that an empty post triggers an alert
-  it("New Post - should prevent empty posts", () => {
+  it("New Post - should prevent empty posts", async () => {
     const paramMap = TestBed.inject(ActivatedRoute);
     paramMap.url = of([{ path: "Post" } as UrlSegment]);
     const fixture = TestBed.createComponent(NewItemComponent);
@@ -178,15 +176,13 @@ describe("NewItemComponent", () => {
     const apiClientSpy = spyOn(newItem["apiClient"], "post");
     const alertsService = newItem["alertService"];
     const alertSpy = spyOn(alertsService, "createAlert");
-
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     // fill in post's text and trigger a click
     const postText = "";
     newItemDOM.querySelector("#postText").value = postText;
     newItemDOM.querySelector("#postText").dispatchEvent(new Event("input"));
     newItemDOM.querySelectorAll(".sendData")[0].click();
-    fixture.detectChanges();
 
     expect(newPostSpy).toHaveBeenCalledWith();
     expect(alertSpy).toHaveBeenCalledWith({
@@ -198,7 +194,7 @@ describe("NewItemComponent", () => {
   });
 
   // Check that a user can't post if they're logged out
-  it("New Post - should prevent logged out users from posting", () => {
+  it("New Post - should prevent logged out users from posting", async () => {
     const paramMap = TestBed.inject(ActivatedRoute);
     paramMap.url = of([{ path: "Post" } as UrlSegment]);
     const fixture = TestBed.createComponent(NewItemComponent);
@@ -210,14 +206,13 @@ describe("NewItemComponent", () => {
     newItem["authService"].authenticated.set(false);
     const apiClientSpy = spyOn(newItem["apiClient"], "post");
     const addItemSpy = spyOn(newItem["swManager"], "addFetchedItems");
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     // fill in post's text and trigger a click
     const postText = "textfield";
     newItemDOM.querySelector("#postText").value = postText;
     newItemDOM.querySelector("#postText").dispatchEvent(new Event("input"));
     newItemDOM.querySelectorAll(".sendData")[0].click();
-    fixture.detectChanges();
 
     expect(newPostSpy).toHaveBeenCalledWith();
     expect(alertSpy).toHaveBeenCalledWith({
@@ -229,7 +224,7 @@ describe("NewItemComponent", () => {
     expect(addItemSpy).not.toHaveBeenCalled();
   });
 
-  it("shouldn't show the post form if the user is blocked", () => {
+  it("shouldn't show the post form if the user is blocked", async () => {
     const paramMap = TestBed.inject(ActivatedRoute);
     paramMap.url = of([{ path: "Post" } as UrlSegment]);
     const fixture = TestBed.createComponent(NewItemComponent);
@@ -239,7 +234,7 @@ describe("NewItemComponent", () => {
     newItem["authService"].userData()!.releaseDate = new Date(
       "Tue Apr 09 2124 17:06:17 GMT+0100 (British Summer Time)",
     );
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     expect(newItemDOM.querySelector("#postText")).toBeNull();
     const errorMessage = newItemDOM.querySelectorAll(".errorMessage")[0];
@@ -249,7 +244,7 @@ describe("NewItemComponent", () => {
     );
   });
 
-  it("sendPost() - should prevent sending a post if the user is blocked", () => {
+  it("sendPost() - should prevent sending a post if the user is blocked", async () => {
     const paramMap = TestBed.inject(ActivatedRoute);
     paramMap.url = of([{ path: "Post" } as UrlSegment]);
     const fixture = TestBed.createComponent(NewItemComponent);
@@ -263,7 +258,7 @@ describe("NewItemComponent", () => {
     newItem["authService"].userData()!.releaseDate = new Date(
       "Tue Apr 09 2124 17:06:17 GMT+0100 (British Summer Time)",
     );
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     // fill in post's text and trigger a click
     const postText = "new post";
@@ -271,7 +266,6 @@ describe("NewItemComponent", () => {
     newItemDOM.querySelector("#postText").dispatchEvent(new Event("input"));
     newItem["authService"].userData()!.blocked = true;
     newItemDOM.querySelectorAll(".sendData")[0].click();
-    fixture.detectChanges();
 
     expect(apiClientSpy).not.toHaveBeenCalled();
     expect(successAlertSpy).not.toHaveBeenCalled();
@@ -285,7 +279,7 @@ describe("NewItemComponent", () => {
   // NEW MESSAGE
   // ==================================================================
   // Check that the type of new item is determined by the parameter type
-  it("New Message - has a type determined by the type parameter - message", () => {
+  it("New Message - has a type determined by the type parameter - message", async () => {
     const paramMap = TestBed.inject(ActivatedRoute);
     paramMap.url = of([{ path: "Message" } as UrlSegment]);
     const queryParamsSpy = spyOn(paramMap.snapshot.queryParamMap, "get").and.callFake(
@@ -302,8 +296,7 @@ describe("NewItemComponent", () => {
     const fixture = TestBed.createComponent(NewItemComponent);
     const newItem = fixture.componentInstance;
     const newItemDOM = fixture.nativeElement;
-
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     expect(queryParamsSpy).toHaveBeenCalledTimes(2);
     expect(queryParamsSpy.calls.argsFor(0)[0]).toBe("user");
@@ -317,7 +310,7 @@ describe("NewItemComponent", () => {
   });
 
   // Check that it triggers the items service when creating a new message
-  it("New Message - triggers the items service when creating a new message", () => {
+  it("New Message - triggers the items service when creating a new message", async () => {
     const paramMap = TestBed.inject(ActivatedRoute);
     paramMap.url = of([{ path: "Message" } as UrlSegment]);
     spyOn(paramMap.snapshot.queryParamMap, "get").and.callFake((param: string) => {
@@ -353,15 +346,13 @@ describe("NewItemComponent", () => {
       }),
     );
     const navigateSpy = spyOn(newItem["router"], "navigate");
-
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     // fill in message's text and trigger a click
     const messageText = "hello";
     newItemDOM.querySelector("#messageText").value = messageText;
     newItemDOM.querySelector("#messageText").dispatchEvent(new Event("input"));
     newItemDOM.querySelectorAll(".sendData")[0].click();
-    fixture.detectChanges();
 
     const newMessage = {
       from: {
@@ -377,7 +368,7 @@ describe("NewItemComponent", () => {
   });
 
   // Check that an empty message triggers an alert
-  it("New Message - should prevent empty messages", () => {
+  it("New Message - should prevent empty messages", async () => {
     const paramMap = TestBed.inject(ActivatedRoute);
     paramMap.url = of([{ path: "Message" } as UrlSegment]);
     spyOn(paramMap.snapshot.queryParamMap, "get").and.callFake((param: string) => {
@@ -395,15 +386,13 @@ describe("NewItemComponent", () => {
     const newMessageSpy = spyOn(newItem, "sendMessage").and.callThrough();
     const newMessServiceSpy = spyOn(newItem["itemsService"], "sendMessage");
     const alertSpy = spyOn(newItem["alertService"], "createAlert");
-
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     // fill in message's text and trigger a click
     const messageText = "";
     newItemDOM.querySelector("#messageText").value = messageText;
     newItemDOM.querySelector("#messageText").dispatchEvent(new Event("input"));
     newItemDOM.querySelectorAll(".sendData")[0].click();
-    fixture.detectChanges();
 
     expect(newMessageSpy).toHaveBeenCalledWith();
     expect(alertSpy).toHaveBeenCalledWith({
@@ -415,7 +404,7 @@ describe("NewItemComponent", () => {
   });
 
   // Check that a user can't send a message if they're logged out
-  it("New Message - should prevent logged out users from messaging", () => {
+  it("New Message - should prevent logged out users from messaging", async () => {
     const paramMap = TestBed.inject(ActivatedRoute);
     paramMap.url = of([{ path: "Message" } as UrlSegment]);
     spyOn(paramMap.snapshot.queryParamMap, "get").and.callFake((param: string) => {
@@ -434,15 +423,13 @@ describe("NewItemComponent", () => {
     const newMessServiceSpy = spyOn(newItem["itemsService"], "sendMessage");
     const alertSpy = spyOn(newItem["alertService"], "createAlert");
     newItem["authService"].authenticated.set(false);
-
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     // fill in message's text and trigger a click
     const messageText = "text";
     newItemDOM.querySelector("#messageText").value = messageText;
     newItemDOM.querySelector("#messageText").dispatchEvent(new Event("input"));
     newItemDOM.querySelectorAll(".sendData")[0].click();
-    fixture.detectChanges();
 
     expect(newMessageSpy).toHaveBeenCalledWith();
     expect(alertSpy).toHaveBeenCalledWith({
@@ -454,7 +441,7 @@ describe("NewItemComponent", () => {
   });
 
   // Check that an error is thrown if there's no user ID and user data
-  it("New Message - should throw an error if there's no user ID and user", () => {
+  it("New Message - should throw an error if there's no user ID and user", async () => {
     const paramMap = TestBed.inject(ActivatedRoute);
     paramMap.url = of([{ path: "Message" } as UrlSegment]);
     spyOn(paramMap.snapshot.queryParamMap, "get").and.callFake((_param: string) => {
@@ -462,8 +449,7 @@ describe("NewItemComponent", () => {
     });
     const fixture = TestBed.createComponent(NewItemComponent);
     const newItemDOM = fixture.nativeElement;
-
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     expect(newItemDOM.querySelectorAll(".newItem")[0]).toBeUndefined();
     expect(newItemDOM.querySelectorAll(".errorMessage")[0]).toBeTruthy();
@@ -473,7 +459,7 @@ describe("NewItemComponent", () => {
   });
 
   // Check that a user can't message themselves
-  it("New Message - should prevent users messaging themselves", () => {
+  it("New Message - should prevent users messaging themselves", async () => {
     const paramMap = TestBed.inject(ActivatedRoute);
     paramMap.url = of([{ path: "Message" } as UrlSegment]);
     spyOn(paramMap.snapshot.queryParamMap, "get").and.callFake((param: string) => {
@@ -491,15 +477,13 @@ describe("NewItemComponent", () => {
     const newMessageSpy = spyOn(newItem, "sendMessage").and.callThrough();
     const newMessServiceSpy = spyOn(newItem["itemsService"], "sendMessage");
     const alertSpy = spyOn(newItem["alertService"], "createAlert");
-
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     // fill in message's text and trigger a click
     const messageText = "text";
     newItemDOM.querySelector("#messageText").value = messageText;
     newItemDOM.querySelector("#messageText").dispatchEvent(new Event("input"));
     newItemDOM.querySelectorAll(".sendData")[0].click();
-    fixture.detectChanges();
 
     expect(newMessageSpy).toHaveBeenCalledWith();
     expect(newMessServiceSpy).not.toHaveBeenCalled();

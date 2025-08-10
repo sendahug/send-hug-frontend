@@ -84,33 +84,31 @@ describe("IconEditorComponent", () => {
   });
 
   // Check the icon changes when the radio button is clicked
-  it("should change icon when radio buttons are clicked", () => {
+  it("should change icon when radio buttons are clicked", async () => {
     const fixture = TestBed.createComponent(IconEditorComponent);
     const iconEditor = fixture.componentInstance;
     const iconEditorDOM = fixture.nativeElement;
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     // before changing icon
     expect(iconEditor.iconEditForm.controls.selectedIcon.value).toBe("kitty");
 
     iconEditorDOM.querySelector("#cRadioOption1").click();
-    fixture.detectChanges();
 
     // before changing icon
     expect(iconEditor.iconEditForm.controls.selectedIcon.value).toBe("bear");
 
     iconEditorDOM.querySelector("#cRadioOption3").click();
-    fixture.detectChanges();
 
     // before changing icon
     expect(iconEditor.iconEditForm.controls.selectedIcon.value).toBe("dog");
   });
 
-  it("should update the colours when clicked", () => {
+  it("should update the colours when clicked", async () => {
     const fixture = TestBed.createComponent(IconEditorComponent);
     const iconEditor = fixture.componentInstance;
     const iconEditorDOM = fixture.nativeElement;
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     // before changing icon
     expect(iconEditor.iconEditForm.controls.characterColour.value).toBe("#BA9F93");
@@ -121,39 +119,35 @@ describe("IconEditorComponent", () => {
     // change the character colour
     iconEditorDOM.querySelector("#characterC").value = "#000000";
     iconEditorDOM.querySelector("#characterC").dispatchEvent(new Event("input"));
-    fixture.detectChanges();
 
     expect(iconEditor.iconEditForm.controls.characterColour.value).toBe("#000000");
 
     // change the left background colour
     iconEditorDOM.querySelector("#lbgColour").value = "#121212";
     iconEditorDOM.querySelector("#lbgColour").dispatchEvent(new Event("input"));
-    fixture.detectChanges();
 
     expect(iconEditor.iconEditForm.controls.lbgColour.value).toBe("#121212");
 
     // change the right background colour
     iconEditorDOM.querySelector("#rbgColour").value = "#ffffff";
     iconEditorDOM.querySelector("#rbgColour").dispatchEvent(new Event("input"));
-    fixture.detectChanges();
 
     expect(iconEditor.iconEditForm.controls.rbgColour.value).toBe("#ffffff");
 
     // change the item colour
     iconEditorDOM.querySelector("#itemColour").value = "#e1e1e1";
     iconEditorDOM.querySelector("#itemColour").dispatchEvent(new Event("input"));
-    fixture.detectChanges();
 
     expect(iconEditor.iconEditForm.controls.itemColour.value).toBe("#e1e1e1");
   });
 
-  it("should make the request to change the icon", () => {
+  it("should make the request to change the icon", async () => {
     const fixture = TestBed.createComponent(IconEditorComponent);
     const iconEditor = fixture.componentInstance;
     const iconEditorDOM = fixture.nativeElement;
     const updateSpy = spyOn(iconEditor.authService, "updateUserData");
     const dismissSpy = spyOn(iconEditor.editMode, "emit");
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     // before the update
     expect(iconEditor.authService.userData()?.selectedIcon).toBe("kitty");
@@ -185,7 +179,7 @@ describe("IconEditorComponent", () => {
     expect(dismissSpy).toHaveBeenCalledWith(false);
   });
 
-  it("should make the request to change the icon with default values if there are nonoe", () => {
+  it("should make the request to change the icon with default values if there are none", async () => {
     const fixture = TestBed.createComponent(IconEditorComponent);
     const iconEditor = fixture.componentInstance;
     const iconEditorDOM = fixture.nativeElement;
@@ -198,7 +192,7 @@ describe("IconEditorComponent", () => {
     iconEditor.iconEditForm.controls.lbgColour.setValue(null);
     iconEditor.iconEditForm.controls.rbgColour.setValue(null);
     iconEditor.iconEditForm.controls.itemColour.setValue(null);
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     // after the update
     iconEditorDOM.querySelectorAll(".iconButton")[1].click();
@@ -216,22 +210,21 @@ describe("IconEditorComponent", () => {
     expect(dismissSpy).toHaveBeenCalledWith(false);
   });
 
-  it("should dismiss the editor when the cancel button is clicked", () => {
+  it("should dismiss the editor when the cancel button is clicked", async () => {
     const fixture = TestBed.createComponent(IconEditorComponent);
     const iconEditor = fixture.componentInstance;
     const iconEditorDOM = fixture.nativeElement;
     const emitSpy = spyOn(iconEditor.editMode, "emit");
     const dismissSpy = spyOn(iconEditor, "dismiss").and.callThrough();
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     iconEditorDOM.querySelectorAll(".iconButton")[0].click();
-    fixture.detectChanges();
 
     expect(dismissSpy).toHaveBeenCalledWith();
     expect(emitSpy).toHaveBeenCalledWith(false);
   });
 
-  it("should set the default values if no value is set", () => {
+  it("should set the default values if no value is set", async () => {
     const authService = TestBed.inject(AuthService);
     authService.userData.set({
       ...mockAuthedUser,
@@ -247,6 +240,7 @@ describe("IconEditorComponent", () => {
 
     const fixture = TestBed.createComponent(IconEditorComponent);
     const iconEditor = fixture.componentInstance;
+    await fixture.whenStable();
 
     expect(iconEditor.iconEditForm.controls.selectedIcon.value).toBe("kitty");
     expect(iconEditor.iconEditForm.controls.characterColour.value).toBe("#ba9f93");

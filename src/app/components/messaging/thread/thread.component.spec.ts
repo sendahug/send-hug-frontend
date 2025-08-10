@@ -96,11 +96,11 @@ describe("ThreadComponent", () => {
   });
 
   // Check that the component loads the inbox if no mailbox is specified
-  it("should show the thread details", () => {
+  it("should show the thread details", async () => {
     const fixture = TestBed.createComponent(ThreadComponent);
     fixture.componentRef.setInput("thread", mockThread);
     const appThreadDOM = fixture.nativeElement;
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     const threadDetailsDOM = appThreadDOM.querySelectorAll(".pageData");
 
@@ -110,29 +110,29 @@ describe("ThreadComponent", () => {
   });
 
   // Check that the popup variables are set to false
-  it("should have all popup variables set to false", () => {
+  it("should have all popup variables set to false", async () => {
     const fixture = TestBed.createComponent(ThreadComponent);
     fixture.componentRef.setInput("thread", mockThread);
     const appThread = fixture.componentInstance;
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     expect(appThread.deleteMode()).toBeFalse();
   });
 
   // Check deleting a single message triggers the poppup
-  it("should trigger the popup upon delete", () => {
+  it("should trigger the popup upon delete", async () => {
     const fixture = TestBed.createComponent(ThreadComponent);
     const appThread = fixture.componentInstance;
     const appThreadDOM = fixture.nativeElement;
     fixture.componentRef.setInput("thread", mockThread);
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     // before the click
     expect(appThread.deleteMode()).toBeFalse();
 
     // trigger click
     appThreadDOM.querySelectorAll(".deleteButton")[0].click();
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     // after the click
     expect(appThread.deleteMode()).toBeTrue();
@@ -142,7 +142,7 @@ describe("ThreadComponent", () => {
   });
 
   // Check the popup exits when 'false' is emitted
-  it("should change mode when the event emitter emits false", () => {
+  it("should change mode when the event emitter emits false", async () => {
     const fixture = TestBed.createComponent(ThreadComponent);
     fixture.componentRef.setInput("thread", mockThread);
     const appThread = fixture.componentInstance;
@@ -153,14 +153,14 @@ describe("ThreadComponent", () => {
 
     // start the popup
     appThread.deleteMode.set(true);
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     // exit the popup
     const popup = fixture.debugElement.query(By.css("item-delete-form"))
       .componentInstance as ItemDeleteFormComponent;
     popup.deleted.emit(3);
     popup.editMode.emit(false);
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     // check the popup is exited
     expect(changeSpy).toHaveBeenCalledWith(false);
@@ -171,11 +171,11 @@ describe("ThreadComponent", () => {
   });
 
   // Check each message has delete button and reply link
-  it("should have the relevant buttons for each message", () => {
+  it("should have the relevant buttons for each message", async () => {
     const fixture = TestBed.createComponent(ThreadComponent);
     const appThreadDOM = fixture.nativeElement;
     fixture.componentRef.setInput("thread", mockThread);
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     expect(appThreadDOM.querySelectorAll(".appButton")[0].tagName.toLowerCase()).toBe("button");
     expect(appThreadDOM.querySelectorAll(".appButton")[0].textContent.trim()).toBe("View");
@@ -184,16 +184,15 @@ describe("ThreadComponent", () => {
     expect(appThreadDOM.querySelectorAll(".appButton")[1].textContent.trim()).toBe("Delete");
   });
 
-  it("should emit the selected thread's ID when a user clicks 'view'", () => {
+  it("should emit the selected thread's ID when a user clicks 'view'", async () => {
     const fixture = TestBed.createComponent(ThreadComponent);
     const appThread = fixture.componentInstance;
     const appThreadDOM = fixture.nativeElement;
     fixture.componentRef.setInput("thread", mockThread);
     const emitSpy = spyOn(appThread.threadSelected, "emit");
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     appThreadDOM.querySelectorAll(".appButton")[0].click();
-    fixture.detectChanges();
 
     expect(emitSpy).toHaveBeenCalledWith(mockThread.id);
   });

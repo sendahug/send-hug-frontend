@@ -252,23 +252,23 @@ describe("AppComponent", () => {
     expect(paramMapSpy).toHaveBeenCalledWith("redirect");
   }));
 
-  it("should register the teleport target", () => {
+  it("should register the teleport target", async () => {
     const teleportService = TestBed.inject(TeleportService);
     const createSpy = spyOn(teleportService, "createTeleportTarget");
 
     const fixture = TestBed.createComponent(AppComponent);
     const component = fixture.componentInstance;
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     expect(createSpy).toHaveBeenCalledWith("modalContainer", component.modalContainer);
   });
 
   // check the 'share' button is hidden
-  it("shouldn't show the share button if it's not supported", () => {
+  it("shouldn't show the share button if it's not supported", async () => {
     const fixture = TestBed.createComponent(AppComponent);
-    fixture.detectChanges();
     const component = fixture.componentInstance;
     const componentHtml = fixture.nativeElement;
+    await fixture.whenStable();
 
     // because tests run on Chrome on linux, 'share' doesn't exist in navigator
     expect(component.canShare()).toBeFalse();
@@ -278,18 +278,16 @@ describe("AppComponent", () => {
   });
 
   // check the share method is called when the button is clicked
-  it("should call the share method when the button is clicked", () => {
+  it("should call the share method when the button is clicked", async () => {
     const fixture = TestBed.createComponent(AppComponent);
-    fixture.detectChanges();
     const component = fixture.componentInstance;
     const componentHtml = fixture.nativeElement;
     const shareSpy = spyOn(component, "shareSite");
+    await fixture.whenStable();
 
     component.canShare.set(true);
-    fixture.detectChanges();
 
     componentHtml.querySelector("#siteFooter").querySelectorAll(".textlessButton")[0].click();
-    fixture.detectChanges();
 
     expect(shareSpy).toHaveBeenCalledWith();
   });

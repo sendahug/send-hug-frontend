@@ -87,7 +87,7 @@ describe("PostEditFormComponent", () => {
     expect(popUp).toBeTruthy();
   });
 
-  it("should make the request to itemsService to change the post", () => {
+  it("should make the request to itemsService to change the post", async () => {
     const validationService = TestBed.inject(ValidationService);
     const validateSpy = spyOn(validationService, "validateItemAgainst").and.returnValue(
       (_control) => null,
@@ -126,7 +126,7 @@ describe("PostEditFormComponent", () => {
       },
       reportId: undefined,
     };
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     const apiClientSpy = spyOn(popUp["apiClient"], "patch").and.returnValue(of(serverResponse));
     const updateReportSpy = spyOn(popUp, "updateReportIfNecessary").and.returnValue(
@@ -139,7 +139,6 @@ describe("PostEditFormComponent", () => {
     popUpDOM.querySelector("#postText").value = newText;
     popUpDOM.querySelector("#postText").dispatchEvent(new Event("input"));
     popUpDOM.querySelectorAll(".sendData")[0].click();
-    fixture.detectChanges();
 
     expect(validateSpy).toHaveBeenCalledWith("post");
     const updatedItem = { ...originalItem };
@@ -152,7 +151,7 @@ describe("PostEditFormComponent", () => {
     expect(resultSpy).toHaveBeenCalledWith(reportPostResponse);
   });
 
-  it("should handle errors when editing the post", () => {
+  it("should handle errors when editing the post", async () => {
     const validationService = TestBed.inject(ValidationService);
     const validateSpy = spyOn(validationService, "validateItemAgainst").and.returnValue(
       (_control) => null,
@@ -184,7 +183,7 @@ describe("PostEditFormComponent", () => {
         givenHugs: 0,
       },
     };
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     const apiClientSpy = spyOn(popUp["apiClient"], "patch").and.returnValue(of(serverResponse));
     const updateReportSpy = spyOn(popUp, "updateReportIfNecessary").and.throwError("Error");
@@ -196,7 +195,6 @@ describe("PostEditFormComponent", () => {
     popUpDOM.querySelector("#postText").value = newText;
     popUpDOM.querySelector("#postText").dispatchEvent(new Event("input"));
     popUpDOM.querySelectorAll(".sendData")[0].click();
-    fixture.detectChanges();
 
     expect(validateSpy).toHaveBeenCalledWith("post");
     const updatedItem = { ...originalItem };
@@ -213,7 +211,7 @@ describe("PostEditFormComponent", () => {
     });
   });
 
-  it("should send a different message if the report was closed", () => {
+  it("should send a different message if the report was closed", async () => {
     const validationService = TestBed.inject(ValidationService);
     const validateSpy = spyOn(validationService, "validateItemAgainst").and.returnValue(
       (_control) => null,
@@ -249,7 +247,7 @@ describe("PostEditFormComponent", () => {
       },
       reportId: 1,
     };
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     const apiClientSpy = spyOn(popUp["apiClient"], "patch").and.returnValue(of(serverResponse));
     const updateReportSpy = spyOn(popUp, "updateReportIfNecessary").and.returnValue(
@@ -262,7 +260,6 @@ describe("PostEditFormComponent", () => {
     popUpDOM.querySelector("#postText").value = newText;
     popUpDOM.querySelector("#postText").dispatchEvent(new Event("input"));
     popUpDOM.querySelector("#updateAndClose").click();
-    fixture.detectChanges();
 
     expect(validateSpy).toHaveBeenCalledWith("post");
     const updatedItem = { ...originalItem };
@@ -278,7 +275,7 @@ describe("PostEditFormComponent", () => {
     expect(resultSpy).toHaveBeenCalledWith(reportPostResponse);
   });
 
-  it("should not try to close the report if the user chose not to", () => {
+  it("should not try to close the report if the user chose not to", async () => {
     const validationService = TestBed.inject(ValidationService);
     const validateSpy = spyOn(validationService, "validateItemAgainst").and.returnValue(
       (_control) => null,
@@ -314,7 +311,7 @@ describe("PostEditFormComponent", () => {
       },
       reportId: undefined,
     };
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     const apiClientSpy = spyOn(popUp["apiClient"], "patch").and.returnValue(of(serverResponse));
     const updateReportSpy = spyOn(popUp, "updateReportIfNecessary").and.returnValue(
@@ -327,7 +324,6 @@ describe("PostEditFormComponent", () => {
     popUpDOM.querySelector("#postText").value = newText;
     popUpDOM.querySelector("#postText").dispatchEvent(new Event("input"));
     popUpDOM.querySelector("#updateDontClose").click();
-    fixture.detectChanges();
 
     expect(validateSpy).toHaveBeenCalledWith("post");
     const updatedItem = { ...originalItem };
@@ -461,7 +457,6 @@ describe("PostEditFormComponent", () => {
         givenHugs: 0,
       },
     };
-    fixture.detectChanges();
     const adminServiceSpy = spyOn(popUp["adminService"], "closeReport");
 
     (
@@ -501,7 +496,6 @@ describe("PostEditFormComponent", () => {
         givenHugs: 0,
       },
     };
-    fixture.detectChanges();
     const adminServiceSpy = spyOn(popUp["adminService"], "closeReport");
 
     (
@@ -515,7 +509,7 @@ describe("PostEditFormComponent", () => {
     });
   });
 
-  it("should alert if the post isn't valid", () => {
+  it("should alert if the post isn't valid", async () => {
     const validationService = TestBed.inject(ValidationService);
     const validateSpy = spyOn(validationService, "validateItemAgainst").and.returnValue(
       (_control) => ({ error: "error" }),
@@ -533,7 +527,7 @@ describe("PostEditFormComponent", () => {
     });
     fixture.componentRef.setInput("isAdmin", true);
     const newText = "new text";
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     const apiClientSpy = spyOn(popUp["apiClient"], "patch");
     const alertSpy = spyOn(popUp["alertService"], "createAlert");
@@ -541,7 +535,6 @@ describe("PostEditFormComponent", () => {
     popUpDOM.querySelector("#postText").value = newText;
     popUpDOM.querySelector("#postText").dispatchEvent(new Event("input"));
     popUpDOM.querySelector("#updateDontClose").click();
-    fixture.detectChanges();
 
     expect(validateSpy).toHaveBeenCalledWith("post");
     expect(apiClientSpy).not.toHaveBeenCalled();

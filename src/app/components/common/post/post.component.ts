@@ -42,7 +42,6 @@ import {
   WritableSignal,
   Output,
   EventEmitter,
-  SimpleChanges,
   inject,
 } from "@angular/core";
 import { faComment, faEdit, faFlag } from "@fortawesome/free-regular-svg-icons";
@@ -81,6 +80,9 @@ import { type ReportType } from "@app/interfaces/report.interface";
   ],
 })
 export class PostComponent implements AfterViewChecked, OnInit, OnDestroy {
+  public itemsService = inject(ItemsService);
+  public authService = inject(AuthService);
+  private swManager = inject(SWManager);
   @Input()
   get post(): PostGet | undefined {
     return this._post();
@@ -142,8 +144,6 @@ export class PostComponent implements AfterViewChecked, OnInit, OnDestroy {
       initialButtonsCount += 1;
     }
 
-    console.log("Current display", initialButtonsCount);
-
     return initialButtonsCount;
   });
   readonly sendHugButtonClass = computed(() => ({
@@ -166,9 +166,6 @@ export class PostComponent implements AfterViewChecked, OnInit, OnDestroy {
   // Delete Popup Constants
   readonly deleteEndpoint = "posts";
   readonly itemType = "Post";
-  public itemsService = inject(ItemsService);
-  public authService = inject(AuthService);
-  private swManager = inject(SWManager);
 
   ngOnInit(): void {
     this.subscriptions.push(
@@ -196,13 +193,7 @@ export class PostComponent implements AfterViewChecked, OnInit, OnDestroy {
     );
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
-    console.log("CHANGES", changes);
-    console.log("CHANGES COUNT", this.displayedButtons());
-  }
-
   ngAfterViewChecked(): void {
-    console.log("ngAfterViewChecked");
     this.checkMenuSize();
   }
 
@@ -224,10 +215,6 @@ export class PostComponent implements AfterViewChecked, OnInit, OnDestroy {
     // TODO: There's got to be a way to do this that doesn't require copying
     // and pasting the same measurement from the LESS file.
     const buttonsWidth = this.displayedButtons() * 55 + 75;
-
-    console.log("dislpaying", this.displayedButtons());
-    console.log("width", buttonsWidth);
-    console.log("container", buttonsContainer.offsetWidth);
 
     if (buttonsContainer.offsetWidth < buttonsWidth) {
       this.shouldMenuFloat.set(true);

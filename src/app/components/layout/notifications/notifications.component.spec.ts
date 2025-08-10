@@ -121,7 +121,7 @@ describe("Notifications Tab", () => {
   });
 
   // Check that the button toggles push notifications
-  it("has a button that toggles push notifications", () => {
+  it("has a button that toggles push notifications", async () => {
     // set up the component and its spies
     const fixture = TestBed.createComponent(NotificationsTabComponent);
     const notificationsTab = fixture.componentInstance;
@@ -131,14 +131,13 @@ describe("Notifications Tab", () => {
     const settingsSpy = spyOn(notificationsTab["authService"], "updateUserData");
     const subscribeSpy = spyOn(notificationsService, "subscribeToStream");
     const unsubscribeSpy = spyOn(notificationsService, "unsubscribeFromStream");
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     // before the click
     expect(notificationsTab["authService"].pushEnabled()).toBeFalse();
 
     // simulate click
     notifTabDOM.querySelectorAll(".NotificationButton")[0].click();
-    fixture.detectChanges();
 
     // after the first click, check 'subscribe' was called
     expect(toggleSpy).toHaveBeenCalledWith();
@@ -149,7 +148,6 @@ describe("Notifications Tab", () => {
     // simulate another click
     spyOn(notificationsTab["authService"], "pushEnabled").and.returnValue(true);
     notifTabDOM.querySelectorAll(".NotificationButton")[0].click();
-    fixture.detectChanges();
 
     // after the second click, chcek 'unsubscribe' was called
     expect(toggleSpy.calls.count()).toBe(2);
@@ -161,7 +159,7 @@ describe("Notifications Tab", () => {
   });
 
   // Check that the button toggles auto refresh
-  it("has a button that toggles auto-refresh", () => {
+  it("has a button that toggles auto-refresh", async () => {
     // set up spies
     const notificationsService = TestBed.inject(NotificationService);
     const settingsSpy = spyOn(TestBed.inject(AuthService), "updateUserData");
@@ -173,14 +171,13 @@ describe("Notifications Tab", () => {
     const notificationsTab = fixture.componentInstance;
     const notifTabDOM = fixture.nativeElement;
     const toggleSpy = spyOn(notificationsTab, "toggleAutoRefresh").and.callThrough();
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     // before the click
     expect(notificationsTab["authService"].autoRefresh()).toBeFalse();
 
     // simulate click
     notifTabDOM.querySelectorAll(".NotificationButton")[1].click();
-    fixture.detectChanges();
 
     // after the first click, check 'subscribe' was called
     expect(toggleSpy).toHaveBeenCalledWith();
@@ -191,7 +188,6 @@ describe("Notifications Tab", () => {
     // simulate another click
     spyOn(notificationsTab["authService"], "autoRefresh").and.returnValue(true);
     notifTabDOM.querySelectorAll(".NotificationButton")[1].click();
-    fixture.detectChanges();
 
     // after the second click, chcek 'unsubscribe' was called
     expect(toggleSpy.calls.count()).toBe(2);
@@ -421,12 +417,12 @@ describe("Notifications Tab", () => {
   });
 
   // check the focus is trapped
-  it("should trap focus in the modal", () => {
+  it("should trap focus in the modal", async () => {
     const fixture = TestBed.createComponent(NotificationsTabComponent);
     const notificationsTab = fixture.componentInstance;
     const notifTabDOM = fixture.nativeElement;
     const focusBindedSpy = spyOn(notificationsTab, "checkFocusBinded").and.callThrough();
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     // spies
     const spies = [
@@ -461,7 +457,6 @@ describe("Notifications Tab", () => {
         shiftKey: false,
       }),
     );
-    fixture.detectChanges();
 
     // check the focus shifted to the first element
     expect(focusBindedSpy).toHaveBeenCalledTimes(1);
@@ -480,7 +475,6 @@ describe("Notifications Tab", () => {
         shiftKey: true,
       }),
     );
-    fixture.detectChanges();
 
     // check the focus shifted to the last element
     expect(focusBindedSpy).toHaveBeenCalledTimes(2);
@@ -492,13 +486,13 @@ describe("Notifications Tab", () => {
     expect(spies[5]).toHaveBeenCalledTimes(2);
   });
 
-  it("nextPage() - should continue to the next page", () => {
+  it("nextPage() - should continue to the next page", async () => {
     const fixture = TestBed.createComponent(NotificationsTabComponent);
     const notificationsTab = fixture.componentInstance;
     const notifTabDOM = fixture.nativeElement;
     const getNotificationsSpy = spyOn(notificationsTab, "getNotifications");
     notificationsTab.totalPages.set(2);
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     // before
     expect(notificationsTab.currentPage()).toBe(1);
@@ -506,40 +500,38 @@ describe("Notifications Tab", () => {
 
     // click the next button
     notifTabDOM.querySelectorAll(".nextButton")[0].click();
-    fixture.detectChanges();
 
     // after
     expect(notificationsTab.currentPage()).toBe(2);
     expect(getNotificationsSpy).toHaveBeenCalledTimes(1);
   });
 
-  it("prevPage() - should go to the previous page", () => {
+  it("prevPage() - should go to the previous page", async () => {
     const fixture = TestBed.createComponent(NotificationsTabComponent);
     const notificationsTab = fixture.componentInstance;
     const notifTabDOM = fixture.nativeElement;
     const getNotificationsSpy = spyOn(notificationsTab, "getNotifications");
     notificationsTab.totalPages.set(2);
     notificationsTab.currentPage.set(2);
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     // before
     expect(notificationsTab.currentPage()).toBe(2);
     expect(getNotificationsSpy).toHaveBeenCalledTimes(0);
 
     notifTabDOM.querySelectorAll(".prevButton")[0].click();
-    fixture.detectChanges();
 
     // after
     expect(notificationsTab.currentPage()).toBe(1);
     expect(getNotificationsSpy).toHaveBeenCalledTimes(1);
   });
 
-  it("toggleUnread() - should toggle the visibility of unread messages", () => {
+  it("toggleUnread() - should toggle the visibility of unread messages", async () => {
     const fixture = TestBed.createComponent(NotificationsTabComponent);
     const notificationsTab = fixture.componentInstance;
     const notifTabDOM = fixture.nativeElement;
     const getNotificationsSpy = spyOn(notificationsTab, "getNotifications");
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     // before
     expect(notificationsTab.displayUnread()).toBeTrue();
@@ -548,7 +540,6 @@ describe("Notifications Tab", () => {
     );
 
     notifTabDOM.querySelectorAll(".NotificationButton")[2].click();
-    fixture.detectChanges();
 
     // after
     expect(notificationsTab.displayUnread()).toBeFalse();
@@ -558,12 +549,12 @@ describe("Notifications Tab", () => {
     );
   });
 
-  it("toggleRead() - should toggle the visibility of read messages", () => {
+  it("toggleRead() - should toggle the visibility of read messages", async () => {
     const fixture = TestBed.createComponent(NotificationsTabComponent);
     const notificationsTab = fixture.componentInstance;
     const notifTabDOM = fixture.nativeElement;
     const getNotificationsSpy = spyOn(notificationsTab, "getNotifications");
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     // before
     expect(notificationsTab.displayRead()).toBeTrue();
@@ -572,7 +563,6 @@ describe("Notifications Tab", () => {
     );
 
     notifTabDOM.querySelectorAll(".NotificationButton")[3].click();
-    fixture.detectChanges();
 
     // after
     expect(notificationsTab.displayRead()).toBeFalse();
@@ -582,7 +572,7 @@ describe("Notifications Tab", () => {
     );
   });
 
-  it("markAll() - should mark all notifications read", () => {
+  it("markAll() - should mark all notifications read", async () => {
     const apiClient = TestBed.inject(ApiClientService);
     const apiClientSpy = spyOn(apiClient, "patch").and.returnValue(
       of({
@@ -631,7 +621,7 @@ describe("Notifications Tab", () => {
         read: false,
       },
     ]);
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     // before
     let notificationBadges = notifTabDOM.querySelectorAll(".badge");
@@ -642,7 +632,6 @@ describe("Notifications Tab", () => {
     );
 
     notifTabDOM.querySelectorAll(".NotificationButton")[4].click();
-    fixture.detectChanges();
 
     // after
     notificationBadges = notifTabDOM.querySelectorAll(".badge");
@@ -662,7 +651,7 @@ describe("Notifications Tab", () => {
     });
   });
 
-  it("markAll() - should mark all notifications unread", () => {
+  it("markAll() - should mark all notifications unread", async () => {
     const apiClient = TestBed.inject(ApiClientService);
     const apiClientSpy = spyOn(apiClient, "patch").and.returnValue(
       of({
@@ -712,7 +701,7 @@ describe("Notifications Tab", () => {
         read: true,
       },
     ]);
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     // before
     let notificationBadges = notifTabDOM.querySelectorAll(".badge");
@@ -723,7 +712,6 @@ describe("Notifications Tab", () => {
     );
 
     notifTabDOM.querySelectorAll(".NotificationButton")[4].click();
-    fixture.detectChanges();
 
     // after
     notificationBadges = notifTabDOM.querySelectorAll(".badge");
@@ -743,7 +731,7 @@ describe("Notifications Tab", () => {
     });
   });
 
-  it("mark() - should mark a notification read", () => {
+  it("mark() - should mark a notification read", async () => {
     const apiClient = TestBed.inject(ApiClientService);
     const apiClientSpy = spyOn(apiClient, "patch").and.returnValue(
       of({
@@ -782,7 +770,7 @@ describe("Notifications Tab", () => {
         read: false,
       },
     ]);
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     // before
     let notificationBadges = notifTabDOM.querySelectorAll(".badge");
@@ -791,7 +779,6 @@ describe("Notifications Tab", () => {
     expect(notifTabDOM.querySelectorAll(".readToggle")[0].textContent.trim()).toBe("Mark Read");
 
     notifTabDOM.querySelectorAll(".readToggle")[0].click();
-    fixture.detectChanges();
 
     // after
     notificationBadges = notifTabDOM.querySelectorAll(".badge");
@@ -807,7 +794,7 @@ describe("Notifications Tab", () => {
     expect(notificationsTab.notifications()[0].read).toBeTrue();
   });
 
-  it("mark() - should mark a notification unread", () => {
+  it("mark() - should mark a notification unread", async () => {
     const apiClient = TestBed.inject(ApiClientService);
     const apiClientSpy = spyOn(apiClient, "patch").and.returnValue(
       of({
@@ -846,7 +833,7 @@ describe("Notifications Tab", () => {
         read: false,
       },
     ]);
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     // before
     let notificationBadges = notifTabDOM.querySelectorAll(".badge");
@@ -855,7 +842,6 @@ describe("Notifications Tab", () => {
     expect(notifTabDOM.querySelectorAll(".readToggle")[0].textContent.trim()).toBe("Mark Unread");
 
     notifTabDOM.querySelectorAll(".readToggle")[0].click();
-    fixture.detectChanges();
 
     // after
     notificationBadges = notifTabDOM.querySelectorAll(".badge");
@@ -872,18 +858,17 @@ describe("Notifications Tab", () => {
   });
 
   // Check that the exit button emits the correct boolean
-  it("emits false upon clicking the exit button", () => {
+  it("emits false upon clicking the exit button", async () => {
     // set up the component
     const fixture = TestBed.createComponent(NotificationsTabComponent);
     const notificationsTab = fixture.componentInstance;
     const notifTabDOM = fixture.nativeElement;
     spyOn(notificationsTab, "getNotifications");
     const emitterSpy = spyOn(notificationsTab.NotificationsMode, "emit");
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     // click the exit button
     notifTabDOM.querySelector("#exitButton").click();
-    fixture.detectChanges();
 
     expect(emitterSpy).toHaveBeenCalledWith(false);
   });

@@ -193,7 +193,7 @@ describe("AppMessagesComponent", () => {
     expect(threadsFetchSpy).toHaveBeenCalledWith();
   });
 
-  it("should set default pages and thread ID if the query parameters aren't provided", () => {
+  it("should set default pages and thread ID if the query parameters aren't provided", async () => {
     const route = TestBed.inject(ActivatedRoute);
     spyOn(route.snapshot.queryParamMap, "get").and.callFake((name) => {
       if (name === "threadsPage") {
@@ -207,14 +207,14 @@ describe("AppMessagesComponent", () => {
     spyOn(AppMessagesComponent.prototype, "fetchThreads");
     const fixture = TestBed.createComponent(AppMessagesComponent);
     const appMessaging = fixture.componentInstance;
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     expect(appMessaging.currentMessagesPage()).toBe(1);
     expect(appMessaging.currentThreadsPage()).toBe(1);
     expect(appMessaging.threadId()).toBe(undefined);
   });
 
-  it("should set pages and thread ID based on the query parameters", () => {
+  it("should set pages and thread ID based on the query parameters", async () => {
     const route = TestBed.inject(ActivatedRoute);
     spyOn(route.snapshot.queryParamMap, "get").and.callFake((name) => {
       if (name === "threadsPage") {
@@ -228,14 +228,14 @@ describe("AppMessagesComponent", () => {
     spyOn(AppMessagesComponent.prototype, "fetchThreads");
     const fixture = TestBed.createComponent(AppMessagesComponent);
     const appMessaging = fixture.componentInstance;
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     expect(appMessaging.currentMessagesPage()).toBe(2);
     expect(appMessaging.currentThreadsPage()).toBe(2);
     expect(appMessaging.threadId()).toBe(4);
   });
 
-  it("should fetch threads from the server", () => {
+  it("should fetch threads from the server", async () => {
     const fixture = TestBed.createComponent(AppMessagesComponent);
     const appMessaging = fixture.componentInstance;
     const idbFetchSpy = spyOn(appMessaging, "fetchThreadsFromIdb").and.returnValue(
@@ -250,8 +250,7 @@ describe("AppMessagesComponent", () => {
     expect(appMessaging.userThreads()).toEqual([]);
     expect(appMessaging.totalThreadsPages()).toBe(1);
     expect(appMessaging.currentThreadsPage()).toBe(1);
-
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     appMessaging.fetchThreads();
 
@@ -274,7 +273,6 @@ describe("AppMessagesComponent", () => {
     const idbSpy = spyOn(appMessaging["swManager"], "queryThreads").and.returnValue(
       new Promise((resolve) => resolve({ messages: mockThreads, pages: 2 })),
     );
-    fixture.detectChanges();
 
     appMessaging.fetchThreadsFromIdb().subscribe((response) => {
       expect(idbSpy).toHaveBeenCalledWith(1);
@@ -290,10 +288,10 @@ describe("AppMessagesComponent", () => {
     });
   });
 
-  it("API messages fetch - should add the thread ID param to the fetch if the message type is thread", () => {
+  it("API messages fetch - should add the thread ID param to the fetch if the message type is thread", async () => {
+    spyOn(AppMessagesComponent.prototype, "fetchThreads");
     const fixture = TestBed.createComponent(AppMessagesComponent);
     const appMessaging = fixture.componentInstance;
-    spyOn(appMessaging, "fetchThreads");
     appMessaging.threadId.set(4);
     const idbFetchSpy = spyOn(appMessaging, "fetchMessagesFromIdb").and.returnValue(
       of({ messages: [], total_pages: 1, current_page: 1, success: true }),
@@ -301,14 +299,13 @@ describe("AppMessagesComponent", () => {
     const apiClientSpy = spyOn(appMessaging["apiClient"], "get").and.returnValue(
       of({ messages: mockMessages, total_pages: 2, current_page: 1, success: true }),
     );
-
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     expect(appMessaging.currentMessagesPage()).toBe(1);
     expect(appMessaging.totalMessagesPages()).toBe(1);
 
     appMessaging.fetchMessages();
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     expect(idbFetchSpy).toHaveBeenCalledWith();
     expect(apiClientSpy).toHaveBeenCalledWith("messages", {
@@ -329,8 +326,6 @@ describe("AppMessagesComponent", () => {
       new Promise((resolve) => resolve({ messages: mockMessages, pages: 2 })),
     );
 
-    fixture.detectChanges();
-
     appMessaging.fetchMessagesFromIdb().subscribe((response) => {
       expect(idbSpy).toHaveBeenCalledWith("threadID", 2, 5, 1);
       expect(appMessaging.messages()).toEqual(mockMessages);
@@ -345,10 +340,10 @@ describe("AppMessagesComponent", () => {
     });
   });
 
-  it("should update the current page and re-fetch messages - messages", () => {
+  it("should update the current page and re-fetch messages - messages", async () => {
+    spyOn(AppMessagesComponent.prototype, "fetchThreads");
     const fixture = TestBed.createComponent(AppMessagesComponent);
     const appMessaging = fixture.componentInstance;
-    spyOn(appMessaging, "fetchThreads");
     const fetchSpy = spyOn(appMessaging, "fetchMessages");
     const updateSpy = spyOn(appMessaging, "updateCurrentPage").and.callThrough();
     const navigateSpy = spyOn(appMessaging["router"], "navigate");
@@ -356,12 +351,12 @@ describe("AppMessagesComponent", () => {
     appMessaging.messages.set(mockMessages);
     appMessaging.totalMessagesPages.set(2);
     appMessaging.isMessagesIdbFetchLoading.set(false);
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     const paginatedList = fixture.debugElement.query(By.css("app-paginated-list#messagesList"))
       .componentInstance as PaginatedListComponent;
     paginatedList.pageChange.emit(2);
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     expect(updateSpy).toHaveBeenCalledWith(2, "thread");
     expect(appMessaging.currentMessagesPage()).toBe(2);
@@ -377,21 +372,21 @@ describe("AppMessagesComponent", () => {
     );
   });
 
-  it("should update the current page and re-fetch messages - threads", () => {
+  it("should update the current page and re-fetch messages - threads", async () => {
+    const fetchSpy = spyOn(AppMessagesComponent.prototype, "fetchThreads");
     const fixture = TestBed.createComponent(AppMessagesComponent);
     const appMessaging = fixture.componentInstance;
     const updateSpy = spyOn(appMessaging, "updateCurrentPage").and.callThrough();
-    const fetchSpy = spyOn(appMessaging, "fetchThreads");
     const navigateSpy = spyOn(appMessaging["router"], "navigate");
     appMessaging.userThreads.set(mockThreads);
     appMessaging.totalThreadsPages.set(2);
     appMessaging.isThreadsIdbFetchLoading.set(false);
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     const paginatedList = fixture.debugElement.query(By.css("app-paginated-list#threadsList"))
       .componentInstance as PaginatedListComponent;
     paginatedList.pageChange.emit(2);
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     expect(updateSpy).toHaveBeenCalledWith(2, "threads");
     expect(appMessaging.currentThreadsPage()).toBe(2);
@@ -406,21 +401,21 @@ describe("AppMessagesComponent", () => {
     );
   });
 
-  it("should trigger the popup upon deleting all - threads", () => {
+  it("should trigger the popup upon deleting all - threads", async () => {
+    spyOn(AppMessagesComponent.prototype, "fetchThreads");
     const fixture = TestBed.createComponent(AppMessagesComponent);
     const appMessaging = fixture.componentInstance;
     const appMessagingDOM = fixture.nativeElement;
-    spyOn(appMessaging, "fetchThreads");
     appMessaging.userThreads.set(mockThreads);
     appMessaging.isThreadsIdbFetchLoading.set(false);
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     // before the click
     expect(appMessaging.deleteMode()).toBeFalse();
 
     // trigger click
     appMessagingDOM.querySelectorAll(".deleteAll")[0].click();
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     // after the click
     expect(appMessaging.deleteMode()).toBeTrue();
@@ -430,44 +425,44 @@ describe("AppMessagesComponent", () => {
   });
 
   // Check the popup exits when 'false' is emitted
-  it("should change mode when the event emitter emits false", () => {
+  it("should change mode when the event emitter emits false", async () => {
+    spyOn(AppMessagesComponent.prototype, "fetchThreads");
     const fixture = TestBed.createComponent(AppMessagesComponent);
     const appMessaging = fixture.componentInstance;
-    spyOn(appMessaging, "fetchThreads");
     const changeSpy = spyOn(appMessaging, "changeMode").and.callThrough();
     appMessaging.messages.set(mockMessages);
     appMessaging.isMessagesIdbFetchLoading.set(false);
 
     // start the popup
     appMessaging.deleteMode.set(true);
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     // exit the popup
     const popup = fixture.debugElement.query(By.css("item-delete-form"))
       .componentInstance as ItemDeleteFormComponent;
     popup.editMode.emit(false);
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     // check the popup is exited
     expect(changeSpy).toHaveBeenCalledWith(false);
     expect(appMessaging.deleteMode()).toBeFalse();
   });
 
-  it("should update the message list post delete - single message", () => {
+  it("should update the message list post delete - single message", async () => {
+    spyOn(AppMessagesComponent.prototype, "fetchThreads");
+    spyOn(AppMessagesComponent.prototype, "fetchMessages");
     const fixture = TestBed.createComponent(AppMessagesComponent);
     const appMessaging = fixture.componentInstance;
     const updateSpy = spyOn(appMessaging, "updateMessageList").and.callThrough();
-    spyOn(appMessaging, "fetchMessages");
-    spyOn(appMessaging, "fetchThreads");
     appMessaging.messages.set(mockMessages);
     appMessaging.isMessagesIdbFetchLoading.set(false);
     appMessaging.threadId.set(4);
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     const message = fixture.debugElement.query(By.css("app-single-message"))
       .componentInstance as MessageComponent;
     message.messageDeleted.emit(1);
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     // check the popup is exited
     expect(updateSpy).toHaveBeenCalledWith(1, "thread");
@@ -475,44 +470,44 @@ describe("AppMessagesComponent", () => {
     expect(appMessaging.messages()[0].id).not.toBe(1);
   });
 
-  it("should update the message list post delete - single thread", () => {
+  it("should update the message list post delete - single thread", async () => {
+    spyOn(AppMessagesComponent.prototype, "fetchThreads");
     const fixture = TestBed.createComponent(AppMessagesComponent);
     const appMessaging = fixture.componentInstance;
     const updateSpy = spyOn(appMessaging, "updateMessageList").and.callThrough();
-    spyOn(appMessaging, "fetchThreads");
     appMessaging.userThreads.set(mockThreads);
     appMessaging.isThreadsIdbFetchLoading.set(false);
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     const thread = fixture.debugElement.query(By.css("app-single-thread"))
       .componentInstance as ThreadComponent;
     thread.messageDeleted.emit(3);
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     // check the popup is exited
     expect(updateSpy).toHaveBeenCalledWith(3, "threads");
     expect(appMessaging.userThreads().length).toBe(0);
   });
 
-  it("should update the message list post delete - all threads", () => {
+  it("should update the message list post delete - all threads", async () => {
+    spyOn(AppMessagesComponent.prototype, "fetchThreads");
     const fixture = TestBed.createComponent(AppMessagesComponent);
     const appMessaging = fixture.componentInstance;
     const updateSpy = spyOn(appMessaging, "clearMailbox").and.callThrough();
     const deleteSpy = spyOn(appMessaging["swManager"], "clearStore");
-    spyOn(appMessaging, "fetchThreads");
     appMessaging.userThreads.set(mockThreads);
     appMessaging.isThreadsIdbFetchLoading.set(false);
 
     // start the popup
     appMessaging.deleteMode.set(true);
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     // exit the popup
     const popup = fixture.debugElement.query(By.css("item-delete-form"))
       .componentInstance as ItemDeleteFormComponent;
     popup.deleted.emit(3);
     popup.editMode.emit(false);
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     // check the popup is exited
     expect(updateSpy).toHaveBeenCalledWith();
@@ -522,20 +517,19 @@ describe("AppMessagesComponent", () => {
   });
 
   /** @todo This one is more of an integration test, isn't it? Probably better off in e2e. */
-  it("should show the selected thread", () => {
+  it("should show the selected thread", async () => {
+    spyOn(AppMessagesComponent.prototype, "fetchThreads");
     const fixture = TestBed.createComponent(AppMessagesComponent);
     const appMessaging = fixture.componentInstance;
     const appMessagingDOM = fixture.nativeElement;
-    spyOn(appMessaging, "fetchThreads");
     const messagesFetchSpy = spyOn(appMessaging, "fetchMessages");
     const showThreadSpy = spyOn(appMessaging, "showThread").and.callThrough();
     const navigateSpy = spyOn(appMessaging["router"], "navigate");
     appMessaging.userThreads.set(mockThreads);
     appMessaging.isThreadsIdbFetchLoading.set(false);
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     appMessagingDOM.querySelectorAll(".viewButton")[0].click();
-    fixture.detectChanges();
 
     expect(showThreadSpy).toHaveBeenCalledWith(3);
     expect(appMessaging.threadId()).toBe(3);
@@ -550,11 +544,11 @@ describe("AppMessagesComponent", () => {
     );
   });
 
-  it("should preserve threads page query param if it's not 1", () => {
+  it("should preserve threads page query param if it's not 1", async () => {
+    spyOn(AppMessagesComponent.prototype, "fetchThreads");
     const fixture = TestBed.createComponent(AppMessagesComponent);
     const appMessaging = fixture.componentInstance;
     const appMessagingDOM = fixture.nativeElement;
-    spyOn(appMessaging, "fetchThreads");
     const messagesFetchSpy = spyOn(appMessaging, "fetchMessages");
     const showThreadSpy = spyOn(appMessaging, "showThread").and.callThrough();
     const navigateSpy = spyOn(appMessaging["router"], "navigate");
@@ -562,10 +556,9 @@ describe("AppMessagesComponent", () => {
     appMessaging.isThreadsIdbFetchLoading.set(false);
     appMessaging.totalThreadsPages.set(2);
     appMessaging.currentThreadsPage.set(2);
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     appMessagingDOM.querySelectorAll(".viewButton")[0].click();
-    fixture.detectChanges();
 
     expect(showThreadSpy).toHaveBeenCalledWith(3);
     expect(appMessaging.threadId()).toBe(3);
@@ -581,12 +574,12 @@ describe("AppMessagesComponent", () => {
     );
   });
 
-  it("should close the thread and reset the thread ID", () => {
+  it("should close the thread and reset the thread ID", async () => {
+    spyOn(AppMessagesComponent.prototype, "fetchThreads");
+    spyOn(AppMessagesComponent.prototype, "fetchMessages");
     const fixture = TestBed.createComponent(AppMessagesComponent);
     const appMessaging = fixture.componentInstance;
     const appMessagingDOM = fixture.nativeElement;
-    spyOn(appMessaging, "fetchThreads");
-    spyOn(appMessaging, "fetchMessages");
     const closeThreadSpy = spyOn(appMessaging, "closeThread").and.callThrough();
     const navigateSpy = spyOn(appMessaging["router"], "navigate");
     appMessaging.userThreads.set(mockThreads);
@@ -594,10 +587,9 @@ describe("AppMessagesComponent", () => {
     appMessaging.threadId.set(3);
     appMessaging.currentThreadsPage.set(2);
     appMessaging.totalThreadsPages.set(2);
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     appMessagingDOM.querySelector(".messagesLink").click();
-    fixture.detectChanges();
 
     expect(closeThreadSpy).toHaveBeenCalledWith();
     expect(appMessaging.threadId()).toBe(undefined);
@@ -611,12 +603,12 @@ describe("AppMessagesComponent", () => {
     );
   });
 
-  it("should close the thread and reset the query parameters if the page is 1", () => {
+  it("should close the thread and reset the query parameters if the page is 1", async () => {
+    spyOn(AppMessagesComponent.prototype, "fetchThreads");
+    spyOn(AppMessagesComponent.prototype, "fetchMessages");
     const fixture = TestBed.createComponent(AppMessagesComponent);
     const appMessaging = fixture.componentInstance;
     const appMessagingDOM = fixture.nativeElement;
-    spyOn(appMessaging, "fetchThreads");
-    spyOn(appMessaging, "fetchMessages");
     const closeThreadSpy = spyOn(appMessaging, "closeThread").and.callThrough();
     const navigateSpy = spyOn(appMessaging["router"], "navigate");
     appMessaging.userThreads.set(mockThreads);
@@ -624,10 +616,9 @@ describe("AppMessagesComponent", () => {
     appMessaging.threadId.set(3);
     appMessaging.currentThreadsPage.set(1);
     appMessaging.totalThreadsPages.set(2);
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     appMessagingDOM.querySelector(".messagesLink").click();
-    fixture.detectChanges();
 
     expect(closeThreadSpy).toHaveBeenCalledWith();
     expect(appMessaging.threadId()).toBe(undefined);
@@ -639,12 +630,12 @@ describe("AppMessagesComponent", () => {
     );
   });
 
-  it("should close the thread and reset the thread ID when clicking the back button", () => {
+  it("should close the thread and reset the thread ID when clicking the back button", async () => {
+    spyOn(AppMessagesComponent.prototype, "fetchThreads");
+    spyOn(AppMessagesComponent.prototype, "fetchMessages");
     const fixture = TestBed.createComponent(AppMessagesComponent);
     const appMessaging = fixture.componentInstance;
     const appMessagingDOM = fixture.nativeElement;
-    spyOn(appMessaging, "fetchThreads");
-    spyOn(appMessaging, "fetchMessages");
     const closeThreadSpy = spyOn(appMessaging, "closeThread").and.callThrough();
     const navigateSpy = spyOn(appMessaging["router"], "navigate");
     appMessaging.userThreads.set(mockThreads);
@@ -652,10 +643,9 @@ describe("AppMessagesComponent", () => {
     appMessaging.threadId.set(3);
     appMessaging.currentThreadsPage.set(2);
     appMessaging.totalThreadsPages.set(2);
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     appMessagingDOM.querySelector(".textlessButton").click();
-    fixture.detectChanges();
 
     expect(closeThreadSpy).toHaveBeenCalledWith();
     expect(appMessaging.threadId()).toBe(undefined);

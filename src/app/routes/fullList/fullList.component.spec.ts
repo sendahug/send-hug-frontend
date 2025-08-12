@@ -59,7 +59,9 @@ import { mockAuthedUser } from "@tests/mockData";
 
 describe("FullListComponent", () => {
   let pageOnePosts: PostGet[];
-  const MockAPIClient = MockProvider(ApiClientService);
+  const MockAPIClient = MockProvider(ApiClientService, {
+    get: (_url: string, _params?: Record<string, any>) => of(),
+  });
   const MockAuthService = MockProvider(AuthService, {
     userData: signal({ ...mockAuthedUser }),
     authenticated: signal(true),
@@ -70,6 +72,7 @@ describe("FullListComponent", () => {
   });
   const MockSWManager = MockProvider(SWManager, {
     fetchPosts: () => new Promise((resolve) => resolve({ posts: pageOnePosts, pages: 1 })),
+    addFetchedItems: () => undefined,
   });
 
   // Before each test, configure testing environment
@@ -146,6 +149,7 @@ describe("FullListComponent", () => {
 
   // Check that the component is created
   it("should create the component", () => {
+    spyOn(FullListComponent.prototype, "fetchPosts");
     const paramMap = TestBed.inject(ActivatedRoute);
     paramMap.snapshot.url = [{ path: "New" }] as UrlSegment[];
     const fixture = TestBed.createComponent(FullListComponent);

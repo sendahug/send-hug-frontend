@@ -111,6 +111,9 @@ describe("MainPageComponent", () => {
 
   // Check that the component is created
   it("should create the component", () => {
+    // Just to make sure it doesn't get called during the test
+    spyOn(MainPageComponent.prototype, "fetchPosts");
+
     const fixture = TestBed.createComponent(MainPageComponent);
     const mainPage = fixture.componentInstance;
 
@@ -153,6 +156,9 @@ describe("MainPageComponent", () => {
   });
 
   it("should fetch posts from the server and not change the value if the returned value is undefined", () => {
+    // Just to make sure it doesn't get called during the test
+    spyOn(MainPageComponent.prototype, "fetchPosts");
+
     // set up mock data
     const mockNetworkResponse = { recent: undefined, suggested: undefined, success: true };
 

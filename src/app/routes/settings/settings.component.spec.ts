@@ -99,8 +99,6 @@ describe("SettingsPageComponent", () => {
     const settingsDOM = fixture.nativeElement;
     settingsPage.authService.authenticated.set(false);
 
-    fixture.detectChanges();
-
     fixture
       .whenStable()
       .then(() => {

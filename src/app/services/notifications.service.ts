@@ -70,6 +70,14 @@ export class NotificationService {
 
   // CTOR
   constructor() {
+    this.listenToSWMessages();
+  }
+
+  /**
+   * Adds an event listener (for message events) to the ServiceWorker.
+   * Made for isolation as it's problematic to patch the global SW.
+   */
+  listenToSWMessages() {
     navigator.serviceWorker.addEventListener("message", this.renewPushSubscription);
   }
 
@@ -246,24 +254,24 @@ export class NotificationService {
       this.resubscribeCalls = 0;
     }
 
-    if (event.data.action == "resubscribe" && this.resubscribeCalls < 2) {
-      this.resubscribeCalls++;
+    if (event.data.action != "resubscribe" || this.resubscribeCalls >= 2) return;
 
-      // request a new push subscription
-      this.requestSubscription().then((subscription) => {
-        // update the saved subscription in the database
-        this.apiClient
-          .patch<CreateUpdatePushSubscriptionResponse>(
-            `push_subscriptions/${this.subId}`,
-            JSON.stringify(subscription),
-          )
-          .subscribe({
-            next: (response) => {
-              this.subId = response.subId;
-            },
-          });
-      });
-    }
+    this.resubscribeCalls++;
+
+    // request a new push subscription
+    return this.requestSubscription().then((subscription) => {
+      // update the saved subscription in the database
+      this.apiClient
+        .patch<CreateUpdatePushSubscriptionResponse>(
+          `push_subscriptions/${this.subId}`,
+          JSON.stringify(subscription),
+        )
+        .subscribe({
+          next: (response) => {
+            this.subId = response.subId;
+          },
+        });
+    });
   }
 
   /**

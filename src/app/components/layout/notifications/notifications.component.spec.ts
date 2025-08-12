@@ -30,7 +30,7 @@
   SOFTWARE.
 */
 
-import { fakeAsync, TestBed, tick } from "@angular/core/testing";
+import { TestBed } from "@angular/core/testing";
 import { provideRouter, RouterLink } from "@angular/router";
 import {} from "jasmine";
 import { APP_BASE_HREF, CommonModule } from "@angular/common";
@@ -300,7 +300,9 @@ describe("Notifications Tab", () => {
     });
   });
 
-  it("getNotifications() - returns without making a call", fakeAsync(() => {
+  it("getNotifications() - returns without making a call", () => {
+    jasmine.clock().install();
+
     // mock response
     const mockResponse = {
       success: true,
@@ -324,10 +326,12 @@ describe("Notifications Tab", () => {
 
     notificationsTab.getNotifications();
 
-    tick();
+    jasmine.clock().tick(100);
 
     expect(getSpy).not.toHaveBeenCalled();
-  }));
+
+    jasmine.clock().uninstall();
+  });
 
   // check tab and tab+shift let the user navigate
   // TODO: Figure out why this test isn't working
@@ -440,6 +444,7 @@ describe("Notifications Tab", () => {
     // step 1: check the last element is focused
     // focus on the last element
     notifTabDOM.querySelectorAll(".NotificationButton")[4].focus();
+    await fixture.whenStable();
 
     // check the last element has focus
     expect(spies[0]).not.toHaveBeenCalled();
@@ -457,6 +462,7 @@ describe("Notifications Tab", () => {
         shiftKey: false,
       }),
     );
+    await fixture.whenStable();
 
     // check the focus shifted to the first element
     expect(focusBindedSpy).toHaveBeenCalledTimes(1);
@@ -475,6 +481,7 @@ describe("Notifications Tab", () => {
         shiftKey: true,
       }),
     );
+    await fixture.whenStable();
 
     // check the focus shifted to the last element
     expect(focusBindedSpy).toHaveBeenCalledTimes(2);
@@ -540,6 +547,7 @@ describe("Notifications Tab", () => {
     );
 
     notifTabDOM.querySelectorAll(".NotificationButton")[2].click();
+    await fixture.whenStable();
 
     // after
     expect(notificationsTab.displayUnread()).toBeFalse();
@@ -563,6 +571,7 @@ describe("Notifications Tab", () => {
     );
 
     notifTabDOM.querySelectorAll(".NotificationButton")[3].click();
+    await fixture.whenStable();
 
     // after
     expect(notificationsTab.displayRead()).toBeFalse();
@@ -632,6 +641,7 @@ describe("Notifications Tab", () => {
     );
 
     notifTabDOM.querySelectorAll(".NotificationButton")[4].click();
+    await fixture.whenStable();
 
     // after
     notificationBadges = notifTabDOM.querySelectorAll(".badge");
@@ -712,6 +722,7 @@ describe("Notifications Tab", () => {
     );
 
     notifTabDOM.querySelectorAll(".NotificationButton")[4].click();
+    await fixture.whenStable();
 
     // after
     notificationBadges = notifTabDOM.querySelectorAll(".badge");
@@ -779,6 +790,7 @@ describe("Notifications Tab", () => {
     expect(notifTabDOM.querySelectorAll(".readToggle")[0].textContent.trim()).toBe("Mark Read");
 
     notifTabDOM.querySelectorAll(".readToggle")[0].click();
+    await fixture.whenStable();
 
     // after
     notificationBadges = notifTabDOM.querySelectorAll(".badge");
@@ -842,6 +854,7 @@ describe("Notifications Tab", () => {
     expect(notifTabDOM.querySelectorAll(".readToggle")[0].textContent.trim()).toBe("Mark Unread");
 
     notifTabDOM.querySelectorAll(".readToggle")[0].click();
+    await fixture.whenStable();
 
     // after
     notificationBadges = notifTabDOM.querySelectorAll(".badge");

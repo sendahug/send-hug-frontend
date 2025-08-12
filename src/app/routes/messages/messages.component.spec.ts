@@ -57,6 +57,7 @@ import { MessageComponent } from "@app/components/messaging/message/message.comp
 import { ThreadComponent } from "@app/components/messaging/thread/thread.component";
 import { PaginatedListComponent } from "@app/components/common/paginatedList/paginatedList.component";
 import { MockItemDeleteFormComponent } from "@tests/mockForms";
+import { SWManager } from "@app/services/sWManager.service";
 
 describe("AppMessagesComponent", () => {
   let mockMessages: MessageGet[];
@@ -70,6 +71,9 @@ describe("AppMessagesComponent", () => {
       isUserDataResolved: new BehaviorSubject(true),
     });
     const MockAPIClient = MockProvider(ApiClientService);
+    const MockSWManager = MockProvider(SWManager, {
+      fetchMessages: () => new Promise((resolve) => resolve({ messages: [], pages: 1 })),
+    });
 
     TestBed.configureTestingModule({
       schemas: [NO_ERRORS_SCHEMA],
@@ -102,6 +106,7 @@ describe("AppMessagesComponent", () => {
         ),
         MockAuthService,
         MockAPIClient,
+        MockSWManager,
       ],
     }).compileComponents();
 
@@ -169,6 +174,7 @@ describe("AppMessagesComponent", () => {
 
   // Check that the component is created
   it("should create the component", () => {
+    spyOn(AppMessagesComponent.prototype, "fetchThreads");
     const fixture = TestBed.createComponent(AppMessagesComponent);
     const appMessaging = fixture.componentInstance;
 
@@ -177,6 +183,7 @@ describe("AppMessagesComponent", () => {
 
   // Check that the popup variables are set to false
   it("should have all popup variables set to false", () => {
+    spyOn(AppMessagesComponent.prototype, "fetchThreads");
     const fixture = TestBed.createComponent(AppMessagesComponent);
     const appMessaging = fixture.componentInstance;
 
@@ -212,6 +219,7 @@ describe("AppMessagesComponent", () => {
     expect(appMessaging.currentMessagesPage()).toBe(1);
     expect(appMessaging.currentThreadsPage()).toBe(1);
     expect(appMessaging.threadId()).toBe(undefined);
+    expect(appMessaging.userThreads()).toEqual([]);
   });
 
   it("should set pages and thread ID based on the query parameters", async () => {
@@ -226,6 +234,7 @@ describe("AppMessagesComponent", () => {
       }
     });
     spyOn(AppMessagesComponent.prototype, "fetchThreads");
+    spyOn(AppMessagesComponent.prototype, "fetchMessages");
     const fixture = TestBed.createComponent(AppMessagesComponent);
     const appMessaging = fixture.componentInstance;
     await fixture.whenStable();
@@ -235,24 +244,21 @@ describe("AppMessagesComponent", () => {
     expect(appMessaging.threadId()).toBe(4);
   });
 
-  it("should fetch threads from the server", async () => {
-    const fixture = TestBed.createComponent(AppMessagesComponent);
-    const appMessaging = fixture.componentInstance;
-    const idbFetchSpy = spyOn(appMessaging, "fetchThreadsFromIdb").and.returnValue(
-      of({ messages: [], total_pages: 1, current_page: 1, success: true }),
-    );
-    const apiClientSpy = spyOn(appMessaging["apiClient"], "get").and.returnValue(
+  it("should fetch threads from the server on load", async () => {
+    const apiClient = TestBed.inject(ApiClientService);
+    const apiClientSpy = spyOn(apiClient, "get").and.returnValue(
       of({ messages: mockThreads, total_pages: 2, current_page: 1, success: true }),
     );
-    const swManagerSpy = spyOn(appMessaging["swManager"], "addFetchedItems");
+    const swManager = TestBed.inject(SWManager);
+    const swManagerSpy = spyOn(swManager, "addFetchedItems");
+    const idbFetchSpy = spyOn(
+      AppMessagesComponent.prototype,
+      "fetchThreadsFromIdb",
+    ).and.returnValue(of({ messages: [], total_pages: 1, current_page: 1, success: true }));
 
-    // before
-    expect(appMessaging.userThreads()).toEqual([]);
-    expect(appMessaging.totalThreadsPages()).toBe(1);
-    expect(appMessaging.currentThreadsPage()).toBe(1);
+    const fixture = TestBed.createComponent(AppMessagesComponent);
+    const appMessaging = fixture.componentInstance;
     await fixture.whenStable();
-
-    appMessaging.fetchThreads();
 
     // after
     expect(idbFetchSpy).toHaveBeenCalledWith();
@@ -267,9 +273,9 @@ describe("AppMessagesComponent", () => {
   });
 
   it("should fetch threads from IDB", (done: DoneFn) => {
+    spyOn(AppMessagesComponent.prototype, "fetchThreads");
     const fixture = TestBed.createComponent(AppMessagesComponent);
     const appMessaging = fixture.componentInstance;
-    spyOn(appMessaging, "fetchThreads");
     const idbSpy = spyOn(appMessaging["swManager"], "queryThreads").and.returnValue(
       new Promise((resolve) => resolve({ messages: mockThreads, pages: 2 })),
     );
@@ -318,9 +324,9 @@ describe("AppMessagesComponent", () => {
   });
 
   it("IDB messages fetch - should set the filter value to the thread ID if the message type is thread", (done: DoneFn) => {
+    spyOn(AppMessagesComponent.prototype, "fetchThreads");
     const fixture = TestBed.createComponent(AppMessagesComponent);
     const appMessaging = fixture.componentInstance;
-    spyOn(appMessaging, "fetchThreads");
     appMessaging.threadId.set(2);
     const idbSpy = spyOn(appMessaging["swManager"], "fetchMessages").and.returnValue(
       new Promise((resolve) => resolve({ messages: mockMessages, pages: 2 })),

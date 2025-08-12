@@ -51,6 +51,8 @@ import { ApiClientService } from "@app/services/apiClient.service";
 import { LoaderComponent } from "@common/loader/loader.component";
 import { UserIconComponent } from "@common/userIcon/userIcon.component";
 import { MockDisplayNameEditFormComponent, MockReportFormComponent } from "@tests/mockForms";
+import { SWManager } from "@app/services/sWManager.service";
+import { MyPostsComponent } from "@app/components/myPosts/myPosts.component";
 
 describe("UserPageComponent", () => {
   // Before each test, configure testing environment
@@ -59,7 +61,13 @@ describe("UserPageComponent", () => {
       authenticated: signal(false),
       userData: signal(undefined),
     });
-    const MockAPIClient = MockProvider(ApiClientService);
+    const MockAPIClient = MockProvider(ApiClientService, {
+      get: () => of(),
+    });
+    const MockSWManager = MockProvider(SWManager, {
+      queryUsers: () => new Promise((resolve) => resolve(undefined)),
+      fetchPosts: () => new Promise((resolve) => resolve({ posts: [], pages: 1 })),
+    });
 
     TestBed.configureTestingModule({
       schemas: [NO_ERRORS_SCHEMA],
@@ -72,6 +80,7 @@ describe("UserPageComponent", () => {
         RouterLink,
         UserIconComponent,
         UserPageComponent,
+        MyPostsComponent,
       ],
       declarations: [],
       providers: [
@@ -98,6 +107,7 @@ describe("UserPageComponent", () => {
         ]),
         MockAuthService,
         MockAPIClient,
+        MockSWManager,
       ],
     }).compileComponents();
   });
@@ -216,7 +226,7 @@ describe("UserPageComponent", () => {
   });
 
   // Check that when the ID is another user's ID, it shows their page
-  it("should show another user's page if that was the provided ID", () => {
+  it("should show another user's page if that was the provided ID", async () => {
     const paramMap = TestBed.inject(ActivatedRoute);
     const routeSpy = spyOn(paramMap.snapshot.paramMap, "get").and.returnValue("1");
     const authService = TestBed.inject(AuthService);
@@ -246,8 +256,7 @@ describe("UserPageComponent", () => {
     });
     userPage.isIdbFetchLoading.set(false);
     userPage.isLoading.set(false);
-
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     const userData = userPage.otherUser() as OtherUser;
 
@@ -362,18 +371,17 @@ describe("UserPageComponent", () => {
     expect(userPage.isLoading()).toBeFalse();
   });
 
-  it("should show the loader as full loader if the IDB fetch isn't resolved", () => {
+  it("should show the loader as full loader if the IDB fetch isn't resolved", async () => {
     const authService = TestBed.inject(AuthService);
     authService.authenticated.set(true);
     authService.userData.set({ ...mockAuthedUser });
     const fixture = TestBed.createComponent(UserPageComponent);
     const userPage = fixture.componentInstance;
     const userPageDOM = fixture.nativeElement;
-    fixture.detectChanges();
 
     userPage.isIdbFetchLoading.set(true);
     userPage.isLoading.set(true);
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     expect(userPage.loaderClass()).toBe("");
     expect(userPageDOM.querySelector("app-loader").className).toEqual("");
@@ -421,7 +429,7 @@ describe("UserPageComponent", () => {
   });
 
   // Check that the popup is triggered on edit
-  it("should open the popup upon editing", () => {
+  it("should open the popup upon editing", async () => {
     const paramMap = TestBed.inject(ActivatedRoute);
     spyOn(paramMap.snapshot.paramMap, "get").and.returnValue("4");
     const authService = TestBed.inject(AuthService);
@@ -430,15 +438,14 @@ describe("UserPageComponent", () => {
     const fixture = TestBed.createComponent(UserPageComponent);
     const userPage = fixture.componentInstance;
     const userPageDOM = fixture.nativeElement;
-
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     // before the click
     expect(userPage.editMode()).toBeFalse();
 
     // trigger click
     userPageDOM.querySelector("#editName").click();
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     // after the click
     expect(userPage.editMode()).toBeTrue();
@@ -451,7 +458,7 @@ describe("UserPageComponent", () => {
   });
 
   //Check that the popup is opened when clicking 'report'
-  it("should open the popup upon reporting", () => {
+  it("should open the popup upon reporting", async () => {
     const paramMap = TestBed.inject(ActivatedRoute);
     spyOn(paramMap.snapshot.paramMap, "get").and.returnValue("1");
     const authService = TestBed.inject(AuthService);
@@ -481,15 +488,14 @@ describe("UserPageComponent", () => {
     });
     userPage.isLoading.set(false);
     userPage.isIdbFetchLoading.set(false);
-
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     // before the click
     expect(userPage.reportMode()).toBeFalse();
 
     // trigger click
     userPageDOM.querySelectorAll(".reportButton")[0].click();
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     // after the click
     expect(userPage.reportMode()).toBeTrue();
@@ -499,7 +505,7 @@ describe("UserPageComponent", () => {
   });
 
   // Check that sending a hug triggers the items service
-  it("should trigger items service on hug", () => {
+  it("should trigger items service on hug", async () => {
     const paramMap = TestBed.inject(ActivatedRoute);
     spyOn(paramMap.snapshot.paramMap, "get").and.returnValue("1");
     const authService = TestBed.inject(AuthService);
@@ -533,8 +539,7 @@ describe("UserPageComponent", () => {
     });
     userPage.isLoading.set(false);
     userPage.isIdbFetchLoading.set(false);
-
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     // before the click
     expect(hugSpy).not.toHaveBeenCalled();
@@ -551,7 +556,7 @@ describe("UserPageComponent", () => {
 
     // simulate click
     userPageDOM.querySelectorAll(".hugButton")[0].click();
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     // after the click
     expect(hugSpy).toHaveBeenCalledWith(1);
@@ -569,7 +574,7 @@ describe("UserPageComponent", () => {
   });
 
   // Check the popup exits when 'false' is emitted
-  it("should change mode when the event emitter emits false - display name edit", () => {
+  it("should change mode when the event emitter emits false - display name edit", async () => {
     const paramMap = TestBed.inject(ActivatedRoute);
     spyOn(paramMap.snapshot.paramMap, "get").and.returnValue("4");
     const authService = TestBed.inject(AuthService);
@@ -580,29 +585,28 @@ describe("UserPageComponent", () => {
     userPage.isIdbFetchLoading.set(false);
     const changeSpy = spyOn(userPage, "changeMode").and.callThrough();
 
-    fixture.detectChanges();
-
     // start the popup
     userPage.editMode.set(true);
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     // exit the popup
     const popup = fixture.debugElement.query(By.css("display-name-edit-form"))
       .componentInstance as DisplayNameEditFormComponent;
     popup.editMode.emit(false);
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     // check the popup is exited
     expect(changeSpy).toHaveBeenCalledWith(false, "Edit");
     expect(userPage.editMode()).toBeFalse();
   });
 
-  it("should change mode when the event emitter emits false - report", () => {
+  it("should change mode when the event emitter emits false - report", async () => {
     const paramMap = TestBed.inject(ActivatedRoute);
     spyOn(paramMap.snapshot.paramMap, "get").and.returnValue("1");
     const authService = TestBed.inject(AuthService);
     authService.authenticated.set(true);
     authService.userData.set({ ...mockAuthedUser });
+    spyOn(UserPageComponent.prototype, "getUser");
     const fixture = TestBed.createComponent(UserPageComponent);
     const userPage = fixture.componentInstance;
     userPage.otherUser.set({
@@ -627,19 +631,17 @@ describe("UserPageComponent", () => {
     userPage.isIdbFetchLoading.set(false);
     const changeSpy = spyOn(userPage, "changeMode").and.callThrough();
 
-    fixture.detectChanges();
-
     // start the popup
     userPage.reportedItem.set(userPage.otherUser() as OtherUser);
     userPage.reportMode.set(true);
     userPage.reportType = "User";
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     // exit the popup
     const popup = fixture.debugElement.query(By.css("report-form"))
       .componentInstance as ReportFormComponent;
     popup.reportMode.emit(false);
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     // check the popup is exited
     expect(changeSpy).toHaveBeenCalledWith(false, "Report");

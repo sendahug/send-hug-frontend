@@ -486,12 +486,15 @@ describe("NotificationService", () => {
     );
 
     const mockEvent = new MessageEvent("event", { data: { action: "resubscribe" } });
-    notificationService.renewPushSubscription(mockEvent)?.then(() => {
-      expect(requestSpy).toHaveBeenCalledWith();
-      expect(apiClientSpy).toHaveBeenCalledWith(`push_subscriptions/1`, JSON.stringify(pushSub));
-      expect(notificationService.resubscribeCalls).toEqual(1);
-      done();
-    });
+    notificationService
+      .renewPushSubscription(mockEvent)
+      ?.then(() => {
+        expect(requestSpy).toHaveBeenCalledWith();
+        expect(apiClientSpy).toHaveBeenCalledWith(`push_subscriptions/1`, JSON.stringify(pushSub));
+        expect(notificationService.resubscribeCalls).toEqual(1);
+        done();
+      })
+      .catch(done.fail);
   });
 
   it("renewPushSubscription() - should make resubscribeCalls 0 if it's been more than 24 hours", (done: DoneFn) => {
@@ -506,12 +509,15 @@ describe("NotificationService", () => {
     );
 
     const mockEvent = new MessageEvent("event", { data: { action: "resubscribe" } });
-    notificationService.renewPushSubscription(mockEvent)?.then(() => {
-      expect(requestSpy).toHaveBeenCalledWith();
-      expect(apiClientSpy).toHaveBeenCalledWith(`push_subscriptions/1`, JSON.stringify(pushSub));
-      expect(notificationService.resubscribeCalls).toEqual(1);
-      done();
-    });
+    notificationService
+      .renewPushSubscription(mockEvent)
+      ?.then(() => {
+        expect(requestSpy).toHaveBeenCalledWith();
+        expect(apiClientSpy).toHaveBeenCalledWith(`push_subscriptions/1`, JSON.stringify(pushSub));
+        expect(notificationService.resubscribeCalls).toEqual(1);
+        done();
+      })
+      .catch(done.fail);
   });
 
   it("unsubscribeFromStream() - should do nothing ", (done: DoneFn) => {

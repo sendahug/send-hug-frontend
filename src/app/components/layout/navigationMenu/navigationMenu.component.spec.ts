@@ -263,9 +263,9 @@ describe("NavigationMenuComponent", () => {
   });
 
   // Check that the font size panel changes the site's font size
-  it("has a font size that changes according to user choice", (done: DoneFn) => {
+  it("has a font size that changes according to user choice", async () => {
     const fixture = TestBed.createComponent(NavigationMenuComponent);
-    fixture.detectChanges();
+    await fixture.whenStable();
     const navMenu = fixture.componentInstance;
     const navMenuHtml = fixture.nativeElement;
     const fontButton = navMenuHtml.querySelector("#textSize");
@@ -273,65 +273,55 @@ describe("NavigationMenuComponent", () => {
 
     // open the text panel
     fontButton.click();
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     const fontPanelButtons = navMenuHtml.querySelector("#textPanel").querySelectorAll(".appButton");
 
-    // wrap tests in a promise to make sure they run fully and by the order
     // step 1: regular size
-    new Promise((resolve) => {
-      // change the font size to the smallest
-      fontPanelButtons[0]!.click();
-      fixture.detectChanges();
+    // change the font size to the smallest
+    fontPanelButtons[0]!.click();
+    await fixture.whenStable();
 
-      // check the font size was changed
-      expect(document.querySelector("html")!.style.fontSize).toBe("75%");
-      expect(menuSpy).toHaveBeenCalledWith();
-      expect(menuSpy).toHaveBeenCalledTimes(1);
-      resolve(undefined);
-      // step 3: smaller size
-    })
-      .then(() => {
-        // change the font size to the smaller
-        fontPanelButtons[1]!.click();
-        fixture.detectChanges();
+    // check the font size was changed
+    expect(document.querySelector("html")!.style.fontSize).toBe("75%");
+    expect(menuSpy).toHaveBeenCalledWith();
+    expect(menuSpy).toHaveBeenCalledTimes(1);
 
-        // check the font size was changed
-        expect(document.querySelector("html")!.style.fontSize).toBe("87.5%");
-        expect(menuSpy).toHaveBeenCalledTimes(2);
-        // step 4: regular size
-      })
-      .then(() => {
-        // change the font size to the normal
-        fontPanelButtons[2]!.click();
-        fixture.detectChanges();
+    // step 2: smaller size
+    // change the font size to the smaller
+    fontPanelButtons[1]!.click();
+    await fixture.whenStable();
 
-        // check the font size was changed
-        expect(document.querySelector("html")!.style.fontSize).toBe("100%");
-        expect(menuSpy).toHaveBeenCalledTimes(3);
-        // step 5: larger size
-      })
-      .then(() => {
-        // change the font size to the larger
-        fontPanelButtons[3]!.click();
-        fixture.detectChanges();
+    // check the font size was changed
+    expect(document.querySelector("html")!.style.fontSize).toBe("87.5%");
+    expect(menuSpy).toHaveBeenCalledTimes(2);
 
-        // check the font size was changed
-        expect(document.querySelector("html")!.style.fontSize).toBe("150%");
-        expect(menuSpy).toHaveBeenCalledTimes(4);
-        // step 6: largest size
-      })
-      .then(() => {
-        // change the font size to the largest
-        fontPanelButtons[4]!.click();
-        fixture.detectChanges();
+    // step 3: regular size
+    // change the font size to the normal
+    fontPanelButtons[2]!.click();
+    await fixture.whenStable();
 
-        // check the font size was changed
-        expect(document.querySelector("html")!.style.fontSize).toBe("200%");
-        expect(menuSpy).toHaveBeenCalledTimes(5);
-        done();
-      })
-      .catch(done.fail);
+    // check the font size was changed
+    expect(document.querySelector("html")!.style.fontSize).toBe("100%");
+    expect(menuSpy).toHaveBeenCalledTimes(3);
+
+    // step 4: larger size
+    // change the font size to the larger
+    fontPanelButtons[3]!.click();
+    await fixture.whenStable();
+
+    // check the font size was changed
+    expect(document.querySelector("html")!.style.fontSize).toBe("150%");
+    expect(menuSpy).toHaveBeenCalledTimes(4);
+
+    // step 5: largest size
+    // change the font size to the largest
+    fontPanelButtons[4]!.click();
+    await fixture.whenStable();
+
+    // check the font size was changed
+    expect(document.querySelector("html")!.style.fontSize).toBe("200%");
+    expect(menuSpy).toHaveBeenCalledTimes(5);
   });
 
   // check the menu is shown if the screen is wide enough

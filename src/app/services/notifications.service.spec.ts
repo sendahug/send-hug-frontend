@@ -538,6 +538,24 @@ describe("NotificationService", () => {
     expect(apiClientSpy).not.toHaveBeenCalled();
   });
 
+  it("renewPushSubscription() - should do nothing if the SW message isn't related to subscription", () => {
+    notificationService.subscriptionDate = Date.now();
+    notificationService.resubscribeCalls = 1;
+    notificationService.subId = 1;
+    const requestSpy = spyOn(notificationService, "requestSubscription").and.returnValue(
+      new Promise((resolve) => resolve(pushSub)),
+    );
+    const apiClientSpy = spyOn(notificationService["apiClient"], "patch").and.returnValue(
+      of({ subId: 1 }),
+    );
+
+    const mockEvent = new MessageEvent("event", { data: { action: "meow" } });
+    notificationService.renewPushSubscription(mockEvent);
+
+    expect(requestSpy).not.toHaveBeenCalled();
+    expect(apiClientSpy).not.toHaveBeenCalled();
+  });
+
   it("unsubscribeFromStream() - should do nothing ", (done: DoneFn) => {
     notificationService.notificationsSub = undefined;
 

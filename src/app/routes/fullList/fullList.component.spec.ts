@@ -60,6 +60,7 @@ import { mockAuthedUser } from "@tests/mockData";
 describe("FullListComponent", () => {
   let pageOnePosts: PostGet[];
   const MockAPIClient = MockProvider(ApiClientService, {
+    /* eslint-disable @typescript-eslint/no-explicit-any */
     get: (_url: string, _params?: Record<string, any>) => of(),
   });
   const MockAuthService = MockProvider(AuthService, {

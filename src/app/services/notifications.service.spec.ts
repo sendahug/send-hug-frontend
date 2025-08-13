@@ -520,6 +520,24 @@ describe("NotificationService", () => {
       .catch(done.fail);
   });
 
+  it("renewPushSubscription() - should do nothing if resubscribeCalls > 2", () => {
+    notificationService.subscriptionDate = Date.now();
+    notificationService.resubscribeCalls = 2;
+    notificationService.subId = 1;
+    const requestSpy = spyOn(notificationService, "requestSubscription").and.returnValue(
+      new Promise((resolve) => resolve(pushSub)),
+    );
+    const apiClientSpy = spyOn(notificationService["apiClient"], "patch").and.returnValue(
+      of({ subId: 1 }),
+    );
+
+    const mockEvent = new MessageEvent("event", { data: { action: "resubscribe" } });
+    notificationService.renewPushSubscription(mockEvent);
+
+    expect(requestSpy).not.toHaveBeenCalled();
+    expect(apiClientSpy).not.toHaveBeenCalled();
+  });
+
   it("unsubscribeFromStream() - should do nothing ", (done: DoneFn) => {
     notificationService.notificationsSub = undefined;
 

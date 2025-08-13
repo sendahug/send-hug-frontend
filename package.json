@@ -79,7 +79,6 @@
     "@fortawesome/free-solid-svg-icons": "^6.7.2",
     "firebase": "^11.10.0",
     "idb": "^8.0.3",
-    "rxjs": "^7.8.2",
-    "zone.js": "^0.15.1"
+    "rxjs": "^7.8.2"
   }
 }

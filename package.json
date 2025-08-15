@@ -21,7 +21,7 @@
     "lint:fix": "eslint src e2e --fix"
   },
   "devDependencies": {
-    "@babel/core": "^7.27.4",
+    "@babel/core": "^7.28.3",
     "@babel/plugin-syntax-decorators": "^7.27.1",
     "@babel/plugin-syntax-typescript": "^7.27.1",
     "@size-limit/file": "^11.2.0",

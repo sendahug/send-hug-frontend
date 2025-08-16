@@ -33,23 +33,16 @@
 import { TestBed } from "@angular/core/testing";
 import {} from "jasmine";
 import { APP_BASE_HREF } from "@angular/common";
-import { BrowserTestingModule, platformBrowserTesting } from "@angular/platform-browser/testing";
-import { provideZoneChangeDetection } from "@angular/core";
+import { provideZonelessChangeDetection } from "@angular/core";
 
 import { LoaderComponent } from "./loader.component";
 
 describe("LoaderComponent", () => {
   // Before each test, configure testing environment
   beforeEach(() => {
-    TestBed.resetTestEnvironment();
-    TestBed.initTestEnvironment(BrowserTestingModule, platformBrowserTesting());
-
     TestBed.configureTestingModule({
       imports: [LoaderComponent],
-      providers: [
-        { provide: APP_BASE_HREF, useValue: "/" },
-        provideZoneChangeDetection({ eventCoalescing: true }),
-      ],
+      providers: [{ provide: APP_BASE_HREF, useValue: "/" }, provideZonelessChangeDetection()],
     }).compileComponents();
   });
 
@@ -62,12 +55,12 @@ describe("LoaderComponent", () => {
   });
 
   // Check that the component displays a loading message
-  it("should display a loading message passed in from the parent", () => {
+  it("should display a loading message passed in from the parent", async () => {
     const fixture = TestBed.createComponent(LoaderComponent);
     const loader = fixture.componentInstance;
     const loaderDOM = fixture.nativeElement;
     fixture.componentRef.setInput("loadingMessage", "Fetching user data...");
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     expect(loader.loadingMessage()).toBeDefined();
     expect(loader.loadingMessage()).toBe("Fetching user data...");
@@ -75,11 +68,11 @@ describe("LoaderComponent", () => {
     expect(loaderDOM.querySelector("#loadingMessage").textContent).toBe(loader.loadingMessage());
   });
 
-  it("should display a default message if waitingFor is null", () => {
+  it("should display a default message if waitingFor is null", async () => {
     const fixture = TestBed.createComponent(LoaderComponent);
     const loader = fixture.componentInstance;
     const loaderDOM = fixture.nativeElement;
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     expect(loader.loadingMessage()).toBe("Loading...");
     expect(loaderDOM.querySelector("#loadingMessage").textContent).toBe("Loading...");

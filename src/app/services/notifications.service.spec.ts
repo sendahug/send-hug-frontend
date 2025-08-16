@@ -30,8 +30,7 @@
   SOFTWARE.
 */
 
-import { discardPeriodicTasks, fakeAsync, TestBed, tick } from "@angular/core/testing";
-import { BrowserTestingModule, platformBrowserTesting } from "@angular/platform-browser/testing";
+import { TestBed } from "@angular/core/testing";
 import { ServiceWorkerModule } from "@angular/service-worker";
 import { Subscription, of } from "rxjs";
 import {} from "jasmine";
@@ -48,14 +47,12 @@ describe("NotificationService", () => {
   beforeEach(() => {
     const MockAPIClient = MockProvider(ApiClientService);
 
-    TestBed.resetTestEnvironment();
-    TestBed.initTestEnvironment(BrowserTestingModule, platformBrowserTesting());
-
     TestBed.configureTestingModule({
       imports: [ServiceWorkerModule.register("/sw.js", { enabled: false })],
       providers: [NotificationService, MockAPIClient],
     }).compileComponents();
 
+    spyOn(NotificationService.prototype, "listenToSWMessages");
     notificationService = TestBed.inject(NotificationService);
 
     pushSub = {
@@ -86,7 +83,9 @@ describe("NotificationService", () => {
   });
 
   // Check the service auto-refreshes
-  it("autoRefresh() - should run auto-refresh with interval", fakeAsync(() => {
+  it("autoRefresh() - should run auto-refresh with interval", () => {
+    jasmine.clock().install();
+
     const notifSpy = spyOn(notificationService, "getNotifications").and.returnValue(
       of({
         success: true,
@@ -109,16 +108,16 @@ describe("NotificationService", () => {
     expect(notificationService.refreshSub).toBeDefined();
 
     // wait for the first round of the interval to pass
-    tick(20 * 1000);
+    jasmine.clock().tick(20 * 1000);
 
     expect(notifSpy).toHaveBeenCalledWith();
 
-    tick(20 * 1000);
+    jasmine.clock().tick(20 * 1000);
 
     expect(notifSpy).toHaveBeenCalledTimes(2);
 
-    discardPeriodicTasks();
-  }));
+    jasmine.clock().uninstall();
+  });
 
   // Check the service also stops auto-refresh
   it("stopAutoRefresh() - should stop auto-refresh", () => {
@@ -475,7 +474,7 @@ describe("NotificationService", () => {
       .catch(done.fail);
   });
 
-  it("renewPushSubscription() - should renew the push subscription", fakeAsync(() => {
+  it("renewPushSubscription() - should renew the push subscription", (done: DoneFn) => {
     notificationService.subscriptionDate = Date.now();
     notificationService.resubscribeCalls = 0;
     notificationService.subId = 1;
@@ -487,16 +486,18 @@ describe("NotificationService", () => {
     );
 
     const mockEvent = new MessageEvent("event", { data: { action: "resubscribe" } });
-    notificationService.renewPushSubscription(mockEvent);
+    notificationService
+      .renewPushSubscription(mockEvent)
+      ?.then(() => {
+        expect(requestSpy).toHaveBeenCalledWith();
+        expect(apiClientSpy).toHaveBeenCalledWith(`push_subscriptions/1`, JSON.stringify(pushSub));
+        expect(notificationService.resubscribeCalls).toEqual(1);
+        done();
+      })
+      .catch(done.fail);
+  });
 
-    tick(100);
-
-    expect(requestSpy).toHaveBeenCalledWith();
-    expect(apiClientSpy).toHaveBeenCalledWith(`push_subscriptions/1`, JSON.stringify(pushSub));
-    expect(notificationService.resubscribeCalls).toEqual(1);
-  }));
-
-  it("renewPushSubscription() - should make resubscribeCalls 0 if it's been more than 24 hours", fakeAsync(() => {
+  it("renewPushSubscription() - should make resubscribeCalls 0 if it's been more than 24 hours", (done: DoneFn) => {
     notificationService.subscriptionDate = Date.now() - 864e5 * 2;
     notificationService.resubscribeCalls = 1;
     notificationService.subId = 1;
@@ -508,14 +509,52 @@ describe("NotificationService", () => {
     );
 
     const mockEvent = new MessageEvent("event", { data: { action: "resubscribe" } });
+    notificationService
+      .renewPushSubscription(mockEvent)
+      ?.then(() => {
+        expect(requestSpy).toHaveBeenCalledWith();
+        expect(apiClientSpy).toHaveBeenCalledWith(`push_subscriptions/1`, JSON.stringify(pushSub));
+        expect(notificationService.resubscribeCalls).toEqual(1);
+        done();
+      })
+      .catch(done.fail);
+  });
+
+  it("renewPushSubscription() - should do nothing if resubscribeCalls > 2", () => {
+    notificationService.subscriptionDate = Date.now();
+    notificationService.resubscribeCalls = 2;
+    notificationService.subId = 1;
+    const requestSpy = spyOn(notificationService, "requestSubscription").and.returnValue(
+      new Promise((resolve) => resolve(pushSub)),
+    );
+    const apiClientSpy = spyOn(notificationService["apiClient"], "patch").and.returnValue(
+      of({ subId: 1 }),
+    );
+
+    const mockEvent = new MessageEvent("event", { data: { action: "resubscribe" } });
     notificationService.renewPushSubscription(mockEvent);
 
-    tick(100);
+    expect(requestSpy).not.toHaveBeenCalled();
+    expect(apiClientSpy).not.toHaveBeenCalled();
+  });
 
-    expect(requestSpy).toHaveBeenCalledWith();
-    expect(apiClientSpy).toHaveBeenCalledWith(`push_subscriptions/1`, JSON.stringify(pushSub));
-    expect(notificationService.resubscribeCalls).toEqual(1);
-  }));
+  it("renewPushSubscription() - should do nothing if the SW message isn't related to subscription", () => {
+    notificationService.subscriptionDate = Date.now();
+    notificationService.resubscribeCalls = 1;
+    notificationService.subId = 1;
+    const requestSpy = spyOn(notificationService, "requestSubscription").and.returnValue(
+      new Promise((resolve) => resolve(pushSub)),
+    );
+    const apiClientSpy = spyOn(notificationService["apiClient"], "patch").and.returnValue(
+      of({ subId: 1 }),
+    );
+
+    const mockEvent = new MessageEvent("event", { data: { action: "meow" } });
+    notificationService.renewPushSubscription(mockEvent);
+
+    expect(requestSpy).not.toHaveBeenCalled();
+    expect(apiClientSpy).not.toHaveBeenCalled();
+  });
 
   it("unsubscribeFromStream() - should do nothing ", (done: DoneFn) => {
     notificationService.notificationsSub = undefined;

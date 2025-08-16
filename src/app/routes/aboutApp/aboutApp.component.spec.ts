@@ -33,23 +33,19 @@
 import { TestBed } from "@angular/core/testing";
 import {} from "jasmine";
 import { APP_BASE_HREF } from "@angular/common";
-import { BrowserTestingModule, platformBrowserTesting } from "@angular/platform-browser/testing";
 import { provideRouter, RouterLink } from "@angular/router";
-import { provideZoneChangeDetection } from "@angular/core";
+import { provideZonelessChangeDetection } from "@angular/core";
 
 import { AboutAppComponent } from "./aboutApp.component";
 
 describe("AboutAppComponent", () => {
   // Before each test, configure testing environment
   beforeEach(() => {
-    TestBed.resetTestEnvironment();
-    TestBed.initTestEnvironment(BrowserTestingModule, platformBrowserTesting());
-
     TestBed.configureTestingModule({
       imports: [RouterLink, AboutAppComponent],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
-        provideZoneChangeDetection({ eventCoalescing: true }),
+        provideZonelessChangeDetection(),
         provideRouter([]),
       ],
     }).compileComponents();

@@ -32,7 +32,6 @@
 
 import { TestBed } from "@angular/core/testing";
 import { provideHttpClientTesting } from "@angular/common/http/testing";
-import { BrowserTestingModule, platformBrowserTesting } from "@angular/platform-browser/testing";
 import {} from "jasmine";
 import { provideHttpClient } from "@angular/common/http";
 
@@ -43,9 +42,6 @@ describe("FirebaseService", () => {
 
   // Before each test, configure testing environment
   beforeEach(() => {
-    TestBed.resetTestEnvironment();
-    TestBed.initTestEnvironment(BrowserTestingModule, platformBrowserTesting());
-
     TestBed.configureTestingModule({
       imports: [],
       providers: [FirebaseService, provideHttpClient(), provideHttpClientTesting()],

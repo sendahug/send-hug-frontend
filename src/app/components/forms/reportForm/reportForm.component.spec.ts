@@ -28,10 +28,9 @@ import { TestBed } from "@angular/core/testing";
 import { provideRouter, RouterLink } from "@angular/router";
 import {} from "jasmine";
 import { APP_BASE_HREF, CommonModule } from "@angular/common";
-import { BrowserTestingModule, platformBrowserTesting } from "@angular/platform-browser/testing";
 import { ReactiveFormsModule } from "@angular/forms";
 import { of } from "rxjs";
-import { provideZoneChangeDetection, signal } from "@angular/core";
+import { provideZonelessChangeDetection, signal } from "@angular/core";
 import { MockProvider } from "ng-mocks";
 
 import { ReportFormComponent } from "./reportForm.component";
@@ -52,14 +51,11 @@ describe("Report", () => {
       post: () => of(),
     });
 
-    TestBed.resetTestEnvironment();
-    TestBed.initTestEnvironment(BrowserTestingModule, platformBrowserTesting());
-
     TestBed.configureTestingModule({
       imports: [CommonModule, ReactiveFormsModule, PopUpComponent, RouterLink, ReportFormComponent],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
-        provideZoneChangeDetection({ eventCoalescing: true }),
+        provideZonelessChangeDetection(),
         provideRouter([]),
         MockAuthService,
         MockAPIClient,
@@ -68,7 +64,7 @@ describe("Report", () => {
   });
 
   // Check that the reported post is shown
-  it("shows the reported post", () => {
+  it("shows the reported post", async () => {
     const fixture = TestBed.createComponent(ReportFormComponent);
     const reportFormDOM = fixture.nativeElement;
     fixture.componentRef.setInput("reportType", "Post");
@@ -81,7 +77,7 @@ describe("Report", () => {
       text: "hi",
       date: new Date(),
     });
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     expect(reportFormDOM.querySelector("#reportItem")).toBeTruthy();
     expect(reportFormDOM.querySelectorAll(".userPost")).toBeTruthy();
@@ -89,7 +85,7 @@ describe("Report", () => {
   });
 
   // Check that the reported user's display name is shown
-  it("shows the reported user's name", () => {
+  it("shows the reported user's name", async () => {
     const fixture = TestBed.createComponent(ReportFormComponent);
     const reportFormDOM = fixture.nativeElement;
     fixture.componentRef.setInput("reportType", "User");
@@ -112,15 +108,14 @@ describe("Report", () => {
         item: "#f4b56a",
       },
     });
-
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     expect(reportFormDOM.querySelector("#uReportText")).toBeTruthy();
     expect(reportFormDOM.querySelector("#uReportText").textContent).toBe("string");
   });
 
   // Check that the correct radio button is set as selected
-  it("correctly identifies the chosen radio button", () => {
+  it("correctly identifies the chosen radio button", async () => {
     const fixture = TestBed.createComponent(ReportFormComponent);
     const reportForm = fixture.componentInstance;
     const reportFormDOM = fixture.nativeElement;
@@ -135,11 +130,11 @@ describe("Report", () => {
       date: new Date(),
     });
     const selectSpy = spyOn(reportForm, "checkSelectedForOther").and.callThrough();
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     // select option 1
     reportFormDOM.querySelector("#pRadioOption0").click();
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     // check the first option was selected
     expect(selectSpy).toHaveBeenCalledWith(reportFormDOM.querySelector("#pRadioOption0"));
@@ -147,7 +142,7 @@ describe("Report", () => {
 
     // select option 2
     reportFormDOM.querySelector("#pRadioOption1").click();
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     // check the second option was selected
     expect(selectSpy).toHaveBeenCalledWith(reportFormDOM.querySelector("#pRadioOption1"));
@@ -155,7 +150,7 @@ describe("Report", () => {
 
     // select option 3
     reportFormDOM.querySelector("#pRadioOption2").click();
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     // check the third option was selected
     expect(selectSpy).toHaveBeenCalledWith(reportFormDOM.querySelector("#pRadioOption2"));
@@ -163,14 +158,14 @@ describe("Report", () => {
 
     // select option 4
     reportFormDOM.querySelector("#pRadioOption3").click();
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     // check the fourth option was selected
     expect(selectSpy).toHaveBeenCalledWith(reportFormDOM.querySelector("#pRadioOption3"));
     expect(reportForm.reportForm.controls.selectedReason.value).toEqual("3");
   });
 
-  it("checkSelectedForOther() - correctly enables/disables the 'other' text field", () => {
+  it("checkSelectedForOther() - correctly enables/disables the 'other' text field", async () => {
     const fixture = TestBed.createComponent(ReportFormComponent);
     const reportForm = fixture.componentInstance;
     const reportFormDOM = fixture.nativeElement;
@@ -194,31 +189,31 @@ describe("Report", () => {
         item: "#f4b56a",
       },
     });
-    fixture.detectChanges();
+    await fixture.whenStable();
     const otherTextField = document.getElementById("rOption3Text") as HTMLInputElement;
 
     reportForm.checkSelectedForOther(reportFormDOM.querySelector("#pRadioOption0"));
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     expect(otherTextField.disabled).toBe(true);
 
     reportForm.checkSelectedForOther(reportFormDOM.querySelector("#pRadioOption1"));
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     expect(otherTextField.disabled).toBe(true);
 
     reportForm.checkSelectedForOther(reportFormDOM.querySelector("#pRadioOption2"));
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     expect(otherTextField.disabled).toBe(true);
 
     reportForm.checkSelectedForOther(reportFormDOM.querySelector("#pRadioOption3"));
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     expect(otherTextField.disabled).toBe(false);
   });
 
-  it("Correctly sets the required and aria-required attributes", () => {
+  it("Correctly sets the required and aria-required attributes", async () => {
     const fixture = TestBed.createComponent(ReportFormComponent);
     const reportFormDOM = fixture.nativeElement;
     fixture.componentRef.setInput("reportType", "Post");
@@ -231,35 +226,35 @@ describe("Report", () => {
       text: "hi",
       date: new Date(),
     });
-    fixture.detectChanges();
+    await fixture.whenStable();
     const otherTextField = document.getElementById("rOption3Text") as HTMLInputElement;
 
     reportFormDOM.querySelector("#pRadioOption0").click();
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     expect(otherTextField.required).toBe(false);
     expect(otherTextField.getAttribute("aria-required")).toEqual("false");
 
     reportFormDOM.querySelector("#pRadioOption1").click();
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     expect(otherTextField.required).toBe(false);
     expect(otherTextField.getAttribute("aria-required")).toEqual("false");
 
     reportFormDOM.querySelector("#pRadioOption3").click();
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     expect(otherTextField.required).toBe(true);
     expect(otherTextField.getAttribute("aria-required")).toEqual("true");
 
     reportFormDOM.querySelector("#pRadioOption2").click();
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     expect(otherTextField.required).toBe(false);
     expect(otherTextField.getAttribute("aria-required")).toEqual("false");
   });
 
-  it("getSelectedReasonText() - correctly sets the selected reason - posts", () => {
+  it("getSelectedReasonText() - correctly sets the selected reason - posts", async () => {
     const fixture = TestBed.createComponent(ReportFormComponent);
     const reportForm = fixture.componentInstance;
     const reportFormDOM = fixture.nativeElement;
@@ -274,32 +269,32 @@ describe("Report", () => {
       date: new Date(),
     });
 
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     expect(reportForm.getSelectedReasonText()).toBe(undefined);
 
     reportFormDOM.querySelector("#pRadioOption0").click();
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     expect(reportForm.getSelectedReasonText()).toEqual("The post is Inappropriate");
 
     reportFormDOM.querySelector("#pRadioOption1").click();
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     expect(reportForm.getSelectedReasonText()).toEqual("The post is Spam");
 
     reportFormDOM.querySelector("#pRadioOption2").click();
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     expect(reportForm.getSelectedReasonText()).toEqual("The post is Offensive");
 
     reportFormDOM.querySelector("#pRadioOption3").click();
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     expect(reportForm.getSelectedReasonText()).toEqual("other");
   });
 
-  it("getSelectedReasonText() - correctly sets the selected reason - users", () => {
+  it("getSelectedReasonText() - correctly sets the selected reason - users", async () => {
     const fixture = TestBed.createComponent(ReportFormComponent);
     const reportForm = fixture.componentInstance;
     const reportFormDOM = fixture.nativeElement;
@@ -323,37 +318,36 @@ describe("Report", () => {
         item: "#f4b56a",
       },
     });
-
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     expect(reportForm.getSelectedReasonText()).toBe(undefined);
 
     reportFormDOM.querySelector("#pRadioOption0").click();
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     expect(reportForm.getSelectedReasonText()).toEqual("The user is posting Spam");
 
     reportFormDOM.querySelector("#pRadioOption1").click();
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     expect(reportForm.getSelectedReasonText()).toEqual(
       "The user is posting harmful / dangerous content",
     );
 
     reportFormDOM.querySelector("#pRadioOption2").click();
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     expect(reportForm.getSelectedReasonText()).toEqual("The user is behaving in an abusive manner");
 
     reportFormDOM.querySelector("#pRadioOption3").click();
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     expect(reportForm.getSelectedReasonText()).toEqual("other");
   });
 
   // Check that if the user chooses 'other' as reason they can't submit an
   // empty reason
-  it("requires text if the chosen reason is other - invalid", () => {
+  it("requires text if the chosen reason is other - invalid", async () => {
     const validationService = TestBed.inject(ValidationService);
     const validateSpy = spyOn(validationService, "validateItemAgainst").and.returnValue(
       (_control) => null,
@@ -374,15 +368,14 @@ describe("Report", () => {
     });
     const apiClientSpy = spyOn(reportForm["apiClient"], "post");
     const alertServiceSpy = spyOn(reportForm["alertsService"], "createAlert");
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     // select option 4
     reportFormDOM.querySelector("#pRadioOption3").click();
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     // try to submit it without text in the textfield
     reportFormDOM.querySelectorAll(".reportButton")[0].click();
-    fixture.detectChanges();
 
     // check the report wasn't sent and the user was alerted
     expect(validateSpy).toHaveBeenCalledWith("reportOther");
@@ -393,7 +386,7 @@ describe("Report", () => {
     });
   });
 
-  it("requires text if the chosen reason is other - valid", () => {
+  it("requires text if the chosen reason is other - valid", async () => {
     // mock response
     const mockResponse = {
       report: {
@@ -427,7 +420,7 @@ describe("Report", () => {
       text: "hi",
       date: new Date(),
     });
-    fixture.detectChanges();
+    await fixture.whenStable();
     const apiClientSpy = spyOn(reportForm["apiClient"], "post").and.returnValue(of(mockResponse));
     const alertsSpy = spyOn(reportForm["alertsService"], "createSuccessAlert");
     const emitSpy = spyOn(reportForm.reportMode, "emit");
@@ -438,13 +431,11 @@ describe("Report", () => {
     reportFormDOM.querySelector("#pRadioOption3").click();
     otherText.value = reportReason;
     otherText.dispatchEvent(new Event("input"));
-    fixture.detectChanges();
 
     expect(reportForm.reportForm.controls.otherReason.value).toEqual(reportReason);
 
     // try to submit it
     reportFormDOM.querySelectorAll(".reportButton")[0].click();
-    fixture.detectChanges();
 
     // check the report was sent
     const report = {
@@ -466,7 +457,7 @@ describe("Report", () => {
     expect(emitSpy).toHaveBeenCalledWith(false);
   });
 
-  it("creates the report and sends it to the itemsService - post", () => {
+  it("creates the report and sends it to the itemsService - post", async () => {
     // mock response
     const mockResponse = {
       report: {
@@ -498,15 +489,13 @@ describe("Report", () => {
     const apiClientSpy = spyOn(reportForm["apiClient"], "post").and.returnValue(of(mockResponse));
     const alertsSpy = spyOn(reportForm["alertsService"], "createSuccessAlert");
     const emitSpy = spyOn(reportForm.reportMode, "emit");
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     // select option 1
     reportFormDOM.querySelector("#pRadioOption0").click();
-    fixture.detectChanges();
 
     // try to submit it without text in the textfield
     reportFormDOM.querySelectorAll(".reportButton")[0].click();
-    fixture.detectChanges();
 
     // check the report wasn't sent and the user was alerted
     const report = {
@@ -528,7 +517,7 @@ describe("Report", () => {
     expect(emitSpy).toHaveBeenCalledWith(false);
   });
 
-  it("creates the report and sends it to the itemsService - user", () => {
+  it("creates the report and sends it to the itemsService - user", async () => {
     // mock response
     const mockResponse = {
       report: {
@@ -570,15 +559,13 @@ describe("Report", () => {
     const apiClientSpy = spyOn(reportForm["apiClient"], "post").and.returnValue(of(mockResponse));
     const alertsSpy = spyOn(reportForm["alertsService"], "createSuccessAlert");
     const emitSpy = spyOn(reportForm.reportMode, "emit");
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     // select option 1
     reportFormDOM.querySelector("#pRadioOption0").click();
-    fixture.detectChanges();
 
     // try to submit it without text in the textfield
     reportFormDOM.querySelectorAll(".reportButton")[0].click();
-    fixture.detectChanges();
 
     // check the report wasn't sent and the user was alerted
     const report = {

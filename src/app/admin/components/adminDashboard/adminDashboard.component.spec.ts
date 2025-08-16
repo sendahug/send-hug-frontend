@@ -33,11 +33,10 @@
 import { TestBed } from "@angular/core/testing";
 import {} from "jasmine";
 import { APP_BASE_HREF } from "@angular/common";
-import { BrowserTestingModule, platformBrowserTesting } from "@angular/platform-browser/testing";
 import { NO_ERRORS_SCHEMA, signal } from "@angular/core";
 import { ActivatedRoute, provideRouter, UrlSegment } from "@angular/router";
 import { BehaviorSubject, of } from "rxjs";
-import { MockComponent, MockProvider } from "ng-mocks";
+import { MockProvider } from "ng-mocks";
 
 import { AdminDashboardComponent } from "./adminDashboard.component";
 import { AuthService } from "@app/services/auth.service";
@@ -56,21 +55,15 @@ describe("AdminDashboardComponent", () => {
       authenticated: signal(true),
       canUser: () => true,
     });
-    const MockAdminReportsComponent = MockComponent(AdminReportsComponent);
-    const MockAdminBlocks = MockComponent(AdminBlocksComponent);
-    const MockAdminFilter = MockComponent(AdminFiltersComponent);
-
-    TestBed.resetTestEnvironment();
-    TestBed.initTestEnvironment(BrowserTestingModule, platformBrowserTesting());
 
     TestBed.configureTestingModule({
       schemas: [NO_ERRORS_SCHEMA],
       imports: [],
       declarations: [
         AdminDashboardComponent,
-        MockAdminReportsComponent,
-        MockAdminBlocks,
-        MockAdminFilter,
+        AdminReportsComponent,
+        AdminBlocksComponent,
+        AdminFiltersComponent,
       ],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },

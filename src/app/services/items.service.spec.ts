@@ -31,7 +31,6 @@
 */
 
 import { TestBed } from "@angular/core/testing";
-import { BrowserTestingModule, platformBrowserTesting } from "@angular/platform-browser/testing";
 import {} from "jasmine";
 import { of, throwError } from "rxjs";
 import { MockProvider } from "ng-mocks";
@@ -45,9 +44,6 @@ describe("ItemsService", () => {
   // Before each test, configure testing environment
   beforeEach(() => {
     const MockAPIClient = MockProvider(ApiClientService);
-
-    TestBed.resetTestEnvironment();
-    TestBed.initTestEnvironment(BrowserTestingModule, platformBrowserTesting());
 
     TestBed.configureTestingModule({
       imports: [],

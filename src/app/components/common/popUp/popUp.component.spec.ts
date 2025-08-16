@@ -33,9 +33,8 @@
 import { TestBed } from "@angular/core/testing";
 import {} from "jasmine";
 import { APP_BASE_HREF, CommonModule } from "@angular/common";
-import { BrowserTestingModule, platformBrowserTesting } from "@angular/platform-browser/testing";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
-import { provideZoneChangeDetection } from "@angular/core";
+import { provideZonelessChangeDetection } from "@angular/core";
 import { Component } from "@angular/core";
 
 import { PopUpComponent } from "./popUp.component";
@@ -59,15 +58,9 @@ class MockPageComponent {
 describe("Popup", () => {
   // Before each test, configure testing environment
   beforeEach(() => {
-    TestBed.resetTestEnvironment();
-    TestBed.initTestEnvironment(BrowserTestingModule, platformBrowserTesting());
-
     TestBed.configureTestingModule({
       imports: [CommonModule, FontAwesomeModule, MockPageComponent, PopUpComponent],
-      providers: [
-        { provide: APP_BASE_HREF, useValue: "/" },
-        provideZoneChangeDetection({ eventCoalescing: true }),
-      ],
+      providers: [{ provide: APP_BASE_HREF, useValue: "/" }, provideZonelessChangeDetection()],
     }).compileComponents();
   });
 
@@ -236,16 +229,15 @@ describe("Popup", () => {
   });
 
   // Check that the event emitter emits false if the user clicks 'exit'
-  it("exits the popup if the user decides not to edit", () => {
+  it("exits the popup if the user decides not to edit", async () => {
     const fixture = TestBed.createComponent(PopUpComponent);
     const popUp = fixture.componentInstance;
     const popUpDOM = fixture.nativeElement;
     const exitSpy = spyOn(popUp, "exitEdit").and.callThrough();
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     // click the exit button
     popUpDOM.querySelector("#exitButton").click();
-    fixture.detectChanges();
 
     popUp.editMode.subscribe((event: boolean) => {
       expect(event).toBeFalse();

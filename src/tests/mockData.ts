@@ -31,7 +31,7 @@
 
 import { type User as FirebaseUser } from "firebase/auth";
 
-import { type User } from "../app/interfaces/user.interface";
+import { OtherUser, type User } from "../app/interfaces/user.interface";
 
 export const mockAuthedUser: User = {
   id: 4,
@@ -90,3 +90,25 @@ export function getMockFirebaseUser(): FirebaseUser {
     uid: "fb",
   };
 }
+
+export const mockOtherUser: OtherUser = {
+  id: 1,
+  displayName: "name",
+  receivedH: 2,
+  givenH: 2,
+  posts: 2,
+  role: {
+    id: 1,
+    name: "admin",
+    permissions: [],
+  },
+  blocked: false,
+  releaseDate: undefined,
+  selectedIcon: "kitty",
+  iconColours: {
+    character: "#BA9F93",
+    lbg: "#e2a275",
+    rbg: "#f8eee4",
+    item: "#f4b56a",
+  },
+};

@@ -80,6 +80,9 @@ import { type ReportType } from "@app/interfaces/report.interface";
   ],
 })
 export class PostComponent implements AfterViewChecked, OnInit, OnDestroy {
+  public itemsService = inject(ItemsService);
+  public authService = inject(AuthService);
+  private swManager = inject(SWManager);
   @Input()
   get post(): PostGet | undefined {
     return this._post();
@@ -163,9 +166,6 @@ export class PostComponent implements AfterViewChecked, OnInit, OnDestroy {
   // Delete Popup Constants
   readonly deleteEndpoint = "posts";
   readonly itemType = "Post";
-  public itemsService = inject(ItemsService);
-  public authService = inject(AuthService);
-  private swManager = inject(SWManager);
 
   ngOnInit(): void {
     this.subscriptions.push(

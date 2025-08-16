@@ -32,9 +32,8 @@
 import { TestBed } from "@angular/core/testing";
 import {} from "jasmine";
 import { APP_BASE_HREF } from "@angular/common";
-import { BrowserTestingModule, platformBrowserTesting } from "@angular/platform-browser/testing";
 import { ReactiveFormsModule } from "@angular/forms";
-import { provideZoneChangeDetection, signal } from "@angular/core";
+import { provideZonelessChangeDetection, signal } from "@angular/core";
 import { MockProvider } from "ng-mocks";
 
 import { PasswordResetFormComponent } from "./passwordResetForm.component";
@@ -53,14 +52,11 @@ describe("PasswordResetFormComponent", () => {
       userData: signal({ ...mockAuthedUser }),
     });
 
-    TestBed.resetTestEnvironment();
-    TestBed.initTestEnvironment(BrowserTestingModule, platformBrowserTesting());
-
     TestBed.configureTestingModule({
       imports: [ReactiveFormsModule, PopUpComponent, PasswordResetFormComponent, TeleportDirective],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
-        provideZoneChangeDetection({ eventCoalescing: true }),
+        provideZonelessChangeDetection(),
         MockAuthService,
       ],
     }).compileComponents();
@@ -74,12 +70,12 @@ describe("PasswordResetFormComponent", () => {
     expect(popUp).toBeTruthy();
   });
 
-  it("should make the request to authService to reset the password", () => {
+  it("should make the request to authService to reset the password", async () => {
     const fixture = TestBed.createComponent(PasswordResetFormComponent);
     const popUp = fixture.componentInstance;
     const popUpDOM = fixture.nativeElement;
     const email = "ab@c.com";
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     const resetSpy = spyOn(popUp["authService"], "resetPassword").and.returnValue(
       new Promise((resolve) => resolve(undefined)),
@@ -88,16 +84,15 @@ describe("PasswordResetFormComponent", () => {
     popUpDOM.querySelector("#username").value = email;
     popUpDOM.querySelector("#username").dispatchEvent(new Event("input"));
     popUpDOM.querySelectorAll(".updateItem")[0].click();
-    fixture.detectChanges();
 
     expect(resetSpy).toHaveBeenCalledWith(email);
   });
 
-  it("should prevent invalid emails - invalid email", () => {
+  it("should prevent invalid emails - invalid email", async () => {
     const fixture = TestBed.createComponent(PasswordResetFormComponent);
     const popUp = fixture.componentInstance;
     const popUpDOM = fixture.nativeElement;
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     const resetSpy = spyOn(popUp["authService"], "resetPassword").and.returnValue(
       new Promise((resolve) => resolve(undefined)),
@@ -108,7 +103,6 @@ describe("PasswordResetFormComponent", () => {
     popUpDOM.querySelector("#username").value = "ab";
     popUpDOM.querySelector("#username").dispatchEvent(new Event("input"));
     popUpDOM.querySelectorAll(".updateItem")[0].click();
-    fixture.detectChanges();
 
     expect(resetSpy).not.toHaveBeenCalled();
     expect(emitSpy).not.toHaveBeenCalled();
@@ -118,11 +112,11 @@ describe("PasswordResetFormComponent", () => {
     });
   });
 
-  it("should prevent invalid emails - empty email", () => {
+  it("should prevent invalid emails - empty email", async () => {
     const fixture = TestBed.createComponent(PasswordResetFormComponent);
     const popUp = fixture.componentInstance;
     const popUpDOM = fixture.nativeElement;
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     const resetSpy = spyOn(popUp["authService"], "resetPassword").and.returnValue(
       new Promise((resolve) => resolve(undefined)),
@@ -131,7 +125,6 @@ describe("PasswordResetFormComponent", () => {
     const alertSpy = spyOn(popUp["alertsService"], "createAlert");
 
     popUpDOM.querySelectorAll(".updateItem")[0].click();
-    fixture.detectChanges();
 
     expect(resetSpy).not.toHaveBeenCalled();
     expect(emitSpy).not.toHaveBeenCalled();

@@ -33,9 +33,8 @@
 import { TestBed } from "@angular/core/testing";
 import {} from "jasmine";
 import { APP_BASE_HREF, CommonModule } from "@angular/common";
-import { BrowserTestingModule, platformBrowserTesting } from "@angular/platform-browser/testing";
 import { ReactiveFormsModule } from "@angular/forms";
-import { provideZoneChangeDetection, signal } from "@angular/core";
+import { provideZonelessChangeDetection, signal } from "@angular/core";
 import { MockProvider } from "ng-mocks";
 import { Subscription } from "rxjs";
 
@@ -58,9 +57,6 @@ describe("DisplayNameEditFormComponent", () => {
     });
     const AdminServiceMock = MockProvider(AdminService);
 
-    TestBed.resetTestEnvironment();
-    TestBed.initTestEnvironment(BrowserTestingModule, platformBrowserTesting());
-
     TestBed.configureTestingModule({
       imports: [
         CommonModule,
@@ -71,7 +67,7 @@ describe("DisplayNameEditFormComponent", () => {
       ],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
-        provideZoneChangeDetection({ eventCoalescing: true }),
+        provideZonelessChangeDetection(),
         AuthServiceMock,
         AdminServiceMock,
       ],
@@ -108,7 +104,7 @@ describe("DisplayNameEditFormComponent", () => {
     expect(popUp.editedItem()!.displayName).not.toEqual(popUp.authService.userData()!.displayName);
   });
 
-  it("should make the request to authService to change the name", () => {
+  it("should make the request to authService to change the name", async () => {
     const validationService = TestBed.inject(ValidationService);
     const validateSpy = spyOn(validationService, "validateItemAgainst").and.returnValue(
       (_control) => null,
@@ -122,7 +118,7 @@ describe("DisplayNameEditFormComponent", () => {
       displayName: "name",
     });
     const newName = "new name";
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     const updateSpy = spyOn(popUp.authService, "updateUserData");
     const emitSpy = spyOn(popUp.editMode, "emit");
@@ -130,14 +126,13 @@ describe("DisplayNameEditFormComponent", () => {
     popUpDOM.querySelector("#displayName").value = newName;
     popUpDOM.querySelector("#displayName").dispatchEvent(new Event("input"));
     popUpDOM.querySelectorAll(".updateItem")[0].click();
-    fixture.detectChanges();
 
     expect(validateSpy).toHaveBeenCalledWith("displayName");
     expect(updateSpy).toHaveBeenCalledWith({ displayName: newName });
     expect(emitSpy).toHaveBeenCalledWith(false);
   });
 
-  it("should make the request to adminService to change the name - close report", () => {
+  it("should make the request to adminService to change the name - close report", async () => {
     const validationService = TestBed.inject(ValidationService);
     const validateSpy = spyOn(validationService, "validateItemAgainst").and.returnValue(
       (_control) => null,
@@ -157,7 +152,7 @@ describe("DisplayNameEditFormComponent", () => {
     const newName = "new name";
     const mockSubscription = new Subscription();
     mockSubscription.unsubscribe();
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     const updateSpy = spyOn(popUp["adminService"], "editUser").and.returnValue(mockSubscription);
     const emitSpy = spyOn(popUp.editMode, "emit");
@@ -166,7 +161,6 @@ describe("DisplayNameEditFormComponent", () => {
     popUpDOM.querySelector("#displayName").value = newName;
     popUpDOM.querySelector("#displayName").dispatchEvent(new Event("input"));
     popUpDOM.querySelectorAll(".updateItem")[0].click();
-    fixture.detectChanges();
 
     expect(validateSpy).toHaveBeenCalledWith("displayName");
     expect(updateSpy).toHaveBeenCalledWith(
@@ -186,7 +180,7 @@ describe("DisplayNameEditFormComponent", () => {
     });
   });
 
-  it("should raise an error if trying to update another user's name without a report", () => {
+  it("should raise an error if trying to update another user's name without a report", async () => {
     const validationService = TestBed.inject(ValidationService);
     const validateSpy = spyOn(validationService, "validateItemAgainst").and.returnValue(
       (_control) => null,
@@ -201,7 +195,7 @@ describe("DisplayNameEditFormComponent", () => {
     });
     fixture.componentRef.setInput("reportData", undefined);
     const newName = "new name";
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     const updateSpy = spyOn(popUp["adminService"], "editUser");
     const emitSpy = spyOn(popUp.editMode, "emit");
@@ -211,7 +205,6 @@ describe("DisplayNameEditFormComponent", () => {
     popUpDOM.querySelector("#displayName").value = newName;
     popUpDOM.querySelector("#displayName").dispatchEvent(new Event("input"));
     popUp.updateDisplayName(new Event(""), true);
-    fixture.detectChanges();
 
     expect(validateSpy).toHaveBeenCalledWith("displayName");
     expect(updateSpy).not.toHaveBeenCalled();
@@ -223,7 +216,7 @@ describe("DisplayNameEditFormComponent", () => {
     });
   });
 
-  it("should make the request to adminService to change the name - don't close report", () => {
+  it("should make the request to adminService to change the name - don't close report", async () => {
     const validationService = TestBed.inject(ValidationService);
     const validateSpy = spyOn(validationService, "validateItemAgainst").and.returnValue(
       (_control) => null,
@@ -243,7 +236,7 @@ describe("DisplayNameEditFormComponent", () => {
     const newName = "new name";
     const mockSubscription = new Subscription();
     mockSubscription.unsubscribe();
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     const updateSpy = spyOn(popUp["adminService"], "editUser").and.returnValue(mockSubscription);
     const emitSpy = spyOn(popUp.editMode, "emit");
@@ -252,7 +245,6 @@ describe("DisplayNameEditFormComponent", () => {
     popUpDOM.querySelector("#displayName").value = newName;
     popUpDOM.querySelector("#displayName").dispatchEvent(new Event("input"));
     popUpDOM.querySelectorAll(".updateItem")[1].click();
-    fixture.detectChanges();
 
     expect(validateSpy).toHaveBeenCalledWith("displayName");
     expect(updateSpy).toHaveBeenCalledWith(
@@ -272,7 +264,7 @@ describe("DisplayNameEditFormComponent", () => {
     });
   });
 
-  it("should prevent invalid names", () => {
+  it("should prevent invalid names", async () => {
     const validationService = TestBed.inject(ValidationService);
     const validateSpy = spyOn(validationService, "validateItemAgainst").and.returnValue(
       (_control) => {
@@ -288,7 +280,7 @@ describe("DisplayNameEditFormComponent", () => {
       displayName: "name",
     });
     const newName = "new name";
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     const updateSpy = spyOn(popUp.authService, "updateUserData");
     const emitSpy = spyOn(popUp.editMode, "emit");
@@ -297,7 +289,6 @@ describe("DisplayNameEditFormComponent", () => {
     popUpDOM.querySelector("#displayName").value = newName;
     popUpDOM.querySelector("#displayName").dispatchEvent(new Event("input"));
     popUpDOM.querySelectorAll(".updateItem")[0].click();
-    fixture.detectChanges();
 
     expect(validateSpy).toHaveBeenCalledWith("displayName");
     expect(updateSpy).not.toHaveBeenCalled();

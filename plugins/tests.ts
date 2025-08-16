@@ -22,14 +22,21 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-import "zone.js";
-import "zone.js/testing";
 import { getTestBed } from "@angular/core/testing";
 import { BrowserTestingModule, platformBrowserTesting } from "@angular/platform-browser/testing";
-import "@angular/compiler";
+import { NgModule, provideZonelessChangeDetection } from "@angular/core";
+
+@NgModule({
+  providers: [provideZonelessChangeDetection()],
+})
+class ZonelessTestingModule {}
 
 // First, initialize the Angular testing environment.
-getTestBed().initTestEnvironment(BrowserTestingModule, platformBrowserTesting(), {
-  errorOnUnknownElements: true,
-  errorOnUnknownProperties: true,
-});
+getTestBed().initTestEnvironment(
+  [BrowserTestingModule, ZonelessTestingModule],
+  platformBrowserTesting(),
+  {
+    errorOnUnknownElements: true,
+    errorOnUnknownProperties: true,
+  },
+);

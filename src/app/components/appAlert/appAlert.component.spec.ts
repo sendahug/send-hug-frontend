@@ -33,9 +33,8 @@
 import { TestBed } from "@angular/core/testing";
 import {} from "jasmine";
 import { APP_BASE_HREF, CommonModule } from "@angular/common";
-import { BrowserTestingModule, platformBrowserTesting } from "@angular/platform-browser/testing";
 import { provideRouter, RouterLink } from "@angular/router";
-import { provideZoneChangeDetection } from "@angular/core";
+import { provideZonelessChangeDetection } from "@angular/core";
 
 import { AppAlertComponent } from "./appAlert.component";
 import { AlertsService } from "@app/services/alerts.service";
@@ -43,14 +42,11 @@ import { AlertsService } from "@app/services/alerts.service";
 describe("AppAlertComponent", () => {
   // Before each test, configure testing environment
   beforeEach(() => {
-    TestBed.resetTestEnvironment();
-    TestBed.initTestEnvironment(BrowserTestingModule, platformBrowserTesting());
-
     TestBed.configureTestingModule({
       imports: [CommonModule, AppAlertComponent, RouterLink],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
-        provideZoneChangeDetection({ eventCoalescing: true }),
+        provideZonelessChangeDetection(),
         provideRouter([]),
       ],
     }).compileComponents();
@@ -64,7 +60,7 @@ describe("AppAlertComponent", () => {
     expect(appAlert).toBeTruthy();
   });
 
-  it("should display the right title, icon and message (error)", () => {
+  it("should display the right title, icon and message (error)", async () => {
     const fixture = TestBed.createComponent(AppAlertComponent);
     const alertDOM = fixture.nativeElement;
     const alertsService = fixture.debugElement.injector.get(AlertsService);
@@ -72,7 +68,7 @@ describe("AppAlertComponent", () => {
     alertsService.alertMessage.set(alertMessage);
     alertsService.alertType.set("Error");
     alertsService.shouldDisplayAlert.set(true);
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     const alertElement = alertDOM.querySelectorAll(".alertMessage")[0];
     const alertIcon = alertDOM.querySelectorAll(".alertIcon")[0];
@@ -87,7 +83,7 @@ describe("AppAlertComponent", () => {
     expect(alertElement.getAttribute("aria-live")).toBe("assertive");
   });
 
-  it("should display the right title, icon and message (success)", () => {
+  it("should display the right title, icon and message (success)", async () => {
     const fixture = TestBed.createComponent(AppAlertComponent);
     const alertDOM = fixture.nativeElement;
     const alertsService = fixture.debugElement.injector.get(AlertsService);
@@ -95,7 +91,7 @@ describe("AppAlertComponent", () => {
     alertsService.alertMessage.set(alertMessage);
     alertsService.alertType.set("Success");
     alertsService.shouldDisplayAlert.set(true);
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     const alertElement = alertDOM.querySelectorAll(".alertMessage")[0];
     const alertIcon = alertDOM.querySelectorAll(".alertIcon")[0];
@@ -109,7 +105,7 @@ describe("AppAlertComponent", () => {
     expect(alertElement.getAttribute("aria-live")).toBe("assertive");
   });
 
-  it("should display the right title, icon and message (notification)", () => {
+  it("should display the right title, icon and message (notification)", async () => {
     const fixture = TestBed.createComponent(AppAlertComponent);
     const alertDOM = fixture.nativeElement;
     const alertsService = fixture.debugElement.injector.get(AlertsService);
@@ -117,7 +113,7 @@ describe("AppAlertComponent", () => {
     alertsService.alertMessage.set(alertMessage);
     alertsService.alertType.set("Notification");
     alertsService.shouldDisplayAlert.set(true);
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     const alertElement = alertDOM.querySelectorAll(".alertMessage")[0];
     const alertIcon = alertDOM.querySelectorAll(".alertIcon")[0];
@@ -131,14 +127,14 @@ describe("AppAlertComponent", () => {
     expect(alertElement.getAttribute("aria-live")).toBe("assertive");
   });
 
-  it("should close the alert", () => {
+  it("should close the alert", async () => {
     const fixture = TestBed.createComponent(AppAlertComponent);
     const appAlert = fixture.componentInstance;
     const alertDOM = fixture.nativeElement;
     const alertsService = fixture.debugElement.injector.get(AlertsService);
     const closeSpy = spyOn(appAlert, "closeAlert").and.callThrough();
     alertsService.shouldDisplayAlert.set(true);
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     alertDOM.querySelector("#alertButton").click();
 
@@ -146,39 +142,39 @@ describe("AppAlertComponent", () => {
     expect(alertsService.shouldDisplayAlert()).toBe(false);
   });
 
-  it("should display reload button", () => {
+  it("should display reload button", async () => {
     const fixture = TestBed.createComponent(AppAlertComponent);
     const alertDOM = fixture.nativeElement;
     const alertsService = fixture.debugElement.injector.get(AlertsService);
     alertsService.shouldDisplayReloadBtn.set(true);
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     const reloadButton = alertDOM.querySelector("#reloadBtn");
 
     expect(reloadButton).toBeTruthy();
   });
 
-  it("should display navigation button", () => {
+  it("should display navigation button", async () => {
     const fixture = TestBed.createComponent(AppAlertComponent);
     const alertDOM = fixture.nativeElement;
     const alertsService = fixture.debugElement.injector.get(AlertsService);
     alertsService.shouldDisplayNavBtn.set(true);
     alertsService.shouldDisplayAlert.set(true);
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     const navButton = alertDOM.querySelector("#navButton");
 
     expect(navButton).toBeTruthy();
   });
 
-  it("should make the request to reload the page", () => {
+  it("should make the request to reload the page", async () => {
     const fixture = TestBed.createComponent(AppAlertComponent);
     const alertDOM = fixture.nativeElement;
     const alertsService = fixture.debugElement.injector.get(AlertsService);
     const reloadSpy = spyOn(alertsService, "reloadPage");
     alertsService.shouldDisplayReloadBtn.set(true);
     alertsService.shouldDisplayAlert.set(true);
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     alertDOM.querySelector("#reloadBtn").click();
 

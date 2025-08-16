@@ -31,7 +31,6 @@
 */
 
 import { TestBed } from "@angular/core/testing";
-import { BrowserTestingModule, platformBrowserTesting } from "@angular/platform-browser/testing";
 import {} from "jasmine";
 import { BehaviorSubject, of } from "rxjs";
 import { signal } from "@angular/core";
@@ -56,9 +55,6 @@ describe("AdminService", () => {
     });
     const MockAPIClient = MockProvider(ApiClientService);
     const MockItemsService = MockProvider(ItemsService);
-
-    TestBed.resetTestEnvironment();
-    TestBed.initTestEnvironment(BrowserTestingModule, platformBrowserTesting());
 
     TestBed.configureTestingModule({
       declarations: [],

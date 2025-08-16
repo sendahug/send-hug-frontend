@@ -33,10 +33,9 @@
 import { TestBed } from "@angular/core/testing";
 import {} from "jasmine";
 import { APP_BASE_HREF, CommonModule } from "@angular/common";
-import { BrowserTestingModule, platformBrowserTesting } from "@angular/platform-browser/testing";
 import { provideRouter } from "@angular/router";
 import { NO_ERRORS_SCHEMA, signal } from "@angular/core";
-import { provideZoneChangeDetection } from "@angular/core";
+import { provideZonelessChangeDetection } from "@angular/core";
 import { MockProvider } from "ng-mocks";
 import { BehaviorSubject } from "rxjs";
 
@@ -53,15 +52,12 @@ describe("VerifyEmailPageComponent", () => {
       isUserDataResolved: new BehaviorSubject(false),
     });
 
-    TestBed.resetTestEnvironment();
-    TestBed.initTestEnvironment(BrowserTestingModule, platformBrowserTesting());
-
     TestBed.configureTestingModule({
       schemas: [NO_ERRORS_SCHEMA],
       imports: [CommonModule, VerifyEmailPageComponent],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
-        provideZoneChangeDetection({ eventCoalescing: true }),
+        provideZonelessChangeDetection(),
         provideRouter([]),
         MockAuthService,
       ],
@@ -76,20 +72,20 @@ describe("VerifyEmailPageComponent", () => {
     expect(verifyEmailPage).toBeTruthy();
   });
 
-  it("should wait for the user's login to be resolved", () => {
+  it("should wait for the user's login to be resolved", async () => {
     const fixture = TestBed.createComponent(VerifyEmailPageComponent);
     const verifyEmailPage = fixture.componentInstance;
     const verifyEmailPageDOM = fixture.nativeElement;
     const verifySpy = spyOn(verifyEmailPage, "verifyEmail");
     verifyEmailPage["authService"].authenticated.set(true);
     verifyEmailPage["authService"].userData.set(mockAuthedUser);
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     expect(verifyEmailPage.loadingAuth()).toBeTrue();
     expect(verifyEmailPageDOM.querySelector("app-loader")).toBeDefined();
     expect(verifyEmailPageDOM.querySelector("#logoutBox")).toBeNull();
     verifyEmailPage["authService"].isUserDataResolved.next(true);
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     expect(verifyEmailPage.loadingAuth()).toBeFalse();
     expect(verifySpy).toHaveBeenCalledWith();
@@ -97,49 +93,46 @@ describe("VerifyEmailPageComponent", () => {
     expect(verifyEmailPageDOM.querySelector("#logoutBox")).toBeDefined();
   });
 
-  it("should verify the email of unverified users", () => {
+  it("should verify the email of unverified users", async () => {
     const fixture = TestBed.createComponent(VerifyEmailPageComponent);
     const verifyEmailPage = fixture.componentInstance;
     verifyEmailPage["authService"].authenticated.set(true);
     verifyEmailPage["authService"].userData.set({ ...mockAuthedUser, emailVerified: false });
     const updateSpy = spyOn(verifyEmailPage["authService"], "updateUserData");
     const routerSpy = spyOn(verifyEmailPage["router"], "navigate");
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     verifyEmailPage.verifyEmail();
-    fixture.detectChanges();
 
     expect(updateSpy).toHaveBeenCalledWith({ emailVerified: true });
     expect(routerSpy).toHaveBeenCalledWith(["/"]);
   });
 
-  it("shouldn't verify the email of verified users", () => {
+  it("shouldn't verify the email of verified users", async () => {
     const fixture = TestBed.createComponent(VerifyEmailPageComponent);
     const verifyEmailPage = fixture.componentInstance;
     verifyEmailPage["authService"].authenticated.set(true);
     verifyEmailPage["authService"].userData.set(mockAuthedUser);
     const updateSpy = spyOn(verifyEmailPage["authService"], "updateUserData");
     const routerSpy = spyOn(verifyEmailPage["router"], "navigate");
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     verifyEmailPage.verifyEmail();
-    fixture.detectChanges();
 
     expect(updateSpy).not.toHaveBeenCalled();
     expect(routerSpy).toHaveBeenCalledWith(["/"]);
   });
 
-  it("should do nothing if the user isn't authenticated", () => {
+  it("should do nothing if the user isn't authenticated", async () => {
     const fixture = TestBed.createComponent(VerifyEmailPageComponent);
     const verifyEmailPage = fixture.componentInstance;
     verifyEmailPage["authService"].authenticated.set(true);
     verifyEmailPage["authService"].userData.set(undefined);
     const updateSpy = spyOn(verifyEmailPage["authService"], "updateUserData");
     const routerSpy = spyOn(verifyEmailPage["router"], "navigate");
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     verifyEmailPage.verifyEmail();
-    fixture.detectChanges();
 
     expect(updateSpy).not.toHaveBeenCalled();
     expect(routerSpy).not.toHaveBeenCalled();

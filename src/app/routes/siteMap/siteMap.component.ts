@@ -32,11 +32,12 @@
 
 // Angular imports
 import { CommonModule } from "@angular/common";
-import { Component, inject, signal } from "@angular/core";
+import { Component, inject, OnDestroy, signal } from "@angular/core";
 import { Router, Route, RouterLink } from "@angular/router";
 
 // App-related imports
 import { AuthService } from "@app/services/auth.service";
+import { Subscription } from "rxjs";
 
 @Component({
   selector: "app-site-map",
@@ -45,9 +46,10 @@ import { AuthService } from "@app/services/auth.service";
   standalone: true,
   imports: [CommonModule, RouterLink],
 })
-export class SiteMapComponent {
+export class SiteMapComponent implements OnDestroy {
   private router = inject(Router);
   private authService = inject(AuthService);
+  private userSubscription: Subscription | undefined;
   readonly routes = signal<Route[]>([]);
 
   // CTOR
@@ -55,13 +57,20 @@ export class SiteMapComponent {
     this.updateSiteMap();
 
     if (!this.authService.authenticated()) {
-      const userSubscription = this.authService.isUserDataResolved.subscribe((value) => {
+      this.userSubscription = this.authService.isUserDataResolved.subscribe((value) => {
         if (value) {
           this.updateSiteMap();
-          userSubscription.unsubscribe();
         }
       });
     }
+  }
+
+  /**
+   * Angular lifecycle hook that is called when the component is destroyed.
+   * It unsubscribes from the user subscription to prevent memory leaks.
+   */
+  ngOnDestroy(): void {
+    this.userSubscription?.unsubscribe();
   }
 
   /**

@@ -43,7 +43,7 @@
                 name: e.description,
                 stack: e.stack,
                 expected: e.expected,
-                actual: e.actual,
+                actual: String(e.actual),
               });
             });
           }
@@ -67,7 +67,14 @@
       });
 
       (async () => {
-        await import("./plugins/tests.ts");
+        await import("./plugins/tests.ts")
+          .then(() => {
+            console.log("Tests plugin loaded");
+          })
+          .catch((error) => {
+            console.error("Failed to load tests plugin", error);
+            sessionFailed(error);
+          });
 
         await sessionStarted();
         const { testFile, watch, debug, testFrameworkConfig } = await getConfig();

@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+### 2025-08-16
+
+#### Fixes
+
+- Fixed a bug where the main navigation menu didn't display as a floating (vertical) menu, but instead still showed in its normal format (horizontal), when there wasn't enough space for the full horizontal menu onscreen. The navigation menu now displays as a floating menu both when the screen is too narrow (under 650px) and when the menu is too long to fit onscreen in higher sizes (e.g., when there are too many links or when the text size is large). ([#2193](https://github.com/sendahug/send-hug-frontend/pull/2193))
+
+#### Chores
+
+- Fixed a problem with tests where tests using `hasBeenCalledTimes` matchers didn't show an error message in web-test-runner when using headless mode. ([#2193](https://github.com/sendahug/send-hug-frontend/pull/2193))
+
 ### 2025-07-20
 
 #### Chores

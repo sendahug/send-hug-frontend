@@ -67,7 +67,7 @@ describe("NavigationMenuComponent", () => {
       refreshBtn: computed(() => "Enable" as ToggleButtonOption),
       refreshRate: computed(() => 0),
       checkForLoggedInUser: () => of(),
-      canUser: (_permission) => true,
+      canUser: (_permission) => false,
     });
     const MockItemsService = MockProvider(ItemsService, {
       sendSearch: (_search) => new Subscription(),
@@ -111,7 +111,7 @@ describe("NavigationMenuComponent", () => {
     // Reset the viewport to full size after each test
     // This ensures the viewport is in the right size for the tests
     // that require the full navigation menu
-    await setViewport({ width: 780, height: 640 });
+    await setViewport({ width: 800, height: 640 });
   });
 
   // Check that the app is created
@@ -264,18 +264,24 @@ describe("NavigationMenuComponent", () => {
 
   // Check that the font size panel changes the site's font size
   it("has a font size that changes according to user choice", async () => {
+    await setViewport({ width: 780, height: 640 });
+
     const fixture = TestBed.createComponent(NavigationMenuComponent);
     await fixture.whenStable();
     const navMenu = fixture.componentInstance;
     const navMenuHtml = fixture.nativeElement;
     const fontButton = navMenuHtml.querySelector("#textSize");
     const menuSpy = spyOn(navMenu, "checkMenuSize");
+    fixture.detectChanges();
 
     // open the text panel
     fontButton.click();
     await fixture.whenStable();
 
+    expect(navMenu.showTextPanel()).toBeTrue();
+
     const fontPanelButtons = navMenuHtml.querySelector("#textPanel").querySelectorAll(".appButton");
+    menuSpy.calls.reset();
 
     // step 1: regular size
     // change the font size to the smallest
@@ -332,7 +338,7 @@ describe("NavigationMenuComponent", () => {
     await setViewport({ width: 780, height: 640 });
     await fixture.whenStable();
 
-    expect(navMenu.showMenu()).toBeTrue();
+    expect(navMenu.showMenuForCurrentWidth()).toBeTrue();
     expect(navMenuHtml.querySelector("#navLinks")!.classList).not.toBeNull();
     expect(navMenuHtml.querySelector("#menuBtn")!.classList).toContain("hidden");
   });
@@ -346,7 +352,7 @@ describe("NavigationMenuComponent", () => {
     const navMenuHtml = fixture.nativeElement;
     await fixture.whenStable();
 
-    expect(navMenu.showMenu()).toBeFalse();
+    expect(navMenu.showMenuForCurrentWidth()).toBeFalse();
     expect(navMenuHtml.querySelector("#navLinks")).toBeNull();
   });
 
@@ -360,7 +366,8 @@ describe("NavigationMenuComponent", () => {
     await fixture.whenStable();
 
     // pre-click check
-    expect(navMenu.showMenu()).toBeFalse();
+    expect(navMenu.showMenuForCurrentWidth()).toBeFalse();
+    expect(navMenu.showMenuUserTriggered()).toBeFalse();
     expect(navMenuHtml.querySelector("#navLinks")).toBeNull();
     expect(navMenuHtml.querySelector("#menuBtn")!.classList).not.toContain("hidden");
 
@@ -369,7 +376,8 @@ describe("NavigationMenuComponent", () => {
     await fixture.whenStable();
 
     // post-click check
-    expect(navMenu.showMenu()).toBeTrue();
+    expect(navMenu.showMenuForCurrentWidth()).toBeTrue();
+    expect(navMenu.showMenuUserTriggered()).toBeTrue();
     expect(navMenuHtml.querySelector("#navLinks")).not.toBeNull();
     expect(navMenuHtml.querySelector("#menuBtn")!.classList).not.toContain("hidden");
 
@@ -378,7 +386,8 @@ describe("NavigationMenuComponent", () => {
     await fixture.whenStable();
 
     // post-click check
-    expect(navMenu.showMenu()).toBeFalse();
+    expect(navMenu.showMenuForCurrentWidth()).toBeFalse();
+    expect(navMenu.showMenuUserTriggered()).toBeFalse();
     expect(navMenuHtml.querySelector("#navLinks")).toBeNull();
     expect(navMenuHtml.querySelector("#menuBtn")!.classList).not.toContain("hidden");
   });
@@ -388,14 +397,10 @@ describe("NavigationMenuComponent", () => {
     const fixture = TestBed.createComponent(NavigationMenuComponent);
     const navMenu = fixture.componentInstance;
     const navMenuHtml = fixture.nativeElement;
+    await setViewport({ width: 780, height: 640 });
     const checkSpy = spyOn(navMenu, "checkMenuSize").and.callThrough();
     await fixture.whenStable();
 
-    const navMenuDiv = navMenuHtml.querySelector("#navMenu");
-    const navLinks = navMenuHtml.querySelector("#navLinks");
-    navLinks.style.width = "600px";
-    navMenuDiv.style.maxWidth = "600px";
-    navMenuDiv.style.display = "flex";
     navMenu.changeTextSize("largest");
     await fixture.whenStable();
 
@@ -409,27 +414,23 @@ describe("NavigationMenuComponent", () => {
     const fixture = TestBed.createComponent(NavigationMenuComponent);
     const navMenu = fixture.componentInstance;
     const navMenuHtml = fixture.nativeElement;
+    await setViewport({ width: 780, height: 640 });
     const checkSpy = spyOn(navMenu, "checkMenuSize").and.callThrough();
     await fixture.whenStable();
 
-    const navMenuDiv = navMenuHtml.querySelector("#navMenu");
     const navLinks = navMenuHtml.querySelector("#navLinks");
-    navLinks.style.width = "1000px";
-    navMenuDiv.style.maxWidth = "1000px";
-    navMenuDiv.style.display = "flex";
     navMenu.changeTextSize("largest");
     await fixture.whenStable();
 
     // Validate it's hidden before un-hiding it
     expect(navMenuHtml.querySelector("#menuBtn").classList).not.toContain("hidden");
 
-    navLinks.style.width = "500px";
     navMenu.changeTextSize("smaller");
     await fixture.whenStable();
 
     expect(checkSpy).toHaveBeenCalledWith();
     expect(navLinks.classList).not.toContain("hidden");
-    expect(navMenu.showMenu()).toBeTrue();
+    expect(navMenu.showMenuForCurrentWidth()).toBeTrue();
   });
 
   it("should send an email verification request", async () => {

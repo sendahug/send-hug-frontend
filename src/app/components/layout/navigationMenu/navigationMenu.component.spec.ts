@@ -267,6 +267,7 @@ describe("NavigationMenuComponent", () => {
     await setViewport({ width: 780, height: 640 });
 
     const fixture = TestBed.createComponent(NavigationMenuComponent);
+    await fixture.whenStable();
     const navMenu = fixture.componentInstance;
     const navMenuHtml = fixture.nativeElement;
     const menuSpy = spyOn(navMenu, "checkMenuSize");

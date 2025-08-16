@@ -349,7 +349,6 @@ export class NavigationMenuComponent implements AfterViewInit, AfterViewChecked 
 
     // if the larger text makes the navigation menu too long, turn it back
     // to the small-viewport menu
-    console.log("Menu size: ", this.menuSize(), "Nav menu width: ", navMenu.offsetWidth);
     if (this.menuSize() >= navMenu.offsetWidth) {
       this.showMenuForCurrentWidth.set(this.showMenuUserTriggered());
       this.showMenuButton.set(true);

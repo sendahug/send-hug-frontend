@@ -2,6 +2,64 @@
 
 ## Unreleased
 
+### 2025-08-16
+
+#### Changes
+
+- Removed Zone.js and switched Angular to use Zoneless change detection. This should make the app faster to load and execute and allow us to use newer language features without compatibility issues with Zone.js. ([#1925](https://github.com/sendahug/send-hug-frontend/pull/1925))
+
+#### Fixes
+
+- Fixed a bug where the main navigation menu didn't display as a floating (vertical) menu, but instead still showed in its normal format (horizontal), when there wasn't enough space for the full horizontal menu onscreen. The navigation menu now displays as a floating menu both when the screen is too narrow (under 650px) and when the menu is too long to fit onscreen in higher sizes (e.g., when there are too many links or when the text size is large). ([#2193](https://github.com/sendahug/send-hug-frontend/pull/2193))
+
+#### Chores
+
+- Fixed a problem with tests where tests using `hasBeenCalledTimes` matchers didn't show an error message in web-test-runner when using headless mode. ([#2193](https://github.com/sendahug/send-hug-frontend/pull/2193))
+- Replaced the majority of `fixture.detectChanges()` calls in tests with `fixture.whenStable()`. As per Angular's documentation, `detectChanges` forces change detection immediately, which can lead to differet results in tests than in the deployed application, and thus isn't recommended. `whenStable` waits for all asynchronous tasks to complete before proceeding, which is more aligned with how the application behaves in production. ([#1925](https://github.com/sendahug/send-hug-frontend/pull/1925))
+- Simplified the tests' setup by removing unnecessary re-creation of the TestBed before each suite. ([#1925](https://github.com/sendahug/send-hug-frontend/pull/1925))
+
+### 2025-07-20
+
+#### Chores
+
+- Removed an unneeded old global install step from the CircleCI config. That step broke CI due to the package no longer being supported. ([#2169](https://github.com/sendahug/send-hug-frontend/pull/2169))
+
+### 2025-07-14
+
+#### Changes
+
+- Updated the paths to the messages-related endpoints to match the new endpoints set in [sendahug/send-hug-backend#751](https://github.com/sendahug/send-hug-backend/pull/751). ([#2259](https://github.com/sendahug/send-hug-frontend/pull/2259))
+
+### 2025-06-22
+
+#### Chores
+
+- Added a ref to the checkout step in the 'deploy to preview' workflow in order to ensure the deployed preview is using the updated repo when dealing with dependabot's pull requests. ([#2136](https://github.com/sendahug/send-hug-frontend/pull/2136))
+
+### 2025-06-20
+
+#### Features
+
+- Added a new paginated list component to display lists that require pagination functionality. ([#2103](https://github.com/sendahug/send-hug-frontend/pull/2103))
+
+#### Changes
+
+- The mailbox view was rebuilt to improve the user experience when using messaging. This includes:
+  - The different mailbox views (inbox, outbox, threads) were replaced with a single threads view. When users select a thread, they can view the thread's messages in the same view; otherwise, only the threads list is shown.
+  - The thread component was redesigned. The new thread component emphasizes the other user's name and user icon and makes it easier to understand the rest of the thread's details (last message and message count).
+  - The message component was redesigned. The new message component condenses the message's sender and text into a single line, which allows us to display messages in a more familiar layout and emphasises the message's sender and text. It also displays the user's icon in the left or in the right side of the message, depending on whether the message's sender is the first or the second user in the thread.
+  - The text of the buttons in the thread and message components was simplified. ([#2103](https://github.com/sendahug/send-hug-frontend/pull/2103))
+
+#### Breaking Changes
+
+- Removed the inbox and outbox from the mailbox. While this was useful for debugging, realistically it wasn't likely to be useful for most users. The mailbox now displays threads, which allow seeing both send and received messages in one mailbox. The old messaging routes (except `/messages`) no longer lead anywhere and will return an error (not found) page. ([#2103](https://github.com/sendahug/send-hug-frontend/pull/2103))
+
+### 2025-06-09
+
+#### Chores
+
+- Updated the version of postgres in CI to match the version currently used in production. ([#2124](https://github.com/sendahug/send-hug-frontend/pull/2124))
+
 ### 2025-05-08
 
 #### Chores

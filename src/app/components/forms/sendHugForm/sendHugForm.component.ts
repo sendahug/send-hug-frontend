@@ -31,7 +31,7 @@
 */
 
 // Angular imports
-import { Component, EventEmitter, input, OnInit, Output } from "@angular/core";
+import { Component, EventEmitter, inject, input, OnInit, Output } from "@angular/core";
 import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { CommonModule } from "@angular/common";
 
@@ -52,6 +52,12 @@ import { type SendHugResponse } from "@app/interfaces/api";
   imports: [CommonModule, ReactiveFormsModule, PopUpComponent, TeleportDirective],
 })
 export class SendHugFormComponent implements OnInit {
+  private authService = inject(AuthService);
+  private alertsService = inject(AlertsService);
+  private apiClient = inject(ApiClientService);
+  private fb = inject(FormBuilder);
+  private validationService = inject(ValidationService);
+  private itemsService = inject(ItemsService);
   @Output() sendMode = new EventEmitter<boolean>();
   readonly forUsername = input<string>("");
   readonly forID = input.required<number>();
@@ -61,15 +67,6 @@ export class SendHugFormComponent implements OnInit {
     sendMessage: [true],
     messageText: ["", [Validators.required, this.validationService.validateItemAgainst("message")]],
   });
-
-  constructor(
-    private authService: AuthService,
-    private alertsService: AlertsService,
-    private apiClient: ApiClientService,
-    private fb: FormBuilder,
-    private validationService: ValidationService,
-    private itemsService: ItemsService,
-  ) {}
 
   /**
    * Angular's OnInit hook.

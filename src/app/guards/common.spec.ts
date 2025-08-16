@@ -33,10 +33,6 @@
 import { TestBed } from "@angular/core/testing";
 import { provideRouter, Router, UrlTree } from "@angular/router";
 import {} from "jasmine";
-import {
-  BrowserDynamicTestingModule,
-  platformBrowserDynamicTesting,
-} from "@angular/platform-browser-dynamic/testing";
 import { NO_ERRORS_SCHEMA } from "@angular/core";
 
 import { getQueryStringFromRouter, getQueryParamsFromPath } from "./common";
@@ -44,9 +40,6 @@ import { getQueryStringFromRouter, getQueryParamsFromPath } from "./common";
 describe("guards/common", () => {
   // Before each test, configure testing environment
   beforeEach(() => {
-    TestBed.resetTestEnvironment();
-    TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
-
     TestBed.configureTestingModule({
       schemas: [NO_ERRORS_SCHEMA],
       imports: [],
@@ -65,6 +58,7 @@ describe("guards/common", () => {
       trigger: "imperative",
       extras: {},
       previousNavigation: null,
+      abort: () => {},
     });
 
     const result = getQueryStringFromRouter(router);
@@ -83,6 +77,7 @@ describe("guards/common", () => {
       trigger: "imperative",
       extras: {},
       previousNavigation: null,
+      abort: () => {},
     });
 
     const result = getQueryStringFromRouter(router);
@@ -101,6 +96,7 @@ describe("guards/common", () => {
       trigger: "imperative",
       extras: {},
       previousNavigation: null,
+      abort: () => {},
     });
 
     const result = getQueryStringFromRouter(router);

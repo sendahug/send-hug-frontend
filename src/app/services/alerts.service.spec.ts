@@ -31,10 +31,6 @@
 */
 
 import { TestBed } from "@angular/core/testing";
-import {
-  BrowserDynamicTestingModule,
-  platformBrowserDynamicTesting,
-} from "@angular/platform-browser-dynamic/testing";
 import { APP_BASE_HREF } from "@angular/common";
 import { HttpEventType, HttpErrorResponse, HttpHeaders } from "@angular/common/http";
 import {} from "jasmine";
@@ -46,9 +42,6 @@ describe("AlertsService", () => {
 
   // Before each test, configure testing environment
   beforeEach(() => {
-    TestBed.resetTestEnvironment();
-    TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
-
     TestBed.configureTestingModule({
       declarations: [],
       providers: [AlertsService, { provide: APP_BASE_HREF, useValue: "/" }],

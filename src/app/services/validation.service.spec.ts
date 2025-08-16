@@ -31,11 +31,7 @@
 */
 
 import { TestBed } from "@angular/core/testing";
-import { HttpClientTestingModule } from "@angular/common/http/testing";
-import {
-  BrowserDynamicTestingModule,
-  platformBrowserDynamicTesting,
-} from "@angular/platform-browser-dynamic/testing";
+import { provideHttpClientTesting } from "@angular/common/http/testing";
 import {} from "jasmine";
 import { FormControl } from "@angular/forms";
 
@@ -46,12 +42,9 @@ describe("PostsService", () => {
 
   // Before each test, configure testing environment
   beforeEach(() => {
-    TestBed.resetTestEnvironment();
-    TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
-
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
-      providers: [ValidationService],
+      imports: [],
+      providers: [ValidationService, provideHttpClientTesting()],
       declarations: [],
     }).compileComponents();
 

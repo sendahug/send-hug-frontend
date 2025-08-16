@@ -1,0 +1,37 @@
+<app-loader
+  *ngIf="isLoading()"
+  [ngClass]="loaderClass()"
+  [loadingMessage]="loadingMessage() || 'Loading...'"
+></app-loader>
+
+<!-- Items area -->
+<div class="listContainer">
+  <ng-content select="[itemList]"></ng-content>
+</div>
+
+<!-- If there are no messages in the user's mailbox -->
+<div *ngIf="!itemCount()! && !isIdbFetchLoading()">
+  <div class="errorMessage">You have no {{ itemType() }}.</div>
+</div>
+
+<!-- pagination -->
+<div *ngIf="!isIdbFetchLoading()" class="pagination" role="navigation">
+  <button
+    [ngClass]="previousPageButtonClass()"
+    [attr.aria-label]="'previous page of the ' + itemType()"
+    [disabled]="currentPage() <= 1"
+    (click)="prevPage()"
+  >
+    Previous Page
+  </button>
+  <div class="pageCount">Page {{ currentPage() }} of {{ totalPages() }}</div>
+  <button
+    [ngClass]="nextPageButtonClass()"
+    [attr.aria-label]="'next page of the ' + itemType()"
+    [disabled]="totalPages() <= currentPage()"
+    (click)="nextPage()"
+  >
+    Next Page
+  </button>
+</div>
+<ng-content select="[deleteAllButton]"></ng-content>

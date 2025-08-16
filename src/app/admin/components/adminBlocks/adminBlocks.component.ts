@@ -31,7 +31,7 @@
 */
 
 // Angular imports
-import { Component, signal, computed } from "@angular/core";
+import { Component, signal, computed, inject } from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
 
 // App imports
@@ -51,6 +51,11 @@ import { type BlockUserResponse } from "@app/interfaces/api";
   standalone: false,
 })
 export class AdminBlocksComponent {
+  public authService = inject(AuthService);
+  public adminService = inject(AdminService);
+  private alertsService = inject(AlertsService);
+  private apiClient = inject(ApiClientService);
+  private fb = inject(FormBuilder);
   readonly blockedUsers = signal<BlockedUser[]>([]);
   readonly currentPage = signal(1);
   readonly totalPages = signal(1);
@@ -69,13 +74,7 @@ export class AdminBlocksComponent {
   });
 
   // CTOR
-  constructor(
-    public authService: AuthService,
-    public adminService: AdminService,
-    private alertsService: AlertsService,
-    private apiClient: ApiClientService,
-    private fb: FormBuilder,
-  ) {
+  constructor() {
     this.fetchBlocks();
   }
 

@@ -33,10 +33,6 @@
 import { TestBed } from "@angular/core/testing";
 import { provideRouter, Router, UrlSegment } from "@angular/router";
 import {} from "jasmine";
-import {
-  BrowserDynamicTestingModule,
-  platformBrowserDynamicTesting,
-} from "@angular/platform-browser-dynamic/testing";
 import { NO_ERRORS_SCHEMA, signal } from "@angular/core";
 import { MockProvider } from "ng-mocks";
 
@@ -46,9 +42,6 @@ import { AuthService } from "@app/services/auth.service";
 describe("isAuthedGuard", () => {
   // Before each test, configure testing environment
   beforeEach(() => {
-    TestBed.resetTestEnvironment();
-    TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
-
     const MockAuthService = MockProvider(AuthService, {
       authenticated: signal(true),
     });

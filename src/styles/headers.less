@@ -126,6 +126,11 @@
   display: flex;
 }
 
+.navLinks.float:not(.hidden) {
+  .limitedSpaceNavLink();
+  padding: 10px;
+}
+
 /* Navigation menu - inner - for larger font size */
 .navLinks.large {
   .limitedSpaceNavLink();
@@ -191,7 +196,6 @@
 .newNotification {
   &:extend(.notificationBlockSample);
   padding: 2px;
-  background-color: var(--boxesBackground);
   /* Responsive styling for screens up to 650px width */
   @media screen and (max-width: 650px) {
     margin-top: 20px;
@@ -205,6 +209,15 @@
   @media screen and (min-width: 700px) {
     margin-left: 5px;
   }
+}
+
+.navLinks:not(.float):not(.large) .newNotification {
+  background-color: var(--mainBackground);
+}
+
+.navLinks.float .newNotification,
+.navLinks.large .newNotification {
+  background: var(--boxesBackground);
 }
 
 /* Search form exit button */

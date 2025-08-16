@@ -31,8 +31,7 @@
 */
 
 // Angular imports
-import { Component, signal, Output, Input, EventEmitter } from "@angular/core";
-import { RouterLink } from "@angular/router";
+import { Component, signal, Output, Input, EventEmitter, inject } from "@angular/core";
 import { CommonModule } from "@angular/common";
 
 // App-related imports
@@ -46,7 +45,7 @@ import { SWManager } from "@app/services/sWManager.service";
   templateUrl: "./thread.component.html",
   styleUrl: "./thread.component.less",
   standalone: true,
-  imports: [CommonModule, RouterLink, UserIconComponent, ItemDeleteFormComponent],
+  imports: [CommonModule, UserIconComponent, ItemDeleteFormComponent],
 })
 export class ThreadComponent {
   // TODO: Replace this with `input()`/`output()` once we figure out coverage
@@ -56,12 +55,12 @@ export class ThreadComponent {
   }
   readonly _thread = signal<ParsedThread>({} as ParsedThread);
   @Output() messageDeleted = new EventEmitter<number>();
+  @Output() threadSelected = new EventEmitter<number>();
   readonly deleteMode = signal(false);
   // Delete Popup Constants
-  readonly deleteEndpoint = "messages/threads";
+  readonly deleteEndpoint = "threads";
   readonly itemType = "Thread";
-
-  constructor(private swManager: SWManager) {}
+  private swManager = inject(SWManager);
 
   /**
    * Opens the delete popup to delete the current thread.

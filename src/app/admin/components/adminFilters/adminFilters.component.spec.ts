@@ -34,14 +34,10 @@ import { TestBed } from "@angular/core/testing";
 import { provideRouter } from "@angular/router";
 import {} from "jasmine";
 import { APP_BASE_HREF } from "@angular/common";
-import {
-  BrowserDynamicTestingModule,
-  platformBrowserDynamicTesting,
-} from "@angular/platform-browser-dynamic/testing";
 import { NO_ERRORS_SCHEMA, signal } from "@angular/core";
 import { ReactiveFormsModule } from "@angular/forms";
 import { BehaviorSubject, of, throwError } from "rxjs";
-import { MockComponent, MockProvider } from "ng-mocks";
+import { MockProvider } from "ng-mocks";
 
 import { AdminFiltersComponent } from "./adminFilters.component";
 import { AuthService } from "@app/services/auth.service";
@@ -75,14 +71,10 @@ describe("Filters Page", () => {
     const MockAPIClient = MockProvider(ApiClientService, {
       get: () => of(),
     });
-    const MockLoaderComponent = MockComponent(LoaderComponent);
-
-    TestBed.resetTestEnvironment();
-    TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
       schemas: [NO_ERRORS_SCHEMA],
-      imports: [ReactiveFormsModule, MockLoaderComponent],
+      imports: [ReactiveFormsModule, LoaderComponent],
       declarations: [AdminFiltersComponent],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
@@ -95,7 +87,7 @@ describe("Filters Page", () => {
   });
 
   // Check that a call is made to get filtered phrases
-  it("should get filtered phrases", () => {
+  it("should get filtered phrases", async () => {
     const apiClientSpy = spyOn(TestBed.inject(ApiClientService), "get").and.returnValue(
       of({
         words: [...mockFilteredPhrases],
@@ -106,8 +98,7 @@ describe("Filters Page", () => {
     const fixture = TestBed.createComponent(AdminFiltersComponent);
     const adminFilters = fixture.componentInstance;
     const adminFiltersDOM = fixture.nativeElement;
-
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     expect(apiClientSpy).toHaveBeenCalledWith("filters", { page: "1" });
     expect(adminFilters.filteredPhrases().length).toBe(2);
@@ -117,15 +108,14 @@ describe("Filters Page", () => {
     ).toBe(2);
   });
 
-  it("should remove the loading screen if there was an error", () => {
+  it("should remove the loading screen if there was an error", async () => {
     const apiClientSpy = spyOn(TestBed.inject(ApiClientService), "get").and.returnValue(
       throwError(() => new Error("ERROR")),
     );
     const fixture = TestBed.createComponent(AdminFiltersComponent);
     const adminFilters = fixture.componentInstance;
     const adminFiltersDOM = fixture.nativeElement;
-
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     expect(apiClientSpy).toHaveBeenCalledWith("filters", { page: "1" });
     expect(adminFilters.filteredPhrases().length).toBe(0);
@@ -138,7 +128,7 @@ describe("Filters Page", () => {
   });
 
   // Check that you can add a filter
-  it("should add a new filter", () => {
+  it("should add a new filter", async () => {
     // set up the spy and the component
     const fixture = TestBed.createComponent(AdminFiltersComponent);
     const adminFilters = fixture.componentInstance;
@@ -152,13 +142,12 @@ describe("Filters Page", () => {
     adminFilters.filteredPhrases.set([...mockFilteredPhrases]);
     adminFilters.totalPages.set(1);
     adminFilters.isLoading.set(false);
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     // add filter to the text-field and click the button
     adminFiltersDOM.querySelector("#filter").value = "text";
     adminFiltersDOM.querySelector("#filter").dispatchEvent(new Event("input"));
     adminFiltersDOM.querySelectorAll(".sendData")[0].click();
-    fixture.detectChanges();
 
     // check expectations
     expect(addSpy).toHaveBeenCalledWith();
@@ -170,7 +159,7 @@ describe("Filters Page", () => {
     expect(adminFilters.filteredPhrases()[2]).toEqual({ id: 3, filter: "text" });
   });
 
-  it("should not try to add a new filter if there's no filter in the text field", () => {
+  it("should not try to add a new filter if there's no filter in the text field", async () => {
     // set up the spy and the component
     const fixture = TestBed.createComponent(AdminFiltersComponent);
     const adminFilters = fixture.componentInstance;
@@ -182,11 +171,10 @@ describe("Filters Page", () => {
     adminFilters.filteredPhrases.set([...mockFilteredPhrases]);
     adminFilters.totalPages.set(1);
     adminFilters.isLoading.set(false);
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     // click the button
     adminFiltersDOM.querySelectorAll(".sendData")[0].click();
-    fixture.detectChanges();
 
     // check expectations
     expect(addSpy).toHaveBeenCalledWith();
@@ -198,7 +186,7 @@ describe("Filters Page", () => {
   });
 
   // Check that you can remove a filter
-  it("should remove a filter", () => {
+  it("should remove a filter", async () => {
     // mock response
     const mockResponse = {
       success: true,
@@ -219,12 +207,10 @@ describe("Filters Page", () => {
     adminFilters.filteredPhrases.set([...mockFilteredPhrases]);
     adminFilters.totalPages.set(1);
     adminFilters.isLoading.set(false);
-
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     // simulate click on the 'remove' button
     adminFiltersDOM.querySelectorAll(".adminButton")[0].click();
-    fixture.detectChanges();
 
     // check expectations
     expect(removeSpy).toHaveBeenCalledWith(1);
@@ -237,7 +223,7 @@ describe("Filters Page", () => {
     expect(adminFilters.filteredPhrases()[0].id).not.toBe(1);
   });
 
-  it("should go to the next page", () => {
+  it("should go to the next page", async () => {
     // set up the spy and the component
     const fixture = TestBed.createComponent(AdminFiltersComponent);
     const adminFilters = fixture.componentInstance;
@@ -247,19 +233,17 @@ describe("Filters Page", () => {
     adminFilters.filteredPhrases.set([...mockFilteredPhrases]);
     adminFilters.totalPages.set(2);
     adminFilters.isLoading.set(false);
-
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     // simulate click on the 'next' button
     adminFiltersDOM.querySelectorAll(".pagination > button")[1].click();
-    fixture.detectChanges();
 
     // check expectations
     expect(nextPageSpy).toHaveBeenCalledWith();
     expect(fetchSpy).toHaveBeenCalledWith();
   });
 
-  it("should go to the previous page", () => {
+  it("should go to the previous page", async () => {
     // set up the spy and the component
     const fixture = TestBed.createComponent(AdminFiltersComponent);
     const adminFilters = fixture.componentInstance;
@@ -270,12 +254,10 @@ describe("Filters Page", () => {
     adminFilters.totalPages.set(2);
     adminFilters.isLoading.set(false);
     adminFilters.currentPage.set(2);
-
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     // simulate click on the 'previous' button
     adminFiltersDOM.querySelectorAll(".pagination > button")[0].click();
-    fixture.detectChanges();
 
     // check expectations
     expect(prevPageSpy).toHaveBeenCalledWith();

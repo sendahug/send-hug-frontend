@@ -32,10 +32,6 @@
 
 import { TestBed } from "@angular/core/testing";
 import { HttpTestingController, provideHttpClientTesting } from "@angular/common/http/testing";
-import {
-  BrowserDynamicTestingModule,
-  platformBrowserDynamicTesting,
-} from "@angular/platform-browser-dynamic/testing";
 import {} from "jasmine";
 import { of } from "rxjs";
 import { HttpErrorResponse, HttpParams, provideHttpClient } from "@angular/common/http";
@@ -55,9 +51,6 @@ describe("APIClient Service", () => {
       getIdTokenForCurrentUser: () => of(),
       authenticated: signal(false),
     });
-
-    TestBed.resetTestEnvironment();
-    TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
       imports: [],

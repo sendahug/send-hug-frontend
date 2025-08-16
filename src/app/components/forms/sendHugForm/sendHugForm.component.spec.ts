@@ -27,13 +27,9 @@
 import { TestBed } from "@angular/core/testing";
 import {} from "jasmine";
 import { APP_BASE_HREF, CommonModule } from "@angular/common";
-import {
-  BrowserDynamicTestingModule,
-  platformBrowserDynamicTesting,
-} from "@angular/platform-browser-dynamic/testing";
 import { ReactiveFormsModule } from "@angular/forms";
 import { BehaviorSubject, of } from "rxjs";
-import { provideZoneChangeDetection, signal } from "@angular/core";
+import { provideZonelessChangeDetection, signal } from "@angular/core";
 import { MockProvider } from "ng-mocks";
 import { provideRouter } from "@angular/router";
 
@@ -60,9 +56,6 @@ describe("Send Hug Form", () => {
       receivedAHug: new BehaviorSubject(0),
     });
 
-    TestBed.resetTestEnvironment();
-    TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
-
     TestBed.configureTestingModule({
       imports: [
         CommonModule,
@@ -73,7 +66,7 @@ describe("Send Hug Form", () => {
       ],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
-        provideZoneChangeDetection({ eventCoalescing: true }),
+        provideZonelessChangeDetection(),
         provideRouter([]),
         MockAuthService,
         MockAPIClient,
@@ -82,66 +75,63 @@ describe("Send Hug Form", () => {
     }).compileComponents();
   });
 
-  it("shows the name of the user who sent the post", () => {
+  it("shows the name of the user who sent the post", async () => {
     const fixture = TestBed.createComponent(SendHugFormComponent);
     const shformDOM = fixture.nativeElement;
     fixture.componentRef.setInput("forUsername", "meow");
     fixture.componentRef.setInput("forID", 1);
     fixture.componentRef.setInput("postID", 1);
-
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     expect(shformDOM.querySelectorAll(".postEdit")).toBeTruthy();
     expect(shformDOM.querySelector("#messageFor").value).toBe("meow");
   });
 
-  it("updateTextValidators() - correctly enables/disables the 'message' text field", () => {
+  it("updateTextValidators() - correctly enables/disables the 'message' text field", async () => {
     const fixture = TestBed.createComponent(SendHugFormComponent);
     const shformDOM = fixture.nativeElement;
     fixture.componentRef.setInput("forUsername", "meow");
     fixture.componentRef.setInput("forID", 1);
     fixture.componentRef.setInput("postID", 1);
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     const messageTextField = document.getElementById("messageText") as HTMLInputElement;
 
     expect(messageTextField.disabled).toBe(false);
 
     shformDOM.querySelector("#sendMessage").click();
-    fixture.detectChanges();
 
     expect(messageTextField.disabled).toBe(true);
 
     shformDOM.querySelector("#sendMessage").click();
-    fixture.detectChanges();
 
     expect(messageTextField.disabled).toBe(false);
   });
 
-  it("Correctly sets the required and aria-required attributes", () => {
+  it("Correctly sets the required and aria-required attributes", async () => {
     const fixture = TestBed.createComponent(SendHugFormComponent);
     const shformDOM = fixture.nativeElement;
     fixture.componentRef.setInput("forUsername", "meow");
     fixture.componentRef.setInput("forID", 1);
     fixture.componentRef.setInput("postID", 1);
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     const messageTextField = document.getElementById("messageText") as HTMLInputElement;
 
     shformDOM.querySelector("#sendMessage").click();
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     expect(messageTextField.required).toBe(false);
     expect(messageTextField.getAttribute("aria-required")).toEqual("false");
 
     shformDOM.querySelector("#sendMessage").click();
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     expect(messageTextField.required).toBe(true);
     expect(messageTextField.getAttribute("aria-required")).toEqual("true");
   });
 
-  it("requires text if the user is sending a message", () => {
+  it("requires text if the user is sending a message", async () => {
     const validationService = TestBed.inject(ValidationService);
     const validateSpy = spyOn(validationService, "validateItemAgainst").and.returnValue(
       (_control) => ({ error: "ERROR!" }),
@@ -155,11 +145,10 @@ describe("Send Hug Form", () => {
     fixture.componentRef.setInput("postID", 1);
     const apiClientSpy = spyOn(shForm["apiClient"], "post");
     const alertServiceSpy = spyOn(shForm["alertsService"], "createAlert");
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     // try to submit it without text in the textfield
     shformDOM.querySelectorAll(".sendData")[0].click();
-    fixture.detectChanges();
 
     // check the message wasn't sent and the user was alerted
     expect(validateSpy).toHaveBeenCalledWith("message");
@@ -170,7 +159,7 @@ describe("Send Hug Form", () => {
     });
   });
 
-  it("doesn't allow unauthenticated users to send a hug", () => {
+  it("doesn't allow unauthenticated users to send a hug", async () => {
     const validationService = TestBed.inject(ValidationService);
     const validateSpy = spyOn(validationService, "validateItemAgainst").and.returnValue(
       (_control) => null,
@@ -187,14 +176,13 @@ describe("Send Hug Form", () => {
     fixture.componentRef.setInput("postID", 1);
     const apiClientSpy = spyOn(shForm["apiClient"], "post");
     const alertServiceSpy = spyOn(shForm["alertsService"], "createAlert");
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     // try to submit it without text in the textfield
     const messageTextField = document.getElementById("messageText") as HTMLInputElement;
     messageTextField.value = "text";
     messageTextField.dispatchEvent(new Event("input"));
     shformDOM.querySelectorAll(".sendData")[0].click();
-    fixture.detectChanges();
 
     // check the message wasn't sent and the user was alerted
     expect(validateSpy).toHaveBeenCalledWith("message");
@@ -205,7 +193,7 @@ describe("Send Hug Form", () => {
     });
   });
 
-  it("doesn't allow sending hugs to self", () => {
+  it("doesn't allow sending hugs to self", async () => {
     const validationService = TestBed.inject(ValidationService);
     const validateSpy = spyOn(validationService, "validateItemAgainst").and.returnValue(
       (_control) => null,
@@ -219,14 +207,13 @@ describe("Send Hug Form", () => {
     fixture.componentRef.setInput("postID", 1);
     const apiClientSpy = spyOn(shForm["apiClient"], "post");
     const alertServiceSpy = spyOn(shForm["alertsService"], "createAlert");
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     // try to submit it without text in the textfield
     const messageTextField = document.getElementById("messageText") as HTMLInputElement;
     messageTextField.value = "text";
     messageTextField.dispatchEvent(new Event("input"));
     shformDOM.querySelectorAll(".sendData")[0].click();
-    fixture.detectChanges();
 
     // check the message wasn't sent and the user was alerted
     expect(validateSpy).toHaveBeenCalledWith("message");
@@ -237,7 +224,7 @@ describe("Send Hug Form", () => {
     });
   });
 
-  it("doesn't allow sending hugs without postID", () => {
+  it("doesn't allow sending hugs without postID", async () => {
     const validationService = TestBed.inject(ValidationService);
     const validateSpy = spyOn(validationService, "validateItemAgainst").and.returnValue(
       (_control) => null,
@@ -250,7 +237,7 @@ describe("Send Hug Form", () => {
     fixture.componentRef.setInput("postID", undefined);
     const apiClientSpy = spyOn(shForm["apiClient"], "post");
     const alertServiceSpy = spyOn(shForm["alertsService"], "createAlert");
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     // try to submit it without text in the textfield
     shForm.sendHugForm.controls.sendMessage.setValue(true);
@@ -267,7 +254,7 @@ describe("Send Hug Form", () => {
     });
   });
 
-  it("sends the hug via the itemsService", () => {
+  it("sends the hug via the itemsService", async () => {
     // mock response
     const mockResponse = {
       updated: "Sent hug!",
@@ -289,18 +276,16 @@ describe("Send Hug Form", () => {
     const alertsSpy = spyOn(shForm["alertsService"], "createSuccessAlert");
     const emitSpy = spyOn(shForm.sendMode, "emit");
     const newMessage = "hang in there";
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     const messageText = shformDOM.querySelector("#messageText");
     messageText.value = newMessage;
     messageText.dispatchEvent(new Event("input"));
-    fixture.detectChanges();
 
     expect(shForm.sendHugForm.controls.messageText.value).toEqual(newMessage);
 
     // try to submit it
     shformDOM.querySelectorAll(".sendData")[0].click();
-    fixture.detectChanges();
 
     // check the hug was sent
     expect(validateSpy).toHaveBeenCalledWith("message");

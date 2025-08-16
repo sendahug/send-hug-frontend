@@ -31,7 +31,7 @@
 */
 
 // Angular imports
-import { Component, OnDestroy, signal, computed } from "@angular/core";
+import { Component, OnDestroy, signal, computed, inject } from "@angular/core";
 import { ActivatedRoute, Router, RouterLink } from "@angular/router";
 import { from, switchMap, tap } from "rxjs";
 import { faGratipay } from "@fortawesome/free-brands-svg-icons";
@@ -70,6 +70,12 @@ import { type ReportType } from "@app/interfaces/report.interface";
   ],
 })
 export class UserPageComponent implements OnDestroy {
+  public authService = inject(AuthService);
+  private route = inject(ActivatedRoute);
+  private swManager = inject(SWManager);
+  private apiClient = inject(ApiClientService);
+  private alertsService = inject(AlertsService);
+  private router = inject(Router);
   readonly isLoading = signal(false);
   readonly isIdbFetchLoading = signal(false);
   readonly otherUser = signal<OtherUser | undefined>(undefined);
@@ -99,14 +105,7 @@ export class UserPageComponent implements OnDestroy {
   faGratipay = faGratipay;
 
   // CTOR
-  constructor(
-    public authService: AuthService,
-    private route: ActivatedRoute,
-    private swManager: SWManager,
-    private apiClient: ApiClientService,
-    private alertsService: AlertsService,
-    private router: Router,
-  ) {
+  constructor() {
     // if there's a user ID, set the user ID to it
     if (this.route.snapshot.paramMap.get("id")) {
       this.userId.set(Number(this.route.snapshot.paramMap.get("id")));

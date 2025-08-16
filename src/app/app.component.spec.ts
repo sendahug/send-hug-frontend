@@ -29,7 +29,7 @@
   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
   SOFTWARE.
 */
-import { fakeAsync, TestBed, tick } from "@angular/core/testing";
+import { TestBed } from "@angular/core/testing";
 import {
   ActivatedRoute,
   provideRouter,
@@ -38,14 +38,10 @@ import {
   RouterOutlet,
   withComponentInputBinding,
 } from "@angular/router";
-import {
-  BrowserDynamicTestingModule,
-  platformBrowserDynamicTesting,
-} from "@angular/platform-browser-dynamic/testing";
 import {} from "jasmine";
 import { APP_BASE_HREF, CommonModule } from "@angular/common";
 import { BehaviorSubject, of, throwError } from "rxjs";
-import { provideZoneChangeDetection, signal } from "@angular/core";
+import { provideZonelessChangeDetection, signal } from "@angular/core";
 import { MockComponent, MockProvider } from "ng-mocks";
 
 import { AppComponent } from "./app.component";
@@ -61,7 +57,6 @@ import { TeleportService } from "./services/teleport.service";
 describe("AppComponent", () => {
   beforeEach(() => {
     const MockNavBar = MockComponent(NavigationMenuComponent);
-    const MockAppAlertComponent = MockComponent(AppAlertComponent);
     const MockAuthService = MockProvider(AuthService, {
       authenticated: signal(true),
       userData: signal({ ...mockAuthedUser }),
@@ -81,26 +76,24 @@ describe("AppComponent", () => {
     });
     const MockTeleportService = MockProvider(TeleportService);
 
-    TestBed.resetTestEnvironment();
-    TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
-
     TestBed.configureTestingModule({
       imports: [
         CommonModule,
         RouterOutlet,
         RouterLink,
-        MockAppAlertComponent,
+        AppAlertComponent,
         MockNavBar,
         AppComponent,
       ],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
-        provideZoneChangeDetection({ eventCoalescing: true }),
+        provideZonelessChangeDetection(),
         provideRouter([], withComponentInputBinding()),
         MockAuthService,
         MockNotificationsService,
         MockSWManager,
         MockTeleportService,
+        AlertsService,
       ],
     }).compileComponents();
   });
@@ -155,7 +148,7 @@ describe("AppComponent", () => {
     });
   });
 
-  it("should check for a logged in user - enable push and auto-refresh", fakeAsync(() => {
+  it("should check for a logged in user - enable push and auto-refresh", async () => {
     const authService = TestBed.inject(AuthService);
     const authSpy = spyOn(authService, "checkForLoggedInUser").and.returnValue(
       of({ ...mockAuthedUser, pushEnabled: true, autoRefresh: true }),
@@ -171,18 +164,17 @@ describe("AppComponent", () => {
       of(),
     );
 
-    TestBed.createComponent(AppComponent);
-
-    tick();
+    const fixture = TestBed.createComponent(AppComponent);
+    await fixture.whenStable();
 
     expect(authSpy).toHaveBeenCalledWith();
     expect(checkStateSpy).toHaveBeenCalledWith(true);
     expect(getSubscriptionSpy).toHaveBeenCalledWith();
     expect(startRefreshSpy).toHaveBeenCalledWith(mockAuthedUser.refreshRate);
     expect(getNotificationsSpy).toHaveBeenCalledWith();
-  }));
+  });
 
-  it("should check for a logged in user - don't enable push and auto-refresh", fakeAsync(() => {
+  it("should check for a logged in user - don't enable push and auto-refresh", async () => {
     const authService = TestBed.inject(AuthService);
     const authSpy = spyOn(authService, "checkForLoggedInUser").and.returnValue(
       of({ ...mockAuthedUser, pushEnabled: false, autoRefresh: false }),
@@ -196,17 +188,16 @@ describe("AppComponent", () => {
     const startRefreshSpy = spyOn(notificationService, "startAutoRefresh");
     spyOn(notificationService, "getNotifications").and.returnValue(of());
 
-    TestBed.createComponent(AppComponent);
-
-    tick();
+    const fixture = TestBed.createComponent(AppComponent);
+    await fixture.whenStable();
 
     expect(authSpy).toHaveBeenCalledWith();
     expect(checkStateSpy).toHaveBeenCalledWith(false);
     expect(getSubscriptionSpy).not.toHaveBeenCalled();
     expect(startRefreshSpy).not.toHaveBeenCalled();
-  }));
+  });
 
-  it("should check for a logged in user - push permission not granted", fakeAsync(() => {
+  it("should check for a logged in user - push permission not granted", async () => {
     const authService = TestBed.inject(AuthService);
     const authSpy = spyOn(authService, "checkForLoggedInUser").and.returnValue(
       of({ ...mockAuthedUser, pushEnabled: true }),
@@ -219,16 +210,15 @@ describe("AppComponent", () => {
     const getSubscriptionSpy = spyOn(notificationService, "getCachedSubscription");
     spyOn(notificationService, "getNotifications").and.returnValue(of());
 
-    TestBed.createComponent(AppComponent);
-
-    tick(100);
+    const fixture = TestBed.createComponent(AppComponent);
+    await fixture.whenStable();
 
     expect(authSpy).toHaveBeenCalledWith();
     expect(checkStateSpy).toHaveBeenCalledWith(true);
     expect(getSubscriptionSpy).not.toHaveBeenCalled();
-  }));
+  });
 
-  it("should navigate to another page if the user is logged in and there's a redirect", fakeAsync(() => {
+  it("should navigate to another page if the user is logged in and there's a redirect", async () => {
     const authService = TestBed.inject(AuthService);
     const authSpy = spyOn(authService, "checkForLoggedInUser").and.returnValue(
       of({ ...mockAuthedUser, pushEnabled: true, autoRefresh: false }),
@@ -247,30 +237,29 @@ describe("AppComponent", () => {
     const route = TestBed.inject(ActivatedRoute);
     const paramMapSpy = spyOn(route.snapshot.queryParamMap, "get").and.returnValue("test");
 
-    TestBed.createComponent(AppComponent);
-
-    tick();
+    const fixture = TestBed.createComponent(AppComponent);
+    await fixture.whenStable();
 
     expect(authSpy).toHaveBeenCalledWith();
     expect(navigateSpy).toHaveBeenCalledWith(["/test"], { queryParams: {} });
     expect(paramMapSpy).toHaveBeenCalledWith("redirect");
-  }));
+  });
 
-  it("should register the teleport target", () => {
+  it("should register the teleport target", async () => {
     const teleportService = TestBed.inject(TeleportService);
     const createSpy = spyOn(teleportService, "createTeleportTarget");
 
     const fixture = TestBed.createComponent(AppComponent);
     const component = fixture.componentInstance;
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     expect(createSpy).toHaveBeenCalledWith("modalContainer", component.modalContainer);
   });
 
   // check the 'share' button is hidden
-  it("shouldn't show the share button if it's not supported", () => {
+  it("shouldn't show the share button if it's not supported", async () => {
     const fixture = TestBed.createComponent(AppComponent);
-    fixture.detectChanges();
+    await fixture.whenStable();
     const component = fixture.componentInstance;
     const componentHtml = fixture.nativeElement;
 
@@ -282,18 +271,18 @@ describe("AppComponent", () => {
   });
 
   // check the share method is called when the button is clicked
-  it("should call the share method when the button is clicked", () => {
+  it("should call the share method when the button is clicked", async () => {
     const fixture = TestBed.createComponent(AppComponent);
-    fixture.detectChanges();
+    await fixture.whenStable();
     const component = fixture.componentInstance;
     const componentHtml = fixture.nativeElement;
     const shareSpy = spyOn(component, "shareSite");
 
     component.canShare.set(true);
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     componentHtml.querySelector("#siteFooter").querySelectorAll(".textlessButton")[0].click();
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     expect(shareSpy).toHaveBeenCalledWith();
   });

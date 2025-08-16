@@ -31,7 +31,15 @@
 */
 
 // Angular imports
-import { Component, OnInit, HostListener, AfterViewInit, signal, computed } from "@angular/core";
+import {
+  Component,
+  HostListener,
+  AfterViewInit,
+  signal,
+  computed,
+  inject,
+  AfterViewChecked,
+} from "@angular/core";
 import { Router, RouterLink, NavigationEnd } from "@angular/router";
 import { faComments, faUserCircle, faCompass, faBell } from "@fortawesome/free-regular-svg-icons";
 import {
@@ -68,32 +76,44 @@ import SiteLogoSrc from "@/assets/img/Logo.svg";
     SearchFormComponent,
   ],
 })
-export class NavigationMenuComponent implements OnInit, AfterViewInit {
+export class NavigationMenuComponent implements AfterViewInit, AfterViewChecked {
+  protected authService = inject(AuthService);
+  protected itemsService = inject(ItemsService);
+  protected alertsService = inject(AlertsService);
+  private router = inject(Router);
+  private serviceWorkerM = inject(SWManager);
+  protected notificationService = inject(NotificationService);
   readonly showNotifications = signal(false);
   readonly showSearch = signal(false);
   readonly showTextPanel = signal(false);
-  readonly showMenu = signal(false);
+  readonly showMenuForCurrentWidth = signal(false);
+  readonly showMenuUserTriggered = signal(false);
+  readonly shouldMenuFloat = signal(false);
+  readonly showMenuButton = signal(true);
   readonly navMenuClass = computed(() => ({
     navLinks: true,
-    hidden: !this.showMenu(),
+    hidden: !this.showMenuForCurrentWidth(),
+    float: this.shouldMenuFloat(),
   }));
-  readonly showMenuButton = signal(false);
   readonly menuButtonClass = computed(() => ({
     navLink: true,
     hidden: !this.showMenuButton(),
   }));
   readonly currentlyActiveRoute = signal("/");
   readonly currentTextSize = signal(1);
+  readonly navLinksCount = computed(() => {
+    let navLinksCount = 3;
+    if (this.authService.canUser("read:messages")) navLinksCount += 1;
+    if (this.authService.canUser("post:post")) navLinksCount += 1;
+    if (this.authService.canUser("read:admin-board")) navLinksCount += 1;
+
+    return navLinksCount;
+  });
   readonly menuSize = computed(() => {
     // text, search and notifications, each is ~65px
     const smallerButtons = 3 * 65;
     // the logo is at most 100px
     const logo = 100;
-
-    // unauthenticated users have 3 buttons
-    let navLinksCount = 3;
-    if (this.authService.authenticated()) navLinksCount += 2;
-    if (this.authService.canUser("read:admin-board")) navLinksCount += 1;
 
     // nav icons are padded at most by 30px in regular text size,
     // and 50px in large text size
@@ -104,8 +124,7 @@ export class NavigationMenuComponent implements OnInit, AfterViewInit {
       50 +
       smallerButtons +
       logo +
-      navLinksCount * 30 * this.currentTextSize() +
-      navLinksCount * iconPadding
+      this.navLinksCount() * (45 * this.currentTextSize() + iconPadding)
     );
   });
   SiteLogoSrc = SiteLogoSrc;
@@ -119,35 +138,6 @@ export class NavigationMenuComponent implements OnInit, AfterViewInit {
   faTimes = faTimes;
   faTextHeight = faTextHeight;
   faArrowRightFromBracket = faArrowRightFromBracket;
-
-  constructor(
-    protected authService: AuthService,
-    protected itemsService: ItemsService,
-    protected alertsService: AlertsService,
-    private router: Router,
-    private serviceWorkerM: SWManager,
-    protected notificationService: NotificationService,
-  ) {}
-
-  /*
-  Function Name: ngOnInit()
-  Function Description: This method is automatically triggered by Angular upon
-                        page initiation. It triggers the registration of the ServiceWorker,
-                        as well keeping alert for any ServiceWorker that has been
-                        installed and is ready to be activated.
-  Parameters: None.
-  ----------------
-  Programmer: Shir Bar Lev.
-  */
-  ngOnInit() {
-    if (document.documentElement.clientWidth > 650) {
-      this.showMenu.set(true);
-      this.showMenuButton.set(false);
-    } else {
-      this.showMenu.set(false);
-      this.showMenuButton.set(true);
-    }
-  }
 
   /*
   Function Name: ngAfterViewInit()
@@ -165,19 +155,18 @@ export class NavigationMenuComponent implements OnInit, AfterViewInit {
         this.serviceWorkerM.updateSW();
 
         // if the menu was open and the user navigated to another page, close it
-        if (this.showMenu() && document.documentElement.clientWidth < 650) this.showMenu.set(false);
+        if (this.showMenuForCurrentWidth() && document.documentElement.clientWidth < 650)
+          this.showMenuForCurrentWidth.set(false);
         const currentUrl = event.url;
 
         // if the current URL is the main page
         // or the about page
         if (["/", "/about", "/login"].includes(currentUrl)) {
           this.currentlyActiveRoute.set(currentUrl);
+        } else if (currentUrl.startsWith("/messages")) {
+          this.currentlyActiveRoute.set("/messages");
           // if it's any of the messages/admin/new pages
-        } else if (
-          currentUrl.startsWith("/messages") ||
-          currentUrl.startsWith("/admin") ||
-          currentUrl.startsWith("/new")
-        ) {
+        } else if (currentUrl.startsWith("/admin") || currentUrl.startsWith("/new")) {
           this.currentlyActiveRoute.set(`/${currentUrl.split("/")[1]}`);
         } else if (currentUrl.startsWith("/user")) {
           // if the user is logged in and viewing their own page, or
@@ -191,7 +180,12 @@ export class NavigationMenuComponent implements OnInit, AfterViewInit {
           }
         }
       });
+  }
 
+  /**
+   * Angular's AfterViewChecked lifecycle hook.
+   */
+  ngAfterViewChecked(): void {
     this.checkMenuSize();
   }
 
@@ -222,7 +216,7 @@ export class NavigationMenuComponent implements OnInit, AfterViewInit {
     // if the viewport is smaller than 650px, the user opened the panel through the
     // menu, which needs to be closed
     if (width < 650) {
-      this.showMenu.set(false);
+      this.showMenuForCurrentWidth.set(false);
     }
   }
 
@@ -243,7 +237,7 @@ export class NavigationMenuComponent implements OnInit, AfterViewInit {
       // if the viewport is smaller than 650px, the user opened the panel through the
       // menu, which needs to be closed
       if (width < 650) {
-        this.showMenu.set(true);
+        this.showMenuForCurrentWidth.set(true);
       }
     }
     // otherwise show it
@@ -251,7 +245,7 @@ export class NavigationMenuComponent implements OnInit, AfterViewInit {
       // if the viewport is smaller than 650px, the user opened the panel through the
       // menu, which needs to be closed
       if (width < 650) {
-        this.showMenu.set(false);
+        this.showMenuForCurrentWidth.set(false);
       }
 
       this.showSearch.set(true);
@@ -267,7 +261,7 @@ export class NavigationMenuComponent implements OnInit, AfterViewInit {
   Programmer: Shir Bar Lev.
   */
   toggleMenu() {
-    this.showMenu.set(!this.showMenu());
+    this.showMenuUserTriggered.set(!this.showMenuForCurrentWidth());
   }
 
   /*
@@ -284,12 +278,14 @@ export class NavigationMenuComponent implements OnInit, AfterViewInit {
     const navMenu = document.getElementById("navMenu") as HTMLDivElement;
 
     if (width > 650 && this.menuSize() < navMenu.offsetWidth) {
-      this.showMenu.set(true);
+      this.showMenuForCurrentWidth.set(true);
       this.showMenuButton.set(false);
+      this.shouldMenuFloat.set(false);
     } else {
-      if (this.showMenu()) {
+      if (this.showMenuForCurrentWidth()) {
         this.showMenuButton.set(true);
-        this.showMenu.set(false);
+        this.showMenuForCurrentWidth.set(false);
+        this.shouldMenuFloat.set(true);
       }
     }
   }
@@ -354,10 +350,12 @@ export class NavigationMenuComponent implements OnInit, AfterViewInit {
     // if the larger text makes the navigation menu too long, turn it back
     // to the small-viewport menu
     if (this.menuSize() >= navMenu.offsetWidth) {
-      this.showMenu.set(false);
+      this.showMenuForCurrentWidth.set(this.showMenuUserTriggered());
       this.showMenuButton.set(true);
+      this.shouldMenuFloat.set(true);
     } else {
-      this.showMenu.set(true);
+      this.showMenuForCurrentWidth.set(true);
+      this.shouldMenuFloat.set(false);
 
       if (document.documentElement.clientWidth > 650) {
         this.showMenuButton.set(false);

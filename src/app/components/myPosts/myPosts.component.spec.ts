@@ -34,15 +34,11 @@ import { TestBed } from "@angular/core/testing";
 import { provideRouter } from "@angular/router";
 import {} from "jasmine";
 import { APP_BASE_HREF } from "@angular/common";
-import {
-  BrowserDynamicTestingModule,
-  platformBrowserDynamicTesting,
-} from "@angular/platform-browser-dynamic/testing";
 import { Component, signal } from "@angular/core";
 import { of } from "rxjs";
 import { By } from "@angular/platform-browser";
 import { NO_ERRORS_SCHEMA } from "@angular/core";
-import { MockComponent, MockProvider } from "ng-mocks";
+import { MockProvider } from "ng-mocks";
 
 import { MyPostsComponent } from "./myPosts.component";
 import { AuthService } from "@app/services/auth.service";
@@ -52,6 +48,7 @@ import { PostComponent } from "@common/post/post.component";
 import { ItemDeleteFormComponent } from "@forms/itemDeleteForm/itemDeleteForm.component";
 import { ApiClientService } from "@app/services/apiClient.service";
 import { SWManager } from "@app/services/sWManager.service";
+import { MockItemDeleteFormComponent } from "@tests/mockForms";
 
 // Mock User Page for testing the sub-component
 // ==================================================
@@ -89,10 +86,6 @@ describe("MyPostsComponent", () => {
     const MockSWManager = MockProvider(SWManager, {
       fetchPosts: () => new Promise(() => {}),
     });
-    const MockItemDeleteFormComponent = MockComponent(ItemDeleteFormComponent);
-
-    TestBed.resetTestEnvironment();
-    TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
 
     TestBed.configureTestingModule({
       schemas: [NO_ERRORS_SCHEMA],
@@ -135,10 +128,10 @@ describe("MyPostsComponent", () => {
   });
 
   // Check that the component is created
-  it("should create the component", () => {
+  it("should create the component", async () => {
     const upFixture = TestBed.createComponent(MockUserPageComponent);
     const userPage = upFixture.componentInstance;
-    upFixture.detectChanges();
+    await upFixture.whenStable();
     const myPosts: MyPostsComponent =
       upFixture.debugElement.children[0].children[0].componentInstance;
 
@@ -147,9 +140,9 @@ describe("MyPostsComponent", () => {
   });
 
   // Check that all the popup-related variables are set to false at first
-  it("should have all popup variables set to false", () => {
+  it("should have all popup variables set to false", async () => {
     const upFixture = TestBed.createComponent(MockUserPageComponent);
-    upFixture.detectChanges();
+    await upFixture.whenStable();
     const myPosts: MyPostsComponent =
       upFixture.debugElement.children[0].children[0].componentInstance;
 
@@ -157,11 +150,11 @@ describe("MyPostsComponent", () => {
   });
 
   // Check that the component gets the user ID correctly
-  it("should get the correct user ID", () => {
+  it("should get the correct user ID", async () => {
     const upFixture = TestBed.createComponent(MockUserPageComponent);
     const userPage = upFixture.componentInstance;
     userPage.userId = 1;
-    upFixture.detectChanges();
+    await upFixture.whenStable();
     const myPosts: MyPostsComponent =
       upFixture.debugElement.children[0].children[0].componentInstance;
 
@@ -169,11 +162,11 @@ describe("MyPostsComponent", () => {
     expect(myPosts.user()).toBe("other");
   });
 
-  it("should fetch posts on init", () => {
+  it("should fetch posts on init", async () => {
     const upFixture = TestBed.createComponent(MockUserPageComponent);
     const userPage = upFixture.componentInstance;
     userPage.userId = 1;
-    upFixture.detectChanges();
+    await upFixture.whenStable();
     const myPosts: MyPostsComponent =
       upFixture.debugElement.children[0].children[0].componentInstance;
     const fetchSpy = spyOn(myPosts, "fetchPosts");
@@ -183,21 +176,21 @@ describe("MyPostsComponent", () => {
     expect(fetchSpy).toHaveBeenCalledWith();
   });
 
-  it("should set the user ID to the logged in user's ID if no ID is provided", () => {
+  it("should set the user ID to the logged in user's ID if no ID is provided", async () => {
     const fixture = TestBed.createComponent(MyPostsComponent);
     const myPosts = fixture.componentInstance;
-    fixture.detectChanges();
+    await fixture.whenStable();
     const authService = TestBed.inject(AuthService);
 
     expect(myPosts.userID).toBe(authService.userData()!.id as number);
     expect(myPosts.user()).toBe("self");
   });
 
-  it("should fetch posts from the server", () => {
+  it("should fetch posts from the server", async () => {
     const upFixture = TestBed.createComponent(MockUserPageComponent);
     const userPage = upFixture.componentInstance;
     userPage.userId = 1;
-    upFixture.detectChanges();
+    await upFixture.whenStable();
     const myPosts: MyPostsComponent =
       upFixture.debugElement.children[0].children[0].componentInstance;
     const idbSpy = spyOn(myPosts, "fetchPostsFromIdb").and.returnValue(
@@ -255,28 +248,28 @@ describe("MyPostsComponent", () => {
   });
 
   // Check the popup exits when 'false' is emitted
-  it("should change mode when the event emitter emits false - post delete", () => {
+  it("should change mode when the event emitter emits false - post delete", async () => {
     // create the component
     const fixture = TestBed.createComponent(MockUserPageComponent);
     const userPage = fixture.componentInstance;
     userPage.userId = 4;
-    fixture.detectChanges();
+    await fixture.whenStable();
+
     const myPosts: MyPostsComponent =
       fixture.debugElement.children[0].children[0].componentInstance;
     const changeSpy = spyOn(myPosts, "changeMode").and.callThrough();
     myPosts.posts.set(mockPosts);
     myPosts.isIdbFetchLoading.set(false);
-    fixture.detectChanges();
 
     // start the popup
     myPosts.deleteMode.set(true);
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     // exit the popup
     const popup = fixture.debugElement.children[0].children[0].query(By.css("item-delete-form"))
       .componentInstance as ItemDeleteFormComponent;
     popup.editMode.emit(false);
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     // check the popup is exited
     expect(changeSpy).toHaveBeenCalledWith(false);
@@ -284,18 +277,19 @@ describe("MyPostsComponent", () => {
   });
 
   // Check that the popup is opened when clicking 'delete all'
-  it("should open the popup upon deleting all", () => {
+  it("should open the popup upon deleting all", async () => {
     const fixture = TestBed.createComponent(MockUserPageComponent);
     const userPage = fixture.componentInstance;
     userPage.userId = 4;
-    fixture.detectChanges();
+    await fixture.whenStable();
+
     const myPosts: MyPostsComponent =
       fixture.debugElement.children[0].children[0].componentInstance;
     const myPostsDOM = fixture.debugElement.children[0].children[0].nativeElement;
     const deleteSpy = spyOn(myPosts, "deleteAllPosts").and.callThrough();
     myPosts.posts.set(mockPosts);
     myPosts.isIdbFetchLoading.set(false);
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     // before the click
     expect(myPosts.deleteMode()).toBeFalse();
@@ -303,7 +297,7 @@ describe("MyPostsComponent", () => {
 
     // trigger click
     myPostsDOM.querySelector("#deleteAll").click();
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     // after the click
     expect(myPosts.deleteMode()).toBeTrue();
@@ -312,11 +306,12 @@ describe("MyPostsComponent", () => {
     expect(myPostsDOM.querySelector("item-delete-form")).toBeTruthy();
   });
 
-  it("continues to the next page", () => {
+  it("continues to the next page", async () => {
     const fixture = TestBed.createComponent(MockUserPageComponent);
     const userPage = fixture.componentInstance;
     userPage.userId = 1;
-    fixture.detectChanges();
+    await fixture.whenStable();
+
     const myPosts: MyPostsComponent =
       fixture.debugElement.children[0].children[0].componentInstance;
     const myPostsDOM = fixture.debugElement.children[0].children[0].nativeElement;
@@ -325,7 +320,7 @@ describe("MyPostsComponent", () => {
     myPosts.posts.set(mockPosts);
     myPosts.isIdbFetchLoading.set(false);
     myPosts.totalPages.set(2);
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     // change the page
     myPostsDOM.querySelectorAll(".nextButton")[0].click();
@@ -335,11 +330,12 @@ describe("MyPostsComponent", () => {
     expect(myPosts.currentPage()).toEqual(2);
   });
 
-  it("goes back to the previous page", () => {
+  it("goes back to the previous page", async () => {
     const fixture = TestBed.createComponent(MockUserPageComponent);
     const userPage = fixture.componentInstance;
     userPage.userId = 1;
-    fixture.detectChanges();
+    await fixture.whenStable();
+
     const myPosts: MyPostsComponent =
       fixture.debugElement.children[0].children[0].componentInstance;
     const myPostsDOM = fixture.debugElement.children[0].children[0].nativeElement;
@@ -349,7 +345,7 @@ describe("MyPostsComponent", () => {
     myPosts.isIdbFetchLoading.set(false);
     myPosts.totalPages.set(2);
     myPosts.currentPage.set(2);
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     // change the page
     myPostsDOM.querySelectorAll(".prevButton")[0].click();
@@ -359,52 +355,53 @@ describe("MyPostsComponent", () => {
     expect(myPosts.currentPage()).toEqual(1);
   });
 
-  it("should remove a deleted post", () => {
+  it("should remove a deleted post", async () => {
     // create the component
     const fixture = TestBed.createComponent(MockUserPageComponent);
     const userPage = fixture.componentInstance;
     userPage.userId = 4;
-    fixture.detectChanges();
+    await fixture.whenStable();
+
     const myPosts: MyPostsComponent =
       fixture.debugElement.children[0].children[0].componentInstance;
     spyOn(myPosts, "fetchPosts");
     myPosts.posts.set(mockPosts);
     myPosts.isIdbFetchLoading.set(false);
     const removeSpy = spyOn(myPosts, "removeDeletedPost").and.callThrough();
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     const singlePost = fixture.debugElement.query(By.css("app-single-post"))
       .componentInstance as PostComponent;
     singlePost.deletedId.emit(2);
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     expect(removeSpy).toHaveBeenCalledWith(2);
     expect(myPosts.posts().length).toBe(1);
     expect(myPosts.posts()[0].id).not.toBe(2);
   });
 
-  it("should delete all posts", () => {
+  it("should delete all posts", async () => {
     // create the component
     const fixture = TestBed.createComponent(MockUserPageComponent);
     const userPage = fixture.componentInstance;
     userPage.userId = 4;
-    fixture.detectChanges();
+    await fixture.whenStable();
+
     const myPosts: MyPostsComponent =
       fixture.debugElement.children[0].children[0].componentInstance;
     spyOn(myPosts, "fetchPosts");
     myPosts.posts.set(mockPosts);
     myPosts.isIdbFetchLoading.set(false);
     const updateListSpy = spyOn(myPosts, "updatePostsList").and.callThrough();
-    fixture.detectChanges();
 
     // start the popup
     myPosts.deleteMode.set(true);
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     const singlePost = fixture.debugElement.query(By.css("item-delete-form"))
       .componentInstance as ItemDeleteFormComponent;
     singlePost.deleted.emit(4);
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     expect(updateListSpy).toHaveBeenCalledWith();
     expect(myPosts.posts().length).toBe(0);

@@ -31,7 +31,7 @@
 */
 
 // Angular imports
-import { Injectable, computed, signal } from "@angular/core";
+import { Injectable, computed, inject, signal } from "@angular/core";
 import { HttpErrorResponse } from "@angular/common/http";
 import { BehaviorSubject, tap } from "rxjs";
 
@@ -52,6 +52,9 @@ import {
   providedIn: "root",
 })
 export class ItemsService {
+  private alertsService = inject(AlertsService);
+  private serviceWorkerM = inject(SWManager);
+  private apiClient = inject(ApiClientService);
   // search variables
   readonly isSearching = signal(false);
   readonly userSearchResults = signal<OtherUser[]>([]);
@@ -71,13 +74,6 @@ export class ItemsService {
   // Posts variables
   currentlyOpenMenu = new BehaviorSubject("");
   receivedAHug = new BehaviorSubject(0);
-
-  // CTOR
-  constructor(
-    private alertsService: AlertsService,
-    private serviceWorkerM: SWManager,
-    private apiClient: ApiClientService,
-  ) {}
 
   // POST-RELATED METHODS
   /*

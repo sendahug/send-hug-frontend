@@ -31,7 +31,7 @@
 */
 
 // Angular imports
-import { Component, Output, EventEmitter, OnInit, input } from "@angular/core";
+import { Component, Output, EventEmitter, OnInit, input, inject } from "@angular/core";
 import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { CommonModule } from "@angular/common";
 
@@ -53,6 +53,11 @@ import { TeleportDirective } from "@app/directives/teleport.directive";
   imports: [CommonModule, ReactiveFormsModule, PopUpComponent, TeleportDirective],
 })
 export class DisplayNameEditFormComponent implements OnInit {
+  public authService = inject(AuthService);
+  private adminService = inject(AdminService);
+  private validationService = inject(ValidationService);
+  private alertService = inject(AlertsService);
+  private fb = inject(FormBuilder);
   // item to edit
   readonly editedItem = input<PartialUser>();
   @Output() updatedDetails = new EventEmitter<UpdatedUserReportResponse>();
@@ -65,15 +70,6 @@ export class DisplayNameEditFormComponent implements OnInit {
       [Validators.required, this.validationService.validateItemAgainst("displayName")],
     ],
   });
-
-  // CTOR
-  constructor(
-    public authService: AuthService,
-    private adminService: AdminService,
-    private validationService: ValidationService,
-    private alertService: AlertsService,
-    private fb: FormBuilder,
-  ) {}
 
   /*
   Function Name: ngOnInit()

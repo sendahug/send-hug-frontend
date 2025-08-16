@@ -33,12 +33,8 @@
 import { TestBed } from "@angular/core/testing";
 import {} from "jasmine";
 import { APP_BASE_HREF, CommonModule } from "@angular/common";
-import {
-  BrowserDynamicTestingModule,
-  platformBrowserDynamicTesting,
-} from "@angular/platform-browser-dynamic/testing";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
-import { provideZoneChangeDetection } from "@angular/core";
+import { provideZonelessChangeDetection } from "@angular/core";
 import { provideRouter } from "@angular/router";
 
 // App imports
@@ -47,14 +43,11 @@ import { ErrorPageComponent } from "./errorPage.component";
 describe("ErrorPageComponent", () => {
   // Before each test, configure testing environment
   beforeEach(() => {
-    TestBed.resetTestEnvironment();
-    TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
-
     TestBed.configureTestingModule({
       imports: [FontAwesomeModule, CommonModule, ErrorPageComponent],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
-        provideZoneChangeDetection({ eventCoalescing: true }),
+        provideZonelessChangeDetection(),
         provideRouter([]),
       ],
     }).compileComponents();
@@ -69,7 +62,7 @@ describe("ErrorPageComponent", () => {
   });
 
   // Check that the error page has the right error message
-  it("should have an error message", () => {
+  it("should have an error message", async () => {
     const fixture = TestBed.createComponent(ErrorPageComponent);
     const errorPage = fixture.componentInstance;
     const errorPageDOM = fixture.nativeElement;
@@ -78,8 +71,7 @@ describe("ErrorPageComponent", () => {
       message: `The page you were looking for doesn't exist.`,
       code: 404,
     };
-
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     expect(errorPage.error()).toEqual(error);
     expect(errorPageDOM.querySelectorAll("h3")[0].textContent).toBe(error.title);
@@ -87,18 +79,16 @@ describe("ErrorPageComponent", () => {
   });
 
   // Check that the 'back' method is called when clicking the back button
-  it("should call back method when clicking the back button", () => {
+  it("should call back method when clicking the back button", async () => {
     const fixture = TestBed.createComponent(ErrorPageComponent);
     const errorPage = fixture.componentInstance;
     const errorPageDOM = fixture.nativeElement;
     const backSpy = spyOn(errorPage, "goBack").and.callThrough();
     const mockLocationSpy = spyOn(errorPage["location"], "back");
-
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     // click the back button
     errorPageDOM.querySelector("#backBtn").click();
-    fixture.detectChanges();
 
     expect(backSpy).toHaveBeenCalledWith();
     expect(mockLocationSpy).toHaveBeenCalledWith();

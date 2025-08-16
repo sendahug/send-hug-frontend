@@ -31,7 +31,7 @@
 */
 
 // Angular imports
-import { Component, OnInit, Input, signal, computed } from "@angular/core";
+import { Component, OnInit, Input, signal, computed, inject } from "@angular/core";
 import { from, map, switchMap, tap } from "rxjs";
 import { CommonModule } from "@angular/common";
 import { ActivatedRoute, Router } from "@angular/router";
@@ -54,6 +54,11 @@ import { type MyPostsResponse } from "@app/interfaces/api";
   imports: [LoaderComponent, PostComponent, ItemDeleteFormComponent, CommonModule],
 })
 export class MyPostsComponent implements OnInit {
+  public authService = inject(AuthService);
+  private swManager = inject(SWManager);
+  private apiClient = inject(ApiClientService);
+  private router = inject(Router);
+  private route = inject(ActivatedRoute);
   readonly isLoading = signal(false);
   readonly isIdbFetchLoading = signal(false);
   readonly posts = signal<PostGet[]>([]);
@@ -89,13 +94,7 @@ export class MyPostsComponent implements OnInit {
   readonly itemType = "Post";
 
   // CTOR
-  constructor(
-    public authService: AuthService,
-    private swManager: SWManager,
-    private apiClient: ApiClientService,
-    private router: Router,
-    private route: ActivatedRoute,
-  ) {
+  constructor() {
     if (!this._userId()) {
       this._userId.set(this.authService.userData()!.id!);
     }

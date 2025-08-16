@@ -34,12 +34,8 @@ import { TestBed } from "@angular/core/testing";
 import { provideRouter, RouterLink } from "@angular/router";
 import {} from "jasmine";
 import { APP_BASE_HREF, CommonModule } from "@angular/common";
-import {
-  BrowserDynamicTestingModule,
-  platformBrowserDynamicTesting,
-} from "@angular/platform-browser-dynamic/testing";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
-import { provideZoneChangeDetection } from "@angular/core";
+import { provideZonelessChangeDetection } from "@angular/core";
 
 // App imports
 import { SupportPageComponent } from "./supportPage.component";
@@ -47,35 +43,32 @@ import { SupportPageComponent } from "./supportPage.component";
 describe("Support Page", () => {
   // Before each test, configure testing environment
   beforeEach(() => {
-    TestBed.resetTestEnvironment();
-    TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
-
     TestBed.configureTestingModule({
       imports: [CommonModule, FontAwesomeModule, RouterLink, SupportPageComponent],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
-        provideZoneChangeDetection({ eventCoalescing: true }),
+        provideZonelessChangeDetection(),
         provideRouter([]),
       ],
     }).compileComponents();
   });
 
   // Check the component is create
-  it("should create the component", () => {
+  it("should create the component", async () => {
     const fixture = TestBed.createComponent(SupportPageComponent);
     const supportPage = fixture.componentInstance;
     const supportPageDOM = fixture.nativeElement;
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     expect(supportPage).toBeTruthy();
     expect(supportPageDOM).toBeTruthy();
   });
 
-  it("should add the FAQ items to the navigation list", () => {
+  it("should add the FAQ items to the navigation list", async () => {
     const fixture = TestBed.createComponent(SupportPageComponent);
     const supportPage = fixture.componentInstance;
     const supportPageDOM = fixture.nativeElement;
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     expect(supportPage.faqItems().length).toBeGreaterThan(0);
     expect(supportPageDOM.querySelectorAll(".supportNavLink").length).toEqual(

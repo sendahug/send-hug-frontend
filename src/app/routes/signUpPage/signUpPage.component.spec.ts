@@ -33,16 +33,12 @@
 import { TestBed } from "@angular/core/testing";
 import {} from "jasmine";
 import { APP_BASE_HREF, CommonModule } from "@angular/common";
-import {
-  BrowserDynamicTestingModule,
-  platformBrowserDynamicTesting,
-} from "@angular/platform-browser-dynamic/testing";
 import { provideRouter, RouterLink } from "@angular/router";
 import { NO_ERRORS_SCHEMA, signal } from "@angular/core";
 import { ReactiveFormsModule } from "@angular/forms";
 import { User as FirebaseUser } from "firebase/auth";
 import { of } from "rxjs";
-import { provideZoneChangeDetection } from "@angular/core";
+import { provideZonelessChangeDetection } from "@angular/core";
 import { MockProvider } from "ng-mocks";
 
 import { SignUpPageComponent } from "./signUpPage.component";
@@ -59,15 +55,12 @@ describe("SignUpPageComponent", () => {
       userData: signal(undefined),
     });
 
-    TestBed.resetTestEnvironment();
-    TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
-
     TestBed.configureTestingModule({
       schemas: [NO_ERRORS_SCHEMA],
       imports: [ReactiveFormsModule, CommonModule, RouterLink, SignUpPageComponent],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
-        provideZoneChangeDetection({ eventCoalescing: true }),
+        provideZonelessChangeDetection(),
         provideRouter([]),
         MockAuthService,
       ],
@@ -84,18 +77,18 @@ describe("SignUpPageComponent", () => {
     expect(signUpPage).toBeTruthy();
   });
 
-  it("should show the signup form if the user isn't logged in", () => {
+  it("should show the signup form if the user isn't logged in", async () => {
     const fixture = TestBed.createComponent(SignUpPageComponent);
     const signUpPage = fixture.componentInstance;
     const signUpPageDOM = fixture.nativeElement;
     signUpPage["authService"].authenticated.set(false);
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     expect(signUpPageDOM.querySelector("#loginBox")).toBeDefined();
     expect(signUpPageDOM.querySelector("#logoutBox")).toBeNull();
   });
 
-  it("should prevent users not logged in with firebase from signing up", () => {
+  it("should prevent users not logged in with firebase from signing up", async () => {
     const fixture = TestBed.createComponent(SignUpPageComponent);
     const signUpPage = fixture.componentInstance;
     const signUpPageDOM = fixture.nativeElement;
@@ -107,13 +100,12 @@ describe("SignUpPageComponent", () => {
     ).and.returnValue(null);
     const createUserSpy = spyOn(signUpPage["authService"], "createUser");
     const alertsSpy = spyOn(signUpPage["alertsService"], "createAlert");
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     signUpPageDOM.querySelector("#displayName").value = "name";
     signUpPageDOM.querySelector("#displayName").dispatchEvent(new Event("input"));
     signUpPageDOM.querySelector("#acceptedTerms").click();
     signUpPageDOM.querySelector("#logIn").click();
-    fixture.detectChanges();
 
     expect(signUpSpy).toHaveBeenCalledWith();
     expect(currentUserSpy).toHaveBeenCalledWith();
@@ -125,7 +117,7 @@ describe("SignUpPageComponent", () => {
     });
   });
 
-  it("should prevent signed in users from registering again", () => {
+  it("should prevent signed in users from registering again", async () => {
     const fixture = TestBed.createComponent(SignUpPageComponent);
     const signUpPage = fixture.componentInstance;
     signUpPage["authService"].authenticated.set(true);
@@ -138,7 +130,7 @@ describe("SignUpPageComponent", () => {
     const alertsSpy = spyOn(signUpPage["alertsService"], "createAlert");
     signUpPage.signUpForm.controls.displayName.setValue("name");
     signUpPage.signUpForm.controls.acceptedTerms.setValue(true);
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     signUpPage.signUp();
 
@@ -151,7 +143,7 @@ describe("SignUpPageComponent", () => {
     });
   });
 
-  it("should prevent invalid sign up forms from being submitted - display name too long", () => {
+  it("should prevent invalid sign up forms from being submitted - display name too long", async () => {
     const fixture = TestBed.createComponent(SignUpPageComponent);
     const signUpPage = fixture.componentInstance;
     const signUpPageDOM = fixture.nativeElement;
@@ -163,7 +155,7 @@ describe("SignUpPageComponent", () => {
     ).and.returnValue(mockFirebaseUser);
     const createUserSpy = spyOn(signUpPage["authService"], "createUser");
     const alertsSpy = spyOn(signUpPage["alertsService"], "createAlert");
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     let nameStr = "";
     for (let i = 0; i <= 20; i++) {
@@ -174,7 +166,6 @@ describe("SignUpPageComponent", () => {
     signUpPageDOM.querySelector("#displayName").dispatchEvent(new Event("input"));
     signUpPageDOM.querySelector("#acceptedTerms").click();
     signUpPageDOM.querySelector("#logIn").click();
-    fixture.detectChanges();
 
     expect(signUpSpy).toHaveBeenCalledWith();
     expect(currentUserSpy).toHaveBeenCalledWith();
@@ -186,7 +177,7 @@ describe("SignUpPageComponent", () => {
     });
   });
 
-  it("should prevent invalid sign up forms from being submitted - no display name", () => {
+  it("should prevent invalid sign up forms from being submitted - no display name", async () => {
     const fixture = TestBed.createComponent(SignUpPageComponent);
     const signUpPage = fixture.componentInstance;
     const signUpPageDOM = fixture.nativeElement;
@@ -198,11 +189,10 @@ describe("SignUpPageComponent", () => {
     ).and.returnValue(mockFirebaseUser);
     const createUserSpy = spyOn(signUpPage["authService"], "createUser");
     const alertsSpy = spyOn(signUpPage["alertsService"], "createAlert");
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     signUpPageDOM.querySelector("#acceptedTerms").click();
     signUpPageDOM.querySelector("#logIn").click();
-    fixture.detectChanges();
 
     expect(signUpSpy).toHaveBeenCalledWith();
     expect(currentUserSpy).toHaveBeenCalledWith();
@@ -213,7 +203,7 @@ describe("SignUpPageComponent", () => {
     });
   });
 
-  it("should prevent invalid sign up forms from being submitted - terms not accepted", () => {
+  it("should prevent invalid sign up forms from being submitted - terms not accepted", async () => {
     const fixture = TestBed.createComponent(SignUpPageComponent);
     const signUpPage = fixture.componentInstance;
     const signUpPageDOM = fixture.nativeElement;
@@ -225,14 +215,13 @@ describe("SignUpPageComponent", () => {
     ).and.returnValue(mockFirebaseUser);
     const createUserSpy = spyOn(signUpPage["authService"], "createUser");
     const alertsSpy = spyOn(signUpPage["alertsService"], "createAlert");
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     signUpPageDOM.querySelector("#displayName").value = "name";
     signUpPageDOM.querySelector("#displayName").dispatchEvent(new Event("input"));
     signUpPageDOM.querySelector("#acceptedTerms").click();
     signUpPageDOM.querySelector("#acceptedTerms").click();
     signUpPageDOM.querySelector("#logIn").click();
-    fixture.detectChanges();
 
     expect(signUpSpy).toHaveBeenCalledWith();
     expect(currentUserSpy).toHaveBeenCalledWith();
@@ -244,7 +233,7 @@ describe("SignUpPageComponent", () => {
     });
   });
 
-  it("should create a new user via the AuthService", () => {
+  it("should create a new user via the AuthService", async () => {
     const fixture = TestBed.createComponent(SignUpPageComponent);
     const signUpPage = fixture.componentInstance;
     const signUpPageDOM = fixture.nativeElement;
@@ -255,20 +244,19 @@ describe("SignUpPageComponent", () => {
       of({ ...mockAuthedUser }),
     );
     const routerSpy = spyOn(signUpPage["router"], "navigate");
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     signUpPageDOM.querySelector("#displayName").value = "name";
     signUpPageDOM.querySelector("#displayName").dispatchEvent(new Event("input"));
     signUpPageDOM.querySelector("#acceptedTerms").click();
     signUpPageDOM.querySelector("#logIn").click();
-    fixture.detectChanges();
 
     expect(signUpSpy).toHaveBeenCalledWith();
     expect(createUserSpy).toHaveBeenCalledWith("name", false);
     expect(routerSpy).toHaveBeenCalledWith(["/user"]);
   });
 
-  it("should log out", () => {
+  it("should log out", async () => {
     const fixture = TestBed.createComponent(SignUpPageComponent);
     const signUpPage = fixture.componentInstance;
     const signUpPageDOM = fixture.nativeElement;
@@ -277,23 +265,22 @@ describe("SignUpPageComponent", () => {
     const signOutRedirectSpy = spyOn(signUpPage, "signOutAndRedirect").and.callThrough();
     const logOutSpy = spyOn(signUpPage["authService"], "logout");
     const routerSpy = spyOn(signUpPage["router"], "navigate");
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     signUpPageDOM.querySelector("#logOut").click();
-    fixture.detectChanges();
 
     expect(signOutRedirectSpy).toHaveBeenCalledWith();
     expect(logOutSpy).toHaveBeenCalledWith();
     expect(routerSpy).toHaveBeenCalledWith(["/login"]);
   });
 
-  it("should show an error message if the user is logged in", () => {
+  it("should show an error message if the user is logged in", async () => {
     const fixture = TestBed.createComponent(SignUpPageComponent);
     const signUpPage = fixture.componentInstance;
     const signUpPageDOM = fixture.nativeElement;
     signUpPage["authService"].authenticated.set(true);
     signUpPage["authService"].userData.set({ ...mockAuthedUser });
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     expect(signUpPageDOM.querySelector("#loginBox")).toBeNull();
     expect(signUpPageDOM.querySelector("#logoutBox")).toBeDefined();

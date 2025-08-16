@@ -41,35 +41,21 @@ describe("Send A Hug Router", () => {
   // check the correct sub-route is shown for those paths that have sub-routes
   // TODO: Figure out why this isn't registering auth
   it("should show the correct sub-route - messages", () => {
-    // inbox
-    cy.visit("http://localhost:3000/messages/inbox");
-    cy.url().should("equal", "http://localhost:3000/messages/inbox");
-    cy.get("app-messages").should("be.visible").should("not.be.undefined");
-    cy.get("h1").eq(0).should("have.text", "inbox");
-    // check messages route is marked active
-    cy.get(".navLink").eq(2).should("have.class", "active");
-
-    // outbox
-    cy.visit("http://localhost:3000/messages/outbox");
-    cy.url().should("equal", "http://localhost:3000/messages/outbox");
-    cy.get("app-messages").should("be.visible").should("not.be.undefined");
-    cy.get("h1").eq(0).should("have.text", "outbox");
-    // check messages route is marked active
-    cy.get(".navLink").eq(2).should("have.class", "active");
-
     // threads
-    cy.visit("http://localhost:3000/messages/threads");
-    cy.url().should("equal", "http://localhost:3000/messages/threads");
+    cy.visit("http://localhost:3000/messages");
+    cy.url().should("equal", "http://localhost:3000/messages");
     cy.get("app-messages").should("be.visible").should("not.be.undefined");
-    cy.get("h1").eq(0).should("have.text", "threads");
+    cy.get("h1").eq(0).should("have.text", "Messages");
+    cy.get("#breadcrumb").should("not.exist");
     // check messages route is marked active
     cy.get(".navLink").eq(2).should("have.class", "active");
 
     // thread
-    cy.visit("http://localhost:3000/messages/thread/1");
-    cy.url().should("equal", "http://localhost:3000/messages/thread/1");
+    cy.visit("http://localhost:3000/messages?threadId=1");
+    cy.url().should("equal", "http://localhost:3000/messages?threadId=1");
     cy.get("app-messages").should("be.visible").should("not.be.undefined");
-    cy.get("h1").eq(0).should("have.text", "thread");
+    cy.get("h1").eq(0).should("have.text", "Messages");
+    cy.get("#breadcrumb").should("have.text", "Messages / Thread 1");
     // check messages route is marked active
     cy.get(".navLink").eq(2).should("have.class", "active");
   });

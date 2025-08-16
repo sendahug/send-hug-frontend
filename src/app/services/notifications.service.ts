@@ -31,7 +31,7 @@
 */
 
 // Angular imports
-import { Injectable, signal } from "@angular/core";
+import { inject, Injectable, signal } from "@angular/core";
 import { SwPush } from "@angular/service-worker";
 import { interval, Subscription, Observable, tap } from "rxjs";
 
@@ -53,6 +53,10 @@ export type ToggleButtonOption = "Enable" | "Disable";
   providedIn: "root",
 })
 export class NotificationService {
+  private alertsService = inject(AlertsService);
+  private swPush = inject(SwPush);
+  private serviceWorkerM = inject(SWManager);
+  private apiClient = inject(ApiClientService);
   readonly publicKey = import.meta.env["VITE_PUBLIC_KEY"];
   // push notifications variables
   notificationsSub: PushSubscription | undefined;
@@ -65,12 +69,15 @@ export class NotificationService {
   refreshSub: Subscription | undefined;
 
   // CTOR
-  constructor(
-    private alertsService: AlertsService,
-    private swPush: SwPush,
-    private serviceWorkerM: SWManager,
-    private apiClient: ApiClientService,
-  ) {
+  constructor() {
+    this.listenToSWMessages();
+  }
+
+  /**
+   * Adds an event listener (for message events) to the ServiceWorker.
+   * Made for isolation as it's problematic to patch the global SW.
+   */
+  listenToSWMessages() {
     navigator.serviceWorker.addEventListener("message", this.renewPushSubscription);
   }
 
@@ -247,24 +254,24 @@ export class NotificationService {
       this.resubscribeCalls = 0;
     }
 
-    if (event.data.action == "resubscribe" && this.resubscribeCalls < 2) {
-      this.resubscribeCalls++;
+    if (event.data.action != "resubscribe" || this.resubscribeCalls >= 2) return;
 
-      // request a new push subscription
-      this.requestSubscription().then((subscription) => {
-        // update the saved subscription in the database
-        this.apiClient
-          .patch<CreateUpdatePushSubscriptionResponse>(
-            `push_subscriptions/${this.subId}`,
-            JSON.stringify(subscription),
-          )
-          .subscribe({
-            next: (response) => {
-              this.subId = response.subId;
-            },
-          });
-      });
-    }
+    this.resubscribeCalls++;
+
+    // request a new push subscription
+    return this.requestSubscription().then((subscription) => {
+      // update the saved subscription in the database
+      this.apiClient
+        .patch<CreateUpdatePushSubscriptionResponse>(
+          `push_subscriptions/${this.subId}`,
+          JSON.stringify(subscription),
+        )
+        .subscribe({
+          next: (response) => {
+            this.subId = response.subId;
+          },
+        });
+    });
   }
 
   /**

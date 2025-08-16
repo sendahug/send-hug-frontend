@@ -31,15 +31,11 @@
 */
 import { TestBed } from "@angular/core/testing";
 import { provideRouter, withComponentInputBinding } from "@angular/router";
-import {
-  BrowserDynamicTestingModule,
-  platformBrowserDynamicTesting,
-} from "@angular/platform-browser-dynamic/testing";
 import {} from "jasmine";
 import { APP_BASE_HREF, CommonModule } from "@angular/common";
 import { ReactiveFormsModule } from "@angular/forms";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
-import { provideZoneChangeDetection } from "@angular/core";
+import { provideZonelessChangeDetection } from "@angular/core";
 import { MockProvider } from "ng-mocks";
 import { Subscription } from "rxjs";
 
@@ -52,14 +48,11 @@ describe("SearchFormComponent", () => {
       sendSearch: (_search) => new Subscription(),
     });
 
-    TestBed.resetTestEnvironment();
-    TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
-
     TestBed.configureTestingModule({
       imports: [CommonModule, ReactiveFormsModule, FontAwesomeModule, SearchFormComponent],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
-        provideZoneChangeDetection({ eventCoalescing: true }),
+        provideZonelessChangeDetection(),
         provideRouter([], withComponentInputBinding()),
         MockItemsService,
       ],
@@ -129,16 +122,15 @@ describe("SearchFormComponent", () => {
     expect(toggleSpy).not.toHaveBeenCalled();
   });
 
-  it("toggleSearch() - emits false to close the search", () => {
+  it("toggleSearch() - emits false to close the search", async () => {
     const fixture = TestBed.createComponent(SearchFormComponent);
-    fixture.detectChanges();
     const searchForm = fixture.componentInstance;
     const searchFormHtml = fixture.nativeElement;
     const toggleSpy = spyOn(searchForm, "toggleSearch").and.callThrough();
     const emitSpy = spyOn(searchForm.showForm, "emit");
+    await fixture.whenStable();
 
     searchFormHtml.querySelector("#exitButton").click();
-    fixture.detectChanges();
 
     expect(toggleSpy).toHaveBeenCalledWith();
     expect(emitSpy).toHaveBeenCalledWith(false);

@@ -39,7 +39,6 @@ import { CommonModule } from "@angular/common";
 import { type MessageGet } from "@app/interfaces/message.interface";
 import { UserIconComponent } from "@common/userIcon/userIcon.component";
 import { ItemDeleteFormComponent } from "@forms/itemDeleteForm/itemDeleteForm.component";
-import { MessageType } from "@app/interfaces/types";
 
 @Component({
   selector: "app-single-message",
@@ -49,29 +48,22 @@ import { MessageType } from "@app/interfaces/types";
   imports: [CommonModule, RouterLink, UserIconComponent, ItemDeleteFormComponent],
 })
 export class MessageComponent {
-  // TODO: Replace these with `input()`/`output()` once we figure out coverage
-  @Input() currentUser!: number;
+  /**
+   * @todo Replace these with `input()` after removing component mocks. ng-mock's
+   * MockComponent doesn't support signal inputs and outputs apparently.
+   */
   @Input()
   set message(newMessage: MessageGet) {
     this._message.set(newMessage);
   }
   readonly _message = signal<MessageGet>({} as MessageGet);
-  @Input() messType!: MessageType;
+  @Input() user1Id: number = 0;
+  @Input() user2Id: number = 0;
   @Output() messageDeleted = new EventEmitter<number>();
-  readonly userIconToShow = computed(() => {
-    if (this.messType == "thread") return this._message().from;
-
-    return this._message().forId == this.currentUser ? this._message().from : this._message().for;
-  });
-  readonly displayFor = computed(
-    () => this._message().fromId == this.currentUser || this.messType == "thread",
-  );
-  readonly displayFrom = computed(
-    () => this._message().forId == this.currentUser || this.messType == "thread",
-  );
+  readonly userIconToShow = computed(() => this._message().from);
   readonly deleteMode = signal(false);
   // Delete Popup Constants
-  readonly deleteEndpoint = computed(() => `messages/${this.messType}`);
+  readonly deleteEndpoint = "messages";
   readonly itemType = "Message";
 
   /**

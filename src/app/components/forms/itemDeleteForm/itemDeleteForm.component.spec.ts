@@ -33,12 +33,8 @@
 import { TestBed } from "@angular/core/testing";
 import {} from "jasmine";
 import { APP_BASE_HREF, CommonModule } from "@angular/common";
-import {
-  BrowserDynamicTestingModule,
-  platformBrowserDynamicTesting,
-} from "@angular/platform-browser-dynamic/testing";
 import { of } from "rxjs";
-import { provideZoneChangeDetection } from "@angular/core";
+import { provideZonelessChangeDetection } from "@angular/core";
 import { MockProvider } from "ng-mocks";
 
 import { ItemDeleteFormComponent } from "./itemDeleteForm.component";
@@ -51,14 +47,11 @@ describe("ItemDeleteFormComponent", () => {
   beforeEach(() => {
     const MockAPIClient = MockProvider(ApiClientService);
 
-    TestBed.resetTestEnvironment();
-    TestBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting());
-
     TestBed.configureTestingModule({
       imports: [CommonModule, PopUpComponent, ItemDeleteFormComponent, TeleportDirective],
       providers: [
         { provide: APP_BASE_HREF, useValue: "/" },
-        provideZoneChangeDetection({ eventCoalescing: true }),
+        provideZonelessChangeDetection(),
         MockAPIClient,
       ],
     }).compileComponents();
@@ -73,14 +66,13 @@ describe("ItemDeleteFormComponent", () => {
   });
 
   // Check that a warning is shown before deleting an item
-  it("shows a warning when deleting something", () => {
+  it("shows a warning when deleting something", async () => {
     const fixture = TestBed.createComponent(ItemDeleteFormComponent);
     const itemDeleteFormDOM = fixture.nativeElement;
     fixture.componentRef.setInput("deleteEndpoint", "delete");
     fixture.componentRef.setInput("itemType", "Post");
     fixture.componentRef.setInput("itemId", 2);
-
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     expect(itemDeleteFormDOM.querySelector("#deleteItem")).toBeTruthy();
     expect(
@@ -92,7 +84,7 @@ describe("ItemDeleteFormComponent", () => {
     ).toContain("This action is irreversible!");
   });
 
-  it("deleteItem - single item - makes the request and updates the user and IndexedDB store", () => {
+  it("deleteItem - single item - makes the request and updates the user and IndexedDB store", async () => {
     const fixture = TestBed.createComponent(ItemDeleteFormComponent);
     const itemDeleteForm = fixture.componentInstance;
     const itemDeleteFormDOM = fixture.nativeElement;
@@ -106,8 +98,7 @@ describe("ItemDeleteFormComponent", () => {
     fixture.componentRef.setInput("deleteEndpoint", "delete");
     fixture.componentRef.setInput("itemType", "Post");
     fixture.componentRef.setInput("itemId", 4);
-
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     // click 'delete'
     itemDeleteFormDOM.querySelectorAll(".popupDeleteBtn")[0].click();
@@ -119,7 +110,7 @@ describe("ItemDeleteFormComponent", () => {
     expect(deletedEmitSpy).toHaveBeenCalledWith(4);
   });
 
-  it("deleteItem - multiple items - makes the request and updates the user", () => {
+  it("deleteItem - multiple items - makes the request and updates the user", async () => {
     const fixture = TestBed.createComponent(ItemDeleteFormComponent);
     const itemDeleteForm = fixture.componentInstance;
     const itemDeleteFormDOM = fixture.nativeElement;
@@ -134,8 +125,7 @@ describe("ItemDeleteFormComponent", () => {
     fixture.componentRef.setInput("itemType", "Post");
     fixture.componentRef.setInput("itemId", 2);
     fixture.componentRef.setInput("bulkDelete", true);
-
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     // click 'delete'
     itemDeleteFormDOM.querySelectorAll(".popupDeleteBtn")[0].click();
@@ -147,7 +137,7 @@ describe("ItemDeleteFormComponent", () => {
     expect(deletedEmitSpy).toHaveBeenCalledWith(4);
   });
 
-  it("deleteItem - shouldn't delete if deleteEndpoint is undefined", () => {
+  it("deleteItem - shouldn't delete if deleteEndpoint is undefined", async () => {
     const fixture = TestBed.createComponent(ItemDeleteFormComponent);
     const itemDeleteForm = fixture.componentInstance;
     const itemDeleteFormDOM = fixture.nativeElement;
@@ -160,8 +150,7 @@ describe("ItemDeleteFormComponent", () => {
     const deletedEmitSpy = spyOn(itemDeleteForm.deleted, "emit");
     fixture.componentRef.setInput("itemType", "Post");
     fixture.componentRef.setInput("itemId", 4);
-
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     // click 'delete'
     itemDeleteFormDOM.querySelectorAll(".popupDeleteBtn")[0].click();
@@ -175,7 +164,7 @@ describe("ItemDeleteFormComponent", () => {
 
   // Check that a request to close the report is made if the item is deleted from
   // the admin dashboard
-  it("makes a request to close the report if that's what the user chose - Admin delete", () => {
+  it("makes a request to close the report if that's what the user chose - Admin delete", async () => {
     const fixture = TestBed.createComponent(ItemDeleteFormComponent);
     const itemDeleteForm = fixture.componentInstance;
     const itemDeleteFormDOM = fixture.nativeElement;
@@ -191,12 +180,10 @@ describe("ItemDeleteFormComponent", () => {
     const deletedEmitSpy = spyOn(itemDeleteForm.deleted, "emit");
     const alertsSpy = spyOn(itemDeleteForm["alertsService"], "createSuccessAlert");
     const swManagerSpy = spyOn(itemDeleteForm["swManager"], "deleteItem");
-
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     // click 'delete and close report'
     itemDeleteFormDOM.querySelectorAll(".deleteButton")[0].click();
-    fixture.detectChanges();
 
     expect(deleteSpy).toHaveBeenCalledWith();
     expect(deleteServiceSpy).toHaveBeenCalledWith("whatever/4");
@@ -207,7 +194,7 @@ describe("ItemDeleteFormComponent", () => {
   });
 
   // Check that the popup is exited and the item isn't deleted if the user picks 'never mind'
-  it("should emit false and keep the item if the user chooses not to delete", () => {
+  it("should emit false and keep the item if the user chooses not to delete", async () => {
     const fixture = TestBed.createComponent(ItemDeleteFormComponent);
     const itemDeleteForm = fixture.componentInstance;
     const itemDeleteFormDOM = fixture.nativeElement;
@@ -216,12 +203,10 @@ describe("ItemDeleteFormComponent", () => {
     fixture.componentRef.setInput("itemId", 2);
     const deleteSpy = spyOn(itemDeleteForm, "deleteItem");
     const emitSpy = spyOn(itemDeleteForm.editMode, "emit");
-
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     // click the 'never mind button'
     itemDeleteFormDOM.querySelectorAll(".popupDeleteBtn")[1].click();
-    fixture.detectChanges();
 
     // check the exit method was called
     itemDeleteForm.editMode.subscribe((event: boolean) => {
@@ -232,7 +217,7 @@ describe("ItemDeleteFormComponent", () => {
     expect(emitSpy).toHaveBeenCalledWith(false);
   });
 
-  it("should emit false and keep the item if the user chooses not to delete - admin", () => {
+  it("should emit false and keep the item if the user chooses not to delete - admin", async () => {
     const fixture = TestBed.createComponent(ItemDeleteFormComponent);
     const itemDeleteForm = fixture.componentInstance;
     const itemDeleteFormDOM = fixture.nativeElement;
@@ -243,12 +228,10 @@ describe("ItemDeleteFormComponent", () => {
 
     const deleteSpy = spyOn(itemDeleteForm, "deleteItem").and.callThrough();
     const emitSpy = spyOn(itemDeleteForm.editMode, "emit");
-
-    fixture.detectChanges();
+    await fixture.whenStable();
 
     // click the 'never mind button'
     itemDeleteFormDOM.querySelector("#adminCancel").click();
-    fixture.detectChanges();
 
     // check the exit method was called
     expect(deleteSpy).not.toHaveBeenCalled();

@@ -2,7 +2,7 @@
 
 [![CircleCI](https://circleci.com/gh/sendahug/send-hug-frontend.svg?style=shield)](https://circleci.com/gh/sendahug/send-hug-frontend)
 ![CI](https://github.com/sendahug/send-hug-frontend/workflows/Test%20CI/badge.svg)
-[![codecov](https://codecov.io/gh/sendahug/send-hug-frontend/graph/badge.svg)](https://codecov.io/gh/sendahug/send-hug-frontend)
+[![codecov](https://codecov.io/github/sendahug/send-hug-frontend/graph/badge.svg?token=PURHCFWB8Y)](https://codecov.io/github/sendahug/send-hug-frontend)
 [![Known Vulnerabilities](https://snyk.io/test/github/sendahug/send-hug-frontend/badge.svg)](https://snyk.io/test/github/sendahug/send-hug-frontend)
 [![Depfu](https://badges.depfu.com/badges/d559c2b81b6153cf48b9badbfe1633ae/overview.svg)](https://depfu.com/github/sendahug/send-hug-frontend?project_id=35503)
 [![Depfu](https://badges.depfu.com/badges/d559c2b81b6153cf48b9badbfe1633ae/count.svg)](https://depfu.com/github/sendahug/send-hug-frontend?project_id=35503)

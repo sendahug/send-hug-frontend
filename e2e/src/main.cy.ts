@@ -13,7 +13,7 @@ describe("Send A Hug App", function () {
     cy.get(".navLink").eq(0).should("have.class", "active");
 
     // click the second nav button
-    cy.navigateTo(2);
+    cy.navigateTo(1);
     cy.url().should("equal", "http://localhost:3000/login");
 
     // check the second element is marked active and the first isn't
@@ -21,7 +21,7 @@ describe("Send A Hug App", function () {
     cy.get(".navLink").eq(0).should("not.have.class", "active");
 
     // click the third nav button
-    cy.navigateTo(3);
+    cy.navigateTo(2);
     cy.url().should("equal", "http://localhost:3000/about");
 
     // check the third element is marked active and the second isn't

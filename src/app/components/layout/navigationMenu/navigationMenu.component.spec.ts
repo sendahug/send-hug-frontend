@@ -347,7 +347,7 @@ describe("NavigationMenuComponent", () => {
 
     expect(navMenu.showMenuForCurrentWidth()).toBeTrue();
     expect(navMenuHtml.querySelector("#navLinks")!.classList).not.toBeNull();
-    expect(navMenuHtml.querySelector("#menuBtn")!.classList).toContain("hidden");
+    expect(navMenuHtml.querySelector("#menuBtn")).toBeNull();
   });
 
   // check the menu is hidden if the screen isn't wide enough
@@ -361,6 +361,7 @@ describe("NavigationMenuComponent", () => {
 
     expect(navMenu.showMenuForCurrentWidth()).toBeFalse();
     expect(navMenuHtml.querySelector("#navLinks")).toBeNull();
+    expect(navMenuHtml.querySelector("#menuBtn")).toBeTruthy();
   });
 
   // check the menu is hidden when clicked again

@@ -10,23 +10,23 @@ describe("Send A Hug App", function () {
     cy.visit("http://localhost:3000/");
 
     // check the first element is marked as active
-    cy.get(".navLink").eq(1).should("have.class", "active");
+    cy.get(".navLink").eq(0).should("have.class", "active");
 
     // click the second nav button
-    cy.navigateTo(2);
+    cy.navigateTo(1);
     cy.url().should("equal", "http://localhost:3000/login");
 
     // check the second element is marked active and the first isn't
-    cy.get(".navLink").eq(2).should("have.class", "active");
-    cy.get(".navLink").eq(1).should("not.have.class", "active");
+    cy.get(".navLink").eq(1).should("have.class", "active");
+    cy.get(".navLink").eq(0).should("not.have.class", "active");
 
     // click the third nav button
-    cy.navigateTo(3);
+    cy.navigateTo(2);
     cy.url().should("equal", "http://localhost:3000/about");
 
     // check the third element is marked active and the second isn't
-    cy.get(".navLink").eq(3).should("have.class", "active");
-    cy.get(".navLink").eq(2).should("not.have.class", "active");
+    cy.get(".navLink").eq(2).should("have.class", "active");
+    cy.get(".navLink").eq(1).should("not.have.class", "active");
   });
 
   // Check that when clicking the logo, it navigates to the home page
@@ -34,14 +34,14 @@ describe("Send A Hug App", function () {
     cy.visit("http://localhost:3000/about");
 
     // check the home route isn't marked active
-    cy.get(".navLink").eq(1).should("not.have.class", "active");
+    cy.get(".navLink").eq(0).should("not.have.class", "active");
 
     // click the logo
     cy.get("#siteLogo").click();
 
     // check the current page is the home page`
     cy.url().should("equal", "http://localhost:3000/");
-    cy.get(".navLink").eq(1).should("have.class", "active");
+    cy.get(".navLink").eq(0).should("have.class", "active");
   });
 
   // Check that the active links changes when navigating manually
@@ -50,21 +50,21 @@ describe("Send A Hug App", function () {
     cy.visit("http://localhost:3000/about");
 
     // check the correct route is marked active
-    cy.get(".navLink").eq(3).should("have.class", "active");
+    cy.get(".navLink").eq(2).should("have.class", "active");
 
     // get the messages route
     cy.visit("http://localhost:3000/login");
 
     // check the correct route is marked active and the previous route isn't
-    cy.get(".navLink").eq(2).should("have.class", "active");
-    cy.get(".navLink").eq(3).should("not.have.class", "active");
+    cy.get(".navLink").eq(1).should("have.class", "active");
+    cy.get(".navLink").eq(2).should("not.have.class", "active");
 
     // get the home route
     cy.visit("http://localhost:3000/");
 
     // check the correct route is marked active and the previous route isn't
-    cy.get(".navLink").eq(1).should("have.class", "active");
-    cy.get(".navLink").eq(2).should("not.have.class", "active");
+    cy.get(".navLink").eq(0).should("have.class", "active");
+    cy.get(".navLink").eq(1).should("not.have.class", "active");
   });
 
   // check the user is redirected to the search results page upon searching

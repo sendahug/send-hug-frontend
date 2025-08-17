@@ -11,6 +11,7 @@
 #### Chores
 
 - Added more logging to tests to allow logging test suite result using Jasmine's `suiteDone` hook. ([#2198](https://github.com/sendahug/send-hug-frontend/pull/2198))
+- Updated the URLs for the codecov badge in the README to match the updated pattern codecov uses. ([#2199](https://github.com/sendahug/send-hug-frontend/pull/2199))
 
 ### 2025-08-16
 

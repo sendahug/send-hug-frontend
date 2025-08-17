@@ -18,10 +18,10 @@
   <nav id="navMenu" role="navigation">
     <a [routerLink]="['/']"><img alt="send a hug logo" id="siteLogo" [src]="SiteLogoSrc" /></a>
     <button
+      *ngIf="showMenuButton()"
       id="menuBtn"
       aria-label="open navigation menu"
-      [ngClass]="menuButtonClass()"
-      [attr.aria-hidden]="!showMenuButton()"
+      class="navLink"
       (click)="toggleMenu()"
     >
       <!-- prettier-ignore -->

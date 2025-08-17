@@ -48,6 +48,14 @@
             });
           }
         },
+        suiteDone: function (result) {
+          console.log(`Suite ${result.fullName} completed with result: ${result.status}`);
+
+          for (const expectation of result.failedExpectations) {
+            console.log("Suite " + expectation.message);
+            console.log(expectation.stack);
+          }
+        },
         jasmineDone: (result) => {
           if (result.overallStatus !== "passed") {
             console.log("Finished all tests. Tearing down.");

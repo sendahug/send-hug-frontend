@@ -48,7 +48,7 @@ describe("Send A Hug Router", () => {
     cy.get("h1").eq(0).should("have.text", "Messages");
     cy.get("#breadcrumb").should("not.exist");
     // check messages route is marked active
-    cy.get(".navLink").eq(2).should("have.class", "active");
+    cy.get(".navLink").eq(1).should("have.class", "active");
 
     // thread
     cy.visit("http://localhost:3000/messages?threadId=1");
@@ -57,7 +57,7 @@ describe("Send A Hug Router", () => {
     cy.get("h1").eq(0).should("have.text", "Messages");
     cy.get("#breadcrumb").should("have.text", "Messages / Thread 1");
     // check messages route is marked active
-    cy.get(".navLink").eq(2).should("have.class", "active");
+    cy.get(".navLink").eq(1).should("have.class", "active");
   });
 
   // check the correct sub-route is shown for those paths that have sub-routes

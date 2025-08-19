@@ -48,7 +48,7 @@
     "eslint-plugin-jasmine": "^4.2.2",
     "globals": "^16.3.0",
     "jasmine-core": "^5.9.0",
-    "less": "^4.4.0",
+    "less": "^4.4.1",
     "magic-string": "^0.30.17",
     "ng-mocks": "^14.13.5",
     "pa11y": "^8.0.0",

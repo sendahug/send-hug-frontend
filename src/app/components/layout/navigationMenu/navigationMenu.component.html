@@ -27,7 +27,7 @@
       <!-- prettier-ignore -->
       <fa-icon class="fa-bars" [icon]="faBars"></fa-icon>
     </button>
-    <div *ngIf="showMenuForCurrentWidth()" id="navLinks" [ngClass]="navMenuClass()">
+    <div *ngIf="showMenuUserTriggered()" id="navLinks" [ngClass]="navMenuClass()">
       <a [routerLink]="['/']" [ngClass]="getClassForNavItem('/')">
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -182,6 +182,15 @@
   </nav>
   <app-search-form *ngIf="showSearch()" (showForm)="toggleSearch()"></app-search-form>
   <div *ngIf="showTextPanel()" id="textPanel">
+    <button
+      id="textExitButton"
+      aria-label="close text size panel"
+      type="button"
+      (click)="toggleSizePanel()"
+    >
+      <!-- prettier-ignore -->
+      <fa-icon class="fa-times" [icon]="faTimes"></fa-icon>
+    </button>
     <button
       class="appButton"
       aria-label="change text size to smallest size"

@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+### 2025-09-14
+
+#### Fixes
+
+- Fixed a bug where deleting all threads while a thread was open caused errors in the UI. This happened due to the fact there was no thread to render, so all messages were null, which broke both lists (the messages and the threads). ([#2229](https://github.com/sendahug/send-hug-frontend/pull/2229))
+
 ### 2025-08-17
 
 #### Fixes

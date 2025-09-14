@@ -1,9 +1,0 @@
-{
-  "pr_number": 2229,
-  "changes": [
-    {
-      "change": "Fixes",
-      "description": "Fixed a bug where deleting all threads while a thread was open caused errors in the UI. This happened due to the fact there was no thread to render, so all messages were null, which broke both lists (the messages and the threads)."
-    }
-  ]
-}

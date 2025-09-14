@@ -305,6 +305,8 @@ export class AppMessagesComponent {
     this.userThreads.set([]);
     this.swManager.clearStore("messages");
     this.swManager.clearStore("threads");
+    this.currentThreadsPage.set(1);
+    this.closeThread();
   }
 
   /**

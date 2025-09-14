@@ -2,6 +2,17 @@
 
 ## Unreleased
 
+### 2025-08-17
+
+#### Fixes
+
+- The 'open menu' button is now properly removed from the DOM if there's enough space for the full navigation menu onscreen. Previously, the button was only hidden visually, which meant it could still be navigated to using keyboard navigation and assistive technology. Removing the button from the DOM ensures users with assistive technology and users using keyboard navigation can't access it when it's not supposed to be enabled, which improves the accessibility of the app. ([#2198](https://github.com/sendahug/send-hug-frontend/pull/2198))
+
+#### Chores
+
+- Added more logging to tests to allow logging test suite result using Jasmine's `suiteDone` hook. ([#2198](https://github.com/sendahug/send-hug-frontend/pull/2198))
+- Updated the URLs for the codecov badge in the README to match the updated pattern codecov uses. ([#2199](https://github.com/sendahug/send-hug-frontend/pull/2199))
+
 ### 2025-08-16
 
 #### Changes

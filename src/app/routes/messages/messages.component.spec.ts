@@ -501,6 +501,7 @@ describe("AppMessagesComponent", () => {
     const appMessaging = fixture.componentInstance;
     const updateSpy = spyOn(appMessaging, "clearMailbox").and.callThrough();
     const deleteSpy = spyOn(appMessaging["swManager"], "clearStore");
+    const closeThreadSpy = spyOn(appMessaging, "closeThread");
     appMessaging.userThreads.set(mockThreads);
     appMessaging.isThreadsIdbFetchLoading.set(false);
 
@@ -520,6 +521,8 @@ describe("AppMessagesComponent", () => {
     expect(deleteSpy.calls.first().args).toEqual(["messages"]);
     expect(deleteSpy.calls.mostRecent().args).toEqual(["threads"]);
     expect(appMessaging.userThreads().length).toBe(0);
+    expect(closeThreadSpy).toHaveBeenCalledTimes(1);
+    expect(appMessaging.currentThreadsPage()).toBe(1);
   });
 
   /** @todo This one is more of an integration test, isn't it? Probably better off in e2e. */

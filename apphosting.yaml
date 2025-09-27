@@ -1,0 +1,7 @@
+runConfig:
+  vpcAccess:
+    egress: PRIVATE_RANGES_ONLY # Default value
+    networkInterfaces:
+      # Specify at least one of network and/or subnetwork
+      - network: lb-network
+        subnetwork: lb-subnet

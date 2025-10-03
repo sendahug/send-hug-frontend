@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+### 2025-10-03
+
+#### Fixes
+
+- Added missing start_url to the web manifest to allow users to install the app as a PWA again. ([#2246](https://github.com/sendahug/send-hug-frontend/pull/2246))
+
 ### 2025-09-14
 
 #### Fixes

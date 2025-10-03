@@ -1,9 +1,0 @@
-{
-  "pr_number": 2246,
-  "changes": [
-    {
-      "change": "Fixes",
-      "description": "Added missing start_url to the web manifest to allow users to install the app as a PWA again."
-    }
-  ]
-}

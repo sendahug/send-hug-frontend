@@ -41,7 +41,7 @@
     "axe-core": "^4.10.3",
     "babel-plugin-istanbul": "^7.0.1",
     "command-line-args": "^6.0.1",
-    "cypress": "^15.3.0",
+    "cypress": "^15.4.0",
     "eslint": "^9.36.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-cypress": "^5.2.0",

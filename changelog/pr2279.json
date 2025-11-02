@@ -1,9 +1,0 @@
-{
-  "pr_number": 2279,
-  "changes": [
-    {
-      "change": "Chores",
-      "description": "Updated the versions of the CircleCI orbs we use in CI."
-    }
-  ]
-}

@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+### 2025-11-02
+
+#### Chores
+
+- Updated the versions of the CircleCI orbs we use in CI. ([#2279](https://github.com/sendahug/send-hug-frontend/pull/2279))
+- Updated the version of Node we use in CI and CD to the current LTS version (24). ([#2280](https://github.com/sendahug/send-hug-frontend/pull/2280))
+
 ### 2025-10-03
 
 #### Fixes

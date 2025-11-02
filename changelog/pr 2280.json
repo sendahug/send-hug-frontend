@@ -1,0 +1,9 @@
+{
+  "pr_number": 2280,
+  "changes": [
+    {
+      "change": "Chores",
+      "description": "Updated the version of Node we use in CI and CD to the current LTS version (24)."
+    }
+  ]
+}

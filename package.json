@@ -42,7 +42,7 @@
     "babel-plugin-istanbul": "^7.0.1",
     "command-line-args": "^6.0.1",
     "cypress": "^15.5.0",
-    "eslint": "^9.36.0",
+    "eslint": "^9.39.1",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-cypress": "^5.2.0",
     "eslint-plugin-jasmine": "^4.2.2",

@@ -157,7 +157,8 @@ export class AppComponent implements OnInit, AfterViewInit, AfterViewChecked {
    * menu in order to adjust the location of the main content container.
    */
   ngAfterViewChecked(): void {
-    this.navMenuHeight.set(this.navMenu()?.nativeElement.clientHeight);
+    // @todo why is nativeElement undefined here in tests?
+    this.navMenuHeight.set(this.navMenu()?.nativeElement?.clientHeight);
   }
 
   /**

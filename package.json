@@ -47,7 +47,7 @@
     "eslint-plugin-cypress": "^5.2.0",
     "eslint-plugin-jasmine": "^4.2.2",
     "globals": "^16.5.0",
-    "jasmine-core": "^5.12.1",
+    "jasmine-core": "^5.13.0",
     "jiti": "^2.6.1",
     "less": "^4.5.1",
     "magic-string": "^0.30.21",

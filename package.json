@@ -28,7 +28,7 @@
     "@size-limit/preset-app": "^12.0.0",
     "@size-limit/time": "^12.0.0",
     "@types/babel__core": "^7.20.5",
-    "@types/jasmine": "^5.1.13",
+    "@types/jasmine": "^5.1.15",
     "@types/less": "^3.0.8",
     "@types/node": "^25.0.6",
     "@types/pa11y": "^5.3.7",

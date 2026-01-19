@@ -23,7 +23,7 @@
   "devDependencies": {
     "@babel/core": "^7.28.5",
     "@babel/plugin-syntax-decorators": "^7.27.1",
-    "@babel/plugin-syntax-typescript": "^7.27.1",
+    "@babel/plugin-syntax-typescript": "^7.28.6",
     "@size-limit/file": "^12.0.0",
     "@size-limit/preset-app": "^12.0.0",
     "@size-limit/time": "^12.0.0",

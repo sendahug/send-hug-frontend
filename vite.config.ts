@@ -51,6 +51,20 @@ export default defineConfig(({ mode }) => ({
           if (id.includes("polyfill.js") || id.includes("zone.js")) {
             return "polyfills";
           } else if (id.includes("node_modules")) {
+            if (id.includes("angular")) {
+              if (id.includes("angular/core")) return "angular-core";
+              if (id.includes("angular/common")) return "angular-common";
+              if (id.includes("angular/forms")) return "angular-forms";
+              if (id.includes("angular/router")) return "angular-router";
+              else return "angular";
+            } else if (id.includes("firebase")) {
+              return "firebase";
+            } else if (id.includes("rxjs")) {
+              return "rxjs";
+            } else if (id.includes("fortawesome")) {
+              return "fortawesome";
+            }
+
             return "vendor";
           }
         },

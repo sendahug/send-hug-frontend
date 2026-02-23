@@ -82,8 +82,19 @@ module.exports = [
   },
   {
     name: "Vendor scripts",
-    limit: "236 kB",
-    path: ["dist/assets/vendor-*.js", "dist/assets/polyfills-*.js"],
+    limit: "76 kB",
+    path: [
+      "dist/assets/vendor-*.js",
+      "dist/assets/polyfills-*.js",
+      "dist/assets/firebase-*.js",
+      "dist/assets/rxjs-*.js",
+      "dist/assets/fortawesome-*.js",
+    ],
+  },
+  {
+    name: "Angular scripts",
+    limit: "175 kB",
+    path: ["dist/assets/angular-*.js"],
   },
   {
     name: "Static Assets",

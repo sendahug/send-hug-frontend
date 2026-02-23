@@ -1,0 +1,13 @@
+{
+  "pr_number": 2092,
+  "changes": [
+    {
+      "change": "Chores",
+      "description": "Re-added lines that were deleted from the changelog. Several lines expanding on bigger changes seem to have been removed/relocated due to the automated process we use to update the changelog. All the missing lines were now re-added to their respective parent changelog line."
+    },
+    {
+      "change": "Features",
+      "description": "Changed our build process to use more specific manual chunking. This breaks down the `vendor` package further into multiple different packages, which should make it quicker to load the app."
+    }
+  ]
+}

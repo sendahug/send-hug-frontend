@@ -452,11 +452,11 @@
 #### Chores
 
 - Simplified the structure of the NotificationService. This includes:
-- Removed the user-settings-related properties. These were unneeded duplicates of the AuthService properties, and so they were removed.
-- Removed the AuthService dependency from the NotificationService. The NotificationService now handles only the process of auto-refresh and the process of subscribing ot push notifications. This makes it easier to update the user-related logic and the push-related logic.
-- Moved the logic for the initial push permission check into a separate method (instead of running it in the service's constructor).
-- Moved duplicate code for requesting push subscriptions to its own helper method.
-- Added user-settings-related computed properties to the AuthService, as well as computed properties for setting the title of the buttons in the NotificationsTab. ([#1787](https://github.com/sendahug/send-hug-frontend/pull/1787))
+  - Removed the user-settings-related properties. These were unneeded duplicates of the AuthService properties, and so they were removed.
+  - Removed the AuthService dependency from the NotificationService. The NotificationService now handles only the process of auto-refresh and the process of subscribing ot push notifications. This makes it easier to update the user-related logic and the push-related logic.
+  - Moved the logic for the initial push permission check into a separate method (instead of running it in the service's constructor).
+  - Moved duplicate code for requesting push subscriptions to its own helper method.
+  - Added user-settings-related computed properties to the AuthService, as well as computed properties for setting the title of the buttons in the NotificationsTab. ([#1787](https://github.com/sendahug/send-hug-frontend/pull/1787))
 - Simplified the logic for handling logged-in users in the AppComponent. Previously, we waited for user data to be resolved before enabling push notifications and auto refresh (if necessary), and in another part of the code, we waited for the Firebase logged-in-user state to be resolved. Since both checks essentially wait for the same thing, they were unified. ([#1787](https://github.com/sendahug/send-hug-frontend/pull/1787))
 
 ### 2024-08-21
@@ -521,8 +521,17 @@
 - Deleted the old Express server we used when the app was deployed in Heroku. Now that we're using Firebase Hosting to serve the files for us, it's no longer needed. ([#1755](https://github.com/sendahug/send-hug-frontend/pull/1755))
 - Upgraded Angular to v18.1.3. ([#1755](https://github.com/sendahug/send-hug-frontend/pull/1755))
 - Replaced Karma with web-test-runner for unit tests. Karma [has been deprecated](https://github.com/karma-runner/karma?tab=readme-ov-file#karma-is-deprecated-and-is-not-accepting-new-features-or-general-bug-fixes) last year (the original blog post is no longer accessible), and the Angular team specified they plan to add support for web-test-runner as a direct alternative. As such, we made the decision to migrate to web-test-runner now. The change includes:
+  - Replaced the Karma config with web-test-runner config.
+  - Updated the old template inliner to include CSS inlining (if a component has scoped CSS).
+  - Removed the old SVG inliner. SVG inlining is no longer required due to the way we process most SVGs now.
+  - Added a plugin for transpiling the files in tests using the TypeScript API. This allows us to include decorator metadata in tests, which is required since we don't run the Angular compiler in tests.
+  - Added a plugin for serving the files that aren't inlined in tests (e.g., the logo and the ServiceWorker).
+  - Added an HTML file to use in web-test-runner tests. The file sets up the Jasmine environment, imports zone.js and zone.js/testing (which is needed for tests), and initialises the Angular test environment automatically for users. This means the test environment no longer needs to be initialised manually (using a `tests.ts` file). ([#1755](https://github.com/sendahug/send-hug-frontend/pull/1755))
 - Deleted the old Cypress plugins file, which is no longer used and no longer supported. ([#1755](https://github.com/sendahug/send-hug-frontend/pull/1755))
 - Replaced Gulp with Vite as the build tool. This allows us to take advantage of HMR in development and creates a much better developer experience. The change includes:
+  - Added an Angular Builder class for handling the Angular Compiler and the compilation process.
+  - Added Vite plugins for handling compilation using the Builder class, linking libraries (using the [Angular Linker](https://angular.dev/tools/libraries/creating-libraries#consuming-partial-ivy-code-outside-the-angular-cli)), handling standalone files (e.g., the ServiceWorker) and handling global stylesheets.
+  - Added a development tsconfig to ensure testing files and dependencies don't clutter the Vite server logs in development or break compilation at build time. ([#1755](https://github.com/sendahug/send-hug-frontend/pull/1755))
 - Removed Node.js version 18 from CI tests (in GitHub Actions) and added Node.js version 22. ([#1745](https://github.com/sendahug/send-hug-frontend/pull/1745))
 - Fixed the back-end startup in CI (during the e2e and accessibility testing workflows), which has apparently been broken since the migration to Firebase. ([#1758](https://github.com/sendahug/send-hug-frontend/pull/1758))
 - Added missing Chrome flags to pa11y config to fix accessibility tests. ([#1758](https://github.com/sendahug/send-hug-frontend/pull/1758))
@@ -679,6 +688,9 @@
 
 - Combined the rollup plugin for setting the environment to production with the rollup plugin for replacing the environment variables. Since they both update the environment variables and the production environment setter now consists of one line of code, there was no need to keep them separated. ([#1618](https://github.com/sendahug/send-hug-frontend/pull/1618))
 - Replaced @rollup/stream with rollup in the process of bundling the site's scripts. Since @rollup/stream is the recommended plugin for making rollup work with gulp, we've been using it in script compilation. However, @rollup/stream doesn't support chunking, and the process of using it with gulp produces considerably larger JavaScript bundles than rollup itself. Moving to rollup allows us to generate smaller packages, and, in the future, it will allow us to start splitting the code. The change includes:
+  - Added a new rollup configuration file.
+  - Converted the old processor CommonJS file (with the rollup plugins we use in compilation and in tests) to an ES module with the plugins we use.
+  - The gulp tasks for bundling the scripts now run rollup via a child process (Node.js's `exec`) instead of running @rollup/stream. ([#1618](https://github.com/sendahug/send-hug-frontend/pull/1618))
 
 ### 2024-04-17
 

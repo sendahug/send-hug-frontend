@@ -1,0 +1,13 @@
+{
+  "pr_number": 2198,
+  "changes": [
+    {
+      "change": "Fixes",
+      "description": "The 'open menu' button is now properly removed from the DOM if there's enough space for the full navigation menu onscreen. Previously, the button was only hidden visually, which meant it could still be navigated to using keyboard navigation and assistive technology. Removing the button from the DOM ensures users with assistive technology and users using keyboard navigation can't access it when it's not supposed to be enabled, which improves the accessibility of the app."
+    },
+    {
+      "change": "Chores",
+      "description": "Added more logging to tests to allow logging test suite result using Jasmine's `suiteDone` hook."
+    }
+  ]
+}

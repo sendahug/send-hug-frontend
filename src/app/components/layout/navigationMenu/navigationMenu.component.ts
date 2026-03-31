@@ -92,12 +92,7 @@ export class NavigationMenuComponent implements AfterViewInit, AfterViewChecked 
   readonly showMenuButton = signal(true);
   readonly navMenuClass = computed(() => ({
     navLinks: true,
-    hidden: !this.showMenuForCurrentWidth(),
     float: this.shouldMenuFloat(),
-  }));
-  readonly menuButtonClass = computed(() => ({
-    navLink: true,
-    hidden: !this.showMenuButton(),
   }));
   readonly currentlyActiveRoute = signal("/");
   readonly currentTextSize = signal(1);
@@ -155,8 +150,8 @@ export class NavigationMenuComponent implements AfterViewInit, AfterViewChecked 
         this.serviceWorkerM.updateSW();
 
         // if the menu was open and the user navigated to another page, close it
-        if (this.showMenuForCurrentWidth() && document.documentElement.clientWidth < 650)
-          this.showMenuForCurrentWidth.set(false);
+        if (!this.showMenuForCurrentWidth() && this.showMenuButton())
+          this.showMenuUserTriggered.set(false);
         const currentUrl = event.url;
 
         // if the current URL is the main page
@@ -210,13 +205,12 @@ export class NavigationMenuComponent implements AfterViewInit, AfterViewChecked 
   Programmer: Shir Bar Lev.
   */
   toggleNotifications() {
-    const width = document.documentElement.clientWidth;
     this.showNotifications.set(true);
 
     // if the viewport is smaller than 650px, the user opened the panel through the
     // menu, which needs to be closed
-    if (width < 650) {
-      this.showMenuForCurrentWidth.set(false);
+    if (!this.showMenuForCurrentWidth()) {
+      this.showMenuUserTriggered.set(false);
     }
   }
 
@@ -228,24 +222,22 @@ export class NavigationMenuComponent implements AfterViewInit, AfterViewChecked 
   Programmer: Shir Bar Lev.
   */
   toggleSearch() {
-    const width = document.documentElement.clientWidth;
-
     // if the search is displayed, close it
     if (this.showSearch()) {
       this.showSearch.set(false);
 
       // if the viewport is smaller than 650px, the user opened the panel through the
       // menu, which needs to be closed
-      if (width < 650) {
-        this.showMenuForCurrentWidth.set(true);
+      if (!this.showMenuForCurrentWidth()) {
+        this.showMenuUserTriggered.set(true);
       }
     }
     // otherwise show it
     else {
       // if the viewport is smaller than 650px, the user opened the panel through the
       // menu, which needs to be closed
-      if (width < 650) {
-        this.showMenuForCurrentWidth.set(false);
+      if (!this.showMenuForCurrentWidth()) {
+        this.showMenuUserTriggered.set(false);
       }
 
       this.showSearch.set(true);
@@ -261,7 +253,7 @@ export class NavigationMenuComponent implements AfterViewInit, AfterViewChecked 
   Programmer: Shir Bar Lev.
   */
   toggleMenu() {
-    this.showMenuUserTriggered.set(!this.showMenuForCurrentWidth());
+    this.showMenuUserTriggered.set(!this.showMenuUserTriggered());
   }
 
   /*
@@ -279,14 +271,14 @@ export class NavigationMenuComponent implements AfterViewInit, AfterViewChecked 
 
     if (width > 650 && this.menuSize() < navMenu.offsetWidth) {
       this.showMenuForCurrentWidth.set(true);
+      this.showMenuUserTriggered.set(true);
       this.showMenuButton.set(false);
       this.shouldMenuFloat.set(false);
     } else {
-      if (this.showMenuForCurrentWidth()) {
-        this.showMenuButton.set(true);
-        this.showMenuForCurrentWidth.set(false);
-        this.shouldMenuFloat.set(true);
-      }
+      this.showMenuButton.set(true);
+      this.showMenuForCurrentWidth.set(false);
+      this.showMenuUserTriggered.set(false);
+      this.shouldMenuFloat.set(true);
     }
   }
 
@@ -300,6 +292,10 @@ export class NavigationMenuComponent implements AfterViewInit, AfterViewChecked 
   */
   toggleSizePanel() {
     this.showTextPanel.set(!this.showTextPanel());
+
+    if (!this.showMenuForCurrentWidth()) {
+      this.showMenuUserTriggered.set(!this.showMenuUserTriggered());
+    }
   }
 
   /*
@@ -350,16 +346,14 @@ export class NavigationMenuComponent implements AfterViewInit, AfterViewChecked 
     // if the larger text makes the navigation menu too long, turn it back
     // to the small-viewport menu
     if (this.menuSize() >= navMenu.offsetWidth) {
-      this.showMenuForCurrentWidth.set(this.showMenuUserTriggered());
+      this.showMenuForCurrentWidth.set(false);
       this.showMenuButton.set(true);
       this.shouldMenuFloat.set(true);
     } else {
       this.showMenuForCurrentWidth.set(true);
+      this.showMenuUserTriggered.set(true);
       this.shouldMenuFloat.set(false);
-
-      if (document.documentElement.clientWidth > 650) {
-        this.showMenuButton.set(false);
-      }
+      this.showMenuButton.set(false);
     }
   }
 
@@ -375,6 +369,12 @@ export class NavigationMenuComponent implements AfterViewInit, AfterViewChecked 
   */
   changeMode(notificationsOn: boolean) {
     this.showNotifications.set(notificationsOn);
+
+    // if the viewport is smaller than 650px, the user opened the panel through the
+    // menu, which needs to be reopened
+    if (!this.showMenuForCurrentWidth()) {
+      this.showMenuUserTriggered.set(true);
+    }
   }
 
   /**
